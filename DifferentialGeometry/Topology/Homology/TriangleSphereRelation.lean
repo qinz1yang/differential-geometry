@@ -18,7 +18,7 @@ theorem integralSingularTriangleSphereClass_face_relation
   obtain ⟨G, hG, hfaces⟩ := exists_terminal_tetrahedron_faces x tau
   have heq (i : Fin 4) := integralSingularTriangleSphereClass_eq_triangleGenLoop x
     ((TopCat.toSSet.obj (TopCat.of X)).δ i tau)
-    (G.comp ⟨stdSimplex.map i.succAbove, stdSimplex.continuous_map i.succAbove⟩)
+    (G.comp ⟨Convexity.StdSimplex.coordinateMap i.succAbove, Convexity.StdSimplex.continuous_coordinateMap i.succAbove⟩)
     (fun p hp => hG (Simplex.faceBoundaryIntoTetrahedronOneSkeleton i ⟨p, hp⟩))
     (hfaces i)
   rw [heq 0, heq 2, heq 1, heq 3]

@@ -69,7 +69,7 @@ theorem exists_lipschitz_fixed_forcing_of_tame
       hforce q, hparam p q, hstate q] with t hsub hpt hqt hpqt hst
     rw [hsub, Pi.sub_apply, hpt, hqt]
     have h := hpqt ⟨L (F q) t, hst⟩
-    simpa only [aeSetLift, Set.mem_ofPred_eq, dif_pos hst, mul_add, mul_comm, mul_left_comm, mul_assoc] using h
+    simpa only [aeSetLift, Set.mem_ofPred_eq, dite_eq_left hst, mul_add, mul_comm, mul_left_comm, mul_assoc] using h
   have hcross : ‖Gpq - F q‖ ≤
       ((K₁ : ℝ) * H * ρ + Real.sqrt T * K₀) * dist p q := by
     have hraw := timeL2_norm_le_of_ae_affine_bound (Gpq - F q) (L (F q))

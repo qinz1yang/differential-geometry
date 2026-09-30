@@ -92,8 +92,8 @@ theorem exists_unique_fundamentalClass_of_connecting_eq_zero_of_localClassTransp
     (localClassRealizationLocallyConstant_of_localClassTransport o htransport) x₀ hδ h₃
 
 def ClosedThreeManifoldPuncturedVanishing
-    (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] (x : M) : Prop :=
+    (M : Type u) [TopologicalSpace M]
+    (x : M) : Prop :=
   Subsingleton (IntegralHomology ({x}ᶜ : Set M) 2) ∧
     Subsingleton (IntegralHomology ({x}ᶜ : Set M) 3)
 

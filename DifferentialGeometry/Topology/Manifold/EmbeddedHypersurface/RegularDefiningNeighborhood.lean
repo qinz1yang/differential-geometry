@@ -69,15 +69,24 @@ theorem exists_defining_neighborhood_of_regular_vanishing {e : S → M} {x : S}
     have hhc := mfderiv_comp z₀ (hΦ'.mdifferentiableAt (by simp))
       ((he'.comp z₀ hd).mdifferentiableAt (by simp))
     change mfderiv 𝓘(ℝ, MorseModel m) 𝓘(ℝ, MorseModel (m + 1)) H₀ z₀ = _ at hhc
-    erw [mfderiv_eq_fderiv, hdc] at hhc
-    rw [hhc]
+    erw [hdc] at hhc
     have hxΦ' : e (d.symm z₀) ∈ Φ.source := by erw [hdx]; exact hxΦ
     have hei : Function.Injective (mfderiv I J e (d.symm z₀)) := by
       erw [hdx]
       exact injective_mfderiv_of_isImmersionAt I J he
-    exact ((Φ.isLocalDiffeomorphAt J 𝓘(ℝ, MorseModel (m + 1)) ∞ hxΦ').mfderivToContinuousLinearEquiv (by simp)).injective.comp
-      (hei.comp
-        ((d.symm.isLocalDiffeomorphAt 𝓘(ℝ, MorseModel m) I ∞ hzD).mfderivToContinuousLinearEquiv (by simp)).injective)
+    have hinj : Function.Injective
+        (mfderiv 𝓘(ℝ, MorseModel m) 𝓘(ℝ, MorseModel (m + 1)) H₀ z₀) := by
+      rw [hhc]
+      exact ((Φ.isLocalDiffeomorphAt J 𝓘(ℝ, MorseModel (m + 1)) ∞ hxΦ').mfderivToContinuousLinearEquiv (by simp)).injective.comp
+        (hei.comp
+          ((d.symm.isLocalDiffeomorphAt 𝓘(ℝ, MorseModel m) I ∞ hzD).mfderivToContinuousLinearEquiv (by simp)).injective)
+    intro v w hvw
+    apply (NormedSpace.fromTangentSpace (𝕜 := ℝ) z₀).symm.injective
+    apply hinj
+    rw [mfderiv_eq_fderiv]
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply] using
+      congrArg (NormedSpace.fromTangentSpace (𝕜 := ℝ) (H₀ z₀)).symm hvw
   have hqinj : Function.Injective (fderiv ℝ q z₀) := by
     intro v w hvw
     apply hHinj

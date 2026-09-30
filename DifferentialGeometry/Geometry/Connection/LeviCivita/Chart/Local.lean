@@ -256,7 +256,7 @@ lemma chartLeviCivita_eq_of_mem (g : SmoothRiemannianMetric I M) (α : M)
       (trivFromE (I := I) α x).comp
         (chartLeviCivitaInnerCLM (I := I) g α σ x) := by
   classical
-  simp only [chartLeviCivita, if_pos hx]
+  simp only [chartLeviCivita, ite_eq_left hx]
 
 lemma chartLeviCivita_apply (g : SmoothRiemannianMetric I M)
     (α : M) (σ : Π x : M, TangentSpace I x) {x : M}

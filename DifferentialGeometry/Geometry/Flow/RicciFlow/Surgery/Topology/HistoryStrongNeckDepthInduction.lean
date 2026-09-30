@@ -15,7 +15,7 @@ universe u
 
 section Single
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 theorem hasStrongNeckAt_of_forall_neckAlternative {ε ε₁ C1 C2 qcan : ℝ}
     (hclass : H.EventSlabsStronglyCanonical ε ε₁ C1 C2 qcan (Fin.last H.eventCount))
@@ -95,7 +95,7 @@ theorem isTracedRegion_of_forall_neckAlternative {phi : ℝ → ℝ}
 end Single
 
 theorem exists_isTracedRegion_of_forall_neckAlternative_of_depth_induction
-    {P₀ : ℕ → OrientedThreeStage.{u}} (H : ∀ n, RetainedCoreHistory (P₀ n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (t : ∀ n, Icc (0 : ℝ) (H n).toHistory.horizon)
     (y : ∀ n, ((H n).toHistory.stageAt (t n)).Carrier) (R : ℕ → ℝ)
     (hRlim : Tendsto R atTop atTop) (hRt : Tendsto (fun n => R n * t n) atTop atTop)

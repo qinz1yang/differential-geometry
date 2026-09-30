@@ -47,15 +47,15 @@ theorem mixedPoincareHopf_of_collar
     by_cases hp : p ∈ A
     · apply (contMDiffAt_const (c := (1 : ℝ))).congr_of_eventuallyEq
       filter_upwards [hA.isOpen.mem_nhds hp] with q hq
-      simp only [b, if_pos hq]
+      simp only [b, ite_eq_left hq]
     · apply (contMDiffAt_const (c := (-1 : ℝ))).congr_of_eventuallyEq
       filter_upwards [hA.isClosed.isOpen_compl.mem_nhds hp] with q hq
-      simp only [b, if_neg hq]
+      simp only [b, ite_eq_right hq]
   have hnormal (q : S) (hq : q.val.2.val = 0) :
       0 < DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2 (W q).2 * b q.val.1 := by
     by_cases hp : q.val.1 ∈ A
-    · simpa only [b, if_pos hp, mul_one] using (hsign q hq).1 hp
-    · simpa only [b, if_neg hp, mul_neg_one] using neg_pos.mpr ((hsign q hq).2 hp)
+    · simpa only [b, ite_eq_left hp, mul_one] using (hsign q hq).1 hp
+    · simpa only [b, ite_eq_right hp, mul_neg_one] using neg_pos.mpr ((hsign q hq).2 hp)
   obtain ⟨G, hG, hzero, hgerm, hcomp⟩ :=
     exists_with_prescribed_boundary_components hδ Y hY e hi hz V hV T b hT hb hnormal
   have hGf : {x | G x = 0}.Finite := hzero.symm ▸ hVf

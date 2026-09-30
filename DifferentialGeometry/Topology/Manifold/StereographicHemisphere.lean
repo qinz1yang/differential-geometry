@@ -13,7 +13,7 @@ theorem sphereChartEquiv_sphericalCap_neg_one {n : ℕ}
   let U := (OrthonormalBasis.fromOrthogonalSpanSingleton (𝕜 := ℝ) n
     (ne_zero_of_mem_unit_sphere v)).repr
   have hn : ‖(U.symm ((2 : ℝ) • x) : E)‖ = 2 * ‖x‖ := by
-    simp [← Submodule.coe_norm, norm_smul]
+    simp [Submodule.norm_coe, norm_smul]
   rw [sphereChartEquiv_apply, stereographic'_symm_apply]
   change (U.symm (sphericalCap (-1) x).1 : E) + (sphericalCap (-1) x).2 • (v : E) =
     (‖(U.symm ((2 : ℝ) • x) : E)‖ ^ 2 + 4)⁻¹ • (4 : ℝ) • (U.symm ((2 : ℝ) • x) : E) +

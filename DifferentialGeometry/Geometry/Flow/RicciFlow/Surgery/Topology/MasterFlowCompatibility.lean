@@ -40,12 +40,12 @@ def masterFlowOfAgree {P : OrientedThreeStage.{u}} {J₁ J₂ : Set ℝ}
   classical
   exact
     { metric := fun τ => if τ ∈ J₁ then f₁ τ else f₂ τ
-      metric_eq_left := fun τ hτ => if_pos hτ
+      metric_eq_left := fun τ hτ => ite_eq_left hτ
       metric_eq_right := fun τ hτ => by
         by_cases h₁ : τ ∈ J₁
-        · rw [if_pos h₁]
+        · rw [ite_eq_left h₁]
           exact h τ h₁ hτ
-        · rw [if_neg h₁] }
+        · rw [ite_eq_right h₁] }
 
 theorem nonempty_masterFlow_iff {P : OrientedThreeStage.{u}} {J₁ J₂ : Set ℝ}
     {f₁ f₂ : ℝ → P.Metric} :
@@ -61,11 +61,11 @@ variable {H : ObservedHistory.{u}}
 theorem stageMetric_last_of_lt {h : H.time (Fin.last H.eventCount) < H.horizon} (τ : ℝ) :
     H.stageMetric (Fin.last H.eventCount) τ =
       (H.finalSlab h).flow.base.metric τ := by
-  rw [ObservedHistory.stageMetric, Fin.lastCases_last, dif_pos h]
+  rw [ObservedHistory.stageMetric, Fin.lastCases_last, dite_eq_left h]
 
 theorem stageMetric_last_of_le (h : H.horizon ≤ H.time (Fin.last H.eventCount)) (τ : ℝ) :
     H.stageMetric (Fin.last H.eventCount) τ = H.initialMetric (Fin.last H.eventCount) := by
-  rw [ObservedHistory.stageMetric, Fin.lastCases_last, dif_neg (not_lt.mpr h)]
+  rw [ObservedHistory.stageMetric, Fin.lastCases_last, dite_eq_right (not_lt.mpr h)]
 
 theorem mem_stageDomain_last (H : ObservedHistory.{u}) (τ : ℝ) :
     τ ∈ H.stageDomain (Fin.last H.eventCount) ↔
@@ -82,9 +82,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P : OrientedThreeStage.{u}}
-
-abbrev eventMasterFlow (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : ℝ}
+abbrev eventMasterFlow (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s) :=
   MasterFlow (H.stage (Fin.last H.eventCount))
@@ -92,7 +90,7 @@ abbrev eventMasterFlow (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} 
     (Icc (H.time (Fin.last H.eventCount)) H.horizon)
     E.incoming.flow.base.metric (fun τ => (H.toHistory).stageMetric (Fin.last H.eventCount) τ)
 
-theorem appendEventCompatible_of_masterFlow (H : RetainedCoreHistory P)
+theorem appendEventCompatible_of_masterFlow (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -103,7 +101,7 @@ theorem appendEventCompatible_of_masterFlow (H : RetainedCoreHistory P)
     ((F.metric_eq_right τ hτ).trans
       (ObservedHistory.stageMetric_last_of_lt (H := H.toHistory) (h := hh) τ))
 
-theorem exists_eventMasterFlow_of_appendEventCompatible (H : RetainedCoreHistory P)
+theorem exists_eventMasterFlow_of_appendEventCompatible (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -114,7 +112,7 @@ theorem exists_eventMasterFlow_of_appendEventCompatible (H : RetainedCoreHistory
   rw [ObservedHistory.stageMetric_last_of_lt (H := H.toHistory) (h := hne) τ]
   exact hc hne τ h₂
 
-theorem appendEventCompatible_iff_nonempty_eventMasterFlow (H : RetainedCoreHistory P)
+theorem appendEventCompatible_iff_nonempty_eventMasterFlow (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -123,7 +121,7 @@ theorem appendEventCompatible_iff_nonempty_eventMasterFlow (H : RetainedCoreHist
   ⟨exists_eventMasterFlow_of_appendEventCompatible H E hne,
     fun ⟨F⟩ => appendEventCompatible_of_masterFlow H E F hle⟩
 
-theorem exists_eventMasterFlow_of_time_eq_horizon (H : RetainedCoreHistory P)
+theorem exists_eventMasterFlow_of_time_eq_horizon (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -144,19 +142,19 @@ theorem exists_eventMasterFlow_atZero (P : OrientedThreeStage.{u}) (g : P.Metric
     Nonempty ((RetainedCoreHistory.atZero P g).eventMasterFlow E) :=
   exists_eventMasterFlow_of_time_eq_horizon (RetainedCoreHistory.atZero P g) E hinit rfl
 
-abbrev horizonMasterFlow (H : RetainedCoreHistory P) (T : ℝ)
+abbrev horizonMasterFlow (H : RetainedCoreHistory.{u}) (T : ℝ)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T) :=
   MasterFlow (H.stage (Fin.last H.eventCount))
     (Icc (H.time (Fin.last H.eventCount)) T)
     (Icc (H.time (Fin.last H.eventCount)) H.horizon)
     S.flow.base.metric (fun τ => (H.toHistory).stageMetric (Fin.last H.eventCount) τ)
 
-def extendHorizonCompatible (H : RetainedCoreHistory P) (T : ℝ)
+def extendHorizonCompatible (H : RetainedCoreHistory.{u}) (T : ℝ)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T) : Prop :=
   ∀ τ ∈ Icc (H.time (Fin.last H.eventCount)) H.horizon,
     S.flow.base.metric τ = (H.toHistory).stageMetric (Fin.last H.eventCount) τ
 
-theorem exists_horizonMasterFlow_iff_extendHorizonCompatible (H : RetainedCoreHistory P) (T : ℝ)
+theorem exists_horizonMasterFlow_iff_extendHorizonCompatible (H : RetainedCoreHistory.{u}) (T : ℝ)
     (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T) :
     Nonempty (H.horizonMasterFlow T S) ↔ H.extendHorizonCompatible T S := by
@@ -167,12 +165,12 @@ theorem exists_horizonMasterFlow_iff_extendHorizonCompatible (H : RetainedCoreHi
   · intro h τ _ h₂
     exact h τ h₂
 
-theorem exists_horizonMasterFlow_of_extendHorizonCompatible (H : RetainedCoreHistory P) (T : ℝ)
+theorem exists_horizonMasterFlow_of_extendHorizonCompatible (H : RetainedCoreHistory.{u}) (T : ℝ)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hcompat : H.extendHorizonCompatible T S) : Nonempty (H.horizonMasterFlow T S) :=
   ⟨masterFlowOfAgree fun τ _ h₂ => hcompat τ h₂⟩
 
-theorem extendHorizonCompatible_of_time_eq_horizon (H : RetainedCoreHistory P) (T : ℝ)
+theorem extendHorizonCompatible_of_time_eq_horizon (H : RetainedCoreHistory.{u}) (T : ℝ)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount))
@@ -183,19 +181,19 @@ theorem extendHorizonCompatible_of_time_eq_horizon (H : RetainedCoreHistory P) (
   exact hS.trans (ObservedHistory.stageMetric_last_of_le (H := H.toHistory)
     (h := le_of_eq htime.symm) (H.time (Fin.last H.eventCount))).symm
 
-theorem exists_horizonMasterFlow_finalSlab (H : RetainedCoreHistory P)
+theorem exists_horizonMasterFlow_finalSlab (H : RetainedCoreHistory.{u})
     (hh : H.time (Fin.last H.eventCount) < H.horizon) :
     Nonempty (H.horizonMasterFlow H.horizon (H.finalSlab hh)) :=
   exists_horizonMasterFlow_of_extendHorizonCompatible H H.horizon (H.finalSlab hh)
     fun τ _ => (ObservedHistory.stageMetric_last_of_lt (H := H.toHistory) (h := hh) τ).symm
 
-theorem toHistory_extendHorizon_horizon (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
+theorem toHistory_extendHorizon_horizon (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount)) :
     (H.extendHorizon T hT S hS).toHistory.horizon = T := rfl
 
-theorem extendHorizon_stageMetric_last (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
+theorem extendHorizon_stageMetric_last (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount))
@@ -222,7 +220,7 @@ theorem extendHorizon_stageMetric_last (H : RetainedCoreHistory P) (T : ℝ) (hT
         (H := (H.extendHorizon T hT S hS).toHistory) (h := not_lt.mp hT')
         (H.time (Fin.last H.eventCount))
 
-theorem extendHorizon_restrict_samePresentation (H : RetainedCoreHistory P) (T : ℝ)
+theorem extendHorizon_restrict_samePresentation (H : RetainedCoreHistory.{u}) (T : ℝ)
     (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -283,7 +281,7 @@ theorem extendHorizon_restrict_samePresentation (H : RetainedCoreHistory P) (T :
         show t ≤ H.horizon from h1.2⟩
     exact heq_of_eq (extendHorizon_stageMetric_last H T hT S hS hcompat hmem)
 
-theorem extendHorizon_isPrefixOf (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
+theorem extendHorizon_isPrefixOf (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount))
@@ -295,7 +293,7 @@ theorem extendHorizon_isPrefixOf (H : RetainedCoreHistory P) (T : ℝ) (hT : H.h
         hT.trans (le_of_eq (toHistory_extendHorizon_horizon H T hT S hS).symm)⟩ :
         Icc (0 : ℝ) (H.extendHorizon T hT S hS).toHistory.horizon) rfl⟩
 
-theorem appendEvent_extendHorizon_successor (H : RetainedCoreHistory P)
+theorem appendEvent_extendHorizon_successor (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s T : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q

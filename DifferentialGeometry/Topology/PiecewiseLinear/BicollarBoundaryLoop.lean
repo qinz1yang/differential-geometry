@@ -339,18 +339,18 @@ theorem IsPLHomeomorphOn.exists_continuousOn_mapsTo_space_of_bicollar_disk
   have hec : ∀ c, ec c ∈ ({-1, 1} : Set ℝ) := by
     intro c
     by_cases hcp : c ∈ Cp
-    · exact Or.inr (if_pos hcp)
-    · exact Or.inl (if_neg hcp)
+    · exact Or.inr (ite_eq_left hcp)
+    · exact Or.inl (ite_eq_right hcp)
   have hecI : ∀ c, ec c ∈ Icc (-1 : ℝ) 1 := by
     intro c
     rcases hec c with h | h <;> rw [h] <;> exact ⟨by norm_num, by norm_num⟩
   have hlevc : ∀ c ∈ Cp ∪ Cm, c ⊆ P ∩ f ⁻¹' (ρ '' (L.space ×ˢ {ec c * s})) := by
     intro c hc
     by_cases hcp : c ∈ Cp
-    · have h1 : ec c = 1 := if_pos hcp
+    · have h1 : ec c = 1 := ite_eq_left hcp
       rw [h1, one_mul, hCpeq]
       exact subset_sUnion_of_mem hcp
-    · have h1 : ec c = -1 := if_neg hcp
+    · have h1 : ec c = -1 := ite_eq_right hcp
       rw [h1, neg_one_mul, hCmeq]
       exact subset_sUnion_of_mem (Or.resolve_left hc hcp)
   have hCsph : ∀ c ∈ Cp ∪ Cm, IsPLSphere 1 c := fun c hc => Or.elim hc (hCp c) (hCm c)

@@ -1,6 +1,6 @@
 import Mathlib.Topology.MetricSpace.Lipschitz
-import Mathlib.Data.ENNReal.Real
-import Mathlib.Data.ENNReal.Operations
+import Mathlib.Basic.ENNReal.Real
+import Mathlib.Basic.ENNReal.Operations
 import Mathlib.Algebra.Order.Group.MinMax
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring

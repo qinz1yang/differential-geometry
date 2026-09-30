@@ -58,7 +58,7 @@ theorem exists_isOpen_inter_image_eq_of_isCompact {X Y : Type*} [TopologicalSpac
     exact ⟨hmem, x, hxS, rfl⟩
 
 theorem stdSimplex_subset_closure_openSimplex (n : ℕ) :
-    stdSimplex ℝ (Fin (n + 2)) ⊆ closure (openSimplex (stdVertices n)) := by
+    Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) ⊆ closure (openSimplex (stdVertices n)) := by
   rw [← convexHull_stdVertices]
   exact convexHull_subset_closure_openSimplex
     (Finset.card_pos.mp (lt_of_lt_of_le (by decide : 0 < 2) (two_le_card_stdVertices n)))
@@ -176,8 +176,8 @@ theorem IsTube.splitDisk_sdiff_subset_interior (ht : IsTube K N C D Dbd h N') {u
 
 theorem IsTube.exists_dualCell_model (ht : IsTube K N C D Dbd h N') {a : E3}
     (ha : a ∈ K.vertices) :
-    ∃ g : (Fin 4 → ℝ) → E3, ContinuousOn g (stdSimplex ℝ (Fin 4)) ∧
-      InjOn g (stdSimplex ℝ (Fin 4)) ∧ g '' stdSimplex ℝ (Fin 4) = h '' C a ∧
+    ∃ g : (Fin 4 → ℝ) → E3, ContinuousOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) ∧
+      InjOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) ∧ g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 4) = h '' C a ∧
       g '' stdSimplexBoundary 3 = frontier (h '' C a) ∧
       g '' openSimplex (stdVertices 2) = interior (h '' C a) := by
   obtain ⟨f, hf⟩ := ht.dualBall a ha
@@ -193,7 +193,7 @@ theorem IsTube.exists_dualCell_model (ht : IsTube K N C D Dbd h N') {a : E3}
   have hinj : InjOn h (C a) := ht.injOn.mono hCN
   refine ⟨h ∘ f, hcont.comp hf.isPiecewiseAffineOn.continuousOn hf.bijOn.mapsTo,
     hinj.comp hf.bijOn.injOn hf.bijOn.mapsTo, ?_, ?_, ?_⟩
-  · calc (h ∘ f) '' stdSimplex ℝ (Fin 4) = h '' (f '' stdSimplex ℝ (Fin (3 + 1))) :=
+  · calc (h ∘ f) '' Convexity.StdSimplex.coordinateSet ℝ (Fin 4) = h '' (f '' Convexity.StdSimplex.coordinateSet ℝ (Fin (3 + 1))) :=
           image_comp _ _ _
       _ = h '' C a := by rw [hf.image_eq]
   · calc (h ∘ f) '' stdSimplexBoundary 3 = h '' (f '' stdSimplexBoundary 3) := image_comp _ _ _
@@ -241,13 +241,13 @@ theorem exists_compact_connected_to_freeFace (ht : IsTube K N C D Dbd h N')
     exact ⟨v, ht.mem_interior_dualCell hv, rfl⟩
   rw [← hgint] at hvint
   obtain ⟨q, hq, hgq⟩ := hvint
-  have hpimg : h p ∈ g '' stdSimplex ℝ (Fin 4) := by
+  have hpimg : h p ∈ g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 4) := by
     rw [hgim]
     exact ⟨p, hpC, rfl⟩
   obtain ⟨s, hs, hgs⟩ := hpimg
-  have hqΔ : q ∈ stdSimplex ℝ (Fin 4) := openSimplex_stdVertices_subset_stdSimplex hq
-  have hseg : segment ℝ q s ⊆ stdSimplex ℝ (Fin 4) :=
-    (convex_stdSimplex ℝ _).segment_subset hqΔ hs
+  have hqΔ : q ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) := openSimplex_stdVertices_subset_stdSimplex hq
+  have hseg : segment ℝ q s ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) :=
+    (Convexity.StdSimplex.convex_coordinateSet ℝ _).segment_subset hqΔ hs
   have hqpos : ∀ i, 0 < q i := ((mem_openSimplex_stdVertices_iff 2).mp hq).1
   have hsegc : IsCompact (segment ℝ q s) := by
     rw [← Path.range_segment]

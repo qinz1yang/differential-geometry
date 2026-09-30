@@ -7,6 +7,8 @@ open scoped Manifold Topology ContDiff ENNReal NNReal InnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Analysis.Sobolev
@@ -301,8 +303,8 @@ theorem galerkinForceTermBackground (g₀ g_bg : SmoothRiemannianMetric I M)
     sub_eq_iff_eq_add'.mp harm
   rw [galerkinTameForce_apply]
   by_cases hi : i ∈ S
-  · rw [if_pos hi, if_pos hi, hval, TensorHs.add_coeff]
-  · rw [if_neg hi, if_neg hi]
+  · rw [ite_eq_left hi, ite_eq_left hi, hval, TensorHs.add_coeff]
+  · rw [ite_eq_right hi, ite_eq_right hi]
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 

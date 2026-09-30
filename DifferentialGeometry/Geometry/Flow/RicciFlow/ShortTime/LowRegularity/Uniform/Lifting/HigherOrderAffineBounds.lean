@@ -227,7 +227,7 @@ theorem exists_uniform_higher_order_affine_bounds_at_background
       dsimp only [force, arm, seed]
       rw [galerkinForceTermBackground (I := I) (M := M) g gBase K.threshold_lt hsol.threshold_nonneg hsol.threshold_le_third
         K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos hsol.metric_realization hsol.smoothCore_continuous F (U N t) i,
-        if_pos hi]
+        ite_eq_left hi]
       simp only [galerkinActionVectorBackground]
       module
     have hstatRaw := hseed (5 + k) F

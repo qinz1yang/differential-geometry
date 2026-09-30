@@ -1092,19 +1092,19 @@ theorem campanato_implies_holder
     filter_upwards [hinner_eq_global] with x hx hx_outer
     by_cases hx_inner : x ∈ inner
     · dsimp [v]
-      rw [if_pos hx_inner]
+      rw [ite_eq_left hx_inner]
       exact hx hx_inner
     · dsimp [v]
-      rw [if_neg hx_inner]
+      rw [ite_eq_right hx_inner]
   · intro x hx y hy
     have hx_inner : x ∈ inner := by simpa [inner] using hx
     have hy_inner : y ∈ inner := by simpa [inner] using hy
     have hvx : v x = dyadicBallAverageLimit u x ρ := by
       dsimp [v]
-      rw [if_pos hx_inner]
+      rw [ite_eq_left hx_inner]
     have hvy : v y = dyadicBallAverageLimit u y ρ := by
       dsimp [v]
-      rw [if_pos hy_inner]
+      rw [ite_eq_left hy_inner]
     by_cases hsmall : ‖x - y‖ ≤ ρ
     · rw [hvx, hvy]
       simpa [ρ] using

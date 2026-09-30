@@ -169,9 +169,9 @@ theorem laplacian_lRegularizedAction_endpointBranch_le_index_sum
       refine Finset.sum_congr rfl ?_
       intro i _
       rw [Finset.sum_eq_single i]
-      · rw [if_pos rfl, one_mul, hbasis i]
+      · rw [ite_eq_left rfl, one_mul, hbasis i]
       · intro j _ hji
-        rw [if_neg (fun hij ↦ hji hij.symm), zero_mul]
+        rw [ite_eq_right (fun hij ↦ hji hij.symm), zero_mul]
       · intro hi
         exact absurd (Finset.mem_univ i) hi
     exact hlap0.trans htrace

@@ -217,7 +217,7 @@ private theorem closedPrefixOnStage_metric (t : Icc (0 : ℝ) H.horizon)
   | last =>
     have hf : H.time (Fin.last H.eventCount) < H.horizon := hleft.trans_le t.2.2
     rw [H.closedPrefixOnStage_last]
-    simp only [stageMetric, Fin.lastCases_last, dif_pos hf]
+    simp only [stageMetric, Fin.lastCases_last, dite_eq_left hf]
     rfl
   | cast i =>
     rw [H.closedPrefixOnStage_castSucc]

@@ -18,7 +18,7 @@ universe u
 
 theorem exists_tolerance_historyStrongNeck_of_spatialNeck (C1 C2 : ℝ) :
     ∃ eta : ℝ, 0 < eta ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (k : Fin (H.eventCount + 1))
+    ∀ (H : RetainedCoreHistory.{u}) (k : Fin (H.eventCount + 1))
       {s : ℝ} (G : (H.stage k).IncomingSlab (H.time k) s) {ε ε₁ eps : ℝ}
       {y : (H.stage k).Carrier} {t : ℝ},
       ε ≤ 1 / 1000 → H.StronglyCanonicalAt k G ε ε₁ C1 C2 y t → eps ≤ eta →
@@ -26,14 +26,14 @@ theorem exists_tolerance_historyStrongNeck_of_spatialNeck (C1 C2 : ℝ) :
       H.toHistory.HistoryStrongNeck k G ε₁ y t := by
   obtain ⟨eta, heta, hneck⟩ := exists_tolerance_alternative_eq_neck_of_spatialNeck.{u} C1 C2
   refine ⟨eta, heta, ?_⟩
-  intro P₀ H k s G ε ε₁ eps y t hε hcan heps hnk
+  intro H k s G ε ε₁ eps y t hε hcan heps hnk
   obtain ⟨W, hW, himp⟩ := hcan
   obtain ⟨n, hn⟩ := hneck _ _ ε ε eps y W hW hε heps hnk
   exact himp ⟨n, hn⟩
 
 theorem eventually_historyStrongNeck_of_mem_hornHalfRange :
     ∃ eta : ℝ, 0 < eta ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (k : Fin (H.eventCount + 1))
+    ∀ (H : RetainedCoreHistory.{u}) (k : Fin (H.eventCount + 1))
       {s : ℝ} (G : (H.stage k).IncomingSlab (H.time k) s) (L : G.TerminalLimitMetric)
       (hsing : G.SingularEndpoint) (parameters : CutoffParameters) {εP Λ : ℝ}
       (P : TerminalCorePresentation
@@ -56,7 +56,7 @@ theorem eventually_historyStrongNeck_of_mem_hornHalfRange :
   obtain ⟨eta, heta, hneck⟩ :=
     TerminalCorePresentation.eventually_neck_alternative_of_mem_hornHalfRange.{u}
   refine ⟨eta, heta, ?_⟩
-  intro P₀ H k s G L hsing parameters εP Λ P hεP c e x hx ε ε₁ C1 C2 qcan hε hεη hscalar hq hcan
+  intro H k s G L hsing parameters εP Λ P hεP c e x hx ε ε₁ C1 C2 qcan hε hεη hscalar hq hcan
   have hev := hneck P hεP c e x hx (epsCan := ε) (C1 := C1) hε hεη hscalar
   have hhigh : ∀ᶠ t in 𝓝[<] s, qcan < G.flow.scalar t x.val :=
     (L.tendsto_metricScalarAt x).eventually_const_lt hq

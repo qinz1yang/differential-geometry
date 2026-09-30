@@ -253,10 +253,9 @@ theorem wkpNormL2_add_le
       iterWeakPartial_add_ae (d := d) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ β h_uWj h_vWj
     change eLpNorm _ 2 _ ≤ _
     rw [eLpNorm_congr_ae h_iter_add_ae]
-    have h_iter_u := iterWeakPartial_memLp_of_memWkp (d := d) (p := (2 : ℝ≥0∞)) h_uWj β
-    have h_iter_v := iterWeakPartial_memLp_of_memWkp (d := d) (p := (2 : ℝ≥0∞)) h_vWj β
     have htr := eLpNorm_add_le (μ := volume.restrict Ω) (p := (2 : ℝ≥0∞))
-      h_iter_u.aestronglyMeasurable h_iter_v.aestronglyMeasurable
+      (f := iterWeakPartial (d := d) (2 : ℝ≥0∞) j β u Ω)
+      (g := iterWeakPartial (d := d) (2 : ℝ≥0∞) j β v Ω)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     have hEq : (iterWeakPartial (d := d) (2 : ℝ≥0∞) j β u Ω +
         iterWeakPartial (d := d) (2 : ℝ≥0∞) j β v Ω) =

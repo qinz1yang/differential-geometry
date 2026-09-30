@@ -243,7 +243,7 @@ theorem iteratedCovGradJetSum_le_toHs (g_bg : SmoothRiemannianMetric I M) (k : �
   exact hC S x
 
 omit [BoundarylessManifold I M] in
-theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
+theorem chartMetricJet2DiffSum_realizeMetricAt_le_iteratedCovGradJetSum
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
     {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
@@ -269,7 +269,7 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
               (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
               ((extChartAt I α).symm y))) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K,
-      chartMetricJet2DiffSup (I := I) (M := M)
+      DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
           (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α y ≤
         C * iteratedCovGradJetSum (I := I) g_bg
           (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
@@ -287,11 +287,11 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
   intro y hy
   set R : ℝ := iteratedCovGradJetSum (I := I) g_bg S ((extChartAt I α).symm y) with hR_def
   have hR_nn : 0 ≤ R := iteratedCovGradJetSum_nonneg (I := I) g_bg S _
-  have h0 : chartGramDiffSup (I := I) (M := M)
+  have h0 : DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M)
         (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α
         ((extChartAt I α).symm y) ≤
       (Fintype.card ((Fin n) × (Fin n)) : ℝ) * (C₀ * R) := by
-    rw [chartGramDiffSup, matrixEntryL1]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum, Matrix.entrywiseL1]
     calc ∑ pq : (Fin n) × (Fin n),
             |(DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (realizeMetricAt (I := I) g_bg u₁) α
                   ((extChartAt I α).symm y) -
@@ -307,37 +307,37 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
           Finset.sum_le_sum (fun pq _ => (hcovgrad_jet_bound y hy pq.1 pq.2).1)
       _ = (Fintype.card ((Fin n) × (Fin n)) : ℝ) * (C₀ * R) := by
           rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ]
-  have h1 : chartGramPartialDiffSup (I := I) (M := M)
+  have h1 : DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum (I := I) (M := M)
         (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α y ≤
       (Fintype.card ((Fin n) × (Fin n) × (Fin n)) : ℝ) * (C₀ * R) := by
-    rw [chartGramPartialDiffSup]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum]
     calc ∑ p : (Fin n) × (Fin n) × (Fin n),
-            gramPartialDiffEntry (I := I) (M := M)
+            DifferentialGeometry.Tensor.Coordinates.chartGramPartialAbsDiffEntry (I := I) (M := M)
               (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α y p
         = ∑ p : (Fin n) × (Fin n) × (Fin n),
             |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1
               (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α p.1 p.2.2) y| := by
           refine Finset.sum_congr rfl (fun p _ => ?_)
-          rw [gramPartialDiffEntry,
+          rw [DifferentialGeometry.Tensor.Coordinates.chartGramPartialAbsDiffEntry,
             partialDeriv_chartGramOnE_realizeMetricAt_sub_eq (I := I) g_bg hu₁ hu₂
               α p.2.1 p.1 p.2.2 (hKsub hy)]
       _ ≤ ∑ _p : (Fin n) × (Fin n) × (Fin n), C₀ * R :=
           Finset.sum_le_sum (fun p _ => (hcovgrad_jet_bound y hy p.1 p.2.2).2.1 p.2.1)
       _ = (Fintype.card ((Fin n) × (Fin n) × (Fin n)) : ℝ) * (C₀ * R) := by
           rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ]
-  have h2 : chartGramPartial2DiffSup (I := I) (M := M)
+  have h2 : DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum (I := I) (M := M)
         (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α y ≤
       (Fintype.card ((Fin n) × (Fin n) × (Fin n) × (Fin n)) : ℝ) * (C₀ * R) := by
-    rw [chartGramPartial2DiffSup]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum]
     calc ∑ p : (Fin n) × (Fin n) × (Fin n) × (Fin n),
-            gramPartial2DiffEntry (I := I) (M := M)
+            DifferentialGeometry.Tensor.Coordinates.chartGramPartial2AbsDiffEntry (I := I) (M := M)
               (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α y p
         = ∑ p : (Fin n) × (Fin n) × (Fin n) × (Fin n),
             |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.1
               (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1
                 (reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α p.2.2.1 p.2.2.2)) y| := by
           refine Finset.sum_congr rfl (fun p _ => ?_)
-          rw [gramPartial2DiffEntry,
+          rw [DifferentialGeometry.Tensor.Coordinates.chartGramPartial2AbsDiffEntry,
             partialDeriv2_chartGramOnE_realizeMetricAt_sub_eq (I := I) g_bg hu₁ hu₂
               α p.1 p.2.1 p.2.2.1 p.2.2.2 (hKsub hy)]
       _ ≤ ∑ _p : (Fin n) × (Fin n) × (Fin n) × (Fin n), C₀ * R :=
@@ -345,13 +345,13 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
             (hcovgrad_jet_bound y hy p.2.2.1 p.2.2.2).2.2 p.1 p.2.1)
       _ = (Fintype.card ((Fin n) × (Fin n) × (Fin n) × (Fin n)) : ℝ) * (C₀ * R) := by
           rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ]
-  rw [chartMetricJet2DiffSup, chartMetricJet1DiffSup]
-  calc chartGramDiffSup (I := I) (M := M)
+  rw [DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum, DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum]
+  calc DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M)
           (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α
           ((extChartAt I α).symm y)
-        + chartGramPartialDiffSup (I := I) (M := M)
+        + DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum (I := I) (M := M)
           (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α y
-        + chartGramPartial2DiffSup (I := I) (M := M)
+        + DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum (I := I) (M := M)
           (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α y
       ≤ (Fintype.card ((Fin n) × (Fin n)) : ℝ) * (C₀ * R)
           + (Fintype.card ((Fin n) × (Fin n) × (Fin n)) : ℝ) * (C₀ * R)
@@ -360,7 +360,7 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum
     _ = C₀ * Ncard * R := by rw [hNcard_def]; ring
 
 omit [BoundarylessManifold I M] in
-theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs_of_covariant_jet_bound
+theorem chartMetricJet2DiffSum_realizeMetricAt_le_toHs_of_covariant_jet_bound
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
     {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
@@ -387,7 +387,7 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs_of_covariant_jet_bound
               (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)
               ((extChartAt I α).symm y))) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K,
-      chartMetricJet2DiffSup (I := I) (M := M)
+      DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
           (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α y ≤
         C * ‖SmoothCcTensor.toHs (g := g_bg) (r := 0) (s := 2) (2 * k)
           (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)‖ := by
@@ -395,7 +395,7 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs_of_covariant_jet_bound
   set S : SmoothCcTensor g_bg 0 2 :=
     realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂ with hS_def
   obtain ⟨C₁, hC₁_nn, hC₁⟩ :=
-    chartMetricJet2DiffSup_realizeMetricAt_le_iteratedCovGradJetSum (I := I) g_bg hu₁ hu₂
+    chartMetricJet2DiffSum_realizeMetricAt_le_iteratedCovGradJetSum (I := I) g_bg hu₁ hu₂
       α hKsub hC₀ hcovgrad_jet_bound
   obtain ⟨C₂, hC₂_pos, hC₂⟩ :=
     iteratedCovGradJetSum_le_toHs (I := I) g_bg k h_super
@@ -403,7 +403,7 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs_of_covariant_jet_bound
   intro y hy
   set N : ℝ := ‖SmoothCcTensor.toHs (g := g_bg) (r := 0) (s := 2) (2 * k) S‖ with hN_def
   have hN_nn : 0 ≤ N := norm_nonneg _
-  calc chartMetricJet2DiffSup (I := I) (M := M)
+  calc DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
           (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α y
       ≤ C₁ * iteratedCovGradJetSum (I := I) g_bg S ((extChartAt I α).symm y) := hC₁ y hy
     _ ≤ C₁ * (C₂ * N) :=

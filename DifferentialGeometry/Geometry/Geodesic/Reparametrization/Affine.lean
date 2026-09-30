@@ -1,3 +1,4 @@
+import DifferentialGeometry.Bundle.TangentChart
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.Basic
@@ -13,6 +14,9 @@ noncomputable section
 
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff
+
+open TangentBundle
+  (chartFiberCoord chartFiberCoord_def extChartAt_tangent_zero_apply_chartFiber)
 
 namespace DifferentialGeometry
 namespace Geometry

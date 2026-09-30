@@ -187,6 +187,7 @@ private theorem mvfderiv_congr_eventually_real
   have hx : f x = g x := h.eq_of_nhds
   unfold mvfderiv
   rw [hmf, hx]
+  rfl
 
 omit [SigmaCompactSpace M] in
 theorem metricCovDeriv_one_eval_localFrame

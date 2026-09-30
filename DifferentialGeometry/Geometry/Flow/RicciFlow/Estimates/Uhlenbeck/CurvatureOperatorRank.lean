@@ -129,7 +129,7 @@ private theorem smoothSectionExtension_eq
     (t : ℝ) (ht : t ∈ J) (x : M) :
     smoothSectionExtension R hR t x = R t x := by
   classical
-  simp only [smoothSectionExtension, dif_pos ht]
+  simp only [smoothSectionExtension, dite_eq_left ht]
   rfl
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
@@ -149,7 +149,7 @@ private theorem smoothSectionExtension_symmetric
     exact hsym t x
   · change ((if ht : t ∈ J then (⟨R t, hR t ht⟩ :
       Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M => V x →L[ℝ] V x)⟯) else 0) x).IsSymmetric
-    rw [dif_neg ht]
+    rw [dite_eq_right ht]
     intro v w
     simp
 
@@ -184,7 +184,7 @@ private theorem connectionExtension_eq
     {J : Set ℝ} (cov : ∀ t ∈ J, CovariantDerivative I F V) {t₀ : ℝ} (ht₀ : t₀ ∈ J)
     {t : ℝ} (ht : t ∈ J) : connectionExtension cov ht₀ t = cov t ht := by
   classical
-  simp only [connectionExtension, dif_pos ht]
+  simp only [connectionExtension, dite_eq_left ht]
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M]
     [FiniteDimensional ℝ F] [ContMDiffVectorBundle ∞ F V I]
@@ -566,7 +566,12 @@ private theorem curvature_pullback_rank_and_kernel
         (curvatureOperatorReactionEndomorphism3 (A q z).toLinearMap).toContinuousLinearMap) q := by
     intro q hq z
     simpa only [map_zero, add_zero] using hevolA q hq z
-  have hAeq' (q : ℝ) (hq : q ∈ Ioc 0 T) := hAeq q (hTJ ⟨hq.1.le, hq.2⟩)
+  have hAeq' (q : ℝ) (hq : q ∈ Ioc 0 T) (x : M) : A q x = R q x :=
+    hAeq q (hTJ ⟨hq.1.le, hq.2⟩) x
+  have hfinrank_eq (q : ℝ) (hq : q ∈ Ioc 0 T) (x : M) :
+      Module.finrank ℝ (A q x).range = Module.finrank ℝ (R q x).range :=
+    congrArg (fun B : (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x) =>
+      Module.finrank ℝ B.range) (hAeq' q hq x)
   have hrank := DifferentialGeometry.Analysis.Parabolic.curvatureOperator_rank_spatially_constant_and_locally_constant_from_left
     G cov hcov hT A hAsymm hApos hAcont (fun _ _ => 0)
     hS.smoothMetric (hTJ.trans hJD) hzero hconn hevol
@@ -579,34 +584,46 @@ private theorem curvature_pullback_rank_and_kernel
   have hF : Module.finrank ℝ (⋀[ℝ]^2 F) = 3 := by
     rw [exteriorPower.finrank_eq, hdim]
     decide
-  have htri (t : ℝ) (ht : t ∈ Ioc 0 T) := DifferentialGeometry.Analysis.Parabolic.curvatureOperator_finrank_range_trichotomy_at_positive_time
-    hF G cov hcov hT A hAsymm hApos hAcont hAspace (fun _ _ => 0)
-    hS.smoothMetric (hTJ.trans hJD) hzero hconn hevol ht
+  have htri (t : ℝ) (ht : t ∈ Ioc 0 T) (x : M) :=
+    curvatureOperatorEndomorphism_finrank_range_trichotomy
+      ((VectorBundle.finrank_eq ℝ (⋀[ℝ]^2 F) (fun y => ⋀[ℝ]^2 (V y)) x).trans hF)
+      (A t x).toLinearMap (hApos t ⟨ht.1.le, ht.2⟩ x).toLinearMap
+      (hreaction t ht x)
   have hparallel (t : ℝ) (ht : t ∈ Ioc 0 T) := DifferentialGeometry.Analysis.Parabolic.curvatureOperator_kernel_parallel_at_positive_time
     G cov hcov hT A hAsymm hApos hAcont hAspace (fun _ _ => 0)
     hS.smoothMetric (hTJ.trans hJD) hzero hconn hevol ht
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · intro t ht x y
-    have h := hrank.1 t ht x y
-    rw [hAeq' t ht x, hAeq' t ht y] at h
-    exact h
+    exact (hfinrank_eq t ht x).symm.trans
+      ((hrank.1 t ht x y).trans (hfinrank_eq t ht y))
   · intro t ht
     obtain ⟨ε, hε, hk⟩ := hkernel t ht
     refine ⟨ε, hε, ?_⟩
     intro q hq x
     have hqT : q ∈ Ioc 0 T := ⟨by linarith [hε.2, hq.1], hq.2.trans ht.2⟩
     have h := hk q hq x
-    rw [hAeq' q hqT x, hAeq' t ht x] at h
-    exact h
+    have hqker := congrArg
+      (fun B : (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x) => B.ker) (hAeq' q hqT x)
+    have htker := congrArg
+      (fun B : (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x) => B.ker) (hAeq' t ht x)
+    have hqrange := congrArg
+      (fun B : (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x) => B.range) (hAeq' q hqT x)
+    have htrange := congrArg
+      (fun B : (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x) => B.range) (hAeq' t ht x)
+    exact ⟨hqker.symm.trans (h.1.trans htker), hqrange.symm.trans (h.2.trans htrange)⟩
   · intro t ht x v hv
-    have hvA : A t x v = 0 := by rw [hAeq' t ht x]; exact hv
-    have h := hreaction t ht x v hvA
-    rw [hAeq' t ht x] at h
-    exact h
+    have hvA : A t x v = 0 :=
+      (congrArg (fun B : (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x) => B v)
+        (hAeq' t ht x)).trans hv
+    have heq := congrArg
+      (fun B : (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x) =>
+        curvatureOperatorReactionEndomorphism3 B.toLinearMap v) (hAeq' t ht x)
+    exact heq.symm.trans (hreaction t ht x v hvA)
   · intro t ht x
-    have h := htri t ht x
-    rw [hAeq' t ht x] at h
-    exact h
+    rcases htri t ht x with h | h | h
+    · exact Or.inl ((hfinrank_eq t ht x).symm.trans h)
+    · exact Or.inr (Or.inl ((hfinrank_eq t ht x).symm.trans h))
+    · exact Or.inr (Or.inr ((hfinrank_eq t ht x).symm.trans h))
   · intro t ht
     obtain ⟨hιt, hc⟩ := hcov_eq t (hTJ ⟨ht.1.le, ht.2⟩)
     refine ⟨hιt, ?_⟩

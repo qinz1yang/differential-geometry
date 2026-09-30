@@ -43,7 +43,7 @@ end ObservationTower
 namespace RetainedCoreHistory
 
 def ofClosedSlab {P : OrientedThreeStage.{u}} (g : P.Metric) {T : ℝ} (hT : 0 < T)
-    (S : P.ClosedSlab 0 T) (hS : S.flow.base.metric 0 = g) : RetainedCoreHistory P where
+    (S : P.ClosedSlab 0 T) (hS : S.flow.base.metric 0 = g) : RetainedCoreHistory.{u} where
   horizon := T
   horizon_nonneg := hT.le
   eventCount := 0

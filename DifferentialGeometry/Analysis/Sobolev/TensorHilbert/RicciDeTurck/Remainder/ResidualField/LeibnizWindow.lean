@@ -1,4 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.Basic
+
+open DifferentialGeometry.TensorMetric
+  (coframeS coframeS_apply exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent
+    riemannianFiberNormSq riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -52,25 +56,25 @@ private lemma ricciContractionRemainderPermutationValue_lt (i v : ℕ) (_hv : v 
 private lemma ricciContractionRemainderPermutationValue_eq_sub_two (i v : ℕ) (h2 : 2 ≤ v) (h : v < i + 2) :
     ricciContractionRemainderPermutationValue i v = v - 2 := by
   unfold ricciContractionRemainderPermutationValue
-  rw [if_neg (by omega), if_neg (by omega), if_pos h]
+  rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left h]
 
 private lemma ricciContractionRemainderPermutationValue_at_order_add_two (i : ℕ) : ricciContractionRemainderPermutationValue i (i + 2) = i + 4 := by
   unfold ricciContractionRemainderPermutationValue
-  rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_pos rfl]
+  rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left rfl]
 
 private lemma ricciContractionRemainderPermutationValue_at_order_add_three (i : ℕ) : ricciContractionRemainderPermutationValue i (i + 3) = i + 5 := by
   unfold ricciContractionRemainderPermutationValue
-  rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega), if_pos rfl]
+  rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left rfl]
 
 private lemma ricciContractionRemainderPermutationValue_at_order_add_four (i : ℕ) : ricciContractionRemainderPermutationValue i (i + 4) = i := by
   unfold ricciContractionRemainderPermutationValue
-  rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega),
-    if_neg (by omega), if_pos rfl]
+  rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega),
+    ite_eq_right (by omega), ite_eq_left rfl]
 
 private lemma ricciContractionRemainderPermutationValue_at_order_add_five (i : ℕ) : ricciContractionRemainderPermutationValue i (i + 5) = i + 2 := by
   unfold ricciContractionRemainderPermutationValue
-  rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega),
-    if_neg (by omega), if_neg (by omega)]
+  rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega),
+    ite_eq_right (by omega), ite_eq_right (by omega)]
 
 private lemma decomposeFin_symm_val {m : ℕ} (ρ : Equiv.Perm (Fin m)) (j : Fin (m + 1)) :
     (((Equiv.Perm.decomposeFin.symm (0, ρ)) j : Fin (m + 1)) : ℕ) =
@@ -80,7 +84,7 @@ private lemma decomposeFin_symm_val {m : ℕ} (ρ : Equiv.Perm (Fin m)) (j : Fin
   · rw [Equiv.Perm.decomposeFin_symm_apply_zero]
     simp
   · rw [Equiv.Perm.decomposeFin_symm_apply_succ, Equiv.swap_self, Equiv.refl_apply]
-    rw [dif_neg (by simp [Fin.val_succ] : ¬((Fin.succ j' : Fin (m + 1)) : ℕ) = 0)]
+    rw [dite_eq_right (by simp [Fin.val_succ] : ¬((Fin.succ j' : Fin (m + 1)) : ℕ) = 0)]
     have harg : (⟨((Fin.succ j' : Fin (m + 1)) : ℕ) - 1,
         by have h1 := (Fin.succ j').isLt; have h2 := j'.isLt; omega⟩ : Fin m) = j' :=
       Fin.ext (by simp)
@@ -99,8 +103,8 @@ private lemma swap_zero_one_val {m : ℕ} (j : Fin (m + 2)) :
       rw [Equiv.swap_apply_right]
       simp
     · rw [Equiv.swap_apply_of_ne_of_ne h0 h1]
-      rw [if_neg (fun hv => h0 (Fin.ext (by simpa using hv))),
-        if_neg (fun hv => h1 (Fin.ext (by simpa using hv)))]
+      rw [ite_eq_right (fun hv => h0 (Fin.ext (by simpa using hv))),
+        ite_eq_right (fun hv => h1 (Fin.ext (by simpa using hv)))]
 
 private lemma ricciContractionRemainderPermutationValue_succ {m : ℕ} (τ : Equiv.Perm (Fin (m + 2))) (i : ℕ)
     (hτ : ∀ j : Fin (m + 2), ((τ j : Fin (m + 2)) : ℕ) = ricciContractionRemainderPermutationValue i (j : ℕ))
@@ -120,10 +124,10 @@ private lemma ricciContractionRemainderPermutationValue_succ {m : ℕ} (τ : Equ
   rw [hj3]
   have hjlt : (j : ℕ) < m + 3 := j.isLt
   by_cases h0 : (j : ℕ) = 0
-  · rw [dif_pos h0] at hj1
+  · rw [dite_eq_left h0] at hj1
     have hj1v : (j1 : ℕ) = 0 := hj1
-    have hj2vv : (j2 : ℕ) = 1 := by rw [hj2_def, hj2v, if_pos hj1v]
-    rw [dif_neg (by omega)]
+    have hj2vv : (j2 : ℕ) = 1 := by rw [hj2_def, hj2v, ite_eq_left hj1v]
+    rw [dite_eq_right (by omega)]
     rw [hτ ⟨(j2 : ℕ) - 1, by omega⟩]
     have harg0 : ((⟨(j2 : ℕ) - 1, by omega⟩ : Fin (m + 2)) : ℕ) = 0 := by
       simp [hj2vv]
@@ -131,7 +135,7 @@ private lemma ricciContractionRemainderPermutationValue_succ {m : ℕ} (τ : Equ
     unfold ricciContractionRemainderPermutationValue
     simp only [h0]
     split_ifs <;> omega
-  · rw [dif_neg h0] at hj1
+  · rw [dite_eq_right h0] at hj1
     rw [swap_zero_one_val (m := m) ⟨(j : ℕ) - 1, by omega⟩] at hj1
     simp only [] at hj1
     by_cases h1 : (j : ℕ) = 1
@@ -139,8 +143,8 @@ private lemma ricciContractionRemainderPermutationValue_succ {m : ℕ} (τ : Equ
         rw [hj1]
         simp [h1]
       have hj2vv : (j2 : ℕ) = 2 := by
-        rw [hj2_def, hj2v, if_neg (by omega), if_neg (by omega), hj1v]
-      rw [dif_neg (by omega)]
+        rw [hj2_def, hj2v, ite_eq_right (by omega), ite_eq_right (by omega), hj1v]
+      rw [dite_eq_right (by omega)]
       rw [hτ ⟨(j2 : ℕ) - 1, by omega⟩]
       have harg1 : ((⟨(j2 : ℕ) - 1, by omega⟩ : Fin (m + 2)) : ℕ) = 1 := by
         simp [hj2vv]
@@ -153,18 +157,18 @@ private lemma ricciContractionRemainderPermutationValue_succ {m : ℕ} (τ : Equ
           rw [hj1]
           simp [h2]
         have hj2vv : (j2 : ℕ) = 0 := by
-          rw [hj2_def, hj2v, if_neg (by omega), if_pos hj1v]
-        rw [dif_pos hj2vv]
+          rw [hj2_def, hj2v, ite_eq_right (by omega), ite_eq_left hj1v]
+        rw [dite_eq_left hj2vv]
         unfold ricciContractionRemainderPermutationValue
         simp only [h2]
         split_ifs <;> omega
       · have hj1v : (j1 : ℕ) = (j : ℕ) := by
           rw [hj1]
-          rw [if_neg (by omega), if_neg (by omega)]
+          rw [ite_eq_right (by omega), ite_eq_right (by omega)]
           omega
         have hj2vv : (j2 : ℕ) = (j : ℕ) := by
-          rw [hj2_def, hj2v, if_neg (by omega), if_neg (by omega), hj1v]
-        rw [dif_neg (by omega)]
+          rw [hj2_def, hj2v, ite_eq_right (by omega), ite_eq_right (by omega), hj1v]
+        rw [dite_eq_right (by omega)]
         rw [hτ ⟨(j2 : ℕ) - 1, by omega⟩]
         have harg : ((⟨(j2 : ℕ) - 1, by omega⟩ : Fin (m + 2)) : ℕ) = (j : ℕ) - 1 := by
           simp [hj2vv]
@@ -628,7 +632,7 @@ private lemma operatorFieldApplicationLeibnizPsi_diag_toSection (g : SmoothRiema
           slotExtend (I := I) (M := M) g (b + i) (c + i)
             (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ i i) := by
         rw [operatorFieldApplicationLeibnizPsi_succ_succ_eq (I := I) (M := M) g b c Φ i i]
-        rw [if_neg (by omega : ¬ (i + 1 < i + 1)), zero_add]
+        rw [ite_eq_right (by omega : ¬ (i + 1 < i + 1)), zero_add]
       rw [hdiag]
       rw [show (slotExtendIteratedPointwise (I := I) (M := M) g b c x
             (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x) (i + 1)) =
@@ -731,7 +735,7 @@ private lemma secondMetricPairTraceFrameTuple_succ (g₁ : SmoothRiemannianMetri
   · change secondMetricPairTraceFrameTuple (I := I) (M := M) g₁ x (w + 1) u a b 0 =
       tangentSpaceModelContinuousLinearEquiv (I := I) x (u 0)
     unfold secondMetricPairTraceFrameTuple
-    rw [dif_pos (by simp : ((0 : Fin (6 + (w + 1))) : ℕ) < w + 1)]
+    rw [dite_eq_left (by simp : ((0 : Fin (6 + (w + 1))) : ℕ) < w + 1)]
     exact congrArg u (Fin.ext (by simp))
   · change secondMetricPairTraceFrameTuple (I := I) (M := M) g₁ x (w + 1) u a b
         (Fin.succ k') =
@@ -739,33 +743,33 @@ private lemma secondMetricPairTraceFrameTuple_succ (g₁ : SmoothRiemannianMetri
         (fun k => u (Fin.succ k)) a b k'
     unfold secondMetricPairTraceFrameTuple
     by_cases h1 : (k' : ℕ) < w
-    · rw [dif_pos (show ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) < w + 1 by
-        simp only [Fin.val_succ]; omega), dif_pos h1]
+    · rw [dite_eq_left (show ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) < w + 1 by
+        simp only [Fin.val_succ]; omega), dite_eq_left h1]
       beta_reduce
       exact congrArg u (Fin.ext (by simp [Fin.val_succ]))
-    · rw [dif_neg (show ¬ ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) < w + 1 by
-        simp only [Fin.val_succ]; omega), dif_neg h1]
+    · rw [dite_eq_right (show ¬ ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) < w + 1 by
+        simp only [Fin.val_succ]; omega), dite_eq_right h1]
       by_cases h2 : (k' : ℕ) = w ∨ (k' : ℕ) = w + 1
-      · rw [if_pos (show ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) ∨
+      · rw [ite_eq_left (show ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) ∨
             ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) + 1 by
-          simp only [Fin.val_succ]; omega), if_pos h2]
-      · rw [if_neg (show ¬ (((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) ∨
+          simp only [Fin.val_succ]; omega), ite_eq_left h2]
+      · rw [ite_eq_right (show ¬ (((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) ∨
             ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) + 1) by
-          simp only [Fin.val_succ]; omega), if_neg h2]
+          simp only [Fin.val_succ]; omega), ite_eq_right h2]
         by_cases h3 : (k' : ℕ) = w + 2 ∨ (k' : ℕ) = w + 3
-        · rw [if_pos (show ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) + 2 ∨
+        · rw [ite_eq_left (show ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) + 2 ∨
               ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) + 3 by
-            simp only [Fin.val_succ]; omega), if_pos h3]
-        · rw [if_neg (show ¬ (((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) + 2 ∨
+            simp only [Fin.val_succ]; omega), ite_eq_left h3]
+        · rw [ite_eq_right (show ¬ (((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) + 2 ∨
               ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) + 3) by
-            simp only [Fin.val_succ]; omega), if_neg h3]
+            simp only [Fin.val_succ]; omega), ite_eq_right h3]
           by_cases h4 : (k' : ℕ) = w + 4
-          · rw [if_pos (show ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) + 4 by
-              simp only [Fin.val_succ]; omega), if_pos h4]
+          · rw [ite_eq_left (show ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) + 4 by
+              simp only [Fin.val_succ]; omega), ite_eq_left h4]
             beta_reduce
             exact congrArg u (Fin.ext (by simp))
-          · rw [if_neg (show ¬ ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) + 4 by
-              simp only [Fin.val_succ]; omega), if_neg h4]
+          · rw [ite_eq_right (show ¬ ((Fin.succ k' : Fin (6 + (w + 1))) : ℕ) = (w + 1) + 4 by
+              simp only [Fin.val_succ]; omega), ite_eq_right h4]
             beta_reduce
             exact congrArg u (Fin.ext (by simp))
 
@@ -939,9 +943,9 @@ private lemma metricComparisonEndomorphism_frame_sum_sq_le (g₀ g₁ : SmoothRi
       rw [horth q p] :
       ∀ p ∈ Finset.univ, B p * g₀.inner x (e q) (e p) =
         B p * (if q = p then (1 : ℝ) else 0))]
-    rw [Finset.sum_eq_single q (fun p _ hp => by rw [if_neg (fun hqp => hp hqp.symm), mul_zero])
+    rw [Finset.sum_eq_single q (fun p _ hp => by rw [ite_eq_right (fun hqp => hp hqp.symm), mul_zero])
       (fun hq => absurd (Finset.mem_univ q) hq)]
-    rw [if_pos rfl, mul_one]
+    rw [ite_eq_left rfl, mul_one]
   have hnorm : g₀.inner x u u = ∑ p : Fin n, (B p) ^ 2 := by
     calc g₀.inner x u u = ∑ q : Fin n, B q * g₀.inner x u (e q) := hone u
       _ = ∑ p : Fin n, (B p) ^ 2 := Finset.sum_congr rfl fun q _ => by rw [htwo q]; ring
@@ -987,7 +991,7 @@ private lemma secondMetricPairTraceFrameTuple_apply_initial (g₁ : SmoothRieman
     secondMetricPairTraceFrameTuple (I := I) (M := M) g₁ x i u a b t =
       tangentSpaceModelContinuousLinearEquiv (I := I) x (u ⟨(t : ℕ), by omega⟩) := by
   unfold secondMetricPairTraceFrameTuple
-  with_unfolding_all rw [dif_pos h]
+  with_unfolding_all rw [dite_eq_left h]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -998,7 +1002,7 @@ private lemma secondMetricPairTraceFrameTuple_apply_firstFrame (g₁ : SmoothRie
       tangentSpaceModelContinuousLinearEquiv (I := I) x
         (smoothOrthoFrame (I := I) g₁ x a x) := by
   unfold secondMetricPairTraceFrameTuple
-  with_unfolding_all rw [dif_neg (by omega), if_pos h]
+  with_unfolding_all rw [dite_eq_right (by omega), ite_eq_left h]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -1009,7 +1013,7 @@ private lemma secondMetricPairTraceFrameTuple_apply_secondFrame (g₁ : SmoothRi
       tangentSpaceModelContinuousLinearEquiv (I := I) x
         (smoothOrthoFrame (I := I) g₁ x b x) := by
   unfold secondMetricPairTraceFrameTuple
-  with_unfolding_all rw [dif_neg (by omega), if_neg (by omega), if_pos h]
+  with_unfolding_all rw [dite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left h]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -1019,7 +1023,7 @@ private lemma secondMetricPairTraceFrameTuple_apply_firstInput (g₁ : SmoothRie
     secondMetricPairTraceFrameTuple (I := I) (M := M) g₁ x i u a b t =
       tangentSpaceModelContinuousLinearEquiv (I := I) x (u ⟨i, by omega⟩) := by
   unfold secondMetricPairTraceFrameTuple
-  with_unfolding_all rw [dif_neg (by omega), if_neg (by omega), if_neg (by omega), if_pos h]
+  with_unfolding_all rw [dite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left h]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -1030,7 +1034,7 @@ private lemma secondMetricPairTraceFrameTuple_apply_secondInput (g₁ : SmoothRi
       tangentSpaceModelContinuousLinearEquiv (I := I) x (u ⟨i + 1, by omega⟩) := by
   unfold secondMetricPairTraceFrameTuple
   with_unfolding_all
-    rw [dif_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega)]
+    rw [dite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega)]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -1057,7 +1061,7 @@ private lemma secondMetricPairTraceFrameTuple_ricciContractionPermutation_eq_upd
   funext t
   rw [Function.update_apply, Function.update_apply]
   by_cases h3 : (t : ℕ) = 3 + i
-  · rw [if_pos (Fin.ext h3 : t = ⟨3 + i, by omega⟩)]
+  · rw [ite_eq_left (Fin.ext h3 : t = ⟨3 + i, by omega⟩)]
     have hidx : (⟨ricciContractionRemainderPermutationValue i ((t : ℕ) + 2),
         ricciContractionRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
         ⟨i + 2, by omega⟩ := by
@@ -1067,9 +1071,9 @@ private lemma secondMetricPairTraceFrameTuple_ricciContractionPermutation_eq_upd
       exact ricciContractionRemainderPermutationValue_at_order_add_five i
     rw [hidx]
     exact secondMetricPairTraceFrameTuple_apply_secondFrame (I := I) (M := M) g₁ x i (fun k => e (J k)) a b _ (Or.inl rfl)
-  · rw [if_neg (fun ht' => h3 (by rw [ht']))]
+  · rw [ite_eq_right (fun ht' => h3 (by rw [ht']))]
     by_cases h2 : (t : ℕ) = 2 + i
-    · rw [if_pos (Fin.ext h2 : t = ⟨2 + i, by omega⟩)]
+    · rw [ite_eq_left (Fin.ext h2 : t = ⟨2 + i, by omega⟩)]
       have hidx : (⟨ricciContractionRemainderPermutationValue i ((t : ℕ) + 2),
           ricciContractionRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
           ⟨i, by omega⟩ := by
@@ -1079,9 +1083,9 @@ private lemma secondMetricPairTraceFrameTuple_ricciContractionPermutation_eq_upd
         exact ricciContractionRemainderPermutationValue_at_order_add_four i
       rw [hidx]
       exact secondMetricPairTraceFrameTuple_apply_firstFrame (I := I) (M := M) g₁ x i (fun k => e (J k)) a b _ (Or.inl rfl)
-    · rw [if_neg (fun ht' => h2 (by rw [ht']))]
+    · rw [ite_eq_right (fun ht' => h2 (by rw [ht']))]
       have ht : (t : ℕ) < 2 + i := by have := t.isLt; omega
-      with_unfolding_all rw [dif_pos ht]
+      with_unfolding_all rw [dite_eq_left ht]
       by_cases hlt : (t : ℕ) < i
       · have hidx : (⟨ricciContractionRemainderPermutationValue i ((t : ℕ) + 2),
             ricciContractionRemainderPermutationValue_lt i ((t : ℕ) + 2) (by have := t.isLt; omega)⟩ : Fin (6 + i)) =
@@ -1136,31 +1140,31 @@ private lemma frameIndexUpdates_eq_ricciContractionRemainderFrameIndex (x : M) (
   rw [Function.update_apply, Function.update_apply]
   unfold ricciContractionRemainderFrameIndex
   by_cases h3 : (t : ℕ) = 3 + i
-  · rw [if_pos (Fin.ext h3 : t = ⟨3 + i, by omega⟩), dif_neg (by omega), if_neg (by omega)]
-  · rw [if_neg (fun ht' => h3 (by rw [ht']))]
+  · rw [ite_eq_left (Fin.ext h3 : t = ⟨3 + i, by omega⟩), dite_eq_right (by omega), ite_eq_right (by omega)]
+  · rw [ite_eq_right (fun ht' => h3 (by rw [ht']))]
     by_cases h2 : (t : ℕ) = 2 + i
-    · rw [if_pos (Fin.ext h2 : t = ⟨2 + i, by omega⟩), dif_neg (by omega), if_pos h2]
-    · rw [if_neg (fun ht' => h2 (by rw [ht']))]
+    · rw [ite_eq_left (Fin.ext h2 : t = ⟨2 + i, by omega⟩), dite_eq_right (by omega), ite_eq_left h2]
+    · rw [ite_eq_right (fun ht' => h2 (by rw [ht']))]
       have ht : (t : ℕ) < 2 + i := by have := t.isLt; omega
-      with_unfolding_all rw [dif_pos ht, dif_pos ht]
+      with_unfolding_all rw [dite_eq_left ht, dite_eq_left ht]
 
 private lemma ricciContractionRemainderFrameIndex_apply_initial (i : ℕ) {n : ℕ} (J : Fin (2 + i) → Fin n) (p q : Fin n)
     (t : Fin (4 + i)) (h : (t : ℕ) < 2 + i) :
     ricciContractionRemainderFrameIndex i J p q t = J ⟨(t : ℕ), h⟩ := by
   unfold ricciContractionRemainderFrameIndex
-  rw [dif_pos h]
+  rw [dite_eq_left h]
 
 private lemma ricciContractionRemainderFrameIndex_apply_penultimate (i : ℕ) {n : ℕ} (J : Fin (2 + i) → Fin n) (p q : Fin n)
     (t : Fin (4 + i)) (h : (t : ℕ) = 2 + i) :
     ricciContractionRemainderFrameIndex i J p q t = p := by
   unfold ricciContractionRemainderFrameIndex
-  rw [dif_neg (by omega), if_pos h]
+  rw [dite_eq_right (by omega), ite_eq_left h]
 
 private lemma ricciContractionRemainderFrameIndex_apply_last (i : ℕ) {n : ℕ} (J : Fin (2 + i) → Fin n) (p q : Fin n)
     (t : Fin (4 + i)) (h2 : ¬ (t : ℕ) < 2 + i) (h3 : ¬ (t : ℕ) = 2 + i) :
     ricciContractionRemainderFrameIndex i J p q t = q := by
   unfold ricciContractionRemainderFrameIndex
-  rw [dif_neg h2, if_neg h3]
+  rw [dite_eq_right h2, ite_eq_right h3]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
@@ -1560,7 +1564,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
             ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P).toSection x) := by
         ring
 
-theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContractionMonomialField_leibnizResidual_window
+theorem decompositionKernelContractionMonomialField_leibniz_remainder_norm_sq_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)

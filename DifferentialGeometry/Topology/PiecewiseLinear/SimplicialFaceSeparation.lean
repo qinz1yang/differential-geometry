@@ -59,7 +59,7 @@ theorem openSimplex_pair_eq_openSegment [DecidableEq E] {p q : E} (hpq : p ≠ q
       rcases (by simpa only [Finset.mem_insert, Finset.mem_singleton] using hy :
         y = p ∨ y = q) with rfl | rfl
       · simpa using ha
-      · simpa only [if_neg hpq.symm] using hb
+      · simpa only [ite_eq_right hpq.symm] using hb
     · simpa [Finset.sum_pair hpq, hpq.symm] using hab
     · simpa [Finset.sum_pair hpq, hpq.symm] using hx
 

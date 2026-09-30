@@ -209,7 +209,7 @@ theorem image_stdSimplexBoundary_eq_biUnion_erase [FiniteDimensional ℝ E] {w :
     (hw : Function.Injective w) {I : Finset (Fin 5)}
     (hI : AffineIndependent ℝ ((↑) : ↥(w '' (I : Set (Fin 5))) → E)) {d : ℕ}
     (hcard : I.card = d + 1) {f : (Fin (d + 1) → ℝ) → E}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (d + 1)))
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)))
       (convexHull ℝ (w '' (I : Set (Fin 5))))) :
     f '' stdSimplexBoundary d =
       ⋃ i ∈ I, convexHull ℝ (w '' ((I.erase i : Finset (Fin 5)) : Set (Fin 5))) := by
@@ -229,7 +229,7 @@ theorem image_stdSimplexBoundary_eq_biUnion_erase [FiniteDimensional ℝ E] {w :
       rw [hempty] at hxi
       simp at hxi
   | succ n =>
-      have hf' : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2)))
+      have hf' : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)))
           (convexHull ℝ ((I.image w : Finset E) : Set E)) := by
         rw [hcoe]
         exact hf

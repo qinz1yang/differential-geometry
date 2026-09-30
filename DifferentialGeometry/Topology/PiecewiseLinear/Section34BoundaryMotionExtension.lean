@@ -90,7 +90,7 @@ open Classical in
 theorem IsCombinatorialManifoldWithBoundary.exists_boundary_extension_of_disk_support
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {N : Set E} {n : (Fin 3 → ℝ) → E}
-    (hn : IsPLHomeomorphOn n (stdSimplex ℝ (Fin 3)) N)
+    (hn : IsPLHomeomorphOn n (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N)
     (hNB : N ⊆ (boundaryComplex 3 K).space) {u : E → E}
     (hu : IsPLHomeomorphOn u (boundaryComplex 3 K).space (boundaryComplex 3 K).space)
     (hfix : EqOn u id (closure ((boundaryComplex 3 K).space \ N))) (huN : u '' N = N) :

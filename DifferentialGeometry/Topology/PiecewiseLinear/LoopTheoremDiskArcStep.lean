@@ -27,7 +27,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_arcStep
     {Δ : Set E3} (hΔ : IsLoopTheoremDisk (h '' K.space) N' (frontier XK.space) Δ)
     {Cs : Set (Set E3)} (hfin : Cs.Finite) (hdisj : Cs.PairwiseDisjoint id)
     (hA : Δ ∩ (⋃ e ∈ {e : Finset E3 | e ∈ K.faces ∧ e.card = 2}, Ec e) = ⋃₀ Cs)
-    (hCs : ∀ S ∈ Cs, ∃ q : (Fin 2 → ℝ) → E3, IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) S ∧
+    (hCs : ∀ S ∈ Cs, ∃ q : (Fin 2 → ℝ) → E3, IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) S ∧
       q '' stdSimplexBoundary 1 = S ∩ frontier XK.space)
     (hne : Cs.Nonempty) :
     ∃ (Δ' : Set E3) (Cs' : Set (Set E3)),
@@ -309,7 +309,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_arcStep
       · exact ⟨gB 0, Or.inl rfl, hψ0⟩
       · exact ⟨gB 1, Or.inr rfl, hψ1⟩)
   obtain ⟨qW', hqW'⟩ := id hW'
-  have hrW' : IsPLHomeomorphOn (ρ ∘ qW') (stdSimplex ℝ (Fin 3)) (ρ '' W') :=
+  have hrW' : IsPLHomeomorphOn (ρ ∘ qW') (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (ρ '' W') :=
     hqW'.trans (hρ.restrict hW'.isPolyhedron hW'Pl)
   have hrW'b : (ρ ∘ qW') '' stdSimplexBoundary 2 = ρ '' AW' ∪ B := by
     rw [image_comp, hqW'.image_stdSimplexBoundary_eq_frontier (n := 1), hfrW', image_union,
@@ -355,7 +355,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_arcStep
       rw [hWW'img, hWDB]
       exact surjOn_id B)
   rw [hWΔ] at hH
-  have hr₁ : IsPLHomeomorphOn (H ∘ r) (stdSimplex ℝ (Fin 3)) (ρ '' W ∪ DB) := hr.trans hH
+  have hr₁ : IsPLHomeomorphOn (H ∘ r) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (ρ '' W ∪ DB) := hr.trans hH
   have hr₁b : (H ∘ r) '' stdSimplexBoundary 2 = ρ '' AW ∪ B₁ := by
     rw [image_comp, ← hρb, ← hAWu, image_union, image_union]
     have h1 : H '' (ρ '' AW) = ρ '' AW :=
@@ -454,7 +454,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_arcStep
     exact hz.2 (hzx' ▸ hBpWo hx)
   have hDBc : IsCompact DB := by
     rw [← hrB.image_eq]
-    exact (isCompact_stdSimplex ℝ (Fin 3)).image_of_continuousOn
+    exact (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).image_of_continuousOn
       hrB.isPiecewiseAffineOn.continuousOn
   have hDBO : DB ⊆ (interior N' \ h '' K.space) ∩ (⋃₀ Cs')ᶜ ∩ (ρ '' (W \ Wo))ᶜ := by
     intro y hy

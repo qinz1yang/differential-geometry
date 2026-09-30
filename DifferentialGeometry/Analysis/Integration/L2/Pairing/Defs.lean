@@ -8,6 +8,8 @@ import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Function.L1Space.Integrable
 import Mathlib.Analysis.Real.Sqrt
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_zero_left)
+
 
 noncomputable section
 

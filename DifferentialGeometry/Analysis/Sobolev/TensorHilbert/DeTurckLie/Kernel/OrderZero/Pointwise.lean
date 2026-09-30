@@ -1,4 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.OrderZero.ConnectionDifferenceBounds
+
+open DifferentialGeometry.TensorMetric
+  (coframeS exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent
+    riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -385,7 +389,7 @@ private theorem deTurckLieConnectionDifferenceDerivCoeffField_fiberNormSq_le_of_
   have hunit : ∀ i : Fin n, g₀.inner x (e i) (e i) = 1 := by
     intro i
     have h := horth i i
-    rw [if_pos rfl] at h
+    rw [ite_eq_left rfl] at h
     exact h
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ 2 2 x
     ((deTurckLieConnectionDifferenceDerivCoeffField (I := I) g₀ g₁ g_bg).toSection x) e bse hnE hbse horth]
@@ -429,7 +433,7 @@ private theorem smoothOrthoFrame_g0Norm_le_of_perturbation
   set Ba : TangentSpace I x := smoothOrthoFrame (I := I) g₁ x a' x with hBa
   have hg1BB : g₁.inner x Ba Ba = 1 := by
     have h := smoothOrthoFrame_orthonormal_at_center (I := I) g₁ x a' a'
-    rw [if_pos rfl] at h
+    rw [ite_eq_left rfl] at h
     exact h
   have hBB_nn : 0 ≤ g₀.inner x Ba Ba :=
     metric_inner_self_nonneg (I := I) (M := M) g₀ x Ba

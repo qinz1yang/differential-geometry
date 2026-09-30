@@ -106,7 +106,7 @@ private def coverComponentFunctorData
         (if h : x.as.val ∈ U then
           FreeGroup.of (ZerothHomotopy.mk
             (⟨x.as.val, h, x.as.property.2⟩ : ↑(U ∩ V))) else 1)
-      rw [dif_pos hy, dif_pos hx]
+      rw [dite_eq_left hy, dite_eq_left hx]
       change 1 = (FreeGroup.of (ZerothHomotopy.mk y.as))⁻¹ *
         FreeGroup.of (ZerothHomotopy.mk x.as)
       rw [he, inv_mul_cancel]

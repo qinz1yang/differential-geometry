@@ -327,9 +327,9 @@ theorem curvatureExpressionJetOrder_comm (k : ℕ) :
       else CurvatureExpression.binaryContraction (k + 1) (k + 1) 0 (sigmaCurvPos k q hq))
     (k + 1) (fun q => by
       by_cases hq : q.val = 0
-      · simp only [dif_pos hq]
+      · simp only [dite_eq_left hq]
         exact le_trans (curvatureExpressionJetOrder_binaryContraction _ _ _ _) (by simp)
-      · simp only [dif_neg hq]
+      · simp only [dite_eq_right hq]
         exact le_trans (curvatureExpressionJetOrder_binaryContraction _ _ _ _) (by simp))
   simp only [CurvatureExpression.comm, curvatureExpressionJetOrder]
   omega

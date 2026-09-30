@@ -318,7 +318,13 @@ theorem unitFillingOfSphereChart_fill (P : SphereUnitFilling.S3)
       = (SphereUnitFilling.sphereBallChart P).chart u)
     (c : OrientedBallChart M.toClosedOrientedManifold)
     (q : d.toBallChart.Punctured) :
-    (unitFillingOfSphereChart P d hd c).fill q
+    @DFunLike.coe
+      (@BallChart.Punctured (EuclideanSpace ℝ (Fin 3)) _ _
+        (EuclideanSpace ℝ (Fin 3)) _ 3 (𝓡 3) (ULift.{u} SphereUnitFilling.S3)
+        standardThreeSphereLift.{u}.topology standardThreeSphereLift.{u}.charts
+        d.toBallChart ≃ₜ
+        {x : M.Carrier // x ∈ BallImage c}) _ _ _
+      (unitFillingOfSphereChart P d hd c).fill q
       = (SphereUnitFilling.capFill P c.toBallChart)
         ((BallChart.puncturedHomeomorphOfImage d.toBallChart
           (SphereUnitFilling.sphereBallChart P) uliftSphereHomeomorph
@@ -347,9 +353,12 @@ theorem ballComplementCollar_unitFillingOfSphereChart (P : SphereUnitFilling.S3)
     refine (congrArg ULift.down (BallChart.radialMap_val (c := d.toBallChart)
       (boundaryAttachment.1 p.1) (1 - (p.2 : ℝ)) _)).trans ?_
     exact hd _
-  rw [unitFillingOfSphereChart_fill P d hd c, hbd]
-  exact congrArg Subtype.val
-    (SphereUnitFilling.capFill_radialRightClamp P c.toBallChart p.1 p hp)
+  have hfill := congrArg Subtype.val
+    (unitFillingOfSphereChart_fill P d hd c
+      (ConnectedSumQuotient.radialRightClamp d.toBallChart (boundaryAttachment.1 p.1) p))
+  rw [hbd] at hfill
+  exact hfill.trans (congrArg Subtype.val
+    (SphereUnitFilling.capFill_radialRightClamp P c.toBallChart p.1 p hp))
 
 end ConnectedSumUnit
 

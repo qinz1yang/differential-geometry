@@ -91,7 +91,9 @@ theorem exists_weak_memW1p_subseq_of_lipschitz_of_energy_bound
       atTop (𝓝 0) := by
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
     intro n
-    exact eLpNorm_mono_ae (Filter.Eventually.of_forall fun x =>
+    have hcoord_mem : MemLp (fun x => f (φ n) x i - v x i) 2 μ :=
+      (hw (φ n) i).memLp.sub (hv.eval_piLp i)
+    exact eLpNorm_mono_ae hcoord_mem.aestronglyMeasurable (Filter.Eventually.of_forall fun x =>
       PiLp.norm_apply_le (f (φ n) x - v x) i)
   obtain ⟨ψ, hwv, hψ, _, hweak⟩ :=
     Euclidean.exists_subseq_memW1pWitnesses_of_tendsto_L2_norm_bounded

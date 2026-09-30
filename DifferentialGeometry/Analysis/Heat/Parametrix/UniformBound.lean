@@ -1,5 +1,5 @@
 import Mathlib.Data.Finset.Lattice.Fold
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Topology.Compactness.Compact
 
 noncomputable section
@@ -41,7 +41,7 @@ theorem exists_uniform_linear_time_bound_of_compact_cover
   · obtain ⟨x, hx, hEq⟩ := Finset.exists_mem_eq_sup' ht_nonempty C'
     have hxK : x ∈ K := hs_sub (hs_fin.mem_toFinset.mp hx)
     rw [show C₀ = C' x by simp only [C₀, hEq]]
-    simp only [C', dif_pos hxK]
+    simp only [C', dite_eq_left hxK]
     exact hC x hxK
   · intro t ht y hy
     have hy' := hs hy
@@ -50,7 +50,7 @@ theorem exists_uniform_linear_time_bound_of_compact_cover
     rw [mem_iUnion] at hy'
     obtain ⟨hx, hyx⟩ := hy'
     have hxK : x ∈ K := hs_sub hx
-    have hCx : C' x = C x hxK := dif_pos hxK
+    have hCx : C' x = C x hxK := dite_eq_left hxK
     calc
       abs (F t y) ≤ t * C' x := by rw [hCx]; exact hbound x hxK t ht y hyx
       _ ≤ t * C₀ := mul_le_mul_of_nonneg_left

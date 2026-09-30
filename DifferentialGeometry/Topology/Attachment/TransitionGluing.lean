@@ -97,8 +97,7 @@ theorem t2Space_iff_isClosed_rel :
 
 theorem secondCountableTopology [Countable D.J] [∀ i, SecondCountableTopology (D.U i)] :
     SecondCountableTopology D.toGlueData.glued :=
-  (isOpenQuotientMap_sigma_ι D).isQuotientMap.secondCountableTopology
-    (isOpenQuotientMap_sigma_ι D).isOpenMap
+  (isOpenQuotientMap_sigma_ι D).secondCountableTopology
 
 end TopCat.GlueData
 

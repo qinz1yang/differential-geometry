@@ -251,7 +251,7 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
         dsimp only at this
         rw [hfroz] at this
         rw [this, ec.left_inv hxsrc]
-      rw [if_pos hxR]
+      rw [ite_eq_left hxR]
       dsimp [Z]
       rw [hxD']
       have hcomb : (1 - (t : ℝ)) • ec (D x.1) + (t : ℝ) • ec (D x.1) = ec (D x.1) := by
@@ -259,7 +259,7 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
         have : 1 - (t : ℝ) + (t : ℝ) = 1 := sub_add_cancel 1 (t : ℝ)
         rw [this, one_smul]
       rw [hcomb, ec.left_inv hxsrc]
-    · rw [if_neg hxR]
+    · rw [ite_eq_right hxR]
   have hU_sub : ∀ p : unitInterval × frontier D.domain, p.2.1 ∈ Ω → p.2.1 ∈ Rc.space :=
     fun p hp => hΩR ⟨hfr_sub p.2.2, hp⟩
   have hU_mapsD : MapsTo (fun p : unitInterval × frontier D.domain => D p.2.1)
@@ -313,8 +313,7 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
     have hab : 1 - (t : ℝ) + (t : ℝ) = 1 := sub_add_cancel 1 (t : ℝ)
     have hmem_ball := convex_ball (ec (D x.1)) ε hm1 hm2 ha hb hab
     have hdist : dist ((1 - (t : ℝ)) • ec (D x.1) + (t : ℝ) • w) (ec (D x.1)) < ε := by
-      have := Metric.mem_ball.mp hmem_ball
-      rwa [dist_comm] at this
+      exact Metric.mem_ball.mp hmem_ball
     have hzV := hchartbuf x.1 hxR _ hdist
     obtain ⟨y, hyV, hyz⟩ := hzV
     have hysrc : y ∈ ec.source := hVec hyV
@@ -325,7 +324,7 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
       intro ⟨t, x⟩ hp
       have hxR : x.1 ∈ Rc.space := hU_sub ⟨t, x⟩ hp
       dsimp [Hfun]
-      rw [if_pos hxR]
+      rw [ite_eq_left hxR]
     refine (ec.continuousOn_symm.comp hZ_cont hZ_target).congr (fun p hp => h_eq hp)
   have hcont_univ : ContinuousOn Hfun univ := by
     rw [← hUV]
@@ -337,7 +336,7 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
     change Hfun (0, x) = D x
     dsimp [Hfun]
     by_cases hxR : x.1 ∈ Rc.space
-    · rw [if_pos hxR]
+    · rw [ite_eq_left hxR]
       dsimp [Z]
       have hcomb : (1 - (0 : ℝ)) • ec (D x.1) + (0 : ℝ) • ec (D' x.1) = ec (D x.1) := by
         rw [sub_zero, one_smul, zero_smul, add_zero]
@@ -345,13 +344,13 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
       have hxV : D x.1 ∈ V := hRV hxR
       have hxsrc : D x.1 ∈ ec.source := hVec hxV
       exact ec.left_inv hxsrc
-    · rw [if_neg hxR]
+    · rw [ite_eq_right hxR]
   have hH1 : ∀ x : frontier D.domain, H (1, x) = D' x := by
     intro x
     change Hfun (1, x) = D' x
     dsimp [Hfun]
     by_cases hxR : x.1 ∈ Rc.space
-    · rw [if_pos hxR]
+    · rw [ite_eq_left hxR]
       dsimp [Z]
       have hcomb : (1 - (1 : ℝ)) • ec (D x.1) + (1 : ℝ) • ec (D' x.1) = ec (D' x.1) := by
         rw [sub_self, zero_smul, zero_add, one_smul]
@@ -366,7 +365,7 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
       have hy_eq : ec.symm w = y := by rw [← hyw, ec.left_inv hysrc]
       rw [hg, hy_eq]
       exact ec.left_inv hysrc
-    · rw [if_neg hxR]
+    · rw [ite_eq_right hxR]
       exact (hglueoff hxR).symm
   have hHbd : ∀ (t : unitInterval) (x : frontier D.domain),
       H (t, x) ∈ BdM ∧ B ∈ 𝓝[BdM] (H (t, x)) := by
@@ -374,7 +373,7 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
     change Hfun (t, x) ∈ BdM ∧ B ∈ 𝓝[BdM] (Hfun (t, x))
     dsimp [Hfun]
     by_cases hxR : x.1 ∈ Rc.space
-    · rw [if_pos hxR]
+    · rw [ite_eq_left hxR]
       dsimp [Z]
       rw [hD'ec x.1 hxR]
       let w := simplicialMap Rs φ x.1
@@ -388,8 +387,7 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
       have hab : 1 - (t : ℝ) + (t : ℝ) = 1 := sub_add_cancel 1 (t : ℝ)
       have hmem_ball := convex_ball (ec (D x.1)) ε hm1 hm2 ha hb hab
       have hdist : dist ((1 - (t : ℝ)) • ec (D x.1) + (t : ℝ) • w) (ec (D x.1)) < ε := by
-        have := Metric.mem_ball.mp hmem_ball
-        rwa [dist_comm] at this
+        exact Metric.mem_ball.mp hmem_ball
       have hzV := hchartbuf x.1 hxR _ hdist
       obtain ⟨y, hyV, hyz⟩ := hzV
       have hysrc : y ∈ ec.source := hVec hyV
@@ -414,7 +412,7 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
         exact hyBd
       refine ⟨hyBd', ?_⟩
       exact hbdbuf x.1 ⟨hxR, hxfr⟩ _ hdist hyBd'
-    · rw [if_neg hxR]
+    · rw [ite_eq_right hxR]
       have hxdom : x.1 ∈ D.domain := hfr_sub x.2
       have hxfr : x.1 ∈ frontier D.domain := x.2
       have hDxBd : D x.1 ∈ BdM := by

@@ -15,14 +15,14 @@ theorem closedCell_chartAt_of_norm_lt_one {m : ℕ}
     (α : ClosedCell (m + 1)) (hα : ‖α.val‖ < 1) :
     chartAt (EuclideanHalfSpace (m + 1)) α = closedCellInteriorChart m := by
   change closedCellChartAt α = _
-  rw [closedCellChartAt, dif_pos hα]
+  rw [closedCellChartAt, dite_eq_left hα]
 
 theorem closedCell_extChartAt_apply_of_norm_lt_one {m : ℕ}
     (α : ClosedCell (m + 1)) (hα : ‖α.val‖ < 1)
     (x : ClosedCell (m + 1)) :
     extChartAt (𝓡∂ (m + 1)) α x = closedCellShiftSucc m 1 x.val := by
   change (closedCellChartAt α x).val = _
-  rw [closedCellChartAt, dif_pos hα]
+  rw [closedCellChartAt, dite_eq_left hα]
   rfl
 
 theorem closedCell_extChartAt_source_of_norm_lt_one {m : ℕ}

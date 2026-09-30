@@ -20,7 +20,7 @@ private lemma hyperbolicSn_scale (q δ t : Real) (hδ : δ ≠ 0) :
   by_cases hq : q = 0
   · subst q
     simp [hyperbolicSn]
-  · rw [hyperbolicSn, if_neg (mul_ne_zero hq hδ), hyperbolicSn, if_neg hq]
+  · rw [hyperbolicSn, ite_eq_right (mul_ne_zero hq hδ), hyperbolicSn, ite_eq_right hq]
     rw [show (q * δ) * t = q * (δ * t) by ring]
     field_simp
 
@@ -184,10 +184,10 @@ private theorem linearIndependent_of_orthonormal
   apply LinearMap.linearIndependent_of_isOrthoᵢ (B := B)
   · rw [LinearMap.isOrthoᵢ_def]
     intro i j hij
-    exact (hON i j).trans (if_neg hij)
+    exact (hON i j).trans (ite_eq_right hij)
   · intro i
     change G (e i) (e i) ≠ 0
-    rw [show G (e i) (e i) = 1 from (hON i i).trans (if_pos rfl)]
+    rw [show G (e i) (e i) = 1 from (hON i i).trans (ite_eq_left rfl)]
     exact one_ne_zero
 
 private noncomputable def optionFamily
@@ -531,7 +531,7 @@ theorem exists_radius_antitoneOn_framedExpDiffeo_density_ratio
     cases i with
     | none =>
         cases j with
-        | none => simpa only [optionFamily, if_pos] using hxUnitModel
+        | none => simpa only [optionFamily, ite_eq_left] using hxUnitModel
         | some j => simp [optionFamily, hxPerpModel j]
     | some i =>
         cases j with

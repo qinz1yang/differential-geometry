@@ -21,7 +21,7 @@ theorem exists_isPLSphere_pair_of_heightIndex_eq_zero
     (hbelow : ∃ y ∈ K.space, ℓ y < r) (habove : ∃ z ∈ K.space, r < ℓ z)
     {W : Set E} (hW : IsOpen W) (hWconv : Convex ℝ W) (hKW : K.space ⊆ W) :
     ∃ (D : Set E) (g : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       g '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = r} ∧
       D ⊆ W ∩ {x | ℓ x = r} ∧ K.space ∩ D = g '' stdSimplexBoundary 2 ∧
       IsPLSphere 2 ((K.space ∩ {x | ℓ x ≤ r}) ∪ D) ∧

@@ -97,23 +97,23 @@ theorem exists_linearMap_fieldHurewiczOne [PathConnectedSpace X] (x : X)
       f ((TopCat.toSSet.obj (TopCat.of X)).δ 2 τ) + f ((TopCat.toSSet.obj (TopCat.of X)).δ 0 τ) =
         f ((TopCat.toSSet.obj (TopCat.of X)).δ 1 τ) := by
     intro τ
-    let T : C(stdSimplex ℝ (Fin 3), X) := integralSingularSimplexEquiv 2 X τ
-    let g : Fin 3 → unitInterval → stdSimplex ℝ (Fin 3) := fun i t =>
-      stdSimplex.map (Fin.succAbove i)
+    let T : C(Convexity.StdSimplex ℝ (Fin 3), X) := integralSingularSimplexEquiv 2 X τ
+    let g : Fin 3 → unitInterval → Convexity.StdSimplex ℝ (Fin 3) := fun i t =>
+      Convexity.StdSimplex.map (Fin.succAbove i)
         (TopCat.stdSimplexHomeomorphI.{0}.symm (TopCat.I.homeomorph.{0}.symm t))
-    have hg : ∀ i, Continuous (g i) := fun i => (stdSimplex.continuous_map _).comp
+    have hg : ∀ i, Continuous (g i) := fun i => (Convexity.StdSimplex.continuous_map ℝ _).comp
       (TopCat.stdSimplexHomeomorphI.{0}.symm.continuous.comp
         TopCat.I.homeomorph.{0}.symm.continuous)
     let e : ∀ i, Path (g i 0) (g i 1) := fun i => ⟨⟨g i, hg i⟩, rfl, rfl⟩
     have hf : ∀ i, f ((TopCat.toSSet.obj (TopCat.of X)).δ i τ) =
         fundamentalGroupoidLoopValue φ r (Path.Homotopic.Quotient.mk ((e i).map T.continuous)) :=
       fun i => fundamentalGroupoidLoopValue_mk_eq_of_forall_apply_eq φ r _ _ fun _ => rfl
-    have hg0 : ∀ i, g i 0 = stdSimplex.vertex (Fin.succAbove i 0) := fun i => by
-      change stdSimplex.map _ (TopCat.stdSimplexHomeomorphI.{0}.symm 0) = _
-      rw [TopCat.stdSimplexHomeomorphI_symm_zero.{0}, stdSimplex.map_vertex]
-    have hg1 : ∀ i, g i 1 = stdSimplex.vertex (Fin.succAbove i 1) := fun i => by
-      change stdSimplex.map _ (TopCat.stdSimplexHomeomorphI.{0}.symm 1) = _
-      rw [TopCat.stdSimplexHomeomorphI_symm_one.{0}, stdSimplex.map_vertex]
+    have hg0 : ∀ i, g i 0 = Convexity.StdSimplex.single (Fin.succAbove i 0) := fun i => by
+      change Convexity.StdSimplex.map _ (TopCat.stdSimplexHomeomorphI.{0}.symm 0) = _
+      rw [TopCat.stdSimplexHomeomorphI_symm_zero.{0}, Convexity.StdSimplex.map_single]
+    have hg1 : ∀ i, g i 1 = Convexity.StdSimplex.single (Fin.succAbove i 1) := fun i => by
+      change Convexity.StdSimplex.map _ (TopCat.stdSimplexHomeomorphI.{0}.symm 1) = _
+      rw [TopCat.stdSimplexHomeomorphI_symm_one.{0}, Convexity.StdSimplex.map_single]
     have h1 : g 2 1 = g 0 0 := by
       rw [hg1, hg0]
       rfl
@@ -123,8 +123,7 @@ theorem exists_linearMap_fieldHurewiczOne [PathConnectedSpace X] (x : X)
     have h2 : g 0 1 = g 1 1 := by
       rw [hg1, hg1]
       rfl
-    let _ : ContractibleSpace (stdSimplex ℝ (Fin 3)) :=
-      (convex_stdSimplex ℝ (Fin 3)).contractibleSpace ⟨g 0 0, (g 0 0).property⟩
+    let _ : ContractibleSpace (Convexity.StdSimplex ℝ (Fin 3)) := inferInstance
     have hPQ := SimplyConnectedSpace.paths_homotopic ((e 2).trans ((e 0).cast h1 rfl))
       ((e 1).cast h0 h2)
     have hmap := Path.Homotopic.Quotient.eq.mpr (hPQ.map T)
@@ -167,7 +166,7 @@ theorem exists_linearMap_fieldHurewiczOne [PathConnectedSpace X] (x : X)
       have h := integralPathSimplex_apply γ (TopCat.stdSimplexHomeomorphI.{0}.symm
         (TopCat.I.homeomorph.{0}.symm t))
       refine h.trans (congrArg γ ?_)
-      change stdSimplexHomeomorphUnitInterval (stdSimplexHomeomorphUnitInterval.symm
+      change Convexity.StdSimplex.homeomorphI (Convexity.StdSimplex.homeomorphI.symm
         (Homeomorph.ulift.{0, 0}.symm.symm (Homeomorph.ulift.{0, 0}.symm t))) = t
       rw [Homeomorph.symm_symm, Homeomorph.apply_symm_apply, Homeomorph.apply_symm_apply]
     rw [show f (integralPathSimplex γ) = fundamentalGroupoidLoopValue φ r
@@ -300,7 +299,7 @@ theorem IsCombinatorialManifoldWithBoundary.eulerChar_add_card_le_two
     ext y
     simp only [mem_iUnion, exists_prop, Subtype.exists]
   have hdisk : ∀ i : I, ∃ (D : Set (E × (I → ℝ))) (r : (Fin 3 → ℝ) → E × (I → ℝ)),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ r '' stdSimplexBoundary 2 = ι₀ '' J i ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ r '' stdSimplexBoundary 2 = ι₀ '' J i ∧
       D ∩ M'.space = ι₀ '' J i ∧
       ∀ y ∈ D, ∃ s : ℝ, y.2 = s • Pi.single i (1 : ℝ) ∧ (s = 0 → y ∈ ι₀ '' J i) := by
     intro i

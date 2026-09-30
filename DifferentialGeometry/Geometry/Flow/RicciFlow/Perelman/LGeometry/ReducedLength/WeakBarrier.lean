@@ -313,7 +313,7 @@ theorem exists_endpoint_action_branch_of_minimal
       hfixed.localInverse_left_inv hfixed.localInverse_mem_target
   have hgoodOpen : IsOpen
       (htime.localInverse.source ∩ htime.localInverse ⁻¹' (V ×ˢ Ktime)) :=
-    htime.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
+    htime.contMDiffOn_localInverse.continuousOn.isOpen_inter_preimage
       htime.localInverse_open_source (hVopen.prod hKopen)
   have hgood : (y, b) ∈
       htime.localInverse.source ∩ htime.localInverse ⁻¹' (V ×ˢ Ktime) := by
@@ -1193,7 +1193,7 @@ theorem exists_time_upper_support_of_free_endpoint_minimizers_on
   · have hdlin : HasDerivAt (fun rho : ℝ => 2 * (Module.finrank ℝ E : ℝ) * rho)
         (2 * (Module.finrank ℝ E : ℝ)) tau := by
       convert ((hasDerivAt_id tau).const_mul (2 * (Module.finrank ℝ E : ℝ))) using 1 <;> first | rfl | simp only [mul_one]
-    convert hderiv.sub hdlin using 1 <;> rfl
+    convert hderiv.sub hdlin using 1
   · linarith
 
 

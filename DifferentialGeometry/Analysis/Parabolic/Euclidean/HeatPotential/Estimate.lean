@@ -658,7 +658,7 @@ theorem heatDuhamel_isParabolicC2HolderOn
       (f := fun t x ↦ parabolicSpatialJet 2 w (parabolicPoint t x))
       (parabolicSpatialJet_holderWith_restrict hgauge) hp.1
     have hhessHolder : HolderWith C alpha (heatDuhamelHessian p.time f) := by
-      have hcomp := (hessianCurryEquiv V F).lipschitz.holderWith.comp hslice
+      have hcomp := (hessianCurryEquiv V F).lipschitzWith.holderWith.comp hslice
       have hcomp' : HolderWith C alpha
           (hessianCurryEquiv V F ∘
             fun x ↦ parabolicSpatialJet 2 w (parabolicPoint p.time x)) := by

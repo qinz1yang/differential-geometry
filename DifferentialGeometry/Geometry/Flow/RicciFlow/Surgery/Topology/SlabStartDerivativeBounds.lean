@@ -98,7 +98,7 @@ theorem exists_slice_bounds_at_slab_start (P₀ : OrientedThreeStage.{u}) (g₀ 
       ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
         p₀.modelAccuracy ≤ εs → Rs ≤ p₀.modelRadius → ms ≤ p₀.modelOrder →
         δbound ≤ δs → ρbound ≤ ρs →
-      ∀ H : RetainedCoreHistory P₀, Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
+      ∀ H : RetainedCoreHistory.{u}, Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
         p₀.recenterConstant * δbound ≤ 1 / 2 →
       ∀ (p : CutoffParameters) (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
         H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →

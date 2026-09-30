@@ -8,10 +8,9 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 namespace RetainedCoreHistory
-variable {P : OrientedThreeStage.{u}}
 
-def restrict (H : RetainedCoreHistory P)
-    (t : Icc (0 : ℝ) H.horizon) : RetainedCoreHistory P := by
+def restrict (H : RetainedCoreHistory.{u})
+    (t : Icc (0 : ℝ) H.horizon) : RetainedCoreHistory.{u} := by
   let K := H.toHistory.restrict t
   let k := H.toHistory.activeStage t
   have hk : k.val ≤ H.eventCount := Nat.le_of_lt_succ k.isLt
@@ -67,7 +66,7 @@ def restrict (H : RetainedCoreHistory P)
       ObservedHistory.restrict_initialMetric_heq H.toHistory t i.succ
     exact eq_of_heq (hE.trans ((heq_of_eq hout).trans hmetric.symm))
 
-@[simp] theorem restrict_toHistory (H : RetainedCoreHistory P)
+@[simp] theorem restrict_toHistory (H : RetainedCoreHistory.{u})
     (t : Icc (0 : ℝ) H.horizon) :
     (H.restrict t).toHistory = H.toHistory.restrict t := rfl
 

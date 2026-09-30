@@ -83,9 +83,9 @@ theorem tangentChartExp_hasFDerivAt_zero (g : SmoothRiemannianMetric I M)
       (⟨p, (0 : E)⟩ : TangentBundle I M)) at h
   have hpt : extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)
       (⟨p, (0 : E)⟩ : TangentBundle I M) = (extChartAt I p p, 0) := by
-    rw [extChartAt_tangent_zero_apply_chartFiber (I := I) p
+    rw [TangentBundle.extChartAt_tangent_zero_apply_chartFiber (I := I) p
       (p := (⟨p, (0 : E)⟩ : TangentBundle I M)) (mem_chart_source H p)]
-    exact Prod.ext rfl (chartFiberCoord_self_zero (I := I) p)
+    exact Prod.ext rfl (TangentBundle.chartFiberCoord_self_zero (I := I) p)
   have hsum : (ContinuousLinearMap.snd ℝ E E).comp
       (DifferentialGeometry.PhaseFlow.freeDiagCLE (E := E) : (E × E) →L[ℝ] (E × E)) =
       ContinuousLinearMap.fst ℝ E E + ContinuousLinearMap.snd ℝ E E := by

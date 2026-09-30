@@ -87,8 +87,7 @@ private lemma integral_mul_tendsto_zero
         (fun n => (eLpNorm (g n) 2 μ).toReal) = fun n => lpNorm (g n) 2 μ := by
       funext n
       simpa using
-        (toReal_eLpNorm (μ := μ) (p := (2 : ENNReal)) (f := g n)
-          (hg n).aestronglyMeasurable)
+        (toReal_eLpNorm (μ := μ) (p := (2 : ENNReal)) (f := g n))
     rw [← hEq]
     exact hlim_toReal
   have hbound : ∀ n, |∫ x, f x * g n x ∂μ| ≤ C * lpNorm (g n) 2 μ := by

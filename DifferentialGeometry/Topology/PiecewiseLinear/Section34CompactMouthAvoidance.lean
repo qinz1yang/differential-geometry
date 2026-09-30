@@ -46,7 +46,7 @@ theorem exists_vertex_disk_avoiding_all_split_disks
     (hJV : J ⊆ section34CompactVertexBallImage src f₁ w)
     (hJN : J ⊆ frontier (⋃ v, section34CompactVertexBallImage src f₁ v)) :
     ∃ (D : Set E3) (q : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = J ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = J ∧
         D ⊆ section34CompactVertexBallImage srcBd f₁ w ∧
         ∀ e : Section34CompactEdgeIndex K K',
           Disjoint D (section34CompactSplitDiskImage src f₁ e) := by

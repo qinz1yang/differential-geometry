@@ -77,7 +77,7 @@ private theorem tangentChartExp_fixed_base (p : M) (v : E) :
     rw [extChartAt_source]
     exact (mem_chartAt_modelProd_zero_source_iff (I := I) p w).mpr (mem_chart_source H p)
   have hc : extChartAt I.tangent z w = (extChartAt I p p, v) := by
-    rw [extChartAt_tangent_zero_apply_chartFiber (I := I) p
+    rw [TangentBundle.extChartAt_tangent_zero_apply_chartFiber (I := I) p
       (p := w) (mem_chart_source H p)]
     exact Prod.ext rfl (chartFiberCoord_mk_self (I := I) p v)
   have hi : (extChartAt I.tangent z).symm (extChartAt I p p, v) = w := by

@@ -92,15 +92,15 @@ theorem exists_backwardSurvivor_incomingSlab_flow {s : ℝ}
   refine ⟨fun τ => if τ ≤ H.time k then F τ else gR τ, ?_, ?_, ?_⟩
   · intro j hf hl τ hτ
     have hτk : τ ≤ H.time k := hτ.2.trans (H.time_strictMono.monotone hl)
-    simp only [if_pos hτk]
+    simp only [ite_eq_left hτk]
     exact hslabs j hf hl τ hτ
   · intro τ hτ
     by_cases hc : τ ≤ H.time k
     · have he : τ = H.time k := le_antisymm hc hτ.1
       subst he
-      simp only [if_pos le_rfl]
+      simp only [ite_eq_left le_rfl]
       exact hmatch
-    · simp only [if_neg hc]
+    · simp only [ite_eq_right hc]
       rfl
   · apply isSolutionOn_of_joint_metric _ (uniqueDiffOn_Ico _ _)
     · intro p hp

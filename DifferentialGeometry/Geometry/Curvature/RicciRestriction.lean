@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricci
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.MetricData
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
 
 noncomputable section
@@ -41,9 +41,9 @@ theorem riemannOp_restrictOpen
       riemannOp (LeviCivita g) (x : M) (mfderiv I I (Subtype.val : U → M) x u)
         (mfderiv I I (Subtype.val : U → M) x v) (mfderiv I I (Subtype.val : U → M) x w) := by
   let : CompleteSpace E := FiniteDimensional.complete ℝ E
-  apply tangentFlatLinear_injective_gen (I := I) g (x : M)
+  apply tangentFlatLinear_injective (I := I) g (x : M)
   ext z
-  simp only [tangentFlatLinear_apply_gen]
+  simp only [tangentFlatLinear_apply]
   obtain ⟨q, rfl⟩ := (inclusionTangentEquiv (I := I) U x).surjective z
   rw [inclusionTangentEquiv_apply]
   have h := metricRm04StandardAt_restrictOpen g U x u v w q
@@ -76,9 +76,9 @@ theorem ricciSharp_restrictOpen
     (x : U) (v : TangentSpace I x) :
     mfderiv I I (Subtype.val : U → M) x (ricciSharp (g.restrictOpen U) x v) =
       ricciSharp g (x : M) (mfderiv I I (Subtype.val : U → M) x v) := by
-  apply tangentFlatLinear_injective_gen (I := I) g (x : M)
+  apply tangentFlatLinear_injective (I := I) g (x : M)
   ext z
-  simp only [tangentFlatLinear_apply_gen]
+  simp only [tangentFlatLinear_apply]
   obtain ⟨w, rfl⟩ := (inclusionTangentEquiv (I := I) U x).surjective z
   rw [inclusionTangentEquiv_apply, ← restrict_inner, inner_ricciSharp, inner_ricciSharp]
   exact ricciTensor_restrictOpen g U x v w
@@ -125,13 +125,13 @@ theorem ricciTensor_restrictOpen
     intro i j
     by_cases hij : i = j
     · subst j
-      simpa only [Bf, if_pos] using hB (Fin.cast hdim i) (Fin.cast hdim i)
+      simpa only [Bf, ite_eq_left] using hB (Fin.cast hdim i) (Fin.cast hdim i)
     · have hcast : Fin.cast hdim i ≠ Fin.cast hdim j := by
         intro h
         apply hij
         apply Fin.ext
         exact congrArg Fin.val h
-      simpa only [Bf, if_neg hij, if_neg hcast] using
+      simpa only [Bf, ite_eq_right hij, ite_eq_right hcast] using
         hB (Fin.cast hdim i) (Fin.cast hdim j)
   let eU : TangentSpace I (x : M) ≃ₗ[ℝ] TangentSpace I x :=
     (tangentSpaceModelContinuousLinearEquiv (I := I) (x : M)).toLinearEquiv.trans

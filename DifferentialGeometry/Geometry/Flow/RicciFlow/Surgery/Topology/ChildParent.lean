@@ -265,7 +265,7 @@ def childCoreComponent (c : ConnectedComponents Q.Carrier) :
 def childParent (c : ConnectedComponents Q.Carrier) : ConnectedComponents P.Carrier :=
   letI := E.core_compact
   letI := E.core_locallyConnected
-  E.trace.rfs_child_parent c
+  E.trace.childParent c
 
 abbrev ChildCore (c : ConnectedComponents Q.Carrier) :=
   ComponentCarrier (E.childCoreComponent c)

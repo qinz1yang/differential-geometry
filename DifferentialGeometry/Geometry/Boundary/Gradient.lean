@@ -26,7 +26,7 @@ private theorem mfderiv_inwardCoord_nonneg {f : M → ℝ} {x : BoundaryManifold
   obtain ⟨γ, hγ0, hγ, hγd, -⟩ := exists_inward_curve x
   have hminγ : IsLocalMinOn (f ∘ γ) (Set.Ici 0) 0 := by
     have hm : IsLocalMin f (γ 0) := hγ0 ▸ hmin
-    exact hm.comp_tendsto hγ.continuousWithinAt
+    exact hm.comp_of_tendsto hγ.continuousWithinAt
   have hcone : (1 : ℝ) ∈ posTangentConeAt (Set.Ici (0 : ℝ)) 0 := by
     rw [one_mem_posTangentConeAt_iff_mem_closure]
     rw [Set.inter_eq_left.mpr Set.Ioi_subset_Ici_self, closure_Ioi]

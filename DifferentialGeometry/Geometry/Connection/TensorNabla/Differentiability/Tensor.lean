@@ -405,7 +405,7 @@ lemma tensor02CovAt_apply_of_diff
     tensor02CovAt cov T x v = tensor02BilinAt cov hT v := by
   classical
   unfold tensor02CovAt
-  rw [dif_pos hT]
+  rw [dite_eq_left hT]
   with_unfolding_all rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -432,7 +432,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     tensor02CovAt cov T x = 0 := by
   classical
   unfold tensor02CovAt
-  rw [dif_neg hT]
+  rw [dite_eq_right hT]
 
 def tensor02CovFun
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _)) :

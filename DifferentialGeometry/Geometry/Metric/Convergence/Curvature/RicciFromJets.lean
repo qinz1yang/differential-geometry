@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelBounds
+import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Components
 
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
@@ -848,7 +850,7 @@ theorem jet2Diff_le_dNorm
     [Module.Finite ℝ E]
     :
     ∃ C : Real, 0 < C ∧ ∀ u u' : SmoothRiemannianMetric I M,
-      chartMetricJet2DiffSup (I := I) (M := M) u u' x (extChartAt I x x) ≤
+      DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) u u' x (extChartAt I x x) ≤
         C * ∑ a ∈ Finset.range 3, metricDerivNorm (I := I) a u u' gRef x := by
   classical
   obtain ⟨σs, hσs⟩ := exists_slotSections (I := I) x
@@ -883,10 +885,10 @@ theorem jet2Diff_le_dNorm
       + metricDerivNorm (I := I) 0 u u' gRef x ≤ S := by rw [hSexp]; linarith
   have hψ : (extChartAt I x).symm (extChartAt I x x) = x :=
     (extChartAt I x).left_inv (mem_extChartAt_source (I := I) x)
-  have hA : chartGramDiffSup (I := I) (M := M) u u' x
+  have hA : DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) u u' x
       ((extChartAt I x).symm (extChartAt I x x)) ≤ n2 * C0 * S := by
     rw [hψ]
-    unfold chartGramDiffSup matrixEntryL1
+    unfold DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum Matrix.entrywiseL1
     calc ∑ pq : Fin (Module.finrank Real E) × Fin (Module.finrank Real E),
           |(DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u x x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) u' x x) pq.1 pq.2|
         ≤ ∑ _pq : Fin (Module.finrank Real E) × Fin (Module.finrank Real E),
@@ -898,9 +900,9 @@ theorem jet2Diff_le_dNorm
       _ = n2 * (C0 * S) := by
           rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
       _ = n2 * C0 * S := by ring
-  have hB : chartGramPartialDiffSup (I := I) (M := M) u u' x (extChartAt I x x)
+  have hB : DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum (I := I) (M := M) u u' x (extChartAt I x x)
       ≤ n3 * C1 * S := by
-    unfold chartGramPartialDiffSup gramPartialDiffEntry
+    unfold DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum DifferentialGeometry.Tensor.Coordinates.chartGramPartialAbsDiffEntry
     calc ∑ p : Fin (Module.finrank Real E) × Fin (Module.finrank Real E)
           × Fin (Module.finrank Real E),
           |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1 (chartGramOnE (I := I) u x p.1 p.2.2)
@@ -915,9 +917,9 @@ theorem jet2Diff_le_dNorm
       _ = n3 * (C1 * S) := by
           rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
       _ = n3 * C1 * S := by ring
-  have hCc : chartGramPartial2DiffSup (I := I) (M := M) u u' x (extChartAt I x x)
+  have hCc : DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum (I := I) (M := M) u u' x (extChartAt I x x)
       ≤ n4 * C2 * S := by
-    unfold chartGramPartial2DiffSup gramPartial2DiffEntry
+    unfold DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum DifferentialGeometry.Tensor.Coordinates.chartGramPartial2AbsDiffEntry
     calc ∑ p : Fin (Module.finrank Real E) × Fin (Module.finrank Real E)
           × Fin (Module.finrank Real E) × Fin (Module.finrank Real E),
           |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.1
@@ -934,11 +936,11 @@ theorem jet2Diff_le_dNorm
       _ = n4 * (C2 * S) := by
           rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
       _ = n4 * C2 * S := by ring
-  unfold chartMetricJet2DiffSup chartMetricJet1DiffSup
-  calc chartGramDiffSup (I := I) (M := M) u u' x
+  unfold DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum
+  calc DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) u u' x
         ((extChartAt I x).symm (extChartAt I x x))
-      + chartGramPartialDiffSup (I := I) (M := M) u u' x (extChartAt I x x)
-      + chartGramPartial2DiffSup (I := I) (M := M) u u' x (extChartAt I x x)
+      + DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum (I := I) (M := M) u u' x (extChartAt I x x)
+      + DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum (I := I) (M := M) u u' x (extChartAt I x x)
       ≤ n2 * C0 * S + n3 * C1 * S + n4 * C2 * S := by
         exact add_le_add (add_le_add hA hB) hCc
     _ ≤ (n2 * C0 + n3 * C1 + n4 * C2 + 1) * S := by nlinarith
@@ -1325,7 +1327,7 @@ theorem chartRicci_sub_le
       ∀ i k : Fin (Module.finrank Real E),
         |chartRicciTensor (I := I) u x i k (extChartAt I x x)
           - chartRicciTensor (I := I) u' x i k (extChartAt I x x)| ≤
-        C * chartMetricJet2DiffSup (I := I) (M := M) u u' x (extChartAt I x x) := by
+        C * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) u u' x (extChartAt I x x) := by
   classical
   obtain ⟨CJ, hCJ0, hCJ⟩ := gramJet_le_covNorm gRef x
   obtain ⟨Mb, hMb0, hMb⟩ := invGram_le_of_low gRef x lam hlam
@@ -1434,11 +1436,11 @@ theorem chartRicci_sub_le
   have hCinvα : ∀ k' l : Fin (Module.finrank Real E),
       |chartInvGramOnE (I := I) u x k' l (extChartAt I x x)
         - chartInvGramOnE (I := I) u' x k' l (extChartAt I x x)| ≤
-      Cinv * chartGramDiffSup (I := I) (M := M) u u' x
+      Cinv * DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) u u' x
         ((extChartAt I x).symm (extChartAt I x x)) := by
     intro k' l
     rw [chartInvGramOnE_def, chartInvGramOnE_def, hψ]
-    have h := chartInvGramMatrix_entry_sub_abs_le_gramDiffSup (I := I) (M := M) u u' x
+    have h := chartInvGramMatrix_entry_sub_abs_le_chartGramDiffSum (I := I) (M := M) u u' x
       hxbase (fun p q => hMb u hlowu p q) (fun p q => hMb u' hlowu' p q) k' l
     rw [hCinvdef, hnR]
     exact h
@@ -1577,7 +1579,7 @@ theorem chartRicci_sub_le
   have hCdα : ∀ (m k' l : Fin (Module.finrank Real E)),
       |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) u x k' l) (extChartAt I x x)
         - DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) u' x k' l) (extChartAt I x x)| ≤
-      Cd * chartMetricJet1DiffSup (I := I) (M := M) u u' x (extChartAt I x x) := by
+      Cd * DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) u u' x (extChartAt I x x) := by
     intro m k' l
     have h := partialDeriv_chartInvGramOnE_sub_abs_le (I := I) (M := M) u u' x hyInt
       hMb0 hQ0 hCinv0 hMbu hMbu' (fun m' a b => hQu m' a b) hCinvα m k' l
@@ -1586,7 +1588,7 @@ theorem chartRicci_sub_le
   have hClipα : ∀ i' j k' : Fin (Module.finrank Real E),
       |chartChristoffel (I := I) u x i' j k' (extChartAt I x x)
         - chartChristoffel (I := I) u' x i' j k' (extChartAt I x x)| ≤
-      Clip * chartMetricJet1DiffSup (I := I) (M := M) u u' x (extChartAt I x x) := by
+      Clip * DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) u u' x (extChartAt I x x) := by
     intro i' j k'
     have h := chartChristoffel_sub_abs_le (I := I) (M := M) u u' x
       hP0 hMb0 hMbu' hPu hCinvα hCinv0 i' j k'
@@ -1595,7 +1597,7 @@ theorem chartRicci_sub_le
   have hCdiffα : ∀ m i' j k' : Fin (Module.finrank Real E),
       |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) u x i' j k') (extChartAt I x x)
         - DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) u' x i' j k') (extChartAt I x x)| ≤
-      Cdiff * chartMetricJet2DiffSup (I := I) (M := M) u u' x (extChartAt I x x) := by
+      Cdiff * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) u u' x (extChartAt I x x) := by
     intro m i' j k'
     have h := partialDeriv_chartChristoffel_sub_abs_le (I := I) (M := M) u u' x hyInt
       hCd0 hCinv0 hMb0 hP0 hD0 hR0 m i' j k'
@@ -1603,11 +1605,11 @@ theorem chartRicci_sub_le
       (fun i'' j' l => hRu m i'' j' l) hCinvα
     rw [hCdiffdef, hnR]
     exact h
-  set jet2 : Real := chartMetricJet2DiffSup (I := I) (M := M) u u' x (extChartAt I x x)
+  set jet2 : Real := DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) u u' x (extChartAt I x x)
     with hjet2def
-  have hjet2nn : 0 ≤ jet2 := chartMetricJet2DiffSup_nonneg _ _ _ _
-  have hjet1le : chartMetricJet1DiffSup (I := I) (M := M) u u' x (extChartAt I x x) ≤ jet2 :=
-    chartMetricJet1DiffSup_le_jet2 (I := I) (M := M) u u' x (extChartAt I x x)
+  have hjet2nn : 0 ≤ jet2 := DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_nonneg _ _ _ _
+  have hjet1le : DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) u u' x (extChartAt I x x) ≤ jet2 :=
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum_le_chartMetricJet2DiffSum (I := I) (M := M) u u' x (extChartAt I x x)
   have h2nd := chartRicciSecondOrderTerm_sub_abs_le (I := I) (M := M) u u' x
     hCdiffα i k
   have h1st := chartRicciFirstOrderTerm_sub_abs_le (I := I) (M := M) u u' x
@@ -1675,7 +1677,7 @@ theorem ricciSub_le_dNorm
   refine ⟨crep * (CR * CJ2) + 1, by positivity, fun u u' h1 h2 h3 h4 => ?_⟩
   set S : Real := ∑ a ∈ Finset.range 3, metricDerivNorm (I := I) a u u' gRef x with hSd
   have hSnn : 0 ≤ S := Finset.sum_nonneg fun a _ => Real.sqrt_nonneg _
-  have hjet : chartMetricJet2DiffSup (I := I) (M := M) u u' x (extChartAt I x x)
+  have hjet : DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) u u' x (extChartAt I x x)
       ≤ CJ2 * S := hCJ2 u u'
   have hentry : ∀ i k : Fin (Module.finrank Real E),
       |chartRicciTensor (I := I) u x i k (extChartAt I x x)

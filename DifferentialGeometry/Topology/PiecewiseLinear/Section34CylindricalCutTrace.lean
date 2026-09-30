@@ -73,7 +73,7 @@ theorem IsCylindricalDiagram.exists_innermost_cut_disk
     (hdisj : Pairwise fun i j => Disjoint (J i) (J j))
     (htrace : K ∩ frontier (f '' (D.space ×ˢ Icc (0 : ℝ) (1 / 2))) = ⋃ i, J i) :
     ∃ (i : ι) (Q : Set F) (q : (Fin 3 → ℝ) → F),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧
       Q ⊆ frontier (f '' (D.space ×ˢ Icc (0 : ℝ) (1 / 2))) ∩ interior M.space ∧
       q '' stdSimplexBoundary 2 = J i ∧ Q ∩ K = J i ∧
       ∀ j, j ≠ i → Disjoint Q (J j) := by
@@ -105,7 +105,7 @@ theorem IsCylindricalDiagram.exists_innermost_cut_disk
       (hside : f '' (D.space ×ˢ {t}) ⊆ frontier A.space) {i : ι}
       (hi : J i ⊆ f '' (D.space ×ˢ {t})) :
       ∃ (Q : Set F) (q : (Fin 3 → ℝ) → F),
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧
         Q ⊆ frontier A.space ∩ interior M.space ∧ q '' stdSimplexBoundary 2 = J i := by
     obtain ⟨r, hr, hrbd, -, -, hmeet, -, hinside, -⟩ :=
       hf.exists_essential_slice_disk D M hD hM hends hdim ht
@@ -122,7 +122,7 @@ theorem IsCylindricalDiagram.exists_innermost_cut_disk
     exact ⟨Q, q, hq, fun x hx => ⟨hside (hQD hx).1, hQint hx⟩, hqJ⟩
   obtain ⟨i⟩ := ‹Nonempty ι›
   have hex : ∃ (i : ι) (Q : Set F) (q : (Fin 3 → ℝ) → F),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧
       Q ⊆ frontier A.space ∩ interior M.space ∧ q '' stdSimplexBoundary 2 = J i := by
     rcases hplace i with hi | hi
     · obtain ⟨Q, q, hq⟩ := hslice 0 (by norm_num) h₀A hi
@@ -162,7 +162,7 @@ theorem IsCylindricalDiagram.exists_innermost_cut_disk_of_carrier
     (htrace : K ∩ frontier (f '' (D.space ×ˢ Icc (0 : ℝ) (1 / 2))) = ⋃ i, J i) :
     ∃ (i : ι) (Q : Set (EuclideanSpace ℝ (Fin 3)))
       (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧
       Q ⊆ frontier (f '' (D.space ×ˢ Icc (0 : ℝ) (1 / 2))) ∩ interior M.space ∧
       q '' stdSimplexBoundary 2 = J i ∧ Q ∩ K = J i ∧
       ∀ j, j ≠ i → Disjoint Q (J j) := by

@@ -26,7 +26,7 @@ def append (A : BackwardPointTrace H first i.castSucc hle p)
     by_cases hji : j = i
     · subst j
       have hne : i.castSucc ≠ i.succ := ne_of_lt i.castSucc_lt_succ
-      simpa only [dif_neg hne, dif_pos True.intro, A.endpoint_eq] using hcross
+      simpa only [dite_eq_right hne, dite_eq_left True.intro, A.endpoint_eq] using hcross
     · have hcast : j.castSucc ≠ i.succ := by
         intro he
         have hlt := j.castSucc_lt_succ
@@ -37,7 +37,7 @@ def append (A : BackwardPointTrace H first i.castSucc hle p)
         apply Fin.le_iff_val_le_val.mpr
         have hlt : j.succ < i.succ := lt_of_le_of_ne hl hsucc
         exact Nat.le_of_lt_succ hlt
-      simpa only [dif_neg hcast, dif_neg hsucc] using A.crossing j hf hlast
+      simpa only [dite_eq_right hcast, dite_eq_right hsucc] using A.crossing j hf hlast
 
 @[simp] theorem append_point_before
     (A : BackwardPointTrace H first i.castSucc hle p)
@@ -45,7 +45,7 @@ def append (A : BackwardPointTrace H first i.castSucc hle p)
     (j : Fin (H.eventCount + 1)) (hf : first ≤ j) (hl : j ≤ i.castSucc) :
     (A.append q hcross).point j hf (hl.trans i.castSucc_lt_succ.le) = A.point j hf hl := by
   have hne : j ≠ i.succ := ne_of_lt (hl.trans_lt i.castSucc_lt_succ)
-  simp only [append, dif_neg hne]
+  simp only [append, dite_eq_right hne]
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.BackwardPointTrace
 

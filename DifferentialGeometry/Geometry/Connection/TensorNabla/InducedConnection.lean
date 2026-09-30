@@ -489,10 +489,10 @@ noncomputable def connectionEndomorphismInChart
             cov (tangentConstInChart x₀ v) p +
               cov (tangentConstInChart x₀ w) p :=
         cov.isCovariantDerivativeOnUniv.add hv hw
-      rw [if_pos hy, if_pos hy, if_pos hy]
+      rw [ite_eq_left hy, ite_eq_left hy, ite_eq_left hy]
       rw [hsection, hcov]
       simp [map_add]
-    · rw [if_neg hy, if_neg hy, if_neg hy]
+    · rw [ite_eq_right hy, ite_eq_right hy, ite_eq_right hy]
       simp
   · intro a v
     by_cases hy : y ∈ (extChartAt I x₀).target
@@ -511,10 +511,10 @@ noncomputable def connectionEndomorphismInChart
           cov (a • (tangentConstInChart x₀ v : (p : M) → TangentSpace I p)) p =
             a • cov (tangentConstInChart x₀ v) p :=
         cov.isCovariantDerivativeOnUniv.smul_const a hv
-      rw [if_pos hy, if_pos hy]
+      rw [ite_eq_left hy, ite_eq_left hy]
       rw [hsection, hcov]
       simp [map_smul]
-    · rw [if_neg hy, if_neg hy]
+    · rw [ite_eq_right hy, ite_eq_right hy]
       simp
 
 lemma connectionEndomorphismInChart_apply_of_mem
@@ -538,7 +538,7 @@ lemma connectionEndomorphismInChart_apply_of_mem
         ((extChartAt I x₀).symm y)
         ((cov (tangentConstInChart x₀ v) ((extChartAt I x₀).symm y))
           (X ((extChartAt I x₀).symm y)))
-  rw [if_pos hy]
+  rw [ite_eq_left hy]
 
 lemma connectionEndomorphismInChart_apply_of_notMem
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -552,7 +552,7 @@ lemma connectionEndomorphismInChart_apply_of_notMem
         ((cov (tangentConstInChart x₀ v) ((extChartAt I x₀).symm y))
           (X ((extChartAt I x₀).symm y)))
     else 0) = 0
-  rw [if_neg hy]
+  rw [ite_eq_right hy]
 
 end ConnectionEndomorphism
 

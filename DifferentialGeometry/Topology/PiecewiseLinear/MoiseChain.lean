@@ -41,7 +41,7 @@ def Moise252 : Prop :=
         C((connectedComponentComplex (boundaryComplex 3 K) c).space, K.space)).comp γ) →
       ¬ IsNullHomotopic γ →
       ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
         Δ ⊆ K.space ∧
         Δ ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2 ∧
         ∃ hboundary : r '' stdSimplexBoundary 2 ⊆
@@ -65,7 +65,7 @@ def Moise264 : Prop :=
         FundamentalGroup.map (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ :
           C(S, K.space)) x g = 1) →
       ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
         Δ ⊆ K.space \ (boundaryComplex 3 K).space ∧
         Δ ∩ S = r '' stdSimplexBoundary 2 ∧
         ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ S,
@@ -120,7 +120,7 @@ def Moise306 : Prop :=
 
 def HasCylindricalDiagram (S : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
   ∃ f : (Fin 3 → ℝ) × ℝ → EuclideanSpace ℝ (Fin 3),
-    IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) S
+    IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) S
 
 def Moise307 : Prop :=
   ∀ (S₁ S₂ : Set (EuclideanSpace ℝ (Fin 3))),
@@ -275,9 +275,9 @@ def Moise303 : Prop :=
     IsClosed (((↑) : M → E3) ⁻¹' H) → IsClosed (((↑) : M → E3) ⁻¹' K) →
     C ⊆ M → IsClosed (((↑) : M → E3) ⁻¹' C) →
     Separates (((↑) : M → E3) ⁻¹' C) (((↑) : M → E3) ⁻¹' H) (((↑) : M → E3) ⁻¹' K) →
-    IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ → Δ ⊆ C →
-    IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁ →
-    IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂ →
+    IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ → Δ ⊆ C →
+    IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ →
+    IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂ →
     D₁ ∩ D₂ = Δ → D₁ ∪ D₂ ⊆ C → D₁ ∪ D₂ ∈ 𝓝ˢ[C] Δ →
     Δ ⊆ D₁ \ r₁ '' stdSimplexBoundary 2 → Δ ⊆ D₂ \ r₂ '' stdSimplexBoundary 2 →
     IsOpen Ω → Δ ⊆ Ω → Ω ⊆ M → Disjoint Ω (H ∪ K) →
@@ -287,7 +287,7 @@ def Moise303 : Prop :=
       C' \ Ω = C \ Ω ∧ D₂ ⊆ C' ∧
       IsPLAnnulusWithEnds A₁ (r '' stdSimplexBoundary 2) J₁ ∧ A₁ ⊆ D₁ ∩ Ω ∧
       A₁ ∩ Δ = r '' stdSimplexBoundary 2 ∧
-      IsPLHomeomorphOn r' (stdSimplex ℝ (Fin 3)) Δ₁ ∧ J₁ = r' '' stdSimplexBoundary 2 ∧
+      IsPLHomeomorphOn r' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ₁ ∧ J₁ = r' '' stdSimplexBoundary 2 ∧
       Δ₁ ⊆ Ω ∧ Δ₁ ∩ C = J₁ ∧
       C' = (C \ (A₁ \ (r '' stdSimplexBoundary 2 ∪ J₁))) ∪ Δ₁
 
@@ -297,7 +297,7 @@ def Moise286 : Prop :=
     (∀ i, IsPLSphere 1 (G i)) → (∀ i, G i ⊆ frontier S) →
     Pairwise (fun i j => Disjoint (G i) (G j)) →
     (∀ i, ¬ ∃ (Δ : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier S ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier S ∧
         G i = r '' stdSimplexBoundary 2) →
     ∀ x ∈ frontier S \ (⋃ i, G i), ∃ i j : Fin n, i ≠ j ∧
       IsPLAnnulusWithEnds (closure (connectedComponentIn (frontier S \ ⋃ i, G i) x)) (G i) (G j)

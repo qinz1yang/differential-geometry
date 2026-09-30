@@ -51,7 +51,7 @@ theorem ι_affineSubdivisionMap_succ (n : ℕ)
       (TopCat.toSSet.obj (TopCat.of E)).ιChainComplex σ ≫
         ((TopCat.toSSet.obj (TopCat.of E)).chainComplex R).d (n + 1) n ≫
           affineSubdivisionMap R n ≫ affineCone R (singularSimplexBarycenter σ) n :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 
 theorem affineSubdivisionMap_straightening (n : ℕ) :

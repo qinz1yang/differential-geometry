@@ -29,7 +29,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLSphere.inter_closure_sdiff_eq_image_stdSimplexBoundary_one {S D : Set E}
     (hS : IsPLSphere 1 S) {r : (Fin 2 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 2)) D) (hDS : D ⊆ S) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) D) (hDS : D ⊆ S) :
     D ∩ closure (S \ D) = r '' stdSimplexBoundary 1 := by
   classical
   obtain ⟨K, hKfin, hKS⟩ := hS.isPolyhedron.exists_simplicialComplex

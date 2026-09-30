@@ -6,6 +6,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Spectral.Planch
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerMode.L2
 import DifferentialGeometry.Analysis.Calculus.Smoothness.ExtendInterval
 import DifferentialGeometry.Analysis.Integration.L2.Parametric.FiniteOrderRegularity
+open DifferentialGeometry.TensorMetric (lowerAllUpperIndices_apply)
 open DifferentialGeometry.Analysis.Integration DifferentialGeometry.Analysis.Sobolev.CSupTensor
     DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
     DifferentialGeometry.PDE.RicciFlow
@@ -664,31 +665,31 @@ set_option backward.isDefEq.respectTransparency false in
 private lemma tensorInnerPointwise_abs_le_half_selfInner_add
     (g : SmoothRiemannianMetric I M) (x : M)
     (V W : Tensor0SBundle.TensorRSModel 0 2 ℝ E) :
-    |DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g 0 2 x V W| ≤
-      (DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g 0 2 x V V +
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g 0 2 x W W)
+    |DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g 0 2 x V W| ≤
+      (DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g 0 2 x V V +
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g 0 2 x W W)
         / 2 := by
   have hexp : ∀ c : ℝ,
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g 0 2 x
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g 0 2 x
           (V + c • W) (V + c • W) =
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g 0 2 x V V +
-          c * DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g 0 2 x V W +
-          (c * DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g 0 2 x W V +
-            c * (c * DifferentialGeometry.Integral.L2.tensorInnerPointwise
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g 0 2 x V V +
+          c * DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g 0 2 x V W +
+          (c * DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g 0 2 x W V +
+            c * (c * DifferentialGeometry.TensorMetric.tensorInnerPointwise
               (I := I) (M := M) g 0 2 x W W)) := by
     intro c
-    rw [DifferentialGeometry.Integral.L2.tensorInnerPointwise_add_left,
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise_add_right,
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise_add_right,
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise_smul_right,
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise_smul_left,
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise_smul_left,
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise_smul_right]
-  have hsymm := DifferentialGeometry.Integral.L2.tensorInnerPointwise_symm
+    rw [DifferentialGeometry.TensorMetric.tensorInnerPointwise_add_left,
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise_add_right,
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise_add_right,
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise_smul_right,
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise_smul_left,
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise_smul_left,
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise_smul_right]
+  have hsymm := DifferentialGeometry.TensorMetric.tensorInnerPointwise_symm
     (I := I) (M := M) g 0 2 x V W
-  have hplus := DifferentialGeometry.Integral.L2.tensorInnerPointwise_nonneg
+  have hplus := DifferentialGeometry.TensorMetric.tensorInnerPointwise_nonneg
     (I := I) (M := M) g 0 2 x (V + (1 : ℝ) • W)
-  have hminus := DifferentialGeometry.Integral.L2.tensorInnerPointwise_nonneg
+  have hminus := DifferentialGeometry.TensorMetric.tensorInnerPointwise_nonneg
     (I := I) (M := M) g 0 2 x (V + (-1 : ℝ) • W)
   rw [hexp 1] at hplus
   rw [hexp (-1)] at hminus
@@ -699,7 +700,7 @@ set_option backward.isDefEq.respectTransparency false in
 private lemma eigenvectorSmooth_selfInner_integral_eq_one
     (g₀ : SmoothRiemannianMetric I M)
     (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2) :
-    (∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+    (∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
         ((Analysis.Parabolic.TensorSpectral.eigenvectorSmooth
           (I := I) (M := M) g₀ 0 2 i).toFun x)
         ((Analysis.Parabolic.TensorSpectral.eigenvectorSmooth
@@ -709,7 +710,7 @@ private lemma eigenvectorSmooth_selfInner_integral_eq_one
   classical
   set eig := Analysis.Parabolic.TensorSpectral.eigenvectorSmooth (I := I) (M := M) g₀ 0 2 i
     with heig
-  have h1 : (∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise
+  have h1 : (∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise
         (I := I) (M := M) g₀ 0 2 x (eig.toFun x) (eig.toFun x)
       ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀))
       = ⟪eig, eig⟫_ℝ := by
@@ -741,7 +742,7 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T)) :
     ContinuousOn
       (fun p : M × ℝ =>
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
           (iteratedDerivWithin j (fun s => (Sfam s).toFun p.1) (Set.Icc (0 : ℝ) T) p.2)
           (iteratedDerivWithin j (fun s => (Sfam s).toFun p.1) (Set.Icc (0 : ℝ) T) p.2))
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) := by
@@ -925,7 +926,7 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
   have h0inf : (((0 : ℕ) : WithTop ℕ∞)) ≤ (∞ : WithTop ℕ∞) := by exact_mod_cast le_top
   have hpair : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ((0 : ℕ) : WithTop ℕ∞)
       (fun p : M × ℝ =>
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
           (jetD p.1 p.2) (jetD p.1 p.2))
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) := by
     refine contMDiffOn_of_locally_contMDiffOn ?_
@@ -940,7 +941,7 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
     rw [hinter]
     set α : M := x₀ with hα
     have hbridge : ∀ p ∈ (chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T,
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
             (jetD p.1 p.2) (jetD p.1 p.2) =
           chartTensorInnerPointwise0s (I := I) (M := M) (0 + 2) g₀ α p.1
             (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 (jetD p.1 p.2))
@@ -1061,7 +1062,7 @@ theorem smoothCcTensorPath_eigenPairing_timeJet_uniform_bound
     heigM.comp contMDiff_fst
   have hpairing : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ((kk : ℕ) : WithTop ℕ∞)
       (fun p : M × ℝ =>
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
           (eig.toFun p.1) ((Sfam p.2).toFun p.1))
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) :=
     tensorInnerPointwise_pair_section_jointContMDiffOn (I := I) (M := M) hkinf g₀
@@ -1069,7 +1070,7 @@ theorem smoothCcTensorPath_eigenPairing_timeJet_uniform_bound
   have hcoeffInt : ∀ S : SmoothCcTensor g₀ 0 2,
       tensorL2Coeff (I := I) (M := M) hc
           (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) S) i =
-        ∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+        ∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
           (eig.toFun x) (S.toFun x) ∂μ := by
     intro S
     rw [tensorL2Coeff_eq_inner,
@@ -1081,11 +1082,11 @@ theorem smoothCcTensorPath_eigenPairing_timeJet_uniform_bound
     rfl
   have hLHSfun : (fun s : ℝ => tensorL2Coeff (I := I) (M := M) hc
         (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) (Sfam s)) i)
-      = (fun s : ℝ => ∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise
+      = (fun s : ℝ => ∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise
           (I := I) (M := M) g₀ 0 2 x (eig.toFun x) ((Sfam s).toFun x) ∂μ) :=
     funext fun s => hcoeffInt (Sfam s)
   have hinter := iteratedDerivWithin_integral_param_Icc_finiteOrder μ hT j
-    (fun x s => DifferentialGeometry.Integral.L2.tensorInnerPointwise
+    (fun x s => DifferentialGeometry.TensorMetric.tensorInnerPointwise
       (I := I) (M := M) g₀ 0 2 x (eig.toFun x) ((Sfam s).toFun x))
     (hpairing.of_le hjW) t ht
   have hγfam : ∀ x : M, ContDiffWithinAt ℝ ((j : ℕ) : WithTop ℕ∞)
@@ -1093,10 +1094,10 @@ theorem smoothCcTensorPath_eigenPairing_timeJet_uniform_bound
     (smoothCcTensor_path_toFun_contDiffWithinAt (I := I) (M := M) g₀ Sfam hSfam x ht).of_le hjW
   have hfib : ∀ x : M,
       iteratedDerivWithin j
-          (fun s => DifferentialGeometry.Integral.L2.tensorInnerPointwise
+          (fun s => DifferentialGeometry.TensorMetric.tensorInnerPointwise
             (I := I) (M := M) g₀ 0 2 x (eig.toFun x) ((Sfam s).toFun x))
           (Set.Icc (0 : ℝ) T) t
-        = DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+        = DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
             (eig.toFun x)
             (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t) := by
     intro x
@@ -1107,7 +1108,7 @@ theorem smoothCcTensorPath_eigenPairing_timeJet_uniform_bound
     simpa only [DifferentialGeometry.Tensor.TensorRSRiemannianBundle.innerModelCLMRS_apply]
       using hL
   have hjet_slice_cont : Continuous (fun x : M =>
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
         (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)
         (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)) := by
     have harg : ContinuousOn (fun x : M => ((x, t) : M × ℝ)) (Set.univ : Set M) := by fun_prop
@@ -1117,73 +1118,73 @@ theorem smoothCcTensorPath_eigenPairing_timeJet_uniform_bound
     rw [continuousOn_univ] at hcomp
     exact hcomp
   have hjet_int : MeasureTheory.Integrable (fun x : M =>
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
         (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)
         (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)) μ :=
     integrableOn_univ.mp (hjet_slice_cont.continuousOn.integrableOn_compact isCompact_univ)
   have heig_int : MeasureTheory.Integrable (fun x : M =>
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
         (eig.toFun x) (eig.toFun x)) μ :=
     SmoothCcTensor.integrable_inner_cross (I := I) (M := M) eig eig
   have hmaj_int : MeasureTheory.Integrable (fun x : M =>
-      (DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+      (DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
           (eig.toFun x) (eig.toFun x) +
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
           (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)
           (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)) / 2) μ :=
     (heig_int.add hjet_int).div_const 2
   have hbound_pt : ∀ x : M,
       ‖iteratedDerivWithin j
-          (fun s => DifferentialGeometry.Integral.L2.tensorInnerPointwise
+          (fun s => DifferentialGeometry.TensorMetric.tensorInnerPointwise
             (I := I) (M := M) g₀ 0 2 x (eig.toFun x) ((Sfam s).toFun x))
           (Set.Icc (0 : ℝ) T) t‖ ≤
-        (DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+        (DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
             (eig.toFun x) (eig.toFun x) +
-          DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+          DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
             (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)
             (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)) / 2 := by
     intro x
     rw [hfib x, Real.norm_eq_abs]
     exact tensorInnerPointwise_abs_le_half_selfInner_add (I := I) (M := M) g₀ x _ _
   have h1 : ‖∫ x, iteratedDerivWithin j
-        (fun s => DifferentialGeometry.Integral.L2.tensorInnerPointwise
+        (fun s => DifferentialGeometry.TensorMetric.tensorInnerPointwise
           (I := I) (M := M) g₀ 0 2 x (eig.toFun x) ((Sfam s).toFun x))
         (Set.Icc (0 : ℝ) T) t ∂μ‖ ≤
-      ∫ x, (DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+      ∫ x, (DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
           (eig.toFun x) (eig.toFun x) +
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
           (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)
           (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)) / 2 ∂μ :=
     MeasureTheory.norm_integral_le_of_norm_le hmaj_int
       (Filter.Eventually.of_forall hbound_pt)
-  have h2 : (∫ x, (DifferentialGeometry.Integral.L2.tensorInnerPointwise
+  have h2 : (∫ x, (DifferentialGeometry.TensorMetric.tensorInnerPointwise
           (I := I) (M := M) g₀ 0 2 x (eig.toFun x) (eig.toFun x) +
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
           (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)
           (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)) / 2 ∂μ)
-      = ((∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise
+      = ((∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise
             (I := I) (M := M) g₀ 0 2 x (eig.toFun x) (eig.toFun x) ∂μ) +
-          (∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise
+          (∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise
             (I := I) (M := M) g₀ 0 2 x
             (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)
             (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t) ∂μ)) / 2 := by
     rw [MeasureTheory.integral_div, MeasureTheory.integral_add heig_int hjet_int]
-  have h3 : (∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise
+  have h3 : (∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise
         (I := I) (M := M) g₀ 0 2 x (eig.toFun x) (eig.toFun x) ∂μ) = 1 :=
     eigenvectorSmooth_selfInner_integral_eq_one (I := I) (M := M) g₀ i
-  have h4 : (∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise
+  have h4 : (∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise
         (I := I) (M := M) g₀ 0 2 x
         (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)
         (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t) ∂μ)
       ≤ K * μ.real Set.univ := by
-    have hle : (∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise
+    have hle : (∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise
           (I := I) (M := M) g₀ 0 2 x
           (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t)
           (iteratedDerivWithin j (fun s => (Sfam s).toFun x) (Set.Icc (0 : ℝ) T) t) ∂μ)
         ≤ ∫ _x, K ∂μ := by
       refine MeasureTheory.integral_mono_of_nonneg ?_ (MeasureTheory.integrable_const K) ?_
       · exact Filter.Eventually.of_forall (fun x =>
-          DifferentialGeometry.Integral.L2.tensorInnerPointwise_nonneg
+          DifferentialGeometry.TensorMetric.tensorInnerPointwise_nonneg
             (I := I) (M := M) g₀ 0 2 x _)
       · refine Filter.Eventually.of_forall (fun x => ?_)
         have hKx := hK (x, t) ⟨Set.mem_univ _, ht⟩

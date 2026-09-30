@@ -160,6 +160,7 @@ def SpatialCanonicalAlternative.scaleMetric :
       field_simp)
   | .round whole data => .round whole (data.scaleMetric c hc)
 
+omit [SigmaCompactSpace M] in
 @[simp] theorem SpatialCanonicalAlternative.scaleMetric_requiresVolume
     (A : SpatialCanonicalAlternative g eps C x U) :
     (A.scaleMetric c hc).requiresVolume = A.requiresVolume := by
@@ -670,11 +671,13 @@ def SpatialLocalCap.pushforward {eps' : ℝ} {x : N} {V : Set N} (L : SpatialLoc
   · intro z
     rw [partialDiffeomorph_trans_apply, L.core_boundary_eq]
 
+omit [SigmaCompactSpace M] [SigmaCompactSpace N] in
 theorem SpatialLocalCap.pushforward_tube {eps' : ℝ} {x : N} {V : Set N}
     (L : SpatialLocalCap h eps x V) (e : PartialDiffeomorph I3 I3 N M ∞) (hV : V ⊆ e.source)
     (hVc : IsCompact V) (chain : SpatialOrderedNeckChain g eps' (e '' L.tube)) :
     (L.pushforward e hV hVc chain).tube = e '' L.tube := rfl
 
+omit [SigmaCompactSpace M] [SigmaCompactSpace N] in
 theorem SpatialLocalCap.pushforward_tubeMap {eps' : ℝ} {x : N} {V : Set N}
     (L : SpatialLocalCap h eps x V) (e : PartialDiffeomorph I3 I3 N M ∞) (hV : V ⊆ e.source)
     (hVc : IsCompact V) (chain : SpatialOrderedNeckChain g eps' (e '' L.tube)) :
@@ -864,6 +867,7 @@ theorem riemannianVolumeMeasure_image_eq_of_isometryOn (e : PartialDiffeomorph I
     rw [← hvalB, image_image]
   rw [← heB, ← h2, h1, hvalB]
 
+omit [SigmaCompactSpace M] [SigmaCompactSpace N] in
 @[simp] theorem SpatialCanonicalAlternative.pushforward_requiresVolume {x : N} {V : Set N}
     (A : SpatialCanonicalAlternative h eps C x V) (e : PartialDiffeomorph I3 I3 N M ∞)
     (hiso : ∀ z ∈ e.source, ∀ v w : TangentSpace I3 z,
@@ -876,6 +880,7 @@ theorem riemannianVolumeMeasure_image_eq_of_isometryOn (e : PartialDiffeomorph I
     (A.pushforward e hiso hV hVc hdist hneck hcap).requiresVolume = A.requiresVolume := by
   cases A <;> rfl
 
+omit [SigmaCompactSpace M] [SigmaCompactSpace N] in
 theorem SpatialCanonicalAlternative.pushforward_eq_cap {x : N} {V : Set N}
     {A : SpatialCanonicalAlternative h eps C x V} {e : PartialDiffeomorph I3 I3 N M ∞}
     {hiso : ∀ z ∈ e.source, ∀ v w : TangentSpace I3 z,

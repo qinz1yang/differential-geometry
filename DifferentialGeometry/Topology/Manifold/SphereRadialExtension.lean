@@ -20,7 +20,7 @@ theorem sphereRadialExtension_of_ne_zero
     (f : sphere (0 : E) 1 → sphere (0 : E) 1) {x : E} (hx : x ≠ 0) :
     sphereRadialExtension f x =
       ‖x‖ • (f ⟨‖x‖⁻¹ • x, mem_sphere_zero_iff_norm.mpr (norm_smul_inv_norm hx)⟩ : E) :=
-  dif_neg hx
+  dite_eq_right hx
 
 theorem sphereRadialExtension_pos_smul
     (f : sphere (0 : E) 1 → sphere (0 : E) 1) (v : sphere (0 : E) 1)
@@ -107,7 +107,7 @@ theorem contDiffOn_sphereRadialExtension_family
     have heq : (fun q : U ↦ sphereRadialExtension (f q.1.1) q.1.2) =
         (fun q : U ↦ ‖q.1.2‖ • (f q.1.1 (d q) : E)) := by
       funext q
-      exact dif_neg q.2
+      exact dite_eq_right q.2
     rw [heq]
     exact hs
   intro q hq

@@ -29,7 +29,7 @@ theorem IsCombinatorialManifold.isBicollared_preimage_open
   let f : E3 → U := fun x => if hx : x ∈ U then ⟨x, hx⟩ else ⟨a, hLU ha⟩
   have hfix (x : U) : f x = x := by
     dsimp only [f]
-    rw [dif_pos x.property]
+    rw [dite_eq_left x.property]
   have hf : IsOpenEmbedding (fun x : U => f x) := by
     have heq : (fun x : U => f x) = id := funext hfix
     rw [heq]
@@ -42,7 +42,7 @@ theorem IsCombinatorialManifold.isBicollared_preimage_open
     constructor
     · rintro ⟨y, hy, rfl⟩
       change (f y : E3) ∈ L.space
-      simpa only [f, dif_pos (hLU hy)] using hy
+      simpa only [f, dite_eq_left (hLU hy)] using hy
     · intro hx
       exact ⟨(x : E3), hx, hfix x⟩
   exact himage ▸ hbi

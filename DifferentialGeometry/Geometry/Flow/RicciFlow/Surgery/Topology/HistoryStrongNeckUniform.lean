@@ -107,7 +107,7 @@ namespace RetainedCoreHistory
 
 theorem eventually_forall_historyStrongNeck_of_subset_hornHalfRange :
     ∃ eta : ℝ, 0 < eta ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (k : Fin (H.eventCount + 1))
+    ∀ (H : RetainedCoreHistory.{u}) (k : Fin (H.eventCount + 1))
       {s : ℝ} (G : (H.stage k).IncomingSlab (H.time k) s) (L : G.TerminalLimitMetric)
       (hsing : G.SingularEndpoint) (parameters : CutoffParameters) {εP Λ : ℝ}
       (P : TerminalCorePresentation
@@ -130,7 +130,7 @@ theorem eventually_forall_historyStrongNeck_of_subset_hornHalfRange :
   obtain ⟨eta, heta, hneck⟩ :=
     TerminalCorePresentation.eventually_forall_neck_alternative_of_subset_hornHalfRange.{u}
   refine ⟨eta, heta, ?_⟩
-  intro P₀ H k s G L hsing parameters εP Λ P hεP c e B hB hBsub ε ε₁ C1 C2 qcan hε hεη hscalar
+  intro H k s G L hsing parameters εP Λ P hεP c e B hB hBsub ε ε₁ C1 C2 qcan hε hεη hscalar
     hq hcan
   have hev := hneck P hεP c e hB hBsub (epsCan := ε) (C1 := C1) hε hεη hscalar
   have hhigh : ∀ᶠ t in 𝓝[<] s, ∀ x ∈ B, qcan < G.flow.scalar t x.val := by

@@ -273,11 +273,7 @@ theorem IsNondegenerateCriticalPointAt.exists_smooth_ball_sublevel_of_index_zero
         interior (Set.range e) = Set.range (e ∘ cellInteriorInclusion n) := by
   let data := morseChart I f hf p (f p) 0 (Nat.zero_le n) hnd hindex rfl
   have hdata : data.p = p := by
-    have hAnd {P Q : Prop} {α : Type} (F : P → Q → α) (h : P ∧ Q) :
-        And.rec F h = F h.1 h.2 := by
-      cases h
-      rfl
-    simp only [data, morseChart, hAnd]
+    simp only [data, morseChart]
   have h0src : (0 : MorseModel n) ∈ data.χ.source :=
     data.closedBall_subset_source 0 (by
       change ‖(0 : EuclideanSpace ℝ (Fin n))‖ ≤ data.R

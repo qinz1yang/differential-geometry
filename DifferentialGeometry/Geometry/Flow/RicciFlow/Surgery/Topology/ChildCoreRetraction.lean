@@ -41,6 +41,7 @@ def coreRetraction
         (T.continuous_coreFun hsm) hpair
     exact hmain.subtype_mk _
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem coreRetraction_comp_coreInclusion
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     (coreRetraction T hsm).comp (coreInclusion T) = ContinuousMap.id ↥T.core := by
@@ -59,6 +60,7 @@ def coreHomotopy
     apply Subtype.ext
     simp [ContinuousMap.comp_apply, coreRetraction, coreInclusion]
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem coreInclusion_comp_coreRetraction_homotopic_id
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     ((coreInclusion T).comp (coreRetraction T hsm)).Homotopic
@@ -68,20 +70,23 @@ theorem coreInclusion_comp_coreRetraction_homotopic_id
 noncomputable def puncturedCoreHomotopyEquivCore
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     ↥T.puncturedCore ≃ₕ ↥T.core :=
-  (homotopyEquiv_of_retraction (coreInclusion T) (coreRetraction T hsm)
+  (homotopyEquivOfRetraction (coreInclusion T) (coreRetraction T hsm)
     (coreRetraction_comp_coreInclusion T hsm)
     (coreInclusion_comp_coreRetraction_homotopic_id T hsm)).symm
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem simplyConnectedSpace_puncturedCore_iff_core
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     SimplyConnectedSpace ↥T.puncturedCore ↔ SimplyConnectedSpace ↥T.core :=
   (puncturedCoreHomotopyEquivCore T hsm).simplyConnectedSpace_iff
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem simplyConnectedSpace_puncturedCore_of_core
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a))
     [SimplyConnectedSpace ↥T.core] : SimplyConnectedSpace ↥T.puncturedCore :=
   (simplyConnectedSpace_puncturedCore_iff_core T hsm).mpr inferInstance
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem simplyConnectedSpace_core_of_puncturedCore
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a))
     [SimplyConnectedSpace ↥T.puncturedCore] : SimplyConnectedSpace ↥T.core :=

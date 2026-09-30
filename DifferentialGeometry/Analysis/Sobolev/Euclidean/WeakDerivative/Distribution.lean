@@ -50,7 +50,7 @@ omit [NeZero d] in
   simp only [ContinuousLinearMap.toUniformConvergenceCLM_apply]
   rw [TestFunction.integralAgainstBilinCLM_eq_integral hwon]
   have hφd : Differentiable ℝ (φ : E → ℝ) := φ.contDiff.differentiable (by simp)
-  simp only [TestFunction.lineDerivCLM_apply, top_add, le_refl, if_true,
+  simp only [TestFunction.lineDerivCLM_apply, top_add, le_refl, ite_true,
     ContinuousLinearMap.lsmul_apply, smul_eq_mul]
   congr 1
   refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)

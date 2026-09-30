@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareHor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFineCutNecksLongSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceConstants
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalWitnessMonotone
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodsThroughSurgeryStrong
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.CanonicalNeighborhood.UniformEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryNoncollapsingToSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricExistence
 
@@ -52,7 +52,7 @@ private theorem exists_horn_cutoff_record_of_fineCutNecks_of_le
     ∃ Q v : ℝ, 0 < Q ∧ 0 < v ∧ v = Q ^ (-3 / 2 : ℝ) ∧
     ∀ (p₀ : CutoffParameters), p₀.modelRadius = Dbig →
       ⌈tol⁻¹⌉₊ + 2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ εold →
-    ∀ (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+    ∀ (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
     ∀ ρold : ℝ, H.hasCanonicalCutoffRecords p₀ δold ρold →
     ∀ (s : ℝ)
@@ -108,7 +108,7 @@ private theorem exists_horn_cutoff_record_of_fineCutNecks_of_le
       ∃ (Qout : OrientedThreeStage.{u})
         (E : MetricCutCapEvent D'.stage Qout D'.startTime D'.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -285,8 +285,8 @@ private theorem fineCutNecks_of_le {D : OneStepIncoming.{u}} {ε Λ : ℝ}
   exact ⟨δ, k, N, hN, hδ.trans hle,
     (Nat.add_le_add_right (Nat.floor_le_floor (inv_anti₀ hεc hle)) 1).trans hk⟩
 
-private theorem hasCanonicalCutoffRecords_of_le {P : OrientedThreeStage.{u}}
-    {H : RetainedCoreHistory P} {p₀ : CutoffParameters} {δ δ' ρ ρ' : ℝ} (hδ : δ ≤ δ')
+private theorem hasCanonicalCutoffRecords_of_le
+    {H : RetainedCoreHistory.{u}} {p₀ : CutoffParameters} {δ δ' ρ ρ' : ℝ} (hδ : δ ≤ δ')
     (hρ : ρ ≤ ρ') (hH : H.hasCanonicalCutoffRecords p₀ δ ρ) :
     H.hasCanonicalCutoffRecords p₀ δ' ρ' := by
   obtain ⟨p, h1, h2, h3, h4, h5, records, hw, hd, hn⟩ := hH
@@ -307,7 +307,7 @@ private theorem exists_compact_volume_debit_of_incoming_eq {P Q : OrientedThreeS
 theorem uniformDebitSurgeryStepStrong_of_long_slabs
     (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
     (hlong : ∀ B θ : ℝ, 0 < B → 0 < θ → ∃ Qθ : ℝ,
-      ∀ H : RetainedCoreHistory P₀, InitialIdentification P₀ g₀ H.toHistory → H.horizon < B →
+      ∀ H : RetainedCoreHistory.{u}, InitialIdentification P₀ g₀ H.toHistory → H.horizon < B →
       ∀ (s : ℝ)
         (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s),
         s ≤ B → G.flow.base.metric (H.time (Fin.last H.eventCount)) =

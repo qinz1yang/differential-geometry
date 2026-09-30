@@ -295,7 +295,7 @@ theorem late_localizedSpacetimeMeasure_centered_log_sublevel_tail_of_evolving_su
   exact hbridge.trans
     (mul_le_mul_of_nonneg_left htail ENNReal.toReal_nonneg)
 
-theorem early_localizedSpacetimeMeasure_log_superlevel_tail_of_exponentialTimeRescale_of_evolving_supersolution
+theorem early_localizedSpacetimeMeasure_rescaled_log_tail_of_evolving_supersolution
     (g : ℝ → SmoothRiemannianMetric I M)
     {q : SmoothRiemannianMetric I M} (deviationCutoff : SmoothScalar q)
     (averagingCutoff : M → ℝ) (u : ℝ → M → ℝ)

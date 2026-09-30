@@ -56,7 +56,7 @@ theorem contMDiff_extendById_of_contMDiff_of_mapsTo [T2Space M]
     apply hs.congr_of_eventuallyEq
     filter_upwards [continuous_snd.continuousAt.preimage_mem_nhds
       (e.open_source.mem_nhds hq)] with r hr
-    exact if_pos hr
+    exact ite_eq_left hr
   · have hqK : q.2 ∉ e.symm '' K := by
       rintro ⟨z, hz, heq⟩
       exact hq (heq ▸ e.map_target (hKt hz))
@@ -76,12 +76,12 @@ theorem leftInverse_extendById_of_mapsTo
   intro x
   by_cases hx : x ∈ e.source
   · have hfx := hf (e.map_source hx)
-    rw [show OpenPartialHomeomorph.extendById e f x = e.symm (f (e x)) from if_pos hx,
+    rw [show OpenPartialHomeomorph.extendById e f x = e.symm (f (e x)) from ite_eq_left hx,
       show OpenPartialHomeomorph.extendById e g (e.symm (f (e x))) =
-        e.symm (g (e (e.symm (f (e x))))) from if_pos (e.map_target hfx),
+        e.symm (g (e (e.symm (f (e x))))) from ite_eq_left (e.map_target hfx),
       e.right_inv hfx, hgf, e.left_inv hx]
-  · rw [show OpenPartialHomeomorph.extendById e f x = x from if_neg hx]
-    exact if_neg hx
+  · rw [show OpenPartialHomeomorph.extendById e f x = x from ite_eq_right hx]
+    exact ite_eq_right hx
 
 end DifferentialGeometry.Topology.Manifold
 

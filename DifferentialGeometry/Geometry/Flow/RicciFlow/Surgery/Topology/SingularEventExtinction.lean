@@ -32,9 +32,9 @@ private theorem prefix_metric_zero_heq {H K : ObservedHistory.{u}} (h : H.IsPref
 
 theorem exists_poincare_controlled_extinction_of_singular_events_of_horizon_invariants
     (P : OrientedThreeStage.{u}) [SimplyConnectedSpace P.Carrier] (g : P.Metric)
-    (hproduce : ∀ B : ℝ, 0 < B → ∃ (p₀ : CutoffParameters) (v : ℝ) (Inv : RetainedCoreHistory P → Prop),
+    (hproduce : ∀ B : ℝ, 0 < B → ∃ (p₀ : CutoffParameters) (v : ℝ) (Inv : RetainedCoreHistory.{u} → Prop),
       0 < v ∧ Inv (RetainedCoreHistory.atZero P g) ∧
-      ∀ H : RetainedCoreHistory P, InitialIdentification P g H.toHistory → Inv H →
+      ∀ H : RetainedCoreHistory.{u}, InitialIdentification P g H.toHistory → Inv H →
         ∀ p : CutoffParameters,
         H.time (Fin.last H.eventCount) = H.horizon → H.horizon < B →
         p.fixed = p₀.fixed → p.modelRadius = p₀.modelRadius →
@@ -82,7 +82,7 @@ theorem exists_poincare_controlled_extinction_of_singular_events_of_horizon_inva
     (lt_add_one _).trans_le (le_max_right _ _)
   obtain ⟨p₀, v, Inv, hv, hInv, hstep⟩ := hproduce B hB
   let H₀ := RetainedCoreHistory.atZero P g
-  let S : Set (RetainedCoreHistory P) := {H |
+  let S : Set (RetainedCoreHistory.{u}) := {H |
     H₀.toHistory.IsPrefixOf H.toHistory ∧ H.horizon ≤ B ∧
     H.time (Fin.last H.eventCount) = H.horizon ∧ Inv H ∧
     ∃ p : CutoffParameters,
@@ -132,7 +132,7 @@ theorem exists_poincare_controlled_extinction_of_singular_events_of_horizon_inva
             (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount)),
           E.incoming = G ∧ H.appendEvent E.incoming.lt E hinit ∈ S := by
     intro H hH hHB s G hs hinit hsing
-    let A := (InitialIdentification.atZero P g).of_stageZero
+    let A := (InitialIdentification.atZero P g).ofStageZero
       (prefix_stage_zero_eq hH.1) (prefix_metric_zero_heq hH.1)
     obtain ⟨Q, E, hE, q, hincoming, hInvNext, hqfixed, hqradius, hqorder, hqaccuracy, hqrecenter,
       ⟨R⟩, hbfrE, hctrlE, F, hF, hvol⟩ :=
@@ -179,9 +179,9 @@ theorem exists_poincare_controlled_extinction_of_singular_events_of_horizon_inva
 
 theorem exists_poincare_controlled_extinction_of_singular_events_of_invariant
     (P : OrientedThreeStage.{u}) [SimplyConnectedSpace P.Carrier] (g : P.Metric)
-    (Inv : RetainedCoreHistory P → Prop) (hInv : Inv (RetainedCoreHistory.atZero P g))
+    (Inv : RetainedCoreHistory.{u} → Prop) (hInv : Inv (RetainedCoreHistory.atZero P g))
     (hproduce : ∀ B : ℝ, 0 < B → ∃ (p₀ : CutoffParameters) (v : ℝ), 0 < v ∧
-      ∀ H : RetainedCoreHistory P, InitialIdentification P g H.toHistory → Inv H →
+      ∀ H : RetainedCoreHistory.{u}, InitialIdentification P g H.toHistory → Inv H →
         ∀ p : CutoffParameters,
         H.time (Fin.last H.eventCount) = H.horizon → H.horizon < B →
         p.fixed = p₀.fixed → p.modelRadius = p₀.modelRadius →
@@ -229,7 +229,7 @@ theorem exists_poincare_controlled_extinction_of_singular_events_of_invariant
 theorem exists_poincare_controlled_extinction_of_singular_events
     (P : OrientedThreeStage.{u}) [SimplyConnectedSpace P.Carrier] (g : P.Metric)
     (hproduce : ∀ B : ℝ, 0 < B → ∃ (p₀ : CutoffParameters) (v : ℝ), 0 < v ∧
-      ∀ H : RetainedCoreHistory P, InitialIdentification P g H.toHistory →
+      ∀ H : RetainedCoreHistory.{u}, InitialIdentification P g H.toHistory →
         ∀ p : CutoffParameters,
         H.time (Fin.last H.eventCount) = H.horizon → H.horizon < B →
         p.fixed = p₀.fixed → p.modelRadius = p₀.modelRadius →

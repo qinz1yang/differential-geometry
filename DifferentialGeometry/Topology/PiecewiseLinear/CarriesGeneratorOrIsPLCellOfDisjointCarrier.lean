@@ -16,7 +16,7 @@ theorem carriesGenerator_or_exists_isPLCell_of_polygon_disjoint_carrier
     (hG : IsPLSphere 1 G) (hGS : G ⊆ frontier S) (hGK : Disjoint G K) :
     CarriesFundamentalGroupOnto G S ∨
       ∃ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier S ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier S ∧
           G = r '' stdSimplexBoundary 2 := by
   by_cases hsep : IsPreconnected (frontier S \ G)
   · exact Or.inl (hS.carriesFundamentalGroupOnto_of_isPreconnected_sdiff hK hKS hKgen hG hGS hGK

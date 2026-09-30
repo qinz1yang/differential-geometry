@@ -143,7 +143,7 @@ theorem scalar_gradient_inner_le_nablaRm
   have hpow : (Module.finrank ℝ E : ℝ) ^ 6 = ((Module.finrank ℝ E : ℝ) ^ 3) ^ 2 := by ring
   rw [hpow, Real.sqrt_mul (sq_nonneg _),
     Real.sqrt_sq (by positivity : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) ^ 3)] at hsqrt
-  exact (DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+  exact (DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
     (I := I) g x (gradientFun (I := I) g (metricScalarAt (I := I) g) x) v).trans
     (mul_le_mul_of_nonneg_right hsqrt (Real.sqrt_nonneg _))
 

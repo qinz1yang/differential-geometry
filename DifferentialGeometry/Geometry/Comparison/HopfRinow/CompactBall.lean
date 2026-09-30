@@ -119,7 +119,9 @@ theorem exists_isGeodesicOn_of_isCompact_closedEBall
     have hγ_cpt : ∀ᶠ t in 𝓝[<] b,
         γ t ∈ Metric.closedEBall x (ENNReal.ofReal r) := by
       filter_upwards [Ioo_mem_nhdsLT hb] with t ht
-      rw [Metric.mem_closedEBall']
+      apply (@Metric.mem_closedEBall' M
+        PseudoEMetricSpace.toUniformSpace.toTopologicalSpace inferInstance x (γ t)
+        (ENNReal.ofReal r)).mpr
       have hIcc : Set.Icc 0 t ⊆ Set.Ioo (-δ) b := by
         intro s hs
         exact ⟨by linarith [hs.1], lt_of_le_of_lt hs.2 ht.2⟩

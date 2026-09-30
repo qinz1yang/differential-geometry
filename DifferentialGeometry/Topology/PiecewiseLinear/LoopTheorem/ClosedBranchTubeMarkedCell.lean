@@ -18,8 +18,8 @@ theorem exists_isPLHomeomorphOn_tubeCellSphere_of_marked {S D₀ D₁ : Set E} {
     (hTT : ∀ i j, i ≠ j → T i ∩ T j = {y₀, y₁})
     (hsep : ∀ i : Fin 4, ∀ U ⊆ S \ (T i ∪ T (i + 2)), IsPreconnected U →
       (U ∩ T (i + 1)).Nonempty → (U ∩ T (i + 3)).Nonempty → False)
-    (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hq₁ : IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁) (hD₀S : D₀ ⊆ S) (hD₁S : D₁ ⊆ S)
+    (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hq₁ : IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) (hD₀S : D₀ ⊆ S) (hD₁S : D₁ ⊆ S)
     (hdis : Disjoint D₀ D₁) (hb₀ : ∀ i, q₀ '' stdSimplexBoundary 2 ∩ T i = {γ i (1 / 4)})
     (hb₁ : ∀ i, q₁ '' stdSimplexBoundary 2 ∩ T i = {γ i (3 / 4)}) (hy₀ : y₀ ∈ D₀)
     (hy₁ : y₁ ∈ D₁) :
@@ -47,11 +47,11 @@ theorem exists_isPLHomeomorphOn_tubeCellSphere_of_marked {S D₀ D₁ : Set E} {
     rw [hg₁t i ((hγ i).bijOn.mapsTo ht)]
     simp only [Function.comp_apply, hinv i t ht]
   have hpolyD : ∀ {q : (Fin 3 → ℝ) → E} {D : Set E},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D → D ⊆ S →
-        IsPLHomeomorphOn (g₁ ∘ q) (stdSimplex ℝ (Fin 3)) (g₁ '' D) := fun hq hD =>
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D → D ⊆ S →
+        IsPLHomeomorphOn (g₁ ∘ q) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g₁ '' D) := fun hq hD =>
     hq.trans (hg₁.restrict (IsPLBall.isPolyhedron ⟨_, hq⟩) hD)
   have hbd : ∀ {q : (Fin 3 → ℝ) → E} {D : Set E},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D → D ⊆ S → ∀ s ∈ Icc (0 : ℝ) 1,
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D → D ⊆ S → ∀ s ∈ Icc (0 : ℝ) 1,
         (∀ i, q '' stdSimplexBoundary 2 ∩ T i = {γ i s}) → ∀ k,
           (g₁ ∘ q) '' stdSimplexBoundary 2 ∩ tubeCellArc k =
             {tubeMeridianParam (fourSpokeModelLeaf k) s} := by
@@ -98,8 +98,8 @@ theorem exists_isPLHomeomorphOn_spliceCylinder_of_marked {c : E}
     (hTT : ∀ i j, i ≠ j → T i ∩ T j = {y₀, y₁})
     (hsep : ∀ i : Fin 4, ∀ U ⊆ K.space \ (T i ∪ T (i + 2)), IsPreconnected U →
       (U ∩ T (i + 1)).Nonempty → (U ∩ T (i + 3)).Nonempty → False)
-    (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hq₁ : IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁) (hD₀S : D₀ ⊆ K.space)
+    (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hq₁ : IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) (hD₀S : D₀ ⊆ K.space)
     (hD₁S : D₁ ⊆ K.space) (hdis : Disjoint D₀ D₁)
     (hb₀ : ∀ i, q₀ '' stdSimplexBoundary 2 ∩ T i = {γ i (1 / 4)})
     (hb₁ : ∀ i, q₁ '' stdSimplexBoundary 2 ∩ T i = {γ i (3 / 4)}) (hy₀ : y₀ ∈ D₀)

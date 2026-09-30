@@ -7,6 +7,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCo
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.PartitionOfUnityNormComparison
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SmoothSectionMap
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.DeTurckRemainderPathTimeJet.JointSmoothness
+open DifferentialGeometry.TensorMetric (lowerAllUpperIndices_apply)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -378,7 +379,7 @@ theorem tensorInnerPointwise_pair_section_jointContMDiffOn
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) N
       (fun p : M × ℝ =>
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
           ((A p.2).toFun p.1) ((B p.2).toFun p.1))
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) := by
   classical
@@ -394,7 +395,7 @@ theorem tensorInnerPointwise_pair_section_jointContMDiffOn
   rw [hinter]
   set α : M := x₀ with hα
   have hbridge : ∀ p ∈ (chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T,
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
           ((A p.2).toFun p.1) ((B p.2).toFun p.1) =
         chartTensorInnerPointwise0s (I := I) (M := M) (0 + 2) g₀ α p.1
           (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 ((A p.2).toFun p.1))

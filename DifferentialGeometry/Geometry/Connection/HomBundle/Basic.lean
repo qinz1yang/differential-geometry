@@ -251,7 +251,7 @@ private theorem homBundleCovariantDerivativeFun_apply
     homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V τ x (V_field x) (Y x) =
       Psi I M E_U U F V cov_U cov_V τ V_field Y x := by
   unfold homBundleCovariantDerivativeFun
-  rw [dif_pos hτ]
+  rw [dite_eq_left hτ]
   exact TensorialAt.mkHom₂_apply
     (Φ := fun V_field Y => Psi I M E_U U F V cov_U cov_V τ V_field Y x)
     (fun Y _ => Psi_tensorialAt_left I M E_U U F V cov_U cov_V τ Y)
@@ -287,7 +287,7 @@ private theorem homBundleCovariantDerivativeFun_of_not_mdiff
     {x : M} (hτ : ¬ MDiffAtHom I M E_U U F V τ x) :
     homBundleCovariantDerivativeFun I M E_U U F V cov_U cov_V τ x = 0 := by
   unfold homBundleCovariantDerivativeFun
-  rw [dif_neg hτ]
+  rw [dite_eq_right hτ]
 
 omit [FiniteDimensional ℝ F] [CompleteSpace F] [ContMDiffVectorBundle ∞ F V I] in
 omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] in

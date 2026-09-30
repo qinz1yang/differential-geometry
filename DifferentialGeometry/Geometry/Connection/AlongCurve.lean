@@ -329,7 +329,7 @@ private theorem parallel_piecewise_at
       hγ.mfderivWithin_mono (uniqueDiffOn_Icc hcb c (left_mem_Icc.mpr hcb.le)).uniqueMDiffWithinAt
         hright, ← hZW] at h
     exact h
-  have hUZ (t : ℝ) (ht : t ∈ Icc a c) : U t = Z t := if_pos ht.2
+  have hUZ (t : ℝ) (ht : t ∈ Icc a c) : U t = Z t := ite_eq_left ht.2
   have hUW (t : ℝ) (ht : t ∈ Icc c b) : U t = W t := by
     dsimp only [U]
     split_ifs with htc
@@ -395,7 +395,7 @@ theorem parallel_piecewise_on_Icc
     exact hWpar t ht
   by_cases hcb : c = b
   · subst c
-    have hUZ (t : ℝ) (ht : t ∈ Icc a b) : U t = Z t := if_pos ht.2
+    have hUZ (t : ℝ) (ht : t ∈ Icc a b) : U t = Z t := ite_eq_left ht.2
     refine ⟨hZ.congr (fun t ht => congrArg (fun v => (⟨γ t, v⟩ : TotalSpace F V)) (hUZ t ht)), ?_⟩
     intro t ht
     rw [cov.derivAlongWithin_congr hUZ (hUZ t ht)]
@@ -418,8 +418,8 @@ theorem parallel_piecewise_on_Icc
       (mdifferentiableWithinAt_congr_set hdom).mp (hZ t hts)
     have hUZ : ∀ᶠ s in 𝓝[Icc a b] t, U s = Z s := by
       filter_upwards [nhdsWithin_le_nhds (Iio_mem_nhds htc)] with s hs
-      exact if_pos hs.le
-    have hUZt : U t = Z t := if_pos htc.le
+      exact ite_eq_left hs.le
+    have hUZt : U t = Z t := ite_eq_left htc.le
     refine ⟨hZfull.congr_of_eventuallyEq ?_ ?_, ?_⟩
     · exact hUZ.mono fun s hs => congrArg (fun v => (⟨γ s, v⟩ : TotalSpace F V)) hs
     · exact congrArg (fun v => (⟨γ t, v⟩ : TotalSpace F V)) hUZt
@@ -439,8 +439,8 @@ theorem parallel_piecewise_on_Icc
       (mdifferentiableWithinAt_congr_set hdom).mp (hW t hts)
     have hUW : ∀ᶠ s in 𝓝[Icc a b] t, U s = W s := by
       filter_upwards [nhdsWithin_le_nhds (Ioi_mem_nhds hct)] with s hs
-      exact if_neg (not_le.mpr hs)
-    have hUWt : U t = W t := if_neg (not_le.mpr hct)
+      exact ite_eq_right (not_le.mpr hs)
+    have hUWt : U t = W t := ite_eq_right (not_le.mpr hct)
     refine ⟨hWfull.congr_of_eventuallyEq ?_ ?_, ?_⟩
     · exact hUW.mono fun s hs => congrArg (fun v => (⟨γ s, v⟩ : TotalSpace F V)) hs
     · exact congrArg (fun v => (⟨γ t, v⟩ : TotalSpace F V)) hUWt

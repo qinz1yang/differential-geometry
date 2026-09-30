@@ -314,20 +314,20 @@ private theorem orientation_coordinate_class_transition
     (if a = ω then c else -c) = if b = ω then c else -c
   by_cases ha : a = ω
   · by_cases hb : b = ω
-    · rw [if_pos ha, if_pos hb, sign_pos (hpos (hb.trans ha.symm))]
+    · rw [ite_eq_left ha, ite_eq_left hb, sign_pos (hpos (hb.trans ha.symm))]
       simp
     · have hb' : b = -ω := (Orientation.ne_iff_eq_neg b ω (by simp)).mp hb
       have hba : b = -a := hb'.trans (congrArg Neg.neg ha).symm
-      rw [if_pos ha, if_neg hb, sign_neg (hneg hba)]
+      rw [ite_eq_left ha, ite_eq_right hb, sign_neg (hneg hba)]
       simp
   · have ha' : a = -ω := (Orientation.ne_iff_eq_neg a ω (by simp)).mp ha
     by_cases hb : b = ω
     · have hba : b = -a := (Orientation.ne_iff_eq_neg b a (by simp)).mp
         (fun h => ha (h.symm.trans hb))
-      rw [if_neg ha, if_pos hb, sign_neg (hneg hba)]
+      rw [ite_eq_right ha, ite_eq_left hb, sign_neg (hneg hba)]
       simp
     · have hb' : b = -ω := (Orientation.ne_iff_eq_neg b ω (by simp)).mp hb
-      rw [if_neg ha, if_neg hb, sign_pos (hpos (hb'.trans ha'.symm))]
+      rw [ite_eq_right ha, ite_eq_right hb, sign_pos (hpos (hb'.trans ha'.symm))]
       simp
 
 private def normalizedChartLocalIso

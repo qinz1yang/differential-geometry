@@ -180,7 +180,7 @@ theorem IsHandleDecompositionOfTube.false_of_reversed_rim
     (hconn : IsConnected K.space) {XK : Geometry.SimplicialComplex ℝ E3}
     (hXfin : XK.faces.Finite) (hXman : IsCombinatorialManifoldWithBoundary 3 XK)
     (hXc : IsConnected (frontier XK.space)) {R : Finset E3 → (Fin 3 → ℝ) → E3}
-    (hR : ∀ e ∈ K.faces, e.card = 2 → IsPLHomeomorphOn (R e) (stdSimplex ℝ (Fin 3)) (D e) ∧
+    (hR : ∀ e ∈ K.faces, e.card = 2 → IsPLHomeomorphOn (R e) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D e) ∧
       Dbd e = R e '' stdSimplexBoundary 2)
     {W : Finset K.vertices} {f fw : E3 → E3}
     (hf : IsPLHomeomorphOn f (⋃ v ∈ W, frontier (C v) ∩ frontier N)
@@ -307,7 +307,7 @@ theorem IsHandleDecompositionOfTube.false_of_reversed_rim
       (∀ q ∈ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) (1 / 2), M q = S₁ (q.1, 2 * q.2)) ∧
       (∀ q ∉ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) (1 / 2), M q = σ (q.1, 2 * q.2 - 1)) :=
     ⟨_, isCylindricalDiagram_piecewise isHPolytope_Icc.isPolyhedron hf₁ hg₁ hf₁0 hg₁1 hf₁m hfg₁
-      hSσ, fun q hq => if_pos hq, fun q hq => if_neg hq⟩
+      hSσ, fun q hq => ite_eq_left hq, fun q hq => ite_eq_right hq⟩
   obtain ⟨TN, _, hTN, hTNor, hTNsp⟩ := ht.exists_isOrientable_frontier hconn
   have hsubN : S₁ '' (Icc 0 1 ×ˢ Icc 0 1) ∪ σ '' (Icc 0 1 ×ˢ Icc 0 1) ⊆ TN.space := by
     rw [hTNsp]
@@ -391,7 +391,7 @@ theorem IsHandleDecompositionOfTube.false_of_reversed_rim
       (∀ q ∈ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) (1 / 2), M₂ q = f (S₁ (q.1, 2 * q.2))) ∧
       (∀ q ∉ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) (1 / 2), M₂ q = fw (σ (q.1, 2 * q.2 - 1))) :=
     ⟨_, isCylindricalDiagram_piecewise isHPolytope_Icc.isPolyhedron hf₂ hg₂ hf₂0 hg₂1 hf₂m hfg₂
-      hinter₂, fun q hq => if_pos hq, fun q hq => if_neg hq⟩
+      hinter₂, fun q hq => ite_eq_left hq, fun q hq => ite_eq_right hq⟩
   obtain ⟨TX, _, hTX, hTXor, hTXsp⟩ :=
     exists_isOrientable_frontier_of_isCombinatorialManifoldWithBoundary hXfin hXman hXc
   have hsubX : f '' (S₁ '' (Icc 0 1 ×ˢ Icc 0 1)) ∪ fw '' (σ '' (Icc 0 1 ×ˢ Icc 0 1)) ⊆

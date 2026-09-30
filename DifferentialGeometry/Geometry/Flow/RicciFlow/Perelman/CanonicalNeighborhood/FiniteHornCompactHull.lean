@@ -69,7 +69,7 @@ variable [SigmaCompactSpace W]
 
 theorem exists_finiteHorn_compact_connectors_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ outer : ℕ, ∃ inner : ℕ,
+      H₀ ≤ H.collarDepth → ∀ outer : ℕ, ∃ inner : ℕ,
         closure (H.subend inner) ⊆ H.subend outer ∧
         ∀ A B : Set W, IsCompact A → IsCompact B →
           A ⊆ H.subend inner → B ⊆ H.subend inner →

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.CompleteScalarComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.SolutionHeatEquation
@@ -192,7 +193,7 @@ private theorem curvature_normSq_eq_zero_on_Icc_at_zero
       linarith
     have hinit : ∀ x : M, u 0 x ≤ 0 := fun x => hflat x
     have hcut : ∀ O : M,
-        Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S) T O) :=
+        Nonempty (ParabolicBarrierCutoffSequence (I := I) (flowG (I := I) S) T O) :=
       nonempty_shi_barrier_cutoff_data_of_solution (I := I) S hS hT hcarrier hregular
         hcomplete hK hcurv
     have hmain := DifferentialGeometry.Analysis.nonpositive_of_dissipation_and_cutoffs

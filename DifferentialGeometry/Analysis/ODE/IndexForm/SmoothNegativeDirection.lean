@@ -1066,7 +1066,7 @@ theorem IsJacobiFieldOn.exists_contDiff_indexForm_neg
     intro t ht
     constructor <;> linarith [ht.1, ht.2]
   have hR₀eq (t : ℝ) (ht : t ∈ Icc (0 : ℝ) (b - a)) :
-      R₀ t = R (t + a) := if_pos ht
+      R₀ t = R (t + a) := ite_eq_left ht
   have hR₀ : ContinuousOn R₀ (Icc (0 : ℝ) (b - a)) :=
     (hR.comp (continuous_id.add continuous_const).continuousOn hmap).congr hR₀eq
   have hSym₀ (t : ℝ) (x x' : F) : ⟪R₀ t x, x'⟫ = ⟪x, R₀ t x'⟫ := by
@@ -1074,7 +1074,7 @@ theorem IsJacobiFieldOn.exists_contDiff_indexForm_neg
     · exact (congrArg (fun A : F →L[ℝ] F => ⟪A x, x'⟫) (hR₀eq t ht)).trans
         ((hSym (t + a) (hmap ht) x x').trans
           (congrArg (fun A : F →L[ℝ] F => ⟪x, A x'⟫) (hR₀eq t ht)).symm)
-    · simp only [R₀, if_neg ht, zero_apply, inner_zero_left, inner_zero_right]
+    · simp only [R₀, ite_eq_right ht, zero_apply, inner_zero_left, inner_zero_right]
   have hy₀ : ContDiff ℝ ∞ y₀ :=
     hY.comp (contDiff_id.add contDiff_const)
   have hy₀d (t : ℝ) (ht : t ∈ Icc (0 : ℝ) (b - a)) :

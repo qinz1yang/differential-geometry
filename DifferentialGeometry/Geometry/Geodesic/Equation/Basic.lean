@@ -10,6 +10,9 @@ noncomputable section
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff Matrix
 
+open TangentBundle
+  (chartFiberCoord chartFiberCoord_self_zero)
+
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian

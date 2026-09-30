@@ -114,19 +114,23 @@ theorem smoothCompactSupport_L2_bound_on_bounded_ge_two
         exact continuous_norm.comp hcont_fderiv
       have hu_eq_full :
           eLpNorm u 2 (volume.restrict Ω) = eLpNorm u 2 volume := by
-        rw [eLpNorm_restrict_eq_of_support_subset hu_support_sub]
+        rw [eLpNorm_restrict_eq_of_support_subset hu.continuous.aestronglyMeasurable
+          hu_support_sub]
       have hgrad_eq_full :
           eLpNorm (smoothGradNorm u) 2 (volume.restrict Ω) =
             eLpNorm (smoothGradNorm u) 2 volume := by
-        rw [eLpNorm_restrict_eq_of_support_subset hgrad_support_sub]
+        rw [eLpNorm_restrict_eq_of_support_subset hgrad_cont.aestronglyMeasurable
+          hgrad_support_sub]
       have hgrad_eq_s_one :
           eLpNorm (smoothGradNorm u) (ENNReal.ofReal 1) (volume.restrict s) =
             eLpNorm (smoothGradNorm u) (ENNReal.ofReal 1) volume := by
-        rw [eLpNorm_restrict_eq_of_support_subset hgrad_support_sub_s]
+        rw [eLpNorm_restrict_eq_of_support_subset hgrad_cont.aestronglyMeasurable
+          hgrad_support_sub_s]
       have hgrad_eq_s_two :
           eLpNorm (smoothGradNorm u) 2 (volume.restrict s) =
             eLpNorm (smoothGradNorm u) 2 volume := by
-        rw [eLpNorm_restrict_eq_of_support_subset hgrad_support_sub_s]
+        rw [eLpNorm_restrict_eq_of_support_subset hgrad_cont.aestronglyMeasurable
+          hgrad_support_sub_s]
       have hgrad_aesm_s :
           AEStronglyMeasurable (smoothGradNorm u) (volume.restrict s) :=
         hgrad_cont.aestronglyMeasurable
@@ -151,7 +155,8 @@ theorem smoothCompactSupport_L2_bound_on_bounded_ge_two
         calc
           eLpNorm (fderiv ℝ u) 1 volume
               = eLpNorm (fun x => ‖fderiv ℝ u x‖) 1 volume := by
-                  exact (eLpNorm_norm (f := fderiv ℝ u) (p := (1 : ℝ≥0∞)) (μ := volume)).symm
+                  exact (eLpNorm_norm (f := fderiv ℝ u) (p := (1 : ℝ≥0∞)) (μ := volume)
+                    (hu.continuous_fderiv (by simp)).aestronglyMeasurable).symm
           _ = eLpNorm (smoothGradNorm u) 1 volume := by
                 exact eLpNorm_congr_ae (Eventually.of_forall fun x =>
                   norm_fderiv_eq_smoothGradNorm (u := u) (x := x))
@@ -199,11 +204,14 @@ theorem smoothCompactSupport_L2_bound_on_bounded_ge_two
         support_smoothGradNorm_subset_tsupport.trans hu_sub
       have hu_eq_full :
           eLpNorm u 2 (volume.restrict Ω) = eLpNorm u 2 volume := by
-        rw [eLpNorm_restrict_eq_of_support_subset hu_support_sub]
+        rw [eLpNorm_restrict_eq_of_support_subset hu.continuous.aestronglyMeasurable
+          hu_support_sub]
       have hgrad_eq_full :
           eLpNorm (smoothGradNorm u) 2 (volume.restrict Ω) =
             eLpNorm (smoothGradNorm u) 2 volume := by
-        rw [eLpNorm_restrict_eq_of_support_subset hgrad_support_sub]
+        rw [eLpNorm_restrict_eq_of_support_subset
+          (by simpa only [norm_fderiv_eq_smoothGradNorm] using
+            (hu.continuous_fderiv (by simp)).norm.aestronglyMeasurable) hgrad_support_sub]
       have hsobolev :
         eLpNorm u 2 volume ≤
           (Csob : ℝ≥0∞) * eLpNorm (fderiv ℝ u) 2 volume := by
@@ -220,7 +228,8 @@ theorem smoothCompactSupport_L2_bound_on_bounded_ge_two
         calc
           eLpNorm (fderiv ℝ u) 2 volume
               = eLpNorm (fun x => ‖fderiv ℝ u x‖) 2 volume := by
-                  exact (eLpNorm_norm (f := fderiv ℝ u) (p := (2 : ℝ≥0∞)) (μ := volume)).symm
+                  exact (eLpNorm_norm (f := fderiv ℝ u) (p := (2 : ℝ≥0∞)) (μ := volume)
+                    (hu.continuous_fderiv (by simp)).aestronglyMeasurable).symm
           _ = eLpNorm (smoothGradNorm u) 2 volume := by
                 exact eLpNorm_congr_ae (Eventually.of_forall fun x =>
                   norm_fderiv_eq_smoothGradNorm (u := u) (x := x))
@@ -779,13 +788,13 @@ theorem integral_norm_rpow_neg_ball {R : ℝ} (hR : 0 < R) :
       have hy_pos : 0 < y := hy
       by_cases hlt : y < R
       · simp only [f, smul_eq_mul, Set.indicator, Set.mem_Ioo, hy_pos, hlt, true_and,
-          if_true]
+          ite_true]
         rw [← Real.rpow_natCast y (d - 1),
           Nat.cast_sub (Nat.one_le_iff_ne_zero.mpr (NeZero.ne d)),
           ← Real.rpow_add hy_pos]
         norm_num
       · simp only [f, smul_eq_mul, Set.indicator, Set.mem_Ioo, hy_pos, hlt, true_and,
-          if_false, mul_zero]
+          ite_false, mul_zero]
     rw [setIntegral_congr_fun measurableSet_Ioi hsupp]
     rw [setIntegral_indicator measurableSet_Ioo]
     rw [show Set.Ioi (0 : ℝ) ∩ Set.Ioo 0 R = Set.Ioo 0 R from
@@ -807,7 +816,7 @@ theorem riesz_kernel_integrable
       (g ∘ (‖·‖)) := by
     filter_upwards [ae_restrict_mem measurableSet_ball] with x hx
     simp only [Function.comp_apply, g, Metric.mem_ball, dist_zero_right] at hx ⊢
-    rw [if_pos hx]
+    rw [ite_eq_left hx]
   rw [IntegrableOn, integrable_congr hag]
   suffices h : Integrable (fun x : E => g ‖x‖) volume from h.integrableOn
   have h1d : IntegrableOn (fun y : ℝ => y ^ (Module.finrank ℝ E - 1) • g y) (Set.Ioi 0) := by
@@ -1212,7 +1221,8 @@ theorem representation_formula_smooth
 -- Local copy of lintegral_rpow_norm_eq_eLpNorm_pow (defined in BallExtension, not imported here)
 private theorem lintegral_rpow_norm_eq_eLpNorm_pow'
     {α F : Type*} [MeasurableSpace α] [NormedAddCommGroup F]
-    {μ : Measure α} {p : ℝ} (hp : 0 < p) {f : α → F} :
+    {μ : Measure α} {p : ℝ} (hp : 0 < p) {f : α → F}
+    (hf : AEStronglyMeasurable f μ) :
     ∫⁻ x, (ENNReal.ofReal ‖f x‖) ^ p ∂μ = eLpNorm f (ENNReal.ofReal p) μ ^ p := by
   let pnn : ℝ≥0 := Real.toNNReal p
   have hpnn0 : pnn ≠ 0 := by
@@ -1223,7 +1233,8 @@ private theorem lintegral_rpow_norm_eq_eLpNorm_pow'
       = ∫⁻ x, (ENNReal.ofReal ‖f x‖) ^ (pnn : ℝ) ∂μ := by simp [hpnn_real]
     _ = eLpNorm f (pnn : ℝ≥0∞) μ ^ (pnn : ℝ) := by
         simpa using
-          (MeasureTheory.eLpNorm_nnreal_pow_eq_lintegral (μ := μ) (f := f) (p := pnn) hpnn0).symm
+          (MeasureTheory.eLpNorm_nnreal_pow_eq_lintegral (μ := μ) (f := f) (p := pnn)
+            hpnn0 hf).symm
     _ = eLpNorm f (ENNReal.ofReal p) μ ^ p := by simp [hpnn_real, hpnn_enn]
 
 -- Weighted power-mean inequality: (∫ f·w dμ)^p ≤ (∫ w dμ)^{p-1} · ∫ f^p · w dμ
@@ -1388,7 +1399,7 @@ theorem poincare_smooth_unitBall
     exact hpw x hx_mem
   have h_step2 : eLpNorm f (ENNReal.ofReal p) μ ≤
       eLpNorm (fun x => C_rep * h x) (ENNReal.ofReal p) μ :=
-    eLpNorm_mono_ae_real hpw_ae
+    eLpNorm_mono_ae_real (hu.continuous.sub continuous_const).aestronglyMeasurable hpw_ae
   set M := (d : ℝ) * (volume (Metric.ball (0 : E) 1)).toReal * (2 * 1)
   -- Young-type bound: ‖h‖_p ≤ M · ‖g‖_p
   -- Proof outline:
@@ -1734,9 +1745,9 @@ theorem poincare_smooth_unitBall
       simpa [μ] using hIntBound
     have h_pow : eLpNorm h (ENNReal.ofReal p) μ ^ p ≤
         (ENNReal.ofReal M * eLpNorm g (ENNReal.ofReal p) μ) ^ p := by
-      rw [← lintegral_rpow_norm_eq_eLpNorm_pow' hp_pos (f := h)]
+      rw [← lintegral_rpow_norm_eq_eLpNorm_pow' hp_pos hh_aesm]
       rw [ENNReal.mul_rpow_of_nonneg _ _ (le_of_lt hp_pos)]
-      rw [← lintegral_rpow_norm_eq_eLpNorm_pow' hp_pos (f := g)]
+      rw [← lintegral_rpow_norm_eq_eLpNorm_pow' hp_pos hg_cont.aestronglyMeasurable]
       simp_rw [ENNReal.ofReal_rpow_of_nonneg (norm_nonneg _) (le_of_lt hp_pos),
         Real.norm_eq_abs]
       rw [← ofReal_integral_eq_lintegral_ofReal hhpow_int.integrable

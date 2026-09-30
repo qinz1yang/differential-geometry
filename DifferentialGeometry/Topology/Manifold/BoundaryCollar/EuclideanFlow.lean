@@ -8,13 +8,14 @@ namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_complete_smooth_flow
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E]
+    [FiniteDimensional ℝ E]
     (g : E → E) (hg : ContDiff ℝ ∞ g) (hgK : HasCompactSupport g) :
     ∃ Φ : E × ℝ → E, ContDiff ℝ ∞ Φ ∧
       (∀ x, Φ (x, 0) = x) ∧
       (∀ x s t, Φ (Φ (x, s), t) = Φ (x, s + t)) ∧
       (∀ t, Injective (fun x => Φ (x, t))) ∧
       ∀ x t, HasDerivAt (fun s => Φ (x, s)) (g (Φ (x, t))) t := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
   let V : (x : E) → TangentSpace 𝓘(ℝ, E) x := g
   have hV : ContMDiff 𝓘(ℝ, E) (𝓘(ℝ, E).prod 𝓘(ℝ, E)) ∞
       (fun x => (⟨x, V x⟩ : TangentBundle 𝓘(ℝ, E) E)) :=

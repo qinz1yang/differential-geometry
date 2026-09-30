@@ -108,6 +108,39 @@ theorem abs_radius_sub_le_coneDistance {Y : Type*} [PseudoMetricSpace Y]
   have hn := Metric.coneDistance_nonneg x y
   nlinarith only [hs, hc, hn, sq_abs (x.1 - y.1), abs_nonneg (x.1 - y.1)]
 
+theorem dist_snd_eq_zero_of_coneDistance_le_radius_sub {Y : Type*} [PseudoMetricSpace Y]
+    {z w : ℝ × Y} (hz : 0 < z.1) (hw : 0 < w.1)
+    (hd : coneDistance z w ≤ w.1 - z.1) : dist z.2 w.2 = 0 := by
+  have hrad : w.1 - z.1 ≤ coneDistance z w := by
+    calc
+      w.1 - z.1 ≤ |w.1 - z.1| := le_abs_self _
+      _ = |z.1 - w.1| := abs_sub_comm _ _
+      _ ≤ coneDistance z w := abs_radius_sub_le_coneDistance hz.le hw.le
+  have heq : coneDistance z w = w.1 - z.1 := le_antisymm hd hrad
+  have hs := coneDistance_sq hz.le hw.le
+  rw [heq] at hs
+  have hprod : (2 * z.1 * w.1) *
+      (1 - Real.cos (min Real.pi (dist z.2 w.2))) = 0 := by
+    nlinarith only [hs]
+  have hcoef : 2 * z.1 * w.1 ≠ 0 := ne_of_gt (by positivity)
+  have hcos : Real.cos (min Real.pi (dist z.2 w.2)) = 1 := by
+    have h := (mul_eq_zero.mp hprod).resolve_left hcoef
+    linarith only [h]
+  have htheta : min Real.pi (dist z.2 w.2) = 0 := by
+    apply (Real.cos_eq_one_iff_of_lt_of_lt ?_ ?_).mp hcos
+    · exact lt_of_lt_of_le (by linarith [Real.pi_pos])
+        (le_min Real.pi_pos.le dist_nonneg)
+    · exact (min_le_left _ _).trans_lt (by linarith [Real.pi_pos])
+  rcases min_cases Real.pi (dist z.2 w.2) with h | h
+  · rw [h.1] at htheta
+    exact False.elim (Real.pi_pos.ne' htheta)
+  · rwa [h.1] at htheta
+
+theorem snd_eq_of_coneDistance_le_radius_sub {Y : Type*} [MetricSpace Y]
+    {z w : ℝ × Y} (hz : 0 < z.1) (hw : 0 < w.1)
+    (hd : coneDistance z w ≤ w.1 - z.1) : z.2 = w.2 :=
+  dist_eq_zero.mp (dist_snd_eq_zero_of_coneDistance_le_radius_sub hz hw hd)
+
 theorem coneDistance_radial_mul {Y : Type*} [PseudoMetricSpace Y]
     (c : ℝ) (x y : ℝ × Y) :
     coneDistance (c * x.1, x.2) (c * y.1, y.2) = |c| * coneDistance x y := by

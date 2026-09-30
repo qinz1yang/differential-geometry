@@ -153,13 +153,20 @@ theorem cylinderDeck_fst_eq_at_zero (x : SphereTwo) (s : ℝ) :
       ((↑) : SphereTwo → SphereAmbient) := contMDiff_coe_sphere
   have hzero : ∀ r : ℝ, fderiv ℝ (fun q : ℝ => (f q : SphereAmbient)) r = 0 := by
     intro r
-    rw [← mfderiv_eq_fderiv]
+    have h : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, SphereAmbient)
+        (((↑) : SphereTwo → SphereAmbient) ∘ f) r = 0 := by
+      apply ContinuousLinearMap.ext
+      intro a
+      rw [mfderiv_comp_apply r (hcoe.mdifferentiable (by decide) (f r))
+        (hf.mdifferentiable (by decide) r) a, hz, zero_apply, map_zero]
+      rfl
+    rw [mfderiv_eq_fderiv] at h
     apply ContinuousLinearMap.ext
     intro a
-    change mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, SphereAmbient)
-      (((↑) : SphereTwo → SphereAmbient) ∘ f) r a = 0
-    rw [mfderiv_comp_apply r (hcoe.mdifferentiable (by decide) (f r))
-      (hf.mdifferentiable (by decide) r) a, hz, zero_apply, map_zero]
+    have ha := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (f r : SphereAmbient)
+      (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) r).symm a))) h
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply, zero_apply, map_zero] using! ha
   apply Subtype.ext
   exact is_const_of_fderiv_eq_zero
     ((hcoe.comp hf).contDiff.differentiable (by decide)) hzero s 0
@@ -233,8 +240,11 @@ theorem cylinderDeck_exists_product_affine :
     have hderiv : deriv line s =
         (mfderiv CylinderI CylinderI Phi (x₀, s) (0, 1)).2 := by
       change fderiv ℝ (fun r : ℝ => (Phi (x₀, r)).2) s 1 = _
-      rw [← mfderiv_eq_fderiv]
-      exact cylinderProduct_snd_vertical Phi x₀ s 1
+      have h := cylinderProduct_snd_vertical Phi x₀ s 1
+      rw [mfderiv_eq_fderiv] at h
+      have hv := congrArg (NormedSpace.fromTangentSpace (𝕜 := ℝ) ((Phi (x₀, s)).2)) h
+      simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+        ContinuousLinearEquiv.apply_symm_apply] using! hv
     rw [hderiv, pow_two]
     convert (cylinderDeck_mfderiv_block_inner Phi hdifferent hmetric (x₀, s) 0 0 1 1).2
       using 1 <;> first | rfl | norm_num

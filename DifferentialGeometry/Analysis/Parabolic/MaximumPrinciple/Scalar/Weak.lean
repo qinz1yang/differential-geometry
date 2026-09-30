@@ -738,7 +738,7 @@ theorem strict_barrier_nonnegative_of_positive_time
         ((differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t0)).const_mul ε)
     have hbarrier_deriv_nonpos :
         derivWithin (fun s : Real => w s x0 + ε * s) (Set.Icc 0 T) t0 <= 0 :=
-      derivWithin_nonpos_at_Icc_min_of_pos htime_min.localize hp0_time ht0_pos
+      derivWithin_nonpos_at_Icc_min_of_pos htime_min.isLocalMinOn hp0_time ht0_pos
     have hderiv_eq :
       derivWithin (fun s : Real => w s x0 + ε * s) (Set.Icc 0 T) t0 =
         derivWithin (fun s : Real => w s x0) (Set.Icc 0 T) t0 + ε :=
@@ -950,7 +950,7 @@ theorem strict_barrier_positive_region
         ((differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t0)).const_mul ε)
     have hbarrier_deriv_nonpos :
         derivWithin (fun s : Real => w s x0 + ε * s) (Set.Icc 0 T) t0 <= 0 :=
-      derivWithin_nonpos_at_Icc_min_of_pos htime_min.localize hp0_time ht0_pos
+      derivWithin_nonpos_at_Icc_min_of_pos htime_min.isLocalMinOn hp0_time ht0_pos
     have hderiv_eq :
       derivWithin (fun s : Real => w s x0 + ε * s) (Set.Icc 0 T) t0 =
         derivWithin (fun s : Real => w s x0) (Set.Icc 0 T) t0 + ε :=
@@ -1068,7 +1068,7 @@ theorem strict_barrier_compact
         ((differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t0)).const_mul ε)
     have hbarrier_deriv_nonpos :
         derivWithin (fun s : Real => w s x0 + ε * s) (Set.Icc 0 T) t0 <= 0 :=
-      derivWithin_nonpos_at_Icc_min_of_pos htime_min.localize hp0_time ht0_pos
+      derivWithin_nonpos_at_Icc_min_of_pos htime_min.isLocalMinOn hp0_time ht0_pos
     have hderiv_eq :
         derivWithin (fun s : Real => w s x0 + ε * s) (Set.Icc 0 T) t0 =
           derivWithin (fun s : Real => w s x0) (Set.Icc 0 T) t0 + ε :=
@@ -2143,11 +2143,11 @@ theorem exists_time_dependent_lipschitz_bound_on_values
   refine ⟨A, ?_, ?_⟩
   · intro t ht
     dsimp [A]
-    rw [dif_pos ht]
+    rw [dite_eq_left ht]
     exact NNReal.coe_nonneg _
   · intro t ht x
     dsimp [A]
-    rw [dif_pos ht]
+    rw [dite_eq_left ht]
     have hu_mem : u t x ∈ scalarValueSet (M := M) u c t := by
       left
       exact ⟨x, rfl⟩

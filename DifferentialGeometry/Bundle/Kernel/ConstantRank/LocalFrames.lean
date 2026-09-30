@@ -6,10 +6,10 @@ import Mathlib.Geometry.Manifold.ContMDiff.Constructions
 set_option autoImplicit false
 noncomputable section
 
-open Matrix Manifold Set
+open Manifold Set
 open scoped BigOperators ContDiff Manifold Topology
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+namespace Matrix
 
 private theorem transformed_matrix_mulVec {d r k : ℕ}
     (V A U : Matrix (Fin d) (Fin d) ℝ)
@@ -194,6 +194,6 @@ theorem exists_smooth_local_kernel_section
   rw [← hRange x hx]
   exact ⟨c, rfl⟩
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+end Matrix
 
 end

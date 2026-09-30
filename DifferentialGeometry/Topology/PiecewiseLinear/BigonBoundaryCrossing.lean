@@ -73,7 +73,7 @@ theorem HasPLCurveCrossingOnAt.image_chart_of_mem_maximalAtlas
 
 omit [FiniteDimensional ℝ E] in
 private theorem exists_preconnected_diskInterior {D : Set E} {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) {x : E} (hx : x ∈ D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {x : E} (hx : x ∈ D)
     {O : Set E} (hO : O ∈ 𝓝 x) :
     ∃ L : Set E, L ⊆ O ∧ L ⊆ D \ q '' stdSimplexBoundary 2 ∧ IsPreconnected L ∧
       ∃ O' : Set E, IsOpen O' ∧ x ∈ O' ∧
@@ -83,8 +83,8 @@ private theorem exists_preconnected_diskInterior {D : Set E} {q : (Fin 3 → ℝ
   obtain ⟨r, hr, hball⟩ := Metric.mem_nhdsWithin_iff.mp
     ((hqc b hb).preimage_mem_nhdsWithin hO)
   obtain ⟨T, hT, hTeq⟩ := exists_isOpen_inter_image_eq_of_isCompact
-    (isCompact_stdSimplex ℝ (Fin 3)) hqc hq.bijOn.injOn (Metric.isOpen_ball (x := b) (ε := r))
-  have hsub : Metric.ball b r ∩ openSimplex (stdVertices 1) ⊆ stdSimplex ℝ (Fin 3) :=
+    (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)) hqc hq.bijOn.injOn (Metric.isOpen_ball (x := b) (ε := r))
+  have hsub : Metric.ball b r ∩ openSimplex (stdVertices 1) ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) :=
     inter_subset_right.trans openSimplex_stdVertices_subset_stdSimplex
   refine ⟨q '' (Metric.ball b r ∩ openSimplex (stdVertices 1)), ?_, ?_, ?_, T, hT, ?_, ?_⟩
   · rintro _ ⟨z, ⟨hzr, hzo⟩, rfl⟩
@@ -93,14 +93,14 @@ private theorem exists_preconnected_diskInterior {D : Set E} {q : (Fin 3 → ℝ
     exact image_mono inter_subset_right
   · exact ((convex_ball b r).inter (convex_openSimplex _)).isPreconnected.image q
       (hqc.mono hsub)
-  · have hm : q b ∈ q '' (Metric.ball b r ∩ stdSimplex ℝ (Fin 3)) :=
+  · have hm : q b ∈ q '' (Metric.ball b r ∩ Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) :=
       ⟨b, ⟨Metric.mem_ball_self hr, hb⟩, rfl⟩
     rw [← hTeq] at hm
     exact hm.1
   · rw [← hq.image_openSimplex_stdVertices]
     rintro _ ⟨hyT, z, hzo, rfl⟩
-    have hzΔ : z ∈ stdSimplex ℝ (Fin 3) := openSimplex_stdVertices_subset_stdSimplex hzo
-    have hm : q z ∈ T ∩ q '' stdSimplex ℝ (Fin 3) := ⟨hyT, z, hzΔ, rfl⟩
+    have hzΔ : z ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := openSimplex_stdVertices_subset_stdSimplex hzo
+    have hm : q z ∈ T ∩ q '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := ⟨hyT, z, hzΔ, rfl⟩
     rw [hTeq] at hm
     obtain ⟨w, ⟨hwr, hwΔ⟩, hwz⟩ := hm
     have hwz' : w = z := hq.bijOn.injOn hwΔ hzΔ hwz
@@ -170,7 +170,7 @@ theorem HasPLCurveCrossingOnAt.eventually_mem_arc_iff {S A B C : Set E} {x : E}
 
 theorem HasPLCurveCrossingOnAt.mem_closure_inter_diskInterior {S A B D : Set E} {x : E}
     (hcross : HasPLCurveCrossingOnAt S A B x) {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDS : D ⊆ S)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDS : D ⊆ S)
     (hboundary : ∀ᶠ y in 𝓝 x, y ∈ q '' stdSimplexBoundary 2 ↔ y ∈ B) :
     x ∈ closure (A ∩ (D \ q '' stdSimplexBoundary 2)) := by
   classical
@@ -292,7 +292,7 @@ theorem HasPLCurveCrossingOnAt.mem_closure_inter_diskInterior {S A B D : Set E} 
     linarith
 
 theorem inter_subset_endpoints_of_disk_boundary_crossing {S A B C D F : Set E}
-    {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDS : D ⊆ S) {γ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) C)
     (hCB : C ⊆ B) (hF : IsClosed F)
     (hFC : F ∩ C = {γ 0, γ 1}) (hJ : q '' stdSimplexBoundary 2 = F ∪ C)
@@ -316,7 +316,7 @@ theorem inter_subset_endpoints_of_disk_boundary_crossing {S A B C D F : Set E}
   exact hcl
 
 theorem inter_eq_endpoints_of_disk_boundary_crossing {S A B C D F : Set E}
-    {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDS : D ⊆ S) {γ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) C)
     (hCB : C ⊆ B) (hF : IsClosed F) (hFA : F ⊆ A)
     (hFC : F ∩ C = {γ 0, γ 1}) (hJ : q '' stdSimplexBoundary 2 = F ∪ C)

@@ -52,7 +52,7 @@ theorem exists_uniform_linearizedRicciConnectionDifferenceOrderOneCoefficient_co
               (linearizedRicciConnectionDifferenceOrder1CoeffField
                 (I := I) (M := M) g₀ g₁)‖ ^ 2) ≤
             (B0 R + B1 R * A) ^ 2 :=
-  exists_uniform_linearizedRicciConnectionDifferenceOrderOneCoefficient_covariantJetNormSq_two_tame_bound (EU := E) (HU := H) (IU := I) (MU := M)
+  exists_uniform_linearizedRicciConnectionDifferenceOrder1CoeffField_jet_two_tame_bound (EU := E) (HU := H) (IU := I) (MU := M)
     hDim gBase hΛ hδ₀
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

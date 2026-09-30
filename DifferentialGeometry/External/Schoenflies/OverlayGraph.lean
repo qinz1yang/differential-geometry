@@ -91,12 +91,12 @@ noncomputable def orientPiece (P : Piece) : Piece :=
 
 theorem orientPiece_of_precedes {P : Piece} (h : Precedes P.1 P.2) : orientPiece P = P := by
   classical
-  exact if_pos h
+  exact ite_eq_left h
 
 theorem orientPiece_of_not_precedes {P : Piece} (h : ¬ Precedes P.1 P.2) :
     orientPiece P = (P.2, P.1) := by
   classical
-  exact if_neg h
+  exact ite_eq_right h
 
 /-- Orienting does not move the segment. -/
 @[simp] theorem orientPiece_seg (P : Piece) : (orientPiece P).seg = P.seg := by

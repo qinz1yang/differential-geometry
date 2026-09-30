@@ -17,7 +17,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_union_disk_of_circle_
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 2 K)
     {Δ : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hmeet : K.space ∩ Δ = r '' stdSimplexBoundary 2)
     (hcollar : HasPLCircleCollar K.space (r '' stdSimplexBoundary 2)) :
     ∃ (Q : Geometry.SimplicialComplex ℝ E) (hQfin : Q.faces.Finite),

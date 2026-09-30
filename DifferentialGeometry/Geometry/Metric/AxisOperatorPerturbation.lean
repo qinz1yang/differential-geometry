@@ -4,7 +4,6 @@ import DifferentialGeometry.Geometry.Metric.LengthPerturbation
 noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
-open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Geometry.Riemannian
 
 namespace DifferentialGeometry.Geometry.Metric

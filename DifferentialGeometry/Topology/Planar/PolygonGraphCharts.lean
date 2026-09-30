@@ -1483,7 +1483,7 @@ private theorem exists_one_edge_free_endpoint_graph_regions_of_basis
   have hpρ : p ∈ Metric.ball (b 0) ρ := Metric.ball_subset_ball (min_le_left _ _) hpball
   have hpU : p ∈ U := hδU (Metric.ball_subset_ball (min_le_right _ _) hpball)
   by_cases hfp : f p < 0
-  · simp only [if_pos hfp]
+  · simp only [ite_eq_left hfp]
     let B := (M.eraseTriangle T.1).toPlaneComplex.support
     let S := M.toPlaneComplex.support
     let g := (-f v) • b.coord 2 + b.coord 2 v • f
@@ -1524,7 +1524,7 @@ private theorem exists_one_edge_free_endpoint_graph_regions_of_basis
     exact ⟨hmem.trans (hB.1.trans hgweak), hint.trans (hB.2.1.trans hgstrict),
       hfront.trans (hB.2.2.trans hgzero), hB.1.trans hgweak, hB.2.1.trans hgstrict,
       hB.2.2.trans hgzero⟩
-  · simp only [if_neg hfp]
+  · simp only [ite_eq_right hfp]
     have hB := one_edge_free_nonnegative_survivor_region_iff M T b htriangle hfree hattach v hρ f
       hf0 hf1 hf2 hfv hNew p hpρ hpU.1 (le_of_not_gt hfp)
     have hS := one_edge_free_nonnegative_old_region_iff M T b htriangle hfree hattach v hρ f
@@ -1748,18 +1748,18 @@ private theorem exists_contDiff_glued_near_compact
       Set.EqOn g f₂ (W ∩ V) := by
   classical
   let f : E → F := fun x => if x ∈ U₀ then f₀ x else if x ∈ U₁ then f₁ x else f₂ x
-  have he₀ : Set.EqOn f f₀ U₀ := fun x hx => by simp only [f, if_pos hx]
+  have he₀ : Set.EqOn f f₀ U₀ := fun x hx => by simp only [f, ite_eq_left hx]
   have he₁ : Set.EqOn f f₁ U₁ := by
     intro x hx
     have hx₀ : x ∉ U₀ := fun hy => Set.disjoint_left.mp hdisj hy hx
-    simp only [f, if_neg hx₀, if_pos hx]
+    simp only [f, ite_eq_right hx₀, ite_eq_left hx]
   have he₂ : Set.EqOn f f₂ V := by
     intro x hx
     by_cases hx₀ : x ∈ U₀
     · exact (he₀ hx₀).trans (h₀ ⟨hx₀, hx⟩)
     by_cases hx₁ : x ∈ U₁
     · exact (he₁ hx₁).trans (h₁ ⟨hx₁, hx⟩)
-    simp only [f, if_neg hx₀, if_neg hx₁]
+    simp only [f, ite_eq_right hx₀, ite_eq_right hx₁]
   have hf : ContDiffOn ℝ ∞ f (U₀ ∪ U₁ ∪ V) :=
     ((hf₀.contDiffOn.congr (fun _ hx => he₀ hx)).union_of_isOpen
       (hf₁.contDiffOn.congr (fun _ hx => he₁ hx)) hU₀ hU₁).union_of_isOpen
@@ -2705,8 +2705,8 @@ private theorem endpoint_signs_eq_outside_cthickening
 private theorem mul_sub_max_zero (s x : ℝ) :
     s * (x - max x 0) = if x < 0 then s * x else 0 := by
   by_cases hx : x < 0
-  · rw [if_pos hx, max_eq_right hx.le, sub_zero]
-  · rw [if_neg hx, max_eq_left (le_of_not_gt hx), sub_self, mul_zero]
+  · rw [ite_eq_left hx, max_eq_right hx.le, sub_zero]
+  · rw [ite_eq_right hx, max_eq_left (le_of_not_gt hx), sub_self, mul_zero]
 
 private theorem removed_endpoint_rounding_band_mem_interior_cthickening
     (b : AffineBasis (Fin 3) ℝ Plane) (f : Plane →ᵃ[ℝ] ℝ)

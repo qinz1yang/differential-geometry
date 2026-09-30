@@ -1,3 +1,4 @@
+import DifferentialGeometry.Bundle.TangentChart
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.InverseBranch
 import DifferentialGeometry.Geometry.Exponential.Variation.Smoothness
@@ -13,6 +14,9 @@ noncomputable section
 
 open Set Function Filter Metric Bundle Manifold
 open scoped Topology Manifold ContDiff
+
+open TangentBundle
+  (chartFiberCoord chartFiberCoord_self_zero extChartAt_tangent_zero_apply_chartFiber)
 
 namespace DifferentialGeometry
 namespace Geometry

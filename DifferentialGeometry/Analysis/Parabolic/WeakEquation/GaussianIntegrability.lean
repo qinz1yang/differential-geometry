@@ -133,7 +133,7 @@ private theorem integrable_toEuclidean_chartGaussianResidual
       exact (hc.memLp_top_of_subset_isCompact (isCompact_Icc.prod hΩc)
         (measurableSet_Icc.prod hΩ.measurableSet) (prod_mono Subset.rfl subset_closure))
     simpa only [mul_assoc, mul_left_comm, mul_comm] using
-      memLp_one_iff_integrable.mp (hdf.mul' (r := 1) hcMem)
+      memLp_one_iff_integrable.mp (hdf.fun_mul (r := 1) hcMem)
   have hgrad : Integrable
       (fun q : ℝ × V => densityOnEuclid (I := I) (g q.1) α q.2 *
         u (q.1, (toEuclidean (E := E)).symm q.2) *
@@ -158,8 +158,9 @@ private theorem integrable_toEuclidean_chartGaussianResidual
     convert hs using 1
     funext q
     simp only [Finset.mul_sum, mul_assoc]
-  convert htime.add hgrad using 1 <;>
-    first | rfl | (funext q; simp only [Pi.add_apply, mul_add])
+  convert htime.add hgrad using 1
+  funext q
+  simp only [Pi.add_apply, mul_add]
 
 theorem integrable_chartGaussianResidual_of_locallyLipschitzOn
     (D : RealTimeInterval) (g : ℝ → SmoothRiemannianMetric I M)

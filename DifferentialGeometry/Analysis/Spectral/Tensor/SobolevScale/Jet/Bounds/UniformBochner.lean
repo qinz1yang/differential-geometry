@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bochner.DirichletGap
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -2646,7 +2647,7 @@ private theorem elliptic_engine_const
           unfold ellipticTopC
           have h1 : J' + 1 - 1 = J' := by omega
           have h2 : J' + 1 + 1 = J' + 2 := by omega
-          rw [if_neg (by omega : ¬ (J' + 1 = 0)), h1, h2]
+          rw [ite_eq_right (by omega : ¬ (J' + 1 = 0)), h1, h2]
         rw [htop_eq]
         set L : ℝ := ∑ i ∈ Finset.range ((J' + 1 + 1 + 1) / 2 + 1),
           ‖rawTensorConnLapIter (I := I) g₀ 0 s i S‖ with hL
@@ -3491,13 +3492,13 @@ theorem covsum_hs_uniform_const
   rcases Nat.even_or_odd n with ⟨k, hk⟩ | ⟨k, hk⟩
   · have hm : n % 2 = 0 := by omega
     have hd : n / 2 = k := by omega
-    rw [if_pos hm, hd]
+    rw [ite_eq_left hm, hd]
     have hn2k : n = 2 * k := by omega
     subst hn2k
     exact jetEven_const (I := I) (M := M) g₀ Fc hFc hcurv s k S
   · have hm : ¬ (n % 2 = 0) := by omega
     have hd : n / 2 = k := by omega
-    rw [if_neg hm, hd]
+    rw [ite_eq_right hm, hd]
     have hn : n = 2 * k + 1 := by omega
     subst hn
     exact jetOdd_const (I := I) (M := M) g₀ Fc hFc hcurv s k S

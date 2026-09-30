@@ -120,8 +120,8 @@ theorem DifferentialGeometry.mfderiv_subtypeVal_comp {U : TopologicalSpace.Opens
         (Set.range I) ((extChartAt I x) x) else (0 : E →L[𝕜] F))
   by_cases hf : MDifferentiableAt I J f x
   · have hc := (MDifferentiableAt.subtypeVal_comp_iff (I := I) (J := J) f x).mpr hf
-    rw [if_pos hc, if_pos hf]
+    rw [ite_eq_left hc, ite_eq_left hf]
     rfl
   · have hc := mt (MDifferentiableAt.subtypeVal_comp_iff (I := I) (J := J) f x).mp hf
-    rw [if_neg hc, if_neg hf]
+    rw [ite_eq_right hc, ite_eq_right hf]
 end

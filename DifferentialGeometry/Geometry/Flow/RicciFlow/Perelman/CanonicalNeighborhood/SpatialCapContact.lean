@@ -81,7 +81,7 @@ theorem SpatialNeck.exists_cap_filling_or_containment
         closure (interior (W ∪ K)) = W ∪ K ∧ frontier (W ∪ K) = R ∧
         range (fun z : Sphere 2 => nk.map (z, level)) ⊆ interior (W ∪ K)) := by
   have hcapture := nk.image_slab_subset_cap_core_of_center_in_slab heps q hlevel hy cap hdepth
-  exact nk.exists_cap_filling_or_containment_of_sphere_subset hlevel cap.core_model
+  exact nk.exists_cap_filling_or_containment_of_sphere_subset hlevel cap.coreModel
     (by
       rintro z ⟨v, rfl⟩
       exact hcapture ⟨(v, level), ⟨mem_univ _, abs_le.mp hlevel⟩, rfl⟩)

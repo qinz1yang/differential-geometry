@@ -16,7 +16,7 @@ universe u
 
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact
 
 theorem finite_horn_construction_of_boundedAtDistance {kappa sigma : ℝ} {Phi : ℝ → ℝ}
@@ -28,7 +28,7 @@ theorem finite_horn_construction_of_boundedAtDistance {kappa sigma : ℝ} {Phi :
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth := by
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth := by
   let _ := hkappa
   let _ := hsigma
   let _ := hPhi
@@ -56,7 +56,7 @@ theorem finite_horn_construction_of_rmBallBound_and_ricciTensorBound
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth :=
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth :=
   finite_horn_construction_of_boundedAtDistance hkappa hsigma hPhi (by
     obtain ⟨epsStar, hepsStar, h⟩ :=
       bounded_curvature_at_distance_of_rmBallBound_and_ricciTensorBound hK hrm hric

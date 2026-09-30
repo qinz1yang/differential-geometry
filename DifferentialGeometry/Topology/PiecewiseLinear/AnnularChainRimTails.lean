@@ -87,13 +87,13 @@ theorem IsCanonicalTower.exists_upper_tail_subset
     · exact iUnion₂_mono' fun i hi => ⟨i, (le_max_right m n).trans hi, subset_rfl⟩
   obtain ⟨m, hm⟩ := (hI.inter_right hU.isClosed_compl).elim_directed_family_closed
     (fun m : ℤ => closure (⋃ i, ⋃ (_ : m ≤ i), φ '' S i))
-    (fun _ => isClosed_closure) hempty hdir
+    (fun _ => isClosed_closure) (Set.disjoint_iff_inter_eq_empty.mpr hempty) hdir
   refine ⟨m, fun i hi x hx => ?_⟩
   by_contra hxU
   have hxmem : x ∈ (closure I \ U) ∩ closure (⋃ j, ⋃ (_ : m ≤ j), φ '' S j) :=
     ⟨⟨subset_closure (htw.subsetInterior i hx), hxU⟩,
       subset_closure (mem_iUnion₂.mpr ⟨i, hi, hx⟩)⟩
-  exact Set.eq_empty_iff_forall_notMem.mp hm x hxmem
+  exact Set.disjoint_left.mp hm hxmem.1 hxmem.2
 
 theorem IsCanonicalTower.exists_lower_tail_subset
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
@@ -112,12 +112,12 @@ theorem IsCanonicalTower.exists_lower_tail_subset
     · exact iUnion₂_mono' fun i hi => ⟨i, hi.trans (min_le_right m n), subset_rfl⟩
   obtain ⟨m, hm⟩ := (hI.inter_right hU.isClosed_compl).elim_directed_family_closed
     (fun m : ℤ => closure (⋃ i, ⋃ (_ : i ≤ m), φ '' S i))
-    (fun _ => isClosed_closure) hempty hdir
+    (fun _ => isClosed_closure) (Set.disjoint_iff_inter_eq_empty.mpr hempty) hdir
   refine ⟨m, fun i hi x hx => ?_⟩
   by_contra hxU
   have hxmem : x ∈ (closure I \ U) ∩ closure (⋃ j, ⋃ (_ : j ≤ m), φ '' S j) :=
     ⟨⟨subset_closure (htw.subsetInterior i hx), hxU⟩,
       subset_closure (mem_iUnion₂.mpr ⟨i, hi, hx⟩)⟩
-  exact Set.eq_empty_iff_forall_notMem.mp hm x hxmem
+  exact Set.disjoint_left.mp hm hxmem.1 hxmem.2
 
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -144,7 +144,8 @@ theorem SmoothRepresentative.unitSpeed
         (mfderiv 𝓘(ℝ, ℝ) I r.curve t 1) = 1 := by
   have heq := r.eventuallyEq_at_of_mem_Ioo ht
   rw [show r.curve t = c.curve t from heq.self_of_nhds]
-  simpa only [heq.mfderiv_eq] using c.unitSpeed t ht
+  rw [heq.mfderiv_eq]
+  exact c.unitSpeed t ht
 
 def SmoothRepresentative.ofConnector
     {g : SmoothRiemannianMetric I M} {p q : M}

@@ -34,7 +34,7 @@ private theorem interior_stdClosedTarget (n : ℕ) :
   rfl
 
 private theorem stdProj_mem_stdClosedTarget (n : ℕ) {x : Fin (n + 2) → ℝ}
-    (hx : x ∈ stdSimplex ℝ (Fin (n + 2))) : stdProj n x ∈ stdClosedTarget n := by
+    (hx : x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) : stdProj n x ∈ stdClosedTarget n := by
   refine ⟨fun i => ?_, ?_⟩
   · rw [ofLp_stdProj]
     exact hx.1 _
@@ -46,7 +46,7 @@ private theorem stdProj_mem_stdClosedTarget (n : ℕ) {x : Fin (n + 2) → ℝ}
 theorem mem_interior_image_of_isPLHomeomorphOn_stdSimplex
     {n : ℕ} {f : (Fin (n + 2) → ℝ) → EuclideanSpace ℝ (Fin (n + 1))}
     {P : Set (EuclideanSpace ℝ (Fin (n + 1)))}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) P)
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) P)
     {x : Fin (n + 2) → ℝ} (hx : x ∈ openSimplex (stdVertices n)) :
     f x ∈ interior P := by
   let g : EuclideanSpace ℝ (Fin (n + 1)) → EuclideanSpace ℝ (Fin (n + 1)) :=
@@ -82,7 +82,7 @@ private theorem not_mem_interior_of_mem_boundaryComplex_of_isPLBall
   obtain ⟨y, hyB, rfl⟩ := hx
   intro hyint
   let g : EuclideanSpace ℝ (Fin (n + 1)) → EuclideanSpace ℝ (Fin (n + 1)) :=
-    fun z => stdProj n (Function.invFunOn f (stdSimplex ℝ (Fin (n + 2))) z)
+    fun z => stdProj n (Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) z)
   have hgcont : ContinuousOn g (interior K.space) :=
     (continuous_stdProj n).comp_continuousOn
       (hf.isPiecewiseAffineOn_invFunOn.continuousOn.mono interior_subset)
@@ -94,20 +94,20 @@ private theorem not_mem_interior_of_mem_boundaryComplex_of_isPLBall
     have hwinv := hf.bijOn.surjOn.mapsTo_invFunOn hwK
     have hliftz := stdLift_stdProj n hzinv.2
     have hliftw := stdLift_stdProj n hwinv.2
-    have hinveq : Function.invFunOn f (stdSimplex ℝ (Fin (n + 2))) z =
-        Function.invFunOn f (stdSimplex ℝ (Fin (n + 2))) w := by
+    have hinveq : Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) z =
+        Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) w := by
       calc
-        Function.invFunOn f (stdSimplex ℝ (Fin (n + 2))) z =
-            stdLift n (stdProj n (Function.invFunOn f (stdSimplex ℝ (Fin (n + 2))) z)) :=
+        Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) z =
+            stdLift n (stdProj n (Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) z)) :=
           hliftz.symm
         _ = stdLift n (stdProj n
-            (Function.invFunOn f (stdSimplex ℝ (Fin (n + 2))) w)) := by
+            (Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) w)) := by
           exact congrArg (stdLift n) hzw
-        _ = Function.invFunOn f (stdSimplex ℝ (Fin (n + 2))) w := hliftw
+        _ = Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) w := hliftw
     calc
-      z = f (Function.invFunOn f (stdSimplex ℝ (Fin (n + 2))) z) :=
+      z = f (Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) z) :=
         (hf.bijOn.invOn_invFunOn.2 hzK).symm
-      _ = f (Function.invFunOn f (stdSimplex ℝ (Fin (n + 2))) w) := congrArg f hinveq
+      _ = f (Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) w) := congrArg f hinveq
       _ = w := hf.bijOn.invOn_invFunOn.2 hwK
   have hgopen : IsOpen (g '' interior K.space) :=
     DifferentialGeometry.Topology.invariance_of_domain_isOpen_image isOpen_interior hgcont hginj
@@ -117,9 +117,9 @@ private theorem not_mem_interior_of_mem_boundaryComplex_of_isPLBall
   have hgy : g (f y) ∈ interior (stdClosedTarget n) :=
     interior_maximal hsub hgopen ⟨f y, hyint, rfl⟩
   rw [interior_stdClosedTarget] at hgy
-  have hyS : y ∈ stdSimplex ℝ (Fin (n + 2)) := simplexBoundary_stdVertices_space_subset n hyB
+  have hyS : y ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := simplexBoundary_stdVertices_space_subset n hyB
   have hinv := hf.bijOn.invOn_invFunOn.1 hyS
-  change stdProj n (Function.invFunOn f (stdSimplex ℝ (Fin (n + 2))) (f y)) ∈ stdTarget n at hgy
+  change stdProj n (Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (f y)) ∈ stdTarget n at hgy
   rw [hinv] at hgy
   have hopen : y ∈ openSimplex (stdVertices n) := by
     rw [← stdLift_stdProj n (x := y) hyS.2]

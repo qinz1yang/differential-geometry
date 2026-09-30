@@ -18,14 +18,14 @@ theorem HolderOnWith.extend_real
     · refine ⟨fun x => if x ∈ s then f x else f z, ?_, ?_⟩
       · intro x y
         by_cases hx : x ∈ s <;> by_cases hy : y ∈ s
-        · simpa only [if_pos hx, if_pos hy] using hf x hx y hy
-        · simpa only [if_pos hx, if_neg hy, NNReal.coe_zero, ENNReal.rpow_zero,
+        · simpa only [ite_eq_left hx, ite_eq_left hy] using hf x hx y hy
+        · simpa only [ite_eq_left hx, ite_eq_right hy, NNReal.coe_zero, ENNReal.rpow_zero,
             mul_one] using hf x hx z hz
-        · simpa only [if_neg hx, if_pos hy, NNReal.coe_zero, ENNReal.rpow_zero,
+        · simpa only [ite_eq_right hx, ite_eq_left hy, NNReal.coe_zero, ENNReal.rpow_zero,
             mul_one] using hf z hz y hy
-        · simp only [if_neg hx, if_neg hy, edist_self, zero_le]
+        · simp only [ite_eq_right hx, ite_eq_right hy, edist_self, zero_le]
       · intro x hx
-        exact if_pos hx
+        exact ite_eq_left hx
   have hαpos : 0 < (α : ℝ) := NNReal.coe_pos.mpr (pos_iff_ne_zero.mpr hα₀)
   let Y := Metric.Snowflaking X (α : ℝ) hαpos hα₁
   let : PseudoMetricSpace Y := Metric.Snowflaking.instPseudoMetricSpace

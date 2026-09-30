@@ -8,17 +8,14 @@ import Mathlib.Logic.Equiv.Fin.Basic
 import Mathlib.Data.Fin.Tuple.Basic
 
 
-open DifferentialGeometry.Analysis.Elliptic
 noncomputable section
 
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators Matrix RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
-open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -64,9 +61,9 @@ private lemma orthoFrame_expansion
     refine Finset.sum_congr rfl (fun b _ => ?_)
     rw [ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul]
   rw [hv, Finset.sum_eq_single a]
-  · rw [horth a a, if_pos rfl, mul_one]
+  · rw [horth a a, ite_eq_left rfl, mul_one]
   · intro b _ hba
-    rw [horth b a, if_neg (by simpa [eq_comm] using hba), mul_zero]
+    rw [horth b a, ite_eq_right (by simpa [eq_comm] using hba), mul_zero]
   · intro hb
     exact absurd (Finset.mem_univ a) hb
 
@@ -600,8 +597,7 @@ theorem tensorInnerPointwise_eq_sum_componentS_mul
     · exact (lower_toModel_append_eq_fiberNormSqComponent (I := I) (M := M) g r s x B
         (Module.finrank ℝ E) e p.1 p.2).symm
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry
 
 end

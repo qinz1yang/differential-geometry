@@ -26,7 +26,7 @@ theorem outwardCutCylinder_apply (Φ : PartialDiffeomorph ((𝓡 2).prod 𝓘(�
   change Φ (z, (if side then 1 else -1) + (if side then 1 / 2 else -(1 / 2)) * t) = _
   congr 1
   refine Prod.ext rfl ?_
-  cases side <;> simp only [Bool.false_eq_true, if_false, if_true] <;> ring
+  cases side <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;> ring
 
 theorem outwardCutCylinder_source
     (Φ : PartialDiffeomorph ((𝓡 2).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ThreeSpace) (Sphere 2 × ℝ) M ∞)
@@ -37,7 +37,7 @@ theorem outwardCutCylinder_source
   change (z, (if side then 1 else -1) + (if side then 1 / 2 else -(1 / 2)) * t) ∈
     univ ×ˢ Icc (-(3 / 2) : ℝ) (3 / 2)
   refine ⟨mem_univ _, ?_, ?_⟩ <;> cases side <;>
-    simp only [Bool.false_eq_true, if_false, if_true] <;> linarith [ht.1, ht.2]
+    simp only [Bool.false_eq_true, ite_false, ite_true] <;> linarith [ht.1, ht.2]
 
 theorem outwardCutCylinder_upper (Φ : PartialDiffeomorph ((𝓡 2).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ThreeSpace) (Sphere 2 × ℝ) M ∞) (side : Bool)
     (z : Sphere 2) :
@@ -69,7 +69,7 @@ private theorem outwardCutCylinder_image_subset_tube :
   rintro _ ⟨⟨z, t⟩, ⟨_, ht⟩, rfl⟩
   let s : ℝ := if b.2 then 1 + t / 2 else -1 - t / 2
   have hs : s ∈ Icc (-2 : ℝ) 2 := by
-    cases hside : b.2 <;> simp only [s, hside, Bool.false_eq_true, if_false, if_true] <;>
+    cases hside : b.2 <;> simp only [s, hside, Bool.false_eq_true, ite_false, ite_true] <;>
       constructor <;> linarith [ht.1, ht.2]
   exact ⟨(z, ⟨s, hs⟩), (hmap _).trans (outwardCutCylinder_apply Φ b.2 z t).symm⟩
 
@@ -79,7 +79,7 @@ private theorem outwardCutCylinder_mem_closedBands_iff (z : Sphere 2) {t : ℝ}
         ⋃ a, T.tube a '' {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1} ↔ t = 0 := by
   let s : ℝ := if b.2 then 1 + t / 2 else -1 - t / 2
   have hs : s ∈ Icc (-2 : ℝ) 2 := by
-    cases hside : b.2 <;> simp only [s, hside, Bool.false_eq_true, if_false, if_true] <;>
+    cases hside : b.2 <;> simp only [s, hside, Bool.false_eq_true, ite_false, ite_true] <;>
       constructor <;> linarith [ht.1, ht.2]
   let q : TubeDomain := (z, ⟨s, hs⟩)
   have he : outwardCutCylinder Φ b.2 (z, t) = T.tube b.1 q :=
@@ -96,7 +96,7 @@ private theorem outwardCutCylinder_mem_closedBands_iff (z : Sphere 2) {t : ℝ}
     have hs' := congrArg (fun q : TubeDomain => q.2.val) hq
     change r.2.val = s at hs'
     have hb : s ∈ Icc (-1 : ℝ) 1 := hs' ▸ hr
-    cases hside : b.2 <;> simp only [s, hside, Bool.false_eq_true, if_false, if_true] at hb <;>
+    cases hside : b.2 <;> simp only [s, hside, Bool.false_eq_true, ite_false, ite_true] at hb <;>
       linarith [hb.1, hb.2, ht.1]
   · rintro rfl
     rw [T.outwardCutCylinder_lower Φ b hmap]

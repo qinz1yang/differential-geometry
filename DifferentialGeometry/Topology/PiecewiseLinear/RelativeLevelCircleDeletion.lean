@@ -54,8 +54,8 @@ theorem eventually_exists_vertexMap_eq_height_off_fixed
     if hv : v ∈ R.vertices then Classical.choose (hf ⟨v, hv⟩) else v
   have hφ : ∀ v ∈ R.vertices, P f v (φ v) := by
     intro v hv
-    simpa only [φ, dif_pos hv] using Classical.choose_spec (hf ⟨v, hv⟩)
-  have hfix : ∀ v ∉ R.vertices, φ v = v := fun v hv => dif_neg hv
+    simpa only [φ, dite_eq_left hv] using Classical.choose_spec (hf ⟨v, hv⟩)
+  have hfix : ∀ v ∉ R.vertices, φ v = v := fun v hv => dite_eq_right hv
   refine ⟨φ, ?_, ?_, fun v hv => (hφ v hv).1, fun v hv => (hφ v hv).2.2.2⟩
   · intro v hvB
     by_cases hvR : v ∈ R.vertices

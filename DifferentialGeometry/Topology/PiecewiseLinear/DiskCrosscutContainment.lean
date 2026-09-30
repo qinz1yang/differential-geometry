@@ -13,9 +13,9 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 theorem IsPLHomeomorphOn.exists_disk_subset_of_circle_subset {D₀ J : Set E}
-    {q₀ : (Fin 3 → ℝ) → E} (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀)
+    {q₀ : (Fin 3 → ℝ) → E} (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
     (hJ : IsPLSphere 1 J) (hJD₀ : J ⊆ D₀) :
-    ∃ (D : Set E) (q : (Fin 3 → ℝ) → E), IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+    ∃ (D : Set E) (q : (Fin 3 → ℝ) → E), IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ D₀ ∧ q '' stdSimplexBoundary 2 = J := by
   obtain ⟨Pl, ρ, hPl, hρ, -⟩ := hq₀.exists_planarModel
   let σ := Function.invFunOn ρ Pl
@@ -43,8 +43,8 @@ theorem IsPLHomeomorphOn.exists_disk_subset_of_circle_subset {D₀ J : Set E}
     frontier_closure_inside_of_isPLSphere_one hJp, hρJ]
 
 theorem IsPLHomeomorphOn.disk_inter_boundary_subset_boundary {D D₀ : Set E}
-    {q q₀ : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
-    (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀) (hDD₀ : D ⊆ D₀) :
+    {q q₀ : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
+    (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀) (hDD₀ : D ⊆ D₀) :
     D ∩ (q₀ '' stdSimplexBoundary 2) ⊆ q '' stdSimplexBoundary 2 := by
   obtain ⟨Pl, ρ, hPl, hρ, hρbd⟩ := hq₀.exists_planarModel
   let σ := Function.invFunOn ρ Pl
@@ -67,12 +67,12 @@ theorem IsPLHomeomorphOn.disk_inter_boundary_subset_boundary {D D₀ : Set E}
   exact ⟨a, ha, hax'⟩
 
 theorem IsPLHomeomorphOn.exists_disk_between_proper_arc_and_boundary_arc {D₀ A B : Set E}
-    {q₀ : (Fin 3 → ℝ) → E} (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀)
+    {q₀ : (Fin 3 → ℝ) → E} (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
     {γ δ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
     (hδ : IsPLHomeomorphOn δ (Icc 0 1) B) (hδ0 : δ 0 = γ 0) (hδ1 : δ 1 = γ 1)
     (hAD₀ : A ⊆ D₀) (hBJ₀ : B ⊆ q₀ '' stdSimplexBoundary 2)
     (hAJ₀ : A ∩ (q₀ '' stdSimplexBoundary 2) = {γ 0, γ 1}) :
-    ∃ (D : Set E) (q : (Fin 3 → ℝ) → E), IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+    ∃ (D : Set E) (q : (Fin 3 → ℝ) → E), IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ D₀ ∧ q '' stdSimplexBoundary 2 = A ∪ B ∧ D ∩ (q₀ '' stdSimplexBoundary 2) = B := by
   have hendsB : ({γ 0, γ 1} : Set E) ⊆ B := by
     rw [← hδ0, ← hδ1]

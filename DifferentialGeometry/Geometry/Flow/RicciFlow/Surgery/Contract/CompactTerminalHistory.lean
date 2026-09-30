@@ -34,7 +34,7 @@ private theorem compact_volume_of_terminal_heq
 
 theorem exists_extension_of_compact_low_components
     {P : OrientedThreeStage.{u}} {g : P.Metric}
-    (H : RetainedCoreHistory P) (A : InitialIdentification P g H.toHistory)
+    (H : RetainedCoreHistory.{u}) (A : InitialIdentification P g H.toHistory)
     (htime : H.time (Fin.last H.eventCount) = H.horizon)
     (D : OneStepIncoming.{u})
     (hstage : H.stage (Fin.last H.eventCount) = D.stage)
@@ -59,7 +59,7 @@ theorem exists_extension_of_compact_low_components
           ConnectedComponents.mk ⟨x.val, hx⟩ = c ∧
             metricScalarAt D.terminal.metric x ≤
               ((D.parameters.delta D.endTime * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) ∧
-      ∃ (K : RetainedCoreHistory P) (B : InitialIdentification P g K.toHistory)
+      ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P g K.toHistory)
         (i : Fin K.eventCount),
         A.IsPrefixOf B ∧ D.endTime < K.horizon ∧ K.eventCount = H.eventCount + 1 ∧
         K.time (Fin.last K.eventCount) = D.endTime ∧ K.stage (Fin.last K.eventCount) = Q ∧

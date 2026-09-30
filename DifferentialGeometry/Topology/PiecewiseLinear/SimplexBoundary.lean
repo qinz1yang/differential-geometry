@@ -274,9 +274,9 @@ theorem exists_mem_convexHull_insert_erase {T : Finset E}
   have hsmul_erase : ∑ v ∈ T.erase v₀, (weights T x v - s * weights T p v) • v = x - s • p := by
     rw [← hsmulT, ← Finset.add_sum_erase T _ hv₀, ha₀, zero_smul, zero_add]
   set c : E → ℝ := fun u => if u = p then s else weights T x u - s * weights T p u with hc
-  have hcp : c p = s := by simp only [hc, if_true]
+  have hcp : c p = s := by simp only [hc, ite_true]
   have hcu : ∀ u ∈ T.erase v₀, c u = weights T x u - s * weights T p u := fun u hu => by
-    simp only [hc, if_neg (ne_of_mem_of_not_mem hu hpv₀)]
+    simp only [hc, ite_eq_right (ne_of_mem_of_not_mem hu hpv₀)]
   refine ⟨v₀, hv₀, mem_convexHull_iff_exists_weights.mpr ⟨c, ?_, ?_, ?_⟩⟩
   · intro u hu
     rcases Finset.mem_insert.mp hu with h | h
@@ -302,7 +302,7 @@ theorem isPLSphere_biUnion_erase [FiniteDimensional ℝ E] {n : ℕ} (T : Finset
   let A : (Fin (n + 2) → ℝ) →ₗ[ℝ] E := Fintype.linearCombination ℝ q
   have hA : ∀ x, A x = ∑ i, x i • q i := fun x => by simp [A, Fintype.linearCombination_apply]
   let wx : (Fin (n + 2) → ℝ) → E → ℝ := fun x v => if h : v ∈ T then x (e.symm ⟨v, h⟩) else 0
-  have hwx : ∀ x i, wx x (q i) = x i := fun x i => by simp only [wx, dif_pos (hq i), hqe]
+  have hwx : ∀ x i, wx x (q i) = x i := fun x i => by simp only [wx, dite_eq_left (hq i), hqe]
   have hwx_sum : ∀ x, ∑ v ∈ T, wx x v = ∑ i, x i := fun x => by
     rw [sum_reindex_of_equiv e]
     exact Finset.sum_congr rfl fun i _ => hwx x i
@@ -310,13 +310,13 @@ theorem isPLSphere_biUnion_erase [FiniteDimensional ℝ E] {n : ℕ} (T : Finset
     rw [sum_reindex_of_equiv e, hA]
     exact Finset.sum_congr rfl fun i _ => by rw [hwx x i]
   let g : E → Fin (n + 2) → ℝ := fun y i => weights T y (q i)
-  have hg_mem : ∀ y ∈ convexHull ℝ (T : Set E), g y ∈ stdSimplex ℝ (Fin (n + 2)) := fun y hy =>
+  have hg_mem : ∀ y ∈ convexHull ℝ (T : Set E), g y ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := fun y hy =>
     ⟨fun i => weights_nonneg hy (hq i),
       (sum_reindex_of_equiv e (weights T y)).symm.trans (sum_weights hy)⟩
   have hAg : ∀ y ∈ convexHull ℝ (T : Set E), A (g y) = y := fun y hy => by
     rw [hA]
     exact (sum_reindex_of_equiv e fun v => weights T y v • v).symm.trans (sum_weights_smul hy)
-  have hinj : InjOn A (stdSimplex ℝ (Fin (n + 2))) := fun x hx x' hx' hxx' => by
+  have hinj : InjOn A (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) := fun x hx x' hx' hxx' => by
     have h := eq_on_of_sum_smul_eq hT ((hwx_sum x).trans hx.2) ((hwx_sum x').trans hx'.2)
       (by rw [hwx_smul x, hwx_smul x', hxx'])
     funext i
@@ -345,7 +345,7 @@ theorem isPLSphere_biUnion_erase [FiniteDimensional ℝ E] {n : ℕ} (T : Finset
       (Finset.notMem_erase v T)
   have hbij : BijOn A (stdSimplexBoundary (n + 1)) Q := ⟨hmaps, hinj.mono fun x hx => hx.1, hsurj⟩
   refine ⟨A, hbij, ?_, ?_⟩
-  · have hSU : stdSimplexBoundary (n + 1) = ⋃ i : Fin (n + 2), (stdSimplex ℝ (Fin (n + 2)) ∩
+  · have hSU : stdSimplexBoundary (n + 1) = ⋃ i : Fin (n + 2), (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) ∩
         (LinearMap.proj i : (Fin (n + 2) → ℝ) →ₗ[ℝ] ℝ).toAffineMap ⁻¹'
           convexHull ℝ (({0} : Finset ℝ) : Set ℝ)) := by
       ext x
@@ -364,7 +364,7 @@ theorem isPLSphere_biUnion_erase [FiniteDimensional ℝ E] {n : ℕ} (T : Finset
   · let qv : E → Fin (n + 2) → ℝ := fun v =>
       if h : v ∈ T then Pi.single (e.symm ⟨v, h⟩) (1 : ℝ) else 0
     have hqv : ∀ i, qv (e i) = Pi.single i 1 := fun i => by
-      simp only [qv, dif_pos (e i).2, Subtype.coe_eta, Equiv.symm_apply_apply]
+      simp only [qv, dite_eq_left (e i).2, Subtype.coe_eta, Equiv.symm_apply_apply]
     obtain ⟨B, hB⟩ := exists_affineMap_eqOn hT qv
     have hgB : EqOn g B (convexHull ℝ (T : Set E)) := by
       intro y hy
@@ -380,7 +380,7 @@ theorem isPLSphere_biUnion_erase [FiniteDimensional ℝ E] {n : ℕ} (T : Finset
         sum_reindex_of_equiv e fun v => weights T y v • qv v]
       funext j
       simp only [g, q, Finset.sum_apply, Pi.smul_apply, hqv, Pi.single_apply, smul_eq_mul, mul_ite,
-        mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     have hQU : Q = ⋃ v : T, convexHull ℝ ((T.erase v : Finset E) : Set E) := by
       ext y
       rw [hQ, mem_iUnion₂, mem_iUnion]

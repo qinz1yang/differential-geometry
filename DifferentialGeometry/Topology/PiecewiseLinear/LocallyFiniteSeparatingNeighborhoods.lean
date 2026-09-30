@@ -44,7 +44,7 @@ theorem exists_isOpen_inter_subset_interior_of_locallyFinite {X ι : Type*} [Met
   have hEO : ∀ i, E i ⊆ O i := by
     intro i x hx
     have hne : (E i).Nonempty := ⟨x, hx⟩
-    simp only [O, if_pos hne]
+    simp only [O, ite_eq_left hne]
     split_ifs with hF
     · change infDist x (E i) < infDist x (F i)
       rw [infDist_zero_of_mem hx]
@@ -58,8 +58,8 @@ theorem exists_isOpen_inter_subset_interior_of_locallyFinite {X ι : Type*} [Met
     · by_cases hEj : (E j).Nonempty
       · have hFi : (F i).Nonempty := hEj.mono (hEF i j hij.symm)
         have hFj : (F j).Nonempty := hEi.mono (hEF j i hij)
-        simp only [O, if_pos hEi, if_pos hFi] at hi
-        simp only [O, if_pos hEj, if_pos hFj] at hj
+        simp only [O, ite_eq_left hEi, ite_eq_left hFi] at hi
+        simp only [O, ite_eq_left hEj, ite_eq_left hFj] at hj
         have h1 : infDist x (F i) ≤ infDist x (E j) :=
           infDist_le_infDist_of_subset (hEF i j hij.symm) hEj
         have h2 : infDist x (F j) ≤ infDist x (E i) :=
@@ -67,9 +67,9 @@ theorem exists_isOpen_inter_subset_interior_of_locallyFinite {X ι : Type*} [Met
         have hi' : infDist x (E i) < infDist x (F i) := hi
         have hj' : infDist x (E j) < infDist x (F j) := hj
         linarith
-      · simp only [O, if_neg hEj] at hj
+      · simp only [O, ite_eq_right hEj] at hj
         exact hj
-    · simp only [O, if_neg hEi] at hi
+    · simp only [O, ite_eq_right hEi] at hi
       exact hi
   refine ⟨fun i => (O i ∪ interior Z) ∩ G i,
     fun i => ((hOo i).union isOpen_interior).inter (hG i), fun i x hx => ⟨?_, hAG i hx⟩,

@@ -31,7 +31,7 @@ theorem exists_gluing_of_isCompact {ι : Type*}
     intro x hx
     have hex : ∃ j, x ∈ U j := ⟨i, hx⟩
     dsimp only [f]
-    rw [dif_pos hex]
+    rw [dite_eq_left hex]
     exact heq (Classical.choose hex) i ⟨Classical.choose_spec hex, hx⟩
   have hlocal : IsLocalDiffeomorphOn I J n f K := by
     intro x
@@ -86,12 +86,12 @@ theorem exists_eqOn_neighborhoods_of_isCompact [T3Space M]
     intro x hx
     exact hx.2.2.resolve_right (fun h => h (subset_closure hx.1))
   let f := V.piecewise D₀ D₁
-  have hf₀ : EqOn f D₀ V := fun x hx => if_pos hx
+  have hf₀ : EqOn f D₀ V := fun x hx => ite_eq_left hx
   have hf₁ : EqOn f D₁ W := by
     intro x hx
     by_cases hxV : x ∈ V
     · exact (hf₀ hxV).trans (heq (hVWsub ⟨hxV, hx⟩))
-    · exact if_neg hxV
+    · exact ite_eq_right hxV
   have hfK₀ : EqOn f D₀ K₀ := hf₀.mono hK₀V
   have hfK₁ : EqOn f D₁ K₁ := hf₁.mono hK₁W
   have hcross {x y : M} (hx : x ∈ K₀) (hy : y ∈ K₁) (hxy : D₀ x = D₁ y) : x = y := by

@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Integration.L2.Pairing.MovingFrameBracketDi
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.FirstOrder.LoweredCovariantDerivative
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Weitzenbock.IntegratedSecondOrder
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.CurvatureTraceSmoothness
+
+open DifferentialGeometry.TensorMetric
+  (covariantTensorInnerPointwise)
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

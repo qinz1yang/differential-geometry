@@ -21,7 +21,7 @@ private theorem deriv_add_period_real {F : ℝ → ℝ} (hF : ∀ z, F (z + 1) =
 namespace CurveMap
 
 omit [CompleteSpace E] in
-theorem curvatureSq_add_period [I.Boundaryless] (g : ℝ → SmoothRiemannianMetric I Q)
+theorem curvatureSq_add_period (g : ℝ → SmoothRiemannianMetric I Q)
     (c : CurveMap Q) (J : Set ℝ) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
     (t : ℝ) (ht : t ∈ J) (x : ℝ) :
     c.curvatureSq g (x + 1) t = c.curvatureSq g x t := by

@@ -461,7 +461,7 @@ theorem abs_dirichletEnergy_le_norm
       exact integral_mono_of_nonneg
         (Filter.Eventually.of_forall fun _ => abs_nonneg _)
         hprod (Filter.Eventually.of_forall fun x =>
-          DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+          DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
             (I := I_half n) (M := M) h x _ _)
     _ ≤ (eLpNorm fu 2
           (riemannianVolumeMeasure (I := I_half n) (M := M) h)).toReal *
@@ -511,7 +511,8 @@ theorem abs_dirichletDrift_le_norm
         (riemannianVolumeMeasure (I := I_half n) (M := M) h) by
       simpa only [fv, Real.norm_eq_abs] using
         (eLpNorm_norm (p := 2)
-          (μ := riemannianVolumeMeasure (I := I_half n) (M := M) h) v.toFun)]
+          (μ := riemannianVolumeMeasure (I := I_half n) (M := M) h) v.toFun
+          v.memLp_two.aestronglyMeasurable)]
     exact dirichletScalar_eLpNorm_toReal_le_norm h v
   unfold dirichletDrift
   calc
@@ -529,7 +530,7 @@ theorem abs_dirichletDrift_le_norm
               v.toFun x| ≤ Real.sqrt (max B 0) * (fu x * fv x)
           rw [abs_mul]
           have hmetric :=
-            DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+            DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
               (I := I_half n) (M := M) h x (X x)
                 (gradFun (I := I_half n) h u.toFun x)
           have hroot : Real.sqrt (h.inner x (X x) (X x)) ≤ Real.sqrt (max B 0) := by

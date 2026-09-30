@@ -43,11 +43,11 @@ noncomputable def sigmaSplitPair (i j : ι) (hij : i ≠ j) :
           (continuous_inl : Continuous (Sum.inl : X i → X i ⊕ X j))
     · by_cases hkj : k = j
       · subst k
-        simp only [dif_neg hki]
+        simp only [dite_eq_right hki]
         exact (continuous_inl : Continuous (Sum.inl : X i ⊕ X j →
           (X i ⊕ X j) ⊕ (Σ k : {k // k ≠ i ∧ k ≠ j}, X k.val))).comp
             (continuous_inr : Continuous (Sum.inr : X j → X i ⊕ X j))
-      · simp only [dif_neg hki, dif_neg hkj]
+      · simp only [dite_eq_right hki, dite_eq_right hkj]
         exact continuous_inr.comp
           (@continuous_sigmaMk {k // k ≠ i ∧ k ≠ j} (fun k => X k.val)
             (fun k => inferInstance) ⟨k, hki, hkj⟩)
@@ -264,7 +264,7 @@ def sigmaSplit (i : V) :
     · subst v
       simp only
       exact continuous_inl
-    · simp only [dif_neg h]
+    · simp only [dite_eq_right h]
       exact continuous_inr.comp
         (@continuous_sigmaMk {v // v ≠ i} (fun v => X v.val)
           (fun v => inferInstance) ⟨v, h⟩)

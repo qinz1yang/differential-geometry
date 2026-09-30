@@ -83,7 +83,7 @@ theorem exists_uniform_closed_initial_metric_bounds {D : RealTimeInterval}
             ∀ S : SolutionOn (I := I) (M := M) D, Good S →
               ∀ t ∈ Icc 0 T, ∀ x : M,
                 metricCovDerivNorm r (S.base.metric t) (S.base.metric 0) x ≤ Cg r := by
-          simpa only [Cg, dif_pos hr] using (ih r hr).choose_spec
+          simpa only [Cg, dite_eq_left hr] using (ih r hr).choose_spec
         let cf := ricTowerCoeffs (Module.finrank ℝ E) N Λ Cg (κ N)
         refine ⟨metricCovOrderEvolutionConstant cf.slope cf.offset T 0, Real.sqrt_nonneg _, ?_⟩
         intro S hS t ht x

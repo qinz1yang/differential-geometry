@@ -37,7 +37,7 @@ private theorem isSmoothEmbedding_diffeomorph_comp
   intro x
   rw [mfderiv_comp x (d.contMDiff.mdifferentiableAt hn) (hf.contMDiff.mdifferentiableAt hn)]
   exact ((d.isLocalDiffeomorph (f x)).mfderivToContinuousLinearEquiv hn).injective.comp
-    ((hf.isImmersion.isImmersionAt x).injective_mfderiv hn)
+    ((hf.isImmersion.isImmersionAt x).mfderiv_injective hn)
 
 
 end

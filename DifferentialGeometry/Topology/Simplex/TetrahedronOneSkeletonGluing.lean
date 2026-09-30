@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.TetrahedronOneSkeleton
 import Mathlib.Topology.ContinuousMap.Basic
 import Mathlib.Topology.Separation.Hausdorff
@@ -5,21 +6,23 @@ import Mathlib.Topology.CompactOpen
 
 noncomputable section
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 def edgeIntoTetrahedronOneSkeleton (i : Fin 4) (j : Fin 3) :
-    C(stdSimplex ℝ (Fin 2), tetrahedronOneSkeleton) :=
+    C(coordinateSet ℝ (Fin 2), tetrahedronOneSkeleton) :=
   (faceBoundaryIntoTetrahedronOneSkeleton i).comp
-    ⟨fun p => ⟨stdSimplex.map j.succAbove p, ⟨j, map_succAbove_apply_pivot j p⟩⟩,
-      (stdSimplex.continuous_map j.succAbove).subtype_mk _⟩
+    ⟨fun p => ⟨coordinateMap j.succAbove p, ⟨j, map_succAbove_apply_pivot j p⟩⟩,
+      (continuous_coordinateMap j.succAbove).subtype_mk _⟩
 
 @[simp] theorem edgeIntoTetrahedronOneSkeleton_val (i : Fin 4) (j : Fin 3)
-    (p : stdSimplex ℝ (Fin 2)) :
+    (p : coordinateSet ℝ (Fin 2)) :
     (edgeIntoTetrahedronOneSkeleton i j p).val =
-      stdSimplex.map i.succAbove (stdSimplex.map j.succAbove p) := rfl
+      coordinateMap i.succAbove (coordinateMap j.succAbove p) := rfl
 
 theorem exists_edgeIntoTetrahedronOneSkeleton_eq (p : tetrahedronOneSkeleton) :
-    ∃ (i : Fin 4) (j : Fin 3) (q : stdSimplex ℝ (Fin 2)),
+    ∃ (i : Fin 4) (j : Fin 3) (q : coordinateSet ℝ (Fin 2)),
       edgeIntoTetrahedronOneSkeleton i j q = p := by
   obtain ⟨i, q, rfl⟩ := exists_faceBoundaryIntoTetrahedronOneSkeleton_eq p
   obtain ⟨j, hj⟩ := q.property
@@ -30,7 +33,7 @@ theorem exists_edgeIntoTetrahedronOneSkeleton_eq (p : tetrahedronOneSkeleton) :
   exact congrArg (fun z : face j => z.val) (faceInsert_faceDelete j ⟨q.val, hj⟩)
 
 private def tetrahedronEdgeQuotientMap :
-    C((Fin 4 × Fin 3) × stdSimplex ℝ (Fin 2), tetrahedronOneSkeleton) :=
+    C((Fin 4 × Fin 3) × coordinateSet ℝ (Fin 2), tetrahedronOneSkeleton) :=
   ⟨fun z => edgeIntoTetrahedronOneSkeleton z.1.1 z.1.2 z.2,
     continuous_prod_of_discrete_left.mpr fun i =>
       (edgeIntoTetrahedronOneSkeleton i.1 i.2).continuous⟩
@@ -49,11 +52,11 @@ private theorem tetrahedronEdgeQuotientMap_isQuotientMap :
 variable {X : Type*} [TopologicalSpace X]
 
 def tetrahedronOneSkeletonDesc
-    (f : Fin 4 → Fin 3 → C(stdSimplex ℝ (Fin 2), X))
-    (h : ∀ (i k : Fin 4) (j l : Fin 3) (p q : stdSimplex ℝ (Fin 2)),
+    (f : Fin 4 → Fin 3 → C(coordinateSet ℝ (Fin 2), X))
+    (h : ∀ (i k : Fin 4) (j l : Fin 3) (p q : coordinateSet ℝ (Fin 2)),
       edgeIntoTetrahedronOneSkeleton i j p = edgeIntoTetrahedronOneSkeleton k l q →
         f i j p = f k l q) : C(tetrahedronOneSkeleton, X) := by
-  let F : C((Fin 4 × Fin 3) × stdSimplex ℝ (Fin 2), X) :=
+  let F : C((Fin 4 × Fin 3) × coordinateSet ℝ (Fin 2), X) :=
     ⟨fun z => f z.1.1 z.1.2 z.2,
       continuous_prod_of_discrete_left.mpr fun i => (f i.1 i.2).continuous⟩
   have hF : Function.FactorsThrough F tetrahedronEdgeQuotientMap := by
@@ -62,13 +65,13 @@ def tetrahedronOneSkeletonDesc
   exact tetrahedronEdgeQuotientMap_isQuotientMap.lift F hF
 
 @[simp] theorem tetrahedronOneSkeletonDesc_edge
-    (f : Fin 4 → Fin 3 → C(stdSimplex ℝ (Fin 2), X))
-    (h : ∀ (i k : Fin 4) (j l : Fin 3) (p q : stdSimplex ℝ (Fin 2)),
+    (f : Fin 4 → Fin 3 → C(coordinateSet ℝ (Fin 2), X))
+    (h : ∀ (i k : Fin 4) (j l : Fin 3) (p q : coordinateSet ℝ (Fin 2)),
       edgeIntoTetrahedronOneSkeleton i j p = edgeIntoTetrahedronOneSkeleton k l q →
         f i j p = f k l q)
-    (i : Fin 4) (j : Fin 3) (p : stdSimplex ℝ (Fin 2)) :
+    (i : Fin 4) (j : Fin 3) (p : coordinateSet ℝ (Fin 2)) :
     tetrahedronOneSkeletonDesc f h (edgeIntoTetrahedronOneSkeleton i j p) = f i j p := by
-  let F : C((Fin 4 × Fin 3) × stdSimplex ℝ (Fin 2), X) :=
+  let F : C((Fin 4 × Fin 3) × coordinateSet ℝ (Fin 2), X) :=
     ⟨fun z => f z.1.1 z.1.2 z.2,
       continuous_prod_of_discrete_left.mpr fun i => (f i.1 i.2).continuous⟩
   have hF : Function.FactorsThrough F tetrahedronEdgeQuotientMap := by
@@ -78,12 +81,12 @@ def tetrahedronOneSkeletonDesc
   exact congrArg (fun k => k ((i, j), p)) he
 
 theorem tetrahedronOneSkeletonDesc_unique
-    (f : Fin 4 → Fin 3 → C(stdSimplex ℝ (Fin 2), X))
-    (h : ∀ (i k : Fin 4) (j l : Fin 3) (p q : stdSimplex ℝ (Fin 2)),
+    (f : Fin 4 → Fin 3 → C(coordinateSet ℝ (Fin 2), X))
+    (h : ∀ (i k : Fin 4) (j l : Fin 3) (p q : coordinateSet ℝ (Fin 2)),
       edgeIntoTetrahedronOneSkeleton i j p = edgeIntoTetrahedronOneSkeleton k l q →
         f i j p = f k l q)
     (g : C(tetrahedronOneSkeleton, X))
-    (hg : ∀ (i : Fin 4) (j : Fin 3) (p : stdSimplex ℝ (Fin 2)),
+    (hg : ∀ (i : Fin 4) (j : Fin 3) (p : coordinateSet ℝ (Fin 2)),
       g (edgeIntoTetrahedronOneSkeleton i j p) = f i j p) :
     g = tetrahedronOneSkeletonDesc f h := by
   ext p
@@ -91,18 +94,18 @@ theorem tetrahedronOneSkeletonDesc_unique
   rw [hg, tetrahedronOneSkeletonDesc_edge]
 
 private def tetrahedronEdgePathMap
-    (f : Fin 4 → Fin 3 → C(unitInterval × stdSimplex ℝ (Fin 2), X)) :
-    Fin 4 → Fin 3 → C(stdSimplex ℝ (Fin 2), C(unitInterval, X)) := fun i j =>
+    (f : Fin 4 → Fin 3 → C(unitInterval × coordinateSet ℝ (Fin 2), X)) :
+    Fin 4 → Fin 3 → C(coordinateSet ℝ (Fin 2), C(unitInterval, X)) := fun i j =>
   ((f i j).comp ⟨fun z => (z.2, z.1), continuous_snd.prodMk continuous_fst⟩).curry
 
 def tetrahedronOneSkeletonHomotopyDesc
-    (f : Fin 4 → Fin 3 → C(unitInterval × stdSimplex ℝ (Fin 2), X))
-    (h : ∀ (i k : Fin 4) (j l : Fin 3) (p q : stdSimplex ℝ (Fin 2)) (t : unitInterval),
+    (f : Fin 4 → Fin 3 → C(unitInterval × coordinateSet ℝ (Fin 2), X))
+    (h : ∀ (i k : Fin 4) (j l : Fin 3) (p q : coordinateSet ℝ (Fin 2)) (t : unitInterval),
       edgeIntoTetrahedronOneSkeleton i j p = edgeIntoTetrahedronOneSkeleton k l q →
         f i j (t, p) = f k l (t, q)) :
     C(unitInterval × tetrahedronOneSkeleton, X) := by
   let F := tetrahedronEdgePathMap f
-  have hF : ∀ (i k : Fin 4) (j l : Fin 3) (p q : stdSimplex ℝ (Fin 2)),
+  have hF : ∀ (i k : Fin 4) (j l : Fin 3) (p q : coordinateSet ℝ (Fin 2)),
       edgeIntoTetrahedronOneSkeleton i j p = edgeIntoTetrahedronOneSkeleton k l q →
         F i j p = F k l q := by
     intro i k j l p q hpq
@@ -113,15 +116,15 @@ def tetrahedronOneSkeletonHomotopyDesc
     ⟨fun z => (z.2, z.1), continuous_snd.prodMk continuous_fst⟩
 
 @[simp] theorem tetrahedronOneSkeletonHomotopyDesc_edge
-    (f : Fin 4 → Fin 3 → C(unitInterval × stdSimplex ℝ (Fin 2), X))
-    (h : ∀ (i k : Fin 4) (j l : Fin 3) (p q : stdSimplex ℝ (Fin 2)) (t : unitInterval),
+    (f : Fin 4 → Fin 3 → C(unitInterval × coordinateSet ℝ (Fin 2), X))
+    (h : ∀ (i k : Fin 4) (j l : Fin 3) (p q : coordinateSet ℝ (Fin 2)) (t : unitInterval),
       edgeIntoTetrahedronOneSkeleton i j p = edgeIntoTetrahedronOneSkeleton k l q →
         f i j (t, p) = f k l (t, q))
-    (i : Fin 4) (j : Fin 3) (p : stdSimplex ℝ (Fin 2)) (t : unitInterval) :
+    (i : Fin 4) (j : Fin 3) (p : coordinateSet ℝ (Fin 2)) (t : unitInterval) :
     tetrahedronOneSkeletonHomotopyDesc f h (t, edgeIntoTetrahedronOneSkeleton i j p) =
       f i j (t, p) := by
   let F := tetrahedronEdgePathMap f
-  have hF : ∀ (i k : Fin 4) (j l : Fin 3) (p q : stdSimplex ℝ (Fin 2)),
+  have hF : ∀ (i k : Fin 4) (j l : Fin 3) (p q : coordinateSet ℝ (Fin 2)),
       edgeIntoTetrahedronOneSkeleton i j p = edgeIntoTetrahedronOneSkeleton k l q →
         F i j p = F k l q := by
     intro i k j l p q hpq
@@ -133,12 +136,12 @@ def tetrahedronOneSkeletonHomotopyDesc
   rfl
 
 theorem tetrahedronOneSkeletonHomotopyDesc_eq
-    (f : Fin 4 → Fin 3 → C(unitInterval × stdSimplex ℝ (Fin 2), X))
-    (h : ∀ (i k : Fin 4) (j l : Fin 3) (p q : stdSimplex ℝ (Fin 2)) (t : unitInterval),
+    (f : Fin 4 → Fin 3 → C(unitInterval × coordinateSet ℝ (Fin 2), X))
+    (h : ∀ (i k : Fin 4) (j l : Fin 3) (p q : coordinateSet ℝ (Fin 2)) (t : unitInterval),
       edgeIntoTetrahedronOneSkeleton i j p = edgeIntoTetrahedronOneSkeleton k l q →
         f i j (t, p) = f k l (t, q))
     (t : unitInterval) (g : tetrahedronOneSkeleton → X)
-    (hg : ∀ (i : Fin 4) (j : Fin 3) (p : stdSimplex ℝ (Fin 2)),
+    (hg : ∀ (i : Fin 4) (j : Fin 3) (p : coordinateSet ℝ (Fin 2)),
       f i j (t, p) = g (edgeIntoTetrahedronOneSkeleton i j p))
     (p : tetrahedronOneSkeleton) :
     tetrahedronOneSkeletonHomotopyDesc f h (t, p) = g p := by

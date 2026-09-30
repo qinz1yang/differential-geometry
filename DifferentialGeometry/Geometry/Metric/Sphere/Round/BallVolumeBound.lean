@@ -37,7 +37,7 @@ private lemma det_le_one_of_rayleigh
       RCLike.re (dotProduct (star ⇑v) (Matrix.mulVec A ⇑v)) ≤ 1) :
     A.det ≤ 1 := by
   rw [hA.isHermitian.det_eq_prod_eigenvalues]
-  refine Finset.prod_le_one (fun i _ ↦ ?_) (fun i _ ↦ ?_)
+  refine Finset.prod_le_one₀ (fun i _ ↦ ?_) (fun i _ ↦ ?_)
   · exact_mod_cast hA.eigenvalues_nonneg i
   · exact_mod_cast eigenvalues_le_of_rayleigh hA.isHermitian hray i
 
@@ -143,7 +143,7 @@ private theorem graphMap_mem_sphere {v : EuclideanSpace ℝ (Fin (n + 1))} (hv :
   have h0 : ⟪(R y : EuclideanSpace ℝ (Fin (n + 1))), v⟫ = 0 :=
     Submodule.mem_orthogonal_singleton_iff_inner_left.mp (R y).property
   have hnorm : ‖(R y : EuclideanSpace ℝ (Fin (n + 1)))‖ = ‖y‖ := by
-    rw [← Submodule.coe_norm, R.norm_map]
+    rw [Submodule.norm_coe, R.norm_map]
   have h1 : 0 ≤ 1 - ‖y‖ ^ 2 := by nlinarith [norm_nonneg y]
   have horth : ⟪(R y : EuclideanSpace ℝ (Fin (n + 1))), Real.sqrt (1 - ‖y‖ ^ 2) • v⟫ = 0 := by
     rw [real_inner_smul_right, h0, mul_zero]
@@ -182,7 +182,7 @@ private theorem coe_graphParam {v : EuclideanSpace ℝ (Fin (n + 1))} (hv : ‖v
     (R : EuclideanSpace ℝ (Fin n) ≃ₗᵢ[ℝ] (ℝ ∙ v)ᗮ) {y : EuclideanSpace ℝ (Fin n)}
     (hy : ‖y‖ < 1) :
     (graphParam hv R y : EuclideanSpace ℝ (Fin (n + 1))) = graphMap R y := by
-  rw [graphParam, dif_pos hy]
+  rw [graphParam, dite_eq_left hy]
 
 private def graphDomain (n : ℕ) : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin n)) :=
   ⟨ball 0 1, isOpen_ball⟩

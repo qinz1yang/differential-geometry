@@ -159,12 +159,14 @@ private lemma ennreal_sq_finset_sum_le_card_mul_sq_finset_sum
     nlinarith
 
 private lemma sq_eLpNorm_two_eq_lintegral_ofReal_sq
-    {α : Type*} {_ : MeasurableSpace α} (f : α → ℝ) (μ : Measure α) :
+    {α : Type*} {_ : MeasurableSpace α} (f : α → ℝ) (μ : Measure α)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, ENNReal.ofReal ((f x) ^ 2) ∂μ := by
   classical
   have h_rpow : eLpNorm f 2 μ = (∫⁻ x, ‖f x‖ₑ ^ (2 : ℝ≥0∞).toReal ∂μ) ^
       (1 / (2 : ℝ≥0∞).toReal) :=
-    eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num)
+    eLpNorm_eq_lintegral_rpow_enorm_toReal (p := (2 : ℝ≥0∞)) (μ := μ) (f := f)
+      (by norm_num) (by norm_num) hf
   have h_two_toReal : ((2 : ℝ≥0∞)).toReal = (2 : ℝ) := by norm_num
   rw [h_rpow, h_two_toReal]
   set I : ℝ≥0∞ := ∫⁻ x, ‖f x‖ₑ ^ (2 : ℝ) ∂μ with hI_def
@@ -1114,6 +1116,8 @@ private lemma sq_eLpNorm_tensorChartComp_le_pou_summand
           ∂((volume : Measure EuclN).restrict
               (chartTargetEuclid (I := I) (M := M) α)) :=
     sq_eLpNorm_two_eq_lintegral_ofReal_sq _ _
+      ((tensorChartComp_continuous (I := I) (M := M) g r s
+        (rawTensorConnLapSmooth (I := I) g r s T) α Idx Jdx).measurable.aestronglyMeasurable)
   rw [h_sq_eLp]
   set μ : Measure EuclN :=
     (volume : Measure EuclN).restrict (chartTargetEuclid (I := I) (M := M) α)
@@ -1399,15 +1403,15 @@ theorem wtwokTwoNorm_zero_rawTensorConnLap_le_tensorPouSobolevNorm_one
   have hK_max_nn : 0 ≤ K_max := by
     rw [hK_max_def]
     by_cases hSne : S.Nonempty
-    · rw [dif_pos hSne]
+    · rw [dite_eq_left hSne]
       obtain ⟨α₀, hα₀⟩ := hSne
       exact le_trans (hK_pt_nn α₀) (Finset.le_sup' K_pt hα₀)
-    · rw [dif_neg hSne]; linarith
+    · rw [dite_eq_right hSne]; linarith
   have hK_le_max : ∀ α ∈ S, K_pt α ≤ K_max := by
     intro α hα
     rw [hK_max_def]
     have hSne : S.Nonempty := ⟨α, hα⟩
-    rw [dif_pos hSne]
+    rw [dite_eq_left hSne]
     exact Finset.le_sup' K_pt hα
   set nIJ : ℕ :=
     Fintype.card ((Fin r → Fin n) × (Fin s → Fin n)) with hnIJ_def

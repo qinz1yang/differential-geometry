@@ -1,4 +1,8 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Components
+
+open DifferentialGeometry.Analysis.Parabolic (towerReactionSum towerReactionSum_mono_const)
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -21,25 +25,6 @@ variable [CompleteSpace E] [T2Space M]
 variable [I.Boundaryless] [CompactSpace M]
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-omit [TopologicalSpace M] [T2Space M] [CompactSpace M] in
-theorem towerReactionSum_mono_const
-    (w : ℕ -> Real -> M -> Real) {c c' : Real} (hcc : c <= c')
-    (k : ℕ) (t : Real) (x : M) :
-    towerReactionSum (M := M) w c k t x <= towerReactionSum (M := M) w c' k t x := by
-  unfold towerReactionSum
-  apply Finset.sum_le_sum
-  intro j _
-  have h1 : 0 <= Real.sqrt (w j t x) := Real.sqrt_nonneg _
-  have h2 : 0 <= Real.sqrt (w (k - j) t x) := Real.sqrt_nonneg _
-  have h3 : 0 <= Real.sqrt (w k t x) := Real.sqrt_nonneg _
-  have hprod : 0 <= Real.sqrt (w j t x) * Real.sqrt (w (k - j) t x) * Real.sqrt (w k t x) :=
-    mul_nonneg (mul_nonneg h1 h2) h3
-  calc c * Real.sqrt (w j t x) * Real.sqrt (w (k - j) t x) * Real.sqrt (w k t x)
-      = c * (Real.sqrt (w j t x) * Real.sqrt (w (k - j) t x) * Real.sqrt (w k t x)) := by ring
-    _ <= c' * (Real.sqrt (w j t x) * Real.sqrt (w (k - j) t x) * Real.sqrt (w k t x)) :=
-        mul_le_mul_of_nonneg_right hcc hprod
-    _ = c' * Real.sqrt (w j t x) * Real.sqrt (w (k - j) t x) * Real.sqrt (w k t x) := by ring
 
 omit [DecidableEq Idx] in
 theorem towerLevelConst_mono {k m : ℕ} (hkm : k <= m) :
@@ -92,13 +77,13 @@ theorem bernsteinShi_solution_estimate
   set wLap' : ℕ -> Real -> M -> Real := fun k => if k <= m then wLap k else fun _ _ => 0
     with hwLap'_def
   have hw'_le : ∀ k : ℕ, k <= m -> w' k = w k := by
-    intro k hk; simp only [hw'_def, if_pos hk]
+    intro k hk; simp only [hw'_def, ite_eq_left hk]
   have hw'_gt : ∀ k : ℕ, ¬ k <= m -> w' k = fun _ _ => 0 := by
-    intro k hk; simp only [hw'_def, if_neg hk]
+    intro k hk; simp only [hw'_def, ite_eq_right hk]
   have hwLap'_le : ∀ k : ℕ, k <= m -> wLap' k = wLap k := by
-    intro k hk; simp only [hwLap'_def, if_pos hk]
+    intro k hk; simp only [hwLap'_def, ite_eq_left hk]
   have hwLap'_gt : ∀ k : ℕ, ¬ k <= m -> wLap' k = fun _ _ => 0 := by
-    intro k hk; simp only [hwLap'_def, if_neg hk]
+    intro k hk; simp only [hwLap'_def, ite_eq_right hk]
   have hw'_val_le : ∀ k : ℕ, k <= m -> ∀ (s : Real) (y : M), w' k s y = w k s y := by
     intro k hk s y; rw [hw'_le k hk]
   have hw'_val_gt : ∀ k : ℕ, ¬ k <= m -> ∀ (s : Real) (y : M), w' k s y = 0 := by

@@ -33,7 +33,7 @@ theorem backwardSurvivorTerminalMap_isLocalDiffeomorph
     (fun x => by
       have hi :=
         (H.backwardSurvivorTerminalMap_isSmoothEmbedding first last hle i hf hl).isImmersion
-      exact (hi.isImmersionAt x).injective_mfderiv (by simp)) rfl
+      exact (hi.isImmersionAt x).mfderiv_injective (by simp)) rfl
 
 def backwardSurvivorSlabMetric
     (i : Fin H.eventCount) (hf : first ≤ i.castSucc) (hl : i.succ ≤ last) (t : ℝ) :
@@ -583,16 +583,16 @@ theorem exists_backwardSurvivorTerminal_isSolutionOn :
     · intro j hf hl t ht
       have htc : t ≤ H.time i.castSucc := ht.2.trans (H.time_strictMono.monotone hl)
       dsimp only
-      rw [if_pos htc]
+      rw [ite_eq_left htc]
       exact congrArg (fun g => g.restrictOpen W) (hslabs j hf hl t ht)
     · intro t ht
       dsimp only
       by_cases htc : t ≤ H.time i.castSucc
       · have he : t = H.time i.castSucc := le_antisymm htc ht.1
         subst t
-        rw [if_pos le_rfl]
+        rw [ite_eq_left le_rfl]
         exact hmatch
-      · rw [if_neg htc]
+      · rw [ite_eq_right htc]
     · exact metricCLMSection_jointContMDiffOn_ite_of_ricciFlow gL gR ha hb
         hL hR hpdeL hpdeR hmatch
     · exact isSolutionOn_ite_of_ricciFlow gL gR ha hb hL hR hpdeL hpdeR hmatch

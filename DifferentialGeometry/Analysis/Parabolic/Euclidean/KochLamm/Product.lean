@@ -90,6 +90,7 @@ variable {X E G F : Type*}
 theorem eLpNorm_bilin_le {p q r : ℝ≥0∞} [ENNReal.HolderTriple p q r]
     (B : X → E →L[ℝ] G →L[ℝ] F) (d₁ : X → E) (d₂ : X → G)
     (K : ℝ≥0) (hK : ∀ x, ‖B x‖ ≤ (K : ℝ))
+    (hmeas : AEStronglyMeasurable (fun x => B x (d₁ x) (d₂ x)) μ)
     (h₁ : AEStronglyMeasurable d₁ μ) (h₂ : AEStronglyMeasurable d₂ μ) :
     eLpNorm (fun x => B x (d₁ x) (d₂ x)) r μ ≤
       (K : ℝ≥0∞) * eLpNorm d₁ p μ * eLpNorm d₂ q μ := by
@@ -108,7 +109,7 @@ theorem eLpNorm_bilin_le {p q r : ℝ≥0∞} [ENNReal.HolderTriple p q r]
   have hmono :
       eLpNorm (fun x => B x (d₁ x) (d₂ x)) r μ ≤
         eLpNorm (fun x => (K : ℝ) * (‖d₁ x‖ * ‖d₂ x‖)) r μ := by
-    apply eLpNorm_mono
+    apply eLpNorm_mono hmeas
     intro x
     simpa [Real.norm_of_nonneg
       (mul_nonneg (NNReal.coe_nonneg K)
@@ -124,13 +125,13 @@ theorem eLpNorm_bilin_le {p q r : ℝ≥0∞} [ENNReal.HolderTriple p q r]
         eLpNorm d₁ p μ * eLpNorm d₂ q μ := by
     have h₁n := h₁.norm
     have h₂n := h₂.norm
-    have h := eLpNorm_le_eLpNorm_mul_eLpNorm'_of_norm
+    have h := eLpNorm_le_eLpNorm_mul_eLpNorm_of_norm
       (μ := μ) (p := p) (q := q) (r := r)
       (f := fun x => ‖d₁ x‖) (g := fun x => ‖d₂ x‖)
-      h₁n h₂n (fun a b : ℝ => a * b) 1
+      (fun a b : ℝ => a * b) 1 continuous_mul h₁n h₂n
       (ae_of_all μ fun x => by
         simp)
-    simpa only [eLpNorm_norm, ENNReal.coe_one, one_mul] using h
+    simpa only [eLpNorm_norm d₁ h₁, eLpNorm_norm d₂ h₂, ENNReal.coe_one, one_mul] using h
   calc
     eLpNorm (fun x => B x (d₁ x) (d₂ x)) r μ
         ≤ eLpNorm (fun x => (K : ℝ) * (‖d₁ x‖ * ‖d₂ x‖)) r μ := hmono
@@ -175,6 +176,7 @@ theorem kochLammBilin_source {T : ℝ}
       (kochLammVolume : Measure (ℝ × V)).restrict (kochLammCylinder x R)
     have hp := eLpNorm_bilin_le (p := 2) (q := 2) (r := 1)
       B d₁ d₂ K hK
+      (hmeas.mono_measure Measure.restrict_le_self)
       (h₁.ae.mono_measure Measure.restrict_le_self)
       (h₂.ae.mono_measure Measure.restrict_le_self :
         AEStronglyMeasurable d₂ μ)
@@ -203,6 +205,7 @@ theorem kochLammBilin_source {T : ℝ}
     have hp := eLpNorm_bilin_le
       (p := kochLammP V) (q := kochLammP V) (r := kochLammQ V)
       B d₁ d₂ K hK
+      (hmeas.mono_measure Measure.restrict_le_self)
       (h₁.ae.mono_measure Measure.restrict_le_self)
       (h₂.ae.mono_measure Measure.restrict_le_self :
         AEStronglyMeasurable d₂ μ)

@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Christo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Evolution
 import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
-import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Mixed
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Curvature.Riemann.Contractions
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Identities

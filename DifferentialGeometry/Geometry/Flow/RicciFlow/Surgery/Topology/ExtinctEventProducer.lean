@@ -92,7 +92,7 @@ theorem hasControlledExtinctionWithin_pos
   lt_of_not_ge fun hB => not_hasControlledExtinctionWithin_of_nonpos hB h
 
 theorem hasControlledExtinctionWithin_of_retainedCoreHistory_time
-    {P : OrientedThreeStage.{u}} {g : P.Metric} (H : RetainedCoreHistory P)
+    {P : OrientedThreeStage.{u}} {g : P.Metric} (H : RetainedCoreHistory.{u})
     [Nonempty P.Carrier]
     (A : InitialIdentification P g H.toHistory)
     (hbfr : ∀ i : Fin H.eventCount, (H.coreEvent i).transition.boundaryFrameReversing)

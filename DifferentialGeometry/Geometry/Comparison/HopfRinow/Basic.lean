@@ -127,7 +127,7 @@ theorem isGeodesicOn_Ici_of_endpointContinuation
     have hex : ∃ a : Rec, a ∈ Mc ∧ t < a.1.1 := ⟨a, ha, hta⟩
     change (if h : ∃ a : Rec, a ∈ Mc ∧ t < a.1.1 then (h.choose.1.2 t)
       else γ₀ t) = a.1.2 t
-    rw [dif_pos hex]
+    rw [dite_eq_left hex]
     obtain ⟨hb_mem, hb_lt⟩ := hex.choose_spec
     exact hconsist _ hb_mem a ha t hb_lt hta
   have hΓ_agree : ∀ t, t < b₀ → Γ t = γ₀ t := by
@@ -368,12 +368,12 @@ theorem isGeodesicOn_Ioo_extend
       have hGγ : G =ᶠ[𝓝[Set.Ioo a₀ (b + δ)] t] γ := by
         have hnhds : Set.Iio b ∈ 𝓝 t := isOpen_Iio.mem_nhds hlt
         filter_upwards [nhdsWithin_le_nhds hnhds] with s hs
-        simp only [hG_def, if_pos (mem_Iio.mp hs)]
+        simp only [hG_def, ite_eq_left (mem_Iio.mp hs)]
       have hγ_at : ContinuousWithinAt γ (Set.Ioo a₀ (b + δ)) t := by
         refine (hγ_cont t htγ).mono_of_mem_nhdsWithin ?_
         exact mem_nhdsWithin_of_mem_nhds (isOpen_Ioo.mem_nhds htγ)
       refine hγ_at.congr_of_eventuallyEq hGγ ?_
-      simp only [hG_def, if_pos hlt]
+      simp only [hG_def, ite_eq_left hlt]
     · subst heq
       have hG_eq_ηb : G =ᶠ[𝓝[Set.Ioo a₀ (t + δ)] t] (fun s => η (s - t)) := by
         rw [eventuallyEq_nhdsWithin_iff]
@@ -381,11 +381,11 @@ theorem isGeodesicOn_Ioo_extend
           have hmatch' : γ =ᶠ[𝓝[<] t] (fun s => η (s - t)) := hmatch
           have hGγ : G =ᶠ[𝓝[<] t] γ := by
             filter_upwards [self_mem_nhdsWithin] with s hs
-            simp only [hG_def, if_pos (mem_Iio.mp hs)]
+            simp only [hG_def, ite_eq_left (mem_Iio.mp hs)]
           exact hGγ.trans hmatch'
         have hright : ∀ᶠ s in 𝓝[≥] t, G s = η (s - t) := by
           filter_upwards [self_mem_nhdsWithin] with s hs
-          simp only [hG_def, if_neg (not_lt.mpr (mem_Ici.mp hs))]
+          simp only [hG_def, ite_eq_right (not_lt.mpr (mem_Ici.mp hs))]
         have hfull : G =ᶠ[𝓝 t] (fun s => η (s - t)) := by
           rw [← nhdsLT_sup_nhdsGE t, Filter.EventuallyEq, eventually_sup]
           exact ⟨hleft, hright⟩
@@ -395,21 +395,21 @@ theorem isGeodesicOn_Ioo_extend
         refine (hηb_cont t htmem).mono_of_mem_nhdsWithin ?_
         exact mem_nhdsWithin_of_mem_nhds (isOpen_Ioo.mem_nhds htmem)
       refine hηb_at.congr_of_eventuallyEq hG_eq_ηb ?_
-      simp only [hG_def, if_neg (lt_irrefl t), sub_self]
+      simp only [hG_def, ite_eq_right (lt_irrefl t), sub_self]
     · have htηb : t ∈ Set.Ioo (b - δ) (b + δ) := ⟨by linarith, ht.2⟩
       have hGηb : G =ᶠ[𝓝[Set.Ioo a₀ (b + δ)] t] (fun s => η (s - b)) := by
         have hnhds : Set.Ioi b ∈ 𝓝 t := isOpen_Ioi.mem_nhds hgt
         filter_upwards [nhdsWithin_le_nhds hnhds] with s hs
-        simp only [hG_def, if_neg (not_lt.mpr (le_of_lt (mem_Ioi.mp hs)))]
+        simp only [hG_def, ite_eq_right (not_lt.mpr (le_of_lt (mem_Ioi.mp hs)))]
       refine ContinuousWithinAt.congr_of_eventuallyEq ?_ hGηb ?_
       · refine (hηb_cont t htηb).mono_of_mem_nhdsWithin ?_
         exact mem_nhdsWithin_of_mem_nhds (isOpen_Ioo.mem_nhds htηb)
-      · simp only [hG_def, if_neg (not_lt.mpr (le_of_lt hgt))]
+      · simp only [hG_def, ite_eq_right (not_lt.mpr (le_of_lt hgt))]
   refine ⟨G, b + δ, by linarith,
     Geodesic.isGeodesicOn_glue_at_limit_Ioo (I := I) g hδ ha₀b hγ hη hmatch,
     hG_cont, ?_⟩
   intro t ht
-  simp only [hG_def, if_pos ht]
+  simp only [hG_def, ite_eq_left ht]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -484,7 +484,7 @@ theorem isGeodesicOn_Ioi_of_endpointContinuation
     have hex : ∃ a : Rec, a ∈ Mc ∧ t < a.1.1 := ⟨a, ha, hta⟩
     change (if h : ∃ a : Rec, a ∈ Mc ∧ t < a.1.1 then (h.choose.1.2 t)
       else γ₀ t) = a.1.2 t
-    rw [dif_pos hex]
+    rw [dite_eq_left hex]
     obtain ⟨hb_mem, hb_lt⟩ := hex.choose_spec
     exact hconsist _ hb_mem a ha t hb_lt hta
   have hΓ_agree : ∀ t, t < b₀ → Γ t = γ₀ t := by

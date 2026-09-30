@@ -39,13 +39,13 @@ noncomputable def rampDown (T : ℝ) (z : X) : timeH1 X T :=
 theorem rampUp_apply {T t : ℝ} (hT : 0 ≤ T) (z : X)
     (ht : t ∈ Icc (0 : ℝ) T) :
     (rampUp T z).toFun t = (t / T) • z := by
-  rw [rampUp, dif_pos hT]
+  rw [rampUp, dite_eq_left hT]
   exact toFun_ofContDiffOn hT _ (rampUp_smooth T z) ht
 
 theorem rampDown_apply {T t : ℝ} (hT : 0 ≤ T) (z : X)
     (ht : t ∈ Icc (0 : ℝ) T) :
     (rampDown T z).toFun t = ((T - t) / T) • z := by
-  rw [rampDown, dif_pos hT]
+  rw [rampDown, dite_eq_left hT]
   exact toFun_ofContDiffOn hT _ (rampDown_smooth T z) ht
 
 theorem rampUp_zero {T : ℝ} (hT : 0 < T) (z : X) :
@@ -68,7 +68,7 @@ theorem rampDown_end {T : ℝ} (hT : 0 < T) (z : X) :
 omit [CompleteSpace X] in
 theorem rampUp_deriv {T : ℝ} (hT : 0 < T) (z : X) :
     (rampUp T z).deriv =ᵐ[timeMeasure T] fun _ ↦ (1 / T) • z := by
-  rw [rampUp, dif_pos hT.le]
+  rw [rampUp, dite_eq_left hT.le]
   filter_upwards [deriv_ofContDiffOn hT.le _ (rampUp_smooth T z)] with t ht
   rw [ht]
   exact (((hasDerivAt_id t).div_const T).smul_const z).deriv
@@ -76,7 +76,7 @@ theorem rampUp_deriv {T : ℝ} (hT : 0 < T) (z : X) :
 omit [CompleteSpace X] in
 theorem rampDown_deriv {T : ℝ} (hT : 0 < T) (z : X) :
     (rampDown T z).deriv =ᵐ[timeMeasure T] fun _ ↦ (-(1 / T)) • z := by
-  rw [rampDown, dif_pos hT.le]
+  rw [rampDown, dite_eq_left hT.le]
   filter_upwards [deriv_ofContDiffOn hT.le _ (rampDown_smooth T z)] with t ht
   rw [ht]
   simpa only [Pi.sub_apply, id_eq, zero_sub, neg_div, one_div] using

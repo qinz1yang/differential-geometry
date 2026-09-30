@@ -13,8 +13,8 @@ open DifferentialGeometry.Topology
 universe u
 
 def PuncturedThreeManifoldTopHomologyVanishing
-    (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] (x₀ : M) : Prop :=
+    (M : Type u) [TopologicalSpace M]
+    (x₀ : M) : Prop :=
   (Subsingleton (IntegralHomology ({x₀}ᶜ : Set M) 2) ∧
     Subsingleton (IntegralHomology ({x₀}ᶜ : Set M) 3)) ∧
     ∀ x : M, Subsingleton (IntegralHomology ({x}ᶜ : Set M) 3)

@@ -72,7 +72,7 @@ theorem realizeMetricAt_inner_of_realizable (g_bg : SmoothRiemannianMetric I M)
       g_bg.inner x v w + tensorHsBilinFormSymm (I := I) g_bg u hu_fs x v w := by
   classical
   have hex : isRealizableMetricPerturbationAt (I := I) g_bg u := ⟨hu_fs, δ', hδ'_lt, hδ'⟩
-  rw [realizeMetricAt, dif_pos hex]
+  rw [realizeMetricAt, dite_eq_left hex]
   unfold tensorSectionRealizeMetric
   change g_bg.inner x v w +
       ccTensorBilinSymm (I := I) g_bg
@@ -87,7 +87,7 @@ theorem realizeMetricAt_of_not_realizable (g_bg : SmoothRiemannianMetric I M)
     (hu : ¬ isRealizableMetricPerturbationAt (I := I) g_bg u) :
     realizeMetricAt (I := I) g_bg u = g_bg := by
   classical
-  rw [realizeMetricAt, dif_neg hu]
+  rw [realizeMetricAt, dite_eq_right hu]
 
 open scoped Classical in
 def deTurckRemainderSection (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
@@ -134,7 +134,7 @@ theorem deTurckGeometricN_of_not_realizable (g_bg : SmoothRiemannianMetric I M)
     deTurckGeometricN (I := I) g_bg a u = 0 := by
   classical
   have hsec : deTurckRemainderSection (I := I) g_bg u = 0 := by
-    rw [deTurckRemainderSection, dif_neg hu]
+    rw [deTurckRemainderSection, dite_eq_right hu]
   apply TensorHs.ext (I := I) (M := M)
   funext i
   rw [deTurckGeometricN_coeff, hsec,

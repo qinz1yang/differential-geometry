@@ -59,9 +59,9 @@ theorem exists_isPLHomeomorphOn_pair_of_isPLSphere_one
 
 theorem exists_isPLHomeomorphOn_map_crosscut_eqOn_boundary
     {D J P : Set E} {D' J' P' : Set F}
-    {u : (Fin 3 → ℝ) → E} (hu : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) D)
+    {u : (Fin 3 → ℝ) → E} (hu : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (huJ : u '' stdSimplexBoundary 2 = J)
-    {u' : (Fin 3 → ℝ) → F} (hu' : IsPLHomeomorphOn u' (stdSimplex ℝ (Fin 3)) D')
+    {u' : (Fin 3 → ℝ) → F} (hu' : IsPLHomeomorphOn u' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D')
     (huJ' : u' '' stdSimplexBoundary 2 = J')
     {γ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) P)
     (hPD : P ⊆ D) (hinter : P ∩ J = {γ 0, γ 1})
@@ -94,13 +94,13 @@ theorem exists_isPLHomeomorphOn_map_crosscut_eqOn_boundary
 theorem exists_isPLHomeomorphOn_disk_pair_eqOn_boundary
     {A B J P Q : Set E} {A' B' J' P' Q' : Set F}
     {u v : (Fin 3 → ℝ) → E}
-    (hu : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) A)
-    (hv : IsPLHomeomorphOn v (stdSimplex ℝ (Fin 3)) B)
+    (hu : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A)
+    (hv : IsPLHomeomorphOn v (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B)
     (huJ : u '' stdSimplexBoundary 2 = J) (hvJ : v '' stdSimplexBoundary 2 = J)
     (hAB : A ∩ B = J)
     {u' v' : (Fin 3 → ℝ) → F}
-    (hu' : IsPLHomeomorphOn u' (stdSimplex ℝ (Fin 3)) A')
-    (hv' : IsPLHomeomorphOn v' (stdSimplex ℝ (Fin 3)) B')
+    (hu' : IsPLHomeomorphOn u' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A')
+    (hv' : IsPLHomeomorphOn v' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B')
     (huJ' : u' '' stdSimplexBoundary 2 = J') (hvJ' : v' '' stdSimplexBoundary 2 = J')
     (hAB' : A' ∩ B' = J')
     {γ δ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) P)
@@ -137,13 +137,13 @@ theorem exists_isPLHomeomorphOn_disk_pair_eqOn_boundary
 theorem exists_isPLHomeomorphOn_disk_pair_map_crosscuts
     {A B J P Q : Set E} {A' B' J' P' Q' : Set F}
     {u v : (Fin 3 → ℝ) → E}
-    (hu : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) A)
-    (hv : IsPLHomeomorphOn v (stdSimplex ℝ (Fin 3)) B)
+    (hu : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A)
+    (hv : IsPLHomeomorphOn v (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B)
     (huJ : u '' stdSimplexBoundary 2 = J) (hvJ : v '' stdSimplexBoundary 2 = J)
     (hAB : A ∩ B = J)
     {u' v' : (Fin 3 → ℝ) → F}
-    (hu' : IsPLHomeomorphOn u' (stdSimplex ℝ (Fin 3)) A')
-    (hv' : IsPLHomeomorphOn v' (stdSimplex ℝ (Fin 3)) B')
+    (hu' : IsPLHomeomorphOn u' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A')
+    (hv' : IsPLHomeomorphOn v' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B')
     (huJ' : u' '' stdSimplexBoundary 2 = J') (hvJ' : v' '' stdSimplexBoundary 2 = J')
     (hAB' : A' ∩ B' = J')
     {γ δ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) P)

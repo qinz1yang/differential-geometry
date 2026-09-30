@@ -81,22 +81,18 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNorm
               (‖rawTensorConnLap (I := I) g r s
                   (fun z : M => T.toSection z) x‖ₑ : ℝ≥0∞) ^ 2
               ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤
-            ENNReal.ofReal
-                (chartTargetL2BridgeConstant (I := I) (M := M) g) *
+            ENNReal.ofReal C *
               chartSobolevRawNorm (I := I) (M := M) g r s T := by
   classical
-  refine ⟨chartTargetL2BridgeConstant (I := I) (M := M) g,
-    chartTargetL2BridgeConstant_nonneg (I := I) (M := M) g, ?_⟩
-  intro T hΔT_meas
-  have hbound :=
+  obtain ⟨C, hC, hbound⟩ :=
     uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
-      (I := I) (M := M) g r s
-      (S := fun b : M =>
-        rawTensorConnLap (I := I) g r s
-          (fun z : M => T.toSection z) b)
-      hΔT_meas
+      (I := I) (M := M) g
+  refine ⟨C, hC, ?_⟩
+  intro T hΔT_meas
   rw [chartSobolevRawNorm_def]
-  exact hbound
+  exact hbound r s
+    (fun b : M => rawTensorConnLap (I := I) g r s (fun z : M => T.toSection z) b)
+    hΔT_meas
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -104,9 +100,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNorm_of_section
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (T₀ : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
-              (fun x : M => TensorRSSpace r s I x)⟯)
-        (_hT₀_cc : HasCompactSupport
-          (fun x : M => TensorRSSpace.toModel (T₀ x))),
+              (fun x : M => TensorRSSpace r s I x)⟯),
         Measurable
           (fun x : M =>
             ‖rawTensorConnLap (I := I) g r s
@@ -115,8 +109,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNorm_of_section
               (‖rawTensorConnLap (I := I) g r s
                   (fun z : M => T₀ z) x‖ₑ : ℝ≥0∞) ^ 2
               ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤
-            ENNReal.ofReal
-                (chartTargetL2BridgeConstant (I := I) (M := M) g) *
+            ENNReal.ofReal C *
               ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
                 ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                   ENNReal.ofReal
@@ -127,16 +120,14 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNorm_of_section
                       y)
                   ∂(volume : Measure EuclN) := by
   classical
-  refine ⟨chartTargetL2BridgeConstant (I := I) (M := M) g,
-    chartTargetL2BridgeConstant_nonneg (I := I) (M := M) g, ?_⟩
-  intro T₀ _hT₀_cc hΔT_meas
-  exact
+  obtain ⟨C, hC, hbound⟩ :=
     uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
-      (I := I) (M := M) g r s
-      (S := fun b : M =>
-        rawTensorConnLap (I := I) g r s
-          (fun z : M => T₀ z) b)
-      hΔT_meas
+      (I := I) (M := M) g
+  refine ⟨C, hC, ?_⟩
+  intro T₀ hΔT_meas
+  exact hbound r s
+    (fun b : M => rawTensorConnLap (I := I) g r s (fun z : M => T₀ z) b)
+    hΔT_meas
 
 end Elliptic
 end Analysis

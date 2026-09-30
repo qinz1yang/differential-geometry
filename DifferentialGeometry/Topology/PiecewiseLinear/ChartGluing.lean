@@ -47,10 +47,10 @@ theorem exists_atlasOn_union_of_plApproximation (hA : PLApproximation.{u} n) {U 
     · have hpos : 0 < Metric.infDist x Oᶜ :=
         (hO.isClosed_compl.notMem_iff_infDist_pos hne).mp (notMem_compl_iff.mpr hx)
       change 0 < (if Oᶜ.Nonempty then Metric.infDist x Oᶜ / 2 else 1)
-      rw [if_pos hne]
+      rw [ite_eq_left hne]
       positivity
     · change 0 < (if Oᶜ.Nonempty then Metric.infDist x Oᶜ / 2 else 1)
-      rw [if_neg hne]
+      rw [ite_eq_right hne]
       exact one_pos
   obtain ⟨f, hfs, hft, hfφ, hfPL⟩ := hA (A.restrict hV) (B.restrict hU)
     (OpenPartialHomeomorph.ofSet O hO) rfl (inter_comm U V) φ hφcont hφpos
@@ -72,14 +72,14 @@ theorem exists_atlasOn_union_of_plApproximation (hA : PLApproximation.{u} n) {U 
     intro x hx hne
     have h := hfφ x hx
     change dist (f x) x < (if Oᶜ.Nonempty then Metric.infDist x Oᶜ / 2 else 1) at h
-    rw [if_pos hne, dist_comm] at h
+    rw [ite_eq_left hne, dist_comm] at h
     exact h
   let Ff : X → X := fun x => if x ∈ O then f x else x
   let Fi : X → X := fun x => if x ∈ O then f.symm x else x
-  have hFf_mem : ∀ x ∈ O, Ff x = f x := fun x hx => if_pos hx
-  have hFf_not : ∀ x, x ∉ O → Ff x = x := fun x hx => if_neg hx
-  have hFi_mem : ∀ x ∈ O, Fi x = f.symm x := fun x hx => if_pos hx
-  have hFi_not : ∀ x, x ∉ O → Fi x = x := fun x hx => if_neg hx
+  have hFf_mem : ∀ x ∈ O, Ff x = f x := fun x hx => ite_eq_left hx
+  have hFf_not : ∀ x, x ∉ O → Ff x = x := fun x hx => ite_eq_right hx
+  have hFi_mem : ∀ x ∈ O, Fi x = f.symm x := fun x hx => ite_eq_left hx
+  have hFi_not : ∀ x, x ∉ O → Fi x = x := fun x hx => ite_eq_right hx
   have hleft : ∀ x, Fi (Ff x) = x := by
     intro x
     by_cases hx : x ∈ O

@@ -22,7 +22,7 @@ private theorem norm_sum_mul_fields
       (F =ᵐ[μ] fun p => ∑ i, a i p * V i p) ∧
       ‖F‖ ≤ ∑ i, C i * ‖(hV i).toLp (V i)‖ := by
   have hmem (i) : MemLp (fun p => a i p * V i p) 2 μ :=
-    (hV i).mul (r := 2) (ha i)
+    (ha i).fun_mul (r := 2) (hV i)
   let G : ι → Lp ℝ 2 μ := fun i => (hmem i).toLp (fun p => a i p * V i p)
   let F : Lp ℝ 2 μ := ∑ i, G i
   have hG (i) : G i =ᵐ[μ] fun p => a i p * V i p := (hmem i).coeFn_toLp
@@ -379,8 +379,8 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_gradient_equation_source_norm_le
       (μ := (volume : Measure ℝ).prod volume)
     rw [← Measure.prod_restrict] at hb
     exact hb.mono_measure (Measure.prod_mono Measure.restrict_le_self le_rfl)
-  have hC (i) : MemLp (C i) ∞ (μ.prod (volume.restrict Ω₀)) := (hB i).mul hρ
-  have hC₀ : MemLp C₀ ∞ (μ.prod (volume.restrict Ω₀)) := ((hτ.const_mul (1 / 2 : ℝ)).sub ha).mul hρ
+  have hC (i) : MemLp (C i) ∞ (μ.prod (volume.restrict Ω₀)) := hρ.fun_mul (r := ∞) (hB i)
+  have hC₀ : MemLp C₀ ∞ (μ.prod (volume.restrict Ω₀)) := hρ.fun_mul (r := ∞) ((hτ.const_mul (1 / 2 : ℝ)).sub ha)
   have hDCmem (i) : MemLp (fun p => fderiv ℝ (fun x => C i (p.1, x)) p.2 (EuclideanSpace.single k 1))
       ∞ (μ.prod (volume.restrict Ω₀)) := by
     have hb := MetricExtension.densityOnEuclid_mul_chartCoeffOnE_family_fderiv_memLp_top hG isCompact_Icc
@@ -441,7 +441,7 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_gradient_equation_source_norm_le
     (ae_le_lpNorm_exponent_top hDρ) (ae_le_lpNorm_exponent_top hDDρ)
     (fun i j p => H i j p) (fun i j => Lp.memLp (H i j)) (fun i p => V i p) hV U R hU (Lp.memLp R) k (F k) he
   simpa only [Lp.toLp_coeFn, Lp.norm_toLp,
-    toReal_eLpNorm (hV _).aestronglyMeasurable, toReal_eLpNorm hU.aestronglyMeasurable] using hb
+    toReal_eLpNorm] using hb
 
 theorem IsWeakEvolutionSolution.exists_lp_weak_gradient_equation_source_bound
     {q : SmoothRiemannianMetric I_hs M}

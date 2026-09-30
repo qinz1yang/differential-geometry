@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionD
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Decomposition.PathIntegral
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.RiemannianBundle
 
+open DifferentialGeometry.TensorMetric (
+  tensorInnerPointwise)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 

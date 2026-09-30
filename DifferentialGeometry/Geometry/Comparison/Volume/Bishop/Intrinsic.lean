@@ -84,9 +84,9 @@ private theorem linIndep_of_ortho
       smul_eq_mul, hON i j]
   rw [Finset.sum_congr rfl hsummand] at hpair
   rw [Finset.sum_eq_single_of_mem j hj] at hpair
-  · simpa only [if_pos, mul_one] using hpair
+  · simpa only [ite_eq_left, mul_one] using hpair
   · intro i _ hij
-    rw [if_neg (by simpa using hij), mul_zero]
+    rw [ite_eq_right (by simpa using hij), mul_zero]
 
 omit [T2Space (TangentBundle I M)] in
 private theorem intrinsic_geodesic_tangent_variation_smooth

@@ -10,6 +10,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Analysis.Sobolev
@@ -1359,7 +1360,7 @@ private theorem exists_deTurckLieBackgroundDifferenceCoefficient_first_order_bou
   rw [hBsq]
   exact hmain
 
-theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDifference_pairing_firstOrder_bound
+theorem exists_deTurckLieConnectionDifferenceDerivCoeffField_background_difference_jet_one_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -1953,8 +1954,8 @@ private theorem slotInsertEndoCc_zero_deTurckInsertionCorrectionEndomorphism
     slotInsertEndoCc (I := I) (M := M) g 0
       (endoDiffSection (I := I) (M := M) g gm g_bg) = _
   rw [endoDiffSection, slotInsertEndoCc_sub,
-    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise_deTurckVectorFieldCovariantDerivativeLowered,
-    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise_deTurckVectorFieldCovariantDerivativeLowered,
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise_lowered,
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise_lowered,
     connectionDifferenceDeTurckVectorFieldInsert_eq_cometricRaise,
     connectionDifferenceDeTurckVectorFieldInsert_eq_cometricRaise]
   rw [deTurckVectorFieldCovariantDerivativeLowered, deTurckVectorFieldCovariantDerivativeLowered, cometricRaiseSlot0Field_zero_add, cometricRaiseSlot0Field_zero_add, cometricRaiseSlot0Field_zero_sub]
@@ -2081,7 +2082,7 @@ private theorem deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDiffe
     deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDifference_eq (I := I) (M := M) g g_bg gU,
     ← domDomCongrSection_sub, ← covGrad_sub]
 
-private theorem exists_deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDifference_pairing_first_order_bound
+private theorem deTurckVectorFieldCovariantDerivativeLoweredBase_background_difference_jet_one_lipschitz_bound
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 ≤ C ∧
@@ -2156,7 +2157,7 @@ theorem exists_deTurckLieInsertionCorrection_pairing_firstOrder_bound
           (C * ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
             (T - U)‖) ^ 2 := by
   obtain ⟨ρ, Ca, hρ, _hCa, hα⟩ :=
-    exists_deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDifference_pairing_first_order_bound (I := I) (M := M) hDim g g_bg
+    deTurckVectorFieldCovariantDerivativeLoweredBase_background_difference_jet_one_lipschitz_bound (I := I) (M := M) hDim g g_bg
   let fr : ℝ := Module.finrank ℝ E
   let K : ℝ := 4 * fr * Ca ^ 2
   let C : ℝ := Real.sqrt K
@@ -3299,7 +3300,7 @@ theorem exists_deTurckLieCoefficient_backgroundDifference_pairing_firstOrder_bou
                 lieCorrectionZeroField (I := I) (M := M) g gU g))) ≤
         (B0 R A * D2 + B1 A * N) ^ 2 := by
   obtain ⟨ρa, Ba0, Ba1, hρa, hBa0, hBa1, hDLa⟩ :=
-    exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDifference_pairing_firstOrder_bound (I := I) (M := M) hDim g gB hδ₀0 hδ₀
+    exists_deTurckLieConnectionDifferenceDerivCoeffField_background_difference_jet_one_difference_bound (I := I) (M := M) hDim g gB hδ₀0 hδ₀
   obtain ⟨ρb, Cb, hρb, hCb, hDLb⟩ :=
     exists_deTurckLieInsertionCorrection_pairing_firstOrder_bound (I := I) (M := M) hDim g gB
   obtain ⟨ρm, Cm, hρm, hCm, hAMix⟩ :=

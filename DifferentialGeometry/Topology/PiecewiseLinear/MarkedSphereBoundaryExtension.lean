@@ -49,8 +49,8 @@ theorem IsPLSphere.exists_isPLHomeomorphOn_glue_holed_disks
     (hS : IsPLSphere 2 S) (hS' : IsPLSphere 2 S')
     {D : ι → Set E} {D' : ι → Set F}
     {q : ι → (Fin 3 → ℝ) → E} {q' : ι → (Fin 3 → ℝ) → F}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
-    (hq' : ∀ i, IsPLHomeomorphOn (q' i) (stdSimplex ℝ (Fin 3)) (D' i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
+    (hq' : ∀ i, IsPLHomeomorphOn (q' i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D' i))
     (hDS : ∀ i, D i ⊆ S) (hD'S' : ∀ i, D' i ⊆ S')
     (hdis : Pairwise fun i j => Disjoint (D i) (D j))
     (hdis' : Pairwise fun i j => Disjoint (D' i) (D' j))
@@ -122,8 +122,8 @@ theorem IsPLSphere.exists_isPLHomeomorphOn_disk_family_eqOn_circle
     (hS : IsPLSphere 2 S) (hS' : IsPLSphere 2 S')
     {D : ι → Set E} {D' : ι → Set F}
     {q : ι → (Fin 3 → ℝ) → E} {q' : ι → (Fin 3 → ℝ) → F}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
-    (hq' : ∀ i, IsPLHomeomorphOn (q' i) (stdSimplex ℝ (Fin 3)) (D' i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
+    (hq' : ∀ i, IsPLHomeomorphOn (q' i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D' i))
     (hDS : ∀ i, D i ⊆ S) (hD'S' : ∀ i, D' i ⊆ S')
     (hdis : Pairwise fun i j => Disjoint (D i) (D j))
     (hdis' : Pairwise fun i j => Disjoint (D' i) (D' j))
@@ -156,7 +156,7 @@ omit [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F] in
 theorem IsPLSphere.exists_disk_family_map_not_isPLCirclePositive
     {ι : Type*} [Finite ι] {S : Set E} (hS : IsPLSphere 2 S)
     {D : ι → Set E} {q : ι → (Fin 3 → ℝ) → E}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDS : ∀ i, D i ⊆ S) (hdis : Pairwise fun i j => Disjoint (D i) (D j)) (i₀ : ι) :
     ∃ G : E → E, IsPLHomeomorphOn G S S ∧ (∀ i, G '' D i = D i) ∧
       ¬ IsPLCirclePositive (q i₀ '' stdSimplexBoundary 2) G := by

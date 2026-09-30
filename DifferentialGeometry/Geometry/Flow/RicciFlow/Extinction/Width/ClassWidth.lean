@@ -202,7 +202,7 @@ theorem rfs_width_finiteness (g : SmoothRiemannianMetric I Q)
     have heq : (fun ε => i.comp (T ε)) =ᶠ[𝓝[>] (0 : ℝ)] S := by
       filter_upwards [hevent] with ε hε
       ext k
-      simp only [T, dif_pos hε, ContinuousMap.comp_apply, i, ContinuousMap.coe_mk]
+      simp only [T, dite_eq_left hε, ContinuousMap.comp_apply, i, ContinuousMap.coe_mk]
     exact ((hregular Γr rfl).1).congr' heq.symm
   have hmax := (continuous_familyMaximum g).continuousAt.tendsto.comp hT
   have hbound : ∀ᶠ ε in 𝓝[>] (0 : ℝ),
@@ -223,12 +223,12 @@ theorem rfs_width_finiteness (g : SmoothRiemannianMetric I Q)
     · intro k
       apply Subtype.ext
       change F (1, k) = (T ε k).1.toContinuousLoop
-      simpa only [T, dif_pos hε, ContinuousMap.coe_mk] using
+      simpa only [T, dite_eq_left hε, ContinuousMap.coe_mk] using
         (show F (1, k) = (S ε k).toContinuousLoop from F.apply_one k)
   have hclass : FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (T ε)) = ξ :=
     ((FreeHomotopyClass.mk_eq_mk_iff _ _).mpr hhomT).symm.trans Γ.2
   refine ⟨⟨T ε, hclass⟩, hboundε, ?_⟩
-  simpa only [HasContinuousSmoothLoopJets, HasContinuousSmoothJets, T, dif_pos hε,
+  simpa only [HasContinuousSmoothLoopJets, HasContinuousSmoothJets, T, dite_eq_left hε,
     ContinuousMap.coe_mk] using hjets ε hε
 
 theorem classWidth_metric_comparison (g h : SmoothRiemannianMetric I Q)

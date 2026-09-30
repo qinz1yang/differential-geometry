@@ -59,8 +59,7 @@ variable {n : Nat} [Fact (Module.finrank Real A = n + 1)]
 
 omit [FiniteDimensional Real A] in
 theorem roundSphereShrinker_metricRicciAt_add_hessianSec_eq
-    (hn : 2 ≤ n)
-    [NeZero (Module.finrank Real (EuclideanSpace Real (Fin n)))] :
+    (hn : 2 ≤ n) :
     ∀ (x : Metric.sphere (0 : A) 1) (v w : TangentSpace (𝓡 n) x),
       metricRicciAt (I := 𝓡 n) (roundSphereShrinkerMetric (A := A) hn) x
           (vec2 (I := 𝓡 n) v w) +
@@ -139,8 +138,7 @@ theorem metricRicciAt_add_hessianSec_eq_smul_metricTensor0S_iff
 
 omit [FiniteDimensional Real A] in
 theorem roundSphereShrinker_metricRicciAt_add_hessianSec_eq_smul_metricTensor0S
-    (hn : 2 ≤ n)
-    [NeZero (Module.finrank Real (EuclideanSpace Real (Fin n)))] :
+    (hn : 2 ≤ n) :
     ∀ (x : Metric.sphere (0 : A) 1),
       metricRicciAt (I := 𝓡 n) (roundSphereShrinkerMetric (A := A) hn) x +
         hessianSec (I := 𝓡 n)
@@ -163,7 +161,7 @@ end Round
 
 section Gaussian
 
-theorem gaussian_metricRicciAt_add_hessianSec_eq (n : Nat) [NeZero n] :
+theorem gaussian_metricRicciAt_add_hessianSec_eq (n : Nat) :
     ∀ (x : EuclideanSpace Real (Fin n))
         (v w : TangentSpace (𝓘(Real, EuclideanSpace Real (Fin n))) x),
       metricRicciAt (I := 𝓘(Real, EuclideanSpace Real (Fin n)))

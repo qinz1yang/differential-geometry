@@ -155,7 +155,7 @@ theorem FlowMetricConvergenceData.tendsto_lintegral_mul_chartDensity_mul_density
   let C : E → ENNReal := fun z => ((Cvol : ENNReal) * (Cdensity : ENNReal)) * w z
   have hFMeas : ∀ᶠ k in atTop, AEMeasurable (F k) μ := by
     filter_upwards [hDensityMeas'] with k hk
-    convert hw.mul ((hVolMeas k).mul hk) using 1 <;> rfl
+    exact hw.mul ((hVolMeas k).mul hk)
   have hBound : ∀ᶠ k in atTop, F k ≤ᵐ[μ] C := by
     filter_upwards [hVolBd, hDensityBd] with k hkVol hkRed
     filter_upwards [hkVol, hkRed] with z hzVol hzRed

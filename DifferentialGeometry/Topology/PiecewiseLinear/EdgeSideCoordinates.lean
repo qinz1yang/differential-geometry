@@ -36,16 +36,16 @@ theorem pair_independent_of_affineIndependent_insert {a b c x : E}
   let w : E → ℝ := fun u => if u = a then 1 else 0
   let w' : E → ℝ := fun u => if u = a then 1 - (α - β * θ) - β else if u = b then α - β * θ
     else β
-  have wc : w c = 0 := if_neg hca
-  have wa : w a = 1 := if_pos rfl
-  have wb : w b = 0 := if_neg hba
+  have wc : w c = 0 := ite_eq_right hca
+  have wa : w a = 1 := ite_eq_left rfl
+  have wb : w b = 0 := ite_eq_right hba
   have w'c : w' c = β := by
     change (if c = a then 1 - (α - β * θ) - β else if c = b then α - β * θ else β) = β
-    rw [if_neg hca, if_neg hcb]
-  have w'a : w' a = 1 - (α - β * θ) - β := if_pos rfl
+    rw [ite_eq_right hca, ite_eq_right hcb]
+  have w'a : w' a = 1 - (α - β * θ) - β := ite_eq_left rfl
   have w'b : w' b = α - β * θ := by
     change (if b = a then 1 - (α - β * θ) - β else if b = b then α - β * θ else β) = α - β * θ
-    rw [if_neg hba, if_pos rfl]
+    rw [ite_eq_right hba, ite_eq_left rfl]
   have hw : ∑ u ∈ insert c ({a, b} : Finset E), w u = 1 := by
     rw [Finset.sum_insert hc, Finset.sum_pair hab, wc, wa, wb]
     ring

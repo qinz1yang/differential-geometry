@@ -14,7 +14,6 @@ noncomputable section
 open MeasureTheory Filter
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Integration
-open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Integral.L2
 open scoped Manifold ContDiff Topology
 

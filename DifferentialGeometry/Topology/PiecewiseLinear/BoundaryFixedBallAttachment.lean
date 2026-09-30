@@ -18,8 +18,8 @@ theorem IsPLHomeomorphOn.exists_manifold_union_ball_fixed_boundary [d : Decidabl
     {L D Δ : Set E} {f g : E → E} (hf : IsPLHomeomorphOn f R.space L)
     (hfix : EqOn f id (boundaryComplex (n + 1) R).space)
     {r s : (Fin (n + 2) → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (n + 2))) D)
-    (hs : IsPLHomeomorphOn s (stdSimplex ℝ (Fin (n + 2))) Δ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) D)
+    (hs : IsPLHomeomorphOn s (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) Δ)
     (hrim : s '' stdSimplexBoundary (n + 1) = r '' stdSimplexBoundary (n + 1))
     (hRD : R.space ∩ D = r '' stdSimplexBoundary (n + 1))
     (hLΔ : L ∩ Δ = r '' stdSimplexBoundary (n + 1))

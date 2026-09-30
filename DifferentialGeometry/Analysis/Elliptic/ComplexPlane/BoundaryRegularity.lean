@@ -485,7 +485,7 @@ private theorem exists_contDiff_one_extension_of_quadratic_growth_equiv
     (e.symm.hasFDerivAt.comp z (hu.differentiable (by norm_num) z).hasFDerivAt).fderiv
   refine ⟨ρ, hρ, hρR, e.symm ∘ u, ‖A‖₊ * C,
     e.symm.contDiff.comp hu, ?_, ?_⟩
-  · have h := A.lipschitz.holderWith.comp hDu
+  · have h := A.lipschitzWith.holderWith.comp hDu
     intro x y
     rw [he x, he y]
     simpa only [Function.comp_def, one_mul, NNReal.coe_one, NNReal.rpow_one] using! h x y

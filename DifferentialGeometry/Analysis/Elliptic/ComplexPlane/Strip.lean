@@ -37,8 +37,9 @@ theorem stripClamp_eventually_eq_id {z : ℂ} (hz : z.re ∈ Ioo (0 : ℝ) 1) :
 theorem exists_lipschitz_stripClamp : ∃ C : ℝ≥0, LipschitzWith C stripClamp := by
   have ht := ((LipschitzWith.subtype_val (Icc (0 : ℝ) 1)).comp
     (LipschitzWith.projIcc (zero_le_one : (0 : ℝ) ≤ 1))).comp
-    Complex.reCLM.lipschitz
-  exact ⟨_, Complex.equivRealProdCLM.symm.lipschitz.comp (ht.prodMk Complex.imCLM.lipschitz)⟩
+    Complex.reCLM.lipschitzWith
+  exact ⟨_, Complex.equivRealProdCLM.symm.lipschitzWith.comp
+    (ht.prodMk Complex.imCLM.lipschitzWith)⟩
 
 theorem isCompact_unitSquare : IsCompact unitSquare :=
   Complex.equivRealProdCLM.toHomeomorph.isCompact_preimage.mpr (isCompact_Icc.prod isCompact_Icc)

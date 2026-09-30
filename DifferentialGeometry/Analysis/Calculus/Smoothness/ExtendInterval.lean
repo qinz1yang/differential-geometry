@@ -14,7 +14,7 @@ namespace Analysis
 
 private lemma inter_Iic_eventuallyEq {s : Set ℝ} {a y : ℝ} (h : y < a) :
     (s ∩ Set.Iic a : Set ℝ) =ᶠ[𝓝 y] s := by
-  rw [eventuallyEq_set]
+  rw [eventuallyEqSet_iff]
   filter_upwards [Iio_mem_nhds h] with z hz
   simp only [Set.mem_Iio] at hz
   simp only [Set.mem_inter_iff, Set.mem_Iic]
@@ -22,7 +22,7 @@ private lemma inter_Iic_eventuallyEq {s : Set ℝ} {a y : ℝ} (h : y < a) :
 
 private lemma inter_Ici_eventuallyEq {s : Set ℝ} {a y : ℝ} (h : a < y) :
     (s ∩ Set.Ici a : Set ℝ) =ᶠ[𝓝 y] s := by
-  rw [eventuallyEq_set]
+  rw [eventuallyEqSet_iff]
   filter_upwards [Ioi_mem_nhds h] with z hz
   simp only [Set.mem_Ioi] at hz
   simp only [Set.mem_inter_iff, Set.mem_Ici]
@@ -59,9 +59,9 @@ private lemma iteratedDeriv_taylorWithinEval_eq (f : ℝ → ℝ) (n : ℕ) (s :
   rw [Finset.sum_congr rfl hsummand, Finset.sum_eq_single_of_mem j
     (Finset.mem_range.mpr (by omega))]
   · have hfac : (j ! : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero j
-    rw [if_pos rfl, mul_right_comm, inv_mul_cancel₀ hfac, one_mul]
+    rw [ite_eq_left rfl, mul_right_comm, inv_mul_cancel₀ hfac, one_mul]
   · intro i _ hij
-    rw [if_neg (Ne.symm hij), mul_zero]
+    rw [ite_eq_right (Ne.symm hij), mul_zero]
 
 private theorem contDiffOn_glue {a : ℝ} {s : Set ℝ} (ha : a ∈ s) (hs : UniqueDiffOn ℝ s)
     (hsL : UniqueDiffOn ℝ (s ∩ Set.Iic a)) (hsR : UniqueDiffOn ℝ (s ∩ Set.Ici a)) :
@@ -189,51 +189,51 @@ theorem exists_contDiff_extend_of_contDiffOn_Icc
     · rw [hIciIci]; exact uniqueDiffOn_Ici T
     · rw [hIciIic]
       refine hg.congr (fun y hy => ?_)
-      simp only [hGR]; rw [if_pos hy.2]
+      simp only [hGR]; rw [ite_eq_left hy.2]
     · rw [hIciIci]
       refine hPTsm.contDiffOn.congr (fun y hy => ?_)
       simp only [hGR]
       by_cases hyT : y ≤ T
-      · rw [if_pos hyT, le_antisymm hyT (Set.mem_Ici.mp hy)]
+      · rw [ite_eq_left hyT, le_antisymm hyT (Set.mem_Ici.mp hy)]
         simp only [hPT, taylorWithinEval_self]
-      · rw [if_neg hyT]
+      · rw [ite_eq_right hyT]
     · intro j hj
       rw [hIciIic, hIciIci]
       have hlhs : iteratedDerivWithin j GR (Set.Icc 0 T) T = iteratedDerivWithin j g (Set.Icc 0 T)
         T :=
-        iteratedDerivWithin_congr (fun y hy => by simp only [hGR]; rw [if_pos hy.2])
+        iteratedDerivWithin_congr (fun y hy => by simp only [hGR]; rw [ite_eq_left hy.2])
           ⟨hT.le, le_refl T⟩
       have hrhs : iteratedDerivWithin j GR (Set.Ici T) T = iteratedDerivWithin j PT (Set.Ici T)
         T := by
         refine iteratedDerivWithin_congr (fun y hy => ?_) Set.self_mem_Ici
         simp only [hGR]
         by_cases hyT : y ≤ T
-        · rw [if_pos hyT, le_antisymm hyT (Set.mem_Ici.mp hy)]
+        · rw [ite_eq_left hyT, le_antisymm hyT (Set.mem_Ici.mp hy)]
           simp only [hPT, taylorWithinEval_self]
-        · rw [if_neg hyT]
+        · rw [ite_eq_right hyT]
       rw [hlhs, hrhs,
         iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Ici T)
           (hPTsm.contDiffAt.of_le (by exact_mod_cast hj)) Set.self_mem_Ici,
         hPT]
       exact (iteratedDeriv_taylorWithinEval_eq g k (Set.Icc 0 T) T hj).symm
   set G : ℝ → ℝ := fun x => if x ≤ 0 then P0 x else GR x with hG
-  have hGRzero : GR 0 = g 0 := by simp only [hGR]; rw [if_pos hT.le]
+  have hGRzero : GR 0 = g 0 := by simp only [hGR]; rw [ite_eq_left hT.le]
   have hP0zero : P0 0 = g 0 := by rw [hP0]; simp
   have hG_contDiff : ContDiff ℝ (k : ℕ) G := by
     refine contDiff_glue (a := 0) (F := G) ?_ ?_ ?_
     · refine hP0sm.contDiffOn.congr (fun y hy => ?_)
-      simp only [hG]; rw [if_pos (Set.mem_Iic.mp hy)]
+      simp only [hG]; rw [ite_eq_left (Set.mem_Iic.mp hy)]
     · refine hGR_Ici.congr (fun y hy => ?_)
       simp only [hG]
       by_cases hy0 : y ≤ 0
-      · rw [if_pos hy0, le_antisymm hy0 (Set.mem_Ici.mp hy), hGRzero, hP0zero]
-      · rw [if_neg hy0]
+      · rw [ite_eq_left hy0, le_antisymm hy0 (Set.mem_Ici.mp hy), hGRzero, hP0zero]
+      · rw [ite_eq_right hy0]
     · intro j hj
       have hlhs : iteratedDerivWithin j G (Set.Iic 0) 0 = iteratedDerivWithin j P0 (Set.Iic 0) 0 :=
         iteratedDerivWithin_congr
-          (fun y hy => by simp only [hG]; rw [if_pos (Set.mem_Iic.mp hy)]) Set.self_mem_Iic
+          (fun y hy => by simp only [hG]; rw [ite_eq_left (Set.mem_Iic.mp hy)]) Set.self_mem_Iic
       have hset : Set.Ici (0 : ℝ) =ᶠ[𝓝 (0 : ℝ)] Set.Icc 0 T := by
-        rw [eventuallyEq_set]
+        rw [eventuallyEqSet_iff]
         filter_upwards [Iio_mem_nhds hT] with y hy
         simp only [Set.mem_Iio] at hy
         simp only [Set.mem_Ici, Set.mem_Icc]
@@ -242,7 +242,7 @@ theorem exists_contDiff_extend_of_contDiffOn_Icc
         have hmem : Set.Iic T ∈ 𝓝[Set.Ici (0 : ℝ)] (0 : ℝ) :=
           mem_nhdsWithin_of_mem_nhds (Iic_mem_nhds hT)
         filter_upwards [hmem] with y hy
-        simp only [hGR]; rw [if_pos (Set.mem_Iic.mp hy)]
+        simp only [hGR]; rw [ite_eq_left (Set.mem_Iic.mp hy)]
       have hrhs : iteratedDerivWithin j G (Set.Ici 0) 0 = iteratedDerivWithin j g (Set.Icc 0 T)
         0 := by
         have hGGR : iteratedDerivWithin j G (Set.Ici 0) 0 = iteratedDerivWithin j GR (Set.Ici 0)
@@ -250,8 +250,8 @@ theorem exists_contDiff_extend_of_contDiffOn_Icc
           iteratedDerivWithin_congr (fun y hy => by
             simp only [hG]
             by_cases hy0 : y ≤ 0
-            · rw [if_pos hy0, le_antisymm hy0 (Set.mem_Ici.mp hy), hGRzero, hP0zero]
-            · rw [if_neg hy0]) Set.self_mem_Ici
+            · rw [ite_eq_left hy0, le_antisymm hy0 (Set.mem_Ici.mp hy), hGRzero, hP0zero]
+            · rw [ite_eq_right hy0]) Set.self_mem_Ici
         rw [hGGR, hGRg.iteratedDerivWithin_eq hGRzero, iteratedDerivWithin_congr_set j hset]
       rw [hlhs, hrhs,
         iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Iic 0)
@@ -261,9 +261,9 @@ theorem exists_contDiff_extend_of_contDiffOn_Icc
   refine ⟨G, hG_contDiff, fun y hy => ?_⟩
   simp only [hG]
   by_cases hy0 : y ≤ 0
-  · rw [if_pos hy0, le_antisymm hy0 hy.1, hP0zero]
-  · rw [if_neg hy0]
-    simp only [hGR]; rw [if_pos hy.2]
+  · rw [ite_eq_left hy0, le_antisymm hy0 hy.1, hP0zero]
+  · rw [ite_eq_right hy0]
+    simp only [hGR]; rw [ite_eq_left hy.2]
 
 end Analysis
 end DifferentialGeometry

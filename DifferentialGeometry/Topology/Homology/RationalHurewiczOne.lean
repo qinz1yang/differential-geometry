@@ -126,7 +126,6 @@ def tensorRationalAdditiveEquivOfMulEquiv {G H : Type u} [CommGroup G] [CommGrou
   LinearEquiv.baseChange ℤ ℚ _ _ (AddEquiv.toIntLinearEquiv (MulEquiv.toAdditive e))
 
 theorem tensorRational_abelianizationFundamentalGroup_equiv_of_hurewiczOne (x : X)
-    [PathConnectedSpace X]
     (c : integralSingularHomology (0 + 1) (liftedHomotopySphere.{u} 0))
     (hmul : ∀ a b : HomotopyGroup (Fin 1) X x,
       sphereHurewicz 0 x c (a * b) = sphereHurewicz 0 x c a + sphereHurewicz 0 x c b)

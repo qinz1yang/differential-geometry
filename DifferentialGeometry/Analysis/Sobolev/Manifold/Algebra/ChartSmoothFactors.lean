@@ -100,7 +100,7 @@ private lemma leftSmoothFactor_norm_le
               (fun x : M => b x * u x)
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
             else 0)‖ ≤ Cb * Cu
-    rw [if_pos hy]
+    rw [ite_eq_left hy]
     set x : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y)
     calc
       ‖b x * u x‖ = ‖b x‖ * ‖u x‖ := norm_mul _ _
@@ -109,7 +109,7 @@ private lemma leftSmoothFactor_norm_le
               (fun x : M => b x * u x)
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
             else 0)‖ ≤ Cb * Cu
-    rw [if_neg hy]
+    rw [ite_eq_right hy]
     rw [norm_zero]
     exact mul_nonneg hCb_nn hCu_nn
 
@@ -408,7 +408,7 @@ private lemma liftedPou_apply_in_unit_interval
                 : C^∞⟮I, M; ℝ⟯) : M → ℝ)
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
             else 0) ∧ _ ≤ 1
-    rw [if_pos hy]
+    rw [ite_eq_left hy]
     exact ⟨(DifferentialGeometry.Integral.Measure.chartAtlasPOU I M).nonneg α _,
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M).le_one α _⟩
   · change 0 ≤ (if (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target then
@@ -416,7 +416,7 @@ private lemma liftedPou_apply_in_unit_interval
                 : C^∞⟮I, M; ℝ⟯) : M → ℝ)
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
             else 0) ∧ _ ≤ 1
-    rw [if_neg hy]
+    rw [ite_eq_right hy]
     exact ⟨le_refl 0, zero_le_one⟩
 
 lemma liftedPou_norm_le_one
@@ -459,7 +459,7 @@ lemma smoothPushed_norm_le_of_bound
                   : C^∞⟮I, M; ℝ⟯) : M → ℝ) x * u x)
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
             else 0)‖ ≤ uMax
-    rw [if_pos hy]
+    rw [ite_eq_left hy]
     set x : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y)
     have hρ_x_nonneg : 0 ≤ ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) : M → ℝ) x :=
@@ -483,7 +483,7 @@ lemma smoothPushed_norm_le_of_bound
                   : C^∞⟮I, M; ℝ⟯) : M → ℝ) x * u x)
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
             else 0)‖ ≤ uMax
-    rw [if_neg hy, norm_zero]
+    rw [ite_eq_right hy, norm_zero]
     exact huMax_nn
 
 omit [IsManifold I ∞ M] in
@@ -499,7 +499,7 @@ lemma leftSmoothFactor_norm_le_of_bound
               (fun x : M => b x * u x)
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
             else 0)‖ ≤ uMax
-    rw [if_pos hy]
+    rw [ite_eq_left hy]
     set x : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y)
     have hb_x_nn : 0 ≤ b x := (hb_le_one x).1
     have hb_x_le_one : b x ≤ 1 := (hb_le_one x).2
@@ -513,7 +513,7 @@ lemma leftSmoothFactor_norm_le_of_bound
               (fun x : M => b x * u x)
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
             else 0)‖ ≤ uMax
-    rw [if_neg hy, norm_zero]
+    rw [ite_eq_right hy, norm_zero]
     exact huMax_nn
 
 lemma liftedPou_mul_leftSmoothFactor_eq_smoothPushed

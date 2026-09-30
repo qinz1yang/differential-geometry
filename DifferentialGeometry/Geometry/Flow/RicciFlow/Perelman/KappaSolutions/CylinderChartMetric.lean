@@ -14,6 +14,9 @@ open Bundle Manifold Set Filter
 open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Tensor.Coordinates
+  (chartCoordCLM chartGramBilin chartGramBilin_eq_innerJinv)
+open DifferentialGeometry.TensorMetric (modelInnerAt_apply)
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Geometry.Operator

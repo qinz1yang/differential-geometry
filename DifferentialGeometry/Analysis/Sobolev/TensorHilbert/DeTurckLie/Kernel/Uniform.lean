@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2J
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.TraceRadiusFreeBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Lowered
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -747,7 +750,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeKernel_gridBound_of_conne
                 (deTurckLieConnectionDifferenceDerivativeSym (I := I) (M := M) g₀ T g₁ g_bg))))).toSection x) by
       rw [SmoothCcTensor.toSection_smul]
       rfl]
-    rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 (2 + i) x]
+    rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 (2 + i) x]
     ring
   rw [hlift]
   refine (riemannianFiberNormSq_iteratedCovGrad_operatorFieldComposition_diagonalProductGrid_rankLeft_le

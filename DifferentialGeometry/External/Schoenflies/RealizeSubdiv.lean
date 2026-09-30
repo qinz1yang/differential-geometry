@@ -312,7 +312,7 @@ theorem drawing_params :
       R.drawing d.edge (d.rightParam R) = R.pos d.right := by
   have hd := R.isDrawing.edge_param (d.edge_mem_edgeSet_graph R)
   rcases (d.isLink_drawn_edge R).eq_and_eq_or_eq_and_eq hd.2.2 with ⟨h0, h1⟩ | ⟨h0, h1⟩
-  · have hL : d.leftParam R = 0 := if_pos h0.symm
+  · have hL : d.leftParam R = 0 := ite_eq_left h0.symm
     refine ⟨by rw [hL]; exact h0.symm, ?_⟩
     have hR : d.rightParam R = 1 := by rw [rightParam, hL]; ring
     rw [hR]; exact h1.symm
@@ -320,7 +320,7 @@ theorem drawing_params :
     -- endpoint values, which injectivity forbids.
     have hne : ¬ (R.drawing d.edge 0 = R.pos d.left) := fun hcon =>
       zero_ne_one (hd.2.1 zero_mem_I one_mem_I (by rw [hcon, h0]))
-    have hL : d.leftParam R = 1 := if_neg hne
+    have hL : d.leftParam R = 1 := ite_eq_right hne
     refine ⟨by rw [hL]; exact h0.symm, ?_⟩
     have hR : d.rightParam R = 0 := by rw [rightParam, hL]; ring
     rw [hR]; exact h1.symm
@@ -461,9 +461,9 @@ noncomputable def realizeGraph (d : S.SubdivData) (R : S.Realization) (t : ℝ) 
 variable {d R}
 
 @[simp] theorem realizePos_newVertex : d.realizePos R t d.newVertex = R.drawing d.edge t :=
-  if_pos rfl
+  ite_eq_left rfl
 
-theorem realizePos_of_ne {z : γ} (h : z ≠ d.newVertex) : d.realizePos R t z = R.pos z := if_neg h
+theorem realizePos_of_ne {z : γ} (h : z ≠ d.newVertex) : d.realizePos R t z = R.pos z := ite_eq_right h
 
 theorem realizePos_of_mem_cells {z : γ} (h : z ∈ S.cells) : d.realizePos R t z = R.pos z :=
   realizePos_of_ne (d.ne_newVertex_of_mem_cells h)
@@ -472,33 +472,33 @@ theorem realizePos_of_mem_vertexSet {z : γ} (h : z ∈ V(S.skel)) : d.realizePo
   realizePos_of_mem_cells (S.mem_cells_of_mem_vertexSet h)
 
 @[simp] theorem realizeDrawing_newEdge₁ :
-    d.realizeDrawing R t d.newEdge₁ = subarc (R.drawing d.edge) (d.leftParam R) t := if_pos rfl
+    d.realizeDrawing R t d.newEdge₁ = subarc (R.drawing d.edge) (d.leftParam R) t := ite_eq_left rfl
 
 @[simp] theorem realizeDrawing_newEdge₂ :
     d.realizeDrawing R t d.newEdge₂ = subarc (R.drawing d.edge) t (d.rightParam R) := by
-  rw [realizeDrawing, if_neg d.newEdge_ne.symm, if_pos rfl]
+  rw [realizeDrawing, ite_eq_right d.newEdge_ne.symm, ite_eq_left rfl]
 
 theorem realizeDrawing_of_ne {f : γ} (h₁ : f ≠ d.newEdge₁) (h₂ : f ≠ d.newEdge₂) :
-    d.realizeDrawing R t f = R.drawing f := by rw [realizeDrawing, if_neg h₁, if_neg h₂]
+    d.realizeDrawing R t f = R.drawing f := by rw [realizeDrawing, ite_eq_right h₁, ite_eq_right h₂]
 
 theorem realizeDrawing_of_mem_cells {f : γ} (h : f ∈ S.cells) :
     d.realizeDrawing R t f = R.drawing f :=
   realizeDrawing_of_ne (d.ne_newEdge₁_of_mem_cells h) (d.ne_newEdge₂_of_mem_cells h)
 
 @[simp] theorem realizeCell_newVertex : d.realizeCell R t d.newVertex = {R.drawing d.edge t} :=
-  if_pos rfl
+  ite_eq_left rfl
 
 @[simp] theorem realizeCell_newEdge₁ : d.realizeCell R t d.newEdge₁ =
     R.drawing d.edge '' uIcc (d.leftParam R) t \ {R.pos d.left, R.drawing d.edge t} := by
-  rw [realizeCell, if_neg d.newVertex_ne₁.symm, if_pos rfl]
+  rw [realizeCell, ite_eq_right d.newVertex_ne₁.symm, ite_eq_left rfl]
 
 @[simp] theorem realizeCell_newEdge₂ : d.realizeCell R t d.newEdge₂ =
     R.drawing d.edge '' uIcc t (d.rightParam R) \ {R.drawing d.edge t, R.pos d.right} := by
-  rw [realizeCell, if_neg d.newVertex_ne₂.symm, if_neg d.newEdge_ne.symm, if_pos rfl]
+  rw [realizeCell, ite_eq_right d.newVertex_ne₂.symm, ite_eq_right d.newEdge_ne.symm, ite_eq_left rfl]
 
 theorem realizeCell_of_mem_cells {c : γ} (h : c ∈ S.cells) : d.realizeCell R t c = R.cell c := by
-  rw [realizeCell, if_neg (d.ne_newVertex_of_mem_cells h), if_neg (d.ne_newEdge₁_of_mem_cells h),
-    if_neg (d.ne_newEdge₂_of_mem_cells h)]
+  rw [realizeCell, ite_eq_right (d.ne_newVertex_of_mem_cells h), ite_eq_right (d.ne_newEdge₁_of_mem_cells h),
+    ite_eq_right (d.ne_newEdge₂_of_mem_cells h)]
 
 /-! ### The two half arcs -/
 

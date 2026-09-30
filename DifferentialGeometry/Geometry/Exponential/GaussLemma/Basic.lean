@@ -393,6 +393,8 @@ private theorem mfderiv_expMap_injective_of_norm_lt_radius
       (fun y : E => (expMap (I := I) g p (show TangentSpace I p from y) : M)) u with hA_def
   have hA_eq : A = mfderiv 𝓘(ℝ, E) I Φ u := by
     rw [hA_def, hΦ_exp.mfderiv_eq]
+    ext w
+    rfl
   have hΦu : Φ u = expMap (I := I) g p (show TangentSpace I p from u) :=
     NormalCoordinates.expMapDiffeo_apply_eq (I := I) g p hsrc
   have hψΦ_id : (ψ ∘ Φ) =ᶠ[nhds u] (_root_.id : E → E) := by

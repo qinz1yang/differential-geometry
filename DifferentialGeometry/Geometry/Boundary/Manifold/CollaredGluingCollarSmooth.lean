@@ -41,28 +41,28 @@ theorem collarLeftExtend_apply_of_mem (G : CollaredGluing I X ι) (i : ι)
     (h : (y : X) ∈ (G.left i).carrier) :
     G.collarLeftExtend i (y, t) = (G.collarLeft i (⟨(y : X), h⟩, t) : X) := by
   rw [collarLeftExtend]
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
 
 theorem collarLeftExtend_apply_of_notMem (G : CollaredGluing I X ι) (i : ι)
     {y : BoundaryManifold I X} {t : Icc (0 : ℝ) (G.ε i)}
     (h : (y : X) ∉ (G.left i).carrier) :
     G.collarLeftExtend i (y, t) = (y : X) := by
   rw [collarLeftExtend]
-  simp only [dif_neg h]
+  simp only [dite_eq_right h]
 
 theorem collarRightExtend_apply_of_mem (G : CollaredGluing I X ι) (i : ι)
     {y : BoundaryManifold I X} {t : Icc (0 : ℝ) (G.ε i)}
     (h : (y : X) ∈ (G.right i).carrier) :
     G.collarRightExtend i (y, t) = (G.collarRight i (⟨(y : X), h⟩, t) : X) := by
   rw [collarRightExtend]
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
 
 theorem collarRightExtend_apply_of_notMem (G : CollaredGluing I X ι) (i : ι)
     {y : BoundaryManifold I X} {t : Icc (0 : ℝ) (G.ε i)}
     (h : (y : X) ∉ (G.right i).carrier) :
     G.collarRightExtend i (y, t) = (y : X) := by
   rw [collarRightExtend]
-  simp only [dif_neg h]
+  simp only [dite_eq_right h]
 
 theorem collarLeftExtend_apply_zero (G : CollaredGluing I X ι) (i : ι)
     {y : BoundaryManifold I X} (h : (y : X) ∈ (G.left i).carrier) :

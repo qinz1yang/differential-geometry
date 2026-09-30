@@ -77,7 +77,7 @@ theorem norm_sub_apply_le {G : Type*} [NormedAddCommGroup G] [NormedSpace ℝ G]
   calc ‖(L₁ - L₂) u‖ ≤ ‖L₁ - L₂‖ * ∏ i, ‖u i‖ := ContinuousMultilinearMap.le_opNorm _ _
     _ ≤ ‖L₁ - L₂‖ * 1 := by
         have hprod : ∏ i, ‖u i‖ ≤ ∏ _ : Fin m, (1 : ℝ) :=
-          Finset.prod_le_prod (fun i _ => norm_nonneg _)
+          Finset.prod_le_prod₀ (fun i _ => norm_nonneg _)
             (fun i _ => (norm_le_pi_norm u i).trans hu)
         simpa using mul_le_mul_of_nonneg_left hprod (norm_nonneg (L₁ - L₂))
     _ = ‖L₁ - L₂‖ := mul_one _
@@ -348,12 +348,12 @@ theorem IsSolutionOn.glue {g : ℝ → SmoothRiemannianMetric I M} {a t₀ T u :
   set cJ : CurveMap M := fun z t => if t ≤ T then c₁ z t else c₂ z t with hcJ
   have heq₁ : ∀ z t, t ≤ T → cJ z t = c₁ z t := by
     intro z t ht
-    simp only [hcJ, if_pos ht]
+    simp only [hcJ, ite_eq_left ht]
   have heq₂ : ∀ z t, t₀ < t → cJ z t = c₂ z t := by
     intro z t ht
     by_cases h : t ≤ T
-    · simp only [hcJ, if_pos h, hagree z t ⟨le_of_lt ht, h⟩]
-    · simp only [hcJ, if_neg h]
+    · simp only [hcJ, ite_eq_left h, hagree z t ⟨le_of_lt ht, h⟩]
+    · simp only [hcJ, ite_eq_right h]
   refine ⟨?_, ?_, ?_⟩
   · intro p hp
     obtain ⟨x, t⟩ := p
@@ -428,7 +428,7 @@ theorem IsSolutionOn.glue {g : ℝ → SmoothRiemannianMetric I M} {a t₀ T u :
   · intro x t ht
     rcases lt_trichotomy t T with hlt | heq | hgt
     · have hset : Icc a u =ᶠ[𝓝 t] Icc a T := by
-        rw [Filter.eventuallyEq_set]
+        rw [Filter.eventuallyEqSet_iff]
         filter_upwards [isOpen_Iio.mem_nhds hlt] with s hs
         exact ⟨fun h => ⟨h.1, le_of_lt hs⟩, fun h => ⟨h.1, le_trans h.2 hTu.le⟩⟩
       have hev : (cJ.lift x) =ᶠ[𝓝[Icc a u] t] (c₁.lift x) := by
@@ -452,7 +452,7 @@ theorem IsSolutionOn.glue {g : ℝ → SmoothRiemannianMetric I M} {a t₀ T u :
       have htu : t < u := by rw [heq]; exact hTu
       have hat : max a t₀ < t := by rw [max_eq_right hat₀]; exact htT
       have hset : Icc a u =ᶠ[𝓝 t] Icc t₀ u := by
-        rw [Filter.eventuallyEq_set]
+        rw [Filter.eventuallyEqSet_iff]
         filter_upwards [isOpen_Ioo.mem_nhds ⟨hat, htu⟩] with s hs
         exact ⟨fun _ => ⟨le_of_lt (lt_of_le_of_lt (le_max_right a t₀) hs.1), hs.2.le⟩,
           fun _ => ⟨le_trans hat₀ (le_of_lt (lt_of_le_of_lt (le_max_right a t₀) hs.1)), hs.2.le⟩⟩
@@ -475,7 +475,7 @@ theorem IsSolutionOn.glue {g : ℝ → SmoothRiemannianMetric I M} {a t₀ T u :
         (fun z => heq₂ z t htT) x).symm
     · have ht₀t : t₀ < t := lt_trans ht₀T hgt
       have hset : Icc a u =ᶠ[𝓝 t] Icc t₀ u := by
-        rw [Filter.eventuallyEq_set]
+        rw [Filter.eventuallyEqSet_iff]
         filter_upwards [isOpen_Ioi.mem_nhds hgt] with s hs
         exact ⟨fun h => ⟨le_of_lt (lt_trans ht₀T hs), h.2⟩,
           fun h => ⟨le_trans hat₀ (le_of_lt (lt_trans ht₀T hs)), h.2⟩⟩
@@ -758,7 +758,7 @@ theorem exists_extension_of_localWindow
     · rw [hhorizon]
       exact hglue
     · intro z t ht
-      simp only [if_pos (le_of_lt ht.2)]
+      simp only [ite_eq_left (le_of_lt ht.2)]
       exact hagr z t ht
 
 def curveShorteningTerminalClosure (B : RicciBackground (I := I) (M := M) D a b) : Prop :=
@@ -958,12 +958,12 @@ theorem continuous_solution_family_glue
     CurveMap.IsSolutionOn.glue has hst htb (hfsol p) (hhsol p) (heq p)
   have hleft (p : P) (z : AddCircle (1 : ℝ)) (v : ℝ) (hv : v ∈ Icc a t) :
       solutions p z v = f p z v := by
-    exact if_pos hv.2
+    exact ite_eq_left hv.2
   have hright (p : P) (z : AddCircle (1 : ℝ)) (v : ℝ) (hv : v ∈ Icc s b) :
       solutions p z v = h p z v := by
     by_cases hvt : v ≤ t
-    · exact (if_pos hvt).trans (heq p z v ⟨hv.1, hvt⟩)
-    · exact if_neg hvt
+    · exact (ite_eq_left hvt).trans (heq p z v ⟨hv.1, hvt⟩)
+    · exact ite_eq_right hvt
   have hcover : Icc a t ∪ Icc s b = Icc a b := by
     ext v
     constructor

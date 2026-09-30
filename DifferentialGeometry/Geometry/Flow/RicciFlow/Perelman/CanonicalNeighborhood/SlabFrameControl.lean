@@ -91,7 +91,7 @@ theorem exists_local_uniform_frame_comparison
   obtain ⟨W, hWsub, hWopen, hqW⟩ := mem_nhds_iff.mp hev
   refine ⟨basisE, W, hWopen, hqW, ?_⟩
   intro q hq r A
-  have hQlb := DifferentialGeometry.CheegerGromovCompactness.quad_lb_of_near_id
+  have hQlb := Matrix.quad_lb_of_near_id
     (fun i j => (G q)⁻¹ i j) eps heps.le
     (hWsub hq) hsmall
   have hkey := sum_comp_sq_le_pow_normSq0S (I := I) (g q.1) q.2 r

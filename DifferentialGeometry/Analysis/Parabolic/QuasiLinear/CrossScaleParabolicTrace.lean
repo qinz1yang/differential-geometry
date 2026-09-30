@@ -428,7 +428,7 @@ lemma repr_coeff_of_summable {t : ℝ}
       tensorSobolevWeight (I := I) (M := M) i (a + 1) * (u.coeffFun i t) ^ 2))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (u.repr t).coeff i = u.coeffFun i t := by
-  rw [repr, dif_pos h]
+  rw [repr, dite_eq_left h]
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma repr_coeff (hT : 0 < T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T)

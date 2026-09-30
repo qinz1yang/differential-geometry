@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
-open DifferentialGeometry.Geometry.Curvature
+import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 
 set_option autoImplicit false
 

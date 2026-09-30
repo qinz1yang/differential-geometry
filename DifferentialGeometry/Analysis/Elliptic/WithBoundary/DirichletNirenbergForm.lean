@@ -357,9 +357,9 @@ private theorem integral_normalized_dirichlet_nirenberg_flux
     ((weightedInvGramOnEuclid_contDiffOn h α i j).continuousOn.mono htarget).memLp_top_of_subset_isCompact
       hΩc hΩ.measurableSet subset_closure
   have hQ : MemLp Q ∞ (volume.restrict Ω) := memLp_chart_smoothMap_partial α hΩ hΩc hΩs φ j
-  have hcu : MemLp (fun z => A z * D i u z) 2 (volume.restrict Ω) := (Lp.memLp _).mul' hA
+  have hcu : MemLp (fun z => A z * D i u z) 2 (volume.restrict Ω) := hA.fun_mul (r := 2) (Lp.memLp (D i u))
   have hcqu : MemLp (fun z => (C z * Q z) * D i u z) 2 (volume.restrict Ω) :=
-    (Lp.memLp _).mul' (hQ.mul' (r := ∞) hC)
+    (hC.fun_mul (r := ∞) hQ).fun_mul (r := 2) (Lp.memLp (D i u))
   have hV : MemLp V 2 (volume.restrict Ω) :=
     (memWkp_chartInverse_H1ComplDirichletToLp q α hΩ hΩc hΩs v).memLp
   apply integral_normalized_multiplier_nirenberg_flux_eq_local hΩ.measurableSet hcu ?_ hcqu hV
@@ -497,7 +497,7 @@ theorem dirichletWeakFormCompl_smoothMul_dirichletNirenbergTest_eq_shifted_integ
     apply Finset.sum_congr rfl
     intro i _
     have hBi : MemLp (fun z => B i z * D i u z) 2 (volume.restrict Ω) :=
-      (Lp.memLp _).mul' (memLp_chart_vector_field_coefficient α hΩ hΩc hΩs X i)
+      (memLp_chart_vector_field_coefficient α hΩ hΩc hΩs X i).fun_mul (r := 2) (Lp.memLp (D i u))
     exact integral_normalized_weight_nirenberg_eq hΩ.measurableSet hP hBi hV hη.continuous hηc k s hηs
   have hreaction := integral_normalized_reaction_nirenberg_eq hΩ.measurableSet hP hU hV a
     hη.continuous hηc k s hηs

@@ -45,7 +45,7 @@ private lemma euclN_basis_expansion (v : EuclN) :
     rw [Finset.sum_apply, Finset.sum_eq_single i]
     · simp [smul_eq_mul]
     · intro j _ hj
-      rw [Pi.smul_apply, Pi.single_apply, if_neg hj.symm, smul_zero]
+      rw [Pi.smul_apply, Pi.single_apply, ite_eq_right hj.symm, smul_zero]
     · intro h; exact absurd (Finset.mem_univ i) h
   have h_v_toLp : v = WithLp.toLp 2 (fun i : Fin (Module.finrank ℝ E) => v i) := rfl
   have h_rhs :
@@ -152,8 +152,8 @@ private theorem opNorm_le_sum_basisE {m : ℕ}
     rw [h_map_smul α, smul_eq_mul, abs_mul, mul_comm]
     refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
     rw [Finset.abs_prod]
-    apply Finset.prod_le_prod
-    · intros; exact abs_nonneg _
+    apply Finset.prod_le_prod₀
+    · intro i _; exact abs_nonneg _
     · intro i _; exact euclN_coord_abs_le_norm (v i) (α i)
   refine le_trans (Finset.sum_le_sum (fun α _ => h_each α)) ?_
   rw [← Finset.sum_mul]

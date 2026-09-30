@@ -180,13 +180,13 @@ theorem IsPLTorus.range_integralSingularHomologyMap_le_or_eq_bot_of_disjoint {ι
         · simp)
     exact hle
   by_cases hall : ∀ i, ∃ (D : Set ((Fin 3 → ℝ) × ℝ)) (r : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ∧
         r '' stdSimplexBoundary 2 =
           Function.invFunOn h (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) '' C i
   · right
     choose D' r hr hDA hrb using hall
     obtain ⟨Sg, hSgdef⟩ : ∃ Sg : Set ((Fin 3 → ℝ) × ℝ),
-        Sg = stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 :=
+        Sg = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 :=
       ⟨_, rfl⟩
     have hSg : IsPLSphere 2 Sg := by
       rw [hSgdef]
@@ -194,7 +194,7 @@ theorem IsPLTorus.range_integralSingularHomologyMap_le_or_eq_bot_of_disjoint {ι
     have hASg : stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ⊆ Sg := by
       rw [hSgdef]
       exact subset_union_right
-    have hcΔ : (fun _ : Fin 3 => (1 / 3 : ℝ)) ∈ stdSimplex ℝ (Fin 3) :=
+    have hcΔ : (fun _ : Fin 3 => (1 / 3 : ℝ)) ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) :=
       ⟨fun _ => by norm_num, by rw [Fin.sum_univ_three]; norm_num⟩
     have hcB : (fun _ : Fin 3 => (1 / 3 : ℝ)) ∉ stdSimplexBoundary 2 := by
       rintro ⟨-, i, hi⟩
@@ -421,11 +421,11 @@ theorem IsPLTorus.range_integralSingularHomologyMap_le_or_eq_bot_of_disjoint {ι
         exact disjoint_left.mp hbd ha (hca ▸ hc)
       · obtain ⟨i, hi⟩ := hMD b
         rw [← hi, ← (hr i).image_eq, image_image, image_image]
-        have hmaps : ∀ x ∈ stdSimplex ℝ (Fin 3), r i x ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 :=
+        have hmaps : ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), r i x ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 :=
           fun x hx => hDA i ((hr i).bijOn.mapsTo hx)
         exact subsingleton_integralSingularHomology_image_of_convex
-          (f := fun x => φ (h (r i x))) (convex_stdSimplex ℝ (Fin 3))
-          (isCompact_stdSimplex ℝ (Fin 3)) ⟨_, single_mem_stdSimplex ℝ (0 : Fin 3)⟩
+          (f := fun x => φ (h (r i x))) (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin 3))
+          (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)) ⟨_, Convexity.StdSimplex.single_mem_coordinateSet ℝ (0 : Fin 3)⟩
           (hφ.comp (hh.isPiecewiseAffineOn.continuousOn.comp (hr i).isPiecewiseAffineOn.continuousOn
             hmaps) fun x hx => hhΘ _ (hmaps x hx))
           (fun x hx y hy hxy => (hr i).bijOn.injOn hx hy (hh.bijOn.injOn (hmaps x hx) (hmaps y hy)

@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.MetricData
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 
 set_option autoImplicit false
 
@@ -416,9 +416,9 @@ theorem ricciSharp_localPull
   have he (z : TangentSpace I x) : e z = mfderiv I J f x z :=
     congrArg (fun A : TangentSpace I x →L[ℝ] TangentSpace J (f x) => A z)
       (hf.mfderivToContinuousLinearEquiv_coe (by simp) x)
-  apply tangentFlatLinear_injective_gen (I := J) g (f x)
+  apply tangentFlatLinear_injective (I := J) g (f x)
   ext z
-  simp only [tangentFlatLinear_apply_gen]
+  simp only [tangentFlatLinear_apply]
   obtain ⟨w, rfl⟩ := e.surjective z
   rw [he, ← localPullMetric_inner, inner_ricciSharp, inner_ricciSharp]
   exact ricciTensor_localPull g f hf x v w

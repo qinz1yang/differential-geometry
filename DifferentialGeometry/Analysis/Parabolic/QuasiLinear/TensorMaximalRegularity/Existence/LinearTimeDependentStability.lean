@@ -556,7 +556,7 @@ variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {a T : ℝ}
 private theorem ae_norm_le_lpTop_norm
     {Ω Y : Type*} [MeasurableSpace Ω] {μ : Measure Ω} [NormedAddCommGroup Y]
     (f : Lp Y ∞ μ) : ∀ᵐ t ∂μ, ‖f t‖ ≤ ‖f‖ := by
-  simpa only [← toReal_eLpNorm (Lp.memLp f).aestronglyMeasurable, Lp.norm_def] using
+  simpa only [← toReal_eLpNorm, Lp.norm_def] using
     ae_le_lpNorm_exponent_top (Lp.memLp f)
 
 theorem tendsto_heatVectorForcingResidualL_of_tendsto_lp

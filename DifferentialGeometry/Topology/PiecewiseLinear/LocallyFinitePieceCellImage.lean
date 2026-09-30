@@ -121,20 +121,28 @@ open Classical in
 theorem LocallyFinitePLPieceIn.isPLCellOn_image
     (T : LocallyFinitePLPieceIn E 3 M U) {d : ℕ} (hd : d ≤ 3)
     {P : Set E} {r : (Fin (d + 1) → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (d + 1))) P)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) P)
     (hPK : P ⊆ T.complex.space) :
     IsPLCellOn d (T.map '' P) (T.map '' (r '' stdSimplexBoundary d)) := by
   obtain ⟨S, B, ⟨Q, p, u, hp, -, -, -⟩, -⟩ := exists_isPLCellOn_of_le_three d hd
-  let ρ := r ∘ Function.invFunOn p (stdSimplex ℝ (Fin (d + 1)))
+  let ρ := r ∘ Function.invFunOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)))
   have hρ : IsPLHomeomorphOn ρ Q P := hp.symm.trans hr
+  have hbsub : stdSimplexBoundary d ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)) :=
+    fun _ hx => hx.1
   have hbd : ρ '' (p '' stdSimplexBoundary d) = r '' stdSimplexBoundary d := by
-    ext y
-    constructor
-    · rintro ⟨_, ⟨z, hz, rfl⟩, rfl⟩
-      exact ⟨z, hz, by simp only [ρ, Function.comp_apply, hp.bijOn.invOn_invFunOn.1 hz.1]⟩
-    · rintro ⟨z, hz, rfl⟩
-      exact ⟨p z, mem_image_of_mem p hz,
-        by simp only [ρ, Function.comp_apply, hp.bijOn.invOn_invFunOn.1 hz.1]⟩
+    have h : EqOn
+        (Function.invFunOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) ∘ p) id
+        (stdSimplexBoundary d) :=
+      fun x hx => hp.bijOn.invOn_invFunOn.1 (hbsub hx)
+    calc
+      ρ '' (p '' stdSimplexBoundary d) = (ρ ∘ p) '' stdSimplexBoundary d := by
+        rw [← image_comp]
+      _ = (r ∘ (Function.invFunOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) ∘ p)) ''
+          stdSimplexBoundary d := by rfl
+      _ = r '' ((Function.invFunOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) ∘ p) ''
+          stdSimplexBoundary d) := by rw [image_comp]
+      _ = r '' stdSimplexBoundary d :=
+        congrArg (fun A => r '' A) (h.image_eq.trans (image_id _))
   refine ⟨Q, p, T.map ∘ ρ, hp, T.isPLHomeomorphInto_comp hρ hPK, ?_, ?_⟩
   · rw [image_comp, hρ.image_eq]
   · rw [image_comp, hbd]

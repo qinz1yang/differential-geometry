@@ -19,7 +19,7 @@ theorem IsPLHomeomorphOn.exists_component_eulerChar_of_disk_attachment
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (Q : Geometry.SimplicialComplex ℝ F) [Finite Q.faces]
     {D : Set E} {r : (Fin 3 → ℝ) → E} {f : E → F}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : K.space ∩ D = r '' stdSimplexBoundary 2)
     (hf : IsPLHomeomorphOn f (K.space ∪ D) Q.space) :
     letI (c : ConnectedComponents K.space) : Finite (connectedComponentComplex K c).faces :=
@@ -71,7 +71,7 @@ theorem IsPLHomeomorphOn.exists_component_eulerChar_of_disk_attachment
   · intro c hc
     have hfC : IsPLHomeomorphOn f (connectedComponentComplex K c).space
         (connectedComponentComplex Q (e c)).space := by
-      simpa only [if_neg hc, union_empty] using hcomp c
+      simpa only [ite_eq_right hc, union_empty] using hcomp c
     exact (eulerChar_eq_of_isPLHomeomorphOn (connectedComponentComplex K c)
       (connectedComponentComplex Q (e c)) hfC).symm
 

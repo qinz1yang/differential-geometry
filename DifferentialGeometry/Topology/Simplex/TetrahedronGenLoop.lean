@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.TriangleGenLoop
 import DifferentialGeometry.Topology.Simplex.CubeParametrization
 import DifferentialGeometry.Topology.Simplex.TetrahedronConeHomotopy
@@ -6,10 +7,12 @@ import DifferentialGeometry.Topology.Homotopy.CoordinateSwap
 noncomputable section
 open ContinuousMap
 open scoped unitInterval
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 variable {X : Type*} [TopologicalSpace X]
 
-def tetrahedronGenLoop (g : C(stdSimplex ℝ (Fin 4), X)) (x : X)
+def tetrahedronGenLoop (g : C(coordinateSet ℝ (Fin 4), X)) (x : X)
     (hg : ∀ p ∈ boundary (Fin 4), g p = x) : GenLoop (Fin 3) X x :=
   ⟨⟨fun v => g (Simplex.tetrahedronJoin (v 2, v 1, v 0)), by fun_prop⟩, by
     rintro v ⟨i, hi⟩
@@ -25,12 +28,12 @@ def tetrahedronGenLoop (g : C(stdSimplex ℝ (Fin 4), X)) (x : X)
       · exact ⟨2, by simp [tetrahedronJoin, show v 2 = 0 from h]⟩
       · exact ⟨0, by simp [tetrahedronJoin, show v 2 = 1 from h]⟩⟩
 
-@[simp] theorem tetrahedronGenLoop_apply (g : C(stdSimplex ℝ (Fin 4), X)) (x : X)
+@[simp] theorem tetrahedronGenLoop_apply (g : C(coordinateSet ℝ (Fin 4), X)) (x : X)
     (hg : ∀ p ∈ boundary (Fin 4), g p = x) (v : Fin 3 → unitInterval) :
     tetrahedronGenLoop g x hg v = g (Simplex.tetrahedronJoin (v 2, v 1, v 0)) := rfl
 
 
-def tetrahedronConeGenLoop (g : C(stdSimplex ℝ (Fin 4), X)) (x : X)
+def tetrahedronConeGenLoop (g : C(coordinateSet ℝ (Fin 4), X)) (x : X)
     (hg : ∀ p ∈ boundary (Fin 4), g p = x) : GenLoop (Fin 3) X x :=
   ⟨⟨fun v => g (tetrahedronCone (v 2, v 1, v 0)), by fun_prop⟩, by
     rintro v ⟨i, hi⟩
@@ -46,7 +49,7 @@ def tetrahedronConeGenLoop (g : C(stdSimplex ℝ (Fin 4), X)) (x : X)
       · exact ⟨1, by simp [tetrahedronCone, show v 2 = 0 from h]⟩
       · exact ⟨0, by simp [tetrahedronCone, show v 2 = 1 from h]⟩⟩
 
-def tetrahedronConeGenLoopHomotopyRel (g : C(stdSimplex ℝ (Fin 4), X)) (x : X)
+def tetrahedronConeGenLoopHomotopyRel (g : C(coordinateSet ℝ (Fin 4), X)) (x : X)
     (hg : ∀ p ∈ boundary (Fin 4), g p = x) :
     (tetrahedronConeGenLoop g x hg).val.HomotopyRel
       (GenLoop.congr x (Equiv.swap (1 : Fin 3) 2) (tetrahedronGenLoop g x hg)).val
@@ -78,7 +81,7 @@ def tetrahedronConeGenLoopHomotopyRel (g : C(stdSimplex ℝ (Fin 4), X)) (x : X)
         · exact Or.inr (Or.inl h)
     exact (tetrahedronConeHomotopyRel g hg).eq_fst t hb
 
-theorem tetrahedronConeGenLoop_class_eq_inv (g : C(stdSimplex ℝ (Fin 4), X)) (x : X)
+theorem tetrahedronConeGenLoop_class_eq_inv (g : C(coordinateSet ℝ (Fin 4), X)) (x : X)
     (hg : ∀ p ∈ boundary (Fin 4), g p = x) :
     (⟦tetrahedronConeGenLoop g x hg⟧ : HomotopyGroup (Fin 3) X x) =
       ((·⁻¹) : HomotopyGroup (Fin 3) X x → HomotopyGroup (Fin 3) X x)

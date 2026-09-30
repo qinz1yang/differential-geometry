@@ -57,7 +57,7 @@ theorem IsCombinatorialManifold.mem_nhdsWithin_of_mem_image_openSimplex
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) {N : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) N) (hNK : N ⊆ K.space)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N) (hNK : N ⊆ K.space)
     {x : E} (hx : x ∈ r '' openSimplex (stdVertices 1)) : N ∈ 𝓝[K.space] x := by
   rw [hr.image_openSimplex_stdVertices] at hx
   have hbd := hK.inter_closure_sdiff_eq_image_stdSimplexBoundary K hr hNK

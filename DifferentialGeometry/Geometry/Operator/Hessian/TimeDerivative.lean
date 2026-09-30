@@ -90,7 +90,7 @@ theorem hessianSec_hasDerivAt
     (ft := fun y => mvfderiv (I := I) ft y (Y y))
     (fun r => (dphi_apply_smooth (I := I) (f r) (hfs r) Y).mdifferentiable (by simp))
     ((dphi_apply_smooth (I := I) ft hft Y).mdifferentiable (by simp))
-    (fun y => (prodExtDerivAt_smooth (I := I) (hf y) Y.contMDiff.contMDiffAt).of_le
+    (fun y => (contMDiffAt_partial_mvfderiv_apply_infty (I := I) (hf y) Y.contMDiff.contMDiffAt).of_le
       (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤)))
     (fun y => hfirst y (Y y)) x (X x)
   have hsub := hsecond.sub (hfirst x (cov (fun y => Y y) x (X x)))
@@ -142,7 +142,7 @@ theorem hessianSec_leviCivita_hasDerivAt
         (leviCivita_contMDiffCovariantDerivativeLocally (g r)) (f r) (hfs r) x slots)
       ((hessianSec (I := I) (LeviCivita (g t))
           (leviCivita_contMDiffCovariantDerivativeLocally (g t)) ft hft x -
-        connectionDifferenceOutput (I := I) (leviCivitaVariation g t x)
+        bilinearCovectorComp (I := I) (leviCivitaVariation g t x)
           (duSec (I := I) (f t) (hfs t) x)) slots) t := by
   let cov := fun r => LeviCivita (I := I) (g r)
   let hcov := fun r => leviCivita_contMDiffCovariantDerivativeLocally (I := I) (g r)
@@ -191,24 +191,24 @@ theorem hessianSec_leviCivita_hasDerivAt
       (hess_sub_conn (I := I) (cov r) (cov t) (hcov r) (hcov t) (f r) (hfs r) x)
     change hessianSec (I := I) (cov r) (hcov r) (f r) (hfs r) x slots -
         hessianSec (I := I) (cov t) (hcov t) (f r) (hfs r) x slots =
-      -(connectionDifferenceOutput (I := I) (A r) (duSec (I := I) (f r) (hfs r) x) slots)
+      -(bilinearCovectorComp (I := I) (A r) (duSec (I := I) (f r) (hfs r) x) slots)
       at heq
     have hout :
-        connectionDifferenceOutput (I := I) (A r) (duSec (I := I) (f r) (hfs r) x) slots =
+        bilinearCovectorComp (I := I) (A r) (duSec (I := I) (f r) (hfs r) x) slots =
           mvfderiv (I := I) (f r) x (A r (slots 1) (slots 0)) := by
-      rw [← Tensor0SSpace.eval_eq, connectionDifferenceOutput_apply]
+      rw [← Tensor0SSpace.eval_eq, bilinearCovectorComp_apply]
       exact differential1FormFun_apply_eq_mvfderiv (I := I) (f r) x _
     rw [hout] at heq
     linarith
   have hout :
-      (connectionDifferenceOutput (I := I) (leviCivitaVariation g t x)
+      (bilinearCovectorComp (I := I) (leviCivitaVariation g t x)
         (duSec (I := I) (f t) (hfs t) x)) slots =
       mvfderiv (I := I) (f t) x (leviCivitaVariation g t x (slots 1) (slots 0)) := by
-    rw [← Tensor0SSpace.eval_eq, connectionDifferenceOutput_apply]
+    rw [← Tensor0SSpace.eval_eq, bilinearCovectorComp_apply]
     exact differential1FormFun_apply_eq_mvfderiv (I := I) (f t) x _
   change HasDerivAt _
     (hessianSec (I := I) (cov t) (hcov t) ft hft x slots -
-      connectionDifferenceOutput (I := I) (leviCivitaVariation g t x)
+      bilinearCovectorComp (I := I) (leviCivitaVariation g t x)
         (duSec (I := I) (f t) (hfs t) x) slots) t
   rw [hout]
   exact hresult.congr_of_eventuallyEq (Filter.Eventually.of_forall hvalue)

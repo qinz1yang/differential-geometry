@@ -217,7 +217,7 @@ theorem crossChart_transfer_bound
       refine (hMib i hi y hy).trans ?_
       refine le_trans ?_ (le_max_right _ _)
       refine Finset.le_sup'_of_le _ (Finset.mem_range_succ_iff.mpr hi) ?_
-      simp only [hi, dif_pos, le_refl]
+      simp only [hi, dite_eq_left, le_refl]
     · exact ⟨1, le_refl _, fun i _ y hy => absurd ⟨y, hy⟩ hKne⟩
   obtain ⟨B, hB0, hB_bd⟩ :
       ∃ B : ℝ, 0 ≤ B ∧ ∀ i, i ≤ k → ∀ y ∈ fβ '' K_M,
@@ -237,11 +237,11 @@ theorem crossChart_transfer_bound
       refine ⟨(Finset.range (k + 1)).sup' (by simp)
         (fun i => if hi : i ≤ k then Mi i hi else 0), ?_, ?_⟩
       · refine Finset.le_sup'_of_le _ (Finset.mem_range_succ_iff.mpr (Nat.zero_le k)) ?_
-        simp only [Nat.zero_le, dif_pos]; exact hMi0 0 (Nat.zero_le k)
+        simp only [Nat.zero_le, dite_eq_left]; exact hMi0 0 (Nat.zero_le k)
       · intro i hi y hy
         refine (hMib i hi y hy).trans ?_
         refine Finset.le_sup'_of_le _ (Finset.mem_range_succ_iff.mpr hi) ?_
-        simp only [hi, dif_pos, le_refl]
+        simp only [hi, dite_eq_left, le_refl]
     · exact ⟨0, le_refl _, fun i _ y hy => absurd ⟨y, hy⟩ hKne⟩
   set C : ℝ := (k + 1 : ℕ) * (2 ^ k : ℕ) * ((k ! : ℝ) * B * D ^ k + 1) with hC_def
   have hD_nonneg : (0 : ℝ) ≤ D := le_trans zero_le_one hD_one

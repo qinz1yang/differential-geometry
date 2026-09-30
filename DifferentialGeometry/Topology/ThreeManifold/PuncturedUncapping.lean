@@ -24,7 +24,7 @@ private def annulusParameter (ρ : ℝ ≃ₘ[ℝ] ℝ)
     (r : Icc (1 / 4 : ℝ) 1) : unitInterval :=
   ⟨(1 + (if side then ρ r.val else -ρ r.val)) / 2, by
     have h := hρ r.property
-    cases side <;> simp only [Bool.false_eq_true, if_false, if_true] <;> constructor <;> linarith [h.1,h.2]⟩
+    cases side <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;> constructor <;> linarith [h.1,h.2]⟩
 
 private def uncappingAnnulusMap
     (Ψ : T.Index → Cylinder ≃ₘ⟮CI, CI⟯ Cylinder)
@@ -35,7 +35,7 @@ private def uncappingAnnulusMap
     ((Ψ b.1).continuous.comp (continuous_fst.prodMk (by
       apply Continuous.subtype_mk
       change Continuous (fun q : Annulus => (1 + (if b.2 then ρ q.2.val else -ρ q.2.val)) / 2)
-      cases b.2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;> fun_prop)))
+      cases b.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;> fun_prop)))
 
 private theorem cylinderMap_end (a : T.Index) (side : Bool) (z : S2) :
     T.cylinderMap a (z, if side then 1 else 0) = T.boundarySphere (a, side) z := by
@@ -149,7 +149,7 @@ private theorem puncturedUncappingMap_core_annulus
     change t.val = -1 ∨ t.val = 1 at hend
     rw [htval] at hend
     rcases hend with h | h <;>
-      cases hs : q.1.2 <;> simp only [hs, Bool.false_eq_true, if_false, if_true] at h <;> linarith [hbound.1,hbound.2]
+      cases hs : q.1.2 <;> simp only [hs, Bool.false_eq_true, ite_false, ite_true] at h <;> linarith [hbound.1,hbound.2]
   have htone : q.2.2 = (⟨1,by norm_num⟩ : Icc (1 / 4 : ℝ) 1) := Subtype.ext hr
   have hq : q = ⟨q.1,q.2.1,⟨1,by norm_num⟩⟩ :=
     congrArg (fun r : Icc (1 / 4 : ℝ) 1 => (⟨q.1,q.2.1,r⟩ : Σ _b : T.Boundary,Annulus)) htone
@@ -178,9 +178,9 @@ private theorem signed_annulus_parameter_eq_iff
       apply ρ.injective
       change ρ r.val = ρ r'.val
       subst t
-      cases s <;> simp only [Bool.false_eq_true, if_false, if_true] at h <;> linarith
+      cases s <;> simp only [Bool.false_eq_true, ite_false, ite_true] at h <;> linarith
     · have hs : ρ r.val = 0 ∧ ρ r'.val = 0 := by
-        cases s <;> cases t <;> simp only [Bool.false_eq_true, if_false, if_true] at h <;>
+        cases s <;> cases t <;> simp only [Bool.false_eq_true, ite_false, ite_true] at h <;>
           first | exact False.elim (hst rfl) | constructor <;> linarith
       exact Or.inr ⟨ρ.injective (hs.1.trans hzero.symm), ρ.injective (hs.2.trans hzero.symm)⟩
   · rintro (⟨hst, hrr⟩ | ⟨hr0, hr0'⟩)
@@ -406,7 +406,7 @@ theorem exists_uncapping_homeomorph :
             T.cylinderMap q.1.1 (Ψ q.1.1 (q.2.1,
               ⟨(1 + (if q.1.2 then ρ q.2.2.val else -ρ q.2.2.val)) / 2, by
                 have h := hρ q.2.2.property
-                cases q.1.2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+                cases q.1.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
                   constructor <;> linarith [h.1,h.2]⟩))) ∧
         (∀ a z, F (adjunctionCell (capAnnuliBoundaryInclusion (T := T)) C.capAnnuliAttachingMap
             ⟨(a,false),z,⟨1 / 4,by norm_num⟩⟩) =

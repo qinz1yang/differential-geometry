@@ -64,14 +64,14 @@ theorem hasDerivAt_ite_of_one_sided_derivatives
     (hR : HasDerivWithinAt fR L (Ici s) s) :
     HasDerivAt (fun t => if t ≤ s then fL t else fR t) L s := by
   have hL' : HasDerivWithinAt (fun t => if t ≤ s then fL t else fR t) L (Iic s) s :=
-    hL.congr (fun t ht => if_pos ht) (if_pos le_rfl)
+    hL.congr (fun t ht => ite_eq_left ht) (ite_eq_left le_rfl)
   have hR' : HasDerivWithinAt (fun t => if t ≤ s then fL t else fR t) L (Ici s) s := by
     apply hR.congr
     · intro t ht
       rcases eq_or_lt_of_le (mem_Ici.mp ht) with rfl | hst
-      · exact (if_pos le_rfl).trans hval
-      · exact if_neg (not_le.mpr hst)
-    · exact (if_pos le_rfl).trans hval
+      · exact (ite_eq_left le_rfl).trans hval
+      · exact ite_eq_right (not_le.mpr hst)
+    · exact (ite_eq_left le_rfl).trans hval
   simpa only [Iic_union_Ici, hasDerivWithinAt_univ] using hL'.union hR'
 
 theorem hasDerivAt_ite_of_tendsto_derivatives

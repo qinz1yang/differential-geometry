@@ -1,22 +1,11 @@
-import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-
-
-
-noncomputable section
+import DifferentialGeometry.Topology.FundamentalGroup.SimplyConnected
 
 namespace DifferentialGeometry.Topology
 
 theorem simplyConnectedSpace_of_subsingleton_fundamentalGroup
     {X : Type*} [TopologicalSpace X] [PathConnectedSpace X] (x₀ : X)
-    [Subsingleton (FundamentalGroup X x₀)] : SimplyConnectedSpace X := by
-  apply simply_connected_iff_loops_nullhomotopic.mpr
-  refine ⟨inferInstance, ?_⟩
-  intro x γ
-  let e := FundamentalGroup.fundamentalGroupMulEquivOfPathConnected x x₀
-  have h : FundamentalGroup.fromPath (Path.Homotopic.Quotient.mk γ) = (1 : FundamentalGroup X x) :=
-    e.injective (Subsingleton.elim _ _)
-  have hh := congrArg FundamentalGroup.toPath h
-  apply Path.Homotopic.Quotient.eq.mp
-  exact hh
+    [Subsingleton (FundamentalGroup X x₀)] : SimplyConnectedSpace X :=
+  (simplyConnectedSpace_iff_fundamentalGroup_eq_one x₀).mpr
+    (fun g => Subsingleton.elim g 1)
 
 end DifferentialGeometry.Topology

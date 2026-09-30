@@ -126,12 +126,15 @@ theorem exists_norm_lt_regular_value_on_partialDiffeomorph
     rw [hqa]
     exact (hf.contMDiffAt (hU.mem_nhds hq.1)).mdifferentiableAt (by simp)
   have heq := mfderiv_comp (a q) hf' hinv
-  rw [mfderiv_eq_fderiv, hqa] at heq
   change Function.Surjective (fderiv ℝ (f ∘ a.symm) (a q)) at hsurj
-  rw [heq] at hsurj
-  intro z
-  obtain ⟨w, hw⟩ := hsurj z
-  exact ⟨mfderiv 𝓘(ℝ, E) I a.symm (a q) w, hw⟩
+  have hsurjM : Function.Surjective
+      (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, F) (f ∘ a.symm) (a q)) := by
+    rw [mfderiv_eq_fderiv]
+    exact (NormedSpace.fromTangentSpace (𝕜 := ℝ) (f (a.symm (a q)))).symm.surjective.comp
+      (hsurj.comp (NormedSpace.fromTangentSpace (𝕜 := ℝ) (a q)).surjective)
+  rw [hqa] at heq
+  rw [heq] at hsurjM
+  exact Function.Surjective.of_comp hsurjM
 
 end DifferentialGeometry.Manifold
 

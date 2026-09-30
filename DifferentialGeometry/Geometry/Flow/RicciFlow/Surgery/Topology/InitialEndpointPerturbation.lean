@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeometry.Window
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Window
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialSlabUniformBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Connector

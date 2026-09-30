@@ -18,7 +18,7 @@ theorem exists_ae_eq_comp_of_ae_mem_range
   let w : X → M := fun x => if h : v x ∈ range Φ then Classical.choose h else Classical.arbitrary M
   refine ⟨w, ?_⟩
   filter_upwards [hv] with x hx
-  simp only [w, dif_pos hx]
+  simp only [w, dite_eq_left hx]
   exact Classical.choose_spec hx
 
 theorem exists_tendsto_ae_of_inducing_ae_limit

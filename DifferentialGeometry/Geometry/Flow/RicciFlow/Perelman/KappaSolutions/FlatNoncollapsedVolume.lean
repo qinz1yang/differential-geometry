@@ -289,7 +289,6 @@ private lemma flat_normalJacobi_density_one
     simp only [curveGram, Matrix.of_apply, Matrix.one_apply,
       expMapIntrinsic] at hmetric ⊢
     convert hmetric using 1
-    rfl
   rw [curveDensity, hgram, Matrix.det_one, Real.sqrt_one]
 
 private lemma flat_exp_ball_image

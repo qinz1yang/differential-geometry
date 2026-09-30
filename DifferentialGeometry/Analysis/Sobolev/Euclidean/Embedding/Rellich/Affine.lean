@@ -40,12 +40,6 @@ theorem rellich_kondrachov_W01p_sub_seq_euclidean_closed_image
     hu_mem R hu_bdd_fun hu_bdd_grad
   let v := fun x => w x + b x
   have hv : MemLp v p (volume.restrict Ω) := hw.add hb
-  have hum (n : ℕ) : MemLp (u n) p (volume.restrict Ω) := by
-    have hsub : MemLp (fun x => u n x - b x) p (volume.restrict Ω) :=
-      MemLp.of_eval_piLp (fun i => (hu_mem i n).1.1)
-    convert hsub.add hb using 1
-    ext x
-    exact (sub_add_cancel _ _).symm
   have hlimv : Tendsto (fun n => eLpNorm (fun x => u (φ n) x - v x) p
       (volume.restrict Ω)) atTop (𝓝 0) := by
     have heq (n : ℕ) : (fun x => u (φ n) x - b x - w x) =
@@ -56,7 +50,7 @@ theorem rellich_kondrachov_W01p_sub_seq_euclidean_closed_image
     simpa only [heq] using hlim
   have hmeasure := tendstoInMeasure_of_tendsto_eLpNorm
     (ne_of_gt (lt_of_lt_of_le zero_lt_one hp_one))
-    (fun n => (hum (φ n)).aestronglyMeasurable) hv.aestronglyMeasurable hlimv
+    hlimv
   obtain ⟨ψ, hψ, hae⟩ := hmeasure.exists_seq_tendsto_ae
   refine ⟨φ ∘ ψ, v, hφ.comp hψ, hv, hlimv.comp hψ.tendsto_atTop, hae, ?_⟩
   filter_upwards [hae, ae_all_iff.mpr huK] with x hx hKx

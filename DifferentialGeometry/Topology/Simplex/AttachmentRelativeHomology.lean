@@ -9,6 +9,8 @@ open CategoryTheory CategoryTheory.Limits Topology AlgebraicTopology
 
 universe u
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex.Attachment
 
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k)
@@ -55,7 +57,7 @@ private theorem quasiIso_relativeChainMap_openEmbedding {Y Z : TopCat.{u}}
 
 variable {I : Type u} [Fintype I] [Nonempty I]
   {X P : TopCat.{u}} {g : TopCat.of (boundary I) ⟶ X}
-  {r : TopCat.of (stdSimplex ℝ I) ⟶ P} {b : X ⟶ P}
+  {r : TopCat.of (coordinateSet ℝ I) ⟶ P} {b : X ⟶ P}
   (h : IsPushout boundaryι g r b)
 
 include h
@@ -67,7 +69,7 @@ theorem mapsTo_boundary_range_inr : Set.MapsTo r (boundary I) (Set.range b) := b
 
 
 def cellRelativeChainMap :
-    DifferentialGeometry.Homology.relativeChainComplex (TopCat.of (stdSimplex ℝ I)) (boundary I) R ⟶
+    DifferentialGeometry.Homology.relativeChainComplex (TopCat.of (coordinateSet ℝ I)) (boundary I) R ⟶
       DifferentialGeometry.Homology.relativeChainComplex P (Set.range b) R :=
   DifferentialGeometry.Homology.relativeChainMap R r (mapsTo_boundary_range_inr h)
 
@@ -86,7 +88,7 @@ private theorem range_boundaryι : Set.range (boundaryι (I := I)) = boundary I 
 
 omit [Nonempty I] in
 theorem isOpenEmbedding_openCellMap : IsOpenEmbedding (openCellMap (r := r)) := by
-  let e : openCell I ≃ₜ {d : stdSimplex ℝ I // d ∉ Set.range (boundaryι (I := I))} :=
+  let e : openCell I ≃ₜ {d : coordinateSet ℝ I // d ∉ Set.range (boundaryι (I := I))} :=
     Homeomorph.setCongr (by rw [range_boundaryι, openCell_eq_compl_boundary]; rfl)
   exact (DifferentialGeometry.TopCat.Pushout.isOpenEmbedding_inlComplement h
     isClosedEmbedding_boundaryι).comp e.isOpenEmbedding
@@ -96,8 +98,8 @@ theorem openCellMap_range_union_neighborhood :
     Set.range (openCellMap (r := r)) ∪ puncturedNeighborhood (r := r) = Set.univ := by
   apply Set.eq_univ_of_forall
   intro p
-  by_cases hp : p = r stdSimplex.barycenter
-  · exact Or.inl ⟨⟨stdSimplex.barycenter, barycenter_mem_openCell⟩, hp.symm⟩
+  by_cases hp : p = r coordinateBarycenter
+  · exact Or.inl ⟨⟨coordinateBarycenter, barycenter_mem_openCell⟩, hp.symm⟩
   · exact Or.inr hp
 
 
@@ -108,14 +110,14 @@ theorem mapsTo_punctured_neighborhood :
 
 
 def puncturedCellRelativeChainMap :
-    DifferentialGeometry.Homology.relativeChainComplex (TopCat.of (stdSimplex ℝ I)) (punctured I) R ⟶
+    DifferentialGeometry.Homology.relativeChainComplex (TopCat.of (coordinateSet ℝ I)) (punctured I) R ⟶
       DifferentialGeometry.Homology.relativeChainComplex P (puncturedNeighborhood (r := r)) R :=
   DifferentialGeometry.Homology.relativeChainMap R r (mapsTo_punctured_neighborhood h)
 
 
 theorem quasiIso_puncturedCellRelativeChainMap :
     QuasiIso (puncturedCellRelativeChainMap R h) := by
-  let j : TopCat.of (openCell I) ⟶ TopCat.of (stdSimplex ℝ I) :=
+  let j : TopCat.of (openCell I) ⟶ TopCat.of (coordinateSet ℝ I) :=
     TopCat.ofHom ⟨Subtype.val, continuous_subtype_val⟩
   have hlocal : ∀ d : openCell I, d.val ∈ punctured I ↔
       openCellMap (r := r) d ∈ puncturedNeighborhood (r := r) :=
@@ -188,14 +190,14 @@ theorem quasiIso_cellRelativeChainMap : QuasiIso (cellRelativeChainMap R h) := b
 omit [Nonempty I] in
 @[reassoc (attr := simp)]
 theorem relativeProjection_cellRelativeChainMap :
-    DifferentialGeometry.Homology.relativeProjection (TopCat.of (stdSimplex ℝ I)) (boundary I) R ≫
+    DifferentialGeometry.Homology.relativeProjection (TopCat.of (coordinateSet ℝ I)) (boundary I) R ≫
         cellRelativeChainMap R h =
       ((singularChainComplexFunctor (ModuleCat.{u} k)).obj R).map r ≫
         DifferentialGeometry.Homology.relativeProjection P (Set.range b) R :=
   DifferentialGeometry.Homology.relativeProjection_chainMap R r (mapsTo_boundary_range_inr h)
 
 def cellRelativeHomologyIso (n : ℕ) :
-    DifferentialGeometry.Homology.relativeHomology (TopCat.of (stdSimplex ℝ I)) (boundary I) R n ≅
+    DifferentialGeometry.Homology.relativeHomology (TopCat.of (coordinateSet ℝ I)) (boundary I) R n ≅
       DifferentialGeometry.Homology.relativeHomology P (Set.range b) R n := by
   have : QuasiIso (cellRelativeChainMap R h) := quasiIso_cellRelativeChainMap R h
   exact isoOfQuasiIsoAt (cellRelativeChainMap R h) n

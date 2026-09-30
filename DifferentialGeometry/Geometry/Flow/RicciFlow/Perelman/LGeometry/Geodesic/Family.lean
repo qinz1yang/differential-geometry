@@ -88,7 +88,19 @@ private theorem contDiffAt_time_fderiv_family
     (x₀ := A0) (m := ∞) (n := ∞)
     hF' htime hparam hone le_rfl
   apply contMDiffAt_iff_contDiffAt.mp
-  simpa only [inTangentCoordinates_model_space, mfderiv_eq_fderiv, id_eq] using h
+  convert h using 1
+  funext A
+  simp only [inTangentCoordinates, mfderiv_eq_fderiv]
+  dsimp only [ContinuousLinearMap.inCoordinates]
+  simp only [TangentBundle.continuousLinearMapAt_model_space,
+    TangentBundle.symmL_model_space]
+  change fderiv Real (fun s : Real => F (A, s)) s0 1 =
+    (NormedSpace.fromTangentSpace (𝕜 := ℝ) (F (A, s0)))
+      ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (F (A, s0))).symm
+        (fderiv Real (fun s : Real => F (A, s)) s0
+          ((NormedSpace.fromTangentSpace (𝕜 := ℝ) s0)
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) s0).symm 1))))
+  simp only [ContinuousLinearEquiv.apply_symm_apply]
 
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M] in
@@ -376,7 +388,7 @@ private theorem extend_lRegularizedGeodesicFamily_of_phaseFlow
         filter_upwards [(hJopen.preimage continuous_snd).mem_nhds hpJ] with q hq
         change q.2 ∈ J at hq
         simp only [beta]
-        rw [if_pos hq]
+        rw [ite_eq_left hq]
       exact (halphaAt.congr_of_eventuallyEq heq).contMDiffWithinAt
     · have hpK : p.2 ∈ K := hp.2.resolve_left hpJ
       have hWKopen : IsOpen (W ×ˢ K) := hWopen.prod isOpen_Ioo
@@ -389,9 +401,9 @@ private theorem extend_lRegularizedGeodesicFamily_of_phaseFlow
           (isOpen_Ioo.preimage continuous_snd).mem_nhds hpK] with q hqW hqK
         simp only [beta]
         by_cases hqJ : q.2 ∈ J
-        · rw [if_pos hqJ]
+        · rw [ite_eq_left hqJ]
           exact hmatch q.1 hqW ⟨hqJ, hqK⟩
-        · rw [if_neg hqJ]
+        · rw [ite_eq_right hqJ]
       exact (hetaAt.congr_of_eventuallyEq heq).contMDiffWithinAt
   refine ⟨W, hWopen, hA0W, hWV, beta, hbetaSmooth, ?_⟩
   intro A hA
@@ -400,18 +412,18 @@ private theorem extend_lRegularizedGeodesicFamily_of_phaseFlow
     intro r hr
     filter_upwards [hJopen.mem_nhds hr] with q hq
     simp only [beta]
-    rw [if_pos hq]
+    rw [ite_eq_left hq]
   have hbetaEta : ∀ r ∈ K,
       (fun q ↦ beta (A, q)) =ᶠ[nhds r] (fun q ↦ eta (A, q)) := by
     intro r hr
     filter_upwards [isOpen_Ioo.mem_nhds hr] with q hq
     simp only [beta]
     by_cases hqJ : q ∈ J
-    · rw [if_pos hqJ]
+    · rw [ite_eq_left hqJ]
       exact hmatch A hA ⟨hqJ, hq⟩
-    · rw [if_neg hqJ]
+    · rw [ite_eq_right hqJ]
   have hbeta0 : beta (A, s0) = x := by
-    simpa only [beta, if_pos hs0J] using (hcurves A (hWV hA)).1
+    simpa only [beta, ite_eq_left hs0J] using (hcurves A (hWV hA)).1
   have hbetaVelocity : lVelocity (I := I) (fun r ↦ beta (A, r)) s0 = A := by
     have heq := hbetaAlpha s0 hs0J
     have hvel := congrArg (fun L ↦ L (1 : Real))

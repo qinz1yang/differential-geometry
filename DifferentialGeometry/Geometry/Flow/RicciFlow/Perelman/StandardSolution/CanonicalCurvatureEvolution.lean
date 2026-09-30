@@ -88,7 +88,6 @@ theorem hasDerivWithinAt_curvature_canonical_residual {D : RealTimeInterval}
     have hh := hevol k x hx m
     simp only [component0S_apply, tensor0SComponent, L, basis, hf.toBasisAt_coe hx] at hh ⊢
     convert hh using 1
-    rfl
   have hL : metricTraceFirstTwo0STensor g (nablaKRm04Field S (t : ℝ) (k + 2) x) = L := by
     apply tensor0SSpace_ext (4 + k) x
     intro v

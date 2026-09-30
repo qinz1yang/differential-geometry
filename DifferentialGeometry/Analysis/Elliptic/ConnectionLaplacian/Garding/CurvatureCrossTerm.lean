@@ -8,6 +8,9 @@ import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.Bracke
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.FirstOrder.Bounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.Contraction
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.CauchySchwarz
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_zero)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

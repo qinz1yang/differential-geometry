@@ -162,7 +162,7 @@ theorem exists_cylindricalDiagram_isOrientable_derivedNeighborhood_of_nullHomoto
         (Path.refl (spaceInclusion hPK y))) :
     IsOrientable 3 (derivedNeighborhood K P) ∧
       ∃ φ : (Fin 3 → ℝ) × ℝ → E,
-        IsCylindricalDiagram φ (stdSimplex ℝ (Fin 3)) (derivedNeighborhood K P).space :=
+        IsCylindricalDiagram φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (derivedNeighborhood K P).space :=
   ⟨isOrientable_derivedNeighborhood_of_ambient_nullHomotopic_polygon hPK hK hP hconn hnull,
     exists_cylindricalDiagram_derivedNeighborhood_circle K P hK hPK hP hconn⟩
 

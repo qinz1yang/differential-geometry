@@ -1,7 +1,11 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.HeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.ReactionEstimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Frame.Invariant
+
+open DifferentialGeometry.Analysis.Parabolic (towerReactionSum TowerHeatBoundOn)
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -57,7 +61,8 @@ theorem reactionContract_le {k : ℕ} {Idx : Type*} [Fintype Idx]
     (Cres : Real) (hCres : 0 ≤ Cres)
     (hresid : ∀ m : Fin (4 + k) → Idx, |resid m| ≤
         Cres * ∑ j ∈ Finset.range (k + 1), Real.sqrt (w j) * Real.sqrt (w (k - j))) :
-    |2 * ∑ m : Fin (4 + k) → Idx, level m * (ricStarArray ric level m + resid m)|
+    |2 * ∑ m : Fin (4 + k) → Idx,
+      level m * (covariantEndomorphismActionArray ric level m + resid m)|
       ≤ ∑ j ∈ Finset.range (k + 1),
           (2 * Real.sqrt ((Fintype.card (Fin (4 + k) → Idx) : Real)) *
             (((4 + k : ℕ) : Real) * (Fintype.card Idx : Real) ^ 2 + Cres)) *
@@ -75,10 +80,10 @@ theorem reactionContract_le {k : ℕ} {Idx : Type*} [Fintype Idx]
   have hBr0 : 0 ≤ Br := by rw [hBr]; positivity
   have hBres0 : 0 ≤ Bres := by rw [hBres]; positivity
   have hcomb : ∀ m : Fin (4 + k) → Idx,
-      |ricStarArray ric level m + resid m| ≤ Br + Bres := by
+      |covariantEndomorphismActionArray ric level m + resid m| ≤ Br + Bres := by
     intro m
     refine le_trans (abs_add_le _ _) (add_le_add ?_ (hresid m))
-    refine le_trans (abs_ricStarArray_le ric level (card * Real.sqrt (w 0))
+    refine le_trans (abs_covariantEndomorphismActionArray_le ric level (card * Real.sqrt (w 0))
       (mul_nonneg hcard0 (Real.sqrt_nonneg _)) hRic m) ?_
     have hsq : Real.sqrt (compNormSqMulti level) ≤ Real.sqrt (w k) := Real.sqrt_le_sqrt hlevel
     calc ((4 + k : ℕ) : Real) * card * (card * Real.sqrt (w 0)) *
@@ -87,24 +92,28 @@ theorem reactionContract_le {k : ℕ} {Idx : Type*} [Fintype Idx]
           mul_le_mul_of_nonneg_left hsq (by positivity)
       _ = Br := by rw [hBr]; ring
   have hcombnorm :
-      compNormSqMulti (fun m : Fin (4 + k) → Idx => ricStarArray ric level m + resid m)
+      compNormSqMulti (fun m : Fin (4 + k) → Idx =>
+        covariantEndomorphismActionArray ric level m + resid m)
         ≤ Ncard * (Br + Bres) ^ 2 :=
     compNormSqMulti_le_card _ (Br + Bres) hcomb
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ level
-    (fun m : Fin (4 + k) → Idx => ricStarArray ric level m + resid m)
-  have hAbs : |∑ m : Fin (4 + k) → Idx, level m * (ricStarArray ric level m + resid m)|
+    (fun m : Fin (4 + k) → Idx => covariantEndomorphismActionArray ric level m + resid m)
+  have hAbs : |∑ m : Fin (4 + k) → Idx,
+      level m * (covariantEndomorphismActionArray ric level m + resid m)|
       ≤ Real.sqrt (compNormSqMulti level) *
           Real.sqrt (compNormSqMulti
-            (fun m : Fin (4 + k) → Idx => ricStarArray ric level m + resid m)) := by
+            (fun m : Fin (4 + k) → Idx =>
+              covariantEndomorphismActionArray ric level m + resid m)) := by
     rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (compNormSqMulti_nonneg _)]
     exact Real.sqrt_le_sqrt hcs
   have hsqcomb : Real.sqrt (compNormSqMulti
-        (fun m : Fin (4 + k) → Idx => ricStarArray ric level m + resid m))
+        (fun m : Fin (4 + k) → Idx => covariantEndomorphismActionArray ric level m + resid m))
       ≤ Real.sqrt Ncard * (Br + Bres) := by
     refine le_trans (Real.sqrt_le_sqrt hcombnorm) ?_
     rw [Real.sqrt_mul hNcard0, Real.sqrt_sq (by positivity)]
   have hsqlevel : Real.sqrt (compNormSqMulti level) ≤ Real.sqrt (w k) := Real.sqrt_le_sqrt hlevel
-  have hmain : |2 * ∑ m : Fin (4 + k) → Idx, level m * (ricStarArray ric level m + resid m)|
+  have hmain : |2 * ∑ m : Fin (4 + k) → Idx,
+      level m * (covariantEndomorphismActionArray ric level m + resid m)|
       ≤ 2 * (Real.sqrt (w k) * (Real.sqrt Ncard * (Br + Bres))) := by
     rw [abs_mul, abs_two]
     refine mul_le_mul_of_nonneg_left ?_ (by norm_num)

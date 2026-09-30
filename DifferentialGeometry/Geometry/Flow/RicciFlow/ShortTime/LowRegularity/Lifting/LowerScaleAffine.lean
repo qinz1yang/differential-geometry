@@ -123,8 +123,11 @@ theorem norm_congrLp (g : SmoothRiemannianMetric I M) {a b T : ℝ} (h : a = b)
     ‖(tensorHsCongrL (I := I) (M := M) g 0 2 h).compLpL 2 (timeMeasure T) u‖ =
       ‖u‖ := by
   rw [MeasureTheory.Lp.norm_def, MeasureTheory.Lp.norm_def]
-  congr 1
-  refine eLpNorm_congr_norm_ae ?_
+  apply congrArg ENNReal.toReal
+  refine eLpNorm_congr_norm_ae
+    (Lp.aestronglyMeasurable
+      ((tensorHsCongrL (I := I) (M := M) g 0 2 h).compLpL 2 (timeMeasure T) u))
+    (Lp.aestronglyMeasurable u) ?_
   filter_upwards [(tensorHsCongrL (I := I) (M := M) g 0 2 h).coeFn_compLpL
     (p := 2) (μ := timeMeasure T) u] with t ht
   rw [ht, tensorHsCongrL_apply, norm_tensorHsCongr]

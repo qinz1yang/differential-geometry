@@ -410,6 +410,8 @@ theorem canonicalConjugateHeatDensity_volumeMeasure
       (canonicalFlowDiffeomorph (I := I) g f 1 h.1 h.2.1
         (canonicalFlowParameter 1 t)) _ hrho]
   rw [canonicalConjugateHeatDensity_scaledVolume (I := I) g f h ht]
-  rw [Measure.map_smul]
+  rw [Measure.map_smul _
+    (canonicalFlowDiffeomorph (I := I) g f 1 h.1 h.2.1
+      (canonicalFlowParameter 1 t)).symm.continuous.measurable.aemeasurable]
 
 end DifferentialGeometry.PDE.RicciFlow.Soliton

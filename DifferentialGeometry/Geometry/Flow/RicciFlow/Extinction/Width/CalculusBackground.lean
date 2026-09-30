@@ -172,7 +172,7 @@ theorem lipschitzOn_hasWeakPartialDeriv
       (fun x => (fderiv ℝ f x (EuclideanSpace.single i 1)) j)
       (fun x => f x j) Ω := by
   let P : F →L[ℝ] ℝ := EuclideanSpace.proj j
-  have hscalar := P.lipschitz.comp_lipschitzOnWith hf
+  have hscalar := P.lipschitzWith.comp_lipschitzOnWith hf
   obtain ⟨g, hg, heq⟩ := hscalar.extend_real
   have heq' : EqOn (fun x => f x j) g Ω := heq
   have hderiv : (fun x => lineDeriv ℝ g x (EuclideanSpace.single i 1))
@@ -271,6 +271,8 @@ theorem convolution_fderiv_tendstoUniformlyOn_compact_family
       (φ i).hasCompactSupport_normed (φ i).integrable_normed.locallyIntegrable
       (f p.1) (hf1 p.1) p.2
   rw [hmaps]
+  let : CompleteSpace (E →L[ℝ] F) :=
+    ContinuousLinearMap.instCompleteSpace (σ := RingHom.id ℝ)
   exact convolution_tendstoUniformlyOn_compact_family_banach φ hφ
     (fun k x => fderiv ℝ (f k) x) hdf hs
 

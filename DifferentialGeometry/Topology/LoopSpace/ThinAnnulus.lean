@@ -66,12 +66,12 @@ theorem thinAnnulusParameter_mem_Icc {R h : ℝ} (hh : 0 < h) {z : ℂ}
 theorem attachThinAnnulus_inner (u v : ℂ → F) (r : F → F) (R h : ℝ)
     {z : ℂ} (hz : ‖z‖ ≤ R - h) :
     attachThinAnnulus u v r R h z = v ((R / (R - h)) • z) :=
-  if_pos hz
+  ite_eq_left hz
 
 theorem attachThinAnnulus_outer (u v : ℂ → F) (r : F → F) {R h : ℝ}
     (hh : 0 < h) {z : ℂ} (hz : R ≤ ‖z‖) :
     attachThinAnnulus u v r R h z = u z := by
-  rw [attachThinAnnulus, if_neg (by linarith), if_pos hz]
+  rw [attachThinAnnulus, ite_eq_right (by linarith), ite_eq_left hz]
 
 theorem attachThinAnnulus_shell (u v : ℂ → F) (r : F → F) {R h : ℝ}
     (hh : 0 < h) (hhR : h < R)
@@ -92,7 +92,7 @@ theorem attachThinAnnulus_shell (u v : ℂ → F) (r : F → F) {R h : ℝ}
       rw [attachThinAnnulus_outer u v r hh hzout, thinAnnulusInterpolation,
         thinAnnulusParameter_outer hh.ne' hnorm, sub_self, zero_smul, one_smul,
         zero_add, thinAnnulusProjection_eq hnorm, hru z hnorm]
-    · simp only [attachThinAnnulus, if_neg hzin, if_neg hzout]
+    · simp only [attachThinAnnulus, ite_eq_right hzin, ite_eq_right hzout]
 
 theorem thinAnnulusProjection_lipschitzOn {R h : ℝ} (hh : 0 < h) (hhR : h < R) :
     LipschitzOnWith (Real.toNNReal (2 * R / (R - h))) (thinAnnulusProjection R)

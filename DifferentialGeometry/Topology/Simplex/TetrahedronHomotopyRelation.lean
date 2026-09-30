@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Homotopy.CubicalBoundary
 import DifferentialGeometry.Topology.Simplex.TriangleGenLoop
 import DifferentialGeometry.Topology.Simplex.CubicalBoundaryHomotopy
@@ -7,6 +8,8 @@ import DifferentialGeometry.Topology.Simplex.TetrahedronOneSkeleton
 noncomputable section
 open Set ContinuousMap
 open scoped unitInterval
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Topology
 
 variable {X : Type*} [TopologicalSpace X] {x : X}
@@ -103,17 +106,17 @@ private theorem homotopyGroup_cube_faces_relation
     change G (v ⟨1, by decide⟩, t, 1) = G ((Cube.insertAt (0 : Fin 2) (t, v)) 1, (Cube.insertAt (0 : Fin 2) (t, v)) 0, 1)
     simp
 
-private def tetrahedronFace (F : C(stdSimplex ℝ (Fin 4), X)) (i : Fin 4) :
-    C(stdSimplex ℝ (Fin 3), X) :=
-  F.comp ⟨stdSimplex.map i.succAbove, stdSimplex.continuous_map i.succAbove⟩
+private def tetrahedronFace (F : C(coordinateSet ℝ (Fin 4), X)) (i : Fin 4) :
+    C(coordinateSet ℝ (Fin 3), X) :=
+  F.comp ⟨coordinateMap i.succAbove, continuous_coordinateMap i.succAbove⟩
 
-private theorem tetrahedronFace_boundary (F : C(stdSimplex ℝ (Fin 4), X))
+private theorem tetrahedronFace_boundary (F : C(coordinateSet ℝ (Fin 4), X))
     (hF : ∀ p : Simplex.tetrahedronOneSkeleton, F p.val = x) (i : Fin 4) :
     ∀ p ∈ Simplex.boundary (Fin 3), tetrahedronFace F i p = x := by
   intro p hp
   exact hF (Simplex.faceBoundaryIntoTetrahedronOneSkeleton i ⟨p, hp⟩)
 
-private theorem tetrahedronJoin_skeleton (F : C(stdSimplex ℝ (Fin 4), X))
+private theorem tetrahedronJoin_skeleton (F : C(coordinateSet ℝ (Fin 4), X))
     (hF : ∀ p : Simplex.tetrahedronOneSkeleton, F p.val = x) :
     ∀ s t u, (s = 0 ∨ s = 1) ∨
       ((t = 0 ∨ t = 1) ∧ (u = 0 ∨ u = 1)) →
@@ -128,31 +131,31 @@ private theorem tetrahedronJoin_skeleton (F : C(stdSimplex ℝ (Fin 4), X))
   · exact ⟨0, 3, by decide, by simp [Simplex.tetrahedronJoin], by simp [Simplex.tetrahedronJoin]⟩
   · exact ⟨0, 2, by decide, by simp [Simplex.tetrahedronJoin], by simp [Simplex.tetrahedronJoin]⟩
 
-private theorem cubeFace0_tetrahedron (F : C(stdSimplex ℝ (Fin 4), X))
+private theorem cubeFace0_tetrahedron (F : C(coordinateSet ℝ (Fin 4), X))
     (hF : ∀ p : Simplex.tetrahedronOneSkeleton, F p.val = x) :
     cubeFace0 (F.comp Simplex.tetrahedronJoin) (tetrahedronJoin_skeleton F hF) =
       GenLoop.congr x (Equiv.swap (0 : Fin 2) 1)
         (Simplex.triangleGenLoop (tetrahedronFace F 1) x (tetrahedronFace_boundary F hF 1)) := by
   ext v
   change F (Simplex.tetrahedronJoin (v 1, 0, v 0)) =
-    F (stdSimplex.map (1 : Fin 4).succAbove
+    F (coordinateMap (1 : Fin 4).succAbove
       (Simplex.triangleJoin (v ((Equiv.swap (0 : Fin 2) 1) 0),
         v ((Equiv.swap (0 : Fin 2) 1) 1))))
   simp only [Simplex.tetrahedronJoin_middle_zero, Equiv.swap_apply_left, Equiv.swap_apply_right]
 
-private theorem cubeFace1_tetrahedron (F : C(stdSimplex ℝ (Fin 4), X))
+private theorem cubeFace1_tetrahedron (F : C(coordinateSet ℝ (Fin 4), X))
     (hF : ∀ p : Simplex.tetrahedronOneSkeleton, F p.val = x) :
     cubeFace1 (F.comp Simplex.tetrahedronJoin) (tetrahedronJoin_skeleton F hF) =
       GenLoop.congr x (Equiv.swap (0 : Fin 2) 1)
         (Simplex.triangleGenLoop (tetrahedronFace F 0) x (tetrahedronFace_boundary F hF 0)) := by
   ext v
   change F (Simplex.tetrahedronJoin (v 1, 1, v 0)) =
-    F (stdSimplex.map (0 : Fin 4).succAbove
+    F (coordinateMap (0 : Fin 4).succAbove
       (Simplex.triangleJoin (v ((Equiv.swap (0 : Fin 2) 1) 0),
         v ((Equiv.swap (0 : Fin 2) 1) 1))))
   simp only [Simplex.tetrahedronJoin_middle_one, Equiv.swap_apply_left, Equiv.swap_apply_right]
 
-private def cubeFace2HomotopyRel (F : C(stdSimplex ℝ (Fin 4), X))
+private def cubeFace2HomotopyRel (F : C(coordinateSet ℝ (Fin 4), X))
     (hF : ∀ p : Simplex.tetrahedronOneSkeleton, F p.val = x) :
     (cubeFace2 (F.comp Simplex.tetrahedronJoin) (tetrahedronJoin_skeleton F hF)).val.HomotopyRel
       (Simplex.triangleGenLoop (tetrahedronFace F 3) x (tetrahedronFace_boundary F hF 3)).val
@@ -165,7 +168,7 @@ private def cubeFace2HomotopyRel (F : C(stdSimplex ℝ (Fin 4), X))
     change (Simplex.triangleJoinReverseHomotopyRel (tetrahedronFace F 3)
       (tetrahedronFace_boundary F hF 3)) (0, v 1, v 0) = _
     rw [ContinuousMap.HomotopyWith.apply_zero]
-    change F (stdSimplex.map (3 : Fin 4).succAbove
+    change F (coordinateMap (3 : Fin 4).succAbove
       (Simplex.triangleJoinReverse (v 1, v 0))) =
         F (Simplex.tetrahedronJoin (v 1, v 0, 0))
     rw [Simplex.tetrahedronJoin_last_zero]
@@ -185,12 +188,12 @@ private def cubeFace2HomotopyRel (F : C(stdSimplex ℝ (Fin 4), X))
         · exact Or.inl h
         · exact Or.inr (Or.inl h)
     rw [ContinuousMap.HomotopyRel.eq_fst _ t hb]
-    change F (stdSimplex.map (3 : Fin 4).succAbove
+    change F (coordinateMap (3 : Fin 4).succAbove
       (Simplex.triangleJoinReverse (v 1, v 0))) =
         F (Simplex.tetrahedronJoin (v 1, v 0, 0))
     rw [Simplex.tetrahedronJoin_last_zero]
 
-private def cubeFace3HomotopyRel (F : C(stdSimplex ℝ (Fin 4), X))
+private def cubeFace3HomotopyRel (F : C(coordinateSet ℝ (Fin 4), X))
     (hF : ∀ p : Simplex.tetrahedronOneSkeleton, F p.val = x) :
     (cubeFace3 (F.comp Simplex.tetrahedronJoin) (tetrahedronJoin_skeleton F hF)).val.HomotopyRel
       (Simplex.triangleGenLoop (tetrahedronFace F 2) x (tetrahedronFace_boundary F hF 2)).val
@@ -203,7 +206,7 @@ private def cubeFace3HomotopyRel (F : C(stdSimplex ℝ (Fin 4), X))
     change (Simplex.triangleJoinReverseHomotopyRel (tetrahedronFace F 2)
       (tetrahedronFace_boundary F hF 2)) (0, v 1, v 0) = _
     rw [ContinuousMap.HomotopyWith.apply_zero]
-    change F (stdSimplex.map (2 : Fin 4).succAbove
+    change F (coordinateMap (2 : Fin 4).succAbove
       (Simplex.triangleJoinReverse (v 1, v 0))) =
         F (Simplex.tetrahedronJoin (v 1, v 0, 1))
     rw [Simplex.tetrahedronJoin_last_one]
@@ -223,17 +226,17 @@ private def cubeFace3HomotopyRel (F : C(stdSimplex ℝ (Fin 4), X))
         · exact Or.inl h
         · exact Or.inr (Or.inl h)
     rw [ContinuousMap.HomotopyRel.eq_fst _ t hb]
-    change F (stdSimplex.map (2 : Fin 4).succAbove
+    change F (coordinateMap (2 : Fin 4).succAbove
       (Simplex.triangleJoinReverse (v 1, v 0))) =
         F (Simplex.tetrahedronJoin (v 1, v 0, 1))
     rw [Simplex.tetrahedronJoin_last_one]
 
 theorem triangleGenLoop_tetrahedron_face_relation
-    (F : C(stdSimplex ℝ (Fin 4), X))
+    (F : C(coordinateSet ℝ (Fin 4), X))
     (hF : ∀ p : Simplex.tetrahedronOneSkeleton, F p.val = x) :
     let q : Fin 4 → HomotopyGroup (Fin 2) X x := fun i =>
       (⟦Simplex.triangleGenLoop
-        (F.comp ⟨stdSimplex.map i.succAbove, stdSimplex.continuous_map i.succAbove⟩) x
+        (F.comp ⟨coordinateMap i.succAbove, continuous_coordinateMap i.succAbove⟩) x
         (fun p hp => hF (Simplex.faceBoundaryIntoTetrahedronOneSkeleton i ⟨p, hp⟩))⟧ :
           HomotopyGroup (Fin 2) X x)
     q 0 * q 2 = q 1 * q 3 := by

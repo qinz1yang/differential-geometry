@@ -19,7 +19,7 @@ theorem IsPseudoCell.exists_reduced_disk_of_finite_trace
     (hDcΩ : Dc ⊆ Ω) (hΩ : IsOpen Ω)
     (hcentral : ∃ D I : Set E3, IsTopologicalCellWithInterior 2 D I ∧ D ⊆ Dc ∧
       D \ I = J ∧ P ∈ I) {n : ℕ} {G : Fin n → Set E3} {Δ : Set E3}
-    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hΔΩ : Δ ⊆ Ω) (hrim : r '' stdSimplexBoundary 2 = J)
     (hG : ∀ i, IsPLSphere 1 (G i)) (hdisj : Pairwise fun i j => Disjoint (G i) (G j))
     (htrace : Δ ∩ Ec = ⋃ i, G i) (hGD : ∀ i, G i ⊆ Dc) (hGP : ∀ i, P ∉ G i)
@@ -28,7 +28,7 @@ theorem IsPseudoCell.exists_reduced_disk_of_finite_trace
       ¬ ∃ D I : Set E3, IsTopologicalCellWithInterior 2 D I ∧ D ⊆ Dc ∧
         D \ I = G i ∧ P ∈ I) :
     ∃ (Δ' : Set E3) (q : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Δ' ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ' ∧
       q '' stdSimplexBoundary 2 = J ∧ Δ' ⊆ Ω ∧ Δ' ∩ Ec = J := by
   classical
   induction n using Nat.strong_induction_on generalizing Δ r with
@@ -76,7 +76,7 @@ theorem IsPseudoCell.exists_reduced_disk_of_finite_trace
       exists_isPLHomeomorphOn_replace_ball hR ht hs htbd hsbd hRQ hRD
     rw [hcover] at hF
     let Γ := R ∪ D
-    have hp : IsPLHomeomorphOn (F ∘ r) (stdSimplex ℝ (Fin 3)) Γ := hr.trans hF
+    have hp : IsPLHomeomorphOn (F ∘ r) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Γ := hr.trans hF
     have hpbd : (F ∘ r) '' stdSimplexBoundary 2 = J := by
       rw [image_comp, (hFid.mono hbdR).image_eq, image_id, hrim]
     have hDΓ : D ⊆ (F ∘ r) '' openSimplex (stdVertices 1) := by

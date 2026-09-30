@@ -24,6 +24,9 @@ import DifferentialGeometry.Analysis.Sobolev.BoundedFactorProductGrid
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Data.Fin.Tuple.NatAntidiagonal
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -267,7 +270,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannCoeff_metricFactorTelescope
         rw [← Finset.sum_mul]
         ring
 
-theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroRiemannCoeff_backgroundDifference_diagonalProductGrid_le
+theorem exists_ricciOrderZeroRiemannCoeff_sub_covariant_jet_bound
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -361,7 +364,7 @@ theorem slotInsertEndoCc_ricEndoBackgroundDifferenceField_perOrder_l2_ballUnifor
             (slotInsertEndoCc (I := I) (M := M) g₀ 0
               (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁))‖ ^ 2 ≤ K i := by
   obtain ⟨C, hC_nn, hgrid⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceField_diagonalProductGrid_le
+    exists_ricEndoBackgroundDifferenceField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Kg, hKg_nn, hKg⟩ :=
     curvDiffGrid_integral_ballUniform_window (I := I) (M := M) g₀ a ha_super hR
@@ -444,7 +447,7 @@ theorem ricciOrderZeroRiemannCoeff_backgroundDifference_perOrder_l2_ballUniform
             (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
               ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀)‖ ^ 2 ≤ K i := by
   obtain ⟨C, hC_nn, hgrid⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroRiemannCoeff_backgroundDifference_diagonalProductGrid_le
+    exists_ricciOrderZeroRiemannCoeff_sub_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Kg, hKg_nn, hKg⟩ :=
     curvDiffGrid_integral_ballUniform_window (I := I) (M := M) g₀ a ha_super hR
@@ -764,7 +767,7 @@ theorem antidiagonalTupleGrid_integral_ballUniform_tameWindow
       have hb := hGNspec P Lam hLam_nn hΛsup j hj0 hji
       have hchoose : (DifferentialGeometry.Analysis.Sobolev.Tensor.exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le_rs
           (I := I) (M := M) g₀ 0 2 i hi1).choose = Cgn i := by
-        rw [hCgn]; simp only [dif_pos hi1]
+        rw [hCgn]; simp only [dite_eq_left hi1]
       rw [hchoose] at hb
       have hnorm : Integral.L2.tensorL2Norm (I := I) g₀ 0 (2 + i)
           (iteratedCovGrad (I := I) g₀ 0 2 i P).toFun = ‖iteratedCovGrad (I := I) g₀ 0 2 i P‖ :=
@@ -918,7 +921,7 @@ theorem slotInsertEndoCc_ricEndoBackgroundDifferenceField_perOrder_l2_tameEnvelo
             K i * (1 + ∑ j ∈ Finset.range (i + 3),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   obtain ⟨C, hC_nn, hgrid⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceField_diagonalProductGrid_le
+    exists_ricEndoBackgroundDifferenceField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Kg, hKg_nn, hKg⟩ :=
     antidiagonalTupleGrid_integral_ballUniform_tameWindow (I := I) (M := M) g₀ a ha_super hR
@@ -1035,7 +1038,7 @@ theorem ricciOrderZeroRiemannCoeff_backgroundDifference_perOrder_l2_tameEnvelope
             K i * (1 + ∑ j ∈ Finset.range (i + 3),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   obtain ⟨C, hC_nn, hgrid⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroRiemannCoeff_backgroundDifference_diagonalProductGrid_le
+    exists_ricciOrderZeroRiemannCoeff_sub_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Kg, hKg_nn, hKg⟩ :=
     antidiagonalTupleGrid_integral_ballUniform_tameWindow (I := I) (M := M) g₀ a ha_super hR

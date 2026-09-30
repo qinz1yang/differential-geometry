@@ -103,14 +103,14 @@ noncomputable def inverseOn (F : FinitePLHomeomorphBetween f A B) : Plane → Pl
 
 theorem inverseOn_mem (F : FinitePLHomeomorphBetween f A B) {y : Plane} (hy : y ∈ B) :
     F.inverseOn y ∈ A := by
-  simp only [inverseOn, dif_pos hy]
+  simp only [inverseOn, dite_eq_left hy]
   exact (Classical.choose_spec (show ∃ x ∈ A, f x = y by
     rw [← F.image_eq] at hy
     exact hy)).1
 
 theorem apply_inverseOn (F : FinitePLHomeomorphBetween f A B) {y : Plane} (hy : y ∈ B) :
     f (F.inverseOn y) = y := by
-  simp only [inverseOn, dif_pos hy]
+  simp only [inverseOn, dite_eq_left hy]
   exact (Classical.choose_spec (show ∃ x ∈ A, f x = y by
     rw [← F.image_eq] at hy
     exact hy)).2

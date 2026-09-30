@@ -22,7 +22,7 @@ theorem memLp_timeOpL2
   have hmeas : AEStronglyMeasurable (fun t => A t (u t))
       (timeMeasure T) := by
     have h :=
-      (ContinuousLinearMap.apply ℝ Y).aestronglyMeasurable_comp₂ hu hA.1
+      (ContinuousLinearMap.apply ℝ Y).aestronglyMeasurable_comp₂ hu hA.aestronglyMeasurable
     simpa only [ContinuousLinearMap.apply_apply] using h
   refine MemLp.of_le_mul (c := (C : ℝ)) hA hmeas ?_
   filter_upwards [hC] with t ht

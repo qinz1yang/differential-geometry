@@ -367,6 +367,7 @@ private theorem mfderiv_adaptedBaseMap_zero (g : SmoothRiemannianMetric I M) (x 
         using 1
       all_goals try rfl
       · simp only [zero_add]
+        rfl
   rw [haff_deriv]
   apply ContinuousLinearMap.ext
   intro v
@@ -757,6 +758,7 @@ private theorem correctedFlowMap_isLocalDiffeomorphAt_infty
         mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I F q := by
       rw [hFMD.mfderiv,
         ModelWithCorners.Boundaryless.range_eq_univ, fderivWithin_univ]
+      rfl
     exact hderiv ▸ hmfInv
   obtain ⟨psi, hzeroPsi, -, hEqPsi⟩ :=
     DifferentialGeometry.Coordinates.exists_partialDiffeomorph_of_contMDiffOn_infty

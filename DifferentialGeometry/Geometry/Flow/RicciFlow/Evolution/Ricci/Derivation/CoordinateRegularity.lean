@@ -1184,7 +1184,7 @@ private theorem coordDgSmAt
         (fun p : Real × M =>
           mvfderiv (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
         ((t : Real), x) :=
-    prodExtDerivAt_smooth (I := I) (F := F) (X := X) hF hX
+    contMDiffAt_partial_mvfderiv_apply_infty (I := I) (F := F) (X := X) hF hX
   have heq :
       (fun p : Real × M =>
         fderivWithin Real
@@ -1377,10 +1377,7 @@ theorem coordGammaBack
   have hcomp := hforwardAt.comp tau hsub
   convert hcomp using 1
   · rfl
-  · rfl
-  · funext s
-    rfl
-  · ring
+  · simp [mul_comm]
 
 omit [SigmaCompactSpace M] in
 theorem coordConnBack
@@ -1418,9 +1415,6 @@ theorem coordConnBack
   have hcomp := hforwardAt.comp tau hsub
   convert hcomp using 1
   · rfl
-  · rfl
-  · funext s
-    rfl
   · simp only [frame, N]
     ring
 

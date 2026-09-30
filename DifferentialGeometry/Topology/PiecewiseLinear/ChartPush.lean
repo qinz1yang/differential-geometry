@@ -49,14 +49,14 @@ theorem isPLHomeomorphOn_univ_chartConj {F : Type*} [NormedAddCommGroup F] [Norm
     have hsubU : U ⊆ (U ∩ φ ⁻¹' univ) ∩ (θ ∘ φ) ⁻¹' V := fun y hy =>
       ⟨⟨hy, mem_univ _⟩, hθV _ (hφU y hy)⟩
     have hon : IsPiecewiseAffineOn (fun y => if y ∈ U then g (θ (φ y)) else y) U :=
-      (hcomp.mono hU hsubU).congr fun y hy => by simp only [if_pos hy, Function.comp_apply]
+      (hcomp.mono hU hsubU).congr fun y hy => by simp only [ite_eq_left hy, Function.comp_apply]
     have hoff : IsPiecewiseAffineOn (fun y => if y ∈ U then g (θ (φ y)) else y) (g '' K)ᶜ := by
       refine (isPiecewiseAffineOn_id hKE.isClosed.isOpen_compl).congr fun y hy => ?_
       by_cases hyU : y ∈ U
-      · simp only [if_pos hyU, id]
+      · simp only [ite_eq_left hyU, id]
         have hφy : φ y ∉ K := fun h => hy ⟨φ y, h, hgφ y hyU⟩
         rw [hθfix _ hφy, hgφ y hyU]
-      · simp only [if_neg hyU, id]
+      · simp only [ite_eq_right hyU, id]
     have hunion := hon.union_of_open hoff
       (fun y hy _ => ⟨U, hU, hy, fun z hz => hz.2⟩)
       (fun y hy _ => ⟨(g '' K)ᶜ, hKE.isClosed.isOpen_compl, hy, fun z hz => hz.2⟩)
@@ -91,15 +91,15 @@ theorem isPLHomeomorphOn_univ_chartConj {F : Type*} [NormedAddCommGroup F] [Norm
     by_cases hyU : y ∈ U
     · have hV1 := hmapV ψ hfix hψK _ (hφU y hyU)
       have hU1 := hgV _ hV1
-      simp only [hΘdef, hΘ'def, if_pos hyU, if_pos hU1, hφg _ hV1, hψinv, hgφ y hyU]
-    · simp only [hΘdef, hΘ'def, if_neg hyU]
+      simp only [hΘdef, hΘ'def, ite_eq_left hyU, ite_eq_left hU1, hφg _ hV1, hψinv, hgφ y hyU]
+    · simp only [hΘdef, hΘ'def, ite_eq_right hyU]
   have hright : ∀ y, Θ (Θ' y) = y := by
     intro y
     by_cases hyU : y ∈ U
     · have hV1 := hmapV ψ' hψ'fix hψ'K _ (hφU y hyU)
       have hU1 := hgV _ hV1
-      simp only [hΘdef, hΘ'def, if_pos hyU, if_pos hU1, hφg _ hV1, hψinv', hgφ y hyU]
-    · simp only [hΘdef, hΘ'def, if_neg hyU]
+      simp only [hΘdef, hΘ'def, ite_eq_left hyU, ite_eq_left hU1, hφg _ hV1, hψinv', hgφ y hyU]
+    · simp only [hΘdef, hΘ'def, ite_eq_right hyU]
   have hbij : BijOn Θ univ univ :=
     ⟨mapsTo_univ _ _, fun a _ b _ h => by rw [← hleft a, h, hleft b],
       fun y _ => ⟨Θ' y, mem_univ _, hright y⟩⟩
@@ -184,14 +184,14 @@ theorem exists_isPLHomeomorphOn_push_of_chart {U : Set E} {V : Set (ℝ × ℝ �
     exact h (by rw [hψinj h1]; exact hz)
   have hΨoff : ∀ y, (y ∉ U ∨ φ y ∉ K) → Ψ y = y := by
     rintro y (hy | hy)
-    · simp only [hΨdef, if_neg hy]
+    · simp only [hΨdef, ite_eq_right hy]
     · by_cases hyU : y ∈ U
-      · simp only [hΨdef, if_pos hyU, hψfix _ hy, hgφ y hyU]
-      · simp only [hΨdef, if_neg hyU]
+      · simp only [hΨdef, ite_eq_left hyU, hψfix _ hy, hgφ y hyU]
+      · simp only [hΨdef, ite_eq_right hyU]
   have hΨon : ∀ y ∈ U, φ y ∈ K → Ψ y ∈ U ∧ φ (Ψ y) = ψ (φ y) := by
     intro y hyU hyK
     have hV1 := hKV (hψK _ hyK)
-    simp only [hΨdef, if_pos hyU]
+    simp only [hΨdef, ite_eq_left hyU]
     exact ⟨hgV _ hV1, hφg _ hV1⟩
   set W := U ∩ φ ⁻¹' (τ ⁻¹' {1}) with hWdef
   have hW : W ∈ 𝓝 x := by
@@ -245,7 +245,7 @@ theorem exists_isPLHomeomorphOn_push_of_chart {U : Set E} {V : Set (ℝ × ℝ �
         have := (mul_eq_zero.mp hc0).resolve_left hs0
         linarith
       have hfixy : Ψ y = y := by
-        simp only [hΨdef, if_pos hyU]
+        simp only [hΨdef, ite_eq_left hyU]
         have hψy : ψ (φ y) = φ y := by simp [hψdef, hfdef, hτ0']
         rw [hψy, hgφ y hyU]
       refine ⟨(hA y hyU hyball).mpr hyA, fun hyW => ?_, hfixy⟩

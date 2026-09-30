@@ -1,3 +1,8 @@
+import Mathlib.LinearAlgebra.LinearIndependent.Lemmas
+import Mathlib.LinearAlgebra.Matrix.Notation
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Push
+import Mathlib.Tactic.Ring
 import DifferentialGeometry.Geometry.Curvature.Algebraic.Tensor
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
@@ -123,3 +128,47 @@ theorem metricAlgebraicCurvatureTensorAt_coe
   rfl
 
 end DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.Geometry
+
+open Curvature
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+
+theorem metricRm04StandardAt_eq_zero_of_not_linearIndependent
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (W T : TangentSpace I x) (hdep : ¬ LinearIndependent ℝ ![W, T]) :
+    metricRm04StandardAt (I := I) (M := M) g x W T T W = 0 := by
+  let B : TangentSpace I x → TangentSpace I x → TangentSpace I x →
+      TangentSpace I x → ℝ :=
+    fun X Y Z U ↦ metricRm04StandardAt (I := I) (M := M) g x X Y Z U
+  have hB : IsAlgCurvForm B := by
+    change IsAlgCurvForm
+      (tensor04StandardAt (I := I) (M := M)
+        (metricRm04At (I := I) (M := M) g x))
+    exact mem_algebraicCurvatureTensorSubmodule.mp
+      (metricRm04At_mem_algebraicCurvatureTensorSubmodule
+        (I := I) (M := M) g x)
+  by_cases hW : W = 0
+  · subst W
+    have hzero := hB.smul_left 0 (0 : TangentSpace I x) T T 0
+    simpa [B] using hzero
+  · rw [LinearIndependent.pair_iff' hW] at hdep
+    push Not at hdep
+    obtain ⟨a, rfl⟩ := hdep
+    have hdiag : B W W (a • W) W = 0 := by
+      have hskew := hB.anti_first W W (a • W) W
+      linarith
+    have hskew := hB.anti_first W (a • W) (a • W) W
+    have hsmul := hB.smul_left a W W (a • W) W
+    change B W (a • W) (a • W) W = 0
+    rw [hskew, hsmul, hdiag]
+    ring
+
+end DifferentialGeometry.Geometry

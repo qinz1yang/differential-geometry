@@ -125,10 +125,6 @@ theorem cutComponentSingleTubeCollaredQuotientGluing_of_isEmpty_index
   E.cutComponentSingleTubeCollaredQuotientGluing_of_cutComponentCollaredQuotientGluing
     E.cutComponentCollaredQuotientGluing_of_isEmpty_index
 
-theorem cutComponentCollaredQuotientRealization_of_isEmpty_index [IsEmpty E.tubes.Index] :
-    E.CutComponentCollaredQuotientRealization :=
-  E.cutComponentCollaredQuotientRealization_of_self
-
 structure CutComponentCollaredQuotientGluingBridge where
   graph : MarkedManifoldGraph.{u}
   zFactor : ConnectedClosedOrientedManifold.{u} 3
@@ -168,7 +164,7 @@ theorem cutComponentGluing_of_cutComponentCollaredQuotientGluingBridge
   E.cutComponentGluing_of_cutComponentCollaredQuotientGluing
     (E.cutComponentCollaredQuotientGluing_of_cutComponentCollaredQuotientGluingBridge h)
 
-def cutComponentCollaredQuotientGluingBridge_of_seamData
+def cutComponentCollaredQuotientGluingBridgeOfSeamEquation
     (graph : MarkedManifoldGraph.{u}) (zFactor : ConnectedClosedOrientedManifold.{u} 3)
     (zFactor_sphere : isSphereTwoTimesCircleFactor zFactor)
     (realized : PartialRealization graph Finset.univ)
@@ -207,7 +203,7 @@ theorem cutComponentGluing_of_seamData
             (ConnectedComponents.mk (realized.vertexPiece (vertexOf C) y))).toClosedOrientedManifold)) :
     E.cutComponentGluing :=
   E.cutComponentGluing_of_cutComponentCollaredQuotientGluingBridge
-    (E.cutComponentCollaredQuotientGluingBridge_of_seamData graph zFactor zFactor_sphere
+    (E.cutComponentCollaredQuotientGluingBridgeOfSeamEquation graph zFactor zFactor_sphere
       realized he hcover hseam hcorr hpres vertexOf blockEnumeration componentDiffeo)
 
 theorem componentConnectedSumDecomposition_of_cutComponentCollaredQuotientGluingBridge

@@ -18,6 +18,9 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomp
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.LieCovariantDerivative
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.EndomorphismTermAlgebra
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.CovariantDerivativeTerm
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg riemannianFiberNormSq_sub_le)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -412,7 +415,7 @@ private lemma lrWindowOneThree_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {B :
       Finset.Nat.antidiagonalTuple_one 1]
     rw [Finset.filter_empty, Finset.sum_empty]
     rw [Finset.filter_singleton]
-    rw [if_pos (by decide : ∀ m : Fin 1, (![1] : Fin 1 → ℕ) m ≤ 1)]
+    rw [ite_eq_left (by decide : ∀ m : Fin 1, (![1] : Fin 1 → ℕ) m ≤ 1)]
     rw [Finset.sum_singleton]
     rw [Fin.prod_univ_one]
     norm_num
@@ -425,7 +428,7 @@ private lemma lrWindowOneThree_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {B :
       Finset.Nat.antidiagonalTuple_one 2]
     rw [Finset.filter_empty, Finset.sum_empty]
     rw [Finset.filter_singleton]
-    rw [if_neg (by decide : ¬ ∀ m : Fin 1, (![2] : Fin 1 → ℕ) m ≤ 1)]
+    rw [ite_eq_right (by decide : ¬ ∀ m : Fin 1, (![2] : Fin 1 → ℕ) m ≤ 1)]
     rw [Finset.sum_empty]
     have h22 : (Finset.Nat.antidiagonalTuple 2 2).filter
         (fun e : Fin 2 → ℕ => ∀ m, e m ≤ 1) = {![1, 1]} := by
@@ -683,10 +686,10 @@ theorem exists_deTurckLieCovariantDerivativeTerm_decomposition_identity_with_bou
     exists_deTurckLieCovariantDerivativeTerm_basepointBackground_decomposition_identity_with_bounds (I := I) (M := M)
       g₀ a ha_super hR hδ₀
   obtain ⟨Λbg, hΛbg_nn, hsup_bg⟩ :=
-    deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M)
+    deTurckLieConnectionDifferenceDerivCoeffField_pointwise_perturbation_bound (I := I) (M := M)
       g₀ g_bg a ha_super hR hδ₀
   obtain ⟨Λz, hΛz_nn, hsup_z⟩ :=
-    deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M)
+    deTurckLieConnectionDifferenceDerivCoeffField_pointwise_perturbation_bound (I := I) (M := M)
       g₀ g₀ a ha_super hR hδ₀
   obtain ⟨Kd, hKd_nn, henv_d⟩ :=
     exists_deTurckLieCovariantDerivativeTerm_backgroundDifference_l2JetWindow (I := I) (M := M)

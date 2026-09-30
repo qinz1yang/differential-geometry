@@ -190,10 +190,10 @@ theorem homotopic_truncateOfLE_trans (γ : Path x y) {a b c : ℝ} (ha : 0 ≤ a
   have hgcont : Continuous g :=
     (continuous_subtype_val.max continuous_const).min continuous_const
   have hf0 : f 0 = a := by
-    simp only [f, Set.Icc.coe_zero, mul_zero, if_pos (by norm_num : (0 : ℝ) ≤ 1 / 2)]
+    simp only [f, Set.Icc.coe_zero, mul_zero, ite_eq_left (by norm_num : (0 : ℝ) ≤ 1 / 2)]
     rw [max_eq_right ha, min_eq_left hab]
   have hf1 : f 1 = c := by
-    simp only [f, Set.Icc.coe_one, mul_one, if_neg (by norm_num : ¬ (1 : ℝ) ≤ 1 / 2)]
+    simp only [f, Set.Icc.coe_one, mul_one, ite_eq_right (by norm_num : ¬ (1 : ℝ) ≤ 1 / 2)]
     have e3 : (2 : ℝ) - 1 = 1 := by norm_num
     rw [e3, max_eq_left (by linarith), min_eq_right hc]
   have hg0 : g 0 = a := by

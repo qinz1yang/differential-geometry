@@ -15,6 +15,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.FirstOrder
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.FirstOrderTerm.BackgroundCoefficientBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.FirstOrderTerm.PointwiseIdentity
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -498,7 +501,7 @@ theorem lieFirstOrderPiece_psiB_metricPerturbationPath_jetL2_perOrder_ballUnifor
     rw [h0]
     norm_num
 
-theorem lieFirstOrderPiece_connectionDifference_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform
+theorem lieFirstOrderPiece_connectionDifference_pointwise_perturbation_bound
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -555,7 +558,7 @@ theorem lieFirstOrderPiece_connectionDifference_metricPerturbationPath_riemannia
     exact ⟨0, le_rfl, fun T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball σ' ρ s hs x =>
       (hIsE.false x).elim⟩
 
-theorem lieFirstOrderPiece_connectionDifferenceBackground_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform
+theorem lieFirstOrderPiece_connectionDifferenceBackground_pointwise_perturbation_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -976,10 +979,10 @@ theorem deTurckLieFirstOrderCoeff_metricPerturbationPath_riemannianFiberNormSq_o
               ((deTurckLieFirstOrderCoeff (I := I) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x) ≤ Λ := by
   obtain ⟨Λc, hΛc_nn, hΛc⟩ :=
-    lieFirstOrderPiece_connectionDifference_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ a
+    lieFirstOrderPiece_connectionDifference_pointwise_perturbation_bound (I := I) (M := M) g₀ a
       ha_super hR hδ₀
   obtain ⟨Λbg, hΛbg_nn, hΛbg⟩ :=
-    lieFirstOrderPiece_connectionDifferenceBackground_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ g_bg a
+    lieFirstOrderPiece_connectionDifferenceBackground_pointwise_perturbation_bound (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   obtain ⟨Λb, hΛb_nn, hΛb⟩ :=
     lieFirstOrderPiece_psiB_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ g_bg a

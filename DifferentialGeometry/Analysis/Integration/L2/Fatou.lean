@@ -102,9 +102,8 @@ theorem integral_fatou_sq_mass {ι : Type*}
       exact Real.sqrt_le_sqrt hpartialN
     have hflp : eLpNorm f 2 (volume.restrict (Icc (0 : ℝ) T)) ≤
         ENNReal.ofReal (Real.sqrt B) :=
-      Lp.eLpNorm_le_of_ae_tendsto heLp hfNmeas hlim
+      Lp.eLpNorm_le_of_ae_tendsto heLp hfNmeas hfmeas hlim
     have hfmem : MemLp f 2 (volume.restrict (Icc (0 : ℝ) T)) := by
-      refine ⟨hfmeas, ?_⟩
       exact hflp.trans_lt (by simp)
     have hnormint : ∫ t, ‖f t‖ ^ 2
         ∂(volume.restrict (Icc (0 : ℝ) T)) ≤ B := by
@@ -129,7 +128,7 @@ theorem integral_fatou_sq_mass {ι : Type*}
         have hiLp : MemLp (fun t => f t ⟨i, hi⟩) 2
             (volume.restrict (Icc (0 : ℝ) T)) := by
           apply MemLp.of_le hfmem
-          · exact (EuclideanSpace.proj ⟨i, hi⟩).continuous.comp_aestronglyMeasurable hfmem.1
+          · exact (EuclideanSpace.proj ⟨i, hi⟩).continuous.comp_aestronglyMeasurable hfmeas
           · exact Filter.Eventually.of_forall fun t => PiLp.norm_apply_le (f t) ⟨i, hi⟩
         refine hiLp.integrable_sq.congr (Filter.Eventually.of_forall fun t => ?_)
         dsimp [f]

@@ -1,12 +1,12 @@
 import DifferentialGeometry.Analysis.Elliptic.Barrier.SupportComparison
 import DifferentialGeometry.Analysis.Parabolic.Energy.CutoffEnergy
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 
 set_option autoImplicit false
 noncomputable section
 open Set Filter Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.Analysis.Parabolic DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Parabolic
 open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.Analysis
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -29,7 +29,7 @@ private theorem gradient_product_local (g : SmoothRiemannianMetric I M)
 
 private theorem cutoff_square_dissipation
     (G : MetricConnectionFamily (I := I) (M := M) ℝ) (T ε t : ℝ)
-    (χ q : ℝ → M → ℝ) (x : M) (F : ShiCutoffLowerSupportAt G T ε χ t x)
+    (χ q : ℝ → M → ℝ) (x : M) (F : ParabolicCutoffLowerSupportAt G T ε χ t x)
     (B a w : ℝ) (hε : 0 ≤ ε) (hχ : χ t x ∈ Icc 0 1)
     (hB : 0 ≤ B) (hw : 0 ≤ w) (hq : 0 ≤ q t x) (hqB : q t x ≤ B)
     (htime : DifferentiableWithinAt ℝ (fun s => q s x) (Icc 0 T) t)
@@ -97,7 +97,7 @@ theorem nonpositive_of_dissipation_and_cutoffs
         (gradientFun (I := I) (G.metric t) (q t) x) ≤ 4 * B * w t x)
     (hheat : ∀ t ∈ Icc 0 T, 0 < t → ∀ x : M, 0 < q t x →
       parabolicOperatorWithDrift G T (fun _ _ => 0) q t x ≤ -2 * w t x + a * q t x)
-    (hcut : ∀ O : M, Nonempty (ShiBarrierCutoffData G T O)) :
+    (hcut : ∀ O : M, Nonempty (ParabolicBarrierCutoffSequence G T O)) :
     ∀ t ∈ Icc 0 T, ∀ x : M, q t x ≤ 0 := by
   intro t ht O
   obtain ⟨cut⟩ := hcut O
@@ -164,7 +164,7 @@ theorem scalar_quadratic_reaction_bound_cutoffs
     (hheat : ∀ t ∈ Icc 0 T, 0 < t → ∀ x : M,
       parabolicOperatorWithDrift G T (fun _ _ => 0) u t x ≤ -2 * w t x + c * (u t x + 1) ^ 2)
     (hinit : ∀ x : M, u 0 x ≤ A)
-    (hcut : ∀ O : M, Nonempty (ShiBarrierCutoffData G T O)) :
+    (hcut : ∀ O : M, Nonempty (ParabolicBarrierCutoffSequence G T O)) :
     ∀ t ∈ Icc 0 T, ∀ x : M, u t x ≤ 2 * A + 1 := by
   let v := fun t : ℝ => (A + 1) / (1 - c * (A + 1) * t) - 1
   have hden (t : ℝ) (ht : t ∈ Icc 0 T) : 0 < 1 - c * (A + 1) * t := by

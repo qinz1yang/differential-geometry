@@ -166,7 +166,7 @@ theorem eventually_injective_mfderiv_sub_at_coincidences_on_isCompact
         contMDiffAt_snd (by norm_num : (0 : ℕ∞ω) + 1 ≤ 1)).continuousAt
     have hA0 : A (a, x) = mfderiv I J (f a) x := by
       dsimp only [A]
-      erw [inTangentCoordinates_eq_mfderiv_comp (f := Prod.snd)
+      erw [inTangentCoordinates_eq_mfderiv_comp_abuse (f := Prod.snd)
         (g := fun p : P × Q => f p.1 p.2) (x₀ := (a, x)) (x := (a, x))
         (mem_chart_source H x) (mem_chart_source H' (f a x))]
       simp only [mfderiv_extChartAt_self, mfderivWithin_range_extChartAt_symm]
@@ -174,7 +174,7 @@ theorem eventually_injective_mfderiv_sub_at_coincidences_on_isCompact
       rfl
     have hB0 : B (a, x) = mfderiv I J (g a) x := by
       dsimp only [B]
-      erw [inTangentCoordinates_eq_mfderiv_comp (f := Prod.snd)
+      erw [inTangentCoordinates_eq_mfderiv_comp_abuse (f := Prod.snd)
         (g := fun p : P × Q => g p.1 p.2) (x₀ := (a, x)) (x := (a, x))
         (mem_chart_source H x) (mem_chart_source H' (g a x))]
       simp only [mfderiv_extChartAt_self, mfderivWithin_range_extChartAt_symm]

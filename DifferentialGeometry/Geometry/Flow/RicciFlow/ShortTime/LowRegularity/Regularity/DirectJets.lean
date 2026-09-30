@@ -91,7 +91,7 @@ private theorem force_step_one
       tensorL2Coeff (I := I) (M := M) hc
           (SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2) (F t)) i = φ i t := by
     intro t ht i
-    simp only [hF_def, ht, if_pos]
+    simp only [hF_def, ht, ite_eq_left]
     exact hF₀_coeff t ht i
   have hF_hs2 : ∀ t ∈ Set.Icc (0 : ℝ) T, ∀ i,
       (smoothCcToTensorHs (I := I) (M := M) g
@@ -186,7 +186,7 @@ private theorem force_step_one
     by_cases ht : t ∈ Set.Icc (0 : ℝ) T
     · exact hball_pt t ht
     · have hF0 : F t = (0 : SmoothCcTensor g 0 2) := by
-        simp only [hF_def, ht, if_neg, not_false_iff]
+        simp only [hF_def, ht, ite_eq_right, not_false_iff]
       rw [hF0]
       have hz : smoothCcToTensorHs (I := I) (M := M) g
           (((1 : ℕ) : ℝ) + 1)
@@ -822,11 +822,11 @@ private theorem direct_force_coeff
         (((1 : ℕ) : ℝ) + 1) (Fcut t)‖ ≤ R := by
     intro t
     by_cases ht : t ∈ Set.Icc (0 : ℝ) T
-    · rw [show Fcut t = F t by simp only [hFcut_def, ht, if_pos], hF2 t ht]
+    · rw [show Fcut t = F t by simp only [hFcut_def, ht, ite_eq_left], hF2 t ht]
       rw [norm_tensorHsCongr]
       exact hstate t ht
     · rw [show Fcut t = (0 : SmoothCcTensor g 0 2) by
-        simp only [hFcut_def, ht, if_false], smoothCcToTensorHs_zero, norm_zero]
+        simp only [hFcut_def, ht, ite_false], smoothCcToTensorHs_zero, norm_zero]
       exact hR.le
   have hball_all : ∀ t : ℝ,
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -877,7 +877,7 @@ private theorem direct_force_coeff
           (((1 : ℕ) : ℝ) + 2) (Fcut t)).coeff i =
           (smoothCcToTensorHs (I := I) (M := M) g
             (((1 : ℕ) : ℝ) + 1) (F t)).coeff i := by
-              rw [show Fcut t = F t by simp only [hFcut_def, ht, if_pos],
+              rw [show Fcut t = F t by simp only [hFcut_def, ht, ite_eq_left],
                 smoothCcToTensorHs_coeff, smoothCcToTensorHs_coeff]
       _ = (timeH1.toFun uHi t).coeff i := hi
       _ = ((duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) hT
@@ -941,7 +941,7 @@ private theorem direct_force_coeff
     filter_upwards [hpinLo i, hsmooth, MeasureTheory.ae_restrict_mem
       (μ := MeasureTheory.volume) (measurableSet_Icc (a := (0 : ℝ)) (b := T))]
       with t hpin_t hsmooth_t ht
-    have hcut : Fcut t = F t := by simp only [hFcut_def, ht, if_pos]
+    have hcut : Fcut t = F t := by simp only [hFcut_def, ht, ite_eq_left]
     have hwd : deTurckSmoothN (I := I) (M := M) g g_bg 1
           (ccTensor02Symm (I := I) (M := M) g (Fcut t)) hδ
           (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g (Fcut t) (hδcut t)) =

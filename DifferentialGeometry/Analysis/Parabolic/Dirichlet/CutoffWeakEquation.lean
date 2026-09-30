@@ -20,7 +20,9 @@ private theorem integrable_tensor_mul_lp
   have hτp := hτ.comp_fst ν
   have hψp := hψ.comp_snd μ
   have hm : MemLp (fun p => τ p.1 * (c p * F p) * ψ p.2) 2 (μ.prod ν) := by
-    exact hψp.mul (r := 2) ((hF.mul (r := 2) hc).mul (r := 2) hτp)
+    have hinner := (hF.fun_mul (r := 2) hc).fun_mul (r := 2) hτp
+    have houter := hψp.fun_mul (r := 2) hinner
+    simpa only [mul_assoc, mul_left_comm, mul_comm] using houter
   exact hm.integrable (by norm_num)
 
 private theorem integrable_fixed_density_tensor_terms
@@ -146,12 +148,13 @@ theorem exists_lp_dual_of_fixed_density_cutoff_equation
       (0, EuclideanSpace.single j 1)) ∞ ν :=
     hlift (((hηall.div hr hrne).fderiv_of_isOpen (m := (⊤ : ℕ∞)) hO (by simp)).clm_apply
       contDiffOn_const).continuousOn
-  have hQ (j) : MemLp (Q j) 2 ν := (hP j).mul (r := 2) hηr
+  have hQ (j) : MemLp (Q j) 2 ν := by
+    simpa only [Q] using hηr.fun_mul (r := 2) (hP j)
   have hB : MemLp B 2 ν := by
-    apply (hC.mul (r := 2) (hlift hηall.continuousOn)).sub
+    apply (hlift hηall.continuousOn).fun_mul (r := 2) hC |>.sub
     apply memLp_finsetSum
     intro j _
-    exact (hdηr j).mul (r := 2) (hP j)
+    exact (hP j).fun_mul (r := 2) (hdηr j)
   refine ⟨hQ, hB, exists_lp_chart_source_sub_divergence_dual α hΩ hΩc hΩs hB hQ, ?_⟩
   intro v τ hτ hτc hτs ψ
   obtain ⟨hψ, hψmem, hdψmem⟩ :=

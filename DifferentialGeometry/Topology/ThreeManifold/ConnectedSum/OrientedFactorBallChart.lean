@@ -144,7 +144,7 @@ theorem exists_orientedBallChart_inr
   have huW : ∀ x (hx : x ∈ W),
       u x = inr c.toBallChart d.toBallChart a.1.toHomeomorph ⟨d'.chart x, hmemW hx⟩ := by
     intro x hx
-    simp only [u, dif_pos hx]
+    simp only [u, dite_eq_left hx]
   have hinj : Set.InjOn u W := by
     intro x hx y hy hxy
     have h1 : (⟨d'.chart x, hmemW hx⟩ : d.Punctured) = ⟨d'.chart y, hmemW hy⟩ :=
@@ -237,18 +237,18 @@ theorem exists_orientedBallChart_inr
         (f := ι') (x := ⟨x, hxW⟩)).mp ?_
       rw [show (fun y : Wop => ι' (y : csModel)) =
           fun y : Wop => (⟨d'.chart (y : csModel), y.2.2⟩ : d.interior) from
-        funext fun y => dif_pos y.2]
+        funext fun y => dite_eq_left y.2]
       exact hι₀
     have hι : (fun y : csModel => (ι' y : N.Carrier)) =ᶠ[𝓝 x]
         (d'.chart : csModel → N.Carrier) := by
       filter_upwards [hWopen.mem_nhds hxW] with y hy
-      rw [show ι' y = (⟨d'.chart y, hy.2⟩ : d.interior) from dif_pos hy]
+      rw [show ι' y = (⟨d'.chart y, hy.2⟩ : d.interior) from dite_eq_left hy]
     have huu : u =ᶠ[𝓝 x] u' := by
       filter_upwards [hWopen.mem_nhds hxW] with y hy
       rw [huW y hy]
       change inr c.toBallChart d.toBallChart a.1.toHomeomorph ⟨d'.chart y, hmemW hy⟩ =
         inr c.toBallChart d.toBallChart a.1.toHomeomorph (d.interiorToPunctured (ι' y))
-      rw [show ι' y = (⟨d'.chart y, hy.2⟩ : d.interior) from dif_pos hy]
+      rw [show ι' y = (⟨d'.chart y, hy.2⟩ : d.interior) from dite_eq_left hy]
       exact congrArg (inr c.toBallChart d.toBallChart a.1.toHomeomorph) (Subtype.ext rfl)
     have hkey :
         (((PartialDiffeomorph.isLocalDiffeomorphAt (𝓡 3) (𝓡 3) ∞
@@ -279,7 +279,7 @@ theorem exists_orientedBallChart_inr
         (g := interiorRight c.toBallChart d.toBallChart a.1)
         ((smoothConnectedSum M N c d a).interiorRight_localDiffeomorph.mdifferentiable
           (by simp) _) hι']
-      rw [show ι' x = (⟨d'.chart x, hxW.2⟩ : d.interior) from dif_pos hxW]
+      rw [show ι' x = (⟨d'.chart x, hxW.2⟩ : d.interior) from dite_eq_left hxW]
       rw [← DifferentialGeometry.mfderiv_subtypeVal_comp ι' x,
         Filter.EventuallyEq.mfderiv_eq hι]
       rfl
@@ -339,7 +339,7 @@ theorem exists_orientedBallChart_inl
   have huW : ∀ x (hx : x ∈ W),
       u x = inl c.toBallChart d.toBallChart a.1.toHomeomorph ⟨c'.chart x, hmemW hx⟩ := by
     intro x hx
-    simp only [u, dif_pos hx]
+    simp only [u, dite_eq_left hx]
   have hinj : Set.InjOn u W := by
     intro x hx y hy hxy
     have h1 : (⟨c'.chart x, hmemW hx⟩ : c.Punctured) = ⟨c'.chart y, hmemW hy⟩ :=
@@ -432,18 +432,18 @@ theorem exists_orientedBallChart_inl
         (f := ι') (x := ⟨x, hxW⟩)).mp ?_
       rw [show (fun y : Wop => ι' (y : csModel)) =
           fun y : Wop => (⟨c'.chart (y : csModel), y.2.2⟩ : c.interior) from
-        funext fun y => dif_pos y.2]
+        funext fun y => dite_eq_left y.2]
       exact hι₀
     have hι : (fun y : csModel => (ι' y : M.Carrier)) =ᶠ[𝓝 x]
         (c'.chart : csModel → M.Carrier) := by
       filter_upwards [hWopen.mem_nhds hxW] with y hy
-      rw [show ι' y = (⟨c'.chart y, hy.2⟩ : c.interior) from dif_pos hy]
+      rw [show ι' y = (⟨c'.chart y, hy.2⟩ : c.interior) from dite_eq_left hy]
     have huu : u =ᶠ[𝓝 x] u' := by
       filter_upwards [hWopen.mem_nhds hxW] with y hy
       rw [huW y hy]
       change inl c.toBallChart d.toBallChart a.1.toHomeomorph ⟨c'.chart y, hmemW hy⟩ =
         inl c.toBallChart d.toBallChart a.1.toHomeomorph (c.interiorToPunctured (ι' y))
-      rw [show ι' y = (⟨c'.chart y, hy.2⟩ : c.interior) from dif_pos hy]
+      rw [show ι' y = (⟨c'.chart y, hy.2⟩ : c.interior) from dite_eq_left hy]
       exact congrArg (inl c.toBallChart d.toBallChart a.1.toHomeomorph) (Subtype.ext rfl)
     have hkey :
         (((PartialDiffeomorph.isLocalDiffeomorphAt (𝓡 3) (𝓡 3) ∞
@@ -474,7 +474,7 @@ theorem exists_orientedBallChart_inl
         (g := interiorLeft c.toBallChart d.toBallChart a.1)
         ((smoothConnectedSum M N c d a).interiorLeft_localDiffeomorph.mdifferentiable
           (by simp) _) hι']
-      rw [show ι' x = (⟨c'.chart x, hxW.2⟩ : c.interior) from dif_pos hxW]
+      rw [show ι' x = (⟨c'.chart x, hxW.2⟩ : c.interior) from dite_eq_left hxW]
       rw [← DifferentialGeometry.mfderiv_subtypeVal_comp ι' x,
         Filter.EventuallyEq.mfderiv_eq hι]
       rfl

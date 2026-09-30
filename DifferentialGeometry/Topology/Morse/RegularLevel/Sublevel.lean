@@ -303,14 +303,14 @@ noncomputable def sublevelPullbackChart (f : M → ℝ) (a : ℝ) (x : SublevelS
             change x'.1 ∈ e.source ∧ e x'.1 ∈ Metric.ball p b.rIn at hx'
             change (toFun' x').1 ∈ Metric.ball p b.rIn
             simp only [toFun']
-            rw [dif_pos hx']
+            rw [dite_eq_left hx']
             exact hx'.2
           map_target' := by
             intro z hz
             change z.1 ∈ Metric.ball p b.rIn at hz
             change (invFun' z).1 ∈ e.source ∧ e ((invFun' z).1) ∈ Metric.ball p b.rIn
             simp only [invFun']
-            rw [dif_pos hz]
+            rw [dite_eq_left hz]
             change (extChartAt I x.1).symm z.1 ∈ e.source ∧
               e ((extChartAt I x.1).symm z.1) ∈ Metric.ball p b.rIn
             have hzt : z.1 ∈ (extChartAt I x.1).target :=
@@ -325,9 +325,9 @@ noncomputable def sublevelPullbackChart (f : M → ℝ) (a : ℝ) (x : SublevelS
             change x'.1 ∈ e.source ∧ e x'.1 ∈ Metric.ball p b.rIn at hx'
             apply Subtype.ext
             simp only [toFun']
-            rw [dif_pos hx']
+            rw [dite_eq_left hx']
             simp only [invFun']
-            rw [dif_pos (by exact hx'.2)]
+            rw [dite_eq_left (by exact hx'.2)]
             change (extChartAt I x.1).symm (e x'.1) = x'.1
             exact (extChartAt I x.1).left_inv hx'.1
           right_inv' := by
@@ -335,7 +335,7 @@ noncomputable def sublevelPullbackChart (f : M → ℝ) (a : ℝ) (x : SublevelS
             change z.1 ∈ Metric.ball p b.rIn at hz
             apply Subtype.ext
             simp only [invFun']
-            rw [dif_pos hz]
+            rw [dite_eq_left hz]
             have hzt : z.1 ∈ (extChartAt I x.1).target :=
               ((Metric.ball_subset_ball (le_of_lt b.rIn_lt_rOut)).trans
                 Metric.ball_subset_closedBall).trans hb hz
@@ -348,7 +348,7 @@ noncomputable def sublevelPullbackChart (f : M → ℝ) (a : ℝ) (x : SublevelS
               · rw [(extChartAt I x.1).right_inv hzt]
                 exact hz
             simp only [toFun']
-            rw [dif_pos hcond]
+            rw [dite_eq_left hcond]
             change (extChartAt I x.1) ((extChartAt I x.1).symm z.1) = z.1
             exact (extChartAt I x.1).right_inv hzt }
       open_source := by
@@ -384,7 +384,7 @@ noncomputable def sublevelPullbackChart (f : M → ℝ) (a : ℝ) (x : SublevelS
         apply Subtype.ext
         change e x'.1.1 = (toFun' x'.1).1
         simp only [toFun']
-        rw [dif_pos (show x'.1.1 ∈ e.source ∧ e x'.1.1 ∈ Metric.ball p b.rIn from x'.2)]
+        rw [dite_eq_left (show x'.1.1 ∈ e.source ∧ e x'.1.1 ∈ Metric.ball p b.rIn from x'.2)]
       continuousOn_invFun := by
         refine continuousOn_iff_continuous_domRestrict.mpr ?_
         have hcont : Continuous (fun z : {z : SublevelSpace (sublevelPullbackCutoff I f x.1 b) a |
@@ -404,7 +404,7 @@ noncomputable def sublevelPullbackChart (f : M → ℝ) (a : ℝ) (x : SublevelS
         apply Subtype.ext
         change (extChartAt I x.1).symm z.1.1 = (invFun' z.1).1
         simp only [invFun']
-        rw [dif_pos (show z.1.1 ∈ Metric.ball p b.rIn from z.2)]
+        rw [dite_eq_left (show z.1.1 ∈ Metric.ball p b.rIn from z.2)]
       }
 
 theorem mem_sublevelPullbackChart_source (f : M → ℝ) (a : ℝ) (x : SublevelSpace f a)
@@ -428,7 +428,7 @@ theorem sublevelPullbackChart_apply_of_mem (f : M → ℝ) (a : ℝ) (x : Sublev
     simpa [sublevelPullbackChart] using hx
   dsimp only [sublevelPullbackChart]
   rw [OpenPartialHomeomorph.coe_mk, PartialEquiv.coe_mk]
-  rw [dif_pos hx']
+  rw [dite_eq_left hx']
 
 theorem sublevelPullbackChart_symm_value (f : M → ℝ) (a : ℝ) (x : SublevelSpace f a)
     (b : ContDiffBump ((extChartAt I x.1) x.1))
@@ -441,7 +441,7 @@ theorem sublevelPullbackChart_symm_value (f : M → ℝ) (a : ℝ) (x : Sublevel
     simpa [sublevelPullbackChart] using hz
   dsimp only [sublevelPullbackChart]
   rw [OpenPartialHomeomorph.coe_mk_symm, PartialEquiv.coe_symm_mk]
-  rw [dif_pos hz']
+  rw [dite_eq_left hz']
 
 noncomputable def sublevelChartTransition (x₁ x₂ : M) : MorseModel (m + 1) → MorseModel (m + 1) :=
   fun y => (extChartAt I x₂) ((extChartAt I x₁).symm y)
@@ -1211,22 +1211,22 @@ theorem manifoldSublevelHasGroupoid [I.Boundaryless]
   rcases he' with ⟨x₂, rfl⟩
   by_cases hx₁ : f x₁.1 = a
   · by_cases hx₂ : f x₂.1 = a
-    · simp only [dif_pos hx₁, dif_pos hx₂]
+    · simp only [dite_eq_left hx₁, dite_eq_left hx₂]
       simpa only [contDiffPregroupoid, Set.preimage_inter,
         Set.preimage_preimage, Function.comp_apply] using
         contDiffOn_manifoldSublevelBoundary_transition I f a hf hreg x₁ x₂ hx₁ hx₂
-    · simp only [dif_pos hx₁, dif_neg hx₂]
+    · simp only [dite_eq_left hx₁, dite_eq_right hx₂]
       simpa only [contDiffPregroupoid, Set.preimage_inter,
         Set.preimage_preimage, Function.comp_apply] using
         contDiffOn_manifoldSublevelBoundaryInterior_transition I f a hf hreg x₁ x₂ hx₁
           (lt_of_le_of_ne (show f x₂.1 ≤ a from x₂.2) hx₂)
   · by_cases hx₂ : f x₂.1 = a
-    · simp only [dif_neg hx₁, dif_pos hx₂]
+    · simp only [dite_eq_right hx₁, dite_eq_left hx₂]
       simpa only [contDiffPregroupoid, Set.preimage_inter,
         Set.preimage_preimage, Function.comp_apply] using
         contDiffOn_manifoldSublevelInteriorBoundary_transition I f a hf hreg x₁ x₂
           (lt_of_le_of_ne (show f x₁.1 ≤ a from x₁.2) hx₁) hx₂
-    · simp only [dif_neg hx₁, dif_neg hx₂]
+    · simp only [dite_eq_right hx₁, dite_eq_right hx₂]
       simpa only [contDiffPregroupoid, Set.preimage_inter,
         Set.preimage_preimage, Function.comp_apply] using
         contDiffOn_manifoldSublevelInterior_transition I f a hf x₁ x₂
@@ -1323,14 +1323,14 @@ noncomputable def levelSetPullbackChart (f : M → ℝ) (a : ℝ) (x : LevelSetS
             change x'.1 ∈ e.source ∧ e x'.1 ∈ Metric.ball p b.rIn at hx'
             change (toFun' x').1 ∈ Metric.ball p b.rIn
             simp only [toFun']
-            rw [dif_pos hx']
+            rw [dite_eq_left hx']
             exact hx'.2
           map_target' := by
             intro z hz
             change z.1 ∈ Metric.ball p b.rIn at hz
             change (invFun' z).1 ∈ e.source ∧ e ((invFun' z).1) ∈ Metric.ball p b.rIn
             simp only [invFun']
-            rw [dif_pos hz]
+            rw [dite_eq_left hz]
             change (extChartAt I x.1).symm z.1 ∈ e.source ∧
               e ((extChartAt I x.1).symm z.1) ∈ Metric.ball p b.rIn
             have hzt : z.1 ∈ (extChartAt I x.1).target :=
@@ -1345,9 +1345,9 @@ noncomputable def levelSetPullbackChart (f : M → ℝ) (a : ℝ) (x : LevelSetS
             change x'.1 ∈ e.source ∧ e x'.1 ∈ Metric.ball p b.rIn at hx'
             apply Subtype.ext
             simp only [toFun']
-            rw [dif_pos hx']
+            rw [dite_eq_left hx']
             simp only [invFun']
-            rw [dif_pos (by exact hx'.2)]
+            rw [dite_eq_left (by exact hx'.2)]
             change (extChartAt I x.1).symm (e x'.1) = x'.1
             exact (extChartAt I x.1).left_inv hx'.1
           right_inv' := by
@@ -1355,7 +1355,7 @@ noncomputable def levelSetPullbackChart (f : M → ℝ) (a : ℝ) (x : LevelSetS
             change z.1 ∈ Metric.ball p b.rIn at hz
             apply Subtype.ext
             simp only [invFun']
-            rw [dif_pos hz]
+            rw [dite_eq_left hz]
             have hzt : z.1 ∈ (extChartAt I x.1).target :=
               ((Metric.ball_subset_ball (le_of_lt b.rIn_lt_rOut)).trans
                 Metric.ball_subset_closedBall).trans hb hz
@@ -1368,7 +1368,7 @@ noncomputable def levelSetPullbackChart (f : M → ℝ) (a : ℝ) (x : LevelSetS
               · rw [(extChartAt I x.1).right_inv hzt]
                 exact hz
             simp only [toFun']
-            rw [dif_pos hcond]
+            rw [dite_eq_left hcond]
             change (extChartAt I x.1) ((extChartAt I x.1).symm z.1) = z.1
             exact (extChartAt I x.1).right_inv hzt }
       open_source := by
@@ -1403,7 +1403,7 @@ noncomputable def levelSetPullbackChart (f : M → ℝ) (a : ℝ) (x : LevelSetS
         apply Subtype.ext
         change e x'.1.1 = (toFun' x'.1).1
         simp only [toFun']
-        rw [dif_pos (show x'.1.1 ∈ e.source ∧ e x'.1.1 ∈ Metric.ball p b.rIn from x'.2)]
+        rw [dite_eq_left (show x'.1.1 ∈ e.source ∧ e x'.1.1 ∈ Metric.ball p b.rIn from x'.2)]
       continuousOn_invFun := by
         refine continuousOn_iff_continuous_domRestrict.mpr ?_
         have hcont : Continuous (fun z : {z : LevelSetSpace (sublevelPullbackCutoff I f x.1 b) a |
@@ -1422,7 +1422,7 @@ noncomputable def levelSetPullbackChart (f : M → ℝ) (a : ℝ) (x : LevelSetS
         apply Subtype.ext
         change (extChartAt I x.1).symm z.1.1 = (invFun' z.1).1
         simp only [invFun']
-        rw [dif_pos (show z.1.1 ∈ Metric.ball p b.rIn from z.2)]
+        rw [dite_eq_left (show z.1.1 ∈ Metric.ball p b.rIn from z.2)]
       }
 
 theorem mem_levelSetPullbackChart_source (f : M → ℝ) (a : ℝ) (x : LevelSetSpace f a)
@@ -1446,7 +1446,7 @@ theorem levelSetPullbackChart_apply_of_mem (f : M → ℝ) (a : ℝ) (x : LevelS
     simpa [levelSetPullbackChart] using hx
   dsimp only [levelSetPullbackChart]
   rw [OpenPartialHomeomorph.coe_mk, PartialEquiv.coe_mk]
-  rw [dif_pos hx']
+  rw [dite_eq_left hx']
 
 theorem levelSetPullbackChart_symm_value (f : M → ℝ) (a : ℝ) (x : LevelSetSpace f a)
     (b : ContDiffBump ((extChartAt I x.1) x.1))
@@ -1459,7 +1459,7 @@ theorem levelSetPullbackChart_symm_value (f : M → ℝ) (a : ℝ) (x : LevelSet
     simpa [levelSetPullbackChart] using hz
   dsimp only [levelSetPullbackChart]
   rw [OpenPartialHomeomorph.coe_mk_symm, PartialEquiv.coe_symm_mk]
-  rw [dif_pos hz']
+  rw [dite_eq_left hz']
 
 private theorem levelSetPullbackChart_transition_mem
     (f : M → ℝ) (a : ℝ) (x₁ x₂ : LevelSetSpace f a)
@@ -2275,7 +2275,7 @@ theorem contMDiff_levelSetSublevelInclusion {m : ℕ} {H : Type*} [TopologicalSp
       rw [hchart₁ x]
     have hchart₂' : (hcs₂.chartAt x') = c₂ := by
       rw [hchart₂ x']
-      rw [dif_pos x.2]
+      rw [dite_eq_left x.2]
     have hz₀ : z₀ ∈ c₁.target := by
       have hval₀ : c₁ x ∈ c₁.target := c₁.map_source (mem_manifoldLevelSetChart_source I f a hf hreg x)
       dsimp [z₀]
@@ -2484,10 +2484,10 @@ theorem contMDiffAt_manifoldSublevelBoundaryMap [I.Boundaryless]
       manifoldSublevelBoundaryChart I g₂ a₂ x₂ hx₂ hg₂ hreg₂
     have hchart₁' : hcs₁.chartAt x = c₁ := by
       rw [hchart₁ x]
-      rw [dif_pos hx]
+      rw [dite_eq_left hx]
     have hchart₂' : hcs₂.chartAt x₂ = c₂ := by
       rw [hchart₂ x₂]
-      rw [dif_pos hx₂]
+      rw [dite_eq_left hx₂]
     let b₁ : ContDiffBump ((extChartAt I x.1) x.1) := sublevelPullbackBump I x.1
     let hb₁ : Metric.closedBall ((extChartAt I x.1) x.1) b₁.rOut ⊆ (extChartAt I x.1).target :=
       sublevelPullbackBump_closedBall_target (I := I) x.1
@@ -2817,10 +2817,10 @@ theorem contMDiffAt_manifoldSublevelBoundaryToInteriorMap [I.Boundaryless]
       manifoldSublevelInteriorChart I g₂ a₂ x₂ hx₂lt' hg₂
     have hchart₁' : hcs₁.chartAt x = c₁ := by
       rw [hchart₁ x]
-      rw [dif_pos hx]
+      rw [dite_eq_left hx]
     have hchart₂' : hcs₂.chartAt x₂ = c₂ := by
       rw [hchart₂ x₂]
-      rw [dif_neg (ne_of_lt hx₂lt')]
+      rw [dite_eq_right (ne_of_lt hx₂lt')]
     let b₁ : ContDiffBump ((extChartAt I x.1) x.1) := sublevelPullbackBump I x.1
     let hb₁ : Metric.closedBall ((extChartAt I x.1) x.1) b₁.rOut ⊆ (extChartAt I x.1).target :=
       sublevelPullbackBump_closedBall_target (I := I) x.1
@@ -3190,13 +3190,13 @@ theorem contMDiffAt_manifoldSublevelInteriorMap [I.Boundaryless]
       manifoldSublevelInteriorChart I g₁ a₁ x hx hg₁
     have hchart₁' : hcs₁.chartAt x = c₁ := by
       rw [hchart₁ x]
-      rw [dif_neg (ne_of_lt hx)]
+      rw [dite_eq_right (ne_of_lt hx)]
     have hx₂lt : g₂ x₂.1 < a₂ := hstrict x.1 hx
     let c₂ : OpenPartialHomeomorph (SublevelSpace g₂ a₂) (MorseHalfSpace m) :=
       manifoldSublevelInteriorChart I g₂ a₂ x₂ hx₂lt hg₂
     have hchart₂' : hcs₂.chartAt x₂ = c₂ := by
       rw [hchart₂ x₂]
-      rw [dif_neg (ne_of_lt hx₂lt)]
+      rw [dite_eq_right (ne_of_lt hx₂lt)]
     let b₁ : ContDiffBump ((extChartAt I x.1) x.1) := sublevelPullbackBump I x.1
     let hb₁ : Metric.closedBall ((extChartAt I x.1) x.1) b₁.rOut ⊆ (extChartAt I x.1).target :=
       sublevelPullbackBump_closedBall_target (I := I) x.1
@@ -3636,7 +3636,7 @@ theorem contMDiffAt_sublevelCorestrictInterior [I.Boundaryless]
       manifoldSublevelInteriorChart I g a x₂ hx₂lt hg
     have hchart₂' : hcs.chartAt x₂ = c₂ := by
       rw [hchart x₂]
-      rw [dif_neg (ne_of_lt hx₂lt)]
+      rw [dite_eq_right (ne_of_lt hx₂lt)]
     let b₂ : ContDiffBump ((extChartAt I x₂.1) x₂.1) := sublevelPullbackBump I x₂.1
     let hb₂ : Metric.closedBall ((extChartAt I x₂.1) x₂.1) b₂.rOut ⊆ (extChartAt I x₂.1).target :=
       sublevelPullbackBump_closedBall_target (I := I) x₂.1
@@ -3749,7 +3749,7 @@ theorem contMDiffAt_sublevelCorestrictBoundary [I.Boundaryless]
       manifoldSublevelBoundaryChart I g a x₂ hx₂ hg hreg
     have hchart₂' : hcs.chartAt x₂ = c₂ := by
       rw [hchart x₂]
-      rw [dif_pos hx₂]
+      rw [dite_eq_left hx₂]
     let b₂ : ContDiffBump ((extChartAt I x₂.1) x₂.1) := sublevelPullbackBump I x₂.1
     let hb₂ : Metric.closedBall ((extChartAt I x₂.1) x₂.1) b₂.rOut ⊆ (extChartAt I x₂.1).target :=
       sublevelPullbackBump_closedBall_target (I := I) x₂.1
@@ -4087,7 +4087,7 @@ theorem contMDiffAt_manifoldSublevelSetEqIdentityInterior [I.Boundaryless]
       manifoldSublevelInteriorChart I g a x hx hg
     have hchart₁' : hcs₁.chartAt x = c₁ := by
       rw [hchart₁ x]
-      rw [dif_neg (ne_of_lt hx)]
+      rw [dite_eq_right (ne_of_lt hx)]
     let b₁ : ContDiffBump ((extChartAt I x.1) x.1) := sublevelPullbackBump I x.1
     let hb₁ : Metric.closedBall ((extChartAt I x.1) x.1) b₁.rOut ⊆ (extChartAt I x.1).target :=
       sublevelPullbackBump_closedBall_target (I := I) x.1
@@ -4236,7 +4236,7 @@ theorem contMDiffAt_manifoldSublevelSetEqIdentityInterior [I.Boundaryless]
         manifoldSublevelBoundaryChart I f a x₂ hxb hf hreg_f
       have hchart₂' : hcs₂.chartAt x₂ = c₂ := by
         rw [hchart₂ x₂]
-        rw [dif_pos hxb]
+        rw [dite_eq_left hxb]
       let hx₂b : f x₂.1 = a := hxb
       let hr₂c : fderiv ℝ f₂c p₂.1 ≠ 0 :=
         fderiv_sublevelPullbackCutoffPoint_ne_zero I f hf a hreg_f x₂ b₂ hx₂b
@@ -4408,7 +4408,7 @@ theorem contMDiffAt_manifoldSublevelSetEqIdentityInterior [I.Boundaryless]
         manifoldSublevelInteriorChart I f a x₂ hx₂lt hf
       have hchart₂' : hcs₂.chartAt x₂ = c₂ := by
         rw [hchart₂ x₂]
-        rw [dif_neg (ne_of_lt hx₂lt)]
+        rw [dite_eq_right (ne_of_lt hx₂lt)]
       let hx₂lt' : f x₂.1 < a := hx₂lt
       let mi₂ : OpenPartialHomeomorph (SublevelSpace f₂c a) (MorseHalfSpace m) :=
         sublevelInteriorChart f₂c a p₂ (sublevelPullbackCutoffPoint_value_lt I f a x₂ b₂ hx₂lt') hf₂c

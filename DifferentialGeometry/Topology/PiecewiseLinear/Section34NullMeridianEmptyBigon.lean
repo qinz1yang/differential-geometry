@@ -10,7 +10,7 @@ theorem IsCylindricalDiagram.exists_empty_bigon_of_nullhomotopic_circle
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {f : E × ℝ → F} {P : Set E} {S J : Set F} {d : (Fin 3 → ℝ) → E}
-    (hf : IsCylindricalDiagram f P S) (hd : IsPLHomeomorphOn d (stdSimplex ℝ (Fin 3)) P)
+    (hf : IsCylindricalDiagram f P S) (hd : IsPLHomeomorphOn d (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (hends : ∀ x ∈ P, f (x, 0) = f (x, 1)) (hJ : IsPLSphere 1 J)
     (hJside : J ⊆ f '' ((d '' stdSimplexBoundary 2) ×ˢ Icc 0 1))
     (hJS : J ⊆ S)
@@ -22,7 +22,7 @@ theorem IsCylindricalDiagram.exists_empty_bigon_of_nullhomotopic_circle
         (x, s) ∈ closure (((P ×ˢ Icc a b) ∩ f ⁻¹' J) ∩ {y | s < y.2}))
     (hne : (J ∩ f '' (P ×ˢ {s})).Nonempty) :
     ∃ (D : Set F) (q : (Fin 3 → ℝ) → F) (x y : F),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ f '' ((d '' stdSimplexBoundary 2) ×ˢ Icc 0 1) ∧
       IsPLBall 1 (D ∩ J) ∧
       IsPLBall 1 (D ∩ f '' ((d '' stdSimplexBoundary 2) ×ˢ ({s} : Set ℝ))) ∧

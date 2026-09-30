@@ -124,7 +124,7 @@ theorem contDiffOn_terminalGermCoefficient :
 theorem deriv_terminalAngleDeficit_eq_germ {s : ℝ} (hs : s < 1) :
     deriv terminalAngleDeficit s = terminalGermCoefficient s * expNegInvGlue s := by
   have he : expNegInvGlue (1 - s) = Real.exp (-(1 - s)⁻¹) := by
-    rw [expNegInvGlue, if_neg (not_le.mpr (sub_pos.mpr hs))]
+    rw [expNegInvGlue, ite_eq_right (not_le.mpr (sub_pos.mpr hs))]
   rw [deriv_terminalAngleDeficit, deriv_angle]
   simp only [sub_sub_cancel, Real.smoothTransition, he, terminalGermCoefficient]
   simp only [mul_inv_rev, div_eq_mul_inv]
@@ -132,7 +132,7 @@ theorem deriv_terminalAngleDeficit_eq_germ {s : ℝ} (hs : s < 1) :
 
 theorem deriv_terminalAngleDeficit_eq_exp {s : ℝ} (hs : 0 < s) (hsmall : s < 1) :
     deriv terminalAngleDeficit s = terminalGermCoefficient s * Real.exp (-1 / s) := by
-  rw [deriv_terminalAngleDeficit_eq_germ hsmall, expNegInvGlue, if_neg hs.not_ge]
+  rw [deriv_terminalAngleDeficit_eq_germ hsmall, expNegInvGlue, ite_eq_right hs.not_ge]
   simp only [neg_div, one_div]
 
 theorem terminalAngleDeficit_eq_integral_germ {s : ℝ} (hs : s < 1) :

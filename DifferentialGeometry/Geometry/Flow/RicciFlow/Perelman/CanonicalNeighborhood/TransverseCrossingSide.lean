@@ -489,14 +489,14 @@ theorem TransversePath.not_mem_connectedComponentIn_of_intersection
       have ht'B : c.curve t' ∈ d.positiveSide := h ⟨t', ⟨htt', le_rfl⟩, rfl⟩
       change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) =
         (if c.curve t' ∈ d.positiveSide then (1 : ZMod 2) else 0)
-      rw [if_pos htB, if_pos ht'B]
+      rw [ite_eq_left htB, ite_eq_left ht'B]
     · have htB : c.curve t ∉ d.positiveSide :=
         fun hcon => Set.disjoint_left.mp d.disjoint hcon (h ⟨t, ⟨le_rfl, htt'⟩, rfl⟩)
       have ht'B : c.curve t' ∉ d.positiveSide :=
         fun hcon => Set.disjoint_left.mp d.disjoint hcon (h ⟨t', ⟨htt', le_rfl⟩, rfl⟩)
       change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) =
         (if c.curve t' ∈ d.positiveSide then (1 : ZMod 2) else 0)
-      rw [if_neg htB, if_neg ht'B]
+      rw [ite_eq_right htB, ite_eq_right ht'B]
   have hflip : ∀ s ∈ c.crossings, ∃ A : ZMod 2,
       (∃ ε : ℝ, 0 < ε ∧ ∀ t ∈ Ioo (s - ε) s, f t = A) ∧
       (∃ ε : ℝ, 0 < ε ∧ ∀ t ∈ Ioo s (s + ε), f t = A + 1) := by
@@ -507,32 +507,32 @@ theorem TransversePath.not_mem_connectedComponentIn_of_intersection
       · obtain ⟨ε, hε, h1, h2⟩ := hloc
         refine ⟨1, ⟨⟨ε, hε, fun t ht => ?_⟩, ⟨ε, hε, fun t ht => ?_⟩⟩⟩
         · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 1
-          rw [if_pos (hNB (h1 t ht))]
+          rw [ite_eq_left (hNB (h1 t ht))]
         · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 1 + 1
-          rw [if_neg (fun hcon => Set.disjoint_left.mp d.disjoint hcon (hPE (h2 t ht))),
+          rw [ite_eq_right (fun hcon => Set.disjoint_left.mp d.disjoint hcon (hPE (h2 t ht))),
             zmodTwo_one_add_one]
       · obtain ⟨ε, hε, h1, h2⟩ := hloc
         refine ⟨0, ⟨⟨ε, hε, fun t ht => ?_⟩, ⟨ε, hε, fun t ht => ?_⟩⟩⟩
         · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 0
-          rw [if_neg (fun hcon => Set.disjoint_left.mp d.disjoint hcon (hPE (h1 t ht)))]
+          rw [ite_eq_right (fun hcon => Set.disjoint_left.mp d.disjoint hcon (hPE (h1 t ht)))]
         · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 0 + 1
-          rw [if_pos (hNB (h2 t ht))]
+          rw [ite_eq_left (hNB (h2 t ht))]
           ring
     · obtain ⟨hNE, hPB⟩ := hcase
       rcases c.exists_band_neighborhood_of_mem_crossings hs with hloc | hloc
       · obtain ⟨ε, hε, h1, h2⟩ := hloc
         refine ⟨0, ⟨⟨ε, hε, fun t ht => ?_⟩, ⟨ε, hε, fun t ht => ?_⟩⟩⟩
         · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 0
-          rw [if_neg (fun hcon => Set.disjoint_left.mp d.disjoint hcon (hNE (h1 t ht)))]
+          rw [ite_eq_right (fun hcon => Set.disjoint_left.mp d.disjoint hcon (hNE (h1 t ht)))]
         · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 0 + 1
-          rw [if_pos (hPB (h2 t ht))]
+          rw [ite_eq_left (hPB (h2 t ht))]
           ring
       · obtain ⟨ε, hε, h1, h2⟩ := hloc
         refine ⟨1, ⟨⟨ε, hε, fun t ht => ?_⟩, ⟨ε, hε, fun t ht => ?_⟩⟩⟩
         · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 1
-          rw [if_pos (hPB (h1 t ht))]
+          rw [ite_eq_left (hPB (h1 t ht))]
         · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 1 + 1
-          rw [if_neg (fun hcon => Set.disjoint_left.mp d.disjoint hcon (hNE (h2 t ht))),
+          rw [ite_eq_right (fun hcon => Set.disjoint_left.mp d.disjoint hcon (hNE (h2 t ht))),
             zmodTwo_one_add_one]
   have h0 : (0 : ℝ) ∉ c.crossings := fun h => absurd (c.crossings_interior 0 h).1 (lt_irrefl 0)
   have h1 : (1 : ℝ) ∉ c.crossings := fun h => absurd (c.crossings_interior 1 h).2 (lt_irrefl 1)
@@ -547,9 +547,9 @@ theorem TransversePath.not_mem_connectedComponentIn_of_intersection
           ZMod 2) = 1 := by
       intro x _
       by_cases hx : 0 < deriv (fun t => (c.collar.symm (c.curve t)).2) x
-      · rw [if_pos hx]
+      · rw [ite_eq_left hx]
         exact Int.cast_one
-      · rw [if_neg hx]
+      · rw [ite_eq_right hx]
         exact zmodTwo_intCast_neg_one
     have hsum : ((c.intersection : ℤ) : ZMod 2) = (c.crossings.card : ZMod 2) := by
       calc ((c.intersection : ℤ) : ZMod 2)
@@ -577,7 +577,7 @@ theorem TransversePath.not_mem_connectedComponentIn_of_intersection
   by_cases hpB : p ∈ d.positiveSide
   · have hzB : z ∉ d.positiveSide := by
       intro hzB'
-      exact hne01 (by rw [hf0, hf1, if_pos hpB, if_pos hzB'])
+      exact hne01 (by rw [hf0, hf1, ite_eq_left hpB, ite_eq_left hzB'])
     have hzE : z ∈ d.negativeSide := by
       have hmem : z ∈ d.positiveSide ∪ d.negativeSide := by rw [d.union_eq_compl]; exact hz
       exact hmem.resolve_left hzB
@@ -590,7 +590,7 @@ theorem TransversePath.not_mem_connectedComponentIn_of_intersection
       have hzE : z ∈ d.negativeSide := by
         have hmem : z ∈ d.positiveSide ∪ d.negativeSide := by rw [d.union_eq_compl]; exact hz
         exact hmem.resolve_left hzB'
-      exact hne01 (by rw [hf0, hf1, if_neg hpB, if_neg hzB'])
+      exact hne01 (by rw [hf0, hf1, ite_eq_right hpB, ite_eq_right hzB'])
     exact d.not_mem_connectedComponentIn_of_mem_other_side hpE hzB
 
 

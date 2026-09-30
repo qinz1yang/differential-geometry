@@ -38,7 +38,7 @@ theorem IsCylindricalDiagram.exists_supported_crosscut_replacement
     {f : E × ℝ → F} {P L B B' : Set E} {S : Set F}
     (hf : IsCylindricalDiagram f P S)
     (hends : ∀ x ∈ P, f (x, 0) = f (x, 1))
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P)
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (hrim : r '' stdSimplexBoundary 2 = L)
     (hfront : frontier S ⊆ f '' (L ×ˢ Icc (0 : ℝ) 1))
     {γ γ' : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) B)
@@ -54,7 +54,7 @@ theorem IsCylindricalDiagram.exists_supported_crosscut_replacement
   have hL : IsPLSphere 1 L := hrim ▸ hr.isPLSphere_image_stdSimplexBoundary
   have hLP : L ⊆ P := by
     rw [← hrim]
-    exact (image_mono (show stdSimplexBoundary 2 ⊆ stdSimplex ℝ (Fin 3) from
+    exact (image_mono (show stdSimplexBoundary 2 ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) from
       inter_subset_left)).trans hr.bijOn.mapsTo.image_subset
   obtain ⟨φ, hφ, hφfix, hφB⟩ := exists_isPLHomeomorphOn_map_crosscut_eqOn_boundary
     hr hrim hr hrim hγ hBP hBL hγ' hB'P hB'L hL.isPolyhedron.isPLHomeomorphOn_id hzero hone

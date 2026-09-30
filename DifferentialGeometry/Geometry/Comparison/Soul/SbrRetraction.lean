@@ -52,7 +52,7 @@ theorem selectedMaximalAscent_spec (x : M) (hx : 0 ≤ F x ∧ F x < m) :
         LipschitzOnWith (Real.toNNReal (Metric.diam {z : M | 0 ≤ F z} / (m - T)))
           (c x) (Icc (F x) T) := by
   unfold selectedMaximalAscent
-  rw [dif_pos hx]
+  rw [dite_eq_left hx]
   exact (exists_maximal_normalized_ascent_curve g hEnorm F L hF hconc hC
     hx.1 hx.2 hmax x rfl).choose_spec
 
@@ -62,7 +62,7 @@ def sharafutdinovLevelMap (s : ℝ) (x : M) : M :=
 local notation "R" => sharafutdinovLevelMap g hEnorm F L hF hconc hC hmax
 
 theorem sharafutdinovLevelMap_of_le (s : ℝ) (x : M) (hs : s ≤ F x) : R s x = x := by
-  simp only [sharafutdinovLevelMap, if_pos hs]
+  simp only [sharafutdinovLevelMap, ite_eq_left hs]
 
 theorem sharafutdinovLevelMap_eq_ascent (x : M) (hx : 0 ≤ F x ∧ F x < m)
     {s : ℝ} (hs : F x ≤ s) : R s x = c x s := by
@@ -71,7 +71,7 @@ theorem sharafutdinovLevelMap_eq_ascent (x : M) (hx : 0 ≤ F x ∧ F x < m)
     subst s
     rw [sharafutdinovLevelMap_of_le g hEnorm F L hF hconc hC hmax _ _ le_rfl]
     exact (selectedMaximalAscent_spec g hEnorm F L hF hconc hC hmax x hx).2.1.symm
-  · simp only [sharafutdinovLevelMap, if_neg h]
+  · simp only [sharafutdinovLevelMap, ite_eq_right h]
 
 theorem sharafutdinovLevelMap_level {s : ℝ} (hs : s ∈ Icc 0 m)
     {x : M} (hx : 0 ≤ F x) : F (R s x) = max (F x) s := by

@@ -3,6 +3,25 @@ import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.FieldDec
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.Proportional
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.SmoothTensor
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Bound
+
+open DifferentialGeometry.TensorMetric
+  (coframeS
+    coframeS_apply
+    covariantTensorInnerPointwise
+    fiberNormSqSummand
+    lowerAllUpperIndices
+    lowerAllUpperIndices_apply
+    riemannianFiberNormSq
+    riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg
+    riemannianFiberNormSq_slot0Curry_le_of_frame
+    riemannianFiberNormSq_sum_le_card_mul
+    slot0Curry
+    slot0Curry_apply
+    tensor00Scalar
+    tensor00Scalar_apply
+    tensorInnerPointwise
+    tensorInnerPointwise_0s_eq_diag_sum_orthoFrame)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -66,8 +85,8 @@ private lemma riemannianFiberNormSq_eq_sum_toModel_sq
       intro j _
       rw [(g.inner x (e k)).map_smul (c j) (e j), smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
-    · intro j _ hjk; rw [if_neg (fun h => hjk h.symm), mul_zero]
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
+    · intro j _ hjk; rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ (TangentSpace I x))) =
       Module.finrank ℝ (TangentSpace I x) := Fintype.card_fin _
   set bse : Module.Basis (Fin (Module.finrank ℝ (TangentSpace I x))) ℝ (TangentSpace I x) :=
@@ -149,9 +168,9 @@ private lemma orthoWeighted_frame_sum_collapse
           (unitZeroSec (I := I) (M := M) x)) m := by
   classical
   rw [Finset.sum_eq_single a₀]
-  · rw [horth a₀ a₀, if_pos rfl, one_smul]
+  · rw [horth a₀ a₀, ite_eq_left rfl, one_smul]
   · intro b _ hb
-    rw [horth b a₀, if_neg hb, zero_smul]
+    rw [horth b a₀, ite_eq_right hb, zero_smul]
   · intro h; exact absurd (Finset.mem_univ a₀) h
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -373,7 +392,7 @@ theorem genuineTrace_le_of
     have hgB : g.inner x (smoothOrthoFrame (I := I) g x i x)
         (smoothOrthoFrame (I := I) g x i x) = 1 := by
       have h := smoothOrthoFrame_orthonormal_at_center (I := I) g x i i
-      rwa [if_pos rfl] at h
+      rwa [ite_eq_left rfl] at h
     have hbound := hC_bound x (smoothOrthoFrame (I := I) g x i x)
       (smoothExtensionTangent (I := I) x v x)
       (covApply (tensorCov (I := I) g 0 s) (smoothOrthoFrame (I := I) g x i)
@@ -580,7 +599,7 @@ theorem exists_uniform_genuineCurvTracePureR_fiberNormSq_bound
     rw [hFop i]
     have hgB : g.inner x (smoothOrthoFrame (I := I) g x i x) (smoothOrthoFrame (I := I) g x i x) =
       1 := by
-      have := smoothOrthoFrame_orthonormal_at_center (I := I) g x i i; rwa [if_pos rfl] at this
+      have := smoothOrthoFrame_orthonormal_at_center (I := I) g x i i; rwa [ite_eq_left rfl] at this
     have hbound := hC_bound s x (smoothOrthoFrame (I := I) g x i x)
       (smoothExtensionTangent (I := I) x v x)
       (covApply (tensorCov (I := I) g 0 s) (smoothOrthoFrame (I := I) g x i)
@@ -645,7 +664,7 @@ theorem genuineThirdCurvFieldFibPureR_fiberNormEnergy_le
         Kpure s * riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
           ((covGrad (I := I) (M := M) g 0 s S).toSection x) := by
     intro a
-    have hunit : g.inner x (e a) (e a) = 1 := by rw [horth a a, if_pos rfl]
+    have hunit : g.inner x (e a) (e a) = 1 := by rw [horth a a, ite_eq_left rfl]
     exact hKpure s S x (e a) hunit
   calc ∑ a : Fin n, riemannianFiberNormSq (I := I) (M := M) g 0 s x (Tr a)
       ≤ ∑ _a : Fin n, Kpure s * riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x

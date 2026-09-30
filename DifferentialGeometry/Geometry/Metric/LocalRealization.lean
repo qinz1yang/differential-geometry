@@ -27,7 +27,7 @@ private theorem eventually_pos_bilinear_section
   have hx : x ∈ e.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
   have hCx : ∀ v : E, v ≠ 0 → 0 < C x v v := by
     intro v hv
-    rw [metricCoeffInModel_apply x hx]
+    rw [BilinearForm.trivializationAt_apply x hx]
     apply hpos
     intro heq
     have hv0 := congrArg (e.continuousLinearMapAt ℝ x) heq
@@ -44,7 +44,7 @@ private theorem eventually_pos_bilinear_section
     rw [e.symmL_continuousLinearMapAt hbase, map_zero] at hv0
     exact hv hv0
   have hval := hy w hw
-  rw [metricCoeffInModel_apply x hbase] at hval
+  rw [BilinearForm.trivializationAt_apply x hbase] at hval
   change 0 < b y (e.symmL ℝ y (e.continuousLinearMapAt ℝ y v))
     (e.symmL ℝ y (e.continuousLinearMapAt ℝ y v)) at hval
   rwa [e.symmL_continuousLinearMapAt hbase] at hval

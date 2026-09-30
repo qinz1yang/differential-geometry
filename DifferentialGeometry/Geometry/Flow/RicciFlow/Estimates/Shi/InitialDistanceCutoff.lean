@@ -1,11 +1,15 @@
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Profile
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSupport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.BernsteinMaximum
 import DifferentialGeometry.Geometry.Comparison.DistanceHessianLocal
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
+
+open DifferentialGeometry.SmoothRiemannianMetric
+  (metric_inner_cauchy_schwarz_sq
+   metric_inner_smul_self)
 
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -23,7 +27,6 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle Filter Set DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis
 open DifferentialGeometry.Analysis.Parabolic
-open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Geometry.Riemannian
 open scoped Manifold ContDiff Topology Bundle
 
@@ -212,7 +215,7 @@ def ShiSelfCoupledLowerSupportAt.toCutoffLowerSupport
     {T A eps : Real} {Λ χ : Real → M → Real} {t : Real} {x : M}
     (h : ShiSelfCoupledLowerSupportAt (I := I) G T A Λ χ t x)
     (hA : A ≤ eps) (hΛ : Λ t x ≤ eps) (hχ : 0 ≤ χ t x) :
-    ShiCutoffLowerSupportAt (I := I) G T eps χ t x where
+    ParabolicCutoffLowerSupportAt (I := I) G T eps χ t x where
   phi := h.phi
   eq_at := h.eq_at
   lower_nhds := h.lower_nhds

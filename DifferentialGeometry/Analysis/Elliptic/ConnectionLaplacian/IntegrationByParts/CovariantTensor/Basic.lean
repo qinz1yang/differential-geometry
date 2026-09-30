@@ -15,6 +15,10 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.Suppor
 import DifferentialGeometry.Geometry.Operator.Gradient.MetricSharpSmoothness
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
 
+open DifferentialGeometry.TensorMetric (lowerAllUpperIndices lowerAllUpperIndices_apply
+  modelInnerAt modelInnerAt_apply tensorInnerPointwise tensorInnerPointwise_add_left
+  tensorInnerPointwise_smul_left)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -548,10 +552,10 @@ private lemma tensorCovDerivPointwiseInnerCovariantTensor_eq_smoothOrthoFrame_di
       rw [hB_orth k j]
     rw [Finset.sum_congr rfl h_pull2] at h_zero
     rw [Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rw [if_pos rfl, mul_one] at h_zero
+    · rw [ite_eq_left rfl, mul_one] at h_zero
       exact h_zero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
       Module.finrank ℝ (TangentSpace I b) := by
     rw [Fintype.card_fin]

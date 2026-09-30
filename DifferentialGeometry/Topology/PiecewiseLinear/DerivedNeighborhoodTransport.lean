@@ -36,7 +36,7 @@ theorem IsGlueIso.simplicialMap_centroid (h : IsGlueIso K K' φ ψ) {s : Finset 
     centroid_eq_sum (s.image φ) (hsne.image φ), Finset.sum_image hinj,
     Finset.card_image_of_injOn hinj]
   exact Finset.sum_congr rfl fun v hv => by
-    rw [weights_centroid (K.indep hs) (Finset.Subset.refl s) hsne hv, if_pos hv]
+    rw [weights_centroid (K.indep hs) (Finset.Subset.refl s) hsne hv, ite_eq_left hv]
 
 theorem IsGlueIso.image_isFlag (h : IsGlueIso K K' φ ψ)
     {D : Finset (Finset E)} (hD : IsFlag K D) :

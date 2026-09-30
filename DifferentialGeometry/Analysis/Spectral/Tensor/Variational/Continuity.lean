@@ -17,6 +17,12 @@ import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Function.L1Space.Integrable
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.Topology.ContinuousOn
+open DifferentialGeometry.TensorMetric
+  (lowerAllUpperIndices
+    lowerAllUpperIndices_apply
+    separableFormAt
+    separableFormAt_apply
+    tensorInnerPointwise)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

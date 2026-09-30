@@ -252,7 +252,7 @@ theorem nablaRicChartComp
           (Function.update (fun r : Fin 2 => V r x) q
             (((metricCov (I := I) g) (V q) x) (X x)))) = _
   rw [hderivX, Fin.sum_univ_two, hterm 0, hterm 1]
-  simp only [Fin.isValue, Fin.succ_zero_eq_one, if_true, reduceIte,
+  simp only [Fin.isValue, Fin.succ_zero_eq_one, ite_true, reduceIte,
     show ((0 : Fin 2) = 1) = False by simp,
     show ((1 : Fin 2) = 0) = False by simp, gE, y₀]
   rw [show Fin.succ (1 : Fin 2) = (2 : Fin 3) by decide]

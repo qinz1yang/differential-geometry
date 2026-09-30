@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Pointwis
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.EndomorphismInsertion.Bounds
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Curvature.DecompositionMonomialBounds
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -98,7 +101,7 @@ private theorem normSqSmul (g₀ : SmoothRiemannianMetric I M) {r s : ℕ} (c : 
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
   dsimp only
   rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-    DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ r s x c _]
+    DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ r s x c _]
 
 theorem gridIntUnit (g₀ : SmoothRiemannianMetric I M) (rb sb : ℕ) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
@@ -134,7 +137,7 @@ theorem gridIntUnit (g₀ : SmoothRiemannianMetric I M) (rb sb : ℕ) :
       (I := I) (M := M) g₀ rb sb i hi1).choose_spec.2 P Λ₀ hΛ₀0 hsup
     have hCeq : (DifferentialGeometry.Analysis.Sobolev.Tensor.exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le_rs
         (I := I) (M := M) g₀ rb sb i hi1).choose = Cgn i := by
-      simp only [hCgn, dif_pos hi1]
+      simp only [hCgn, dite_eq_left hi1]
     rw [hCeq] at hGN
     have hmain := grid_prod_int_le (I := I) (M := M) g₀ P
       (R := ‖iteratedCovGrad (I := I) g₀ rb sb i P‖) (norm_nonneg _) i hi1 hΛ₀0 hsup
@@ -283,7 +286,7 @@ theorem gridIntGrad (g₀ : SmoothRiemannianMetric I M) :
           (Λ⁻¹) ^ 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
             (u.toSection x) := by
         rw [hv, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-          DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + 1) x (Λ⁻¹) _]
+          DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + 1) x (Λ⁻¹) _]
       rw [hsm]
       have hcapx : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x (u.toSection x) ≤
           Λ ^ 2 := by
@@ -305,7 +308,7 @@ theorem gridIntGrad (g₀ : SmoothRiemannianMetric I M) :
       rw [hv, DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_smul_real
         (I := I) (M := M) g₀ 0 (2 + 1) d (Λ⁻¹) u,
         SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-        DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 ((2 + 1) + d) x (Λ⁻¹) _, hu,
+        DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 ((2 + 1) + d) x (Λ⁻¹) _, hu,
         riemannianFiberNormSq_iteratedCovGrad_comp (I := I) (M := M) g₀ 0 2 1 d P x]
       field_simp
     have htop : Λ ^ 2 * ‖iteratedCovGrad (I := I) g₀ 0 (2 + 1) m v‖ ^ 2 = Rtop ^ 2 := by

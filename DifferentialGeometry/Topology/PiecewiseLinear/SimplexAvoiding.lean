@@ -124,9 +124,9 @@ theorem exists_mem_convexHull_insert_erase_of_mem_openSimplex [DecidableEq E] {�
   have hsmul_erase : ∑ v ∈ T.erase v₀, (weights T x v - s * weights T p v) • v = x - s • p := by
     rw [← hsmulT, ← Finset.add_sum_erase T _ hv₀T, hcoef₀, zero_smul, zero_add]
   set c : E → ℝ := fun u => if u = p then s else weights T x u - s * weights T p u with hc
-  have hcp : c p = s := by simp only [hc, if_true]
+  have hcp : c p = s := by simp only [hc, ite_true]
   have hcu : ∀ u ∈ T.erase v₀, c u = weights T x u - s * weights T p u := fun u hu => by
-    simp only [hc, if_neg (ne_of_mem_of_not_mem hu hpv₀)]
+    simp only [hc, ite_eq_right (ne_of_mem_of_not_mem hu hpv₀)]
   refine ⟨v₀, hv₀, mem_convexHull_iff_exists_weights.mpr ⟨c, ?_, ?_, ?_⟩⟩
   · intro u hu
     rcases Finset.mem_insert.mp hu with h | h
@@ -162,7 +162,7 @@ theorem affineIndependent_insert_of_not_subset [DecidableEq E] {σ₀ : Finset E
     · simp only [ite_smul, zero_smul]
       rw [Finset.sum_ite_mem, Finset.inter_eq_right.mpr hsT, hcp]
   have h := hw v (hσ₀T hvσ)
-  rw [if_neg hvs] at h
+  rw [ite_eq_right hvs] at h
   exact hpos.ne' h
 
 variable {A : Finset (Finset E)} {σ₀ : Finset E} (hσ₀ : σ₀ ∈ A) (hσ₀T : σ₀ ⊆ T) {p : E}

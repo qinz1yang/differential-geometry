@@ -20,8 +20,8 @@ theorem isParametrizedSolidTorusTransport_of_image_eq_self
     (hP : IsCombinatorialManifoldWithBoundary 3 P)
     {f : (Fin 3 → ℝ) × ℝ → E}
     (hsolid : IsTopologicalSolidTorus P.space)
-    (hf : IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) P.space)
-    (hends : ∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = f (x, 1))
+    (hf : IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P.space)
+    (hends : ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = f (x, 1))
     {g : E → E} (himage : g '' P.space = P.space) :
     IsParametrizedSolidTorusTransport g P.space := by
   refine ⟨P, P, f, f, hPfin, hPfin, hP, hP, rfl, himage.symm,
@@ -42,8 +42,8 @@ structure SupportedSolidTorusPLHomeomorphSystem (D : CompactCoreExhaustion E)
   support_subset_interior_torus : ∀ i, support i ⊆ interior (torus i).space
   isTopologicalSolidTorus_torus : ∀ i, IsTopologicalSolidTorus (torus i).space
   isCylindricalDiagram_parametrization : ∀ i,
-    IsCylindricalDiagram (parametrization i) (stdSimplex ℝ (Fin 3)) (torus i).space
-  parametrization_eq_ends : ∀ i x, x ∈ stdSimplex ℝ (Fin 3) →
+    IsCylindricalDiagram (parametrization i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (torus i).space
+  parametrization_eq_ends : ∀ i x, x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) →
     parametrization i (x, 0) = parametrization i (x, 1)
 
 namespace SupportedSolidTorusPLHomeomorphSystem
@@ -110,8 +110,8 @@ theorem CompactCoreExhaustion.exists_supportedSolidTorusPLHomeomorphSystem
         N.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 N ∧
         N.space ⊆ interior (D.core (i + 1)) \ D.core i ∧
         (interior N.space).Nonempty ∧ IsTopologicalSolidTorus N.space ∧
-        IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) N.space ∧
-        ∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = f (x, 1) :=
+        IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N.space ∧
+        ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = f (x, 1) :=
     exists_parametrized_solid_torus_complex_subset_open hdim (hopen i) (hstrict i)
   choose N f hNfin hNman hNshell hNint hNsolid hf hends using htorus
   choose p hp using hNint

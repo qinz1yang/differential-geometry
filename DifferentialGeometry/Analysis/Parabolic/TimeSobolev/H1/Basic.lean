@@ -348,14 +348,14 @@ theorem ae_hasDerivWithinAt_toFun (u : timeH1 X T) :
         (TimeSobolev.integrableOn u.deriv).mono_set Ioc_subset_Icc_self
       refine hcongr.congr_fun ?_ measurableSet_Ioc
       intro s hs
-      simp only [hv_def, if_pos hs]
+      simp only [hv_def, ite_eq_left hs]
     have hvloc : LocallyIntegrable v volume := by
       refine Integrable.locallyIntegrable ?_
       refine (integrableOn_iff_integrable_of_support_subset (s := Ioc (0 : ℝ) T) ?_).1 hvint
       intro s hs
       by_contra hmem
       apply hs
-      simp only [hv_def, if_neg hmem]
+      simp only [hv_def, ite_eq_right hmem]
     have hLDT := locallyIntegrable_ae_hasDerivAt_integral hvloc
     have hLDT' : ∀ᵐ t ∂(timeMeasure T), ∀ c, HasDerivAt
         (fun x => ∫ r in c..x, v r) (v t) t := hac hLDT
@@ -376,9 +376,9 @@ theorem ae_hasDerivWithinAt_toFun (u : timeH1 X T) :
       rw [Set.uIoc, min_eq_left (le_of_lt hs.1), max_eq_right (le_of_lt hs.1)] at hr
       have hrIoc : r ∈ Ioc (0 : ℝ) T :=
         ⟨hr.1, le_trans hr.2 (le_of_lt hs.2)⟩
-      simp only [hv_def, if_pos hrIoc]
+      simp only [hv_def, ite_eq_left hrIoc]
     have htIoc : t ∈ Ioc (0 : ℝ) T := ⟨htIoo.1, le_of_lt htIoo.2⟩
-    have hvt : v t = u.deriv t := by simp only [hv_def, if_pos htIoc]
+    have hvt : v t = u.deriv t := by simp only [hv_def, ite_eq_left htIoc]
     have hderiv_v : HasDerivAt (fun s => ∫ r in (0 : ℝ)..s, v r) (v t) t := ht 0
     have hderiv_u : HasDerivAt (fun s => ∫ r in (0 : ℝ)..s, u.deriv r)
         (u.deriv t) t := by

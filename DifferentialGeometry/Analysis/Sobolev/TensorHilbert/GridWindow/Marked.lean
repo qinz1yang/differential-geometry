@@ -2,6 +2,10 @@ import DifferentialGeometry.Analysis.Sobolev.MarkedTupleGrid
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.ProductBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Interpolation.GagliardoNirenbergTwoAnchor
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -346,7 +350,7 @@ theorem hasMarkedGridWindow_smul (g₀ : SmoothRiemannianMetric I M) (P : Smooth
     rw [DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_smul_real
       (I := I) (M := M) g₀ r c i t X,
       SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-      DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ r (c + i) x t _]
+      DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ r (c + i) x t _]
   rw [heq, mul_assoc]
   exact mul_le_mul_of_nonneg_left (hX i x) (sq_nonneg t)
 

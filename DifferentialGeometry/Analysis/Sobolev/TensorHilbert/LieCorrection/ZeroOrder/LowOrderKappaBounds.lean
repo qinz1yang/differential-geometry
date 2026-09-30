@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.FiberNo
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrection.TameBounds
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 

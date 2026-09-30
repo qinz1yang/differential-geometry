@@ -198,8 +198,8 @@ theorem hamiltonTestJetDU_sq_sum_le
       _ <= B + 1 / (2 * clock.elapsed) := by
         exact add_le_add (hRic i j) (by
           by_cases hij : i = j
-          · rw [if_pos hij, mul_one, abs_of_nonneg hclock]
-          · rw [if_neg hij, mul_zero, abs_zero]
+          · rw [ite_eq_left hij, mul_one, abs_of_nonneg hclock]
+          · rw [ite_eq_right hij, mul_zero, abs_zero]
             exact hclock)
   have htri := hamiltonTriangularA_sq_sum_le S W D hD hS
   have hrewrite : forall e a b,

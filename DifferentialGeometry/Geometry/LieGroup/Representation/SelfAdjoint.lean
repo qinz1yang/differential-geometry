@@ -20,7 +20,11 @@ private def orthogonalConjugationCLM (e : W ≃ₗᵢ[ℝ] W) : (W →L[ℝ] W) 
 private theorem orthogonalConjugation_mem_selfAdjoint (e : W ≃ₗᵢ[ℝ] W)
     (A : selfAdjoint.submodule ℝ (W →L[ℝ] W)) :
     orthogonalConjugationCLM e (A : W →L[ℝ] W) ∈ selfAdjoint.submodule ℝ (W →L[ℝ] W) := by
-  exact IsSelfAdjoint.map A.property e.conjStarAlgEquiv
+  have hA : IsSelfAdjoint (A : W →L[ℝ] W) := A.property
+  have hmap : IsSelfAdjoint (e.conjStarAlgEquiv (A : W →L[ℝ] W)) :=
+    hA.map e.conjStarAlgEquiv
+  change IsSelfAdjoint (orthogonalConjugationCLM e (A : W →L[ℝ] W))
+  exact hmap
 
 private def orthogonalConjugation (e : W ≃ₗᵢ[ℝ] W) :
     (selfAdjoint.submodule ℝ (W →L[ℝ] W)) →L[ℝ]

@@ -102,7 +102,7 @@ private theorem euclidean_gram_pos_of_bilinear_gram_ne_zero
       rw [sq_abs, mul_pow]
       linarith
     exact (sq_eq_sq₀ (abs_nonneg _) (mul_nonneg (norm_nonneg _) (norm_nonneg _))).mp hs
-  rcases ((norm_inner_eq_norm_tfae ℝ u v).out 0 2).mp habs with hu | ⟨c, hv⟩
+  rcases ((norm_inner_eq_norm_tfae ℝ u v).out 1 3).mp habs with hu | ⟨c, hv⟩
   · apply hB
     simp [hu]
   · apply hB

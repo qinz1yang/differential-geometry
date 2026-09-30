@@ -36,7 +36,7 @@ theorem abs_covDerivAlong_velocity_pairing_div_le_of_reference_acceleration
   have hbound := covDerivAlong_norm_le_of_connection_bound g h beta
     (fun s ↦ mfderiv 𝓘(ℝ, ℝ) I beta s (1 : ℝ)) t hbeta hΛ hA
     hmetric hconnection hvelocity hvelocity hacceleration
-  have hpair := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+  have hpair := DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
     h (beta t) (covDerivAlong h beta
       (fun s ↦ mfderiv 𝓘(ℝ, ℝ) I beta s (1 : ℝ)) t) w
   have hD : 0 ≤ D := (Real.sqrt_nonneg _).trans hacceleration

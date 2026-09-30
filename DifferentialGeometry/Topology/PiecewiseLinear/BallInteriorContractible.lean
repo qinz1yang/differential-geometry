@@ -20,7 +20,7 @@ theorem IsPLBall.contractibleSpace_interior_of_finrank {n : ℕ}
   have hP : IsPLBall (n + 1) P := ⟨f, hf⟩
   obtain ⟨K, hKfin, hKP⟩ := hP.isPolyhedron.exists_simplicialComplex
   let _ : Finite K.faces := hKfin.to_subtype
-  have hfK : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) K.space := hKP.symm ▸ hf
+  have hfK : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) K.space := hKP.symm ▸ hf
   have hK : IsPLBall (n + 1) K.space := ⟨f, hfK⟩
   have hboundary : f '' stdSimplexBoundary (n + 1) = frontier P := by
     rw [← hKP, frontier_space_eq_boundaryComplex_space_of_finrank hdim K
@@ -30,7 +30,7 @@ theorem IsPLBall.contractibleSpace_interior_of_finrank {n : ℕ}
   have himage : f '' openSimplex (stdVertices n) = interior P := by
     rw [hf.image_openSimplex_stdVertices, hboundary, hP.isPolyhedron.isClosed.frontier_eq,
       sdiff_sdiff_cancel_left interior_subset]
-  have hfull : IsEmbedding ((stdSimplex ℝ (Fin (n + 2))).domRestrict f) :=
+  have hfull : IsEmbedding ((Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))).domRestrict f) :=
     Topology.IsEmbedding.subtypeVal.comp hf.homeomorph.isEmbedding
   have hopen : IsEmbedding ((openSimplex (stdVertices n)).domRestrict f) :=
     hfull.comp (Topology.IsEmbedding.inclusion openSimplex_stdVertices_subset_stdSimplex)

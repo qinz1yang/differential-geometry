@@ -31,7 +31,7 @@ private theorem continuousOn_metricScalarAt_of_surjective_localPullMetric
   let Y := (hf x).localInverse
   have hqY : q.2 ∈ Y.source := hx ▸ (hf x).localInverse_mem_source
   have hYat : ContinuousAt (fun r : ℝ × N => Y r.2) q :=
-    (((hf x).localInverse_contMDiffOn.continuousOn).continuousAt
+    (((hf x).contMDiffOn_localInverse.continuousOn).continuousAt
       (Y.open_source.mem_nhds hqY)).comp continuousAt_snd
   have hφ : ContinuousWithinAt (fun r : ℝ × N => ((r.1 : ℝ), Y r.2))
       (D.carrier ×ˢ (univ : Set N)) q :=
@@ -151,7 +151,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 theorem isSolutionOn_quotientProductFamily (A : QuotientProductAtlas I M) [I.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] {D : RealTimeInterval} {a b : ℝ}
+    [T2Space M] {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold
@@ -176,7 +176,7 @@ theorem isSolutionOn_quotientProductFamily (A : QuotientProductAtlas I M) [I.Bou
   simpa only [quotientProductFamily] using hdescent
 
 theorem exists_ricciBackground_quotientProduct (A : QuotientProductAtlas I M) [I.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] {D : RealTimeInterval} {a b : ℝ}
+    [T2Space M] {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold

@@ -52,12 +52,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    (fChartEffectivePrev : EuclN → ℝ)
-    (h_iter : ∀ a : Fin (Module.finrank ℝ E),
-      MemWkp (d := Module.finrank ℝ E) 2 2
-        (eigenvectorChartIteratedPartial (I := I) (M := M)
-          g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
-        (chartTargetEuclid (I := I) (M := M) α)) :
+    (fChartEffectivePrev : EuclN → ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧
       eLpNorm (fun y => ∑ a : Fin (Module.finrank ℝ E),
           ∑ b : Fin (Module.finrank ℝ E),
@@ -104,19 +99,6 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le
         (fun (L : EuclN →L[ℝ] ℝ) => L (EuclideanSpace.single b 1)) :=
       (ContinuousLinearMap.apply ℝ ℝ (EuclideanSpace.single b (1 : ℝ))).contDiff
     exact h_eval.contDiffOn.comp h_fderiv (mapsTo_univ _ _)
-  have h_atom_mem : ∀ a : Fin (Module.finrank ℝ E),
-      MemLp (eigenvectorChartIteratedPartial (I := I) (M := M)
-        g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) 2 μ := by
-    intro a
-    have h0 := (h_iter a).le_of_le (Nat.zero_le 2)
-    rw [MemWkp_zero] at h0
-    have h_eq : μ = ((volume : Measure EuclN).restrict
-          (chartTargetEuclid (I := I) (M := M) α)).restrict
-          (chartPouKernel (I := I) (M := M) α) := by
-      rw [hμ_def, Measure.restrict_restrict hK_meas,
-        Set.inter_eq_self_of_subset_left hK_in]
-    rw [h_eq]
-    exact h0.restrict _
   have h_atom_le : ∀ a : Fin (Module.finrank ℝ E),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 2 2
           (eigenvectorChartIteratedPartial (I := I) (M := M)
@@ -138,11 +120,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le
             (l (Fin.last m))) y)
           (EuclideanSpace.single b 1) *
         eigenvectorChartIteratedPartial (I := I) (M := M)
-          g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)) y) A ?_ ?_
-  · intro a
-    refine memLp_finsetSum _ (fun b _ => ?_)
-    exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
-      (h_coeff a b) hK_compact hK_meas hK_in (h_atom_mem a)
+          g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)) y) A ?_
   · intro a
     refine eLpNorm_sum_le_const_mul_aggregate
       (μ := μ)
@@ -151,10 +129,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le
               (l (Fin.last m))) y)
             (EuclideanSpace.single b 1) *
           eigenvectorChartIteratedPartial (I := I) (M := M)
-            g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)) y) A ?_ ?_
-    · intro b
-      exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
-        (h_coeff a b) hK_compact hK_meas hK_in (h_atom_mem a)
+            g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)) y) A ?_
     · intro b
       obtain ⟨C₀, hC₀_nn, hC₀⟩ := eLpNorm_volume_restrict_contDiffOn_mul_le
         (I := I) (M := M) α (h_coeff a b) hK_compact hK_meas hK_in
@@ -172,12 +147,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    (fChartEffectivePrev : EuclN → ℝ)
-    (h_iter : ∀ a : Fin (Module.finrank ℝ E),
-      MemWkp (d := Module.finrank ℝ E) 2 2
-        (eigenvectorChartIteratedPartial (I := I) (M := M)
-          g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
-        (chartTargetEuclid (I := I) (M := M) α)) :
+    (fChartEffectivePrev : EuclN → ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧
       eLpNorm (fun y => ∑ a : Fin (Module.finrank ℝ E),
           ∑ b : Fin (Module.finrank ℝ E),
@@ -215,36 +185,13 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le
           g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) Ω)
       (fun k _ => zero_le) (Finset.mem_univ a)) ?_
     exact le_trans le_self_add (le_trans le_self_add le_self_add)
-  have h_chosen_mem : ∀ a b : Fin (Module.finrank ℝ E),
-      MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
-        (eigenvectorChartIteratedPartial (I := I) (M := M)
-          g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) Ω) 2 μ := by
-    intro a b
-    have h1 : MemWkp (d := Module.finrank ℝ E) 1 2
-        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
-          (eigenvectorChartIteratedPartial (I := I) (M := M)
-            g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) Ω) Ω :=
-      (h_iter a).chosenWeakPartial_mem b
-    have h0 := h1.le_of_le (Nat.zero_le 1)
-    rw [MemWkp_zero] at h0
-    have h_eq : μ = ((volume : Measure EuclN).restrict Ω).restrict
-        (chartPouKernel (I := I) (M := M) α) := by
-      rw [hμ_def, Measure.restrict_restrict hK_meas,
-        Set.inter_eq_self_of_subset_left hK_in]
-    rw [h_eq]
-    exact h0.restrict _
   refine eLpNorm_sum_le_const_mul_aggregate
     (μ := μ)
     (fun a => fun y => ∑ b : Fin (Module.finrank ℝ E),
       weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
         chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
           (eigenvectorChartIteratedPartial (I := I) (M := M)
-            g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) Ω y) A ?_ ?_
-  · intro a
-    refine memLp_finsetSum _ (fun b _ => ?_)
-    exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
-      (weightedInvGramDerivOnEuclid_contDiffOn (I := I) g α a b (l (Fin.last m)))
-      hK_compact hK_meas hK_in (h_chosen_mem a b)
+            g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) Ω y) A ?_
   · intro a
     refine eLpNorm_sum_le_const_mul_aggregate
       (μ := μ)
@@ -252,12 +199,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le
         weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
           chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
             (eigenvectorChartIteratedPartial (I := I) (M := M)
-              g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) Ω y) A ?_ ?_
-    · intro b
-      exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
-        (weightedInvGramDerivOnEuclid_contDiffOn (I := I) g α a b
-          (l (Fin.last m)))
-        hK_compact hK_meas hK_in (h_chosen_mem a b)
+              g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) Ω y) A ?_
     · intro b
       obtain ⟨C₀, hC₀_nn, hC₀⟩ := eLpNorm_volume_restrict_contDiffOn_mul_le
         (I := I) (M := M) α
@@ -584,11 +526,9 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le
   obtain ⟨CA, hCA_nn, hCA⟩ :=
     eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le
     (I := I) (M := M) g r s i α P₀ m l fChartEffectivePrev
-    (fun a => h_iter (m + 1) (Fin.cons a (Fin.init l)))
   obtain ⟨CB, hCB_nn, hCB⟩ :=
     eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le
     (I := I) (M := M) g r s i α P₀ m l fChartEffectivePrev
-    (fun a => h_iter (m + 1) (Fin.cons a (Fin.init l)))
   obtain ⟨CC, hCC_nn, hCC⟩ :=
     eigenvectorChartRHSDiffNumerator_layerC_eLpNorm_le
     (I := I) (M := M) g r s i α P₀ m l fChartEffectivePrev
@@ -614,17 +554,13 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le
     have hABC_mem : MemLp (layerA + layerB - layerC) 2 μ := hAB_mem.sub hC_mem
     have hABCD_mem : MemLp (layerA + layerB - layerC + layerD) 2 μ :=
       hABC_mem.add hD_mem
-    refine le_trans (eLpNorm_add_le hABCD_mem.aestronglyMeasurable
-      hE_mem.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_add_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_add_le hABC_mem.aestronglyMeasurable
-      hD_mem.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_add_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_sub_le hAB_mem.aestronglyMeasurable
-      hC_mem.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_sub_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    exact eLpNorm_add_le hA_mem.aestronglyMeasurable
-      hB_mem.aestronglyMeasurable (by norm_num)
+    exact eLpNorm_add_le (by norm_num)
   refine le_trans h_tri ?_
   have h_five :
       eLpNorm layerA 2 μ + eLpNorm layerB 2 μ + eLpNorm layerC 2 μ
@@ -735,15 +671,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le_eigenIndexUnifo
         ENNReal.ofReal
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
-              g r s) i‖) ?_ ?_
-    · intro a i
-      refine memLp_finsetSum _ (fun b _ => ?_)
-      have h_atom_mem := iter_memLp_volume_restrict
-        (I := I) (M := M) g r s i α P₀ (m + 1)
-        (Fin.cons a (Fin.init l)) hK_meas hK_in
-      rw [← hμ_def] at h_atom_mem
-      exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
-        (h_coeff a b) hK_compact hK_meas hK_in h_atom_mem
+              g r s) i‖) ?_
     · intro a
       refine eLpNorm_sum_le_const_mul_aggregate_uniform
         (μ := μ) (ι := Fin (Module.finrank ℝ E))
@@ -758,14 +686,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le_eigenIndexUnifo
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
-                g r s) i‖) ?_ ?_
-      · intro b i
-        have h_atom_mem := iter_memLp_volume_restrict
-          (I := I) (M := M) g r s i α P₀ (m + 1)
-          (Fin.cons a (Fin.init l)) hK_meas hK_in
-        rw [← hμ_def] at h_atom_mem
-        exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
-          (h_coeff a b) hK_compact hK_meas hK_in h_atom_mem
+                g r s) i‖) ?_
       · intro b
         obtain ⟨C₀, hC₀_nn, hC₀⟩ :=
           eLpNorm_volume_restrict_contDiffOn_mul_le_uniform
@@ -852,18 +773,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le_eigenIndexUnifo
         ENNReal.ofReal
           ‖tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
-              g r s) i‖) ?_ ?_
-    · intro a i
-      refine memLp_finsetSum _ (fun b _ => ?_)
-      have h_chosen_mem := chosenWp_memLp_volume_restrict b
-        (eigenvectorChartIteratedPartial (I := I) (M := M)
-          g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
-        (Ω := chartTargetEuclid (I := I) (M := M) α)
-        hK_meas hK_in
-      rw [← hμ_def] at h_chosen_mem
-      exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
-        (weightedInvGramDerivOnEuclid_contDiffOn (I := I) g α a b (l (Fin.last m)))
-        hK_compact hK_meas hK_in h_chosen_mem
+              g r s) i‖) ?_
     · intro a
       refine eLpNorm_sum_le_const_mul_aggregate_uniform
         (μ := μ) (ι := Fin (Module.finrank ℝ E))
@@ -878,18 +788,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le_eigenIndexUnifo
           ENNReal.ofReal
             ‖tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
-                g r s) i‖) ?_ ?_
-      · intro b i
-        have h_chosen_mem := chosenWp_memLp_volume_restrict b
-          (eigenvectorChartIteratedPartial (I := I) (M := M)
-            g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
-          (Ω := chartTargetEuclid (I := I) (M := M) α)
-          hK_meas hK_in
-        rw [← hμ_def] at h_chosen_mem
-        exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
-          (weightedInvGramDerivOnEuclid_contDiffOn (I := I) g α a b
-            (l (Fin.last m)))
-          hK_compact hK_meas hK_in h_chosen_mem
+                g r s) i‖) ?_
       · intro b
         obtain ⟨C₀, hC₀_nn, hC₀⟩ :=
           eLpNorm_volume_restrict_contDiffOn_mul_le_uniform
@@ -1388,15 +1287,13 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le_eigenIndexUniform
     have hABCD_aesm : AEStronglyMeasurable
         (layerA + layerB - layerC + layerD) μ :=
       hABC_aesm.add h_aesm_D
-    refine le_trans (eLpNorm_add_le hABCD_aesm h_aesm_E (by norm_num)) ?_
+    refine le_trans (eLpNorm_add_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_add_le hABC_aesm h_aesm_D (by norm_num)) ?_
+    refine le_trans (eLpNorm_add_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_sub_le hAB_aesm
-      hC_mem.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_sub_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    exact eLpNorm_add_le hA_mem.aestronglyMeasurable
-      hB_mem.aestronglyMeasurable (by norm_num)
+    exact eLpNorm_add_le (by norm_num)
   refine le_trans h_tri ?_
   have h_five :
       eLpNorm layerA 2 μ + eLpNorm layerB 2 μ + eLpNorm layerC 2 μ

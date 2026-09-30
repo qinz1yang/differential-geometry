@@ -87,11 +87,11 @@ points of the standard simplex on `V` whose support lies inside some face of `F`
 this carves out the geometric simplex spanned by `t`, so the realization is the finite union of
 the geometric simplexes of `F`, glued along shared barycentric-coordinate faces. -/
 def GeometricRealization (V : Type*) [Fintype V] (F : Finset (Finset V)) : Set (V → ℝ) :=
-  {x | x ∈ stdSimplex ℝ V ∧ ∃ t ∈ F, ∀ v ∉ t, x v = 0}
+  {x | ((∀ v, 0 ≤ x v) ∧ ∑ v, x v = 1) ∧ ∃ t ∈ F, ∀ v ∉ t, x v = 0}
 
 /-- The geometric simplex carried by one finite set of vertices. -/
 def GeometricFace (V : Type*) [Fintype V] (t : Finset V) : Set (V → ℝ) :=
-  {x | x ∈ stdSimplex ℝ V ∧ ∀ v ∉ t, x v = 0}
+  {x | ((∀ v, 0 ≤ x v) ∧ ∑ v, x v = 1) ∧ ∀ v ∉ t, x v = 0}
 
 namespace GeometricFace
 
@@ -129,9 +129,9 @@ theorem nonempty_iff (t : Finset V) :
       funext v
       exact hxsupp v (by simp [ht'])
     rw [hxzero] at hxstd
-    norm_num [stdSimplex] at hxstd
+    norm_num at hxstd
   · rintro ⟨v, hv⟩
-    refine ⟨Pi.single v 1, single_mem_stdSimplex ℝ v, ?_⟩
+    refine ⟨Pi.single v 1, ⟨fun w => (Pi.single_nonneg.mpr zero_le_one : (0 : V → ℝ) ≤ Pi.single v 1) w, by simp⟩, ?_⟩
     intro w hw
     by_cases hwv : w = v
     · subst w
@@ -144,11 +144,15 @@ theorem isClosed (t : Finset V) :
     IsClosed (GeometricFace V t) := by
   classical
   have hrepr : GeometricFace V t =
-      stdSimplex ℝ V ∩ ⋂ v ∈ {v : V | v ∉ t}, {x : V → ℝ | x v = 0} := by
+      {x : V → ℝ | (∀ v, 0 ≤ x v) ∧ ∑ v, x v = 1} ∩ ⋂ v ∈ {v : V | v ∉ t}, {x : V → ℝ | x v = 0} := by
     ext x
     simp [GeometricFace]
   rw [hrepr]
-  exact (isClosed_stdSimplex ℝ V).inter
+  have hclosed : IsClosed {x : V → ℝ | (∀ v, 0 ≤ x v) ∧ ∑ v, x v = 1} := by
+    simpa only [Convexity.StdSimplex.range_toFun_comp_weights, Set.ofPred_and,
+      Set.ofPred_forall] using
+      (Convexity.StdSimplex.isClosedEmbedding_toFun_comp_weights ℝ V).isClosed_range
+  exact hclosed.inter
     (isClosed_biInter fun v _ ↦ isClosed_eq (continuous_apply v) continuous_const)
 
 end GeometricFace
@@ -163,16 +167,21 @@ theorem eq_biUnion_geometricFace :
   ext x
   simp [GeometricRealization, GeometricFace]
 
-theorem subset_stdSimplex : GeometricRealization V F ⊆ stdSimplex ℝ V :=
+theorem subset_stdSimplex :
+    GeometricRealization V F ⊆ {x : V → ℝ | (∀ v, 0 ≤ x v) ∧ ∑ v, x v = 1} :=
   fun _ hx => hx.1
 
 theorem isClosed : IsClosed (GeometricRealization V F) := by
   have hrepr : GeometricRealization V F =
-      stdSimplex ℝ V ∩ ⋃ t ∈ F, {x : V → ℝ | ∀ v ∉ t, x v = 0} := by
+      {x : V → ℝ | (∀ v, 0 ≤ x v) ∧ ∑ v, x v = 1} ∩ ⋃ t ∈ F, {x : V → ℝ | ∀ v ∉ t, x v = 0} := by
     ext x
     simp [GeometricRealization, Set.mem_iUnion]
   rw [hrepr]
-  refine (isClosed_stdSimplex ℝ V).inter ?_
+  have hclosed : IsClosed {x : V → ℝ | (∀ v, 0 ≤ x v) ∧ ∑ v, x v = 1} := by
+    simpa only [Convexity.StdSimplex.range_toFun_comp_weights, Set.ofPred_and,
+      Set.ofPred_forall] using
+      (Convexity.StdSimplex.isClosedEmbedding_toFun_comp_weights ℝ V).isClosed_range
+  refine hclosed.inter ?_
   refine Set.Finite.isClosed_biUnion F.finite_toSet ?_
   intro t _
   have hInter : {x : V → ℝ | ∀ v ∉ t, x v = 0} =
@@ -182,8 +191,12 @@ theorem isClosed : IsClosed (GeometricRealization V F) := by
   rw [hInter]
   exact isClosed_biInter fun v _ => isClosed_eq (continuous_apply v) continuous_const
 
-theorem isCompact : IsCompact (GeometricRealization V F) :=
-  (isCompact_stdSimplex ℝ V).of_isClosed_subset isClosed subset_stdSimplex
+theorem isCompact : IsCompact (GeometricRealization V F) := by
+  have hcompact : IsCompact {x : V → ℝ | (∀ v, 0 ≤ x v) ∧ ∑ v, x v = 1} := by
+    simpa only [Convexity.StdSimplex.range_toFun_comp_weights, Set.ofPred_and,
+      Set.ofPred_forall] using
+      isCompact_range (Convexity.StdSimplex.isEmbedding_toFun_comp_weights ℝ V).continuous
+  exact hcompact.of_isClosed_subset isClosed subset_stdSimplex
 
 instance : CompactSpace (GeometricRealization V F) :=
   isCompact_iff_compactSpace.mp isCompact

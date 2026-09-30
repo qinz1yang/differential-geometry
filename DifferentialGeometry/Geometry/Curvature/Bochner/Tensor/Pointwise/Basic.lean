@@ -2,6 +2,16 @@ import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Weitzenbock.Integr
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.GradientSlotLeibniz
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorThirdOrder
+
+open DifferentialGeometry.TensorMetric
+  (abs_tensorInnerPointwise_le_mul
+    riemannianFiberNormSq
+    riemannianFiberNormSq_add_le
+    riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg
+    riemannianFiberNormSq_sum_le_card_mul
+    tensorInnerPointwise
+    tensorPointwiseNorm)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

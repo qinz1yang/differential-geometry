@@ -54,8 +54,8 @@ theorem exists_parametrized_solid_torus_complex_subset_open
       N.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 N ∧
       N.space ⊆ U ∧ (interior N.space).Nonempty ∧
       IsTopologicalSolidTorus N.space ∧
-      IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) N.space ∧
-      ∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = f (x, 1) := by
+      IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N.space ∧
+      ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = f (x, 1) := by
   obtain ⟨T, hT, hTcard, -⟩ :=
     exists_affineIndependent_openSimplex_superset 3 hdim
       (isCompact_singleton.isBounded : Bornology.IsBounded ({0} : Set E))
@@ -129,10 +129,10 @@ theorem exists_parametrized_solid_torus_complex_subset_open
   have hN'solid : IsTopologicalSolidTorus N'.space := by
     rw [hN'space]
     exact hNsolid.affineEquiv_image A
-  have hf' : IsCylindricalDiagram f' (stdSimplex ℝ (Fin 3)) N'.space := by
+  have hf' : IsCylindricalDiagram f' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N'.space := by
     rw [hN'space]
     exact hf.affineEquiv_comp A
-  have hends' : ∀ x ∈ stdSimplex ℝ (Fin 3), f' (x, 0) = f' (x, 1) := by
+  have hends' : ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f' (x, 0) = f' (x, 1) := by
     intro x hx
     exact congrArg A (hends x hx)
   exact ⟨N', f', hN'fin, hN'man, hN'U, hN'int, hN'solid, hf', hends'⟩

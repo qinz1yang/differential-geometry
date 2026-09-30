@@ -20,20 +20,10 @@ theorem unifIntegrable_one_of_eLpNorm_bdd {f : ι → α → ℝ} {p : ℝ}
     UnifIntegrable f 1 μ := by
   have hp0 : 0 < p := lt_trans zero_lt_one hp
   have ha : 0 < 1 - 1 / p := sub_pos.mpr ((div_lt_one hp0).2 hp)
-  intro ε hε
-  have hlim : Tendsto (fun d : ℝ => C * (ENNReal.ofReal d) ^ (1 - 1 / p))
-      (𝓝 0) (𝓝 0) := by
-    exact (ENNReal.tendsto_const_mul_rpow_nhds_zero_of_pos hC ha).comp
-      (by simpa only [ENNReal.ofReal_zero] using ENNReal.continuous_ofReal.tendsto 0)
-  have hsmall : {d : ℝ | C * (ENNReal.ofReal d) ^ (1 - 1 / p) < ENNReal.ofReal ε} ∈ 𝓝 0 :=
-    hlim.eventually (Iio_mem_nhds (ENNReal.ofReal_pos.mpr hε))
-  obtain ⟨d, hd, hball⟩ := Metric.mem_nhds_iff.1 hsmall
-  have hdsmall : C * (ENNReal.ofReal (d / 2)) ^ (1 - 1 / p) ≤ ENNReal.ofReal ε := by
-    apply (hball (show d / 2 ∈ Metric.ball (0 : ℝ) d by
-      rw [Metric.mem_ball, dist_zero_right, Real.norm_of_nonneg (half_pos hd).le]
-      exact half_lt_self hd)).le
-  refine ⟨d / 2, half_pos hd, fun i s hs hμs => ?_⟩
-  rw [eLpNorm_indicator_eq_eLpNorm_restrict hs]
+  apply tendsto_nhds_bot_mono (ENNReal.tendsto_const_mul_rpow_nhds_zero_of_pos hC ha)
+  filter_upwards with d
+  simp only [iSup_le_iff]
+  intro i s hμs
   have hpE : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p := by
     simpa only [ENNReal.ofReal_one] using ENNReal.ofReal_le_ofReal hp.le
   calc
@@ -44,9 +34,8 @@ theorem unifIntegrable_one_of_eLpNorm_bdd {f : ι → α → ℝ} {p : ℝ}
         eLpNorm_le_eLpNorm_mul_rpow_measure_univ hpE (hf i).restrict
     _ ≤ C * μ s ^ (1 - 1 / p) :=
       mul_le_mul_left ((eLpNorm_restrict_le _ _ _ _).trans (hbound i)) _
-    _ ≤ C * (ENNReal.ofReal (d / 2)) ^ (1 - 1 / p) :=
+    _ ≤ C * d ^ (1 - 1 / p) :=
       mul_le_mul_right (ENNReal.rpow_le_rpow hμs ha.le) C
-    _ ≤ ENNReal.ofReal ε := hdsmall
 
 
 theorem tendsto_integral_sq_mul_log_sq_of_eLpNorm_bdd [IsFiniteMeasure μ]
@@ -72,8 +61,6 @@ theorem tendsto_integral_sq_mul_log_sq_of_eLpNorm_bdd [IsFiniteMeasure μ]
   let F (n : ℕ) (x : α) : ℝ := f n x ^ 2 * Real.log (f n x ^ 2)
   have hF (n : ℕ) : AEStronglyMeasurable (F n) μ :=
     Real.continuous_mul_log.comp_aestronglyMeasurable ((hf n).pow 2)
-  have hpow (n : ℕ) : AEStronglyMeasurable (fun x => ‖f n x‖ ^ a) μ :=
-    (Real.continuous_rpow_const ha0.le).comp_aestronglyMeasurable (hf n).norm
   let B : ℝ≥0∞ := eLpNorm (fun _ : α => (1 : ℝ)) (ENNReal.ofReal p) μ + ENNReal.ofReal D * C ^ a
   have hB : B ≠ ⊤ := by
     apply ENNReal.add_ne_top.mpr
@@ -82,7 +69,7 @@ theorem tendsto_integral_sq_mul_log_sq_of_eLpNorm_bdd [IsFiniteMeasure μ]
   have hFbound (n : ℕ) : eLpNorm (F n) (ENNReal.ofReal p) μ ≤ B := by
     have hdom : eLpNorm (F n) (ENNReal.ofReal p) μ ≤
         eLpNorm (fun x => 1 + D * ‖f n x‖ ^ a) (ENNReal.ofReal p) μ := by
-      apply eLpNorm_mono_ae
+      apply eLpNorm_mono_ae (hF n)
       filter_upwards with x
       rw [Real.norm_eq_abs, Real.norm_of_nonneg (by positivity : 0 ≤ 1 + D * ‖f n x‖ ^ a)]
       simpa only [F, D, div_eq_mul_inv, mul_comm] using abs_sq_mul_log_sq_le ha2 (f n x)
@@ -93,13 +80,13 @@ theorem tendsto_integral_sq_mul_log_sq_of_eLpNorm_bdd [IsFiniteMeasure μ]
           change eLpNorm (D • fun x => ‖f n x‖ ^ a) (ENNReal.ofReal p) μ ≤ _
           exact eLpNorm_const_smul_le
         _ = ENNReal.ofReal D * eLpNorm (f n) (ENNReal.ofReal q) μ ^ a := by
-          rw [Real.enorm_eq_ofReal hD.le, eLpNorm_norm_rpow _ ha0, hpa]
+          rw [Real.enorm_eq_ofReal hD.le, eLpNorm_norm_rpow _ (hf n) ha0, hpa]
         _ ≤ ENNReal.ofReal D * C ^ a := by gcongr; exact hbound n
     apply hdom.trans
     calc
       _ ≤ eLpNorm (fun _ : α => (1 : ℝ)) (ENNReal.ofReal p) μ +
           eLpNorm (fun x => D * ‖f n x‖ ^ a) (ENNReal.ofReal p) μ :=
-        eLpNorm_add_le aestronglyMeasurable_const ((hpow n).const_mul D)
+        eLpNorm_add_le
           (by simpa only [ENNReal.ofReal_one] using ENNReal.ofReal_le_ofReal hp.le)
       _ ≤ B := add_le_add_right hmul _
   have hui : UnifIntegrable F 1 μ := unifIntegrable_one_of_eLpNorm_bdd hp hF hB hFbound
@@ -111,11 +98,11 @@ theorem tendsto_integral_sq_mul_log_sq_of_eLpNorm_bdd [IsFiniteMeasure μ]
     exact Real.continuous_mul_log.continuousAt.tendsto.comp (hx.pow 2)
   have hL1 := tendsto_Lp_finite_of_tendsto_ae le_rfl (by norm_num)
     hF (memLp_one_iff_integrable.mpr huF) hui hFlim
-  apply tendsto_integral_of_L1' _ huF.aestronglyMeasurable _ hL1
+  apply tendsto_integral_of_L1' _ _ hL1
   apply Eventually.of_forall
   intro n
   exact (show MemLp (F n) (ENNReal.ofReal p) μ from
-    ⟨hF n, (hFbound n).trans_lt hB.lt_top⟩).integrable
+    (hFbound n).trans_lt hB.lt_top).integrable
       (by simpa only [ENNReal.ofReal_one] using ENNReal.ofReal_le_ofReal hp.le)
 
 end DifferentialGeometry.Analysis.Integration

@@ -1,3 +1,4 @@
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Analysis.Calculus.ContDiff.Operations

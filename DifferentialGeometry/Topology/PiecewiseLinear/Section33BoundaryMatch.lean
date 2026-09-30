@@ -37,7 +37,7 @@ theorem IsHandleDecompositionOfTube.exists_piece_map
       SimplicialComplex.faceEulerChar (AK v).toPreAbstractSimplicialComplex =
         2 - ((edgesAt K v).ncard : ℤ))
     {R : Finset E3 → (Fin 3 → ℝ) → E3}
-    (hR : ∀ e ∈ K.faces, e.card = 2 → IsPLHomeomorphOn (R e) (stdSimplex ℝ (Fin 3)) (D e) ∧
+    (hR : ∀ e ∈ K.faces, e.card = 2 → IsPLHomeomorphOn (R e) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D e) ∧
       Dbd e = R e '' stdSimplexBoundary 2)
     {w : E3} (hw : w ∈ K.vertices) {e₀ : Finset E3} (he₀ : e₀ ∈ edgesAt K w) {φ : E3 → E3}
     (hφ : IsPLHomeomorphOn φ (Dbd e₀) (Ec e₀ ∩ frontier XK.space)) :
@@ -60,7 +60,7 @@ theorem IsHandleDecompositionOfTube.exists_piece_map
   have _ : Finite ι := hfin.to_subtype
   let _ : Fintype ι := Fintype.ofFinite ι
   have hS : IsPLSphere 2 (frontier (C w)) := (ht.dualBall w hw).isPLSphere_frontier (n := 2)
-  have hq : ∀ e : ι, IsPLHomeomorphOn (R e.1) (stdSimplex ℝ (Fin 3)) (D e.1) := fun e =>
+  have hq : ∀ e : ι, IsPLHomeomorphOn (R e.1) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D e.1) := fun e =>
     (hR e.1 e.2.1 e.2.2.1).1
   have hc : ∀ e : ι, R e.1 '' stdSimplexBoundary 2 = Dbd e.1 := fun e =>
     (hR e.1 e.2.1 e.2.2.1).2.symm
@@ -211,7 +211,7 @@ theorem IsHandleDecompositionOfTube.exists_boundaryMatch_step
       SimplicialComplex.faceEulerChar (AK v).toPreAbstractSimplicialComplex =
         2 - ((edgesAt K v).ncard : ℤ))
     {R : Finset E3 → (Fin 3 → ℝ) → E3}
-    (hR : ∀ e ∈ K.faces, e.card = 2 → IsPLHomeomorphOn (R e) (stdSimplex ℝ (Fin 3)) (D e) ∧
+    (hR : ∀ e ∈ K.faces, e.card = 2 → IsPLHomeomorphOn (R e) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D e) ∧
       Dbd e = R e '' stdSimplexBoundary 2)
     {W : Finset K.vertices} {f : E3 → E3}
     (hf : ∀ v ∈ W,
@@ -317,11 +317,11 @@ theorem IsHandleDecompositionOfTube.exists_boundaryMatch_step
         (G₀ (r g (Function.invFunOn G₀ (Dbd g) z))))
       rw [(hG₀g g hg).bijOn.invOn_invFunOn.1 ((hr g hg).bijOn.mapsTo hz')]
     have hψ1 : ∀ g, (∃ v ∈ W, (v : E3) ∈ g) → pos g → ψ g = f := fun g h1 h2 => by
-      simp only [ψ, if_pos h1, if_pos h2]
+      simp only [ψ, ite_eq_left h1, ite_eq_left h2]
     have hψ2 : ∀ g, (∃ v ∈ W, (v : E3) ∈ g) → ¬ pos g → ψ g = f ∘ r g := fun g h1 h2 => by
-      simp only [ψ, if_pos h1, if_neg h2]
+      simp only [ψ, ite_eq_left h1, ite_eq_right h2]
     have hψ3 : ∀ g, ¬ (∃ v ∈ W, (v : E3) ∈ g) → ψ g = G₀ := fun g h1 => by
-      simp only [ψ, if_neg h1]
+      simp only [ψ, ite_eq_right h1]
     have hψ : ∀ g ∈ edgesAt K w, g ≠ {(x₀ : E3), (w : E3)} →
         IsPLHomeomorphOn (ψ g) (Dbd g) (Ec g ∩ frontier XK.space) := by
       intro g hg _
@@ -364,9 +364,9 @@ theorem IsHandleDecompositionOfTube.exists_boundaryMatch_step
       hGφ (hr e he) (hnr e he) (ha e he) (hac e he) (hra e he) hGe
   let ψ : Finset E3 → E3 → E3 := fun g => if (∃ v ∈ W, (v : E3) ∈ g) then f else G₀
   have hψ1 : ∀ g, (∃ v ∈ W, (v : E3) ∈ g) → ψ g = f := fun g h1 => by
-    simp only [ψ, if_pos h1]
+    simp only [ψ, ite_eq_left h1]
   have hψ3 : ∀ g, ¬ (∃ v ∈ W, (v : E3) ∈ g) → ψ g = G₀ := fun g h1 => by
-    simp only [ψ, if_neg h1]
+    simp only [ψ, ite_eq_right h1]
   have hψ : ∀ g ∈ edgesAt K w, g ≠ {(x₀ : E3), (w : E3)} →
       IsPLHomeomorphOn (ψ g) (Dbd g) (Ec g ∩ frontier XK.space) := by
     intro g hg _
@@ -450,7 +450,7 @@ theorem exists_section33BoundaryMatch
   classical
   have ht := hd.tube
   have hRex : ∀ e : Finset E3, ∃ R : (Fin 3 → ℝ) → E3, e ∈ K.faces → e.card = 2 →
-      IsPLHomeomorphOn R (stdSimplex ℝ (Fin 3)) (D e) ∧ Dbd e = R '' stdSimplexBoundary 2 := by
+      IsPLHomeomorphOn R (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D e) ∧ Dbd e = R '' stdSimplexBoundary 2 := by
     intro e
     by_cases he : e ∈ K.faces ∧ e.card = 2
     · obtain ⟨r, hr, hrb⟩ := ht.splitCell e he.1 he.2

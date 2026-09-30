@@ -150,7 +150,7 @@ theorem trace_sq_eq_iff
           simp
         · simp [hki, sq_nonneg]
       have hpoint := (Finset.sum_eq_sum_iff_of_le hle).mp (by
-        simpa only [Finset.sum_ite_eq', Finset.mem_univ, if_true] using hrow_eq i) j
+        simpa only [Finset.sum_ite_eq', Finset.mem_univ, ite_true] using hrow_eq i) j
         (Finset.mem_univ j)
       have hsquare : (A i j) ^ 2 = 0 := by simpa [hij.symm] using hpoint.symm
       exact sq_eq_zero_iff.mp hsquare

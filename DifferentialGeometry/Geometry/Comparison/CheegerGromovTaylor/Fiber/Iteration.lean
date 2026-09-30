@@ -199,7 +199,7 @@ theorem loopTransportExt_eq
         c hc hcLen z =
       loopTransport (I := I) g hEnorm p hL ha hfit hloc
         c hc hcLen z hz := by
-  simp only [loopTransportExt, dif_pos hz]
+  simp only [loopTransportExt, dite_eq_left hz]
 
 theorem loopTransport_exp
     (g : SmoothRiemannianMetric I M)
@@ -248,7 +248,7 @@ theorem loopTransportExt_exp
       c hc hcLen z hz]
     exact loopTransport_exp (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen z hz
-  · simp only [loopTransportExt, dif_neg hz]
+  · simp only [loopTransportExt, dite_eq_right hz]
 
 theorem loopIter_exp
     (g : SmoothRiemannianMetric I M)
@@ -1306,12 +1306,12 @@ theorem intrinsicCycle_not_fin
       else q
   have hTpts : ∀ i : Fin n, T (points i) = points (e i) := by
     intro i
-    simp only [T, dif_pos (hptsCore i)]
+    simp only [T, dite_eq_left (hptsCore i)]
     exact hperm i
   have hTdist :
       ∀ i : Fin n, dist (T z) (T (points i)) ≤ dist z (points i) := by
     intro i
-    simp only [T, dif_pos hz, dif_pos (hptsCore i)]
+    simp only [T, dite_eq_left hz, dite_eq_left (hptsCore i)]
     exact
       loopTransport_nonexp (I := I) g hEnorm p hR h4aR
         hL ha hfit hloc hK hsmall hRm c hc hcLen hz (hptsCore i)
@@ -1322,7 +1322,7 @@ theorem intrinsicCycle_not_fin
   have hfix :
       loopTransport (I := I) g hEnorm p hL ha hfit hloc
         c hc hcLen z hz = z := by
-    simpa only [T, dif_pos hz] using hfixT
+    simpa only [T, dite_eq_left hz] using hfixT
   exact
     (loopTransport_ne (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen A hA z hz) hfix
@@ -1411,12 +1411,12 @@ theorem intrinsicOrbit_not_finite
   have hTpts :
       ∀ i : ι, T (points i) = points (e i) := by
     intro i
-    simp only [T, dif_pos (hptsCore i)]
+    simp only [T, dite_eq_left (hptsCore i)]
     exact hperm i (hptsCore i)
   have hTdist :
       ∀ i : ι, dist (T z) (T (points i)) ≤ dist z (points i) := by
     intro i
-    simp only [T, dif_pos hz, dif_pos (hptsCore i)]
+    simp only [T, dite_eq_left hz, dite_eq_left (hptsCore i)]
     exact
       loopTransport_nonexp (I := I) g hEnorm p hR h4aR
         hL ha hfit hloc hK hsmall hRm c hc hcLen hz (hptsCore i)
@@ -1427,7 +1427,7 @@ theorem intrinsicOrbit_not_finite
   have hfix :
       loopTransport (I := I) g hEnorm p hL ha hfit hloc
         c hc hcLen z hz = z := by
-    simpa only [T, dif_pos hz] using hfixT
+    simpa only [T, dite_eq_left hz] using hfixT
   exact
     (loopTransport_ne (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen A hA z hz) hfix
@@ -2017,7 +2017,7 @@ theorem intrinsicFiber_encard_ge_of_nonzero_frameLift
     (N + 1 : ENat) = ENat.card (Fin (N + 1)) := by
       rw [ENat.card_eq_coe_fintype_card, Fintype.card_fin]
       norm_num
-    _ ≤ (Set.range pointsE).encard := hinjE.encard_range
+    _ ≤ (Set.range pointsE).encard := le_of_eq hinjE.encard_range.symm
     _ ≤ (intrinsicFiber (I := I) g hEnorm p p a).encard :=
       Set.encard_le_encard hrange
 
@@ -2117,7 +2117,7 @@ theorem intrinsicFiber_encard_ge
     (N + 1 : ENat) = ENat.card (Fin (N + 1)) := by
       rw [ENat.card_eq_coe_fintype_card, Fintype.card_fin]
       norm_num
-    _ ≤ (Set.range pointsE).encard := hinjE.encard_range
+    _ ≤ (Set.range pointsE).encard := le_of_eq hinjE.encard_range.symm
     _ ≤ (intrinsicFiber (I := I) g hEnorm p p r).encard :=
       Set.encard_le_encard hrange
 

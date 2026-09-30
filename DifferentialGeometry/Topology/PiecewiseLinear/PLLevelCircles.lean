@@ -313,8 +313,8 @@ theorem exists_arc_of_two_rays {p vp vm : E} (ℓ : E →ᵃ[ℝ] ℝ) (hℓp : 
     rintro rfl
     simp at hvm
   let γ : ℝ → E := fun t => if t ≤ 0 then p + (-t * δ) • vm else p + (t * δ) • vp
-  have hγneg : ∀ t, t ≤ 0 → γ t = p + (-t * δ) • vm := fun t ht => if_pos ht
-  have hγpos : ∀ t, 0 < t → γ t = p + (t * δ) • vp := fun t ht => if_neg (not_le.mpr ht)
+  have hγneg : ∀ t, t ≤ 0 → γ t = p + (-t * δ) • vm := fun t ht => ite_eq_left ht
+  have hγpos : ∀ t, 0 < t → γ t = p + (t * δ) • vp := fun t ht => ite_eq_right (not_le.mpr ht)
   have hγ0 : γ 0 = p := by rw [hγneg 0 le_rfl, neg_zero, zero_mul, zero_smul, add_zero]
   have hpl : IsPiecewiseAffineOn γ (Icc (-1) 1) := by
     have hneg_pl : IsPiecewiseAffineOn γ (Icc (-1) 0) := by

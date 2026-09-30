@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Solution
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Spacetime
-import DifferentialGeometry.Bundle.SmoothSubbundle.KernelAPI
+import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
 
 set_option autoImplicit false
 

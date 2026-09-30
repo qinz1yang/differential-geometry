@@ -91,7 +91,7 @@ theorem exists_section34_adjacent_band_family_interior
   let q (r : ℕ) : Fin (cnt e - 1) :=
     if hr : r < cnt e - 1 then ⟨r, hr⟩ else ⟨0, by omega⟩
   have hq (r : ℕ) (hr : r + 1 < cnt e) : (q r).val = r := by
-    simp only [q, dif_pos (show r < cnt e - 1 by omega)]
+    simp only [q, dite_eq_left (show r < cnt e - 1 by omega)]
   let P' := fun r => P (q r)
   let u' := fun r => u (q r)
   let g' := fun r => g (q r)

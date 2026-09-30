@@ -19,6 +19,9 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomp
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.RicciContractionKernel
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.KoszulResidualSmoothness
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.ResidualCoefficientUniformBounds
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -71,7 +74,7 @@ private lemma palatiniWindowOneThree_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j
       Finset.Nat.antidiagonalTuple_one 1]
     rw [Finset.filter_empty, Finset.sum_empty]
     rw [Finset.filter_singleton]
-    rw [if_pos (by decide : ∀ m : Fin 1, (![1] : Fin 1 → ℕ) m ≤ 1)]
+    rw [ite_eq_left (by decide : ∀ m : Fin 1, (![1] : Fin 1 → ℕ) m ≤ 1)]
     rw [Finset.sum_singleton]
     rw [Fin.prod_univ_one]
     norm_num
@@ -84,7 +87,7 @@ private lemma palatiniWindowOneThree_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j
       Finset.Nat.antidiagonalTuple_one 2]
     rw [Finset.filter_empty, Finset.sum_empty]
     rw [Finset.filter_singleton]
-    rw [if_neg (by decide : ¬ ∀ m : Fin 1, (![2] : Fin 1 → ℕ) m ≤ 1)]
+    rw [ite_eq_right (by decide : ¬ ∀ m : Fin 1, (![2] : Fin 1 → ℕ) m ≤ 1)]
     rw [Finset.sum_empty]
     have h22 : (Finset.Nat.antidiagonalTuple 2 2).filter
         (fun e : Fin 2 → ℕ => ∀ m, e m ≤ 1) = {![1, 1]} := by
@@ -160,7 +163,7 @@ theorem exists_ricciOrderZeroAACommCoeffField_metricPerturbationPath_fiberNormSq
         s • ((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x) from by
       rw [SmoothCcTensor.toSection_smul]
       rfl]
-    rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + 1) x]
+    rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + 1) x]
     have hT1 := hcap1 T hR hball x
     nlinarith only [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + 1) x
       ((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x), hT1, hss, hs2, sq_nonneg s]
@@ -244,7 +247,7 @@ theorem exists_ricciOrderZeroAACommCoeffField_metricPerturbationPath_l2JetWindow
       rw [Combinatorics.boundedFactorGrid, Combinatorics.boundedFactorGrid]
       refine Finset.sum_le_sum fun n _ => ?_
       refine Finset.sum_le_sum fun e _ => ?_
-      refine Finset.prod_le_prod
+      refine Finset.prod_le_prod₀
         (fun m _ => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + e m) x _)
         (fun m _ => ?_)
       rw [hcP, iteratedCovGrad_smul_real]
@@ -252,7 +255,7 @@ theorem exists_ricciOrderZeroAACommCoeffField_metricPerturbationPath_l2JetWindow
           s • ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) from by
         rw [SmoothCcTensor.toSection_smul]
         rfl]
-      rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + e m) x]
+      rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + e m) x]
       nlinarith only [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + e m) x
         ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x), hss, hs2]
     obtain ⟨hWint, hWbound⟩ := hKflat T hball i
@@ -287,9 +290,9 @@ private lemma palatiniBoundedFactorGridWindow_mono_of_le (b b' : ℕ → ℝ) (h
   rw [Combinatorics.boundedFactorGrid, Combinatorics.boundedFactorGrid]
   refine Finset.sum_le_sum fun n _ => ?_
   refine Finset.sum_le_sum fun e _ => ?_
-  exact Finset.prod_le_prod (fun m _ => hb (e m)) (fun m _ => hbb (e m))
+  exact Finset.prod_le_prod₀ (fun m _ => hb (e m)) (fun m _ => hbb (e m))
 
-theorem exists_ricciOrderZeroBackgroundRCommCoeffField_metricPerturbationPath_backgroundDifference_l2JetWindow
+theorem ricci_background_curvature_difference_l2_jet_bound_on_metric_path
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -355,7 +358,7 @@ theorem exists_ricciOrderZeroBackgroundRCommCoeffField_metricPerturbationPath_ba
           s • ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x) from by
         rw [SmoothCcTensor.toSection_smul]
         rfl]
-      rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l) x]
+      rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l) x]
       have hs2 : s ^ 2 ≤ 1 := by nlinarith only [hs0, hs1]
       nlinarith only [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x
         ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x), hs2]
@@ -1114,7 +1117,7 @@ theorem exists_ricciCovariantTermSharpGradKoszulResidualField_metricPerturbation
           s • ((iteratedCovGrad (I := I) g₀ 0 2 l' T).toSection x) from by
         rw [SmoothCcTensor.toSection_smul]
         rfl]
-      rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l') x]
+      rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l') x]
       nlinarith only [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l') x
         ((iteratedCovGrad (I := I) g₀ 0 2 l' T).toSection x), hs2, hss]
     obtain ⟨hWint, hWbound⟩ := hKflat T hball i
@@ -1709,7 +1712,7 @@ theorem exists_ricciContractionRemainderField_metricPerturbationPath_l2JetWindow
           s • ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x) from by
         rw [SmoothCcTensor.toSection_smul]
         rfl]
-      rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l) x]
+      rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l) x]
       have hs2 : s ^ 2 ≤ 1 := by nlinarith only [hs0, hs1]
       nlinarith only [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x
         ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x), hs2]

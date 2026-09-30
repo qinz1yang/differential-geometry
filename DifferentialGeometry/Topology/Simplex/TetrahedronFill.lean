@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.TetrahedronJoinQuotient
 import DifferentialGeometry.Topology.Simplex.TriangleCubeSphere
 import DifferentialGeometry.Topology.Homotopy.CubicalBoundaryFilling
@@ -5,6 +6,8 @@ import DifferentialGeometry.Topology.Simplex.TetrahedronHomotopyRelation
 
 noncomputable section
 open scoped unitInterval
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Topology
 variable {X : Type*} [TopologicalSpace X] {x : X}
 
@@ -16,11 +19,11 @@ private theorem other_eq (j : Other) : j = ⟨1, by decide⟩ := by
   rcases j with ⟨j, hj⟩
   fin_cases j <;> simp_all
 
-private def joinFaceLoop (g : C(stdSimplex ℝ (Fin 3), X))
+private def joinFaceLoop (g : C(coordinateSet ℝ (Fin 3), X))
     (hg : ∀ p ∈ Simplex.boundary (Fin 3), g p = x) : GenLoop (Fin 2) X x :=
   GenLoop.congr x (Equiv.swap (0 : Fin 2) 1) (Simplex.triangleGenLoop g x hg)
 
-private def joinReverseFaceLoop (g : C(stdSimplex ℝ (Fin 3), X))
+private def joinReverseFaceLoop (g : C(coordinateSet ℝ (Fin 3), X))
     (hg : ∀ p ∈ Simplex.boundary (Fin 3), g p = x) : GenLoop (Fin 2) X x :=
   ⟨⟨fun v => g (Simplex.triangleJoinReverse (v 1, v 0)), by fun_prop⟩, by
     rintro v ⟨i, hi⟩
@@ -43,7 +46,7 @@ private def joinReverseFaceLoop (g : C(stdSimplex ℝ (Fin 3), X))
         change (1 - (v 1 : ℝ)) * (1 - (v 0 : ℝ)) = 0
         simp [h]⟩
 
-private theorem joinReverseFaceLoop_homotopic (g : C(stdSimplex ℝ (Fin 3), X))
+private theorem joinReverseFaceLoop_homotopic (g : C(coordinateSet ℝ (Fin 3), X))
     (hg : ∀ p ∈ Simplex.boundary (Fin 3), g p = x) :
     GenLoop.Homotopic (joinReverseFaceLoop g hg) (Simplex.triangleGenLoop g x hg) := by
   refine ⟨{
@@ -67,7 +70,7 @@ private theorem joinReverseFaceLoop_homotopic (g : C(stdSimplex ℝ (Fin 3), X))
         · exact Or.inr (Or.inl h)
     exact (Simplex.triangleJoinReverseHomotopyRel g hg).eq_fst t hb
 
-private theorem joinFaceLoop_apply (g : C(stdSimplex ℝ (Fin 3), X))
+private theorem joinFaceLoop_apply (g : C(coordinateSet ℝ (Fin 3), X))
     (hg : ∀ p ∈ Simplex.boundary (Fin 3), g p = x) (t u : unitInterval) :
     GenLoop.toLoop 0 (joinFaceLoop g hg) u (fun _ : Other => t) =
       g (Simplex.triangleJoin (t, u)) := by
@@ -76,7 +79,7 @@ private theorem joinFaceLoop_apply (g : C(stdSimplex ℝ (Fin 3), X))
       (Cube.insertAt (0 : Fin 2) (u, fun _ : Other => t)) ((Equiv.swap (0 : Fin 2) 1) 1))) = _
   simp
 
-private theorem joinReverseFaceLoop_apply (g : C(stdSimplex ℝ (Fin 3), X))
+private theorem joinReverseFaceLoop_apply (g : C(coordinateSet ℝ (Fin 3), X))
     (hg : ∀ p ∈ Simplex.boundary (Fin 3), g p = x) (t u : unitInterval) :
     GenLoop.toLoop 0 (joinReverseFaceLoop g hg) u (fun _ : Other => t) =
       g (Simplex.triangleJoinReverse (t, u)) := by
@@ -125,14 +128,14 @@ private theorem loopFamilyCube_one (F : C(unitInterval × unitInterval, GenLoop 
   GenLoop.boundary _ _ ⟨⟨1, by decide⟩, Or.inr rfl⟩
 
 theorem exists_tetrahedron_extension_of_triangleGenLoop_relation
-    (g : Fin 4 → C(stdSimplex ℝ (Fin 3), X))
+    (g : Fin 4 → C(coordinateSet ℝ (Fin 3), X))
     (hg : ∀ i, ∀ p ∈ Simplex.boundary (Fin 3), g i p = x)
     (h : let q : Fin 4 → HomotopyGroup (Fin 2) X x := fun i =>
       ⟦Simplex.triangleGenLoop (g i) x (hg i)⟧
       q 0 * q 2 = q 1 * q 3) :
-    ∃ F : C(stdSimplex ℝ (Fin 4), X),
-      ∀ (i : Fin 4) (p : stdSimplex ℝ (Fin 3)),
-        F (stdSimplex.map i.succAbove p) = g i p := by
+    ∃ F : C(coordinateSet ℝ (Fin 4), X),
+      ∀ (i : Fin 4) (p : coordinateSet ℝ (Fin 3)),
+        F (coordinateMap i.succAbove p) = g i p := by
   let q : Fin 4 → HomotopyGroup (Fin 2) X x := fun i =>
     ⟦Simplex.triangleGenLoop (g i) x (hg i)⟧
   change q 0 * q 2 = q 1 * q 3 at h
@@ -179,24 +182,24 @@ theorem exists_tetrahedron_extension_of_triangleGenLoop_relation
   intro i p
   fin_cases i
   · obtain ⟨⟨s,u⟩, rfl⟩ := Simplex.triangleJoin_surjective p
-    change K (stdSimplex.map (0 : Fin 4).succAbove (Simplex.triangleJoin (s,u))) = g 0 _
+    change K (coordinateMap (0 : Fin 4).succAbove (Simplex.triangleJoin (s,u))) = g 0 _
     rw [← Simplex.tetrahedronJoin_middle_one, hk, h0]
   · obtain ⟨⟨s,u⟩, rfl⟩ := Simplex.triangleJoin_surjective p
-    change K (stdSimplex.map (1 : Fin 4).succAbove (Simplex.triangleJoin (s,u))) = g 1 _
+    change K (coordinateMap (1 : Fin 4).succAbove (Simplex.triangleJoin (s,u))) = g 1 _
     rw [← Simplex.tetrahedronJoin_middle_zero, hk, h1]
   · obtain ⟨⟨s,t⟩, rfl⟩ := triangleJoinReverse_surjective p
-    change K (stdSimplex.map (2 : Fin 4).succAbove (Simplex.triangleJoinReverse (s,t))) = g 2 _
+    change K (coordinateMap (2 : Fin 4).succAbove (Simplex.triangleJoinReverse (s,t))) = g 2 _
     rw [← Simplex.tetrahedronJoin_last_one, hk, h2]
   · obtain ⟨⟨s,t⟩, rfl⟩ := triangleJoinReverse_surjective p
-    change K (stdSimplex.map (3 : Fin 4).succAbove (Simplex.triangleJoinReverse (s,t))) = g 3 _
+    change K (coordinateMap (3 : Fin 4).succAbove (Simplex.triangleJoinReverse (s,t))) = g 3 _
     rw [← Simplex.tetrahedronJoin_last_zero, hk, h3]
 
 theorem exists_tetrahedron_extension_iff_triangleGenLoop_relation
-    (g : Fin 4 → C(stdSimplex ℝ (Fin 3), X))
+    (g : Fin 4 → C(coordinateSet ℝ (Fin 3), X))
     (hg : ∀ i, ∀ p ∈ Simplex.boundary (Fin 3), g i p = x) :
-    (∃ F : C(stdSimplex ℝ (Fin 4), X),
-      ∀ (i : Fin 4) (p : stdSimplex ℝ (Fin 3)),
-        F (stdSimplex.map i.succAbove p) = g i p) ↔
+    (∃ F : C(coordinateSet ℝ (Fin 4), X),
+      ∀ (i : Fin 4) (p : coordinateSet ℝ (Fin 3)),
+        F (coordinateMap i.succAbove p) = g i p) ↔
       (let q : Fin 4 → HomotopyGroup (Fin 2) X x := fun i =>
         ⟦Simplex.triangleGenLoop (g i) x (hg i)⟧;
         q 0 * q 2 = q 1 * q 3) := by
@@ -205,12 +208,12 @@ theorem exists_tetrahedron_extension_iff_triangleGenLoop_relation
     have hskel : ∀ p : Simplex.tetrahedronOneSkeleton, F p.val = x := by
       intro p
       obtain ⟨i, q, hq⟩ := Simplex.exists_faceBoundaryIntoTetrahedronOneSkeleton_eq p
-      have hmap : stdSimplex.map i.succAbove q.val = p.val := congrArg Subtype.val hq
+      have hmap : coordinateMap i.succAbove q.val = p.val := congrArg Subtype.val hq
       rw [← hmap, hF]
       exact hg i q.val q.property
     have hrel := triangleGenLoop_tetrahedron_face_relation F hskel
     have hgi (i : Fin 4) :
-        g i = F.comp ⟨stdSimplex.map i.succAbove, stdSimplex.continuous_map i.succAbove⟩ := by
+        g i = F.comp ⟨coordinateMap i.succAbove, continuous_coordinateMap i.succAbove⟩ := by
       ext p
       exact (hF i p).symm
     simpa only [hgi] using hrel

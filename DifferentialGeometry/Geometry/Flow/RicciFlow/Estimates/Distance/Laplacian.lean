@@ -182,7 +182,7 @@ private theorem calabi_support_regularity
     apply LinearMap.linearIndependent_of_isOrthoᵢ (B := b)
     · intro i j hij
       change g.inner tail.splitPoint (w i) (w j) = 0
-      rw [hw i j, if_neg hij]
+      rw [hw i j, ite_eq_right hij]
     · intro i
       change g.inner tail.splitPoint (w i) (w i) ≠ 0
       simp [hw]

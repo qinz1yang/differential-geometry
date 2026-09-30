@@ -127,20 +127,20 @@ theorem exists_isometry_of_approximate_opposite_rays [ProperSpace X]
   · intro s t
     by_cases hs : 0 ≤ s
     · by_cases ht : 0 ≤ t
-      · simpa only [f, if_pos hs, if_pos ht] using halpha s t hs ht
+      · simpa only [f, ite_eq_left hs, ite_eq_left ht] using halpha s t hs ht
       · have hnt : 0 ≤ -t := by linarith
         have hst : 0 ≤ s - t := by linarith
         have hval : |s - t| = s + -t := by
           rw [abs_of_nonneg hst, sub_eq_add_neg]
-        simpa only [f, if_pos hs, if_neg ht, hval] using hcross s (-t) hs hnt
+        simpa only [f, ite_eq_left hs, ite_eq_right ht, hval] using hcross s (-t) hs hnt
     · have hns : 0 ≤ -s := by linarith
       by_cases ht : 0 ≤ t
       · have hst : s - t ≤ 0 := by linarith
         have hval : |s - t| = t + -s := by
           rw [abs_of_nonpos hst, neg_sub, sub_eq_add_neg]
-        simpa only [f, if_neg hs, if_pos ht, dist_comm, hval] using hcross t (-s) ht hns
+        simpa only [f, ite_eq_right hs, ite_eq_left ht, dist_comm, hval] using hcross t (-s) ht hns
       · have hnt : 0 ≤ -t := by linarith
-        simpa only [f, if_neg hs, if_neg ht, neg_sub_neg, abs_sub_comm] using
+        simpa only [f, ite_eq_right hs, ite_eq_right ht, neg_sub_neg, abs_sub_comm] using
           hbeta (-s) (-t) hns hnt
 
 end DifferentialGeometry.Geometry.Topology

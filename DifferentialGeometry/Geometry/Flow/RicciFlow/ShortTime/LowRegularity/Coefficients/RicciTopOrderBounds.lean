@@ -2,6 +2,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Acti
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Lowered
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.FiberNorm
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg
+    riemannianFiberNormSq_add_le riemannianFiberNormSq_sub_le)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -203,7 +207,7 @@ theorem exists_uniform_riemannianFiberNormSq_ricciConnectionPrincipalCoefficient
     let C := reindexCoefficientInputSlots (I := I) (M := M) g 3 3 E1
       (Equiv.swap (1 : Fin 3) 2)
     rw [hYsplit, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
-      Pi.smul_apply, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+      Pi.smul_apply, DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     rw [show ((A + B - C).toSection x) =
         (A.toSection x + B.toSection x) - C.toSection x from by
       rw [SmoothCcTensor.toSection_sub, SmoothCcTensor.toSection_add]
@@ -361,7 +365,7 @@ theorem exists_topOrderKernel_path_riemannianFiberNormSq_le :
         ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T).toSection x) ≤
         4 * (KR * r2) ^ 2 := by
     rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-      DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+      DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     calc
       (-2 * s) ^ 2 * riemannianFiberNormSq (I := I) (M := M) g 4 2 x
           ((ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T).toSection x) ≤

@@ -37,7 +37,7 @@ theorem eq_half_iff {x : ℝ} : Real.smoothTransition x = (2 : ℝ)⁻¹ ↔ x =
       by_contra hy
       rw [heq, expNegInvGlue.zero_of_nonpos (not_lt.mp hy)] at hp
       exact lt_irrefl 0 hp
-    simp only [expNegInvGlue, if_neg (not_le.mpr hx), if_neg (not_le.mpr hy)] at heq
+    simp only [expNegInvGlue, ite_eq_right (not_le.mpr hx), ite_eq_right (not_le.mpr hy)] at heq
     have hi := inv_injective (neg_injective (Real.exp_injective heq))
     linarith
   · rintro rfl

@@ -1304,7 +1304,7 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
   have hδret_def : ∀ ε (h : 0 < pfun ε), δret ε = Classical.choose (hpack (pfun ε) h) := by
     intro ε h
     dsimp only [δret]
-    rw [dif_pos h]
+    rw [dite_eq_left h]
   have hδret : ∀ ε (h : 0 < pfun ε), 0 < δret ε := by
     intro ε h
     rw [hδret_def ε h]
@@ -1327,11 +1327,11 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
   have hrad_def_pos : ∀ ε, 0 < ε → rad ε = min (min (δret ε) δc) (ε / 4) / 2 := by
     intro ε hε
     dsimp only [rad]
-    rw [if_pos hε]
+    rw [ite_eq_left hε]
   have hrad_def_neg : ∀ ε, ¬ 0 < ε → rad ε = min 1 δc / 2 := by
     intro ε hε
     dsimp only [rad]
-    rw [if_neg hε]
+    rw [ite_eq_right hε]
   have hradpos : ∀ ε, 0 < rad ε := by
     intro ε
     by_cases hε : 0 < ε

@@ -80,7 +80,7 @@ theorem LocallyLipschitzOn.integrable_fderiv_fderiv_mul_of_hasCompactSupport
   apply (integrableOn_iff_integrable_of_support_subset
     ((subset_tsupport _).trans (tsupport_mul_subset_right.trans hψs))).mp
   have hw : LocallyLipschitzOn Ω (fun x => fderiv ℝ u x w) :=
-    ((ContinuousLinearMap.apply ℝ ℝ w).lipschitz.locallyLipschitz.locallyLipschitzOn).comp
+    ((ContinuousLinearMap.apply ℝ ℝ w).lipschitzWith.locallyLipschitz.locallyLipschitzOn).comp
       hdu (Set.mapsTo_univ _ _)
   apply (hw.integrable_lineDeriv_mul_of_hasCompactSupport hψ hψc hψs v).integrableOn.congr
   filter_upwards [hdu.ae_differentiableAt hΩ] with x hx

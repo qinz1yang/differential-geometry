@@ -1,9 +1,12 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.VertexFaces
 import DifferentialGeometry.Topology.SimplicialComplex.MaximalFace
 
 set_option autoImplicit false
 noncomputable section
 open Set Finset
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Topology.SimplicialComplex
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (K : Geometry.SimplicialComplex ℝ E) {s : Finset E}
@@ -18,7 +21,7 @@ private theorem image_face_inter (t : Finset E) :
   · rintro ⟨has, hat⟩
     exact ⟨⟨a, has⟩, hat, rfl⟩
 
-theorem vertexMap_mem_geometricFaceCostar_iff (hs : s ∈ K.faces) (x : stdSimplex ℝ s) :
+theorem vertexMap_mem_geometricFaceCostar_iff (hs : s ∈ K.faces) (x : coordinateSet ℝ s) :
     DifferentialGeometry.Simplex.vertexMap (fun i : s => (i : E)) x ∈ (geometricFaceCostar K s).space ↔
       x ∈ DifferentialGeometry.Simplex.boundary s := by
   classical

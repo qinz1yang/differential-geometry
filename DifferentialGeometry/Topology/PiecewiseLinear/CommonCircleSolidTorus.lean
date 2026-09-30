@@ -21,8 +21,8 @@ theorem IsCommonAnnularDerivedNeighborhood.exists_solid_torus
     (hJ : IsPLSphere 1 J) :
     ∃ (P : Geometry.SimplicialComplex ℝ E) (f : (Fin 3 → ℝ) × ℝ → E),
       P.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 P ∧ P.space = N ∧
-      IsTopologicalSolidTorus N ∧ IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) N ∧
-      ∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = f (x, 1) := by
+      IsTopologicalSolidTorus N ∧ IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N ∧
+      ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = f (x, 1) := by
   obtain ⟨R, L, P₀, -, hRfin, hLfin, -, -, hRK, hLspace, -, -, hP₀R, -, hLP₀,
     -, hN, -⟩ := h
   let _ : Finite R.faces := hRfin.to_subtype

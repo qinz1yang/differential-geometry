@@ -20,14 +20,14 @@ theorem IsPLSphere.exists_clean_return_subdisk
     (hδ₀ : IsPLHomeomorphOn δ₀ (Icc 0 1) R₀)
     (hδ₀0 : δ₀ 0 = β₀ 0) (hδ₀1 : δ₀ 1 = β₀ 1)
     (hB₀R₀ : B₀ ∩ R₀ = {β₀ 0, β₀ 1})
-    (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀)
+    (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
     (hq₀B : q₀ '' stdSimplexBoundary 2 = B₀ ∪ R₀) (hD₀S : D₀ ⊆ S)
     (hfinite : (R₀ ∩ ⋃ i, F i).Finite)
     (hcross : ∀ (i : ι) (B R D : Set E) (q : (Fin 3 → ℝ) → E) (β δ : ℝ → E),
       IsPLHomeomorphOn β (Icc 0 1) B → B ⊆ F i →
       IsPLHomeomorphOn δ (Icc 0 1) R → δ 0 = β 0 → δ 1 = β 1 →
       R ⊆ R₀ → B ∩ R = {β 0, β 1} →
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D →
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D →
       q '' stdSimplexBoundary 2 = B ∪ R → D ⊆ D₀ → D ∩ R₀ = R →
       ((D \ (B ∪ R)) ∩ ⋃ j, F j).Nonempty →
       ∃ (j : ι) (A : Set E) (α : ℝ → E), IsPLHomeomorphOn α (Icc 0 1) A ∧
@@ -37,7 +37,7 @@ theorem IsPLSphere.exists_clean_return_subdisk
       IsPLHomeomorphOn β (Icc 0 1) B ∧ B ⊆ F i ∧
       IsPLHomeomorphOn δ (Icc 0 1) R ∧ δ 0 = β 0 ∧ δ 1 = β 1 ∧
       R ⊆ R₀ ∧ B ∩ R = {β 0, β 1} ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       q '' stdSimplexBoundary 2 = B ∪ R ∧ D ⊆ D₀ ∧ D ∩ R₀ = R ∧
       ∀ j, Disjoint (D \ (B ∪ R)) (F j) := by
   classical
@@ -45,7 +45,7 @@ theorem IsPLSphere.exists_clean_return_subdisk
     IsPLHomeomorphOn β (Icc 0 1) B ∧ B ⊆ F i ∧
     IsPLHomeomorphOn δ (Icc 0 1) R ∧ δ 0 = β 0 ∧ δ 1 = β 1 ∧
     R ⊆ R₀ ∧ B ∩ R = {β 0, β 1} ∧
-    IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+    IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
     q '' stdSimplexBoundary 2 = B ∪ R ∧ D ⊆ D₀ ∧ D ∩ R₀ = R
   have hR₀D₀ : R₀ ⊆ D₀ := by
     intro x hx

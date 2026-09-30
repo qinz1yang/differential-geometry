@@ -77,7 +77,8 @@ theorem tendsto_source_distance_zero_of_rescaled_distance_zero
     (by linarith : 3 * (R / 16) < R) hc.1 hupper (hmem _ hp.1) (hmem _ hp.2)
   have hr := ENNReal.toReal_mono
     (ENNReal.mul_ne_top ENNReal.ofReal_ne_top (hfinite i (w i) (v i))) hu
-  simpa only [metricDistance, ENNReal.toReal_mul, ENNReal.toReal_ofReal (by norm_num : (0 : ℝ) ≤ 2)] using hr
+  simpa only [metricDistance, ENNReal.toReal_mul,
+    ENNReal.toReal_ofReal (by norm_num : (0 : ℝ) ≤ 2)] using hr
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
@@ -151,15 +152,16 @@ theorem AnnularConvergence.exists_capture_radius_subset_range
   let P : B → ℝ × UniformSpace.Completion angles.quotient := fun z => (z.1.1, z.2)
   let o : ℝ × UniformSpace.Completion angles.quotient :=
     (1, (angles.classOf ray : UniformSpace.Completion angles.quotient))
-  let oB : B := (⟨1, ha1.le, h1b.le⟩, (angles.classOf ray : UniformSpace.Completion angles.quotient))
+  let oB : B :=
+    (⟨1, ha1.le, h1b.le⟩, (angles.classOf ray : UniformSpace.Completion angles.quotient))
   have hP : Continuous P := (continuous_subtype_val.comp continuous_fst).prodMk continuous_snd
   let rho : B → ℝ := fun z => lambda * Metric.coneDistance o (P z)
   have hrho : Continuous rho := continuous_const.mul
-    (continuous_openConeDistance.comp (continuous_const.prodMk hP))
+    (Metric.continuous_coneDistance.comp (continuous_const.prodMk hP))
   obtain ⟨eta, heta, hetaD⟩ := hrho.exists_pos_sublevel_subset_of_unique_zero
     (fun _ => mul_nonneg hlambda.le (Real.sqrt_nonneg _)) (o := oB) (by
       intro z hz
-      have heq := (openConeDistance_eq_zero_iff zero_lt_one (ha.trans_le z.1.2.1)).mp
+      have heq := (Metric.coneDistance_eq_zero_iff zero_lt_one (ha.trans_le z.1.2.1)).mp
         ((mul_eq_zero.mp hz).resolve_left hlambda.ne')
       exact Prod.ext (Subtype.ext (congrArg Prod.fst heq).symm) (congrArg Prod.snd heq).symm)
     ((hD.preimage hP).mem_nhds hoD)
@@ -214,7 +216,7 @@ theorem AnnularConvergence.exists_capture_radius_subset_range
     have hzero := C.tendsto_rescaled_distance_of_approximated_representatives ha (ha1.trans h1b)
       hd hQ hscale hl (y xD) c (w xD) zc v ((hy xD).mono_left hl) hcx
       (hl ((hw xD).mono fun _ hi => hi.1)) (hl hrel) (hnear.mono_left hl)
-    rw [(openConeDistance_eq_zero_iff hxpos hxpos).mpr rfl, mul_zero] at hzero
+    rw [(Metric.coneDistance_eq_zero_iff hxpos hxpos).mpr rfl, mul_zero] at hzero
     have hsource := tendsto_source_distance_zero_of_rescaled_distance_zero H ray hR hQ target F
       hcompare hl (w xD) v (by
         filter_upwards [hl (hw xD), hl hv] with i hi hvi

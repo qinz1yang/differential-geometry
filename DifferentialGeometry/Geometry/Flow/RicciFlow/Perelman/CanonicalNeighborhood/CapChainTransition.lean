@@ -194,8 +194,8 @@ noncomputable def OrderedNeckChain.pairOfMapEq {eps t : ℝ} {x : M}
   lo_lt_hi := fun _ => by norm_num
   inside := fun i => by
     by_cases h0 : i = 0
-    · rw [if_pos h0]; exact nk₀.tube_window_subset_source
-    · rw [if_neg h0]; exact nk₁.tube_window_subset_source
+    · rw [ite_eq_left h0]; exact nk₀.tube_window_subset_source
+    · rw [ite_eq_right h0]; exact nk₁.tube_window_subset_source
   swept_eq := by
     refine Eq.symm ?_
     apply le_antisymm
@@ -203,8 +203,8 @@ noncomputable def OrderedNeckChain.pairOfMapEq {eps t : ℝ} {x : M}
       rw [Set.mem_iUnion] at hy
       obtain ⟨i, hi⟩ := hy
       by_cases h0 : i = 0
-      · rw [if_pos h0] at hi; exact hi
-      · rw [if_neg h0] at hi; rwa [h] at hi
+      · rw [ite_eq_left h0] at hi; exact hi
+      · rw [ite_eq_right h0] at hi; rwa [h] at hi
     · intro y hy
       exact Set.mem_iUnion.mpr ⟨0, by simpa using hy⟩
   transition_increasing := by

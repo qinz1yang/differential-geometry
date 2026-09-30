@@ -939,7 +939,7 @@ private theorem eventually_scalar_normalized_time_window
   have htimeLim : Tendsto (fun z : neckBuffer δ × ℝ => z.2 - (9 / 8 : ℝ) / S.scalar z.2 z.1)
       (𝓝[univ ×ˢ Iic 0] (x, 0)) (𝓝 (-(9 / 8 : ℝ))) := by
     convert ((continuous_snd.tendsto (x, 0)).mono_left nhdsWithin_le_nhds).sub
-      ((tendsto_const_nhds (x := (9 / 8 : ℝ))).div hscalarLim (by norm_num : (1 : ℝ) ≠ 0)) using 1 <;> norm_num
+      ((tendsto_const_nhds (x := (9 / 8 : ℝ))).div hscalarLim (by norm_num : (1 : ℝ) ≠ 0)) using 1; norm_num
   filter_upwards [hscalarLim.eventually (eventually_gt_nhds (by norm_num : (0 : ℝ) < 1)),
     htimeLim.eventually (eventually_gt_nhds (by norm_num : -(5 / 4 : ℝ) < -(9 / 8 : ℝ))),
     self_mem_nhdsWithin] with z hq hlo hz

@@ -55,9 +55,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}}
-
-theorem isKappaNoncollapsed_of_noncollapsedBefore (H : RetainedCoreHistory P₀) {κ ρ t₀ : ℝ}
+theorem isKappaNoncollapsed_of_noncollapsedBefore (H : RetainedCoreHistory.{u}) {κ ρ t₀ : ℝ}
     (hκ : 0 < κ) (hnc : H.NoncollapsedBefore κ ρ t₀) (j : Fin H.eventCount)
     (τ : (RealTimeInterval.closedOpen _ _ (H.toHistory.event j).incoming.lt).FlowTime)
     (B : Perelman.FlowMetricBall (H.toHistory.event j).incoming.flow τ) :
@@ -92,7 +90,7 @@ theorem isKappaNoncollapsed_of_noncollapsedBefore (H : RetainedCoreHistory P₀)
   rw [hmet] at hvol
   exact hvol
 
-theorem isKappaNoncollapsed_of_terminalNoncollapsedBefore (H : RetainedCoreHistory P₀)
+theorem isKappaNoncollapsed_of_terminalNoncollapsedBefore (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =

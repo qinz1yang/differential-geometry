@@ -132,7 +132,10 @@ private lemma wkpNorm_eta_target_le_split
     rw [hIter1_u α']
   have hLp_bound : eLpNorm (fun x => η x * u x) p (volume.restrict Ω) ≤
       ENNReal.ofReal C0 * eLpNorm u p (volume.restrict Ω) := by
-    refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul (g := u) (c := C0) ?_ p
+    have hηu_meas : AEStronglyMeasurable (fun x => η x * u x)
+        (volume.restrict Ω) :=
+      hη_smooth.continuous.aestronglyMeasurable.mul hu.memLp.aestronglyMeasurable
+    refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul (g := u) (c := C0) hηu_meas ?_ p
     refine (ae_restrict_iff' hΩ_open.measurableSet).mpr ?_
     refine Filter.Eventually.of_forall (fun x hx => ?_)
     calc
@@ -167,14 +170,6 @@ private lemma wkpNorm_eta_target_le_split
       hη_smooth.continuous.aestronglyMeasurable.mul
         (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
           hu_W1p i).aestronglyMeasurable
-    have hderiv_cont : Continuous
-        (fun x : EuclN => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ))) :=
-      (hη_smooth.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply
-        continuous_const
-    have hdηu_meas : AEStronglyMeasurable
-        (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x)
-        (volume.restrict Ω) :=
-      hderiv_cont.aestronglyMeasurable.mul hu.memLp.aestronglyMeasurable
     rw [eLpNorm_congr_ae hae]
     have hSumEq :
         (fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
@@ -198,7 +193,7 @@ private lemma wkpNorm_eta_target_le_split
             eLpNorm
               (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x)
               p (volume.restrict Ω) :=
-      eLpNorm_add_le hηcwp_meas hdηu_meas hp_one
+      eLpNorm_add_le hp_one
     refine htriangle.trans ?_
     have hbnd1 :
         eLpNorm (fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
@@ -210,6 +205,7 @@ private lemma wkpNorm_eta_target_le_split
       DifferentialGeometry.Analysis.Sobolev.Euclidean.eLpNorm_eta_mul_le
         (d := Module.finrank ℝ E) hΩ_open hη0
         (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero p i u Ω)
+        hηcwp_meas
     have hbnd2 :
         eLpNorm (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x) p
             (volume.restrict Ω) ≤

@@ -222,7 +222,7 @@ theorem not_constant_complex_stream_of_coordinate_boundary
     simp [Real.norm_eq_abs, abs_of_pos hR]
   have hp' := (hvclosed (Metric.sphere_subset_closedBall hp)).symm.trans (hbd _ hp)
   have hn' := (hvclosed (Metric.sphere_subset_closedBall hn)).symm.trans (hbd _ hn)
-  simp only [PiLp.single_apply, if_true] at hp' hn'
+  simp only [PiLp.single_apply, ite_true] at hp' hn'
   linarith
 
 end DifferentialGeometry.Analysis

@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.H1Compl.ToLpChartBridge
 import DifferentialGeometry.Analysis.Elliptic.Regularity.H1Compl.WeakPartialLimit
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.IntegralIdentity
 import DifferentialGeometry.Analysis.Elliptic.Operator.VariationalLaplacian
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
@@ -259,7 +259,12 @@ private lemma chartPushedRaw_memLp_chartPulledWeighted
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α)) := by
   classical
-  refine ⟨(chartPushedRaw_measurable (I := I) (M := M) α hF_meas).aestronglyMeasurable, ?_⟩
+  have h_raw_meas : AEStronglyMeasurable
+      (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α F)
+      ((chartPulledWeightedMeasure (I := I) g α).restrict
+        (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
+          (I := I) (M := M) α)) := by
+    exact (chartPushedRaw_measurable (I := I) (M := M) α hF_meas).aestronglyMeasurable
   set μ_w : Measure EuclN :=
     (chartPulledWeightedMeasure (I := I) g α).restrict
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
@@ -272,7 +277,8 @@ private lemma chartPushedRaw_memLp_chartPulledWeighted
   have h_two_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
   have h_two_ne_top : (2 : ℝ≥0∞) ≠ ⊤ := by norm_num
   have h_two_toReal : (2 : ℝ≥0∞).toReal = 2 := by norm_num
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h_two_ne_zero h_two_ne_top]
+  change eLpNorm (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α F) 2 μ_w < ⊤
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h_two_ne_zero h_two_ne_top h_raw_meas]
   rw [h_two_toReal]
   refine ENNReal.rpow_lt_top_of_nonneg (by positivity) ?_
   show ∫⁻ y, ‖DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α F y‖ₑ ^ (2 : ℝ) ∂μ_w ≠
@@ -326,11 +332,12 @@ private lemma chartPushedRaw_memLp_chartPulledWeighted
       (by norm_num : (0 : ℝ) < 2)
   have h_RHS_lt_top : ∫⁻ x, ‖F x‖ₑ ^ (2 : ℝ)
       ∂(riemannianVolumeMeasure (I := I) (M := M) g) < ⊤ := by
-    have h_eLp_lt_top := hF_memLp.2
+    have h_eLp_lt_top := hF_memLp
     have h_eLp_eq : eLpNorm F 2 (riemannianVolumeMeasure (I := I) (M := M) g) ^ (2 : ℝ) =
         ∫⁻ x, ‖F x‖ₑ ^ (2 : ℝ)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
-      rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h_two_ne_zero h_two_ne_top]
+      rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h_two_ne_zero h_two_ne_top
+        hF_memLp.aestronglyMeasurable]
       rw [h_two_toReal]
       have h2_eq : ((∫⁻ x, ‖F x‖ₑ ^ (2 : ℝ)
             ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ^ ((1 : ℝ) / 2)) ^ (2 : ℝ) =
@@ -371,9 +378,16 @@ private lemma eLpNorm_chartPushedRaw_le
         (I := I) (M := M) α) :=
     DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_measurableSet
       (I := I) (M := M) α
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h_two_ne_zero h_two_ne_top]
+  have h_raw_meas : AEStronglyMeasurable
+      (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α F)
+      ((chartPulledWeightedMeasure (I := I) g α).restrict
+        (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
+          (I := I) (M := M) α)) := by
+    exact (chartPushedRaw_measurable (I := I) (M := M) α hF_meas).aestronglyMeasurable
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h_two_ne_zero h_two_ne_top h_raw_meas]
   rw [h_two_toReal]
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h_two_ne_zero h_two_ne_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h_two_ne_zero h_two_ne_top
+    hF_meas.aestronglyMeasurable]
   rw [h_two_toReal]
   have h_lint_eq :
       ∫⁻ y, ‖DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α F y‖ₑ ^ (2 : ℝ)

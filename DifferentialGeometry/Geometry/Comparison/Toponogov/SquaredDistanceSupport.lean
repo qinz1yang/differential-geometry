@@ -350,7 +350,7 @@ theorem exists_squaredDistanceLowerSupport_of_positive
     rw [hsupport_deriv2]
     linarith
   let S : LowerSupportAt (squaredRiemannianDistanceDefect (I := I) g p β) J r₀ :=
-    lowerSupportAt_sq_sub_sq_of_energy
+    lowerSupportAtSqSubSqOfEnergy
       (distance := fun r : ℝ => riemannianDistance (I := I) g p (β r))
       (energy := energy) (energyDeriv := fun r : ℝ => deriv E (r - r₀))
       (energySecond := deriv (deriv E) 0) (L := L) hU hUJ hmajor hcontact henergy_deriv
@@ -400,7 +400,7 @@ theorem exists_squaredDistanceLowerSupport_of_zero
     {r | riemannianDistance (I := I) g p (β r) ≤ |r - r₀|} ∩ J
   have hU : U ∈ 𝓝 r₀ := inter_mem hlocal hJnhds
   have hUJ : U ⊆ J := inter_subset_right
-  let S := lowerSupportAt_sq_sub_sq_of_zero hU hUJ
+  let S := lowerSupportAtSqSubSqOfZero hU hUJ
     (fun r _hr ↦ ENNReal.toReal_nonneg)
     (fun _r hr ↦ hr.1) hzero
   obtain ⟨left, right, hcenter, hinterval⟩ :=
@@ -431,7 +431,7 @@ theorem exists_squaredDistanceLowerSupport_of_zero
         ring
       secondDeriv_nonneg := by
         simp }
-  exact ⟨S, by simp [S, lowerSupportAt_sq_sub_sq_of_zero],
-    by simp [S, lowerSupportAt_sq_sub_sq_of_zero], C, by simp [C], by simp [C]⟩
+  exact ⟨S, by simp [S, lowerSupportAtSqSubSqOfZero],
+    by simp [S, lowerSupportAtSqSubSqOfZero], C, by simp [C], by simp [C]⟩
 
 end DifferentialGeometry.Toponogov

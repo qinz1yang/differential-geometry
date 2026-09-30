@@ -183,17 +183,17 @@ theorem localTerminalDistanceControl_of_localTerminalLengthControl
 
 theorem rfs_collapse_degree_of_localDistanceFrontier
     {K : G.ComparisonSupport c}
-    (hlip : K.LocalTerminalDistanceControl K.rfs_whole_parent_map)
+    (hlip : K.LocalTerminalDistanceControl K.canonicalWholeParentMap)
     (hclass : CollapseDegreeClassInput K) :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
+    K.LocalTerminalLengthControl K.canonicalWholeParentMap ∧
     (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      K.rfs_whole_parent_map y = K.rfs_whole_parent_map x) ∧
+      K.canonicalWholeParentMap y = K.canonicalWholeParentMap x) ∧
     (∀ x : G.transition.ChildCore c,
-      K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+      K.canonicalWholeParentMap (G.transition.childCoreIntoParent c x) =
         G.transition.childCoreInclusion c x) ∧
-    integralHomologyMap 3 K.rfs_whole_parent_map (fundamentalClass (G.Parent c).orientation) =
+    integralHomologyMap 3 K.canonicalWholeParentMap (fundamentalClass (G.Parent c).orientation) =
       fundamentalClass (G.Child c).orientation ∧
-    Function.Surjective K.rfs_whole_parent_map :=
+    Function.Surjective K.canonicalWholeParentMap :=
   ⟨K.rfs_whole_parent_map_localTerminalLengthControl_of_localTerminalDistanceControl hlip,
     fun _ hx => K.rfs_whole_parent_map_locallyConstant_of_notMem hx,
     fun x => K.rfs_whole_parent_map_childCore x, hclass,
@@ -201,8 +201,8 @@ theorem rfs_collapse_degree_of_localDistanceFrontier
 
 theorem localTerminalLengthControl_iff_localTerminalDistanceControl
     {K : G.ComparisonSupport c} :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map ↔
-      K.LocalTerminalDistanceControl K.rfs_whole_parent_map :=
+    K.LocalTerminalLengthControl K.canonicalWholeParentMap ↔
+      K.LocalTerminalDistanceControl K.canonicalWholeParentMap :=
   ⟨localTerminalDistanceControl_of_localTerminalLengthControl,
     K.rfs_whole_parent_map_localTerminalLengthControl_of_localTerminalDistanceControl⟩
 
@@ -231,7 +231,7 @@ theorem rfs_child_comparison_metric_of_metricHalfFrontier
     (h : G.CollapseDegreeMetricHalfFrontier) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
         Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1) ∧
@@ -254,7 +254,7 @@ theorem rfs_child_comparison_of_terminalFrontiers
     (hconv : G.LocalTerminalParentEDistComparison Kc s₀ ell) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       (∀ c, integralHomologyMap 3 (f c) (fundamentalClass (G.Parent c).orientation) =
         fundamentalClass (G.Child c).orientation) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,

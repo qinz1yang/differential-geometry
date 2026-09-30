@@ -6,7 +6,7 @@ import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 
 set_option autoImplicit false
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+namespace DifferentialGeometry.Analysis
 
 open Filter Set
 open scoped Topology ContDiff Manifold
@@ -73,4 +73,4 @@ theorem polynomial_eval_contMDiffAt_of_variables
     exact Filter.Eventually.of_forall fun y => by
       simp only [map_mul, MvPolynomial.eval_X, Pi.mul_apply]
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+end DifferentialGeometry.Analysis

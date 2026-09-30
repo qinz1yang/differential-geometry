@@ -20,19 +20,19 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem exists_compressionSide {P V D E E' F O : Set E3} {q : (Fin 3 → ℝ) → E3}
-    (hP : IsPLBall 3 P) (hV : IsPLBall 3 V) (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    (hP : IsPLBall 3 P) (hV : IsPLBall 3 V) (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDV : D ⊆ frontier V) (hDP : D ∩ P = q '' stdSimplexBoundary 2)
     (hcross : ∀ p ∈ q '' stdSimplexBoundary 2, HasPLCrossingAt (frontier V) (frontier P) p)
-    {qE qE' : (Fin 3 → ℝ) → E3} (hqE : IsPLHomeomorphOn qE (stdSimplex ℝ (Fin 3)) E)
+    {qE qE' : (Fin 3 → ℝ) → E3} (hqE : IsPLHomeomorphOn qE (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) E)
     (hqEJ : qE '' stdSimplexBoundary 2 = q '' stdSimplexBoundary 2)
-    (hqE' : IsPLHomeomorphOn qE' (stdSimplex ℝ (Fin 3)) E')
+    (hqE' : IsPLHomeomorphOn qE' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) E')
     (hqE'J : qE' '' stdSimplexBoundary 2 = q '' stdSimplexBoundary 2)
     (hEE' : E ∪ E' = frontier P) (hEE'J : E ∩ E' = q '' stdSimplexBoundary 2)
     (hF : IsClosed F) (hFD : Disjoint F D) (hO : IsOpen O) (hDO : D ⊆ O) :
     ∃ (L Bo Ah C T : Set E3) (ε : ℝ),
       IsPLBall 2 L ∧ IsPLBall 2 (D ∪ Ah) ∧ IsPLSphere 2 (L ∪ Bo) ∧ IsPLBall 3 T ∧
       frontier T = D ∪ Ah ∪ L ∧ E = Bo ∪ Ah ∧ L ∩ Bo = C ∧ Bo ∩ Ah = C ∧ L ∩ P = C ∧
-      (∃ qB : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qB (stdSimplex ℝ (Fin 3)) Bo ∧
+      (∃ qB : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qB (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Bo ∧
         qB '' stdSimplexBoundary 2 = C) ∧
       Disjoint Bo (q '' stdSimplexBoundary 2) ∧ Disjoint L D ∧ T ∩ P = Ah ∧ T ⊆ O ∧
       Ah ∩ (frontier V ∪ F) ⊆ q '' stdSimplexBoundary 2 ∧ Disjoint L (frontier V ∪ F) ∧
@@ -49,7 +49,7 @@ theorem exists_compressionSide {P V D E E' F O : Set E3} {q : (Fin 3 → ℝ) �
           (Disjoint (interior P) Y → R ⊆ interior Y) ∧ (interior P ⊆ Y → Disjoint R Y) := by
   classical
   set J := q '' stdSimplexBoundary 2 with hJdef
-  set Δ := stdSimplex ℝ (Fin 3) with hΔdef
+  set Δ := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) with hΔdef
   have hdim3 : Module.finrank ℝ E3 = 2 + 1 := by simp
   have hJD : J ⊆ D := (image_mono fun _ hx => hx.1).trans hq.image_eq.subset
   have hJsph : IsPLSphere 1 J := hq.isPLSphere_image_stdSimplexBoundary (n := 1)

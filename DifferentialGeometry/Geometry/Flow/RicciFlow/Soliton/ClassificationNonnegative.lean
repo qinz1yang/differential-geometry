@@ -270,7 +270,7 @@ theorem normalizedGradientRicciSoliton_isometry_classification_of_nonnegative_of
   · exact Or.inr ⟨hc, hs⟩
 
 
-theorem normalizedGradientRicciSoliton_isometry_classification_of_nonnegative_of_exists_nonvanishing_top_form
+theorem normalizedGradientRicciSoliton_isometry_classification_of_nonnegative_of_nonvanishing_top_form
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯}
     (h : normalizedGradientRicciSoliton (I := I) g f)
     (hdim : Module.finrank ℝ E = 3)

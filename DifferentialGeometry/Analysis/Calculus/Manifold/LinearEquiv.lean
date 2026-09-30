@@ -1,4 +1,5 @@
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 
 noncomputable section

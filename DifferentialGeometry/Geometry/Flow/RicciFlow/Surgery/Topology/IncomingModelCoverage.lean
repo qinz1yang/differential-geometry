@@ -112,7 +112,7 @@ theorem exists_uniform_high_curvature_models :
   have hμle : ∀ c, μ ≤ kappa c := by
     intro c
     have hb : ∏ j ∈ (Finset.univ : Finset (ConnectedComponents P.Carrier)).erase c,
-        min (kappa j) 1 ≤ 1 := Finset.prod_le_one
+        min (kappa j) 1 ≤ 1 := Finset.prod_le_one₀
           (fun j _ => (lt_min (hkappa j) zero_lt_one).le) (fun j _ => min_le_right _ _)
     have heq : μ = min (kappa c) 1 *
         ∏ j ∈ (Finset.univ : Finset (ConnectedComponents P.Carrier)).erase c,
@@ -149,7 +149,7 @@ theorem exists_uniform_canonical_constants_with_cap_neck_charts
       interior_mono W.window_mem
   obtain ⟨B, hB⟩ := htransfer kappa P.Carrier _ G.flow G.equation delta
     P.orientation x t le_rfl hreg hw
-  exact ⟨B.canonicalWitness_mono B.tolerance_lt.le hsmall,
+  exact ⟨B.canonicalWitnessMono B.tolerance_lt.le hsmall,
     hB.mono_eps B.tolerance_lt.le hsmall⟩
 
 
@@ -218,7 +218,7 @@ theorem exists_component_canonical_neighborhoods_with_cap_neck_charts
   obtain ⟨B, hB⟩ := htransfer (kappa c) (P.componentOpen c) _
     (G.componentTimeShift c) (G.isSolutionOn_componentTimeShift c) delta
     (P.componentOrientation c) x (t - a) le_rfl hreg hw
-  exact ⟨B.canonicalWitness_mono B.tolerance_lt.le hsmall,
+  exact ⟨B.canonicalWitnessMono B.tolerance_lt.le hsmall,
     hB.mono_eps B.tolerance_lt.le hsmall⟩
 
 end

@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Bridge.Metric
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise)
+
 
 noncomputable section
 

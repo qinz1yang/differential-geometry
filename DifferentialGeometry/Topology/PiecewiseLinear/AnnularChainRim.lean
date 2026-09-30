@@ -28,10 +28,10 @@ private theorem rim_subset_closure_of_prism
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
     (hch : IsAnnularChain H B Jlo Jhi (fun i => φ '' S i) S'' T'' P')
     (hcompact : IsCompact (closure I)) {Q : Set E3} (hIQ : I ⊆ Q)
-    (e : (stdSimplex ℝ (Fin 3) × Icc (-1 : ℝ) 1) ≃ₜ Q)
+    (e : (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) × Icc (-1 : ℝ) 1) ≃ₜ Q)
     (hD : range (fun p => (e (p, ⟨0, by norm_num⟩) : E3)) = Dimg)
     (hR : range (fun b : boundary (Fin 3) => (e (b.val, ⟨0, by norm_num⟩) : E3)) = Dbdimg)
-    (hP : (e (stdSimplex.barycenter, ⟨0, by norm_num⟩) : E3) = P')
+    (hP : (e (Convexity.StdSimplex.coordinateBarycenter, ⟨0, by norm_num⟩) : E3) = P')
     (eR : Dbdimg ≃ₜ CircleModel) : Dbdimg ⊆ closure (annularChain H B P') := by
   classical
   obtain ⟨U, r, hU, hrim, d, hd, s, hs⟩ := exists_prism_rim_retraction e hD hR hP
@@ -132,7 +132,7 @@ private theorem rim_subset_closure_of_prism
   let g : C(Jlo j, S'' (2 * j)) := ⟨Set.inclusion hlo, continuous_inclusion hlo⟩
   obtain ⟨eH, -, heH⟩ := (hch.half j).exists_homeomorph
   let b₀ : stdSimplexBoundary 2 :=
-    ⟨Pi.single (0 : Fin 3) 1, single_mem_stdSimplex ℝ 0, ⟨1, by simp⟩⟩
+    ⟨Pi.single (0 : Fin 3) 1, Convexity.StdSimplex.single_mem_coordinateSet ℝ 0, ⟨1, by simp⟩⟩
   let y₀ : Jlo j := ⟨eH (b₀, 1), heH ▸ mem_range_self b₀⟩
   have hfg := surjective_fundamentalGroup_map_comp_of_surjective_comp a g (r.comp q) z y₀
     hfa (hch.loGenerator j hlo y₀)

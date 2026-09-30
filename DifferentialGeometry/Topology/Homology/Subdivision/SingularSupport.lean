@@ -56,7 +56,7 @@ theorem ι_smallSingularSubdivisionMap {n : ℕ} (σ : (A : SSet) _⦋n⦌) :
     (A : SSet).ιChainComplex σ ≫ smallSingularSubdivisionMap X U R n =
       barycentricSimplexChain R n ≫
         (SSet.chainComplexMap (smallSingularSimplexPushforward X U σ) R).f n :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 
 theorem smallSingularSubdivisionMap_inclusion (n : ℕ) :
@@ -83,7 +83,7 @@ theorem ι_smallSingularSubdivisionHomotopyMap {n : ℕ} (σ : (A : SSet) _⦋n�
     (A : SSet).ιChainComplex σ ≫ smallSingularSubdivisionHomotopyMap X U R n =
       barycentricSimplexHomotopyChain R n ≫
         (SSet.chainComplexMap (smallSingularSimplexPushforward X U σ) R).f (n + 1) :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 
 theorem smallSingularSubdivisionHomotopyMap_inclusion (n : ℕ) :
@@ -172,17 +172,17 @@ def smallSingularSubdivisionHomotopy : Homotopy (smallSingularSubdivision X U R)
     smallSingularSubdivisionHomotopyMap X U R i ≫ eqToHom (congrArg (KA).X h) else 0
   zero i j hij := by
     change ¬ i + 1 = j at hij
-    exact dif_neg hij
+    exact dite_eq_right hij
   comm n := by
     cases n with
     | zero =>
       rw [Homotopy.dNext_zero_chainComplex, Homotopy.prevD_chainComplex]
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id,
+      simp only [dite_eq_left rfl, eqToHom_refl, Category.comp_id,
         smallSingularSubdivisionHomotopyMap_zero, zero_comp, zero_add,
         smallSingularSubdivision_f, smallSingularSubdivisionMap_zero, HomologicalComplex.id_f]
     | succ n =>
       rw [Homotopy.dNext_succ_chainComplex, Homotopy.prevD_chainComplex]
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id,
+      simp only [dite_eq_left rfl, eqToHom_refl, Category.comp_id,
         smallSingularSubdivision_f, HomologicalComplex.id_f]
       exact sub_eq_iff_eq_add.mp (smallSingularSubdivisionHomotopy_comm X U R n)
 
@@ -193,6 +193,6 @@ theorem smallSingularSubdivisionHomotopy_hom (n : ℕ) :
       smallSingularSubdivisionHomotopyMap X U R n := by
   change (if h : n + 1 = n + 1 then
     smallSingularSubdivisionHomotopyMap X U R n ≫ eqToHom (congrArg (KA).X h) else 0) = _
-  rw [dif_pos rfl, eqToHom_refl, Category.comp_id]
+  rw [dite_eq_left rfl, eqToHom_refl, Category.comp_id]
 
 end DifferentialGeometry.Homology

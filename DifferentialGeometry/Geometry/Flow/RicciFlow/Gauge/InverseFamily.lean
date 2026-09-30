@@ -130,7 +130,7 @@ theorem joint_symm_smoothOn
     rw [hFG r, hloc.localInverse_right_inv hr]
   have hlocal_smooth : ContMDiffAt (𝓘(ℝ, ℝ).prod I)
       (𝓘(ℝ, ℝ).prod I) ∞ hloc.localInverse q := by
-    simpa only [hFG q] using hloc.localInverse_contMDiffAt
+    simpa only [hFG q] using hloc.contMDiffAt_localInverse
   have hG_at : ContMDiffAt (𝓘(ℝ, ℝ).prod I)
       (𝓘(ℝ, ℝ).prod I) ∞ G q :=
     hlocal_smooth.congr_of_eventuallyEq hG_event

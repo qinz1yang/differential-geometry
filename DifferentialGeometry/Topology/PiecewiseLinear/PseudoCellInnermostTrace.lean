@@ -40,7 +40,7 @@ theorem IsPseudoCell.exists_innermost_disk_of_noncentral_trace
     (hnot : ¬ ∃ DJ DJint : Set E3, IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Dc ∧
       DJ \ DJint = G i₀ ∧ P ∈ DJint) :
     ∃ (i : Fin n) (D : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ r '' stdSimplexBoundary 2 = G i ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ r '' stdSimplexBoundary 2 = G i ∧
       D ⊆ Dc ∧ D ⊆ Eint \ {P} ∧ D ∩ Δ = G i ∧
       ¬ ∃ DJ DJint : Set E3, IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Dc ∧
         DJ \ DJint = G i ∧ P ∈ DJint := by

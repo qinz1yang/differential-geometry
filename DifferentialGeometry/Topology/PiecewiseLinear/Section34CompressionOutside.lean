@@ -332,7 +332,7 @@ theorem exists_section34Compression_of_disjoint_of_cleanPocket
     obtain ⟨P0, r0, u0, -, -, -, hB⟩ := id hDcell
     rw [hB]
     exact ⟨u0 (r0 (Pi.single 0 1)), r0 (Pi.single 0 1),
-      ⟨Pi.single 0 1, ⟨single_mem_stdSimplex ℝ 0, 1,
+      ⟨Pi.single 0 1, ⟨Convexity.StdSimplex.single_mem_coordinateSet ℝ 0, 1,
         Pi.single_eq_of_ne (show (1 : Fin 3) ≠ 0 by decide) (1 : ℝ)⟩, rfl⟩, rfl⟩
   have hDwV : Dj ⊆ section34VertexBallImage src f₁ w := fun z hz =>
     image_mono (hcell (.vertexBall w)).boundary_subset (hDw hz)

@@ -262,10 +262,10 @@ theorem exists_section34RemovalGood_upperBound (K : Section34VertexIndex 𝒦 �
     by_cases heS : e ∈ ⋃ a ∈ c, a.1
     · rw [hone e (hsub (Finset.mem_coe.mpr (Finset.mem_union.mpr (Or.inr
         (Finset.mem_filter.mpr ⟨he, heS⟩)))))]
-      exact (if_pos heS).symm
+      exact (ite_eq_left heS).symm
     · have hea : e ∉ a.1 := fun hea => heS (mem_iUnion₂.mpr ⟨a, ha, hea⟩)
       rw [hzero e hea]
-      exact (if_neg heS).symm
+      exact (ite_eq_right heS).symm
   have hB : ∀ e : Section34EdgeIndex 𝒦 𝒦', ∃ a ∈ c, (a.2.1 (ends e).1 = Gl (ends e).1 ∧
       a.2.1 (ends e).2 = Gl (ends e).2) ∧ a.2.2.1 e = cntl e := by
     intro e
@@ -279,7 +279,7 @@ theorem exists_section34RemovalGood_upperBound (K : Section34VertexIndex 𝒦 �
     q6, fun e => ?_, fun e => ?_, fun e => ?_, q10, fun w => ?_, fun w e => ?_,
     fun e w hw₁ hw₂ => ?_, fun w w' hww' => ?_, fun e => ?_, fun e => ?_, fun e => ?_,
     fun e i hi => ?_, fun e i hi j hj hij => ?_, fun e => ?_, fun e d hed => ?_,
-    fun w w' hww' => ?_⟩, fun e he => if_pos he, fun e he => if_neg he, fun w => ?_,
+    fun w w' hww' => ?_⟩, fun e he => ite_eq_left he, fun e he => ite_eq_right he, fun w => ?_,
     fun w => ?_⟩, fun a ha => ⟨fun e he => mem_iUnion₂.mpr ⟨a, ha, he⟩, fun w hw => ?_⟩⟩
   · obtain ⟨a, ha, hL, -⟩ := hagree {w} ∅
     obtain ⟨p, -⟩ := (hgood a ha).1
@@ -401,8 +401,8 @@ theorem exists_section34RemovalGood_insert
   have hG₂ : ∀ w, EqOn (G₁ w) (G₂ w) (Cc w) := by
     intro w x hx
     by_cases hw : (Sp e₀ ∩ K w).Nonempty
-    · simp only [G₂, if_pos hw]
-    · simp only [G₂, if_neg hw]
+    · simp only [G₂, ite_eq_left hw]
+    · simp only [G₂, ite_eq_right hw]
       exact hoff₁ w ⟨hx, fun hint =>
         hw ⟨G w x, interior_subset hint, hQK w (hGQ w ⟨x, hx, rfl⟩)⟩⟩
   have hpc₂ := section34PiercingConditions_congr_of_eqOn hprep hG₂ hpc₁
@@ -428,7 +428,7 @@ theorem exists_section34RemovalGood_insert
     rw [← (hG₂ w hxC), h1]
     exact hbody w hx
   · have hno : ¬ (Sp e₀ ∩ K w).Nonempty := hw e₀ ⟨mem_insert e₀ S, he₀⟩
-    exact if_neg hno
+    exact ite_eq_right hno
 
 theorem exists_section34ProtectedCircleRemoval_of_step
     (hstep : ∀ (G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂) (cnt : Section34EdgeIndex 𝒦 𝒦' → ℕ)

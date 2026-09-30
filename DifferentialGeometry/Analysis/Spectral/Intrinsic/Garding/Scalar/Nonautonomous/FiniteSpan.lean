@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Nonautonomous.UniformBound
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
@@ -176,7 +177,7 @@ theorem scalarFlux_span
     rw [DifferentialGeometry.Combinatorics.antidiagonalTupleGrid,
       DifferentialGeometry.Combinatorics.antidiagonalTupleGrid]
     refine Finset.sum_le_sum (fun n _ ↦ Finset.sum_le_sum (fun e _ ↦ ?_))
-    exact Finset.prod_le_prod
+    exact Finset.prod_le_prod₀
       (fun m _ ↦ riemannianFiberNormSq_nonneg
         (I := I) (M := M) q 0 (2 + e m) x _)
       (fun m _ ↦ by simpa only [q, P] using hsdata.2.2 (e m) x)

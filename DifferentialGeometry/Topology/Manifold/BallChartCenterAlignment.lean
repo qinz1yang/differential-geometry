@@ -26,14 +26,6 @@ theorem orientedBallChartIsotopicAwayFromCompact_of_common_center {U : Type u}
       b'.toBallChart hcenter))
     hcenter
 
-def orientedBallChartCenterNormalizable {U : Type u} [TopologicalSpace U]
-    [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
-    (o : ManifoldOrientation ThreeModel U 3) (b b' : OrientedBallEmbedding U o)
-    (C : Set U) : Prop :=
-  ∃ b₀ : OrientedBallEmbedding U o, b₀.chart (0 : ThreeSpace) = b'.chart (0 : ThreeSpace) ∧
-    Disjoint (b₀.chart '' Metric.closedBall (0 : ThreeSpace) 1) C ∧
-    orientedBallChartIsotopicAwayFromCompact o b b₀ C
-
 private def orientedBallChartIsotopyConcat {U : Type u} [TopologicalSpace U]
     [ChartedSpace ThreeSpace U] (J J' : ℝ → Diffeomorph ThreeModel ThreeModel U U ∞) :
     ℝ → Diffeomorph ThreeModel ThreeModel U U ∞ :=
@@ -134,30 +126,6 @@ theorem orientedBallChartIsotopicAwayFromCompact.trans {U : Type u} [Topological
   · intro x hx
     change J' (Real.smoothTransition 1) (J (Real.smoothTransition 1) (b.chart x)) = b'.chart x
     rw [Real.smoothTransition.one, hJact x hx, hK'act x hx]
-
-theorem orientedBallChartIsotopicAwayFromCompact_of_centerNormalizable {U : Type u}
-    [TopologicalSpace U] [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U] [T2Space U]
-    (o : ManifoldOrientation ThreeModel U 3) (b b' : OrientedBallEmbedding U o) (C : Set U)
-    (hC : IsCompact C)
-    (hdisj' : Disjoint (b'.chart '' Metric.closedBall (0 : ThreeSpace) 1) C)
-    (h : orientedBallChartCenterNormalizable o b b' C) :
-    orientedBallChartIsotopicAwayFromCompact o b b' C := by
-  obtain ⟨b₀, hctr, hdisj₀, halign⟩ := h
-  exact halign.trans
-    (orientedBallChartIsotopicAwayFromCompact_of_common_center o b₀ b' C hC hdisj₀ hdisj' hctr)
-
-theorem orientedBallChartStraighteningAwayFromCompact_of_centerNormalization
-    (h : ∀ (U : Type u) [TopologicalSpace U] [ChartedSpace ThreeSpace U]
-      [IsManifold ThreeModel ∞ U] [T2Space U] [ConnectedSpace U]
-      (o : ManifoldOrientation ThreeModel U 3) (b b' : OrientedBallEmbedding U o) (C : Set U),
-      IsCompact C →
-      Disjoint (b.chart '' Metric.closedBall (0 : ThreeSpace) 1) C →
-      Disjoint (b'.chart '' Metric.closedBall (0 : ThreeSpace) 1) C →
-      orientedBallChartCenterNormalizable o b b' C) :
-    orientedBallChartStraighteningAwayFromCompact.{u} := by
-  intro U _ _ _ _ _ o b b' C hC hdisj hdisj'
-  exact orientedBallChartIsotopicAwayFromCompact_of_centerNormalizable o b b' C hC hdisj'
-    (h U o b b' C hC hdisj hdisj')
 
 theorem not_orientedBallChartStraighteningAwayFromCompact :
     ¬ orientedBallChartStraighteningAwayFromCompact.{0} := by
@@ -309,19 +277,6 @@ theorem not_orientedBallChartStraighteningAwayFromCompact :
     linarith
   · exact absurd h0mem (hsub ⟨le_rfl, zero_le_one⟩)
 
-theorem ballEmbeddingIsotopy_of_centerNormalization
-    (h : ∀ (U : Type u) [TopologicalSpace U] [ChartedSpace ThreeSpace U]
-      [IsManifold ThreeModel ∞ U] [T2Space U] [ConnectedSpace U]
-      (o : ManifoldOrientation ThreeModel U 3) (b b' : OrientedBallEmbedding U o) (C : Set U),
-      IsCompact C →
-      Disjoint (b.chart '' Metric.closedBall (0 : ThreeSpace) 1) C →
-      Disjoint (b'.chart '' Metric.closedBall (0 : ThreeSpace) 1) C →
-      orientedBallChartCenterNormalizable o b b' C)
-    (horient : isotopyPreservesOrientation.{u}) :
-    ballEmbeddingIsotopy.{u} :=
-  ballEmbeddingIsotopy_of_orientedBallChartStraighteningAwayFromCompact
-    (orientedBallChartStraighteningAwayFromCompact_of_centerNormalization h) horient
-
 theorem BallMarking.relativeTransitionTube_singleton
     {M : DifferentialGeometry.Topology.ClosedOrientedManifold.{u} 3}
     (c : DifferentialGeometry.Topology.OrientedBallChart M) :
@@ -331,7 +286,7 @@ theorem BallMarking.relativeTransitionTube_singleton
     (DifferentialGeometry.Topology.BallMarking.singleton c)
 
 theorem relativeCollarUniqueness_conclusion_of_self {S : Type u} [TopologicalSpace S]
-    [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S] [IsManifold (𝓡 2) ∞ S]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S]
     (c : PartialDiffeomorph ((𝓡 2).prod (𝓡∂ 1)) (𝓡∂ 3) (S × EuclideanHalfSpace 1)
       (EuclideanHalfSpace 3) ∞)
     (hunif : ∀ (p : S) (t : EuclideanHalfSpace 1), t.1 0 < 1 → (p, t) ∈ c.source)

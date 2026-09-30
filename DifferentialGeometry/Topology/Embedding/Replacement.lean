@@ -82,10 +82,10 @@ theorem IsSmoothEmbedding.exists_replacement_of_partialDiffeomorph
       have hi := φ.symm.isLocalDiffeomorphAt I 𝓘(𝕜, E) n (hLφ hy)
       rw [mfderiv_comp y (hg.contMDiff.mdifferentiableAt hn)
         (hi.mdifferentiableAt hn)]
-      exact ((hg.isImmersion.isImmersionAt (φ.symm y)).injective_mfderiv hn).comp
+      exact ((hg.isImmersion.isImmersionAt (φ.symm y)).mfderiv_injective hn).comp
         (hi.mfderivToContinuousLinearEquiv hn).injective
     · rw [(hnear_compl y hy).mfderiv_eq]
-      exact (he.isImmersion.isImmersionAt y).injective_mfderiv hn
+      exact (he.isImmersion.isImmersionAt y).mfderiv_injective hn
   have hinj : Function.Injective f := by
     intro x y hxy
     by_cases hx : x ∈ L

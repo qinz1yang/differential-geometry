@@ -73,7 +73,7 @@ theorem insertZeroVertex_natCast (J : PolygonalCircle) (p : Plane) {m : ℕ}
     (hm0 : 0 < m) (hm : m < J.n + 1) :
     J.insertZeroVertex p (m : ZMod (J.n + 1)) = J.vertex (m : ZMod J.n) := by
   rw [insertZeroVertex, ZMod.val_natCast_of_lt hm]
-  simp only [if_neg hm0.ne']
+  simp only [ite_eq_right hm0.ne']
 
 /-- The prospective edges of `insertZero`, before packaging the simple-polygon proofs. -/
 def insertZeroEdgeSegment (J : PolygonalCircle) (p : Plane)
@@ -145,7 +145,7 @@ theorem insertZeroVertex_adjacent_ne (J : PolygonalCircle) {p : Plane}
     rw [hsucc]
     unfold insertZeroVertex
     rw [ZMod.val_one_eq_one_mod, Nat.mod_eq_of_lt htwo]
-    simp only [if_neg (by omega : (1 : ℕ) ≠ 0)]
+    simp only [ite_eq_right (by omega : (1 : ℕ) ≠ 0)]
     simpa only [Nat.cast_one] using hp1
   by_cases hmn : m = J.n
   · rw [hmn]

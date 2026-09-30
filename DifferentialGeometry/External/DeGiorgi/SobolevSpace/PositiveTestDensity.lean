@@ -197,19 +197,18 @@ private theorem lp_zero_of_dom
   have huiH : UnifIntegrable (fun _ : ℕ => H) 2 mu :=
     MeasureTheory.unifIntegrable_const (by norm_num) (by simp) hH
   have huiF : UnifIntegrable F 2 mu := by
-    intro e he
-    obtain ⟨delta, hdelta, hsmall⟩ := huiH he
-    refine ⟨delta, hdelta, fun n s hs hmus => ?_⟩
-    exact (eLpNorm_mono_ae_real <| by
-      filter_upwards [hdom n] with x hx
-      by_cases hxs : x ∈ s <;> simp [hxs, hx]).trans (hsmall 0 s hs hmus)
+    refine huiH.ae_mono hF ?_
+    intro n
+    filter_upwards [hdom n] with x hx
+    simpa only [enorm_le_iff_norm_le, Real.norm_eq_abs] using
+      hx.trans (le_abs_self (H x))
   have hutH : UnifTight (fun _ : ℕ => H) 2 mu :=
     MeasureTheory.unifTight_const (by simp) hH
   have hutF : UnifTight F 2 mu := by
     intro e he
-    obtain ⟨s, hmus, hsmall⟩ := hutH he
-    refine ⟨s, hmus, fun n => ?_⟩
-    exact (eLpNorm_mono_ae_real <| by
+    obtain ⟨s, hs, hmus, hsmall⟩ := hutH.exists_measurableSet_indicator he.ne'
+    refine ⟨s, hmus.ne, fun n => ?_⟩
+    exact (eLpNorm_mono_ae_real ((hF n).indicator hs.compl) <| by
       filter_upwards [hdom n] with x hx
       by_cases hxs : x ∈ sᶜ <;> simp [hxs, hx]).trans (hsmall 0)
   have h := MeasureTheory.tendsto_Lp_of_tendsto_ae
@@ -296,7 +295,7 @@ private theorem reg_comp_data
           fderiv_eq_deriv_mul]
       rw [hfdcomp]
       by_cases hx : 0 < f x
-      · simp only [hx, if_true]
+      · simp only [hx, ite_true]
         change |deriv (posReg n) (f x) * df x - df x| ≤ (C + 1) * ‖df x‖
         nth_rewrite 2 [← one_mul (df x)]
         rw [← sub_mul, abs_mul]
@@ -306,7 +305,7 @@ private theorem reg_comp_data
             gcongr
             exact (abs_sub _ _).trans (add_le_add (hCb n (f x)) (by norm_num))
           _ = (C + 1) * |df x| := rfl
-      · simp only [hx, if_false, sub_zero, abs_mul]
+      · simp only [hx, ite_false, sub_zero, abs_mul]
         exact mul_le_mul_of_nonneg_right (hCb n (f x)) (abs_nonneg _)
           |>.trans (mul_le_mul_of_nonneg_right (by linarith) (abs_nonneg _))
     · filter_upwards with x
@@ -355,7 +354,9 @@ theorem nonneg_approx
         eLpNorm (fun x => max (f n x) 0 - phi x) 2 mu ≤
           eLpNorm (fun x => f n x - phi x) 2 mu := by
       intro n
-      refine eLpNorm_mono ?_
+      refine eLpNorm_mono
+        (((hf_smooth n).continuous.max continuous_const).aestronglyMeasurable.sub
+          hw.memLp.aestronglyMeasurable) ?_
       intro x
       simpa [Real.norm_eq_abs, max_eq_left (hphi_nonneg x)] using
         abs_max_sub_max_le_abs (f n x) (phi x) 0
@@ -366,18 +367,6 @@ theorem nonneg_approx
     if 0 < f n x then (fderiv ℝ (f n) x) (EuclideanSpace.single i 1) else 0
   have hf_pos (n : ℕ) : MeasurableSet {x | 0 < f n x} :=
     measurableSet_lt continuous_const.measurable (hf_smooth n).continuous.measurable
-  have hphi_pos : NullMeasurableSet {x | 0 < phi x} mu :=
-    AEStronglyMeasurable.nullMeasurableSet_lt (μ := mu)
-      stronglyMeasurable_const.aestronglyMeasurable hw.memLp.aestronglyMeasurable
-  have hraw_meas (n : ℕ) (i : Fin d) : AEStronglyMeasurable (rawGrad n i) mu := by
-    have hd : AEStronglyMeasurable
-        (fun x => (fderiv ℝ (f n) x) (EuclideanSpace.single i 1)) mu :=
-      (((hf_smooth n).fderiv_right
-        (m := (⊤ : ℕ∞)) (by norm_cast)).clm_apply contDiff_const).continuous
-        |>.aestronglyMeasurable
-    convert hd.indicator (hf_pos n) using 1
-    funext x
-    simp only [rawGrad, Set.indicator_apply, Set.mem_ofPred_eq]
   have hraw_grad : ∀ i : Fin d,
       Tendsto (fun n => eLpNorm (fun x => rawGrad n i x - hw.weakGrad x i) 2 mu)
         atTop (nhds 0) := by
@@ -395,9 +384,18 @@ theorem nonneg_approx
             (fun x => (fderiv ℝ (f n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i)
             2 mu := by
         intro n
-        refine eLpNorm_mono ?_
-        intro x
-        by_cases hx : 0 < f n x <;> simp [A, hx]
+        refine eLpNorm_mono ?_ ?_
+        · have hd : AEStronglyMeasurable
+              (fun x => (fderiv ℝ (f n) x) (EuclideanSpace.single i 1) -
+                hw.weakGrad x i) mu :=
+            ((((hf_smooth n).fderiv_right
+              (m := (⊤ : ℕ∞)) (by norm_cast)).clm_apply contDiff_const).continuous
+              |>.aestronglyMeasurable).sub (hw.weakGrad_component_memLp i).aestronglyMeasurable
+          convert hd.indicator (hf_pos n) using 1
+          funext x
+          simp only [A, Set.indicator_apply, Set.mem_ofPred_eq]
+        · intro x
+          by_cases hx : 0 < f n x <;> simp [A, hx]
       exact tendsto_of_tendsto_of_tendsto_of_le_of_le
         tendsto_const_nhds (by simpa [mu] using hf_grad i) (fun _ => bot_le) hbound
     have hB : Tendsto (fun n => eLpNorm (B n) 2 mu) atTop (nhds 0) := by
@@ -425,21 +423,7 @@ theorem nonneg_approx
           eLpNorm (A n) 2 mu + eLpNorm (B n) 2 mu := by
       intro n
       rw [eLpNorm_congr_ae (hAe n)]
-      apply eLpNorm_add_le
-      · have hd : AEStronglyMeasurable
-            (fun x => (fderiv ℝ (f n) x) (EuclideanSpace.single i 1) -
-              hw.weakGrad x i) mu :=
-          ((((hf_smooth n).fderiv_right
-            (m := (⊤ : ℕ∞)) (by norm_cast)).clm_apply contDiff_const).continuous
-            |>.aestronglyMeasurable).sub (hw.weakGrad_component_memLp i).aestronglyMeasurable
-        convert hd.indicator (hf_pos n) using 1
-        funext x
-        simp only [A, Set.indicator_apply, Set.mem_ofPred_eq]
-      · have hG := (hw.weakGrad_component_memLp i).aestronglyMeasurable
-        convert (hG.indicator (hf_pos n)).sub (hG.indicator₀ hphi_pos) using 1
-        funext x
-        simp only [B, Pi.sub_apply, Set.indicator_apply, Set.mem_ofPred_eq]
-      · norm_num
+      exact eLpNorm_add_le (by norm_num)
     have hupper : Tendsto (fun n => eLpNorm (A n) 2 mu + eLpNorm (B n) 2 mu)
         atTop (nhds 0) := by simpa using hA.add hB
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le
@@ -488,15 +472,9 @@ theorem nonneg_approx
         eLpNorm (fun x => psi n x - phi x) 2 mu ≤
           eps n + eLpNorm (fun x => max (f n x) 0 - phi x) 2 mu := by
       intro n
-      have hfirst : AEStronglyMeasurable
-          (fun x => psi n x - max (f n x) 0) mu :=
-        (hq_smooth n (k n)).continuous.aestronglyMeasurable.sub
-          ((hf_smooth n).continuous.max continuous_const).aestronglyMeasurable
-      have hsecond : AEStronglyMeasurable
-          (fun x => max (f n x) 0 - phi x) mu :=
-        ((hf_smooth n).continuous.max continuous_const).aestronglyMeasurable.sub
-          hw.memLp.aestronglyMeasurable
-      have htri := eLpNorm_add_le hfirst hsecond (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+      have htri := eLpNorm_add_le (μ := mu)
+        (f := fun x => psi n x - max (f n x) 0)
+        (g := fun x => max (f n x) 0 - phi x) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
       have heq : (fun x => psi n x - phi x) =
           (fun x => (psi n x - max (f n x) 0) + (max (f n x) 0 - phi x)) := by
         funext x
@@ -521,15 +499,9 @@ theorem nonneg_approx
             2 mu ≤
           eps n + eLpNorm (fun x => rawGrad n i x - hw.weakGrad x i) 2 mu := by
       intro n
-      have hfirst : AEStronglyMeasurable
-          (fun x => (fderiv ℝ (psi n) x) (EuclideanSpace.single i 1) - rawGrad n i x) mu :=
-        ((((hq_smooth n (k n)).fderiv_right
-          (m := (⊤ : ℕ∞)) (by norm_cast)).clm_apply contDiff_const).continuous
-          |>.aestronglyMeasurable).sub (hraw_meas n i)
-      have hsecond : AEStronglyMeasurable
-          (fun x => rawGrad n i x - hw.weakGrad x i) mu :=
-        (hraw_meas n i).sub (hw.weakGrad_component_memLp i).aestronglyMeasurable
-      have htri := eLpNorm_add_le hfirst hsecond (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+      have htri := eLpNorm_add_le (μ := mu)
+        (f := fun x => (fderiv ℝ (psi n) x) (EuclideanSpace.single i 1) - rawGrad n i x)
+        (g := fun x => rawGrad n i x - hw.weakGrad x i) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
       have heq :
           (fun x => (fderiv ℝ (psi n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i) =
           (fun x =>

@@ -23,11 +23,11 @@ theorem IsPLCellOn.exists_preconnected_sdiff_boundary {n : ℕ} {D B : Set M}
       ∃ O' : Set M, IsOpen O' ∧ x ∈ O' ∧ O' ∩ (D \ B) ⊆ L := by
   obtain ⟨P, r, u, hr, hu, hDP, hBP⟩ := hD
   let q := u ∘ r
-  have hqc : ContinuousOn q (stdSimplex ℝ (Fin (n + 2))) :=
+  have hqc : ContinuousOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) :=
     hu.continuousOn.comp hr.isPiecewiseAffineOn.continuousOn hr.bijOn.mapsTo
-  have hqi : InjOn q (stdSimplex ℝ (Fin (n + 2))) :=
+  have hqi : InjOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) :=
     hu.injOn.comp hr.bijOn.injOn hr.bijOn.mapsTo
-  have hqD : q '' stdSimplex ℝ (Fin (n + 2)) = D := by
+  have hqD : q '' Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) = D := by
     rw [image_comp, hr.image_eq, ← hDP]
   have hbd : r '' stdSimplexBoundary (n + 1) ⊆ P := by
     rintro _ ⟨z, hz, rfl⟩
@@ -39,10 +39,10 @@ theorem IsPLCellOn.exists_preconnected_sdiff_boundary {n : ℕ} {D B : Set M}
   obtain ⟨ε, hε, hball⟩ := Metric.mem_nhdsWithin_iff.mp
     ((hqc b hb).preimage_mem_nhdsWithin hO)
   obtain ⟨T, hT, hTeq⟩ := exists_isOpen_inter_image_eq_of_isCompact
-    (isCompact_stdSimplex ℝ (Fin (n + 2))) hqc hqi
+    (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin (n + 2))) hqc hqi
     (Metric.isOpen_ball (x := b) (ε := ε))
   have hsub : Metric.ball b ε ∩ openSimplex (stdVertices n) ⊆
-      stdSimplex ℝ (Fin (n + 2)) :=
+      Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) :=
     inter_subset_right.trans openSimplex_stdVertices_subset_stdSimplex
   refine ⟨q '' (Metric.ball b ε ∩ openSimplex (stdVertices n)), ?_, ?_, ?_,
     T, hT, ?_, ?_⟩
@@ -52,15 +52,15 @@ theorem IsPLCellOn.exists_preconnected_sdiff_boundary {n : ℕ} {D B : Set M}
     exact image_mono inter_subset_right
   · exact ((convex_ball b ε).inter (convex_openSimplex _)).isPreconnected.image q
       (hqc.mono hsub)
-  · have hm : q b ∈ q '' (Metric.ball b ε ∩ stdSimplex ℝ (Fin (n + 2))) :=
+  · have hm : q b ∈ q '' (Metric.ball b ε ∩ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) :=
       ⟨b, ⟨Metric.mem_ball_self hε, hb⟩, rfl⟩
     rw [← hTeq] at hm
     exact hm.1
   · rw [← hqI]
     rintro _ ⟨hyT, z, hzo, rfl⟩
-    have hzΔ : z ∈ stdSimplex ℝ (Fin (n + 2)) :=
+    have hzΔ : z ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) :=
       openSimplex_stdVertices_subset_stdSimplex hzo
-    have hm : q z ∈ T ∩ q '' stdSimplex ℝ (Fin (n + 2)) := ⟨hyT, z, hzΔ, rfl⟩
+    have hm : q z ∈ T ∩ q '' Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := ⟨hyT, z, hzΔ, rfl⟩
     rw [hTeq] at hm
     obtain ⟨w, ⟨hwr, hwΔ⟩, hwz⟩ := hm
     have hwz' : w = z := hqi hwΔ hzΔ hwz

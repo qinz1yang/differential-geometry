@@ -11,13 +11,13 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 theorem isPLHomeomorphOn_triangle_coordinate_projection :
-    IsPLHomeomorphOn (fun x : Fin 3 → ℝ => (x 1, x 2)) (stdSimplex ℝ (Fin 3))
+    IsPLHomeomorphOn (fun x : Fin 3 → ℝ => (x 1, x 2)) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       {z : ℝ × ℝ | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1} := by
   let π : (Fin 3 → ℝ) →ₗ[ℝ] ℝ × ℝ :=
     { toFun := fun x => (x 1, x 2)
       map_add' := fun _ _ => rfl
       map_smul' := fun _ _ => rfl }
-  have hπ : IsPLHomeomorphOn π (stdSimplex ℝ (Fin 3))
+  have hπ : IsPLHomeomorphOn π (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       {z : ℝ × ℝ | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1} := by
     apply isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn
       (isHPolytope_stdSimplex (Fin 3)).isPolyhedron

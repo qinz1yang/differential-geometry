@@ -22,11 +22,11 @@ theorem IsCylindricalDiagram.exists_supported_surface_nonbounding_disk
     ∃ (Φ : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
       (Q : Set (EuclideanSpace ℝ (Fin 3))) (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
       IsPLHomeomorphOn Φ univ univ ∧ EqOn Φ id (interior S.space)ᶜ ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧ Q ⊆ interior S.space ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧ Q ⊆ interior S.space ∧
       Q ∩ Φ '' K.space = q '' stdSimplexBoundary 2 ∧
       ¬ ∃ (B : Set (EuclideanSpace ℝ (Fin 3)))
         (b : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn b (stdSimplex ℝ (Fin 3)) B ∧ B ⊆ Φ '' K.space ∧
+        IsPLHomeomorphOn b (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B ∧ B ⊆ Φ '' K.space ∧
           b '' stdSimplexBoundary 2 = q '' stdSimplexBoundary 2 := by
   classical
   let P (m : ℕ) : Prop :=
@@ -53,7 +53,7 @@ theorem IsCylindricalDiagram.exists_supported_surface_nonbounding_disk
   have hQL : Q ⊆ L.space ∩ interior S.space := hLspace.symm ▸ hQS
   have hnot : ¬ ∃ (B : Set (EuclideanSpace ℝ (Fin 3)))
       (b : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn b (stdSimplex ℝ (Fin 3)) B ∧ B ⊆ N.space ∧
+      IsPLHomeomorphOn b (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B ∧ B ⊆ N.space ∧
         b '' stdSimplexBoundary 2 = q '' stdSimplexBoundary 2 := by
     rintro ⟨B, b, hb, hBN, hbq⟩
     obtain ⟨Ψ, I, hΨ, hΨfix, hcard, hnew⟩ :=

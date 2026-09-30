@@ -22,19 +22,19 @@ theorem exists_isPLHomeomorphInto_cells {d : ℕ}
   classical
   obtain ⟨A, r, u, hr, hu, rfl, rfl⟩ := hP
   obtain ⟨B, s, v, hs, hv, rfl, rfl⟩ := hQ
-  let H := s ∘ Function.invFunOn r (stdSimplex ℝ (Fin (d + 1)))
+  let H := s ∘ Function.invFunOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)))
   have hH : IsPLHomeomorphOn H A B := hr.symm.trans hs
   obtain ⟨hf, hfim⟩ := exists_isPLHomeomorphInto_of_isPLHomeomorphOn hu hv hH
   refine ⟨v ∘ H ∘ Function.invFunOn u A, hf, hfim, ?_⟩
-  have hbsub : stdSimplexBoundary d ⊆ stdSimplex ℝ (Fin (d + 1)) :=
+  have hbsub : stdSimplexBoundary d ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)) :=
     fun _ hx => hx.1
   have hAsub : r '' stdSimplexBoundary d ⊆ A := by
     rw [← hr.image_eq]
     exact image_mono hbsub
-  have hrinv : Function.invFunOn r (stdSimplex ℝ (Fin (d + 1))) ''
+  have hrinv : Function.invFunOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) ''
       (r '' stdSimplexBoundary d) = stdSimplexBoundary d := by
     rw [← image_comp]
-    have h : EqOn (Function.invFunOn r (stdSimplex ℝ (Fin (d + 1))) ∘ r)
+    have h : EqOn (Function.invFunOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) ∘ r)
         id (stdSimplexBoundary d) :=
       fun x hx => hr.bijOn.invOn_invFunOn.1 (hbsub hx)
     exact h.image_eq.trans (image_id _)
@@ -51,7 +51,7 @@ theorem exists_isPLHomeomorphInto_cells {d : ℕ}
     _ = v '' (H '' (r '' stdSimplexBoundary d)) := by rw [huinv]
     _ = v '' (s '' stdSimplexBoundary d) := by
       congr 1
-      change (s ∘ Function.invFunOn r (stdSimplex ℝ (Fin (d + 1)))) ''
+      change (s ∘ Function.invFunOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)))) ''
         (r '' stdSimplexBoundary d) = _
       rw [image_comp, hrinv]
 

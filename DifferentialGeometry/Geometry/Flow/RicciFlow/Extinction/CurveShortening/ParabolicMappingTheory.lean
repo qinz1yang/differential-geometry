@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SmoothSolution
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.FixedPoint.Mixed
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nemytskii.LocallyLipschitzTruncation
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.StrictParabolicity
 import DifferentialGeometry.Topology.Manifold.AddCircle
 
@@ -177,19 +176,5 @@ theorem circleTensorNemytskiiSplit_exists_strong_solution
                   (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) a hT u0 force)) :=
   S.exists_strong_solution h_compact hT hT1 u0 hsmall
 
-noncomputable abbrev circleDeSimonShortTimeExistence
-    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
-    (r s : ℕ) (a : ℝ)
-    {N : CircleSobolevSection g r s (a + 1) → CircleSobolevSection g r s a}
-    {L_R : ℝ≥0} {R : ℝ} (hR : 0 ≤ R)
-    (h_compact : IsCompactOperator (tensorResolventL2
-      (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) g r s))
-    (u0 : CircleSobolevSection g r s (a + 2))
-    (hN : LipschitzOnWith L_R N (Metric.closedBall
-      (tensorHsInclusion (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ))
-        (g := g) (r := r) (s := s) (show a + 1 ≤ a + 2 by linarith) u0) R)) :=
-  de_simon_quasilinear_tensor_heat_short_time_existence_locally_lipschitz_of_compact_resolvent
-    (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) (g := g) (r := r) (s := s)
-    (a := a) hR h_compact u0 hN
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

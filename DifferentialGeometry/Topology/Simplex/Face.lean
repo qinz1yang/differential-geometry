@@ -1,13 +1,16 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import Mathlib.Analysis.Convex.StdSimplex
 
 set_option autoImplicit false
 
 noncomputable section
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 
-def face {n : ℕ} (i : Fin (n + 2)) : Set (stdSimplex ℝ (Fin (n + 2))) :=
+def face {n : ℕ} (i : Fin (n + 2)) : Set (coordinateSet ℝ (Fin (n + 2))) :=
   {p | p.val i = 0}
 
 
@@ -16,31 +19,31 @@ theorem isClosed_face {n : ℕ} (i : Fin (n + 2)) : IsClosed (face i) :=
 
 
 theorem map_succAbove_apply_pivot {n : ℕ} (i : Fin (n + 2))
-    (p : stdSimplex ℝ (Fin (n + 1))) :
-    (stdSimplex.map i.succAbove p).val i = 0 := by
+    (p : coordinateSet ℝ (Fin (n + 1))) :
+    (coordinateMap i.succAbove p).val i = 0 := by
   change FunOnFinite.linearMap ℝ ℝ i.succAbove p i = 0
   rw [FunOnFinite.linearMap_apply_apply]
   simp [Fin.succAbove_ne]
 
 
 theorem map_succAbove_apply_image {n : ℕ} (i : Fin (n + 2))
-    (p : stdSimplex ℝ (Fin (n + 1))) (j : Fin (n + 1)) :
-    (stdSimplex.map i.succAbove p).val (i.succAbove j) = p.val j := by
+    (p : coordinateSet ℝ (Fin (n + 1))) (j : Fin (n + 1)) :
+    (coordinateMap i.succAbove p).val (i.succAbove j) = p.val j := by
   change FunOnFinite.linearMap ℝ ℝ i.succAbove p (i.succAbove j) = p.val j
   rw [FunOnFinite.linearMap_apply_apply]
   simp only [Fin.succAbove_right_inj, Finset.filter_eq', Finset.mem_univ,
-    if_true, Finset.sum_singleton]
+    ite_true, Finset.sum_singleton]
   rfl
 
 
 def faceInsert {n : ℕ} (i : Fin (n + 2)) :
-    C(stdSimplex ℝ (Fin (n + 1)), face i) :=
-  ⟨fun p ↦ ⟨stdSimplex.map i.succAbove p, map_succAbove_apply_pivot i p⟩,
-    (stdSimplex.continuous_map i.succAbove).subtype_mk _⟩
+    C(coordinateSet ℝ (Fin (n + 1)), face i) :=
+  ⟨fun p ↦ ⟨coordinateMap i.succAbove p, map_succAbove_apply_pivot i p⟩,
+    (continuous_coordinateMap i.succAbove).subtype_mk _⟩
 
 
 def faceDelete {n : ℕ} (i : Fin (n + 2)) :
-    C(face i, stdSimplex ℝ (Fin (n + 1))) :=
+    C(face i, coordinateSet ℝ (Fin (n + 1))) :=
   ⟨fun p ↦ ⟨fun j ↦ p.val.val (i.succAbove j),
     ⟨fun j ↦ p.val.property.1 _, by
       have hp := p.val.property.2
@@ -55,7 +58,7 @@ def faceDelete {n : ℕ} (i : Fin (n + 2)) :
 
 @[simp]
 theorem faceDelete_faceInsert {n : ℕ} (i : Fin (n + 2))
-    (p : stdSimplex ℝ (Fin (n + 1))) : faceDelete i (faceInsert i p) = p := by
+    (p : coordinateSet ℝ (Fin (n + 1))) : faceDelete i (faceInsert i p) = p := by
   apply Subtype.ext
   funext j
   exact map_succAbove_apply_image i p j
@@ -75,7 +78,7 @@ theorem faceInsert_faceDelete {n : ℕ} (i : Fin (n + 2)) (p : face i) :
 
 
 def faceHomeomorph {n : ℕ} (i : Fin (n + 2)) :
-    stdSimplex ℝ (Fin (n + 1)) ≃ₜ face i where
+    coordinateSet ℝ (Fin (n + 1)) ≃ₜ face i where
   toFun := faceInsert i
   invFun := faceDelete i
   left_inv := faceDelete_faceInsert i

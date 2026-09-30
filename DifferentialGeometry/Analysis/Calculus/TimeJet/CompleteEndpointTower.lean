@@ -1,12 +1,14 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Analysis.Elliptic.Barrier.SupportComparison
 import DifferentialGeometry.Analysis.Parabolic.Energy.CutoffEnergy
 import DifferentialGeometry.Analysis.Calculus.TimeJet.EndpointTower
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 
 set_option autoImplicit false
 noncomputable section
 open Set Filter Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic
 open scoped Manifold ContDiff Topology BigOperators
 namespace DifferentialGeometry.Analysis
 
@@ -59,7 +61,7 @@ private theorem gradient_product_local (g : SmoothRiemannianMetric I M)
   exact congrArg (fun w => (⟨y, w⟩ : TotalSpace E (TangentSpace I))) (gradientFun_mul g hfy hhy)
 
 private theorem pair_regular (G : MetricConnectionFamily (I := I) (M := M) ℝ)
-    (T ε t : ℝ) (χ : ℝ → M → ℝ) (x : M) (F : ShiCutoffLowerSupportAt G T ε χ t x)
+    (T ε t : ℝ) (χ : ℝ → M → ℝ) (x : M) (F : ParabolicCutoffLowerSupportAt G T ε χ t x)
     (u v : ℝ → M → ℝ)
     (hu_time : DifferentiableWithinAt ℝ (fun s => u s x) (Icc 0 T) t)
     (hv_time : DifferentiableWithinAt ℝ (fun s => v s x) (Icc 0 T) t)
@@ -123,7 +125,7 @@ theorem endpoint_tower_bound_complete
     (hgrad : ∀ k ≤ N, ∀ t ∈ Icc 0 T, 0 < t → ∀ x,
       (G.metric t).inner x (gradientFun (I := I) (G.metric t) (w k t) x)
         (gradientFun (I := I) (G.metric t) (w k t) x) ≤ 4 * w k t x * w (k + 1) t x)
-    (hcut : ∀ O : M, Nonempty (ShiBarrierCutoffData G T O)) :
+    (hcut : ∀ O : M, Nonempty (ParabolicBarrierCutoffSequence G T O)) :
     ∀ k ≤ N, ∀ t ∈ Icc 0 T, ∀ x, w k t x ≤ completeEndpointTowerBound c K T A N := by
   have hlevels : ∀ n, n ≤ N → ∀ k ≤ n, ∀ t ∈ Icc 0 T, ∀ x,
       w k t x ≤ completeEndpointTowerBound c K T A n := by

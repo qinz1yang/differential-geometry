@@ -7,7 +7,7 @@ noncomputable section
 
 open Set Filter Function Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Integral.Measure
 open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow

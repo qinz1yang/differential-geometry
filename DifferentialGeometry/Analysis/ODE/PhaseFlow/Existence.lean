@@ -104,10 +104,10 @@ theorem scaledPhase_lip {P V κ : NNReal} {a : E × E → E}
       (scaledPhase P V a) (closedBall (0 : E × E) 1) := by
   have hu : LipschitzOnWith ‖phaseUnscale (E := E) P V‖₊ (phaseUnscale P V)
       (closedBall (0 : E × E) 1) :=
-    (phaseUnscale (E := E) P V).lipschitz.lipschitzOnWith
+    (phaseUnscale (E := E) P V).lipschitzWith.lipschitzOnWith
   have hm := (phaseField_lip (E := E) ha).comp hu
     (unscale_maps_box (E := E) P V)
-  have hs := (phaseScale (E := E) P V).lipschitz.comp_lipschitzOnWith hm
+  have hs := (phaseScale (E := E) P V).lipschitzWith.comp_lipschitzOnWith hm
   let hscaled : LipschitzOnWith
       (‖phaseScale (E := E) P V‖₊ *
         (max 1 κ * ‖phaseUnscale (E := E) P V‖₊))
@@ -185,11 +185,11 @@ private theorem exists_picard_mem
   refine ⟨Φ, ?_⟩
   intro x hx
   have hinit : Φ x t₀ = x := by
-    simp only [Φ, dif_pos hx]
+    simp only [Φ, dite_eq_left hx]
     rw [ODE.FunSpace.compProj_val, ← hα x hx, ODE.FunSpace.next_apply₀]
   refine ⟨hinit, ?_, ?_⟩
   · intro t ht
-    simp only [Φ, dif_pos hx]
+    simp only [Φ, dite_eq_left hx]
     apply ODE.hasDerivWithinAt_picard_Icc t₀.2 hf.continuousOn_uncurry
       ((α x hx).continuous_compProj.continuousOn)
       (fun _ _ ↦ (α x hx).compProj_mem_closedBall hf.mul_max_le)
@@ -198,7 +198,7 @@ private theorem exists_picard_mem
     nth_rw 1 [← hα x hx]
     rw [ODE.FunSpace.compProj_of_mem ht', ODE.FunSpace.next_apply]
   · intro t ht
-    simp only [Φ, dif_pos hx]
+    simp only [Φ, dite_eq_left hx]
     exact (α x hx).compProj_mem_closedBall hf.mul_max_le
 
 private theorem exists_fenced_Icc [CompleteSpace E]

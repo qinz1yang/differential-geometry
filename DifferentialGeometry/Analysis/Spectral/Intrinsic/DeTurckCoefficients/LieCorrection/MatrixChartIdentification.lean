@@ -75,12 +75,12 @@ theorem chartCoeff_deTurckVF_eq_chartDeTurckVFComp
     rw [htriv, map_smul, Finsupp.smul_apply, Module.Basis.repr_self,
       Finsupp.single_apply, smul_eq_mul]
     by_cases hpk : p = k
-    · rw [if_pos hpk, if_pos hpk, mul_one]
-    · rw [if_neg hpk, if_neg hpk, mul_zero]
+    · rw [ite_eq_left hpk, ite_eq_left hpk, mul_one]
+    · rw [ite_eq_right hpk, ite_eq_right hpk, mul_zero]
   rw [Finset.sum_congr rfl (fun p _ => hbasis p)]
   rw [Finset.sum_ite_eq' Finset.univ k
     (fun p => chartDeTurckVFComp (I := I) g g_bg α p (extChartAt I α x))]
-  rw [if_pos (Finset.mem_univ k)]
+  rw [ite_eq_left (Finset.mem_univ k)]
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in

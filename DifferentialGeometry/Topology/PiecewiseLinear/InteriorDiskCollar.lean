@@ -14,32 +14,32 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLHomeomorphOn.exists_collar_of_centered_prism {D N : Set E}
     {r : (Fin 3 → ℝ) → E} {f : (Fin 3 → ℝ) × ℝ → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N)
-    (hzero : ∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = r x) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N)
+    (hzero : ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = r x) :
     ∃ (C : Set E) (ρ : E × ℝ → E),
       IsPLHomeomorphOn ρ (D ×ˢ Icc (0 : ℝ) 1) C ∧ C ⊆ N ∧ D ⊆ C ∧
         (∀ x ∈ D, ρ (x, 0) = x) ∧ MapsTo ρ (D ×ˢ Ioc (0 : ℝ) 1) (C \ D) := by
-  have hsub : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 ⊆
-      stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 :=
+  have hsub : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 ⊆
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 :=
     prod_mono Subset.rfl (Icc_subset_Icc (by norm_num) le_rfl)
-  have hpoly : IsPolyhedron (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) :=
+  have hpoly : IsPolyhedron (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) :=
     (isPLBall_stdSimplex 2).isPolyhedron.prod
       (isHPolytope_Icc (a := (0 : ℝ)) (b := 1)).isPolyhedron
-  have hfC : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
-      (f '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)) := hf.restrict hpoly hsub
+  have hfC : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
+      (f '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)) := hf.restrict hpoly hsub
   have hρ : IsPLHomeomorphOn
-      (f ∘ Prod.map (Function.invFunOn r (stdSimplex ℝ (Fin 3))) (id : ℝ → ℝ))
-      (D ×ˢ Icc (0 : ℝ) 1) (f '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)) :=
+      (f ∘ Prod.map (Function.invFunOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))) (id : ℝ → ℝ))
+      (D ×ˢ Icc (0 : ℝ) 1) (f '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)) :=
     (hr.symm.prodMap
       (isHPolytope_Icc (a := (0 : ℝ)) (b := 1)).isPolyhedron.isPLHomeomorphOn_id).trans hfC
   have hbase : ∀ x ∈ D,
-      (f ∘ Prod.map (Function.invFunOn r (stdSimplex ℝ (Fin 3))) (id : ℝ → ℝ)) (x, 0) = x := by
+      (f ∘ Prod.map (Function.invFunOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))) (id : ℝ → ℝ)) (x, 0) = x := by
     intro x hx
-    change f (Function.invFunOn r (stdSimplex ℝ (Fin 3)) x, (0 : ℝ)) = x
+    change f (Function.invFunOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) x, (0 : ℝ)) = x
     rw [hzero _ (hr.symm.bijOn.mapsTo hx)]
     exact hr.bijOn.invOn_invFunOn.2 hx
-  have hDC : D ⊆ f '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) := by
+  have hDC : D ⊆ f '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) := by
     intro x hx
     rw [← hbase x hx]
     exact hρ.bijOn.mapsTo ⟨hx, le_rfl, zero_le_one⟩
@@ -53,11 +53,11 @@ theorem IsPLHomeomorphOn.exists_collar_of_centered_prism {D N : Set E}
 
 theorem IsPLHomeomorphOn.centered_prism_neg {N : Set E} {r : (Fin 3 → ℝ) → E}
     {f : (Fin 3 → ℝ) × ℝ → E}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N)
-    (hzero : ∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = r x) :
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N)
+    (hzero : ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = r x) :
     IsPLHomeomorphOn (f ∘ Prod.map (id : (Fin 3 → ℝ) → (Fin 3 → ℝ)) (fun t : ℝ => -t))
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N ∧
-      ∀ x ∈ stdSimplex ℝ (Fin 3),
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N ∧
+      ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3),
         (f ∘ Prod.map (id : (Fin 3 → ℝ) → (Fin 3 → ℝ)) (fun t : ℝ => -t)) (x, 0) = r x := by
   refine ⟨?_, ?_⟩
   · have hreflect : IsPLHomeomorphOn (fun t : ℝ => -t) (Icc (-1 : ℝ) 1) (Icc (-1 : ℝ) 1) := by
@@ -79,7 +79,7 @@ theorem IsPLHomeomorphOn.centered_prism_neg {N : Set E} {r : (Fin 3 → ℝ) →
 theorem IsPLBall.exists_collar_of_properly_embedded_disk
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 3 K.space)
     (hdim : Module.finrank ℝ E = 3) {D : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (hproper : D ∩ frontier K.space = r '' stdSimplexBoundary 2) :
     ∃ (C : Set E) (ρ : E × ℝ → E),
       IsPLHomeomorphOn ρ (D ×ˢ Icc (0 : ℝ) 1) C ∧ C ⊆ K.space ∧ D ⊆ C ∧
@@ -94,10 +94,10 @@ theorem IsPLBall.exists_collar_of_properly_embedded_disk
 theorem IsPLBall.exists_pushOff_of_properly_embedded_disk
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 3 K.space)
     (hdim : Module.finrank ℝ E = 3) {D : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (hproper : D ∩ frontier K.space = r '' stdSimplexBoundary 2) :
     ∃ (D' : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D' ∧ D' ⊆ K.space ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' ∧ D' ⊆ K.space ∧
         q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 ∧
           D' ∩ D = r '' stdSimplexBoundary 2 := by
   obtain ⟨C, ρ, hρ, hCK, -, hbase, -⟩ :=
@@ -110,7 +110,7 @@ theorem IsCombinatorialManifold.exists_collar_of_spanning_disk
     (S : Geometry.SimplicialComplex ℝ E) [Finite S.faces]
     (hS : IsCombinatorialManifold 2 S) (hSc : IsConnected S.space)
     (hdim : Module.finrank ℝ E = 3) {D U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2) (hU : IsOpen U) (hDU : D ⊆ U) :
     ∃ (C : Set E) (ρ : E × ℝ → E),
       IsPLHomeomorphOn ρ (D ×ˢ Icc (0 : ℝ) 1) C ∧ C ⊆ U ∧ D ⊆ C ∧
@@ -124,10 +124,10 @@ theorem IsCombinatorialManifold.exists_pushOff_of_spanning_disk
     (S : Geometry.SimplicialComplex ℝ E) [Finite S.faces]
     (hS : IsCombinatorialManifold 2 S) (hSc : IsConnected S.space)
     (hdim : Module.finrank ℝ E = 3) {D U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2) (hU : IsOpen U) (hDU : D ⊆ U) :
     ∃ (D' : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D' ∧ D' ⊆ U ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' ∧ D' ⊆ U ∧
         q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 ∧
           D' ∩ D = r '' stdSimplexBoundary 2 := by
   obtain ⟨C, ρ, hρ, hCU, -, hbase, -⟩ :=

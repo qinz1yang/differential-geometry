@@ -58,7 +58,7 @@ theorem nonempty_plSeamTubeChart_of_isPLHomeomorphOn (L : Geometry.SimplicialCom
     have hgp : g p ∈ L.space := (hg.bijOn.mapsTo (hcyl hp.1)).1
     change (vertexChart L hq (hL.isPLSphere_link hq)) (chart p) =
       (if h : g p ∈ L.space then (vertexChart L hq (hL.isPLSphere_link hq)) ⟨g p, h⟩ else 0)
-    rw [dif_pos hgp]
+    rw [dite_eq_left hgp]
     congr 1
     exact Subtype.ext (hchart p hp.1)
   · intro e he
@@ -216,7 +216,7 @@ theorem exists_plSeamTube_of_straightening (L : Geometry.SimplicialComplex ℝ E
   set chart : (ℝ × ℝ) × ℝ → L.space := fun p =>
     if h : Φ (sc p) ∈ L.space then ⟨Φ (sc p), h⟩ else m₀ with hchartdef
   have hchart : ∀ p ∈ spliceCylinder, (chart p : E) = Φ (sc p) := fun p hp => by
-    simp only [hchartdef, dif_pos (hΦS _ (hcyl p hp).1)]
+    simp only [hchartdef, dite_eq_left (hΦS _ (hcyl p hp).1)]
   have hX : ∀ p ∈ spliceCylinder, sc p ∈ crossPlanes ↔ p ∈ crossingFigure := by
     intro p hp
     change (ε * p.1.1 = 0 ∨ ε * p.1.2 = 0) ↔ _

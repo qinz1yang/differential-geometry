@@ -1,6 +1,6 @@
 import Mathlib.Geometry.Manifold.Instances.Real
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
-import DifferentialGeometry.Tensor.Metric.IsometryNorm
+import DifferentialGeometry.Geometry.Metric.Tensor.IsometryNorm
 import DifferentialGeometry.Geometry.Curvature.LocalIsometry
 import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
 

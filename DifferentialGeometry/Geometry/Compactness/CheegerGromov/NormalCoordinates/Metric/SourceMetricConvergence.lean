@@ -68,7 +68,7 @@ theorem IntrinsicBallChart.exists_metricCInfConvergenceOnCompacts_of_chart_conve
   by_cases hV : Nonempty V
   · let p₀ : V := Classical.choice hV
     let jbar : ι → E → Q := fun i z => if hz : z ∈ U i then j i ⟨z, hz⟩ else p₀
-    have hjbar (i : ι) (z : U i) : jbar i z = j i z := dif_pos z.property
+    have hjbar (i : ι) (z : U i) : jbar i z = j i z := dite_eq_left z.property
     apply CheegerGromovCompactness.exists_metricCInfConvergenceOnCompacts_restrict_open_of_local_coefficients
       U j hj hinj jbar hjbar V hcover g F gQ hpartial
     have hF : ∀ᶠ k in atTop, ContMDiffOn 𝓘(ℝ, E) I ∞ (F k) V :=
@@ -81,7 +81,7 @@ theorem IntrinsicBallChart.exists_metricCInfConvergenceOnCompacts_of_chart_conve
       split_ifs with h
       · exact h
       · exact contMDiffOn_const
-    have hF'eq : ∀ᶠ k in atTop, F' k = F k := hF.mono fun k hk => if_pos hk
+    have hF'eq : ∀ᶠ k in atTop, F' k = F k := hF.mono fun k hk => ite_eq_left hk
     intro i
     have hdom : IsOpen (Subtype.val '' ((j i) ⁻¹' (V : Set Q))) :=
       (U i).isOpen.isOpenMap_subtype_val _ (V.isOpen.preimage (hj i).contMDiff.continuous)

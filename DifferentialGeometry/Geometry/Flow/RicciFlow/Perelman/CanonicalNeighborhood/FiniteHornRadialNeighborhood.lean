@@ -46,7 +46,7 @@ theorem finiteHorn_ball_subset_subend (g : SmoothRiemannianMetric I3 W)
     (H : FiniteHorn g) (i : ℕ) :
     ∃ delta : ℝ, 0 < delta ∧ ∀ x : W,
       dist (x : UniformSpace.Completion W) H.endpoint < delta → x ∈ H.subend i := by
-  let q := H.cut_height i
+  let q := H.cutHeight i
   have hq : q ∈ Ioo (0 : ℝ) 1 := H.cut_height_mem i
   let S := H.tube.sectionSet q
   have hS : IsCompact S := by

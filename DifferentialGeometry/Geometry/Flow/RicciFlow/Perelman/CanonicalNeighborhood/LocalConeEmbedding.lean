@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.LocalMarkedInverse
 import DifferentialGeometry.Geometry.Metric.Distance.ClosedBall
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeDistance
+import DifferentialGeometry.Geometry.Metric.ConeDistance.Compactness
 
 noncomputable section
 open Filter Set
@@ -88,12 +88,12 @@ theorem AnnularConvergence.exists_marked_local_cone_embedding_of_local_metric_li
   let D := {x : ℝ × UniformSpace.Completion angles.quotient |
     x.1 ∈ Ioo a b ∧ lambda * Metric.coneDistance o x < A}
   have hDopen : IsOpen D := (isOpen_Ioo.preimage continuous_fst).inter
-    (isOpen_lt (continuous_const.mul (continuous_openConeDistance.comp
+    (isOpen_lt (continuous_const.mul (Metric.continuous_coneDistance.comp
       (continuous_const.prodMk continuous_id))) continuous_const)
   have hoD : o ∈ D := by
     refine ⟨⟨ha1, h1b⟩, ?_⟩
     have hozero : Metric.coneDistance o o = 0 :=
-      (openConeDistance_eq_zero_iff zero_lt_one zero_lt_one).mpr rfl
+      (Metric.coneDistance_eq_zero_iff zero_lt_one zero_lt_one).mpr rfl
     simpa only [hozero, mul_zero] using hA
   let incD : D → D0 := fun x => ⟨x.1, ⟨⟨x.2.1.1.le, x.2.1.2.le⟩, x.2.2⟩⟩
   let y := fun x : D => y0 (incD x)
@@ -109,7 +109,7 @@ theorem AnnularConvergence.exists_marked_local_cone_embedding_of_local_metric_li
     filter_upwards [hinv0 (incD x)] with i hi
     have hmem : (f i).symm (F i (w x i)) ∈ K := hi.2.1
     dsimp only [uK]
-    rw [dif_pos hmem]
+    rw [dite_eq_left hmem]
   have hdistK (x z : K) : dist x z = (riemannianEDistOf gQ x z).toReal := hmdist x z
   have hpair (x z : D) : Tendsto (fun i => dist (uK i x) (uK i z)) atTop
       (𝓝 (lambda * Metric.coneDistance (x : ℝ × UniformSpace.Completion angles.quotient)
@@ -123,7 +123,7 @@ theorem AnnularConvergence.exists_marked_local_cone_embedding_of_local_metric_li
     filter_upwards [huK oD] with i hi
     rw [hdistK, hi]
   obtain ⟨PK, hPKcluster, hPKemb, hPKbase, hPKmetric⟩ :=
-    exists_marked_cone_embedding_of_compact_pair_limits ha hlambda D
+    Metric.exists_marked_cone_embedding_of_compact_pair_limits ha hlambda D
       (fun x hx => ⟨hx.1.1.le, hx.1.2.le⟩) uK hpair oD qK hbaseK
   let inc : K → V := fun x => ⟨x.1, hKV x.2⟩
   have hincCont : Continuous inc := continuous_subtype_val.subtype_mk _

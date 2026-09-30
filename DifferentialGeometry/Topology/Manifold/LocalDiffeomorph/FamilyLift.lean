@@ -44,7 +44,7 @@ theorem exists_contMDiff_family_lift_near
   let β := hf.localInverse ∘ α
   refine ⟨U', hU'open, haU', (fun a ha => (hdom (a, t0) ⟨ha, htI⟩).2.1), ε, hε,
     (fun r hr => (hdom (a0, r) ⟨haU', hr⟩).2.2), β, ?_, ?_, ?_⟩
-  · exact hf.contmdiffOn_localInverse.comp (hα.mono (fun p hp => (hdom p hp).2)) (fun p hp => (hdom p hp).1)
+  · exact hf.contMDiffOn_localInverse.comp (hα.mono (fun p hp => (hdom p hp).2)) (fun p hp => (hdom p hp).1)
   · intro p hp
     exact hf.localInverse_right_inv (hdom p hp).1
   · change hf.localInverse (α (a0, t0)) = x0

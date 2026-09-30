@@ -14,17 +14,17 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLSphere.exists_innermost_disk_subset_of_eventually_eq {S T D₀ : Set E}
     (hS : IsPLSphere 2 S) {q₀ : (Fin 3 → ℝ) → E}
-    (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀) (hD₀S : D₀ ⊆ S)
+    (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀) (hD₀S : D₀ ⊆ S)
     (hlocal : ∀ x ∈ D₀, ∀ᶠ y in 𝓝 x, y ∈ T ↔ y ∈ S)
     {ι : Type*} [Finite ι] {J : ι → Set E} (hJ : ∀ i, IsPLSphere 1 (J i))
     (hJT : ∀ i, J i ⊆ T) (hdisj : Pairwise fun i j => Disjoint (J i) (J j))
     (i₀ : ι) (hi₀ : q₀ '' stdSimplexBoundary 2 = J i₀) :
     ∃ (i : ι) (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ D₀ ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ D₀ ∧
         q '' stdSimplexBoundary 2 = J i ∧ ∀ j, j ≠ i → Disjoint D (J j) := by
   classical
   have hex : ∃ n, ∃ (i : ι) (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ D₀ ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ D₀ ∧
         q '' stdSimplexBoundary 2 = J i ∧ {j | j ≠ i ∧ J j ⊆ D}.ncard = n :=
     ⟨_, i₀, D₀, q₀, hq₀, Subset.rfl, hi₀, rfl⟩
   obtain ⟨i, D, q, hq, hDD₀, hqJ, hn⟩ := Nat.find_spec hex

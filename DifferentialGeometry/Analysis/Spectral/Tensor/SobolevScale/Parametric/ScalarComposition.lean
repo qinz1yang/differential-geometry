@@ -89,14 +89,15 @@ variable {V W α : Type*} [NormedAddCommGroup V] [NormedAddCommGroup W]
 private theorem LipschitzOnWith.eLpNorm_comp_sub_le
     {F : V → W} {K : Set V} {L : ℝ≥0} (hF : LipschitzOnWith L F K)
     (μ : Measure α) (p : ENNReal) (u v : α → V)
-    (hu : ∀ᵐ x ∂μ, u x ∈ K) (hv : ∀ᵐ x ∂μ, v x ∈ K) :
+    (hu : ∀ᵐ x ∂μ, u x ∈ K) (hv : ∀ᵐ x ∂μ, v x ∈ K)
+    (hfg : AEStronglyMeasurable (fun x => F (u x) - F (v x)) μ) :
     eLpNorm (fun x => F (u x) - F (v x)) p μ ≤
       (L : ENNReal) * eLpNorm (fun x => u x - v x) p μ := by
   have hbound : ∀ᵐ x ∂μ, ‖F (u x) - F (v x)‖ ≤ (L : ℝ) * ‖u x - v x‖ := by
     filter_upwards [hu, hv] with x hux hvx
     exact hF.norm_sub_le hux hvx
   simpa only [ENNReal.ofReal_coe_nnreal] using
-    eLpNorm_le_mul_eLpNorm_of_ae_le_mul hbound p
+    eLpNorm_le_mul_eLpNorm_of_ae_le_mul hfg hbound p
 
 
 end
@@ -191,6 +192,14 @@ theorem norm_scalarCompOn_sub_le_of_lipschitzOnWith
   let a : M → ι → ℝ := fun x i => TensorRSField.scalar0 (u i).toSection x
   let b : M → ι → ℝ := fun x i => TensorRSField.scalar0 (v i).toSection x
   let d : ι → M → ℝ := fun i x => a x i - b x i
+  have hFa : Continuous (fun x => F (a x)) := by
+    simpa [a] using
+      (TensorRSField.scalar0_smooth
+        (scalarCompOn u F hF hu).toSection).continuous
+  have hFb : Continuous (fun x => F (b x)) := by
+    simpa [b] using
+      (TensorRSField.scalar0_smooth
+        (scalarCompOn v F hF hv).toSection).continuous
   have hd (i : ι) : MemLp (d i) 2 μ :=
     (memLp_scalar0 g (u i) 2).sub (memLp_scalar0 g (v i) 2)
   have hpn : ∀ x, ‖a x - b x‖ ≤ ∑ i, ‖d i x‖ := by
@@ -198,20 +207,24 @@ theorem norm_scalarCompOn_sub_le_of_lipschitzOnWith
     apply (pi_norm_le_iff_of_nonneg (Finset.sum_nonneg (fun i _ => norm_nonneg (d i x)))).2
     intro i
     exact Finset.single_le_sum (fun j _ => norm_nonneg (d j x)) (Finset.mem_univ i)
+  have hab : Continuous (fun x => a x - b x) :=
+    (continuous_pi (fun i => (TensorRSField.scalar0_smooth (u i).toSection).continuous)).sub
+      (continuous_pi (fun i => (TensorRSField.scalar0_smooth (v i).toSection).continuous))
   have hsum : eLpNorm (fun x => a x - b x) 2 μ ≤ ∑ i, eLpNorm (d i) 2 μ := by
     calc
       _ ≤ eLpNorm (fun x => ∑ i, ‖d i x‖) 2 μ :=
-        eLpNorm_mono_ae_real (Filter.Eventually.of_forall hpn)
+        eLpNorm_mono_ae_real hab.aestronglyMeasurable (Filter.Eventually.of_forall hpn)
       _ ≤ ∑ i, eLpNorm (fun x => ‖d i x‖) 2 μ := by
         have heq : (fun x => ∑ i, ‖d i x‖) = ∑ i, (fun x => ‖d i x‖) := by
           funext x
           simp only [Finset.sum_apply]
         rw [heq]
-        exact eLpNorm_sum_le (fun i _ => (hd i).aestronglyMeasurable.norm)
-          (by norm_num : (1 : ENNReal) ≤ 2)
-      _ = _ := by simp only [eLpNorm_norm]
+        exact eLpNorm_sum_le (by norm_num : (1 : ENNReal) ≤ 2)
+      _ = _ := Finset.sum_congr rfl (fun i _ =>
+        eLpNorm_norm (d i) (hd i).aestronglyMeasurable)
   have hbound := (hL.eLpNorm_comp_sub_le μ 2 a b
-    (Filter.Eventually.of_forall huK) (Filter.Eventually.of_forall hvK)).trans
+    (Filter.Eventually.of_forall huK) (Filter.Eventually.of_forall hvK)
+    (hFa.aestronglyMeasurable.sub hFb.aestronglyMeasurable)).trans
       (mul_le_mul_of_nonneg_left hsum (by positivity))
   have hrhs : (L : ENNReal) * ∑ i, eLpNorm (d i) 2 μ ≠ (∞ : ENNReal) := by
     apply ENNReal.mul_ne_top ENNReal.coe_ne_top

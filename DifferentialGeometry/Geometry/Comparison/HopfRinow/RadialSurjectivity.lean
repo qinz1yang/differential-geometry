@@ -710,8 +710,13 @@ theorem minExp_of_cptBall
         apply @IsCompact.of_isClosed_subset M
           PseudoEMetricSpace.toUniformSpace.toTopologicalSpace _ _ hcpt hclosed
         intro z hz
-        rw [Metric.mem_closedEBall'] at hz ⊢
-        rw [IsRiemannianManifold.out (I := I) c z] at hz
+        have hz' := (@Metric.mem_closedEBall' M
+          PseudoEMetricSpace.toUniformSpace.toTopologicalSpace inferInstance c z
+          (ENNReal.ofReal (R - t₀))).mp hz
+        apply (@Metric.mem_closedEBall' M
+          PseudoEMetricSpace.toUniformSpace.toTopologicalSpace inferInstance p z
+          (ENNReal.ofReal R)).mpr
+        rw [IsRiemannianManifold.out (I := I) c z] at hz'
         rw [IsRiemannianManifold.out (I := I) p z]
         have htri : riemannianEDist I p z ≤
             riemannianEDist I p c + riemannianEDist I c z :=
@@ -719,7 +724,7 @@ theorem minExp_of_cptBall
         calc
           riemannianEDist I p z ≤ riemannianEDist I p c + riemannianEDist I c z := htri
           _ ≤ ENNReal.ofReal t₀ + ENNReal.ofReal (R - t₀) :=
-            add_le_add hpc.le hz
+            add_le_add hpc.le hz'
           _ = ENNReal.ofReal R := by
             rw [← ENNReal.ofReal_add ht₀Icc.1 hRt₀.le]
             congr 1
@@ -820,9 +825,11 @@ theorem minExp_of_cptBall
         hγgUnit hσgUnit hjuncg hming
       have hvmatch : mfderiv (modelWithCornersSelf ℝ ℝ) I γ t₀ (1 : ℝ) =
           mfderiv (modelWithCornersSelf ℝ ℝ) I σ 0 (1 : ℝ) := by
-        rw [← (hγgerm t₀ ht₀Icc).mfderiv_eq,
-          ← (hσgerm 0 ⟨le_rfl, hδ'pos.le⟩).mfderiv_eq]
-        exact hvmatchg
+        have hγderiv := congrArg (fun A : ℝ →L[ℝ] E => A 1)
+          ((hγgerm t₀ ht₀Icc).mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := I))
+        have hσderiv := congrArg (fun A : ℝ →L[ℝ] E => A 1)
+          ((hσgerm 0 ⟨le_rfl, hδ'pos.le⟩).mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := I))
+        exact hγderiv.symm.trans (hvmatchg.trans hσderiv)
       have hγlift := Geodesic.isMIntegralCurveOn_velocityLift (I := I) g hJopen hγgeo hγcont
       have hσlift := Geodesic.isMIntegralCurveOn_velocityLift (I := I) g hJσopen hσgeo hσcont
       let Jshift : Set ℝ := {s : ℝ | s + t₀ ∈ J}

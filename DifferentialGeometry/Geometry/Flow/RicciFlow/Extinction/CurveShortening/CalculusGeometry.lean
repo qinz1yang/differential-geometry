@@ -214,8 +214,15 @@ private theorem chartRep_surjective_iff
         (mfderiv% F ((extChartAt I p).symm (extChartAt I p x)) ∘SL
           mfderiv% (extChartAt I p).symm (extChartAt I p x))) :
         E →L[ℝ] EuclideanSpace ℝ (Fin n)) := by
-    rw [← mfderiv_eq_fderiv]
-    exact hcomp2.mfderiv
+    have h := hcomp2.mfderiv
+    rw [mfderiv_eq_fderiv] at h
+    apply ContinuousLinearMap.ext
+    intro v
+    have hv := congrArg (fun L => NormedSpace.fromTangentSpace (𝕜 := ℝ)
+      (extChartAt J q (F ((extChartAt I p).symm (extChartAt I p x))))
+        (L ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (extChartAt I p x)).symm v))) h
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply] using! hv
   rw [hfd]
   exact surjective_comp_comp_iff_of_isInvertible hA hB
 

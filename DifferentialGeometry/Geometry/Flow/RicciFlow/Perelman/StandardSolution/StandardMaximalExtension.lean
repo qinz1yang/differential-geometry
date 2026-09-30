@@ -32,7 +32,7 @@ theorem exists_chain_upper_bound (C : Set PartialStandardSolution)
   have hagree (S : PartialStandardSolution) (hSC : S ∈ C) (t : ℝ) (ht : t ∈ S.domain) :
       g t = S.metric t := by
     have htD : t ∈ D.carrier := lifetimeInterval_carrier_mono S.lifetime_pos hT (hle S hSC) ht
-    simp only [g, dif_pos htD]
+    simp only [g, dite_eq_left htD]
     by_cases heq : cover t htD = S
     · rw [heq]
     · rcases hchain (hcover_mem t htD) hSC heq with he | he

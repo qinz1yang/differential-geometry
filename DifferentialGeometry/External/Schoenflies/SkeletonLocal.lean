@@ -216,9 +216,9 @@ theorem exists_goodRadius (x : Plane) (P : Piece) : ∃ r > 0, GoodRadius x P r 
       · exact one_pos
       · exact dist_pos.2 (Ne.symm h)
     · intro h1
-      exact le_trans (min_le_left _ _) (le_of_eq (if_neg h1))
+      exact le_trans (min_le_left _ _) (le_of_eq (ite_eq_right h1))
     · intro h2
-      exact le_trans (min_le_right _ _) (le_of_eq (if_neg h2))
+      exact le_trans (min_le_right _ _) (le_of_eq (ite_eq_right h2))
   · -- A piece missing `x` is a compact set at positive distance from `x`.
     obtain ⟨ρ, hρ, hd⟩ := Plane.exists_dist_pos isCompact_singleton (isCompact_segment P.1 P.2)
       (Set.disjoint_singleton_left.2 hx)

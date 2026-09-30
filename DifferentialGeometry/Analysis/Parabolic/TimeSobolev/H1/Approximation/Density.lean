@@ -108,8 +108,12 @@ private lemma germ_deriv
   have hη : 0 < η := by dsimp [η]; linarith
   obtain ⟨q, d, hq, _hq_support, hdq, hdv⟩ := exists_flat_deriv hT v hη
   have hqLp : MemLp q 2 (timeMeasure T) := (Lp.memLp d).ae_eq hdq
-  obtain ⟨δ, hδ, hsmall⟩ :=
-    hqLp.eLpNorm_indicator_le (p := (2 : ℝ≥0∞)) (by norm_num) (by norm_num) hη
+  obtain ⟨δ₀, hδ₀, hsmall⟩ :=
+    hqLp.eLpNorm_indicator_le (p := (2 : ℝ≥0∞)) (by norm_num) (by norm_num)
+      (ENNReal.ofReal_pos.mpr hη)
+  obtain ⟨r, hr, hrδ₀⟩ := ENNReal.lt_iff_exists_nnreal_btwn.mp hδ₀
+  let δ : ℝ := r
+  have hδ : 0 < δ := by exact_mod_cast hr
   let ρ : ℝ := min (T / 8) (δ / 4)
   have hρ : 0 < ρ := by
     dsimp [ρ]
@@ -132,7 +136,7 @@ private lemma germ_deriv
         exact hρ.le
       _ ≤ ENNReal.ofReal δ := ENNReal.ofReal_le_ofReal h2ρδ
   have hSsmall : eLpNorm (S.indicator q) 2 (timeMeasure T) ≤ ENNReal.ofReal η :=
-    hsmall S hSmeas hμS
+    hsmall S hSmeas (hμS.trans (by simpa only [δ, ENNReal.ofReal_coe_nnreal] using hrδ₀.le))
   let χ : ContDiffBump (T / 2) :=
     ⟨T / 2 - ρ, T / 2 - ρ / 2, by linarith [hρT], by linarith [hρ]⟩
   let q' : ℝ → X := fun t => χ t • q t
@@ -140,7 +144,7 @@ private lemma germ_deriv
   have hq'mem : MemLp q' 2 (timeMeasure T) :=
     memLp_of_continuousOn hq'.continuous.continuousOn
   have hq'q : eLpNorm (q' - q) 2 (timeMeasure T) ≤ ENNReal.ofReal η := by
-    refine (eLpNorm_mono_ae ?_).trans hSsmall
+    refine (eLpNorm_mono_ae (hq'mem.sub hqLp).aestronglyMeasurable ?_).trans hSsmall
     unfold timeMeasure
     filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
     by_cases htS : t ∈ S

@@ -136,7 +136,7 @@ theorem iterCov_prod_flat_apply [I.Boundaryless] [J.Boundaryless]
           rw [hVdef, productVectorField_apply]
 
 omit [SigmaCompactSpace M] [SigmaCompactSpace N] in
-theorem iterCov_ricci_prod_flat_apply [I.Boundaryless] [J.Boundaryless]
+theorem iterCov_ricci_prod_flat_apply
     [BoundarylessManifold I M] [BoundarylessManifold J N]
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
     (hflat : ∀ (y : N) (w : Fin 2 → TangentSpace J y), metricRicciAt h y w = 0) :
@@ -238,8 +238,7 @@ theorem iterCov_ricci_prod_flat_apply [I.Boundaryless] [J.Boundaryless]
 
 set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace E] [CompleteSpace F] [SigmaCompactSpace M] [SigmaCompactSpace N] in
-theorem normSq0S_prod_of_forall_fst [I.Boundaryless] [J.Boundaryless]
-    [BoundarylessManifold I M] [BoundarylessManifold J N]
+theorem normSq0S_prod_of_forall_fst
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
     (x : M × N) (s : ℕ) (T : Tensor0SSpace s (I.prod J) x) (T' : Tensor0SSpace s I x.1)
     (hT : ∀ slots : Fin s → TangentSpace (I.prod J) x, T slots = T' (fun i => (slots i).1)) :

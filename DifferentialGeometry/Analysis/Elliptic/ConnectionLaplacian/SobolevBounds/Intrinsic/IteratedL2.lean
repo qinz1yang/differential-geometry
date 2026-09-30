@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Intrinsic.L2
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Iterates
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 

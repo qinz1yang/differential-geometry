@@ -93,7 +93,7 @@ theorem doubleSeamPatch_of_nonneg (ha : 0 < a) (b : B) {q : B × ℝ}
   classical
   rw [doubleSeamPatch_apply B r hr hz hn c hheight hsmall hc ha b hq]
   change (if 0 ≤ q.2 then doublePositive B (c _) else doubleNegative B (c _)) = _
-  rw [if_pos ht]
+  rw [ite_eq_left ht]
   apply congrArg (fun p => doublePositive B (c p))
   exact Prod.ext rfl (Subtype.ext (abs_of_nonneg ht))
 
@@ -105,7 +105,7 @@ theorem doubleSeamPatch_of_neg (ha : 0 < a) (b : B) {q : B × ℝ}
   classical
   rw [doubleSeamPatch_apply B r hr hz hn c hheight hsmall hc ha b hq]
   change (if 0 ≤ q.2 then doublePositive B (c _) else doubleNegative B (c _)) = _
-  rw [if_neg (not_le.mpr ht)]
+  rw [ite_eq_right (not_le.mpr ht)]
   apply congrArg (fun p => doubleNegative B (c p))
   exact Prod.ext rfl (Subtype.ext (abs_of_neg ht))
 

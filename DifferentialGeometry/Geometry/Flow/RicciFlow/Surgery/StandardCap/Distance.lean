@@ -186,7 +186,7 @@ private theorem intrinsicMetricSpace_proper :
   apply ProperSpace.of_seq_closedBall (x := (0 : E3)) (r := fun r : ℝ => r) Filter.tendsto_id
   apply Filter.Eventually.of_forall
   intro r
-  convert compact_euclidean_radial_ball r using 1 <;> try rfl
+  convert compact_euclidean_radial_ball r using 1
   ext x
   change dist x 0 ≤ r ↔ ‖x‖ ≤ r
   rw [dist_comm]
@@ -197,12 +197,11 @@ theorem metric_complete : RiemannianMetricComplete metric :=
 
 theorem isCompact_metric_closedBall (x : E3) (r : ℝ≥0) :
     IsCompact {y : E3 | riemannianEDistOf metric x y ≤ r} := by
-  let : PseudoMetricSpace E3 := intrinsicMetricSpace.toPseudoMetricSpace
-  let : PseudoEMetricSpace E3 := intrinsicMetricSpace.toPseudoEMetricSpace
-  let : ProperSpace E3 := intrinsicMetricSpace_proper
-  have h := isCompact_closedBall x (r : ℝ)
-  rw [← Metric.closedEBall_coe] at h
-  have hset : Metric.closedEBall x r = {y : E3 | riemannianEDistOf metric x y ≤ r} := by
+  have h := @isCompact_closedBall E3 intrinsicMetricSpace.toPseudoMetricSpace
+    intrinsicMetricSpace_proper x (r : ℝ)
+  rw [← @Metric.closedEBall_coe E3 intrinsicMetricSpace.toPseudoMetricSpace x r] at h
+  have hset : @Metric.closedEBall E3 intrinsicMetricSpace.toEDist x r =
+      {y : E3 | riemannianEDistOf metric x y ≤ r} := by
     ext y
     change riemannianEDistOf metric y x ≤ r ↔ _
     rw [show riemannianEDistOf metric y x = riemannianEDistOf metric x y from

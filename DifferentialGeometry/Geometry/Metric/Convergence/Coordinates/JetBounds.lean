@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Christoffel.Perturbation
+import DifferentialGeometry.Geometry.Metric.Coordinates.JetDifference
 
 noncomputable section
 
@@ -8,7 +8,7 @@ namespace DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold ContDiff Topology BigOperators Matrix
 
 open CheegerGromovCompactness Geometry.Curvature Geometry.Operator
-open Analysis.Calculus Analysis.Spectral.DeTurckCoefficients
+open Analysis.Calculus
 open Integral.DivergenceTheorem Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -242,13 +242,13 @@ private lemma chartGramPartial2_sub_sum_le
       rw [← hS]
       ring
 
-theorem exists_chartMetricJet2DiffSup_le
+theorem exists_chartMetricJet2DiffSum_le
     (gRef : SmoothRiemannianMetric I M) (α : M)
     {K : Set M} (hK : IsCompact K)
     (hKchart : K ⊆ (chartAt H α).source) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ u u' : SmoothRiemannianMetric I M,
       ∀ y ∈ K,
-        chartMetricJet2DiffSup (I := I) (M := M) u u' α (extChartAt I α y) ≤
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) u u' α (extChartAt I α y) ≤
           C * ∑ q ∈ Finset.range 3, metricDerivNorm (I := I) q u u' gRef y := by
   classical
   obtain ⟨C0, hC0, h0⟩ := chartGramMatrix_sub_sum_le (I := I) gRef α hK hKchart
@@ -258,8 +258,8 @@ theorem exists_chartMetricJet2DiffSup_le
   intro u u' y hy
   have hψ : (extChartAt I α).symm (extChartAt I α y) = y :=
     (extChartAt I α).left_inv (by rw [extChartAt_source]; exact hKchart hy)
-  unfold chartMetricJet2DiffSup chartMetricJet1DiffSup chartGramDiffSup matrixEntryL1
-    chartGramPartialDiffSup gramPartialDiffEntry chartGramPartial2DiffSup gramPartial2DiffEntry
+  unfold DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum Matrix.entrywiseL1
+    DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum DifferentialGeometry.Tensor.Coordinates.chartGramPartialAbsDiffEntry DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum DifferentialGeometry.Tensor.Coordinates.chartGramPartial2AbsDiffEntry
   rw [hψ]
   calc
     _ ≤ C0 * (∑ q ∈ Finset.range 3, metricDerivNorm (I := I) q u u' gRef y) +

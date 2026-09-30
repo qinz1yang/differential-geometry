@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialSphericalFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckFields
-import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormCovering
 
 set_option autoImplicit false
 
@@ -78,7 +77,6 @@ theorem nonempty_globalStepInputs_of_uniformEpsilon {p : CutoffParameters} {τ �
           presentation := hΛpres },
       neckInput := hneck Λ hΛ hΛpres,
       pieceInput := hpiece,
-      roundInput := sphericalSpaceFormCovering_holds,
       cylinderInput := hcylinder Λ hΛ hΛpres,
       protectInput := hprotect Λ hΛ hΛpres }
 
@@ -114,9 +112,35 @@ theorem exists_pair_and_globalStepInputs_of_hasInitialSphericalFrontier
             presentation := hΛpres },
         neckInput := hneck ε Λ hε hε1 hΛ hΛpres,
         pieceInput := hpiece,
-        roundInput := sphericalSpaceFormCovering_holds,
         cylinderInput := hcylinder ε Λ hε hε1 hΛ hΛpres,
         protectInput := hprotect ε Λ hε hε1 hΛ hΛpres }⟩
+
+
+open DifferentialGeometry.Topology
+  (componentwiseConnectedSumStandardFactor_of_componentwiseStandardFactor) in
+theorem nonempty_globalStepInputs_of_uniformEpsilon_of_standardDiscard
+    {p : CutoffParameters} {τ d : ℝ} {k : ℕ} {DiscardedCutOpen : Type u → Prop}
+    (hτ : 0 < τ) (huniform : HasUniformEpsilonSphericalFrontier.{u} τ)
+    (hmodels : ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
+      GeometricCutoffRecord H i p → DiscardedCutOpen (H.event i).discarded.Carrier →
+      (H.event i).discarded.toClosedOrientedManifold.componentwiseStandardFactor)
+    (hneck : ∀ Λ : ℝ, 1 ≤ Λ →
+      (∀ D : OneStepIncoming.{u}, τ ≤ D.endTime →
+        Nonempty (TerminalCorePresentation.{u} D (1 / 2) Λ)) →
+      historicalNeckRecognition.{u} τ (1 / 2) d k Λ)
+    (hcylinder : ∀ Λ : ℝ, 1 ≤ Λ →
+      (∀ D : OneStepIncoming.{u}, τ ≤ D.endTime →
+        Nonempty (TerminalCorePresentation.{u} D (1 / 2) Λ)) →
+      hornCylinderLimit.{u} (1 / 2) Λ)
+    (hprotect : ∀ Λ : ℝ, 1 ≤ Λ →
+      (∀ D : OneStepIncoming.{u}, τ ≤ D.endTime →
+        Nonempty (TerminalCorePresentation.{u} D (1 / 2) Λ)) →
+      protectionInput.{u} τ (1 / 2) Λ) :
+    Nonempty (GlobalStepInputs.{u} p τ (1 / 2) d k DiscardedCutOpen) :=
+  nonempty_globalStepInputs_of_uniformEpsilon hτ (by norm_num) (by norm_num) huniform hneck
+    hcylinder hprotect (fun H i R hD =>
+      componentwiseConnectedSumStandardFactor_of_componentwiseStandardFactor
+        (H.event i).discarded.toClosedOrientedManifold (hmodels H i R hD))
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 

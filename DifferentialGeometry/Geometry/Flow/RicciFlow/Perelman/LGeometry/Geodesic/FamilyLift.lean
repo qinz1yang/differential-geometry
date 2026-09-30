@@ -50,9 +50,32 @@ theorem exists_lRegularizedGeodesicFamily_lift_to_time
     have hgerm : f ∘ (fun r => theta (a, r)) =ᶠ[𝓝 s0] (fun r => α (a, r)) := by
       filter_upwards [isOpen_Ioo.mem_nhds hsI] with r hr
       exact hproj ⟨ha, hr⟩
+    have hder := hgerm.mfderiv_eq (I := modelWithCornersSelf ℝ ℝ) (I' := J)
+    have hpointA : α (a, s0) = f (theta (a, s0)) :=
+      (hproj ⟨ha, by simpa only [I₀] using hsI⟩).symm
+    rw [hpointA] at hder
+    simp only [Function.comp_apply] at hder
+    have hcomp := mfderiv_comp s0 ((hf _).contMDiffAt.mdifferentiableAt (by simp))
+      (hthetaD a ha)
+    have hcomp1 := congrArg
+      (fun L => L (1 : TangentSpace (modelWithCornersSelf ℝ ℝ) s0)) hcomp
+    have hder1 := congrArg
+      (fun L => L (1 : TangentSpace (modelWithCornersSelf ℝ ℝ) s0)) hder
+    have hder1' : (mfderiv (modelWithCornersSelf ℝ ℝ) J
+        (f ∘ fun r => theta (a, r)) s0)
+        (1 : TangentSpace (modelWithCornersSelf ℝ ℝ) s0) =
+        (mfderiv (modelWithCornersSelf ℝ ℝ) J (fun r => α (a, r)) s0)
+          (1 : TangentSpace (modelWithCornersSelf ℝ ℝ) s0) := by
+      rw [Function.comp_apply] at hder1
+      convert hder1 using 1; rfl
     unfold lVelocity
-    rw [← hgerm.mfderiv_eq, mfderiv_comp s0 ((hf _).contMDiffAt.mdifferentiableAt (by simp)) (hthetaD a ha)]
-    rfl
+    change (mfderiv I J f (theta (a, s0)))
+        ((mfderiv (modelWithCornersSelf ℝ ℝ) I (fun r => theta (a, r)) s0)
+          (1 : TangentSpace (modelWithCornersSelf ℝ ℝ) s0)) =
+      (mfderiv (modelWithCornersSelf ℝ ℝ) J (fun r => α (a, r)) s0)
+        (1 : TangentSpace (modelWithCornersSelf ℝ ℝ) s0)
+    simpa only [Function.comp_apply, ContinuousLinearMap.comp_apply] using
+      hcomp1.symm.trans hder1'
   let ζ : A → TangentBundle I X := fun a => ⟨theta (a, s0), lVelocity (I := I) (fun r => theta (a, r)) s0⟩
   have hζ : ContMDiffOn 𝓘(ℝ, A) I.tangent ∞ ζ U₀ :=
     (DifferentialGeometry.Geometry.contMDiffOn_curve_velocity_family hU₀ isOpen_Ioo htheta).comp

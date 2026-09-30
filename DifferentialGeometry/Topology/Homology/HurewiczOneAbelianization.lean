@@ -48,36 +48,36 @@ theorem integralPathChain_refl_eq_constChain (x : X) :
     rfl
   rw [integralPathChain, integralConstChain, h]
 
-theorem stdSimplex_one_le_one (t : stdSimplex ℝ (Fin 2)) : (t.val 1 : ℝ) ≤ 1 := by
-  have hsum : t.val 0 + t.val 1 = 1 := by simpa [Fin.sum_univ_two] using t.property.2
-  have h0 : (0 : ℝ) ≤ t.val 0 := t.property.1 0
+theorem stdSimplex_one_le_one (t : Convexity.StdSimplex ℝ (Fin 2)) : (t.weights 1 : ℝ) ≤ 1 := by
+  have hsum : t.weights 0 + t.weights 1 = 1 := by simp
+  have h0 : (0 : ℝ) ≤ t.weights 0 := t.weights_nonneg 0
   linarith
 
-theorem squareAffineMap_one_apply_coe (P Q : Square) (t : stdSimplex ℝ (Fin 2)) (i : Fin 2) :
+theorem squareAffineMap_one_apply_coe (P Q : Square) (t : Convexity.StdSimplex ℝ (Fin 2)) (i : Fin 2) :
     (squareAffineMap 1 ![P, Q] t i : ℝ) =
-      (1 - t.val 1) * (P i : ℝ) + t.val 1 * (Q i : ℝ) := by
-  have ht : t.val 0 = 1 - t.val 1 := by
-    have h : t.val 0 + t.val 1 = 1 := by simpa [Fin.sum_univ_two] using t.property.2
+      (1 - t.weights 1) * (P i : ℝ) + t.weights 1 * (Q i : ℝ) := by
+  have ht : t.weights 0 = 1 - t.weights 1 := by
+    have h : t.weights 0 + t.weights 1 = 1 := by simp
     linarith
   fin_cases i <;>
     (rw [squareAffineMap_apply_coe, Fin.sum_univ_two, ht]
      simp)
 
-theorem squareAffineMap_one_eq_squarePoint (P Q : Square) (t : stdSimplex ℝ (Fin 2)) :
+theorem squareAffineMap_one_eq_squarePoint (P Q : Square) (t : Convexity.StdSimplex ℝ (Fin 2)) :
     squareAffineMap 1 ![P, Q] t =
       squarePoint
-        ⟨(1 - t.val 1) * (P 0 : ℝ) + t.val 1 * (Q 0 : ℝ), by
+        ⟨(1 - t.weights 1) * (P 0 : ℝ) + t.weights 1 * (Q 0 : ℝ), by
           have hP := (P 0).property
           have hQ := (Q 0).property
           have ht1 := stdSimplex_one_le_one t
-          have ht0 := t.property.1 1
+          have ht0 := t.weights_nonneg 1
           exact ⟨by nlinarith [hP.1, hQ.1, ht0, ht1],
             by nlinarith [hP.2, hQ.2, ht0, ht1]⟩⟩
-        ⟨(1 - t.val 1) * (P 1 : ℝ) + t.val 1 * (Q 1 : ℝ), by
+        ⟨(1 - t.weights 1) * (P 1 : ℝ) + t.weights 1 * (Q 1 : ℝ), by
           have hP := (P 1).property
           have hQ := (Q 1).property
           have ht1 := stdSimplex_one_le_one t
-          have ht0 := t.property.1 1
+          have ht0 := t.weights_nonneg 1
           exact ⟨by nlinarith [hP.1, hQ.1, ht0, ht1],
             by nlinarith [hP.2, hQ.2, ht0, ht1]⟩⟩ := by
   funext i
@@ -87,7 +87,7 @@ theorem squareAffineMap_one_eq_squarePoint (P Q : Square) (t : stdSimplex ℝ (F
 
 theorem integralSimplexImageGen_squareSegment (f : C(Square, X)) (P Q : Square)
     (σ : integralSingularSimplex 1 X)
-    (h : ∀ t : stdSimplex ℝ (Fin 2), f (squareAffineMap 1 ![P, Q] t) =
+    (h : ∀ t : Convexity.StdSimplex ℝ (Fin 2), f (squareAffineMap 1 ![P, Q] t) =
       (integralSingularSimplexEquiv 1 X σ) t) :
     singularSimplexImageGen 1 f (squareAffineSimplex 1 ![P, Q]) = σ := by
   apply (integralSingularSimplexEquiv 1 X).injective
@@ -99,7 +99,7 @@ theorem integralSimplexImageGen_squareSegment (f : C(Square, X)) (P Q : Square)
 
 theorem integralPathChain_squareSegment (f : C(Square, X)) (P Q : Square)
     (σ : integralSingularSimplex 1 X)
-    (h : ∀ t : stdSimplex ℝ (Fin 2), f (squareAffineMap 1 ![P, Q] t) =
+    (h : ∀ t : Convexity.StdSimplex ℝ (Fin 2), f (squareAffineMap 1 ![P, Q] t) =
       (integralSingularSimplexEquiv 1 X σ) t) :
     integralSimplexChain 1 (singularSimplexImageGen 1 f (squareAffineSimplex 1 ![P, Q])) =
       integralSimplexChain 1 σ := by
@@ -222,19 +222,19 @@ theorem concatSquareParam_squarePoint_right (s : unitInterval) :
   push_cast
   ring
 
-def squareInterpCoord (P Q : Square) (t : stdSimplex ℝ (Fin 2)) (i : Fin 2) : unitInterval :=
-  ⟨(1 - t.val 1) * (P i : ℝ) + t.val 1 * (Q i : ℝ), by
+def squareInterpCoord (P Q : Square) (t : Convexity.StdSimplex ℝ (Fin 2)) (i : Fin 2) : unitInterval :=
+  ⟨(1 - t.weights 1) * (P i : ℝ) + t.weights 1 * (Q i : ℝ), by
     have hP := (P i).property
     have hQ := (Q i).property
     have ht1 := stdSimplex_one_le_one t
-    have ht0 := t.property.1 1
+    have ht0 := t.weights_nonneg 1
     exact ⟨by nlinarith [hP.1, hQ.1, ht0, ht1], by nlinarith [hP.2, hQ.2, ht0, ht1]⟩⟩
 
-theorem squareInterpCoord_apply_coe (P Q : Square) (t : stdSimplex ℝ (Fin 2)) (i : Fin 2) :
+theorem squareInterpCoord_apply_coe (P Q : Square) (t : Convexity.StdSimplex ℝ (Fin 2)) (i : Fin 2) :
     (squareInterpCoord P Q t i : ℝ) =
-      (1 - t.val 1) * (P i : ℝ) + t.val 1 * (Q i : ℝ) := rfl
+      (1 - t.weights 1) * (P i : ℝ) + t.weights 1 * (Q i : ℝ) := rfl
 
-theorem squareAffineMap_one_eq_squarePoint_coord (P Q : Square) (t : stdSimplex ℝ (Fin 2)) :
+theorem squareAffineMap_one_eq_squarePoint_coord (P Q : Square) (t : Convexity.StdSimplex ℝ (Fin 2)) :
     squareAffineMap 1 ![P, Q] t =
       squarePoint (squareInterpCoord P Q t 0) (squareInterpCoord P Q t 1) := by
   rw [squareAffineMap_one_eq_squarePoint]
@@ -277,7 +277,7 @@ theorem pathConcatSquare_top {a b c : X} (p : Path a b) (q : Path b c) (s : unit
 theorem pathConcatSquare_left {a b c : X} (p : Path a b) (q : Path b c) (s : unitInterval) :
     pathConcatSquare p q (squarePoint 0 s) = p 0 := by
   rw [pathConcatSquare_apply, concatSquareParam_squarePoint_left, Path.trans_apply]
-  rw [dif_pos (by norm_num)]
+  rw [dite_eq_left (by norm_num)]
   congr 1
   apply Subtype.ext
   push_cast
@@ -299,25 +299,25 @@ theorem pathConcatSquare_right {a b c : X} (p : Path a b) (q : Path b c) (s : un
     push_cast
     ring
 
-theorem stdSimplexHomeomorphUnitInterval_coe (t : stdSimplex ℝ (Fin 2)) :
-    ((stdSimplexHomeomorphUnitInterval t : unitInterval) : ℝ) = t.val 1 := rfl
+theorem stdSimplexHomeomorphUnitInterval_coe (t : Convexity.StdSimplex ℝ (Fin 2)) :
+    ((Convexity.StdSimplex.homeomorphI t : unitInterval) : ℝ) = t.weights 1 := rfl
 
-theorem squareInterpCoord_origin_east_zero (t : stdSimplex ℝ (Fin 2)) :
-    squareInterpCoord squareOrigin squareEast t 0 = stdSimplexHomeomorphUnitInterval t := by
+theorem squareInterpCoord_origin_east_zero (t : Convexity.StdSimplex ℝ (Fin 2)) :
+    squareInterpCoord squareOrigin squareEast t 0 = Convexity.StdSimplex.homeomorphI t := by
   apply Subtype.ext
   simp only [squareInterpCoord, Subtype.coe_mk, squareOrigin, squareEast, squarePoint_zero,
     stdSimplexHomeomorphUnitInterval_coe]
   push_cast
   ring
 
-theorem squareInterpCoord_origin_east_one (t : stdSimplex ℝ (Fin 2)) :
+theorem squareInterpCoord_origin_east_one (t : Convexity.StdSimplex ℝ (Fin 2)) :
     squareInterpCoord squareOrigin squareEast t 1 = 0 := by
   apply Subtype.ext
   simp only [squareInterpCoord, Subtype.coe_mk, squareOrigin, squareEast, squarePoint_one]
   push_cast
   ring
 
-theorem squareInterpCoord_east_northEast_zero (t : stdSimplex ℝ (Fin 2)) :
+theorem squareInterpCoord_east_northEast_zero (t : Convexity.StdSimplex ℝ (Fin 2)) :
     squareInterpCoord squareEast squareNorthEast t 0 = 1 := by
   apply Subtype.ext
   simp only [squareInterpCoord, Subtype.coe_mk, squareEast, squareNorthEast, squarePoint_zero,
@@ -325,38 +325,38 @@ theorem squareInterpCoord_east_northEast_zero (t : stdSimplex ℝ (Fin 2)) :
   push_cast
   ring
 
-theorem squareInterpCoord_east_northEast_one (t : stdSimplex ℝ (Fin 2)) :
-    squareInterpCoord squareEast squareNorthEast t 1 = stdSimplexHomeomorphUnitInterval t := by
+theorem squareInterpCoord_east_northEast_one (t : Convexity.StdSimplex ℝ (Fin 2)) :
+    squareInterpCoord squareEast squareNorthEast t 1 = Convexity.StdSimplex.homeomorphI t := by
   apply Subtype.ext
   simp only [squareInterpCoord, Subtype.coe_mk, squareEast, squareNorthEast, squarePoint_one,
     stdSimplexHomeomorphUnitInterval_coe]
   push_cast
   ring
 
-theorem squareInterpCoord_north_northEast_zero (t : stdSimplex ℝ (Fin 2)) :
-    squareInterpCoord squareNorth squareNorthEast t 0 = stdSimplexHomeomorphUnitInterval t := by
+theorem squareInterpCoord_north_northEast_zero (t : Convexity.StdSimplex ℝ (Fin 2)) :
+    squareInterpCoord squareNorth squareNorthEast t 0 = Convexity.StdSimplex.homeomorphI t := by
   apply Subtype.ext
   simp only [squareInterpCoord, Subtype.coe_mk, squareNorth, squareNorthEast, squarePoint_zero,
     stdSimplexHomeomorphUnitInterval_coe]
   push_cast
   ring
 
-theorem squareInterpCoord_north_northEast_one (t : stdSimplex ℝ (Fin 2)) :
+theorem squareInterpCoord_north_northEast_one (t : Convexity.StdSimplex ℝ (Fin 2)) :
     squareInterpCoord squareNorth squareNorthEast t 1 = 1 := by
   apply Subtype.ext
   simp only [squareInterpCoord, Subtype.coe_mk, squareNorth, squareNorthEast, squarePoint_one]
   push_cast
   ring
 
-theorem squareInterpCoord_origin_north_zero (t : stdSimplex ℝ (Fin 2)) :
+theorem squareInterpCoord_origin_north_zero (t : Convexity.StdSimplex ℝ (Fin 2)) :
     squareInterpCoord squareOrigin squareNorth t 0 = 0 := by
   apply Subtype.ext
   simp only [squareInterpCoord, Subtype.coe_mk, squareOrigin, squareNorth, squarePoint_zero]
   push_cast
   ring
 
-theorem squareInterpCoord_origin_north_one (t : stdSimplex ℝ (Fin 2)) :
-    squareInterpCoord squareOrigin squareNorth t 1 = stdSimplexHomeomorphUnitInterval t := by
+theorem squareInterpCoord_origin_north_one (t : Convexity.StdSimplex ℝ (Fin 2)) :
+    squareInterpCoord squareOrigin squareNorth t 1 = Convexity.StdSimplex.homeomorphI t := by
   apply Subtype.ext
   simp only [squareInterpCoord, Subtype.coe_mk, squareOrigin, squareNorth, squarePoint_one,
     stdSimplexHomeomorphUnitInterval_coe]
@@ -364,72 +364,72 @@ theorem squareInterpCoord_origin_north_one (t : stdSimplex ℝ (Fin 2)) :
   ring
 
 theorem pathReverseSquare_edge_bottom {a b : X} (p : Path a b) :
-    ∀ t : stdSimplex ℝ (Fin 2),
+    ∀ t : Convexity.StdSimplex ℝ (Fin 2),
       pathReverseSquare p (squareAffineMap 1 ![squareOrigin, squareEast] t) =
-        p (stdSimplexHomeomorphUnitInterval t) := by
+        p (Convexity.StdSimplex.homeomorphI t) := by
   intro t
   rw [squareAffineMap_one_eq_squarePoint_coord, squareInterpCoord_origin_east_zero,
     squareInterpCoord_origin_east_one]
   exact pathReverseSquare_bottom p _
 
 theorem pathReverseSquare_edge_right {a b : X} (p : Path a b) :
-    ∀ t : stdSimplex ℝ (Fin 2),
+    ∀ t : Convexity.StdSimplex ℝ (Fin 2),
       pathReverseSquare p (squareAffineMap 1 ![squareEast, squareNorthEast] t) =
-        p.symm (stdSimplexHomeomorphUnitInterval t) := by
+        p.symm (Convexity.StdSimplex.homeomorphI t) := by
   intro t
   rw [squareAffineMap_one_eq_squarePoint_coord, squareInterpCoord_east_northEast_zero,
     squareInterpCoord_east_northEast_one]
   exact pathReverseSquare_right p _
 
 theorem pathReverseSquare_edge_top {a b : X} (p : Path a b) :
-    ∀ t : stdSimplex ℝ (Fin 2),
+    ∀ t : Convexity.StdSimplex ℝ (Fin 2),
       pathReverseSquare p (squareAffineMap 1 ![squareNorth, squareNorthEast] t) =
-        (Path.refl a) (stdSimplexHomeomorphUnitInterval t) := by
+        (Path.refl a) (Convexity.StdSimplex.homeomorphI t) := by
   intro t
   rw [squareAffineMap_one_eq_squarePoint_coord, squareInterpCoord_north_northEast_zero,
     squareInterpCoord_north_northEast_one]
   exact (pathReverseSquare_top p _).trans (Path.source p)
 
 theorem pathReverseSquare_edge_left {a b : X} (p : Path a b) :
-    ∀ t : stdSimplex ℝ (Fin 2),
+    ∀ t : Convexity.StdSimplex ℝ (Fin 2),
       pathReverseSquare p (squareAffineMap 1 ![squareOrigin, squareNorth] t) =
-        (Path.refl a) (stdSimplexHomeomorphUnitInterval t) := by
+        (Path.refl a) (Convexity.StdSimplex.homeomorphI t) := by
   intro t
   rw [squareAffineMap_one_eq_squarePoint_coord, squareInterpCoord_origin_north_zero,
     squareInterpCoord_origin_north_one]
   exact (pathReverseSquare_left p _).trans (Path.source p)
 
 theorem pathConcatSquare_edge_bottom {a b c : X} (p : Path a b) (q : Path b c) :
-    ∀ t : stdSimplex ℝ (Fin 2),
+    ∀ t : Convexity.StdSimplex ℝ (Fin 2),
       pathConcatSquare p q (squareAffineMap 1 ![squareOrigin, squareEast] t) =
-        p (stdSimplexHomeomorphUnitInterval t) := by
+        p (Convexity.StdSimplex.homeomorphI t) := by
   intro t
   rw [squareAffineMap_one_eq_squarePoint_coord, squareInterpCoord_origin_east_zero,
     squareInterpCoord_origin_east_one]
   exact pathConcatSquare_bottom p q _
 
 theorem pathConcatSquare_edge_right {a b c : X} (p : Path a b) (q : Path b c) :
-    ∀ t : stdSimplex ℝ (Fin 2),
+    ∀ t : Convexity.StdSimplex ℝ (Fin 2),
       pathConcatSquare p q (squareAffineMap 1 ![squareEast, squareNorthEast] t) =
-        q (stdSimplexHomeomorphUnitInterval t) := by
+        q (Convexity.StdSimplex.homeomorphI t) := by
   intro t
   rw [squareAffineMap_one_eq_squarePoint_coord, squareInterpCoord_east_northEast_zero,
     squareInterpCoord_east_northEast_one]
   exact pathConcatSquare_right p q _
 
 theorem pathConcatSquare_edge_top {a b c : X} (p : Path a b) (q : Path b c) :
-    ∀ t : stdSimplex ℝ (Fin 2),
+    ∀ t : Convexity.StdSimplex ℝ (Fin 2),
       pathConcatSquare p q (squareAffineMap 1 ![squareNorth, squareNorthEast] t) =
-        (p.trans q) (stdSimplexHomeomorphUnitInterval t) := by
+        (p.trans q) (Convexity.StdSimplex.homeomorphI t) := by
   intro t
   rw [squareAffineMap_one_eq_squarePoint_coord, squareInterpCoord_north_northEast_zero,
     squareInterpCoord_north_northEast_one]
   exact pathConcatSquare_top p q _
 
 theorem pathConcatSquare_edge_left {a b c : X} (p : Path a b) (q : Path b c) :
-    ∀ t : stdSimplex ℝ (Fin 2),
+    ∀ t : Convexity.StdSimplex ℝ (Fin 2),
       pathConcatSquare p q (squareAffineMap 1 ![squareOrigin, squareNorth] t) =
-        (Path.refl a) (stdSimplexHomeomorphUnitInterval t) := by
+        (Path.refl a) (Convexity.StdSimplex.homeomorphI t) := by
   intro t
   rw [squareAffineMap_one_eq_squarePoint_coord, squareInterpCoord_origin_north_zero,
     squareInterpCoord_origin_north_one]
@@ -671,7 +671,7 @@ theorem integralPathLoopChainMap_simplex [PathConnectedSpace X] (x : X)
   rw [← integralSingularChainBasis_apply]
   exact (integralSingularChainBasis 1 X).constr_basis ℕ _ σ
 
-theorem integralSourceVertexMap_eq_targetVertexMap_of_cycle [PathConnectedSpace X]
+theorem integralSourceVertexMap_eq_targetVertexMap_of_cycle
     (z : integralSingularCycles 0 X) :
     integralSourceVertexMap (z : (integralSingularChains X).X 1) =
       integralTargetVertexMap (z : (integralSingularChains X).X 1) := by
@@ -682,7 +682,7 @@ theorem integralSourceVertexMap_eq_targetVertexMap_of_cycle [PathConnectedSpace 
   rw [hz, sub_eq_zero] at h
   exact h.symm
 
-def HurewiczOneLoopGeneration [PathConnectedSpace X] (x : X) : Prop :=
+def HurewiczOneLoopGeneration (x : X) : Prop :=
   ∀ y : integralSingularHomology 1 X,
     y ∈ Submodule.span ℤ (Set.range (fun γ : Path x x => integralPathLoopClass γ))
 
@@ -709,7 +709,7 @@ theorem hurewiczOneLoopGeneration_punit (x : PUnit.{u + 1}) : HurewiczOneLoopGen
   rw [@Subsingleton.elim _ hsub y 0]
   exact Submodule.zero_mem _
 
-noncomputable def abelianization_equiv_of_surjective_ker_eq_commutator {G : Type*} [Group G]
+noncomputable def abelianizationEquivOfSurjectiveKerEqCommutator {G : Type*} [Group G]
     {A : Type*} [CommGroup A] (f : G →* A) (hsurj : Function.Surjective f)
     (hker : f.ker = commutator G) : Abelianization G ≃* A :=
   QuotientGroup.liftEquiv (commutator G) hsurj hker.symm
@@ -723,7 +723,7 @@ def hurewiczSphereMonoidHom (x : X)
   map_one' := by rw [sphereHurewicz_one]; rfl
   map_mul' a b := by rw [hmul]; rfl
 
-theorem abelianizationHomotopyGroupOne_equiv_of_hurewiczOne [PathConnectedSpace X] (x : X)
+theorem abelianizationHomotopyGroupOne_equiv_of_hurewiczOne (x : X)
     (c : integralSingularHomology (0 + 1) (liftedHomotopySphere.{u} 0))
     (hmul : ∀ a b : HomotopyGroup (Fin 1) X x,
       sphereHurewicz 0 x c (a * b) = sphereHurewicz 0 x c a + sphereHurewicz 0 x c b)
@@ -732,7 +732,7 @@ theorem abelianizationHomotopyGroupOne_equiv_of_hurewiczOne [PathConnectedSpace 
       a ∈ commutator (HomotopyGroup (Fin 1) X x)) :
     Nonempty (Abelianization (HomotopyGroup (Fin 1) X x) ≃*
       Multiplicative (integralSingularHomology 1 X)) := by
-  refine ⟨abelianization_equiv_of_surjective_ker_eq_commutator
+  refine ⟨abelianizationEquivOfSurjectiveKerEqCommutator
     (hurewiczSphereMonoidHom x c hmul) ?_ ?_⟩
   · intro y
     obtain ⟨a, ha⟩ := hsurj (Multiplicative.toAdd y)

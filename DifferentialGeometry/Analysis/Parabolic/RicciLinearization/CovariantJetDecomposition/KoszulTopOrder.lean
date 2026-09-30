@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.PerOrderEnvelopes
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.JetIntegral
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.Application
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg riemannianFiberNormSq_sum_le_card_mul)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -65,7 +68,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_gridWindow_le
       (iteratedCovGrad (I := I) g₀ 3 1 i Φ)
   choose SΦ hSΦ_nn hSΦ using hSΦ_ex
   obtain ⟨C, hC_nn, hC⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   refine ⟨fun l => 2 * SΦ l +

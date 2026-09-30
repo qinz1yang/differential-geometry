@@ -76,8 +76,8 @@ theorem IsCombinatorialManifold.isPLSphere_closure_sdiff_union_of_bettiOne_le_tw
     (hnon : ¬ (⟨Set.inclusion hJS, continuous_inclusion hJS⟩ : C(J, S.space)).Nullhomotopic)
     (hN : IsPLBall 3 N) (hwall : S.space ∩ N = W)
     {D₀ D₁ : Set E} {r₀ r₁ : (Fin 3 → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
     (hfront : frontier N = W ∪ D₀ ∪ D₁)
     (hmeet₀ : W ∩ D₀ = r₀ '' stdSimplexBoundary 2)
     (hmeet₁ : W ∩ D₁ = r₁ '' stdSimplexBoundary 2)
@@ -291,7 +291,6 @@ theorem IsPLBall.exists_isPLBall_subset_interior_of_isOpen {B U : Set E3}
   have hTind : AffineIndependent ℝ ((↑) : T.image (AffineMap.homothety c t) → E3) := by
     convert ((affineIndependent_image_iff T (AffineMap.homothety c t)).mp
       (hT.map' (AffineMap.homothety c t) hhinj)).2
-    rfl
   obtain ⟨T', hT', hT'card, hΔ'eq⟩ : ∃ T' : Finset E3,
       AffineIndependent ℝ ((↑) : T' → E3) ∧ T'.card = 3 + 1 ∧
         convexHull ℝ (T' : Set E3) = AffineMap.homothety c t '' Δ :=
@@ -342,7 +341,7 @@ theorem exists_isPLBall_superset_of_exterior_compression
     (hR : IsCombinatorialManifoldWithBoundary 3 R) (hT : IsPLTorus (frontier R.space))
     {U D : Set (EuclideanSpace ℝ (Fin 3))} (hU : IsOpen U) (hRU : R.space ⊆ U)
     {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDU : D ⊆ U)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDU : D ⊆ U)
     (hmeet : D ∩ frontier R.space = r '' stdSimplexBoundary 2)
     (hess : ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ frontier R.space,
       ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :

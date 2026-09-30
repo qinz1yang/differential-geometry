@@ -254,16 +254,16 @@ theorem exists_lipschitz_subseq_limit_on_Ico
     if N ≤ n then f n (projIcc 0 (τ n) (hτ n) t) else f 0 0
   have hFLip (n : ℕ) : LipschitzWith (K + 1) (F n) := by
     by_cases hn : N ≤ n
-    · simpa only [F, if_pos hn, mul_one, Function.comp_def, Set.domRestrict_apply] using
+    · simpa only [F, ite_eq_left hn, mul_one, Function.comp_def, Set.domRestrict_apply] using
         (hN n hn).to_restrict.comp (LipschitzWith.projIcc (hτ n))
-    · simpa only [F, if_neg hn] using
+    · simpa only [F, ite_eq_right hn] using
         ((LipschitzWith.const (f 0 0)).weaken (show 0 ≤ K + 1 from zero_le))
   let G : ℕ → C(Ico 0 rho, Y) :=
     fun n => ⟨fun t => F n t, (hFLip n).continuous.comp continuous_subtype_val⟩
   have heq (t : Ico (0 : ℝ) rho) : ∀ᶠ n in atTop, G n t = f n t := by
     filter_upwards [eventually_ge_atTop N, hτρ.eventually (eventually_gt_nhds t.2.2)] with n hn ht
     change (if N ≤ n then _ else _) = _
-    rw [if_pos hn, projIcc_of_mem (hτ n) ⟨t.2.1, ht.le⟩]
+    rw [ite_eq_left hn, projIcc_of_mem (hτ n) ⟨t.2.1, ht.le⟩]
   have hGpoint (t : Ico (0 : ℝ) rho) :
       ∃ Q : Set Y, IsCompact Q ∧ ∀ᶠ n in atTop, G n t ∈ Q := by
     obtain ⟨Q, hQ, ht⟩ := hpoint t t.2
@@ -305,7 +305,7 @@ theorem exists_lipschitz_subseq_limit_on_Ico
     change N ≤ phi n at hn
     change (t : ℝ) < τ (phi n) at ht
     change (if N ≤ phi n then _ else _) = _
-    rw [if_pos hn, projIcc_of_mem (hτ (phi n))
+    rw [ite_eq_left hn, projIcc_of_mem (hτ (phi n))
       ⟨x.2.1, (show (x : ℝ) ≤ t from htmax hx).trans ht.le⟩]
   · exact Eventually.of_forall fun _ x hx => (hAne ⟨x, hx⟩).elim
 

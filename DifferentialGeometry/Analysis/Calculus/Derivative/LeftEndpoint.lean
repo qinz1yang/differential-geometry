@@ -5,11 +5,13 @@ set_option autoImplicit false
 open Filter Set
 open scoped Topology
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+namespace DifferentialGeometry.Analysis
 
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 theorem hasDerivWithinAt_left_of_mem_nhdsLE
-    {f : ℝ → ℝ} {J : Set ℝ} {t : ℝ}
+    {f : ℝ → F} {J : Set ℝ} {t : ℝ}
     (hf : DifferentiableWithinAt ℝ f J t) (hJ : J ∈ 𝓝[≤] t) :
     HasDerivWithinAt f (derivWithin f (Iic t) t) J t := by
   have hleft : HasDerivWithinAt f (derivWithin f J t) (Iic t) t :=
@@ -17,4 +19,4 @@ theorem hasDerivWithinAt_left_of_mem_nhdsLE
   rw [hleft.derivWithin (uniqueDiffWithinAt_Iic t)]
   exact hf.hasDerivWithinAt
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+end DifferentialGeometry.Analysis

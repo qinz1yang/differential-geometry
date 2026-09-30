@@ -1,8 +1,8 @@
 import DifferentialGeometry.Topology.Covering.LiftEnumeration
 import Mathlib.AlgebraicTopology.SingularHomology.Basic
 import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
-import Mathlib.Analysis.Convex.Contractible
-import Mathlib.Analysis.LocallyConvex.WithSeminorms
+import DifferentialGeometry.Topology.Simplex.Coordinates
+import Mathlib.Geometry.Convex.ConvexSpace.Barycenter
 import Mathlib.Algebra.BigOperators.Finprod
 
 open CategoryTheory CategoryTheory.Limits Simplicial
@@ -20,7 +20,7 @@ abbrev SingularSimplexLifts {n : ℕ} (σ : TopCat.toSSet.obj B _⦋n⦌) :=
 
 private def singularSimplexLiftsEquivContinuous {n : ℕ} (σ : TopCat.toSSet.obj B _⦋n⦌) :
     SingularSimplexLifts p σ ≃
-      {g : C(stdSimplex ℝ (Fin (n + 1)), E) // p ∘ g = B.toSSetObjEquiv _ σ} :=
+      {g : C(Convexity.StdSimplex ℝ (Fin (n + 1)), E) // p ∘ g = B.toSSetObjEquiv _ σ} :=
   Equiv.subtypeEquiv (E.toSSetObjEquiv _) (fun τ => by
     constructor
     · intro h
@@ -31,20 +31,19 @@ private def singularSimplexLiftsEquivContinuous {n : ℕ} (σ : TopCat.toSSet.ob
       exact ContinuousMap.ext (congrFun h))
 
 private theorem simplex_contractible (n : ℕ) :
-    ContractibleSpace (stdSimplex ℝ (Fin (n + 1))) :=
-  (convex_stdSimplex ℝ _).contractibleSpace ⟨stdSimplex.barycenter, stdSimplex.barycenter.prop⟩
+    ContractibleSpace (Convexity.StdSimplex ℝ (Fin (n + 1))) :=
+  inferInstance
 
 theorem finite_singularSimplex_lifts (hp : IsCoveringMap p)
     (hfin : ∀ b : B, (p ⁻¹' {b}).Finite) {n : ℕ} (σ : TopCat.toSSet.obj B _⦋n⦌) :
     Finite (SingularSimplexLifts p σ) := by
   let _ := simplex_contractible n
-  let _ : SimplyConnectedSpace (stdSimplex ℝ (Fin (n + 1))) :=
+  let _ : SimplyConnectedSpace (Convexity.StdSimplex ℝ (Fin (n + 1))) :=
     SimplyConnectedSpace.ofContractible _
-  let _ := (convex_stdSimplex ℝ (Fin (n + 1))).locallyPathConnectedSpace
   let e := (singularSimplexLiftsEquivContinuous p σ).trans
     (Topology.Covering.continuousMapLiftsEquivFiber hp (B.toSSetObjEquiv _ σ)
-      stdSimplex.barycenter)
-  let _ := (hfin (B.toSSetObjEquiv _ σ stdSimplex.barycenter)).fintype
+      Convexity.StdSimplex.barycenter)
+  let _ := (hfin (B.toSSetObjEquiv _ σ Convexity.StdSimplex.barycenter)).fintype
   exact Finite.of_equiv _ e.symm
 
 def singularSimplexLiftFace {n : ℕ} (σ : TopCat.toSSet.obj B _⦋n + 1⦌)
@@ -58,12 +57,11 @@ theorem singularSimplexLiftFace_bijective (hp : IsCoveringMap p) {n : ℕ}
     Function.Bijective (singularSimplexLiftFace p σ i) := by
   let _ := simplex_contractible (n + 1)
   let _ := simplex_contractible n
-  let _ : SimplyConnectedSpace (stdSimplex ℝ (Fin (n + 2))) :=
+  let _ : SimplyConnectedSpace (Convexity.StdSimplex ℝ (Fin (n + 2))) :=
     SimplyConnectedSpace.ofContractible _
-  let _ := (convex_stdSimplex ℝ (Fin (n + 2))).locallyPathConnectedSpace
   let e := ((singularSimplexLiftsEquivContinuous p σ).trans
     (Topology.Covering.liftPrecompEquiv hp (B.toSSetObjEquiv _ σ)
-      ⟨stdSimplex.map i.succAbove, stdSimplex.continuous_map _⟩)).trans
+      ⟨Convexity.StdSimplex.map i.succAbove, Convexity.StdSimplex.continuous_map ℝ _⟩)).trans
         (singularSimplexLiftsEquivContinuous p ((TopCat.toSSet.obj B).δ i σ)).symm
   have he : (e : _ → _) = singularSimplexLiftFace p σ i := by
     funext τ
@@ -91,7 +89,7 @@ theorem ι_singularTransferMap (hp : IsCoveringMap p)
       ∑ᶠ τ : SingularSimplexLifts p σ, (TopCat.toSSet.obj E).ιChainComplex (R := A) τ.val := by
   let _ (τ : TopCat.toSSet.obj B _⦋n⦌) := finite_singularSimplex_lifts p hp hfin τ
   let _ (τ : TopCat.toSSet.obj B _⦋n⦌) : Fintype (SingularSimplexLifts p τ) := Fintype.ofFinite _
-  exact (Sigma.ι_desc (fun τ : TopCat.toSSet.obj B _⦋n⦌ =>
+  exact (Sigma.ι_comp_desc (fun τ : TopCat.toSSet.obj B _⦋n⦌ =>
     ∑ lift : SingularSimplexLifts p τ, (TopCat.toSSet.obj E).ιChainComplex (R := A) lift.val) σ).trans
       (finsum_eq_sum_of_fintype _).symm
 

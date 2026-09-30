@@ -36,7 +36,7 @@ theorem gradient_joint_contMDiffOn
       ((D.regular_isOpen.prod isOpen_univ).mem_nhds ⟨hp.2, mem_univ p.1⟩)
     have hXAt := (chartBasisVec_contMDiffOn (I := I) α j).contMDiffAt
       ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hp.1)
-    have hd := DifferentialGeometry.prodExtDerivAt_smooth hfAt hXAt
+    have hd := DifferentialGeometry.contMDiffAt_partial_mvfderiv_apply_infty hfAt hXAt
     exact (hd.comp p (contMDiffAt_snd.prodMk contMDiffAt_fst)).contMDiffWithinAt
   have hgrad := metricSharp_jointContMDiffOn g cv D.regular_isOpen
     (chartInvGramMatrix_jointContMDiffOn g hg) hcv

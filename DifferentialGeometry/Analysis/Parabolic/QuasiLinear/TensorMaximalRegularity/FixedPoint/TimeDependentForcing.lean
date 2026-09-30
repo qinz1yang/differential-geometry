@@ -185,11 +185,11 @@ theorem exists_fixed_forcing_of_tame
   let Ψ : timeL2 Y T → timeL2 Y T := fun F => if h : F ∈ ball then Φ ⟨F, h⟩ else 0
   have hzeroBall : (0 : timeL2 Y T) ∈ ball := zeroBall.property
   have hΨ0 : ‖Ψ 0‖ ≤ (1 - (κ.toNNReal : ℝ)) * ρ := by
-    simpa only [Ψ, dif_pos hzeroBall, Real.coe_toNNReal _ hκ0] using hΦ0.trans hstay
+    simpa only [Ψ, dite_eq_left hzeroBall, Real.coe_toNNReal _ hκ0] using hΦ0.trans hstay
   have hΨ : LipschitzOnWith κ.toNNReal Ψ ball := by
     apply LipschitzOnWith.of_dist_le_mul
     intro F hF G hG
-    simp only [Ψ, dif_pos hF, dif_pos hG, dist_eq_norm, Real.coe_toNNReal _ hκ0]
+    simp only [Ψ, dite_eq_left hF, dite_eq_left hG, dist_eq_norm, Real.coe_toNNReal _ hκ0]
     exact hΦ ⟨F, hF⟩ ⟨G, hG⟩
   have hκnn : κ.toNNReal < 1 := by
     rw [← NNReal.coe_lt_coe, Real.coe_toNNReal _ hκ0]
@@ -199,7 +199,7 @@ theorem exists_fixed_forcing_of_tame
   let Fball : ball := ⟨F, hF⟩
   have hfix' : Φ Fball = F := by
     change (if h : F ∈ ball then Φ ⟨F, h⟩ else 0) = F at hfix
-    rw [dif_pos (show F ∈ ball from hF)] at hfix
+    rw [dite_eq_left (show F ∈ ball from hF)] at hfix
     exact hfix
   refine ⟨F, ?_, hstate Fball, ?_⟩
   · simpa only [Metric.mem_closedBall, dist_zero_right] using hF
@@ -269,7 +269,7 @@ theorem forcing_eq_of_tame
       J.coeFn_compLpL (p := 2) (μ := timeMeasure T) (f - g), hpt]
       with t hFG hFt hGt hft hgt hNt hfg hj hp
     rw [hFG, Pi.sub_apply, hFt, hGt]
-    simp only [aeSetLift, dif_pos hft, dif_pos hgt]
+    simp only [aeSetLift, dite_eq_left hft, dite_eq_left hgt]
     have hraw := hNt ⟨f t, hft⟩ ⟨g t, hgt⟩
     have hfg' : f t - g t = (f - g) t := hfg.symm
     have hj' : J ((f - g) t) = j t := hj.symm

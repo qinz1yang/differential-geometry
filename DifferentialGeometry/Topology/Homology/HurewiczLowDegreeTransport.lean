@@ -206,7 +206,7 @@ theorem isSphereHomologyGenerator_squareSphereFundamentalClass_of_cubeSphereFund
     {B : Type u} [AddCommGroup B] [Module ℤ B]
     (f : CubeSphereMayerVietorisSource.{u} ≃ₗ[ℤ] B) (g : B ≃ₗ[ℤ] ℤ)
     (τ : B ≃ₗ[ℤ] integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
-    (halign : integralSphereHomologyShiftEquiv_cubeSphereFundamentalClass f τ)
+    (halign : cubeSquareHomologyAlignment f τ)
     (hc : IsSphereHomologyGenerator.{u} 2 cubeSphereFundamentalClass.{u}) :
     IsSphereHomologyGenerator.{u} 1 squareSphereFundamentalClass.{u} :=
   (isSphereHomologyGenerator_cubeSphereFundamentalClass_iff_squareSphereFundamentalClass
@@ -216,7 +216,7 @@ theorem hurewiczTwoMultiplicative_of_cubeSphereFundamentalClass_isSphereHomology
     {B : Type u} [AddCommGroup B] [Module ℤ B]
     (f : CubeSphereMayerVietorisSource.{u} ≃ₗ[ℤ] B) (g : B ≃ₗ[ℤ] ℤ)
     (τ : B ≃ₗ[ℤ] integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
-    (halign : integralSphereHomologyShiftEquiv_cubeSphereFundamentalClass f τ)
+    (halign : cubeSquareHomologyAlignment f τ)
     (hc : IsSphereHomologyGenerator.{u} 2 cubeSphereFundamentalClass.{u}) :
     HurewiczTwoMultiplicative X :=
   hurewiczTwoMultiplicative_of_squareSphereFundamentalClass_isGenerator (X := X)
@@ -227,7 +227,7 @@ theorem hurewiczThreeMultiplicative_of_squareSphereFundamentalClass_isSphereHomo
     {B : Type u} [AddCommGroup B] [Module ℤ B]
     (f : CubeSphereMayerVietorisSource.{u} ≃ₗ[ℤ] B) (g : B ≃ₗ[ℤ] ℤ)
     (τ : B ≃ₗ[ℤ] integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
-    (halign : integralSphereHomologyShiftEquiv_cubeSphereFundamentalClass f τ)
+    (halign : cubeSquareHomologyAlignment f τ)
     (hc : IsSphereHomologyGenerator.{u} 1 squareSphereFundamentalClass.{u}) :
     HurewiczThreeMultiplicative X :=
   hurewiczThreeMultiplicative_of_cubeSphereFundamentalClass_isSphereHomologyGenerator (X := X)
@@ -238,7 +238,7 @@ theorem hurewiczTwoMultiplicative_and_hurewiczThreeMultiplicative_of_squareSpher
     {B : Type u} [AddCommGroup B] [Module ℤ B]
     (f : CubeSphereMayerVietorisSource.{u} ≃ₗ[ℤ] B) (g : B ≃ₗ[ℤ] ℤ)
     (τ : B ≃ₗ[ℤ] integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
-    (halign : integralSphereHomologyShiftEquiv_cubeSphereFundamentalClass f τ)
+    (halign : cubeSquareHomologyAlignment f τ)
     (hc : IsSphereHomologyGenerator.{u} 1 squareSphereFundamentalClass.{u}) :
     HurewiczTwoMultiplicative X ∧ HurewiczThreeMultiplicative X :=
   ⟨hurewiczTwoMultiplicative_of_squareSphereFundamentalClass_isGenerator (X := X) hc,

@@ -17,7 +17,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
-open DifferentialGeometry.Analysis.Elliptic (riemannianFiberNormSq)
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev (iteratedCovGrad)
 open DifferentialGeometry.Analysis.Spectral
   (cc_partial_le_norm smoothCcTensorBilinForm_ccTensor02Symm_symm eigenIdxFinset galerkinEnergy hs_le_jet
@@ -677,7 +677,7 @@ private theorem exists_galerkin_energy_five_bound_of_three_four_bounds_parameter
             ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i := by
       intro i hi
       rw [galerkinForceTerm (I := I) (M := M) g₀ hδ hδ0 hδ3 hCtop hB1 hρ hP hreal
-        hcore (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i, if_pos hi]
+        hcore (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i, ite_eq_left hi]
       simp only [galerkinActionVector]
       module
     have hstat : ∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,

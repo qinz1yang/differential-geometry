@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.SupportFace
 import DifferentialGeometry.Topology.Simplex.Reindex
 import DifferentialGeometry.Topology.Simplex.MapInjectivity
@@ -5,31 +6,33 @@ import Mathlib.Data.Finset.Sort
 
 noncomputable section
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 variable {ι κ : Type*} [Fintype ι] [Fintype κ]
 
-theorem reindexHomeomorph_eq_map (e : ι ≃ κ) (p : stdSimplex ℝ ι) :
-    reindexHomeomorph e p = stdSimplex.map e p := by
+theorem reindexHomeomorph_eq_map (e : ι ≃ κ) (p : coordinateSet ℝ ι) :
+    reindexHomeomorph e p = coordinateMap e p := by
   ext j
-  change p.val (e.symm j) = (stdSimplex.map e p).val j
-  have h := stdSimplex.map_apply_of_injective e.injective p (e.symm j)
-  change p (e.symm j) = (stdSimplex.map e p) j
+  change p.val (e.symm j) = (coordinateMap e p).val j
+  have h := Convexity.StdSimplex.map_apply_of_injective e.injective p (e.symm j)
+  change p (e.symm j) = (coordinateMap e p) j
   rw [e.apply_symm_apply] at h
   exact h.symm
 
 variable [LinearOrder ι]
 
 def orderedSupportFaceHomeomorph (s : Finset ι) {m : ℕ} (hs : s.card = m) :
-    stdSimplex ℝ (Fin m) ≃ₜ supportFace s :=
+    coordinateSet ℝ (Fin m) ≃ₜ supportFace s :=
   (reindexHomeomorph (s.orderIsoOfFin hs).toEquiv).trans (supportFaceHomeomorph s)
 
 @[simp]
 theorem orderedSupportFaceHomeomorph_apply_val (s : Finset ι) {m : ℕ} (hs : s.card = m)
-    (p : stdSimplex ℝ (Fin m)) :
-    (orderedSupportFaceHomeomorph s hs p).val = stdSimplex.map (s.orderEmbOfFin hs) p := by
-  change stdSimplex.map Subtype.val (reindexHomeomorph (s.orderIsoOfFin hs).toEquiv p) = _
-  rw [reindexHomeomorph_eq_map, stdSimplex.map_comp_apply]
+    (p : coordinateSet ℝ (Fin m)) :
+    (orderedSupportFaceHomeomorph s hs p).val = coordinateMap (s.orderEmbOfFin hs) p := by
+  change coordinateMap Subtype.val (reindexHomeomorph (s.orderIsoOfFin hs).toEquiv p) = _
+  rw [reindexHomeomorph_eq_map, coordinateMap_comp_apply]
   rfl
 
 @[simp]
@@ -53,11 +56,11 @@ private theorem orderEmbOfFin_erase (s : Finset ι) {m : ℕ} (hs : s.card = m +
 
 theorem orderedSupportFaceHomeomorph_erase_apply_val (s : Finset ι) {m : ℕ}
     (hs : s.card = m + 1) (i : Fin (m + 1))
-    (he : (s.erase (s.orderEmbOfFin hs i)).card = m) (p : stdSimplex ℝ (Fin m)) :
+    (he : (s.erase (s.orderEmbOfFin hs i)).card = m) (p : coordinateSet ℝ (Fin m)) :
     (orderedSupportFaceHomeomorph (s.erase (s.orderEmbOfFin hs i)) he p).val =
-      (orderedSupportFaceHomeomorph s hs (stdSimplex.map i.succAbove p)).val := by
+      (orderedSupportFaceHomeomorph s hs (coordinateMap i.succAbove p)).val := by
   rw [orderedSupportFaceHomeomorph_apply_val, orderedSupportFaceHomeomorph_apply_val,
-    stdSimplex.map_comp_apply, orderEmbOfFin_erase s hs i he]
+    coordinateMap_comp_apply, orderEmbOfFin_erase s hs i he]
   rfl
 
 end DifferentialGeometry.Simplex

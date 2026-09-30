@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.LoweringJetT
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.JetComparison.Tower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.JetComparison.ReverseSecondDerivative
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 set_option autoImplicit false
 
 noncomputable section

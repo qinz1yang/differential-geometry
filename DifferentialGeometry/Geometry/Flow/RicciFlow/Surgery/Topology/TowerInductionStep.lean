@@ -111,9 +111,7 @@ end RetainedCoreEvent
 
 namespace RetainedCoreHistory
 
-variable {P : OrientedThreeStage.{u}}
-
-def extendCoreEventLast (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : ℝ}
+def extendCoreEventLast (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s) :
     RetainedCoreEvent
@@ -128,7 +126,7 @@ def extendCoreEventLast (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}}
     (ObservedHistory.extendTime_castSucc H.toHistory s (Fin.last H.eventCount)).symm
     (ObservedHistory.extendTime_last H.toHistory s).symm E
 
-def extendCoreEventCast (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : ℝ}
+def extendCoreEventCast (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s) (i : Fin H.eventCount) :
     RetainedCoreEvent
@@ -142,7 +140,7 @@ def extendCoreEventCast (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}}
     (ObservedHistory.extendTime_castSucc H.toHistory s (i.castSucc)).symm
     (ObservedHistory.extendTime_castSucc H.toHistory s i.succ).symm (H.coreEvent i)
 
-def extendCoreEventFamily (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : ℝ}
+def extendCoreEventFamily (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s) :
     (e : Fin (H.eventCount + 1)) →
@@ -151,26 +149,26 @@ def extendCoreEventFamily (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u
         ((H.toHistory).extendTime s e.castSucc) ((H.toHistory).extendTime s e.succ) :=
   Fin.lastCases (H.extendCoreEventLast E) (fun i => H.extendCoreEventCast E i)
 
-theorem extendCoreEventFamily_castSucc (H : RetainedCoreHistory P)
+theorem extendCoreEventFamily_castSucc (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s) (i : Fin H.eventCount) :
     H.extendCoreEventFamily E i.castSucc = H.extendCoreEventCast E i :=
   Fin.lastCases_castSucc i
 
-theorem extendCoreEventFamily_last (H : RetainedCoreHistory P)
+theorem extendCoreEventFamily_last (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s) :
     H.extendCoreEventFamily E (Fin.last H.eventCount) = H.extendCoreEventLast E :=
   Fin.lastCases_last
 
-def appendEvent (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : ℝ}
+def appendEvent (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
     (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
-      H.initialMetric (Fin.last H.eventCount)) : RetainedCoreHistory P where
+      H.initialMetric (Fin.last H.eventCount)) : RetainedCoreHistory.{u} where
   horizon := s
   horizon_nonneg := (ObservedHistory.time_nonneg (H.toHistory) (Fin.last H.eventCount)).trans hs.le
   eventCount := H.eventCount + 1
@@ -242,7 +240,7 @@ def appendEvent (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : �
   final_initial := fun h =>
     False.elim (absurd (by rw [ObservedHistory.extendTime_last] at h; exact h) (lt_irrefl s))
 
-theorem appendEvent_horizon (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : ℝ}
+theorem appendEvent_horizon (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -250,7 +248,7 @@ theorem appendEvent_horizon (H : RetainedCoreHistory P) {Q : OrientedThreeStage.
       H.initialMetric (Fin.last H.eventCount)) :
     (H.appendEvent hs E hinit).horizon = s := rfl
 
-theorem appendEvent_eventCount (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : ℝ}
+theorem appendEvent_eventCount (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -258,7 +256,7 @@ theorem appendEvent_eventCount (H : RetainedCoreHistory P) {Q : OrientedThreeSta
       H.initialMetric (Fin.last H.eventCount)) :
     (H.appendEvent hs E hinit).eventCount = H.eventCount + 1 := rfl
 
-theorem appendEvent_time_apply (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : ℝ}
+theorem appendEvent_time_apply (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -266,7 +264,7 @@ theorem appendEvent_time_apply (H : RetainedCoreHistory P) {Q : OrientedThreeSta
       H.initialMetric (Fin.last H.eventCount)) (j : Fin (H.eventCount + 2)) :
     (H.appendEvent hs E hinit).time j = (H.toHistory).extendTime s j := rfl
 
-theorem appendEvent_time_castSucc (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}}
+theorem appendEvent_time_castSucc (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}}
     {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -275,7 +273,7 @@ theorem appendEvent_time_castSucc (H : RetainedCoreHistory P) {Q : OrientedThree
     (H.appendEvent hs E hinit).time i.castSucc = H.time i := by
   rw [appendEvent_time_apply, ObservedHistory.extendTime_castSucc]
 
-theorem appendEvent_time_last (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : ℝ}
+theorem appendEvent_time_last (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -284,7 +282,7 @@ theorem appendEvent_time_last (H : RetainedCoreHistory P) {Q : OrientedThreeStag
     (H.appendEvent hs E hinit).time (Fin.last (H.eventCount + 1)) = s := by
   rw [appendEvent_time_apply, ObservedHistory.extendTime_last]
 
-theorem appendEvent_stage_apply (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : ℝ}
+theorem appendEvent_stage_apply (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -292,7 +290,7 @@ theorem appendEvent_stage_apply (H : RetainedCoreHistory P) {Q : OrientedThreeSt
       H.initialMetric (Fin.last H.eventCount)) (j : Fin (H.eventCount + 2)) :
     (H.appendEvent hs E hinit).stage j = (H.toHistory).extendStage Q E.outputMetric j := rfl
 
-theorem appendEvent_stage_castSucc (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}}
+theorem appendEvent_stage_castSucc (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}}
     {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -301,7 +299,7 @@ theorem appendEvent_stage_castSucc (H : RetainedCoreHistory P) {Q : OrientedThre
     (H.appendEvent hs E hinit).stage i.castSucc = H.stage i := by
   rw [appendEvent_stage_apply, ObservedHistory.extendStage_castSucc]
 
-theorem appendEvent_stage_last (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : ℝ}
+theorem appendEvent_stage_last (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -310,7 +308,7 @@ theorem appendEvent_stage_last (H : RetainedCoreHistory P) {Q : OrientedThreeSta
     (H.appendEvent hs E hinit).stage (Fin.last (H.eventCount + 1)) = Q := by
   rw [appendEvent_stage_apply, ObservedHistory.extendStage_last]
 
-theorem appendEvent_initialMetric_castSucc_heq (H : RetainedCoreHistory P)
+theorem appendEvent_initialMetric_castSucc_heq (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -319,7 +317,7 @@ theorem appendEvent_initialMetric_castSucc_heq (H : RetainedCoreHistory P)
     HEq ((H.appendEvent hs E hinit).initialMetric i.castSucc) (H.initialMetric i) :=
   ObservedHistory.extendMetric_castSucc_heq (H.toHistory) Q E.outputMetric i
 
-theorem appendEvent_initialMetric_last_heq (H : RetainedCoreHistory P)
+theorem appendEvent_initialMetric_last_heq (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -329,7 +327,7 @@ theorem appendEvent_initialMetric_last_heq (H : RetainedCoreHistory P)
       E.outputMetric :=
   ObservedHistory.extendMetric_last_heq (H.toHistory) Q E.outputMetric
 
-theorem appendEvent_coreEvent_castSucc (H : RetainedCoreHistory P)
+theorem appendEvent_coreEvent_castSucc (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -338,7 +336,7 @@ theorem appendEvent_coreEvent_castSucc (H : RetainedCoreHistory P)
     (H.appendEvent hs E hinit).coreEvent i.castSucc = H.extendCoreEventCast E i :=
   extendCoreEventFamily_castSucc H E i
 
-theorem appendEvent_coreEvent_last (H : RetainedCoreHistory P)
+theorem appendEvent_coreEvent_last (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -347,7 +345,7 @@ theorem appendEvent_coreEvent_last (H : RetainedCoreHistory P)
     (H.appendEvent hs E hinit).coreEvent (Fin.last H.eventCount) = H.extendCoreEventLast E :=
   extendCoreEventFamily_last H E
 
-theorem appendEvent_toHistory_eventCount (H : RetainedCoreHistory P)
+theorem appendEvent_toHistory_eventCount (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -355,7 +353,7 @@ theorem appendEvent_toHistory_eventCount (H : RetainedCoreHistory P)
       H.initialMetric (Fin.last H.eventCount)) :
     (H.appendEvent hs E hinit).toHistory.eventCount = H.eventCount + 1 := rfl
 
-theorem extendCoreEventFamily_toMetricCutCapEvent (H : RetainedCoreHistory P)
+theorem extendCoreEventFamily_toMetricCutCapEvent (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s) (e : Fin (H.eventCount + 1)) :
@@ -373,7 +371,7 @@ theorem extendCoreEventFamily_toMetricCutCapEvent (H : RetainedCoreHistory P)
       RetainedCoreEvent.transport_toMetricCutCapEvent]
     rfl
 
-theorem appendEvent_toHistory_time (H : RetainedCoreHistory P)
+theorem appendEvent_toHistory_time (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -381,7 +379,7 @@ theorem appendEvent_toHistory_time (H : RetainedCoreHistory P)
       H.initialMetric (Fin.last H.eventCount)) :
     (H.appendEvent hs E hinit).toHistory.time = (H.toHistory).extendTime s := rfl
 
-theorem appendEvent_toHistory_time_castSucc (H : RetainedCoreHistory P)
+theorem appendEvent_toHistory_time_castSucc (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -390,7 +388,7 @@ theorem appendEvent_toHistory_time_castSucc (H : RetainedCoreHistory P)
     (H.appendEvent hs E hinit).toHistory.time i.castSucc = H.time i := by
   rw [appendEvent_toHistory_time H hs E hinit, ObservedHistory.extendTime_castSucc]
 
-theorem appendEvent_toHistory_time_last (H : RetainedCoreHistory P)
+theorem appendEvent_toHistory_time_last (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -399,7 +397,7 @@ theorem appendEvent_toHistory_time_last (H : RetainedCoreHistory P)
     (H.appendEvent hs E hinit).toHistory.time (Fin.last (H.eventCount + 1)) = s := by
   rw [appendEvent_toHistory_time H hs E hinit, ObservedHistory.extendTime_last]
 
-theorem activeStage_appendEvent_toHistory (H : RetainedCoreHistory P)
+theorem activeStage_appendEvent_toHistory (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -426,7 +424,7 @@ theorem activeStage_appendEvent_toHistory (H : RetainedCoreHistory P)
         exact hk
       exact absurd hk' (not_le.mpr hhor)
 
-theorem appendEvent_toHistory_restrict_eventCount (H : RetainedCoreHistory P)
+theorem appendEvent_toHistory_restrict_eventCount (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -437,10 +435,10 @@ theorem appendEvent_toHistory_restrict_eventCount (H : RetainedCoreHistory P)
   rw [ObservedHistory.restrict_eventCount, activeStage_appendEvent_toHistory H hs E hinit hhor]
   rfl
 
-def extendHorizon (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
+def extendHorizon (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
-      H.initialMetric (Fin.last H.eventCount)) : RetainedCoreHistory P where
+      H.initialMetric (Fin.last H.eventCount)) : RetainedCoreHistory.{u} where
   horizon := T
   horizon_nonneg := H.horizon_nonneg.trans hT
   eventCount := H.eventCount
@@ -456,44 +454,44 @@ def extendHorizon (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
   finalSlab := fun _ => S
   final_initial := fun _ => hS
 
-theorem extendHorizon_eventCount (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
+theorem extendHorizon_eventCount (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount)) :
     (H.extendHorizon T hT S hS).eventCount = H.eventCount := rfl
 
-theorem extendHorizon_horizon (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
+theorem extendHorizon_horizon (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount)) :
     (H.extendHorizon T hT S hS).horizon = T := rfl
 
-theorem extendHorizon_time (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
+theorem extendHorizon_time (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount)) (i : Fin (H.eventCount + 1)) :
     (H.extendHorizon T hT S hS).time i = H.time i := rfl
 
-theorem extendHorizon_stage (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
+theorem extendHorizon_stage (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount)) (i : Fin (H.eventCount + 1)) :
     (H.extendHorizon T hT S hS).stage i = H.stage i := rfl
 
-theorem extendHorizon_coreEvent (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
+theorem extendHorizon_coreEvent (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount)) (i : Fin H.eventCount) :
     (H.extendHorizon T hT S hS).coreEvent i = H.coreEvent i := rfl
 
-def appendEventCompatible (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}} {s : ℝ}
+def appendEventCompatible (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s) : Prop :=
   ∀ (h : H.time (Fin.last H.eventCount) < H.horizon) (τ : ℝ),
     τ ∈ Icc (H.time (Fin.last H.eventCount)) H.horizon →
     E.incoming.flow.base.metric τ = (H.finalSlab h).flow.base.metric τ
 
-theorem appendEventCompatible_of_time_eq_horizon (H : RetainedCoreHistory P)
+theorem appendEventCompatible_of_time_eq_horizon (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -502,21 +500,46 @@ theorem appendEventCompatible_of_time_eq_horizon (H : RetainedCoreHistory P)
   exact absurd (htime ▸ h) (lt_irrefl H.horizon)
 
 theorem exists_retainedCoreHistory_eventCount_zero (P : OrientedThreeStage.{u}) (g : P.Metric) :
-    ∃ H : RetainedCoreHistory P, H.eventCount = 0 ∧ 0 < H.horizon := by
+    ∃ H : RetainedCoreHistory.{u}, Nonempty (InitialIdentification P g H.toHistory) ∧
+      H.eventCount = 0 ∧ 0 < H.horizon := by
   obtain ⟨T, hT, S, hS⟩ := exists_closedSlab_of_metric P g 0
-  exact ⟨RetainedCoreHistory.ofClosedSlab g hT S hS, rfl, hT⟩
+  refine ⟨RetainedCoreHistory.ofClosedSlab g hT S hS, ?_, rfl, hT⟩
+  exact ⟨{
+    map := Diffeomorph.refl ThreeModel P.Carrier ∞
+    positive := preservesTangentOrientation_refl P.orientation
+    metric_eq := by
+      intro x v w
+      change g.inner x
+        (mfderiv ThreeModel ThreeModel (id : P.Carrier → P.Carrier) x v)
+        (mfderiv ThreeModel ThreeModel (id : P.Carrier → P.Carrier) x w) =
+          g.inner x v w
+      rw [mfderiv_id]
+      rfl }⟩
 
 theorem exists_retainedCoreHistory_eventCount_one (P : OrientedThreeStage.{u}) (g : P.Metric)
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : 0 < s) (E : RetainedCoreEvent P Q 0 s)
     (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric 0 = g) :
-    ∃ H : RetainedCoreHistory P, H.eventCount = 1 ∧ H.horizon = s :=
-  ⟨(RetainedCoreHistory.atZero P g).appendEvent hs E hinit, rfl, rfl⟩
+    ∃ H : RetainedCoreHistory.{u}, Nonempty (InitialIdentification P g H.toHistory) ∧
+      H.eventCount = 1 ∧ H.horizon = s := by
+  refine ⟨(RetainedCoreHistory.atZero P g).appendEvent hs E hinit, ?_, rfl, rfl⟩
+  exact ⟨{
+    map := Diffeomorph.refl ThreeModel P.Carrier ∞
+    positive := preservesTangentOrientation_refl P.orientation
+    metric_eq := by
+      intro x v w
+      change g.inner x
+        (mfderiv ThreeModel ThreeModel (id : P.Carrier → P.Carrier) x v)
+        (mfderiv ThreeModel ThreeModel (id : P.Carrier → P.Carrier) x w) =
+          g.inner x v w
+      rw [mfderiv_id]
+      rfl }⟩
 
 theorem exists_retainedCoreHistory_eventCount_one_of_isEmpty_output
     (P : OrientedThreeStage.{u}) (g : P.Metric) {Q D N : OrientedThreeStage.{u}} {s : ℝ}
     (hs : 0 < s) (X : SmoothCutCapTransition P Q D N) [IsEmpty Q.Carrier]
     (G : P.IncomingSlab 0 s) (L : G.TerminalLimitMetric) (hinit : G.flow.base.metric 0 = g) :
-    ∃ H : RetainedCoreHistory P, H.eventCount = 1 ∧ H.horizon = s :=
+    ∃ H : RetainedCoreHistory.{u}, Nonempty (InitialIdentification P g H.toHistory) ∧
+      H.eventCount = 1 ∧ H.horizon = s :=
   exists_retainedCoreHistory_eventCount_one P g hs
     (RetainedCoreEvent.ofEmptyOutput X G L (OrientedThreeStage.metricOfIsEmpty Q)) hinit
 
@@ -638,9 +661,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P : OrientedThreeStage.{u}}
-
-theorem appendEvent_toHistory_samePresentation (H : RetainedCoreHistory P)
+theorem appendEvent_toHistory_samePresentation (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -745,7 +766,7 @@ theorem appendEvent_toHistory_samePresentation (H : RetainedCoreHistory P)
       event_eq := hevent
       metric_heq := hmetric }
 
-theorem appendEvent_isPrefixOf (H : RetainedCoreHistory P) {Q : OrientedThreeStage.{u}}
+theorem appendEvent_isPrefixOf (H : RetainedCoreHistory.{u}) {Q : OrientedThreeStage.{u}}
     {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)

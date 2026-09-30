@@ -94,10 +94,10 @@ theorem time_dependent_vf_diffeomorph_family_of_smooth_bijective
     ?_, ?_⟩
   · have h0 : ¬ (0 < (0 : ℝ) ∧ (0 : ℝ) < T) := by
       rintro ⟨h, _⟩; exact (lt_irrefl 0) h
-    simp only [h0, dif_neg, not_false_iff]
+    simp only [h0, dite_eq_right, not_false_iff]
   · intro t ht htT x
     have hguard : 0 < t ∧ t < T := ⟨ht, htT⟩
-    simp only [hguard, dif_pos, and_self]
+    simp only [hguard, dite_eq_left, and_self]
     exact (hdiffeo t ht htT).choose_spec x
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -114,10 +114,10 @@ theorem time_dependent_vf_diffeomorph_family_of_hdiffeo
     ?_, ?_⟩
   · have h0 : ¬ (0 < (0 : ℝ) ∧ (0 : ℝ) < T) := by
       rintro ⟨h, _⟩; exact (lt_irrefl 0) h
-    simp only [h0, dif_neg, not_false_iff]
+    simp only [h0, dite_eq_right, not_false_iff]
   · intro t ht htT x
     have hguard : 0 < t ∧ t < T := ⟨ht, htT⟩
-    simp only [hguard, dif_pos, and_self]
+    simp only [hguard, dite_eq_left, and_self]
     exact (hdiffeo t ht htT).choose_spec x
 
 end DifferentialGeometry.Analysis.ODE

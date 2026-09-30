@@ -3,6 +3,11 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.LocalValu
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Reconstruction
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.RicciTrace.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
+
+open DifferentialGeometry.TensorMetric
+  (tensor00Scalar
+    tensor0SAsRS_apply
+    tensor0SToTensorRS)
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -56,8 +61,8 @@ lemma smoothOrthoFrame_parsevalExpand
       intro j _
       rw [(g.inner x (e k)).map_smul (c j) (e j), smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
-    · intro j _ hjk; rw [if_neg (fun h => hjk h.symm), mul_zero]
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
+    · intro j _ hjk; rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) = Module.finrank ℝ (TangentSpace I x) := by
     rw [Fintype.card_fin]; rfl
   set bse : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
@@ -77,8 +82,8 @@ lemma smoothOrthoFrame_parsevalExpand
     refine Finset.sum_congr rfl (fun b _ => ?_)
     rw [(g.inner x (e a)).map_smul (bse.repr u b) (bse b), smul_eq_mul, hbse_eq b]
   rw [hrepr, Finset.sum_eq_single a]
-  · rw [horth a a, if_pos rfl, mul_one]
-  · intro b _ hba; rw [horth a b, if_neg (fun h => hba h.symm), mul_zero]
+  · rw [horth a a, ite_eq_left rfl, mul_one]
+  · intro b _ hba; rw [horth a b, ite_eq_right (fun h => hba h.symm), mul_zero]
   · intro h; exact absurd (Finset.mem_univ a) h
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]

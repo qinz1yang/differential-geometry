@@ -57,7 +57,7 @@ private lemma pull_lipschitz_of_chartPushedRaw
         chartPushedRaw_apply_of_notMem (I := I) (M := M) α φ hy']
   refine ⟨C * ‖(toEuclidean (E := E)).toContinuousLinearMap‖₊, ?_⟩
   rw [heq]
-  exact hφ.comp (toEuclidean (E := E)).lipschitz
+  exact hφ.comp (toEuclidean (E := E)).lipschitzWith
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

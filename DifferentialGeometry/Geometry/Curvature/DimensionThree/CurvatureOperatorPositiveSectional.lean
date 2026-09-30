@@ -158,7 +158,7 @@ theorem metricRm04StdAt_pos_of_metricCurvatureOperatorRankAt_eq_three_of_nonnega
         simpa [u] using hu
       exact hc (funext hc0)
     have hposu : 0 < g.inner x u u := g.pos x u hu
-    convert hposu using 1 <;> try rfl
+    convert hposu using 1; try rfl
     simp only [dotProduct, Matrix.mulVec, G, star_trivial]
     simp [u, vec2]
     ring

@@ -44,7 +44,7 @@ theorem abs_scalar_curvature_sub_le_of_ricci_operator_difference
         rw [basis_repr_eq_sum_inv_inner gRef x b _ hinv]
         simp [identityInvMetric, diagonalInvMetric]
       rw [hrepr]
-      have hcs := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+      have hcs := DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
         gRef x (A (b i)) (b i)
       rw [hu, Real.sqrt_one, mul_one] at hcs
       apply hcs.trans

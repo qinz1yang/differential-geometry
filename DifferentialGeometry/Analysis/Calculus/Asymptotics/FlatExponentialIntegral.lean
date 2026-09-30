@@ -13,7 +13,7 @@ namespace DifferentialGeometry.Analysis
 
 theorem expNegInvGlue_div_eq_exp {b s : ℝ} (hb : 0 < b) (hs : 0 < s) :
     expNegInvGlue (s / b) = Real.exp (-b / s) := by
-  rw [expNegInvGlue, if_neg (div_pos hs hb).not_ge]
+  rw [expNegInvGlue, ite_eq_right (div_pos hs hb).not_ge]
   congr 1
   field_simp
 

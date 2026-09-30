@@ -978,7 +978,7 @@ theorem heatSup_parabolic_schauder_estimate
       (heatScaledParabolicHolderConst (V := V) alpha K2) alpha
       (Q.domRestrict (parabolicSpatialJet 2 w)) := by
     have hraw := heatSup_parabolic_holder (V := V) halpha d2u hK2
-    have hcomp := (hessianCurryEquiv V F).symm.lipschitz.holderWith.comp hraw
+    have hcomp := (hessianCurryEquiv V F).symm.lipschitzWith.holderWith.comp hraw
     have hcomp' : HolderWith
         (heatScaledParabolicHolderConst (V := V) alpha K2) alpha
         ((hessianCurryEquiv V F).symm ∘

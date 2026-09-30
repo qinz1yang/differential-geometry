@@ -120,8 +120,8 @@ theorem exists_isPLBall_pair_separating_of_isPLSphere_two {S C P Q : Set E} {a b
     (hQconn : IsPreconnected (Q \ {a, b})) (hQne : (Q \ {a, b}).Nonempty)
     (hsep : ∀ U ⊆ S \ C, IsPreconnected U → (U ∩ P).Nonempty → (U ∩ Q).Nonempty → False) :
     ∃ (D₀ D₁ : Set E) (r₀ r₁ : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀ ∧
-        IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ ∧
+        IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
         r₀ '' stdSimplexBoundary 2 = C ∧ r₁ '' stdSimplexBoundary 2 = C ∧
         D₀ ∪ D₁ = S ∧ D₀ ∩ D₁ = C ∧ P ⊆ D₀ ∧ Q ⊆ D₁ := by
   classical
@@ -320,8 +320,8 @@ theorem exists_isPLHomeomorphOn_of_fourArcSphere {S : Set E} {S' : Set F} {y₀ 
   have hhalf : ∀ (k : Fin 4) (D : Set E) (D' : Set F) (r : (Fin 3 → ℝ) → E)
       (r' : (Fin 3 → ℝ) → F), T k ∩ (T 0 ∪ T 2) = {y₀, y₁} →
       T' (π k) ∩ (T' (π 0) ∪ T' (π 2)) = {y₀', y₁'} →
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D → r '' stdSimplexBoundary 2 = T 0 ∪ T 2 →
-      IsPLHomeomorphOn r' (stdSimplex ℝ (Fin 3)) D' →
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D → r '' stdSimplexBoundary 2 = T 0 ∪ T 2 →
+      IsPLHomeomorphOn r' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' →
       r' '' stdSimplexBoundary 2 = T' (π 0) ∪ T' (π 2) → T k ⊆ D → T' (π k) ⊆ D' →
       ∃ G : E → F, IsPLHomeomorphOn G D D' ∧ EqOn G c (T 0 ∪ T 2) ∧ EqOn G (t k) (T k) := by
     intro k D D' r r' hkC hk'C hr hrb hr' hr'b hkD hk'D

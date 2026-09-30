@@ -14,10 +14,10 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem IsPLTorus.exists_disk_neighborhood {T D U : Set E3} (hT : IsPLTorus T)
-    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDT : D ⊆ T) (hU : U ∈ 𝓝ˢ[T] D) :
     ∃ (D' : Set E3) (q : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D' ∧ D' ⊆ T ∩ U ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' ∧ D' ⊆ T ∩ U ∧
       D ⊆ D' \ q '' stdSimplexBoundary 2 ∧ D' ∈ 𝓝ˢ[T] D := by
   obtain ⟨K, hKfin, hK, hKconn, hKT⟩ := hT.exists_combinatorial_triangulation
   let _ : Finite K.faces := hKfin.to_subtype

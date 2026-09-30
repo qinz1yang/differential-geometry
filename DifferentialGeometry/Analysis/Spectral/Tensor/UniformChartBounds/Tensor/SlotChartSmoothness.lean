@@ -483,7 +483,7 @@ private lemma chartJinv_chartJ_self_on_chartSource
         (chartTrivializationLinearMap (I := I) (M := M) α b v) = v := by
   classical
   have hbase : b ∈ (trivializationAt E (TangentSpace I) α).baseSet := hb
-  exact chartJinv_chartJ_self (I := I) (M := M) α hbase v
+  exact chartJinv_chartJ (I := I) (M := M) α hbase v
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma eval0SCLE_symm_pi_single_at_basis_tuple
@@ -586,7 +586,7 @@ private lemma slotSubst_trivProj_entry_closedForm
     with hRi_def
   change ((eval0SCLE (E := E) r).symm (Pi.single Idx (1 : ℝ))) Ri = _
   by_cases hagree : ∀ i : Fin r, i ≠ k → Idx i = Jdx i
-  · rw [if_pos hagree]
+  · rw [ite_eq_left hagree]
     have hRi_other : ∀ i, i ≠ k →
         Ri i = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (Idx i) := by
       intro i hi
@@ -755,7 +755,7 @@ private lemma slotSubst_trivProj_entry_closedForm
       · intro hne
         exfalso; exact hne (Finset.mem_univ _)
     rw [hcollapse]
-  · rw [if_neg hagree]
+  · rw [ite_eq_right hagree]
     have hagree' : ∃ i : Fin r, i ≠ k ∧ Idx i ≠ Jdx i := by
       classical
       by_contra hall
@@ -972,12 +972,12 @@ theorem tensorSlotSubstCLM_chartLeviCivita_chartBasisVec_trivImage_contMDiffOn_c
         (I := I) (M := M) g α j (Idx k) (Jdx k)
     refine hagree_smooth.congr ?_
     intro b _
-    rw [if_pos hagree]
+    rw [ite_eq_left hagree]
   · have hzero_smooth : ContMDiffOn I 𝓘(ℝ) ∞ (fun (_ : M) => (0 : ℝ))
         ((chartAt H α).source) := contMDiffOn_const
     refine hzero_smooth.congr ?_
     intro b _
-    rw [if_neg hagree]
+    rw [ite_eq_right hagree]
 
 end SlotSubst
 
@@ -1122,7 +1122,7 @@ private lemma triv_compInput_eq_trivT_compL_trivS
         ContinuousMultilinearMap.compContinuousLinearMap_apply]
     congr 1
     funext kk
-    exact chartJinv_chartJ_self (I := I) (M := M) α hb_base (u kk)
+    exact chartJinv_chartJ (I := I) (M := M) α hb_base (u kk)
   change (((TensorRSSpace.toModel
       (((show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from Tb).comp
         (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace r I b from Sb) :
@@ -1287,7 +1287,7 @@ private lemma triv_compOutput_eq_trivS_compL_trivT
         ContinuousMultilinearMap.compContinuousLinearMap_apply]
     congr 1
     funext kk
-    exact chartJinv_chartJ_self (I := I) (M := M) α hb_base (u kk)
+    exact chartJinv_chartJ (I := I) (M := M) α hb_base (u kk)
   change (((TensorRSSpace.toModel
       (((show Tensor0SSpace s I b →L[ℝ] Tensor0SSpace s I b from Sb).comp
         (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from Tb) :

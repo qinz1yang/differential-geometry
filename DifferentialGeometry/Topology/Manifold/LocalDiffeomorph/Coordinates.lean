@@ -40,7 +40,7 @@ theorem IsLocalDiffeomorphAt.contMDiffAt_of_comp
     hq.localInverse_left_inv hq.localInverse_mem_target
   have hf' : ContMDiffAt I₁ I₃ n (f ∘ q) (hq.localInverse (q x)) := by
     rwa [hinverse]
-  apply (hf'.comp (q x) hq.localInverse_contMDiffAt).congr_of_eventuallyEq
+  apply (hf'.comp (q x) hq.contMDiffAt_localInverse).congr_of_eventuallyEq
   filter_upwards [hq.localInverse.open_source.mem_nhds hq.localInverse_mem_source] with z hz
   change f z = f (q (hq.localInverse z))
   rw [hq.localInverse_right_inv hz]

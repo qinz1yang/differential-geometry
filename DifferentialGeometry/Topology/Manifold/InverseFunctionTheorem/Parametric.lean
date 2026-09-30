@@ -320,7 +320,7 @@ theorem eventuallyEq_fst_localInverse_parameter_graph_slice
       (fun y : M ↦ htime.localInverse (y, b)) (alpha (A0, b)) := by
     have htimeCont : ContinuousAt htime.localInverse
         (alpha (A0, b), b) := by
-      simpa only [q0] using htime.localInverse_contMDiffAt.continuousAt
+      simpa only [q0] using htime.contMDiffAt_localInverse.continuousAt
     exact ContinuousAt.comp'
       (f := fun y : M ↦ (y, b)) htimeCont hslice
   have hfirst : ContinuousAt

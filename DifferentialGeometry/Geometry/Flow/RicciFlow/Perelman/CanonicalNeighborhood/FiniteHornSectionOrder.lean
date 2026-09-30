@@ -78,7 +78,7 @@ theorem GlobalNeckCrossSection.outer_side_of_center_in_subend
     (G : GlobalNeckCrossSection F H.subend H.axial.point H.axial.length)
     (i : ℕ) (hcenter : ∀ p : Sphere 2, F (p, 0) ∈ H.subend i) :
     ∀ x : W, x ∉ H.subend i → (1 / 2 : ℝ) < G.tube.height x := by
-  let S : Set W := {x | H.cut_height i ≤ H.tube.height x}
+  let S : Set W := {x | H.cutHeight i ≤ H.tube.height x}
   have hS : IsConnected S := isConnected_upper_side H.tube (H.cut_height_mem i)
   have hne (x : W) (hx : x ∈ S) : G.tube.height x ≠ (1 / 2 : ℝ) := by
     intro heq
@@ -89,26 +89,26 @@ theorem GlobalNeckCrossSection.outer_side_of_center_in_subend
       exact hyx
     have hbelow := hcenter y.1
     rw [hp, H.subend_eq i] at hbelow
-    change H.tube.height x < H.cut_height i at hbelow
-    change H.cut_height i ≤ H.tube.height x at hx
+    change H.tube.height x < H.cutHeight i at hbelow
+    change H.cutHeight i ≤ H.tube.height x at hx
     exact (not_lt_of_ge hx) hbelow
   rcases hS.isPreconnected.mapsTo_Ioi_or_Iio G.tube.continuous_height.continuousOn hne with
     houter | hinner
   · intro x hx
     apply houter
-    change H.cut_height i ≤ H.tube.height x
+    change H.cutHeight i ≤ H.tube.height x
     simpa only [H.subend_eq i, mem_ofPred_eq, not_lt] using hx
   · obtain ⟨j, hj⟩ := G.deep_side
     have hcompact : IsCompact {x : W | (1 / 2 : ℝ) ≤ G.tube.height x} := by
       apply (H.tube.isCompact_slab (H.cut_height_mem j).1 (H.cut_height_mem i).2).of_isClosed_subset
         (isClosed_le continuous_const G.tube.continuous_height)
       intro x hx
-      have hxj : H.cut_height j ≤ H.tube.height x := by
+      have hxj : H.cutHeight j ≤ H.tube.height x := by
         apply le_of_not_gt
         intro hlt
         have hmem : x ∈ H.subend j := by rwa [H.subend_eq j]
         exact (not_lt_of_ge hx) (hj x hmem)
-      have hxi : H.tube.height x < H.cut_height i := by
+      have hxi : H.tube.height x < H.cutHeight i := by
         apply lt_of_not_ge
         intro hge
         have hnegative : G.tube.height x < (1 / 2 : ℝ) := hinner hge
@@ -122,12 +122,12 @@ theorem finiteHorn_exists_inner_collar
     {eta : ℝ} (heta : 0 < eta) :
     ∃ (w : W) (C : CylinderReference) (F : PartialDiffeomorph IC I3 Cylinder W ∞)
       (p : Sphere 2) (G : GlobalNeckCrossSection F H.subend H.axial.point H.axial.length),
-      F (p, 0) = w ∧ univ ×ˢ Icc (-H.collar_depth) H.collar_depth ⊆ F.source ∧
+      F (p, 0) = w ∧ univ ×ˢ Icc (-H.collarDepth) H.collarDepth ⊆ F.source ∧
       ∃ hQ : 0 < metricScalarAt g w,
         Nonempty (MetricComparisonOn (fun _ => C.metric 0)
           (fun _ => scaleMetric (metricScalarAt g w) hQ g) F
-          (univ ×ˢ Icc (-H.collar_depth) H.collar_depth) {0}
-          (⌈H.neck_precision⁻¹⌉₊) H.neck_precision) ∧
+          (univ ×ˢ Icc (-H.collarDepth) H.collarDepth) {0}
+          (⌈H.neckPrecision⁻¹⌉₊) H.neckPrecision) ∧
         (∀ q : Sphere 2, dist (F (q, 0) : UniformSpace.Completion W) H.endpoint < eta) ∧
         (1 / 2 : ℝ) < G.tube.height x ∧ (1 / 2 : ℝ) < G.tube.height y := by
   have hheight : 0 < min (H.tube.height x) (H.tube.height y) :=
@@ -162,7 +162,7 @@ theorem finiteHorn_exists_inner_collar
     have hmul := (div_lt_iff₀ he).mp hsqrt
     nlinarith
   have hlevel : ∀ q : Sphere 2, (q, (0 : ℝ)) ∈
-      (univ ×ˢ Icc (-H.collar_depth) H.collar_depth : Set Cylinder) := by
+      (univ ×ˢ Icc (-H.collarDepth) H.collarDepth : Set Cylinder) := by
     intro q
     exact ⟨mem_univ _, by constructor <;> linarith [H.collar_depth_pos]⟩
   have hcentral (q : Sphere 2) :
@@ -170,8 +170,8 @@ theorem finiteHorn_exists_inner_collar
     obtain ⟨gamma, hstart, hend, hsmooth, _hmem, hlength⟩ :=
       hshortcuts C (fun _ => C.metric 0)
         (fun _ => scaleMetric (metricScalarAt g w) hQ g) F
-        (univ ×ˢ Icc (-H.collar_depth) H.collar_depth) {0}
-        (⌈H.neck_precision⁻¹⌉₊) H.neck_precision 0 cmp rfl H.neck_precision_pos.le
+        (univ ×ˢ Icc (-H.collarDepth) H.collarDepth) {0}
+        (⌈H.neckPrecision⁻¹⌉₊) H.neckPrecision 0 cmp rfl H.neck_precision_pos.le
         (by linarith [H.neck_precision_small]) (by simp) hsource hlevel q p
     have hdist := (edistOf_le_metricPathELength (scaleMetric (metricScalarAt g w) hQ g)
       (by norm_num : (0 : ℝ) ≤ 1) hsmooth).trans hlength

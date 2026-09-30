@@ -41,23 +41,23 @@ theorem contDiffOn_glue_of_seam_param_of_uniqueDiffOn
   have hEqL : ∀ m : ℕ, Set.EqOn (fun y => p y m) (fun y => pL y m) sL := by
     rintro m ⟨y1, y2⟩ hy
     obtain ⟨hy1, _⟩ := hy
-    simp only [hp_def, if_pos (Set.mem_Iic.mp hy1)]
+    simp only [hp_def, ite_eq_left (Set.mem_Iic.mp hy1)]
   have hEqR : ∀ m : ℕ, Set.EqOn (fun y => p y m) (fun y => pR y m) sR := by
     rintro m ⟨y1, y2⟩ hy
     obtain ⟨hy1, hy2⟩ := hy
     rcases eq_or_lt_of_le (Set.mem_Ici.mp hy1) with hy0 | hy0
     · subst hy0
-      simp only [hp_def, if_pos (le_refl (0:ℝ)), hmatchP m y2 hy2]
-    · simp only [hp_def, if_neg (not_le.mpr hy0)]
+      simp only [hp_def, ite_eq_left (le_refl (0:ℝ)), hmatchP m y2 hy2]
+    · simp only [hp_def, ite_eq_right (not_le.mpr hy0)]
   have hzero : ∀ x : ℝ × E, x ∈ ((Set.univ : Set ℝ) ×ˢ V) → (p x 0).curry0 = f x := by
     rintro ⟨x1, x2⟩ hx
     obtain ⟨_, hx2⟩ := hx
     by_cases hx1 : x1 ≤ 0
     · have hval : (pL (x1, x2) 0).curry0 = fL (x1, x2) := hTL.zero_eq (x1, x2) ⟨hx1, hx2⟩
-      simp only [hp_def, hf_def, if_pos hx1, hval]
+      simp only [hp_def, hf_def, ite_eq_left hx1, hval]
     · have hx1' : (0:ℝ) ≤ x1 := le_of_lt (not_le.mp hx1)
       have hval : (pR (x1, x2) 0).curry0 = fR (x1, x2) := hTR.zero_eq (x1, x2) ⟨hx1', hx2⟩
-      simp only [hp_def, hf_def, if_neg hx1, hval]
+      simp only [hp_def, hf_def, ite_eq_right hx1, hval]
   have hm_lt : ∀ m : ℕ, (m : WithTop ℕ∞) < ∞ := fun m => by
     exact_mod_cast (Nat.cast_lt.mpr m.lt_succ_self).trans_le le_top
   have hderiv : ∀ (m : ℕ) (x : ℝ × E), x ∈ ((Set.univ : Set ℝ) ×ˢ V) →
@@ -65,9 +65,9 @@ theorem contDiffOn_glue_of_seam_param_of_uniqueDiffOn
     rintro m ⟨x1, x2⟩ hx
     obtain ⟨_, hx2⟩ := hx
     have hpL_succ : ∀ y : ℝ × E, y.1 ≤ 0 → p y m.succ = pL y m.succ :=
-      fun y hy => by simp only [hp_def, if_pos hy]
+      fun y hy => by simp only [hp_def, ite_eq_left hy]
     have hpR_succ : ∀ y : ℝ × E, 0 < y.1 → p y m.succ = pR y m.succ :=
-      fun y hy => by simp only [hp_def, if_neg (not_le.mpr hy)]
+      fun y hy => by simp only [hp_def, ite_eq_right (not_le.mpr hy)]
     rcases lt_trichotomy x1 0 with hx1 | hx1 | hx1
     · have hxle : x1 ≤ 0 := le_of_lt hx1
       have hdL : HasFDerivWithinAt (fun y => pL y m) (pL (x1, x2) m.succ).curryLeft sL (x1, x2) :=

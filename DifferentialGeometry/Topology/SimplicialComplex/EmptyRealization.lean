@@ -17,7 +17,7 @@ theorem isEmpty_orderedRealization (K : PreAbstractSimplicialComplex ι) (hK : K
     change Finset.univ.image a.simplex.val.obj ∈ K.faces at ha
     rw [hK] at ha
     exact ha⟩
-  have hI := (DifferentialGeometry.SSet.isInitial_of_isEmpty_nondegenerate (orderedSimplicialSet K)).isInitialObj
+  have hI := (DifferentialGeometry.SSet.isInitialOfIsEmptyNondegenerate (orderedSimplicialSet K)).isInitialObj
     SSet.toTop
   exact ⟨fun x => PEmpty.elim (hI.to (TopCat.of PEmpty.{u + 1}) x)⟩
 

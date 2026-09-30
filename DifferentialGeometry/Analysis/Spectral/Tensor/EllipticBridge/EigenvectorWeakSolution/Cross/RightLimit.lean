@@ -1,5 +1,14 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.Basic
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+open DifferentialGeometry.TensorMetric
+  (gramMatrixAt
+    gramMatrixAt_apply
+    gramMatrixAt_inv_mul_self
+    modelInnerAt_apply
+    tensorInnerPointwise
+    tensorInnerPointwise_add_right
+    tensorInnerPointwise_smul_right
+    tensorInnerPointwise_zero_right)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -46,7 +55,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞
 private lemma mvfderiv_apply_scalar (f : M → ℝ) (x : M) (v : TangentSpace I x) :
     mvfderiv (I := I) f x v = mfderiv I 𝓘(ℝ, ℝ) f x v := by
   simp only [mvfderiv, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk]
+  simp only [NormedSpace.fromTangentSpace]
   rfl
 
 omit [CompactSpace M] in

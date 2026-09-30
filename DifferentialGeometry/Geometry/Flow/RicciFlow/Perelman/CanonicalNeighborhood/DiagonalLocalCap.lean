@@ -36,7 +36,7 @@ theorem exists_localCap_diagonal_slab
     ∃ cap : LocalCap S eps (d (cylinderDiagonalQuotientMap p)) 0 U,
       cap.core.carrier = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-L) L)) ∧
       cap.tube = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc L (L + 1))) ∧
-      (∀ z : Cylinder, cap.tube_map z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
+      (∀ z : Cylinder, cap.tubeMap z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
       cap.chain.count = 1 ∧ ∀ i,
         cap.chain.centers i = d (cylinderDiagonalQuotientMap (p.1, L)) ∧
         (∀ z : Cylinder, (cap.chain.necks i).map z =
@@ -58,9 +58,9 @@ theorem exists_localCap_diagonal_slab
     core := K
     core_inside := hKU
     center_inside := hpK
-    core_model := core
+    coreModel := core
     tube := V
-    tube_map := tube
+    tubeMap := tube
     tube_domain := hdom
     tube_eq := himage
     union_eq := by dsimp only [V]; rw [← himage]; exact hunion.symm
@@ -70,7 +70,7 @@ theorem exists_localCap_diagonal_slab
     boundary_eq := by dsimp only [V]; rw [← himage]; exact hfront
     boundaries_disjoint := hdisjoint
     chain := chain
-    core_boundary_map := fun z => tube (z, 0)
+    coreBoundaryMap := fun z => tube (z, 0)
     core_boundary_eq := fun _ => rfl }
   refine ⟨cap, hK, rfl, ?_, hcount, ?_⟩
   · intro z

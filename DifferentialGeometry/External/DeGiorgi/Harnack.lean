@@ -238,7 +238,9 @@ private lemma affine_map_restrict_ball_mul
             rw [show (fun z : E => x₀ + R • z) = (fun z => x₀ + z) ∘ (fun z => R • z) from rfl]
             rw [← Measure.map_map (measurable_const_add x₀) (measurable_const_smul R)]
             rw [Measure.map_addHaar_smul volume hR.ne']
-            rw [Measure.map_smul, (measurePreserving_add_left volume x₀).map_eq, abs_inv]
+            rw [Measure.map_smul (c := ENNReal.ofReal |(R ^ Module.finrank ℝ E)⁻¹|)
+              (f := fun z : E => x₀ + z) (measurable_const_add x₀).aemeasurable,
+              (measurePreserving_add_left volume x₀).map_eq, abs_inv]
     _ = ENNReal.ofReal (|R ^ Module.finrank ℝ E|⁻¹) •
           (volume.restrict (Metric.ball x₀ (R * ρ))) := by
             rw [Measure.restrict_smul]

@@ -25,12 +25,12 @@ private theorem collarStep_eq_side_off_band
   · have hq : ¬ (a ≤ q x ∧ q x ≤ b) := fun h ↦ hx ⟨hu, h⟩
     rcases not_and_or.mp hq with hlo | hhi
     · have hqa : q x ≤ a := (lt_of_not_ge hlo).le
-      rw [collarStep, if_pos hu, hzero _ hqa,
-        if_pos ((hside x hu).mpr (hqa.trans hac))]
+      rw [collarStep, ite_eq_left hu, hzero _ hqa,
+        ite_eq_left ((hside x hu).mpr (hqa.trans hac))]
     · have hbq : b < q x := lt_of_not_ge hhi
       have hnotL : x ∉ L := fun h ↦ (not_le_of_gt (hcb.trans_lt hbq)) ((hside x hu).mp h)
-      rw [collarStep, if_pos hu, hone _ hbq.le, if_neg hnotL]
-  · rw [collarStep, if_neg hu]
+      rw [collarStep, ite_eq_left hu, hone _ hbq.le, ite_eq_right hnotL]
+  · rw [collarStep, ite_eq_right hu]
 
 open scoped Classical in
 private theorem collarStep_eventuallyEq_side_off_band
@@ -50,10 +50,10 @@ private theorem collarStep_eventuallyEq_side_off_band
       exact hf ⟨subset_closure hl, hnot⟩
     filter_upwards [hK.isOpen_compl.mem_nhds hx, isOpen_interior.mem_nhds hi] with y hy hyL
     rw [collarStep_eq_side_off_band U L q β a c b hac hcb hside hzero hone hy,
-      if_pos (interior_subset hyL), if_pos hl]
+      ite_eq_left (interior_subset hyL), ite_eq_left hl]
   · filter_upwards [hK.isOpen_compl.mem_nhds hx, hL.isOpen_compl.mem_nhds hl] with y hy hyL
     rw [collarStep_eq_side_off_band U L q β a c b hac hcb hside hzero hone hy,
-      if_neg hyL, if_neg hl]
+      ite_eq_right hyL, ite_eq_right hl]
 
 theorem contMDiff_collarStep
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -73,7 +73,7 @@ theorem contMDiff_collarStep
   by_cases hu : x ∈ U
   · apply (hβ.comp_contMDiffAt ((hq x hu).contMDiffAt (hU.mem_nhds hu))).congr_of_eventuallyEq
     filter_upwards [hU.mem_nhds hu] with y hy
-    exact if_pos hy
+    exact ite_eq_left hy
   · have hk : x ∉ U ∩ q ⁻¹' Icc a b := fun h ↦ hu h.1
     exact contMDiffAt_const.congr_of_eventuallyEq
       (collarStep_eventuallyEq_side_off_band U L hL q β a c b hac hcb hside hzero hone hK hfrontier hk)
@@ -116,7 +116,7 @@ theorem mvfderiv_collarStep_of_mem
     mvfderiv I (collarStep U L q β) x v = deriv β (q x) * mvfderiv I q x v := by
   have heq : collarStep U L q β =ᶠ[𝓝 x] β ∘ q := by
     filter_upwards [hU.mem_nhds hx] with y hy
-    exact if_pos hy
+    exact ite_eq_left hy
   change (show ℝ from mfderiv I 𝓘(ℝ) (collarStep U L q β) x v) = _
   rw [heq.mfderiv_eq, mfderiv_comp x hβ.mdifferentiableAt hq]
   change (show ℝ from mfderiv 𝓘(ℝ) 𝓘(ℝ) β (q x) (mfderiv I 𝓘(ℝ) q x v)) = _

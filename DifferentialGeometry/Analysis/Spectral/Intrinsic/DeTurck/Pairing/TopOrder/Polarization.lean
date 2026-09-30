@@ -1,7 +1,14 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotPairing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Decomposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CometricSlotPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
+
+open DifferentialGeometry.TensorMetric (
+  coframeS coframeS_zero_eq_unitZeroSec fiberNormSqComponent tensorInnerPointwise
+  tensorInnerPointwise_add_left tensorInnerPointwise_add_right
+  tensorInnerPointwise_eq_sum_componentS_mul tensorInnerPointwise_smul_left
+  tensorInnerPointwise_smul_right)
 
 noncomputable section
 set_option backward.isDefEq.respectTransparency false

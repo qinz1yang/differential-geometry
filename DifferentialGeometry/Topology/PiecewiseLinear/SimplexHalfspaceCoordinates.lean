@@ -6,7 +6,7 @@ Authors: DifferentialGeometry contributors
 import Mathlib.LinearAlgebra.AffineSpace.Basis
 import Mathlib.LinearAlgebra.AffineSpace.AffineEquiv
 import Mathlib.Data.Fintype.EquivFin
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Linarith
 

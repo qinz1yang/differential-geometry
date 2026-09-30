@@ -68,7 +68,7 @@ theorem exists_metric_mfderiv_bound_of_hasCompactSupport
       filter_upwards [(isClosed_tsupport f).isOpen_compl.mem_nhds hx] with y hy
       exact image_eq_zero_of_notMem_tsupport hy
     have hd : (mfderiv I 𝓘(ℝ, F) f x : TangentSpace I x →L[ℝ] F) = 0 := by
-      exact hzero.mfderiv_eq.trans mfderiv_const
+      simpa only [mfderiv_const, ContinuousLinearMap.comp_zero] using hzero.mfderiv_eq
     rw [hd, zero_apply, norm_zero]
     exact mul_nonneg C.coe_nonneg (Real.sqrt_nonneg _)
 

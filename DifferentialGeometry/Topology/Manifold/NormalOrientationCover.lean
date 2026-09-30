@@ -86,7 +86,7 @@ theorem transitionParity_eq_normalSideFlipAt
     C.transitionParity i j y =
       OpenPartialHomeomorph.normalSideFlipAt (C.transition i j)
         (C.transition_zeroLocus_iff_zero i j) (C.transitionZeroPoint i j ⟨y, hy⟩) := by
-  simp only [transitionParity, dif_pos hy]
+  simp only [transitionParity, dite_eq_left hy]
 
 theorem continuousOn_transitionParity (i j : B) :
     ContinuousOn (C.transitionParity i j) (C.baseSet i ∩ C.baseSet j) := by
@@ -104,7 +104,7 @@ theorem continuousOn_transitionParity (i j : B) :
   apply (hnormal.comp hz).congr
   intro y
   simp only [Function.comp_apply, Set.domRestrict_apply, z]
-  rw [transitionParity, dif_pos y.2]
+  rw [transitionParity, dite_eq_left y.2]
 
 theorem hasNormalSideFlipAt_transition_self
     {i y : B} (hy : y ∈ C.baseSet i) :

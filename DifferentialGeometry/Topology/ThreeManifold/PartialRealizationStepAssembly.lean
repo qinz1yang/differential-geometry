@@ -312,7 +312,7 @@ abbrev twoVertexEmpty (N N' : ConnectedClosedOrientedManifold.{0} 3) :
   endpoint := fun e => PEmpty.elim e
   vertexManifold := fun b => if b then N' else N
   flag := fun e => PEmpty.elim e
-  flag_collar_disjoint := fun _ f => PEmpty.elim f.1.1
+  flag_neighborhood_disjoint := fun _ f => PEmpty.elim f.1.1
   attach := fun e => PEmpty.elim e
   attach_eq := fun e => PEmpty.elim e
 

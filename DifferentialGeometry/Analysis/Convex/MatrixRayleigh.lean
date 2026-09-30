@@ -656,7 +656,7 @@ private theorem matrixQuadraticForm3_diagonal
     rw [Finset.sum_eq_single i]
     · simp
     · intro x_2 _ hx2
-      rw [if_neg (Ne.symm hx2)]
+      rw [ite_eq_right (Ne.symm hx2)]
       simp
     · intro h
       exact absurd (Finset.mem_univ i) h

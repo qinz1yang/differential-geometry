@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.BelowScaleVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Invariance
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.BufferedControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NoncollapseLocalization
 
 set_option autoImplicit false
@@ -279,15 +279,6 @@ theorem exists_oldData_noncollapsing_eq (v : Real) (hv : 0 < v) :
      olderLength_pos := one_pos
      energyBound := 1
      olderLength_le_energy := le_rfl }, rfl⟩
-
-theorem isEnlargementInput_iff_forall_exists :
-    isEnlargementInput.{u} ↔
-      ∀ d : OldData, ∃ α : Real, 0 < α ∧ α ≤ 1 / 100 ∧ ∃ sstar : Real, 0 < sstar ∧
-        sstar ≤ d.epsilon / 2 ∧
-          ∀ (H : ObservedHistory.{u}) (S : EnlargementStrip H),
-            S.radius < min (α * d.scaleLower) (sstar / 4) →
-            Nonempty (EnlargementConclusion S) :=
-  ⟨fun h d => h d d.noncollapsing_pos, fun h d _ => h d⟩
 
 end Data
 

@@ -70,13 +70,31 @@ theorem exists_lp_mixed_weak_partial_trees_of_second_order_evolution
     rwa [Measure.restrict_eq_self_of_ae_mem hmem] at h
   let r := fun x => (∑ i, ∑ j, B i j x * U 2 (Fin.cons j (Fin.cons i e)) x) +
     (∑ i, C i x * U 1 (Fin.cons i e) x) + q x * U 0 e x + s x * F 0 0 e x
-  have hr : MemLp r p ((μ.restrict J).prod (volume.restrict Ω)) :=
-    ((memLp_finsetSum Finset.univ fun i _ => memLp_finsetSum Finset.univ fun j _ =>
-      (Lp.memLp (U 2 (Fin.cons j (Fin.cons i e)))).mul (hbounded (hB i j))).add
-      (memLp_finsetSum Finset.univ fun i _ =>
-        (Lp.memLp (U 1 (Fin.cons i e))).mul (hbounded (hC i)))).add
-          ((Lp.memLp (U 0 e)).mul (hbounded hq)) |>.add
-            ((Lp.memLp (F 0 0 e)).mul (hbounded hs))
+  have hBmul (i j) : MemLp (fun x => B i j x * U 2 (Fin.cons j (Fin.cons i e)) x) p
+      ((μ.restrict J).prod (volume.restrict Ω)) :=
+    (hbounded (hB i j)).mul (Lp.memLp (U 2 (Fin.cons j (Fin.cons i e))))
+  have hCmul (i) : MemLp (fun x => C i x * U 1 (Fin.cons i e) x) p
+      ((μ.restrict J).prod (volume.restrict Ω)) :=
+    (hbounded (hC i)).mul (Lp.memLp (U 1 (Fin.cons i e)))
+  have hqmul : MemLp (fun x => q x * U 0 e x) p
+      ((μ.restrict J).prod (volume.restrict Ω)) :=
+    (hbounded hq).mul (Lp.memLp (U 0 e))
+  have hsmul : MemLp (fun x => s x * F 0 0 e x) p
+      ((μ.restrict J).prod (volume.restrict Ω)) :=
+    (hbounded hs).mul (Lp.memLp (F 0 0 e))
+  have hsumB : MemLp (fun x => ∑ i, ∑ j, B i j x * U 2 (Fin.cons j (Fin.cons i e)) x) p
+      ((μ.restrict J).prod (volume.restrict Ω)) :=
+    memLp_finsetSum Finset.univ (fun i _ => memLp_finsetSum Finset.univ (fun j _ => hBmul i j))
+  have hsumC : MemLp (fun x => ∑ i, C i x * U 1 (Fin.cons i e) x) p
+      ((μ.restrict J).prod (volume.restrict Ω)) :=
+    memLp_finsetSum Finset.univ (fun i _ => hCmul i)
+  have hr' : MemLp (fun x =>
+      (∑ i, ∑ j, B i j x * U 2 (Fin.cons j (Fin.cons i e)) x) +
+        (∑ i, C i x * U 1 (Fin.cons i e) x) + q x * U 0 e x + s x * F 0 0 e x) p
+      ((μ.restrict J).prod (volume.restrict Ω)) :=
+    ((hsumB.add hsumC).add hqmul).add hsmul
+  have hr : MemLp r p ((μ.restrict J).prod (volume.restrict Ω)) := by
+    simpa only [r] using hr'
   let R := hr.toLp r
   have hR : R =ᵐ[(μ.restrict J).prod (volume.restrict Ω)] r := hr.coeFn_toLp
   have hRtime (φ : Z × E → ℝ) (hφ : ContDiff ℝ (⊤ : ℕ∞) φ)

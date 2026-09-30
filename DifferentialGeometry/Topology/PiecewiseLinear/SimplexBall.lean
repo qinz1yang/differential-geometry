@@ -27,7 +27,7 @@ theorem isPLBall_convexHull_of_affineIndependent [FiniteDimensional ℝ E] {n : 
   let A : (Fin (n + 1) → ℝ) →ₗ[ℝ] E := Fintype.linearCombination ℝ p
   have hA : ∀ x, A x = ∑ i, x i • p i := fun x => by simp [A, Fintype.linearCombination_apply]
   let wx : (Fin (n + 1) → ℝ) → E → ℝ := fun x v => if h : v ∈ s then x (e.symm ⟨v, h⟩) else 0
-  have hwx : ∀ x i, wx x (p i) = x i := fun x i => by simp only [wx, dif_pos (hp i), hpe]
+  have hwx : ∀ x i, wx x (p i) = x i := fun x i => by simp only [wx, dite_eq_left (hp i), hpe]
   have hwx_sum : ∀ x, ∑ v ∈ s, wx x v = ∑ i, x i := fun x => by
     rw [sum_reindex_of_equiv e]
     exact Finset.sum_congr rfl fun i _ => hwx x i
@@ -35,23 +35,23 @@ theorem isPLBall_convexHull_of_affineIndependent [FiniteDimensional ℝ E] {n : 
     rw [sum_reindex_of_equiv e, hA]
     exact Finset.sum_congr rfl fun i _ => by rw [hwx x i]
   let g : E → Fin (n + 1) → ℝ := fun y i => weights s y (p i)
-  have hg_mem : ∀ y ∈ convexHull ℝ (s : Set E), g y ∈ stdSimplex ℝ (Fin (n + 1)) := fun y hy =>
+  have hg_mem : ∀ y ∈ convexHull ℝ (s : Set E), g y ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1)) := fun y hy =>
     ⟨fun i => weights_nonneg hy (hp i),
       (sum_reindex_of_equiv e (weights s y)).symm.trans (sum_weights hy)⟩
   have hAg : ∀ y ∈ convexHull ℝ (s : Set E), A (g y) = y := fun y hy => by
     rw [hA]
     exact (sum_reindex_of_equiv e fun v => weights s y v • v).symm.trans (sum_weights_smul hy)
-  have hmaps : MapsTo A (stdSimplex ℝ (Fin (n + 1))) (convexHull ℝ (s : Set E)) := fun x hx => by
+  have hmaps : MapsTo A (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) (convexHull ℝ (s : Set E)) := fun x hx => by
     rw [hA]
     exact (convex_convexHull ℝ _).sum_mem (fun i _ => hx.1 i) hx.2 fun i _ =>
       subset_convexHull ℝ _ (Finset.mem_coe.mpr (hp i))
-  have hinj : InjOn A (stdSimplex ℝ (Fin (n + 1))) := fun x hx x' hx' hxx' => by
+  have hinj : InjOn A (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) := fun x hx x' hx' hxx' => by
     have h := eq_on_of_sum_smul_eq hs ((hwx_sum x).trans hx.2) ((hwx_sum x').trans hx'.2)
       (by rw [hwx_smul x, hwx_smul x', hxx'])
     funext i
     rw [← hwx x i, ← hwx x' i]
     exact h (p i) (hp i)
-  have hbij : BijOn A (stdSimplex ℝ (Fin (n + 1))) (convexHull ℝ (s : Set E)) :=
+  have hbij : BijOn A (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) (convexHull ℝ (s : Set E)) :=
     ⟨hmaps, hinj, fun y hy => ⟨g y, hg_mem y hy, hAg y hy⟩⟩
   refine ⟨A, hbij, ?_, ?_⟩
   · exact (isPiecewiseAffineOn_of_affine_of_isHPolytope A.toAffineMap
@@ -59,7 +59,7 @@ theorem isPLBall_convexHull_of_affineIndependent [FiniteDimensional ℝ E] {n : 
   · let q : E → Fin (n + 1) → ℝ := fun v =>
       if h : v ∈ s then Pi.single (e.symm ⟨v, h⟩) (1 : ℝ) else 0
     have hq : ∀ i, q (e i) = Pi.single i 1 := fun i => by
-      simp only [q, dif_pos (e i).2, Subtype.coe_eta, Equiv.symm_apply_apply]
+      simp only [q, dite_eq_left (e i).2, Subtype.coe_eta, Equiv.symm_apply_apply]
     obtain ⟨B, hB⟩ := exists_affineMap_eqOn hs q
     have hgB : EqOn g B (convexHull ℝ (s : Set E)) := by
       intro y hy
@@ -75,7 +75,7 @@ theorem isPLBall_convexHull_of_affineIndependent [FiniteDimensional ℝ E] {n : 
         sum_reindex_of_equiv e fun v => weights s y v • q v]
       funext j
       simp only [g, p, Finset.sum_apply, Pi.smul_apply, hq, Pi.single_apply, smul_eq_mul, mul_ite,
-        mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     have hinvOn := hbij.invOn_invFunOn
     refine (isPiecewiseAffineOn_of_affine_of_isHPolytope B
       (isHPolytope_convexHull_of_affineIndependent s hs)).congr ?_

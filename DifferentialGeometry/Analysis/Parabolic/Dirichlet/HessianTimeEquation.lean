@@ -192,8 +192,8 @@ private theorem integral_chart_cutoff_tensor_test
         (hφrc.fderiv_apply ℝ (0, EuclideanSpace.single j 1)) ν
     have hin (i j) : Integrable (fun p => A i j p * K i p *
         fderiv ℝ (fun z => φ z / r z) p (0, EuclideanSpace.single j 1)) ν :=
-      ((hdφ j).mul (r := 2) ((Lp.memLp (K i)).mul (r := 2)
-        (hAmem i j))).integrable (by norm_num)
+      (((hAmem i j).fun_mul (r := 2) (Lp.memLp (K i))).fun_mul (r := 2)
+        (hdφ j)).integrable (by norm_num)
     have heach (j) : (∫ p, P j p * fderiv ℝ (fun z => φ z / r z) p
         (0, EuclideanSpace.single j 1) ∂ν) =
         ∑ i, ∫ p, A i j p * K i p *

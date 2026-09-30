@@ -100,7 +100,7 @@ private theorem exists_compact_isotopy_eqOn_small_ballCharts_of_center_eq
   · intro x hx
     rw [(hJe 1 (c.chart x)).1]
     unfold extendChartById
-    rw [if_pos (show c.chart x ∈ d.chart.symm.toOpenPartialHomeomorph.source from hover x hx)]
+    rw [ite_eq_left (show c.chart x ∈ d.chart.symm.toOpenPartialHomeomorph.source from hover x hx)]
     change d.chart (D 1 (ψ x)) = d.chart x
     rw [hDact x hx]
     rfl

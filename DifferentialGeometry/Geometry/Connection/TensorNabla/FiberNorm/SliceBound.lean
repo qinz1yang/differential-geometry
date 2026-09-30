@@ -14,7 +14,8 @@ namespace Analysis
 namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric (fiberNormSqComponent riemannianFiberNormSq
+  riemannianFiberNormSq_eq_sum_component_sq_of_basis)
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor0SNabla
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -82,9 +83,9 @@ theorem riemannianFiberNormSq_covGradBundleEquiv_symm_slice_le
       intro j _
       rw [map_smul, horthC k j, smul_eq_mul]
     rw [Finset.sum_congr rfl h_pull] at h_zero
-    rw [Finset.sum_eq_single k (fun j _ hj => by rw [if_neg (Ne.symm hj), mul_zero])
+    rw [Finset.sum_eq_single k (fun j _ hj => by rw [ite_eq_right (Ne.symm hj), mul_zero])
       (fun hk => absurd hk_mem hk)] at h_zero
-    rwa [if_pos rfl, mul_one] at h_zero
+    rwa [ite_eq_left rfl, mul_one] at h_zero
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) = Module.finrank ℝ (TangentSpace I x) := by
     rw [Fintype.card_fin]; rfl
   set bse : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=

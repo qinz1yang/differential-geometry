@@ -61,6 +61,7 @@ variable {E F G : Type*}
   [TopologicalSpace P] [ChartedSpace H'' P]
   {n : ℕ∞ω} {e : M → N} {f : N → P} {x : M}
 
+omit [IsManifold J ∞ N] in
 theorem IsSmoothEmbedding.contMDiffAt_of_comp_of_isInteriorPoint
     (he : IsSmoothEmbedding I J ∞ e) (hn : n ≤ ∞)
     (hdim : Module.finrank ℝ E = Module.finrank ℝ F) (hx : I.IsInteriorPoint x)

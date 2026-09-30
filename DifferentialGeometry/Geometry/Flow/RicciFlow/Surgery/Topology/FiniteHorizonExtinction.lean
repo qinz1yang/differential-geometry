@@ -38,7 +38,7 @@ private theorem ObservedHistory.isExtinctAtHorizon_of_initialScalarBarrier
 
 theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_initialScalarBarrier
     {P : OrientedThreeStage.{u}} [SimplyConnectedSpace P.Carrier]
-    {g : P.Metric} (H : RetainedCoreHistory P) (A : InitialIdentification P g H.toHistory)
+    {g : P.Metric} (H : RetainedCoreHistory.{u}) (A : InitialIdentification P g H.toHistory)
     (parameters : CutoffParameters)
     (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i parameters)
     (hbfr : ∀ i : Fin H.eventCount, (H.coreEvent i).transition.boundaryFrameReversing)
@@ -67,9 +67,9 @@ private theorem prefix_initial_metric {H K : ObservedHistory.{u}} (h : H.IsPrefi
 
 theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_history_volume_debit
     {P : OrientedThreeStage.{u}} [SimplyConnectedSpace P.Carrier]
-    {g : P.Metric} (H : RetainedCoreHistory P)
+    {g : P.Metric} (H : RetainedCoreHistory.{u})
     (A : InitialIdentification P g H.toHistory)
-    (S : Set (RetainedCoreHistory P)) (hH : H ∈ S)
+    (S : Set (RetainedCoreHistory.{u})) (hH : H ∈ S)
     {B v : ℝ} (hv : 0 < v)
     (hprefix : ∀ K ∈ S, H.toHistory.IsPrefixOf K.toHistory)
     (hhorizon : ∀ K ∈ S, K.horizon ≤ B)
@@ -108,7 +108,7 @@ theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_history_vol
       ∀ x : (K.stage i.castSucc).Carrier,
         -(3 / (2 * c)) ≤ metricScalarAt ((K.coreEvent i).incoming.flow.base.metric t) x := by
     intro K hK i t ht x
-    let A' := A.of_stageZero (prefix_initial_stage (hprefix K hK))
+    let A' := A.ofStageZero (prefix_initial_stage (hprefix K hK))
       (prefix_initial_metric (hprefix K hK))
     have hstage := DifferentialGeometry.PDE.RicciFlow.stageInitial_scalarLowerBound_of_history
       (records K hK) hc (A'.stageZero_scalarLowerBound hscalar0)
@@ -132,21 +132,21 @@ theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_history_vol
   obtain ⟨J, hJ, hJB | ⟨hB, G, hG, hp⟩⟩ :=
     H.exists_closedSlab_extension_to_horizon_of_volume_debit S hH (by positivity : 0 ≤ 3 / (2 * c)) hv hprefix hhorizon
       hend hscalar hdebit hproduce
-  · let A' := A.of_stageZero (prefix_initial_stage (hprefix J hJ))
+  · let A' := A.ofStageZero (prefix_initial_stage (hprefix J hJ))
       (prefix_initial_metric (hprefix J hJ))
     exact J.exists_poincare_controlled_extinction_of_initialScalarBarrier A' (parameters J hJ)
       (records J hJ) (hbfr J hJ) (hctrl J hJ) hc hscalar0 (hJB ▸ hthr)
   · let K := J.extendHorizon B hB G hG
-    let A' := A.of_stageZero (prefix_initial_stage hp) (prefix_initial_metric hp)
+    let A' := A.ofStageZero (prefix_initial_stage hp) (prefix_initial_metric hp)
     exact K.exists_poincare_controlled_extinction_of_initialScalarBarrier A' (parameters J hJ)
       (fun i => GeometricCutoffRecord.extendHorizon B hB G hG (records J hJ i))
       (hbfr J hJ) (hctrl J hJ) hc hscalar0 hthr
 
 theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_volume_debit
     {P : OrientedThreeStage.{u}} [SimplyConnectedSpace P.Carrier]
-    {g : P.Metric} (H : RetainedCoreHistory P)
+    {g : P.Metric} (H : RetainedCoreHistory.{u})
     (A : InitialIdentification P g H.toHistory)
-    (S : Set (RetainedCoreHistory P)) (hH : H ∈ S)
+    (S : Set (RetainedCoreHistory.{u})) (hH : H ∈ S)
     {B v : ℝ} (hv : 0 < v)
     (hprefix : ∀ K ∈ S, H.toHistory.IsPrefixOf K.toHistory)
     (hhorizon : ∀ K ∈ S, K.horizon ≤ B)

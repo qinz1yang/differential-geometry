@@ -11,26 +11,25 @@ universe u
 
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
-def liftedTetrahedronFace (i : Fin 4) : C(stdSimplex ℝ (Fin 3), stdSimplex ℝ (Fin 4)) :=
-  ⟨stdSimplex.map (SimplexCategory.δ i).toOrderHom,
-    stdSimplex.continuous_map (SimplexCategory.δ i).toOrderHom⟩
+def liftedTetrahedronFace (i : Fin 4) : C(Convexity.StdSimplex ℝ (Fin 3), Convexity.StdSimplex ℝ (Fin 4)) :=
+  ⟨Convexity.StdSimplex.map (SimplexCategory.δ i).toOrderHom,
+    Convexity.StdSimplex.continuous_map ℝ (SimplexCategory.δ i).toOrderHom⟩
 
-theorem liftedTetrahedronFace_zero (i : Fin 4) (q : stdSimplex ℝ (Fin 3)) :
-    (liftedTetrahedronFace i q).val i = 0 := by
-  change FunOnFinite.linearMap ℝ ℝ i.succAbove (q : Fin 3 → ℝ) i = 0
-  rw [FunOnFinite.linearMap_apply_apply]
-  apply Finset.sum_eq_zero
-  intro j hj
-  exact False.elim (Fin.succAbove_ne i j (Finset.mem_filter.mp hj).2)
+theorem liftedTetrahedronFace_zero (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)) :
+    (liftedTetrahedronFace i q).weights i = 0 := by
+  change (q.weights.mapDomain i.succAbove) i = 0
+  apply Finsupp.mapDomain_of_notMem_range
+  rintro ⟨j, hj⟩
+  exact Fin.succAbove_ne i j hj
 
-def liftedTetrahedronSimplex : C(stdSimplex ℝ (Fin 4), liftedSphereSpace.{u} 1) where
+def liftedTetrahedronSimplex : C(Convexity.StdSimplex ℝ (Fin 4), liftedSphereSpace.{u} 1) where
   toFun q := (ULift.up (positiveTetrahedron q) : liftedSphereSpace.{u} 1)
   continuous_toFun :=
     (Homeomorph.ulift (X := ThreeSpace) :
         liftedSphereSpace.{u} 1 ≃ₜ ThreeSpace).symm.continuous.comp
       positiveTetrahedron.continuous
 
-theorem liftedTetrahedronSimplex_face_ne_zero (i : Fin 4) (q : stdSimplex ℝ (Fin 3)) :
+theorem liftedTetrahedronSimplex_face_ne_zero (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)) :
     liftedTetrahedronSimplex (liftedTetrahedronFace i q) ≠ (0 : liftedSphereSpace.{u} 1) := by
   intro hh
   exact positiveTetrahedron_face_ne_zero (liftedTetrahedronFace i q) i

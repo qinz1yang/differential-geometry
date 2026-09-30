@@ -846,7 +846,7 @@ theorem summable_canonicalEvolvingLateBombieriGiustiThreshold
       n Vfixed Vmoving C G B τ c d D lower upper k)
     hbound
 
-theorem localizedSpacetimeRpowNorm_inv_le_canonicalEvolvingLateBombieriGiustiReverseCost_of_gradient_bound_of_volume_le
+theorem evolving_bombieri_giusti_reciprocal_reverse_bound_of_cutoff_gradient_bound
     (qMetric : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (hdim : 2 < (Module.finrank ℝ E : ℝ))
@@ -1118,7 +1118,7 @@ theorem localizedSpacetimeRpowNorm_inv_le_canonicalEvolvingLateBombieriGiustiRev
             (bombieriGiustiDescendingLevel τ c (k + 1))
             (bombieriGiustiIncreasingLevel d D (k + 1)) := by
   exact
-    localizedSpacetimeRpowNorm_inv_le_canonicalEvolvingLateBombieriGiustiReverseCost_of_gradient_bound_of_volume_le
+    evolving_bombieri_giusti_reciprocal_reverse_bound_of_cutoff_gradient_bound
       (I := I) (M := M) qMetric g hdim rho u hu hpos Vfixed Vmoving
         hτc hcd hdD hC hG hB hlowerUpper hg hgram hSobolev hpde htrace
         (fun k j t ht x =>
@@ -1126,7 +1126,7 @@ theorem localizedSpacetimeRpowNorm_inv_le_canonicalEvolvingLateBombieriGiustiRev
             (I := I) (g t) rho hG (hrho t ht) k j x)
         hVfixedTop hVmovingZero hVmovingTop hfixedVolume hmovingVolume hmeasure
 
-theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGiustiThreshold_of_supersolution_of_log_tail
+theorem evolving_bombieri_giusti_early_bound_of_log_tail
     (qMetric : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (hdim : 2 < (Module.finrank ℝ E : ℝ))
@@ -1244,7 +1244,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGi
       summable_canonicalEvolvingEarlyBombieriGiustiThreshold
         n V hp₀ hp₀_one hc₀.le hAb hbτ hG hB hlowerUpper
 
-theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombieriGiustiThreshold_of_supersolution_of_log_tail_of_volume_le
+theorem evolving_bombieri_giusti_late_reciprocal_bound_of_log_tail
     (qMetric : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (hdim : 2 < (Module.finrank ℝ E : ℝ))
@@ -1393,7 +1393,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
       summable_canonicalEvolvingLateBombieriGiustiThreshold
         n Vfixed Vmoving hp₀ hc₀.le hτc hcd hdD hG hB hlowerUpper
 
-theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombieriGiustiThreshold_nat_add_of_supersolution_of_log_tail_of_volume_le
+theorem evolving_bombieri_giusti_late_reciprocal_bound_of_log_tail_at_level
     (qMetric : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (hdim : 2 < (Module.finrank ℝ E : ℝ))
@@ -1763,7 +1763,7 @@ theorem inv_le_evolvingBombieriGiustiLatePointwiseFactor_mul_localizedSpacetimeR
       dsimp only [F, gradientCost, aOuter, pivot, bOuter]
       ring
 
-theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGiustiThreshold_of_exponentialTimeRescale_of_evolving_supersolution
+theorem evolving_bombieri_giusti_early_bound_exponentialTimeRescale
     (qMetric : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (hdim : 2 < (Module.finrank ℝ E : ℝ))
@@ -1863,7 +1863,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGi
         {z | r < Real.log (v z.1 z.2)} ≤ c₀ / r := by
     intro r hr
     have hraw :=
-      early_localizedSpacetimeMeasure_log_superlevel_tail_of_exponentialTimeRescale_of_evolving_supersolution
+      early_localizedSpacetimeMeasure_rescaled_log_tail_of_evolving_supersolution
         (I := I) (M := M) g outer averagingCutoff u hu hpos
           Ccenter Ctail H W rate (hAb.trans hbτ.le) hr hCtail hg V hVtop
           (fun t ht => (hvolume t ht).2) hgram haveragingCutoff hne
@@ -1876,13 +1876,13 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGi
       _ = (V.toReal * (4 * Ctail * W)) / r := by ring
       _ ≤ c₀ / r := div_le_div_of_nonneg_right (le_max_right _ _) hr.le
   simpa only [center, v, c₀, logu] using
-    (early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGiustiThreshold_of_supersolution_of_log_tail
+    (evolving_bombieri_giusti_early_bound_of_log_tail
       (I := I) (M := M) qMetric g hdim rho outer v hv hvpos
         V hp₀ hp₀_one hc₀ hAb hbτ hC hG hB hlowerUpper hg hgram
         hSobolev htrace hrho hvpde hVtop hvolume hmeasure hmeasure_le_one
         houter htail)
 
-theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombieriGiustiThreshold_of_exponentialTimeRescale_of_evolving_supersolution_of_volume_le
+theorem evolving_bombieri_giusti_late_reciprocal_bound_exponentialTimeRescale
     (qMetric : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M)
     (hdim : 2 < (Module.finrank ℝ E : ℝ))
@@ -1999,7 +1999,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
       _ = (V.toReal * (4 * Ctail * W)) / r := by ring
       _ ≤ c₀ / r := div_le_div_of_nonneg_right (le_max_right _ _) hr.le
   simpa only [center, v, c₀, logu] using
-    (late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombieriGiustiThreshold_of_supersolution_of_log_tail_of_volume_le
+    (evolving_bombieri_giusti_late_reciprocal_bound_of_log_tail
       (I := I) (M := M) qMetric g hdim rho outer v hv hvpos
         V V hp₀ hc₀ hτc hcd hdD hC hG hB hlowerUpper hg hgram
         hSobolev hvpde htrace hrho hVtop hVzero hVtop
@@ -2061,7 +2061,7 @@ def canonicalEvolvingBombieriGiustiCrossoverBound
       n V V C G Blate p₀ c₀ τ c d D lower upper))
 
 omit [I.Boundaryless] in
-theorem localizedSpacetimeRpowNorm_mul_inv_le_canonicalEvolvingBombieriGiustiCrossoverBound_of_exponentialTimeRescale_bounds
+theorem evolving_bombieri_giusti_crossover_of_rescaled_bounds
     {qMetric : SmoothRiemannianMetric I M}
     (rho : SmoothScalar qMetric)
     (rate center : ℝ)
@@ -2099,7 +2099,7 @@ theorem localizedSpacetimeRpowNorm_mul_inv_le_canonicalEvolvingBombieriGiustiCro
   simpa only [canonicalEvolvingBombieriGiustiCrossoverBound] using hbound
 
 omit [I.Boundaryless] in
-theorem localizedSpacetimeRpowNorm_le_canonicalEvolvingBombieriGiustiWeakHarnackBound_mul_of_exponentialTimeRescale_bounds
+theorem evolving_weak_harnack_of_rescaled_bounds
     {qMetric : SmoothRiemannianMetric I M}
     (rho : SmoothScalar qMetric)
     (rate center : ℝ)
@@ -2243,7 +2243,7 @@ theorem localizedSpacetimeRpowNorm_mul_inv_le_canonicalEvolvingBombieriGiustiCro
       n V C p₀ c₀ A b τ G Bearly lower upper) := by
     simpa only [v, center, logu, c₀, n,
       canonicalEvolvingEarlyBombieriGiustiThresholdSum] using
-      (early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGiustiThreshold_of_exponentialTimeRescale_of_evolving_supersolution
+      (evolving_bombieri_giusti_early_bound_exponentialTimeRescale
         (I := I) (M := M) qMetric g hdim rho outer averagingCutoff
           u hu hpos Ccenter Ctail H W rate V hp₀ hp₀_one hAb hbτ
           hC hG hBearly hCtail hrate hlowerUpper hg hgram
@@ -2266,7 +2266,7 @@ theorem localizedSpacetimeRpowNorm_mul_inv_le_canonicalEvolvingBombieriGiustiCro
       n V V C G Blate p₀ c₀ τ c d D lower upper) := by
     simpa only [v, center, logu, c₀, n,
       canonicalEvolvingLateBombieriGiustiThresholdSum] using
-      (late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombieriGiustiThreshold_of_exponentialTimeRescale_of_evolving_supersolution_of_volume_le
+      (evolving_bombieri_giusti_late_reciprocal_bound_exponentialTimeRescale
         (I := I) (M := M) qMetric g hdim rho outer averagingCutoff
           u hu hpos Ccenter Ctail H W rate V hp₀ hτc hcd hdD
           hC hG hBlate hCtail hrate hlowerUpper hg hgram
@@ -2283,7 +2283,7 @@ theorem localizedSpacetimeRpowNorm_mul_inv_le_canonicalEvolvingBombieriGiustiCro
           hVzero hVtop (fun t ht => hvolume t ⟨hAτ.trans ht.1, ht.2⟩)
           hlateMeasure hlateMeasure_le_one houter)
   simpa only [c₀, n] using
-    (localizedSpacetimeRpowNorm_mul_inv_le_canonicalEvolvingBombieriGiustiCrossoverBound_of_exponentialTimeRescale_bounds
+    (evolving_bombieri_giusti_crossover_of_rescaled_bounds
       (I := I) (M := M) rho rate center u hu hpos hp₀ hrate hearly hlate)
 
 theorem localizedSpacetimeRpowNorm_le_canonicalEvolvingBombieriGiustiWeakHarnackBound_mul_of_supersolution
@@ -2425,7 +2425,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalEvolvingBombieriGiustiWeakHarnack
       n V C p₀ c₀ A b τ G Bearly lower upper) := by
     simpa only [v, center, logu, c₀, n,
       canonicalEvolvingEarlyBombieriGiustiThresholdSum] using
-      (early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGiustiThreshold_of_exponentialTimeRescale_of_evolving_supersolution
+      (evolving_bombieri_giusti_early_bound_exponentialTimeRescale
         (I := I) (M := M) qMetric g hdim rho outer averagingCutoff
           u hu hpos Ccenter Ctail H W rate V hp₀ hp₀_one hAb hbτ
           hC hG hBearly hCtail hrate hlowerUpper hg hgram
@@ -2449,7 +2449,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalEvolvingBombieriGiustiWeakHarnack
     Real.exp (canonicalEvolvingLateBombieriGiustiThresholdSumNatAdd
       n V V C G Blate p₀ c₀ τ c d D lower upper 1) := by
     simpa only [n, canonicalEvolvingLateBombieriGiustiThresholdSumNatAdd] using
-      (late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombieriGiustiThreshold_nat_add_of_supersolution_of_log_tail_of_volume_le
+      (evolving_bombieri_giusti_late_reciprocal_bound_of_log_tail_at_level
         (I := I) (M := M) qMetric g hdim rho outer v hv hvpos
           V V hp₀ hc₀ hτc hcd hdD hC hG hBlate hlowerUpper hg hgram
           (fun t ht => hSobolev t ⟨hAτ.trans ht.1, ht.2⟩)
@@ -2481,7 +2481,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalEvolvingBombieriGiustiWeakHarnack
       (evolvingBombieriGiustiLatePointwiseFactor_nonneg
         n V C G Blate p₀ τ c d D lower upper))
   simpa only [c₀, n, v] using
-    (localizedSpacetimeRpowNorm_le_canonicalEvolvingBombieriGiustiWeakHarnackBound_mul_of_exponentialTimeRescale_bounds
+    (evolving_weak_harnack_of_rescaled_bounds
       (I := I) (M := M) rho rate center u hu hpos x hp₀ hrate
         (ht.2.trans hdD.le) hearly hpoint')
 

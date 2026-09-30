@@ -67,7 +67,7 @@ theorem eventually_strictMonoOn_triangle_height
       dsimp only [b, Function.comp_apply]
       ring
     rw [heq]
-    exact (f - ℓ).lipschitz.comp hLip
+    exact (f - ℓ).lipschitzWith.comp hLip
   obtain ⟨hh, hl, hr⟩ := strictMonoOn_triangle_slices_of_lipschitz_sub_affine hbLip
     (show ((‖f - ℓ‖₊ * k : NNReal) : ℝ) < c from lt_of_lt_of_le hsmall (min_le_left _ _))
     (show ((‖f - ℓ‖₊ * k : NNReal) : ℝ) < a - c from lt_of_lt_of_le hsmall (min_le_right _ _))

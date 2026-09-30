@@ -58,24 +58,24 @@ namespace ComparisonSupport
 
 variable (K : G.ComparisonSupport c)
 
-theorem rfs_whole_parent_map_surjective : Function.Surjective K.rfs_whole_parent_map :=
+theorem rfs_whole_parent_map_surjective : Function.Surjective K.canonicalWholeParentMap :=
   K.rfs_whole_parent_map_surjective_of_cover K.rfs_collapse_cover
 
 theorem collapseClassGenerator_iff_surjective
     {a : IntegralHomology (G.Parent c).Carrier 3}
     {b : IntegralHomology (G.Child c).Carrier 3} {k : ℤ}
-    (hmap : integralHomologyMap 3 K.rfs_whole_parent_map a = k • b)
+    (hmap : integralHomologyMap 3 K.canonicalWholeParentMap a = k • b)
     (ha : Function.Bijective (fun z : ℤ => z • a))
     (hb : Function.Bijective (fun z : ℤ => z • b)) :
     K.CollapseClassGenerator a ↔
-      Function.Surjective (integralHomologyMap 3 K.rfs_whole_parent_map) := by
+      Function.Surjective (integralHomologyMap 3 K.canonicalWholeParentMap) := by
   constructor
   · rintro ⟨φ, hφ⟩
     have hk : IsUnit k :=
       DifferentialGeometry.Topology.isUnit_of_exists_linearMap_eq_one _
         ⟨φ, hφ⟩ hmap
     have hgen : Function.Surjective
-        (fun z : ℤ => z • integralHomologyMap 3 K.rfs_whole_parent_map a) := by
+        (fun z : ℤ => z • integralHomologyMap 3 K.canonicalWholeParentMap a) := by
       intro w
       obtain ⟨m, hm⟩ := hb.2 w
       rcases Int.isUnit_iff.mp hk with hk1 | hk1
@@ -85,21 +85,21 @@ theorem collapseClassGenerator_iff_surjective
           rw [show (-m) * (-1) = m by ring]
           exact hm⟩
     exact DifferentialGeometry.Topology.surjective_of_bijective_zsmul
-      (DifferentialGeometry.Topology.integralSingularHomologyMap 3 K.rfs_whole_parent_map) hgen
+      (DifferentialGeometry.Topology.integralSingularHomologyMap 3 K.canonicalWholeParentMap) hgen
   · intro hsurj
     exact DifferentialGeometry.Topology.exists_linearMap_eq_one_of_surjective_of_bijective_zsmul
-      (DifferentialGeometry.Topology.integralSingularHomologyMap 3 K.rfs_whole_parent_map)
+      (DifferentialGeometry.Topology.integralSingularHomologyMap 3 K.canonicalWholeParentMap)
       hsurj hmap ha hb
 
 theorem surjective_integralHomologyMap_of_coreRetraction
     (hρ : G.CollapseCoreRetraction c) :
-    Function.Surjective (integralHomologyMap 3 K.rfs_whole_parent_map) := by
+    Function.Surjective (integralHomologyMap 3 K.canonicalWholeParentMap) := by
   obtain ⟨ρ, hρ⟩ := hρ
   let s : C(G.transition.ChildCarrier c, G.transition.ParentCarrier c) :=
     (G.transition.childCoreIntoParent c).comp ρ
-  have hsec : (K.rfs_whole_parent_map.comp s).Homotopic
+  have hsec : (K.canonicalWholeParentMap.comp s).Homotopic
       (ContinuousMap.id (G.transition.ChildCarrier c)) := by
-    have hEq : K.rfs_whole_parent_map.comp s =
+    have hEq : K.canonicalWholeParentMap.comp s =
         (G.transition.childCoreInclusion c).comp ρ := by
       apply ContinuousMap.ext
       intro y
@@ -107,36 +107,36 @@ theorem surjective_integralHomologyMap_of_coreRetraction
     rw [hEq]
     exact hρ
   have hcomp : (DifferentialGeometry.Topology.integralSingularHomologyMap 3
-        K.rfs_whole_parent_map).comp
+        K.canonicalWholeParentMap).comp
         (DifferentialGeometry.Topology.integralSingularHomologyMap 3 s) = LinearMap.id :=
     (DifferentialGeometry.Topology.integralSingularHomologyMap_comp 3 s
-        K.rfs_whole_parent_map).symm.trans
+        K.canonicalWholeParentMap).symm.trans
       ((DifferentialGeometry.Topology.integralSingularHomologyMap_homotopic 3 hsec).trans
         (DifferentialGeometry.Topology.integralSingularHomologyMap_id 3))
   have hsurj : Function.Surjective
-      (DifferentialGeometry.Topology.integralSingularHomologyMap 3 K.rfs_whole_parent_map) := by
+      (DifferentialGeometry.Topology.integralSingularHomologyMap 3 K.canonicalWholeParentMap) := by
     intro y
     exact ⟨(DifferentialGeometry.Topology.integralSingularHomologyMap 3 s) y,
       (congrArg (fun k => k y) hcomp).trans (LinearMap.id_apply y)⟩
   exact hsurj
 
 theorem rfs_collapse_degree_of_localDistanceControl_and_bijective_zsmul
-    (hlip : K.LocalTerminalDistanceControl K.rfs_whole_parent_map)
-    (hsurj : Function.Surjective (integralHomologyMap 3 K.rfs_whole_parent_map))
+    (hlip : K.LocalTerminalDistanceControl K.canonicalWholeParentMap)
+    (hsurj : Function.Surjective (integralHomologyMap 3 K.canonicalWholeParentMap))
     {a : IntegralHomology (G.Parent c).Carrier 3}
     {b : IntegralHomology (G.Child c).Carrier 3} {k : ℤ}
-    (hmap : integralHomologyMap 3 K.rfs_whole_parent_map a = k • b)
+    (hmap : integralHomologyMap 3 K.canonicalWholeParentMap a = k • b)
     (ha : Function.Bijective (fun z : ℤ => z • a))
     (hb : Function.Bijective (fun z : ℤ => z • b))
     (hk : 0 < k) :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
+    K.LocalTerminalLengthControl K.canonicalWholeParentMap ∧
     (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      K.rfs_whole_parent_map y = K.rfs_whole_parent_map x) ∧
+      K.canonicalWholeParentMap y = K.canonicalWholeParentMap x) ∧
     (∀ x : G.transition.ChildCore c,
-      K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+      K.canonicalWholeParentMap (G.transition.childCoreIntoParent c x) =
         G.transition.childCoreInclusion c x) ∧
-    integralHomologyMap 3 K.rfs_whole_parent_map a = b ∧
-    Function.Surjective K.rfs_whole_parent_map :=
+    integralHomologyMap 3 K.canonicalWholeParentMap a = b ∧
+    Function.Surjective K.canonicalWholeParentMap :=
   K.rfs_collapse_degree_of_localTerminalDistanceControl_and_class_generator a b hlip hmap
     ((K.collapseClassGenerator_iff_surjective hmap ha hb).mpr hsurj) hk
 
@@ -150,19 +150,19 @@ theorem rfs_collapse_degree_of_localTerminalEDistComparison_and_bijective_zsmul
     (Kc : (c' : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c')
     (a : IntegralHomology (G.Parent c).Carrier 3) (b : IntegralHomology (G.Child c).Carrier 3)
     {k : ℤ} (hcollapse : G.LocalTerminalEDistComparison Kc)
-    (hsurj : Function.Surjective (integralHomologyMap 3 (Kc c).rfs_whole_parent_map))
-    (hmap : integralHomologyMap 3 (Kc c).rfs_whole_parent_map a = k • b)
+    (hsurj : Function.Surjective (integralHomologyMap 3 (Kc c).canonicalWholeParentMap))
+    (hmap : integralHomologyMap 3 (Kc c).canonicalWholeParentMap a = k • b)
     (ha : Function.Bijective (fun z : ℤ => z • a))
     (hb : Function.Bijective (fun z : ℤ => z • b))
     (hk : 0 < k) :
-    (Kc c).LocalTerminalLengthControl (Kc c).rfs_whole_parent_map ∧
+    (Kc c).LocalTerminalLengthControl (Kc c).canonicalWholeParentMap ∧
     (∀ x ∉ (Kc c).support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      (Kc c).rfs_whole_parent_map y = (Kc c).rfs_whole_parent_map x) ∧
+      (Kc c).canonicalWholeParentMap y = (Kc c).canonicalWholeParentMap x) ∧
     (∀ x : G.transition.ChildCore c,
-      (Kc c).rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+      (Kc c).canonicalWholeParentMap (G.transition.childCoreIntoParent c x) =
         G.transition.childCoreInclusion c x) ∧
-    integralHomologyMap 3 (Kc c).rfs_whole_parent_map a = b ∧
-    Function.Surjective (Kc c).rfs_whole_parent_map :=
+    integralHomologyMap 3 (Kc c).canonicalWholeParentMap a = b ∧
+    Function.Surjective (Kc c).canonicalWholeParentMap :=
   ComparisonSupport.rfs_collapse_degree_of_localDistanceControl_and_bijective_zsmul (Kc c)
     (ComparisonSupport.localTerminalDistanceControl_of_localTerminalEDistComparison Kc
       hcollapse) hsurj hmap ha hb hk

@@ -23,10 +23,10 @@ theorem extendById_eq_of_notMem_image {X Y : Type*}
     (hf : ∀ z, z ∉ K → f z = z) {x : X} (hx : x ∉ e.symm '' K) :
     e.extendById f x = x := by
   by_cases hxs : x ∈ e.source
-  · rw [show e.extendById f x = e.symm (f (e x)) from if_pos hxs]
+  · rw [show e.extendById f x = e.symm (f (e x)) from ite_eq_left hxs]
     have hek : e x ∉ K := fun h ↦ hx ⟨e x, h, e.left_inv hxs⟩
     rw [hf _ hek, e.left_inv hxs]
-  · exact if_neg hxs
+  · exact ite_eq_right hxs
 
 theorem extendById_mem_iff {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
     (e : OpenPartialHomeomorph X Y) (f : Y → Y)
@@ -36,9 +36,9 @@ theorem extendById_mem_iff {X Y : Type*} [TopologicalSpace X] [TopologicalSpace 
     (hf : ∀ y ∈ e.target, f y ∈ D ↔ y ∈ C) (x : X) :
     e.extendById f x ∈ B ↔ x ∈ A := by
   by_cases hx : x ∈ e.source
-  · rw [show e.extendById f x = e.symm (f (e x)) from if_pos hx]
+  · rw [show e.extendById f x = e.symm (f (e x)) from ite_eq_left hx]
     exact (hB.symm (hmap (e.map_source hx))).trans ((hf _ (e.map_source hx)).trans (hA hx))
-  · rw [show e.extendById f x = x from if_neg hx]
+  · rw [show e.extendById f x = x from ite_eq_right hx]
     exact (houtside x hx).symm
 
 end OpenPartialHomeomorph
@@ -55,10 +55,10 @@ def extendChartById (e : OpenPartialHomeomorph M E) (f : E → E) (x : M) : M :=
 
 private theorem extendChartById_of_mem (e : OpenPartialHomeomorph M E) (f : E → E)
     {x : M} (hx : x ∈ e.source) : extendChartById e f x = e.symm (f (e x)) :=
-  if_pos hx
+  ite_eq_left hx
 
 private theorem extendChartById_of_notMem (e : OpenPartialHomeomorph M E) (f : E → E)
-    {x : M} (hx : x ∉ e.source) : extendChartById e f x = x := if_neg hx
+    {x : M} (hx : x ∉ e.source) : extendChartById e f x = x := ite_eq_right hx
 
 theorem extendChartById_eq_of_notMem_image
     (e : OpenPartialHomeomorph M E) (f : E → E) {K : Set E}

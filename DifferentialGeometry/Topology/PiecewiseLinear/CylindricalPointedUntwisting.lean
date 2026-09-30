@@ -39,16 +39,16 @@ theorem IsCylindricalDiagram.isPLPseudoIsotopicToId_endMap_of_finrank_eq_three
 
 theorem IsCylindricalDiagram.exists_endMap_id_preserving_stdCenter
     {S : Set F} {f : (Fin 3 → ℝ) × ℝ → F}
-    (hf : IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) S)
+    (hf : IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) S)
     (hdim : Module.finrank ℝ F = 3)
     (hclosed : f (stdCenter 1, 0) = f (stdCenter 1, 1)) :
     ∃ g : (Fin 3 → ℝ) × ℝ → F,
-      IsCylindricalDiagram g (stdSimplex ℝ (Fin 3)) S ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), g (x, 0) = g (x, 1)) ∧
+      IsCylindricalDiagram g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) S ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), g (x, 0) = g (x, 1)) ∧
       ∀ t ∈ Icc (0 : ℝ) 1, g (stdCenter 1, t) = f (stdCenter 1, t) := by
   have hP := (isPLBall_stdSimplex 2).isPolyhedron
   obtain ⟨u, hu, hfu⟩ := hf.exists_isPLHomeomorphOn_endMap hP
-  have hp : stdCenter 1 ∈ stdSimplex ℝ (Fin 3) := by
+  have hp : stdCenter 1 ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := by
     constructor
     · intro i
       norm_num [stdCenter]

@@ -4,9 +4,6 @@ import DifferentialGeometry.Geometry.Metric.Sphere.FreeOrthogonalAction
 import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 import DifferentialGeometry.Topology.Manifold.Quotient
 import DifferentialGeometry.Topology.Manifold.SphereOrientation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
-import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceForm
-import DifferentialGeometry.Geometry.Curvature.Metric.Conditions
 
 set_option autoImplicit false
 
@@ -16,8 +13,6 @@ open Bundle Manifold Metric Module
 open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry
-
-open DifferentialGeometry.Geometry
 
 universe u
 
@@ -278,59 +273,3 @@ theorem exists_diffeomorph_sphericalSpaceFormOrbit_of_roundSphereQuotient
 end Geometry
 
 end DifferentialGeometry
-
-namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-
-universe u
-
-def sectionalCurvatureMetricBridge : Prop :=
-  ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-    (g : SmoothRiemannianMetric ThreeModel M.Carrier),
-    IsConstantPositiveSectionalCurvature g →
-      DifferentialGeometry.Geometry.Curvature.constantPositiveSectionalCurvatureMetric
-        (I := ThreeModel) (M := M.Carrier) g
-
-def roundSphereQuotientOrientedCovering : Prop :=
-  ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-    (D : DifferentialGeometry.Geometry.RoundSphereQuotient.{0, u}
-      (EuclideanSpace ℝ (Fin 4)) 3),
-    Nonempty (M.Carrier ≃ₘ⟮ThreeModel, 𝓡 3⟯ D.Q) →
-    ∃ G : DifferentialGeometry.Topology.SphericalSpaceFormGroup,
-      Nonempty (DifferentialGeometry.Topology.ClosedOrientedManifold.OrientedDiffeomorph
-        M.toClosedOrientedManifold G.manifold.toClosedOrientedManifold)
-
-def sphericalSpaceFormCoveringGeneralized : Prop :=
-  ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-    (g : SmoothRiemannianMetric ThreeModel M.Carrier),
-    IsConstantPositiveSectionalCurvature g →
-    ∃ G : DifferentialGeometry.Topology.SphericalSpaceFormGroup,
-      Nonempty (DifferentialGeometry.Topology.ClosedOrientedManifold.OrientedDiffeomorph
-        M.toClosedOrientedManifold G.manifold.toClosedOrientedManifold)
-
-theorem sphericalSpaceFormCoveringGeneralized_of_inputs
-    (hbridge : sectionalCurvatureMetricBridge.{u})
-    (horient : roundSphereQuotientOrientedCovering.{u}) :
-    sphericalSpaceFormCoveringGeneralized.{u} := by
-  intro M g hg
-  have hclosed : DifferentialGeometry.Topology.ThreeManifold.isClosedThreeManifold
-      (I := ThreeModel) (M := M.Carrier) :=
-    ⟨inferInstance, inferInstance, inferInstance, by rw [finrank_euclideanSpace_fin]⟩
-  have hconst : DifferentialGeometry.Geometry.Curvature.admitsConstantPositiveSectionalCurvature
-      (I := ThreeModel) (M := M.Carrier) :=
-    ⟨g, hbridge M g hg⟩
-  obtain ⟨S⟩ :=
-    DifferentialGeometry.Geometry.constant_positive_sectional_curvature_implies_spherical_space_form
-      (I := ThreeModel) (M := M.Carrier) hclosed hconst
-  exact horient M S.quotient ⟨S.equiv⟩
-
-theorem sphericalSpaceFormCovering_of_inputs
-    (hbridge : sectionalCurvatureMetricBridge.{u})
-    (horient : roundSphereQuotientOrientedCovering.{u}) :
-    sphericalSpaceFormCovering.{u} :=
-  sphericalSpaceFormCoveringGeneralized_of_inputs hbridge horient
-
-theorem sphericalSpaceFormCovering_iff_generalized :
-    sphericalSpaceFormCovering.{u} ↔ sphericalSpaceFormCoveringGeneralized.{u} :=
-  Iff.rfl
-
-end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

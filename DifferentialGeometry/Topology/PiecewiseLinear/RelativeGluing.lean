@@ -27,7 +27,7 @@ theorem glueHeight_eq_one_of_mem_glued₁ {B A : Geometry.SimplicialComplex ℝ 
     have hxA : {x} ∉ A.faces := fun hh => Set.disjoint_left.mp hdis
       (B.convexHull_subset_space ht (subset_convexHull ℝ _ hx))
       (A.convexHull_subset_space hh (subset_convexHull ℝ _ (by simp)))
-    simp only [glueEmbed₁, glueHeight, LinearMap.comp_apply, LinearMap.snd_apply, if_neg hxA]
+    simp only [glueEmbed₁, glueHeight, LinearMap.comp_apply, LinearMap.snd_apply, ite_eq_right hxA]
   obtain ⟨w, _, hw, rfl⟩ := mem_convexHull_iff_exists_weights.mp hz
   rw [map_sum]
   calc

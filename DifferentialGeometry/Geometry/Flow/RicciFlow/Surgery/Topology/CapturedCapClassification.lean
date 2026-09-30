@@ -333,7 +333,7 @@ theorem exists_late_isPoincareStandard_discardedComponent_of_cap
       ((H.event i).transition.tube_smooth b.1)
   obtain ⟨b, K, hK, hKU, hfront, hcore⟩ :=
     (H.event i).transition.trace.tubes.exists_capCore_in_cutCore_of_captured_boundary_spheres
-      j cap.core_model hsmooth
+      j cap.coreModel hsmooth
       ((H.event i).transition.trace.tubes.central_and_boundary_spheres_subset_of_closedBand_subset
         j hinside).2
   refine ⟨b, K, hK, hKU, hfront, hcore, ?_⟩

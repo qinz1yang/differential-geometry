@@ -27,7 +27,7 @@ theorem homotopyGroupSpherePrecompose_integralSingularTriangleSphereClass
 
 theorem integralSingularTriangleSphereClass_eq_triangleGenLoop
     (x : X) (σ : integralSingularSimplex 2 X)
-    (g : C(stdSimplex ℝ (Fin 3), X))
+    (g : C(Convexity.StdSimplex.coordinateSet ℝ (Fin 3), X))
     (hg : ∀ p ∈ Simplex.boundary (Fin 3), g p = x)
     (h : (integralSingularConeSphereMap x σ).Homotopic
       (Simplex.triangleSphereMap g x hg)) :

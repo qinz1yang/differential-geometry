@@ -38,6 +38,8 @@ private theorem gradient_germ (g : SmoothRiemannianMetric I M)
     gradientFun (I := I) g F x = gradientFun (I := I) g f x := by
   unfold gradientFun mvfderiv
   rw [h.mfderiv_eq, h.eq_of_nhds]
+  simp [tangentSpaceCast]
+  rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] in
 private theorem hessian_norm_germ (g : SmoothRiemannianMetric I M)

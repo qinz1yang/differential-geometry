@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCoreComponent
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarRescale
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
+import DifferentialGeometry.Topology.FundamentalGroup.ConnectedComponent
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarSimplyConnected
 
 noncomputable section

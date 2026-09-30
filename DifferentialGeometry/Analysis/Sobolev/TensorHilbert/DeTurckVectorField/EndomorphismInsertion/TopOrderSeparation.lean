@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.EndomorphismInsertion.Bounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.L2Jet.Bound
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -182,7 +185,7 @@ private theorem wAlphaB_jetL2_perOrder
         ((iteratedCovGrad (I := I) g₀ 1 2 n (connectionDifferenceRaisedEndomorphism (I := I) (M := M) g₀ g₁)).toSection x) ≤
       ΛCd n := by
     intro n hn x
-    rw [riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceRaisedEndomorphism_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ n x]
+    rw [connectionDifferenceRaisedEndomorphism_iteratedCovGrad_fiber_norm_sq_eq_section (I := I) (M := M) g₀ g₁ n x]
     exact hCdlow n hn x
   have hwCAsum : ∀ i : ℕ, i ≤ a + 1 →
       ∑ q ∈ Finset.range (i + 1),
@@ -243,7 +246,7 @@ private theorem wAlphaB_jetL2_perOrder
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem
     Icc_subset_metricPerturbationPathDomain) in
-theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform
+theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_path_fiber_norm_sq_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -326,7 +329,7 @@ theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbati
         mul_neg_of_neg_of_pos hδc' hsqrt_pos
       exact mul_neg_of_neg_of_pos h1 hsqrt_pos
     linarith [le_trans habs_nn hbound]
-  have htr := riemannianFiberNormSq_iteratedCovGrad_deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_deTurckVectorFieldCovariantDerivativeLowered (I := I) (M := M) g₀
+  have htr := deTurckVectorFieldCovariantDerivativeEndomorphismInsert_iteratedCovGrad_fiber_norm_sq_eq_lowered (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg 0 x
   have h0 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 1 x
       ((deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀
@@ -1171,7 +1174,7 @@ private theorem wAlpha_L2_topsep
         ((iteratedCovGrad (I := I) g₀ 1 2 n (connectionDifferenceRaisedEndomorphism (I := I) (M := M) g₀ g₁)).toSection x) ≤
       ΛCd n := by
     intro n hn x
-    rw [riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceRaisedEndomorphism_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ n x]
+    rw [connectionDifferenceRaisedEndomorphism_iteratedCovGrad_fiber_norm_sq_eq_section (I := I) (M := M) g₀ g₁ n x]
     exact hCdlow n hn x
   have hwCAsum : ∀ i : ℕ, i ≤ a + 1 →
       ∑ q ∈ Finset.range (i + 1),
@@ -1231,7 +1234,7 @@ private theorem wAlpha_L2_topsep
     linarith [e1, e2]
   have hAi : ‖iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredBase (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤
       Ktop_om * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 + Com (i + 1) := by
-    rw [norm_iteratedCovGrad_deTurckVectorFieldCovariantDerivativeLoweredBase_eq_succ_deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ g_bg i]
+    rw [deTurckVectorFieldCovariantDerivativeLoweredBase_iteratedCovGrad_norm_eq_succ (I := I) (M := M) g₀ g₁ g_bg i]
     exact hom g₁ P htie hδ_le hδ0 hδ hPball (i + 1) (by omega)
   have htri : ‖iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLowered (I := I) (M := M) g₀ g₁ g_bg)‖ ≤
       ‖iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredBase (I := I) (M := M) g₀ g₁ g_bg)‖ +

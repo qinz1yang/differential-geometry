@@ -22,12 +22,12 @@ theorem exists_parameterized_triangle_cut_of_singular_height
       (m : E →ₗ[ℝ] ℝ) (e : EuclideanSpace ℝ (Fin 2) →ᵃ[ℝ] E)
       (T : Finset (EuclideanSpace ℝ (Fin 2))),
       A ∪ B = K.space ∧ A ∩ B = g '' stdSimplexBoundary 2 ∧
-      IsPLHomeomorphOn fA (stdSimplex ℝ (Fin 3)) A ∧
+      IsPLHomeomorphOn fA (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A ∧
       fA '' stdSimplexBoundary 2 = g '' stdSimplexBoundary 2 ∧
-      IsPLHomeomorphOn fB (stdSimplex ℝ (Fin 3)) B ∧
+      IsPLHomeomorphOn fB (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B ∧
       fB '' stdSimplexBoundary 2 = g '' stdSimplexBoundary 2 ∧
       K.space ∩ D = g '' stdSimplexBoundary 2 ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ W ∩ {x | ℓ x = ℓ p} ∧ D ∉ 𝓝[{x | ℓ x = ℓ p}] p ∧
       IsPLSphere 2 (A ∪ D) ∧ IsPLSphere 2 (B ∪ D) ∧ (A ∪ D) ∩ (B ∪ D) = D ∧
       ((A ∪ D) ∪ (B ∪ D)) \ (D \ (g '' stdSimplexBoundary 2)) = K.space ∧

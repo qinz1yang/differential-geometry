@@ -224,7 +224,7 @@ section Inhabitant
 
 theorem isPLCellOn_id_of_isPLBall {d : ℕ} {P : Set (EuclideanSpace ℝ (Fin 3))}
     {r : (Fin (d + 1) → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (d + 1))) P) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) P) :
     IsPLCellOn (M := EuclideanSpace ℝ (Fin 3)) d P (r '' stdSimplexBoundary d) :=
   ⟨P, r, id, hr, isPLHomeomorphInto_id_of_isPolyhedron (IsPLBall.isPolyhedron ⟨r, hr⟩),
     (image_id P).symm, (image_id _).symm⟩
@@ -234,7 +234,7 @@ theorem nonempty_stdSimplexBoundary_of_pos {d : ℕ} (hd : 0 < d) :
   have hlt : 1 < d + 1 := by omega
   have hne : (⟨1, hlt⟩ : Fin (d + 1)) ≠ 0 := by
     simp [Fin.ext_iff]
-  exact ⟨Pi.single (0 : Fin (d + 1)) 1, single_mem_stdSimplex ℝ 0, ⟨1, hlt⟩,
+  exact ⟨Pi.single (0 : Fin (d + 1)) 1, Convexity.StdSimplex.single_mem_coordinateSet ℝ 0, ⟨1, hlt⟩,
     Pi.single_eq_of_ne hne 1⟩
 
 theorem exists_isPLCellOn_of_le_three (d : ℕ) (hd : d ≤ 3) :

@@ -14,6 +14,8 @@ open scoped BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -41,7 +43,7 @@ variable
 
 private local instance (x : M) :
     ContinuousAdd (TangentSpace I x →L[ℝ] TangentSpace I x) :=
-  ContinuousLinearMap.topologicalAddGroup.toContinuousAdd
+  ContinuousLinearMap.isTopologicalAddGroup.toContinuousAdd
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -5248,7 +5250,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma vbPK_slotExt_lip (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (B : Tensor0SSpace 1 I x) :
     Tensor0SSpace.toModel
-        (tensor0SProdKappaFib (I := I) (p := 1) (q := 3) x
+        (Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 1) (q := 3) x
           (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) B) =
       Tensor0SSpace.toModel
         (DifferentialGeometry.Integral.Connection.slotExtendFib
@@ -5261,7 +5263,7 @@ private lemma vbPK_slotExt_lip (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
   intro u
   rw [show (u : Fin 4 → E) = Fin.cons (u 0) (Fin.tail u) from
     (Fin.cons_self_tail u).symm]
-  rw [tensor0SProdKappaFib_apply, Tensor0SSpace.toModel_ofModel,
+  rw [Tensor0SSpace.rightProductContinuousLinearMap_apply, Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
   rw [DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval
     (I := I) (M := M) 0 3 x
@@ -5331,10 +5333,10 @@ private lemma vbmcd_rel_lip (g₀ g₁ : SmoothRiemannianMetric I M) :
   intro y d
   rw [show ((show Tensor0SSpace 1 I y →L[ℝ] Tensor0SSpace 4 I y from
       (lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (I := I) (M := M) g₀ g₁).toSection y) d) =
-      domDomCongrFibRank (I := I) 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation y
-        (tensor0SProdKappaFib (I := I) (p := 1) (q := 3) y
+      Tensor0SSpace.reindexContinuousLinearMap (I := I) 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation y
+        (Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 1) (q := 3) y
           (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ y) d) from rfl]
-  rw [domDomCongrFibRank_apply, Tensor0SSpace.toModel_ofModel]
+  rw [Tensor0SSpace.reindexContinuousLinearMap_apply, Tensor0SSpace.toModel_ofModel]
   exact congrArg
     (ContinuousMultilinearMap.domDomCongr LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation)
     (vbPK_slotExt_lip (I := I) (M := M) g₀ g₁ y d)

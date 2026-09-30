@@ -21,7 +21,9 @@ def projectiveSlice : SphereAntipodalQuotient → CylinderDiagonalQuotient :=
   Quotient.map (fun x : SphereTwo => (x, (0 : ℝ))) (by
     intro x y h
     change y = x ∨ y = -x at h
-    change (y, (0 : ℝ)) = (x, (0 : ℝ)) ∨ (y, (0 : ℝ)) = -(x, (0 : ℝ))
+    apply Quotient.exact
+    change proj (x, (0 : ℝ)) = proj (y, (0 : ℝ))
+    apply (proj_eq_iff _ _).mpr
     rcases h with h | h
     · exact Or.inl (Prod.ext h rfl)
     · right

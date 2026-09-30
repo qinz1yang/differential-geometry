@@ -67,10 +67,10 @@ theorem exists_uniform_closed_initial_metric_time_bounds {D : RealTimeInterval}
   let L := fun N => if N = 0 then 2 * Λ * κ 0 else 2 * ((cf N).slope * C N + (cf N).offset)
   have hL (N : ℕ) : 0 ≤ L N := by
     by_cases hN : N = 0
-    · simp only [L, if_pos hN]
+    · simp only [L, ite_eq_left hN]
       exact mul_nonneg (mul_nonneg (by norm_num) (le_trans (by norm_num) hΛ)) (hκ 0)
     · have hc := ricCoeffs_nonneg (Module.finrank ℝ E) N Λ C (κ N) hΛ (hκ N)
-      simp only [L, if_neg hN]
+      simp only [L, ite_eq_right hN]
       exact mul_nonneg (by norm_num) (add_nonneg (mul_nonneg hc.1 (hC N)) hc.2)
   refine ⟨C, L, hC, hL, ?_⟩
   intro S hS hgram hequiv hShi
@@ -90,7 +90,7 @@ theorem exists_uniform_closed_initial_metric_time_bounds {D : RealTimeInterval}
     rw [sqrt_normSq0S_smul, show |(-2 : ℝ)| = 2 by norm_num]
     by_cases hN : N = 0
     · subst N
-      simp only [L, if_pos rfl]
+      simp only [L, ite_eq_left rfl]
       have hh := reference_ricci_zero_bound S (S.base.metric 0) r Λ (κ 0) hΛ (hequiv r hrc) y
         (hShi 0 0 le_rfl 0 r hrc y (mem_univ y))
       nlinarith
@@ -101,7 +101,7 @@ theorem exists_uniform_closed_initial_metric_time_bounds {D : RealTimeInterval}
         0 r hrc y (mem_univ y)
       have hh' := hh.trans (add_le_add
         (mul_le_mul_of_nonneg_left (hnorm N r hrc y) hc.1) le_rfl)
-      simp only [L, if_neg hN]
+      simp only [L, ite_eq_right hN]
       exact mul_le_mul_of_nonneg_left hh' (by norm_num)
   exact metricDerivNorm_le_of_closed_evolution S.base.metric 0 T hgram (S.base.metric 0)
     N Ev univ (L N) (hL N) hev hEv s hs t ht x (mem_univ x)

@@ -24,6 +24,8 @@ import Mathlib.MeasureTheory.Function.StronglyMeasurable.AEStronglyMeasurable
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 import Mathlib.Topology.Algebra.Support
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_zero_left)
+
 
 noncomputable section
 
@@ -174,7 +176,7 @@ private lemma tensor0S_continuousLinearMapAt_self_apply (s : ℕ) (x : M)
         (fun y : M => Tensor0SSpace s I y) x ⟨x, p⟩).2 := by
     change (trivializationAt (Tensor0SModel s ℝ E)
         (fun y : M => Tensor0SSpace s I y) x).linearMapAt ℝ x p = _
-    rw [Bundle.Trivialization.linearMapAt_apply, if_pos hx_base]
+    rw [Bundle.Trivialization.linearMapAt_apply, ite_eq_left hx_base]
   rw [hcLMAt]
   have happly : (trivializationAt (Tensor0SModel s ℝ E)
       (fun y : M => Tensor0SSpace s I y) x ⟨x, p⟩).2 =

@@ -49,7 +49,7 @@ theorem coerciveMassODE_exists
   have hlip_f : ∀ t ∈ Icc (0 : ℝ) T, LipschitzWith K (f t) := by
     intro t ht
     have hsharp : LipschitzWith ‖(hco t ht).sharpCLM‖₊
-        (hco t ht).sharpCLM := (hco t ht).sharpCLM.lipschitz
+        (hco t ht).sharpCLM := (hco t ht).sharpCLM.lipschitzWith
     have hcomp := hsharp.comp (hlip t ht)
     have hnorm_nn : ‖(hco t ht).sharpCLM‖₊ ≤ cinv := by
       exact_mod_cast hsharp_norm t ht
@@ -57,7 +57,7 @@ theorem coerciveMassODE_exists
       simpa only [K, mul_comm] using mul_le_mul_left hnorm_nn L
     rw [show f t = (hco t ht).sharpCLM ∘ resid t by
       funext v
-      simp only [f, dif_pos ht, Function.comp_apply]]
+      simp only [f, dite_eq_left ht, Function.comp_apply]]
     exact hcomp.weaken hKL
   have hsharp_cont : Continuous
       (fun t : Icc (0 : ℝ) T => (hco t t.2).sharpCLM) := by
@@ -70,7 +70,7 @@ theorem coerciveMassODE_exists
     have happ := hsharp_cont.clm_apply hres
     convert happ using 1
     ext t
-    simp only [f, Set.domRestrict_apply, dif_pos t.property]
+    simp only [f, Set.domRestrict_apply, dite_eq_left t.property]
   have haff_f : ∀ t ∈ Icc (0 : ℝ) T, ∀ v : V,
       ‖f t v‖ ≤ c⁻¹ * A + (K : ℝ) * ‖v‖ := by
     intro t ht v
@@ -79,7 +79,7 @@ theorem coerciveMassODE_exists
     have hcnn : 0 ≤ c⁻¹ := inv_nonneg.mpr hc.le
     calc
       ‖f t v‖ = ‖(hco t ht).sharpCLM (resid t v)‖ := by
-        simp only [f, dif_pos ht]
+        simp only [f, dite_eq_left ht]
       _ ≤ ‖(hco t ht).sharpCLM‖ * ‖resid t v‖ := hop
       _ ≤ c⁻¹ * (A + (L : ℝ) * ‖v‖) :=
         mul_le_mul (hsharp_norm t ht) (haff t ht v) (norm_nonneg _) hcnn
@@ -93,7 +93,7 @@ theorem coerciveMassODE_exists
   refine ⟨γ, hγ0, hγcont, ?_⟩
   intro t ht
   have ht' : t ∈ Icc (0 : ℝ) T := ⟨ht.1, le_of_lt ht.2⟩
-  simpa only [f, dif_pos ht'] using hγderiv t ht
+  simpa only [f, dite_eq_left ht'] using hγderiv t ht
 
 theorem coerOn_of_lip
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
@@ -210,16 +210,16 @@ theorem exists_state_mass_solution
           (hco t ht u hu).sharpCLM_norm_le hc (hcoer t ht u hu)
         calc
           ‖f t u‖ = ‖(hco t ht u hu).sharpCLM (resid t u)‖ := by
-            simp only [f, dif_pos ht, dif_pos hu]
+            simp only [f, dite_eq_left ht, dite_eq_left hu]
           _ ≤ ‖(hco t ht u hu).sharpCLM‖ * ‖resid t u‖ :=
             ContinuousLinearMap.le_opNorm _ _
           _ ≤ c⁻¹ * A := by
             exact mul_le_mul hsharp (hres_bound t ht u hu)
               (norm_nonneg _) (inv_nonneg.mpr hc.le)
           _ = (Lf : ℝ) := by rfl
-      · simp only [f, dif_pos ht, dif_neg hu, norm_zero]
+      · simp only [f, dite_eq_left ht, dite_eq_right hu, norm_zero]
         exact Lf.coe_nonneg
-    · simp only [f, dif_neg ht, norm_zero]
+    · simp only [f, dite_eq_right ht, norm_zero]
       exact Lf.coe_nonneg
   have hflip : ∀ t ∈ Icc (0 : ℝ) τ,
       LipschitzOnWith Kf (f t) (closedBall (0 : V) R) := by
@@ -240,7 +240,7 @@ theorem exists_state_mass_solution
       hc hc (hcoer t htT u hu) (hcoer t htT v hv)
       (resid t u) (resid t v)
     rw [dist_eq_norm]
-    simp only [f, dif_pos htT, dif_pos hu, dif_pos hv]
+    simp only [f, dite_eq_left htT, dite_eq_left hu, dite_eq_left hv]
     calc
       ‖(hco t htT u hu).sharpCLM (resid t u) -
           (hco t htT v hv).sharpCLM (resid t v)‖
@@ -272,7 +272,7 @@ theorem exists_state_mass_solution
     have happ := hsharp.clm_apply hr
     convert happ using 1
     funext t
-    simp only [f, Set.domRestrict_apply, dif_pos (htime_sub t.2), dif_pos hu]
+    simp only [f, Set.domRestrict_apply, dite_eq_left (htime_sub t.2), dite_eq_left hu]
   let tzero : Icc (0 : ℝ) τ := ⟨0, by exact ⟨le_rfl, hτ.le⟩⟩
   let aN : ℝ≥0 := ⟨R, hR.le⟩
   have hPL : IsPicardLindelof f tzero (0 : V) aN 0 Lf Kf :=
@@ -309,7 +309,7 @@ theorem exists_state_mass_solution
     change mass t (γ t) (f t (γ t)) = resid t (γ t)
     rw [show f t (γ t) =
         (hco t htT (γ t) hu).sharpCLM (resid t (γ t)) by
-      simp only [f, dif_pos htT, dif_pos hu]]
+      simp only [f, dite_eq_left htT, dite_eq_left hu]]
     simpa only [IsCoercive.sharpCLM_apply] using
       (hco t htT (γ t) hu).apply_sharp (resid t (γ t))
 

@@ -131,21 +131,21 @@ variable {G c} (K : G.ComparisonSupport c)
 
 def CollapseClassGenerator (a : IntegralHomology (G.Parent c).Carrier 3) : Prop :=
   ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-    φ (integralHomologyMap 3 K.rfs_whole_parent_map a) = 1
+    φ (integralHomologyMap 3 K.canonicalWholeParentMap a) = 1
 
 theorem collapseClassGenerator_of_coreRetraction
     (hρ : G.CollapseCoreRetraction c)
     {a : IntegralHomology (G.Parent c).Carrier 3}
     {b : IntegralHomology (G.Child c).Carrier 3} {k : ℤ}
-    (hmap : integralHomologyMap 3 K.rfs_whole_parent_map a = k • b)
+    (hmap : integralHomologyMap 3 K.canonicalWholeParentMap a = k • b)
     (ha : Function.Bijective (fun z : ℤ => z • a))
     (hb : Function.Bijective (fun z : ℤ => z • b)) :
     K.CollapseClassGenerator a := by
   obtain ⟨ρ, hρ⟩ := hρ
-  have hsec : (K.rfs_whole_parent_map.comp
+  have hsec : (K.canonicalWholeParentMap.comp
       ((G.transition.childCoreIntoParent c).comp ρ)).Homotopic
       (ContinuousMap.id (G.transition.ChildCarrier c)) := by
-    have hEq : K.rfs_whole_parent_map.comp ((G.transition.childCoreIntoParent c).comp ρ) =
+    have hEq : K.canonicalWholeParentMap.comp ((G.transition.childCoreIntoParent c).comp ρ) =
         (G.transition.childCoreInclusion c).comp ρ := by
       apply ContinuousMap.ext
       intro y
@@ -153,25 +153,25 @@ theorem collapseClassGenerator_of_coreRetraction
     rw [hEq]
     exact hρ
   exact DifferentialGeometry.Topology.exists_linearMap_eq_one_of_homotopySection
-    K.rfs_whole_parent_map ((G.transition.childCoreIntoParent c).comp ρ) hsec hmap ha hb
+    K.canonicalWholeParentMap ((G.transition.childCoreIntoParent c).comp ρ) hsec hmap ha hb
 
 theorem rfs_collapse_degree_of_localDistanceControl_and_coreRetraction
-    (hlip : K.LocalTerminalDistanceControl K.rfs_whole_parent_map)
+    (hlip : K.LocalTerminalDistanceControl K.canonicalWholeParentMap)
     (hρ : G.CollapseCoreRetraction c)
     {a : IntegralHomology (G.Parent c).Carrier 3}
     {b : IntegralHomology (G.Child c).Carrier 3} {k : ℤ}
-    (hmap : integralHomologyMap 3 K.rfs_whole_parent_map a = k • b)
+    (hmap : integralHomologyMap 3 K.canonicalWholeParentMap a = k • b)
     (ha : Function.Bijective (fun z : ℤ => z • a))
     (hb : Function.Bijective (fun z : ℤ => z • b))
     (hk : 0 < k) :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
+    K.LocalTerminalLengthControl K.canonicalWholeParentMap ∧
     (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      K.rfs_whole_parent_map y = K.rfs_whole_parent_map x) ∧
+      K.canonicalWholeParentMap y = K.canonicalWholeParentMap x) ∧
     (∀ x : G.transition.ChildCore c,
-      K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+      K.canonicalWholeParentMap (G.transition.childCoreIntoParent c x) =
         G.transition.childCoreInclusion c x) ∧
-    integralHomologyMap 3 K.rfs_whole_parent_map a = b ∧
-    Function.Surjective K.rfs_whole_parent_map :=
+    integralHomologyMap 3 K.canonicalWholeParentMap a = b ∧
+    Function.Surjective K.canonicalWholeParentMap :=
   K.rfs_collapse_degree_of_localTerminalDistanceControl_and_class_generator a b hlip hmap
     (K.collapseClassGenerator_of_coreRetraction hρ hmap ha hb) hk
 

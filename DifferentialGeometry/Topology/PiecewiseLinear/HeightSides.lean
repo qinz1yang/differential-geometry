@@ -209,8 +209,8 @@ theorem eventually_mem_halfSpace_along_levelPolygon_disk_partition
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsCombinatorialManifold 2 K)
     (hdimE : Module.finrank ℝ E = 3) (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
     {p : E} (hp : p ∈ K.vertices) {J A B : Set E} (hJ : J ∈ levelPolygons K.space ℓ (ℓ p))
-    {gA gB : (Fin 3 → ℝ) → E} (hgA : IsPLHomeomorphOn gA (stdSimplex ℝ (Fin 3)) A)
-    (hgB : IsPLHomeomorphOn gB (stdSimplex ℝ (Fin 3)) B)
+    {gA gB : (Fin 3 → ℝ) → E} (hgA : IsPLHomeomorphOn gA (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A)
+    (hgB : IsPLHomeomorphOn gB (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B)
     (hunion : A ∪ B = K.space) (hinter : A ∩ B = J)
     (hgAJ : gA '' stdSimplexBoundary 2 = J) (hgBJ : gB '' stdSimplexBoundary 2 = J) :
     (∀ q ∈ J \ {p}, ∀ᶠ x in 𝓝 q, x ∈ A ↔ x ∈ K.space ∧ ℓ p ≤ ℓ x) ∨
@@ -298,8 +298,8 @@ theorem eventually_mem_opposite_halfSpaces_along_levelPolygon_disk_partition
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsCombinatorialManifold 2 K)
     (hdimE : Module.finrank ℝ E = 3) (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
     {p : E} (hp : p ∈ K.vertices) {J A B : Set E} (hJ : J ∈ levelPolygons K.space ℓ (ℓ p))
-    {gA gB : (Fin 3 → ℝ) → E} (hgA : IsPLHomeomorphOn gA (stdSimplex ℝ (Fin 3)) A)
-    (hgB : IsPLHomeomorphOn gB (stdSimplex ℝ (Fin 3)) B)
+    {gA gB : (Fin 3 → ℝ) → E} (hgA : IsPLHomeomorphOn gA (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A)
+    (hgB : IsPLHomeomorphOn gB (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B)
     (hunion : A ∪ B = K.space) (hinter : A ∩ B = J)
     (hgAJ : gA '' stdSimplexBoundary 2 = J) (hgBJ : gB '' stdSimplexBoundary 2 = J) :
     (∀ q ∈ J \ {p}, ∀ᶠ x in 𝓝 q,

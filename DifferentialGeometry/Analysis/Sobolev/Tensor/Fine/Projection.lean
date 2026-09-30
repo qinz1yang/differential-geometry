@@ -59,7 +59,7 @@ theorem modelReconstruct_proj (r s : ℕ)
     · intro Jdx _ hJdx
       rw [map_smul, smul_eq_mul,
         tensorChartComponentProjection_basisElement (E := E)
-          r s P.1 P.1 P.2 Jdx, if_pos rfl, if_neg hJdx,
+          r s P.1 P.1 P.2 Jdx, ite_eq_left rfl, ite_eq_right hJdx,
         mul_zero, mul_zero]
     · simp
   · intro Idx _ hIdx
@@ -68,7 +68,7 @@ theorem modelReconstruct_proj (r s : ℕ)
     intro Jdx _
     rw [map_smul, smul_eq_mul,
       tensorChartComponentProjection_basisElement (E := E)
-        r s P.1 Idx P.2 Jdx, if_neg (Ne.symm hIdx),
+        r s P.1 Idx P.2 Jdx, ite_eq_right (Ne.symm hIdx),
       zero_mul, mul_zero]
   · simp
 
@@ -174,7 +174,7 @@ theorem chartReconstruct_extract (r s : ℕ) (α : M)
     rw [rsTriv_base (E := E) (I := I) (M := M) r s α]
     exact hx
   unfold chartReconstruct secModelPull
-  rw [dif_pos hx, hmodel]
+  rw [dite_eq_left hx, hmodel]
   unfold secTriv
   rw [(trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) α).symmL_continuousLinearMapAt
@@ -245,7 +245,7 @@ theorem chartReconstruct_fine (r s : ℕ) (α : M)
       rw [rsTriv_base (E := E) (I := I) (M := M) r s α]
       exact hx
     unfold chartReconstruct secModelPull
-    rw [dif_pos hx, hmodel]
+    rw [dite_eq_left hx, hmodel]
     rw [ContinuousLinearMap.map_smul]
     unfold secTriv
     rw [(trivializationAt (TensorRSModel r s ℝ E)
@@ -257,7 +257,7 @@ theorem chartReconstruct_fine (r s : ℕ) (α : M)
       exact hx (chartAtlasPOU_isSubordinate I M α
         (subset_tsupport _ hne))
     unfold chartReconstruct secModelPull
-    rw [dif_neg hx, hρ, mul_zero, zero_smul]
+    rw [dite_eq_right hx, hρ, mul_zero, zero_smul]
 
 noncomputable def finePouReconstruct
     {κ : M → Type*} [∀ α, Fintype (κ α)]

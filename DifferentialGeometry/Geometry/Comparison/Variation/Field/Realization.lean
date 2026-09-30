@@ -139,7 +139,7 @@ theorem exists_var_fix_ends
       simp only [c, curveAt_zero]
     rw [hc0] at hvel
     rw [hfzero t]
-    convert hvel using 1 ; rfl
+    convert hvel using 1
   have hstationary : ∀ t, V t = 0 → ∀ u,
       curveAt X hcomplete (initial t) u = initial t := by
     intro t hVt u

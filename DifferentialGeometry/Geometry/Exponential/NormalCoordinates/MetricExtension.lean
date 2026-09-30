@@ -43,7 +43,7 @@ private theorem exists_subtype_curve_extension {n : ℕ∞} {γ : ℝ → M} {a 
   have hηEq (t : ℝ) (ht : γ t ∈ U) : (Subtype.val ∘ η) =ᶠ[𝓝 t] γ := by
     filter_upwards [hV.mem_nhds ht] with s hs
     change γ s ∈ U at hs
-    simp only [η, Function.comp_apply, dif_pos hs]
+    simp only [η, Function.comp_apply, dite_eq_left hs]
   have hη : ContMDiffOn 𝓘(ℝ, ℝ) I n η (γ ⁻¹' (U : Set M)) := by
     intro t ht
     have hval : ContMDiffAt 𝓘(ℝ, ℝ) I n (Subtype.val ∘ η) t :=
@@ -519,7 +519,7 @@ theorem riemannianEDistOf_eq_of_pullback_extension
     have hEq : EqOn (Subtype.val ∘ γU) γ (Icc (0 : ℝ) 1) := by
       intro t ht
       have hm : γ t ∈ U := hball (Metric.ball_subset_closedBall (hfence ht))
-      simp only [γU, Function.comp_apply, dif_pos hm]
+      simp only [γU, Function.comp_apply, dite_eq_left hm]
     have hγU : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, E) 1 γU (Icc (0 : ℝ) 1) := by
       intro t ht
       apply (ChartedSpace.liftPropWithinAt_subtypeVal_comp_iff
@@ -702,7 +702,7 @@ theorem hasGeodesicEquationAt_smul_of_framedExpMap_pullback
     (continuous_id.smul continuous_const).continuousAt.preimage_mem_nhds (V.isOpen.mem_nhds htV)
   have hEq : (fun s => (γ s : E)) =ᶠ[𝓝 t] (fun s => s • z) := by
     filter_upwards [hmem] with s hs
-    simp only [γ, dif_pos hs]
+    simp only [γ, dite_eq_left hs]
   have hγ : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ γ t := by
     have hval : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (fun s => (γ s : E)) t :=
       (contMDiffAt_id.smul contMDiffAt_const).congr_of_eventuallyEq hEq

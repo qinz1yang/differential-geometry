@@ -7,6 +7,9 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.Pointw
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.SingleSlotFiberNorm
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.CovariantTwoTensor.FrameExpansion
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq
+    riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

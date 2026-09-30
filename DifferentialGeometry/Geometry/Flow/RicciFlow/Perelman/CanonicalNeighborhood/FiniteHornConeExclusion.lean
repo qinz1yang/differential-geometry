@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeCoordinates
+import DifferentialGeometry.Geometry.Metric.ConeChart.Construction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.LocalConeHomeomorphism
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.OriginalSourceConeEmbedding
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonComposition
@@ -21,7 +21,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u v
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact EndAngles.metric
 
 theorem RealizedFiniteHorn.exists_original_source_local_coneChart
@@ -73,8 +73,9 @@ theorem RealizedFiniteHorn.exists_original_source_local_coneChart
   let : LocallyCompactSpace Q := Manifold.locallyCompact_of_finiteDimensional (M := Q) I3
   let : LocallyCompactSpace V := V.isOpen.locallyCompactSpace
   let : SigmaCompactSpace V := inferInstance
-  obtain ⟨W, hW, hqW, _, hcone⟩ := exists_coneChart_of_local_riemannian_distance_cone
-    (g.restrictOpen V) e hpos hdist he
+  obtain ⟨W, hW, hqW, _, hcone⟩ :=
+    DifferentialGeometry.Geometry.Riemannian.exists_cone_chart_of_riemannianEDistOf_cone
+      (g.restrictOpen V) e hpos hdist (m := 2) (by simp [ThreeSpace]) he
   exact ⟨W, hW, hqW, hcone⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
@@ -97,7 +98,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u v
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact EndAngles.metric
 
 theorem RealizedFiniteHorn.false_of_original_source_nonnegative_local_flow_limit
@@ -179,8 +180,9 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  PointedFlowData.t2TangentBundle RealizedFiniteHorn.metric_space
-  RealizedFiniteHorn.charted RealizedFiniteHorn.smooth RealizedFiniteHorn.sigmaCompact EndAngles.metric
+  PointedFlowData.t2TangentBundle RealizedFiniteHorn.metricSpace
+  RealizedFiniteHorn.charted RealizedFiniteHorn.smooth RealizedFiniteHorn.sigmaCompact
+    EndAngles.metric
   PointedRiemannianManifold.topology PointedRiemannianManifold.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact PointedRiemannianManifold.t2TangentBundle
@@ -192,7 +194,8 @@ theorem exists_pos_not_nonempty_realizedFiniteHorn
         ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
           ¬ Nonempty (RealizedFiniteHorn X.toFlowSequence) := by
   obtain ⟨epsStar, c, Cbound, hc, hepsStar, _, hlimits⟩ :=
-    RealizedFiniteHorn.exists_original_source_normalized_nonnegative_local_ricci_flow_limit hkappa hmod
+    RealizedFiniteHorn.exists_original_source_normalized_nonnegative_local_ricci_flow_limit hkappa
+      hmod
   refine ⟨epsStar, hepsStar, ?_⟩
   intro eps heps hepsStar' sigma hsigma Phi hPhi X hH
   obtain ⟨H⟩ := hH

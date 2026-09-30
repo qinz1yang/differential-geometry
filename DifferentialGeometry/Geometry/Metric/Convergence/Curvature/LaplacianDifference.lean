@@ -237,7 +237,7 @@ private theorem lapDiff_sq_core
   let Hess := leviHessSec (I := I) g f hf x
   let du := duSec (I := I) f hf x
   let D := Tensor0SBundle.connectionDifferenceTensorAt (I := I) covH covG x
-  let B := Tensor0SBundle.connectionDifferenceOutput (I := I)
+  let B := Tensor0SBundle.bilinearCovectorComp (I := I)
     (CovariantDerivative.difference covH covG x) du
   let a := metricTracePair0SAt (I := I) h Hess -
     metricTracePair0SAt (I := I) g Hess

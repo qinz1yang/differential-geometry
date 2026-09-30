@@ -345,7 +345,7 @@ theorem exists_isOpen_contDiffOn_graph_of_isCompact
   let g : E → F := fun x => if hx : x ∈ O then Classical.choose hx else 0
   have hspec (x : E) (hx : x ∈ O) : (x, g x) ∈ N ∩ S := by
     dsimp only [g]
-    rw [dif_pos hx]
+    rw [dite_eq_left hx]
     exact Classical.choose_spec hx
   have huniq (x : E) (hx : x ∈ O) (y : F) (hy : (x, y) ∈ N ∩ S) : y = g x :=
     congrArg Prod.snd (hNinj hy (hspec x hx) rfl)

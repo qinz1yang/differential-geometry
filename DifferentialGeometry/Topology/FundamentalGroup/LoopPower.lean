@@ -28,7 +28,8 @@ theorem refl_map {f : X → Y} (hf : Continuous f) (a : X) :
     (Path.refl a).map hf = Path.refl (f a) := rfl
 
 theorem symm_map (p : Path x x) {f : X → Y} (hf : Continuous f) :
-    p.symm.map hf = (p.map hf).symm := rfl
+    p.symm.map hf = (p.map hf).symm :=
+  (Path.map_symm p hf).symm
 
 theorem loopPow_map (p : Path x x) {f : X → Y} (hf : Continuous f) (k : ℕ) :
     (loopPow p k).map hf = loopPow (p.map hf) k := by
@@ -54,7 +55,7 @@ theorem loopZPow_homotopic {p q : Path x x} (h : p.Homotopic q) (k : ℤ) :
   | ofNat k => exact loopPow_homotopic h k
   | negSucc k => exact loopPow_homotopic h.symm₂ (k + 1)
 
-theorem cast_rfl (p : Path x x) : p.cast rfl rfl = p := rfl
+theorem cast_rfl (p : Path x x) : p.cast rfl rfl = p := Path.cast_rfl_rfl p
 
 theorem loopPow_cast {y : X} (p : Path x x) (hx : y = x) (k : ℕ) :
     (loopPow p k).cast hx hx = loopPow (p.cast hx hx) k := by

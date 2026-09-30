@@ -20,12 +20,12 @@ def patchOnOpen (U : TopologicalSpace.Opens M) (V : ∀ x : M, TangentSpace I x)
 
 theorem patchOnOpen_of_mem (U : TopologicalSpace.Opens M)
     (V : ∀ x : M, TangentSpace I x) (W : ∀ x : U, TangentSpace I x)
-    {x : M} (hx : x ∈ U) : patchOnOpen U V W x = W ⟨x, hx⟩ := dif_pos hx
+    {x : M} (hx : x ∈ U) : patchOnOpen U V W x = W ⟨x, hx⟩ := dite_eq_left hx
 
 
 theorem patchOnOpen_of_not_mem (U : TopologicalSpace.Opens M)
     (V : ∀ x : M, TangentSpace I x) (W : ∀ x : U, TangentSpace I x)
-    {x : M} (hx : x ∉ U) : patchOnOpen U V W x = V x := dif_neg hx
+    {x : M} (hx : x ∉ U) : patchOnOpen U V W x = V x := dite_eq_right hx
 
 
 theorem patchOnOpen_eq_self_off (U : TopologicalSpace.Opens M)

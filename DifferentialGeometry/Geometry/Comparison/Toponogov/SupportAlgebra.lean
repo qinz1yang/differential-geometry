@@ -14,7 +14,7 @@ open Set Filter Topology
 
 namespace DifferentialGeometry.Toponogov
 
-def lowerSupportAt_sq_sub_sq_of_energy
+def lowerSupportAtSqSubSqOfEnergy
     {distance energy energyDeriv : ℝ → ℝ} {J U : Set ℝ}
     {r₀ L energySecond : ℝ}
     (hU : U ∈ 𝓝 r₀) (hUJ : U ⊆ J)
@@ -47,7 +47,7 @@ def lowerSupportAt_sq_sub_sq_of_energy
     all_goals ring
   · linarith
 
-def lowerSupportAt_sq_sub_sq_of_zero
+def lowerSupportAtSqSubSqOfZero
     {distance : ℝ → ℝ} {J U : Set ℝ} {r₀ : ℝ}
     (hU : U ∈ 𝓝 r₀) (hUJ : U ⊆ J)
     (hdistance_nonneg : ∀ r ∈ U, 0 ≤ distance r)

@@ -16,8 +16,8 @@ theorem IsPLHomeomorphOn.exists_extension_union_ball {n : ℕ}
     {P D : Set E} {Q D' : Set F} {f : E → F}
     (hf : IsPLHomeomorphOn f P Q) (hP : IsPolyhedron P)
     {r : (Fin (n + 2) → ℝ) → E} {s : (Fin (n + 2) → ℝ) → F}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (n + 2))) D)
-    (hs : IsPLHomeomorphOn s (stdSimplex ℝ (Fin (n + 2))) D')
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) D)
+    (hs : IsPLHomeomorphOn s (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) D')
     (hPD : P ∩ D = r '' stdSimplexBoundary (n + 1))
     (hQD : Q ∩ D' = s '' stdSimplexBoundary (n + 1))
     (hboundary : f '' (r '' stdSimplexBoundary (n + 1)) = s '' stdSimplexBoundary (n + 1)) :

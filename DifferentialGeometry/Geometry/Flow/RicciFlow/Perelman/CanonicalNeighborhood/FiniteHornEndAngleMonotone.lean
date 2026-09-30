@@ -45,7 +45,7 @@ private theorem endComparisonAngle_mono_of_ray_approximation {g : SmoothRiemanni
           comparisonAngle a1 b1 (dist (arm 0 a1) (arm 1 b1)))
     (hrx : ∀ a b : EndRay H.endpoint, ∀ lo hi : Fin 2 → ℝ, (∀ k, 0 < lo k) →
       (∀ k, lo k ≤ hi k) → hi 0 ≤ a.length → hi 1 ≤ b.length → (∀ k, hi k ≤ d) →
-      ∃ A : RayApproximation H a b lo hi, A.connector_index = inner)
+      ∃ A : RayApproximation H a b lo hi, A.connectorIndex = inner)
     (a b : EndRay H.endpoint) {s₁ s₂ t₁ t₂ : ℝ}
     (hs₁ : 0 < s₁) (hs₁₂ : s₁ ≤ s₂) (hs₂ : s₂ ≤ min a.length d)
     (ht₁ : 0 < t₁) (ht₁₂ : t₁ ≤ t₂) (ht₂ : t₂ ≤ min b.length d) :
@@ -174,7 +174,7 @@ private theorem endComparisonAngle_mono_of_ray_approximation {g : SmoothRiemanni
 
 theorem finite_horn_end_angle_monotone :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
+      H₀ ≤ H.collarDepth → ∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
         CoordinatewiseNonincreasingOn (endRayLength H.endpoint d a) (endRayLength H.endpoint d b)
           (radialComparisonAngle (endRayFamily H.endpoint) a b) := by
   obtain ⟨H₁, hH₁, hcmp⟩ := exists_finiteHorn_arm_comparison_depth (W := W)
@@ -201,7 +201,7 @@ theorem finite_horn_end_angle_monotone :
 
 theorem finite_horn_end_angle_of_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → Nonempty (EndAngles H) := by
+      H₀ ≤ H.collarDepth → Nonempty (EndAngles H) := by
   obtain ⟨H₀, hH₀, hmono⟩ := finite_horn_end_angle_monotone (W := W)
   refine ⟨H₀, hH₀, ?_⟩
   intro g H hdepth

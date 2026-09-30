@@ -53,7 +53,7 @@ theorem exists_half_collar_retraction
       (max_lt hdr (hHinv x hx).2).le⟩
   have hfeq : ∀ x ∈ H, f x = F x := by
     intro x hx
-    exact if_pos hx
+    exact ite_eq_left hx
   have hfix : EqOn f id Kᶜ := by
     intro x hx
     change f x = x
@@ -67,7 +67,7 @@ theorem exists_half_collar_retraction
       dsimp [F]
       rw [max_eq_right hxd]
       exact T.right_inv (hHt hxH)
-    · exact if_neg hxH
+    · exact ite_eq_right hxH
   have hfc : ContinuousOn f V := by
     intro x hx
     by_cases hxK : x ∈ K
@@ -100,7 +100,7 @@ theorem exists_half_collar_retraction
         exact hx ⟨z, ⟨hz.1, hz.2.1, lt_of_not_ge hn⟩, rfl⟩
       rw [hformula z.1 z.2 hz.2, max_eq_right hdz]
       rfl
-    · exact if_neg hxH
+    · exact ite_eq_right hxH
   have hmaps : MapsTo f V (V \ T '' ((univ : Set N) ×ˢ Ioo 0 d)) := by
     intro x hx
     by_cases hxH : x ∈ H
@@ -116,7 +116,7 @@ theorem exists_half_collar_retraction
       have hlt : max d z.2 < d := by
         simpa only [hcoord] using hw.2.2
       exact (not_lt_of_ge (le_max_left d z.2)) hlt
-    · have hfx : f x = x := if_neg hxH
+    · have hfx : f x = x := ite_eq_right hxH
       rw [hfx]
       refine ⟨hx, ?_⟩
       rintro ⟨z, hz, he⟩
@@ -135,7 +135,7 @@ theorem exists_half_collar_retraction
       rw [hformula z.1 z.2 ⟨hzt, hz.2.2.trans_lt hdr⟩, max_eq_left hz.2.2]
       exact ⟨(z.1, d), ⟨mem_univ _, hd.le, le_rfl⟩, rfl⟩
     · change f x ∈ K
-      simpa only [f, if_neg hxH] using hx
+      simpa only [f, ite_eq_right hxH] using hx
 
 
 private theorem exists_finite_retraction
@@ -232,12 +232,12 @@ theorem exists_finite_half_collar_retraction
     exact image_mono (prod_mono Subset.rfl Ioo_subset_Icc_self)
   · exact hdis
   · intro i hi
-    simpa only [F, dif_pos hi] using hc i hi
+    simpa only [F, dite_eq_left hi] using hc i hi
   · intro i hi
-    simpa only [F, dif_pos hi] using hm i hi
+    simpa only [F, dite_eq_left hi] using hm i hi
   · intro i hi
-    simpa only [F, dif_pos hi] using hfix i hi
+    simpa only [F, dite_eq_left hi] using hfix i hi
   · intro i hi
-    simpa only [F, dif_pos hi] using hK i hi
+    simpa only [F, dite_eq_left hi] using hK i hi
 
 end OpenPartialHomeomorph

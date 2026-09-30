@@ -53,7 +53,7 @@ theorem exists_ball_chart_of_compact_closure_sphere_frontier
   have hf : IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ f :=
     DifferentialGeometry.Topology.isSmoothEmbedding_comp_partialDiffeomorph A.symm he hesource
   have hfrange : frontier V = range f := by rw [hfrontV, hfront, ← range_comp]
-  let sides := SphereSeparation.jordanBrouwer_openThreeSpace f hf
+  let sides := SphereSeparation.smoothSphereSidesOpenThreeSpace f hf
     (Diffeomorph.refl (𝓡 3) E3 ∞)
   have hside : V = sides.compactSide :=
     sides.toSphereSides.eq_compactSide_of_frontier_subset hVopen hVne (hcl ▸ hK)

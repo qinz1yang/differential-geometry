@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.LinearAlgebra
+import DifferentialGeometry.Geometry.Metric.MetricFiberData.Hom
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.Product
@@ -598,7 +598,7 @@ theorem metricTracePair0SAt_eq_sum_basis
         gInv i j * B (vec2 (I := I) (basis i) (basis j)) := by
   classical
   rw [metricTracePair0SAt]
-  rw [inner0S_two_eq_coord_direct (I := I) g x basis gInv hinv
+  rw [inner0S_two_eq_coord (I := I) g x basis gInv hinv
     (metricTensor0S (I := I) g x) B]
   simp only [metricTensor0S_apply]
   calc
@@ -834,7 +834,7 @@ theorem trace_sub_le_c0
       · intro hi
         exact absurd (Finset.mem_univ i) hi
     rw [← hsum]
-    simpa only [if_pos] using (hhinv i i).1
+    simpa only [ite_eq_left] using (hhinv i i).1
   let c0 :=
     Real.sqrt
       (normSq0S (I := I) g x 2

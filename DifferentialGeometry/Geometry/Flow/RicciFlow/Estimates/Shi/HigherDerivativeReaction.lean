@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.FirstDerivativeReaction
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -736,7 +737,7 @@ theorem neg_two_inner_gradient_shiWeightedNormSq_le
       (gradientAt (I := I) (flowG (I := I) S) t (shiWeightedNormSq (I := I) S m t) x) ≤
       (t ^ m) ^ 2 * (4 * nablaKRm04NormSqIntrinsic (I := I) S m t x *
         nablaKRm04NormSqIntrinsic (I := I) S (m + 1) t x) := by
-    rw [hgm, DifferentialGeometry.Analysis.Laplacian.metric_inner_smul_self]
+    rw [hgm, DifferentialGeometry.SmoothRiemannianMetric.metric_inner_smul_self]
     exact mul_le_mul_of_nonneg_left
       (inner_gradient_nablaKRm04NormSqIntrinsic_self_le (I := I) S m t x) (sq_nonneg (t ^ m))
   have hB : ((flowG (I := I) S).metric t).inner x
@@ -745,7 +746,7 @@ theorem neg_two_inner_gradient_shiWeightedNormSq_le
         (shiWeightedNormSq (I := I) S (m + 1) t) x) ≤
       (t ^ (m + 1)) ^ 2 * (4 * nablaKRm04NormSqIntrinsic (I := I) S (m + 1) t x *
         nablaKRm04NormSqIntrinsic (I := I) S (m + 1 + 1) t x) := by
-    rw [hgm1, DifferentialGeometry.Analysis.Laplacian.metric_inner_smul_self]
+    rw [hgm1, DifferentialGeometry.SmoothRiemannianMetric.metric_inner_smul_self]
     exact mul_le_mul_of_nonneg_left
       (inner_gradient_nablaKRm04NormSqIntrinsic_self_le (I := I) S (m + 1) t x)
       (sq_nonneg (t ^ (m + 1)))
@@ -757,7 +758,7 @@ theorem neg_two_inner_gradient_shiWeightedNormSq_le
       (I := I) (M := M) ((flowG (I := I) S).metric t) x _
   have hAnn : (0 : Real) ≤ (t ^ m) ^ 2 * (4 * nablaKRm04NormSqIntrinsic (I := I) S m t x *
       nablaKRm04NormSqIntrinsic (I := I) S (m + 1) t x) := by positivity
-  have hcs := DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
+  have hcs := DifferentialGeometry.SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq
     (I := I) (M := M) ((flowG (I := I) S).metric t) x
     (gradientAt (I := I) (flowG (I := I) S) t (shiWeightedNormSq (I := I) S m t) x)
     (gradientAt (I := I) (flowG (I := I) S) t (shiWeightedNormSq (I := I) S (m + 1) t) x)

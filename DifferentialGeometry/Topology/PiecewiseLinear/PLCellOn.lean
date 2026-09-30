@@ -15,7 +15,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin
 def IsPLCellOn (d : ℕ) (S B : Set M) : Prop :=
   ∃ (P : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin (d + 1) → ℝ) → EuclideanSpace ℝ (Fin 3))
     (u : EuclideanSpace ℝ (Fin 3) → M),
-    IsPLHomeomorphOn r (stdSimplex ℝ (Fin (d + 1))) P ∧ IsPLHomeomorphInto 3 u P ∧
+    IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) P ∧ IsPLHomeomorphInto 3 u P ∧
       S = u '' P ∧ B = u '' (r '' stdSimplexBoundary d)
 
 theorem IsPLCellOn.isCompact {d : ℕ} {S B : Set M} (hS : IsPLCellOn d S B) : IsCompact S := by

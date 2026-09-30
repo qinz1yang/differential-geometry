@@ -372,7 +372,7 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
     · intros j _ hjk
       rw [map_smul, Finsupp.coe_smul, Pi.smul_apply, b.repr_self_apply]
       have hne : ¬ (j = k) := hjk
-      rw [if_neg hne]
+      rw [ite_eq_right hne]
       simp
     · intro hk
       exact absurd (Finset.mem_univ k) hk
@@ -555,7 +555,7 @@ theorem weak_maximum_principle_of_closed
       rw [hv1, hv2] at h
       linarith
     have h_isLocalMaxOn : IsLocalMaxOn f (Set.Icc (0 : ℝ) (T - η)) p₀.1 :=
-      h_isMaxOn.localize
+      h_isMaxOn.isLocalMaxOn
     have hf_deriv : HasDerivAt f (Du p₀.1 p₀.2 - δ) p₀.1 := by
       have h1 : HasDerivAt (fun s : ℝ => u s p₀.2) (Du p₀.1 p₀.2) p₀.1 :=
         h_t_diff p₀.1 hp₀_t_Ioo p₀.2

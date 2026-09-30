@@ -136,7 +136,7 @@ private theorem tensorInnerPointwise_diag_section_jointContMDiffOn
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
       (fun p : M × ℝ =>
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
           ((Sfam p.2).toFun p.1) ((Sfam p.2).toFun p.1))
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) := by
   classical
@@ -152,7 +152,7 @@ private theorem tensorInnerPointwise_diag_section_jointContMDiffOn
   rw [hinter]
   set α : M := x₀ with hα
   have hbridge : ∀ p ∈ (chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T,
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
           ((Sfam p.2).toFun p.1) ((Sfam p.2).toFun p.1) =
         chartTensorInnerPointwise0s (I := I) (M := M) (0 + 2) g₀ α p.1
           (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 ((Sfam p.2).toFun p.1))
@@ -252,7 +252,7 @@ theorem deTurckRHSReconSection_oneMinusConnLapIter_normSq_continuousOn
   have hdiag := tensorInnerPointwise_diag_section_jointContMDiffOn (I := I) (M := M) g₀ Sfam
     hSfam_joint
   have hnormeq : (fun t : ℝ => ‖SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) (Sfam t)‖ ^ 2)
-      = fun t : ℝ => ∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise
+      = fun t : ℝ => ∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise
           (I := I) (M := M) g₀ 0 2 x ((Sfam t).toFun x) ((Sfam t).toFun x) ∂μ := by
     funext t
     rw [SmoothCcTensor.norm_toL2,
@@ -260,7 +260,7 @@ theorem deTurckRHSReconSection_oneMinusConnLapIter_normSq_continuousOn
     rfl
   rw [hnormeq]
   have hcd := contDiffOn_integral_of_jointContMDiffOn_Icc (I := I) (M := M) μ
-    (fun x t => DifferentialGeometry.Integral.L2.tensorInnerPointwise
+    (fun x t => DifferentialGeometry.TensorMetric.tensorInnerPointwise
       (I := I) (M := M) g₀ 0 2 x ((Sfam t).toFun x) ((Sfam t).toFun x)) hdiag
   exact hcd.continuousOn
 

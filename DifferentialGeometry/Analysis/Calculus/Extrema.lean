@@ -74,7 +74,7 @@ theorem deriv_nonneg_at_right_endpoint_of_isMaxOn_Icc
       segment_eq_Icc (by linarith : a / 2 ≤ a)]
     intro s hs
     exact ⟨by linarith [hs.1], hs.2⟩
-  have hnonpos := hmax.localize.hasFDerivWithinAt_nonpos
+  have hnonpos := hmax.isLocalMaxOn.hasFDerivWithinAt_nonpos
     hderiv.hasFDerivAt.hasFDerivWithinAt hdir
   have heval : (ContinuousLinearMap.toSpanSingleton ℝ d) (-(a / 2)) =
       -(a / 2) * d := by

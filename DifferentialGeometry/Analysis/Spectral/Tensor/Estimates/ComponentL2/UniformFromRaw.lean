@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ComponentL2.TensorSection
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.RawComponentBound
 import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -89,8 +91,12 @@ theorem exists_uniform_l2_bound_of_raw_component_bound {ι : Type*}
     have hlp : eLpNorm (tensorChartComponentScalar (I := I) (M := M)
           g r s (S k) α Idx Jdx) 2 μ ≤ R := by
       dsimp [R]
+      have hmeas : Measurable (tensorChartComponentScalar (I := I) (M := M)
+          g r s (S k) α Idx Jdx) :=
+        (tensorChartComponentScalar_contMDiff (I := I) (M := M) g r s (S k) α Idx Jdx).continuous.measurable
       exact MeasureTheory.eLpNorm_le_of_ae_bound
-        (μ := μ) (p := 2) (Filter.Eventually.of_forall hpt)
+        hmeas.aestronglyMeasurable
+        (Filter.Eventually.of_forall hpt)
     have hreal : (eLpNorm (tensorChartComponentScalar (I := I) (M := M)
           g r s (S k) α Idx Jdx) 2 μ).toReal ≤ A := by
       dsimp [A]

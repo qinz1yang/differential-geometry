@@ -165,7 +165,7 @@ theorem distribution_le_of_upper_tests_of_convexOn_add_quadratic
     filter_upwards [hj] with x hx
     refine ⟨hx.1, ?_⟩
     dsimp only [B]
-    rw [dif_pos hx.2]
+    rw [dite_eq_left hx.2]
     exact hx.2.choose_spec
   have hBAE : ∀ᵐ x ∂μ, (B x).flip = B x ∧ ∃ p : E →L[ℝ] ℝ,
       (fun y => u y - u x - p (y - x) - (1 / 2 : ℝ) * B x (y - x) (y - x))
@@ -540,11 +540,11 @@ theorem distribution_le_of_upper_tests_of_locallyLipschitzOn
   let φF : F → ℝ := φ ∘ A.symm
   have hΩF : IsOpen ΩF := hΩ.preimage A.symm.continuous
   have huF : LocallyLipschitzOn ΩF uF := hu.comp
-    A.symm.lipschitz.locallyLipschitz.locallyLipschitzOn (fun _ hx => hx)
+    A.symm.toContinuousLinearMap.lipschitzWith.locallyLipschitz.locallyLipschitzOn (fun _ hx => hx)
   have hcF : LocallyLipschitzOn ΩF cF := hc.comp
-    A.symm.lipschitz.locallyLipschitz.locallyLipschitzOn (fun _ hx => hx)
+    A.symm.toContinuousLinearMap.lipschitzWith.locallyLipschitz.locallyLipschitzOn (fun _ hx => hx)
   have hrF : LocallyLipschitzOn ΩF rF := hr.comp
-    A.symm.lipschitz.locallyLipschitz.locallyLipschitzOn (fun _ hx => hx)
+    A.symm.toContinuousLinearMap.lipschitzWith.locallyLipschitz.locallyLipschitzOn (fun _ hx => hx)
   have hVF (k : κ) : ContDiffOn ℝ 2 (VF k) ΩF :=
     A.contDiff.comp_contDiffOn ((hV k).comp A.symm.contDiff.contDiffOn (fun _ hx => hx))
   have hWF : ContDiffOn ℝ 1 WF ΩF :=

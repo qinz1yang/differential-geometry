@@ -151,7 +151,8 @@ theorem eLpNorm_const_average_le
                 ≤ ∫ x, ‖f x‖ ∂μ := norm_integral_le_integral_norm _
               _ = (∫⁻ x, ‖f x‖ₑ ∂μ).toReal :=
                   integral_norm_eq_lintegral_enorm hf.aestronglyMeasurable
-              _ = (eLpNorm f 1 μ).toReal := by rw [eLpNorm_one_eq_lintegral_enorm]
+              _ = (eLpNorm f 1 μ).toReal := by
+                  rw [eLpNorm_one_eq_lintegral_enorm hf.aestronglyMeasurable]
     -- Convert ℝ bound to ENNReal
     have h_inv_eq : ENNReal.ofReal (μ.real Set.univ)⁻¹ = (μ Set.univ)⁻¹ := by
       rw [measureReal_def, ENNReal.ofReal_inv_of_pos (ENNReal.toReal_pos hμ_ne hμ_top),
@@ -289,8 +290,11 @@ private theorem poincare_unitBall_W1p
     have h_mono : eLpNorm (fun x => ‖fderiv ℝ (ψ n) x‖ - ‖hw.weakGrad x‖) pp μ ≤
         eLpNorm (fun x => ∑ i : Fin d,
           ‖(fderiv ℝ (ψ n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i‖) pp μ :=
-      eLpNorm_mono fun x => (h_ptwise x).trans_eq
-        (Real.norm_of_nonneg (Finset.sum_nonneg fun i _ => norm_nonneg _)).symm
+      eLpNorm_mono
+        (((hψ_smooth n).continuous_fderiv (by simp)).norm.aestronglyMeasurable.sub
+          hw.weakGrad_memLp.aestronglyMeasurable.norm)
+        (fun x => (h_ptwise x).trans_eq
+          (Real.norm_of_nonneg (Finset.sum_nonneg fun i _ => norm_nonneg _)).symm)
     -- Minkowski: eLpNorm of sum ≤ sum of eLpNorms
     have h_mink : eLpNorm (fun x => ∑ i : Fin d,
         ‖(fderiv ℝ (ψ n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i‖) pp μ ≤
@@ -302,14 +306,14 @@ private theorem poincare_unitBall_W1p
             ‖(fderiv ℝ (ψ n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i‖) := by
         ext x; simp [Finset.sum_apply]
       rw [h_eq]
-      exact eLpNorm_sum_le (fun i _ => (h_comp_aesm n i).norm) hpp
+      exact eLpNorm_sum_le hpp
     calc eLpNorm (fun x => ‖fderiv ℝ (ψ n) x‖ - ‖hw.weakGrad x‖) pp μ
         ≤ _ := h_mono
       _ ≤ _ := h_mink
       _ = ∑ i : Fin d, eLpNorm
             (fun x => (fderiv ℝ (ψ n) x) (EuclideanSpace.single i 1) -
               hw.weakGrad x i) pp μ := by
-          congr 1; ext i; exact eLpNorm_norm _
+          congr 1; ext i; exact eLpNorm_norm _ (h_comp_aesm n i)
   -- Sum of component errors → 0
   have h_grad_err_tendsto : Tendsto
       (fun n => ∑ i : Fin d, eLpNorm
@@ -347,7 +351,7 @@ private theorem poincare_unitBall_W1p
           congr 1; ext x; simp [add_sub_cancel]
       _ ≤ eLpNorm (fun x => ‖hw.weakGrad x‖) pp μ +
             eLpNorm (fun x => ‖fderiv ℝ (ψ n) x‖ - ‖hw.weakGrad x‖) pp μ :=
-          eLpNorm_add_le hG_norm_aesm hfn_aesm hpp
+          eLpNorm_add_le hpp
       _ ≤ _ := by gcongr; exact h_grad_err n
   -- === Integrability ===
   have hu_int : Integrable u μ :=
@@ -404,23 +408,19 @@ private theorem poincare_unitBall_W1p
               (ψ n x - ⨍ y in B, ψ n y ∂volume)) pp μ +
             eLpNorm (fun _ : E =>
               (⨍ y in B, (ψ n y - u y) ∂volume : ℝ)) pp μ :=
-          eLpNorm_add_le
-            (((hψn_aesm n).sub hu_aesm).neg.add
-              ((hψn_aesm n).sub aestronglyMeasurable_const))
-            aestronglyMeasurable_const hpp
+          eLpNorm_add_le hpp
       _ ≤ (eLpNorm (fun x => -(ψ n x - u x)) pp μ +
               eLpNorm (fun x => ψ n x - ⨍ y in B, ψ n y ∂volume) pp μ) +
             eLpNorm (fun _ : E =>
               (⨍ y in B, (ψ n y - u y) ∂volume : ℝ)) pp μ := by
           gcongr
-          exact eLpNorm_add_le ((hψn_aesm n).sub hu_aesm).neg
-            ((hψn_aesm n).sub aestronglyMeasurable_const) hpp
+          exact eLpNorm_add_le hpp
       _ = eLpNorm (fun x => ψ n x - u x) pp μ +
             eLpNorm (fun x => ψ n x - ⨍ y in B, ψ n y ∂volume) pp μ +
             eLpNorm (fun _ : E =>
               (⨍ x in B, (ψ n x - u x) ∂volume : ℝ)) pp μ := by
           congr 1; congr 1
-          exact eLpNorm_congr_norm_ae (ae_of_all _ fun x => norm_neg _)
+          exact eLpNorm_neg (fun x => ψ n x - u x) pp μ
       _ ≤ eLpNorm (fun x => ψ n x - u x) pp μ +
             C * eLpNorm (fun x => ‖fderiv ℝ (ψ n) x‖) pp μ +
             eLpNorm (fun _ : E =>
@@ -525,15 +525,18 @@ private theorem extension_gradient_eLpNorm_bound
   have hpow : Gext ^ p ≤ Gv ^ p + Ce * (Fv ^ p + Gv ^ p) := by
     have hGext_eq : Gext ^ p = ∫⁻ x, (ENNReal.ofReal ‖hwExt.weakGrad x‖) ^ p ∂volume := by
       change eLpNorm (fun x => ‖hwExt.weakGrad x‖) pp volume ^ p = _
-      rw [eLpNorm_norm, ← lintegral_rpow_norm_eq_eLpNorm_pow hp0]
+      have hGext_meas : AEStronglyMeasurable hwExt.weakGrad volume := by
+        simpa only [Measure.restrict_univ] using hwExt.weakGrad_memLp.aestronglyMeasurable
+      rw [eLpNorm_norm _ hGext_meas, ← lintegral_rpow_norm_eq_eLpNorm_pow hp0 hGext_meas]
     have hGv_eq : Gv ^ p = ∫⁻ x in B, (ENNReal.ofReal ‖hwv.weakGrad x‖) ^ p ∂volume := by
       change eLpNorm (fun x => ‖hwv.weakGrad x‖) pp μ ^ p = _
-      rw [eLpNorm_norm, ← lintegral_rpow_norm_eq_eLpNorm_pow hp0]
+      rw [eLpNorm_norm _ hwv.weakGrad_memLp.aestronglyMeasurable,
+        ← lintegral_rpow_norm_eq_eLpNorm_pow hp0 hwv.weakGrad_memLp.aestronglyMeasurable]
     have hFv_eq : Fv ^ p = ∫⁻ x in B, (ENNReal.ofReal |v x|) ^ p ∂volume := by
       change eLpNorm v pp μ ^ p = _
       have : (fun x => (ENNReal.ofReal ‖v x‖) ^ p) = (fun x => (ENNReal.ofReal |v x|) ^ p) :=
         funext fun x => by rw [Real.norm_eq_abs]
-      rw [← lintegral_rpow_norm_eq_eLpNorm_pow hp0, this]
+      rw [← lintegral_rpow_norm_eq_eLpNorm_pow hp0 hwv.memLp.aestronglyMeasurable, this]
     rw [hGext_eq, hGv_eq, hFv_eq]
     exact hgrad_bound
   have hFvp : Fv ^ p ≤ Cp ^ p * Gv ^ p :=

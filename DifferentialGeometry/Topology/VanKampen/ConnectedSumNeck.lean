@@ -593,7 +593,7 @@ theorem injective_connectedSumNeckMiddleQuotientMap
       change (@connectedSumNeckMiddleRawProjection K L) (Sum.inl p) =
         (@connectedSumNeckMiddleRawProjection K L) (Sum.inl q) at hproj
       simp only [connectedSumNeckMiddleRawProjection.eq_def] at hproj
-      rw [if_pos ⟨hx.2, hx.1⟩, if_pos ⟨hy.2, hy.1⟩] at hproj
+      rw [ite_eq_left ⟨hx.2, hx.1⟩, ite_eq_left ⟨hy.2, hy.1⟩] at hproj
       exact congrArg (Sum.inl : ConnectedSumNeckCylinder →
         ConnectedSumNeckCylinder ⊕ (K ⊕ L)) (Option.some.inj hproj)
     · exact False.elim hy.2

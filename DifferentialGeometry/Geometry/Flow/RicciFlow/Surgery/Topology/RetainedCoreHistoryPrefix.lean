@@ -13,9 +13,9 @@ universe u
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
-def prefixAt (k : Fin (H.eventCount + 1)) : RetainedCoreHistory P₀ where
+def prefixAt (k : Fin (H.eventCount + 1)) : RetainedCoreHistory.{u} where
   horizon := H.time k
   horizon_nonneg := H.toHistory.time_nonneg k
   eventCount := k.val

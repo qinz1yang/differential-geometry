@@ -70,7 +70,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 private theorem time_lt_succ_of_activeStage_eq_castSucc (t : Icc (0 : ℝ) H.toHistory.horizon)
     (i : Fin H.eventCount) (hi : H.toHistory.activeStage t = i.castSucc) :

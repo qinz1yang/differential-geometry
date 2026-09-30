@@ -100,30 +100,30 @@ theorem mem_convexHull_join_iff (σ : Finset E) (τ : Finset F) {z : E × F × �
       dsimp only
       rcases Finset.mem_union.mp hu with h | h
       · obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp h
-        rw [if_pos (glueHeight_joinFst v), glueFst_joinFst]
+        rw [ite_eq_left (glueHeight_joinFst v), glueFst_joinFst]
         exact ha v hv
       · obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp h
-        rw [if_neg (by rw [glueHeight_joinSnd]; exact one_ne_zero), glueSnd_joinSnd]
+        rw [ite_eq_right (by rw [glueHeight_joinSnd]; exact one_ne_zero), glueSnd_joinSnd]
         exact hb w hw
     · rw [Finset.sum_union (disjoint_image_joinFst_joinSnd σ τ),
         Finset.sum_image fun _ _ _ _ h => joinFst_injective h,
         Finset.sum_image fun _ _ _ _ h => joinSnd_injective h, ← hab]
       congr 1
       · exact Finset.sum_congr rfl fun v _ => by
-          rw [if_pos (glueHeight_joinFst v), glueFst_joinFst]
+          rw [ite_eq_left (glueHeight_joinFst v), glueFst_joinFst]
       · exact Finset.sum_congr rfl fun w _ => by
-          rw [if_neg (by rw [glueHeight_joinSnd]; exact one_ne_zero), glueSnd_joinSnd]
+          rw [ite_eq_right (by rw [glueHeight_joinSnd]; exact one_ne_zero), glueSnd_joinSnd]
     · rw [Finset.sum_union (disjoint_image_joinFst_joinSnd σ τ),
         Finset.sum_image fun _ _ _ _ h => joinFst_injective h,
         Finset.sum_image fun _ _ _ _ h => joinSnd_injective h]
       dsimp only
       have h1 : ∑ v ∈ σ, (if glueHeight E F (joinFst E F v) = 0 then a (glueFst E F (joinFst E F v))
           else b (glueSnd E F (joinFst E F v))) • joinFst E F v = ∑ v ∈ σ, a v • joinFst E F v :=
-        Finset.sum_congr rfl fun v _ => by rw [if_pos (glueHeight_joinFst v), glueFst_joinFst]
+        Finset.sum_congr rfl fun v _ => by rw [ite_eq_left (glueHeight_joinFst v), glueFst_joinFst]
       have h2 : ∑ w ∈ τ, (if glueHeight E F (joinSnd E F w) = 0 then a (glueFst E F (joinSnd E F w))
           else b (glueSnd E F (joinSnd E F w))) • joinSnd E F w = ∑ w ∈ τ, b w • joinSnd E F w :=
         Finset.sum_congr rfl fun w _ => by
-          rw [if_neg (by rw [glueHeight_joinSnd]; exact one_ne_zero), glueSnd_joinSnd]
+          rw [ite_eq_right (by rw [glueHeight_joinSnd]; exact one_ne_zero), glueSnd_joinSnd]
       rw [h1, h2, sum_smul_joinFst, sum_smul_joinSnd]
       simp
 

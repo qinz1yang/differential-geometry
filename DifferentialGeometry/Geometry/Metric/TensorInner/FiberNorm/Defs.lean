@@ -11,8 +11,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
 open DifferentialGeometry.Tensor0SBundle
 
@@ -89,6 +88,5 @@ theorem riemannianFiberNormSq_zero
   refine Finset.sum_eq_zero (fun J _ => ?_)
   exact fiberNormSqSummand_zero (I := I) (M := M) g b r s _ _ K J
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry

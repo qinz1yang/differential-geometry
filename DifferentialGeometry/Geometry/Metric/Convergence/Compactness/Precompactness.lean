@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Alge
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.TimeRegularity
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.GoodFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
 import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Iterated
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
@@ -288,7 +287,7 @@ theorem fderiv_comp_le_tower
               ((Fin.cons (σ i y) (fun a : Fin (p + 2) => V a y) :
                   Fin (p + 3) → TangentSpace I y) a)))
             ≤ D ^ (p + 3) := by
-        refine le_trans (Finset.prod_le_prod (g := fun _ : Fin (p + 3) => D)
+        refine le_trans (Finset.prod_le_prod₀ (g := fun _ : Fin (p + 3) => D)
           (fun a _ => Real.sqrt_nonneg _) (fun a _ => ?_)) (le_of_eq ?_)
         · refine Fin.cases ?_ ?_ a
           · simpa using hσbd i y hy
@@ -321,7 +320,7 @@ theorem fderiv_comp_le_tower
                   (((leviCivitaConnectionOfMetric (I := I) gRef)
                     (fun q : M => V a q) y) (σ i y)) b)))
               ≤ D ^ (p + 2) := by
-          refine le_trans (Finset.prod_le_prod (g := fun _ : Fin (p + 2) => D)
+          refine le_trans (Finset.prod_le_prod₀ (g := fun _ : Fin (p + 2) => D)
             (fun b _ => Real.sqrt_nonneg _) (fun b _ => ?_)) (le_of_eq ?_)
           · by_cases hba : b = a
             · rw [hba, Function.update_self]
@@ -577,7 +576,7 @@ theorem iterFDeriv_tower_le
         (covDerivOfField (I := I) gRef A0 p y) (fun a => V a y)
       have hprod : (∏ a : Fin (p + 2), Real.sqrt (gRef.inner y (V a y) (V a y)))
           ≤ D ^ (p + 2) := by
-        refine le_trans (Finset.prod_le_prod (g := fun _ : Fin (p + 2) => D)
+        refine le_trans (Finset.prod_le_prod₀ (g := fun _ : Fin (p + 2) => D)
           (fun a _ => Real.sqrt_nonneg _) (fun a _ => hD a y hy)) (le_of_eq ?_)
         rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
       calc |(covDerivOfField (I := I) gRef A0 p y) (fun a => V a y)|
@@ -855,7 +854,7 @@ theorem metricComp_iter_le
   have hC : ∀ q (hq : q ≤ r), ∀ k : ι, ∀ z ∈ Kc,
       metricCovDerivNorm (I := I) q (gSeq k) gRef z ≤ C q := by
     intro q hq k z hz
-    simpa only [C, dif_pos hq] using (Classical.choose_spec (hbdd q hq)) k z hz
+    simpa only [C, dite_eq_left hq] using (Classical.choose_spec (hbdd q hq)) k z hz
   let B : ℕ → Real := fun q => max (C q) 0
   refine ⟨CV * ∑ q ∈ Finset.range (r + 1), B q,
     mul_nonneg hCV0 (Finset.sum_nonneg (fun q _ => le_max_right _ _)), ?_⟩
@@ -880,14 +879,14 @@ theorem metricComp_iter_le
       simp only [metricCovDerivNorm, metricCovDeriv_eq_covDerivOfField]
     rw [hcompeq]
     by_cases hq : q ≤ r
-    · exact le_trans (hC q hq k z hz) (by simp only [b, dif_pos hq, B]; exact le_max_left _ _)
-    · exact le_trans (hD q z hz) (by simp only [b, dif_neg hq]; exact le_max_left _ _)
+    · exact le_trans (hC q hq k z hz) (by simp only [b, dite_eq_left hq, B]; exact le_max_left _ _)
+    · exact le_trans (hD q z hz) (by simp only [b, dite_eq_right hq]; exact le_max_left _ _)
   have hbound := hCV (Tensor0SBundle.metricTensorField (I := I) (gSeq k)) y hy b hbnd
   have hsum : ∑ q ∈ Finset.range (r + 1), b q =
       ∑ q ∈ Finset.range (r + 1), B q := by
     refine Finset.sum_congr rfl fun q hqmem => ?_
     have hq : q ≤ r := Nat.le_of_lt_succ (Finset.mem_range.mp hqmem)
-    simp only [b, dif_pos hq]
+    simp only [b, dite_eq_left hq]
   calc
     ‖iteratedFDeriv Real r (writtenInExtChartAt I 𝓘(Real, Real) x₀
           (fun w : M => (covDerivOfField (I := I) gRef
@@ -1279,14 +1278,8 @@ theorem chartGram_pou_le
             (extChartAt I α y)‖ ≤ C := by
     intro α
     exact chartGram_of_orders (I := I) gRef gSeq α
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_isCompact
-        (I := I) (M := M) α)
-      (by
-        intro y hy
-        have hy_base :=
-          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_subset_baseSet
-            (I := I) (M := M) α hy
-        rwa [trivializationAt_baseSet_eq_chartAt_source (I := I)] at hy_base)
+      (isClosed_tsupport _).isCompact
+      (chartAtlasPOU_isSubordinate I M α)
       r B (fun k q hq y _hy => hbdd k q hq y (Set.mem_univ y))
   choose Cα hCα hbound using hper
   let C : Real := ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Cα α
@@ -1388,9 +1381,9 @@ theorem chartGram_pou_d2
   have hCE_nn : 0 ≤ C_E := Finset.sum_nonneg fun a _ => norm_nonneg _
   refine ⟨C * (C_E * C_E), mul_nonneg hC_nn (mul_nonneg hCE_nn hCE_nn), ?_⟩
   intro α hα k y hy c m i j
-  have hy_base : y ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_subset_baseSet
-      (I := I) (M := M) α hy
+  have hy_base : y ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]
+    exact chartAtlasPOU_isSubordinate I M α hy
   have hy_source : y ∈ (extChartAt I α).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I),
       ← trivializationAt_baseSet_eq_chartAt_source (I := I)]
@@ -1450,9 +1443,9 @@ theorem chartGram_pou_d3
   refine ⟨C * (C_E * (C_E * C_E)),
     mul_nonneg hC_nn (mul_nonneg hCE_nn (mul_nonneg hCE_nn hCE_nn)), ?_⟩
   intro α hα k y hy d c m i j
-  have hy_base : y ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_subset_baseSet
-      (I := I) (M := M) α hy
+  have hy_base : y ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]
+    exact chartAtlasPOU_isSubordinate I M α hy
   have hy_source : y ∈ (extChartAt I α).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I),
       ← trivializationAt_baseSet_eq_chartAt_source (I := I)]
@@ -1542,7 +1535,7 @@ theorem metricComp_iter_refs
       metricCovDerivNorm (I := I) q (gSeq k) (gRef r) z ≤ C q := by
     intro q hq
     dsimp only [C]
-    rw [dif_pos hq]
+    rw [dite_eq_left hq]
     exact Classical.choose_spec (hbdd r q hq Kc hKc)
   let B : ℕ → Real := fun q => max (C q) 0
   have hB0 : ∀ q, 0 ≤ B q := fun q => le_max_right _ _

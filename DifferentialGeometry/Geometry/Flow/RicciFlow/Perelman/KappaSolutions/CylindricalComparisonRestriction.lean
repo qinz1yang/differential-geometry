@@ -70,7 +70,7 @@ private theorem restrictedCylinderTensor_norm
     tensor02CovDerivNormWith_pullbackTensor02FieldCross]
 
 
-def backwardMetricComparison_cylindricalRestriction
+def backwardMetricComparisonCylindricalRestriction
     (F : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval)
     (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     {L : PointedRiemannianManifold.{u, 0, 0} (I := I3)} {phi : ℕ → ℕ}
@@ -123,7 +123,7 @@ def backwardMetricComparison_cylindricalRestriction
         (mfderiv SpatialNeckCylinderModel I3 e (x : SpatialNeckCylinder) (v 0))
         (mfderiv SpatialNeckCylinderModel I3 e (x : SpatialNeckCylinder) (v 1)))
           (restrictedCylinderTensor_apply e epsilon (C.pullback theta) x v)
-    · simp only [J, if_neg hb, restrictedCylinderTensor_apply]
+    · simp only [J, ite_eq_right hb, restrictedCylinderTensor_apply]
   have hJfield (b : ℕ) (theta : ℝ) (htheta : theta ∈ Icc (1 : ℝ) 3) :
       J b theta = restrictedCylinderTensor e epsilon (C.jet b theta) := by
     apply ContMDiffSection.ext

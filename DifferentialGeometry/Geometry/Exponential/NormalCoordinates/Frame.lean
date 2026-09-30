@@ -87,10 +87,10 @@ theorem euclideanNormalFrame_inner (g : SmoothRiemannianMetric I M) (x : M)
     (ContinuousLinearMap.precomp ℝ L).comp ((g.inner x).comp L)
   have hG : G = (innerSL ℝ : F →L[ℝ] F →L[ℝ] ℝ) := by
     let b := (EuclideanSpace.basisFun (Fin (Module.finrank ℝ E)) ℝ).toBasis
-    apply LinearMap.toLinearMap_injective
+    apply LinearMap.ofClass_injective
     apply b.ext
     intro i
-    apply LinearMap.toLinearMap_injective
+    apply LinearMap.ofClass_injective
     apply b.ext
     intro j
     change g.inner x
@@ -155,10 +155,10 @@ theorem frameMetric_eq (g : SmoothRiemannianMetric I M) (x : M) :
     frameMetric (I := I) g x = (innerSL Real : E →L[Real] E →L[Real] Real) := by
   classical
   let b := (stdOrthonormalBasis Real E).toBasis
-  apply LinearMap.toLinearMap_injective
+  apply LinearMap.ofClass_injective
   apply b.ext
   intro i
-  apply LinearMap.toLinearMap_injective
+  apply LinearMap.ofClass_injective
   apply b.ext
   intro j
   change frameMetric (I := I) g x (b i) (b j) =

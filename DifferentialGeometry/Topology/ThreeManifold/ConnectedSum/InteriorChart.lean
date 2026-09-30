@@ -131,7 +131,7 @@ def leftCoord (hn : 0 < n) (f : OpenPartialHomeomorph M H) (y : H) : c.Punctured
 
 theorem leftCoord_val_of_mem (hn : 0 < n) (f : OpenPartialHomeomorph M H) (y : H)
     (hy : y ∈ leftChartSource c f) : (leftCoord c hn f y : M) = f.symm y := by
-  rw [leftCoord, dif_pos hy]
+  rw [leftCoord, dite_eq_left hy]
 
 theorem leftCoord_mem_leftRegion (hn : 0 < n) (f : OpenPartialHomeomorph M H) (y : H)
     (hy : y ∈ leftChartSource c f) : leftCoord c hn f y ∈ leftRegion c f := by
@@ -250,7 +250,7 @@ def leftInvFun (f : OpenPartialHomeomorph M H) :
 theorem leftInvFun_of_mem (f : OpenPartialHomeomorph M H) (x : ConnectedSumQuotient c d a)
     (hx : x ∈ leftTarget c d a f) :
     leftInvFun c d a f x = f ((leftWitness c d a f x hx : c.Punctured) : M) := by
-  rw [leftInvFun, dif_pos hx]
+  rw [leftInvFun, dite_eq_left hx]
 
 def leftPartialEquiv (hn : 0 < n) (f : OpenPartialHomeomorph M H) :
     PartialEquiv H (ConnectedSumQuotient c d a) where
@@ -406,7 +406,7 @@ def rightCoord (hn : 0 < n) (g : OpenPartialHomeomorph N K) (z : K) : d.Puncture
 
 theorem rightCoord_val_of_mem (hn : 0 < n) (g : OpenPartialHomeomorph N K) (z : K)
     (hz : z ∈ rightChartSource d g) : (rightCoord d hn g z : N) = g.symm z := by
-  rw [rightCoord, dif_pos hz]
+  rw [rightCoord, dite_eq_left hz]
 
 theorem rightCoord_mem_rightRegion (hn : 0 < n) (g : OpenPartialHomeomorph N K) (z : K)
     (hz : z ∈ rightChartSource d g) : rightCoord d hn g z ∈ rightRegion d g := by
@@ -525,7 +525,7 @@ def rightInvFun (g : OpenPartialHomeomorph N K) :
 theorem rightInvFun_of_mem (g : OpenPartialHomeomorph N K) (x : ConnectedSumQuotient c d a)
     (hx : x ∈ rightTarget c d a g) :
     rightInvFun c d a g x = g ((rightWitness c d a g x hx : d.Punctured) : N) := by
-  rw [rightInvFun, dif_pos hx]
+  rw [rightInvFun, dite_eq_left hx]
 
 def rightPartialEquiv (hn : 0 < n) (g : OpenPartialHomeomorph N K) :
     PartialEquiv K (ConnectedSumQuotient c d a) where

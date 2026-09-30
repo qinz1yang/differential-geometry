@@ -19,7 +19,7 @@ theorem exists_sphere_sides_flat_cap
     (hfix : EqOn f e Dᶜ) (hgfix : EqOn g e Dᶜ)
     (hside : ∀ p ∈ ball (0 : EuclideanSpace ℝ (Fin 2)) R ×ˢ Ioo (-b) b,
       Ψ p ∈ e '' Dᶜ → ‖p.1‖ = 1 ∧ 0 ≤ a * p.2) :
-    let d_f := (jordanBrouwer_openThreeSpace f hf
+    let d_f := (smoothSphereSidesOpenThreeSpace f hf
       (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides
     ∃ Φ : EuclideanThree ≃ₜ EuclideanThree,
       Φ ∘ f = g ∧ EqOn Φ id (e '' Dᶜ) ∧ _root_.Topology.IsEmbedding g ∧
@@ -36,7 +36,7 @@ theorem exists_sphere_sides_flat_cap
   refine ⟨Φ, hΦ, hretained, hg, C, hC, hCU, hfixΦ, hfixΦi, ?_⟩
   have himage : Φ '' range f = range g := by rw [← range_comp, hΦ]
   rw [← himage]
-  exact ⟨((jordanBrouwer_openThreeSpace f hf
+  exact ⟨((smoothSphereSidesOpenThreeSpace f hf
     (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides).image Φ, rfl, rfl⟩
 
 end DifferentialGeometry.Topology.SphereSeparation

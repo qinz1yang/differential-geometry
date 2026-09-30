@@ -242,8 +242,8 @@ theorem exists_upperRightDiniLE_not_incomingJump :
   refine ⟨fun t => if (1 : ℝ) ≤ t then 1 else 0, ?_, ?_⟩
   · intro ε hε
     filter_upwards [self_mem_nhdsWithin] with y hy
-    have h0 : (if (1 : ℝ) ≤ y then (1 : ℝ) else 0) = 1 := if_pos (le_of_lt hy)
-    have h1 : (if (1 : ℝ) ≤ (1 : ℝ) then (1 : ℝ) else 0) = 1 := if_pos le_rfl
+    have h0 : (if (1 : ℝ) ≤ y then (1 : ℝ) else 0) = 1 := ite_eq_left (le_of_lt hy)
+    have h1 : (if (1 : ℝ) ≤ (1 : ℝ) then (1 : ℝ) else 0) = 1 := ite_eq_left le_rfl
     rw [slope_def_field, h0, h1, sub_self, zero_div]
     linarith
   · intro hj

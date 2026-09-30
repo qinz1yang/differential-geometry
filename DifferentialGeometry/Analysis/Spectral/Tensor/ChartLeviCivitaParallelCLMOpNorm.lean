@@ -1,5 +1,4 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.SlotBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.ChartTransition.LocallyConstantAtlas
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartTensor0SCovariantDerivative
 open DifferentialGeometry.Geometry.Connection

@@ -19,8 +19,9 @@ theorem affineSimplexBarycenter_sub (n : ℕ) (v : Fin (n + 1) → E) (x : E) :
   have hs : (∑ _i : Fin (n + 1), x) = (n + 1 : ℝ) • x := by
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin]
     simpa only [Nat.cast_add, Nat.cast_one] using (Nat.cast_smul_eq_nsmul ℝ (n + 1) x).symm
-  change (∑ i : Fin (n + 1), (Fintype.card (Fin (n + 1)) : ℝ)⁻¹ • v i) - x = _
-  simp only [Fintype.card_fin, Nat.cast_add, Nat.cast_one]
+  change (∑ i : Fin (n + 1), Convexity.StdSimplex.barycenter.weights i • v i) - x = _
+  simp only [Convexity.StdSimplex.weights_barycenter_apply, Fintype.card_fin,
+    Nat.cast_add, Nat.cast_one]
   rw [← Finset.smul_sum, Finset.sum_sub_distrib, hs, smul_sub, smul_smul,
     inv_mul_cancel₀ (by positivity : (n + 1 : ℝ) ≠ 0), one_smul]
 

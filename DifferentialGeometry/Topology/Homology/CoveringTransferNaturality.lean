@@ -32,12 +32,9 @@ include hbij
 theorem singularSimplexLiftMap_bijective (hp : IsCoveringMap p) (hq : IsCoveringMap q)
     {n : ℕ} (σ : TopCat.toSSet.obj B _⦋n⦌) :
     Function.Bijective (singularSimplexLiftMap p q g f hsq σ) := by
-  let D := stdSimplex ℝ (Fin (n + 1))
-  let _ : ContractibleSpace D :=
-    (convex_stdSimplex ℝ _).contractibleSpace ⟨stdSimplex.barycenter, stdSimplex.barycenter.prop⟩
+  let D := Convexity.StdSimplex ℝ (Fin (n + 1))
   let _ : SimplyConnectedSpace D := SimplyConnectedSpace.ofContractible _
-  let _ : LocallyPathConnectedSpace D := (convex_stdSimplex ℝ _).locallyPathConnectedSpace
-  let z₀ : D := stdSimplex.barycenter
+  let z₀ : D := Convexity.StdSimplex.barycenter
   let s := B.toSSetObjEquiv _ σ
   have hproj (t : SingularSimplexLifts p σ) : p ∘ E.toSSetObjEquiv _ t.val = s :=
     congrArg (fun z => (B.toSSetObjEquiv _ z : D → B)) t.property

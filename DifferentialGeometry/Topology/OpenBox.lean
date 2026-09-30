@@ -111,7 +111,7 @@ theorem exists_isTopologicalBasis_inter_homeomorph_of_homeomorph_pi
       ∀ S ∈ B, S.Nonempty → Nonempty (S ≃ₜ X) := by
   let A : Set (Set (ι → ℝ)) :=
     {S | ∃ a b : ι → ℝ, S = univ.pi (fun i => Ioo (a i) (b i))}
-  refine ⟨(preimage e) '' A, isTopologicalBasis_pi_Ioo.isInducing e.isInducing, ?_, ?_⟩
+  refine ⟨(preimage e) '' A, e.isInducing.isTopologicalBasis isTopologicalBasis_pi_Ioo, ?_, ?_⟩
   · rintro S ⟨S', ⟨a, b, rfl⟩, rfl⟩ T ⟨T', ⟨c, d, rfl⟩, rfl⟩
     refine ⟨univ.pi (fun i => Ioo (max (a i) (c i)) (min (b i) (d i))),
       ⟨fun i => max (a i) (c i), fun i => min (b i) (d i), rfl⟩, ?_⟩

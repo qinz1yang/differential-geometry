@@ -35,15 +35,15 @@ theorem exists_pasting_of_compact
   let f : M → N := A.piecewise d e
   have hfd (x : M) (hx : x ∈ K) : f =ᶠ[𝓝 x] d := by
     filter_upwards [hA.mem_nhds (hKA hx)] with y hy
-    exact if_pos hy
+    exact ite_eq_left hy
   have hfe (x : M) (hx : x ∈ L) : f =ᶠ[𝓝 x] e := by
     by_cases hxV : x ∈ V
     · filter_upwards [hV.mem_nhds hxV] with y hy
       by_cases hyA : y ∈ A
-      · exact (if_pos hyA).trans (hmatch hy)
-      · exact if_neg hyA
+      · exact (ite_eq_left hyA).trans (hmatch hy)
+      · exact ite_eq_right hyA
     · filter_upwards [hB.mem_nhds (hLB ⟨hx, hxV⟩)] with y hy
-      exact if_neg (fun hyA => disjoint_left.mp hAB hyA hy)
+      exact ite_eq_right (fun hyA => disjoint_left.mp hAB hyA hy)
   have hinj : InjOn f (K ∪ L) := by
     rintro x (hx | hx) y (hy | hy) heq
     · exact d.injOn (hKd hx) (hKd hy)

@@ -22,9 +22,9 @@ private theorem exists_coordinates_of_seam_formula
       e.symm (x, ((t : ℝ) : loopCircle) + (r : loopCircle)) := rfl
   rw [he', hrot]
   by_cases hc : (t : ℝ) ≤ 1 - r
-  · rw [if_pos hc, ← AddCircle.coe_add]
+  · rw [ite_eq_left hc, ← AddCircle.coe_add]
     exact he x ⟨t + r, by linarith [t.2.1, hr.1], by linarith⟩
-  · rw [if_neg hc]
+  · rw [ite_eq_right hc]
     have hcoe : ((t : ℝ) : loopCircle) + (r : loopCircle) =
         (((t : ℝ) + r - 1 : ℝ) : loopCircle) := by
       rw [AddCircle.coe_sub, AddCircle.coe_add, AddCircle.coe_period, sub_zero]
@@ -35,7 +35,7 @@ theorem IsCylindricalDiagram.exists_returning_source_arc_of_nullhomotopic_circle
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {f f' : E × ℝ → F} {P : Set E} {S J : Set F} {d : (Fin 3 → ℝ) → E}
-    (hf : IsCylindricalDiagram f P S) (hd : IsPLHomeomorphOn d (stdSimplex ℝ (Fin 3)) P)
+    (hf : IsCylindricalDiagram f P S) (hd : IsPLHomeomorphOn d (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (hends : ∀ x ∈ P, f (x, 0) = f (x, 1)) (hJ : IsPLSphere 1 J)
     (hJside : J ⊆ f '' ((d '' stdSimplexBoundary 2) ×ˢ Icc 0 1))
     (hJS : J ⊆ S)
@@ -68,10 +68,10 @@ theorem IsCylindricalDiagram.exists_returning_source_arc_of_nullhomotopic_circle
     apply continuousOn_iff_continuous_domRestrict.mpr
     convert l.continuous using 1
     ext y
-    exact dif_pos y.2
+    exact dite_eq_left y.2
   have hgl (y : F) (hy : y ∈ J) :
       (g y : loopCircle) = (e' ⟨y, hJS hy⟩).2 := by
-    have hgval : g y = l ⟨y, hy⟩ := dif_pos hy
+    have hgval : g y = l ⟨y, hy⟩ := dite_eq_left hy
     rw [hgval]
     exact hl ⟨y, hy⟩
   have hgl' (y : F) (hy : y ∈ J) (hyS : y ∈ S) :

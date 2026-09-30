@@ -72,7 +72,7 @@ theorem exists_local_solution_of_pullback
 
 theorem ricCovTower_normSq_eq_of_local_pullback
     (Phi : PartialDiffeomorph I I M N ∞)
-    (U : TopologicalSpace.Opens M) [SigmaCompactSpace U]
+    (U : TopologicalSpace.Opens M)
     (hU : (U : Set M) ⊆ Phi.source)
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric I N)
     (hmet : ∀ x ∈ U, ∀ v w : TangentSpace I x,

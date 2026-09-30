@@ -13,6 +13,10 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByP
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.OperatorFieldApplication
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
+
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -56,7 +60,7 @@ private lemma cometricDoubleTraceField_iteratedCovGrad_norm_le
       (if i = 0 then ‖DeTurck.cometricDoubleTraceField (I := I) g₀ 2‖ else 0) *
         (1 + ‖smoothCcToTensorHs (I := I) (M := M) g₀ (i : ℝ) T₀‖) := by
   rcases i with _ | k
-  · rw [iteratedCovGrad_zero, if_pos rfl]
+  · rw [iteratedCovGrad_zero, ite_eq_left rfl]
     simpa only [mul_one] using mul_le_mul_of_nonneg_left
       (show (1 : ℝ) ≤ 1 + ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((0 : ℕ) : ℝ) T₀‖ by
         linarith [norm_nonneg (smoothCcToTensorHs (I := I) (M := M) g₀ ((0 : ℕ) : ℝ) T₀)])
@@ -66,7 +70,7 @@ private lemma cometricDoubleTraceField_iteratedCovGrad_norm_le
       iteratedCovGrad_eq_zero_of_covGrad_eq_zero (I := I) (M := M) g₀ 4 2
         (DeTurck.cometricDoubleTraceField (I := I) g₀ 2)
         (DeTurck.cometricDoubleTraceField_covGrad_eq_zero (I := I) g₀ 2) k
-    rw [if_neg (Nat.succ_ne_zero k), hzero, norm_zero, zero_mul]
+    rw [ite_eq_right (Nat.succ_ne_zero k), hzero, norm_zero, zero_mul]
 
 private theorem term_commutator_Hs_family_tame
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -416,7 +420,7 @@ private theorem term_covGrad_coeffLower_l2_tame [Nonempty M]
   let inst23 : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 2 3 I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 2 3
   obtain ⟨Cpo, hCpo_nn, hCpo⟩ :=
-    deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient (I := I) (M := M) g₀
+    exists_deTurckPrincipalCometricCoeff_pointwise_jet_bound (I := I) (M := M) g₀
   obtain ⟨Cenv, hCenv_nn, hCenv⟩ :=
     norm_iteratedCovGrad_inverseMetricDifferenceSlotCoefficient_le_envelope_one (I := I) (M := M) g₀
   have hm_super : 2 * (2 * (Module.finrank ℝ E / 2 + 1) + 1) ≤ a + 2 := by omega
@@ -645,7 +649,8 @@ theorem deTurckPrincipalCometricTerm_realize_Hs_norm_succ_le [Nonempty M]
             Cj0 * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((0 + 1 : ℕ) : ℝ) S‖) :=
         le_trans harm (by
           have := mul_le_mul_of_nonneg_left hjet hCEκ_nn
-          rwa [hCEκ_def] at this ⊢)
+          rw [hCEκ_def] at this ⊢
+          exact this)
       have hMbase_ge : CEκ * Cj0 ≤ Mbase := by
         rw [hMbase_def]
         nlinarith only [hCEκ_nn, hCgrad_nn,

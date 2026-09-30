@@ -4,6 +4,8 @@ set_option autoImplicit false
 noncomputable section
 open Set Finset
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Topology.SimplicialComplex
 
 universe u
@@ -22,12 +24,12 @@ theorem geometricFaceBarycenter_val :
 
 omit [LinearOrder E] in
 theorem geometricFaceHomeomorphism_barycenter [Nonempty s] :
-    (geometricFaceHomeomorphism K hs stdSimplex.barycenter).val = s.centroid ℝ id := by
+    (geometricFaceHomeomorphism K hs coordinateBarycenter).val = s.centroid ℝ id := by
   rw [← Finset.centroid_univ ℝ s, Finset.centroid_def,
     Finset.affineCombination_eq_linear_combination _ _ _
       (Finset.sum_centroidWeights_eq_one_of_nonempty ℝ _ Finset.univ_nonempty)]
   simp only [geometricFaceHomeomorphism_apply, DifferentialGeometry.Simplex.vertexMap_apply,
-    stdSimplex.barycenter_apply, Finset.centroidWeights_apply, Finset.card_univ]
+    coordinateBarycenter_apply, Finset.centroidWeights_apply, Finset.card_univ]
 
 omit [LinearOrder E] in
 theorem geometricFaceBarycenter_mem_convexHull :
@@ -38,16 +40,16 @@ theorem vertexHeight_geometricFaceBarycenter [Finite K.faces] (p : E) :
     vertexHeight K p (geometricFaceBarycenter K s hs) =
       if p ∈ s then (s.card : ℝ)⁻¹ else 0 := by
   let : Nonempty s := (K.nonempty_of_mem_faces hs).to_subtype
-  have he : (⟨(geometricFaceHomeomorphism K hs stdSimplex.barycenter).val,
+  have he : (⟨(geometricFaceHomeomorphism K hs coordinateBarycenter).val,
       Geometry.SimplicialComplex.convexHull_subset_space hs
-        (geometricFaceHomeomorphism K hs stdSimplex.barycenter).prop⟩ : K.space) =
+        (geometricFaceHomeomorphism K hs coordinateBarycenter).prop⟩ : K.space) =
       geometricFaceBarycenter K s hs :=
     Subtype.ext (geometricFaceHomeomorphism_barycenter K s hs)
   rw [← he]
   by_cases hp : p ∈ s
-  · rw [vertexHeight_face_of_mem K p hs hp, if_pos hp]
-    simp only [stdSimplex.barycenter_apply, Fintype.card_coe]
-  · rw [vertexHeight_face_of_not_mem K p hs hp, if_neg hp]
+  · rw [vertexHeight_face_of_mem K p hs hp, ite_eq_left hp]
+    simp only [coordinateBarycenter_apply, Fintype.card_coe]
+  · rw [vertexHeight_face_of_not_mem K p hs hp, ite_eq_right hp]
 
 theorem vertexHeight_geometricFaceBarycenter_pos_iff [Finite K.faces] (p : E) :
     0 < vertexHeight K p (geometricFaceBarycenter K s hs) ↔ p ∈ s := by
@@ -63,7 +65,7 @@ theorem geometricFaceBarycenter_not_mem_costar :
   let : Nonempty s := (K.nonempty_of_mem_faces hs).to_subtype
   intro h
   rw [geometricFaceBarycenter_val, ← geometricFaceHomeomorphism_barycenter K s hs] at h
-  have hb := (vertexMap_mem_geometricFaceCostar_iff K hs stdSimplex.barycenter).mp h
+  have hb := (vertexMap_mem_geometricFaceCostar_iff K hs coordinateBarycenter).mp h
   exact DifferentialGeometry.Simplex.boundary_ne_barycenter hb rfl
 
 omit [LinearOrder E] in

@@ -14,7 +14,7 @@ universe u
 variable {U : Type u} [TopologicalSpace U] [ChartedSpace ThreeSpace U]
   [IsManifold ThreeModel ∞ U] {o : ManifoldOrientation ThreeModel U 3}
 
-theorem not_supportedBallEmbeddingIsotopy_swap {ι : Type u} [Fintype ι] [DecidableEq ι]
+theorem not_supportedBallEmbeddingIsotopy_swap {ι : Type u} [DecidableEq ι]
     (e : ι → OrientedBallEmbedding U o) (i j : ι) (hij : i ≠ j)
     (hne : (e i).chart (0 : ThreeSpace) ≠ (e j).chart (0 : ThreeSpace)) :
     ¬ SupportedBallEmbeddingIsotopy ι U o e

@@ -278,14 +278,14 @@ private lemma LeviCivita_covApply_firstLayer_pointwise
     · simp [h]
   rw [Finset.sum_eq_single k (fun p _ hp => ?_) (fun hk => ?_)]
   · rw [Finset.sum_eq_single i (fun q _ hq => ?_) (fun hi => ?_)]
-    · rw [hrepr_basis k k, hrepr_basis i i, if_pos rfl, if_pos rfl]
+    · rw [hrepr_basis k k, hrepr_basis i i, ite_eq_left rfl, ite_eq_left rfl]
       refine Finset.sum_congr rfl (fun r _ => ?_)
       rw [one_mul, one_mul]
     · refine Finset.sum_eq_zero (fun r _ => ?_)
-      rw [hrepr_basis i q, if_neg (fun h => hq h.symm)]; simp
+      rw [hrepr_basis i q, ite_eq_right (fun h => hq h.symm)]; simp
     · exact absurd (Finset.mem_univ i) hi
   · refine Finset.sum_eq_zero (fun q _ => Finset.sum_eq_zero (fun r _ => ?_))
-    rw [hrepr_basis k p, if_neg (fun h => hp h.symm)]; simp
+    rw [hrepr_basis k p, ite_eq_right (fun h => hp h.symm)]; simp
   · exact absurd (Finset.mem_univ k) hk
 
 omit [InnerProductSpace ℝ E] in
@@ -443,9 +443,9 @@ private lemma LeviCivita_covApply_secondLayer
     simp only [map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.coe_smul,
       Pi.smul_apply, smul_eq_mul]
     rw [Finset.sum_eq_single q
-      (fun m _ hm => by rw [Module.Basis.repr_self_apply, if_neg hm, mul_zero])
+      (fun m _ hm => by rw [Module.Basis.repr_self_apply, ite_eq_right hm, mul_zero])
       (fun hq => absurd (Finset.mem_univ q) hq)]
-    rw [Module.Basis.repr_self_apply, if_pos rfl, mul_one]
+    rw [Module.Basis.repr_self_apply, ite_eq_left rfl, mul_one]
   rw [LeviCivita_chart_apply (I := I) g x hx_good hS_at
     ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) j)]
   rw [chartLeviCivita_apply (I := I) g x S hx_good
@@ -502,9 +502,9 @@ private lemma LeviCivita_covApply_secondLayer
         refine Finset.sum_congr rfl (fun q _ => ?_)
         ring
       · refine Finset.sum_congr rfl (fun q _ => Finset.sum_congr rfl (fun r _ => ?_))
-        rw [hrepr_ej j, if_pos rfl, hrepr_sum q, one_mul]
+        rw [hrepr_ej j, ite_eq_left rfl, hrepr_sum q, one_mul]
     · refine Finset.sum_eq_zero (fun q _ => Finset.sum_eq_zero (fun r _ => ?_))
-      rw [hrepr_ej p, if_neg (fun h => hp h.symm), zero_mul, zero_mul, zero_smul]
+      rw [hrepr_ej p, ite_eq_right (fun h => hp h.symm), zero_mul, zero_mul, zero_smul]
     · exact absurd (Finset.mem_univ j) hj
   rw [hcorr]
   have hmerge :
@@ -542,9 +542,9 @@ private lemma coord_sum_smul_basis
   simp only [map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.coe_smul,
     Pi.smul_apply, smul_eq_mul]
   rw [Finset.sum_eq_single l
-    (fun l' _ hl' => by rw [Module.Basis.repr_self_apply, if_neg hl', mul_zero])
+    (fun l' _ hl' => by rw [Module.Basis.repr_self_apply, ite_eq_right hl', mul_zero])
     (fun hl => absurd (Finset.mem_univ l) hl)]
-  rw [Module.Basis.repr_self_apply, if_pos rfl, mul_one]
+  rw [Module.Basis.repr_self_apply, ite_eq_left rfl, mul_one]
 
 omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in

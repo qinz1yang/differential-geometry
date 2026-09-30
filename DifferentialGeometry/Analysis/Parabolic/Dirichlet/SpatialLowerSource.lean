@@ -50,11 +50,11 @@ private theorem exists_lp_product_source
   refine ⟨F, ?_⟩
   intro φ hφ hφc hφs
   have heq := DifferentialGeometry.Analysis.Sobolev.Euclidean.integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
-    (((Lp.memLp U).mul (r := 2) hc).locallyIntegrable (by norm_num))
+    ((hc.fun_mul (r := 2) (Lp.memLp U)).locallyIntegrable (by norm_num))
     ((Lp.memLp F).locallyIntegrable (by norm_num)) k hF φ hφ hφc hφs
   refine (integral_congr_ae ?_).trans heq
   filter_upwards [hU] with p hp
-  simp only [Pi.mul_apply, hp]
+  simp only [hp]
 
 open DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
 open DifferentialGeometry.Analysis.Laplacian
@@ -181,8 +181,8 @@ theorem IsWeakEvolutionSolution.exists_lp_weakPartial_localLowerSource
     exact hb.mono_measure (Measure.prod_mono Measure.restrict_le_self le_rfl)
   let C := fun i (p : ℝ × EuStd) => ρ p * B i p
   let C₀ := fun p : ℝ × EuStd => ρ p * ((1 / 2 : ℝ) * τ p - a p.1)
-  have hC (i) : MemLp (C i) ∞ (μ.prod (volume.restrict Ω₀)) := (hB i).mul hρ
-  have hC₀ : MemLp C₀ ∞ (μ.prod (volume.restrict Ω₀)) := ((hτ.const_mul (1 / 2 : ℝ)).sub ha).mul hρ
+  have hC (i) : MemLp (C i) ∞ (μ.prod (volume.restrict Ω₀)) := hρ.fun_mul (r := ∞) (hB i)
+  have hC₀ : MemLp C₀ ∞ (μ.prod (volume.restrict Ω₀)) := hρ.fun_mul (r := ∞) ((hτ.const_mul (1 / 2 : ℝ)).sub ha)
   have hDC (i) : MemLp (fun p => fderiv ℝ (fun x => C i (p.1, x)) p.2 (EuclideanSpace.single k 1))
       ∞ (μ.prod (volume.restrict Ω₀)) := by
     have hb := MetricExtension.densityOnEuclid_mul_chartCoeffOnE_family_fderiv_memLp_top hG isCompact_Icc
@@ -224,9 +224,9 @@ theorem IsWeakEvolutionSolution.exists_lp_weakPartial_localLowerSource
   have hdφ : Continuous dφ := (hφ.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply continuous_const
   have hdφc : HasCompactSupport dφ := hφc.fderiv_apply (𝕜 := ℝ) (0, EuclideanSpace.single k 1)
   have hI (i) : Integrable (fun p => C i p * V i p * dφ p) (μ.prod (volume.restrict Ω₀)) :=
-    (((hV i).mul (r := 2) (hC i)).locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport hdφ hdφc
+    (((hC i).fun_mul (r := 2) (hV i)).locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport hdφ hdφc
   have hI₀ : Integrable (fun p => C₀ p * U p * dφ p) (μ.prod (volume.restrict Ω₀)) :=
-    ((hU.mul (r := 2) hC₀).locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport hdφ hdφc
+    ((hC₀.fun_mul (r := 2) hU).locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport hdφ hdφc
   have hFI (i) : Integrable (fun p => F i p * φ p) (μ.prod (volume.restrict Ω₀)) :=
     ((Lp.memLp (F i)).locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport hφ.continuous hφc
   have hFI₀ : Integrable (fun p => F₀ p * φ p) (μ.prod (volume.restrict Ω₀)) :=

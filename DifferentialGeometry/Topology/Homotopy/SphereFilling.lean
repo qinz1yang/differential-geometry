@@ -76,7 +76,7 @@ private theorem exists_continuous_closedBall_of_nullhomotopic_unit
     simp [sphereDirection, hzne, hz]
   change g (z : E) = f z
   dsimp [g]
-  rw [hz, if_neg (by norm_num : ¬ (1 : ℝ) ≤ 1 / 2), ht, hd]
+  rw [hz, ite_eq_right (by norm_num : ¬ (1 : ℝ) ≤ 1 / 2), ht, hd]
   exact F.apply_one z
 
 end DifferentialGeometry.Topology

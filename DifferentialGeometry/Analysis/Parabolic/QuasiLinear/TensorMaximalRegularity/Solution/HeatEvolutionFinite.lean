@@ -127,7 +127,10 @@ theorem heatDuhamelVectorEvolution_timeDeriv (hT : 0 < T)
       (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
         tensorScaleLaplacian (g := g) (r := r) (s := s) a)).compLpL
           2 (timeMeasure T) (heatDuhamelVectorField hT u₀ F) + F := by
-  apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
+  let e := Lp.piLpEquiv (𝕜 := ℝ)
+    (X := fun _ : ι => TensorHs (I := I) (M := M) g r s a) (timeMeasure T)
+  have he : Function.Injective e := e.toEquiv.injective
+  apply he
   rw [map_add, Lp.piLpEquiv_compLpL (𝕜 := ℝ)]
   change Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)
     ((Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).symm
@@ -149,10 +152,9 @@ theorem heatDuhamelVectorField_toFunL2 (hT : 0 < T)
       tensorHsInclusion (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith))).compLpL 2 (timeMeasure T)
           (heatDuhamelVectorField hT u₀ F) = (heatDuhamelVectorEvolution hT u₀ F).toFunL2 := by
-  apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
-  rw [Lp.piLpEquiv_compLpL (𝕜 := ℝ)]
-  simp only [heatDuhamelVectorField, heatDuhamelVectorEvolution,
-    timeH1.piLpEquiv_symm_toFunL2, LinearIsometryEquiv.apply_symm_apply]
+  simp only [heatDuhamelVectorField, heatDuhamelVectorEvolution, timeH1.piLpEquiv_symm_toFunL2]
+  rw [← Lp.piLpEquiv_symm_piLpMap (𝕜 := ℝ)]
+  congr 1
   apply PiLp.ext
   intro i
   exact heatDuhamelEvolutionField_toTimeL2 hT hc (u₀ i)
@@ -167,8 +169,7 @@ theorem heatDuhamelVectorField_inclusion (hT : 0 < T)
         (g := g) (r := r) (s := s) (show a + 1 ≤ a + 2 by linarith)) u₀) F =
       maximalRegularityDuhamelVectorField hT u₀ F := by
   unfold heatDuhamelVectorField maximalRegularityDuhamelVectorField
-  exact congrArg (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).symm
-    (heatDuhamelEvolutionFieldPi_inclusion hT hc u₀ _)
+  exact congrArg _ (heatDuhamelEvolutionFieldPi_inclusion hT hc u₀ _)
 
 theorem heatDuhamelVectorEvolution_inclusion (hT : 0 < T)
     (hc : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -250,10 +251,9 @@ theorem heatVectorField_toFunL2 (hT : 0 ≤ T)
     (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion (g := g) (r := r) (s := s)
       (show a ≤ a + 2 by linarith))).compLpL 2 (timeMeasure T) (heatVectorField a T u₀) =
       (heatVectorEvolution a T u₀).toFunL2 := by
-  apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
-  rw [Lp.piLpEquiv_compLpL (𝕜 := ℝ)]
-  simp only [heatVectorField, heatVectorEvolution,
-    timeH1.piLpEquiv_symm_toFunL2, LinearIsometryEquiv.apply_symm_apply]
+  simp only [heatVectorField, heatVectorEvolution, timeH1.piLpEquiv_symm_toFunL2]
+  rw [← Lp.piLpEquiv_symm_piLpMap (𝕜 := ℝ)]
+  congr 1
   apply PiLp.ext
   intro i
   exact heatEvolutionField_toTimeL2 hT hc (u₀ i)
@@ -263,7 +263,10 @@ theorem heatVectorEvolution_timeDeriv
     timeH1.timeDeriv _ T (heatVectorEvolution a T u₀) =
       (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorScaleLaplacian
         (g := g) (r := r) (s := s) a)).compLpL 2 (timeMeasure T) (heatVectorField a T u₀) := by
-  apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
+  let e := Lp.piLpEquiv (𝕜 := ℝ)
+    (X := fun _ : ι => TensorHs (I := I) (M := M) g r s a) (timeMeasure T)
+  have he : Function.Injective e := e.toEquiv.injective
+  apply he
   rw [Lp.piLpEquiv_compLpL (𝕜 := ℝ)]
   change Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)
     ((Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).symm
@@ -307,9 +310,12 @@ theorem heatDuhamelVectorField_eq_add (hT : 0 < T)
     (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g r s a)) T) :
     heatDuhamelVectorField hT u₀ F = heatVectorField a T u₀ +
       maximalRegularityDuhamelVectorField hT 0 F := by
-  apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
+  let e := Lp.piLpEquiv (𝕜 := ℝ)
+    (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2)) (timeMeasure T)
+  have he : Function.Injective e := e.toEquiv.injective
+  apply he
   rw [map_add]
-  simp only [heatDuhamelVectorField, heatVectorField, maximalRegularityDuhamelVectorField,
+  simp only [e, heatDuhamelVectorField, heatVectorField, maximalRegularityDuhamelVectorField,
     LinearIsometryEquiv.apply_symm_apply]
   apply PiLp.ext
   intro i

@@ -16,7 +16,7 @@ open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 open DifferentialGeometry.TensorMetricLowering DifferentialGeometry.Tensor0SNabla
     DifferentialGeometry.TensorRSNabla
-open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -136,9 +136,9 @@ theorem normSqRS_eq_normSq0S_lowerAllSpace
         rw [Finset.prod_congr rfl (fun i _ => hgram (up i) (jdx i))]
         by_cases h : up = jdx
         · subst h; simp
-        · rw [if_neg h]
+        · rw [ite_eq_right h]
           obtain ⟨i, hi⟩ := Function.ne_iff.mp h
-          exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hi)
+          exact Finset.prod_eq_zero (Finset.mem_univ i) (ite_eq_right hi)
   rw [componentRSField_apply, component0S_apply]
   change A (basisTensor0S (I := I) basis up) (fun a => basis (low a)) =
     Tensor0SSpace.eval (lowerAllSpace g r s x A) (fun a => basis (Fin.append up low a))

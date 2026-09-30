@@ -10,6 +10,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNor
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.ConvexPerturbationC2
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
+
+open DifferentialGeometry.SmoothRiemannianMetric (abs_metric_inner_le_sqrt_metric_quadratic)
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply
+  exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent riemannianFiberNormSq)
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -922,7 +926,7 @@ theorem riemannianFiberNormSq_backgroundRiemannBiContrFib_le
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem
-    exists_ricciOrderZeroBackgroundCurvatureCoeffField_metricPerturbationPath_riemannianFiberNormSq_ballUniform
+    ricci_background_curvature_coefficient_uniform_bound_on_metric_path
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     {R : ℝ}
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

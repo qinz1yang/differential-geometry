@@ -1138,7 +1138,7 @@ theorem exists_nhds_tendsto_integral_regularized_normGradSqFun_inv_sq_mul_of_hes
     rw [hJ₀, hdetDensity]
     field_simp [hc, ne_of_gt hdensityPos]
   have hbase :=
-    DifferentialGeometry.Analysis.Integration.tendsto_setIntegral_regularized_quadratic_kernel_comp_mul_abs_det_fderiv_of_integrableOn_nhdsGT_zero_of_finrank_eq_two
+    DifferentialGeometry.Analysis.Integration.tendsto_setIntegral_regularized_quadratic_kernel_jacobian_of_finrank_eq_two
       (F := Plane) (by simp) (a := (1 : Real)) one_ne_zero hsMeas hψDeriv hψInj
         hψImageNhds hGIntegrable (hGContinuous.continuousAt hφImageNhds)
   have hbase' : Tendsto

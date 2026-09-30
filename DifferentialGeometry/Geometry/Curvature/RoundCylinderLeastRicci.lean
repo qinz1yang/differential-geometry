@@ -3,6 +3,9 @@ import DifferentialGeometry.Geometry.Curvature.LeastRicciDirection
 import DifferentialGeometry.Geometry.Metric.AxisOperatorPerturbation
 import DifferentialGeometry.Geometry.Metric.NormalizedAxisPerturbation
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (abs_metric_inner_le_sqrt_metric_quadratic)
+
 noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry DifferentialGeometry.CheegerGromovCompactness

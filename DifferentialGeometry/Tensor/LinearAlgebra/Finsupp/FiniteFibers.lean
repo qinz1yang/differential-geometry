@@ -57,14 +57,14 @@ theorem mem_range_lcomapDomainOfFiniteFibers_iff (p : α → β)
       apply (v.hasFiniteSupport.image p).subset
       intro b hb
       by_cases h : ∃ a, p a = b
-      · exact ⟨h.choose, by simpa only [Function.mem_support, w, dif_pos h] using hb,
+      · exact ⟨h.choose, by simpa only [Function.mem_support, w, dite_eq_left h] using hb,
           h.choose_spec⟩
       · simp [Function.mem_support, w, h] at hb
     refine ⟨ofSupportFinite w hw, ?_⟩
     ext a
     change w (p a) = v a
     dsimp only [w]
-    rw [dif_pos ⟨a, rfl⟩]
+    rw [dite_eq_left ⟨a, rfl⟩]
     exact hv _ a (Exists.choose_spec (show ∃ a', p a' = p a from ⟨a, rfl⟩))
 
 end

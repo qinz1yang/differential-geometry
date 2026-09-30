@@ -86,7 +86,7 @@ theorem shrinkingCylinder_chartChristoffel_eq (s t : ℝ) (hs : s < 1) (ht : t <
   have hcoord := congrArg (fun v => (chartModelBasis CylinderModel).repr v k) hcontraction
   simpa only [chartChristoffelContraction, chartCoord,
     Module.Basis.repr_self_apply, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+    Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
     Module.Basis.repr_sum_self] using hcoord
 
 

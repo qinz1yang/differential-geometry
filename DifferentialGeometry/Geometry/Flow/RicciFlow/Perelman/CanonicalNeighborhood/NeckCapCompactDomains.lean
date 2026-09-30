@@ -104,13 +104,13 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
 omit [SigmaCompactSpace M] in
 theorem LocalCap.exists_compactDomain (cap : LocalCap S eps x t U) :
     ∃ K : CompactDomain M, K.carrier = U ∧ x ∈ interior K.carrier := by
-  obtain ⟨T, hT⟩ := exists_compactDomain_of_cylinder_slab cap.tube_map
+  obtain ⟨T, hT⟩ := exists_compactDomain_of_cylinder_slab cap.tubeMap
     (by norm_num : (0 : ℝ) < 1) cap.tube_domain
   have hTtube : T.carrier = cap.tube := hT.trans cap.tube_eq
   have hU : U = cap.core.carrier ∪ T.carrier := by rw [hTtube]; exact cap.union_eq
   have hinter : (cap.core.carrier ∩ T.carrier).Nonempty := by
     let p : Sphere 2 := ⟨EuclideanSpace.single 0 1, by simp [PiLp.norm_single]⟩
-    have hp : cap.tube_map (p, 0) ∈ frontier cap.core.carrier := by
+    have hp : cap.tubeMap (p, 0) ∈ frontier cap.core.carrier := by
       rw [← cap.inner_boundary]
       exact ⟨(p, 0), ⟨mem_univ _, rfl⟩, rfl⟩
     rw [hTtube, cap.overlap_eq]

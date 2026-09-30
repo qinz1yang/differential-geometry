@@ -295,7 +295,9 @@ private theorem deGiorgi_cutoffSobolev_prepare
   have hv_restrict :
       eLpNorm v q μ = eLpNorm v q volume := by
     simpa [μ] using
-      (MeasureTheory.eLpNorm_restrict_eq_of_support_subset (μ := volume) (p := q) hv_support)
+      (MeasureTheory.eLpNorm_restrict_eq_of_support_subset (μ := volume) (p := q)
+        (by simpa only [Measure.restrict_univ] using hwηθ_univ.memLp.aestronglyMeasurable)
+        hv_support)
   have hSob'' :
       eLpNorm v q μ ≤
         ENNReal.ofReal (CGns d 2) * eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ := by
@@ -460,7 +462,6 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
     ring
   have hv_memLp_q :
       MemLp v q μ := by
-    refine ⟨hwηθ_real.memLp.aestronglyMeasurable, ?_⟩
     have hgrad_lt_top :
         eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ < ∞ :=
       hgrad_memLp2.eLpNorm_lt_top
@@ -503,14 +504,13 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
       rw [← ENNReal.toReal_rpow]
       rfl
     have hcompare_toReal' := hcompare_toReal
-    rw [MeasureTheory.toReal_eLpNorm hv_memLp2_T.aestronglyMeasurable,
-      ENNReal.toReal_mul, MeasureTheory.toReal_eLpNorm hv_memLp_q_T.aestronglyMeasurable,
+    rw [MeasureTheory.toReal_eLpNorm,
+      ENNReal.toReal_mul, MeasureTheory.toReal_eLpNorm,
       hrpow_toReal] at hcompare_toReal'
     exact hcompare_toReal'
   have hq_mono_real :
       MeasureTheory.lpNorm v q (μ.restrict T) ≤ MeasureTheory.lpNorm v q μ := by
-    rw [← MeasureTheory.toReal_eLpNorm hv_memLp_q_T.aestronglyMeasurable,
-      ← MeasureTheory.toReal_eLpNorm hv_memLp_q.aestronglyMeasurable]
+    rw [← MeasureTheory.toReal_eLpNorm, ← MeasureTheory.toReal_eLpNorm]
     exact ENNReal.toReal_mono hv_memLp_q.eLpNorm_ne_top
       (MeasureTheory.eLpNorm_mono_measure v Measure.restrict_le_self)
   have hgrad_lp :
@@ -538,8 +538,8 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
     have hC_toReal : (ENNReal.ofReal (CGns d 2)).toReal = CGns d 2 :=
       ENNReal.toReal_ofReal (C_gns_nonneg d 2)
     have hSob_toReal' := hSob_toReal
-    rw [MeasureTheory.toReal_eLpNorm hv_memLp_q.aestronglyMeasurable,
-      ENNReal.toReal_mul, MeasureTheory.toReal_eLpNorm hgrad_memLp2.aestronglyMeasurable,
+    rw [MeasureTheory.toReal_eLpNorm,
+      ENNReal.toReal_mul, MeasureTheory.toReal_eLpNorm,
       hC_toReal] at hSob_toReal'
     exact hSob_toReal'
   have hT_lp_sq :

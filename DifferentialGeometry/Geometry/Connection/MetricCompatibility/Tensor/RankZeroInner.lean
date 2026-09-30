@@ -25,25 +25,25 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 lemma inner_nat_cast
     (g : SmoothRiemannianMetric I M) (x : M) {a b : ℕ} (h : a = b)
     (A B : ContinuousMultilinearMap ℝ (fun _ : Fin b => E) ℝ) :
-    covariantTensorInnerPointwise (I := I) (M := M) a g x
+    TensorMetric.covariantTensorInnerPointwise (I := I) (M := M) a g x
         (A.domDomCongr (finCongr h.symm))
         (B.domDomCongr (finCongr h.symm)) =
-      covariantTensorInnerPointwise (I := I) (M := M) b g x A B := by
+      TensorMetric.covariantTensorInnerPointwise (I := I) (M := M) b g x A B := by
   subst a
   simpa only [finCongr_refl] using
-    (tensorInnerPointwise_0s_domDomCongr (I := I) (M := M) g x b
+    (TensorMetric.tensorInnerPointwise_0s_domDomCongr (I := I) (M := M) g x b
       (Equiv.refl (Fin b)) A B)
 
 lemma lower_toRS0
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (A : Tensor0SSpace s I x) :
-    lowerAllUpperIndices (I := I) (M := M) g 0 s x
+    TensorMetric.lowerAllUpperIndices (I := I) (M := M) g 0 s x
         (TensorRSSpace.toModel (Tensor0SSpace.toRS0 A)) =
       (Tensor0SSpace.toModel A).domDomCongr
         (finCongr (Nat.zero_add s).symm) := by
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [lowerAllUpperIndices_apply, separableFormAt_zero]
+  rw [TensorMetric.lowerAllUpperIndices_apply, separableFormAt_zero]
   have hunit_model : Tensor0SSpace.toModel
       (Tensor0SSpace.ofModel (I := I) (x := x)
         (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ))) =
@@ -75,18 +75,18 @@ lemma lower_toRS0
 lemma inner_toRS0
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (A B : Tensor0SSpace s I x) :
-    tensorInnerPointwise (I := I) (M := M) g 0 s x
+    TensorMetric.tensorInnerPointwise (I := I) (M := M) g 0 s x
         (TensorRSSpace.toModel (Tensor0SSpace.toRS0 A))
         (TensorRSSpace.toModel (Tensor0SSpace.toRS0 B)) =
-      covariantTensorInnerPointwise (I := I) (M := M) s g x
+      TensorMetric.covariantTensorInnerPointwise (I := I) (M := M) s g x
         (Tensor0SSpace.toModel A) (Tensor0SSpace.toModel B) := by
-  rw [show tensorInnerPointwise (I := I) (M := M) g 0 s x
+  rw [show TensorMetric.tensorInnerPointwise (I := I) (M := M) g 0 s x
       (TensorRSSpace.toModel (Tensor0SSpace.toRS0 A))
       (TensorRSSpace.toModel (Tensor0SSpace.toRS0 B)) =
-        covariantTensorInnerPointwise (I := I) (M := M) (0 + s) g x
-          (lowerAllUpperIndices (I := I) (M := M) g 0 s x
+        TensorMetric.covariantTensorInnerPointwise (I := I) (M := M) (0 + s) g x
+          (TensorMetric.lowerAllUpperIndices (I := I) (M := M) g 0 s x
             (TensorRSSpace.toModel (Tensor0SSpace.toRS0 A)))
-          (lowerAllUpperIndices (I := I) (M := M) g 0 s x
+          (TensorMetric.lowerAllUpperIndices (I := I) (M := M) g 0 s x
             (TensorRSSpace.toModel (Tensor0SSpace.toRS0 B))) from rfl]
   rw [lower_toRS0 (I := I) (M := M) g s x A,
     lower_toRS0 (I := I) (M := M) g s x B]
@@ -96,19 +96,19 @@ lemma inner_toRS0
 lemma inner_toRS0_zero
     (g : SmoothRiemannianMetric I M) (x : M)
     (A B : Tensor0SSpace 0 I x) :
-    tensorInnerPointwise (I := I) (M := M) g 0 0 x
+    TensorMetric.tensorInnerPointwise (I := I) (M := M) g 0 0 x
         (TensorRSSpace.toModel (Tensor0SSpace.toRS0 A))
         (TensorRSSpace.toModel (Tensor0SSpace.toRS0 B)) =
       tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x A *
         tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x B := by
   rw [inner_toRS0 (I := I) (M := M) g 0 x,
-    tensorInnerPointwise_0s_zero_arity,
+    TensorMetric.tensorInnerPointwise_0s_zero_arity,
     Tensor0SSpace.evalScalar_apply, Tensor0SSpace.evalScalar_apply]
   rfl
 
 lemma inner_toRS0_scalar
     (g : SmoothRiemannianMetric I M) (x : M) (a b : ℝ) :
-    tensorInnerPointwise (I := I) (M := M) g 0 0 x
+    TensorMetric.tensorInnerPointwise (I := I) (M := M) g 0 0 x
         (TensorRSSpace.toModel
           (Tensor0SSpace.toRS0 ((Tensor0SNabla.tensor0Iso I M x).symm a)))
         (TensorRSSpace.toModel

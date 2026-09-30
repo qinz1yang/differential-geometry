@@ -169,7 +169,8 @@ theorem map_tail_prod_head_modelHaar (n : Nat) :
         ((volume : Measure (Fin n → Real)).prod volume) := by
   conv_lhs =>
     rw [(modelHaar (E := EuclideanSpace Real (Fin (n + 1)))).isAddLeftInvariant_eq_smul volume]
-  rw [MeasureTheory.Measure.map_smul]
+  rw [MeasureTheory.Measure.map_smul _
+    (EuclideanSpace.measurePreserving_tail_prod_head n).measurable.aemeasurable]
   congr 1
   exact EuclideanSpace.map_tail_prod_head_volume n
 

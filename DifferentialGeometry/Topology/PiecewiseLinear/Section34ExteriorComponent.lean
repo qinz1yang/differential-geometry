@@ -688,7 +688,7 @@ theorem section34Exterior_component (hh : IsEmbedding (U.domRestrict h))
       exact hCint z' (hEC hz) hz'K
     obtain ⟨P, r, v, hr, hv, hS, hB⟩ := hHcell t.1 t.2.1
     have hx0 : (Pi.single (0 : Fin (3 + 1)) (1 : ℝ)) ∈ stdSimplexBoundary 3 :=
-      ⟨single_mem_stdSimplex ℝ _, 1, by simp⟩
+      ⟨Convexity.StdSimplex.single_mem_coordinateSet ℝ _, 1, by simp⟩
     have hb : v (r (Pi.single 0 1)) ∈ frontier (H t.1) := by
       rw [hB]
       exact ⟨_, ⟨_, hx0, rfl⟩, rfl⟩

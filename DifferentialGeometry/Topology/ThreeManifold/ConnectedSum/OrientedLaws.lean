@@ -226,7 +226,7 @@ theorem nonempty_orientedDiffeomorph_connectedSum_sphere_right_iso
     (ConnectedSumUnit.ballComplementCollar_unitFillingOfSphereChartIso A P d hd c)
     (ConnectedSumUnit.ballComplementSmooth_unitFillingOfSphereChartIso A P d hd c)
   obtain ⟨Ψ, hΨo, hΨ⟩ := orientedBallChartTransport_of_ballChartTransport
-    connectedBallChartTransport_holds standardThreeSphereLift.{u} d d'
+    d d' (connectedBallChartTransport_holds standardThreeSphereLift.{u} d d')
   obtain ⟨e₂⟩ := csTransport_diffeomorph_preservesOrientation c c d d' boundaryAttachment
     (Diffeomorph.refl (𝓡 3) X.Carrier ∞) Ψ (fun _ _ => rfl) hΨ
     (Diffeomorph.preservesOrientation_refl X.orientation)

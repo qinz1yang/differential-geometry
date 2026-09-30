@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardBoundedRestart
 import Mathlib.Order.LiminfLimsup
 import Mathlib.Topology.Order.LeftRightNhds
-import Mathlib.Data.ENNReal.Inv
+import Mathlib.Basic.ENNReal.Inv
 
 set_option autoImplicit false
 noncomputable section

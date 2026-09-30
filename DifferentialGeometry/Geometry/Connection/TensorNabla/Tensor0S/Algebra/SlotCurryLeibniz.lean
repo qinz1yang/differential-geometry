@@ -20,6 +20,8 @@ namespace Connection
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric (tensor00Scalar tensor00Scalar_apply
+  tensor0SToTensorRS tensor0SAsRS_apply)
 open DifferentialGeometry.Tensor0SNabla
 open DifferentialGeometry.TensorRSNabla
 

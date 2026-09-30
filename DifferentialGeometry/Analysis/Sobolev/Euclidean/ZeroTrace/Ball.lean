@@ -123,7 +123,7 @@ theorem memW01p_ball_of_global_memW1pWitness_of_zero_outside_closedBall
     let hfb : MemW1pWitness 2 f (Metric.ball c R) :=
       hf.restrict Metric.isOpen_ball (subset_univ _)
     refine ⟨hfb.memW1p, hfb, fun _ => f, fun _ => hfc, fun _ => hcomp, fun _ => hsub, ?_, ?_⟩
-    · simpa only [sub_self, eLpNorm_zero', Pi.zero_def] using
+    · simpa only [sub_self, eLpNorm_fun_zero, Pi.zero_def] using
         (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (𝓝 0))
     · exact fun i => Fin.elim0 i
   · let _ : NeZero d := ⟨hd.ne'⟩

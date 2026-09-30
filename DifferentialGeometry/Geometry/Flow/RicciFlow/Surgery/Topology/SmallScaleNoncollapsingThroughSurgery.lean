@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NoncollapsingThroughSurgeryLeaves
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.ReducedVolumeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StageBallVolumeRatio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StageComponentSimplyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowPointScalar
@@ -27,7 +27,7 @@ private local instance (P : OrientedThreeStage.{u}) : MeasurableSpace P.Carrier 
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 theorem noncollapsedAtRegularTimesBefore_of_cases {κ₁ κH κ₀ cBG M η r₀ ε t₀ : ℝ}
     (hr₀ε : r₀ ≤ ε) (hr₀1 : r₀ ≤ 1) (hcBG : 0 ≤ cBG) (hκ₁ : 0 ≤ κ₁)
@@ -370,7 +370,7 @@ end RetainedCoreHistory
 
 private theorem exists_cutoff_record_bounds (Dcw K : ℝ) (hK : 0 < K)
     (hDcw : StandardCap.transitionEnd < Dcw) :
-    ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+    ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ (H : RetainedCoreHistory.{u})
       {p₀ : CutoffParameters} {δbound ρbound : ℝ},
       H.hasCanonicalCutoffRecords p₀ δbound ρbound → p₀.recenterConstant * δbound ≤ 1 / 2 →
       p₀.modelAccuracy ≤ ε₀ → Dcw + 2 ≤ p₀.modelRadius → 2 ≤ p₀.modelOrder →
@@ -394,7 +394,7 @@ private theorem exists_cutoff_record_bounds (Dcw K : ℝ) (hK : 0 < K)
   obtain ⟨εw, hεw, hwin⟩ :=
     RetainedCoreHistory.exists_window_scalar_lower_bound.{u} Dcw (Dcw + 2) (by linarith)
   refine ⟨min (1 / 2) (min εs εw), lt_min (by norm_num) (lt_min hεs hεw), ?_⟩
-  intro P₀ H p₀ δbound ρbound hrec hΛδ hacc hD hm hρ
+  intro H p₀ δbound ρbound hrec hΛδ hacc hD hm hρ
   obtain ⟨p, records, hfam⟩ :=
     (H.hasCanonicalCutoffRecords_iff_exists_isCanonicalCutoffRecordFamily p₀ δbound ρbound).mp
       hrec
@@ -462,7 +462,7 @@ end ObservedHistory
 private theorem exists_initial_layer_noncollapsed_of_initialIdentification
     (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ κ η : ℝ, 0 < κ ∧ 0 < η ∧
-      ∀ H : RetainedCoreHistory P₀, Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
+      ∀ H : RetainedCoreHistory.{u}, Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
       (∀ j : Fin H.eventCount, (H.toHistory.event j).incoming.SingularEndpoint) →
       ∀ (t : Icc (0 : ℝ) H.toHistory.horizon) (p : (H.toHistory.stageAt t).Carrier) (r : ℝ),
         (t : ℝ) ≤ η → r ≤ 1 → H.toHistory.isParabolicallyRmControlledBall t p r →

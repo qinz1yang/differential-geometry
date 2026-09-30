@@ -261,7 +261,7 @@ theorem supersolution_geometric_majorant_inv
       ∏ i ∈ Finset.range n, superStepConstInv (d := d) A p₀ i ≤
         ∏ i ∈ Finset.range n, (K * CC ^ i) ^
           (1 / moserExponentSeq d p₀ i) :=
-    Finset.prod_le_prod hstep_nonneg hstep_le
+    Finset.prod_le_prod₀ hstep_nonneg hstep_le
   have hprod_eval :
       ∀ m : ℕ,
         ∏ i ∈ Finset.range m, (K * CC ^ i) ^

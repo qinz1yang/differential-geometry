@@ -160,7 +160,7 @@ theorem normGradSqFun_busemann_eq_one
   have hcs : |g.inner x v u| ≤
       Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x u u) := by
     exact
-      DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+      DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
         (I := I) (M := M) g x v u
   have hlower : 1 ≤ Real.sqrt (g.inner x v v) := by
     rw [show g.inner x v u = -1 by simpa only [v] using hpair,

@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.FirstOrder.CovariantDerivative
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.Basic
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.Algebra
+
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise)
 open DifferentialGeometry.Geometry.Curvature
 
 

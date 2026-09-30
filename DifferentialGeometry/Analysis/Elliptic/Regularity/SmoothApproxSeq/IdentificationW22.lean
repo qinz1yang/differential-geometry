@@ -531,31 +531,9 @@ private lemma volume_restrict_chartTarget_absolutelyContinuous_weighted
   exact (ENNReal.ofReal_pos.mpr h_pos).ne'
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma smoothFChartResidual_aestronglyMeasurable
-    (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g)
-    (μ : Measure EuclN) :
-    AEStronglyMeasurable
-      (smoothFChartResidual (I := I) (M := M) g α v) μ := by
-  unfold smoothFChartResidual fChartResidual
-  exact (Lp.stronglyMeasurable _).aestronglyMeasurable.mono_measure (le_refl _)
-
-omit [NeZero (Module.finrank ℝ E)] in
-private lemma fChartResidual_aestronglyMeasurable
-    (g : SmoothRiemannianMetric I M) (α : M) (u_h : H1Compl (I := I) (M := M) g)
-    (μ : Measure EuclN) :
-    AEStronglyMeasurable
-      (DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fChartResidual
-        (I := I) (M := M) g α u_h) μ := by
-  unfold fChartResidual
-  exact (Lp.stronglyMeasurable _).aestronglyMeasurable.mono_measure (le_refl _)
-
-omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_subseq_ae_volume_restrict
     (g : SmoothRiemannianMetric I M) (α : M)
     {v : ℕ → SmoothScalar g} {F_lim : EuclN → ℝ}
-    (hF_aesm : AEStronglyMeasurable F_lim
-      ((volume : Measure EuclN).restrict
-        (chartTargetEuclid (I := I) (M := M) α)))
     (h_tendsto : Tendsto (fun n =>
       eLpNorm (fun y =>
           smoothFChartResidual (I := I) (M := M) g α (v n) y - F_lim y) 2
@@ -569,11 +547,6 @@ private lemma exists_subseq_ae_volume_restrict
           smoothFChartResidual (I := I) (M := M) g α (v (σ n)) y) atTop
           (𝓝 (F_lim y)) := by
   classical
-  have h_aesm_n : ∀ n, AEStronglyMeasurable
-      (smoothFChartResidual (I := I) (M := M) g α (v n))
-      ((volume : Measure EuclN).restrict
-        (chartTargetEuclid (I := I) (M := M) α)) := fun n =>
-    smoothFChartResidual_aestronglyMeasurable (I := I) (M := M) g α (v n) _
   have h_tim : TendstoInMeasure
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α))
@@ -583,16 +556,13 @@ private lemma exists_subseq_ae_volume_restrict
       (μ := (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α))
       (p := 2) (by norm_num : (2 : ℝ≥0∞) ≠ 0)
-      h_aesm_n hF_aesm h_tendsto
+      h_tendsto
   exact h_tim.exists_seq_tendsto_ae
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_subseq_ae_weighted_restrict
     (g : SmoothRiemannianMetric I M) (α : M)
     {v : ℕ → SmoothScalar g} {F : EuclN → ℝ}
-    (hF_aesm : AEStronglyMeasurable F
-      ((chartPulledWeightedMeasure (I := I) g α).restrict
-        (chartTargetEuclid (I := I) (M := M) α)))
     (h_tendsto : Tendsto (fun n =>
       eLpNorm (fun y =>
           smoothFChartResidual (I := I) (M := M) g α (v n) y - F y) 2
@@ -606,11 +576,6 @@ private lemma exists_subseq_ae_weighted_restrict
           smoothFChartResidual (I := I) (M := M) g α (v (σ n)) y) atTop
           (𝓝 (F y)) := by
   classical
-  have h_aesm_n : ∀ n, AEStronglyMeasurable
-      (smoothFChartResidual (I := I) (M := M) g α (v n))
-      ((chartPulledWeightedMeasure (I := I) g α).restrict
-        (chartTargetEuclid (I := I) (M := M) α)) := fun n =>
-    smoothFChartResidual_aestronglyMeasurable (I := I) (M := M) g α (v n) _
   have h_tim : TendstoInMeasure
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
@@ -620,7 +585,7 @@ private lemma exists_subseq_ae_weighted_restrict
       (μ := (chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
       (p := 2) (by norm_num : (2 : ℝ≥0∞) ≠ 0)
-      h_aesm_n hF_aesm h_tendsto
+      h_tendsto
   exact h_tim.exists_seq_tendsto_ae
 
 theorem smoothApproxSeqWkpThree_smoothFChartResidual_limit_eq_fChartResidual_w22
@@ -628,9 +593,6 @@ theorem smoothApproxSeqWkpThree_smoothFChartResidual_limit_eq_fChartResidual_w22
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     ∀ F_lim : EuclN → ℝ,
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-        (d := Module.finrank ℝ E) 2 2 F_lim
-        (chartTargetEuclid (I := I) (M := M) α) →
       Tendsto (fun n =>
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) 2 2
@@ -645,25 +607,9 @@ theorem smoothApproxSeqWkpThree_smoothFChartResidual_limit_eq_fChartResidual_w22
         DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fChartResidual
           (I := I) (M := M) g α u_h := by
   classical
-  intro F_lim h_F_lim_w2p h_wkp_tendsto
+  intro F_lim h_wkp_tendsto
   set v : ℕ → SmoothScalar g := fun n =>
     smoothApproxSeqWkpThree (I := I) (M := M) g hu_h n with hv_def
-  have hF_lim_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 F_lim
-      (chartTargetEuclid (I := I) (M := M) α) := h_F_lim_w2p.memW1p
-  have hF_lim_memLp : MemLp F_lim 2
-      ((volume : Measure EuclN).restrict
-        (chartTargetEuclid (I := I) (M := M) α)) := hF_lim_W1p.1
-  have hF_lim_aesm_volume : AEStronglyMeasurable F_lim
-      ((volume : Measure EuclN).restrict
-        (chartTargetEuclid (I := I) (M := M) α)) :=
-    hF_lim_memLp.aestronglyMeasurable
-  have hF_res_aesm_weighted :
-      AEStronglyMeasurable
-        (DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fChartResidual
-          (I := I) (M := M) g α u_h)
-        ((chartPulledWeightedMeasure (I := I) g α).restrict
-          (chartTargetEuclid (I := I) (M := M) α)) :=
-    fChartResidual_aestronglyMeasurable (I := I) (M := M) g α u_h _
   have h_eLpNorm_volume_tendsto :
       Tendsto (fun n =>
         eLpNorm (fun y =>
@@ -693,7 +639,7 @@ theorem smoothApproxSeqWkpThree_smoothFChartResidual_limit_eq_fChartResidual_w22
       (I := I) (M := M) g α v h_h1Compl_tendsto
   obtain ⟨σ, hσ_strict, hσ_ae⟩ :=
     exists_subseq_ae_volume_restrict (I := I) (M := M) g α
-      (v := v) (F_lim := F_lim) hF_lim_aesm_volume h_eLpNorm_volume_tendsto
+      (v := v) (F_lim := F_lim) h_eLpNorm_volume_tendsto
   have h_eLpNorm_weighted_subseq :
       Tendsto (fun n =>
         eLpNorm (fun y =>
@@ -709,7 +655,7 @@ theorem smoothApproxSeqWkpThree_smoothFChartResidual_limit_eq_fChartResidual_w22
       (v := fun n => v (σ n))
       (F := DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fChartResidual
         (I := I) (M := M) g α u_h)
-      hF_res_aesm_weighted h_eLpNorm_weighted_subseq
+      h_eLpNorm_weighted_subseq
   have h_volume_ae_σ_τ :
       ∀ᵐ y ∂((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)),

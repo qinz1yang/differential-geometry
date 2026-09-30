@@ -82,7 +82,7 @@ theorem dimH_lt_two_of_finrank_direction_le_one
 
 theorem dimH_range_lt_three {f : ℝ × ℝ → EuclideanSpace ℝ (Fin 3)} (hf : ContDiff ℝ 1 f) :
     dimH (range f) < 3 := by
-  have h := hf.dimH_range_le
+  have h := (hf.differentiable one_ne_zero).dimH_range_le
   rw [Module.finrank_prod, Module.finrank_self] at h
   calc dimH (range f) ≤ ((1 + 1 : ℕ) : ENNReal) := h
     _ < 3 := by norm_num

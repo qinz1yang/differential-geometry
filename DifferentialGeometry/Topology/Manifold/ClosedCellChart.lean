@@ -105,7 +105,7 @@ theorem injective_mfderiv_closedCellChartMap
   have hAinj : Function.Injective (mfderiv (𝓡 (m + 1)) (𝓡 (m + 1)) A (ι x)) :=
     (A.mfderivToContinuousLinearEquiv (by simp) (ι x)).injective
   have hιinj : Function.Injective (mfderiv (𝓡∂ (m + 1)) (𝓡 (m + 1)) ι x) :=
-    (hι.isImmersion.isImmersionAt x).injective_mfderiv (by simp)
+    (hι.isImmersion.isImmersionAt x).mfderiv_injective (by simp)
   have hAιinj : Function.Injective
       (mfderiv (𝓡∂ (m + 1)) (𝓡 (m + 1)) (A ∘ ι) x) := by
     rw [mfderiv_comp x hAd hιd]

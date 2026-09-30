@@ -282,7 +282,7 @@ theorem exists_section34FaceBall_of_neighborhood (hh : IsEmbedding (U.domRestric
       exact hqB
     rw [hJa]
     refine ⟨⟨q, hq.restrict hBdpoly fun x hx => hx.1⟩, ?_⟩
-    have hq' : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+    have hq' : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (B ⟨w, (hIm _).mpr hw⟩ ∩ B ⟨w', (hIm _).mpr hw'⟩) := by
       rw [hBdef, hBdef, hinter2 w w' hw hw', ← hDw]
       exact hq

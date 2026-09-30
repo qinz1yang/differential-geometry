@@ -260,7 +260,7 @@ theorem ginv_hinv
   rw [Finset.sum_congr rfl fun l _ => hterm l, hentry]
   rcases eq_or_ne e c with rfl | h
   · simp
-  · rw [if_neg h, if_neg fun hce => h hce.symm]
+  · rw [ite_eq_right h, ite_eq_right fun hce => h hce.symm]
 
 omit [I.Boundaryless] [DecidableEq Idx] in
 omit [SigmaCompactSpace M] in
@@ -420,12 +420,12 @@ theorem koszulComp_at
         rw [hw0]
       · refine Fin.cases ?_ (fun q'' => ?_) q'
         · change (if (0 : Fin 2) = 0 then frame v1 y else frame v2 y) = frame (w 1) y
-          rw [if_pos rfl, hw1]
+          rw [ite_eq_left rfl, hw1]
         · have hq2 : q'' = 0 := Subsingleton.elim _ _
           subst hq2
           change (if (Fin.succ 0 : Fin 2) = 0 then frame v1 y else frame v2 y) =
             frame (w 2) y
-          rw [if_neg (by decide), hw2]
+          rw [ite_eq_right (by decide), hw2]
     rw [← h1', hW, hvw,
       ← iterCovComp_eq_iterCov (I := I) gRef (metricTensorField (I := I) gK)
         frame hframe hu 1 hy w]

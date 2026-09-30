@@ -58,7 +58,7 @@ theorem exists_normalized_uncapping_homeomorph (v : S2) :
               T.cylinderMap q.1.1 (Ψ q.1.1 (q.2.1,
                 ⟨(1 + (if q.1.2 then ρ q.2.2.val else -ρ q.2.2.val)) / 2, by
                   have h := hρ q.2.2.property
-                  cases q.1.2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+                  cases q.1.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
                     constructor <;> linarith [h.1,h.2]⟩)) := by
   choose B e hhalf hbd he V hVo hSV hcap hrad hlocal using fun b => C.exists_cap_normalization b v
   have hsmall (b : T.Boundary) (x : ClosedCell 3) (hx : ‖x.val‖ ≤ 1 / 4) : B b x = x :=

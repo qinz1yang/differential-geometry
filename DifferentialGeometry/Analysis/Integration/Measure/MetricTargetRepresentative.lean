@@ -74,12 +74,12 @@ theorem exists_continuousOn_ae_eq_of_truncated_distance_modulus_on_open
     apply continuousOn_iff_continuous_domRestrict.mpr
     have heq : (fun x : Ω => G x) = F := by
       funext x
-      simp only [G, dif_pos x.property]
+      simp only [G, dite_eq_left x.property]
     exact hF.continuous.congr (fun x => (congrFun heq x).symm)
   refine ⟨G, hG, ?_⟩
   apply (ae_restrict_iff_subtype hΩ.measurableSet).mpr
   filter_upwards [hFeq] with x hx
-  simpa only [G, dif_pos x.property] using hx
+  simpa only [G, dite_eq_left x.property] using hx
 
 end DifferentialGeometry.Topology
 

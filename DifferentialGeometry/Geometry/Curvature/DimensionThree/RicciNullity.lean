@@ -96,7 +96,7 @@ theorem sectionalCurvature_eq_half_scalar_of_orthonormal_curvature_nullity
   change 2 * metricRm04At g x (vec4 (basis 0) (basis 1) (basis 1) (basis 0)) = _ at hm0
   change 2 * metricRm04At g x (vec4 (basis 0) (basis 2) (basis 2) (basis 0)) = _ at hm1
   change 2 * metricRm04At g x (vec4 (basis 1) (basis 2) (basis 2) (basis 1)) = _ at hm2
-  exact ⟨by linarith only [hm0], Or.inl (by linarith only [hm1]), Or.inl (by linarith only [hm2])⟩
+  exact ⟨by linarith only [hm0], by linarith only [hm1], by linarith only [hm2]⟩
 
 theorem traceNormalizedCurvatureEndomorphism_apply_of_curvature_nullity
     (g : SmoothRiemannianMetric I M) (x : M) :

@@ -39,7 +39,7 @@ private theorem joinedArcProfile_endpoints {a b : ℝ → F} (hba : b 1 = a 0) :
 theorem joinedLoop_first {a b : ℝ → F} (hba : b 1 = a 0) {t : ℝ}
     (ht : t ∈ Icc (0 : ℝ) (1 / 2)) : joinedLoop a b t = a (2 * t) := by
   rw [joinedLoop, liftIco_one_coe_Icc (joinedArcProfile_endpoints hba) ⟨ht.1, by linarith [ht.2]⟩]
-  exact if_pos ht.2
+  exact ite_eq_left ht.2
 
 theorem joinedLoop_second {a b : ℝ → F} (hab : a 1 = b 0) (hba : b 1 = a 0) {t : ℝ}
     (ht : t ∈ Icc (1 / 2 : ℝ) 1) : joinedLoop a b t = b (2 * t - 1) := by
@@ -47,7 +47,7 @@ theorem joinedLoop_second {a b : ℝ → F} (hab : a 1 = b 0) (hba : b 1 = a 0) 
   rcases eq_or_lt_of_le ht.1 with he | hlt
   · subst t
     simpa [joinedArcProfile] using hab
-  · exact if_neg (not_le.mpr hlt)
+  · exact ite_eq_right (not_le.mpr hlt)
 
 section Metric
 
@@ -104,17 +104,17 @@ private theorem lipschitz_joinedArcProfile {a b : ℝ → F} {Ka Kb : ℝ≥0}
     simpa only [C, mul_comm Ka 2] using le_max_left (2 * Ka) (2 * Kb)
   have hs' : LipschitzWith 2 (fun t : ℝ => 2 * t - 1) := by
     simpa only [Function.comp_def, sub_eq_add_neg, one_mul] using
-      (isometry_add_right (-1 : ℝ)).lipschitz.comp hs
+      (isometry_add_right (-1 : ℝ)).lipschitzWith.comp hs
   have hb' : LipschitzWith C (fun t => b (2 * t - 1)) := by
     apply (hb.comp hs').weaken
     simpa only [C, mul_comm Kb 2] using le_max_right (2 * Ka) (2 * Kb)
   have hordered (x y : ℝ) (hxy : x ≤ y) :
       dist (joinedArcProfile a b x) (joinedArcProfile a b y) ≤ (C : ℝ) * dist x y := by
     by_cases hy : y ≤ 1 / 2
-    · rw [joinedArcProfile, if_pos (hxy.trans hy), joinedArcProfile, if_pos hy]
+    · rw [joinedArcProfile, ite_eq_left (hxy.trans hy), joinedArcProfile, ite_eq_left hy]
       exact ha'.dist_le_mul x y
     · by_cases hx : x ≤ 1 / 2
-      · rw [joinedArcProfile, if_pos hx, joinedArcProfile, if_neg hy]
+      · rw [joinedArcProfile, ite_eq_left hx, joinedArcProfile, ite_eq_right hy]
         have h₁ := ha'.dist_le_mul x (1 / 2)
         have h₂ := hb'.dist_le_mul (1 / 2) y
         norm_num only [mul_one_div_cancel (by norm_num : (2 : ℝ) ≠ 0), sub_self] at h₁ h₂
@@ -124,7 +124,7 @@ private theorem lipschitz_joinedArcProfile {a b : ℝ → F} {Ka Kb : ℝ≥0}
         rw [Real.dist_eq, abs_of_nonpos (by linarith)] at h₂
         rw [Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hxy)]
         nlinarith
-      · rw [joinedArcProfile, if_neg hx, joinedArcProfile, if_neg hy]
+      · rw [joinedArcProfile, ite_eq_right hx, joinedArcProfile, ite_eq_right hy]
         exact hb'.dist_le_mul x y
   apply LipschitzWith.of_dist_le_mul
   intro x y
@@ -152,9 +152,9 @@ theorem mapsTo_joinedLoop {a b : ℝ → F} {S : Set F}
   have hs : 0 ≤ (s : ℝ) ∧ (s : ℝ) < 1 := by simpa using s.property
   change joinedArcProfile a b s ∈ S
   by_cases hhalf : (s : ℝ) ≤ 1 / 2
-  · rw [joinedArcProfile, if_pos hhalf]
+  · rw [joinedArcProfile, ite_eq_left hhalf]
     exact ha ⟨by linarith [hs.1], by linarith⟩
-  · rw [joinedArcProfile, if_neg hhalf]
+  · rw [joinedArcProfile, ite_eq_right hhalf]
     exact hb ⟨by linarith, by linarith [hs.2]⟩
 
 end DifferentialGeometry.Topology

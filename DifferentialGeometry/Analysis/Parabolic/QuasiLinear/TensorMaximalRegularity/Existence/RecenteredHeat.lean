@@ -143,7 +143,7 @@ theorem exists_heatDuhamelVectorEvolution_of_tame_timeL2
   have hforce' : F t = N t (heatDuhamelVectorField hT u₀ F t) -
       L (heatDuhamelVectorField hT u₀ F t) := by
     rw [hf]
-    simp only [aeSetLift, Set.mem_ofPred_eq, dif_pos hs]
+    simp only [aeSetLift, Set.mem_ofPred_eq, dite_eq_left hs]
     change N t (heatVectorField a T u₀ t + maximalRegularityDuhamelVectorField hT 0 F t) -
       L (heatVectorField a T u₀ t + maximalRegularityDuhamelVectorField hT 0 F t) = _
     rw [← hv]
@@ -176,10 +176,10 @@ private theorem aestronglyMeasurable_of_continuous_time_cylinder
   let zs : ℝ → S := fun t => if ht : z t ∈ S then ⟨z t, ht⟩ else z₀
   have hts : (fun t => (ts t : ℝ)) =ᵐ[timeMeasure T] fun t => t := by
     filter_upwards [htime] with t ht
-    simp only [ts, dif_pos ht]
+    simp only [ts, dite_eq_left ht]
   have hzs : (fun t => (zs t : Z)) =ᵐ[timeMeasure T] z := by
     filter_upwards [hmem] with t ht
-    simp only [zs, dif_pos ht]
+    simp only [zs, dite_eq_left ht]
   have htmeas : AEStronglyMeasurable ts (timeMeasure T) := by
     apply Topology.IsEmbedding.subtypeVal.aestronglyMeasurable_comp_iff.mp
     exact aestronglyMeasurable_id.congr hts.symm
@@ -419,7 +419,7 @@ theorem exists_heatDuhamelVectorEvolution_of_recentered_coefficients
       (Δ.continuous.comp_aestronglyMeasurable hsum)
     apply hm.congr
     filter_upwards [hf] with t ht
-    simp only [N, aeSetLift, Set.mem_ofPred_eq, dif_pos ht, Pi.add_apply, Pi.sub_apply]
+    simp only [N, aeSetLift, Set.mem_ofPred_eq, dite_eq_left ht, Pi.add_apply, Pi.sub_apply]
   have hBounds := Real.mul_add_sqrt_mul_le_of_le_min hR.le hKb hDb hKf hDf hhsmall hTtime
   have hbn : ‖Bt‖ ≤ 1 / 8 := hBnorm.trans hBounds.1
   have hfn : ‖F0‖ ≤ R / 8 := hF0norm.trans hBounds.2

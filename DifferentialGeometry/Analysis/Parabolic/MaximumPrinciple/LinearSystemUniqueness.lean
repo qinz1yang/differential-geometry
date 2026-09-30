@@ -62,7 +62,6 @@ theorem hasDerivAt_component_sum_sq {n : ℕ} {f : Fin n → ℝ → ℝ} {f' : 
   exact hsum
 
 theorem laplacianAt_univ_sum
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ) {n : ℕ}
     (f : Fin n → M → ℝ) (t : ℝ) (x : M)
     (hf : ∀ i : Fin n, ∀ y : M, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) y)
@@ -76,7 +75,6 @@ theorem laplacianAt_univ_sum
     (fun i _ => Filter.Eventually.of_forall (hf i)) (fun i _ => hgrad i)
 
 theorem laplacianAt_sum_sq
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ) {n : ℕ}
     (u : M → Fin n → ℝ) (t : ℝ) (x : M)
     (hu : ∀ i : Fin n, ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => u y i)) :

@@ -4,7 +4,9 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinat
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Iterates
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.MixedCompatibility
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.PartitionOfUnity
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
+
+open DifferentialGeometry.TensorMetric (covariantTensorInnerPointwise)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

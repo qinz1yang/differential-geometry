@@ -23,11 +23,11 @@ theorem LocalCap.exists_boundary_diffeomorph_of_core_ball_chart
     (hA : Metric.closedBall (0 : ThreeSpace) 1 ⊆ A.source)
     (hcore : A '' Metric.closedBall (0 : ThreeSpace) 1 = cap.core.carrier) :
     ∃ e : Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2,
-      (∀ q, A (e q) = cap.tube_map (q, 0)) ∧
-      (∀ q, cap.tube_map (e.symm q, 0) = A q) := by
+      (∀ q, A (e q) = cap.tubeMap (q, 0)) ∧
+      (∀ q, cap.tubeMap (e.symm q, 0) = A q) := by
   let _ : Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp [ThreeSpace]⟩
   apply DifferentialGeometry.Topology.Manifold.exists_sphere_diffeomorph_of_sphere_chart_and_cylinder_boundary
-    A cap.tube_map (Metric.sphere_subset_closedBall.trans hA)
+    A cap.tubeMap (Metric.sphere_subset_closedBall.trans hA)
     (fun q => cap.tube_domain ⟨mem_univ q, le_rfl, zero_le_one⟩)
   have hclosed : IsClosed (A '' Metric.closedBall (0 : ThreeSpace) 1) :=
     hcore.symm ▸ cap.core.compact.isClosed

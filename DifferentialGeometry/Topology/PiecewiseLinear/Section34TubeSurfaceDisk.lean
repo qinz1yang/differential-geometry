@@ -17,7 +17,7 @@ theorem IsCylindricalDiagram.exists_essential_disk_of_interior_torus_carrier
     {T : Set (EuclideanSpace ℝ (Fin 3))} (hT : IsPLTorus T)
     (hTS : T ⊆ interior S.space) (hgen : CarriesFundamentalGroupOnto T S.space) :
     ∃ (Q : Set (EuclideanSpace ℝ (Fin 3))) (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧ Q ⊆ interior S.space ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧ Q ⊆ interior S.space ∧
       Q ∩ T = q '' stdSimplexBoundary 2 ∧
       ∃ hb : q '' stdSimplexBoundary 2 ⊆ T,
         ¬ (⟨inclusion hb, continuous_inclusion hb⟩ :

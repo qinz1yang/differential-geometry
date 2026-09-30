@@ -93,7 +93,7 @@ private theorem exists_continuousOn_fixedAmbientSobolev_curve
     fun t => if ht : t ∈ Icc a b then fixedAmbientSobolev e g₀ (slice c hc hi t ht)
       else fixedAmbientSobolev e g₀ (slice c hc hi a ⟨le_rfl, hab.le⟩)
   have hW (t : ℝ) (ht : t ∈ Icc a b) :
-      W t = fixedAmbientSobolev e g₀ (slice c hc hi t ht) := dif_pos ht
+      W t = fixedAmbientSobolev e g₀ (slice c hc hi t ht) := dite_eq_left ht
   refine ⟨W, ?_, hW, ?_⟩
   · apply continuousOn_iff_continuous_domRestrict.mpr
     exact (continuous_fixedAmbientSobolev_slice e g₀ hab hc hi).congr

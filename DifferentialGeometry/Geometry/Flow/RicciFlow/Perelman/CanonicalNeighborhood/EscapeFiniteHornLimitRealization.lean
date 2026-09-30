@@ -28,7 +28,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
 
 structure CheegerGromovLimit (X : FlowSequence.{u}) where
   space : Type u
-  [metric_space : MetricSpace space]
+  [metricSpace : MetricSpace space]
   [charted : ChartedSpace ThreeSpace space]
   [smooth : IsManifold I3 ∞ space]
   [sigmaCompact : SigmaCompactSpace space]
@@ -42,7 +42,7 @@ structure CheegerGromovLimit (X : FlowSequence.{u}) where
       Nonempty (MetricComparisonOn (fun _ => metric)
         (fun _ => (X.term (subseq i)).S.base.metric 0) (maps i) K {0} m eta)
 
-attribute [local instance] CheegerGromovLimit.metric_space CheegerGromovLimit.charted
+attribute [local instance] CheegerGromovLimit.metricSpace CheegerGromovLimit.charted
   CheegerGromovLimit.smooth CheegerGromovLimit.sigmaCompact
 
 structure HornOnLimit (X : FlowSequence.{u}) (L : CheegerGromovLimit X) where
@@ -55,7 +55,7 @@ structure HornOnLimit (X : FlowSequence.{u}) (L : CheegerGromovLimit X) where
   coneRealization : ∀ (angles : EndAngles horn) (ray : EndRay horn.endpoint) (d : ℕ → ℝ),
     (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
     ConeDistanceRealization horn angles ray d
-  depth_ok : hornDepthThreshold.{u} ≤ horn.collar_depth
+  depth_ok : hornDepthThreshold.{u} ≤ horn.collarDepth
   curvatureUpper : ScaleCurvatureUpperBound horn horn.axial radii
 
 namespace RealizedFiniteHorn
@@ -63,7 +63,7 @@ namespace RealizedFiniteHorn
 def toCheegerGromovLimit {X : FlowSequence.{u}} (H : RealizedFiniteHorn X) :
     CheegerGromovLimit X where
   space := H.space
-  metric_space := H.metric_space
+  metricSpace := H.metricSpace
   charted := H.charted
   smooth := H.smooth
   sigmaCompact := H.sigmaCompact
@@ -89,7 +89,7 @@ def toHornOnLimit {X : FlowSequence.{u}} (H : RealizedFiniteHorn X) :
 def ofParts {X : FlowSequence.{u}} (L : CheegerGromovLimit X) (K : HornOnLimit X L) :
     RealizedFiniteHorn X where
   space := L.space
-  metric_space := L.metric_space
+  metricSpace := L.metricSpace
   charted := L.charted
   smooth := L.smooth
   sigmaCompact := L.sigmaCompact
@@ -130,7 +130,7 @@ theorem nonempty_realizedFiniteHorn_iff_exists_cheegerGromovLimit_horn
 
 theorem exhaustsByOpen_diffeomorphFamily_sources {X : FlowSequence.{u}}
     {space : Type u} [MetricSpace space] [ChartedSpace ThreeSpace space]
-    [IsManifold I3 ∞ space] [SigmaCompactSpace space] (subseq : ℕ → ℕ)
+    (subseq : ℕ → ℕ)
     (phi : ∀ i, Diffeomorph I3 I3 space ((X.term (subseq i)).M) ∞) :
     ExhaustsByOpen (fun i => ((phi i).toPartialDiffeomorph :
       PartialDiffeomorph I3 I3 space ((X.term (subseq i)).M) ∞).source) := by
@@ -188,7 +188,7 @@ theorem escapeFiniteHornRealization_iff_hornOnLimitRealization
 
 theorem not_nonempty_finiteHorn_of_ricciTensor_eq_zero
     {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W]
-    [SigmaCompactSpace W] (g : SmoothRiemannianMetric I3 W)
+    (g : SmoothRiemannianMetric I3 W)
     (hric : ∀ x (v w : TangentSpace I3 x), ricciTensor g x v w = 0) :
     ¬ Nonempty (FiniteHorn g) := by
   rintro ⟨H⟩

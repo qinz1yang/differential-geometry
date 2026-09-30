@@ -42,7 +42,7 @@ theorem IsCylindricalDiagram.seam_sides_of_subset_lateral
 theorem IsCylindricalDiagram.exists_empty_source_returning_bigon
     {f : E × ℝ → F} {P : Set E} {S J : Set F} {r : (Fin 3 → ℝ) → E}
     (hf : IsCylindricalDiagram f P S)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (hends : ∀ x ∈ P, f (x, 0) = f (x, 1))
     (hJ : IsPLSphere 1 J) (hJS : J ⊆ f '' ((r '' stdSimplexBoundary 2) ×ˢ Icc 0 1))
     (hseam : ∀ a ∈ Ioo (0 : ℝ) 1,
@@ -55,7 +55,7 @@ theorem IsCylindricalDiagram.exists_empty_source_returning_bigon
     (hγJ : MapsTo f A₀ J)
     (hγends : A₀ ∩ ((r '' stdSimplexBoundary 2) ×ˢ ({1} : Set ℝ)) = {γ 0, γ 1}) :
     ∃ (a : ℝ) (D A B : Set (E × ℝ)) (q : (Fin 3 → ℝ) → E × ℝ) (δ : ℝ → E × ℝ),
-      a ∈ Ioo (0 : ℝ) η ∧ IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+      a ∈ Ioo (0 : ℝ) η ∧ IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       IsPLHomeomorphOn δ (Icc 0 1) A ∧ IsPLBall 1 B ∧
       D ⊆ (r '' stdSimplexBoundary 2) ×ˢ Ioc a 1 ∧
       q '' stdSimplexBoundary 2 = A ∪ B ∧
@@ -150,7 +150,7 @@ theorem IsCylindricalDiagram.exists_empty_source_returning_bigon
 theorem IsCylindricalDiagram.exists_empty_returning_bigon
     {f : E × ℝ → F} {P : Set E} {S J : Set F} {r : (Fin 3 → ℝ) → E}
     (hf : IsCylindricalDiagram f P S)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (hends : ∀ x ∈ P, f (x, 0) = f (x, 1))
     (hJ : IsPLSphere 1 J) (hJS : J ⊆ f '' ((r '' stdSimplexBoundary 2) ×ˢ Icc 0 1))
     (hseam : ∀ a ∈ Ioo (0 : ℝ) 1,
@@ -163,7 +163,7 @@ theorem IsCylindricalDiagram.exists_empty_returning_bigon
     (hγJ : MapsTo f A₀ J)
     (hγends : A₀ ∩ ((r '' stdSimplexBoundary 2) ×ˢ ({1} : Set ℝ)) = {γ 0, γ 1}) :
     ∃ (D : Set F) (q : (Fin 3 → ℝ) → F) (x y : F),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ f '' ((r '' stdSimplexBoundary 2) ×ˢ Icc 0 1) ∧
       IsPLBall 1 (D ∩ J) ∧
       IsPLBall 1 (D ∩ f '' ((r '' stdSimplexBoundary 2) ×ˢ ({1} : Set ℝ))) ∧

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Homotopy.CubeBoundaryAdjunction
 import DifferentialGeometry.Topology.Simplex.FourSimplexJoinSkeleton
 
@@ -6,15 +7,17 @@ noncomputable section
 open ContinuousMap
 open scoped unitInterval
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Topology
 
 variable {X : Type*} [TopologicalSpace X] {x : X}
 
-private def fourSimplexJoinUncurry (F : C(stdSimplex ℝ (Fin 5), X)) :
+private def fourSimplexJoinUncurry (F : C(coordinateSet ℝ (Fin 5), X)) :
     C((I × I × I) × (Fin 1 → I), X) :=
   ⟨fun z => F (Simplex.fourSimplexJoin (z.2 0, z.1.1, z.1.2.1, z.1.2.2)), by fun_prop⟩
 
-def fourSimplexJoinLoopCube (F : C(stdSimplex ℝ (Fin 5), X))
+def fourSimplexJoinLoopCube (F : C(coordinateSet ℝ (Fin 5), X))
     (hF : ∀ p ∈ Simplex.skeleton (Fin 5) 2, F p = x) :
     C(I × I × I, GenLoop (Fin 1) X x) := by
   let P := (fourSimplexJoinUncurry F).curry
@@ -31,13 +34,13 @@ def fourSimplexJoinLoopCube (F : C(stdSimplex ℝ (Fin 5), X))
       exact hF _ (Simplex.fourSimplexJoin_first_one_mem_skeleton _ _ _)
   exact ⟨fun p => ⟨P p, hP p⟩, P.continuous.subtype_mk hP⟩
 
-theorem fourSimplexJoinLoopCube_apply (F : C(stdSimplex ℝ (Fin 5), X))
+theorem fourSimplexJoinLoopCube_apply (F : C(coordinateSet ℝ (Fin 5), X))
     (hF : ∀ p ∈ Simplex.skeleton (Fin 5) 2, F p = x)
     (t u v : I) (s : Fin 1 → I) :
     fourSimplexJoinLoopCube F hF (t,u,v) s =
       F (Simplex.fourSimplexJoin (s 0,t,u,v)) := rfl
 
-theorem fourSimplexJoinLoopCube_boundary (F : C(stdSimplex ℝ (Fin 5), X))
+theorem fourSimplexJoinLoopCube_boundary (F : C(coordinateSet ℝ (Fin 5), X))
     (hF : ∀ p ∈ Simplex.skeleton (Fin 5) 2, F p = x)
     (t u v : I)
     (h : ((t = 0 ∨ t = 1) ∧ (u = 0 ∨ u = 1)) ∨
@@ -47,13 +50,13 @@ theorem fourSimplexJoinLoopCube_boundary (F : C(stdSimplex ℝ (Fin 5), X))
   ext s
   exact hF _ (Simplex.fourSimplexJoin_outer_edge_mem_skeleton (s 0) t u v h)
 
-def fourSimplexCubeFace (F : C(stdSimplex ℝ (Fin 5), X))
+def fourSimplexCubeFace (F : C(coordinateSet ℝ (Fin 5), X))
     (hF : ∀ p ∈ Simplex.skeleton (Fin 5) 2, F p = x)
     (j : Fin 3) (e : I) (he : e = 0 ∨ e = 1) : GenLoop (Fin 3) X x :=
   cubeBoundaryLoopFace (fourSimplexJoinLoopCube F hF)
     (fourSimplexJoinLoopCube_boundary F hF) j e he
 
-theorem fourSimplexCubeFace_apply (F : C(stdSimplex ℝ (Fin 5), X))
+theorem fourSimplexCubeFace_apply (F : C(coordinateSet ℝ (Fin 5), X))
     (hF : ∀ p ∈ Simplex.skeleton (Fin 5) 2, F p = x)
     (j : Fin 3) (e : I) (he : e = 0 ∨ e = 1) (v : Fin 3 → I) :
     fourSimplexCubeFace F hF j e he v = F (Simplex.fourSimplexJoin
@@ -64,14 +67,14 @@ theorem fourSimplexCubeFace_apply (F : C(stdSimplex ℝ (Fin 5), X))
   rw [fourSimplexCubeFace, cubeBoundaryLoopFace_apply]
   fin_cases j <;> rfl
 
-theorem fourSimplexCubeFace_zero (F : C(stdSimplex ℝ (Fin 5), X))
+theorem fourSimplexCubeFace_zero (F : C(coordinateSet ℝ (Fin 5), X))
     (hF : ∀ p ∈ Simplex.skeleton (Fin 5) 2, F p = x) :
     fourSimplexCubeFace F hF 1 0 (Or.inl rfl) = GenLoop.const := by
   ext v
   rw [fourSimplexCubeFace_apply]
   exact hF _ (Simplex.fourSimplexJoin_third_zero_mem_skeleton _ _ _)
 
-theorem homotopyGroup_fourSimplexCubeFace_relation (F : C(stdSimplex ℝ (Fin 5), X))
+theorem homotopyGroup_fourSimplexCubeFace_relation (F : C(coordinateSet ℝ (Fin 5), X))
     (hF : ∀ p ∈ Simplex.skeleton (Fin 5) 2, F p = x) :
     let q (i : Fin 3) (e : I) (he : e = 0 ∨ e = 1) : HomotopyGroup (Fin 3) X x :=
       ⟦fourSimplexCubeFace F hF i e he⟧

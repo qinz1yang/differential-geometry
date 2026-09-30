@@ -86,17 +86,17 @@ def smallAffineSubdivisionHomotopy : Homotopy (smallAffineSubdivision hs R) (SA)
     smallAffineSubdivisionHomotopyMap hs R i ≫ eqToHom (congrArg (KA).X h) else 0
   zero i j hij := by
     change ¬ i + 1 = j at hij
-    exact dif_neg hij
+    exact dite_eq_right hij
   comm n := by
     cases n with
     | zero =>
       rw [Homotopy.dNext_zero_chainComplex, Homotopy.prevD_chainComplex]
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id,
+      simp only [dite_eq_left rfl, eqToHom_refl, Category.comp_id,
         smallAffineSubdivisionHomotopyMap_zero, zero_comp, zero_add,
         smallAffineSubdivision_f, smallAffineSubdivisionMap_zero, smallStraightening_zero]
     | succ n =>
       rw [Homotopy.dNext_succ_chainComplex, Homotopy.prevD_chainComplex]
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id]
+      simp only [dite_eq_left rfl, eqToHom_refl, Category.comp_id]
       exact sub_eq_iff_eq_add.mp (smallHomotopy_comm hs R n)
 
 
@@ -106,7 +106,7 @@ theorem smallAffineSubdivisionHomotopy_hom (n : ℕ) :
       smallAffineSubdivisionHomotopyMap hs R n := by
   change (if h : n + 1 = n + 1 then
     smallAffineSubdivisionHomotopyMap hs R n ≫ eqToHom (congrArg (KA).X h) else 0) = _
-  rw [dif_pos rfl, eqToHom_refl, Category.comp_id]
+  rw [dite_eq_left rfl, eqToHom_refl, Category.comp_id]
 
 variable {E' : Type u} [NormedAddCommGroup E'] [NormedSpace ℝ E']
   {t : Set E'} (ht : Convex ℝ t) (f : E →L[ℝ] E') (hf : Set.MapsTo f s t)

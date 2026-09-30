@@ -43,11 +43,11 @@ theorem range_slabMap (c : PartialDiffeomorph IC I (SphereTwo × ℝ) M ∞) :
 
 private theorem lowerSeam_zero (f : SphereTwo ≃ₘ⟮𝓡 2, 𝓡 2⟯ SphereTwo) (z : SphereTwo) :
     lowerSeam f ⟨(z,0),mem_univ _,by norm_num⟩ = core f (z,⟨0,by norm_num⟩) := by
-  simp only [lowerSeam,le_refl,dif_pos]
+  simp only [lowerSeam,le_refl,dite_eq_left]
 
 private theorem upperSeam_zero (f : SphereTwo ≃ₘ⟮𝓡 2, 𝓡 2⟯ SphereTwo) (z : SphereTwo) :
     upperSeam f ⟨(z,0),mem_univ _,by norm_num⟩ = band f (f z,⟨1,by norm_num⟩) := by
-  simp only [upperSeam,le_refl,dif_pos,sub_zero]
+  simp only [upperSeam,le_refl,dite_eq_left,sub_zero]
 
 private theorem interior_zero_seam_cover
     (f : SphereTwo ≃ₘ⟮𝓡 2, 𝓡 2⟯ SphereTwo) (q : Space f) :

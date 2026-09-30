@@ -19,7 +19,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_polyhedral_separator_of_spann
     (S : Geometry.SimplicialComplex ℝ E) [Finite S.faces]
     (hS : IsCombinatorialManifoldWithBoundary 2 S) (hor : IsOrientable 2 S)
     (hdim : Module.finrank ℝ E = 3) {A D U H T : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2)
     (hA : IsCompact A) (hAn : A ∈ 𝓝ˢ[S.space] (r '' stdSimplexBoundary 2))
     (hBd : Disjoint (r '' stdSimplexBoundary 2) (boundaryComplex 2 S).space)
@@ -28,7 +28,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_polyhedral_separator_of_spann
     (havoid : D ∪ A ⊆ (H ∪ T)ᶜ) :
     ∃ (B P : Geometry.SimplicialComplex ℝ E) (M V Q : Set E) (q : (Fin 3 → ℝ) → E),
       B.faces.Finite ∧ IsPLBall 3 B.space ∧ B.space ⊆ U ∧ Disjoint B.space (H ∪ T) ∧
-      P.faces.Finite ∧ IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) M ∧
+      P.faces.Finite ∧ IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) M ∧
       D ⊆ M ∧ M ⊆ (boundaryComplex 3 B).space ∧ M \ D ⊆ S.space ∩ A ∧
       V ⊆ S.space ∩ A ∧ V ⊆ B.space ∧ IsPLBall 2 Q ∧ Q ⊆ (boundaryComplex 3 B).space ∧
       (boundaryComplex 3 B).space = M ∪ Q ∧ M ∩ Q = q '' stdSimplexBoundary 2 ∧
@@ -156,7 +156,7 @@ theorem IsCommonAnnularDerivedNeighborhood.exists_polyhedral_separator_of_spanni
     (hS : IsCombinatorialManifoldWithBoundary 2 S) (hor : IsOrientable 2 S)
     (hdim : Module.finrank ℝ E = 3) {A D U H T : Set E} {r : (Fin 3 → ℝ) → E}
     (hcommon : IsCommonAnnularDerivedNeighborhood K A (r '' stdSimplexBoundary 2) S.space D)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2)
     (hBd : Disjoint (r '' stdSimplexBoundary 2) (boundaryComplex 2 S).space)
     (hU : IsOpen U) (hDU : D ⊆ U) (hAU : A ⊆ U)
@@ -164,7 +164,7 @@ theorem IsCommonAnnularDerivedNeighborhood.exists_polyhedral_separator_of_spanni
     (havoid : D ∪ A ⊆ (H ∪ T)ᶜ) :
     ∃ (B P : Geometry.SimplicialComplex ℝ E) (M V Q : Set E) (q : (Fin 3 → ℝ) → E),
       B.faces.Finite ∧ IsPLBall 3 B.space ∧ B.space ⊆ U ∧ Disjoint B.space (H ∪ T) ∧
-      P.faces.Finite ∧ IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) M ∧
+      P.faces.Finite ∧ IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) M ∧
       D ⊆ M ∧ M ⊆ (boundaryComplex 3 B).space ∧ M \ D ⊆ S.space ∩ A ∧
       V ⊆ S.space ∩ A ∧ V ⊆ B.space ∧ IsPLBall 2 Q ∧ Q ⊆ (boundaryComplex 3 B).space ∧
       (boundaryComplex 3 B).space = M ∪ Q ∧ M ∩ Q = q '' stdSimplexBoundary 2 ∧
@@ -194,7 +194,7 @@ theorem IsSphericalShell.exists_polyhedral_separator_of_spanning_disk
     (hS : IsCombinatorialManifold 2 S) (hconn : IsConnected S.space)
     (hsep : Separates S.space B₀ B₁)
     {D : Set (EuclideanSpace ℝ (Fin 3))} {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2) (hDX : D ⊆ interior X) :
     ∃ K A B P : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
       K.faces.Finite ∧ IsPLBall 3 K.space ∧ A.faces.Finite ∧

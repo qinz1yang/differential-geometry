@@ -143,7 +143,7 @@ noncomputable def ConnectedSumStep.forwardFundamentalGroupEquiv
       FundamentalGroup C C.basepoint :=
   (fundamentalGroupSourceFreeProductEquivCoprod A.basepoint B.basepoint).symm.trans <|
     (s.sourceBasepointEquiv.trans <|
-      (fundamentalGroupEquiv_connectedSum
+      (fundamentalGroupEquivConnectedSum
         s.leftCell s.rightCell s.glue s.boundaryPoint).trans <|
           s.realizationFundamentalGroupEquiv)
 
@@ -176,7 +176,7 @@ theorem ConnectedSumStep.forwardFundamentalGroupEquiv_comp_inl
   ext g
   change
     s.realizationFundamentalGroupEquiv
-      ((fundamentalGroupEquiv_connectedSum
+      ((fundamentalGroupEquivConnectedSum
         s.leftCell s.rightCell s.glue s.boundaryPoint)
         (Monoid.CoprodI.of (i := false)
           (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.leftConnector g))) = _
@@ -185,7 +185,7 @@ theorem ConnectedSumStep.forwardFundamentalGroupEquiv_comp_inl
       s.leftCell s.rightCell s.glue s.boundaryPoint)
     (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.leftConnector g)
   change
-    (fundamentalGroupEquiv_connectedSum
+    (fundamentalGroupEquivConnectedSum
       s.leftCell s.rightCell s.glue s.boundaryPoint)
         (Monoid.CoprodI.of
           (M := fundamentalGroupSourceFactor
@@ -206,7 +206,7 @@ theorem ConnectedSumStep.forwardFundamentalGroupEquiv_comp_inr
   ext g
   change
     s.realizationFundamentalGroupEquiv
-      ((fundamentalGroupEquiv_connectedSum
+      ((fundamentalGroupEquivConnectedSum
         s.leftCell s.rightCell s.glue s.boundaryPoint)
         (Monoid.CoprodI.of (i := true)
           (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.rightConnector g))) = _
@@ -215,7 +215,7 @@ theorem ConnectedSumStep.forwardFundamentalGroupEquiv_comp_inr
       s.leftCell s.rightCell s.glue s.boundaryPoint)
     (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint s.rightConnector g)
   change
-    (fundamentalGroupEquiv_connectedSum
+    (fundamentalGroupEquivConnectedSum
       s.leftCell s.rightCell s.glue s.boundaryPoint)
         (Monoid.CoprodI.of
           (M := fundamentalGroupSourceFactor
@@ -625,7 +625,7 @@ noncomputable def emptyConnectedSumFundamentalGroupEquiv
       uniq := fun x => Subsingleton.elim x 1 }
   exact sphereEquiv.trans MulEquiv.ofUnique
 
-noncomputable def fundamentalGroupEquiv_finiteConnectedSum :
+noncomputable def fundamentalGroupEquivFiniteConnectedSum :
     {r : ℕ} → {result : BasedConnectedClosedSmoothThreeManifold} →
       (c : LeftAssociatedConnectedSumConstruction r result) →
       FundamentalGroup result result.basepoint ≃*
@@ -636,7 +636,7 @@ noncomputable def fundamentalGroupEquiv_finiteConnectedSum :
   | _, _, .singleton factor => singletonConnectedSumFundamentalGroupEquiv factor
   | _, _, .append previous nonempty factor result step =>
       step.fundamentalGroupEquiv.trans <|
-        ((fundamentalGroupEquiv_finiteConnectedSum previous).coprodCongr
+        ((fundamentalGroupEquivFiniteConnectedSum previous).coprodCongr
           (MulEquiv.refl (FundamentalGroup factor factor.basepoint))).trans <|
             (appendFactorFreeProductEquiv previous nonempty factor result step).symm
 
@@ -662,7 +662,7 @@ noncomputable def LeftAssociatedConnectedSumConstruction.factorToResult :
 theorem fundamentalGroupEquiv_finiteConnectedSum_comp_factorToResult :
     {r : ℕ} → {result : BasedConnectedClosedSmoothThreeManifold} →
       (c : LeftAssociatedConnectedSumConstruction r result) → (i : Fin r) →
-      (fundamentalGroupEquiv_finiteConnectedSum c).toMonoidHom.comp
+      (fundamentalGroupEquivFiniteConnectedSum c).toMonoidHom.comp
           (c.factorToResult i) =
         (Monoid.CoprodI.of : c.factorFundamentalGroup i →*
           Monoid.CoprodI c.factorFundamentalGroup) := by
@@ -681,12 +681,12 @@ theorem fundamentalGroupEquiv_finiteConnectedSum_comp_factorToResult :
       intro i
       refine Fin.lastCases ?_ (fun j => ?_) i
       · ext g
-        simp only [fundamentalGroupEquiv_finiteConnectedSum,
+        simp only [fundamentalGroupEquivFiniteConnectedSum,
           LeftAssociatedConnectedSumConstruction.factorToResult,
           Fin.lastCases_last, MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom]
         change
           (appendFactorFreeProductEquiv previous nonempty factor result step).symm
-            (((fundamentalGroupEquiv_finiteConnectedSum previous).coprodCongr
+            (((fundamentalGroupEquivFiniteConnectedSum previous).coprodCongr
               (MulEquiv.refl (FundamentalGroup factor factor.basepoint)))
                 (step.fundamentalGroupEquiv
                   (step.rightFactorHom
@@ -710,12 +710,12 @@ theorem fundamentalGroupEquiv_finiteConnectedSum_comp_factorToResult :
           (appendFactorFreeProductEquiv_symm_comp_inr_last
             previous nonempty factor result step) g
       · ext g
-        simp only [fundamentalGroupEquiv_finiteConnectedSum,
+        simp only [fundamentalGroupEquivFiniteConnectedSum,
           LeftAssociatedConnectedSumConstruction.factorToResult,
           Fin.lastCases_castSucc, MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom]
         change
           (appendFactorFreeProductEquiv previous nonempty factor result step).symm
-            (((fundamentalGroupEquiv_finiteConnectedSum previous).coprodCongr
+            (((fundamentalGroupEquivFiniteConnectedSum previous).coprodCongr
               (MulEquiv.refl (FundamentalGroup factor factor.basepoint)))
                 (step.fundamentalGroupEquiv
                   (step.leftFactorHom
@@ -738,7 +738,7 @@ theorem fundamentalGroupEquiv_finiteConnectedSum_comp_factorToResult :
         change
           (appendFactorFreeProductEquiv previous nonempty factor result step).symm
             (Monoid.Coprod.inl
-              ((fundamentalGroupEquiv_finiteConnectedSum previous)
+              ((fundamentalGroupEquivFiniteConnectedSum previous)
                 (previous.factorToResult j
                   ((appendCastSuccFactorEquiv
                     previous nonempty factor result step j) g)))) =
@@ -746,7 +746,7 @@ theorem fundamentalGroupEquiv_finiteConnectedSum_comp_factorToResult :
         have hih := DFunLike.congr_fun (ih j)
           ((appendCastSuccFactorEquiv previous nonempty factor result step j) g)
         change
-          (fundamentalGroupEquiv_finiteConnectedSum previous)
+          (fundamentalGroupEquivFiniteConnectedSum previous)
               (previous.factorToResult j
                 ((appendCastSuccFactorEquiv previous nonempty factor result step j) g)) =
             Monoid.CoprodI.of

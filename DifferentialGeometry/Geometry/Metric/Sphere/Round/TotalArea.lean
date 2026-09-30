@@ -86,7 +86,8 @@ private theorem mfderiv_equatorialDirection_self (base : sphere (0 : E3) 1)
     exact equatorialDirection_smul base R hy hs
   have hzero : mfderiv 𝓘(ℝ, ℝ) (𝓡 2) ((equatorialDirection base R) ∘ c) 1 = 0 := by
     rw [hev.mfderiv_eq]
-    exact mfderiv_const
+    exact (mfderiv_const (I := 𝓘(ℝ, ℝ)) (I' := 𝓡 2)
+      (x := (1 : ℝ)) (c := equatorialDirection base R y))
   have hcomp := mfderiv_comp_apply (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, E2)) (I'' := 𝓡 2)
     (f := c) (g := equatorialDirection base R) 1 hMd' hcMd (1 : ℝ)
   have hcderiv : (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E2) c 1) (1 : ℝ) = y := by

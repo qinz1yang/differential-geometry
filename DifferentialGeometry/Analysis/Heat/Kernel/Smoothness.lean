@@ -66,7 +66,7 @@ private theorem heatKernel_pair_jet_uniform (g : SmoothRiemannianMetric I M)
     refine ((ContinuousMultilinearMap.norm_compContinuousLinearMap_le _ _).trans ?_).trans
       (hα j hj i z.1 hz.1)
     have hprod : (∏ _j : Fin j, ‖F‖) ≤ 1 :=
-      Finset.prod_le_one (fun _ _ => norm_nonneg F) (fun _ _ => ContinuousLinearMap.norm_fst_le ..)
+      Finset.prod_le_one₀ (fun _ _ => norm_nonneg F) (fun _ _ => ContinuousLinearMap.norm_fst_le ..)
     exact mul_le_of_le_one_right (norm_nonneg _) hprod
   have hright (j : Nat) (hj : j ≤ N) :
       ‖iteratedFDerivWithin Real j (fun q : EuclN × EuclN => ψβ i q.2) (Oα ×ˢ Oβ) z‖ ≤
@@ -82,7 +82,7 @@ private theorem heatKernel_pair_jet_uniform (g : SmoothRiemannianMetric I M)
     refine ((ContinuousMultilinearMap.norm_compContinuousLinearMap_le _ _).trans ?_).trans
       (hβ j hj i z.2 hz.2)
     have hprod : (∏ _j : Fin j, ‖F‖) ≤ 1 :=
-      Finset.prod_le_one (fun _ _ => norm_nonneg F) (fun _ _ => ContinuousLinearMap.norm_snd_le ..)
+      Finset.prod_le_one₀ (fun _ _ => norm_nonneg F) (fun _ _ => ContinuousLinearMap.norm_snd_le ..)
     exact mul_le_of_le_one_right (norm_nonneg _) hprod
   have hbase : 0 ≤ 1 + TensorEigenIdx.lambda i := by
     linarith [tensor_lambda_nonneg (I := I) (M := M) i]

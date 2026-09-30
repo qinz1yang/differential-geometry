@@ -11,14 +11,14 @@ theorem IsPLSphere.exists_innermost_disk_subset {S P : Set E} (hS : IsPLSphere 2
     (hJ : ∀ i, IsPLSphere 1 (J i)) (hJS : ∀ i, J i ⊆ S)
     (hdisj : Pairwise fun i j => Disjoint (J i) (J j))
     (hexists : ∃ (i : ι) (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ P ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ P ∧
         q '' stdSimplexBoundary 2 = J i) :
     ∃ (i : ι) (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ P ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ P ∧
         q '' stdSimplexBoundary 2 = J i ∧ ∀ j, j ≠ i → Disjoint D (J j) := by
   classical
   have hside : ∀ {D Y : Set E} {q : (Fin 3 → ℝ) → E} {i : ι},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D → D ⊆ S →
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D → D ⊆ S →
       q '' stdSimplexBoundary 2 = J i → IsPreconnected Y → Y ⊆ S →
       Disjoint Y (J i) → Y ⊆ D ∨ Disjoint D Y := by
     intro D Y q i hq hDS hqJ hY hYS hYJ
@@ -40,7 +40,7 @@ theorem IsPLSphere.exists_innermost_disk_subset {S P : Set E} (hS : IsPLSphere 2
         rw [hmeet] at hy
         exact Set.disjoint_left.mp hYJ hyY hy)
   have hex : ∃ n, ∃ (i : ι) (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ P ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ P ∧
         q '' stdSimplexBoundary 2 = J i ∧ {j | j ≠ i ∧ J j ⊆ D}.ncard = n := by
     obtain ⟨i₀, D₀, q₀, hq₀, hD₀P, hq₀J⟩ := hexists
     exact ⟨_, i₀, D₀, q₀, hq₀, hD₀P, hq₀J, rfl⟩

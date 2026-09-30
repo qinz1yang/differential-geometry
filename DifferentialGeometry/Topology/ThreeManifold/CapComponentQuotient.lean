@@ -158,19 +158,19 @@ def pairedBallUncappingHomeomorph :
   constructor
   · rintro ⟨a, z, ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩⟩
     · exact ⟨a, -z, Or.inl ⟨hB a false z, by
-        simpa only [if_true, boundaryAttachment_apply] using
+        simpa only [ite_true, boundaryAttachment_apply] using
           hB a true (boundaryAttachment.val z)⟩⟩
     · exact ⟨a, -z, Or.inr ⟨hB a false z, by
-        simpa only [if_true, boundaryAttachment_apply] using
+        simpa only [ite_true, boundaryAttachment_apply] using
           hB a true (boundaryAttachment.val z)⟩⟩
   · rintro ⟨a, z, h | h⟩
     · refine ⟨a, -z, Or.inl ⟨J.injective ?_, J.injective ?_⟩⟩
       · exact h.1.trans (by simpa using (hB a false (-z)).symm)
-      · exact h.2.trans (by simpa only [boundaryAttachment_apply, neg_neg, if_true] using
+      · exact h.2.trans (by simpa only [boundaryAttachment_apply, neg_neg, ite_true] using
           (hB a true (boundaryAttachment.val (-z))).symm)
     · refine ⟨a, -z, Or.inr ⟨J.injective ?_, J.injective ?_⟩⟩
       · exact h.1.trans (by simpa using (hB a false (-z)).symm)
-      · exact h.2.trans (by simpa only [boundaryAttachment_apply, neg_neg, if_true] using
+      · exact h.2.trans (by simpa only [boundaryAttachment_apply, neg_neg, ite_true] using
           (hB a true (boundaryAttachment.val (-z))).symm)
 
 @[simp] theorem pairedBallUncappingHomeomorph_mk

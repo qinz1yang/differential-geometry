@@ -25,7 +25,7 @@ theorem interiorIndexSum_eq_finsum :
         (hisolated p p.property) (hinterior p p.property) := by
   classical
   rw [interiorIndexSum,← finsum_eq_sum_of_fintype]
-  exact finsum_comp_equiv (Equiv.setCongr hfinite.coe_toFinset)
+  exact finsum_comp_equiv (Set.equivOfEq hfinite.coe_toFinset)
     (f := fun p : {x | V x = 0} => interiorIndex I V p
       (hisolated p p.property) (hinterior p p.property))
 
@@ -62,7 +62,7 @@ theorem interiorIndexSum_neg :
   have hz : {x | (-V) x = 0} = {x | V x = 0} := by
     ext x
     exact neg_eq_zero
-  let e := Equiv.setCongr hz
+  let e := Set.equivOfEq hz
   rw [interiorIndexSum_eq_finsum,interiorIndexSum_eq_finsum]
   calc
     _ = ∑ᶠ p : {x | (-V) x = 0}, (-1 : ℤ) ^ (d + 1) *
@@ -120,7 +120,7 @@ theorem interiorIndexSumOn_eq_of_germ (W : ∀ x : M, TangentSpace I x)
       exact ⟨(hVW x hxS).eq_of_nhds.symm.trans hx,hxS⟩
     · rintro ⟨hx,hxS⟩
       exact ⟨(hVW x hxS).eq_of_nhds.trans hx,hxS⟩
-  let e := Equiv.setCongr hz
+  let e := Set.equivOfEq hz
   rw [interiorIndexSumOn_eq_finsum,interiorIndexSumOn_eq_finsum]
   calc
     _ = ∑ᶠ p : {x | V x = 0 ∧ x ∈ S}, interiorIndex I W (e p)

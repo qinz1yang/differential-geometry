@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.ChartBound
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import Mathlib.Topology.Order.Compact
+open DifferentialGeometry.TensorMetric
+  (fiberNormSqSummand
+    riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

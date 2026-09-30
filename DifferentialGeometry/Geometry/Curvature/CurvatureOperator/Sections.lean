@@ -306,7 +306,7 @@ private lemma riemannSec_smul_third_smooth
     have : (2 : WithTop ℕ∞) ≤ ∞ := by
       have h1 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
         exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-      simpa using h1
+      exact h1
     exact (hf x).of_le this
   have hf_mdiff : MDiff f := hf.mdifferentiable (by simp)
   have hZ_mdiff : MDiff (T% Z) := hZ.mdifferentiable (by simp)

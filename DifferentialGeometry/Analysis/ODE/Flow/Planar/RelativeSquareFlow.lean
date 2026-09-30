@@ -80,9 +80,9 @@ theorem exists_boundary_fixed_square_reconstruction
   have hfid (p y : ℝ) (hy : y ≤ 0 ∨ 1 ≤ y) : f (p, y) = y := by
     rw [show f (p, y) = extendIntervalById 0 1 g (κ p, y) from (hEprop _ (hκrange p)).1 y]
     by_cases hi : y ∈ Icc (0 : ℝ) 1
-    · rw [extendIntervalById, if_pos hi]
+    · rw [extendIntervalById, ite_eq_left hi]
       exact (hgfix _ (hκrange p) y hi (hy.imp (fun h ↦ by linarith) (fun h ↦ by linarith))).2
-    · exact if_neg hi
+    · exact ite_eq_right hi
   let ε : ℝ := min η (1 / 4)
   have hε : 0 < ε := lt_min hη (by norm_num)
   have hεη : ε ≤ η := min_le_left _ _
@@ -144,7 +144,7 @@ theorem exists_boundary_fixed_square_reconstruction
         rw [show f (p, rightEdgeExitMap φ τ (κ p, z.im)) =
           extendIntervalById 0 1 g (κ p, rightEdgeExitMap φ τ (κ p, z.im)) from
             (hEprop _ (hκrange p)).1 _]
-        rw [extendIntervalById, if_pos hyplus]
+        rw [extendIntervalById, ite_eq_left hyplus]
         exact (hgprop _ (hκrange p)).2.2.1 z.im hAy
       change K p (A (κ p, z)) = z
       rw [ha, (hKprop p).1]
@@ -155,7 +155,7 @@ theorem exists_boundary_fixed_square_reconstruction
       rw [ha]
       apply hKfix
       rw [show f (p, z.im) = extendIntervalById 0 1 g (κ p, z.im) from (hEprop _ (hκrange p)).1 _]
-      rw [extendIntervalById, if_pos hAy]
+      rw [extendIntervalById, ite_eq_left hAy]
       exact (hgfix _ (hκrange p) z.im hAy hyedge).2
     · have hyedge : z.im ≤ δ ∨ 1 - δ ≤ z.im := Or.inr (by linarith)
       have ha : A (κ p, z) = z := by simpa only [hrepr] using hstrip.2.2 z.re hyedge
@@ -163,7 +163,7 @@ theorem exists_boundary_fixed_square_reconstruction
       rw [ha]
       apply hKfix
       rw [show f (p, z.im) = extendIntervalById 0 1 g (κ p, z.im) from (hEprop _ (hκrange p)).1 _]
-      rw [extendIntervalById, if_pos hAy]
+      rw [extendIntervalById, ite_eq_left hAy]
       exact (hgfix _ (hκrange p) z.im hAy hyedge).2
   refine ⟨D, hDone, F, G, hF, hG, ?_, ε, hε, by linarith, fun p ↦ ?_⟩
   · intro i hi hexitid z _
@@ -171,12 +171,12 @@ theorem exists_boundary_fixed_square_reconstruction
     have hfi (y : ℝ) : f (i, y) = y := by
       rw [show f (i, y) = extendIntervalById 0 1 g (κ i, y) from (hEprop _ (hκrange i)).1 y, hκi]
       by_cases hy : y ∈ Icc (0 : ℝ) 1
-      · rw [extendIntervalById, if_pos hy]
+      · rw [extendIntervalById, ite_eq_left hy]
         have hip : i ∈ Icc (0 : ℝ) 1 := hκi ▸ hκrange i
         have he := (hgprop i hip).2.2.1 y hy
         rw [hexitid y hy] at he
         exact he
-      · exact if_neg hy
+      · exact ite_eq_right hy
     change K i (A (κ i, z)) = A (i, z)
     rw [hκi]
     exact hKfix i _ (hfi _)

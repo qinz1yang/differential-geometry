@@ -5,10 +5,9 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetr
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.TensorMetric
 
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 open DifferentialGeometry.Integral.Connection
@@ -61,4 +60,4 @@ theorem reLowerPairSq_le (g : SmoothRiemannianMetric I M) {s : ℕ}
   exact htr
 
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.TensorMetric

@@ -14,7 +14,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLBall.exists_neighborhood_pair_of_nested_disks {D M U : Set E}
     (hD : IsPLBall 2 D) (hdim : Module.finrank ℝ E = 3) {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) M)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) M)
     (hDM : D ⊆ r '' openSimplex (stdVertices 1)) (hU : IsOpen U) (hDU : D ⊆ U) :
     ∃ N Q₁ Q₂ DQ : Set E, IsPLBall 3 N ∧ IsPLBall 3 Q₁ ∧ IsPLBall 3 Q₂ ∧
       Q₁ ∪ Q₂ = N ∧ Q₁ ∩ Q₂ = DQ ∧ IsPLBall 2 DQ ∧ N ∩ M = DQ ∧

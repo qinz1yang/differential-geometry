@@ -49,6 +49,9 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -434,10 +437,10 @@ private theorem operatorFieldApplication_integrated_grid_twoTerm_mixed
           (I := I) (M := M) g 0 s₂ m hm1).choose_spec.2 T ΛT hΛT hTsup l hlpos hml
         have hCSf_m : (exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le_rs
             (I := I) (M := M) g r s₁ m hm1).choose = CSf m := by
-          simp only [hCSf, dif_pos hm1]
+          simp only [hCSf, dite_eq_left hm1]
         have hCTf_m : (exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le_rs
             (I := I) (M := M) g 0 s₂ m hm1).choose = CTf m := by
-          simp only [hCTf, dif_pos hm1]
+          simp only [hCTf, dite_eq_left hm1]
         rw [hCSf_m] at hSe
         rw [hCTf_m] at hTe
         rw [mul_div_assoc 2 (i : ℝ) m, ← hwi] at hSe

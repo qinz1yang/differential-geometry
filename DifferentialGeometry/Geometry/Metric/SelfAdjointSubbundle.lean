@@ -54,9 +54,14 @@ private theorem map_selfAdjoint_conj
   ext A
   constructor
   · rintro ⟨B, hB, rfl⟩
-    exact IsSelfAdjoint.map hB e.conjStarAlgEquiv
+    have hB' : IsSelfAdjoint B := hB
+    have hmap : IsSelfAdjoint (e.conjStarAlgEquiv B) := hB'.map e.conjStarAlgEquiv
+    exact hmap
   · intro hA
-    refine ⟨e.conjStarAlgEquiv.symm A, IsSelfAdjoint.map hA e.conjStarAlgEquiv.symm, ?_⟩
+    have hA' : IsSelfAdjoint A := hA
+    have hmap : IsSelfAdjoint (e.conjStarAlgEquiv.symm A) :=
+      hA'.map e.conjStarAlgEquiv.symm
+    refine ⟨e.conjStarAlgEquiv.symm A, hmap, ?_⟩
     exact e.conjStarAlgEquiv.apply_symm_apply A
 
 namespace Bundle

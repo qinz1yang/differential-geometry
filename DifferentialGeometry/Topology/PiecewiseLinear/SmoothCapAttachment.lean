@@ -26,7 +26,7 @@ noncomputable def halfSpaceShiftFun (s : ℝ) (v : EuclideanSpace ℝ (Fin 3)) :
 
 theorem halfSpaceShiftFun_val {s : ℝ} {v : EuclideanSpace ℝ (Fin 3)} (h : 0 ≤ v 0 + s) :
     (halfSpaceShiftFun s v).val = v + EuclideanSpace.single 0 s := by
-  simp only [halfSpaceShiftFun, dif_pos h]
+  simp only [halfSpaceShiftFun, dite_eq_left h]
 
 noncomputable def halfSpaceShift (s : ℝ) :
     OpenPartialHomeomorph (EuclideanSpace ℝ (Fin 3)) (EuclideanHalfSpace 3) where
@@ -146,15 +146,15 @@ theorem exists_isManifold_of_isOpenEmbedding_of_ballChart
       chartAt := chartFn
       mem_chart_source := fun x => by
         by_cases hx : x ∈ ι '' U
-        · simp only [chartFn, dif_pos hx]
+        · simp only [chartFn, dite_eq_left hx]
           exact ⟨_, mem_chart_source _ _, hx.choose_spec.2⟩
-        · simp only [chartFn, dif_neg hx]
+        · simp only [chartFn, dite_eq_right hx]
           exact hCsrc x ((hcov x).resolve_left hx)
       chart_mem_atlas := fun x => by
         by_cases hx : x ∈ ι '' U
-        · simp only [chartFn, dif_pos hx]
+        · simp only [chartFn, dite_eq_left hx]
           exact Or.inl ⟨_, rfl⟩
-        · simp only [chartFn, dif_neg hx]
+        · simp only [chartFn, dite_eq_right hx]
           exact Or.inr rfl }
   refine ⟨cs, ?_, ?_⟩
   · apply isManifold_of_contDiffOn (𝓡∂ 3) ∞ X
@@ -213,7 +213,7 @@ theorem exists_isManifold_of_isOpenEmbedding_of_ballChart
             obtain ⟨hvt, hvU⟩ := key y' hy'
             obtain ⟨hΘU, hκ, -⟩ := hbwd _ hvt hvU
             have hk : ΘU ((halfSpaceShift (R + 1)).symm y') =
-                ⟨Θ ((halfSpaceShift (R + 1)).symm y'), hΘU⟩ := dif_pos hΘU
+                ⟨Θ ((halfSpaceShift (R + 1)).symm y'), hΘU⟩ := dite_eq_left hΘU
             change (chartL q) (κ.symm ((halfSpaceShift (R + 1)).symm y')) = _
             rw [hκ, Function.comp_apply, Function.comp_apply, hk]
             exact OpenPartialHomeomorph.lift_openEmbedding_apply (chartAt (EuclideanHalfSpace 3) q)
@@ -228,13 +228,13 @@ theorem exists_isManifold_of_isOpenEmbedding_of_ballChart
             refine (ContMDiffAt.subtypeVal_comp_iff U ΘU _).mp ?_
             apply hΘs.congr_of_eventuallyEq
             filter_upwards [hnbhd] with w hw
-            simp only [Function.comp_apply, ΘU, dif_pos hw]
+            simp only [Function.comp_apply, ΘU, dite_eq_left hw]
           have hq' : ΘU ((halfSpaceShift (R + 1)).symm y) ∈
               (chartAt (EuclideanHalfSpace 3) q).source := by
             obtain ⟨p', hp', hpe⟩ := hy.2
             have hp'eq : p' = ΘU ((halfSpaceShift (R + 1)).symm y) := by
               rw [show ΘU ((halfSpaceShift (R + 1)).symm y) =
-                ⟨Θ ((halfSpaceShift (R + 1)).symm y), hΘU⟩ from dif_pos hΘU]
+                ⟨Θ ((halfSpaceShift (R + 1)).symm y), hΘU⟩ from dite_eq_left hΘU]
               exact hι.injective (hpe.trans hκ)
             rw [← hp'eq]
             exact hp'
@@ -389,7 +389,7 @@ theorem exists_capChart_of_radialCollar
     rintro _ (⟨b, rfl⟩ | ⟨m, hm, rfl⟩)
     · have hle : ‖(Ext b : EuclideanSpace ℝ (Fin 3))‖ ≤ 1 := (Ext b).2
       dsimp only [κinv]
-      rw [hκc, if_pos hle]
+      rw [hκc, ite_eq_left hle]
       have hp : projCB (Ext b) = Ext b := Subtype.ext (hproj1 _ hle)
       rw [hp, Homeomorph.symm_apply_apply]
     · dsimp only [κinv]
@@ -467,11 +467,11 @@ theorem exists_capChart_of_radialCollar
     fun v hv => ?_⟩
   · change κinv v ∈ _
     dsimp only [κinv]
-    rw [if_pos hv]
+    rw [ite_eq_left hv]
     exact ⟨_, rfl⟩
   · change κinv v = _
     dsimp only [κinv]
-    rw [if_neg (not_le.mpr hv)]
+    rw [ite_eq_right (not_le.mpr hv)]
 
 theorem isSmoothHandleStage_adjunction_of_radialCollar
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]

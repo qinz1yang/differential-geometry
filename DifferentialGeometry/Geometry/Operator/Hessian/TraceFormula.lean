@@ -642,10 +642,10 @@ theorem traceFun_hessFun_eq_chartHessTrace_of_orthonormal
   symm
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [Finset.sum_eq_single i]
-  · rw [h_orth i i, if_pos rfl, one_mul]
+  · rw [h_orth i i, ite_eq_left rfl, one_mul]
   · intro j _ hji
     have hij : ¬ i = j := fun h => hji h.symm
-    rw [h_orth i j, if_neg hij, zero_mul]
+    rw [h_orth i j, ite_eq_right hij, zero_mul]
   · intro hi
     exact absurd (Finset.mem_univ i) hi
 

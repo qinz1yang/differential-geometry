@@ -79,13 +79,13 @@ structure PresentedStaticCapFrontier (fixed : StaticCapScaffold) (D : ℝ) (m : 
     (H.event i).transition.trace.presentation
       ((H.event i).transition.trace.capping.cap b.1 x) =
         Sum.inl (inclusion (witness.cap x))
-  retained_point : (x : neckRetainedCollar delta) →
+  retainedPoint : (x : neckRetainedCollar delta) →
     (H.event i).transition.trace.tubes.core
   retained_point_eq : ∀ (x : neckRetainedCollar delta) (hx : x.1 ∈ neckBuffer delta),
-    (retained_point x).1 = (neck.chart ⟨x.1, hx⟩).1
+    (retainedPoint x).1 = (neck.chart ⟨x.1, hx⟩).1
   retained_presentation : ∀ x : neckRetainedCollar delta,
     (H.event i).transition.trace.presentation
-      ((H.event i).transition.trace.capping.coreInclusion (retained_point x)) =
+      ((H.event i).transition.trace.capping.coreInclusion (retainedPoint x)) =
         Sum.inl (inclusion (witness.retained x))
 
 namespace PresentedStaticCapFrontier
@@ -107,7 +107,7 @@ def ofFrontier {fixed : StaticCapScaffold} {D : ℝ} {m : ℕ} {η : ℝ}
   inclusion_metric := F.inclusion_metric
   cap_eq := F.cap_presentation
   attaching_eq := F.attaching_eq
-  retainedPoint := fun x => ⟨F.retained_point x, ⟨_, F.retained_presentation x⟩⟩
+  retainedPoint := fun x => ⟨F.retainedPoint x, ⟨_, F.retained_presentation x⟩⟩
   retained_point_eq := F.retained_point_eq
   retained_eq := F.retained_presentation
 
@@ -121,7 +121,7 @@ def toFrontier {fixed : StaticCapScaffold} {D : ℝ} {m : ℕ} {η : ℝ}
   inclusion_metric := S.inclusion_metric
   attaching_eq := S.attaching_eq
   cap_presentation := S.cap_eq
-  retained_point := fun x => (S.retainedPoint x).1
+  retainedPoint := fun x => (S.retainedPoint x).1
   retained_point_eq := S.retained_point_eq
   retained_presentation := S.retained_eq
 

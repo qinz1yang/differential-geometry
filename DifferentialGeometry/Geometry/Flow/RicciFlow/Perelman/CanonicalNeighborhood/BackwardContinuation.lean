@@ -81,18 +81,18 @@ private theorem nonempty_metricComparisonOn_glue
         filter_upwards [Iio_mem_nhds (htc.trans_lt hcs)] with r hr
         exact propext ⟨fun h => ⟨h.1, hr.le⟩, fun h => ⟨h.1, hr.le.trans hsb⟩⟩
       dsimp [jet]
-      rw [if_pos htc, hnear.derivWithin_eq_of_nhds, derivWithin_congr_set hsets]
+      rw [ite_eq_left htc, hnear.derivWithin_eq_of_nhds, derivWithin_congr_set hsets]
       exact C₁.jet_succ q t ⟨ht.1, htc.trans hcs.le⟩ y hy v
     · have hct : c < t := lt_of_not_ge htc
       have hnear : (fun r => jet q r y v) =ᶠ[𝓝 t] (fun r => C₂.jet q r y v) := by
         filter_upwards [Ioi_mem_nhds hct] with r hr
         dsimp [jet]
-        rw [if_neg (not_le.mpr hr)]
+        rw [ite_eq_right (not_le.mpr hr)]
       have hsets : Icc l b =ᶠ[𝓝 t] Icc a b := by
         filter_upwards [Ioi_mem_nhds (hac.trans hct)] with r hr
         exact propext ⟨fun h => ⟨hr.le, h.2⟩, fun h => ⟨hla.trans h.1, h.2⟩⟩
       dsimp [jet]
-      rw [if_neg htc, hnear.derivWithin_eq_of_nhds, derivWithin_congr_set hsets]
+      rw [ite_eq_right htc, hnear.derivWithin_eq_of_nhds, derivWithin_congr_set hsets]
       exact C₂.jet_succ q t ⟨(hac.trans hct).le, ht.2⟩ y hy v
   · intro t ht y hy v
     split_ifs with htc

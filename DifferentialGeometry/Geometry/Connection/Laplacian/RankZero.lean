@@ -150,11 +150,11 @@ private theorem orthonormal_li
     simp
   rw [map_sum, sum_apply, Finset.sum_eq_single j] at hpair
   · rw [ContinuousLinearMap.map_smul, smul_apply,
-      horth j j, if_pos rfl, smul_eq_mul, mul_one] at hpair
+      horth j j, ite_eq_left rfl, smul_eq_mul, mul_one] at hpair
     exact hpair
   · intro i _ hij
     rw [ContinuousLinearMap.map_smul, smul_apply,
-      horth i j, if_neg (by simpa using hij), smul_zero]
+      horth i j, ite_eq_right (by simpa using hij), smul_zero]
   · intro hj
     exact absurd (Finset.mem_univ j) hj
 

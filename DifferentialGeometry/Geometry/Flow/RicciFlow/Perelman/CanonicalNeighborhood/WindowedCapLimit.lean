@@ -50,7 +50,7 @@ theorem LocalCap.eventually_transport_of_windowed_models
         (W (phi i)).embedding) '' cap.tube ∧
       cap'.core.carrier = (partialDiffeomorphTransMixed (F.partialDiffeomorph i)
         (W (phi i)).embedding) '' cap.core.carrier ∧
-      cap'.tube_map = cap.tube_map.trans
+      cap'.tubeMap = cap.tubeMap.trans
         (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) := by
   classical
   let Psi := fun i => partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding
@@ -69,7 +69,7 @@ theorem LocalCap.eventually_transport_of_windowed_models
     heps.le.trans ((neckModelTolerance_le alpha).trans (by linarith))
   filter_upwards [eventually_all.mpr hnecks, hsource] with i hi hsrc
   choose necks hmap using hi
-  refine ⟨LocalCap.mapOfNeckFamily (cap.mono_eps htol hsmall) (Psi i) hsrc
+  refine ⟨LocalCap.mapOfNeckFamily (cap.monoEps htol hsmall) (Psi i) hsrc
     necks (fun j => hmap j), rfl, rfl, rfl⟩
 
 theorem LocalCap.eventually_transport_with_depth_of_windowed_models
@@ -101,7 +101,7 @@ theorem LocalCap.eventually_transport_with_depth_of_windowed_models
         (W (phi i)).embedding) '' cap.tube ∧
       cap'.core.carrier = (partialDiffeomorphTransMixed (F.partialDiffeomorph i)
         (W (phi i)).embedding) '' cap.core.carrier ∧
-      cap'.tube_map = cap.tube_map.trans
+      cap'.tubeMap = cap.tubeMap.trans
         (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) := by
   let _ : TopologicalSpace L.M := L.topology
   let _ : ChartedSpace ThreeSpace L.M := L.charted
@@ -114,7 +114,7 @@ theorem LocalCap.eventually_transport_with_depth_of_windowed_models
         (continuous_riemannianEDist (L.S.base.metric 0) L.basepoint).continuousAt
   let z : Sphere 2 := ⟨EuclideanSpace.single 0 1, by simp⟩
   have hne : cap.tube.Nonempty := by
-    refine ⟨cap.tube_map (z, 0), ?_⟩
+    refine ⟨cap.tubeMap (z, 0), ?_⟩
     rw [← cap.tube_eq]
     exact ⟨(z, 0), ⟨mem_univ _, by norm_num⟩, rfl⟩
   obtain ⟨y0, hy0, hmin⟩ := cap.isCompact_tube.exists_isMinOn hne hcont.continuousOn
@@ -175,7 +175,7 @@ theorem LocalCap.eventually_transport_with_depth_of_windowed_models
         10000 / Real.sqrt ((S (phi i)).scalar (t (phi i)) (Psi i L.basepoint)) ≤
           metricDistance ((S (phi i)).base.metric (t (phi i))) (Psi i L.basepoint) z) ∧
       cap'.tube = Psi i '' cap.tube ∧ cap'.core.carrier = Psi i '' cap.core.carrier ∧
-      cap'.tube_map = cap.tube_map.trans (Psi i) :=
+      cap'.tubeMap = cap.tubeMap.trans (Psi i) :=
     ⟨cap', hdeep, htube, hcore, hmap⟩
   rwa [hbase] at hout
 

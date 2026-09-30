@@ -99,7 +99,7 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem isPLHomeomorphOn_lineMap_Icc_stdSimplex_two :
     IsPLHomeomorphOn (AffineMap.lineMap (k := ℝ) (![1, 0] : Fin 2 → ℝ) ![0, 1]) (Icc 0 1)
-      (stdSimplex ℝ (Fin 2)) := by
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) := by
   let L : ℝ →ᵃ[ℝ] (Fin 2 → ℝ) := AffineMap.lineMap ![1, 0] ![0, 1]
   have hL0 : ∀ t : ℝ, L t 0 = 1 - t := by
     intro t
@@ -112,7 +112,7 @@ theorem isPLHomeomorphOn_lineMap_Icc_stdSimplex_two :
     simp only [L, AffineMap.lineMap_apply, vsub_eq_sub, vadd_eq_add, Pi.add_apply,
       Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
     simp
-  have hLbij : BijOn L (Icc 0 1) (stdSimplex ℝ (Fin 2)) := by
+  have hLbij : BijOn L (Icc 0 1) (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) := by
     refine ⟨fun t ht => ⟨fun i => ?_, ?_⟩, fun s _ t _ hst => ?_, fun x hx => ?_⟩
     · fin_cases i
       · simp only [Fin.zero_eta, Fin.isValue, hL0]

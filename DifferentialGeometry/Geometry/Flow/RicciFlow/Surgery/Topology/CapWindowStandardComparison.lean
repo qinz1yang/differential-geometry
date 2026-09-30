@@ -23,7 +23,7 @@ theorem exists_standard_comparison_of_cap_window_trace
     ∀ (D ε η : ℝ) (hD : 0 < D), 0 < ε → 0 < η → ∀ N : ℕ,
     ∃ R : ℝ, D + 1 < R ∧ ∃ m₀ : ℕ, 4 ≤ m₀ ∧
     ∃ ζ₀ δ₀ : ℝ, 0 < ζ₀ ∧ ζ₀ ≤ 1 / 2 ∧ 0 < δ₀ ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (p₀ : CutoffParameters)
+    ∀ (H : RetainedCoreHistory.{u}) (p₀ : CutoffParameters)
       (δbound ρbound : ℝ) {p : CutoffParameters}
       (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -116,7 +116,7 @@ theorem exists_standard_comparison_of_cap_window_trace
   obtain ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, hwindow⟩ :=
     hwindow (I := ThreeModel) D ε η hD hε hη N
   refine ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, ?_⟩
-  intro P₀ H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ θcap hqcan hθ hHI hlow
+  intro H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ θcap hqcan hθ hHI hlow
     k s Gk hGk hderiv t hkt hts hcur j hl y A b x hanchor hage hxD hbirth haq
   obtain ⟨-, hradius, horder, haccuracy, -, hcanonical, hdelta, -⟩ := hfam
   obtain ⟨x₀, δ, kd, d, w, -, hwmetric, -⟩ := hcanonical j b

@@ -123,7 +123,7 @@ theorem gluedSphereMap_apply_of_nonneg (n : ℕ)
     (p : sphere (0 : EuclideanSpace ℝ (Fin (n + 2))) 1)
     (hp : 0 ≤ hemisphereLastCoordinate (n + 1) p) :
     gluedSphereMap n u v h p = u (hemisphereBall (n + 1) p) := by
-  simp only [gluedSphereMap, ContinuousMap.coe_mk, if_pos hp]
+  simp only [gluedSphereMap, ContinuousMap.coe_mk, ite_eq_left hp]
 
 theorem gluedSphereMap_apply_of_neg (n : ℕ)
     (u v : C(closedBall (0 : EuclideanSpace ℝ (Fin (n + 1))) 1, X))
@@ -132,7 +132,7 @@ theorem gluedSphereMap_apply_of_neg (n : ℕ)
     (p : sphere (0 : EuclideanSpace ℝ (Fin (n + 2))) 1)
     (hp : hemisphereLastCoordinate (n + 1) p < 0) :
     gluedSphereMap n u v h p = v (hemisphereBall (n + 1) p) := by
-  simp only [gluedSphereMap, ContinuousMap.coe_mk, if_neg (not_le.mpr hp)]
+  simp only [gluedSphereMap, ContinuousMap.coe_mk, ite_eq_right (not_le.mpr hp)]
 
 def OpenCoverLinkingRealization (n : ℕ) (A B : Set X) (hA : IsOpen A) (hB : IsOpen B)
     (hcover : A ∪ B = univ) : Prop :=

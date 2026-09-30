@@ -42,6 +42,17 @@ theorem IntrinsicBallChart.pullbackMetricCoefficients_eq_intrinsicFrameMetric
   ext v w
   rw [pullbackMetricCoefficients_apply, intrinsicFrameMetric_apply]
   rw [hD, c.hom_eq hz]
+  have hcast :
+      (tangentSpaceCast I (intrinsicFramedExp g hEnorm p z)
+          (intrinsicFramedExp g hEnorm p z) :
+        TangentSpace I (intrinsicFramedExp g hEnorm p z) →L[ℝ]
+          TangentSpace I (intrinsicFramedExp g hEnorm p z)) =
+      ContinuousLinearMap.id ℝ _ := by
+    apply ContinuousLinearMap.ext
+    intro v
+    rfl
+  rw [hcast]
+  simp
 
 theorem IntrinsicBallChart.pullbackMetricCoefficients_eq_pullbackForm
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
@@ -192,7 +203,7 @@ theorem IntrinsicBallChart.pullbackMetricCoefficients_convergence_of_local_inclu
     apply hcoord.congr hD _ (fun _ _ => rfl)
     intro k z hz
     obtain ⟨x, _, rfl⟩ := hz
-    simp only [Function.comp_apply, dif_pos x.property, hjbar x]
+    simp only [Function.comp_apply, dite_eq_left x.property, hjbar x]
 
 end DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 

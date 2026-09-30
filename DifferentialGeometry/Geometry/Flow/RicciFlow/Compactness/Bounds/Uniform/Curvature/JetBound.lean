@@ -8,6 +8,17 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.SourceEstimates
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Metric.Construction.ConvexCombination
+
+open DifferentialGeometry.SmoothRiemannianMetric
+  (abs_metric_inner_le_sqrt_metric_quadratic)
+open DifferentialGeometry.TensorMetric
+  (covariantTensorInnerPointwise
+   lowerAllUpperIndices
+   lowerAllUpperIndices_apply
+   riemannianFiberNormSq
+   riemannianFiberNormSq_eq_tensorInnerPointwise
+   tensorInnerPointwise
+   tensorInnerPointwise_0s_eq_diag_sum_orthoFrame)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -558,15 +569,15 @@ theorem metricDifference_jetEnvelope (gBase g₀ : SmoothRiemannianMetric I M) {
     · simp only []
       with_unfolding_all exact
         (metricDifference_order0_bound (I := I) (M := M) gBase g₀ hΛ hcomp x)
-    · simp only [if_neg (by norm_num : ¬(1 : ℕ) = 0)]
+    · simp only [ite_eq_right (by norm_num : ¬(1 : ℕ) = 0)]
       with_unfolding_all exact
         (metricDifference_orderPos_bound (I := I) (M := M) gBase g₀ 0 hjet1 x)
-    · simp only [if_neg (by norm_num : ¬(2 : ℕ) = 0)]
+    · simp only [ite_eq_right (by norm_num : ¬(2 : ℕ) = 0)]
       with_unfolding_all exact
         (metricDifference_orderPos_bound (I := I) (M := M) gBase g₀ 1 hjet2 x)
   · rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
-      Finset.sum_range_zero, zero_add, if_pos (rfl : (0 : ℕ) = 0),
-      if_neg (by norm_num : ¬(1 : ℕ) = 0), if_neg (by norm_num : ¬(2 : ℕ) = 0)]
+      Finset.sum_range_zero, zero_add, ite_eq_left (rfl : (0 : ℕ) = 0),
+      ite_eq_right (by norm_num : ¬(1 : ℕ) = 0), ite_eq_right (by norm_num : ¬(2 : ℕ) = 0)]
     ring
 
 theorem uniformCurvatureSup_singleLink

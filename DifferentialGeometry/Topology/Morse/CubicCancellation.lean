@@ -303,12 +303,12 @@ theorem sigNeg_chartHessianAt_cubic_suspension (a : ℝ) (p : ℝ × ℝ) :
       ext i
       fin_cases i <;> simp [w]
       linarith
-    rw [hw, Set.ncard_singleton, if_pos hp]
+    rw [hw, Set.ncard_singleton, ite_eq_left hp]
   · have hw : {i | w i < 0} = (∅ : Set (Fin 2)) := by
       ext i
       fin_cases i <;> simp [w]
       linarith
-    rw [hw, Set.ncard_empty, if_neg hp]
+    rw [hw, Set.ncard_empty, ite_eq_right hp]
 
 theorem strictAntiOn_cubic_between_critical_points {a : ℝ} (ha : 0 ≤ a) :
     StrictAntiOn (fun x : ℝ => x ^ 3 / 3 - a * x)

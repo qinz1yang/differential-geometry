@@ -22,9 +22,9 @@ private theorem barycentricCoordinate_centroid
     s.centroid_mem_convexHull hne
   rw [barycentricCoordinate_eq K hs hmem]
   by_cases hz : z ∈ s
-  · rw [if_pos hz, weights_centroid (K.indep hs) (Finset.Subset.refl s) hne hz,
-      if_pos hz]
-  · simp only [if_neg hz]
+  · rw [ite_eq_left hz, weights_centroid (K.indep hs) (Finset.Subset.refl s) hne hz,
+      ite_eq_left hz]
+  · simp only [ite_eq_right hz]
 
 open Classical in
 theorem centroid_mem_frontier_graphDualCell_of_mixed_face
@@ -49,11 +49,11 @@ theorem centroid_mem_frontier_graphDualCell_of_mixed_face
   have hnot : s.centroid ℝ id ∉ interior (derivedNeighborhood M L).space := by
     apply notMem_interior_derivedNeighborhood_of_barycentricCoordinate_le
       ((barycentricSubdivision M).convexHull_subset_space hsM hmem) hw
-    · rw [barycentricCoordinate_centroid _ hsM, if_pos hws]
+    · rw [barycentricCoordinate_centroid _ hsM, ite_eq_left hws]
       exact hpos
     · intro z _
       rw [barycentricCoordinate_centroid _ hsM, barycentricCoordinate_centroid _ hsM,
-        if_pos hws]
+        ite_eq_left hws]
       split_ifs
       · exact le_rfl
       · exact hpos.le

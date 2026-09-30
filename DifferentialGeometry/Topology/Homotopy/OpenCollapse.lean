@@ -23,11 +23,11 @@ def openCollapse (U : Set Y) (y : Y) : OnePoint U :=
     exact if h : y ∈ U then (⟨y, h⟩ : U) else OnePoint.infty
 
 theorem openCollapse_of_mem (U : Set Y) (y : U) : openCollapse U y = (y : OnePoint U) := by
-  simp only [openCollapse, dif_pos y.property]
+  simp only [openCollapse, dite_eq_left y.property]
 
 theorem openCollapse_of_notMem (U : Set Y) {y : Y} (hy : y ∉ U) :
     openCollapse U y = OnePoint.infty := by
-  simp only [openCollapse, dif_neg hy]
+  simp only [openCollapse, dite_eq_right hy]
 
 
 
@@ -43,13 +43,13 @@ theorem continuous_openCollapse [TopologicalSpace Y] [T2Space Y] (U : Set Y) (hU
         Subtype.val '' ((fun u : U => (u : OnePoint U)) ⁻¹' V)ᶜ := by
       ext y
       by_cases hy : y ∈ U
-      · simp only [mem_compl_iff, mem_preimage, openCollapse, dif_pos hy, mem_image]
+      · simp only [mem_compl_iff, mem_preimage, openCollapse, dite_eq_left hy, mem_image]
         constructor
         · intro h
           exact ⟨⟨y, hy⟩, h, rfl⟩
         · rintro ⟨u, hu, rfl⟩
           exact hu
-      · simp only [mem_compl_iff, mem_preimage, openCollapse, dif_neg hy, hinf, not_true_eq_false,
+      · simp only [mem_compl_iff, mem_preimage, openCollapse, dite_eq_right hy, hinf, not_true_eq_false,
           mem_image]
         refine ⟨False.elim, ?_⟩
         rintro ⟨u, _, hu⟩
@@ -60,13 +60,13 @@ theorem continuous_openCollapse [TopologicalSpace Y] [T2Space Y] (U : Set Y) (hU
         Subtype.val '' ((fun u : U => (u : OnePoint U)) ⁻¹' V) := by
       ext y
       by_cases hy : y ∈ U
-      · simp only [mem_preimage, openCollapse, dif_pos hy, mem_image]
+      · simp only [mem_preimage, openCollapse, dite_eq_left hy, mem_image]
         constructor
         · intro h
           exact ⟨⟨y, hy⟩, h, rfl⟩
         · rintro ⟨u, hu, rfl⟩
           exact hu
-      · simp only [mem_preimage, openCollapse, dif_neg hy, hinf, mem_image]
+      · simp only [mem_preimage, openCollapse, dite_eq_right hy, hinf, mem_image]
         refine ⟨False.elim, ?_⟩
         rintro ⟨u, _, hu⟩
         exact hy (hu ▸ u.property)

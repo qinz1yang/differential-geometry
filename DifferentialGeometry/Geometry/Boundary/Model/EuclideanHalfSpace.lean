@@ -67,13 +67,13 @@ private def tailFun (n : ℕ) [NeZero n] (y : Fin n → ℝ) : Fin (n - 1) → �
   fun j => y (succIndex n j)
 
 private theorem consZeroFun_zero (n : ℕ) [NeZero n] (x : Fin (n - 1) → ℝ) :
-    consZeroFun n x 0 = 0 := dif_pos rfl
+    consZeroFun n x 0 = 0 := dite_eq_left rfl
 
 private theorem consZeroFun_succIndex (n : ℕ) [NeZero n]
     (x : Fin (n - 1) → ℝ) (j : Fin (n - 1)) :
     consZeroFun n x (succIndex n j) = x j := by
   unfold consZeroFun
-  rw [dif_neg (succIndex_ne_zero n j), predIndex_succIndex]
+  rw [dite_eq_right (succIndex_ne_zero n j), predIndex_succIndex]
 
 private theorem tailFun_consZeroFun (n : ℕ) [NeZero n] (x : Fin (n - 1) → ℝ) :
     tailFun n (consZeroFun n x) = x := by
@@ -86,8 +86,8 @@ private theorem consZeroFun_tailFun (n : ℕ) [NeZero n] (y : Fin n → ℝ)
   funext i
   unfold consZeroFun tailFun
   by_cases h : i = (0 : Fin n)
-  · rw [dif_pos h, h]; exact hy.symm
-  · rw [dif_neg h, succIndex_predIndex]
+  · rw [dite_eq_left h, h]; exact hy.symm
+  · rw [dite_eq_right h, succIndex_predIndex]
 
 private def consZeroCLM (n : ℕ) [NeZero n] :
     (Fin (n - 1) → ℝ) →L[ℝ] (Fin n → ℝ) :=
@@ -103,8 +103,8 @@ private theorem consZeroCLM_apply (n : ℕ) [NeZero n] (x : Fin (n - 1) → ℝ)
   unfold consZeroCLM consZeroFun
   rw [ContinuousLinearMap.pi_apply]
   by_cases h : i = (0 : Fin n)
-  · rw [dif_pos h, dif_pos h]; rfl
-  · rw [dif_neg h, dif_neg h]; rfl
+  · rw [dite_eq_left h, dite_eq_left h]; rfl
+  · rw [dite_eq_right h, dite_eq_right h]; rfl
 
 private def tailCLM (n : ℕ) [NeZero n] :
     (Fin n → ℝ) →L[ℝ] (Fin (n - 1) → ℝ) :=
@@ -230,7 +230,7 @@ theorem range_inclEuclidean (n : ℕ) [NeZero n] :
     · rw [h, consZeroFun_zero]
       exact hy.symm
     · unfold consZeroFun
-      rw [dif_neg h]
+      rw [dite_eq_right h]
       rw [projEuclideanCLM_apply_coord]
       unfold tailFun
       rw [succIndex_predIndex]

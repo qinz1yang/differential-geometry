@@ -26,7 +26,7 @@ noncomputable def smoothSchoenfliesBallFilling : Prop :=
   ∀ (e : S² → E³) (he : IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e),
     ∃ D : E³ ≃ₘ[ℝ] E³,
       D '' ball (0 : E³) 1 =
-        (jordanBrouwer_openThreeSpace e he (Diffeomorph.refl 𝓘(ℝ, E³) E³ ∞)).compactSide
+        (smoothSphereSidesOpenThreeSpace e he (Diffeomorph.refl 𝓘(ℝ, E³) E³ ∞)).compactSide
 
 theorem smoothSchoenfliesThree_iff_smoothSchoenfliesBallFilling :
     smoothSchoenfliesThree ↔ smoothSchoenfliesBallFilling := by
@@ -44,7 +44,7 @@ theorem smoothSchoenfliesThree_iff_smoothSchoenfliesBallFilling :
           rw [frontier_ball 0 one_ne_zero]
       _ = frontier ((D : E³ → E³) '' ball (0 : E³) 1) :=
           Homeomorph.image_frontier D.toHomeomorph _
-      _ = frontier (jordanBrouwer_openThreeSpace e he
+      _ = frontier (smoothSphereSidesOpenThreeSpace e he
             (Diffeomorph.refl 𝓘(ℝ, E³) E³ ∞)).compactSide := by rw [hD]
       _ = range e := SphereSides.frontier_compactSide _
 
@@ -69,7 +69,7 @@ theorem exists_diffeomorph_image_sphere_of_diffeomorph_comp_coe (Φ : E³ ≃ₘ
 theorem exists_diffeomorph_image_ball_of_diffeomorph_comp_coe (Φ : E³ ≃ₘ[ℝ] E³) :
     ∃ D : E³ ≃ₘ[ℝ] E³,
       D '' ball (0 : E³) 1 =
-        (jordanBrouwer_openThreeSpace (Φ ∘ (Subtype.val : S² → E³))
+        (smoothSphereSidesOpenThreeSpace (Φ ∘ (Subtype.val : S² → E³))
           (isSmoothEmbedding_coe_sphereThree.postcomp_diffeomorph Φ)
           (Diffeomorph.refl 𝓘(ℝ, E³) E³ ∞)).compactSide := by
   let d₀ := standardUnitSphereSides.image Φ.toHomeomorph
@@ -82,7 +82,7 @@ theorem exists_diffeomorph_image_ball_of_diffeomorph_comp_coe (Φ : E³ ≃ₘ[�
   refine ⟨Φ, ?_⟩
   rw [← hB]
   exact (SphereSides.side_sets_unique_of_core_properties
-    (jordanBrouwer_openThreeSpace (Φ ∘ (Subtype.val : S² → E³))
+    (smoothSphereSidesOpenThreeSpace (Φ ∘ (Subtype.val : S² → E³))
       (isSmoothEmbedding_coe_sphereThree.postcomp_diffeomorph Φ)
       (Diffeomorph.refl 𝓘(ℝ, E³) E³ ∞)).toSphereSides
     d₀.compactSide d₀.endSide d₀.isOpen_compactSide d₀.isOpen_endSide

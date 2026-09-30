@@ -10,9 +10,7 @@ variable {X Y : Type*} [NormedAddCommGroup X] [NormedAddCommGroup Y] {T : ℝ}
 
 theorem memLp_mul_norm_add_const (f : timeL2 X T) (K D : ℝ) :
     MemLp (fun t => K * ‖f t‖ + D) 2 (timeMeasure T) := by
-  convert ((Lp.memLp f).norm.const_smul K).add (memLp_const D) using 1
-  ext t
-  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+  exact ((Lp.memLp f).norm.const_smul K).add (memLp_const D)
 
 def affineNormMajorant (f : timeL2 X T) (K D : ℝ) : timeL2 ℝ T :=
   (memLp_mul_norm_add_const f K D).toLp (fun t => K * ‖f t‖ + D)

@@ -113,7 +113,7 @@ theorem traceNormalizedCurvatureEndomorphism_pullback_kernel_covariantly_invaria
           (cov r) (cov r) (fun z => A r z) y 0 +
         (curvatureOperatorReactionEndomorphism3 (A r y).toLinearMap).toContinuousLinearMap) r := by
     intro r hr y
-    simpa only [cov, dif_pos hr, map_zero, add_zero] using
+    simpa only [cov, dite_eq_left hr, map_zero, add_zero] using
       ((hp r hr).2.2 A hA y).hasDerivAt (isOpen_Ioo.mem_nhds hr)
   have hArank : ∀ r ∈ Ioo a b, ∀ y, Module.finrank ℝ (A r y).range = q := by
     intro r hr y
@@ -137,6 +137,6 @@ theorem traceNormalizedCurvatureEndomorphism_pullback_kernel_covariantly_invaria
     funext y
     rw [hA t ht y]
   rw [heq] at hinv
-  simpa only [cov, dif_pos ht, pull, hslice] using hinv
+  simpa only [cov, dite_eq_left ht, pull, hslice] using hinv
 
 end DifferentialGeometry.PDE.RicciFlow

@@ -29,11 +29,11 @@ theorem WindowedModelWitness.mono_of_regular_strict_of_lt
     (hreg : ∀ s ∈ Ioo (-modelDepth delta) 0, parabolicTime t (S.scalar t x) s ∈ D.regular) :
     ∀ a b, a + 2 * b ≤ modelOrder eps → ∀ s ∈ Icc (-modelDepth eps) 0,
       ∀ y ∈ riemannianClosedBallOf
-          ((W.mono_of_regular hS hde.le he hreg).model.S.base.metric 0)
-          (W.mono_of_regular hS hde.le he hreg).model.basepoint (modelRadius eps),
-        tensor02CovDerivNormWith a ((W.mono_of_regular hS hde.le he hreg).comparison.jet b s)
-          ((W.mono_of_regular hS hde.le he hreg).model.S.base.metric s)
-          ((W.mono_of_regular hS hde.le he hreg).model.S.base.metric s) y < eps := by
+          ((W.monoOfRegular hS hde.le he hreg).model.S.base.metric 0)
+          (W.monoOfRegular hS hde.le he hreg).model.basepoint (modelRadius eps),
+        tensor02CovDerivNormWith a ((W.monoOfRegular hS hde.le he hreg).comparison.jet b s)
+          ((W.monoOfRegular hS hde.le he hreg).model.S.base.metric s)
+          ((W.monoOfRegular hS hde.le he hreg).model.S.base.metric s) y < eps := by
   intro a b hab s hs y hy
   have ht : s ∈ Icc (-modelDepth delta) 0 :=
     ⟨(neg_le_neg (modelDepth_anti W.eps_pos hde.le)).trans hs.1, hs.2⟩
@@ -52,7 +52,7 @@ theorem WindowedModelWitness.exists_strict_of_lt
             (modelRadius eps),
           tensor02CovDerivNormWith a (W'.comparison.jet b s)
             (W'.model.S.base.metric s) (W'.model.S.base.metric s) y < eps :=
-  ⟨W.mono_of_regular hS hde.le he hreg, W.mono_of_regular_strict_of_lt hS hde he hreg⟩
+  ⟨W.monoOfRegular hS hde.le he hreg, W.mono_of_regular_strict_of_lt hS hde he hreg⟩
 
 omit [T2Space M] in
 theorem WindowedModelWitness.window_subset_regular_of_lt
@@ -88,7 +88,7 @@ theorem orientedWitness_mono_of_regular
     (hw : OrientedWitness S o delta kappa x t) :
     OrientedWitness S o eps kappa x t := by
   obtain ⟨W, oN, hO⟩ := hw
-  exact ⟨W.mono_of_regular hS hde he hreg, oN, hO⟩
+  exact ⟨W.monoOfRegular hS hde he hreg, oN, hO⟩
 
 theorem orientedWitness_exists_strict_of_lt
     (hS : IsSolutionOn S) (o : TangentOrientationSection M)
@@ -106,7 +106,7 @@ theorem orientedWitness_exists_strict_of_lt
           tensor02CovDerivNormWith a (W'.comparison.jet b s)
             (W'.model.S.base.metric s) (W'.model.S.base.metric s) y < eps := by
   obtain ⟨W, oN, hO⟩ := hw
-  exact ⟨W.mono_of_regular hS hde.le he hreg, ⟨oN, hO⟩,
+  exact ⟨W.monoOfRegular hS hde.le he hreg, ⟨oN, hO⟩,
     W.mono_of_regular_strict_of_lt hS hde he hreg⟩
 
 section RestrictOpen
@@ -268,7 +268,7 @@ theorem WindowedModelWitness.toRestrictOpen_strict
           ((W.toRestrictOpen hU).model.S.base.metric s) y < eps :=
   hstrict
 
-theorem WindowedModelWitness.orientedWitness_toRestrictOpen
+theorem WindowedModelWitness.toRestrictOpen_preservesTangentOrientationAt
     (W : WindowedModelWitness eps kappa S x.val t)
     (hU : W.embedding '' riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint
       (modelRadius eps + 1) ⊆ (U : Set M))
@@ -276,8 +276,10 @@ theorem WindowedModelWitness.orientedWitness_toRestrictOpen
     (hO : ∀ y ∈ W.embedding.source,
       ∃ hf : Function.Bijective (mfderiv I3 I3 W.embedding y),
         PreservesTangentOrientationAt oN o W.embedding y hf) :
-    OrientedWitness (solutionOnRestrictOpen S U) (o.restrictOpen U) eps kappa x t := by
-  refine ⟨W.toRestrictOpen hU, oN, ?_⟩
+    ∀ y ∈ (W.toRestrictOpen hU).embedding.source,
+      ∃ hf : Function.Bijective (mfderiv I3 I3 (W.toRestrictOpen hU).embedding y),
+        PreservesTangentOrientationAt oN (o.restrictOpen U) (W.toRestrictOpen hU).embedding y
+          hf := by
   intro y hy
   change W.model.M at y
   have hy' : y ∈ W.embedding.source ∩ W.embedding ⁻¹' (U : Set M) := by
@@ -292,8 +294,21 @@ theorem WindowedModelWitness.orientedWitness_toRestrictOpen
   rw [TangentOrientationSection.restrictOpen_orientation]
   convert hpres using 2
   rw [hc]
-  simp only [hder]
-  exact Iff.rfl
+  apply Iff.of_eq
+  congr 3
+  ext v
+  exact DFunLike.congr_fun hder v
+
+theorem WindowedModelWitness.orientedWitness_toRestrictOpen
+    (W : WindowedModelWitness eps kappa S x.val t)
+    (hU : W.embedding '' riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint
+      (modelRadius eps + 1) ⊆ (U : Set M))
+    (o : TangentOrientationSection M) (oN : TangentOrientationSection W.model.M)
+    (hO : ∀ y ∈ W.embedding.source,
+      ∃ hf : Function.Bijective (mfderiv I3 I3 W.embedding y),
+        PreservesTangentOrientationAt oN o W.embedding y hf) :
+    OrientedWitness (solutionOnRestrictOpen S U) (o.restrictOpen U) eps kappa x t :=
+  ⟨W.toRestrictOpen hU, oN, W.toRestrictOpen_preservesTangentOrientationAt hU o oN hO⟩
 
 end RestrictOpen
 

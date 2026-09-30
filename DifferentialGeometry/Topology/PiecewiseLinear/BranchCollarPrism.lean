@@ -180,7 +180,7 @@ theorem prismSweep_of_mem {q : EuclideanSpace ℝ (Fin 2) → M}
   classical
   have hmem : q z ∈ q '' J := ⟨z, hz, rfl⟩
   have hinv : Function.invFunOn q J (q z) = z := hinj.leftInvOn_invFunOn hz
-  simp only [prismSweep, if_pos hmem, hinv]
+  simp only [prismSweep, ite_eq_left hmem, hinv]
 
 omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem prismSweep_of_notMem {q : EuclideanSpace ℝ (Fin 2) → M}
@@ -189,7 +189,7 @@ theorem prismSweep_of_notMem {q : EuclideanSpace ℝ (Fin 2) → M}
     {Ψ : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 3)}
     {y : M} (hy : y ∉ q '' J) (s : ℝ) : prismSweep q J ec Ψ y s = y := by
   classical
-  simp only [prismSweep, if_neg hy]
+  simp only [prismSweep, ite_eq_right hy]
 
 open Classical in
 theorem exists_boundarySweep_of_prism_over_arc

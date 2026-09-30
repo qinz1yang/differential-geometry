@@ -6,6 +6,11 @@ import DifferentialGeometry.Geometry.Metric.LieDerivative.Cartan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.JetComparison.Tower
 import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivativeBound
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (abs_metric_inner_le_sqrt_metric_quadratic)
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 set_option autoImplicit false
 
 

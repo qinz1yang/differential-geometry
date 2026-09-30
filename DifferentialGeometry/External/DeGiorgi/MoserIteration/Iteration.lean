@@ -34,7 +34,7 @@ noncomputable def CWeakHarnack0 (d : ℕ) [NeZero d] : ℝ :=
 theorem C_Moser_le_C_weakHarnack0 :
     CMoser d ≤ CWeakHarnack0 d := by
   by_cases hd : 2 < (d : ℝ)
-  · simp only [CWeakHarnack0, hd, dif_pos]
+  · simp only [CWeakHarnack0, hd, dite_eq_left]
     have hq_nonneg : 0 ≤ moserDecayRatio d :=
       moserDecayRatio_nonneg (d := d) hd
     have hq_lt_one : moserDecayRatio d < 1 :=
@@ -56,7 +56,7 @@ theorem C_Moser_le_C_weakHarnack0 :
       CMoser d = CMoser d * 1 := by ring
       _ ≤ CMoser d * (moserChi d ^ 2) ^ (∑' n : ℕ, (n : ℝ) * moserDecayRatio d ^ n) := by
           exact mul_le_mul_of_nonneg_left hfactor_ge_one hCMoser_nonneg
-  · simp only [CWeakHarnack0, hd, dif_neg, not_false_eq_true]
+  · simp only [CWeakHarnack0, hd, dite_eq_right, not_false_eq_true]
     exact le_refl _
 
 theorem one_le_C_weakHarnack0 :
@@ -548,7 +548,7 @@ theorem moser_geometric_majorant
     have hC_base :
         B ^ ((d : ℝ) / 2) * 4 ^ (∑' i : ℕ, (i : ℝ) * q ^ i) ≤ CMoser d := by
       dsimp [B, q]
-      rw [CMoser, dif_pos hd]
+      rw [CMoser, dite_eq_left hd]
       exact
         le_max_right (CMoserAnchor d)
           (((32 : ℝ) * CMoserAnchor d) ^ ((d : ℝ) / 2) *

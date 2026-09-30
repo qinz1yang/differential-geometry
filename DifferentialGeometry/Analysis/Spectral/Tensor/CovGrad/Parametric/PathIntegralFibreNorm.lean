@@ -5,8 +5,14 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import Mathlib.Analysis.Convex.Integral
 import Mathlib.Analysis.Convex.Mul
-import Mathlib.Analysis.Seminorm
+import Mathlib.Analysis.Normed.Module.Seminorm.Basic
 import Mathlib.MeasureTheory.Integral.Prod
+
+open DifferentialGeometry.TensorMetric (abs_tensorInnerPointwise_le_mul riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg tensorInnerPointwise
+  tensorInnerPointwise_add_left tensorInnerPointwise_add_right tensorInnerPointwise_nonneg
+  tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right tensorInnerPointwise_symm
+  tensorPointwiseNorm)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

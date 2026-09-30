@@ -90,10 +90,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private lemma eLpNorm_finsetSum_le
     {ι : Type*} (g : SmoothRiemannianMetric I M) (α : M)
-    (s : Finset ι) (F : ι → EuclN → ℝ)
-    (hF : ∀ j ∈ s, MemLp (F j) 2
-      ((chartPulledWeightedMeasure (I := I) g α).restrict
-        (chartTargetEuclid (I := I) (M := M) α))) :
+    (s : Finset ι) (F : ι → EuclN → ℝ) :
     eLpNorm (fun y => ∑ j ∈ s, F j y) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))
@@ -105,7 +102,7 @@ private lemma eLpNorm_finsetSum_le
     funext y
     exact (Finset.sum_apply y s F).symm
   rw [h_fun]
-  exact eLpNorm_sum_le (fun j hj => (hF j hj).1) (by norm_num)
+  exact eLpNorm_sum_le (by norm_num)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -114,9 +111,6 @@ private lemma eLpNorm_finsetSum_le_const_mul_atomSum
     (s : Finset ι) (t : Finset κ) (F : ι → EuclN → ℝ) (atom : κ → EuclN → ℝ)
     (proj : ι → κ) (hproj : ∀ j ∈ s, proj j ∈ t)
     (C : ℝ)
-    (hF : ∀ j ∈ s, MemLp (F j) 2
-      ((chartPulledWeightedMeasure (I := I) g α).restrict
-        (chartTargetEuclid (I := I) (M := M) α)))
     (h_bd : ∀ j ∈ s, eLpNorm (F j) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))
@@ -131,7 +125,7 @@ private lemma eLpNorm_finsetSum_le_const_mul_atomSum
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
-  have h_tri := eLpNorm_finsetSum_le (I := I) (M := M) g α s F hF
+  have h_tri := eLpNorm_finsetSum_le (I := I) (M := M) g α s F
   have h_step : ∑ j ∈ s, eLpNorm (F j) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))
@@ -495,7 +489,6 @@ theorem eLpNorm_covPrincipalRotationCoeffLimit_le_uniform
       (fun x => (x.1, x.2.2.1)) (fun x _ => Finset.mem_univ _)
       (∑ x : TensorCompIdx (E := E) r s × TensorCompIdx (E := E) r s
         × Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E), CF x)
-      (fun x _ => by rw [← hμw_def]; exact (h_data x).1)
       (fun x _ => by rw [← hμw_def]; exact hCsum_bd x)
   have h_eq : (fun y => ∑ x : TensorCompIdx (E := E) r s
       × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)

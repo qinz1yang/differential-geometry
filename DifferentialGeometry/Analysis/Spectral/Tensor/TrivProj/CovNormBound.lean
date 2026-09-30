@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.NormComparison
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerCovDiagonalBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerPointwiseUpperBound
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise)
 
 
 noncomputable section

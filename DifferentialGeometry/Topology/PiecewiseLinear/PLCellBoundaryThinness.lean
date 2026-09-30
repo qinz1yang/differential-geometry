@@ -45,7 +45,7 @@ private theorem source_subset_of_top_simplex {ι : Type*}
 theorem exists_pair_cofaces_of_finite_cell_decomposition {ι : Type*} [Finite ι]
     {dim : ι → ℕ} {src srcBd : ι → Set E}
     (hparam : ∀ i, ∃ q : (Fin (dim i + 1) → ℝ) → E,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin (dim i + 1))) (src i) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin (dim i + 1))) (src i) ∧
         srcBd i = q '' stdSimplexBoundary (dim i))
     (hboundary : ∀ i, srcBd i = ⋃ j ∈ {j | src j ⊆ src i} \ {i}, src j)
     (hinter : ∀ i j, src i ∩ src j =
@@ -124,14 +124,14 @@ theorem exists_pair_cofaces_of_finite_cell_decomposition {ι : Type*} [Finite ι
       rw [hboundary c]
       exact subset_iUnion₂_of_subset r ⟨hrc, hrcne⟩ subset_rfl
     have hparamc : ∃ q : (Fin (n + 2) → ℝ) → E,
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin (n + 2))) (src c) ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (src c) ∧
           srcBd c = q '' stdSimplexBoundary (n + 1) := by
       have hcparam := hparam c
       rw [hdc] at hcparam
       exact hcparam
     obtain ⟨q, hq, hqc⟩ := hparamc
     have hcb : srcBd c = (boundaryComplex (n + 1) (restrict T (src c))).space := by
-      have hqR : IsPLHomeomorphOn q (stdSimplex ℝ (Fin (n + 2)))
+      have hqR : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)))
           (restrict T (src c)).space := (hTcell c hcB).symm ▸ hq
       rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex _ hqR,
         simplexBoundary_stdVertices_space]

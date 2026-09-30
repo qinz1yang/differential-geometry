@@ -2,6 +2,7 @@ import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 import Mathlib.Geometry.Manifold.ContMDiff.Basic
 import DifferentialGeometry.Analysis.Calculus.Inverse.ContinuousLinearMapNeumann
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Chart
 
 set_option autoImplicit false
 
@@ -46,17 +47,9 @@ theorem exists_partialDiffeomorph_of_contMDiffOn (hn : 1 ≤ n) (hn' : n ≠ ∞
     hG.toOpenPartialHomeomorph_coe hGfd hn0
   have ha₀ : extChartAt I x x ∈ Ψ.source := hG.mem_toOpenPartialHomeomorph_source hGfd hn0
   set cO : OpenPartialHomeomorph M E :=
-    { toPartialEquiv := extChartAt I x
-      open_source := isOpen_extChartAt_source x
-      open_target := isOpen_extChartAt_target x
-      continuousOn_toFun := continuousOn_extChartAt x
-      continuousOn_invFun := continuousOn_extChartAt_symm x } with hcO
+    (PartialDiffeomorph.extChartAt I n x).toOpenPartialHomeomorph with hcO
   set dO : OpenPartialHomeomorph N F :=
-    { toPartialEquiv := extChartAt J (f x)
-      open_source := isOpen_extChartAt_source (f x)
-      open_target := isOpen_extChartAt_target (f x)
-      continuousOn_toFun := continuousOn_extChartAt (f x)
-      continuousOn_invFun := continuousOn_extChartAt_symm (f x) } with hdO
+    (PartialDiffeomorph.extChartAt J n (f x)).toOpenPartialHomeomorph with hdO
   set Θ : OpenPartialHomeomorph M N := (cO.trans Ψ).trans dO.symm with hΘ
   have hcz : (cO : M → E) = (extChartAt I x : M → E) := rfl
   have hdsz : (dO.symm : F → N) = ((extChartAt J (f x)).symm : F → N) := rfl
@@ -245,7 +238,7 @@ theorem contMDiffAt_isLocalDiffeomorphAt_of_mfderiv (hn : 1 ≤ n) (hn' : n ≠ 
     exact ne_of_gt (zero_lt_one.trans_le hn))
   have hderiv :
       fderiv ℝ (writtenInExtChartAt I J x f) (extChartAt I x x) = mfderiv I J f x := by
-    rw [hmdiff.mfderiv, I.range_eq_univ, fderivWithin_univ]
+    rw [hmdiff.mfderiv_abuse, I.range_eq_univ, fderivWithin_univ]
   exact contMDiffAt_isLocalDiffeomorphAt hn hn' hf (hderiv ▸ hinv)
 
 omit [CompleteSpace F] in

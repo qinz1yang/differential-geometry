@@ -145,7 +145,6 @@ theorem TubeSystem.coreBoundarySphere_disjoint {M : Type u} [TopologicalSpace M]
 
 theorem TubeSystem.coreBoundarySphere_mem_boundary {M : Type u} [TopologicalSpace M]
     (T : TubeSystem M) [ChartedSpace (EuclideanHalfSpace 3) T.core]
-    [IsManifold (𝓡∂ 3) ∞ T.core]
     (hcore : (𝓡∂ 3).boundary T.core = ⋃ b, Set.range (T.coreBoundarySphere b))
     (b : T.Boundary) (y : Sphere 2) :
     T.coreBoundarySphere b y ∈ (𝓡∂ 3).boundary T.core := by
@@ -157,7 +156,7 @@ theorem CutCapTransitionData.coreBoundarySphere_mem_boundary {P Q D N : Oriented
     letI : ChartedSpace (EuclideanHalfSpace 3) X.trace.tubes.core := X.coreCharts
     letI : IsManifold (𝓡∂ 3) ∞ X.trace.tubes.core := X.coreSmooth
     X.trace.tubes.coreBoundarySphere b y ∈ (𝓡∂ 3).boundary X.trace.tubes.core :=
-  @TubeSystem.coreBoundarySphere_mem_boundary _ _ X.trace.tubes X.coreCharts X.coreSmooth
+  @TubeSystem.coreBoundarySphere_mem_boundary _ _ X.trace.tubes X.coreCharts
     X.core_boundary b y
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

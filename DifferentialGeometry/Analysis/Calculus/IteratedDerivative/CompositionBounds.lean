@@ -80,14 +80,14 @@ private theorem exists_uniform_iteratedFDeriv_bound
     if hi : i ≤ n then Mi i hi else 0
   have hCnonneg : 0 ≤ C := by
     refine Finset.le_sup'_of_le _ (by simp : (0 : ℕ) ∈ Finset.range (n + 1)) ?_
-    simp only [Nat.zero_le, dif_pos]
+    simp only [Nat.zero_le, dite_eq_left]
     exact hMi0 0 (Nat.zero_le n)
   refine ⟨C, hCnonneg, ?_⟩
   intro i hi y hy
   refine (hMib i hi y hy).trans ?_
   have hmem : i ∈ Finset.range (n + 1) := Finset.mem_range.mpr (Nat.lt_succ_of_le hi)
   refine Finset.le_sup'_of_le _ hmem ?_
-  simp only [hi, dif_pos, le_refl]
+  simp only [hi, dite_eq_left, le_refl]
 
 theorem norm_iteratedFDeriv_comp_le_on_compact
     {g : E → F} {f : F → G} {n : ℕ} {N : WithTop ℕ∞}

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Localization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFootprint
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ReducedAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.MetricAction
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalPullback
 

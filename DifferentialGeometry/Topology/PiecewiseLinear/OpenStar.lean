@@ -106,15 +106,15 @@ theorem mem_openStar_iff (K : Geometry.SimplicialComplex ℝ E) {p : E} (hp : {p
         have hw : ∀ v ∈ insert p σ, weights (insert p σ) x v =
             if v = p then 1 - s else s * weights σ z v := by
           refine weights_eq (K.indep hins) hxins ?_ ?_
-          · rw [Finset.sum_insert hpσ, if_pos rfl,
-              Finset.sum_congr rfl fun v hv => if_neg (ne_of_mem_of_not_mem hv hpσ),
+          · rw [Finset.sum_insert hpσ, ite_eq_left rfl,
+              Finset.sum_congr rfl fun v hv => ite_eq_right (ne_of_mem_of_not_mem hv hpσ),
               ← Finset.mul_sum, sum_weights hzσ]
             ring
-          · rw [Finset.sum_insert hpσ, if_pos rfl,
-              Finset.sum_congr rfl fun v hv => by rw [if_neg (ne_of_mem_of_not_mem hv hpσ)]]
+          · rw [Finset.sum_insert hpσ, ite_eq_left rfl,
+              Finset.sum_congr rfl fun v hv => by rw [ite_eq_right (ne_of_mem_of_not_mem hv hpσ)]]
             simp_rw [mul_smul]
             rw [← Finset.smul_sum, sum_weights_smul hzσ, hxz, add_smul_sub_eq_combo]
-        rw [hw p (Finset.mem_insert_self p σ), if_pos rfl]
+        rw [hw p (Finset.mem_insert_self p σ), ite_eq_left rfl]
         linarith
       have hpu : p ∈ u :=
         ((mem_openSimplex_iff_weights_pos (K.indep hins) hu' hxins).mp hxu p
@@ -178,7 +178,7 @@ open Classical in
 theorem exists_starHomeo [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E)
     [Finite K.faces] {p : E} (hp : {p} ∈ K.faces) {n : ℕ}
     (hsph : IsPLSphere n (SimplicialComplex.geometricLink K {p}).space) :
-    ∃ g : (Fin (n + 2) → ℝ) → E, IsPLHomeomorphOn g (stdSimplex ℝ (Fin (n + 2))) (closedStar K p) ∧
+    ∃ g : (Fin (n + 2) → ℝ) → E, IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (closedStar K p) ∧
       g '' openSimplex (stdVertices n) = openStar K p ∧ g (stdCenter n) = p := by
   obtain ⟨f, hf⟩ := hsph
   obtain ⟨f₀, hf₀⟩ := isPLSphere_simplexBoundary_std n

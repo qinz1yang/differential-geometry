@@ -343,7 +343,7 @@ theorem IntrinsicBallChart.exists_local_source_maps_on_compact [Finite ι]
       let : Nonempty (D.U i) := ⟨⟨0, Metric.mem_ball_self (by positivity)⟩⟩
       have hp : points k z i =
           D.chartMap i (fun w : U => (c i k).hom w) (D.toGlueData.ι b.1 ⟨z, hKU hz⟩) :=
-        dif_pos (hKU hz)
+        dite_eq_left (hKU hz)
       have hiA : weights a (T z) i ≠ 0 := by
         intro hzero
         exact hi ((congrFun (hweights hz) i).symm.trans hzero)
@@ -393,7 +393,7 @@ theorem IntrinsicBallChart.exists_local_source_maps_on_compact [Finite ι]
     have hactive0 (i : ι) (hi : weights a₀ 0 i ≠ 0) : xi a₀ k 0 i = 0 := by
       have hii : i = i₀ := by
         by_contra hne
-        exact hi ((hweights0 i).trans (if_neg hne))
+        exact hi ((hweights0 i).trans (ite_eq_right hne))
       subst i
       have h := hk a₀.2 i₀ hself hi
       change xi a₀ k 0 i₀ = -(0 : E) + (c i₀ k).hom.symm ((c i₀ k).hom (J ⟨(i₀, i₀), hself⟩ 0)) at h

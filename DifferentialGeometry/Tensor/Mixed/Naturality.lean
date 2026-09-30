@@ -21,14 +21,13 @@ theorem dualTensorHomEquiv_symm_naturality
   rw [LinearEquiv.apply_symm_apply]
   set t := (dualTensorHomEquiv 𝕜 V W).symm T
   rw [show T = dualTensorHomEquiv 𝕜 V W t from (LinearEquiv.apply_symm_apply _ T).symm]
-  induction t using TensorProduct.induction_on with
-  | zero => simp
+  induction t using TensorProduct.inductionOn with
   | add t₁ t₂ ih₁ ih₂ =>
     simp only [map_add, LinearMap.comp_add, LinearMap.add_comp] at ih₁ ih₂ ⊢
     rw [ih₁, ih₂]
   | tmul f w =>
     ext v
-    simp only [dualTensorHomEquiv_eq_dualTensorHomEquivOfBasis (Module.Free.chooseBasis 𝕜 V),
+    simp only [← dualTensorHomEquivOfBasis_eq_dualTensorHomEquiv (Module.Free.chooseBasis 𝕜 V),
       dualTensorHomEquivOfBasis_apply, dualTensorHom_apply, TensorProduct.map_tmul, LinearMap.dualMap_apply,
       LinearMap.comp_apply, LinearEquiv.coe_toLinearMap, map_smul]
 
@@ -68,7 +67,7 @@ theorem homEquivCDualTensor_symm_tmul
     TensorProduct.congr_symm_tmul, LinearEquiv.refl_symm, LinearEquiv.refl_apply]
   have h_inner : (dualTensorHomEquiv 𝕜 V W
         (LinearMap.toContinuousLinearMap.symm η ⊗ₜ[𝕜] w)) v = η v • w := by
-    simp only [dualTensorHomEquiv_eq_dualTensorHomEquivOfBasis (Module.Free.chooseBasis 𝕜 V),
+    simp only [← dualTensorHomEquivOfBasis_eq_dualTensorHomEquiv (Module.Free.chooseBasis 𝕜 V),
       dualTensorHomEquivOfBasis_apply, dualTensorHom_apply]
     rfl
   exact h_inner
@@ -172,13 +171,7 @@ theorem multilinearHomEquivDualMultilinearTensor_naturality
     rw [LinearEquiv.symm_apply_apply] at this
     convert this using 2
   intro u
-  induction u using TensorProduct.induction_on with
-  | zero =>
-    rw [LinearEquiv.map_zero MHE.symm]
-    rw [ContinuousLinearMap.zero_comp]
-    rw [ContinuousLinearMap.comp_zero]
-    rw [LinearEquiv.map_zero MHE]
-    rw [(TensorProduct.map _ _).map_zero]
+  induction u using TensorProduct.inductionOn with
   | add t₁ t₂ ih₁ ih₂ =>
     rw [LinearEquiv.map_add MHE.symm]
     rw [ContinuousLinearMap.add_comp]

@@ -92,7 +92,7 @@ theorem lScalarGradient_bound_on_compact
   have hgrad : Real.sqrt (q (t, y)) ≤ max 0 C₀ :=
     (hC₀ (f (t, y)) ⟨(t, y), ⟨ht, hy⟩, rfl⟩).trans (le_max_right _ _)
   have hcs :=
-    DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+    DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
       (I := I) (M := M) (S.base.metric t) y
       (gradientFun (I := I) (S.base.metric t) (S.scalar t) y) v
   exact hcs.trans (mul_le_mul_of_nonneg_right

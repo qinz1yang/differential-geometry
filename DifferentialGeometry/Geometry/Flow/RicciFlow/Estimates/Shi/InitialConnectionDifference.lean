@@ -233,7 +233,7 @@ theorem initialConnectionDifferenceBound_of_connectionVariation
       calc |(S.base.metric 0).inner x (Z s x u w) v|
           ≤ Real.sqrt ((S.base.metric 0).inner x (Z s x u w) (Z s x u w)) *
               Real.sqrt ((S.base.metric 0).inner x v v) :=
-            DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+            DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
               (I := I) (M := M)
               (S.base.metric 0) x (Z s x u w) v
         _ ≤ (Cc * Real.sqrt (nablaKRm04NormSqIntrinsic (I := I) S 1 s x) *

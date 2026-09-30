@@ -76,18 +76,18 @@ lemma uc_trans_truncate_class
     change ((γ.truncateOfLE h0).trans (γ.truncateOfLE h0s)) t = _
     rw [_root_.Path.trans_apply]
     by_cases ht : (t : ℝ) ≤ 1 / 2
-    · rw [dif_pos ht]
+    · rw [dite_eq_left ht]
       have h2t_nn : (0 : ℝ) ≤ 2 * (t : ℝ) := by
         have : (0 : ℝ) ≤ (t : ℝ) := t.2.1
         linarith
       change (γ.truncate 0 s₀) _ = _
       change γ.extend (min (max (2 * (t : ℝ)) 0) s₀) = γ.extend (rhsIdx t)
       rw [max_eq_left h2t_nn]
-      simp only [rhsIdx, if_pos ht]
-    · rw [dif_neg ht]
+      simp only [rhsIdx, ite_eq_left ht]
+    · rw [dite_eq_right ht]
       change (γ.truncate s₀ s) _ = _
       change γ.extend (min (max (2 * (t : ℝ) - 1) s₀) s) = γ.extend (rhsIdx t)
-      simp only [rhsIdx, if_neg ht]
+      simp only [rhsIdx, ite_eq_right ht]
   refine ⟨{
     toFun := fun ut => γ.extend
       ((1 - (ut.1 : ℝ)) * lhsIdx ut.2 + (ut.1 : ℝ) * rhsIdx ut.2)
@@ -128,7 +128,7 @@ lemma uc_trans_truncate_class
       have hr0 : rhsIdx 0 = 0 := by
         change (if ((0:I):ℝ) ≤ 1 / 2 then min (2 * ((0:I):ℝ)) s₀
               else min (max (2 * ((0:I):ℝ) - 1) s₀) s) = 0
-        rw [Icc.coe_zero, if_pos (by norm_num : (0:ℝ) ≤ 1/2), mul_zero, min_eq_left h0]
+        rw [Icc.coe_zero, ite_eq_left (by norm_num : (0:ℝ) ≤ 1/2), mul_zero, min_eq_left h0]
       rw [hl0, hr0]
       simp only [mul_zero, add_zero]
       change γ.extend 0 = p 0
@@ -143,7 +143,7 @@ lemma uc_trans_truncate_class
       have hr1 : rhsIdx 1 = s := by
         change (if ((1:I):ℝ) ≤ 1 / 2 then min (2 * ((1:I):ℝ)) s₀
               else min (max (2 * ((1:I):ℝ) - 1) s₀) s) = s
-        rw [Icc.coe_one, if_neg (by norm_num : ¬(1:ℝ) ≤ 1/2)]
+        rw [Icc.coe_one, ite_eq_right (by norm_num : ¬(1:ℝ) ≤ 1/2)]
         have h_one : (2 : ℝ) * 1 - 1 = 1 := by ring
         rw [h_one]
         rw [max_eq_left (h0s.trans hs1)]

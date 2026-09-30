@@ -187,7 +187,7 @@ private theorem closedCellChart_ambient_extension (x : ClosedCell (m + 1)) :
       closedCellInteriorAmbientChart_mem_maximalAtlas m, Set.mem_univ _, ?_⟩
     intro u
     change closedCellShiftSucc m 1 u.val = (closedCellChartAt x u).val
-    rw [closedCellChartAt, dif_pos hx]
+    rw [closedCellChartAt, dite_eq_left hx]
     rfl
   · let i : Fin (m + 1) := Classical.choose
       (exists_closedCell_coord_ne_zero x.val (le_of_not_gt hx))
@@ -195,7 +195,7 @@ private theorem closedCellChart_ambient_extension (x : ClosedCell (m + 1)) :
     have hc : chartAt (EuclideanHalfSpace (m + 1)) x =
         closedCellBoundaryChart m i σ := by
       change closedCellChartAt x = closedCellBoundaryChart m i σ
-      rw [closedCellChartAt, dif_neg hx]
+      rw [closedCellChartAt, dite_eq_right hx]
     refine ⟨closedCellBoundaryAmbientChart m i σ,
       closedCellBoundaryAmbientChart_mem_maximalAtlas m i σ, ?_, ?_⟩
     · have hs := mem_chart_source (EuclideanHalfSpace (m + 1)) x

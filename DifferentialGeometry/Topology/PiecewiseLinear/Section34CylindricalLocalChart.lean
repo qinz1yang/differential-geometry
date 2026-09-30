@@ -60,7 +60,7 @@ private theorem exists_seam_strip (hf : IsCylindricalDiagram f P S)
     by_cases h : 0 ≤ z.2
     · have hz0 : z.2 = 0 := le_antisymm hz.2 h
       have hz0' : z = (z.1, 0) := Prod.ext rfl hz0
-      simp only [g, if_pos h, Function.comp_apply, τ, hz0, zero_add]
+      simp only [g, ite_eq_left h, Function.comp_apply, τ, hz0, zero_add]
       exact (congrArg f hz0').trans (hends z.1 hzP)
     · simp [g, h]
   have hgR : EqOn g f R := fun z hz => by simp [g, hz.2.1]
@@ -88,10 +88,10 @@ private theorem exists_seam_strip (hf : IsCylindricalDiagram f P S)
   have hinj : InjOn g C := by
     intro x hx y hy hxy
     by_cases hx0 : 0 ≤ x.2 <;> by_cases hy0 : 0 ≤ y.2
-    · simp only [g, if_pos hx0, if_pos hy0] at hxy
+    · simp only [g, ite_eq_left hx0, ite_eq_left hy0] at hxy
       exact hf.injOn_strip (a := 0) (b := 1 / 4) le_rfl (by norm_num)
         (Or.inr (by norm_num)) ⟨hx.1, hx0, hx.2.2⟩ ⟨hy.1, hy0, hy.2.2⟩ hxy
-    · simp only [g, if_pos hx0, if_neg hy0] at hxy
+    · simp only [g, ite_eq_left hx0, ite_eq_right hy0] at hxy
       rcases hf.eq_or_endpoints x ⟨hx.1, hx0, by linarith [hx.2.2]⟩
         (τ y) ⟨hy.1, by dsimp [τ]; constructor <;> linarith [hy.2.1]⟩ hxy with
         heq | heq | heq
@@ -101,7 +101,7 @@ private theorem exists_seam_strip (hf : IsCylindricalDiagram f P S)
       · dsimp [τ] at heq
         linarith [heq.2]
       · linarith [heq.1, hx.2.2]
-    · simp only [g, if_neg hx0, if_pos hy0] at hxy
+    · simp only [g, ite_eq_right hx0, ite_eq_left hy0] at hxy
       rcases hf.eq_or_endpoints (τ x)
         ⟨hx.1, by dsimp [τ]; constructor <;> linarith [hx.2.1]⟩
         y ⟨hy.1, hy0, by linarith [hy.2.2]⟩ hxy with heq | heq | heq
@@ -112,7 +112,7 @@ private theorem exists_seam_strip (hf : IsCylindricalDiagram f P S)
         linarith [heq.1, hx.2.1]
       · dsimp [τ] at heq
         linarith [heq.1]
-    · simp only [g, if_neg hx0, if_neg hy0] at hxy
+    · simp only [g, ite_eq_right hx0, ite_eq_right hy0] at hxy
       have heq := hf.injOn_strip (a := 3 / 4) (b := 1) (by norm_num) le_rfl
         (Or.inl (by norm_num)) (x₁ := τ x) (x₂ := τ y)
         ⟨hx.1, by dsimp [τ]; constructor <;> linarith [hx.2.1]⟩

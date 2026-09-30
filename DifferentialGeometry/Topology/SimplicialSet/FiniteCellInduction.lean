@@ -12,7 +12,7 @@ universe u
 namespace DifferentialGeometry.SSet
 
 
-def isInitial_of_isEmpty_nondegenerate (X : _root_.SSet.{u}) [IsEmpty X.N] : IsInitial X := by
+def isInitialOfIsEmptyNondegenerate (X : _root_.SSet.{u}) [IsEmpty X.N] : IsInitial X := by
   have hbot : (⊥ : X.Subcomplex) = ⊤ := by
     apply le_antisymm bot_le
     rw [_root_.SSet.N.subcomplex_le_iff]
@@ -45,7 +45,7 @@ theorem finite_cell_induction (P : _root_.SSet.{u} → Prop)
       cases isEmpty_or_nonempty Y.N with
       | inl he =>
         have : IsEmpty Y.N := he
-        exact hInitial Y (isInitial_of_isEmpty_nondegenerate Y)
+        exact hInitial Y (isInitialOfIsEmptyNondegenerate Y)
       | inr he =>
         have : Nonempty Y.N := he
         obtain ⟨s, hs⟩ := (Set.finite_univ : (Set.univ : Set Y.N).Finite).exists_maximal

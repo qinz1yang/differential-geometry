@@ -16,8 +16,15 @@ namespace Parabolic
 namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric
+  (covariantTensorInnerPointwise
+    lowerAllUpperIndices
+    lowerAllUpperIndices_apply
+    separableFormAt
+    separableFormAt_apply
+    tensorInnerPointwise)
 open DifferentialGeometry.Tensor
+open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 
@@ -25,153 +32,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-lemma chartGramBilin_eq_innerJinv
-    (g : SmoothRiemannianMetric I M) (α b : M) (u w : E) :
-    chartGramBilin (I := I) (M := M) g α b u w =
-      modelInnerAt (I := I) (M := M) g b
-        (chartTrivializationLinearMapSymm (I := I) (M := M) α b u)
-        (chartTrivializationLinearMapSymm (I := I) (M := M) α b w) := by
-  classical
-  rw [chartGramBilin_apply]
-  have hrewrite :
-      (∑ j : Fin (Module.finrank ℝ E),
-        ∑ k : Fin (Module.finrank ℝ E),
-          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b j k *
-            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u j *
-            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k)
-        = ∑ j : Fin (Module.finrank ℝ E),
-            ∑ k : Fin (Module.finrank ℝ E),
-              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u j *
-                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k *
-                modelInnerAt (I := I) (M := M) g b
-                  (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
-                  (chartTrivializationLinearMapSymm (I := I) (M := M) α b
-                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) := by
-    refine Finset.sum_congr rfl ?_
-    intro j _
-    refine Finset.sum_congr rfl ?_
-    intro k _
-    rw [chartGramMatrix_eq_innerJinv (I := I) (M := M) g α b j k]
-    ring
-  rw [hrewrite]
-  have hcollapse_inner : ∀ j : Fin (Module.finrank ℝ E),
-      (∑ k : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u j *
-            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k *
-            modelInnerAt (I := I) (M := M) g b
-              (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
-              (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)))
-        = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u j *
-            modelInnerAt (I := I) (M := M) g b
-              (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
-              (∑ k : Fin (Module.finrank ℝ E),
-                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k •
-                  chartTrivializationLinearMapSymm (I := I) (M := M) α b
-                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) := by
-    intro j
-    have hRHS_unfold :
-        ((modelInnerAt (I := I) (M := M) g b
-          (chartTrivializationLinearMapSymm (I := I) (M := M) α b
-          ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)))
-            (∑ k : Fin (Module.finrank ℝ E),
-              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k •
-                chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)))
-          = ∑ k : Fin (Module.finrank ℝ E),
-              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k *
-                modelInnerAt (I := I) (M := M) g b
-                  (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
-                  (chartTrivializationLinearMapSymm (I := I) (M := M) α b
-                    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) := by
-      rw [map_sum]
-      refine Finset.sum_congr rfl ?_
-      intro k _
-      rw [ContinuousLinearMap.map_smul, smul_eq_mul]
-    rw [hRHS_unfold]
-    rw [Finset.mul_sum]
-    refine Finset.sum_congr rfl ?_
-    intro k _
-    ring
-  rw [show (∑ j : Fin (Module.finrank ℝ E),
-        ∑ k : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u j *
-            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k *
-            modelInnerAt (I := I) (M := M) g b
-              (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
-              (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)))
-        = ∑ j : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u j *
-              modelInnerAt (I := I) (M := M) g b
-                (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
-                (∑ k : Fin (Module.finrank ℝ E),
-                  (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k •
-                    chartTrivializationLinearMapSymm (I := I) (M := M) α b
-                      ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) from
-      Finset.sum_congr rfl (fun j _ => hcollapse_inner j)]
-  have hwsum :
-      (∑ k : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k •
-            chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) =
-        chartTrivializationLinearMapSymm (I := I) (M := M) α b w := by
-    have hsum_eq :
-        (∑ k : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k •
-              chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k))
-          = chartTrivializationLinearMapSymm (I := I) (M := M) α b
-              (∑ k : Fin (Module.finrank ℝ E),
-                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) := by
-      rw [map_sum]
-      refine Finset.sum_congr rfl ?_
-      intro k _
-      rw [ContinuousLinearMap.map_smul]
-    rw [hsum_eq, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_equivFun w]
-  rw [hwsum]
-  have hcollapse_outer :
-      (∑ j : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u j *
-            modelInnerAt (I := I) (M := M) g b
-              (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
-              (chartTrivializationLinearMapSymm (I := I) (M := M) α b w))
-        = modelInnerAt (I := I) (M := M) g b
-            (∑ j : Fin (Module.finrank ℝ E),
-              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u j •
-                chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
-            (chartTrivializationLinearMapSymm (I := I) (M := M) α b w) := by
-    rw [map_sum]
-    rw [sum_apply]
-    refine Finset.sum_congr rfl ?_
-    intro j _
-    rw [ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul]
-  rw [hcollapse_outer]
-  have husum :
-      (∑ j : Fin (Module.finrank ℝ E),
-          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u j •
-            chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
-        = chartTrivializationLinearMapSymm (I := I) (M := M) α b u := by
-    have hsum_eq :
-        (∑ j : Fin (Module.finrank ℝ E),
-            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u j •
-              chartTrivializationLinearMapSymm (I := I) (M := M) α b ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
-          = chartTrivializationLinearMapSymm (I := I) (M := M) α b
-              (∑ j : Fin (Module.finrank ℝ E),
-                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
-      rw [map_sum]
-      refine Finset.sum_congr rfl ?_
-      intro j _
-      rw [ContinuousLinearMap.map_smul]
-    rw [hsum_eq, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_equivFun u]
-  rw [husum]
-
-lemma chartGramBilin_chartJ_chartJ
-    (g : SmoothRiemannianMetric I M) (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (u w : E) :
-    chartGramBilin (I := I) (M := M) g α b
-        (chartTrivializationLinearMap (I := I) (M := M) α b u)
-        (chartTrivializationLinearMap (I := I) (M := M) α b w) =
-      modelInnerAt (I := I) (M := M) g b u w := by
-  rw [chartGramBilin_eq_innerJinv (I := I) (M := M) g α b]
-  rw [chartJinv_chartJ_self (I := I) (M := M) α hb u]
-  rw [chartJinv_chartJ_self (I := I) (M := M) α hb w]
 
 lemma chartSeparableFormAt_chartJ_compose
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
@@ -188,8 +48,8 @@ lemma chartSeparableFormAt_chartJ_compose
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply, separableFormAt_apply]
   refine Finset.prod_congr rfl ?_
   intro k _
-  rw [chartGramBilin_eq_innerJinv (I := I) (M := M) g α b]
-  rw [chartJinv_chartJ_self (I := I) (M := M) α hb (v_first k)]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramBilin_eq_innerJinv (I := I) (M := M) g α b]
+  rw [chartJinv_chartJ (I := I) (M := M) α hb (v_first k)]
 
 theorem chartTensorInnerPointwise_0s_eq_tensorInnerPointwise_0s_chartJ
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}

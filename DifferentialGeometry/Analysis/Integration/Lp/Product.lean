@@ -15,27 +15,41 @@ variable {A B : Type*} [MeasurableSpace A] [MeasurableSpace B]
 variable {μ : Measure A} {ν : Measure B} [SFinite ν]
 variable {p : ℝ≥0∞}
 
-section ENorm
-
-variable {E : Type*} [ENorm E]
-
-theorem eLpNorm_eLpNorm {f : A × B → E}
-    (hp : p ≠ (⊤ : ℝ≥0∞))
-    (hf : AEMeasurable (fun z => ‖f z‖ₑ) (μ.prod ν)) :
-    eLpNorm (fun a => eLpNorm (fun b => f (a, b)) p ν) p μ =
-      eLpNorm f p (μ.prod ν) := by
-  by_cases hp₀ : p = 0
-  · simp [hp₀]
-  have hp' : p.toReal ≠ 0 := (ENNReal.toReal_pos hp₀ hp).ne'
-  simp_rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp₀ hp, enorm_eq_self,
-    ← ENNReal.rpow_mul, one_div, inv_mul_cancel₀ hp', ENNReal.rpow_one]
-  rw [← lintegral_prod _ (hf.pow_const p.toReal)]
-
-end ENorm
-
 section ContinuousENorm
 
 variable {E : Type*} [TopologicalSpace E] [ContinuousENorm E]
+
+theorem aestronglyMeasurable_eLpNorm_prodMk_left {f : A × B → E}
+    (hp : p ≠ (⊤ : ℝ≥0∞)) (hf : AEStronglyMeasurable f (μ.prod ν)) :
+    AEStronglyMeasurable (fun a => eLpNorm (fun b => f (a, b)) p ν) μ := by
+  by_cases hp₀ : p = 0
+  · subst p
+    refine (aestronglyMeasurable_const (b := (0 : ℝ≥0∞))).congr ?_
+    filter_upwards [hf.prodMk_left] with a ha
+    exact (eLpNorm_exponent_zero ha).symm
+  have hm := ((hf.enorm.pow_const p.toReal).lintegral_prod_right').pow_const
+    (1 / p.toReal)
+  refine hm.aestronglyMeasurable.congr ?_
+  filter_upwards [hf.prodMk_left] with a ha
+  exact (eLpNorm_eq_lintegral_rpow_enorm_toReal hp₀ hp ha).symm
+
+theorem eLpNorm_eLpNorm {f : A × B → E}
+    (hp : p ≠ (⊤ : ℝ≥0∞)) (hf : AEStronglyMeasurable f (μ.prod ν)) :
+    eLpNorm (fun a => eLpNorm (fun b => f (a, b)) p ν) p μ =
+      eLpNorm f p (μ.prod ν) := by
+  have hm := aestronglyMeasurable_eLpNorm_prodMk_left hp hf
+  by_cases hp₀ : p = 0
+  · subst p
+    rw [eLpNorm_exponent_zero hf, eLpNorm_exponent_zero hm]
+  have hp' : p.toReal ≠ 0 := (ENNReal.toReal_pos hp₀ hp).ne'
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp₀ hp hm,
+    eLpNorm_eq_lintegral_rpow_enorm_toReal hp₀ hp hf,
+    lintegral_prod _ (hf.enorm.pow_const p.toReal)]
+  congr 1
+  apply lintegral_congr_ae
+  filter_upwards [hf.prodMk_left] with a ha
+  rw [enorm_eq_self, eLpNorm_eq_lintegral_rpow_enorm_toReal hp₀ hp ha,
+    ← ENNReal.rpow_mul, one_div, inv_mul_cancel₀ hp', ENNReal.rpow_one]
 
 theorem MemLp.prodMk_left {f : A × B → E}
     (hf : MemLp f p (μ.prod ν)) (hp : p ≠ (⊤ : ℝ≥0∞)) :
@@ -43,23 +57,22 @@ theorem MemLp.prodMk_left {f : A × B → E}
   by_cases hp₀ : p = 0
   · subst p
     filter_upwards [hf.aestronglyMeasurable.prodMk_left] with a ha
-    exact ⟨ha, by simp⟩
-  have hnorm := eLpNorm_eLpNorm hp hf.aestronglyMeasurable.enorm
+    exact memLp_zero_iff_aestronglyMeasurable.mpr ha
+  have hm := aestronglyMeasurable_eLpNorm_prodMk_left hp hf.aestronglyMeasurable
+  have hnorm := eLpNorm_eLpNorm hp hf.aestronglyMeasurable
   have hfinite : (∫⁻ a, (eLpNorm (fun b => f (a, b)) p ν) ^ p.toReal ∂μ) < ⊤ := by
     apply (ENNReal.rpow_lt_top_iff_of_pos (one_div_pos.mpr (ENNReal.toReal_pos hp₀ hp))).mp
-    simpa only [eLpNorm_eq_lintegral_rpow_enorm_toReal hp₀ hp, enorm_eq_self] using
-      (hnorm.trans_lt hf.2)
-  have hmeas : AEMeasurable (fun a => (eLpNorm (fun b => f (a, b)) p ν) ^ p.toReal) μ := by
-    simp_rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp₀ hp, ← ENNReal.rpow_mul,
-      one_div, inv_mul_cancel₀ (ENNReal.toReal_pos hp₀ hp).ne', ENNReal.rpow_one]
-    exact (hf.aestronglyMeasurable.enorm.pow_const p.toReal).lintegral_prod_right'
-  filter_upwards [hf.aestronglyMeasurable.prodMk_left, ae_lt_top' hmeas hfinite.ne] with a ha₁ ha₂
-  exact ⟨ha₁, (ENNReal.rpow_lt_top_iff_of_pos (ENNReal.toReal_pos hp₀ hp)).mp ha₂⟩
+    simpa only [eLpNorm_eq_lintegral_rpow_enorm_toReal hp₀ hp hm, enorm_eq_self] using
+      (hnorm.trans_lt hf)
+  have hmeas := hm.aemeasurable.pow_const p.toReal
+  filter_upwards [ae_lt_top' hmeas hfinite.ne] with a ha
+  exact (ENNReal.rpow_lt_top_iff_of_pos (ENNReal.toReal_pos hp₀ hp)).mp ha
 
 theorem MemLp.prodMk_left_top {f : A × B → E}
     (hf : MemLp f ∞ (μ.prod ν)) :
     ∀ᵐ a ∂μ, MemLp (fun b => f (a, b)) ∞ ν := by
-  have hfinite : eLpNormEssSup f (μ.prod ν) ≠ ∞ := hf.eLpNorm_ne_top
+  have hfinite : eLpNormEssSup f (μ.prod ν) ≠ ∞ := by
+    simpa only [eLpNorm_exponent_top hf.aestronglyMeasurable] using hf.eLpNorm_ne_top
   have hbound : ∀ᵐ z ∂μ.prod ν,
       ‖f z‖ₑ ≤ (eLpNormEssSup f (μ.prod ν)).toNNReal := by
     rw [ENNReal.coe_toNNReal hfinite]
@@ -72,25 +85,17 @@ theorem eLpNorm_eLpNorm_toReal {f : A × B → E}
     (hf : MemLp f p (μ.prod ν)) (hp : p ≠ (⊤ : ℝ≥0∞)) :
     eLpNorm (fun a => (eLpNorm (fun b => f (a, b)) p ν).toReal) p μ =
       eLpNorm f p (μ.prod ν) := by
-  rw [← eLpNorm_eLpNorm hp hf.aestronglyMeasurable.enorm]
-  apply eLpNorm_congr_enorm_ae
+  have hm := aestronglyMeasurable_eLpNorm_prodMk_left hp hf.aestronglyMeasurable
+  rw [← eLpNorm_eLpNorm hp hf.aestronglyMeasurable]
+  apply eLpNorm_congr_enorm_ae hm.aemeasurable.ennreal_toReal.aestronglyMeasurable hm
   filter_upwards [hf.prodMk_left hp] with a ha
-  rw [← ofReal_norm, Real.norm_eq_abs, abs_of_nonneg ENNReal.toReal_nonneg, ENNReal.ofReal_toReal ha.2.ne, enorm_eq_self]
+  rw [← ofReal_norm, Real.norm_eq_abs, abs_of_nonneg ENNReal.toReal_nonneg, ENNReal.ofReal_toReal ha.ne, enorm_eq_self]
 
 theorem MemLp.eLpNorm_toReal {f : A × B → E}
     (hf : MemLp f p (μ.prod ν)) (hp : p ≠ (⊤ : ℝ≥0∞)) :
     MemLp (fun a => (eLpNorm (fun b => f (a, b)) p ν).toReal) p μ := by
-  by_cases hp₀ : p = 0
-  · subst p
-    simp only [eLpNorm_exponent_zero, ENNReal.toReal_zero]
-    exact ⟨aestronglyMeasurable_const, by simp⟩
-  constructor
-  · apply AEMeasurable.aestronglyMeasurable
-    simp_rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp₀ hp]
-    exact (((hf.aestronglyMeasurable.enorm.pow_const p.toReal).lintegral_prod_right').pow_const
-      (1 / p.toReal)).ennreal_toReal
-  · rw [eLpNorm_eLpNorm_toReal hf hp]
-    exact hf.2
+  rw [memLp_iff, eLpNorm_eLpNorm_toReal hf hp]
+  exact hf
 
 end ContinuousENorm
 
@@ -130,17 +135,16 @@ private theorem stronglyMeasurable_uncurrySimple (f : SimpleFunc A (Lp E p ν)) 
 private theorem eLpNorm_uncurrySimple (f : SimpleFunc A (Lp E p ν))
     (hp : p ≠ (⊤ : ℝ≥0∞)) :
     eLpNorm (uncurrySimple f) p (μ.prod ν) = eLpNorm f p μ := by
-  rw [← eLpNorm_eLpNorm hp (stronglyMeasurable_uncurrySimple f).enorm.aemeasurable]
+  rw [← eLpNorm_eLpNorm hp (stronglyMeasurable_uncurrySimple f).aestronglyMeasurable]
   change eLpNorm (fun a => eLpNorm (f a) p ν) p μ = _
   simp_rw [← Lp.enorm_def]
-  exact eLpNorm_enorm f
+  exact eLpNorm_enorm f f.aestronglyMeasurable
 
 private theorem memLp_uncurrySimple {f : SimpleFunc A (Lp E p ν)}
     (hf : MemLp f p μ) (hp : p ≠ (⊤ : ℝ≥0∞)) :
     MemLp (uncurrySimple f) p (μ.prod ν) := by
-  refine ⟨(stronglyMeasurable_uncurrySimple f).aestronglyMeasurable, ?_⟩
-  rw [eLpNorm_uncurrySimple f hp]
-  exact hf.2
+  rw [memLp_iff, eLpNorm_uncurrySimple f hp]
+  exact hf
 
 private def uncurrySimpleLp (hp : p ≠ (⊤ : ℝ≥0∞))
     (f : Lp.simpleFunc (Lp E p ν) p μ) : Lp E p (μ.prod ν) :=
@@ -173,18 +177,16 @@ theorem Lp.exists_subseq_tendsto_eLpNorm_prodMk_left
     (eLpNorm (fun b => f k (a, b) - g (a, b)) p ν).toReal
   have hmem (k : ℕ) : MemLp (fun z => f k z - g z) p (μ.prod ν) :=
     (Lp.memLp (f k)).sub (Lp.memLp g)
-  have hψmem (k : ℕ) : MemLp (ψ k) p μ := (hmem k).eLpNorm_toReal hp
   have hψlim : Tendsto (fun k => eLpNorm (ψ k - 0) p μ) atTop (𝓝 0) := by
     have h := (Lp.tendsto_Lp_iff_tendsto_eLpNorm' f g).mp hfg
     apply h.congr'
     filter_upwards [] with k
     rw [sub_zero]
     exact (eLpNorm_eLpNorm_toReal (hmem k) hp).symm
-  obtain ⟨s, hs, hslim⟩ := (tendstoInMeasure_of_tendsto_eLpNorm hp₀
-    (fun k => (hψmem k).aestronglyMeasurable) aestronglyMeasurable_const hψlim).exists_seq_tendsto_ae
+  obtain ⟨s, hs, hslim⟩ := (tendstoInMeasure_of_tendsto_eLpNorm hp₀ hψlim).exists_seq_tendsto_ae
   refine ⟨s, hs, ?_⟩
   filter_upwards [hslim, ae_all_iff.mpr (fun k => (hmem k).prodMk_left hp)] with a ha hfinite
-  exact (ENNReal.tendsto_toReal_zero_iff (fun k => (hfinite (s k)).2.ne)).mp ha
+  exact (ENNReal.tendsto_toReal_zero_iff (fun k => (hfinite (s k)).ne)).mp ha
 
 variable {𝕜 : Type*} [NormedField 𝕜] [NormedSpace 𝕜 E]
 

@@ -151,7 +151,7 @@ theorem integral_poleEndpoint_redDensity_limit_chart_residual_eq_zero_of_ancient
   have hT : LipschitzWith (max 1 ‖e.symm.toContinuousLinearMap‖₊) T := by
     simpa only [mul_one, T, Function.comp_def] using
       (LipschitzWith.prod_fst : LipschitzWith 1 (Prod.fst : ℝ × EuStd → ℝ)).prodMk
-        (e.symm.lipschitz.comp
+        (e.symm.lipschitzWith.comp
           (LipschitzWith.prod_snd : LipschitzWith 1 (Prod.snd : ℝ × EuStd → EuStd)))
   have hfV : LocallyLipschitzOn (Icc a' c' ×ˢ closure Ω)
       (fun v : ℝ × EuStd => f (v.1, e.symm v.2)) := by

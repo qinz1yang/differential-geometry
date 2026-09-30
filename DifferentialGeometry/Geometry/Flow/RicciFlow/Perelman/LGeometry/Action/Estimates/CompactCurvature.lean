@@ -95,7 +95,7 @@ theorem lGrad_bound
     apply (hC₀ (f (t, x)) ⟨(t, x), ⟨ht, Set.mem_univ x⟩, rfl⟩).trans
     exact le_max_right _ _
   have hcs :=
-    DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+    DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
       (I := I) (M := M) (S.base.metric t) x
         (gradientFun (I := I) (S.base.metric t) (S.scalar t) x) v
   exact hcs.trans (mul_le_mul_of_nonneg_right (by simpa only [q] using hgrad)

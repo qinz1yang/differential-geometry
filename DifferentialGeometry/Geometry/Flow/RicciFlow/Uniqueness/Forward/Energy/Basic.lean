@@ -9,6 +9,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffAt metricDiffAt_apply metricDiffSq)
+
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
@@ -27,7 +30,7 @@ section MovingNorm
 
 def movingReact0S (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (Q : Tensor0SSpace 2 I x) (W : Tensor0SSpace s I x) : Real :=
-  ricReactionContract
+  metricVariationContract
     (basisInvMetric (I := I) g x (Module.finBasis Real (TangentSpace I x)))
     (fun i j =>
       Q (fun a : Fin 2 =>
@@ -77,7 +80,7 @@ theorem normSq0S_moving_deriv {s : Nat} {x : M} {t : Real}
   have hgInv (i j : Fin (Module.finrank Real (TangentSpace I x))) :
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by
     simpa [gInv, gInvDt, ric] using
-      (basisInv_time (I := I) g
+      (hasDerivAt_basisInvMetric (I := I) g
         (fun p q => (-2 : Real) * ric p q) basis
         (fun p q => by simpa [ric] using hg (basis p) (basis q)) i j)
   have hTcomp (I0 : Fin s → Fin (Module.finrank Real (TangentSpace I x))) :
@@ -107,7 +110,7 @@ theorem normSq0S_moving_deriv {s : Nat} {x : M} {t : Real}
     rw [hterm, hfactor]
     ring
   have hbase :=
-    hasDerivWithinAt_normSq0S_ricciFlow (I := I) (s := s) (u := Set.univ) (t := t)
+    hasDerivWithinAt_normSq0S_of_metric_variation (I := I) (s := s) (u := Set.univ) (t := t)
       g gInv gInvDt ric T Tdt Tdot basis hinvAll hgInv hTcomp hTdot hflow
   exact hbase.hasDerivAt (by simp)
 

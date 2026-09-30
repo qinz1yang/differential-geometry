@@ -121,7 +121,7 @@ theorem edgeGraph_connected_delete_edge_of_triangle
       · exact hwt
       · exact hst (by simp)
     · simp
-  apply hG.connected_delete_edge_of_not_isBridge
+  apply hG.preconnected.connected_deleteEdges_of_not_isBridge
   intro hbridge
   apply (SimpleGraph.isBridge_iff.mp hbridge)
   let hp : G.Walk u v := Walk.cons huw (Walk.cons hwv Walk.nil)

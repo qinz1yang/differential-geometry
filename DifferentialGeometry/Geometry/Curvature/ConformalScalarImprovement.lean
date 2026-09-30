@@ -2,6 +2,9 @@ import DifferentialGeometry.Geometry.Curvature.ConformalScalar
 import DifferentialGeometry.Geometry.Operator.ParallelPotential
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (metric_inner_smul_self)
+
 set_option autoImplicit false
 noncomputable section
 open Bundle DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness

@@ -56,8 +56,11 @@ def selfAdjointConjugate
   dsimp only
   intro A
   let a : ∀ x, S₁.fiber x := fun x =>
-    ⟨(φ x).symm.conjStarAlgEquiv (A x),
-      IsSelfAdjoint.map (A x).property (φ x).symm.conjStarAlgEquiv⟩
+    ⟨(φ x).symm.conjStarAlgEquiv (A x), by
+      have hAx : IsSelfAdjoint (A x : V₂ x →L[ℝ] V₂ x) := (A x).property
+      have hmap : IsSelfAdjoint ((φ x).symm.conjStarAlgEquiv
+          (A x : V₂ x →L[ℝ] V₂ x)) := hAx.map (φ x).symm.conjStarAlgEquiv
+      exact hmap⟩
   refine ⟨a, (S₁.contMDiff_section_iff a).mpr ?_⟩
   have hA := (S₂.contMDiff_section_iff A).mp A.contMDiff
   have hφinv : ContMDiff I (I.prod 𝓘(ℝ, F₂ →L[ℝ] F₁)) n

@@ -65,7 +65,7 @@ theorem reflect_source_subset (c : BallChart 3 (𝓡 3) M) {x : E3}
   change x ∈ ((OppositeModel.negDiffeomorph.toPartialDiffeomorph
     ).toOpenPartialHomeomorph.trans c.chart.toOpenPartialHomeomorph).source at hx'
   rw [OpenPartialHomeomorph.trans_source] at hx'
-  simpa [OppositeModel.neg_openPartialHomeomorph_apply] using hx'.2
+  exact hx'.2
 
 omit [IsManifold (𝓡 3) ∞ M] in
 theorem reflect_image_ball (c : BallChart 3 (𝓡 3) M) :

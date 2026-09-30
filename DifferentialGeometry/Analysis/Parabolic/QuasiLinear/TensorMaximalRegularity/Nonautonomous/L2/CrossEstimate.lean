@@ -59,7 +59,9 @@ theorem memLp_clm_affine
     rw [heq, TimeSobolev.norm_const, Real.norm_eq_abs, abs_of_nonneg hZ₀]
   have hUnorm : ‖hU.toLp U‖ = ‖u‖ := by
     rw [Lp.norm_toLp, Lp.norm_def]
-    simp only [U, eLpNorm_norm]
+    simpa only [U] using congrArg ENNReal.toReal
+      (eLpNorm_norm (p := (2 : ENNReal)) (μ := timeMeasure T)
+        (u : ℝ → X) (Lp.aestronglyMeasurable u))
   calc
     ‖hmem.toLp A‖ ≤ ‖hCU.toLp (C + L • U)‖ :=
       Lp.norm_le_norm_of_ae_le hdom

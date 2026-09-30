@@ -17,9 +17,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistor
 
 universe u
 
-variable {P₀ : OrientedThreeStage.{u}}
-
-theorem extendAt_traced_limit_inputs (H : RetainedCoreHistory P₀)
+theorem extendAt_traced_limit_inputs (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =

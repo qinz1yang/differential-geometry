@@ -5,6 +5,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.ContractionL
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.DifferentialOperatorProportionalBounds
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.DifferentiatedTower
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

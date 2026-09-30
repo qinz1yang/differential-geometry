@@ -1243,7 +1243,7 @@ theorem exists_weights_of_mem_cellCarrier {p : Plane} {t : Finset K.Vertex}
     rw [K.baryEval_eq_sum_of_support hsupp]
     have hite : ∑ v ∈ t, (if v ∈ t then w (K.position v) else 0) • K.position v =
         ∑ v ∈ t, w (K.position v) • K.position v :=
-      Finset.sum_congr rfl fun v hv => by rw [if_pos hv]
+      Finset.sum_congr rfl fun v hv => by rw [ite_eq_left hv]
     have himg2 : ∑ q ∈ t.image K.position, w q • q =
         ∑ v ∈ t, w (K.position v) • K.position v :=
       Finset.sum_image fun v _ v' _ h => K.position_injective h

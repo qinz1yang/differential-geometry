@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.EndTranslations
 import DifferentialGeometry.Geometry.Curvature.LocalIsometry
-import DifferentialGeometry.Tensor.Metric.IsometryNorm
-import DifferentialGeometry.Tensor.Metric.CompactBounds
+import DifferentialGeometry.Geometry.Metric.Tensor.IsometryNorm
+import DifferentialGeometry.Geometry.Metric.Tensor.CompactBounds
 import DifferentialGeometry.Topology.SigmaCompactOpen
 
 set_option autoImplicit false

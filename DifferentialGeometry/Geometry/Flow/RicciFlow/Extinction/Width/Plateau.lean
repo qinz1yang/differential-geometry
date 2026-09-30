@@ -425,7 +425,7 @@ private theorem curve_phase_jacobian_zero (g : SmoothRiemannianMetric I Q)
       _ = A (B (diskBasis i) • (1 : ℝ)) := congrArg A (by simp)
       _ = B (diskBasis i) • A 1 := A.map_smul _ _
   unfold parametricJacobian
-  rw [if_pos hc]
+  rw [ite_eq_left hc]
   let D : ℂ →L[ℝ] E := mfderivWithin 𝓘(ℝ, ℂ) I (f ∘ phase) s z
   let G : E →L[ℝ] E →L[ℝ] ℝ := g.inner (f (phase z))
   let v : E := A 1
@@ -695,7 +695,7 @@ private theorem diskExtension_comp_diskReflection (u : SmoothDisk (I := I) (Q :=
       refine Subtype.ext ?_
       simp only [diskReflection, diskCenter, star_zero]
     rw [Function.comp_apply]
-    simp only [diskExtension, dif_neg hz, dif_neg hz', hdc]
+    simp only [diskExtension, dite_eq_right hz, dite_eq_right hz', hdc]
 
 omit [I.Boundaryless] t2Q compactQ in
 def SmoothDisk.diskReflection (u : SmoothDisk (I := I) (Q := Q)) :

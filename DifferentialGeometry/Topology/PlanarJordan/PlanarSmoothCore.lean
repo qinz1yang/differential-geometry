@@ -662,7 +662,7 @@ theorem exists_smooth_core_curve {e : Plane → Plane} {α β W τa τb ρ : ℝ
   have hpf_in : ∀ t ∈ Icc τa τb, pf t = p t := by
     intro t ht
     simp only [hpfdef]
-    rw [if_pos ⟨by linarith [ht.1], by linarith [ht.2]⟩]
+    rw [ite_eq_left ⟨by linarith [ht.1], by linarith [ht.2]⟩]
   have hpfcont : ContinuousOn pf (Icc α β) :=
     continuousOn_core_switch (by linarith) hpcont.continuousOn hecont
       (hray_a _ (by rw [abs_lt]; constructor <;> linarith) (by linarith))
@@ -783,7 +783,7 @@ theorem exists_smooth_core_curve {e : Plane → Plane} {α β W τa τb ρ : ℝ
         exact half_pos hκ
     · intro s hs t ht hst hshort hCeq
       by_cases hin : s ∈ Icc (τa - ρ) (τb + ρ) ∧ t ∈ Icc (τa - ρ) (τb + ρ)
-      · simp only [Cf, if_pos hin.1, if_pos hin.2] at hCeq
+      · simp only [Cf, ite_eq_left hin.1, ite_eq_left hin.2] at hCeq
         exact rampPath_smoothRamp_ne_of_lt hε hh hTgap hcomb hst
           (by linarith [min_le_right (ρ / 4) (h / 2)]) hCeq
       · have hcase : (t ≤ τa - ρ / 2) ∨ (τb + ρ / 2 ≤ s) := by

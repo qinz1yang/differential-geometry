@@ -54,7 +54,7 @@ theorem isPiecewiseAffineOn_val_of_mem_maximalAtlas {F : Type*} [NormedAddCommGr
     ext q
     constructor
     · rintro ⟨⟨x, hx, rfl⟩, hxT⟩
-      simp only [mem_preimage, dif_pos x.2, Subtype.coe_eta] at hxT
+      simp only [mem_preimage, dite_eq_left x.2, Subtype.coe_eta] at hxT
       rw [OpenPartialHomeomorph.trans_source, mem_inter_iff, OpenPartialHomeomorph.symm_source,
         mem_preimage, e.left_inv hx] at hxT
       refine ⟨⟨x, hxT.2, rfl⟩, ?_⟩
@@ -65,7 +65,7 @@ theorem isPiecewiseAffineOn_val_of_mem_maximalAtlas {F : Type*} [NormedAddCommGr
         rw [← hUe]
         exact hxU
       refine ⟨⟨x, hxe, rfl⟩, ?_⟩
-      simp only [mem_preimage, dif_pos x.2, Subtype.coe_eta]
+      simp only [mem_preimage, dite_eq_left x.2, Subtype.coe_eta]
       rw [OpenPartialHomeomorph.trans_source, mem_inter_iff, OpenPartialHomeomorph.symm_source,
         mem_preimage, e.left_inv hxe]
       exact ⟨e.map_source hxe, hx⟩
@@ -79,7 +79,7 @@ theorem isPiecewiseAffineOn_val_of_mem_maximalAtlas {F : Type*} [NormedAddCommGr
   have hxe : x ∈ e.source := by
     rw [← hUe]
     exact hxU
-  simp only [Function.comp_apply, dif_pos x.2, Subtype.coe_eta, OpenPartialHomeomorph.coe_trans,
+  simp only [Function.comp_apply, dite_eq_left x.2, Subtype.coe_eta, OpenPartialHomeomorph.coe_trans,
     e.left_inv hxe]
 
 theorem exists_wallSides_of_isCombinatorialManifold {Ea : Type*} [NormedAddCommGroup Ea]
@@ -395,7 +395,7 @@ theorem exists_commonWallComplex {E : Type} [NormedAddCommGroup E] [NormedSpace 
       obtain ⟨Aff, hAff⟩ := (hK'aff i).2 t ht
       refine ⟨Aff, fun x hx => ?_⟩
       have h1 := hAff (hst hx)
-      simp only [F, dif_pos (show (x : E × E × ℝ) ∈ X.space from x.2)] at h1
+      simp only [F, dite_eq_left (show (x : E × E × ℝ) ∈ X.space from x.2)] at h1
       exact h1 }
 
 end DifferentialGeometry.Topology.PiecewiseLinear

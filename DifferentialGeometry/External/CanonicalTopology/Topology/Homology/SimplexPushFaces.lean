@@ -21,7 +21,15 @@ theorem singularSimplexEvaluation_face (n : ℕ) (σ : integralSingularSimplex (
       (singularSimplexEvaluation (n + 1) σ).comp (liftedSimplexBodyMap n (n + 1) i.succAbove) := by
   apply ContinuousMap.ext
   intro z
-  rfl
+  obtain ⟨t, rfl⟩ := (liftedSimplexHomeomorph.{u} n).surjective z
+  simp only [ContinuousMap.comp_apply, liftedSimplexBodyMap_apply]
+  change integralSingularSimplexEquiv n X _
+      ((liftedSimplexHomeomorph.{u} n).symm (liftedSimplexHomeomorph.{u} n t)) =
+    integralSingularSimplexEquiv (n + 1) X σ
+      ((liftedSimplexHomeomorph.{u} (n + 1)).symm
+        (liftedSimplexHomeomorph.{u} (n + 1) (Convexity.StdSimplex.map i.succAbove t)))
+  simp only [Homeomorph.symm_apply_apply]
+  exact TopCat.toSSetObjEquiv_δ_apply σ i t
 
 /-- Pushing through an original face equals pushing its original carrier
 image through the same simplex, in every chain degree. -/

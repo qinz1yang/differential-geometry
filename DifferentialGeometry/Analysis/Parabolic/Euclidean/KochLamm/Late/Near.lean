@@ -31,7 +31,6 @@ theorem kochLammLateSource_memLp {T R : ℝ} {A₁ A_q : ℝ≥0}
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :
     MemLp f (kochLammQ V)
       ((kochLammVolume : Measure (ℝ × V)).restrict (kochLammLateCylinder x R)) := by
-  refine ⟨h.ae.mono_measure Measure.restrict_le_self, ?_⟩
   have hb := h.late_lq x R hR hRT
   have hs0 : kochLammLqScale (V := V) R ≠ 0 :=
     (ENNReal.ofReal_pos.mpr

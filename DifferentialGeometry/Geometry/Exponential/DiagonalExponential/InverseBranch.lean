@@ -152,7 +152,7 @@ theorem inv_fiberCoordinates_contMDiffOn_at_fixed_base
     rw [B.proj_eq (hdom z hz)]
     exact mem_chart_source H p
   have hcoord : ContMDiffOn I 𝓘(Real, E) ∞
-      (fun z : M => Geodesic.chartFiberCoord (I := I) p (B.inv (p, z))) S :=
+      (fun z : M => TangentBundle.chartFiberCoord (I := I) p (B.inv (p, z))) S :=
     (Geodesic.chartFiberCoord_contMDiffOn (I := I) p).comp hinv hmaps
   refine hcoord.congr ?_
   intro z hz

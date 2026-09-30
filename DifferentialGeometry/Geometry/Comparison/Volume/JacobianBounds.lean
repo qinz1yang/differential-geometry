@@ -48,7 +48,7 @@ lemma sqrt_pow_le_sqrt_det
       a ^ Fintype.card ι ≤ ∏ i, hA.isHermitian.eigenvalues i := by
     have hprod_const :
         (∏ _ : ι, a) ≤ ∏ i, hA.isHermitian.eigenvalues i :=
-      Finset.prod_le_prod (fun _ _ => ha) (fun i _ => heig i)
+      Finset.prod_le_prod₀ (fun _ _ => ha) (fun i _ => heig i)
     simpa using hprod_const
   have hdet : a ^ Fintype.card ι ≤ A.det := by
     rw [hA.isHermitian.det_eq_prod_eigenvalues]

@@ -430,13 +430,13 @@ theorem BoundedGeometryNormalChartData.cov_comp_tail
       apply hQconv.congr_eventually hVopen
       · filter_upwards [eventually_atTop.2 ⟨Nsm, fun n hn => hn⟩] with n hn
         intro z _hz
-        simp only [Qp, if_pos hn]
+        simp only [Qp, ite_eq_left hn]
       · exact Set.eqOn_refl (gInf alpha) V
     have hQpcd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (Qp n) V := by
       intro n
       by_cases hn : Nsm ≤ n
-      · simpa only [Qp, if_pos hn] using hQsmooth n hn
-      · simpa only [Qp, if_neg hn] using hgInfV
+      · simpa only [Qp, ite_eq_left hn] using hQsmooth n hn
+      · simpa only [Qp, ite_eq_right hn] using hgInfV
     have htower := metric_tower_convergence hVopen e
       (fun n => B alpha (kn n)) Qp (gInf alpha)
       hGconvV hQpconv hBcd hQpcd hgInfV hBco hgInfCo (a : Nat)
@@ -486,7 +486,7 @@ theorem BoundedGeometryNormalChartData.cov_comp_tail
             (Qp n z - B alpha (kn n) z)
             (e (slots 0)) (e (slots 1)))
           (a : Nat) (zn n)) (slotn n)).trans hnorm
-      simpa only [Qp, if_pos hnSm, tower, Gamma] using hpi
+      simpa only [Qp, ite_eq_left hnSm, tower, Gamma] using hpi
     have hsmall :
         |tower alpha (kn n) (ln n) a (zn n) (slotn n)| < eps := by
       have habs :

@@ -7,7 +7,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem isAnnulusOn_stdSimplex_lateral :
     IsAnnulusOn (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)
       (stdSimplexBoundary 2 ×ˢ {0}) (stdSimplexBoundary 2 ×ˢ {1}) := by
-  have hβ : ∀ z : stdSimplexBoundary 2, (⟨z.1, z.2.1⟩ : stdSimplex ℝ (Fin 3)) ∈
+  have hβ : ∀ z : stdSimplexBoundary 2, (⟨z.1, z.2.1⟩ : Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ∈
       DifferentialGeometry.Simplex.boundary (Fin 3) := fun z => z.2.2
   have hβ' : ∀ z : DifferentialGeometry.Simplex.boundary (Fin 3),
       (z.1.1 : Fin 3 → ℝ) ∈ stdSimplexBoundary 2 := fun z => ⟨z.1.2, z.2⟩

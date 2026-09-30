@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.InverseGramLowerBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.PreHilbert
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise
+    tensorInnerPointwise_nonneg)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -120,7 +123,7 @@ theorem exists_sum_tensorInner_cov_chartBasis_diagonal_le_const_mul_covDerivInne
     intro k
     have hbnd := hc_bound b hb (fun i => U i k)
     have hcol_norm : ∑ i : Fin n, (U i k) ^ 2 = 1 := by
-      have hkk := hUTU k k; simp only [if_true] at hkk
+      have hkk := hUTU k k; simp only [ite_true] at hkk
       calc ∑ i : Fin n, (U i k) ^ 2 = ∑ i : Fin n, U i k * U i k := by
             refine Finset.sum_congr rfl ?_; intro i _; rw [sq]
         _ = 1 := hkk

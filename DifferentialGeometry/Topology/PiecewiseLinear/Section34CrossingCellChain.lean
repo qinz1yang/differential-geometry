@@ -59,7 +59,7 @@ theorem exists_crossing_cell_chain_of_chart_cover [FiniteDimensional ℝ E]
       IsPLHomeomorphOn (ψ j) (V j) (R.space ∩ Ω j) ∧
       (∀ p ∈ V j, (ψ j p ∈ A ↔ p.1.2 = 0) ∧ (ψ j p ∈ B ↔ p.1.1 = 0)) ∧
       (∀ p ∈ V j, ψ j p ∈ Γ.space ↔ p.1 = 0) ∧
-      ∀ i, IsPLHomeomorphOn (q j i) (stdSimplex ℝ (Fin 3)) (P j i) ∧
+      ∀ i, IsPLHomeomorphOn (q j i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P j i) ∧
         (PiecewiseLinear.restrict R (P j i)).space = P j i ∧
         ∀ x ∈ R.space ∩ W j,
           (x ∈ P j i ↔ Function.invFunOn (ψ j) (V j) x ∈ crossHalfPlane i) ∧

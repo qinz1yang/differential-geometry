@@ -451,7 +451,7 @@ private theorem lowRegularity_forceJetStep
       tensorL2Coeff (I := I) (M := M) hc
           (SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2) (F t)) i = φ i t := by
     intro t ht i
-    simp only [hF_def, ht, if_pos]
+    simp only [hF_def, ht, ite_eq_left]
     exact hF₀_coeff t ht i
   have hF_hs2 : ∀ t ∈ Set.Icc (0 : ℝ) T, ∀ i,
       (smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) (F t)).coeff i = φ i t := by
@@ -521,7 +521,7 @@ private theorem lowRegularity_forceJetStep
     by_cases ht : t ∈ Set.Icc (0 : ℝ) T
     · exact le_trans (hball_pt t ht) hRρ
     · have hF0 : F t = (0 : SmoothCcTensor g 0 2) := by
-        simp only [hF_def, ht, if_neg, not_false_iff]
+        simp only [hF_def, ht, ite_eq_right, not_false_iff]
       have hz : smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ)
           (0 : SmoothCcTensor g 0 2) = 0 := by
         have h0 : (0 : SmoothCcTensor g 0 2) = (0 : ℝ) • (0 : SmoothCcTensor g 0 2) :=

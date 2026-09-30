@@ -54,8 +54,8 @@ theorem regularizedDisk_curvatureDensity_le_sectional
   by_cases hzero : a z = 0
   · have hw : regularizedConformalWeight a f ε z = 0 := by
       simp [regularizedConformalWeight, hzero]
-    rw [if_pos hzero, hw, zero_mul]
-  · rw [if_neg hzero]
+    rw [ite_eq_left hzero, hw, zero_mul]
+  · rw [ite_eq_right hzero]
     apply mul_le_mul_of_nonneg_left _ (regularizedConformalWeight_mem_Icc (han z) hε).1
     have hpos : 0 < diskMapConformalCoefficient g U z := by
       rw [← heq.eq_of_nhds]

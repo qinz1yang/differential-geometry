@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.Scalar
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_nonneg
+  tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
+
 section
 
 noncomputable section

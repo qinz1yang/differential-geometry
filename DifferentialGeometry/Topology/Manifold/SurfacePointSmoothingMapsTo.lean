@@ -48,9 +48,9 @@ theorem exists_smooth_at_preserving_mapsTo [Finite ι] (h : M ≃ₜ N)
     · have hgy : g y ∈ h '' K := himage ▸ mem_image_of_mem g hyK
       obtain ⟨z, hz, hzg⟩ := hgy
       have hzV := mem_iInter.mp (hKW hz).2 i
-      rw [if_pos hx] at hzV
+      rw [ite_eq_left hx] at hzV
       exact hzg ▸ hzV
-    · rw [if_neg hx] at hyV
+    · rw [ite_eq_right hx] at hyV
       exact (hyV hy).elim
   · rw [hgout hyK]
     exact hmap i hy

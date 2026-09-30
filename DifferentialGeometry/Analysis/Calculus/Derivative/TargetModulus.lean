@@ -52,7 +52,7 @@ theorem exists_target_modulus (P : ℝ → ℕ → Prop)
   · intro δ hδ
     have hi := hindex δ hδ.1 0 hδ.2
     have hir : (1 : ℝ) ≤ (index δ hδ.1 : ℝ) := by exact_mod_cast hi
-    simp only [modulus, dif_pos hδ.1, mem_Ioc]
+    simp only [modulus, dite_eq_left hδ.1, mem_Ioc]
     exact ⟨inv_pos.mpr (zero_lt_one.trans_le hir), (inv_le_one₀ (zero_lt_one.trans_le hir)).mpr hir⟩
   · apply tendsto_order.mpr
     constructor
@@ -70,7 +70,7 @@ theorem exists_target_modulus (P : ℝ → ℕ → Prop)
       have hpos : 0 < (N : ℝ) + 1 := by positivity
       have hinv : (index δ hδ.1 : ℝ)⁻¹ ≤ ((N : ℝ) + 1)⁻¹ := inv_anti₀ hpos hir
       have hN' : ((N : ℝ) + 1)⁻¹ < ε := by simpa only [one_div] using hN
-      simpa only [modulus, dif_pos hδ.1] using hinv.trans_lt hN'
+      simpa only [modulus, dite_eq_left hδ.1] using hinv.trans_lt hN'
   · intro δ hδ hle
     let n := index δ hδ - 1
     have hi := hindex δ hδ 0 hle
@@ -79,7 +79,7 @@ theorem exists_target_modulus (P : ℝ → ℕ → Prop)
     have hmin : δ ≤ τ n := le_of_not_gt
       (@Nat.find_min (fun r => τ r < δ) (fun _ => Classical.propDecidable _) (hex δ hδ) n hlt)
     refine ⟨n, ?_, htarget n δ hδ (hmin.trans (hτ n).2.1)⟩
-    simp only [modulus, dif_pos hδ]
+    simp only [modulus, dite_eq_left hδ]
     congr 1
     exact_mod_cast hn.symm
 end DifferentialGeometry.Analysis

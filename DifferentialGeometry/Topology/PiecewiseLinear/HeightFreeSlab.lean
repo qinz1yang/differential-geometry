@@ -22,7 +22,7 @@ theorem exists_convex_slab_cell_of_ne_closedStar
     {p : E} (hp : {p} ∈ K.faces) {a b : ℝ} (hab : a < b) (hpheight : ℓ p ∈ Icc a b)
     (hgap : ∀ v ∈ K.vertices, v ≠ p → ℓ v < a ∨ b < ℓ v)
     {g : (Fin 3 → ℝ) → E}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (K.space ∩ {x | ℓ x = ℓ p}))
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (K.space ∩ {x | ℓ x = ℓ p}))
     (hgBd : g '' stdSimplexBoundary 2 = frontier K.space ∩ {x | ℓ x = ℓ p})
     (hne : closedStar K p ∩ {x | ℓ x = ℓ p} ≠ K.space ∩ {x | ℓ x = ℓ p}) :
     ∃ T ∈ K.faces, T.card = 4 ∧ p ∉ T ∧
@@ -69,7 +69,7 @@ theorem exists_convex_slab_cell_of_ne_closedStar
       rfl
   have hKfront : frontier K.space = (boundaryComplex 3 K).space :=
     frontier_space_eq_boundaryComplex_space_of_finrank hdim K hK
-  have hgL : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) L.space := hLspace.symm ▸ hg
+  have hgL : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) L.space := hLspace.symm ▸ hg
   have hLboundary : (boundaryComplex 2 L).space =
       (boundaryComplex 3 K).space ∩ {x | ℓ x = ℓ p} := by
     rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex L hgL,

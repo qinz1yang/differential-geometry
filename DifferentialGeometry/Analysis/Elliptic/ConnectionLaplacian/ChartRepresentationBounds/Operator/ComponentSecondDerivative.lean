@@ -110,7 +110,7 @@ private lemma tensorRepr_chart_pulled_contDiffAt_inf
     change (trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) α).linearMapAt ℝ x
         (S.toSection x) = _
-    rw [Bundle.Trivialization.linearMapAt_apply, if_pos hx_base]
+    rw [Bundle.Trivialization.linearMapAt_apply, ite_eq_left hx_base]
   have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm
       (extChartAt I α).target := contMDiffOn_extChartAt_symm (I := I) α
   have hmaps : Set.MapsTo (extChartAt I α).symm (extChartAt I α).target

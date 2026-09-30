@@ -17,6 +17,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCu
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.RicciFlowPdeAtZero
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelDerivative
 
 
 open DifferentialGeometry.Geometry.Curvature

@@ -22,10 +22,10 @@ private theorem snocVec_continuous :
   intro i
   unfold snocVec
   by_cases h : (i : ℕ) < 3
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     exact (continuous_apply (ι := Fin 3) (A := fun _ : Fin 3 => ℝ) ⟨i, h⟩).comp
       continuous_fst
-  · simp only [dif_neg h]
+  · simp only [dite_eq_right h]
     exact continuous_snd
 
 private theorem snocVec_castSucc (x : Fin 3 → ℝ) (t : ℝ) (i : Fin 3) :

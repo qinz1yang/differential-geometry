@@ -59,11 +59,11 @@ theorem exists_compactGraphNeighborhoods
   refine ⟨H, W, hH, hHC, hWopen, hCW, fun _ => inter_subset_left, ?_, ?_⟩
   · intro v t ht hvt x hx
     have htmem := mem_iInter.mp hx.2 ⟨t, ht⟩
-    simpa only [if_pos hvt] using htmem
+    simpa only [ite_eq_left hvt] using htmem
   · intro v t ht hvt
     refine disjoint_left.mpr fun x hx hxt => ?_
     have htmem := mem_iInter.mp hx.2 ⟨t, ht⟩
-    simp only [if_neg hvt, mem_compl_iff] at htmem
+    simp only [ite_eq_right hvt, mem_compl_iff] at htmem
     exact htmem hxt
 
 end DifferentialGeometry.Topology.PiecewiseLinear

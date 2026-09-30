@@ -63,8 +63,8 @@ def LocalTerminalDistanceControl
           riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩)
 
 theorem rfs_whole_parent_map_localTerminalLengthControl_of_localTerminalDistanceControl
-    (hlip : K.LocalTerminalDistanceControl K.rfs_whole_parent_map) :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map := by
+    (hlip : K.LocalTerminalDistanceControl K.canonicalWholeParentMap) :
+    K.LocalTerminalLengthControl K.canonicalWholeParentMap := by
   intro x hx
   obtain ⟨U, hU, hterm, hdist⟩ := hlip x hx
   refine ⟨U, hU, hterm, hdist, ?_⟩
@@ -80,20 +80,20 @@ theorem rfs_whole_parent_map_localTerminalLengthControl_of_localTerminalDistance
 
 theorem rfs_collapse_degree_of_localTerminalDistanceControl_and_class_generator
     (a : IntegralHomology (G.Parent c).Carrier 3) (b : IntegralHomology (G.Child c).Carrier 3)
-    {k : ℤ} (hlip : K.LocalTerminalDistanceControl K.rfs_whole_parent_map)
-    (hmap : integralHomologyMap 3 K.rfs_whole_parent_map a = k • b)
+    {k : ℤ} (hlip : K.LocalTerminalDistanceControl K.canonicalWholeParentMap)
+    (hmap : integralHomologyMap 3 K.canonicalWholeParentMap a = k • b)
     (hgen : ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-      φ (integralHomologyMap 3 K.rfs_whole_parent_map a) = 1)
+      φ (integralHomologyMap 3 K.canonicalWholeParentMap a) = 1)
     (hk : 0 < k) :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
+    K.LocalTerminalLengthControl K.canonicalWholeParentMap ∧
     (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      K.rfs_whole_parent_map y = K.rfs_whole_parent_map x) ∧
+      K.canonicalWholeParentMap y = K.canonicalWholeParentMap x) ∧
     (∀ x : G.transition.ChildCore c,
-      K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+      K.canonicalWholeParentMap (G.transition.childCoreIntoParent c x) =
         G.transition.childCoreInclusion c x) ∧
-    integralHomologyMap 3 K.rfs_whole_parent_map a = b ∧
-    Function.Surjective K.rfs_whole_parent_map := by
-  have hclass : integralHomologyMap 3 K.rfs_whole_parent_map a = b := by
+    integralHomologyMap 3 K.canonicalWholeParentMap a = b ∧
+    Function.Surjective K.canonicalWholeParentMap := by
+  have hclass : integralHomologyMap 3 K.canonicalWholeParentMap a = b := by
     have hone : k = 1 :=
       DifferentialGeometry.Topology.eq_one_of_exists_linearMap_eq_one_of_eq_zsmul_of_pos
         hgen hmap hk

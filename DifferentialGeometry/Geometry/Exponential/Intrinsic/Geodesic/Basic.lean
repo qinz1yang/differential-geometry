@@ -232,10 +232,10 @@ theorem exists_complete_geodesic_at_velocity
   have hΓ_eq_η : ∀ t, -δ < t → t < δ → Γ t = η t := by
     intro t ht_lo ht_hi
     rcases lt_trichotomy t 0 with hlt | heq | hgt
-    · rw [hΓ_def]; simp only [if_pos hlt]; exact hΓb_agree t ht_lo
-    · subst heq; rw [hΓ_def]; simp only [lt_irrefl, if_false]
+    · rw [hΓ_def]; simp only [ite_eq_left hlt]; exact hΓb_agree t ht_lo
+    · subst heq; rw [hΓ_def]; simp only [lt_irrefl, ite_false]
       exact hΓf_agree' 0 hδ
-    · rw [hΓ_def]; simp only [if_neg (not_lt.mpr hgt.le)]; exact hΓf_agree' t ht_hi
+    · rw [hΓ_def]; simp only [ite_eq_right (not_lt.mpr hgt.le)]; exact hΓf_agree' t ht_hi
   have h0_win : (0 : ℝ) ∈ Set.Ioo (-δ) δ := ⟨by linarith [hδ], hδ⟩
   have hΓ_nhds_η : Γ =ᶠ[nhds (0 : ℝ)] η := by
     refine Filter.eventually_of_mem (isOpen_Ioo.mem_nhds h0_win) ?_
@@ -245,9 +245,9 @@ theorem exists_complete_geodesic_at_velocity
     rcases lt_trichotomy t 0 with hlt | heq | hgt
     · have hΓΓb : Γ =ᶠ[nhds t] Γb := by
         refine Filter.eventually_of_mem (isOpen_Iio.mem_nhds hlt) ?_
-        intro s hs; rw [hΓ_def]; simp only [if_pos (Set.mem_Iio.mp hs)]
+        intro s hs; rw [hΓ_def]; simp only [ite_eq_left (Set.mem_Iio.mp hs)]
       refine HasGeodesicEquationAt.congr_of_eventuallyEq_at (γ' := Γb) ?_ hΓΓb ?_
-      · rw [hΓ_def]; simp only [if_pos hlt]
+      · rw [hΓ_def]; simp only [ite_eq_left hlt]
       · exact hΓb_geo t (Set.mem_Iio.mpr (by rw [hma₀]; linarith))
     · subst heq
       refine HasGeodesicEquationAt.congr_of_eventuallyEq_at (γ' := η)
@@ -255,9 +255,9 @@ theorem exists_complete_geodesic_at_velocity
       exact hη_geo 0 h0_mem_seed
     · have hΓΓf : Γ =ᶠ[nhds t] Γf := by
         refine Filter.eventually_of_mem (isOpen_Ioi.mem_nhds hgt) ?_
-        intro s hs; rw [hΓ_def]; simp only [if_neg (not_lt.mpr (le_of_lt (Set.mem_Ioi.mp hs)))]
+        intro s hs; rw [hΓ_def]; simp only [ite_eq_right (not_lt.mpr (le_of_lt (Set.mem_Ioi.mp hs)))]
       refine HasGeodesicEquationAt.congr_of_eventuallyEq_at (γ' := Γf) ?_ hΓΓf ?_
-      · rw [hΓ_def]; simp only [if_neg (not_lt.mpr hgt.le)]
+      · rw [hΓ_def]; simp only [ite_eq_right (not_lt.mpr hgt.le)]
       · exact hΓf_geo t (Set.mem_Ioi.mpr (lt_trans ha₀_neg hgt))
   have hΓb0 : Γb 0 = p := by
     have := hΓb_agree 0 (by linarith [hδ]); rw [this, hη0]
@@ -284,9 +284,9 @@ theorem exists_complete_geodesic_at_velocity
     have hΓt : Γ t = if t < 0 then Γb t else Γf t := by rw [hΓ_def]
     rw [hΓt]
     rcases lt_trichotomy t 0 with hlt | heq | hgt
-    · rw [if_pos hlt.le, if_pos hlt]
-    · subst heq; rw [if_pos le_rfl, if_neg (lt_irrefl 0), hΓf0, hΓb0]
-    · rw [if_neg (not_le.mpr hgt), if_neg (not_lt.mpr hgt.le)]
+    · rw [ite_eq_left hlt.le, ite_eq_left hlt]
+    · subst heq; rw [ite_eq_left le_rfl, ite_eq_right (lt_irrefl 0), hΓf0, hΓb0]
+    · rw [ite_eq_right (not_le.mpr hgt), ite_eq_right (not_lt.mpr hgt.le)]
   refine ⟨Γ, hΓ_geo, ?_, ?_, hΓ_cont⟩
   · rw [hΓ_nhds_η.eq_of_nhds, hη0]
   · rw [show mfderiv 𝓘(ℝ, ℝ) I Γ 0 = mfderiv 𝓘(ℝ, ℝ) I η 0 from hΓ_nhds_η.mfderiv_eq]

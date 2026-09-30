@@ -33,13 +33,9 @@ structure LocalSmoothSection (E : Type*) [NormedAddCommGroup E] [InnerProductSpa
   [baseSigmaCompact : SigmaCompactSpace baseNeighborhood]
   [baseT2 : T2Space baseNeighborhood]
   [baseBoundaryless : BoundarylessManifold (𝓡 n) baseNeighborhood]
-  [baseManifoldOne : IsManifold (𝓡 n) 1 baseNeighborhood]
-  [baseManifoldTop : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) baseNeighborhood]
   [sphereSigmaCompact : SigmaCompactSpace sphereNeighborhood]
   [sphereT2 : T2Space sphereNeighborhood]
   [sphereBoundaryless : BoundarylessManifold (𝓡 n) sphereNeighborhood]
-  [sphereManifoldOne : IsManifold (𝓡 n) 1 sphereNeighborhood]
-  [sphereManifoldTop : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) sphereNeighborhood]
   localSection : baseNeighborhood ≃ₘ⟮𝓡 n, 𝓡 n⟯ sphereNeighborhood
   mem_baseNeighborhood : x ∈ baseNeighborhood
   proj_localSection : ∀ r : baseNeighborhood,
@@ -51,14 +47,12 @@ structure RoundSphereQuotient (E : Type uE) [NormedAddCommGroup E] [InnerProduct
   [topos : TopologicalSpace Q]
   [charted : ChartedSpace (EuclideanSpace ℝ (Fin n)) Q]
   [mfld : IsManifold (𝓡 n) ∞ Q]
-  [mfld1 : IsManifold (𝓡 n) 1 Q]
-  [mfldTop : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) Q]
   [t2 : T2Space Q]
   [sigmaCompact : SigmaCompactSpace Q]
   [boundaryless : BoundarylessManifold (𝓡 n) Q]
   Γ : Type uQ
   [grp : Group Γ]
-  [fin : Fintype Γ]
+  [finite : Finite Γ]
   ρ : Γ →* (E ≃ₗᵢ[ℝ] E)
   action_free : ∀ γ : Γ, ∀ q : sphere (0 : E) 1,
     sphereDiffeo (n := n) (ρ γ) q = q → γ = 1
@@ -71,14 +65,12 @@ structure RoundSphereQuotient (E : Type uE) [NormedAddCommGroup E] [InnerProduct
   sectionAt : ∀ x : Q, LocalSmoothSection E n Q proj x
 
 attribute [instance] RoundSphereQuotient.topos RoundSphereQuotient.charted RoundSphereQuotient.mfld
-  RoundSphereQuotient.mfld1 RoundSphereQuotient.mfldTop RoundSphereQuotient.t2
+  RoundSphereQuotient.t2
   RoundSphereQuotient.sigmaCompact RoundSphereQuotient.boundaryless RoundSphereQuotient.grp
-  RoundSphereQuotient.fin
+  RoundSphereQuotient.finite
   LocalSmoothSection.baseSigmaCompact LocalSmoothSection.baseT2
-  LocalSmoothSection.baseBoundaryless LocalSmoothSection.baseManifoldOne
-  LocalSmoothSection.baseManifoldTop LocalSmoothSection.sphereSigmaCompact
+  LocalSmoothSection.baseBoundaryless LocalSmoothSection.sphereSigmaCompact
   LocalSmoothSection.sphereT2 LocalSmoothSection.sphereBoundaryless
-  LocalSmoothSection.sphereManifoldOne LocalSmoothSection.sphereManifoldTop
 
 private noncomputable def tangentOpenEquiv
     {Q : Type*} [TopologicalSpace Q] [ChartedSpace (EuclideanSpace ℝ (Fin n)) Q]
@@ -161,13 +153,16 @@ noncomputable def ofLocal
       _ = (r : Q) := by
         exact congrArg Subtype.val (e.apply_symm_apply r)
 
-def toSphere : S.baseNeighborhood → sphere (0 : E) 1 := fun r => ((S.localSection r : S.sphereNeighborhood) : sphere (0 : E) 1)
+def toSphere : S.baseNeighborhood → sphere (0 : E) 1 :=
+  fun r => ((S.localSection r : S.sphereNeighborhood) : sphere (0 : E) 1)
 
-theorem toSphere_proj (r : S.baseNeighborhood) : proj (S.toSphere r) = (r : Q) := S.proj_localSection r
+theorem toSphere_proj (r : S.baseNeighborhood) : proj (S.toSphere r) = (r : Q) :=
+  S.proj_localSection r
 
 theorem toSphere_contMDiff : ContMDiff (𝓡 n) (𝓡 n) ∞ S.toSphere := by
   have h : ContMDiff (𝓡 n) (𝓡 n) ∞
-      ((Subtype.val : S.sphereNeighborhood → sphere (0 : E) 1) ∘ (S.localSection : S.baseNeighborhood → S.sphereNeighborhood)) :=
+      ((Subtype.val : S.sphereNeighborhood → sphere (0 : E) 1) ∘
+        (S.localSection : S.baseNeighborhood → S.sphereNeighborhood)) :=
     (contMDiff_subtype_val (I := 𝓡 n)).comp S.localSection.contMDiff
   exact h
 
@@ -176,15 +171,18 @@ theorem mfderiv_toSphere_apply (r : S.baseNeighborhood) (v : TangentSpace (𝓡 
   have hval : MDifferentiableAt (𝓡 n) (𝓡 n)
       (Subtype.val : S.sphereNeighborhood → sphere (0 : E) 1) (S.localSection r) :=
     (contMDiff_subtype_val (I := 𝓡 n)).mdifferentiableAt (by decide : (∞ : WithTop ℕ∞) ≠ 0)
-  have hs : MDifferentiableAt (𝓡 n) (𝓡 n) (S.localSection : S.baseNeighborhood → S.sphereNeighborhood) r :=
+  have hs : MDifferentiableAt (𝓡 n) (𝓡 n)
+      (S.localSection : S.baseNeighborhood → S.sphereNeighborhood) r :=
     S.localSection.contMDiff.mdifferentiableAt (by decide : (∞ : WithTop ℕ∞) ≠ 0)
-  have hcomp : S.toSphere = (Subtype.val : S.sphereNeighborhood → sphere (0 : E) 1) ∘ (S.localSection : S.baseNeighborhood → S.sphereNeighborhood) := rfl
+  have hcomp : S.toSphere = (Subtype.val : S.sphereNeighborhood → sphere (0 : E) 1) ∘
+      (S.localSection : S.baseNeighborhood → S.sphereNeighborhood) := rfl
   rw [hcomp, mfderiv_comp_apply r hval hs v, mfderiv_subtype_val_apply]
 
 theorem pullback_inner_eval {x : Q} (hx : x ∈ S.baseNeighborhood)
     (v w : TangentSpace (𝓡 n) (⟨x, hx⟩ : S.baseNeighborhood)) :
     (Diffeomorph.pullbackMetric
-        ((roundMetric (E := E) (n := n)).restrictOpen S.sphereNeighborhood) S.localSection).inner ⟨x, hx⟩ v w
+        ((roundMetric (E := E) (n := n)).restrictOpen S.sphereNeighborhood)
+        S.localSection).inner ⟨x, hx⟩ v w
       = roundInner (n := n) (S.toSphere ⟨x, hx⟩)
           (mfderiv (𝓡 n) (𝓡 n) S.toSphere ⟨x, hx⟩ v)
           (mfderiv (𝓡 n) (𝓡 n) S.toSphere ⟨x, hx⟩ w) := by
@@ -249,8 +247,10 @@ theorem gm_apply (x : D.Q) (v w : TangentSpace (𝓡 n) x) :
       (Diffeomorph.pullbackMetric
         ((roundMetric (E := E) (n := n)).restrictOpen (D.sectionAt x).sphereNeighborhood)
         (D.sectionAt x).localSection).inner ⟨x, (D.sectionAt x).mem_baseNeighborhood⟩
-          (tangentOpenEquiv (D.sectionAt x).baseNeighborhood ⟨x, (D.sectionAt x).mem_baseNeighborhood⟩ v)
-          (tangentOpenEquiv (D.sectionAt x).baseNeighborhood ⟨x, (D.sectionAt x).mem_baseNeighborhood⟩ w) := by
+          (tangentOpenEquiv (D.sectionAt x).baseNeighborhood
+            ⟨x, (D.sectionAt x).mem_baseNeighborhood⟩ v)
+          (tangentOpenEquiv (D.sectionAt x).baseNeighborhood
+            ⟨x, (D.sectionAt x).mem_baseNeighborhood⟩ w) := by
   rfl
 
 theorem gm_symm (x : D.Q) (v w : TangentSpace (𝓡 n) x) : D.gm x v w = D.gm x w v :=
@@ -334,8 +334,10 @@ theorem gm_locallyEq {x₁ x : D.Q} (hx : x ∈ (D.sectionAt x₁).baseNeighborh
           (tangentOpenEquiv (D.sectionAt x₁).baseNeighborhood ⟨x, hx⟩ w) := by
   rw [D.gm_apply,
     (D.sectionAt x).pullback_inner_eval (D.sectionAt x).mem_baseNeighborhood
-      (tangentOpenEquiv (D.sectionAt x).baseNeighborhood ⟨x, (D.sectionAt x).mem_baseNeighborhood⟩ v)
-      (tangentOpenEquiv (D.sectionAt x).baseNeighborhood ⟨x, (D.sectionAt x).mem_baseNeighborhood⟩ w),
+      (tangentOpenEquiv (D.sectionAt x).baseNeighborhood
+        ⟨x, (D.sectionAt x).mem_baseNeighborhood⟩ v)
+      (tangentOpenEquiv (D.sectionAt x).baseNeighborhood
+        ⟨x, (D.sectionAt x).mem_baseNeighborhood⟩ w),
     (D.sectionAt x₁).pullback_inner_eval hx
       (tangentOpenEquiv (D.sectionAt x₁).baseNeighborhood ⟨x, hx⟩ v)
       (tangentOpenEquiv (D.sectionAt x₁).baseNeighborhood ⟨x, hx⟩ w)]
@@ -365,8 +367,10 @@ theorem gm_coeff (x₀ : D.Q) (i j : Fin (Module.finrank ℝ (EuclideanSpace ℝ
     (Diffeomorph.pullbackMetric
       ((roundMetric (E := E) (n := n)).restrictOpen (D.sectionAt x₁).sphereNeighborhood)
       (D.sectionAt x₁).localSection)
-    (frameVec_sub_cmdiffAt (I := 𝓡 n) (D.sectionAt x₁).baseNeighborhood x₀ i hx₁ (D.sectionAt x₁).mem_baseNeighborhood)
-    (frameVec_sub_cmdiffAt (I := 𝓡 n) (D.sectionAt x₁).baseNeighborhood x₀ j hx₁ (D.sectionAt x₁).mem_baseNeighborhood)
+    (frameVec_sub_cmdiffAt (I := 𝓡 n) (D.sectionAt x₁).baseNeighborhood x₀ i hx₁
+      (D.sectionAt x₁).mem_baseNeighborhood)
+    (frameVec_sub_cmdiffAt (I := 𝓡 n) (D.sectionAt x₁).baseNeighborhood x₀ j hx₁
+      (D.sectionAt x₁).mem_baseNeighborhood)
     (le_refl _)
 
 def gQuot : SmoothRiemannianMetric (𝓡 n) D.Q :=
@@ -391,7 +395,8 @@ theorem gQuot_sectional_one (x : D.Q) (X Y : TangentSpace (𝓡 n) x) :
   have hYW : mfderiv (𝓡 n) (𝓡 n) (Subtype.val : S.baseNeighborhood → D.Q) xW YW = Y :=
     mfderiv_subtype_val_tangentOpenEquiv S.baseNeighborhood xW Y
   have hB : metricRm04StandardAt (I := 𝓡 n) D.gQuot x X Y Y X
-      = metricRm04StandardAt (I := 𝓡 n) (D.gQuot.restrictOpen S.baseNeighborhood) xW XW YW YW XW := by
+      = metricRm04StandardAt (I := 𝓡 n) (D.gQuot.restrictOpen S.baseNeighborhood)
+          xW XW YW YW XW := by
     rw [metricRm04StandardAt_restrictOpen, hXW, hYW]
   have hmetric : D.gQuot.restrictOpen S.baseNeighborhood
       = Diffeomorph.pullbackMetric
@@ -408,18 +413,21 @@ theorem gQuot_sectional_one (x : D.Q) (X Y : TangentSpace (𝓡 n) x) :
           SmoothRiemannianMetric.restrictOpen_inner D.gQuot S.baseNeighborhood r v w
       _ = D.gm (r : D.Q) vQ wQ := D.gQuot_inner (r : D.Q) vQ wQ
       _ = (Diffeomorph.pullbackMetric
-          ((roundMetric (E := E) (n := n)).restrictOpen S.sphereNeighborhood) S.localSection).inner r
-            (tangentOpenEquiv S.baseNeighborhood r vQ) (tangentOpenEquiv S.baseNeighborhood r wQ) := by
+          ((roundMetric (E := E) (n := n)).restrictOpen S.sphereNeighborhood)
+          S.localSection).inner r (tangentOpenEquiv S.baseNeighborhood r vQ)
+            (tangentOpenEquiv S.baseNeighborhood r wQ) := by
         exact D.gm_locallyEq (x₁ := x) r.2 vQ wQ
       _ = (Diffeomorph.pullbackMetric
-          ((roundMetric (E := E) (n := n)).restrictOpen S.sphereNeighborhood) S.localSection).inner r v w := by
+          ((roundMetric (E := E) (n := n)).restrictOpen S.sphereNeighborhood)
+          S.localSection).inner r v w := by
         rw [show tangentOpenEquiv S.baseNeighborhood r vQ = v from by
               exact tangentOpenEquiv_mfderiv_subtype_val S.baseNeighborhood r v,
           show tangentOpenEquiv S.baseNeighborhood r wQ = w from by
               exact tangentOpenEquiv_mfderiv_subtype_val S.baseNeighborhood r w]
   have hC : metricRm04StandardAt (I := 𝓡 n)
         (Diffeomorph.pullbackMetric
-          ((roundMetric (E := E) (n := n)).restrictOpen S.sphereNeighborhood) S.localSection) xW XW YW YW XW
+          ((roundMetric (E := E) (n := n)).restrictOpen S.sphereNeighborhood)
+          S.localSection) xW XW YW YW XW
       = metricRm04StandardAt (I := 𝓡 n) (roundMetric (E := E) (n := n)) (S.toSphere xW)
           (mfderiv (𝓡 n) (𝓡 n) S.toSphere xW XW)
           (mfderiv (𝓡 n) (𝓡 n) S.toSphere xW YW)

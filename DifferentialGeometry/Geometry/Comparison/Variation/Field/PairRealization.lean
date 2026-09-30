@@ -154,7 +154,7 @@ theorem exists_var_pair
       simp only [c, curveAt_zero]
     rw [hc0] at hvel
     rw [hzero Q t]
-    convert hvel using 1 ; rfl
+    convert hvel using 1
   have hstationary (Q : Real → E) (t : Real) (hQt : Q t = 0) :
       ∀ u, f Q u t = gamma t := by
     intro u

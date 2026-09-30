@@ -19,7 +19,7 @@ noncomputable def carrierFace (K : Geometry.SimplicialComplex ℝ E) (x : E) : F
 
 theorem carrierFace_spec {K : Geometry.SimplicialComplex ℝ E} {x : E} (hx : x ∈ K.space) :
     carrierFace K x ∈ K.faces ∧ x ∈ openSimplex (carrierFace K x) := by
-  rw [carrierFace, dif_pos hx]
+  rw [carrierFace, dite_eq_left hx]
   exact Classical.choose_spec (exists_face_mem_openSimplex K hx)
 
 theorem carrierFace_mem {K : Geometry.SimplicialComplex ℝ E} {x : E} (hx : x ∈ K.space) :
@@ -56,14 +56,14 @@ theorem weights_eq_of_subset_of_mem {s t : Finset E} (hs : AffineIndependent ℝ
     (hts : t ⊆ s) {x : E} (hxt : x ∈ convexHull ℝ (t : Set E)) {v : E} (hv : v ∈ t) :
     weights s x v = weights t x v := by
   classical
-  rw [weights_eq_of_subset hs hts hxt v (hts hv), if_pos hv]
+  rw [weights_eq_of_subset hs hts hxt v (hts hv), ite_eq_left hv]
 
 theorem weights_eq_zero_of_subset_of_notMem {s t : Finset E}
     (hs : AffineIndependent ℝ ((↑) : s → E)) (hts : t ⊆ s) {x : E}
     (hxt : x ∈ convexHull ℝ (t : Set E)) {v : E} (hvs : v ∈ s) (hvt : v ∉ t) :
     weights s x v = 0 := by
   classical
-  rw [weights_eq_of_subset hs hts hxt v hvs, if_neg hvt]
+  rw [weights_eq_of_subset hs hts hxt v hvs, ite_eq_right hvt]
 
 noncomputable def simplicialMap (K : Geometry.SimplicialComplex ℝ E) (φ : E → F) (x : E) : F :=
   ∑ v ∈ carrierFace K x, weights (carrierFace K x) x v • φ v

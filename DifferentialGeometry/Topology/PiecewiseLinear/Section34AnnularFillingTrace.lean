@@ -70,10 +70,10 @@ theorem IsPLSphere.exists_annular_band_with_filling_trace
     (hJA : J ⊆ A) (hLA : L ⊆ A) (hJL : Disjoint J L)
     (hJend : Disjoint J (A₀ ∪ A₁)) (hLend : Disjoint L (A₀ ∪ A₁))
     (hJess : ¬ ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ A ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ A ∧
         r '' stdSimplexBoundary 2 = J)
     (hLess : ¬ ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ A ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ A ∧
         r '' stdSimplexBoundary 2 = L) :
     ∃ φ : (Fin 3 → ℝ) × ℝ → E,
       IsPLHomeomorphOn φ (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)

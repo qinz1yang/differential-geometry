@@ -402,19 +402,19 @@ theorem heatSemigroup_apply_of_nonneg
           ⟪resolventHilbertEigenbasisSigma (I := I) (M := M) g i, u⟫_ℝ •
           resolventHilbertEigenbasisSigma (I := I) (M := M) g i := by
   unfold heatSemigroup
-  rw [dif_pos ht]
+  rw [dite_eq_left ht]
   rfl
 
 theorem heatSemigroup_of_neg (g : SmoothRiemannianMetric I M) {t : ℝ} (ht : t < 0) :
     heatSemigroup (I := I) (M := M) g t = 0 := by
   unfold heatSemigroup
-  rw [dif_neg (not_le.mpr ht)]
+  rw [dite_eq_right (not_le.mpr ht)]
 
 theorem heatSemigroup_opNorm_le_one (g : SmoothRiemannianMetric I M)
     {t : ℝ} (ht : 0 ≤ t) :
     ‖heatSemigroup (I := I) (M := M) g t‖ ≤ 1 := by
   unfold heatSemigroup
-  rw [dif_pos ht]
+  rw [dite_eq_left ht]
   exact LinearMap.mkContinuous_norm_le _ zero_le_one _
 
 theorem heatSemigroup_apply_basis

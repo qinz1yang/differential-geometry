@@ -394,12 +394,12 @@ private lemma C_1_firstDeriv_contDiffOn
         (secondCovDeriv_GlobalCorrection_contDiffOn
           (I := I) (M := M) g r s α Idx Jdx k l I' J' m)
     · by_cases h : I' = Idx ∧ J' = Jdx
-      · simp only [h]
+      · simp only [ite_eq_left h]
         refine ContDiffOn.sum (fun i _ => ?_)
         refine ContDiffOn.sum (fun l _ => ?_)
         exact (chartFrameCoordPull_contDiffOn (I := I) (M := M) g α i l).mul
           (chartFrameCoordDirDerivPull_contDiffOn (I := I) (M := M) g α i m l)
-      · simp only [h, if_false]
+      · simp only [ite_eq_right h]
         exact contDiffOn_const
   · exact chartFrameTraceΓ_Coeff_1_contDiffOn
       (I := I) (M := M) g r s α Idx Jdx I' J' m

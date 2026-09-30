@@ -159,7 +159,7 @@ theorem abs_scalarDifferential_le_of_inner_gradientFun_le_sq {t K : ℝ} (x : P.
     |Perelman.CanonicalNeighborhood.scalarDifferential G.flow t x v| ≤
       K * Real.sqrt ((G.flow.base.metric t).inner x v v) := by
   rw [G.scalarDifferential_eq_inner_gradientFun]
-  refine (DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+  refine (DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
     _ x _ v).trans (mul_le_mul_of_nonneg_right ?_ (Real.sqrt_nonneg _))
   calc Real.sqrt _ ≤ Real.sqrt (K ^ 2) := Real.sqrt_le_sqrt h
     _ = K := Real.sqrt_sq hK

@@ -13,7 +13,7 @@ open scoped _root_.Manifold ContDiff ENNReal
 
 universe u
 
-attribute [local instance] FiniteHorn.ambient_metric
+attribute [local instance] FiniteHorn.ambientMetric
 attribute [local instance] EndAngles.metric
 
 variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]

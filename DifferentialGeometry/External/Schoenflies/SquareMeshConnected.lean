@@ -665,9 +665,9 @@ theorem bIdx_le (m n t : ℕ) : bIdx m n t ≤ m := by unfold bIdx; split_ifs <;
 theorem bIdy_le {m n t : ℕ} (h : t ≤ 2 * m + 2 * n) : bIdy m n t ≤ n := by
   unfold bIdy; split_ifs <;> omega
 
-theorem bIdx_bottom {m n t : ℕ} (h : t ≤ m) : bIdx m n t = t := by unfold bIdx; exact if_pos h
+theorem bIdx_bottom {m n t : ℕ} (h : t ≤ m) : bIdx m n t = t := by unfold bIdx; exact ite_eq_left h
 
-theorem bIdy_bottom {m n t : ℕ} (h : t ≤ m) : bIdy m n t = 0 := by unfold bIdy; exact if_pos h
+theorem bIdy_bottom {m n t : ℕ} (h : t ≤ m) : bIdy m n t = 0 := by unfold bIdy; exact ite_eq_left h
 
 theorem bIdx_right {m n t : ℕ} (h₁ : m ≤ t) (h₂ : t ≤ m + n) : bIdx m n t = m := by
   unfold bIdx; split_ifs <;> omega
@@ -740,25 +740,25 @@ theorem gridBoundary_isLink {xc yc : ℕ → ℝ} {m n t : ℕ} (hm : 1 ≤ m) (
   unfold gridBoundaryEdge gridBoundaryPt gridGraph
   rcases lt_or_ge t m with h₁ | h₁
   · -- along the bottom
-    rw [if_pos h₁, bIdx_bottom (by omega), bIdy_bottom (by omega), bIdx_bottom (by omega),
+    rw [ite_eq_left h₁, bIdx_bottom (by omega), bIdy_bottom (by omega), bIdx_bottom (by omega),
       bIdy_bottom (by omega)]
     exact pieceListGraph_isLink_self (gridHEdge_mem_gridEdges h₁ (Nat.zero_le n) hn)
   rcases lt_or_ge t (m + n) with h₂ | h₂
   · -- up the right side
-    rw [if_neg (by omega), if_pos h₂, bIdx_right (by omega) (by omega),
+    rw [ite_eq_right (by omega), ite_eq_left h₂, bIdx_right (by omega) (by omega),
       bIdy_right (by omega) (by omega), bIdx_right (by omega) (by omega),
       bIdy_right (by omega) (by omega), show t + 1 - m = (t - m) + 1 by omega]
     exact pieceListGraph_isLink_self (gridVEdge_mem_gridEdges le_rfl (by omega) hm)
   rcases lt_or_ge t (2 * m + n) with h₃ | h₃
   · -- back along the top, so the walk runs against the edge's own orientation
-    rw [if_neg (by omega), if_neg (by omega), if_pos h₃, bIdx_top (by omega) (by omega),
+    rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left h₃, bIdx_top (by omega) (by omega),
       bIdy_top (by omega) (by omega), bIdx_top (by omega) (by omega),
       bIdy_top (by omega) (by omega), show 2 * m + n - (t + 1) = 2 * m + n - 1 - t by omega,
       show 2 * m + n - t = 2 * m + n - 1 - t + 1 by omega]
     exact (pieceListGraph_isLink_self (gridHEdge_mem_gridEdges
       (show 2 * m + n - 1 - t < m by omega) le_rfl hn)).symm
   · -- down the left side, again against the edge's orientation
-    rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), bIdx_left (by omega) (by omega),
+    rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), bIdx_left (by omega) (by omega),
       bIdy_left (by omega) (by omega), bIdx_left (by omega) (by omega),
       bIdy_left (by omega) (by omega),
       show 2 * m + 2 * n - (t + 1) = 2 * m + 2 * n - 1 - t by omega,
@@ -817,23 +817,23 @@ and the proof is the one-dimensional fact `Set.Icc_union_Icc_eq_Icc` transported
 
 theorem gridBoundaryEdge_bottom {xc yc : ℕ → ℝ} {m n i : ℕ} (h : i < m) :
     gridBoundaryEdge xc yc m n i = gridHEdge xc yc i 0 := by
-  unfold gridBoundaryEdge; rw [if_pos h]
+  unfold gridBoundaryEdge; rw [ite_eq_left h]
 
 theorem gridBoundaryEdge_right {xc yc : ℕ → ℝ} {m n j : ℕ} (h : j < n) :
     gridBoundaryEdge xc yc m n (m + j) = gridVEdge xc yc m j := by
   unfold gridBoundaryEdge
-  rw [if_neg (by omega), if_pos (by omega), show m + j - m = j by omega]
+  rw [ite_eq_right (by omega), ite_eq_left (by omega), show m + j - m = j by omega]
 
 theorem gridBoundaryEdge_top {xc yc : ℕ → ℝ} {m n i : ℕ} (hn : 1 ≤ n) (h : i < m) :
     gridBoundaryEdge xc yc m n (2 * m + n - 1 - i) = gridHEdge xc yc i n := by
   unfold gridBoundaryEdge
-  rw [if_neg (by omega), if_neg (by omega), if_pos (by omega),
+  rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left (by omega),
     show 2 * m + n - 1 - (2 * m + n - 1 - i) = i by omega]
 
 theorem gridBoundaryEdge_left {xc yc : ℕ → ℝ} {m n j : ℕ} (h : j < n) :
     gridBoundaryEdge xc yc m n (2 * m + 2 * n - 1 - j) = gridVEdge xc yc 0 j := by
   unfold gridBoundaryEdge
-  rw [if_neg (by omega), if_neg (by omega), if_neg (by omega),
+  rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega),
     show 2 * m + 2 * n - 1 - (2 * m + 2 * n - 1 - j) = j by omega]
 
 /-- The realisation of the cycle is the union of the boundary edges, indexed by position on

@@ -112,7 +112,7 @@ theorem orientation_map_of_open_ambient_germ
   let g' : M → N := fun y => if hy : y ∈ U then g ⟨y, hy⟩ else g ⟨x.val, hx⟩
   have hres : (fun y : U => g' y.val) = g := by
     funext y
-    exact dif_pos y.property
+    exact dite_eq_left y.property
   have hg' : MDifferentiableAt I J g' x.val :=
     DifferentialGeometry.mdifferentiableAt_subtype_iff.mp (hres ▸ hg)
   have hder : (mfderiv I J g' x.val : E →L[ℝ] F) =
@@ -126,12 +126,12 @@ theorem orientation_map_of_open_ambient_germ
       (continuous_subtype_val.continuousAt).eventually (U.isOpen.mem_nhds hx)
     filter_upwards [hcomm, hU] with y hy hyU
     change (f y).val = g' y.val
-    have hv : g' y.val = g ⟨y.val, hyU⟩ := dif_pos hyU
+    have hv : g' y.val = g ⟨y.val, hyU⟩ := dite_eq_left hyU
     exact (hy hyU).trans hv.symm
   have hgo' : Orientation.map (Fin n) eg.toLinearEquiv (O.orientation x.val) =
       P.orientation (g' x.val) := by
     let p : N → Orientation ℝ F (Fin n) := P.orientation
-    have hv : g' x.val = g ⟨x.val, hx⟩ := dif_pos hx
+    have hv : g' x.val = g ⟨x.val, hx⟩ := dite_eq_left hx
     have hp := congrArg p hv
     change Orientation.map (Fin n) eg.toLinearEquiv (O.orientation x.val) =
       (P.orientation (g ⟨x.val, hx⟩) : Orientation ℝ F (Fin n)) at hgo

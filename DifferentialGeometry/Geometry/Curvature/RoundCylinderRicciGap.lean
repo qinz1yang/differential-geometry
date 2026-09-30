@@ -60,6 +60,6 @@ theorem ricciSharp_roundCylinder_normalized_axis_bound
   have h := axis_operator_error_for_perturbed_metric g gRef x ε (1441 * ε) (1 / 2)
     hε (hsmall 0 (by norm_num)) v hv (ricciSharp g x).toLinearMap hreference z
   norm_num only [abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)] at h
-  convert h using 1 <;> first | rfl | ring
+  convert h using 1; first | rfl | ring
 
 end DifferentialGeometry.Geometry.Curvature

@@ -86,17 +86,15 @@ theorem homeomorph_image_connectedComponent {P : Type*} [TopologicalSpace P]
       ⟨e p, mem_connectedComponent, e.symm_apply_apply p⟩)
 
 theorem diffeomorph_image_connectedComponent {P : Type*} [TopologicalSpace P]
-    [ChartedSpace ThreeSpace P] [IsManifold I3 ∞ P]
-    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    [ChartedSpace ThreeSpace P]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     (e : P ≃ₘ⟮I3, I3⟯ M) (p : P) :
     e '' connectedComponent p = connectedComponent (e p) :=
   homeomorph_image_connectedComponent (Diffeomorph.toHomeomorph e) p
 
 theorem capCore_transport_of_partialDiffeomorph {P : Type u} {M : Type u}
-    [TopologicalSpace P] [ChartedSpace ThreeSpace P] [IsManifold I3 ∞ P] [T2Space P]
-    [SigmaCompactSpace P]
-    [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M] [T2Space M]
-    [SigmaCompactSpace M]
+    [TopologicalSpace P] [ChartedSpace ThreeSpace P]
+    [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     {X : Set P} (c : CapCore (M := P) X) (e : PartialDiffeomorph I3 I3 P M ∞)
     (he : X ⊆ e.source) : Nonempty (CapCore (M := M) (e '' X)) := by
   cases c with
@@ -112,8 +110,7 @@ theorem capCore_transport_of_partialDiffeomorph {P : Type u} {M : Type u}
       (by rw [partialDiffeomorph_image_trans])⟩
 
 theorem nonempty_capCore_transport_of_image {M : Type}
-    [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M] [T2Space M]
-    [SigmaCompactSpace M]
+    [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     (e : PartialDiffeomorph I3 I3 ThreeSpace M ∞)
     (he : Metric.closedBall (0 : ThreeSpace) 1 ⊆ e.source) :
     Nonempty (CapCore (M := M) (e '' Metric.closedBall (0 : ThreeSpace) 1)) := by
@@ -121,10 +118,8 @@ theorem nonempty_capCore_transport_of_image {M : Type}
   exact capCore_transport_of_partialDiffeomorph c e he
 
 theorem positiveComponent_transport_of_partialDiffeomorph {P : Type u} {M : Type u}
-    [TopologicalSpace P] [ChartedSpace ThreeSpace P] [IsManifold I3 ∞ P] [T2Space P]
-    [SigmaCompactSpace P]
-    [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M] [T2Space M]
-    [SigmaCompactSpace M]
+    [TopologicalSpace P] [ChartedSpace ThreeSpace P]
+    [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     {U : Set P} (c : PositiveComponent (M := P) U)
     (e : PartialDiffeomorph I3 I3 P M ∞) (he : U ⊆ e.source) :
     Nonempty (PositiveComponent (M := M) (e '' U)) := by
@@ -147,17 +142,15 @@ theorem positiveComponent_transport_of_partialDiffeomorph {P : Type u} {M : Type
       exact congrArg (fun s => ↑e.toPartialEquiv '' s) (Set.inter_eq_self_of_subset_right he)
 
 theorem nonempty_positiveComponent_transport_sphereThree {M : Type}
-    [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M] [T2Space M]
-    [SigmaCompactSpace M]
+    [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     (e : PartialDiffeomorph I3 I3 (Sphere 3) M ∞) (hsrc : e.source = Set.univ) :
     Nonempty (PositiveComponent (M := M) (e '' Set.univ)) := by
   obtain ⟨c⟩ := nonempty_positiveComponent_sphereThree
   exact positiveComponent_transport_of_partialDiffeomorph c e (by rw [hsrc])
 
 theorem canonicalAlternative_transport_positive {P : Type u} [TopologicalSpace P]
-    [ChartedSpace ThreeSpace P] [IsManifold I3 ∞ P] [T2Space P] [SigmaCompactSpace P]
+    [ChartedSpace ThreeSpace P]
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
-    [T2Space M] [SigmaCompactSpace M]
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
     {x : M} {t : ℝ} {eps C : ℝ} {U : Set P}
     (data : PositiveComponent (M := P) U) (e : PartialDiffeomorph I3 I3 P M ∞)
@@ -171,7 +164,6 @@ theorem canonicalAlternative_transport_positive {P : Type u} [TopologicalSpace P
 theorem roundComponent_transport_of_comparison {P : Type u} [TopologicalSpace P]
     [ChartedSpace ThreeSpace P] [IsManifold I3 ∞ P] [T2Space P] [SigmaCompactSpace P]
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
-    [T2Space M] [SigmaCompactSpace M]
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {p : P} {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
     {x : M} {t : ℝ} {epsR : ℝ} {U V : Set P} {order' : ℕ} {eps : ℝ}
@@ -210,7 +202,7 @@ theorem roundComponent_transport_of_comparison {P : Type u} [TopologicalSpace P]
       (R.map : R.Z → P) Set.univ {0} order epsR :=
     R.comparison.mono (subset_refl _) horderR le_rfl
   have hV' : ∀ y ∈ (Set.univ : Set R.Z), Phi y ∈ V := fun y _ => hPhi y ▸ hUV (hmap_mem y)
-  have hT := TransportedErrorTower.ofPullbackCross_of_close cmp (fun _ => R.metric) Phi
+  have hT := TransportedErrorTower.ofPullbackCrossOfClose cmp (fun _ => R.metric) Phi
     (R.map : R.Z → P) (fun y => (hPhi y).symm) hc₁ isOpen_univ hV' horder heps
     hepsR hepsR_small
     (fun _ _ _ _ _ _ _ => DifferentiableWithinAt.singleton)
@@ -266,7 +258,6 @@ theorem roundComponent_transport_of_comparison {P : Type u} [TopologicalSpace P]
 theorem canonicalAlternative_transport_round {P : Type u} [TopologicalSpace P]
     [ChartedSpace ThreeSpace P] [IsManifold I3 ∞ P] [T2Space P] [SigmaCompactSpace P]
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
-    [T2Space M] [SigmaCompactSpace M]
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {p : P} {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
     {x : M} {t : ℝ} {epsR : ℝ} {U V : Set P} {order' : ℕ} {eps C : ℝ}

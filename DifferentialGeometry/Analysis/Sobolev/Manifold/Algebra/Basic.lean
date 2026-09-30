@@ -195,7 +195,7 @@ theorem mul_smooth_chart_bound_C1
     intro α hα
     change (if hα' : α ∈ S then Classical.choose (h_per_α α hα') else 0) =
       Classical.choose (h_per_α α hα)
-    rw [dif_pos hα]
+    rw [dite_eq_left hα]
   have hKfun_nn : ∀ α ∈ S, 0 ≤ Kfun α := by
     intro α hα
     rw [hKfun_eq_of_mem α hα]
@@ -253,6 +253,7 @@ private lemma eLpNorm_restrict_le_ofReal_mul_volume_pow
     {p : ℝ≥0∞} {Ω : Set EuclN}
     {K : Set EuclN} (hK_meas : MeasurableSet K)
     {f : EuclN → ℝ} {C : ℝ} (hC_nn : 0 ≤ C)
+    (hf : AEStronglyMeasurable f (volume.restrict Ω))
     (h_support : ∀ y, y ∉ K → f y = 0)
     (h_bound : ∀ y, ‖f y‖ ≤ C) :
     eLpNorm f p (volume.restrict Ω) ≤
@@ -271,10 +272,11 @@ private lemma eLpNorm_restrict_le_ofReal_mul_volume_pow
   have h_ae : ∀ᵐ y ∂(volume.restrict Ω),
       ‖f y‖ ≤ ‖K.indicator (fun _ : EuclN => C) y‖ :=
     Filter.Eventually.of_forall h_pointwise
-  refine (eLpNorm_mono_ae h_ae).trans ?_
+  refine (eLpNorm_mono_ae hf h_ae).trans ?_
   have h_indicator_bd : eLpNorm (K.indicator (fun _ : EuclN => C)) p (volume.restrict Ω) ≤
       ‖C‖ₑ * (volume.restrict Ω) K ^ (1 / p.toReal) :=
     eLpNorm_indicator_const_le (μ := volume.restrict Ω) (s := K) (c := C) (p := p)
+      hK_meas.nullMeasurableSet
   refine h_indicator_bd.trans ?_
   have h_meas_le : (volume.restrict Ω) K ≤ volume K := by
     rw [Measure.restrict_apply hK_meas]
@@ -292,7 +294,12 @@ private lemma eLpNorm_Eu_dR_Ev_bound
     (hv_bound : ∀ x : M, ‖v x‖ ≤ vMax) (hvMax_nn : 0 ≤ vMax)
     {C_R : ℝ} (hC_R_nn : 0 ≤ C_R)
     (hC_R_bound : ∀ y : EuclN, ‖fderiv ℝ (liftedPou (I := I) (M := M) α) y‖ ≤ C_R)
-    (i : Fin (Module.finrank ℝ E)) {p : ℝ≥0∞} :
+    (i : Fin (Module.finrank ℝ E)) {p : ℝ≥0∞}
+    (h_meas : AEStronglyMeasurable
+      (fun y : EuclN => leftSmoothFactor (I := I) (M := M) α b u y *
+        (fderiv ℝ (liftedPou (I := I) (M := M) α) y) (EuclideanSpace.single i (1 : ℝ)) *
+        leftSmoothFactor (I := I) (M := M) α b v y)
+      (volume.restrict (chartTargetEuclid (I := I) (M := M) α))) :
     eLpNorm (fun y : EuclN => leftSmoothFactor (I := I) (M := M) α b u y *
         (fderiv ℝ (liftedPou (I := I) (M := M) α) y) (EuclideanSpace.single i (1 : ℝ)) *
         leftSmoothFactor (I := I) (M := M) α b v y) p
@@ -357,7 +364,8 @@ private lemma eLpNorm_Eu_dR_Ev_bound
               rw [norm_mul, norm_mul]
       _ ≤ uMax * C_R * vMax := by gcongr
       _ = uMax * vMax * C_R := by ring
-  exact eLpNorm_restrict_le_ofReal_mul_volume_pow hK_meas hC_nn h_support h_bound
+  exact eLpNorm_restrict_le_ofReal_mul_volume_pow hK_meas hC_nn h_meas
+    h_support h_bound
 
 private lemma per_chart_bilinear_bound
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
@@ -500,7 +508,11 @@ private lemma per_chart_bilinear_bound
     leftSmoothFactor_norm_le_of_bound (I := I) (M := M) α hb_le_one hv_bound hvMax_nn
   have h_Lp_bound : eLpNorm (fun y => Pu y * Ev y) p (volume.restrict Ω) ≤
       vMax_e * ePu := by
-    refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul (g := Pu) (c := vMax) ?_ p
+    have hPuEv_meas : AEStronglyMeasurable (fun y => Pu y * Ev y)
+        (volume.restrict Ω) :=
+      (smoothPushed_smooth (I := I) (M := M) α hu).continuous.aestronglyMeasurable.mul
+        ((leftSmoothFactor_smooth (I := I) (M := M) α hb_smooth hv hb_support).continuous).aestronglyMeasurable
+    refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul (g := Pu) (c := vMax) hPuEv_meas ?_ p
     refine (ae_restrict_iff' hΩ_open.measurableSet).mpr ?_
     refine Filter.Eventually.of_forall (fun y _ => ?_)
     calc
@@ -639,17 +651,18 @@ private lemma per_chart_bilinear_bound
       show _ = _
       rfl
     rw [h_addLR]
-    refine (eLpNorm_add_le h_AESM_f1_neg_f2 h_AESM_f3 hp_one).trans ?_
+    refine (eLpNorm_add_le hp_one).trans ?_
     have h_addLR2 : (fun y => f1 y + -f2 y) = f1 + (-f2) := by
       funext y; rfl
     have h_tri_2 : eLpNorm (fun y => f1 y + -f2 y) p (volume.restrict Ω) ≤
         eLpNorm f1 p (volume.restrict Ω) + eLpNorm f2 p (volume.restrict Ω) := by
       rw [h_addLR2]
-      have h := eLpNorm_add_le h_AESM_f1 h_AESM_f2.neg hp_one
+      have h := eLpNorm_add_le (f := f1) (g := -f2)
+        (μ := volume.restrict Ω) (p := p) hp_one
       rwa [eLpNorm_neg] at h
     refine (add_le_add h_tri_2 (le_refl (eLpNorm f3 p (volume.restrict Ω)))).trans ?_
     have h_f1_bd : eLpNorm f1 p (volume.restrict Ω) ≤ uMax_e * gPv i := by
-      refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul
+      refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul h_AESM_f1
         (g := DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := d) p i Pv Ω)
         (c := uMax) ?_ p
@@ -670,6 +683,7 @@ private lemma per_chart_bilinear_bound
         ENNReal.ofReal (uMax * vMax * C_R) * vol_K ^ (1 / p.toReal) := by
       exact eLpNorm_Eu_dR_Ev_bound (I := I) (M := M) α hb_le_one
         hu_bound huMax_nn hv_bound hvMax_nn hC_R_nn hC_R_bound i
+        ((h_Eu_cont.mul h_dR_cont).mul h_Ev_cont).aestronglyMeasurable
     have h_f3_bd : eLpNorm f3 p (volume.restrict Ω) ≤ vMax_e * gPu i := by
       have h_classical_eq_chosen :
           (fun y : EuclN => (fderiv ℝ Pu y) (EuclideanSpace.single i (1 : ℝ)))
@@ -692,7 +706,18 @@ private lemma per_chart_bilinear_bound
         rw [hy]
         ring
       rw [eLpNorm_congr_ae h_f3_ae]
-      refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul
+      have hPu_W1p : DeGiorgi.MemW1p (d := d) p Pu Ω :=
+        smoothPushed_memW1p (I := I) (M := M) α hu hp_one
+      have h_chosen_Pu_meas : AEStronglyMeasurable
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
+            (d := d) p i Pu Ω) (volume.restrict Ω) :=
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
+          hPu_W1p i).aestronglyMeasurable
+      have hEv_chosen_meas : AEStronglyMeasurable
+          (fun y => Ev y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
+            (d := d) p i Pu Ω y) (volume.restrict Ω) :=
+        h_Ev_cont.aestronglyMeasurable.mul h_chosen_Pu_meas
+      refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul hEv_chosen_meas
         (g := DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := d) p i Pu Ω)
         (c := vMax) ?_ p
@@ -834,7 +859,7 @@ private lemma mul_smooth_chart_bound_explicit_form
     intro α hα
     change (if hα' : α ∈ S then Classical.choose (h_per_α α hα') else 0) =
       Classical.choose (h_per_α α hα)
-    rw [dif_pos hα]
+    rw [dite_eq_left hα]
   have hBfun_nn : ∀ α ∈ S, 0 ≤ Bfun α := by
     intro α hα
     rw [hBfun_eq_of_mem α hα]

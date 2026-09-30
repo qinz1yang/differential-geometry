@@ -104,10 +104,10 @@ private theorem isCombinatorialManifoldWithBoundary_of_cyclic_ball_union
 theorem exists_cylindricalDiagram_with_base_of_ball_pair
     {A B D₀ D₁ : Set E3} (hA : IsPLBall 3 A) (hB : IsPLBall 3 B)
     (hD₁ : IsPLBall 2 D₁) (hdis : Disjoint D₀ D₁) (hinter : A ∩ B = D₀ ∪ D₁)
-    {q : (Fin 3 → ℝ) → E3} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D₀) :
+    {q : (Fin 3 → ℝ) → E3} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀) :
     ∃ f : (Fin 3 → ℝ) × ℝ → E3,
-      IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) (A ∪ B) ∧
-      ∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = q x := by
+      IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (A ∪ B) ∧
+      ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = q x := by
   classical
   let _ : DecidableEq E3 := Classical.decEq _
   have hD₀ : IsPLBall 2 D₀ := ⟨q, hq⟩
@@ -134,10 +134,10 @@ private theorem cyclic_ball_seam_zero_one_is_essential {n : ℕ}
       Disjoint (C i) (C j))
     (htriple : ∀ i j k, i ≠ j → i ≠ k → j ≠ k → C i ∩ C j ∩ C k = ∅)
     {q : (Fin 3 → ℝ) → E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (C 0 ∩ C 1)) :
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (C 0 ∩ C 1)) :
     IsConnected (frontier (⋃ i, C i) \ q '' stdSimplexBoundary 2) ∧
       ¬ ∃ (D : Set E3) (r : (Fin 3 → ℝ) → E3),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ frontier (⋃ i, C i) ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ frontier (⋃ i, C i) ∧
           q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 := by
   classical
   obtain ⟨M, hMfin, hMsp⟩ :=
@@ -189,7 +189,7 @@ private theorem cyclic_ball_seam_zero_one_is_essential {n : ℕ}
     exact Set.notMem_empty x (ht ▸ ⟨⟨hx0, hx1⟩, hxl⟩)
   obtain ⟨f, hf, hf0⟩ := exists_cylindricalDiagram_with_base_of_ball_pair (hC 0) hB
     (hnext 0 _ cycleGraph_adj_zero_last) hDdis hmeet hq
-  have hfM : IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) M.space := by
+  have hfM : IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) M.space := by
     rw [hMsp, ← hcover]
     exact hf
   have hbase : f '' (stdSimplexBoundary 2 ×ˢ {(0 : ℝ)}) = q '' stdSimplexBoundary 2 := by
@@ -206,16 +206,16 @@ theorem cyclic_ball_seam_is_essential {n : ℕ}
     (htriple : ∀ i j k, i ≠ j → i ≠ k → j ≠ k → C i ∩ C j ∩ C k = ∅)
     {i j : Fin (n + 3)} (hij : (SimpleGraph.cycleGraph (n + 3)).Adj i j)
     {q : (Fin 3 → ℝ) → E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (C i ∩ C j)) :
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (C i ∩ C j)) :
     IsConnected (frontier (⋃ i, C i) \ q '' stdSimplexBoundary 2) ∧
       ¬ ∃ (D : Set E3) (r : (Fin 3 → ℝ) → E3),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ frontier (⋃ i, C i) ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ frontier (⋃ i, C i) ∧
           q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 := by
   have key (a b : Fin (n + 3)) (hab : b - a = 1)
-      (hqab : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (C a ∩ C b)) :
+      (hqab : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (C a ∩ C b)) :
       IsConnected (frontier (⋃ i, C i) \ q '' stdSimplexBoundary 2) ∧
         ¬ ∃ (D : Set E3) (r : (Fin 3 → ℝ) → E3),
-          IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ frontier (⋃ i, C i) ∧
+          IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ frontier (⋃ i, C i) ∧
             q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 := by
     let e := Equiv.addRight a
     let C' := C ∘ e
@@ -225,7 +225,7 @@ theorem cyclic_ball_seam_is_essential {n : ℕ}
       rw [SimpleGraph.cycleGraph_adj, SimpleGraph.cycleGraph_adj]
       change ((x + a) - (y + a) = 1 ∨ (y + a) - (x + a) = 1) ↔ _
       simp only [add_sub_add_right_eq_sub]
-    have hq' : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (C' 0 ∩ C' 1) := by
+    have hq' : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (C' 0 ∩ C' 1) := by
       have hb : b = 1 + a := sub_eq_iff_eq_add.mp hab
       change IsPLHomeomorphOn q _ (C (0 + a) ∩ C (1 + a))
       rwa [zero_add, ← hb]

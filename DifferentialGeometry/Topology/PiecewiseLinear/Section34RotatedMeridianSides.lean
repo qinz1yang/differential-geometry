@@ -46,7 +46,7 @@ theorem IsCylindricalDiagram.mem_closure_sides_of_seam_rotation
       ⟨hy.1.1.1, by linarith [hnear.1], by linarith⟩, ?_⟩
     rw [hrot]
     have hcut : ¬y.2 - r + 1 ≤ 1 - r := by linarith [hnear.2]
-    rw [if_neg hcut]
+    rw [ite_eq_right hcut]
     congr 1
     ext
     · rfl
@@ -60,7 +60,7 @@ theorem IsCylindricalDiagram.mem_closure_sides_of_seam_rotation
     have htime : y.2 - r ∈ Ioo (0 : ℝ) a := ⟨by linarith, by linarith⟩
     have hytime : y.2 ≤ 1 := hy.1.1.2.2.trans hd
     have hgy : g (y.1, y.2 - r) = f y := by
-      rw [hrot, if_pos (by linarith : y.2 - r ≤ 1 - r), sub_add_cancel]
+      rw [hrot, ite_eq_left (by linarith : y.2 - r ≤ 1 - r), sub_add_cancel]
     refine ⟨hy.1.2, ?_⟩
     rintro ⟨z, hz, hzy⟩
     rcases hg.eq_or_endpoints (y.1, y.2 - r)
@@ -95,7 +95,7 @@ theorem IsCylindricalDiagram.seam_subset_closure_sides_of_rotation
     have ht' : t = 1 := ht
     subst t
     have hgr : g (x, 1) = f (x, r) := by
-      rw [hrot, if_neg (by change ¬(1 : ℝ) ≤ 1 - r; linarith [hr.1])]
+      rw [hrot, ite_eq_right (by change ¬(1 : ℝ) ≤ 1 - r; linarith [hr.1])]
       congr 1
       ext
       · rfl

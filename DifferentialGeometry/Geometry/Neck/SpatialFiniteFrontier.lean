@@ -73,7 +73,7 @@ theorem exists_spatial_neck_first_frontier_annulus_tolerance :
       (abs_lt.mp (hfsmall v)).1, hb.2]
   choose η h hh hbounds htouch hmem heq using hsmall
   let hfun (i : ι) (q : Sphere 2) : ℝ := if hi : i ∈ s then h i hi q else 0
-  have hgood (i : ι) (hi : i ∈ s) : hfun i = h i hi := by funext q; exact dif_pos hi
+  have hgood (i : ι) (hi : i ∈ s) : hfun i = h i hi := by funext q; exact dite_eq_left hi
   have hSgraph (i : ι) (hi : i ∈ s) : range (fun q => nk.map (q, hfun i q)) = S i := by
     rw [hgood i hi]
     ext y

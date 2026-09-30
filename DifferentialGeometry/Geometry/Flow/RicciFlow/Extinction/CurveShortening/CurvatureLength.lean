@@ -16,7 +16,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 namespace CurveMap
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem length_pos_of_immersed [I.Boundaryless]
+theorem length_pos_of_immersed
     (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M) {J : Set ℝ}
     (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J) {t : ℝ} (ht : t ∈ J) :
     0 < c.length g t := by

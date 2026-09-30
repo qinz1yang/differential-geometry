@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.ChartPartial.CovariantComponentBound
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.ChartFormLowerOrder
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothFChartResidual.BilinearBound
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise
+    tensorInnerPointwise_nonneg)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -40,17 +43,15 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma eLpNorm_add_add_sub_le
-    {β : Type*} [MeasurableSpace β] {ν : Measure β} {a b c : β → ℝ}
-    (ha : AEStronglyMeasurable a ν) (hb : AEStronglyMeasurable b ν)
-    (hc : AEStronglyMeasurable c ν) :
-    eLpNorm (fun y => a y + b y - c y) 2 ν ≤
+    {β : Type*} [MeasurableSpace β] {ν : Measure β} {a b c : β → ℝ} :
+      eLpNorm (fun y => a y + b y - c y) 2 ν ≤
       eLpNorm a 2 ν + eLpNorm b 2 ν + eLpNorm c 2 ν := by
   have h_ab : eLpNorm (fun y => a y + b y) 2 ν ≤
       eLpNorm a 2 ν + eLpNorm b 2 ν :=
-    eLpNorm_add_le ha hb (by norm_num)
+    eLpNorm_add_le (by norm_num)
   have h_full : eLpNorm (fun y => (a y + b y) - c y) 2 ν ≤
       eLpNorm (fun y => a y + b y) 2 ν + eLpNorm c 2 ν :=
-    eLpNorm_sub_le (ha.add hb) hc (by norm_num)
+    eLpNorm_sub_le (by norm_num)
   exact h_full.trans (by gcongr)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
@@ -703,12 +704,13 @@ private lemma exists_const_rawComponentCutoff_sq_le
     simpa using h_rhs_nn
 
 private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq
-    {β : Type*} [MeasurableSpace β] (μ : Measure β) (f : β → ℝ) :
+    {β : Type*} [MeasurableSpace β] (μ : Measure β) (f : β → ℝ)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
   classical
   have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
   have h2_ne_top : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by norm_num
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top hf]
   have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
   rw [h2_toReal]
   have h_inner_eq : ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
@@ -755,6 +757,9 @@ private lemma exists_const_eLpNorm_rawComponentCutoff_le
   set f : M → ℝ := rawComponentCutoff (I := I) (M := M) g r s S α Idx Jdx
     with hf_def
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
+  have hf_meas : AEStronglyMeasurable f μ := by
+    rw [hf_def, hμ_def]
+    exact (rawComponentCutoff_measurable (I := I) (M := M) g r s S α Idx Jdx).aestronglyMeasurable
   have h_pt_enn : ∀ b : M,
       (‖f b‖ₑ : ℝ≥0∞) ^ 2 ≤
         ENNReal.ofReal (C * tensorInnerPointwise (I := I) (M := M)
@@ -782,7 +787,7 @@ private lemma exists_const_eLpNorm_rawComponentCutoff_le
       (eLpNorm f 2 μ) ^ 2 ≤
         ENNReal.ofReal (C *
           tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun) := by
-    rw [sq_eLpNorm_two_eq_lintegral_enorm_sq μ f]
+    rw [sq_eLpNorm_two_eq_lintegral_enorm_sq μ f hf_meas]
     have h_lint_le :
         ∫⁻ b, (‖f b‖ₑ : ℝ≥0∞) ^ 2 ∂μ ≤
           ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise
@@ -972,9 +977,16 @@ private theorem exists_const_eLpNorm_leibnizCrossTerm_le_uniform
     (volume : Measure EuclN).restrict (chartTargetEuclid (I := I) (M := M) α)
     with hμ_def
   set normCut : EuclN → ℝ := fun y : EuclN =>
-    ‖chartPushedRaw (I := I) (M := M) α
+      ‖chartPushedRaw (I := I) (M := M) α
       (rawComponentCutoff (I := I) (M := M) g r s S.toCcTensor α Idx Jdx) y‖
     with hnormCut_def
+  have hμ_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
+    chartTargetEuclid_measurableSet (I := I) (M := M) α
+  have h_cross_meas : AEStronglyMeasurable
+      (leibnizCrossTerm (I := I) (M := M) g r s S.toCcTensor α k Idx Jdx) μ := by
+    rw [hμ_def]
+    exact (leibnizCrossTerm_continuousOn (I := I) (M := M)
+      g r s S.toCcTensor α k Idx Jdx).aestronglyMeasurable hμ_meas
   have h_ptwise : ∀ y : EuclN,
       ‖leibnizCrossTerm (I := I) (M := M) g r s S.toCcTensor α k Idx Jdx y‖ ≤
         (Cχ • normCut) y := by
@@ -986,12 +998,15 @@ private theorem exists_const_eLpNorm_leibnizCrossTerm_le_uniform
       eLpNorm (leibnizCrossTerm (I := I) (M := M) g r s S.toCcTensor α
           k Idx Jdx) 2 μ ≤
         eLpNorm (Cχ • normCut) 2 μ :=
-    eLpNorm_mono_real h_ptwise
+    eLpNorm_mono_real h_cross_meas h_ptwise
   have h_smul :
       eLpNorm (Cχ • normCut) 2 μ =
         ‖Cχ‖ₑ * eLpNorm (chartPushedRaw (I := I) (M := M) α
           (rawComponentCutoff (I := I) (M := M) g r s S.toCcTensor α Idx Jdx)) 2 μ := by
-    rw [eLpNorm_const_smul Cχ normCut 2 μ, hnormCut_def, eLpNorm_norm]
+    rw [eLpNorm_const_smul Cχ normCut 2 μ, hnormCut_def,
+      eLpNorm_norm _ ((chartPushedRaw_measurable (I := I) (M := M) α
+        (rawComponentCutoff_measurable (I := I) (M := M)
+          g r s S.toCcTensor α Idx Jdx)).aestronglyMeasurable)]
   have hCχ_enorm : ‖Cχ‖ₑ = ENNReal.ofReal Cχ := by
     rw [Real.enorm_eq_ofReal_abs, abs_of_nonneg hCχ_nn]
   have h_bridge :
@@ -1122,22 +1137,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartialOrZero_tensorChartComponent_le
       exact euclidPartial_tensorChartComponent_eq_three_terms
         (I := I) (M := M) g r s S.toCcTensor α k Idx Jdx hy
     rw [eLpNorm_congr_ae h_three]
-    have h_cov_meas : AEStronglyMeasurable tCov
-        ((volume : Measure EuclN).restrict
-          (chartTargetEuclid (I := I) (M := M) α)) :=
-      (pouCovDerivComponent_continuousOn (I := I) (M := M) g r s S.toCcTensor α
-        k Idx Jdx).aestronglyMeasurable hμ_meas
-    have h_cross_meas : AEStronglyMeasurable tCross
-        ((volume : Measure EuclN).restrict
-          (chartTargetEuclid (I := I) (M := M) α)) :=
-      (leibnizCrossTerm_continuousOn (I := I) (M := M) g r s S.toCcTensor α
-        k Idx Jdx).aestronglyMeasurable hμ_meas
-    have h_low_meas : AEStronglyMeasurable tLow
-        ((volume : Measure EuclN).restrict
-          (chartTargetEuclid (I := I) (M := M) α)) :=
-      (pouLowerOrderTerm_continuousOn (I := I) (M := M) g r s S.toCcTensor α
-        k Idx Jdx).aestronglyMeasurable hμ_meas
-    exact eLpNorm_add_add_sub_le h_cov_meas h_cross_meas h_low_meas
+    exact eLpNorm_add_add_sub_le
   refine (Finset.sum_le_sum (fun k _ => hdir k)).trans ?_
   rw [Finset.sum_add_distrib, Finset.sum_add_distrib]
   have h_cov_sum :

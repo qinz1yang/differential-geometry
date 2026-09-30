@@ -94,7 +94,7 @@ theorem orientedChartSimplex_map
 omit [ChartedSpace ThreeSpace M] [ChartedSpace ThreeSpace N]
   [IsManifold ThreeModel ∞ M] [IsManifold ThreeModel ∞ N] in
 private theorem degree_simplex_chain_map (f : C(M, N)) {n : ℕ}
-    (s : C(stdSimplex ℝ (Fin (n + 1)), M)) :
+    (s : C(Convexity.StdSimplex ℝ (Fin (n + 1)), M)) :
     singularSimplexChain s ≫ (integralChainsFunctor.map (TopCat.ofHom f)).f n =
       singularSimplexChain (f.comp s) := by
   exact SSet.ι_chainComplexMap_f (TopCat.toSSet.obj (TopCat.of M))

@@ -17,6 +17,7 @@ theorem diskMapConformalAt_congr_of_eventuallyEq
     (h : U =ᶠ[𝓝 z] V) : DiskMapConformalAt g U z ↔ DiskMapConformalAt g V z := by
   unfold DiskMapConformalAt diskMapPartial
   erw [h.mfderiv_eq, h.eq_of_nhds]
+  rfl
 
 
 

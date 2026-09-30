@@ -218,12 +218,18 @@ theorem positiveSideQuotientCollapseMap_eVariationOn_le (d : normalizedDatum g x
      letI : RiemannianBundle (TangentSpace I : d.controlledImage → Type _) := ⟨s.toRiemannianMetric⟩
      letI : IsContinuousRiemannianBundle E (TangentSpace I : d.controlledImage → Type _) :=
        ⟨s.inner, s.contMDiff.continuous, fun _ _ _ => rfl⟩
-     letI : PseudoEMetricSpace d.controlledImage := .ofRiemannianMetric I d.controlledImage
+     letI sourceMetric : PseudoEMetricSpace d.controlledImage :=
+       .ofRiemannianMetric I d.controlledImage
+     letI : WeakPseudoEMetricSpace d.controlledImage :=
+       @PseudoEMetricSpace.toWeakPseudoEMetricSpace d.controlledImage sourceMetric
      let h := d.positiveSideInsertionMetric hA hAB
      letI : RiemannianBundle (TangentSpace (𝓡 3) : InsertionQuotient hB → Type _) := ⟨h.toRiemannianMetric⟩
      letI : IsContinuousRiemannianBundle E3 (TangentSpace (𝓡 3) : InsertionQuotient hB → Type _) :=
        ⟨h.inner, h.contMDiff.continuous, fun _ _ _ => rfl⟩
-     letI : PseudoEMetricSpace (InsertionQuotient hB) := .ofRiemannianMetric (𝓡 3) (InsertionQuotient hB)
+     letI targetMetric : PseudoEMetricSpace (InsertionQuotient hB) :=
+       .ofRiemannianMetric (𝓡 3) (InsertionQuotient hB)
+     letI : WeakPseudoEMetricSpace (InsertionQuotient hB) :=
+       @PseudoEMetricSpace.toWeakPseudoEMetricSpace (InsertionQuotient hB) targetMetric
      eVariationOn (d.positiveSideQuotientCollapseMap hA hAB ∘ γ) (Icc a b) ≤ eVariationOn γ (Icc a b)) := by
   let hB := inv_pos.mpr d.precision_pos
   let s := g.restrictOpen d.controlledImage
@@ -245,12 +251,16 @@ theorem positiveSideQuotientCollapseMap_eVariationOn_le (d : normalizedDatum g x
       ⟨v.inner, v.contMDiff.continuous, fun _ _ _ => rfl⟩
     exact .ofRiemannianMetric (𝓡 3) (insertionBall δ⁻¹)
   have hb := d.positiveSideCollapseMap_eVariationOn_le hA hAB γ a b hγ
-  change @eVariationOn ℝ _ (insertionBall δ⁻¹) mb
+  change @eVariationOn ℝ _ (insertionBall δ⁻¹) mb.toUniformSpace.toTopologicalSpace
+    (@PseudoEMetricSpace.toWeakPseudoEMetricSpace (insertionBall δ⁻¹) mb)
     (d.positiveSideCollapseMap hA hAB ∘ γ) (Icc a b) ≤
-      @eVariationOn ℝ _ d.controlledImage mi γ (Icc a b) at hb
-  have he : @eVariationOn ℝ _ (InsertionQuotient hB) mq
+      @eVariationOn ℝ _ d.controlledImage mi.toUniformSpace.toTopologicalSpace
+        (@PseudoEMetricSpace.toWeakPseudoEMetricSpace d.controlledImage mi) γ (Icc a b) at hb
+  have he : @eVariationOn ℝ _ (InsertionQuotient hB) mq.toUniformSpace.toTopologicalSpace
+      (@PseudoEMetricSpace.toWeakPseudoEMetricSpace (InsertionQuotient hB) mq)
       (d.positiveSideQuotientCollapseMap hA hAB ∘ γ) (Icc a b) =
-      @eVariationOn ℝ _ (insertionBall δ⁻¹) mb
+      @eVariationOn ℝ _ (insertionBall δ⁻¹) mb.toUniformSpace.toTopologicalSpace
+        (@PseudoEMetricSpace.toWeakPseudoEMetricSpace (insertionBall δ⁻¹) mb)
         (d.positiveSideCollapseMap hA hAB ∘ γ) (Icc a b) := by
     unfold eVariationOn
     apply iSup_congr

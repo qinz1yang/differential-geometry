@@ -239,9 +239,9 @@ theorem chart_christoffel_expansion_of_nabla_on_vf
       intro i' j'
       rw [Finset.sum_eq_single i
         (fun k' _ hne => by
-          rw [hrepr_basis k' i, if_neg hne]; ring)
+          rw [hrepr_basis k' i, ite_eq_right hne]; ring)
         (fun hm => (hm (Finset.mem_univ i)).elim)]
-      rw [hrepr_basis i i, if_pos rfl]
+      rw [hrepr_basis i i, ite_eq_left rfl]
       ring
     rw [show
       ∑ i' : Fin (Module.finrank ℝ E),
@@ -324,7 +324,7 @@ theorem cartan_formula_chart_algebra
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) x W k) (extChartAt I x x) := by
     intro k
     rw [Finset.sum_eq_single k
-      (fun l _ hl => by rw [if_neg hl]; ring)
+      (fun l _ hl => by rw [ite_eq_right hl]; ring)
       (fun hm => (hm (Finset.mem_univ k)).elim)]
     simp
   have hcoll2 : ∀ k : Fin (Module.finrank ℝ E),
@@ -334,7 +334,7 @@ theorem cartan_formula_chart_algebra
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) x W k) (extChartAt I x x) := by
     intro k
     rw [Finset.sum_eq_single k
-      (fun l _ hl => by rw [if_neg hl]; ring)
+      (fun l _ hl => by rw [ite_eq_right hl]; ring)
       (fun hm => (hm (Finset.mem_univ k)).elim)]
     simp
   conv_rhs =>
@@ -521,7 +521,7 @@ theorem cartan_formula_for_lie_deriv_metric
         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartCoeffOnE (I := I) x W k) (extChartAt I x x) := by
     intro a k
     rw [Finset.sum_eq_single k
-      (fun l _ hl => by rw [if_neg hl]; ring)
+      (fun l _ hl => by rw [ite_eq_right hl]; ring)
       (fun hm => (hm (Finset.mem_univ k)).elim)]
     simp
   rw [show

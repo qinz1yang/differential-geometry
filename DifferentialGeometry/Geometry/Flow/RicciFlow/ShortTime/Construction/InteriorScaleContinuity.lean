@@ -312,8 +312,8 @@ private theorem tsum_singleModeCLM_coeff
     intro j
     rw [coeffCLM_apply, singleModeCLM_coeff]
     by_cases h : j = i
-    · rw [if_pos h, if_pos h.symm]
-    · rw [if_neg h, if_neg (fun hc => h hc.symm)]
+    · rw [ite_eq_left h, ite_eq_left h.symm]
+    · rw [ite_eq_right h, ite_eq_right (fun hc => h hc.symm)]
   rw [tsum_congr hterm, tsum_ite_eq i c]
 
 omit [BoundarylessManifold I M] in

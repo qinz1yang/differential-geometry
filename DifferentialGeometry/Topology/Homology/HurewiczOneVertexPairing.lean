@@ -144,13 +144,6 @@ theorem hurewiczOneVertexPairing [PathConnectedSpace X] (x : X) :
     exact h
   simpa using neg_mem h3
 
-private theorem mem_commutator_of_mulEquiv {G H : Type*} [Group G] [Group H] (e : G ≃* H) {g : G}
-    (h : e g ∈ commutator H) : g ∈ commutator G := by
-  rw [← Abelianization.ker_of] at h ⊢
-  rw [MonoidHom.mem_ker] at h ⊢
-  rw [← abelianizationCongr_of e g] at h
-  exact (MulEquiv.map_eq_one_iff e.abelianizationCongr).mp h
-
 private theorem hurewiczPairing_range_le_ker [PathConnectedSpace X] (x : X) :
     LinearMap.range (integralSingularBoundaryToCycles 0 X) ≤
       ((hurewiczPairing x).comp (Submodule.subtype (integralSingularCycles 0 X))).ker := by
@@ -180,62 +173,10 @@ theorem hurewiczPairingHomology_integralSingularCycleClass [PathConnectedSpace X
   rw [integralSingularCycleClass, AddEquiv.apply_symm_apply, Submodule.liftQ_apply,
     LinearMap.comp_apply, Submodule.subtype_apply]
 
-def HurewiczOneSpherePairing (X : Type u) [TopologicalSpace X] [PathConnectedSpace X] : Prop :=
-  ∀ (x : X) (c : integralSingularHomology (0 + 1) (liftedHomotopySphere.{u} 0))
-    (_ : IsSphereHomologyGenerator 0 c) (a : HomotopyGroup (Fin 1) X x),
-    hurewiczPairingHomology x (sphereHurewicz 0 x c a) =
-      Additive.ofMul (Abelianization.of (HomotopyGroup.pi1MulEquivFundamentalGroup a))
-
-theorem hurewiczOneKernel_of_spherePairing [PathConnectedSpace X]
-    (h : HurewiczOneSpherePairing X) : HurewiczOneKernel X := by
-  intro x c hc a ha
-  have h1 := h x c hc a
-  rw [ha, map_zero] at h1
-  have h2 : Abelianization.of (HomotopyGroup.pi1MulEquivFundamentalGroup a) = 1 := by
-    have := congrArg Additive.toMul h1.symm
-    simpa using this
-  exact mem_commutator_of_mulEquiv
-    (HomotopyGroup.pi1MulEquivFundamentalGroup (X := X) (x := x))
-    (by
-      rw [← Abelianization.ker_of, MonoidHom.mem_ker]
-      exact h2)
-
-theorem hurewiczOneSpherePairing_of_subsingleton [PathConnectedSpace X]
-    (h : ∀ x : X, Subsingleton (HomotopyGroup (Fin 1) X x)) :
-    HurewiczOneSpherePairing X := by
-  intro x c hc a
-  rw [Subsingleton.elim a 1, sphereHurewicz_one, map_zero, map_one, map_one]
-  rfl
-
-theorem hurewiczOneKernel_of_subsingleton [PathConnectedSpace X]
-    (h : ∀ x : X, Subsingleton (HomotopyGroup (Fin 1) X x)) : HurewiczOneKernel X :=
-  hurewiczOneKernel_of_spherePairing (hurewiczOneSpherePairing_of_subsingleton h)
-
-theorem hurewiczOneSpherePairing_of_loopBridge_of_loopClassPairing [PathConnectedSpace X]
-    (hbridge : ∀ (x : X) (c : integralSingularHomology (0 + 1) (liftedHomotopySphere.{u} 0))
-      (_ : IsSphereHomologyGenerator 0 c) (a : HomotopyGroup (Fin 1) X x),
-      ∃ γ : Path x x,
-        HomotopyGroup.pi1MulEquivFundamentalGroup a =
-          FundamentalGroup.fromPath (Path.Homotopic.Quotient.mk γ) ∧
-        sphereHurewicz 0 x c a = integralPathLoopClass γ)
-    (hloop : ∀ (x : X) (γ : Path x x),
-      hurewiczPairingHomology x (integralPathLoopClass γ) =
-        Additive.ofMul (Abelianization.of (FundamentalGroup.fromPath
-          (Path.Homotopic.Quotient.mk γ)))) :
-    HurewiczOneSpherePairing X := by
-  intro x c hc a
-  obtain ⟨γ, hγ, hsphere⟩ := hbridge x c hc a
-  rw [hsphere, hloop x γ, hγ]
-
-theorem abelianizationHomotopyGroupOne_equiv_of_spherePairing [PathConnectedSpace X] (x : X)
-    (c : integralSingularHomology (0 + 1) (liftedHomotopySphere.{u} 0))
-    (hc : IsSphereHomologyGenerator 0 c) (hpair : HurewiczOneSpherePairing X)
-    (hmul : ∀ a b : HomotopyGroup (Fin 1) X x,
-      sphereHurewicz 0 x c (a * b) = sphereHurewicz 0 x c a + sphereHurewicz 0 x c b)
-    (hsurj : Function.Surjective (sphereHurewicz 0 x c)) :
-    Nonempty (Abelianization (HomotopyGroup (Fin 1) X x) ≃*
-      Multiplicative (integralSingularHomology 1 X)) :=
-  abelianizationHomotopyGroupOne_equiv_of_hurewiczOne x c hmul hsurj
-    fun a ha => hurewiczOneKernel_of_spherePairing hpair x c hc a ha
+theorem hurewiczOneKernel_of_subsingleton
+    (h : ∀ x : X, Subsingleton (HomotopyGroup (Fin 1) X x)) : HurewiczOneKernel X := by
+  intro x _ _ a _
+  rw [@Subsingleton.elim _ (h x) a 1]
+  exact (commutator _).one_mem
 
 end DifferentialGeometry.Topology

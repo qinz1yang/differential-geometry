@@ -11,7 +11,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLHomeomorphOn.exists_surface_ball_chart_of_mem_open_disk
     {D : Set E} {f : (Fin 3 → ℝ) → E}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) D) {x : E}
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {x : E}
     (hx : x ∈ D \ f '' stdSimplexBoundary 2) {N : Set E} (hN : N ∈ 𝓝 x) :
     ∃ (c : EuclideanSpace ℝ (Fin 2)) (r : ℝ) (g : EuclideanSpace ℝ (Fin 2) → E),
       0 < r ∧ ContinuousOn g (Metric.ball c r) ∧ InjOn g (Metric.ball c r) ∧
@@ -24,14 +24,14 @@ theorem IsPLHomeomorphOn.exists_surface_ball_chart_of_mem_open_disk
   obtain ⟨k, hk⟩ := hC
   obtain ⟨z, hz, hzx⟩ : x ∈ f '' openSimplex (stdVertices 1) := by
     rwa [hf.image_openSimplex_stdVertices]
-  let g := f ∘ Function.invFunOn k (stdSimplex ℝ (Fin 3))
+  let g := f ∘ Function.invFunOn k (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hg : IsPLHomeomorphOn g (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2)))) D :=
     hk.symm.trans hf
   have hzc : k z ∈ interior (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2)))) := by
     rw [← hk.image_openSimplex_eq_interior]
     exact mem_image_of_mem k hz
   have hgc : g (k z) = x := by
-    change f (Function.invFunOn k (stdSimplex ℝ (Fin 3)) (k z)) = x
+    change f (Function.invFunOn k (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (k z)) = x
     rw [hk.bijOn.invOn_invFunOn.1 (openSimplex_stdVertices_subset_stdSimplex hz), hzx]
   have hgn : g ⁻¹' N ∈ 𝓝 (k z) :=
     (hg.isPiecewiseAffineOn.continuousOn.continuousAt

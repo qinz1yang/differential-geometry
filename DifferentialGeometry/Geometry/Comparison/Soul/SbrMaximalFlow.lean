@@ -66,7 +66,7 @@ theorem exists_maximal_normalized_ascent_curve
   let eta : ℝ → M := fun s => if hs : s ∈ Ico a m then c (middle s hs) s else x
   have hpatch (T : J) (s : ℝ) (hs : s ∈ Icc a T.1) : eta s = c T s := by
     have hsm : s ∈ Ico a m := ⟨hs.1, hs.2.trans_lt T.2.2⟩
-    simp only [eta, dif_pos hsm]
+    simp only [eta, dite_eq_left hsm]
     exact hcAgree (middle s hsm) T ⟨hs.1, le_min (hmiddle s hsm).le hs.2⟩
   have hetaData (s : ℝ) (hs : s ∈ Ico a m) :
       eta s ∈ {z : M | 0 ≤ F z} ∧ F (eta s) = s := by

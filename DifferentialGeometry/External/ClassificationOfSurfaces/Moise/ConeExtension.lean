@@ -732,7 +732,7 @@ theorem exists_affineMap_eqOn_affineIndependent {ι : Type*} [Nonempty ι]
   refine ⟨g, fun i => ?_⟩
   have hb : b (embed i) = p i := rfl
   rw [← hb, hgBasis]
-  simp only [Q, embed, dif_pos (Set.mem_range_self i)]
+  simp only [Q, embed, dite_eq_left (Set.mem_range_self i)]
   exact congrArg q (e.symm_apply_apply i)
 
 /-- Map a one-dimensional complex by a function affine on every face and injective on its
@@ -957,7 +957,7 @@ theorem repositionMap_apply_realization (position' : K.Vertex → Plane)
       (K.reposition position' hinj haff hface).baryEval x.1 := by
   have hxmem : K.baryEval x.1 ∈ K.support :=
     (K.realizationHomeomorphAll x).2
-  simp only [repositionMap, dif_pos hxmem, repositionHomeomorphAll]
+  simp only [repositionMap, dite_eq_left hxmem, repositionHomeomorphAll]
   change ((K.reposition position' hinj haff hface).realizationHomeomorphAll
     (K.realizationHomeomorphAll.symm ⟨K.baryEval x.1, hxmem⟩)).1 = _
   have heq : K.realizationHomeomorphAll.symm ⟨K.baryEval x.1, hxmem⟩ = x := by

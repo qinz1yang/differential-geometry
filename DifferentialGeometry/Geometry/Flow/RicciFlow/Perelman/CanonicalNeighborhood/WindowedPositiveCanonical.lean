@@ -81,7 +81,7 @@ theorem exists_windowedModelWitness_canonicalWitness_of_model_positive_component
         ring
       _ ≤ modelRadius delta := modelRadius_anti W.eps_pos hdradius
   let K : CanonicalWitness W.model.S eta (2 * C1) C2 W.model.basepoint 0 :=
-    K0.enlarge_constants (by linarith) le_rfl
+    K0.enlargeConstants (by linarith) le_rfl
   have hKuniv : K.domain.carrier = univ := hK0univ
   have hKouter : K.domain.carrier ⊆ riemannianBallOf (W.model.S.base.metric 0)
       W.model.basepoint (2 * C1) := by

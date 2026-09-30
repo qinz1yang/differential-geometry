@@ -36,6 +36,7 @@ theorem isLocalDiffeomorphOn_sphereDirection_comp_of_norm_eq_one
     exact hgf hy
   have hmf : mfderiv (𝓘(ℝ, E)) 𝓘(ℝ, F) (fun y => (g y : F)) x.val = fderiv ℝ f x.val := by
     rw [heq.mfderiv_eq, mfderiv_eq_fderiv]
+    rfl
   have hinj : Function.Injective (mfderiv 𝓘(ℝ, E) (𝓡 n) g x.val) := by
     have hinj' := hmf ▸ hder x.val x.property
     change Function.Injective (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, F) (Subtype.val ∘ g) x.val) at hinj'

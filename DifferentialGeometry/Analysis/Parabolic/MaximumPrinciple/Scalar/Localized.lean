@@ -306,7 +306,7 @@ theorem cutoff_quadratic_lower_bound_on_compact_support
     G X hptime BoundarylessManifold.isInteriorPoint χ φ u hφtime
     (hu_time p.1 hpreg p.2) hφspace (Eventually.of_forall (hu_space p.1 hpreg))
     hφgrad (hu_grad p.1 hpreg p.2) hucont hφχ hφeq hχpos hχp.2 huneg
-    hmin.localize hc (hPu p.1 hpreg p.2) hφP hφg
+    hmin.isLocalMinOn hc (hPu p.1 hpreg p.2) hφP hφg
   have hmono : -(1 + T * (δ + 2 * ε)) / c ≤ -(1 + p.1 * (δ + 2 * ε)) / c := by
     apply div_le_div_of_nonneg_right _ hc.le
     linarith [mul_le_mul_of_nonneg_right hp.1.2 herror]

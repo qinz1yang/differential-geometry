@@ -189,18 +189,9 @@ private lemma memLp_two_of_bounded_mul
     (hf : MemLp f 2 ((volume : Measure EuclN).restrict K)) :
     MemLp (fun y => h y * f y) 2 ((volume : Measure EuclN).restrict K) := by
   classical
-  have hh_memLp_top : MemLp h ∞ ((volume : Measure EuclN).restrict K) := by
-    refine ⟨hh_meas, ?_⟩
-    rw [eLpNorm_exponent_top]
-    refine lt_of_le_of_lt ?_
-      (show (ENNReal.ofReal (max C 0) : ℝ≥0∞) < ⊤ from
-        ENNReal.ofReal_lt_top)
-    refine eLpNormEssSup_le_of_ae_enorm_bound (C := ENNReal.ofReal (max C 0)) ?_
-    refine hh_bd.mono (fun y hy => ?_)
-    rw [Real.enorm_eq_ofReal_abs]
-    apply ENNReal.ofReal_le_ofReal
-    exact hy.trans (le_max_left _ _)
-  exact MemLp.mul' (p := ∞) (q := 2) (r := 2) hf hh_memLp_top
+  have hh_memLp_top : MemLp h ∞ ((volume : Measure EuclN).restrict K) :=
+    memLp_top_of_bound hh_meas C (by simpa only [Real.norm_eq_abs] using hh_bd)
+  exact MemLp.fun_mul (p := ∞) (q := 2) (r := 2) hh_memLp_top hf
 
 private abbrev Kα (α : M) : Set EuclN :=
   chartImagePOUTsupport (I := I) (M := M) α
@@ -820,7 +811,6 @@ private lemma fChartEffectiveTwiceNumerator_memLp_vol_K
   have h_step12 := h_step11.add hE2
   unfold effectiveSourceChartSecondOrderNumerator
   convert h_step12 using 2 with y
-  simp only [Pi.add_apply, Pi.sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

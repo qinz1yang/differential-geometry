@@ -173,7 +173,7 @@ theorem TerminalLimitMetric.eventually_canonical_cap_core
     exact hz ▸ z.property
   let K := (cap n).core.restrictOpen G.terminalRegularOpen hcore
   refine ⟨K, (cap n).core.image_restrictOpen_carrier _ _,
-    (cap n).core_model.nonempty_preimage_open _ hcore, ?_, ?_⟩
+    (cap n).coreModel.nonempty_preimage_open _ hcore, ?_, ?_⟩
   · rw [CompactDomain.interior_restrictOpen_carrier]
     exact (cap n).center_inside
   · intro y hy

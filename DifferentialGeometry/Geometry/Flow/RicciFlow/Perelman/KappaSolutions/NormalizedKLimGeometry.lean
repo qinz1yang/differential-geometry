@@ -136,7 +136,7 @@ theorem exists_normalized_klim_base_injectivity [NeZero (Module.finrank ℝ E)]
     dsimp only [X]
     intro z hz
     exact hbound D F hK F.basepoint hbase z hz.le
-  let B := klim_three_baseInjBound_of_unit_scalar_bound X (fun _ => hK) hdim C hC hunit
+  let B := klimThreeBaseInjBoundOfUnitScalarBound X (fun _ => hK) hdim C hC hunit
   exact B.bound 0
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

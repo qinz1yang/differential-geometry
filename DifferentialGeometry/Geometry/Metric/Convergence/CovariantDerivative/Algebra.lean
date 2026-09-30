@@ -213,7 +213,7 @@ theorem metricDerivNorm_triangle
         + (metricCovDeriv (I := I) B gRef a x - metricCovDeriv (I := I) C gRef a x) :=
     (sub_add_sub_cancel _ _ _).symm
   rw [htel]
-  exact Tensor0SBundle.sqrt_normSq0S_add_le (I := I) gRef x (a + 2) _ _
+  exact DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le (I := I) gRef x (a + 2) _ _
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] in
 theorem metricDerivNorm_symm
@@ -226,7 +226,7 @@ theorem metricDerivNorm_symm
         -metricDiffCovDerivAt (I := I) a A B gRef x := by
     simp only [metricDiffCovDerivAt]
     abel
-  rw [metricDerivNorm, metricDerivNorm, hneg, Tensor0SBundle.normSq0S_neg]
+  rw [metricDerivNorm, metricDerivNorm, hneg, DifferentialGeometry.Tensor0SBundle.normSq0S_neg]
 
 noncomputable def covStep
     (gRef : SmoothRiemannianMetric I M) (s : Nat)
@@ -648,9 +648,6 @@ theorem diffStep_leibniz_eval
         (hv := fun b => ((τ a b).contMDiff.contMDiffAt))
       convert hEval using 1
       · rfl
-      · rfl
-      · funext y
-        rfl
     exact hSAt.mdifferentiableAt (by simp)
   simp only [← hτeval]
   have hDF : mvfderiv (I := I)

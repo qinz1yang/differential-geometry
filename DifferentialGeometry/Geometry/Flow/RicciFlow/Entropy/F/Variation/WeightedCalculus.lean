@@ -248,9 +248,7 @@ theorem expNegPotentialDensity_contMDiff
     ContMDiff I 𝓘(Real, Real) ∞ (expNegPotentialDensity potential) := by
   change ContMDiff I 𝓘(Real, Real) ∞ (fun x => Real.exp (-(potential x)))
   have h := Real.contDiff_exp.contMDiff.comp hpotential.neg
-  convert h using 1
-  · with_reducible_and_instances rfl
-  · rfl
+  simpa only [Function.comp_def] using h
 
 omit [FiniteDimensional ℝ E] in
 theorem tangentSectionAction_expNeg

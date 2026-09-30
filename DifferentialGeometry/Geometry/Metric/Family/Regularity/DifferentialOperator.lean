@@ -345,7 +345,7 @@ theorem heatOperatorWithDrift_continuousOn [I.Boundaryless] [T2Space M]
   exact h
 
 omit [CompleteSpace E] in
-theorem driftTerm_continuousOn [I.Boundaryless]
+theorem driftTerm_continuousOn
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     {D : RealTimeInterval}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)

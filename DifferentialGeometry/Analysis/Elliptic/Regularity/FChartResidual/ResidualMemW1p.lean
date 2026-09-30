@@ -44,8 +44,9 @@ theorem fChartResidual_memW1p
   fChartResidual_memW1p_of_cauchy_identification (I := I) (M := M) g α hu_h
     (smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy
       (I := I) (M := M) g α hu_h)
-    (smoothApproxSeq_smoothFChartResidual_limit_eq_fChartResidual
-      (I := I) (M := M) g α hu_h)
+    (fun F_lim _ h_tendsto =>
+      smoothApproxSeq_smoothFChartResidual_limit_eq_fChartResidual
+        (I := I) (M := M) g α hu_h F_lim h_tendsto)
 
 end FChartResidualMemW1p
 end Laplacian

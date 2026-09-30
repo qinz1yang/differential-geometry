@@ -56,13 +56,13 @@ theorem exists_crosscut_disk_with_cap_contact
 theorem IsPLHomeomorphOn.exists_crosscut_disk_with_cap_contact
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {D C A : Set E} {r c : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
-    (hc : IsPLHomeomorphOn c (stdSimplex ℝ (Fin 3)) C) (hCD : C ⊆ D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
+    (hc : IsPLHomeomorphOn c (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) C) (hCD : C ⊆ D)
     {γ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A) (hAD : A ⊆ D)
     (hends : A ∩ r '' stdSimplexBoundary 2 = {γ 0, γ 1})
     (hCA : C ∩ A ⊆ c '' stdSimplexBoundary 2) :
     ∃ (F B : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
       F ⊆ D ∧ F ∩ C = A ∩ C ∧ q '' stdSimplexBoundary 2 = A ∪ B ∧
       F ∩ r '' stdSimplexBoundary 2 = B ∧
       ∀ Z : Set E, IsPreconnected Z → Z ⊆ D → Disjoint Z A →
@@ -143,12 +143,12 @@ theorem IsPLHomeomorphOn.exists_crosscut_disk_with_cap_contact
 theorem exists_lateral_disk_of_crosscut
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {P : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P) {a b : ℝ} (hab : a < b)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P) {a b : ℝ} (hab : a < b)
     {A : Set (E × ℝ)} {γ : ℝ → E × ℝ} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
     (hAside : A ⊆ (r '' stdSimplexBoundary 2) ×ˢ Icc a b)
     (hends : A ∩ ((r '' stdSimplexBoundary 2) ×ˢ ({b} : Set ℝ)) = {γ 0, γ 1}) :
     ∃ (F B : Set (E × ℝ)) (q : (Fin 3 → ℝ) → E × ℝ),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
       F ⊆ (r '' stdSimplexBoundary 2) ×ˢ Icc a b ∧
       q '' stdSimplexBoundary 2 = A ∪ B ∧
       F ∩ ((r '' stdSimplexBoundary 2) ×ˢ ({b} : Set ℝ)) = B ∧
@@ -161,7 +161,7 @@ theorem exists_lateral_disk_of_crosscut
   obtain ⟨K, hKfin, hKP⟩ := hP.isPolyhedron.exists_simplicialComplex
   let _ : Finite K.faces := hKfin.to_subtype
   have hK : IsPLBall 2 K.space := hKP.symm ▸ hP
-  have hrK : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) K.space := hKP.symm ▸ hr
+  have hrK : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) K.space := hKP.symm ▸ hr
   have hJ : (boundaryComplex 2 K).space = r '' stdSimplexBoundary 2 :=
     (hr.image_stdSimplexBoundary_eq_boundaryComplex K hKP).symm
   have hD := isPLBall_prism_bottom_union_side K hK hab
@@ -171,7 +171,7 @@ theorem exists_lateral_disk_of_crosscut
     apply IsPLHomeomorphOn.capped_prism_boundary K hK hrK hab
     rwa [hKP]
   let c : (Fin 3 → ℝ) → E × ℝ := fun z => (r z, a)
-  have hc : IsPLHomeomorphOn c (stdSimplex ℝ (Fin 3)) (P ×ˢ ({a} : Set ℝ)) :=
+  have hc : IsPLHomeomorphOn c (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P ×ˢ ({a} : Set ℝ)) :=
     hr.trans (hP.isPolyhedron.isPLHomeomorphOn_prod_const a)
   have hAD : A ⊆ P ×ˢ ({a} : Set ℝ) ∪ (r '' stdSimplexBoundary 2) ×ˢ Icc a b :=
     hAside.trans subset_union_right
@@ -193,7 +193,7 @@ theorem exists_lateral_disk_of_crosscut
 theorem exists_lateral_disk_between_spanning_arcs
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {P A : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     {T₀ T₁ : Set (E × ℝ)} {α β : ℝ → E × ℝ} {δ : ℝ → E}
     {a b : ℝ} {x y : E} (hab : a < b)
     (hα : IsPLHomeomorphOn α (Icc 0 1) T₀)
@@ -212,7 +212,7 @@ theorem exists_lateral_disk_between_spanning_arcs
     (hdis : Disjoint T₀ T₁) :
     let U := (T₀ ∪ (A ×ˢ ({a} : Set ℝ))) ∪ T₁
     ∃ (F B : Set (E × ℝ)) (q : (Fin 3 → ℝ) → E × ℝ),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
       F ⊆ (r '' stdSimplexBoundary 2) ×ˢ Icc a b ∧
       q '' stdSimplexBoundary 2 = U ∪ B ∧
       F ∩ ((r '' stdSimplexBoundary 2) ×ˢ ({b} : Set ℝ)) = B ∧

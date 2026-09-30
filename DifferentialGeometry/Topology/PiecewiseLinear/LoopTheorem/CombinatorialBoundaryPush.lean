@@ -15,7 +15,7 @@ theorem exists_nonsingular_two_cell_in_combinatorial_manifold
     (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     {D : Set (EuclideanSpace ℝ (Fin 3))} {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDK : D ⊆ frontier K.space) :
     ∃ A : SingularTwoCell (EuclideanSpace ℝ (Fin 3)),
       A.IsNonsingular ∧ A '' A.domain ⊆ K.space ∧

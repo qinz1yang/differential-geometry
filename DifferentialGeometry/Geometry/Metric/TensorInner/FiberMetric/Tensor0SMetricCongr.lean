@@ -4,9 +4,8 @@ set_option autoImplicit false
 
 noncomputable section
 
-namespace Tensor0SBundle
+namespace DifferentialGeometry.Tensor0SBundle
 
-open DifferentialGeometry DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -46,4 +45,4 @@ theorem inner0S_domDomCongr {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     Equiv.coe_refl, Function.comp, id_eq]
   rfl
 
-end Tensor0SBundle
+end DifferentialGeometry.Tensor0SBundle

@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrd
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.ConnectionDifference.OrderOne.KernelRadiusFreeBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionDifference.Pairing
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 

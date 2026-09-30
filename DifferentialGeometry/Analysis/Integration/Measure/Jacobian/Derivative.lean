@@ -191,7 +191,7 @@ theorem perm_sum_eq_trace_adjugate_mul
         exact this.symm
       exact hi_ne_k (h1.trans hkinv)
     rw [Matrix.updateRow_apply]
-    exact if_neg hτi_ne_v
+    exact ite_eq_right hτi_ne_v
   rw [hrest]
 
 theorem hasDerivAt_det_eq_trace_adjugate_mul

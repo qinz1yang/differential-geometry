@@ -20,10 +20,10 @@ universe u
 
 theorem exists_tolerance_false_of_deep_horn_slices :
     ∃ epsW : ℝ, 0 < epsW ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} {κ ε ε₁ C1 C2 qcan a : ℝ} {Ctime Cgrad : ℝ≥0} {phi : ℝ → ℝ},
+    ∀ {κ ε ε₁ C1 C2 qcan a : ℝ} {Ctime Cgrad : ℝ≥0} {phi : ℝ → ℝ},
       0 < κ → 0 < qcan → 0 < ε → ε ≤ epsW → ε ≤ crossingNeckAccuracy.{u} → ε₁ ≤ 1 / 30000 →
       0 < a → Perelman.AdmissiblePinchingFunction phi →
-    ∀ (H : ℕ → RetainedCoreHistory P₀)
+    ∀ (H : ℕ → RetainedCoreHistory.{u})
       (hend : ∀ n, (H n).time (Fin.last (H n).eventCount) = (H n).horizon),
       (∀ n, (H n).EventSlabsDerivative Ctime qcan (Fin.last (H n).eventCount)) →
       (∀ n, (H n).EventSlabsPinched phi) →
@@ -89,7 +89,7 @@ theorem exists_tolerance_false_of_deep_horn_slices :
               W.alternative = SpatialCanonicalAlternative.neck neck) → False := by
   obtain ⟨epsW, hepsW, hLemA⟩ := exists_tolerance_false_of_deep_horn_sequence.{u}
   refine ⟨epsW, hepsW, ?_⟩
-  intro P₀ κ ε ε₁ C1 C2 qcan a Ctime Cgrad phi hκ hq hε hεW hεcross hε₁ ha hphi H hend hderiv
+  intro κ ε ε₁ C1 C2 qcan a Ctime Cgrad phi hκ hq hε hεW hεcross hε₁ ha hphi H hend hderiv
     hpinch hclass hnc s G L hG hs hderG hgradG hcanG hpinchG hncG x eps heps heps11 hRl1 τ Q S V W
     hτmem hQ1 hno hcl hgap hV hW hVW hS hpts hup hwit
   have hat : ∀ n, (H n).time (Fin.last (H n).eventCount) < τ n := fun n => (hτmem n).1

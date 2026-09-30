@@ -106,7 +106,7 @@ theorem isPLBall_union_of_boundary_arc_of_ambient
   obtain ⟨u, hu⟩ := hA
   have hA : IsPLBall 1 (K.space ∩ L.space) := ⟨u, hu⟩
   obtain ⟨v, hv⟩ := hseg
-  let g := v ∘ Function.invFunOn u (stdSimplex ℝ (Fin 2))
+  let g := v ∘ Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 2))
   have hg : IsPLHomeomorphOn g (K.space ∩ L.space) (segment ℝ p q) := hu.symm.trans hv
   let d : DecidableEq (EuclideanSpace ℝ (Fin 2)) := inferInstance
   have hd : d = Classical.decEq _ := Subsingleton.elim _ _

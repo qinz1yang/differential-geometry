@@ -86,7 +86,7 @@ theorem integrable_bilinFormIntegrandOfCoeff
   let μ : Measure E := volume.restrict Ω
   have hprod_memLp :
       MemLp (fun x => ‖hu.weakGrad x‖ * ‖hv.weakGrad x‖) 1 μ := by
-    exact (hv.weakGrad_memLp.norm.mul hu.weakGrad_memLp.norm).ae_eq <|
+    exact (hu.weakGrad_memLp.norm.mul hv.weakGrad_memLp.norm).ae_eq <|
       Filter.Eventually.of_forall fun _ => rfl
   have hdom_int :
       Integrable (fun x => A.Λ * (‖hu.weakGrad x‖ * ‖hv.weakGrad x‖)) μ := by
@@ -118,7 +118,7 @@ theorem bilinForm_bound
     rw [← memLp_one_iff_integrable]
     have hprod_memLp :
         MemLp (fun x => ‖hu.weakGrad x‖ * ‖hv.weakGrad x‖) 1 μ := by
-      exact (hv.weakGrad_memLp.norm.mul hu.weakGrad_memLp.norm).ae_eq <|
+      exact (hu.weakGrad_memLp.norm.mul hv.weakGrad_memLp.norm).ae_eq <|
         Filter.Eventually.of_forall fun _ => rfl
     exact hprod_memLp.const_mul A.Λ
   have hpointwise :
@@ -504,7 +504,7 @@ theorem weakProblemRHSOfField_eq_of_memH01
     {Ω : Set E} (hΩ : IsOpen Ω) {F : E → E} {v : E → ℝ}
     (hv0 : MemH01 v Ω) (hv : MemW1pWitness 2 v Ω) :
     weakProblemRHSOfField (Ω := Ω) F v = divergenceRHSOfField F hv := by
-  rw [weakProblemRHSOfField, dif_pos hv0]
+  rw [weakProblemRHSOfField, dite_eq_left hv0]
   let hw0 : MemW1pWitness 2 v Ω :=
     DeGiorgi.MemW1p.someWitness (MemW01p.memW1p hv0)
   have hgrad_ae : hw0.weakGrad =ᵐ[volume.restrict Ω] hv.weakGrad := by
@@ -566,7 +566,7 @@ theorem weakProblemRHSOfFieldAndDatum_eq_of_memH01
     {v : E → ℝ} (hv0 : MemH01 v Ω) (hv : MemW1pWitness 2 v Ω) :
     weakProblemRHSOfFieldAndDatum (A := A) (Ω := Ω) F hu₀ v =
       divergenceRHSOfField F hv - bilinFormOfCoeff A hu₀ hv := by
-  rw [weakProblemRHSOfFieldAndDatum, dif_pos hv0]
+  rw [weakProblemRHSOfFieldAndDatum, dite_eq_left hv0]
   let hw0 : MemW1pWitness 2 v Ω :=
     DeGiorgi.MemW1p.someWitness (MemW01p.memW1p hv0)
   have hdiv : divergenceRHSOfField F hw0 = divergenceRHSOfField F hv := by

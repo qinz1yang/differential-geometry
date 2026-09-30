@@ -102,7 +102,7 @@ theorem weak_replacement_energy_le_of_memW01p_sub_of_disk_energy_minimizing_sequ
     have hnull := measure_eq_zero_iff_ae_notMem.mp (Measure.addHaar_sphere volume b a)
     filter_upwards [hnull] with x hx
     apply propext
-    exact ⟨fun h => lt_of_le_of_ne h hx, le_of_lt⟩
+    exact ⟨fun h => lt_of_le_of_ne h hx, fun h => Metric.ball_subset_closedBall h⟩
   rw [heqμ] at hcomp
   let hva (i : ι) := DeGiorgi.MemW1pWitness.restrict Metric.isOpen_ball
     (Metric.ball_subset_ball hac.le) (hvc i)

@@ -1,6 +1,4 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtensionReduction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RecenteredScalarBoundReduction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FarPointSeparatingNeckFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtensionLimitInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FlowConvergenceAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalLimitFrontierInputs
@@ -191,94 +189,6 @@ theorem terminal_limit_global_bound_of_sourceFrontier {kappa sigma : ℝ} {Phi :
         BoundedAtDistance X → TerminalDerivativeBounds X → Nonempty (TerminalLimit X) :=
   terminal_limit_global_bound_of_frontiers hPhi
     (terminalLimitCompactnessFrontier_of_sourceCompactness hprod hsrc) hscalar
-
-def AncientExtensionAnalyticFrontier (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
-  TerminalLimitCompactnessFrontier.{u} kappa sigma Phi ∧
-    TerminalLimitScalarBoundFrontier.{u} kappa sigma Phi ∧
-    TerminalSlabInputShell.{u} kappa sigma Phi ∧
-    (∃ c : ℝ, 0 < c ∧ TerminalLocalPropagationBound.{u} kappa c) ∧
-    RecenteredScalarBoundBeyondRadius.{u} kappa sigma Phi 1 ∧
-    TerminalSliceScalarTransfer.{u} kappa sigma Phi ∧
-    FarPointSeparatingNeckInput.{u} kappa sigma Phi ∧
-    HalfLineAncientExtensionFrontierEstimate.{u} kappa sigma Phi
-
-theorem terminal_limit_global_bound_of_analyticFrontier {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (hPhi : AdmissiblePinchingFunction Phi) (h : AncientExtensionAnalyticFrontier.{u} kappa sigma Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
-        BoundedAtDistance X → TerminalDerivativeBounds X → Nonempty (TerminalLimit X) :=
-  terminal_limit_global_bound_of_frontiers hPhi h.1 h.2.1
-
-theorem first_backward_slab_of_analyticFrontier {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi)
-    (h : AncientExtensionAnalyticFrontier.{u} kappa sigma Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X),
-        ∃ delta : ℝ, ∃ hd : 0 < delta,
-          Nonempty (BackwardExtension L (RealTimeInterval.closed (-delta) 0 (by linarith))) :=
-  first_backward_slab_of_slabInputShell hkappa hsigma hPhi h.2.2.1
-
-theorem recentered_source_bound_of_analyticFrontier {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi)
-    (h : AncientExtensionAnalyticFrontier.{u} kappa sigma Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ A D : ℝ, 0 ≤ D → ∃ C : ℝ,
-        ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, ∀ᶠ i in Filter.atTop,
-          ∀ s ∈ Set.Icc (-(X.depth i / 2)) 0, ∀ z y : (X.term i).M,
-            (X.term i).S.scalar s z ≤ A →
-            metricDistance ((X.term i).S.base.metric s) z y ≤ D →
-              (X.term i).S.scalar s y ≤ C := by
-  obtain ⟨_, _, _, ⟨c, hc, hlocal⟩, hfar, _, _, _⟩ := h
-  exact recentered_source_bound_of_canonical_beyondRadius hsigma hPhi hc hlocal hfar
-
-theorem uniform_moving_slice_propagation_of_analyticFrontier {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi)
-    (h : AncientExtensionAnalyticFrontier.{u} kappa sigma Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ A D : ℝ, 0 ≤ D → ∃ C : ℝ,
-        ∀ (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X)
-          (J : RealTimeInterval) (B : BackwardExtension L J),
-          ∀ s ∈ J.carrier, ∀ z y : L.space.M,
-            B.solution.scalar s z ≤ A →
-            metricDistance (B.solution.base.metric s) z y ≤ D →
-              B.solution.scalar s y ≤ C := by
-  obtain ⟨_, _, _, ⟨c, hc, hlocal⟩, hfar, htr, _, _⟩ := h
-  exact uniform_moving_slice_propagation_of_canonical_beyondRadius_and_scalarTransfer
-    hsigma hPhi hc hlocal hfar htr
-
-theorem far_point_separating_neck_of_analyticFrontier {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (h : AncientExtensionAnalyticFrontier.{u} kappa sigma Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X)
-        (J : RealTimeInterval) (B : BackwardExtension L J),
-        ¬ CompactSpace L.space.M → ∀ D : ℝ, 0 ≤ D →
-        (∀ s ∈ J.carrier, ∀ y z : L.space.M,
-          |metricDistance (B.solution.base.metric s) y z -
-            metricDistance L.space.metric y z| ≤ D) →
-        ∀ p : L.space.M, ∃ alpha D0 C0 : ℝ, 0 < alpha ∧ alpha < 1 / 11 ∧
-          0 < D0 ∧ 0 < C0 ∧ ∀ s ∈ J.carrier, ∀ y : L.space.M,
-            D0 < metricDistance L.space.metric p y →
-            C0 < B.solution.scalar s y →
-            ∃ (neck : SpatialNeck (B.solution.base.metric s) alpha y) (z : L.space.M),
-              metricDistance L.space.metric p y <
-                metricDistance L.space.metric p z ∧
-              p ∉ neck.map '' (Set.univ ×ˢ ({0} : Set ℝ)) ∧
-              z ∉ connectedComponentIn (neck.map '' (Set.univ ×ˢ ({0} : Set ℝ)))ᶜ p ∧
-              ∀ v ∈ neck.map '' (Set.univ ×ˢ Set.Icc (-10) 10),
-                ∀ w ∈ neck.map '' (Set.univ ×ˢ Set.Icc (-10) 10),
-                  metricDistance (B.solution.base.metric s) v w ≤
-                    C0 / Real.sqrt (B.solution.scalar s y) :=
-  far_point_separating_neck_of_input h.2.2.2.2.2.2.1
-
-theorem ancient_extension_of_analyticFrontier {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (h : AncientExtensionAnalyticFrontier.{u} kappa sigma Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X)
-        (delta : ℝ) (hd : 0 < delta)
-        (B : BackwardExtension L (RealTimeInterval.closed (-delta) 0 (by linarith))),
-          Nonempty (AncientExtension B) :=
-  ancient_extension_of_halfLineAncientLimitFrontier
-    ((halfLineAncientExtensionFrontier_iff_estimate).mpr h.2.2.2.2.2.2.2)
 
 def GoodPointBufferedCanonicalFrontier (kappa alpha theta : ℝ) : Prop :=
   ∃ epsStar C Lmin Lmax : ℝ, 1 ≤ C ∧ 0 < epsStar ∧ epsStar < alpha ∧

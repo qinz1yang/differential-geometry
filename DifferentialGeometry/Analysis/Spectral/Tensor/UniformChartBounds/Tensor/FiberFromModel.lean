@@ -208,7 +208,7 @@ theorem tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
     · exact (exists_W_and_constant_symmL (I := I) (M := M) g r s α y₀ hy).choose_spec.1
     · exact isOpen_empty
   have hW_mem : ∀ y₀, y₀ ∈ (chartAt H α).source → y₀ ∈ W y₀ := by
-    intro y₀ hy; simp only [W, dif_pos hy]
+    intro y₀ hy; simp only [W, dite_eq_left hy]
     exact (exists_W_and_constant_symmL (I := I) (M := M) g r s α y₀ hy).choose_spec.2.1
   let N : M → ℝ := fun y₀ =>
     if hy : y₀ ∈ (chartAt H α).source then
@@ -226,8 +226,8 @@ theorem tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
           (fun y : M => TensorRSSpace r s I y) α).symmL ℝ b v :
           TensorRSSpace r s I b)‖ ≤ N y₀ * ‖v‖ := by
     intro y₀ hy b hb v
-    simp only [W, dif_pos hy] at hb
-    simp only [N, dif_pos hy]
+    simp only [W, dite_eq_left hy] at hb
+    simp only [N, dite_eq_left hy]
     exact (exists_W_and_constant_symmL (I := I) (M := M) g r s α y₀
       hy).choose_spec.2.2.choose_spec.2
       b hb v

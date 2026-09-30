@@ -31,7 +31,7 @@ theorem PLPieceIn.interior_eq_image_openSimplex
     {P : Set X} (T : PLPieceIn E (n + 1) X P)
     (hT : IsPLBall (n + 1) T.complex.space)
     {f : (Fin (n + 2) → ℝ) → E}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) T.complex.space) :
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) T.complex.space) :
     interior P = (T.map ∘ f) '' openSimplex (stdVertices n) := by
   classical
   let _ : Finite T.complex.faces := T.finite_faces.to_subtype
@@ -61,7 +61,7 @@ theorem PLPieceIn.interior_eq_image_openSimplex
     apply (T.mem_interior_iff_not_mem_boundaryComplex_space hman hfx).mpr
     rw [hboundary]
     rintro ⟨z, hzB, hzx⟩
-    have hz : z ∈ stdSimplex ℝ (Fin (n + 2)) :=
+    have hz : z ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) :=
       simplexBoundary_stdVertices_space_subset n hzB
     have heq : z = x := hf.bijOn.injOn hz hx.1 hzx
     exact hx.2 (heq ▸ hzB)

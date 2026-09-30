@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Grid.H3Integral
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorProductGrid
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.PerOrderEnvelopes
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise
+  riemannianFiberNormSq_nonneg)
 
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

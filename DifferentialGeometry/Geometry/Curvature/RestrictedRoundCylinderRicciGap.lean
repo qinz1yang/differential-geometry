@@ -64,7 +64,7 @@ theorem ricciSharp_restricted_roundCylinder_normalized_axis_bound
   have h := axis_operator_error_for_perturbed_metric g gRef x ε (1441 * ε) (1 / 2)
     hε (hsmall 0 (by norm_num)) v hv (ricciSharp g x).toLinearMap hreference z
   norm_num only [abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)] at h
-  convert h using 1 <;> first | rfl | ring
+  convert h using 1; first | rfl | ring
 
 theorem exists_unit_ricciTensor_bound_of_small_metric_derivatives_on_restricted_roundCylinder
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -89,7 +89,7 @@ theorem exists_unit_ricciTensor_bound_of_small_metric_derivatives_on_restricted_
     (ricciSharp g x v - (1 / 2 : ℝ) • (v - g.inner x v v • v))) ≤
     5772 * ε * Real.sqrt (g.inner x v v) at hnorm
   rw [hunit, one_smul, sub_self, smul_zero, sub_zero, Real.sqrt_one, mul_one] at hnorm
-  have hupper := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+  have hupper := DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
     g x (ricciSharp g x v) v
   rw [inner_ricciSharp, hunit, Real.sqrt_one, mul_one] at hupper
   exact ⟨v, hunit, hupper.trans hnorm⟩

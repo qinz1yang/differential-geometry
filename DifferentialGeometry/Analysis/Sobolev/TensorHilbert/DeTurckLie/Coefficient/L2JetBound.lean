@@ -6,6 +6,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.SlotInsertion
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -265,7 +268,7 @@ theorem deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_jetL2
               (deTurckLieCovariantDerivativeInsertionField (I := I) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg)‖ ^ 2 ≤ P i := by
   obtain ⟨F, hF_nn, hF⟩ :=
-    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbationPath_jetL2_perOrder_ballUniform (I := I) (M := M) g₀ g_bg a
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_path_iteratedCovGrad_norm_sq_bound (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   have hfr_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
   refine ⟨fun i => 2 * ((Module.finrank ℝ E : ℝ) * F i + (Module.finrank ℝ E : ℝ) * F i),
@@ -586,7 +589,7 @@ theorem deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_jetL2
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hins⟩ :=
-    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbationPath_jetL2_perOrder_topOrderSeparated (I := I) (M := M) g₀ g_bg a
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_path_iteratedCovGrad_norm_sq_top_order_bound (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   have hfr_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
   refine ⟨4 * (Module.finrank ℝ E : ℝ) * Ktop,
@@ -635,7 +638,7 @@ theorem deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_jetL2
                 (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hins⟩ :=
-    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_metricPerturbationPath_jetL2_summed_topOrderSeparated (I := I) (M := M) g₀ g_bg a
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_path_covariantJetNormSq_top_order_bound (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   have hfr_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
   refine ⟨4 * (Module.finrank ℝ E : ℝ) * Ktop,
@@ -662,7 +665,7 @@ theorem deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_jetL2
     (le_of_eq ?_)
   ring
 
-theorem deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform
+theorem deTurckLieCovariantDerivativeInsertionField_pointwise_perturbation_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -811,10 +814,10 @@ theorem deTurckLieCoeffField_metricPerturbationPath_riemannianFiberNormSq_order0
               ((deTurckLieCoeffField (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) g_bg).toSection x) ≤ Λ := by
   obtain ⟨Λa, hΛa_nn, hΛa⟩ :=
-    deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ g_bg a
+    deTurckLieConnectionDifferenceDerivCoeffField_pointwise_perturbation_bound (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   obtain ⟨Λb, hΛb_nn, hΛb⟩ :=
-    deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ g_bg a
+    deTurckLieCovariantDerivativeInsertionField_pointwise_perturbation_bound (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   refine ⟨2 * Λa + 2 * Λb, by linarith, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
@@ -883,7 +886,7 @@ theorem deTurckLieCoeffField_metricPerturbationPath_jetL2_perOrder_topOrderSepar
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop_a, hKtop_a_nn, Kc_a, hKc_a_nn, ha⟩ :=
-    deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jetL2_perOrder_topOrderSeparated (I := I) (M := M) g₀ g_bg a
+    deTurckLieConnectionDifferenceDerivCoeffField_covariant_l2_perturbation_tame_bound (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   obtain ⟨Ktop_b, hKtop_b_nn, Kc_b, hKc_b_nn, hb⟩ :=
     deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_jetL2_perOrder_topOrderSeparated (I := I) (M := M) g₀ g_bg a

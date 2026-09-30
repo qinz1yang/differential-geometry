@@ -39,7 +39,7 @@ theorem allSeamChart_nonneg (e : E) (p : SelfAttachment.directSeamDomain)
       Quot.mk _ ⟨endpoint e false,
         radialPoint N endpoint chart hdisj e false p.val.1 (1 + p.val.2)
           ⟨by linarith, by linarith [p.property.2.2]⟩⟩ := by
-  simp only [allSeamChart, comp_apply, seamChart, dif_pos ht]
+  simp only [allSeamChart, comp_apply, seamChart, dite_eq_left ht]
   rfl
 
 theorem allSeamChart_neg (e : E) (p : SelfAttachment.directSeamDomain)
@@ -48,7 +48,7 @@ theorem allSeamChart_neg (e : E) (p : SelfAttachment.directSeamDomain)
       Quot.mk _ ⟨endpoint e true,
         radialPoint N endpoint chart hdisj e true ((a e).val p.val.1) (1 - p.val.2)
           ⟨by linarith, by linarith [p.property.2.1]⟩⟩ := by
-  simp only [allSeamChart, comp_apply, seamChart, dif_neg (not_le.mpr ht)]
+  simp only [allSeamChart, comp_apply, seamChart, dite_eq_right (not_le.mpr ht)]
   rfl
 
 theorem allSeamChart_zero (e : E) (z : SelfAttachment.Sphere (n := 3)) :

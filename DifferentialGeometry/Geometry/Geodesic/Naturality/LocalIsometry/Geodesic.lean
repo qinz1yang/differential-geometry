@@ -90,7 +90,7 @@ theorem geoEq_map_localIso
     hγ.continuousAt.preimage_mem_nhds (U.isOpen.mem_nhds γtU.property)
   have hγU_val : (fun s => ((γU s : U) : M)) =ᶠ[𝓝 t] γ := by
     filter_upwards [hmem] with s hs
-    simp only [γU, dif_pos hs]
+    simp only [γU, dite_eq_left hs]
   have hγU_smooth : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ γU t := by
     have hamb : ContMDiffAt 𝓘(ℝ, ℝ) I ∞
         (fun s => ((γU s : U) : M)) t :=
@@ -173,7 +173,7 @@ theorem geoEq_map_localIso
     filter_upwards [hmem] with s hs
     dsimp only [Ψ]
     have hγUs : ((γU s : U) : M) = γ s := by
-      simp only [γU, dif_pos hs]
+      simp only [γU, dite_eq_left hs]
     change f (γ s) =
       (Φ : M → N) ((γU s : U) : M)
     rw [hγUs]
@@ -226,7 +226,7 @@ theorem geoEq_of_map_localIso
     hγ.continuousAt.preimage_mem_nhds (U.isOpen.mem_nhds γtU.property)
   have hγU_val : (fun s => ((γU s : U) : M)) =ᶠ[𝓝 t] γ := by
     filter_upwards [hmem] with s hs
-    simp only [γU, dif_pos hs]
+    simp only [γU, dite_eq_left hs]
   have hγU_smooth : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ γU t := by
     have hamb : ContMDiffAt 𝓘(ℝ, ℝ) I ∞
         (fun s => ((γU s : U) : M)) t :=
@@ -273,7 +273,7 @@ theorem geoEq_of_map_localIso
     filter_upwards [hmem] with s hs
     dsimp only [Ψ]
     have hγUs : ((γU s : U) : M) = γ s := by
-      simp only [γU, dif_pos hs]
+      simp only [γU, dite_eq_left hs]
     change f (γ s) = (Φ : M → N) ((γU s : U) : M)
     rw [hγUs]
     exact hfΦ hs.1

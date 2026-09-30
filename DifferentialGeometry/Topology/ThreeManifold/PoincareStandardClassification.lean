@@ -18,7 +18,6 @@ universe u
 
 theorem exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-    [IsManifold (𝓡 3) ∞ M] [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [SimplyConnectedSpace M] (h : isPoincareStandard M) :
     Nonempty (M ≃ₘ⟮𝓡 3, 𝓡 3⟯ standardThreeSphereLift.{u}.Carrier) := by
   classical

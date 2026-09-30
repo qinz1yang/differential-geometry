@@ -20,8 +20,8 @@ theorem exists_interior_circle_cell_chain (R Γc : Geometry.SimplicialComplex �
       (∀ k, IsConeBase ((s k).centroid ℝ id)
         (upperLink (barycentricSubdivision R) {(s k).centroid ℝ id})) ∧
       (∀ k, IsPLSphere 2 (upperLink (barycentricSubdivision R) {(s k).centroid ℝ id}).space) ∧
-      (∀ k, IsPLHomeomorphOn (q₀ k) (stdSimplex ℝ (Fin 3)) (D₀ k)) ∧
-      (∀ k, IsPLHomeomorphOn (q₁ k) (stdSimplex ℝ (Fin 3)) (D₁ k)) ∧
+      (∀ k, IsPLHomeomorphOn (q₀ k) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₀ k)) ∧
+      (∀ k, IsPLHomeomorphOn (q₁ k) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₁ k)) ∧
       (∀ k, D₀ k ⊆ (upperLink (barycentricSubdivision R) {(s k).centroid ℝ id}).space) ∧
       (∀ k, D₁ k ⊆ (upperLink (barycentricSubdivision R) {(s k).centroid ℝ id}).space) ∧
       (∀ k, Disjoint (D₀ k) (D₁ k)) ∧ (∀ k < m, D₁ k = D₀ (k + 1)) ∧ D₁ m = D₀ 0 ∧
@@ -59,19 +59,19 @@ theorem exists_interior_circle_cell_chain (R Γc : Geometry.SimplicialComplex �
   let ν : ℕ → ℕ := fun k => if k ≤ m then k else 0
   let prv : ℕ → ℕ := fun k => if k = 0 then m else k - 1
   let nxt : ℕ → ℕ := fun k => if k = m then 0 else k + 1
-  have hν : ∀ k ≤ m, ν k = k := fun k hk => if_pos hk
+  have hν : ∀ k ≤ m, ν k = k := fun k hk => ite_eq_left hk
   have hνle : ∀ k, ν k ≤ m := by
     intro k
     change (if k ≤ m then k else 0) ≤ m
     split_ifs with h
     · exact h
     · exact Nat.zero_le m
-  have hprv0 : prv 0 = m := if_pos rfl
+  have hprv0 : prv 0 = m := ite_eq_left rfl
   have hprvS : ∀ k, prv (k + 1) = k := fun k => by
     change (if k + 1 = 0 then m else k + 1 - 1) = k
-    rw [if_neg (Nat.succ_ne_zero k), Nat.add_sub_cancel]
-  have hnxtm : nxt m = 0 := if_pos rfl
-  have hnxtlt : ∀ k < m, nxt k = k + 1 := fun k hk => if_neg hk.ne
+    rw [ite_eq_right (Nat.succ_ne_zero k), Nat.add_sub_cancel]
+  have hnxtm : nxt m = 0 := ite_eq_left rfl
+  have hnxtlt : ∀ k < m, nxt k = k + 1 := fun k hk => ite_eq_right hk.ne
   have hprvle : ∀ a ≤ m, prv a ≤ m := by
     intro a ha
     rcases Nat.eq_zero_or_pos a with rfl | h

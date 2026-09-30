@@ -1,8 +1,14 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.ConnectionDifference.OrderZero.KernelJetGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredCoefficient
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Algebra
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.OperatorField.Composition
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
+
+open DifferentialGeometry.TensorMetric (
+  coframeS coframeS_zero_eq_unitZeroSec fiberNormSqComponent riemannianFiberNormSq
+  riemannianFiberNormSq_sub_le tensorInnerPointwise tensorInnerPointwise_eq_sum_componentS_mul)
+
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -597,13 +603,13 @@ private lemma ricLow_unitModel (g gm : SmoothRiemannianMetric I M)
     (x : M) :
     unitModel (I := I) (M := M) g 3
         (metricLoweredConnectionDifferenceCoefficient (I := I) g gm) x =
-      Tensor0SSpace.toModel (metricLoweredConnectionDifferenceCovector (I := I) g gm x) := by
+      Tensor0SSpace.toModel (DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceCovector (I := I) g gm x) := by
   rw [unitModel]
   rw [show (metricLoweredConnectionDifferenceCoefficient (I := I) g gm).toSection x
         (unitTensor (I := I) (M := M) x) =
       (MixedSection.eval₀ (F := E)
           (E := (TangentSpace I : M → Type _)) x).smulRight
-        (metricLoweredConnectionDifferenceField (I := I) g gm x)
+        (DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceField (I := I) g gm x)
         (ContinuousMultilinearMap.constOfIsEmpty Real
           (fun _ : Fin 0 => TangentSpace I x) (1 : Real)) from rfl]
   rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,
@@ -1293,9 +1299,9 @@ private lemma ricSmooth_basis (g : SmoothRiemannianMetric I M) (x : M) :
       rw [map_smul, horth k j, smul_eq_mul]
     rw [Finset.sum_congr rfl hpull] at hz
     rw [Finset.sum_eq_single k
-      (fun j _ hj => by rw [if_neg (Ne.symm hj), mul_zero])
+      (fun j _ hj => by rw [ite_eq_right (Ne.symm hj), mul_zero])
       (fun h => absurd hk h)] at hz
-    rwa [if_pos rfl, mul_one] at hz
+    rwa [ite_eq_left rfl, mul_one] at hz
   have hcard : Fintype.card (Fin (Module.finrank Real E)) =
       Module.finrank Real (TangentSpace I x) := by
     rw [Fintype.card_fin]

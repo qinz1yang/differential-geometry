@@ -17,6 +17,7 @@ open scoped ContDiff Manifold Topology
 
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Tensor.Coordinates (chartCoordCLM chartGramBilin)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian.Variation.ChartCoordinateExpansion

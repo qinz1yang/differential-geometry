@@ -14,14 +14,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem exists_disk_pair_of_spanning_disk_of_bicollar
     {S D W : Set E} (hS : IsClosed S) {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S = r '' stdSimplexBoundary 2) {ρ : E × ℝ → E}
     (hρ : IsPLHomeomorphOn ρ ((r '' stdSimplexBoundary 2) ×ˢ Icc (-1 : ℝ) 1) W)
     (hfix : ∀ x ∈ r '' stdSimplexBoundary 2, ρ (x, 0) = x)
     (hWS : W ⊆ S) (hWnhds : W ∈ 𝓝ˢ[S] (r '' stdSimplexBoundary 2)) :
     ∃ (D₀ D₁ : Set E) (q₀ q₁ : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀ ∧
-      IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ ∧
+      IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
       D ⊆ D₀ \ q₀ '' stdSimplexBoundary 2 ∧ D ⊆ D₁ \ q₁ '' stdSimplexBoundary 2 ∧
       D₀ ∩ D₁ = D ∧
       D₀ = D ∪ ρ '' ((r '' stdSimplexBoundary 2) ×ˢ Icc (-1 : ℝ) 0) ∧
@@ -64,13 +64,13 @@ open Classical in
 theorem IsCombinatorialManifoldWithBoundary.exists_disk_pair_of_spanning_disk
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 2 K) (hor : IsOrientable 2 K)
-    {D U : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {D U : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ K.space = r '' stdSimplexBoundary 2)
     (hBd : Disjoint (r '' stdSimplexBoundary 2) (boundaryComplex 2 K).space)
     (hU : U ∈ 𝓝ˢ[K.space] (r '' stdSimplexBoundary 2)) :
     ∃ (D₁ D₂ : Set E) (q₁ q₂ : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
-      IsPLHomeomorphOn q₂ (stdSimplex ℝ (Fin 3)) D₂ ∧
+      IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn q₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂ ∧
       D ⊆ D₁ \ q₁ '' stdSimplexBoundary 2 ∧ D ⊆ D₂ \ q₂ '' stdSimplexBoundary 2 ∧
       D₁ ∩ D₂ = D ∧ D₁ ⊆ D ∪ (K.space ∩ U) ∧ D₂ ⊆ D ∪ (K.space ∩ U) ∧
       D₁ ∪ D₂ ∈ 𝓝ˢ[K.space ∪ D] D := by
@@ -91,12 +91,12 @@ theorem IsCombinatorialManifoldWithBoundary.exists_disk_pair_of_spanning_disk
 theorem IsCombinatorialManifold.exists_disk_pair_of_spanning_disk
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) (hor : IsOrientable 2 K)
-    {D U : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {D U : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ K.space = r '' stdSimplexBoundary 2)
     (hU : U ∈ 𝓝ˢ[K.space] (r '' stdSimplexBoundary 2)) :
     ∃ (D₁ D₂ : Set E) (q₁ q₂ : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
-      IsPLHomeomorphOn q₂ (stdSimplex ℝ (Fin 3)) D₂ ∧
+      IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn q₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂ ∧
       D ⊆ D₁ \ q₁ '' stdSimplexBoundary 2 ∧ D ⊆ D₂ \ q₂ '' stdSimplexBoundary 2 ∧
       D₁ ∩ D₂ = D ∧ D₁ ⊆ D ∪ (K.space ∩ U) ∧ D₂ ⊆ D ∪ (K.space ∩ U) ∧
       D₁ ∪ D₂ ∈ 𝓝ˢ[K.space ∪ D] D := by

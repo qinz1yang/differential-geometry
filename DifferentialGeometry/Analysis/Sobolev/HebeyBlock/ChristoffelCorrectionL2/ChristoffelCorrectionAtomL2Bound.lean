@@ -134,7 +134,7 @@ private lemma chartLeviCivitaParallelCLM_chartBasisVec_apply_chartBasisVec_eq_su
     intro i
     by_cases hik : i = k
     · subst hik
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       rw [map_sum]
       have hj_eq :
           ∀ j : Fin (Module.finrank ℝ E),
@@ -154,14 +154,14 @@ private lemma chartLeviCivitaParallelCLM_chartBasisVec_apply_chartBasisVec_eq_su
         intro j
         by_cases hjm : j = m
         · subst hjm
-          rw [if_pos rfl]
+          rw [ite_eq_left rfl]
           rw [map_sum]
           refine Finset.sum_congr rfl ?_
           intro p _
           rw [map_smul]
           rw [hrepr_v i, hrepr_Y j]
           simp
-        · rw [if_neg hjm]
+        · rw [ite_eq_right hjm]
           rw [map_sum]
           have h_sum_zero :
               (∑ p : Fin (Module.finrank ℝ E),
@@ -174,12 +174,12 @@ private lemma chartLeviCivitaParallelCLM_chartBasisVec_apply_chartBasisVec_eq_su
             refine Finset.sum_eq_zero ?_
             intro p _
             rw [map_smul]
-            rw [hrepr_Y j, if_neg hjm]
+            rw [hrepr_Y j, ite_eq_right hjm]
             simp
           exact h_sum_zero
       rw [Finset.sum_congr rfl (fun j _ => hj_eq j)]
-      simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
-    · rw [if_neg hik]
+      simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    · rw [ite_eq_right hik]
       rw [map_sum]
       refine Finset.sum_eq_zero ?_
       intro j _
@@ -187,10 +187,10 @@ private lemma chartLeviCivitaParallelCLM_chartBasisVec_apply_chartBasisVec_eq_su
       refine Finset.sum_eq_zero ?_
       intro p _
       rw [map_smul]
-      rw [hrepr_v i, if_neg hik]
+      rw [hrepr_v i, ite_eq_right hik]
       simp
   rw [Finset.sum_congr rfl (fun i _ => h_outer i)]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   refine Finset.sum_congr rfl ?_
   intro p _
   rfl
@@ -529,6 +529,59 @@ theorem chartAtlasPOU_mul_sqrt_g_inner_chartLeviCivitaParallelCLM_chartBasisVec_
     intro b
     rw [h_norm_eq b, hf_def]
     exact h_pt b
+  let Φ : ∀ b : M, TangentSpace I b := fun b =>
+    chartLeviCivitaParallelCLM (I := I) g α b
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)
+  let S : Set M := tsupport (fun x : M =>
+    ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
+  have hΦ_repr : ContMDiffOn I 𝓘(ℝ, E) ∞
+      (fun b : M => chartESectionRepr (I := I) α Φ b)
+      ((chartAt H α).source) := by
+    have hop :=
+      chartLeviCivitaParallelCLM_chartBasisVec_trivImage_contMDiffOn_chartSource
+        (I := I) (M := M) g α k
+    have hconst : ContMDiffOn I 𝓘(ℝ, E) ∞
+        (fun _ : M => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)
+        ((chartAt H α).source) := contMDiffOn_const
+    have happly := hop.clm_apply hconst
+    refine happly.congr ?_
+    intro b hb
+    simp only [chartESectionRepr, Φ]
+    rfl
+  have hΦ_on : ContinuousOn (fun b : M =>
+      TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) b (Φ b)) S := by
+    intro b hb
+    have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
+      (pouTsupport_subset_baseSet (I := I) (M := M) α) hb
+    have h_at := hΦ_repr b
+      ((pouTsupport_subset_baseSet (I := I) (M := M) α) hb)
+    have h_at' :=
+      (contMDiffWithinAt_section_iff_chartE I α Φ (k := (⊤ : ℕ∞)) hb_base).mpr h_at
+    exact h_at'.continuousWithinAt.mono (fun x hx =>
+      (pouTsupport_subset_baseSet (I := I) (M := M) α) hx)
+  have hi : ContinuousOn (fun b : M => g.inner b (Φ b) (Φ b)) S :=
+    metric_inner_sections_continuousOn (I := I) (M := M) g hΦ_on hΦ_on
+  have hf_restrict : AEStronglyMeasurable f
+      ((riemannianVolumeMeasure (I := I) (M := M) g).restrict S) := by
+    apply ContinuousOn.aestronglyMeasurable_of_isCompact
+      ((chartAtlasPOU I M α).contMDiff.continuous.continuousOn.mul
+        (Real.continuous_sqrt.comp_continuousOn hi))
+      (pouTsupport_isCompact (I := I) (M := M) α)
+      (isClosed_tsupport _).measurableSet
+  have hf_indicator : S.indicator f = f := by
+    funext b
+    by_cases hb : b ∈ S
+    · exact Set.indicator_of_mem hb f
+    · have hρ_zero : ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b = 0 := by
+        by_contra hne
+        exact hb (subset_tsupport _ hne)
+      simp only [Set.indicator_of_notMem hb, hf_def, hρ_zero, zero_mul]
+  have hf_ae : AEStronglyMeasurable f
+      (riemannianVolumeMeasure (I := I) (M := M) g) := by
+    rw [← hf_indicator]
+    exact (aestronglyMeasurable_indicator_iff (isClosed_tsupport _).measurableSet).2
+      hf_restrict
   have h_eLpNorm_bound :
       eLpNorm f 2 (riemannianVolumeMeasure (I := I) (M := M) g) ≤
         (riemannianVolumeMeasure (I := I) (M := M) g
@@ -536,7 +589,7 @@ theorem chartAtlasPOU_mul_sqrt_g_inner_chartLeviCivitaParallelCLM_chartBasisVec_
           ENNReal.ofReal (Real.sqrt K) :=
     MeasureTheory.eLpNorm_le_of_ae_bound
       (μ := riemannianVolumeMeasure (I := I) (M := M) g) (f := f)
-      (C := Real.sqrt K) (Filter.Eventually.of_forall h_pt')
+      (C := Real.sqrt K) hf_ae (Filter.Eventually.of_forall h_pt')
   set μM_univ : ℝ≥0∞ := riemannianVolumeMeasure (I := I) (M := M) g Set.univ
     with hμM_univ_def
   have hμM_univ_lt_top : μM_univ < ⊤ := by
@@ -679,7 +732,7 @@ theorem g3_christoffel_atom_eLpNorm_le_uniform_intrinsic_pou
       funext b
       rw [h_zero b]; ring
     rw [h_integrand_zero]
-    rw [eLpNorm_zero']
+    rw [eLpNorm_fun_zero]
     exact zero_le
 
 end HebeyBlock

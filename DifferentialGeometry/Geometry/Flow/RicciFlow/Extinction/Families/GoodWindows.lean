@@ -162,7 +162,7 @@ theorem le_of_arclength_lipschitz_integral_bound {u v : ℝ → ℝ} {x₀ K ell
     have hl : 0 ≤ 2 * lam / ell := by positivity
     linarith
 
-omit [SigmaCompactSpace Q] hT2 hCompact hConnected hBoundary in
+omit [CompleteSpace E] [SigmaCompactSpace Q] hT2 hCompact hConnected hBoundary in
 theorem rfs_ramp_small_angle (g : SmoothRiemannianMetric I Q)
     (c : ProductCurve Q) (lambda t ell K : ℝ) (hlambda : 0 < lambda)
     (hell : 0 < ell) (hK : 0 < K) (hdegree : c.degree = 1)
@@ -371,9 +371,9 @@ theorem exists_goodWindow_finset_of_energy_bound {a b d C threshold : ℝ} (hd :
     set cell : ℕ → Set ℝ := fun j => if j < K then Icc (p j) (p (j + 1)) else Icc (p K) (b - d)
       with hcell
     have hcell_lt : ∀ j, j < K → cell j = Icc (p j) (p (j + 1)) := by
-      intro j hj; simp only [hcell, if_pos hj]
+      intro j hj; simp only [hcell, ite_eq_left hj]
     have hcell_ge : ∀ j, K ≤ j → cell j = Icc (p K) (b - d) := by
-      intro j hj; simp only [hcell, if_neg (not_lt.mpr hj)]
+      intro j hj; simp only [hcell, ite_eq_right (not_lt.mpr hj)]
     have hcell_sub : ∀ j, cell j ⊆ Icc a (b - d) := by
       intro j
       rcases lt_or_ge j K with hlt | hge
@@ -387,7 +387,7 @@ theorem exists_goodWindow_finset_of_energy_bound {a b d C threshold : ℝ} (hd :
     set wfun : ℕ → ℝ := fun j => if hj : good j then Classical.choose hj else a with hwfun
     have hwfun_spec : ∀ j, good j → wfun j ∈ cell j ∧ f (wfun j) ≤ threshold := by
       intro j hj
-      have h1 : wfun j = Classical.choose hj := by rw [hwfun]; simp only [dif_pos hj]
+      have h1 : wfun j = Classical.choose hj := by rw [hwfun]; simp only [dite_eq_left hj]
       rw [h1]; exact Classical.choose_spec hj
     have hxlo : ∀ j ≤ K, ∀ x ∈ cell j, p j ≤ x := by
       intro j hj x hx

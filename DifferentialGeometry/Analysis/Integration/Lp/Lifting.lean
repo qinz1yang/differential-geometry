@@ -29,7 +29,7 @@ theorem exists_lp_lift_of_ae_exists_norm_le
     if h : ∃ e : E, j e = g a ∧ ‖e‖ ≤ b a then h.choose else 0
   have hf : ∀ᵐ a ∂μ, j (f a) = g a ∧ ‖f a‖ ≤ b a := by
     filter_upwards [h] with a ha
-    simpa only [f, dif_pos ha] using ha.choose_spec
+    simpa only [f, dite_eq_left ha] using ha.choose_spec
   have hfg : (j ∘ f) =ᵐ[μ] g := hf.mono fun _ ha => ha.1
   have hfm : AEStronglyMeasurable f μ :=
     aestronglyMeasurable_of_continuous_injective hj hinj (hg.congr hfg.symm)

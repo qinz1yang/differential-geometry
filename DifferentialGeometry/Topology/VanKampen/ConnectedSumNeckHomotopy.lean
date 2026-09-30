@@ -177,7 +177,7 @@ theorem connectedSumNeckLeftRetractionCode_quotientMap
   · change (p.2 : ℝ) < 2 / 3 at hz
     change (if (p.2 : ℝ) < 2 / 3 then some (leftBoundary p.1) else none) =
       some (leftBoundary p.1)
-    rw [if_pos hz]
+    rw [ite_eq_left hz]
   · rfl
   · exact False.elim hz
 

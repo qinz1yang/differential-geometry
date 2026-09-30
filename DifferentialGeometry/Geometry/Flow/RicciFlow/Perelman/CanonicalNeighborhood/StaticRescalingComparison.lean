@@ -81,15 +81,15 @@ def MetricComparisonOn.staticRescale
       smul_eq_mul, C.pullback_eq t y hy v, scaleMetric_inner]
   · intro b s hs y _hy v
     obtain rfl := mem_singleton_iff.mp hs
-    simp only [jet, if_neg (Nat.add_one_ne_zero b)]
+    simp only [jet, ite_eq_right (Nat.add_one_ne_zero b)]
     change 0 = derivWithin (fun _ => (if b = 0 then A else 0) y v) {0} 0
     simp only [derivWithin_fun_const, Pi.zero_apply]
   · intro s _hs y hy v
     exact quadratic_comparison_of_error_norm _ _ A y (hA y) (hbound 0 (by omega) y hy) v
   · intro a b hab s _hs y hy
     by_cases hb : b = 0
-    · simpa only [jet, if_pos hb] using hbound a (by omega) y hy
-    · simp only [jet, if_neg hb]
+    · simpa only [jet, ite_eq_left hb] using hbound a (by omega) y hy
+    · simp only [jet, ite_eq_right hb]
       rw [tensor02CovDerivNormWith, tensor02_cov_deriv_eq_cov_deriv_of_field,
         covDerivOfField_zero_tensor]
       simpa only [ContMDiffSection.coe_zero, Pi.zero_apply, normSq0S, inner0S,

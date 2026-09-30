@@ -45,11 +45,8 @@ theorem ancient_cube_mul_lCost_le_of_le
         (nhdsWithin_le_nhds : 𝓝[<] t ≤ 𝓝 t) (Ioi_mem_nhds htpos)
       filter_upwards [hupper', hpos'] with r hr hrpos
       exact mul_le_mul_of_nonneg_left hr (pow_nonneg hrpos.le 3)
-    · convert ((hasDerivAt_id t).pow 3).mul hderiv using 1
-      · rfl
-      · rfl
-      · rfl
-      · simp only [Nat.cast_ofNat, Nat.reduceSub, mul_one, id_eq, Pi.pow_apply]
+    · convert! ((hasDerivAt_id t).pow 3).mul hderiv using 1
+      all_goals norm_num
     · rw [htouch]
       have htd := (div_le_iff₀ htpos).mp hbound
       have hp := mul_le_mul_of_nonneg_left htd (sq_nonneg t)

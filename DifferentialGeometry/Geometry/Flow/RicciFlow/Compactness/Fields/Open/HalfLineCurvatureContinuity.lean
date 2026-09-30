@@ -78,7 +78,7 @@ theorem chartRiemannTensor_eq_sum_metricRm04At_mul_chartInvGramMatrix
         rw [Finset.sum_eq_single m]
         · simp
         · intro l _ hl
-          simp only [hl, if_false, mul_zero]
+          simp only [hl, ite_false, mul_zero]
         · intro hm
           exact absurd (Finset.mem_univ m) hm
     _ = ∑ l : Fin (Module.finrank Real E),

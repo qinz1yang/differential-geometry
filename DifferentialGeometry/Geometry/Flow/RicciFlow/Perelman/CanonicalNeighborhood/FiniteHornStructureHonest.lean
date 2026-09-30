@@ -20,7 +20,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.topology PointedRiemannianManifold.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact
 
 def EscapeFiniteHornRealization.{v} (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
@@ -53,7 +53,7 @@ theorem escapeFiniteHornRealization_of_finiteHornConstruction
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth) :
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth) :
     EscapeFiniteHornRealization.{u} kappa sigma Phi := by
   obtain ⟨alphaMax, collarMin, haMax, haMax', hcMin, hmain⟩ := h
   obtain ⟨e, he, hstep⟩ :=

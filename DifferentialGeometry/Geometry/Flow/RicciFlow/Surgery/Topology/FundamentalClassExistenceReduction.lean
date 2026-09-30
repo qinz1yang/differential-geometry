@@ -72,7 +72,7 @@ theorem localizationInjective_of_forall_exists_injective
 theorem localizationInjective_connected_of_noncompactThreeManifoldTopHomologyVanishing
     (h : noncompactThreeManifoldTopHomologyVanishing.{u})
     (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
-    [T2Space M] [CompactSpace M] [ConnectedSpace M] :
+    [T2Space M] [ConnectedSpace M] :
     Function.Injective (fun w : IntegralHomology M 3 =>
       fun x : M => absoluteToRelative M ({x}ᶜ) 3 w) := by
   let x₀ : M := Classical.arbitrary M

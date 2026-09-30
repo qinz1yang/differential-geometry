@@ -59,6 +59,9 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg)
+
 open LieCorrectionZeroFiberOperators
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
@@ -1717,7 +1720,7 @@ private theorem exists_lieDerivativeCorrectionPlusEndoTerm_order0_data
     lieCorrectionZeroField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M) g₀ g_bg a
       ha_super hR hδ₀
   obtain ⟨Λz, hΛz_nn, hsupz⟩ :=
-    deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform
+    deTurckLieCovariantDerivativeInsertionField_pointwise_perturbation_bound
       (I := I) (M := M) g₀ g₀ a ha_super hR hδ₀
   obtain ⟨K, hK_nn, henv⟩ :=
     lieDerivativeCorrectionPlusEndoTerm_l2JetWindow (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
@@ -3246,7 +3249,7 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
     rw [Real.sq_sqrt hprod_nn] at hfin
     exact hfin
 
-theorem exists_deTurckRHSCovariantTermDifference_zero_canonicalTop_curvatureDecomposition_coeffSup_jetEnvelope_of_symm
+theorem exists_deTurckRHSTermG0_zero_tame_decomposition_of_symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     {δ : ℝ} (hδ_le : δ ≤ 1 / 3)

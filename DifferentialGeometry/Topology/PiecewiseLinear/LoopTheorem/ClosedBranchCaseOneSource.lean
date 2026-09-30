@@ -130,7 +130,7 @@ theorem exists_isBranchDeckInvolution_of_branchPreimage_eq [T2Space M]
       ∀ (x : EuclideanSpace ℝ (Fin 2)) (hx : x ∈ hD.branchPreimage c),
         τ x = (σ ⟨x, hx⟩ : EuclideanSpace ℝ (Fin 2)) :=
     ⟨fun x => if hx : x ∈ hD.branchPreimage c then (σ ⟨x, hx⟩ : EuclideanSpace ℝ (Fin 2)) else x,
-      fun x hx => dif_pos hx⟩
+      fun x hx => dite_eq_left hx⟩
   refine ⟨τ, ?_⟩
   have hmaps : MapsTo τ (hD.branchPreimage c) (hD.branchPreimage c) := by
     intro x hx

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.Inverse.LocalInverse
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Chart
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
@@ -16,21 +17,14 @@ variable {E F H H' M N : Type*}
   {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F H'}
   [I.Boundaryless] [J.Boundaryless] [IsManifold I ∞ M] [IsManifold J ∞ N]
 
-private def extendedChart (I : ModelWithCorners ℝ E H) [I.Boundaryless] (x : M) :
-    OpenPartialHomeomorph M E where
-  toPartialEquiv := extChartAt I x
-  open_source := isOpen_extChartAt_source x
-  open_target := isOpen_extChartAt_target x
-  continuousOn_toFun := continuousOn_extChartAt x
-  continuousOn_invFun := continuousOn_extChartAt_symm x
-
 theorem isLocalDiffeomorphAt_of_contMDiffOn_of_hasMFDerivAt_equiv
     (f : M → N) {U : Set M} (hf : ContMDiffOn I J ∞ f U) (hU : IsOpen U)
     (x₀ : M) (hx₀ : x₀ ∈ U)
     (A : E ≃L[ℝ] F) (hdf : HasMFDerivAt I J f x₀ (A : E →L[ℝ] F)) :
     IsLocalDiffeomorphAt I J ∞ f x₀ := by
-  let cM := extendedChart I x₀
-  let cN := extendedChart J (f x₀)
+  let cM := (DifferentialGeometry.PartialDiffeomorph.extChartAt I ∞ x₀).toOpenPartialHomeomorph
+  let cN :=
+    (DifferentialGeometry.PartialDiffeomorph.extChartAt J ∞ (f x₀)).toOpenPartialHomeomorph
   let g : E → F := cN ∘ f ∘ cM.symm
   let D := U ∩ f ⁻¹' cN.source
   have hD : IsOpen D := hf.continuousOn.isOpen_inter_preimage hU cN.open_source

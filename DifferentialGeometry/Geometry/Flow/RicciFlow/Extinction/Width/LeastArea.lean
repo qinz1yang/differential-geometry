@@ -130,7 +130,7 @@ private theorem parametricJacobian_eq_riemannianAreaDensity (g : SmoothRiemannia
   by_cases hd : MDifferentiableAt 𝓘(ℝ, ℂ) I U z
   · have hw : MDifferentiableWithinAt 𝓘(ℝ, ℂ) I U (Metric.closedBall (0 : ℂ) 1) z :=
       hd.mdifferentiableWithinAt
-    rw [parametricJacobian, if_pos hw, mfderivWithin_of_mem_nhds (f := U) hs]
+    rw [parametricJacobian, ite_eq_left hw, mfderivWithin_of_mem_nhds (f := U) hs]
     have h0 : diskBasis (0 : Fin 2) = (1 : ℂ) := by simp [diskBasis]
     have h1 : diskBasis (1 : Fin 2) = Complex.I := by simp [diskBasis]
     rw [Matrix.det_fin_two, Geometry.riemannianAreaDensity, Geometry.tangentTwoJacobian]
@@ -140,7 +140,7 @@ private theorem parametricJacobian_eq_riemannianAreaDensity (g : SmoothRiemannia
     ring_nf
   · have hw : ¬ MDifferentiableWithinAt 𝓘(ℝ, ℂ) I U (Metric.closedBall (0 : ℂ) 1) z :=
       fun h => hd (h.mdifferentiableAt hs)
-    rw [parametricJacobian, if_neg hw,
+    rw [parametricJacobian, ite_eq_right hw,
       Geometry.riemannianAreaDensity_eq_zero_of_not_mdifferentiableAt g hd]
 
 omit finiteDimensionalE boundarylessI t2Q compactQ in
@@ -156,7 +156,7 @@ private theorem diskArea_eq_riemannianDiskArea (g : SmoothRiemannianMetric I Q) 
     (Metric.ball_subset_closedBall hz)).trans
     (parametricJacobian_eq_riemannianAreaDensity g (Geometry.diskExtension u) z hz)
   intro w hw
-  simp only [diskExtension, dif_pos hw, Geometry.diskExtension, Function.comp_apply]
+  simp only [diskExtension, dite_eq_left hw, Geometry.diskExtension, Function.comp_apply]
   rw [Geometry.diskRetraction_coe ⟨w, hw⟩]
 
 section Pullback
@@ -338,7 +338,7 @@ theorem edist_proj_le (x y : ℝ) :
 theorem riemannianCurveLength_pullbackMetricCross
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-    {Q : Type*} [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q] [T2Space Q]
+    {Q : Type*} [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
     {A : Type*} [TopologicalSpace A] [ChartedSpace E A] [IsManifold 𝓘(ℝ, E) ∞ A] [T2Space A]
     (g : SmoothRiemannianMetric I Q) (Ψ : A ≃ₘ⟮𝓘(ℝ, E), I⟯ Q) (γ : ℝ → A) (a b : ℝ) :
     Surgery.Topology.riemannianCurveLength (Diffeomorph.pullbackMetricCross g Ψ) γ a b =

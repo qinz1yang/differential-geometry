@@ -202,10 +202,10 @@ private def MetricComparisonOn.transportLocalIsometry {h : ℝ → SmoothRiemann
       close := ?_ }
   · intro s y hy v
     by_cases hs : s ∈ times
-    · simp only [if_pos hs]
+    · simp only [ite_eq_left hs]
       rw [pullbackTensor02FieldCross_apply, C.pullback_eq s (Ψ y) hy]
       exact hG s hs y hy (v 0) (v 1)
-    · simp only [if_neg hs]
+    · simp only [ite_eq_right hs]
       rw [hB s y hy v, metricTensorField_apply]
   · intro s y v
     by_cases hs : s ∈ times
@@ -216,19 +216,19 @@ private def MetricComparisonOn.transportLocalIsometry {h : ℝ → SmoothRiemann
       simp only [ContMDiffSection.coe_sub, Pi.sub_apply, Tensor0SSpace.sub_apply,
         metricTensorField_apply]
   · intro b s hs y hy v
-    simp only [Nat.add_one_ne_zero, false_and, if_false]
+    simp only [Nat.add_one_ne_zero, false_and, ite_false]
     rw [pullbackTensor02FieldCross_apply, C.jet_succ b s hs (Ψ y) hy]
     apply derivWithin_congr
     · intro a ha
-      simp only [ha, not_true_eq_false, and_false, if_false, pullbackTensor02FieldCross_apply]
-    · simp only [hs, not_true_eq_false, and_false, if_false, pullbackTensor02FieldCross_apply]
+      simp only [ha, not_true_eq_false, and_false, ite_false, pullbackTensor02FieldCross_apply]
+    · simp only [hs, not_true_eq_false, and_false, ite_false, pullbackTensor02FieldCross_apply]
   · intro s hs y hy v
-    simp only [if_pos hs]
+    simp only [ite_eq_left hs]
     rw [pullbackTensor02FieldCross_apply,
       DifferentialGeometry.Diffeomorph.pullbackMetricCross_inner]
     exact C.equivalence s hs (Ψ y) hy (mfderiv I3 I3 Ψ y v)
   · intro a b hab s hs y hy
-    simp only [hs, not_true_eq_false, and_false, if_false]
+    simp only [hs, not_true_eq_false, and_false, ite_false]
     rw [tensor02CovDerivNormWith_pullbackTensor02FieldCross]
     exact C.close a b hab s hs (Ψ y) hy
 

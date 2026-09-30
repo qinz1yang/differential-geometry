@@ -57,13 +57,13 @@ private theorem band_subset_cap_of_center_mem
     · exact isPreconnected_Ioc
     · exact isPreconnected_Ico
   have hsub : I ⊆ Icc (-2 : ℝ) 2 := by
-    cases side <;> simp only [I, Bool.false_eq_true, if_false, if_true]
+    cases side <;> simp only [I, Bool.false_eq_true, ite_false, ite_true]
     · intro s hs; constructor <;> linarith [hs.1, hs.2]
     · intro s hs; constructor <;> linarith [hs.1, hs.2]
   have havoid : Disjoint (T.tube a '' {p : TubeDomain | p.2.val ∈ I}) (frontier K) := by
     rw [hfront]
     apply T.band_disjoint_boundary
-    cases side <;> simp only [I, Bool.false_eq_true, if_false, if_true, boundaryLevel]
+    cases side <;> simp only [I, Bool.false_eq_true, ite_false, ite_true, boundaryLevel]
     · intro s hs; linarith [hs.1]
     · intro s hs; linarith [hs.2]
   have hzero : (0 : ℝ) ∈ I := by cases side <;> norm_num [I]
@@ -74,7 +74,7 @@ private theorem band_subset_cap_of_center_mem
   · rintro x ⟨z, hz, rfl⟩
     apply hin
     refine ⟨z, ?_, rfl⟩
-    cases side <;> simp only [I, Bool.false_eq_true, if_false, if_true]
+    cases side <;> simp only [I, Bool.false_eq_true, ite_false, ite_true]
     · exact ⟨hz.1, hz.2.le⟩
     · exact ⟨hz.1.le, hz.2⟩
   · rintro x ⟨z, rfl⟩
@@ -203,9 +203,9 @@ theorem exists_capCore_in_cutCore_of_spatialNeck_center_close
       exact hmap (z, boundaryLevel side) (by cases side <;> norm_num [boundaryLevel])
     rw [heq]
     apply nk.isSmoothEmbedding_level
-    cases side <;> simpa only [boundaryLevel, Bool.false_eq_true, if_false, if_true,
+    cases side <;> simpa only [boundaryLevel, Bool.false_eq_true, ite_false, ite_true,
       abs_neg, abs_one] using hsmall
-  exact T.exists_capCore_in_cutCore_of_boundary_spheres_subset a cap.core_model hsmooth
+  exact T.exists_capCore_in_cutCore_of_boundary_spheres_subset a cap.coreModel hsmooth
     (T.central_and_boundary_spheres_subset_of_closedBand_subset a hinside).2 hanchor
 
 omit [ChartedSpace ThreeSpace M] [T2Space M] in

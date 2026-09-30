@@ -450,7 +450,7 @@ private theorem ambientFirstJet_range
   rw [firstJetCoordinates_ambientFirstJet]
   change 0 ∈ D.regular ∧
     e (c₀.map (x : AddCircle (1 : ℝ))) ∈ interior (extChartAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) β).target ∧
-    0 < Analysis.Parabolic.TensorSpectral.chartGramBilin
+    0 < Tensor.Coordinates.chartGramBilin
       (Geometry.Riemannian.retractionMetric (g 0) he hr) β
       ((extChartAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) β).symm (e (c₀.map (x : AddCircle (1 : ℝ)))))
       (deriv (fun y : ℝ => e (c₀.map (y : AddCircle (1 : ℝ)))) x)

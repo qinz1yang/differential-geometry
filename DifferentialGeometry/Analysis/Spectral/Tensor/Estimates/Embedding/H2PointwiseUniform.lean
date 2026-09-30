@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.UniformBochner
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Regularity.SmoothPaths
+open DifferentialGeometry.TensorMetric (norm_eq_sqrt_tensorInnerPointwise
+  riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise)
 
 noncomputable section
 

@@ -69,9 +69,9 @@ private theorem exists_pair_of_isPLSphere {S : Set E} (hS : IsPLSphere 1 S) :
     ∃ p ∈ S, ∃ q ∈ S, p ≠ q := by
   obtain ⟨f, hf⟩ := hS
   have hp : (Pi.single (0 : Fin 3) (1 : ℝ)) ∈ stdSimplexBoundary 2 :=
-    ⟨single_mem_stdSimplex ℝ _, 1, by simp⟩
+    ⟨Convexity.StdSimplex.single_mem_coordinateSet ℝ _, 1, by simp⟩
   have hq : (Pi.single (1 : Fin 3) (1 : ℝ)) ∈ stdSimplexBoundary 2 :=
-    ⟨single_mem_stdSimplex ℝ _, 0, by simp⟩
+    ⟨Convexity.StdSimplex.single_mem_coordinateSet ℝ _, 0, by simp⟩
   refine ⟨_, hf.bijOn.mapsTo hp, _, hf.bijOn.mapsTo hq, ?_⟩
   intro heq
   have h := congrFun (hf.bijOn.injOn hp hq heq) 0
@@ -199,7 +199,7 @@ theorem IsCombinatorialManifold.not_isPreconnected_compl [FiniteDimensional ℝ 
     (hne : L.space.Nonempty) : ¬ IsPreconnected L.spaceᶜ := by
   let D := simplexComplex (stdVertices 1) (stdVertices_affineIndependent 1)
   let _ : Finite D.faces := (simplexComplex_faces_finite _ _).to_subtype
-  have hDspace : D.space = stdSimplex ℝ (Fin 3) := by
+  have hDspace : D.space = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := by
     rw [simplexComplex_space _ _ (Finset.card_pos.mp (by rw [card_stdVertices]; norm_num)),
       convexHull_stdVertices]
   have hDball : IsPLBall 2 D.space := hDspace.symm ▸ isPLBall_stdSimplex 2

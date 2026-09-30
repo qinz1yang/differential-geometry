@@ -41,7 +41,7 @@ theorem MapCInfConvergenceOnCompacts.pullbackForm_comp_fderiv_locally
   have hAeq : ∀ᶠ k in atTop, EqOn (A' k) (A k) W := by
     filter_upwards [eventually_ge_atTop N] with k hk
     intro z _
-    simp only [A', if_pos hk]
+    simp only [A', ite_eq_left hk]
   have hAW : MapCInfConvergenceOnCompacts W A Ainf :=
     fun L hL hLW => hA L hL (hLW.trans hWU)
   have hA' : MapCInfConvergenceOnCompacts W A' Ainf :=
@@ -49,13 +49,13 @@ theorem MapCInfConvergenceOnCompacts.pullbackForm_comp_fderiv_locally
   have hA'c : ∀ k, ContDiffOn ℝ ∞ (A' k) W := by
     intro k
     by_cases hk : N ≤ k
-    · simpa only [A', if_pos hk] using (hN k hk).1
-    · simpa only [A', if_neg hk] using hAinfC.mono hWU
+    · simpa only [A', ite_eq_left hk] using (hN k hk).1
+    · simpa only [A', ite_eq_right hk] using hAinfC.mono hWU
   have hA'map : ∀ k, MapsTo (A' k) W V := by
     intro k
     by_cases hk : N ≤ k
-    · simpa only [A', if_pos hk] using (hN k hk).2
-    · simpa only [A', if_neg hk] using hmap.mono_left hWU
+    · simpa only [A', ite_eq_left hk] using (hN k hk).2
+    · simpa only [A', ite_eq_right hk] using hmap.mono_left hWU
   have hP := hA'.pullbackForm_comp_fderiv hW hV hB hA'c
     (hAinfC.mono hWU) hBc hBinfC (hmap.mono_left hWU) hA'map
   have hPeq : ∀ᶠ k in atTop,
@@ -65,7 +65,7 @@ theorem MapCInfConvergenceOnCompacts.pullbackForm_comp_fderiv_locally
           (B k (A' k z), fderiv ℝ (A' k) z)) W := by
     filter_upwards [eventually_ge_atTop N] with k hk
     intro z _
-    simp only [A', if_pos hk]
+    simp only [A', ite_eq_left hk]
   exact (hP.congr_eventually hW hPeq (fun _ _ => rfl)) K hK hKW p
 
 end DifferentialGeometry.CheegerGromovCompactness

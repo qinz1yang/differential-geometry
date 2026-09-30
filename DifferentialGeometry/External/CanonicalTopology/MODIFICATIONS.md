@@ -100,3 +100,23 @@ The standard declaration linter requires data-instance names without underscores
 - `integralReducedHomologyZero_module` → `integralReducedHomologyZeroModule`.
 
 The private `integralReducedZeroMap_oneDimSphere_neg` in `LocalLinearMaps` no longer assumes `FiniteDimensional ℝ E`: its `finrank = 1` input suffices for the existing one-dimensional-sphere API. This is a genuine generalization, with the proof body unchanged. The original names, hypotheses, comments and source remain available in the pinned archive; updated migration patches record these differences.
+
+## Lean 4.34 and current Mathlib compatibility
+
+- `Topology/Homology/SimplexBasis.lean`: follow Mathlib's singular-simplex representation change from the deprecated function subtype to `Convexity.StdSimplex`. `integralSingularSimplexEquiv` remains exactly `TopCat.toSSetObjEquiv`; no replacement singular set, chains, or map is introduced.
+- `Topology/Homology/AffineSimplex.lean`, `AffineChains.lean`, `AffineNaturality.lean`, `AffineSubdivision.lean`, and `FineAffineImages.lean`: express the same affine barycentric maps using the canonical finite-support weights, vertices, pushforward, and barycenter. Remove the now-unused `DecidableEq` parameter from `affineSimplexMap_vertex`; the proof constructs decidability locally. The affine pushforward identity uses Mathlib's finite-support sum transport.
+- `Topology/Homology/LiftedSimplex.lean` and `LiftedFaces.lean`: retain the lifted finite coordinate space and its original linear face maps. Describe the simplex body as the range of the canonical weight embedding, and obtain its homeomorphism from Mathlib's embedding-to-range construction. The naturality statements still bind those same linear maps to the canonical simplex pushforwards.
+- `Topology/Homotopy/PlaneTriangle.lean` and `TriangleFaces.lean`, and `Topology/Homology/PathEvaluation.lean` and `TriangleFilling.lean`: use the canonical simplex representation and interval homeomorphism while preserving the ordered vertices, exact edge parameters, and prescribed singular faces.
+- `Topology/Homology/RelativeEmpty.lean` and `CohomologyVanishing.lean`: use the canonical zeroth vertex as the same nonempty-domain witness.
+- Replace deprecated conditional rewrite names in the touched `AffineCones.lean`, `AffineSubdivision.lean`, `SubdivisionHomotopy.lean`, `RelativeCochains.lean`, `CohomologyVanishing.lean`, and `Topology/Manifold/TangentOrientation.lean`; simplify the disk-boundary membership proof in `Topology/LoopSpace/SpanningDisk.lean` as required by the current linter. These edits do not change their mathematical statements.
+- Preserve all original source comments, documentation, attribution, licenses, and pinned archives verbatim. `SOURCE_MAP.json` and the corresponding reconciliation patches record the compatibility changes.
+
+- `Topology/Homology/SimplexPushFaces.lean`: prove face evaluation using the same lifted homeomorphism, its established face-map compatibility, and Mathlib's singular-face evaluation law. The former definitional equality is now a propositional equality because the canonical embedding-to-range homeomorphism has a non-definitional inverse; the statement is unchanged.
+
+- `Topology/Homology/BarycenterBounds.lean`: replace the old definitional unfolding of barycenter coordinates with the canonical `StdSimplex.weights_barycenter_apply` equation; all estimate statements and constants are unchanged.
+
+- `Topology/Homology/LocalOrientation.lean` (eight occurrences) and `ZeroSphereOrientation.lean` (two occurrences): replace `if_pos`/`if_neg` with the official Lean 4.34 `ite_eq_left`/`ite_eq_right` theorem names. The deprecated declarations are wrappers around those same theorems with the same arguments; statements, proof structure, all comments, attribution, and strings remain unchanged.
+
+- `Topology/Homology/SubdivisionAffineAgreement.lean`: replace the former definitional equality for affine evaluation with extensionality, surjectivity of the same lifted simplex homeomorphism, and its inverse law. The original linear extension, vertex list, singular simplex, and public statements remain unchanged.
+
+- `Topology/Homology/LocalLinearMaps.lean`: replace the deprecated `Mathlib.Data.Sign.Basic` import with its official target `Mathlib.Basic.Sign.Basic`. The old module only re-exports this target; all declarations, scopes, proof bodies, comments, and attribution remain byte-for-byte unchanged.

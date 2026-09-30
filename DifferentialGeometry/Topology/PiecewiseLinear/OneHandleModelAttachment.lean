@@ -307,12 +307,12 @@ theorem oneHandleChart_rim (a : ℝ) (j : Fin 3) :
     simp only [oneHandleBottomL] at h1
     have hs : p.2 < 0 := by
       rcases (abs_eq zero_le_one).mp h4 with h | h <;> linarith
-    exact (if_pos hs).symm
+    exact (ite_eq_left hs).symm
   · rintro p ⟨-, ⟨h1, -⟩, -⟩ ⟨-, h4⟩
     simp only [oneHandleTopL] at h1
     have hs : ¬ p.2 < 0 := by
       rcases (abs_eq zero_le_one).mp h4 with h | h <;> intro hlt <;> linarith
-    exact (if_neg hs).symm
+    exact (ite_eq_right hs).symm
 
 theorem oneHandleChart_cover {a : ℝ} (ha : 0 < a) {p : EuclideanSpace ℝ (Fin 2) × ℝ}
     (hp : p ∈ Metric.closedBall 0 1) : ∃ j, p ∈ oneHandleChartSource a j := by

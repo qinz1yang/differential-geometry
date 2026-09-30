@@ -2,6 +2,10 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.En
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Lowered
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Residual.RadiusFreeIntegral
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg
+    riemannianFiberNormSq_sub_le)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -58,7 +62,7 @@ theorem cometricCastG0_order0sup_jetL2_radiusFree
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set Φ : SmoothCcTensor g₀ 3 1 := cometricDoubleTraceField (I := I) g₀ 1 with hΦ_def
   obtain ⟨C_base, hC_base_nn, hC_base⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨K_rf, hK_rf_nn, hK_rf⟩ :=
     antidiagonalTupleGrid_integral_radiusFree (I := I) (M := M) g₀ hΛ₀0
@@ -409,7 +413,7 @@ theorem sharpFlatEndoCc_lowOrder_jetL2_radiusFree
     slotInsertEndoCc (I := I) (M := M) g₀ 0
       (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) with hIdIns_def
   obtain ⟨C_base, hC_base_nn, hC_base⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨K_rf, hK_rf_nn, hK_rf⟩ :=
     antidiagonalTupleGrid_integral_radiusFree (I := I) (M := M) g₀ hΛ₀0
@@ -759,7 +763,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_antidiagonalTupleGrid
   classical
   set Φ : SmoothCcTensor g₀ 3 1 := cometricDoubleTraceField (I := I) g₀ 1 with hΦ_def
   obtain ⟨C_base, hC_base_nn, hC_base⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   have hSΦ_ex : ∀ i : ℕ, ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 3 (1 + i) x
@@ -957,7 +961,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_antidiag
   refine mul_le_mul_of_nonneg_left hgrid_grid ?_
   have := hKt0_nn; have := hKc0_nn l; positivity
 
-lemma riemannianFiberNormSq_iteratedCovGrad_metricLoweredConnectionDifference_le_antidiagonalTupleGridWindow
+lemma metricLoweredConnectionDifference_iteratedCovGrad_fiber_norm_sq_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Kwx : ℕ → ℝ, (∀ l, 0 ≤ Kwx l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1038,7 +1042,7 @@ theorem deTurckVectorFieldCovector_lowOrder_iteratedCovGrad_norm_sq_le
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Kcg, hKcg_nn, hcg⟩ := riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_antidiagonalTupleGridWindow_rf (I := I) (M := M) g₀ hδ₀
-  obtain ⟨Kwx, hKwx_nn, hwx⟩ := riemannianFiberNormSq_iteratedCovGrad_metricLoweredConnectionDifference_le_antidiagonalTupleGridWindow (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨Kwx, hKwx_nn, hwx⟩ := metricLoweredConnectionDifference_iteratedCovGrad_fiber_norm_sq_bound (I := I) (M := M) g₀ g_bg hδ₀
   obtain ⟨K_rf, hK_rf_nn, hK_rf⟩ :=
     antidiagonalTupleGrid_integral_radiusFree (I := I) (M := M) g₀ hΛ₀0
   set Komega : ℕ → ℝ := fun n => operatorFieldApplicationGdiag (E := E) n *
@@ -1484,7 +1488,7 @@ private lemma cometricCastG0_wXi_twoTerm_radiusFree
               ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (n + 2) := by
   classical
   obtain ⟨Kcg, hKcg_nn, hcg⟩ := riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_antidiagonalTupleGridWindow_rf (I := I) (M := M) g₀ hδ₀
-  obtain ⟨Kwx, hKwx_nn, hwx⟩ := riemannianFiberNormSq_iteratedCovGrad_metricLoweredConnectionDifference_le_antidiagonalTupleGridWindow (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨Kwx, hKwx_nn, hwx⟩ := metricLoweredConnectionDifference_iteratedCovGrad_fiber_norm_sq_bound (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨fun n => ∑ i' ∈ Finset.range (n + 1), ∑ l ∈ Finset.range (n + 1),
       Kcg i' * Kwx l * Combinatorics.antidiagonalTupleGridWindowMulConst i' (l + 1),
     fun n => Finset.sum_nonneg (fun i' _ => Finset.sum_nonneg (fun l _ =>
@@ -1896,7 +1900,7 @@ private lemma wCA_wOmega_twoTerm_radiusFree
       ((iteratedCovGrad (I := I) g₀ 1 2 m (connectionDifferenceRaisedEndomorphism (I := I) (M := M) g₀ g₁)).toSection x) ≤
       Ccd m * Combinatorics.antidiagonalTupleGridWindow bP (m + 2) := by
     intro m
-    rw [riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceRaisedEndomorphism_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ m x]
+    rw [connectionDifferenceRaisedEndomorphism_iteratedCovGrad_fiber_norm_sq_eq_section (I := I) (M := M) g₀ g₁ m x]
     exact hcd g₁ P htie hδ_le hδ0 hδ m x
   have hterm : ∀ n ∈ Finset.range (i + 1),
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + n) x
@@ -2090,7 +2094,7 @@ theorem deTurckVectorFieldCovariantDerivativeLowered_iteratedCovGrad_norm_sq_top
   have hS'_nn : 0 ≤ S' := Finset.sum_nonneg (fun _ _ => sq_nonneg _)
   have hA : ‖iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredBase (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤
       Ktop_om * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 + Flow_om (i + 1) * (1 + S') := by
-    rw [norm_iteratedCovGrad_deTurckVectorFieldCovariantDerivativeLoweredBase_eq_succ_deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ g_bg i, hS'_def]
+    rw [deTurckVectorFieldCovariantDerivativeLoweredBase_iteratedCovGrad_norm_eq_succ (I := I) (M := M) g₀ g₁ g_bg i, hS'_def]
     exact hom g₁ P htie hδ_le hδ0 hδ hsup (i + 1) (by omega)
   have hBi : ‖iteratedCovGrad (I := I) g₀ 0 2 i (deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤
       FlowB i * (1 + S') := by

@@ -3,6 +3,7 @@ import DifferentialGeometry.Topology.Morse.Attachment.ModelCell
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Local
 import Mathlib.Analysis.Calculus.FDeriv.Comp
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.LinearAlgebra.QuadraticForm.Real
 
 open scoped Topology Manifold
@@ -907,12 +908,12 @@ theorem isCriticalPointAt_iff_fderiv_of_localInverse {E : Type*} [NormedAddCommG
     have hcomp' := mfderiv_comp (x := σ x) (g := σ) (f := τ) (hg := hσmd') (hf := hτmd)
     rw [mfderiv_eq_fderiv] at hcomp'
     have hcompPoint : (σ ∘ τ) (σ x) = σ x := hright.eq_of_nhds
-    have hστσx : σ (τ (σ x)) = σ x := congrArg σ hτσx
     rw [hτσx] at hcomp'
     rw [hcompPoint] at hcomp'
     have heq := Filter.EventuallyEq.fderiv_eq (𝕜 := ℝ) hright
     rw [heq] at hcomp'
-    simpa only [hστσx, fderiv_id] using hcomp'.symm
+    simpa only [fderiv_id, ContinuousLinearMap.id_comp,
+      ContinuousLinearEquiv.coe_symm_comp_coe] using! hcomp'.symm
   have hA_surj : Function.Surjective (mfderiv I 𝓘(ℝ, E) σ x) := by
     intro v
     refine ⟨(mfderiv 𝓘(ℝ, E) I τ (σ x)) v, ?_⟩

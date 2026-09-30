@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
 import DifferentialGeometry.Analysis.Sobolev.Chart.AtlasNorm.Atlas
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
@@ -257,27 +257,20 @@ private theorem perChart_memLp_riemannianMeasure
       (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) := by
   classical
-  refine ⟨?_, ?_⟩
-  · have h_meas : Measurable (fun x : M =>
-        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
-          : C^∞⟮I, M; ℝ⟯) x * u x) :=
-      measurable_pou_mul (I := I) (M := M)
-        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α hu_meas
-    exact h_meas.aestronglyMeasurable
-  · have h_bound :=
-      perChartConst_bound (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α
-        hu_meas hu
-    have hK : perChartConst (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α ≠ ⊤ :=
-      perChartConst_ne_top (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α
-    have hN : wkpNormChart (I := I) (M := M) 1 p u ≠ ⊤ :=
-      ne_of_lt (wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_one hu)
-    have hRHS_lt_top :
-        perChartConst (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α *
-          wkpNormChart (I := I) (M := M) 1 p u < ⊤ := by
-      apply ENNReal.mul_lt_top
-      · exact lt_top_iff_ne_top.mpr hK
-      · exact lt_top_iff_ne_top.mpr hN
-    exact lt_of_le_of_lt h_bound hRHS_lt_top
+  have h_bound :=
+    perChartConst_bound (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α
+      hu_meas hu
+  have hK : perChartConst (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α ≠ ⊤ :=
+    perChartConst_ne_top (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α
+  have hN : wkpNormChart (I := I) (M := M) 1 p u ≠ ⊤ :=
+    ne_of_lt (wkpNormChart_lt_top_of_memWkpChart (I := I) (M := M) hp_one hu)
+  have hRHS_lt_top :
+      perChartConst (I := I) (M := M) g hp_one hp_top hq_one hq_top hqp α *
+        wkpNormChart (I := I) (M := M) 1 p u < ⊤ := by
+    apply ENNReal.mul_lt_top
+    · exact lt_top_iff_ne_top.mpr hK
+    · exact lt_top_iff_ne_top.mpr hN
+  exact lt_of_le_of_lt h_bound hRHS_lt_top
 
 theorem MemWkpChart.memLp_riemannianMeasure_of_le_exponent
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
@@ -382,7 +375,7 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_wkpNormChart_of_le_exponent
               : C^∞⟮I, M; ℝ⟯) x * u x) q
           (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) :=
-    eLpNorm_sum_le h_aesm hq_one
+    eLpNorm_sum_le hq_one
   refine h_minkowski.trans ?_
   have h_each : ∀ α ∈ S,
       eLpNorm

@@ -312,7 +312,7 @@ private theorem eLpNorm_vector_le_sum_component_eLpNorm
     exact ((continuous_apply i).comp_aestronglyMeasurable hg_ofLp).norm
   have hmono :
       eLpNorm g 2 μ ≤ eLpNorm s 2 μ := by
-    exact eLpNorm_mono_ae_real hpoint
+    exact eLpNorm_mono_ae_real hg hpoint
   have hsum :
       eLpNorm s 2 μ ≤ ∑ i : Fin d, eLpNorm (fun x => ‖g x i‖) 2 μ := by
     let p : ENNReal := 2
@@ -325,7 +325,7 @@ private theorem eLpNorm_vector_le_sum_component_eLpNorm
     have hsum' :
         eLpNorm (Finset.sum (Finset.univ : Finset (Fin d)) fun i => fun x => ‖g x i‖) p μ ≤
           Finset.sum (Finset.univ : Finset (Fin d)) fun i => eLpNorm (fun x => ‖g x i‖) p μ := by
-      exact eLpNorm_sum_le (μ := μ) hfs hp1
+      exact eLpNorm_sum_le (μ := μ) hp1
     simpa [s, p] using hsum'
   calc
     eLpNorm g 2 μ ≤ eLpNorm s 2 μ := hmono
@@ -333,7 +333,8 @@ private theorem eLpNorm_vector_le_sum_component_eLpNorm
     _ = ∑ i : Fin d, eLpNorm (fun x => g x i) 2 μ := by
           refine Finset.sum_congr rfl ?_
           intro i hi
-          simpa using (eLpNorm_norm (μ := μ) (p := (2 : ENNReal)) (fun x => g x i))
+          simpa using (eLpNorm_norm (μ := μ) (p := (2 : ENNReal)) (fun x => g x i)
+            ((continuous_apply i).comp_aestronglyMeasurable hg_ofLp))
 
 omit [NeZero d] in
 theorem tendsto_eLpNorm_vector_of_componentwise

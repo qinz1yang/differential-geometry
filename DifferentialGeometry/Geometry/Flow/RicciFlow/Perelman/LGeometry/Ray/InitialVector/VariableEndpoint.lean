@@ -14,7 +14,6 @@ open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian
-open DifferentialGeometry.Analysis.Laplacian
 
 universe u uE uH
 

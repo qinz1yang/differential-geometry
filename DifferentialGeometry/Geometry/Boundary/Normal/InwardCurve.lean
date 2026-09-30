@@ -147,7 +147,7 @@ theorem exists_inward_curve (p : BoundaryManifold I M) :
       henters t ⟨ht.1, hta_epsilon.le⟩
     have hqt_interior_target : q t ∈
         interior (extChartAt I (p : M)).target :=
-      (extChartAt_target_eventuallyEq_of_mem hqt_target).symm.mem_interior
+      (extChartAt_target_eventuallyEqSet_of_mem hqt_target).symm.mem_interior
         hqt_interior_range
     have hsource : gamma t ∈ (chartAt H (p : M)).source := by
       change (extChartAt I (p : M)).symm (q t) ∈

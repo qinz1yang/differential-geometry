@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
-import Mathlib.Data.Real.Pointwise
+import Mathlib.Basic.Real.Pointwise
 
 set_option autoImplicit false
 noncomputable section

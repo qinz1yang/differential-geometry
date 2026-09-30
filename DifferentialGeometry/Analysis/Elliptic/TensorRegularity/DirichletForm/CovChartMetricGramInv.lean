@@ -167,8 +167,8 @@ private lemma tensorChartComponentProjection_gramCoeffTensor (r s : ℕ)
     · by_cases h2 : P.2 = P₀.2
       · have hPP₀ : P = P₀ := Prod.ext h1.symm h2
         exact absurd hPP₀ hP
-      · rw [if_neg h2, mul_zero, mul_zero]
-    · rw [if_neg h1, zero_mul, mul_zero]
+      · rw [ite_eq_right h2, mul_zero, mul_zero]
+    · rw [ite_eq_right h1, zero_mul, mul_zero]
   · intro hP₀
     exact absurd (Finset.mem_univ P₀) hP₀
 

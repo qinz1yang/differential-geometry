@@ -45,7 +45,7 @@ theorem ObservedHistory.exists_uniform_backwardPointTrace_of_forall (K : Observe
     (Fin.le_last _)⟩
 
 theorem RetainedCoreHistory.exists_pointed_convergence_at_scalar_escape_of_traced_buffer
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
       ((H i).time (Fin.last (H i).eventCount)) (time i)) :
     let G := fun i => (A i).restrictIncoming le_rfl (A i).lt le_rfl;
@@ -226,7 +226,7 @@ theorem RetainedCoreHistory.exists_pointed_convergence_at_scalar_escape_of_trace
     obtain ⟨r, Amax, θ, hrr, hrrho, hAmax, hθ, hbudget, hb⟩ := hbuf R hR hRrho
     exact ⟨r, Amax, θ, hrr, hrrho, hAmax, hθ, hbudget, hind.tendsto_atTop.eventually hb⟩
   have hvol := RetainedCoreHistory.normalized_terminal_ball_volume_lower_bound_of_scaled_tests
-    Phi hPhi (fun i => P₀ (ind i)) (fun i => H (ind i)) (fun i => time (ind i))
+    Phi hPhi (fun i => H (ind i)) (fun i => time (ind i))
     (fun i => G (ind i)) (fun i => L (ind i)) (fun i => hinit (ind i))
     (fun i => hs (ind i)) (fun i => x (ind i)) (fun i => q (ind i))
     (fun i => (A (ind i)).flow.scalar (time (ind i)) (x (ind i)).val) (fun i => hq (ind i))

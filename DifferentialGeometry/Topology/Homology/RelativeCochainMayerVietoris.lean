@@ -54,7 +54,7 @@ private theorem exists_cochain_decomposition (n : ℕ) (A B : Set X)
   refine ⟨φ - β, β, ?_, ?_, sub_add_cancel φ β⟩
   · apply (cochain_pullback_eq_zero_iff n A _).2
     intro σ hσ
-    rw [LinearMap.sub_apply, hβ, if_pos hσ, sub_self]
+    rw [LinearMap.sub_apply, hβ, ite_eq_left hσ, sub_self]
   · apply (cochain_pullback_eq_zero_iff n B _).2
     intro σ hσ
     rw [hβ]
@@ -229,7 +229,7 @@ private theorem exists_cochain_relative_extension (n : ℕ) (A B : Set X)
       rintro _ ⟨t, rfl⟩
       rw [integralSingularSimplexMap_apply]
       exact (integralSingularSimplexEquiv n B σ t).property
-    rw [dif_pos hB]
+    rw [dite_eq_left hB]
     congr 1
 
 theorem integralRelativeCochainMap_subspace_surjective (n : ℕ) (A B : Set X) :

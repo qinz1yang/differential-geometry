@@ -655,7 +655,7 @@ theorem strict_barrier_on_compact_set_of_isInteriorPoint
     have hderiv_nonpos : derivWithin
         (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 ≤ 0 :=
       strong_derivWithin_nonpos_at_Icc_min_of_pos
-        htime_min.localize ht0 ht0pos htime_diff
+        htime_min.isLocalMinOn ht0 ht0pos htime_diff
     have hderiv_eq : derivWithin
         (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 =
         derivWithin (fun s => w s x0) (Set.Icc 0 T) t0 + epsilon :=
@@ -781,7 +781,7 @@ theorem strict_barrier_on_compact_manifold_interior_region
     have hderiv_nonpos : derivWithin
         (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 ≤ 0 :=
       strong_derivWithin_nonpos_at_Icc_min_of_pos
-        htime_min.localize ht0 ht0pos htime_diff
+        htime_min.isLocalMinOn ht0 ht0pos htime_diff
     have hderiv_eq : derivWithin
         (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 =
         derivWithin (fun s => w s x0) (Set.Icc 0 T) t0 + epsilon :=
@@ -802,7 +802,7 @@ theorem strict_barrier_on_compact_manifold_interior_region
           (show (t0, y) ∈ Set.Icc 0 T ×ˢ (Set.univ : Set M) from ⟨ht0, hy⟩)
         dsimp [Phi] at hymin
         exact (add_le_add_iff_right (epsilon * t0)).mp hymin
-      exact isLocalMinOn_univ_iff.mp hglobal.localize
+      exact isLocalMinOn_univ_iff.mp hglobal.isLocalMinOn
     have hheat_nonneg : 0 ≤
         heatOperatorWithDrift (I := I) G t0 (X t0) (w t0) x0 :=
       heatOperatorWithDrift_at_spatial_min_nonneg_of_isInteriorPoint
@@ -871,7 +871,7 @@ private theorem deriv_nonneg_at_right_endpoint
     exact sub_mem_posTangentConeAt_of_segment_subset hseg
   have hnonneg : 0 ≤
       (fderivWithin Real f (Set.Icc 0 a) 0 : Real →L[Real] Real) (a - 0) :=
-    hmin.localize.fderivWithin_nonneg hdir
+    hmin.isLocalMinOn.fderivWithin_nonneg hdir
   have huniq : UniqueDiffWithinAt Real (Set.Icc 0 a) 0 :=
     (uniqueDiffOn_Icc ha).uniqueDiffWithinAt (left_mem_Icc.mpr ha.le)
   have hderivWithin : derivWithin f (Set.Icc 0 a) 0 = d := by

@@ -114,11 +114,12 @@ theorem IsWeakEvolutionSolution.exists_lp_local_evolution_source
     exact h
   have hflux (i) : MemLp (fun p => ρ p * B i p * V i p) 2
       ((timeMeasure T).prod (volume.restrict Ω)) :=
-    (Lp.memLp (V i)).mul (hB i |>.mul (r := ∞) hρ)
+    (hρ.fun_mul (r := ∞) (hB i)).fun_mul (r := 2) (Lp.memLp (V i))
   have hpot : MemLp (fun p => ρ p *
       ((1 / 2 : ℝ) * traceTimeDerivMetric (I := I_hs) G.metric p.1 (x p.2) - a p.1) * U p) 2
       ((timeMeasure T).prod (volume.restrict Ω)) :=
-    (Lp.memLp U).mul (((hτ.const_mul (1 / 2 : ℝ)).sub ha).mul (r := ∞) hρ)
+    (hρ.fun_mul (r := ∞) ((hτ.const_mul (1 / 2 : ℝ)).sub ha)).fun_mul
+      (r := 2) (Lp.memLp U)
   have hR := (Lp.memLp F).add
     ((memLp_finsetSum Finset.univ (fun i _ => hflux i)).mono_measure hmeasure) |>.add
       (hpot.mono_measure hmeasure)
@@ -291,7 +292,8 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_time_deriv
     exact h.mono_measure hmeasure
   let F := fun p => (ρ p)⁻¹ * R p - ((ρ p)⁻¹ * fderiv ℝ ρ p v) * U p
   have hF : MemLp F 2 ν :=
-    ((Lp.memLp R).mul hρinv).sub (hU.mul (hDρ.mul (r := ∞) hρinv))
+    (hρinv.fun_mul (r := 2) (Lp.memLp R)).sub
+      ((hρinv.fun_mul (r := ∞) hDρ).fun_mul (r := 2) hU)
   refine ⟨hF.toLp F, ?_⟩
   intro φ hφ hφc hφs
   have heq := DifferentialGeometry.Analysis.Sobolev.integral_fderiv_eq_neg_of_weighted_identity

@@ -4,6 +4,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.Sectio
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.SlotSwapPairingCalculus
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Analysis.Sobolev
@@ -385,12 +387,12 @@ private lemma tensorL2Coeff_sum_smul_eigenbasis
   · rw [Finset.sum_eq_single k]
     · simp [hkS]
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm)]
+      rw [ite_eq_right (fun h => hjk h.symm)]
     · intro h
       exact absurd hkS h
-  · rw [if_neg hkS, Finset.sum_eq_zero]
+  · rw [ite_eq_right hkS, Finset.sum_eq_zero]
     intro j hj
-    rw [if_neg (fun h => hkS (by rw [h]; exact hj))]
+    rw [ite_eq_right (fun h => hkS (by rw [h]; exact hj))]
 
 omit [BoundarylessManifold I M] in
 private lemma eq_sum_of_tensorL2Coeff_support
@@ -406,8 +408,8 @@ private lemma eq_sum_of_tensorL2Coeff_support
   rw [tensorL2Coeff_sum_smul_eigenbasis (I := I) (M := M) g S
     (fun j => tensorL2Coeff (I := I) (M := M) (hCompact (I := I) (M := M) g) U j) k]
   by_cases hkS : k ∈ S
-  · rw [if_pos hkS]
-  · rw [if_neg hkS, hU k hkS]
+  · rw [ite_eq_left hkS]
+  · rw [ite_eq_right hkS, hU k hkS]
 
 private lemma tensorL2Coeff_toL2_domDomCongrSection_swap (X : SmoothCcTensor g 0 2)
     (i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g 0 2) :

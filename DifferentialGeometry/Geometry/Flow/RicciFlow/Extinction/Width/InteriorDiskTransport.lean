@@ -30,19 +30,19 @@ omit [IsManifold I ∞ Q] [IsManifold J ∞ A] in
 theorem InteriorSmoothDisk.differential_comp_diffeomorph
     (Φ : Q ≃ₘ⟮I, J⟯ A) (u : InteriorSmoothDisk (I := I) (Q := Q))
     (z : Disk) (hz : (z : ℂ) ∈ Metric.ball (0 : ℂ) 1) (X : ℂ) :
-    (InteriorSmoothDisk.comp_diffeomorph Φ u).differential z X =
+    (InteriorSmoothDisk.compDiffeomorph Φ u).differential z X =
       mfderiv I J (Φ : Q → A) (u.map z) (u.differential z X) := by
-  have hext : diskExtension (InteriorSmoothDisk.comp_diffeomorph Φ u).map =
+  have hext : diskExtension (InteriorSmoothDisk.compDiffeomorph Φ u).map =
       fun w => Φ (diskExtension u.map w) := by
     funext w
     by_cases hw : w ∈ Metric.closedBall (0 : ℂ) 1 <;>
-      simp only [diskExtension, hw, ↓reduceDIte, InteriorSmoothDisk.comp_diffeomorph, ContinuousMap.coe_mk]
+      simp only [diskExtension, hw, ↓reduceDIte, InteriorSmoothDisk.compDiffeomorph, ContinuousMap.coe_mk]
   have hcomp := mfderiv_comp_mfderivWithin_of_eq (s := Metric.closedBall (0 : ℂ) 1)
     (f := diskExtension u.map) (g := (Φ : Q → A)) (y := u.map z)
     (Φ.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
     ((u.contMDiffAt_extension z hz).mdifferentiableAt (by simp)).mdifferentiableWithinAt
     (disk_uniqueDiffWithinAt z).uniqueMDiffWithinAt (diskExtension_coe u.map z)
-  change mfderivWithin 𝓘(ℝ, ℂ) J (diskExtension (InteriorSmoothDisk.comp_diffeomorph Φ u).map)
+  change mfderivWithin 𝓘(ℝ, ℂ) J (diskExtension (InteriorSmoothDisk.compDiffeomorph Φ u).map)
     (Metric.closedBall (0 : ℂ) 1) (z : ℂ) X = _
   rw [hext]
   simp only [Function.comp_def] at hcomp
@@ -62,11 +62,11 @@ theorem InteriorSmoothDisk.isConformal_comp_diffeomorph_symm
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : InteriorSmoothDisk (I := 𝓘(ℝ, E)) (Q := A))
     (h : u.IsConformal (Diffeomorph.pullbackMetricCross g Φ.symm)) :
-    (InteriorSmoothDisk.comp_diffeomorph Φ.symm u).IsConformal g := by
+    (InteriorSmoothDisk.compDiffeomorph Φ.symm u).IsConformal g := by
   intro z hz
-  have hid (X Y : ℂ) : g.inner ((InteriorSmoothDisk.comp_diffeomorph Φ.symm u).map z)
-      ((InteriorSmoothDisk.comp_diffeomorph Φ.symm u).differential z X)
-      ((InteriorSmoothDisk.comp_diffeomorph Φ.symm u).differential z Y) =
+  have hid (X Y : ℂ) : g.inner ((InteriorSmoothDisk.compDiffeomorph Φ.symm u).map z)
+      ((InteriorSmoothDisk.compDiffeomorph Φ.symm u).differential z X)
+      ((InteriorSmoothDisk.compDiffeomorph Φ.symm u).differential z Y) =
       (Diffeomorph.pullbackMetricCross g Φ.symm).inner (u.map z)
         (u.differential z X) (u.differential z Y) := by
     rw [InteriorSmoothDisk.differential_comp_diffeomorph Φ.symm u z hz X,
@@ -80,7 +80,7 @@ theorem InteriorSmoothDisk.isHarmonic_comp_diffeomorph_symm [I.Boundaryless]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : InteriorSmoothDisk (I := 𝓘(ℝ, E)) (Q := A))
     (h : u.IsHarmonic (Diffeomorph.pullbackMetricCross g Φ.symm)) :
-    (InteriorSmoothDisk.comp_diffeomorph Φ.symm u).IsHarmonic g := by
+    (InteriorSmoothDisk.compDiffeomorph Φ.symm u).IsHarmonic g := by
   intro z hz F
   let G : DiskLocalExtension (I := 𝓘(ℝ, E)) u.map z := {
     map := fun w => Φ (F.map w)
@@ -92,7 +92,7 @@ theorem InteriorSmoothDisk.isHarmonic_comp_diffeomorph_symm [I.Boundaryless]
       intro w hw
       have hF : F.map w = Φ.symm (u.map ⟨w, hw.2⟩) :=
         (F.agrees hw).trans
-          (diskExtension_coe (InteriorSmoothDisk.comp_diffeomorph Φ.symm u).map ⟨w, hw.2⟩)
+          (diskExtension_coe (InteriorSmoothDisk.compDiffeomorph Φ.symm u).map ⟨w, hw.2⟩)
       change Φ (F.map w) = diskExtension u.map w
       rw [hF, Φ.apply_symm_apply]
       exact (diskExtension_coe u.map ⟨w, hw.2⟩).symm }

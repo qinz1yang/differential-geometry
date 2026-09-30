@@ -9,8 +9,8 @@ theorem IsPLSphere.exists_lateral_annulus_eq_inter_of_disk_caps
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {S D₀ D₁ F₀ F₁ J L : Set E} (hS : IsPLSphere 2 S)
     {r s : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D₀)
-    (hs : IsPLHomeomorphOn s (stdSimplex ℝ (Fin 3)) F₁)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hs : IsPLHomeomorphOn s (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F₁)
     (hrb : r '' stdSimplexBoundary 2 = J) (hsb : s '' stdSimplexBoundary 2 = L)
     (hDU : D₀ ∪ D₁ = S) (hDI : D₀ ∩ D₁ = J)
     (hFU : F₀ ∪ F₁ = S) (hFI : F₀ ∩ F₁ = L) (hdis : Disjoint D₀ F₁) :
@@ -87,7 +87,7 @@ theorem IsPLSphere.exists_ordered_lateral_bands_of_essential_family
     (hCsph : ∀ J ∈ C, IsPLSphere 1 J) (hCA : ∀ J ∈ C, J ⊆ A)
     (hCend : ∀ J ∈ C, Disjoint J (A₀ ∪ A₁)) (hCdisj : C.PairwiseDisjoint id)
     (hCess : ∀ J ∈ C, ¬ ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ A ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ A ∧
         r '' stdSimplexBoundary 2 = J) :
     ∃ e : Fin C.ncard ≃ C, ∀ i j, i < j → ∃ f : (Fin 3 → ℝ) × ℝ → E,
       IsPLHomeomorphOn f (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)

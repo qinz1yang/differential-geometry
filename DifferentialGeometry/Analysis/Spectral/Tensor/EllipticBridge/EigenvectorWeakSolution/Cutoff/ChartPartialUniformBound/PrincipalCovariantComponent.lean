@@ -121,7 +121,7 @@ private lemma chartRSTwistInv_tensorCovDeriv_contMDiffOn'
       (tensorCovDerivAt (I := I) (M := M) g r s S b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))) = _
-  rw [Bundle.Trivialization.linearMapAt_apply, if_pos hb_base]
+  rw [Bundle.Trivialization.linearMapAt_apply, ite_eq_left hb_base]
 
 omit [CompleteSpace E] in
 omit [CompactSpace M] in

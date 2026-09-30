@@ -75,8 +75,8 @@ theorem exists_cylindricalDiagram_derivedNeighborhood_circle_eq_ends
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hLK : L.faces ⊆ K.faces)
     (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space) (hor : IsOrientable 3 K) :
     ∃ φ : (Fin 3 → ℝ) × ℝ → E,
-      IsCylindricalDiagram φ (stdSimplex ℝ (Fin 3)) (derivedNeighborhood K L).space ∧
-        ∀ x ∈ stdSimplex ℝ (Fin 3), φ (x, 0) = φ (x, 1) := by
+      IsCylindricalDiagram φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (derivedNeighborhood K L).space ∧
+        ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), φ (x, 0) = φ (x, 1) := by
   let _ : Finite (derivedNeighborhood K L).faces :=
     (derivedNeighborhood_faces_finite K L).to_subtype
   obtain ⟨horN, f, hf⟩ := exists_cylindricalDiagram_isOrientable_derivedNeighborhood_circle

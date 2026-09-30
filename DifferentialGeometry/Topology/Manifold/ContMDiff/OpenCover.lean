@@ -32,7 +32,7 @@ theorem contMDiffOn_of_open_cover_prod
     (hloc.localInverse_open_source.mem_nhds hloc.localInverse_mem_source)
   let ψ : P × M → P × U i := fun p => (p.1, hloc.localInverse p.2)
   have hmap : ContMDiffAt (I.prod J) (I.prod J) ∞ ψ (t, x) :=
-    contMDiffAt_fst.prodMk (hloc.localInverse_contMDiffAt.comp (t, x) contMDiffAt_snd)
+    contMDiffAt_fst.prodMk (hloc.contMDiffAt_localInverse.comp (t, x) contMDiffAt_snd)
   have hleft : hloc.localInverse x = y :=
     hloc.localInverse_left_inv hloc.localInverse_mem_target
   have hg := hf i (ψ (t, x)) (show ψ (t, x) ∈ A ×ˢ (Subtype.val ⁻¹' B) by

@@ -24,7 +24,7 @@ def radialStep (n : ℕ) (t : I) (x : ClosedCell n) : ClosedCell n :=
         (1 - (t : ℝ)) * ‖(x : EuclideanSpace ℝ (Fin n))‖ := by
       rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg ht₀]
     rw [hnorm]
-    exact mul_le_one₀ (unitInterval.one_minus_le_one t) (norm_nonneg _) x.2⟩
+    exact (mul_le_of_le_one_left (norm_nonneg _) (unitInterval.one_minus_le_one t)).trans x.2⟩
 
 @[simp]
 theorem radialStep_zero (n : ℕ) (x : ClosedCell n) : radialStep n 0 x = x := by
@@ -79,7 +79,8 @@ theorem continuous_radialStep (n : ℕ) :
           (1 - (p.1 : ℝ)) * ‖(p.2 : EuclideanSpace ℝ (Fin n))‖ := by
         rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg ht₀]
       simpa using hnorm.trans_le
-        (mul_le_one₀ (unitInterval.one_minus_le_one p.1) (norm_nonneg _) p.2.2))
+        ((mul_le_of_le_one_left (norm_nonneg _)
+          (unitInterval.one_minus_le_one p.1)).trans p.2.2))
 
 theorem continuous_radialStep_left (n : ℕ) (t : I) : Continuous (radialStep n t) :=
   (continuous_radialStep n).comp (continuous_const.prodMk continuous_id)

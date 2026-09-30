@@ -364,7 +364,7 @@ theorem uniform_two_id_fill_on {s : Set M}
         (points := activeFill (μSeq k l) (pointsSeq k l) (fun x : M => x) x)
         (join := join) (p := pSeq k l x) (r := rSeq k l x) (hSeq k l x hx)
         (qstar := x) (ε := ε / 4) (le_of_lt hquarter) hnear
-  rw [centerAverageOn, dif_pos hx, dist_comm]
+  rw [centerAverageOn, dite_eq_left hx, dist_comm]
   exact lt_of_le_of_lt hdist (by nlinarith)
 
 theorem uniformTwoIdOfFill {s : Set M}

@@ -397,7 +397,7 @@ noncomputable def heatPower
 theorem heatPower_zero (g : SmoothRiemannianMetric I M) (t : ℝ) :
     heatPower (I := I) (M := M) g 0 t = heatSemigroup (I := I) (M := M) g t := by
   unfold heatPower
-  rw [dif_pos rfl]
+  rw [dite_eq_left rfl]
 
 theorem heatPower_apply_of_pos_one_le
     (g : SmoothRiemannianMetric I M) {k : ℕ} (hk : 1 ≤ k) {t : ℝ} (ht : 0 < t)
@@ -410,7 +410,7 @@ theorem heatPower_apply_of_pos_one_le
           resolventHilbertEigenbasisSigma (I := I) (M := M) g i := by
   have hk_ne : k ≠ 0 := Nat.one_le_iff_ne_zero.mp hk
   unfold heatPower
-  rw [dif_neg hk_ne, dif_pos ht]
+  rw [dite_eq_right hk_ne, dite_eq_left ht]
   rfl
 
 theorem heatPower_eq_zero_of_one_le_of_nonpos
@@ -418,7 +418,7 @@ theorem heatPower_eq_zero_of_one_le_of_nonpos
     heatPower (I := I) (M := M) g k t = 0 := by
   have hk_ne : k ≠ 0 := Nat.one_le_iff_ne_zero.mp hk
   unfold heatPower
-  rw [dif_neg hk_ne, dif_neg (not_lt.mpr ht)]
+  rw [dite_eq_right hk_ne, dite_eq_right (not_lt.mpr ht)]
 
 theorem heatPower_apply_of_pos
     (g : SmoothRiemannianMetric I M) (k : ℕ) {t : ℝ} (ht : 0 < t)
@@ -442,7 +442,7 @@ theorem heatPower_opNorm_le
       (k / t : ℝ) ^ k * Real.exp (-(k : ℝ)) := by
   have hk_ne : k ≠ 0 := Nat.one_le_iff_ne_zero.mp hk
   unfold heatPower
-  rw [dif_neg hk_ne, dif_pos ht]
+  rw [dite_eq_right hk_ne, dite_eq_left ht]
   have hC_nn : 0 ≤ heatPowerCoeffBound k t := heatPowerCoeffBound_nonneg k ht
   exact LinearMap.mkContinuous_norm_le _ hC_nn _
 

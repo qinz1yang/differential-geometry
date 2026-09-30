@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.IntegratedSecondOrder
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Intrinsic.RoughLaplacianSecondDerivative
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -499,7 +502,7 @@ theorem exists_moserTameProduct_pi_iteratedCovGrad_l2Norm_le
         riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 _ x _
       have herase : ∏ m ∈ Finset.univ.erase i₀, f m ≤
           ∏ m ∈ Finset.univ.erase i₀, (Λ m) ^ 2 :=
-        Finset.prod_le_prod (fun m _ => hf_nn m) (fun m _ => hjet m x (e m) (he_le m))
+        Finset.prod_le_prod₀ (fun m _ => hf_nn m) (fun m _ => hjet m x (e m) (he_le m))
       have hsplit : ∏ m : Fin n, f m = f i₀ * ∏ m ∈ Finset.univ.erase i₀, f m :=
         (Finset.mul_prod_erase Finset.univ f (Finset.mem_univ i₀)).symm
       have hprod_erase_nn : 0 ≤ ∏ m ∈ Finset.univ.erase i₀, f m :=

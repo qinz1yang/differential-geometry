@@ -22,7 +22,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.topology PointedRiemannianManifold.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact
 
 def TerminalParabolicScalarBallBoundAtSameTime {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
@@ -169,7 +169,7 @@ theorem finite_horn_construction_of_scalarBallBoundAtSameTime_and_ricciTensorBou
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth := by
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth := by
   obtain ⟨e, he, hscl⟩ := hscl
   exact finite_horn_construction_of_rmBallBoundAtSameTime_and_ricciTensorBound hkappa hsigma
     hPhi hK

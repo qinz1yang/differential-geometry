@@ -123,7 +123,7 @@ theorem stdSimplexBoundary_one_eq :
       fin_cases i <;> simp
 
 theorem image_Icc_stdSimplex_two :
-    (fun t : ℝ => (![1 - t, t] : Fin 2 → ℝ)) '' Icc 0 1 = stdSimplex ℝ (Fin 2) := by
+    (fun t : ℝ => (![1 - t, t] : Fin 2 → ℝ)) '' Icc 0 1 = Convexity.StdSimplex.coordinateSet ℝ (Fin 2) := by
   ext x
   constructor
   · rintro ⟨t, ht, rfl⟩
@@ -164,13 +164,13 @@ theorem exists_arc_of_isBoundaryBranch (T : NormalSingularSetTriangulation D BdM
     intro s t hst
     have h := congrFun hst 1
     simpa [hlam] using h
-  have hlamimg : lam '' Icc 0 1 = stdSimplex ℝ (Fin 2) := image_Icc_stdSimplex_two
-  have hlammem : ∀ t ∈ Icc (0 : ℝ) 1, lam t ∈ stdSimplex ℝ (Fin 2) := fun t ht =>
+  have hlamimg : lam '' Icc 0 1 = Convexity.StdSimplex.coordinateSet ℝ (Fin 2) := image_Icc_stdSimplex_two
+  have hlammem : ∀ t ∈ Icc (0 : ℝ) 1, lam t ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 2) := fun t ht =>
     hlamimg ▸ mem_image_of_mem lam ht
   have hsub : (T.branchComplex c).space ⊆ T.piece.piece.complex.space :=
     T.branchComplex_space_subset_piece c
   refine ⟨fun t => T.piece.piece.map (g (lam t)), ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · have h1 : ContinuousOn g (stdSimplex ℝ (Fin 2)) := hg.isPiecewiseAffineOn.continuousOn
+  · have h1 : ContinuousOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) := hg.isPiecewiseAffineOn.continuousOn
     have h2 := h1.comp hlamc.continuousOn fun t ht => hlammem t ht
     exact T.piece.piece.continuousOn.comp h2 fun t ht => hsub (hg.bijOn.mapsTo (hlammem t ht))
   · intro s hs t ht hst
@@ -196,7 +196,7 @@ theorem exists_arc_of_isBoundaryBranch (T : NormalSingularSetTriangulation D BdM
     have h := (T.map_mem_boundary_iff_mem_boundaryComplex c hmem).mp hB
     rw [hbd, stdSimplexBoundary_one_eq] at h
     obtain ⟨z, hz, hgz⟩ := h
-    have hzmem : z ∈ stdSimplex ℝ (Fin 2) := by
+    have hzmem : z ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 2) := by
       rcases hz with rfl | rfl
       · simpa [hlam] using hlammem 0 ⟨le_rfl, zero_le_one⟩
       · simpa [hlam] using hlammem 1 ⟨zero_le_one, le_rfl⟩

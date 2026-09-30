@@ -399,7 +399,7 @@ theorem sumComponentInl_preservesOrientation (x : X.Carrier) :
   simp only [sum_orientation, ManifoldOrientation.sum_orientation_inl]
   rfl
 
-noncomputable def sumComponentInl_orientedDiffeomorph (x : X.Carrier) :
+noncomputable def sumComponentInlOrientedDiffeomorph (x : X.Carrier) :
     OrientedDiffeomorph
       ((sum X Y).component (ConnectedComponents.mk (Sum.inl x))).toClosedOrientedManifold
       (X.component (ConnectedComponents.mk x)).toClosedOrientedManifold :=
@@ -575,7 +575,7 @@ theorem sumComponentInr_preservesOrientation (y : Y.Carrier) :
   simp only [sum_orientation, ManifoldOrientation.sum_orientation_inr]
   rfl
 
-noncomputable def sumComponentInr_orientedDiffeomorph (y : Y.Carrier) :
+noncomputable def sumComponentInrOrientedDiffeomorph (y : Y.Carrier) :
     OrientedDiffeomorph
       ((sum X Y).component (ConnectedComponents.mk (Sum.inr y))).toClosedOrientedManifold
       (Y.component (ConnectedComponents.mk y)).toClosedOrientedManifold :=
@@ -615,7 +615,7 @@ theorem cappedRetainedPresentationRealization (E : SphericalCutCapTransition M Q
     rw [Continuous.connectedComponentsMap_mk, hx]
   refine ⟨(e.component (ConnectedComponents.mk (E.capping.coreInclusion x))).trans ?_⟩
   rw [hC]
-  exact ClosedOrientedManifold.sumComponentInl_orientedDiffeomorph q
+  exact ClosedOrientedManifold.sumComponentInlOrientedDiffeomorph q
 
 theorem cappedDiscardedPresentationRealization (E : SphericalCutCapTransition M Q) :
     E.CappedDiscardedPresentationRealization := by
@@ -631,7 +631,7 @@ theorem cappedDiscardedPresentationRealization (E : SphericalCutCapTransition M 
     rw [Continuous.connectedComponentsMap_mk, hx]
   refine ⟨(e.component (ConnectedComponents.mk (E.capping.coreInclusion x))).trans ?_⟩
   rw [hC]
-  exact ClosedOrientedManifold.sumComponentInr_orientedDiffeomorph d
+  exact ClosedOrientedManifold.sumComponentInrOrientedDiffeomorph d
 
 theorem cappedPresentationRealization (E : SphericalCutCapTransition M Q) :
     E.CappedPresentationRealization :=

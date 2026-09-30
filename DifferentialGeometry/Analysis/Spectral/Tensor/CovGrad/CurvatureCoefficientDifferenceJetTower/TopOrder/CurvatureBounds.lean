@@ -2,6 +2,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficien
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.TraceGrid
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg riemannianFiberNormSq_sub_le riemannianFiberNormSq_sum_le_card_mul
+  riemannianFiberNormSq_zero)
+
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -263,7 +267,7 @@ lemma riemannianFiberNormSq_operatorFieldComposition_parallel_argument_residual_
 
 end CurvatureCoefficientDifferenceJetTower
 
-theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceField_topOrderSeparated_le
+theorem exists_ricEndoBackgroundDifferenceField_top_order_split
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1355,7 +1359,7 @@ lemma exists_rsDomDomCongrSection_head_transport (g₀ : SmoothRiemannianMetric 
 
 end CurvatureCoefficientDifferenceJetTower
 
-theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroCurvCoeff_backgroundDifference_topOrderSeparated_le
+theorem exists_ricciOrderZeroCurvCoeff_sub_top_order_split
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1380,7 +1384,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroCurvCoeff_background
                   ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (i + 1) (i + 3)) := by
   classical
   obtain ⟨KtB, hKtB_nn, KcB, hKcB_nn, hB⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceField_topOrderSeparated_le
+    exists_ricEndoBackgroundDifferenceField_top_order_split
       (I := I) (M := M) g₀ hδ₀
   set n : ℝ := (Module.finrank ℝ E : ℝ) with hn_def
   have hn_nn : (0 : ℝ) ≤ n := Nat.cast_nonneg _
@@ -1631,7 +1635,7 @@ private lemma ts_combine_riemannianFiberNormSq_residual
     _ = (4 * (2 * (2 * a + 2 * b) + 2 * (2 * c * d))) * w :=
       ts_residual_bound_factor a b c d w
 
-theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroRiemannCoeff_backgroundDifference_topOrderSeparated_le
+theorem exists_ricciOrderZeroRiemannCoeff_sub_top_order_split
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)

@@ -55,6 +55,8 @@ private theorem exists_circle_embedding_regular_level_fin_two
       ((hf.contDiffAt (hU.mem_nhds x.property)).contMDiffAt)
   have hdg (x : O) : mfderiv 𝓘(ℝ, Fin 2 → ℝ) 𝓘(ℝ, ℝ) g x = fderiv ℝ f x.val := by
     rw [DifferentialGeometry.mfderiv_restrict_open, mfderiv_eq_fderiv]
+    ext v
+    rfl
   have hgr (x : O) (hx : g x = a) : mfderiv 𝓘(ℝ, Fin 2 → ℝ) 𝓘(ℝ, ℝ) g x ≠ 0 := by
     rw [hdg]
     exact hr x.val x.property hx
@@ -143,7 +145,7 @@ theorem exists_circle_embedding_of_isCompact_isConnected_regular_level
     intro x
     rw [mfderiv_comp x (he.mdifferentiableAt (by simp))
       (hγ.contMDiff.mdifferentiableAt (by simp)), mfderiv_eq_fderiv, e.fderiv]
-    exact e.injective.comp ((hγ.isImmersion.isImmersionAt x).injective_mfderiv (by simp))
+    exact e.injective.comp ((hγ.isImmersion.isImmersionAt x).mfderiv_injective (by simp))
   refine ⟨e ∘ γ, ⟨himm, e.toHomeomorph.isEmbedding.comp hγ.isEmbedding⟩, ?_⟩
   rw [range_comp, hrange]
   ext x

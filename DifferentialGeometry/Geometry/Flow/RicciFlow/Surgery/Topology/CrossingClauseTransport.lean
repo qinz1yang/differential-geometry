@@ -62,7 +62,7 @@ private theorem canonical_clauses_upgrade {M : Type u} [TopologicalSpace M]
   refine ⟨fun hage => ?_, hder.trans (mul_le_mul_of_nonneg_right h3 (sq_nonneg _)),
     fun v => (hgrad v).trans ?_⟩
   · obtain ⟨W, hW⟩ := hwit (hτ.trans hage)
-    exact ⟨W.enlarge_constants h1 h2, hW.enlarge_constants h1 h2⟩
+    exact ⟨W.enlargeConstants h1 h2, hW.enlarge_constants h1 h2⟩
   · have hnn : 0 ≤ S.scalar t x * Real.sqrt (S.scalar t x) *
         Real.sqrt ((S.base.metric t).inner x v v) := by
       refine mul_nonneg ?_ (Real.sqrt_nonneg _)
@@ -110,8 +110,8 @@ private theorem canonical_clauses_of_closedPrefixAt {K : ObservedHistory.{u}}
     rw [K.closedPrefixAt_metric τ hlt v, hF v]
   exact canonical_clauses_of_base_eq _ F hbase hD hwit hder hgrad
 
-theorem RetainedCoreHistory.canonical_clauses_of_extendAt {P₀ : OrientedThreeStage.{u}}
-    (H : RetainedCoreHistory P₀) (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
+theorem RetainedCoreHistory.canonical_clauses_of_extendAt
+    (H : RetainedCoreHistory.{u}) (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount)) {t : ℝ}

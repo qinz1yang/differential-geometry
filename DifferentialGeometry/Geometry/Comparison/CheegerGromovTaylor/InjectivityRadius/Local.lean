@@ -30,9 +30,8 @@ variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
 open scoped Bundle
 
-private theorem sqrt_normSq_le_of_curvature_bound [I.Boundaryless]
+private theorem sqrt_normSq_le_of_curvature_bound
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (x : M) {r : ℝ} (hr : 0 < r)
     (hRm : ∀ y ∈ riemannianBallOf (I := I) g x r,
       r ^ 4 * Tensor0SBundle.normSq0S (I := I) g y 4 (metricRm04At g y) ≤ 1) :
@@ -53,7 +52,7 @@ private theorem sqrt_normSq_le_of_curvature_bound [I.Boundaryless]
 private theorem ricciTensor_lower_of_curvature_bound [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [T2Space M] [SigmaCompactSpace M]
+    [T2Space M]
     (g : SmoothRiemannianMetric I M) (x : M) {r q₀ : ℝ} (hr : 0 < r)
     (hq₀ : q₀ = (Module.finrank ℝ E : ℝ) /
       Real.sqrt (((Module.finrank ℝ E - 1 : ℕ)) : ℝ))
@@ -98,7 +97,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem ball_volume_lower_bound_of_ricci_lower_bound [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     {kappa q₀ : ℝ} {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (hg : RiemannianMetricComplete g)
     (x : M)
     (hkappa : 0 < kappa) {r : ℝ} (hr : 0 < r)

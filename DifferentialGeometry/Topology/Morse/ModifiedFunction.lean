@@ -28,7 +28,7 @@ theorem contMDiff_morseModifiedFunction (hk : k ≤ n) (c ε δ R : ℝ)
     change (if x ∈ χ.target then
       if morseNorm n (χ.symm x) ≤ R then modifiedNormalForm hk c ε δ (χ.symm x)
       else f x else f x) = _
-    rw [if_pos hx]
+    rw [ite_eq_left hx]
     split_ifs with hb
     · rfl
     · have hgt : 4 * ε + 9 * δ ^ 2 / 4 < morseNorm n (χ.symm x) ^ 2 := by

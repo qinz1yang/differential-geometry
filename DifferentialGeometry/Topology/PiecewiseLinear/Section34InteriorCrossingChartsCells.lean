@@ -32,7 +32,7 @@ theorem exists_subdivision_isolated_crossing_circle_disks_of_local_ball_charts
         (∀ p ∈ V j, (ψ j p ∈ A ↔ p.1.2 = 0) ∧ (ψ j p ∈ B ↔ p.1.1 = 0)) ∧
         (∀ p ∈ V j, ψ j p ∈ A ∪ B ↔ p ∈ crossPlanes) ∧
         (∀ p ∈ V j, ψ j p ∈ J ↔ p.1 = 0) ∧
-        ∀ i, IsPLHomeomorphOn (q j i) (stdSimplex ℝ (Fin 3)) (P j i) ∧
+        ∀ i, IsPLHomeomorphOn (q j i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P j i) ∧
           P j i ⊆ K.space ∩ (A ∪ B) ∧
           (PiecewiseLinear.restrict R (P j i)).space = P j i ∧
           ∀ x ∈ R.space ∩ W j,

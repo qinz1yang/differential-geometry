@@ -46,7 +46,7 @@ theorem exists_isMarkedBranchCollar [T2Space M] (hD : NormalSingularCellData D B
     hτ, hρ, fun a ha => ?_⟩
   change hD.IsMarkedCrossingChartAt c J τ ρ a
     (if h : a ∈ J then (hD.exists_isMarkedCrossingChartAt hc hτ hρ h).choose else e₀)
-  rw [dif_pos ha]
+  rw [dite_eq_left ha]
   exact (hD.exists_isMarkedCrossingChartAt hc hτ hρ ha).choose_spec
 
 end NormalSingularCellData

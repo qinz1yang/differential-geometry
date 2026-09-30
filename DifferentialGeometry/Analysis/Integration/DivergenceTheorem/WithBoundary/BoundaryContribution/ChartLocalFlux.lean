@@ -91,7 +91,7 @@ theorem integral_chartDensity_mul_localDivergenceWithin_add_tangentSectionAction
     rw [htarget] at hyt
     exact hyt.1
   have hflux :=
-    integral_mul_trace_fderivWithin_add_fderivWithin_withDensity_euclidean_half_space_inter_of_hasCompactSupport
+    integration_by_parts_euclidean_half_space_inter_withDensity
       hU hphi hrho hu hpos hcs hsupp
   rw [integral_withDensity_eq_integral_toReal_smul₀ hrho.ennreal_ofReal
     (by filter_upwards with y; exact ENNReal.ofReal_lt_top) _] at hflux
@@ -196,7 +196,7 @@ theorem integral_mul_localDivergenceWithin_add_tangentSectionAction_eq_surfaceMe
   exact (integral_surfaceMeasure_flux_eq_neg_integral_chartPullZero
     g alpha X hf.continuous hc hs).symm
 
-theorem integral_mul_divergence_g_with_boundary_add_tangentSectionAction_eq_surfaceMeasure_flux_of_tsupport_subset
+theorem integration_by_parts_of_tsupport_subset_boundary_chart
     (g : SmoothRiemannianMetric J M) (alpha : BoundaryManifold J M)
     (X : Cₛ^∞⟮J; V, (TangentSpace J : M → Type _)⟯)
     {f : M → Real} (hf : ContMDiff J 𝓘(Real) ∞ f) (hc : HasCompactSupport f)

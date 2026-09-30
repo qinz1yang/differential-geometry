@@ -30,23 +30,23 @@ theorem rfs_collapse_degree_of_canonicalComparisonSupport
     (a : IntegralHomology (G.Parent c).Carrier 3) (b : IntegralHomology (G.Child c).Carrier 3)
     {k : ℤ}
     (hcollapse : G.LocalTerminalEDistComparison (G.canonicalComparisonSupport hSC))
-    (hmap : integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map a
+    (hmap : integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap a
       = k • b)
     (hgen : ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-      φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map a)
+      φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap a)
         = 1)
     (hk : 0 < k) :
     (G.canonicalComparisonSupport hSC c).LocalTerminalLengthControl
-        (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map ∧
+        (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap ∧
     (∀ x ∉ (G.canonicalComparisonSupport hSC c).support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map y =
-        (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map x) ∧
+      (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap y =
+        (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap x) ∧
     (∀ x : G.transition.ChildCore c,
-      (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map
+      (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap
           (G.transition.childCoreIntoParent c x) =
         G.transition.childCoreInclusion c x) ∧
-    integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map a = b ∧
-    Function.Surjective (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map :=
+    integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap a = b ∧
+    Function.Surjective (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap :=
   rfs_collapse_degree_of_localTerminalEDistComparison
     (G.canonicalComparisonSupport hSC) a b hcollapse hmap hgen hk
 
@@ -57,13 +57,13 @@ theorem canonicalComparisonSupport_map_eq
     (a : IntegralHomology (G.Parent c).Carrier 3) (b : IntegralHomology (G.Child c).Carrier 3)
     {k : ℤ}
     (hcollapse : G.LocalTerminalEDistComparison (G.canonicalComparisonSupport hSC))
-    (hmap : integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map a
+    (hmap : integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap a
       = k • b)
     (hgen : ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-      φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map a)
+      φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap a)
         = 1)
     (hk : 0 < k) :
-    integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map a = b :=
+    integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap a = b :=
   (rfs_collapse_degree_of_canonicalComparisonSupport hSC c a b hcollapse hmap hgen hk).2.2.2.1
 
 end ComparisonSupport

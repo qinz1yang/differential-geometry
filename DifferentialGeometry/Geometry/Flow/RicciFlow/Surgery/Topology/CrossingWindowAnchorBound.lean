@@ -432,7 +432,7 @@ theorem eventually_scalar_backwardPointTrace_le_of_window_limit
     else (Gl (-T')).restrictOpen (V k)
   have hseq_eq : ∀ i (hi : N k ≤ ψ₁ i),
       seq i = localPullMetric (h k (f (ψ₁ i)) (-T')) (φ k (ψ₁ i) hi) (hφ k (ψ₁ i) hi) :=
-    fun i hi => dif_pos hi
+    fun i hi => dite_eq_left hi
   have hconvk : MetricCInfConvergenceOnCompacts seq
       ((Gl (-T')).restrictOpen (V k)) (P.metric.restrictOpen (V k)) := by
     intro K' hK' p η hη
@@ -498,7 +498,7 @@ namespace RetainedCoreHistory
 variable {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
   {B ε C1 C2 τmin θ κ C1s C2s Cs : ℝ} {Ctime Cgrad : ℝ≥0} {phi : ℝ → ℝ}
   {D θcap qcan qs η t₀ t s : ℕ → ℝ} {p₀ p : ℕ → CutoffParameters} {δb ρb : ℕ → ℝ}
-  {H : ℕ → RetainedCoreHistory P₀}
+  {H : ℕ → RetainedCoreHistory.{u}}
   {records : ∀ n i, GeometricCutoffRecord (H n).toHistory i (p n)}
   {G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
     ((H n).time (Fin.last (H n).eventCount)) (s n)}
@@ -506,7 +506,7 @@ variable {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
   (hε : 0 < ε) (hεcone : ε ≤ coneAccuracy)
   (hκ : 0 < κ) (hphi : Perelman.AdmissiblePinchingFunction phi) (hθ : 0 < θ)
   (hCs : 1 ≤ Cs) (hCt : 0 < Ctime)
-  (hH : ∀ n, (H n).InCutoffClass g₀ B (p₀ n) (δb n) (ρb n))
+  (hH : ∀ n, (H n).InCutoffClass (P₀ := P₀) g₀ B (p₀ n) (δb n) (ρb n))
   (hG : ∀ n, (H n).IsContinuationSlab B (Fin.last (H n).eventCount) (G n))
   (hrec : ∀ n, (H n).IsCanonicalCutoffRecordFamily (p₀ n) (δb n) (ρb n) (records n))
   (hq : ∀ n : ℕ, (n : ℝ) + 1 ≤ qcan n ∧ qcan n ≤ qs n ∧ qs n ≤ Cs * qcan n)
@@ -555,7 +555,7 @@ include hε hεcone hκ hphi hCs hH hG hrec hq hpar hscale hpinch hslabs hbefore
 theorem exists_subseq_windowAnchorBound_of_depthExtendable
     (hεX : ε ≤ crossingWindowNeckAccuracy.{u}) {σ : ℕ → ℕ} (hσ : StrictMono σ) {Tstar : ℝ}
     (hT : 0 < Tstar) :
-    let K : ℕ → RetainedCoreHistory P₀ := fun n => (H n).extendAt (hH n).2.1 (G n) (hG n).2
+    let K : ℕ → RetainedCoreHistory.{u} := fun n => (H n).extendAt (hH n).2.1 (G n) (hG n).2
       (hbad n).1 ((hbad n).2.2.1.trans (hsliver n).2.1)
     let τ : ∀ n, Icc (0 : ℝ) (K n).toHistory.horizon := fun n =>
       (H n).extendAtTime (hH n).2.1 (G n) (hG n).2 (hbad n).1

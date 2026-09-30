@@ -220,7 +220,7 @@ theorem exists_diffeomorph_apply_eq_of_mem_nhds (x : M) :
         (isCompact_closedBall (e x) R) hRsub (fun _ y hy => hfix y hy)
     refine ⟨J 1, ?_⟩
     rw [(hJ 1 x).1]
-    rw [extendChartById, if_pos hxsrc, hD0, e.left_inv hzsrc]
+    rw [extendChartById, ite_eq_left hxsrc, hD0, e.left_inv hzsrc]
 
 theorem exists_diffeomorph_apply_eq_of_connectedSpace [ConnectedSpace M] (a b : M) :
     ∃ Φ : Diffeomorph I I M M ∞, Φ a = b := by

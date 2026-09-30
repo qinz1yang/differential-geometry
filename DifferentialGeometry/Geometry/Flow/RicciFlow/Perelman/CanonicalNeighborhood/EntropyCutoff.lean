@@ -213,7 +213,7 @@ theorem exists_normalized_cutoff_wform (g : SmoothRiemannianMetric I M) (x : M)
   have hGenergy := energy_integrable g hwgrad2
   have hGeq : (∫ y, g.inner y (G y) (G y) ∂μ) =
       c ^ 2 * (∫ y, g.inner y (gradFun g η y) (gradFun g η y) ∂μ) := by
-    simp only [G, metric_inner_smul_self, integral_const_mul]
+    simp only [G, SmoothRiemannianMetric.metric_inner_smul_self, integral_const_mul]
   have hgradbound : 4 * r ^ 2 * (∫ y, g.inner y (G y) (G y) ∂μ) ≤ 36 * D := by
     rw [hGeq]
     calc

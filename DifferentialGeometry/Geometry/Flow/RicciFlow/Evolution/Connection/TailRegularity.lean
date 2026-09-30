@@ -238,7 +238,7 @@ theorem tailChrOrtho
         simpa only [metricCompInFrame, SolutionOn.family_metric, S', D'] using
           horth y hy a b
       simpa only [horth', mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-        Finset.mem_univ, if_true] using hleft
+        Finset.mem_univ, ite_true] using hleft
     simpa only [chrDt, nablaRic, S', D'] using
       christoffelRHS_id (M := M) gInv nablaRic hinvId i j k
 

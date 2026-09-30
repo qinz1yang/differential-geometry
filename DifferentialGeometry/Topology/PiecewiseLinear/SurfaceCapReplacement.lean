@@ -30,7 +30,7 @@ private theorem mem_of_closure_of_relative_closed {X : Type*} [TopologicalSpace 
 theorem isPolyhedron_cap_replacement
     {I R T L L' C' Δ D₁ D₂ Ω A B G J : Set E3} {r : (Fin 3 → ℝ) → E3}
     (hL : IsPolyhedron L) (hB : IsPolyhedron B)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hboundary : r '' stdSimplexBoundary 2 = G) (hAnn : IsPLAnnulusWithEnds A G J)
     (hA : A ⊆ D₁ ∩ Ω) (hAΔ : A ∩ Δ = G) (hD₁ : IsPLBall 2 D₁)
     (hΔD₁ : Δ ⊆ D₁) (hΔT : Δ ⊆ T) (hD₂T : D₂ ⊆ T)

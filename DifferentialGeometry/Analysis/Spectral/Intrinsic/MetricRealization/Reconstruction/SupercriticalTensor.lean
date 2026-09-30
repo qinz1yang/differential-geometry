@@ -404,8 +404,8 @@ private lemma ite_finsetSum_eq_finsetSum_ite'
     {ι : Type*} (t : Finset ι) (p : Prop) [Decidable p] (f : ι → ℝ) :
     (if p then ∑ a ∈ t, f a else 0) = ∑ a ∈ t, (if p then f a else 0) := by
   by_cases hp : p
-  · simp only [if_pos hp]
-  · simp only [if_neg hp, Finset.sum_const_zero]
+  · simp only [ite_eq_left hp]
+  · simp only [ite_eq_right hp, Finset.sum_const_zero]
 
 open Classical in
 private lemma chartPushedRaw_ite_transitionSum_eq_finsetSum_w (w : TensorL2 r s g)
@@ -478,12 +478,12 @@ private lemma raw_wSmoothChart_eq_ite (w : TensorL2 r s g)
         else 0) := by
   classical
   by_cases hxα : x ∈ (chartAt H α).source
-  · rw [if_pos hxα]
+  · rw [ite_eq_left hxα]
     exact tensorChartComponentRaw_eq_transitionCoeff_sum
       (E := E) (I := I) (M := M) g r s
       (wSmoothChart (I := I) (M := M) g r s w h_all α)
       α β P₀ ⟨hxα, hxβ⟩
-  · rw [if_neg hxα]
+  · rw [ite_eq_right hxα]
     exact tensorChartComponentRaw_wSmoothChart_eq_zero_off_source
       (I := I) (M := M) g r s w h_all α β P₀ hxα
 
@@ -790,7 +790,7 @@ private lemma wSmoothChart_transport_term_aeEq (w : TensorL2 r s g)
         rw [hA_def]
         simp only
         rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β _ hy_target,
-          ← hz_def, if_pos hz_sourceγ]
+          ← hz_def, ite_eq_left hz_sourceγ]
         congr 1
         have h_raw := tensorChartComponentRaw_wSmoothChart_self
           (I := I) (M := M) g r s w h_all γ Q
@@ -857,7 +857,7 @@ private lemma wSmoothChart_transport_term_aeEq (w : TensorL2 r s g)
           rw [hA_def]
           simp only
           rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β _ hy_target,
-            ← hz_def, if_neg hz_notin_sourceγ]
+            ← hz_def, ite_eq_right hz_notin_sourceγ]
         have hRHS_y : RHS y = 0 := by
           rw [hRHS_def]
           simp only
@@ -955,6 +955,7 @@ private lemma wSmoothChart_tensorL2ChartComponent_eq_transport_sum
   funext y
   rw [Finset.mul_sum]
 
+omit [I.Boundaryless] in
 private lemma wChartComp_ite_chartPushedPouWeight_zero_ae_zero (w : TensorL2 r s g)
     (α : M) (Q : TensorCompIdx (E := E) r s) :
     (fun y => if chartPushedPouWeight (I := I) (M := M) α y = 0 then
@@ -977,8 +978,8 @@ private lemma wChartComp_ite_chartPushedPouWeight_zero_ae_zero (w : TensorL2 r s
         chartPushedPouWeight (I := I) (M := M) α y from rfl, hy_zero, zero_mul]
   filter_upwards [h_gate] with y hy
   by_cases hw : chartPushedPouWeight (I := I) (M := M) α y = 0
-  · rw [if_pos hw]; exact hy hw
-  · rw [if_neg hw]
+  · rw [ite_eq_left hw]; exact hy hw
+  · rw [ite_eq_right hw]
 
 private lemma chartTransitionTransportCLM_w_ae_zero_of_notMem (w : TensorL2 r s g)
     (α β : M) (P₀ Q : TensorCompIdx (E := E) r s)
@@ -1077,7 +1078,7 @@ private lemma chartTransitionTransportCLM_w_ae_zero_of_notMem (w : TensorL2 r s 
           wChartComp (I := I) (M := M) g r s w α Q
             (chartTransitionEuclid (I := I) (M := M) β α y)
         else 0) = 0 := hy_gate
-      rw [if_pos hw_zero] at hy_gate'
+      rw [ite_eq_left hw_zero] at hy_gate'
       rw [hy_gate', mul_zero]
   have h_off_overlap : ∀ y, y ∉ chartOverlapEuclid (I := I) (M := M) β α →
       chartPushedRaw (I := I) (M := M) β

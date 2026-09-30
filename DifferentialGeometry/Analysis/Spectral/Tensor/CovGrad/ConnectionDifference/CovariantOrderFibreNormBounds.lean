@@ -1,5 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.JetTower
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.FibreBounds
+
+open DifferentialGeometry.SmoothRiemannianMetric (abs_metric_inner_le_sqrt_metric_quadratic
+  metric_inner_cauchy_schwarz_sq)
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply
+  exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -1938,7 +1943,7 @@ private lemma sqrt_inner_flatTermVec_le
     | true =>
         have hval : flatTermVec (I := I) g₀ g₁ true x (g0FlatCLM (I := I) g₀ x w) v0 =
             - PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x s v0 := by
-          rw [flatTermVec, if_pos rfl, hs_def]
+          rw [flatTermVec, ite_eq_left rfl, hs_def]
         rw [hval]
         rw [show g₀.inner x (- PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x s v0)
               (- PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x s v0) =
@@ -1964,7 +1969,7 @@ private lemma sqrt_inner_flatTermVec_le
               ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).flip v0)) with hDfun_def
         have hval : flatTermVec (I := I) g₀ g₁ false x (g0FlatCLM (I := I) g₀ x w) v0 =
             inverseMetricSharpFib (I := I) g₁ x (dualToCotangent (I := I) Dfun.toLinearMap) := by
-          rw [flatTermVec, if_neg (by decide : ¬ (false = true)), hDfun_def]
+          rw [flatTermVec, ite_eq_right (by decide : ¬ (false = true)), hDfun_def]
         rw [hval]
         set p : TangentSpace I x :=
           inverseMetricSharpFib (I := I) g₀ x (dualToCotangent (I := I) Dfun.toLinearMap)

@@ -61,7 +61,7 @@ theorem IsPLTorus.exists_disk_of_nullhomotopic_image_circle_disjoint_carrier
     (hnull : (⟨inclusion ((image_mono hCΘ).trans hΘT), continuous_inclusion _⟩ :
       C(u '' C, T)).Nullhomotopic) :
     ∃ (D : Set E3) (q : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ Θ ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ Θ ∧
         C = q '' stdSimplexBoundary 2 := by
   let F : Option ι → Set E3 := fun i => i.elim C J
   have hF : ∀ i, IsPLSphere 1 (F i) := by

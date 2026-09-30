@@ -111,27 +111,27 @@ theorem contDiffOn_ite_of_jet_pde
     intro q hq
     by_cases hqc : q.1 ≤ c
     · change jet2 (glued q.1) q.2 ∈ Ω
-      rw [show glued q.1 = gL q.1 from if_pos hqc]
+      rw [show glued q.1 = gL q.1 from ite_eq_left hqc]
       exact hmapL ⟨⟨hq.1.1, hqc⟩, hq.2⟩
     · change jet2 (glued q.1) q.2 ∈ Ω
-      rw [show glued q.1 = gR q.1 from if_neg hqc]
+      rw [show glued q.1 = gR q.1 from ite_eq_right hqc]
       exact hmapR ⟨⟨(lt_of_not_ge hqc).le, hq.1.2⟩, hq.2⟩
   have hGs : ∀ t ∈ Icc a b, ContDiffOn ℝ ∞ (glued t) V := by
     intro t ht
     by_cases htc : t ≤ c
     · change ContDiffOn ℝ ∞ (if t ≤ c then gL t else gR t) V
-      rw [if_pos htc]
+      rw [ite_eq_left htc]
       exact hGL t ⟨ht.1, htc⟩
     · change ContDiffOn ℝ ∞ (if t ≤ c then gL t else gR t) V
-      rw [if_neg htc]
+      rw [ite_eq_right htc]
       exact hGR t ⟨(lt_of_not_ge htc).le, ht.2⟩
   have htime : ∀ t ∈ Ioo a b, ∀ x ∈ V,
       HasDerivAt (fun u => glued u x) (Φ (jet2 (glued t) x)) t := by
     intro t ht x hx
     rcases lt_trichotomy t c with htc | heq | hct
     · have heq : (fun u => glued u x) =ᶠ[𝓝 t] (fun u => gL u x) :=
-        eventuallyEq_of_mem (Iio_mem_nhds htc) fun u hu => by simp only [glued, if_pos (show u ≤ c from (mem_Iio.mp hu).le)]
-      simpa only [glued, if_pos htc.le] using
+        eventuallyEq_of_mem (Iio_mem_nhds htc) fun u hu => by simp only [glued, ite_eq_left (show u ≤ c from (mem_Iio.mp hu).le)]
+      simpa only [glued, ite_eq_left htc.le] using
         (hpdeL t ⟨ht.1, htc⟩ x hx).congr_of_eventuallyEq heq
     · subst t
       have hcL : ContinuousOn (fun u => gL u x) (Icc a c) :=
@@ -151,12 +151,12 @@ theorem contDiffOn_ite_of_jet_pde
         (fun u hu => hpdeL u hu x hx) (fun u hu => hpdeR u hu x hx) (hmatch hx)
         (hFL c ⟨ha.le, le_rfl⟩) (hFR c ⟨le_rfl, hb.le⟩)
         (congrArg Φ (jet2_eq_of_eqOn hV hmatch hx))
-      simpa only [glued, ite_apply, if_pos le_rfl] using hd
+      simpa only [glued, ite_apply, ite_eq_left le_rfl] using hd
     · have heq : (fun u => glued u x) =ᶠ[𝓝 t] (fun u => gR u x) :=
-        eventuallyEq_of_mem (Ioi_mem_nhds hct) fun u hu => by simp only [glued, if_neg (not_le.mpr (mem_Ioi.mp hu))]
-      simpa only [glued, if_neg (not_le.mpr hct)] using
+        eventuallyEq_of_mem (Ioi_mem_nhds hct) fun u hu => by simp only [glued, ite_eq_right (not_le.mpr (mem_Ioi.mp hu))]
+      simpa only [glued, ite_eq_right (not_le.mpr hct)] using
         (hpdeR t ⟨hct, ht.2⟩ x hx).congr_of_eventuallyEq heq
-  have hh := PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn.contDiffOn_of_closed_jet_pde
+  have hh := contDiffOn_of_closed_jet_pde
     (ha.trans hb) hV hΩ hGs hΦ hmap (continuousOn_spatial_ite ha hb hV hL hR hmatch) htime
   exact hh.congr fun q _ => by
     dsimp only [Function.uncurry, glued]
@@ -176,14 +176,14 @@ private theorem iteratedDerivWithin_eq_of_contDiffOn_ite
   have hfc : ContDiffAt ℝ ∞ f c :=
     (hglue.contDiffAt (prod_mem_nhds (Icc_mem_nhds ha hb) (hV.mem_nhds hx))).comp c
       (contDiffAt_id.prodMk contDiffAt_const)
-  have hleft : EqOn f (fun t => gL t x) (Icc a c) := fun t ht => if_pos ht.2
+  have hleft : EqOn f (fun t => gL t x) (Icc a c) := fun t ht => ite_eq_left ht.2
   have hright : EqOn f (fun t => gR t x) (Icc c b) := by
     intro t ht
     by_cases htc : t ≤ c
     · have htEq : t = c := le_antisymm htc ht.1
       subst t
-      exact (if_pos le_rfl).trans (hmatch hx)
-    · exact if_neg htc
+      exact (ite_eq_left le_rfl).trans (hmatch hx)
+    · exact ite_eq_right htc
   rw [← iteratedDerivWithin_congr hleft ⟨ha.le, le_rfl⟩,
     ← iteratedDerivWithin_congr hright ⟨le_rfl, hb.le⟩]
   rw [iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Icc ha)

@@ -6,6 +6,7 @@ import Mathlib.Analysis.SpecificLimits.Basic
 set_option autoImplicit false
 
 open CategoryTheory
+open Convexity.StdSimplex
 open CategoryTheory.Limits
 open Simplicial
 open scoped Simplicial
@@ -20,9 +21,9 @@ abbrev BarycentricWord (n k : ℕ) :=
 
 noncomputable def iteratedBarycentricSimplexMap (n : ℕ) :
     (k : ℕ) → BarycentricWord n k →
-      C(stdSimplex ℝ (Fin (n + 1)), stdSimplex ℝ (Fin (n + 1))) :=
+      C(coordinateSet ℝ (Fin (n + 1)), coordinateSet ℝ (Fin (n + 1))) :=
   Nat.rec (motive := fun k ↦ BarycentricWord n k →
-      C(stdSimplex ℝ (Fin (n + 1)), stdSimplex ℝ (Fin (n + 1))))
+      C(coordinateSet ℝ (Fin (n + 1)), coordinateSet ℝ (Fin (n + 1))))
     (fun _ ↦ ContinuousMap.id _)
     (fun k previous w ↦
       (previous (fun i ↦ w i.castSucc)).comp
@@ -52,23 +53,26 @@ theorem range_iteratedBarycentricSimplexMap_succ_subset
 
 noncomputable def singularSimplexIteratedBarycentricPiece
     {X : Type} [TopologicalSpace X] {n k : ℕ}
-    (s : C(stdSimplex ℝ (Fin (n + 1)), X))
+    (s : C(Convexity.StdSimplex ℝ (Fin (n + 1)), X))
     (w : BarycentricWord n k) :
-    C(stdSimplex ℝ (Fin (n + 1)), X) :=
-  s.comp (iteratedBarycentricSimplexMap n k w)
+    C(Convexity.StdSimplex ℝ (Fin (n + 1)), X) :=
+  s.comp ((toContinuousMap (coordinateHomeomorph ℝ (Fin (n + 1))).symm).comp
+    ((iteratedBarycentricSimplexMap n k w).comp
+      (toContinuousMap (coordinateHomeomorph ℝ (Fin (n + 1))))))
 
 theorem range_singularSimplexIteratedBarycentricPiece_subset
     {X : Type} [TopologicalSpace X] {n k : ℕ}
-    (s : C(stdSimplex ℝ (Fin (n + 1)), X))
+    (s : C(Convexity.StdSimplex ℝ (Fin (n + 1)), X))
     (w : BarycentricWord n k) :
     Set.range (singularSimplexIteratedBarycentricPiece s w) ⊆
       Set.range s := by
   rintro _ ⟨x, rfl⟩
-  exact ⟨iteratedBarycentricSimplexMap n k w x, rfl⟩
+  exact ⟨(coordinateHomeomorph ℝ (Fin (n + 1))).symm
+    (iteratedBarycentricSimplexMap n k w (coordinateHomeomorph ℝ (Fin (n + 1)) x)), rfl⟩
 
 theorem singularSimplexIteratedBarycentricPiece_smallFor_twoSets
     {X : Type} [TopologicalSpace X] {n k : ℕ}
-    (V W : Set X) (s : C(stdSimplex ℝ (Fin (n + 1)), X))
+    (V W : Set X) (s : C(Convexity.StdSimplex ℝ (Fin (n + 1)), X))
     (w : BarycentricWord n k)
     (hs : SingularSimplexSmallFor V W s) :
     SingularSimplexSmallFor V W
@@ -81,11 +85,11 @@ theorem singularSimplexIteratedBarycentricPiece_smallFor_twoSets
 
 noncomputable def barycentricResidual {n : ℕ} (hn : 0 < n)
     (σ : Equiv.Perm (Fin (n + 1))) (k : Fin (n + 1)) :
-    stdSimplex ℝ (Fin (n + 1)) := by
+    coordinateSet ℝ (Fin (n + 1)) := by
   let b := nonemptyFaceBarycenter (barycentricPrefix σ k)
     (barycentricPrefix_nonempty σ k)
-  let e : stdSimplex ℝ (Fin (n + 1)) :=
-    stdSimplex.vertex (S := ℝ) (σ 0)
+  let e : coordinateSet ℝ (Fin (n + 1)) :=
+    coordinateSingle (S := ℝ) (σ 0)
   let a : ℝ := ((n : ℝ) + 1)⁻¹
   let q : ℝ := barycentricContractionFactor n
   have hq : 0 < q := div_pos (Nat.cast_pos.2 hn) (by positivity)
@@ -97,18 +101,22 @@ noncomputable def barycentricResidual {n : ℕ} (hn : 0 < n)
     · subst i
       simp only [b, a, barycentricPrefixBarycenter_apply,
         Equiv.symm_apply_apply, Fin.zero_le, ↓reduceIte]
-      have he : e (σ 0) = 1 := by simp [e]
+      have he : e (σ 0) = 1 := by
+        change (Pi.single (σ 0) 1 : Fin (n + 1) → ℝ) (σ 0) = 1
+        simp
       rw [he, mul_one]
       apply sub_nonneg.2
       apply (inv_le_inv₀ (by positivity) (by positivity)).2
       exact_mod_cast Nat.add_le_add_right (Nat.le_of_lt_succ k.isLt) 1
     · have hvertex : e i = 0 := by
-        simp [e, hi]
+        change (Pi.single (σ 0) 1 : Fin (n + 1) → ℝ) i = 0
+        simp [hi]
       rw [hvertex, mul_zero, sub_zero]
-      exact (stdSimplex.zero_le b i)
+      exact b.property.1 i
   · simp only [div_eq_mul_inv]
-    rw [← Finset.sum_mul, Finset.sum_sub_distrib, ← Finset.mul_sum,
-      stdSimplex.sum_eq_one, stdSimplex.sum_eq_one e, mul_one]
+    rw [← Finset.sum_mul, Finset.sum_sub_distrib, ← Finset.mul_sum]
+    change ((∑ i, b.val i) - a * ∑ i, e.val i) * q⁻¹ = 1
+    rw [b.property.2, e.property.2, mul_one]
     dsimp only [q, a, barycentricContractionFactor]
     field_simp
     ring
@@ -118,14 +126,14 @@ theorem barycentricPrefixBarycenter_eq_common_add_residual
     (k : Fin (n + 1)) :
     (nonemptyFaceBarycenter (barycentricPrefix σ k)
         (barycentricPrefix_nonempty σ k) : Fin (n + 1) → ℝ) =
-      fun i ↦ ((n : ℝ) + 1)⁻¹ * stdSimplex.vertex (σ 0) i +
+      fun i ↦ ((n : ℝ) + 1)⁻¹ * coordinateSingle (σ 0) i +
         barycentricContractionFactor n * barycentricResidual hn σ k i := by
   funext i
-  change _ = ((n : ℝ) + 1)⁻¹ * stdSimplex.vertex (σ 0) i +
+  change _ = ((n : ℝ) + 1)⁻¹ * coordinateSingle (σ 0) i +
     barycentricContractionFactor n *
       ((nonemptyFaceBarycenter (barycentricPrefix σ k)
         (barycentricPrefix_nonempty σ k) i -
-          ((n : ℝ) + 1)⁻¹ * stdSimplex.vertex (σ 0) i) /
+          ((n : ℝ) + 1)⁻¹ * coordinateSingle (σ 0) i) /
             barycentricContractionFactor n)
   have hq : barycentricContractionFactor n ≠ 0 :=
     ne_of_gt (div_pos (Nat.cast_pos.2 hn) (by positivity))
@@ -134,7 +142,7 @@ theorem barycentricPrefixBarycenter_eq_common_add_residual
 
 theorem affineStandardSimplexMap_barycentricPrefixBarycenter
     {n : ℕ} (hn : 0 < n)
-    (v : Fin (n + 1) → stdSimplex ℝ (Fin (n + 1)))
+    (v : Fin (n + 1) → coordinateSet ℝ (Fin (n + 1)))
     (σ : Equiv.Perm (Fin (n + 1))) (k : Fin (n + 1)) :
     (affineStandardSimplexMap v
       (nonemptyFaceBarycenter (barycentricPrefix σ k)
@@ -145,14 +153,19 @@ theorem affineStandardSimplexMap_barycentricPrefixBarycenter
   classical
   funext i
   rw [affineStandardSimplexMap_apply]
-  simp_rw [congr_fun
-    (barycentricPrefixBarycenter_eq_common_add_residual hn σ k)]
+  have hb (j : Fin (n + 1)) :
+      (nonemptyFaceBarycenter (barycentricPrefix σ k)
+        (barycentricPrefix_nonempty σ k)).val j =
+      ((n : ℝ) + 1)⁻¹ * coordinateSingle (σ 0) j +
+        barycentricContractionFactor n * barycentricResidual hn σ k j :=
+    congr_fun (barycentricPrefixBarycenter_eq_common_add_residual hn σ k) j
+  simp_rw [hb]
   calc
-    (∑ j, (((n : ℝ) + 1)⁻¹ * stdSimplex.vertex (σ 0) j +
+    (∑ j, (((n : ℝ) + 1)⁻¹ * coordinateSingle (σ 0) j +
         barycentricContractionFactor n * barycentricResidual hn σ k j) *
           v j i) =
       ((n : ℝ) + 1)⁻¹ *
-          ∑ j, stdSimplex.vertex (σ 0) j * v j i +
+          ∑ j, coordinateSingle (σ 0) j * v j i +
         barycentricContractionFactor n *
           ∑ j, barycentricResidual hn σ k j * v j i := by
             rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
@@ -162,13 +175,15 @@ theorem affineStandardSimplexMap_barycentricPrefixBarycenter
     _ = ((n : ℝ) + 1)⁻¹ * v (σ 0) i +
         barycentricContractionFactor n *
           affineStandardSimplexMap v (barycentricResidual hn σ k) i := by
-      rw [← affineStandardSimplexMap_apply,
-        affineStandardSimplexMap_vertex,
-        affineStandardSimplexMap_apply]
+      change ((n : ℝ) + 1)⁻¹ *
+          affineStandardSimplexMap v (coordinateSingle (σ 0)) i +
+        barycentricContractionFactor n *
+          affineStandardSimplexMap v (barycentricResidual hn σ k) i = _
+      rw [affineStandardSimplexMap_vertex]
 
 theorem dist_affineStandardSimplexMap_barycentricVertices_le
     {n : ℕ} (hn : 0 < n)
-    (v : Fin (n + 1) → stdSimplex ℝ (Fin (n + 1)))
+    (v : Fin (n + 1) → coordinateSet ℝ (Fin (n + 1)))
     (σ : Equiv.Perm (Fin (n + 1))) (k l : Fin (n + 1)) :
     dist
         (affineStandardSimplexMap v
@@ -220,7 +235,7 @@ theorem dist_affineStandardSimplexMap_barycentricVertices_le
 
 theorem affineStandardSimplexMap_comp
     {ι κ μ : Type} [Fintype ι] [Fintype κ] [Fintype μ]
-    (v : κ → stdSimplex ℝ μ) (u : ι → stdSimplex ℝ κ) :
+    (v : κ → coordinateSet ℝ μ) (u : ι → coordinateSet ℝ κ) :
     (affineStandardSimplexMap v).comp (affineStandardSimplexMap u) =
       affineStandardSimplexMap (fun i ↦ affineStandardSimplexMap v (u i)) := by
   classical
@@ -248,28 +263,28 @@ theorem affineStandardSimplexMap_comp
 theorem affineStandardSimplexMap_vertex_eq_id
     {ι : Type} [Fintype ι] [DecidableEq ι] :
     affineStandardSimplexMap
-        (fun i : ι ↦ stdSimplex.vertex (S := ℝ) i) =
-      ContinuousMap.id (stdSimplex ℝ ι) := by
+        (fun i : ι ↦ coordinateSingle (S := ℝ) i) =
+      ContinuousMap.id (coordinateSet ℝ ι) := by
   apply ContinuousMap.ext
   intro x
   apply Subtype.ext
   funext a
-  change (∑ i, x i * stdSimplex.vertex (S := ℝ) i a) = x a
+  change (∑ i, x.val i * (Pi.single i 1 : ι → ℝ) a) = x.val a
   classical
   rw [Finset.sum_eq_single a]
-  · simp [stdSimplex.vertex]
+  · simp
   · intro b _ hba
-    simp [stdSimplex.vertex, hba]
+    simp [Ne.symm hba]
   · simp
 
 
 theorem exists_affineStandardSimplexMap_eq_iterated
     (n k : ℕ) (w : BarycentricWord n k) :
-    ∃ v : Fin (n + 1) → stdSimplex ℝ (Fin (n + 1)),
+    ∃ v : Fin (n + 1) → coordinateSet ℝ (Fin (n + 1)),
       iteratedBarycentricSimplexMap n k w = affineStandardSimplexMap v := by
   induction k with
   | zero =>
-      refine ⟨fun i ↦ stdSimplex.vertex (S := ℝ) i, ?_⟩
+      refine ⟨fun i ↦ coordinateSingle (S := ℝ) i, ?_⟩
       rw [iteratedBarycentricSimplexMap_zero,
         affineStandardSimplexMap_vertex_eq_id]
   | succ k ih =>
@@ -288,7 +303,7 @@ theorem exists_affineStandardSimplexMap_eq_iterated
 
 theorem diam_range_affineStandardSimplexMap_comp_barycentric_le
     {n : ℕ} (hn : 0 < n)
-    (v : Fin (n + 1) → stdSimplex ℝ (Fin (n + 1)))
+    (v : Fin (n + 1) → coordinateSet ℝ (Fin (n + 1)))
     (σ : Equiv.Perm (Fin (n + 1))) :
     Metric.diam (Set.range ((affineStandardSimplexMap v).comp
       (barycentricPermutationSimplexMap σ))) ≤
@@ -313,12 +328,14 @@ theorem diam_range_affineStandardSimplexMap_comp_barycentric_le
   exact (dist_pi_le_iff hr).1 hkl i
 
 private theorem diam_univ_stdSimplex_le (ι : Type) [Fintype ι] :
-    Metric.diam (Set.univ : Set (stdSimplex ℝ ι)) ≤ 1 := by
+    Metric.diam (Set.univ : Set (coordinateSet ℝ ι)) ≤ 1 := by
   apply Metric.diam_le_of_forall_dist_le zero_le_one
   intro x _ y _
   rw [Subtype.dist_eq]
-  exact (Metric.dist_le_diam_of_mem (bounded_stdSimplex (ι := ι))
-    x.property y.property).trans diam_stdSimplex_le
+  exact (Metric.dist_le_diam_of_mem (isCompact_coordinateSet ℝ ι).isBounded
+    x.property y.property).trans (by
+      simpa only [range_weights_eq_coordinateSet] using
+        diam_range_toFun_comp_weights_subset_closedBall ι)
 
 theorem diam_range_iteratedBarycentricSimplexMap_le
     (n k : ℕ) (w : BarycentricWord n k) :
@@ -329,7 +346,7 @@ theorem diam_range_iteratedBarycentricSimplexMap_le
     rw [Metric.diam_subsingleton (s :=
       Set.range (iteratedBarycentricSimplexMap 0 k w)) (by
         intro x _ y _
-        exact Subsingleton.elim x y)]
+        exact (coordinateEquiv ℝ (Fin 1)).symm.injective (Subsingleton.elim _ _))]
     exact pow_nonneg (barycentricContractionFactor_nonneg 0) k
   · have hnpos : 0 < n := Nat.pos_of_ne_zero hn
     induction k with
@@ -366,10 +383,10 @@ theorem exists_pow_barycentricContractionFactor_lt
   exists_pow_lt_of_lt_one hε (barycentricContractionFactor_lt_one n)
 
 theorem standardSimplex_openCover_lebesgueNumber
-    {n : ℕ} {ι : Sort*} (U : ι → Set (stdSimplex ℝ (Fin (n + 1))))
+    {n : ℕ} {ι : Sort*} (U : ι → Set (coordinateSet ℝ (Fin (n + 1))))
     (hUopen : ∀ i, IsOpen (U i))
     (hUcover : Set.univ ⊆ ⋃ i, U i) :
-    ∃ δ > 0, ∀ x : stdSimplex ℝ (Fin (n + 1)),
+    ∃ δ > 0, ∀ x : coordinateSet ℝ (Fin (n + 1)),
       ∃ i, Metric.ball x δ ⊆ U i := by
   obtain ⟨δ, hδ, hball⟩ :=
     lebesgue_number_lemma_of_metric isCompact_univ hUopen hUcover
@@ -398,42 +415,48 @@ theorem isCompact_range_iteratedBarycentricSimplexMap
 
 theorem iteratedBarycentricSimplexMap_subordinate_of_diam_lt
     {n k : ℕ} {ι : Sort*}
-    (U : ι → Set (stdSimplex ℝ (Fin (n + 1))))
+    (U : ι → Set (coordinateSet ℝ (Fin (n + 1))))
     (w : BarycentricWord n k) {δ : ℝ} (_hδ : 0 < δ)
-    (hball : ∀ x : stdSimplex ℝ (Fin (n + 1)),
+    (hball : ∀ x : coordinateSet ℝ (Fin (n + 1)),
       ∃ i, Metric.ball x δ ⊆ U i)
     (hdiam : Metric.diam
       (Set.range (iteratedBarycentricSimplexMap n k w)) < δ) :
     ∃ i, Set.range (iteratedBarycentricSimplexMap n k w) ⊆ U i := by
-  apply subset_openCover_of_diam_lt_lebesgueNumber U
-    (Set.range_nonempty _) (isCompact_range_iteratedBarycentricSimplexMap n k w).isBounded
+  apply subset_openCover_of_diam_lt_lebesgueNumber
+    (K := Set.range (iteratedBarycentricSimplexMap n k w)) U
+    ⟨_, ⟨coordinateSingle (0 : Fin (n + 1)), rfl⟩⟩
+    (isCompact_range_iteratedBarycentricSimplexMap n k w).isBounded
     _hδ (fun x _ ↦ hball x) hdiam
 
 theorem singularSimplexIteratedBarycentricPiece_subordinate_of_diam_lt
     {X : Type} [TopologicalSpace X] {n : ℕ} {ι : Sort*}
     (U : ι → Set X) (hUopen : ∀ i, IsOpen (U i))
     (hUcover : Set.univ ⊆ ⋃ i, U i)
-    (s : C(stdSimplex ℝ (Fin (n + 1)), X)) :
+    (s : C(Convexity.StdSimplex ℝ (Fin (n + 1)), X)) :
     ∃ δ > 0, ∀ (k : ℕ) (w : BarycentricWord n k),
       Metric.diam (Set.range (iteratedBarycentricSimplexMap n k w)) < δ →
         ∃ i, Set.range (singularSimplexIteratedBarycentricPiece s w) ⊆ U i := by
   obtain ⟨δ, hδ, hball⟩ := standardSimplex_openCover_lebesgueNumber
-    (fun i ↦ s ⁻¹' U i) (fun i ↦ (hUopen i).preimage s.continuous) (by
+    (fun i ↦ (fun x => s ((coordinateHomeomorph ℝ (Fin (n + 1))).symm x)) ⁻¹' U i)
+    (fun i ↦ (hUopen i).preimage
+      (s.continuous.comp (coordinateHomeomorph ℝ (Fin (n + 1))).symm.continuous)) (by
       intro x _
-      have hx : s x ∈ ⋃ i, U i := hUcover (Set.mem_univ _)
+      have hx : s ((coordinateHomeomorph ℝ (Fin (n + 1))).symm x) ∈ ⋃ i, U i :=
+        hUcover (Set.mem_univ _)
       simpa only [Set.mem_iUnion, Set.mem_preimage] using hx)
   refine ⟨δ, hδ, fun k w hdiam ↦ ?_⟩
   obtain ⟨i, hi⟩ := iteratedBarycentricSimplexMap_subordinate_of_diam_lt
-    (fun i ↦ s ⁻¹' U i) w hδ hball hdiam
+    (fun i ↦ (fun x => s ((coordinateHomeomorph ℝ (Fin (n + 1))).symm x)) ⁻¹' U i)
+    w hδ hball hdiam
   refine ⟨i, ?_⟩
   rintro _ ⟨x, rfl⟩
-  exact hi ⟨x, rfl⟩
+  exact hi ⟨coordinateHomeomorph ℝ (Fin (n + 1)) x, rfl⟩
 
 theorem exists_iterate_singularSimplex_subordinate_openCover
     {X : Type} [TopologicalSpace X] {n : ℕ} {ι : Sort*}
     (U : ι → Set X) (hUopen : ∀ i, IsOpen (U i))
     (hUcover : Set.univ ⊆ ⋃ i, U i)
-    (s : C(stdSimplex ℝ (Fin (n + 1)), X)) :
+    (s : C(Convexity.StdSimplex ℝ (Fin (n + 1)), X)) :
     ∃ k : ℕ, ∀ w : BarycentricWord n k,
       ∃ i, Set.range (singularSimplexIteratedBarycentricPiece s w) ⊆ U i := by
   obtain ⟨δ, hδ, hsubordinate⟩ :=
@@ -447,7 +470,7 @@ theorem exists_iterate_singularSimplex_smallFor_twoSetCover
     {X : Type} [TopologicalSpace X] {n : ℕ}
     (V W : Set X) (hV : IsOpen V) (hW : IsOpen W)
     (hcover : V ∪ W = Set.univ)
-    (s : C(stdSimplex ℝ (Fin (n + 1)), X)) :
+    (s : C(Convexity.StdSimplex ℝ (Fin (n + 1)), X)) :
     ∃ k : ℕ, ∀ w : BarycentricWord n k,
       SingularSimplexSmallFor V W
         (singularSimplexIteratedBarycentricPiece s w) := by
@@ -512,6 +535,19 @@ theorem iteratedBarycentricPieceOfSingularSimplex_succ
     iteratedBarycentricSimplexMap_succ,
     toSSetObjEquiv_barycentricPieceOfSingularSimplex,
     ContinuousMap.comp_assoc]
+  ext x
+  simp only [ContinuousMap.comp_apply]
+  apply congrArg (X.toSSetObjEquiv _ s)
+  apply (coordinateHomeomorph ℝ (Fin (n + 1))).injective
+  change iteratedBarycentricSimplexMap n k (fun i ↦ w i.castSucc)
+      (barycentricPermutationSimplexMap (w (Fin.last k))
+        (coordinateHomeomorph ℝ (Fin (n + 1)) x)) =
+    iteratedBarycentricSimplexMap n k (fun i ↦ w i.castSucc)
+      (coordinateHomeomorph ℝ (Fin (n + 1))
+        ((coordinateHomeomorph ℝ (Fin (n + 1))).symm
+          (barycentricPermutationSimplexMap (w (Fin.last k))
+            (coordinateHomeomorph ℝ (Fin (n + 1)) x))))
+  rw [Homeomorph.apply_symm_apply]
 
 def barycentricWordSign {n k : ℕ} (w : BarycentricWord n k) : ℤ :=
   ∏ i, (Equiv.Perm.sign (w i) : ℤ)

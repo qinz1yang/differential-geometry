@@ -260,7 +260,6 @@ def GlobalStepInputs.monoOrder {p : CutoffParameters} {τ ε d : ℝ} {k j : ℕ
   endInput := G.endInput
   neckInput := G.neckInput.mono_order hjk hlow
   pieceInput := G.pieceInput
-  roundInput := G.roundInput
   cylinderInput := G.cylinderInput
   protectInput := G.protectInput
 

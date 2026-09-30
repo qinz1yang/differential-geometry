@@ -86,7 +86,7 @@ theorem exists_open_orientedChartSimplex (o : TangentOrientationSection M) (p : 
         ((congrArg (Orientation.map (Fin 3) L.toLinearEquiv) (hconst y hy)).trans hL)
   obtain ⟨r, hr, hins⟩ := compact_family_small_scaling positiveTetrahedron
     e.open_target (e.map_source hyE)
-  have hins' : ∀ q : stdSimplex ℝ (Fin 4),
+  have hins' : ∀ q : Convexity.StdSimplex ℝ (Fin 4),
       e y + r • positiveTetrahedron q ∈ e.target :=
     hins r ⟨hr.le, le_rfl⟩
   exact ⟨{

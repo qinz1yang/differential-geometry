@@ -179,7 +179,7 @@ theorem ancient_redLength_hamilton_jacobi_eq_of_mdifferentiableAt
     change gradientFun (F.S.base.metric (-tau)) ((2 * b) • phi (b ^ 2)) q = _
     rw [hb2, gradientFun_const_smul _ _ hspace]
   rw [hcostTime.deriv, hgrad, hb2,
-    DifferentialGeometry.Analysis.Laplacian.metric_inner_smul_self] at hHJ
+    DifferentialGeometry.SmoothRiemannianMetric.metric_inner_smul_self] at hHJ
   have halgebra : 4 * tau *
       (deriv (fun a ↦ phi a q) tau +
         (1 / 2 : ℝ) * (F.S.base.metric (-tau)).inner q

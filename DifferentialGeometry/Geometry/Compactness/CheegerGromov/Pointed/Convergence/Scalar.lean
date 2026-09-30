@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.Scalar
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
-import DifferentialGeometry.Tensor.Metric.CompactBounds
+import DifferentialGeometry.Geometry.Metric.Tensor.CompactBounds
 import Mathlib.Topology.UniformSpace.UniformApproximation
 
 set_option autoImplicit false

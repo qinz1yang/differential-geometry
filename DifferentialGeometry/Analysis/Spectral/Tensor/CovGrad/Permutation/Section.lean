@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Norm
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_add_le_sq_sqrt riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -73,8 +76,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le
         (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1) P)).toSection x from by
     rw [SmoothCcTensor.toSection_smul]
     rfl]
-  rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul,
-    DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+  rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul,
+    DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
   rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection
     (I := I) (M := M) g (Equiv.swap (0 : Fin 2) 1) P k x]
   set A := riemannianFiberNormSq (I := I) (M := M) g 0 (2 + k) x

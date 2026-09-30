@@ -1,11 +1,9 @@
 import DifferentialGeometry.Topology.ProjectiveSpace.CylinderDiagonalSlab
-import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeomorph
 
 section
 open private closedSlab closedSlab_eq_image exists_normalized_slab_collar
   frontier_image_positive_tube disjoint_frontier_image_closedSlab
   from DifferentialGeometry.Topology.ProjectiveSpace.CylinderDiagonalSlab
-open private exists_diffeomorph_orbitQuotient from DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeomorph
 
 noncomputable section
 
@@ -36,35 +34,23 @@ private theorem exists_geometry_normalized_slab_collar
       frontier (tube '' (univ ×ˢ Icc (0 : ℝ) 1)) = frontier K ∪ frontier U ∧
       Disjoint (frontier K) (frontier U) := by
   intro K U
-  obtain ⟨e, he⟩ := exists_diffeomorph_orbitQuotient
-  let D := e.trans d
-  have himages (A : Set (S × ℝ)) : D '' (proj '' A) =
-      d '' (Geometry.cylinderDiagonalQuotientMap '' A) := by
-    rw [image_image, image_image]
-    apply image_congr
-    intro p _
-    exact congrArg d (he p)
-  have hslabs (a : ℝ) : D '' closedSlab a =
-      d '' (Geometry.cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-a) a)) := by
-    rw [closedSlab_eq_image]
-    exact himages _
+  have hslabs (a : ℝ) : d '' closedSlab a =
+      d '' (Geometry.cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-a) a)) :=
+    congrArg (Set.image d) (closedSlab_eq_image a)
   obtain ⟨tube, htube, hdomain, himage, hin, hout, hunion, hinter⟩ :=
-    exists_normalized_slab_collar D hL hLR
-  refine ⟨tube, ?_, hdomain, himage.trans (himages _), ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · intro p
-    rw [htube]
-    exact congrArg d (he _)
+    exists_normalized_slab_collar d hL hLR
+  refine ⟨tube, htube, hdomain, himage, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · simpa only [hslabs, K] using hin
   · simpa only [hslabs, U] using hout
   · simpa only [hslabs, K, U] using hunion
   · simpa only [hslabs, K] using hinter
   · rw [himage]
-    have h := frontier_image_positive_tube D.toHomeomorph hL hLR.le
-    change frontier (D '' (proj '' (univ ×ˢ Icc L R))) =
-      frontier (D '' closedSlab L) ∪ frontier (D '' closedSlab R) at h
+    have h := frontier_image_positive_tube d.toHomeomorph hL hLR.le
+    change frontier (d '' (proj '' (univ ×ˢ Icc L R))) =
+      frontier (d '' closedSlab L) ∪ frontier (d '' closedSlab R) at h
     simpa only [hslabs, K, U] using h
-  · have h := disjoint_frontier_image_closedSlab D.toHomeomorph hL (hL.trans hLR) hLR.ne
-    change Disjoint (frontier (D '' closedSlab L)) (frontier (D '' closedSlab R)) at h
+  · have h := disjoint_frontier_image_closedSlab d.toHomeomorph hL (hL.trans hLR) hLR.ne
+    change Disjoint (frontier (d '' closedSlab L)) (frontier (d '' closedSlab R)) at h
     simpa only [hslabs, K, U] using h
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.CylinderDiagonalQuotient
@@ -74,8 +60,8 @@ end
 end
 
 section
-open private closedSlab closedSlab_eq_image preimage_interior_closedSlab from DifferentialGeometry.Topology.ProjectiveSpace.CylinderDiagonalSlab
-open private exists_diffeomorph_orbitQuotient from DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeomorph
+open private closedSlab closedSlab_eq_image preimage_interior_closedSlab
+  from DifferentialGeometry.Topology.ProjectiveSpace.CylinderDiagonalSlab
 
 noncomputable section
 
@@ -88,25 +74,15 @@ open KappaSolutions.CylinderDiagonalQuotient
 
 private theorem diagonalSlab_mem_interior_iff
     {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-    (d : Geometry.CylinderDiagonalQuotient ≃ₘ⟮((𝓡 2).prod 𝓘(ℝ, ℝ)), (𝓡 3)⟯ M) (L : ℝ) (p : (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × ℝ)) :
+    (d : Geometry.CylinderDiagonalQuotient ≃ₘ⟮((𝓡 2).prod 𝓘(ℝ, ℝ)), (𝓡 3)⟯ M)
+    (L : ℝ) (p : (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × ℝ)) :
     d (Geometry.cylinderDiagonalQuotientMap p) ∈
       interior (d '' (Geometry.cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-L) L))) ↔
         |p.2| < L := by
-  obtain ⟨e,he⟩ := exists_diffeomorph_orbitQuotient
-  let D := e.trans d
-  have hr : D '' closedSlab L =
-      d '' (Geometry.cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-L) L)) := by
-    rw [closedSlab_eq_image, Set.image_image, Set.image_image]
-    apply Set.image_congr
-    intro q hq
-    change d (e (proj q)) = d (Geometry.cylinderDiagonalQuotientMap q)
-    rw [he q]
-  have heval : D (proj p) = d (Geometry.cylinderDiagonalQuotientMap p) := by
-    change d (e (proj p)) = _
-    rw [he p]
-  rw [← hr, ← heval]
-  change D.toHomeomorph (proj p) ∈ interior (D.toHomeomorph '' closedSlab L) ↔ _
-  rw [← D.toHomeomorph.image_interior, D.toHomeomorph.injective.mem_set_image]
+  change d.toHomeomorph (proj p) ∈
+    interior (d.toHomeomorph '' (proj '' (univ ×ˢ Icc (-L) L))) ↔ _
+  rw [← closedSlab_eq_image, ← d.toHomeomorph.image_interior,
+    d.toHomeomorph.injective.mem_set_image]
   change p ∈ proj ⁻¹' interior (closedSlab L) ↔ _
   rw [preimage_interior_closedSlab]
   simp only [mem_prod, mem_univ, true_and, mem_Ioo, abs_lt]

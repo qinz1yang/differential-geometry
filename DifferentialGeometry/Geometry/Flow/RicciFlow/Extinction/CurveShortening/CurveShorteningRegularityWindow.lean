@@ -1,5 +1,5 @@
 import Mathlib.Order.Interval.Set.Basic
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
 

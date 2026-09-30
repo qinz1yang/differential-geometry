@@ -36,7 +36,7 @@ theorem framedExpMap_radial_lower_bound
     |inner ℝ z v| ≤ ‖z‖ * Real.sqrt (g.inner (framedExpMap g p z)
       (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) z v)
       (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) z v)) := by
-  have h := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+  have h := DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
     g (framedExpMap g p z) (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) z z)
       (mfderiv 𝓘(ℝ, E) I (framedExpMap g p) z v)
   rw [gauss_lemma_framedExpMap g p v hz, gauss_lemma_framedExpMap g p z hz,

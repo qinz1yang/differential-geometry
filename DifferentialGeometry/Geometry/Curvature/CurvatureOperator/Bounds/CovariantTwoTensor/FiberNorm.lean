@@ -2,6 +2,19 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Covarian
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.OrthonormalFrame.Tensor02
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+
+open DifferentialGeometry.TensorMetric
+  (dualTensorFrame
+    exists_tangent_orthonormalBasis_with_norm_sum
+    fiberNormSqComponent
+    fiberNormSqComponent_smul
+    fiberNormSqComponent_sum
+    fiberNormSqSummand
+    fiberNormSqSummand_eq_component_sq
+    riemannianFiberNormSq
+    riemannianFiberNormSq_eq_sum_component_sq
+    riemannianFiberNormSq_nonneg
+    tensor_dualFrame_expansion)
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

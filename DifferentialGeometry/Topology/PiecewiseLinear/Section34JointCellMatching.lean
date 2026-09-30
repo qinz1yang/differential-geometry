@@ -91,10 +91,10 @@ theorem exists_section34_joint_cell_matching
   have hθ (w : Section34VertexIndex 𝒦 𝒦') (e : Section34EdgeIndex 𝒦 𝒦') :
       IsPLHomeomorphInto 3 (θ w e) (Dd e) ∧ θ w e '' Dd e = Dd e := by
     by_cases he : w = (ends e).1
-    · simpa only [θ, if_pos he, image_id] using
+    · simpa only [θ, ite_eq_left he, image_id] using
         (show IsPLHomeomorphInto 3 (id : M₂ → M₂) (Dd e) ∧ Dd e = Dd e from
           ⟨isPLHomeomorphInto_id_of_cell (hDd e), rfl⟩)
-    · simpa only [θ, if_neg he] using ⟨(hδ e).1, (hδ e).2.1⟩
+    · simpa only [θ, ite_eq_right he] using ⟨(hδ e).1, (hδ e).2.1⟩
   have hNpoint (w : Section34VertexIndex 𝒦 𝒦') :
       ∃ N : M₂ → M₂, IsPLHomeomorphInto 3 N (Dv w) ∧ N '' Dv w = Dv w ∧
         ∀ e, (w = (ends e).1 ∨ w = (ends e).2) → EqOn N (θ w e) (Dd e) := by
@@ -112,9 +112,9 @@ theorem exists_section34_joint_cell_matching
           exact hr.isPLSphere_image_stdSimplexBoundary (n := 1)
         apply (isPLCirclePositive_id hS).of_eqOn
         rintro _ ⟨x, hx, rfl⟩
-        simp only [θ, if_pos hi, Function.comp_apply, id_eq]
+        simp only [θ, ite_eq_left hi, Function.comp_apply, id_eq]
         exact (b w).right_inv ((b w).map_source (hJib hx))
-      · simpa only [θ, if_neg hi] using (hδ i.1).2.2.2 (b w) hJib
+      · simpa only [θ, ite_eq_right hi] using (hδ i.1).2.2.2 (b w) hJib
     obtain ⟨N, hN, hNim, hND⟩ := (hDv w).exists_extension_of_positive_disk_family
       (fun i : I => hDi i) (fun i : I => hDBi i) (fun i j hij => hdisi hij)
       (hb w) ((hDvQ w).trans (hbQ w)) (fun i : I => (hθ w i.1).1)
@@ -141,8 +141,8 @@ theorem exists_section34_joint_cell_matching
       hRD (ends e).2 e (Or.inr rfl) ▸ mem_image_of_mem (R (ends e).2) hx
     have h₁ := hND (ends e).1 e (Or.inl rfl) hx₁
     have h₂ := hND (ends e).2 e (Or.inr rfl) hx₂
-    simp only [θ, if_pos rfl, id_eq] at h₁
-    simp only [θ, if_neg (hends e).1.symm] at h₂
+    simp only [θ, ite_eq_left rfl, id_eq] at h₁
+    simp only [θ, ite_eq_right (hends e).1.symm] at h₂
     exact h₁.trans (((hδ e).2.2.1 hx).symm.trans h₂.symm)
   have hcompat (w w' : Section34VertexIndex 𝒦 𝒦') :
       EqOn (F w) (F w') (src (.vertexBall w) ∩ src (.vertexBall w')) := by

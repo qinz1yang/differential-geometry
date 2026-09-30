@@ -248,51 +248,51 @@ theorem invVelocityConfiguration_tail
     apply he.congr_eventually hV
     · filter_upwards [eventually_ge_atTop N] with n hn
       intro z hz
-      simp only [e', if_pos hn]
+      simp only [e', ite_eq_left hn]
     · intro z hz
       rfl
   have hcfg' : MapCInfConvergenceOnCompacts U configuration' configurationInf := by
     apply hcfg.congr_eventually hU
     · filter_upwards [eventually_ge_atTop N] with n hn
       intro z hz
-      simp only [configuration', if_pos hn]
+      simp only [configuration', ite_eq_left hn]
     · intro z hz
       rfl
   have hctr' : MapCInfConvergenceOnCompacts U ctr' ctrInf := by
     apply hctr.congr_eventually hU
     · filter_upwards [eventually_ge_atTop N] with n hn
       intro z hz
-      simp only [ctr', if_pos hn]
+      simp only [ctr', ite_eq_left hn]
     · intro z hz
       rfl
   have hec' : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
       ((e' n).symm : E × E → E × E) V := by
     intro n
     by_cases hn : N ≤ n
-    · simpa only [e', if_pos hn] using (hN n hn).1
-    · simpa only [e', if_neg hn] using heInfC
+    · simpa only [e', ite_eq_left hn] using (hN n hn).1
+    · simpa only [e', ite_eq_right hn] using heInfC
   have hcfgC' : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (configuration' n) U := by
     intro n
     by_cases hn : N ≤ n
-    · simpa only [configuration', if_pos hn] using hcfgC n
-    · simpa only [configuration', if_neg hn] using hcfgInfC
+    · simpa only [configuration', ite_eq_left hn] using hcfgC n
+    · simpa only [configuration', ite_eq_right hn] using hcfgInfC
   have hctrC' : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (ctr' n) U := by
     intro n
     by_cases hn : N ≤ n
-    · simpa only [ctr', if_pos hn] using hctrC n
-    · simpa only [ctr', if_neg hn] using hctrInfC
+    · simpa only [ctr', ite_eq_left hn] using hctrC n
+    · simpa only [ctr', ite_eq_right hn] using hctrInfC
   have hmap' : ∀ n z, z ∈ U → ∀ i,
       (ctr' n z, (configuration' n z).2 i) ∈ V := by
     intro n z hz i
     by_cases hn : N ≤ n
-    · simpa only [ctr', configuration', if_pos hn] using (hN n hn).2 z hz i
-    · simpa only [ctr', configuration', if_neg hn] using hmapInf z hz i
+    · simpa only [ctr', configuration', ite_eq_left hn] using (hN n hn).2 z hz i
+    · simpa only [ctr', configuration', ite_eq_right hn] using hmapInf z hz i
   have hfilled := invVelocityConfiguration_convergence hU hV he' hcfg' hctr' hec' heInfC
     hcfgC' hcfgInfC hctrC' hctrInfC hmap' hmapInf
   apply hfilled.congr_eventually hU
   · filter_upwards [eventually_ge_atTop N] with n hn
     intro z hz
-    simp only [e', configuration', ctr', if_pos hn]
+    simp only [e', configuration', ctr', ite_eq_left hn]
   · intro z hz
     rfl
 

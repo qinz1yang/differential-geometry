@@ -17,7 +17,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem exists_isPLHomeomorphOn_box {a b c d : ℝ} (hab : a < b) (hcd : c < d) :
-    ∃ q : (Fin 3 → ℝ) → ℝ × ℝ, IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (Icc a b ×ˢ Icc c d) ∧
+    ∃ q : (Fin 3 → ℝ) → ℝ × ℝ, IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (Icc a b ×ˢ Icc c d) ∧
       q '' stdSimplexBoundary 2 = frontier (Icc a b ×ˢ Icc c d) := by
   classical
   have hC : IsHPolytope (Icc a b ×ˢ Icc c d) := isHPolytope_Icc.prod isHPolytope_Icc
@@ -68,7 +68,7 @@ theorem notMem_frontier_box {a b c d : ℝ} {w : ℝ × ℝ} (h1 : w.1 ∈ Ioo a
 theorem IsPseudoCell.exists_localDisk {Ec Eint Ebd : Set E3} {P : E3}
     (hpc : IsPseudoCell Ec Eint Ebd P) {y : E3} (hy : y ∈ Eint) (hyP : y ≠ P) {O : Set E3}
     (hO : O ∈ 𝓝 y) :
-    ∃ (D W : Set E3) (q : (Fin 3 → ℝ) → E3), IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+    ∃ (D W : Set E3) (q : (Fin 3 → ℝ) → E3), IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ Ec ∩ O ∧ IsOpen W ∧ y ∈ W ∧ W ∩ Ec ⊆ D ∧ Disjoint W (q '' stdSimplexBoundary 2) := by
   obtain ⟨U, V, φ, hU, hV, hyU, hUO, hφ, hE⟩ := hpc.exists_flatChart hy hyP hO
   have hφV : ∀ z ∈ U, φ z ∈ V := fun z hz => hφ.bijOn.mapsTo hz
@@ -211,7 +211,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_sideDisk
     {M : Set E3} (hMc : IsClosed M) (hMSd : M ⊆ Sd)
     (hMint : ∀ᶠ z in 𝓝 y, z ∈ M → z ∉ frontier XK.space → M ∈ 𝓝 z)
     (hMy : y ∈ closure (M \ frontier XK.space)) {O : Set E3} (hO : O ∈ 𝓝 y) :
-    ∃ (Dk W : Set E3) (q : (Fin 3 → ℝ) → E3), IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Dk ∧
+    ∃ (Dk W : Set E3) (q : (Fin 3 → ℝ) → E3), IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Dk ∧
       Dk ⊆ Ec e ∩ M ∩ O ∧ IsOpen W ∧ y ∈ W ∧ W ∩ Ec e ∩ M ⊆ Dk ∧
       ∀ z ∈ W ∩ Dk, (z ∈ q '' stdSimplexBoundary 2 ↔ z ∈ frontier XK.space) := by
   classical

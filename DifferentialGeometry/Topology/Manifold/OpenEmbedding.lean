@@ -30,7 +30,7 @@ def diffeomorphOntoImage (f : M → N) (hf : IsLocalDiffeomorph I J ∞ f)
   have hsmooth : ContMDiffAt J I ∞ (fun z : hf.image ↦ (hf x).localInverse z) y := by
     apply contMDiffAt_subtype_iff.mpr
     rw [← hxy]
-    exact (hf x).localInverse_contMDiffAt
+    exact (hf x).contMDiffAt_localInverse
   apply hsmooth.congr_of_eventuallyEq
   have hnear : ∀ᶠ z : hf.image in 𝓝 y, (z : N) ∈ (hf x).localInverse.source :=
     continuous_subtype_val.continuousAt.preimage_mem_nhds

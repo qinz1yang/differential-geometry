@@ -152,7 +152,7 @@ theorem reverseJetOne
       iterCov (I := I) g₀ 2 (metricTensorField (I := I) gBase) 1 x =
         -(diffStep (I := I) gBase g₀ 2 (metricTensorField (I := I) gBase) x) := by
     exact congrArg (fun S => S x) hfield
-  rw [hneg, Tensor0SBundle.normSq0S_neg]
+  rw [hneg, DifferentialGeometry.Tensor0SBundle.normSq0S_neg]
   have hstep := diffStep_jet_one_le (I := I) gBase g₀ 2
     (metricTensorField (I := I) gBase) hEq hjet1 (Set.mem_univ x)
   have hmetric := sqrt_normSq0S_comp (I := I) hEq (Set.mem_univ x) 2

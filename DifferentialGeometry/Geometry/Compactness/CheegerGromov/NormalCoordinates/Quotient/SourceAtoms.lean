@@ -119,7 +119,7 @@ theorem IntrinsicBallChart.eventually_chart_active_atoms [Fintype ι] :
     let : Nonempty (D.U i) := ⟨⟨0, Metric.mem_ball_self (by positivity)⟩⟩
     have hchange : atom k z i = D.chartMap i (fun w : U => (c i k).hom w)
         (D.toGlueData.ι j z) := by
-      exact dif_pos z.property
+      exact dite_eq_left z.property
     exact hchange.trans (IntrinsicBallChart.chartMap_apply_transition
       g hEnorm x hρ c near hclass J hcont hconv i j k z hji hJi)
   have htarget : ∀ᶠ k in atTop, ∀ z ∈ K, ∀ i, weights z i ≠ 0 →
@@ -148,7 +148,7 @@ theorem IntrinsicBallChart.eventually_chart_active_atoms [Fintype ι] :
     change ((nc k).recenter a hr (hball k)).inv (atom k z i) ∈ Metric.ball (0 : E) r at hm
     rw [h.2.1] at hm
     exact hm
-  · exact h.1.trans (dif_pos z.property)
+  · exact h.1.trans (dite_eq_left z.property)
 
 end DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 end

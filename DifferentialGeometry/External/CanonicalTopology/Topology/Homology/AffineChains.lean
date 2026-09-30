@@ -37,7 +37,7 @@ theorem affineSingularSimplex_injective (n : ℕ) :
   rw [Equiv.apply_symm_apply, Equiv.apply_symm_apply] at he
   funext i
   simpa only [affineSimplexMap_vertex] using congrArg
-    (fun F : C(stdSimplex ℝ (Fin (n + 1)), E) => F (stdSimplex.vertex i)) he
+    (fun F : C(Convexity.StdSimplex ℝ (Fin (n + 1)), E) => F (Convexity.StdSimplex.single i)) he
 
 /-- The actual cone with a new first vertex has the original face as its
 zeroth face and the negatively signed cones of the original remaining faces. -/

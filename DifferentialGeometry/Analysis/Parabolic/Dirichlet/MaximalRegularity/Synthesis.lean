@@ -43,8 +43,8 @@ private theorem norm_dirichletHsBasisVec {σ : ℝ}
     funext j
     rw [DirichletHs.basisVec_coeff]
     by_cases hj : j = i
-    · rw [if_pos hj, if_pos hj, one_pow, mul_one]
-    · rw [if_neg hj, if_neg hj, zero_pow (by norm_num), mul_zero]
+    · rw [ite_eq_left hj, ite_eq_left hj, one_pow, mul_one]
+    · rw [ite_eq_right hj, ite_eq_right hj, zero_pow (by norm_num), mul_zero]
   rw [hfun, tsum_ite_eq i (fun j => dirichletSobolevWeight j σ)]
 
 private def singleModeCLM {σ : ℝ}
@@ -74,8 +74,8 @@ private theorem singleModeCLM_coeff {σ : ℝ}
   rw [singleModeCLM_apply]
   simp only [DirichletHs.smul_coeff, DirichletHs.basisVec_coeff]
   by_cases hj : j = i
-  · rw [if_pos hj, if_pos hj, mul_one]
-  · rw [if_neg hj, if_neg hj, mul_zero]
+  · rw [ite_eq_left hj, ite_eq_left hj, mul_one]
+  · rw [ite_eq_right hj, ite_eq_right hj, mul_zero]
 
 variable {σ : ℝ} {T : ℝ}
 
@@ -110,14 +110,14 @@ private theorem timeModeCoeff_singleModeTimeL2
     intro t
     simp only [DirichletHs.smul_coeff, DirichletHs.basisVec_coeff]
     by_cases hj : j = i
-    · rw [if_pos hj, if_pos hj, mul_one]
-    · rw [if_neg hj, if_neg hj, mul_zero]
+    · rw [ite_eq_left hj, ite_eq_left hj, mul_one]
+    · rw [ite_eq_right hj, ite_eq_right hj, mul_zero]
   by_cases hj : j = i
   · filter_upwards [hlhs, hsm] with t ht hsmt
-    rw [ht, hsmt, hcoord t, if_pos hj, if_pos hj]
+    rw [ht, hsmt, hcoord t, ite_eq_left hj, ite_eq_left hj]
   · have hzero := Lp.coeFn_zero (E := ℝ) (p := 2) (μ := timeMeasure T)
     filter_upwards [hlhs, hsm, hzero] with t ht hsmt hzt
-    rw [ht, hsmt, hcoord t, if_neg hj, if_neg hj, hzt]
+    rw [ht, hsmt, hcoord t, ite_eq_right hj, ite_eq_right hj, hzt]
     rfl
 
 private theorem norm_singleModeTimeL2_sq (i : DirichletLaplacianEigenIndex g)
@@ -163,8 +163,8 @@ private theorem inner_dirichletHsBasisVec_eq_zero
     funext k
     rw [DirichletHs.basisVec_coeff, DirichletHs.basisVec_coeff]
     by_cases hki : k = i
-    · rw [if_pos hki, if_neg (by rw [hki]; exact hij), mul_zero, mul_zero]
-    · rw [if_neg hki, zero_mul, mul_zero]
+    · rw [ite_eq_left hki, ite_eq_right (by rw [hki]; exact hij), mul_zero, mul_zero]
+    · rw [ite_eq_right hki, zero_mul, mul_zero]
   rw [hterm, tsum_zero]
 
 private theorem inner_singleModeTimeL2_eq_zero
@@ -293,8 +293,8 @@ theorem timeL2OfModes_timeModeCoeff
     funext i
     rw [timeModeCoeff_singleModeTimeL2 i j (gFam i)]
     by_cases hij : i = j
-    · rw [if_pos hij, if_pos (by rw [hij])]
-    · rw [if_neg hij, if_neg (fun h => hij h.symm)]
+    · rw [ite_eq_left hij, ite_eq_left (by rw [hij])]
+    · rw [ite_eq_right hij, ite_eq_right (fun h => hij h.symm)]
   rw [hterm, tsum_ite_eq j gFam]
 
 end MaximalRegularity

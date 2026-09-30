@@ -32,7 +32,7 @@ theorem rfsHomotopyGroupsHypothesis_of_inputs {M : Type u} [TopologicalSpace M]
   ⟨hH₂, hgen, hHLD⟩
 
 theorem rfsHomotopyGroupsHypothesis_of_subsingleton_punctured_homology_two {M : Type u}
-    [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
+    [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [T2Space M] [CompactSpace M] [SimplyConnectedSpace M] (x : M)
     (hH₂ : Subsingleton (integralSingularHomology 2 ({x}ᶜ : Set M)))
     (hgen : DifferentialGeometry.Topology.IsSphereHomologyGenerator.{u} 2

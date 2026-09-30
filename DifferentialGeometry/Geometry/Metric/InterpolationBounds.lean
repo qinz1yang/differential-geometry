@@ -69,7 +69,7 @@ theorem exists_geodesicInterpolation_ambient_bound (g : SmoothRiemannianMetric �
       fun x v => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := 𝓘(ℝ, E)) g x v
     have hG : geodesicInterpolation g = shortGeodesic g hg := by
       funext x y t
-      simp only [geodesicInterpolation, dif_neg hdim]
+      simp only [geodesicInterpolation, dite_eq_right hdim]
       rfl
     erw [hG]
     exact exists_ambientShortGeodesic_bound g hg he.continuous hU heU hr hleft
@@ -85,7 +85,7 @@ theorem riemannianEDistOf_geodesicInterpolation
   · let : Subsingleton M := subsingleton_of_zero_model hdim
     have hyx : y = x := Subsingleton.elim y x
     subst hyx
-    simp only [geodesicInterpolation, dif_pos hdim, riemannianEDistOf_self, mul_zero]
+    simp only [geodesicInterpolation, dite_eq_left hdim, riemannianEDistOf_self, mul_zero]
   · let : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
     let : RiemannianBundle (TangentSpace 𝓘(ℝ, E) : M → Type _) := ⟨g.toRiemannianMetric⟩
     let : IsContinuousRiemannianBundle E (TangentSpace 𝓘(ℝ, E) : M → Type _) :=
@@ -99,7 +99,7 @@ theorem riemannianEDistOf_geodesicInterpolation
     have hr0 : 0 ≤ r := ENNReal.toReal_nonneg
     have hshort (u : ℝ) : geodesicInterpolation g x y u = γ u := by
       have h1 : geodesicInterpolation g x y u = shortGeodesic g hg x y u := by
-        simp only [geodesicInterpolation, dif_neg hdim]
+        simp only [geodesicInterpolation, dite_eq_right hdim]
         rfl
       rw [h1, shortGeodesic_eq_exp, expMapIntrinsic_def, intrinsicGeodesic_smul]
     have hγ0 : γ 0 = x := intrinsicGeodesic_zero (I := 𝓘(ℝ, E)) g hg x v

@@ -158,7 +158,7 @@ theorem chart_displacement_le_pathELength
         simpa only [norm_g] using hbound t ht _
       have hn := ENNReal.ofReal_le_ofReal hnorm
       simp only [ENNReal.ofReal_mul hK, ofReal_norm] at hn
-      convert hn using 1; rfl
+      convert hn using 1
     _ = ENNReal.ofReal K * pathELength I γ 0 1 := by
       rw [MeasureTheory.lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,
         pathELength_eq_lintegral_mfderivWithin_Icc]

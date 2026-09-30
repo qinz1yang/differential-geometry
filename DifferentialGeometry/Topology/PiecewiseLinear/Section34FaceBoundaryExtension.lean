@@ -12,8 +12,8 @@ theorem exists_isPLHomeomorphOn_finite_ball_union_of_boundary_maps
     [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F] [Finite ι]
     {n : ℕ} {P : ι → Set E} {Q : ι → Set F}
     {r : ι → (Fin (n + 2) → ℝ) → E} {s : ι → (Fin (n + 2) → ℝ) → F}
-    (hr : ∀ i, IsPLHomeomorphOn (r i) (stdSimplex ℝ (Fin (n + 2))) (P i))
-    (hs : ∀ i, IsPLHomeomorphOn (s i) (stdSimplex ℝ (Fin (n + 2))) (Q i))
+    (hr : ∀ i, IsPLHomeomorphOn (r i) (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (P i))
+    (hs : ∀ i, IsPLHomeomorphOn (s i) (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (Q i))
     (hPinter : ∀ i j, i ≠ j → P i ∩ P j ⊆ r i '' stdSimplexBoundary (n + 1))
     (hQinter : ∀ i j, i ≠ j → Q i ∩ Q j ⊆ s i '' stdSimplexBoundary (n + 1))
     {φ : E → F}

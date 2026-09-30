@@ -1,9 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Existence
-import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.Cm
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Defs
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.Space
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
-import Mathlib.Geometry.Manifold.ContMDiff.Basic
+
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -14,7 +11,7 @@ open Bundle
 open scoped Manifold ContDiff
 open DifferentialGeometry.PDE.DeTurck
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -23,15 +20,15 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem c1_norm_time_continuous_from_h1_time_derivative
+theorem metric_inner_continuousOn_time_of_deTurck_solution
     (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (g_DT : ℝ → SmoothRiemannianMetric I M)
-    (_hsol : IsQuasilinearMetricParabolicSolution (I := I)
+    (hsol : IsQuasilinearMetricParabolicSolution (I := I)
               (deTurckRicciRHS (I := I) g_bg) (g_DT 0) T g_DT) :
     ∀ x : M, ∀ v w : TangentSpace I x,
       ContinuousOn (fun t : ℝ => (g_DT t).inner x v w)
         (Set.Ico (0 : ℝ) T) := by
-  obtain ⟨_hT, _hinit, hderiv⟩ := _hsol
+  obtain ⟨_hT, _hinit, hderiv⟩ := hsol
   intro x v w t ht
   have hcont_within_Ici :
       ContinuousWithinAt (fun s : ℝ => (g_DT s).inner x v w) (Set.Ici (0 : ℝ)) t :=

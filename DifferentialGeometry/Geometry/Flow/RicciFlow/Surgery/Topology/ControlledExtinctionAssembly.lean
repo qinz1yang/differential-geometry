@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Assembly
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
 import DifferentialGeometry.Topology.Manifold.CollarFamily
@@ -27,35 +28,6 @@ theorem seifertVanKampenPushout_holds :
   intro X _ U V hU hV hcover
   exact DifferentialGeometry.Topology.VanKampen.seifertVanKampen U V hU hV hcover
 
-theorem boundaryCollarGeometry_iff :
-    boundaryCollarGeometry.{u} ↔ relativeCollarUniqueness.{u} :=
-  ⟨fun h => h.2, fun h => ⟨disjointBoundaryCollarFamily_holds, h⟩⟩
-
-theorem geometricReconstructionBackground_iff :
-    geometricReconstructionBackground.{u} ↔
-      relativeCollarUniqueness.{u} ∧ ballEmbeddingIsotopy.{u} ∧
-        sphereDiffeomorphismIsotopyConnected :=
-  ⟨fun h => ⟨h.1.2, h.2.1, h.2.2.1⟩,
-    fun h => ⟨⟨disjointBoundaryCollarFamily_holds, h.1⟩, h.2.1, h.2.2,
-      seifertVanKampenPushout_holds⟩⟩
-
-theorem globalMetricStep_iff_globalStepConclusion
-    (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ) (a₀ : ℝ)
-    (DiscardedCutOpen : Type u → Prop)
-    (inputs : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) :
-    globalMetricStep p τ ε d k a₀ DiscardedCutOpen inputs ↔
-      GlobalStepConclusion.{u} p τ ε d k a₀ DiscardedCutOpen inputs :=
-  Iff.rfl
-
-theorem globalMetricStep_scale_positive
-    (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ) (a₀ : ℝ)
-    (DiscardedCutOpen : Type u → Prop)
-    (inputs : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen)
-    (h : globalMetricStep p τ ε d k a₀ DiscardedCutOpen inputs) :
-    ∃ hstar : ℝ, 0 < hstar ∧ 2 * hstar ^ 2 < τ := by
-  obtain ⟨hstar, hpos, hlt, _⟩ := h
-  exact ⟨hstar, hpos, hlt⟩
-
 def TangentOrientationSection.toManifoldOrientation {M : Type u} [TopologicalSpace M]
     [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
     (o : TangentOrientationSection M) : ManifoldOrientation ThreeModel M 3 where
@@ -65,8 +37,7 @@ def TangentOrientationSection.toManifoldOrientation {M : Type u} [TopologicalSpa
 
 theorem mfderivToContinuousLinearEquiv_toLinearEquiv_eq_ofBijective
     {M N : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] [TopologicalSpace N] [ChartedSpace ThreeSpace N]
-    [IsManifold ThreeModel ∞ N]
+    [TopologicalSpace N] [ChartedSpace ThreeSpace N]
     (f : M ≃ₘ⟮ThreeModel, ThreeModel⟯ N) (x : M)
     (hf : Function.Bijective (mfderiv ThreeModel ThreeModel f x)) :
     (f.mfderivToContinuousLinearEquiv (by simp) x).toLinearEquiv =
@@ -134,7 +105,7 @@ theorem exists_poincare_controlled_extinction_of_observedHistory
     Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
   have hn : 0 < H.eventCount :=
     @ObservedHistory.eventCount_pos_of_final_empty H A.initial_nonempty hempty
-  refine ⟨{ history := H.toSurgeryFiniteSurgeryHistory_of_cutCapCompletion hn hc hout
+  refine ⟨{ history := H.toSurgeryFiniteSurgeryHistoryOfCutCapCompletion hn hc hout
             time := H.time (Fin.last H.eventCount)
             time_pos := H.last_time_pos hn
             initial := A.toFiniteSurgeryHistory hn (H.toSurgeryEvents hc hout)

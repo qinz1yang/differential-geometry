@@ -294,9 +294,10 @@ private theorem exists_neck_of_cast_point {g : SmoothRiemannianMetric I3 M} {ε 
   subst hpq
   exact h
 
+omit [SigmaCompactSpace M] in
 private theorem exists_neck_of_alternative_pushforward_eq_neck
     {N : Type u} [TopologicalSpace N] [ChartedSpace ThreeSpace N] [IsManifold I3 ∞ N]
-    [T2Space N] [SigmaCompactSpace N] {g : SmoothRiemannianMetric I3 M}
+    [T2Space N] {g : SmoothRiemannianMetric I3 M}
     {h : SmoothRiemannianMetric I3 N} {eps C : ℝ} {x : N} {V : Set N}
     {A : SpatialCanonicalAlternative h eps C x V} {e : PartialDiffeomorph I3 I3 N M ∞}
     {hiso : ∀ z ∈ e.source, ∀ v w : TangentSpace I3 z,
@@ -367,6 +368,7 @@ private theorem exists_neck_of_witness_pushforward_eq_neck
     W.domain.compact (metricDistance_le_image W e hiso hR hcpt hsrc) hneck hcap = _ at heq
   exact exists_neck_of_alternative_pushforward_eq_neck heq
 
+omit [SigmaCompactSpace M] in
 private theorem exists_neck_of_alternative_scaleMetric_eq_neck
     {g : SmoothRiemannianMetric I3 M} {eps C : ℝ} {x : M} {V : Set M} {c : ℝ} {hc : 0 < c}
     {A : SpatialCanonicalAlternative g eps C x V}

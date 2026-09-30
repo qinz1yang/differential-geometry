@@ -53,13 +53,13 @@ theorem modelRadial_eq_of_ne_zero {K : Real} (hK : K ≠ 0) :
     modelRadial K =
       fun t : Real => Real.sinh (Real.sqrt (-K) * t) / Real.sqrt (-K) := by
   funext t
-  simp only [modelRadial, if_neg hK]
+  simp only [modelRadial, ite_eq_right hK]
 
 
 theorem modelRadialDeriv_eq_of_ne_zero {K : Real} (hK : K ≠ 0) :
     modelRadialDeriv K = fun t : Real => Real.cosh (Real.sqrt (-K) * t) := by
   funext t
-  simp only [modelRadialDeriv, if_neg hK]
+  simp only [modelRadialDeriv, ite_eq_right hK]
 
 
 theorem modelRadial_apply_of_eq_zero {K : Real} (hK : K = 0) (t : Real) :

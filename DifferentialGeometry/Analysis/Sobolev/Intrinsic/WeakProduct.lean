@@ -75,8 +75,8 @@ theorem HasWeakRiemannianGradLp.pairing_memLp
       (TangentBundle.continuous_g_inner_of_smooth_sections g X X)
   have hdom : MemLp (fun x => Real.sqrt (g.inner x (X x) (X x)) *
       Real.sqrt (g.inner x (G x) (G x))) p (riemannianVolumeMeasure I M g) :=
-    hGn.mul' (hX.memLp_top_of_hasCompactSupport (isClosed_tsupport _).isCompact
-      (riemannianVolumeMeasure I M g))
+    (hX.memLp_top_of_hasCompactSupport (isClosed_tsupport _).isCompact
+      (riemannianVolumeMeasure I M g)).fun_mul hGn
   refine hdom.mono (hG.pairing_aestronglyMeasurable X) (Eventually.of_forall fun x => ?_)
   rw [Real.norm_eq_abs, Real.norm_of_nonneg
     (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))]
@@ -166,7 +166,7 @@ theorem HasWeakRiemannianGradLp.smooth_mul_witness [I.Boundaryless]
   let Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG g ⟨φ, hφ⟩
   have hφtop : MemLp φ ⊤ μ :=
     hφ.continuous.memLp_top_of_hasCompactSupport (isClosed_tsupport _).isCompact μ
-  refine ⟨hu.mul' hφtop, ?_, ?_⟩
+  refine ⟨hφtop.fun_mul hu, ?_, ?_⟩
   · exact hG.smooth_mul (memLp_one_iff_integrable.mp (hu.mono_exponent hp))
       (memLp_one_iff_integrable.mp (hGn.mono_exponent hp)) hφ
   · change MemLp (fun x => Real.sqrt
@@ -206,7 +206,7 @@ theorem HasWeakRiemannianGradLp.smooth_mul_witness [I.Boundaryless]
     have hdom : MemLp (fun x =>
         ‖φ x‖ * Real.sqrt (g.inner x (G x) (G x)) +
           Real.sqrt (g.inner x (Z x) (Z x)) * ‖u x‖) p μ :=
-      (hGn.mul' hφtop.norm).add (hu.norm.mul' hZtop)
+      (hφtop.norm.fun_mul hGn).add (hZtop.fun_mul hu.norm)
     refine hdom.mono hnorm (Eventually.of_forall fun x => ?_)
     rw [Real.norm_of_nonneg (Real.sqrt_nonneg _), Real.norm_of_nonneg
       (add_nonneg (mul_nonneg (norm_nonneg _) (Real.sqrt_nonneg _))

@@ -1,7 +1,11 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Geometry.Connection.Coordinates.CovariantDerivativeComponents
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Higher
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Components
+
+open DifferentialGeometry.Analysis.Parabolic (towerReactionSum TowerHeatBoundOn)
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -77,10 +81,10 @@ theorem prod_delta_eq {r : ℕ} (m n : Fin r → Idx) :
   by_cases h : m = n
   · subst h
     simp
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     obtain ⟨s, hs⟩ := Function.ne_iff.mp h
     refine Finset.prod_eq_zero (Finset.mem_univ s) ?_
-    rw [if_neg hs]
+    rw [ite_eq_right hs]
 
 theorem multiNormInFrame_eq_compNormSqMulti {r : ℕ}
     (gInv : Idx → Idx → Real)
@@ -93,7 +97,7 @@ theorem multiNormInFrame_eq_compNormSqMulti {r : ℕ}
   rw [Finset.sum_eq_single m]
   · have hprod : (∏ s : Fin r, gInv (m s) (m s)) = 1 := by
       refine Finset.prod_eq_one fun s _ => ?_
-      rw [horth (m s) (m s), if_pos rfl]
+      rw [horth (m s) (m s), ite_eq_left rfl]
     rw [hprod]; ring
   · intro n _ hn
     have hprod : (∏ s : Fin r, gInv (m s) (n s)) = 0 := by
@@ -101,7 +105,7 @@ theorem multiNormInFrame_eq_compNormSqMulti {r : ℕ}
           ∏ s : Fin r, (if m s = n s then (1 : Real) else 0) := by
         refine Finset.prod_congr rfl fun s _ => ?_
         rw [horth (m s) (n s)]
-      rw [this, prod_delta_eq, if_neg (fun h => hn h.symm)]
+      rw [this, prod_delta_eq, ite_eq_right (fun h => hn h.symm)]
     rw [hprod]; ring
   · intro h; exact absurd (Finset.mem_univ m) h
 

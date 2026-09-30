@@ -142,7 +142,7 @@ theorem metricSourceCapture_of_metricComparisonOn
 
 end Capture
 
-noncomputable def pointedRiemannianConvergenceMaps_self
+noncomputable def pointedRiemannianConvergenceMapsSelf
     (P : PointedRiemannianManifold.{u, 0, 0} (I := I3)) :
     PointedRiemannianConvergenceMaps (I := I3)
       (⟨fun _ : ℕ => P⟩ : PointedRiemannianSeq.{u, 0, 0} (I := I3)) P id where
@@ -159,8 +159,8 @@ noncomputable def pointedRiemannianConvergenceMaps_self
 
 theorem metricSourceCapture_self (P : PointedRiemannianManifold.{u, 0, 0} (I := I3))
     (hcomplete : RiemannianMetricComplete (I := I3) P.metric) :
-    MetricSourceCapture (pointedRiemannianConvergenceMaps_self P) := by
-  refine metricSourceCapture_of_metricComparisonOn (pointedRiemannianConvergenceMaps_self P)
+    MetricSourceCapture (pointedRiemannianConvergenceMapsSelf P) := by
+  refine metricSourceCapture_of_metricComparisonOn (pointedRiemannianConvergenceMapsSelf P)
     hcomplete (fun _ => P.metric) rfl (fun _ _ => P.metric) (fun _ => rfl) ?_
   intro K _ A hA order eta heta
   filter_upwards with i
@@ -170,11 +170,11 @@ theorem metricSourceCapture_self (P : PointedRiemannianManifold.{u, 0, 0} (I := 
 theorem orientedConvergenceMaps_self (P : PointedRiemannianManifold.{u, 0, 0} (I := I3))
     (o : TangentOrientationSection P.M) :
     ∃ ori : TangentOrientationSection P.M, ∀ i y, y ∈
-        ((pointedRiemannianConvergenceMaps_self P).partialDiffeomorph i).source →
+        ((pointedRiemannianConvergenceMapsSelf P).partialDiffeomorph i).source →
       ∃ hf : Function.Bijective (mfderiv I3 I3
-          ((pointedRiemannianConvergenceMaps_self P).partialDiffeomorph i) y),
+          ((pointedRiemannianConvergenceMapsSelf P).partialDiffeomorph i) y),
         PreservesTangentOrientationAt ori o
-          ((pointedRiemannianConvergenceMaps_self P).partialDiffeomorph i) y hf := by
+          ((pointedRiemannianConvergenceMapsSelf P).partialDiffeomorph i) y hf := by
   refine ⟨o, fun i y _ => ⟨?_, ?_⟩⟩
   · have hd : mfderiv I3 I3 ((PartialDiffeomorph.refl (I := I3) P.M) : P.M → P.M) y =
         ContinuousLinearMap.id ℝ (TangentSpace I3 y) := mfderiv_id

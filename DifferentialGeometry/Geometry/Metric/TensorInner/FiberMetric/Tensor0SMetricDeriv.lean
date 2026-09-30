@@ -116,7 +116,7 @@ theorem coordContract_eq_coordInner0S {s : Nat} {x : M}
       coordInner0S (I := I) (x := x) s gInv A B basis := by
   rfl
 
-def ricReactionContract {s : Nat}
+def metricVariationContract {s : Nat}
     (gInv ric : Idx -> Idx -> Real)
     (cA cB : (Fin s -> Idx) -> Real) : Real :=
   2 * ∑ I0 : Fin s -> Idx, ∑ J0 : Fin s -> Idx,
@@ -125,21 +125,21 @@ def ricReactionContract {s : Nat}
           (∑ p : Idx, ∑ q : Idx, gInv (I0 b) p * gInv (J0 b) q * ric p q)) *
       cA I0 * cB J0
 
-def ricStarArray {s : ℕ}
+def covariantEndomorphismActionArray {s : ℕ}
     (ric : Idx → Idx → Real) (cB : (Fin s → Idx) → Real) :
     (Fin s → Idx) → Real :=
   fun I0 => ∑ b : Fin s, ∑ e : Idx,
     ric (I0 b) e * cB (Function.update I0 b e)
 
-theorem coordContractDt_eq_ricReactionContract {s : Nat}
+theorem coordContractDt_eq_metricVariationContract {s : Nat}
     (gInv gInvDt ric : Idx -> Idx -> Real)
     (cA cB : (Fin s -> Idx) -> Real)
     (hflow : ∀ i j : Idx,
       gInvDt i j = 2 * (∑ p : Idx, ∑ q : Idx, gInv i p * gInv j q * ric p q)) :
     coordContractDt gInv gInvDt cA cB =
-      ricReactionContract gInv ric cA cB := by
+      metricVariationContract gInv ric cA cB := by
   classical
-  unfold coordContractDt ricReactionContract
+  unfold coordContractDt metricVariationContract
   have hsub :
       (∑ I0 : Fin s -> Idx, ∑ J0 : Fin s -> Idx,
           (∑ b : Fin s,
@@ -280,11 +280,11 @@ private theorem eval2_sum_right {Idx : Type*} [Fintype Idx] {x : M}
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [hupdate]
 
-theorem ricReact_one {x : M}
+theorem metricVariationContract_one {x : M}
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Q : Tensor0SSpace 2 I x) (A B : Tensor0SSpace 1 I x) :
-    ricReactionContract
+    metricVariationContract
         (basisInvMetric (I := I) g x basis)
         (fun i j => Q (fun a : Fin 2 => if a = 0 then basis i else basis j))
         (fun I0 => tensor0SComponent (I := I) A (fun i => basis i) I0)
@@ -299,13 +299,13 @@ theorem ricReact_one {x : M}
   let q : Idx -> Idx -> Real := fun i j =>
     Q (fun k : Fin 2 => if k = 0 then basis i else basis j)
   have hreact :
-      ricReactionContract gInv q
+      metricVariationContract gInv q
           (fun I0 => tensor0SComponent (I := I) A (fun i => basis i) I0)
           (fun J0 => tensor0SComponent (I := I) B (fun i => basis i) J0) =
         2 * ∑ i : Idx, ∑ j : Idx,
           (∑ p : Idx, ∑ r : Idx, gInv i p * gInv j r * q p r) *
             a i * b j := by
-    unfold ricReactionContract
+    unfold metricVariationContract
     rw [sum_one_idx]
     refine congrArg (fun z : Real => 2 * z) ?_
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -394,8 +394,8 @@ omit [FiniteDimensional Real E] in
   funext a
   by_cases hab : a = b
   · subst hab
-    rw [if_pos rfl, Function.update_self]
-  · rw [if_neg hab, ContinuousLinearMap.id_apply, Function.update_of_ne hab]
+    rw [ite_eq_left rfl, Function.update_self]
+  · rw [ite_eq_right hab, ContinuousLinearMap.id_apply, Function.update_of_ne hab]
 
 omit [FiniteDimensional Real E] in
 theorem covariantEndomorphismAction0S_product
@@ -472,14 +472,14 @@ theorem tensor0SComponent_covariantEndomorphismAction0S
     (slots : Fin s → Idx) :
     tensor0SComponent (I := I)
         (covariantEndomorphismAction0S (I := I) A L) basis slots =
-      ricStarArray
+      covariantEndomorphismActionArray
         (fun i e => basis.repr (L (basis i)) e)
         (fun slots' => tensor0SComponent (I := I) A basis slots') slots := by
   classical
   change
     covariantEndomorphismAction0S (I := I) A L (fun a => basis (slots a)) = _
   rw [covariantEndomorphismAction0S_apply]
-  unfold ricStarArray
+  unfold covariantEndomorphismActionArray
   refine Finset.sum_congr rfl fun b _ => ?_
   change
     A (Function.update (fun a => basis (slots a)) b (L (basis (slots b)))) =
@@ -547,11 +547,11 @@ theorem covariantEndomorphismAction0S_two_skew
   rw [hA (L X) Y, hA X (L Y), hA (L Y) X, hA Y (L X)]
   ring
 
-noncomputable def ricciReaction0S
+noncomputable def metricVariationPairing0S
     (g : SmoothRiemannianMetric I M) (x : M) (s : Nat)
     (Q : Tensor0SSpace 2 I x) (A B : Tensor0SSpace s I x) : Real :=
   let basis := Module.finBasis Real (TangentSpace I x)
-  ricReactionContract
+  metricVariationContract
     (basisInvMetric (I := I) g x basis)
     (fun i j => Q (fun a : Fin 2 => if a = 0 then basis i else basis j))
     (fun slots => tensor0SComponent (I := I) A basis slots)
@@ -623,7 +623,7 @@ private theorem bmat_inv_entry
   ring
 
 omit [DecidableEq Idx] in
-theorem basisInv_time {x : M} {t : Real}
+theorem hasDerivAt_basisInvMetric {x : M} {t : Real}
     (g : Real → SmoothRiemannianMetric I M)
     (gdot : Idx → Idx → Real)
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -864,7 +864,7 @@ theorem hasDerivWithinAt_normSq0S {s : Nat} {x : M}
     exact (tensor0SMetricData (I := I) (g t) x s).symm (T t) Tdot
   rw [hsymm]; ring
 
-theorem hasDerivWithinAt_normSq0S_ricciFlow {s : Nat} {x : M}
+theorem hasDerivWithinAt_normSq0S_of_metric_variation {s : Nat} {x : M}
     {u : Set Real} {t : Real}
     (g : Real -> SmoothRiemannianMetric I M)
     (gInv : Real -> Idx -> Idx -> Real)
@@ -886,7 +886,7 @@ theorem hasDerivWithinAt_normSq0S_ricciFlow {s : Nat} {x : M}
       gInvDt i j = 2 * (∑ p : Idx, ∑ q : Idx, gInv t i p * gInv t j q * ric p q)) :
     HasDerivWithinAt
       (fun r : Real => normSq0S (I := I) (g r) x s (T r))
-      (ricReactionContract (gInv t) ric
+      (metricVariationContract (gInv t) ric
           (fun I0 => tensor0SComponent (I := I) (T t) (fun i => basis i) I0)
           (fun J0 => tensor0SComponent (I := I) (T t) (fun i => basis i) J0) +
         2 * inner0S (I := I) (g t) x s Tdot (T t))
@@ -894,13 +894,13 @@ theorem hasDerivWithinAt_normSq0S_ricciFlow {s : Nat} {x : M}
   have hbase :=
     hasDerivWithinAt_normSq0S (s := s) (u := u) (t := t)
       g gInv gInvDt T Tdt Tdot basis hinvAll hgInv hT hTdot
-  rw [coordContractDt_eq_ricReactionContract (gInv t) gInvDt ric
+  rw [coordContractDt_eq_metricVariationContract (gInv t) gInvDt ric
       (fun I0 => tensor0SComponent (I := I) (T t) (fun i => basis i) I0)
       (fun J0 => tensor0SComponent (I := I) (T t) (fun i => basis i) J0) hflow]
     at hbase
   exact hbase
 
-theorem hasDerivWithinAt_inner0S_ricciFlow {s : Nat} {x : M}
+theorem hasDerivWithinAt_inner0S_of_metric_variation {s : Nat} {x : M}
     {u : Set Real} {t : Real}
     (g : Real -> SmoothRiemannianMetric I M)
     (gInv : Real -> Idx -> Idx -> Real)
@@ -928,7 +928,7 @@ theorem hasDerivWithinAt_inner0S_ricciFlow {s : Nat} {x : M}
       gInvDt i j = 2 * (∑ p : Idx, ∑ q : Idx, gInv t i p * gInv t j q * ric p q)) :
     HasDerivWithinAt
       (fun r : Real => inner0S (I := I) (g r) x s (A r) (B r))
-      (ricReactionContract (gInv t) ric
+      (metricVariationContract (gInv t) ric
           (fun slots => tensor0SComponent (I := I) (A t) basis slots)
           (fun slots => tensor0SComponent (I := I) (B t) basis slots) +
         inner0S (I := I) (g t) x s Adot (B t) +
@@ -940,7 +940,7 @@ theorem hasDerivWithinAt_inner0S_ricciFlow {s : Nat} {x : M}
     (fun r slots => tensor0SComponent (I := I) (A r) basis slots)
     (fun r slots => tensor0SComponent (I := I) (B r) basis slots)
     Adt Bdt hgInv hA hB
-  rw [coordContractDt_eq_ricReactionContract (gInv t) gInvDt ric
+  rw [coordContractDt_eq_metricVariationContract (gInv t) gInvDt ric
       (fun slots => tensor0SComponent (I := I) (A t) basis slots)
       (fun slots => tensor0SComponent (I := I) (B t) basis slots) hflow]
     at hderiv
@@ -977,7 +977,7 @@ theorem hasDerivWithinAt_inner0S_ricciFlow {s : Nat} {x : M}
   exact hderiv.congr (fun r _ => (hfun r).symm) (hfun t).symm
 
 omit [DecidableEq Idx] in
-theorem inner0S_moving_deriv_in_basis {s : Nat} {x : M} {t : Real}
+theorem hasDerivAt_inner0S_of_metric_variation_in_basis {s : Nat} {x : M} {t : Real}
     (g : Real -> SmoothRiemannianMetric I M)
     (Q : Tensor0SSpace 2 I x)
     (A B : Real -> Tensor0SSpace s I x)
@@ -991,7 +991,7 @@ theorem inner0S_moving_deriv_in_basis {s : Nat} {x : M} {t : Real}
     (hB : ∀ v : Fin s -> TangentSpace I x,
       HasDerivAt (fun r : Real => B r v) (Bdot v) t) :
     HasDerivAt (fun r : Real => inner0S (I := I) (g r) x s (A r) (B r))
-      (ricReactionContract
+      (metricVariationContract
           (basisInvMetric (I := I) (g t) x basis)
           (fun i j => Q (fun a : Fin 2 => if a = 0 then basis i else basis j))
           (fun slots => tensor0SComponent (I := I) (A t) basis slots)
@@ -1015,7 +1015,7 @@ theorem inner0S_moving_deriv_in_basis {s : Nat} {x : M} {t : Real}
   have hgInv (i j : Idx) :
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by
     simpa [gInv, gInvDt, ric] using
-      (basisInv_time (I := I) g (fun p q => (-2 : Real) * ric p q) basis
+      (hasDerivAt_basisInvMetric (I := I) g (fun p q => (-2 : Real) * ric p q) basis
         (fun p q => by simpa [ric] using hg (basis p) (basis q)) i j)
   have hflow (i j : Idx) :
       gInvDt i j = 2 * (∑ p, ∑ q, gInv t i p * gInv t j q * ric p q) := by
@@ -1036,7 +1036,7 @@ theorem inner0S_moving_deriv_in_basis {s : Nat} {x : M} {t : Real}
     simp only [gInvDt]
     rw [hterm, hfactor]
     ring
-  have hmain := hasDerivWithinAt_inner0S_ricciFlow
+  have hmain := hasDerivWithinAt_inner0S_of_metric_variation
     (I := I) (u := Set.univ) g gInv gInvDt ric A B Adt Bdt Adot Bdot basis
     hinvAll hgInv
     (fun slots => (hA (fun a => basis (slots a))).hasDerivWithinAt)
@@ -1044,7 +1044,7 @@ theorem inner0S_moving_deriv_in_basis {s : Nat} {x : M} {t : Real}
     (fun _ => rfl) (fun _ => rfl) hflow
   simpa only [gInv, ric] using hmain.hasDerivAt (by simp)
 
-theorem inner0S_moving_deriv {s : Nat} {x : M} {t : Real}
+theorem hasDerivAt_inner0S_of_metric_variation {s : Nat} {x : M} {t : Real}
     (g : Real -> SmoothRiemannianMetric I M)
     (Q : Tensor0SSpace 2 I x)
     (A B : Real -> Tensor0SSpace s I x)
@@ -1057,65 +1057,16 @@ theorem inner0S_moving_deriv {s : Nat} {x : M} {t : Real}
     (hB : ∀ v : Fin s -> TangentSpace I x,
       HasDerivAt (fun r : Real => B r v) (Bdot v) t) :
     HasDerivAt (fun r : Real => inner0S (I := I) (g r) x s (A r) (B r))
-      (ricciReaction0S (I := I) (g t) x s Q (A t) (B t) +
+      (metricVariationPairing0S (I := I) (g t) x s Q (A t) (B t) +
         inner0S (I := I) (g t) x s Adot (B t) +
         inner0S (I := I) (g t) x s (A t) Bdot) t := by
-  classical
-  let basis := Module.finBasis Real (TangentSpace I x)
-  let gInv : Real ->
-      Fin (Module.finrank Real (TangentSpace I x)) ->
-      Fin (Module.finrank Real (TangentSpace I x)) -> Real := fun r =>
-    basisInvMetric (I := I) (g r) x basis
-  let ric :
-      Fin (Module.finrank Real (TangentSpace I x)) ->
-      Fin (Module.finrank Real (TangentSpace I x)) -> Real := fun i j =>
-    Q (fun a : Fin 2 => if a = 0 then basis i else basis j)
-  let gInvDt :
-      Fin (Module.finrank Real (TangentSpace I x)) ->
-      Fin (Module.finrank Real (TangentSpace I x)) -> Real := fun i j =>
-    -(∑ p, ∑ q, gInv t i p * ((-2 : Real) * ric p q) * gInv t q j)
-  let Adt : (Fin s -> Fin (Module.finrank Real (TangentSpace I x))) -> Real :=
-    fun slots => tensor0SComponent (I := I) Adot basis slots
-  let Bdt : (Fin s -> Fin (Module.finrank Real (TangentSpace I x))) -> Real :=
-    fun slots => tensor0SComponent (I := I) Bdot basis slots
-  have hinvAll (r : Real) :
-      MetricInverseInBasis (I := I) (g r) x basis (gInv r) := by
-    simpa [gInv] using basisInvMetric_isInverse (I := I) (g r) x basis
-  have hgInv (i j : Fin (Module.finrank Real (TangentSpace I x))) :
-      HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by
-    simpa [gInv, gInvDt, ric] using
-      (basisInv_time (I := I) g (fun p q => (-2 : Real) * ric p q) basis
-        (fun p q => by simpa [ric] using hg (basis p) (basis q)) i j)
-  have hflow (i j : Fin (Module.finrank Real (TangentSpace I x))) :
-      gInvDt i j = 2 * (∑ p, ∑ q, gInv t i p * gInv t j q * ric p q) := by
-    have hterm :
-        (∑ p, ∑ q, gInv t i p * ((-2 : Real) * ric p q) * gInv t q j) =
-          ∑ p, ∑ q, (-2 : Real) * (gInv t i p * gInv t j q * ric p q) := by
-      refine Finset.sum_congr rfl fun p _ => ?_
-      refine Finset.sum_congr rfl fun q _ => ?_
-      simp only [gInv]
-      rw [basisInvMetric_symm (I := I) (g t) x basis q j]
-      ring
-    have hfactor :
-        (∑ p, ∑ q, (-2 : Real) * (gInv t i p * gInv t j q * ric p q)) =
-          (-2 : Real) * (∑ p, ∑ q, gInv t i p * gInv t j q * ric p q) := by
-      rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl fun p _ => ?_
-      rw [Finset.mul_sum]
-    simp only [gInvDt]
-    rw [hterm, hfactor]
-    ring
-  have hmain := hasDerivWithinAt_inner0S_ricciFlow
-    (I := I) (u := Set.univ) g gInv gInvDt ric A B Adt Bdt Adot Bdot basis
-    hinvAll hgInv
-    (fun slots => (hA (fun a => basis (slots a))).hasDerivWithinAt)
-    (fun slots => (hB (fun a => basis (slots a))).hasDerivWithinAt)
-    (fun _ => rfl) (fun _ => rfl) hflow
-  simpa only [ricciReaction0S, basis, gInv, ric] using hmain.hasDerivAt (by simp)
+  simpa only [metricVariationPairing0S] using
+    hasDerivAt_inner0S_of_metric_variation_in_basis
+      (I := I) g Q A B Adot Bdot (Module.finBasis Real (TangentSpace I x)) hg hA hB
 
 end Intrinsic
 
-theorem normSq_one_time {x : M} {t : Real}
+theorem hasDerivAt_normSq0S_one_of_metric_variation {x : M} {t : Real}
     (g : Real -> SmoothRiemannianMetric I M)
     (Q : Tensor0SSpace 2 I x)
     (A : Real -> Tensor0SSpace 1 I x)
@@ -1134,83 +1085,20 @@ theorem normSq_one_time {x : M} {t : Real}
           if a = 0 then cotangentSharp (I := I) (g t) x (A t)
           else cotangentSharp (I := I) (g t) x (A t)) +
         2 * inner0S (I := I) (g t) x 1 Adot (A t)) t := by
-  classical
-  let basis : Module.Basis
-      (Fin (Module.finrank Real (TangentSpace I x))) Real (TangentSpace I x) :=
-    Module.finBasis Real (TangentSpace I x)
-  let gInv : Real ->
-      Fin (Module.finrank Real (TangentSpace I x)) ->
-      Fin (Module.finrank Real (TangentSpace I x)) -> Real := fun r =>
-    basisInvMetric (I := I) (g r) x basis
-  let ric :
-      Fin (Module.finrank Real (TangentSpace I x)) ->
-      Fin (Module.finrank Real (TangentSpace I x)) -> Real := fun i j =>
-    Q (fun a : Fin 2 => if a = 0 then basis i else basis j)
-  let gInvDt :
-      Fin (Module.finrank Real (TangentSpace I x)) ->
-      Fin (Module.finrank Real (TangentSpace I x)) -> Real := fun i j =>
-    -(∑ p, ∑ q, gInv t i p * ((-2 : Real) * ric p q) * gInv t q j)
-  let Tdt :
-      (Fin 1 -> Fin (Module.finrank Real (TangentSpace I x))) -> Real := fun I0 =>
-    tensor0SComponent (I := I) Adot (fun i => basis i) I0
-  have hinvAll (r : Real) :
-      MetricInverseInBasis (I := I) (g r) x basis (gInv r) := by
-    simpa [gInv] using basisInvMetric_isInverse (I := I) (g r) x basis
-  have hgInv (i j : Fin (Module.finrank Real (TangentSpace I x))) :
-      HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by
-    simpa [gInv, gInvDt, ric] using
-      (basisInv_time (I := I) g
-        (fun p q => (-2 : Real) * ric p q) basis
-        (fun p q => by simpa [ric] using hg (basis p) (basis q)) i j)
-  have hT (I0 : Fin 1 -> Fin (Module.finrank Real (TangentSpace I x))) :
-      HasDerivWithinAt
-        (fun r : Real => tensor0SComponent (I := I) (A r) (fun i => basis i) I0)
-        (Tdt I0) Set.univ t := by
-    have hslots :
-        (fun a : Fin 1 => basis (I0 a)) = fun _ : Fin 1 => basis (I0 0) := by
-      funext a
-      exact congrArg (fun i => basis i) (congrArg I0 (Subsingleton.elim a (0 : Fin 1)))
-    change HasDerivWithinAt
-      (fun r : Real => A r (fun a : Fin 1 => basis (I0 a)))
-      (Adot (fun a : Fin 1 => basis (I0 a))) Set.univ t
-    rw [hslots]
-    exact (hA (basis (I0 0))).hasDerivWithinAt
-  have hTdot (I0 : Fin 1 -> Fin (Module.finrank Real (TangentSpace I x))) :
-      tensor0SComponent (I := I) Adot (fun i => basis i) I0 = Tdt I0 := by
-    rfl
-  have hflow (i j : Fin (Module.finrank Real (TangentSpace I x))) :
-      gInvDt i j =
-        2 * (∑ p, ∑ q, gInv t i p * gInv t j q * ric p q) := by
-    have hterm :
-        (∑ p, ∑ q, gInv t i p * ((-2 : Real) * ric p q) * gInv t q j) =
-          ∑ p, ∑ q, (-2 : Real) *
-            (gInv t i p * gInv t j q * ric p q) := by
-      refine Finset.sum_congr rfl fun p _ => ?_
-      refine Finset.sum_congr rfl fun q _ => ?_
-      simp only [gInv]
-      rw [basisInvMetric_symm (I := I) (g t) x basis q j]
-      ring
-    have hfactor :
-        (∑ p, ∑ q, (-2 : Real) *
-            (gInv t i p * gInv t j q * ric p q)) =
-          (-2 : Real) *
-            (∑ p, ∑ q, gInv t i p * gInv t j q * ric p q) := by
-      rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl fun p _ => ?_
-      rw [Finset.mul_sum]
-    simp only [gInvDt]
-    rw [hterm, hfactor]
-    ring
-  have hbase :=
-    hasDerivWithinAt_normSq0S_ricciFlow
-      (I := I) (s := 1) (u := Set.univ) (t := t)
-      g gInv gInvDt ric A Tdt Adot basis hinvAll hgInv hT hTdot hflow
-  have hat := hbase.hasDerivAt (by simp)
-  rw [show gInv t = basisInvMetric (I := I) (g t) x basis by rfl,
-    show ric = fun i j =>
-      Q (fun a : Fin 2 => if a = 0 then basis i else basis j) by rfl,
-    ricReact_one (I := I) (g t) basis Q (A t) (A t)] at hat
-  exact hat
+  let basis := Module.finBasis Real (TangentSpace I x)
+  have hA' (v : Fin 1 → TangentSpace I x) :
+      HasDerivAt (fun r : Real => A r v) (Adot v) t := by
+    have hv : v = fun _ : Fin 1 => v 0 := by
+      funext i
+      exact congrArg v (Subsingleton.elim i 0)
+    rw [hv]
+    exact hA (v 0)
+  have h := hasDerivAt_inner0S_of_metric_variation_in_basis
+    (I := I) g Q A A Adot Adot basis hg hA' hA'
+  change HasDerivAt (fun r : Real => inner0S (I := I) (g r) x 1 (A r) (A r)) _ t
+  refine h.congr_deriv ?_
+  rw [metricVariationContract_one, inner0S_symm (I := I) (g t) x (A t) Adot]
+  ring
 
 end
 

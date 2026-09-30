@@ -36,7 +36,7 @@ theorem boundaryFace_card_lt_of_geometric_pair {d : ℕ}
   have hzero := faceEulerChar_link_eq_zero_of_card_bound K.toPreAbstractSimplicialComplex s
     (fun t ht => (hd t ht).trans_eq hc.symm)
   have hone := faceLink_values_of_geometric_boundary hLK e hboundary (hLK hs)
-  rw [if_pos hs] at hone
+  rw [ite_eq_left hs] at hone
   omega
 
 

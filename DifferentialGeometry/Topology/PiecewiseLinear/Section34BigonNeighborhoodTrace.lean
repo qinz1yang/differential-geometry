@@ -84,12 +84,12 @@ theorem IsCombinatorialManifold.derivedNeighborhood_crosscut_boundary
     (hK : IsCombinatorialManifold 2 K) (hS : IsCombinatorialManifold 1 S)
     (hSK : S.faces ⊆ K.faces)
     {r : (Fin 3 → ℝ) → E} {q : (Fin 2 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (derivedNeighborhood K B).space)
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2))
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (derivedNeighborhood K B).space)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2))
       ((derivedNeighborhood K B).space ∩ S.space)) :
     ((derivedNeighborhood K B).space ∩ S.space) ∩ r '' stdSimplexBoundary 2 =
       q '' stdSimplexBoundary 1 := by
-  have hQ : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2))
+  have hQ : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2))
       (derivedNeighborhood S B).space := by
     rwa [derivedNeighborhood_space_inter_subcomplex K S B hSK] at hq
   have hbdN := hK.inter_closure_sdiff_eq_image_stdSimplexBoundary K hr
@@ -111,9 +111,9 @@ theorem IsCombinatorialManifold.exists_disk_neighborhood_with_crosscuts
     (hJ : ∀ i, IsPLSphere 1 (J i)) (hJK : ∀ i, J i ⊆ K.space)
     (hBJ : ∀ i, IsPLBall 1 (B ∩ J i)) :
     ∃ (N : Set E) (r : (Fin 3 → ℝ) → E) (q : ι → (Fin 2 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) N ∧ N ⊆ K.space ∩ Ω ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N ∧ N ⊆ K.space ∩ Ω ∧
       B ⊆ r '' openSimplex (stdVertices 1) ∧
-      ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 2)) (N ∩ J i) ∧
+      ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (N ∩ J i) ∧
         (N ∩ J i) ∩ r '' stdSimplexBoundary 2 = q i '' stdSimplexBoundary 1 := by
   classical
   have hex : ∀ i, ∃ p, p ∈ J i ∧ p ∉ B := by
@@ -201,7 +201,7 @@ theorem IsCombinatorialManifold.exists_disk_neighborhood_with_crosscuts
     obtain ⟨y, hyO, hy⟩ := mem_closure_iff_nhds.mp hxcl O (hO.mem_nhds hxO)
     exact hy.2 (hON ⟨hyO, hy.1⟩)
   have hcross : ∀ i, ∃ q : (Fin 2 → ℝ) → E,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) (N.space ∩ J i) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (N.space ∩ J i) ∧
         (N.space ∩ J i) ∩ r '' stdSimplexBoundary 2 = q '' stdSimplexBoundary 1 := by
     intro i
     let S := restrict R (J i)

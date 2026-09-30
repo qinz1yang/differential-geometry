@@ -50,7 +50,7 @@ theorem CanonicalWitness.exists_localNeck_of_product_chart
     funext q
     exact hmap _
   have hv : v ∈ W.domain.carrier := by
-    have hmem : cap.tube_map (nk.center,0) ∈ cap.tube := by
+    have hmem : cap.tubeMap (nk.center,0) ∈ cap.tube := by
       rw [← cap.tube_eq]
       exact ⟨(nk.center,0),⟨mem_univ _,by norm_num⟩,rfl⟩
     rw [hmap,nk.center_eq] at hmem

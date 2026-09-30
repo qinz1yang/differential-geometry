@@ -2,6 +2,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Acti
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.CompositionJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg
+    riemannianFiberNormSq_add_le riemannianFiberNormSq_sub_le)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -151,7 +155,7 @@ theorem HasMoserTameBounds.smul {g : SmoothRiemannianMetric I M} {r c : ℕ}
     HasMoserTameBounds (I := I) (M := M) g T (fun n => a ^ 2 * A n) (|a| * S) (a • X) := by
   refine ⟨mul_nonneg (abs_nonneg _) h.1, fun x => ?_, fun n => ?_⟩
   · rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-      DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul, mul_pow, sq_abs]
+      DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul, mul_pow, sq_abs]
     exact mul_le_mul_of_nonneg_left (h.2.1 x) (sq_nonneg a)
   · rw [covariantJetNormSq_smul]
     have hT : (0 : ℝ) ≤ 1 + covariantJetNormSq (I := I) (M := M) g n T := by
@@ -448,8 +452,8 @@ private theorem riemannianFiberNormSq_ccTensor02Symm_le (g : SmoothRiemannianMet
   rw [hsec, one_mul]
   refine le_trans (riemannianFiberNormSq_add_le
     (I := I) (M := M) g 0 (2 + j) x _ _) ?_
-  rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g 0 (2 + j) x,
-    DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g 0 (2 + j) x,
+  rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g 0 (2 + j) x,
+    DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g 0 (2 + j) x,
     riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection
       (I := I) (M := M) g (Equiv.swap (0 : Fin 2) 1) T j x]
   nlinarith [riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 (2 + j) x
@@ -900,16 +904,16 @@ theorem HasMoserTameBounds.deTurckMetricPrincipalDefectDifference
             deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g) := by
   obtain ⟨AG, SG, hG⟩ := HasMoserTameBounds.inverseMetricDifferenceCoefficient (I := I) (M := M) g hδ₀0 hδ₀
   obtain ⟨CTp, hCTp0, hCTp⟩ :=
-    traceHessianCoeff_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+    traceHessianCoeff_sub_jet_norm_sq_le
       (I := I) (M := M) g
   obtain ⟨CTj, hCTj0, hCTj⟩ :=
     traceHessianCoeff_sub_background_jetL2_le_inverseMetricDifferenceSlotCoefficient_jetL2
       (I := I) (M := M) g
   obtain ⟨CRp, hCRp0, hCRp⟩ :=
-    ricciDeTurckPrincipalCoefficient_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+    exists_ricciDeTurckPrincipalCoefficient_sub_pointwise_jet_bound
       (I := I) (M := M) g
   obtain ⟨CRj, hCRj0, hCRj⟩ :=
-    ricciDeTurckPrincipalCoefficient_sub_background_jetL2_le_inverseMetricDifferenceSlotCoefficient_jetL2
+    ricciDeTurckPrincipalCoefficient_sub_jet_l2_sq_le
       (I := I) (M := M) g
   set ρA : Equiv.Perm (Fin 4) :=
     traceHessianSlotPerm⁻¹ * deTurckLieSecondOrderDivSlotPermA with hρA
@@ -1093,7 +1097,7 @@ theorem metricPerturbationPath_isControlledMetricPerturbation
     fun y v w => metricPerturbationPath_inner_of_mem (I := I) g T 0 hδg hδZ hsmem y v w,
     fun x => ?_, fun n => ?_⟩
   · rw [convexPerturbation_zero, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
-      Pi.smul_apply, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+      Pi.smul_apply, DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     nlinarith [hTsup x, riemannianFiberNormSq_nonneg
       (I := I) (M := M) g 0 2 x (T.toSection x)]
   · rw [convexPerturbation_zero, covariantJetNormSq_smul]

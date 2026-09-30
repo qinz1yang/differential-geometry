@@ -12,6 +12,7 @@ open scoped Manifold ContDiff Topology Pointwise
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.Topology
+open Convexity.StdSimplex (coordinateSet coordinateHomeomorph coordinateEquiv)
 
 universe u
 variable {M N : Type u} [TopologicalSpace M] [TopologicalSpace N]
@@ -20,7 +21,7 @@ variable {M N : Type u} [TopologicalSpace M] [TopologicalSpace N]
 
 private theorem exists_tetrahedron_radius_mem {U : Set ThreeSpace} (hU : IsOpen U)
     {y : ThreeSpace} (hy : y ∈ U) :
-    ∃ r : ℝ, 0 < r ∧ ∀ q : stdSimplex ℝ (Fin 4),
+    ∃ r : ℝ, 0 < r ∧ ∀ q : Convexity.StdSimplex ℝ (Fin 4),
       y + r • positiveTetrahedron q ∈ U := by
   have h := eventually_singleton_add_smul_subset
     (𝕜 := ℝ) (x := y) (s := range positiveTetrahedron)
@@ -140,14 +141,16 @@ theorem orientedChartSimplex_partial_map
   rw [e.left_inv hx]
 
 private theorem simplex_face_ne (o : TangentOrientationSection M) (x : M)
-    (S : OrientedChartSimplex o x) (i : Fin 4) (q : stdSimplex ℝ (Fin 3)) :
-    S.simplex (SimplexDegree.orientedSimplexFace i q) ≠ x := by
+    (S : OrientedChartSimplex o x) (i : Fin 4) (q : coordinateSet ℝ (Fin 3)) :
+    S.simplex ((coordinateHomeomorph ℝ _).symm
+      (SimplexDegree.orientedSimplexFace i q)) ≠ x := by
   intro heq
+  let t := (coordinateHomeomorph ℝ _).symm (SimplexDegree.orientedSimplexFace i q)
   have he := congrArg S.chart heq
   change S.chart (S.chart.symm
-    (S.chart x + S.radius • positiveTetrahedron (SimplexDegree.orientedSimplexFace i q))) = S.chart x at he
-  rw [S.chart.right_inv (S.simplex_inside (SimplexDegree.orientedSimplexFace i q))] at he
-  have hs : S.radius • positiveTetrahedron (SimplexDegree.orientedSimplexFace i q) = 0 := by
+    (S.chart x + S.radius • positiveTetrahedron t)) = S.chart x at he
+  rw [S.chart.right_inv (S.simplex_inside t)] at he
+  have hs : S.radius • positiveTetrahedron t = 0 := by
     have h := congrArg (fun y : ThreeSpace => y - S.chart x) he
     simpa only [add_sub_cancel_left, sub_self] using h
   apply SimplexDegree.standardTetrahedronSimplex_face_ne_zero.{u} i q
@@ -166,12 +169,28 @@ theorem OrientedChartSimplex.localClass_natural_openPartialHomeomorph
       S'.localClass := by
   let _ : T1Space M := ChartedSpace.t1Space ThreeSpace M
   let _ : T1Space N := ChartedSpace.t1Space ThreeSpace N
+  let σ := S.simplex.comp
+    ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩
+  let σ' := S'.simplex.comp
+    ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩
+  have hsource : ∀ q, σ q ∈ e.source := fun q => hS _
   have h := SimplexDegree.integralLocalHomologyOpenPartialHomeomorphIso_simplexLocalClass
-    e x hx S.simplex hS (simplex_face_ne oM x S)
-  have hmap' : (⟨fun q => e (S.simplex q),
-      e.continuousOn.comp_continuous S.simplex.continuous hS⟩ : C(stdSimplex ℝ (Fin 4), N)) =
-      S'.simplex := ContinuousMap.ext fun q => (hmap q).symm
+    e x hx σ hsource (simplex_face_ne oM x S)
+  have hmap' : (⟨fun q => e (σ q),
+      e.continuousOn.comp_continuous σ.continuous hsource⟩ :
+        C(coordinateSet ℝ (Fin 4), N)) = σ' :=
+    ContinuousMap.ext fun q => (hmap _).symm
   simp only [hmap'] at h
+  have hσ : σ.comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩ =
+      S.simplex := by
+    ext q
+    rfl
+  have hσ' : σ'.comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩ =
+      S'.simplex := by
+    ext q
+    rfl
+  unfold SimplexDegree.simplexLocalClass SimplexDegree.integralSimplexChain at h
+  simp only [hσ, hσ'] at h
   exact h
 
 theorem localOrientationClass_natural_partialDiffeomorph
@@ -212,7 +231,8 @@ theorem localOrientationClass_natural_of_isLocalDiffeomorphAt
   have hex : f x = Φ x := hfe hx
   have hnear : (f : M → N) =ᶠ[𝓝 x] Φ :=
     Filter.eventuallyEq_of_mem (Φ.open_source.mem_nhds hx) hfe
-  have hder := hnear.mfderiv_eq (I := ThreeModel) (I' := ThreeModel)
+  have hder : mfderiv ThreeModel ThreeModel f x =
+      mfderiv ThreeModel ThreeModel Φ x := hnear.mfderiv_eq
   have hΦbij : Function.Bijective (mfderiv ThreeModel ThreeModel Φ x) := by
     rw [← hder]
     exact hebij

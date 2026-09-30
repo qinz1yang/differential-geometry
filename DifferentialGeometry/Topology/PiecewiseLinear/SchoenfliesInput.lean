@@ -66,7 +66,7 @@ structure SchoenfliesInput : Prop where
       (f : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3))
       (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (r : ℝ),
       IsSimplyEmbedded S₁ → IsSimplyEmbedded S₂ →
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) D →
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D →
       ℓ ≠ 0 → D ⊆ {x | ℓ x = r} → S₁ ∩ S₂ = D →
       IsSimplyEmbedded ((S₁ ∪ S₂) \ (D \ (f '' stdSimplexBoundary 2)))
   exists_two_free_disk_cells :

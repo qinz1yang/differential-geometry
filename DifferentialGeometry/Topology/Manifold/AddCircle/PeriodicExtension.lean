@@ -21,9 +21,9 @@ theorem exists_contMDiff_extension_of_periodic
     intro t x
     dsimp only [β₀]
     by_cases ht : t ∈ Icc a b
-    · simp only [if_pos ht]
+    · simp only [ite_eq_left ht]
       exact hper t ht x
-    · simp only [if_neg ht]
+    · simp only [ite_eq_right ht]
   let f : ℝ × AddCircle (1 : ℝ) → ℝ := fun p => (hp₀ p.1).lift p.2
   have hcoe (t x : ℝ) : f (t, (x : AddCircle (1 : ℝ))) = β₀ t x := rfl
   have hf : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞ f
@@ -34,7 +34,7 @@ theorem exists_contMDiff_extension_of_periodic
       intro p hp
       change f (p.1, (p.2 : AddCircle (1 : ℝ))) = β p.1 p.2
       rw [hcoe]
-      exact if_pos hp.1
+      exact ite_eq_left hp.1
     have hh : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => f (p.1, (p.2 : AddCircle (1 : ℝ))))
         (Icc a b ×ˢ (univ : Set ℝ)) := hβ.congr heq
     rw [← contMDiffOn_iff_contDiffOn, ← chartedSpaceSelf_prod,
@@ -44,6 +44,6 @@ theorem exists_contMDiff_extension_of_periodic
   refine ⟨γ, hγ, ?_⟩
   intro t ht x
   rw [hγf ⟨ht, mem_univ _⟩, hcoe]
-  exact if_pos ht
+  exact ite_eq_left ht
 
 end AddCircle

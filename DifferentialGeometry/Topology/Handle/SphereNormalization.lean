@@ -74,16 +74,16 @@ theorem exists_isotopy_eqOn_closedCell_sphere (m : ℕ)
   have hHeq (t : ℝ) (x : E) : H t (c.symm x) = c.symm (J t x) := by
     rw [(hHformula t (c.symm x)).1]
     unfold DifferentialGeometry.Topology.Manifold.extendChartById
-    rw [if_pos (c.map_target (by simp [c])), c.right_inv (by simp [c])]
+    rw [ite_eq_left (c.map_target (by simp [c])), c.right_inv (by simp [c])]
   refine ⟨p, Q, H, hH, hHi, ?_, ?_, c.symm '' K, hHK, ?_, hHfix⟩
   · apply Diffeomorph.ext
     intro x
     rw [(hHformula 0 x).1]
     unfold DifferentialGeometry.Topology.Manifold.extendChartById
     by_cases hx : x ∈ c.source
-    · rw [if_pos hx, hJ0]
+    · rw [ite_eq_left hx, hJ0]
       exact c.left_inv hx
-    · rw [if_neg hx]
+    · rw [ite_eq_right hx]
       rfl
   · intro x
     rw [hHeq]

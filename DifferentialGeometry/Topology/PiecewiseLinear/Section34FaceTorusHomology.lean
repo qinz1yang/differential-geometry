@@ -73,8 +73,8 @@ theorem IsPLCellOn.isPathConnected {M : Type*} [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {d : ℕ} {S B : Set M} (hS : IsPLCellOn d S B) :
     IsPathConnected S := by
   obtain ⟨P, r, v, hr, hv, rfl, -⟩ := hS
-  have h1 : IsPathConnected (stdSimplex ℝ (Fin (d + 1))) :=
-    (convex_stdSimplex ℝ _).isPathConnected ⟨_, single_mem_stdSimplex ℝ (0 : Fin (d + 1))⟩
+  have h1 : IsPathConnected (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) :=
+    (Convexity.StdSimplex.convex_coordinateSet ℝ _).isPathConnected ⟨_, Convexity.StdSimplex.single_mem_coordinateSet ℝ (0 : Fin (d + 1))⟩
   have h2 := h1.image' hr.isPiecewiseAffineOn.continuousOn
   rw [hr.bijOn.image_eq] at h2
   exact h2.image' hv.continuousOn
@@ -328,10 +328,10 @@ theorem exists_section34FaceTorusAuxiliary (hh : IsEmbedding (U.domRestrict h))
   refine ⟨(fun z => h (𝒦.map z)) '' B', hB'.isPolyhedron.isCompact.image_of_continuousOn
     (hΦ.mono hB'K), ?_, ?_, ?_⟩
   · obtain ⟨r, hr⟩ := hB'
-    have hmaps : ∀ x : stdSimplex ℝ (Fin (3 + 1)),
+    have hmaps : ∀ x : Convexity.StdSimplex.coordinateSet ℝ (Fin (3 + 1)),
         h (𝒦.map (r x)) ∈ (fun z => h (𝒦.map z)) '' B' :=
       fun x => ⟨r x, hr.bijOn.mapsTo x.2, rfl⟩
-    let f : stdSimplex ℝ (Fin (3 + 1)) → (fun z => h (𝒦.map z)) '' B' :=
+    let f : Convexity.StdSimplex.coordinateSet ℝ (Fin (3 + 1)) → (fun z => h (𝒦.map z)) '' B' :=
       fun x => ⟨h (𝒦.map (r x)), hmaps x⟩
     have hcont : Continuous f :=
       ((hΦ.mono hB'K).comp hr.isPiecewiseAffineOn.continuousOn hr.bijOn.mapsTo).comp_continuous
@@ -345,12 +345,12 @@ theorem exists_section34FaceTorusAuxiliary (hh : IsEmbedding (U.domRestrict h))
       rintro ⟨_, z, hz, rfl⟩
       obtain ⟨x, hx, rfl⟩ := hr.bijOn.surjOn hz
       exact ⟨⟨x, hx⟩, rfl⟩
-    have : CompactSpace (stdSimplex ℝ (Fin (3 + 1))) :=
-      isCompact_iff_compactSpace.mp (isCompact_stdSimplex ℝ (Fin (3 + 1)))
+    have : CompactSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin (3 + 1))) :=
+      isCompact_iff_compactSpace.mp (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin (3 + 1)))
     let Φ := Continuous.homeoOfEquivCompactToT2 (f := Equiv.ofBijective f ⟨hinj, hsurj⟩) hcont
-    have : ContractibleSpace (stdSimplex ℝ (Fin (3 + 1))) :=
-      (convex_stdSimplex ℝ (Fin (3 + 1))).contractibleSpace
-        ⟨_, single_mem_stdSimplex ℝ (0 : Fin (3 + 1))⟩
+    have : ContractibleSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin (3 + 1))) :=
+      (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin (3 + 1))).contractibleSpace
+        ⟨_, Convexity.StdSimplex.single_mem_coordinateSet ℝ (0 : Fin (3 + 1))⟩
     have : ContractibleSpace ((fun z => h (𝒦.map z)) '' B') := Φ.symm.contractibleSpace
     exact integralSingularHomology_subsingleton_of_contractible 1 one_ne_zero _
   · rintro _ ⟨_, hm, rfl⟩

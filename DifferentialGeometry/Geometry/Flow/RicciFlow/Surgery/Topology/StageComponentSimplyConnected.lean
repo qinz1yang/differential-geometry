@@ -23,8 +23,8 @@ theorem OrientedThreeStage.simplyConnectedSpace_connectedComponent (P : Oriented
 
 theorem RetainedCoreHistory.simplyConnectedSpace_connectedComponent_stage
     {P₀ : OrientedThreeStage.{u}} [SimplyConnectedSpace P₀.Carrier] {g₀ : P₀.Metric}
-    {B : ℝ} {p₀ : CutoffParameters} {δbound ρbound : ℝ} (H : RetainedCoreHistory P₀)
-    (hH : H.InCutoffClass g₀ B p₀ δbound ρbound) (j : Fin (H.eventCount + 1))
+    {B : ℝ} {p₀ : CutoffParameters} {δbound ρbound : ℝ} (H : RetainedCoreHistory.{u})
+    (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound) (j : Fin (H.eventCount + 1))
     (x : (H.stage j).Carrier) : SimplyConnectedSpace (connectedComponent x) := by
   let h0 := Extinction.Width.initialIdentification_components_simplyConnected P₀ g₀
     H.toHistory hH.1.some

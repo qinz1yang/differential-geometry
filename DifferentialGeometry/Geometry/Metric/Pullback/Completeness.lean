@@ -157,7 +157,7 @@ theorem RiemannianMetricComplete.pullbackMetric
     ⟨(Diffeomorph.pullbackMetric g Φ).inner,
       (Diffeomorph.pullbackMetric g Φ).contMDiff.continuous, by intro x v w; rfl⟩
   let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  refine EMetric.complete_of_cauchySeq_tendsto (α := M) fun s hs => ?_
+  refine EMetric.complete_of_cauchySeq_tendsto (γ := M) fun s hs => ?_
   have hsTarget : ∀ ε > (0 : ENNReal), ∃ N,
       ∀ m, N ≤ m → ∀ n, N ≤ n →
         riemannianEDistOf (I := I) (Diffeomorph.pullbackMetric g Φ) (s m) (s n) < ε := by

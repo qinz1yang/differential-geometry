@@ -1,4 +1,4 @@
-import DifferentialGeometry.Bundle.SmoothMetricEigenpair
+import DifferentialGeometry.Geometry.Metric.Eigenpair
 import DifferentialGeometry.Geometry.Curvature.RicciSharpSmooth
 
 noncomputable section

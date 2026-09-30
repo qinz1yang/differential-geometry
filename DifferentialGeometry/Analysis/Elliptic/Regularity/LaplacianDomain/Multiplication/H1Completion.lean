@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multiplication.Smooth
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.ArbitraryTest
 import Mathlib.Analysis.Normed.Operator.Extend
+
+open DifferentialGeometry.SmoothRiemannianMetric (abs_metric_inner_le_sqrt_metric_quadratic)
 open DifferentialGeometry.Geometry.Operator
 
 

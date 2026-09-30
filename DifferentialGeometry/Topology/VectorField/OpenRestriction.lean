@@ -42,7 +42,7 @@ theorem contMDiff_tangentSection_opens_iff
     classical
     let V : ∀ x : M, TangentSpace I x := fun x => if hx : x ∈ U then W ⟨x, hx⟩ else 0
     have hVeq (x : U) : V x.val = W x := by
-      exact dif_pos x.property
+      exact dite_eq_left x.property
     have hV : ContMDiffOn I I.tangent ∞ (fun x => (⟨x, V x⟩ : TangentBundle I M)) U := by
       have hh := hW.congr (fun x => congrArg
         (fun v : TangentSpace I x.val => (⟨x.val, v⟩ : TangentBundle I M)) (hVeq x))

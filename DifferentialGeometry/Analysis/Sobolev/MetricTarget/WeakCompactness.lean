@@ -106,7 +106,7 @@ theorem exists_memW1pWitness_comp_of_ae_tendsto_of_lipschitz
     exact real_inner_self_eq_norm_sq w
   have henergy (n : ℕ) : ‖DeGiorgi.gradLpOfWitness (hs n)‖ ^ 2 = q n := by
     rw [DeGiorgi.gradLpOfWitness, Lp.norm_toLp, hnorm n]
-    simpa only [q, eLpNorm_norm] using
+    simpa only [q, eLpNorm_norm _ (hdfm n).aestronglyMeasurable] using
       (Analysis.Integration.integral_sq_eq_l2 (hdfm n).norm).symm
   simp only [hQ, henergy] at hlsc
   have hσq : Tendsto (fun n => q (σ n)) atTop (𝓝 (liminf q atTop)) := by

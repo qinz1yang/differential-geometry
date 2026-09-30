@@ -96,9 +96,9 @@ theorem exists_planar_strip {ι : Type*} [Finite ι] {D : Set Plane} {H : ι →
   let Hm : ι → Set Plane := fun i =>
     if i = j then rectTwo (-1) 1 (-1) 1 else rectTwo (xl i) (xl i + w) (3 / 2) (7 / 4)
   let D₀ : Set Plane := rectTwo (-2) 2 (-2) 2
-  have hHmj : Hm j = rectTwo (-1) 1 (-1) 1 := if_pos rfl
+  have hHmj : Hm j = rectTwo (-1) 1 (-1) 1 := ite_eq_left rfl
   have hHmi : ∀ i, i ≠ j → Hm i = rectTwo (xl i) (xl i + w) (3 / 2) (7 / 4) :=
-    fun i hi => if_neg hi
+    fun i hi => ite_eq_right hi
   have hD₀ : IsPLBall 2 D₀ := isPLBall_rectTwo (by norm_num) (by norm_num)
   have hHm : ∀ i, IsPLBall 2 (Hm i) := by
     intro i
@@ -254,7 +254,7 @@ theorem exists_planar_strip {ι : Type*} [Finite ι] {D : Set Plane} {H : ι →
       simpa [ψ] using hψjpos
     · have hid := isPLCirclePositive_id ((hH i).isPLSphere_frontier (n := 1))
       refine hid.of_eqOn fun z hz => ?_
-      simp only [ψ, hi, if_false, Function.comp_apply, id]
+      simp only [ψ, hi, ite_false, Function.comp_apply, id]
       exact (hfr i).bijOn.surjOn.rightInvOn_invFunOn hz
   obtain ⟨g, hg, hgφ, hgψ⟩ := hext ψ hψ hψpos
   have hsqpoly : IsPolyhedron (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) :=
@@ -375,7 +375,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLSphere.exists_holed_strip {ι : Type*} [Finite ι] {S : Set E} (hS : IsPLSphere 2 S)
     {D : ι → Set E} {q : ι → (Fin 3 → ℝ) → E}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i)) (hDS : ∀ i, D i ⊆ S)
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i)) (hDS : ∀ i, D i ⊆ S)
     (hdis : Pairwise fun i j => Disjoint (D i) (D j)) {i₀ j : ι} (hj : j ≠ i₀) {α β : ℝ → E}
     (hα : IsPLHomeomorphOn α (Icc 0 1) (α '' Icc 0 1))
     (hαc : α '' Icc 0 1 ⊆ q i₀ '' stdSimplexBoundary 2)

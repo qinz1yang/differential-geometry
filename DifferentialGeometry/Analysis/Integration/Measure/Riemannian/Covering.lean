@@ -49,6 +49,7 @@ private theorem inner_eq_of_eq_localPullMetric_of_isRightInverse
   have hchain : mfderiv I I (p ∘ (ψ : N → M)) y =
       ContinuousLinearMap.id ℝ (TangentSpace I y) := by
     rw [hev.mfderiv_eq, mfderiv_id]
+    rfl
   have hpψ : ∀ v : TangentSpace I y,
       mfderiv I I p (ψ y) (mfderiv I I (ψ : N → M) y v) = v := by
     intro v
@@ -196,7 +197,7 @@ private theorem pairwise_disjoint_sdiff_iUnion_lt {ι : Type*} (W : ι → Set M
     exact hx.2 hmem
 
 omit [TopologicalSpace M] [T2Space M] [SigmaCompactSpace M] in
-private theorem iUnion_sdiff_iUnion_lt_eq {ι : Type*} [Countable ι]
+private theorem iUnion_sdiff_iUnion_lt_eq {ι : Type*}
     (W : ι → Set M) (lev : ι → ℕ) (hcover : ⋃ i, W i = univ) :
     ⋃ i, (W i \ ⋃ j, ⋃ (_ : lev j < lev i), W j) = univ := by
   classical
@@ -232,7 +233,7 @@ private theorem indicator_image_eq_indicator_setOf {ι : Type*} (p : M → N) {V
 
 omit [TopologicalSpace M] [T2Space M] [SigmaCompactSpace M]
   [TopologicalSpace N] [T2Space N] [SigmaCompactSpace N] in
-private theorem tsum_indicator_image_eq_natCast {ι : Type*} [Countable ι]
+private theorem tsum_indicator_image_eq_natCast {ι : Type*}
     {p : M → N} {V W : ι → Set M}
     (hVsub : ∀ i, V i ⊆ W i) (hinj : ∀ i, Set.InjOn p (W i))
     (hdisj : Pairwise (Function.onFun Disjoint V)) (hcover : ⋃ i, V i = univ)

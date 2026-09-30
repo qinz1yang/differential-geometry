@@ -192,7 +192,7 @@ theorem eq_geometricFaceBarycenter_of_faceHeight_eq_one [Finite K.faces]
 theorem faceHeight_geometricFaceBarycenter [Finite K.faces] (hs : s ∈ K.faces) :
     faceHeight K s hs (geometricFaceBarycenter K s hs) = 1 := by
   obtain ⟨p, hp, he⟩ := exists_faceHeight_coordinate K s hs (geometricFaceBarycenter K s hs)
-  rw [he, vertexHeight_geometricFaceBarycenter, if_pos hp]
+  rw [he, vertexHeight_geometricFaceBarycenter, ite_eq_left hp]
   exact mul_inv_cancel₀ (Nat.cast_ne_zero.mpr (Finset.card_ne_zero.mpr
     (K.nonempty_of_mem_faces hs)))
 
@@ -248,9 +248,9 @@ theorem face_normalization_mem_shell [Finite K.faces] (hs : s ∈ K.faces)
   have hw0 (q : E) : 0 ≤ w q := by
     apply mul_nonneg (inv_nonneg.mpr hd.le)
     by_cases hqs : q ∈ s
-    · rw [if_pos hqs]
+    · rw [ite_eq_left hqs]
       exact sub_nonneg.mpr (Finset.inf'_le (fun p ↦ vertexHeight K p z) hqs)
-    · rw [if_neg hqs, sub_zero]
+    · rw [ite_eq_right hqs, sub_zero]
       exact (vertexHeight_mem_Icc K q z).1
   have hsum : ∑ q ∈ t, w q = 1 := by
     simp only [w, ← Finset.mul_sum, Finset.sum_sub_distrib, Finset.sum_ite_mem,
@@ -259,7 +259,7 @@ theorem face_normalization_mem_shell [Finite K.faces] (hs : s ∈ K.faces)
     exact inv_mul_cancel₀ (ne_of_gt hd)
   have hwp : w p = 0 := by
     change (1 - h)⁻¹ * (vertexHeight K p z - if p ∈ s then m else 0) = 0
-    rw [if_pos hp, show vertexHeight K p z = m from hpm.symm, sub_self, mul_zero]
+    rw [ite_eq_left hp, show vertexHeight K p z = m from hpm.symm, sub_self, mul_zero]
   have hsumerase : ∑ q ∈ t.erase p, w q = 1 := by
     rw [Finset.sum_erase_eq_sub (hst hp), hsum, hwp, sub_zero]
   have hvec : ∑ q ∈ t, w q • q = (1 - h)⁻¹ • (z.val - h • s.centroid ℝ id) := by
@@ -320,7 +320,7 @@ theorem faceHeight_cone [Finite K.faces] (hs : s ∈ K.faces)
       (sub_nonneg.mpr a.prop.2.le) (add_sub_cancel _ _)
     change vertexHeight K q z = a.val * vertexHeight K q (geometricFaceBarycenter K s hs) +
       (1 - a.val) * vertexHeight K q yp at h
-    simpa only [vertexHeight_geometricFaceBarycenter, if_pos hq] using h
+    simpa only [vertexHeight_geometricFaceBarycenter, ite_eq_left hq] using h
   let m := s.inf' (K.nonempty_of_mem_faces hs) (fun q ↦ vertexHeight K q z)
   have hmle : a.val * (s.card : ℝ)⁻¹ ≤ m := by
     apply Finset.le_inf'

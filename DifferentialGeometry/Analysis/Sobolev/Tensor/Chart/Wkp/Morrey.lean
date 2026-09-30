@@ -96,11 +96,11 @@ private theorem weakGrad_real_le
     intro i
     funext x
     unfold chosenWeakPartialOrZero
-    simp only [dif_pos hW1]
+    simp only [dite_eq_left hW1]
     rfl
   have hmono : G ≤ eLpNorm (fun x => ∑ i : Fin d, ‖hw.weakGrad x i‖) p
       (volume.restrict Ω) := by
-    refine eLpNorm_mono ?_
+    refine eLpNorm_mono hw.weakGrad_memLp.aestronglyMeasurable.norm ?_
     intro x
     rw [Real.norm_of_nonneg (norm_nonneg _),
       Real.norm_of_nonneg (Finset.sum_nonneg fun i _ => norm_nonneg _)]
@@ -114,13 +114,12 @@ private theorem weakGrad_real_le
       ext x
       simp [Finset.sum_apply]
     rw [heq]
-    exact eLpNorm_sum_le
-      (fun i _ => (hw.weakGrad_component_memLp i).aestronglyMeasurable.norm) hp
+    exact eLpNorm_sum_le hp
   have hterm : ∀ i : Fin d,
       eLpNorm (fun x => ‖hw.weakGrad x i‖) p (volume.restrict Ω) ≤
         iteratedWeakSobolevNorm (d := d) 1 p v Ω := by
     intro i
-    rw [eLpNorm_norm, hcomp i]
+    rw [eLpNorm_norm _ (hw.weakGrad_component_memLp i).aestronglyMeasurable, hcomp i]
     simpa [iterWeakPartial_succ, iterWeakPartial_zero] using
       (eLpNorm_iterWeakPartial_le_wkpNorm (d := d) p v Ω 1 le_rfl
         (fun _ : Fin 1 => i))

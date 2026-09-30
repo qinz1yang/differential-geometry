@@ -1,6 +1,5 @@
-import DifferentialGeometry.Topology.Manifold.CylinderCollar.Germ
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.Coordinates
 import DifferentialGeometry.Analysis.Calculus.Interpolation.RadialContraction
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SupportedExtension
 
 set_option autoImplicit false
 noncomputable section

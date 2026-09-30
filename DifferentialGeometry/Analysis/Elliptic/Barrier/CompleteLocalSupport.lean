@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Barrier.SupportComparison
 import DifferentialGeometry.Analysis.Parabolic.Energy.CutoffEnergy
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 
 set_option autoImplicit false
 noncomputable section
@@ -9,8 +10,6 @@ open Set Filter Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Parabolic
-open DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.PDE.RicciFlow
 open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Analysis
@@ -43,7 +42,7 @@ private theorem gradient_product_local
 private theorem cutoff_square_dissipation
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (T ε t : ℝ) (χ q : ℝ → M → ℝ) (x : M)
-    (F : ShiCutoffLowerSupportAt G T ε χ t x)
+    (F : ParabolicCutoffLowerSupportAt G T ε χ t x)
     (B a w : ℝ)
     (hε : 0 ≤ ε) (hχ : χ t x ∈ Icc 0 1)
     (hB : 0 ≤ B) (hw : 0 ≤ w)
@@ -149,7 +148,7 @@ private theorem nonpositive_of_dissipative_lower_supports
             4 * B * w ∧
         parabolicOperatorWithDrift G T (fun _ _ => 0) v t x ≤
           -2 * w + a * v t x)
-    (hcut : ∀ O : M, Nonempty (ShiBarrierCutoffData G T O)) :
+    (hcut : ∀ O : M, Nonempty (ParabolicBarrierCutoffSequence G T O)) :
     ∀ t ∈ Icc 0 T, ∀ x : M, q t x ≤ 0 := by
   intro t ht O
   obtain ⟨cut⟩ := hcut O
@@ -247,7 +246,7 @@ theorem nonpositive_of_linear_reaction_lower_supports_and_cutoffs
           (T% (gradientFun (I := I) (G.metric t) (v t))) x ∧
         parabolicOperatorWithDrift G T (fun _ _ => 0) v t x ≤
           a * v t x)
-    (hcut : ∀ O : M, Nonempty (ShiBarrierCutoffData G T O)) :
+    (hcut : ∀ O : M, Nonempty (ParabolicBarrierCutoffSequence G T O)) :
     ∀ t ∈ Icc 0 T, ∀ x : M, q t x ≤ 0 := by
   let φ : ℝ → ℝ := fun r => Real.exp r - 1
   let u : ℝ → M → ℝ := fun t x => φ (q t x)

@@ -3,6 +3,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.LoweringJetTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.JetComparison.Tower
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq
+   riemannianFiberNormSq_eq_tensorInnerPointwise)
+
 set_option autoImplicit false
 
 noncomputable section
@@ -62,18 +66,18 @@ private theorem lpNorm_vol_cross
     simpa only [μg, μB, L] using
       (volumeMeasure_cross_le (I := I) (M := M) gBase g hEq).1
   have he := eLpNorm_mono_measure (p := (6 : ENNReal)) f hμ
-  rw [eLpNorm_smul_measure_of_ne_top (μ := μB) (p := (6 : ENNReal))
-      (by norm_num) f (ENNReal.ofReal L), smul_eq_mul] at he
+  rw [eLpNorm_smul_measure_of_ne_zero_of_ne_top (μ := μB) (p := (6 : ENNReal))
+      (by norm_num) (by norm_num) (f := f) (ENNReal.ofReal L), smul_eq_mul] at he
   have hexp : (1 / (6 : ENNReal)).toReal = (1 / 6 : ℝ) := by norm_num
   rw [hexp] at he
   have hpow : (ENNReal.ofReal L) ^ (1 / 6 : ℝ) ≠ ⊤ :=
     ENNReal.rpow_ne_top_of_nonneg (by norm_num) ENNReal.ofReal_ne_top
   have htop := ENNReal.mul_ne_top hpow hfB.eLpNorm_ne_top
   have hr := ENNReal.toReal_mono htop he
-  rw [toReal_eLpNorm hf.aestronglyMeasurable,
+  rw [toReal_eLpNorm,
     ENNReal.toReal_mul, ← ENNReal.toReal_rpow,
     ENNReal.toReal_ofReal hL,
-    toReal_eLpNorm hf.aestronglyMeasurable] at hr
+    toReal_eLpNorm] at hr
   simpa only [μg, μB, L, l6VolC] using hr
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]

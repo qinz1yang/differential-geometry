@@ -47,7 +47,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPath convexPerturbation metricPerturbationPath_inner_of_mem convexPerturbation_gFibreOpBound_abs
     abs_convex_smallConstant_lt_one metricPerturbationPathDomain)
-open DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.SmoothRiemannianMetric
   (metric_inner_cauchy_schwarz_sq)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel)
@@ -417,10 +417,10 @@ lemma deTurckLieConnectionDifferenceDerivativeQuadCc_toModel (g₀ g_arm g_out :
         Fin 2 → TangentSpace I x) from by
     funext j
     refine Fin.cases ?_ ?_ j
-    · rw [if_pos rfl, ContinuousLinearEquiv.symm_apply_apply]
+    · rw [ite_eq_left rfl, ContinuousLinearEquiv.symm_apply_apply]
       rfl
     · intro i
-      rw [if_neg (Fin.succ_ne_zero i)]
+      rw [ite_eq_right (Fin.succ_ne_zero i)]
       rfl]
   rw [connectionDifferencePairing_apply]
   rw [cotangentToDual_apply]

@@ -99,7 +99,7 @@ theorem exists_memW1pWitness_bounded_intrinsic_probe_of_ae_tendsto
   have hLipe (n : ℕ) : ∃ L : ℝ≥0,
       LipschitzWith L (Φ ∘ (fun x => diskExtension (u n) (e x))) := by
     obtain ⟨L, hL⟩ := hf n
-    exact ⟨L, by simpa only [f, Function.comp_def, mul_one] using hL.comp e.lipschitz⟩
+    exact ⟨L, by simpa only [f, Function.comp_def, mul_one] using hL.comp e.lipschitzWith⟩
   obtain ⟨_, _, hv, _, _, _, hvbound, _, hvenergy⟩ :=
     Analysis.Sobolev.Euclidean.exists_memW1pWitness_comp_of_ae_tendsto_of_lipschitz
       hΦ hD (fun n x => diskExtension (u n) (e x)) (fun x => v (e x))

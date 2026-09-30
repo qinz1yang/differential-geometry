@@ -20,12 +20,12 @@ noncomputable def joinVertexMap (φ : E → E') (ψ : F → F') (z : E × F × �
 omit [NormedSpace ℝ E'] [NormedSpace ℝ F'] in
 theorem joinVertexMap_joinFst (φ : E → E') (ψ : F → F') (v : E) :
     joinVertexMap φ ψ (joinFst E F v) = joinFst E' F' (φ v) := by
-  rw [joinVertexMap, if_pos (glueHeight_joinFst v), glueFst_joinFst]
+  rw [joinVertexMap, ite_eq_left (glueHeight_joinFst v), glueFst_joinFst]
 
 omit [NormedSpace ℝ E'] [NormedSpace ℝ F'] in
 theorem joinVertexMap_joinSnd (φ : E → E') (ψ : F → F') (w : F) :
     joinVertexMap φ ψ (joinSnd E F w) = joinSnd E' F' (ψ w) := by
-  rw [joinVertexMap, if_neg (by rw [glueHeight_joinSnd]; exact one_ne_zero), glueSnd_joinSnd]
+  rw [joinVertexMap, ite_eq_right (by rw [glueHeight_joinSnd]; exact one_ne_zero), glueSnd_joinSnd]
 
 omit [NormedSpace ℝ E'] [NormedSpace ℝ F'] in
 theorem image_joinVertexMap [DecidableEq E] [DecidableEq E'] [DecidableEq F] [DecidableEq F']

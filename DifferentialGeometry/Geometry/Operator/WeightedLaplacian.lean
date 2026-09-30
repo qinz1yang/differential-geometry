@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metri
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.SlotPermutation
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TotalNabla0S
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ProductLeibniz
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.MetricData
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 
 set_option autoImplicit false
 
@@ -479,7 +479,7 @@ theorem weightedRoughLaplacian0S_smul_metric
   have hnabla2U : nabla2U =
       tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2) Hess metric :=
     totalNabla0SRealizes_unique (I := I) hsecondCanonical' hsecondExplicit
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore

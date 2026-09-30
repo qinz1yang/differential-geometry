@@ -66,7 +66,7 @@ theorem crossQuarterTriangle_subset_closedBall (i : Fin 4) {r : ℝ} :
 
 theorem isPLHomeomorphOn_crossQuarterTriangle (i : Fin 4) {r : ℝ} (hr : 0 < r) :
     IsPLHomeomorphOn (fun w : Fin 3 → ℝ => ((r * w 1) • fourSpokeModelLeaf i, r * w 2))
-      (stdSimplex ℝ (Fin 3)) (crossQuarterTriangle r i) := by
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (crossQuarterTriangle r i) := by
   let L : (Fin 3 → ℝ) →ₗ[ℝ] (ℝ × ℝ) × ℝ :=
     (LinearMap.smulRight (r • LinearMap.proj 1) (fourSpokeModelLeaf i)).prod
       (r • LinearMap.proj 2)

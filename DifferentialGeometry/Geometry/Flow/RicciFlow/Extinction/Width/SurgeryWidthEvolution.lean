@@ -388,7 +388,7 @@ def historyWidth (H : ObservedHistory.{u})
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (t : Icc (0 : ℝ) H.horizon) : ℝ :=
   let j := historyStageAt H t
-  let c := (rfs_finite_ancestor_chain H terminal).component j
+  let c := (finiteAncestorChain H terminal).component j
   componentWidth (H.stage j) (historyStageMetric H j t.1) c
     (rfs_simply_connected_history H h0 j c)
 
@@ -505,16 +505,16 @@ theorem historyWidth_stageTime (H : ObservedHistory.{u})
     (j : Fin (H.eventCount + 1)) :
     historyWidth H h0 terminal (historyStageTime H j) =
       componentWidth (H.stage j) (H.initialMetric j)
-        ((rfs_finite_ancestor_chain H terminal).component j)
+        ((finiteAncestorChain H terminal).component j)
         (rfs_simply_connected_history H h0 j _) := by
   let W : Fin (H.eventCount + 1) → ℝ → ℝ := fun k s =>
     componentWidth (H.stage k) (historyStageMetric H k s)
-      ((rfs_finite_ancestor_chain H terminal).component k)
+      ((finiteAncestorChain H terminal).component k)
       (rfs_simply_connected_history H h0 k _)
   change W (historyStageAt H (historyStageTime H j)) (H.time j) = _
   rw [historyStageAt_stageTime]
   exact congrArg (fun g : (H.stage j).Metric => componentWidth (H.stage j) g
-    ((rfs_finite_ancestor_chain H terminal).component j)
+    ((finiteAncestorChain H terminal).component j)
     (rfs_simply_connected_history H h0 j _)) (historyStageMetric_initial H j)
 
 theorem historyWidth_incoming (H : ObservedHistory.{u})
@@ -525,11 +525,11 @@ theorem historyWidth_incoming (H : ObservedHistory.{u})
     (ht : t.1 ∈ Ico (H.time i.castSucc) (H.time i.succ)) :
     historyWidth H h0 terminal t =
       componentWidth (H.stage i.castSucc) ((H.event i).incoming.flow.base.metric t.1)
-        ((rfs_finite_ancestor_chain H terminal).component i.castSucc)
+        ((finiteAncestorChain H terminal).component i.castSucc)
         (rfs_simply_connected_history H h0 i.castSucc _) := by
   let W : Fin (H.eventCount + 1) → ℝ → ℝ := fun k s =>
     componentWidth (H.stage k) (historyStageMetric H k s)
-      ((rfs_finite_ancestor_chain H terminal).component k)
+      ((finiteAncestorChain H terminal).component k)
       (rfs_simply_connected_history H h0 k _)
   change W (historyStageAt H t) t.1 = _
   rw [historyStageAt_of_mem_incoming H i t ht]
@@ -642,7 +642,7 @@ private theorem historyWidth_tendsto_of_stage_eventually_constant (H : ObservedH
     (hstage : ∀ᶠ s in F, historyStageAt H s = historyStageAt H t) :
     Tendsto (historyWidth H h0 terminal) F (𝓝 (historyWidth H h0 terminal t)) := by
   let j := historyStageAt H t
-  let c := (rfs_finite_ancestor_chain H terminal).component j
+  let c := (finiteAncestorChain H terminal).component j
   let hSC := rfs_simply_connected_history H h0 j c
   let f : ℝ → ℝ := fun s => componentWidth (H.stage j) (historyStageMetric H j s) c hSC
   have hc : ContinuousWithinAt f (historyStageDomain H j) t.1 :=
@@ -658,7 +658,7 @@ private theorem historyWidth_tendsto_of_stage_eventually_constant (H : ObservedH
     filter_upwards [hstage] with s hs
     let W : Fin (H.eventCount + 1) → ℝ := fun k =>
       componentWidth (H.stage k) (historyStageMetric H k s.1)
-        ((rfs_finite_ancestor_chain H terminal).component k)
+        ((finiteAncestorChain H terminal).component k)
         (rfs_simply_connected_history H h0 k _)
     change W (historyStageAt H t) = W (historyStageAt H s)
     exact congrArg W hs.symm
@@ -682,7 +682,7 @@ theorem historyWidth_initial_eq_of_isometry
   let : ConnectedSpace (H.stage 0).Carrier := e.connectedSpace_iff.mp inferInstance
   let : SimplyConnectedSpace (H.stage 0).Carrier :=
     e.symm.toHomotopyEquiv.simplyConnectedSpace
-  let c := (rfs_finite_ancestor_chain H terminal).component 0
+  let c := (finiteAncestorChain H terminal).component 0
   let := (H.stage 0).component_connected c
   let := h0 c
   let d := componentDiffeomorph (H.stage 0) c
@@ -733,7 +733,7 @@ theorem historyWidth_event_jump (H : ObservedHistory.{u})
     ENNReal.ofReal (historyWidth H h0 terminal (historyStageTime H i.succ)) ≤
       liminf (fun t => ENNReal.ofReal (historyWidth H h0 terminal t))
         (𝓝[<] (historyStageTime H i.succ)) := by
-  let chain := rfs_finite_ancestor_chain H terminal
+  let chain := finiteAncestorChain H terminal
   let SC := rfs_simply_connected_history H h0
   let G := cutoff i
   let c := chain.component i.succ

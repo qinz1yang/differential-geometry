@@ -169,16 +169,16 @@ theorem exists_isSetHomeoOn_modelCurve {C : Set Plane} (hC : IsJordanCurve C) :
       funext q; simp [Set.domRestrict, q.2]
     rw [this]
     exact continuous_subtype_val.comp h.symm.continuous
-  · intro p hp; simp only [dif_pos hp]; exact (h ⟨p, hp⟩).2
-  · intro q hq; simp only [dif_pos hq]; exact (h.symm ⟨q, hq⟩).2
+  · intro p hp; simp only [dite_eq_left hp]; exact (h ⟨p, hp⟩).2
+  · intro q hq; simp only [dite_eq_left hq]; exact (h.symm ⟨q, hq⟩).2
   · intro p hp
     have hmem : (h ⟨p, hp⟩ : Plane) ∈ modelCurve := (h ⟨p, hp⟩).2
-    simp only [dif_pos hp, dif_pos hmem]
+    simp only [dite_eq_left hp, dite_eq_left hmem]
     have : (⟨(h ⟨p, hp⟩ : Plane), hmem⟩ : ↥modelCurve) = h ⟨p, hp⟩ := rfl
     rw [this, h.symm_apply_apply]
   · intro q hq
     have hmem : (h.symm ⟨q, hq⟩ : Plane) ∈ C := (h.symm ⟨q, hq⟩).2
-    simp only [dif_pos hq, dif_pos hmem]
+    simp only [dite_eq_left hq, dite_eq_left hmem]
     have : (⟨(h.symm ⟨q, hq⟩ : Plane), hmem⟩ : ↥C) = h.symm ⟨q, hq⟩ := rfl
     rw [this, h.apply_symm_apply]
 
@@ -1447,10 +1447,10 @@ noncomputable def skelInv (d : InitialData C) : Plane → Plane :=
     d.cross (Function.invFunOn (tgtChord d.xa d.xb) I y)
 
 theorem skelMap_of_mem {x : Plane} (hx : x ∈ C) : d.skelMap x = d.u x := by
-  simp only [skelMap, if_pos hx]
+  simp only [skelMap, ite_eq_left hx]
 
 theorem skelInv_of_mem {y : Plane} (hy : y ∈ modelCurve) : d.skelInv y = d.w y := by
-  simp only [skelInv, if_pos hy]
+  simp only [skelInv, ite_eq_left hy]
 
 /-- **The skeleton map matches parameters on the crosscut.** -/
 theorem skelMap_cross {t : ℝ} (ht : t ∈ I) :
@@ -1461,7 +1461,7 @@ theorem skelMap_cross {t : ℝ} (ht : t ∈ I) :
       simp [tgtChord]
     · rw [d.skelMap_of_mem hmem, d.cross_one, d.u_b]
       simp [tgtChord]
-  · simp only [skelMap, if_neg hmem, d.injOn_cross.leftInvOn_invFunOn ht]
+  · simp only [skelMap, ite_eq_right hmem, d.injOn_cross.leftInvOn_invFunOn ht]
 
 theorem tgtChord_mem_modelCurve_iff {t : ℝ} (ht : t ∈ I) :
     tgtChord d.xa d.xb t ∈ modelCurve ↔ t = 0 ∨ t = 1 := by
@@ -1489,7 +1489,7 @@ theorem skelInv_tgtChord {t : ℝ} (ht : t ∈ I) :
       simp [tgtChord]
     · rw [d.skelInv_of_mem hmem, d.cross_one]
       simp [tgtChord]
-  · simp only [skelInv, if_neg hmem, d.injOn_tgtChord.leftInvOn_invFunOn ht]
+  · simp only [skelInv, ite_eq_right hmem, d.injOn_tgtChord.leftInvOn_invFunOn ht]
 
 /-! #### Continuity and inversion -/
 

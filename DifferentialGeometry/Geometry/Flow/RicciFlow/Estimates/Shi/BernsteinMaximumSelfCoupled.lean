@@ -54,10 +54,10 @@ def ShiInitialDistanceCutoff.toSelfCoupledCutoff
   support_zero := cut.support_zero
   lower_support := cut.lower_support
 
-def ShiCutoffLowerSupportAt.toSelfCoupled
+def _root_.DifferentialGeometry.Analysis.Parabolic.ParabolicCutoffLowerSupportAt.toSelfCoupled
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     {T eps : Real} {χ : Real → M → Real} {t : Real} {x : M}
-    (h : ShiCutoffLowerSupportAt (I := I) G T eps χ t x) :
+    (h : ParabolicCutoffLowerSupportAt (I := I) G T eps χ t x) :
     ShiSelfCoupledLowerSupportAt (I := I) G T eps (fun _ _ => eps) χ t x where
   phi := h.phi
   eq_at := h.eq_at

@@ -378,18 +378,18 @@ theorem chartRiemannCLM_basis_apply (g : SmoothRiemannianMetric I M) (x : M)
       · intro k' _ hk_ne
         refine Finset.sum_eq_zero (fun l _ => ?_)
         have hkk' : ¬ k = k' := fun h => hk_ne h.symm
-        simp only [hkk', if_false, mul_zero, zero_mul, zero_smul]
+        simp only [hkk', ite_false, mul_zero, zero_mul, zero_smul]
       · intro hk; exact absurd (Finset.mem_univ _) hk
     · intro j' _ hj_ne
       refine Finset.sum_eq_zero (fun k' _ => Finset.sum_eq_zero (fun l _ => ?_))
       have hjj' : ¬ j = j' := fun h => hj_ne h.symm
-      simp only [hjj', if_false, mul_zero, zero_mul, zero_smul]
+      simp only [hjj', ite_false, mul_zero, zero_mul, zero_smul]
     · intro hj; exact absurd (Finset.mem_univ _) hj
   · intro i' _ hi_ne
     refine Finset.sum_eq_zero (fun j' _ =>
       Finset.sum_eq_zero (fun k' _ => Finset.sum_eq_zero (fun l _ => ?_)))
     have hii' : ¬ i = i' := fun h => hi_ne h.symm
-    simp only [hii', if_false, zero_mul, zero_smul]
+    simp only [hii', ite_false, zero_mul, zero_smul]
   · intro hi; exact absurd (Finset.mem_univ _) hi
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -407,12 +407,12 @@ theorem chartRiemannCLM_repr_basis (g : SmoothRiemannianMetric I M) (x : M)
   rw [Finset.sum_apply]
   rw [Finset.sum_eq_single l]
   · rw [LinearEquiv.map_smul, Finsupp.smul_apply,
-        Module.Basis.repr_self_apply, smul_eq_mul, if_pos rfl, mul_one]
+        Module.Basis.repr_self_apply, smul_eq_mul, ite_eq_left rfl, mul_one]
   · intro l' _ hl_ne
     rw [LinearEquiv.map_smul, Finsupp.smul_apply,
         Module.Basis.repr_self_apply, smul_eq_mul]
     have h_neg : ¬ l' = l := hl_ne
-    rw [if_neg h_neg, mul_zero]
+    rw [ite_eq_right h_neg, mul_zero]
   · intro hl; exact absurd (Finset.mem_univ _) hl
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in

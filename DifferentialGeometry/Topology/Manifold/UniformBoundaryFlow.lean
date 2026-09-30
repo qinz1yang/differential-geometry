@@ -62,7 +62,7 @@ theorem exists_uniform_localFlow_of_compact
     intro i hi y hy t ht
     have hyU : y ∈ U := mem_iUnion.mpr ⟨i, mem_iUnion.mpr ⟨hi, hy⟩⟩
     dsimp only [Φ]
-    rw [dif_pos hyU]
+    rw [dite_eq_left hyU]
     exact hagree _ (hindex ⟨y, hyU⟩).1 i hi y ⟨(hindex ⟨y, hyU⟩).2, hy⟩ ht
   have hsmooth : ContMDiffOn (I.prod 𝓘(ℝ)) I ∞ Φ (U ×ˢ Ico 0 ε) := by
     apply contMDiffOn_of_locally_contMDiffOn
@@ -83,6 +83,7 @@ theorem exists_uniform_localFlow_of_compact
       (hΦeq i hi y hyi t ht) subset_rfl).congr_mfderiv
     dsimp only
     rw [hΦeq i hi y hyi t ht]
+    rfl
   · intro y hy t ht
     obtain ⟨i, hi, hyi⟩ := hselect y hy
     rw [hΦeq i hi y hyi t ⟨ht.1.le, ht.2⟩]

@@ -256,7 +256,7 @@ theorem metricDerivNorm_restrictOpen
   rw [metricDerivNorm]
   rw [metricDiffCovDerivAt_restrictOpen_apply]
   apply congrArg Real.sqrt
-  exact normSq0S_restrictOpen_apply (I := I) gRef U (a + 2) x _
+  exact Tensor0SBundle.normSq0S_restrictOpen_apply (I := I) gRef U (a + 2) x _
 
 omit [SigmaCompactSpace M] in
 theorem metricDerivNormSupOn_restrictOpen
@@ -291,7 +291,7 @@ theorem covNorm_restrictOpen
     ext slots
     exact metricCovDeriv_restrictOpen_apply (I := I) h gRef U a x slots
   unfold metricCovDerivNorm
-  rw [normSq0S_restrictOpen_apply, hcov]
+  rw [Tensor0SBundle.normSq0S_restrictOpen_apply, hcov]
 
 end FixedManifold
 

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.TetrahedronJoinQuotient
 import DifferentialGeometry.Topology.Simplex.TetrahedronJoinBoundary
 import DifferentialGeometry.Topology.Simplex.TetrahedronGenLoop
@@ -6,6 +7,8 @@ import DifferentialGeometry.Topology.Homotopy.CubeSphereLocalHomeomorph
 noncomputable section
 
 open scoped unitInterval
+
+open Convexity.StdSimplex
 
 namespace DifferentialGeometry.Simplex
 
@@ -33,7 +36,7 @@ private theorem cubeSphereProjectionTriple_one (t u v : I) :
     Topology.cubeSphereProjection_boundary 2 _ ⟨2, Or.inr rfl⟩]
 
 def tetrahedronCubeSphereMap :
-    C(stdSimplex ℝ (Fin 4), Metric.sphere (0 : EuclideanSpace ℝ (Fin 4)) 1) :=
+    C(coordinateSet ℝ (Fin 4), Metric.sphere (0 : EuclideanSpace ℝ (Fin 4)) 1) :=
   tetrahedronJoinDesc cubeSphereProjectionTriple
     cubeSphereProjectionTriple_zero cubeSphereProjectionTriple_one
 
@@ -46,7 +49,7 @@ def tetrahedronCubeSphereMap :
   funext i
   fin_cases i <;> rfl
 
-theorem tetrahedronCubeSphereMap_boundary (p : stdSimplex ℝ (Fin 4))
+theorem tetrahedronCubeSphereMap_boundary (p : coordinateSet ℝ (Fin 4))
     (hp : p ∈ boundary (Fin 4)) : tetrahedronCubeSphereMap p = Topology.cubeSphereBasepoint 2 := by
   obtain ⟨⟨s, t, u⟩, rfl⟩ := tetrahedronJoin_surjective p
   rw [show tetrahedronJoin (s, t, u) = tetrahedronJoin (![u, t, s] 2, ![u, t, s] 1, ![u, t, s] 0) from rfl,
@@ -62,7 +65,7 @@ theorem tetrahedronCubeSphereMap_isQuotientMap :
     _root_.Topology.IsQuotientMap tetrahedronCubeSphereMap :=
   .of_surjective_continuous tetrahedronCubeSphereMap_surjective tetrahedronCubeSphereMap.continuous
 
-theorem tetrahedronCubeSphereMap_fiber (p q : stdSimplex ℝ (Fin 4))
+theorem tetrahedronCubeSphereMap_fiber (p q : coordinateSet ℝ (Fin 4))
     (h : tetrahedronCubeSphereMap p = tetrahedronCubeSphereMap q) :
     p = q ∨ p ∈ boundary (Fin 4) ∧ q ∈ boundary (Fin 4) := by
   obtain ⟨⟨s, t, u⟩, rfl⟩ := tetrahedronJoin_surjective p
@@ -90,7 +93,7 @@ theorem tetrahedronCubeSphereMap_fiber (p q : stdSimplex ℝ (Fin 4))
 
 variable {X : Type*} [TopologicalSpace X]
 
-theorem genLoopSphereHomeomorph_tetrahedronGenLoop_comp (g : C(stdSimplex ℝ (Fin 4), X))
+theorem genLoopSphereHomeomorph_tetrahedronGenLoop_comp (g : C(coordinateSet ℝ (Fin 4), X))
     (x : X) (hg : ∀ p ∈ boundary (Fin 4), g p = x) :
     (Topology.genLoopSphereHomeomorph 2 x (tetrahedronGenLoop g x hg)).val.comp
       tetrahedronCubeSphereMap = g := by

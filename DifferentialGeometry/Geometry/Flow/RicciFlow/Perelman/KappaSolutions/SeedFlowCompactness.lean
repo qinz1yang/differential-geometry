@@ -204,7 +204,8 @@ private theorem seed_terminal_hasInjRadiusAt (hK : KLim kappa F)
   have hadd : R / 8 + R / 8 = R / 4 := by ring
   rw [hhalf, hadd] at hcgt
   have hinj := (selectedCGTInjRadius_le_quotient (E := E) hK.kappa_pos.le hR).trans hcgt
-  convert hinj using 1 <;> rfl
+  convert hinj using 1
+  rfl
 
 end OneFlow
 
@@ -212,7 +213,7 @@ section Sequence
 
 variable [I.Boundaryless] (X : PointedFlowSeq.{u, uE, uH} (I := I)) {kappa : ℝ}
 
-def klim_three_baseInjBound_of_unit_scalar_bound [NeZero (Module.finrank ℝ E)]
+def klimThreeBaseInjBoundOfUnitScalarBound [NeZero (Module.finrank ℝ E)]
     (hK : ∀ i, KLim kappa (X.term i)) (hdim : Module.finrank ℝ E = 3)
     (C : ℝ) (hC : 0 < C)
     (hunit : ∀ i,
@@ -246,7 +247,7 @@ def klim_three_baseInjBound_of_unit_scalar_bound [NeZero (Module.finrank ℝ E)]
     rho R hrhoOne hcontrol hR (hRj.trans hrJrho) (min_le_right _ _)
     (fun a ha haR => herror a ha (haR.trans hRj))
 
-def seedFlow_baseInjBound [NeZero (Module.finrank ℝ E)]
+def seedFlowBaseInjBound [NeZero (Module.finrank ℝ E)]
     (hK : ∀ i, KLim kappa (X.term i)) (hdim : Module.finrank ℝ E = 3)
     (hvolume : ∀ i, seedTerminalUnitVolume (X.term i) = euclideanUnitBallVolume 3 / 2) :
     FlowScaleInjectivityBound (I := I) X := by
@@ -255,7 +256,7 @@ def seedFlow_baseInjBound [NeZero (Module.finrank ℝ E)]
   let C : ℝ → ℝ := hconstants.choose
   have hC : ∀ A, 0 < C A := hconstants.choose_spec.1
   have hbound := hconstants.choose_spec.2
-  apply klim_three_baseInjBound_of_unit_scalar_bound X hK hdim (C 1) (hC 1)
+  apply klimThreeBaseInjBoundOfUnitScalarBound X hK hdim (C 1) (hC 1)
   intro i
   dsimp only
   intro z hz
@@ -318,7 +319,7 @@ theorem exists_seedFlow_ancient_limit
     intro t ht z v
     simpa only [one_mul] using (hK i).metric_inner_le ht.2 le_rfl z v
   exact exists_local_ancient_flow_compactness X hD hcomplete
-    (fun i => (hK i).connected) (seedFlow_baseInjBound X hK hdim hvolume)
+    (fun i => (hK i).connected) (seedFlowBaseInjBound X hK hdim hvolume)
     hlocalInput hlowerInput
 
 end Sequence

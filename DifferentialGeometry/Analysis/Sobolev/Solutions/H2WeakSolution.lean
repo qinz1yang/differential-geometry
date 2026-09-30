@@ -150,10 +150,11 @@ theorem eLpNorm_kdi_partial_le_of_uniform_diffQuot
   have h_2_ne_top : (2 : ℝ≥0∞) ≠ ∞ := by norm_num
   have h_2toReal : ((2 : ℝ≥0∞).toReal) = (2 : ℝ) := by norm_num
   have h_eLpNorm_to_lint : ∀ {f : E → ℝ},
+      AEStronglyMeasurable f (volume.restrict Ω'') →
       eLpNorm f 2 (volume.restrict Ω'') ^ (2 : ℝ) =
         ∫⁻ x in Ω'', (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂(volume : Measure E) := by
-    intro f
-    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h_2_ne_zero h_2_ne_top]
+    intro f hf
+    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h_2_ne_zero h_2_ne_top hf]
     rw [h_2toReal]
     rw [← ENNReal.rpow_mul]
     rw [show (1 : ℝ) / 2 * 2 = 1 from by norm_num, ENNReal.rpow_one]
@@ -162,7 +163,9 @@ theorem eLpNorm_kdi_partial_le_of_uniform_diffQuot
           ((1 : ℝ) / (j + 1)) ψ x‖ₑ : ℝ≥0∞) ^ (2 : ℝ)
         ∂(volume : Measure E) ≤
       (ENNReal.ofReal M) ^ (2 : ℝ) := fun j => by
-    rw [← h_eLpNorm_to_lint]
+    rw [← h_eLpNorm_to_lint
+      (DifferentialGeometry.Analysis.Sobolev.continuous_diffQuot_of_continuous
+        (d := d) k _ hψ_cont).aestronglyMeasurable]
     exact ENNReal.rpow_le_rpow (h_dq_bound j) (by norm_num : (0 : ℝ) ≤ 2)
   have h_meas_dq : ∀ j : ℕ, Measurable
       (DifferentialGeometry.Analysis.Sobolev.diffQuot k ((1 : ℝ) / (j + 1)) ψ) :=
@@ -209,7 +212,8 @@ theorem eLpNorm_kdi_partial_le_of_uniform_diffQuot
   have h_eLpNorm_sq_le :
       (eLpNorm gψ 2 (volume.restrict Ω'')) ^ (2 : ℝ) ≤
       (ENNReal.ofReal M) ^ (2 : ℝ) := by
-    rw [h_eLpNorm_to_lint]
+    rw [h_eLpNorm_to_lint
+      ((hψ_smooth.continuous_fderiv (by simp)).clm_apply continuous_const).aestronglyMeasurable]
     exact h_liminf_bound
   have h_2_pos : (0 : ℝ) < 2 := by norm_num
   exact (ENNReal.rpow_le_rpow_iff h_2_pos).mp h_eLpNorm_sq_le

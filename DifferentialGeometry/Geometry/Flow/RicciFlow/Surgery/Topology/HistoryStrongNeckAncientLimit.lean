@@ -34,7 +34,7 @@ attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianM
 
 theorem exists_bounded_ancient_pointed_flow_limit_extendAt_of_forall_neckAlternative :
     ∃ epsW : ℝ, 0 < epsW ∧
-    ∀ {P₀ : ℕ → OrientedThreeStage.{u}} (H Hext : ∀ n, RetainedCoreHistory (P₀ n))
+    ∀ (H Hext : ℕ → RetainedCoreHistory.{u})
       (hend : ∀ n, (H n).time (Fin.last (H n).eventCount) = (H n).horizon) {s τ : ℕ → ℝ}
       (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
         ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -186,7 +186,7 @@ theorem exists_bounded_ancient_pointed_flow_limit_extendAt_of_forall_neckAlterna
   obtain ⟨epsW, hepsW, hB13⟩ :=
     ObservedHistory.exists_bounded_ancient_pointed_flow_limit_of_spatially_canonical_before.{u}
   refine ⟨epsW, hepsW, ?_⟩
-  intro P₀ H Hext hend s τ G hG hat hτs hext t ht y R hR hRlim hRt κ ε ε₁ C1 C2 qcan Ctime phi hκ
+  intro H Hext hend s τ G hG hat hτs hext t ht y R hR hRlim hRt κ ε ε₁ C1 C2 qcan Ctime phi hκ
     hε hεW hε₁ hqR hphi hpinch hpinchG hderiv hderivG hclass hcanG hnc hncG Qup hball hsupply
   obtain rfl : Hext = fun n => (H n).extendAt (hend n) (G n) (hG n) (hat n) (hτs n) :=
     funext hext

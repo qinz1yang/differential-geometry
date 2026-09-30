@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 import DifferentialGeometry.Topology.Homotopy.CubeCompactification
 import DifferentialGeometry.Topology.Simplex.CubeParametrization
@@ -7,11 +8,13 @@ noncomputable section
 open Set ContinuousMap
 open scoped unitInterval
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 variable {X : Type*} [TopologicalSpace X]
 
-def triangleGenLoop (g : C(stdSimplex ℝ (Fin 3), X)) (x : X)
+def triangleGenLoop (g : C(coordinateSet ℝ (Fin 3), X)) (x : X)
     (hg : ∀ p ∈ boundary (Fin 3), g p = x) :
     GenLoop (Fin 2) X x :=
   ⟨⟨fun v => g (triangleJoin (v 0, v 1)),
@@ -31,7 +34,7 @@ def triangleGenLoop (g : C(stdSimplex ℝ (Fin 3), X)) (x : X)
       · rw [show v 1 = 1 from hi, triangleJoin_second_one]
         exact hg _ ⟨1, map_succAbove_apply_pivot _ _⟩⟩
 
-@[simp] theorem triangleGenLoop_apply (g : C(stdSimplex ℝ (Fin 3), X)) (x : X)
+@[simp] theorem triangleGenLoop_apply (g : C(coordinateSet ℝ (Fin 3), X)) (x : X)
     (hg : ∀ p ∈ boundary (Fin 3), g p = x) (v : Fin 2 → unitInterval) :
     triangleGenLoop g x hg v = g (triangleJoin (v 0, v 1)) := rfl
 

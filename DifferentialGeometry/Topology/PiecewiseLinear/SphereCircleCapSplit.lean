@@ -14,7 +14,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
 
 theorem IsPLHomeomorphOn.isPreconnected_sdiff_of_subset_boundary {E β : Set F}
-    {r : (Fin 3 → ℝ) → F} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) E)
+    {r : (Fin 3 → ℝ) → F} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) E)
     (hβ : β ⊆ r '' stdSimplexBoundary 2) : IsPreconnected (E \ β) ∧ closure (E \ β) = E := by
   have hO : IsPreconnected (r '' openSimplex (stdVertices 1)) :=
     (convex_openSimplex _).isPreconnected.image r
@@ -34,15 +34,15 @@ theorem IsPLHomeomorphOn.isPreconnected_sdiff_of_subset_boundary {E β : Set F}
     _ ⊆ closure (E \ β) := closure_mono hsub1
 
 theorem exists_isPLHomeomorphOn_closure_sdiff_biUnion_of_caps {D : Set F}
-    {q : (Fin 3 → ℝ) → F} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) {ι : Type*}
+    {q : (Fin 3 → ℝ) → F} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {ι : Type*}
     {E β : ι → Set F} {r : ι → (Fin 3 → ℝ) → F} {γ : ι → ℝ → F}
-    (hr : ∀ i, IsPLHomeomorphOn (r i) (stdSimplex ℝ (Fin 3)) (E i))
+    (hr : ∀ i, IsPLHomeomorphOn (r i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (E i))
     (hγ : ∀ i, IsPLHomeomorphOn (γ i) (Icc 0 1) (β i))
     (hβ : ∀ i, β i ⊆ r i '' stdSimplexBoundary 2) (s : Finset ι)
     (hED : ∀ i ∈ s, E i ⊆ D) (hEDb : ∀ i ∈ s, E i ∩ q '' stdSimplexBoundary 2 = β i)
     (hdisj : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → Disjoint (E i) (E j)) :
     ∃ q' : (Fin 3 → ℝ) → F,
-      IsPLHomeomorphOn q' (stdSimplex ℝ (Fin 3)) (closure (D \ ⋃ i ∈ s, E i)) ∧
+      IsPLHomeomorphOn q' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (closure (D \ ⋃ i ∈ s, E i)) ∧
       q' '' stdSimplexBoundary 2 = (q '' stdSimplexBoundary 2 \
           ⋃ i ∈ s, (β i \ {γ i 0, γ i 1})) ∪
         ⋃ i ∈ s, closure (r i '' stdSimplexBoundary 2 \ β i) ∧
@@ -141,13 +141,13 @@ theorem exists_isPLHomeomorphOn_closure_sdiff_biUnion_of_caps {D : Set F}
 theorem IsPLSphere.exists_split_of_circle_caps {S J : Set F} (hS : IsPLSphere 2 S)
     (hJ : IsPLSphere 1 J) (hJS : J ⊆ S) {ι : Type*} [Finite ι] {E β : ι → Set F}
     {r : ι → (Fin 3 → ℝ) → F} {γ : ι → ℝ → F}
-    (hr : ∀ i, IsPLHomeomorphOn (r i) (stdSimplex ℝ (Fin 3)) (E i)) (hES : ∀ i, E i ⊆ S)
+    (hr : ∀ i, IsPLHomeomorphOn (r i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (E i)) (hES : ∀ i, E i ⊆ S)
     (hdisj : Pairwise fun i j => Disjoint (E i) (E j))
     (hγ : ∀ i, IsPLHomeomorphOn (γ i) (Icc 0 1) (β i))
     (hβ : ∀ i, β i ⊆ r i '' stdSimplexBoundary 2) (hEJ : ∀ i, E i ∩ J = β i) :
     ∃ (X Y : Set F) (qX qY : (Fin 3 → ℝ) → F),
-      IsPLHomeomorphOn qX (stdSimplex ℝ (Fin 3)) X ∧
-      IsPLHomeomorphOn qY (stdSimplex ℝ (Fin 3)) Y ∧
+      IsPLHomeomorphOn qX (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) X ∧
+      IsPLHomeomorphOn qY (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Y ∧
       X ∪ Y ∪ (⋃ i, E i) = S ∧ X ∩ Y = J \ ⋃ i, (β i \ {γ i 0, γ i 1}) ∧
       (∀ i, (X ∩ E i = β i ∧ Y ∩ E i = closure (r i '' stdSimplexBoundary 2 \ β i)) ∨
         (X ∩ E i = closure (r i '' stdSimplexBoundary 2 \ β i) ∧ Y ∩ E i = β i)) ∧

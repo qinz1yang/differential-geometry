@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.FirstOrder.DirichletPairing
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lowering
+
+open DifferentialGeometry.TensorMetric (covariantTensorInnerPointwise lowerAllUpperIndices
+  lowerAllUpperIndices_apply modelInnerAt modelInnerAt_apply tensorInnerPointwise)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 
@@ -120,10 +123,10 @@ theorem tensorCovDerivPointwiseInner_eq_lowered_orthoFrame_diag_sum_two
       rw [hB_orth k j]
     rw [Finset.sum_congr rfl h_pull2] at h_zero
     rw [Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rw [if_pos rfl, mul_one] at h_zero
+    · rw [ite_eq_left rfl, mul_one] at h_zero
       exact h_zero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
       Module.finrank ℝ (TangentSpace I b) := by
     rw [Fintype.card_fin]

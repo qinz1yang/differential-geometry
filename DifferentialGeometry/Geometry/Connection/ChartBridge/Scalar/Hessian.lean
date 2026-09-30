@@ -80,7 +80,7 @@ theorem abstractHessianBilin_isPointwiseSymm
   exact (hf.contMDiffAt).of_le (by
     have h1 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
       exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-    simpa using h1)
+    exact h1)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -560,6 +560,7 @@ private lemma mvfderiv_pairing_chartBasisVec_apply_basis
   have hmvfderiv : mvfderiv (I := I) scalarAlong x = mvfderiv (I := I) g x := by
     unfold mvfderiv
     rw [hev.self_of_nhds, Filter.EventuallyEq.mfderiv_eq hev]
+    rfl
   rw [hmvfderiv]
   exact hg_value
 
@@ -650,14 +651,14 @@ private lemma christoffelCorrection_self_basis_apply
   rw [Finset.sum_eq_single i (fun i' _ hi'_ne_i => ?_) (fun hi_mem => ?_)]
   · rw [Finset.sum_eq_single j (fun j' _ hj'_ne_j => ?_) (fun hj_mem => ?_)]
     · have hrepr_ii : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) i = 1 := by
-        rw [hrepr_basis i i, if_pos rfl]
+        rw [hrepr_basis i i, ite_eq_left rfl]
       have hrepr_jj : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) j = 1 := by
-        rw [hrepr_basis j j, if_pos rfl]
+        rw [hrepr_basis j j, ite_eq_left rfl]
       rw [hrepr_ii, hrepr_jj]
       refine Finset.sum_congr rfl (fun k _ => ?_)
       ring_nf
     · have hrepr_jj' : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) j' = 0 := by
-        rw [hrepr_basis j j', if_neg (fun h => hj'_ne_j h.symm)]
+        rw [hrepr_basis j j', ite_eq_right (fun h => hj'_ne_j h.symm)]
       refine Finset.sum_eq_zero (fun k _ => ?_)
       rw [hrepr_jj']
       simp
@@ -665,7 +666,7 @@ private lemma christoffelCorrection_self_basis_apply
   · refine Finset.sum_eq_zero (fun j' _ => ?_)
     refine Finset.sum_eq_zero (fun k _ => ?_)
     have hrepr_ii' : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) i' = 0 := by
-      rw [hrepr_basis i i', if_neg (fun h => hi'_ne_i h.symm)]
+      rw [hrepr_basis i i', ite_eq_right (fun h => hi'_ne_i h.symm)]
     rw [hrepr_ii']
     simp
   · exact (hi_mem (Finset.mem_univ i)).elim
@@ -899,6 +900,7 @@ theorem hessFun_eq_cov_local [I.Boundaryless]
     filter_upwards [hFf.eventuallyEq_nhds] with y hy
     unfold gradFun
     rw [hy.mfderiv_eq]
+    rfl
   have hgrad_total :
       (T% fun b => gradFun (I := I) g F b) =ᶠ[𝓝 x]
         (T% fun b => gradFun (I := I) g f b) := by
@@ -1044,6 +1046,7 @@ theorem hessFun_sub_eq_neg_mvfderiv_connectionDifference [I.Boundaryless]
     _ = _ := by
       unfold mvfderiv
       rw [hFf.mfderiv_eq, hFf.eq_of_nhds]
+      rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma mvfderiv_chartBasisVec_alpha_apply_of_mem
@@ -1299,14 +1302,14 @@ private lemma christoffelCorrection_alpha_basis_apply
   rw [Finset.sum_eq_single i (fun i' _ hi'_ne_i => ?_) (fun hi_mem => ?_)]
   · rw [Finset.sum_eq_single j (fun j' _ hj'_ne_j => ?_) (fun hj_mem => ?_)]
     · have hrepr_ii : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) i = 1 := by
-        rw [hrepr_basis i i, if_pos rfl]
+        rw [hrepr_basis i i, ite_eq_left rfl]
       have hrepr_jj : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) j = 1 := by
-        rw [hrepr_basis j j, if_pos rfl]
+        rw [hrepr_basis j j, ite_eq_left rfl]
       rw [hrepr_ii, hrepr_jj]
       refine Finset.sum_congr rfl (fun k _ => ?_)
       ring_nf
     · have hrepr_jj' : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) j' = 0 := by
-        rw [hrepr_basis j j', if_neg (fun h => hj'_ne_j h.symm)]
+        rw [hrepr_basis j j', ite_eq_right (fun h => hj'_ne_j h.symm)]
       refine Finset.sum_eq_zero (fun k _ => ?_)
       rw [hrepr_jj']
       simp
@@ -1314,7 +1317,7 @@ private lemma christoffelCorrection_alpha_basis_apply
   · refine Finset.sum_eq_zero (fun j' _ => ?_)
     refine Finset.sum_eq_zero (fun k _ => ?_)
     have hrepr_ii' : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) i' = 0 := by
-      rw [hrepr_basis i i', if_neg (fun h => hi'_ne_i h.symm)]
+      rw [hrepr_basis i i', ite_eq_right (fun h => hi'_ne_i h.symm)]
     rw [hrepr_ii']
     simp
   · exact (hi_mem (Finset.mem_univ i)).elim

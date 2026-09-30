@@ -87,7 +87,7 @@ theorem connectionForm_apply (cov : CovariantDerivative I F V)
       e.continuousLinearMapAt ℝ x (cov (fun y => e.symmL ℝ y v) x X) := by
   unfold connectionForm
   dsimp only
-  rw [dif_pos hx]
+  rw [dite_eq_left hx]
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply,
     LinearMap.coe_toContinuousLinearMap', ContinuousLinearEquiv.coe_coe]
   change e.continuousLinearMapAt ℝ x

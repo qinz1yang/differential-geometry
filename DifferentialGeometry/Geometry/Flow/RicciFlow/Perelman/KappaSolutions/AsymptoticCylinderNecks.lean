@@ -80,7 +80,7 @@ theorem backwardCylinderLimit_eventually_strongNeckWitness
   filter_upwards [hsource, hconvergence (e '' Kbuffer) hcompact (Nat.ceil epsilon⁻¹) eta heta]
     with i hsource_i hcomparison_i
   obtain ⟨B⟩ := hcomparison_i
-  exact ⟨backwardMetricComparison_cylindricalRestriction F tau htau q Phi e epsilon i B
+  exact ⟨backwardMetricComparisonCylindricalRestriction F tau htau q Phi e epsilon i B
     ((image_mono hUbuffer).trans hsource_i)
     (fun x => ⟨x, hUbuffer x.property, rfl⟩) hlocalMetric⟩
 

@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.TensorRS.ChartTensorRSCovariantDerivative
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.ChartTransition.LocallyConstantAtlas
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
@@ -14,7 +13,6 @@ namespace Elliptic
 open DifferentialGeometry.Tensor
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]

@@ -127,7 +127,7 @@ theorem TerminalLimitMetric.exists_compact_containing_cap_neck_windows
           ∀ (cap : LocalCap G.flow epsCanonical x.val t W.domain.carrier) (depth),
             W.alternative = CanonicalAlternative.cap cap depth →
             ∃ (v : P.Carrier) (nk : StrongNeck G.flow eps v t),
-              (∀ z, cap.tube_map z = nk.map z) ∧ v ∈ cap.tube ∧
+              (∀ z, cap.tubeMap z = nk.map z) ∧ v ∈ cap.tube ∧
               W.domain.carrier ∪ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆
                 Subtype.val '' K := by
   obtain ⟨K, hK, d, hd, hcapture⟩ :=
@@ -159,7 +159,7 @@ theorem TerminalLimitMetric.exists_uniform_scalar_comparison_on_cap_neck_windows
           ∀ (cap : LocalCap G.flow epsCanonical x.val t W.domain.carrier) (depth),
             W.alternative = CanonicalAlternative.cap cap depth →
             ∃ (v : P.Carrier) (nk : StrongNeck G.flow eps v t),
-              (∀ z, cap.tube_map z = nk.map z) ∧ v ∈ cap.tube ∧
+              (∀ z, cap.tubeMap z = nk.map z) ∧ v ∈ cap.tube ∧
               W.domain.carrier ∪ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆
                 Subtype.val '' K ∧
               ∀ y : G.terminalRegularOpen,
@@ -193,7 +193,7 @@ theorem TerminalLimitMetric.exists_canonical_cap_neck_scalar_comparison
                 ∀ (cap : LocalCap G.flow eps x.val t W.domain.carrier) (depth),
                   W.alternative = CanonicalAlternative.cap cap depth →
                   ∃ (v : P.Carrier) (nk : StrongNeck G.flow eps v t),
-                    (∀ z, cap.tube_map z = nk.map z) ∧ v ∈ cap.tube ∧
+                    (∀ z, cap.tubeMap z = nk.map z) ∧ v ∈ cap.tube ∧
                     W.domain.carrier ∪ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆
                       Subtype.val '' K ∧
                     (∀ y : G.terminalRegularOpen,

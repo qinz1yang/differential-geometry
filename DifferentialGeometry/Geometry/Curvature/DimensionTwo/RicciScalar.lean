@@ -150,7 +150,7 @@ theorem metricRicciAt_eq_half_metricScalarAt_smul_metric_of_finrank_eq_two
     · change Rm (basis 0) (basis 0) (basis 0) (basis 0) +
           Rm (basis 1) (basis 0) (basis 0) (basis 1) =
         K * g.inner x (basis 0) (basis 0)
-      rw [horth 0 0, if_pos rfl]
+      rw [horth 0 0, ite_eq_left rfl]
       have hz := hinput (basis 0) (basis 0) (basis 0) (basis 0)
       have hzero : Rm (basis 0) (basis 0) (basis 0) (basis 0) = 0 := by
         linarith
@@ -159,7 +159,7 @@ theorem metricRicciAt_eq_half_metricScalarAt_smul_metric_of_finrank_eq_two
     · change Rm (basis 0) (basis 0) (basis 1) (basis 0) +
           Rm (basis 1) (basis 0) (basis 1) (basis 1) =
         K * g.inner x (basis 0) (basis 1)
-      rw [horth 0 1, if_neg (by decide)]
+      rw [horth 0 1, ite_eq_right (by decide)]
       have hz0 := hinput (basis 0) (basis 0) (basis 1) (basis 0)
       have hz1 := houtput (basis 1) (basis 0) (basis 1) (basis 1)
       have hzero0 : Rm (basis 0) (basis 0) (basis 1) (basis 0) = 0 := by
@@ -171,7 +171,7 @@ theorem metricRicciAt_eq_half_metricScalarAt_smul_metric_of_finrank_eq_two
     · change Rm (basis 0) (basis 1) (basis 0) (basis 0) +
           Rm (basis 1) (basis 1) (basis 0) (basis 1) =
         K * g.inner x (basis 1) (basis 0)
-      rw [horth 1 0, if_neg (by decide)]
+      rw [horth 1 0, ite_eq_right (by decide)]
       have hz0 := houtput (basis 0) (basis 1) (basis 0) (basis 0)
       have hz1 := hinput (basis 1) (basis 1) (basis 0) (basis 1)
       have hzero0 : Rm (basis 0) (basis 1) (basis 0) (basis 0) = 0 := by
@@ -183,7 +183,7 @@ theorem metricRicciAt_eq_half_metricScalarAt_smul_metric_of_finrank_eq_two
     · change Rm (basis 0) (basis 1) (basis 1) (basis 0) +
           Rm (basis 1) (basis 1) (basis 1) (basis 1) =
         K * g.inner x (basis 1) (basis 1)
-      rw [horth 1 1, if_pos rfl]
+      rw [horth 1 1, ite_eq_left rfl]
       have hz := hinput (basis 1) (basis 1) (basis 1) (basis 1)
       have hzero : Rm (basis 1) (basis 1) (basis 1) (basis 1) = 0 := by
         linarith
@@ -284,7 +284,7 @@ theorem metricRm04StdAt_eq_scalar_div_two_of_finrank_eq_two
   have hK : K = metricScalarAt (I := I) (M := M) g x / 2 := by
     have hric := ricciTensor_eq_half_metricScalarAt_mul_inner_of_finrank_eq_two
       (I := I) g hdim x (basis 0) (basis 0)
-    rw [htrace, horth 0 0, if_pos rfl] at hric
+    rw [htrace, horth 0 0, ite_eq_left rfl] at hric
     have hzero : Rm (basis 0) (basis 0) (basis 0) (basis 0) = 0 := by
       have hz := hinput (basis 0) (basis 0) (basis 0) (basis 0)
       linarith

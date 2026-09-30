@@ -27,7 +27,7 @@ def Moise264Orientable : Prop :=
         (⟨Set.inclusion (hLK.trans sdiff_subset), continuous_inclusion _⟩ :
           C(L.space, K.space)) x g = 1 →
       ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
         Δ ⊆ K.space \ (boundaryComplex 3 K).space ∧
         Δ ∩ L.space = r '' stdSimplexBoundary 2 ∧
         ∃ hb : r '' stdSimplexBoundary 2 ⊆ L.space,

@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.Product
-open DifferentialGeometry.Geometry.Curvature
+import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
+import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Tensor0S
+import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
 
 set_option autoImplicit false
 

@@ -83,9 +83,11 @@ theorem strongPair_eq_heatDuhamelVectorEvolution (hT : 0 < T)
       rw [map_add, Lp.piLpEquiv_compLpL] at h
       exact h
   constructor
-  · apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
-    change _ = (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T))
-      ((Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).symm _)
+  · let e := Lp.piLpEquiv (𝕜 := ℝ)
+      (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2)) (timeMeasure T)
+    have he : Function.Injective e := e.toEquiv.injective
+    apply he
+    change _ = e (e.symm _)
     rw [LinearIsometryEquiv.apply_symm_apply]
     exact PiLp.ext fun i => (hparts i).1
   · apply timeH1.piLpEquiv.injective

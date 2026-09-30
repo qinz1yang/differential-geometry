@@ -66,7 +66,7 @@ theorem contMDiffOn_diffeomorph_family_symm
     rw [hFG r, hloc.localInverse_right_inv hr]
   have hi : ContMDiffAt (𝓘(ℝ, ℝ).prod I) (𝓘(ℝ, ℝ).prod I) ∞
       hloc.localInverse q := by
-    simpa only [hFG q] using hloc.localInverse_contMDiffAt
+    simpa only [hFG q] using hloc.contMDiffAt_localInverse
   exact (contMDiffAt_snd.comp q (hi.congr_of_eventuallyEq heq)).contMDiffWithinAt
 
 end DifferentialGeometry.Topology.Manifold

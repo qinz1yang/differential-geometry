@@ -68,7 +68,12 @@ theorem wkpNorm_secComp_le
             (chartTargetEuclid (I := I) (M := M) α))
       (fun _ _ => Finset.sum_nonneg (fun _ _ => zero_le))
       (Finset.mem_univ Idx)
-  exact hJ.trans (hI.trans (ENNReal.le_tsum α))
+  exact hJ.trans (hI.trans (ENNReal.le_tsum (f := fun β : M =>
+    ∑ Idx' : Fin r → Fin (Module.finrank ℝ E),
+      ∑ Jdx' : Fin s → Fin (Module.finrank ℝ E),
+        iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
+          (secChartComp (I := I) (M := M) r s S β Idx' Jdx')
+          (chartTargetEuclid (I := I) (M := M) β)) α))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem secComp_cauchy
@@ -246,7 +251,7 @@ theorem secModelLimit_proj
     · intro Jdx' _ hJdx
       rw [map_smul, smul_eq_mul,
         tensorChartComponentProjection_basisElement (E := E)
-          r s Idx Idx Jdx Jdx', if_pos rfl, if_neg hJdx,
+          r s Idx Idx Jdx Jdx', ite_eq_left rfl, ite_eq_right hJdx,
         mul_zero, mul_zero]
     · simp
   · intro Idx' _ hIdx
@@ -255,7 +260,7 @@ theorem secModelLimit_proj
     intro Jdx' _
     rw [map_smul, smul_eq_mul,
       tensorChartComponentProjection_basisElement (E := E)
-        r s Idx Idx' Jdx Jdx', if_neg (Ne.symm hIdx),
+        r s Idx Idx' Jdx Jdx', ite_eq_right (Ne.symm hIdx),
       zero_mul, mul_zero]
   · simp
 

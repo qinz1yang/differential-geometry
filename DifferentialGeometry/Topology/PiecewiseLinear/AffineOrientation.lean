@@ -5,7 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.Barycentric
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
-import Mathlib.Data.Sign.Basic
+import Mathlib.Basic.Sign.Basic
 import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 
 open Set

@@ -988,7 +988,7 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
       set Vc : ∀ t, TangentSpace I (γ t) := fun s => if s ≤ c n then Vn s else Vp s with hVc_def
       have hVc0 : Vc 0 = v₀ := by
         rw [hVc_def]; simp only
-        rw [if_pos (by linarith [hc_nonneg n] : (0 : ℝ) ≤ c n)]
+        rw [ite_eq_left (by linarith [hc_nonneg n] : (0 : ℝ) ≤ c n)]
         exact hVn_initial
       have hcast : ((n + 1 : ℕ) : ℝ) * step = (n : ℝ) * step + step := by
         push_cast; ring
@@ -1002,7 +1002,7 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
         by_cases htc : t < c n
         · have heq : ∀ᶠ s in 𝓝 t, Vc s = Vn s := by
             filter_upwards [eventually_lt_nhds htc] with s hs
-            rw [hVc_def]; simp only; rw [if_pos (le_of_lt hs)]
+            rw [hVc_def]; simp only; rw [ite_eq_left (le_of_lt hs)]
           rw [(chartRepAt_eventuallyEq_of_eventuallyEq (I := I) γ heq).differentiableAt_iff]
           exact hVn_diff t ⟨ht.1, by linarith [htc, hstep_pos]⟩
         · replace htc := not_lt.mp htc
@@ -1011,8 +1011,8 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
             filter_upwards [eventually_gt_nhds ht_gt] with s hs
             rw [hVc_def]; simp only
             by_cases hsc : s ≤ c n
-            · rw [if_pos hsc]; exact hagree s ⟨le_of_lt hs, hsc⟩
-            · rw [if_neg hsc]
+            · rw [ite_eq_left hsc]; exact hagree s ⟨le_of_lt hs, hsc⟩
+            · rw [ite_eq_right hsc]
           rw [(chartRepAt_eventuallyEq_of_eventuallyEq (I := I) γ heq).differentiableAt_iff]
           refine hVp_diff t ⟨by linarith [htc, hstep_pos], ?_⟩
           have : c (n + 1) + step ≤ c n + 2 * step := by linarith [hcn1_le, hstep_pos]
@@ -1021,7 +1021,7 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
         by_cases htc : t < c n
         · have heq : ∀ᶠ s in 𝓝 t, Vc s = Vn s := by
             filter_upwards [eventually_lt_nhds htc] with s hs
-            rw [hVc_def]; simp only; rw [if_pos (le_of_lt hs)]
+            rw [hVc_def]; simp only; rw [ite_eq_left (le_of_lt hs)]
           rw [covDerivAlong_congr_of_eventuallyEq (I := I) g γ heq]
           exact hVn_par t ⟨ht.1, by linarith [htc, hstep_pos]⟩
         · replace htc := not_lt.mp htc
@@ -1030,8 +1030,8 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
             filter_upwards [eventually_gt_nhds ht_gt] with s hs
             rw [hVc_def]; simp only
             by_cases hsc : s ≤ c n
-            · rw [if_pos hsc]; exact hagree s ⟨le_of_lt hs, hsc⟩
-            · rw [if_neg hsc]
+            · rw [ite_eq_left hsc]; exact hagree s ⟨le_of_lt hs, hsc⟩
+            · rw [ite_eq_right hsc]
           rw [covDerivAlong_congr_of_eventuallyEq (I := I) g γ heq]
           refine hVp_par t ⟨by linarith [htc, hstep_pos], ?_⟩
           have : c (n + 1) + step ≤ c n + 2 * step := by linarith [hcn1_le, hstep_pos]

@@ -196,7 +196,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
+variable (H : RetainedCoreHistory.{u})
   {Q : OrientedThreeStage.{u}} {s : ℝ}
   (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Q
     (H.time (Fin.last H.eventCount)) s)
@@ -243,7 +243,7 @@ theorem exists_extension_after_metricCutCapEvent_preserving_cap_scalar_lower_bou
       ∀ x ∈ (H.toHistory.event j).capRegion,
         B ≤ metricScalarAt (H.toHistory.event j).outputMetric x)
     (hE : s ∈ Ioc c b → ∀ x ∈ E.capRegion, B ≤ metricScalarAt E.outputMetric x) :
-    ∃ K : RetainedCoreHistory P,
+    ∃ K : RetainedCoreHistory.{u},
       (H.appendEvent E.incoming.lt (E.toRetainedCoreEvent hOld) hinit).toHistory.IsPrefixOf
         K.toHistory ∧ H.toHistory.IsPrefixOf K.toHistory ∧
       s < K.horizon ∧ K.eventCount = H.eventCount + 1 ∧
@@ -342,7 +342,7 @@ private theorem frame_and_discard_transport
   exact ⟨hbfr, hctrl⟩
 
 theorem RetainedCoreHistory.appendEvent_boundaryFrameReversing_and_poincareStandardDiscarded
-    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    {Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u}) {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -398,7 +398,7 @@ private theorem scalar_time_derivative_bound_transport
   exact hbound
 
 theorem RetainedCoreHistory.appendEvent_scalar_time_derivative_bound
-    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    {Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u}) {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)

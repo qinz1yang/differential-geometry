@@ -40,6 +40,8 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
+
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation

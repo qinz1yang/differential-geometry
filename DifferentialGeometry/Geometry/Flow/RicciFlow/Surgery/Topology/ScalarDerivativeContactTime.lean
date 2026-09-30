@@ -94,7 +94,7 @@ private theorem gradient_norm_sq_ge_of_direction_eq
   have hn := metric_inner_self_nonneg g x (gradientFun g f x)
   have hs : Real.sqrt (g.inner x (gradientFun g f x) (gradientFun g f x)) < A :=
     (Real.sqrt_lt hn hA.le).mpr (lt_of_not_ge h)
-  have hcs := Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+  have hcs := SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
     g x (gradientFun g f x) v
   rw [inner_gradientFun] at hcs
   have hvpos : 0 < Real.sqrt (g.inner x v v) := Real.sqrt_pos.mpr (g.pos x v hv)

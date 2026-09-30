@@ -67,7 +67,7 @@ theorem exists_interior_boundary_approach_of_lipschitz_sequence_energy_bound
     intro z hz
     simpa only [Metric.mem_sphere, dist_zero_right, e.norm_map] using hz
   have hfn (n : ℕ) : LipschitzWith (K n) (f n ∘ e) := by
-    simpa only [mul_one] using (hf n).comp e.isometry.lipschitz
+    simpa only [mul_one] using (hf n).comp e.isometry.lipschitzWith
   have hv' : ContinuousOn (v ∘ e) (Metric.ball (0 : ℂ) 1) :=
     hv.comp e.continuous.continuousOn hmap
   have hq : Measure.QuasiMeasurePreserving e

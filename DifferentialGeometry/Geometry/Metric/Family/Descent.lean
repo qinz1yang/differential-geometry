@@ -33,6 +33,7 @@ private theorem metric_inner_eq_of_local_section
       ContinuousLinearMap.id ℝ (TangentSpace J y) := by
     rw [← mfderiv_comp y (hf.contMDiff.mdifferentiableAt (by simp))
       (hY.mdifferentiableAt (by simp)), hsec.mfderiv_eq, mfderiv_id]
+    rfl
   have hv := congrArg (fun L : TangentSpace J y →L[ℝ] TangentSpace J (f (Y y)) => L v) hder
   have hw := congrArg (fun L : TangentSpace J y →L[ℝ] TangentSpace J (f (Y y)) => L w) hder
   simp only [ContinuousLinearMap.comp_apply] at hv hw
@@ -58,7 +59,7 @@ private theorem chartGramMatrix_joint_contMDiffOn_of_surjective_localPullMetric
   let Y := (hf x).localInverse
   let V := Y.source ∩ (trivializationAt F (TangentSpace J) x₀).baseSet
   have hY : ContMDiffOn J I ∞ Y V :=
-    (hf x).localInverse_contMDiffOn.mono inter_subset_left
+    (hf x).contMDiffOn_localInverse.mono inter_subset_left
   have hpV : p.2 ∈ V := ⟨hx ▸ (hf x).localInverse_mem_source, hp.2⟩
   have hVopen : IsOpen V := Y.open_source.inter
     (trivializationAt F (TangentSpace J) x₀).open_baseSet

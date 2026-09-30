@@ -11,6 +11,8 @@ noncomputable section
 namespace DifferentialGeometry.Topology
 open Simplex
 open CategoryTheory AlgebraicTopology
+open Convexity.StdSimplex (coordinateSet coordinateMap continuous_coordinateMap
+  coordinateEquiv coordinateHomeomorph coordinateEquiv_map)
 open scoped Simplicial
 universe u
 variable {X : Type u} [TopologicalSpace X] [SimplyConnectedSpace X]
@@ -19,16 +21,28 @@ private def supportTriangleSimplex (tau : integralSingularSimplex 4 X)
     (s : Finset (Fin 5)) (hs : s.card = 3) : integralSingularSimplex 2 X :=
   (integralSingularSimplexEquiv 2 X).symm
     ((integralSingularSimplexEquiv 4 X tau).comp
-      ⟨stdSimplex.map (s.orderEmbOfFin hs), stdSimplex.continuous_map (s.orderEmbOfFin hs)⟩)
+      ⟨Convexity.StdSimplex.map (s.orderEmbOfFin hs),
+        Convexity.StdSimplex.continuous_map ℝ (s.orderEmbOfFin hs)⟩)
 
 omit [SimplyConnectedSpace X] in
 private theorem supportTriangleSimplex_apply (tau : integralSingularSimplex 4 X)
-    (s : Finset (Fin 5)) (hs : s.card = 3) (p : stdSimplex ℝ (Fin 3)) :
-    integralSingularSimplexEquiv 2 X (supportTriangleSimplex tau s hs) p =
-      integralSingularSimplexEquiv 4 X tau (Simplex.orderedSupportFaceHomeomorph s hs p).val := by
+    (s : Finset (Fin 5)) (hs : s.card = 3) (p : coordinateSet ℝ (Fin 3)) :
+    integralSingularSimplexEquiv 2 X (supportTriangleSimplex tau s hs)
+        ((coordinateHomeomorph ℝ (Fin 3)).symm p) =
+      integralSingularSimplexEquiv 4 X tau
+        ((coordinateHomeomorph ℝ (Fin 5)).symm
+          (Simplex.orderedSupportFaceHomeomorph s hs p).val) := by
   rw [supportTriangleSimplex, Equiv.apply_symm_apply]
-  exact congrArg (integralSingularSimplexEquiv 4 X tau)
-    (orderedSupportFaceHomeomorph_apply_val s hs p).symm
+  change integralSingularSimplexEquiv 4 X tau
+      (Convexity.StdSimplex.map (s.orderEmbOfFin hs)
+        ((coordinateHomeomorph ℝ (Fin 3)).symm p)) = _
+  congr 1
+  apply (coordinateHomeomorph ℝ (Fin 5)).injective
+  rw [Homeomorph.apply_symm_apply, orderedSupportFaceHomeomorph_apply_val]
+  change coordinateEquiv ℝ _ (Convexity.StdSimplex.map _ _) = _
+  rw [coordinateEquiv_map]
+  exact congrArg (coordinateMap (s.orderEmbOfFin hs))
+    ((coordinateHomeomorph ℝ (Fin 3)).apply_symm_apply p)
 
 variable (x : X) [Subsingleton (HomotopyGroup (Fin 2) X x)]
 
@@ -40,7 +54,8 @@ private def supportTriangleConeHomotopy (tau : integralSingularSimplex 4 X)
 
 private theorem supportTriangleConeHomotopy_zero (tau : integralSingularSimplex 4 X)
     (s : Finset (Fin 5)) (hs : s.card = 3) (p : Simplex.supportFace s) :
-    supportTriangleConeHomotopy x tau s hs (0,p) = integralSingularSimplexEquiv 4 X tau p.val := by
+    supportTriangleConeHomotopy x tau s hs (0,p) =
+      integralSingularSimplexEquiv 4 X tau ((coordinateHomeomorph ℝ (Fin 5)).symm p.val) := by
   change integralSingularConeTriangleHomotopy x (supportTriangleSimplex tau s hs)
     (0,(Simplex.orderedSupportFaceHomeomorph s hs).symm p) = _
   rw [integralSingularConeTriangleHomotopy_zero, supportTriangleSimplex_apply,
@@ -55,7 +70,7 @@ private theorem supportTriangleConeHomotopy_one (tau : integralSingularSimplex 4
 private theorem supportFace_homotopy_overlap
     (tau : integralSingularSimplex 4 X)
     (s r : {s : Finset (Fin 5) // s.card = 3})
-    (t : unitInterval) (p : stdSimplex ℝ (Fin 5))
+    (t : unitInterval) (p : coordinateSet ℝ (Fin 5))
     (hs : p ∈ Simplex.supportFace s.val) (hr : p ∈ Simplex.supportFace r.val) :
     supportTriangleConeHomotopy x tau s.val s.property (t,⟨p,hs⟩) =
       supportTriangleConeHomotopy x tau r.val r.property (t,⟨p,hr⟩) := by
@@ -65,45 +80,75 @@ private theorem supportFace_homotopy_overlap
       (t, es.symm ⟨p,hs⟩) =
     integralSingularConeTriangleHomotopy x (supportTriangleSimplex tau r.val r.property)
       (t, er.symm ⟨p,hr⟩)
-  apply integralSingularConeTriangleHomotopy_comp_map_eq x
-    (integralSingularSimplexEquiv 4 X tau)
+  let τ : C(coordinateSet ℝ (Fin 5), X) :=
+    (integralSingularSimplexEquiv 4 X tau).comp
+      ⟨(coordinateHomeomorph ℝ (Fin 5)).symm,
+        (coordinateHomeomorph ℝ (Fin 5)).symm.continuous⟩
+  have hrestrict (s : Finset (Fin 5)) (hs : s.card = 3) :
+      supportTriangleSimplex tau s hs =
+        (integralSingularSimplexEquiv 2 X).symm
+          ((τ.comp ⟨coordinateMap (s.orderEmbOfFin hs),
+            continuous_coordinateMap (s.orderEmbOfFin hs)⟩).comp
+              ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩) := by
+    apply (integralSingularSimplexEquiv 2 X).injective
+    rw [Equiv.apply_symm_apply]
+    apply ContinuousMap.ext
+    intro q
+    change integralSingularSimplexEquiv 2 X (supportTriangleSimplex tau s hs) q =
+      integralSingularSimplexEquiv 4 X tau
+        ((coordinateHomeomorph ℝ (Fin 5)).symm
+          (coordinateMap (s.orderEmbOfFin hs) (coordinateEquiv ℝ (Fin 3) q)))
+    rw [← coordinateEquiv_map]
+    change integralSingularSimplexEquiv 2 X (supportTriangleSimplex tau s hs) q =
+      integralSingularSimplexEquiv 4 X tau
+        ((coordinateHomeomorph ℝ (Fin 5)).symm
+          (coordinateHomeomorph ℝ (Fin 5) (Convexity.StdSimplex.map (s.orderEmbOfFin hs) q)))
+    rw [Homeomorph.symm_apply_apply, supportTriangleSimplex, Equiv.apply_symm_apply]
+    rfl
+  rw [hrestrict, hrestrict]
+  apply integralSingularConeTriangleHomotopy_comp_map_eq x τ
     (s.val.orderEmbOfFin s.property).strictMono
     (r.val.orderEmbOfFin r.property).strictMono
   calc
-    stdSimplex.map (s.val.orderEmbOfFin s.property) (es.symm ⟨p,hs⟩) = p := by
+    coordinateMap (s.val.orderEmbOfFin s.property) (es.symm ⟨p,hs⟩) = p := by
       rw [← orderedSupportFaceHomeomorph_apply_val]
       exact congrArg Subtype.val (es.apply_symm_apply ⟨p,hs⟩)
-    _ = stdSimplex.map (r.val.orderEmbOfFin r.property) (er.symm ⟨p,hr⟩) := by
+    _ = coordinateMap (r.val.orderEmbOfFin r.property) (er.symm ⟨p,hr⟩) := by
       rw [← orderedSupportFaceHomeomorph_apply_val]
       exact (congrArg Subtype.val (er.apply_symm_apply ⟨p,hr⟩)).symm
 
 
 theorem exists_fourSimplex_cone_triangle_homotopy
     (tau : integralSingularSimplex 4 X) :
-    ∃ F : C(unitInterval × stdSimplex ℝ (Fin 5), X),
-      (∀ p, F (0,p) = integralSingularSimplexEquiv 4 X tau p) ∧
+    ∃ F : C(unitInterval × coordinateSet ℝ (Fin 5), X),
+      (∀ p, F (0,p) = integralSingularSimplexEquiv 4 X tau
+        ((coordinateHomeomorph ℝ (Fin 5)).symm p)) ∧
       (∀ (s : Finset (Fin 5)) (hs : s.card = 3) (t : unitInterval)
-        (p : stdSimplex ℝ (Fin 3)),
-        F (t,stdSimplex.map (s.orderEmbOfFin hs) p) =
+        (p : coordinateSet ℝ (Fin 3)),
+        F (t,coordinateMap (s.orderEmbOfFin hs) p) =
           integralSingularConeTriangleHomotopy x
             ((integralSingularSimplexEquiv 2 X).symm
               ((integralSingularSimplexEquiv 4 X tau).comp
-                ⟨stdSimplex.map (s.orderEmbOfFin hs),
-                  stdSimplex.continuous_map (s.orderEmbOfFin hs)⟩)) (t,p)) ∧
+                ⟨Convexity.StdSimplex.map (s.orderEmbOfFin hs),
+                  Convexity.StdSimplex.continuous_map ℝ (s.orderEmbOfFin hs)⟩)) (t,p)) ∧
       ∀ p : Simplex.skeleton (Fin 5) 2, F (1,p.val) = x := by
+  let f : C(coordinateSet ℝ (Fin 5), X) :=
+    (integralSingularSimplexEquiv 4 X tau).comp
+      ⟨(coordinateHomeomorph ℝ (Fin 5)).symm,
+        (coordinateHomeomorph ℝ (Fin 5)).symm.continuous⟩
   let G : (s : {s : Finset (Fin 5) // s.card = 3}) →
       C(unitInterval × supportFace s.val, X) :=
     fun s => supportTriangleConeHomotopy x tau s.val s.property
   have hG : ∀ (s r : {s : Finset (Fin 5) // s.card = 3}) (t : unitInterval)
-      (p : stdSimplex ℝ (Fin 5)) (hs : p ∈ supportFace s.val) (hr : p ∈ supportFace r.val),
+      (p : coordinateSet ℝ (Fin 5)) (hs : p ∈ supportFace s.val) (hr : p ∈ supportFace r.val),
       G s (t,⟨p,hs⟩) = G r (t,⟨p,hr⟩) := supportFace_homotopy_overlap x tau
   let H := skeletonHomotopyDesc (show 2 + 1 ≤ Fintype.card (Fin 5) by decide) G hG
   have hH : ∀ p : skeleton (Fin 5) 2,
-      H (0,p) = integralSingularSimplexEquiv 4 X tau p.val :=
-    skeletonHomotopyDesc_zero _ G hG (integralSingularSimplexEquiv 4 X tau)
+      H (0,p) = f p.val :=
+    skeletonHomotopyDesc_zero _ G hG f
       (fun s p => supportTriangleConeHomotopy_zero x tau s.val s.property p)
   obtain ⟨F,hF0,hFs⟩ := exists_continuous_homotopy_extension_skeleton 2
-    (integralSingularSimplexEquiv 4 X tau) H hH
+    f H hH
   refine ⟨F,hF0,?_,?_⟩
   · intro s hs t p
     let e := orderedSupportFaceHomeomorph s hs

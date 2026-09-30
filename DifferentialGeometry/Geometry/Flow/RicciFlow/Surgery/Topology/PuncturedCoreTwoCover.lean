@@ -63,6 +63,7 @@ private theorem eq_of_continuous_bool_of_preconnectedSpace {X : Type*} [Topologi
     have hy : f y = true := h (mem_univ y)
     rw [hx, hy]
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem puncturedCoreComponent_eq_connectedComponent
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a))
     [LocallyConnectedSpace ↥T.core] (c : ConnectedComponents ↥T.core) :
@@ -130,6 +131,7 @@ theorem puncturedCoreComponent_eq_connectedComponent
   exact ⟨_, Set.Subset.antisymm (hpre.subset_connectedComponent hu)
     (hclopen.connectedComponent_subset hu)⟩
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem simplyConnectedSpace_puncturedCoreComponent_of_simplyConnectedSpace
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a))
     [LocallyConnectedSpace ↥T.core] [SimplyConnectedSpace ↥T.puncturedCore]
@@ -139,12 +141,13 @@ theorem simplyConnectedSpace_puncturedCoreComponent_of_simplyConnectedSpace
   rw [hu, PreconnectedSpace.connectedComponent_eq_univ u]
   exact (Homeomorph.Set.univ ↥T.puncturedCore).toHomotopyEquiv.simplyConnectedSpace
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem simplyConnectedSpace_puncturedCoreComponent_of_isEmpty_index
     [LocallyConnectedSpace ↥T.core] [IsEmpty T.Index] [SimplyConnectedSpace M]
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a))
     (c : ConnectedComponents ↥T.core) :
     SimplyConnectedSpace ↥(T.puncturedCoreComponent c) :=
-  @simplyConnectedSpace_puncturedCoreComponent_of_simplyConnectedSpace M _ _ _ _
+  @simplyConnectedSpace_puncturedCoreComponent_of_simplyConnectedSpace M _ _ _
     T hsm inferInstance
     ((simplyConnectedSpace_puncturedCore_iff_of_isEmpty T).mpr inferInstance) c
 

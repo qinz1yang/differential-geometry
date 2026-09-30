@@ -326,7 +326,7 @@ private theorem convexOn_squared_distance_defect_along_completion_segment_regula
   let beta (t : ℝ) : M := if ht : t ∈ Ioc 0 L then (hregular t ht).choose else p
   have hbeta (t : ℝ) (ht : t ∈ Ioc 0 L) : (beta t : UniformSpace.Completion M) = gamma t := by
     dsimp only [beta]
-    rw [dif_pos ht]
+    rw [dite_eq_left ht]
     exact (hregular t ht).choose_spec
   have hunit : UnitSpeedGeodesicOn g beta (Ioo 0 L) := by
     apply unitSpeedGeodesicOn_of_dist_eq g hmetric isOpen_Ioo

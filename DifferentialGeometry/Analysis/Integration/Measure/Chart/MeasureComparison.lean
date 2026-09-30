@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
@@ -203,6 +203,69 @@ lemma continuousOn_symm_toEuclideanSymm (α : M) :
     exact hy
   exact (continuousOn_extChartAt_symm (I := I) α).comp
     (toEuclidean (E := E)).symm.continuous.continuousOn hy_target
+
+private noncomputable def extChartAtSymmGlobal (α : M) : E → M := by
+  classical
+  exact (extChartAt I α).target.piecewise
+    (fun y : E => (extChartAt I α).symm y)
+    (fun _ : E => α)
+
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
+private lemma extChartAtSymmGlobal_eq_on_target (α : M) {y : E}
+    (hy : y ∈ (extChartAt I α).target) :
+    extChartAtSymmGlobal (I := I) (M := M) α y = (extChartAt I α).symm y := by
+  classical
+  change (extChartAt I α).target.piecewise
+    (fun y : E => (extChartAt I α).symm y)
+    (fun _ : E => α) y = _
+  rw [Set.piecewise_eq_of_mem _ _ _ hy]
+
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
+private lemma extChartAtSymmGlobal_measurable (α : M) :
+    Measurable (extChartAtSymmGlobal (I := I) (M := M) α) := by
+  classical
+  unfold extChartAtSymmGlobal
+  exact ContinuousOn.measurable_piecewise
+    (continuousOn_extChartAt_symm (I := I) α)
+    continuousOn_const
+    (extChartAt_target_measurableSet (I := I) (M := M) α)
+
+omit [IsManifold I ∞ M] in
+lemma chartPushedRaw_measurable (α : M) {F : M → ℝ}
+    (hF_meas : Measurable F) :
+    Measurable (chartPushedRaw I α F) := by
+  classical
+  have h_extSymm_meas : Measurable (extChartAtSymmGlobal (I := I) (M := M) α) :=
+    extChartAtSymmGlobal_measurable (I := I) (M := M) α
+  have h_comp : Measurable
+      (fun y : EuclN E =>
+        F (extChartAtSymmGlobal (I := I) (M := M) α
+          ((toEuclidean (E := E)).symm y))) :=
+    hF_meas.comp (h_extSymm_meas.comp
+      (toEuclidean (E := E)).symm.continuous.measurable)
+  have hCT_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
+    chartTargetEuclid_measurableSet (I := I) (M := M) α
+  have h_piecewise :
+      chartPushedRaw I α F =
+        (chartTargetEuclid (I := I) (M := M) α).piecewise
+          (fun y : EuclN E =>
+            F (extChartAtSymmGlobal (I := I) (M := M) α
+              ((toEuclidean (E := E)).symm y)))
+          (fun _ : EuclN E => (0 : ℝ)) := by
+    funext y
+    by_cases hy : y ∈ chartTargetEuclid (I := I) (M := M) α
+    · rw [Set.piecewise_eq_of_mem _ _ _ hy]
+      rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α F hy]
+      have h_toE_symm_in : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
+        rcases hy with ⟨w, hw_target, hwy⟩
+        have h_eq : (toEuclidean (E := E)).symm y = w := by
+          rw [← hwy]; exact (toEuclidean (E := E)).symm_apply_apply w
+        rw [h_eq]; exact hw_target
+      rw [extChartAtSymmGlobal_eq_on_target (I := I) (M := M) α h_toE_symm_in]
+    · rw [Set.piecewise_eq_of_notMem _ _ _ hy]
+      rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α F hy]
+  rw [h_piecewise]
+  exact Measurable.piecewise hCT_meas h_comp measurable_const
 
 theorem mdifferentiableAt_of_chartPushedRaw_differentiableAt (α : M) {f : M → ℝ} {x : M}
     (hx : x ∈ (chartAt H α).source)
@@ -526,7 +589,7 @@ lemma ae_chart_of_volume
         (extChartAt I α).map_target hy_target
       rwa [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M)] at hmem
-    simpa only [coord, if_pos hy_source,
+    simpa only [coord, ite_eq_left hy_source,
       (extChartAt I α).right_inv hy_target] using hy
   have hchart :
       ∀ᵐ x ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α),
@@ -534,7 +597,7 @@ lemma ae_chart_of_volume
     simpa only [DifferentialGeometry.Integral.Measure.chartLocalMeasure, μD, μT, dens]
       using hpush
   filter_upwards [hchart] with x hx hx_source
-  simpa only [coord, if_pos hx_source] using hx
+  simpa only [coord, ite_eq_left hx_source] using hx
 
 lemma chartDensity_pos_on_target
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) (α : M)
@@ -871,7 +934,8 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw
     lintegral_riemannianMeasure_le_const_mul_lintegral_chartPushedRaw
       (I := I) (M := M) g α hu_meas hu_support hp_toReal_pos
   refine ⟨C ^ (1 / p.toReal), Real.rpow_pos_of_pos hC_pos _, ?_⟩
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top
+    hu_meas.aestronglyMeasurable]
   have h_lint_bound :
       ∫⁻ x, ‖u x‖ₑ ^ p.toReal
           ∂(DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
@@ -902,7 +966,8 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw
     positivity
   refine h_pow_le.trans ?_
   rw [ENNReal.mul_rpow_of_nonneg _ _ (by positivity : (0 : ℝ) ≤ 1 / p.toReal)]
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top
+    (chartPushedRaw_measurable α hu_meas).aestronglyMeasurable]
   gcongr
   rw [← ENNReal.ofReal_rpow_of_pos hC_pos]
 
@@ -1072,7 +1137,8 @@ theorem eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure
     lintegral_chartPushedRaw_le_const_mul_lintegral_riemannianMeasure
       (I := I) (M := M) g α hu_meas hu_support hp_toReal_pos
   refine ⟨C ^ (1 / p.toReal), Real.rpow_pos_of_pos hC_pos _, ?_⟩
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top
+    (chartPushedRaw_measurable α hu_meas).aestronglyMeasurable]
   have h_LHS_eq :
       (∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
         ‖chartPushedRaw I α u y‖ₑ ^ p.toReal
@@ -1095,7 +1161,8 @@ theorem eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure
     positivity
   refine h_pow_le.trans ?_
   rw [ENNReal.mul_rpow_of_nonneg _ _ (by positivity : (0 : ℝ) ≤ 1 / p.toReal)]
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top
+    hu_meas.aestronglyMeasurable]
   gcongr
   rw [← ENNReal.ofReal_rpow_of_pos hC_pos]
 
@@ -1236,7 +1303,8 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw_uniform
             ∫⁻ y, ‖chartPushedRaw I α u y‖ₑ ^ p.toReal
               ∂((volume : Measure (EuclN E)).restrict
                 (chartTargetEuclid (I := I) (M := M) α)) := h_lint
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top
+    hu_meas.aestronglyMeasurable]
   have h_pow_le :
       (∫⁻ x, ‖u x‖ₑ ^ p.toReal
           ∂(DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
@@ -1251,7 +1319,8 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw_uniform
     positivity
   refine h_pow_le.trans ?_
   rw [ENNReal.mul_rpow_of_nonneg _ _ (by positivity : (0 : ℝ) ≤ 1 / p.toReal)]
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top
+    (chartPushedRaw_measurable α hu_meas).aestronglyMeasurable]
   gcongr
   rw [← ENNReal.ofReal_rpow_of_pos hC_pos]
 
@@ -1428,7 +1497,8 @@ theorem eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure_uniform
   refine ⟨C ^ (1 / p.toReal), Real.rpow_pos_of_pos hC_pos _, ?_⟩
   intro u hu_meas hu_support hu_K
   have h_lint := hC_bnd hu_meas hu_support hu_K hp_toReal_pos
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top
+    (chartPushedRaw_measurable α hu_meas).aestronglyMeasurable]
   have h_LHS_eq :
       (∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
         ‖chartPushedRaw I α u y‖ₑ ^ p.toReal
@@ -1451,72 +1521,10 @@ theorem eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure_uniform
     positivity
   refine h_pow_le.trans ?_
   rw [ENNReal.mul_rpow_of_nonneg _ _ (by positivity : (0 : ℝ) ≤ 1 / p.toReal)]
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top
+    hu_meas.aestronglyMeasurable]
   gcongr
   rw [← ENNReal.ofReal_rpow_of_pos hC_pos]
-
-private noncomputable def extChartAtSymmGlobal (α : M) : E → M := by
-  classical
-  exact (extChartAt I α).target.piecewise
-    (fun y : E => (extChartAt I α).symm y)
-    (fun _ : E => α)
-
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-private lemma extChartAtSymmGlobal_eq_on_target (α : M) {y : E}
-    (hy : y ∈ (extChartAt I α).target) :
-    extChartAtSymmGlobal (I := I) (M := M) α y = (extChartAt I α).symm y := by
-  classical
-  change (extChartAt I α).target.piecewise
-    (fun y : E => (extChartAt I α).symm y)
-    (fun _ : E => α) y = _
-  rw [Set.piecewise_eq_of_mem _ _ _ hy]
-
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-private lemma extChartAtSymmGlobal_measurable (α : M) :
-    Measurable (extChartAtSymmGlobal (I := I) (M := M) α) := by
-  classical
-  unfold extChartAtSymmGlobal
-  exact ContinuousOn.measurable_piecewise
-    (continuousOn_extChartAt_symm (I := I) α)
-    continuousOn_const
-    (extChartAt_target_measurableSet (I := I) (M := M) α)
-
-omit [IsManifold I ∞ M] in
-lemma chartPushedRaw_measurable (α : M) {F : M → ℝ}
-    (hF_meas : Measurable F) :
-    Measurable (chartPushedRaw I α F) := by
-  classical
-  have h_extSymm_meas : Measurable (extChartAtSymmGlobal (I := I) (M := M) α) :=
-    extChartAtSymmGlobal_measurable (I := I) (M := M) α
-  have h_comp : Measurable
-      (fun y : EuclN E =>
-        F (extChartAtSymmGlobal (I := I) (M := M) α
-          ((toEuclidean (E := E)).symm y))) :=
-    hF_meas.comp (h_extSymm_meas.comp
-      (toEuclidean (E := E)).symm.continuous.measurable)
-  have hCT_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
-    chartTargetEuclid_measurableSet (I := I) (M := M) α
-  have h_piecewise :
-      chartPushedRaw I α F =
-        (chartTargetEuclid (I := I) (M := M) α).piecewise
-          (fun y : EuclN E =>
-            F (extChartAtSymmGlobal (I := I) (M := M) α
-              ((toEuclidean (E := E)).symm y)))
-          (fun _ : EuclN E => (0 : ℝ)) := by
-    funext y
-    by_cases hy : y ∈ chartTargetEuclid (I := I) (M := M) α
-    · rw [Set.piecewise_eq_of_mem _ _ _ hy]
-      rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α F hy]
-      have h_toE_symm_in : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
-        rcases hy with ⟨w, hw_target, hwy⟩
-        have h_eq : (toEuclidean (E := E)).symm y = w := by
-          rw [← hwy]; exact (toEuclidean (E := E)).symm_apply_apply w
-        rw [h_eq]; exact hw_target
-      rw [extChartAtSymmGlobal_eq_on_target (I := I) (M := M) α h_toE_symm_in]
-    · rw [Set.piecewise_eq_of_notMem _ _ _ hy]
-      rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α F hy]
-  rw [h_piecewise]
-  exact Measurable.piecewise hCT_meas h_comp measurable_const
 
 omit [IsManifold I ∞ M] in
 private lemma toEuclidean_symm_target_of_mem (α : M) {y : EuclN E}

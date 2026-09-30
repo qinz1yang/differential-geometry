@@ -174,7 +174,7 @@ theorem connBack_pair
     rw [hAat]
     exact hspeed
   have hpair' := hpair.congr_deriv hspeed'
-  convert hpair' using 1 <;> rfl
+  convert hpair' using 1; rfl
 
 omit [SigmaCompactSpace M] in
 private theorem connBack_frame_sq
@@ -791,7 +791,7 @@ theorem connBack_vec_sq
       apply metricFlatLinear_injective (I := I) q (alpha r)
       ext w
       simp only [metricFlatLinear_apply, inner_metricSharp]
-      simp only [cv, dif_pos]
+      simp only [cv, dite_eq_left]
       rfl
     have hmodel := trivToE_metricSharp (I := I) q x₀ cv hr
     rw [← hsharp, hmodel]
@@ -810,7 +810,7 @@ theorem connBack_vec_sq
           (metricCov (I := I) q) (alpha r)))
         (v3 (X r) (Z r) (b j))
     change cv (alpha r) (chartBasisVecFiber (I := I) x₀ j (alpha r)) = f j r
-    simp only [cv, dif_pos]
+    simp only [cv, dite_eq_left]
     change q.inner (alpha r) (C r)
       (chartBasisVecFiber (I := I) x₀ j (alpha r)) = f j r
     rw [show chartBasisVecFiber (I := I) x₀ j (alpha r) =

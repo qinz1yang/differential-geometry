@@ -8,7 +8,7 @@ open scoped Manifold ContDiff
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
-variable {P : OrientedThreeStage.{u}} {H : RetainedCoreHistory P}
+variable {H : RetainedCoreHistory.{u}}
   (T : ℝ) (hT : H.horizon ≤ T)
   (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
   (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))

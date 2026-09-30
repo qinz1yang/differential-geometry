@@ -1,6 +1,9 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.HomotopyExtension
 
 noncomputable section
+
+open Convexity.StdSimplex
 
 namespace DifferentialGeometry.Simplex
 
@@ -8,7 +11,7 @@ variable {X : Type*} [TopologicalSpace X]
 
 theorem exists_continuous_extension_of_nullhomotopic (n : ℕ)
     (f : C(boundary (Fin (n + 1)), X)) (hf : f.Nullhomotopic) :
-    ∃ F : C(stdSimplex ℝ (Fin (n + 1)), X),
+    ∃ F : C(coordinateSet ℝ (Fin (n + 1)), X),
       ∀ p : boundary (Fin (n + 1)), F p.val = f p := by
   obtain ⟨x, ⟨H⟩⟩ := hf
   obtain ⟨F, hF, hside⟩ := exists_continuous_homotopy_extension n

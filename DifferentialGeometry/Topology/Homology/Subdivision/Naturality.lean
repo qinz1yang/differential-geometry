@@ -20,7 +20,7 @@ local notation "Φ" => TopCat.toSSet.map
 theorem affineSimplex_map_linear {n : ℕ} (v : Fin (n + 1) → E) :
     (⟨f, f.continuous⟩ : C(E, E')).comp (affineSimplex v) = affineSimplex (f ∘ v) := by
   ext x
-  change f (∑ i, x i • v i) = ∑ i, x i • f (v i)
+  change f (∑ i, x.weights i • v i) = ∑ i, x.weights i • f (v i)
   simp only [map_sum, map_smul]
 
 

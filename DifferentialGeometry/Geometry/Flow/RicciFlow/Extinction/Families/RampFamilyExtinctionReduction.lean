@@ -350,7 +350,7 @@ structure PreparedFamilyShortEdgeFrontier (g : SmoothRiemannianMetric I Q) {d : 
       polygon_jets_continuous) Γ
 
 omit [CompleteSpace E] in
-def preparedFamilyFrontier_of_shortEdgeFrontier (g : SmoothRiemannianMetric I Q) {d : ℕ}
+def preparedFamilyFrontierOfShortEdgeFrontier (g : SmoothRiemannianMetric I Q) {d : ℕ}
     (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
     (Γ : RegularFamily (I := I) (Q := Q) (Sphere 2)) (eta : ℝ)
     (f : PreparedFamilyShortEdgeFrontier (I := I) (Q := Q) g e Γ eta) :
@@ -390,6 +390,6 @@ theorem rfs_prepared_family_of_shortEdgeFrontier (g : SmoothRiemannianMetric I Q
             (initialRamp (prepared p).1).totalCurvature (fun _ => g) lambda 0 ≤ Theta₀ ∧
             regularLeastArea g (prepared p) ≤ Ainit :=
   rfs_prepared_family_of_preparedFamilyFrontier g e Γ eta heta
-    (preparedFamilyFrontier_of_shortEdgeFrontier g e Γ eta f)
+    (preparedFamilyFrontierOfShortEdgeFrontier g e Γ eta f)
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families

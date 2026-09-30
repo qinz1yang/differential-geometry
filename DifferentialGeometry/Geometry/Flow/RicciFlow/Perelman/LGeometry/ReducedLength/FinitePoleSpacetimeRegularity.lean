@@ -88,7 +88,7 @@ theorem lCost_joint_contMDiffAt_of_rm
   let A : E × ℝ → ℝ := fun q =>
     lRegularizedAction S T (lRegularizedCurve S T x q.1) 0 (Real.sqrt q.2)
   have hp0 : p y = (Z, tau) := hloc.localInverse_left_inv hloc.localInverse_mem_target
-  have hp : ContMDiffAt K J ∞ p y := hloc.localInverse_contMDiffAt
+  have hp : ContMDiffAt K J ∞ p y := hloc.contMDiffAt_localInverse
   have hA : ContMDiffAt J 𝓘(ℝ) ∞ A (Z, tau) := by
     have h := contDiffAt_lRegularizedAction_lRegularizedCurve_sqrt S hS T x hdom
     rw [← contMDiffAt_iff_contDiffAt, modelWithCornersSelf_prod,
@@ -178,7 +178,7 @@ theorem isOpen_lInjDomain_spacetime_image_of_rm
   let p : M × ℝ → E × ℝ := hloc.localInverse
   let y : M × ℝ := (lExp S T x Z tau, tau)
   have hp0 : p y = (Z, tau) := hloc.localInverse_left_inv hloc.localInverse_mem_target
-  have hp : ContinuousAt p y := hloc.localInverse_contMDiffAt.continuousAt
+  have hp : ContinuousAt p y := hloc.contMDiffAt_localInverse.continuousAt
   let rho : ℝ := (tau + sigma) / 2
   have htRho : tau < rho := by dsimp only [rho]; linarith only [hsigma]
   have hRhoS : rho < sigma := by dsimp only [rho]; linarith only [hsigma]

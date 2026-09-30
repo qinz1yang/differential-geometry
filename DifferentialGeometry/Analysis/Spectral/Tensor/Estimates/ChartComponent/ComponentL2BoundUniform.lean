@@ -10,6 +10,8 @@ import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise
+  tensorInnerPointwise_nonneg)
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -286,12 +288,13 @@ lemma tensorChartComponentRaw_sq_le_const_mul_tensorInner
   linarith [h_chain_sq, h_rhs_rearr.le, h_rhs_rearr.symm.le]
 
 private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq
-    {α : Type*} [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) :
+    {α : Type*} [MeasurableSpace α] (μ : Measure α) (f : α → ℝ)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
   classical
   have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
   have h2_ne_top : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by norm_num
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top hf]
   have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
   rw [h2_toReal]
   have h_inner_eq : ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
@@ -372,7 +375,10 @@ private lemma sq_eLpNorm_two_le_const_mul_tensorL2Inner
     intro b
     exact mul_nonneg hC_nn
       (tensorInnerPointwise_nonneg (I := I) (M := M) g r s b _)
-  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq μ f]
+  have hf_meas : AEStronglyMeasurable f μ :=
+    (tensorChartComponentScalar_contMDiff
+      (I := I) (M := M) g r s S α Idx Jdx).continuous.aestronglyMeasurable
+  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq μ f hf_meas]
   have h_lint_le :
       ∫⁻ b, (‖f b‖ₑ : ℝ≥0∞) ^ 2 ∂μ ≤
         ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise

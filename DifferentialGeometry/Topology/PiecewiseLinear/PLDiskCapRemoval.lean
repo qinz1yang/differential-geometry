@@ -21,7 +21,7 @@ theorem IsPLHomeomorphOn.image_stdSimplexBoundary_one_of_Icc {β : Set F} {γ : 
     (hγ : IsPLHomeomorphOn γ (Icc 0 1) β) :
     IsPLHomeomorphOn (γ ∘ Function.invFunOn
         (AffineMap.lineMap (k := ℝ) (![1, 0] : Fin 2 → ℝ) ![0, 1]) (Icc 0 1))
-        (stdSimplex ℝ (Fin 2)) β ∧
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) β ∧
       (γ ∘ Function.invFunOn (AffineMap.lineMap (k := ℝ) (![1, 0] : Fin 2 → ℝ) ![0, 1])
         (Icc 0 1)) '' stdSimplexBoundary 1 = {γ 0, γ 1} := by
   have hL := isPLHomeomorphOn_lineMap_Icc_stdSimplex_two
@@ -95,11 +95,11 @@ theorem IsPLSphere.exists_isPLHomeomorphOn_closure_sdiff {S β : Set F} (hS : Is
       exact h0
 
 theorem exists_isPLHomeomorphOn_closure_sdiff_of_cap {D E β : Set F}
-    {q r : (Fin 3 → ℝ) → F} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) E) (hED : E ⊆ D) {γ : ℝ → F}
+    {q r : (Fin 3 → ℝ) → F} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) E) (hED : E ⊆ D) {γ : ℝ → F}
     (hγ : IsPLHomeomorphOn γ (Icc 0 1) β) (hβE : β ⊆ r '' stdSimplexBoundary 2)
     (hEDb : E ∩ q '' stdSimplexBoundary 2 = β) :
-    ∃ q' : (Fin 3 → ℝ) → F, IsPLHomeomorphOn q' (stdSimplex ℝ (Fin 3)) (closure (D \ E)) ∧
+    ∃ q' : (Fin 3 → ℝ) → F, IsPLHomeomorphOn q' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (closure (D \ E)) ∧
       q' '' stdSimplexBoundary 2 = (q '' stdSimplexBoundary 2 \ (β \ {γ 0, γ 1})) ∪
         closure (r '' stdSimplexBoundary 2 \ β) ∧
       closure (D \ E) ∩ E = closure (r '' stdSimplexBoundary 2 \ β) ∧
@@ -137,7 +137,7 @@ theorem exists_isPLHomeomorphOn_closure_sdiff_of_cap {D E β : Set F}
   obtain ⟨p, hp⟩ := hΔ
   have hΔ : IsPLBall 2 Δ := ⟨p, hp⟩
   have hΔc : IsClosed Δ := hΔ.isPolyhedron.isClosed
-  set s := p ∘ Function.invFunOn q (stdSimplex ℝ (Fin 3)) with hsdef
+  set s := p ∘ Function.invFunOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) with hsdef
   have hs : IsPLHomeomorphOn s D Δ := hq.symm.trans hp
   have hsDb : s '' Db = frontier Δ := by
     rw [← IsPLHomeomorphOn.image_stdSimplexBoundary (n := 1) hp, hDb, ← image_comp]
@@ -204,7 +204,7 @@ theorem exists_isPLHomeomorphOn_closure_sdiff_of_cap {D E β : Set F}
   have key : ∀ U V : Set (EuclideanSpace ℝ (Fin 2)), IsPLBall 2 U → IsPLBall 2 V →
       U ∪ V = Δ → U ∩ V = s '' β' → frontier V ⊆ frontier Δ ∪ s '' β' →
       s '' β' ⊆ frontier U → s '' β' ⊆ frontier V → s '' E ⊆ U →
-      ∃ q' : (Fin 3 → ℝ) → F, IsPLHomeomorphOn q' (stdSimplex ℝ (Fin 3)) (closure (D \ E)) ∧
+      ∃ q' : (Fin 3 → ℝ) → F, IsPLHomeomorphOn q' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (closure (D \ E)) ∧
         q' '' stdSimplexBoundary 2 = (Db \ (β \ {γ 0, γ 1})) ∪ β' ∧
         closure (D \ E) ∩ E = β' ∧ closure (D \ E) ∪ E = D := by
     intro U V hU hV hUV hUiV hfV hAU hAV hEU

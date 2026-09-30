@@ -44,16 +44,16 @@ def radialPhi (s : ℝ) : ℝ :=
 def nu (v : E3) : E3 := radialPhi ‖v‖ • v
 
 lemma radialSigma_of_lt {s : ℝ} (h : s < 4 / 3) : radialSigma s = -(3 / 8) * s := by
-  rw [radialSigma, if_neg (not_le.mpr h)]
+  rw [radialSigma, ite_eq_right (not_le.mpr h)]
 
 lemma radialSigma_of_ge {s : ℝ} (h : 4 / 3 ≤ s) : radialSigma s = 2 / s - 2 := by
-  rw [radialSigma, if_pos h]
+  rw [radialSigma, ite_eq_left h]
 
 lemma radialPhi_of_lt {s : ℝ} (h : s < 4 / 3) : radialPhi s = -(3 / 8) := by
-  rw [radialPhi, if_neg (not_le.mpr h)]
+  rw [radialPhi, ite_eq_right (not_le.mpr h)]
 
 lemma radialPhi_of_ge {s : ℝ} (h : 4 / 3 ≤ s) : radialPhi s = (2 - 2 * s) / s ^ 2 := by
-  rw [radialPhi, if_pos h]
+  rw [radialPhi, ite_eq_left h]
 
 lemma radialPhi_continuous : Continuous radialPhi := by
   refine continuous_if_le continuous_const continuous_id ?_ ?_ ?_

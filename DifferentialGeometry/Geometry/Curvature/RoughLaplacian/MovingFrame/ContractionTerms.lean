@@ -2,6 +2,9 @@ import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.Remain
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.BracketDivergenceForm
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.SecondOrder
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.ContractedBianchi
+
+open DifferentialGeometry.TensorMetric
+  (covariantTensorInnerPointwise)
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection

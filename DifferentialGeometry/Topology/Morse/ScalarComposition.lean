@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Schauder.Holder.SecondOrderComposition
 import DifferentialGeometry.Tensor.QuadraticForm.Scaling
 import DifferentialGeometry.Topology.Morse.Defs
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 
 open scoped Manifold
 
@@ -71,7 +72,7 @@ theorem chartHessianAt_scalar_comp
     change (if MDifferentiableAt I 𝓘(ℝ, ℝ) f x then
       fderivWithin ℝ (writtenInExtChartAt I 𝓘(ℝ, ℝ) x f) (Set.range I)
         (extChartAt I x x) else (0 : E →L[ℝ] ℝ)) = 0 at hcrit
-    rw [if_pos hmd] at hcrit
+    rw [ite_eq_left hmd] at hcrit
     simp only [I.range_eq_univ, fderivWithin_univ,
       writtenInExtChartAt, extChartAt_model_space_eq_id, PartialEquiv.refl_coe,
       Function.id_comp] at hcrit

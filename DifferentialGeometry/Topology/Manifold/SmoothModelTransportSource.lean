@@ -247,7 +247,7 @@ private theorem extend_trans_homeomorph_symm_apply (φ : OpenPartialHomeomorph N
 
 omit [ChartedSpace H N] [NormedAddCommGroup E₀] [NormedSpace 𝕜 E₀] in
 include hcompat in
-private theorem eqOn_writtenInExtend_trans {G : Type*} [NormedAddCommGroup G] [NormedSpace 𝕜 G]
+private theorem eqOn_writtenInExtend_trans {G : Type*} [Zero G]
     (φ : OpenPartialHomeomorph N H) (g : N → E₀) (Ξ : E × G → E₀) (Ξ' : F × G → E₀)
     (hΞ : ∀ (z : E) (c : G), Ξ' (L z, c) = Ξ (z, c))
     (h : EqOn (g ∘ (φ.extend I).symm) (fun z : E => Ξ (z, 0)) (φ.extend I).target) :
@@ -512,7 +512,6 @@ abbrev EuclideanHalfSpaceProdModel : Type :=
 
 theorem isSmoothEmbedding_coreInclusion_of_euclideanHalfSpaceProd {core Carrier : Type*}
     [TopologicalSpace core] [ChartedSpace EuclideanHalfSpaceProdModel core]
-    [IsManifold ((𝓡 2).prod (𝓡∂ 1)) ∞ core]
     [TopologicalSpace Carrier] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) Carrier]
     (f : core → Carrier)
     (h : IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) (𝓡 3) ∞ f) :
@@ -525,7 +524,6 @@ theorem isSmoothEmbedding_coreInclusion_of_euclideanHalfSpaceProd {core Carrier 
 theorem isSmoothEmbedding_coreSubtype_of_euclideanHalfSpaceProd {Carrier : Type*}
     [TopologicalSpace Carrier] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) Carrier]
     {core : Set Carrier} [ChartedSpace EuclideanHalfSpaceProdModel core]
-    [IsManifold ((𝓡 2).prod (𝓡∂ 1)) ∞ core]
     (h : IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) (𝓡 3) ∞
       (Subtype.val : core → Carrier)) :
     let _ := euclideanHalfSpaceProdChartedSpace core

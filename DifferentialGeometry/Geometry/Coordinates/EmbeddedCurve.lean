@@ -57,12 +57,15 @@ private theorem deriv_chartCurve_zero {c : ℝ → M}
     (hc : MDifferentiableAt 𝓘(ℝ, ℝ) I c 0) :
     deriv (fun s => extChartAt I (c 0) (c s)) 0 =
       mfderiv 𝓘(ℝ, ℝ) I c 0 1 := by
-  rw [← fderiv_apply_one_eq_deriv, ← mfderiv_eq_fderiv]
   have hh := mfderiv_comp (I := 𝓘(ℝ, ℝ)) (I' := I) (I'' := 𝓘(ℝ, E)) 0
     (mdifferentiableAt_extChartAt (I := I) (mem_chart_source H (c 0))) hc
-  change (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ((extChartAt I (c 0)) ∘ c) 0) 1 = _
-  rw [hh, mfderiv_extChartAt_self]
-  rfl
+  rw [mfderiv_eq_fderiv, mfderiv_extChartAt_self] at hh
+  have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ)
+    (extChartAt I (c 0) (c 0))
+      (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (0 : ℝ)).symm (1 : ℝ)))) hh
+  simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply,
+    ContinuousLinearEquiv.coe_coe, ContinuousLinearEquiv.apply_symm_apply,
+    fderiv_apply_one_eq_deriv] using! hv
 
 private theorem exists_restrict_curve_axis
     {V C N : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]

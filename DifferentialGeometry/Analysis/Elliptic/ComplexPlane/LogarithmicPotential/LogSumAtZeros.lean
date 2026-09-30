@@ -51,7 +51,7 @@ theorem neg_half_laplacian_log_add_le_nonnegative {a b : ℂ → ℝ} {z : ℂ}
   by_cases ha0 : a z = 0
   · simpa [ha0, hbpos.ne'] using
       neg_half_laplacian_log_add_le_at_zero ha hb han ha0 hbpos
-  · rw [if_neg ha0]
+  · rw [ite_eq_right ha0]
     exact neg_half_laplacian_log_add_le ha hb
       (lt_of_le_of_ne han.self_of_nhds (Ne.symm ha0)) hbpos
 

@@ -68,7 +68,7 @@ theorem mergeFlag_flagMap_left
   have h : mergeFlag N endpoint chart s a b e t =
       ⟨none, b (Sum.inl ⟨(e.val, t), e.property, hi⟩)⟩ := by
     unfold mergeFlag
-    rw [dif_pos hi]
+    rw [dite_eq_left hi]
   exact congrArg (fun p : Σ v, OrientedBallChart
     (mergeFactor N endpoint chart s a v).toClosedOrientedManifold =>
       (⟨p.fst, p.snd.chart x⟩ : Σ v, (mergeFactor N endpoint chart s a v).Carrier)) h
@@ -87,7 +87,7 @@ theorem mergeFlag_flagMap_right
   have h : mergeFlag N endpoint chart s a b e t =
       ⟨none, b (Sum.inr ⟨(e.val, t), e.property, hj⟩)⟩ := by
     unfold mergeFlag
-    rw [dif_neg hi, dif_pos hj]
+    rw [dite_eq_right hi, dite_eq_left hj]
   exact congrArg (fun p : Σ v, OrientedBallChart
     (mergeFactor N endpoint chart s a v).toClosedOrientedManifold =>
       (⟨p.fst, p.snd.chart x⟩ : Σ v, (mergeFactor N endpoint chart s a v).Carrier)) h
@@ -107,7 +107,7 @@ theorem mergeFlag_flagMap_remaining
   have h : mergeFlag N endpoint chart s a b e t =
       ⟨some ⟨endpoint e.val t, hi, hj⟩, chart e.val t⟩ := by
     unfold mergeFlag
-    rw [dif_neg hi, dif_neg hj]
+    rw [dite_eq_right hi, dite_eq_right hj]
   exact congrArg (fun p : Σ v, OrientedBallChart
     (mergeFactor N endpoint chart s a v).toClosedOrientedManifold =>
       (⟨p.fst, p.snd.chart x⟩ : Σ v, (mergeFactor N endpoint chart s a v).Carrier)) h

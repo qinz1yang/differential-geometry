@@ -2,7 +2,14 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Tens
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Components
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-open DifferentialGeometry.Analysis.Elliptic
+
+open DifferentialGeometry.TensorMetric
+  (fiberNormSqComponent
+    fiberNormSqComponent_smul
+    fiberNormSqComponent_sum
+    fiberNormSqSummand
+    fiberNormSqSummand_eq_component_sq
+    riemannianFiberNormSq)
 open DifferentialGeometry.Geometry.Curvature
 
 

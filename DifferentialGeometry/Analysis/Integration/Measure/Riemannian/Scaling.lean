@@ -68,6 +68,8 @@ theorem chartLocal_scale (c : Real) (hc : 0 < c)
   have ha : a ≠ (∞ : ℝ≥0∞) := by simp [a]
   unfold chartLocalMeasure
   rw [hdensity, withDensity_smul' a _ ha, Measure.map_smul]
+  exact (aemeasurable_extChartAt_symm_restrict_target (I := I) x₀).mono_ac
+    (withDensity_absolutelyContinuous _ _)
 
 theorem riemMeasure_scale
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)

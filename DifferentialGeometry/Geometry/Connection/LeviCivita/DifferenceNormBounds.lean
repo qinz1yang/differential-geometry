@@ -9,7 +9,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
-open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.Geometry.Curvature
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -55,7 +55,7 @@ theorem connectionDifferenceSq_le_of_bilinear_bound
             (hnorm (slots 0)) (Real.sqrt_nonneg _) (by positivity)
         _ = L * C := by rw [mul_assoc, ← sq, Real.sq_sqrt hC0]
     have hsq : g₀.inner x V V ≤ (L * C) ^ 2 := (Real.sqrt_le_iff).mp hb |>.2
-    have hCS := metric_inner_cauchy_schwarz_sq (I := I) g₁ x V (b (slots 2))
+    have hCS := SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq (I := I) g₁ x V (b (slots 2))
     rw [hunit, mul_one] at hCS
     have hpoint : (g₁.inner x V (b (slots 2))) ^ 2 ≤ C ^ 3 * L ^ 2 :=
       (hCS.trans (heq V).2).trans
@@ -117,7 +117,7 @@ theorem connectionDifferenceSq_le_of_common_connection_bounds
   let V₁ := CovariantDerivative.difference (metricCov (I := I) g₁) cov₀ x v w
   let V₂ := CovariantDerivative.difference (metricCov (I := I) g₂) cov₀ x v w
   rw [connection_difference_sub cov₀]
-  have h := gNorm_add_le (I := I) g₀ x V₁ (-V₂)
+  have h := SmoothRiemannianMetric.gNorm_add_le (I := I) g₀ x V₁ (-V₂)
   simp only [map_neg, neg_apply, neg_neg] at h
   rw [sub_eq_add_neg]
   have h₁ := hbound₁ v w

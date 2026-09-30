@@ -48,14 +48,14 @@ private lemma abs_prod_kronecker_le_one
   | insert i t hi ih =>
       rw [Finset.prod_insert hi, abs_mul]
       by_cases hf : f i
-      · rw [if_pos hf, abs_one, one_mul]; exact ih
-      · rw [if_neg hf, abs_zero, zero_mul]; exact zero_le_one
+      · rw [ite_eq_left hf, abs_one, one_mul]; exact ih
+      · rw [ite_eq_right hf, abs_zero, zero_mul]; exact zero_le_one
 
 private lemma abs_kronecker_le_one {P : Prop} [Decidable P] :
     |if P then (1 : ℝ) else 0| ≤ 1 := by
   by_cases h : P
-  · rw [if_pos h, abs_one]
-  · rw [if_neg h, abs_zero]; exact zero_le_one
+  · rw [ite_eq_left h, abs_one]
+  · rw [ite_eq_right h, abs_zero]; exact zero_le_one
 
 private lemma abs_sum_coeff_kronecker_le
     {ι : Type*} (t : Finset ι) (f : ι → ℝ) (P : ι → Prop) [DecidablePred P]
@@ -254,7 +254,7 @@ private lemma mem_pouTsupport_of_tensorChartComponent_ne_zero
     (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) hρ_ne
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma eLpNorm_coeff_mul_component_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -282,8 +282,21 @@ private lemma eLpNorm_coeff_mul_component_le
   classical
   set μ : Measure EuclN :=
     (volume : Measure EuclN).restrict (chartTargetEuclid (I := I) (M := M) α)
+    with hμ_def
   set comp : EuclN → ℝ :=
     tensorChartComponent (I := I) (M := M) g r s S α Idx' Jdx' with hcomp_def
+  have hμ_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
+    chartTargetEuclid_measurableSet (I := I) (M := M) α
+  have hmeas : AEStronglyMeasurable
+      (fun y : EuclN =>
+        covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx Idx'
+            Jdx Jdx' y * comp y) μ := by
+    rw [hμ_def]
+    refine ContinuousOn.aestronglyMeasurable ?_ hμ_meas
+    exact (covDerivLowerOrderCoeff_contDiffOn (I := I) (M := M)
+      g r s α m Idx Idx' Jdx Jdx').continuousOn.mul
+      (tensorChartComponent_continuous' (I := I) (M := M)
+        g r s S α Idx' Jdx').continuousOn
   have hpt : ∀ y : EuclN,
       ‖covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx Idx'
             Jdx Jdx' y * comp y‖ ≤
@@ -301,7 +314,7 @@ private lemma eLpNorm_coeff_mul_component_le
           (fun y : EuclN =>
             covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx Idx'
                 Jdx Jdx' y * comp y) 2 μ
-      ≤ eLpNorm ((Ccoeff : ℝ) • comp) 2 μ := eLpNorm_mono hpt
+      ≤ eLpNorm ((Ccoeff : ℝ) • comp) 2 μ := eLpNorm_mono hmeas hpt
     _ = ‖(Ccoeff : ℝ)‖ₑ * eLpNorm comp 2 μ :=
         eLpNorm_const_smul (Ccoeff : ℝ) comp 2 _
     _ = ENNReal.ofReal Ccoeff * eLpNorm comp 2 μ := by
@@ -429,7 +442,7 @@ theorem exists_const_sum_eLpNorm_pou_covDerivLowerOrderTerm_le_uniform
       refine (h1.trans
         (mul_le_mul_of_nonneg_left (hcomp_h1 p) (zero_le))).trans_eq ?_
       rw [ENNReal.ofReal_mul hCcoeff_nn, mul_assoc]
-    refine (eLpNorm_sum_le (fun p _ => hmeas p) (by norm_num)).trans ?_
+    refine (eLpNorm_sum_le (p := (2 : ℝ≥0∞)) (by norm_num)).trans ?_
     refine (Finset.sum_le_sum (fun p _ => hsummand p)).trans ?_
     rw [Finset.sum_const, Finset.card_univ, ← hNpair_def, nsmul_eq_mul]
     rw [show ((Npair : ℝ≥0∞)) = ENNReal.ofReal (Npair : ℝ) from by

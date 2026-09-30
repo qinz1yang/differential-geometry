@@ -70,7 +70,7 @@ def LocalRegionEDistComparison (G : GeometricCutoffRecord H i parameters)
       ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
       ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
       riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-        ((Kc c).rfs_whole_parent_map y) ((Kc c).rfs_whole_parent_map z) ≤
+        ((Kc c).canonicalWholeParentMap y) ((Kc c).canonicalWholeParentMap z) ≤
       ENNReal.ofReal (ell s) *
         riemannianEDistOf (((H.event i).incoming.flow.base.metric s).restrictOpen
           (H.event i).incoming.terminalRegularOpen) ⟨y.1, hy⟩ ⟨z.1, hz⟩
@@ -123,7 +123,7 @@ def LocalRegionLengthComparison (G : GeometricCutoffRecord H i parameters)
         riemannianCurveLength (((H.event i).incoming.flow.base.metric s).restrictOpen
           (regionOfComponent G c)) γ a b ≠ ⊤ →
         riemannianCurveLength ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-          (fun t => (Kc c).rfs_whole_parent_map ⟨(γ t).1, (γ t).2.1⟩) a b ≤
+          (fun t => (Kc c).canonicalWholeParentMap ⟨(γ t).1, (γ t).2.1⟩) a b ≤
         ENNReal.ofReal (ell s) *
           riemannianCurveLength (((H.event i).incoming.flow.base.metric s).restrictOpen
             (regionOfComponent G c)) γ a b
@@ -144,7 +144,7 @@ theorem localRegionLengthComparison_of_regionEDistComparison
   refine riemannianCurveLength_comp_le_of_mapsTo
     (((H.event i).incoming.flow.base.metric s).restrictOpen (regionOfComponent G c))
     ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-    (fun u : ↥(regionOfComponent G c) => (Kc c).rfs_whole_parent_map ⟨u.1, u.2.1⟩)
+    (fun u : ↥(regionOfComponent G c) => (Kc c).canonicalWholeParentMap ⟨u.1, u.2.1⟩)
     {u : ↥(regionOfComponent G c) | (⟨u.1, u.2.1⟩ : (G.Parent c).Carrier) ∈ U}
     ?_ γ a b ?_
   · intro y hy z hz
@@ -161,20 +161,20 @@ theorem rfs_child_comparison_metric_of_regionLengthComparison
     (hlocal : G.LocalRegionLengthComparison Kc) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, f c = (Kc c).rfs_whole_parent_map) ∧
+      (∀ c, f c = (Kc c).canonicalWholeParentMap) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
         Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1) ∧
         ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ x y : ↥(regionOfComponent G c),
           riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-            ((Kc c).rfs_whole_parent_map ⟨x.1, x.2.1⟩)
-            ((Kc c).rfs_whole_parent_map ⟨y.1, y.2.1⟩) ≤
+            ((Kc c).canonicalWholeParentMap ⟨x.1, x.2.1⟩)
+            ((Kc c).canonicalWholeParentMap ⟨y.1, y.2.1⟩) ≤
           ENNReal.ofReal (ell s) *
             riemannianEDistOf
               (((H.event i).incoming.flow.base.metric s).restrictOpen
                 (regionOfComponent G c)) x y := by
   obtain ⟨s₀, hs₀, ell, hell, htend, hloc⟩ := hlocal
-  refine ⟨fun c => (Kc c).rfs_whole_parent_map, fun c => rfl, s₀, hs₀, ell, hell, htend, ?_⟩
+  refine ⟨fun c => (Kc c).canonicalWholeParentMap, fun c => rfl, s₀, hs₀, ell, hell, htend, ?_⟩
   intro c s hs x y
   let W := regionOfComponent G c
   let gs : SmoothRiemannianMetric ThreeModel ↥W :=
@@ -184,8 +184,8 @@ theorem rfs_child_comparison_metric_of_regionLengthComparison
   have hκ : Continuous fun u : ↥W => (⟨u.1, u.2.1⟩ : (G.Parent c).Carrier) :=
     continuous_subtype_val.subtype_mk fun u => u.2.1
   let F : C(↥W, (G.Child c).Carrier) :=
-    ⟨fun u => (Kc c).rfs_whole_parent_map ⟨u.1, u.2.1⟩,
-      (Kc c).rfs_whole_parent_map.continuous.comp hκ⟩
+    ⟨fun u => (Kc c).canonicalWholeParentMap ⟨u.1, u.2.1⟩,
+      (Kc c).canonicalWholeParentMap.continuous.comp hκ⟩
   have hL : (0 : ℝ) ≤ ell s := le_trans zero_le_one (hell s hs)
   let : SecondCountableTopology (H.stage i.castSucc).Carrier :=
     ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (H.stage i.castSucc).Carrier
@@ -321,14 +321,14 @@ theorem rfs_child_comparison_metric_coreDominated_of_regionLengthComparison
           G.childCoreIntoParent_terminal c v⟩⟩ ≤ d c s u v) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, f c = (Kc c).rfs_whole_parent_map) ∧
+      (∀ c, f c = (Kc c).canonicalWholeParentMap) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
         Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1) ∧
         ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ u v : G.transition.ChildCore c,
           riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-            ((Kc c).rfs_whole_parent_map (G.transition.childCoreIntoParent c u))
-            ((Kc c).rfs_whole_parent_map (G.transition.childCoreIntoParent c v)) ≤
+            ((Kc c).canonicalWholeParentMap (G.transition.childCoreIntoParent c u))
+            ((Kc c).canonicalWholeParentMap (G.transition.childCoreIntoParent c v)) ≤
           ENNReal.ofReal (ell s) * d c s u v := by
   obtain ⟨f, hf, s₀, hs₀, ell, hell, htend, hdist⟩ :=
     G.rfs_child_comparison_metric_of_regionLengthComparison Kc hlocal

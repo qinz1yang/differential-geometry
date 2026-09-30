@@ -122,7 +122,7 @@ theorem exists_complex_lp_gradient_columns_of_tendsto_inner
   have hf (n : ℕ) : LipschitzWith (K n)
       (U n ∘ Complex.orthonormalBasisOneI.repr.symm) := by
     simpa only [mul_one] using
-      (hU n).comp Complex.orthonormalBasisOneI.repr.symm.isometry.lipschitz
+      (hU n).comp Complex.orthonormalBasisOneI.repr.symm.isometry.lipschitzWith
   obtain ⟨A, A₀, hA, hA₀, hAw⟩ := exists_lp_gradient_columns_of_tendsto_inner
     (fun n => U n ∘ Complex.orthonormalBasisOneI.repr.symm) v hs hv K hf hrep hweak
   exact exists_complex_lp_columns_of_tendsto_dual hball U

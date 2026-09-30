@@ -13,8 +13,10 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffAt metricDiffSq metricDiffSq_def traceNormSq_le reLowerPair reLowerPairSq_le)
+
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 open DifferentialGeometry.Integral.Measure
@@ -577,7 +579,7 @@ private theorem reactOrtho {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       HasDerivAt (fun r : Real => (g r).inner x X Y)
         ((-2 : Real) * Q (fun d : Fin 2 => if d = 0 then X else Y)) t) :
     movingReact0S (I := I) (g t) x s Q W =
-      ricReactionContract (identityInvMetric (Idx := Idx))
+      metricVariationContract (identityInvMetric (Idx := Idx))
         (fun i j => Q (fun d : Fin 2 => if d = 0 then basis i else basis j))
         (fun I0 => tensor0SComponent (I := I) W (fun i => basis i) I0)
         (fun J0 => tensor0SComponent (I := I) W (fun i => basis i) J0) := by
@@ -609,7 +611,7 @@ private theorem reactOrtho {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       HasDerivWithinAt (fun r : Real => gI r i j) (gIDt i j) Set.univ t := by
     intro i j
     simpa [gI, gIDt, ric] using
-      (basisInv_time (I := I) g (fun p q => (-2 : Real) * ric p q) basis
+      (hasDerivAt_basisInvMetric (I := I) g (fun p q => (-2 : Real) * ric p q) basis
         (fun p q => by simpa [ric] using hg (basis p) (basis q)) i j)
   have hflow : ∀ i j : Idx,
       gIDt i j = 2 * (∑ p : Idx, ∑ q : Idx, gI t i p * gI t j q * ric p q) := by
@@ -639,7 +641,7 @@ private theorem reactOrtho {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
           (0 : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
           (fun i => basis i) I0 = (0 : Real) :=
     fun I0 => Tensor0SSpace.zero_apply (I := I) s x _
-  have hR := hasDerivWithinAt_normSq0S_ricciFlow (I := I) (s := s) (u := Set.univ) (t := t)
+  have hR := hasDerivWithinAt_normSq0S_of_metric_variation (I := I) (s := s) (u := Set.univ) (t := t)
     g gI gIDt ric (fun _ : Real => W) (fun _ : Fin s → Idx => (0 : Real)) 0 basis
     hinvAll hgI hTcomp hTdot hflow
   rw [hz, mul_zero, add_zero] at hR
@@ -647,7 +649,7 @@ private theorem reactOrtho {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     funext i j
     have h := (hinvAll t i j).1
     simp only [hON, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true] at h
+      Finset.mem_univ, ite_true] at h
     simpa [identityInvMetric, diagonalInvMetric] using h
   rw [hid] at hR
   exact hL.unique (hR.hasDerivAt (by simp))
@@ -656,7 +658,7 @@ private theorem ricReactAbs_le {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {s 
     (ric : Idx → Idx → Real) (cc : (Fin s → Idx) → Real) {Bq N : Real}
     (hBq0 : 0 ≤ Bq) (hN0 : 0 ≤ N)
     (hBq : ∀ i j, |ric i j| ≤ Bq) (hc : ∀ I0, |cc I0| ≤ N) :
-    |ricReactionContract (identityInvMetric (Idx := Idx)) ric cc cc| ≤
+    |metricVariationContract (identityInvMetric (Idx := Idx)) ric cc cc| ≤
       2 * ((Fintype.card (Fin s → Idx) : Real) ^ 2 *
         ((s : Real) * (Fintype.card Idx : Real) ^ 2 * Bq * N ^ 2)) := by
   classical
@@ -713,7 +715,7 @@ private theorem ricReactAbs_le {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {s 
       have hprod : |∏ α ∈ (Finset.univ : Finset (Fin s)).erase b,
           identityInvMetric (Idx := Idx) (I0 α) (J0 α)| ≤ 1 := by
         rw [Finset.abs_prod]
-        exact Finset.prod_le_one (fun α _ => hδ0 _ _) (fun α _ => hδ _ _)
+        exact Finset.prod_le_one₀ (fun α _ => hδ0 _ _) (fun α _ => hδ _ _)
       calc |∏ α ∈ (Finset.univ : Finset (Fin s)).erase b,
               identityInvMetric (Idx := Idx) (I0 α) (J0 α)| *
             |∑ p : Idx, ∑ q : Idx, identityInvMetric (Idx := Idx) (I0 b) p *
@@ -723,7 +725,7 @@ private theorem ricReactAbs_le {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {s 
         _ = (Fintype.card Idx : Real) ^ 2 * Bq := by ring
     refine (Finset.sum_le_sum fun b _ => hterm b).trans ?_
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-  unfold ricReactionContract
+  unfold metricVariationContract
   rw [abs_mul, abs_two]
   refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
   refine (Finset.abs_sum_le_sum_abs _ _).trans ?_

@@ -7,7 +7,7 @@ import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import Mathlib.Topology.Connected.LocallyPathConnected
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
 import Mathlib.Topology.Covering.Basic
-import Mathlib.Data.Finite.Defs
+import Mathlib.Basic.Finite.Defs
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

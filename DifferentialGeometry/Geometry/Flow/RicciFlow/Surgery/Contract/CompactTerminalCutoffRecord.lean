@@ -22,7 +22,7 @@ def CutoffParameters.withCoreProtectedRadius (p : CutoffParameters) : CutoffPara
 namespace GeometricCutoffRecord
 
 private theorem nonempty_of_coreEvent_heq
-    {P₀ P : OrientedThreeStage.{u}} {H : RetainedCoreHistory P₀} {i : Fin H.eventCount}
+    {P : OrientedThreeStage.{u}} {H : RetainedCoreHistory.{u}} {i : Fin H.eventCount}
     {Q : OrientedThreeStage.{u}} {a s : ℝ}
     (E : MetricCutCapEvent P Q a s)
     (hP : H.stage i.castSucc = P) (hQ : H.stage i.succ = Q)
@@ -115,7 +115,7 @@ namespace RetainedCoreHistory
 
 theorem exists_extension_geometricCutoffRecord_of_compact_low_components
     {P : OrientedThreeStage.{u}} {g : P.Metric}
-    (H : RetainedCoreHistory P) (A : InitialIdentification P g H.toHistory)
+    (H : RetainedCoreHistory.{u}) (A : InitialIdentification P g H.toHistory)
     (htime : H.time (Fin.last H.eventCount) = H.horizon)
     (D : OneStepIncoming.{u})
     (hstage : H.stage (Fin.last H.eventCount) = D.stage)
@@ -130,7 +130,7 @@ theorem exists_extension_geometricCutoffRecord_of_compact_low_components
       (hOld : E.old = E.transition.trace.retainedCore),
       E.incoming = D.slab ∧ HEq E.terminal D.terminal ∧
       IsEmpty E.transition.trace.tubes.Index ∧ E.transition.boundaryFrameReversing ∧
-      ∃ (K : RetainedCoreHistory P) (B : InitialIdentification P g K.toHistory)
+      ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P g K.toHistory)
         (i : Fin K.eventCount),
         A.IsPrefixOf B ∧ D.endTime < K.horizon ∧ K.eventCount = H.eventCount + 1 ∧
         K.time (Fin.last K.eventCount) = D.endTime ∧

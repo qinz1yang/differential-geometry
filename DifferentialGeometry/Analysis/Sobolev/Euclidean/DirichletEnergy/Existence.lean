@@ -57,7 +57,8 @@ private theorem gradient_coordinate_sum_le {u : E → ℝ}
   have hcoord (j : Fin d) : eLpNorm (fun x => hu.weakGrad x j) 2 (volume.restrict Ω) ≤
       ENNReal.ofReal ‖DeGiorgi.gradLpOfWitness hu‖ := by
     rw [← hnorm]
-    exact eLpNorm_mono_ae (Eventually.of_forall fun x => PiLp.norm_apply_le _ j)
+    exact eLpNorm_mono_ae (hu.weakGrad_component_memLp j).aestronglyMeasurable
+      (Eventually.of_forall fun x => PiLp.norm_apply_le _ j)
   calc
     _ ≤ ∑ _j : Fin d, ENNReal.ofReal ‖DeGiorgi.gradLpOfWitness hu‖ :=
       Finset.sum_le_sum fun j _ => hcoord j
@@ -135,7 +136,9 @@ private theorem affine_energy_compactness
       (fun _ => zero_le)
     intro n
     apply eLpNorm_mono_ae
+      (((hu i (φ n)).1.1.sub (hv i).1.1).aestronglyMeasurable)
     filter_upwards with x
+    change ‖(u (φ n) x i - b x i) - (v x i - b x i)‖ ≤ ‖u (φ n) x - v x‖
     have heq : (u (φ n) x i - b x i) - (v x i - b x i) = (u (φ n) x - v x) i := by
       simp only [PiLp.sub_apply]
       ring

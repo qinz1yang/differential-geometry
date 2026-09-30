@@ -57,11 +57,11 @@ theorem HasNoHandleLoopTheoremDisk.inter_pseudoCells_nonempty
   obtain ⟨r, hr, hΔsub, -⟩ := id hΔ
   have hpre : IsPreconnected Δ := by
     rw [← hr.image_eq]
-    exact (convex_stdSimplex ℝ (Fin 3)).isPreconnected.image r
+    exact (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin 3)).isPreconnected.image r
       hr.isPiecewiseAffineOn.continuousOn
   have hΔne : Δ.Nonempty := by
     rw [← hr.image_eq]
-    exact ⟨r _, mem_image_of_mem r (single_mem_stdSimplex ℝ (0 : Fin 3))⟩
+    exact ⟨r _, mem_image_of_mem r (Convexity.StdSimplex.single_mem_coordinateSet ℝ (0 : Fin 3))⟩
   obtain ⟨v, hv, hΔv⟩ := hd.exists_subset_handlePiece hpre hΔne (fun y hy => (hΔsub hy).1)
     (Set.disjoint_iff_inter_eq_empty.mpr (Set.not_nonempty_iff_eq_empty.mp hne))
   exact h7 v hv Δ hΔ hΔv

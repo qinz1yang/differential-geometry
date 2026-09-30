@@ -186,7 +186,7 @@ theorem secPull_triv_eq
     rw [rawRSTriv_base]
     exact hx
   unfold secTriv secModelPull
-  rw [dif_pos hx]
+  rw [dite_eq_left hx]
   exact Bundle.Trivialization.continuousLinearMapAt_symmL
     (rawRSTriv (E := E) (I := I) (M := M) r s α) hx' _
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]

@@ -53,12 +53,12 @@ open Classical in
 def IsPLThreeHandleAttachment (k : Fin 4) (L : Geometry.SimplicialComplex ℝ E)
     (C N : Set E) : Prop :=
   match k.val with
-  | 0 => IsPLCellAttachment 3 (stdSimplex ℝ (Fin 4)) ∅ L C N
-  | 1 => IsPLCellAttachment 3 (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
-      (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) L C N
-  | 2 => IsPLCellAttachment 3 (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
+  | 0 => IsPLCellAttachment 3 (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) ∅ L C N
+  | 1 => IsPLCellAttachment 3 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) L C N
+  | 2 => IsPLCellAttachment 3 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
       (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) L C N
-  | _ => IsPLCellAttachment 3 (stdSimplex ℝ (Fin 4)) (stdSimplexBoundary 3) L C N
+  | _ => IsPLCellAttachment 3 (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) (stdSimplexBoundary 3) L C N
 
 open Classical in
 def IsPLCellAttachmentWith (n : ℕ) (P B : Set F) (L : Geometry.SimplicialComplex ℝ E)

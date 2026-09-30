@@ -398,7 +398,7 @@ private theorem exists_finite_bumps
     by_cases hp : p = q'
     · subst p
       filter_upwards [(χ q').eventuallyEq_one] with x hx
-      simpa only [if_pos, Pi.one_apply] using hx
+      simpa only [ite_eq_left, Pi.one_apply] using hx
     · have hqNotSupport : q ∉ tsupport (χ p : M → Real) := by
         intro hqSupport
         have hqAvoid := (hχ p hqSupport).2
@@ -409,7 +409,7 @@ private theorem exists_finite_bumps
         apply Subtype.ext
         simpa only [q'] using hqp.symm
       filter_upwards [notMem_tsupport_iff_eventuallyEq.mp hqNotSupport] with x hx
-      simpa only [hp, if_false, Pi.zero_apply] using hx
+      simpa only [hp, ite_false, Pi.zero_apply] using hx
   have hall : ∀ᶠ x in 𝓝 q, ∀ p ∈ (Finset.univ : Finset ↥hs.toFinset),
       (χ p : M → Real) x = if p = q' then 1 else 0 :=
     (eventually_all_finset (Finset.univ : Finset ↥hs.toFinset)).2

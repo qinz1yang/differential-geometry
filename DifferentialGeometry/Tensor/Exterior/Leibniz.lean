@@ -238,7 +238,7 @@ private lemma addCasesSwapPerm_cast_sign (m n : ℕ) :
 
 private lemma units_neg_pow_smul (k₁ k₂ : ℕ) (x : N'') :
     ((-1 : ℤˣ) ^ k₁) • (((-1 : ℤˣ) ^ k₂) • x) = ((-1 : 𝕜) ^ (k₁ + k₂)) • x := by
-  rw [smul_smul, ← neg_one_pow_add, Units.smul_def]
+  rw [smul_smul, ← pow_add, Units.smul_def]
   rw [← Int.cast_smul_eq_zsmul (R := 𝕜)]
   rcases Nat.even_or_odd (k₁ + k₂) with h | h
   · have hz : ((-1 : ℤˣ) ^ (k₁ + k₂)) = 1 := h.neg_one_pow

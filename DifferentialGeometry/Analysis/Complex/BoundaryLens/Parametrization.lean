@@ -163,15 +163,15 @@ theorem lensAngleProfile_slope_bounds {ρ : ℝ} (hρ : 0 < ρ) (hρ1 : ρ ≤ 1
   have ho := interval_slope_bounds (fun t ht => lens_outer_derivative_bounds hρ hρ1 ht)
   have hjoin := (lens_angle_branches_endpoints hρ (by linarith : ρ < 2)).1
   by_cases hyh : y ≤ 1 / 2
-  · simp only [lensAngleProfile, if_pos hyh, if_pos (hxy.trans hyh)]
+  · simp only [lensAngleProfile, ite_eq_left hyh, ite_eq_left (hxy.trans hyh)]
     exact hi x ⟨hx.1, hxy.trans hyh⟩ y ⟨hy.1, hyh⟩ hxy
   · by_cases hxh : x ≤ 1 / 2
-    · rw [lensAngleProfile, if_neg hyh, lensAngleProfile, if_pos hxh]
+    · rw [lensAngleProfile, ite_eq_right hyh, lensAngleProfile, ite_eq_left hxh]
       have h₁ := hi x ⟨hx.1, hxh⟩ (1 / 2) (by norm_num) hxh
       have h₂ := ho (1 / 2) (by norm_num) y ⟨(le_of_not_ge hyh), hy.2⟩ (le_of_not_ge hyh)
       rw [hjoin] at h₁
       constructor <;> linarith [h₁.1, h₁.2, h₂.1, h₂.2]
-    · simp only [lensAngleProfile, if_neg hyh, if_neg hxh]
+    · simp only [lensAngleProfile, ite_eq_right hyh, ite_eq_right hxh]
       exact ho x ⟨le_of_not_ge hxh, hx.2⟩ y ⟨le_of_not_ge hyh, hy.2⟩ hxy
 
 theorem continuousOn_lensAngleProfile {ρ : ℝ} (hρ : 0 < ρ) (hρ1 : ρ ≤ 1) :
@@ -317,13 +317,13 @@ theorem exists_lens_angle_homeomorph {ρ : ℝ} (hρ : 0 < ρ) (hρ1 : ρ ≤ 1)
     rw [hF, hgp, hF]
   · intro t ht
     rw [hprofile t ⟨ht.1, by linarith [ht.2]⟩]
-    simp only [f, lensAngleProfile, if_pos ht.2]
+    simp only [f, lensAngleProfile, ite_eq_left ht.2]
   · intro t ht
     rw [hprofile t ⟨by linarith [ht.1], ht.2⟩]
     rcases ht.1.eq_or_lt with rfl | hlt
     · simp only [f, lensAngleProfile, le_refl, ↓reduceIte,
         (lens_angle_branches_endpoints hρ (by linarith : ρ < 2)).1]
-    · simp only [f, lensAngleProfile, if_neg (not_le.mpr hlt)]
+    · simp only [f, lensAngleProfile, ite_eq_right (not_le.mpr hlt)]
 
 end DifferentialGeometry.Analysis
 
@@ -396,13 +396,13 @@ theorem exp_lensAngleProfile_eq_normalize {ρ t : ℝ} (hρ : 0 < ρ) (hρ1 : ρ
   let β : ℝ → ℂ := fun s => circleMap 0 1 (2 * a + (2 * Real.pi - 4 * a) * s)
   have he : α 1 = β 0 ∧ β 1 = α 0 := lens_arc_endpoints hρ hρ1
   by_cases hhalf : t ≤ 1 / 2
-  · rw [lensAngleProfile, if_pos hhalf]
+  · rw [lensAngleProfile, ite_eq_left hhalf]
     have hj := joinedLoop_first (a := α) (b := β) he.2
       (show t ∈ Icc (0 : ℝ) (1 / 2) from ⟨ht.1, hhalf⟩)
     change lensBoundaryLoop ρ t = circleMap (-1) ρ (-a + 2 * a * (2 * t)) at hj
     rw [hj, show -a + 2 * a * (2 * t) = -a + 4 * a * t by ring]
     exact exp_arg_eq_normalize (inner_circle_offset_ne_zero hρ _)
-  · rw [lensAngleProfile, if_neg hhalf]
+  · rw [lensAngleProfile, ite_eq_right hhalf]
     have hj := joinedLoop_second (a := α) (b := β) he.1 he.2
       (show t ∈ Icc (1 / 2 : ℝ) 1 from ⟨le_of_not_ge hhalf, ht.2⟩)
     change lensBoundaryLoop ρ t =

@@ -13,14 +13,14 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem exists_disk_pair_of_circle_collar {T L Δ U : Set E3}
     (hT : IsPLTorus T) (hL : IsClosed L)
-    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hΔT : Δ ⊆ T) (hmeet : Δ ∩ L = r '' stdSimplexBoundary 2)
     (hcollar : HasPLCircleCollar L (r '' stdSimplexBoundary 2))
     (hU : IsOpen U) (hΔU : Δ ⊆ U)
     (htrace : U ∩ L ∩ T ⊆ r '' stdSimplexBoundary 2) :
     ∃ (D₁ D₂ : Set E3) (q₁ q₂ : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
-      IsPLHomeomorphOn q₂ (stdSimplex ℝ (Fin 3)) D₂ ∧
+      IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn q₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂ ∧
       Δ ⊆ D₁ \ q₁ '' stdSimplexBoundary 2 ∧ Δ ⊆ D₂ \ q₂ '' stdSimplexBoundary 2 ∧
       D₁ ∩ D₂ = Δ ∧ D₁ ∩ T = Δ ∧ D₂ ⊆ T ∧ D₁ \ Δ ⊆ L ∧
       D₁ ∪ D₂ ⊆ (T ∪ L) ∩ U ∧ D₁ ∪ D₂ ∈ 𝓝ˢ[T ∪ L] Δ := by

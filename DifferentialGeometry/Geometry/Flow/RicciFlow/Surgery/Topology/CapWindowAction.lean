@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.EventContinuation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.EventContinuation
 import Mathlib.Topology.Order.LeftRight
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.Density
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.Density
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIveyPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapWindows
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowEvolution
@@ -12,7 +12,7 @@ import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.CarrierIntegrability
 import Mathlib.Topology.UniformSpace.OfCompactT2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardActionComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowRadius
 
 set_option autoImplicit false
@@ -2522,11 +2522,11 @@ theorem exists_uniform_continuousAt_spatial_regularizedCost_at_event
   · change Tendsto _ (𝓝[<] v) (𝓝 _)
     simpa only [le_refl, ite_true] using hleft.congr' (by
       filter_upwards [self_mem_nhdsWithin] with w hw
-      exact (if_pos (show w ≤ v from le_of_lt hw)).symm)
+      exact (ite_eq_left (show w ≤ v from le_of_lt hw)).symm)
   · change Tendsto _ (𝓝[>] v) (𝓝 _)
     simpa only [le_refl, ite_true] using hright.congr' (by
       filter_upwards [self_mem_nhdsWithin] with w hw
-      exact (if_neg (show ¬ w ≤ v from not_le_of_gt hw)).symm)
+      exact (ite_eq_right (show ¬ w ≤ v from not_le_of_gt hw)).symm)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
@@ -2630,10 +2630,10 @@ theorem exists_uniform_continuousAt_regularizedSpatialCost
       split_ifs with hwv
       · apply H.regularizedSpatialCost_eq_of_mem_stageDomain
         apply (H.mem_stageDomain_iff ⟨t.val - w.val ^ 2, hphysical w⟩ i.succ).mpr
-        simpa only [if_pos hwv] using hh
+        simpa only [ite_eq_left hwv] using hh
       · apply H.regularizedSpatialCost_eq_of_mem_stageDomain
         apply (H.mem_stageDomain_iff ⟨t.val - w.val ^ 2, hphysical w⟩ i.castSucc).mpr
-        simpa only [if_neg hwv] using hh
+        simpa only [ite_eq_right hwv] using hh
     exact (continuousAt_congr heq).mpr (hcont.comp continuous_subtype_val.continuousAt)
   · let s : Icc (0 : ℝ) H.horizon := ⟨t.val - v.val ^ 2, hphysical v⟩
     let first := H.activeStage s

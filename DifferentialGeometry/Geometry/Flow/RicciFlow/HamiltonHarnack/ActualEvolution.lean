@@ -1699,7 +1699,7 @@ private theorem metricTraceFirstTwoField_apply_orthonormal_pre
       (fun i j => if i = j then (1 : Real) else 0) hinv]
   unfold metricTrace0S2InBasis
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
 private theorem quadTraceProductField_apply_orthonormal
     {n : Nat}
@@ -2043,7 +2043,7 @@ private theorem metricTraceFirstTwoField_apply_orthonormal
       (fun i j => if i = j then (1 : Real) else 0) hinv]
   unfold metricTrace0S2InBasis
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
 private theorem hamiltonCurvatureRicciRoughLaplacianField_apply_orthonormal
     [T2Space M]
@@ -4368,7 +4368,7 @@ private theorem nablaRicCompInCoordinateFrame_contMDiffAt
             (fun y : M => ricciCompInFrame (I := I) S frame p.1 y i j)
             p.2 (frame d p.2))
         ((t : Real), x) := by
-    refine DifferentialGeometry.prodExtDerivAt_two
+    refine DifferentialGeometry.contMDiffAt_partial_mvfderiv_apply_two
       (I := I)
       (F := fun p : Real × M =>
         ricciCompInFrame (I := I) S frame p.1 p.2 i j)
@@ -6986,7 +6986,7 @@ private theorem tensor04At_apply_ricciEnd_slot_orthonormal
     rw [basis_repr_eq_sum_inv_inner (I := I) g x basis
       (fun i j => if i = j then (1 : Real) else 0) hinv]
     simp only [ricciEnd_inner, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have hend :
       ricciEndAt (I := I) g Ric (basis (slots r)) =
         ∑ p : Idx,
@@ -7057,7 +7057,7 @@ private theorem hamiltonRmRoughLaplacianField_eq_component_orthonormal
       (I := I) (S.base.metric t) basis horth]
   unfold metricTrace0S2InBasis identityInvMetric diagonalInvMetric
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
 private theorem hamiltonNablaPTimeVariationField_apply_orthonormal
     [T2Space M]
@@ -7097,7 +7097,7 @@ private theorem hamiltonNablaPTimeVariationField_apply_orthonormal
     connectionVariationPThirdField_apply_basis
       (I := I) g basis (fun i j => if i = j then (1 : Real) else 0) hinv]
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
 private theorem hamiltonDivPTimeDerivativeField_apply_orthonormal
     [T2Space M]
@@ -7126,7 +7126,7 @@ private theorem hamiltonDivPTimeDerivativeField_apply_orthonormal
       (basis a) (basis b)
   rw [htrace]
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   rw [Finset.sum_comm]
 
 private theorem uhlenbeck_time_derivative_trace_expand
@@ -7214,7 +7214,7 @@ private theorem tensor02At_apply_ricciEnd_first_orthonormal
     rw [basis_repr_eq_sum_inv_inner (I := I) g x basis
       (fun i j => if i = j then (1 : Real) else 0) hinv]
     simp only [ricciEnd_inner, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have hend :
       ricciEndAt (I := I) g Ric (basis a) =
         ∑ p : Idx,
@@ -7269,7 +7269,7 @@ private theorem tensor02At_apply_ricciEnd_second_orthonormal
     rw [basis_repr_eq_sum_inv_inner (I := I) g x basis
       (fun i j => if i = j then (1 : Real) else 0) hinv]
     simp only [ricciEnd_inner, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have hend :
       ricciEndAt (I := I) g Ric (basis b) =
         ∑ p : Idx,
@@ -7378,7 +7378,7 @@ private theorem hamiltonDivPAt_apply_ricciEnd_first_orthonormal
     (I := I) g basis (fun i j => if i = j then (1 : Real) else 0) hinv
       (basis p) (basis b)
   simpa only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true] using hdiv
+    Finset.mem_univ, ite_true] using hdiv
 
 private theorem hamiltonDivPAt_apply_ricciEnd_second_orthonormal
     [T2Space M]
@@ -7409,7 +7409,7 @@ private theorem hamiltonDivPAt_apply_ricciEnd_second_orthonormal
     (I := I) g basis (fun i j => if i = j then (1 : Real) else 0) hinv
       (basis a) (basis p)
   simpa only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true] using hdiv
+    Finset.mem_univ, ite_true] using hdiv
 
 private theorem hamiltonDivPTimeDerivativeField_add_ricciEnd_eq_uhlenbeck_trace_of_orthonormal
     [T2Space M]
@@ -7667,7 +7667,7 @@ private theorem metricRicciTimeDerivativeField_add_ricciEnd_eq_heat_of_orthonorm
     rw [hamiltonCurvatureRicciField_apply_basis
       (I := I) g basis (fun i j => if i = j then (1 : Real) else 0) hinv]
     simp only [hamiltonCurvatureRicciComponent, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [Finset.sum_comm]
   have hsquare :
       hamiltonRicciSquareField (I := I) g x
@@ -7680,7 +7680,7 @@ private theorem metricRicciTimeDerivativeField_add_ricciEnd_eq_heat_of_orthonorm
     rw [hamiltonRicciSquareField_apply_basis
       (I := I) g basis (fun i j => if i = j then (1 : Real) else 0) hinv]
     simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
   have hfirst := tensor02At_apply_ricciEnd_first_orthonormal
     (I := I) g basis horth (metricRicci (I := I) (M := M) g x)
       (metricRicci (I := I) (M := M) g x) a b
@@ -7981,7 +7981,7 @@ private theorem metricNablaRoughRicciField_apply_orthonormal
       (fun i j => if i = j then (1 : Real) else 0) hinv]
   unfold metricTrace0S2InBasis
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply]
   congr 1
@@ -8015,7 +8015,7 @@ private theorem hamiltonNablaRicciSquareField_apply_orthonormal
       (fun i j => if i = j then (1 : Real) else 0) hinv]
   unfold metricTrace0S2InBasis
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   refine Finset.sum_congr rfl fun d _ => ?_
   rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
     Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply]
@@ -8086,7 +8086,7 @@ private theorem hamiltonCurvatureRicciInnerNablaField_apply_orthonormal
       (fun i j => if i = j then (1 : Real) else 0) hinv]
   unfold metricTrace0S2InBasis
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   refine Finset.sum_congr rfl fun d _ => ?_
   rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,
     Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply]
@@ -8158,7 +8158,7 @@ private theorem hamiltonNablaCurvatureRicciField_apply_orthonormal
       (fun i j => if i = j then (1 : Real) else 0) hinv]
   unfold metricTrace0S2InBasis
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   have heval : forall e : Fin n,
       (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (traceNablaShuffle 2)
           (hamiltonCurvatureRicciInnerNablaField (I := I) g)) x
@@ -8918,7 +8918,7 @@ private theorem hamiltonDivPComponentOfSolution_eq_hamiltonDivPAt_orthonormal
   unfold hamiltonDivPComponentOfSolution hamiltonNablaPComponentOfSolution
   simp_rw [hamiltonNablaPField_apply]
   simp only [Finset.sum_sub_distrib, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   congr 1
   apply Finset.sum_congr rfl
   intro i _
@@ -9264,7 +9264,7 @@ private theorem hamilton_contracted_curvature_derivative_components_of_solution
     (metricNablaRic (I := I) (M := M) (S.base.metric t) x)
     hcore.1 hcore.2.1 hcore.2.2 (basis r) (basis q) (basis p)
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true, hamiltonP_apply] at hDiv
+    Finset.mem_univ, ite_true, hamiltonP_apply] at hDiv
   rw [metricNablaRic_last_two_symm (I := I) (M := M) (S.base.metric t) x
     (basis q) (basis r) (basis p),
     metricNablaRic_last_two_symm (I := I) (M := M) (S.base.metric t) x
@@ -9356,7 +9356,7 @@ private theorem hamilton_differentiated_curvature_divergence_components_of_solut
     fixedNabla2Rm fixedNabla2Ric hSecond hRmSymm hRicTrace
     (basis e) (basis b) (basis a)
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true] at hDiv
+    Finset.mem_univ, ite_true] at hDiv
   simpa [hamiltonNabla2RmComponentOfSolution,
     hamiltonNablaPComponentOfSolution, fixedNabla2Rm, fixedNabla2Ric,
     Tensor0SBundle.tensor0S_curry_apply_cons,
@@ -9973,7 +9973,7 @@ private theorem hamiltonCurvatureRicciAt_hasDerivWithinAt_oneTimeUhlenbeck_raw
           (rawRmDt c d * Ric c d + R a c d b * ricDt c d))
     simp only [hdelta, hRmAt, hRicAt, Pi.mul_apply, ite_mul,
       one_mul, zero_mul, Finset.sum_add_distrib, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true, Finset.mul_sum]
+      Finset.mem_univ, ite_true, Finset.mul_sum]
     rw [hRawRmSwap, hRicDtSwap]
     ring_nf
   · intro s _hs
@@ -10985,7 +10985,7 @@ private theorem tensor0SAt_apply_ricciEnd_slot_orthonormal
     rw [basis_repr_eq_sum_inv_inner (I := I) g x basis
       (fun i j => if i = j then (1 : Real) else 0) hinv]
     simp only [ricciEnd_inner, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have hend :
       ricciEndAt (I := I) g Ric (basis (slots r)) =
         ∑ p : Idx,
@@ -13123,7 +13123,7 @@ theorem hamiltonMComponent_eq_hamiltonMAt_orthonormal
       (S.family.metric clock.time) basis
       (fun i j => if i = j then (1 : Real) else 0) hinv]
     simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     rw [Finset.sum_comm]
   rw [hcurv]
 

@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.ChartBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.SummandBound
+open DifferentialGeometry.TensorMetric
+  (fiberNormSqSummand
+    riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

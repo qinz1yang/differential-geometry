@@ -359,7 +359,7 @@ private theorem exists_contDiffOn_ae_eq_of_forall_memWkp_two_of_neZero
     have h_lift : gΩ ⟨z, hz_Ω⟩ = frep x (z : EuN) :=
       Set.iUnionLift_of_mem (S := S) (T := (Ω : Set EuN)) ⟨z, hz_Ω⟩ hz
     rw [hu_smooth_def]
-    simp only [hz_Ω, dif_pos]
+    simp only [hz_Ω, dite_eq_left]
     exact h_lift
   refine ⟨u_smooth, ?_, ?_⟩
   · refine contDiffOn_of_locally_contDiffOn ?_

@@ -70,9 +70,9 @@ theorem signPairs_fst_ne_snd {α : Type*} : ∀ (l : List α), l.Nodup → ∀ p
 
 theorem abs_mul_ite_neg (x : ℝ) : |x| * (if x < 0 then (-1 : ℝ) else 1) = x := by
   by_cases h : x < 0
-  · rw [if_pos h, abs_of_neg h]
+  · rw [ite_eq_left h, abs_of_neg h]
     ring
-  · rw [if_neg h, abs_of_nonneg (le_of_not_gt h), mul_one]
+  · rw [ite_eq_right h, abs_of_nonneg (le_of_not_gt h), mul_one]
 
 theorem even_card_of_prod_neg_pos {α : Type*} (s : Finset α) (D : α → ℝ)
     (h : 0 < ∏ i ∈ s, D i) (hs : ∀ i ∈ s, D i < 0) : Even s.card := by

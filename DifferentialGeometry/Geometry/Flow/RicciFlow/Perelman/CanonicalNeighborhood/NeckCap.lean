@@ -174,9 +174,9 @@ def localCapOfCompactSide (nk : StrongNeck S eps v t)
     { core := K
       core_inside := ?_
       center_inside := ?_
-      core_model := core
+      coreModel := core
       tube := nk.map '' (Set.univ ×ˢ Set.Icc (0 : ℝ) 1)
-      tube_map := nk.map
+      tubeMap := nk.map
       tube_domain := nk.tube_window_subset_source
       tube_eq := rfl
       union_eq := rfl
@@ -186,7 +186,7 @@ def localCapOfCompactSide (nk : StrongNeck S eps v t)
       boundary_eq := ?_
       boundaries_disjoint := ?_
       chain := OrderedNeckChain.single nk
-      core_boundary_map := fun z => nk.map (z, 0)
+      coreBoundaryMap := fun z => nk.map (z, 0)
       core_boundary_eq := fun _ => rfl }
   · change K.carrier ⊆ interior (K.carrier ∪ nk.map '' (Set.univ ×ˢ Set.Icc (0 : ℝ) 1))
     rw [hU, (d b).interior_closure_compactSide, hK']
@@ -218,7 +218,7 @@ theorem localCapOfCompactSide_selected_neck (nk : StrongNeck S eps v t)
     let cap := nk.localCapOfCompactSide ψ ho core p hp
     cap.core.carrier = closure
         (nk.bicollarSides ψ (axialZero (inv_pos.mpr nk.eps_pos))).compactSide ∧
-      cap.tube_map = nk.map ∧ cap.chain.count = 1 ∧
+      cap.tubeMap = nk.map ∧ cap.chain.count = 1 ∧
       (∀ j : Fin cap.chain.count, cap.chain.centers j = v ∧ cap.chain.necks j = nk ∧
         cap.chain.lo j = 0 ∧ cap.chain.hi j = 1) ∧ v ∈ cap.tube := by
   refine ⟨rfl, rfl, rfl, fun _ => ⟨rfl, rfl, rfl, rfl⟩, ?_⟩
@@ -236,7 +236,7 @@ theorem exists_localCap_of_capCore (nk : StrongNeck S eps v t)
       cap.core.carrier = closure
         (nk.bicollarSides ψ (axialZero (inv_pos.mpr nk.eps_pos))).compactSide ∧
       cap.tube = neck.map '' (Set.univ ×ˢ Set.Icc (0 : ℝ) 1) ∧
-      cap.tube_map = neck.map ∧
+      cap.tubeMap = neck.map ∧
       ∃ j : Fin cap.chain.count,
         cap.chain.centers j = v ∧ HEq (cap.chain.necks j) neck ∧
         cap.chain.lo j = 0 ∧ cap.chain.hi j = 1 ∧ v ∈ cap.tube := by
@@ -337,7 +337,7 @@ theorem exists_localCap_of_mem_compactSide (nk : StrongNeck S eps v t)
       cap.core.carrier = closure
         (nk.bicollarSides ψ (axialZero (inv_pos.mpr nk.eps_pos))).compactSide ∧
       cap.tube = neck.map '' (Set.univ ×ˢ Set.Icc (0 : ℝ) 1) ∧
-      cap.tube_map = neck.map ∧
+      cap.tubeMap = neck.map ∧
       ∃ j : Fin cap.chain.count,
         cap.chain.centers j = v ∧ HEq (cap.chain.necks j) neck ∧
         cap.chain.lo j = 0 ∧ cap.chain.hi j = 1 ∧ v ∈ cap.tube := by

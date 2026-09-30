@@ -25,14 +25,14 @@ theorem exists_cap_inner_boundary_to_cut_neck_level_annulus_and_capture_toleranc
             10000 / Real.sqrt (S.scalar t x) ≤ metricDistance (S.base.metric t) x z),
           witness.alternative = CanonicalAlternative.cap cap depth →
           ∀ (nk : SpatialNeck (S.base.metric t) eps p) (u v : Sphere 2) (a : ℝ),
-            |a| ≤ 1 → nk.map (u, a) = cap.tube_map (v, 0) →
+            |a| ≤ 1 → nk.map (u, a) = cap.tubeMap (v, 0) →
             ∃ (b : ℝ) (eta : Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2)
               (f : Sphere 2 → ℝ) (A : PartialDiffeomorph IC I3 Cylinder M ∞),
               (b = -2 ∨ b = 2) ∧ ContMDiff I2 𝓘(ℝ) ∞ f ∧
               (∀ z, |f z - a| < 1 / 10) ∧ f u = a ∧
               univ ×ˢ Icc (0 : ℝ) 1 ⊆ A.source ∧
               (∀ z t, A (z, t) = nk.map (z, f z + (b - f z) * t)) ∧
-              (∀ z, A (z, 0) = cap.tube_map (eta z, 0)) ∧
+              (∀ z, A (z, 0) = cap.tubeMap (eta z, 0)) ∧
               (∀ z, A (z, 1) = nk.map (z, b)) ∧
               IsCompact (A '' (univ ×ˢ Icc (0 : ℝ) 1)) ∧
               A '' (univ ×ˢ Icc (0 : ℝ) 1) ∩ cap.core.carrier = frontier cap.core.carrier ∧

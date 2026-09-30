@@ -65,11 +65,11 @@ theorem exists_compact_flow_beyond_control_time (g₀ : SmoothRiemannianMetric I
     if ht : t ∈ Ico 0 Tsup then (flowAt t ht).S.base.metric t else g₀
   have hagree (t : ℝ) (ht : t ∈ Ico 0 Tsup) {τ : ℝ} (P : FlowTo g₀ τ) (htτ : t < τ) :
       g t = P.S.base.metric t := by
-    simp only [g, dif_pos ht]
+    simp only [g, dite_eq_left ht]
     exact flow_to_eq (flowAt t ht) P ht.1 (hltAt t ht) htτ
   have hzero : g 0 = g₀ := by
     have ht : (0 : ℝ) ∈ Ico 0 Tsup := ⟨le_rfl, hTsup⟩
-    simp only [g, dif_pos ht]
+    simp only [g, dite_eq_left ht]
     exact (flowAt 0 ht).start
   have hjoint : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞

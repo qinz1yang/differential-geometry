@@ -520,7 +520,8 @@ theorem bonnet_myers_diameter_of_ricci_bound
     (hEnorm : IsMetricNorm (I := I) (M := M) g) :
     Metric.ediam (Set.univ : Set M) ≤
       ENNReal.ofReal (Real.pi / Real.sqrt K) := by
-  refine Metric.ediam_le ?_
+  refine @Metric.ediam_le M Set.univ
+    PseudoEMetricSpace.toUniformSpace.toTopologicalSpace inferInstance _ ?_
   intro x _ y _
   exact bonnet_myers_pairwise_edist_le_of_ricci_bound (E := E) g hdim hK hRic hEnorm x y
 

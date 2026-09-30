@@ -18,7 +18,7 @@ private theorem continuousWithinAt_of_local_eq
   let F : M → ℝ := fun y => if hy : y ∈ U then g ⟨y, hy⟩ else 0
   have hcomp : F ∘ (Subtype.val : U → M) = g := by
     funext y
-    simp only [Function.comp_apply, F, dif_pos y.2]
+    simp only [Function.comp_apply, F, dite_eq_left y.2]
   have hccomp : ContinuousAt (F ∘ (Subtype.val : U → M)) ⟨q, hqU⟩ :=
     hcomp.symm ▸ hg.continuousAt
   have hc : ContinuousAt F q :=
@@ -70,7 +70,7 @@ theorem halfClosedDerivNorm_of_mem
     h.halfClosedDerivNorm gInf gRef m q =
       Real.sqrt (Tensor0SBundle.normSq0S gRef q (m + 2)
         (h.halfClosedCovDeriv gRef m q hq - metricCovDeriv gInf gRef m q)) := by
-  simp only [halfClosedDerivNorm, dif_pos hq]
+  simp only [halfClosedDerivNorm, dite_eq_left hq]
 
 theorem halfClosedDerivNorm_nonneg
     (h : SmoothRiemannianMetricOn (I := I.prod 𝓘(ℝ)) ((univ : Set S) ×ˢ Ioc (-A) 0))
@@ -94,7 +94,7 @@ theorem halfClosedDerivNorm_congr
     exact congrArg (fun C : Tensor0SBundle.Tensor0SSpace (m + 2) (I.prod 𝓘(ℝ)) q =>
       Real.sqrt (Tensor0SBundle.normSq0S gRef q (m + 2) (C - metricCovDeriv gInf gRef m q)))
       (h₁.halfClosedCovDeriv_congr h₂ heq gRef m q hq)
-  · simp only [halfClosedDerivNorm, dif_neg hq]
+  · simp only [halfClosedDerivNorm, dite_eq_right hq]
 
 theorem halfClosedDerivNorm_eq_local
     (h : SmoothRiemannianMetricOn (I := I.prod 𝓘(ℝ)) ((univ : Set S) ×ˢ Ioc (-A) 0))
@@ -114,7 +114,7 @@ theorem halfClosedDerivNorm_eq_local
     congrArg₂ (· - ·) hj hi.symm
   exact (congrArg (fun C : Tensor0SBundle.Tensor0SSpace (m + 2) (I.prod 𝓘(ℝ)) q =>
     Real.sqrt (Tensor0SBundle.normSq0S gRef q (m + 2) C)) hd).trans
-      (congrArg Real.sqrt (normSq0S_restrictOpen_apply gRef U (m + 2) ⟨q, hqU⟩ _).symm)
+      (congrArg Real.sqrt (Tensor0SBundle.normSq0S_restrictOpen_apply gRef U (m + 2) ⟨q, hqU⟩ _).symm)
 
 theorem continuousOn_halfClosedDerivNorm
     (h : SmoothRiemannianMetricOn (I := I.prod 𝓘(ℝ)) ((univ : Set S) ×ˢ Ioc (-A) 0))

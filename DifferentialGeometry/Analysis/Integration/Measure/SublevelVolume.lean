@@ -235,7 +235,6 @@ theorem map_riemannianVolumeMeasure_sublevelMetric [T2Space M] [SigmaCompactSpac
   have hae := measure_eq_zero_iff_ae_notMem.mp (riemannianVolumeMeasure_levelSet_eq_zero I g f a hf hreg)
   filter_upwards [hae] with x hx
   apply propext
-  change (f x < a) ↔ f x ≤ a
   exact ⟨le_of_lt, fun h => lt_of_le_of_ne h hx⟩
 
 theorem integral_sublevelMetric_eq_setIntegral [T2Space M] [SigmaCompactSpace M]

@@ -40,12 +40,12 @@ theorem exists_returning_crosscut_disk_avoiding_hole
 theorem IsPLHomeomorphOn.exists_returning_crosscut_disk_avoiding_hole
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {D C A : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hC : IsPLBall 2 C) (hCD : C ⊆ D) {γ : ℝ → E}
     (hγ : IsPLHomeomorphOn γ (Icc 0 1) A) (hAD : A ⊆ D)
     (hends : A ∩ r '' stdSimplexBoundary 2 = {γ 0, γ 1}) (hCA : Disjoint C A) :
     ∃ (F B : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
       F ⊆ D ∧ Disjoint F C ∧ q '' stdSimplexBoundary 2 = A ∪ B ∧
       F ∩ r '' stdSimplexBoundary 2 = B := by
   have hD : IsPLBall 2 D := ⟨r, hr⟩

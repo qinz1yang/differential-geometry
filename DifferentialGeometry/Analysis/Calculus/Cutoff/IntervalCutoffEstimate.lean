@@ -87,7 +87,7 @@ theorem exists_uniform_smooth_interval_cutoff :
   have hrb (t : ℝ) : 0 ≤ r t ∧ r t ≤ 1 :=
     ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩
   refine ⟨χ, hl.mul hr, fun t ↦ ⟨mul_nonneg (hlb t).1 (hrb t).1,
-    mul_le_one₀ (hlb t).2 (hrb t).1 (hrb t).2⟩, ?_, ?_, ?_⟩
+    (mul_le_of_le_one_left (hrb t).1 (hlb t).2).trans (hrb t).2⟩, ?_, ?_, ?_⟩
   · apply closure_minimal _ isClosed_Icc
     intro t ht
     by_contra hout

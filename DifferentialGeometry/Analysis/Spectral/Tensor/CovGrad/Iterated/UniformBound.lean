@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.UniformBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
+
 noncomputable section
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle

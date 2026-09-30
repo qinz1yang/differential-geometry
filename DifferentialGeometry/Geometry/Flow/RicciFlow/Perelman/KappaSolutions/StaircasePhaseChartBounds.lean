@@ -532,7 +532,7 @@ theorem of_boundedGeometryNormalChartData_hasFullRadiusChartBounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalChartData (I := I) X hd) :
-    (SeqBallNormalChartData.of_boundedGeometryNormalChartData (I := I) d).HasFullRadiusChartBounds
+    (SeqBallNormalChartData.ofBoundedGeometryNormalChartData (I := I) d).HasFullRadiusChartBounds
       (fun q => d.metricC q) := by
   refine ⟨fun q => d.metricC_nonneg q, ?_⟩
   intro j x
@@ -548,7 +548,7 @@ theorem of_boundedGeometryNormalChartData_hasQuarterRadiusChartBounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalChartData (I := I) X hd) :
-    (of_boundedGeometryNormalChartData (I := I) d).HasQuarterRadiusChartBounds
+    (ofBoundedGeometryNormalChartData (I := I) d).HasQuarterRadiusChartBounds
       (fun q => d.metricC q) := by
   refine ⟨fun q => d.metricC_nonneg q, ?_⟩
   intro j x
@@ -567,10 +567,10 @@ theorem of_boundedGeometryNormalChartData_hasQuarterRadiusChartBoundsOnBall
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalChartData (I := I) X hd) (R : Real) :
-    (of_boundedGeometryNormalChartData (I := I) d).HasQuarterRadiusChartBoundsOnBall
+    (ofBoundedGeometryNormalChartData (I := I) d).HasQuarterRadiusChartBoundsOnBall
       R (fun q => d.metricC q) :=
   hasQuarterRadiusChartBoundsOnBall_of_hasQuarterRadiusChartBounds
-    (of_boundedGeometryNormalChartData (I := I) d) (fun q => d.metricC q)
+    (ofBoundedGeometryNormalChartData (I := I) d) (fun q => d.metricC q)
     (of_boundedGeometryNormalChartData_hasQuarterRadiusChartBounds (I := I) d) R
 
 omit [CompleteSpace E] in

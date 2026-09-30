@@ -235,7 +235,7 @@ theorem exists_curvatureOperatorImageAt_finrank_eq_on_ancient_of_complete_existe
   obtain ⟨r, _, hr⟩ := hinterval a b hb
   exact (hr t ⟨hat, htb⟩ x).trans ((hr s ⟨has, hsb⟩ x₀).symm.trans (hbase s hsbase x₀))
 
-theorem exists_positive_surface_global_product_of_curvatureOperator_rank_one_of_complete_ancient_existence_and_uniqueness
+theorem exists_positive_surface_product_of_rank_one_of_complete_ancient_existence_and_uniqueness
     [SimplyConnectedSpace M]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {T : ℝ} (hreg : Iio T ⊆ D.regular)

@@ -262,9 +262,7 @@ private theorem mvfderiv_tangentConstAt_eq_fderiv_writtenInExtChartAt
     have happ := congrArg (fun L => L vModel) hlin
     unfold tangentConstAt
     rw [TensorLieDeriv.tangentConstInChart_apply]
-    convert happ using 1
-    dsimp only [z, vModel]
-    rfl
+    exact happ
   have hwithin_to_fderiv :
       fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
           (Set.range I) z vModel =

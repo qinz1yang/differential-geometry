@@ -121,11 +121,11 @@ theorem exists_isPiecewiseAffineOn_prism_of_partition {f g : ℝ → F} {n : ℕ
       have hGmem : ∀ z ∈ A, G z = Φ z := by
         intro z hz
         rw [hGdef]
-        exact if_pos hz
+        exact ite_eq_left hz
       have hGnot : ∀ z ∉ A, G z = Ψ z := by
         intro z hz
         rw [hGdef]
-        exact if_neg hz
+        exact ite_eq_right hz
       refine ⟨G, ?_, ?_, ?_, ?_, ?_, ?_⟩
       · rw [← hAB]
         exact hPA.piecewise_of_isClosed (isPiecewiseAffineOn_prismStripMap hlt _ _ _ _)

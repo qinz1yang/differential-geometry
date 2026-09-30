@@ -229,9 +229,9 @@ theorem weightedInvGramOnEuclid_family_memLp_top
     (hΩs : closure Ω ⊆ chartTargetEuclid (I := I) α) (i j : Fin (Module.finrank ℝ E)) (μ : Measure (ℝ × EuclN)) :
     MemLp (fun p : ℝ × EuclN => weightedInvGramOnEuclid (I := I) (G.metric p.1) α i j p.2) ∞
       (μ.restrict (J ×ˢ Ω)) := by
-  exact MemLp.mul' (p := ∞) (q := ∞) (r := ∞)
-    (invGramOnEuclid_family_memLp_top hG hJc hJ α hΩm hΩc hΩs i j μ)
+  exact MemLp.fun_mul (p := ∞) (q := ∞) (r := ∞)
     (densityOnEuclid_family_memLp_top hG hJc hJ α hΩm hΩc hΩs μ)
+    (invGramOnEuclid_family_memLp_top hG hJc hJ α hΩm hΩc hΩs i j μ)
 
 theorem chartCoeffOnE_comp_toEuclidean_symm_family_memLp_top
     {Z : Type*} [TopologicalSpace Z] [MeasurableSpace Z] [OpensMeasurableSpace Z]

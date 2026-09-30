@@ -135,7 +135,8 @@ private theorem memLp_cutoff_gradient_flux_error
     rw [← Measure.prod_restrict] at h
     exact h.mono_measure (Measure.prod_mono hμ le_rfl)
   intro j
-  exact memLp_finsetSum Finset.univ fun i _ => hV.mul (r := 2) (hcoeff i j)
+  exact memLp_finsetSum Finset.univ fun i _ =>
+    (hcoeff i j).fun_mul (r := 2) hV
 
 private theorem exists_local_dirichlet_main_flux_dual
     (q : SmoothRiemannianMetric I_hs M)

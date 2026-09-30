@@ -61,7 +61,7 @@ private lemma mvfderiv_apply_scalar (f : M → ℝ) (x : M) (v : TangentSpace I 
       tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ)) (f x)
         (mfderiv I 𝓘(ℝ) f x v) := by
   simp only [mvfderiv, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk]
+  simp only [NormedSpace.fromTangentSpace]
   rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]

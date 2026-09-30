@@ -164,7 +164,7 @@ variable [NeZero (Module.finrank ℝ E)]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-def staticScalarNormalized_baseInjBound [ConnectedSpace M]
+def staticScalarNormalizedBaseInjBound [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M) (hdim : Module.finrank ℝ E = 2)
     (hnonneg : ∀ z, 0 ≤ metricScalarAt (I := I) g z)
     (hsec : ∀ z, metricRm04At (I := I) g z ∈
@@ -348,7 +348,7 @@ theorem exists_static_surface_blowup_with_baseInjBound [ConnectedSpace M]
   · simpa only [Function.comp_def] using hexpand.comp hshift
   · simpa only [Function.comp_def] using hdist.comp hshift
   · simpa only [Function.comp_def] using hscaled.comp hshift
-  · exact ⟨staticScalarNormalized_baseInjBound g hdim hnonneg hsec kappa hkappa hnc
+  · exact ⟨staticScalarNormalizedBaseInjBound g hdim hnonneg hsec kappa hkappa hnc
       (fun i => x (N + i)) (fun i => r (N + i)) (fun i => hQ (N + i))
       (fun i => hlocal (N + i)) (fun i => hN (N + i) (Nat.le_add_right N i))⟩
   · intro i

@@ -184,7 +184,7 @@ theorem exists_saddle_minimum_common_coordinates {f : M → ℝ}
         (if i then z i 0 ^ 2 + z i 1 ^ 2 else z i 1 ^ 2 - z i 0 ^ 2) / 2 :=
       (congrArg f (hχ'z i)).symm.trans (hnormal i (z i) (hzχ' i))
     rw [hnormal i _ ht, hzval]
-    cases i <;> simp only [Bool.false_eq_true, if_false, if_true,
+    cases i <;> simp only [Bool.false_eq_true, ite_false, ite_true,
       Pi.smul_apply, smul_eq_mul] <;> ring
   let B := Icc (s₀ - δ) (s₀ + δ) ×ˢ Icc (0 : ℝ) 1
   let K := d '' B

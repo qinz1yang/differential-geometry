@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Chart.Norm
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.CompletenessLp
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -95,11 +95,11 @@ lemma chartDensitySupPou_nonneg
   classical
   unfold chartDensitySupPou
   by_cases h : chartAtlasPOU_tsupp_nonempty (I := I) (M := M) α
-  · rw [dif_pos h]
+  · rw [dite_eq_left h]
     exact le_of_lt
       (exists_sup_chartDensity_on_pou_tsupport_image (I := I) (M := M)
         g α h).choose_spec.1
-  · rw [dif_neg h]
+  · rw [dite_eq_right h]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 lemma chartDensitySupPou_le
@@ -118,7 +118,7 @@ lemma chartDensitySupPou_le
   have h := (exists_sup_chartDensity_on_pou_tsupport_image (I := I) (M := M)
     g α h_support_ne).choose_spec.2 y hy_image
   unfold chartDensitySupPou
-  rw [dif_pos h_pred]
+  rw [dite_eq_left h_pred]
   convert h using 2
 
 variable (I M) in

@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.UniformBound
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg riemannianFiberNormSq_zero)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -111,9 +114,9 @@ private theorem ipjb_orthoFrame_basis (g : SmoothRiemannianMetric I M) (x : M) :
       rw [(g.inner x (smoothOrthoFrame (I := I) g x k x)).map_smul (c j),
         smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) = Module.finrank ℝ E :=
     Fintype.card_fin _
   exact ⟨basisOfLinearIndependentOfCardEqFinrank he_li hcard,
@@ -141,9 +144,9 @@ private theorem ipjb_orthoFrame_expansion (g : SmoothRiemannianMetric I M) (x : 
       rw [(g.inner x (smoothOrthoFrame (I := I) g x j x)).map_smul (bse.repr u i),
         smul_eq_mul, hbse i, horth j i])]
     rw [Finset.sum_eq_single_of_mem j (Finset.mem_univ j)]
-    · rw [if_pos rfl, mul_one]
+    · rw [ite_eq_left rfl, mul_one]
     · intro i _ hij
-      rw [if_neg (fun h => hij h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hij h.symm), mul_zero]
   calc u = ∑ i : Fin (Module.finrank ℝ E), bse.repr u i • bse i := (bse.sum_repr u).symm
     _ = ∑ i : Fin (Module.finrank ℝ E),
         g.inner x u (smoothOrthoFrame (I := I) g x i x) •

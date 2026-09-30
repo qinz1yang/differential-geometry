@@ -131,7 +131,7 @@ theorem exists_tetrahedron_oneSkeleton :
   have hcardV : Nat.card L.vertices = 4 := by
     calc
       Nat.card L.vertices = Nat.card (T : Set (EuclideanSpace ℝ (Fin 3))) :=
-        Nat.card_congr (Equiv.setCongr hvertices)
+        Nat.card_congr (Set.equivOfEq hvertices)
       _ = T.card := by simp
       _ = 4 := by omega
   have hnonempty : Nonempty L.vertices := by

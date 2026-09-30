@@ -110,6 +110,7 @@ theorem exists_riemannian_lipschitz_disk_of_lipschitz_retraction
         diskMapEnergyDensity g (r ∘ z) x := by
       unfold diskMapEnergyDensity diskMapPartial
       rw [hloc.mfderiv_eq, hloc.eq_of_nhds]
+      rfl
     exact henergy.trans (diskMapEnergyDensity_comp_eq_pullback g hxr hdx)
   exact ⟨u, hu, hΦu, hLip, ht, he, he.congr heq, integral_congr_ae heq⟩
 
@@ -197,6 +198,7 @@ theorem exists_riemannian_lipschitz_disk_of_compact_source
         diskMapEnergyDensity g (r ∘ z) x := by
       unfold diskMapEnergyDensity diskMapPartial
       rw [hloc.mfderiv_eq, hloc.eq_of_nhds]
+      rfl
     exact henergy.trans (diskMapEnergyDensity_comp_eq_pullback g hxr hdx)
   exact ⟨u, hu, hLip, ht, he, he.congr heq, integral_congr_ae heq⟩
 

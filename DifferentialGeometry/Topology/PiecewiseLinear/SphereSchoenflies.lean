@@ -82,7 +82,7 @@ private theorem exists_isPLBall_disjoint_of_isPLSphere_two
 open Classical in
 private theorem closure_sdiff_closure_sdiff_eq_of_isPLBall
     {S D : Set E} (hS : IsPLSphere 2 S) {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDS : D ⊆ S) :
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDS : D ⊆ S) :
     closure (S \ closure (S \ D)) = D := by
   classical
   let R := closure (S \ D)
@@ -95,15 +95,15 @@ private theorem closure_sdiff_closure_sdiff_eq_of_isPLBall
       by_contra hxD
       exact hx.2 (subset_closure ⟨hx.1, hxD⟩)
     · exact hD.isPolyhedron.isClosed
-  have hopen : openSimplex (stdVertices 1) ⊆ stdSimplex ℝ (Fin 3) :=
+  have hopen : openSimplex (stdVertices 1) ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) :=
     openSimplex_stdVertices_subset_stdSimplex
-  have hopenclosure : closure (openSimplex (stdVertices 1)) = stdSimplex ℝ (Fin 3) := by
+  have hopenclosure : closure (openSimplex (stdVertices 1)) = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := by
     apply Set.Subset.antisymm
-    · exact closure_minimal hopen (isClosed_stdSimplex ℝ (Fin 3))
+    · exact closure_minimal hopen (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).isClosed
     · rw [← convexHull_stdVertices]
       exact convexHull_subset_closure_openSimplex (by simp [stdVertices])
   have himageclosure : closure (q '' openSimplex (stdVertices 1)) = D := by
-    have h := hq.image_closure (isCompact_stdSimplex ℝ (Fin 3)) hopen
+    have h := hq.image_closure (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)) hopen
     rw [hopenclosure, hq.image_eq] at h
     exact h.symm
   apply Set.Subset.antisymm hupper
@@ -123,13 +123,13 @@ private theorem closure_sdiff_closure_sdiff_eq_of_isPLBall
 open Classical in
 private theorem image_stdSimplexBoundary_eq_frontier
     {D : Set (EuclideanSpace ℝ (Fin 2))} {q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 2)}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) :
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) :
     q '' stdSimplexBoundary 2 = frontier D := by
   classical
   have hD : IsPLBall 2 D := ⟨q, hq⟩
   obtain ⟨K, hKfinite, hKD⟩ := hD.isPolyhedron.exists_simplicialComplex
   let _ : Finite K.faces := hKfinite.to_subtype
-  have hqK : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) K.space := hKD ▸ hq
+  have hqK : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) K.space := hKD ▸ hq
   have hboundary := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hqK
   rw [simplexBoundary_stdVertices_space] at hboundary
   have hKball : IsPLBall 2 K.space := hKD ▸ hD
@@ -169,8 +169,8 @@ open Classical in
 theorem exists_isPLBall_pair_of_isPLSphere_two
     {B J : Set E} (hB : IsPLSphere 2 B) (hJ : IsPLSphere 1 J) (hJB : J ⊆ B) :
     ∃ (D₀ D₁ : Set E) (q₀ q₁ : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀ ∧
-      IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ ∧
+      IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
       q₀ '' stdSimplexBoundary 2 = J ∧ q₁ '' stdSimplexBoundary 2 = J ∧
       D₀ ∪ D₁ = B ∧ D₀ ∩ D₁ = J := by
   classical
@@ -209,7 +209,7 @@ theorem exists_isPLBall_pair_of_isPLSphere_two
     · exact interior_maximal subset_closure hCsep.isOpen_inside
   obtain ⟨qP, hqP⟩ := hP
   let f : E → EuclideanSpace ℝ (Fin 2) :=
-    qP ∘ Function.invFunOn qR (stdSimplex ℝ (Fin 3))
+    qP ∘ Function.invFunOn qR (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hf : IsPLHomeomorphOn f R P := hqR.symm.trans hqP
   let J' := f '' J
   have hJR : J ⊆ R := by
@@ -258,7 +258,7 @@ theorem exists_isPLBall_pair_of_isPLSphere_two
   have hg : IsPLHomeomorphOn g D' D₀ := by
     simpa [g, D₀] using hf.symm.restrict hD'ball.isPolyhedron hD'P
   let q₀ := g ∘ q'
-  have hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀ := hq'.trans hg
+  have hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ := hq'.trans hg
   have hginv : g '' J' = J := by
     change Function.invFunOn f R '' (f '' J) = J
     rw [image_image]
@@ -301,7 +301,7 @@ theorem IsPLSphere.exists_isPLBall_with_boundary_disjoint_of_isPreconnected
     {S D J : Set E} (hS : IsPLSphere 2 S) (hD : IsPreconnected D)
     (hDS : D ⊆ S) (hJ : IsPLSphere 1 J) (hJS : J ⊆ S) (hDJ : Disjoint D J) :
     ∃ (Q : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧ Q ⊆ S ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧ Q ⊆ S ∧
       Disjoint D Q ∧ q '' stdSimplexBoundary 2 = J := by
   obtain ⟨Q₀, Q₁, q₀, q₁, hq₀, hq₁, hq₀boundary, hq₁boundary, hcover, hinter⟩ :=
     exists_isPLBall_pair_of_isPLSphere_two hS hJ hJS
@@ -327,7 +327,7 @@ theorem IsPLBall.exists_disjoint_isPLBall_with_boundary_of_isPLSphere_two
     {S D J : Set G} (hD : IsPLBall 2 D) (hS : IsPLSphere 2 S)
     (hDS : D ⊆ S) (hJ : IsPLSphere 1 J) (hJS : J ⊆ S) (hDJ : Disjoint D J) :
     ∃ (Q : Set G) (q : (Fin 3 → ℝ) → G),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧ Q ⊆ S ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧ Q ⊆ S ∧
       Disjoint D Q ∧ q '' stdSimplexBoundary 2 = J := by
   exact hS.exists_isPLBall_with_boundary_disjoint_of_isPreconnected
     hD.isConnected.isPreconnected hDS hJ hJS hDJ

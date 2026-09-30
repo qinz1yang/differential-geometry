@@ -18,7 +18,7 @@ universe uHF
 
 theorem finrank_range_le_of_continuousWithinAt_of_forall_lt_le
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
-    [NormedAddCommGroup W] [NormedSpace ℝ W] [FiniteDimensional ℝ W]
+    [NormedAddCommGroup W] [NormedSpace ℝ W]
     (A : ℝ → V →L[ℝ] W) (hA : ContinuousWithinAt A (Iio 0) 0) {q : ℕ}
     (hbound : ∀ t < (0 : ℝ),
       Module.finrank ℝ (LinearMap.range (A t : V →ₗ[ℝ] W)) ≤ q) :
@@ -50,7 +50,7 @@ theorem finrank_range_le_of_continuousWithinAt_of_forall_lt_le
 
 theorem finrank_range_le_of_continuousWithinAt_of_forall_lt_eq
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
-    [NormedAddCommGroup W] [NormedSpace ℝ W] [FiniteDimensional ℝ W]
+    [NormedAddCommGroup W] [NormedSpace ℝ W]
     (A : ℝ → V →L[ℝ] W) (hA : ContinuousWithinAt A (Iio 0) 0) {q : ℕ}
     (hq : ∀ t < (0 : ℝ), Module.finrank ℝ (LinearMap.range (A t : V →ₗ[ℝ] W)) = q) :
     Module.finrank ℝ (LinearMap.range (A 0 : V →ₗ[ℝ] W)) ≤ q :=
@@ -83,7 +83,7 @@ theorem finrank_range_le_of_range_le
 
 theorem finrank_range_eq_of_continuousWithinAt_of_forall_lt_eq_of_ker_le
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
-    [NormedAddCommGroup W] [NormedSpace ℝ W] [FiniteDimensional ℝ W]
+    [NormedAddCommGroup W] [NormedSpace ℝ W]
     (A : ℝ → V →L[ℝ] W) (hA : ContinuousWithinAt A (Iio 0) 0) {q : ℕ}
     (hq : ∀ t < (0 : ℝ), Module.finrank ℝ (LinearMap.range (A t : V →ₗ[ℝ] W)) = q)
     (hker : ∀ t < (0 : ℝ), (A 0 : V →ₗ[ℝ] W).ker ≤ (A t : V →ₗ[ℝ] W).ker) :
@@ -94,7 +94,7 @@ theorem finrank_range_eq_of_continuousWithinAt_of_forall_lt_eq_of_ker_le
 
 theorem finrank_range_eq_of_continuousWithinAt_of_forall_lt_eq_of_range_le
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
-    [NormedAddCommGroup W] [NormedSpace ℝ W] [FiniteDimensional ℝ W]
+    [NormedAddCommGroup W] [NormedSpace ℝ W]
     (A : ℝ → V →L[ℝ] W) (hA : ContinuousWithinAt A (Iio 0) 0) {q : ℕ}
     (hq : ∀ t < (0 : ℝ), Module.finrank ℝ (LinearMap.range (A t : V →ₗ[ℝ] W)) = q)
     (hnest : ∀ t < (0 : ℝ), (A t : V →ₗ[ℝ] W).range ≤ (A 0 : V →ₗ[ℝ] W).range) :

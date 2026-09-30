@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTrace
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
+
 
 noncomputable section
 

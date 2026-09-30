@@ -24,7 +24,7 @@ theorem exists_surface_split_and_cap_of_spanning_disk_avoiding
     (hM : IsCombinatorialManifoldWithBoundary 3 M)
     (hK : IsCombinatorialManifold 2 K) (hor : IsOrientable 2 K)
     {Δ U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hmeet : Δ ∩ K.space = r '' stdSimplexBoundary 2)
     (hKM : K.space ⊆ M.space) (hΔM : Δ ⊆ M.space)
     (hΔboundary : Disjoint Δ (boundaryComplex 3 M).space)
@@ -35,8 +35,8 @@ theorem exists_surface_split_and_cap_of_spanning_disk_avoiding
       source.faces.Finite ∧ split.faces.Finite ∧ result.faces.Finite ∧
       IsSubdivision source K ∧ IsCombinatorialManifoldWithBoundary 2 split ∧
       IsCombinatorialManifold 2 result ∧
-      IsPLHomeomorphOn p₀ (stdSimplex ℝ (Fin 3)) cap₀ ∧
-      IsPLHomeomorphOn p₁ (stdSimplex ℝ (Fin 3)) cap₁ ∧
+      IsPLHomeomorphOn p₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) cap₀ ∧
+      IsPLHomeomorphOn p₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) cap₁ ∧
       Disjoint cap₀ cap₁ ∧
       split.space ∩ cap₀ = p₀ '' stdSimplexBoundary 2 ∧
       split.space ∩ cap₁ = p₁ '' stdSimplexBoundary 2 ∧
@@ -105,7 +105,7 @@ theorem exists_surface_split_and_cap_of_spanning_disk_avoiding
   obtain ⟨Q, qQ, hqQ, hQboundary, hmiddleQ, hqQboundary⟩ :=
     hmiddleBall.exists_disjoint_isPLBall_with_boundary_of_isPLSphere_two
       hboundarySphere hmiddleB hinnerSphere hinnerBoundary hinnerMiddleDisjoint.symm
-  have hstdBoundary : stdSimplexBoundary 2 ⊆ stdSimplex ℝ (Fin 3) := by
+  have hstdBoundary : stdSimplexBoundary 2 ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := by
     intro x hx
     have hx' : x ∈
         (simplexBoundary (stdVertices 1) (stdVertices_affineIndependent 1)).space := by
@@ -146,7 +146,7 @@ theorem exists_surface_split_and_cap_of_spanning_disk_avoiding
     rw [← hPcover]
     exact hH
   let p₀ := H ∘ q₀
-  have hp₀ : IsPLHomeomorphOn p₀ (stdSimplex ℝ (Fin 3)) cap₀ := hq₀.trans hHD₀
+  have hp₀ : IsPLHomeomorphOn p₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) cap₀ := hq₀.trans hHD₀
   have hp₀boundary : p₀ '' stdSimplexBoundary 2 = q₀ '' stdSimplexBoundary 2 := by
     calc
       p₀ '' stdSimplexBoundary 2 = H '' (q₀ '' stdSimplexBoundary 2) := by
@@ -309,7 +309,7 @@ theorem exists_surface_split_and_cap_of_spanning_disk
     (hM : IsCombinatorialManifoldWithBoundary 3 M)
     (hK : IsCombinatorialManifold 2 K) (hor : IsOrientable 2 K)
     {Δ U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hmeet : Δ ∩ K.space = r '' stdSimplexBoundary 2)
     (hKM : K.space ⊆ M.space) (hΔM : Δ ⊆ M.space)
     (hΔboundary : Disjoint Δ (boundaryComplex 3 M).space)
@@ -319,8 +319,8 @@ theorem exists_surface_split_and_cap_of_spanning_disk
       source.faces.Finite ∧ split.faces.Finite ∧ result.faces.Finite ∧
       IsSubdivision source K ∧ IsCombinatorialManifoldWithBoundary 2 split ∧
       IsCombinatorialManifold 2 result ∧
-      IsPLHomeomorphOn p₀ (stdSimplex ℝ (Fin 3)) cap₀ ∧
-      IsPLHomeomorphOn p₁ (stdSimplex ℝ (Fin 3)) cap₁ ∧
+      IsPLHomeomorphOn p₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) cap₀ ∧
+      IsPLHomeomorphOn p₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) cap₁ ∧
       Disjoint cap₀ cap₁ ∧
       split.space ∩ cap₀ = p₀ '' stdSimplexBoundary 2 ∧
       split.space ∩ cap₁ = p₁ '' stdSimplexBoundary 2 ∧
@@ -344,7 +344,7 @@ theorem exists_surface_split_and_cap_of_spanning_disk_preserving_separation
     (hK : IsCombinatorialManifold 2 K) (hor : IsOrientable 2 K)
     (hdim : Module.finrank ℝ E = 3)
     {Δ U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hmeet : Δ ∩ K.space = r '' stdSimplexBoundary 2)
     (hKM : K.space ⊆ M.space) (hΔM : Δ ⊆ M.space)
     (hΔboundary : Disjoint Δ (boundaryComplex 3 M).space)
@@ -357,8 +357,8 @@ theorem exists_surface_split_and_cap_of_spanning_disk_preserving_separation
       source.faces.Finite ∧ split.faces.Finite ∧ result.faces.Finite ∧
       IsSubdivision source K ∧ IsCombinatorialManifoldWithBoundary 2 split ∧
       IsCombinatorialManifold 2 result ∧
-      IsPLHomeomorphOn p₀ (stdSimplex ℝ (Fin 3)) cap₀ ∧
-      IsPLHomeomorphOn p₁ (stdSimplex ℝ (Fin 3)) cap₁ ∧
+      IsPLHomeomorphOn p₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) cap₀ ∧
+      IsPLHomeomorphOn p₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) cap₁ ∧
       Disjoint cap₀ cap₁ ∧
       split.space ∩ cap₀ = p₀ '' stdSimplexBoundary 2 ∧
       split.space ∩ cap₁ = p₁ '' stdSimplexBoundary 2 ∧

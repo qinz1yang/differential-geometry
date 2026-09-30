@@ -73,7 +73,7 @@ private theorem exists_local_closed_metric_covariant_bounds
             ∀ S : SolutionOn (I := I) (M := M) D, Good D θ S →
               1 ≤ r → ∀ t ∈ Icc 0 θ, ∀ x ∈ U,
                 metricCovDerivNorm r (S.base.metric t) R x ≤ Cg r := by
-          simpa only [Cg, dif_pos hr] using (ih r hr (by omega)).choose_spec
+          simpa only [Cg, dite_eq_left hr] using (ih r hr (by omega)).choose_spec
         let cf := ricTowerCoeffs (Module.finrank ℝ E) q Λ Cg K
         refine ⟨metricCovOrderEvolutionConstant cf.slope cf.offset T (A q),
           Real.sqrt_nonneg _, ?_⟩
@@ -91,10 +91,10 @@ private theorem exists_local_closed_metric_covariant_bounds
   refine ⟨C, ?_, ?_⟩
   · intro q
     by_cases hq : q ≤ N
-    · simpa only [C, dif_pos hq] using (hb q hq).choose_spec.1
-    · simp only [C, dif_neg hq, le_rfl]
+    · simpa only [C, dite_eq_left hq] using (hb q hq).choose_spec.1
+    · simp only [C, dite_eq_right hq, le_rfl]
   · intro D θ hθ hθT hreg S hS hgram hequiv hinit hShi q hq hqN
-    simpa only [C, dif_pos hqN] using
+    simpa only [C, dite_eq_left hqN] using
       (hb q hqN).choose_spec.2 D θ hθ hθT hreg S ⟨hS, hgram, hequiv, hinit, hShi⟩ hq
 
 theorem exists_metricDerivNormSupOn_time_lipschitz_of_finite_ricci_bounds
@@ -122,10 +122,10 @@ theorem exists_metricDerivNormSupOn_time_lipschitz_of_finite_ricci_bounds
   let Lq := fun q => if q = 0 then 2 * Λ * K else 2 * ((cf q).slope * C q + (cf q).offset)
   have hLq (q : ℕ) : 0 ≤ Lq q := by
     by_cases hq : q = 0
-    · simp only [Lq, if_pos hq]
+    · simp only [Lq, ite_eq_left hq]
       positivity
     · have hc := ricCoeffs_nonneg (Module.finrank ℝ E) q Λ C K hΛ hK
-      simp only [Lq, if_neg hq]
+      simp only [Lq, ite_eq_right hq]
       exact mul_nonneg (by norm_num) (add_nonneg (mul_nonneg hc.1 (hC q)) hc.2)
   refine ⟨∑ q ∈ Finset.range (N + 1), Lq q, Finset.sum_nonneg (fun q _ => hLq q), ?_⟩
   intro D θ hθ hθT hreg S hS hgram hequiv hinit hShi V hVU s hs t ht
@@ -153,7 +153,7 @@ theorem exists_metricDerivNormSupOn_time_lipschitz_of_finite_ricci_bounds
     rw [sqrt_normSq0S_smul, show |(-2 : ℝ)| = 2 by norm_num]
     by_cases hzero : q = 0
     · subst q
-      simp only [Lq, if_pos rfl]
+      simp only [Lq, ite_eq_left rfl]
       have hcomp := sqrt_normSq0S_le_of_metric_equiv (g := S.base.metric r) (h := R) y 2 hΛ
         (fun v => (metricUniformEquivalentOn_symm (hequiv r hrc)).2 y hy v)
         (nablaRicReal (fun _ u => S.base.metric u) R 0 0 r y)
@@ -170,7 +170,7 @@ theorem exists_metricDerivNormSupOn_time_lipschitz_of_finite_ricci_bounds
         K hK (fun a ha => hShi a (ha.trans hq)) 0 r hrc y hy
       have hh' := hh.trans (add_le_add
         (mul_le_mul_of_nonneg_left (hnorm q (by omega) hq r hrc y hy) hc.1) le_rfl)
-      simp only [Lq, if_neg hzero]
+      simp only [Lq, ite_eq_right hzero]
       exact mul_le_mul_of_nonneg_left hh' (by norm_num)
   have hlip := metricDerivNorm_le_of_closed_evolution S.base.metric 0 θ hgram R q Ev U
     (Lq q) (hLq q) hev hEv s hs t ht x (hVU hx)

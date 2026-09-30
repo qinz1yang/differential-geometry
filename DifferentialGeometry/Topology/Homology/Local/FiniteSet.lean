@@ -154,9 +154,9 @@ theorem isIso_finitePunctureProductMap [T2Space X] (hZ : Z.Finite) (n : ℕ) :
     intro p
     apply Pi.hom_ext
     intro q
-    simp only [A, Category.assoc, finitePunctureProductMap, Pi.lift_π,
+    simp only [A, Category.assoc, finitePunctureProductMap, Pi.lift_comp_π,
       biproduct.isoCoproduct_inv, biproduct.isoProduct_hom,
-      Sigma.ι_desc_assoc]
+      Sigma.ι_comp_desc_assoc]
     by_cases h : p = q
     · subst q
       exact (finitePunctureHomologyIsoOfNeighborhoods_ι_projection_self X Z U hp hd R hZ hU n p).trans
@@ -180,7 +180,7 @@ def finitePunctureHomologyIso [T2Space X] (hZ : Z.Finite) (n : ℕ) :
 theorem finitePunctureHomologyIso_hom_π [T2Space X] (hZ : Z.Finite) (n : ℕ) (p : Z) :
     (finitePunctureHomologyIso X Z R hZ n).hom ≫
       Pi.π (fun p : Z => relativeHomology X ({p.val}ᶜ : Set X) R n) p =
-        finitePunctureProjection X Z R p n := Pi.lift_π _ _
+        finitePunctureProjection X Z R p n := Pi.lift_comp_π _ _
 
 
 def finitePunctureHomologyLinearEquiv [T2Space X] (hZ : Z.Finite) (n : ℕ) :

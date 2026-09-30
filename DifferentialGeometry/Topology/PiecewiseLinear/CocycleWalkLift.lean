@@ -109,7 +109,7 @@ theorem exists_edgeLift {a b : K.vertices}
   have hgb : g xb = (⟨vertexPoint K b, Bool.xor s (ε.parity (a : E) (b : E))⟩ :
       ε.toBoolCocycle.toFiberBundleCore.TotalSpace) := by
     have hmem : g xb = (coveringNeighbor ε.isCoveringMap v (b : E)).1 := by
-      rw [coveringNeighbor, dif_pos hvw]
+      rw [coveringNeighbor, dite_eq_left hvw]
       rfl
     rw [hmem]
     refine totalSpace_eq_mk ?_ ?_

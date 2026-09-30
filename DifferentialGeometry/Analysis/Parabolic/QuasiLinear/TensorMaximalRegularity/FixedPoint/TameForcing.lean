@@ -331,7 +331,7 @@ private theorem l2_four
   let major : ℝ → ℝ := A • Pf + B • Qf + C • Rf + D • Sf
   have hmono : eLpNorm (h : ℝ → X) 2 (timeMeasure T) ≤
       eLpNorm major 2 (timeMeasure T) := by
-    refine eLpNorm_mono_ae ?_
+    refine eLpNorm_mono_ae (Lp.aestronglyMeasurable h) ?_
     filter_upwards [hbound] with t ht
     have happ : major t =
         A * ‖p t‖ + B * ‖q t‖ + C * ‖r t‖ + D * ‖s t‖ := by
@@ -344,27 +344,39 @@ private theorem l2_four
   have htri₁ : eLpNorm major 2 (timeMeasure T) ≤
       eLpNorm (A • Pf + B • Qf + C • Rf) 2 (timeMeasure T) +
         eLpNorm (D • Sf) 2 (timeMeasure T) := by
-    exact eLpNorm_add_le ((hAPm.add hBQm).add hCRm) hDSm (by norm_num)
+    exact eLpNorm_add_le (by norm_num : (1 : ENNReal) ≤ 2)
   have htri₂ : eLpNorm (A • Pf + B • Qf + C • Rf) 2 (timeMeasure T) ≤
       eLpNorm (A • Pf + B • Qf) 2 (timeMeasure T) +
         eLpNorm (C • Rf) 2 (timeMeasure T) := by
-    exact eLpNorm_add_le (hAPm.add hBQm) hCRm (by norm_num)
+    exact eLpNorm_add_le (by norm_num : (1 : ENNReal) ≤ 2)
   have htri₃ : eLpNorm (A • Pf + B • Qf) 2 (timeMeasure T) ≤
       eLpNorm (A • Pf) 2 (timeMeasure T) +
         eLpNorm (B • Qf) 2 (timeMeasure T) :=
-    eLpNorm_add_le hAPm hBQm (by norm_num)
+    eLpNorm_add_le (by norm_num : (1 : ENNReal) ≤ 2)
   have hscaleP : eLpNorm (A • Pf) 2 (timeMeasure T) =
       ENNReal.ofReal A * eLpNorm (p : ℝ → Y) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hA]
+    rw [eLpNorm_const_smul]
+    change ‖A‖ₑ * eLpNorm (fun t => ‖(p : ℝ → Y) t‖) 2 (timeMeasure T) = _
+    rw [eLpNorm_norm (p := (2 : ENNReal)) (μ := timeMeasure T)
+      (p : ℝ → Y) (Lp.aestronglyMeasurable p), Real.enorm_eq_ofReal hA]
   have hscaleQ : eLpNorm (B • Qf) 2 (timeMeasure T) =
       ENNReal.ofReal B * eLpNorm (q : ℝ → Z) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hB]
+    rw [eLpNorm_const_smul]
+    change ‖B‖ₑ * eLpNorm (fun t => ‖(q : ℝ → Z) t‖) 2 (timeMeasure T) = _
+    rw [eLpNorm_norm (p := (2 : ENNReal)) (μ := timeMeasure T)
+      (q : ℝ → Z) (Lp.aestronglyMeasurable q), Real.enorm_eq_ofReal hB]
   have hscaleR : eLpNorm (C • Rf) 2 (timeMeasure T) =
       ENNReal.ofReal C * eLpNorm (r : ℝ → W) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hC]
+    rw [eLpNorm_const_smul]
+    change ‖C‖ₑ * eLpNorm (fun t => ‖(r : ℝ → W) t‖) 2 (timeMeasure T) = _
+    rw [eLpNorm_norm (p := (2 : ENNReal)) (μ := timeMeasure T)
+      (r : ℝ → W) (Lp.aestronglyMeasurable r), Real.enorm_eq_ofReal hC]
   have hscaleS : eLpNorm (D • Sf) 2 (timeMeasure T) =
       ENNReal.ofReal D * eLpNorm (s : ℝ → V) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hD]
+    rw [eLpNorm_const_smul]
+    change ‖D‖ₑ * eLpNorm (fun t => ‖(s : ℝ → V) t‖) 2 (timeMeasure T) = _
+    rw [eLpNorm_norm (p := (2 : ENNReal)) (μ := timeMeasure T)
+      (s : ℝ → V) (Lp.aestronglyMeasurable s), Real.enorm_eq_ofReal hD]
   have hfinal : eLpNorm (h : ℝ → X) 2 (timeMeasure T) ≤
       ENNReal.ofReal A * eLpNorm (p : ℝ → Y) 2 (timeMeasure T) +
         ENNReal.ofReal B * eLpNorm (q : ℝ → Z) 2 (timeMeasure T) +
@@ -384,10 +396,14 @@ private theorem l2_four
           eLpNorm (D • Sf) 2 (timeMeasure T) :=
         add_le_add (add_le_add htri₃ le_rfl) le_rfl
       _ = _ := by rw [hscaleP, hscaleQ, hscaleR, hscaleS]
-  have hp_top : eLpNorm (p : ℝ → Y) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp p).2.ne
-  have hq_top : eLpNorm (q : ℝ → Z) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp q).2.ne
-  have hr_top : eLpNorm (r : ℝ → W) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp r).2.ne
-  have hs_top : eLpNorm (s : ℝ → V) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp s).2.ne
+  have hp_top : eLpNorm (p : ℝ → Y) 2 (timeMeasure T) ≠ ⊤ :=
+    ne_top_of_lt (Lp.memLp p)
+  have hq_top : eLpNorm (q : ℝ → Z) 2 (timeMeasure T) ≠ ⊤ :=
+    ne_top_of_lt (Lp.memLp q)
+  have hr_top : eLpNorm (r : ℝ → W) 2 (timeMeasure T) ≠ ⊤ :=
+    ne_top_of_lt (Lp.memLp r)
+  have hs_top : eLpNorm (s : ℝ → V) 2 (timeMeasure T) ≠ ⊤ :=
+    ne_top_of_lt (Lp.memLp s)
   have hp_mul : ENNReal.ofReal A * eLpNorm (p : ℝ → Y) 2 (timeMeasure T) ≠ ⊤ :=
     ENNReal.mul_ne_top ENNReal.ofReal_ne_top hp_top
   have hq_mul : ENNReal.ofReal B * eLpNorm (q : ℝ → Z) 2 (timeMeasure T) ≠ ⊤ :=
@@ -485,7 +501,7 @@ private theorem memLp_tame
     exact add_nonneg (mul_nonneg hK (norm_nonneg _)) hQ
   change ‖N (aeSetLift hzero f t)‖ ≤ ‖major t‖
   have hu : aeSetLift hzero f t = u := by
-    simp only [aeSetLift, dif_pos ht, u]
+    simp only [aeSetLift, dite_eq_left ht, u]
   rw [hu, Real.norm_eq_abs, abs_of_nonneg hmajor0]
   exact hn
 
@@ -742,7 +758,7 @@ theorem partial_solution_tame
       filter_upwards [hΨsub, hΨF, hΨF', hfieldsub, hinclcoe, hpoint,
         hstate F, hstate F'] with t htΨ htF htF' htfsub htincl htpoint htstate htstate'
       rw [htΨ, Pi.sub_apply, htF, htF']
-      simp only [aeSetLift, dif_pos htstate, dif_pos htstate']
+      simp only [aeSetLift, dite_eq_left htstate, dite_eq_left htstate']
       let u : lowerState (I := I) (M := M) g₀ a R := ⟨field F t, htstate⟩
       let u' : lowerState (I := I) (M := M) g₀ a R := ⟨field F' t, htstate'⟩
       have hraw := hsingle u u'
@@ -897,7 +913,7 @@ theorem partial_solution_tame
     have hlift : aeSetLift hz (field z₀) t =
         ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ a hR.le⟩ := by
       apply Subtype.ext
-      simp only [aeSetLift, dif_pos htstate, Subtype.coe_mk]
+      simp only [aeSetLift, dite_eq_left htstate, Subtype.coe_mk]
       exact htfield
     rw [hlift]
   have hsqrtTD : Real.sqrt T * D ≤ ρ / 2 := by
@@ -1092,7 +1108,7 @@ theorem tameMap_dist_le
     filter_upwards [hΨsub, hΨF, hΨF', hfieldsub, hinclcoe, hpoint, hFm, hFm']
       with t htΨ htF htF' htfsub htincl htpoint htstate htstate'
     rw [htΨ, Pi.sub_apply, htF, htF']
-    simp only [aeSetLift, dif_pos htstate, dif_pos htstate']
+    simp only [aeSetLift, dite_eq_left htstate, dite_eq_left htstate']
     set u : lowerState (I := I) (M := M) g₀ a R := ⟨fld F t, htstate⟩ with hudef
     set u' : lowerState (I := I) (M := M) g₀ a R := ⟨fld F' t, htstate'⟩ with hu'def
     have hraw := hsingle u u'

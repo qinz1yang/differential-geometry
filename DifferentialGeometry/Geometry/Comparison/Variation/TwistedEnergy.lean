@@ -48,6 +48,7 @@ theorem SmoothNearInterval.energy_integrable {c : ℝ → M} {L : ℝ}
   change g.inner (c t) (mfderiv 𝓘(ℝ, ℝ) I c t 1) (mfderiv 𝓘(ℝ, ℝ) I c t 1) = _
   dsimp only
   rw [hbase, hderiv]
+  rfl
 
 omit [IsManifold I ∞ M] in
 theorem SmoothNearInterval.contMDiffOn {c : ℝ → M} {L : ℝ}

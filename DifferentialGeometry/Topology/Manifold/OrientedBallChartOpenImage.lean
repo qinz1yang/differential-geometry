@@ -33,11 +33,11 @@ theorem exists_orientedBallChart_of_open_embedding
   have h0U : c.chart (0 : E3) ∈ U := hU 0 (Metric.mem_closedBall_self (by norm_num))
   let g : E3 → U := fun y =>
     if hy : c.chart y ∈ U then ⟨c.chart y, hy⟩ else ⟨c.chart 0, h0U⟩
-  have hgx : g x = ⟨c.chart x, hxU⟩ := dif_pos hxU
+  have hgx : g x = ⟨c.chart x, hxU⟩ := dite_eq_left hxU
   have hgc : (fun y => (g y).val) =ᶠ[𝓝 x] c.chart := by
     have hc := c.chart.contMDiffOn_toFun.continuousOn.continuousAt (c.chart.open_source.mem_nhds hxsrc)
     filter_upwards [hc.preimage_mem_nhds (U.isOpen.mem_nhds hxU)] with y hy
-    rw [show g y = ⟨c.chart y, hy⟩ from dif_pos hy]
+    rw [show g y = ⟨c.chart y, hy⟩ from dite_eq_left hy]
   have hcg := IsLocalDiffeomorphAt.of_eventuallyEq hgc (c.chart.isLocalDiffeomorphAt _ _ _ hxsrc)
   have hgloc : IsLocalDiffeomorphAt (𝓡 3) (𝓡 3) ∞ g x :=
     DifferentialGeometry.isLocalDiffeomorphAt_subtypeCodRestrict (fun y => (g y).property) hcg
@@ -46,7 +46,7 @@ theorem exists_orientedBallChart_of_open_embedding
     obtain ⟨hyU, hyval⟩ := hd y hy
     rw [hyval]
     change f ⟨c.chart y, hyU⟩ = f (g y)
-    rw [show g y = ⟨c.chart y, hyU⟩ from dif_pos hyU]
+    rw [show g y = ⟨c.chart y, hyU⟩ from dite_eq_left hyU]
   have hgder : mfderiv (𝓡 3) (𝓡 3) g x = mfderiv (𝓡 3) (𝓡 3) c.chart x := by
     rw [← DifferentialGeometry.mfderiv_subtypeVal_comp g x]
     exact hgc.mfderiv_eq

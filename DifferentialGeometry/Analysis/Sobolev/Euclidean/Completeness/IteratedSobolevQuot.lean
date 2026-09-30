@@ -403,7 +403,7 @@ private theorem enorm_eq_zero
       le_antisymm heLp_le (zero_le)
     have hp_zero : p ≠ 0 := ne_of_gt (lt_of_lt_of_le (by norm_num) hp)
     have hae : u.1 =ᵐ[volume.restrict Ω] 0 :=
-      (eLpNorm_eq_zero_iff u.2.memLp.aestronglyMeasurable hp_zero).mp heLp
+      (eLpNorm_eq_zero_iff hp_zero).mp heLp
     exact Quotient.sound hae
   · intro h
     change Quotient.mk (euclidWkpSetoid (d := d) k p hp Ω) u =

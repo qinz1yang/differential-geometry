@@ -119,47 +119,65 @@ private lemma eLpNorm_chartPulledWeighted_restrict_le_of_support_subset
     DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
       (I := I) (M := M) α
   have hS_meas : MeasurableSet S := hS_open.measurableSet
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num)]
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num)]
-  have h2 : (2 : ℝ≥0∞).toReal = 2 := by norm_num
-  rw [h2]
-  have h_lint_le :
-      ∫⁻ y, ‖f y‖ₑ ^ (2 : ℝ)
-          ∂((chartPulledWeightedMeasure (I := I) g α).restrict S) ≤
-        ENNReal.ofReal densitySup *
-          ∫⁻ y, ‖f y‖ₑ ^ (2 : ℝ) ∂((volume : Measure EuclN).restrict S) := by
-    rw [show (chartPulledWeightedMeasure (I := I) g α).restrict S =
-        ((volume : Measure EuclN).restrict S).withDensity
-          (fun y => ENNReal.ofReal (densityOnEuclid (I := I) g α y)) by
-      unfold chartPulledWeightedMeasure
-      exact MeasureTheory.restrict_withDensity hS_meas _]
-    rw [MeasureTheory.lintegral_withDensity_eq_lintegral_mul_non_measurable₀]
-    rotate_left
-    · have hdens_contOn : ContinuousOn (densityOnEuclid (I := I) g α) S :=
-        densityOnEuclid_continuousOn (I := I) g α
-      exact (hdens_contOn.aemeasurable hS_meas).ennreal_ofReal
-    · exact Filter.Eventually.of_forall (fun y => ENNReal.ofReal_lt_top)
-    rw [show ENNReal.ofReal densitySup *
-          ∫⁻ y, ‖f y‖ₑ ^ (2 : ℝ) ∂((volume : Measure EuclN).restrict S) =
-        ∫⁻ y, ENNReal.ofReal densitySup * ‖f y‖ₑ ^ (2 : ℝ)
-          ∂((volume : Measure EuclN).restrict S) from
-      (MeasureTheory.lintegral_const_mul' (r := ENNReal.ofReal densitySup) _
-        ENNReal.ofReal_ne_top).symm]
-    refine MeasureTheory.lintegral_mono_ae ?_
-    refine Filter.Eventually.of_forall (fun y => ?_)
-    simp only [Pi.mul_apply]
-    by_cases hfy : f y = 0
-    · simp [hfy, ENNReal.zero_rpow_of_pos (by norm_num : (0 : ℝ) < 2)]
-    · have hy_in : y ∈ K := hf_support hfy
-      have h_dens_le :
-          ENNReal.ofReal (densityOnEuclid (I := I) g α y) ≤
-            ENNReal.ofReal densitySup :=
-        ENNReal.ofReal_le_ofReal (hdensitySup_bd y hy_in)
-      gcongr
-  refine le_trans (ENNReal.rpow_le_rpow h_lint_le (by positivity)) ?_
-  rw [ENNReal.mul_rpow_of_nonneg _ _ (by positivity : (0 : ℝ) ≤ 1 / 2)]
-  gcongr
-  rw [← ENNReal.ofReal_rpow_of_pos hdensitySup_pos]
+  by_cases hf_meas : AEStronglyMeasurable f ((volume : Measure EuclN).restrict S)
+  · have hf_weighted : AEStronglyMeasurable f
+        ((chartPulledWeightedMeasure (I := I) g α).restrict S) := by
+      have hac : (chartPulledWeightedMeasure (I := I) g α).restrict S ≪
+          (volume : Measure EuclN).restrict S := by
+        unfold chartPulledWeightedMeasure
+        exact (MeasureTheory.withDensity_absolutelyContinuous _ _).restrict S
+      exact hf_meas.mono_ac hac
+    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num)
+      hf_weighted]
+    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num)
+      hf_meas]
+    have h2 : (2 : ℝ≥0∞).toReal = 2 := by norm_num
+    rw [h2]
+    have h_lint_le :
+        ∫⁻ y, ‖f y‖ₑ ^ (2 : ℝ)
+            ∂((chartPulledWeightedMeasure (I := I) g α).restrict S) ≤
+          ENNReal.ofReal densitySup *
+            ∫⁻ y, ‖f y‖ₑ ^ (2 : ℝ) ∂((volume : Measure EuclN).restrict S) := by
+      rw [show (chartPulledWeightedMeasure (I := I) g α).restrict S =
+          ((volume : Measure EuclN).restrict S).withDensity
+            (fun y => ENNReal.ofReal (densityOnEuclid (I := I) g α y)) by
+        unfold chartPulledWeightedMeasure
+        exact MeasureTheory.restrict_withDensity hS_meas _]
+      rw [MeasureTheory.lintegral_withDensity_eq_lintegral_mul_non_measurable₀]
+      rotate_left
+      · have hdens_contOn : ContinuousOn (densityOnEuclid (I := I) g α) S :=
+          densityOnEuclid_continuousOn (I := I) g α
+        exact (hdens_contOn.aemeasurable hS_meas).ennreal_ofReal
+      · exact Filter.Eventually.of_forall (fun y => ENNReal.ofReal_lt_top)
+      rw [show ENNReal.ofReal densitySup *
+            ∫⁻ y, ‖f y‖ₑ ^ (2 : ℝ) ∂((volume : Measure EuclN).restrict S) =
+          ∫⁻ y, ENNReal.ofReal densitySup * ‖f y‖ₑ ^ (2 : ℝ)
+            ∂((volume : Measure EuclN).restrict S) from
+        (MeasureTheory.lintegral_const_mul' (r := ENNReal.ofReal densitySup) _
+          ENNReal.ofReal_ne_top).symm]
+      refine MeasureTheory.lintegral_mono_ae ?_
+      refine Filter.Eventually.of_forall (fun y => ?_)
+      simp only [Pi.mul_apply]
+      by_cases hfy : f y = 0
+      · simp [hfy, ENNReal.zero_rpow_of_pos (by norm_num : (0 : ℝ) < 2)]
+      · have hy_in : y ∈ K := hf_support hfy
+        have h_dens_le :
+            ENNReal.ofReal (densityOnEuclid (I := I) g α y) ≤
+              ENNReal.ofReal densitySup :=
+          ENNReal.ofReal_le_ofReal (hdensitySup_bd y hy_in)
+        gcongr
+    refine le_trans (ENNReal.rpow_le_rpow h_lint_le (by positivity)) ?_
+    rw [ENNReal.mul_rpow_of_nonneg _ _ (by positivity : (0 : ℝ) ≤ 1 / 2)]
+    gcongr
+    rw [ENNReal.ofReal_rpow_of_pos hdensitySup_pos]
+  · rw [eLpNorm_of_not_aestronglyMeasurable hf_meas]
+    have hc : ENNReal.ofReal (densitySup ^ (1 / (2 : ℝ))) ≠ 0 :=
+      (ENNReal.ofReal_pos.mpr (by positivity)).ne'
+    calc
+      eLpNorm f 2 ((chartPulledWeightedMeasure (I := I) g α).restrict S) ≤
+          (∞ : ℝ≥0∞) := le_top
+      _ = ENNReal.ofReal (densitySup ^ (1 / (2 : ℝ))) * (∞ : ℝ≥0∞) :=
+        (ENNReal.mul_top hc).symm
 
 private def chartL2RestrictLin (α : M) (s : Set EuclN) :
     Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) →ₗ[ℝ]
@@ -225,6 +243,7 @@ private lemma chartL2RestrictCLM_eq_zero_iff (α : M) (s : Set EuclN)
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private lemma chartL2RestrictCLM_tensorL2ChartComponentCutoff_smooth_eq_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -266,6 +285,7 @@ private lemma chartL2RestrictCLM_tensorL2ChartComponentCutoff_smooth_eq_zero
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private lemma tensorL2ChartComponentCutoff_aeEq_zero_off_cutoffKernel
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M)

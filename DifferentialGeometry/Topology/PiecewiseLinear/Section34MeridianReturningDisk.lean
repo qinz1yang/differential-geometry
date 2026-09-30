@@ -9,7 +9,7 @@ theorem IsCylindricalDiagram.exists_returning_disk_of_upper_height_arc
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {f : E × ℝ → F} {P : Set E} {S : Set F} {r : (Fin 3 → ℝ) → E}
-    (hf : IsCylindricalDiagram f P S) (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P)
+    (hf : IsCylindricalDiagram f P S) (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (e : S ≃ₜ (P × loopCircle))
     (he : ∀ (x : P) (t : Icc (0 : ℝ) 1), (e.symm (x, (t : ℝ)) : F) = f (x, t))
     {β : ℝ → F} (hβ : IsPLHomeomorphOn β (Icc 0 1) (β '' Icc 0 1))
@@ -21,7 +21,7 @@ theorem IsCylindricalDiagram.exists_returning_disk_of_upper_height_arc
     (hδ : 0 < δ) (hδ1 : δ < 1)
     (hbound : ∀ t ∈ Icc (0 : ℝ) 1, (m : ℝ) - δ ≤ g (β t) ∧ g (β t) ≤ m) :
     ∃ (D A : Set F) (q : (Fin 3 → ℝ) → F),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ IsPLBall 1 A ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ IsPLBall 1 A ∧
       D ⊆ f '' ((r '' stdSimplexBoundary 2) ×ˢ Icc 0 1) ∧
       q '' stdSimplexBoundary 2 = (β '' Icc 0 1) ∪ A ∧
       D ∩ (f '' (P ×ˢ ({0} : Set ℝ))) = A := by

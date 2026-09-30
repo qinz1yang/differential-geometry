@@ -116,58 +116,6 @@ theorem piecewise_Iic {f g : ℝ → X} {a b c : ℝ}
     _ < ε / 2 + ε / 2 := add_lt_add hfSum hgSum
     _ = ε := by ring
 
-theorem congr {f g : ℝ → X} {a b : ℝ}
-    (hf : AbsolutelyContinuousOnInterval f a b)
-    (hfg : EqOn f g (uIcc a b)) :
-    AbsolutelyContinuousOnInterval g a b := by
-  rw [absolutelyContinuousOnInterval_iff] at hf ⊢
-  intro ε hε
-  obtain ⟨δ, hδ, hf⟩ := hf ε hε
-  refine ⟨δ, hδ, ?_⟩
-  intro p hp hpLen
-  have hpEnds := hp.1
-  convert hf p hp hpLen using 1
-  apply Finset.sum_congr rfl
-  intro i hi
-  rw [← hfg (hpEnds i hi).1, ← hfg (hpEnds i hi).2]
-
-theorem _root_.LipschitzOnWith.comp_absolutelyContinuousOnInterval
-    {Y : Type*} [PseudoMetricSpace Y]
-    {f : X → Y} {g : ℝ → X} {s : Set X} {K : NNReal} {a b : ℝ}
-    (hf : LipschitzOnWith K f s)
-    (hg : AbsolutelyContinuousOnInterval g a b)
-    (hgs : MapsTo g (uIcc a b) s) :
-    AbsolutelyContinuousOnInterval (f ∘ g) a b := by
-  rw [absolutelyContinuousOnInterval_iff] at hg ⊢
-  intro ε hε
-  obtain ⟨δ, hδ, hg⟩ := hg (ε / (K + 1)) (by positivity)
-  refine ⟨δ, hδ, ?_⟩
-  intro p hp hpLen
-  have hgSum := hg p hp hpLen
-  have hpEnds := hp.1
-  calc
-    ∑ i ∈ Finset.range p.1,
-        dist ((f ∘ g) (p.2 i).1) ((f ∘ g) (p.2 i).2) ≤
-        ∑ i ∈ Finset.range p.1,
-          K * dist (g (p.2 i).1) (g (p.2 i).2) := by
-      apply Finset.sum_le_sum
-      intro i hi
-      have hle := hf
-        (hgs (hpEnds i hi).1) (hgs (hpEnds i hi).2)
-      apply ENNReal.toReal_mono
-        (ENNReal.mul_ne_top ENNReal.coe_ne_top (edist_ne_top _ _)) at hle
-      simpa only [Function.comp_apply, ENNReal.toReal_mul, ENNReal.coe_toReal,
-        ← dist_edist] using hle
-    _ = K * ∑ i ∈ Finset.range p.1,
-        dist (g (p.2 i).1) (g (p.2 i).2) := by
-      rw [Finset.mul_sum]
-    _ ≤ K * (ε / (K + 1)) := by
-      gcongr
-    _ < (K + 1) * (ε / (K + 1)) := by
-      gcongr
-      linarith
-    _ = ε := by field
-
 theorem comp_monotone_lipschitzOn
     {f : ℝ → X} {g : ℝ → ℝ} {a b c d : ℝ} {K : NNReal}
     (hf : AbsolutelyContinuousOnInterval f c d)
@@ -281,8 +229,7 @@ theorem intervalIntegrable_deriv_vector (hf : AbsolutelyContinuousOnInterval f a
   let L : E →L[ℝ] ℝ :=
     LinearMap.toContinuousLinearMap ((LinearMap.proj i).comp A.toLinearMap)
   have hLac : AbsolutelyContinuousOnInterval (L ∘ f) a b :=
-    L.lipschitz.lipschitzOnWith.comp_absolutelyContinuousOnInterval hf
-      (mapsTo_univ f (uIcc a b))
+    L.lipschitzWith.comp_absolutelyContinuousOnInterval hf
   exact hLac.intervalIntegrable_deriv.def'.congr (ae_deriv_comp_continuousLinearMap hf L)
 
 theorem integral_deriv_eq_sub_vector (hf : AbsolutelyContinuousOnInterval f a b) :
@@ -293,8 +240,7 @@ theorem integral_deriv_eq_sub_vector (hf : AbsolutelyContinuousOnInterval f a b)
   let L : E →L[ℝ] ℝ :=
     LinearMap.toContinuousLinearMap ((LinearMap.proj i).comp A.toLinearMap)
   have hLac : AbsolutelyContinuousOnInterval (L ∘ f) a b :=
-    L.lipschitz.lipschitzOnWith.comp_absolutelyContinuousOnInterval hf
-      (mapsTo_univ f (uIcc a b))
+    L.lipschitzWith.comp_absolutelyContinuousOnInterval hf
   change L (∫ t in a..b, deriv f t) = L (f b - f a)
   calc
     L (∫ t in a..b, deriv f t) = ∫ t in a..b, L (deriv f t) :=

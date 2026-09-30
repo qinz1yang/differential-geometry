@@ -73,7 +73,7 @@ theorem exists_metricCInfConvergenceOnCompacts_restrict_open_of_local_coefficien
       refine ⟨i, ⟨z, ⟨z, hzV, rfl⟩⟩, ?_⟩
       exact Subtype.ext hz
     let jVbar : ι → E → V := fun i z => if hz : z ∈ A i then jV i ⟨z, hz⟩ else p₀
-    have hjVbar (i : ι) (z : A i) : jVbar i z = jV i z := dif_pos z.property
+    have hjVbar (i : ι) (z : A i) : jVbar i z = jV i z := dite_eq_left z.property
     have hbar (i : ι) : EqOn (fun z => (jVbar i z : Q)) (jbar i) (A i) := by
       intro z hz
       exact (congrArg Subtype.val (hjVbar i ⟨z, hz⟩)).trans

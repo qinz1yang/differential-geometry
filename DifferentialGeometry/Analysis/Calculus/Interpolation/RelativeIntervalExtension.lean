@@ -24,7 +24,7 @@ theorem contDiffOn_extendIntervalById
       exact ⟨hr.1, ⟨hri.1.le, hri.2.le⟩⟩
     apply ((hf q ⟨hq.1, ⟨hqint.1.le, hqint.2.le⟩⟩).mono_of_mem_nhdsWithin hmem).congr_of_eventuallyEq_of_mem _ hq
     filter_upwards [hmem] with r hr
-    simp only [extendIntervalById, if_pos hr.2]
+    simp only [extendIntervalById, ite_eq_left hr.2]
   · let U : Set (P × ℝ) := {r | r.2 < a + ε ∨ b - ε < r.2}
     have hU : IsOpen U :=
       (isOpen_lt continuous_snd continuous_const).union (isOpen_lt continuous_const continuous_snd)
@@ -36,9 +36,9 @@ theorem contDiffOn_extendIntervalById
     apply contDiffWithinAt_snd.congr_of_eventuallyEq_of_mem _ hq
     filter_upwards [self_mem_nhdsWithin, nhdsWithin_le_nhds (hU.mem_nhds hUq)] with r hr hUr
     by_cases hri : r.2 ∈ Icc a b
-    · simp only [extendIntervalById, if_pos hri]
+    · simp only [extendIntervalById, ite_eq_left hri]
       exact hfixed r.1 hr.1 r.2 hri (hUr.imp le_of_lt le_of_lt)
-    · simp only [extendIntervalById, if_neg hri]
+    · simp only [extendIntervalById, ite_eq_right hri]
 
 theorem leftInverse_extendIntervalById
     {P : Type*} {a b : ℝ} {f g : P × ℝ → ℝ} {p : P}
@@ -48,8 +48,8 @@ theorem leftInverse_extendIntervalById
       (fun y ↦ extendIntervalById a b f (p, y)) := by
   intro y
   by_cases hy : y ∈ Icc a b
-  · simp only [extendIntervalById, if_pos hy, if_pos (hf hy)]
+  · simp only [extendIntervalById, ite_eq_left hy, ite_eq_left (hf hy)]
     exact hinv y hy
-  · simp only [extendIntervalById, if_neg hy]
+  · simp only [extendIntervalById, ite_eq_right hy]
 
 end DifferentialGeometry.Analysis

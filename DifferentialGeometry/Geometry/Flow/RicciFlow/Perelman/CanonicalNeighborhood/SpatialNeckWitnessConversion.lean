@@ -554,7 +554,7 @@ theorem _root_.DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.Spatia
         ring
       jet_succ := by
         intro b s _hs z _hz v
-        simp only [if_neg (Nat.add_one_ne_zero b)]
+        simp only [ite_eq_right (Nat.add_one_ne_zero b)]
         change 0 = derivWithin (fun _ => (if b = 0 then T else 0) z v) ({0} : Set ℝ) s
         simp only [derivWithin_fun_const, Pi.zero_apply]
       equivalence := by
@@ -569,8 +569,8 @@ theorem _root_.DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.Spatia
       close := by
         intro a b hab s _hs z hz
         by_cases hb : b = 0
-        · simpa only [if_pos hb] using hbound a (by omega) z hz
-        · rw [if_neg hb, tensor02CovDerivNormWith,
+        · simpa only [ite_eq_left hb] using hbound a (by omega) z hz
+        · rw [ite_eq_right hb, tensor02CovDerivNormWith,
             tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_zero_tensor]
           simpa only [ContMDiffSection.coe_zero, Pi.zero_apply, normSq0S, inner0S,
             MetricFiberData.inner, map_zero, Real.sqrt_zero] using heps.le }

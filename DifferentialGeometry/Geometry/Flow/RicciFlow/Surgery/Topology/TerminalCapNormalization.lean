@@ -48,7 +48,7 @@ theorem TerminalLimitMetric.eventually_cap_neck_compact_capture
     (hcap : ∀ n, (W n).alternative = CanonicalAlternative.cap (cap n) (depth n)) :
     ∃ K : Set G.terminalRegularOpen, IsCompact K ∧
       ∃ (v : ℕ → P.Carrier) (neck : ∀ n, StrongNeck G.flow eps (v n) (τ n)),
-        (∀ n z, (cap n).tube_map z = (neck n).map z) ∧
+        (∀ n z, (cap n).tubeMap z = (neck n).map z) ∧
         (∀ n, v n ∈ (cap n).tube) ∧
         ∀ᶠ n in atTop,
           (W n).domain.carrier ∪ (neck n).map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆
@@ -93,7 +93,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_canonical_caps
     (hcap : ∀ n, (W n).alternative = CanonicalAlternative.cap (cap n) (depth n)) :
     ∀ᶠ n in atTop, ∃ (v : G.terminalRegularOpen)
       (nk : StrongNeck G.flow eps v.val (τ n)),
-      (∀ z, (cap n).tube_map z = nk.map z) ∧ v.val ∈ (cap n).tube ∧
+      (∀ z, (cap n).tubeMap z = nk.map z) ∧ v.val ∈ (cap n).tube ∧
       ∃ N : NormalizedNeck L.metric δ k,
         N.center = v ∧ N.sphereMark = nk.center ∧
           ∀ z, (N.chart z).val = nk.map z.val := by
@@ -154,7 +154,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_canonical_caps
   obtain ⟨N, hNv, hNmark, hNmap⟩ := hn₁ (n - n₀) (by omega)
   have hresult : ∃ (v : G.terminalRegularOpen)
       (nk : StrongNeck G.flow eps v.val (τ (n - n₀ + n₀))),
-      (∀ z, (cap (n - n₀ + n₀)).tube_map z = nk.map z) ∧
+      (∀ z, (cap (n - n₀ + n₀)).tubeMap z = nk.map z) ∧
       v.val ∈ (cap (n - n₀ + n₀)).tube ∧
       ∃ N : NormalizedNeck L.metric δ k,
         N.center = v ∧ N.sphereMark = nk.center ∧

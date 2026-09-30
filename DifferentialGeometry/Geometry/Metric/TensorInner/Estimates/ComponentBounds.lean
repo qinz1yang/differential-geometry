@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.CoerciveBilinearInverse
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 
@@ -30,7 +31,7 @@ theorem exists_orthonormal_basis_norm_le_of_coercive
   refine ⟨basis, hON, fun i => ?_⟩
   have h1 : c * ‖(basis i : TangentSpace I x)‖ ^ 2 ≤ 1 := by
     have h := hlow (basis i)
-    rw [hON i i, if_pos rfl] at h
+    rw [hON i i, ite_eq_left rfl] at h
     exact h
   have hs : Real.sqrt c > 0 := Real.sqrt_pos.mpr hc
   have hsq : Real.sqrt c * Real.sqrt c = c :=

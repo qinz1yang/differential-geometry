@@ -14,6 +14,10 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.SlotInsertion
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.SlotFibreNormBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ProductGridRankLeftBound
+
+open DifferentialGeometry.TensorMetric
+  (norm_eq_sqrt_tensorInnerPointwise riemannianFiberNormSq
+    riemannianFiberNormSq_eq_tensorInnerPointwise)
 open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -802,7 +806,7 @@ theorem covGrad_inverseMetricDifferenceSlotCoefficient_eq_operatorFieldCompositi
     tensor0SOne_apply_neg_comp (I := I) x om]
   rw [connectionDifferenceGInvComposite_pairing_apply (I := I) g₀ g₁ x om
     (fun j : Fin 2 => if j = 0 then Y x else v)]
-  simp only [Fin.isValue, if_true, if_neg (by decide : (1 : Fin 2) ≠ 0)]
+  simp only [Fin.isValue, ite_true, ite_eq_right (by decide : (1 : Fin 2) ≠ 0)]
 
 open DifferentialGeometry.TensorMultilinear
 

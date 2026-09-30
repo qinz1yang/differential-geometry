@@ -78,11 +78,11 @@ theorem exists_isPLHomeomorphOn_derivedNeighborhoodCell_edge
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {a b : E} (hab : a ≠ b)
     (he : {a, b} ∈ K.faces) :
     ∃ g : (Fin 3 → ℝ) × ℝ → E,
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3) ×ˢ Icc 0 1)
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc 0 1)
         (derivedNeighborhoodCell K {a, b}).space ∧
-      g '' (stdSimplex ℝ (Fin 3) ×ˢ {0}) =
+      g '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {0}) =
         (derivedNeighborhoodCell K {a, b}).space ∩ (derivedNeighborhoodCell K {a}).space ∧
-      g '' (stdSimplex ℝ (Fin 3) ×ˢ {1}) =
+      g '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {1}) =
         (derivedNeighborhoodCell K {a, b}).space ∩ (derivedNeighborhoodCell K {b}).space := by
   classical
   have ha : {a} ∈ K.faces := K.down_closed he (by simp) (Finset.singleton_nonempty a)
@@ -103,7 +103,7 @@ theorem exists_isPLHomeomorphOn_derivedNeighborhoodCell_edge
     (hK.derivedNeighborhoodCell_inter_subset_boundaryComplex he hb heb)
     (hdis.mono inter_subset_right inter_subset_right) hf
   refine ⟨g, hg, ?_, hg1⟩
-  have h0 : EqOn (g ∘ fun x => (x, (0 : ℝ))) f (stdSimplex ℝ (Fin 3)) := hg0
+  have h0 : EqOn (g ∘ fun x => (x, (0 : ℝ))) f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := hg0
   rw [← (isPLBall_stdSimplex 2).isPolyhedron.isPLHomeomorphOn_prod_const (0 : ℝ) |>.image_eq,
     image_image]
   exact h0.image_eq.trans hf.image_eq

@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Boundary.SmoothAnnulus
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import Mathlib.Topology.Connected.Clopen
 
+open DifferentialGeometry.SmoothRiemannianMetric (metric_inner_cauchy_schwarz_sq)
+
 
 set_option autoImplicit false
 

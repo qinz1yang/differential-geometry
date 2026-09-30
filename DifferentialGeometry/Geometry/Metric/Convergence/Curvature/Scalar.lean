@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.CoordinateBounds
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentityOffCenter
 import DifferentialGeometry.Geometry.Curvature.Coordinates.ScalarTrace
@@ -50,7 +51,7 @@ private theorem abs_metricScalarAt_sub_bound_on_chart
   obtain ⟨Minv, hMinv0, hMinv⟩ :=
     exists_abs_chartInvGramMatrix_le_of_lower_bound (I := I) gRef α hK
       (by rwa [trivializationAt_baseSet_eq_chartAt_source]) lam hlam
-  obtain ⟨CJ, hCJ0, hCJ⟩ := exists_chartMetricJet2DiffSup_le (I := I) gRef α hK hKchart
+  obtain ⟨CJ, hCJ0, hCJ⟩ := exists_chartMetricJet2DiffSum_le (I := I) gRef α hK hKchart
   set nR : Real := (Module.finrank Real E : Real) with hnR
   have hnR0 : 0 ≤ nR := Nat.cast_nonneg _
   set Cinv : Real := nR ^ 2 * Minv ^ 2 with hCinv
@@ -82,25 +83,25 @@ private theorem abs_metricScalarAt_sub_bound_on_chart
       |chartInvGramOnE (I := I) u α i j z - chartInvGramOnE (I := I) u' α i j z| ≤
         Ci * S := by
     intro i j
-    have hmatrix := chartInvGramMatrix_entry_sub_abs_le_gramDiffSup (I := I) (M := M)
+    have hmatrix := chartInvGramMatrix_entry_sub_abs_le_chartGramDiffSum (I := I) (M := M)
       u u' α hybase
       (fun p q => hMinv y hy u (hlowu y hy) p q)
       (fun p q => hMinv y hy u' (hlowu' y hy) p q) i j
-    have hgram : chartGramDiffSup (I := I) (M := M) u u' α y ≤
-        chartMetricJet2DiffSup (I := I) (M := M) u u' α z := by
+    have hgram : DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) u u' α y ≤
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) u u' α z := by
       rw [← hψ]
-      exact (chartGramDiffSup_le_jet1 (I := I) (M := M) u u' α z).trans
-        (chartMetricJet1DiffSup_le_jet2 (I := I) (M := M) u u' α z)
-    have hjet : chartMetricJet2DiffSup (I := I) (M := M) u u' α z ≤ CJ * S := by
+      exact (DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum_le_chartMetricJet1DiffSum (I := I) (M := M) u u' α z).trans
+        (DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum_le_chartMetricJet2DiffSum (I := I) (M := M) u u' α z)
+    have hjet : DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) u u' α z ≤ CJ * S := by
       rw [hz, hS]
       exact hCJ u u' y hy
     rw [chartInvGramOnE_def, chartInvGramOnE_def, hψ]
     calc
       |chartInvGramMatrix (I := I) u α y i j - chartInvGramMatrix (I := I) u' α y i j|
-          ≤ Cinv * chartGramDiffSup (I := I) (M := M) u u' α y := by
+          ≤ Cinv * DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) u u' α y := by
             rw [hCinv, hnR]
             exact hmatrix
-      _ ≤ Cinv * chartMetricJet2DiffSup (I := I) (M := M) u u' α z :=
+      _ ≤ Cinv * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) u u' α z :=
         mul_le_mul_of_nonneg_left hgram hCinv0
       _ ≤ Cinv * (CJ * S) := mul_le_mul_of_nonneg_left hjet hCinv0
       _ = Ci * S := by rw [hCi]; ring
@@ -256,14 +257,14 @@ omit [CompleteSpace E] [T2Space M] [BoundarylessManifold I M] in
 private theorem compactScalar_inner_abs (g : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     |g.inner x v w| ≤ Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w) := by
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let _ : InnerProductSpace.Core ℝ (TangentSpace I x) := D.toCore
   let _ : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup ℝ (TangentSpace I x) _ _ _ D.toCore
   let _ : InnerProductSpace ℝ (TangentSpace I x) :=
     @InnerProductSpace.ofCore ℝ (TangentSpace I x) _ _ _ D.toCore.toCore
   have hi (a b : TangentSpace I x) : g.inner x a b = inner ℝ a b := by
-    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x) a b]
+    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x) a b]
     exact (MetricFiberData.toCore_inner D a b).symm
   simp only [hi, real_inner_self_eq_norm_sq, Real.sqrt_sq_eq_abs, abs_norm]
   exact abs_real_inner_le_norm v w

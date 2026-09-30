@@ -49,7 +49,7 @@ private theorem exists_endRay_of_convergent_curves {ell : ℝ} (hell : 0 < ell)
     (hpoints s hs).choose else (hpoints 0 hzero).choose
   have hgamma (s : ℝ) (hs : s ∈ Ico 0 ell) :
       Tendsto (fun i => beta i s) atTop (𝓝 (gamma s)) := by
-    simpa only [gamma, dif_pos hs] using (hpoints s hs).choose_spec
+    simpa only [gamma, dite_eq_left hs] using (hpoints s hs).choose_spec
   have hisom : Isometry (fun s : Ico 0 ell => gamma s) := by
     apply Isometry.of_dist_eq
     intro s t
@@ -95,16 +95,16 @@ private theorem exists_endRay_subseq_of_equicontinuous {ell : ℝ} (hell : 0 < e
   let b (i : ℕ) (s : ℝ) : W := if hs : s ∈ Ico 0 ell then
     beta (phi i) ⟨s, hs⟩ else beta (phi i) ⟨0, le_rfl, hell⟩
   obtain ⟨E, a, ha, haconv, halower, hmissing⟩ := exists_endRay_of_convergent_curves hell b
-    (fun s hs => ⟨gamma ⟨s, hs⟩, by simpa only [b, dif_pos hs] using heval ⟨s, hs⟩⟩)
+    (fun s hs => ⟨gamma ⟨s, hs⟩, by simpa only [b, dite_eq_left hs] using heval ⟨s, hs⟩⟩)
     (fun s hs t ht => by
-      simpa only [b, dif_pos hs, dif_pos ht, Function.comp_def] using
+      simpa only [b, dite_eq_left hs, dite_eq_left ht, Function.comp_def] using
         (hpair ⟨s, hs⟩ ⟨t, ht⟩).comp hphi.tendsto_atTop)
-    f hf (fun s hs w hw => hlower phi hphi ⟨s, hs⟩ w (by simpa only [b, dif_pos hs] using hw))
+    f hf (fun s hs w hw => hlower phi hphi ⟨s, hs⟩ w (by simpa only [b, dite_eq_left hs] using hw))
   refine ⟨phi, E, a, hphi, ha, ?_, halower, hmissing⟩
   intro s
   have hs : ell - (s : ℝ) ∈ Ioc 0 ell :=
     ⟨sub_pos.mpr s.property.2, sub_le_self _ s.property.1⟩
-  simpa only [sub_sub_cancel, b, dif_pos s.property] using haconv (ell - (s : ℝ)) hs
+  simpa only [sub_sub_cancel, b, dite_eq_left s.property] using haconv (ell - (s : ℝ)) hs
 
 
 theorem exists_endRay_subseq_of_scalar_distance_lower_bound {ell : ℝ} (hell : 0 < ell)

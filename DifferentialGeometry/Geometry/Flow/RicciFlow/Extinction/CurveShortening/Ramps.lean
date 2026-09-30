@@ -98,9 +98,7 @@ private theorem angle_eq {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 end ProductCurve
 
-private theorem slice_slice_contDiffOn {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+private theorem slice_slice_contDiffOn {M : Type*}
     (c : ProductCurve M) {J : Set ℝ} {t : ℝ} (ht : t ∈ J)
     (hc : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => c.y p.1 p.2) (univ ×ˢ J)) :
     ContDiffOn ℝ ∞ (fun z : ℝ => c.y z t) univ := by
@@ -144,7 +142,7 @@ private theorem ramp_angle_sq_le_one {E : Type*} [NormedAddCommGroup E] [NormedS
     exact (div_le_one hpos).mpr hsq
 
 private theorem ramp_speed_pos {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) {J : Set ℝ} (hc : c.ImmersedOn (I := I) J)
@@ -228,14 +226,14 @@ private theorem ramp_angle_mul_speed {E : Type*} [NormedAddCommGroup E] [NormedS
     field_simp
 
 theorem productCurve_integral_angle_of_smoothOn {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E] {H : Type*} [TopologicalSpace H]
+    {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) {J : Set ℝ} (hsmooth : c.SmoothOn (I := I) J)
     {t : ℝ} (ht : t ∈ J) :
     c.integral g lambda (c.angle g lambda) t = c.degree * lambda := by
-  have hslice := slice_slice_contDiffOn (H := H) (I := I) c ht hsmooth.2
+  have hslice := slice_slice_contDiffOn c ht hsmooth.2
   have hdiff : ∀ x : ℝ, DifferentiableAt ℝ (fun z : ℝ => c.y z t) x := fun x =>
     (hslice.differentiableOn (by norm_num)).differentiableAt Filter.univ_mem
   have hderiv : ∀ x : ℝ, HasDerivAt (fun z : ℝ => c.y z t)
@@ -259,7 +257,7 @@ theorem productCurve_integral_angle_of_smoothOn {E : Type*} [NormedAddCommGroup 
         ring
 
 theorem productCurve_integral_angle {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E] {H : Type*} [TopologicalSpace H]
+    [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M)
@@ -269,7 +267,7 @@ theorem productCurve_integral_angle {E : Type*} [NormedAddCommGroup E] [NormedSp
   productCurve_integral_angle_of_smoothOn c g lambda hlambda hc.smooth ht
 
 private theorem ramp_slice_continuous {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E] {H : Type*} [TopologicalSpace H]
+    [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M)
@@ -282,7 +280,7 @@ private theorem ramp_slice_continuous {E : Type*} [NormedAddCommGroup E] [Normed
     (CurveMap.space_slice_contMDiffOn (I := I) c.projection J hc.smooth.1 t ht).continuousOn.mono
       (fun x _ => mem_univ x)
   have hy : ContinuousOn (fun x : ℝ => c.y x t) (Icc (0:ℝ) (0 + 1)) := by
-    have h := (slice_slice_contDiffOn (H := H) (I := I) c ht hc.smooth.2).continuousOn
+    have h := (slice_slice_contDiffOn c ht hc.smooth.2).continuousOn
     exact h.mono (fun x _ => mem_univ x)
   have hyc : ContinuousOn (fun x : ℝ => (c.y x t : Surgery.Topology.Circle))
       (Icc (0:ℝ) (0 + 1)) :=
@@ -372,7 +370,7 @@ def productEmbeddedCoordinates {E : Type*} [NormedAddCommGroup E] [NormedSpace �
 
 private theorem productEmbeddedCoordinates_congr {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     {N : ℕ} (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N) {J : Set ℝ}
     {d d' : ProductCurve M} (h : ∀ z t, t ∈ J → d.map z t = d'.map z t) :
     ∀ x t, t ∈ J →
@@ -408,7 +406,7 @@ def smoothProductCylinderTopology {E : Type*} [NormedAddCommGroup E] [NormedSpac
 
 private theorem productCylinder_generateFrom_congr {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     {N : ℕ} (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N) {J : Set ℝ}
     {d d' : ProductCurve M} (h : ∀ z t, t ∈ J → d.map z t = d'.map z t) :
     ∀ s ∈ {U | ∃ c : ProductCurve M, ∃ m : ℕ, ∃ ε : ℝ,
@@ -434,7 +432,7 @@ private theorem productCylinder_generateFrom_congr {E : Type*} [NormedAddCommGro
 
 private theorem productCylinder_continuousAt_congr {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     {N : ℕ} (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N) {J : Set ℝ}
     {P : Type*} [TopologicalSpace P] {f g : P → ProductCurve M} {p : P}
     (h : ∀ᶠ q in 𝓝 p, ∀ z t, t ∈ J → (f q).map z t = (g q).map z t)
@@ -564,7 +562,7 @@ structure RampFamilyInput {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
           ∀ z, (sol c hs hr).map z a = c.map z a
 
 private theorem ramp_initialMinAngle_pos {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E] {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M) (lambda a : ℝ)
     (hcont : Continuous fun x : ℝ => c.angle g lambda x a)
@@ -653,7 +651,7 @@ theorem rfs_csf_ramp_existence (B : RicciBackground (I := I) (M := M) D a b)
 theorem rfs_csf_ramp_family (B : RicciBackground (I := I) (M := M) D a b)
     (lambda : ℝ) (hlambda : 0 < lambda) (hlambda_one : lambda ≤ 1)
     {N : ℕ} (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    {P : Type*} [TopologicalSpace P] [CompactSpace P] (initial : P → ProductCurve M)
+    {P : Type*} [TopologicalSpace P] (initial : P → ProductCurve M)
     (hcontinuous : @Continuous P (ProductCurve M) inferInstance
       (smoothProductInitialTopology e a) initial)
     (hsmooth : ∀ p, (initial p).SmoothOn (I := I) {a})

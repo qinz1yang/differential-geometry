@@ -47,7 +47,7 @@ theorem IsPLCellOn.exists_planar_chart_boundary_complement
     (hDB i).trans (hB ▸ image_mono hfrontP)
   have hqExists (i : ι) :
       ∃ q : (Fin 3 → ℝ) → E3,
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
           (Function.invFunOn u P '' D i) ∧
         Function.invFunOn u P '' J i = q '' stdSimplexBoundary 2 :=
     (hD i).exists_isPLHomeomorphOn_invFunOn hu (hDQ i)

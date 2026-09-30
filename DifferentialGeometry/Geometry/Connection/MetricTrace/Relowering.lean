@@ -10,6 +10,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.TensorMetric (reLower reLower_eval traceField_eq_sum)
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -40,7 +41,7 @@ private theorem traceInput_last {k : ℕ} {x : M} (a b : TangentSpace I x)
   have hv : ((Fin.last (k + 2) : Fin (k + 1 + 2)) : ℕ) = k + 2 := rfl
   rw [metricTraceInput_apply]
   simp only [hv]
-  rw [dif_neg (by omega : ¬(k + 2 = 0)), dif_neg (by omega : ¬(k + 2 = 1))]
+  rw [dite_eq_right (by omega : ¬(k + 2 = 0)), dite_eq_right (by omega : ¬(k + 2 = 1))]
   exact congrArg tail (Fin.ext (by simp))
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in

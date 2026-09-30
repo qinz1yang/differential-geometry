@@ -44,7 +44,7 @@ theorem exists_filling_injOn_vertices_of_heightIndex_eq_zero
       heightIndex L.space f = 0 ∧
       ∀ r : ℝ, (∃ x ∈ L.space, f x < r) → (∃ y ∈ L.space, r < f y) →
         ∃ g : (Fin 3 → ℝ) → E,
-          IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (R.space ∩ {x | f x = r}) ∧
+          IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (R.space ∩ {x | f x = r}) ∧
           g '' stdSimplexBoundary 2 = L.space ∩ {x | f x = r} := by
   obtain ⟨R, hRfin, hRman, hRboundary, hRfront, hRcl, hRconn, hRext⟩ :=
     hL.isCombinatorialManifold.exists_isCombinatorialManifoldWithBoundary_boundaryComplex

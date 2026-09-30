@@ -7,22 +7,35 @@ set_option autoImplicit false
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits Simplicial Topology
+open Convexity.StdSimplex (coordinateSet coordinateHomeomorph)
 
 universe u
 
 namespace DifferentialGeometry.SSet
 
+private def simplexCoordinateULiftHomeomorph (n : ℕ) :
+    SimplexCategory.toTop.{u}.obj ⦋n⦌ ≃ₜ ULift.{u} (coordinateSet ℝ (Fin (n + 1))) :=
+  Homeomorph.ulift.trans ((coordinateHomeomorph ℝ _).trans Homeomorph.ulift.symm)
+
+private def boundaryCoordinateULiftHomeomorph (n : ℕ) :
+    simplexBoundarySet.{u} n ≃ₜ
+      {p : ULift.{u} (coordinateSet ℝ (Fin (n + 1))) //
+        p.down ∈ DifferentialGeometry.Simplex.boundary (Fin (n + 1))} :=
+  (simplexCoordinateULiftHomeomorph n).subtype (fun _ => Iff.rfl)
+
 def nativeSimplexHomeomorph (n : ℕ) :
     _root_.SSet.toTop.obj (Δ[n] : _root_.SSet.{u}) ≃ₜ
-      stdSimplex ℝ (ULift.{u} (Fin (n + 1))) :=
+      coordinateSet ℝ (ULift.{u} (Fin (n + 1))) :=
   (TopCat.homeoOfIso (_root_.SSet.toTopSimplex.app ⦋n⦌)).trans
-    (DifferentialGeometry.Simplex.uliftHomeomorph (Fin (n + 1)))
+    ((simplexCoordinateULiftHomeomorph n).trans
+      (DifferentialGeometry.Simplex.uliftHomeomorph (Fin (n + 1))))
 
 def nativeBoundaryHomeomorph (n : ℕ) :
     _root_.SSet.toTop.obj (_root_.SSet.boundary n : _root_.SSet.{u}) ≃ₜ
       DifferentialGeometry.Simplex.boundary (ULift.{u} (Fin (n + 1))) :=
   (boundaryRealizationHomeomorph n).trans
-    (DifferentialGeometry.Simplex.boundaryUliftHomeomorph (Fin (n + 1)))
+    ((boundaryCoordinateULiftHomeomorph n).trans
+      (DifferentialGeometry.Simplex.boundaryUliftHomeomorph (Fin (n + 1))))
 
 @[reassoc]
 theorem nativeBoundaryHomeomorph_inclusion (n : ℕ) :
@@ -33,11 +46,14 @@ theorem nativeBoundaryHomeomorph_inclusion (n : ℕ) :
   apply ConcreteCategory.hom_ext
   intro x
   change DifferentialGeometry.Simplex.uliftHomeomorph (Fin (n + 1))
-      ((_root_.SSet.toTopSimplex.hom.app ⦋n⦌)
-        ((_root_.SSet.toTop.map (_root_.SSet.boundary n).ι) x)) =
-    DifferentialGeometry.Simplex.uliftHomeomorph (Fin (n + 1)) ((boundaryRealizationHomeomorph n x).val)
-  exact congrArg (DifferentialGeometry.Simplex.uliftHomeomorph (Fin (n + 1)))
-    (boundaryRealizationHomeomorph_ambient n x).symm
+      (simplexCoordinateULiftHomeomorph n
+        ((_root_.SSet.toTopSimplex.hom.app ⦋n⦌)
+          ((_root_.SSet.toTop.map (_root_.SSet.boundary n).ι) x))) =
+    DifferentialGeometry.Simplex.uliftHomeomorph (Fin (n + 1))
+      (simplexCoordinateULiftHomeomorph n (boundaryRealizationHomeomorph n x).val)
+  exact congrArg (fun p => DifferentialGeometry.Simplex.uliftHomeomorph (Fin (n + 1))
+    (simplexCoordinateULiftHomeomorph n p)) (boundaryRealizationHomeomorph_ambient n x).symm
+
 
 theorem nativeSimplexHomeomorph_mem_boundary (n : ℕ)
     (x : _root_.SSet.toTop.obj (Δ[n] : _root_.SSet.{u})) :
@@ -77,7 +93,7 @@ def nativeSimplexRelativeChainIso (n : ℕ) :
     DifferentialGeometry.Homology.relativeChainComplex (_root_.SSet.toTop.obj (Δ[n] : _root_.SSet.{u}))
         (Set.range (_root_.SSet.toTop.map (_root_.SSet.boundary n).ι)) R ≅
       DifferentialGeometry.Homology.relativeChainComplex
-        (TopCat.of (stdSimplex ℝ (ULift.{u} (Fin (n + 1)))))
+        (TopCat.of (coordinateSet ℝ (ULift.{u} (Fin (n + 1)))))
         (DifferentialGeometry.Simplex.boundary (ULift.{u} (Fin (n + 1)))) R :=
   DifferentialGeometry.Homology.relativeChainIso R (nativeSimplexHomeomorph n)
     (nativeSimplexHomeomorph_mem_boundary n)
@@ -92,7 +108,7 @@ def nativeAttachingMap :
 
 
 def nativeCellMap :
-    TopCat.of (stdSimplex ℝ (ULift.{u} (Fin (n + 1)))) ⟶ _root_.SSet.toTop.obj Y :=
+    TopCat.of (coordinateSet ℝ (ULift.{u} (Fin (n + 1)))) ⟶ _root_.SSet.toTop.obj Y :=
   (TopCat.isoOfHomeo (nativeSimplexHomeomorph n)).inv ≫ _root_.SSet.toTop.map r
 
 @[reassoc]

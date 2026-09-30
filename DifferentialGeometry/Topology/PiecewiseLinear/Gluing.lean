@@ -338,7 +338,7 @@ theorem image_glueEmbed₁_eq (h : IsGlueIso A₁ A₂ ψ ψ') {s : Finset E} (h
   have hv₁ : {v} ∈ A₁.faces :=
     A₁.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
   change glueEmbed₁ A₁ ψ v = glueEmbed₂ A₂ ψ' (ψ v)
-  rw [glueEmbed₁, glueEmbed₂, if_pos hv₁, if_pos (h.singleton_mem hv₁), h.left s hs v hv]
+  rw [glueEmbed₁, glueEmbed₂, ite_eq_left hv₁, ite_eq_left (h.singleton_mem hv₁), h.left s hs v hv]
 
 theorem image_glueEmbed₂_eq (h : IsGlueIso A₁ A₂ ψ ψ') {t : Finset F} (ht : t ∈ A₂.faces) :
     t.image (glueEmbed₂ A₂ ψ') = (t.image ψ').image (glueEmbed₁ A₁ ψ) := by
@@ -347,7 +347,7 @@ theorem image_glueEmbed₂_eq (h : IsGlueIso A₁ A₂ ψ ψ') {t : Finset F} (h
   have hw₂ : {w} ∈ A₂.faces :=
     A₂.down_closed ht (Finset.singleton_subset_iff.mpr hw) (Finset.singleton_nonempty w)
   change glueEmbed₂ A₂ ψ' w = glueEmbed₁ A₁ ψ (ψ' w)
-  rw [glueEmbed₁, glueEmbed₂, if_pos hw₂, if_pos (h.symm.singleton_mem hw₂), h.right t ht w hw]
+  rw [glueEmbed₁, glueEmbed₂, ite_eq_left hw₂, ite_eq_left (h.symm.singleton_mem hw₂), h.right t ht w hw]
 
 theorem exists_face_filter_glued₁
     (hfull₁ : ∀ s ∈ K₁.faces, (∀ v ∈ s, {v} ∈ A₁.faces) → s ∈ A₁.faces)
@@ -491,12 +491,12 @@ noncomputable def gluedMap (z : E × F × ℝ) : X :=
 omit [TopologicalSpace X] in
 theorem gluedMap_of_mem {z : E × F × ℝ} (hz : z ∈ (glued₁ K₁ A₁ ψ).space) :
     gluedMap K₁ A₁ ψ g₁ g₂ z = g₁ (glueFst E F z) := by
-  rw [gluedMap, if_pos hz]
+  rw [gluedMap, ite_eq_left hz]
 
 omit [TopologicalSpace X] in
 theorem gluedMap_of_notMem {z : E × F × ℝ} (hz : z ∉ (glued₁ K₁ A₁ ψ).space) :
     gluedMap K₁ A₁ ψ g₁ g₂ z = g₂ (glueSnd E F z) := by
-  rw [gluedMap, if_neg hz]
+  rw [gluedMap, ite_eq_right hz]
 
 variable {K₁ A₁ ψ g₁ g₂}
 

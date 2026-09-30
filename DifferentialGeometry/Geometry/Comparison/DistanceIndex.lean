@@ -519,7 +519,7 @@ private theorem linIndep_ortho
   apply LinearMap.linearIndependent_of_isOrthoᵢ (B := b)
   · intro i j hij
     change g.inner p (v i) (v j) = 0
-    rw [hON i j, if_neg hij]
+    rw [hON i j, ite_eq_right hij]
   · intro i
     change g.inner p (v i) (v i) ≠ 0
     simp [hON]

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ApplyI
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ModelBridge
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Formula
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOneTwo
-import DifferentialGeometry.Tensor.RicciIdentity.ContractionProductRules
+import DifferentialGeometry.Tensor.Contraction.ProductRules
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.FieldComponents
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 
@@ -16,6 +16,8 @@ namespace DifferentialGeometry.Tensor.RicciIdentity
 attribute [local instance] Fintype.ofFinite Classical.propDecidable
 
 open Bundle DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Tensor.Contraction (contractUpper
+  contractUpper_commutator_of_second_product_rules contractUpper_second_product_of_first_product_rules)
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]

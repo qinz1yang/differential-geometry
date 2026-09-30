@@ -107,11 +107,11 @@ theorem revLaplacianPotential_time
   let F : ℝ → M → ℝ := fun r => if r ∈ U then f r else fun _ => 0
   have hFeq : F =ᶠ[𝓝 t] f := by
     filter_upwards [hU.mem_nhds htU] with r hr
-    simp only [F, if_pos hr]
+    simp only [F, ite_eq_left hr]
   have hFs (r : ℝ) : ContMDiff I 𝓘(ℝ, ℝ) ∞ (F r) := by
     by_cases hr : r ∈ U
-    · simpa only [F, if_pos hr] using hfs r hr
-    · simp only [F, if_neg hr]
+    · simpa only [F, ite_eq_left hr] using hfs r hr
+    · simp only [F, ite_eq_right hr]
       exact contMDiff_const
   have hFj (y : M) : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M => F p.1 p.2) (t, y) := by
@@ -152,7 +152,7 @@ theorem revLaplacianPotential_time
     rfl
   have hres := hmain.congr_of_eventuallyEq heq
   have hsimp := hres
-  simp only [F, if_pos htU, metricRicci_apply] at hsimp
+  simp only [F, ite_eq_left htU, metricRicci_apply] at hsimp
   have hh : hessianSec (LeviCivita (G.metric t))
       (leviCivita_contMDiffCovariantDerivativeLocally (G.metric t)) (f t) (hfs t htU) x =
       hessianSec (metricCov (G.metric t)) (metricCov_smooth (G.metric t))

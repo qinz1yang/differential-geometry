@@ -202,7 +202,7 @@ theorem exists_c2Pullback_schauder_bounds_on_compact_convex_of_contDiffOn
   have hK2 : HolderWith K2 alpha
       (s.domRestrict (fun x => hessianCurryEquiv V W
         (iteratedFDeriv Real 2 phi x))) := by
-    have hcomp := (hessianCurryEquiv V W).lipschitz.holderWith.comp hK2raw
+    have hcomp := (hessianCurryEquiv V W).lipschitzWith.holderWith.comp hK2raw
     intro x y
     simpa only [NNReal.coe_one, NNReal.rpow_one, one_mul,
       Function.comp_apply, Set.domRestrict_apply] using hcomp x y

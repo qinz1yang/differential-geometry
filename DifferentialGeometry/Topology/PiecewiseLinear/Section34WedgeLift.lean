@@ -18,7 +18,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem exists_bentDisk_centeredPrism {D A V : Set E3} {q : (Fin 3 → ℝ) → E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) {ρ : E3 × ℝ → E3}
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {ρ : E3 × ℝ → E3}
     (hρ : IsPLHomeomorphOn ρ ((q '' stdSimplexBoundary 2) ×ˢ Icc (0 : ℝ) 1) A)
     (hρ0 : ∀ x ∈ q '' stdSimplexBoundary 2, ρ (x, 0) = x)
     (hAD : A ∩ D = q '' stdSimplexBoundary 2) (hV : IsOpen V) (hDAV : D ∪ A ⊆ V) :
@@ -26,16 +26,16 @@ theorem exists_bentDisk_centeredPrism {D A V : Set E3} {q : (Fin 3 → ℝ) → 
       (prism : (Fin 3 → ℝ) × ℝ → E3) (b : EuclideanSpace ℝ (Fin 2) → (Fin 3 → ℝ)),
       IsPLBall 2 E₁ ∧
       IsPLHomeomorphOn β E₁ (D ∪ ρ '' ((q '' stdSimplexBoundary 2) ×ˢ Icc 0 (1 / 2))) ∧
-      ContinuousOn prism (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
-      InjOn prism (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
-      prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ⊆ V ∧
-      (∀ x ∈ E₁, prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∈ 𝓝 (β x)) ∧
-      prism '' (stdSimplex ℝ (Fin 3) ×ˢ {(0 : ℝ)}) =
-        (D ∪ A) ∩ prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
-      MapsTo b E₁ (stdSimplex ℝ (Fin 3)) ∧ IsPiecewiseAffineOn b E₁ ∧
+      ContinuousOn prism (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
+      InjOn prism (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
+      prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ⊆ V ∧
+      (∀ x ∈ E₁, prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∈ 𝓝 (β x)) ∧
+      prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(0 : ℝ)}) =
+        (D ∪ A) ∩ prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
+      MapsTo b E₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ∧ IsPiecewiseAffineOn b E₁ ∧
       (∀ x ∈ E₁, prism (b x, 0) = β x) ∧
       ∀ (G : EuclideanSpace ℝ (Fin 2) → (Fin 3 → ℝ) × ℝ) (S : Set (EuclideanSpace ℝ (Fin 2))),
-        IsPiecewiseAffineOn G S → MapsTo G S (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) →
+        IsPiecewiseAffineOn G S → MapsTo G S (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) →
           IsPiecewiseAffineOn (prism ∘ G) S := by
   set J := q '' stdSimplexBoundary 2 with hJdef
   have hJpoly : IsPolyhedron J := (hq.isPLSphere_image_stdSimplexBoundary (n := 1)).isPolyhedron
@@ -108,24 +108,24 @@ theorem exists_bentDisk_centeredPrism {D A V : Set E3} {q : (Fin 3 → ℝ) → 
   rw [hPcen, hβ.image_eq]
 
 theorem exists_prism_side_of_bentChart {C U : Set E3} {prism : (Fin 3 → ℝ) × ℝ → E3}
-    (hPc : ContinuousOn prism (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1))
-    (hPi : InjOn prism (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1))
-    (hCen : prism '' (stdSimplex ℝ (Fin 3) ×ˢ {(0 : ℝ)}) =
-      C ∩ prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1))
-    {a₀ : Fin 3 → ℝ} (ha₀ : a₀ ∈ stdSimplex ℝ (Fin 3))
-    (hN : prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∈ 𝓝 (prism (a₀, 0)))
+    (hPc : ContinuousOn prism (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1))
+    (hPi : InjOn prism (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1))
+    (hCen : prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(0 : ℝ)}) =
+      C ∩ prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1))
+    {a₀ : Fin 3 → ℝ} (ha₀ : a₀ ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
+    (hN : prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∈ 𝓝 (prism (a₀, 0)))
     {φ : E3 → ℝ × ℝ × ℝ} {r ε : ℝ} (hε : ε = 1 ∨ ε = -1) (hU : IsOpen U)
     (hpU : prism (a₀, 0) ∈ U) (hr : 0 < r) (hφ : IsPLHomeomorphOn φ U (Metric.ball 0 r))
     (hφp : φ (prism (a₀, 0)) = 0)
     (hC : ∀ y ∈ U, y ∈ C ↔
       ((φ y).2.2 = 0 ∧ (φ y).2.1 ≤ 0) ∨ ((φ y).2.1 = 0 ∧ 0 ≤ ε * (φ y).2.2)) :
     ∃ (s : ℝ) (O : Set E3), (s = 1 ∨ s = -1) ∧ IsOpen O ∧ prism (a₀, 0) ∈ O ∧ O ⊆ U ∧
-      (∀ a ∈ stdSimplex ℝ (Fin 3), ∀ t ∈ Ioc (0 : ℝ) 1, prism (a, s * t) ∈ O →
+      (∀ a ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ∀ t ∈ Ioc (0 : ℝ) 1, prism (a, s * t) ∈ O →
         (φ (prism (a, s * t))).2.1 < 0 ∧ 0 < ε * (φ (prism (a, s * t))).2.2) ∧
-      (∀ a ∈ stdSimplex ℝ (Fin 3), ∀ t ∈ Ioc (0 : ℝ) 1, prism (a, -s * t) ∈ O →
+      (∀ a ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ∀ t ∈ Ioc (0 : ℝ) 1, prism (a, -s * t) ∈ O →
         0 < (φ (prism (a, -s * t))).2.1 ∨ ε * (φ (prism (a, -s * t))).2.2 < 0) := by
   classical
-  set Δ := stdSimplex ℝ (Fin 3) with hΔdef
+  set Δ := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) with hΔdef
   set N := prism '' (Δ ×ˢ Icc (-1 : ℝ) 1) with hNdef
   set p := prism (a₀, 0) with hpdef
   set ψ := Function.invFunOn φ U with hψdef
@@ -152,7 +152,7 @@ theorem exists_prism_side_of_bentChart {C U : Set E3} {prism : (Fin 3 → ℝ) �
   have hOU : O ⊆ U := by
     rintro _ ⟨z, hz, rfl⟩
     exact hψU z (hballr hz)
-  have hΔc : IsCompact Δ := isCompact_stdSimplex ℝ (Fin 3)
+  have hΔc : IsCompact Δ := Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)
   set Kup := prism '' (Δ ×ˢ Icc (0 : ℝ) 1) with hKupdef
   set Klo := prism '' (Δ ×ˢ Icc (-1 : ℝ) 0) with hKlodef
   have hupsub : Δ ×ˢ Icc (0 : ℝ) 1 ⊆ Δ ×ˢ Icc (-1 : ℝ) 1 :=
@@ -385,7 +385,7 @@ theorem exists_prism_side_of_bentChart {C U : Set E3} {prism : (Fin 3 → ℝ) �
     · exact hupC (hKint _ hupK (hR h))
 
 theorem exists_bentDisk_wedgeSide {D A V₀ P V T : Set E3} {q : (Fin 3 → ℝ) → E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) {ρ : E3 × ℝ → E3}
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {ρ : E3 × ℝ → E3}
     (hρ : IsPLHomeomorphOn ρ ((q '' stdSimplexBoundary 2) ×ˢ Icc (0 : ℝ) 1) A)
     (hρ0 : ∀ x ∈ q '' stdSimplexBoundary 2, ρ (x, 0) = x)
     (hAD : A ∩ D = q '' stdSimplexBoundary 2) (hV₀ : IsOpen V₀) (hDAV : D ∪ A ⊆ V₀)
@@ -403,16 +403,16 @@ theorem exists_bentDisk_wedgeSide {D A V₀ P V T : Set E3} {q : (Fin 3 → ℝ)
       (σ s₀ : ℝ),
       IsPLBall 2 E₁ ∧
       IsPLHomeomorphOn β E₁ (D ∪ ρ '' ((q '' stdSimplexBoundary 2) ×ˢ Icc 0 (1 / 2))) ∧
-      ContinuousOn prism (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
-      InjOn prism (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
-      prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ⊆ V₀ ∧
-      (∀ x ∈ E₁, prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∈ 𝓝 (β x)) ∧
-      prism '' (stdSimplex ℝ (Fin 3) ×ˢ {(0 : ℝ)}) =
-        (D ∪ A) ∩ prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
-      MapsTo b E₁ (stdSimplex ℝ (Fin 3)) ∧ IsPiecewiseAffineOn b E₁ ∧
+      ContinuousOn prism (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
+      InjOn prism (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
+      prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ⊆ V₀ ∧
+      (∀ x ∈ E₁, prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∈ 𝓝 (β x)) ∧
+      prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(0 : ℝ)}) =
+        (D ∪ A) ∩ prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
+      MapsTo b E₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ∧ IsPiecewiseAffineOn b E₁ ∧
       (∀ x ∈ E₁, prism (b x, 0) = β x) ∧
       (∀ (G : EuclideanSpace ℝ (Fin 2) → (Fin 3 → ℝ) × ℝ) (S : Set (EuclideanSpace ℝ (Fin 2))),
-        IsPiecewiseAffineOn G S → MapsTo G S (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) →
+        IsPiecewiseAffineOn G S → MapsTo G S (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) →
           IsPiecewiseAffineOn (prism ∘ G) S) ∧
       (σ = 1 ∨ σ = -1) ∧ 0 < s₀ ∧ s₀ ≤ 1 ∧
       (∀ x ∈ E₁, ∀ t ∈ Ioc (0 : ℝ) s₀, prism (b x, σ * t) ∉ T) ∧
@@ -420,7 +420,7 @@ theorem exists_bentDisk_wedgeSide {D A V₀ P V T : Set E3} {q : (Fin 3 → ℝ)
         prism (b x₀, σ * t₀) ∉ P ∧ (prism (b x₀, σ * t₀) ∈ V ↔ ε = -1) := by
   classical
   set J := q '' stdSimplexBoundary 2 with hJdef
-  set Δ := stdSimplex ℝ (Fin 3) with hΔdef
+  set Δ := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) with hΔdef
   obtain ⟨E₁, β, prism, b, hE₁, hβ, hPc, hPi, hPV, hPn, hPcen, hbm, hbpa, hbβ, hPpl⟩ :=
     exists_bentDisk_centeredPrism hq hρ hρ0 hAD hV₀ hDAV
   set Bh := D ∪ ρ '' (J ×ˢ Icc (0 : ℝ) (1 / 2)) with hBhdef
@@ -612,7 +612,7 @@ theorem exists_bentDisk_wedgeSide {D A V₀ P V T : Set E3} {q : (Fin 3 → ℝ)
   exact (hwJ p₁ hp₁ (b x₀) (hbm hx₀) t₀ ⟨ht₀.1, ht₀.2.trans hs₀1⟩ hmem₀).2
 
 theorem exists_wedgeLift {D A V₀ P V T : Set E3} {q : (Fin 3 → ℝ) → E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) {ρ : E3 × ℝ → E3}
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {ρ : E3 × ℝ → E3}
     (hρ : IsPLHomeomorphOn ρ ((q '' stdSimplexBoundary 2) ×ˢ Icc (0 : ℝ) 1) A)
     (hρ0 : ∀ x ∈ q '' stdSimplexBoundary 2, ρ (x, 0) = x)
     (hAD : A ∩ D = q '' stdSimplexBoundary 2) (hV₀ : IsOpen V₀) (hDAV : D ∪ A ⊆ V₀)
@@ -631,27 +631,27 @@ theorem exists_wedgeLift {D A V₀ P V T : Set E3} {q : (Fin 3 → ℝ) → E3}
       (μ : EuclideanSpace ℝ (Fin 2) → ℝ) (σ c : ℝ) (q' : (Fin 3 → ℝ) → E3),
       IsPLBall 2 E₁ ∧
       IsPLHomeomorphOn β E₁ (D ∪ ρ '' ((q '' stdSimplexBoundary 2) ×ˢ Icc 0 (1 / 2))) ∧
-      ContinuousOn prism (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
-      InjOn prism (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
-      prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ⊆ V₀ ∧
-      prism '' (stdSimplex ℝ (Fin 3) ×ˢ {(0 : ℝ)}) =
-        (D ∪ A) ∩ prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
-      MapsTo b E₁ (stdSimplex ℝ (Fin 3)) ∧ ContinuousOn b E₁ ∧ InjOn b E₁ ∧
+      ContinuousOn prism (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
+      InjOn prism (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
+      prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ⊆ V₀ ∧
+      prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(0 : ℝ)}) =
+        (D ∪ A) ∩ prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
+      MapsTo b E₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ∧ ContinuousOn b E₁ ∧ InjOn b E₁ ∧
       (∀ x ∈ E₁, prism (b x, 0) = β x) ∧
       (σ = 1 ∨ σ = -1) ∧ 0 < c ∧ c ≤ 1 / 2 ∧
       (∀ x ∈ E₁, ∀ t ∈ Icc (-(2 * c)) (2 * c),
-        prism (b x, t) ∈ interior (prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1))) ∧
+        prism (b x, t) ∈ interior (prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1))) ∧
       (∀ x ∈ E₁, ∀ t ∈ Ioc (0 : ℝ) (2 * c), prism (b x, σ * t) ∉ T ∧
         prism (b x, σ * t) ∉ P ∧ (prism (b x, σ * t) ∈ V ↔ ε = -1)) ∧
       ContinuousOn μ E₁ ∧ (∀ x ∈ E₁, 0 ≤ μ x ∧ μ x ≤ 1) ∧
       (∀ x ∈ E₁, μ x = 0 ↔
         β x ∈ ρ '' ((q '' stdSimplexBoundary 2) ×ˢ {(1 / 2 : ℝ)})) ∧
-      IsPLHomeomorphOn q' (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn q' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         ((fun x => prism (b x, σ * (c * μ x))) '' E₁) ∧
       q' '' stdSimplexBoundary 2 = ρ '' ((q '' stdSimplexBoundary 2) ×ˢ {(1 / 2 : ℝ)}) := by
   classical
   set J := q '' stdSimplexBoundary 2 with hJdef
-  set Δ := stdSimplex ℝ (Fin 3) with hΔdef
+  set Δ := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) with hΔdef
   set far := ρ '' (J ×ˢ {(1 / 2 : ℝ)}) with hfardef
   obtain ⟨E₁, β, prism, b, σ, s₀, hE₁, hβ, hPc, hPi, hPV, hPn, hPcen, hbm, hbpa, hbβ, hPpl, hσ,
     hs₀, hs₀1, hfreeT, x₀, hx₀, t₀, ht₀, hwit⟩ :=

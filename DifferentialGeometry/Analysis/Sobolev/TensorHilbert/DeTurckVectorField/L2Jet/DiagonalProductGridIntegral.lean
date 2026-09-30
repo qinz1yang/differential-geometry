@@ -4,6 +4,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenc
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Identities
 import DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity
 import Mathlib.Analysis.MeanInequalities
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -140,7 +143,7 @@ private theorem diagonalProductTerm_integral_le
     calc (∏ m ∈ Zset, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
         ≤ ∏ _m ∈ Zset, Λ ^ 2 := by
-          apply Finset.prod_le_prod (fun m _ => hnn (e m) x)
+          apply Finset.prod_le_prod₀ (fun m _ => hnn (e m) x)
           intro m hm
           have hem0 : e m = 0 := by have := (Finset.mem_filter.mp hm).2; omega
           rw [hem0]; exact hΛsup x
@@ -553,7 +556,7 @@ theorem diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform_succ
         have hchoose :
           (Analysis.Sobolev.Tensor.exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le_rs
             (I := I) (M := M) g₀ 0 2 i hi1).choose = Cgn i := by
-          rw [hCgn]; simp only [dif_pos hi1]
+          rw [hCgn]; simp only [dite_eq_left hi1]
         rw [hchoose] at hb
         refine le_trans hb ?_
         have hnorm : Integral.L2.tensorL2Norm (I := I) (M := M) g₀ 0 (2 + i)

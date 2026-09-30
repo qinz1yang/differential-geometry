@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormIdentity
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.PerOrderEnvelopes
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.Extraction
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.IteratedCovariantDerivative
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -26,7 +29,7 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (deTurckPrincipalCometricCoeff
-    deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient)
+    exists_deTurckPrincipalCometricCoeff_pointwise_jet_bound)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -243,7 +246,7 @@ theorem deTurckPrincipalCometricCoeff_perOrder_l2_ballUniform
             (deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤ K i := by
   classical
   obtain ⟨C, hC_nn, hC⟩ :=
-    deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient (I := I) (M := M) g₀
+    exists_deTurckPrincipalCometricCoeff_pointwise_jet_bound (I := I) (M := M) g₀
   obtain ⟨Kslot, hKslot_nn, hKslot⟩ :=
     inverseMetricDifferenceSlotCoefficient_perOrder_l2_ballUniform (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨fun i => C i * ∑ j ∈ Finset.range (i + 1), Kslot j,
@@ -391,7 +394,7 @@ private theorem productGridTerm_integral_le_topOrderJetSq
     calc (∏ m ∈ Zset, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
         ≤ ∏ _m ∈ Zset, Λ ^ 2 := by
-          apply Finset.prod_le_prod (fun m _ => hnn (e m) x)
+          apply Finset.prod_le_prod₀ (fun m _ => hnn (e m) x)
           intro m hm
           have hem0 : e m = 0 := by have := (Finset.mem_filter.mp hm).2; omega
           rw [hem0]; exact hΛsup x
@@ -852,7 +855,7 @@ private theorem inverseMetricDifferenceSlotCoefficient_perOrder_l2_tame
           have hchoose :
             (Analysis.Sobolev.Tensor.exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le_rs
               (I := I) (M := M) g₀ 0 2 i hi1).choose = Cgn i := by
-            rw [hCgn]; simp only [dif_pos hi1]
+            rw [hCgn]; simp only [dite_eq_left hi1]
           rw [hchoose] at hb
           have hnorm : Integral.L2.tensorL2Norm (I := I) (M := M) g₀ 0 (2 + i)
               (iteratedCovGrad (I := I) g₀ 0 2 i P).toFun = ‖iteratedCovGrad (I := I) g₀ 0 2 i P‖ :=
@@ -978,7 +981,7 @@ theorem deTurckPrincipalCometricCoeff_perOrder_l2_tame
             K i * (1 + ‖smoothCcToTensorHs (I := I) (M := M) g₀ (i : ℝ) P‖) := by
   classical
   obtain ⟨Cpo, hCpo_nn, hCpo⟩ :=
-    deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient (I := I) (M := M) g₀
+    exists_deTurckPrincipalCometricCoeff_pointwise_jet_bound (I := I) (M := M) g₀
   obtain ⟨Kslot, hKslot_nn, hKslot⟩ :=
     inverseMetricDifferenceSlotCoefficient_perOrder_l2_tame (I := I) (M := M) g₀ a ha_super hR₀ hδ₀
   set Cbr : ℕ → ℝ := fun j =>

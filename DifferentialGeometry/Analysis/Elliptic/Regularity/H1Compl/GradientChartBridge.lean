@@ -93,7 +93,7 @@ lemma eLpNorm_chartPushedPartial_eq_ofReal_norm
       ENNReal.ofReal ‖chartPushedPartialLp (I := I) (M := M) g α j v h‖ := by
   rw [norm_chartPushedPartialLp (I := I) (M := M) g α j v h]
   rw [ENNReal.ofReal_toReal]
-  exact h.2.ne
+  exact h.ne
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem cauchy_in_Lp_of_h1Compl_cauchy_with_extension
@@ -199,7 +199,7 @@ theorem cauchy_eLpNorm_diff_chartPushedPartial_with_extension
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α)))) :=
-    (ENNReal.ofReal_toReal (h_partial_diff_memLp (v n) (v m)).2.ne).symm
+    (ENNReal.ofReal_toReal (h_partial_diff_memLp (v n) (v m)).ne).symm
   rw [hLeR]
   have hε_eq : ε = ENNReal.ofReal ε.toReal := (ENNReal.ofReal_toReal hε_top).symm
   rw [hε_eq]

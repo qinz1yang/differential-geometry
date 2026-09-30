@@ -45,7 +45,7 @@ theorem exists_innermost_ball_of_sphere_family
     have heq : e i z = e j w := c.toPartialEquiv.injOn
       (hsource i (mem_range_self z)) (hsource j (mem_range_self w)) (hz.trans hw.symm)
     exact (hdis hij).le_bot ⟨mem_range_self z, w, heq.symm⟩
-  let d (i : ι) := (jordanBrouwer_openThreeSpace (f i) (hf i)
+  let d (i : ι) := (smoothSphereSidesOpenThreeSpace (f i) (hf i)
     (Diffeomorph.refl (𝓡 3) E3 ∞)).toSphereSides
   obtain ⟨i, havoid, _hclosed⟩ := exists_sphereSides_compactSide_disjoint_iUnion d
     (fun j => isConnected_range (hf j).contMDiff.continuous) hfdis

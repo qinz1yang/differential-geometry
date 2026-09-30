@@ -38,7 +38,7 @@ theorem exists_bufferedCanonical_of_shrinkingSphericalSpaceFormFlow
   obtain ⟨hdepth, _⟩ := hc
   let i : Fin cap.chain.count := ⟨0, cap.chain.count_pos⟩
   let p := (cap.chain.necks i).center
-  have hv : cap.tube_map (p, 0) ∈ cap.tube := by
+  have hv : cap.tubeMap (p, 0) ∈ cap.tube := by
     rw [← cap.tube_eq]
     exact ⟨(p, 0), ⟨Set.mem_univ _, by norm_num⟩, rfl⟩
   have hcontra := localCap_tube_depth_lt_two_mul_comparisonConstant W cap hdepth hv

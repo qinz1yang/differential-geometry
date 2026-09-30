@@ -30,7 +30,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_essential_disk_of_loop_theore
     ∃ (hLK : L.space ⊆ K.space) (c : ThreeManifold.TwoSidedCollar (Set.inclusion hLK)),
       range (((↑) : K.space → E) ∘ c.toFun) ⊆ U ∧
       ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
         D ⊆ K.space \ (boundaryComplex 3 K).space ∧
         D ∩ L.space = r '' stdSimplexBoundary 2 ∧
         ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ L.space,
@@ -72,7 +72,7 @@ theorem IsCombinatorialManifold.exists_essential_disk_in_neighborhood_of_fundame
     (hmap : FundamentalGroup.map (⟨Set.inclusion hLU, continuous_inclusion hLU⟩ :
       C(L.space, U)) x g = 1) :
     ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ U ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ U ∧
       D ∩ L.space = r '' stdSimplexBoundary 2 ∧
       ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ L.space,
         ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
@@ -97,7 +97,7 @@ theorem IsCombinatorialManifold.exists_essential_disk_in_neighborhood_of_loop_th
     (hLc : IsConnected L.space) (hnot : ¬ IsPLSphere 2 L.space)
     {U : Set E} (hU : IsOpen U) (hLU : L.space ⊆ U) [SimplyConnectedSpace U] :
     ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ U ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ U ∧
       D ∩ L.space = r '' stdSimplexBoundary 2 ∧
       ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ L.space,
         ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
@@ -125,7 +125,7 @@ theorem IsSphericalShell.exists_essential_disk_annulus_of_loop_theorem
     ∃ (D W : Set (EuclideanSpace ℝ (Fin 3)))
       (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3))
       (ρ : EuclideanSpace ℝ (Fin 3) × ℝ → EuclideanSpace ℝ (Fin 3))
-      (_ : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+      (_ : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
       (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2),
       D ⊆ interior X ∧ (D \ S.space).Nonempty ∧
       ¬ (⟨Set.inclusion (hmeet.symm.subset.trans inter_subset_right),
@@ -138,8 +138,8 @@ theorem IsSphericalShell.exists_essential_disk_annulus_of_loop_theorem
       ∀ (N D₀ D₁ : Set (EuclideanSpace ℝ (Fin 3)))
         (r₀ r₁ : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
         IsPLBall 3 N → S.space ∩ N = W → N ⊆ interior X →
-        IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀ →
-        IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁ → Disjoint D₀ D₁ →
+        IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ →
+        IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ → Disjoint D₀ D₁ →
         frontier N = W ∪ D₀ ∪ D₁ →
         W ∩ D₀ = r₀ '' stdSimplexBoundary 2 → W ∩ D₁ = r₁ '' stdSimplexBoundary 2 →
         r₀ '' stdSimplexBoundary 2 = ρ '' ((r '' stdSimplexBoundary 2) ×ˢ {(-1 : ℝ)}) →

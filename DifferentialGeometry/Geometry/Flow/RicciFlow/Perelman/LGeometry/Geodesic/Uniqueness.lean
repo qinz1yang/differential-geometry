@@ -53,10 +53,23 @@ theorem lRegularizedCurve_initialVector_eq_of_endpoint_eq_of_velocity_eq
     hZgerm.eq_of_nhds.symm.trans (hpos.trans hWgerm.eq_of_nhds)
   have hvelChosen : lVelocity (I := I) alphaZ b =
       lVelocity (I := I) alphaW b := by
-    unfold lVelocity
-    rw [← hZgerm.mfderiv_eq (I := modelWithCornersSelf Real Real) (I' := I),
-      ← hWgerm.mfderiv_eq (I := modelWithCornersSelf Real Real) (I' := I)]
-    exact hvel
+    have hZder := hZgerm.mfderiv_eq (I := modelWithCornersSelf Real Real) (I' := I)
+    have hWder := hWgerm.mfderiv_eq (I := modelWithCornersSelf Real Real) (I' := I)
+    have hZvel : lVelocity (I := I) alphaZ b =
+        lVelocity (I := I) (lRegularizedCurve S T x Z) b := by
+      unfold lVelocity
+      change (mfderiv (modelWithCornersSelf Real Real) I alphaZ b)
+          (1 : TangentSpace (modelWithCornersSelf Real Real) b) = _
+      rw [hZder]
+      rfl
+    have hWvel : lVelocity (I := I) alphaW b =
+        lVelocity (I := I) (lRegularizedCurve S T x W) b := by
+      unfold lVelocity
+      change (mfderiv (modelWithCornersSelf Real Real) I alphaW b)
+          (1 : TangentSpace (modelWithCornersSelf Real Real) b) = _
+      rw [hWder]
+      rfl
+    exact hZvel.trans (hvel.trans hWvel.symm)
   have hsolEq := lRegularizedSolution_eqOn S hS T hJZopen hJZconn hbJZ
     hJWopen hJWconn hbJW hchosenZ.2.2 hchosenW.2.2
     hposChosen hvelChosen

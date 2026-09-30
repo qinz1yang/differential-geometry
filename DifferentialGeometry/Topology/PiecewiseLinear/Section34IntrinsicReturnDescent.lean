@@ -37,7 +37,7 @@ theorem exists_section34BigonSlide_of_model_return_disk_crosscuts
     (hδ₀0 : δ₀ 0 = β₀ 0) (hδ₀1 : δ₀ 1 = β₀ 1)
     (hR₀ : R₀ ⊆ u ⁻¹' section34SplitDiskImage srcBd f₁ e)
     (hB₀R₀ : B₀ ∩ R₀ = {β₀ 0, β₀ 1})
-    (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀)
+    (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
     (hq₀B : q₀ '' stdSimplexBoundary 2 = B₀ ∪ R₀) (hD₀S : D₀ ⊆ S) (hD₀P : D₀ ⊆ P)
     (hD₀loc : D₀ ⊆ u ⁻¹' (section34VertexBallImage srcBd f₁ w ∩
       frontier (⋃ v, section34VertexBallImage src f₁ v)))
@@ -49,7 +49,7 @@ theorem exists_section34BigonSlide_of_model_return_disk_crosscuts
       IsPLHomeomorphOn β (Icc 0 1) B → B ⊆ u ⁻¹' fblBd t →
       IsPLHomeomorphOn δ (Icc 0 1) R → δ 0 = β 0 → δ 1 = β 1 →
       R ⊆ R₀ → B ∩ R = {β 0, β 1} →
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D →
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D →
       q '' stdSimplexBoundary 2 = B ∪ R → D ⊆ D₀ → D ∩ R₀ = R →
       ((D \ (B ∪ R)) ∩ ⋃ a : Section34SimplexIndex 𝒦 3, u ⁻¹' fblBd a).Nonempty →
       ∃ (a : Section34SimplexIndex 𝒦 3) (A : Set E3) (α : ℝ → E3),

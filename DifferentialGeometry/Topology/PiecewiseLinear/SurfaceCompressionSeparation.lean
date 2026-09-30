@@ -24,8 +24,8 @@ theorem IsCombinatorialManifold.exists_separating_component_bettiOne_lt_of_annul
     (hnon : ¬ (⟨Set.inclusion hJS, continuous_inclusion hJS⟩ : C(J, S.space)).Nullhomotopic)
     (hN : IsPLBall 3 N) (hwall : S.space ∩ N = W)
     {D₀ D₁ : Set E} {r₀ r₁ : (Fin 3 → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
     (hfront : frontier N = W ∪ D₀ ∪ D₁)
     (hmeet₀ : W ∩ D₀ = r₀ '' stdSimplexBoundary 2)
     (hmeet₁ : W ∩ D₁ = r₁ '' stdSimplexBoundary 2)
@@ -106,7 +106,7 @@ theorem IsCombinatorialManifold.exists_separating_component_bettiOne_lt_of_spann
     (S : Geometry.SimplicialComplex ℝ E) [Finite S.faces]
     (hS : IsCombinatorialManifold 2 S) (hconn : IsConnected S.space)
     (hdim : Module.finrank ℝ E = 3) {D W N : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2)
     (hnon : ¬ (⟨Set.inclusion (hmeet.symm.subset.trans inter_subset_right),
       continuous_inclusion _⟩ : C(r '' stdSimplexBoundary 2, S.space)).Nullhomotopic)
@@ -115,8 +115,8 @@ theorem IsCombinatorialManifold.exists_separating_component_bettiOne_lt_of_spann
     (hzero : ∀ x ∈ r '' stdSimplexBoundary 2, ρ (x, 0) = x)
     (hN : IsPLBall 3 N) (hwall : S.space ∩ N = W)
     {D₀ D₁ : Set E} {r₀ r₁ : (Fin 3 → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
     (hfront : frontier N = W ∪ D₀ ∪ D₁)
     (hmeet₀ : W ∩ D₀ = r₀ '' stdSimplexBoundary 2)
     (hmeet₁ : W ∩ D₁ = r₁ '' stdSimplexBoundary 2)
@@ -144,7 +144,7 @@ theorem IsSphericalShell.exists_separating_component_bettiOne_lt_of_spanning_dis
     (hsep : Separates S.space B₀ B₁)
     {D W N : Set (EuclideanSpace ℝ (Fin 3))}
     {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2)
     (hnon : ¬ (⟨Set.inclusion (hmeet.symm.subset.trans inter_subset_right),
       continuous_inclusion _⟩ : C(r '' stdSimplexBoundary 2, S.space)).Nullhomotopic)
@@ -154,8 +154,8 @@ theorem IsSphericalShell.exists_separating_component_bettiOne_lt_of_spanning_dis
     (hN : IsPLBall 3 N) (hwall : S.space ∩ N = W) (hNX : N ⊆ interior X)
     {D₀ D₁ : Set (EuclideanSpace ℝ (Fin 3))}
     {r₀ r₁ : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
     (hfront : frontier N = W ∪ D₀ ∪ D₁)
     (hmeet₀ : W ∩ D₀ = r₀ '' stdSimplexBoundary 2)
     (hmeet₁ : W ∩ D₁ = r₁ '' stdSimplexBoundary 2)

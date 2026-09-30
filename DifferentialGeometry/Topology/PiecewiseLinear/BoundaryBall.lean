@@ -27,7 +27,7 @@ theorem exists_isPLBall_subset_inter_frontier {n : ℕ}
   have hCc : IsClosed C := hC.isPolyhedron.isClosed
   obtain ⟨u, hu⟩ := hR
   obtain ⟨v, hv⟩ := hC
-  let f := v ∘ Function.invFunOn u (stdSimplex ℝ (Fin (n + 2)))
+  let f := v ∘ Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)))
   have hf : IsPLHomeomorphOn f R C := hu.symm.trans hv
   let g := Function.invFunOn f R
   have hD0 : IsPLBall n (g '' D) :=

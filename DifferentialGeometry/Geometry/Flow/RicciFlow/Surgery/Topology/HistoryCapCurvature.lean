@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 theorem RetainedCoreHistory.exists_backwardSurvivorFootprint_curvature_bound
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
+    (H : RetainedCoreHistory.{u}) (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
     (K : Set (H.toHistory.event i).incoming.terminalRegularOpen)
     {q Q : ℝ} {C : ℝ≥0} (hq : 0 < q) (hqQ : q ≤ Q)
     {Phi : ℝ → ℝ} (hPhi : Perelman.AdmissiblePinchingFunction Phi)

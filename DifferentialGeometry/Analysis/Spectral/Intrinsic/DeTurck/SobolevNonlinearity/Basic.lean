@@ -96,8 +96,8 @@ theorem smoothCcToTensorHs_denseRange (g₀ : SmoothRiemannianMetric I M) (σ : 
         finiteEigenCombo_tensorL2Coeff (I := I) (M := M) g₀ hxfin.toFinset x.coeff i]
     rw [hcoeff]
     by_cases hi : i ∈ hxfin.toFinset
-    · rw [if_pos hi]
-    · rw [if_neg hi]
+    · rw [ite_eq_left hi]
+    · rw [ite_eq_right hi]
       rw [Set.Finite.mem_toFinset] at hi
       exact (Function.notMem_support.mp hi).symm
   exact (tensorHsFiniteSupportSubmodule_dense (I := I) (M := M)).mono hsub
@@ -918,7 +918,7 @@ theorem deTurckSobolevNHa2_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric I M
         (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀) := by
     funext v
     rw [deTurckSobolevNonlinearity]
-    rw [dif_pos h]
+    rw [dite_eq_left h]
     rfl
   rw [heq_fun]
   exact hcomp
@@ -1006,7 +1006,7 @@ theorem deTurckSobolevNHa2_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I M) (
       Dense.extend hdense F
         (recenteredBallRetraction (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
           (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T)) := by
-    rw [deTurckSobolevNonlinearity, dif_pos h]
+    rw [deTurckSobolevNonlinearity, dite_eq_left h]
   have hfix : recenteredBallRetraction (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) R₀
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) =
       smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T := by
@@ -1073,7 +1073,7 @@ theorem deTurckSobolevNHa2_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetric I 
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) =
         deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a
           (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S) := by
-    rw [deTurckSobolevNonlinearity, deTurckSobolevNonlinearity, dif_pos h, dif_pos h, hrecS]
+    rw [deTurckSobolevNonlinearity, deTurckSobolevNonlinearity, dite_eq_left h, dite_eq_left h, hrecS]
   rw [hNeq, hSeq]
 
 theorem exists_norm_smoothCcToTensorHs_ccTensor02Symm_le (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
@@ -1300,7 +1300,7 @@ theorem deTurckSobolevNHa2Symm_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric
       Dense.extend hdense F := by
     funext v
     change (dite _ _ _) = _
-    rw [dif_pos h]
+    rw [dite_eq_left h]
   rw [heq_fun]
   exact hext_lip
 
@@ -1411,7 +1411,7 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I 
       Dense.extend hdense F
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) := by
     change (dite _ _ _) = _
-    rw [dif_pos h]
+    rw [dite_eq_left h]
   rw [hunfold, hdense.extend_eq hF_cont ⟨_, hmem⟩]
   change deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a
       (radialScaleSmooth (I := I) (M := M) g₀ a R₀
@@ -1575,7 +1575,7 @@ theorem deTurckSobolevNHa2Symm_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetri
       Dense.extend hdense F
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) := by
     change (dite _ _ _) = _
-    rw [dif_pos h]
+    rw [dite_eq_left h]
   rw [hunfold, hdense.extend_eq hF_cont ⟨_, hmem⟩]
   change deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a
       (radialScaleSmooth (I := I) (M := M) g₀ a R₀

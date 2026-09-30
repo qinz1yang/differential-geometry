@@ -22,7 +22,7 @@ theorem cylinderArea_tracePhaseAnnulus_eq_zero_of_lipschitz
     {ψ : ℝ → ℝ} {C : ℝ≥0} (hψ : LipschitzWith C ψ) {δ : loopCircle → ℝ}
     (hδ : ∀ t : ℝ, δ (t : loopCircle) = ψ t - t) :
     cylinderArea g (tracePhaseAnnulus γ δ) = 0 := by
-  have hf := (hψ.comp Complex.imCLM.lipschitz).ae_differentiableAt (μ := volume)
+  have hf := (hψ.comp Complex.imCLM.lipschitzWith).ae_differentiableAt (μ := volume)
   have ha : ∀ᵐ z ∂volume.restrict unitSquare,
       riemannianAreaDensity g (cylinderLift (tracePhaseAnnulus γ δ)) z = 0 := by
     filter_upwards [ae_restrict_of_ae hf] with z hz

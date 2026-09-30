@@ -2,6 +2,10 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Tensor.F
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.FrameEnergy
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Defs
 import Mathlib.Topology.Order.Compact
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq
+    riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

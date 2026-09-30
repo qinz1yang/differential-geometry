@@ -7,6 +7,8 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDe
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredTrilinear
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.DeTurckLie.FirstOrderCoefficient
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.LieMetricPerturbationPathSmoothness
+
+open DifferentialGeometry.TensorMetric (embedRS embedRS_unitZeroSec_apply)
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -142,7 +144,7 @@ private theorem deTurckLieKoszulTrace_metricPerturbationPath_apply_jointContMDif
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
   rw [deTurckLieKoszulTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
-    domDomCongrFibRank_apply, connectionDifferenceFib_comp_eq]
+    DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply, connectionDifferenceFib_comp_eq]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -206,7 +208,7 @@ private theorem deTurckLiePairTrace_metricPerturbationPath_apply_jointContMDiffO
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
   rw [deTurckLiePairTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.comp_apply, tensor0SProdKappaFib_apply, domDomCongrFibRank_apply]
+    ContinuousLinearMap.comp_apply, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -279,7 +281,7 @@ private theorem deTurckLieFirstOrderCoreFib_metricPerturbationPath_apply_jointCo
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
   rw [deTurckLieFirstOrderCoreFib]
   simp only [sub_apply, ContinuousLinearMap.comp_apply]
-  rw [domDomCongrFibRank_apply]
+  rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -329,7 +331,7 @@ private theorem deTurckLieFirstOrderFib_metricPerturbationPath_apply_jointContMD
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
   rw [deTurckLieFirstOrderFib]
   simp only [add_apply, ContinuousLinearMap.comp_apply]
-  rw [domDomCongrFibRank_apply]
+  rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Bundle.TangentChart
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.Basic
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Coordinates.Chart
 import DifferentialGeometry.Geometry.Exponential.Defs
@@ -15,6 +16,9 @@ noncomputable section
 
 open Set Function Filter Bundle Manifold
 open scoped Topology Manifold ContDiff
+
+open TangentBundle
+  (chartFiberCoord)
 
 namespace DifferentialGeometry
 namespace Geometry

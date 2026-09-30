@@ -14,7 +14,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 local notation "E2" => EuclideanSpace ℝ (Fin 2)
-local notation "Δ" => stdSimplex ℝ (Fin 3)
+local notation "Δ" => Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
 local notation "Disk" => Metric.closedBall (0 : E2) 1
 local notation "Circle" => Metric.sphere (0 : E2) 1
 

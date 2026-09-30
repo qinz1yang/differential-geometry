@@ -103,10 +103,10 @@ theorem exists_manifoldFlowFamily
     Φ, ?_, hΦ_initial, ?_⟩
   · have h0 : ¬ (0 < (0 : ℝ) ∧ (0 : ℝ) < T) := by
       rintro ⟨h, _⟩; exact (lt_irrefl 0) h
-    simp only [h0, dif_neg, not_false_iff]
+    simp only [h0, dite_eq_right, not_false_iff]
   · intro t ht htT x
     have hguard : 0 < t ∧ t < T := ⟨ht, htT⟩
-    simp only [hguard, dif_pos, and_self]
+    simp only [hguard, dite_eq_left, and_self]
     exact (hdiffeo t ht htT).choose_spec x
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
@@ -170,10 +170,10 @@ theorem exists_manifoldFlowFamily_chartRepr
     Φ, ?_, hΦ_initial, ?_, hΦ_repr_simple, ?_⟩
   · have h0 : ¬ (0 < (0 : ℝ) ∧ (0 : ℝ) < T) := by
       rintro ⟨h, _⟩; exact (lt_irrefl 0) h
-    simp only [h0, dif_neg, not_false_iff]
+    simp only [h0, dite_eq_right, not_false_iff]
   · intro t ht htT x
     have hguard : 0 < t ∧ t < T := ⟨ht, htT⟩
-    simp only [hguard, dif_pos, and_self]
+    simp only [hguard, dite_eq_left, and_self]
     exact (hdiffeo t ht htT).choose_spec x
   · intro t ht htT x
     obtain ⟨α, hαrepr⟩ := hΦ_repr_simple x
@@ -181,7 +181,7 @@ theorem exists_manifoldFlowFamily_chartRepr
     have hguard : 0 < t ∧ t < T := ⟨ht, htT⟩
     have hfam_eq : ((if h : 0 < t ∧ t < T then (hdiffeo t h.1 h.2).choose
         else Diffeomorph.refl I M ∞ : M ≃ₘ⟮I, I⟯ M) : M → M) x = Φ t x := by
-      simp only [hguard, dif_pos, and_self]
+      simp only [hguard, dite_eq_left, and_self]
       exact (hdiffeo t ht htT).choose_spec x
     rw [hfam_eq, hαrepr t]
 

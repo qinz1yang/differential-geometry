@@ -184,7 +184,7 @@ theorem quotientMap_collarMap (F : UnitFilling c d a) (hcollar : BallComplementC
   · rw [ConnectedSumQuotient.collarMap_of_nonneg c.toBallChart d.toBallChart a.1 p ht]
     rfl
   · rw [ConnectedSumQuotient.collarMap_eq_if]
-    simp only [if_neg (not_le.mpr (lt_of_not_ge ht)), ConnectedSumQuotient.collarRight]
+    simp only [ite_eq_right (not_le.mpr (lt_of_not_ge ht)), ConnectedSumQuotient.collarRight]
     exact hcollar p (lt_of_not_ge ht)
 
 def BallComplementSmooth (F : UnitFilling c d a) : Prop :=

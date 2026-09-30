@@ -92,12 +92,12 @@ lemma chartFrameBasisModel_apply_chartFrameTuple (α : M) {b : M}
   rw [Finset.prod_congr rfl (fun k _ => by rw [hchartJ k])]
   by_cases hEq : Idx = Jdx
   · subst hEq
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     refine (Finset.prod_eq_one ?_).trans rfl
     intro k _
     rw [Module.Basis.coord_apply, Module.Basis.repr_self,
-      Finsupp.single_apply, if_pos rfl]
-  · rw [if_neg hEq]
+      Finsupp.single_apply, ite_eq_left rfl]
+  · rw [ite_eq_right hEq]
     have h_exists : ∃ k : Fin r, Idx k ≠ Jdx k := by
       by_contra h_all
       exact hEq (funext fun k => by
@@ -106,7 +106,7 @@ lemma chartFrameBasisModel_apply_chartFrameTuple (α : M) {b : M}
     obtain ⟨k₀, hk₀⟩ := h_exists
     refine Finset.prod_eq_zero (Finset.mem_univ k₀) ?_
     rw [Module.Basis.coord_apply, Module.Basis.repr_self, Finsupp.single_apply]
-    exact if_neg hk₀.symm
+    exact ite_eq_right hk₀.symm
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -178,7 +178,7 @@ lemma sum_chartFrame_coord_eq (α : M) {b : M}
         rw [hbasis]
     _ = (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
         (tangentSpaceModelContinuousLinearEquiv (I := I) b w) := by
-      rw [chartJinv_chartJ_self (I := I) (M := M) α hb]
+      rw [chartJinv_chartJ (I := I) (M := M) α hb]
     _ = w := (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply w
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -423,11 +423,11 @@ lemma coord_christoffelCorrection_eq
   rw [Finset.sum_eq_single p]
   · rw [map_smul, smul_eq_mul]
     rw [Module.Basis.coord_apply, Module.Basis.repr_self, Finsupp.single_apply,
-      if_pos rfl, mul_one]
+      ite_eq_left rfl, mul_one]
   · intro k' _ hk'
     rw [map_smul, smul_eq_mul]
     rw [Module.Basis.coord_apply, Module.Basis.repr_self, Finsupp.single_apply,
-      if_neg hk', mul_zero]
+      ite_eq_right hk', mul_zero]
   · intro h
     exact absurd (Finset.mem_univ p) h
 
@@ -501,14 +501,14 @@ theorem chartLeviCivitaParallelCLM_coordEntry_eq_chartChristoffel
       rw [hv_coord i, hY_coord j]))]
   rw [Finset.sum_eq_single q]
   · rw [Finset.sum_eq_single m]
-    · rw [if_pos rfl, if_pos rfl, one_mul, one_mul]
+    · rw [ite_eq_left rfl, ite_eq_left rfl, one_mul, one_mul]
     · intro j _ hj
-      rw [if_neg (Ne.symm hj), mul_zero, zero_mul]
+      rw [ite_eq_right (Ne.symm hj), mul_zero, zero_mul]
     · intro h
       exact absurd (Finset.mem_univ m) h
   · intro i _ hi
     refine Finset.sum_eq_zero (fun j _ => ?_)
-    rw [if_neg (Ne.symm hi), zero_mul, zero_mul]
+    rw [ite_eq_right (Ne.symm hi), zero_mul, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ q) h
 

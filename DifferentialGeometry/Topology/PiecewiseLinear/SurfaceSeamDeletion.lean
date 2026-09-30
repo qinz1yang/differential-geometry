@@ -92,9 +92,9 @@ theorem exists_disk_split_reducing_seams_with_annulus (h303 : Moise303)
     (hHK : Disjoint H K) (hH : IsClosed (((↑) : I → E3) ⁻¹' H))
     (hK : IsClosed (((↑) : I → E3) ⁻¹' K)) (hCI : (R ∪ (T ∪ L)) ⊆ I)
     (hC : IsSeparatorIn I ((R ∪ (T ∪ L))) H K)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) (hΔT : Δ ⊆ T)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ) (hΔT : Δ ⊆ T)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hpair : D₁ ∩ D₂ = Δ) (hD₁T : D₁ ∩ T = Δ)
     (hsub : D₁ ∪ D₂ ⊆ (R ∪ (T ∪ L))) (hnear : D₁ ∪ D₂ ∈ 𝓝ˢ[(R ∪ (T ∪ L))] Δ)
     (hΔ₁ : Δ ⊆ D₁ \ r₁ '' stdSimplexBoundary 2)
@@ -111,7 +111,7 @@ theorem exists_disk_split_reducing_seams_with_annulus (h303 : Moise303)
         A ⊆ D₁ ∩ Ω ∧ A ∩ Δ = r '' stdSimplexBoundary 2 ∧ IsPLBall 2 Δ' ∧ Δ' ⊆ Ω ∧
         Δ' ∩ (R ∪ (T ∪ L)) = J ∧ L' = (L \ (A \ J)) ∪ Δ' ∧
         L' ∩ T = (L ∩ T) \ (r '' stdSimplexBoundary 2) ∧
-        ∃ r' : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn r' (stdSimplex ℝ (Fin 3)) Δ' ∧
+        ∃ r' : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn r' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ' ∧
           r' '' stdSimplexBoundary 2 = J := by
   let G := r '' stdSimplexBoundary 2
   obtain ⟨C', A, Δ', J, r', hC'cl, hC'I, hsep', hout, -, hA, hAΩ, hAΔ,
@@ -195,9 +195,9 @@ theorem exists_disk_split_reducing_seams (h303 : Moise303)
     (hHK : Disjoint H K) (hH : IsClosed (((↑) : I → E3) ⁻¹' H))
     (hK : IsClosed (((↑) : I → E3) ⁻¹' K)) (hCI : (R ∪ (T ∪ L)) ⊆ I)
     (hC : IsSeparatorIn I ((R ∪ (T ∪ L))) H K)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) (hΔT : Δ ⊆ T)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ) (hΔT : Δ ⊆ T)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hpair : D₁ ∩ D₂ = Δ) (hD₁T : D₁ ∩ T = Δ)
     (hsub : D₁ ∪ D₂ ⊆ (R ∪ (T ∪ L))) (hnear : D₁ ∪ D₂ ∈ 𝓝ˢ[(R ∪ (T ∪ L))] Δ)
     (hΔ₁ : Δ ⊆ D₁ \ r₁ '' stdSimplexBoundary 2)

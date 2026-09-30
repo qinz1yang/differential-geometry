@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryParabolicBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TowerInductionStep
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodsThroughSurgery
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.CanonicalNeighborhood.ExtinctionCriterion
 
 set_option autoImplicit false
 
@@ -160,7 +160,7 @@ end OrientedThreeStage.IncomingSlab
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u})
 
 def InCutoffClass (g₀ : P₀.Metric) (B : ℝ) (p₀ : CutoffParameters) (δbound ρbound : ℝ) : Prop :=
   Nonempty (InitialIdentification P₀ g₀ H.toHistory) ∧
@@ -242,7 +242,7 @@ def PinchingThroughSurgery (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) 
     Perelman.AdmissiblePinchingFunction phi ∧ 0 < δmax ∧ 0 < ρmax ∧ 0 < εcap ∧
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ εcap → δbound ≤ δmax → ρbound ≤ ρmax →
-    ∀ H : RetainedCoreHistory P₀, H.InCutoffClass g₀ B p₀ δbound ρbound →
+    ∀ H : RetainedCoreHistory.{u}, H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound →
     ∀ (k : Fin (H.eventCount + 1)) (s : ℝ) (G : (H.stage k).IncomingSlab (H.time k) s),
       H.IsContinuationSlab B k G →
       Perelman.PhiAlmostNonnegative G.flow (Ico (H.time k) s) phi
@@ -257,7 +257,7 @@ def NoncollapsingThroughSurgery (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Met
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ εcap → Dcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
       δbound ≤ δmax → ρbound ≤ ρmax →
-    ∀ (H : RetainedCoreHistory P₀) (hH : H.InCutoffClass g₀ B p₀ δbound ρbound),
+    ∀ (H : RetainedCoreHistory.{u}) (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound),
       H.EventSlabsPinched phi →
       (∀ j : Fin H.eventCount,
         H.EventSlabsCanonical ε C1 C2 qcan τmin j.castSucc →
@@ -296,7 +296,7 @@ def CanonicalNeighborhoodContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P�
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ εcap → Dcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
       δbound ≤ δmax → ρbound ≤ ρmax →
-    ∀ (H : RetainedCoreHistory P₀) (hH : H.InCutoffClass g₀ B p₀ δbound ρbound),
+    ∀ (H : RetainedCoreHistory.{u}) (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound),
       H.EventSlabsPinched phi →
       (∀ j : Fin H.eventCount,
         H.EventSlabsCanonical ε C1 C2 qcan τmin j.castSucc →

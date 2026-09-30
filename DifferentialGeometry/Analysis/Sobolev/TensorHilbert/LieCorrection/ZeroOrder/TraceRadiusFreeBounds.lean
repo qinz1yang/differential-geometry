@@ -2,6 +2,10 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrd
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.RadiusFree
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.CometricTraceSelf
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg
+    riemannianFiberNormSq_zero)
+
 noncomputable section
 
 set_option autoImplicit false
@@ -253,7 +257,7 @@ theorem trace_grid_uniform
     match m with
     | 0 =>
         rw [iteratedCovGrad_zero]
-        simpa only [S, fr, if_pos, Nat.add_zero] using
+        simpa only [S, fr, ite_eq_left, Nat.add_zero] using
           (cometricTrace_riemannianFiberNormSq_p (I := I) (M := M) p g₀ y)
     | (m' + 1) =>
         rw [iteratedCovGrad_eq_zero_of_covGrad_eq_zero (I := I) (M := M) g₀
@@ -309,7 +313,7 @@ theorem trace_grid_rf
                 ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) k := by
   classical
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   let Φ : SmoothCcTensor g₀ (p + 2) p := cometricDoubleTraceField (I := I) g₀ p
   have hS_ex : ∀ m : ℕ, ∃ S : ℝ, 0 ≤ S ∧ ∀ x : M,

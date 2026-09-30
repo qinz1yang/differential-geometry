@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.JointRegularity
 import DifferentialGeometry.Geometry.Curvature.Product
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
-import DifferentialGeometry.Tensor.Metric.CompactBounds
+import DifferentialGeometry.Geometry.Metric.Tensor.CompactBounds
 
 noncomputable section
 open Set Filter Bundle Manifold DifferentialGeometry

@@ -149,7 +149,7 @@ end BackwardPointTrace
 
 namespace RetainedCoreHistory
 
-variable {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
+variable (H : RetainedCoreHistory.{u})
 
 private theorem lt_time_succ_of_activeStage_eq (t : Icc (0 : ℝ) H.toHistory.horizon)
     (i : Fin H.eventCount) (hi : H.toHistory.activeStage t = i.castSucc) :

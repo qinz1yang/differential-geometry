@@ -13,9 +13,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistor
 
 universe u
 
-variable {P₀ : OrientedThreeStage.{u}}
-
-theorem riemannianEDistOf_extendAt_stageAt_eq (H : RetainedCoreHistory P₀)
+theorem riemannianEDistOf_extendAt_stageAt_eq (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -53,7 +51,7 @@ theorem riemannianEDistOf_extendAt_stageAt_eq (H : RetainedCoreHistory P₀)
   rw [hmet]
   exact ⟨rfl, rfl⟩
 
-theorem exists_heq_extendAt_stageAt (H : RetainedCoreHistory P₀)
+theorem exists_heq_extendAt_stageAt (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =

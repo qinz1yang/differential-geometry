@@ -106,7 +106,7 @@ theorem exists_preservesOrientation_diffeomorph_apply_eq_of_mem_nhds {M : Type*}
       (D.contDiff.comp contDiff_snd) (D.symm.contDiff.comp contDiff_snd)
       (isCompact_closedBall (e x) R) hRsub (fun _ y hy => hfix y hy)
   have hJx : J 1 x = z := by
-    rw [(hJ 1 x).1, Manifold.extendChartById, if_pos hxsrc, hD0, e.left_inv hzsrc]
+    rw [(hJ 1 x).1, Manifold.extendChartById, ite_eq_left hxsrc, hD0, e.left_inv hzsrc]
   have hJeq : (J 1) =ᶠ[𝓝 (e.symm y₀)] id := by
     have hopen : IsOpen (e.symm '' Metric.closedBall (e x) R)ᶜ := hJK.isClosed.isOpen_compl
     exact Filter.eventually_of_mem (hopen.mem_nhds hx₀) fun y hy => (hJfix 1 y hy).1

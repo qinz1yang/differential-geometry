@@ -313,7 +313,7 @@ private theorem uhlenbeckBTensorInFrame_orthonormal
     rw [Finset.sum_eq_single e]
     · simp
     · intro g _ hge
-      rw [if_neg (fun h => hge h.symm)]
+      rw [ite_eq_right (fun h => hge h.symm)]
       ring
     · intro h; exact absurd (Finset.mem_univ e) h
   calc
@@ -336,7 +336,7 @@ private theorem uhlenbeckBTensorInFrame_orthonormal
           rw [Finset.sum_eq_single f]
           · simp
           · intro r _ hfr
-            rw [if_neg (fun h => hfr h.symm)]
+            rw [ite_eq_right (fun h => hfr h.symm)]
             ring
           · intro h; exact absurd (Finset.mem_univ f) h
 

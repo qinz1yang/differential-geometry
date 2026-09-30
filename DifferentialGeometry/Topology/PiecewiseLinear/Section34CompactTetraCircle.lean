@@ -94,7 +94,7 @@ theorem Section34CompactFaceDiskFamily.exists_arcs_of_holes
 
 theorem exists_split_of_four_runs {B₁ : Set E3} (hB₁ : IsPLBall 3 B₁) {H r : Fin 4 → Set E3}
     {rH : Fin 4 → (Fin 3 → ℝ) → E3} {ρ : Fin 4 → ℝ → E3}
-    (hrH : ∀ k, IsPLHomeomorphOn (rH k) (stdSimplex ℝ (Fin 3)) (H k))
+    (hrH : ∀ k, IsPLHomeomorphOn (rH k) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (H k))
     (hHB : ∀ k, H k ⊆ frontier B₁) (hHdisj : Pairwise fun k l => Disjoint (H k) (H l))
     (hρ : ∀ k, IsPLHomeomorphOn (ρ k) (Icc 0 1) (r k)) (hrB : ∀ k, r k ⊆ frontier B₁)
     (hrr : Pairwise fun k l => Disjoint (r k) (r l))
@@ -103,8 +103,8 @@ theorem exists_split_of_four_runs {B₁ : Set E3} (hB₁ : IsPLBall 3 B₁) {H r
     (hbout : ∀ k, ρ k 1 ∈ rH k '' stdSimplexBoundary 2)
     (hbin : ∀ k, ρ (k + 1) 0 ∈ rH k '' stdSimplexBoundary 2) :
     ∃ (X Y : Set E3) (qX qY : (Fin 3 → ℝ) → E3) (β : Fin 4 → Set E3) (σ : Fin 4 → ℝ → E3),
-      IsPLHomeomorphOn qX (stdSimplex ℝ (Fin 3)) X ∧
-      IsPLHomeomorphOn qY (stdSimplex ℝ (Fin 3)) Y ∧
+      IsPLHomeomorphOn qX (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) X ∧
+      IsPLHomeomorphOn qY (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Y ∧
       X ∪ Y ∪ (⋃ k, H k) = frontier B₁ ∧ X ∩ Y = ⋃ k, r k ∧
       (∀ k, IsPLHomeomorphOn (σ k) (Icc 0 1) (β k)) ∧
       (∀ k, β k ⊆ rH k '' stdSimplexBoundary 2) ∧

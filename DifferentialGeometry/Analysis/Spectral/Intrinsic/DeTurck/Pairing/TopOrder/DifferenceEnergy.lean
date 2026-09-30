@@ -3,6 +3,11 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenc
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.ConnectionDifferenceDerivative.TopOrderBounds
 
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise
+  riemannianFiberNormSq_nonneg tensorInnerPointwise tensorInnerPointwise_smul_left
+  tensorInnerPointwise_smul_right tensorInnerPointwise_sq_le_mul)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -74,7 +79,7 @@ theorem topOrderDifferenceCoefficient_riemannianFiberNormSq (g₀ : SmoothRieman
     exists_uniform_riemannianFiberNormSq_operatorFieldComposition_le
       (I := I) (M := M) g₀ 3 4 2 Φ
   obtain ⟨A, hA0, hA⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ (show (1 / 2 : ℝ) < 1 by norm_num)
   let fr : ℝ := Module.finrank ℝ E
   let B : ℝ := K * (fr ^ 2 * A 1)

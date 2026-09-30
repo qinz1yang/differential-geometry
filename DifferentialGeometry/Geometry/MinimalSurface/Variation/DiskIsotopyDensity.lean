@@ -295,7 +295,7 @@ theorem hasDerivWithinAt_isotopyPartialPairing_of_chart
       exact (hA (t, q) ⟨ht, hq⟩).comp (f := fun r : ℝ => (r, q)) t
         ((contDiffWithinAt_id.prodMk contDiffWithinAt_const).contMDiffWithinAt)
         (fun r hr => ⟨hr, hq⟩)
-    have hh := chartCoord_source_mfderivWithin (hT t ht)
+    have hh := TangentBundle.chartCoord_source_mfderivWithin (hT t ht)
       (hAq.mdifferentiableWithinAt (by simp)) (U z) (hchart t ht q hq)
     have he := congrArg (fun L => L (1 : ℝ)) hh
     change (trivializationAt E (TangentSpace 𝓘(ℝ, E)) (U z)).continuousLinearMapAt ℝ

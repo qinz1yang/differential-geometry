@@ -162,9 +162,9 @@ theorem exists_continuousOn_mapsTo_closure_inside_of_nullhomotopic {Y : Type*}
       ((e.continuous.comp continuous_subtype_val).subtype_mk fun x => hmem x x.2))).congr ?_
     intro x
     change (F ⟨e x, hmem x x.2⟩ : Y) = G x
-    simp only [G, dif_pos (hmem x x.2)]
+    simp only [G, dite_eq_left (hmem x x.2)]
   · intro x hx
-    simp only [G, dif_pos (hmem x hx)]
+    simp only [G, dite_eq_left (hmem x hx)]
     exact (F _).2
   · intro z
     have hz : e z ∈ frontier (closedBall (0 : Schoenflies.Plane) 1) := by
@@ -173,7 +173,7 @@ theorem exists_continuousOn_mapsTo_closure_inside_of_nullhomotopic {Y : Type*}
     have hzb : e z ∈ closedBall (0 : Schoenflies.Plane) 1 :=
       (isCompact_closedBall _ _).isClosed.frontier_subset hz
     change G z = b z
-    simp only [G, dif_pos hzb]
+    simp only [G, dite_eq_left hzb]
     have h' : (F ⟨e z, hzb⟩ : Y) = ((b.comp k) ⟨e z, hz⟩ : Y) := congrArg Subtype.val (hF ⟨e z, hz⟩)
     have hk : k ⟨e z, hz⟩ = z := Subtype.ext (e.symm_apply_apply z)
     rw [h']

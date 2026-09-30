@@ -6,6 +6,9 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Section
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Integrability
 import DifferentialGeometry.Analysis.FunctionalAnalysis.BilinearOperatorNorm
 
+open DifferentialGeometry.TensorMetric (
+  tensorInnerPointwise tensorPointwiseNorm)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 

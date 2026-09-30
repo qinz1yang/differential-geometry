@@ -59,14 +59,14 @@ theorem exists_diffeomorph_image_compactSide_of_smoothSchoenfliesThree
     (he₁ : Manifold.IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e₁)
     (he₂ : Manifold.IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e₂) :
     ∃ Φ : ℝ³ ≃ₘ[ℝ] ℝ³,
-      Φ '' (SphereSeparation.jordanBrouwer_openThreeSpace e₁ he₁
+      Φ '' (SphereSeparation.smoothSphereSidesOpenThreeSpace e₁ he₁
               (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)).compactSide =
-        (SphereSeparation.jordanBrouwer_openThreeSpace e₂ he₂
+        (SphereSeparation.smoothSphereSidesOpenThreeSpace e₂ he₂
               (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)).compactSide := by
   obtain ⟨Φ, hΦ⟩ := exists_diffeomorph_image_range_of_smoothSchoenfliesThree h he₁ he₂
   let ψ : Diffeomorph (𝓘(ℝ, ℝ³)) (𝓘(ℝ, ℝ³)) ℝ³ ℝ³ ∞ := Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞
-  let d₁ := SphereSeparation.jordanBrouwer_openThreeSpace e₁ he₁ ψ
-  let d₂ := SphereSeparation.jordanBrouwer_openThreeSpace e₂ he₂ ψ
+  let d₁ := SphereSeparation.smoothSphereSidesOpenThreeSpace e₁ he₁ ψ
+  let d₂ := SphereSeparation.smoothSphereSidesOpenThreeSpace e₂ he₂ ψ
   have huniq : d₂.compactSide = (d₁.toSphereSides.image Φ.toHomeomorph).compactSide :=
     ((d₁.toSphereSides.image Φ.toHomeomorph).side_sets_unique_of_core_properties
       d₂.compactSide d₂.endSide d₂.isOpen_compactSide d₂.isOpen_endSide

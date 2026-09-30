@@ -14,9 +14,12 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffAt metricDiffSq metricDiffSq_def tensorInnerPointwise
+    tensorInnerPointwise_eq_inner0S traceNormSq_le)
+
 open Bundle Manifold MeasureTheory Set
 open _root_.DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 open DifferentialGeometry.Integral.Measure
@@ -181,7 +184,7 @@ theorem l2Inner_eq_integral (g : SmoothRiemannianMetric I M)
       TensorRSSpace.toModel ((ccLift0S (I := I) g T).toSection x) from rfl,
     show (ccLift0S (I := I) g T').toFun x =
       TensorRSSpace.toModel ((ccLift0S (I := I) g T').toSection x) from rfl,
-    innerPt_eq_inner0S (I := I) g s x, ccLift0S_unit, ccLift0S_unit]
+    tensorInnerPointwise_eq_inner0S (I := I) g s x, ccLift0S_unit, ccLift0S_unit]
 
 end Pairing
 

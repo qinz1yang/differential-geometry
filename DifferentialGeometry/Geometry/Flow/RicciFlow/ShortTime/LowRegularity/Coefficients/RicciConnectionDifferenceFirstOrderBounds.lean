@@ -3,6 +3,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Coefficients.SecondOrderBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.FiberNorm
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.ConnectionDifference.OrderOne.TameEnvelope
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
     DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -580,7 +583,7 @@ theorem exists_linearizedRicciConnectionDifferenceOrderOneCoefficient_covariantJ
   rw [← hfactor]
   exact hout
 
-theorem exists_uniform_linearizedRicciConnectionDifferenceOrderOneCoefficient_covariantJetNormSq_two_tame_bound
+theorem exists_uniform_linearizedRicciConnectionDifferenceOrder1CoeffField_jet_two_tame_bound
     {EU : Type*} [NormedAddCommGroup EU] [InnerProductSpace ℝ EU]
     [FiniteDimensional ℝ EU] [NeZero (Module.finrank ℝ EU)]
     {HU : Type*} [TopologicalSpace HU] {IU : ModelWithCorners ℝ EU HU}

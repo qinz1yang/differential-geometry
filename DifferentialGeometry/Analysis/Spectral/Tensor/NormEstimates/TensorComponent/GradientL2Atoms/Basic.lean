@@ -20,6 +20,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorCompone
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponent.GradientL2Atoms.Measurability
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponent.GradientL2Atoms.CovariantRiemannian
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponent.GradientL2Atoms.ChristoffelSlotFiberNormBound
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise
+    tensorInnerPointwise_nonneg)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -258,7 +261,27 @@ private lemma sq_eLpNorm_indicator_raw_le_const_mul_tensorL2Inner
     intro b
     exact mul_nonneg hC_nn
       (tensorInnerPointwise_nonneg (I := I) (M := M) g r s b _)
-  rw [DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq]
+  have hf_meas : AEStronglyMeasurable f μ := by
+    have hs : MeasurableSet (tsupport (fun x : M =>
+        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
+      (isClosed_tsupport _).measurableSet
+    apply (aestronglyMeasurable_indicator_iff hs).2
+    have hraw := (tensorChartComponentRaw_contMDiffOn_chart_source
+      (I := I) (M := M) g r s S α Idx Jdx).continuousOn
+    have hcont : ContinuousOn
+        (fun b : M => scalarOnE (I := I) α
+          (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx)
+          (extChartAt I α b))
+        (tsupport (fun x : M =>
+          ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) := by
+      refine (hraw.mono (fun b hb =>
+        pouTsupport_subset_baseSet (I := I) (M := M) α hb)).congr ?_
+      intro b hb
+      exact scalarOnE_raw_eq_raw_on_pouTsupport
+        (I := I) (M := M) g r s α S Idx Jdx hb
+    exact hcont.aestronglyMeasurable_of_isCompact (isClosed_tsupport _).isCompact hs
+  rw [DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq
+    f hf_meas]
   have h_lint_le :
       ∫⁻ b, (‖f b‖ₑ : ℝ≥0∞) ^ 2 ∂μ ≤
         ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise
@@ -625,6 +648,66 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
             (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j) b l‖ ^ 2) with hSumSq_def
   set f : M → ℝ := fun b : M => ρ b * Real.sqrt (SumSq b) with hf_def
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
+  have hf_meas : AEStronglyMeasurable f μ := by
+    let _ : IsContinuousRiemannianBundle (TensorRSModel r s ℝ E)
+        (fun b : M => TensorRSSpace r s I b) :=
+      DifferentialGeometry.Tensor.TensorRSRiemannianBundleContinuous.tensorRS_isContinuousRiemannianBundle (I := I) (M := M) g r s
+    have hbase : (trivializationAt (TensorRSModel r s ℝ E)
+        (fun b : M => TensorRSSpace r s I b) α).baseSet = (chartAt H α).source := by
+      change (trivializationAt (Tensor0SModel r ℝ E)
+          (fun b : M => Tensor0SSpace r I b) α).baseSet ∩
+          (trivializationAt (Tensor0SModel s ℝ E)
+            (fun b : M => Tensor0SSpace s I b) α).baseSet = _
+      change (trivializationAt E (TangentSpace I) α).baseSet ∩
+          (trivializationAt E (TangentSpace I) α).baseSet = _
+      rw [Set.inter_self]
+      exact DifferentialGeometry.Integral.Measure.trivializationAt_baseSet_eq_chartAt_source α
+    have hnorm_sq (V : Π b : M, TensorRSSpace r s I b)
+        (hV : ContMDiffOn I 𝓘(ℝ, TensorRSModel r s ℝ E) ∞
+          (fun b : M => (trivializationAt (TensorRSModel r s ℝ E)
+            (fun y : M => TensorRSSpace r s I y) α ⟨b, V b⟩).2)
+          (chartAt H α).source) :
+        ContinuousOn (fun b : M => ‖V b‖ ^ 2) (chartAt H α).source := by
+      have hsec : ContMDiffOn I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
+          (fun b : M => TotalSpace.mk' (TensorRSModel r s ℝ E) b (V b))
+          (chartAt H α).source := by
+        rw [← hbase] at hV ⊢
+        exact (Bundle.Trivialization.contMDiffOn_section_baseSet_iff
+          (e := trivializationAt (TensorRSModel r s ℝ E)
+            (fun b : M => TensorRSSpace r s I b) α)).2 hV
+      have hinner : ContinuousOn (fun b : M => ⟪V b, V b⟫_ℝ)
+          (chartAt H α).source :=
+        hsec.continuousOn.inner_bundle hsec.continuousOn
+      simpa only [real_inner_self_eq_norm_sq] using hinner
+    have hsum : ContinuousOn SumSq (chartAt H α).source := by
+      apply ContinuousOn.add
+      · exact continuousOn_finsetSum _ (fun k _ => hnorm_sq _
+          (chartTensorRSInputSlotCorrection_chartBasisVec_trivImage_contMDiffOn_chartSource
+            (I := I) (M := M) g r s α (fun b => S.toCcTensor.toSection b)
+            S.toCcTensor.toSection.contMDiff j k))
+      · exact continuousOn_finsetSum _ (fun l _ => hnorm_sq _
+          (chartTensorRSOutputSlotCorrection_chartBasisVec_trivImage_contMDiffOn_chartSource
+            (I := I) (M := M) g r s α (fun b => S.toCcTensor.toSection b)
+            S.toCcTensor.toSection.contMDiff j l))
+    have hcont : ContinuousOn f (chartAt H α).source :=
+      (chartAtlasPOU I M α).contMDiff.continuous.continuousOn.mul
+        (Real.continuous_sqrt.comp_continuousOn hsum)
+    have hs : MeasurableSet (tsupport ρ) := (isClosed_tsupport _).measurableSet
+    have hf_indicator : f = (tsupport ρ).indicator f := by
+      funext b
+      by_cases hb : b ∈ tsupport ρ
+      · exact (Set.indicator_of_mem hb f).symm
+      · have hρ_zero : ρ b = 0 := by
+          by_contra hne
+          exact hb (subset_tsupport ρ hne)
+        rw [Set.indicator_of_notMem hb, hf_def]
+        change ρ b * Real.sqrt (SumSq b) = 0
+        rw [hρ_zero, zero_mul]
+    rw [hf_indicator]
+    apply (aestronglyMeasurable_indicator_iff hs).2
+    exact (hcont.mono (fun b hb =>
+      pouTsupport_subset_baseSet (I := I) (M := M) α hb)).aestronglyMeasurable_of_isCompact
+        (isClosed_tsupport _).isCompact hs
   have hSumSq_nn : ∀ b : M, 0 ≤ SumSq b := by
     intro b
     rw [hSumSq_def]
@@ -713,7 +796,8 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
     rw [h_l2_eq]
     exact SmoothCcTensorH1.l2NormSq_le_h1NormSq S
   have h_sq : (eLpNorm f 2 μ) ^ 2 ≤ ENNReal.ofReal (C * ‖S‖ ^ 2) := by
-    rw [DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq]
+    rw [DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq
+      f hf_meas]
     calc ∫⁻ b, (‖f b‖ₑ : ℝ≥0∞) ^ 2 ∂μ
         ≤ ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise
             (I := I) (M := M) g r s b

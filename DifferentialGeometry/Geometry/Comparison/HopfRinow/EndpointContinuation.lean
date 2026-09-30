@@ -65,7 +65,7 @@ theorem isGeodesicOn_extends_past_finite_endpoint
   refine ⟨fun t => if t < T then γ t else η (t - T),
     Geodesic.isGeodesicOn_glue_at_limit (I := I) g hδ hγ hη hmatch, ?_⟩
   intro t ht
-  simp only [if_pos ht]
+  simp only [ite_eq_left ht]
 
 def HasEndpointContinuation
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (b : ℝ) : Prop :=
@@ -264,9 +264,9 @@ theorem endpointCont_of_lim
     else (extChartAt I y y, wγ) with hcγ_def
   set cη : ℝ → E × E := fun s => (uη (s - b), deriv uη (s - b)) with hcη_def
   have hcγ_lt : ∀ s, s < b → cγ s = (u s, deriv u s) := fun s hs => by
-    simp only [hcγ_def, if_pos hs]
+    simp only [hcγ_def, ite_eq_left hs]
   have hcγ_b : cγ b = (extChartAt I y y, wγ) := by
-    simp only [hcγ_def, if_neg (lt_irrefl b)]
+    simp only [hcγ_def, ite_eq_right (lt_irrefl b)]
   have hcγ_deriv_open : ∀ s ∈ Set.Ioo a b,
       HasDerivAt cγ (chartPhaseVF (I := I) g y (cγ s)) s := by
     intro s hs

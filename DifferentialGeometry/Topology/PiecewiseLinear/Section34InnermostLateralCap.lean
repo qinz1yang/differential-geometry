@@ -8,7 +8,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem exists_innermost_disk_of_lateral_returning_arcs
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {P : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P) {a b : ℝ} (hab : a < b)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P) {a b : ℝ} (hab : a < b)
     {ι : Type*} [Finite ι] [Nonempty ι] {T : ι → Set (E × ℝ)} {γ : ι → ℝ → E × ℝ}
     (hγ : ∀ i, IsPLHomeomorphOn (γ i) (Icc 0 1) (T i))
     (hside : ∀ i, T i ⊆ (r '' stdSimplexBoundary 2) ×ˢ Icc a b)
@@ -17,7 +17,7 @@ theorem exists_innermost_disk_of_lateral_returning_arcs
     (hbase : ∀ i, Disjoint (T i) (P ×ˢ ({a} : Set ℝ)))
     (hdisj : Pairwise fun i j => Disjoint (T i) (T j)) :
     ∃ (i : ι) (F B : Set (E × ℝ)) (q : (Fin 3 → ℝ) → E × ℝ),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
       F ⊆ (r '' stdSimplexBoundary 2) ×ˢ Ioc a b ∧
       q '' stdSimplexBoundary 2 = T i ∪ B ∧
       F ∩ ((r '' stdSimplexBoundary 2) ×ˢ ({b} : Set ℝ)) = B ∧
@@ -30,7 +30,7 @@ theorem exists_innermost_disk_of_lateral_returning_arcs
   obtain ⟨K, hKfin, hKP⟩ := hP.isPolyhedron.exists_simplicialComplex
   let _ : Finite K.faces := hKfin.to_subtype
   have hK : IsPLBall 2 K.space := hKP.symm ▸ hP
-  have hrK : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) K.space := hKP.symm ▸ hr
+  have hrK : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) K.space := hKP.symm ▸ hr
   have hJ : (boundaryComplex 2 K).space = r '' stdSimplexBoundary 2 :=
     (hr.image_stdSimplexBoundary_eq_boundaryComplex K hKP).symm
   have hD := isPLBall_prism_bottom_union_side K hK hab
@@ -63,7 +63,7 @@ theorem exists_innermost_disk_of_lateral_returning_arcs
 theorem exists_innermost_disk_of_lateral_arc_family
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {P : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P) {a b : ℝ} (hab : a < b)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P) {a b : ℝ} (hab : a < b)
     {ι : Type*} [Finite ι] {T : ι → Set (E × ℝ)} {γ : ι → ℝ → E × ℝ}
     (hγ : ∀ i, IsPLHomeomorphOn (γ i) (Icc 0 1) (T i))
     (hside : ∀ i, T i ⊆ (r '' stdSimplexBoundary 2) ×ˢ Icc a b)
@@ -72,7 +72,7 @@ theorem exists_innermost_disk_of_lateral_arc_family
     (hdisj : Pairwise fun i j => Disjoint (T i) (T j))
     (hreturn : ∃ i, Disjoint (T i) (P ×ˢ ({a} : Set ℝ))) :
     ∃ (i : ι) (F B : Set (E × ℝ)) (q : (Fin 3 → ℝ) → E × ℝ),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
       F ⊆ (r '' stdSimplexBoundary 2) ×ˢ Ioc a b ∧
       q '' stdSimplexBoundary 2 = T i ∪ B ∧
       F ∩ ((r '' stdSimplexBoundary 2) ×ˢ ({b} : Set ℝ)) = B ∧

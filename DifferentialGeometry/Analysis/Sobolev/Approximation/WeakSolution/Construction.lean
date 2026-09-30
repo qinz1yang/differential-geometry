@@ -1,14 +1,12 @@
-import DifferentialGeometry.Analysis.Sobolev.Nirenberg.H2Regularity.NonSmooth
+import DifferentialGeometry.Analysis.Sobolev.Solutions.SmoothSequence
 
 noncomputable section
 
 open MeasureTheory Metric Filter Topology Set Function
-open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
-open DifferentialGeometry.Analysis.Sobolev.NirenbergNonSmooth
 open scoped ENNReal NNReal Convolution Pointwise BigOperators
 
-namespace DifferentialGeometry.Analysis.Sobolev.SmoothApproximationConstruction
+namespace DifferentialGeometry.Analysis.Sobolev.BoundedSmoothSolutionSequence
 
 variable {d : ℕ} [NeZero d]
 
@@ -65,18 +63,17 @@ private lemma exists_grad_component_bound
     exact hN_fun_nn k
   exact (hN_fun_le j x).trans hsingle
 
-theorem exists_smoothApproximation_of_smooth_compactSupport
+theorem exists_const
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
-    (hu_smooth : ContDiff ℝ (⊤ : ℕ∞) u)
+    (h_sws : B.IsSmoothWeakSolution u f)
     (hu_cs : HasCompactSupport u)
     (hf_cont : Continuous f)
-    (hf_cs : HasCompactSupport f)
-    (h_weak : ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ →
-        HasCompactSupport φ → tsupport φ ⊆ Ω →
-        B.bilin u φ = ∫ x in Ω, f x * φ x) :
-    Nonempty (SmoothApproximation B u f) := by
+    (hf_cs : HasCompactSupport f) :
+    ∃ S : BoundedSmoothSolutionSequence B,
+      S.uSeq = (fun _ => u) ∧ S.fSeq = (fun _ => f) := by
   classical
+  have hu_smooth := h_sws.1
   obtain ⟨M_u, hM_u_nn, hM_u_le⟩ :=
     exists_abs_bound_of_continuous_compactSupport
       (h_cont := hu_smooth.continuous) (h_cs := hu_cs)
@@ -103,7 +100,7 @@ theorem exists_smoothApproximation_of_smooth_compactSupport
     uSeq := fun _ => u
     fSeq := fun _ => f
     u_seq_smooth := fun _ => hu_smooth
-    is_smooth_weak_solution := fun _ => ?_
+    is_smooth_weak_solution := fun _ => h_sws
     f_seq_l2_local := fun _ {S} _hS_cc =>
       memLp_two_restrict_of_continuous_compactSupport hf_cont hf_cs S
     u_seq_l2_local := fun _ {S} _hS_cc =>
@@ -114,10 +111,7 @@ theorem exists_smoothApproximation_of_smooth_compactSupport
     dataBound := D
     data_bound_nn := hD_nn
     data_integrated_bound := ?_
-  }⟩
-  · refine ⟨hu_smooth, ?_⟩
-    intro φ hφ_smooth hφ_cs hφ_support
-    exact h_weak φ hφ_smooth hφ_cs hφ_support
+  }, rfl, rfl⟩
   · intro Ω' hΩ'_open hΩ'_cc
     have h_volume_lt_top : volume Ω' < ⊤ :=
       lt_of_le_of_lt (measure_mono subset_closure) hΩ'_cc.measure_lt_top
@@ -283,15 +277,4 @@ theorem exists_smoothApproximation_of_smooth_compactSupport
     rw [h_combine_eq] at h_combined
     exact h_combined
 
-theorem exists_smoothApproximation_of_isSmoothWeakSolution
-    {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
-    {u f : E → ℝ}
-    (h_sws : B.IsSmoothWeakSolution u f)
-    (hu_cs : HasCompactSupport u)
-    (hf_cont : Continuous f)
-    (hf_cs : HasCompactSupport f) :
-    Nonempty (SmoothApproximation B u f) :=
-  exists_smoothApproximation_of_smooth_compactSupport (B := B)
-    (u := u) (f := f) h_sws.1 hu_cs hf_cont hf_cs h_sws.2
-
-end DifferentialGeometry.Analysis.Sobolev.SmoothApproximationConstruction
+end DifferentialGeometry.Analysis.Sobolev.BoundedSmoothSolutionSequence

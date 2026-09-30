@@ -76,9 +76,9 @@ theorem relativeEulerChar_finitePunctureManifold :
   apply finsum_congr
   intro p
   by_cases hi : (𝓡∂ n).IsInteriorPoint p.val
-  · rw [if_pos hi]
+  · rw [ite_eq_left hi]
     exact relativeEulerChar_localManifold_interior k (𝓡∂ n) p.val hi
-  · rw [if_neg hi]
+  · rw [ite_eq_right hi]
     exact relativeEulerChar_localManifold_boundary k p.val
       (((𝓡∂ n).isBoundaryPoint_iff_not_isInteriorPoint p.val).mpr hi)
 end Boundary

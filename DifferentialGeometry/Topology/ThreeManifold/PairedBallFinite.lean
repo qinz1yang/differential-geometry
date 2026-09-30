@@ -46,13 +46,13 @@ private theorem mem_loopLabels
   | some v =>
     simp only [loopLabels, hL, loopVertex]
     by_cases h : assign a = endpoint s false
-    · simp only [dif_pos h]
+    · simp only [dite_eq_left h]
       constructor
       · intro ha
         exact (v.property (ha.symm.trans h)).elim
       · intro he
         exact (Option.some_ne_none _ he.symm).elim
-    · simp only [dif_neg h, Option.some.injEq]
+    · simp only [dite_eq_right h, Option.some.injEq]
       exact ⟨fun h => Subtype.ext h, fun h => congrArg Subtype.val h⟩
 
 private theorem mem_mergeLabels
@@ -67,21 +67,21 @@ private theorem mem_mergeLabels
   | some v =>
     simp only [mergeLabels, hL, mergeVertex]
     by_cases h : assign a = endpoint s false
-    · simp only [dif_pos h]
+    · simp only [dite_eq_left h]
       constructor
       · intro ha
         exact (v.property.1 (ha.symm.trans h)).elim
       · intro he
         exact (Option.some_ne_none _ he.symm).elim
-    · simp only [dif_neg h]
+    · simp only [dite_eq_right h]
       by_cases h' : assign a = endpoint s true
-      · simp only [dif_pos h']
+      · simp only [dite_eq_left h']
         constructor
         · intro ha
           exact (v.property.2 (ha.symm.trans h')).elim
         · intro he
           exact (Option.some_ne_none _ he.symm).elim
-      · simp only [dif_neg h', Option.some.injEq]
+      · simp only [dite_eq_right h', Option.some.injEq]
         exact ⟨fun h => Subtype.ext h, fun h => congrArg Subtype.val h⟩
 
 private theorem nodup_loopLabels (hL : ∀ v, (L v).Nodup)

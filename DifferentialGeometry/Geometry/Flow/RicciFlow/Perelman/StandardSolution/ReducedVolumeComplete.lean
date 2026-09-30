@@ -44,7 +44,7 @@ noncomputable def redVolume
     ∂riemannianVolumeMeasure (I := I) (M := M)
       (S.base.metric (T - tau))
 
-theorem redVolume_eq_upstream [CompactSpace M]
+theorem redVolume_eq_upstream
     (S : SolutionOn (I := I) (M := M) D)
     (T : ℝ) (x : M) (tau : ℝ) :
     DifferentialGeometry.PDE.RicciFlow.redVolume S T x tau =
@@ -67,7 +67,10 @@ theorem paramDensity_eq_lExpDensity_of_eqOn [I.Boundaryless] [T2Space M]
     exact hEq hW
   unfold paramDensity paramGramMatrix lExpDensity lExpGram lGram lExpField
   rw [hev.eq_of_nhds,
-    hev.mfderiv_eq (I := modelWithCornersSelf ℝ E) (I' := I)]
+    hev.mfderiv_eq (I := modelWithCornersSelf ℝ E) (I' := I),
+    hEq hZ]
+  simp only [tangentSpaceCast]
+  congr 2
 
 section NonconjugateNormalization
 

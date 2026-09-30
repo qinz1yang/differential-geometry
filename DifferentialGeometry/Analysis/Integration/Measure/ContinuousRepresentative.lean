@@ -32,7 +32,7 @@ theorem exists_continuousOn_ae_eq_of_isLindelof
     intro x hx
     have hxΩ := hsub i hx
     dsimp only [v]
-    rw [dif_pos hxΩ]
+    rw [dite_eq_left hxΩ]
     exact hoverlap ⟨x, hxΩ⟩ i ⟨hxU ⟨x, hxΩ⟩, hx⟩
   have hvc : ContinuousOn v Ω := by
     apply continuousOn_of_locally_continuousOn

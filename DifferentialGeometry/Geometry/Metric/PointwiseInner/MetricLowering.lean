@@ -3,7 +3,6 @@ import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.Riemannian
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
-import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
@@ -31,8 +30,7 @@ variable
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.TensorMetric
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 open DifferentialGeometry.Tensor.TensorRSRiemannian
 

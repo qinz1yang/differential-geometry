@@ -35,7 +35,7 @@ variable [FiniteDimensional ℝ E]
 
 theorem smooth_exact_disk_density_of_smooth_disk_area_density
     (c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E)
-    [I.Boundaryless] [T2Space Q] [CompactSpace Q]
+    [T2Space Q]
     (g : SmoothRiemannianMetric I Q) (γ : RegularLoop I Q)
     (h : Geometry.SmoothDiskAreaDensity (E := E)
       (Diffeomorph.pullbackMetricCross g c.equiv.symm)
@@ -161,9 +161,9 @@ theorem transported_area_first_variation_of_isOpen_isotopy
         diskExtension (u.metricVariationDensity W.family.metric (Icc a b) t₀) z := by
     refine setIntegral_congr_fun measurableSet_closedBall (fun z hz => ?_)
     rw [show diskExtension (u.metricVariationDensity W.family.metric T t₀) z =
-        u.metricVariationDensity W.family.metric T t₀ ⟨z, hz⟩ from dif_pos hz,
+        u.metricVariationDensity W.family.metric T t₀ ⟨z, hz⟩ from dite_eq_left hz,
       show diskExtension (u.metricVariationDensity W.family.metric (Icc a b) t₀) z =
-        u.metricVariationDensity W.family.metric (Icc a b) t₀ ⟨z, hz⟩ from dif_pos hz]
+        u.metricVariationDensity W.family.metric (Icc a b) t₀ ⟨z, hz⟩ from dite_eq_left hz]
     simp only [SmoothDisk.metricVariationDensity]
     split_ifs with hpos
     · rw [derivWithin_of_mem_nhds (hTopen.mem_nhds ht₀T),

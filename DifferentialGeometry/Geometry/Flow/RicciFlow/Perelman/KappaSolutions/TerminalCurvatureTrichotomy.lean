@@ -190,7 +190,7 @@ private theorem terminal_surface_product_of_morse_product
       𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2) (𝓡 2) e L hcompat
   let PsiM : (ULift.{u} N) ≃ₘ⟮(𝓡 2),
       𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2)⟯ (ULift.{u} N) :=
-    DifferentialGeometry.Manifold.diffeomorph_chartedSpaceTransHomeomorph
+    DifferentialGeometry.Manifold.diffeomorphChartedSpaceTransHomeomorph
       (M := ULift.{u} N) 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2)
       (𝓡 2) e L hcompat
   let PsiN : (ULift.{u} N) ≃ₘ⟮(𝓡 2),

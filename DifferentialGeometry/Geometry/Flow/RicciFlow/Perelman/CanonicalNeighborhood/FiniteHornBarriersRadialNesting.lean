@@ -13,7 +13,7 @@ open scoped _root_.Manifold ContDiff ENNReal
 
 universe u
 
-attribute [local instance] RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted
+attribute [local instance] RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted
   RealizedFiniteHorn.smooth RealizedFiniteHorn.sigmaCompact
 
 def BoundedAtDistanceShell (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
@@ -28,7 +28,7 @@ theorem finite_horn_construction_of_boundedAtDistanceShell {kappa sigma : ℝ} {
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth := by
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth := by
   let _ := hkappa
   let _ := hsigma
   let _ := hPhi
@@ -122,7 +122,7 @@ theorem hornRadialPosition_iff_hornRadialOuterPosition {g : SmoothRiemannianMetr
     refine ⟨?_, ?_⟩
     · intro x hx
       have htube : neckTube g H ray d i = (endChart g H (ray.point (d i)) hgood).cross.tube := by
-        rw [neckTube, dif_pos hgood]
+        rw [neckTube, dite_eq_left hgood]
       rw [htube]
       exact htip hgood (endChart g H (ray.point (d i)) hgood) x hx
     · intro x hx
@@ -143,7 +143,7 @@ theorem hornRadialOuterPosition_of_subendRadialNesting {g : SmoothRiemannianMetr
     with i hnest_i hgood hbig
   obtain ⟨j1, hsub1, hsup1⟩ := hnest_i
   set E := endChart g H (ray.point (d i)) hgood with hE
-  have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dif_pos hgood]
+  have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dite_eq_left hgood]
   have hdpos : 0 < d i := (hd i).1
   have hsmul : 1 ≤ metricScalarAt g (ray.point (d i)) * d i ^ 2 :=
     le_trans (le_max_left _ _) hbig

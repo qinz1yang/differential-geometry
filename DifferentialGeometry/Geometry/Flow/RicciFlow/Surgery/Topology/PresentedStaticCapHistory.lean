@@ -133,7 +133,7 @@ private theorem exists_window_of_stage_metric_heq
   exact ⟨J, HEq.rfl, hJ, hmetric⟩
 
 theorem RetainedCoreHistory.exists_window_at_appendEvent
-    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    {Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u}) {s : ℝ}
     (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
     (hOld : E.old = E.transition.trace.retainedCore)
@@ -157,7 +157,7 @@ theorem RetainedCoreHistory.exists_window_at_appendEvent
     g J hJ hmetric
 
 theorem RetainedCoreHistory.exists_static_window_at_appendEvent
-    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    {Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u}) {s : ℝ}
     (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
     (hOld : E.old = E.transition.trace.retainedCore)
@@ -175,7 +175,7 @@ theorem RetainedCoreHistory.exists_static_window_at_appendEvent
     S.witness.windowMetric S.window S.window_smooth S.window_inner
 
 theorem RetainedCoreHistory.exists_static_cap_family_at_appendEvent
-    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    {Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u}) {s : ℝ}
     (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
     (hOld : E.old = E.transition.trace.retainedCore)
@@ -225,7 +225,7 @@ theorem RetainedCoreHistory.exists_static_cap_family_at_appendEvent
     H.appendEvent_initialMetric_last_heq E.incoming.lt F hinit, hold⟩
 
 theorem RetainedCoreHistory.exists_static_cap_family_before_appendEvent
-    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    {Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u}) {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -265,7 +265,7 @@ theorem RetainedCoreHistory.exists_static_cap_family_before_appendEvent
 
 
 theorem RetainedCoreHistory.exists_static_cap_families_at_appendEvent
-    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    {Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u}) {s : ℝ}
     (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
     (hOld : E.old = E.transition.trace.retainedCore)

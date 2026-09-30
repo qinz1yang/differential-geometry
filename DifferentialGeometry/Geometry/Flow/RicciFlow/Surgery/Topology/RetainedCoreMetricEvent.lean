@@ -88,7 +88,6 @@ def toRetainedCoreEvent (E : MetricCutCapEvent P Q a s)
         (mfderiv (𝓡∂ 3) ThreeModel (E.oldOutput ∘ E.retainedToOld hOld) x w)
     rw [mfderiv_comp x (hterminal _) (hmap _), mfderiv_comp x (houtput _) (hmap _)]
     exact E.old_metric_eq (E.retainedToOld hOld x) _ _
-  old_contains_outside := fun _ hx _ => hx
   every_child_meets_old := by
     intro c
     obtain ⟨x, hx⟩ := E.every_child_meets_old c

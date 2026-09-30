@@ -86,7 +86,7 @@ theorem leastCurvatureOperatorEigenvalueAt_pullbackMetricCross
     simpa only [he] using metricRm04Standard_pullbackCross g Φ x u v w z
 
 theorem leastCurvatureOperatorEigenvalueAt_restrictOpen
-    (g : SmoothRiemannianMetric I M) (U : Opens M) [SigmaCompactSpace U] (x : U) :
+    (g : SmoothRiemannianMetric I M) (U : Opens M) (x : U) :
     leastCurvatureOperatorEigenvalueAt (g.restrictOpen U) x
         (metricAlgebraicCurvatureTensorAt (g.restrictOpen U) x) =
       leastCurvatureOperatorEigenvalueAt g (x : M) (metricAlgebraicCurvatureTensorAt g (x : M)) := by
@@ -100,15 +100,11 @@ theorem leastCurvatureOperatorEigenvalueAt_restrictOpen
       metricRm04StandardAt_restrictOpen g U x u v w z
 
 theorem leastCurvatureOperatorEigenvalueAt_pullbackMetricOfInjectiveLocalDiffeomorph
-    [SigmaCompactSpace M] (g : SmoothRiemannianMetric J N) (f : M → N)
+    (g : SmoothRiemannianMetric J N) (f : M → N)
     (hf : IsLocalDiffeomorph I J ∞ f) (hinj : Function.Injective f) (x : M) :
     leastCurvatureOperatorEigenvalueAt (pullbackMetricOfInjectiveLocalDiffeomorph g f hf hinj) x
         (metricAlgebraicCurvatureTensorAt (pullbackMetricOfInjectiveLocalDiffeomorph g f hf hinj) x) =
       leastCurvatureOperatorEigenvalueAt g (f x) (metricAlgebraicCurvatureTensorAt g (f x)) := by
-  let Φ := diffeomorphOntoImage f hf hinj
-  have hrange : Set.range Φ = Set.univ := Φ.surjective.range_eq
-  let : SigmaCompactSpace hf.image := isSigmaCompact_univ_iff.mp
-    (hrange ▸ isSigmaCompact_range Φ.continuous)
   rw [pullbackMetricOfInjectiveLocalDiffeomorph,
     leastCurvatureOperatorEigenvalueAt_pullbackMetricCross,
     leastCurvatureOperatorEigenvalueAt_restrictOpen, diffeomorphOntoImage_apply]

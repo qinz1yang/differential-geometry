@@ -48,7 +48,7 @@ private theorem mfderiv_eq_fderiv_chart
   change (if MDifferentiableAt I J f x then
     fderivWithin ℝ (writtenInExtChartAt I J x f) (Set.range I) (extChartAt I x x)
     else (0 : E →L[ℝ] F)) = _
-  rw [if_pos hf, I.range_eq_univ, fderivWithin_univ]
+  rw [ite_eq_left hf, I.range_eq_univ, fderivWithin_univ]
 
 theorem chartHessianAt_comp_mfderiv
     {c : M → N} {f : N → ℝ} {x : M}

@@ -211,7 +211,7 @@ theorem normalExpJacobian_radial_two_of_metric_trace
       ((stdOrthonormalBasis ℝ E) i) ((stdOrthonormalBasis ℝ E) j)
     have hcomp := hmetric.comp
       (contDiff_id.smul (contDiff_const : ContDiff ℝ ∞ (fun _ : ℝ ↦ a)))
-    convert hcomp using 1 <;> rfl
+    convert hcomp using 1; rfl
   have hGB : ∀ t i j, HasDerivAt (fun s ↦ G s i j) (B t i j) t := by
     intro t i j
     exact ((hG i j).differentiable (by simp) t).hasDerivAt

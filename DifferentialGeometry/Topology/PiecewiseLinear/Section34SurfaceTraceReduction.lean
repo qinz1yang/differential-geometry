@@ -18,8 +18,8 @@ theorem exists_strict_surface_trace_reduction_of_inessential_disk
     (htrace : K.space ∩ L.space = ⋃ j, J j) (i : ι)
     {D E : Set (EuclideanSpace ℝ (Fin 3))}
     {d e : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hd : IsPLHomeomorphOn d (stdSimplex ℝ (Fin 3)) D)
-    (he : IsPLHomeomorphOn e (stdSimplex ℝ (Fin 3)) E)
+    (hd : IsPLHomeomorphOn d (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
+    (he : IsPLHomeomorphOn e (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) E)
     (hdJ : d '' stdSimplexBoundary 2 = J i) (heJ : e '' stdSimplexBoundary 2 = J i)
     (hDS : D ⊆ L.space ∩ interior S.space) (hEK : E ⊆ K.space)
     (hDK : D ∩ K.space = J i) :

@@ -44,7 +44,7 @@ theorem exists_lowerScaleSecondOrderCoefficient_background_smallPerturbation_sec
       let A := lowerScaleActionCoefficients (I := I) (M := M) g gB T
         (lt_of_le_of_lt hδ_le (by norm_num)) hδ hδZ
       (∀ x : M,
-        DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq
+        DifferentialGeometry.TensorMetric.riemannianFiberNormSq
             (I := I) (M := M) g 4 2 x
             (A.secondOrderCoefficient.toSection x) ≤ (C * R) ^ 2) ∧
         covariantJetNormSq (I := I) (M := M) g 2

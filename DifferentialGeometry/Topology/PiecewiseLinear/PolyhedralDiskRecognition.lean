@@ -21,7 +21,7 @@ theorem IsConeBase.exists_isPLHomeomorphOn_of_isPLSphere [FiniteDimensional ℝ 
     [DecidableEq E] {p : E} {L : Geometry.SimplicialComplex ℝ E} [Finite L.faces]
     (hL : IsConeBase p L) {n : ℕ} (hsph : IsPLSphere n L.space) :
     ∃ g : (Fin (n + 2) → ℝ) → E,
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin (n + 2))) (coneComplex hL).space ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (coneComplex hL).space ∧
         g '' stdSimplexBoundary (n + 1) = L.space := by
   obtain ⟨f, hf⟩ := hsph
   obtain ⟨f₀, hf₀⟩ := isPLSphere_simplexBoundary_std n
@@ -90,7 +90,7 @@ theorem IsTopologicalCellWithInterior.exists_isPLHomeomorphOn_of_isPolyhedron {E
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {D Dint : Set E} (hD : IsTopologicalCellWithInterior 2 D Dint)
     (hDp : IsPolyhedron D) (hJ : IsPLSphere 1 (D \ Dint)) :
-    ∃ r : (Fin 3 → ℝ) → E, IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+    ∃ r : (Fin 3 → ℝ) → E, IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       r '' stdSimplexBoundary 2 = D \ Dint := by
   have hDintD : Dint ⊆ D := by
     obtain ⟨θ, hθ⟩ := id hD
@@ -129,7 +129,7 @@ theorem IsTopologicalCellWithInterior.exists_isPLHomeomorphOn_of_isPolyhedron {E
   have hcb : IsConeBase (((0 : E), (1 : ℝ)) : E × ℝ) L := isConeBase_of_snd_eq_zero L hL0 0
   have hLsph : IsPLSphere 1 L.space := hLspace ▸ hJ.of_isPLHomeomorphOn (hιpl _ hJp)
   obtain ⟨g, hg, hgb⟩ : ∃ g : (Fin 3 → ℝ) → E × ℝ,
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (coneComplex hcb).space ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (coneComplex hcb).space ∧
         g '' stdSimplexBoundary 2 = L.space :=
     hcb.exists_isPLHomeomorphOn_of_isPLSphere (n := 1) hLsph
   have hinter : ι '' D ∩ (coneComplex hcb).space = ι '' (D \ Dint) := by
@@ -173,12 +173,12 @@ theorem IsTopologicalCellWithInterior.exists_isPLHomeomorphOn_of_isPolyhedron {E
   have hgc := hg.isPiecewiseAffineOn.continuousOn
   have hconec : IsClosed (coneComplex hcb).space := by
     rw [← hg.image_eq]
-    exact ((isCompact_stdSimplex ℝ (Fin 3)).image_of_continuousOn hgc).isClosed
+    exact ((Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).image_of_continuousOn hgc).isClosed
   have hcl : closure ((coneComplex hcb).space \ ι '' (D \ Dint)) = (coneComplex hcb).space := by
     refine Subset.antisymm (closure_minimal sdiff_subset hconec) ?_
     rw [← hg.image_eq]
     rintro _ ⟨x, hx, rfl⟩
-    have hsub : openSimplex (stdVertices 1) ⊆ stdSimplex ℝ (Fin 3) :=
+    have hsub : openSimplex (stdVertices 1) ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) :=
       openSimplex_stdVertices_subset_stdSimplex (n := 1)
     refine closure_mono ?_ (((hgc x hx).mono hsub).mem_closure_image
       (stdSimplex_subset_closure_openSimplex 1 hx))

@@ -54,7 +54,7 @@ theorem exists_timeH1_dual_of_weak_deriv
 private theorem scalar_weak_deriv_of_tensor_integrals_on
     {X S E J : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [SeminormedAddCommGroup S] [NormedSpace ℝ S]
-    [MeasurableSpace E] [Fintype J] {ν : Measure E}
+    [MeasurableSpace E] [Fintype J] {ν : Measure E} [SFinite ν]
     {a b : ℝ} (μ : Measure ℝ) (hμ : μ = volume.restrict (Icc a b))
     (ι : S →L[ℝ] X) {p q : ℝ → X →L[ℝ] ℝ}
     {W B : ℝ × E → ℝ} {Q : J → ℝ × E → ℝ}
@@ -109,7 +109,7 @@ private theorem scalar_weak_deriv_of_tensor_integrals_on
 theorem exists_timeH1_dual_of_tensor_integrals_on
     {X S E J : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [SeminormedAddCommGroup S] [NormedSpace ℝ S]
-    [MeasurableSpace E] [Fintype J] {ν : Measure E}
+    [MeasurableSpace E] [Fintype J] {ν : Measure E} [SFinite ν]
     {a b : ℝ} (hab : a < b) (μ : Measure ℝ)
     (hμ : μ = volume.restrict (Icc a b))
     (ι : S →L[ℝ] X) (hdense : DenseRange ι)
@@ -204,7 +204,7 @@ theorem timeH1.deriv_ae_eq_of_tensor_mass_dual
     {X Y S E J : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [NormedAddCommGroup Y] [NormedSpace ℝ Y]
     [SeminormedAddCommGroup S] [NormedSpace ℝ S]
-    [MeasurableSpace E] [Fintype J] {ν : Measure E}
+    [MeasurableSpace E] [Fintype J] {ν : Measure E} [SFinite ν]
     {a b : ℝ} (hab : a < b) (μ : Measure ℝ) (hμ : μ = volume.restrict (Icc a b))
     (ι : S →L[ℝ] X) (hdense : DenseRange ι)
     (mass : Y →L[ℝ] X →L[ℝ] ℝ) (v : Lp Y 2 μ)

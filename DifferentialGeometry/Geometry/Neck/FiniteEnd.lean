@@ -388,7 +388,9 @@ private theorem exists_restricted_completion_endpoint
   let _ : UniformSpace W := mW.toPseudoMetricSpace.toUniformSpace
   let eW : PseudoEMetricSpace W :=
     @PseudoMetricSpace.toPseudoEMetricSpace W mW.toPseudoMetricSpace
+  let : PseudoEMetricSpace W := eW
   let : WeakPseudoEMetricSpace W := @PseudoEMetricSpace.toWeakPseudoEMetricSpace W eW
+  let : EDist W := eW.toEDist
   have hscalar : Tendsto (fun n => metricScalarAt (g.restrictOpen W) (γ (t n))) atTop atTop := by
     simpa only [metricScalarAt_restrictOpen] using hscalarAmbient
   have hmetricW (x y : W) : edist x y = riemannianEDistOf (g.restrictOpen W) x y :=

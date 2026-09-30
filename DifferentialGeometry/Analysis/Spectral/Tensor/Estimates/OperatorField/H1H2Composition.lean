@@ -5,6 +5,10 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.SharpC0JetSum
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.PerOrderEnvelopes
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise
+  riemannianFiberNormSq_nonneg
+  tensorInnerPointwise)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -222,8 +226,8 @@ private theorem rsFiber3_le_6
       (1 / (3 : ℝ≥0∞).toReal - 1 / (6 : ℝ≥0∞).toReal) ≠ ⊤ :=
     ENNReal.mul_ne_top hmem.eLpNorm_ne_top hpow
   have hreal := ENNReal.toReal_mono htop hcmp
-  rw [toReal_eLpNorm hcont.aestronglyMeasurable, ENNReal.toReal_mul,
-    toReal_eLpNorm hcont.aestronglyMeasurable,
+  rw [toReal_eLpNorm, ENNReal.toReal_mul,
+    toReal_eLpNorm,
     show 1 / (3 : ℝ≥0∞).toReal - 1 / (6 : ℝ≥0∞).toReal =
       (1 / 6 : ℝ) by norm_num] at hreal
   simpa only [V, mul_comm] using hreal
@@ -362,7 +366,7 @@ private theorem rs_l6_l3_l2
   have hmono :
       eLpNorm (rsFiberFun g p c Y) 2 μ ≤
         eLpNorm (fun x => rsFiberFun g r c Φ x * rsFiberFun g p r W x) 2 μ := by
-    apply eLpNorm_mono
+    apply eLpNorm_mono hYmem.aestronglyMeasurable
     intro x
     rw [Real.norm_eq_abs, abs_of_nonneg (fiber_rs_nonneg g p c Y x),
       Real.norm_eq_abs, abs_of_nonneg
@@ -373,23 +377,19 @@ private theorem rs_l6_l3_l2
       eLpNorm (fun x => rsFiberFun g r c Φ x * rsFiberFun g p r W x) 2 μ ≤
         eLpNorm (rsFiberFun g r c Φ) 6 μ *
           eLpNorm (rsFiberFun g p r W) 3 μ := by
-    simpa using
-      (eLpNorm_le_eLpNorm_mul_eLpNorm'_of_norm
-        (p := 6) (q := 3) (r := 2) (μ := μ)
-        (hΦc.aestronglyMeasurable) (hWc.aestronglyMeasurable)
-        (fun a b : ℝ => a * b) 1
-        (Filter.Eventually.of_forall (fun x => by
-          rw [Real.norm_eq_abs, abs_mul]
-          norm_num)))
+    simpa only [smul_eq_mul, Pi.mul_def] using
+      (eLpNorm_smul_le_mul_eLpNorm
+        (p := (6 : ENNReal)) (q := 3) (r := 2) (μ := μ)
+        hΦc.aestronglyMeasurable hWc.aestronglyMeasurable)
   have hENN := hmono.trans hholder
   have hfinite :
       eLpNorm (rsFiberFun g r c Φ) 6 μ *
           eLpNorm (rsFiberFun g p r W) 3 μ ≠ ⊤ :=
     ENNReal.mul_ne_top hΦmem.eLpNorm_ne_top hWmem.eLpNorm_ne_top
   have hreal := ENNReal.toReal_mono hfinite hENN
-  rw [toReal_eLpNorm hYmem.aestronglyMeasurable,
-    ENNReal.toReal_mul, toReal_eLpNorm hΦmem.aestronglyMeasurable,
-    toReal_eLpNorm hWmem.aestronglyMeasurable] at hreal
+  rw [toReal_eLpNorm,
+    ENNReal.toReal_mul, toReal_eLpNorm,
+    toReal_eLpNorm] at hreal
   rw [← fiber_rs_lp2 (I := I) (M := M) g p c Y]
   exact hreal
 

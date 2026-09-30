@@ -1,5 +1,21 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorCommutator
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.OrthonormalFrame.TensorRS
+
+open DifferentialGeometry.TensorMetric
+  (dualTensorFrameRS
+    dualTensorFrameS
+    exists_tangent_orthonormalBasisRS_with_norm_sum
+    fiberNormSqComponent
+    fiberNormSqComponent_smul
+    fiberNormSqComponent_sum
+    fiberNormSqSummand
+    fiberNormSqSummand_eq_component_sq
+    riemannianFiberNormSq
+    riemannianFiberNormSq_eq_sum_componentRS_sq
+    riemannianFiberNormSq_eq_sum_componentS_sq
+    riemannianFiberNormSq_nonneg
+    tensorRS_dualFrame_expansion
+    tensorS_dualFrame_expansion)
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -29,7 +45,7 @@ private local instance clm1_ts (r s : ℕ) (x : M) :
 private local instance clm1_ca (r s : ℕ) (x : M) :
     ContinuousAdd (Tensor0SBundle.TensorRSSpace r s I x →L[ℝ]
       Tensor0SBundle.TensorRSSpace r s I x) :=
-  ContinuousLinearMap.topologicalAddGroup.toContinuousAdd
+  ContinuousLinearMap.isTopologicalAddGroup.toContinuousAdd
 private local instance clm1_acm (r s : ℕ) (x : M) :
     AddCommMonoid (Tensor0SBundle.TensorRSSpace r s I x →L[ℝ]
       Tensor0SBundle.TensorRSSpace r s I x) :=
@@ -45,7 +61,7 @@ private local instance clm2_ts (r s : ℕ) (x : M) :
 private local instance clm2_ca (r s : ℕ) (x : M) :
     ContinuousAdd (TangentSpace I x →L[ℝ] Tensor0SBundle.TensorRSSpace r s I x →L[ℝ]
       Tensor0SBundle.TensorRSSpace r s I x) :=
-  ContinuousLinearMap.topologicalAddGroup.toContinuousAdd
+  ContinuousLinearMap.isTopologicalAddGroup.toContinuousAdd
 private local instance clm2_acm (r s : ℕ) (x : M) :
     AddCommMonoid (TangentSpace I x →L[ℝ] Tensor0SBundle.TensorRSSpace r s I x →L[ℝ]
       Tensor0SBundle.TensorRSSpace r s I x) :=

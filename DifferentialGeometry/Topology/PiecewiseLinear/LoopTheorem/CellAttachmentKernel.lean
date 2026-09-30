@@ -860,7 +860,7 @@ theorem attachedCellOuterRadialExpansion_of_mem_base
     (e : ClosedCell n ≃ₜ D) (t : unitInterval)
     (y : ↑(attachedCellOuter (X := X) e)) (hy : (y.1 : Y) ∈ X) :
     attachedCellOuterRadialExpansion (X := X) e (t, y) = y := by
-  rw [attachedCellOuterRadialExpansion, dif_pos hy]
+  rw [attachedCellOuterRadialExpansion, dite_eq_left hy]
 
 theorem attachedCellOuterRadialExpansion_of_mem_disk
     {Y : Type*} [TopologicalSpace Y] {X D : Set Y} {n : ℕ}
@@ -874,7 +874,7 @@ theorem attachedCellOuterRadialExpansion_of_mem_disk
   by_cases hyX : (y.1 : Y) ∈ X
   · rw [attachedCellOuterRadialExpansion_of_mem_base e t y hyX,
       attachedCellOuterDiskRadialExpansion_eq_of_mem_base e hboundary t ⟨y, hyD⟩ hyX]
-  · rw [attachedCellOuterRadialExpansion, dif_neg hyX]
+  · rw [attachedCellOuterRadialExpansion, dite_eq_right hyX]
 
 theorem continuous_attachedCellOuterRadialExpansion
     {Y : Type*} [TopologicalSpace Y] {X D : Set Y} {n : ℕ}
@@ -930,7 +930,7 @@ theorem attachedCellOuterRadialExpansion_zero
     attachedCellOuterRadialExpansion (X := X) e (0, y) = y := by
   by_cases hy : (y.1 : Y) ∈ X
   · exact attachedCellOuterRadialExpansion_of_mem_base e 0 y hy
-  · rw [attachedCellOuterRadialExpansion, dif_neg hy]
+  · rw [attachedCellOuterRadialExpansion, dite_eq_right hy]
     exact congrArg Subtype.val
       (attachedCellOuterDiskRadialExpansion_zero e
         (⟨y, y.1.2.resolve_left hy⟩ : AttachedCellOuterDisk (X := X) e))

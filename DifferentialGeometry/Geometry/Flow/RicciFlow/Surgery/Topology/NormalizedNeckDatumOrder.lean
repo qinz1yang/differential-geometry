@@ -23,6 +23,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   (U : Opens M) [SigmaCompactSpace U] {g : SmoothRiemannianMetric ThreeModel U}
   {ι : Type v} {δ₀ : ι → ℝ} {k : ι → ℕ}
 
+omit [SigmaCompactSpace U] in
 theorem lowerOrder_oriented_rotatedDatum_family
     (N : ∀ i, NormalizedNeck g (δ₀ i) (k i))
     {δ : ℝ} (hδ : ∀ i, δ₀ i ≤ δ) (hδ1 : δ < 1)

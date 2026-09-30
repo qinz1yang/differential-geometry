@@ -20,7 +20,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.topology PointedRiemannianManifold.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact
 
 variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
@@ -45,7 +45,7 @@ theorem finite_horn_construction_of_rmBallBoundAtSameTime_and_ricciTensorBound
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth :=
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth :=
   finite_horn_construction_of_boundedAtDistance hkappa hsigma hPhi (by
     obtain ⟨e, he, h⟩ :=
       bounded_curvature_at_distance_of_rmBallBoundAtSameTime_and_ricciTensorBound hK hrm hric

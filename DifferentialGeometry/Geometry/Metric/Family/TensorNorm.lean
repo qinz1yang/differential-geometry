@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Metric.InverseGram
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.BasisEvaluation

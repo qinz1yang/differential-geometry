@@ -83,7 +83,7 @@ theorem IsCylindricalDiagram.exists_finite_crosscut_partition_of_regular_strip
     ∃ C : Set (Set F), C.Finite ∧ C.PairwiseDisjoint id ∧
       ⋃₀ C = J ∩ f '' (P ×ˢ Icc a b) ∧
       ∀ A ∈ C, ∃ q : (Fin 2 → ℝ) → F,
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧
         q '' stdSimplexBoundary 1 = A ∩ f '' (P ×ˢ ({a, b} : Set ℝ)) := by
   let D : Set F := f '' (P ×ˢ Icc a b)
   let W : Set F := f '' (P ×ˢ ({a, b} : Set ℝ))
@@ -168,7 +168,7 @@ theorem IsCylindricalDiagram.exists_source_crosscut_partition_of_regular_strip
     ∃ C : Set (Set (E × ℝ)), C.Finite ∧ C.PairwiseDisjoint id ∧
       ⋃₀ C = (P ×ˢ Icc a b) ∩ f ⁻¹' J ∧
       ∀ A ∈ C, ∃ q : (Fin 2 → ℝ) → E × ℝ,
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧
         q '' stdSimplexBoundary 1 = A ∩ (P ×ˢ ({a, b} : Set ℝ)) := by
   obtain ⟨C, hCfin, hCdis, hcover, hC⟩ :=
     hf.exists_finite_crosscut_partition_of_regular_strip hP hJ hJS L hc hca hab hbd hd

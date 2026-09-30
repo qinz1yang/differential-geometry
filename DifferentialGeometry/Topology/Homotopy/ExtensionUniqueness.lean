@@ -14,7 +14,7 @@ variable {X : Type*} [TopologicalSpace X] {x y : X}
 
 
 
-theorem cubePathExtension_retract_eq (n : ℕ) (p : Path x y)
+private theorem cubePathExtension_retract_eq (n : ℕ) (p : Path x y)
     (Γ : GenLoop (Fin (n + 1)) X x)
     (F : C(unitInterval × (Fin (n + 1) → unitInterval), X))
     (h0 : ∀ v, F (0, v) = Γ v)

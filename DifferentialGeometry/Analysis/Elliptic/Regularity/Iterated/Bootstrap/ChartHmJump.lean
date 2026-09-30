@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIde
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIdentity.InductiveSuccessor
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.BaseFChart.PolymorphicRegularity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.EffectiveSourceSuccessorRegularity
-import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.InteriorH2RelaxedHyp
+import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.InteriorH2
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.ChartHm
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.MixedPartials
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CanonicalDerivedData
@@ -34,7 +34,6 @@ open DifferentialGeometry.Analysis.Laplacian.IteratedDifferentiatedData
 open DifferentialGeometry.Analysis.Laplacian.IteratedVariationalIdentityStep
 open DifferentialGeometry.Analysis.Laplacian.IteratedBaseFChartRegularityB
 open DifferentialGeometry.Analysis.Laplacian.IteratedEffectiveSourceSuccessorRegularity
-open DifferentialGeometry.Analysis.Laplacian.IteratedNirenbergInteriorWeakened
 open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrap
 open DifferentialGeometry.Analysis.Laplacian.IteratedVariationalIdentitySuccessorSource
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
@@ -63,7 +62,7 @@ omit [FiniteDimensional ℝ E] in
     (dirs : Fin n → Fin (Module.finrank ℝ E))
     {j : ℕ} (hj : j < n) :
     padDirs dirs j = dirs ⟨j, hj⟩ := by
-  unfold padDirs; rw [dif_pos hj]
+  unfold padDirs; rw [dite_eq_left hj]
 
 private noncomputable def dirsOf {n : ℕ}
     (dirs : Fin n → Fin (Module.finrank ℝ E)) (k : ℕ) :
@@ -336,7 +335,7 @@ private theorem chosenMthMixed_memWkp_two_two
     h_chart_H_m_plus_1_u α
   obtain ⟨Ω'', hΩ''_open, hKα_in_Ω'', hΩ''_compact_closure,
       h_closureΩ''_in_chart, h_memWkp_22_Ω''⟩ :=
-    iteratedDerivedChartBilinear_memWkp_two_two_interior_weakened
+    DifferentialGeometry.Analysis.Laplacian.IteratedNirenbergInterior.iteratedDerivedChartBilinear_memWkp_two_two_interior
       (I := I) (M := M) g α m B_m.data h_chart_H_m_plus_1_at_α
   rw [h_directions] at h_memWkp_22_Ω''
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def

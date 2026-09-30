@@ -284,7 +284,10 @@ private lemma integrableOn_rescaleToUnitBall_iff
           rw [show T = (fun z : E => x₀ + z) ∘ (fun z => R • z) from rfl]
           rw [← Measure.map_map (measurable_const_add x₀) (measurable_const_smul R)]
           rw [Measure.map_addHaar_smul volume hR.ne']
-          rw [Measure.map_smul, (measurePreserving_add_left volume x₀).map_eq, abs_inv]]
+          rw [Measure.map_smul (c := ENNReal.ofReal |(R ^ Module.finrank ℝ E)⁻¹|)
+            (f := fun x : E => x₀ + x)
+            (measurable_const_add x₀).aemeasurable,
+            (measurePreserving_add_left volume x₀).map_eq, abs_inv]]
     rw [IntegrableOn, Measure.restrict_smul]
     exact integrable_smul_measure (affine_scale_measure_ne_zero (d := d) hR) ENNReal.ofReal_ne_top
   exact hiff.trans hsmul
@@ -386,8 +389,7 @@ private theorem unitBall_average_abs_le_lpNorm_two
       MeasureTheory.lpNorm (fun _ : E => ⨍ z in B1, |f z| ∂volume) 2 μ1 ≤
         MeasureTheory.lpNorm (fun z => |f z|) 2 μ1 := by
     have htoReal := ENNReal.toReal_mono hAbs_memLp.eLpNorm_ne_top hconst_e
-    simpa [MeasureTheory.toReal_eLpNorm aestronglyMeasurable_const,
-      MeasureTheory.toReal_eLpNorm hAbs_memLp.aestronglyMeasurable] using htoReal
+    simpa [MeasureTheory.toReal_eLpNorm] using htoReal
   have hconst_real :
       (⨍ z in B1, |f z| ∂volume) * (volume.real B1) ^ ((1 : ℝ) / 2) ≤
         MeasureTheory.lpNorm f 2 μ1 := by
@@ -469,15 +471,13 @@ private theorem unitBall_sub_average_lpNorm_le_grad_lpNorm_two
         = (eLpNorm (fun z => u z - ⨍ y in B1, u y ∂volume) 2 μ1).toReal := by
             symm
             rw [MeasureTheory.toReal_eLpNorm]
-            exact hdev_memLp.aestronglyMeasurable
     _ ≤ (ENNReal.ofReal (CPoincVal d) *
           eLpNorm (fun z => ‖hw.weakGrad z‖) 2 μ1).toReal := h
     _ = (ENNReal.ofReal (CPoincVal d)).toReal *
           (eLpNorm (fun z => ‖hw.weakGrad z‖) 2 μ1).toReal := by
             rw [ENNReal.toReal_mul]
     _ = CPoincVal d * MeasureTheory.lpNorm (fun z => ‖hw.weakGrad z‖) 2 μ1 := by
-          rw [ENNReal.toReal_ofReal hCp_nonneg,
-            MeasureTheory.toReal_eLpNorm hgrad_memLp.aestronglyMeasurable]
+          rw [ENNReal.toReal_ofReal hCp_nonneg, MeasureTheory.toReal_eLpNorm]
 
 private theorem unitBall_average_abs_sub_average_le_grad_lpNorm_two
     {u : E → ℝ}

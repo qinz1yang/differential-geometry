@@ -28,7 +28,7 @@ open scoped Classical in
     (gU : SmoothRiemannianMetric I U) {x : M} (hx : x ∈ U)
     (v w : TangentSpace I x) :
     extZeroForm (I := I) U gU x v w = gU.inner ⟨x, hx⟩ v w := by
-  have h : extZeroForm (I := I) U gU x = gU.inner ⟨x, hx⟩ := dif_pos hx
+  have h : extZeroForm (I := I) U gU x = gU.inner ⟨x, hx⟩ := dite_eq_left hx
   exact DFunLike.congr_fun (DFunLike.congr_fun h v) w
 
 omit [FiniteDimensional ℝ E] in
@@ -37,7 +37,7 @@ lemma extZeroForm_of_not_mem (U : Opens M)
     (gU : SmoothRiemannianMetric I U) {x : M} (hx : x ∉ U)
     (v w : TangentSpace I x) :
     extZeroForm (I := I) U gU x v w = 0 := by
-  have h : extZeroForm (I := I) U gU x = 0 := dif_neg hx
+  have h : extZeroForm (I := I) U gU x = 0 := dite_eq_right hx
   exact DFunLike.congr_fun (DFunLike.congr_fun h v) w
 
 
@@ -100,7 +100,7 @@ lemma frameVec_cmdiffAt (x₀ : M) (i : Fin (Module.finrank ℝ E)) {x : M}
   have hfr : frameVec (I := I) x₀ i =ᶠ[𝓝 x] e.localFrame b i := by
     filter_upwards [e.open_baseSet.mem_nhds hx] with y hy
     change (e.symmL ℝ y) (b i) = e.localFrame b i y
-    rw [Bundle.Trivialization.localFrame, dif_pos hy]
+    rw [Bundle.Trivialization.localFrame, dite_eq_left hy]
     rw [Bundle.Trivialization.basisAt, Module.Basis.map_apply,
       Bundle.Trivialization.linearEquivAt_symm_apply]
     exact e.symmL_apply hy (b i)

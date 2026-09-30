@@ -104,9 +104,9 @@ theorem SmoothDisk.inwardConormal_eq_diskMapInwardConormal
   have hcoeff : u.conformalFactor g z = diskMapConformalCoefficient g U (z : ℂ) := hcoeff'.symm
   rw [SmoothDisk.inwardConormal, diskMapInwardConormal, hcoeff]
   by_cases h : 0 < diskMapConformalCoefficient g U (z : ℂ)
-  · rw [if_pos h, ← hd (z : ℂ)]
+  · rw [ite_eq_left h, ← hd (z : ℂ)]
     rfl
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     have hnn := diskMapConformalCoefficient_nonneg g U (z : ℂ)
     have hzero : diskMapConformalCoefficient g U (z : ℂ) = 0 := le_antisymm (not_lt.mp h) hnn
     rw [hzero, Real.sqrt_zero, inv_zero, neg_zero, zero_smul]

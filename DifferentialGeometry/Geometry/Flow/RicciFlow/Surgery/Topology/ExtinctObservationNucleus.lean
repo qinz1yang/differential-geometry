@@ -1,6 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HextDiscardedSideReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscarded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExtinctionBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Poincare
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalClassRealizationLocality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OpenCoreSubmanifold
@@ -64,7 +63,7 @@ def HasExtinctStandardSideNucleus (P : OrientedThreeStage.{u}) (g : P.Metric) : 
     (∀ i : Fin H.eventCount, (H.event i).transition.boundaryFrameReversing) ∧
     (∀ i : Fin H.eventCount, (H.event i).coreInclusionIsSmoothEmbedding) ∧
     (∀ i : Fin H.eventCount,
-      DiscardedSideStandardRealization (H.event i).discarded.toClosedOrientedManifold) ∧
+      (H.event i).discarded.toClosedOrientedManifold.componentwiseStandardFactor) ∧
     IsEmpty (H.stage (Fin.last H.eventCount)).Carrier
 
 def HasExtinctObservationNucleusOfCutCapCompletion
@@ -89,23 +88,6 @@ theorem exists_poincare_controlled_extinction_of_hasExtinctObservationNucleusOfC
   obtain ⟨H, A, hc, hcore, hctrl, hempty⟩ := h
   exact exists_poincare_controlled_extinction_of_observedHistory P g H A
     (fun i => (hc i).some) (fun i => hcore i) hctrl hempty
-
-theorem hext_of_hasExtinctObservationNucleusOfCutCapCompletion
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
-      HasExtinctObservationNucleusOfCutCapCompletion
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g) :
-    ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
-      Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) :=
-  fun M hsc g =>
-    let _ := hsc
-    letI : Nonempty (OrientedThreeStage.ofClosedOrientedManifold
-        M.toClosedOrientedManifold).Carrier := M.connected.toNonempty
-    exists_poincare_controlled_extinction_of_hasExtinctObservationNucleusOfCutCapCompletion
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g (h M g)
 
 theorem hasExtinctObservationNucleusOfCutCapCompletion_of_tower_extinctBy
     (P : OrientedThreeStage.{u}) (g : P.Metric) (T : RetainedCoreObservationTower P g)
@@ -144,7 +126,7 @@ theorem hasExtinctStandardSideNucleus_implies (P : OrientedThreeStage.{u}) (g : 
     (h : HasExtinctStandardSideNucleus P g) : HasExtinctObservationNucleus P g := by
   obtain ⟨H, A, hbfr, hcore, hside, hempty⟩ := h
   exact ⟨H, A, hbfr, hcore,
-    fun i => MetricCutCapEvent.poincareStandardDiscarded_of_discardedSideStandardRealization
+    fun i => MetricCutCapEvent.poincareStandardDiscarded_of_componentwiseStandardFactor
       (H.event i) (hside i), hempty⟩
 
 theorem exists_poincare_controlled_extinction_of_hasExtinctObservationNucleus
@@ -155,36 +137,6 @@ theorem exists_poincare_controlled_extinction_of_hasExtinctObservationNucleus
   exact exists_poincare_controlled_extinction_of_observedHistory P g H A
     (fun i => ((H.event i).hasCutCapCompletion_of_boundaryFrameReversing (hbfr i)).some)
     (fun i => hcore i) hctrl hempty
-
-theorem hext_of_hasExtinctObservationNucleus
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
-      HasExtinctObservationNucleus
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g) :
-    ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
-      Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) :=
-  fun M hsc g =>
-    let _ := hsc
-    letI : Nonempty (OrientedThreeStage.ofClosedOrientedManifold
-        M.toClosedOrientedManifold).Carrier := M.connected.toNonempty
-    exists_poincare_controlled_extinction_of_hasExtinctObservationNucleus
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g (h M g)
-
-theorem smoothPoincareConjecture_of_hasExtinctObservationNucleus
-    (hsum : ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
-      (i : Fin H.eventCount),
-      (H.cutCapTrace.transition i).componentConnectedSumDecomposition)
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
-      HasExtinctObservationNucleus
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g) :
-    smoothPoincareConjecture.{u} :=
-  smoothPoincareConjecture_of_poincareControlledExtinction hsum
-    (hext_of_hasExtinctObservationNucleus h)
 
 theorem hasExtinctObservationNucleus_of_isEmpty (P : OrientedThreeStage.{u})
     [hP : IsEmpty P.Carrier] (g : P.Metric) : HasExtinctObservationNucleus P g := by

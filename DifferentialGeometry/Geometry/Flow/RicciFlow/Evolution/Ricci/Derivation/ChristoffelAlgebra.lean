@@ -542,6 +542,7 @@ theorem ricci_mvfderiv_congr_eventually
   have hx : f x = g x := h.eq_of_nhds
   unfold mvfderiv
   rw [hmf, hx]
+  rfl
 
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in

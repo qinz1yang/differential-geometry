@@ -59,7 +59,7 @@ private theorem exists_continuousOn_scalar_composition_of_order
       funext w
       change (if hw : (w : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k : ℝ) + 1))) ∈
         Metric.ball (u t) r then N ⟨w, hw⟩ else 0) = N w
-      rw [dif_pos w.property]
+      rw [dite_eq_left w.property]
     rw [heq]
     exact hN.continuous
   have hm : u ⁻¹' Metric.ball (u t) r ∈ 𝓝[s] t :=
@@ -71,7 +71,7 @@ private theorem exists_continuousOn_scalar_composition_of_order
   change u z ∈ Metric.ball (u t) r at hball
   change v z = f (u z)
   change v z = if hw : u z ∈ Metric.ball (u t) r then N ⟨u z, hw⟩ else 0
-  rw [dif_pos hball]
+  rw [dite_eq_left hball]
   apply tensorHsInclusion_injective (g := g) (r := 0) (s := 0)
     (by norm_num : (1 : ℝ) ≤ (k : ℝ) + 1)
   apply scalarH1ToContinuous_injective g
@@ -141,7 +141,7 @@ theorem tendsto_scalarHs_composition
       funext w
       change (if hw : (w : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k : ℝ) + 1))) ∈
         Metric.ball u0 r then N ⟨w, hw⟩ else 0) = N w
-      rw [dif_pos w.property]
+      rw [dite_eq_left w.property]
     rw [heq]
     exact hN.continuous
   have hfc : ContinuousAt f u0 :=
@@ -149,7 +149,7 @@ theorem tendsto_scalarHs_composition
   have hfu : Tendsto (fun z => f (u z)) l (𝓝 (f u0)) := hfc.tendsto.comp hu
   have heq0 : f u0 = v0 := by
     change (if hw : u0 ∈ Metric.ball u0 r then N ⟨u0, hw⟩ else 0) = v0
-    rw [dif_pos (Metric.mem_ball_self hr)]
+    rw [dite_eq_left (Metric.mem_ball_self hr)]
     apply tensorHsInclusion_injective (g := g) (r := 0) (s := 0)
       (by norm_num : (1 : ℝ) ≤ (k : ℝ) + 1)
     apply scalarH1ToContinuous_injective g
@@ -160,7 +160,7 @@ theorem tendsto_scalarHs_composition
   filter_upwards [hu.eventually (Metric.ball_mem_nhds u0 hr), hEval] with z hz hez
   change u z ∈ Metric.ball u0 r at hz
   change (if hw : u z ∈ Metric.ball u0 r then N ⟨u z, hw⟩ else 0) = v z
-  rw [dif_pos hz]
+  rw [dite_eq_left hz]
   apply tensorHsInclusion_injective (g := g) (r := 0) (s := 0)
     (by norm_num : (1 : ℝ) ≤ (k : ℝ) + 1)
   apply scalarH1ToContinuous_injective g
@@ -211,7 +211,7 @@ theorem tendstoUniformlyOn_scalarHs_composition_of_isCompact_image
   have hN_eq (w : E) (y : H) (hy : Rel w y) : N w = y := by
     have hex : ∃ y, Rel w y := ⟨y, hy⟩
     change (if hw : ∃ y, Rel w y then Classical.choose hw else 0) = y
-    rw [dif_pos hex]
+    rw [dite_eq_left hex]
     apply tensorHsInclusion_injective (g := g) (r := 0) (s := 0)
       (by norm_num : (1 : ℝ) ≤ (k : ℝ) + 1)
     apply scalarH1ToContinuous_injective g

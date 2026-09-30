@@ -7,7 +7,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 theorem exists_axis_charts_of_exterior_collar_paths
     {D W A B : Set (ℝ × ℝ)} {q : (Fin 3 → ℝ) → ℝ × ℝ}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     {c d : ℝ} (hc : 0 < c) (hcd : c ≤ 2 * d)
     {γ : Fin 2 → ℝ → ℝ × ℝ}
     (hγ : ∀ k, IsPLHomeomorphOn (γ k) (Icc (-d) d) (γ k '' Icc (-d) d))

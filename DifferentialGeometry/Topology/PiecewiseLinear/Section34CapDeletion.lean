@@ -131,7 +131,7 @@ theorem IsPLCellOn.sdiff_interior_of_frontier_inter {M : Type*} [TopologicalSpac
       · exact Or.inr (Or.inr ⟨y, ⟨hy, hyJ⟩, rfl⟩)
   have hdisk : ∀ (A₀ : Set (EuclideanSpace ℝ (Fin 3)))
       (f : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) A₀ → f '' stdSimplexBoundary 2 = J →
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A₀ → f '' stdSimplexBoundary 2 = J →
       A₀ ⊆ frontier PY → IsPreconnected (uY '' (A₀ \ J)) ∧
         Disjoint (uY '' (A₀ \ J)) (frontier X) := by
     intro A₀ f hf hfb hA
@@ -152,7 +152,7 @@ theorem IsPLCellOn.sdiff_interior_of_frontier_inter {M : Type*} [TopologicalSpac
   have hpC : p ∉ C := fun hpC => (hCX hpC).2 hpX
   obtain ⟨A₀, A₁, f, hf, hfb, hA₀₁, hAin, hAout⟩ :
       ∃ (A₀ A₁ : Set (EuclideanSpace ℝ (Fin 3))) (f : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) A₀ ∧ f '' stdSimplexBoundary 2 = J ∧
+        IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A₀ ∧ f '' stdSimplexBoundary 2 = J ∧
           A₀ ∪ A₁ = frontier PY ∧ uY '' (A₀ \ J) ⊆ interior X ∧
             Disjoint (uY '' (A₁ \ J)) X := by
     have hsub₁ : D₁ ⊆ frontier PY := by rw [← hD₁₂]; exact subset_union_left
@@ -223,7 +223,7 @@ theorem IsPLCellOn.sdiff_interior_of_frontier_inter {M : Type*} [TopologicalSpac
     exact huX.injOn.bijOn_image.surjOn.mapsTo_invFunOn (hAX (mem_image_of_mem uY hy))
   have huDX : uX '' DX = uY '' A₀ := by rw [hDXdef]; exact hback A₀ Subset.rfl
   have hgf : IsPLHomeomorphOn ((Function.invFunOn uX PX ∘ uY) ∘ f)
-      (stdSimplex ℝ (Fin 3)) DX :=
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) DX :=
     hf.trans hg
   have htrace : DX ∩ frontier PX =
       ((Function.invFunOn uX PX ∘ uY) ∘ f) '' stdSimplexBoundary 2 := by

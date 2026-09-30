@@ -9,7 +9,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem IsPLHomeomorphOn.exists_interior_point_outside_closed_disk_subset
     {Γ D : Set (EuclideanSpace ℝ (Fin 3))}
     {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Γ) (hD : IsClosed D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Γ) (hD : IsClosed D)
     (hDΓ : D ⊆ r '' openSimplex (stdVertices 1)) :
     ∃ p ∈ Γ \ r '' stdSimplexBoundary 2, p ∉ D := by
   obtain ⟨z, hz⟩ := hr.isPLSphere_image_stdSimplexBoundary.nonempty
@@ -29,7 +29,7 @@ theorem IsPLSphere.exists_disk_chart_around_disk
     (hD : IsPLBall 2 D) (hDS : D ⊆ S) :
     ∃ (Γ : Set (EuclideanSpace ℝ (Fin 3)))
       (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)) (p : EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Γ ∧ Γ ⊆ S ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Γ ∧ Γ ⊆ S ∧
       D ⊆ r '' openSimplex (stdVertices 1) ∧
       p ∈ Γ \ r '' stdSimplexBoundary 2 ∧ p ∉ D ∧
       ∀ x ∈ D, ∀ᶠ y in 𝓝 x, y ∈ Γ ↔ y ∈ S := by
@@ -64,7 +64,7 @@ theorem IsPLSphere.exists_disk_neighborhood_of_disk_subset
     (hD : IsPLBall 2 D) (hDS : D ⊆ S) (hΩ : IsOpen Ω) (hDΩ : D ⊆ Ω) :
     ∃ (M : Set (EuclideanSpace ℝ (Fin 3)))
       (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) M ∧ M ⊆ S ∩ Ω ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) M ∧ M ⊆ S ∩ Ω ∧
       D ⊆ r '' openSimplex (stdVertices 1) ∧
       ∀ x ∈ D, ∀ᶠ y in 𝓝 x, y ∈ M ↔ y ∈ S := by
   obtain ⟨Γ, q, p, hq, hΓS, hDΓ, hpΓ, hpD, hag⟩ := hS.exists_disk_chart_around_disk hD hDS

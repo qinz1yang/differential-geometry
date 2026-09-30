@@ -24,7 +24,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_graphDualCel
     let U := (boundaryComplex 3 K).space ∪ ⋃ e : I,
       (splittingDisk K e.1 (boundaryComplex_faces_subset 3 K (hLB e.2.1))).space
     ∃ q : (Fin 3 → ℝ) → E,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (closure ((boundaryComplex 3 C).space \ U)) ∧
       q '' stdSimplexBoundary 2 = closure ((boundaryComplex 3 C).space \ U) ∩ U := by
   let C := graphDualCell K L v
@@ -122,7 +122,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_graphDualCel
       · exact ⟨hx, Or.inl ⟨hFC (hclosed hx), hb⟩⟩
       · exact ⟨hx, Or.inr he⟩
   change ∃ q : (Fin 3 → ℝ) → E,
-    IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+    IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       (closure (F.space \ (B.space ∪ ⋃ e : I, D e))) ∧
     q '' stdSimplexBoundary 2 = closure (F.space \ (B.space ∪ ⋃ e : I, D e)) ∩
       (B.space ∪ ⋃ e : I, D e)

@@ -13,7 +13,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistor
 
 universe u
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 theorem exists_currentSlab_stronglyCanonicalBefore {ε ε₁ C1 C2 qcan : ℝ}
     (hclass : H.EventSlabsStronglyCanonical ε ε₁ C1 C2 qcan (Fin.last H.eventCount))
@@ -44,7 +44,7 @@ theorem exists_currentSlab_stronglyCanonicalBefore {ε ε₁ C1 C2 qcan : ℝ}
 
 theorem exists_tolerance_hasStrongNeckAt_of_spatialNeck (C1 C2 : ℝ) :
     ∃ eta : ℝ, 0 < eta ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) {ε ε₁ eps qcan : ℝ},
+    ∀ (H : RetainedCoreHistory.{u}) {ε ε₁ eps qcan : ℝ},
       ε ≤ 1 / 1000 → eps ≤ eta →
       H.EventSlabsStronglyCanonical ε ε₁ C1 C2 qcan (Fin.last H.eventCount) →
       ∀ (v : Icc (0 : ℝ) H.toHistory.horizon) (p : (H.toHistory.stageAt v).Carrier),
@@ -61,7 +61,7 @@ theorem exists_tolerance_hasStrongNeckAt_of_spatialNeck (C1 C2 : ℝ) :
         H.toHistory.HasStrongNeckAt ε₁ v p := by
   obtain ⟨eta, heta, htrig⟩ := exists_tolerance_historyStrongNeck_of_spatialNeck.{u} C1 C2
   refine ⟨eta, heta, ?_⟩
-  intro P₀ H ε ε₁ eps qcan hε heps hclass v p hev hterm hq hnk
+  intro H ε ε₁ eps qcan hε heps hclass v p hev hterm hq hnk
   obtain ⟨s, G, hvs, hG, hbefore⟩ := H.exists_currentSlab_stronglyCanonicalBefore hclass v hterm
   have hGv : G.flow.base.metric v = H.toHistory.stageMetric (H.toHistory.activeStage v) v :=
     hG v ⟨(H.toHistory.activeStage_time_le v), le_rfl⟩
@@ -77,7 +77,7 @@ theorem exists_tolerance_hasStrongNeckAt_of_spatialNeck (C1 C2 : ℝ) :
 
 theorem exists_tolerance_isTracedRegion_of_spatialNecks (C1 C2 : ℝ) :
     ∃ eta : ℝ, 0 < eta ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) {phi : ℝ → ℝ},
+    ∀ (H : RetainedCoreHistory.{u}) {phi : ℝ → ℝ},
       Perelman.AdmissiblePinchingFunction phi → H.EventSlabsPinched phi →
     ∀ {ε ε₁ eps qcan : ℝ}, ε ≤ 1 / 1000 → eps ≤ eta → ε₁ ≤ 1 / 30000 →
       H.EventSlabsStronglyCanonical ε ε₁ C1 C2 qcan (Fin.last H.eventCount) →
@@ -116,7 +116,7 @@ theorem exists_tolerance_isTracedRegion_of_spatialNecks (C1 C2 : ℝ) :
         (8 * Real.sqrt 3 * (1 + phi 1 + phi 0) * max Qup 1) := by
   obtain ⟨eta, heta, hsup⟩ := exists_tolerance_hasStrongNeckAt_of_spatialNeck.{u} C1 C2
   refine ⟨eta, heta, ?_⟩
-  intro P₀ H phi hphi hpinch ε ε₁ eps qcan hε heps hε₁ hclass t hlast htop p ρ T Qlow Qup L
+  intro H phi hphi hpinch ε ε₁ eps qcan hε heps hε₁ hclass t hlast htop p ρ T Qlow Qup L
     hρ hT hTt hL0 hqL hlow hup hL hterm hfine
   apply H.isTracedRegion_of_hasStrongNeckAt hphi hpinch hlast htop hρ hT hTt hε₁ hL0 hlow hup hL
   intro x hx v hav hvt hev B hB

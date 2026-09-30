@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.SimplicialSet.FiniteCellInduction
 import DifferentialGeometry.Topology.Category.TopCat.PushoutClosedEmbedding
 import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
-import Mathlib.Topology.Compactness.Compact
+import Mathlib.Geometry.Convex.ConvexSpace.CompactSpaceStdSimplex
 
 set_option autoImplicit false
 

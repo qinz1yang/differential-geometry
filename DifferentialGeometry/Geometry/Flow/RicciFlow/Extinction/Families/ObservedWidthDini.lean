@@ -29,14 +29,14 @@ theorem historyWidth_final (H : ObservedHistory.{u})
     historyWidth H h0 terminal t =
       componentWidth (H.stage (Fin.last H.eventCount))
         ((H.finalSlab hfin).flow.base.metric t.1)
-        ((rfs_finite_ancestor_chain H terminal).component (Fin.last H.eventCount))
+        ((finiteAncestorChain H terminal).component (Fin.last H.eventCount))
         (rfs_simply_connected_history H h0 (Fin.last H.eventCount) _) := by
   change componentWidth (H.stage (historyStageAt H t))
       (historyStageMetric H (historyStageAt H t) t.1)
-      ((rfs_finite_ancestor_chain H terminal).component (historyStageAt H t))
+      ((finiteAncestorChain H terminal).component (historyStageAt H t))
       (rfs_simply_connected_history H h0 (historyStageAt H t) _) = _
   rw [historyStageAt_eq_last H t ht]
-  simp only [historyStageMetric, Fin.lastCases_last, dif_pos hfin]
+  simp only [historyStageMetric, Fin.lastCases_last, dite_eq_left hfin]
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width
 
@@ -72,10 +72,10 @@ theorem componentHalfScalar_le_of_scalarLowerBound {H : ObservedHistory.{u}}
     -3 / (4 * (t.1 + c)) ≤
       componentHalfScalar (H.stage (historyStageAt H t))
         ⟨historyStageMetric H (historyStageAt H t)⟩
-        ((rfs_finite_ancestor_chain H terminal).component (historyStageAt H t)) t.1 := by
+        ((finiteAncestorChain H terminal).component (historyStageAt H t)) t.1 := by
   refine two_mul_le_componentHalfScalar (H.stage (historyStageAt H t))
     ⟨historyStageMetric H (historyStageAt H t)⟩
-    ((rfs_finite_ancestor_chain H terminal).component (historyStageAt H t)) t.1
+    ((finiteAncestorChain H terminal).component (historyStageAt H t)) t.1
     (-3 / (4 * (t.1 + c))) ?_
   intro x
   have hx := hscalar t htE x.1
@@ -92,7 +92,7 @@ theorem componentHalfScalar_le_of_scalarLowerBound_incoming {H : ObservedHistory
     {t : ℝ} (ht : t ∈ Ico (H.time i.castSucc) (H.time i.succ)) (htE : t ∉ H.eventTimes) :
     -3 / (4 * (t + c)) ≤
       componentHalfScalar (H.stage i.castSucc) (H.event i).incoming.flow.base
-        ((rfs_finite_ancestor_chain H terminal).component i.castSucc) t := by
+        ((finiteAncestorChain H terminal).component i.castSucc) t := by
   have htIcc : t ∈ Icc (0 : ℝ) H.horizon :=
     ⟨le_trans (le_of_eq H.time_zero.symm)
         (le_trans (H.time_strictMono.monotone (Fin.zero_le _)) ht.1),
@@ -104,7 +104,7 @@ theorem componentHalfScalar_le_of_scalarLowerBound_incoming {H : ObservedHistory
   rw [hstage] at h0
   refine h0.trans (le_of_eq ?_)
   refine (componentHalfScalar_congr (H.stage i.castSucc)
-    ((rfs_finite_ancestor_chain H terminal).component i.castSucc)
+    ((finiteAncestorChain H terminal).component i.castSucc)
     (↑(⟨t, htIcc⟩ : Icc (0 : ℝ) H.horizon)) ?_).symm
   intro s
   simp only [historyStageMetric, Fin.lastCases_castSucc]
@@ -117,7 +117,7 @@ theorem componentHalfScalar_le_of_scalarLowerBound_final {H : ObservedHistory.{u
     (htE : t ∉ H.eventTimes) :
     -3 / (4 * (t + c)) ≤
       componentHalfScalar (H.stage (Fin.last H.eventCount)) (H.finalSlab hfin).flow.base
-        ((rfs_finite_ancestor_chain H terminal).component (Fin.last H.eventCount)) t := by
+        ((finiteAncestorChain H terminal).component (Fin.last H.eventCount)) t := by
   have htIcc : t ∈ Icc (0 : ℝ) H.horizon :=
     ⟨le_trans (le_of_eq H.time_zero.symm)
         (le_trans (H.time_strictMono.monotone (Fin.zero_le _)) ht.1),
@@ -129,10 +129,10 @@ theorem componentHalfScalar_le_of_scalarLowerBound_final {H : ObservedHistory.{u
   rw [hstage] at h0
   refine h0.trans (le_of_eq ?_)
   refine (componentHalfScalar_congr (H.stage (Fin.last H.eventCount))
-    ((rfs_finite_ancestor_chain H terminal).component (Fin.last H.eventCount))
+    ((finiteAncestorChain H terminal).component (Fin.last H.eventCount))
     (↑(⟨t, htIcc⟩ : Icc (0 : ℝ) H.horizon)) ?_).symm
   intro s
-  simp only [historyStageMetric, Fin.lastCases_last, dif_pos hfin]
+  simp only [historyStageMetric, Fin.lastCases_last, dite_eq_left hfin]
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families
 
@@ -229,9 +229,9 @@ theorem observedHistoryWidthValue_upperRightDiniLE_of_slabIncrementBounds
       simpa only [historyStageDomain, Fin.lastCases_castSucc] using hm
     let W : ℝ → ℝ := fun s => componentWidth (H.stage i.castSucc)
       ((H.event i).incoming.flow.base.metric (horizonClamp H.horizon s))
-      ((rfs_finite_ancestor_chain H terminal).component i.castSucc)
+      ((finiteAncestorChain H terminal).component i.castSucc)
       (rfs_simply_connected_history H h0 i.castSucc
-        ((rfs_finite_ancestor_chain H terminal).component i.castSucc))
+        ((finiteAncestorChain H terminal).component i.castSucc))
     have hWt : 0 ≤ W t := by
       simp only [W]
       exact componentWidth_nonneg _ _ _ _
@@ -260,9 +260,9 @@ theorem observedHistoryWidthValue_upperRightDiniLE_of_slabIncrementBounds
         (W (t + h) - W t) / h ≤ -2 * Real.pi - (-3 / (4 * (t + c))) * W t + ε := by
       intro ε hε
       obtain ⟨δ, hδ, hb⟩ := hinc i
-        ((rfs_finite_ancestor_chain H terminal).component i.castSucc)
+        ((finiteAncestorChain H terminal).component i.castSucc)
         (rfs_simply_connected_history H h0 i.castSucc
-          ((rfs_finite_ancestor_chain H terminal).component i.castSucc)) t hdomain ε hε
+          ((finiteAncestorChain H terminal).component i.castSucc)) t hdomain ε hε
       refine ⟨min δ (H.time i.succ - t), lt_min hδ (by linarith [hdomain.2]), ?_⟩
       intro h hh
       have hh1 : h < δ := hh.2.trans_le (min_le_left _ _)
@@ -276,13 +276,13 @@ theorem observedHistoryWidthValue_upperRightDiniLE_of_slabIncrementBounds
       have hstep' : (W (t + h) - W t) / h ≤
           -2 * Real.pi - componentHalfScalar (H.stage i.castSucc)
             (H.event i).incoming.flow.base
-            ((rfs_finite_ancestor_chain H terminal).component i.castSucc) t * W t + ε := by
+            ((finiteAncestorChain H terminal).component i.castSucc) t * W t + ε := by
         simp only [W, horizonClamp_eq_self hhmem, hclamp_t]
         exact hstep
       refine hstep'.trans ?_
       have hhalf : -3 / (4 * (t + c)) ≤ componentHalfScalar (H.stage i.castSucc)
           (H.event i).incoming.flow.base
-          ((rfs_finite_ancestor_chain H terminal).component i.castSucc) t :=
+          ((finiteAncestorChain H terminal).component i.castSucc) t :=
         componentHalfScalar_le_of_scalarLowerBound_incoming (terminal := terminal)
           hc hscalar i hdomain htE
       have hmul := mul_le_mul_of_nonneg_right hhalf hWt
@@ -295,9 +295,9 @@ theorem observedHistoryWidthValue_upperRightDiniLE_of_slabIncrementBounds
     have hfin : H.time (Fin.last H.eventCount) < H.horizon := lt_of_le_of_lt hdomain.1 htm.2
     let W : ℝ → ℝ := fun s => componentWidth (H.stage (Fin.last H.eventCount))
       ((H.finalSlab hfin).flow.base.metric (horizonClamp H.horizon s))
-      ((rfs_finite_ancestor_chain H terminal).component (Fin.last H.eventCount))
+      ((finiteAncestorChain H terminal).component (Fin.last H.eventCount))
       (rfs_simply_connected_history H h0 (Fin.last H.eventCount)
-        ((rfs_finite_ancestor_chain H terminal).component (Fin.last H.eventCount)))
+        ((finiteAncestorChain H terminal).component (Fin.last H.eventCount)))
     have hWt : 0 ≤ W t := by
       simp only [W]
       exact componentWidth_nonneg _ _ _ _
@@ -329,9 +329,9 @@ theorem observedHistoryWidthValue_upperRightDiniLE_of_slabIncrementBounds
         (W (t + h) - W t) / h ≤ -2 * Real.pi - (-3 / (4 * (t + c))) * W t + ε := by
       intro ε hε
       obtain ⟨δ, hδ, hb⟩ := hclosed hfin
-        ((rfs_finite_ancestor_chain H terminal).component (Fin.last H.eventCount))
+        ((finiteAncestorChain H terminal).component (Fin.last H.eventCount))
         (rfs_simply_connected_history H h0 (Fin.last H.eventCount)
-          ((rfs_finite_ancestor_chain H terminal).component (Fin.last H.eventCount)))
+          ((finiteAncestorChain H terminal).component (Fin.last H.eventCount)))
         t ⟨hdomain.1, htm.2⟩ ε hε
       refine ⟨min δ (H.horizon - t), lt_min hδ (by linarith [htm.2]), ?_⟩
       intro h hh
@@ -344,14 +344,14 @@ theorem observedHistoryWidthValue_upperRightDiniLE_of_slabIncrementBounds
       have hstep' : (W (t + h) - W t) / h ≤
           -2 * Real.pi - componentHalfScalar (H.stage (Fin.last H.eventCount))
             (H.finalSlab hfin).flow.base
-            ((rfs_finite_ancestor_chain H terminal).component (Fin.last H.eventCount)) t * W t +
+            ((finiteAncestorChain H terminal).component (Fin.last H.eventCount)) t * W t +
             ε := by
         simp only [W, horizonClamp_eq_self hhmem, hclamp_t]
         exact hstep
       refine hstep'.trans ?_
       have hhalf : -3 / (4 * (t + c)) ≤ componentHalfScalar (H.stage (Fin.last H.eventCount))
           (H.finalSlab hfin).flow.base
-          ((rfs_finite_ancestor_chain H terminal).component (Fin.last H.eventCount)) t :=
+          ((finiteAncestorChain H terminal).component (Fin.last H.eventCount)) t :=
         componentHalfScalar_le_of_scalarLowerBound_final (terminal := terminal)
           hc hscalar hfin hdomain htE
       have hmul := mul_le_mul_of_nonneg_right hhalf hWt

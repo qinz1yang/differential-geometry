@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelFrontiers
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureBlowupFrontierReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckCapMainFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientKappaReducedVolumeBound
@@ -43,7 +43,8 @@ theorem kappaUniformCanonicalClassification_of_reducedVolumeBound_modelBranches
       [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
       (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
       IsSolutionOn S → ∀ (x : M) (t : ℝ),
-      Set.Ioo (t - ((1 / 2) * S.scalar t x)⁻¹) t ⊆ D.regular → ∀ (W : WindowedModelWitness (1 / 2) kappa S x t),
+      Set.Ioo (t - ((1 / 2) * S.scalar t x)⁻¹) t ⊆ D.regular →
+      ∀ (W : WindowedModelWitness (1 / 2) kappa S x t),
       Nonempty (CanonicalWitness W.model.S (eps / 2) C1 C2 W.model.basepoint 0) →
         Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t)) :
     kappaUniformCanonicalClassification.{u} :=
@@ -58,7 +59,8 @@ theorem buffered_canonical_pullback_of_reducedVolumeBound_modelBranches
       [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
       (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
       IsSolutionOn S → ∀ (x : M) (t : ℝ),
-      Set.Ioo (t - ((1 / 2) * S.scalar t x)⁻¹) t ⊆ D.regular → ∀ (W : WindowedModelWitness (1 / 2) kappa S x t),
+      Set.Ioo (t - ((1 / 2) * S.scalar t x)⁻¹) t ⊆ D.regular →
+      ∀ (W : WindowedModelWitness (1 / 2) kappa S x t),
       Nonempty (CanonicalWitness W.model.S (eps / 2) C1 C2 W.model.basepoint 0) →
         Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t)) :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
@@ -83,23 +85,7 @@ theorem arbitrary_high_curvature_blowup_of_maximalPointSlabCompactnessWithoutBas
       (∀ i, t i ∈ Set.Ico 0 T) →
       Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
         Nonempty (BlowupLimit S o kappa x t) :=
-  arbitrary_high_curvature_blowup_of_blowupAtHighCurvatureFrontier hT S o
-    (blowupAtHighCurvatureFrontier_of_maximalPointSlabCompactness hT S hS o
-      (maximalPointSlabCompactness_of_withoutBaseNormalization hT S hS o h))
-
-omit [T2Space M] [SigmaCompactSpace M] in
-theorem blowupAtHighCurvatureFrontier_of_forall_scalar_eq_zero
-    {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (o : TangentOrientationSection M)
-    (hscalar : ∀ (t : ℝ) (x : M), S.scalar t x = 0) :
-    BlowupAtHighCurvatureFrontier.{u} hT S o := by
-  refine ⟨1, one_pos, fun x t _ htendsto => ?_⟩
-  have hge : ∀ᶠ i : ℕ in Filter.atTop, (1 : ℝ) < S.scalar (t i) (x i) :=
-    htendsto.eventually (Filter.eventually_gt_atTop 1)
-  obtain ⟨N, hN⟩ := Filter.eventually_atTop.1 hge
-  have hN' := hN N le_rfl
-  rw [hscalar (t N) (x N)] at hN'
-  linarith
+  arbitrary_high_curvature_blowup_of_maximalPointSlabCompactness hT S hS o
+    (maximalPointSlabCompactness_of_withoutBaseNormalization hT S hS o h)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

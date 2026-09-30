@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotPairing
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.State.TensorSobolevLower
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.FirstOrder.DirichletPairing
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
@@ -11,6 +12,10 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Famil
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.MetricComparisonEndomorphismJetBounds
 import DifferentialGeometry.Geometry.Connection.Laplacian.Musical
+
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_add_left
+  tensorInnerPointwise_nonneg tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right
+  tensorInnerPointwise_symm)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -638,7 +643,7 @@ private lemma hmf_integral_le
     _ = C.toReal * ∫ x, f x ∂ν := by
       rw [MeasureTheory.integral_smul_measure, smul_eq_mul]
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem harmonicMapFlowDiff_self_le
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -668,7 +673,7 @@ private theorem harmonicMapFlowDiff_self_le
       q h k htie hδ_lt hδ_nn hδ 1 x
       ((covGrad (I := I) (M := M) q 0 1 S).toSection x))
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem harmonicMapFlowNegDiff_self_le
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -713,7 +718,7 @@ private theorem harmonicMapFlowNegDiff_self_le
         slotInsertEndoCc_toSection, hfield,
         TensorRSSpace.ofCLM, gInvDiffSlotApplied] using hneg
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem harmonicMapFlowFlux_diag_le
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -734,7 +739,7 @@ theorem harmonicMapFlowFlux_diag_le
   linarith [harmonicMapFlowDiff_self_le (I := I) (M := M)
     q h k htie hδ_lt hδ_nn hδ S x]
 
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem harmonicMapFlowFlux_diag_ge
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -764,7 +769,7 @@ theorem harmonicMapFlowMass_nonneg
   exact MeasureTheory.integral_nonneg fun x =>
     tensorInnerPointwise_nonneg (I := I) (M := M) q 0 1 x (S.toFun x)
 
-omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem harmonicMapFlowWeak_nonneg
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -815,7 +820,7 @@ theorem harmonicMapFlowMass_self_rev
     (fun x => tensorInnerPointwise_nonneg (I := I) (M := M) q 0 1 x (S.toFun x))
     (hmf_inner_int (I := I) (M := M) q h S S)
 
-omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem harmonicMapFlowForm_self_le
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -874,7 +879,7 @@ theorem harmonicMapFlowForm_self_le
       dsimp only [D]
       ring
 
-omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem harmonicMapFlowForm_self_rev
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -1069,7 +1074,7 @@ theorem harmonicMapFlowMassH1_nonneg
     0 ≤ harmonicMapFlowMassH1 (I := I) (M := M) q h S S :=
   harmonicMapFlowMass_nonneg (I := I) (M := M) q h S.toCcTensor
 
-omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem harmonicMapFlowFormH1_nonneg
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
@@ -1103,7 +1108,7 @@ theorem harmonicMapFlowMassH1_diag_le
         (SmoothCcTensorH1.l2NormSq_le_h1NormSq (I := I) (M := M) S)
         ENNReal.toReal_nonneg
 
-omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem harmonicMapFlowFormH1_diag_le
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -1131,7 +1136,7 @@ theorem harmonicMapFlowFormH1_diag_le
     q h C hC0 hCtop hvol k htie hδ_lt hδ_nn hδ S.toCcTensor).trans
       (mul_le_mul_of_nonneg_left hfrozen hcoef)
 
-omit [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem harmonicMapFlowH1_coercive
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)

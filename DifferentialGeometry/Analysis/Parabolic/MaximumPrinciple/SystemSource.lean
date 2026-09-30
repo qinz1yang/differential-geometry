@@ -384,14 +384,14 @@ theorem finrank_range_le_at_later_time_of_contMDiffOn_on_Icc
         exact leviCivitaConnectionOfMetric_isMetricCompatible (g q) }
   let A' : ℝ → Cₛ^∞⟮I; F →L[ℝ] F, (fun z : M ↦ V z →L[ℝ] V z)⟯ :=
     fun q => if q ∈ Icc 0 T then A q else 0
-  have hAeq : ∀ q ∈ Icc 0 T, A' q = A q := fun _ hq => if_pos hq
+  have hAeq : ∀ q ∈ Icc 0 T, A' q = A q := fun _ hq => ite_eq_left hq
   have hAsymm' : ∀ q z,
       ((A' q z : V z →L[ℝ] V z) : V z →ₗ[ℝ] V z).IsSymmetric := by
     intro q z
     by_cases hq : q ∈ Icc 0 T
     · rw [hAeq q hq]
       exact (hApos q hq z).isSymmetric
-    · simp only [A', if_neg hq]
+    · simp only [A', ite_eq_right hq]
       change (0 : V z →ₗ[ℝ] V z).IsSymmetric
       exact LinearMap.IsSymmetric.zero
   have hApos' : ∀ q ∈ Icc 0 T, ∀ z, (A' q z).IsPositive := by
@@ -426,9 +426,9 @@ theorem finrank_range_le_at_later_time_of_contMDiffOn_on_Icc
   have hnull : ∀ q z, satisfiesNullEigenvectorCondition (reaction' q z) := by
     intro q z
     by_cases hq : q ∈ Ioo 0 T
-    · simpa only [reaction', if_pos hq] using hreactionNull q hq z
+    · simpa only [reaction', ite_eq_left hq] using hreactionNull q hq z
     · intro B hB v hv
-      simp only [reaction', if_neg hq, zero_apply, inner_zero_left, le_refl]
+      simp only [reaction', ite_eq_right hq, zero_apply, inner_zero_left, le_refl]
   have hlip : ∀ {a b : ℝ}, 0 ≤ a → a < b → b ≤ T →
       ∀ {K : Set M}, IsCompact K → ∀ R, ∃ Klip : NNReal,
         ∀ q ∈ Ioc a b, ∀ z ∈ K, LipschitzOnWith Klip (reaction' q z)
@@ -440,7 +440,7 @@ theorem finrank_range_le_at_later_time_of_contMDiffOn_on_Icc
     refine ⟨Klip, ?_⟩
     intro q hq z hz
     by_cases hqT : q ∈ Ioo 0 T
-    · simp only [reaction', if_pos hqT]
+    · simp only [reaction', ite_eq_left hqT]
       apply LipschitzOnWith.of_dist_le_mul
       intro B hB C hC
       rw [dist_eq_norm, dist_eq_norm]
@@ -448,7 +448,7 @@ theorem finrank_range_le_at_later_time_of_contMDiffOn_on_Icc
       rw [hcoe]
       exact hbound q ⟨hq.1.le, hq.2⟩ z hz B C hB.1.isSymmetric hC.1.isSymmetric
         (hB.2.trans (le_max_left _ _)) (hC.2.trans (le_max_left _ _))
-    · simpa only [reaction', if_neg hqT] using
+    · simpa only [reaction', ite_eq_right hqT] using
         (LipschitzWith.const (0 : V z →L[ℝ] V z)).weaken
           (show (0 : NNReal) ≤ Klip from zero_le) |>.lipschitzOnWith
   have hevol : ∀ q ∈ Ioo 0 T, ∀ z,
@@ -463,7 +463,7 @@ theorem finrank_range_le_at_later_time_of_contMDiffOn_on_Icc
     have hev : (fun r => A' r z) =ᶠ[𝓝 q] (fun r => A r z) := by
       filter_upwards [isOpen_Ioo.mem_nhds hq] with r hr
       rw [hAeq r ⟨hr.1.le, hr.2.le⟩]
-    simpa only [G, hAeq q hq', cov', reaction', if_pos hq] using
+    simpa only [G, hAeq q hq', cov', reaction', ite_eq_left hq] using
       (hevolution q hq z).congr_of_eventuallyEq hev
   have hbound : ∀ {a b : ℝ}, 0 ≤ a → a < b → b ≤ T → ∀ {K : Set M},
       IsCompact K → ∃ R, ∀ q ∈ Icc a b, ∀ z ∈ K, ‖A' q z‖ ≤ R := by

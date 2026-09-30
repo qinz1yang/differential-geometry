@@ -32,7 +32,7 @@ theorem IsPLSphere.isPathConnected_sdiff_union_of_disjoint_isPLBall_two
     IsPathConnected (S \ (D₀ ∪ D₁)) := by
   let _ : DecidableEq (Fin 3 → ℝ) := Classical.decEq _
   let _ : DecidableEq ((Fin 3 → ℝ) × ℝ) := Classical.decEq _
-  let P : Set (Fin 3 → ℝ) := stdSimplex ℝ (Fin 3)
+  let P : Set (Fin 3 → ℝ) := Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
   have hP : IsPLBall 2 P := isPLBall_stdSimplex 2
   obtain ⟨L, hLfin, hLspace⟩ := hP.isPolyhedron.exists_simplicialComplex
   let _ : Finite L.faces := hLfin.to_subtype
@@ -74,7 +74,7 @@ theorem IsPLSphere.isPathConnected_sdiff_union_of_disjoint_isPLBall_two
   obtain ⟨q, hq⟩ := hD₀
   obtain ⟨r, hr⟩ := hD₀'
   have hD₀ball : IsPLBall 2 D₀ := ⟨q, hq⟩
-  let g := r ∘ Function.invFunOn q (stdSimplex ℝ (Fin 3))
+  let g := r ∘ Function.invFunOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hg : IsPLHomeomorphOn g D₀ D₀' := hq.symm.trans hr
   obtain ⟨G, hG, hGD₀, hGD₁⟩ := exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk
     hS hS' hD₀ball hD₀S hD₁ hD₁S hdis hD₁' hD₁'S hdis' hg hD₀'S

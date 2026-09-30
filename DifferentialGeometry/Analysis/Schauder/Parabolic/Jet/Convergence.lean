@@ -151,7 +151,7 @@ theorem holderWith_restrict_spatialDerivative_of_lower_jets_gauge
     HolderWith C alpha (Q.domRestrict du) := by
   let e := continuousMultilinearCurryFin1 Real E F
   have hjet := parabolicSpatialGradient_holderWith_restrict_of_lower_jets hgauge
-  have hcomp := e.lipschitz.holderWith.comp hjet
+  have hcomp := e.lipschitzWith.holderWith.comp hjet
   have heq : e ∘ Q.domRestrict (parabolicSpatialJet 1
       (fun t x ↦ u (parabolicPoint t x))) = Q.domRestrict du := by
     funext p
@@ -173,7 +173,7 @@ theorem holderWith_restrict_spatialSecondDerivative_of_lower_jets_gauge
       (fun t x ↦ u (parabolicPoint t x)) ≤ C :=
     (eParabolicC2HolderGaugeOn_le_with_lower_jets alpha Q _).trans hgauge
   have hjet := parabolicSpatialJet_holderWith_restrict hbase
-  have hcomp := (hessianCurryEquiv E F).lipschitz.holderWith.comp hjet
+  have hcomp := (hessianCurryEquiv E F).lipschitzWith.holderWith.comp hjet
   have heq : hessianCurryEquiv E F ∘ Q.domRestrict (parabolicSpatialJet 2
       (fun t x ↦ u (parabolicPoint t x))) = Q.domRestrict d2u := by
     funext p

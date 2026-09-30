@@ -15,6 +15,10 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainde
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.FamilySmoothness
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.EndomorphismTermAlgebra
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.EndomorphismTermBounds
+
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply
+  exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent riemannianFiberNormSq
+  riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -764,7 +768,7 @@ private theorem metricComparisonEndomorphismField_iteratedCovGrad_gridWindow (g�
               ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)) l * S l := by
   classical
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨cid, hcid_nn, hcid⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor
     (I := I) (M := M) g₀ 1 1
@@ -1058,8 +1062,8 @@ lemma palatiniRiemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (g₀ : Sm
     rfl
   rw [hsec]
   refine le_trans (riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 0 (2 + j) x _ _) ?_
-  rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + j) x,
-    DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + j) x]
+  rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + j) x,
+    DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + j) x]
   have hperm := riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
     (Equiv.swap (0 : Fin 2) 1) T j x
   rw [hperm]
@@ -1128,9 +1132,9 @@ lemma riemannianFiberNormSq_ccTensor02Symm_le_of_gFibreOpBound (g₀ : SmoothRie
     rw [hval]
     have habs := hbound x (e (J 0)) (e (J 1))
     have h00 : g₀.inner x (e (J 0)) (e (J 0)) = 1 := by
-      rw [horth (J 0) (J 0), if_pos rfl]
+      rw [horth (J 0) (J 0), ite_eq_left rfl]
     have h11 : g₀.inner x (e (J 1)) (e (J 1)) = 1 := by
-      rw [horth (J 1) (J 1), if_pos rfl]
+      rw [horth (J 1) (J 1), ite_eq_left rfl]
     rw [h00, h11, Real.sqrt_one, mul_one, mul_one] at habs
     have := abs_nonneg (ccTensorBilinSymm (I := I) g₀ T x (e (J 0)) (e (J 1)))
     nlinarith [habs, sq_abs (ccTensorBilinSymm (I := I) g₀ T x (e (J 0)) (e (J 1)))]
@@ -2137,7 +2141,7 @@ lemma palatiniConnectionDifference_self_apply (g₀ : SmoothRiemannianMetric I M
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma deTurckLieConnectionDifferenceDerivativeCovKernel_diff_eq_deTurckLieConnectionDifferenceDerivativeCovKernel_connectionDifference_expansion
+private lemma connectionDifferenceCovDerivOp_sub_eq
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (v0 p q : TangentSpace I x) :
     connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v0 p q - connectionDifferenceCovDerivOp (I := I) g₁ g₀ x v0 p q =
@@ -2304,7 +2308,7 @@ private lemma palatiniLow0_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMet
   have hs4_2 : palatiniSigma4 (2 : Fin 4) = 2 := by decide
   have hs4_3 : palatiniSigma4 (3 : Fin 4) = 0 := by decide
   rw [hs2_0, hs2_1, hs2_2, hs2_3, hs3_0, hs3_1, hs3_2, hs3_3, hs4_0, hs4_1, hs4_2, hs4_3]
-  rw [deTurckLieConnectionDifferenceDerivativeCovKernel_diff_eq_deTurckLieConnectionDifferenceDerivativeCovKernel_connectionDifference_expansion
+  rw [connectionDifferenceCovDerivOp_sub_eq
     (I := I) (M := M) g₀ g₁ g_bg x
     ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1))
     ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2))
@@ -2638,7 +2642,7 @@ lemma palatiniRiemannianFiberNormSq_neg (g : SmoothRiemannianMetric I M) (r s : 
     riemannianFiberNormSq (I := I) (M := M) g r s x (-v) =
       riemannianFiberNormSq (I := I) (M := M) g r s x v := by
   rw [show (-v) = (-1 : ℝ) • v from by rw [neg_one_smul]]
-  rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+  rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
   norm_num
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
@@ -2982,7 +2986,7 @@ private theorem palatiniQuadLow_movingOuter_gridWindow (g₀ g_bg : SmoothRieman
       rw [Finset.sum_mul]
       refine Finset.sum_le_sum fun l' hl' => ?_
       rw [Finset.mem_range] at hl'
-      rw [palatiniRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ l' x]
+      rw [connection_difference_lowering_preserves_covariant_jet_norm_sq (I := I) (M := M) g₀ g₁ l' x]
       refine le_trans (hCA g₁ P htie hδ_le hδ0 hbound l' x) ?_
       refine mul_le_mul_of_nonneg_left ?_ (hCA_nn l')
       rw [show (∑ k ∈ Finset.range (l' + 2), Combinatorics.antidiagonalTupleGrid b k) =
@@ -3192,7 +3196,7 @@ private theorem palatiniLow0_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
           (palatiniFixLoweredCc (I := I) (M := M) g₀ g_bg g₀)).toSection x) from by
       rw [SmoothCcTensor.toSection_smul]
       rfl]
-    rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+    rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     norm_num
     exact (hcF l x).trans (by
       simpa using mul_le_mul_of_nonneg_left hW1 (hcF_nn l))
@@ -3509,7 +3513,7 @@ theorem palatiniCovDerivTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemann
                 (deTurckTermCoeffDiffCc (I := I) (M := M) g₀ g₁ g_bg))))).toSection x) from by
       rw [SmoothCcTensor.toSection_smul]
       rfl]
-    rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+    rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     norm_num
   rw [hlift]
   refine le_trans

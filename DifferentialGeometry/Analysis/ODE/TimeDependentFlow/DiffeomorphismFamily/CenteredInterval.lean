@@ -50,7 +50,7 @@ theorem exists_diffeomorph_flow_on_centered_interval
       contMDiff_invFun := hGsm s hs.1 hs.2 }
     else Diffeomorph.refl I M ∞
   have hD (s : ℝ) (hs : s ∈ Ioo 0 hi) (x : M) : D s x = F s x := by
-    simp only [D, dif_pos hs]
+    simp only [D, dite_eq_left hs]
     rfl
   have hDsm : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
       (fun q : ℝ × M => D q.1 q.2) (Ioo 0 hi ×ˢ univ) := by

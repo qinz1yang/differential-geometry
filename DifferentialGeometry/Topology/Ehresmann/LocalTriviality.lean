@@ -48,7 +48,7 @@ private theorem trivialization_of_related_diffeomorphFamily
   have hσ : ContMDiff J 𝓘(ℝ, P) ∞ σ := by
     intro z
     apply contMDiffAt_subtype_iff.mpr
-    exact (hbase.contmdiffOn_localInverse z.1 z.2).contMDiffAt (Q.isOpen.mem_nhds z.2)
+    exact (hbase.contMDiffOn_localInverse z.1 z.2).contMDiffAt (Q.isOpen.mem_nhds z.2)
   have hσy : σ ⟨y, hy⟩ = 0 := by
     have hz := hbase.localInverse_left_inv hbase.localInverse_mem_target
     simpa only [hd0] using hz

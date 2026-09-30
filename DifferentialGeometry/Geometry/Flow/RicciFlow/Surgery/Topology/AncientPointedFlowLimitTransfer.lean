@@ -348,7 +348,7 @@ theorem abs_derivWithin_scalar_le_of_local_flow_limit
       refine ⟨j₀, fun i hi => ?_⟩
       obtain ⟨hi', hb⟩ := hj₀ i hi
       change metricDerivNormSupOn {xk} 2 (if hi : N k ≤ ψ i then _ else _) _ _ < η
-      rw [dif_pos hi']
+      rw [dite_eq_left hi']
       exact hb s hs
     have hu := (hcp.tendstoUniformlyOn_metricScalarAt isCompact_singleton).tendsto_at
       (mem_singleton xk)
@@ -357,7 +357,7 @@ theorem abs_derivWithin_scalar_le_of_local_flow_limit
       F i s = metricScalarAt (h k (f (ψ i)) s) (φ k (ψ i) hi xk) := by
     intro i hi s
     change metricScalarAt (if hi : N k ≤ ψ i then _ else _) xk = _
-    rw [dif_pos hi, metricScalarAt_localPull]
+    rw [dite_eq_left hi, metricScalarAt_localPull]
   have hfψ : Tendsto (fun i => f (ψ i)) atTop atTop := (hf.comp hψ).tendsto_atTop
   have hta : Tendsto (fun i => F i t) atTop (𝓝 a) := hlim t ⟨htk.le, ht.le⟩
   have hev : ∀ᶠ i in atTop, ∃ hi : N k ≤ ψ i,
@@ -906,8 +906,7 @@ theorem exists_mem_connectedComponent_of_monotone_cover {Y : Type*} [Topological
         exact hw
       · intro hz
         exact ⟨⟨z, hsub hz⟩, hz, rfl⟩
-    convert isPreconnected_range γ.continuous using 1
-    exact himg
+    exact himg.symm ▸ isPreconnected_range γ.continuous
   exact hS.subset_connectedComponent (show (⟨x, hx⟩ : V k) ∈ S from ⟨0, γ.source⟩)
     (show (⟨y, hy⟩ : V k) ∈ S from ⟨1, γ.target⟩)
 
@@ -932,7 +931,7 @@ theorem metricCInfConvergenceOnCompacts_localPull_of_local_flow_limit
   obtain ⟨j₀, hj₀⟩ := hconv k K hK p η hη
   refine ⟨j₀, fun i hi => ?_⟩
   obtain ⟨hi', hb⟩ := hj₀ i hi
-  simp only [dif_pos hi']
+  simp only [dite_eq_left hi']
   exact hb s hs
 
 end PointedWitnessTransfer
@@ -1257,7 +1256,7 @@ theorem neck_alternatives_of_local_flow_limit {alpha : ℝ} (halpha : 0 < alpha)
     else (G s).restrictOpen (V k)
   have hseq_eq : ∀ k i (hi : N k ≤ ψ i),
       seq k i = localPullMetric (h k (f (ψ i)) s) (φ k (ψ i) hi) (hφ k (ψ i) hi) :=
-    fun k i hi => dif_pos hi
+    fun k i hi => dite_eq_left hi
   have hconvk : ∀ k, k₀ ≤ k → MetricCInfConvergenceOnCompacts (seq k)
       ((G s).restrictOpen (V k)) (P.metric.restrictOpen (V k)) := fun k hk =>
     metricCInfConvergenceOnCompacts_localPull_of_local_flow_limit hconv k (hs_k k hk)

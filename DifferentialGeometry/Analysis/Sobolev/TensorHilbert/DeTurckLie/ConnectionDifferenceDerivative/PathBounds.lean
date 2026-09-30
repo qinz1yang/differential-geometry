@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.ConnectionDifferenceDerivative.TopOrderBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.PositiveDefinitePerturbation
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
 open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Sobolev
@@ -27,7 +30,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPath convexPerturbation metricPerturbationPath_inner_of_mem convexPerturbation_gFibreOpBound_abs
     abs_convex_smallConstant_lt_one metricPerturbationPathDomain Icc_subset_metricPerturbationPathDomain)
-open DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.SmoothRiemannianMetric
   (metric_inner_cauchy_schwarz_sq)
 open DifferentialGeometry.Geometry.Curvature
   (exists_covDerivConnectionDifference_gQuadratic_le_of_jetEnvelope
@@ -93,7 +96,7 @@ private lemma jetL2_sum_lowShift
   linarith [hA, hB]
 
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization (Icc_subset_metricPerturbationPathDomain) in
-theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
+theorem deTurckLieConnectionDifferenceDerivCoeffField_covariant_l2_perturbation_tame_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -120,7 +123,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jet
   have hδ₁_nn : 0 ≤ δ₁ := le_max_right _ _
   have hδ₁_lt : δ₁ < 1 := max_lt hδ₀ one_pos
   obtain ⟨Ktop_field, hKtop_field_nn, Kc_field, hKc_field_nn, hfield⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_deTurckLieConnectionDifferenceDerivCoeffField_topOrderSeparated_le
+    deTurckLieConnectionDifferenceDerivCoeffField_covariant_pointwise_tame_bound
       (I := I) (M := M) g₀ g_bg hδ₁_lt
   obtain ⟨K, hK_nn, hK⟩ :=
     antidiagonalTupleGrid_integral_ballUniform_tameWindow (I := I) (M := M) g₀ a ha_super hR
@@ -408,7 +411,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jet
                 (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hper⟩ :=
-    deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
+    deTurckLieConnectionDifferenceDerivCoeffField_covariant_l2_perturbation_tame_bound
       (I := I) (M := M) g₀ g_bg a ha_super hR hδ₀
   refine ⟨Ktop, hKtop_nn, ∑ i ∈ Finset.range (a + 1), Kc i,
     Finset.sum_nonneg (fun i _ => hKc_nn i), ?_⟩

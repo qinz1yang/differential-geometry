@@ -145,7 +145,7 @@ def standardCapClosedCore : Set ThreeSpace := Metric.closedBall 0 standardCapL
 private theorem standardCapRho_eq_expNegInvGlue (r : ℝ) : standardCapRho r = expNegInvGlue r := by
   by_cases hr : r ≤ 0
   · simp [standardCapRho, expNegInvGlue, hr]
-  · simp only [standardCapRho, expNegInvGlue, if_neg hr]
+  · simp only [standardCapRho, expNegInvGlue, ite_eq_right hr]
     congr 1
     ring
 
@@ -189,9 +189,9 @@ theorem standardCapMetric_eq_metric :
     by_cases hx : x = 0
     · subst x
       rw [DifferentialGeometry.PDE.RicciFlow.StandardCap.metric_inner_zero, standardCapInner,
-        if_pos rfl]
+        ite_eq_left rfl]
     · rw [DifferentialGeometry.PDE.RicciFlow.StandardCap.metric_inner_of_ne_zero hx,
-        standardCapInner, if_neg hx]
+        standardCapInner, ite_eq_right hx]
       rw [DifferentialGeometry.Geometry.Riemannian.radialBilinearField_apply]
       simp only [standardCapWarp_eq_warpingFunction]
       field_simp

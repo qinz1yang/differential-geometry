@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
+import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 
 set_option autoImplicit false
 

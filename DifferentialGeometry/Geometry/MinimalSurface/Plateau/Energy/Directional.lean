@@ -66,6 +66,7 @@ private theorem diskMapDirectionalEnergyDensity_congr
       diskMapDirectionalEnergyDensity g W V z := by
   unfold diskMapDirectionalEnergyDensity
   rw [h.mfderiv_eq, h.eq_of_nhds]
+  rfl
 
 set_option backward.isDefEq.respectTransparency false in
 private theorem diskMapDirectionalEnergyDensity_eq_chart

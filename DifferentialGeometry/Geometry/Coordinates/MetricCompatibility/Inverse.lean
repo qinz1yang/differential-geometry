@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Curvature.Riemann.RawFields
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
-import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Mixed
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 open DifferentialGeometry.Geometry.Curvature

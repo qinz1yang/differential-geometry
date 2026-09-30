@@ -54,7 +54,7 @@ theorem IsPLCellOn.exists_empty_annular_band_of_essential_family {M : Type*}
       (hXess : ¬ ∃ D : Set M, IsPLCellOn 2 D X ∧ D ⊆ A) :
       ¬ ∃ (D : Set (EuclideanSpace ℝ (Fin 3)))
         (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
           q '' stdSimplexBoundary 2 = τ '' X := by
     rintro ⟨D, q, hq, hDA, hqb⟩
     have hDP := (hDA.trans hA'S).trans hfront
@@ -91,7 +91,7 @@ theorem IsPLCellOn.exists_empty_annular_band_of_essential_family {M : Type*}
       (hCdisj hJ hL (fun h => hJL (congrArg (fun K => τ '' K) h)))
   have hC'ess : ∀ J ∈ C', ¬ ∃ (D : Set (EuclideanSpace ℝ (Fin 3)))
       (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
         q '' stdSimplexBoundary 2 = J := by
     rintro _ ⟨J, hJ, rfl⟩
     exact hess (hCA J hJ) (hCess J hJ)

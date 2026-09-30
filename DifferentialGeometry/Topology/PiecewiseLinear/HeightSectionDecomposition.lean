@@ -117,7 +117,7 @@ theorem exists_isPLDiskDecomposition_fiber_of_heightIndex_eq_zero
       L.space = K.space ∩ {x | ℓ x = r} ∧
       IsPLDiskDecomposition L (heightSectionCells 2 K ℓ.toLinearMap r) ∧
       ∃ g : (Fin 3 → ℝ) → E,
-        IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (K.space ∩ {x | ℓ x = r}) ∧
+        IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (K.space ∩ {x | ℓ x = r}) ∧
         g '' stdSimplexBoundary 2 = frontier K.space ∩ {x | ℓ x = r} := by
   let B := boundaryComplex 3 K
   let _ : Finite B.faces := (boundaryComplex_faces_finite 3 K).to_subtype

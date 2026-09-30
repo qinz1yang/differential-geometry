@@ -5,6 +5,20 @@ import Mathlib.Topology.Homeomorph.Quotient
 set_option autoImplicit false
 noncomputable section
 
+namespace Quotient
+
+@[simp]
+theorem mapRight_mk {α : Type*} {r s : Setoid α} (h : r ≤ s) (a : α) :
+    Quot.mapRight h (Quotient.mk'' a) = (Quotient.mk'' a : Quotient s) := rfl
+
+@[simp]
+theorem mapRight_refl {α : Type*} (r : Setoid α) (x : Quotient r) :
+    Quot.mapRight (le_refl r) x = x := by
+  induction x using Quotient.inductionOn with
+  | _ a => rfl
+
+end Quotient
+
 open Set Function Topology
 
 namespace DifferentialGeometry.Topology
@@ -55,7 +69,7 @@ def quotientQuotientHomeomorph {r s : Setoid P} (h : r ≤ s) :
   continuous_toFun := continuous_quotientQuotientMap h
   continuous_invFun := continuous_quotientQuotientMapInv h
 
-def quotientQuotientHomeomorph_comap {r : Setoid P} (u : Setoid (Quotient r)) :
+def quotientQuotientHomeomorphComap {r : Setoid P} (u : Setoid (Quotient r)) :
     Quotient u ≃ₜ Quotient (Setoid.comap (Quotient.mk'' : P → Quotient r) u) := by
   have hle : r ≤ Setoid.comap (Quotient.mk'' : P → Quotient r) u := fun x y hxy => by
     have hxy' : (Quotient.mk'' x : Quotient r) = Quotient.mk'' y := Quotient.sound hxy
@@ -111,9 +125,9 @@ theorem ker_mapRight_homeomorph_congr {P' : Type*} [TopologicalSpace P']
 theorem quotientQuotientHomeomorph_mk {r s : Setoid P} (h : r ≤ s) (x : Quotient r) :
     quotientQuotientHomeomorph h (Quotient.mk'' x) = Quot.mapRight h x := rfl
 
-@[simp]
 theorem quotientQuotientHomeomorph_mk_mk {r s : Setoid P} (h : r ≤ s) (a : P) :
-    quotientQuotientHomeomorph h (Quotient.mk'' (Quotient.mk'' a)) = Quotient.mk'' a := rfl
+    quotientQuotientHomeomorph h (Quotient.mk'' (Quotient.mk'' a)) = Quotient.mk'' a := by
+  simp only [quotientQuotientHomeomorph_mk, Quotient.mapRight_mk]
 
 @[simp]
 theorem quotientQuotientHomeomorph_symm_mk {r s : Setoid P} (h : r ≤ s) (a : P) :
@@ -121,22 +135,20 @@ theorem quotientQuotientHomeomorph_symm_mk {r s : Setoid P} (h : r ≤ s) (a : P
       = Quotient.mk'' (Quotient.mk'' a) := rfl
 
 @[simp]
-theorem quotientQuotientHomeomorph_comap_mk_mk {r : Setoid P} (u : Setoid (Quotient r))
+theorem quotientQuotientHomeomorphComap_mk_mk {r : Setoid P} (u : Setoid (Quotient r))
     (a : P) :
-    quotientQuotientHomeomorph_comap u (Quotient.mk'' (Quotient.mk'' a))
+    quotientQuotientHomeomorphComap u (Quotient.mk'' (Quotient.mk'' a))
       = Quotient.mk'' a := rfl
 
 @[simp]
-theorem quotientQuotientHomeomorph_comap_symm_mk {r : Setoid P} (u : Setoid (Quotient r))
+theorem quotientQuotientHomeomorphComap_symm_mk {r : Setoid P} (u : Setoid (Quotient r))
     (a : P) :
-    (quotientQuotientHomeomorph_comap u).symm (Quotient.mk'' a)
+    (quotientQuotientHomeomorphComap u).symm (Quotient.mk'' a)
       = Quotient.mk'' (Quotient.mk'' a) := rfl
 
-@[simp]
 theorem quotientQuotientHomeomorph_refl_mk (r : Setoid P) (x : Quotient r) :
     quotientQuotientHomeomorph (le_refl r) (Quotient.mk'' x) = x := by
-  induction x using Quotient.inductionOn with
-  | _ a => rfl
+  simp only [quotientQuotientHomeomorph_mk, Quotient.mapRight_refl]
 
 @[simp]
 theorem quotientQuotientHomeomorph_refl_symm (r : Setoid P) (x : Quotient r) :

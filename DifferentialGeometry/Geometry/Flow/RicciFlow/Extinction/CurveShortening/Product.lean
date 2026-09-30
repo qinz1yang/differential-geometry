@@ -269,7 +269,6 @@ private theorem exists_coverShift_of_fiber_eq {x y : M × ℝ}
 omit [CompleteSpace E] in
 private theorem metricFiberCompatible_of_coverShift_invariant [T2Space M]
     {N : Type*} [TopologicalSpace N] [ChartedSpace (ModelProd H ℝ) N]
-    [IsManifold (I.prod 𝓘(ℝ, ℝ)) ∞ N]
     (f : M × ℝ → N)
     (hf : IsLocalDiffeomorph (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) ∞ f)
     (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
@@ -611,13 +610,13 @@ theorem exists_productCurve_lift (c : CurveMap (M × Surgery.Topology.Circle)) {
     · simpa [y, ht] using hg_inc (x, a) ⟨trivial, hane⟩
   have hmap_eq : ∀ z t, t ∈ s → map z t = c z t := by
     intro z t ht
-    simp only [map, ht, if_pos]
+    simp only [map, ht, ite_eq_left]
   refine ⟨{ map := map, y := y, degree := d, lift_eq := hy_lift, increment := hy_inc }, ?_, ?_⟩
   · constructor
     · change ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I ∞
         (fun p : ℝ × ℝ => (map (p.1 : Surgery.Topology.Circle) p.2).1) (univ ×ˢ s)
       refine hbase.congr fun p hp => ?_
-      simp only [map, hp.2, if_pos, CurveMap.lift]
+      simp only [map, hp.2, ite_eq_left, CurveMap.lift]
     · change ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => y p.1 p.2) (univ ×ˢ s)
       refine hg_smooth.congr fun p hp => ?_
       simp [y, hp.2]

@@ -96,7 +96,7 @@ theorem roundNormalMap_mfderiv_zero
     rw [map_zero]
     exact mfderiv_expMapIntrinsic_at_zero _ round_metric_norm p
   have hLd : mfderiv (𝓡 3) (𝓡 3) L 0 = L := by
-    rw [mfderiv_eq_fderiv, ContinuousLinearMap.fderiv]
+    exact L.mfderiv_eq
   rw [hFd, hLd] at hc
   have hv : mfderiv (𝓡 3) (𝓡 3) (roundNormalMap p) 0 v = normalizedFrame p v := by
     with_unfolding_all exact congrArg (fun D : E3 →L[ℝ] E3 => D v) hc

@@ -283,9 +283,7 @@ private theorem verticalDerivative_contMDiff
   have h := DifferentialGeometry.contMDiff_partial_deriv_fst I uSwap
   have hcomp := h.comp (contMDiff_snd.prodMk contMDiff_fst)
   convert hcomp using 1
-  · ext x y
-    rfl
-  · funext p
+  · ext x
     rfl
 
 set_option backward.isDefEq.respectTransparency false in

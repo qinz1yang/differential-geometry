@@ -47,7 +47,7 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensi
 
 theorem IsPLSphere.exists_holed_chart {ι : Type*} {S : Set E} (hS : IsPLSphere 2 S)
     {D : ι → Set E} {q : ι → (Fin 3 → ℝ) → E}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i)) (hDS : ∀ i, D i ⊆ S)
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i)) (hDS : ∀ i, D i ⊆ S)
     (hdis : Pairwise fun i j => Disjoint (D i) (D j)) (i₀ : ι) :
     ∃ (χ : E → Plane) (Δ : Set Plane), IsPLBall 2 Δ ∧
       IsPLHomeomorphOn χ (S \ (D i₀ \ q i₀ '' stdSimplexBoundary 2)) Δ ∧
@@ -71,27 +71,27 @@ theorem IsPLSphere.exists_holed_chart {ι : Type*} {S : Set E} (hS : IsPLSphere 
     isPLBall_convexHull_of_affineIndependent T hT hcard
   set C := S \ (D i₀ \ q i₀ '' stdSimplexBoundary 2) with hCdef
   set Δ := convexHull ℝ (T : Set Plane) with hΔdef
-  have hχ : IsPLHomeomorphOn (v ∘ Function.invFunOn u (stdSimplex ℝ (Fin 3))) C Δ :=
+  have hχ : IsPLHomeomorphOn (v ∘ Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))) C Δ :=
     hu.symm.trans hv
-  have hbd : stdSimplexBoundary 2 ⊆ stdSimplex ℝ (Fin 3) := fun x hx => hx.1
-  have hfront : (v ∘ Function.invFunOn u (stdSimplex ℝ (Fin 3))) ''
+  have hbd : stdSimplexBoundary 2 ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := fun x hx => hx.1
+  have hfront : (v ∘ Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))) ''
       (q i₀ '' stdSimplexBoundary 2) = frontier Δ := by
     rw [← hubd, image_comp, hu.bijOn.injOn.invFunOn_image hbd]
     exact hv.image_stdSimplexBoundary_eq_frontier (n := 1)
   have hc₀C : q i₀ '' stdSimplexBoundary 2 ⊆ C := by
     rintro _ ⟨y, hy, rfl⟩
     exact ⟨hDS i₀ ((hq i₀).bijOn.mapsTo hy.1), fun h => h.2 ⟨y, hy, rfl⟩⟩
-  refine ⟨v ∘ Function.invFunOn u (stdSimplex ℝ (Fin 3)), Δ, ⟨v, hv⟩, hχ, hfront, ?_⟩
+  refine ⟨v ∘ Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)), Δ, ⟨v, hv⟩, hχ, hfront, ?_⟩
   intro i hi
   have hDiC : D i ⊆ C := fun x hx =>
     ⟨hDS i hx, fun h => disjoint_left.mp (hdis hi) hx h.1⟩
   have hχi := hχ.restrict (IsPLBall.isPolyhedron ⟨q i, hq i⟩) hDiC
   refine ⟨hDiC, ?_, hχi, ?_⟩
   · rintro _ ⟨x, hx, rfl⟩
-    have hmem : (v ∘ Function.invFunOn u (stdSimplex ℝ (Fin 3))) x ∈ Δ :=
+    have hmem : (v ∘ Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))) x ∈ Δ :=
       hχ.bijOn.mapsTo (hDiC hx)
     by_contra hint
-    have hfr : (v ∘ Function.invFunOn u (stdSimplex ℝ (Fin 3))) x ∈ frontier Δ :=
+    have hfr : (v ∘ Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))) x ∈ frontier Δ :=
       ⟨subset_closure hmem, hint⟩
     rw [← hfront] at hfr
     obtain ⟨y, hy, hyx⟩ := hfr
@@ -140,8 +140,8 @@ theorem image_sdiff_iUnion_sdiff_eq {ι : Type*} {S C : Set E} {Δ : Set Plane} 
 theorem IsPLSphere.exists_isPLHomeomorphOn_holed {ι : Type*} [Finite ι]
     {S : Set E} {S' : Set F} (hS : IsPLSphere 2 S) (hS' : IsPLSphere 2 S')
     {D : ι → Set E} {D' : ι → Set F} {q : ι → (Fin 3 → ℝ) → E} {q' : ι → (Fin 3 → ℝ) → F}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
-    (hq' : ∀ i, IsPLHomeomorphOn (q' i) (stdSimplex ℝ (Fin 3)) (D' i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
+    (hq' : ∀ i, IsPLHomeomorphOn (q' i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D' i))
     (hDS : ∀ i, D i ⊆ S) (hD'S' : ∀ i, D' i ⊆ S')
     (hdis : Pairwise fun i j => Disjoint (D i) (D j))
     (hdis' : Pairwise fun i j => Disjoint (D' i) (D' j)) (i₀ : ι) {φ : E → F}

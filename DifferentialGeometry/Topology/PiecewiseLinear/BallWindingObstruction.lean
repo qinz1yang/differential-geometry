@@ -50,7 +50,7 @@ theorem IsPLBall.not_subset_union_of_joined_twice {n : ℕ} {D V T E₀ E₁ A B
   obtain ⟨φ, hφ₀, hφ₁, -⟩ := exists_continuous_zero_one_of_isClosed hE₀ hE₁ hE
   have hcov := AddCircle.isCoveringMap_coe (1 : ℝ)
   let g : E → AddCircle (1 : ℝ) := fun x => if x ∈ V then (φ x : AddCircle (1 : ℝ)) else 0
-  have hgV : ∀ x ∈ V, g x = (φ x : AddCircle (1 : ℝ)) := fun x hx => if_pos hx
+  have hgV : ∀ x ∈ V, g x = (φ x : AddCircle (1 : ℝ)) := fun x hx => ite_eq_left hx
   have hgT : ∀ x ∈ T, g x = 0 := by
     intro x hx
     by_cases hxV : x ∈ V
@@ -60,7 +60,7 @@ theorem IsPLBall.not_subset_union_of_joined_twice {n : ℕ} {D V T E₀ E₁ A B
         exact AddCircle.coe_zero (1 : ℝ)
       · rw [hφ₁ h]
         exact AddCircle.coe_period (1 : ℝ)
-    · exact if_neg hxV
+    · exact ite_eq_right hxV
   have hgc : ContinuousOn g (V ∪ T) := by
     refine ContinuousOn.union_of_isClosed ?_ ?_ hV hT
     · exact (hcov.continuous.comp φ.continuous).continuousOn.congr hgV
@@ -71,7 +71,7 @@ theorem IsPLBall.not_subset_union_of_joined_twice {n : ℕ} {D V T E₀ E₁ A B
   obtain ⟨G, ⟨hGF, -⟩, -⟩ := hcov.exists_unique_lift_of_isPLBall hD F ⟨p₀, hp₀D⟩ 0
     ((AddCircle.coe_zero (1 : ℝ)).trans (hgT p₀ (hBT hp₀.1.2)).symm)
   let Gt : E → ℝ := fun x => if hx : x ∈ D then G ⟨x, hx⟩ else 0
-  have hGt : ∀ x (hx : x ∈ D), Gt x = G ⟨x, hx⟩ := fun x hx => dif_pos hx
+  have hGt : ∀ x (hx : x ∈ D), Gt x = G ⟨x, hx⟩ := fun x hx => dite_eq_left hx
   have hGtc : ContinuousOn Gt D := by
     rw [continuousOn_iff_continuous_domRestrict]
     have hres : D.domRestrict Gt = G := funext fun y => hGt y y.2

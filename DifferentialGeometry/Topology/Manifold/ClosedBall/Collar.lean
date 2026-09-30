@@ -93,7 +93,7 @@ private theorem radialHalfCell_mfderiv_bijective (p : Sphere × Half) :
       (Subtype.val : ClosedCell (m + 1) → EuN) (radialHalfCell p)) ∘
       (mfderiv CI (𝓡∂ (m + 1)) radialHalfCell p)) at hB
   exact Function.Bijective.of_comp_left hB
-    (((isSmoothEmbedding_closedCell_inclusion (m := m)).isImmersion.isImmersionAt _).injective_mfderiv
+    (((isSmoothEmbedding_closedCell_inclusion (m := m)).isImmersion.isImmersionAt _).mfderiv_injective
       (by simp))
 
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace (EuclideanSpace ℝ (Fin (m + 1))) N]

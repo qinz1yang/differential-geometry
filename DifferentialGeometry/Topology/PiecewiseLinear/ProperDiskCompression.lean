@@ -191,7 +191,7 @@ theorem IsPLBall.exists_subset_disjoint_of_subset_frontier {Q D K U : Set E3}
     · exact Or.inr ⟨H x, ⟨hHx, h⟩, hHiH x hx⟩
 
 theorem IsPLBall.exists_compression_of_proper_disk {P D K U : Set E3} (hP : IsPLBall 3 P)
-    {q : (Fin 3 → ℝ) → E3} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDP : D ⊆ P)
+    {q : (Fin 3 → ℝ) → E3} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDP : D ⊆ P)
     (htrace : D ∩ frontier P = q '' stdSimplexBoundary 2) (hK : IsCompact K)
     (hKc : IsPreconnected K) (hKP : K ⊆ interior P) (hKD : Disjoint K D) (hU : IsOpen U)
     (hDU : D ⊆ U) :

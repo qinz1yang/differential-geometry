@@ -13,7 +13,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "Q" => (ℝ × ℝ) × ℝ
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
-local notation "Δ" => stdSimplex ℝ (Fin 3)
+local notation "Δ" => Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
 local notation "p" => stdCenter 1
 local notation "I" => Icc (0 : ℝ) 1
 local notation "J" => Icc (-1 : ℝ) 1

@@ -8,6 +8,16 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lower
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.Nabla0SFunAgreement
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 
+open DifferentialGeometry.TensorMetric
+  (covariantTensorInnerPointwise
+   lowerAllUpperIndices
+   lowerAllUpperIndices_apply
+   riemannianFiberNormSq
+   riemannianFiberNormSq_eq_tensorInnerPointwise
+   riemannianFiberNormSq_nonneg
+   tensorInnerPointwise
+   tensorInnerPointwise_0s_eq_diag_sum_orthoFrame)
+
 set_option autoImplicit false
 
 noncomputable section

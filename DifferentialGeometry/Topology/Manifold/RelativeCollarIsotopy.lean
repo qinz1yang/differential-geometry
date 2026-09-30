@@ -430,28 +430,28 @@ theorem exists_contMDiff_compact_isotopy_eqOn_collar_in_chart
     rw [(hJe 0 x).1, hD0]
     by_cases hx : x ∈ e.source
     · exact (show extendChartById e (Diffeomorph.refl _ _ ∞) x = e.symm (e x) from
-        if_pos hx).trans (e.left_inv hx)
-    · exact if_neg hx
+        ite_eq_left hx).trans (e.left_inv hx)
+    · exact ite_eq_right hx
   · intro t ht p hp
     rw [(hJe t (e.symm p)).1]
     rw [show extendChartById e (D t) (e.symm p) = e.symm (D t (e (e.symm p))) from
-      if_pos (e.map_target hp.2), e.right_inv hp.2, htrack t ht p hp.1]
+      ite_eq_left (e.map_target hp.2), e.right_inv hp.2, htrack t ht p hp.1]
   · intro t
     constructor
     · intro x hx
       rw [(hJe t x).1]
       by_cases hxs : x ∈ e.source
-      · rw [show extendChartById e (D t) x = e.symm (D t (e x)) from if_pos hxs,
+      · rw [show extendChartById e (D t) x = e.symm (D t (e x)) from ite_eq_left hxs,
           (hDzero t).1 ⟨mem_univ _, hS x ⟨hx, hxs⟩⟩]
         exact e.left_inv hxs
-      · exact if_neg hxs
+      · exact ite_eq_right hxs
     · intro x hx
       rw [(hJe t x).2]
       by_cases hxs : x ∈ e.source
-      · rw [show extendChartById e (D t).symm x = e.symm ((D t).symm (e x)) from if_pos hxs,
+      · rw [show extendChartById e (D t).symm x = e.symm ((D t).symm (e x)) from ite_eq_left hxs,
           (hDzero t).2 ⟨mem_univ _, hS x ⟨hx, hxs⟩⟩]
         exact e.left_inv hxs
-      · exact if_neg hxs
+      · exact ite_eq_right hxs
   · rintro x ⟨p, hp, rfl⟩
     exact ⟨(hLQ hp).2, hJLs ⟨p, hp, rfl⟩⟩
   · intro t

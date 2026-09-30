@@ -1,5 +1,5 @@
 import DifferentialGeometry.Bundle.SmoothSubbundle.Hom
-import DifferentialGeometry.Bundle.SmoothSubbundle.KernelAPI
+import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Homology.Relative.Basic
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
 import DifferentialGeometry.Topology.Homology.EuclideanLocalTop
 import DifferentialGeometry.Topology.Homology.HurewiczTwoMultiplication
@@ -8,6 +9,8 @@ import DifferentialGeometry.Topology.Homology.SphereGeneratorCriterion
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology ContinuousMap Metric Set Module
+open Convexity.StdSimplex (coordinateSet coordinateMap continuous_coordinateMap
+  coordinateEquiv coordinateHomeomorph coordinateEquiv_map)
 open scoped Simplicial Topology
 
 namespace DifferentialGeometry.Topology
@@ -19,11 +22,11 @@ universe u
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 def orientedSimplexFace (i : Fin 4) :
-    C(stdSimplex ℝ (Fin 3), stdSimplex ℝ (Fin 4)) :=
-  ⟨stdSimplex.map (SimplexCategory.δ i).toOrderHom,
-    stdSimplex.continuous_map (SimplexCategory.δ i).toOrderHom⟩
+    C(coordinateSet ℝ (Fin 3), coordinateSet ℝ (Fin 4)) :=
+  ⟨coordinateMap (SimplexCategory.δ i).toOrderHom,
+    continuous_coordinateMap (SimplexCategory.δ i).toOrderHom⟩
 
-private theorem orientedSimplexFace_zero (i : Fin 4) (q : stdSimplex ℝ (Fin 3)) :
+private theorem orientedSimplexFace_zero (i : Fin 4) (q : coordinateSet ℝ (Fin 3)) :
     (orientedSimplexFace i q).val i = 0 := by
   change FunOnFinite.linearMap ℝ ℝ i.succAbove (q : Fin 3 → ℝ) i = 0
   rw [FunOnFinite.linearMap_apply_apply]
@@ -32,21 +35,22 @@ private theorem orientedSimplexFace_zero (i : Fin 4) (q : stdSimplex ℝ (Fin 3)
   exact False.elim (Fin.succAbove_ne i j (Finset.mem_filter.mp hj).2)
 
 def integralSimplexChain {X : Type u} [TopologicalSpace X] (n : ℕ)
-    (σ : C(stdSimplex ℝ (Fin (n + 1)), X)) :
+    (σ : C(coordinateSet ℝ (Fin (n + 1)), X)) :
     integralSingularCoefficients ⟶ (integralSingularChains X).X n :=
   (TopCat.toSSet.obj (TopCat.of X)).ιChainComplex
-    ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n⦌)).symm σ)
+    ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n⦌)).symm
+      (σ.comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩))
 
 private def puncturedFace {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p)
-    (i : Fin 4) : C(stdSimplex ℝ (Fin 3), ({p}ᶜ : Set X)) :=
+    (σ : C(coordinateSet ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : coordinateSet ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p)
+    (i : Fin 4) : C(coordinateSet ℝ (Fin 3), ({p}ᶜ : Set X)) :=
   ⟨fun q => ⟨σ (orientedSimplexFace i q), hσ i q⟩,
     (σ.continuous.comp (orientedSimplexFace i).continuous).subtype_mk _⟩
 
 private theorem puncturedFace_chain {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p)
+    (σ : C(coordinateSet ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : coordinateSet ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p)
     (i : Fin 4) :
     integralSimplexChain 2 (puncturedFace p σ hσ i) ≫
       (integralSingularChainMap (singularSubspaceInclusion ({(p : X)}ᶜ : Set X))).f 2 =
@@ -56,19 +60,36 @@ private theorem puncturedFace_chain {X : Type u} [TopologicalSpace X] (p : X)
     (TopCat.toSSet.map (TopCat.ofHom (singularSubspaceInclusion ({(p : X)}ᶜ : Set X))))
     integralSingularCoefficients
     ((TopCat.toSSetObjEquiv (TopCat.of ({p}ᶜ : Set X)) (.op ⦋2⦌)).symm
-      (puncturedFace p σ hσ i))
+      ((puncturedFace p σ hσ i).comp
+        ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩))
 
 private theorem simplexChain_boundary {X : Type u} [TopologicalSpace X]
-    (σ : C(stdSimplex ℝ (Fin 4), X)) :
+    (σ : C(coordinateSet ℝ (Fin 4), X)) :
     integralSimplexChain 3 σ ≫ (integralSingularChains X).d 3 2 =
       ∑ i : Fin 4, (-1 : ℤ) ^ i.val •
-        integralSimplexChain 2 (σ.comp (orientedSimplexFace i)) :=
-  (TopCat.toSSet.obj (TopCat.of X)).ιChainComplex_d (R := integralSingularCoefficients)
-    ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋3⦌)).symm σ)
+        integralSimplexChain 2 (σ.comp (orientedSimplexFace i)) := by
+  let τ := (TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋3⦌)).symm
+    (σ.comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩)
+  have hd (i : Fin 4) : (TopCat.toSSet.obj (TopCat.of X)).δ i τ =
+      (TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋2⦌)).symm
+        ((σ.comp (orientedSimplexFace i)).comp
+          ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩) := by
+    apply (TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋2⦌)).injective
+    ext p
+    change σ (coordinateEquiv ℝ _ (Convexity.StdSimplex.map i.succAbove p)) =
+      σ (coordinateMap i.succAbove (coordinateEquiv ℝ _ p))
+    rw [coordinateEquiv_map]
+  change (TopCat.toSSet.obj (TopCat.of X)).ιChainComplex τ ≫
+    ((TopCat.toSSet.obj (TopCat.of X)).chainComplex integralSingularCoefficients).d 3 2 = _
+  rw [SSet.ιChainComplex_d]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [hd]
+  rfl
 
 private theorem relativeChain_boundary {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (σ : C(coordinateSet ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : coordinateSet ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
     (integralSimplexChain 3 σ ≫ (cokernel.π (integralSingularChainMap
       (singularSubspaceInclusion ({(p : X)}ᶜ : Set X)))).f 3) ≫
       (integralRelativeChains ({(p : X)}ᶜ : Set X)).d 3 2 = 0 := by
@@ -87,8 +108,8 @@ private theorem relativeChain_boundary {X : Type u} [TopologicalSpace X] (p : X)
   simp only [Preadditive.sum_comp, Linear.smul_comp, hf, smul_zero, Finset.sum_const_zero]
 
 def simplexLocalClass {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (σ : C(coordinateSet ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : coordinateSet ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
     integralLocalHomology 3 p :=
   ((integralRelativeChains ({(p : X)}ᶜ : Set X)).liftCycles
       (integralSimplexChain 3 σ ≫ (cokernel.π (integralSingularChainMap
@@ -98,19 +119,21 @@ def simplexLocalClass {X : Type u} [TopologicalSpace X] (p : X)
     (integralRelativeChains ({(p : X)}ᶜ : Set X)).homologyπ 3) (ULift.up 1)
 
 def standardTetrahedronSimplex :
-    C(stdSimplex ℝ (Fin 4), liftedSphereSpace.{u} 1) where
-  toFun q := (ULift.up (positiveTetrahedron q) : liftedSphereSpace.{u} 1)
+    C(coordinateSet ℝ (Fin 4), liftedSphereSpace.{u} 1) where
+  toFun q := (ULift.up (positiveTetrahedron ((coordinateHomeomorph ℝ _).symm q)) :
+    liftedSphereSpace.{u} 1)
   continuous_toFun :=
     (Homeomorph.ulift (X := ThreeSpace) :
         liftedSphereSpace.{u} 1 ≃ₜ ThreeSpace).symm.continuous.comp
-      positiveTetrahedron.continuous
+      (positiveTetrahedron.continuous.comp (coordinateHomeomorph ℝ _).symm.continuous)
 
 theorem standardTetrahedronSimplex_face_ne_zero (i : Fin 4)
-    (q : stdSimplex ℝ (Fin 3)) :
+    (q : coordinateSet ℝ (Fin 3)) :
     standardTetrahedronSimplex (orientedSimplexFace i q) ≠
       (0 : liftedSphereSpace.{u} 1) := by
   intro hh
-  exact positiveTetrahedron_face_ne_zero (orientedSimplexFace i q) i
+  exact positiveTetrahedron_face_ne_zero
+    ((coordinateHomeomorph ℝ _).symm (orientedSimplexFace i q)) i
     (orientedSimplexFace_zero i q) (ULift.up_inj.mp hh)
 
 def euclideanStandardSimplexClass :
@@ -119,14 +142,14 @@ def euclideanStandardSimplexClass :
     (fun i q => standardTetrahedronSimplex_face_ne_zero i q)
 
 def puncturedSimplexBoundary {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (σ : C(coordinateSet ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : coordinateSet ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
     integralSingularCoefficients ⟶ (integralSingularChains ({(p : X)}ᶜ : Set X)).X 2 :=
   ∑ i : Fin 4, (-1 : ℤ) ^ i.val • integralSimplexChain 2 (puncturedFace p σ hσ i)
 
 theorem puncturedSimplexBoundary_chain {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (σ : C(coordinateSet ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : coordinateSet ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
     puncturedSimplexBoundary p σ hσ ≫
         (integralSingularChainMap (singularSubspaceInclusion ({(p : X)}ᶜ : Set X))).f 2 =
       integralSimplexChain 3 σ ≫ (integralSingularChains X).d 3 2 := by
@@ -136,8 +159,8 @@ theorem puncturedSimplexBoundary_chain {X : Type u} [TopologicalSpace X] (p : X)
   rw [← simplexChain_boundary σ]
 
 theorem puncturedSimplexBoundary_boundary {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (σ : C(coordinateSet ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : coordinateSet ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
     puncturedSimplexBoundary p σ hσ ≫
       (integralSingularChains ({(p : X)}ᶜ : Set X)).d 2 1 = 0 := by
   rw [← cancel_mono
@@ -148,8 +171,8 @@ theorem puncturedSimplexBoundary_boundary {X : Type u} [TopologicalSpace X] (p :
     HomologicalComplex.d_comp_d, Limits.comp_zero]
 
 theorem integralRelativeConnecting_simplexLocalClass {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (σ : C(coordinateSet ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : coordinateSet ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
     integralRelativeConnecting 2 ({(p : X)}ᶜ : Set X) (simplexLocalClass p σ hσ) =
       (((integralSingularChains ({(p : X)}ᶜ : Set X)).liftCycles
         (puncturedSimplexBoundary p σ hσ) 1 ((ComplexShape.down ℕ).next_eq' (by rfl))

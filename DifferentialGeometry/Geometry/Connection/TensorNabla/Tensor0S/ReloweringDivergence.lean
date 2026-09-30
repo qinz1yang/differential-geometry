@@ -8,6 +8,7 @@ namespace DifferentialGeometry.Geometry.Connection
 open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.TensorMetric (reLower reLowerPair)
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

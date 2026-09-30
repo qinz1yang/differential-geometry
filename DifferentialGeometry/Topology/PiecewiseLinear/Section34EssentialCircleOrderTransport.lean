@@ -52,7 +52,7 @@ theorem IsPLCellOn.exists_ordered_disk_caps_of_essential_family {M : Type*}
       (hXess : ¬ ∃ D : Set M, IsPLCellOn 2 D X ∧ D ⊆ A) :
       ¬ ∃ (D : Set (EuclideanSpace ℝ (Fin 3)))
         (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
           q '' stdSimplexBoundary 2 = τ '' X := by
     rintro ⟨D, q, hq, hDA, hqb⟩
     have hDP := (hDA.trans hA'S).trans hfront
@@ -85,7 +85,7 @@ theorem IsPLCellOn.exists_ordered_disk_caps_of_essential_family {M : Type*}
       (hCdisj hJ hL (fun h => hJL (congrArg (fun K => τ '' K) h)))
   have hC'ess : ∀ J ∈ C', ¬ ∃ (D : Set (EuclideanSpace ℝ (Fin 3)))
       (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
         q '' stdSimplexBoundary 2 = J := by
     rintro _ ⟨J, hJ, rfl⟩
     exact hess (hCA J hJ) (hCess J hJ)
@@ -108,7 +108,7 @@ theorem IsPLCellOn.exists_ordered_disk_caps_of_essential_family {M : Type*}
     rw [← he i, hback _ (hCA (e i).val (e i).property)]
   have hcell {D : Set (EuclideanSpace ℝ (Fin 3))}
       {q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)} (i : Fin C.ncard)
-      (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDP : D ⊆ P)
+      (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDP : D ⊆ P)
       (hqb : q '' stdSimplexBoundary 2 = (e' i).val) :
       IsPLCellOn 2 (u '' D) (e i).val := by
     have hpoly : IsPolyhedron D := IsPLBall.isPolyhedron ⟨q, hq⟩

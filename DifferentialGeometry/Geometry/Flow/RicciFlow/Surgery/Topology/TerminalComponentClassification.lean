@@ -81,7 +81,8 @@ theorem exists_component_poincareStandard_tolerance_of_spatial_neighborhoods :
         ∀ x : (P.toClosedOrientedManifold.component c).Carrier, q < G.flow.scalar t x.val →
         ¬ Nonempty (SpatialNeck ((G.flow.base.metric t).restrictOpen (P.componentOpen c)) eps x) →
         Nonempty (PositiveComponent (M := (P.toClosedOrientedManifold.component c).Carrier) univ) ∨
-        IsPositiveSpaceFormModel (P.toClosedOrientedManifold.component c) ∨
+        admitsConstantPositiveSectionalCurvature (I := ThreeModel)
+          (M := (P.toClosedOrientedManifold.component c).Carrier) ∨
         ∃ (K : CompactDomain (P.toClosedOrientedManifold.component c).Carrier)
           (v : (P.toClosedOrientedManifold.component c).Carrier)
           (nk : SpatialNeck ((G.flow.base.metric t).restrictOpen (P.componentOpen c)) eps v)
@@ -146,7 +147,8 @@ theorem exists_component_poincareStandard_tolerance_of_canonical_neighborhoods :
   · exact Or.inl hp
   · obtain ⟨z, hr⟩ := hr
     exact Or.inr (Or.inl
-      (isPositiveSpaceFormModel_of_roundComponent (P.toClosedOrientedManifold.component c) hr.some))
+      (admitsConstantPositiveSectionalCurvature_of_roundComponent
+        (P.toClosedOrientedManifold.component c) hr.some))
   · exact Or.inr (Or.inr hc)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

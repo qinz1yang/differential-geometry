@@ -36,7 +36,7 @@ theorem exists_isPLSphere_pair_of_mem_heightSingularPoints_with_inter_eq_boundar
     {W : Set E} (hW : IsOpen W) (hWconv : Convex ℝ W) (hKW : K.space ⊆ W) :
     ∃ (A B D : Set E) (f : (Fin 3 → ℝ) → E),
       A ∪ B = K.space ∧ A ∩ B = f '' stdSimplexBoundary 2 ∧
-      IsPLBall 2 A ∧ IsPLBall 2 B ∧ IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLBall 2 A ∧ IsPLBall 2 B ∧ IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ W ∩ {x | ℓ x = ℓ p} ∧ D ∉ 𝓝[{x | ℓ x = ℓ p}] p ∧
       IsPLSphere 2 (A ∪ D) ∧ IsPLSphere 2 (B ∪ D) ∧ (A ∪ D) ∩ (B ∪ D) = D ∧
       ((A ∪ D) ∪ (B ∪ D)) \ (D \ (f '' stdSimplexBoundary 2)) = K.space ∧
@@ -78,7 +78,7 @@ theorem exists_isPLSphere_pair_of_mem_heightSingularPoints
     {W : Set E} (hW : IsOpen W) (hWconv : Convex ℝ W) (hKW : K.space ⊆ W) :
     ∃ (A B D : Set E) (f : (Fin 3 → ℝ) → E),
       A ∪ B = K.space ∧ A ∩ B = f '' stdSimplexBoundary 2 ∧
-      IsPLBall 2 A ∧ IsPLBall 2 B ∧ IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLBall 2 A ∧ IsPLBall 2 B ∧ IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ W ∩ {x | ℓ x = ℓ p} ∧ D ∉ 𝓝[{x | ℓ x = ℓ p}] p ∧
       IsPLSphere 2 (A ∪ D) ∧ IsPLSphere 2 (B ∪ D) ∧ (A ∪ D) ∩ (B ∪ D) = D ∧
       ((A ∪ D) ∪ (B ∪ D)) \ (D \ (f '' stdSimplexBoundary 2)) = K.space ∧

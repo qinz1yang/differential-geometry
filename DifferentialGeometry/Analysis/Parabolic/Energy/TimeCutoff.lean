@@ -718,8 +718,8 @@ theorem exists_smooth_timeCutoff_eq_one_on_Icc {a b T : ℝ}
   · intro t
     exact mul_nonneg (timeCutoff_mem_Icc 0 a t).1 (backwardTimeCutoff_mem_Icc b T t).1
   · intro t
-    exact mul_le_one₀ (timeCutoff_mem_Icc 0 a t).2
-      (backwardTimeCutoff_mem_Icc b T t).1 (backwardTimeCutoff_mem_Icc b T t).2
+    exact (mul_le_of_le_one_left (backwardTimeCutoff_mem_Icc b T t).1
+      (timeCutoff_mem_Icc 0 a t).2).trans (backwardTimeCutoff_mem_Icc b T t).2
   · change timeCutoff 0 a 0 * backwardTimeCutoff b T 0 = 0
     rw [timeCutoff_eq_zero 0 ha, zero_mul]
   · change timeCutoff 0 a T * backwardTimeCutoff b T T = 0

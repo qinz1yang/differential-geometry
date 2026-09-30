@@ -169,6 +169,7 @@ theorem bijective_mfderiv_homeomorphChartedSpace (I : ModelWithCorners 𝕜 E H)
   have hkey : mfderiv I I (chartAt H x) x
       = (mfderiv I I (chartAt H (f x)) (f x)).comp (mfderiv I I f x) := by
     rw [← hchain, heq.mfderiv_eq]
+    rfl
   refine ⟨fun v w hvw => ?_, fun w => ?_⟩
   · have hsub : (mfderiv I I f x) (v - w) = 0 := by rw [map_sub, hvw, sub_self]
     have h0 : mfderiv I I (chartAt H x) x (v - w) = 0 := by

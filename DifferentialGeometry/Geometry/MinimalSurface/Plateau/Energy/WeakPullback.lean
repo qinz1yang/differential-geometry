@@ -9,6 +9,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Composition
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.MinimizingSequence
 import DifferentialGeometry.Geometry.Metric.Pullback.Retraction
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WitnessCongruence
+import Mathlib.Topology.Metrizable.Urysohn
 
 noncomputable section
 open Set Filter MeasureTheory Manifold
@@ -36,7 +37,7 @@ theorem integral_diskMapEnergyDensity_comp_eq_weak_pullback_energy
           (WithLp.toLp 2 (fun i => (hv i).weakGrad x j))
           (WithLp.toLp 2 (fun i => (hv i).weakGrad x j))) / 2 := by
   let e := Complex.orthonormalBasisOneI.repr
-  let A := pullbackMetricCoefficients g r
+  let A : F → (F →L[ℝ] F →L[ℝ] ℝ) := pullbackMetricCoefficients g r
   let G (j : Fin 2) (x : V) : F := WithLp.toLp 2 fun i => (hv i).weakGrad x j
   have hpre : e ⁻¹' Metric.ball (0 : V) R = Metric.ball (0 : ℂ) R := by
     ext x
@@ -77,9 +78,22 @@ theorem integral_diskMapEnergyDensity_comp_eq_weak_pullback_energy
       fun x hx => hC (mem_image_of_mem _ (hvK hx))
   have hG (j : Fin 2) : MemLp (G j) 2 (volume.restrict (Metric.ball (0 : V) R)) :=
     MemLp.of_eval_piLp fun i => (hv i).weakGrad_component_memLp j
+  let B := F →L[ℝ] F →L[ℝ] ℝ
+  have hPM : TopologicalSpace.PseudoMetrizableSpace B := by
+    dsimp [B]
+    let hT2 : T2Space (F →L[ℝ] F →L[ℝ] ℝ) := ContinuousLinearMap.instT2Space
+    let hT1 : T1Space (F →L[ℝ] F →L[ℝ] ℝ) := @T2Space.t1Space _ _ hT2
+    let hT0 : T0Space (F →L[ℝ] F →L[ℝ] ℝ) := @T1Space.t0Space _ _ hT1
+    let hReg : RegularSpace (F →L[ℝ] F →L[ℝ] ℝ) :=
+      IsTopologicalAddGroup.regularSpace _
+    let hT3 : T3Space (F →L[ℝ] F →L[ℝ] ℝ) := @T3Space.mk _ _ hT0 hReg
+    exact @TopologicalSpace.MetrizableSpace.toPseudoMetrizableSpace _ _
+      (@TopologicalSpace.metrizableSpace_of_t3_secondCountable _ _ hT3 inferInstance)
   have hAm : AEStronglyMeasurable (fun x => A (v x))
       (volume.restrict (Metric.ball (0 : V) R)) :=
-    hAv.aestronglyMeasurable Metric.isOpen_ball.measurableSet
+    @ContinuousOn.aestronglyMeasurable V B _ _ inferInstance inferInstance inferInstance hPM
+      (f := fun x : V => A (v x)) (s := Metric.ball (0 : V) R) (μ := volume)
+      hAv Metric.isOpen_ball.measurableSet
   have hI (j : Fin 2) :
       IntegrableOn (fun x => A (v x) (G j x) (G j x)) (Metric.ball (0 : V) R) :=
     integrable_bilinear_of_apply_aestronglyMeasurable (fun x => A (v x))
@@ -252,6 +266,17 @@ theorem integrable_diskMapEnergyDensity_and_energy_eq_of_contDiffOn_representati
       exact hq y hy
     unfold diskMapEnergyDensity diskMapPartial
     rw [hgerm.mfderiv_eq, hgerm.self_of_nhds]
+    have hcast :
+        (tangentSpaceCast 𝓘(ℝ, E)
+            (r (v (Complex.orthonormalBasisOneI.repr z)))
+            (r (v (Complex.orthonormalBasisOneI.repr z))) :
+          TangentSpace 𝓘(ℝ, E) (r (v (Complex.orthonormalBasisOneI.repr z))) →L[ℝ]
+            TangentSpace 𝓘(ℝ, E) (r (v (Complex.orthonormalBasisOneI.repr z)))) =
+        ContinuousLinearMap.id ℝ _ := by
+      ext w
+      rfl
+    rw [hcast]
+    simp
   refine ⟨hclosed.congr heq.symm, ?_⟩
   change (∫ z in Metric.closedBall (0 : ℂ) 1, diskMapEnergyDensity g (diskExtension q) z) = _
   rw [integral_congr_ae heq, ← hμ]

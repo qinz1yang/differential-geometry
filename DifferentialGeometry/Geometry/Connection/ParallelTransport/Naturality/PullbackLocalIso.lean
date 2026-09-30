@@ -45,8 +45,6 @@ theorem covDerivAlong_map_localIso
     [I.Boundaryless] [J.Boundaryless]
     [T2Space M] [BoundarylessManifold I M]
     [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric I M) (g' : SmoothRiemannianMetric J N)
     {f : M → N} (hld : IsLocalDiffeomorph I J ∞ f)
     (hpres : ∀ (x : M) (v w : TangentSpace I x),
@@ -86,7 +84,7 @@ theorem covDerivAlong_map_localIso
     hγ.continuousAt.preimage_mem_nhds (U.isOpen.mem_nhds γtU.property)
   have hγU_val : (fun s => ((γU s : U) : M)) =ᶠ[𝓝 t] γ := by
     filter_upwards [hmem] with s hs
-    simp only [γU, dif_pos hs]
+    simp only [γU, dite_eq_left hs]
   have hγU_smooth : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ γU t := by
     have hamb : ContMDiffAt 𝓘(ℝ, ℝ) I ∞
         (fun s => ((γU s : U) : M)) t :=
@@ -169,7 +167,7 @@ theorem covDerivAlong_map_localIso
         ((mfderiv I J f (γ s) (V s)) : F) := by
     filter_upwards [hmem] with s hs
     rw [PartialDiffeomorph.mfderiv_toOpensDiffeo Φ hUΦ (γU s) (VU s)]
-    rw [show ((γU s : U) : M) = γ s from by simp only [γU, dif_pos hs],
+    rw [show ((γU s : U) : M) = γ s from by simp only [γU, dite_eq_left hs],
       hΦmfd ⟨γ s, hs⟩]
     rfl
   have hcont : ContinuousAt (fun s : ℝ => Ψ (γU s)) t :=
@@ -177,7 +175,7 @@ theorem covDerivAlong_map_localIso
   have hmap : (fun s => ((Ψ (γU s) : Un) : N)) =ᶠ[𝓝 t] (fun s => f (γ s)) := by
     filter_upwards [hmem] with s hs
     dsimp only [Ψ]
-    have hγUs : ((γU s : U) : M) = γ s := by simp only [γU, dif_pos hs]
+    have hγUs : ((γU s : U) : M) = γ s := by simp only [γU, dite_eq_left hs]
     change (Φ : M → N) ((γU s : U) : M) = f (γ s)
     rw [hγUs]
     exact (hfΦ hs.1).symm
@@ -213,8 +211,6 @@ theorem covDerivAlong_map_localPullMetric
     [I.Boundaryless] [J.Boundaryless]
     [T2Space M] [BoundarylessManifold I M]
     [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) {f : M → N} (hld : IsLocalDiffeomorph I J ∞ f)
     (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t)) (t : ℝ)
     (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ γ t)
@@ -233,8 +229,6 @@ theorem covDerivAlong_map_of_eq_localPullMetric
     [I.Boundaryless] [J.Boundaryless]
     [T2Space M] [BoundarylessManifold I M]
     [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) {f : M → N} (hld : IsLocalDiffeomorph I J ∞ f)
     (k : SmoothRiemannianMetric I M)
     (hk : localPullMetric (I := I) (J := J) g f hld = k)
@@ -250,8 +244,6 @@ theorem covDerivAlong_map_of_eq_localPullMetric
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
   [CompleteSpace F] [NeZero (Module.finrank ℝ F)] in
 theorem covDerivAlong_map_localIso_id_witness
-    [I.Boundaryless] [T2Space M] [BoundarylessManifold I M]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M)
     (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t)) (t : ℝ) :
     mfderiv I I (_root_.id : M → M) (γ t) (covDerivAlong (I := I) g γ V t) =
@@ -321,7 +313,7 @@ theorem covDerivAlong_map_of_local_isometry_on
     hgamma.continuousAt.preimage_mem_nhds (hU.mem_nhds ht)
   have heq : (fun s ↦ (gammaO s : M)) =ᶠ[𝓝 t] gamma := by
     filter_upwards [hmem] with s hs
-    simp only [gammaO, dif_pos hs]
+    simp only [gammaO, dite_eq_left hs]
   have hgammaO : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ gammaO t := by
     have hamb : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ (fun s ↦ (gammaO s : M)) t :=
       hgamma.congr_of_eventuallyEq heq

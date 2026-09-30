@@ -287,7 +287,7 @@ theorem third_iterated_covariant_derivative_le_comparison_constant
     else if m = 2 then C2acc else 0) hRnn hEq hjet hx 3 ?_) ?_
   · intro m hm
     interval_cases m
-    · simp only [if_neg (by norm_num : (0 : ℕ) ≠ 1), if_neg (by norm_num : (0 : ℕ) ≠ 2), zero_mul]
+    · simp only [ite_eq_right (by norm_num : (0 : ℕ) ≠ 1), ite_eq_right (by norm_num : (0 : ℕ) ≠ 2), zero_mul]
       rw [show telescAccum (I := I) g₁ g₂ r T 0 = 0 from rfl, covariant_derivative_step_zero]
       simp only [ContMDiffSection.coe_zero, Pi.zero_apply, sqrt_covariant_tensor_norm_sq_zero, le_refl]
     · simp only [reduceIte]

@@ -482,7 +482,7 @@ theorem ballChartIsotopicAwayFromCompact_of_orientedBallChartIsotopicAwayFromCom
 
 theorem orientedBallChartStraighteningAwayFromCompact_hypotheses_satisfiable {U : Type u}
     [TopologicalSpace U] [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
-    [T2Space U] [ConnectedSpace U] (o : ManifoldOrientation ThreeModel U 3)
+    (o : ManifoldOrientation ThreeModel U 3)
     (b : OrientedBallEmbedding U o) :
     ∃ (b' : OrientedBallEmbedding U o) (C : Set U), IsCompact C ∧
       Disjoint (b.chart '' Metric.closedBall (0 : ThreeSpace) 1) C ∧

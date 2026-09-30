@@ -129,7 +129,7 @@ theorem canonicalBackwardMetricComparisons_eventually_strongNeckWitness
       ∀ x : U, f i x = Phi.map i (e (x : SpatialNeckCylinder)) := by
     filter_upwards [hsource] with i hi
     dsimp only [f]
-    rw [dif_pos hi]
+    rw [dite_eq_left hi]
     exact ⟨pointedMaps_restrict_isSmoothEmbedding Phi e U i hi, fun _ => rfl⟩
   have hcomparison_f : ∀ eta : ℝ, 0 < eta → ∀ᶠ i in atTop,
       Nonempty (MetricComparisonOn

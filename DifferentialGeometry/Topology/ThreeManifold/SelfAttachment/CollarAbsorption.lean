@@ -172,7 +172,7 @@ theorem stretchedLowerCollar_one (z : Sphere (n := 3)) :
     stretchedLowerCollar c d hdisj a (z, ⟨1, by norm_num⟩) =
       bandInclusion c d hdisj a (z, ⟨1 / 2, by norm_num⟩) := by
   simp only [stretchedLowerCollar, collarStretch_one]
-  rw [if_pos (by norm_num)]
+  rw [ite_eq_left (by norm_num)]
   apply congrArg (bandInclusion c d hdisj a)
   refine Prod.ext (by rfl) ?_
   apply Subtype.ext
@@ -182,7 +182,7 @@ theorem stretchedUpperCollar_one (z : Sphere (n := 3)) :
     stretchedUpperCollar c d hdisj a (a z, ⟨1, by norm_num⟩) =
       bandInclusion c d hdisj a (z, ⟨1 / 2, by norm_num⟩) := by
   simp only [stretchedUpperCollar, collarStretch_one]
-  rw [if_pos (by norm_num)]
+  rw [ite_eq_left (by norm_num)]
   apply congrArg (bandInclusion c d hdisj a)
   apply Prod.ext (a.symm_apply_apply z)
   apply Subtype.ext
@@ -191,7 +191,7 @@ theorem stretchedUpperCollar_one (z : Sphere (n := 3)) :
 theorem stretchedLowerCollar_of_ge (p : BandCollarMapsDomain) (hp : 7 / 4 ≤ (p.2 : ℝ)) :
     stretchedLowerCollar c d hdisj a p =
       coreInclusion c d hdisj a (c.firstRadialMap d hdisj p.1 p.2 p.2.property) := by
-  rw [stretchedLowerCollar, collarStretch_of_ge hp, if_neg (by linarith)]
+  rw [stretchedLowerCollar, collarStretch_of_ge hp, ite_eq_right (by linarith)]
   apply congrArg (coreInclusion c d hdisj a)
   apply Subtype.ext
   simp only [stretchedFirstCore, BallChart.firstRadialMap_val, collarStretch_of_ge hp,
@@ -200,7 +200,7 @@ theorem stretchedLowerCollar_of_ge (p : BandCollarMapsDomain) (hp : 7 / 4 ≤ (p
 theorem stretchedUpperCollar_of_ge (p : BandCollarMapsDomain) (hp : 7 / 4 ≤ (p.2 : ℝ)) :
     stretchedUpperCollar c d hdisj a p =
       coreInclusion c d hdisj a (c.secondRadialMap d hdisj p.1 p.2 p.2.property) := by
-  rw [stretchedUpperCollar, collarStretch_of_ge hp, if_neg (by linarith)]
+  rw [stretchedUpperCollar, collarStretch_of_ge hp, ite_eq_right (by linarith)]
   apply congrArg (coreInclusion c d hdisj a)
   apply Subtype.ext
   simp only [stretchedSecondCore, BallChart.secondRadialMap_val, collarStretch_of_ge hp,
@@ -210,7 +210,7 @@ theorem stretchedLowerCollar_of_le (p : BandCollarMapsDomain) (hp : collarStretc
     stretchedLowerCollar c d hdisj a p = bandInclusion c d hdisj a
       (p.1, ⟨1 - collarStretch p.2, by constructor <;>
         linarith [(collarStretch_mem_Icc p.2.property).1]⟩) := by
-  rw [stretchedLowerCollar, if_pos hp]
+  rw [stretchedLowerCollar, ite_eq_left hp]
   apply congrArg (bandInclusion c d hdisj a)
   refine Prod.ext (by rfl) ?_
   apply Subtype.ext
@@ -220,7 +220,7 @@ theorem stretchedUpperCollar_of_le (p : BandCollarMapsDomain) (hp : collarStretc
     stretchedUpperCollar c d hdisj a p = bandInclusion c d hdisj a
       (a.symm p.1, ⟨collarStretch p.2,
         le_trans (by norm_num) (collarStretch_mem_Icc p.2.property).1, hp⟩) := by
-  rw [stretchedUpperCollar, if_pos hp]
+  rw [stretchedUpperCollar, ite_eq_left hp]
   apply congrArg (bandInclusion c d hdisj a)
   refine Prod.ext (by rfl) ?_
   apply Subtype.ext
@@ -230,7 +230,7 @@ theorem stretchedLowerCollar_of_gt (p : BandCollarMapsDomain) (hp : 1 < collarSt
     stretchedLowerCollar c d hdisj a p = coreInclusion c d hdisj a
       (c.firstRadialMap d hdisj p.1 (collarStretch p.2)
         ⟨hp.le, (collarStretch_mem_Icc p.2.property).2⟩) := by
-  rw [stretchedLowerCollar, if_neg (not_le.mpr hp)]
+  rw [stretchedLowerCollar, ite_eq_right (not_le.mpr hp)]
   apply congrArg (coreInclusion c d hdisj a)
   apply Subtype.ext
   exact congrArg (fun r => c.chart (r • p.1.val)) (max_eq_right hp.le)
@@ -239,7 +239,7 @@ theorem stretchedUpperCollar_of_gt (p : BandCollarMapsDomain) (hp : 1 < collarSt
     stretchedUpperCollar c d hdisj a p = coreInclusion c d hdisj a
       (c.secondRadialMap d hdisj p.1 (collarStretch p.2)
         ⟨hp.le, (collarStretch_mem_Icc p.2.property).2⟩) := by
-  rw [stretchedUpperCollar, if_neg (not_le.mpr hp)]
+  rw [stretchedUpperCollar, ite_eq_right (not_le.mpr hp)]
   apply congrArg (coreInclusion c d hdisj a)
   apply Subtype.ext
   exact congrArg (fun r => d.chart (r • p.1.val)) (max_eq_right hp.le)

@@ -205,7 +205,7 @@ theorem parabolic_nondivergence_interior_schauder_estimate_in_euclideanChart_of_
     intro p hp
     exact hcNorm p (by simpa only [Qglobal] using hQlocalQglobal hp)
   have hestimate :=
-    parabolic_nondivergence_ball_interior_schauder_estimate_of_local_source_estimates_of_small_freeze_defect
+    nondivergence_ball_schauder_estimate_of_local_source_bounds_of_small_defect
       halpha0 halpha1 haTime hat₀ ht₀t₁ ht₁b hbT hTS center hr hrR
       aext p0 hA bext cext u dtimeU du d2u huTime hu hdu huCont
       (by simpa only [Qlocal] using hsourceHolder')
@@ -918,7 +918,7 @@ theorem eParabolicC2HolderGaugeInEuclideanChartsOn_bounded_of_lower_jet_bounds_o
       (fun i ↦ parabolicCylinder (Set.Icc t₀ t₁)
         (Metric.closedBall (center i) (r i))) intrinsicU Cresult hCresult
 
-theorem eParabolicC2HolderGaugeInEuclideanChartsOn_bounded_of_lower_jet_bounds_of_uniform_interpolation_of_finite
+theorem eParabolicC2HolderGaugeInEuclideanChartsOn_bounded_of_uniform_gauge_bounds
     {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)

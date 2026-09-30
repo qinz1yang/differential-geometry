@@ -16,7 +16,7 @@ def sphereDirection (v : sphere (0 : E) 1) (x : E) : sphere (0 : E) 1 := by
 
 theorem coe_sphereDirection (v : sphere (0 : E) 1) {x : E} (hx : x ≠ 0) :
     (sphereDirection v x : E) = ‖x‖⁻¹ • x := by
-  rw [sphereDirection, dif_neg hx]
+  rw [sphereDirection, dite_eq_right hx]
 
 theorem sphereDirection_pos_smul (v w : sphere (0 : E) 1) {r : ℝ} (hr : 0 < r) :
     sphereDirection v (r • (w : E)) = w := by

@@ -22,7 +22,7 @@ theorem normalizedCollarExtension_of_nonpos
     (V : ∀ p : M × ℝ, TangentSpace (I.prod 𝓘(ℝ, ℝ)) p) (ε : ℝ)
     {p : M × ℝ} (hp : p.2 ≤ 0) :
     normalizedCollarExtension V ε p = collarNormalization V ε 1 p :=
-  if_pos hp
+  ite_eq_left hp
 
 
 theorem normalizedCollarExtension_of_pos
@@ -30,7 +30,7 @@ theorem normalizedCollarExtension_of_pos
     {p : M × ℝ} (hp : 0 < p.2) :
     normalizedCollarExtension V ε p =
       collarExtension (fun x => (V (x, 0)).1) (fun x => (V (x, 0)).2) collarTransition p :=
-  if_neg hp.not_ge
+  ite_eq_right hp.not_ge
 
 theorem collarNormalization_eventuallyEq_collarExtension
     (V : ∀ p : M × ℝ, TangentSpace (I.prod 𝓘(ℝ, ℝ)) p) {ε : ℝ}

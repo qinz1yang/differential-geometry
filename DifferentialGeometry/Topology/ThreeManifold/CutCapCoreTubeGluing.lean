@@ -312,7 +312,7 @@ private theorem coe_transport_symm {v v' : ConnectedComponents E.capped.Carrier}
   cases h
   rfl
 
-private theorem coefficient_val_cutCapMarkedGraph (K : E.CutCapCollarFamily)
+private theorem coefficient_val_cutCapMarkedGraph (K : E.CutCapNeighborhoodFamily)
     (e : ULift.{u, 0} E.tubes.Index) (side : Bool) {v : ConnectedComponents E.capped.Carrier}
     (hv : (E.cutCapMarkedGraph K).endpoint e side = v)
     (y : ((E.cutCapMarkedGraph K).vertexManifold v).Carrier) :
@@ -322,7 +322,7 @@ private theorem coefficient_val_cutCapMarkedGraph (K : E.CutCapCollarFamily)
   cases hv
   rfl
 
-private theorem mem_range_flag_ball_cutCapMarkedGraph (K : E.CutCapCollarFamily)
+private theorem mem_range_flag_ball_cutCapMarkedGraph (K : E.CutCapNeighborhoodFamily)
     (e : ULift.{u, 0} E.tubes.Index) (side : Bool)
     (z : ((E.cutCapMarkedGraph K).vertexManifold
       ((E.cutCapMarkedGraph K).endpoint e side)).Carrier) :
@@ -338,7 +338,7 @@ private theorem mem_range_flag_ball_cutCapMarkedGraph (K : E.CutCapCollarFamily)
     exact Subtype.ext hx
 
 private theorem mem_range_flag_ball_comp_sphereToClosedCell_cutCapMarkedGraph
-    (K : E.CutCapCollarFamily) (e : ULift.{u, 0} E.tubes.Index) (side : Bool)
+    (K : E.CutCapNeighborhoodFamily) (e : ULift.{u, 0} E.tubes.Index) (side : Bool)
     (z : ((E.cutCapMarkedGraph K).vertexManifold
       ((E.cutCapMarkedGraph K).endpoint e side)).Carrier) :
     z ∈ range (((E.cutCapMarkedGraph K).flag e side).ball ∘ sphereToClosedCell) ↔
@@ -354,7 +354,7 @@ private theorem mem_range_flag_ball_comp_sphereToClosedCell_cutCapMarkedGraph
       simpa only [Function.comp_apply, E.cutCapMarkedGraph_flag_ball K e side
         (sphereToClosedCell x), Subtype.coe_mk] using hx)⟩
 
-private theorem mem_flagInterior_cutCapMarkedGraph (K : E.CutCapCollarFamily)
+private theorem mem_flagInterior_cutCapMarkedGraph (K : E.CutCapNeighborhoodFamily)
     (e : ULift.{u, 0} E.tubes.Index) (side : Bool)
     (z : ((E.cutCapMarkedGraph K).vertexManifold
       ((E.cutCapMarkedGraph K).endpoint e side)).Carrier) :
@@ -365,7 +365,7 @@ private theorem mem_flagInterior_cutCapMarkedGraph (K : E.CutCapCollarFamily)
     mem_range_flag_ball_comp_sphereToClosedCell_cutCapMarkedGraph E K e side z,
     SphericalCapping.openCapRange_eq_capRange_diff_capBoundaryRange E.capping (e.down, side)]
 
-theorem mem_removedBallSet_cutCapMarkedGraph_iff (K : E.CutCapCollarFamily)
+theorem mem_removedBallSet_cutCapMarkedGraph_iff (K : E.CutCapNeighborhoodFamily)
     (S : Finset (ULift.{u, 0} E.tubes.Index)) (v : (E.cutCapMarkedGraph K).Vertex)
     (y : ((E.cutCapMarkedGraph K).vertexManifold v).Carrier) :
     y ∈ (E.cutCapMarkedGraph K).removedBallSet S v ↔
@@ -405,7 +405,7 @@ theorem mem_removedBallSet_cutCapMarkedGraph_iff (K : E.CutCapCollarFamily)
     exact (MarkedManifoldGraph.mem_flagInterior_cast_iff
       (E.cutCapMarkedGraph K) (ULift.up a) side v hv' y).mpr hflag
 
-theorem mem_removedBallSet_singleton_cutCapMarkedGraph (K : E.CutCapCollarFamily)
+theorem mem_removedBallSet_singleton_cutCapMarkedGraph (K : E.CutCapNeighborhoodFamily)
     (e : (E.cutCapMarkedGraph K).Edge) (v : (E.cutCapMarkedGraph K).Vertex)
     (y : ((E.cutCapMarkedGraph K).vertexManifold v).Carrier) :
     y ∈ (E.cutCapMarkedGraph K).removedBallSet ({e} : Finset (E.cutCapMarkedGraph K).Edge) v ↔
@@ -427,7 +427,7 @@ theorem mem_removedBallSet_singleton_cutCapMarkedGraph (K : E.CutCapCollarFamily
     · exact (mem_removedBallSet_cutCapMarkedGraph_iff E K {e} v y).mpr
         ⟨e.down, true, Finset.mem_singleton_self _, h⟩
 
-theorem notMem_removedBallSet_univ_cutCapMarkedGraph (K : E.CutCapCollarFamily)
+theorem notMem_removedBallSet_univ_cutCapMarkedGraph (K : E.CutCapNeighborhoodFamily)
     (v : (E.cutCapMarkedGraph K).Vertex)
     (y : ((E.cutCapMarkedGraph K).vertexManifold v).Carrier) :
     y ∉ (E.cutCapMarkedGraph K).removedBallSet Finset.univ v ↔
@@ -477,7 +477,7 @@ namespace SphericalCutCapTransition
 
 variable {M Q : ClosedOrientedManifold.{u} 3} (E : SphericalCutCapTransition M Q)
 
-structure CutCapTubeGluingStep (K : E.CutCapCollarFamily)
+structure CutCapTubeGluingStep (K : E.CutCapNeighborhoodFamily)
     (Z : ConnectedClosedOrientedManifold.{u} 3) where
   step : ∀ (S : Finset (ULift.{u, 0} E.tubes.Index))
     (P : PartialRealization (E.cutCapMarkedGraph K) S) (e : ULift.{u, 0} E.tubes.Index),
@@ -487,34 +487,34 @@ structure CutCapTubeGluingStep (K : E.CutCapCollarFamily)
           (D.partialRealization).componentCorrespondence ∧
           (D.partialRealization).HasBlockPresentation Z
 
-theorem collaredQuotientStep_of_cutCapTubeGluingStep (K : E.CutCapCollarFamily)
+theorem collaredQuotientStep_of_cutCapTubeGluingStep (K : E.CutCapNeighborhoodFamily)
     {Z : ConnectedClosedOrientedManifold.{u} 3} (h : E.CutCapTubeGluingStep K Z) :
     CollaredQuotientStep (E.cutCapMarkedGraph K) Z :=
   ⟨fun S P e he hP => by
     obtain ⟨D, hcover, hcorr, hpres⟩ := h.step S P e he hP
     exact ⟨D.partialRealization, hcover, D.partialRealization_seamEquation, hcorr, hpres⟩⟩
 
-theorem hasRealizationStep_of_cutCapTubeGluingStep (K : E.CutCapCollarFamily)
+theorem hasRealizationStep_of_cutCapTubeGluingStep (K : E.CutCapNeighborhoodFamily)
     {Z : ConnectedClosedOrientedManifold.{u} 3} (h : E.CutCapTubeGluingStep K Z) :
     HasRealizationStep (E.cutCapMarkedGraph K) Z :=
   hasRealizationStep_of_collaredQuotientStep
     (E.collaredQuotientStep_of_cutCapTubeGluingStep K h)
 
-theorem blockStepLaw_of_cutCapTubeGluingStep (K : E.CutCapCollarFamily)
+theorem blockStepLaw_of_cutCapTubeGluingStep (K : E.CutCapNeighborhoodFamily)
     {Z : ConnectedClosedOrientedManifold.{u} 3} (h : E.CutCapTubeGluingStep K Z) :
     BlockStepLaw (E.cutCapMarkedGraph K) Z :=
   blockStepLaw_of_collaredQuotientStep_of_initial
     (E.exists_cutCapEmptyRealization_blockInvariant K Z)
     (E.collaredQuotientStep_of_cutCapTubeGluingStep K h)
 
-theorem nonempty_cutCapTubeGluingStep_of_isEmpty_index (K : E.CutCapCollarFamily)
+theorem nonempty_cutCapTubeGluingStep_of_isEmpty_index (K : E.CutCapNeighborhoodFamily)
     (Z : ConnectedClosedOrientedManifold.{u} 3) [IsEmpty E.tubes.Index] :
     Nonempty (E.CutCapTubeGluingStep K Z) := by
   have hEdge : IsEmpty (E.cutCapMarkedGraph K).Edge :=
     ⟨fun e => isEmptyElim (e : ULift.{u, 0} E.tubes.Index).down⟩
   exact ⟨⟨fun S P e _ _ => (hEdge.false e).elim⟩⟩
 
-theorem nonempty_cutCapMarkedGraph_edge_iff (K : E.CutCapCollarFamily) :
+theorem nonempty_cutCapMarkedGraph_edge_iff (K : E.CutCapNeighborhoodFamily) :
     Nonempty (E.cutCapMarkedGraph K).Edge ↔ Nonempty E.tubes.Index :=
   ⟨fun ⟨e⟩ => ⟨(e : ULift.{u, 0} E.tubes.Index).down⟩, fun ⟨a⟩ => ⟨ULift.up a⟩⟩
 

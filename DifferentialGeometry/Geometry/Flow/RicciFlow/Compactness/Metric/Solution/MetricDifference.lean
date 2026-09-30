@@ -55,7 +55,7 @@ theorem metricDerivNorm_le_add_of_ricci_difference_bound
     norm_num only [abs_neg, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
     exact mul_le_mul_of_nonneg_left (hbound r hr) (by norm_num)
   have hdiff := sqrt_normSq0S_sub_le_of_hasDerivWithinAt R x (q + 2) A B hderiv hB hs ht
-  have htriangle := _root_.Tensor0SBundle.sqrt_normSq0S_add_le R x (q + 2)
+  have htriangle := _root_.DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le R x (q + 2)
     (A t) (A s - A t)
   rw [add_sub_cancel] at htriangle
   exact htriangle.trans (add_le_add_right hdiff _)

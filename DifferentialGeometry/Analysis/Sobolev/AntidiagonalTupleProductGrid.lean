@@ -1,9 +1,10 @@
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Data.Fin.Tuple.NatAntidiagonal
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
+import Mathlib.Tactic.Ring
 
 open scoped BigOperators
 

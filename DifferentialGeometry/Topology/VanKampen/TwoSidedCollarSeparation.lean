@@ -152,8 +152,8 @@ theorem sideLabel_constant_on_overlap_path
     simpa only [pV, Path.source, Path.target] using hsign
   simp only [sideLabel]
   by_cases hx : 0 < h.time ⟨x.1, x.2.2⟩
-  · rw [if_pos hx, if_pos (hsign'.mp hx)]
-  · rw [if_neg hx, if_neg (fun hy => hx (hsign'.mpr hy))]
+  · rw [ite_eq_left hx, ite_eq_left (hsign'.mp hx)]
+  · rw [ite_eq_right hx, ite_eq_right (fun hy => hx (hsign'.mpr hy))]
 
 theorem not_isConnected_complement
     [CompactSpace S] [Nonempty S] [T2Space X] [LocallyPathConnectedSpace X]

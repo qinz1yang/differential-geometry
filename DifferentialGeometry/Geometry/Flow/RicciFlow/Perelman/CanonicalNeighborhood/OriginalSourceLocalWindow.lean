@@ -14,7 +14,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  PointedFlowData.t2TangentBundle RealizedFiniteHorn.metric_space
+  PointedFlowData.t2TangentBundle RealizedFiniteHorn.metricSpace
   RealizedFiniteHorn.charted RealizedFiniteHorn.smooth RealizedFiniteHorn.sigmaCompact
 
 theorem RealizedFiniteHorn.exists_rescaled_local_window_threshold

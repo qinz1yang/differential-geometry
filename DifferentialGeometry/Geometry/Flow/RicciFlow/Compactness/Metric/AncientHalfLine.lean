@@ -144,7 +144,7 @@ theorem exists_ancient_locally_uniform_subsequence
         metricDerivNorm (I := I) a (gSeq (φ k) t) (gInf t) gRef x < ε := by
     intro t ht K hK p ε hε
     have h := Classical.choose_spec (hAt t ht) K hK p ε hε
-    simpa only [gInf, dif_pos ht] using h
+    simpa only [gInf, dite_eq_left ht] using h
   have huniq : ∀ (n : ℕ) (t : ℝ), t ∈ Set.Icc (-(n : ℝ)) 0 → G n t = gInf t := by
     intro n t ht
     refine metric_ext_inner (I := I) (G n t) (gInf t) (fun x => ?_)

@@ -504,11 +504,11 @@ variable {d} {R : S.Realization} {earPos : γ → Plane} {earDraw : γ → ℝ �
 
 theorem splitPos_of_mem_ear {z : γ} (hz : z ∈ V(d.ear)) : d.splitPos R earPos z = earPos z := by
   classical
-  simp only [splitPos, if_pos hz]
+  simp only [splitPos, ite_eq_left hz]
 
 theorem splitPos_of_notMem_ear {z : γ} (hz : z ∉ V(d.ear)) : d.splitPos R earPos z = R.pos z := by
   classical
-  simp only [splitPos, if_neg hz]
+  simp only [splitPos, ite_eq_right hz]
 
 theorem EarCrosscut.splitPos_eq (hE : d.EarCrosscut R earPos earDraw) {z : γ}
     (hz : z ∈ V(S.skel)) : d.splitPos R earPos z = R.pos z := by
@@ -519,24 +519,24 @@ theorem EarCrosscut.splitPos_eq (hE : d.EarCrosscut R earPos earDraw) {z : γ}
 theorem splitDrawing_of_mem_ear {f : γ} (hf : f ∈ E(d.ear)) :
     d.splitDrawing R earDraw f = earDraw f := by
   classical
-  simp only [splitDrawing, if_pos hf]
+  simp only [splitDrawing, ite_eq_left hf]
 
 theorem splitDrawing_of_mem_skel {f : γ} (hf : f ∈ E(S.skel)) :
     d.splitDrawing R earDraw f = R.drawing f := by
   classical
-  simp only [splitDrawing, if_neg (Set.disjoint_left.1 d.disjoint_edgeSet hf)]
+  simp only [splitDrawing, ite_eq_right (Set.disjoint_left.1 d.disjoint_edgeSet hf)]
 
 theorem splitCell_face₁ : d.splitCell R earPos earDraw d.face₁ =
     inside (R.cellUnion d.cells₁ ∪ d.earSet earPos earDraw) := by
   classical
   unfold splitCell
-  rw [if_pos rfl]
+  rw [ite_eq_left rfl]
 
 theorem splitCell_face₂ : d.splitCell R earPos earDraw d.face₂ =
     inside (R.cellUnion d.cells₂ ∪ d.earSet earPos earDraw) := by
   classical
   unfold splitCell
-  rw [if_neg (Ne.symm d.face_ne), if_pos rfl]
+  rw [ite_eq_right (Ne.symm d.face_ne), ite_eq_left rfl]
 
 theorem splitCell_of_mem_cells {σ : γ} (hσ : σ ∈ S.cells) :
     d.splitCell R earPos earDraw σ = R.cell σ := by
@@ -549,7 +549,7 @@ theorem splitCell_of_mem_cells {σ : γ} (hσ : σ ∈ S.cells) :
     exacts [hnv d.source_mem_skel, hnv d.target_mem_skel]
   have h₄ : σ ∉ E(d.ear) := fun h => d.edge_fresh h hσ
   unfold splitCell
-  rw [if_neg h₁, if_neg h₂, if_neg h₃, if_neg h₄]
+  rw [ite_eq_right h₁, ite_eq_right h₂, ite_eq_right h₃, ite_eq_right h₄]
 
 theorem EarCrosscut.splitCell_earVertex (hE : d.EarCrosscut R earPos earDraw) {z : γ}
     (hz : z ∈ V(d.ear)) : d.splitCell R earPos earDraw z = {earPos z} := by
@@ -560,7 +560,7 @@ theorem EarCrosscut.splitCell_earVertex (hE : d.EarCrosscut R earPos earDraw) {z
   · have h₁ : z ≠ d.face₁ := by rintro rfl; exact d.face₁_notMem_ear (Or.inl hz)
     have h₂ : z ≠ d.face₂ := by rintro rfl; exact d.face₂_notMem_ear (Or.inl hz)
     unfold splitCell
-    rw [if_neg h₁, if_neg h₂, if_pos (show z ∈ V(d.ear) ∧ z ∉ V(S.skel) from ⟨hz, hz'⟩)]
+    rw [ite_eq_right h₁, ite_eq_right h₂, ite_eq_left (show z ∈ V(d.ear) ∧ z ∉ V(S.skel) from ⟨hz, hz'⟩)]
 
 theorem splitCell_earEdge {f : γ} (hf : f ∈ E(d.ear)) :
     d.splitCell R earPos earDraw f = Graph.edgeArc earDraw f \ earPos '' V(d.ear) := by
@@ -570,7 +570,7 @@ theorem splitCell_earEdge {f : γ} (hf : f ∈ E(d.ear)) :
   have h₃ : ¬ (f ∈ V(d.ear) ∧ f ∉ V(S.skel)) := fun h =>
     Set.disjoint_left.1 d.ear_disjoint h.1 hf
   unfold splitCell
-  rw [if_neg h₁, if_neg h₂, if_neg h₃, if_pos hf]
+  rw [ite_eq_right h₁, ite_eq_right h₂, ite_eq_right h₃, ite_eq_left hf]
 
 theorem edgeArc_splitDrawing_of_mem_skel {f : γ} (hf : f ∈ E(S.skel)) :
     Graph.edgeArc (d.splitDrawing R earDraw) f = Graph.edgeArc R.drawing f := by

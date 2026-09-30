@@ -58,7 +58,7 @@ theorem pullback_metric_cov_deriv_norm_eq
   unfold metricCovDerivNorm tensor02CovDerivNormWith
   rw [tensor02_cov_deriv_eq_cov_deriv_of_field, hT]
   congr 1
-  exact normSq0S_restrictOpen_apply (I := I) gRef U (q + 2) x _
+  exact DifferentialGeometry.Tensor0SBundle.normSq0S_restrictOpen_apply (I := I) gRef U (q + 2) x _
 
 theorem pullback_metric_cov_deriv_norm_le
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
@@ -237,7 +237,7 @@ theorem pullback_metric_deriv_norm_le
     change Real.sqrt (Tensor0SBundle.normSq0S (I := I) gU x 2
       (Tensor0SBundle.metricTensorField (I := I) hB x -
         Tensor0SBundle.metricTensorField (I := I) gU x)) ≤ ε
-    rw [hpb, href, normSq0S_restrictOpen_apply (I := I)]
+    rw [hpb, href, DifferentialGeometry.Tensor0SBundle.normSq0S_restrictOpen_apply (I := I)]
     exact D.c0_small (x : M) (hUK x.2)
   · have hq1 : 1 ≤ q := Nat.one_le_iff_ne_zero.mpr hq0
     have hzero : metricCovDeriv (I := I) gU gU q x = 0 := by

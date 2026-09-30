@@ -838,7 +838,7 @@ theorem exists_metric_subsequence_tendsto_uniformly_on_time_interval
     refine ⟨k0, fun k hk a ha x hx => ?_⟩
     have hgInf_t : gInf t = gAt t ht := by
       dsimp [gInf]
-      exact dif_pos ht
+      exact dite_eq_left ht
     rw [hgInf_t]
     exact hk0 k hk a ha x hx
   have hInfLip :

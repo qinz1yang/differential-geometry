@@ -20,7 +20,7 @@ theorem boundaryComplex_space_of_isPLCellAttachmentWith_zero [FiniteDimensional 
     {L N' : Geometry.SimplicialComplex ℝ E} [Finite L.faces] [Finite N'.faces]
     (hL : IsCombinatorialManifoldWithBoundary 3 L)
     (hN' : IsCombinatorialManifoldWithBoundary 3 N') {C : Set E} {g : (Fin 4 → ℝ) → E}
-    (hatt : IsPLCellAttachmentWith 3 (stdSimplex ℝ (Fin 4)) ∅ L C N'.space g) :
+    (hatt : IsPLCellAttachmentWith 3 (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) ∅ L C N'.space g) :
     (boundaryComplex 3 N').space = (boundaryComplex 3 L).space ∪ g '' stdSimplexBoundary 3 := by
   obtain ⟨hP, hBP, hg, hgB, φ, hφ, hφg, hφbd, e, helow, hecell⟩ := hatt
   have hN : N'.space = L.space ∪ C := by

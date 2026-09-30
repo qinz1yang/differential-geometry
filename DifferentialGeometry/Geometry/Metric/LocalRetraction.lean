@@ -45,6 +45,7 @@ theorem exists_manifold_local_leftInverse {e : M → F}
     rw [(he.mdifferentiable (by simp) p).mfderiv]
     simp only [writtenInExtChartAt, mfld_simps, f, c, fderivWithin_univ,
       ModelWithCorners.range_eq_univ]
+    rfl
   obtain ⟨r₀, U₀, V₀, hU₀, hpU₀, hV₀, hpV₀, hVs, hr₀, hleft, hbase⟩ :=
     DifferentialGeometry.Analysis.exists_smooth_local_leftInverse
       (isOpen_extChartAt_target (I := I) p) hc hcp (hd ▸ hi)

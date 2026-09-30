@@ -311,9 +311,9 @@ theorem modelRadialVolume_cross_of_ricciBoundedBelowOn
         by_cases hK : 0 < K
         · have hbconj : b.1 < Real.pi / Real.sqrt K :=
             hbR'.trans_lt (hconj hK)
-          simp only [modelCut, if_pos hK]
+          simp only [modelCut, ite_eq_left hK]
           linarith
-        · simp only [modelCut, if_neg hK]
+        · simp only [modelCut, ite_eq_right hK]
           linarith
       let bcut : ℝ :=
         min (c * b.1) (min ((b.1 + R₀) / 2) modelCut)
@@ -335,7 +335,7 @@ theorem modelRadialVolume_cross_of_ricciBoundedBelowOn
         have hbconj : b.1 < Real.pi / Real.sqrt K :=
           hbR'.trans_lt (hconj hK)
         have hmodelCut : modelCut < Real.pi / Real.sqrt K := by
-          simp only [modelCut, if_pos hK]
+          simp only [modelCut, ite_eq_left hK]
           linarith
         exact (ht.2.trans_le hbcut_modelCut).trans hmodelCut
       have haWin : a.1 ∈ Set.Ioo (0 : ℝ) bcut :=

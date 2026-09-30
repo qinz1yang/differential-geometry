@@ -134,7 +134,7 @@ theorem exists_lp_weak_deriv_of_weighted_identity
       ∀ φ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ S →
         (∫ x, U x * fderiv ℝ φ x v ∂μ) = -∫ x, DU x * φ x ∂μ := by
   let F := fun x => (ρ x)⁻¹ * R x - ((ρ x)⁻¹ * fderiv ℝ ρ x v) * U x
-  have hF : MemLp F p μ := (hR.mul hinv).sub (hU.mul hlog)
+  have hF : MemLp F p μ := (hinv.mul hR).sub (hlog.mul hU)
   refine ⟨hF.toLp F, hF.coeFn_toLp, ?_⟩
   intro φ hφ hφc hφs
   refine (integral_fderiv_eq_neg_of_weighted_identity hS v

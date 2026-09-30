@@ -85,7 +85,7 @@ theorem lCost_eq_branch_of_rm
   have hsrc : hloc.localInverse.source ∈ nhds z :=
     hloc.localInverse_open_source.mem_nhds hloc.localInverse_mem_source
   have hpre : hloc.localInverse ⁻¹' lInjDomain S T x tau ∈ nhds z := by
-    apply hloc.localInverse_contMDiffAt.continuousAt.preimage_mem_nhds
+    apply hloc.contMDiffAt_localInverse.continuousAt.preimage_mem_nhds
     rw [hinvZ]
     exact (lInj_isOpen_of_rm S hS T hg x hRm tau).mem_nhds hZ
   rcases (mem_lExpPosDom S T x Z tau).1 hdom with
@@ -374,7 +374,7 @@ theorem lCost_hasDeriv_of_rm
       (hasMFDerivAt_id tau)
   have hInv : MDifferentiableAt K J hloc.localInverse (q tau) := by
     simpa only [q, y, F, f] using
-      hloc.localInverse_mdifferentiableAt (by simp)
+      hloc.mdifferentiableAt_localInverse (by simp)
   have hpM : HasMFDerivAt (modelWithCornersSelf Real Real) J p tau
       ((mfderiv K J hloc.localInverse (q tau)).comp
         ((0 : TangentSpace (modelWithCornersSelf Real Real) tau →L[Real]

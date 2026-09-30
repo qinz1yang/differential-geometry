@@ -53,13 +53,13 @@ theorem plateauDiskDensity_of_smoothDiskAreaDensity (g : SmoothRiemannianMetric 
       ⟨v.2, v.1.isLipschitz⟩
   obtain ⟨vj, Uj, hdata, htend⟩ :=
     Geometry.exists_smooth_spanning_disks_smooth_extension_tendsto_area_of_density g h hv
-  refine ⟨fun j => smoothDisk_of_smoothDiskExtension (hdata j).1, ?_, ?_⟩
+  refine ⟨fun j => smoothDiskOfSmoothDiskExtension (hdata j).1, ?_, ?_⟩
   · intro j θ
-    have hmap : ⇑(smoothDisk_of_smoothDiskExtension (hdata j).1).map = vj j := rfl
+    have hmap : ⇑(smoothDiskOfSmoothDiskExtension (hdata j).1).map = vj j := rfl
     rw [hmap]
     exact (diskTrace_eq_iff (vj j) γ).mp (hdata j).2 θ
   · have hflat : (fun j => diskArea g
-        (⇑(smoothDisk_of_smoothDiskExtension (hdata j).1).map)) =
+        (⇑(smoothDiskOfSmoothDiskExtension (hdata j).1).map)) =
         fun j => Geometry.riemannianDiskArea g (vj j) := by
       funext j
       exact diskArea_eq_riemannianDiskArea g (vj j)

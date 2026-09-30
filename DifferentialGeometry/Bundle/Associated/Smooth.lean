@@ -256,19 +256,19 @@ theorem exists_contMDiffOn_associatedMap_of_equivariantOn
   have hf₀ : ∀ q g w, f₀ (q, ρ g w) = σ g (f₀ (q, w)) := by
     intro q g w
     by_cases hq : q ∈ s
-    · simpa only [f₀, if_pos hq] using hf q hq g w
-    · simp only [f₀, if_neg hq, map_zero]
+    · simpa only [f₀, ite_eq_left hq] using hf q hq g w
+    · simp only [f₀, ite_eq_right hq, map_zero]
   have hfc₀ : ContMDiffOn (IQ.prod 𝓘(k, W)) 𝓘(k, W') n f₀ (s ×ˢ univ) := by
     apply hfc.congr
     intro z hz
-    exact if_pos hz.1
+    exact ite_eq_left hz.1
   refine ⟨fun q x v => ρ.toRepresentation.associatedMap σ.toRepresentation
     (fun w => f₀ (q, w)) (hf₀ q) v, ?_, ?_⟩
   · exact ρ.contMDiffOn_totalSpace_associatedMap_of_atlas I IG n IQ σ hρ hσ
       A hA e₀ he₀ hx₀ hP f₀ hf₀ hfc₀
   · intro q hq x v p
     change f₀ (q, v p) = f (q, v p)
-    exact if_pos hq
+    exact ite_eq_left hq
 
 section Evaluation
 

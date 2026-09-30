@@ -23,7 +23,7 @@ theorem exists_centered_graphDualCell_caps_triangle
     let L := restrict K (section34CompactGraphSkeleton K)
     let C := fun i => (graphDualCell M L (v i)).space
     ∃ r : Fin 3 → (Fin 3 → ℝ) → E3, ∀ i,
-      IsPLHomeomorphOn (r i) (stdSimplex ℝ (Fin 3)) (C i ∩ C (i + 1)) ∧
+      IsPLHomeomorphOn (r i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (C i ∩ C (i + 1)) ∧
       r i (stdCenter 1) = ({v i, v (i + 1)} : Finset E3).centroid ℝ id ∧
       IsBridgeDisk (C i) (section34CompactSimplexRim s.1 ∩ C i)
         (convexHull ℝ (s.1 : Set E3) ∩ C i)
@@ -57,7 +57,7 @@ theorem exists_centered_graphDualCell_caps_triangle
   have hvL (i : Fin 3) : v i ∈ L.vertices := L.down_closed (heL i (i + 1) (hnext i))
     (by simp) (Finset.singleton_nonempty _)
   have hcoords (i : Fin 3) : ∃ r : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (C i ∩ C (i + 1)) ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (C i ∩ C (i + 1)) ∧
       r (stdCenter 1) = ({v i, v (i + 1)} : Finset E3).centroid ℝ id := by
     obtain ⟨r, hr, -, hrc⟩ := ht.exists_centered_splitDisk_parametrization
       (heL i (i + 1) (hnext i)) (Finset.card_pair (fun h => hnext i (hinj h)))

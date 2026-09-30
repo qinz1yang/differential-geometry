@@ -69,10 +69,11 @@ private theorem memLp_continuous_mul
     (hf : MemLp f p (volume.restrict Omega)) :
     MemLp (fun x => a x * f x) p (volume.restrict Omega) := by
   obtain ⟨C, hC⟩ := hcompact.exists_bound_of_continuousOn ha.continuousOn
-  apply hf.mul' (p := ⊤) (r := p)
-  refine memLp_top_of_bound ha.aestronglyMeasurable C ?_
-  filter_upwards [ae_restrict_mem hOmega] with x hx
-  exact hC x (subset_closure hx)
+  have ha_top : MemLp a ⊤ (volume.restrict Omega) := by
+    refine memLp_top_of_bound ha.aestronglyMeasurable C ?_
+    filter_upwards [ae_restrict_mem hOmega] with x hx
+    exact hC x (subset_closure hx)
+  exact ha_top.fun_mul hf
 
 theorem memLp_coefficientDerivativeField
     {Omega : Set E} (hOmega : MeasurableSet Omega)

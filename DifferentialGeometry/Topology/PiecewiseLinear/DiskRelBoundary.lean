@@ -66,30 +66,30 @@ theorem exists_pos_forall_exists_isPiecewiseAffineOn_stdCone_eqOn_boundary
     else f (σ k * (1 - u j), σ k * u j) with hwdef
   have hw0 : ∀ j, w 0 j = w 0 0 := by
     intro j
-    simp only [hwdef, if_pos rfl]
+    simp only [hwdef, ite_eq_left rfl]
   have hwhyp : ∀ j, w (N + 1) j = gHyp j := by
     intro j
     simp only [hwdef]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
     simp
   have hwleg₁ : ∀ k ≤ N + 1, w k 0 = gLeg₁ k := by
     intro k hk
     rcases Nat.eq_zero_or_pos k with rfl | hpos
-    · simp only [hwdef, if_pos rfl]
+    · simp only [hwdef, ite_eq_left rfl]
     · rcases eq_or_lt_of_le hk with rfl | hlt
       · rw [hwhyp 0, hcorner₁]
       · simp only [hwdef]
-        rw [if_neg (by omega), if_neg (by omega)]
+        rw [ite_eq_right (by omega), ite_eq_right (by omega)]
         simp
   have hwleg₂ : ∀ k ≤ N + 1, w k (M + 1) = gLeg₂ k := by
     intro k hk
     rcases Nat.eq_zero_or_pos k with rfl | hpos
-    · simp only [hwdef, if_pos rfl]
+    · simp only [hwdef, ite_eq_left rfl]
       exact hcorner₀
     · rcases eq_or_lt_of_le hk with rfl | hlt
       · rw [hwhyp (M + 1), hcorner₂]
       · simp only [hwdef]
-        rw [if_neg (by omega), if_neg (by omega), if_neg (by omega)]
+        rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega)]
         simp
   have hwclose : ∀ a ≤ N + 1, ∀ b ≤ M + 1,
       dist (w a b) (f (σ a * (1 - u b), σ a * u b)) ≤ ε := by
@@ -99,7 +99,7 @@ theorem exists_pos_forall_exists_isPiecewiseAffineOn_stdCone_eqOn_boundary
         rw [hσ0]
         norm_num
       rw [hpt]
-      simp only [hwdef, if_pos rfl]
+      simp only [hwdef, ite_eq_left rfl]
       exact hcl₁ 0 (by omega)
     · rcases eq_or_lt_of_le ha with rfl | hlt
       · have hpt : ((σ (N + 1) * (1 - u b), σ (N + 1) * u b) : ℝ × ℝ) = (1 - u b, u b) := by
@@ -121,7 +121,7 @@ theorem exists_pos_forall_exists_isPiecewiseAffineOn_stdCone_eqOn_boundary
             exact hcl₂ a ha
           · have hval : w a b = f (σ a * (1 - u b), σ a * u b) := by
               simp only [hwdef]
-              rw [if_neg (by omega), if_neg (by omega), if_neg (by omega), if_neg (by omega)]
+              rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega)]
             rw [hval, dist_self]
             exact hε.le
   obtain ⟨Ψ, hPA, -, hray₁, hray₂, houter, himg⟩ :=

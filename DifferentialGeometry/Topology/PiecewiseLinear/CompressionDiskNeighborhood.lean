@@ -15,32 +15,32 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem mem_closure_sdiff_image_stdSimplexBoundary {q : (Fin 3 → ℝ) → E3} {D : Set E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) {x : E3}
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {x : E3}
     (hx : x ∈ q '' stdSimplexBoundary 2) : x ∈ closure (D \ q '' stdSimplexBoundary 2) := by
   obtain ⟨b, hb, rfl⟩ := hx
   set c : Fin 3 → ℝ := fun _ => 1 / 3 with hcdef
-  have hc : c ∈ stdSimplex ℝ (Fin 3) := by
+  have hc : c ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := by
     refine ⟨fun _ => by norm_num [hcdef], ?_⟩
     simp [hcdef]
-  have hbS : b ∈ stdSimplex ℝ (Fin 3) := hb.1
+  have hbS : b ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := hb.1
   have hseg : ∀ t : ℝ, 0 < t → t ≤ 1 →
-      (1 - t) • b + t • c ∈ stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2 := by
+      (1 - t) • b + t • c ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2 := by
     intro t ht ht1
-    refine ⟨(convex_stdSimplex ℝ (Fin 3)) hbS hc (by linarith) ht.le (by ring), ?_⟩
+    refine ⟨(Convexity.StdSimplex.convex_coordinateSet ℝ (Fin 3)) hbS hc (by linarith) ht.le (by ring), ?_⟩
     rintro ⟨-, i, hi⟩
     have hbi : 0 ≤ b i := hbS.1 i
     have h1 : ((1 - t) • b + t • c) i = (1 - t) * b i + t * (1 / 3) := by
       simp [hcdef]
     rw [h1] at hi
     nlinarith
-  have hcont : ContinuousWithinAt q (stdSimplex ℝ (Fin 3)) b :=
+  have hcont : ContinuousWithinAt q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) b :=
     hq.isPiecewiseAffineOn.continuousOn b hbS
   have hline : Filter.Tendsto (fun t : ℝ => (1 - t) • b + t • c) (𝓝[>] 0) (𝓝 b) := by
     have hc' : Continuous (fun t : ℝ => (1 - t) • b + t • c) := by fun_prop
     have h0 : (fun t : ℝ => (1 - t) • b + t • c) 0 = b := by simp
     simpa [h0] using (hc'.tendsto 0).mono_left nhdsWithin_le_nhds
   have hline' : Filter.Tendsto (fun t : ℝ => (1 - t) • b + t • c) (𝓝[>] 0)
-      (𝓝[stdSimplex ℝ (Fin 3)] b) := by
+      (𝓝[Convexity.StdSimplex.coordinateSet ℝ (Fin 3)] b) := by
     refine tendsto_nhdsWithin_iff.mpr ⟨hline, ?_⟩
     filter_upwards [Ioc_mem_nhdsGT (zero_lt_one' ℝ)] with t ht
     exact (hseg t ht.1 ht.2).1
@@ -55,7 +55,7 @@ theorem mem_closure_sdiff_image_stdSimplexBoundary {q : (Fin 3 → ℝ) → E3} 
 
 theorem exists_isOpen_inter_inter_subset_of_hasPLCrossingAt {P S D : Set E3}
     (hP : IsPLBall 3 P) {q : (Fin 3 → ℝ) → E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDP : D ⊆ P)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDP : D ⊆ P)
     (hDfr : D ∩ frontier P = q '' stdSimplexBoundary 2) (hDS : D ⊆ S)
     (hint : ∀ x ∈ D \ q '' stdSimplexBoundary 2, D ∈ 𝓝[S] x)
     (hcross : ∀ x ∈ q '' stdSimplexBoundary 2, HasPLCrossingAt (frontier P) S x)
@@ -67,7 +67,7 @@ theorem exists_isOpen_inter_inter_subset_of_hasPLCrossingAt {P S D : Set E3}
   have hPc : IsClosed P := hP.isPolyhedron.isClosed
   have hDc : IsClosed D := (IsPLBall.isPolyhedron ⟨q, hq⟩).isClosed
   have hPreg : closure (interior P) = P := hP.closure_interior_of_finrank (by simp)
-  have hDimg : q '' stdSimplex ℝ (Fin 3) = D := hq.image_eq
+  have hDimg : q '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3) = D := hq.image_eq
   have hlocal : ∀ x ∈ D, ∃ V : Set E3, IsOpen V ∧ x ∈ V ∧ V ∩ S ∩ P ⊆ D := by
     intro x hxD
     by_cases hxJ : x ∈ q '' stdSimplexBoundary 2
@@ -195,7 +195,7 @@ theorem exists_isOpen_inter_inter_subset_of_hasPLCrossingAt {P S D : Set E3}
 
 theorem exists_isOpen_inter_inter_subset_of_isPLSphere {P S D Sph O : Set E3}
     (hP : IsPLBall 3 P) {q : (Fin 3 → ℝ) → E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDP : D ⊆ P)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDP : D ⊆ P)
     (hDfr : D ∩ frontier P = q '' stdSimplexBoundary 2) (hSph : IsPLSphere 2 Sph) (hDSph : D ⊆ Sph)
     (hO : IsOpen O) (hDO : D ⊆ O) (hOS : O ∩ S = O ∩ Sph)
     (hcross : ∀ x ∈ q '' stdSimplexBoundary 2, HasPLCrossingAt (frontier P) S x) :
@@ -243,7 +243,7 @@ theorem exists_isOpen_inter_inter_subset_of_isPLSphere {P S D Sph O : Set E3}
     let g : EuclideanSpace ℝ (Fin 2) → E3 := fun v =>
       if h : v ∈ U then ((e.symm ⟨v, h⟩ : ↥(W ∩ Sph)) : E3) else x
     have hgU : ∀ v (h : v ∈ U), g v = ((e.symm ⟨v, h⟩ : ↥(W ∩ Sph)) : E3) := fun v h => by
-      simp only [g, dif_pos h]
+      simp only [g, dite_eq_left h]
     refine ⟨c, r, g, hr, ?_, ?_, ?_, ?_⟩
     · rw [continuousOn_iff_continuous_domRestrict]
       have hsub : ball c r ⊆ U := fun v hv => (hball hv).1

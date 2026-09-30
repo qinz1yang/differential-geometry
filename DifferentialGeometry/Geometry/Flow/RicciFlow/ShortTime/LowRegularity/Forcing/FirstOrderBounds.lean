@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.JetDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Coefficients.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ComponentL2.UniformFromRaw
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.ChartComponentIdentity
@@ -18,6 +19,8 @@ open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundl
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
 
 namespace DifferentialGeometry.PDE.RicciFlow
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 
 
 open DifferentialGeometry.Integral.DivergenceTheorem
@@ -259,7 +262,7 @@ theorem rhs_raw_lip {ι : Type*}
     rw [hA_def]
     exact Finset.sum_nonneg fun _ _ => Real.sqrt_nonneg _
   have hjet' := hjet α (gSeq k₁) (gSeq k₂) hb
-  have hjetAll : chartMetricJet2DiffSup (I := I) (M := M)
+  have hjetAll : DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
       (gSeq k₁) (gSeq k₂) α (extChartAt I α b) ≤ CjetAll * A := by
     rw [hA_def]
     exact hjet'.trans (mul_le_mul_of_nonneg_right (hCjet_le α hα)
@@ -270,7 +273,7 @@ theorem rhs_raw_lip {ι : Type*}
           (extChartAt I α b) -
         chartDeTurckRHSComp (I := I) gBase (gSeq k₂) α (Jdx 0) (Jdx 1)
           (extChartAt I α b)|
-        ≤ D.rhsLip * chartMetricJet2DiffSup (I := I) (M := M)
+        ≤ D.rhsLip * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
             (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
       hD.rhs_lipschitz α hα k₁ k₂ b hb (Jdx 0) (Jdx 1)
     _ ≤ D.rhsLip * (CjetAll * A) :=
@@ -389,7 +392,7 @@ theorem rhs_cov_lip {ι : Type*}
     dsimp [y]
     exact ⟨extChartAt I α b, ⟨b, hb, rfl⟩, rfl⟩
   have hjet' := hjet α (gSeq k₁) (gSeq k₂) hb
-  have hjetAll : metricJet3DiffSup (I := I) (M := M)
+  have hjetAll : DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
       (gSeq k₁) (gSeq k₂) α (extChartAt I α b) ≤ CjetAll * A := by
     rw [hA_def]
     exact hjet'.trans (mul_le_mul_of_nonneg_right (hCjet_le α hα)

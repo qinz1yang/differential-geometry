@@ -41,9 +41,9 @@ theorem quotient_step_selected_seam (p : SelfAttachment.directSeamDomain) :
       Quot.mk _ (H (seamChart N endpoint chart hdisj s (a s) p)) := by
   by_cases ht : 0 ≤ p.val.2
   · rw [allSeamChart_nonneg N endpoint chart hdisj a s p ht, hJ]
-    rw [seamChart, dif_pos ht]
+    rw [seamChart, dite_eq_left ht]
   · rw [allSeamChart_neg N endpoint chart hdisj a s p (lt_of_not_ge ht), hJ]
-    rw [seamChart, dif_neg ht]
+    rw [seamChart, dite_eq_right ht]
 
 include hJ in
 theorem quotient_step_surviving_seam

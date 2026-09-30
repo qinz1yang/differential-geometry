@@ -56,6 +56,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   [hT2 : T2Space Q] [hCompact : CompactSpace Q]
   [hBoundary : I.Boundaryless] [hSigma : SigmaCompactSpace Q]
 
+omit hSigma in
 theorem rfs_plateau_upper_comparison_of_minimizingDiskCompetitor_of_openIsotopy
     (c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E) [CompactSpace c.Q]
     {D : RealTimeInterval} {a b : ℝ} (W : SmoothMetricWindow (I := I) (M := Q) D a b)
@@ -118,9 +119,9 @@ theorem rfs_plateau_upper_comparison_of_minimizingDiskCompetitor_of_openIsotopy
         diskExtension (u.metricVariationDensity W.family.metric (Icc a b) t₀) z := by
     refine setIntegral_congr_fun measurableSet_closedBall (fun z hz => ?_)
     rw [show diskExtension (u.metricVariationDensity W.family.metric T t₀) z =
-        u.metricVariationDensity W.family.metric T t₀ ⟨z, hz⟩ from dif_pos hz,
+        u.metricVariationDensity W.family.metric T t₀ ⟨z, hz⟩ from dite_eq_left hz,
       show diskExtension (u.metricVariationDensity W.family.metric (Icc a b) t₀) z =
-        u.metricVariationDensity W.family.metric (Icc a b) t₀ ⟨z, hz⟩ from dif_pos hz]
+        u.metricVariationDensity W.family.metric (Icc a b) t₀ ⟨z, hz⟩ from dite_eq_left hz]
     simp only [SmoothDisk.metricVariationDensity]
     split_ifs with hpos
     · rw [derivWithin_of_mem_nhds (hTopen.mem_nhds ht₀T),

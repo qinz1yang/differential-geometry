@@ -41,40 +41,18 @@ theorem range_interiorLeft_disjoint_range_interiorRight :
       (Set.range (interiorRight c.toBallChart d.toBallChart aD)) := by
   rw [Set.disjoint_left]
   rintro x ⟨u, rfl⟩ ⟨v, hv⟩
-  obtain ⟨z, hz, -⟩ := (inl_eq_inr_iff c.toBallChart d.toBallChart aD.toHomeomorph
-    (c.toBallChart.interiorToPunctured u) (d.toBallChart.interiorToPunctured v)).mp hv.symm
-  have h1 : ((c.toBallChart.boundaryMap z : c.toBallChart.Punctured) : M.Carrier) =
-      ((c.toBallChart.interiorToPunctured u : c.toBallChart.Punctured) : M.Carrier) :=
-    congrArg Subtype.val hz
-  have hnot : ((c.toBallChart.interiorToPunctured u : c.toBallChart.Punctured) : M.Carrier) ∉
-      c.toBallChart.chart '' Metric.closedBall 0 1 := by
-    rw [← BallChart.mem_interior]
-    exact u.2
-  have hmem : ((c.toBallChart.boundaryMap z : c.toBallChart.Punctured) : M.Carrier) ∈
-      c.toBallChart.chart '' Metric.closedBall 0 1 :=
-    ⟨(z : csModel), by simp [Metric.mem_closedBall], rfl⟩
-  exact hnot (h1 ▸ hmem)
+  exact interiorLeft_ne_interiorRight c.toBallChart d.toBallChart aD u v hv.symm
 
 theorem mem_seamShell_of_norm_one (z : csSphere) :
-    (z : csModel) ∈ SeamShell := by
-  rw [SeamShell]
-  have h := norm_coe_sphere z
-  constructor <;> linarith
+    (z : csModel) ∈ SeamShell :=
+  ConnectedSumQuotient.mem_SeamShell_of_norm_one z
 
 omit [ChartedSpace csModel (ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph)]
   [IsManifold (𝓡 3) ∞ (ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph)] in
 theorem seamMap_of_unit (z : csSphere) :
     ∃ w : Seam, seamMap c.toBallChart d.toBallChart aD.toHomeomorph w =
-      inl c.toBallChart d.toBallChart aD.toHomeomorph (c.toBallChart.boundaryMap z) := by
-  refine ⟨⟨(z : csModel), mem_seamShell_of_norm_one z⟩, ?_⟩
-  have hnorm : ‖((⟨(z : csModel), mem_seamShell_of_norm_one z⟩ : Seam) : csModel)‖ = 1 :=
-    norm_coe_sphere z
-  rw [seamMap_of_one_le c.toBallChart d.toBallChart aD.toHomeomorph _ (le_of_eq hnorm.symm),
-    seamLeft_eq_of_one_le c.toBallChart d.toBallChart aD.toHomeomorph _ (le_of_eq hnorm.symm)]
-  refine congrArg (inl c.toBallChart d.toBallChart aD.toHomeomorph) (Subtype.ext ?_)
-  rw [radialMap_seamDir_coe c.toBallChart
-      (⟨(z : csModel), mem_seamShell_of_norm_one z⟩ : Seam) (le_of_eq hnorm.symm),
-    BallChart.boundaryMap_val]
+      inl c.toBallChart d.toBallChart aD.toHomeomorph (c.toBallChart.boundaryMap z) :=
+  ConnectedSumQuotient.seamMap_of_unit c.toBallChart d.toBallChart aD z
 
 omit [ChartedSpace csModel (ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph)]
   [IsManifold (𝓡 3) ∞ (ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph)] in
@@ -85,16 +63,9 @@ theorem range_interior_left_right_union_seamChartX_source :
   rw [seamChartX_source]
   ext x
   simp only [mem_union, mem_range, mem_univ, iff_true]
-  obtain ⟨y, rfl⟩ | ⟨y, rfl⟩ := jointly_surjective c.toBallChart d.toBallChart aD.toHomeomorph x
-  · obtain ⟨z, rfl⟩ | ⟨z, rfl⟩ := c.toBallChart.interior_boundary_cover y
-    · exact Or.inl (Or.inl ⟨z, rfl⟩)
-    · exact Or.inr (seamMap_of_unit c d aD z)
-  · obtain ⟨z, rfl⟩ | ⟨z, rfl⟩ := d.toBallChart.interior_boundary_cover y
-    · exact Or.inl (Or.inr ⟨z, rfl⟩)
-    · refine Or.inr ?_
-      obtain ⟨w, hw⟩ := seamMap_of_unit c d aD (aD.symm z)
-      refine ⟨w, ?_⟩
-      rw [hw, boundary_eq c.toBallChart d.toBallChart aD.toHomeomorph (aD.symm z)]
-      simp
+  rcases interior_seam_cover c.toBallChart d.toBallChart aD x with h | h | h
+  · exact Or.inl (Or.inl h)
+  · exact Or.inl (Or.inr h)
+  · exact Or.inr h
 
 end OrientationAssembly

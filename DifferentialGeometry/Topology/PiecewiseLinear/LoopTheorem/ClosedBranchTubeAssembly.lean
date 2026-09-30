@@ -35,8 +35,8 @@ theorem exists_isSourceTrackedBranchTube_of_markedCells {M : Type u} [Topologica
     (hTT : ∀ k i j, i ≠ j → T k i ∩ T k j = {y₀ k, y₁ k})
     (hsep : ∀ k, ∀ i : Fin 4, ∀ U ⊆ (K k).space \ (T k i ∪ T k (i + 2)), IsPreconnected U →
       (U ∩ T k (i + 1)).Nonempty → (U ∩ T k (i + 3)).Nonempty → False)
-    (hq₀ : ∀ k, IsPLHomeomorphOn (q₀ k) (stdSimplex ℝ (Fin 3)) (D₀ k))
-    (hq₁ : ∀ k, IsPLHomeomorphOn (q₁ k) (stdSimplex ℝ (Fin 3)) (D₁ k))
+    (hq₀ : ∀ k, IsPLHomeomorphOn (q₀ k) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₀ k))
+    (hq₁ : ∀ k, IsPLHomeomorphOn (q₁ k) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₁ k))
     (hD₀S : ∀ k, D₀ k ⊆ (K k).space) (hD₁S : ∀ k, D₁ k ⊆ (K k).space)
     (hdis : ∀ k, Disjoint (D₀ k) (D₁ k))
     (hb₀ : ∀ k i, q₀ k '' stdSimplexBoundary 2 ∩ T k i = {γ k i (1 / 4)})

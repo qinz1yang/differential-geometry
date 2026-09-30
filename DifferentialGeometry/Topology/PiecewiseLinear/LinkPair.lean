@@ -41,9 +41,9 @@ private theorem exists_geometricLink_disk_pair
     (hside : ∀ s ∈ K.faces, convexHull ℝ (s : Set E) ⊆ {x | ℓ x ≤ 0} ∨
       convexHull ℝ (s : Set E) ⊆ {x | 0 ≤ ℓ x}) :
     ∃ u v : (Fin 3 → ℝ) → E,
-      IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         ((SimplicialComplex.geometricLink K {p}).space ∩ {x | 0 ≤ ℓ x}) ∧
-      IsPLHomeomorphOn v (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn v (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         ((SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x ≤ 0}) ∧
       u '' stdSimplexBoundary 2 = (SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = 0} ∧
       v '' stdSimplexBoundary 2 = (SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = 0} :=

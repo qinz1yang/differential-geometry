@@ -101,7 +101,7 @@ theorem exists_contMDiff_endpoint_perturbation_eqOn
           ((isOpen_extChartAt_target (I := I) p).mem_nhds (htarget z.1 hz z.2 hs))
       apply (hi.comp z hcoordMD).congr_of_eventuallyEq
       filter_upwards [continuous_snd.continuousAt.eventually (hW.mem_nhds hs)] with y hy
-      exact if_pos hy
+      exact ite_eq_left hy
     · have hout : d / 2 < dist z.2 b := by
         have hn : delta ≤ dist z.2 b := le_of_not_gt hs
         have hdDelta : d ≤ delta := min_le_left _ _
@@ -129,7 +129,7 @@ theorem exists_contMDiff_endpoint_perturbation_eqOn
   · intro A hA
     have hone : cut b = 1 := cut.one_of_mem_closedBall (Metric.mem_closedBall_self cut.rIn_pos.le)
     dsimp only [alpha]
-    rw [if_pos hbW]
+    rw [ite_eq_left hbW]
     dsimp only [coord, p, q]
     rw [hone, one_smul, add_sub_cancel]
   · intro s
@@ -215,7 +215,7 @@ theorem exists_contMDiff_two_endpoint_perturbation
     rcases lt_trichotomy z.2 m with hs | hs | hs
     · apply (hleftAt z hz).congr_of_eventuallyEq
       filter_upwards [continuous_snd.continuousAt.eventually (Iio_mem_nhds hs)] with w hw
-      exact if_pos hw.le
+      exact ite_eq_left hw.le
     · have htime : z.2 ∈ Ioo c d := by rw [hs]; exact ⟨hcm, hmd⟩
       apply (hgamma.contMDiffAt.comp z contMDiffAt_snd).congr_of_eventuallyEq
       filter_upwards [hU.mem_nhds hz,
@@ -226,7 +226,7 @@ theorem exists_contMDiff_two_endpoint_perturbation
       · exact hrightEq w.1.2 hw.1.2 w.2 htw.2.le
     · apply (hrightAt z hz).congr_of_eventuallyEq
       filter_upwards [continuous_snd.continuousAt.eventually (Ioi_mem_nhds hs)] with w hw
-      exact if_neg (not_le.mpr hw)
+      exact ite_eq_right (not_le.mpr hw)
   refine ⟨V, W, hV, hW, hqV', hqW, alpha,
     fun z hz => (halphaAt z hz).contMDiffWithinAt, ?_, ?_, ?_, ?_⟩
   · intro A hA B hB s
@@ -235,12 +235,12 @@ theorem exists_contMDiff_two_endpoint_perturbation
   · intro A hA B hB
     have ham : a ≤ m := (hac.trans hcm).le
     dsimp only [alpha]
-    rw [if_pos ham]
+    rw [ite_eq_left ham]
     simpa only [gammaRev, neg_neg] using hleftEnd A hA
   · intro A hA B hB
     have hbm : ¬ b ≤ m := not_le.mpr (hmd.trans hdb)
     dsimp only [alpha]
-    rw [if_neg hbm]
+    rw [ite_eq_right hbm]
     exact hrightEnd B hB
   · intro s
     dsimp only [alpha]

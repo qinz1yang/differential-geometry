@@ -89,7 +89,7 @@ theorem arcParam_spec (hp : p ∈ f '' I) : arcParam f p ∈ I ∧ f (arcParam f
   have h : ∃ s, s ∈ I ∧ f s = p := by
     obtain ⟨s, hs, rfl⟩ := hp
     exact ⟨s, hs, rfl⟩
-  rw [arcParam, dif_pos h]
+  rw [arcParam, dite_eq_left h]
   exact h.choose_spec
 
 theorem arcParam_mem_I (hp : p ∈ f '' I) : arcParam f p ∈ I := (arcParam_spec hp).1

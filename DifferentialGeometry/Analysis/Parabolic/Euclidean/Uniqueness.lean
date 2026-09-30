@@ -98,19 +98,19 @@ private theorem periodic_eq_zero_of_homogeneous_parabolic_equation_inner
   · let w : ℝ → ℝ → E := fun x t => if t ∈ Icc s v then u x t else 0
     have hw (t : ℝ) (ht' : t ∈ Icc s v) : (fun x => w x t) = fun x => u x t := by
       funext x
-      exact if_pos ht'
+      exact ite_eq_left ht'
     have hwt (x t : ℝ) (ht' : t ∈ Ioo s v) :
         (fun r => w x r) =ᶠ[𝓝 t] u x := by
       filter_upwards [Icc_mem_nhds ht'.1 ht'.2] with r hr
-      exact if_pos hr
+      exact ite_eq_left hr
     have hwper (x t : ℝ) : w (x + 1) t = w x t := by
       by_cases ht' : t ∈ Icc s v
-      · simp only [w, if_pos ht', hper x t ht']
-      · simp only [w, if_neg ht']
+      · simp only [w, ite_eq_left ht', hper x t ht']
+      · simp only [w, ite_eq_right ht']
     have hwcont : ContinuousOn (Function.uncurry w) (Icc 0 1 ×ˢ Icc s v) := by
       apply hcont.congr
       intro p hp
-      exact if_pos hp.2
+      exact ite_eq_left hp.2
     have hwtime (x t : ℝ) (ht' : t ∈ Ioo s v) :
         HasDerivAt (w x) (a x t • deriv (deriv (fun y => u y t)) x) t :=
       (ht x t ht').congr_of_eventuallyEq (hwt x t ht')

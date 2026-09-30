@@ -6,6 +6,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffSq)
+
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -138,7 +141,7 @@ theorem exists_uniform_forward_uniqueness_cutoff_energy_bound_on_Ioo
       (metricTensorField (I := I) (g₂ t) x) ≤ Background :=
     htransfer x _ (hself (g₂ t) x).le
   have hBH (x : M) : metricDiffSq (I := I) (g₁ t) (g₂ t) x ≤ BH := by
-    have h := _root_.Tensor0SBundle.normSq0S_sub_le (I := I) (g₁ t) x 2
+    have h := _root_.DifferentialGeometry.Tensor0SBundle.normSq0S_sub_le (I := I) (g₁ t) x 2
       (metricTensorField (I := I) (g₁ t) x) (metricTensorField (I := I) (g₂ t) x)
     rw [hself] at h
     change normSq0S (I := I) (g₁ t) x 2

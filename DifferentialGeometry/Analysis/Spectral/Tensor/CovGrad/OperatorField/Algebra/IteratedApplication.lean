@@ -170,9 +170,9 @@ theorem iteratedCovGrad_operatorFieldComposition_eq (g : SmoothRiemannianMetric 
                 (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ i (k + 1)))
               (iteratedCovGrad g a b (k + 1) W) from by
         rw [Finset.sum_range_succ]
-        rw [if_neg (by omega : ¬ (i + 1 < i + 1)), operatorFieldComposition_zero_left, add_zero]
+        rw [ite_eq_right (by omega : ¬ (i + 1 < i + 1)), operatorFieldComposition_zero_left, add_zero]
         refine Finset.sum_congr rfl (fun k hk => ?_)
-        rw [if_pos (by simp only [Finset.mem_range] at hk; omega : k + 1 < i + 1)]]
+        rw [ite_eq_left (by simp only [Finset.mem_range] at hk; omega : k + 1 < i + 1)]]
       rw [Finset.sum_range_succ' (fun k =>
         ccOperatorFieldComp (I := I) (M := M) g a (b + k) (c + (i + 1))
           (covGrad (I := I) (M := M) g (b + k) (c + i)

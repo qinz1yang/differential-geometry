@@ -37,14 +37,14 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
 variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
   [IsManifold I3 ∞ W] [SigmaCompactSpace W]
 
-attribute [local instance] FiniteHorn.ambient_metric
+attribute [local instance] FiniteHorn.ambientMetric
 attribute [local instance] EndAngles.metric
 
 structure AmbientEndIsometry {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) : Prop where
   deep : ∃ i, (∀ x ∈ H.subend i, ∀ y ∈ H.subend i,
       dist x y = dist (H.inclusion x) (H.inclusion y)) ∧
     ∀ x ∈ H.subend i, dist (x : UniformSpace.Completion W) H.endpoint =
-      dist (H.inclusion x) H.ambient_end
+      dist (H.inclusion x) H.ambientEnd
 
 omit [SigmaCompactSpace W] in
 theorem finiteHorn_ambientEndIsometry {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) :
@@ -57,7 +57,7 @@ theorem finiteHorn_frontier_escape_of_ambientEndIsometry {g : SmoothRiemannianMe
     ∀ w : ℕ → W,
       Filter.Tendsto (fun i => (w i : UniformSpace.Completion W)) Filter.atTop
         (nhds H.endpoint) →
-      ∀ R : ℝ, 0 < R → ∀ᶠ i in Filter.atTop, ∀ z ∈ H.outer_frontier,
+      ∀ R : ℝ, 0 < R → ∀ᶠ i in Filter.atTop, ∀ z ∈ H.outerFrontier,
         R * dist (w i : UniformSpace.Completion W) H.endpoint < dist (H.inclusion (w i)) z := by
   obtain ⟨i₀, -, hdist⟩ := hiso.deep
   obtain ⟨δ, hδ, hfar⟩ := H.frontier_far
@@ -70,12 +70,12 @@ theorem finiteHorn_frontier_escape_of_ambientEndIsometry {g : SmoothRiemannianMe
     exact hw.eventually (Metric.ball_mem_nhds H.endpoint hpos)
   filter_upwards [hmem, hsmall] with i hi hsi
   intro z hz
-  have hzδ : δ ≤ dist z H.ambient_end := hfar z hz
+  have hzδ : δ ≤ dist z H.ambientEnd := hfar z hz
   have hri : dist (w i : UniformSpace.Completion W) H.endpoint =
-      dist (H.inclusion (w i)) H.ambient_end := hdist (w i) hi
+      dist (H.inclusion (w i)) H.ambientEnd := hdist (w i) hi
   have hkey : δ - dist (w i : UniformSpace.Completion W) H.endpoint ≤
       dist z (H.inclusion (w i)) := by
-    have h := abs_dist_sub_le z (H.inclusion (w i)) H.ambient_end
+    have h := abs_dist_sub_le z (H.inclusion (w i)) H.ambientEnd
     rw [← hri] at h
     have := (abs_le.mp h).2
     linarith
@@ -99,7 +99,7 @@ theorem finite_horn_end_rays {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g
 
 theorem finite_horn_ray_approximation {g : SmoothRiemannianMetric I3 W}
     (H : FiniteHorn g) (_endData : EndGeometry H)
-    (hdepth : hornEndGeometryDepth.{u} ≤ H.collar_depth) :
+    (hdepth : hornEndGeometryDepth.{u} ≤ H.collarDepth) :
     ∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
       ∀ lo hi : Fin 2 → ℝ, (∀ k, 0 < lo k) → (∀ k, lo k ≤ hi k) →
       hi 0 ≤ a.length → hi 1 ≤ b.length → (∀ k, hi k ≤ d) →
@@ -109,7 +109,7 @@ theorem finite_horn_ray_approximation {g : SmoothRiemannianMetric I3 W}
 
 theorem finite_horn_end_angle {g : SmoothRiemannianMetric I3 W}
     (H : FiniteHorn g) (_endData : EndGeometry H)
-    (hdepth : hornEndGeometryDepth.{u} ≤ H.collar_depth) : Nonempty (EndAngles H) :=
+    (hdepth : hornEndGeometryDepth.{u} ≤ H.collarDepth) : Nonempty (EndAngles H) :=
   (hornEndGeometryDepth_spec W g H hdepth).2.1
 
 
@@ -132,7 +132,7 @@ theorem finite_horn_cone_convergence {g : SmoothRiemannianMetric I3 W}
     (ray : EndRay H.endpoint) (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
     (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
     (hreal : ConeDistanceRealization H angles ray d)
-    (hdepth : hornEndGeometryDepth.{u} ≤ H.collar_depth) :
+    (hdepth : hornEndGeometryDepth.{u} ≤ H.collarDepth) :
     Nonempty (AnnularConvergence H angles ray d) :=
   nonempty_annularConvergence_of_coneAnnulusRealization H angles ray d hd hzero
     (coneAnnulusRealization_of_coneDistanceRealization
@@ -198,12 +198,12 @@ theorem tailIndex_spec (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) :
       (F : PartialDiffeomorph IC I3 Cylinder W ∞) (p : Sphere 2),
       F (p, 0) = x ∧
       Nonempty (GlobalNeckCrossSection F H.subend H.axial.point H.axial.length) ∧
-      Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth ⊆ F.source ∧
+      Set.univ ×ˢ Set.Icc (-H.collarDepth) H.collarDepth ⊆ F.source ∧
       ∃ hQ : 0 < metricScalarAt g x,
         Nonempty (MetricComparisonOn (fun _ => cyl.metric 0)
           (fun _ => scaleMetric (metricScalarAt g x) hQ g) F
-          (Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth)
-          {0} (⌈H.neck_precision⁻¹⌉₊) H.neck_precision) :=
+          (Set.univ ×ˢ Set.Icc (-H.collarDepth) H.collarDepth)
+          {0} (⌈H.neckPrecision⁻¹⌉₊) H.neckPrecision) :=
   Classical.choose_spec H.cylindrical_tail
 
 structure EndChart (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) (x : W)
@@ -213,12 +213,12 @@ structure EndChart (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) (x : W)
   p : Sphere 2
   center : F (p, 0) = x
   cross : GlobalNeckCrossSection F H.subend H.axial.point H.axial.length
-  source_sub : Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth ⊆ F.source
+  source_sub : Set.univ ×ˢ Set.Icc (-H.collarDepth) H.collarDepth ⊆ F.source
   Q_pos : 0 < metricScalarAt g x
   cmp : MetricComparisonOn (fun _ => cyl.metric 0)
     (fun _ => scaleMetric (metricScalarAt g x) Q_pos g) F
-    (Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth)
-    {0} (⌈H.neck_precision⁻¹⌉₊) H.neck_precision
+    (Set.univ ×ˢ Set.Icc (-H.collarDepth) H.collarDepth)
+    {0} (⌈H.neckPrecision⁻¹⌉₊) H.neckPrecision
 
 omit [SigmaCompactSpace W] in
 noncomputable def endChart (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) (x : W)
@@ -288,14 +288,14 @@ theorem endChart_section_diameter_le (g : SmoothRiemannianMetric I3 W) (H : Fini
   obtain ⟨q, hq⟩ := hy'
   rw [← hq]
   have hlevel : ∀ z : Sphere 2, (z, (0 : ℝ)) ∈
-      (Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth : Set Cylinder) := by
+      (Set.univ ×ˢ Set.Icc (-H.collarDepth) H.collarDepth : Set Cylinder) := by
     intro z
     exact ⟨Set.mem_univ _, by constructor <;> linarith [H.collar_depth_pos]⟩
   obtain ⟨gamma, hstart, hend, hsmooth, _hmem, hlen⟩ :=
     transverseShortcutConstant_spec W E.cyl (fun _ => E.cyl.metric 0)
       (fun _ => scaleMetric (metricScalarAt g x) E.Q_pos g) E.F
-      (Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth) {0}
-      (⌈H.neck_precision⁻¹⌉₊) H.neck_precision 0 E.cmp rfl H.neck_precision_pos.le
+      (Set.univ ×ˢ Set.Icc (-H.collarDepth) H.collarDepth) {0}
+      (⌈H.neckPrecision⁻¹⌉₊) H.neckPrecision 0 E.cmp rfl H.neck_precision_pos.le
       (by linarith [H.neck_precision_small]) (by simp) E.source_sub hlevel E.p q
   have hdist := (edistOf_le_metricPathELength
     (scaleMetric (metricScalarAt g x) E.Q_pos g) (by norm_num : (0 : ℝ) ≤ 1) hsmooth).trans hlen
@@ -320,14 +320,14 @@ theorem EndChart.section_diameter_le {g : SmoothRiemannianMetric I3 W} {H : Fini
   obtain ⟨q, hq⟩ := hyspan
   rw [← hq]
   have hcyl : ∀ z : Sphere 2, (z, (0 : ℝ)) ∈
-      (Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth : Set Cylinder) := by
+      (Set.univ ×ˢ Set.Icc (-H.collarDepth) H.collarDepth : Set Cylinder) := by
     intro z
     exact ⟨Set.mem_univ _, by constructor <;> linarith [H.collar_depth_pos]⟩
   obtain ⟨gam, hgam0, hgam1, hgsm, _hgm, hglen⟩ :=
     transverseShortcutConstant_spec W E.cyl (fun _ => E.cyl.metric 0)
       (fun _ => scaleMetric (metricScalarAt g x) E.Q_pos g) E.F
-      (Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth) {0}
-      (⌈H.neck_precision⁻¹⌉₊) H.neck_precision 0 E.cmp rfl H.neck_precision_pos.le
+      (Set.univ ×ˢ Set.Icc (-H.collarDepth) H.collarDepth) {0}
+      (⌈H.neckPrecision⁻¹⌉₊) H.neckPrecision 0 E.cmp rfl H.neck_precision_pos.le
       (by linarith [H.neck_precision_small]) (by simp) E.source_sub hcyl E.p q
   have hlength' := (edistOf_le_metricPathELength
     (scaleMetric (metricScalarAt g x) E.Q_pos g) (by norm_num : (0 : ℝ) ≤ 1) hgsm).trans hglen
@@ -381,7 +381,7 @@ theorem neckSectionBarrier_of_neckEndScale (g : SmoothRiemannianMetric I3 W) (H 
   · refine ⟨transverseShortcutConstant W, transverseShortcutConstant_pos W, ?_⟩
     filter_upwards [eventually_mem_tail g H ray d hd hzero] with i hgood
     have htube : neckTube g H ray d i = (endChart g H (ray.point (d i)) hgood).cross.tube := by
-      rw [neckTube, dif_pos hgood]
+      rw [neckTube, dite_eq_left hgood]
     intro x hx
     rw [htube] at hx
     exact endChart_section_diameter_le g H (ray.point (d i)) hgood x hx
@@ -398,7 +398,7 @@ theorem neckSectionBarrier_of_neckEndScale (g : SmoothRiemannianMetric I3 W) (H 
     obtain ⟨j0, hsub0, _hsup0, hdeep0⟩ := hj0
     obtain ⟨j1, hsub1, hsup1, _hdeep1⟩ := hj1
     set E := endChart g H (ray.point (d i)) hgood with hE
-    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dif_pos hgood]
+    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dite_eq_left hgood]
     have hdpos : 0 < d i := (hd i).1
     have hsmul : 1 ≤ metricScalarAt g (ray.point (d i)) * d i ^ 2 :=
       le_trans (le_max_left _ _) hbig
@@ -537,7 +537,7 @@ theorem neckSectionBarrier_of_neckEndScaleWindow (g : SmoothRiemannianMetric I3 
   · refine ⟨transverseShortcutConstant W, transverseShortcutConstant_pos W, ?_⟩
     filter_upwards [eventually_mem_tail g H ray d hd hzero] with i hgood
     have htube : neckTube g H ray d i = (endChart g H (ray.point (d i)) hgood).cross.tube := by
-      rw [neckTube, dif_pos hgood]
+      rw [neckTube, dite_eq_left hgood]
     intro x hx
     rw [htube] at hx
     exact endChart_section_diameter_le g H (ray.point (d i)) hgood x hx
@@ -550,7 +550,7 @@ theorem neckSectionBarrier_of_neckEndScaleWindow (g : SmoothRiemannianMetric I3 
     obtain ⟨j0, hsub0, hdeep0⟩ := hj0
     obtain ⟨j1, hsub1, hsup1⟩ := hj1
     set E := endChart g H (ray.point (d i)) hgood with hE
-    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dif_pos hgood]
+    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dite_eq_left hgood]
     have hdpos : 0 < d i := (hd i).1
     have hsmul : 1 ≤ metricScalarAt g (ray.point (d i)) * d i ^ 2 :=
       le_trans (le_max_left _ _) hbig
@@ -656,7 +656,7 @@ theorem neckSectionBarrier_of_hornRadialPosition (g : SmoothRiemannianMetric I3 
   · refine ⟨transverseShortcutConstant W, transverseShortcutConstant_pos W, ?_⟩
     filter_upwards [eventually_mem_tail g H ray d hd hzero] with i hgood
     have htube : neckTube g H ray d i = (endChart g H (ray.point (d i)) hgood).cross.tube := by
-      rw [neckTube, dif_pos hgood]
+      rw [neckTube, dite_eq_left hgood]
     intro x hx
     rw [htube] at hx
     exact endChart_section_diameter_le g H (ray.point (d i)) hgood x hx
@@ -665,7 +665,7 @@ theorem neckSectionBarrier_of_hornRadialPosition (g : SmoothRiemannianMetric I3 
       with i hR hgood
     obtain ⟨htip, houter⟩ := hR
     set E := endChart g H (ray.point (d i)) hgood with hE
-    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dif_pos hgood]
+    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dite_eq_left hgood]
     have hdpos : 0 < d i := (hd i).1
     intro c hc0 hc1
     have hc0' : dist (c ⟨0, by simp⟩ : UniformSpace.Completion W) H.endpoint <
@@ -722,7 +722,7 @@ theorem hornRadialPosition_of_neckEndScaleWindow (g : SmoothRiemannianMetric I3 
   · intro x hx
     obtain ⟨j1, hsub1, hsup1⟩ := hj1
     set E := endChart g H (ray.point (d i)) hgood with hE
-    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dif_pos hgood]
+    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dite_eq_left hgood]
     have hdpos : 0 < d i := (hd i).1
     have hsmul : 1 ≤ metricScalarAt g (ray.point (d i)) * d i ^ 2 :=
       le_trans (le_max_left _ _) hbig
@@ -884,7 +884,7 @@ theorem hornRadialPosition_of_hornRadialExitPosition (g : SmoothRiemannianMetric
     with i htip hex hgood
   have htube : neckTube g H ray d i =
       (endChart g H (ray.point (d i)) hgood).cross.tube := by
-    rw [neckTube, dif_pos hgood]
+    rw [neckTube, dite_eq_left hgood]
   refine ⟨?_, ?_⟩ <;> intro x hx
   · rw [htube]
     exact htip hgood (endChart g H (ray.point (d i)) hgood) x hx
@@ -946,7 +946,7 @@ theorem hornRadialPosition_of_hornRadialExitPositionAtEndChart
     hexit e he he10, eventually_mem_tail g H ray d hd hzero] with i htip hex hgood
   have htube : neckTube g H ray d i =
       (endChart g H (ray.point (d i)) hgood).cross.tube := by
-    rw [neckTube, dif_pos hgood]
+    rw [neckTube, dite_eq_left hgood]
   refine ⟨?_, ?_⟩ <;> intro x hx
   · rw [htube]
     exact htip hgood (endChart g H (ray.point (d i)) hgood) x hx
@@ -1374,7 +1374,7 @@ theorem cone_terminal_exclusion {delta : ℝ} (hd : 0 < delta)
 
 structure RealizedFiniteHorn (X : FlowSequence.{u}) where
   space : Type u
-  [metric_space : MetricSpace space]
+  [metricSpace : MetricSpace space]
   [charted : ChartedSpace ThreeSpace space]
   [smooth : IsManifold I3 ∞ space]
   [sigmaCompact : SigmaCompactSpace space]
@@ -1396,10 +1396,10 @@ structure RealizedFiniteHorn (X : FlowSequence.{u}) where
   coneRealization : ∀ (angles : EndAngles horn) (ray : EndRay horn.endpoint) (d : ℕ → ℝ),
     (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
     ConeDistanceRealization horn angles ray d
-  depth_ok : hornDepthThreshold.{u} ≤ horn.collar_depth
+  depth_ok : hornDepthThreshold.{u} ≤ horn.collarDepth
   curvatureUpper : ScaleCurvatureUpperBound horn horn.axial radii
 
-attribute [local instance] RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted
+attribute [local instance] RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted
   RealizedFiniteHorn.smooth RealizedFiniteHorn.sigmaCompact
 
 namespace RealizedFiniteHorn
@@ -1496,7 +1496,7 @@ theorem finite_horn_construction {kappa sigma : ℝ} {Phi : ℝ → ℝ}
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth := by
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth := by
   obtain ⟨epsStar, hepsStar, hbound⟩ := exists_boundedAtDistance.{u} hkappa
   refine ⟨1 / 20, 1, by norm_num, by norm_num, one_pos, ?_⟩
   intro alpha halpha halphaMax collar hcollar

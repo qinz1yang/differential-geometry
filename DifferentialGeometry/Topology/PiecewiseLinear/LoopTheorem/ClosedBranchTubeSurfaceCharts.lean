@@ -27,7 +27,7 @@ theorem exists_branchSurface_disks
           IsPLHomeomorphOn ψ V (L.space ∩ Ω) ∧
           (∀ p ∈ V, ψ p ∈ Subtype.val '' (D '' D.domain) ↔ p ∈ crossPlanes) ∧
           (∀ p ∈ V, ψ p ∈ Subtype.val '' hD.singularSet.branchCarrier c ↔ p.1 = 0) ∧
-          (∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (P i)) ∧
+          (∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P i)) ∧
           (∀ i, P i ⊆ L.space ∩ Subtype.val '' (D '' D.domain)) ∧
           (∀ x ∈ L.space ∩ W, ∀ i,
             x ∈ P i ↔ Function.invFunOn ψ V x ∈ crossHalfPlane i) ∧

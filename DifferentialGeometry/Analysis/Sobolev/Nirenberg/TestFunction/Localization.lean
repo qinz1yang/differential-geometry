@@ -19,7 +19,7 @@ private theorem memLp_mul_compact
     {f g : E → ℝ} (hf : Continuous f) (hf_cpt : HasCompactSupport f)
     (hg : MemLp g 2 (volume : Measure E)) :
     MemLp (fun x => f x * g x) 2 (volume : Measure E) := by
-  exact hg.mul' (r := 2) (hf.memLp_top_of_hasCompactSupport hf_cpt volume)
+  exact (hf.memLp_top_of_hasCompactSupport hf_cpt volume).fun_mul hg
 
 private noncomputable def nirenbergTestWitnessUniv
     {u : E → ℝ} (hu : MemW1pWitness 2 u Set.univ)

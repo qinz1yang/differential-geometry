@@ -459,7 +459,7 @@ theorem supportFun_core (d : (G.Child c).Carrier) (y : G.transition.ChildCore c)
     K.supportFun d (childCoreIntoParentFun y) = childCoreInclusionCoe y := by
   have h : ∃ y' : G.transition.ChildCore c,
       childCoreIntoParentFun y' = childCoreIntoParentFun y := ⟨y, rfl⟩
-  rw [supportFun, dif_pos h]
+  rw [supportFun, dite_eq_left h]
   exact congrArg childCoreInclusionCoe
     (childCoreIntoParentFun_injective (G := G) (c := c) (Classical.choose_spec h))
 
@@ -467,7 +467,7 @@ theorem supportFun_collar (d : (G.Child c).Carrier) (b : G.ChildBoundary c)
     (w : Sphere 2 × ↑(Icc (K.level b) 0)) :
     K.supportFun d (K.collar b w) = K.localCollapse b (K.collarParameter b w) := by
   by_cases h : ∃ y : G.transition.ChildCore c, childCoreIntoParentFun y = K.collar b w
-  · rw [supportFun, dif_pos h]
+  · rw [supportFun, dite_eq_left h]
     have hmem : K.collar b w ∈ Set.range (K.collar b) ∩
         Set.range (G.transition.childCoreIntoParent c) :=
       ⟨Set.mem_range_self w, ⟨Classical.choose h, Classical.choose_spec h⟩⟩
@@ -486,7 +486,7 @@ theorem supportFun_collar (d : (G.Child c).Carrier) (b : G.ChildBoundary c)
     exact (Classical.choose_spec h).trans (congrArg (K.collar b) hw)
   · have h' : ∃ (b' : G.ChildBoundary c) (w' : Sphere 2 × ↑(Icc (K.level b') 0)),
         K.collar b' w' = K.collar b w := ⟨b, w, rfl⟩
-    rw [supportFun, dif_neg h, dif_pos h']
+    rw [supportFun, dite_eq_right h, dite_eq_left h']
     exact K.collarChoiceValue_eq rfl
 
 theorem childCoreIntoParentFun_continuous :
@@ -559,12 +559,12 @@ noncomputable def wholeParentMapFun (d : (G.Child c).Carrier) (x : (G.Parent c).
 theorem wholeParentMapFun_of_mem (d : (G.Child c).Carrier) {x : (G.Parent c).Carrier}
     (hx : x ∈ K.support.region) :
     K.wholeParentMapFun d x = K.supportFun d x := by
-  rw [wholeParentMapFun, dif_pos hx]
+  rw [wholeParentMapFun, dite_eq_left hx]
 
 theorem wholeParentMapFun_of_notMem (d : (G.Child c).Carrier) {x : (G.Parent c).Carrier}
     (hx : x ∉ K.support.region) :
     K.wholeParentMapFun d x = K.tip (Classical.choose (K.exterior_exists x hx)) := by
-  rw [wholeParentMapFun, dif_neg hx]
+  rw [wholeParentMapFun, dite_eq_right hx]
 
 theorem wholeParentMapFun_continuousOn_region (d : (G.Child c).Carrier) :
     ContinuousOn (K.wholeParentMapFun d) K.support.region :=
@@ -693,37 +693,37 @@ theorem exists_unique_wholeParentMap :
         rwa [Equiv.apply_symm_apply]
       rw [hge, K.wholeParentMapFun_eq_tip_of_mem_exterior d he]
 
-def rfs_whole_parent_map : C((G.Parent c).Carrier, (G.Child c).Carrier) :=
+def canonicalWholeParentMap : C((G.Parent c).Carrier, (G.Child c).Carrier) :=
   Classical.choose K.exists_unique_wholeParentMap
 
-theorem wholeParentMap_spec : K.IsWholeParentMap K.rfs_whole_parent_map :=
+theorem wholeParentMap_spec : K.IsWholeParentMap K.canonicalWholeParentMap :=
   (Classical.choose_spec K.exists_unique_wholeParentMap).1
 
 theorem rfs_whole_parent_map_eq_wholeParentMap (d : (G.Child c).Carrier) :
-    K.rfs_whole_parent_map = K.wholeParentMap d :=
+    K.canonicalWholeParentMap = K.wholeParentMap d :=
   ((Classical.choose_spec K.exists_unique_wholeParentMap).2 _
     (K.wholeParentMap_isWholeParentMap d)).symm
 
 theorem rfs_whole_parent_map_childCore (x : G.transition.ChildCore c) :
-    K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+    K.canonicalWholeParentMap (G.transition.childCoreIntoParent c x) =
       G.transition.childCoreInclusion c x :=
   K.wholeParentMap_spec.1 x
 
 theorem rfs_whole_parent_map_collar (b : G.ChildBoundary c)
     (w : Sphere 2 × ↑(Icc (K.level b) 0)) :
-    K.rfs_whole_parent_map (K.collar b w) =
+    K.canonicalWholeParentMap (K.collar b w) =
       K.localCollapse b (K.collarParameter b w) :=
   K.wholeParentMap_spec.2.1 b w
 
 theorem rfs_whole_parent_map_eq_tip_of_mem_exterior (b : G.ChildBoundary c)
     {x : (G.Parent c).Carrier}
     (hx : x ∈ (K.exterior.exterior (K.boundaryLabel b)).region) :
-    K.rfs_whole_parent_map x = K.tip b :=
+    K.canonicalWholeParentMap x = K.tip b :=
   K.wholeParentMap_spec.2.2 b x hx
 
 theorem rfs_whole_parent_map_locallyConstant_of_notMem {x : (G.Parent c).Carrier}
     (hx : x ∉ K.support.region) :
-    ∃ U ∈ 𝓝 x, ∀ y ∈ U, K.rfs_whole_parent_map y = K.rfs_whole_parent_map x := by
+    ∃ U ∈ 𝓝 x, ∀ y ∈ U, K.canonicalWholeParentMap y = K.canonicalWholeParentMap x := by
   classical
   let : Fintype K.support.Boundary := K.support.finiteBoundary
   obtain ⟨b₀, hb₀⟩ := K.exterior_exists x hx
@@ -762,13 +762,13 @@ theorem rfs_whole_parent_map_curveLength_eq_zero_of_mapsTo_compl
     (hγ : ContinuousOn γ (Icc a b))
     (hmap : ∀ t ∈ Icc a b, γ t ∉ K.support.region) :
     riemannianCurveLength (H.event i).outputMetric
-      (fun t => (K.rfs_whole_parent_map (γ t)).1) a b = 0 := by
+      (fun t => (K.canonicalWholeParentMap (γ t)).1) a b = 0 := by
   by_cases hab : a ≤ b
   · refine riemannianCurveLength_eq_zero_of_apply_eq_const _ _
-      (q := (K.rfs_whole_parent_map (γ a)).1) ?_
+      (q := (K.canonicalWholeParentMap (γ a)).1) ?_
     let γ' : Icc a b → (G.Parent c).Carrier := fun t => γ t
     have hcont : Continuous γ' := hγ.domRestrict
-    have hlc : IsLocallyConstant (fun t : Icc a b => K.rfs_whole_parent_map (γ' t)) := by
+    have hlc : IsLocallyConstant (fun t : Icc a b => K.canonicalWholeParentMap (γ' t)) := by
       rw [IsLocallyConstant.iff_exists_open]
       intro t
       have ht : γ t ∉ K.support.region := hmap t t.2
@@ -780,18 +780,18 @@ theorem rfs_whole_parent_map_curveLength_eq_zero_of_mapsTo_compl
       isPreconnected_iff_preconnectedSpace.mp isPreconnected_Icc
     have hconst := congrFun (@IsLocallyConstant.eq_const (Icc a b)
       ((G.Child c).Carrier) inferInstance hpre
-      (fun t : Icc a b => K.rfs_whole_parent_map (γ' t)) hlc ⟨a, left_mem_Icc.mpr hab⟩)
+      (fun t : Icc a b => K.canonicalWholeParentMap (γ' t)) hlc ⟨a, left_mem_Icc.mpr hab⟩)
     intro t ht
     exact congrArg Subtype.val (hconst ⟨t, ht⟩)
   · exact riemannianCurveLength_eq_zero_of_apply_eq_const _ _
-      (q := (K.rfs_whole_parent_map (γ a)).1)
+      (q := (K.canonicalWholeParentMap (γ a)).1)
       (fun t ht => absurd (ht.1.trans ht.2) hab)
 
 theorem rfs_whole_parent_map_surjective_of_cover
     (hcov : Set.range (G.transition.childCoreInclusion c) ∪
       (⋃ b : G.ChildBoundary c, Set.range (fun w : Sphere 2 × ↑(Icc (K.level b) 0) =>
         K.localCollapse b (K.collarParameter b w))) = univ) :
-    Function.Surjective K.rfs_whole_parent_map := by
+    Function.Surjective K.canonicalWholeParentMap := by
   intro v
   have hv : v ∈ Set.range (G.transition.childCoreInclusion c) ∪
       (⋃ b : G.ChildBoundary c, Set.range (fun w : Sphere 2 × ↑(Icc (K.level b) 0) =>
@@ -826,10 +826,10 @@ theorem rfs_whole_parent_map_localTerminalLengthControl_of_lipschitz
     (hf : ∀ (y z : (G.Parent c).Carrier),
       ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
       ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
-      riemannianEDistOf (H.event i).outputMetric (K.rfs_whole_parent_map y).1
-        (K.rfs_whole_parent_map z).1 ≤
+      riemannianEDistOf (H.event i).outputMetric (K.canonicalWholeParentMap y).1
+        (K.canonicalWholeParentMap z).1 ≤
       riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩) :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map := by
+    K.LocalTerminalLengthControl K.canonicalWholeParentMap := by
   intro x hx
   refine ⟨{y : (G.Parent c).Carrier | y.1 ∈ (H.event i).incoming.terminalRegularRegion},
     ((H.event i).incoming.terminalRegularRegion_isOpen.preimage continuous_subtype_val).mem_nhds
@@ -849,19 +849,19 @@ theorem rfs_collapse_degree_of_local_inputs
     (hlip : ∀ (y z : (G.Parent c).Carrier),
       ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
       ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
-      riemannianEDistOf (H.event i).outputMetric (K.rfs_whole_parent_map y).1
-        (K.rfs_whole_parent_map z).1 ≤
+      riemannianEDistOf (H.event i).outputMetric (K.canonicalWholeParentMap y).1
+        (K.canonicalWholeParentMap z).1 ≤
       riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩)
     (hcov : Set.range (G.transition.childCoreInclusion c) ∪
       (⋃ b : G.ChildBoundary c, Set.range (fun w : Sphere 2 × ↑(Icc (K.level b) 0) =>
         K.localCollapse b (K.collarParameter b w))) = univ) :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
+    K.LocalTerminalLengthControl K.canonicalWholeParentMap ∧
     (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      K.rfs_whole_parent_map y = K.rfs_whole_parent_map x) ∧
+      K.canonicalWholeParentMap y = K.canonicalWholeParentMap x) ∧
     (∀ x : G.transition.ChildCore c,
-      K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+      K.canonicalWholeParentMap (G.transition.childCoreIntoParent c x) =
         G.transition.childCoreInclusion c x) ∧
-    Function.Surjective K.rfs_whole_parent_map :=
+    Function.Surjective K.canonicalWholeParentMap :=
   ⟨K.rfs_whole_parent_map_localTerminalLengthControl_of_lipschitz hlip,
     fun _ hx => K.rfs_whole_parent_map_locallyConstant_of_notMem hx,
     fun x => K.rfs_whole_parent_map_childCore x,
@@ -1014,22 +1014,22 @@ theorem rfs_collapse_degree_of_lipschitz_and_degree
     (hlip : ∀ (y z : (G.Parent c).Carrier),
       ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
       ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
-      riemannianEDistOf (H.event i).outputMetric (K.rfs_whole_parent_map y).1
-        (K.rfs_whole_parent_map z).1 ≤
+      riemannianEDistOf (H.event i).outputMetric (K.canonicalWholeParentMap y).1
+        (K.canonicalWholeParentMap z).1 ≤
       riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩)
-    (hclass : integralHomologyMap 3 K.rfs_whole_parent_map
+    (hclass : integralHomologyMap 3 K.canonicalWholeParentMap
       (fundamentalClass (G.Parent c).orientation) =
       fundamentalClass (G.Child c).orientation) :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
+    K.LocalTerminalLengthControl K.canonicalWholeParentMap ∧
     (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      K.rfs_whole_parent_map y = K.rfs_whole_parent_map x) ∧
+      K.canonicalWholeParentMap y = K.canonicalWholeParentMap x) ∧
     (∀ x : G.transition.ChildCore c,
-      K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+      K.canonicalWholeParentMap (G.transition.childCoreIntoParent c x) =
         G.transition.childCoreInclusion c x) ∧
-    integralHomologyMap 3 K.rfs_whole_parent_map
+    integralHomologyMap 3 K.canonicalWholeParentMap
       (fundamentalClass (G.Parent c).orientation) =
       fundamentalClass (G.Child c).orientation ∧
-    Function.Surjective K.rfs_whole_parent_map := by
+    Function.Surjective K.canonicalWholeParentMap := by
   obtain ⟨h1, h2, h3, h4⟩ := K.rfs_collapse_degree_of_local_inputs hlip K.rfs_collapse_cover
   exact ⟨h1, h2, h3, hclass, h4⟩
 
@@ -1037,7 +1037,7 @@ end ComparisonSupport
 
 theorem rfs_child_comparison_of_local_length_comparison
     (Kc : (c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c)
-    (hdegree : ∀ c, integralHomologyMap 3 (Kc c).rfs_whole_parent_map
+    (hdegree : ∀ c, integralHomologyMap 3 (Kc c).canonicalWholeParentMap
       (fundamentalClass (G.Parent c).orientation) =
       fundamentalClass (G.Child c).orientation)
     (hlocal : ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
@@ -1051,13 +1051,13 @@ theorem rfs_child_comparison_of_local_length_comparison
             (G.transition.childParent c)) γ a b ≠ ⊤ →
           riemannianCurveLength
             ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-            (fun t => (Kc c).rfs_whole_parent_map (γ t)) a b ≤
+            (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
           ENNReal.ofReal (ell s) * riemannianCurveLength
             ((H.stage i.castSucc).componentMetric
               ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) γ a b) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       (∀ c, integralHomologyMap 3 (f c)
           (fundamentalClass (G.Parent c).orientation) =
         fundamentalClass (G.Child c).orientation) ∧
@@ -1070,7 +1070,7 @@ theorem rfs_child_comparison_of_local_length_comparison
             riemannianEDistOf ((H.stage i.castSucc).componentMetric
               ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) x y := by
   obtain ⟨s₀, hs₀, ell, hell, htend, hloc⟩ := hlocal
-  refine ⟨fun c => (Kc c).rfs_whole_parent_map, fun c => ⟨Kc c, rfl⟩,
+  refine ⟨fun c => (Kc c).canonicalWholeParentMap, fun c => ⟨Kc c, rfl⟩,
     fun c => hdegree c, s₀, hs₀, ell, hell, htend, ?_⟩
   intro c s hs x y
   let gs : SmoothRiemannianMetric ThreeModel (G.Parent c).Carrier :=
@@ -1083,7 +1083,7 @@ theorem rfs_child_comparison_of_local_length_comparison
       ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
         a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
         riemannianCurveLength gs γ a b ≠ ⊤ →
-        riemannianCurveLength hc (fun t => (Kc c).rfs_whole_parent_map (γ t)) a b ≤
+        riemannianCurveLength hc (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
           ENNReal.ofReal (ell s) * riemannianCurveLength gs γ a b := by
     intro x
     by_cases hx : x ∈ (Kc c).support.region
@@ -1091,12 +1091,12 @@ theorem rfs_child_comparison_of_local_length_comparison
       exact ⟨U, hU, hU'⟩
     · obtain ⟨U, hU, hconst⟩ := (Kc c).rfs_whole_parent_map_locallyConstant_of_notMem hx
       refine ⟨U, hU, fun a b γ hab hγ hmap hfin => ?_⟩
-      have hone : ∀ t ∈ Icc a b, (fun t => (Kc c).rfs_whole_parent_map (γ t)) t =
-          (Kc c).rfs_whole_parent_map x :=
+      have hone : ∀ t ∈ Icc a b, (fun t => (Kc c).canonicalWholeParentMap (γ t)) t =
+          (Kc c).canonicalWholeParentMap x :=
         fun t ht => hconst (γ t) (hmap ht)
       have hzero := riemannianCurveLength_eq_zero_of_apply_eq_const (g := hc)
-        (γ := fun t => (Kc c).rfs_whole_parent_map (γ t))
-        (a := a) (b := b) (q := (Kc c).rfs_whole_parent_map x) hone
+        (γ := fun t => (Kc c).canonicalWholeParentMap (γ t))
+        (a := a) (b := b) (q := (Kc c).canonicalWholeParentMap x) hone
       rw [hzero]
       exact bot_le
   let : SecondCountableTopology (G.Parent c).Carrier :=
@@ -1111,14 +1111,14 @@ theorem rfs_child_comparison_of_local_length_comparison
         ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
           a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
           riemannianCurveLength gs γ a b ≠ ⊤ →
-          riemannianCurveLength hc (fun t => (Kc c).rfs_whole_parent_map (γ t)) a b ≤
+          riemannianCurveLength hc (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
             ↑(NNReal.mk (ell s) hL) * riemannianCurveLength gs γ a b :=
       fun x => by
         obtain ⟨U, hU, hU'⟩ := hlocFull x
         exact ⟨U, hU, fun a b γ hab hγ hmap hfin => by
           simpa only [ENNReal.ofReal_eq_coe_nnreal hL] using hU' a b γ hab hγ hmap hfin⟩
     have h := rfs_local_to_global_length_of_ne_top gs hc
-      ((Kc c).rfs_whole_parent_map) (NNReal.mk (ell s) hL) hlocCoe hfin
+      ((Kc c).canonicalWholeParentMap) (NNReal.mk (ell s) hL) hlocCoe hfin
     rwa [ENNReal.ofReal_eq_coe_nnreal hL]
 
 
@@ -1126,20 +1126,20 @@ theorem rfs_child_comparison_maps_of_inputs
     (Kc : (c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       C((G.Parent c).Carrier, (G.Child c).Carrier),
-      ∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map :=
-  ⟨fun c => (Kc c).rfs_whole_parent_map, fun c => ⟨Kc c, rfl⟩⟩
+      ∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap :=
+  ⟨fun c => (Kc c).canonicalWholeParentMap, fun c => ⟨Kc c, rfl⟩⟩
 
 theorem rfs_child_comparison_length_of_inputs
     (f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       C((G.Parent c).Carrier, (G.Child c).Carrier))
     (Kc : (c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c)
-    (hf : ∀ c, f c = (Kc c).rfs_whole_parent_map)
+    (hf : ∀ c, f c = (Kc c).canonicalWholeParentMap)
     (s₀ : ℝ) (hs₀ : s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ)) (ell : ℝ → ℝ)
     (hell : ∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s)
     (htend : Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1))
     (hlen : ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ x y : (G.Parent c).Carrier,
       riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-        ((Kc c).rfs_whole_parent_map x) ((Kc c).rfs_whole_parent_map y) ≤
+        ((Kc c).canonicalWholeParentMap x) ((Kc c).canonicalWholeParentMap y) ≤
       ENNReal.ofReal (ell s) * riemannianEDistOf
         ((H.stage i.castSucc).componentMetric
           ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) x y) :

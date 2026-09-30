@@ -212,7 +212,7 @@ private lemma tensor0S_continuousLinearMapAt_levelSet_apply
         (fun y : M => Tensor0SSpace s I y) α ⟨x, p⟩).2 := by
     change (trivializationAt (Tensor0SModel s ℝ E)
         (fun y : M => Tensor0SSpace s I y) α).linearMapAt ℝ x p = _
-    rw [Bundle.Trivialization.linearMapAt_apply, if_pos hx_base]
+    rw [Bundle.Trivialization.linearMapAt_apply, ite_eq_left hx_base]
   rw [hcLMAt]
   have happly : (trivializationAt (Tensor0SModel s ℝ E)
       (fun y : M => Tensor0SSpace s I y) α ⟨x, p⟩).2 =

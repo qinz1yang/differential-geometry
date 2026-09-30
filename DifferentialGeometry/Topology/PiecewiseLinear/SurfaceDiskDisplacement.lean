@@ -17,7 +17,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 private theorem exists_disk_in_surface_disk_off_circle
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) {N J : Set E}
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) N)
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N)
     (hNK : N ⊆ K.space) (hJ : IsPLSphere 1 J) (hJK : J ⊆ K.space) :
     ∃ B : Set E, IsPLBall 2 B ∧ B ⊆ N \ r '' stdSimplexBoundary 2 ∧ Disjoint B J := by
   classical
@@ -85,7 +85,7 @@ private theorem exists_disk_in_surface_disk_off_circle
 private theorem extend_surface_disk_move
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) {N : Set E}
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) N)
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N)
     (hNK : N ⊆ K.space) {f : E → E} (hf : IsPLHomeomorphOn f N N)
     (hfix : EqOn f id (r '' stdSimplexBoundary 2)) :
     ∃ F : E → E, IsPLHomeomorphOn F K.space K.space ∧ EqOn F f N ∧
@@ -111,15 +111,15 @@ private theorem extend_surface_disk_move
     rw [← hcover]
     exact hf.piecewise hQ.isPLHomeomorphOn_id hN.isPolyhedron hQ hfixQ
       (hfixQ.image_eq.trans (image_id _))
-  let q := Function.invFunOn r (stdSimplex ℝ (Fin 3))
+  let q := Function.invFunOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hqr : ∀ x ∈ N, r (q x) = x := hr.bijOn.invOn_invFunOn.2
-  have hqN : MapsTo q N (stdSimplex ℝ (Fin 3)) := hr.bijOn.surjOn.mapsTo_invFunOn
+  have hqN : MapsTo q N (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := hr.bijOn.surjOn.mapsTo_invFunOn
   let V : Set (unitInterval × K.space) := {w | w.2.val ∈ N}
   let a : unitInterval × K.space → Fin 3 → ℝ := fun w =>
     (1 - (w.1 : ℝ)) • q w.2.val + (w.1 : ℝ) • q (f w.2.val)
   let J : unitInterval × K.space → E := fun w => r (a w)
-  have ha : MapsTo a V (stdSimplex ℝ (Fin 3)) := fun w hw =>
-    (convex_stdSimplex ℝ (Fin 3)) (hqN hw) (hqN (hf.bijOn.mapsTo hw))
+  have ha : MapsTo a V (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := fun w hw =>
+    (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin 3)) (hqN hw) (hqN (hf.bijOn.mapsTo hw))
       (sub_nonneg.mpr w.1.2.2) w.1.2.1 (sub_add_cancel _ _)
   have ht : Continuous (fun w : unitInterval × K.space => (w.1 : ℝ)) :=
     continuous_subtype_val.comp continuous_fst
@@ -156,22 +156,22 @@ private theorem extend_surface_disk_move
     fun x hx => N.piecewise_eq_of_notMem f id hx.2, H, hH, ?_, ?_, ?_⟩
   · intro x
     by_cases hxN : x.val ∈ N
-    · rw [show H (0, x) = J (0, x) from if_pos hxN]
+    · rw [show H (0, x) = J (0, x) from ite_eq_left hxN]
       change r ((1 - (0 : ℝ)) • q x.val + (0 : ℝ) • q (f x.val)) = x.val
       simp only [sub_zero, one_smul, zero_smul, add_zero, hqr _ hxN]
-    · exact if_neg hxN
+    · exact ite_eq_right hxN
   · intro x
     by_cases hxN : x.val ∈ N
-    · rw [show H (1, x) = J (1, x) from if_pos hxN]
+    · rw [show H (1, x) = J (1, x) from ite_eq_left hxN]
       change r ((1 - (1 : ℝ)) • q x.val + (1 : ℝ) • q (f x.val)) = F x.val
       simp only [sub_self, zero_smul, one_smul, zero_add, hqr _ (hf.bijOn.mapsTo hxN)]
       exact (N.piecewise_eq_of_mem f id hxN).symm
-    · exact (if_neg hxN).trans (N.piecewise_eq_of_notMem f id hxN).symm
+    · exact (ite_eq_right hxN).trans (N.piecewise_eq_of_notMem f id hxN).symm
   · intro w
     by_cases hw : w.2.val ∈ N
-    · rw [show H w = J w from if_pos hw]
+    · rw [show H w = J w from ite_eq_left hw]
       exact hNK (hr.bijOn.mapsTo (ha hw))
-    · rw [show H w = w.2.val from if_neg hw]
+    · rw [show H w = w.2.val from ite_eq_right hw]
       exact w.2.property
 
 theorem IsCombinatorialManifold.exists_isPLSphere_one_avoiding_disk

@@ -18,10 +18,10 @@ theorem IsCombinatorialManifold.exists_isPLHomeomorphOn_disk_neighborhood
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) (hor : IsOrientable 2 K)
     {D U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDK : D ⊆ K.space) (hU : U ∈ 𝓝ˢ[K.space] D) :
     ∃ (D' : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D' ∧ D' ⊆ K.space ∩ U ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' ∧ D' ⊆ K.space ∩ U ∧
       D ⊆ D' \ q '' stdSimplexBoundary 2 ∧ D' ∈ 𝓝ˢ[K.space] D := by
   let J := r '' stdSimplexBoundary 2
   let B := closure (K.space \ D)

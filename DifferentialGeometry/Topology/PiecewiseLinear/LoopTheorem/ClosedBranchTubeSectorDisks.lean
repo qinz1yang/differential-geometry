@@ -45,7 +45,7 @@ theorem tubeCellSphere_snd_eq_of_lt {q : (ℝ × ℝ) × ℝ} (hq : q ∈ tubeCe
     rcases hb.2 with h | h | h | h <;> linarith
 
 theorem exists_tubeSector_param (k : Fin 4) :
-    ∃ u : (Fin 3 → ℝ) → (ℝ × ℝ) × ℝ, IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) (tubeSector k) ∧
+    ∃ u : (Fin 3 → ℝ) → (ℝ × ℝ) × ℝ, IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (tubeSector k) ∧
       u '' stdSimplexBoundary 2 = tubeCellArc k ∪ tubeCellArc (k + 1) := by
   have hO : IsOpen {p : (ℝ × ℝ) × ℝ | 0 < tubeLeafCoord k p.1 ∧ 0 < tubeLeafCoord (k + 1) p.1} :=
     (isOpen_lt continuous_const ((continuous_tubeLeafCoord k).comp continuous_fst)).inter
@@ -266,7 +266,7 @@ theorem tubeSectorUpper_sdiff (k : Fin 4) :
 
 theorem exists_tubeSectorUpper_param (k : Fin 4) :
     ∃ u : (Fin 3 → ℝ) → (ℝ × ℝ) × ℝ,
-      IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) (tubeSectorUpper k) ∧
+      IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (tubeSectorUpper k) ∧
         u '' stdSimplexBoundary 2 = tubeUpperArc k ∪ (tubeEdge k 0 ∪ tubeUpperArc (k + 1)) := by
   have hO : IsOpen {p : (ℝ × ℝ) × ℝ |
       0 < tubeLeafCoord k p.1 ∧ 0 < tubeLeafCoord (k + 1) p.1 ∧ 0 < p.2} :=

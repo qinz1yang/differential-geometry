@@ -47,7 +47,7 @@ theorem IsPLHomeomorphInto.exists_boundary_product_coordinates_of_carrying_rims
   have hess (i : Fin n) :
       ¬ ∃ (D : Set (EuclideanSpace ℝ (Fin 3)))
         (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ frontier C ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ frontier C ∧
           τ '' L i = r '' stdSimplexBoundary 2 := by
     rintro ⟨D, r, hr, hDC, hbd⟩
     have hD : IsPLBall 2 D := ⟨r, hr⟩

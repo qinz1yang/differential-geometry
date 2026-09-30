@@ -300,8 +300,8 @@ theorem exists_centered_lift_of_isGeodesicAt
   have hvelLift := hBint.mfderiv_proj_one hsrc0
   have hβv' :
       (mfderiv 𝓘(ℝ, ℝ) I (fun r : ℝ ↦ (B r).proj) 0 (1 : ℝ) : E) = v := by
-    rw [← hβB.mfderiv_eq]
-    exact hβv
+    exact (congrArg (fun A : ℝ →L[ℝ] E => A 1)
+      (hβB.symm.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := I))).trans hβv
   have hBsnd : ((B 0).snd : E) = v := by
     exact hvelLift.symm.trans hβv'
   refine ⟨B, hβB.symm, hBint, ?_⟩

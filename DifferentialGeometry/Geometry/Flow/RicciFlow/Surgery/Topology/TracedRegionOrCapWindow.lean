@@ -33,7 +33,7 @@ theorem exists_scalar_lower_bound_of_cap_window_trace :
     ∀ D : ℝ, 0 < D →
     ∃ R : ℝ, D + 1 < R ∧ ∃ m₀ : ℕ, 4 ≤ m₀ ∧
     ∃ ζ₀ δ₀ : ℝ, 0 < ζ₀ ∧ ζ₀ ≤ 1 / 2 ∧ 0 < δ₀ ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (p₀ : CutoffParameters)
+    ∀ (H : RetainedCoreHistory.{u}) (p₀ : CutoffParameters)
       (δbound ρbound : ℝ) {p : CutoffParameters}
       (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -63,7 +63,7 @@ theorem exists_scalar_lower_bound_of_cap_window_trace :
   refine ⟨Cbirth, hCbirth, fun D hD => ?_⟩
   obtain ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, hwindow⟩ := hbridge D eta eta hD heta heta 2
   refine ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, ?_⟩
-  intro P₀ H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ θcap hqcan hθ hHI hlow
+  intro H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ θcap hqcan hθ hHI hlow
     k s Gk hGk hderiv t hkt hts hcur j hl y A b x hanchor hage hxD hbirth haq
   obtain ⟨G, L, -, -, hL, -, -, -, -, -, -, -, z, -, hy, Ξ, -, -, hΞmark, hΞ, gflow, S, -, hS2,
       -, -, hS5, -, -, Q, -, hclose⟩ :=
@@ -113,7 +113,7 @@ theorem exists_capWindow_age_bound_of_scalar_le_along_trace :
     ∀ D : ℝ, 0 < D →
     ∃ R : ℝ, D + 1 < R ∧ ∃ m₀ : ℕ, 4 ≤ m₀ ∧
     ∃ ζ₀ δ₀ : ℝ, 0 < ζ₀ ∧ ζ₀ ≤ 1 / 2 ∧ 0 < δ₀ ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (p₀ : CutoffParameters)
+    ∀ (H : RetainedCoreHistory.{u}) (p₀ : CutoffParameters)
       (δbound ρbound : ℝ) {p : CutoffParameters}
       (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -149,7 +149,7 @@ theorem exists_capWindow_age_bound_of_scalar_le_along_trace :
   refine ⟨Cbirth, hCb, fun D hD => ?_⟩
   obtain ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζh, hδ₀, hB⟩ := hB D hD
   refine ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζh, hδ₀, ?_⟩
-  intro P₀ H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ hqcan hHI hlow u t hut
+  intro H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ hqcan hHI hlow u t hut
     hslabs hcurrent hfinal j hl y A b x hmark hxD hbirth haq huj M θcap hθ0 hθΘ hscal hMθ
   set q := ((records j).static b).neck.scale with hqdef
   have hq : 0 < q := ((records j).static b).neck.scale_pos
@@ -266,7 +266,7 @@ theorem exists_capWindow_age_bound_of_scalar_le_along_trace :
   have h5 : c * θcap < c * τ := mul_lt_mul_of_pos_left hτ.1 hc
   nlinarith
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 private theorem initialMetric_inner_le_exp_of_normSq_le_at (K : ObservedHistory.{u})
     (t : Icc (0 : ℝ) K.horizon) (x : (K.stage (K.activeStage t)).Carrier) {C : ℝ}
@@ -548,7 +548,7 @@ theorem exists_isTracedRegion_or_capWindowPoint_of_scalar_le_along_traces :
     ∀ Dstar : ℝ, StandardCap.transitionEnd < Dstar →
     ∃ Rrad : ℝ, Dstar + 1 < Rrad ∧ ∃ m₀ : ℕ, 4 ≤ m₀ ∧
     ∃ ζ₀ δ₀ : ℝ, 0 < ζ₀ ∧ ζ₀ ≤ 1 / 2 ∧ 0 < δ₀ ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (p₀ : CutoffParameters)
+    ∀ (H : RetainedCoreHistory.{u}) (p₀ : CutoffParameters)
       (δbound ρbound : ℝ) {p : CutoffParameters}
       (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -594,7 +594,7 @@ theorem exists_isTracedRegion_or_capWindowPoint_of_scalar_le_along_traces :
   obtain ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζh, hδ₀, hC⟩ :=
     hC Dstar (StandardCap.transitionEnd_pos.trans hDs)
   refine ⟨R, hDR, m₀, hm₀, min ζ₀ ε₀, δ₀, lt_min hζ₀ hε₀, (min_le_left _ _).trans hζh, hδ₀, ?_⟩
-  intro P₀ H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ hqcan hHI hlow hbirth haq
+  intro H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ hqcan hHI hlow hbirth haq
     phi hphi hpinch u t hut hlast hslabs hcurrent hfinal y M ρ Dcap θcap hρ hut' hM hθ0 hθΘ hDc
     hscal hwin hθM
   have hradius : Dstar ≤ p.modelRadius := by rw [hfam.2.1]; linarith
@@ -667,7 +667,7 @@ theorem exists_isTracedRegion_or_capWindowPoint_at_scale :
     ∀ Dstar : ℝ, StandardCap.transitionEnd < Dstar →
     ∃ Rrad : ℝ, Dstar + 1 < Rrad ∧ ∃ m₀ : ℕ, 4 ≤ m₀ ∧
     ∃ ζ₀ δ₀ : ℝ, 0 < ζ₀ ∧ ζ₀ ≤ 1 / 2 ∧ 0 < δ₀ ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (p₀ : CutoffParameters)
+    ∀ (H : RetainedCoreHistory.{u}) (p₀ : CutoffParameters)
       (δbound ρbound : ℝ) {p : CutoffParameters}
       (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -712,7 +712,7 @@ theorem exists_isTracedRegion_or_capWindowPoint_at_scale :
   refine ⟨Cbirth, hCb, fun Dstar hDs => ?_⟩
   obtain ⟨Rrad, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζh, hδ₀, hD⟩ := hD Dstar hDs
   refine ⟨Rrad, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζh, hδ₀, ?_⟩
-  intro P₀ H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ hqcan hHI hlow hbirth haq
+  intro H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ hqcan hHI hlow hbirth haq
     phi hphi hpinch u t hut hlast hslabs hcurrent hfinal y R A T Q Dcap θcap hR hA hT hQR hu hθ4
     hθ hθΘ hDc hscal hwin
   have hQ : 0 < Q := by

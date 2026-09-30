@@ -109,6 +109,7 @@ theorem BlowupLimit.eventually_deep_image
   exact (div_le_iff₀ (Real.sqrt_pos.mpr (L.scale_pos i))).2 (by
     simpa [mul_comm] using hnormalized)
 
+omit [SigmaCompactSpace M] in
 theorem BlowupLimit.eventually_canonicalAlternative_cap
     (L : BlowupLimit S o kappa x t)
     {eps C : ℝ} {U : Set L.model.M}
@@ -122,7 +123,7 @@ theorem BlowupLimit.eventually_canonicalAlternative_cap
   have htube : IsCompact cap.tube := by
     rw [← cap.tube_eq]
     exact (isCompact_univ.prod isCompact_Icc).image_of_continuousOn
-      (cap.tube_map.contMDiffOn_toFun.continuousOn.mono cap.tube_domain)
+      (cap.tubeMap.contMDiffOn_toFun.continuousOn.mono cap.tube_domain)
   have hU : IsCompact U := cap.union_eq ▸ cap.core.compact.union htube
   have hd := L.eventually_deep_image htube (H := 10000) (by
     intro y hy

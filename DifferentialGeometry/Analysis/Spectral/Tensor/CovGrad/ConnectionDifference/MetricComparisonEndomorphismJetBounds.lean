@@ -6,6 +6,13 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenc
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.CovariantOrderFibreNormBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.CometricRaise
 import DifferentialGeometry.Analysis.Sobolev.AntidiagonalTupleProductGrid
+
+open DifferentialGeometry.SmoothRiemannianMetric (metric_inner_cauchy_schwarz_sq)
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply
+  exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent riemannianFiberNormSq
+  riemannianFiberNormSq_add_le riemannianFiberNormSq_eq_tensorInnerPointwise
+  riemannianFiberNormSq_nonneg riemannianFiberNormSq_sum_le_card_mul
+  tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -141,7 +148,7 @@ private lemma operatorFieldApplicationLeibnizPsi_diag_eq (g : SmoothRiemannianMe
               (castCcTensorRank g ((b + i) + 1) (by omega : (c + i) + 1 = c + (i + 1))
                 (slotExtend (I := I) (M := M) g (b + i) (c + i)
                   (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ i i))) := rfl
-      rw [hss, if_neg (by omega : ¬ i + 1 < i + 1), zero_add]
+      rw [hss, ite_eq_right (by omega : ¬ i + 1 < i + 1), zero_add]
       rw [show castCcTensorSourceRank g (c + (i + 1)) (by omega : (b + i) + 1 = b + (i + 1))
             (castCcTensorRank g ((b + i) + 1) (by omega : (c + i) + 1 = c + (i + 1))
               (slotExtend (I := I) (M := M) g (b + i) (c + i)
@@ -237,7 +244,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_operatorFieldApplicationLeib
           rw [castCcTensorRank, castCcTensorSourceRank]]
       rw [hrec]
       by_cases hji : j < i
-      · rw [if_pos (by omega : j + 1 < i + 1)]
+      · rw [ite_eq_left (by omega : j + 1 < i + 1)]
         rw [iteratedCovGrad_add]
         rw [show ((iteratedCovGrad (I := I) g (b + (j + 1)) (c + (i + 1)) p
               (covGrad (I := I) (M := M) g (b + (j + 1)) (c + i)
@@ -306,7 +313,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_operatorFieldApplicationLeib
           rw [pow_succ]; ring]
         linarith [bA, bB]
       · have hji' : ¬ (j + 1 < i + 1) := by omega
-        rw [if_neg hji', zero_add]
+        rw [ite_eq_right hji', zero_add]
         have hsl : riemannianFiberNormSq (I := I) (M := M) g (b + (j + 1)) ((c + (i + 1)) + p) x
               ((iteratedCovGrad (I := I) g (b + (j + 1)) (c + (i + 1)) p
                 (slotExtend (I := I) (M := M) g (b + j) (c + i)
@@ -385,6 +392,7 @@ private lemma recovery_comp_fullRaisedEndo (g₀ g₁ : SmoothRiemannianMetric I
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private lemma slotInsertEndoFib_comp_eq (s : ℕ) (x : M)
     (A B : TangentSpace I x →L[ℝ] TangentSpace I x) :
     ContinuousLinearMap.comp (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x A)
@@ -394,6 +402,7 @@ private lemma slotInsertEndoFib_comp_eq (s : ℕ) (x : M)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private lemma slotInsertEndoFib_id_eq' (s : ℕ) (x : M) :
     slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (ContinuousLinearMap.id ℝ (TangentSpace I x)) =
@@ -680,6 +689,7 @@ private lemma cotangentToDual_cometricRaiseSlot0_eq (g₀ : SmoothRiemannianMetr
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private lemma cotangentToDual_slotInsertEndoFib (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (om : Tensor0SSpace 1 I x)
     (w : TangentSpace I x) :
@@ -1171,7 +1181,7 @@ private lemma riemannianFiberNormSq_slotInsertE_zero_le
 
 omit [SigmaCompactSpace M] in
 private theorem
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_convolution_recursion
+    exists_metricComparisonEndomorphismField_jet_recursion
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ (A : ℝ) (B : ℕ → ℝ), 0 ≤ A ∧ (∀ m, 0 ≤ B m) ∧
       ∀ (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1349,7 +1359,7 @@ theorem invDiff_zero_uniform
                 riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                   ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
   obtain ⟨A, B, hA, hB, hrec⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_convolution_recursion
+    exists_metricComparisonEndomorphismField_jet_recursion
       (I := I) (M := M) hδ₀
   refine ⟨fun i => (DifferentialGeometry.Combinatorics.recGridCS A B i).1 +
       (Module.finrank ℝ E : ℝ) ^ 2 * (1 / (1 - δ₀)) ^ 2,
@@ -1433,7 +1443,7 @@ theorem invDiff_zero_uniform
     linarith
 
 omit [SigmaCompactSpace M] in
-theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+theorem exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1453,28 +1463,6 @@ theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricCompar
                   ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
   obtain ⟨C, hC, hbnd⟩ := invDiff_zero_uniform (I := I) (M := M) hδ₀
   exact ⟨C, hC, hbnd g₀⟩
-
-omit [SigmaCompactSpace M] in
-theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
-    (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
-    ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
-      ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
-        (_htie : ∀ y v w, g₁.inner y v w =
-          g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w)
-        {δ : ℝ} (_hδ_le : δ ≤ δ₀) (_hδ0 : 0 ≤ δ)
-        (_hbound : metricCauchySchwarzBound (I := I) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-        (i : ℕ) (x : M),
-        riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x
-            ((iteratedCovGrad (I := I) g₀ 1 1 i
-              (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
-                (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection x) ≤
-          C i * ∑ n ∈ Finset.range (i + 1),
-            ∑ e ∈ Finset.Nat.antidiagonalTuple n i,
-              ∏ m : Fin n,
-                riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
-                  ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) :=
-  riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
-    (E := E) (I := I) (M := M) g₀ hδ₀
 
 omit [SigmaCompactSpace M] in
 theorem invDiff_slot_uniform
@@ -1509,7 +1497,7 @@ theorem invDiff_slot_uniform
   exact mul_le_mul_of_nonneg_left hchild (Nat.cast_nonneg _)
 
 omit [SigmaCompactSpace M] in
-theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+theorem exists_metricComparisonDifferenceEndomorphismField_slot_covariant_jet_bound
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)

@@ -21,7 +21,7 @@ theorem interiorIndexSum_eq_of_zero_germ
     (hgerm : ∀ x, V x = 0 → V =ᶠ[𝓝 x] W) :
     interiorIndexSum I V hVfinite hVisolated hVint =
       interiorIndexSum I W hWfinite hWisolated hWint := by
-  let e := Equiv.setCongr hzero
+  let e := Set.equivOfEq hzero
   rw [interiorIndexSum_eq_finsum, interiorIndexSum_eq_finsum]
   calc
     _ = ∑ᶠ p : {x | V x = 0}, interiorIndex I W (e p)

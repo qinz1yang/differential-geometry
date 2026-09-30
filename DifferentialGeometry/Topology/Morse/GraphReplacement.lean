@@ -103,7 +103,7 @@ theorem isCriticalPointAt_snd_iff_of_eventually_graph {e : M → E × ℝ} {x : 
       (mfderiv_comp x ((contDiffAt_id.prodMk hg).differentiableAt (by simp)).mdifferentiableAt hp)
   have hinj : Function.Injective (mfderiv I 𝓘(ℝ, E) p x) := by
     intro u v huv
-    apply he.injective_mfderiv (by simp)
+    apply he.mfderiv_injective (by simp)
     have hh := congrArg (fun f : E →L[ℝ] E × ℝ => f u - f v) hd
     have hz : (mfderiv I 𝓘(ℝ, E × ℝ) e x) u - (mfderiv I 𝓘(ℝ, E × ℝ) e x) v = 0 := by
       calc

@@ -54,6 +54,13 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply
+  exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent gFrame_adjoint_parseval_le
+  riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_zero tensorInnerPointwise tensorInnerPointwise_add_left
+  tensorInnerPointwise_add_right tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right
+  tensorInnerPointwise_symm tensorS_coframe_expansion)
+
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -118,7 +125,7 @@ private lemma riemannianFiberNormSq_neg (g : SmoothRiemannianMetric I M) (r s : 
     (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (-v) =
       riemannianFiberNormSq (I := I) (M := M) g r s x v := by
-  have h := DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g r s x (-1) v
+  have h := DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g r s x (-1) v
   rw [neg_one_smul] at h
   rw [h]
   norm_num
@@ -131,7 +138,7 @@ private lemma sqrt_riemannianFiberNormSq_sub_le (g : SmoothRiemannianMetric I M)
       Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s x a)
         + Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s x b) := by
   rw [sub_eq_add_neg]
-  refine le_trans (DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x a (-b)) ?_
+  refine le_trans (DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x a (-b)) ?_
   rw [riemannianFiberNormSq_neg (I := I) (M := M) g r s x b]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
@@ -463,7 +470,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_le_iteratedCovGrad_s
   rw [iteratedCovGrad_sub (I := I) g₀ 0 3 u, iteratedCovGrad_add (I := I) g₀ 0 3 u]
   rw [DifferentialGeometry.Analysis.Sobolev.smoothCcTensor_toSection_smul_apply (I := I) (M := M) g₀
     (r := 0) (s := 3 + u)]
-  rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (3 + u) x (1 / 2)]
+  rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (3 + u) x (1 / 2)]
   rw [DifferentialGeometry.Analysis.Sobolev.smoothCcTensor_toSection_sub_apply (I := I) (M := M) g₀
       (r := 0) (s := 3 + u),
     DifferentialGeometry.Analysis.Sobolev.smoothCcTensor_toSection_add_apply (I := I) (M := M) g₀
@@ -1068,11 +1075,11 @@ private lemma sqrt_riemannianFiberNormSq_six_add_two_sub_le (g : SmoothRiemannia
         + Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s x v6)
         + Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s x v7)
         + Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s x v8) := by
-  have c1 := DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x v1 v2
-  have c2 := DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x (v1 + v2) v3
-  have c3 := DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x (v1 + v2 + v3) v4
-  have c4 := DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x (v1 + v2 + v3 + v4) v5
-  have c5 := DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x (v1 + v2 + v3 + v4 + v5) v6
+  have c1 := DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x v1 v2
+  have c2 := DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x (v1 + v2) v3
+  have c3 := DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x (v1 + v2 + v3) v4
+  have c4 := DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x (v1 + v2 + v3 + v4) v5
+  have c5 := DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g r s x (v1 + v2 + v3 + v4 + v5) v6
   have c6 := sqrt_riemannianFiberNormSq_sub_le (I := I) (M := M) g r s x (v1 + v2 + v3 + v4 + v5 + v6) v7
   have c7 := sqrt_riemannianFiberNormSq_sub_le (I := I) (M := M) g r s x
     (v1 + v2 + v3 + v4 + v5 + v6 - v7) v8
@@ -1163,8 +1170,8 @@ private lemma metricComparisonEndomorphism_frame_sum_sq (g : SmoothRiemannianMet
   rw [hbil]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [Finset.sum_eq_single j]
-  · rw [horth j j, if_pos rfl, mul_one]; ring
-  · intro l _ hl; rw [horth j l, if_neg (fun h => hl h.symm), mul_zero]
+  · rw [horth j j, ite_eq_left rfl, mul_one]; ring
+  · intro l _ hl; rw [horth j l, ite_eq_right (fun h => hl h.symm), mul_zero]
   · intro h; exact absurd (Finset.mem_univ j) h
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -1439,7 +1446,7 @@ private lemma operatorFieldApplicationLeibnizPsi_diagonal_toSection (g : SmoothR
           slotExtend (I := I) (M := M) g (b + i) (c + i)
             (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ i i) := by
         rw [operatorFieldApplicationLeibnizPsi_succ_succ_eq (I := I) (M := M) g b c Φ i i]
-        rw [if_neg (by omega : ¬ (i + 1 < i + 1)), zero_add]
+        rw [ite_eq_right (by omega : ¬ (i + 1 < i + 1)), zero_add]
       rw [hdiag]
       rw [show (slotExtendIterFib (I := I) (M := M) g b c x
             (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x) (i + 1)) =
@@ -1516,8 +1523,8 @@ private lemma fiberNormSqComponent_slotExtendFib_eq
         (fun i => eX.symm (u i)) from rfl]
     rw [coframeS_apply]
     by_cases h : K' 0 = J' 0
-    · rw [if_pos h, if_pos h.symm]
-    · rw [if_neg h, if_neg (fun hc => h hc.symm)]
+    · rw [ite_eq_left h, ite_eq_left h.symm]
+    · rw [ite_eq_right h, ite_eq_right (fun hc => h hc.symm)]
   rw [show (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
       (eX (e (J' 0))) = e (J' 0) from by
     dsimp only [eX]
@@ -1908,12 +1915,12 @@ private lemma singleTrace_functional_sq_le (g₀ g₁ : SmoothRiemannianMetric I
       rw [Finset.sum_congr rfl (fun Q2 _ => by
         rw [show (if Q2 0 = L 0 then (1 : ℝ) else 0) = (if L 0 = Q2 0 then (1 : ℝ) else 0) from by
           by_cases h : Q2 0 = L 0
-          · rw [if_pos h, if_pos h.symm]
-          · rw [if_neg h, if_neg (fun hc => h hc.symm)],
+          · rw [ite_eq_left h, ite_eq_left h.symm]
+          · rw [ite_eq_right h, ite_eq_right (fun hc => h hc.symm)],
         show (if Q2 1 = L 1 then (1 : ℝ) else 0) = (if L 1 = Q2 1 then (1 : ℝ) else 0) from by
           by_cases h : Q2 1 = L 1
-          · rw [if_pos h, if_pos h.symm]
-          · rw [if_neg h, if_neg (fun hc => h hc.symm)]])]
+          · rw [ite_eq_left h, ite_eq_left h.symm]
+          · rw [ite_eq_right h, ite_eq_right (fun hc => h hc.symm)]])]
       exact pair_delta_sum_right (L 0) (L 1)
     rw [hδ, mul_one]
   have hVsum : (∑ L : Fin 2 → Fin n, ∑ Q : Fin 4 → Fin n, (V Q) ^ 2 * χ Q L) =
@@ -2276,7 +2283,7 @@ private lemma sum_sq_component_slotExtendIterFib_operator_le (g : SmoothRiemanni
               simp only [mul_ite, ite_mul, one_mul, zero_mul, mul_zero]
               rw [Finset.sum_ite_eq Finset.univ (J 0) (fun p₀ =>
                 V (Fin.cons p₀ P') * cw P' (fun k => J (Fin.succ k)))]
-              rw [if_pos (Finset.mem_univ (J 0))]
+              rw [ite_eq_left (Finset.mem_univ (J 0))]
       calc (∑ J : Fin (c + (w + 1)) → Fin n,
             (∑ P : Fin (b + (w + 1)) → Fin n,
               V P * fiberNormSqComponent (I := I) (M := M) g x (b + (w + 1)) (c + (w + 1))
@@ -2448,7 +2455,7 @@ theorem riemannianFiberNormSq_operatorFieldComposition_ricciCometricFourTraceCas
         (I := I) g₀ g₁ x (e b))
       rw [hp]
       refine le_trans (hWop (e b)) ?_
-      rw [horth b b, if_pos rfl, mul_one]
+      rw [horth b b, ite_eq_left rfl, mul_one]
     calc (∑ b : Fin n, ∑ a : Fin n, (g₀.inner x (e a)
           (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.metricComparisonEndomorphism
             (I := I) g₀ g₁ x (e b))) ^ 2)
@@ -2536,7 +2543,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
     riemannianFiberNormSq_iteratedCovGrad_ricciCometricFourTraceCastG0_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CK, hCK_nn, hCK⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenceOrder0KernelField_diagonalProductGrid_le
+    linearizedRicciConnectionDifferenceOrder0KernelField_jet_norm_sq_le_antidiagonalTupleGrid
       (I := I) (M := M) g₀ hδ₀
   set Qq : ℕ → ℝ := fun i => diagonalGridGrowthFactor (E := E) i *
     ∑ n ∈ Finset.range (i + 1), ∑ m ∈ Finset.range (i + 1 - n),
@@ -2711,7 +2718,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
         (r := 1) (s := 2 + (i + 1))]
       abel
     rw [hsplitA]
-    refine le_trans (DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 1 (2 + (i + 1)) x _ _)
+    refine le_trans (DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 1 (2 + (i + 1)) x _ _)
       (add_le_add ?_ (Real.sqrt_le_sqrt hres))
     refine le_trans (sqrt_le_coeff_mul_sqrt (c := d)
       (riemannianFiberNormSq_operatorFieldComposition_sharpFlatEndoCc_contravariantSlot_op_le (I := I) (M := M) g₀ g₁ P htie hδ₀
@@ -3170,7 +3177,7 @@ private theorem linearizedRicciConnectionDifferenceOrder0CoeffField_topOrderSepa
       + (Real.sqrt ((144 * fr * d ^ 2 * Qq i) * w) + Real.sqrt
         ((16 * fr ^ 2 * d ^ 2 * (Kc (i + 1) * ((i : ℝ) + 1))) * w) + Real.sqrt ((Clow i) * w)) := by
     rw [hsplitL0]
-    refine le_trans (DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x _ _) ?_
+    refine le_trans (DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x _ _) ?_
     have hcs : Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
         ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 (4 + i) (2 + i)
           (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g₀ 4 2
@@ -3247,7 +3254,7 @@ private lemma one_remainder_young_bound {T e btop c K w : ℝ}
         rw [hu2, hv2]
         ring
 
-theorem riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContrMonomial_topOrderSeparated_lowerWindow_le
+theorem decompositionKernelContractionMonomialField_top_order_bounds
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -3296,7 +3303,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContrMonomial_t
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 1) (i + 3)) := by
   obtain ⟨K, hK_nn, hres⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContractionMonomialField_leibnizResidual_window
+    decompositionKernelContractionMonomialField_leibniz_remainder_norm_sq_le
       (I := I) (M := M) g₀ hδ₀
   refine ⟨K, hK_nn, ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hbound σ i x
@@ -3464,7 +3471,7 @@ private theorem decompositionKernelContractionField_topOrderSeparated_bound (g�
       have h1 : Module.finrank ℝ E ≠ 0 := NeZero.ne _
       omega
     obtain ⟨KM, hKM_nn, hKM⟩ :=
-      riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContrMonomial_topOrderSeparated_lowerWindow_le
+      decompositionKernelContractionMonomialField_top_order_bounds
       (I := I) (M := M) g₀ hδ₀
     refine ⟨fun i => 5 * 2 ^ 2 * KM i,
       fun i => by have := hKM_nn i; positivity, ?_⟩
@@ -3567,7 +3574,7 @@ private theorem decompositionKernelContractionField_topOrderSeparated_bound (g�
                       (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ)
                       (iteratedCovGrad (I := I) g₀ 0 2 2
                         (ccTensor02Symm (I := I) (M := M) g₀ P))))))).toSection x)) :=
-            DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x _ _
+            DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x _ _
         _ ≤ Real.sqrt (KM i * Combinatorics.boundedFactorGridWindow
               (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 1) (i + 3))
@@ -3657,7 +3664,7 @@ private theorem decompositionKernelContractionField_topOrderSeparated_bound (g�
                 ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 1) (i + 3)) := by
       rw [hsplit]
       refine le_trans (sqrt_le_coeff_mul_sqrt (c := 1 / 2)
-        (le_of_eq (DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 (2 + i) x (1 / 2) _))
+        (le_of_eq (DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 (2 + i) x (1 / 2) _))
         (by norm_num)) ?_
       have hsub2 := sqrt_riemannianFiberNormSq_sub_le (I := I) (M := M) g₀ 2 (2 + i) x
         ((iteratedCovGrad (I := I) g₀ 2 2 i
@@ -3696,7 +3703,7 @@ private theorem decompositionKernelContractionField_topOrderSeparated_bound (g�
             (I := I) (M := M) g₀ g₁
             (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ P))
               (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3))).toSection x)
-      have hadd1 := DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x
+      have hadd1 := DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x
         ((iteratedCovGrad (I := I) g₀ 2 2 i
           (Analysis.Parabolic.TensorSpectral.decompositionKernelContractionMonomialField
             (I := I) (M := M) g₀ g₁
@@ -3751,7 +3758,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContr_symmSecon
   decompositionKernelContractionField_topOrderSeparated_bound (I := I) (M := M) g₀ hδ₀ hδ₀half
 
 theorem
-    riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenceOrder0CoeffField_topAmplitude_le
+    linearizedRicciConnectionDifferenceOrder0CoeffField_pointwise_tame_bound
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ}
     (hδ₀ : δ₀ < 1) (hδ₀half : δ₀ ≤ 1 / 2) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧

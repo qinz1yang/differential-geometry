@@ -65,7 +65,7 @@ theorem local_riemannianEDistOf_le_of_riemannianCurveVariation_le
       Classical.choose (hmaps ht) else y
   have hη : EqOn (φ ∘ η) γ (Icc 0 1) := by
     intro t ht
-    simp only [Function.comp_apply, η, dif_pos ht]
+    simp only [Function.comp_apply, η, dite_eq_left ht]
     exact Classical.choose_spec (hmaps ht)
   have hηcont : ContinuousOn η (Icc 0 1) :=
     hφ.isEmbedding.continuousOn_iff.mpr (hγ.continuousOn.congr hη)

@@ -63,9 +63,8 @@ private theorem image_eq_self_of_mem_iff {α : Type*} {f g : α → α}
     exact ⟨g y, (h (g y)).mp (by rw [hgf y]; exact hy), hgf y⟩
 
 theorem exists_doublePositive_frontier_chart
-    {M E H F G : Type} [TopologicalSpace M] [CompactSpace M] [T2Space M]
-    [NormedAddCommGroup E] [NormedSpace ℝ E] [TopologicalSpace H] [ChartedSpace H M]
-    (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M]
+    {M E F G : Type} [TopologicalSpace M] [CompactSpace M] [T2Space M]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
     (B : Set M) [NormedAddCommGroup F] [NormedSpace ℝ F]
     [TopologicalSpace G] [ChartedSpace G B] (J : ModelWithCorners ℝ F G)
     [IsManifold J ∞ B] [BoundarylessManifold J B]
@@ -74,7 +73,7 @@ theorem exists_doublePositive_frontier_chart
     {a : ℝ} (c : C(B × Icc (0 : ℝ) a, M))
     (hheight : ∀ q, r (c q) = q.2.val)
     (hsmall : ∀ x, r x ≤ a → x ∈ range c) (hc : IsEmbedding c) (ha : 0 < a)
-    [ChartedSpace E (Double B)] [IsManifold 𝓘(ℝ, E) ∞ (Double B)] [T2Space (Double B)]
+    [ChartedSpace E (Double B)]
     (hseam : ∀ b : B,
       ContMDiffOn (J.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, E) ∞
         (doubleSeamPatch B r hr hz hn c hheight hsmall hc ha b) {q | |q.2| < a} ∧
@@ -258,10 +257,8 @@ theorem exists_doublePositive_frontier_chart
     exact hsecond.trans hlast
 
 theorem compactSupportFlow_doublePositive_mem_iff
-    {M E H F G : Type} [TopologicalSpace M] [CompactSpace M] [T2Space M]
+    {M E F G : Type} [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    [TopologicalSpace H] [ChartedSpace H M]
-    (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M]
     (B : Set M) [NormedAddCommGroup F] [NormedSpace ℝ F]
     [TopologicalSpace G] [ChartedSpace G B] (J : ModelWithCorners ℝ F G)
     [IsManifold J ∞ B] [BoundarylessManifold J B]
@@ -297,7 +294,7 @@ theorem compactSupportFlow_doublePositive_mem_iff
         e.toOpenPartialHomeomorph.IsImage (range (doublePositive B)) {z | 0 ≤ z.1} ∧
         ∀ y ∈ frontier (range (doublePositive B)) ∩ e.source,
           (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, ℝ × F) e y (X y)).1 = 0 :=
-    fun p hp _ => exists_doublePositive_frontier_chart I B J r hr hz hn c hheight hsmall hc ha
+    fun p hp _ => exists_doublePositive_frontier_chart B J r hr hz hn c hheight hsmall hc ha
       hseam b₀ X htan p hp
   have h := Diffeomorph.compactSupportFlow_mem_iff_of_boundary_tangent X hX hsupp
     (range (doublePositive B)) hcharts
@@ -305,10 +302,8 @@ theorem compactSupportFlow_doublePositive_mem_iff
   exact ⟨h'.2.1, h'.2.2.2⟩
 
 theorem compactSupportFlow_doublePositive_image_eq
-    {M E H F G : Type} [TopologicalSpace M] [CompactSpace M] [T2Space M]
+    {M E F G : Type} [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    [TopologicalSpace H] [ChartedSpace H M]
-    (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M]
     (B : Set M) [NormedAddCommGroup F] [NormedSpace ℝ F]
     [TopologicalSpace G] [ChartedSpace G B] (J : ModelWithCorners ℝ F G)
     [IsManifold J ∞ B] [BoundarylessManifold J B]
@@ -337,7 +332,7 @@ theorem compactSupportFlow_doublePositive_image_eq
     ∀ t : ℝ, Φ t '' range (doublePositive B) = range (doublePositive B) ∧
       (Φ t).symm '' range (doublePositive B) = range (doublePositive B) := by
   intro Φ t
-  have hmem := compactSupportFlow_doublePositive_mem_iff I B J r hr hz hn c hheight hsmall hc ha
+  have hmem := compactSupportFlow_doublePositive_mem_iff B J r hr hz hn c hheight hsmall hc ha
     hseam b₀ X hX hsupp htan
   have h' := hmem t
   exact ⟨image_eq_self_of_mem_iff (f := (Φ t : Double B → Double B))

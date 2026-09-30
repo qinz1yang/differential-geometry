@@ -79,10 +79,10 @@ theorem exists_homeomorph_extending_closedBall_embedding
     exact congrArg Subtype.val h
   let Φf : Plane → Plane := fun z => if hz : z ∈ closedBall (0 : Plane) 1 then g ⟨z, hz⟩ else F z
   let Ψf : Plane → Plane := fun w => if hw : w ∈ range g then (ginv ⟨w, hw⟩ : Plane) else F.symm w
-  have hΦin : ∀ x : closedBall (0 : Plane) 1, Φf x = g x := fun x => dif_pos x.2
-  have hΦout : ∀ z, z ∉ closedBall (0 : Plane) 1 → Φf z = F z := fun z hz => dif_neg hz
-  have hΨin : ∀ w (hw : w ∈ range g), Ψf w = (ginv ⟨w, hw⟩ : Plane) := fun w hw => dif_pos hw
-  have hΨout : ∀ w, w ∉ range g → Ψf w = F.symm w := fun w hw => dif_neg hw
+  have hΦin : ∀ x : closedBall (0 : Plane) 1, Φf x = g x := fun x => dite_eq_left x.2
+  have hΦout : ∀ z, z ∉ closedBall (0 : Plane) 1 → Φf z = F z := fun z hz => dite_eq_right hz
+  have hΨin : ∀ w (hw : w ∈ range g), Ψf w = (ginv ⟨w, hw⟩ : Plane) := fun w hw => dite_eq_left hw
+  have hΨout : ∀ w, w ∉ range g → Ψf w = F.symm w := fun w hw => dite_eq_right hw
   have hfrontB : ∀ z ∈ frontier (closedBall (0 : Plane) 1), Φf z = F z := by
     intro z hz
     rw [frontier_closedBall (0 : Plane) one_ne_zero] at hz

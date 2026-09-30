@@ -1,4 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.MetricTraceFrame
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

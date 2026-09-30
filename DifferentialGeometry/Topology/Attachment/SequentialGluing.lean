@@ -202,7 +202,7 @@ theorem stepSetoid_iff_block (a b : Quotient (G.restrict s).setoid) :
         exact hxj
       · rw [← hy, hyj, hflip]
 
-def quotientHomeomorph_restrict_empty :
+def quotientHomeomorphRestrictEmpty :
     Quotient (G.restrict (∅ : Set ι)).setoid ≃ₜ X :=
   (Homeomorph.Quotient.congrRight (fun x y => by
     rw [G.setoid_restrict_empty])).trans Homeomorph.quotientBot

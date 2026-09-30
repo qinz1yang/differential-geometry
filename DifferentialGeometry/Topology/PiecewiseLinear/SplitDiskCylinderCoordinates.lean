@@ -94,7 +94,7 @@ theorem IsTube.exists_unitSolidCylinder_coordinates {K : Geometry.SimplicialComp
     · exact h0
     · exact h2
     · exact h4
-  have hΓcyl : Γ '' unitSolidCylinder = stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
+  have hΓcyl : Γ '' unitSolidCylinder = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
     ext ⟨s, t⟩
     constructor
     · rintro ⟨x, ⟨hx1, hx2⟩, hxst⟩
@@ -114,7 +114,7 @@ theorem IsTube.exists_unitSolidCylinder_coordinates {K : Geometry.SimplicialComp
         exact abs_le.mpr htI
       · change (g (meridianCoordinates x), x 1) = (g z, t)
         rw [hmx, hx1]
-  have hΓdisk : Γ '' unitMeridianDisk = stdSimplex ℝ (Fin 3) ×ˢ {(0 : ℝ)} := by
+  have hΓdisk : Γ '' unitMeridianDisk = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(0 : ℝ)} := by
     ext ⟨s, t⟩
     constructor
     · rintro ⟨x, ⟨hx1, hx2⟩, hxst⟩
@@ -159,7 +159,7 @@ theorem IsTube.exists_unitSolidCylinder_coordinates {K : Geometry.SimplicialComp
     change (g (meridianCoordinates 0), (0 : E3) 1) = (stdCenter 1, 0)
     rw [hm0, hg0]
     simp
-  have hmaps : MapsTo Γ unitSolidCylinder (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :=
+  have hmaps : MapsTo Γ unitSolidCylinder (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :=
     fun x hx => hΓcyl ▸ mem_image_of_mem Γ hx
   have hCN : C u ∪ C v ⊆ N := union_subset (ht.dualCell_subset hu) (ht.dualCell_subset hv)
   have hmaps' : MapsTo (ρ ∘ Γ) unitSolidCylinder N :=

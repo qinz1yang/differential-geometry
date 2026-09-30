@@ -39,13 +39,13 @@ noncomputable def starHomeo
 
 open Classical in
 theorem starHomeo_spec (hsph : IsPLSphere n (SimplicialComplex.geometricLink K {p}).space) :
-    IsPLHomeomorphOn (starHomeo K hp hsph) (stdSimplex ℝ (Fin (n + 2))) (closedStar K p) ∧
+    IsPLHomeomorphOn (starHomeo K hp hsph) (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (closedStar K p) ∧
       starHomeo K hp hsph '' openSimplex (stdVertices n) = openStar K p ∧
       starHomeo K hp hsph (stdCenter n) = p :=
   Classical.choose_spec (exists_starHomeo K hp hsph)
 
 theorem openSimplex_stdVertices_subset_stdSimplex :
-    openSimplex (stdVertices n) ⊆ stdSimplex ℝ (Fin (n + 2)) := by
+    openSimplex (stdVertices n) ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := by
   rw [← convexHull_stdVertices]
   exact openSimplex_subset_convexHull _
 
@@ -57,7 +57,7 @@ open Classical in
 noncomputable def vertexChart
     (hsph : IsPLSphere n (SimplicialComplex.geometricLink K {p}).space) :
     OpenPartialHomeomorph K.space (EuclideanSpace ℝ (Fin (n + 1))) where
-  toFun x := stdProj n (Function.invFunOn (starHomeo K hp hsph) (stdSimplex ℝ (Fin (n + 2))) x.1)
+  toFun x := stdProj n (Function.invFunOn (starHomeo K hp hsph) (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) x.1)
   invFun y :=
     if h : starHomeo K hp hsph (stdLift n y) ∈ K.space then ⟨_, h⟩ else ⟨p, apex_mem_space' K hp⟩
   source := Subtype.val ⁻¹' openStar K p
@@ -68,9 +68,9 @@ noncomputable def vertexChart
       rw [(starHomeo_spec K hp hsph).2.1]
       exact hx
     obtain ⟨w, hw, hxw⟩ := hx'
-    have hw' : w ∈ stdSimplex ℝ (Fin (n + 2)) := openSimplex_stdVertices_subset_stdSimplex hw
+    have hw' : w ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := openSimplex_stdVertices_subset_stdSimplex hw
     have hinv := (starHomeo_spec K hp hsph).1.bijOn.invOn_invFunOn.1 hw'
-    change stdProj n (Function.invFunOn (starHomeo K hp hsph) (stdSimplex ℝ (Fin (n + 2))) x.1) ∈
+    change stdProj n (Function.invFunOn (starHomeo K hp hsph) (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) x.1) ∈
       stdTarget n
     rw [← hxw, hinv]
     exact stdProj_mem_stdTarget n hw
@@ -82,7 +82,7 @@ noncomputable def vertexChart
     have hK : starHomeo K hp hsph (stdLift n y) ∈ K.space := openStar_subset_space K p hmem
     change (if h : starHomeo K hp hsph (stdLift n y) ∈ K.space then (⟨_, h⟩ : K.space)
       else ⟨p, apex_mem_space' K hp⟩) ∈ Subtype.val ⁻¹' openStar K p
-    rw [dif_pos hK]
+    rw [dite_eq_left hK]
     exact hmem
   left_inv' := by
     intro x hx
@@ -90,15 +90,15 @@ noncomputable def vertexChart
       rw [(starHomeo_spec K hp hsph).2.1]
       exact hx
     obtain ⟨w, hw, hxw⟩ := hx'
-    have hw' : w ∈ stdSimplex ℝ (Fin (n + 2)) := openSimplex_stdVertices_subset_stdSimplex hw
+    have hw' : w ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := openSimplex_stdVertices_subset_stdSimplex hw
     have hinv := (starHomeo_spec K hp hsph).1.bijOn.invOn_invFunOn.1 hw'
     have e1 : stdLift n (stdProj n
-        (Function.invFunOn (starHomeo K hp hsph) (stdSimplex ℝ (Fin (n + 2))) x.1)) = w := by
+        (Function.invFunOn (starHomeo K hp hsph) (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) x.1)) = w := by
       rw [← hxw, hinv, stdLift_stdProj_of_mem n hw]
     change (if h : starHomeo K hp hsph (stdLift n (stdProj n
-        (Function.invFunOn (starHomeo K hp hsph) (stdSimplex ℝ (Fin (n + 2))) x.1))) ∈ K.space
+        (Function.invFunOn (starHomeo K hp hsph) (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) x.1))) ∈ K.space
       then (⟨_, h⟩ : K.space) else ⟨p, apex_mem_space' K hp⟩) = x
-    rw [e1, dif_pos (by rw [hxw]; exact x.2)]
+    rw [e1, dite_eq_left (by rw [hxw]; exact x.2)]
     exact Subtype.ext hxw
   right_inv' := by
     intro y hy
@@ -108,15 +108,15 @@ noncomputable def vertexChart
     have hK : starHomeo K hp hsph (stdLift n y) ∈ K.space := openStar_subset_space K p hmem
     have hinv := (starHomeo_spec K hp hsph).1.bijOn.invOn_invFunOn.1
       (openSimplex_stdVertices_subset_stdSimplex (stdLift_mem_openSimplex n hy))
-    change stdProj n (Function.invFunOn (starHomeo K hp hsph) (stdSimplex ℝ (Fin (n + 2)))
+    change stdProj n (Function.invFunOn (starHomeo K hp hsph) (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)))
       (if h : starHomeo K hp hsph (stdLift n y) ∈ K.space then (⟨_, h⟩ : K.space)
         else ⟨p, apex_mem_space' K hp⟩).1) = y
-    rw [dif_pos hK, hinv, stdProj_stdLift]
+    rw [dite_eq_left hK, hinv, stdProj_stdLift]
   open_source := isOpen_preimage_openStar K p
   open_target := isOpen_stdTarget n
   continuousOn_toFun := by
     have hcont : ContinuousOn
-        (Function.invFunOn (starHomeo K hp hsph) (stdSimplex ℝ (Fin (n + 2))) ∘
+        (Function.invFunOn (starHomeo K hp hsph) (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) ∘
           (Subtype.val : K.space → E))
         ((Subtype.val : K.space → E) ⁻¹' openStar K p) :=
       (starHomeo_spec K hp hsph).1.symm.isPiecewiseAffineOn.continuousOn.comp
@@ -135,13 +135,13 @@ noncomputable def vertexChart
       exact mem_image_of_mem _ (stdLift_mem_openSimplex n hy)
     change (if h : starHomeo K hp hsph (stdLift n y) ∈ K.space then (⟨_, h⟩ : K.space)
       else ⟨p, apex_mem_space' K hp⟩).1 = starHomeo K hp hsph (stdLift n y)
-    rw [dif_pos (openStar_subset_space K p hmem)]
+    rw [dite_eq_left (openStar_subset_space K p hmem)]
 
 open Classical in
 theorem vertexChart_apply (hsph : IsPLSphere n (SimplicialComplex.geometricLink K {p}).space)
     (x : K.space) :
     vertexChart K hp hsph x =
-      stdProj n (Function.invFunOn (starHomeo K hp hsph) (stdSimplex ℝ (Fin (n + 2))) x.1) := rfl
+      stdProj n (Function.invFunOn (starHomeo K hp hsph) (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) x.1) := rfl
 
 open Classical in
 theorem vertexChart_source (hsph : IsPLSphere n (SimplicialComplex.geometricLink K {p}).space) :
@@ -160,7 +160,7 @@ theorem vertexChart_symm_val (hsph : IsPLSphere n (SimplicialComplex.geometricLi
     exact mem_image_of_mem _ (stdLift_mem_openSimplex n hy)
   change (if h : starHomeo K hp hsph (stdLift n y) ∈ K.space then (⟨_, h⟩ : K.space)
     else ⟨p, apex_mem_space' K hp⟩).1 = starHomeo K hp hsph (stdLift n y)
-  rw [dif_pos (openStar_subset_space K p hmem)]
+  rw [dite_eq_left (openStar_subset_space K p hmem)]
 
 open Classical in
 theorem vertexChart_symm_val_mem
@@ -183,7 +183,7 @@ theorem isPiecewiseAffineOn_vertexChart
   rw [preimage_univ, inter_univ] at h2
   refine (h2.inter_of_isOpen (isClosed_avoidingUnion K p).isOpen_compl).congr fun q hq => ?_
   have hqK : q ∈ K.space := closedStar_subset_space K p hq.1
-  simp only [dif_pos hqK, vertexChart_apply, Function.comp_apply, LinearMap.coe_toAffineMap]
+  simp only [dite_eq_left hqK, vertexChart_apply, Function.comp_apply, LinearMap.coe_toAffineMap]
 
 open Classical in
 theorem isPiecewiseAffineOn_vertexChart_symm
@@ -194,7 +194,7 @@ theorem isPiecewiseAffineOn_vertexChart_symm
   have h1 : IsPiecewiseAffineOn (stdLift n) (stdTarget n) :=
     isPiecewiseAffineOn_of_affine _ (isOpen_stdTarget n)
   have h2 := (starHomeo_spec K hp hsph).1.isPiecewiseAffineOn.comp h1
-  have hsub : stdTarget n ⊆ stdLift n ⁻¹' stdSimplex ℝ (Fin (n + 2)) := fun y hy =>
+  have hsub : stdTarget n ⊆ stdLift n ⁻¹' Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := fun y hy =>
     openSimplex_stdVertices_subset_stdSimplex (stdLift_mem_openSimplex n hy)
   rw [inter_eq_left.mpr hsub] at h2
   exact h2.congr fun y hy => vertexChart_symm_val K hp hsph hy
@@ -225,7 +225,7 @@ theorem vertexChart_trans_mem_plGroupoid
     exact h2
   have h1 : IsPiecewiseAffineOn (stdLift n) U := isPiecewiseAffineOn_of_affine _ hUopen
   have h2 := (starHomeo_spec K hp hsph).1.isPiecewiseAffineOn.comp h1
-  have hsub₁ : U ⊆ stdLift n ⁻¹' stdSimplex ℝ (Fin (n + 2)) := fun y hy =>
+  have hsub₁ : U ⊆ stdLift n ⁻¹' Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := fun y hy =>
     openSimplex_stdVertices_subset_stdSimplex (stdLift_mem_openSimplex n (hUsub y hy).1)
   rw [inter_eq_left.mpr hsub₁] at h2
   have h3 := (starHomeo_spec K hp' hsph').1.symm.isPiecewiseAffineOn.comp h2

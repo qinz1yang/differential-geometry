@@ -56,7 +56,7 @@ theorem continuousMultilinearMapBasisElem_apply
     have ⟨a, ha⟩ : ∃ a, slots a ≠ slots' a := by
       contrapose! h
       exact funext h
-    exact Finset.prod_eq_zero (Finset.mem_univ a) (if_neg (Ne.symm ha))
+    exact Finset.prod_eq_zero (Finset.mem_univ a) (ite_eq_right (Ne.symm ha))
 
 omit [Fintype Idx] [DecidableEq Idx] in
 theorem continuousMultilinearMapBasisElem_linearIndependent [Finite Idx]

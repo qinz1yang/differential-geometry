@@ -208,7 +208,7 @@ private theorem coveringEdgeLift_target
     (hvw : {coveringVertex.base v, w} ∈ K.faces) :
     coveringEdgeLift hp v w hvw
       ⟨w, subset_convexHull ℝ _ (by simp)⟩ = (coveringNeighbor hp v w).1 := by
-  rw [coveringNeighbor, dif_pos hvw]
+  rw [coveringNeighbor, dite_eq_left hvw]
   rfl
 
 open Classical in
@@ -692,7 +692,7 @@ private theorem orientationCocycleCoveringSign_eq_of_point_mem
       (coveringVertex.base v) (q.image (coveringBaseVertex B p)) := by
     cases haValue : a.1.2 <;> cases hvValue : v.1.2 <;>
       simpa [orientationSheetSign, haValue, hvValue] using hflip
-  rw [orientationCocycleCoveringSign, dif_pos hq]
+  rw [orientationCocycleCoveringSign, dite_eq_left hq]
   simpa only [a, B, p, ε] using hflip'
 
 open Classical in

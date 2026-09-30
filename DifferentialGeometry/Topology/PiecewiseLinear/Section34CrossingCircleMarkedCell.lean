@@ -25,12 +25,12 @@ theorem exists_marked_derived_crossing_cell
     {D : Fin 2 → Set E} (hD : ∀ j, D j =
       (derivedNeighborhoodCell R s).space ∩ (derivedNeighborhoodCell R (t j)).space)
     {qcap : Fin 2 → (Fin 3 → ℝ) → E}
-    (hcap : ∀ j, IsPLHomeomorphOn (qcap j) (stdSimplex ℝ (Fin 3)) (D j))
+    (hcap : ∀ j, IsPLHomeomorphOn (qcap j) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D j))
     (hDS : ∀ j, D j ⊆ (derivedNeighborhoodCellBase R s).space)
     (hdis : Disjoint (D 0) (D 1)) {y : Fin 2 → E}
     (hy : ∀ j, y j = ({s.centroid ℝ id, (t j).centroid ℝ id} : Finset E).centroid ℝ id)
     {P : Fin 4 → Set E} {q : Fin 4 → (Fin 3 → ℝ) → E}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (P i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P i))
     (hPR : ∀ i, (PiecewiseLinear.restrict R (P i)).space = P i)
     {W : Set E} (hbd : ∀ x ∈ R.space ∩ W, ∀ i,
       x ∈ q i '' stdSimplexBoundary 2 ↔ x ∈ Γ.space)

@@ -27,20 +27,20 @@ theorem stageFill_fixed_convergence
   have hR' : MapCInfConvergenceOnCompacts (Metric.ball 0 (8 * lam)) R' Jbar := by
     apply hR.congr_eventually Metric.isOpen_ball
     · filter_upwards [eventually_ge_atTop N] with k hk z hz
-      simp only [R', if_pos hk]
+      simp only [R', ite_eq_left hk]
     · exact eqOn_refl _ _
   have hR'C : ∀ k, ContDiffOn ℝ ∞ (R' k) (Metric.ball 0 (8 * lam)) := by
     intro k
     by_cases hk : N ≤ k
-    · simpa only [R', if_pos hk] using hN k hk
-    · simpa only [R', if_neg hk] using hJbar
+    · simpa only [R', ite_eq_left hk] using hN k hk
+    · simpa only [R', ite_eq_right hk] using hJbar
   have hfill := stageFill_convergence lam hlam hU
     (mapCInfConvergence_const J) hR' (fun _ => hJ) hJ hR'C hJbar hinv
     id id tendsto_id tendsto_id
   constructor
   · apply hfill.congr_eventually hU
     · filter_upwards [eventually_ge_atTop N] with k hk z hz
-      simp only [R', if_pos hk, id_eq]
+      simp only [R', ite_eq_left hk, id_eq]
     · exact eqOn_refl _ _
   · filter_upwards [hRC] with k hk
     exact safeFill_smooth (activityBump lam hlam).contDiff
@@ -91,19 +91,19 @@ theorem exists_smooth_active_coordinate_fill
   have hxic : ∀ i k, ContDiffOn ℝ ∞ (fun z => xi k z i) U := by
     intro i k
     by_cases hk : N ≤ k
-    · simpa only [xi, if_pos hk] using hN k hk i
-    · simp only [xi, if_neg hk]
+    · simpa only [xi, ite_eq_left hk] using hN k hk i
+    · simp only [xi, ite_eq_right hk]
       exact contDiffOn_id
   have hxiconv : ∀ i, MapCInfConvergenceOnCompacts U (fun k z => xi k z i) id := by
     intro i
     apply (hfill i).1.congr_eventually hU
     · filter_upwards [eventually_ge_atTop N] with k hk z hz
-      simp only [xi, if_pos hk]
+      simp only [xi, ite_eq_left hk]
     · exact eqOn_refl _ _
   refine ⟨xi, (fun k => contDiffOn_pi.mpr (fun i => hxic i k)),
     mapCInfConvergence_pi hU hxiconv hxic (fun _ => contDiffOn_id), ?_⟩
   filter_upwards [eventually_ge_atTop N] with k hk z hz i hi
-  simp only [xi, if_pos hk]
+  simp only [xi, ite_eq_left hk]
   exact stageFill_eq_of_image_mem_closedBall lam hlam (J i) (R i k) (hactive z hz i hi)
 
 theorem exists_smooth_active_configuration
@@ -219,17 +219,17 @@ theorem exists_smooth_active_configuration_sub_const
       (mapCInfConvergence_const A) hxiC hInf
       (fun _ => hA.contDiffOn) hA.contDiffOn
       (fun _ _ => mem_univ _) (fun _ _ _ => mem_univ _)
-    convert hconv using 1
-    · funext k z
+    apply hconv.congr hU
+    · intro k z hz
       apply Prod.ext
       · rfl
       · funext i
-        simp only [A, Pi.add_apply, add_comm]
-    · funext z
+        simp [A, Pi.add_apply, add_comm]
+    · intro z hz
       apply Prod.ext
       · rfl
       · funext i
-        simp only [A, Pi.add_apply, sub_eq_add_neg, add_comm]
+        simp [A, Pi.add_apply, sub_eq_add_neg, add_comm]
   · filter_upwards [hxiActive] with k hk z hz i hi
     exact congrArg (fun y => -a + y) (hk z hz i hi)
 
@@ -306,32 +306,32 @@ theorem exists_translated_active_configuration_of_near
   let R : ι → ℕ → E → E := fun i k => if h : near j i = true then Rraw i h k else id
   have hJ : ∀ i, ContDiffOn ℝ ∞ (J i) U := by
     intro i; by_cases hi : near j i = true
-    · simpa only [J, dif_pos hi] using (hJraw i hi).mono hball
-    · simpa only [J, dif_neg hi] using (contDiffOn_id : ContDiffOn ℝ ∞ (id : E → E) U)
+    · simpa only [J, dite_eq_left hi] using (hJraw i hi).mono hball
+    · simpa only [J, dite_eq_right hi] using (contDiffOn_id : ContDiffOn ℝ ∞ (id : E → E) U)
   have hJbar : ∀ i, ContDiffOn ℝ ∞ (Jbar i) (Metric.ball 0 (8 * lam)) := by
     intro i; by_cases hi : near j i = true
-    · simpa only [Jbar, dif_pos hi, hlam8] using hJbarRaw i hi
-    · simpa only [Jbar, dif_neg hi] using (contDiffOn_id : ContDiffOn ℝ ∞ (id : E → E) (Metric.ball 0 (8 * lam)))
+    · simpa only [Jbar, dite_eq_left hi, hlam8] using hJbarRaw i hi
+    · simpa only [Jbar, dite_eq_right hi] using (contDiffOn_id : ContDiffOn ℝ ∞ (id : E → E) (Metric.ball 0 (8 * lam)))
   have hR : ∀ i, MapCInfConvergenceOnCompacts (Metric.ball 0 (8 * lam)) (R i) (Jbar i) := by
     intro i; by_cases hi : near j i = true
-    · simpa only [R, Jbar, dif_pos hi, hlam8] using hRraw i hi
-    · simpa only [R, Jbar, dif_neg hi] using (mapCInfConvergence_const (U := Metric.ball 0 (8 * lam)) (id : E → E))
+    · simpa only [R, Jbar, dite_eq_left hi, hlam8] using hRraw i hi
+    · simpa only [R, Jbar, dite_eq_right hi] using (mapCInfConvergence_const (U := Metric.ball 0 (8 * lam)) (id : E → E))
   have hRC : ∀ i, ∀ᶠ k in atTop, ContDiffOn ℝ ∞ (R i k) (Metric.ball 0 (8 * lam)) := by
     intro i; by_cases hi : near j i = true
-    · simpa only [R, dif_pos hi, hlam8] using hRrawC i hi
-    · exact Filter.Eventually.of_forall fun k => by simpa only [R, dif_neg hi] using (contDiffOn_id : ContDiffOn ℝ ∞ (id : E → E) (Metric.ball 0 (8 * lam)))
+    · simpa only [R, dite_eq_left hi, hlam8] using hRrawC i hi
+    · exact Filter.Eventually.of_forall fun k => by simpa only [R, dite_eq_right hi] using (contDiffOn_id : ContDiffOn ℝ ∞ (id : E → E) (Metric.ball 0 (8 * lam)))
   have hinv : ∀ i z, z ∈ U → J i z ∈ Metric.ball 0 (8 * lam) → Jbar i (J i z) = z := by
     intro i z hz _; by_cases hi : near j i = true
-    · simpa only [J, Jbar, dif_pos hi] using hinverse i hi z hz
-    · simp only [J, Jbar, dif_neg hi, id_eq]
+    · simpa only [J, Jbar, dite_eq_left hi] using hinverse i hi z hz
+    · simp only [J, Jbar, dite_eq_right hi, id_eq]
   have hact : ∀ z ∈ U, ∀ i, mu z i ≠ 0 → J i z ∈ Metric.closedBall 0 (6 * lam) := by
     intro z hz i hmi; obtain ⟨hi, hJi⟩ := hactive z hz i hmi
-    simp only [J, dif_pos hi, hlam6]
+    simp only [J, dite_eq_left hi, hlam6]
     exact Metric.ball_subset_closedBall.trans (Metric.closedBall_subset_closedBall (by linarith)) hJi
   obtain ⟨xi, hxiC, hxiconv, hxiActive⟩ := exists_smooth_active_configuration_sub_const a lam hlam (show IsOpen U from Metric.isOpen_ball) mu hmu J Jbar R hJ hJbar hR hRC hinv hact
   refine ⟨xi, hxiC, hxiconv, ?_⟩
   filter_upwards [hxiActive] with k hk z hz i hi hmi
-  simpa only [R, J, dif_pos hi] using hk z hz i hmi
+  simpa only [R, J, dite_eq_left hi] using hk z hz i hmi
 end DifferentialGeometry.CheegerGromovCompactness
 
 end

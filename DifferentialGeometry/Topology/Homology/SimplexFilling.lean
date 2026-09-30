@@ -25,7 +25,8 @@ theorem sphereMap_nullhomotopic_of_subsingleton_homotopyGroup (n : ℕ) (x : X)
 theorem exists_simplex_extension_of_subsingleton_homotopyGroup (n : ℕ) (x : X)
     [Subsingleton (HomotopyGroup (Fin (n + 1)) X x)]
     (f : C(Simplex.boundary (Fin (n + 3)), X)) :
-    ∃ F : C(stdSimplex ℝ (Fin (n + 3)), X), ∀ z : Simplex.boundary (Fin (n + 3)),
+    ∃ F : C(Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 3)), X),
+      ∀ z : Simplex.boundary (Fin (n + 3)),
       F z.val = f z := by
   let e := Simplex.stdSimplexNormedBoundarySphereHomeomorph
     (EuclideanSpace.equiv (Fin (n + 2)) ℝ).symm
@@ -50,31 +51,42 @@ theorem exists_integralSingularSimplex_of_compatible_faces (n : ℕ) (x : X)
         (TopCat.toSSet.obj (TopCat.of X)).δ (j.predAbove i) (f (i.succAbove j))) :
     ∃ σ : integralSingularSimplex (n + 2) X,
       ∀ i : Fin (n + 3), (TopCat.toSSet.obj (TopCat.of X)).δ i σ = f i := by
-  let F : Fin (n + 3) → C(stdSimplex ℝ (Fin (n + 2)), X) :=
-    fun i => integralSingularSimplexEquiv (n + 1) X (f i)
+  let F : Fin (n + 3) → C(Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)), X) :=
+    fun i => ⟨fun p => integralSingularSimplexEquiv (n + 1) X (f i)
+      ((Convexity.StdSimplex.coordinateEquiv ℝ _).symm p),
+      (integralSingularSimplexEquiv (n + 1) X (f i)).continuous.comp
+        (Convexity.StdSimplex.coordinateHomeomorph ℝ _).symm.continuous⟩
   have hF : ∀ (i : Fin (n + 3)) (j : Fin (n + 2))
-      (p : stdSimplex ℝ (Fin (n + 1))),
-      F i (stdSimplex.map j.succAbove p) =
-        F (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p) := by
+      (p : Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))),
+      F i (Convexity.StdSimplex.coordinateMap j.succAbove p) =
+        F (i.succAbove j) (Convexity.StdSimplex.coordinateMap (j.predAbove i).succAbove p) := by
     intro i j p
+    obtain ⟨p, rfl⟩ := (Convexity.StdSimplex.coordinateEquiv ℝ _).surjective p
     have he := congrArg (fun s => integralSingularSimplexEquiv n X s p) (h i j)
     change (TopCat.of X).toSSetObjEquiv _ ((TopCat.toSSet.obj (TopCat.of X)).δ j (f i)) p =
       (TopCat.of X).toSSetObjEquiv _
         ((TopCat.toSSet.obj (TopCat.of X)).δ (j.predAbove i) (f (i.succAbove j))) p at he
     rw [TopCat.toSSetObjEquiv_δ_apply, TopCat.toSSetObjEquiv_δ_apply] at he
-    exact he
+    simpa only [F, ContinuousMap.coe_mk, ← Convexity.StdSimplex.coordinateEquiv_map,
+      Equiv.symm_apply_apply, integralSingularSimplexEquiv] using he
   obtain ⟨G, hG⟩ := exists_simplex_extension_of_subsingleton_homotopyGroup n x
     (Simplex.boundaryDesc F hF)
-  refine ⟨(integralSingularSimplexEquiv (n + 2) X).symm G, ?_⟩
+  let G' := G.comp ⟨Convexity.StdSimplex.coordinateEquiv ℝ _,
+    (Convexity.StdSimplex.coordinateHomeomorph ℝ _).continuous⟩
+  refine ⟨(integralSingularSimplexEquiv (n + 2) X).symm G', ?_⟩
   intro i
   apply (integralSingularSimplexEquiv (n + 1) X).injective
   ext p
   change (TopCat.of X).toSSetObjEquiv _
-    ((TopCat.toSSet.obj (TopCat.of X)).δ i ((integralSingularSimplexEquiv (n + 2) X).symm G)) p = _
+    ((TopCat.toSSet.obj (TopCat.of X)).δ i ((integralSingularSimplexEquiv (n + 2) X).symm G')) p = _
   rw [TopCat.toSSetObjEquiv_δ_apply]
-  change G (stdSimplex.map i.succAbove p) = _
-  exact (hG ⟨stdSimplex.map i.succAbove p,
-    ⟨i, Simplex.map_succAbove_apply_pivot i p⟩⟩).trans
-      (Simplex.boundaryDesc_face F hF i p)
+  change G (Convexity.StdSimplex.coordinateEquiv ℝ _
+    (Convexity.StdSimplex.map i.succAbove p)) = _
+  rw [Convexity.StdSimplex.coordinateEquiv_map]
+  have hface := (hG ⟨Convexity.StdSimplex.coordinateMap i.succAbove
+      (Convexity.StdSimplex.coordinateEquiv ℝ _ p),
+    ⟨i, Simplex.map_succAbove_apply_pivot i _⟩⟩).trans
+      (Simplex.boundaryDesc_face F hF i (Convexity.StdSimplex.coordinateEquiv ℝ _ p))
+  simpa only [F, ContinuousMap.coe_mk, Equiv.symm_apply_apply] using hface
 
 end DifferentialGeometry.Topology

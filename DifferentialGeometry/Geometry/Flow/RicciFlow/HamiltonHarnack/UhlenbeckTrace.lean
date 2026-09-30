@@ -60,7 +60,7 @@ theorem hamiltonMAt_metricTrace_tensor0SPullbackCLE_eq_laplacian_add
   have hnorm :
       normSq0S gSource x 2 (tensor0SPullbackCLE 2 e (S.ricci clock.time y)) =
         normSq0S (S.family.metric clock.time) y 2 (S.ricci clock.time y) :=
-    Tensor0SBundle.inner0S_tensor0SPullbackCLE gSource (S.family.metric clock.time)
+    DifferentialGeometry.Tensor0SBundle.inner0S_tensor0SPullbackCLE gSource (S.family.metric clock.time)
       x y 2 e hiso _ _
   rw [hnorm]
   rw [hamiltonMAt_metricTrace_eq S hS clock ht y]

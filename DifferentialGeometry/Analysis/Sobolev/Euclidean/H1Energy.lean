@@ -44,9 +44,9 @@ theorem integral_smooth_h1_energy_le_wkpNorm_sq
         ∑ i, (eLpNorm (D i) 2 (volume.restrict Ω)).toReal := by
     rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial 0 2 Ω f]
     simp only [wkpNorm_zero, ← hDf]
-    rw [ENNReal.toReal_add hf1.1.2.ne (ENNReal.sum_ne_top.mpr fun i _ => (hD i).2.ne),
+    rw [ENNReal.toReal_add hf1.1.eLpNorm_lt_top.ne (ENNReal.sum_ne_top.mpr fun i _ => (hD i).eLpNorm_lt_top.ne),
       ENNReal.toReal_sum]
-    exact fun i _ => (hD i).2.ne
+    exact fun i _ => (hD i).eLpNorm_lt_top.ne
   have hI : Integrable (fun x => f x ^ 2 + ∑ i, D i x ^ 2) (volume.restrict Ω) :=
     hf1.1.integrable_sq.add (integrable_finsetSum _ fun i _ => (hD i).integrable_sq)
   have hmono := integral_mono_measure (Measure.restrict_mono_set volume hKΩ)

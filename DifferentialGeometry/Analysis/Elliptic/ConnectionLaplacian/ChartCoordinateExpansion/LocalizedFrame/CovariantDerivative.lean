@@ -59,7 +59,7 @@ private lemma chartFrameNormGlobalSmoothCoordMatrix_eq_clmAt_proj
           ((chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun b)) := by
   classical
   unfold chartFrameNormGlobalSmoothCoordMatrix
-  rw [dif_pos hb]
+  rw [dite_eq_left hb]
   unfold DifferentialGeometry.Tensor.Coordinates.chartBasisFamily
   rw [Module.Basis.map_repr]
   simp only [LinearEquiv.trans_apply]

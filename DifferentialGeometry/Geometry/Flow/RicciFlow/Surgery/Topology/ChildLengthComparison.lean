@@ -49,7 +49,7 @@ private theorem local_length_comparison_of_local_terminal_edist_comparison
     exact heq' ▸ hz
   have hlength : riemannianCurveLength
       ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-      (fun t => (Kc c).rfs_whole_parent_map (γ t)) a b ≤
+      (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
         riemannianCurveLength (H.event i).terminal.metric γT a b := by
     unfold riemannianCurveLength
     apply iSup_le
@@ -64,7 +64,8 @@ private theorem local_length_comparison_of_local_terminal_edist_comparison
     have hb := hcollapseV (γ (p.2.1 (j + 1))) (hmap ht₁).2
       (γ (p.2.1 j)) (hmap ht₀).2
       (hterm _ (hmap ht₁).2) (hterm _ (hmap ht₀).2)
-    convert hb using 1 <;> congr 1 <;> apply Subtype.ext <;>
+    convert hb using 1
+    congr 1 <;> apply Subtype.ext <;>
       simp only [γT, projIcc_of_mem, ht₀, ht₁]
   have hmetric : riemannianCurveLength (H.event i).terminal.metric γT a b ≤
       ENNReal.ofReal (ell s) * riemannianCurveLength
@@ -110,7 +111,7 @@ theorem child_comparison_metric
     (Kc : (c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, f c = (Kc c).rfs_whole_parent_map) ∧
+      (∀ c, f c = (Kc c).canonicalWholeParentMap) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
         Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1) ∧

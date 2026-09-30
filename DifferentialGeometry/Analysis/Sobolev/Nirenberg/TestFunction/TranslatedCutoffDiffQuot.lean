@@ -189,115 +189,33 @@ private lemma lintegral_translate_diffQuot_sq
 omit [NeZero d] in
 theorem eLpNorm_translatedCutoffSqDiffQuot_le
     (k : Fin d) (h : ℝ) {η u : EuclN → ℝ}
-    {M_η : ℝ} (hM_η : ∀ x, |η x| ≤ M_η) :
+    {M_η : ℝ} (hM_η : ∀ x, |η x| ≤ M_η)
+    (hf : AEStronglyMeasurable (translatedCutoffSqDiffQuot k h η u)
+      (volume : Measure EuclN)) :
     eLpNorm (translatedCutoffSqDiffQuot k h η u) 2 (volume : Measure EuclN) ≤
       ENNReal.ofReal (M_η^2) *
         eLpNorm (diffQuot k h u) 2 (volume : Measure EuclN) := by
-  classical
-  have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
-  have h2_ne_top : (2 : ℝ≥0∞) ≠ ∞ := by norm_num
-  have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
-  have h_pow_eq : ∀ a : ℝ≥0∞, a ^ (2 : ℝ) = a ^ (2 : ℕ) := by
-    intro a
-    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) from by norm_num, ENNReal.rpow_natCast]
-  have h_pt_enorm : ∀ x : EuclN,
-      (‖translatedCutoffSqDiffQuot k h η u x‖ₑ : ℝ≥0∞)^(2 : ℕ) ≤
-        ENNReal.ofReal (M_η^4) *
-          (‖diffQuot k h u (x + (-h) • EuclideanSpace.single k 1)‖ₑ
-            : ℝ≥0∞)^(2 : ℕ) := by
-    intro x
-    have h_real :=
-      translatedCutoffSqDiffQuot_sq_le (d := d) (u := u) k h hM_η x
-    have h_lhs_eq :
-        (‖translatedCutoffSqDiffQuot k h η u x‖ₑ : ℝ≥0∞)^(2 : ℕ) =
-          ENNReal.ofReal ((translatedCutoffSqDiffQuot k h η u x)^2) := by
-      rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _) 2,
-        sq_abs]
-    have h_rhs_eq :
-        (‖diffQuot k h u (x + (-h) • EuclideanSpace.single k 1)‖ₑ : ℝ≥0∞)^(2 : ℕ) =
-          ENNReal.ofReal
-            ((diffQuot k h u (x + (-h) • EuclideanSpace.single k 1))^2) := by
-      rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _) 2,
-        sq_abs]
-    rw [h_lhs_eq, h_rhs_eq]
-    have hM4_nn : 0 ≤ M_η^4 := by positivity
-    rw [show ENNReal.ofReal (M_η^4) *
-        ENNReal.ofReal
-          ((diffQuot k h u (x + (-h) • EuclideanSpace.single k 1))^2) =
-      ENNReal.ofReal (M_η^4 *
-        (diffQuot k h u (x + (-h) • EuclideanSpace.single k 1))^2) from
-        (ENNReal.ofReal_mul hM4_nn).symm]
-    exact ENNReal.ofReal_le_ofReal h_real
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h2_ne_zero h2_ne_top,
-    eLpNorm_eq_lintegral_rpow_enorm_toReal h2_ne_zero h2_ne_top]
-  rw [h2_toReal]
-  have h_lhs_pow_eq :
-      (∫⁻ x : EuclN,
-          (‖translatedCutoffSqDiffQuot k h η u x‖ₑ : ℝ≥0∞) ^ (2 : ℝ)
-          ∂(volume : Measure EuclN)) =
-        ∫⁻ x : EuclN,
-          (‖translatedCutoffSqDiffQuot k h η u x‖ₑ : ℝ≥0∞) ^ (2 : ℕ)
-          ∂(volume : Measure EuclN) := by
-    refine lintegral_congr_ae ?_
-    filter_upwards with x using h_pow_eq _
-  have h_rhs_pow_eq :
-      (∫⁻ y : EuclN, (‖diffQuot k h u y‖ₑ : ℝ≥0∞) ^ (2 : ℝ)
-          ∂(volume : Measure EuclN)) =
-        ∫⁻ y : EuclN, (‖diffQuot k h u y‖ₑ : ℝ≥0∞) ^ (2 : ℕ)
-          ∂(volume : Measure EuclN) := by
-    refine lintegral_congr_ae ?_
-    filter_upwards with y using h_pow_eq _
-  rw [h_lhs_pow_eq, h_rhs_pow_eq]
-  have h_lint_le :
-      ∫⁻ x : EuclN, (‖translatedCutoffSqDiffQuot k h η u x‖ₑ : ℝ≥0∞) ^ (2 : ℕ) ≤
-        ENNReal.ofReal (M_η^4) *
-          ∫⁻ y : EuclN, (‖diffQuot k h u y‖ₑ : ℝ≥0∞) ^ (2 : ℕ) := by
-    have h_step :
-        ∫⁻ x : EuclN, (‖translatedCutoffSqDiffQuot k h η u x‖ₑ : ℝ≥0∞) ^ (2 : ℕ) ≤
-          ∫⁻ x : EuclN,
-            ENNReal.ofReal (M_η^4) *
-              (‖diffQuot k h u (x + (-h) • EuclideanSpace.single k 1)‖ₑ
-                : ℝ≥0∞) ^ (2 : ℕ) := by
-      refine lintegral_mono_ae ?_
-      filter_upwards with x using h_pt_enorm x
-    have h_const_pull :
-        ∫⁻ x : EuclN,
-            ENNReal.ofReal (M_η^4) *
-              (‖diffQuot k h u (x + (-h) • EuclideanSpace.single k 1)‖ₑ
-                : ℝ≥0∞) ^ (2 : ℕ) =
-          ENNReal.ofReal (M_η^4) *
-            ∫⁻ x : EuclN,
-              (‖diffQuot k h u (x + (-h) • EuclideanSpace.single k 1)‖ₑ
-                : ℝ≥0∞) ^ (2 : ℕ) := by
-      rw [lintegral_const_mul']
-      exact ENNReal.ofReal_ne_top
-    rw [h_const_pull] at h_step
-    rw [lintegral_translate_diffQuot_sq (d := d) k h u] at h_step
-    exact h_step
-  refine le_trans (ENNReal.rpow_le_rpow h_lint_le (by norm_num : (0 : ℝ) ≤ 1/2)) ?_
-  have hM4_nn : 0 ≤ M_η^4 := by positivity
-  have h_mul_rpow :
-      (ENNReal.ofReal (M_η^4) *
-          ∫⁻ y : EuclN,
-            (‖diffQuot k h u y‖ₑ : ℝ≥0∞) ^ (2 : ℕ)) ^ ((1 : ℝ) / 2) =
-        (ENNReal.ofReal (M_η^4)) ^ ((1 : ℝ) / 2) *
-          (∫⁻ y : EuclN,
-            (‖diffQuot k h u y‖ₑ : ℝ≥0∞) ^ (2 : ℕ)) ^ ((1 : ℝ) / 2) := by
-    rw [ENNReal.mul_rpow_of_nonneg _ _ (by norm_num : (0 : ℝ) ≤ 1/2)]
-  rw [h_mul_rpow]
-  have h_sqrt_M4 :
-      (ENNReal.ofReal (M_η^4)) ^ ((1 : ℝ) / 2) = ENNReal.ofReal (M_η^2) := by
-    have hM2_nn : 0 ≤ M_η^2 := sq_nonneg _
-    have h_M4_to_pow :
-        ENNReal.ofReal (M_η^4) = (ENNReal.ofReal (M_η^2)) ^ (2 : ℕ) := by
-      rw [show M_η^4 = (M_η^2)^(2 : ℕ) from by ring,
-        ENNReal.ofReal_pow hM2_nn 2]
-    rw [h_M4_to_pow]
-    rw [← ENNReal.rpow_natCast (ENNReal.ofReal (M_η^2)) 2,
-      ← ENNReal.rpow_mul]
-    have h_calc : ((2 : ℕ) : ℝ) * (1 / 2) = 1 := by norm_num
-    rw [h_calc, ENNReal.rpow_one]
-  rw [h_sqrt_M4]
+  have hb : eLpNorm (translatedCutoffSqDiffQuot k h η u) 2 volume ≤
+      ENNReal.ofReal (M_η^2) *
+        eLpNorm (translate k (-h) (diffQuot k h u)) 2 volume := by
+    refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul hf ?_ 2
+    filter_upwards [] with x
+    rw [translatedCutoffSqDiffQuot_apply, norm_mul]
+    rw [Real.norm_eq_abs ((η (x + (-h) • EuclideanSpace.single k 1))^2),
+      abs_of_nonneg (sq_nonneg _)]
+    apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
+    simpa only [sq_abs] using
+      pow_le_pow_left₀ (abs_nonneg _) (hM_η (x + (-h) • EuclideanSpace.single k 1)) 2
+  let τ : EuclN ≃ₜ EuclN := Homeomorph.addRight ((-h) • EuclideanSpace.single k 1)
+  have hMP : MeasurePreserving τ volume volume := measurePreserving_add_right volume _
+  have heq : eLpNorm (translate k (-h) (diffQuot k h u)) 2 volume =
+      eLpNorm (diffQuot k h u) 2 volume := by
+    change eLpNorm ((diffQuot k h u) ∘ τ) 2 volume = _
+    have ht := τ.measurableEmbedding.eLpNorm_map_measure
+      (g := diffQuot k h u) (p := 2) (μ := volume)
+    rw [hMP.map_eq] at ht
+    exact ht.symm
+  rwa [heq] at hb
 
 omit [NeZero d] in
 private lemma volume_compact_lt_top {K : Set EuclN} (hK : IsCompact K) :
@@ -307,12 +225,37 @@ omit [NeZero d] in
 theorem eLpNorm_translatedCutoffSqDiffQuot_restrict_le
     (k : Fin d) (h : ℝ) {η u : EuclN → ℝ}
     {M_η : ℝ} (hM_η : ∀ x, |η x| ≤ M_η)
-    (Ω' : Set EuclN) :
+    (Ω' : Set EuclN)
+    (hf : AEStronglyMeasurable (translatedCutoffSqDiffQuot k h η u)
+      ((volume : Measure EuclN).restrict Ω')) :
     eLpNorm (translatedCutoffSqDiffQuot k h η u) 2 ((volume : Measure EuclN).restrict Ω') ≤
       ENNReal.ofReal (M_η^2) *
         eLpNorm (diffQuot k h u) 2 (volume : Measure EuclN) := by
-  refine le_trans ?_ (eLpNorm_translatedCutoffSqDiffQuot_le (d := d) k h hM_η)
-  exact eLpNorm_mono_measure _ Measure.restrict_le_self
+  have hb : eLpNorm (translatedCutoffSqDiffQuot k h η u) 2 (volume.restrict Ω') ≤
+      ENNReal.ofReal (M_η^2) *
+        eLpNorm (translate k (-h) (diffQuot k h u)) 2 (volume.restrict Ω') := by
+    refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul hf ?_ 2
+    filter_upwards [] with x
+    rw [translatedCutoffSqDiffQuot_apply, norm_mul]
+    rw [Real.norm_eq_abs ((η (x + (-h) • EuclideanSpace.single k 1))^2),
+      abs_of_nonneg (sq_nonneg _)]
+    apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
+    simpa only [sq_abs] using
+      pow_le_pow_left₀ (abs_nonneg _) (hM_η (x + (-h) • EuclideanSpace.single k 1)) 2
+  have hrestrict :
+      eLpNorm (translate k (-h) (diffQuot k h u)) 2 (volume.restrict Ω') ≤
+        eLpNorm (translate k (-h) (diffQuot k h u)) 2 volume :=
+    eLpNorm_mono_measure _ Measure.restrict_le_self
+  let τ : EuclN ≃ₜ EuclN := Homeomorph.addRight ((-h) • EuclideanSpace.single k 1)
+  have hMP : MeasurePreserving τ volume volume := measurePreserving_add_right volume _
+  have heq : eLpNorm (translate k (-h) (diffQuot k h u)) 2 volume =
+      eLpNorm (diffQuot k h u) 2 volume := by
+    change eLpNorm ((diffQuot k h u) ∘ τ) 2 volume = _
+    have ht := τ.measurableEmbedding.eLpNorm_map_measure
+      (g := diffQuot k h u) (p := 2) (μ := volume)
+    rw [hMP.map_eq] at ht
+    exact ht.symm
+  exact (hb.trans (mul_le_mul_right hrestrict _)).trans_eq (congrArg _ heq)
 
 omit [NeZero d] in
 omit [NeZero d] in

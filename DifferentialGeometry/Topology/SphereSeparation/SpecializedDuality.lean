@@ -6,6 +6,7 @@ import Mathlib.Algebra.Homology.ShortComplex.Abelian
 import Mathlib.Topology.Category.TopCat.EpiMono
 import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
 import DifferentialGeometry.Topology.SphereSeparation.AlexanderDuality
+import DifferentialGeometry.Topology.Simplex.Coordinates
 
 set_option autoImplicit false
 
@@ -263,7 +264,7 @@ theorem excisionCover_union
 
 abbrev TopologicalSingularSimplex
     (X : Type) [TopologicalSpace X] (n : ℕ) :=
-  C(stdSimplex ℝ (Fin (n + 1)), X)
+  C(Convexity.StdSimplex ℝ (Fin (n + 1)), X)
 
 def SingularSimplexSmallFor
     {X : Type} [TopologicalSpace X] {n : ℕ}
@@ -297,14 +298,14 @@ theorem singularZeroSimplex_smallFor_excisionCover
 def singularSimplexExcisionPullbackCover
     {X : Type} [TopologicalSpace X] {n : ℕ}
     (A U : Set X) (s : TopologicalSingularSimplex X n) :
-    Set (Set (stdSimplex ℝ (Fin (n + 1)))) :=
+    Set (Set (Convexity.StdSimplex ℝ (Fin (n + 1)))) :=
   {s ⁻¹' excisionCoverNear A, s ⁻¹' excisionCoverFar U}
 
 theorem singularSimplex_excisionLebesgueNumber
     {X : Type} [TopologicalSpace X] {n : ℕ} {A U : Set X}
     (h : closure U ⊆ interior A)
     (s : TopologicalSingularSimplex X n) :
-    ∃ δ > 0, ∀ x : stdSimplex ℝ (Fin (n + 1)),
+    ∃ δ > 0, ∀ x : Convexity.StdSimplex ℝ (Fin (n + 1)),
       ∃ V ∈ singularSimplexExcisionPullbackCover A U s,
         Metric.ball x δ ⊆ V := by
   have hopen : ∀ V ∈ singularSimplexExcisionPullbackCover A U s, IsOpen V := by
@@ -339,7 +340,7 @@ theorem topologicalSingularSimplexLift_coe
     {X : Type} [TopologicalSpace X] {n : ℕ}
     (s : TopologicalSingularSimplex X n) (A : Set X)
     (h : Set.range s ⊆ A)
-    (x : stdSimplex ℝ (Fin (n + 1))) :
+    (x : Convexity.StdSimplex ℝ (Fin (n + 1))) :
     (topologicalSingularSimplexLift s A h x : X) = s x :=
   rfl
 
@@ -435,9 +436,6 @@ theorem mono_smallSingularChainInclusion
     smallSingularChainComplex, AlgebraicTopology.singularChainComplexFunctor,
     SSet.chainComplexMap, SSet.chainComplexFunctor]
   apply +allowSynthFailures Functor.map_mono
-  apply +allowSynthFailures Functor.map_mono
-  dsimp [SSet, SimplicialObject.whiskering, SimplicialObject]
-  infer_instance
 
 theorem isIso_smallSingularChainInclusion_f_zero
     (X : TopCat) (V W : Set X) (hcover : V ∪ W = Set.univ) :
@@ -456,9 +454,9 @@ theorem isIso_smallSingularChainInclusion_f_zero
     AlgebraicTopology.alternatingFaceMapComplex,
     SimplicialObject.whiskering, SimplicialObject]
   change IsIso (Sigma.map'
-    (f := fun _ : (smallSingularSubcomplex X V W : SSet).obj
+    (g := fun _ : (smallSingularSubcomplex X V W : SSet).obj
         (Opposite.op (SimplexCategory.mk 0)) ↦ ModuleCat.of ℤ ℤ)
-    (g := fun _ : (TopCat.toSSet.obj X).obj
+    (f := fun _ : (TopCat.toSSet.obj X).obj
         (Opposite.op (SimplexCategory.mk 0)) ↦ ModuleCat.of ℤ ℤ)
     (fun x : (smallSingularSubcomplex X V W : SSet).obj
         (Opposite.op (SimplexCategory.mk 0)) ↦

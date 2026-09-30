@@ -169,17 +169,17 @@ theorem dist_lt_dist_add_dist_of_geodesic_avoidance
   have hB (t : ℝ) (ht : t ∈ Icc 0 s) (u : ℝ) (hu : u ∈ Icc 0 s) :
       dist (B t) (B u) = |t - u| := dist_rescaled_segment hy b hb ht hu
   let gamma (t : ℝ) := if t ≤ r then A t else B (r + s - t)
-  have hg0 : gamma 0 = x := by simpa only [gamma, if_pos hx.le] using hA0
+  have hg0 : gamma 0 = x := by simpa only [gamma, ite_eq_left hx.le] using hA0
   have hgend : gamma (r + s) = y := by
     have hgt : ¬ r + s ≤ r := by linarith only [hy]
-    simpa only [gamma, if_neg hgt, sub_self] using hB0
-  have hgr : gamma r = p := by simpa only [gamma, if_pos le_rfl] using hAr
+    simpa only [gamma, ite_eq_right hgt, sub_self] using hB0
+  have hgr : gamma r = p := by simpa only [gamma, ite_eq_left le_rfl] using hAr
   have hordered (t : ℝ) (ht : t ∈ Icc 0 (r + s))
       (u : ℝ) (hu : u ∈ Icc 0 (r + s)) (htu : t ≤ u) :
       dist (gamma t) (gamma u) ≤ u - t := by
     by_cases htr : t ≤ r
     · by_cases hur : u ≤ r
-      · rw [show gamma t = A t from if_pos htr, show gamma u = A u from if_pos hur,
+      · rw [show gamma t = A t from ite_eq_left htr, show gamma u = A u from ite_eq_left hur,
           hA t ⟨ht.1, htr⟩ u ⟨hu.1, hur⟩, abs_of_nonpos (sub_nonpos.mpr htu)]
         linarith only []
       · have hru : r ≤ u := (not_le.mp hur).le
@@ -191,13 +191,13 @@ theorem dist_lt_dist_add_dist_of_geodesic_avoidance
         rw [hBs, abs_of_nonneg (by linarith only [hru] : 0 ≤ s - (r + s - u))] at hright
         have htri := dist_triangle (A t) p (B (r + s - u))
         rw [hleft, hright] at htri
-        rw [show gamma t = A t from if_pos htr, show gamma u = B (r + s - u) from if_neg hur]
+        rw [show gamma t = A t from ite_eq_left htr, show gamma u = B (r + s - u) from ite_eq_right hur]
         linarith only [htri]
     · have hur : ¬ u ≤ r := fun h => htr (htu.trans h)
       have hrt : r ≤ t := (not_le.mp htr).le
       have hru : r ≤ u := (not_le.mp hur).le
-      rw [show gamma t = B (r + s - t) from if_neg htr,
-        show gamma u = B (r + s - u) from if_neg hur,
+      rw [show gamma t = B (r + s - t) from ite_eq_right htr,
+        show gamma u = B (r + s - u) from ite_eq_right hur,
         hB (r + s - t) ⟨sub_nonneg.mpr ht.2, by linarith only [hrt]⟩
           (r + s - u) ⟨sub_nonneg.mpr hu.2, by linarith only [hru]⟩,
         abs_of_nonneg (by linarith only [htu] : 0 ≤ r + s - t - (r + s - u))]

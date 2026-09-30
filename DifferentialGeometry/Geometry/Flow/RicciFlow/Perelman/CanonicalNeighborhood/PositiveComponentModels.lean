@@ -74,7 +74,7 @@ theorem proj_isLocalDiffeomorph_of_subsingleton_deckGroup
   · intro y hy
     rfl
 
-noncomputable def sphereDiffeomorph_of_subsingleton_deckGroup
+noncomputable def sphereDiffeomorphOfSubsingletonDeckGroup
     (D : RoundSphereQuotient E n) [Subsingleton D.Γ] :
     Diffeomorph (𝓡 n) (𝓡 n) (sphere (0 : E) 1) D.Q ∞ :=
   (D.proj_isLocalDiffeomorph_of_subsingleton_deckGroup).diffeomorphOfBijective
@@ -161,7 +161,7 @@ noncomputable def positiveComponentOfRoundSphereQuotient
     (e : Diffeomorph (𝓡 3) I3 D.Q M ∞) :
     PositiveComponent (M := M) Set.univ :=
   PositiveComponent.sphere
-    ((D.sphereDiffeomorph_of_subsingleton_deckGroup).trans e).toPartialDiffeomorph rfl rfl
+    ((D.sphereDiffeomorphOfSubsingletonDeckGroup).trans e).toPartialDiffeomorph rfl rfl
 
 theorem nonempty_positiveComponent_sphereThree :
     Nonempty (PositiveComponent (M := Sphere 3) Set.univ) :=
@@ -177,7 +177,7 @@ omit [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M] in
 theorem exists_diffeomorph_sphereThree_of_sphericalSpaceFormQuotientModel
     (P : SphericalSpaceFormQuotientModel I3 M) [Subsingleton P.quotient.Γ] :
     Nonempty (Diffeomorph (𝓡 3) I3 (Sphere 3) M ∞) :=
-  ⟨(P.quotient.sphereDiffeomorph_of_subsingleton_deckGroup).trans P.equiv.symm⟩
+  ⟨(P.quotient.sphereDiffeomorphOfSubsingletonDeckGroup).trans P.equiv.symm⟩
 
 omit [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M] in
 theorem nonempty_positiveComponent_of_sphericalSpaceFormQuotientModel

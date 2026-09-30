@@ -18,7 +18,7 @@ universe u
 
 theorem NormalizedNeck.exists_compact_long_neck_footprint
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold ThreeModel ∞ M] [T2Space M]
     {g : SmoothRiemannianMetric ThreeModel M} {δ₀ δ eps : ℝ} {k : ℕ}
     (N : NormalizedNeck g δ₀ k) (hδ : δ₀ ≤ δ) (hδ1 : δ < 1)
     (hprecision : δ₀ ≤ eps) (hsmall : eps ≤ 1 / 8646) (hk : ⌈eps⁻¹⌉₊ ≤ k)
@@ -116,7 +116,7 @@ theorem NormalizedNeck.exists_compact_long_neck_footprint
 
 theorem NormalizedNeck.exists_buffered_long_neck_region
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold ThreeModel ∞ M] [T2Space M]
     {g : SmoothRiemannianMetric ThreeModel M} {δ₀ δ eps : ℝ} {k : ℕ}
     (N : NormalizedNeck g δ₀ k) (hδ : δ₀ ≤ δ) (hδ1 : δ < 1)
     (hprecision : δ₀ ≤ eps) (hsmall : eps ≤ 1 / 8646) (hk : ⌈eps⁻¹⌉₊ ≤ k)

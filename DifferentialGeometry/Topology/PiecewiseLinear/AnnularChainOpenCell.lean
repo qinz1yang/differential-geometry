@@ -63,7 +63,7 @@ theorem IsAnnularChain.exists_cylinder_homeomorph
   have hcompact : IsCompact (stdSimplexBoundary 2) := by
     have hc : IsClosed (⋃ i : Fin 3, {x : Fin 3 → ℝ | x i = 0}) :=
       isClosed_iUnion_of_finite fun i => isClosed_eq (continuous_apply i) continuous_const
-    convert (isCompact_stdSimplex ℝ (Fin 3)).inter_right hc using 1
+    convert (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).inter_right hc using 1
     ext x
     simp [stdSimplexBoundary]
   let : CompactSpace (stdSimplexBoundary 2) := isCompact_iff_compactSpace.mp hcompact

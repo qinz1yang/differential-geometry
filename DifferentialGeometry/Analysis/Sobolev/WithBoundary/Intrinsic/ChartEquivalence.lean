@@ -673,9 +673,9 @@ theorem w1pNormIntrinsicLp_withBoundary_lt_top_of_contMDiff
   unfold
     DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.w1pNormIntrinsicLpWithBoundary
   rw [ENNReal.add_lt_top]
-  refine ⟨hu_p.2, ?_⟩
+  refine ⟨hu_p, ?_⟩
   refine lt_of_le_of_lt (iInf_le_of_le G (iInf_le _ hG_weak)) ?_
-  exact hG_p.2
+  exact hG_p
 
 theorem w1pNormIntrinsicLp_withBoundary_lt_top_of_contMDiff_interior
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E]
@@ -701,9 +701,9 @@ theorem w1pNormIntrinsicLp_withBoundary_lt_top_of_contMDiff_interior
   unfold
     DifferentialGeometry.Analysis.Sobolev.WithBoundary.IntrinsicLp.w1pNormIntrinsicLpWithBoundary
   rw [ENNReal.add_lt_top]
-  refine ⟨hu_p.2, ?_⟩
+  refine ⟨hu_p, ?_⟩
   refine lt_of_le_of_lt (iInf_le_of_le G (iInf_le _ hG_weak)) ?_
-  exact hG_p.2
+  exact hG_p
 
 private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_withBoundary_zero
     [T2Space M] [SigmaCompactSpace M]
@@ -729,16 +729,13 @@ private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_withBoundary_zero
       exact le_self_add
     rw [h_zero] at h_le_sum
     exact le_antisymm h_le_sum (zero_le)
-  have h_aestronglyMeasurable : AEStronglyMeasurable u
-      (riemannianVolumeMeasure I M g) :=
-    hu_smooth.continuous.aestronglyMeasurable
   have h_p_ne_zero : p ≠ 0 := by
     intro h
     rw [h] at hp_one
     exact absurd hp_one (by norm_num)
   have h_u_aeEq_zero :
       u =ᵐ[riemannianVolumeMeasure I M g] 0 :=
-    (eLpNorm_eq_zero_iff h_aestronglyMeasurable h_p_ne_zero).mp h_eLp_u_zero
+    (eLpNorm_eq_zero_iff h_p_ne_zero).mp h_eLp_u_zero
   have hu_cont : Continuous u := hu_smooth.continuous
   have h_zero_cont : Continuous (fun _ : M => (0 : ℝ)) := continuous_const
   have h_pos : (riemannianVolumeMeasure I M g).IsOpenPosMeasure :=

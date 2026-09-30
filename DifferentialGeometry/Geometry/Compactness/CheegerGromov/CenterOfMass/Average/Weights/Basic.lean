@@ -74,12 +74,12 @@ noncomputable def cutRaw {X : Type uX} {ι : Type uι} [DecidableEq ι]
 @[simp] theorem cutRaw_same {X : Type uX} {ι : Type uι} [DecidableEq ι]
     (cut : X → ℝ) (a : ι → X → ℝ) (i0 : ι) (x : X) :
     cutRaw cut a i0 i0 x = a i0 x := by
-  rw [cutRaw, if_pos rfl]
+  rw [cutRaw, ite_eq_left rfl]
 
 theorem cutRaw_of_ne {X : Type uX} {ι : Type uι} [DecidableEq ι]
     (cut : X → ℝ) (a : ι → X → ℝ) (i0 i : ι) (x : X) (hi : i ≠ i0) :
     cutRaw cut a i0 i x = (1 - cut x) * a i x := by
-  rw [cutRaw, if_neg hi]
+  rw [cutRaw, ite_eq_right hi]
 
 theorem cutRaw_nonneg {X : Type uX} {ι : Type uι} [DecidableEq ι]
     {cut : X → ℝ} {a : ι → X → ℝ} {i0 : ι} {x : X}

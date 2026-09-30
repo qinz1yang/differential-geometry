@@ -109,7 +109,7 @@ theorem exists_local_dirichlet_second_weak_derivative_of_weighted_weak_equation
     rw [← Measure.prod_restrict] at hm
     exact hm
   have hPmem (j) : MemLp (fun p => ∑ i, A i j p * K i p) 2 ν :=
-    memLp_finsetSum Finset.univ fun i _ => (Lp.memLp (K i)).mul (r := 2) (hA i j)
+    memLp_finsetSum Finset.univ fun i _ => (hA i j).fun_mul (r := 2) (Lp.memLp (K i))
   let P := fun j => (hPmem j).toLp (fun p => ∑ i, A i j p * K i p)
   have hP (j) : P j =ᵐ[ν] fun p => ∑ i, A i j p * K i p := (hPmem j).coeFn_toLp
   have hmem : ∀ᵐ p ∂ν, p.2 ∈ Ω :=

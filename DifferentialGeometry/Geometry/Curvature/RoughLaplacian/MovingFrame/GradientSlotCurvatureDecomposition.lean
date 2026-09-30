@@ -6,6 +6,11 @@ import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.RicciTrace.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.FrameInvariance
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Weitzenbock
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
+
+open DifferentialGeometry.TensorMetric
+  (covariantTensorInnerPointwise
+    tensorInnerPointwise_0s_eq_diag_sum_orthoFrame
+    tensorInnerPointwise_0s_symm)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -339,8 +344,8 @@ theorem tensor0SCov_riemannSec_metric_skew_section
       intro j _
       rw [(g.inner x (e k)).map_smul (c j) (e j), smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
-    · intro j _ hjk; rw [if_neg (fun h => hjk h.symm), mul_zero]
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
+    · intro j _ hjk; rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) = Module.finrank ℝ E := Fintype.card_fin _
   set bse : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
     basisOfLinearIndependentOfCardEqFinrank he_li hcard with hbse_def

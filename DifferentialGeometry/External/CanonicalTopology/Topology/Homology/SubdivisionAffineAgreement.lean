@@ -37,7 +37,13 @@ theorem singularSimplexEvaluation_affine (n : ℕ) (v : Fin (n + 1) → E) :
         C(liftedSimplexSpace n, E)).comp (singularSubspaceInclusion (liftedSimplexBody n)) := by
   unfold singularSimplexEvaluation affineSingularSimplex
   rw [Equiv.apply_symm_apply]
-  rfl
+  apply ContinuousMap.ext
+  intro z
+  obtain ⟨t, rfl⟩ := (liftedSimplexHomeomorph.{u} n).surjective z
+  change affineSimplexMap v
+      ((liftedSimplexHomeomorph.{u} n).symm (liftedSimplexHomeomorph.{u} n t)) =
+    affineSimplexMap v t
+  rw [Homeomorph.symm_apply_apply]
 
 /-- Pushing any original carrier chain through that affine simplex is
 the original ambient chain map of its same linear extension. -/

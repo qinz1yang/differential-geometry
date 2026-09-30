@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.TermJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.VectorBundle.Expansion
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 

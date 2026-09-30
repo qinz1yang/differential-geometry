@@ -85,7 +85,7 @@ theorem metricRicciAt_le_scalar_of_unit_of_ricci_nonnegative
     have hi : (i : TangentSpace I x) = u := i.2
     have hj : (j : TangentSpace I x) = u := j.2
     have hij : i = j := Subtype.ext (hi.trans hj.symm)
-    rw [hi, hj, huInner, if_pos hij]
+    rw [hi, hj, huInner, ite_eq_left hij]
   obtain ⟨s, orthBasis, hus, horthBasis⟩ := huON.exists_orthonormalBasis_extension
   let basis := orthBasis.toBasis
   let iu : s := ⟨u, hus (Set.mem_singleton u)⟩

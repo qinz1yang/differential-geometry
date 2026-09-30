@@ -200,7 +200,7 @@ theorem IsPLSphere.exists_isPLHomeomorphOn_prism_lateral_level
     {K : Set ((Fin 3 → ℝ) × ℝ)} (hK : IsPLSphere 1 K)
     (hKA : K ⊆ stdSimplexBoundary 2 ×ˢ Ioo (0 : ℝ) 1)
     (hess : ¬ ∃ (D : Set ((Fin 3 → ℝ) × ℝ)) (r : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ∧ r '' stdSimplexBoundary 2 = K) :
     ∃ (Ψ : (Fin 3 → ℝ) × ℝ → (Fin 3 → ℝ) × ℝ) (ν : (Fin 3 → ℝ) → (Fin 3 → ℝ)),
       IsPLHomeomorphOn Ψ (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)
@@ -313,7 +313,7 @@ theorem exists_isPLHomeomorphOn_prism_lateral_levels_insert
     {C : Set (Set ((Fin 3 → ℝ) × ℝ))} (hC : C.Finite) {K : Set ((Fin 3 → ℝ) × ℝ)}
     (hK : IsPLSphere 1 K) (hKA : K ⊆ stdSimplexBoundary 2 ×ˢ Ioo (0 : ℝ) 1)
     (hKess : ¬ ∃ (D : Set ((Fin 3 → ℝ) × ℝ)) (r : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ∧ r '' stdSimplexBoundary 2 = K)
     (hKC : ∀ L ∈ C, Disjoint K L) {Φ : (Fin 3 → ℝ) × ℝ → (Fin 3 → ℝ) × ℝ}
     {s : Set ((Fin 3 → ℝ) × ℝ) → ℝ}
@@ -367,7 +367,7 @@ theorem exists_isPLHomeomorphOn_prism_lateral_levels_insert
     rw [(hΦC L hL).2] at hmem
     exact disjoint_left.mp (hKC L hL) hk hmem
   have hK'ess : ¬ ∃ (D : Set ((Fin 3 → ℝ) × ℝ)) (r : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ∧
       r '' stdSimplexBoundary 2 =
         Function.invFunOn Φ (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) '' K := by
@@ -411,7 +411,7 @@ theorem exists_isPLHomeomorphOn_prism_lateral_levels_insert
       push Not at h
       nlinarith [mul_le_mul_of_nonneg_left h hba.le, hk2.2]
   have hK''ess : ¬ ∃ (D : Set ((Fin 3 → ℝ) × ℝ)) (r : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ∧
       r '' stdSimplexBoundary 2 =
         Function.invFunOn σ (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) '' K' := by
@@ -436,7 +436,7 @@ theorem exists_isPLHomeomorphOn_prism_lateral_levels_insert
   · intro L hL
     rcases hL with rfl | hL
     · dsimp only
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       refine ⟨⟨by nlinarith, by nlinarith⟩, ?_⟩
       have hσmid : σ '' (stdSimplexBoundary 2 ×ˢ {1 / 2}) =
           stdSimplexBoundary 2 ×ˢ {(b - a) * (1 / 2) + a} := by
@@ -458,7 +458,7 @@ theorem exists_isPLHomeomorphOn_prism_lateral_levels_insert
         obtain ⟨k, hk⟩ := hK.nonempty
         exact disjoint_left.mp (hKC _ hL) hk hk
       dsimp only
-      rw [if_neg hLK]
+      rw [ite_eq_right hLK]
       obtain ⟨hsL, hΦL⟩ := hΦC L hL
       refine ⟨hsL, ?_⟩
       have hΘL : Θ '' (stdSimplexBoundary 2 ×ˢ {s L}) = stdSimplexBoundary 2 ×ˢ {s L} := by
@@ -474,7 +474,7 @@ theorem exists_isPLHomeomorphOn_prism_lateral_levels
     (hCsph : ∀ K ∈ C, IsPLSphere 1 K)
     (hCA : ∀ K ∈ C, K ⊆ stdSimplexBoundary 2 ×ˢ Ioo (0 : ℝ) 1)
     (hCess : ∀ K ∈ C, ¬ ∃ (D : Set ((Fin 3 → ℝ) × ℝ)) (r : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ∧ r '' stdSimplexBoundary 2 = K)
     (hCdisj : C.PairwiseDisjoint id) :
     ∃ (Φ : (Fin 3 → ℝ) × ℝ → (Fin 3 → ℝ) × ℝ) (s : Set ((Fin 3 → ℝ) × ℝ) → ℝ),

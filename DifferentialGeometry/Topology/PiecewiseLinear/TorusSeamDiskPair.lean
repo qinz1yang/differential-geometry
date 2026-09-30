@@ -25,14 +25,14 @@ theorem IsCombinatorialSolidTorus.subset_closure_interior {X : Set E3}
 
 theorem exists_disk_pair_of_crossing_torus_seam {X T Δ U : Set E3}
     (hX : IsCombinatorialSolidTorus X) (hT : IsPLTorus T)
-    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hΔX : Δ ⊆ frontier X) (hmeet : Δ ∩ T = r '' stdSimplexBoundary 2)
     (hU : IsOpen U) (hΔU : Δ ⊆ U)
     (htrace : U ∩ T ∩ frontier X ⊆ r '' stdSimplexBoundary 2)
     (hcross : ∀ x ∈ r '' stdSimplexBoundary 2, HasPLCrossingAt T (frontier X) x) :
     ∃ (D₁ D₂ : Set E3) (q₁ q₂ : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
-      IsPLHomeomorphOn q₂ (stdSimplex ℝ (Fin 3)) D₂ ∧
+      IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn q₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂ ∧
       Δ ⊆ D₁ \ q₁ '' stdSimplexBoundary 2 ∧ Δ ⊆ D₂ \ q₂ '' stdSimplexBoundary 2 ∧
       D₁ ∩ D₂ = Δ ∧ D₁ ∩ frontier X = Δ ∧ D₂ ⊆ frontier X ∧
       D₁ \ Δ ⊆ T \ interior X ∧

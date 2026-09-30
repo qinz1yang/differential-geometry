@@ -122,11 +122,26 @@ theorem intrinsicBall_volume_ge_of_rm04_inj
         (fun q hq ↦ C.hom_eq hq)
     have hD := Filter.EventuallyEq.mfderiv_eq
       (I := 𝓘(ℝ, E)) (I' := I) hev
-    rw [show Ψ z = intrinsicFramedExp (I := I) g hEnorm p z from C.hom_eq hz, hD]
+    have hpoint : (Ψ.toPartialEquiv z : M) =
+        intrinsicFramedExp (I := I) g hEnorm p z := by
+      change C.hom z = intrinsicFramedExp (I := I) g hEnorm p z
+      exact C.hom_eq hz
+    rw [show Ψ z = intrinsicFramedExp (I := I) g hEnorm p z from C.hom_eq hz,
+      hD, hpoint]
+    have hcast :
+        (tangentSpaceCast I (intrinsicFramedExp (I := I) g hEnorm p z)
+            (intrinsicFramedExp (I := I) g hEnorm p z) :
+          TangentSpace I (intrinsicFramedExp (I := I) g hEnorm p z) →L[ℝ]
+            TangentSpace I (intrinsicFramedExp (I := I) g hEnorm p z)) =
+        ContinuousLinearMap.id ℝ _ := by
+      apply ContinuousLinearMap.ext
+      intro w
+      rfl
+    rw [hcast]
     have hzmetric : z ∈ Metric.ball (0 : E)
         (intrinsicNormalMetricRadius (Module.finrank ℝ E) K) :=
       Metric.ball_subset_ball (hradius.trans (min_le_right _ _)) hz
-    simpa only [intrinsicFrameMetric_apply] using
+    simpa only [intrinsicFrameMetric_apply, ContinuousLinearMap.id_comp] using
       (intrFrameMetric_bound_of_rm04 K hK g hEnorm hRm p hzmetric v).1
   have himage := DifferentialGeometry.Geometry.Measure.riemannianVolumeMeasure_image_ge_of_inner_half
     g Ψ measurableSet_ball hsource hhalf

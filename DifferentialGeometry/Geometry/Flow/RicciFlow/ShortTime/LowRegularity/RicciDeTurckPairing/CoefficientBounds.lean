@@ -13,6 +13,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -240,7 +241,7 @@ theorem jointlySmoothCcTensorFamily_slotExtendIter_two
       (I.prod 𝓘(ℝ, Tensor0SModel 6 ℝ E)) ∞
       (fun q : M × ℝ => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
         (E := fun x : M => Tensor0SSpace 6 I x) q.1
-        (tensor0SProdKappaFib (I := I) (p := 2) (q := 4) q.1
+        (Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 4) q.1
           ((show Tensor0SSpace 0 I q.1 →L[ℝ] Tensor0SSpace 4 I q.1 from
             (K q.2).toSection q.1) (unitTensor (I := I) (M := M) q.1))
           (Y q.1)))
@@ -248,7 +249,7 @@ theorem jointlySmoothCcTensorFamily_slotExtendIter_two
     refine hprod.congr (fun q _ => ?_)
     refine congrArg (fun z => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
       (E := fun x : M => Tensor0SSpace 6 I x) q.1 z) ?_
-    rw [tensor0SProdKappaFib_apply]
+    rw [Tensor0SSpace.rightProductContinuousLinearMap_apply]
   refine hprod'.congr (fun q _ => ?_)
   refine congrArg (fun z => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
     (E := fun x : M => Tensor0SSpace 6 I x) q.1 z) ?_
@@ -462,7 +463,7 @@ theorem reindexedPureTrace_metricPerturbationPath_jointlySmooth
         (reindexedPureTrace_toSection (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2) p σ q.1),
     DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators.lieCorrectionZeroTraceStep,
-    ContinuousLinearMap.comp_apply, domDomCongrFibRank_apply]
+    ContinuousLinearMap.comp_apply, Tensor0SSpace.reindexContinuousLinearMap_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem pureTrace_metricPerturbationPath_jointlySmooth
@@ -596,7 +597,7 @@ theorem lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_metricPertur
       (I.prod 𝓘(ℝ, Tensor0SModel 4 ℝ E)) ∞
       (fun q : M × ℝ => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
         (E := fun x : M => Tensor0SSpace 4 I x) q.1
-        (tensor0SProdKappaFib (I := I) q.1
+        (Tensor0SSpace.rightProductContinuousLinearMap (I := I) q.1
           (metricConnectionDifferenceLoweredFib (I := I)
             (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2)
             (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2) g q.1)
@@ -605,7 +606,7 @@ theorem lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_metricPertur
     refine hprod.congr (fun q _ => ?_)
     refine congrArg (fun z => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
       (E := fun x : M => Tensor0SSpace 4 I x) q.1 z) ?_
-    rw [tensor0SProdKappaFib_apply]
+    rw [Tensor0SSpace.rightProductContinuousLinearMap_apply]
   have hperm := domDomCongrField_jointContMDiffOn (I := I)
     LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ)) _ hprod'
@@ -615,13 +616,13 @@ theorem lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_metricPertur
   rw [show
       ((lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2)).toSection q.1) (Y q.1) =
-        domDomCongrFibRank (I := I) 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation q.1
-          (tensor0SProdKappaFib (I := I) (p := 1) (q := 3) q.1
+        Tensor0SSpace.reindexContinuousLinearMap (I := I) 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation q.1
+          (Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 1) (q := 3) q.1
             (metricConnectionDifferenceLoweredFib (I := I)
               (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2)
               (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2) g q.1)
             (Y q.1)) from rfl,
-    domDomCongrFibRank_apply]
+    Tensor0SSpace.reindexContinuousLinearMap_apply]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -749,7 +750,7 @@ theorem slotExtendedMetricConnectionDifferenceLoweredCoefficient_metricPerturbat
       (I.prod 𝓘(ℝ, Tensor0SModel 6 ℝ E)) ∞
       (fun q : M × ℝ => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
         (E := fun x : M => Tensor0SSpace 6 I x) q.1
-        (tensor0SProdKappaFib (I := I) (p := 3) (q := 3) q.1
+        (Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 3) (q := 3) q.1
           ((show Tensor0SSpace 0 I q.1 →L[ℝ] Tensor0SSpace 3 I q.1 from
             (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2) g).toSection q.1)
@@ -759,7 +760,7 @@ theorem slotExtendedMetricConnectionDifferenceLoweredCoefficient_metricPerturbat
     refine hprod.congr (fun q _ => ?_)
     refine congrArg (fun z => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
       (E := fun x : M => Tensor0SSpace 6 I x) q.1 z) ?_
-    rw [tensor0SProdKappaFib_apply]
+    rw [Tensor0SSpace.rightProductContinuousLinearMap_apply]
   refine hprod'.congr (fun q _ => ?_)
   refine congrArg (fun z => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
     (E := fun x : M => Tensor0SSpace 6 I x) q.1 z) ?_
@@ -883,7 +884,7 @@ private lemma termSlotFib_toModel_apply (s : ℕ) (x : M)
     (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem deTurckLieCovariantDerivativeSecondOrderCoefficient_eq_permuted_connectionDifferenceContravariantInsertionField
+theorem deTurckLieCovariantDerivativeSecondOrderCoefficient_eq_permuted_connection_insertion
     (g gm : SmoothRiemannianMetric I M) :
     deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g gm =
       ccOperatorFieldComp (I := I) (M := M) g 3 4 4
@@ -933,7 +934,7 @@ theorem deTurckLieCovariantDerivativeSecondOrderCoefficient_metricPerturbationPa
     (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
   have hi := connectionDifferenceContravariantInsertionField_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T hδ hδZ
   have hout := jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g hp hi
-  simpa only [S, deTurckLieCovariantDerivativeSecondOrderCoefficient_eq_permuted_connectionDifferenceContravariantInsertionField] using hout
+  simpa only [S, deTurckLieCovariantDerivativeSecondOrderCoefficient_eq_permuted_connection_insertion] using hout
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
@@ -1499,7 +1500,7 @@ theorem lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_metricPertu
       (I.prod 𝓘(ℝ, Tensor0SModel 6 ℝ E)) ∞
       (fun q : M × ℝ => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
         (E := fun x : M => Tensor0SSpace 6 I x) q.1
-        (tensor0SProdKappaFib (I := I) (p := 2) (q := 4) q.1
+        (Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 4) q.1
           ((show Tensor0SSpace 3 I q.1 →L[ℝ] Tensor0SSpace 4 I q.1 from
             (connectionDifferenceQuadraticCurvatureDerivativeCoefficient (I := I) (M := M) g
               (metricPerturbationPath (I := I) g T 0 hδ hδZ q.2)).toSection q.1)
@@ -1510,7 +1511,7 @@ theorem lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_metricPertu
     refine hprod.congr (fun q _ => ?_)
     refine congrArg (fun z => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
       (E := fun x : M => Tensor0SSpace 6 I x) q.1 z) ?_
-    rw [tensor0SProdKappaFib_apply]
+    rw [Tensor0SSpace.rightProductContinuousLinearMap_apply]
   refine hprod'.congr (fun q _ => ?_)
   refine congrArg (fun z => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
     (E := fun x : M => Tensor0SSpace 6 I x) q.1 z) ?_
@@ -1954,7 +1955,8 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Elliptic
-  (integrable_riemannianFiberNormSq_toSection riemannianFiberNormSq)
+  (integrable_riemannianFiberNormSq_toSection)
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev
   (cometricCastG0 covariantJetNormSq covariantJetNormSq_add_le covariantJetNormSq_nonneg
     covariantJetNormSq_reindexCoefficientInputSlots covariantJetNormSq_rsDomDomCongrSection
@@ -5804,7 +5806,7 @@ theorem exists_deTurckLieCovariantDerivativeSecondOrderCoefficient_covariantJetN
     Cp (Bc R * (1 + A)) hCp
     (mul_nonneg (hBc R hR) (add_nonneg (by norm_num) hA))
     hperm hc
-  rw [deTurckLieCovariantDerivativeSecondOrderCoefficient_eq_permuted_connectionDifferenceContravariantInsertionField (I := I) (M := M) g gm]
+  rw [deTurckLieCovariantDerivativeSecondOrderCoefficient_eq_permuted_connection_insertion (I := I) (M := M) g gm]
   refine hraw.trans_eq ?_
   simp only [B]
   ring

@@ -671,7 +671,7 @@ theorem drawing_of_outer {e : γ} (he : e ∈ E(P.str.outerGraph)) :
 theorem drawing_of_inner {e : γ} (he : e ∈ E(w.innerGraph)) :
     w.drawing e =
       (Q.localOverlay p s epsilon extra).relabelDrawing w.name segmentDrawing e := by
-  rw [drawing, if_neg]
+  rw [drawing, ite_eq_right]
   obtain ⟨R, hR, rfl⟩ := he
   exact fun heOuter => w.name_fresh R hR
     (P.str.mem_cells_of_mem_edgeSet (P.str.outerGraph_le.edgeSet_mono heOuter))

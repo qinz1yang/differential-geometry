@@ -2,6 +2,12 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionDifference.Pairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.ConnectionDifference.OrderZero.KernelJetGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.FibreBounds
+
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg
+  tensorInnerPointwise tensorInnerPointwise_sq_le_mul)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -753,7 +759,7 @@ theorem ricciConnectionDifferenceQuadratic_path_pairing_le (g : SmoothRiemannian
     change riemannianFiberNormSq (I := I) (M := M) g 0 3 y
         (s • D.toSection y) ≤
       riemannianFiberNormSq (I := I) (M := M) g 0 3 y (D.toSection y)
-    rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+    rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     exact mul_le_of_le_one_left
       (riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 3 y _) hs2
   have hFraw := hcoeff gm P htie hdeltaHalf hdelta0' hPbound

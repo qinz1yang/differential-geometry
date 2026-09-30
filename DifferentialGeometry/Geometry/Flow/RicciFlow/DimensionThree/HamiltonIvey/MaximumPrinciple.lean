@@ -160,7 +160,7 @@ private theorem fiberHamiltonIveySupport_eq_of_mem_algebraic
       4 * hamiltonIveyConvexMatrixRegionSupportEuclidean K τ
         (matrixToEuclidean (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν⟩)) := by
   unfold fiberHamiltonIveySupport
-  rw [dif_pos hν]
+  rw [dite_eq_left hν]
 
 omit [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
   [SigmaCompactSpace M] [T2Space M] in
@@ -323,7 +323,7 @@ private theorem regionSupport_eq_sSup
         (algebraicCurvatureTensorProjection (I := I) g x ν : Tensor04At (I := I) (M := M) x) =
       regionSupport (I := I) g basisAt K τ x ν := by
     unfold regionSupport fiberHamiltonIveySupport
-    rw [dif_pos hν₀alg]
+    rw [dite_eq_left hν₀alg]
     rw [← hreg]
     rw [regionProjMatrix_eq_curvatureOperatorMatrixAt (I := I) g (basisAt x) hν₀alg]
   calc
@@ -416,7 +416,7 @@ private theorem regionSupport_continuousOn_time
   · have hconst : ∀ τ : ℝ, regionSupport (I := I) g basisAt K τ x ν = 0 := by
       intro τ
       unfold regionSupport hamiltonIveyConvexMatrixRegionSupportEuclidean
-      rw [if_neg hlt]
+      rw [ite_eq_right hlt]
       simp
     have hconst0 : (fun τ : ℝ => regionSupport (I := I) g basisAt K τ x ν) =
         fun _ : ℝ => 0 := by
@@ -450,13 +450,13 @@ private theorem regionSupport_hasDerivAt_time
     have hconst : ∀ τ : ℝ, regionSupport (I := I) g basisAt K τ x ν = 0 := by
       intro τ
       unfold regionSupport hamiltonIveyConvexMatrixRegionSupportEuclidean
-      rw [if_neg hlt]
+      rw [ite_eq_right hlt]
       simp
     have hmain : HasDerivAt (fun τ : ℝ => regionSupport (I := I) g basisAt K τ x ν) 0 t := by
       simpa [hconst] using (hasDerivAt_const (x := t) (c := (0 : ℝ)))
     have hz : regionSupportDeriv (I := I) g basisAt hK t x ν = 0 := by
       unfold regionSupportDeriv hamiltonIveyConvexMatrixRegionSupportDeriv
-      rw [if_neg hnot]
+      rw [ite_eq_right hnot]
       simp
     simpa [hz] using hmain
 
@@ -1471,7 +1471,7 @@ private theorem tangentSection_cont_constBase_of_fiber_cont
   refine hcont.congr ?_
   intro p
   congr 1
-  rw [e.linearMapAt_apply, if_pos hx]
+  rw [e.linearMapAt_apply, ite_eq_left hx]
   rw [e.symm_apply_apply_mk hx (w p)]
 
 end FiberHeatReactionSolution
@@ -3805,7 +3805,7 @@ private theorem fiberRegion_pulledBTensor_eq_bTensorDown
                 exact h ⟨p, hne⟩
               rcases hne with ⟨p, hp⟩
               have hzero : kd (slots4 a b c d p) (I0 p) = 0 := by
-                rw [kd, if_neg]
+                rw [kd, ite_eq_right]
                 exact hp.symm
               calc
                 Bt Rf (I0 0) (I0 1) (I0 2) (I0 3) *
@@ -4801,7 +4801,7 @@ private theorem radialTransportTensorExtension_regionProjMatrix_eq_conj
           (AY : Tensor04At (I := I) (M := M) y) i j by rfl]
     rw [hAY]
     simp only [tensor04CurvatureOperatorMatrixAt_apply]
-    rw [radialTransportSectionTensor, dif_pos hy]
+    rw [radialTransportSectionTensor, dite_eq_left hy]
     change (A₀ : Tensor04At (I := I) (M := M) p)
         (fun a ↦ radialTransportInverseAt g p y hy
           (vec4 (basisY (bivectorIndex3 i).1) (basisY (bivectorIndex3 i).2)

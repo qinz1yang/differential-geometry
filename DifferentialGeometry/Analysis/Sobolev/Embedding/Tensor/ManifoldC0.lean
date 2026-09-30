@@ -126,7 +126,11 @@ theorem hsBlock_le_hsNorm_sq
           (Fin s → Fin (Module.finrank ℝ E)),
         ∑ j ∈ Finset.range (2 * k + 1),
           ∑ basisIdx : Fin j → Fin (Module.finrank ℝ E), F α₀ IJ j basisIdx) ≤ S := by
-    rw [hS_def]; exact ENNReal.le_tsum α₀
+    rw [hS_def]
+    exact ENNReal.le_tsum (f := fun α : M => ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
+      (Fin s → Fin (Module.finrank ℝ E)),
+      ∑ j ∈ Finset.range (2 * k + 1),
+        ∑ basisIdx : Fin j → Fin (Module.finrank ℝ E), F α IJ j basisIdx) α₀
   exact le_trans h_order (le_trans h_comp h_tsum)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
@@ -200,7 +204,7 @@ private theorem continuousMultilinearMap_norm_le_sum_abs_basis_apply
     rw [abs_mul]
     have h_prod_le : |∏ i : Fin j, m i (β i)| ≤ ∏ i : Fin j, ‖m i‖ := by
       rw [Finset.abs_prod]
-      refine Finset.prod_le_prod (fun i _ => abs_nonneg _)
+      refine Finset.prod_le_prod₀ (fun i _ => abs_nonneg _)
         (fun i _ => euclN_coord_le_norm (m i) (β i))
     exact mul_le_mul_of_nonneg_right h_prod_le (abs_nonneg _)
   refine (Finset.sum_le_sum (fun β _ => h_inner_bound β)).trans ?_
@@ -444,9 +448,21 @@ theorem eLpNorm_sq_iteratedFDeriv_le_hsBlock
       (eLpNorm (fun z => ‖iteratedFDeriv ℝ j f z‖) 2
           ((volume : Measure EuclN).restrict (Metric.ball y₀ R))) ^ 2 =
         ∫⁻ z in Metric.ball y₀ R, ‖(‖iteratedFDeriv ℝ j f z‖)‖ₑ ^ 2 ∂(volume : Measure EuclN) := by
+    have h_cdOn := rawPull_contDiffOn (I := I) (M := M) g r s T α IJ.1 IJ.2
+    have h_open : IsOpen Ω :=
+      DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
+        (I := I) (M := M) α
+    have h_iter_contOn : ContinuousOn (fun z => iteratedFDeriv ℝ j f z) Ω := by
+      intro z hz
+      have h_cd : ContDiffAt ℝ ∞ f z := h_cdOn.contDiffAt (h_open.mem_nhds hz)
+      exact (h_cd.continuousAt_iteratedFDeriv (k := j)
+        (by exact_mod_cast le_top)).continuousWithinAt
+    have h_meas : AEStronglyMeasurable (fun z => ‖iteratedFDeriv ℝ j f z‖)
+        ((volume : Measure EuclN).restrict (Metric.ball y₀ R)) := by
+      exact (continuous_norm.comp_continuousOn h_iter_contOn).mono hball_sub |>.aestronglyMeasurable hball_meas
     have h := eLpNorm_nnreal_pow_eq_lintegral
       (μ := (volume : Measure EuclN).restrict (Metric.ball y₀ R))
-      (f := fun z => ‖iteratedFDeriv ℝ j f z‖) (p := (2 : ℝ≥0)) (by norm_num)
+      (f := fun z => ‖iteratedFDeriv ℝ j f z‖) (p := (2 : ℝ≥0)) (by norm_num) h_meas
     rw [show ((2 : ℝ≥0) : ℝ≥0∞) = (2 : ℝ≥0∞) by norm_num] at h
     rw [show ((2 : ℝ≥0) : ℝ) = ((2 : ℕ) : ℝ) by norm_num] at h
     rw [ENNReal.rpow_natCast] at h

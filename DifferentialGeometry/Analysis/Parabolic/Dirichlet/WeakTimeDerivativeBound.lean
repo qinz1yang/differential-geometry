@@ -236,7 +236,8 @@ theorem IsWeakEvolutionSolution.weak_time_derivative_eq_source
     exact h.mono_measure hmeasure
   let Rnew := fun p => (ρ p)⁻¹ * S p - ((ρ p)⁻¹ * fderiv ℝ ρ p v) * U p
   have hRnew : MemLp Rnew 2 ν :=
-    ((Lp.memLp S).mul hρinv).sub (hU.mul (hDρ.mul (r := ∞) hρinv))
+    (hρinv.fun_mul (r := 2) (Lp.memLp S)).sub
+      ((hρinv.fun_mul (r := ∞) hDρ).fun_mul (r := 2) hU)
   have hRnewweak : ∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
       tsupport φ ⊆ Ioo t₀ t₁ ×ˢ Ω₀ →
       (∫ p, U p * fderiv ℝ φ p (1, 0) ∂ν) = -∫ p, hRnew.toLp Rnew p * φ p ∂ν := by
@@ -272,7 +273,7 @@ private theorem norm_sum_mul_fields_le_lpNorm
     simpa only [hVp] using hp
   have hb := norm_varying_coefficient_sum_le a ha (fun i => lpNorm (a i) ∞ μ)
     (fun i => ae_le_lpNorm_exponent_top (ha i)) (fun i => (hV i).toLp (V i)) F he
-  simpa only [Lp.norm_toLp, toReal_eLpNorm (hV _).aestronglyMeasurable] using hb
+  simpa only [Lp.norm_toLp, toReal_eLpNorm] using hb
 
 private theorem norm_weak_time_source_le
     {P ι : Type*} [MeasurableSpace P] [Fintype ι] {μ : Measure P}
@@ -424,8 +425,8 @@ theorem IsWeakEvolutionSolution.norm_weak_time_derivative_le
       (μ := (volume : Measure ℝ).prod volume)
     rw [← Measure.prod_restrict] at hb
     exact hb.mono_measure (Measure.prod_mono Measure.restrict_le_self le_rfl)
-  have hC (i) : MemLp (C i) ∞ (μ.prod (volume.restrict Ω₀)) := (hB i).mul hρ
-  have hC₀ : MemLp C₀ ∞ (μ.prod (volume.restrict Ω₀)) := ((hτ.const_mul (1 / 2 : ℝ)).sub ha).mul hρ
+  have hC (i) : MemLp (C i) ∞ (μ.prod (volume.restrict Ω₀)) := hρ.fun_mul (r := ∞) (hB i)
+  have hC₀ : MemLp C₀ ∞ (μ.prod (volume.restrict Ω₀)) := hρ.fun_mul (r := ∞) ((hτ.const_mul (1 / 2 : ℝ)).sub ha)
   let chartTarget := toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target
   have hTarget : IsOpen chartTarget := (toEuclidean (E := EuN)).isOpenMap _ isOpen_interior
   have hΩV : closure Ω ⊆ chartTarget := hΩs
@@ -463,13 +464,13 @@ theorem IsWeakEvolutionSolution.norm_weak_time_derivative_le
   have hn := norm_weak_time_source_le
     (fun i j p => (ρ p)⁻¹ * A i j p)
     (fun i j p => (ρ p)⁻¹ * fderiv ℝ (fun z => A i j (p.1, z)) p.2 (EuclideanSpace.single j 1))
-    (fun i j => (hA i j).mul hρinv) (fun i j => (hDA i j).mul hρinv)
-    (fun i p => (ρ p)⁻¹ * C i p) (fun i => (hC i).mul hρinv)
-    (fun p => (ρ p)⁻¹ * (C₀ p - fderiv ℝ ρ p (1, 0))) ((hC₀.sub hDρ).mul hρinv)
+    (fun i j => hρinv.fun_mul (hA i j)) (fun i j => hρinv.fun_mul (hDA i j))
+    (fun i p => (ρ p)⁻¹ * C i p) (fun i => hρinv.fun_mul (hC i))
+    (fun p => (ρ p)⁻¹ * (C₀ p - fderiv ℝ ρ p (1, 0))) (hρinv.fun_mul (hC₀.sub hDρ))
     (fun i j p => H i j p) (fun i j => Lp.memLp (H i j))
     (fun i p => V i p) hV U hU R he
   have hHnorm (i j) : lpNorm (fun p => H i j p) 2 ν = ‖H i j‖ := by
-    rw [← toReal_eLpNorm (Lp.memLp (H i j)).aestronglyMeasurable, Lp.norm_def]
+    rw [← toReal_eLpNorm, Lp.norm_def]
   simpa only [hHnorm] using hn
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

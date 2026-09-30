@@ -34,7 +34,7 @@ theorem cylinderTimeErrorJet_zero (epsilon c : ℝ) (hc : 0 < c)
 
 theorem cylinderTimeErrorJet_succ (epsilon c s : ℝ) (q : ℕ) :
     cylinderTimeErrorJet epsilon c (q + 1) s = 0 := by
-  simp only [cylinderTimeErrorJet, Nat.add_eq_zero_iff, Nat.one_ne_zero, and_false, if_false]
+  simp only [cylinderTimeErrorJet, Nat.add_eq_zero_iff, Nat.one_ne_zero, and_false, ite_false]
 
 theorem cylinderTimeErrorJet_hasDerivWithinAt (epsilon c : ℝ)
     (q : ℕ) (s : ℝ) (times : Set ℝ) (x : spatialNeckBuffer epsilon)
@@ -48,11 +48,11 @@ theorem cylinderTimeErrorJet_spatial_succ (epsilon c s : ℝ) (q a : ℕ) :
     tensor02CovDeriv (cylinderTimeErrorJet epsilon c q s)
       (strongNeckBackgroundMetric epsilon s) (a + 1) = 0 := by
   by_cases hq : q = 0
-  · rw [cylinderTimeErrorJet, if_pos hq,
+  · rw [cylinderTimeErrorJet, ite_eq_left hq,
       tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_smul,
       ← tensor02_cov_deriv_eq_cov_deriv_of_field,
       strongNeckBackground_metric_tensor_parallel, smul_zero]
-  · rw [cylinderTimeErrorJet, if_neg hq,
+  · rw [cylinderTimeErrorJet, ite_eq_right hq,
       tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_zero_tensor]
 
 theorem cylinderTimeErrorJet_covNorm_le (epsilon c s : ℝ)
@@ -80,12 +80,12 @@ theorem cylinderTimeErrorJet_covNorm_le (epsilon c s : ℝ)
       rw [hdim] at hn
       change Real.sqrt (normSq0S (strongNeckBackgroundMetric epsilon s) x 2
         (metricTensorField (strongNeckBackgroundMetric epsilon 0) x)) ≤ 3 * Real.sqrt 3 at hn
-      rw [cylinderTimeErrorJet, if_pos hq]
+      rw [cylinderTimeErrorJet, ite_eq_left hq]
       change Real.sqrt (normSq0S (strongNeckBackgroundMetric epsilon s) x 2
         ((c - 1) • metricTensorField (strongNeckBackgroundMetric epsilon 0) x)) ≤ _
       rw [sqrt_normSq0S_smul]
       exact mul_le_mul_of_nonneg_left hn (abs_nonneg _)
-    · rw [cylinderTimeErrorJet, if_neg hq, tensor02CovDerivNormWith,
+    · rw [cylinderTimeErrorJet, ite_eq_right hq, tensor02CovDerivNormWith,
         tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_zero_tensor]
       simp only [ContMDiffSection.coe_zero, Pi.zero_apply, normSq0S, inner0S,
         MetricFiberData.inner, map_zero, Real.sqrt_zero]
@@ -184,11 +184,11 @@ theorem strongNeckBackground_time_difference_covNorm_le
           metricTensorField (strongNeckBackgroundMetric ε 0))
         (strongNeckBackgroundMetric ε v) (strongNeckBackgroundMetric ε v) x ≤
           6 * Real.sqrt 3 := by
-      have htri := _root_.Tensor0SBundle.sqrt_normSq0S_add_le
+      have htri := _root_.DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le
         (strongNeckBackgroundMetric ε v) x 2
         (metricTensorField (strongNeckBackgroundMetric ε (-1)) x)
         (-metricTensorField (strongNeckBackgroundMetric ε 0) x)
-      simp only [_root_.Tensor0SBundle.normSq0S_neg] at htri
+      simp only [_root_.DifferentialGeometry.Tensor0SBundle.normSq0S_neg] at htri
       change Real.sqrt (normSq0S (strongNeckBackgroundMetric ε v) x 2
         (metricTensorField (strongNeckBackgroundMetric ε (-1)) x -
           metricTensorField (strongNeckBackgroundMetric ε 0) x)) ≤ _
@@ -267,7 +267,7 @@ theorem strongNeckBackground_scale_time_error_covNorm_le
         tensor02CovDerivNormWith r (A - B) gV gV x := by
     simp only [tensor02CovDerivNormWith, tensor02_cov_deriv_eq_cov_deriv_of_field,
       covDerivOfField_add, ContMDiffSection.coe_add, Pi.add_apply]
-    exact _root_.Tensor0SBundle.sqrt_normSq0S_add_le gV x (r + 2) _ _
+    exact _root_.DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le gV x (r + 2) _ _
   rw [heq]
   have hfirst : tensor02CovDerivNormWith r ((c - 1) • A) gV gV x ≤
       |c - 1| * (3 * Real.sqrt 3) := by
@@ -314,24 +314,24 @@ theorem shrinkingCylinderTimeJet_hasDerivWithinAt (ε : ℝ) (b : ℕ)
       filter_upwards [self_mem_nhdsWithin] with u hu
       exact heq u hu.2
     have hnext : shrinkingCylinderTimeJet ε (0 + 1) v x w = A - B := by
-      simp only [shrinkingCylinderTimeJet, Nat.zero_add, one_ne_zero, if_false, if_true]
+      simp only [shrinkingCylinderTimeJet, Nat.zero_add, one_ne_zero, ite_false, ite_true]
       rfl
     rw [hnext]
     exact hd.hasDerivWithinAt.congr_of_eventuallyEq hfun hpoint
   · have hnext : shrinkingCylinderTimeJet ε (b + 1) v = 0 := by
       simp only [shrinkingCylinderTimeJet, Nat.add_eq_zero_iff, one_ne_zero, and_false,
-        if_false]
-      rw [if_neg (by omega)]
+        ite_false]
+      rw [ite_eq_right (by omega)]
     rw [hnext]
     change HasDerivWithinAt _ (0 : ℝ) (Icc (-1 : ℝ) 0) v
     by_cases hb1 : b = 1
-    · simpa only [shrinkingCylinderTimeJet, hb1, one_ne_zero, if_false, if_true,
+    · simpa only [shrinkingCylinderTimeJet, hb1, one_ne_zero, ite_false, ite_true,
         ContMDiffSection.coe_zero,
         Pi.zero_apply, zero_apply] using
         hasDerivWithinAt_const v (Icc (-1 : ℝ) 0)
           ((metricTensorField (strongNeckBackgroundMetric ε 0) -
             metricTensorField (strongNeckBackgroundMetric ε (-1))) x w)
-    · simpa only [shrinkingCylinderTimeJet, if_neg hb0, if_neg hb1, ContMDiffSection.coe_zero,
+    · simpa only [shrinkingCylinderTimeJet, ite_eq_right hb0, ite_eq_right hb1, ContMDiffSection.coe_zero,
         Pi.zero_apply, zero_apply] using
         hasDerivWithinAt_const v (Icc (-1 : ℝ) 0)
           (0 : ℝ)
@@ -348,7 +348,7 @@ theorem shrinkingCylinderTimeJet_scale_time_error_covNorm_le
     have heq : (c * c⁻¹ ^ 0) • shrinkingCylinderTimeJet ε 0 u =
         metricTensorField (scaleMetric c hc (strongNeckBackgroundMetric ε u)) := by
       ext y w
-      simp only [shrinkingCylinderTimeJet, if_true, pow_zero, mul_one,
+      simp only [shrinkingCylinderTimeJet, ite_true, pow_zero, mul_one,
         ContMDiffSection.coe_smul, Pi.smul_apply, Tensor0SSpace.smul_apply, smul_eq_mul,
         metricTensorField_apply, scaleMetric_inner]
     rw [heq]
@@ -357,9 +357,9 @@ theorem shrinkingCylinderTimeJet_scale_time_error_covNorm_le
         shrinkingCylinderTimeJet ε b v = 0 := by
       by_cases hb1 : b = 1
       · subst b
-        simp only [shrinkingCylinderTimeJet, one_ne_zero, if_false, if_true,
+        simp only [shrinkingCylinderTimeJet, one_ne_zero, ite_false, ite_true,
           pow_one, mul_inv_cancel₀ hc.ne', one_smul, sub_self]
-      · simp only [shrinkingCylinderTimeJet, if_neg hb0, if_neg hb1, smul_zero, sub_self]
+      · simp only [shrinkingCylinderTimeJet, ite_eq_right hb0, ite_eq_right hb1, smul_zero, sub_self]
     rw [heq, tensor02CovDerivNormWith, tensor02_cov_deriv_eq_cov_deriv_of_field,
       covDerivOfField_zero_tensor]
     simp only [ContMDiffSection.coe_zero, Pi.zero_apply, normSq0S, inner0S,

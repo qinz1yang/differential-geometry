@@ -132,8 +132,12 @@ theorem not_isCriticalPointAt_collarSignedValue_of_eq_zero
   apply h.not_isCriticalPointAt_finiteTime x
   change mfderiv J (modelWithCornersSelf ℝ ℝ) h.collarSignedValue x = 0 at hcrit
   change mfderiv J (modelWithCornersSelf ℝ ℝ) h.finiteTime x = 0
-  rw [← (h.collarSignedValue_eventuallyEq_finiteTime_of_eq_zero x hx).mfderiv_eq]
-  exact hcrit
+  have heq :
+      (mfderiv J (modelWithCornersSelf ℝ ℝ) h.collarSignedValue x : F →L[ℝ] ℝ) =
+        mfderiv J (modelWithCornersSelf ℝ ℝ) h.finiteTime x :=
+    (h.collarSignedValue_eventuallyEq_finiteTime_of_eq_zero x hx).mfderiv_eq
+      (I := J) (I' := modelWithCornersSelf ℝ ℝ)
+  exact heq.symm.trans hcrit
 
 noncomputable def rescaledTime (x : h.neighborhood) : ℝ :=
   (ThreeManifold.TwoSidedCollar.realHomeomorphIoo h.radius h.radius_pos).symm
@@ -249,7 +253,7 @@ noncomputable def sideDefiningFunction [Nonempty S] (x : M) : ℝ :=
 theorem sideDefiningFunction_of_mem_neighborhood [Nonempty S]
     {x : M} (hx : x ∈ h.neighborhood) :
     h.sideDefiningFunction x = h.collarSignedValue ⟨x, hx⟩ := by
-  simp only [sideDefiningFunction, dif_pos hx]
+  simp only [sideDefiningFunction, dite_eq_left hx]
 
 section GlobalClassification
 
@@ -262,7 +266,7 @@ theorem sideDefiningFunction_neg_iff (x : M) :
   · rw [h.sideDefiningFunction_of_mem_neighborhood hxN,
       collarSignedValue, smoothSignedClamp_neg_iff]
     exact h.finiteTime_neg_iff_mem_negativeSide ⟨x, hxN⟩
-  · simp only [sideDefiningFunction, dif_neg hxN]
+  · simp only [sideDefiningFunction, dite_eq_right hxN]
     by_cases hxneg : x ∈ h.toTwoSidedCollar.negativeSide
     · simp [hxneg]
     · simp [hxneg]
@@ -273,7 +277,7 @@ theorem sideDefiningFunction_pos_iff (x : M) :
   · rw [h.sideDefiningFunction_of_mem_neighborhood hxN,
       collarSignedValue, smoothSignedClamp_pos_iff]
     exact h.finiteTime_pos_iff_mem_positiveSide ⟨x, hxN⟩
-  · simp only [sideDefiningFunction, dif_neg hxN]
+  · simp only [sideDefiningFunction, dite_eq_right hxN]
     by_cases hxneg : x ∈ h.toTwoSidedCollar.negativeSide
     · have hxnotpos : x ∉ h.toTwoSidedCollar.positiveSide := fun hxpos =>
         Set.disjoint_left.mp h.toTwoSidedCollar.disjoint_negativeSide_positiveSide hxneg hxpos
@@ -359,7 +363,7 @@ noncomputable def neighborhoodLiftAt (x₀ : h.neighborhood) (x : M) : h.neighbo
 theorem neighborhoodLiftAt_of_mem (x₀ : h.neighborhood) {x : M}
     (hx : x ∈ h.neighborhood) :
     h.neighborhoodLiftAt x₀ x = ⟨x, hx⟩ := by
-  simp only [neighborhoodLiftAt, dif_pos hx]
+  simp only [neighborhoodLiftAt, dite_eq_left hx]
 
 theorem contMDiffAt_neighborhoodLiftAt (x₀ : h.neighborhood) :
     ContMDiffAt J J ∞ (h.neighborhoodLiftAt x₀) x₀.1 := by
@@ -467,11 +471,14 @@ theorem not_isCriticalPointAt_sideDefiningFunction_of_eq_zero
   change mfderiv J (modelWithCornersSelf ℝ ℝ) h.sideDefiningFunction x = 0 at hcrit
   have heq := (h.sideDefiningFunction_eventuallyEq_ambientCollarSignedValueAt x₀).mfderiv_eq
     (I := J) (I' := modelWithCornersSelf ℝ ℝ)
+  change (mfderiv J (modelWithCornersSelf ℝ ℝ) h.sideDefiningFunction x :
+      F →L[ℝ] ℝ) =
+    mfderiv J (modelWithCornersSelf ℝ ℝ) (h.ambientCollarSignedValueAt x₀) x at heq
   have hzero :
       mfderiv J (modelWithCornersSelf ℝ ℝ) (h.ambientCollarSignedValueAt x₀) x
         (h.finiteNormalVector x₀) = 0 := by
-    rw [← heq, hcrit]
-    rfl
+    exact congrArg (fun L : F →L[ℝ] ℝ => L (h.finiteNormalVector x₀))
+      (heq.symm.trans hcrit)
   have hone := h.mfderiv_ambientCollarSignedValueAt_apply_finiteNormalVector_of_eq_zero
     x₀ hxLocal
   change mfderiv J (modelWithCornersSelf ℝ ℝ) (h.ambientCollarSignedValueAt x₀) x

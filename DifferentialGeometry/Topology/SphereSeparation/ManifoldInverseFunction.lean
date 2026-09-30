@@ -34,7 +34,7 @@ theorem exists_nhds_isOpenEmbedding_domRestrict_of_contMDiffAt_of_bijective_mfde
     exact hgContWithin
   let D : E →L[ℝ] F := fderiv ℝ g a
   have hmf : mfderiv I J f x = D := by
-    rw [(hf.mdifferentiableAt hn).mfderiv]
+    rw [(hf.mdifferentiableAt hn).mfderiv_abuse]
     rw [I.range_eq_univ, fderivWithin_univ]
   have hDbij : Function.Bijective D := by
     rw [← hmf]

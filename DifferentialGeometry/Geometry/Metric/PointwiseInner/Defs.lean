@@ -9,8 +9,7 @@ open Manifold Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace L2
+namespace TensorMetric
 
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -59,8 +58,7 @@ noncomputable def tensorPointwiseNorm
     (S : TensorRSModel r s ℝ E) : ℝ :=
   Real.sqrt (tensorInnerPointwise (I := I) (M := M) g r s x S S)
 
-end L2
-end Integral
+end TensorMetric
 end DifferentialGeometry
 
 end

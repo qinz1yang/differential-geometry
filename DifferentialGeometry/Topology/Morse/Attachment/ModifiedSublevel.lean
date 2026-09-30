@@ -64,7 +64,7 @@ theorem negPart_negBasis {n k : ℕ} (hk : k ≤ n) (i : Fin k) :
       intro hz
       exact h (Fin.castLE_injective hk hz).symm
     have hc2 : ¬(j = i) := fun hj => h hj.symm
-    rw [if_neg h', if_neg hc2]
+    rw [ite_eq_right h', ite_eq_right hc2]
 
 theorem posPart_negBasis {n k : ℕ} (hk : k ≤ n) (i : Fin k) :
     posPart hk (negBasis hk i) = 0 := by
@@ -75,7 +75,7 @@ theorem posPart_negBasis {n k : ℕ} (hk : k ≤ n) (i : Fin k) :
     have hval : (posIdx hk j).val = (negIdx hk i).val := congrArg Fin.val hz
     dsimp [posIdx, negIdx] at hval
     omega
-  rw [if_neg h]
+  rw [ite_eq_right h]
   rfl
 
 def posBasis {n k : ℕ} (hk : k ≤ n) (j : Fin (n - k)) : MorseModel n :=
@@ -99,7 +99,7 @@ theorem negPart_posBasis {n k : ℕ} (hk : k ≤ n) (j : Fin (n - k)) :
   have h' : ¬(negIdx hk i = posIdx hk j) := by
     intro hz
     exact h hz.symm
-  rw [if_neg h']
+  rw [ite_eq_right h']
   rfl
 
 theorem posPart_posBasis {n k : ℕ} (hk : k ≤ n) (j : Fin (n - k)) :
@@ -108,13 +108,13 @@ theorem posPart_posBasis {n k : ℕ} (hk : k ≤ n) (j : Fin (n - k)) :
   simp only [posPart, posBasis, posUnit]
   by_cases h : i = j
   · have hz : posIdx hk j = posIdx hk i := by rw [h]
-    rw [if_pos hz.symm, if_pos h]
+    rw [ite_eq_left hz.symm, ite_eq_left h]
   · have h' : posIdx hk j ≠ posIdx hk i := by
       intro hz
       have hval : (posIdx hk j).val = (posIdx hk i).val := congrArg Fin.val hz
       dsimp [posIdx] at hval
       omega
-    rw [if_neg h'.symm, if_neg h]
+    rw [ite_eq_right h'.symm, ite_eq_right h]
 
 lemma posPart_add_smul_pos {n k : ℕ} (hk : k ≤ n) (y : MorseModel n) (h : ℝ)
     (j : Fin (n - k)) :
@@ -966,11 +966,11 @@ theorem modifiedCollarRetraction_mem_lowerCellUnion {n k : ℕ} (hk : k ≤ n) (
     modifiedCollarRetraction hk c ε y ∈ lowerCellUnion hk c ε := by
   by_cases hf : morseNormalForm hk c y ≤ c - ε
   · dsimp [modifiedCollarRetraction]
-    rw [if_pos hf]
+    rw [ite_eq_left hf]
     exact Or.inl (by simpa [sublevel] using hf)
   · by_cases hb : ‖negPart hk y‖ ^ 2 ≤ 2 * ε
     · dsimp [modifiedCollarRetraction]
-      rw [if_neg hf, if_pos hb]
+      rw [ite_eq_right hf, ite_eq_left hb]
       exact Or.inr (spineMap_mem_cell hk ε hε hb)
     · have hP : ‖posPart hk y‖ ^ 2 ≠ 0 := by
         intro hP
@@ -1005,7 +1005,7 @@ theorem modifiedCollarRetraction_mem_lowerCellUnion {n k : ℕ} (hk : k ≤ n) (
         rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hs0]
         nlinarith [hsq]
       dsimp [modifiedCollarRetraction]
-      rw [if_neg hf, if_neg hb]
+      rw [ite_eq_right hf, ite_eq_right hb]
       exact Or.inl (by simpa [s, sublevel] using (le_of_eq hval))
 
 theorem modifiedCollarHomotopy_mem_sublevel {n k : ℕ} (hk : k ≤ n) (c ε δ : ℝ)
@@ -1060,7 +1060,7 @@ theorem modifiedCollarHomotopy_zero {n k : ℕ} (hk : k ≤ n) (c ε : ℝ) (y :
   · simp [hf]
   · by_cases hb : ‖negPart hk y‖ ^ 2 ≤ 2 * ε
     · simp [hf, hb, recombine_decompose]
-    · rw [if_neg hf, if_neg hb]
+    · rw [ite_eq_right hf, ite_eq_right hb]
       have hsc : (1 - 0 + 0 * Real.sqrt ((‖negPart hk y‖ ^ 2 - 2 * ε) / ‖posPart hk y‖ ^ 2)) = 1 := by
         norm_num
       rw [hsc, one_smul]
@@ -1081,7 +1081,7 @@ theorem modifiedCollarHomotopy_mem_lowerCellUnion {n k : ℕ} (hk : k ≤ n) (c 
   rcases hy with hf | hcell
   · have hy' : morseNormalForm hk c y ≤ c - ε := by simpa [sublevel] using hf
     dsimp [modifiedCollarHomotopy]
-    rw [if_pos hy']
+    rw [ite_eq_left hy']
     exact Or.inl hf
   · rcases hcell with ⟨x, hx⟩
     have hpos : posPart hk y = 0 := by
@@ -1090,7 +1090,7 @@ theorem modifiedCollarHomotopy_mem_lowerCellUnion {n k : ℕ} (hk : k ≤ n) (c 
       simp [posPart, cellMap_posIdx]
     by_cases hfy : morseNormalForm hk c y ≤ c - ε
     · dsimp [modifiedCollarHomotopy]
-      rw [if_pos hfy]
+      rw [ite_eq_left hfy]
       exact Or.inr ⟨x, hx⟩
     · have hb : ‖negPart hk y‖ ^ 2 ≤ 2 * ε := by
         rw [← hx]
@@ -1116,7 +1116,7 @@ theorem modifiedCollarHomotopy_mem_lowerCellUnion {n k : ℕ} (hk : k ≤ n) (c 
         nlinarith [hsq, hsq', hbnd]
       have hstep : modifiedCollarHomotopy hk c ε t y = y := by
         dsimp [modifiedCollarHomotopy]
-        rw [if_neg hfy, if_pos hb]
+        rw [ite_eq_right hfy, ite_eq_left hb]
         rw [hpos, smul_zero]
         rw [← hpos]
         exact recombine_decompose hk y
@@ -1392,10 +1392,10 @@ theorem continuousOn_modifiedCollarRetraction_sublevel {n k : ℕ} (hk : k ≤ n
         dsimp [spineMap]
         rw [← hpos]
         exact recombine_decompose hk y
-      rw [if_pos hb]
+      rw [ite_eq_left hb]
       exact hspine.symm
     · have hr3 := recombine_ratio_eq_self_of_morseNormalForm_eq hk c ε hEq hb
-      rw [if_neg hb]
+      rw [ite_eq_right hb]
       exact hr3.symm
   · exact continuous_id.continuousOn.mono (by intro y hy; exact hy.1)
 
@@ -1647,10 +1647,10 @@ theorem continuousOn_modifiedCollarHomotopy_sublevel {n k : ℕ} (hk : k ≤ n)
         rw [hpos, smul_zero]
         rw [← hpos]
         exact recombine_decompose hk p.2
-      rw [if_pos hb]
+      rw [ite_eq_left hb]
       exact hstep.symm
     · have hr3 := recombine_ratio_homotopy_eq_self_of_morseNormalForm_eq hk c ε (p.1 : ℝ) hEq hb
-      rw [if_neg hb]
+      rw [ite_eq_right hb]
       exact hr3.symm
   · exact (continuous_snd.comp continuous_id).continuousOn.mono (by intro p hp; exact hp.1)
 
@@ -1990,12 +1990,12 @@ theorem morseNorm_modifiedCollarHomotopy_le {n k : ℕ} (hk : k ≤ n) (c ε : �
     morseNorm n (modifiedCollarHomotopy hk c ε t y) ≤ morseNorm n y := by
   by_cases hf : morseNormalForm hk c y ≤ c - ε
   · dsimp [modifiedCollarHomotopy]
-    rw [if_pos hf]
+    rw [ite_eq_left hf]
   · by_cases hb : ‖negPart hk y‖ ^ 2 ≤ 2 * ε
     · have hcoef0 : 0 ≤ 1 - t := by linarith
       have hcoef1 : 1 - t ≤ 1 := by linarith
       dsimp [modifiedCollarHomotopy]
-      rw [if_neg hf, if_pos hb]
+      rw [ite_eq_right hf, ite_eq_left hb]
       calc
         morseNorm n (recombine hk (negPart hk y) ((1 - t) • posPart hk y))
             ≤ morseNorm n (recombine hk (negPart hk y) (posPart hk y)) :=
@@ -2027,7 +2027,7 @@ theorem morseNorm_modifiedCollarHomotopy_le {n k : ℕ} (hk : k ≤ n) (c ε : �
       have hcoef1 : 1 - t + t * Real.sqrt ((‖negPart hk y‖ ^ 2 - 2 * ε) / ‖posPart hk y‖ ^ 2) ≤ 1 := by
         nlinarith [ht0, hs1]
       dsimp [modifiedCollarHomotopy]
-      rw [if_neg hf, if_neg hb]
+      rw [ite_eq_right hf, ite_eq_right hb]
       calc
         morseNorm n (recombine hk (negPart hk y)
             ((1 - t + t * Real.sqrt ((‖negPart hk y‖ ^ 2 - 2 * ε) / ‖posPart hk y‖ ^ 2)) •
@@ -2048,7 +2048,7 @@ theorem modifiedCollarHomotopy_fix_cell {n k : ℕ} (hk : k ≤ n) (c ε : ℝ)
     simp [posPart, cellMap_posIdx]
   by_cases hfy : morseNormalForm hk c y ≤ c - ε
   · dsimp [modifiedCollarHomotopy]
-    rw [if_pos hfy]
+    rw [ite_eq_left hfy]
   · have hb : ‖negPart hk y‖ ^ 2 ≤ 2 * ε := by
       rw [← hx]
       have hnp : negPart hk (cellMap (Real.sqrt (2 * ε)) (x : EuclideanSpace ℝ (Fin k))) =
@@ -2072,7 +2072,7 @@ theorem modifiedCollarHomotopy_fix_cell {n k : ℕ} (hk : k ≤ n) (c ε : ℝ)
         simpa using (mul_le_mul_of_nonneg_left hxle2 (sq_nonneg (Real.sqrt (2 * ε))))
       nlinarith [hsq, hsq', hbnd]
     dsimp [modifiedCollarHomotopy]
-    rw [if_neg hfy, if_pos hb]
+    rw [ite_eq_right hfy, ite_eq_left hb]
     rw [hpos, smul_zero]
     rw [← hpos]
     exact recombine_decompose hk y
@@ -2081,7 +2081,7 @@ theorem modifiedCollarHomotopy_eq_self_of_lower {n k : ℕ} (hk : k ≤ n) (c ε
     {y : MorseModel n} (hy : morseNormalForm hk c y ≤ c - ε) :
     modifiedCollarHomotopy hk c ε t y = y := by
   dsimp [modifiedCollarHomotopy]
-  rw [if_pos hy]
+  rw [ite_eq_left hy]
 
 end
 

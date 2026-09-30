@@ -8,6 +8,9 @@ import DifferentialGeometry.Analysis.FiniteDimensional.QuadraticNormBound
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
 import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (metric_inner_cauchy_schwarz_sq)
+
 set_option autoImplicit false
 noncomputable section
 open Bundle Manifold DifferentialGeometry DifferentialGeometry.Geometry

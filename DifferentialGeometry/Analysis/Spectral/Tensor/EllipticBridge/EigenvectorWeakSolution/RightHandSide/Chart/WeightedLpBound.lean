@@ -46,7 +46,6 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 private lemma eLpNorm_sum_le_const_mul_aggregate
     {ι : Type*} [Fintype ι] {μ : Measure EuclN} (F : ι → EuclN → ℝ)
     (A : ℝ≥0∞)
-    (hF : ∀ j : ι, MemLp (F j) 2 μ)
     (hbd : ∀ j : ι, ∃ C : ℝ, 0 ≤ C ∧ eLpNorm (F j) 2 μ ≤ ENNReal.ofReal C * A) :
     ∃ C : ℝ, 0 ≤ C ∧
       eLpNorm (fun y => ∑ j : ι, F j y) 2 μ ≤ ENNReal.ofReal C * A := by
@@ -59,7 +58,7 @@ private lemma eLpNorm_sum_le_const_mul_aggregate
     exact (Finset.sum_apply y Finset.univ F).symm
   rw [h_fun]
   have h_tri : eLpNorm (∑ j : ι, F j) 2 μ ≤ ∑ j : ι, eLpNorm (F j) 2 μ :=
-    eLpNorm_sum_le (fun j _ => (hF j).aestronglyMeasurable) (by norm_num)
+    eLpNorm_sum_le (by norm_num)
   have h_step : ∑ j : ι, eLpNorm (F j) 2 μ
       ≤ ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A := by
     refine Finset.sum_le_sum (fun j _ => ?_)
@@ -140,7 +139,6 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 private lemma eLpNorm_sum_le_const_mul_aggregate_uniform
     {ι : Type*} [Fintype ι] {ν : Type*} {μ : Measure EuclN}
     (F : ι → ν → EuclN → ℝ) (A : ν → ℝ≥0∞)
-    (hF : ∀ (j : ι) (n : ν), MemLp (F j n) 2 μ)
     (hbd : ∀ j : ι, ∃ C : ℝ, 0 ≤ C ∧
       ∀ n : ν, eLpNorm (F j n) 2 μ ≤ ENNReal.ofReal C * A n) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -156,7 +154,7 @@ private lemma eLpNorm_sum_le_const_mul_aggregate_uniform
     exact (Finset.sum_apply y Finset.univ (fun j => F j n)).symm
   rw [h_fun]
   have h_tri : eLpNorm (∑ j : ι, F j n) 2 μ ≤ ∑ j : ι, eLpNorm (F j n) 2 μ :=
-    eLpNorm_sum_le (fun j _ => (hF j n).aestronglyMeasurable) (by norm_num)
+    eLpNorm_sum_le (by norm_num)
   have h_step : ∑ j : ι, eLpNorm (F j n) 2 μ
       ≤ ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A n := by
     refine Finset.sum_le_sum (fun j _ => ?_)
@@ -573,14 +571,6 @@ private lemma eigenvectorChartCrossLeftContraction_eLpNorm_le_uniform_unconditio
           g r s i α x.1 :
           Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hF_def
-  have hF_memLp : ∀ (x : TensorCompIdx (E := E) r (s + 1) ×
-      TensorCompIdx (E := E) r (s + 1))
-      (i : TensorEigenIdx (I := I) (M := M) g r s),
-      MemLp (F x i) 2 μw := by
-    intro x i
-    rw [hμw_def, hF_def]
-    exact eigenvectorChartCrossLeftContraction_summand_memLp_unconditional (I := I) (M := M)
-      g r s i α P₀ x.1 x.2
   have hF_bd : ∀ x : TensorCompIdx (E := E) r (s + 1) ×
       TensorCompIdx (E := E) r (s + 1), ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
@@ -634,7 +624,7 @@ private lemma eigenvectorChartCrossLeftContraction_eLpNorm_le_uniform_unconditio
   obtain ⟨C, hC_nn, hC_bd⟩ := eLpNorm_sum_le_const_mul_aggregate_uniform
     (μ := μw) F
     (fun i => eigenvectorChartRHSELpControl (I := I) (M := M) g r s i α P₀)
-    hF_memLp hF_bd
+    hF_bd
   refine ⟨C, hC_nn, fun i => ?_⟩
   have h_eq : (fun y => ∑ x : TensorCompIdx (E := E) r (s + 1) ×
       TensorCompIdx (E := E) r (s + 1), F x i y)
@@ -667,14 +657,6 @@ private lemma eigenvectorChartCrossRightContraction_eLpNorm_le_uniform_unconditi
           g r s i α x.1 :
           Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y
     with hF_def
-  have hF_memLp : ∀ (x : TensorCompIdx (E := E) r s ×
-      TensorCompIdx (E := E) r s)
-      (i : TensorEigenIdx (I := I) (M := M) g r s),
-      MemLp (F x i) 2 μw := by
-    intro x i
-    rw [hμw_def, hF_def]
-    exact eigenvectorChartCrossRightContraction_summand_memLp_unconditional (I := I) (M := M)
-      g r s i α P₀ x.1 x.2
   have hF_bd : ∀ x : TensorCompIdx (E := E) r s ×
       TensorCompIdx (E := E) r s, ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
@@ -727,7 +709,7 @@ private lemma eigenvectorChartCrossRightContraction_eLpNorm_le_uniform_unconditi
   obtain ⟨C, hC_nn, hC_bd⟩ := eLpNorm_sum_le_const_mul_aggregate_uniform
     (μ := μw) F
     (fun i => eigenvectorChartRHSELpControl (I := I) (M := M) g r s i α P₀)
-    hF_memLp hF_bd
+    hF_bd
   refine ⟨C, hC_nn, fun i => ?_⟩
   have h_eq : (fun y => ∑ x : TensorCompIdx (E := E) r s ×
       TensorCompIdx (E := E) r s, F x i y)
@@ -831,13 +813,6 @@ private lemma weightedGradCoeffDivLimit_sum_eLpNorm_le_uniform_unconditional :
       TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ :=
     fun l i => weightedGradCoeffDivLimit (I := I) (M := M)
       g r s i α P₀ l with hF_def
-  have hF_memLp : ∀ (l : Fin (Module.finrank ℝ E))
-      (i : TensorEigenIdx (I := I) (M := M) g r s),
-      MemLp (F l i) 2 μw := by
-    intro l i
-    rw [hμw_def, hF_def]
-    exact weightedGradCoeffDivLimit_memLp_weighted
-      (I := I) (M := M) g r s i α P₀ l
   have hF_bd : ∀ l : Fin (Module.finrank ℝ E), ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         eLpNorm (F l i) 2 μw
@@ -898,7 +873,7 @@ private lemma weightedGradCoeffDivLimit_sum_eLpNorm_le_uniform_unconditional :
   obtain ⟨C, hC_nn, hC_bd⟩ := eLpNorm_sum_le_const_mul_aggregate_uniform
     (μ := μw) F
     (fun i => eigenvectorChartRHSELpControl (I := I) (M := M) g r s i α P₀)
-    hF_memLp hF_bd
+    hF_bd
   refine ⟨C, hC_nn, fun i => ?_⟩
   rw [hμw_def] at hC_bd
   exact hC_bd i
@@ -1082,23 +1057,17 @@ private lemma eigenvectorChartRHSNumerator_eLpNorm_le_uniform_unconditional :
           + eLpNorm (eigenvectorChartCrossRightDivergence (I := I) (M := M)
               g r s i α P₀) 2 μw := by
     rw [eigenvectorChartRHSNumerator]
-    refine le_trans (eLpNorm_sub_le hB123456.aestronglyMeasurable
-      hM7.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_sub_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_add_le hB12345.aestronglyMeasurable
-      hM6.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_add_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_sub_le hB1234.aestronglyMeasurable
-      hM5.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_sub_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_sub_le hB123.aestronglyMeasurable
-      hM4.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_sub_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_add_le hB12.aestronglyMeasurable
-      hM3.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_add_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    exact eLpNorm_sub_le hM1.aestronglyMeasurable
-      hM2.aestronglyMeasurable (by norm_num)
+    exact eLpNorm_sub_le (by norm_num)
   refine le_trans h_tri ?_
   have h_seven :
       eLpNorm (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀) 2 μw

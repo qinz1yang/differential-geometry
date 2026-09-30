@@ -44,8 +44,8 @@ theorem SmoothDisk.sectionalDensity_eq_diskMapSectionalDensity
   have hdI := SmoothDisk.differential_eq_diskMapPartial u hU z Complex.I
   unfold SmoothDisk.sectionalDensity diskMapSectionalDensity
   by_cases h : 0 < u.conformalFactor g z
-  · rw [if_pos h, ← hcoef, ← hU.1 z, ← hd1, ← hdI]
-  · rw [if_neg h]
+  · rw [ite_eq_left h, ← hcoef, ← hU.1 z, ← hd1, ← hdI]
+  · rw [ite_eq_right h]
     have h0 : u.conformalFactor g z = 0 :=
       le_antisymm (not_lt.mp h) (SmoothDisk.conformalFactor_nonneg u g z)
     rw [← hcoef, h0, mul_zero]
@@ -103,13 +103,13 @@ theorem SmoothDisk.metricVariationDensity_eq_neg_two_mul_sectionalDensity_sub_sc
     linarith
   rw [SmoothDisk.metricVariationDensity]
   by_cases hpos : 0 < u.conformalFactor (G t) z
-  · rw [if_pos hpos]
+  · rw [ite_eq_left hpos]
     exact hsum
-  · rw [if_neg hpos]
+  · rw [ite_eq_right hpos]
     have h0 : u.conformalFactor (G t) z = 0 :=
       le_antisymm (not_lt.mp hpos) (SmoothDisk.conformalFactor_nonneg u (G t) z)
     unfold SmoothDisk.sectionalDensity
-    rw [if_neg hpos, h0, mul_zero, mul_zero, add_zero, neg_zero]
+    rw [ite_eq_right hpos, h0, mul_zero, mul_zero, add_zero, neg_zero]
 
 omit [CompactSpace Q] in
 theorem SmoothDisk.integral_metricVariationDensity_eq_neg_two_mul_sectionalDensity_sub_scalar
@@ -143,13 +143,13 @@ theorem SmoothDisk.integral_metricVariationDensity_eq_neg_two_mul_sectionalDensi
           u.conformalFactor (G t) w) z)) := by
     filter_upwards [ae_restrict_mem measurableSet_closedBall] with z hz
     rw [show diskExtension (u.metricVariationDensity G J t) z =
-        u.metricVariationDensity G J t ⟨z, hz⟩ from dif_pos hz,
+        u.metricVariationDensity G J t ⟨z, hz⟩ from dite_eq_left hz,
       show diskExtension (u.sectionalDensity (G t)) z =
-        u.sectionalDensity (G t) ⟨z, hz⟩ from dif_pos hz,
+        u.sectionalDensity (G t) ⟨z, hz⟩ from dite_eq_left hz,
       show diskExtension (fun w : Disk => metricScalarAt (I := 𝓘(ℝ, E)) (G t) (u.map w) *
           u.conformalFactor (G t) w) z =
         metricScalarAt (I := 𝓘(ℝ, E)) (G t) (u.map ⟨z, hz⟩) *
-          u.conformalFactor (G t) ⟨z, hz⟩ from dif_pos hz]
+          u.conformalFactor (G t) ⟨z, hz⟩ from dite_eq_left hz]
     exact hpt ⟨z, hz⟩
   rw [integral_congr_ae hae]
   have h2 : IntegrableOn (fun z => 2 * diskExtension (u.sectionalDensity (G t)) z)
@@ -188,11 +188,11 @@ theorem scalarMinimum_mul_diskArea_le_integral_scalar_mul
       diskExtension (fun w : Disk => metricScalarAt (I := 𝓘(ℝ, E)) (F.metric t)
         (u.map w) * u.conformalFactor (F.metric t) w) z := by
     rw [show diskExtension (u.conformalFactor (F.metric t)) z =
-        u.conformalFactor (F.metric t) ⟨z, hz⟩ from dif_pos hz,
+        u.conformalFactor (F.metric t) ⟨z, hz⟩ from dite_eq_left hz,
       show diskExtension (fun w : Disk => metricScalarAt (I := 𝓘(ℝ, E)) (F.metric t)
           (u.map w) * u.conformalFactor (F.metric t) w) z =
         metricScalarAt (I := 𝓘(ℝ, E)) (F.metric t) (u.map ⟨z, hz⟩) *
-          u.conformalFactor (F.metric t) ⟨z, hz⟩ from dif_pos hz]
+          u.conformalFactor (F.metric t) ⟨z, hz⟩ from dite_eq_left hz]
     exact mul_le_mul_of_nonneg_right
       (by simpa only [SolutionFamily.scalar] using
         scalarMinimum_le_scalar (F := F) hbdd (u.map ⟨z, hz⟩))

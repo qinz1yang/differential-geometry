@@ -181,7 +181,7 @@ theorem pairwise_disjoint_cuttingCollars (hδ : ∀ i, 0 < precision i)
     have hb : b ≠ c := fun h => hbc (congrArg (Prod.mk i) h)
     have hz := congrArg (fun q : bufferedCylinder (precision i) => q.val.2) (hf i he)
     change cuttingSign c + cuttingSign c * r.2.val = cuttingSign b + cuttingSign b * q.2.val at hz
-    cases b <;> cases c <;> simp only [cuttingSign, Bool.false_eq_true, if_false, if_true,
+    cases b <;> cases c <;> simp only [cuttingSign, Bool.false_eq_true, ite_false, ite_true,
       neg_one_mul, one_mul] at hb hz
     all_goals first | contradiction | linarith [q.2.property.1, r.2.property.1]
   · exact disjoint_left.mp (hdisj hij) ⟨cuttingCollarCylinderMap (hδ i) b q, rfl⟩

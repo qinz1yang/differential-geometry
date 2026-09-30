@@ -4,6 +4,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorCompone
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Subcritical
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.L2
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise)
 open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -155,20 +157,24 @@ theorem h1_lp6_fiber_rs
       _ ≤ Real.sqrt Cr * ∑ q ∈ K, |comp q x| :=
         mul_le_mul_of_nonneg_left
           (sqrt_sum_sq_le_sum_abs K (fun q => comp q x)) (Real.sqrt_nonneg _)
-  have hcomp_meas : ∀ q,
-      AEStronglyMeasurable (fun x => |comp q x|) μ := by
-    intro q
-    have hcont : Continuous (comp q) :=
-      (tensorChartComponentScalar_contMDiff (I := I) (M := M)
-        g r s S.toCcTensor q.1.1 q.1.2 q.2).continuous
-    simpa only [Real.norm_eq_abs] using hcont.aestronglyMeasurable.norm
+  have hfiber_meas : AEStronglyMeasurable fiber μ := by
+    have hinner := SmoothCcTensor.continuous_inner_self
+      (I := I) (M := M) S.toCcTensor
+    have hcont_sq : Continuous (fun x =>
+        riemannianFiberNormSq (I := I) (M := M) g r s x
+          (S.toCcTensor.toSection x)) := by
+      refine hinner.congr (fun x => ?_)
+      rw [riemannianFiberNormSq_eq_tensorInnerPointwise
+        (I := I) (M := M) g r s x (S.toCcTensor.toSection x),
+        ← SmoothCcTensor.toFun_apply (I := I) (M := M) S.toCcTensor x]
+    exact (Real.continuous_sqrt.comp hcont_sq).aestronglyMeasurable
   have hfiber_eLp : eLpNorm fiber 6 μ ≤
       ENNReal.ofReal (Real.sqrt Cr) *
         eLpNorm (fun x => ∑ q ∈ K, |comp q x|) 6 μ := by
     calc
       eLpNorm fiber 6 μ ≤
           eLpNorm (Real.sqrt Cr • fun x => ∑ q ∈ K, |comp q x|) 6 μ := by
-        refine eLpNorm_mono_real (fun x => ?_)
+        refine eLpNorm_mono_real hfiber_meas (fun x => ?_)
         rw [Real.norm_of_nonneg (Real.sqrt_nonneg _)]
         simpa only [Pi.smul_apply, smul_eq_mul] using hpoint x
       _ = ENNReal.ofReal (Real.sqrt Cr) *
@@ -182,7 +188,7 @@ theorem h1_lp6_fiber_rs
       funext x
       exact (Finset.sum_apply x K (fun q x => |comp q x|)).symm
     rw [hfun]
-    exact eLpNorm_sum_le (fun q _ => hcomp_meas q) (by norm_num)
+    exact eLpNorm_sum_le (by norm_num)
   have hcomponent_sum :
       ∑ q ∈ K, eLpNorm (fun x => |comp q x|) 6 μ ≤
         ENNReal.ofReal Csum * (‖S‖₊ : ℝ≥0∞) := by
@@ -190,7 +196,10 @@ theorem h1_lp6_fiber_rs
       ∑ q ∈ K, eLpNorm (fun x => |comp q x|) 6 μ
           = ∑ q ∈ K, eLpNorm (comp q) 6 μ := by
         refine Finset.sum_congr rfl (fun q _ => ?_)
-        simpa only [Real.norm_eq_abs] using (eLpNorm_norm (comp q))
+        have hraw : AEStronglyMeasurable (comp q) μ :=
+          (tensorChartComponentScalar_contMDiff (I := I) (M := M)
+            g r s S.toCcTensor q.1.1 q.1.2 q.2).continuous.aestronglyMeasurable
+        simpa only [Real.norm_eq_abs] using (eLpNorm_norm (comp q) hraw)
       _ ≤ ∑ q ∈ K, ENNReal.ofReal (Ca q.1.1) * (‖S‖₊ : ℝ≥0∞) := by
         exact Finset.sum_le_sum (fun q _ => hcomp q.1.1 S q.1.2 q.2)
       _ = ENNReal.ofReal Csum * (‖S‖₊ : ℝ≥0∞) := by
@@ -223,7 +232,7 @@ theorem h1_lp6_fiber_rs
       ENNReal.ofReal (Real.sqrt Cr * Csum) * (‖S‖₊ : ℝ≥0∞) ≠ ⊤ :=
     ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.coe_ne_top
   have hreal := ENNReal.toReal_mono hrhs_ne_top hENN
-  rw [MeasureTheory.toReal_eLpNorm hfiber_cont.aestronglyMeasurable,
+  rw [MeasureTheory.toReal_eLpNorm,
     ENNReal.toReal_mul,
     ENNReal.toReal_ofReal (mul_nonneg (Real.sqrt_nonneg _)
       (Finset.sum_nonneg (fun q _ => hCa q.1.1))),

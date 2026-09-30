@@ -67,7 +67,7 @@ theorem exists_piecewiseAffine_lipschitz_extension_of_eq_zero_on_faces [FiniteDi
           apply Finset.sum_congr rfl
           intro v hv
           have hvs := hts (subset_convexHull ℝ _ hv)
-          rw [show ψ v = f v from if_pos (K.convexHull_subset_space hs hvs), hA hvs]
+          rw [show ψ v = f v from ite_eq_left (K.convexHull_subset_space hs hvs), hA hvs]
       _ = A (∑ v ∈ t, weights t x v • v) := (affineMap_apply_sum_smul A (sum_weights hxt)).symm
       _ = f x := by rw [sum_weights_smul hxt, ← hA (hts hxt)]
   have hzeroN : EqOn g (fun _ => 0) Nᶜ := by
@@ -77,7 +77,7 @@ theorem exists_piecewiseAffine_lipschitz_extension_of_eq_zero_on_faces [FiniteDi
       have hvs : ∀ v ∈ s, ψ v = 0 := by
         intro v hv
         by_cases hvK : v ∈ K.space
-        · rw [show ψ v = f v from if_pos hvK]
+        · rw [show ψ v = f v from ite_eq_left hvK]
           apply hzero
           refine ⟨hvK, fun hvN => ?_⟩
           have hvN' : v ∈ interior (restrict R N).space := by rwa [hRN]
@@ -86,10 +86,10 @@ theorem exists_piecewiseAffine_lipschitz_extension_of_eq_zero_on_faces [FiniteDi
           apply hxN
           rw [← hRN]
           exact hsub hxs
-        · exact if_neg hvK
+        · exact ite_eq_right hvK
       rw [show g x = ∑ v ∈ s, weights s x v • ψ v from simplicialMap_eq_of_mem R ψ hs hxs]
       exact Finset.sum_eq_zero fun v hv => by rw [hvs v hv, smul_zero]
-    · simp only [g, simplicialMap, carrierFace, dif_neg hxR, Finset.sum_empty]
+    · simp only [g, simplicialMap, carrierFace, dite_eq_right hxR, Finset.sum_empty]
   have hgP : IsPiecewiseAffineOn g (interior P.space) :=
     (isPiecewiseAffineOn_simplicialMap R ψ).mono isOpen_interior
       (by rw [hR.space_eq]; exact interior_subset)
@@ -112,16 +112,16 @@ theorem exists_piecewiseAffine_lipschitz_extension_of_eq_zero_on_faces [FiniteDi
     intro v
     apply subset_convexHull ℝ _
     by_cases hv : v ∈ K.space
-    · rw [show ψ v = f v from if_pos hv]
+    · rw [show ψ v = f v from ite_eq_left hv]
       exact Or.inr ⟨v, hv, rfl⟩
-    · rw [show ψ v = 0 from if_neg hv]
+    · rw [show ψ v = 0 from ite_eq_right hv]
       exact mem_insert 0 _
   by_cases hxR : x ∈ R.space
   · obtain ⟨s, hs, hxs⟩ := R.mem_space_iff.mp hxR
     rw [show g x = ∑ v ∈ s, weights s x v • ψ v from simplicialMap_eq_of_mem R ψ hs hxs]
     exact (convex_convexHull ℝ _).sum_mem (fun v hv => weights_nonneg hxs hv) (sum_weights hxs)
       (fun v _ => hmem v)
-  · simp only [g, simplicialMap, carrierFace, dif_neg hxR, Finset.sum_empty]
+  · simp only [g, simplicialMap, carrierFace, dite_eq_right hxR, Finset.sum_empty]
     exact subset_convexHull ℝ _ (mem_insert 0 _)
 
 theorem IsPiecewiseAffineOn.exists_lipschitz_extension_of_eq_zero [FiniteDimensional ℝ E]
@@ -277,7 +277,7 @@ theorem exists_piecewiseAffine_lipschitz_vertex_function_of_openStar [FiniteDime
     rw [show f x = ∑ w ∈ s, weights s x w • (if w = p then (1 : ℝ) else 0) from
       simplicialMap_eq_of_mem K _ hs hxs]
     exact Finset.sum_eq_zero fun w hw => by
-      rw [if_neg (ne_of_mem_of_not_mem hw hps), smul_zero]
+      rw [ite_eq_right (ne_of_mem_of_not_mem hw hps), smul_zero]
   obtain ⟨b, k, hb, hk, hfix, hzero, -⟩ :=
     (isPiecewiseAffineOn_simplicialMap K _).exists_lipschitz_extension_of_eq_zero
       (isPolyhedron_space K) hN hzero
@@ -335,9 +335,9 @@ theorem exists_isPLHomeomorphOn_of_small_vertex_move [FiniteDimensional ℝ E]
     intro w hw
     by_cases hwp : w = p
     · subst w
-      simp only [if_true, smul_eq_mul, mul_one, Function.update_self, smul_sub]
+      simp only [ite_true, smul_eq_mul, mul_one, Function.update_self, smul_sub]
       abel
-    · simp only [hwp, if_false, smul_eq_mul, mul_zero, zero_smul, add_zero,
+    · simp only [hwp, ite_false, smul_eq_mul, mul_zero, zero_smul, add_zero,
         Function.update_of_ne hwp, id_eq]
 
 end DifferentialGeometry.Topology.PiecewiseLinear

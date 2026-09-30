@@ -40,7 +40,7 @@ private theorem SpatialNeck.slice_isSmoothEmbedding (nk : SpatialNeck g eps p)
   change Function.Injective (mfderiv I2 I3 (nk.map ∘ f) y)
   rw [mfderiv_comp y (hl.contMDiffAt.mdifferentiableAt (by simp)) (hf.contMDiff.mdifferentiableAt (by simp))]
   exact (hl.mfderivToContinuousLinearEquiv (by simp)).injective.comp
-    ((hf.isImmersion.isImmersionAt y).injective_mfderiv (by simp))
+    ((hf.isImmersion.isImmersionAt y).mfderiv_injective (by simp))
 
 omit [T2Space M] in
 private theorem SpatialNeck.exists_slice_collar (nk : SpatialNeck g eps p)

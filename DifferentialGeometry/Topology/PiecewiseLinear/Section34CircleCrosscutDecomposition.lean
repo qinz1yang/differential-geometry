@@ -67,7 +67,7 @@ theorem IsPLSphere.exists_finite_disjoint_arc_partition {S U : Set E}
     (hS : IsPLSphere 1 S) (hU : IsPolyhedron U) (hUS : U ⊂ S) (hacc : Preperfect U) :
     ∃ C : Set (Set E), C.Finite ∧ C.PairwiseDisjoint id ∧ ⋃₀ C = U ∧
       ∀ A ∈ C, ∃ q : (Fin 2 → ℝ) → E,
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧
         q '' stdSimplexBoundary 1 = A ∩ closure (S \ U) := by
   obtain ⟨D, hD, hUD, -⟩ := hS.exists_isPLBall_one_superset_of_ssubset hU.isClosed hUS
   obtain ⟨C, hCfin, hCdis, hC, hcover⟩ := hU.exists_finite_connected_partition
@@ -109,7 +109,7 @@ theorem IsPLSphere.exists_finite_crosscut_partition_of_relative_boundary {S U W 
     (hboundary : U ∩ closure (S \ U) = U ∩ W) (hdense : U ⊆ closure (U \ W)) :
     ∃ C : Set (Set E), C.Finite ∧ C.PairwiseDisjoint id ∧ ⋃₀ C = U ∧
       ∀ A ∈ C, ∃ q : (Fin 2 → ℝ) → E,
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧
         q '' stdSimplexBoundary 1 = A ∩ W := by
   let V : Set E := (closure (S \ U))ᶜ
   have hVU : V ∩ S ⊆ U := by
@@ -146,7 +146,7 @@ theorem IsPLSphere.exists_finite_crosscut_partition {S D : Set E}
     (hout : S ∩ frontier D ⊆ closure (S \ D)) :
     ∃ C : Set (Set E), C.Finite ∧ C.PairwiseDisjoint id ∧ ⋃₀ C = S ∩ D ∧
       ∀ A ∈ C, ∃ q : (Fin 2 → ℝ) → E,
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧
         q '' stdSimplexBoundary 1 = A ∩ frontier D := by
   have hclosure : closure (S ∩ interior D) = S ∩ D := by
     apply Subset.antisymm
@@ -195,7 +195,7 @@ theorem IsPLSphere.exists_finite_crosscut_partition_in_region {S K D W : Set E}
     (hout : S ∩ W ⊆ closure (S \ D)) :
     ∃ C : Set (Set E), C.Finite ∧ C.PairwiseDisjoint id ∧ ⋃₀ C = S ∩ D ∧
       ∀ A ∈ C, ∃ q : (Fin 2 → ℝ) → E,
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧
         q '' stdSimplexBoundary 1 = A ∩ W := by
   have hdiff : S \ (S ∩ D) = S \ D := by ext x; simp
   have hrel : (S ∩ D) ∩ closure (S \ (S ∩ D)) = (S ∩ D) ∩ W := by

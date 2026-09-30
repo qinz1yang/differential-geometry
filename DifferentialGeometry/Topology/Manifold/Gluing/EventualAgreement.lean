@@ -63,24 +63,24 @@ theorem exists_contMDiffOn_eventually_eqOn_of_finite_cover
   refine ⟨F, ?_, ?_, ?_⟩
   · intro k
     by_cases hk : K ≤ k
-    · simp only [F, dif_pos hk]
+    · simp only [F, dite_eq_left hk]
       apply contMDiffOn_of_locally_contMDiffOn
       intro x hx
       obtain ⟨i, hi⟩ := mem_iUnion.mp (hV hx)
       refine ⟨W i, hW i, hi, ?_⟩
       exact ((hK k hk).1 i).congr_mono (hext k hk i) inter_subset_right
-    · simp only [F, dif_neg hk]
+    · simp only [F, dite_eq_right hk]
       exact contMDiffOn_const
   · filter_upwards [eventually_ge_atTop K] with k hk i
-    simp only [F, dif_pos hk]
+    simp only [F, dite_eq_left hk]
     exact hext k hk i
   · intro k x hx
     by_cases hk : K ≤ k
-    · simp only [F, dif_pos hk, extended]
+    · simp only [F, dite_eq_left hk, extended]
       apply Function.extend_apply'
       rintro ⟨y, hy⟩
       exact hx (hy ▸ y.property)
-    · simp only [F, dif_neg hk]
+    · simp only [F, dite_eq_right hk]
 
 end DifferentialGeometry.Topology.Manifold
 

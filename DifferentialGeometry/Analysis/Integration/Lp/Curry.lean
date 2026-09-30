@@ -34,18 +34,14 @@ private theorem measurable_eLpNorm_slice (hp : p ≠ ⊤) {F : A × B → E}
     (hF : StronglyMeasurable F) :
     Measurable (fun a => eLpNorm (fun b => F (a, b)) p ν) := by
   have hp0 : p ≠ 0 := (zero_lt_one.trans_le (Fact.out : 1 ≤ p)).ne'
-  simp_rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp0 hp]
+  have hslice (a : A) : AEStronglyMeasurable (fun b => F (a, b)) ν :=
+    (hF.comp_measurable (measurable_const.prodMk measurable_id)).aestronglyMeasurable
+  simp_rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp0 hp (hslice _)]
   exact (hF.enorm.pow_const p.toReal).lintegral_prod_right'.pow_const _
 
 private theorem measurableSet_memLp_slice (hp : p ≠ ⊤) (f : Lp E p (μ.prod ν)) :
     MeasurableSet {a | MemLp (fun b => f (a, b)) p ν} := by
-  have hsm (a : A) : StronglyMeasurable (fun b => f (a, b)) :=
-    (Lp.stronglyMeasurable f).comp_measurable (measurable_const.prodMk measurable_id)
-  have heq : {a | MemLp (fun b => f (a, b)) p ν} =
-      {a | eLpNorm (fun b => f (a, b)) p ν < ⊤} := by
-    ext a
-    exact ⟨fun h => h.2, fun h => ⟨(hsm a).aestronglyMeasurable, h⟩⟩
-  rw [heq]
+  change MeasurableSet {a | eLpNorm (fun b => f (a, b)) p ν < ⊤}
   exact measurableSet_lt (measurable_eLpNorm_slice hp (Lp.stronglyMeasurable f)) measurable_const
 
 omit [SFinite ν] [Fact (1 ≤ p)] in
@@ -56,11 +52,11 @@ private theorem edist_slice (f : Lp E p (μ.prod ν)) (g : Lp E p ν) (a : A) :
       else edist (0 : Lp E p ν) g := by
   classical
   by_cases ha : MemLp (fun b => f (a, b)) p ν
-  · simp only [slice, dif_pos ha, if_pos ha]
+  · simp only [slice, dite_eq_left ha, ite_eq_left ha]
     have hg : (Lp.memLp g).toLp (fun b => g b) = g := Lp.toLp_coeFn g (Lp.memLp g)
     conv_lhs => rhs; rw [← hg]
     exact Lp.edist_toLp_toLp _ _ ha (Lp.memLp g)
-  · simp only [slice, dif_neg ha, if_neg ha]
+  · simp only [slice, dite_eq_right ha, ite_eq_right ha]
 
 private theorem measurable_slice (hp : p ≠ ⊤) (f : Lp E p (μ.prod ν))
     [MeasurableSpace (Lp E p ν)] [BorelSpace (Lp E p ν)]
@@ -84,17 +80,17 @@ omit [Fact (1 ≤ p)] in
 private theorem slice_coeFn (hp : p ≠ ⊤) (f : Lp E p (μ.prod ν)) :
     ∀ᵐ a ∂μ, (slice f a : B → E) =ᵐ[ν] fun b => f (a, b) := by
   filter_upwards [(Lp.memLp f).prodMk_left hp] with a ha
-  simpa only [slice, dif_pos ha] using ha.coeFn_toLp
+  simpa only [slice, dite_eq_left ha] using ha.coeFn_toLp
 
 private theorem memLp_slice (hp : p ≠ ⊤) (f : Lp E p (μ.prod ν))
     (hf : AEStronglyMeasurable (slice f) μ) : MemLp (slice f) p μ := by
-  refine ⟨hf, ?_⟩
+  rw [memLp_iff]
   have heq : (fun a => ‖slice f a‖ₑ) =ᵐ[μ] fun a => eLpNorm (fun b => f (a, b)) p ν := by
     filter_upwards [(Lp.memLp f).prodMk_left hp] with a ha
-    simp only [slice, dif_pos ha, Lp.enorm_toLp]
-  rw [← eLpNorm_enorm]
-  rw [eLpNorm_congr_ae heq, eLpNorm_eLpNorm hp (Lp.stronglyMeasurable f).enorm.aemeasurable]
-  exact (Lp.memLp f).2
+    simp only [slice, dite_eq_left ha, Lp.enorm_toLp]
+  rw [← eLpNorm_enorm (slice f) hf]
+  rw [eLpNorm_congr_ae heq, eLpNorm_eLpNorm hp (Lp.stronglyMeasurable f).aestronglyMeasurable]
+  exact Lp.memLp f
 
 private theorem norm_curry (hp : p ≠ ⊤) (f : Lp E p (μ.prod ν))
     (hf : MemLp (slice f) p μ) : ‖hf.toLp (slice f)‖ = ‖f‖ := by
@@ -102,9 +98,9 @@ private theorem norm_curry (hp : p ≠ ⊤) (f : Lp E p (μ.prod ν))
   congr 1
   have heq : (fun a => ‖slice f a‖ₑ) =ᵐ[μ] fun a => eLpNorm (fun b => f (a, b)) p ν := by
     filter_upwards [(Lp.memLp f).prodMk_left hp] with a ha
-    simp only [slice, dif_pos ha, Lp.enorm_toLp]
-  rw [← eLpNorm_enorm, eLpNorm_congr_ae heq,
-    eLpNorm_eLpNorm hp (Lp.stronglyMeasurable f).enorm.aemeasurable]
+    simp only [slice, dite_eq_left ha, Lp.enorm_toLp]
+  rw [← eLpNorm_enorm (slice f) hf.aestronglyMeasurable, eLpNorm_congr_ae heq,
+    eLpNorm_eLpNorm hp (Lp.stronglyMeasurable f).aestronglyMeasurable]
 
 variable [_root_.SecondCountableTopology (Lp E p ν)]
 

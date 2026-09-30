@@ -136,7 +136,7 @@ theorem curveShorteningRegularityCurvatureFrontier_of_estimate
     h.product lambda hlambda hlambda_one b B.lt le_rfl (Icc a b) (Or.inr rfl) c hc hlen hcurv
       tstar ht r hr hrR hlenr harc 0 x t htJ hlt hle⟩
 
-def curveShorteningRegularityData_witness : CurveShorteningRegularityData where
+def CurveShorteningRegularityData.unit : CurveShorteningRegularityData where
   delta := 1 / 2
   radius := 1
   coefficient := fun _ => 1
@@ -174,7 +174,7 @@ theorem curveShorteningRegularityEstimateStatement_one_lt_zpow {t tstar : ℝ}
     mul_lt_mul_of_pos_right h1 hpos
   rwa [mul_inv_cancel₀ (ne_of_gt h0), one_mul] at hmul
 
-def curveShorteningRegularityInput_of_estimate
+def curveShorteningRegularityInputOfEstimate
     (B : RicciBackground (I := I) (M := M) D a b) (L₀ Θ₀ : ℝ)
     (data : CurveShorteningRegularityData)
     (h : CurveShorteningRegularityEstimate B L₀ Θ₀ data) :
@@ -216,9 +216,9 @@ theorem curveShorteningRegularityInput_iff_exists_estimate
     Nonempty (CurveShorteningRegularityInput B L₀ Θ₀) ↔
       ∃ data : CurveShorteningRegularityData, CurveShorteningRegularityEstimate B L₀ Θ₀ data :=
   ⟨fun ⟨K⟩ => ⟨_, curveShorteningRegularityEstimate_of_input B L₀ Θ₀ K⟩,
-    fun ⟨data, h⟩ => ⟨curveShorteningRegularityInput_of_estimate B L₀ Θ₀ data h⟩⟩
+    fun ⟨data, h⟩ => ⟨curveShorteningRegularityInputOfEstimate B L₀ Θ₀ data h⟩⟩
 
-def curveShorteningRegularityInput_mono
+def curveShorteningRegularityInputMono
     (B : RicciBackground (I := I) (M := M) D a b)
     {L₀ L₀' Θ₀ Θ₀' : ℝ} (hL : L₀ ≤ L₀') (hΘ : Θ₀ ≤ Θ₀')
     (K : CurveShorteningRegularityInput B L₀' Θ₀') :

@@ -30,8 +30,8 @@ theorem exists_simplicialArc_one_with_interior_edge [FiniteDimensional ℝ E]
   let K := barycentricSubdivision K₀
   let c := T.centroid ℝ id
   let v : ℕ → E := fun i => if i = 0 then c else a
-  have hv0 : v 0 = c := by simp only [v, if_pos rfl]
-  have hv1 : v 1 = a := by simp only [v, if_neg one_ne_zero]
+  have hv0 : v 0 = c := by simp only [v, ite_eq_left rfl]
+  have hv1 : v 1 = a := by simp only [v, ite_eq_right one_ne_zero]
   have hTne : T.Nonempty := ⟨a, ha⟩
   have hTface : T ∈ K₀.faces := (mem_simplexComplex_faces_iff T hT).mpr ⟨hTne, subset_rfl⟩
   have haface : ({a} : Finset E) ∈ K₀.faces :=
@@ -151,8 +151,8 @@ theorem exists_simplicialArc_one_with_all_faces_interior [FiniteDimensional ℝ 
     exact hpB ((boundaryComplex 3 K).down_closed h
       (Finset.singleton_subset_iff.mpr (Finset.mem_insert_self p {q}))
       (Finset.singleton_nonempty p))
-  have hv0 : v 0 = p := by simp only [v, if_pos rfl]
-  have hv1 : v 1 = q := by simp only [v, if_neg one_ne_zero]
+  have hv0 : v 0 = p := by simp only [v, ite_eq_left rfl]
+  have hv1 : v 1 = q := by simp only [v, ite_eq_right one_ne_zero]
   refine ⟨K, v, Set.toFinite K.faces, hK, ?_, ?_, ?_, ?_⟩
   · intro i hi
     interval_cases i

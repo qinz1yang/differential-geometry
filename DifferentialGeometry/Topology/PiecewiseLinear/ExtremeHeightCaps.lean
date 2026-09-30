@@ -44,7 +44,7 @@ theorem exists_isSimplyEmbedded_lower_cap_of_heightIndex_eq_zero (I : Schoenflie
     {W : Set (EuclideanSpace ℝ (Fin 3))} (hW : IsOpen W) (hWconv : Convex ℝ W) (hKW : K.space ⊆ W) :
     ∃ (r : ℝ) (D : Set (EuclideanSpace ℝ (Fin 3))) (g : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
       (∃ y ∈ K.space, ℓ y < r) ∧ (∃ z ∈ K.space, r < ℓ z) ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       g '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = r} ∧
       D ⊆ W ∩ {x | ℓ x = r} ∧ IsSimplyEmbedded ((K.space ∩ {x | ℓ x ≤ r}) ∪ D) := by
   obtain ⟨p, hp, r, hpr, hother, habove⟩ := exists_height_between_lowest_vertices K hK ℓ.toLinearMap
@@ -70,7 +70,7 @@ theorem exists_isSimplyEmbedded_upper_cap_of_heightIndex_eq_zero (I : Schoenflie
     {W : Set (EuclideanSpace ℝ (Fin 3))} (hW : IsOpen W) (hWconv : Convex ℝ W) (hKW : K.space ⊆ W) :
     ∃ (r : ℝ) (D : Set (EuclideanSpace ℝ (Fin 3))) (g : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
       (∃ y ∈ K.space, ℓ y < r) ∧ (∃ z ∈ K.space, r < ℓ z) ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       g '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = r} ∧
       D ⊆ W ∩ {x | ℓ x = r} ∧ IsSimplyEmbedded ((K.space ∩ {x | r ≤ ℓ x}) ∪ D) := by
   have hinj' : InjOn (-ℓ.toLinearMap) K.vertices := fun x hx y hy h => hinj hx hy (neg_injective h)

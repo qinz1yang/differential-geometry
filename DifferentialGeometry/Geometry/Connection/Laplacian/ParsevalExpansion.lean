@@ -18,6 +18,11 @@ namespace Analysis
 namespace Elliptic
 
 open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_add_left
+  tensorInnerPointwise_add_right tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right
+  fiberNormSqComponent tensorInnerPointwise_eq_sum_componentS_mul tensor00Scalar
+  exists_tangent_orthonormalBasisS_with_norm_sum slot0Curry fiberNormSqComponent_slot0Curry
+  tensor0SToTensorRS slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec)
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

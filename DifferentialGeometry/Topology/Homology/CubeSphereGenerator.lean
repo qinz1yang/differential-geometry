@@ -9,6 +9,7 @@ import DifferentialGeometry.Topology.Homology.SpherePunctureHomology
 noncomputable section
 
 open Set
+open Convexity.StdSimplex (coordinateSet coordinateHomeomorph coordinateEquiv)
 
 namespace DifferentialGeometry.Topology
 
@@ -38,17 +39,17 @@ private def tetrahedronStaircaseHomeomorph : liftedSphereSpace.{0} 1 ≃ₜ (Fin
   fin_cases i <;> norm_num [tetrahedronStaircaseHomeomorph, staircaseBarycenter]
 
 private theorem tetrahedronStaircaseHomeomorph_standardTetrahedronSimplex
-    (q : stdSimplex ℝ (Fin 4)) :
+    (q : coordinateSet ℝ (Fin 4)) :
     tetrahedronStaircaseHomeomorph (SimplexDegree.standardTetrahedronSimplex q) =
-      fun i => (staircaseSimplex (Equiv.refl (Fin 3)) q i).val := by
+      fun i => (staircaseSimplex (Equiv.refl (Fin 3)) ((coordinateHomeomorph ℝ _).symm q) i).val := by
   have hq := q.property.2
   simp [Fin.sum_univ_succ] at hq
-  change tetrahedronStaircaseHomeomorph (ULift.up (positiveTetrahedron q)) = _
+  change tetrahedronStaircaseHomeomorph (ULift.up (positiveTetrahedron ((coordinateHomeomorph ℝ _).symm q))) = _
   funext i
   fin_cases i <;>
     simp [tetrahedronStaircaseHomeomorph,
       positiveTetrahedron_coordinate, staircaseSimplex, staircaseCoordinate,
-      Fin.sum_univ_succ] <;> linarith
+      Fin.sum_univ_succ, coordinateHomeomorph, coordinateEquiv] <;> linarith
 
 universe u
 
@@ -57,10 +58,11 @@ private def liftedTetrahedronStaircaseHomeomorph :
   Homeomorph.ulift.trans ((Homeomorph.ulift.symm.trans tetrahedronStaircaseHomeomorph).trans
     Homeomorph.ulift.symm)
 
-private def liftedStaircaseSimplex : C(stdSimplex ℝ (Fin 4), ULift.{u} (Fin 3 → ℝ)) :=
-  ⟨fun q => ULift.up (fun i => (staircaseSimplex (Equiv.refl (Fin 3)) q i).val),
+private def liftedStaircaseSimplex : C(coordinateSet ℝ (Fin 4), ULift.{u} (Fin 3 → ℝ)) :=
+  ⟨fun q => ULift.up (fun i => (staircaseSimplex (Equiv.refl (Fin 3)) ((coordinateHomeomorph ℝ _).symm q) i).val),
     continuous_uliftUp.comp (continuous_pi fun i =>
-      continuous_subtype_val.comp ((continuous_apply i).comp (staircaseSimplex _).continuous))⟩
+      continuous_subtype_val.comp ((continuous_apply i).comp
+        ((staircaseSimplex _).continuous.comp (coordinateHomeomorph ℝ _).symm.continuous)))⟩
 
 @[simp] private theorem liftedTetrahedronStaircaseHomeomorph_zero :
     liftedTetrahedronStaircaseHomeomorph.{u} 0 = ULift.up staircaseBarycenter := by
@@ -75,7 +77,7 @@ private theorem liftedTetrahedronStaircaseHomeomorph_standardTetrahedronSimplex 
   exact congrFun (tetrahedronStaircaseHomeomorph_standardTetrahedronSimplex q) i
 
 private theorem liftedStaircaseSimplex_face_ne_barycenter (i : Fin 4)
-    (q : stdSimplex ℝ (Fin 3)) :
+    (q : coordinateSet ℝ (Fin 3)) :
     liftedStaircaseSimplex.{u} (SimplexDegree.orientedSimplexFace i q) ≠
       ULift.up staircaseBarycenter := by
   rw [← liftedTetrahedronStaircaseHomeomorph_standardTetrahedronSimplex,
@@ -153,7 +155,7 @@ theorem liftedCubeLocalClass_generator :
   have hf : Function.Bijective f :=
     integralRelativeHomologyMap_liftedCubeCoordinateInclusion_bijective (Fin 3) 3 _
       cubeStaircasePoint_mem_interior
-  have hfaces (i : Fin 4) (q : stdSimplex ℝ (Fin 3)) :
+  have hfaces (i : Fin 4) (q : coordinateSet ℝ (Fin 3)) :
       liftedStaircaseSimplex.{u} (SimplexDegree.orientedSimplexFace i q) ≠
         liftedCubeCoordinateInclusion (Fin 3) (ULift.up cubeStaircasePoint) := by
     rw [liftedCubeCoordinateInclusion_point]

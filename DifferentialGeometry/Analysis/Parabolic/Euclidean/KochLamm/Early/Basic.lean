@@ -43,8 +43,9 @@ theorem kochLammSourceZero_sourceCarlesonBound {T : ℝ} {A₁ A_q : ℝ≥0}
     have hsT : kochLammL1Scale (V := V) R ≠ ∞ := ENNReal.ofReal_ne_top
     have hi := (ENNReal.mul_le_iff_le_inv hs0 hsT).mp hb
     rw [kochLammL1Scale_inv (V := V) hR] at hi
+    rw [eLpNorm_one_eq_lintegral_enorm h.ae.restrict] at hi
     simpa [sourceCarlesonMass, forwardParabolicCylinder, kochLammCylinder, spaceTimeVolume, kochLammVolume, mul_comm,
-      eLpNorm_one_eq_lintegral_enorm, ofReal_norm] using hi
+      ofReal_norm] using hi
 
 omit [CompleteSpace F] in
 theorem KochLammSourceZero.earlyHeat_norm {T t : ℝ} {A₁ A_q : ℝ≥0}

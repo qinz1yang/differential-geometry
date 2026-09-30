@@ -20,7 +20,7 @@ theorem exists_uniform_backward_flow_of_canonicalCutoffRecords
       0 < ε₀ ∧ 0 < δ₀ ∧
       ∀ p₀ : CutoffParameters, p₀.modelRadius = Dbig → p₀.recenterConstant ≤ c →
         2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ε₀ →
-      ∀ H₀ : RetainedCoreHistory P, InitialIdentification P g H₀.toHistory →
+      ∀ H₀ : RetainedCoreHistory.{u}, InitialIdentification P g H₀.toHistory →
       H₀.hasCanonicalCutoffRecords p₀ δ₀ ρ →
       let H := H₀.toHistory;
       ∀ (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
@@ -104,7 +104,7 @@ theorem exists_uniform_backward_ball_flow_of_canonicalCutoffRecords
       0 < ε₀ ∧ 0 < δ₀ ∧
       ∀ p₀ : CutoffParameters, p₀.modelRadius = Dbig → p₀.recenterConstant ≤ c →
         2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ε₀ →
-      ∀ H₀ : RetainedCoreHistory P, InitialIdentification P g H₀.toHistory →
+      ∀ H₀ : RetainedCoreHistory.{u}, InitialIdentification P g H₀.toHistory →
       H₀.hasCanonicalCutoffRecords p₀ δ₀ ρ →
       let H := H₀.toHistory;
       ∀ (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
@@ -212,7 +212,7 @@ theorem exists_uniform_backward_ball_flow_of_bounded_terminal_scalar
       0 < ε₀ ∧ 0 < δ₀ ∧ 0 < Δ ∧ Δ ≤ tau ∧ 0 < r ∧
       ∀ p₀ : CutoffParameters, p₀.modelRadius = Dbig → p₀.recenterConstant ≤ c →
         2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ε₀ →
-      ∀ H₀ : RetainedCoreHistory P, InitialIdentification P g H₀.toHistory →
+      ∀ H₀ : RetainedCoreHistory.{u}, InitialIdentification P g H₀.toHistory →
       H₀.hasCanonicalCutoffRecords p₀ δ₀ ρ →
       let H := H₀.toHistory;
       ∀ (last : Fin (H.eventCount + 1))
@@ -300,7 +300,7 @@ theorem exists_uniform_backward_flow_of_canonicalCutoffRecords_on_time_window
       0 < ε₀ ∧ 0 < δ₀ ∧
       ∀ p₀ : CutoffParameters, p₀.modelRadius = Dbig → p₀.recenterConstant ≤ c →
         2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ε₀ →
-      ∀ H₀ : RetainedCoreHistory P, InitialIdentification P g H₀.toHistory →
+      ∀ H₀ : RetainedCoreHistory.{u}, InitialIdentification P g H₀.toHistory →
       H₀.hasCanonicalCutoffRecords p₀ δ₀ ρ →
       let H := H₀.toHistory;
       ∀ (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
@@ -384,7 +384,7 @@ theorem exists_uniform_backward_ball_flow_of_canonicalCutoffRecords_on_time_wind
       0 < ε₀ ∧ 0 < δ₀ ∧
       ∀ p₀ : CutoffParameters, p₀.modelRadius = Dbig → p₀.recenterConstant ≤ c →
         2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ε₀ →
-      ∀ H₀ : RetainedCoreHistory P, InitialIdentification P g H₀.toHistory →
+      ∀ H₀ : RetainedCoreHistory.{u}, InitialIdentification P g H₀.toHistory →
       H₀.hasCanonicalCutoffRecords p₀ δ₀ ρ →
       let H := H₀.toHistory;
       ∀ (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
@@ -474,7 +474,7 @@ theorem exists_uniform_backward_ball_flow_with_stage_bounds
       0 < ε₀ ∧ 0 < δ₀ ∧ 0 < Δ ∧ Δ ≤ tau ∧ 0 < r ∧
       ∀ p₀ : CutoffParameters, p₀.modelRadius = Dbig → p₀.recenterConstant ≤ c →
         2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ε₀ →
-      ∀ H₀ : RetainedCoreHistory P, InitialIdentification P g H₀.toHistory →
+      ∀ H₀ : RetainedCoreHistory.{u}, InitialIdentification P g H₀.toHistory →
       H₀.hasCanonicalCutoffRecords p₀ δ₀ ρ →
       let H := H₀.toHistory;
       ∀ (last : Fin (H.eventCount + 1))
@@ -553,7 +553,7 @@ theorem exists_uniform_backward_ball_flow_of_bounded_terminal_scalar_on_time_win
       0 < ε₀ ∧ 0 < δ₀ ∧ 0 < Δ ∧ Δ ≤ tau ∧ 0 < r ∧
       ∀ p₀ : CutoffParameters, p₀.modelRadius = Dbig → p₀.recenterConstant ≤ c →
         2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ε₀ →
-      ∀ H₀ : RetainedCoreHistory P, InitialIdentification P g H₀.toHistory →
+      ∀ H₀ : RetainedCoreHistory.{u}, InitialIdentification P g H₀.toHistory →
       H₀.hasCanonicalCutoffRecords p₀ δ₀ ρ →
       let H := H₀.toHistory;
       ∀ (last : Fin (H.eventCount + 1))

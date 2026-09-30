@@ -5,8 +5,6 @@ set_option autoImplicit false
 noncomputable section
 namespace DifferentialGeometry
 
-open RealInnerProductSpace
-
 class CoerciveBilinInverse (E : Type*) [NormedAddCommGroup E]
     [NormedSpace Real E] : Prop where
   surjective : ∀ {B : E →L[Real] E →L[Real] Real},
@@ -81,8 +79,6 @@ end DifferentialGeometry
 namespace IsCoercive
 open DifferentialGeometry
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-instance [FiniteDimensional Real E] : FiniteDimensional Real (StrongDual Real E) :=
-  inferInstanceAs (FiniteDimensional Real (E →L[Real] Real))
 
 theorem bilin_injective {B : E →L[Real] E →L[Real] Real}
     (hco : IsCoercive B) : Function.Injective B := by

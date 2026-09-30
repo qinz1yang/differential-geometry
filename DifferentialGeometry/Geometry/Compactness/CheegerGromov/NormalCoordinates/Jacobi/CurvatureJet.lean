@@ -629,7 +629,7 @@ theorem CurvatureJetTerm.eval_le_at
                   ((slots i).eval (I := I) g hEnorm p u a b q)
                   ((slots i).eval (I := I) g hEnorm p u a b q))) <=
             ∏ i : Fin (k + 3), (slots i).majorant C B := by
-        apply Finset.prod_le_prod
+        apply Finset.prod_le_prod₀
         · intro i hi
           exact Real.sqrt_nonneg _
         · intro i hi

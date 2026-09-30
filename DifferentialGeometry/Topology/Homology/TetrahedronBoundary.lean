@@ -7,6 +7,7 @@ import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Subspac
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology ContinuousMap Set Module
+open Convexity.StdSimplex (coordinateSet coordinateEquiv coordinateHomeomorph)
 open scoped Simplicial Topology
 
 namespace DifferentialGeometry.Topology.SimplexDegree
@@ -24,7 +25,7 @@ def positiveDiagonalRayComplement : Set (liftedSphereSpace.{u} 1) :=
   {x | ¬ ∃ r : ℝ, 0 ≤ r ∧ ∀ i : Fin 3, x.down i = r}
 
 theorem standardTetrahedronSimplex_face_zero_mem_negativeDiagonalRayComplement
-    (q : stdSimplex ℝ (Fin 3)) :
+    (q : coordinateSet ℝ (Fin 3)) :
     standardTetrahedronSimplex (orientedSimplexFace 0 q) ∈
       negativeDiagonalRayComplement := by
   rintro ⟨r, hr, hc⟩
@@ -36,8 +37,10 @@ theorem standardTetrahedronSimplex_face_zero_mem_negativeDiagonalRayComplement
     exact False.elim (Fin.succAbove_ne 0 j (Finset.mem_filter.mp hj).2)
   have h (i : Fin 3) : (orientedSimplexFace 0 q).val i.succ = r := by
     have hh := hc i
-    change positiveTetrahedron (orientedSimplexFace 0 q) i = r at hh
-    rwa [positiveTetrahedron_coordinate, hzero, sub_zero] at hh
+    change positiveTetrahedron ((coordinateHomeomorph ℝ _).symm (orientedSimplexFace 0 q)) i = r at hh
+    rw [positiveTetrahedron_coordinate] at hh
+    change (orientedSimplexFace 0 q).val i.succ - (orientedSimplexFace 0 q).val 0 = r at hh
+    rwa [hzero, sub_zero] at hh
   have hs := (orientedSimplexFace 0 q).property.2
   rw [Fin.sum_univ_succ, hzero] at hs
   simp only [h, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at hs
@@ -45,7 +48,7 @@ theorem standardTetrahedronSimplex_face_zero_mem_negativeDiagonalRayComplement
   linarith
 
 theorem standardTetrahedronSimplex_face_succ_mem_positiveDiagonalRayComplement
-    (j : Fin 3) (q : stdSimplex ℝ (Fin 3)) :
+    (j : Fin 3) (q : coordinateSet ℝ (Fin 3)) :
     standardTetrahedronSimplex (orientedSimplexFace j.succ q) ∈
       positiveDiagonalRayComplement := by
   rintro ⟨r, hr, hc⟩
@@ -56,14 +59,18 @@ theorem standardTetrahedronSimplex_face_succ_mem_positiveDiagonalRayComplement
     intro k hk
     exact False.elim (Fin.succAbove_ne j.succ k (Finset.mem_filter.mp hk).2)
   have hh := hc j
-  change positiveTetrahedron (orientedSimplexFace j.succ q) j = r at hh
-  rw [positiveTetrahedron_coordinate, hzero, zero_sub] at hh
+  change positiveTetrahedron ((coordinateHomeomorph ℝ _).symm (orientedSimplexFace j.succ q)) j = r at hh
+  rw [positiveTetrahedron_coordinate] at hh
+  change (orientedSimplexFace j.succ q).val j.succ -
+    (orientedSimplexFace j.succ q).val 0 = r at hh
+  rw [hzero, zero_sub] at hh
   have hn := (orientedSimplexFace j.succ q).property.1 0
   have hrzero : r = 0 := by linarith
-  have he : positiveTetrahedron (orientedSimplexFace j.succ q) = 0 := by
+  have he : positiveTetrahedron ((coordinateHomeomorph ℝ _).symm (orientedSimplexFace j.succ q)) = 0 := by
     ext i
     exact (hc i).trans hrzero
-  exact positiveTetrahedron_face_ne_zero (orientedSimplexFace j.succ q) j.succ hzero he
+  exact positiveTetrahedron_face_ne_zero
+    ((coordinateHomeomorph ℝ _).symm (orientedSimplexFace j.succ q)) j.succ hzero he
 
 
 def puncturedPositiveRayComplement : Set puncturedThreeSpace.{u} :=
@@ -73,28 +80,29 @@ def puncturedNegativeRayComplement : Set puncturedThreeSpace.{u} :=
   {x | x.val ∈ negativeDiagonalRayComplement}
 
 private def tetrahedronFaceMap (i : Fin 4) :
-    C(stdSimplex ℝ (Fin 3), puncturedThreeSpace.{u}) :=
+    C(coordinateSet ℝ (Fin 3), puncturedThreeSpace.{u}) :=
   ⟨fun q => ⟨standardTetrahedronSimplex (orientedSimplexFace i q),
       standardTetrahedronSimplex_face_ne_zero i q⟩,
     (standardTetrahedronSimplex.continuous.comp (orientedSimplexFace i).continuous).subtype_mk _⟩
 
 private theorem simplexChain_comp {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
-    (n : ℕ) (f : C(X, Y)) (σ : C(stdSimplex ℝ (Fin (n + 1)), X)) :
+    (n : ℕ) (f : C(X, Y)) (σ : C(coordinateSet ℝ (Fin (n + 1)), X)) :
     integralSimplexChain n σ ≫ (integralSingularChainMap f).f n =
       integralSimplexChain n (f.comp σ) :=
   SSet.ι_chainComplexMap_f (TopCat.toSSet.obj (TopCat.of X))
     (TopCat.toSSet.obj (TopCat.of Y)) (TopCat.toSSet.map (TopCat.ofHom f))
     integralSingularCoefficients
-    ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n⦌)).symm σ)
+    ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n⦌)).symm
+      (σ.comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩))
 
 private def tetrahedronPositiveFace (i : Fin 3) :
-    C(stdSimplex ℝ (Fin 3), puncturedPositiveRayComplement.{u}) :=
+    C(coordinateSet ℝ (Fin 3), puncturedPositiveRayComplement.{u}) :=
   ⟨fun q => ⟨tetrahedronFaceMap i.succ q,
       standardTetrahedronSimplex_face_succ_mem_positiveDiagonalRayComplement.{u} i q⟩,
     (tetrahedronFaceMap i.succ).continuous.subtype_mk _⟩
 
 private def tetrahedronNegativeFace :
-    C(stdSimplex ℝ (Fin 3), puncturedNegativeRayComplement.{u}) :=
+    C(coordinateSet ℝ (Fin 3), puncturedNegativeRayComplement.{u}) :=
   ⟨fun q => ⟨tetrahedronFaceMap 0 q,
       standardTetrahedronSimplex_face_zero_mem_negativeDiagonalRayComplement.{u} q⟩,
     (tetrahedronFaceMap 0).continuous.subtype_mk _⟩
@@ -391,15 +399,16 @@ def standardTriangleVertex : Fin 3 → liftedSphereSpace.{u} 0 :=
   ![ULift.up (WithLp.toLp 2 ![1, 0]), ULift.up (WithLp.toLp 2 ![0, 1]),
     ULift.up (WithLp.toLp 2 ![-1, -1])]
 
-def standardTriangleSimplex : C(stdSimplex ℝ (Fin 3), liftedSphereSpace.{u} 0) :=
-  affineSimplexMap standardTriangleVertex
+def standardTriangleSimplex : C(coordinateSet ℝ (Fin 3), liftedSphereSpace.{u} 0) :=
+  (affineSimplexMap standardTriangleVertex).comp
+    ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩
 
-private theorem orientedSimplexFace_zero_succ (q : stdSimplex ℝ (Fin 3)) (i : Fin 3) :
+private theorem orientedSimplexFace_zero_succ (q : coordinateSet ℝ (Fin 3)) (i : Fin 3) :
     (orientedSimplexFace 0 q).val i.succ = q.val i := by
   change FunOnFinite.linearMap ℝ ℝ (0 : Fin 4).succAbove (q : Fin 3 → ℝ) i.succ = q.val i
   rw [FunOnFinite.linearMap_apply_apply]
   simp only [Fin.succAbove_zero, Fin.succ_inj, Finset.filter_eq', Finset.mem_univ,
-    if_true, Finset.sum_singleton]
+    ite_true, Finset.sum_singleton]
   rfl
 
 theorem tetrahedronProjection_face_zero :
@@ -410,17 +419,21 @@ theorem tetrahedronProjection_face_zero :
   apply ULift.ext
   ext i
   fin_cases i
-  · change positiveTetrahedron (orientedSimplexFace 0 q) 0 -
-      positiveTetrahedron (orientedSimplexFace 0 q) 2 = _
-    rw [positiveTetrahedron_coordinate, positiveTetrahedron_coordinate,
-      orientedSimplexFace_zero_succ, orientedSimplexFace_zero_succ]
-    simp [standardTriangleSimplex, affineSimplexMap, standardTriangleVertex, Fin.sum_univ_succ]
+  · change positiveTetrahedron ((coordinateHomeomorph ℝ _).symm (orientedSimplexFace 0 q)) 0 -
+      positiveTetrahedron ((coordinateHomeomorph ℝ _).symm (orientedSimplexFace 0 q)) 2 = _
+    rw [positiveTetrahedron_coordinate, positiveTetrahedron_coordinate]
+    change ((orientedSimplexFace 0 q).val (0 : Fin 3).succ - (orientedSimplexFace 0 q).val 0) -
+      ((orientedSimplexFace 0 q).val (2 : Fin 3).succ - (orientedSimplexFace 0 q).val 0) = _
+    rw [orientedSimplexFace_zero_succ, orientedSimplexFace_zero_succ]
+    simp [standardTriangleSimplex, affineSimplexMap, standardTriangleVertex, coordinateHomeomorph, coordinateEquiv, Fin.sum_univ_succ]
     ring
-  · change positiveTetrahedron (orientedSimplexFace 0 q) 1 -
-      positiveTetrahedron (orientedSimplexFace 0 q) 2 = _
-    rw [positiveTetrahedron_coordinate, positiveTetrahedron_coordinate,
-      orientedSimplexFace_zero_succ, orientedSimplexFace_zero_succ]
-    simp [standardTriangleSimplex, affineSimplexMap, standardTriangleVertex, Fin.sum_univ_succ]
+  · change positiveTetrahedron ((coordinateHomeomorph ℝ _).symm (orientedSimplexFace 0 q)) 1 -
+      positiveTetrahedron ((coordinateHomeomorph ℝ _).symm (orientedSimplexFace 0 q)) 2 = _
+    rw [positiveTetrahedron_coordinate, positiveTetrahedron_coordinate]
+    change ((orientedSimplexFace 0 q).val (1 : Fin 3).succ - (orientedSimplexFace 0 q).val 0) -
+      ((orientedSimplexFace 0 q).val (2 : Fin 3).succ - (orientedSimplexFace 0 q).val 0) = _
+    rw [orientedSimplexFace_zero_succ, orientedSimplexFace_zero_succ]
+    simp [standardTriangleSimplex, affineSimplexMap, standardTriangleVertex, coordinateHomeomorph, coordinateEquiv, Fin.sum_univ_succ]
     ring
 
 private theorem tetrahedronProjection_ne_zero

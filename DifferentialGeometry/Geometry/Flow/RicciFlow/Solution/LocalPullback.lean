@@ -105,6 +105,7 @@ theorem IsSolutionOn.localPullback
       _ = (S.base.metric t).inner (p (y : M))
           (mfderiv I J p (y : M) v) (mfderiv I J p (y : M) w) := by
         rw [hgerm.eq_of_nhds, hgerm.mfderiv_eq]
+        rfl
       _ = _ := (localPullMetric_inner (S.base.metric t) p hp (y : M) v w).symm
   exact (IsSolutionOn.pullback (solutionOnRestrictOpen S V')
     (isSolutionOn_restrictOpen S hS V') e).congr_metric (fun t _ => heq t)

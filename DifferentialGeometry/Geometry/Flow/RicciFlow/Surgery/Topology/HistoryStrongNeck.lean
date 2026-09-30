@@ -70,7 +70,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 def StronglyCanonicalAt (k : Fin (H.eventCount + 1)) {s : ℝ}
     (G : (H.stage k).IncomingSlab (H.time k) s) (ε ε₁ C1 C2 : ℝ) (y : (H.stage k).Carrier)

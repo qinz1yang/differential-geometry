@@ -89,7 +89,7 @@ theorem fderiv_smoothGradField_exponentialBallBarrier
   by_cases hij : i = j
   · subst j
     ring
-  · simp only [if_neg hij, if_neg (Ne.symm hij)]
+  · simp only [ite_eq_right hij, ite_eq_right (Ne.symm hij)]
     ring
 
 end DifferentialGeometry.Analysis

@@ -60,7 +60,7 @@ def cokernelHomotopy : Homotopy (cokernelEndomorphism i a b hab) (𝟙 (cokernel
     descHom i b H hA hcompat n ≫ eqToHom (congrArg (cokernel i).X h) else 0
   zero n m hnm := by
     change ¬ n + 1 = m at hnm
-    exact dif_neg hnm
+    exact dite_eq_right hnm
   comm n := by
     have hπ : (cokernel.π i).f n ≫ (cokernelEndomorphism i a b hab).f n =
         b.f n ≫ (cokernel.π i).f n :=
@@ -69,7 +69,7 @@ def cokernelHomotopy : Homotopy (cokernelEndomorphism i a b hab) (𝟙 (cokernel
     cases n with
     | zero =>
       rw [Homotopy.dNext_zero_chainComplex, Homotopy.prevD_chainComplex] at hh ⊢
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id,
+      simp only [dite_eq_left rfl, eqToHom_refl, Category.comp_id,
         _root_.HomologicalComplex.id_f, zero_add] at hh ⊢
       apply (cancel_epi ((cokernel.π i).f 0)).mp
       rw [hπ, Preadditive.comp_add, Category.comp_id, ← Category.assoc,
@@ -77,7 +77,7 @@ def cokernelHomotopy : Homotopy (cokernelEndomorphism i a b hab) (𝟙 (cokernel
       exact congrArg (fun f ↦ f ≫ (cokernel.π i).f 0) hh |>.trans (by simp)
     | succ n =>
       rw [Homotopy.dNext_succ_chainComplex, Homotopy.prevD_chainComplex] at hh ⊢
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id,
+      simp only [dite_eq_left rfl, eqToHom_refl, Category.comp_id,
         _root_.HomologicalComplex.id_f] at hh ⊢
       apply (cancel_epi ((cokernel.π i).f (n + 1))).mp
       rw [hπ]

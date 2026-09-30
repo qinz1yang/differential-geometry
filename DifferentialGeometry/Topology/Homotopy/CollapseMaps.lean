@@ -30,7 +30,7 @@ theorem collapseDescendValue_comp (U : Set Y) (x : X) (f : collapseConstantMaps 
     collapseDescendValue U x f (openCollapse U y) = f.val y := by
   classical
   by_cases hy : y ∈ U
-  · simp only [openCollapse, dif_pos hy, collapseDescendValue, OnePoint.elim_some]
+  · simp only [openCollapse, dite_eq_left hy, collapseDescendValue, OnePoint.elim_some]
   · rw [openCollapse_of_notMem U hy]
     exact (f.property y hy).symm
 

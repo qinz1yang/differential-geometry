@@ -14,6 +14,7 @@ open scoped BigOperators Manifold ContDiff
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
 open DifferentialGeometry.Analysis (sq_add_sq_le_sq_add_of_nonneg)
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -24,8 +25,7 @@ open DifferentialGeometry.Analysis.Sobolev (covariantJetNormSq
   exists_covariantJetNormSq_three_operatorFieldComposition_tame_bound
   exists_covariantJetNormSq_two_operatorFieldComposition_le)
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
-open DifferentialGeometry.Analysis.Elliptic (integrable_riemannianFiberNormSq_toSection
-  riemannianFiberNormSq)
+open DifferentialGeometry.Analysis.Elliptic (integrable_riemannianFiberNormSq_toSection)
 open DifferentialGeometry.Analysis.Sobolev (metricComparisonDifferenceEndomorphismField iteratedCovGrad
   inverseMetricDifferenceSlotCoefficient_eq_slotInsertEndoCc normSq_le_integral_of_pointwise_fiberNormSq_le_rs
   riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo

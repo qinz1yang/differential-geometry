@@ -34,20 +34,20 @@ theorem shrinkTime_one (t : ℝ) : shrinkTime 1 t = shortenTime t := by
   simp [shrinkTime, shortenTime]
 
 theorem one_le_shrinkTime_one {t : ℝ} (h : 0 < t) : 1 ≤ shrinkTime 1 t := by
-  rw [shrinkTime_one, shortenTime, if_pos h]
+  rw [shrinkTime_one, shortenTime, ite_eq_left h]
   exact le_max_right _ _
 
 theorem shrinkTime_one_le_neg_one {t : ℝ} (h : t < 0) : shrinkTime 1 t ≤ -1 := by
-  rw [shrinkTime_one, shortenTime, if_neg (not_lt.mpr h.le)]
+  rw [shrinkTime_one, shortenTime, ite_eq_right (not_lt.mpr h.le)]
   exact min_le_right _ _
 
 theorem shrinkTime_of_pos {s t : ℝ} (h : 0 < t) :
     shrinkTime s t = max t ((1 - s) * t + s) := by
-  rw [shrinkTime, if_pos h]
+  rw [shrinkTime, ite_eq_left h]
 
 theorem shrinkTime_of_nonpos {s t : ℝ} (h : ¬ 0 < t) :
     shrinkTime s t = min t ((1 - s) * t - s) := by
-  rw [shrinkTime, if_neg h]
+  rw [shrinkTime, ite_eq_right h]
 
 theorem shrinkTime_pos {s t : ℝ} (h : 0 < t) : 0 < shrinkTime s t := by
   rw [shrinkTime_of_pos h]
@@ -368,13 +368,13 @@ theorem coreFun_eq_of_mem_removedBand {p : I × M} {a : T.Index}
       ((T.removedBand_subset_range (Classical.choose hex)) (Classical.choose_spec hex))
       ((T.removedBand_subset_range a) h)
   obtain rfl : a = Classical.choose hex := hchoose.symm
-  rw [coreFun, dif_pos hex]
+  rw [coreFun, dite_eq_left hex]
 
 theorem coreFun_eq_self_of_not_mem {p : I × M} (h : ∀ a, p.2 ∉ T.removedBand a) :
     T.coreFun p = p.2 := by
   classical
   unfold coreFun
-  rw [dif_neg (by rintro ⟨a, ha⟩; exact h a ha)]
+  rw [dite_eq_right (by rintro ⟨a, ha⟩; exact h a ha)]
 
 theorem coreFun_eq_self_of_not_mem_iUnion {p : I × M}
     (h : p.2 ∉ ⋃ a, range (T.tube a)) : T.coreFun p = p.2 := by
@@ -404,7 +404,7 @@ def expandTubeFun (a : T.Index) (p : I × M) : M := by
 theorem expandTubeFun_eq (a : T.Index) (p : I × M) (hx : p.2 ∈ range (T.tube a)) :
     T.expandTubeFun a p = T.tube a
       ((T.tubeCoord a p.2 hx).1, expandCoord p.1 (T.tubeCoord a p.2 hx).2) := by
-  rw [expandTubeFun, dif_pos hx]
+  rw [expandTubeFun, dite_eq_left hx]
 
 theorem continuous_expandTubeFun_aux (a : T.Index) :
     Continuous fun u : ↥(univ ×ˢ range (T.tube a)) =>
@@ -428,7 +428,7 @@ theorem continuousOn_expandTubeFun (a : T.Index) :
     ContinuousOn (fun p : I × M => T.expandTubeFun a p) (univ ×ˢ range (T.tube a)) := by
   rw [continuousOn_iff_continuous_domRestrict]
   refine (T.continuous_expandTubeFun_aux a).congr fun u => ?_
-  rw [Set.domRestrict_apply, expandTubeFun, dif_pos u.2.2]
+  rw [Set.domRestrict_apply, expandTubeFun, dite_eq_left u.2.2]
   simp only [tubeCoord]
 
 def compressTubeFun (a : T.Index) (p : I × M) : M := by
@@ -440,7 +440,7 @@ def compressTubeFun (a : T.Index) (p : I × M) : M := by
 theorem compressTubeFun_eq (a : T.Index) (p : I × M) (hx : p.2 ∈ range (T.tube a)) :
     T.compressTubeFun a p = T.tube a
       ((T.tubeCoord a p.2 hx).1, compressCoord p.1 (T.tubeCoord a p.2 hx).2) := by
-  rw [compressTubeFun, dif_pos hx]
+  rw [compressTubeFun, dite_eq_left hx]
 
 theorem continuous_compressTubeFun_aux (a : T.Index) :
     Continuous fun u : ↥(univ ×ˢ range (T.tube a)) =>
@@ -464,7 +464,7 @@ theorem continuousOn_compressTubeFun (a : T.Index) :
     ContinuousOn (fun p : I × M => T.compressTubeFun a p) (univ ×ˢ range (T.tube a)) := by
   rw [continuousOn_iff_continuous_domRestrict]
   refine (T.continuous_compressTubeFun_aux a).congr fun u => ?_
-  rw [Set.domRestrict_apply, compressTubeFun, dif_pos u.2.2]
+  rw [Set.domRestrict_apply, compressTubeFun, dite_eq_left u.2.2]
   simp only [tubeCoord]
 
 end Basic
@@ -525,6 +525,7 @@ variable {M : Type*} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M
 
 local instance : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem frontier_range_tube_subset {a : T.Index}
     (hsm : IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     frontier (range (T.tube a)) ⊆ T.tube a '' {z : TubeDomain | z.2.1 = 2 ∨ z.2.1 = -2} := by
@@ -606,6 +607,7 @@ theorem coreFun_eq_compressTubeFun {a : T.Index} {p : I × M} (hp : p.2 ∈ T.pu
       compressCoord_eq_self_of_le_neg_one p.1 h1]
     exact (T.tube_tubeCoord a p.2 ha).symm
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem coreFun_eq_self_of_mem_closure_compl
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a))
     {p : I × M} (hp : p.2 ∈ closure {x : M | x ∉ ⋃ a, range (T.tube a)}) :
@@ -650,6 +652,7 @@ theorem mem_closure_compl_of_mem_closure_range_compl {u : ↥T.puncturedCore}
     (hO.preimage continuous_subtype_val) huO
   exact hcon ⟨(v : M), hvO, hvA⟩
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem continuousOn_coreFun_closure_compl
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     ContinuousOn (fun p : I × ↥T.puncturedCore => T.coreFun (p.1, (p.2 : M)))
@@ -726,6 +729,7 @@ private theorem continuousOn_biUnion_isClosed_finset {ι X Y : Type*} [Topologic
         (ht a (Finset.mem_insert_self a s)) ?_
       exact (s.finite_toSet).isClosed_biUnion fun i hi => ht i (Finset.mem_insert_of_mem hi)
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem continuous_coreFun
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     Continuous fun p : I × ↥T.puncturedCore => T.coreFun (p.1, (p.2 : M)) := by

@@ -55,7 +55,7 @@ theorem liftedCubeSphereProjectionOpenPartialHomeomorph_target (n : ℕ) :
   rw [cubeSphereProjectionOpenPartialHomeomorph_target]
   ext z
   change z.down ≠ cubeSphereBasepoint n ↔ z ≠ ULift.up (cubeSphereBasepoint n)
-  exact not_congr ⟨fun h => ULift.ext _ _ h, congrArg ULift.down⟩
+  exact not_congr ⟨fun h => ULift.ext h, congrArg ULift.down⟩
 
 def liftedCubeSphereProjection (n : ℕ) :
     C(ULift.{u} (Fin (n + 1) → unitInterval),

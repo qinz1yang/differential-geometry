@@ -21,7 +21,7 @@ theorem IsCylindricalDiagram.exists_essential_lateral_pullback_of_disjoint_seam
       K ⊆ (boundaryComplex 2 D).space ×ˢ Ioo (0 : ℝ) 1 ∧
       IsPLHomeomorphOn f K J ∧
       ¬ ∃ (Q : Set (E × ℝ)) (q : (Fin 3 → ℝ) → E × ℝ),
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧
         Q ⊆ (boundaryComplex 2 D).space ×ˢ Icc (0 : ℝ) 1 ∧
         q '' stdSimplexBoundary 2 = K := by
   classical

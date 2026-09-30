@@ -1,25 +1,24 @@
 import Mathlib.LinearAlgebra.Matrix.Rank
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-import Mathlib.Data.Real.Basic
 
 set_option autoImplicit false
 noncomputable section
 
-open Matrix
 open scoped BigOperators
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+namespace Matrix
 
+variable {𝕜 : Type*} [Field 𝕜]
 variable {m n : Type*} [Fintype m] [Fintype n] [DecidableEq m]
 
-private def blockTopRow (D : Matrix m m ℝ) (B : Matrix m n ℝ) :
-    (m ⊕ n → ℝ) →ₗ[ℝ] (m → ℝ) :=
-  D.mulVecLin.comp (LinearMap.funLeft ℝ ℝ Sum.inl) +
-    B.mulVecLin.comp (LinearMap.funLeft ℝ ℝ Sum.inr)
+private def blockTopRow (D : Matrix m m 𝕜) (B : Matrix m n 𝕜) :
+    (m ⊕ n → 𝕜) →ₗ[𝕜] (m → 𝕜) :=
+  D.mulVecLin.comp (LinearMap.funLeft 𝕜 𝕜 Sum.inl) +
+    B.mulVecLin.comp (LinearMap.funLeft 𝕜 𝕜 Sum.inr)
 
 private theorem block_kernel_eq_top_kernel
-    (D : Matrix m m ℝ) (B : Matrix m n ℝ)
-    (C : Matrix n m ℝ) (A : Matrix n n ℝ)
+    (D : Matrix m m 𝕜) (B : Matrix m n 𝕜)
+    (C : Matrix n m 𝕜) (A : Matrix n n 𝕜)
     (hD : IsUnit D.det) (hr : (Matrix.fromBlocks D B C A).rank = Fintype.card m) :
     LinearMap.ker (Matrix.fromBlocks D B C A).mulVecLin =
       LinearMap.ker (blockTopRow D B) := by
@@ -29,7 +28,7 @@ private theorem block_kernel_eq_top_kernel
     change (Matrix.fromBlocks D B C A) *ᵥ v = 0 at hv
     rw [Matrix.fromBlocks_mulVec] at hv
     change D *ᵥ (v ∘ Sum.inl) + B *ᵥ (v ∘ Sum.inr) = 0
-    exact congrArg (fun w : m ⊕ n → ℝ => w ∘ Sum.inl) hv
+    exact congrArg (fun w : m ⊕ n → 𝕜 => w ∘ Sum.inl) hv
   have hsurj : Function.Surjective (blockTopRow D B) := by
     intro v
     refine ⟨Sum.elim (D⁻¹ *ᵥ v) 0, ?_⟩
@@ -41,13 +40,13 @@ private theorem block_kernel_eq_top_kernel
     Module.finrank_pi] at htop
   have hfull := (Matrix.fromBlocks D B C A).mulVecLin.finrank_range_add_finrank_ker
   change (Matrix.fromBlocks D B C A).rank +
-    Module.finrank ℝ (LinearMap.ker (Matrix.fromBlocks D B C A).mulVecLin) =
-      Module.finrank ℝ (m ⊕ n → ℝ) at hfull
+    Module.finrank 𝕜 (LinearMap.ker (Matrix.fromBlocks D B C A).mulVecLin) =
+      Module.finrank 𝕜 (m ⊕ n → 𝕜) at hfull
   rw [hr] at hfull
   exact Submodule.eq_of_le_of_finrank_le hle (by omega)
 
-def blockKernelGraph (D : Matrix m m ℝ) (B : Matrix m n ℝ) :
-    (n → ℝ) →ₗ[ℝ] (m ⊕ n → ℝ) where
+def blockKernelGraph (D : Matrix m m 𝕜) (B : Matrix m n 𝕜) :
+    (n → 𝕜) →ₗ[𝕜] (m ⊕ n → 𝕜) where
   toFun u := Sum.elim (-(D⁻¹ *ᵥ (B *ᵥ u))) u
   map_add' u v := by
     funext i
@@ -57,10 +56,10 @@ def blockKernelGraph (D : Matrix m m ℝ) (B : Matrix m n ℝ) :
     cases i <;> simp [Matrix.mulVec_smul]
 
 theorem blockKernelGraph_mem_ker
-    (D : Matrix m m ℝ) (B : Matrix m n ℝ)
-    (C : Matrix n m ℝ) (A : Matrix n n ℝ)
+    (D : Matrix m m 𝕜) (B : Matrix m n 𝕜)
+    (C : Matrix n m 𝕜) (A : Matrix n n 𝕜)
     (hD : IsUnit D.det) (hr : (Matrix.fromBlocks D B C A).rank = Fintype.card m)
-    (u : n → ℝ) :
+    (u : n → 𝕜) :
     blockKernelGraph D B u ∈ LinearMap.ker (Matrix.fromBlocks D B C A).mulVecLin := by
   rw [block_kernel_eq_top_kernel D B C A hD hr]
   change D *ᵥ (-(D⁻¹ *ᵥ (B *ᵥ u))) + B *ᵥ u = 0
@@ -68,15 +67,15 @@ theorem blockKernelGraph_mem_ker
     Matrix.one_mulVec, neg_add_cancel]
 
 private theorem blockKernelGraph_reconstruct
-    (D : Matrix m m ℝ) (B : Matrix m n ℝ)
-    (C : Matrix n m ℝ) (A : Matrix n n ℝ)
+    (D : Matrix m m 𝕜) (B : Matrix m n 𝕜)
+    (C : Matrix n m 𝕜) (A : Matrix n n 𝕜)
     (hD : IsUnit D.det) (hr : (Matrix.fromBlocks D B C A).rank = Fintype.card m)
     (v : LinearMap.ker (Matrix.fromBlocks D B C A).mulVecLin) :
     blockKernelGraph D B (v.1 ∘ Sum.inr) = v.1 := by
   have hv : v.1 ∈ LinearMap.ker (blockTopRow D B) :=
     (block_kernel_eq_top_kernel D B C A hD hr).le v.property
   change D *ᵥ (v.1 ∘ Sum.inl) + B *ᵥ (v.1 ∘ Sum.inr) = 0 at hv
-  have hleft := congrArg (fun w : m → ℝ => D⁻¹ *ᵥ w)
+  have hleft := congrArg (fun w : m → 𝕜 => D⁻¹ *ᵥ w)
     (eq_neg_of_add_eq_zero_left hv)
   rw [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul D hD,
     Matrix.one_mulVec, Matrix.mulVec_neg] at hleft
@@ -86,10 +85,10 @@ private theorem blockKernelGraph_reconstruct
   | inr j => rfl
 
 def blockKernelGraphEquiv
-    (D : Matrix m m ℝ) (B : Matrix m n ℝ)
-    (C : Matrix n m ℝ) (A : Matrix n n ℝ)
+    (D : Matrix m m 𝕜) (B : Matrix m n 𝕜)
+    (C : Matrix n m 𝕜) (A : Matrix n n 𝕜)
     (hD : IsUnit D.det) (hr : (Matrix.fromBlocks D B C A).rank = Fintype.card m) :
-    (n → ℝ) ≃ₗ[ℝ] LinearMap.ker (Matrix.fromBlocks D B C A).mulVecLin where
+    (n → 𝕜) ≃ₗ[𝕜] LinearMap.ker (Matrix.fromBlocks D B C A).mulVecLin where
   toFun u := ⟨blockKernelGraph D B u, blockKernelGraph_mem_ker D B C A hD hr u⟩
   invFun v := v.1 ∘ Sum.inr
   left_inv _ := rfl
@@ -98,20 +97,20 @@ def blockKernelGraphEquiv
   map_smul' c u := Subtype.ext ((blockKernelGraph D B).map_smul c u)
 
 theorem blockKernelGraphEquiv_apply
-    (D : Matrix m m ℝ) (B : Matrix m n ℝ)
-    (C : Matrix n m ℝ) (A : Matrix n n ℝ)
+    (D : Matrix m m 𝕜) (B : Matrix m n 𝕜)
+    (C : Matrix n m 𝕜) (A : Matrix n n 𝕜)
     (hD : IsUnit D.det) (hr : (Matrix.fromBlocks D B C A).rank = Fintype.card m)
-    (u : n → ℝ) :
-    ((blockKernelGraphEquiv D B C A hD hr u) : m ⊕ n → ℝ) =
+    (u : n → 𝕜) :
+    ((blockKernelGraphEquiv D B C A hD hr u) : m ⊕ n → 𝕜) =
       Sum.elim (-(D⁻¹ *ᵥ (B *ᵥ u))) u := rfl
 
 theorem blockKernelGraphEquiv_symm_apply
-    (D : Matrix m m ℝ) (B : Matrix m n ℝ)
-    (C : Matrix n m ℝ) (A : Matrix n n ℝ)
+    (D : Matrix m m 𝕜) (B : Matrix m n 𝕜)
+    (C : Matrix n m 𝕜) (A : Matrix n n 𝕜)
     (hD : IsUnit D.det) (hr : (Matrix.fromBlocks D B C A).rank = Fintype.card m)
     (v : LinearMap.ker (Matrix.fromBlocks D B C A).mulVecLin) :
     (blockKernelGraphEquiv D B C A hD hr).symm v = v.1 ∘ Sum.inr := rfl
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+end Matrix
 
 end

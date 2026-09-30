@@ -57,11 +57,11 @@ theorem exists_section34_vertex_embeddings
   have hψ (w) (e) (he : e ∈ s w) : IsPLOn 3 3 (ψ w e) (src (.vertexBall w)) := by
     by_cases hw : w = (ends e).1
     · dsimp only [ψ]
-      rw [if_pos hw, hw]
+      rw [ite_eq_left hw, hw]
       exact (hφ₀ e).isPLOn
     · have hw' := ((hs w e).mp he).resolve_left hw
       dsimp only [ψ]
-      rw [if_neg hw, hw']
+      rw [ite_eq_right hw, hw']
       exact (hφ₁ e).isPLOn
   have hψfix (w) (e) : EqOn (ψ w e) id (K e)ᶜ := by
     dsimp [ψ]
@@ -84,13 +84,13 @@ theorem exists_section34_vertex_embeddings
   · intro e
     have h₀ := hΦeq (ends e).1 e ((hs _ _).mpr (Or.inl rfl))
     have h₁ := hΦeq (ends e).2 e ((hs _ _).mpr (Or.inr rfl))
-    exact ⟨by simpa only [ψ, if_pos rfl] using h₀,
-      by simpa only [ψ, if_neg (hne e).symm] using h₁⟩
+    exact ⟨by simpa only [ψ, ite_eq_left rfl] using h₀,
+      by simpa only [ψ, ite_eq_right (hne e).symm] using h₁⟩
   · intro e
     have h₀ := hΦimage (ends e).1 e ((hs _ _).mpr (Or.inl rfl))
     have h₁ := hΦimage (ends e).2 e ((hs _ _).mpr (Or.inr rfl))
-    exact ⟨by simpa only [ψ, if_pos rfl] using h₀,
-      by simpa only [ψ, if_neg (hne e).symm] using h₁⟩
+    exact ⟨by simpa only [ψ, ite_eq_left rfl] using h₀,
+      by simpa only [ψ, ite_eq_right (hne e).symm] using h₁⟩
   · intro e w hw₀ hw₁ x hx
     apply hΦfix w
     intro hxK

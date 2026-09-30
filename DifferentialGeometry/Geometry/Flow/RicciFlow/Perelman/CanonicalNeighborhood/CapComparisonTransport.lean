@@ -62,13 +62,13 @@ theorem LocalCap.exists_transport_tolerance_of_metricComparisonOn
       ∀ F : PartialDiffeomorph I3 I3 P N ∞, (V : Set P) ⊆ F.source →
       MetricComparisonOn S.base.metric S'.base.metric F V (Icc b t) ⌈(2 * alpha)⁻¹⌉₊ delta →
       ∃ L' : LocalCap S' (2 * alpha) (F x) t (F '' W),
-        L'.tube_map = L.tube_map.trans F ∧ L'.tube = F '' L.tube ∧
+        L'.tubeMap = L.tubeMap.trans F ∧ L'.tube = F '' L.tube ∧
           L'.core.carrier = F '' L.core.carrier := by
   have hmodel : neckModelTolerance alpha < 1 / 11 :=
     (neckModelTolerance_le alpha).trans_lt (by linarith)
   have heps2 : eps ≤ 2 * alpha := heps.trans ((neckModelTolerance_le alpha).trans (by linarith))
-  let L₁ := L.mono_eps heps hmodel
-  let L₂ := L.mono_eps heps2 hsmall
+  let L₁ := L.monoEps heps hmodel
+  let L₂ := L.monoEps heps2 hsmall
   have hbuffer : ∀ i, a < t - 2 * (S.scalar t (L.chain.centers i))⁻¹ :=
     fun i => hab.trans_le (hwindow i)
   have htransport := fun i : Fin L.chain.count =>
@@ -242,7 +242,7 @@ theorem LocalCap.exists_deep_transport_tolerance_of_metricComparisonOn
       ∀ F : PartialDiffeomorph I3 I3 P N ∞, (V : Set P) ⊆ F.source →
       MetricComparisonOn S.base.metric S'.base.metric F V (Icc b t) ⌈(2 * alpha)⁻¹⌉₊ delta →
       ∃ L' : LocalCap S' (2 * alpha) (F x) t (F '' W),
-        L'.tube_map = L.tube_map.trans F ∧ L'.tube = F '' L.tube ∧
+        L'.tubeMap = L.tubeMap.trans F ∧ L'.tube = F '' L.tube ∧
           L'.core.carrier = F '' L.core.carrier ∧
           ∀ y ∈ L'.tube,
             10000 / Real.sqrt (S'.scalar t (F x)) ≤ metricDistance (S'.base.metric t) (F x) y := by

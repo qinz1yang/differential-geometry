@@ -47,7 +47,7 @@ theorem exists_cap_filling_on_finite_spatial_neck_frontier_of_componentwise_mul_
       ∀ z ∈ K, connectedComponentIn (interior W)ᶜ z = K := by
   obtain ⟨K, hK, hKr, hKin, hKf, hinter, hWK, hregular, hnewfront, hfill, hcomponent, _, _⟩ :=
     exists_cap_filling_on_finite_spatial_neck_frontier_of_componentwise_avoidance
-      alive point neck level hlevel hpair i hi cap.core_model
+      alive point neck level hlevel hpair i hi cap.coreModel
       (by
         rintro z ⟨v, rfl⟩
         exact (neck i).image_slab_subset_cap_core_of_center_in_slab heps q (hlevel i hi) hy cap hdepth

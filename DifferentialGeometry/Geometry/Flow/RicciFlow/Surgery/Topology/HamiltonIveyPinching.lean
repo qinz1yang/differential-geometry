@@ -484,12 +484,12 @@ theorem fixedHamiltonIveyRegion_and_scalar_lower_of_preservation :
             (a₀ + H.time (Fin.last H.eventCount) + t - H.time (Fin.last H.eventCount)) x ∧
           -3 / (a₀ + H.time (Fin.last H.eventCount) + t - H.time (Fin.last H.eventCount)) ≤
             metricScalarAt (G.flow.base.metric t) x at hp
-        simpa only [stageMetric, Fin.lastCases_last, dif_pos hlast, heq] using hp
+        simpa only [stageMetric, Fin.lastCases_last, dite_eq_left hlast, heq] using hp
       · have heq : H.horizon = H.time (Fin.last H.eventCount) :=
           le_antisymm (le_of_not_gt hlast) H.time_le_horizon
         have ht' : t = H.time (Fin.last H.eventCount) := le_antisymm (ht.2.trans heq.le) ht.1
         subst t
-        simpa only [stageMetric, Fin.lastCases_last, dif_neg hlast] using hinit _ x
+        simpa only [stageMetric, Fin.lastCases_last, dite_eq_right hlast] using hinit _ x
   · intro i x
     have hA : 0 < a₀ + H.time i.castSucc := add_pos_of_pos_of_nonneg ha₀ (H.time_nonneg _)
     have hin : ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ),

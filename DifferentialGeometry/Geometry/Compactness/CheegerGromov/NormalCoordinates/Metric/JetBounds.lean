@@ -80,7 +80,7 @@ theorem intrinsic_metric_jet_abs_le
       have hleft := hjet i hin
       have hright := hjet (n - i) (Nat.sub_le n i)
       have hinner :=
-        Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+        DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
           (I := I) (M := M) g
           (intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
           (intrinsicLaunchJet (I := I) g hEnorm p u a b i (r, 1))

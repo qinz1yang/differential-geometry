@@ -35,18 +35,18 @@ theorem finiteArcEstimates_tail (X : FiniteArcFlowSeq.{u, uE, uH} (I := I))
     exact ⟨C, hC, fun k t ht x => hb (k + N) t ht x⟩
   connected := fun k => hes.connected (k + N)
 
-noncomputable def finiteArcInjectivityEstimates_tail (X : FiniteArcFlowSeq.{u, uE, uH} (I := I))
+noncomputable def finiteArcInjectivityEstimatesTail (X : FiniteArcFlowSeq.{u, uE, uH} (I := I))
     (h : FiniteArcInjectivityEstimates X) (N : Nat) :
     FiniteArcInjectivityEstimates (X.tail N) :=
   ⟨h.radius, h.radius_pos, fun k => h.bound (k + N)⟩
 
-noncomputable def windowCompactnessEstimates_injectivity_of_finiteArcInjectivityEstimates
+noncomputable def windowCompactnessEstimatesInjectivityOfFiniteArcInjectivityEstimates
     (X : FiniteArcFlowSeq.{u, uE, uH} (I := I)) (h : FiniteArcInjectivityEstimates X)
     (A : Real) (hA : 0 < A) (hcov : ∀ k : Nat, A ≤ X.horizon k) :
     FlowScaleInjectivityBound (I := I) (X.window A hA hcov) :=
   ⟨h.radius, h.radius_pos, fun k => h.bound k⟩
 
-noncomputable def finiteArcInjectivityEstimates_of_windowCompactnessEstimates_injectivity
+noncomputable def finiteArcInjectivityEstimatesOfWindowCompactnessEstimatesInjectivity
     (X : FiniteArcFlowSeq.{u, uE, uH} (I := I)) (A : Real) (hA : 0 < A)
     (hcov : ∀ k : Nat, A ≤ X.horizon k)
     (h : FlowScaleInjectivityBound (I := I) (X.window A hA hcov)) :
@@ -58,12 +58,12 @@ theorem nonempty_finiteArcInjectivityEstimates_iff_windowCompactnessEstimates_in
     (hcov : ∀ k : Nat, A ≤ X.horizon k) :
     Nonempty (FiniteArcInjectivityEstimates X) ↔
       Nonempty (FlowScaleInjectivityBound (I := I) (X.window A hA hcov)) :=
-  ⟨fun h => ⟨windowCompactnessEstimates_injectivity_of_finiteArcInjectivityEstimates X
+  ⟨fun h => ⟨windowCompactnessEstimatesInjectivityOfFiniteArcInjectivityEstimates X
       h.some A hA hcov⟩,
-    fun h => ⟨finiteArcInjectivityEstimates_of_windowCompactnessEstimates_injectivity X
+    fun h => ⟨finiteArcInjectivityEstimatesOfWindowCompactnessEstimatesInjectivity X
       A hA hcov h.some⟩⟩
 
-noncomputable def finiteArcInjectivityEstimates_of_flowInjOfVol
+noncomputable def finiteArcInjectivityEstimatesOfFlowInjOfVol
     (X : FiniteArcFlowSeq.{u, uE, uH} (I := I)) (A : Real) (hA : 0 < A)
     (hcov : ∀ k : Nat, A ≤ X.horizon k)
     (hcomplete : SeqMetricComplete (I := I) ((X.window A hA hcov).atZero (I := I)))
@@ -75,10 +75,10 @@ noncomputable def finiteArcInjectivityEstimates_of_flowInjOfVol
     (V : FlowNoncollapsingScale (I := I) (X.window A hA hcov))
     (hvol : IsFlowNoncollapsingScaleBound (I := I) V) :
     FiniteArcInjectivityEstimates X :=
-  finiteArcInjectivityEstimates_of_windowCompactnessEstimates_injectivity X A hA hcov
+  finiteArcInjectivityEstimatesOfWindowCompactnessEstimatesInjectivity X A hA hcov
     (flowInjOfVol (I := I) (X.window A hA hcov) hcomplete hconn hgeom V hvol)
 
-noncomputable def windowCompactnessEstimates_of_finiteArcEstimates
+noncomputable def windowCompactnessEstimatesOfFiniteArcEstimates
     (X : FiniteArcFlowSeq.{u, uE, uH} (I := I)) (hes : FiniteArcEstimates X)
     (hinj : FiniteArcInjectivityEstimates X) (A : Real) (hA : 0 < A)
     (hcov : ∀ k : Nat, A ≤ X.horizon k) :
@@ -86,7 +86,7 @@ noncomputable def windowCompactnessEstimates_of_finiteArcEstimates
   complete := windowCompactnessEstimates_complete_of_finiteArcEstimates X hes A hA hcov
   curvature := windowCompactnessEstimates_curvature_of_finiteArcEstimates X hes A hA hcov
   injectivity :=
-    windowCompactnessEstimates_injectivity_of_finiteArcInjectivityEstimates X hinj A hA hcov
+    windowCompactnessEstimatesInjectivityOfFiniteArcInjectivityEstimates X hinj A hA hcov
   connected := windowCompactnessEstimates_connected_of_finiteArcEstimates X hes A hA hcov
 
 structure WindowCompactnessFrontier (X : FiniteArcFlowSeq.{u, uE, uH} (I := I))
@@ -102,15 +102,15 @@ theorem windowCompactnessFrontier_of_finiteArcWindowCompactnessInput
     WindowCompactnessFrontier X hT where
   compact := fun m φ hφ _ => h m φ hφ
 
-noncomputable def windowCompactnessEstimates_window_of_finiteArcEstimates
+noncomputable def windowCompactnessEstimatesWindowOfFiniteArcEstimates
     (X : FiniteArcFlowSeq.{u, uE, uH} (I := I))
     (hT : Tendsto X.horizon atTop atTop) (hes : FiniteArcEstimates X)
     (hinj : FiniteArcInjectivityEstimates X) (m : Nat) :
     WindowCompactnessEstimates (X.tail (X.windowShift hT m)) (windowHorizon m)
       (windowHorizon_pos m) (fun k => X.le_horizon_add_windowShift hT m k) :=
-  windowCompactnessEstimates_of_finiteArcEstimates (X.tail (X.windowShift hT m))
+  windowCompactnessEstimatesOfFiniteArcEstimates (X.tail (X.windowShift hT m))
     (finiteArcEstimates_tail X hes (X.windowShift hT m))
-    (finiteArcInjectivityEstimates_tail X hinj (X.windowShift hT m))
+    (finiteArcInjectivityEstimatesTail X hinj (X.windowShift hT m))
     (windowHorizon m) (windowHorizon_pos m) (fun k => X.le_horizon_add_windowShift hT m k)
 
 theorem finiteArcWindowCompactnessInput_of_windowCompactnessEstimates
@@ -128,7 +128,7 @@ theorem finiteArcWindowCompactnessInput_of_finiteArcEstimates
     (hes : FiniteArcEstimates X) (hinj : FiniteArcInjectivityEstimates X) :
     FiniteArcWindowCompactnessInput X hT :=
   finiteArcWindowCompactnessInput_of_windowCompactnessEstimates X hT hfrontier
-    (fun m => windowCompactnessEstimates_window_of_finiteArcEstimates X hT hes hinj m)
+    (fun m => windowCompactnessEstimatesWindowOfFiniteArcEstimates X hT hes hinj m)
 
 theorem exists_strictMono_forall_shift_windowConverges_of_finiteArcEstimates
     (X : FiniteArcFlowSeq.{u, uE, uH} (I := I))

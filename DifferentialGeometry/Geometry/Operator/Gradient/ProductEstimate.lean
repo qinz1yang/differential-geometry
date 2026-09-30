@@ -33,7 +33,7 @@ theorem normSq0S_differential1FormFun_mul_le
     rfl
   rw [heq]
   simpa only [normSq0S_smul, mul_assoc] using
-    _root_.Tensor0SBundle.normSq0S_add_le (I := I) g x 1
+    _root_.DifferentialGeometry.Tensor0SBundle.normSq0S_add_le (I := I) g x 1
       (f x • differential1FormFun (I := I) h x)
       (h x • differential1FormFun (I := I) f x)
 

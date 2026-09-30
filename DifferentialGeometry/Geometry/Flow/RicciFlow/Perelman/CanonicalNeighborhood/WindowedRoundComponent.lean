@@ -24,6 +24,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
   {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
 
+omit [SigmaCompactSpace M] in
 private theorem WindowedModelWitness.round_component_of_round_model
     {delta kappa epsR eps : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness delta kappa S x t)

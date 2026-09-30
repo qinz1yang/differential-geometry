@@ -135,7 +135,7 @@ theorem exists_isSourceTrackedBranchTube_of_sourceCollar
       (∀ i : Fin 4, ∀ U ⊆ (K k).space \ (T k i ∪ T k (i + 2)), IsPreconnected U →
         (U ∩ T k (i + 1)).Nonempty → (U ∩ T k (i + 3)).Nonempty → False) ∧
       ∀ z ∈ Γ.faces, s k ≠ z → (s k ⊆ z ∨ z ⊆ s k) →
-        ∀ r : (Fin 3 → ℝ) → E, IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3))
+        ∀ r : (Fin 3 → ℝ) → E, IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
           (H k ∩ (derivedNeighborhoodCell R z).space) →
           ∀ i, ∃ x, r '' stdSimplexBoundary 2 ∩ T k i = {x} ∧
             T k i ∩ (H k ∩ (derivedNeighborhoodCell R z).space) =
@@ -241,7 +241,7 @@ theorem exists_isSourceTrackedBranchTube_of_sourceCollar
     rw [hs0']
     exact hray i
   let ν : ℕ → ℕ := fun k => if k ≤ m then k else 0
-  have hν : ∀ k ≤ m, ν k = k := fun k hk => if_pos hk
+  have hν : ∀ k ≤ m, ν k = k := fun k hk => ite_eq_left hk
   have hνle : ∀ k, ν k ≤ m := by
     intro k
     dsimp only [ν]

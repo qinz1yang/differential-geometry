@@ -539,14 +539,14 @@ theorem rfs_csf_boundary_isotopy_of_velocityExtension (a b : ℝ)
     intro p hp
     obtain ⟨-, htw⟩ := hp
     dsimp only
-    rw [dif_pos (hwin p.2 htw.2)]
+    rw [dite_eq_left (hwin p.2 htw.2)]
     rfl
   · intro p
     have hd : dist t₀ t₀ < 2 - 3 / 2 := by
       rw [Real.dist_eq, sub_self, abs_zero]
       norm_num
     dsimp only
-    rw [dif_pos hd]
+    rw [dite_eq_left hd]
     change (phaseFlow (I := I) X hX χ hχ hχc (t₀ - t₀) (t₀, p)).2 = p
     have hzero : phaseFlow (I := I) X hX χ hχ hχc 0 =
         Diffeomorph.refl (𝓘(ℝ, ℝ).prod I) (ℝ × M) ∞ :=
@@ -557,7 +557,7 @@ theorem rfs_csf_boundary_isotopy_of_velocityExtension (a b : ℝ)
     obtain ⟨hta, htw⟩ := ht
     have hd : dist t t₀ < 2 - 3 / 2 := hwin t htw
     dsimp only
-    rw [dif_pos hd]
+    rw [dite_eq_left hd]
     change (phaseFlow (I := I) X hX χ hχ hχc (t - t₀) (t₀, γ t₀ z)).2 = γ t z
     set Ψ := phaseFlow (I := I) X hX χ hχ hχc with hΨdef
     have hv : ContMDiff (𝓘(ℝ, ℝ).prod I)

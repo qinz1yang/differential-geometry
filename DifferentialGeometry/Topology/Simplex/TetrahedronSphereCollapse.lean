@@ -6,6 +6,7 @@ import DifferentialGeometry.Topology.Homotopy.SpherePrecomposition
 noncomputable section
 
 open ContinuousMap
+open Convexity.StdSimplex
 
 namespace DifferentialGeometry.Simplex
 
@@ -18,7 +19,7 @@ def tetrahedronSphereCollapse :
     tetrahedronCubeSphereMap_boundary
 
 theorem tetrahedronSphereMap_eq_comp_tetrahedronSphereCollapse
-    (g : C(stdSimplex ℝ (Fin 4), X)) (x : X)
+    (g : C(coordinateSet ℝ (Fin 4), X)) (x : X)
     (hg : ∀ p ∈ boundary (Fin 4), g p = x) :
     tetrahedronSphereMap g x hg =
       (Topology.genLoopSphereHomeomorph 2 x (tetrahedronGenLoop g x hg)).val.comp
@@ -39,7 +40,7 @@ namespace DifferentialGeometry.Simplex
 variable {X : Type*} [TopologicalSpace X] [SimplyConnectedSpace X]
 
 theorem tetrahedronSphereMap_class_eq_precompose
-    (g : C(stdSimplex ℝ (Fin 4), X)) (x : X)
+    (g : C(coordinateSet ℝ (Fin 4), X)) (x : X)
     (hg : ∀ p ∈ boundary (Fin 4), g p = x) :
     (Topology.homotopyGroupFreeSphereEquiv 2 x).symm
       (ZerothHomotopy.mk (tetrahedronSphereMap g x hg)) =

@@ -19,10 +19,10 @@ theorem exists_isPLHomeomorphOn_disk_in_boundary_ball
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (hA : IsPLBall 3 A.space) (hAK : A.space ⊆ K.space)
     {D : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDA : D ⊆ A.space)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDA : D ⊆ A.space)
     (hDK : D ⊆ (boundaryComplex 3 K).space) :
     ∃ (Q : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧ Q ⊆ K.space ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧ Q ⊆ K.space ∧
       q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 ∧
       Q ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2 := by
   classical
@@ -62,10 +62,10 @@ open Classical in
 theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_push_boundary_disk
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {D : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDK : D ⊆ (boundaryComplex 3 K).space) :
     ∃ (Q : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧ Q ⊆ K.space ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧ Q ⊆ K.space ∧
       q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 ∧
       Q ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2 := by
   classical

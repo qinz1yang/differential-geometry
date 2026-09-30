@@ -55,11 +55,11 @@ theorem IsCombinatorialManifold.exists_disk_neighborhood_with_isolated_crossings
     (hisolated : ∀ x ∈ ({p, q} : Set E),
       ∀ᶠ y in 𝓝[K.space] x, y ∈ J ∩ L → y = x) :
     ∃ (N : Set E) (r : (Fin 3 → ℝ) → E) (α β : (Fin 2 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) N ∧ N ⊆ K.space ∩ Ω ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N ∧ N ⊆ K.space ∩ Ω ∧
       B ⊆ r '' openSimplex (stdVertices 1) ∧
-      IsPLHomeomorphOn α (stdSimplex ℝ (Fin 2)) (N ∩ J) ∧
+      IsPLHomeomorphOn α (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (N ∩ J) ∧
       (N ∩ J) ∩ r '' stdSimplexBoundary 2 = α '' stdSimplexBoundary 1 ∧
-      IsPLHomeomorphOn β (stdSimplex ℝ (Fin 2)) (N ∩ L) ∧
+      IsPLHomeomorphOn β (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (N ∩ L) ∧
       (N ∩ L) ∩ r '' stdSimplexBoundary 2 = β '' stdSimplexBoundary 1 ∧
       N ∩ (J ∩ L) = {p, q} := by
   let R := (J ∩ L) \ {p, q}

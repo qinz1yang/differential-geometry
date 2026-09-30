@@ -12,8 +12,7 @@ open Manifold Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace L2
+namespace TensorMetric
 
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -304,8 +303,7 @@ theorem tensorInnerPointwise_0s_domDomCongr_finRotate
   tensorInnerPointwise_0s_domDomCongr (I := I) (M := M) g x s
     (finRotate s) S T
 
-end L2
-end Integral
+end TensorMetric
 end DifferentialGeometry
 
 end

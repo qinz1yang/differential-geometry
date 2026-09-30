@@ -54,7 +54,7 @@ theorem exists_diagonal_basepoint_cap_transport
         ∃ cap : LocalCap Sm (neckModelTolerance alpha) (d (cylinderDiagonalQuotientMap p)) 0 U,
           cap.core.carrier = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-L) L)) ∧
           cap.tube = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc L (L + 1))) ∧
-          (∀ z : Cylinder, cap.tube_map z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
+          (∀ z : Cylinder, cap.tubeMap z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
           cap.chain.count = 1 ∧
           (∀ j, cap.chain.centers j = d (cylinderDiagonalQuotientMap (p.1, L)) ∧
             (∀ z : Cylinder, (cap.chain.necks j).map z = d (cylinderDiagonalQuotientMap (z.1, z.2 + L))) ∧
@@ -69,7 +69,7 @@ theorem exists_diagonal_basepoint_cap_transport
               ∃ cap' : LocalCap F.S (2 * alpha) (q (rho i)) (-tau (rho i)) (Phi.map i '' U),
                 cap'.core.carrier = Phi.map i '' cap.core.carrier ∧
                 cap'.tube = Phi.map i '' cap.tube ∧
-                cap'.tube_map = cap.tube_map.trans (Phi.partialDiffeomorph i) ∧
+                cap'.tubeMap = cap.tubeMap.trans (Phi.partialDiffeomorph i) ∧
                 cap'.chain.count = 1 ∧
                 (∀ j, cap'.chain.centers j = Phi.map i (d (cylinderDiagonalQuotientMap (p.1, L))) ∧
                   (∀ z : Cylinder, (cap'.chain.necks j).map z = Phi.map i (d (cylinderDiagonalQuotientMap (z.1, z.2 + L)))) ∧
@@ -118,7 +118,7 @@ theorem exists_diagonal_basepoint_cap_transport
   have hsrc : d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-(L + 1)) (L + 1))) ⊆
       (Phi.partialDiffeomorph i).source := (hUO.trans subset_closure).trans (hN i hi)
   have htol : neckModelTolerance alpha ≤ 2 * alpha := (neckModelTolerance_le alpha).trans (by linarith)
-  let cap0 := cap.mono_eps htol hsmall
+  let cap0 := cap.monoEps htol hsmall
   have hcExists : ∃ hc : OrderedNeckChain F.S (2 * alpha) (-tau (rho i))
       ((Phi.partialDiffeomorph i) '' cap0.tube), hc.count = 1 ∧
       ∀ j, hc.centers j = Phi.map i (d (cylinderDiagonalQuotientMap (p.1, L))) ∧
@@ -151,7 +151,7 @@ theorem exists_diagonal_basepoint_cap_transport
       ((Phi.partialDiffeomorph i) (d (cylinderDiagonalQuotientMap p))) (-tau (rho i))
       (Phi.map i '' (d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-(L + 1)) (L + 1))))),
       cap'.core.carrier = Phi.map i '' cap.core.carrier ∧ cap'.tube = Phi.map i '' cap.tube ∧
-      cap'.tube_map = cap.tube_map.trans (Phi.partialDiffeomorph i) ∧ cap'.chain.count = 1 ∧
+      cap'.tubeMap = cap.tubeMap.trans (Phi.partialDiffeomorph i) ∧ cap'.chain.count = 1 ∧
       (∀ j, cap'.chain.centers j = Phi.map i (d (cylinderDiagonalQuotientMap (p.1, L))) ∧
         (∀ z : Cylinder, (cap'.chain.necks j).map z = Phi.map i (d (cylinderDiagonalQuotientMap (z.1, z.2 + L)))) ∧
         cap'.chain.lo j = 0 ∧ cap'.chain.hi j = 1) ∧
@@ -216,7 +216,7 @@ theorem exists_diagonal_basepoint_canonical_transport
         ∃ cap : LocalCap Sm (neckModelTolerance alpha) (d (cylinderDiagonalQuotientMap p)) 0 U,
           cap.core.carrier = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-L) L)) ∧
           cap.tube = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc L (L + 1))) ∧
-          (∀ z : Cylinder, cap.tube_map z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
+          (∀ z : Cylinder, cap.tubeMap z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
           cap.chain.count = 1 ∧
           (∀ j, cap.chain.centers j = d (cylinderDiagonalQuotientMap (p.1, L)) ∧
             (∀ z : Cylinder, (cap.chain.necks j).map z = d (cylinderDiagonalQuotientMap (z.1, z.2 + L))) ∧
@@ -231,7 +231,7 @@ theorem exists_diagonal_basepoint_canonical_transport
               ∃ cap' : LocalCap F.S (2 * alpha) (q (rho i)) (-tau (rho i)) (Phi.map i '' U),
                 cap'.core.carrier = Phi.map i '' cap.core.carrier ∧
                 cap'.tube = Phi.map i '' cap.tube ∧
-                cap'.tube_map = cap.tube_map.trans (Phi.partialDiffeomorph i) ∧
+                cap'.tubeMap = cap.tubeMap.trans (Phi.partialDiffeomorph i) ∧
                 cap'.chain.count = 1 ∧
                 (∀ j, cap'.chain.centers j = Phi.map i (d (cylinderDiagonalQuotientMap (p.1, L))) ∧
                   (∀ z : Cylinder, (cap'.chain.necks j).map z = Phi.map i (d (cylinderDiagonalQuotientMap (z.1, z.2 + L)))) ∧

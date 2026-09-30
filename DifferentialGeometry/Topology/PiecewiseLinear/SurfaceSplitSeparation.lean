@@ -21,8 +21,8 @@ theorem IsCombinatorialManifold.exists_surface_split_preserving_separation
     (hCclosed : IsClosed (((↑) : K.space → E) ⁻¹' C))
     (hsep : Separates (((↑) : K.space → E) ⁻¹' C) H Q) (hΔ : IsPLBall 2 Δ)
     {r₁ r₂ : (Fin 3 → ℝ) → E}
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hΔintD₁ : Δ ⊆ r₁ '' openSimplex (stdVertices 1))
     (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
@@ -35,7 +35,7 @@ theorem IsCombinatorialManifold.exists_surface_split_preserving_separation
       Δ ⊆ N ∧ N ⊆ K.space ∧
       N ⊆ (((↑) : K.space → E) '' H ∪ ((↑) : K.space → E) '' Q)ᶜ ∧
       (∀ x ∈ Δ, N ∈ 𝓝[K.space] x) ∧ B.space ⊆ N ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (D₂ ∩ N) ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₂ ∩ N) ∧
       D₂ ∩ N ⊆ (boundaryComplex 3 B).space ∧
       A₁ = N ∩ closure (D₁ \ Δ) ∧ A₁ ⊆ B.space ∧
       IsPLBall 2 Δ₁ ∧ Δ₁ ⊆ (boundaryComplex 3 B).space ∧
@@ -160,8 +160,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_preserving_sepa
     (hHclosed : IsClosed H) (hQclosed : IsClosed Q) (hCclosed : IsClosed C)
     (hsep : Separates C H Q) (hΔ : IsPLBall 2 Δ)
     {r₁ r₂ : (Fin 3 → ℝ) → E}
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hΔintD₁ : Δ ⊆ r₁ '' openSimplex (stdVertices 1))
     (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
@@ -175,7 +175,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_preserving_sepa
       Δ ⊆ N ∧ N ⊆ K.space ∧ Disjoint N (boundaryComplex 3 K).space ∧
       N ⊆ (H ∪ Q)ᶜ ∧
       (∀ x ∈ Δ, N ∈ 𝓝[K.space] x) ∧ B.space ⊆ N ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (D₂ ∩ N) ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₂ ∩ N) ∧
       D₂ ∩ N ⊆ (boundaryComplex 3 B).space ∧
       A₁ = N ∩ closure (D₁ \ Δ) ∧ A₁ ⊆ B.space ∧
       IsPLBall 2 Δ₁ ∧ Δ₁ ⊆ (boundaryComplex 3 B).space ∧

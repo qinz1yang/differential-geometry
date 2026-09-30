@@ -125,9 +125,9 @@ theorem offShellDerivCeil_nonneg
     (q : Nat) :
     0 ≤ d.offShellDerivCeil (n := n) (j := j) x q := by
   by_cases h : n + q ≤ j
-  · simp only [offShellDerivCeil, h, if_true]
+  · simp only [offShellDerivCeil, h, ite_true]
     exact le_rfl
-  · simp only [offShellDerivCeil, h, if_false]
+  · simp only [offShellDerivCeil, h, ite_false]
     exact le_max_left 0 _
 
 omit [CompleteSpace E] in
@@ -155,7 +155,7 @@ theorem twoPieceC_eq_of_shell
     {q : Nat} (hq : n + q ≤ j) :
     d.twoPieceC (n := n) (j := j) x q = d.metricC n q := by
   have h0 : d.offShellDerivCeil (n := n) (j := j) x q = 0 := by
-    simp only [offShellDerivCeil, hq, if_true]
+    simp only [offShellDerivCeil, hq, ite_true]
   rw [twoPieceC, h0, max_eq_left (d.metricC_nonneg n q)]
 
 omit [CompleteSpace E] in
@@ -194,7 +194,7 @@ def metricBoundsTwoPiece
     exact d.metric_deriv n q j hq x hx z (hsub hz)
   · refine ((Classical.choose_spec
       (exists_metricDerivBound_quarter (I := I) d j x q)).2 z hz).trans ?_
-    simp only [twoPieceC, offShellDerivCeil, hq, if_false]
+    simp only [twoPieceC, offShellDerivCeil, hq, ite_false]
     exact le_max_of_le_right (le_max_right (0 : Real) _)
 
 omit [CompleteSpace E] in
@@ -269,7 +269,7 @@ theorem exists_metricBoundsTwoPiece_C_le
       d.offShellDerivCeil (n := n) (j := j) (c j) q ≤ K q := by
     intro q j
     by_cases hle : n + q ≤ j
-    · rw [offShellDerivCeil, if_pos hle]
+    · rw [offShellDerivCeil, ite_eq_left hle]
       exact hK0 q
     · have hmem : j ∈ insert 0 (Finset.range (n + q)) :=
         Finset.mem_insert_of_mem (Finset.mem_range.mpr (by omega))
@@ -320,17 +320,17 @@ theorem exists_metricBounds_full_radius_of_twoPiece
       equiv := d.metric_equiv j x
       deriv := fun q z hz => ?_ }, rfl, ?_, ?_⟩
   · by_cases hq : n + q ≤ j
-    · simpa only [hq, if_true] using d.metricC_nonneg n q
-    · simpa only [hq, if_false] using hCF q
+    · simpa only [hq, ite_true] using d.metricC_nonneg n q
+    · simpa only [hq, ite_false] using hCF q
   · by_cases hq : n + q ≤ j
-    · simpa only [hq, if_true] using d.metric_deriv n q j hq x hx z hz
-    · simpa only [hq, if_false] using hfull q hq z hz
+    · simpa only [hq, ite_true] using d.metric_deriv n q j hq x hx z hz
+    · simpa only [hq, ite_false] using hfull q hq z hz
   · intro q hq
-    simp only [hq, if_true]
+    simp only [hq, ite_true]
   · intro q
     by_cases hq : n + q ≤ j
-    · simpa only [hq, if_true] using hshell q hq
-    · simp only [hq, if_false]
+    · simpa only [hq, ite_true] using hshell q hq
+    · simp only [hq, ite_false]
       exact le_rfl
 
 omit [CompleteSpace E] in
@@ -343,9 +343,9 @@ theorem exists_metricBounds_full_radius_of_boundedGeometry
      letI : ChartedSpace H (X.obj j).M := (X.obj j).charted
      letI : IsManifold I ∞ (X.obj j).M := (X.obj j).smooth
      letI : T2Space (TangentBundle I (X.obj j).M) := (X.obj j).t2TangentBundle
-     ∃ b : (((SeqBallNormalChartData.of_boundedGeometryNormalChartData
+     ∃ b : (((SeqBallNormalChartData.ofBoundedGeometryNormalChartData
        (I := I) d₀).chart j x).MetricBounds (X.obj j).metric),
-       b.radius = ((SeqBallNormalChartData.of_boundedGeometryNormalChartData
+       b.radius = ((SeqBallNormalChartData.ofBoundedGeometryNormalChartData
          (I := I) d₀).chart j x).radius ∧ ∀ q, b.C q ≤ d₀.metricC q) := by
   let : TopologicalSpace (X.obj j).M := (X.obj j).topology
   let : ChartedSpace H (X.obj j).M := (X.obj j).charted

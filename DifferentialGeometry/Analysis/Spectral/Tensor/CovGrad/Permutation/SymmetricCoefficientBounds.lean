@@ -1,5 +1,11 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ConnectionBicontraction
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
+
+open DifferentialGeometry.TensorMetric (fiberNormSqComponent fiberNormSqSummand
+  fiberNormSqSummand_eq_component_sq riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg tensorInnerPointwise
+  tensorInnerPointwise_add_left tensorInnerPointwise_add_right tensorInnerPointwise_smul_left
+  tensorInnerPointwise_smul_right tensorInnerPointwise_sq_le_mul tensorInnerPointwise_symm)
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

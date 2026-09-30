@@ -135,6 +135,7 @@ theorem integral_diskMapEnergyDensity_rotatedDiskMap_preimage
     exact diskExtension_rotatedDiskMap_eq u ζ (Metric.ball_subset_closedBall hw)
   unfold diskMapEnergyDensity diskMapPartial
   rw [heq.mfderiv_eq, heq.eq_of_nhds]
+  rfl
 
 theorem integral_diskMapEnergyDensity_rotatedDiskMap
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (u : C(closedDisk, M)) (ζ : Circle) :

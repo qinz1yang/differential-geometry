@@ -30,7 +30,7 @@ theorem standardTriangleShrink_injective : Function.Injective standardTriangleSh
   linarith
 
 theorem standardTriangleShrink_mem_openSimplex {x : Fin 3 → ℝ}
-    (hx : x ∈ stdSimplex ℝ (Fin 3)) :
+    (hx : x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) :
     standardTriangleShrink x ∈ openSimplex (stdVertices 1) := by
   rw [mem_openSimplex_stdVertices_iff]
   refine ⟨fun i => ?_, ?_⟩
@@ -42,8 +42,8 @@ theorem standardTriangleShrink_mem_openSimplex {x : Fin 3 → ℝ}
     norm_num
 
 theorem isPLHomeomorphOn_standardTriangleShrink :
-    IsPLHomeomorphOn standardTriangleShrink (stdSimplex ℝ (Fin 3))
-      (standardTriangleShrink '' stdSimplex ℝ (Fin 3)) := by
+    IsPLHomeomorphOn standardTriangleShrink (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
+      (standardTriangleShrink '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := by
   apply isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn
     (isHPolytope_stdSimplex (Fin 3)).isPolyhedron
   · exact (isPiecewiseAffineOn_of_affine standardTriangleShrink isOpen_univ).mono_of_isPolyhedron
@@ -51,7 +51,7 @@ theorem isPLHomeomorphOn_standardTriangleShrink :
   · exact standardTriangleShrink_injective.injOn.bijOn_image
 
 theorem isPLBall_standardTriangleShrink :
-    IsPLBall 2 (standardTriangleShrink '' stdSimplex ℝ (Fin 3)) :=
+    IsPLBall 2 (standardTriangleShrink '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) :=
   (isPLBall_stdSimplex 2).of_isPLHomeomorphOn isPLHomeomorphOn_standardTriangleShrink
 
 theorem isPLSphere_standardTriangleShrink_boundary :
@@ -70,28 +70,28 @@ theorem disjoint_standardTriangleShrink_boundary_stdSimplexBoundary :
 
 theorem IsPLHomeomorphOn.exists_inner_triangle [FiniteDimensional ℝ E] {D : Set E}
     {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) :
     ∃ q : (Fin 3 → ℝ) → E,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (q '' stdSimplex ℝ (Fin 3)) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (q '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ∧
       IsPLSphere 1 (q '' stdSimplexBoundary 2) ∧
-      q '' stdSimplex ℝ (Fin 3) ⊆ r '' openSimplex (stdVertices 1) ∧
+      q '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ⊆ r '' openSimplex (stdVertices 1) ∧
       Disjoint (q '' stdSimplexBoundary 2) (r '' stdSimplexBoundary 2) := by
   let q := r ∘ standardTriangleShrink
-  have hsmall : standardTriangleShrink '' stdSimplex ℝ (Fin 3) ⊆
-      stdSimplex ℝ (Fin 3) := by
+  have hsmall : standardTriangleShrink '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ⊆
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := by
     rintro _ ⟨x, hx, rfl⟩
     exact openSimplex_stdVertices_subset_stdSimplex
       (standardTriangleShrink_mem_openSimplex hx)
   have hrsmall := hr.restrict isPLBall_standardTriangleShrink.isPolyhedron hsmall
-  have hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
-      (q '' stdSimplex ℝ (Fin 3)) := by
+  have hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
+      (q '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := by
     simpa only [q, image_comp] using isPLHomeomorphOn_standardTriangleShrink.trans hrsmall
   refine ⟨q, hq, hq.isPLSphere_image_stdSimplexBoundary, ?_, ?_⟩
   · rintro _ ⟨x, hx, rfl⟩
     exact ⟨standardTriangleShrink x, standardTriangleShrink_mem_openSimplex hx, rfl⟩
   · rw [Set.disjoint_left]
     rintro y ⟨x, hx, rfl⟩ ⟨z, hz, heq⟩
-    have hxS : standardTriangleShrink x ∈ stdSimplex ℝ (Fin 3) :=
+    have hxS : standardTriangleShrink x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) :=
       hsmall ⟨x, hx.1, rfl⟩
     change r z = r (standardTriangleShrink x) at heq
     have hxz := hr.bijOn.injOn hxS hz.1 heq.symm

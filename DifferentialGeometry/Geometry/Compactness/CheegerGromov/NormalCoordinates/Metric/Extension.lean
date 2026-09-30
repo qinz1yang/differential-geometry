@@ -468,7 +468,7 @@ private noncomputable def modelFlatMetric
             (mem_baseSet_trivializationAt E
               (TangentSpace (modelWithCornersSelf Real E)) y)] with q hq
         ext v w
-        rw [DifferentialGeometry.Geometry.metricCoeffInModel_apply
+        rw [DifferentialGeometry.BilinearForm.trivializationAt_apply
           (I := _) y hq (Bt q) v w]
         rw [TangentBundle.symmL_model_space]
         rw [hBt]

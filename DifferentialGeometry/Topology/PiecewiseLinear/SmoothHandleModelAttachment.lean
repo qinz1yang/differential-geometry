@@ -156,9 +156,9 @@ theorem exists_modelCoordinates_of_collar {M A P Z : Type*} [TopologicalSpace M]
   have hΓc : ∀ b, Γ (Ext b) = adjunctionCell i ψ b := by
     intro b
     have h : Ext b ∈ range Ext := ⟨b, rfl⟩
-    simp only [Γ, dif_pos h]
+    simp only [Γ, dite_eq_left h]
     rw [hExt.injective h.choose_spec]
-  have hΓl : ∀ p, p ∉ range Ext → Γ p = adjunctionLower ψ (Θ p) := fun p hp => dif_neg hp
+  have hΓl : ∀ p, p ∉ range Ext → Γ p = adjunctionLower ψ (Θ p) := fun p hp => dite_eq_right hp
   have hγΓ : ∀ p ∈ range Ext ∪ O, γ (Γ p) = p := by
     intro p hp
     by_cases hpe : p ∈ range Ext

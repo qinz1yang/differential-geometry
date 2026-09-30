@@ -98,7 +98,7 @@ instance realProjectiveSpaceAntipodalGroupMulAction
     (E : Type*) [NormedAddCommGroup E] :
     MulAction (realProjectiveSpaceAntipodalGroup E)
       (Metric.sphere (0 : E) 1) :=
-  MulAction.instMulAction (realProjectiveSpaceAntipodalGroup E)
+  inferInstance
 
 noncomputable instance realProjectiveSpaceAntipodalGroupFinite
     (E : Type*) [NormedAddCommGroup E] :

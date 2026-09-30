@@ -215,7 +215,7 @@ theorem weak_replacement_energy_le_of_disk_energy_minimizing_sequence
   have hgap : Tendsto (fun n => ∫ z in S, ‖un n z - vn n z‖ ^ 2) atTop (𝓝 0) :=
     tendsto_integral_norm_sub_sq_of_tendsto_eLpNorm_sub_of_ae_eq_of_measure_le
       (Measure.restrict_mono_set volume hSb) un vn (w ∘ e) (q ∘ e) hunm hvnm
-      hwCm.aestronglyMeasurable hqCm.aestronglyMeasurable huL2C hvL2C hweq
+      huL2C hvL2C hweq
   have hvInt (n : ℕ) : IntegrableOn (fun z => ‖fderiv ℝ (vn n) z‖ ^ 2)
       (Metric.closedBall (0 : ℂ) b) := by
     let μ := volume.restrict (Metric.closedBall (0 : ℂ) b)

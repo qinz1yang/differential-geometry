@@ -319,8 +319,8 @@ theorem rfs_width_gap_comparison (B : RicciBackground (I := I) (M := Q) D a b)
     by_cases htg : t ∈ good
     · obtain ⟨uv, huv, htuv⟩ := htg
       have hd := upperDini_of_increments htuv.2 (hDini uv huv t htuv)
-      simpa only [L, if_pos (show t ∈ good from ⟨uv, huv, htuv⟩), rho] using hd
-    · simpa only [L, if_neg htg] using upperDini_of_increment_bound ht hup
+      simpa only [L, ite_eq_left (show t ∈ good from ⟨uv, huv, htuv⟩), rho] using hd
+    · simpa only [L, ite_eq_right htg] using upperDini_of_increment_bound ht hup
   have hJd : ∀ t ∈ Ico a b, ∀ r : ℝ, jp t < r →
       ∀ᶠ y in 𝓝[>] t, slope J t y < r := by
     intro t ht
@@ -337,14 +337,14 @@ theorem rfs_width_gap_comparison (B : RicciBackground (I := I) (M := Q) D a b)
     have htc : t ∈ Icc a b := ⟨ht.1, ht.2.le⟩
     by_cases htg : t ∈ good
     · have htb : t ∉ bad := fun h => h.2 htg
-      simp only [jp, L, if_pos htg, phi, indicator_of_notMem htb]
+      simp only [jp, L, ite_eq_left htg, phi, indicator_of_notMem htb]
       ring_nf
       exact le_rfl
     · have htb : t ∈ bad := ⟨htc, htg⟩
       have hrhof : rho t * f t ≤ M * Abar :=
         (mul_le_mul_of_nonneg_right (le_trans (le_abs_self _) (hbound t htc))
           (hrange t htc).1).trans (mul_le_mul_of_nonneg_left (hrange t htc).2 hM)
-      simp only [jp, L, if_neg htg, phi, indicator_of_mem htb]
+      simp only [jp, L, ite_eq_right htg, phi, indicator_of_mem htb]
       have hh := mul_le_mul_of_nonneg_left hrhof (hFp t).le
       have he := mul_nonneg herror (hFp t).le
       dsimp [K]

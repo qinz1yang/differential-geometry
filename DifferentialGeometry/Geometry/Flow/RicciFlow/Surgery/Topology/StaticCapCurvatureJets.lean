@@ -61,7 +61,7 @@ theorem metricDerivNorm_window_lt {i : ℕ} (hi : i ≤ m) (x : standardCapWindo
 theorem window_isLocalDiffeomorph : IsLocalDiffeomorph ThreeModel ThreeModel ∞ S.window :=
   DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv S.window
     S.window_smooth.contMDiff
-    (fun p => (S.window_smooth.isImmersion.isImmersionAt p).injective_mfderiv (by simp)) rfl
+    (fun p => (S.window_smooth.isImmersion.isImmersionAt p).mfderiv_injective (by simp)) rfl
 
 theorem curvDerivNormSq_output_window (i : ℕ) (x : standardCapWindow D) :
     curvDerivNormSq i E.outputMetric (S.window x) =

@@ -290,17 +290,17 @@ theorem exists_finsetBiUnion_eq_mapsTo_chart {n m : ℕ} {N : Type*} [MetricSpac
     intro s
     by_cases hs : s ∈ K'.faces
     · rw [hCdef]
-      simp only [hs, if_true]
+      simp only [hs, ite_true]
       exact isPolyhedron_convexHull_of_affineIndependent _ (K'.indep hs)
     · rw [hCdef]
-      simp only [hs, if_false]
+      simp only [hs, ite_false]
       exact IsPolyhedron.empty
   set T : Finset (Finset (EuclideanSpace ℝ (Fin n))) :=
     hK'fin.toFinset.filter fun s => s.Nonempty with hTdef
   have hCsub : ∀ s ∈ K'.faces, C s ⊆ P := by
     intro s hs y hy
     rw [hCdef] at hy
-    simp only [hs, if_true] at hy
+    simp only [hs, ite_true] at hy
     rw [← hK'space]
     exact K'.convexHull_subset_space hs hy
   have hunion : ⋃ s ∈ T, C s = P := by
@@ -315,7 +315,7 @@ theorem exists_finsetBiUnion_eq_mapsTo_chart {n m : ℕ} {N : Type*} [MetricSpac
         · exact h
       refine mem_iUnion₂.mpr ⟨s, Finset.mem_filter.mpr ⟨hK'fin.mem_toFinset.mpr hs, hsne⟩, ?_⟩
       rw [hCdef]
-      simpa only [hs, if_true] using hxs
+      simpa only [hs, ite_true] using hxs
   have hchart : ∀ s ∈ T, ∃ e : OpenPartialHomeomorph N (EuclideanSpace ℝ (Fin m)),
       e ∈ (plGroupoid m).maximalAtlas N ∧ MapsTo f (C s) e.source := by
     intro s hs
@@ -323,7 +323,7 @@ theorem exists_finsetBiUnion_eq_mapsTo_chart {n m : ℕ} {N : Type*} [MetricSpac
     have hsK : s ∈ K'.faces := hK'fin.mem_toFinset.mp hsf
     obtain ⟨v, hv⟩ := hsne
     have hCs : C s = convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin n))) := by
-      rw [hCdef]; simp only [hsK, if_true]
+      rw [hCdef]; simp only [hsK, ite_true]
     have hvC : v ∈ C s := by rw [hCs]; exact subset_convexHull ℝ _ hv
     have hvP : v ∈ P := hCsub s hsK hvC
     obtain ⟨i, hi⟩ := hdsub v hvP

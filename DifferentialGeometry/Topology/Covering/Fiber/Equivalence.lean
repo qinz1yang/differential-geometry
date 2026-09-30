@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Covering.CoveringMap
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
 import Mathlib.Topology.Compactness.Compact
 import Mathlib.Logic.Equiv.Basic
-import Mathlib.Data.Finite.Defs
+import Mathlib.Basic.Finite.Defs
 
 open Set Function
 open scoped Topology

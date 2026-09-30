@@ -440,22 +440,22 @@ def spliceAt (p q : CutoffParameters) (s : ℝ) : CutoffParameters :=
     protectedRadius_pos := fun t ht => by split <;> [exact q.protectedRadius_pos t ht; exact p.protectedRadius_pos t ht] }
 
 @[simp] theorem spliceAt_delta_self (p q : CutoffParameters) (s : ℝ) :
-    (p.spliceAt q s).delta s = q.delta s := if_pos rfl
+    (p.spliceAt q s).delta s = q.delta s := ite_eq_left rfl
 
 @[simp] theorem spliceAt_neckRadius_self (p q : CutoffParameters) (s : ℝ) :
-    (p.spliceAt q s).neckRadius s = q.neckRadius s := if_pos rfl
+    (p.spliceAt q s).neckRadius s = q.neckRadius s := ite_eq_left rfl
 
 @[simp] theorem spliceAt_protectedRadius_self (p q : CutoffParameters) (s : ℝ) :
-    (p.spliceAt q s).protectedRadius s = q.protectedRadius s := if_pos rfl
+    (p.spliceAt q s).protectedRadius s = q.protectedRadius s := ite_eq_left rfl
 
 theorem spliceAt_delta_of_ne (p q : CutoffParameters) {s t : ℝ} (h : t ≠ s) :
-    (p.spliceAt q s).delta t = p.delta t := if_neg h
+    (p.spliceAt q s).delta t = p.delta t := ite_eq_right h
 
 theorem spliceAt_neckRadius_of_ne (p q : CutoffParameters) {s t : ℝ} (h : t ≠ s) :
-    (p.spliceAt q s).neckRadius t = p.neckRadius t := if_neg h
+    (p.spliceAt q s).neckRadius t = p.neckRadius t := ite_eq_right h
 
 theorem spliceAt_protectedRadius_of_ne (p q : CutoffParameters) {s t : ℝ} (h : t ≠ s) :
-    (p.spliceAt q s).protectedRadius t = p.protectedRadius t := if_neg h
+    (p.spliceAt q s).protectedRadius t = p.protectedRadius t := ite_eq_right h
 
 end CutoffParameters
 

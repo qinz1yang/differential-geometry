@@ -19,11 +19,14 @@ def integralSingularSphereFace
 
 theorem integralSingularSphereFace_apply
     (f : C(Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1, X)) (i : Fin 4)
-    (p : stdSimplex ℝ (Fin 3)) :
+    (p : Convexity.StdSimplex ℝ (Fin 3)) :
     integralSingularSimplexEquiv 2 X (integralSingularSphereFace f i) p =
       f (Simplex.stdSimplexNormedBoundarySphereHomeomorph
         (EuclideanSpace.equiv (Fin 3) ℝ).symm
-        ⟨stdSimplex.map i.succAbove p, ⟨i, Simplex.map_succAbove_apply_pivot i p⟩⟩) := by
+        ⟨Convexity.StdSimplex.coordinateMap i.succAbove
+          (Convexity.StdSimplex.coordinateEquiv ℝ _ p),
+          ⟨i, Simplex.map_succAbove_apply_pivot i
+            (Convexity.StdSimplex.coordinateEquiv ℝ _ p)⟩⟩) := by
   simp only [integralSingularSphereFace, integralSingularSimplexMap_apply,
     Equiv.apply_symm_apply, ContinuousMap.comp_apply]
   rfl

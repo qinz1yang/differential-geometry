@@ -319,7 +319,7 @@ theorem cutoffHeatParametrix_residual
     have hgrad : gradientFun g χ q = 0 := by
       apply gradientFun_eq_zero_of_mfderiv_eq_zero
       rw [he.mfderiv_eq]
-      exact mfderiv_const
+      exact mfderiv_const (I := I) (I' := 𝓘(ℝ, ℝ)) (x := q) (c := (0 : ℝ))
     have hl := laplacian_congr_of_eventuallyEq (LeviCivita g) g hχ.contMDiffAt
       contMDiffAt_const he
     have hlzero : laplacian (LeviCivita g) g χ q = 0 := by

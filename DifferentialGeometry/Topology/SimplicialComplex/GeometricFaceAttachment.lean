@@ -14,7 +14,7 @@ variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
 def geometricFaceCellMap (hs : s ∈ K.faces) :
-    TopCat.of (stdSimplex ℝ s) ⟶ TopCat.of K.space :=
+    TopCat.of (Convexity.StdSimplex.coordinateSet ℝ s) ⟶ TopCat.of K.space :=
   (TopCat.isoOfHomeo (geometricFaceHomeomorphism K hs)).hom ≫
     DifferentialGeometry.TopCat.subspaceInclusion (Geometry.SimplicialComplex.convexHull_subset_space hs)
 
@@ -26,7 +26,7 @@ def geometricFaceAttachingMap (hs : s ∈ K.faces) :
 
 
 @[simp]
-theorem geometricFaceCellMap_apply (hs : s ∈ K.faces) (x : stdSimplex ℝ s) :
+theorem geometricFaceCellMap_apply (hs : s ∈ K.faces) (x : Convexity.StdSimplex.coordinateSet ℝ s) :
     (geometricFaceCellMap K hs x : E) =
       DifferentialGeometry.Simplex.vertexMap (fun i : s => (i : E)) x := rfl
 

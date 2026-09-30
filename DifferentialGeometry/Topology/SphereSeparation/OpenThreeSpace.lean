@@ -51,7 +51,7 @@ noncomputable def topologicalSphereSidesOpenThreeSpace
   rw [← hback]
   exact dℝ.imageDiffeomorph ψ.symm
 
-noncomputable def topologicalSphereSidesOpenThreeSpace_of_locallyTwoSided
+noncomputable def topologicalSphereSidesOpenThreeSpaceOfLocallyTwoSided
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
     [IsManifold (𝓘(ℝ, EuclideanThree)) ∞ EuclideanThree]
     (e : SphereTwo → N)
@@ -67,7 +67,7 @@ noncomputable def topologicalSphereSidesOpenThreeSpace_of_locallyTwoSided
       (ψ ∘ e) :=
     he.postcomp_diffeomorph ψ
   let dℝ : SphereSides (Set.range (ψ ∘ e)) :=
-    topologicalSphereSidesOfComponentCount_of_locallyTwoSided
+    topologicalSphereSidesOfComponentCountOfLocallyTwoSided
       (ψ ∘ e) heℝ hcount hlocal
   have hrange : Set.range (ψ ∘ e) = ψ '' Set.range e :=
     range_equiv_comp ψ.toEquiv e
@@ -77,7 +77,7 @@ noncomputable def topologicalSphereSidesOpenThreeSpace_of_locallyTwoSided
   rw [← hback]
   exact dℝ.imageDiffeomorph ψ.symm
 
-noncomputable def topologicalSphereSidesOpenThreeSpace_of_alexanderDuality
+noncomputable def topologicalSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
     (e : SphereTwo → N)
     (he : Manifold.IsSmoothEmbedding

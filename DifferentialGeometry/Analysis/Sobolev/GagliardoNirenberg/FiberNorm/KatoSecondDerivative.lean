@@ -11,6 +11,9 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByP
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.DiscreteLogConvexity
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.HolderIntegrability
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.CovariantDerivativeFrameSum
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -71,12 +74,12 @@ private theorem secondCovDeriv_frame_diag_fiberNormSq_sum_le_rs
     (covGrad (I := I) (M := M) g r (m + 1)
       (covGrad (I := I) (M := M) g r m w)).toSection x with hT2_def
   have hcomp : ∀ (i : Fin n) (K : Fin r → Fin n) (J : Fin m → Fin n),
-      DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r m
+      DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r m
           (DifferentialGeometry.Geometry.Curvature.tensorSecondCovDeriv (I := I) g r m
             (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x i)
             (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x i)
             (fun y : M => w.toSection y) x) n e K J =
-        DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+        DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
           (m + 1 + 1) T2 n e K
           (Fin.cons i (Fin.cons i J)) := by
     intro i K J
@@ -115,7 +118,7 @@ private theorem secondCovDeriv_frame_diag_fiberNormSq_sum_le_rs
             (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x i)
             (fun y : M => w.toSection y) x) =
         ∑ K : Fin r → Fin n, ∑ J : Fin m → Fin n,
-          (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+          (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
             (m + 1 + 1) T2 n e K
             (Fin.cons i (Fin.cons i J))) ^ 2 := by
     intro i
@@ -130,21 +133,21 @@ private theorem secondCovDeriv_frame_diag_fiberNormSq_sum_le_rs
   rw [Finset.sum_congr rfl (fun i _ => hdiag_term i)]
   have hfull : ∀ K : Fin r → Fin n,
       (∑ J : Fin (m + 1 + 1) → Fin n,
-          (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+          (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
             (m + 1 + 1) T2 n e K
             J) ^ 2) =
         ∑ a : Fin n, ∑ b : Fin n, ∑ J : Fin m → Fin n,
-          (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+          (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
             (m + 1 + 1) T2 n e K
             (Fin.cons a (Fin.cons b J))) ^ 2 := by
     intro K
     rw [← Fintype.sum_equiv (Fin.consEquiv (fun _ : Fin (m + 1 + 1) => Fin n))
           (fun pr : Fin n × (Fin (m + 1) → Fin n) =>
-            (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+            (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
               (m + 1 + 1) T2 n e K
               (Fin.cons pr.1 pr.2)) ^ 2)
           (fun J'' : Fin (m + 1 + 1) → Fin n =>
-            (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+            (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
               (m + 1 + 1) T2 n e K
               J'') ^ 2)
           (fun pr => by simp [Fin.consEquiv])]
@@ -152,11 +155,11 @@ private theorem secondCovDeriv_frame_diag_fiberNormSq_sum_le_rs
     refine Finset.sum_congr rfl (fun a _ => ?_)
     rw [← Fintype.sum_equiv (Fin.consEquiv (fun _ : Fin (m + 1) => Fin n))
           (fun pr : Fin n × (Fin m → Fin n) =>
-            (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+            (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
               (m + 1 + 1) T2 n e K
               (Fin.cons a (Fin.cons pr.1 pr.2))) ^ 2)
           (fun J' : Fin (m + 1) → Fin n =>
-            (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+            (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
               (m + 1 + 1) T2 n e K
               (Fin.cons a J')) ^ 2)
           (fun pr => by simp [Fin.consEquiv])]
@@ -167,7 +170,7 @@ private theorem secondCovDeriv_frame_diag_fiberNormSq_sum_le_rs
   refine Finset.sum_le_sum (fun i _ => ?_)
   exact Finset.single_le_sum (f := fun b : Fin n =>
       ∑ J : Fin m → Fin n,
-        (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+        (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
           (m + 1 + 1) T2 n e K
           (Fin.cons i (Fin.cons b J))) ^ 2)
     (fun b _ => Finset.sum_nonneg (fun J _ => sq_nonneg _)) (Finset.mem_univ i)
@@ -176,7 +179,7 @@ omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem rawConnLap_innerWith_sqrt_finrank_bound_rs
     (g : SmoothRiemannianMetric I M) (r m : ℕ)
     (w : Integral.L2.SmoothCcTensor g r m) (x : M) :
-    |Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+    |DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         ((rawTensorConnLapSmooth (I := I) g r m w).toFun x) (w.toFun x)| ≤
       Real.sqrt (Module.finrank ℝ E : ℝ) *
         Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x)) *
@@ -207,52 +210,52 @@ theorem rawConnLap_innerWith_sqrt_finrank_bound_rs
         (I := I) g r m
         (fun y : M => w.toSection y) x]
   have hsum_aux : ∀ (s' : Finset (Fin n)),
-      Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
           (Tensor0SBundle.TensorRSSpace.toModel (∑ i ∈ s', D i)) (w.toFun x) =
-        ∑ i ∈ s', Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+        ∑ i ∈ s', DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
           (Tensor0SBundle.TensorRSSpace.toModel (D i)) (w.toFun x) := by
     intro s'
     induction s' using Finset.induction with
     | empty =>
         rw [Finset.sum_empty, Finset.sum_empty, Tensor0SBundle.TensorRSSpace.toModel_zero]
-        exact Integral.L2.tensorInnerPointwise_zero_left (I := I) (M := M) g r m x (w.toFun x)
+        exact DifferentialGeometry.TensorMetric.tensorInnerPointwise_zero_left (I := I) (M := M) g r m x (w.toFun x)
     | insert i₀ s'' hi₀ ih =>
         rw [Finset.sum_insert hi₀, Finset.sum_insert hi₀, Tensor0SBundle.TensorRSSpace.toModel_add,
-          Integral.L2.tensorInnerPointwise_add_left, ih]
-  have hsum : Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+          DifferentialGeometry.TensorMetric.tensorInnerPointwise_add_left, ih]
+  have hsum : DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         ((rawTensorConnLapSmooth (I := I) g r m w).toFun x) (w.toFun x) =
-      ∑ i : Fin n, Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+      ∑ i : Fin n, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         (Tensor0SBundle.TensorRSSpace.toModel (D i)) (w.toFun x) := by
     rw [htrace]
     exact hsum_aux Finset.univ
   set rr : Fin n → ℝ := fun i => riemannianFiberNormSq (I := I) (M := M) g r m x (D i) with hrr_def
   have hrr_nn : ∀ i, 0 ≤ rr i := fun i =>
     riemannianFiberNormSq_nonneg (I := I) (M := M) g r m x (D i)
-  have hCSi : ∀ i, |Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+  have hCSi : ∀ i, |DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         (Tensor0SBundle.TensorRSSpace.toModel (D i)) (w.toFun x)| ≤
       Real.sqrt (rr i) * Real.sqrt aw := by
     intro i
-    have hsq := Integral.L2.tensorInnerPointwise_sq_le_mul (I := I) (M := M) g r m x
+    have hsq := DifferentialGeometry.TensorMetric.tensorInnerPointwise_sq_le_mul (I := I) (M := M) g r m x
       (Tensor0SBundle.TensorRSSpace.toModel (D i)) (w.toFun x)
-    have hDi_self : Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+    have hDi_self : DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         (Tensor0SBundle.TensorRSSpace.toModel (D i))
         (Tensor0SBundle.TensorRSSpace.toModel (D i)) = rr i := by
       rw [show rr i = riemannianFiberNormSq (I := I) (M := M) g r m x (D i) from rfl,
         riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r m x (D i)]
-    have hw_self : Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+    have hw_self : DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         (w.toFun x) (w.toFun x) = aw := by
       rw [show aw = riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) from rfl,
         riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r m x (w.toSection x)]
       rfl
     rw [hDi_self, hw_self] at hsq
-    have habs : |Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+    have habs : |DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         (Tensor0SBundle.TensorRSSpace.toModel (D i)) (w.toFun x)| ≤ Real.sqrt (rr i * aw) := by
       rw [← Real.sqrt_sq_eq_abs]
       exact Real.sqrt_le_sqrt hsq
     rw [Real.sqrt_mul (hrr_nn i)] at habs
     exact habs
   rw [hsum]
-  have hstep1 : |∑ i : Fin n, Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+  have hstep1 : |∑ i : Fin n, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         (Tensor0SBundle.TensorRSSpace.toModel (D i)) (w.toFun x)| ≤
       ∑ i : Fin n, Real.sqrt (rr i) * Real.sqrt aw := by
     refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
@@ -290,7 +293,7 @@ theorem rawConnLap_innerWith_sqrt_finrank_bound_rs
       _ ≤ Real.sqrt ((n : ℝ) * cw) := h2
       _ = Real.sqrt (n : ℝ) * Real.sqrt cw := h3
       _ = Real.sqrt (Module.finrank ℝ E : ℝ) * Real.sqrt cw := by rw [hn_def]
-  calc |∑ i : Fin n, Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+  calc |∑ i : Fin n, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
           (Tensor0SBundle.TensorRSSpace.toModel (D i)) (w.toFun x)|
       ≤ ∑ i : Fin n, Real.sqrt (rr i) * Real.sqrt aw := hstep1
     _ = (∑ i : Fin n, Real.sqrt (rr i)) * Real.sqrt aw := by rw [← Finset.sum_mul]
@@ -304,49 +307,49 @@ private theorem mfderiv_riemannianFiberNormSq_eq_two_mul_covDeriv_inner_rs
     (Q : Integral.L2.SmoothCcTensor g r p) (x : M) (v : TangentSpace I x) :
     mvfderiv (I := I)
         (fun y : M => riemannianFiberNormSq (I := I) (M := M) g r p y (Q.toSection y)) x v =
-      2 * Integral.L2.tensorInnerPointwise (I := I) (M := M) g r p x
+      2 * DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r p x
         (Tensor0SBundle.TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r p Q x v))
         (Q.toFun x) := by
   classical
   have hfun : (fun y : M => riemannianFiberNormSq (I := I) (M := M) g r p y (Q.toSection y)) =
-      fun y : M => Integral.L2.tensorInnerPointwise (I := I) (M := M) g r p y
+      fun y : M => DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r p y
         (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection y))
         (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection y)) := by
     funext y
     rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r p y (Q.toSection y)]
   rw [hfun]
   rw [show mvfderiv (I := I)
-        (fun y : M => Integral.L2.tensorInnerPointwise (I := I) (M := M) g r p y
+        (fun y : M => DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r p y
           (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection y))
           (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection y))) x v =
       mfderiv I 𝓘(ℝ, ℝ)
-        (fun y : M => Integral.L2.tensorInnerPointwise (I := I) (M := M) g r p y
+        (fun y : M => DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r p y
           (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection y))
           (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection y))) x v from rfl]
   rw [DifferentialGeometry.Geometry.Connection.tensorInnerPointwise_hasMFDerivAt_metricCompatible
     (I := I) (M := M) g r p Q.toSection Q.toSection x v]
-  have hbridge : Integral.L2.covariantTensorInnerPointwise (I := I) (M := M) (r + p) g x
+  have hbridge : DifferentialGeometry.TensorMetric.covariantTensorInnerPointwise (I := I) (M := M) (r + p) g x
         (Tensor0SBundle.Tensor0SSpace.toModel
           (DifferentialGeometry.Geometry.Connection.loweredCovDerivAt (I := I)
             (M := M) g r p Q.toSection x v))
         (Tensor0SBundle.Tensor0SSpace.toModel
           (DifferentialGeometry.Geometry.Connection.liftedTensorSection (I := I)
             (M := M) g r p Q.toSection x)) =
-      Integral.L2.tensorInnerPointwise (I := I) (M := M) g r p x
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r p x
         (Tensor0SBundle.TensorRSSpace.toModel
           (tensorCovDerivAt (I := I) (M := M) g r p Q x v))
         (Q.toFun x) := by
-    rw [show Integral.L2.tensorInnerPointwise (I := I) (M := M) g r p x
+    rw [show DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r p x
           (Tensor0SBundle.TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r p Q x v))
           (Q.toFun x) =
-        Integral.L2.tensorInnerPointwise (I := I) (M := M) g r p x
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r p x
           (Tensor0SBundle.TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r p Q x v))
           (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection x)) from rfl]
-    unfold Integral.L2.tensorInnerPointwise
-    rw [show Integral.L2.lowerAllUpperIndices (I := I) (M := M) g r p x
+    unfold DifferentialGeometry.TensorMetric.tensorInnerPointwise
+    rw [show DifferentialGeometry.TensorMetric.lowerAllUpperIndices (I := I) (M := M) g r p x
           (Tensor0SBundle.TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r p Q x v)) =
         Tensor0SBundle.Tensor0SSpace.toModel
@@ -355,7 +358,7 @@ private theorem mfderiv_riemannianFiberNormSq_eq_two_mul_covDeriv_inner_rs
       rw [tensorCovDerivAt_def (I := I) (M := M) g r p Q x v]
       exact (DifferentialGeometry.Geometry.Connection.loweredCovDerivAt_eq_lower_tensorCovDerivAt_rs
         (I := I) (M := M) g r p Q.toSection x v).symm]
-    rw [show Integral.L2.lowerAllUpperIndices (I := I) (M := M) g r p x
+    rw [show DifferentialGeometry.TensorMetric.lowerAllUpperIndices (I := I) (M := M) g r p x
           (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection x)) =
         Tensor0SBundle.Tensor0SSpace.toModel
           (DifferentialGeometry.Geometry.Connection.liftedTensorSection (I := I)
@@ -363,7 +366,7 @@ private theorem mfderiv_riemannianFiberNormSq_eq_two_mul_covDeriv_inner_rs
       (DifferentialGeometry.Geometry.Connection.toModel_liftedTensorSection
         (I := I) (M := M) g r p Q.toSection x).symm]
   rw [hbridge]
-  rw [Integral.L2.tensorInnerPointwise_0s_symm (I := I) (M := M) g x (r + p)
+  rw [DifferentialGeometry.TensorMetric.tensorInnerPointwise_0s_symm (I := I) (M := M) g x (r + p)
       (Tensor0SBundle.Tensor0SSpace.toModel
         (DifferentialGeometry.Geometry.Connection.liftedTensorSection (I := I)
           (M := M) g r p Q.toSection x))
@@ -408,14 +411,14 @@ theorem kato_mfderiv_riemannianFiberNormSq_frame_sum_le_rs
     intro a
     rw [mfderiv_riemannianFiberNormSq_eq_two_mul_covDeriv_inner_rs (I := I) (M := M) g r p Q x
       (e a)]
-    have hsq := Integral.L2.tensorInnerPointwise_sq_le_mul (I := I) (M := M) g r p x
+    have hsq := DifferentialGeometry.TensorMetric.tensorInnerPointwise_sq_le_mul (I := I) (M := M) g r p x
       (Tensor0SBundle.TensorRSSpace.toModel (V a)) (Q.toFun x)
-    have hVself : Integral.L2.tensorInnerPointwise (I := I) (M := M) g r p x
+    have hVself : DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r p x
         (Tensor0SBundle.TensorRSSpace.toModel (V a))
         (Tensor0SBundle.TensorRSSpace.toModel (V a)) = ss a := by
       rw [show ss a = riemannianFiberNormSq (I := I) (M := M) g r p x (V a) from rfl,
         riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r p x (V a)]
-    have hQself : Integral.L2.tensorInnerPointwise (I := I) (M := M) g r p x
+    have hQself : DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r p x
         (Q.toFun x) (Q.toFun x) = rQ := by
       rw [show rQ = riemannianFiberNormSq (I := I) (M := M) g r p x (Q.toSection x) from rfl,
         riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r p x (Q.toSection x)]
@@ -480,7 +483,7 @@ theorem prependCovGradSlot_fiberNormSq_frame_sum_rs
     ((mvfderiv (I := I) (ζ : M → ℝ) x (e a)) • S.toSection x),
     riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r t x (S.toSection x)]
   rw [Tensor0SBundle.TensorRSSpace.toModel_smul,
-    Integral.L2.tensorInnerPointwise_smul_left, Integral.L2.tensorInnerPointwise_smul_right]
+    DifferentialGeometry.TensorMetric.tensorInnerPointwise_smul_left, DifferentialGeometry.TensorMetric.tensorInnerPointwise_smul_right]
   rw [he_def]
   ring
 

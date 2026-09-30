@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ConnectionDifference.Bounds.Coefficients
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Principal.H2H3
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Application
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

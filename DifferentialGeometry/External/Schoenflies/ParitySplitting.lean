@@ -125,7 +125,7 @@ under either name. -/
 theorem mark_swap' (u : Plane) (P : Piece) (q : Plane) : mark u (P.2, P.1) q = mark u P q := by
   obtain ⟨a, b⟩ := P
   by_cases h : hgt u a = hgt u b
-  · rw [mark, mark, if_neg (not_crosses_of_level h.symm q), if_neg (not_crosses_of_level h q)]
+  · rw [mark, mark, ite_eq_right (not_crosses_of_level h.symm q), ite_eq_right (not_crosses_of_level h q)]
   · exact mark_swap h q
 
 /-- Reordering the edges does not change the count. -/

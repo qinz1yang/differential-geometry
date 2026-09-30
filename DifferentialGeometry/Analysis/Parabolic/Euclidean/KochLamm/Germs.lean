@@ -19,10 +19,9 @@ variable {X I E : Type*} [MeasurableSpace X]
   {f : X → E} {mu : Measure X} {s : ℝ} {A : ℝ≥0}
 
 omit [NormedSpace ℝ E] [Fact (1 ≤ p)] in
-theorem kochLammScaleMemLp (hs : 0 < s) (hf : AEStronglyMeasurable f mu)
+theorem kochLammScaleMemLp (hs : 0 < s)
     (h : ENNReal.ofReal s * eLpNorm f p mu ≤ (A : ℝ≥0∞)) :
     MemLp f p mu := by
-  refine ⟨hf, ?_⟩
   have hs0 : ENNReal.ofReal s ≠ 0 := (ENNReal.ofReal_pos.mpr hs).ne'
   have hmul : ENNReal.ofReal s * eLpNorm f p mu < ∞ :=
     lt_of_le_of_lt h ENNReal.coe_lt_top
@@ -100,18 +99,16 @@ lemma sourceZeroL1Mem (h : KochLammSourceZero T A₁ A_q f) (i : KochLammCylinde
     MemLp f 1 (kochLammCylinderMeasure i) := by
   apply kochLammScaleMemLp (s := kochLammL1ScaleR (V := V) i.radius)
     (A := A₁) (kochLammL1ScaleR_pos i.radius_pos)
-  · exact h.ae.mono_measure Measure.restrict_le_self
-  · simpa [kochLammL1Scale, kochLammCylinderMeasure] using
-      h.local_l1 i.center i.radius i.radius_pos i.time_le
+  simpa [kochLammL1Scale, kochLammCylinderMeasure] using
+    h.local_l1 i.center i.radius i.radius_pos i.time_le
 
 omit [NormedSpace ℝ F] [CompleteSpace F] [Fact (1 ≤ kochLammQ V)] in
 lemma sourceZeroLqMem (h : KochLammSourceZero T A₁ A_q f) (i : KochLammCylinderIndex V T) :
     MemLp f (kochLammQ V) (kochLammLateMeasure i) := by
   apply kochLammScaleMemLp (s := kochLammLqScaleR (V := V) i.radius)
     (A := A_q) (kochLammLqScaleR_pos i.radius_pos)
-  · exact h.ae.mono_measure Measure.restrict_le_self
-  · simpa [kochLammLqScale, kochLammLateMeasure] using
-      h.late_lq i.center i.radius i.radius_pos i.time_le
+  simpa [kochLammLqScale, kochLammLateMeasure] using
+    h.late_lq i.center i.radius i.radius_pos i.time_le
 
 def kochLammSourceZeroL1Family (h : KochLammSourceZero T A₁ A_q f) :
     KochLammL1Family (V := V) T F :=
@@ -155,18 +152,16 @@ lemma sourceOneL2Mem (h : KochLammSourceOne T A₂ Aₚ f) (i : KochLammCylinder
     MemLp f 2 (kochLammCylinderMeasure i) := by
   apply kochLammScaleMemLp (s := kochLammL2ScaleR (V := V) i.radius)
     (A := A₂) (kochLammL2ScaleR_pos i.radius_pos)
-  · exact h.ae.mono_measure Measure.restrict_le_self
-  · simpa [kochLammL2Scale, kochLammCylinderMeasure] using
-      h.local_l2 i.center i.radius i.radius_pos i.time_le
+  simpa [kochLammL2Scale, kochLammCylinderMeasure] using
+    h.local_l2 i.center i.radius i.radius_pos i.time_le
 
 omit [NormedSpace ℝ F] [CompleteSpace F] [Fact (1 ≤ kochLammP V)] in
 lemma sourceOneLpMem (h : KochLammSourceOne T A₂ Aₚ f) (i : KochLammCylinderIndex V T) :
     MemLp f (kochLammP V) (kochLammLateMeasure i) := by
   apply kochLammScaleMemLp (s := kochLammLpScaleR (V := V) i.radius)
     (A := Aₚ) (kochLammLpScaleR_pos i.radius_pos)
-  · exact h.ae.mono_measure Measure.restrict_le_self
-  · simpa [kochLammLpScale, kochLammLateMeasure] using
-      h.late_lp i.center i.radius i.radius_pos i.time_le
+  simpa [kochLammLpScale, kochLammLateMeasure] using
+    h.late_lp i.center i.radius i.radius_pos i.time_le
 
 def kochLammSourceOneL2Family (h : KochLammSourceOne T A₂ Aₚ f) :
     KochLammL2Family (V := V) T F :=
@@ -212,9 +207,8 @@ lemma pathL2Mem (h : KochLammPath T A₀ A₂ Aₚ u d) (i : KochLammCylinderInd
     MemLp d 2 (kochLammCylinderMeasure i) := by
   apply kochLammScaleMemLp (s := kochLammL2ScaleR (V := V) i.radius)
     (A := A₂) (kochLammL2ScaleR_pos i.radius_pos)
-  · exact h.grad_ae.mono_measure Measure.restrict_le_self
-  · simpa [kochLammL2Scale, kochLammCylinderMeasure] using
-      h.grad_l2 i.center i.radius i.radius_pos i.time_le
+  simpa [kochLammL2Scale, kochLammCylinderMeasure] using
+    h.grad_l2 i.center i.radius i.radius_pos i.time_le
 
 omit [NormedSpace ℝ F] [CompleteSpace F] [NormedSpace ℝ G] [CompleteSpace G]
     [Fact (1 ≤ kochLammP V)] in
@@ -222,9 +216,8 @@ lemma pathLpMem (h : KochLammPath T A₀ A₂ Aₚ u d) (i : KochLammCylinderInd
     MemLp d (kochLammP V) (kochLammLateMeasure i) := by
   apply kochLammScaleMemLp (s := kochLammLpScaleR (V := V) i.radius)
     (A := Aₚ) (kochLammLpScaleR_pos i.radius_pos)
-  · exact h.grad_ae.mono_measure Measure.restrict_le_self
-  · simpa [kochLammLpScale, kochLammLateMeasure] using
-      h.grad_lp i.center i.radius i.radius_pos i.time_le
+  simpa [kochLammLpScale, kochLammLateMeasure] using
+    h.grad_lp i.center i.radius i.radius_pos i.time_le
 
 def kochLammPathL2Family (h : KochLammPath T A₀ A₂ Aₚ u d) :
     KochLammL2Family (V := V) T G :=

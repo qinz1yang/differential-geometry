@@ -20,18 +20,18 @@ theorem rfs_collapse_degree_of_localTerminalEDistComparison
     (Kc : (c' : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c')
     (a : IntegralHomology (G.Parent c).Carrier 3) (b : IntegralHomology (G.Child c).Carrier 3)
     {k : ℤ} (hcollapse : G.LocalTerminalEDistComparison Kc)
-    (hmap : integralHomologyMap 3 (Kc c).rfs_whole_parent_map a = k • b)
+    (hmap : integralHomologyMap 3 (Kc c).canonicalWholeParentMap a = k • b)
     (hgen : ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-      φ (integralHomologyMap 3 (Kc c).rfs_whole_parent_map a) = 1)
+      φ (integralHomologyMap 3 (Kc c).canonicalWholeParentMap a) = 1)
     (hk : 0 < k) :
-    (Kc c).LocalTerminalLengthControl (Kc c).rfs_whole_parent_map ∧
+    (Kc c).LocalTerminalLengthControl (Kc c).canonicalWholeParentMap ∧
     (∀ x ∉ (Kc c).support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      (Kc c).rfs_whole_parent_map y = (Kc c).rfs_whole_parent_map x) ∧
+      (Kc c).canonicalWholeParentMap y = (Kc c).canonicalWholeParentMap x) ∧
     (∀ x : G.transition.ChildCore c,
-      (Kc c).rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+      (Kc c).canonicalWholeParentMap (G.transition.childCoreIntoParent c x) =
         G.transition.childCoreInclusion c x) ∧
-    integralHomologyMap 3 (Kc c).rfs_whole_parent_map a = b ∧
-    Function.Surjective (Kc c).rfs_whole_parent_map :=
+    integralHomologyMap 3 (Kc c).canonicalWholeParentMap a = b ∧
+    Function.Surjective (Kc c).canonicalWholeParentMap :=
   (Kc c).rfs_collapse_degree_of_localTerminalDistanceControl_and_class_generator a b
     (localTerminalDistanceControl_of_localTerminalEDistComparison Kc hcollapse) hmap hgen hk
 

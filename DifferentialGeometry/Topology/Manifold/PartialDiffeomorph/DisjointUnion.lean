@@ -21,13 +21,13 @@ noncomputable def disjointUnion (e f : PartialDiffeomorph I J M N n)
   refine { e.toOpenPartialHomeomorph.disjointUnion f.toOpenPartialHomeomorph hs ht with
     contMDiffOn_toFun := ?_, contMDiffOn_invFun := ?_ }
   · apply ContMDiffOn.union_of_isOpen ?_ ?_ e.open_source f.open_source
-    · exact e.contMDiffOn.congr (fun x hx => if_pos hx)
+    · exact e.contMDiffOn.congr (fun x hx => ite_eq_left hx)
     · exact f.contMDiffOn.congr (fun x hx =>
-        if_neg (fun he => disjoint_left.mp hs he hx))
+        ite_eq_right (fun he => disjoint_left.mp hs he hx))
   · apply ContMDiffOn.union_of_isOpen ?_ ?_ e.open_target f.open_target
-    · exact e.symm.contMDiffOn.congr (fun x hx => if_pos hx)
+    · exact e.symm.contMDiffOn.congr (fun x hx => ite_eq_left hx)
     · exact f.symm.contMDiffOn.congr (fun x hx =>
-        if_neg (fun he => disjoint_left.mp ht he hx))
+        ite_eq_right (fun he => disjoint_left.mp ht he hx))
 
 @[simp] theorem disjointUnion_source (e f : PartialDiffeomorph I J M N n)
     (hs : Disjoint e.source f.source) (ht : Disjoint e.target f.target) :
@@ -41,24 +41,24 @@ theorem disjointUnion_apply_of_mem_left (e f : PartialDiffeomorph I J M N n)
     (hs : Disjoint e.source f.source) (ht : Disjoint e.target f.target)
     {x : M} (hx : x ∈ e.source) : e.disjointUnion f hs ht x = e x := by
   classical
-  exact if_pos hx
+  exact ite_eq_left hx
 
 theorem disjointUnion_apply_of_mem_right (e f : PartialDiffeomorph I J M N n)
     (hs : Disjoint e.source f.source) (ht : Disjoint e.target f.target)
     {x : M} (hx : x ∈ f.source) : e.disjointUnion f hs ht x = f x := by
   classical
-  exact if_neg (fun he => disjoint_left.mp hs he hx)
+  exact ite_eq_right (fun he => disjoint_left.mp hs he hx)
 
 theorem disjointUnion_symm_apply_of_mem_left (e f : PartialDiffeomorph I J M N n)
     (hs : Disjoint e.source f.source) (ht : Disjoint e.target f.target)
     {x : N} (hx : x ∈ e.target) : (e.disjointUnion f hs ht).symm x = e.symm x := by
   classical
-  exact if_pos hx
+  exact ite_eq_left hx
 
 theorem disjointUnion_symm_apply_of_mem_right (e f : PartialDiffeomorph I J M N n)
     (hs : Disjoint e.source f.source) (ht : Disjoint e.target f.target)
     {x : N} (hx : x ∈ f.target) : (e.disjointUnion f hs ht).symm x = f.symm x := by
   classical
-  exact if_neg (fun he => disjoint_left.mp ht he hx)
+  exact ite_eq_right (fun he => disjoint_left.mp ht he hx)
 
 end PartialDiffeomorph

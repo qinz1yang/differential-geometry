@@ -12,13 +12,14 @@ open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Elliptic
-  (integrable_riemannianFiberNormSq_toSection riemannianFiberNormSq)
+  (integrable_riemannianFiberNormSq_toSection)
 open DifferentialGeometry.Analysis.Sobolev
   (iteratedCovGrad iteratedCovGrad_succ iteratedCovGrad_zero
    normSq_le_integral_of_pointwise_fiberNormSq_le_rs

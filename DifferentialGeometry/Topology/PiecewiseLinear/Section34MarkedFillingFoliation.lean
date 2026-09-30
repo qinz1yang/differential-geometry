@@ -50,7 +50,7 @@ theorem exists_section34_marked_filling_longitude_family
       (γ : (boundaryComplex 2 B).space → ℝ → E × ℝ),
       IsCylindricalDiagram g' B.space R.space ∧
       (∀ z ∈ B.space, g' (z, 0) = g' (z, 1)) ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (g' '' (B.space ×ˢ {0})) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g' '' (B.space ×ˢ {0})) ∧
       q '' stdSimplexBoundary 2 ⊆ frontier R.space ∧ Function.Injective a ∧
       (u ∘ g' ∘ γ (a 0)) '' Icc 0 1 = Pg e i ∧
       (u ∘ g' ∘ γ (a 1)) '' Icc 0 1 = Pg e j ∧

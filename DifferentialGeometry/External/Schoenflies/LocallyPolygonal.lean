@@ -249,17 +249,17 @@ theorem openSquare_disjoint_sideHalfPlane {c : Plane} {r s : ℝ} {p : Plane} {i
   rw [abs_lt] at hlt
   cases b
   · exact absurd (show x i ≤ c i - r from hmem) (by
-      simp only [sideGap, cond_false] at hs; linarith [hlt.1])
+      simp only [sideGap, Bool.cond_false] at hs; linarith [hlt.1])
   · exact absurd (show c i + r ≤ x i from hmem) (by
-      simp only [sideGap, cond_true] at hs; linarith [hlt.2])
+      simp only [sideGap, Bool.cond_true] at hs; linarith [hlt.2])
 
 /-- If there is no room between `p` and a half-plane, `p` is in it. -/
 theorem mem_sideHalfPlane_of_sideGap_nonpos {c : Plane} {r : ℝ} {p : Plane} {i : Fin 2}
     {b : Bool} (h : sideGap c r p i b ≤ 0) : p ∈ sideHalfPlane c r i b := by
   cases b
-  · simp only [sideGap, cond_false] at h
+  · simp only [sideGap, Bool.cond_false] at h
     exact show p i ≤ c i - r by linarith
-  · simp only [sideGap, cond_true] at h
+  · simp only [sideGap, Bool.cond_true] at h
     exact show c i + r ≤ p i by linarith
 
 /-- Each piece the sides of one square cut a small square into is an axis-parallel rectangle —

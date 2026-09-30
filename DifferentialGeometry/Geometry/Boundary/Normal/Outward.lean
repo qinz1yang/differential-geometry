@@ -384,7 +384,7 @@ lemma outwardNormal_eq :
       (Real.sqrt (g.inner (x : M) (outwardDir (M := M) g x)
         (outwardDir (M := M) g x)))⁻¹ • outwardDir (M := M) g x := by
   unfold outwardNormal
-  rw [dif_pos (g_inner_outwardDir_pos (M := M) g x)]
+  rw [dite_eq_left (g_inner_outwardDir_pos (M := M) g x)]
 omit [FiniteDimensional ℝ E] in
 theorem outwardNormal_mem_normalSubspace :
     outwardNormal (M := M) g x ∈ normalSubspace (M := M) g x := by
@@ -635,13 +635,13 @@ theorem outwardNormalAt_inner_eq_neg_sqrt_mul_of_sub_mem_range
   by_cases hq : 0 < q
   · have hs : Real.sqrt q ≠ 0 := (Real.sqrt_pos.mpr hq).ne'
     change g.inner (x : M) (outwardNormalAt g alpha x) v = -Real.sqrt q * c
-    rw [outwardNormalAt, dif_pos hq, map_smul, smul_apply, smul_eq_mul, hinner]
+    rw [outwardNormalAt, dite_eq_left hq, map_smul, smul_apply, smul_eq_mul, hinner]
     change (Real.sqrt q)⁻¹ * (-q * c) = -Real.sqrt q * c
     field_simp
     rw [Real.sq_sqrt hq.le]
   · have hs : Real.sqrt q = 0 := Real.sqrt_eq_zero_of_nonpos (le_of_not_gt hq)
     change g.inner (x : M) (outwardNormalAt g alpha x) v = -Real.sqrt q * c
-    rw [outwardNormalAt, dif_neg hq, map_zero, zero_apply, hs, neg_zero, zero_mul]
+    rw [outwardNormalAt, dite_eq_right hq, map_zero, zero_apply, hs, neg_zero, zero_mul]
 
 omit [FiniteDimensional ℝ E] in
 theorem outwardNormal_inner_eq_neg_sqrt_mul_of_sub_mem_range
@@ -762,7 +762,7 @@ private lemma boundaryFlatCharted_contMDiffAt
   let : NormedSpace ℝ (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ) :=
     ContinuousLinearMap.toNormedSpace
   let (x : BoundaryManifold I M) : ContinuousAdd (TangentSpace hI.boundaryI x →L[ℝ] ℝ) :=
-    (ContinuousLinearMap.topologicalAddGroup (𝕜₁ := ℝ) (𝕜₂ := ℝ)).toContinuousAdd
+    (ContinuousLinearMap.isTopologicalAddGroup (𝕜₁ := ℝ) (𝕜₂ := ℝ)).toContinuousAdd
   have h_section := inducedMetricInner_contMDiff (g := g)
   have h_x₀ : x₀ ∈ (trivializationAt (hI.boundaryE →L[ℝ] hI.boundaryE →L[ℝ] ℝ)
       (fun y : BoundaryManifold I M =>
@@ -1478,7 +1478,7 @@ theorem outwardNormalAt_section_contMDiffAt
         (Real.sqrt (g.inner (b : M) (outwardDirAt (M := M) g α₀ b)
             (outwardDirAt (M := M) g α₀ b)))⁻¹ • outwardDirAt (M := M) g α₀ b := by
       unfold outwardNormalAt
-      rw [dif_pos hb_q_pos]
+      rw [dite_eq_left hb_q_pos]
     rw [h_norm_formula]
     rw [show (T_amb ⟨(b : M), (Real.sqrt (g.inner (b : M) (outwardDirAt (M := M) g α₀ b)
           (outwardDirAt (M := M) g α₀ b)))⁻¹ • outwardDirAt (M := M) g α₀ b⟩).2 =
@@ -1671,7 +1671,7 @@ private lemma outwardNormalAt_norm_one_of_transverse
   have h_normal_eq : outwardNormalAt (M := M) g α y =
       (Real.sqrt q)⁻¹ • outwardDirAt (M := M) g α y := by
     unfold outwardNormalAt
-    rw [dif_pos hq_pos]
+    rw [dite_eq_left hq_pos]
   rw [h_normal_eq]
   have h1 : g.inner (y : M) ((Real.sqrt q)⁻¹ • outwardDirAt (M := M) g α y)
           ((Real.sqrt q)⁻¹ • outwardDirAt (M := M) g α y) =
@@ -1702,10 +1702,10 @@ private lemma outwardNormalAt_mem_normalSubspace
   classical
   by_cases h_pos : 0 < g.inner (y : M) (outwardDirAt (M := M) g α y)
       (outwardDirAt (M := M) g α y)
-  · rw [dif_pos h_pos]
+  · rw [dite_eq_left h_pos]
     exact (normalSubspace (M := M) g y).smul_mem _
       (outwardDirAt_mem_normalSubspace (M := M) g α y)
-  · rw [dif_neg h_pos]
+  · rw [dite_eq_right h_pos]
     exact (normalSubspace (M := M) g y).zero_mem
 omit [FiniteDimensional ℝ E] in
 private lemma outwardNormalAt_inner_inwardCoordAt_neg_of_transverse
@@ -1720,7 +1720,7 @@ private lemma outwardNormalAt_inner_inwardCoordAt_neg_of_transverse
       (Real.sqrt (g.inner (y : M) (outwardDirAt (M := M) g α y)
           (outwardDirAt (M := M) g α y)))⁻¹ • outwardDirAt (M := M) g α y := by
     unfold outwardNormalAt
-    rw [dif_pos hq_pos]
+    rw [dite_eq_left hq_pos]
   rw [h_normal_eq]
   rw [ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul]
   have hsq_pos : 0 < Real.sqrt (g.inner (y : M) (outwardDirAt (M := M) g α y)
@@ -1829,11 +1829,11 @@ theorem outwardNormalAt_chart_invariance_of_orientation
       rw [h0_α₁]; simp
     have h_normal_α₀ : outwardNormalAt (M := M) g α₀ y = 0 := by
       unfold outwardNormalAt
-      rw [dif_neg]
+      rw [dite_eq_right]
       rw [h_q_α₀]; exact lt_irrefl 0
     have h_normal_α₁ : outwardNormalAt (M := M) g α₁ y = 0 := by
       unfold outwardNormalAt
-      rw [dif_neg]
+      rw [dite_eq_right]
       rw [h_q_α₁]; exact lt_irrefl 0
     rw [h_normal_α₀, h_normal_α₁]
   · have h_trans₁_ne : inwardCoordAt (M := M) α₁ y ∉ Set.range

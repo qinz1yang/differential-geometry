@@ -105,7 +105,8 @@ theorem band_ediam_le (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon) :
     Metric.ediam (W.embedding '' {x : spatialNeckBuffer epsilon | |x.val.2| ≤ 5 * Real.pi}) ≤
       ENNReal.ofReal (11 * Real.pi * spatialNeckScale h p) := by
-  apply Metric.ediam_image_le_iff.mpr
+  apply (@Metric.ediam_image_le_iff _ N
+    PseudoEMetricSpace.toUniformSpace.toTopologicalSpace inferInstance _ _ _).mpr
   intro x hx y hy
   rw [IsRiemannianManifold.out (I := I),
     ← riemannianEDistOf_eq_riemannianEDist h hEnorm]
@@ -116,7 +117,8 @@ theorem slice_ediam_le (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon) (s : ℝ) (hs : |s| ≤ 5 * Real.pi) :
     Metric.ediam (W.embedding '' {x : spatialNeckBuffer epsilon | x.val.2 = s}) ≤
       ENNReal.ofReal (13 / 12 * spatialNeckScale h p * Real.pi) := by
-  apply Metric.ediam_image_le_iff.mpr
+  apply (@Metric.ediam_image_le_iff _ N
+    PseudoEMetricSpace.toUniformSpace.toTopologicalSpace inferInstance _ _ _).mpr
   intro x hx y hy
   have hxb : |x.val.2| ≤ 5 * Real.pi := by rw [hx]; exact hs
   have hyb : |y.val.2| ≤ 5 * Real.pi := by rw [hy]; exact hs

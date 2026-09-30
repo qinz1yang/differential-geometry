@@ -69,7 +69,7 @@ theorem riemannSec_tensor0SCov_zero_eq_zero
     have h2le : (2 : WithTop ℕ∞) ≤ ∞ := by
       have h1 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
         exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-      simpa using h1
+      exact h1
     exact (hsm.contMDiffAt).of_le h2le
   have hint : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E) :=
     Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless

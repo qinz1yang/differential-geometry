@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricDeriv
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.Norm
 
 set_option autoImplicit false
 
@@ -12,117 +12,6 @@ namespace Tensor0SBundle
 open scoped BigOperators
 
 variable {Idx : Type*} [Fintype Idx]
-
-def compNormSqMulti {r : ℕ} (A : (Fin r → Idx) → Real) : Real :=
-  ∑ m : Fin r → Idx, (A m) ^ 2
-
-theorem compNormSqMulti_nonneg {r : ℕ} (A : (Fin r → Idx) → Real) :
-    0 ≤ compNormSqMulti A := by
-  unfold compNormSqMulti
-  exact Finset.sum_nonneg fun m _ => sq_nonneg _
-
-theorem sq_le_compNormSqMulti {r : ℕ}
-    (A : (Fin r → Idx) → Real) (m : Fin r → Idx) :
-    (A m) ^ 2 ≤ compNormSqMulti A := by
-  classical
-  unfold compNormSqMulti
-  exact Finset.single_le_sum (f := fun m' : Fin r → Idx => (A m') ^ 2)
-    (fun i _ => sq_nonneg _) (Finset.mem_univ m)
-
-theorem abs_le_sqrt_compNormSqMulti {r : ℕ}
-    (A : (Fin r → Idx) → Real) (m : Fin r → Idx) :
-    |A m| ≤ Real.sqrt (compNormSqMulti A) := by
-  rw [← Real.sqrt_sq_eq_abs]
-  exact Real.sqrt_le_sqrt (sq_le_compNormSqMulti A m)
-
-theorem abs_bilinear_sum_le
-    {ι κ : Type*} [Fintype ι] [Fintype κ]
-    (F : ι → κ → Real) (X : ι → Real) (Y : κ → Real)
-    (C : Real) (hC : 0 ≤ C)
-    (hF : ∀ i j, |F i j| ≤ C) :
-    |∑ i, ∑ j, F i j * X i * Y j| ≤
-      C / 2 *
-        ((Fintype.card κ : Real) * (∑ i, (X i) ^ 2) +
-          (Fintype.card ι : Real) * (∑ j, (Y j) ^ 2)) := by
-  classical
-  calc
-    |∑ i, ∑ j, F i j * X i * Y j| ≤
-        ∑ i, |∑ j, F i j * X i * Y j| :=
-      Finset.abs_sum_le_sum_abs _ _
-    _ ≤ ∑ i, ∑ j, |F i j * X i * Y j| := by
-      exact Finset.sum_le_sum fun i _ => Finset.abs_sum_le_sum_abs _ _
-    _ ≤ ∑ i, ∑ j, C / 2 * ((X i) ^ 2 + (Y j) ^ 2) := by
-      refine Finset.sum_le_sum fun i _ => ?_
-      refine Finset.sum_le_sum fun j _ => ?_
-      rw [abs_mul, abs_mul]
-      have hxy : 2 * |X i| * |Y j| ≤ (X i) ^ 2 + (Y j) ^ 2 := by
-        simpa only [sq_abs] using two_mul_le_add_sq |X i| |Y j|
-      have hnonneg : 0 ≤ |X i| * |Y j| :=
-        mul_nonneg (abs_nonneg _) (abs_nonneg _)
-      have hcoeff : |F i j| * (|X i| * |Y j|) ≤
-          C * (|X i| * |Y j|) :=
-        mul_le_mul_of_nonneg_right (hF i j) hnonneg
-      calc
-        |F i j| * |X i| * |Y j| =
-            |F i j| * (|X i| * |Y j|) := by ring
-        _ ≤ C * (|X i| * |Y j|) := hcoeff
-        _ ≤ C / 2 * ((X i) ^ 2 + (Y j) ^ 2) := by
-          nlinarith
-    _ = C / 2 *
-        ((Fintype.card κ : Real) * (∑ i, (X i) ^ 2) +
-          (Fintype.card ι : Real) * (∑ j, (Y j) ^ 2)) := by
-      simp only [mul_add, Finset.sum_add_distrib, Finset.sum_const,
-        Finset.card_univ, nsmul_eq_mul]
-      have hX :
-          (∑ i, C / 2 * (X i) ^ 2) =
-            C / 2 * (∑ i, (X i) ^ 2) := by
-        rw [Finset.mul_sum]
-      have hY :
-          (∑ j, C / 2 * (Y j) ^ 2) =
-            C / 2 * (∑ j, (Y j) ^ 2) := by
-        rw [Finset.mul_sum]
-      have hXcard :
-          (∑ i, (Fintype.card κ : Real) *
-              (C / 2 * (X i) ^ 2)) =
-            (Fintype.card κ : Real) *
-              (∑ i, C / 2 * (X i) ^ 2) := by
-        rw [Finset.mul_sum]
-      rw [hXcard, hX, hY]
-      ring
-
-theorem abs_quadratic_sum_le
-    {ι : Type*} [Fintype ι]
-    (F : ι → ι → Real) (X : ι → Real)
-    (C : Real) (hC : 0 ≤ C)
-    (hF : ∀ i j, |F i j| ≤ C) :
-    |∑ i, ∑ j, F i j * X i * X j| ≤
-      C * (Fintype.card ι : Real) * (∑ i, (X i) ^ 2) := by
-  have h := abs_bilinear_sum_le F X X C hC hF
-  convert h using 1
-  ring
-
-theorem abs_sum_le_card_mul_of_bound
-    {ι : Type*} [Fintype ι]
-    (f : ι → Real) (C : Real)
-    (h : ∀ i, |f i| ≤ C) :
-    |∑ i, f i| ≤ (Fintype.card ι : Real) * C := by
-  classical
-  calc
-    |∑ i, f i| ≤ ∑ i, |f i| := Finset.abs_sum_le_sum_abs _ _
-    _ ≤ ∑ _i : ι, C := Finset.sum_le_sum fun i _ => h i
-    _ = (Fintype.card ι : Real) * C := by
-      simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-
-theorem abs_double_sum_le_card_mul_card_mul_of_bound
-    {ι κ : Type*} [Fintype ι] [Fintype κ]
-    (f : ι → κ → Real) (C : Real)
-    (h : ∀ i j, |f i j| ≤ C) :
-    |∑ i, ∑ j, f i j| ≤
-      (Fintype.card ι : Real) * (Fintype.card κ : Real) * C := by
-  have houter := abs_sum_le_card_mul_of_bound
-    (fun i => ∑ j, f i j) ((Fintype.card κ : Real) * C)
-    (fun i => abs_sum_le_card_mul_of_bound (f i) C (h i))
-  simpa only [mul_assoc] using houter
 
 theorem sum_delta_erase_slot_eq [DecidableEq Idx] {s : ℕ}
     (I0 : Fin s → Idx) (b : Fin s) (G : (Fin s → Idx) → Real) :
@@ -171,7 +60,7 @@ theorem sum_delta_erase_slot_eq [DecidableEq Idx] {s : ℕ}
   rw [identityInvMetric, diagonalInvMetric_eq_zero_of_ne hdis]
 
 
-private def ricStarArrayUpdateEquiv {s : ℕ}
+private def slotUpdateEquiv {s : ℕ}
     (b : Fin s) : ((Fin s → Idx) × Idx) ≃ ((Fin s → Idx) × Idx) where
   toFun Ie := (Function.update Ie.1 b Ie.2, Ie.1 b)
   invFun Ie := (Function.update Ie.1 b Ie.2, Ie.1 b)
@@ -184,13 +73,13 @@ private def ricStarArrayUpdateEquiv {s : ℕ}
     rcases Ie with ⟨I0, e⟩
     ext q <;> simp
 
-theorem ricStarArray_pairing_self_adjoint {s : ℕ}
+theorem covariantEndomorphismActionArray_pairing_self_adjoint {s : ℕ}
     (ric : Idx → Idx → Real) (cA cB : (Fin s → Idx) → Real)
     (hric : ∀ i j, ric i j = ric j i) :
-    (∑ I0 : Fin s → Idx, ricStarArray ric cA I0 * cB I0) =
-      ∑ I0 : Fin s → Idx, cA I0 * ricStarArray ric cB I0 := by
+    (∑ I0 : Fin s → Idx, covariantEndomorphismActionArray ric cA I0 * cB I0) =
+      ∑ I0 : Fin s → Idx, cA I0 * covariantEndomorphismActionArray ric cB I0 := by
   classical
-  unfold ricStarArray
+  unfold covariantEndomorphismActionArray
   simp_rw [Finset.sum_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   conv_rhs => rw [Finset.sum_comm]
@@ -215,7 +104,7 @@ theorem ricStarArray_pairing_self_adjoint {s : ℕ}
         ∑ Ie, G Ie := by
     rw [Fintype.sum_prod_type]
   rw [hleft, hright]
-  refine Fintype.sum_equiv (ricStarArrayUpdateEquiv (Idx := Idx) b) F G ?_
+  refine Fintype.sum_equiv (slotUpdateEquiv (Idx := Idx) b) F G ?_
   intro Ie
   rcases Ie with ⟨I0, e⟩
   have hupdate :
@@ -233,14 +122,14 @@ theorem ricStarArray_pairing_self_adjoint {s : ℕ}
   rw [Function.update_self, hric, hupdate]
   ring
 
-theorem ricReactionContract_eq_two_mul_coordContract_ricStarArray_raise {s : ℕ}
+theorem metricVariationContract_eq_coordContract {s : ℕ}
     (gInv ric : Idx → Idx → Real)
     (cA cB : (Fin s → Idx) → Real) :
-    ricReactionContract gInv ric cA cB =
+    metricVariationContract gInv ric cA cB =
       2 * coordContract gInv cA
-        (ricStarArray (fun i e => ∑ q : Idx, gInv e q * ric i q) cB) := by
+        (covariantEndomorphismActionArray (fun i e => ∑ q : Idx, gInv e q * ric i q) cB) := by
   classical
-  unfold ricReactionContract coordContract ricStarArray
+  unfold metricVariationContract coordContract covariantEndomorphismActionArray
   congr 1
   have hslot (I0 : Fin s → Idx) (b : Fin s) :
       (∑ J0 : Fin s → Idx,
@@ -286,7 +175,7 @@ theorem ricReactionContract_eq_two_mul_coordContract_ricStarArray_raise {s : ℕ
       refine Finset.sum_congr rfl fun J0 _ => ?_
       rw [Finset.mul_sum, Finset.sum_mul, Finset.sum_mul]
     rw [hG, hF]
-    exact (Fintype.sum_equiv (ricStarArrayUpdateEquiv (Idx := Idx) b) F G (fun Je => by
+    exact (Fintype.sum_equiv (slotUpdateEquiv (Idx := Idx) b) F G (fun Je => by
       rcases Je with ⟨J0, e⟩
       change
         (∏ a : Fin s, gInv (I0 a) (J0 a)) * cA I0 *
@@ -349,15 +238,15 @@ theorem ricReactionContract_eq_two_mul_coordContract_ricStarArray_raise {s : ℕ
         refine Finset.sum_congr rfl fun J0 _ => ?_
         rw [Finset.mul_sum]
 
-theorem ricReactionContract_symm {s : ℕ}
+theorem metricVariationContract_symm {s : ℕ}
     (gInv ric : Idx → Idx → Real)
     (cA cB : (Fin s → Idx) → Real)
     (hgInv : ∀ i j, gInv i j = gInv j i)
     (hric : ∀ i j, ric i j = ric j i) :
-    ricReactionContract gInv ric cA cB =
-      ricReactionContract gInv ric cB cA := by
+    metricVariationContract gInv ric cA cB =
+      metricVariationContract gInv ric cB cA := by
   classical
-  unfold ricReactionContract
+  unfold metricVariationContract
   congr 1
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun I0 _ => ?_
@@ -396,12 +285,12 @@ theorem ricReactionContract_symm {s : ℕ}
 
 
 
-theorem ricReactionContract_delta_eq_compContract [DecidableEq Idx] {s : ℕ}
+theorem metricVariationContract_identityInvMetric [DecidableEq Idx] {s : ℕ}
     (ric : Idx → Idx → Real) (cA cB : (Fin s → Idx) → Real) :
-    ricReactionContract (identityInvMetric (Idx := Idx)) ric cA cB =
-      2 * ∑ I0 : Fin s → Idx, cA I0 * ricStarArray ric cB I0 := by
+    metricVariationContract (identityInvMetric (Idx := Idx)) ric cA cB =
+      2 * ∑ I0 : Fin s → Idx, cA I0 * covariantEndomorphismActionArray ric cB I0 := by
   classical
-  unfold ricReactionContract ricStarArray
+  unfold metricVariationContract covariantEndomorphismActionArray
   congr 1
   refine Finset.sum_congr rfl fun I0 _ => ?_
   have hric : ∀ (J0 : Fin s → Idx) (b : Fin s),
@@ -478,7 +367,7 @@ theorem ricReactionContract_delta_eq_compContract [DecidableEq Idx] {s : ℕ}
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [Function.update_self]
 
-theorem hasDerivWithinAt_inner0S_ricciFlow_orthonormal
+theorem hasDerivWithinAt_inner0S_of_metric_variation_orthonormal
     [DecidableEq Idx]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     [FiniteDimensional Real E]
@@ -506,7 +395,7 @@ theorem hasDerivWithinAt_inner0S_ricciFlow_orthonormal
       (fun r : Real => inner0S (I := I) (g r) x s (A r) (B r))
       (2 * ∑ slots : Fin s -> Idx,
           tensor0SComponent (I := I) (A t) basis slots *
-            ricStarArray
+            covariantEndomorphismActionArray
               (fun i j => Q (fun a : Fin 2 =>
                 if a = 0 then basis i else basis j))
               (fun slots' => tensor0SComponent (I := I) (B t) basis slots')
@@ -532,7 +421,7 @@ theorem hasDerivWithinAt_inner0S_ricciFlow_orthonormal
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) u t := by
     have hfull : HasDerivAt (fun r : Real => gInv r i j) (gInvDt i j) t := by
       simpa only [gInv, gInvDt, ric] using
-        (basisInv_time (I := I) g (fun p q => (-2 : Real) * ric p q) basis
+        (hasDerivAt_basisInvMetric (I := I) g (fun p q => (-2 : Real) * ric p q) basis
           (fun p q => by simpa only [ric] using hg (basis p) (basis q)) i j)
     exact hfull.hasDerivWithinAt
   have hflow (i j : Idx) :
@@ -556,7 +445,7 @@ theorem hasDerivWithinAt_inner0S_ricciFlow_orthonormal
     simp only [gInvDt]
     rw [hterm, hfactor]
     ring
-  have hmain := hasDerivWithinAt_inner0S_ricciFlow
+  have hmain := hasDerivWithinAt_inner0S_of_metric_variation
     (I := I) g gInv gInvDt ric A B Adt Bdt Adot Bdot basis hinvAll hgInv
     (fun slots => hA (fun a => basis (slots a)))
     (fun slots => hB (fun a => basis (slots a)))
@@ -566,19 +455,19 @@ theorem hasDerivWithinAt_inner0S_ricciFlow_orthonormal
     metricInverseInBasis_identity_of_orthonormal (I := I) (g t) basis horth
   have hgInvId : gInv t = identityInvMetric (Idx := Idx) :=
     MetricInverseInBasis.unique (I := I) (g t) x basis _ _ (hinvAll t) hinvId
-  rw [hgInvId, ricReactionContract_delta_eq_compContract] at hmain
+  rw [hgInvId, metricVariationContract_identityInvMetric] at hmain
   simpa only [ric, Adt, Bdt] using hmain
 
-theorem abs_ricStarArray_le {s : ℕ}
+theorem abs_covariantEndomorphismActionArray_le {s : ℕ}
     (ric : Idx → Idx → Real) (cB : (Fin s → Idx) → Real)
     (Rbnd : Real) (hRbnd_nonneg : (0 : Real) ≤ Rbnd)
     (hRbnd : ∀ p q : Idx, |ric p q| ≤ Rbnd)
     (I0 : Fin s → Idx) :
-    |ricStarArray ric cB I0| ≤
+    |covariantEndomorphismActionArray ric cB I0| ≤
       (s : Real) * (Fintype.card Idx : Real) * Rbnd *
         Real.sqrt (compNormSqMulti cB) := by
   classical
-  unfold ricStarArray
+  unfold covariantEndomorphismActionArray
   have hstep :
       |∑ b : Fin s, ∑ e : Idx, ric (I0 b) e * cB (Function.update I0 b e)| ≤
         ∑ b : Fin s, ∑ e : Idx, Rbnd * Real.sqrt (compNormSqMulti cB) := by

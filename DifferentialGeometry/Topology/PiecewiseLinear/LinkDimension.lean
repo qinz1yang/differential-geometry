@@ -11,9 +11,12 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-theorem stdSimplex_fin_one_subsingleton : (stdSimplex ℝ (Fin 1)).Subsingleton := by
-  rw [stdSimplex_unique]
-  exact subsingleton_singleton
+theorem stdSimplex_fin_one_subsingleton : (Convexity.StdSimplex.coordinateSet ℝ (Fin 1)).Subsingleton := by
+  intro x hx y hy
+  exact congrArg Subtype.val ((Convexity.StdSimplex.coordinateEquiv ℝ (Fin 1)).symm.injective
+    (Subsingleton.elim
+      ((Convexity.StdSimplex.coordinateEquiv ℝ (Fin 1)).symm ⟨x, hx⟩)
+      ((Convexity.StdSimplex.coordinateEquiv ℝ (Fin 1)).symm ⟨y, hy⟩)))
 
 theorem stdSimplexBoundary_one_finite : (stdSimplexBoundary 1).Finite := by
   have hfin2 : ∀ k : Fin 2, k = 0 ∨ k = 1 := by decide
@@ -28,11 +31,11 @@ theorem stdSimplexBoundary_one_finite : (stdSimplexBoundary 1).Finite := by
     · refine Or.inr (funext fun j => ?_)
       rcases hfin2 j with rfl | rfl
       · simpa using hi
-      · rw [if_neg (by decide : ¬ (1 : Fin 2) = 0)]
+      · rw [ite_eq_right (by decide : ¬ (1 : Fin 2) = 0)]
         linarith
     · refine Or.inl (funext fun j => ?_)
       rcases hfin2 j with rfl | rfl
-      · rw [if_pos (rfl : (0 : Fin 2) = 0)]
+      · rw [ite_eq_left (rfl : (0 : Fin 2) = 0)]
         linarith
       · simpa using hi
   exact ((finite_singleton _).insert _).subset hsub

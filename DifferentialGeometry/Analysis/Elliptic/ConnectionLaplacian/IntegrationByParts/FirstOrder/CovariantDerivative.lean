@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.MixedCompatibility
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.IntegrationByParts
+
+open DifferentialGeometry.TensorMetric (covariantTensorInnerPointwise tensorInnerPointwise)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

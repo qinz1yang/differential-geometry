@@ -20,7 +20,7 @@ private theorem exists_parametrization_compact_outerFace
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hKM : K.faces ⊆ M.faces)
     (hint : K.space ⊆ interior M.space) (o : Section34CompactOuterVertexIndex K K) :
     ∃ r : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (compactDualCutCell M K hKM (.outerFace o)) ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (compactDualCutCell M K hKM (.outerFace o)) ∧
       r '' stdSimplexBoundary 2 = compactDualCutCell M K hKM (.outerFace o) ∩
         (K.space ∪ ⋃ e : Section34CompactEdgeIndex K K, compactDualSplitDisk M K hKM e) := by
   let dNative : DecidableEq E3 := inferInstance
@@ -103,7 +103,7 @@ private theorem exists_parametrization_compact_outerArc
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hKM : K.faces ⊆ M.faces)
     (hint : K.space ⊆ interior M.space) (q : Section34CompactOuterEdgeIndex K K) :
     ∃ r : (Fin 2 → ℝ) → E3,
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 2)) (compactDualCutCell M K hKM (.outerArc q)) ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (compactDualCutCell M K hKM (.outerArc q)) ∧
       r '' stdSimplexBoundary 1 = compactDualCutCell M K hKM (.outerArc q) ∩ K.space := by
   let dNative : DecidableEq E3 := inferInstance
   let : DecidableEq E3 := Classical.decEq E3

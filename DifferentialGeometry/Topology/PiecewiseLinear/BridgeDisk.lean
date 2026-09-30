@@ -12,7 +12,7 @@ open Set
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "V2" => (Fin 3 → ℝ)
-local notation "Δ" => stdSimplex ℝ (Fin 3)
+local notation "Δ" => Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
 local notation "v0" => (![1, 0, 0] : V2)
 local notation "v1" => (![0, 1, 0] : V2)
 

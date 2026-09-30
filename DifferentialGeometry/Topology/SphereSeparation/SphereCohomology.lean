@@ -97,11 +97,11 @@ noncomputable def singularSimplexSumEquiv
     (X Y : TopCat) [Inhabited X] [Inhabited Y] (n : SimplexCategoryᵒᵖ) :
     (TopCat.toSSet.obj (TopCat.of (X ⊕ Y))).obj n ≃
       (TopCat.toSSet.obj X).obj n ⊕ (TopCat.toSSet.obj Y).obj n := by
-  letI : Inhabited (stdSimplex ℝ (Fin (n.unop.len + 1))) :=
-    ⟨stdSimplex.vertex ⟨0, Nat.zero_lt_succ _⟩⟩
+  letI : Inhabited (Convexity.StdSimplex ℝ (Fin (n.unop.len + 1))) :=
+    ⟨Convexity.StdSimplex.single ⟨0, Nat.zero_lt_succ _⟩⟩
   exact (TopCat.toSSetObjEquiv (TopCat.of (X ⊕ Y)) n).trans
     ((continuousMapSumEquiv
-      (stdSimplex ℝ (Fin (n.unop.len + 1))) X Y).trans
+      (Convexity.StdSimplex ℝ (Fin (n.unop.len + 1))) X Y).trans
       (Equiv.sumCongr (TopCat.toSSetObjEquiv X n).symm
         (TopCat.toSSetObjEquiv Y n).symm))
 
@@ -183,7 +183,7 @@ private theorem ι_singularChainSumToBiprodDegree
           (TopCat.toSSet.obj Y).ιChainComplex y ≫
             (biprod.inr : integerSingularChainComplex Y ⟶
               integerSingularChainComplex X ⊞ integerSingularChainComplex Y).f n := by
-  rw [SSet.ιChainComplex, singularChainSumToBiprodDegree, Sigma.ι_desc]
+  rw [SSet.ιChainComplex, singularChainSumToBiprodDegree, Sigma.ι_comp_desc]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in

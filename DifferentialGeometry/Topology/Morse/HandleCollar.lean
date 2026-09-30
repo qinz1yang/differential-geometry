@@ -39,7 +39,7 @@ private def collarModelInverse {n k : ℕ} (hk : k ≤ n) [NeZero k]
 private theorem collarUnit_val {n k : ℕ} (hk : k ≤ n) [NeZero k]
     {y : MorseModel n} (hy : negPart hk y ≠ 0) :
     (collarUnit hk y).val = ‖negPart hk y‖⁻¹ • negPart hk y := by
-  simp only [collarUnit, dif_neg hy]
+  simp only [collarUnit, dite_eq_right hy]
 
 private theorem continuous_collarRadicand {n k : ℕ} (ε r : ℝ) :
     Continuous (collarRadicand (n := n) (k := k) ε r) := by
@@ -178,9 +178,9 @@ private theorem contDiff_collarRecombine {n k : ℕ} (hk : k ≤ n) :
   apply contDiff_pi.2
   intro i
   by_cases hi : i.val < k
-  · simp only [recombine, dif_pos hi]
+  · simp only [recombine, dite_eq_left hi]
     fun_prop
-  · simp only [recombine, dif_neg hi]
+  · simp only [recombine, dite_eq_right hi]
     fun_prop
 
 section Smooth

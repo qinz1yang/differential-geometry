@@ -132,7 +132,7 @@ private theorem hasDerivAt_integral_metric_energy
     have hh := HasDerivAt.sum (u := Finset.univ) (fun (j : ι) _ =>
       hasDerivAt_quadraticVariation A (u x) (φ x) (v j x) (w j x) t
         ((hA.contDiffAt (hV.mem_nhds (hbu x hx t ht).1)).differentiableAt (by norm_num)))
-    convert hh using 1 <;> try rfl
+    convert hh using 1; try rfl
     funext s
     simp only [f, U, W, Finset.sum_apply]
   have hnear : Metric.ball (0 : ℝ) δ ∈ 𝓝 (0 : ℝ) := Metric.ball_mem_nhds 0 hδ
@@ -354,15 +354,23 @@ theorem integrable_metric_weakGradientColumn_of_compact_range
   have hfm : MemLp f 2 (volume.restrict Ω) := MemLp.of_eval_piLp fun i => (hf i).memLp
   have hAm : Measurable (K.piecewise A 0) :=
     hA.measurable_piecewise continuous_zero.continuousOn hK.measurableSet
-  have hm : AEStronglyMeasurable (fun x => A (f x)) (volume.restrict Ω) := by
-    apply (hAm.comp_aemeasurable hfm.aemeasurable).aestronglyMeasurable.congr
-    filter_upwards [hfK] with x hx
-    exact Set.piecewise_eq_of_mem K A 0 hx
+  have hB : ∀ v w, AEStronglyMeasurable (fun x => A (f x) v w)
+      (volume.restrict Ω) := by
+    intro v w
+    have hAmf : AEMeasurable (fun x => A (f x)) (volume.restrict Ω) := by
+      refine hAm.comp_aemeasurable hfm.aemeasurable |>.congr ?_
+      filter_upwards [hfK] with x hx
+      exact Set.piecewise_eq_of_mem K A 0 hx
+    have hAv : AEMeasurable (fun x => A (f x) v) (volume.restrict Ω) :=
+      (ContinuousLinearMap.apply ℝ (F →L[ℝ] ℝ) v).continuous.measurable.comp_aemeasurable hAmf
+    exact ((ContinuousLinearMap.apply ℝ ℝ w).continuous.measurable.comp_aemeasurable hAv).aestronglyMeasurable
   have hn : ContinuousOn (fun y => ‖A y‖) K :=
     (@continuous_norm (F →L[ℝ] F →L[ℝ] ℝ) inferInstance).comp_continuousOn hA
   obtain ⟨C, hC⟩ := hK.bddAbove_image hn
-  exact integrable_quadratic_weakGradientColumn hf (fun x => A (f x)) hm
-    (hfK.mono fun x hx => hC (mem_image_of_mem _ hx)) j
+  exact integrable_bilinear_of_apply_aestronglyMeasurable (fun x => A (f x)) hB
+    (hfK.mono fun x hx => hC (mem_image_of_mem _ hx))
+    (MemLp.of_eval_piLp fun i => (hf i).weakGrad_component_memLp j)
+    (MemLp.of_eval_piLp fun i => (hf i).weakGrad_component_memLp j)
 
 end DifferentialGeometry.Analysis.Sobolev
 

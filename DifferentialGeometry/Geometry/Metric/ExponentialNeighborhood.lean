@@ -56,8 +56,8 @@ theorem exists_smooth_exp_neighborhood (g : SmoothRiemannianMetric I M)
     refine ⟨mem_extChartAt_source _, ?_⟩
     change R (extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)
       (⟨p, (0 : E)⟩ : TangentBundle I M)) ∈ Metric.ball (extChartAt I p p, 0) ρ
-    rw [extChartAt_tangent_zero_apply_chartFiber (I := I) p (mem_chart_source H p),
-      chartFiberCoord_self_zero]
+    rw [TangentBundle.extChartAt_tangent_zero_apply_chartFiber (I := I) p (mem_chart_source H p),
+      TangentBundle.chartFiberCoord_self_zero]
     simpa only [R, smul_zero] using Metric.mem_ball_self hρ
   have hRG : ContMDiffOn I.tangent 𝓘(ℝ, E) ∞ (fun u => G (R (c u))) W :=
     hG.contMDiffOn.comp (hRC.mono inter_subset_left) (fun _ hu => hu.2)
@@ -73,10 +73,10 @@ theorem exists_smooth_exp_neighborhood (g : SmoothRiemannianMetric I M)
     (mem_chartAt_modelProd_zero_source_iff (I := I) p u).mp
       (by simpa only [c, extChartAt_source] using! hu.1)
   have hphase : (extChartAt I p u.proj,
-      chartFiberCoord (I := I) p (TotalSpace.mk' E u.proj (t⁻¹ • u.2))) = R (c u) := by
+      TangentBundle.chartFiberCoord (I := I) p (TotalSpace.mk' E u.proj (t⁻¹ • u.2))) = R (c u) := by
     rw [chartFiberCoord_fiberScale (I := I) p t⁻¹ hubase]
     dsimp only [R, c]
-    rw [extChartAt_tangent_zero_apply_chartFiber (I := I) p hubase]
+    rw [TangentBundle.extChartAt_tangent_zero_apply_chartFiber (I := I) p hubase]
   have hb := expMapIntrinsic_eq_chartFlow_proj_residual (I := I) g hg p 1 Φ ρ T t
     ⟨hρ, hT, ht, htpos, hG.of_le (by exact_mod_cast (le_top : (1 : ℕ∞) ≤ ⊤)),
       hinit, hode, htarget⟩ u.proj hubase u.2 (hphase.symm ▸ hu.2)

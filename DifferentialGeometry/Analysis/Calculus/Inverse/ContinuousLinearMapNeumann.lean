@@ -1,6 +1,6 @@
 import Mathlib.Analysis.SpecificLimits.Normed
 import Mathlib.Analysis.Normed.Operator.Mul
-import Mathlib.Topology.Algebra.Module.Equiv
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 
 set_option autoImplicit false
 

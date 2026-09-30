@@ -25,7 +25,7 @@ theorem smoothSchoenfliesBallFilling_iff_closedBall_closure :
       ∀ (e : S² → E³) (he : IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e),
         ∃ D : E³ ≃ₘ[ℝ] E³,
           D '' closedBall (0 : E³) 1 =
-            closure (jordanBrouwer_openThreeSpace e he
+            closure (smoothSphereSidesOpenThreeSpace e he
               (Diffeomorph.refl 𝓘(ℝ, E³) E³ ∞)).compactSide := by
   constructor
   · intro h e he
@@ -70,7 +70,7 @@ theorem smoothSchoenfliesBallFilling_iff_closedBallComplement_endSide :
       ∀ (e : S² → E³) (he : IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e),
         ∃ D : E³ ≃ₘ[ℝ] E³,
           D '' (closedBall (0 : E³) 1)ᶜ =
-            (jordanBrouwer_openThreeSpace e he
+            (smoothSphereSidesOpenThreeSpace e he
               (Diffeomorph.refl 𝓘(ℝ, E³) E³ ∞)).endSide := by
   rw [smoothSchoenfliesBallFilling_iff_closedBall_closure]
   constructor
@@ -89,19 +89,19 @@ theorem smoothSchoenfliesThree_iff_closedBallComplement_endSide :
       ∀ (e : S² → E³) (he : IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e),
         ∃ D : E³ ≃ₘ[ℝ] E³,
           D '' (closedBall (0 : E³) 1)ᶜ =
-            (jordanBrouwer_openThreeSpace e he
+            (smoothSphereSidesOpenThreeSpace e he
               (Diffeomorph.refl 𝓘(ℝ, E³) E³ ∞)).endSide :=
   smoothSchoenfliesThree_iff_smoothSchoenfliesBallFilling.trans
     smoothSchoenfliesBallFilling_iff_closedBallComplement_endSide
 
 private theorem endSide_jordanBrouwer_coe_sphere :
-    (jordanBrouwer_openThreeSpace (Subtype.val : S² → E³)
+    (smoothSphereSidesOpenThreeSpace (Subtype.val : S² → E³)
       isSmoothEmbedding_coe_sphereThree_local
       (Diffeomorph.refl 𝓘(ℝ, E³) E³ ∞)).endSide = (closedBall (0 : E³) 1)ᶜ := by
   have hrange : Set.range (Subtype.val : S² → E³) = Metric.sphere (0 : E³) 1 := by
     rw [Subtype.range_coe]
   exact (SphereSides.side_sets_unique_of_core_properties
-    (jordanBrouwer_openThreeSpace (Subtype.val : S² → E³)
+    (smoothSphereSidesOpenThreeSpace (Subtype.val : S² → E³)
       isSmoothEmbedding_coe_sphereThree_local
       (Diffeomorph.refl 𝓘(ℝ, E³) E³ ∞)).toSphereSides
     (ball (0 : E³) 1) ((closedBall (0 : E³) 1)ᶜ)
@@ -117,7 +117,7 @@ private theorem endSide_jordanBrouwer_coe_sphere :
 theorem exists_diffeomorph_image_closedBallComplement_roundSphere :
     ∃ D : E³ ≃ₘ[ℝ] E³,
       D '' (closedBall (0 : E³) 1)ᶜ =
-        (jordanBrouwer_openThreeSpace (Subtype.val : S² → E³)
+        (smoothSphereSidesOpenThreeSpace (Subtype.val : S² → E³)
           isSmoothEmbedding_coe_sphereThree_local
           (Diffeomorph.refl 𝓘(ℝ, E³) E³ ∞)).endSide := by
   refine ⟨Diffeomorph.refl 𝓘(ℝ, E³) E³ ∞, ?_⟩

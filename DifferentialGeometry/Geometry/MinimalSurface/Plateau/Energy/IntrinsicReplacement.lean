@@ -80,6 +80,14 @@ theorem exists_disk_replacement_of_eq_on_sphere
       diskMapEnergyDensity g F z = diskMapEnergyDensity g G z := by
     unfold diskMapEnergyDensity diskMapPartial
     rw [h.mfderiv_eq, h.eq_of_nhds]
+    have hcast :
+        (tangentSpaceCast 𝓘(ℝ, E) (G z) (G z) :
+          TangentSpace 𝓘(ℝ, E) (G z) →L[ℝ] TangentSpace 𝓘(ℝ, E) (G z)) =
+        ContinuousLinearMap.id ℝ _ := by
+      ext w
+      rfl
+    rw [hcast]
+    simp
   let : IsFiniteMeasure (volume.restrict (closedBall (0 : ℂ) 1)) :=
     isFiniteMeasure_restrict.mpr (isCompact_closedBall (0 : ℂ) 1).measure_lt_top.ne
   have hif : IntegrableOn (diskMapEnergyDensity g f) (closedBall (0 : ℂ) 1) :=

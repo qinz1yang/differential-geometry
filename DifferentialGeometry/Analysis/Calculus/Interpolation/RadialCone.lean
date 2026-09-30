@@ -103,7 +103,7 @@ theorem periodicCircleMap_lipschitz {a : ℝ → F} {K : ℝ≥0}
     apply loop_lipschitz_of_lift
     simpa only [Function.Periodic.lift_coe] using hLip
   have hshift : LipschitzWith 1 (fun x : loopCircle => x + ((1 / 2 : ℝ) : loopCircle)) :=
-    (isometry_add_right ((1 / 2 : ℝ) : loopCircle)).lipschitz
+    (isometry_add_right ((1 / 2 : ℝ) : loopCircle)).lipschitzWith
   change LipschitzWith K (ha.lift ∘
     (fun x : loopCircle => x + ((1 / 2 : ℝ) : loopCircle)) ∘
       (AddCircle.homeomorphCircle (T := (1 : ℝ)) one_ne_zero).symm)

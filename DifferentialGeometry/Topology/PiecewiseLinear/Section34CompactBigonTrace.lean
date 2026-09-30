@@ -129,7 +129,7 @@ theorem exists_compactBigonTraceArc (hcut : Section34CompactCutFrame C K K' src 
     (hDS : Dj ⊆ frontier (⋃ w, section34CompactVertexBallImage src f₁ w))
     (hO : IsOpen O) (hDO : Dj ⊆ O) :
     ∃ (A : Set E3) (q : (Fin 2 → ℝ) → E3) (W : Set E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧
       A ⊆ (fblBd s ∩ frontier (⋃ w, section34CompactVertexBallImage src f₁ w)) ∩ O ∧
       Dj ∩ A = B ∧ Disjoint Dj (q '' stdSimplexBoundary 1) ∧
       IsOpen W ∧ Dj ⊆ W ∧ W ⊆ O ∧
@@ -167,7 +167,7 @@ theorem exists_compactBigonSplittingArc
     (hDB' : Dj ∩ section34CompactSplitDiskImage srcBd f₁ e = B')
     (hO : IsOpen O) (hDO : Dj ⊆ O) :
     ∃ (A : Set E3) (q : (Fin 2 → ℝ) → E3) (W : Set E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧
       A ⊆ section34CompactSplitDiskImage srcBd f₁ e ∩ O ∧
       Dj ∩ A = B' ∧ Disjoint Dj (q '' stdSimplexBoundary 1) ∧
       IsOpen W ∧ Dj ⊆ W ∧ W ⊆ O ∧

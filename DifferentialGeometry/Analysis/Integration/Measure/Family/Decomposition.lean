@@ -160,11 +160,11 @@ theorem ae_chart_of_haar
       have hmem : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
         (extChartAt I α).map_target hy_target
       rwa [extChartAt_source_eq_chartAt_source (I := I) (M := M)] at hmem
-    simpa only [coord, if_pos hy_source, (extChartAt I α).right_inv hy_target] using hy
+    simpa only [coord, ite_eq_left hy_source, (extChartAt I α).right_inv hy_target] using hy
   have hchart : ∀ᵐ x ∂(chartLocalMeasure (I := I) g α), P (coord x) := by
     simpa only [chartLocalMeasure, μD, μT, dens] using hpush
   filter_upwards [hchart] with x hx hx_source
-  simpa only [coord, if_pos hx_source] using hx
+  simpa only [coord, ite_eq_left hx_source] using hx
 
 lemma chartAtlasPOU_finite_support
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] :

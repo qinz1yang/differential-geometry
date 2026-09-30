@@ -185,7 +185,7 @@ theorem exists_isSolutionOn_of_metricFiberCompatible
     descendedMetric (S.family.metric t) f hf hsurj (hcompat t ht) else h₀
   have hpull (t : ℝ) (ht : t ∈ D.carrier) :
       localPullMetric (g t) f hf = S.family.metric t := by
-    simp only [g, dif_pos ht]
+    simp only [g, dite_eq_left ht]
     exact localPullMetric_descendedMetric (S.family.metric t) f hf hsurj (hcompat t ht)
   refine ⟨{ base := { metric := g } }, ?_, ?_, hpull⟩
   · exact isSolutionOn_of_surjective_localPullMetric S hS f hf hsurj g hD hg hpull
@@ -222,7 +222,7 @@ theorem exists_ricciFlow_of_metricFiberCompatible
   let h := fun t : ℝ => if ht : t ∈ Ico a b then
     descendedMetric (g t) f hf hsurj (hcompat t ht) else h₀
   have hpull (t : ℝ) (ht : t ∈ Ico a b) : localPullMetric (h t) f hf = g t := by
-    simp only [h, dif_pos ht]
+    simp only [h, dite_eq_left ht]
     exact localPullMetric_descendedMetric (g t) f hf hsurj (hcompat t ht)
   refine ⟨h, ?_, ?_, ?_, hpull⟩
   · exact localPullMetric_injective_of_surjective f hf hsurj

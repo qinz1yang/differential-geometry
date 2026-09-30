@@ -295,8 +295,7 @@ theorem holderOnWith_fderivWithin_of_conformal_pair
       (fun z => ((a z ^ 2 - b z ^ 2 - Rvv z + Rww z : ℝ) : ℂ) +
         ((2 * (a z * b z) - 2 * Rvw z : ℝ) : ℂ) * Complex.I) s := by
     convert holderOn_complex_pair hreal himag using 1
-    · rfl
-    · ring
+    ring
   have hA : HolderOnWith (2 * A) α (fun z => (a z : ℂ) + (b z : ℂ) * Complex.I) s := by
     simpa only [two_mul] using holderOn_complex_pair ha hb
   apply holderOn_fderivWithin_of_sq_add_eq hs hu hf hα hdiam hA hQ

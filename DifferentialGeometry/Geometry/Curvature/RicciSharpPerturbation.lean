@@ -37,7 +37,7 @@ theorem ricciSharp_difference_bound_of_tensor_difference
       change metricRicciAt g x (vec2 v w) - metricRicciAt gRef x (vec2 v w) = _
       rw [metricRicciAt_apply_eq_ricciTensor, metricRicciAt_apply_eq_ricciTensor]
     rw [heq, Fin.prod_univ_two] at h
-    simp only [vec2, Fin.isValue, if_true] at h
+    simp only [vec2, Fin.isValue, ite_true] at h
     exact h.trans (by
       rw [← mul_assoc]
       exact mul_le_mul_of_nonneg_right

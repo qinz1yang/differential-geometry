@@ -439,6 +439,7 @@ private theorem mvfderiv_congr_eventually_real
   have hx : f x = g x := h.eq_of_nhds
   unfold mvfderiv
   rw [hmf, hx]
+  rfl
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     [DecidableEq (CoordinateIdx (𝕜 := Real) E)] in

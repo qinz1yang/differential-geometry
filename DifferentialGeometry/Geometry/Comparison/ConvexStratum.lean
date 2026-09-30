@@ -13,7 +13,6 @@ open scoped Topology ContDiff Manifold
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Riemannian.HopfRinow
-open DifferentialGeometry.Integral.L2
 
 namespace DifferentialGeometry.Geometry.Topology
 
@@ -263,14 +262,14 @@ theorem exists_slice_succ
     intro x hx
     obtain ⟨y, hy, heq, _⟩ := hparam x hx
     simpa only [heq] using hy.1
-  let A := modelInnerAt (I := I) g q
+  let A := TensorMetric.modelInnerAt (I := I) g q
   have hAeq : ∀ v : TangentSpace I q, A (v : E) (v : E) = g.inner q v v := fun _ => rfl
   have hradial (x : L) (hx : x ∈ U) : dist q (Dq (f x)) ^ 2 = A (f x) (f x) := by
     obtain ⟨y, hy, hDxy, hsymm⟩ := hparam x hx
     have hyGood : (q, y) ∈ Good := hPQ ⟨hqnear.1, hy.2.1⟩
     have hlen : Real.sqrt (A (Dq.symm y) (Dq.symm y)) = dist q y := by
       rw [hyGood.2.1, hAeq, minimizingVec_len, riemannian_toReal_eq_dist (I := I)]
-    rw [hDxy, ← hlen, Real.sq_sqrt (modelInnerAt_nonneg (I := I) g q _), hsymm]
+    rw [hDxy, ← hlen, Real.sq_sqrt (TensorMetric.modelInnerAt_nonneg (I := I) g q _), hsymm]
   have hDfa : Dq (f 0) = z := by
     rw [hf0]
     exact Dq.toPartialEquiv.right_inv hzTarget
@@ -294,7 +293,7 @@ theorem exists_slice_succ
     exact hqdiff.2 (hqzEq ▸ hzN)
   have htrans : f 0 ∉ (fderiv ℝ f 0).range :=
     radial_not_mem_range_of_quad_min A
-      (fun _ hv => modelInnerAt_pos_of_ne_zero (I := I) g q hv) hfDiff hlocal hfne
+      (fun _ hv => TensorMetric.modelInnerAt_pos_of_ne_zero (I := I) g q hv) hfDiff hlocal hfne
   let ell : ℝ → E := fun t => t • f 0
   have hell : Continuous ell := continuous_id.smul continuous_const
   have hfaSource : f 0 ∈ Dq.source := by

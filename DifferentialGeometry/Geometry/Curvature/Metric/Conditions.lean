@@ -9,7 +9,7 @@ namespace DifferentialGeometry.Geometry.Curvature
 
 open scoped Manifold ContDiff
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners ℝ E H}

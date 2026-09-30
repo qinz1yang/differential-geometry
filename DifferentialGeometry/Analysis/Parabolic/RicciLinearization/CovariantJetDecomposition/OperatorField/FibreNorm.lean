@@ -16,6 +16,10 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.ConvexPerturbation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseMetricFibreBound
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.CurvatureJetBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Chart.MetricGramDifference
+
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply fiberNormSqComponent
+  riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise
+  tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -123,9 +127,9 @@ private theorem exists_orthoFrame_basis_local (g : SmoothRiemannianMetric I M) (
       intro j _
       rw [map_smul, horth k j, smul_eq_mul]
     rw [Finset.sum_congr rfl h_pull] at h_zero
-    rw [Finset.sum_eq_single k (fun j _ hj => by rw [if_neg (Ne.symm hj), mul_zero])
+    rw [Finset.sum_eq_single k (fun j _ hj => by rw [ite_eq_right (Ne.symm hj), mul_zero])
       (fun hk => absurd hk_mem hk)] at h_zero
-    rwa [if_pos rfl, mul_one] at h_zero
+    rwa [ite_eq_left rfl, mul_one] at h_zero
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
       Module.finrank ℝ (TangentSpace I x) := by
     rw [Fintype.card_fin, hn]
@@ -244,7 +248,7 @@ private lemma abs_g0_inner_invSharp_le (g₀ g₁ : SmoothRiemannianMetric I M)
       1 / (1 - δ) := by
   set f : TangentSpace I x :=
     inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x b) with hf
-  have hcs := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+  have hcs := DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
     (I := I) (M := M) g₀ x a f
   have hfbound := norm_inverseMetricSharpFib_g0Flat_le (I := I) g₀ g₁ h htie
     hδ_lt hδ_nn hδ x b
@@ -389,7 +393,7 @@ private lemma ricciCovariantTerm_dim1_compSq_le {A C R : ℝ} (hAbound : |A| ≤
   have hsub : Subsingleton (Fin (Module.finrank ℝ E)) := by
     rw [hfr]; infer_instance
   have hKJ : ∀ (a b : Fin (Module.finrank ℝ E)), (if a = b then (1 : ℝ) else 0) = 1 := by
-    intro a b; rw [if_pos (Subsingleton.elim a b)]
+    intro a b; rw [ite_eq_left (Subsingleton.elim a b)]
   have hcard : Fintype.card (Fin 2 → Fin (Module.finrank ℝ E)) = 1 := by
     rw [Fintype.card_fun, Fintype.card_fin, hfr]; norm_num
   have hACeq : (∑ J : Fin 2 → Fin (Module.finrank ℝ E),

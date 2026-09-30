@@ -13,12 +13,12 @@ theorem IsCylindricalDiagram.slice_chart_rim_eq
     (D : Geometry.SimplicialComplex ℝ E) [Finite D.faces] (hD : IsPLBall 2 D.space)
     {f : E × ℝ → F} {S : Set F} (hf : IsCylindricalDiagram f D.space S)
     {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) {q : (Fin 3 → ℝ) → F}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (f '' (D.space ×ˢ {t}))) :
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (f '' (D.space ×ˢ {t}))) :
     q '' stdSimplexBoundary 2 = f '' ((boundaryComplex 2 D).space ×ˢ {t}) := by
   obtain ⟨d, hd⟩ := hD
   have hdBd := hd.image_stdSimplexBoundary_eq_boundaryComplex D rfl
   let p : (Fin 3 → ℝ) → F := fun x => f (d x, t)
-  have hp : IsPLHomeomorphOn p (stdSimplex ℝ (Fin 3)) (f '' (D.space ×ˢ {t})) :=
+  have hp : IsPLHomeomorphOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (f '' (D.space ×ˢ {t})) :=
     hd.trans (hf.isPLHomeomorphOn_slice (isPolyhedron_space D) ht)
   obtain ⟨K, hKfin, hKspace⟩ := (IsPLBall.isPolyhedron ⟨q, hq⟩).exists_simplicialComplex
   let _ : Finite K.faces := hKfin.to_subtype
@@ -33,11 +33,11 @@ theorem IsCylindricalDiagram.exists_rotation_with_prescribed_meridian
     {f : E × ℝ → F} {S J : Set F} (hf : IsCylindricalDiagram f D.space S)
     (hends : ∀ x ∈ D.space, f (x, 0) = f (x, 1)) {t : ℝ} (ht : t ∈ Ioo (0 : ℝ) 1)
     {q : (Fin 3 → ℝ) → F}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (f '' (D.space ×ˢ {t})))
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (f '' (D.space ×ˢ {t})))
     (hqJ : q '' stdSimplexBoundary 2 = J) :
     ∃ g : E × ℝ → F, IsCylindricalDiagram g D.space S ∧
       (∀ x ∈ D.space, g (x, 0) = g (x, 1)) ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (g '' (D.space ×ˢ {0})) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g '' (D.space ×ˢ {0})) ∧
       g '' ((boundaryComplex 2 D).space ×ˢ {0}) = J ∧
       g '' (D.space ×ˢ {0}) = f '' (D.space ×ˢ {t}) := by
   obtain ⟨g, hg, hcap, -, -⟩ := hf.exists_seam_rotation hD.isPolyhedron hends ht

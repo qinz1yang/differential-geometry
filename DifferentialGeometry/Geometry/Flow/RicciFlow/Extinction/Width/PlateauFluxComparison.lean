@@ -128,6 +128,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   {Q : Type*} [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
   [T2Space Q] [CompactSpace Q] [SigmaCompactSpace Q] [I.Boundaryless]
 
+omit [SigmaCompactSpace Q] in
 theorem SmoothDisk.hasDerivAt_transportedArea_metricFamily
     (c : Geometry.Topology.StandardModelCopy I Q E) [CompactSpace c.Q]
     (u : SmoothDisk (I := I) (Q := Q)) (G : ℝ → SmoothRiemannianMetric I Q)

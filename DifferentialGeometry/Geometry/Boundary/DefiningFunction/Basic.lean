@@ -70,7 +70,7 @@ theorem levelSetOutwardNormal_eq
         (gradientFun (I := I) g rho x)))⁻¹ •
           gradientFun (I := I) g rho x := by
   unfold levelSetOutwardNormal
-  rw [if_pos hgrad]
+  rw [ite_eq_left hgrad]
 
 theorem levelSetOutwardNormal_unit
     (g : SmoothRiemannianMetric I M) (rho : M → Real) (x : M)
@@ -124,7 +124,7 @@ theorem levelSetOutwardNormal_inner
       le_antisymm (le_of_not_gt hpos) (normGradSqFun_nonneg g f x)
     have hnormal : levelSetOutwardNormal (I := I) g f x = 0 := by
       unfold levelSetOutwardNormal
-      exact if_neg hpos
+      exact ite_eq_right hpos
     simp only [hnormal, hzero, Real.sqrt_zero, inv_zero, zero_mul, map_zero,
       _root_.zero_apply]
 

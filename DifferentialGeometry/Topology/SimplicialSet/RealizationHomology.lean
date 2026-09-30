@@ -5,7 +5,7 @@ import Mathlib.AlgebraicTopology.ExtraDegeneracy
 import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
 import Mathlib.AlgebraicTopology.SingularHomology.HomotopyInvariance
 import Mathlib.AlgebraicTopology.SingularHomology.HomologyZero
-import Mathlib.Analysis.Convex.Contractible
+import DifferentialGeometry.Topology.Simplex.Coordinates
 
 set_option autoImplicit false
 
@@ -125,9 +125,6 @@ private theorem isZero_homology_toSSet_of_contractible (X : TopCat.{u}) [Contrac
 
 theorem contractibleSpace_realization_stdSimplex (n : ℕ) :
     ContractibleSpace (_root_.SSet.toTop.obj (Δ[n] : _root_.SSet.{u})) := by
-  have : ContractibleSpace (_root_.stdSimplex ℝ (Fin (n + 1))) :=
-    (convex_stdSimplex ℝ (Fin (n + 1))).contractibleSpace
-      ⟨Pi.single 0 1, single_mem_stdSimplex ℝ 0⟩
   exact (SimplexCategory.toTopHomeo ⦋n⦌).contractibleSpace
 
 theorem quasiIso_realizationChainMap_stdSimplex (n : ℕ) (R : ModuleCat.{u} k) :

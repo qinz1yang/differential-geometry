@@ -3,7 +3,9 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartRepresent
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.WeightedNorm
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -164,10 +166,10 @@ private lemma perChartDensityCeil_nonneg
   unfold perChartDensityCeil
   by_cases h : (tsupport
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)).Nonempty
-  · rw [dif_pos h]
+  · rw [dite_eq_left h]
     exact le_of_lt
       (exists_sup_chartDensity_on_pou_tsupport_image (I := I) (M := M) g α h).choose_spec.1
-  · rw [dif_neg h]
+  · rw [dite_eq_right h]
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma perChartDensityCeil_bound
@@ -184,7 +186,7 @@ private lemma perChartDensityCeil_bound
       perChartDensityCeil (I := I) (M := M) g α := by
   classical
   unfold perChartDensityCeil
-  rw [dif_pos h_support_ne]
+  rw [dite_eq_left h_support_ne]
   exact (exists_sup_chartDensity_on_pou_tsupport_image
     (I := I) (M := M) g α h_support_ne).choose_spec.2 y hy_image
 
@@ -673,15 +675,15 @@ theorem rawTensorConnLap_intrinsicL2_le_tensorPouSobolevNorm_sq
   have hCB_max_nn : 0 ≤ CB_max := by
     rw [hCB_max_def]
     by_cases hSne : S.Nonempty
-    · rw [dif_pos hSne]
+    · rw [dite_eq_left hSne]
       obtain ⟨α₀, hα₀⟩ := hSne
       exact le_trans (hCB_nn α₀) (Finset.le_sup' CB hα₀)
-    · rw [dif_neg hSne]; linarith
+    · rw [dite_eq_right hSne]; linarith
   have hCB_le_max : ∀ α ∈ S, CB α ≤ CB_max := by
     intro α hα
     rw [hCB_max_def]
     have hSne : S.Nonempty := ⟨α, hα⟩
-    rw [dif_pos hSne]
+    rw [dite_eq_left hSne]
     exact Finset.le_sup' CB hα
   set D_per_alpha : M → ℝ := fun α =>
     CB_max * (euclideanHaarFactor E : ℝ) *
@@ -695,15 +697,15 @@ theorem rawTensorConnLap_intrinsicL2_le_tensorPouSobolevNorm_sq
   have hD_max_nn : 0 ≤ D_max := by
     rw [hD_max_def]
     by_cases hSne : S.Nonempty
-    · rw [dif_pos hSne]
+    · rw [dite_eq_left hSne]
       obtain ⟨α₀, hα₀⟩ := hSne
       exact le_trans (hD_nn α₀) (Finset.le_sup' D_per_alpha hα₀)
-    · rw [dif_neg hSne]; linarith
+    · rw [dite_eq_right hSne]; linarith
   have hD_α_le_max : ∀ α ∈ S, D_per_alpha α ≤ D_max := by
     intro α hα
     rw [hD_max_def]
     have hSne : S.Nonempty := ⟨α, hα⟩
-    rw [dif_pos hSne]
+    rw [dite_eq_left hSne]
     exact Finset.le_sup' D_per_alpha hα
   refine ⟨ENNReal.ofReal D_max, ENNReal.ofReal_ne_top, ?_⟩
   intro T₀

@@ -55,7 +55,7 @@ theorem exists_cylindricalDiagram_derivedNeighborhood_circle
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hLK : L.faces ⊆ K.faces)
     (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space) :
     ∃ φ : (Fin 3 → ℝ) × ℝ → E,
-      IsCylindricalDiagram φ (stdSimplex ℝ (Fin 3)) (derivedNeighborhood K L).space := by
+      IsCylindricalDiagram φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (derivedNeighborhood K L).space := by
   classical
   obtain ⟨A, B, D₀, D₁, hAfin, hBfin, hA, hB, hD₀, hD₁, hdis, hcover, hinter,
     hD₀A, hD₁A, hD₀B, hD₁B⟩ :=
@@ -63,7 +63,7 @@ theorem exists_cylindricalDiagram_derivedNeighborhood_circle
   let _ : Finite A.faces := hAfin.to_subtype
   let _ : Finite B.faces := hBfin.to_subtype
   obtain ⟨g₀, hg₀⟩ := hD₀
-  have hP : IsPLBall 2 (stdSimplex ℝ (Fin 3)) :=
+  have hP : IsPLBall 2 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) :=
     ⟨id, (isHPolytope_stdSimplex (Fin 3)).isPolyhedron.isPLHomeomorphOn_id⟩
   obtain ⟨φ, hφ, _⟩ := exists_cylindricalDiagram_of_ball_pair hP A B hA hB hD₁ hdis
     hD₀A hD₁A hD₀B hD₁B hinter hg₀
@@ -78,7 +78,7 @@ theorem exists_cylindricalDiagram_isOrientable_derivedNeighborhood_circle
       (derivedNeighborhood_faces_finite K L).to_subtype
     IsOrientable 3 (derivedNeighborhood K L) ∧
       ∃ φ : (Fin 3 → ℝ) × ℝ → E,
-        IsCylindricalDiagram φ (stdSimplex ℝ (Fin 3)) (derivedNeighborhood K L).space := by
+        IsCylindricalDiagram φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (derivedNeighborhood K L).space := by
   let _ : Finite (derivedNeighborhood K L).faces :=
     (derivedNeighborhood_faces_finite K L).to_subtype
   have hN := IsOrientable.of_le (secondDerived K) (derivedNeighborhood K L)

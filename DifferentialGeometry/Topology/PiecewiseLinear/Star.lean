@@ -64,7 +64,7 @@ theorem exists_affineMap_eqOn [FiniteDimensional ℝ E] {s : Finset E}
     ∃ A : E →ᵃ[ℝ] F, ∀ v ∈ s, A v = q v := by
   classical
   obtain ⟨t, hst, hti, htop⟩ := exists_subset_affineIndependent_affineSpan_eq_top hs
-  have htf : t.Finite := finite_set_of_fin_dim_affineIndependent ℝ hti
+  have htf : t.Finite := (finiteDimensional_iff_setFinite ℝ hti).mp inferInstance
   have : Finite t := htf.to_subtype
   let : Fintype t := Fintype.ofFinite t
   let b : AffineBasis t ℝ E := ⟨((↑) : t → E), hti, by rw [Subtype.range_coe]; exact htop⟩

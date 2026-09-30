@@ -287,7 +287,7 @@ theorem coordNab2Ric_eq_nabla2RicField
       rfl
     rw [Fin.sum_univ_three]
     rw [hterm 0, hterm 1, hterm 2]
-    simp only [slot, Fin.isValue, if_true, reduceIte,
+    simp only [slot, Fin.isValue, ite_true, reduceIte,
       show ((0 : Fin 3) = 1) = False by simp,
       show ((0 : Fin 3) = 2) = False by simp,
       show ((1 : Fin 3) = 0) = False by simp,

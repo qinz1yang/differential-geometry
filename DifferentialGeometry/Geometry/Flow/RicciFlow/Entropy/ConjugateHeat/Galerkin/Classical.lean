@@ -14,6 +14,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Equati
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Weak
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquaredTime
 import DifferentialGeometry.Analysis.Spectral.Scalar.WeylBounds
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq
+   sq_unit_eval_le)
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic

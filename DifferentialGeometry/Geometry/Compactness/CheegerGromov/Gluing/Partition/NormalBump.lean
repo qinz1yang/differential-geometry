@@ -306,7 +306,7 @@ omit [NeZero (Module.finrank Real E)] in
     (cut : ContDiffBump (0 : E)) (f : ι → ContDiffBump (0 : E)) (i0 : ι) :
     normalRaw g p cut f i0 i0 = normalBump g (p i0) (f i0) := by
   funext q
-  rw [normalRaw, if_pos rfl]
+  rw [normalRaw, ite_eq_left rfl]
 
 omit [T2Space M] in
 omit [NeZero (Module.finrank Real E)] in
@@ -316,7 +316,7 @@ theorem normalRaw_of_ne (g : SmoothRiemannianMetric I M) (p : ι → M)
     normalRaw g p cut f i0 i = fun q =>
       (1 - normalBump g (p i0) cut q) * normalBump g (p i) (f i) q := by
   funext q
-  rw [normalRaw, if_neg hi]
+  rw [normalRaw, ite_eq_right hi]
 
 omit [NeZero (Module.finrank Real E)] in
 theorem normalRaw_contMDiff (g : SmoothRiemannianMetric I M) (p : ι → M)
@@ -339,8 +339,8 @@ theorem normalRaw_nonneg (g : SmoothRiemannianMetric I M) (p : ι → M)
     (i0 i : ι) (q : M) : 0 ≤ normalRaw g p cut f i0 i q := by
   by_cases hi : i = i0
   · subst i
-    simpa only [normalRaw, if_pos] using (normalBump_mem_Icc g (p i0) (f i0) q).1
-  · rw [normalRaw, if_neg hi]
+    simpa only [normalRaw, ite_eq_left] using (normalBump_mem_Icc g (p i0) (f i0) q).1
+  · rw [normalRaw, ite_eq_right hi]
     exact mul_nonneg (sub_nonneg.mpr (normalBump_mem_Icc g (p i0) cut q).2)
       (normalBump_mem_Icc g (p i) (f i) q).1
 
@@ -377,9 +377,9 @@ theorem normalRaw_normalChart_apply (g : SmoothRiemannianMetric I M) (p : ι →
           ((normalChartAt (I := I) g (p β)).symm z)) := by
   by_cases hi : i = i0
   · subst i
-    rw [normalRaw, if_pos rfl, if_pos rfl,
+    rw [normalRaw, ite_eq_left rfl, ite_eq_left rfl,
       normalBump_of_mem g (p i0) (f i0) (hsrc i0)]
-  · rw [normalRaw, if_neg hi, if_neg hi,
+  · rw [normalRaw, ite_eq_right hi, ite_eq_right hi,
       normalBump_of_mem g (p i0) cut (hsrc i0),
       normalBump_of_mem g (p i) (f i) (hsrc i)]
 

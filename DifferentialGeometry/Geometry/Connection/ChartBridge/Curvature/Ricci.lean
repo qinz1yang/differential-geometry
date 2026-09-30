@@ -280,13 +280,13 @@ theorem ricciTensor_eq_chartRicciSwap_of_basis_identity
       rw [map_sum]; rw [Finsupp.coe_finsetSum]; rw [Finset.sum_apply]
       rw [Finset.sum_eq_single t]
       · rw [h_smul_repr]
-        rw [if_pos rfl, mul_one]
+        rw [ite_eq_left rfl, mul_one]
         rw [show ((b.repr (b t)) t : ℝ) = 1 by
-          rw [Module.Basis.repr_self_apply]; rw [if_pos rfl]]
+          rw [Module.Basis.repr_self_apply]; rw [ite_eq_left rfl]]
         ring
       · intro l _ hl_ne
         rw [h_smul_repr]
-        rw [if_neg hl_ne, mul_zero]
+        rw [ite_eq_right hl_ne, mul_zero]
       · intro hl
         exact absurd (Finset.mem_univ t) hl
     · intro j _ hj_ne
@@ -299,7 +299,7 @@ theorem ricciTensor_eq_chartRicciSwap_of_basis_identity
       rw [h_smul_repr]
       have htj : ¬ (t = j) := fun h => hj_ne h.symm
       rw [show ((b.repr (b t)) j : ℝ) = 0 by
-        rw [Module.Basis.repr_self_apply]; rw [if_neg htj]]
+        rw [Module.Basis.repr_self_apply]; rw [ite_eq_right htj]]
       ring
     · intro hj
       exact absurd (Finset.mem_univ t) hj

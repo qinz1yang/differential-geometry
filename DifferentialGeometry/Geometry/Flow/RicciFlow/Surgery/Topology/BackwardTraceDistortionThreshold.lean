@@ -129,7 +129,7 @@ universe u
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 private theorem scalar_le_four_mul_on_ball_of_gradient_bound (t : Icc (0 : ℝ) H.toHistory.horizon)
     (i : Fin H.eventCount) (hi : H.toHistory.activeStage t = i.castSucc)

@@ -325,7 +325,9 @@ theorem cutoffHeatParametrixResidual_at_center_finrank_eq_two
   have hgrad : gradientFun g χ p = 0 := by
     apply gradientFun_eq_zero_of_mfderiv_eq_zero
     rw [hχ0.mfderiv_eq]
-    exact mfderiv_const
+    rw [hχp, mfderiv_const (E := E) (I := I) (M := M) (I' := 𝓘(ℝ, ℝ))
+      (M' := ℝ) (c := (1 : ℝ)) (x := p)]
+    rfl
   have hlap : laplacian (LeviCivita g) g χ p = 0 := by
     calc
       _ = laplacian (LeviCivita g) g (fun _ : M => (1 : ℝ)) p :=
@@ -369,7 +371,11 @@ private theorem cutoffHeatParametrixResidual_eq_zero_of_notMem_tsupport
   have hgrad : gradientFun g χ q = 0 := by
     apply gradientFun_eq_zero_of_mfderiv_eq_zero
     rw [he.mfderiv_eq]
-    exact mfderiv_const
+    have hz : mfderiv I 𝓘(ℝ, ℝ) (fun _ : M => (0 : ℝ)) q = 0 :=
+      mfderiv_const (E := E) (I := I) (M := M) (I' := 𝓘(ℝ, ℝ))
+        (M' := ℝ) (c := (0 : ℝ)) (x := q)
+    rw [show (0 : M → ℝ) = (fun _ : M => (0 : ℝ)) by rfl, hz]
+    rfl
   have hl : laplacian (LeviCivita g) g χ q = 0 := by
     calc
       _ = laplacian (LeviCivita g) g (fun _ : M => (0 : ℝ)) q :=

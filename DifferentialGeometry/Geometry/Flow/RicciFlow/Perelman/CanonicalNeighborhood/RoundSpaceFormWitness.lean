@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundCanonicalWitness
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.MetricData
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.Descent
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundModelClassification
@@ -28,20 +28,20 @@ omit [T2Space M] [SigmaCompactSpace M] in
 theorem metric_inner_sq_le (g : SmoothRiemannianMetric I3 M) (x : M)
     (v w : TangentSpace I3 x) :
     (g.inner x v w) ^ 2 ≤ g.inner x v v * g.inner x w w := by
-  let D := (tangentMetricDataGen (I := I3) g x).metric
+  let D := (tangentMetricData (I := I3) g x).metric
   let : PreInnerProductSpace.Core ℝ (TangentSpace I3 x) := D.toCore.toCore
   let : Inner ℝ (TangentSpace I3 x) := D.toCore.toCore.toInner
   have hcs := InnerProductSpace.Core.inner_mul_inner_self_le (𝕜 := ℝ)
     (F := TangentSpace I3 x) v w
   have hAB : Inner.inner ℝ v w = g.inner x v w :=
-    (MetricFiberData.toCore_inner D v w).trans (TangentMetricDataGen.inner_eq_gen _ v w)
+    (MetricFiberData.toCore_inner D v w).trans (TangentMetricData.inner_eq _ v w)
   have hBA : Inner.inner ℝ w v = g.inner x v w :=
     (MetricFiberData.toCore_inner D w v).trans
-      ((MetricFiberData.symm D w v).trans (TangentMetricDataGen.inner_eq_gen _ v w))
+      ((MetricFiberData.symm D w v).trans (TangentMetricData.inner_eq _ v w))
   have hAA : Inner.inner ℝ v v = g.inner x v v :=
-    (MetricFiberData.toCore_inner D v v).trans (TangentMetricDataGen.inner_eq_gen _ v v)
+    (MetricFiberData.toCore_inner D v v).trans (TangentMetricData.inner_eq _ v v)
   have hBB : Inner.inner ℝ w w = g.inner x w w :=
-    (MetricFiberData.toCore_inner D w w).trans (TangentMetricDataGen.inner_eq_gen _ w w)
+    (MetricFiberData.toCore_inner D w w).trans (TangentMetricData.inner_eq _ w w)
   rw [hAB, hBA, hAA, hBB] at hcs
   simpa [Real.norm_eq_abs, pow_two, sq_abs] using hcs
 

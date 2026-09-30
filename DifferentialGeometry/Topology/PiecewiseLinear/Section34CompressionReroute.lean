@@ -65,24 +65,24 @@ theorem exists_reroute_collapse {c : OpenPartialHomeomorph M E3} {Hs Obs Mk : Se
       · exact Or.inl (interior_subset hyP)
       · exact Or.inr hyP
     · refine (continuousOn_const (c := p)).congr fun y hy => ?_
-      simp only [hrdef, if_pos hy.2]
+      simp only [hrdef, ite_eq_left hy.2]
     · refine continuousOn_id.congr fun y hy => ?_
       have hyP : y ∉ Pk := by
         intro h
         have hyfr : y ∈ frontier Pk := ⟨subset_closure h, hy.2⟩
         exact hy.1.2 (hPkfr hyfr)
-      simp only [hrdef, if_neg hyP, id]
+      simp only [hrdef, ite_eq_right hyP, id]
   · intro y hy
     by_cases hyP : y ∈ Pk
-    · simp only [hrdef, if_pos hyP]
+    · simp only [hrdef, ite_eq_left hyP]
       exact ⟨hpH, fun h => h.elim hpObs hpPk⟩
-    · simp only [hrdef, if_neg hyP]
+    · simp only [hrdef, ite_eq_right hyP]
       exact ⟨hy.1, fun h => h.elim hy.2 hyP⟩
   · have hzP : z ∉ Pk := fun h => Set.disjoint_left.mp hYH h hz
-    simp only [hrdef, if_neg hzP]
+    simp only [hrdef, ite_eq_right hzP]
   · have hyP : y ∉ Pk := fun h => Set.disjoint_left.mp hMk hy h
-    simp only [hrdef, if_neg hyP]
-  · simp only [hrdef, if_neg hy]
+    simp only [hrdef, ite_eq_right hyP]
+  · simp only [hrdef, ite_eq_right hy]
 
 theorem exists_reroute_push {c : OpenPartialHomeomorph M E3} {Hs Obs Mk : Set M}
     {R Lr Bh T : Set E3} {g : E3 → E3} (hRo : IsOpen R) (hclR : closure R ⊆ R ∪ Bh ∪ Lr)
@@ -106,7 +106,7 @@ theorem exists_reroute_push {c : OpenPartialHomeomorph M E3} {Hs Obs Mk : Set M}
   have hRr : ∀ y ∈ SR, c y ∈ R ∧ r y = c.symm (g (c y)) := by
     rintro _ ⟨x, hx, rfl⟩
     refine ⟨by rw [c.right_inv (hRt hx)]; exact hx, ?_⟩
-    simp only [hrdef, if_pos (show c.symm x ∈ SR from ⟨x, hx, rfl⟩)]
+    simp only [hrdef, ite_eq_left (show c.symm x ∈ SR from ⟨x, hx, rfl⟩)]
   have hrin : ∀ y ∈ SR, r y ∈ SR := by
     intro y hy
     obtain ⟨hcy, hry⟩ := hRr y hy
@@ -144,13 +144,13 @@ theorem exists_reroute_push {c : OpenPartialHomeomorph M E3} {Hs Obs Mk : Set M}
       refine (hF.mono hsub).congr fun y hy => ?_
       obtain ⟨x, hx, rfl⟩ := hsub hy
       by_cases hxS : c.symm x ∈ SR
-      · simp only [hrdef, if_pos hxS]
-      · simp only [hrdef, if_neg hxS]
+      · simp only [hrdef, ite_eq_left hxS]
+      · simp only [hrdef, ite_eq_right hxS]
         rcases hx with hxR | hxL
         · exact absurd ⟨x, hxR, rfl⟩ hxS
         · rw [c.right_inv (hLrt hxL), hgLr x hxL]
     · refine continuousOn_id.congr fun y hy => ?_
-      simp only [hrdef, if_neg hy.2, id]
+      simp only [hrdef, ite_eq_right hy.2, id]
   · intro y hy
     by_cases hyR : y ∈ SR
     · obtain ⟨hcy, hry⟩ := hRr y hyR
@@ -162,7 +162,7 @@ theorem exists_reroute_push {c : OpenPartialHomeomorph M E3} {Hs Obs Mk : Set M}
       · rw [hry] at heq
         have h2 := c.symm.injOn (hTt ht) (hRt (hgR hcy)) heq
         exact hgT (c y) hcy (h2 ▸ ht)
-    · simp only [hrdef, if_neg hyR]
+    · simp only [hrdef, ite_eq_right hyR]
       refine ⟨hy.1, ?_⟩
       rintro (h | ⟨t, ht, rfl⟩)
       · exact hy.2 h
@@ -170,10 +170,10 @@ theorem exists_reroute_push {c : OpenPartialHomeomorph M E3} {Hs Obs Mk : Set M}
         · exact hyR ⟨t, htR, rfl⟩
         · exact hy.2 (hBh ⟨t, htB, rfl⟩)
   · have hzR : z ∉ SR := fun h => Set.disjoint_left.mp hRfr h hz
-    simp only [hrdef, if_neg hzR]
+    simp only [hrdef, ite_eq_right hzR]
   · have hyR : y ∉ SR := fun h => Set.disjoint_left.mp hMk hy h
-    simp only [hrdef, if_neg hyR]
-  · simp only [hrdef, if_neg hy]
+    simp only [hrdef, ite_eq_right hyR]
+  · simp only [hrdef, ite_eq_right hy]
 
 omit [T2Space M] in
 theorem exists_reroute_comp {Hs Obs Mk Z₁ Z₂ : Set M} {r₁ r₂ : M → M}

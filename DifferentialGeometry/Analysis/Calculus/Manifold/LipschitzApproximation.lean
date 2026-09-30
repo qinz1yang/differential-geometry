@@ -169,7 +169,7 @@ private theorem partition_derivative_cancel {n : ℕ} {f : M → ℝ} (hf : Cont
     have he : (∑ i, (show TangentSpace I x →L[ℝ] ℝ from mfderiv I 𝓘(ℝ) (ρ i) x)) = 0 := by
       rw [← hd.mfderiv]
       rw [show (∑ i, (ρ i : M → ℝ)) = (fun y => ∑ i, ρ i y) by ext y; simp]
-      rw [heq.mfderiv_eq, mfderiv_const]
+      rw [heq.mfderiv_eq, mfderiv_const, ContinuousLinearMap.comp_zero]
     have hev := congrArg (fun A : TangentSpace I x →L[ℝ] ℝ => A v) he
     simp only [sum_apply, zero_apply] at hev
     exact mul_eq_zero_of_right (f x) hev
@@ -192,7 +192,7 @@ private theorem partition_mul_derivative {n : ℕ} {K : Set M}
     · have heq : (ρ i : M → ℝ) =ᶠ[𝓝 x] fun _ => (0 : ℝ) :=
         notMem_tsupport_iff_eventuallyEq.mp hx
       have hz : mfderiv I 𝓘(ℝ) (ρ i) x = 0 := by
-        rw [heq.mfderiv_eq, mfderiv_const]
+        rw [heq.mfderiv_eq, mfderiv_const, ContinuousLinearMap.comp_zero]
       have hz0 := image_eq_zero_of_notMem_tsupport hx
       rw [hz0, hz, zero_smul, smul_zero, add_zero]
       apply (hasMFDerivAt_const (I := I) (c := (0 : ℝ)) x).congr_of_eventuallyEq
@@ -226,7 +226,7 @@ private theorem partition_derivative_bound {n : ℕ} (g : SmoothRiemannianMetric
     have he := congrArg (fun D : TangentSpace I x →L[ℝ] ℝ => D v)
       (partition_mul_derivative ρ hF x)
     simp only [sum_apply, add_apply, smul_apply, smul_eq_mul] at he
-    convert he using 1 <;> rfl
+    convert he using 1
   have hcancel : f x * ∑ i, dρ i = 0 := partition_derivative_cancel hf ρ x v
   have hrewrite : (∑ i, (ρ i x * dF i + F i x * dρ i)) =
       ∑ i, (ρ i x * dF i + (F i x - f x) * dρ i) := by

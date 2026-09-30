@@ -287,9 +287,12 @@ theorem ofReal_abs_sub_le_riemannianEDistOf
         mdifferentiableAt_iff_differentiableAt.mp hcomp
       have hval : deriv (fun s : ℝ => f (γ s)) t
           = mvfderiv (I := I) f (γ t) (mfderiv 𝓘(ℝ, ℝ) I γ t 1) := by
-        rw [← fderiv_apply_one_eq_deriv, ← mfderiv_eq_fderiv,
-          show (fun s : ℝ => f (γ s)) = f ∘ γ from rfl, mfderiv_comp t hfd hγd]
-        rfl
+        have h := mfderiv_comp t hfd hγd
+        rw [mfderiv_eq_fderiv] at h
+        have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (f (γ t))
+          (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm (1 : ℝ)))) h
+        simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+          ContinuousLinearEquiv.apply_symm_apply, fderiv_apply_one_eq_deriv] using! hv
       have := hdiff.hasDerivAt
       rwa [hval] at this
     have hderivval : ∀ t ∈ Set.Ioo (0 : ℝ) 1,
@@ -369,7 +372,7 @@ theorem RiemannianMetricComplete.of_properFun
   let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨h.inner, h.contMDiff.continuous, by intro x v w; rfl⟩
   let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  refine EMetric.complete_of_cauchySeq_tendsto (α := M) fun s hs => ?_
+  refine EMetric.complete_of_cauchySeq_tendsto (γ := M) fun s hs => ?_
   have hed : ∀ a b : M, edist a b = riemannianEDistOf (I := I) h a b := fun _ _ => rfl
   obtain ⟨N, hN⟩ := EMetric.cauchySeq_iff.mp hs 1 (by norm_num)
   have hmem : ∀ n : ℕ, s (n + N) ∈ {z : M | f z ≤ f (s N) + 1} := by
@@ -401,8 +404,8 @@ theorem exists_riemannianMetricComplete_eqOn_of_isCompact
     have heq : f =ᶠ[𝓝 x] fun _ : M => (0 : ℝ) := by
       filter_upwards [hWopen.mem_nhds hx] with z hz using hfW z hz
     have hmf : mfderiv I 𝓘(ℝ, ℝ) f x = 0 := by
-      rw [heq.mfderiv_eq]
-      exact mfderiv_const
+      simpa only [mfderiv_const, ContinuousLinearMap.comp_zero] using
+        (heq.mfderiv_eq (I := I) (I' := 𝓘(ℝ, ℝ)))
     rw [mvfderiv_real_eq_mfderiv I f x v, hmf]
     exact map_zero _
   refine ⟨g.addGradSq f hfsmooth, W, ?_, hWopen, hKW, ?_, ?_⟩

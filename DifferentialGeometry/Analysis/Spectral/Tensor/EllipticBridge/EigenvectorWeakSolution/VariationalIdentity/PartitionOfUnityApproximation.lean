@@ -250,7 +250,7 @@ lemma density_memLp2_test_integrable
       (fun y => densityOnEuclid (I := I) g α y * ψ y) y) 1
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
-    hm_memLp.mul' hw
+    hw.fun_mul (r := 1) hm_memLp
   refine (memLp_one_iff_integrable.mp hprod).congr ?_
   refine Filter.Eventually.of_forall (fun y => ?_)
   simp only []
@@ -282,7 +282,7 @@ lemma density_coeff_memLp2_test_integrable
       (fun y => densityOnEuclid (I := I) g α y * c y * ψ y) y) 1
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
-    hm_memLp.mul' hw
+    hw.fun_mul (r := 1) hm_memLp
   refine (memLp_one_iff_integrable.mp hprod).congr ?_
   refine Filter.Eventually.of_forall (fun y => ?_)
   simp only []
@@ -1067,7 +1067,7 @@ lemma bilin_eigenvectorPouApprox_tendsto
             g r s i α P₀ i' y) 1
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) :=
-        hwp_memLp.mul hpst_memLp
+        hpst_memLp.fun_mul (r := 1) hwp_memLp
       have hprod_int : Integrable (fun y =>
           principalSymbolTest (I := I) (M := M) g α ψ i' y *
             eigenvectorChartWeakPartial (I := I) (M := M)

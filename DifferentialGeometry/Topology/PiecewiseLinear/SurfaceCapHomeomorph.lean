@@ -14,10 +14,10 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem exists_isPLHomeomorphOn_cap_replacement {L L' Δ A B G J : Set E3}
     (hL : IsPolyhedron L) (hL' : IsPolyhedron L')
-    {r s : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    {r s : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hrG : r '' stdSimplexBoundary 2 = G) (hAnn : IsPLAnnulusWithEnds A G J)
     (hAL : A ⊆ L) (hAΔ : A ∩ Δ = G) (hLΔ : L ∩ Δ = G)
-    (hs : IsPLHomeomorphOn s (stdSimplex ℝ (Fin 3)) B)
+    (hs : IsPLHomeomorphOn s (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B)
     (hsJ : s '' stdSimplexBoundary 2 = J) (hBL : B ∩ L = J)
     (heq : L' = (L \ (A \ J)) ∪ B) :
     ∃ f : E3 → E3, IsPLHomeomorphOn f (L ∪ Δ) L' ∧ EqOn f id (L \ (A \ J)) := by

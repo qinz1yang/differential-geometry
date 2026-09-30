@@ -54,7 +54,7 @@ theorem exists_extinctHistory {P Q : OrientedThreeStage.{u}} {g : P.Metric} {s :
     (hm : E.incoming.flow.base.metric 0 = g)
     (hbfr : E.transition.boundaryFrameReversing)
     (hctrl : E.toMetricCutCapEvent.poincareStandardDiscarded) :
-    ∃ (H : RetainedCoreHistory P) (_ : InitialIdentification P g H.toHistory),
+    ∃ (H : RetainedCoreHistory.{u}) (_ : InitialIdentification P g H.toHistory),
       H.eventCount = 1 ∧
       (∀ i : Fin H.eventCount, (H.coreEvent i).transition.boundaryFrameReversing) ∧
       (∀ i : Fin H.eventCount,
@@ -109,9 +109,7 @@ theorem hasExtinctRetainedCoreHistory_of_hasExtinctCutCapTransition
 
 namespace RetainedCoreHistory
 
-variable {P : OrientedThreeStage.{u}}
-
-theorem appendEventCompatible_of_finalSlab_eq_closedPrefix (H : RetainedCoreHistory P)
+theorem appendEventCompatible_of_finalSlab_eq_closedPrefix (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -123,7 +121,7 @@ theorem appendEventCompatible_of_finalSlab_eq_closedPrefix (H : RetainedCoreHist
   rw [hcap hh]
   rfl
 
-theorem nonempty_eventMasterFlow_of_finalSlab_eq_closedPrefix (H : RetainedCoreHistory P)
+theorem nonempty_eventMasterFlow_of_finalSlab_eq_closedPrefix (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -134,7 +132,7 @@ theorem nonempty_eventMasterFlow_of_finalSlab_eq_closedPrefix (H : RetainedCoreH
   exists_eventMasterFlow_of_appendEventCompatible H E hne
     (H.appendEventCompatible_of_finalSlab_eq_closedPrefix E hhor hcap)
 
-theorem appendEvent_isPrefixOf_of_finalSlab_eq_closedPrefix (H : RetainedCoreHistory P)
+theorem appendEvent_isPrefixOf_of_finalSlab_eq_closedPrefix (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
@@ -206,18 +204,5 @@ theorem exists_hasExtinctCutCapTransition :
     ∃ P : OrientedThreeStage.{0}, Nonempty P.Carrier ∧ HasExtinctCutCapTransition P :=
   ⟨sphereThreeEmptyStage, ⟨Sum.inr sphereThreeStage_nonempty.some⟩,
     hasExtinctCutCapTransition_sphereThreeEmptyStage⟩
-
-theorem smoothPoincareConjecture_of_hasExtinctCutCapTransition
-    (hsum : ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
-      (i : Fin H.eventCount),
-      (H.cutCapTrace.transition i).componentConnectedSumDecomposition)
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (_ : SmoothRiemannianMetric (𝓡 3) M.Carrier),
-      HasExtinctCutCapTransition
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold)) :
-    smoothPoincareConjecture.{u} :=
-  smoothPoincareConjecture_of_hasExtinctRetainedCoreHistory hsum fun M _ g =>
-    hasExtinctRetainedCoreHistory_of_hasExtinctCutCapTransition M g (h M g)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

@@ -32,7 +32,7 @@ theorem TubeSystem.isManifold_core_of_euclideanHalfSpaceProd (T : TubeSystem M)
 
 theorem TubeSystem.isSmoothEmbedding_coreSubtype_of_euclideanHalfSpaceProd (T : TubeSystem M)
     [ChartedSpace EuclideanHalfSpaceProdModel T.core]
-    [IsManifold ((𝓡 2).prod (𝓡∂ 1)) ∞ T.core] [ChartedSpace ThreeSpace M]
+    [ChartedSpace ThreeSpace M]
     (h : IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) (𝓡 3) ∞ (Subtype.val : T.core → M)) :
     letI := T.coreChartedSpace
     IsSmoothEmbedding (𝓡∂ 3) (𝓡 3) ∞ (Subtype.val : T.core → M) :=
@@ -60,7 +60,7 @@ variable {M : Type u} [TopologicalSpace M] {N : Type u} [TopologicalSpace N]
 
 theorem Capping.isSmoothEmbedding_coreInclusion_of_euclideanHalfSpaceProd {T : TubeSystem M}
     (K : Capping T N) [ChartedSpace EuclideanHalfSpaceProdModel T.core]
-    [IsManifold ((𝓡 2).prod (𝓡∂ 1)) ∞ T.core] [ChartedSpace ThreeSpace N]
+    [ChartedSpace ThreeSpace N]
     (h : IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) (𝓡 3) ∞ K.coreInclusion) :
     letI := euclideanHalfSpaceProdChartedSpace T.core
     IsSmoothEmbedding (𝓡∂ 3) (𝓡 3) ∞ K.coreInclusion :=
@@ -113,7 +113,6 @@ theorem cutCore_isSmoothEmbedding_subtypeVal_euclideanHalfSpace
   @DifferentialGeometry.Manifold.isSmoothEmbedding_coreSubtype_of_euclideanHalfSpaceProd M _ _
     (cutCore f)
     (cutCoreBoundaryChartedSpace ThreeModel hdim hδ f hf hdisj)
-    (cutCore_isManifold ThreeModel hdim hδ f hf hdisj hs)
     (cutCore_ambientInclusion_isSmoothEmbedding ThreeModel hdim hδ f hf hdisj hs)
 
 theorem cutCore_boundary_eq_iUnion_cuttingSphereAttachment_euclideanHalfSpace

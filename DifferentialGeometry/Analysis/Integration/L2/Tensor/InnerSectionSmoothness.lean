@@ -4,6 +4,8 @@ import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Analysis.Normed.Module.Multilinear.Basic
+
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise)
 open DifferentialGeometry
 
 

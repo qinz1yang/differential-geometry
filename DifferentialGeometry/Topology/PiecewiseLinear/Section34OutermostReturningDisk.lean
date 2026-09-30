@@ -78,7 +78,7 @@ theorem exists_outermost_PL_crosscut_disk_avoiding_hole
 theorem IsPLHomeomorphOn.exists_outermost_crosscut_disk_avoiding_hole
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {D C : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hC : IsConnected C) (hCD : C ⊆ D)
     (hCrim : Disjoint C (r '' stdSimplexBoundary 2))
     {ι : Type*} [Finite ι] [Nonempty ι] {T : ι → Set E} {γ : ι → ℝ → E}
@@ -88,7 +88,7 @@ theorem IsPLHomeomorphOn.exists_outermost_crosscut_disk_avoiding_hole
     (hdisj : Pairwise fun i j => Disjoint (T i) (T j))
     (hCT : ∀ i, Disjoint C (T i)) :
     ∃ (i : ι) (F B : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
       F ⊆ D ∧ Disjoint F C ∧ q '' stdSimplexBoundary 2 = T i ∪ B ∧
       F ∩ r '' stdSimplexBoundary 2 = B ∧ F ∩ (⋃ j, T j) = T i ∧
       (∀ j, j ≠ i → Disjoint F (T j)) ∧

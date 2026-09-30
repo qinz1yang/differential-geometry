@@ -1,5 +1,9 @@
 import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormIdentity
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_zero tensorInnerPointwise)
 open DifferentialGeometry.Analysis.Elliptic
 
 

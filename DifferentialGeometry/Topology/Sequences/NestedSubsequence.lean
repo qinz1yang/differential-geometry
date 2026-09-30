@@ -15,7 +15,7 @@ private theorem exists_strictMono_eq_comp_of_forall_ge {f g : ℕ → ℕ} (hf :
   classical
   choose m hm heq using h
   let ρ : ℕ → ℕ := fun i => if hi : k ≤ i then m i hi else i
-  have hρ : ∀ i (hi : k ≤ i), ρ i = m i hi := fun i hi => dif_pos hi
+  have hρ : ∀ i (hi : k ≤ i), ρ i = m i hi := fun i hi => dite_eq_left hi
   refine ⟨ρ, strictMono_nat_of_lt_succ fun i => ?_, fun i hi => by rw [hρ i hi]; exact heq i hi⟩
   by_cases hi : k ≤ i
   · have hi' : k ≤ i + 1 := hi.trans (Nat.le_succ i)
@@ -23,12 +23,12 @@ private theorem exists_strictMono_eq_comp_of_forall_ge {f g : ℕ → ℕ} (hf :
     apply hf.lt_iff_lt.mp
     rw [← heq i hi, ← heq (i + 1) hi']
     exact hg (Nat.lt_succ_self i)
-  · have hlt : ρ i = i := dif_neg hi
+  · have hlt : ρ i = i := dite_eq_right hi
     rw [hlt]
     by_cases hi' : k ≤ i + 1
     · rw [hρ (i + 1) hi']
       exact Nat.lt_of_lt_of_le (Nat.lt_succ_self i) (hm (i + 1) hi')
-    · have : ρ (i + 1) = i + 1 := dif_neg hi'
+    · have : ρ (i + 1) = i + 1 := dite_eq_right hi'
       rw [this]
       exact Nat.lt_succ_self i
 
@@ -52,15 +52,15 @@ theorem exists_strictMono_forall_of_subseq_property (E : (ℕ → ℕ) → ℝ �
     rw [hΦsucc]
     by_cases h : ∃ χ : ℕ → ℕ, StrictMono χ ∧ E (σ₀ ∘ (Φ k).1 ∘ χ) (q k)
     · refine ⟨Classical.choose h, (Classical.choose_spec h).1, ?_⟩
-      simp only [step, dif_pos h]
+      simp only [step, dite_eq_left h]
     · refine ⟨id, strictMono_id, ?_⟩
-      simp only [step, dif_neg h]
+      simp only [step, dite_eq_right h]
       rfl
   have hchosen : ∀ k, (∃ χ : ℕ → ℕ, StrictMono χ ∧ E (σ₀ ∘ (Φ k).1 ∘ χ) (q k)) →
       E (σ₀ ∘ (Φ (k + 1)).1) (q k) := by
     intro k h
     rw [hΦsucc]
-    simp only [step, dif_pos h]
+    simp only [step, dite_eq_left h]
     exact (Classical.choose_spec h).2
   have hle : ∀ k m, k ≤ m → ∃ χ : ℕ → ℕ, StrictMono χ ∧ (Φ m).1 = (Φ k).1 ∘ χ := by
     intro k m hkm

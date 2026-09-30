@@ -36,12 +36,12 @@ def pretrivialization [Finite ι]
       map_target' := fun _ h => h.1
       left_inv' := fun ⟨x, v⟩ hx => by
         simp only [mem_preimage] at hx
-        simp only [TotalSpace.mk_inj, dif_pos hx, hs.coeff_apply_of_mem hx]
+        simp only [TotalSpace.mk_inj, dite_eq_left hx, hs.coeff_apply_of_mem hx]
         exact (hs.toBasisAt hx).equivFun.symm_apply_apply v
       right_inv' := fun ⟨x, v⟩ hx => by
-        simp only [Prod.mk_right_inj, dif_pos hx.1]
+        simp only [Prod.mk_right_inj, dite_eq_left hx.1]
         funext i
-        simp only [coeff, dif_pos hx.1]
+        simp only [coeff, dite_eq_left hx.1]
         exact (hs.toBasisAt hx.1).coord_equivFun_symm i v
       open_target := hW.prod isOpen_univ
       baseSet := W
@@ -76,7 +76,7 @@ theorem pretrivialization_symm_coe [Fintype ι]
   have hmk := (hs.pretrivialization hW).mk_symm hx c
   change (⟨x, (hs.pretrivialization hW).symm x c⟩ : TotalSpace (ι → 𝕜) (fun x => S x)) =
     ⟨x, if hx : x ∈ W then (hs.toBasisAt hx).equivFun.symm c else 0⟩ at hmk
-  simp only [TotalSpace.mk_inj, dif_pos hx] at hmk
+  simp only [TotalSpace.mk_inj, dite_eq_left hx] at hmk
   rw [hmk, Module.Basis.equivFun_symm_apply]
   simp only [Submodule.coe_sum, Submodule.coe_smul, toBasisAt_apply]
 

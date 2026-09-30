@@ -108,7 +108,7 @@ theorem abs_intervalIntegral_inner_le_norm
     change Integrable ((fun t => ‖f t‖) * fun t => ‖g t‖) ν
     exact hf.norm.integrable_mul hg.norm
   have hinner : Integrable (fun t => inner ℝ (f t) (g t)) ν := by
-    refine hprod.mono' (hf.1.inner hg.1) ?_
+    refine hprod.mono' (hf.aestronglyMeasurable.inner hg.aestronglyMeasurable) ?_
     filter_upwards [] with t
     exact norm_inner_le_norm _ _
   have hholder :
@@ -174,9 +174,8 @@ theorem memLp_of_continuousOn (hf : ContinuousOn f (Set.Icc (0 : ℝ) T)) :
     refine MemLp.of_bound hmeas ‖f t₀‖ ?_
     unfold timeMeasure
     exact (ae_restrict_iff' measurableSet_Icc).2 (Eventually.of_forall fun t ht => ht₀max ht)
-  · refine ⟨hmeas, ?_⟩
-    rw [timeMeasure_eq_zero_of_nonpos hT.le, eLpNorm_measure_zero]
-    exact ENNReal.zero_lt_top
+  · rw [timeMeasure_eq_zero_of_nonpos hT.le]
+    exact memLp_measure_zero
 
 def ofContinuousOn (hf : ContinuousOn f (Set.Icc (0 : ℝ) T)) : timeL2 X T :=
   (memLp_of_continuousOn hf).toLp f
@@ -194,7 +193,8 @@ theorem norm_ofContinuousOn_le_of_bound (hf : ContinuousOn f (Set.Icc (0 : ℝ) 
     unfold timeMeasure
     exact (ae_restrict_iff' measurableSet_Icc).2 (Eventually.of_forall hC)
   rw [ofContinuousOn, Lp.norm_toLp]
-  have hle := eLpNorm_le_of_ae_bound (μ := timeMeasure T) (p := 2) hbound
+  have hle := eLpNorm_le_of_ae_bound (μ := timeMeasure T) (p := 2)
+    (memLp_of_continuousOn hf).aestronglyMeasurable hbound
   rcases le_or_gt 0 C with hC0 | hC0
   · refine le_trans (ENNReal.toReal_mono ?_ hle) ?_
     · exact ENNReal.mul_ne_top
@@ -208,7 +208,7 @@ theorem norm_ofContinuousOn_le_of_bound (hf : ContinuousOn f (Set.Icc (0 : ℝ) 
       filter_upwards [hbound] with t ht
       have : ‖f t‖ = 0 := le_antisymm (le_trans ht hC0.le) (norm_nonneg _)
       exact norm_eq_zero.1 this
-    rw [eLpNorm_congr_ae hfzero, eLpNorm_zero', ENNReal.toReal_zero]
+    rw [eLpNorm_congr_ae hfzero, eLpNorm_fun_zero, ENNReal.toReal_zero]
     have : 0 ≤ Real.sqrt T * C ∨ Real.sqrt T = 0 := by
       rcases le_or_gt 0 T with hT | hT
       · exact Or.inr (by rcases eq_or_lt_of_le hT with h | h
@@ -559,7 +559,8 @@ theorem integral_norm_le (f : timeL2 X T) :
   have hint : ∫ t in Set.Icc (0 : ℝ) T, ‖f t‖
       = (eLpNorm (fun t => f t) 1 (timeMeasure T)).toReal := by
     rw [show (∫ t in Set.Icc (0 : ℝ) T, ‖f t‖) = ∫ t, ‖f t‖ ∂(timeMeasure T) from rfl,
-      integral_norm_eq_lintegral_enorm hf1.1, eLpNorm_one_eq_lintegral_enorm]
+      integral_norm_eq_lintegral_enorm hf1.aestronglyMeasurable,
+      eLpNorm_one_eq_lintegral_enorm hf1.aestronglyMeasurable]
   rw [hint, Lp.norm_def]
   have hholder := eLpNorm_le_eLpNorm_mul_rpow_measure_univ
     (μ := timeMeasure T) (p := 1) (q := 2) (by norm_num) (Lp.aestronglyMeasurable f)

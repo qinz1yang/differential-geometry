@@ -206,7 +206,7 @@ theorem isPiecewiseAffineOn_stdTriangleLoop : IsPiecewiseAffineOn stdTriangleLoo
     refine (isPiecewiseAffineOn_of_affine_of_isHPolytope
       (AffineMap.lineMap (![1, 0, 0] : Fin 3 → ℝ) ![-2, 3, 0]) isHPolytope_Icc).congr ?_
     intro t ht
-    rw [stdTriangleLoop, if_pos ht.2, AffineMap.lineMap_apply_module]
+    rw [stdTriangleLoop, ite_eq_left ht.2, AffineMap.lineMap_apply_module]
     funext i; fin_cases i <;> dsimp <;> ring
   have h₂ : IsPiecewiseAffineOn stdTriangleLoop (Icc (1 / 3) (2 / 3)) := by
     refine (isPiecewiseAffineOn_of_affine_of_isHPolytope

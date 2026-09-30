@@ -47,7 +47,7 @@ private theorem injective_mfderiv_sphereToThreeBall (x : Sphere 2) :
   let thisBall : ChartedSpace (EuclideanHalfSpace 3) ThreeBall := E.ballCharts
   let thisSmooth : IsManifold (𝓡∂ 3) ∞ ThreeBall := E.ballSmooth
   have hinj := ((isSmoothEmbedding_coe_sphere (E := ThreeSpace) (n := 2)).isImmersion.isImmersionAt
-    x).injective_mfderiv (by simp)
+    x).mfderiv_injective (by simp)
   have heq : (Subtype.val : Sphere 2 → ThreeSpace) =
       (Subtype.val : ThreeBall → ThreeSpace) ∘ sphereToThreeBall := rfl
   rw [heq, mfderiv_comp x (E.ball_induced.contMDiff.mdifferentiableAt (by simp))
@@ -65,7 +65,7 @@ private theorem capBoundary_isSmoothEmbedding (b : E.trace.tubes.Boundary) :
   · intro x
     rw [mfderiv_comp x ((E.cap_smooth b).contMDiff.mdifferentiableAt (by simp))
       (E.contMDiff_sphereToThreeBall.mdifferentiableAt (by simp))]
-    exact ((E.cap_smooth b).isImmersion.isImmersionAt _).injective_mfderiv (by simp) |>.comp
+    exact ((E.cap_smooth b).isImmersion.isImmersionAt _).mfderiv_injective (by simp) |>.comp
       (E.injective_mfderiv_sphereToThreeBall x)
   · apply (E.cap_smooth b).isEmbedding.comp
     apply _root_.Topology.IsEmbedding.subtypeVal.of_comp_iff.mp

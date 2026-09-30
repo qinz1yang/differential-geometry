@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperato
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Composition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Inclusion
 
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq)
 
 noncomputable section
 
@@ -451,7 +453,8 @@ private theorem pcoeff1_bound
       linarith
     _ ≤ Cout * (2 * (Cmul * A * B)) := by
       gcongr
-      convert hprod using 1 <;> rfl
+      convert hprod using 1
+      rfl
     _ = (C * NT) * NW := by
       dsimp only [C, A, B]
       ring

@@ -16,7 +16,7 @@ universe u
 theorem exists_admissiblePinchingFunction_of_hasCanonicalCutoffRecords
     (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ phi : ℝ → ℝ, Perelman.AdmissiblePinchingFunction phi ∧
-      ∀ (H : RetainedCoreHistory P₀), InitialIdentification P₀ g₀ H.toHistory →
+      ∀ (H : RetainedCoreHistory.{u}), InitialIdentification P₀ g₀ H.toHistory →
       ∀ {p₀ : CutoffParameters} {δ₀ ρ₀ : ℝ}, H.hasCanonicalCutoffRecords p₀ δ₀ ρ₀ →
         H.EventSlabsPinched phi ∧
         ∀ (k : Fin (H.eventCount + 1)) {s : ℝ} (G : (H.stage k).IncomingSlab (H.time k) s),
@@ -33,7 +33,7 @@ theorem exists_admissiblePinchingFunction_of_hasCanonicalCutoffRecords
 theorem exists_pos_le_terminal_time_of_hasCanonicalCutoffRecords
     (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ a : ℝ, 0 < a ∧
-      ∀ (H : RetainedCoreHistory P₀), InitialIdentification P₀ g₀ H.toHistory →
+      ∀ (H : RetainedCoreHistory.{u}), InitialIdentification P₀ g₀ H.toHistory →
       ∀ {p₀ : CutoffParameters} {δ₀ ρ₀ : ℝ}, H.hasCanonicalCutoffRecords p₀ δ₀ ρ₀ →
       ∀ (k : Fin (H.eventCount + 1)) {s : ℝ} (G : (H.stage k).IncomingSlab (H.time k) s),
         G.flow.base.metric (H.time k) = H.initialMetric k → G.SingularEndpoint → a ≤ s := by

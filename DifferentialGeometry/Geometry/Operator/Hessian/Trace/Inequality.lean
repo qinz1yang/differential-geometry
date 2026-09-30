@@ -122,21 +122,21 @@ private theorem hessianTrace_parseval_of_orthonormal
         rw [hprod2 i j k l]
         congr 1]
     rw [Finset.sum_eq_single i]
-    · rw [if_pos rfl]
+    · rw [ite_eq_left rfl]
       rw [Finset.sum_eq_single j]
-      · rw [if_pos rfl]
+      · rw [ite_eq_left rfl]
         rw [hvec i j]
         rw [hessTensorAt_apply]
         ring
       · intro l _ hlj
         have hjl : ¬ j = l := fun h => hlj h.symm
-        rw [if_neg (by exact fun h => hlj h.symm)]
+        rw [ite_eq_right (by exact fun h => hlj h.symm)]
         simp
       · intro hj
         exact absurd (Finset.mem_univ j) hj
     · intro k _ hki
       have hik : ¬ i = k := fun h => hki h.symm
-      rw [if_neg (by exact fun h => hki h.symm)]
+      rw [ite_eq_right (by exact fun h => hki h.symm)]
       simp
     · intro hi
       exact absurd (Finset.mem_univ i) hi
@@ -285,7 +285,7 @@ theorem laplacian_sq_le_dim_mul_hessianFrobeniusSq_of_boundaryless
       · simp
       · intro j _ hji
         have hij : ¬ i = j := fun h => hji h.symm
-        rw [if_neg hij]
+        rw [ite_eq_right hij]
         ring
       · intro hi
         exact absurd (Finset.mem_univ i) hi

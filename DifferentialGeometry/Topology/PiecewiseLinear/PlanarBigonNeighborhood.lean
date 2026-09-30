@@ -17,8 +17,8 @@ theorem IsPLBall.exists_isPLBall_neighborhood_with_two_crossings
     {D U A C : Set Plane} {p q : Plane} (hD : IsPLBall 2 D)
     (hU : IsOpen U) (hDU : D ⊆ U)
     {r s : (Fin 2 → ℝ) → Plane}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 2)) A)
-    (hs : IsPLHomeomorphOn s (stdSimplex ℝ (Fin 2)) C)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A)
+    (hs : IsPLHomeomorphOn s (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) C)
     (hDA : IsPLBall 1 (D ∩ A)) (hDC : IsPLBall 1 (D ∩ C))
     (hrends : Disjoint D (r '' stdSimplexBoundary 1))
     (hsends : Disjoint D (s '' stdSimplexBoundary 1))
@@ -42,7 +42,7 @@ theorem IsPLBall.exists_isPLBall_neighborhood_with_two_crossings
     exact ⟨hDU hx, fun hxc => hxc.2 (hpair ▸ ⟨hx, hxc.1⟩)⟩
   let T : Fin 2 → Set Plane := ![A, C]
   let t : Fin 2 → (Fin 2 → ℝ) → Plane := ![r, s]
-  have ht (i : Fin 2) : IsPLHomeomorphOn (t i) (stdSimplex ℝ (Fin 2)) (T i) := by
+  have ht (i : Fin 2) : IsPLHomeomorphOn (t i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (T i) := by
     fin_cases i
     · exact hr
     · exact hs

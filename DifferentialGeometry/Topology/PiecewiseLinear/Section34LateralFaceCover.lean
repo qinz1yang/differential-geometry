@@ -9,7 +9,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem exists_complementary_lateral_disks
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {P A₀ A₁ : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P) {a b : ℝ} (hab : a < b)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P) {a b : ℝ} (hab : a < b)
     {Z : (r '' stdSimplexBoundary 2) → Set (E × ℝ)}
     (hZ : ∀ z, IsPreconnected (Z z))
     (hZside : ∀ z, Z z ⊆ (r '' stdSimplexBoundary 2) ×ˢ Icc a b)
@@ -29,8 +29,8 @@ theorem exists_complementary_lateral_disks
     (hAcover : A₀ ∪ A₁ = r '' stdSimplexBoundary 2)
     (hAinter : A₀ ∩ A₁ = {(x : E), (y : E)}) :
     ∃ (F₀ F₁ : Set (E × ℝ)) (q₀ q₁ : (Fin 3 → ℝ) → E × ℝ),
-      IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) F₀ ∧
-      IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) F₁ ∧
+      IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F₀ ∧
+      IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F₁ ∧
       F₀ ∪ F₁ = (r '' stdSimplexBoundary 2) ×ˢ Icc a b ∧ F₀ ∩ F₁ = Z x ∪ Z y ∧
       q₀ '' stdSimplexBoundary 2 =
         ((Z x ∪ (A₀ ×ˢ ({a} : Set ℝ))) ∪ Z y) ∪ (A₀ ×ˢ ({b} : Set ℝ)) ∧
@@ -55,7 +55,7 @@ theorem exists_complementary_lateral_disks
   have hF₀ : IsPLBall 2 F₀ := ⟨q₀, hq₀⟩
   have hF₁ : IsPLBall 2 F₁ := ⟨q₁, hq₁⟩
   have hZsub (A : Set E) (F : Set (E × ℝ)) (q : (Fin 3 → ℝ) → E × ℝ)
-      (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) F)
+      (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F)
       (hbd : q '' stdSimplexBoundary 2 =
         ((Z x ∪ (A ×ˢ ({a} : Set ℝ))) ∪ Z y) ∪ (A ×ˢ ({b} : Set ℝ))) : Z x ∪ Z y ⊆ F := by
     have hbF : q '' stdSimplexBoundary 2 ⊆ F :=
@@ -85,7 +85,7 @@ theorem exists_complementary_lateral_disks
   obtain ⟨K, hKfin, hKP⟩ := hP.isPolyhedron.exists_simplicialComplex
   let _ : Finite K.faces := hKfin.to_subtype
   have hK : IsPLBall 2 K.space := hKP.symm ▸ hP
-  have hrK : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) K.space := hKP.symm ▸ hr
+  have hrK : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) K.space := hKP.symm ▸ hr
   have hJ : (boundaryComplex 2 K).space = r '' stdSimplexBoundary 2 :=
     (hr.image_stdSimplexBoundary_eq_boundaryComplex K hKP).symm
   let C := P ×ˢ ({a} : Set ℝ)

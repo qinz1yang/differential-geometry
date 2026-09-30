@@ -3,6 +3,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.Symmetr
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.KoszulSecondCovariantDerivative
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.PassZero
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
+
 set_option autoImplicit false
 
 noncomputable section

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedSourceCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedScalarComparison
-import DifferentialGeometry.Tensor.Metric.ScaleNorm
+import DifferentialGeometry.Geometry.Metric.Tensor.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.VolumeTransport
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 

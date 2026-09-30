@@ -113,7 +113,8 @@ theorem IsConeBase.boundaryComplex_space_of_halfSpace_germ
     have hfrontiff : p + s • (z - p) ∈ frontier (coneComplex hp).space ↔
         p + s • (z - p) ∈ frontier {x | 0 ≤ ℓ x} := by
       rw [mem_frontier_iff_notMem_interior hxC, mem_frontier_iff_notMem_interior hxH,
-        hsEq.mem_interior_iff]
+        Filter.EventuallyEqSet.mem_interior_iff (Filter.eventuallyEqSet_iff.mpr
+          (hsEq.mono fun _ h => iff_of_eq h))]
     rw [← hp.mem_frontier_combo_iff hn hL hz hs hs1, hfrontiff, hfront]
     change ℓ (p + s • (z - p)) = 0 ↔ ℓ z = 0
     simp only [map_add, map_smul, map_sub, hpℓ, zero_add, sub_zero, smul_eq_mul,
@@ -130,7 +131,7 @@ theorem exists_isPLHomeomorphOn_geometricLink_halfSpace
     (hside : ∀ s ∈ K.faces, convexHull ℝ (s : Set E) ⊆ {x | ℓ x ≤ 0} ∨
       convexHull ℝ (s : Set E) ⊆ {x | 0 ≤ ℓ x}) :
     ∃ f : (Fin (n + 2) → ℝ) → E,
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2)))
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)))
         ((SimplicialComplex.geometricLink K {p}).space ∩ {x | 0 ≤ ℓ x}) ∧
       f '' stdSimplexBoundary (n + 1) =
         (SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = 0} := by

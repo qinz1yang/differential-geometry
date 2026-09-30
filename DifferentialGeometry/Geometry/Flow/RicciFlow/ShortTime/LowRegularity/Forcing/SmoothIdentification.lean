@@ -220,7 +220,7 @@ theorem deTurck_remainder_forcing_eq_smooth_remainder_ae
   have hlift : aeSetLift
       (zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le) field t = uF := by
     apply Subtype.ext
-    simp only [aeSetLift, dif_pos htstate, uF]
+    simp only [aeSetLift, dite_eq_left htstate, uF]
     exact htpin.symm
   rw [htforce, hlift]
   simpa only [uF] using

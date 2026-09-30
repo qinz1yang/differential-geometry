@@ -11,7 +11,7 @@ namespace DifferentialGeometry.Topology
 
 theorem integralRelativeHomologyMap_liftedFaceToBoundary_bijective
     {n : ℕ} (k : ℕ) (i : Fin (n + 2))
-    (p : ULift.{u} (stdSimplex ℝ (Fin (n + 1))))
+    (p : ULift.{u} (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))))
     (hp : p.down ∉ Simplex.boundary (Fin (n + 1))) :
     Function.Bijective (integralRelativeHomologyMap k (Simplex.liftedFaceToBoundary i)
       (Simplex.liftedFaceToBoundary_mapsTo i p)) := by
@@ -27,7 +27,8 @@ theorem integralRelativeHomologyMap_liftedFaceToBoundary_bijective
 theorem integralRelativeHomologyMap_liftedFaceToBoundary_barycenter_bijective
     {n : ℕ} (k : ℕ) (i : Fin (n + 2)) :
     Function.Bijective (integralRelativeHomologyMap k (Simplex.liftedFaceToBoundary.{u} i)
-      (Simplex.liftedFaceToBoundary_mapsTo i (ULift.up stdSimplex.barycenter))) := by
+      (Simplex.liftedFaceToBoundary_mapsTo i
+        (ULift.up Convexity.StdSimplex.coordinateBarycenter))) := by
   apply integralRelativeHomologyMap_liftedFaceToBoundary_bijective
   exact fun h => Simplex.boundary_ne_barycenter h rfl
 

@@ -5,6 +5,31 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.Proportional
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Bound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.DifferentiatedTower
+
+open DifferentialGeometry.TensorMetric
+  (coframeS
+    coframeS_apply
+    covariantTensorInnerPointwise
+    exists_tangent_orthonormalBasisS_with_norm_sum
+    fiberNormSqComponent
+    fiberNormSqSummand
+    fiberNormSqSummand_eq_component_sq
+    lowerAllUpperIndices
+    lowerAllUpperIndices_apply
+    riemannianFiberNormSq
+    riemannianFiberNormSq_eq_sum_componentS_sq
+    riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg
+    riemannianFiberNormSq_slot0Curry_le_of_frame
+    riemannianFiberNormSq_succ_eq_sum_slot0Curry_of_frame
+    riemannianFiberNormSq_sum_le_card_mul
+    riemannianFiberNormSq_zero
+    slot0Curry
+    slot0Curry_apply
+    tensor00Scalar
+    tensor00Scalar_apply
+    tensorInnerPointwise
+    tensorInnerPointwise_0s_eq_diag_sum_orthoFrame)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -251,8 +276,8 @@ private lemma riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame
       intro j _
       rw [(g.inner x (e k)).map_smul (c j) (e j), smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
-    · intro j _ hjk; rw [if_neg (fun h => hjk h.symm), mul_zero]
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
+    · intro j _ hjk; rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ (TangentSpace I x))) =
       Module.finrank ℝ (TangentSpace I x) := Fintype.card_fin _
   set bse : Module.Basis (Fin (Module.finrank ℝ (TangentSpace I x))) ℝ (TangentSpace I x) :=
@@ -625,9 +650,9 @@ theorem exists_proportional_pureRFrozenFrameDiffOp_orderZero
               Csm * riemannianFiberNormSq (I := I) (M := M) g 0 (m + 1) x₀ (W.toSection x₀) := by
           intro i
           have hgB : g.inner x₀ (B i x₀) (B i x₀) = 1 := by
-            have := hBorth i i; rwa [if_pos rfl] at this
+            have := hBorth i i; rwa [ite_eq_left rfl] at this
           have hge : g.inner x₀ (e a) (e a) = 1 := by
-            have := horth a a; rwa [if_pos rfl] at this
+            have := horth a a; rwa [ite_eq_left rfl] at this
           have hbound := hCsup m x₀ (B i x₀) (e a)
             ((covGradBundleEquiv (I := I) (M := M) 0 m x₀).symm (W.toSection x₀) (B i x₀))
           rw [hgB, hge, mul_one, mul_one, ← hCsm_def] at hbound

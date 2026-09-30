@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.DiagonalLocalCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.DiagonalCapMetric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.DiagonalCapMetric
 open private exists_diagonal_slab_ball_sandwich_and_depth_with_margin from DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.DiagonalCapMetric
 
 set_option autoImplicit false
@@ -35,7 +34,7 @@ theorem exists_localCap_diagonal_shrinking_model
       ∃ cap : LocalCap S eps (d (cylinderDiagonalQuotientMap p)) 0 U,
         cap.core.carrier = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-L) L)) ∧
         cap.tube = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc L (L + 1))) ∧
-        (∀ z : Cylinder, cap.tube_map z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
+        (∀ z : Cylinder, cap.tubeMap z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
         cap.chain.count = 1 ∧
         (∀ i, cap.chain.centers i = d (cylinderDiagonalQuotientMap (p.1, L)) ∧
           (∀ z : Cylinder, (cap.chain.necks i).map z =

@@ -855,7 +855,7 @@ theorem exists_deriv_radius
   have hcloseDeriv := hn z hz
   have hclosePartial :
       dist (partialInf z) (partialFDeriv₂ (F n) z.1 z.2) < delta := by
-    have hbound := restrictPartial.lipschitz.dist_le_mul
+    have hbound := restrictPartial.lipschitzWith.dist_le_mul
       (fderiv Real FInf z) (fderiv Real (F n) z)
     calc
       dist (partialInf z) (partialFDeriv₂ (F n) z.1 z.2)
@@ -1144,7 +1144,7 @@ theorem exists_root_c0
       dist (Phi n p) (PhiInf p) < inner ∧ F n (p, Phi n p) = 0 := by
     intro n hn p hp
     dsimp only [Phi]
-    rw [dif_pos ⟨hn, hp⟩]
+    rw [dite_eq_left ⟨hn, hp⟩]
     exact Classical.choose_spec ((hroot n hn).1 p hp)
   have hPhiConvergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.parameterDomain) := by
     rw [Metric.tendstoUniformlyOn_iff]
@@ -1559,22 +1559,22 @@ theorem exists_root_cInf
     intro eps heps
     filter_upwards [hconv₀ eps heps, eventually_ge_atTop N] with n hnConvergence hn
     intro q hq
-    simpa only [Phi, if_pos hn] using! hnConvergence q hq
+    simpa only [Phi, ite_eq_left hn] using! hnConvergence q hq
   have hPhi_cd : ∀ n, ContDiffOn Real ∞ (Phi n) T.parameterDomain := by
     intro n
     by_cases hn : N ≤ n
-    · simpa only [Phi, if_pos hn] using! hcd₀ n hn
-    · simpa only [Phi, if_neg hn] using! hPhiInf_cd
+    · simpa only [Phi, ite_eq_left hn] using! hcd₀ n hn
+    · simpa only [Phi, ite_eq_right hn] using! hPhiInf_cd
   have hF'_cd : ∀ n, ContDiffOn Real ∞ (F' n) D := by
     intro n
     by_cases hn : N ≤ n
-    · simpa only [F', if_pos hn] using! hF_cd n
-    · simpa only [F', if_neg hn] using! T.limit_equation_smooth
+    · simpa only [F', ite_eq_left hn] using! hF_cd n
+    · simpa only [F', ite_eq_right hn] using! T.limit_equation_smooth
   have hF'_convergence : MapCInfConvergenceOnCompacts D F' FInf := by
     apply hF_convergence.congr_eventually T.isOpen_domain
     · filter_upwards [eventually_ge_atTop N] with n hn
       intro z hz
-      simp only [F', if_pos hn]
+      simp only [F', ite_eq_left hn]
     · intro z hz
       rfl
   have hspec : ∀ n, ∀ p ∈ closure T.parameterDomain,
@@ -1583,18 +1583,18 @@ theorem exists_root_cInf
       (partialFDeriv₂ (F' n) p (Phi n p)).IsInvertible := by
     intro n p hp
     by_cases hn : N ≤ n
-    · simpa only [Phi, F', if_pos hn] using! hspec₀ n hn p hp
+    · simpa only [Phi, F', ite_eq_left hn] using! hspec₀ n hn p hp
     · have hdist : dist (PhiInf p) (PhiInf p) < T.rho / 2 := by
         simpa using! half_pos T.rho_pos
-      simpa only [Phi, F', if_neg hn] using
+      simpa only [Phi, F', ite_eq_right hn] using
         ⟨hdist, T.limit_root p hp, T.limit_root_deriv_inv p hp⟩
   have huniq : ∀ n, ∀ p ∈ closure T.parameterDomain, ∀ x,
       dist x (PhiInf p) < T.rho →
         (F' n (p, x) = 0 ↔ x = Phi n p) := by
     intro n p hp x hx
     by_cases hn : N ≤ n
-    · simpa only [Phi, F', if_pos hn] using! huniq₀ n hn p hp x hx
-    · simp only [Phi, F', if_neg hn]
+    · simpa only [Phi, F', ite_eq_left hn] using! huniq₀ n hn p hp x hx
+    · simp only [Phi, F', ite_eq_right hn]
       constructor
       · exact T.limit_unique p hp x hx.le
       · rintro rfl
@@ -1603,9 +1603,9 @@ theorem exists_root_cInf
     T.root_cInf hF'_cd hF'_convergence hPhi_convergence hPhi_cd hspec huniq
   refine ⟨N, Phi, hCInf, hPhi_cd, ?_, ?_⟩
   · intro n hn p hp
-    simpa only [Phi, if_pos hn] using! hspec₀ n hn p hp
+    simpa only [Phi, ite_eq_left hn] using! hspec₀ n hn p hp
   · intro n hn p hp x hx
-    simpa only [Phi, if_pos hn] using! huniq₀ n hn p hp x hx
+    simpa only [Phi, ite_eq_left hn] using! huniq₀ n hn p hp x hx
 
 theorem exists_cInf_tail
     {P X Y : Type*}
@@ -1634,13 +1634,13 @@ theorem exists_cInf_tail
   have hF'_cd : ∀ n, ContDiffOn Real ∞ (F' n) D := by
     intro n
     by_cases hn : N₀ ≤ n
-    · simpa only [F', if_pos hn] using! hN₀ n hn
-    · simpa only [F', if_neg hn] using! T.limit_equation_smooth
+    · simpa only [F', ite_eq_left hn] using! hN₀ n hn
+    · simpa only [F', ite_eq_right hn] using! T.limit_equation_smooth
   have hF'_convergence : MapCInfConvergenceOnCompacts D F' FInf := by
     apply hF_convergence.congr_eventually T.isOpen_domain
     · filter_upwards [eventually_ge_atTop N₀] with n hn
       intro z hz
-      simp only [F', if_pos hn]
+      simp only [F', ite_eq_left hn]
     · intro z hz
       rfl
   obtain ⟨N₁, Phi, hPhi, hPhiC, hspec, huniq⟩ :=
@@ -1650,11 +1650,11 @@ theorem exists_cInf_tail
   · intro n hn p hp
     have hn₀ : N₀ ≤ n := (Nat.le_max_left _ _).trans hn
     have hn₁ : N₁ ≤ n := (Nat.le_max_right _ _).trans hn
-    simpa only [F', if_pos hn₀] using! hspec n hn₁ p hp
+    simpa only [F', ite_eq_left hn₀] using! hspec n hn₁ p hp
   · intro n hn p hp x hx
     have hn₀ : N₀ ≤ n := (Nat.le_max_left _ _).trans hn
     have hn₁ : N₁ ≤ n := (Nat.le_max_right _ _).trans hn
-    simpa only [F', if_pos hn₀] using! huniq n hn₁ p hp x hx
+    simpa only [F', ite_eq_left hn₀] using! huniq n hn₁ p hp x hx
 
 end CompactRootTube
 

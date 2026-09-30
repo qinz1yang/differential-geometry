@@ -29,7 +29,7 @@ theorem lipschitzOnWith_comp_of_locally_lipschitzOn
       rw [edist_dist, Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hst), neg_sub]
     calc
       edist (f (gamma s)) (f (gamma t)) ≤ eVariationOn (f ∘ gamma) (Icc s t) :=
-        eVariationOn.edist_le _ ⟨le_rfl, hst⟩ ⟨hst, le_rfl⟩
+        eVariationOn.edist_le (f ∘ gamma) (s := Icc s t) ⟨le_rfl, hst⟩ ⟨hst, le_rfl⟩
       _ ≤ (L : ℝ≥0∞) * eVariationOn gamma (Icc s t) := hvar
       _ ≤ (L : ℝ≥0∞) * ((C : ℝ≥0∞) * ENNReal.ofReal (t - s)) :=
         mul_le_mul_right hgammaVar _

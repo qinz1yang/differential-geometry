@@ -456,7 +456,7 @@ theorem exists_orthonormal_normal_sections
         calc
           ⟪v (Fin.last k), e i x⟫_ℝ = ⟪v (Fin.last k), v i.castSucc⟫_ℝ := by rw [heValue i]
           _ = if Fin.last k = i.castSucc then 1 else 0 := h
-          _ = 0 := by rw [if_neg (Fin.castSucc_ne_last i).symm]
+          _ = 0 := by rw [ite_eq_right (Fin.castSucc_ne_last i).symm]
       obtain ⟨W, hW, hxW, eNew, heNewOrth, heNewValue, heNewCov⟩ :=
         exists_orthonormal_normal_section_snoc cov hcov x (v (Fin.last k)) hwNorm
           U hU hxU e heOrth hwOrth heCov

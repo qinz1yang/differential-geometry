@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.WeightedSob
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.ComponentL2BoundUniform
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.IntrinsicL2Bridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.H1Compl
+
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise tensorInnerPointwise_nonneg)
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -170,12 +173,13 @@ lemma tensorChartComponentSqrtPou_sq_le_const_mul_tensorInner
     exact h_RHS_nn
 
 private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq
-    {β : Type*} [MeasurableSpace β] (μ : Measure β) (f : β → ℝ) :
+    {β : Type*} [MeasurableSpace β] (μ : Measure β) (f : β → ℝ)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
   classical
   have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
   have h2_ne_top : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by norm_num
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top hf]
   have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
   rw [h2_toReal]
   have h_inner_eq : ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
@@ -211,122 +215,6 @@ private lemma eLpNorm_two_le_ofReal_sqrt
   have h_pow := le_sqrt_of_sq_le h_sq
   rw [sqrt_ofReal_eq_ofReal_sqrt hS] at h_pow
   exact h_pow
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-private lemma sq_eLpNorm_tensorChartComponentSqrtPou_le_const_mul_tensorL2Inner
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
-    ∃ C : ℝ, 0 ≤ C ∧
-      ∀ (S : SmoothCcTensor g r s)
-        (Idx : Fin r → Fin (Module.finrank ℝ E))
-        (Jdx : Fin s → Fin (Module.finrank ℝ E)),
-        (eLpNorm (tensorChartComponentSqrtPou (I := I) (M := M)
-              g r s S α Idx Jdx) 2
-            (riemannianVolumeMeasure (I := I) (M := M) g)) ^ 2 ≤
-          ENNReal.ofReal (C *
-            tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun) := by
-  classical
-  obtain ⟨C, hC_nn, h_pt⟩ :=
-    tensorChartComponentSqrtPou_sq_le_const_mul_tensorInner
-      (I := I) (M := M) (E := E) g r s α
-  refine ⟨C, hC_nn, ?_⟩
-  intro S Idx Jdx
-  set f : M → ℝ := tensorChartComponentSqrtPou (I := I) (M := M)
-    g r s S α Idx Jdx with hf_def
-  set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
-  have h_pt_enn : ∀ b : M,
-      (‖f b‖ₑ : ℝ≥0∞) ^ 2 ≤
-        ENNReal.ofReal (C * tensorInnerPointwise (I := I) (M := M)
-          g r s b (S.toFun b) (S.toFun b)) := by
-    intro b
-    rw [show (‖f b‖ₑ : ℝ≥0∞) ^ 2 = ENNReal.ofReal ((f b) ^ 2) by
-      rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _) 2,
-        sq_abs]]
-    exact ENNReal.ofReal_le_ofReal (h_pt S Idx Jdx b)
-  have h_inner_int := SmoothCcTensor.integrable_inner_cross
-    (I := I) (M := M) (g := g) (r := r) (s := s) S S
-  have h_C_smul_int :
-      Integrable (fun b : M => C *
-        tensorInnerPointwise (I := I) (M := M) g r s b
-          (S.toFun b) (S.toFun b)) μ :=
-    h_inner_int.const_mul C
-  have h_C_smul_nn :
-      0 ≤ᵐ[μ] (fun b : M => C * tensorInnerPointwise
-        (I := I) (M := M) g r s b (S.toFun b) (S.toFun b)) := by
-    refine Filter.Eventually.of_forall ?_
-    intro b
-    exact mul_nonneg hC_nn
-      (tensorInnerPointwise_nonneg (I := I) (M := M) g r s b _)
-  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq μ f]
-  have h_lint_le :
-      ∫⁻ b, (‖f b‖ₑ : ℝ≥0∞) ^ 2 ∂μ ≤
-        ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise
-          (I := I) (M := M) g r s b (S.toFun b) (S.toFun b)) ∂μ := by
-    refine lintegral_mono_ae ?_
-    filter_upwards with b using h_pt_enn b
-  have h_lint_eq :
-      ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise
-        (I := I) (M := M) g r s b (S.toFun b) (S.toFun b)) ∂μ =
-        ENNReal.ofReal (∫ b, C * tensorInnerPointwise
-          (I := I) (M := M) g r s b (S.toFun b) (S.toFun b) ∂μ) :=
-    (MeasureTheory.ofReal_integral_eq_lintegral_ofReal
-      h_C_smul_int h_C_smul_nn).symm
-  rw [h_lint_eq] at h_lint_le
-  have h_int_const_mul :
-      ∫ b, C * tensorInnerPointwise (I := I) (M := M) g r s b
-        (S.toFun b) (S.toFun b) ∂μ =
-        C * tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun := by
-    unfold tensorL2Inner
-    rw [integral_const_mul]
-  rw [h_int_const_mul] at h_lint_le
-  exact h_lint_le
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem eLpNorm_tensorChartComponentSqrtPou_le_uniform
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
-    ∃ C : ℝ, 0 ≤ C ∧
-      ∀ (S : SmoothCcTensor g r s)
-        (Idx : Fin r → Fin (Module.finrank ℝ E))
-        (Jdx : Fin s → Fin (Module.finrank ℝ E)),
-        eLpNorm (tensorChartComponentSqrtPou (I := I) (M := M)
-              g r s S α Idx Jdx) 2
-            (riemannianVolumeMeasure (I := I) (M := M) g) ≤
-          ENNReal.ofReal C *
-            ENNReal.ofReal
-              (tensorL2Norm (I := I) (M := M) g r s S.toFun) := by
-  classical
-  obtain ⟨C, hC_nn, h_sq⟩ :=
-    sq_eLpNorm_tensorChartComponentSqrtPou_le_const_mul_tensorL2Inner
-      (I := I) (M := M) (E := E) g r s α
-  refine ⟨Real.sqrt C, Real.sqrt_nonneg _, ?_⟩
-  intro S Idx Jdx
-  have h_inner_nn :
-      0 ≤ tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun := by
-    unfold tensorL2Inner
-    refine integral_nonneg ?_
-    intro b
-    exact tensorInnerPointwise_nonneg (I := I) (M := M) g r s b _
-  have h_norm_sq :
-      tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun =
-        (tensorL2Norm (I := I) (M := M) g r s S.toFun) ^ 2 := by
-    unfold tensorL2Norm
-    rw [sq, Real.mul_self_sqrt h_inner_nn]
-  set S_total : ℝ := C *
-    tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun with hS_total_def
-  have hS_total_nn : 0 ≤ S_total := mul_nonneg hC_nn h_inner_nn
-  have h_eLpNorm_le :=
-    eLpNorm_two_le_ofReal_sqrt hS_total_nn (h_sq S Idx Jdx)
-  have h_sqrt_factor :
-      Real.sqrt S_total = Real.sqrt C *
-        tensorL2Norm (I := I) (M := M) g r s S.toFun := by
-    rw [hS_total_def, h_norm_sq, Real.sqrt_mul hC_nn,
-      show (tensorL2Norm (I := I) (M := M) g r s S.toFun) ^ 2 =
-        tensorL2Norm (I := I) (M := M) g r s S.toFun *
-          tensorL2Norm (I := I) (M := M) g r s S.toFun from by ring,
-      Real.sqrt_mul_self
-        (tensorL2Norm_nonneg (I := I) (M := M) g r s S.toFun)]
-  rw [h_sqrt_factor,
-    ENNReal.ofReal_mul (Real.sqrt_nonneg _)] at h_eLpNorm_le
-  exact h_eLpNorm_le
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma support_sqrt_pou_eq
@@ -422,6 +310,124 @@ private lemma measurable_tensorChartComponentSqrtPou
   (continuous_tensorChartComponentSqrtPou (I := I) (M := M)
     g r s S α Idx Jdx).measurable
 
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+private lemma sq_eLpNorm_tensorChartComponentSqrtPou_le_const_mul_tensorL2Inner
+    (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ (S : SmoothCcTensor g r s)
+        (Idx : Fin r → Fin (Module.finrank ℝ E))
+        (Jdx : Fin s → Fin (Module.finrank ℝ E)),
+        (eLpNorm (tensorChartComponentSqrtPou (I := I) (M := M)
+              g r s S α Idx Jdx) 2
+            (riemannianVolumeMeasure (I := I) (M := M) g)) ^ 2 ≤
+          ENNReal.ofReal (C *
+            tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun) := by
+  classical
+  obtain ⟨C, hC_nn, h_pt⟩ :=
+    tensorChartComponentSqrtPou_sq_le_const_mul_tensorInner
+      (I := I) (M := M) (E := E) g r s α
+  refine ⟨C, hC_nn, ?_⟩
+  intro S Idx Jdx
+  set f : M → ℝ := tensorChartComponentSqrtPou (I := I) (M := M)
+    g r s S α Idx Jdx with hf_def
+  set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
+  have h_pt_enn : ∀ b : M,
+      (‖f b‖ₑ : ℝ≥0∞) ^ 2 ≤
+        ENNReal.ofReal (C * tensorInnerPointwise (I := I) (M := M)
+          g r s b (S.toFun b) (S.toFun b)) := by
+    intro b
+    rw [show (‖f b‖ₑ : ℝ≥0∞) ^ 2 = ENNReal.ofReal ((f b) ^ 2) by
+      rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _) 2,
+        sq_abs]]
+    exact ENNReal.ofReal_le_ofReal (h_pt S Idx Jdx b)
+  have h_inner_int := SmoothCcTensor.integrable_inner_cross
+    (I := I) (M := M) (g := g) (r := r) (s := s) S S
+  have h_C_smul_int :
+      Integrable (fun b : M => C *
+        tensorInnerPointwise (I := I) (M := M) g r s b
+          (S.toFun b) (S.toFun b)) μ :=
+    h_inner_int.const_mul C
+  have h_C_smul_nn :
+      0 ≤ᵐ[μ] (fun b : M => C * tensorInnerPointwise
+        (I := I) (M := M) g r s b (S.toFun b) (S.toFun b)) := by
+    refine Filter.Eventually.of_forall ?_
+    intro b
+    exact mul_nonneg hC_nn
+      (tensorInnerPointwise_nonneg (I := I) (M := M) g r s b _)
+  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq μ f
+    (measurable_tensorChartComponentSqrtPou (I := I) (M := M) g r s S α Idx Jdx).aestronglyMeasurable]
+  have h_lint_le :
+      ∫⁻ b, (‖f b‖ₑ : ℝ≥0∞) ^ 2 ∂μ ≤
+        ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise
+          (I := I) (M := M) g r s b (S.toFun b) (S.toFun b)) ∂μ := by
+    refine lintegral_mono_ae ?_
+    filter_upwards with b using h_pt_enn b
+  have h_lint_eq :
+      ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise
+        (I := I) (M := M) g r s b (S.toFun b) (S.toFun b)) ∂μ =
+        ENNReal.ofReal (∫ b, C * tensorInnerPointwise
+          (I := I) (M := M) g r s b (S.toFun b) (S.toFun b) ∂μ) :=
+    (MeasureTheory.ofReal_integral_eq_lintegral_ofReal
+      h_C_smul_int h_C_smul_nn).symm
+  rw [h_lint_eq] at h_lint_le
+  have h_int_const_mul :
+      ∫ b, C * tensorInnerPointwise (I := I) (M := M) g r s b
+        (S.toFun b) (S.toFun b) ∂μ =
+        C * tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun := by
+    unfold tensorL2Inner
+    rw [integral_const_mul]
+  rw [h_int_const_mul] at h_lint_le
+  exact h_lint_le
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem eLpNorm_tensorChartComponentSqrtPou_le_uniform
+    (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ (S : SmoothCcTensor g r s)
+        (Idx : Fin r → Fin (Module.finrank ℝ E))
+        (Jdx : Fin s → Fin (Module.finrank ℝ E)),
+        eLpNorm (tensorChartComponentSqrtPou (I := I) (M := M)
+              g r s S α Idx Jdx) 2
+            (riemannianVolumeMeasure (I := I) (M := M) g) ≤
+          ENNReal.ofReal C *
+            ENNReal.ofReal
+              (tensorL2Norm (I := I) (M := M) g r s S.toFun) := by
+  classical
+  obtain ⟨C, hC_nn, h_sq⟩ :=
+    sq_eLpNorm_tensorChartComponentSqrtPou_le_const_mul_tensorL2Inner
+      (I := I) (M := M) (E := E) g r s α
+  refine ⟨Real.sqrt C, Real.sqrt_nonneg _, ?_⟩
+  intro S Idx Jdx
+  have h_inner_nn :
+      0 ≤ tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun := by
+    unfold tensorL2Inner
+    refine integral_nonneg ?_
+    intro b
+    exact tensorInnerPointwise_nonneg (I := I) (M := M) g r s b _
+  have h_norm_sq :
+      tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun =
+        (tensorL2Norm (I := I) (M := M) g r s S.toFun) ^ 2 := by
+    unfold tensorL2Norm
+    rw [sq, Real.mul_self_sqrt h_inner_nn]
+  set S_total : ℝ := C *
+    tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun with hS_total_def
+  have hS_total_nn : 0 ≤ S_total := mul_nonneg hC_nn h_inner_nn
+  have h_eLpNorm_le :=
+    eLpNorm_two_le_ofReal_sqrt hS_total_nn (h_sq S Idx Jdx)
+  have h_sqrt_factor :
+      Real.sqrt S_total = Real.sqrt C *
+        tensorL2Norm (I := I) (M := M) g r s S.toFun := by
+    rw [hS_total_def, h_norm_sq, Real.sqrt_mul hC_nn,
+      show (tensorL2Norm (I := I) (M := M) g r s S.toFun) ^ 2 =
+        tensorL2Norm (I := I) (M := M) g r s S.toFun *
+          tensorL2Norm (I := I) (M := M) g r s S.toFun from by ring,
+      Real.sqrt_mul_self
+        (tensorL2Norm_nonneg (I := I) (M := M) g r s S.toFun)]
+  rw [h_sqrt_factor,
+    ENNReal.ofReal_mul (Real.sqrt_nonneg _)] at h_eLpNorm_le
+  exact h_eLpNorm_le
+
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private lemma hsNorm_zero_integrand_eq_sq_eLpNorm_chartPushedRaw
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -450,7 +456,13 @@ private lemma hsNorm_zero_integrand_eq_sq_eLpNorm_chartPushedRaw
               Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
             (chartTargetEuclid (I := I) (M := M) α))) ^ 2 := by
   classical
-  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq]
+  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq
+    ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
+      (chartTargetEuclid (I := I) (M := M) α))
+    (chartPushedRaw I α
+      (tensorChartComponentSqrtPou (I := I) (M := M) g r s S α Idx Jdx))
+    (chartPushedRaw_measurable (I := I) (M := M) α
+      (measurable_tensorChartComponentSqrtPou (I := I) (M := M) g r s S α Idx Jdx)).aestronglyMeasurable]
   rw [← MeasureTheory.lintegral_indicator
         (chartTargetEuclid_isOpen (I := I) (M := M) α).measurableSet,
       ← MeasureTheory.lintegral_indicator

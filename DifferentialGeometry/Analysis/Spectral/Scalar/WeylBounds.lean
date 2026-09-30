@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Counti
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.TensorHsInterpolationLimit
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCompactSupportDense
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq_eq_tensorInnerPointwise)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -87,7 +89,7 @@ private lemma basis_sum_coeff
         tensorHsBasisVec_coeff]
       by_cases hij : i = j
       · subst i
-        rw [ih, if_neg hj]
+        rw [ih, ite_eq_right hj]
         simp [hj]
       · simp [hij, ih]
 
@@ -107,13 +109,13 @@ private lemma combo_norm_sq
         tensorHsBasisVec (I := I) (M := M)
           (g := g) (r := 0) (s := 0) σ j).coeff i) ^ 2) ?_]
   · refine Finset.sum_congr rfl (fun i hi => ?_)
-    rw [basis_sum_coeff (I := I) (M := M), if_pos hi]
+    rw [basis_sum_coeff (I := I) (M := M), ite_eq_left hi]
   · intro i hi
     change tensorSobolevWeight (I := I) (M := M) i σ *
       ((∑ j ∈ F, c j •
         tensorHsBasisVec (I := I) (M := M)
           (g := g) (r := 0) (s := 0) σ j).coeff i) ^ 2 = 0
-    rw [basis_sum_coeff (I := I) (M := M), if_neg hi]
+    rw [basis_sum_coeff (I := I) (M := M), ite_eq_right hi]
     ring
 
 theorem scalar_diag_le

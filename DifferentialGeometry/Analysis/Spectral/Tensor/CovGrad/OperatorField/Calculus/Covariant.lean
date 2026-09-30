@@ -1,4 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.EvaluationLeibniz
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

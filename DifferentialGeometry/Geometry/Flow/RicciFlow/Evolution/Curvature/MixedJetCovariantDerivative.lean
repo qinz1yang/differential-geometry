@@ -71,7 +71,7 @@ private theorem mkDerivation_C_eq_sum_pderiv {σ : Type*} [Fintype σ]
       rw [MvPolynomial.pderiv_X_self]
       rw [Algebra.smul_def, mul_one, MvPolynomial.algebraMap_eq]
       simp
-    · rw [MvPolynomial.pderiv_X_of_ne (Ne.symm hxj), smul_zero, if_neg hxj]
+    · rw [MvPolynomial.pderiv_X_of_ne (Ne.symm hxj), smul_zero, ite_eq_right hxj]
   simp only [hsingle]
   simp
 
@@ -173,12 +173,12 @@ private theorem contMDiffAt_matrix_adjugate {G : M → Matrix ι ι ℝ} {x : M}
   · rw [show (fun p => if a = l then (Pi.single k (1 : ℝ) : ι → ℝ) b else G p a b) =
         fun _ : M => (Pi.single k (1 : ℝ) : ι → ℝ) b from by
       funext p
-      rw [if_pos h]]
+      rw [ite_eq_left h]]
     exact contMDiffAt_const
   · rw [show (fun p => if a = l then (Pi.single k (1 : ℝ) : ι → ℝ) b else G p a b) =
         fun p => G p a b from by
       funext p
-      rw [if_neg h]]
+      rw [ite_eq_right h]]
     exact hG a b
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] in
@@ -202,6 +202,8 @@ private theorem mvfderiv_congr_of_eventuallyEq {f₁ f : M → ℝ} {x : M}
   have hx : f₁ x = f x := h.eq_of_nhds
   simp only [mvfderiv]
   rw [Filter.EventuallyEq.mfderiv_eq h, hx]
+  simp [tangentSpaceCast]
+  rfl
 
 omit [I.Boundaryless] in
 theorem component0S_totalNabla_curvatureJetPolynomial

@@ -24,7 +24,7 @@ private theorem integral_translate_congr_ae
     apply MeasureTheory.QuasiMeasurePreserving.prod_of_left (measurable_fst.add (measurable_snd.smul_const v))
     exact Eventually.of_forall fun r =>
       (measurePreserving_add_right volume (r • v)).quasiMeasurePreserving
-  filter_upwards [Measure.ae_ae_of_ae_prod (hq.ae_eq h)] with x hx
+  filter_upwards [Measure.ae_ae_of_ae_prod (hq.ae_eq_comp h)] with x hx
   exact intervalIntegral.integral_congr_ae_restrict hx
 
 private theorem integral_norm_mul_norm_le_lp_norm
@@ -41,8 +41,10 @@ private theorem integral_norm_mul_norm_le_lp_norm
     simp only [Real.inner_apply]
     change ‖u t‖ * ‖v t‖ = uN t * vN t
     rw [show uN t = ‖u t‖ from hu, show vN t = ‖v t‖ from hv]
-  have hun : ‖uN‖ = ‖u‖ := by rw [Lp.norm_toLp, eLpNorm_norm, Lp.norm_def]
-  have hvn : ‖vN‖ = ‖v‖ := by rw [Lp.norm_toLp, eLpNorm_norm, Lp.norm_def]
+  have hun : ‖uN‖ = ‖u‖ := by
+    rw [Lp.norm_toLp, eLpNorm_norm _ (Lp.aestronglyMeasurable u), Lp.norm_def]
+  have hvn : ‖vN‖ = ‖v‖ := by
+    rw [Lp.norm_toLp, eLpNorm_norm _ (Lp.aestronglyMeasurable v), Lp.norm_def]
   rw [hpair, ← hun, ← hvn]
   exact real_inner_le_norm _ _
 
@@ -182,7 +184,7 @@ theorem hasWeakPartialDeriv_integral_translate
   have heq : (f : E → ℝ) =ᵐ[volume] w := hw.coeFn_toLp
   have hav := integral_translate_congr_ae heq (EuclideanSpace.single k 1) 0 h
   have hdq : diffQuot k h f =ᵐ[volume] diffQuot k h w := by
-    have ht := (measurePreserving_add_right volume (h • EuclideanSpace.single k 1)).quasiMeasurePreserving.ae_eq heq
+    have ht := (measurePreserving_add_right volume (h • EuclideanSpace.single k 1)).quasiMeasurePreserving.ae_eq_comp heq
     filter_upwards [heq, ht] with x hx htx
     dsimp only [Function.comp_def] at htx
     simp only [diffQuot_apply_of_ne k hh, htx, hx]

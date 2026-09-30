@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Defs
-import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.PouSobolevIso.SpectralPouH2Identify
+import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.NormEquivalence
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Iterated
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.HigherOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.ComponentSobolevBound

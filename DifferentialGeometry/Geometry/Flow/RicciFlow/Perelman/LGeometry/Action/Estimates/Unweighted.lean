@@ -35,7 +35,7 @@ private theorem lintegral_sub_sq_time
         linarith
   have hF (r : ℝ) : HasFDerivAt F ((-2 * r) • ContinuousLinearMap.id ℝ ℝ) r := by
     have h : HasDerivAt F (-2 * r) r := by
-      convert (hasDerivAt_pow 2 r).const_sub T using 1 <;> first | rfl | ring
+      convert (hasDerivAt_pow 2 r).const_sub T using 1; first | rfl | ring
     convert h.hasFDerivAt using 1
     all_goals first | rfl | (ext; simp [smul_eq_mul])
   have hinj : InjOn F (Ioo a c) := by

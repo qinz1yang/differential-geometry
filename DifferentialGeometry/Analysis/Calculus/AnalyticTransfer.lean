@@ -49,7 +49,7 @@ lemma hasFDerivAt_codRestrict {S : Submodule 𝕜 F} (hS : IsClosed (S : Set F))
     (f := fun y : X => ⟨f y, hfS y⟩)
     (f' := f'.codRestrict S (fun v => mem_submodule_of_hasFDerivAt hS hf hfS v))
     (x := x)).2 ?_
-  simpa [Submodule.coe_norm] using (hasFDerivAt_iff_tendsto.mp hf)
+  simpa [← Submodule.norm_coe] using (hasFDerivAt_iff_tendsto.mp hf)
 
 def multilinearValues (S : Submodule 𝕜 F) (k : ℕ) : Submodule 𝕜 (X [×k]→L[𝕜] F) where
   carrier := {T | ∀ v : Fin k → X, T v ∈ S}

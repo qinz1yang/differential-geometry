@@ -110,7 +110,8 @@ private theorem integral_mul_tendsto_of_eLpNorm_tendsto
       _ = ‖(C : ℝ)‖ₑ * ∫⁻ x, ‖f n x - g x‖ₑ ∂μ :=
           lintegral_const_mul' _ _ hC_ne_top
       _ = ‖(C : ℝ)‖ₑ * eLpNorm (fun x => f n x - g x) 1 μ := by
-          rw [eLpNorm_one_eq_lintegral_enorm]
+          rw [eLpNorm_one_eq_lintegral_enorm
+            (f := fun x => f n x - g x) ((hf_meas n).sub hg_meas)]
   -- L1 ≤ L2 * vol^{1/2}
   have h_L1_le_L2 : ∀ n, eLpNorm (fun x => f n x - g x) 1 μ ≤
       eLpNorm (fun x => f n x - g x) 2 μ * μ Set.univ ^ ((1 : ℝ) / 1 - 1 / 2) :=
@@ -143,7 +144,7 @@ private theorem integral_mul_tendsto_of_eLpNorm_tendsto
     have h_diff_memLp : ∀ᶠ n in atTop, MemLp (fun x => f n x - g x) 2 μ := by
       have := h_conv.eventually (gt_mem_nhds ENNReal.zero_lt_top)
       filter_upwards [this] with n hn
-      exact ⟨(hf_meas n).sub hg_meas, hn⟩
+      exact hn
     filter_upwards [h_diff_memLp] with n hn
     exact (memLp_one_iff_integrable.mp
       (hn.mono_exponent (by norm_num : (1 : ℝ≥0∞) ≤ 2))).mul_bdd
@@ -267,7 +268,8 @@ private theorem eLpNorm_one_tendsto_of_eLpNorm_two_tendsto
   have h_eq : ∀ n, ∫ x in S, ‖f n x - g x‖ =
       (eLpNorm (fun x => f n x - g x) 1 μ).toReal := by
     intro n
-    rw [eLpNorm_one_eq_lintegral_enorm]
+    rw [eLpNorm_one_eq_lintegral_enorm
+      (f := fun x => f n x - g x) ((hf_meas n).sub hg_meas)]
     exact integral_norm_eq_lintegral_enorm
       ((hf_meas n).sub hg_meas)
   rw [show (0 : ℝ) = (0 : ℝ≥0∞).toReal from by simp]
@@ -278,15 +280,13 @@ omit [NeZero d] in
 private theorem exists_ae_tendsto_of_eLpNorm_tendsto
     {S : Set E} (_hS : MeasurableSet S)
     {f : ℕ → E → ℝ} {g : E → ℝ}
-    (hf_meas : ∀ n, AEStronglyMeasurable (f n) (volume.restrict S))
-    (hg_meas : AEStronglyMeasurable g (volume.restrict S))
     (h : Tendsto (fun n => eLpNorm (fun x => f n x - g x) 2
       (volume.restrict S)) atTop (nhds 0)) :
     ∃ (ns : ℕ → ℕ), StrictMono ns ∧
       ∀ᵐ x ∂(volume.restrict S), Tendsto (fun k => f (ns k) x) atTop (nhds (g x)) := by
   have htim : TendstoInMeasure (volume.restrict S) f atTop g := by
     exact MeasureTheory.tendstoInMeasure_of_tendsto_eLpNorm
-      (by norm_num : (2 : ℝ≥0∞) ≠ 0) hf_meas hg_meas h
+      (by norm_num : (2 : ℝ≥0∞) ≠ 0) h
   exact htim.exists_seq_tendsto_ae
 
 /-! ## Main theorem: chain rule on the unit ball -/
@@ -310,8 +310,6 @@ theorem sobolev_chain_rule_unitBall
     exists_smooth_W12_approx_on_unitBall (d := d) hw
   obtain ⟨ns, hns_mono, hns_ae⟩ := exists_ae_tendsto_of_eLpNorm_tendsto
     measurableSet_ball
-    (fun n => (hψ_smooth n).continuous.aestronglyMeasurable.restrict)
-    hw.memLp.aestronglyMeasurable
     hψ_L2
   intro φ hφ hφ_cs hφ_supp
   have hIBP : ∀ n,
@@ -351,7 +349,11 @@ theorem sobolev_chain_rule_unitBall
         exact ENNReal.Tendsto.const_mul hψ_sub (Or.inr enorm_ne_top)
       · calc eLpNorm (fun x => Φ (ψ (ns n) x) - Φ (u x)) 2 μ
             ≤ eLpNorm (fun x => M * (ψ (ns n) x - u x)) 2 μ := by
-              apply eLpNorm_mono (fun x => ?_)
+              apply eLpNorm_mono
+                ((hΦ.continuous.comp_aestronglyMeasurable
+                  ((hψ_smooth (ns n)).continuous.aestronglyMeasurable.restrict)).sub
+                  (hΦ.continuous.comp_aestronglyMeasurable hw.memLp.aestronglyMeasurable))
+                (fun x => ?_)
               calc ‖Φ (ψ (ns n) x) - Φ (u x)‖
                   ≤ M * ‖ψ (ns n) x - u x‖ := hΦ_ptwise n x
                 _ = ‖M * (ψ (ns n) x - u x)‖ := by

@@ -267,12 +267,12 @@ theorem tendsto_radialDiskEnergyFirstVariation_of_minimizing_sequence
   · intro t ht
     apply Eventually.of_forall
     intro n
-    simp only [Q, dif_pos ht]
+    simp only [Q, dite_eq_left ht]
     exact (hscalar t ht n).choose_spec.1
   · intro t ht
     apply Eventually.of_forall
     intro n
-    simp only [Q, dif_pos ht]
+    simp only [Q, dite_eq_left ht]
     exact (hscalar t ht n).choose_spec.2
 
 end DifferentialGeometry.Geometry

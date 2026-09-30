@@ -27,7 +27,7 @@ theorem exists_linearIsometryEquiv_unit {u v : E} (hu : ‖u‖ = 1) (hv : ‖v�
         ((Set.mem_singleton_iff.mp a.2).trans (Set.mem_singleton_iff.mp b.2).symm)⟩
     rw [orthonormal_iff_ite]
     intro i j
-    rw [Subsingleton.elim i j, if_pos rfl]
+    rw [Subsingleton.elim i j, ite_eq_left rfl]
     change inner ℝ w w = 1
     rw [real_inner_self_eq_norm_mul_norm, hw, mul_one]
   obtain ⟨bu, hbu⟩ :=

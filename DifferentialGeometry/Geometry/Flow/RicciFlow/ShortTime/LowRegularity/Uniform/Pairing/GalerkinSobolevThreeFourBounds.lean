@@ -92,9 +92,9 @@ theorem galerkin_background_action_sobolev_three_four_pairing_bounds_of_low_view
                         (c i) ^ 2) ^ 2)) := by
   intro η3 η4 hη3 hη4
   obtain ⟨δ3, hδ3, hδ3third, hpair3⟩ :=
-    galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_le_for_smaller_metric_perturbations (I := I) (M := M) hDim gBase hΛ hη3
+    galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_le_for_smaller_perturbations (I := I) (M := M) hDim gBase hΛ hη3
   obtain ⟨δ4, hδ4, hδ4third, hpair4⟩ :=
-    galerkin_background_action_sobolev_four_pairing_bound_of_low_view_norm_le_for_smaller_metric_perturbations (I := I) (M := M) hDim gBase hΛ hη4
+    galerkin_background_action_sobolev_four_pairing_bound_of_low_view_norm_le_for_smaller_perturbations (I := I) (M := M) hDim gBase hΛ hη4
   let δ : ℝ := min δ3 δ4
   have hδ : 0 < δ := lt_min hδ3 hδ4
   have hδthird : δ ≤ 1 / 3 := (min_le_left δ3 δ4).trans hδ3third
@@ -178,9 +178,9 @@ theorem galerkin_background_action_sobolev_three_four_pairing_bounds_of_low_view
                       tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
                         (c i) ^ 2) ^ 2)) := by
   obtain ⟨δ3, hδ3, hδ3third, hpair3⟩ :=
-    galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_le_for_smaller_metric_perturbations (I := I) (M := M) hDim gBase hΛ one_pos
+    galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_le_for_smaller_perturbations (I := I) (M := M) hDim gBase hΛ one_pos
   obtain ⟨δ4, hδ4, _hδ4third, hpair4⟩ :=
-    galerkin_background_action_sobolev_four_pairing_bound_of_low_view_norm_le_for_smaller_metric_perturbations (I := I) (M := M) hDim gBase hΛ one_pos
+    galerkin_background_action_sobolev_four_pairing_bound_of_low_view_norm_le_for_smaller_perturbations (I := I) (M := M) hDim gBase hΛ one_pos
   let δ : ℝ := min (min δ3 δ4) δcap
   have hδ : 0 < δ := lt_min (lt_min hδ3 hδ4) hδcap
   have hδ3le : δ ≤ δ3 := (min_le_left _ _).trans (min_le_left _ _)

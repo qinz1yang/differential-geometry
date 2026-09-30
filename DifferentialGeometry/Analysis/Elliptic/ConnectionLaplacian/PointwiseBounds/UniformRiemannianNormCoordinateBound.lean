@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.RawComponentBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.PointwiseBounds.SectionUniformChartCoefficients
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

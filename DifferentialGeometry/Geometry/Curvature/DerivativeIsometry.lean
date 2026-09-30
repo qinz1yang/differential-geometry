@@ -1,8 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.LocalIsometry
-import DifferentialGeometry.Tensor.Metric.IsometryNorm
+import DifferentialGeometry.Geometry.Metric.Tensor.IsometryNorm
 import DifferentialGeometry.Topology.Manifold.InverseFunction.ContDiffOn
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
-import DifferentialGeometry.Topology.SigmaCompactOpen
 
 set_option autoImplicit false
 noncomputable section
@@ -20,7 +19,7 @@ variable {E H M N : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 theorem normSq_iterCov_metricRm04_of_pullback_on_opens
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric I N)
     (U : TopologicalSpace.Opens M) (V : TopologicalSpace.Opens N)
-    [SigmaCompactSpace U] [SigmaCompactSpace V] (Φ : U ≃ₘ⟮I, I⟯ V)
+    (Φ : U ≃ₘ⟮I, I⟯ V)
     (hmetric : ∀ (y : U) (v w : TangentSpace I y),
       g.inner (y : M) v w = h.inner (Φ y : N)
         (mfderiv I I Φ y v) (mfderiv I I Φ y w)) (k : ℕ) (x : U) :
@@ -47,7 +46,7 @@ theorem normSq_iterCov_metricRm04_of_pullback_on_opens
   exact normSq0S_iterCov_of_metric_isometry_on_opens g h U V Φ hmetric
     (metricRm04 g) (metricRm04 h) hcurv k x
 
-variable [I.Boundaryless] [SigmaCompactSpace M] [SigmaCompactSpace N]
+variable [I.Boundaryless]
 
 theorem normSq_iterCov_metricRm04_of_metric_isometry_on_open
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric I N)
@@ -84,10 +83,6 @@ theorem normSq_iterCov_metricRm04_of_metric_isometry_on_open
       g.inner (y : M) v w = h.inner (D y : N) (mfderiv I I D y v) (mfderiv I I D y w) := by
     rw [hpoint, hd, hd]
     exact hmetric y y.property.1 v w
-  let : SigmaCompactSpace W := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (Geometry.isSigmaCompact_of_isOpen I W.isOpen)
-  let : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (Geometry.isSigmaCompact_of_isOpen I V.isOpen)
   have hh := normSq_iterCov_metricRm04_of_pullback_on_opens g h W V D hmD k
     ⟨x.val, x.property, hxΦ⟩
   erw [hpoint] at hh

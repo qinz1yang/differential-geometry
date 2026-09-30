@@ -145,9 +145,9 @@ theorem exists_continuousOn_contractibleRegularLoop_family_of_smoothOn {a b : �
           Width.ContractibleRegularLoop (I := I) (Q := M))
       else Width.constantContractibleRegularLoop (I := I) (Q := M) (γ a 0), ?_, ?_⟩
     · rw [continuousOn_iff_continuous_domRestrict]
-      exact hF.congr (fun t => by simp only [Set.domRestrict_apply, dif_pos t.2])
+      exact hF.congr (fun t => by simp only [Set.domRestrict_apply, dite_eq_left t.2])
     · intro t ht
-      simp only [dif_pos ht]
+      simp only [dite_eq_left ht]
       rfl
   · have hba : b ≤ a := le_of_not_gt hab
     refine ⟨fun _ => if ha : a ∈ Icc a b then
@@ -158,7 +158,7 @@ theorem exists_continuousOn_contractibleRegularLoop_family_of_smoothOn {a b : �
     intro t ht
     have hta : t = a := le_antisymm (ht.2.trans hba) ht.1
     have ha : a ∈ Icc a b := ⟨le_rfl, ht.1.trans ht.2⟩
-    rw [hta, dif_pos ha]
+    rw [hta, dite_eq_left ha]
     rfl
 
 theorem continuousOn_loopFamilyLeastArea_of_smoothOn

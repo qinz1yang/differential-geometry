@@ -165,8 +165,8 @@ private theorem ae_lower_source_of_weak_derivatives
       (μ := (volume : Measure ℝ).prod volume)
     rw [← Measure.prod_restrict] at hb
     exact hb.mono_measure (Measure.prod_mono Measure.restrict_le_self le_rfl)
-  have hC (i) : MemLp (C i) ∞ (μ.prod (volume.restrict Ω₀)) := (hB i).mul hρ
-  have hC₀ : MemLp C₀ ∞ (μ.prod (volume.restrict Ω₀)) := ((hτ.const_mul (1 / 2 : ℝ)).sub ha).mul hρ
+  have hC (i) : MemLp (C i) ∞ (μ.prod (volume.restrict Ω₀)) := hρ.fun_mul (r := ∞) (hB i)
+  have hC₀ : MemLp C₀ ∞ (μ.prod (volume.restrict Ω₀)) := hρ.fun_mul (r := ∞) ((hτ.const_mul (1 / 2 : ℝ)).sub ha)
   have hDC (i) : MemLp (fun p => fderiv ℝ (fun x => C i (p.1, x)) p.2 (EuclideanSpace.single k 1))
       ∞ (μ.prod (volume.restrict Ω₀)) := by
     have hb := MetricExtension.densityOnEuclid_mul_chartCoeffOnE_family_fderiv_memLp_top hG isCompact_Icc
@@ -445,7 +445,7 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_gradient_equation_with_source_for
     have hDρ := hlift _ hDρc.continuousOn
     have hDDρ := hlift _ hDDρc.continuousOn
     let corr := fun p => Dρ p * R p + DDρ p * U p
-    have hCorr : MemLp corr 2 ν := ((Lp.memLp R).mul hDρ).add (hU.mul hDDρ)
+    have hCorr : MemLp corr 2 ν := (hDρ.fun_mul (r := 2) (Lp.memLp R)).add (hDDρ.fun_mul (r := 2) hU)
     let f := fun p => Fdiv p + Flower p - corr p
     have hf : MemLp f 2 ν := ((Lp.memLp Fdiv).add (Lp.memLp Flower)).sub hCorr
     refine ⟨hf.toLp f, ?_, ?_⟩
@@ -476,10 +476,10 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_gradient_equation_with_source_for
         (hφc.fderiv_apply ℝ (0, EuclideanSpace.single j 1)) ν
     have hmainI (i j) : Integrable (fun p => A i j p * H k i p *
         fderiv ℝ φ p (0, EuclideanSpace.single j 1)) ν :=
-      ((hdmem j).mul (r := 2) ((Lp.memLp (H k i)).mul (r := 2) (hAmem i j))).integrable (by norm_num)
+      (((hAmem i j).fun_mul (r := 2) (Lp.memLp (H k i))).fun_mul (r := 2) (hdmem j)).integrable (by norm_num)
     have herrorI (i j) : Integrable (fun p => fderiv ℝ (A i j) p (0, EuclideanSpace.single k 1) * V i p *
         fderiv ℝ φ p (0, EuclideanSpace.single j 1)) ν :=
-      ((hdmem j).mul (r := 2) ((hV i).mul (r := 2) (hDAmem i j))).integrable (by norm_num)
+      (((hDAmem i j).fun_mul (r := 2) (hV i)).fun_mul (r := 2) (hdmem j)).integrable (by norm_num)
     have hsplit (i j) : (∫ p, (A i j p * H k i p +
         fderiv ℝ (A i j) p (0, EuclideanSpace.single k 1) * V i p) *
           fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) =
@@ -509,7 +509,7 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_gradient_equation_with_source_for
           simp_rw [Finset.sum_add_distrib]
     have hφLp : MemLp φ ∞ ν := hφ.continuous.memLp_top_of_hasCompactSupport hφc ν
     have hint (g : ℝ × EuStd → ℝ) (hg : MemLp g 2 ν) : Integrable (fun p => g p * φ p) ν :=
-      (hφLp.mul (r := 2) hg).integrable (by norm_num)
+      (hg.fun_mul (r := 2) hφLp).integrable (by norm_num)
     have hFeq : (∫ p, (hf.toLp f) p * φ p ∂ν) =
         (∫ p, Fdiv p * φ p ∂ν) + (∫ p, Flower p * φ p ∂ν) - ∫ p, corr p * φ p ∂ν := by
       have hc : (∫ p, (hf.toLp f) p * φ p ∂ν) = ∫ p, f p * φ p ∂ν := by

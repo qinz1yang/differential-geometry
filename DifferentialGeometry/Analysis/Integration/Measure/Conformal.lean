@@ -62,9 +62,9 @@ theorem chartLocalMeasure_conformalMetric
     (Real.continuous_exp.comp (continuous_const.mul u.contMDiff.continuous)).measurable.ennreal_ofReal
   have hwF : AEMeasurable (w ∘ F) μ := hw.comp_aemeasurable hF
   have hF' : AEMeasurable F (μ.withDensity d) :=
-    hF.mono' (withDensity_absolutelyContinuous μ d)
+    hF.mono_ac (withDensity_absolutelyContinuous μ d)
   have hF'' : AEMeasurable F (μ.withDensity (d * (w ∘ F))) :=
-    hF.mono' (withDensity_absolutelyContinuous μ _)
+    hF.mono_ac (withDensity_absolutelyContinuous μ _)
   have hshape : chartLocalMeasure (I := I) (conformalMetric g u) a =
       Measure.map F (μ.withDensity (d * (w ∘ F))) := by
     unfold chartLocalMeasure

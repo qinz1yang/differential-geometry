@@ -46,9 +46,7 @@ theorem exists_lp_mul_of_ae_bound [TopologicalSpace.SeparableSpace (Lp ℝ 2 ν)
     filter_upwards [hbound] with t ht
     have htop : MemLp (fun x => a t x) ∞ ν :=
       memLp_top_of_bound (Lp.aestronglyMeasurable (a t)) K (by simpa only [Real.norm_eq_abs] using ht)
-    have hp : MemLp (fun x => a t x * b t x) 2 ν := by
-      have hh : MemLp ((b t : Y → ℝ) * fun x => a t x) 2 ν := htop.mul (Lp.memLp (b t))
-      exact hh.ae_eq (Eventually.of_forall fun x => mul_comm _ _)
+    have hp : MemLp (fun x => a t x * b t x) 2 ν := htop.mul (Lp.memLp (b t))
     let e := hp.toLp (fun x => a t x * b t x)
     refine ⟨e, ?_, ?_⟩
     · apply Lp.ext

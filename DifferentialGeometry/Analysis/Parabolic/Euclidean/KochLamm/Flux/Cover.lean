@@ -34,7 +34,7 @@ theorem kochLammFluxPiece_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   let : ENNReal.HolderConjugate
       (ENNReal.ofReal (kochLammPDual V)) (ENNReal.ofReal (kochLammPReal V)) :=
     (kochLammPDual_holder (V := V)).ennrealOfReal
-  exact memLp_one_iff_integrable.mp (hf.smul hk)
+  exact memLp_one_iff_integrable.mp (hk.smul hf)
 
 omit [CompleteSpace F] in
 theorem kochLammFluxCover_est {T R k : ℝ} {A₂ Aₚ : ℝ≥0}

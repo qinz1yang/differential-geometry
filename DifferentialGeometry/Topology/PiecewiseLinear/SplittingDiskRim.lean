@@ -341,7 +341,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_splittingDis
     (hint : ∀ v ∈ L.vertices, v ∈ interior A.space) {e : Finset E} (he : e ∈ L.faces)
     (hcard : e.card = k + 1) (hk : k ≤ n) (hmax : ∀ s ∈ L.faces, s.card ≤ e.card) :
     ∃ r : (Fin (n - k + 2) → ℝ) → E,
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin (n - k + 2))) (splittingDisk A e (hLA he)).space ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (n - k + 2))) (splittingDisk A e (hLA he)).space ∧
       (splittingDisk A e (hLA he)).space ∩
           frontier (⋃ v ∈ L.vertices, (graphDualCell A L v).space) =
         r '' stdSimplexBoundary (n - k + 1) := by
@@ -435,7 +435,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_splittingDis
             barycentricCoordinate (PiecewiseLinear.barycentricSubdivision A)
               (e.centroid ℝ id) x := by
         intro v hvc
-        rw [hβ v, hβ (e.centroid ℝ id), if_pos hcT]
+        rw [hβ v, hβ (e.centroid ℝ id), ite_eq_left hcT]
         split_ifs with hvT
         · rw [← hμx]
           exact weights_sum_centroid_lt_of_notMem_min hTind hd hσ
@@ -472,7 +472,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_splittingDis
     have hle : ∀ v, barycentricCoordinate (PiecewiseLinear.barycentricSubdivision A) v x ≤
         barycentricCoordinate (PiecewiseLinear.barycentricSubdivision A) w x := by
       intro v
-      rw [hβ v, hβ w, if_pos (htop m hm hwm)]
+      rw [hβ v, hβ w, ite_eq_left (htop m hm hwm)]
       split_ifs with hvT
       · rw [← hμx]
         exact (weights_sum_centroid_le_of_mem_min hTind hd hm hbot (fun τ hτ => (hμ0 τ hτ).le)

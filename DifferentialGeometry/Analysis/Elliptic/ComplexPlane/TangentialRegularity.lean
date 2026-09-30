@@ -33,7 +33,7 @@ private theorem exists_holderOnWith_fderivWithin_iteratedFDerivWithin_apply
     rw [fderivWithin_continuousMultilinear_apply_const (hs x hx)
       (hC.differentiableWithinAt (by norm_num))]
     rfl
-  have h := L.lipschitz.holderWith.comp_holderOnWith hD
+  have h := L.lipschitzWith.holderWith.comp_holderOnWith hD
   refine ⟨‖L‖₊ * K, ?_⟩
   intro x hx y hy
   rw [he x hx, he y hy]
@@ -234,7 +234,7 @@ private theorem halfDisk_tangential_data
     rw [iteratedFDerivWithin_eq_iteratedFDeriv hK
       (hg.contDiffAt (mem_of_superset (hSO.mem_nhds hz) hSK)) (hSK hz)]
   · let A := ContinuousMultilinearMap.apply ℝ (fun _ : Fin n => ℂ) F (fun _ => (1 : ℂ))
-    have hh := A.lipschitz.holderWith.comp_holderOnWith hDg
+    have hh := A.lipschitzWith.holderWith.comp_holderOnWith hDg
     refine ⟨‖A‖₊ * Kg, ?_⟩
     intro x hx y hy
     simpa only [Function.comp_def, one_mul, NNReal.coe_one, NNReal.rpow_one] using! hh x hx y hy
@@ -412,7 +412,7 @@ private theorem exists_holderOnWith_iteratedFDerivWithin_clm_comp
     (hD : HolderOnWith K α (iteratedFDerivWithin 𝕜 n f s) s) (L : F →L[𝕜] G) :
     ∃ C : ℝ≥0, HolderOnWith C α (iteratedFDerivWithin 𝕜 n (L ∘ f) s) s := by
   let A := ContinuousLinearMap.compContinuousMultilinearMapL 𝕜 (fun _ : Fin n => E) F G L
-  have h := A.lipschitz.holderWith.comp_holderOnWith hD
+  have h := A.lipschitzWith.holderWith.comp_holderOnWith hD
   refine ⟨‖A‖₊ * K, ?_⟩
   intro x hx y hy
   rw [L.iteratedFDerivWithin_comp_left (hf x hx) hs hx le_rfl,

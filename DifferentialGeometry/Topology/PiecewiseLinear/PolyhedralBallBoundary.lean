@@ -21,7 +21,7 @@ variable {n m : ℕ} {X : Type u} [TopologicalSpace X]
 theorem IsPolyhedralBall.polyhedralBoundary_eq_image_stdSimplexBoundary
     {P : Set X} (hP : IsPolyhedralBall (n := n) (m + 1) P) (T : PLPiece n X P)
     {f : (Fin (m + 2) → ℝ) → EuclideanSpace ℝ (Fin T.ambientDim)}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (m + 2))) T.piece.complex.space) :
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (m + 2))) T.piece.complex.space) :
     polyhedralBoundary (m + 1) P hP.isPolyhedralManifoldWithBoundary =
       (T.piece.map ∘ f) '' stdSimplexBoundary (m + 1) := by
   classical
@@ -36,7 +36,7 @@ theorem IsPolyhedralBall.exists_isPLHomeomorphOn_chart_image_boundary
     (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin n)))
     (he : e ∈ atlas (EuclideanSpace ℝ (Fin n)) X) (hPe : P ⊆ e.source) :
     ∃ f : (Fin (m + 2) → ℝ) → EuclideanSpace ℝ (Fin n),
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin (m + 2))) (e '' P) ∧
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (m + 2))) (e '' P) ∧
         f '' stdSimplexBoundary (m + 1) =
           e '' polyhedralBoundary (m + 1) P hP.isPolyhedralManifoldWithBoundary := by
   obtain ⟨T, hT⟩ := hP

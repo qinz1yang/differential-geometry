@@ -97,8 +97,8 @@ private theorem contDiffAt_of_lipschitz_of_ae_cauchy_riemann
   obtain ⟨R, hR, hRΩ⟩ := Metric.nhds_basis_closedBall.mem_iff.mp (hΩ.mem_nhds hx)
   let u : V → ℝ := fun y => (F y).re
   let v : V → ℝ := fun y => (F y).im
-  have huLip : LipschitzWith (‖Complex.reCLM‖₊ * L) u := Complex.reCLM.lipschitz.comp hF
-  have hvLip : LipschitzWith (‖Complex.imCLM‖₊ * L) v := Complex.imCLM.lipschitz.comp hF
+  have huLip : LipschitzWith (‖Complex.reCLM‖₊ * L) u := Complex.reCLM.lipschitzWith.comp hF
+  have hvLip : LipschitzWith (‖Complex.imCLM‖₊ * L) v := Complex.imCLM.lipschitzWith.comp hF
   let wu := lipschitzBallWitness huLip x R
   let wv := lipschitzBallWitness hvLip x R
   have hCRball : ∀ᵐ y ∂volume.restrict (Metric.ball x R),
@@ -195,7 +195,7 @@ private theorem differentiableOn_of_lipschitzWith_of_ae_differentiableAt
   have hCR := hae'.mono fun x hx => cauchy_riemann_repr hx
   have hFc : ∀ x ∈ Ω', ContDiffAt ℝ ∞ (H ∘ e) x :=
     fun x hx => contDiffAt_of_lipschitz_of_ae_cauchy_riemann
-      (by simpa only [mul_one] using! hH.comp e.lipschitz) hΩ' hCR hx
+      (by simpa only [mul_one] using! hH.comp e.lipschitzWith) hΩ' hCR hx
   have hc : ContDiffOn ℝ ∞ H Ω := by
     intro z hz
     have hx : Complex.orthonormalBasisOneI.repr z ∈ Ω' := by

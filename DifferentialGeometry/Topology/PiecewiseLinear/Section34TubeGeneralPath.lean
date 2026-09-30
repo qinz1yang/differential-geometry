@@ -123,7 +123,7 @@ theorem exists_generic_polygonal_path {K O₀ O₁ : Set E3} (hK : IsClosed K) (
       · subst hk'
         rw [Function.update_self, himg (m + 1) le_rfl]
         refine ⟨hxb, fun h => absurd h (Nat.succ_ne_zero m), fun h => ?_, hxB, hxs⟩
-        rw [if_pos h] at hxO
+        rw [ite_eq_left h] at hxO
         exact hxO
   obtain ⟨w, hw⟩ := hrec N le_rfl
   refine ⟨N, w, hN0, (hw 0 (Nat.zero_le _)).2.1 rfl, (hw N le_rfl).2.2.1 rfl, ?_,

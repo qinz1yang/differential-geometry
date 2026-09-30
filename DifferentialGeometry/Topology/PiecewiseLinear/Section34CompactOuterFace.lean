@@ -46,7 +46,7 @@ private theorem exists_outer_boundary_parametrization_and_residual
     let I := {e : Finset E3 // e ∈ L.faces ∧ e.card = 2}
     let U := K.space ∪ ⋃ e : I, (splittingDisk M e.1 (hKM (hLK e.2.1))).space
     ∃ q : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (closure (frontier (graphDualCell M L v).space \ U)) ∧
       q '' stdSimplexBoundary 2 =
         closure (frontier (graphDualCell M L v).space \ U) ∩ U ∧
@@ -190,7 +190,7 @@ private theorem exists_outer_boundary_parametrization_and_residual
         fun h => hxU ((hremove x hxA).mp h)⟩
   obtain ⟨q, hq, hqb⟩ :=
     hQ.exists_isPLHomeomorphOn_graphDualCell_boundary_remainder Q G hGB hGcard hvG
-  change IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (closure (F.space \ UQ)) at hq
+  change IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (closure (F.space \ UQ)) at hq
   change q '' stdSimplexBoundary 2 = closure (F.space \ UQ) ∩ UQ at hqb
   have hOutA : closure (F.space \ UQ) ⊆ A.space :=
     closure_minimal (sdiff_subset.trans (boundaryComplex_space_subset 3 A))
@@ -222,7 +222,7 @@ theorem exists_isPLHomeomorphOn_graphDualCell_outer_boundary
     let I := {e : Finset E3 // e ∈ L.faces ∧ e.card = 2}
     let U := K.space ∪ ⋃ e : I, (splittingDisk M e.1 (hKM (hLK e.2.1))).space
     ∃ q : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (closure (frontier (graphDualCell M L v).space \ U)) ∧
       q '' stdSimplexBoundary 2 =
         closure (frontier (graphDualCell M L v).space \ U) ∩ U := by

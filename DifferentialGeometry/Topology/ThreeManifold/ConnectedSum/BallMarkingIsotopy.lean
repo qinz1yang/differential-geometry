@@ -81,16 +81,11 @@ theorem isotopic_iff_ballChartIsotopic [Subsingleton I] (i : I) :
 
 end BallMarking
 
-def G_ball : Prop :=
+def connectedBallMarkingIsotopy : Prop :=
   ∀ (M : ClosedOrientedManifold.{u} 3) [ConnectedSpace M.Carrier] (I : Type u) [Fintype I]
     (B B' : BallMarking M I), B.Isotopic B'
 
-theorem G_ball_isotopic_refl (M : ClosedOrientedManifold.{u} 3) [ConnectedSpace M.Carrier]
-    (I : Type u) [Fintype I] (B : BallMarking M I) : B.Isotopic B :=
-  BallMarking.Isotopic.refl B
-
-theorem G_ball_iff_ballChartIsotopic_single (M : ClosedOrientedManifold.{u} 3)
-    [ConnectedSpace M.Carrier] :
+theorem BallMarking.forall_isotopic_singleton_iff (M : ClosedOrientedManifold.{u} 3) :
     (∀ B B' : BallMarking M PUnit, B.Isotopic B') ↔
       ∀ c c' : OrientedBallChart M,
         Manifold.BallChartIsotopic c.toBallChart c'.toBallChart := by

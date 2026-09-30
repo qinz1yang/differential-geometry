@@ -101,17 +101,21 @@ theorem rellich_kondrachov_W01p_seq_euclidean
   refine ⟨φ, v, hφ, hv, ?_⟩
   have hbound (n : ℕ) : eLpNorm (fun x => u (φ n) x - v x) p (volume.restrict Ω) ≤
       ∑ i, eLpNorm (fun x => u (φ n) x i - w i x) p (volume.restrict Ω) := by
+    have hu : MemLp (u (φ n)) p (volume.restrict Ω) :=
+      MemLp.of_eval_piLp (fun i => (hu_mem i (φ n)).1.1)
+    have hdiff (i : ι) : AEStronglyMeasurable
+        (fun x => u (φ n) x i - w i x) (volume.restrict Ω) :=
+      (((hu_mem i (φ n)).1.1).sub (hw i)).aestronglyMeasurable
     calc
       eLpNorm (fun x => u (φ n) x - v x) p (volume.restrict Ω) ≤
           eLpNorm (∑ i, fun x => ‖u (φ n) x i - w i x‖) p (volume.restrict Ω) := by
-        apply eLpNorm_mono_real
+        apply eLpNorm_mono_real (hu.sub hv).aestronglyMeasurable
         intro x
-        simpa only [Finset.sum_apply, PiLp.sub_apply, v, PiLp.toLp_apply] using
+        simpa only [Finset.sum_apply, Pi.sub_apply, PiLp.sub_apply, v, PiLp.toLp_apply] using
           euclidean_norm_le_sum_norm (u (φ n) x - v x)
       _ ≤ ∑ i, eLpNorm (fun x => ‖u (φ n) x i - w i x‖) p (volume.restrict Ω) :=
-        eLpNorm_sum_le (fun i _ => (((hu_mem i (φ n)).1.1).sub (hw i)).aestronglyMeasurable.norm)
-          hp_one
-      _ = _ := by simp only [eLpNorm_norm]
+        eLpNorm_sum_le hp_one
+      _ = _ := by simp only [eLpNorm_norm _ (hdiff _)]
   have hsum : Tendsto (fun n => ∑ i, eLpNorm (fun x => u (φ n) x i - w i x) p
       (volume.restrict Ω)) atTop (𝓝 0) := by
     simpa only [Finset.sum_const_zero] using tendsto_finsetSum Finset.univ (fun i _ => ht i)

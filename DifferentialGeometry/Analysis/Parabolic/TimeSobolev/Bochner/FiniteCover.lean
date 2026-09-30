@@ -49,7 +49,7 @@ theorem exists_lift_of_finite_slices
       have h := J.coeFn_compLpL (p := 2) (μ := timeMeasure (d i - c i)) (v i)
       rw [hv i] at h
       exact h.symm.trans (slice_coe F (c i) (d i) (hc i) (hdT i))
-    have hpull := (measurePreserving_sub_timeMeasure_restrict (hI i)).quasiMeasurePreserving.ae_eq
+    have hpull := (measurePreserving_sub_timeMeasure_restrict (hI i)).quasiMeasurePreserving.ae_eq_comp
       hlocal
     filter_upwards [hw i, hpull] with t hwt hpt
     simpa only [Function.comp_apply, sub_add_cancel, hwt] using hpt
@@ -63,7 +63,7 @@ theorem exists_lift_of_finite_slices
         =ᵐ[(timeMeasure T).restrict (Icc (c i) (d i))]
           fun t => v i (t - c i) := (hFHlocal i).trans (hw i)
     have hshift :=
-      (measurePreserving_add_right_timeMeasure_restrict (hI i)).quasiMeasurePreserving.ae_eq hlocal
+      (measurePreserving_add_right_timeMeasure_restrict (hI i)).quasiMeasurePreserving.ae_eq_comp hlocal
     apply Lp.ext
     filter_upwards [slice_coe FH (c i) (d i) (hc i) (hdT i), hshift] with t hslice htranslated
     simpa only [Function.comp_apply, add_comm (c i), add_sub_cancel_right, hslice]

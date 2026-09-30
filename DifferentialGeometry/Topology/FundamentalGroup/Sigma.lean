@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.FundamentalGroup.Retraction
-import DifferentialGeometry.Topology.VanKampen.SimplyConnectedUnion
+import DifferentialGeometry.Topology.FundamentalGroup.SimplyConnected
 import Mathlib.Topology.Constructions
 
 set_option autoImplicit false
@@ -25,7 +25,7 @@ theorem injective_fundamentalGroup_sigmaMk
         · subst j
           simp only
           exact continuous_id
-        · simp only [dif_neg h]
+        · simp only [dite_eq_right h]
           exact continuous_const }
   apply injective_fundamentalGroup_map_of_leftInverse _ r _ x₀
   intro x
@@ -33,12 +33,13 @@ theorem injective_fundamentalGroup_sigmaMk
 
 theorem simplyConnectedSpace_sigma_fiber_of_subsingleton_fundamentalGroup
     {I : Type u} (X : I → Type v) [∀ i, TopologicalSpace (X i)]
-    (i : I) [PathConnectedSpace (X i)]
-    (h : ∀ p : Σ j, X j, Subsingleton (FundamentalGroup (Σ j, X j) p)) :
+    (i : I) [PathConnectedSpace (X i)] (x₀ : X i)
+    (h : Subsingleton (FundamentalGroup (Σ j, X j) ⟨i, x₀⟩)) :
     SimplyConnectedSpace (X i) := by
-  let x₀ : X i := Classical.choice inferInstance
-  let := h ⟨i, x₀⟩
-  exact (VanKampen.simplyConnectedSpace_iff_fundamentalGroup_subsingleton (X i) x₀).mpr
+  let _ := h
+  have hsub : Subsingleton (FundamentalGroup (X i) x₀) :=
     (injective_fundamentalGroup_sigmaMk X i x₀).subsingleton
+  exact (simplyConnectedSpace_iff_fundamentalGroup_eq_one x₀).mpr
+    (fun g => hsub.elim g 1)
 
 end DifferentialGeometry.Topology

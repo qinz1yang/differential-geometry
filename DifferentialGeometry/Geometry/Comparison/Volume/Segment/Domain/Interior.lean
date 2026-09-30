@@ -267,7 +267,6 @@ theorem exp_inj_segmentInt [ConnectedSpace M] [PseudoEMetricSpace M]
     isGeodesic_contMDiff (I := I) g hσ_geo hσ_cont
   have ha_unit : g.inner (γv L) a a = 1 := by
     convert hγv_unit L using 1
-    all_goals rfl
   have hσ_unit (t : ℝ) :
       g.inner (σ t)
           (mfderiv 𝓘(ℝ, ℝ) I σ t 1)

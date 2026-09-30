@@ -18,7 +18,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem mem_openSimplex_stdVertices_of_mem_sdiff {x : Fin 3 → ℝ}
-    (hx : x ∈ stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2) :
+    (hx : x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2) :
     x ∈ openSimplex (stdVertices 1) :=
   (mem_openSimplex_stdVertices_iff 1).mpr
     ⟨fun i => lt_of_le_of_ne (hx.1.1 i) fun h => hx.2 ⟨hx.1, i, h.symm⟩, hx.1.2⟩
@@ -29,14 +29,14 @@ theorem notMem_stdSimplexBoundary_of_mem_openSimplex {x : Fin 3 → ℝ}
   exact (((mem_openSimplex_stdVertices_iff 1).mp hx).1 i).ne' hi
 
 theorem prism_mem_interior_image {Np : Set E3} {f : (Fin 3 → ℝ) × ℝ → E3}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) Np)
-    {z : (Fin 3 → ℝ) × ℝ} (hz1 : z.1 ∈ stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2)
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) Np)
+    {z : (Fin 3 → ℝ) × ℝ} (hz1 : z.1 ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2)
     (hz2 : z.2 ∈ Ioo (-1 : ℝ) 1) : f z ∈ interior Np := by
   let U : Set (EuclideanSpace ℝ (Fin 2) × ℝ) := stdTarget 1 ×ˢ Ioo (-1 : ℝ) 1
   let ι : EuclideanSpace ℝ (Fin 2) × ℝ → (Fin 3 → ℝ) × ℝ := fun w => (stdLift 1 w.1, w.2)
   have hιc : Continuous ι :=
     ((stdLift 1).continuous_of_finiteDimensional.comp continuous_fst).prodMk continuous_snd
-  have hιU : MapsTo ι U (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) := fun w hw =>
+  have hιU : MapsTo ι U (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) := fun w hw =>
     ⟨openSimplex_stdVertices_subset_stdSimplex (n := 1) (stdLift_mem_openSimplex 1 hw.1),
       Ioo_subset_Icc_self hw.2⟩
   have hU : IsOpen U := (isOpen_stdTarget 1).prod isOpen_Ioo
@@ -62,9 +62,9 @@ theorem prism_mem_interior_image {Np : Set E3} {f : (Fin 3 → ℝ) × ℝ → E
   rw [stdLift_stdProj_of_mem 1 hx]
 
 theorem prism_mem_wall_iff {Np : Set E3} {f : (Fin 3 → ℝ) × ℝ → E3}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) Np) {B : Set E3}
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) Np) {B : Set E3}
     (hwall : B ∩ Np = f '' (stdSimplexBoundary 2 ×ˢ Icc (-1 : ℝ) 1)) {w : (Fin 3 → ℝ) × ℝ}
-    (hw : w ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :
+    (hw : w ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :
     f w ∈ B ↔ w.1 ∈ stdSimplexBoundary 2 := by
   constructor
   · intro hB
@@ -75,13 +75,13 @@ theorem prism_mem_wall_iff {Np : Set E3} {f : (Fin 3 → ℝ) × ℝ → E3}
     exact (hwall.symm.subset ⟨w, ⟨h1, hw.2⟩, rfl⟩).1
 
 theorem prism_subset_or_subset {Np : Set E3} {f : (Fin 3 → ℝ) × ℝ → E3}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) Np) {X : Set E3}
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) Np) {X : Set E3}
     (hX : IsClosed X)
     (hwall : frontier X ∩ Np = f '' (stdSimplexBoundary 2 ×ˢ Icc (-1 : ℝ) 1)) :
     Np ⊆ X ∨ Np ⊆ (interior X)ᶜ := by
   have hfc := hf.isPiecewiseAffineOn.continuousOn
   let S₀ : Set ((Fin 3 → ℝ) × ℝ) := openSimplex (stdVertices 1) ×ˢ Icc (-1 : ℝ) 1
-  have hS₀sub : S₀ ⊆ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 :=
+  have hS₀sub : S₀ ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 :=
     prod_mono (openSimplex_stdVertices_subset_stdSimplex (n := 1)) subset_rfl
   have hY : IsPreconnected (f '' S₀) :=
     ((convex_openSimplex _).prod (convex_Icc _ _)).isPreconnected.image f (hfc.mono hS₀sub)
@@ -129,7 +129,7 @@ theorem mem_restrict_faces_of_inter_isOpen {E : Type*} [NormedAddCommGroup E] [N
 open Classical in
 theorem restrict_isPLBall_cofaces {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] (T : Geometry.SimplicialComplex ℝ E) [Finite T.faces]
-    {Q U : Set E} {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q)
+    {Q U : Set E} {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q)
     (hQ : (restrict T Q).space = Q) (hU : IsOpen U) (hUQ : U ∩ T.space ⊆ Q) :
     (∀ s ∈ T.faces, (convexHull ℝ (s : Set E) ∩ U).Nonempty → s.card ≤ 3) ∧
     (∀ s ∈ T.faces, s.card = 2 → ∀ x ∈ openSimplex s, x ∈ U →
@@ -188,28 +188,28 @@ theorem IsPolyhedralTubeNeighborhood.exists_prism_localDisk
     (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
     (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK) {Np : Set E3}
     {f : (Fin 3 → ℝ) × ℝ → E3}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) Np)
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) Np)
     (hNp : Np ⊆ interior N' \ h '' K.space)
     (hwall : frontier XK.space ∩ Np = f '' (stdSimplexBoundary 2 ×ˢ Icc (-1 : ℝ) 1))
     (hside : Np ⊆ XK.space ∨ Np ⊆ (interior XK.space)ᶜ) {z : (Fin 3 → ℝ) × ℝ}
-    (hz : z ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1)
+    (hz : z ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1)
     (hzA : f z ∈ ⋃ e ∈ {e : Finset E3 | e ∈ K.faces ∧ e.card = 2}, Ec e)
     (hz2 : z.2 ∈ Ioo (-1 : ℝ) 1) :
     ∃ (Q U : Set ((Fin 3 → ℝ) × ℝ)) (q : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧
-      Q ⊆ (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∩
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧
+      Q ⊆ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∩
         f ⁻¹' (⋃ e ∈ {e : Finset E3 | e ∈ K.faces ∧ e.card = 2}, Ec e) ∧
       IsOpen U ∧ z ∈ U ∧
-      U ∩ ((stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∩
+      U ∩ ((Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∩
         f ⁻¹' (⋃ e ∈ {e : Finset E3 | e ∈ K.faces ∧ e.card = 2}, Ec e)) ⊆ Q ∧
       ∀ w ∈ U ∩ Q, (w ∈ q '' stdSimplexBoundary 2 ↔ w.1 ∈ stdSimplexBoundary 2) := by
   classical
   have : Finite XK.faces := h2.facesFinite.to_subtype
   have hXc : IsClosed XK.space := (isPolyhedron_space XK).isClosed
   set A := ⋃ e ∈ {e : Finset E3 | e ∈ K.faces ∧ e.card = 2}, Ec e with hAdef
-  have hfc : ContinuousOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :=
+  have hfc : ContinuousOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :=
     hf.isPiecewiseAffineOn.continuousOn
-  have hwiff : ∀ w ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1,
+  have hwiff : ∀ w ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1,
       f w ∈ frontier XK.space ↔ w.1 ∈ stdSimplexBoundary 2 :=
     fun w hw => prism_mem_wall_iff hf hwall hw
   obtain ⟨e, ⟨he, hcard⟩, hye⟩ := mem_iUnion₂.mp hzA
@@ -242,13 +242,13 @@ theorem IsPolyhedralTubeNeighborhood.exists_prism_localDisk
       rw [hd.meetsGraph e he hcard]
       rfl
     exact (hNp hyN).2 (heq ▸ hmem.2)
-  set g := Function.invFunOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) with hgdef
-  have hg : IsPLHomeomorphOn g Np (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) := hf.symm
+  set g := Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) with hgdef
+  have hg : IsPLHomeomorphOn g Np (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) := hf.symm
   have hfg : ∀ y ∈ Np, f (g y) = y := fun y hy => hf.bijOn.invOn_invFunOn.2 hy
-  have hgf : ∀ w ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1, g (f w) = w :=
+  have hgf : ∀ w ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1, g (f w) = w :=
     fun w hw => hf.bijOn.invOn_invFunOn.1 hw
   obtain ⟨Dk, W, q₀, hq₀, hDk, hW, hyW, hWDk, hbdk⟩ : ∃ (Dk W : Set E3)
-      (q₀ : (Fin 3 → ℝ) → E3), IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) Dk ∧
+      (q₀ : (Fin 3 → ℝ) → E3), IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Dk ∧
       Dk ⊆ Ec e ∩ Np ∧ IsOpen W ∧ f z ∈ W ∧ W ∩ Ec e ∩ Np ⊆ Dk ∧
       ∀ d ∈ W ∩ Dk, (d ∈ q₀ '' stdSimplexBoundary 2 ↔ d ∈ frontier XK.space) := by
     by_cases hz1 : z.1 ∈ stdSimplexBoundary 2
@@ -256,19 +256,19 @@ theorem IsPolyhedralTubeNeighborhood.exists_prism_localDisk
       obtain ⟨Sd, hSd, hNpSd⟩ : ∃ Sd : Set E3,
           (Sd = XK.space ∨ Sd = (interior XK.space)ᶜ) ∧ Np ⊆ Sd :=
         hside.elim (fun hs => ⟨_, Or.inl rfl, hs⟩) (fun hs => ⟨_, Or.inr rfl, hs⟩)
-      have hprc : IsCompact (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :=
-        (isCompact_stdSimplex ℝ (Fin 3)).prod isCompact_Icc
+      have hprc : IsCompact (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :=
+        (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).prod isCompact_Icc
       have hNpc : IsClosed Np := by
         rw [← hf.image_eq]
         exact (hprc.image_of_continuousOn hfc).isClosed
-      have hTbsub : stdSimplex ℝ (Fin 3) ×ˢ ({-1, 1} : Set ℝ) ⊆
-          stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
+      have hTbsub : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({-1, 1} : Set ℝ) ⊆
+          Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
         refine prod_mono subset_rfl ?_
         rintro t (rfl | rfl) <;> constructor <;> norm_num
-      have hTbc : IsCompact (f '' (stdSimplex ℝ (Fin 3) ×ˢ ({-1, 1} : Set ℝ))) :=
-        ((isCompact_stdSimplex ℝ (Fin 3)).prod (Set.toFinite _).isCompact).image_of_continuousOn
+      have hTbc : IsCompact (f '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({-1, 1} : Set ℝ))) :=
+        ((Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).prod (Set.toFinite _).isCompact).image_of_continuousOn
           (hfc.mono hTbsub)
-      have hzTb : f z ∉ f '' (stdSimplex ℝ (Fin 3) ×ˢ ({-1, 1} : Set ℝ)) := by
+      have hzTb : f z ∉ f '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({-1, 1} : Set ℝ)) := by
         rintro ⟨w, hw, hwz⟩
         have heq : w = z := hf.bijOn.injOn (hTbsub hw) hz hwz
         rcases hw.2 with h1 | h1
@@ -285,7 +285,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_prism_localDisk
         exact mem_interior_iff_mem_nhds.mp (prism_mem_interior_image hf ⟨hw.1, hw1⟩ hw2)
       have hMy : f z ∈ closure (Np \ frontier XK.space) := by
         let S₀ : Set ((Fin 3 → ℝ) × ℝ) := openSimplex (stdVertices 1) ×ˢ {z.2}
-        have hS₀sub : S₀ ⊆ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
+        have hS₀sub : S₀ ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
           rintro w ⟨hw1, hw2⟩
           exact ⟨openSimplex_stdVertices_subset_stdSimplex (n := 1) hw1,
             (mem_singleton_iff.mp hw2) ▸ hz.2⟩
@@ -310,11 +310,11 @@ theorem IsPolyhedralTubeNeighborhood.exists_prism_localDisk
         fun hX => absurd hX (hDk hd'.2).2.2⟩
   have hDkN : Dk ⊆ Np := fun d hd' => (hDk hd').2
   have hDkpoly : IsPolyhedron Dk := IsPLBall.isPolyhedron (n := 2) ⟨q₀, hq₀⟩
-  have hq : IsPLHomeomorphOn (g ∘ q₀) (stdSimplex ℝ (Fin 3)) (g '' Dk) :=
+  have hq : IsPLHomeomorphOn (g ∘ q₀) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g '' Dk) :=
     hq₀.trans (hg.restrict hDkpoly hDkN)
   obtain ⟨U, hU, hUeq⟩ := _root_.continuousOn_iff'.mp hfc (W ∩ Othᶜ)
     (hW.inter hOthc.isOpen_compl)
-  have hmemU : ∀ w ∈ U, w ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 → f w ∈ W ∧ f w ∉ Oth :=
+  have hmemU : ∀ w ∈ U, w ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 → f w ∈ W ∧ f w ∉ Oth :=
     fun w hwU hw => (hUeq.symm.subset ⟨hwU, hw⟩).1
   refine ⟨g '' Dk, U, g ∘ q₀, hq, ?_, hU, (hUeq.subset ⟨⟨hyW, hyOth⟩, hz⟩).1, ?_, ?_⟩
   · rintro _ ⟨d, hd', rfl⟩
@@ -327,7 +327,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_prism_localDisk
     exact ⟨f w, hwD, hgf w hwpr⟩
   · rintro w ⟨hwU, d, hd', rfl⟩
     have hdN := hDkN hd'
-    have hgpr : g d ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := hg.bijOn.mapsTo hdN
+    have hgpr : g d ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := hg.bijOn.mapsTo hdN
     have hdW : d ∈ W := by
       have := (hmemU _ hwU hgpr).1
       rwa [hfg d hdN] at this
@@ -352,7 +352,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_levelSet
       Cs.PairwiseDisjoint id ∧
       Δ' ∩ (⋃ e ∈ {e : Finset E3 | e ∈ K.faces ∧ e.card = 2}, Ec e) = ⋃₀ Cs ∧
       ∀ S ∈ Cs, (IsPLSphere 1 S ∧ Disjoint S (frontier XK.space)) ∨
-        ∃ q : (Fin 2 → ℝ) → E3, IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) S ∧
+        ∃ q : (Fin 2 → ℝ) → E3, IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) S ∧
           q '' stdSimplexBoundary 1 = S ∩ frontier XK.space := by
   have : Finite XK.faces := h2.facesFinite.to_subtype
   have hXc : IsClosed XK.space := (isPolyhedron_space XK).isClosed
@@ -365,22 +365,22 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_levelSet
   have hV : IsOpen (interior N' \ h '' K.space) := isOpen_interior.sdiff hKc
   obtain ⟨Np, f, hf, hNpV, hzero, hwall, -⟩ :=
     exists_prism_of_inter_frontier_eq XK h2.isManifold hV hr hΔsub hΔB
-  have hprc : IsCompact (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :=
-    (isCompact_stdSimplex ℝ (Fin 3)).prod isCompact_Icc
-  have hfc : ContinuousOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :=
+  have hprc : IsCompact (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :=
+    (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).prod isCompact_Icc
+  have hfc : ContinuousOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :=
     hf.isPiecewiseAffineOn.continuousOn
-  have hwiff : ∀ w ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1,
+  have hwiff : ∀ w ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1,
       f w ∈ frontier XK.space ↔ w.1 ∈ stdSimplexBoundary 2 :=
     fun w hw => prism_mem_wall_iff hf hwall hw
   have hside := prism_subset_or_subset hf hXc hwall
-  set P : Set ((Fin 3 → ℝ) × ℝ) := (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∩ f ⁻¹' A
+  set P : Set ((Fin 3 → ℝ) × ℝ) := (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∩ f ⁻¹' A
     with hPdef
   have hPc : IsClosed P := hfc.preimage_isClosed_of_isClosed hprc.isClosed hAc
   set Cm : Set ((Fin 3 → ℝ) × ℝ) := P ∩ {w | w.2 ∈ Icc (-(1 / 2) : ℝ) (1 / 2)} with hCmdef
   have hCmc : IsCompact Cm := hprc.of_isClosed_subset
     (hPc.inter (isClosed_Icc.preimage continuous_snd)) fun w hw => hw.1.1
   have hloc : ∀ z ∈ Cm, ∃ (Q U : Set ((Fin 3 → ℝ) × ℝ))
-      (q : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ), IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧
+      (q : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ), IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧
       Q ⊆ P ∧ IsOpen U ∧ z ∈ U ∧ U ∩ P ⊆ Q ∧
       ∀ w ∈ U ∩ Q, (w ∈ q '' stdSimplexBoundary 2 ↔ w.1 ∈ stdSimplexBoundary 2) :=
     fun z hz => h2.exists_prism_localDisk hd hf hNpV hwall hside hz.1.1 hz.1.2
@@ -441,12 +441,12 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_levelSet
   have : Finite G.faces := hGfin.to_subtype
   obtain ⟨CT, hCTfin, hCTdisj, hGC, hCT⟩ :=
     exists_finite_circle_arc_decomposition_of_neighbors G hGcard _ hGW hGdeg
-  have hCTpr : ∀ S ∈ CT, S ⊆ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
+  have hCTpr : ∀ S ∈ CT, S ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
     intro S hS w hw
     have hwG : w ∈ G.space := hGC ▸ mem_sUnion_of_mem hw hS
     rw [hGspace] at hwG
     exact (hTP hwG.1).1
-  have hlevel : (fun x => f (x, r₀)) '' stdSimplex ℝ (Fin 3) ∩ A = f '' G.space := by
+  have hlevel : (fun x => f (x, r₀)) '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ∩ A = f '' G.space := by
     rw [hGspace]
     apply Subset.antisymm
     · rintro _ ⟨⟨x, hx, rfl⟩, hxA⟩
@@ -462,7 +462,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_levelSet
   have hbs : (fun x => f (x, r₀)) '' stdSimplexBoundary 2 ⊆ frontier XK.space := by
     rw [← hΔ'B]
     exact inter_subset_right
-  refine ⟨(fun x => f (x, r₀)) '' stdSimplex ℝ (Fin 3), (fun S => f '' S) '' CT,
+  refine ⟨(fun x => f (x, r₀)) '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3), (fun S => f '' S) '' CT,
     ⟨fun x => f (x, r₀), isPLHomeomorphOn_prism_level hf hr₀I, ?_, hΔ'B, hbs,
       not_nullhomotopic_prism_level hf hwall hr hzero hb hnull hr₀I hbs⟩,
     hCTfin.image _, ?_, ?_, ?_⟩

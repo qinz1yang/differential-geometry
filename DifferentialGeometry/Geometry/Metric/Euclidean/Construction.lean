@@ -52,7 +52,7 @@ theorem contDiff_metric_inner (g : SmoothRiemannianMetric 𝓘(ℝ, E) E) :
       (fun y : E => (show E →L[ℝ] E →L[ℝ] ℝ from by exact g.inner y)) := by
     funext y
     ext v w
-    rw [Geometry.metricCoeffInModel_apply]
+    rw [BilinearForm.trivializationAt_apply]
     · simp only [TangentBundle.symmL_model_space]
       rfl
     · exact Set.mem_univ y

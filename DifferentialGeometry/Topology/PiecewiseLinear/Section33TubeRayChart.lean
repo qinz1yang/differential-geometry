@@ -48,7 +48,7 @@ theorem exists_continuousOn_rayCoordinates {Y M : Set E3} (hY : IsCompact Y)
     have heq : M.domRestrict (fun z => if hz : z ∈ M then ((ψ ⟨z, hz⟩).1 : E3 × ℝ).1 else z) =
         fun z : M => ((ψ z).1 : E3 × ℝ).1 := by
       funext z
-      simp only [domRestrict_apply, dif_pos z.2]
+      simp only [domRestrict_apply, dite_eq_left z.2]
     rw [heq]
     exact continuous_fst.comp (continuous_subtype_val.comp
       (continuous_subtype_val.comp ψ.continuous))
@@ -56,12 +56,12 @@ theorem exists_continuousOn_rayCoordinates {Y M : Set E3} (hY : IsCompact Y)
     have heq : M.domRestrict (fun z => if hz : z ∈ M then ((ψ ⟨z, hz⟩).1 : E3 × ℝ).2 else 0) =
         fun z : M => ((ψ z).1 : E3 × ℝ).2 := by
       funext z
-      simp only [domRestrict_apply, dif_pos z.2]
+      simp only [domRestrict_apply, dite_eq_left z.2]
     rw [heq]
     exact continuous_snd.comp (continuous_subtype_val.comp
       (continuous_subtype_val.comp ψ.continuous))
   · intro z hz
-    simp only [dif_pos hz]
+    simp only [dite_eq_left hz]
     have hw := (ψ ⟨z, hz⟩).1.2
     have hwM := (ψ ⟨z, hz⟩).2
     have hF'eq := congrArg Subtype.val (hψ ⟨z, hz⟩)

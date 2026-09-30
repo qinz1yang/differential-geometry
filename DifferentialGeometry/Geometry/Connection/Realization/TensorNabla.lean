@@ -172,7 +172,7 @@ private theorem dualCovariantDerivativeFun_apply
     (hV : MDiffAtVec I M V x) (hY : MDiffAtVec I M Y x) :
     dualCovariantDerivativeFun I M cov α x (V x) (Y x) = Psi I M cov α V Y x := by
   unfold dualCovariantDerivativeFun
-  rw [dif_pos hα]
+  rw [dite_eq_left hα]
   exact TensorialAt.mkHom₂_apply
     (Φ := fun V Y => Psi I M cov α V Y x)
     (fun Y _ => Psi_tensorialAt_left I M cov α Y)
@@ -185,7 +185,7 @@ private theorem dualCovariantDerivativeFun_of_not_mdiff
     {x : M} (hα : ¬ MDiffAtDual I M α x) :
     dualCovariantDerivativeFun I M cov α x = 0 := by
   unfold dualCovariantDerivativeFun
-  rw [dif_neg hα]
+  rw [dite_eq_right hα]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 private theorem dualCovariantDerivativeFun_isCovOn

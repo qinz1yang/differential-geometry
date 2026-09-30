@@ -66,8 +66,26 @@ theorem IsTopologicalSolidTorus.hurewiczOne_bijective
   let eH := hT.integralSingularHomologyOneEquivInt.toAddEquiv.toMultiplicative
   let F := eH.toMonoidHom.comp ((hurewiczOne x).comp eG.symm.toMonoidHom)
   let f : ℤ →+ ℤ := MonoidHom.toAdditiveRight F
-  have hf : Function.Surjective f :=
-    eH.surjective.comp ((hurewiczOne_surjective x).comp eG.symm.surjective)
+  have heHsurj : Function.Surjective
+      (eH : Multiplicative (integralSingularHomology 1 T) ≃* Multiplicative ℤ) :=
+    eH.surjective
+  have heGsurj : Function.Surjective
+      (eG.symm : Multiplicative ℤ ≃* FundamentalGroup T x) := eG.symm.surjective
+  have huresurj : Function.Surjective (hurewiczOne x) := hurewiczOne_surjective x
+  have hFsurj : Function.Surjective F := by
+    intro z
+    obtain ⟨h, hh⟩ := heHsurj z
+    obtain ⟨g, hg⟩ := huresurj h
+    obtain ⟨a, ha⟩ := heGsurj g
+    refine ⟨a, ?_⟩
+    change eH (hurewiczOne x (eG.symm a)) = z
+    rw [ha, hg, hh]
+  have hf : Function.Surjective f := by
+    intro z
+    obtain ⟨a, ha⟩ := hFsurj (Multiplicative.ofAdd z)
+    refine ⟨Multiplicative.toAdd a, ?_⟩
+    change Multiplicative.toAdd (F a) = z
+    exact congrArg Multiplicative.toAdd ha
   have hfi : Function.Injective f :=
     IsNoetherian.injective_of_surjective_endomorphism f.toIntLinearMap hf
   have hFi : Function.Injective F := by

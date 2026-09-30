@@ -108,11 +108,11 @@ theorem exists_strict_subdiv
       s i.castSucc = t (Q i).castSucc ∧ s i.succ = t (Q i).succ := by
     constructor
     · by_cases hi : i.1 = 0
-      · simpa only [s, Fin.val_castSucc, dif_pos hi] using hgap0 i hi
-      · simpa only [s, Fin.val_castSucc, dif_neg hi] using hgapSucc i hi
+      · simpa only [s, Fin.val_castSucc, dite_eq_left hi] using hgap0 i hi
+      · simpa only [s, Fin.val_castSucc, dite_eq_right hi] using hgapSucc i hi
     · have hi : (i.succ : Fin (k + 1)).1 ≠ 0 := by simp
       have hpred : (i.succ : Fin (k + 1)).1 - 1 = i.1 := by simp
-      simp only [s, dif_neg hi, hpred]
+      simp only [s, dite_eq_right hi, hpred]
   have hsstrict : StrictMono s := by
     rw [Fin.strictMono_iff_lt_succ]
     intro i
@@ -134,7 +134,7 @@ theorem exists_strict_subdiv
         intro r _hr0 _hrm
         exact hnone r
       have hlast0 : (Fin.last k).1 = 0 := by simp only [Fin.last]; omega
-      simpa only [s, dif_pos hlast0] using heq
+      simpa only [s, dite_eq_left hlast0] using heq
     · let i : Fin k := ⟨k - 1, by omega⟩
       have htail : t (Q i).succ = t (Fin.last m) := by
         apply eq_of_no_pos t ht (Nat.succ_le_of_lt (Q i).isLt) (Nat.le_refl m)
@@ -154,7 +154,7 @@ theorem exists_strict_subdiv
         omega
       have hlastNe : (Fin.last k).1 ≠ 0 := by simp only [Fin.last]; omega
       have hlastPred : (Fin.last k).1 - 1 = i.1 := by simp only [Fin.last, i]
-      simpa only [s, dif_neg hlastNe, hlastPred] using htail
+      simpa only [s, dite_eq_right hlastNe, hlastPred] using htail
   exact ⟨k, s, Q, hsstrict, Q.strictMono, rfl, hlast, hseg⟩
 
 end Geometry

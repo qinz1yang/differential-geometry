@@ -252,7 +252,7 @@ theorem continuousOn_wkpNorm_of_finite_weak_partial_tree
         dsimp only
         rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial]
         simp_rw [wkpNorm_congr_ae hp hΩ (he _)]
-        rw [ENNReal.toReal_add (Lp.memLp (U n β t)).2.ne
+        rw [ENNReal.toReal_add (Lp.memLp (U n β t)).ne
           (ENNReal.sum_ne_top.mpr fun i _ =>
             (wkpNorm_lt_top_of_memWkp (hmem k (n + 1) (Fin.cons i β) (by omega) t ht)).ne),
           ENNReal.toReal_sum (fun i _ =>

@@ -14,7 +14,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev (covariantJetNormSq)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
-open DifferentialGeometry.Analysis.Elliptic (riemannianFiberNormSq)
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev (iteratedCovGrad)
 open DifferentialGeometry.Analysis.Spectral
   (operatorFieldApplication_h2_h3_h1 ccTensorToHs ccTensorToHs_add deTurckSmoothRemainder

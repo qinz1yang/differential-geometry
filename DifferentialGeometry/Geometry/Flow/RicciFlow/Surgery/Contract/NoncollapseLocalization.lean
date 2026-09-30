@@ -23,10 +23,10 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [T2Space M]
 
 theorem MetricFiberData.hom_inner_congr_of_inner_eq {V W : Type*}
-    [AddCommGroup V] [Module Real V] [TopologicalSpace V] [IsTopologicalAddGroup V]
-    [ContinuousSMul Real V] [FiniteDimensional Real V]
-    [AddCommGroup W] [Module Real W] [TopologicalSpace W] [IsTopologicalAddGroup W]
-    [ContinuousSMul Real W] [FiniteDimensional Real W]
+    [AddCommGroup V] [Module Real V]
+    [FiniteDimensional Real V]
+    [AddCommGroup W] [Module Real W]
+    [FiniteDimensional Real W]
     (DV DV' : MetricFiberData V) (DW DW' : MetricFiberData W)
     (hV : ∀ v w : V, DV.inner v w = DV'.inner v w)
     (hW : ∀ v w : W, DW.inner v w = DW'.inner v w) (A B : V →ₗ[Real] W) :

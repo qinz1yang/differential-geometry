@@ -73,7 +73,7 @@ def heatHessFreq (v w : V)
       (volume : Measure (WithLp 2 (ℝ × V))) := by
     change MemLp (heatHessSym v w * (f : WithLp 2 (ℝ × V) → ℂ)) 2
       (volume : Measure (WithLp 2 (ℝ × V)))
-    exact (Lp.memLp f).smul (heatHessSym_memLp v w)
+    exact (heatHessSym_memLp v w).smul (Lp.memLp f)
   hmem.toLp (fun z => heatHessSym v w z * f z)
 
 theorem heatHessFreq_ae (v w : V)

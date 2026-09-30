@@ -39,17 +39,15 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 lemma eLpNorm_add_add_sub_le
-    {β : Type*} [MeasurableSpace β] {ν : Measure β} {a b c : β → ℝ}
-    (ha : AEStronglyMeasurable a ν) (hb : AEStronglyMeasurable b ν)
-    (hc : AEStronglyMeasurable c ν) :
+    {β : Type*} [MeasurableSpace β] {ν : Measure β} {a b c : β → ℝ} :
     eLpNorm (fun y => a y + b y - c y) 2 ν ≤
       eLpNorm a 2 ν + eLpNorm b 2 ν + eLpNorm c 2 ν := by
   have h_ab : eLpNorm (fun y => a y + b y) 2 ν ≤
       eLpNorm a 2 ν + eLpNorm b 2 ν :=
-    eLpNorm_add_le ha hb (by norm_num)
+    eLpNorm_add_le (by norm_num)
   have h_full : eLpNorm (fun y => (a y + b y) - c y) 2 ν ≤
       eLpNorm (fun y => a y + b y) 2 ν + eLpNorm c 2 ν :=
-    eLpNorm_sub_le (ha.add hb) hc (by norm_num)
+    eLpNorm_sub_le (by norm_num)
   exact h_full.trans (by gcongr)
 
 lemma abs_prod_kronecker_le_one
@@ -61,14 +59,14 @@ lemma abs_prod_kronecker_le_one
   | insert i t hi ih =>
       rw [Finset.prod_insert hi, abs_mul]
       by_cases hf : f i
-      · rw [if_pos hf, abs_one, one_mul]; exact ih
-      · rw [if_neg hf, abs_zero, zero_mul]; exact zero_le_one
+      · rw [ite_eq_left hf, abs_one, one_mul]; exact ih
+      · rw [ite_eq_right hf, abs_zero, zero_mul]; exact zero_le_one
 
 private lemma abs_kronecker_le_one' {P : Prop} [Decidable P] :
     |if P then (1 : ℝ) else 0| ≤ 1 := by
   by_cases h : P
-  · rw [if_pos h, abs_one]
-  · rw [if_neg h, abs_zero]; exact zero_le_one
+  · rw [ite_eq_left h, abs_one]
+  · rw [ite_eq_right h, abs_zero]; exact zero_le_one
 
 lemma abs_sum_coeff_kronecker_le
     {ι : Type*} (t : Finset ι) (f : ι → ℝ) (P : ι → Prop) [DecidablePred P]

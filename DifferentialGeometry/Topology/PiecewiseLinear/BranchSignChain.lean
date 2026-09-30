@@ -15,7 +15,7 @@ theorem exists_sideChoice_of_chain {n : ℕ} (τ : Fin n → ZMod 2) :
   refine ⟨fun i => sidePartialSum τ i.val, ?_⟩
   intro i
   change sidePartialSum τ (i.val + 1) = sidePartialSum τ i.val + τ i
-  simp only [sidePartialSum, dif_pos i.isLt]
+  simp only [sidePartialSum, dite_eq_left i.isLt]
 
 theorem sum_sideJump_eq_zero_of_cycle {n : ℕ} [NeZero n] (τ ε : Fin n → ZMod 2)
     (hcyc : ∀ i : Fin n, τ i = ε i + ε (i + 1)) :

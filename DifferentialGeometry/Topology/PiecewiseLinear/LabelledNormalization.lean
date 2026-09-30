@@ -3,7 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
-import Mathlib.Data.Countable.Defs
+import Mathlib.Basic.Countable.Defs
 import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Data.Nat.Pairing
 import Mathlib.Order.Lattice.Nat
@@ -58,17 +58,17 @@ theorem exists_forall_not_legal_of_forall_exists_move {ι α β : Type*} [Counta
     | succ k ih =>
       rw [hDs, hstep]
       by_cases h : Legal (e k) (D k)
-      · rw [if_pos h]
+      · rw [ite_eq_left h]
         exact (hpick (D k) (e k) ih h).2
-      · rw [if_neg h]
+      · rw [ite_eq_right h]
         exact ih
   have hmovestep : ∀ k : ℕ, Legal (e k) (D k) →
       D (k + 1) = Function.update (D k) (e k) (pick (D k) (e k)) := by
     intro k h
-    rw [hDs, hstep, if_pos h]
+    rw [hDs, hstep, ite_eq_left h]
   have hfix : ∀ k : ℕ, ¬ Legal (e k) (D k) → D (k + 1) = D k := by
     intro k h
-    rw [hDs, hstep, if_neg h]
+    rw [hDs, hstep, ite_eq_right h]
   have hpoint : ∀ (k : ℕ) (i : ι), D (k + 1) i = D k i ∨ r i (D (k + 1) i) < r i (D k i) := by
     intro k i
     by_cases h : Legal (e k) (D k)

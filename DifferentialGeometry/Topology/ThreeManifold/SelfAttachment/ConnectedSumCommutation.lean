@@ -262,9 +262,9 @@ theorem selfAttachmentConnectedSumHomeomorph_lowerCollar (p : SelfAttachment.Col
   · rw [SelfAttachment.lowerCollar_of_nonpos c'.toBallChart d'.toBallChart hcd' b p ht]
     erw [← puncturedPairHomeomorph_radialSecond m e c d a hec hed hcd c' d' hc' hd' hcd']
     rw [selfAttachmentConnectedSumHomeomorph_commonCore]
-    rw [innerLowerCollarPunctured, dif_pos ht]
+    rw [innerLowerCollarPunctured, dite_eq_left ht]
   · rw [SelfAttachment.lowerCollar_of_pos c'.toBallChart d'.toBallChart hcd' b p (not_le.mp ht),
-      selfAttachmentConnectedSumHomeomorph_band, innerLowerCollarPunctured, dif_neg ht]
+      selfAttachmentConnectedSumHomeomorph_band, innerLowerCollarPunctured, dite_eq_right ht]
 
 
 def innerUpperCollarPunctured (p : SelfAttachment.CollarDomain) : e'.Punctured :=
@@ -299,8 +299,8 @@ theorem selfAttachmentConnectedSumHomeomorph_upperCollar (p : SelfAttachment.Col
   · rw [SelfAttachment.upperCollar_of_nonneg c'.toBallChart d'.toBallChart hcd' b p ht]
     erw [← puncturedPairHomeomorph_radialThird m e c d a hec hed hcd c' d' hc' hd' hcd']
     rw [selfAttachmentConnectedSumHomeomorph_commonCore]
-    rw [innerUpperCollarPunctured, dif_pos ht]
+    rw [innerUpperCollarPunctured, dite_eq_left ht]
   · rw [SelfAttachment.upperCollar_of_neg c'.toBallChart d'.toBallChart hcd' b p (not_le.mp ht),
-      selfAttachmentConnectedSumHomeomorph_band, innerUpperCollarPunctured, dif_neg ht]
+      selfAttachmentConnectedSumHomeomorph_band, innerUpperCollarPunctured, dite_eq_right ht]
 
 end DifferentialGeometry.Topology

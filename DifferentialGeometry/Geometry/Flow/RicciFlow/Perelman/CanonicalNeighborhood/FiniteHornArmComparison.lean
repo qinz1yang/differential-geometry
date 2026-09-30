@@ -95,7 +95,7 @@ variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
 
 theorem exists_finiteHorn_arm_comparison_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∃ inner : ℕ,
+      H₀ ≤ H.collarDepth → ∃ inner : ℕ,
         ∀ (arm : Fin 2 → ℝ → W) (L : Fin 2 → ℝ), (∀ k, 0 < L k) →
           (∀ k, ContMDiffOn 𝓘(ℝ, ℝ) I3 ∞ (arm k) (Icc 0 (L k))) →
           (∀ k s, s ∈ Icc 0 (L k) → arm k s ∈ H.subend inner) →

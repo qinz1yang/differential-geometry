@@ -48,7 +48,7 @@ theorem exists_uniform_ordinary_backward_ball_flow
       rtest ^ 4 * (4 * Real.sqrt 3 * (4 * Qbar + Phi (16 * Qbar) + Phi 0)) ^ 2 ≤ 1 ∧
       ∀ p₀ : CutoffParameters, p₀.modelRadius = Dbig → p₀.recenterConstant ≤ c →
         2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ε₀ →
-      ∀ H₀ : RetainedCoreHistory P, InitialIdentification P g H₀.toHistory →
+      ∀ H₀ : RetainedCoreHistory.{u}, InitialIdentification P g H₀.toHistory →
       H₀.hasCanonicalCutoffRecords p₀ δ₀ ρ →
       let H := H₀.toHistory;
       ∀ (t : Icc (0 : ℝ) H.horizon) (ht : H.time (H.activeStage t) < (t : ℝ)), tau ≤ t →
@@ -217,7 +217,7 @@ theorem exists_uniform_ordinary_backward_patch_volume_and_action
       rtest ^ 4 * (4 * Real.sqrt 3 * (4 * Qbar + Phi (16 * Qbar) + Phi 0)) ^ 2 ≤ 1 ∧
       ∀ p₀ : CutoffParameters, p₀.modelRadius = Dbig → p₀.recenterConstant ≤ c →
         2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ε₀ →
-      ∀ H₀ : RetainedCoreHistory P, InitialIdentification P g H₀.toHistory →
+      ∀ H₀ : RetainedCoreHistory.{u}, InitialIdentification P g H₀.toHistory →
       H₀.hasCanonicalCutoffRecords p₀ δ₀ ρ →
       let H := H₀.toHistory;
       ∀ (t : Icc (0 : ℝ) H.horizon) (ht : H.time (H.activeStage t) < (t : ℝ)), tau ≤ t →

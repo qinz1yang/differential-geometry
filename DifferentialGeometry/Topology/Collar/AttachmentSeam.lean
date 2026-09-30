@@ -77,7 +77,7 @@ theorem attachmentSeam_nonpos (f : C(B, X)) (c : C(B × Icc (0 : ℝ) ε, X))
   · have hm : 0 ≤ -a.val * q.2.val :=
       mul_nonneg_of_nonpos_of_nonpos (neg_nonpos.mpr a.property.1) hq
     dsimp only [attachmentSeam, ContinuousMap.coe_mk]
-    rw [if_neg ht]
+    rw [ite_eq_right ht]
     simp only [ContinuousMap.comp_apply, ContinuousMap.coe_mk]
     congr 2
     apply Prod.ext

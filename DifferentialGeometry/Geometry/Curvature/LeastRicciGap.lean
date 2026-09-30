@@ -23,7 +23,7 @@ theorem least_ricci_eigenpair_of_axis_error
     (heigen : ricciSharp g x w = μ • w) (hμ : μ < κ - ε) :
     (∀ z : TangentSpace I x, g.inner x z z = 1 → μ ≤ ricciTensor g x z z) ∧
       |μ| ≤ ε ∧ Module.End.eigenspace (ricciSharp g x).toLinearMap μ = Submodule.span ℝ {w} := by
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core ℝ (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup ℝ (TangentSpace I x) _ _ _ D.toCore
@@ -31,7 +31,7 @@ theorem least_ricci_eigenpair_of_axis_error
     @InnerProductSpace.ofCore ℝ (TangentSpace I x) _ _ _ D.toCore.toCore
   have hi (a b : TangentSpace I x) : ⟪a, b⟫_ℝ = g.inner x a b :=
     (MetricFiberData.toCore_inner D a b).trans
-      (TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen g x) a b)
+      (TangentMetricData.inner_eq (tangentMetricData g x) a b)
   have hn (a : TangentSpace I x) : ‖a‖ = Real.sqrt (g.inner x a a) := by
     rw [← hi, real_inner_self_eq_norm_sq, Real.sqrt_sq (norm_nonneg _)]
   let : CompleteSpace (TangentSpace I x) := FiniteDimensional.complete ℝ (TangentSpace I x)

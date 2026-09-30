@@ -102,7 +102,7 @@ theorem exists_smooth_finite_segments_preserving_mapsTo [Finite ι] [Finite κ]
         have hLS {j : ι} (hij : i ≠ j) {x : M} (hx : x ∈ S j) : x ∉ L := by
           intro hxL
           have hxU := mem_iInter.mp (hLU hxL).1.2 j
-          rw [if_neg hij] at hxU
+          rw [ite_eq_right hij] at hxU
           exact hxU hx
         refine ⟨K ∪ L, hK.union hL, union_subset hKΩ
           (fun x hx => (hLU hx).1.1), g', ?_, ?_, ?_, ?_⟩
@@ -115,10 +115,10 @@ theorem exists_smooth_finite_segments_preserving_mapsTo [Finite ι] [Finite κ]
             · have hxy : g' x ∈ g '' L := hg'image ▸ mem_image_of_mem g' hxL
               obtain ⟨y, hy, hyx⟩ := hxy
               have hyV := mem_iInter.mp (hLU hy).2 j
-              rw [if_pos hij] at hyV
+              rw [ite_eq_left hij] at hyV
               exact hyx ▸ hyV
             · have hxU := mem_iInter.mp (hLU hxL).2 j
-              rw [if_neg hij] at hxU
+              rw [ite_eq_right hij] at hxU
               exact (hxU hxC).elim
           · rw [hg'out hxL]
             exact hgmap j hxC

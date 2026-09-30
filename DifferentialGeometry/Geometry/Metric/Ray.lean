@@ -1,3 +1,4 @@
+import Mathlib.Order.Filter.AtTopBot.Archimedean
 import Mathlib.Topology.MetricSpace.Isometry
 import Mathlib.Topology.MetricSpace.ProperSpace
 import Mathlib.Topology.Instances.NNReal.Lemmas

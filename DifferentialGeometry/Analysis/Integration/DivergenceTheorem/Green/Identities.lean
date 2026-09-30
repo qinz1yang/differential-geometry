@@ -34,10 +34,7 @@ omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private theorem contMDiff_exp_neg {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x => Real.exp (-f x)) := by
-  have h := Real.contDiff_exp.contMDiff.comp hf.neg
-  convert h using 1
-  · with_reducible_and_instances rfl
-  · rfl
+  simpa only [Function.comp_def] using Real.contDiff_exp.contMDiff.comp hf.neg
 
 theorem green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]

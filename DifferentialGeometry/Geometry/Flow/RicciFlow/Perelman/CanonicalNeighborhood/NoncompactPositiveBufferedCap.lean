@@ -40,7 +40,7 @@ theorem exists_bufferedCanonical_of_noncompact_ancient_positive
           riemannianBallOf (F.S.base.metric 0) p r ⊆ U ∧
           U ⊆ riemannianBallOf (F.S.base.metric 0) p (2 * r) ∧
           (∀ y ∈ cap.tube, max 10000 H / Real.sqrt (F.S.scalar 0 p) ≤ metricDistance (F.S.base.metric 0) p y) ∧
-          cap.tube_map = neck.map ∧ cap.chain.count = 1 ∧
+          cap.tubeMap = neck.map ∧ cap.chain.count = 1 ∧
           (∀ j : Fin cap.chain.count, cap.chain.centers j = v ∧ HEq (cap.chain.necks j) neck ∧
             cap.chain.lo j = 0 ∧ cap.chain.hi j = 1) ∧ v ∈ cap.tube ∧
           ∃ A C : ℝ, 1 ≤ A ∧ 1 ≤ C ∧ ∃ K : CanonicalWitness F.S eps A C p 0,

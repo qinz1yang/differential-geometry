@@ -12,7 +12,7 @@ import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMe
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
-import DifferentialGeometry.Tensor.Metric.CompactBounds
+import DifferentialGeometry.Geometry.Metric.Tensor.CompactBounds
 import Mathlib.Analysis.InnerProductSpace.ExteriorPower
 
 set_option autoImplicit false

@@ -24,7 +24,7 @@ theorem IsCylindricalDiagram.exists_essential_slice_disk
     let C := f '' ((boundaryComplex 2 D).space ×ˢ {t})
     let B := f '' (D.space ×ˢ {t})
     ∃ r : (Fin 3 → ℝ) → F,
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) B ∧ r '' stdSimplexBoundary 2 = C ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B ∧ r '' stdSimplexBoundary 2 = C ∧
       IsPLSphere 1 C ∧ B ⊆ M.space ∧ frontier M.space ∩ B = C ∧
       (B \ C).Nonempty ∧ B \ C ⊆ interior M.space ∧ IsConnected (frontier M.space \ C) ∧
       ∃ (hCf : C ⊆ frontier M.space) (hCM : C ⊆ M.space),
@@ -41,7 +41,7 @@ theorem IsCylindricalDiagram.exists_essential_slice_disk
   have hslice := hf.isPLHomeomorphOn_slice hD.isPolyhedron ht
   have hD' := hD
   obtain ⟨p, hp⟩ := hD'
-  have hcap : IsPLHomeomorphOn (fun x => f (p x, t)) (stdSimplex ℝ (Fin 3)) B :=
+  have hcap : IsPLHomeomorphOn (fun x => f (p x, t)) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B :=
     hp.trans hslice
   have hJp : p '' stdSimplexBoundary 2 = J := by
     rw [show J = (boundaryComplex 2 D).space from rfl,

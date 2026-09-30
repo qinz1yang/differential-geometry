@@ -71,7 +71,9 @@ theorem wkp_bdd_of_jet
       eLpNorm (iterClassicalPartial (d := d) j β (F i)) p
           (volume.restrict Ω) ≤
         eLpNorm G p (volume.restrict Ω) := by
-    refine eLpNorm_mono (fun x => ?_)
+    refine eLpNorm_mono
+      (contDiff_iterClassicalPartial j β (hF_smooth i)).continuous.aestronglyMeasurable
+      (fun x => ?_)
     have hx := norm_iterClassicalPartial_le_iteratedFDeriv
       (d := d) j β (hF_smooth i) x
     simpa only [G, norm_norm] using hx
@@ -88,9 +90,15 @@ theorem wkp_bdd_of_jet
         eLpNorm G p (volume.restrict K) := by
     calc
       eLpNorm G p (volume.restrict Ω) = eLpNorm G p volume :=
-        eLpNorm_restrict_eq_of_support_subset (hG_support.trans hKΩ)
+        eLpNorm_restrict_eq_of_support_subset
+          (((hF_smooth i).continuous_iteratedFDeriv (m := j) (by simp)).norm
+            |>.aestronglyMeasurable)
+          (hG_support.trans hKΩ)
       _ = eLpNorm G p (volume.restrict K) :=
-        (eLpNorm_restrict_eq_of_support_subset hG_support).symm
+        (eLpNorm_restrict_eq_of_support_subset
+          (((hF_smooth i).continuous_iteratedFDeriv (m := j) (by simp)).norm
+            |>.aestronglyMeasurable)
+          hG_support).symm
   have hG_bound :
       eLpNorm G p (volume.restrict K) ≤
         (volume : Measure EuclN) K ^ p.toReal⁻¹ * ENNReal.ofReal C := by
@@ -98,7 +106,10 @@ theorem wkp_bdd_of_jet
       Filter.Eventually.of_forall fun x => by
         simpa only [G, norm_norm] using hF_jet i j hjk x
     have hbound := eLpNorm_le_of_ae_bound
-      (μ := (volume : Measure EuclN).restrict K) (p := p) hpoint
+      (μ := (volume : Measure EuclN).restrict K) (p := p)
+      (((hF_smooth i).continuous_iteratedFDeriv (m := j) (by simp)).norm
+        |>.aestronglyMeasurable.restrict)
+      hpoint
     simpa only [Measure.restrict_apply_univ] using hbound
   exact hclass_le.trans (hG_restrict.le.trans hG_bound)
 

@@ -122,7 +122,7 @@ theorem exists_terminal_scalar_bound_on_ball_of_final_slab :
     ∃ εcone : ℝ, 0 < εcone ∧ ∀ (κ C1 C2 : ℝ), 0 < κ → ∀ (Ctime Cgrad : ℝ≥0) {phi : ℝ → ℝ},
       Perelman.AdmissiblePinchingFunction phi → ∀ ε : ℝ, ε ≤ εcone → ∀ A : ℝ, 0 < A →
       ∃ Q Λ : ℝ, 1 ≤ Q ∧ 1 ≤ Λ ∧
-      ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+      ∀ (H : RetainedCoreHistory.{u})
         (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
         (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
         (L : G.TerminalLimitMetric)
@@ -145,7 +145,7 @@ theorem exists_terminal_scalar_bound_on_ball_of_final_slab :
     exists_scalar_bound_at_distance_of_final_slab_window_of_le_coneAccuracy.{u} hε κ C1 C2 hκ
       Ctime Cgrad hphi (6 * A) (by positivity)
   refine ⟨Q, Λ, hQ1, hΛ1, ?_⟩
-  intro P₀ H hend s G L hG q ρ hq1 hρ hderivH hderivG hgradG hpinchH hpinchG hcan hnc x hxq
+  intro H hend s G L hG q ρ hq1 hρ hderivH hderivG hgradG hpinchH hpinchG hcan hnc x hxq
     hxρ hxwin z hz
   set R := metricScalarAt L.metric x with hRdef
   have hR : 0 < R := by nlinarith
@@ -197,7 +197,7 @@ theorem exists_terminal_scalar_bound_on_ball_of_final_slab :
       rw [div_le_div_iff₀ hsR hsRt]
       nlinarith
     exact hdt.trans_le (ENNReal.ofReal_le_ofReal hrad)
-  have hball := hQ P₀ H hend S hG x.1 q ρ hq1 hΛq hwin
+  have hball := hQ H hend S hG x.1 q ρ hq1 hΛq hwin
     (fun y hy => hcan y t ⟨hT, hts⟩ hy) hderivH
     (fun y t' ht' hy => hderivG y t' ⟨ht'.1, ht'.2.trans hts⟩ hy)
     (fun y t' ht' hy => hgradG y t' ⟨ht'.1, ht'.2.trans hts⟩ hy) hpinchH
@@ -207,8 +207,8 @@ theorem exists_terminal_scalar_bound_on_ball_of_final_slab :
   change metricScalarAt (G.flow.base.metric t) z.1 ≤ 2 * Q * R
   nlinarith
 
-theorem eventually_strongNeck_of_terminal_window {P₀ : OrientedThreeStage.{u}}
-    (H : RetainedCoreHistory P₀) (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
+theorem eventually_strongNeck_of_terminal_window
+    (H : RetainedCoreHistory.{u}) (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -294,7 +294,7 @@ theorem exists_fineCutNecks_of_long_terminal_slab :
       Perelman.AdmissiblePinchingFunction phi → ∀ εbar : ℝ, εbar ≤ εcone →
     ∀ {εc : ℝ}, 0 < εc → εc < 1 / 2 →
     ∃ K θ : ℝ, 1 ≤ K ∧ 0 < θ ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+    ∀ (H : RetainedCoreHistory.{u})
       (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
       (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
       (L : G.TerminalLimitMetric) (hsing : G.SingularEndpoint) (parameters : CutoffParameters)
@@ -333,7 +333,7 @@ theorem exists_fineCutNecks_of_long_terminal_slab :
   have hY : 0 ≤ 18 * A ^ 2 / localPropagationRadius Cgrad ^ 2 := by positivity
   refine ⟨16 + 2 * Λb + 2 * Λb ^ 2 / ρ ^ 2 + 2 * Q₀ + 18 * A ^ 2 / localPropagationRadius Cgrad ^ 2,
     2 * (Λb + θB), by linarith, by positivity, ?_⟩
-  intro P₀ H hend s G L hsing parameters hG q hderivH hderivG hgradG hpinchH hpinchG hcan hnc
+  intro H hend s G L hsing parameters hG q hderivH hderivG hgradG hpinchH hpinchG hcan hnc
     ε Λ P hε Qc hQc hlong c e x hx hQx
   have hQx' : Qc ≤ metricScalarAt L.metric x := hQx
   have hq1M : max q 1 ≤ max (Λ * (P.coreRadius ^ 2)⁻¹) (max q 1) := le_max_right _ _

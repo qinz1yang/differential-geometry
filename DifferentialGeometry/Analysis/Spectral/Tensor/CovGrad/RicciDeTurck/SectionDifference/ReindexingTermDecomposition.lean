@@ -1265,7 +1265,7 @@ lemma lowerSlotInsert0Fib_apply_eval (x : M)
     funext i
     by_cases h : i = 0
     · subst h; simp
-    · rw [if_neg h, Function.update_of_ne h]; rfl
+    · rw [ite_eq_right h, Function.update_of_ne h]; rfl
   exact congrArg (fun t => Tensor0SSpace.toModel A t) hfam
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]

@@ -45,18 +45,18 @@ theorem exists_PL_disk_pseudoisotopy_fixed_side [FiniteDimensional ℝ E]
     refine (hu.prodMap hsing.isPLHomeomorphOn_id).congr ?_
     rintro z ⟨-, hz2⟩
     have hz2' : z.2 = 1 := hz2
-    simp only [if_pos hz2']
+    simp only [ite_eq_left hz2']
     rfl
   have hθid : EqOn (fun z : E × ℝ => if z.2 = 1 then (u z.1, z.2) else z) id
       (K.space ×ˢ ({0} : Set ℝ) ∪ (boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1) := by
     rintro z hz
     by_cases hz2 : z.2 = 1
-    · simp only [if_pos hz2]
+    · simp only [ite_eq_left hz2]
       rcases hz with ⟨-, hzbot⟩ | ⟨hzb, -⟩
       · have hzbot' : z.2 = 0 := hzbot
         exact absurd (hz2.symm.trans hzbot') (by norm_num)
       · exact Prod.ext (hbd hzb) rfl
-    · simp only [if_neg hz2]
+    · simp only [ite_eq_right hz2]
       rfl
   have hθ0 : IsPLHomeomorphOn (fun z : E × ℝ => if z.2 = 1 then (u z.1, z.2) else z)
       (K.space ×ˢ ({0} : Set ℝ) ∪ (boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1)
@@ -77,12 +77,12 @@ theorem exists_PL_disk_pseudoisotopy_fixed_side [FiniteDimensional ℝ E]
       rw [hbdA]
       exact Or.inr (Or.inl ⟨hx, rfl⟩)
     rw [hΦbd hmem]
-    exact if_neg (by norm_num)
+    exact ite_eq_right (by norm_num)
   · have hmem : (x, (1 : ℝ)) ∈ (boundaryComplex 3 A).space := by
       rw [hbdA]
       exact Or.inl ⟨hx, rfl⟩
     rw [hΦbd hmem]
-    exact if_pos rfl
+    exact ite_eq_left rfl
   · intro z hz
     have hmem : z ∈ (boundaryComplex 3 A).space := by
       rw [hbdA]
@@ -92,7 +92,7 @@ theorem exists_PL_disk_pseudoisotopy_fixed_side [FiniteDimensional ℝ E]
 theorem IsCombinatorialManifold.exists_disk_supported_pseudoisotopy
     [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) {N : Set E} {n : (Fin 3 → ℝ) → E}
-    (hn : IsPLHomeomorphOn n (stdSimplex ℝ (Fin 3)) N) (hNK : N ⊆ K.space)
+    (hn : IsPLHomeomorphOn n (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N) (hNK : N ⊆ K.space)
     {H : E → E} (hH : IsPLHomeomorphOn H K.space K.space)
     (hfix : EqOn H id (closure (K.space \ N))) (hHN : H '' N = N) :
     ∃ Φ : E × ℝ → E × ℝ,
@@ -115,7 +115,7 @@ theorem IsCombinatorialManifold.exists_disk_supported_pseudoisotopy
     · exact Or.inr (subset_closure ⟨hx, hxN⟩)
   obtain ⟨R, hRfin, hRspace⟩ := hN.isPolyhedron.exists_simplicialComplex
   let _ : Finite R.faces := hRfin.to_subtype
-  have hnR : IsPLHomeomorphOn n (stdSimplex ℝ (Fin 3)) R.space := hRspace ▸ hn
+  have hnR : IsPLHomeomorphOn n (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) R.space := hRspace ▸ hn
   have hbdR : (boundaryComplex 2 R).space = N ∩ C := by
     rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex R hnR,
       simplexBoundary_stdVertices_space, hNC]

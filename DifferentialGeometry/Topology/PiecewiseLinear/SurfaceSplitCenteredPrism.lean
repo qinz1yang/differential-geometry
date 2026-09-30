@@ -119,9 +119,9 @@ theorem exists_isPLHomeomorphOn_centered_prism_of_boundary_disk_pair
 
 private theorem IsPLHomeomorphOn.image_stdSimplexBoundary_of_map_disk
     {S A : Set E} {S' A' : Set F} (hS : IsPLSphere 2 S) (hS' : IsPLSphere 2 S')
-    {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) A)
+    {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A)
     (hAS : A ⊆ S) {q' : (Fin 3 → ℝ) → F}
-    (hq' : IsPLHomeomorphOn q' (stdSimplex ℝ (Fin 3)) A') (hA'S' : A' ⊆ S')
+    (hq' : IsPLHomeomorphOn q' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A') (hA'S' : A' ⊆ S')
     {f : E → F} (hf : IsPLHomeomorphOn f S S') (hfA : f '' A = A') :
     f '' (q '' stdSimplexBoundary 2) = q' '' stdSimplexBoundary 2 := by
   have hcl : closure (S \ A) ⊆ S := closure_minimal sdiff_subset hS.isPolyhedron.isClosed
@@ -134,9 +134,9 @@ private theorem IsPLHomeomorphOn.image_stdSimplexBoundary_of_map_disk
 private theorem IsPLHomeomorphOn.image_stdSimplexBoundary_prism_bottom_union_side_of_complex
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 2 K.space)
     {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) K.space)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) K.space)
     {a b : ℝ} (hab : a < b) {q : (Fin 3 → ℝ) → E × ℝ}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       (K.space ×ˢ {a} ∪ (r '' stdSimplexBoundary 2) ×ˢ Icc a b)) :
     q '' stdSimplexBoundary 2 = (r '' stdSimplexBoundary 2) ×ˢ {b} := by
   classical
@@ -193,14 +193,14 @@ private theorem IsPLHomeomorphOn.image_stdSimplexBoundary_prism_bottom_union_sid
 open Classical in
 theorem exists_isPLHomeomorphOn_centered_prism_map_boundary_circles
     {P : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (K₀ K₁ : Geometry.SimplicialComplex ℝ F) [Finite K₀.faces] [Finite K₁.faces]
     (hK₀ : IsPLBall 3 K₀.space) (hK₁ : IsPLBall 3 K₁.space) {D Q₀ Q₁ : Set F}
     (hD₀ : D ⊆ (boundaryComplex 3 K₀).space)
     (hD₁ : D ⊆ (boundaryComplex 3 K₁).space) (hinter : K₀.space ∩ K₁.space = D)
     {q₀ q₁ : (Fin 3 → ℝ) → F}
-    (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) Q₀)
-    (hq₁ : IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) Q₁)
+    (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q₀)
+    (hq₁ : IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q₁)
     (hQ₀ : Q₀ ⊆ (boundaryComplex 3 K₀).space)
     (hQ₁ : Q₁ ⊆ (boundaryComplex 3 K₁).space)
     (hdis₀ : Disjoint D Q₀) (hdis₁ : Disjoint D Q₁)
@@ -273,7 +273,7 @@ theorem exists_isPLHomeomorphOn_centered_prism_map_boundary_circles
       isPLBall_prism_bottom_union_side L hL (by norm_num : (-1 : ℝ) < -1 / 2)
   obtain ⟨p₀, hp₀⟩ := id hA₀
   have hp₀boundary : p₀ '' stdSimplexBoundary 2 = J ×ˢ {(-1 / 2 : ℝ)} := by
-    have hp₀' : IsPLHomeomorphOn p₀ (stdSimplex ℝ (Fin 3))
+    have hp₀' : IsPLHomeomorphOn p₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (L.space ×ˢ {(-1 : ℝ)} ∪ (r '' stdSimplexBoundary 2) ×ˢ
           Icc (-1 : ℝ) (-1 / 2 : ℝ)) := by
       simpa only [A₀, J, hLspace] using hp₀
@@ -299,7 +299,7 @@ theorem exists_isPLHomeomorphOn_centered_prism_map_boundary_circles
       isPLBall_prism_bottom_union_side L hL (by norm_num : (0 : ℝ) < 1 / 2)
   obtain ⟨b₁, hb₁⟩ := id hB₁
   have hb₁boundary : b₁ '' stdSimplexBoundary 2 = J ×ˢ {(1 / 2 : ℝ)} := by
-    have hb₁' : IsPLHomeomorphOn b₁ (stdSimplex ℝ (Fin 3))
+    have hb₁' : IsPLHomeomorphOn b₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (L.space ×ˢ {(0 : ℝ)} ∪ (r '' stdSimplexBoundary 2) ×ˢ
           Icc (0 : ℝ) (1 / 2 : ℝ)) := by
       simpa only [B₁, J, hLspace] using hb₁

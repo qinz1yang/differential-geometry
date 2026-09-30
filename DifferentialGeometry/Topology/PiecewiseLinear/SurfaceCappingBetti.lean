@@ -19,7 +19,7 @@ theorem IsCombinatorialManifold.exists_capped_pair_of_separating_essential_circl
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) (hdim : Module.finrank ℝ E = 3)
     (hconn : IsConnected K.space) {D : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ K.space = r '' stdSimplexBoundary 2)
     (hsep : ¬ IsPreconnected (K.space \ r '' stdSimplexBoundary 2))
     (hnon : ¬ (⟨Set.inclusion (hmeet.symm.subset.trans inter_subset_right),

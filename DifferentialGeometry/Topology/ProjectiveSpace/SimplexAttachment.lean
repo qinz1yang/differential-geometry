@@ -17,7 +17,7 @@ def simplexAttachingMap (n : ℕ) :
     diskAttachingMap (Fin n → ℝ)
 
 def simplexCellMap (n : ℕ) :
-    TopCat.of (stdSimplex ℝ (Fin (n + 1))) ⟶
+    TopCat.of (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) ⟶
       TopCat.of (Projectivization ℝ ((Fin n → ℝ) × ℝ)) :=
   (TopCat.isoOfHomeo (DifferentialGeometry.Simplex.stdSimplexBallHomeomorph n)).hom ≫
     diskCellMap (Fin n → ℝ)
@@ -47,7 +47,7 @@ theorem simplexAttachment_isPushout (n : ℕ) :
 variable {k : Type} [Ring k] (R : ModuleCat.{0} k)
 
 def simplexRelativeChainMap (n : ℕ) :
-    DifferentialGeometry.Homology.relativeChainComplex (TopCat.of (stdSimplex ℝ (Fin (n + 1))))
+    DifferentialGeometry.Homology.relativeChainComplex (TopCat.of (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))))
         (DifferentialGeometry.Simplex.boundary (Fin (n + 1))) R ⟶
       DifferentialGeometry.Homology.relativeChainComplex (TopCat.of (Projectivization ℝ ((Fin n → ℝ) × ℝ)))
         (Set.range (projectiveCoordinateInclusion (Fin n → ℝ))) R :=
@@ -58,7 +58,7 @@ theorem quasiIso_simplexRelativeChainMap (n : ℕ) : QuasiIso (simplexRelativeCh
 
 @[reassoc (attr := simp)]
 theorem relativeProjection_simplexRelativeChainMap (n : ℕ) :
-    DifferentialGeometry.Homology.relativeProjection (TopCat.of (stdSimplex ℝ (Fin (n + 1))))
+    DifferentialGeometry.Homology.relativeProjection (TopCat.of (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))))
         (DifferentialGeometry.Simplex.boundary (Fin (n + 1))) R ≫ simplexRelativeChainMap R n =
       ((singularChainComplexFunctor (ModuleCat.{0} k)).obj R).map (simplexCellMap n) ≫
         DifferentialGeometry.Homology.relativeProjection (TopCat.of (Projectivization ℝ ((Fin n → ℝ) × ℝ)))

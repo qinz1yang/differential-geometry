@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Restriction
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
-import Mathlib.Data.ENNReal.Real
+import Mathlib.Basic.ENNReal.Real
 
 set_option autoImplicit false
 

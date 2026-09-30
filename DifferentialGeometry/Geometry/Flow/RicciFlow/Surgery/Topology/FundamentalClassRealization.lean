@@ -108,7 +108,7 @@ theorem exists_unique_fundamentalClass_of_local_realization (o : TangentOrientat
     (exists_fundamentalClass_of_local_realization_at o hprop x₀ h) ⟨x₀, hinj⟩
 
 omit [ConnectedSpace M] in
-theorem exists_unique_fundamentalClass_of_exists_of_subsingleton [T2Space M] [CompactSpace M]
+theorem exists_unique_fundamentalClass_of_exists_of_subsingleton
     (o : TangentOrientationSection M) (x : M)
     (h : ∃ z : IntegralHomology M 3, ∀ y : M,
       absoluteToRelative M ({y}ᶜ) 3 z = localOrientationClass o y)

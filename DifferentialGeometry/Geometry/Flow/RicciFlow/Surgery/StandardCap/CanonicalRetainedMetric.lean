@@ -166,7 +166,7 @@ theorem retainedMap_mfderiv_injective :
   rw [mfderiv_comp x
     (w.properties.retained_embedding.contMDiff.mdifferentiableAt (by simp))
     (Hd.contMDiff.mdifferentiableAt (by simp))]
-  exact ((w.properties.retained_embedding.isImmersion.isImmersionAt (Hd x)).injective_mfderiv
+  exact ((w.properties.retained_embedding.isImmersion.isImmersionAt (Hd x)).mfderiv_injective
     (by simp)).comp ((Hd.mfderivToContinuousLinearEquiv (by simp) x).injective)
 
 

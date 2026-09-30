@@ -15,8 +15,7 @@ open Manifold Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace L2
+namespace TensorMetric
 
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -852,8 +851,7 @@ theorem abs_tensorInnerPointwise_le_mul
   rw [h2] at h1
   exact h1
 
-end L2
-end Integral
+end TensorMetric
 end DifferentialGeometry
 
 end

@@ -102,7 +102,7 @@ private theorem hasMFDerivAt_lRegularizedAction_endpointBranch_at
       flat (mfderiv 𝓘(Real, E) I endMap A B)
     ring
   have hInv : MDifferentiableAt I 𝓘(Real, E) hloc.localInverse y :=
-    (hloc.localInverse_contMDiffOn y hySource).contMDiffAt
+    (hloc.contMDiffOn_localInverse y hySource).contMDiffAt
       (hloc.localInverse_open_source.mem_nhds hySource) |>.mdifferentiableAt (by simp)
   have hEnd : MDifferentiableAt 𝓘(Real, E) I endMap A := by
     have hpair : ContMDiffAt 𝓘(Real, E)
@@ -208,7 +208,7 @@ private theorem exists_gradient_lRegularizedAction_endpointBranch
     lRegularizedAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
   let U : Set M := hloc.localInverse.source ∩ hloc.localInverse ⁻¹' W
   have hUopen : IsOpen U :=
-    hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
+    hloc.contMDiffOn_localInverse.continuousOn.isOpen_inter_preimage
       hloc.localInverse_open_source hWopen
   have hinv : hloc.localInverse (alpha (A0, b)) = A0 :=
     hloc.localInverse_left_inv hloc.localInverse_mem_target
@@ -222,7 +222,7 @@ private theorem exists_gradient_lRegularizedAction_endpointBranch
     contMDiffOn_iff_contDiffOn.mpr hact
   have hbranch : ContMDiffOn I 𝓘(Real, Real) ∞ branch U := by
     have hcomp := hactM.comp
-      (hloc.localInverse_contMDiffOn.mono inter_subset_left)
+      (hloc.contMDiffOn_localInverse.mono inter_subset_left)
       (fun _ hy ↦ hy.2)
     change ContMDiffOn I 𝓘(Real, Real) ∞
       ((fun A : E ↦ lRegularizedAction S T (fun s ↦ alpha (A, s)) a b) ∘
@@ -312,7 +312,7 @@ private theorem covDerivAlong_gradient_lRegularizedAction_endpointBranch
   let zeta : Real → E := fun u ↦ hloc.localInverse (eta u)
   have hzeta : ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ zeta := by
     rw [← contMDiffOn_univ]
-    exact hloc.localInverse_contMDiffOn.comp heta.contMDiffOn
+    exact hloc.contMDiffOn_localInverse.comp heta.contMDiffOn
       (fun u _hu ↦ hsource (eta u) (hetaU u))
   have hzetaV : ∀ u : Real, zeta u ∈ V := by
     exact fun u ↦ by
@@ -328,7 +328,7 @@ private theorem covDerivAlong_gradient_lRegularizedAction_endpointBranch
     have hInv0 : MDifferentiableAt I 𝓘(Real, E)
         hloc.localInverse (eta 0) := by
       simpa only [heta0, y] using
-        hloc.localInverse_contMDiffAt.mdifferentiableAt (by simp)
+        hloc.contMDiffAt_localInverse.mdifferentiableAt (by simp)
     have hc := mfderiv_comp 0 hInv0
       (heta.contMDiffAt.mdifferentiableAt (by simp))
     change mfderiv 𝓘(Real, Real) 𝓘(Real, E)
@@ -405,6 +405,7 @@ private theorem covDerivAlong_gradient_lRegularizedAction_endpointBranch
         DifferentialGeometry.mvfderiv_real_eq_mfderiv,
         hq'.mfderiv_eq (I := I) (I' := 𝓘(Real, Real))]
       rw [hq'.self_of_nhds]
+      simp [tangentSpaceCast]
     exact congrArg
       (fun L : TangentSpace I q →ₗ[Real] Real ↦
         TotalSpace.mk' E q (metricSharp (I := I) g q L)) hmv

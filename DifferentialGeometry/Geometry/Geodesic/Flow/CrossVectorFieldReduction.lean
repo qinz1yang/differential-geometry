@@ -341,10 +341,10 @@ theorem isGeodesicOn_glue_at_limit
   set ηT : ℝ → M := fun s => η (s - T) with hηT
   have hGγ_lt : G =ᶠ[𝓝[<] T] γ :=
     Filter.eventually_of_mem self_mem_nhdsWithin
-      (fun t ht => by simp only [hG]; rw [if_pos (mem_Iio.mp ht)])
+      (fun t ht => by simp only [hG]; rw [ite_eq_left (mem_Iio.mp ht)])
   have hGηT_ge : G =ᶠ[𝓝[≥] T] ηT :=
     Filter.eventually_of_mem self_mem_nhdsWithin
-      (fun t ht => by simp only [hG, hηT]; rw [if_neg (not_lt.mpr (mem_Ici.mp ht))])
+      (fun t ht => by simp only [hG, hηT]; rw [ite_eq_right (not_lt.mpr (mem_Ici.mp ht))])
   have hGηT_lt : G =ᶠ[𝓝[<] T] ηT := hGγ_lt.trans hmatch
   have hGηT_T : G =ᶠ[𝓝 T] ηT := by
     rw [← nhdsLT_sup_nhdsGE T, Filter.EventuallyEq, eventually_sup]
@@ -354,9 +354,9 @@ theorem isGeodesicOn_glue_at_limit
   rcases lt_trichotomy t T with hlt | heq | hgt
   · have hGγ_t : G =ᶠ[𝓝 t] γ :=
       Filter.eventually_of_mem ((isOpen_Iio).mem_nhds hlt)
-        (fun s hs => by simp only [hG]; rw [if_pos (mem_Iio.mp hs)])
+        (fun s hs => by simp only [hG]; rw [ite_eq_left (mem_Iio.mp hs)])
     refine HasGeodesicEquationAt.congr_of_eventuallyEq_at (γ' := γ) ?_ hGγ_t ?_
-    · simp only [hG]; rw [if_pos hlt]
+    · simp only [hG]; rw [ite_eq_left hlt]
     · exact hγ t (mem_Iio.mpr hlt)
   · subst heq
     have hmem0 : t - t ∈ Set.Ioo (-δ) δ := by
@@ -364,16 +364,16 @@ theorem isGeodesicOn_glue_at_limit
     have hηeq : HasGeodesicEquationAt (I := I) g ηT t :=
       hasGeodesicEquationAt_comp_sub_const (hη (t - t) hmem0)
     refine HasGeodesicEquationAt.congr_of_eventuallyEq_at (γ' := ηT) ?_ hGηT_T hηeq
-    simp only [hG, hηT]; rw [if_neg (lt_irrefl t)]
+    simp only [hG, hηT]; rw [ite_eq_right (lt_irrefl t)]
   · have hGηT_t : G =ᶠ[𝓝 t] ηT :=
       Filter.eventually_of_mem ((isOpen_Ioi).mem_nhds hgt)
         (fun s hs => by
-          simp only [hG, hηT]; rw [if_neg (not_lt.mpr (le_of_lt (mem_Ioi.mp hs)))])
+          simp only [hG, hηT]; rw [ite_eq_right (not_lt.mpr (le_of_lt (mem_Ioi.mp hs)))])
     have hmem : t - T ∈ Set.Ioo (-δ) δ := ⟨by linarith, by linarith⟩
     have hηeq : HasGeodesicEquationAt (I := I) g ηT t :=
       hasGeodesicEquationAt_comp_sub_const (hη (t - T) hmem)
     refine HasGeodesicEquationAt.congr_of_eventuallyEq_at (γ' := ηT) ?_ hGηT_t hηeq
-    simp only [hG, hηT]; rw [if_neg (not_lt.mpr (le_of_lt hgt))]
+    simp only [hG, hηT]; rw [ite_eq_right (not_lt.mpr (le_of_lt hgt))]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem isGeodesicOn_glue_at_limit_Ioo
@@ -389,10 +389,10 @@ theorem isGeodesicOn_glue_at_limit_Ioo
   set ηT : ℝ → M := fun s => η (s - T) with hηT
   have hGγ_lt : G =ᶠ[𝓝[<] T] γ :=
     Filter.eventually_of_mem self_mem_nhdsWithin
-      (fun t ht => by simp only [hG]; rw [if_pos (mem_Iio.mp ht)])
+      (fun t ht => by simp only [hG]; rw [ite_eq_left (mem_Iio.mp ht)])
   have hGηT_ge : G =ᶠ[𝓝[≥] T] ηT :=
     Filter.eventually_of_mem self_mem_nhdsWithin
-      (fun t ht => by simp only [hG, hηT]; rw [if_neg (not_lt.mpr (mem_Ici.mp ht))])
+      (fun t ht => by simp only [hG, hηT]; rw [ite_eq_right (not_lt.mpr (mem_Ici.mp ht))])
   have hGηT_lt : G =ᶠ[𝓝[<] T] ηT := hGγ_lt.trans hmatch
   have hGηT_T : G =ᶠ[𝓝 T] ηT := by
     rw [← nhdsLT_sup_nhdsGE T, Filter.EventuallyEq, eventually_sup]
@@ -402,9 +402,9 @@ theorem isGeodesicOn_glue_at_limit_Ioo
   rcases lt_trichotomy t T with hlt | heq | hgt
   · have hGγ_t : G =ᶠ[𝓝 t] γ :=
       Filter.eventually_of_mem ((isOpen_Iio).mem_nhds hlt)
-        (fun s hs => by simp only [hG]; rw [if_pos (mem_Iio.mp hs)])
+        (fun s hs => by simp only [hG]; rw [ite_eq_left (mem_Iio.mp hs)])
     refine HasGeodesicEquationAt.congr_of_eventuallyEq_at (γ' := γ) ?_ hGγ_t ?_
-    · simp only [hG]; rw [if_pos hlt]
+    · simp only [hG]; rw [ite_eq_left hlt]
     · exact hγ t ⟨ht_lo, hlt⟩
   · subst heq
     have hmem0 : t - t ∈ Set.Ioo (-δ) δ := by
@@ -412,16 +412,16 @@ theorem isGeodesicOn_glue_at_limit_Ioo
     have hηeq : HasGeodesicEquationAt (I := I) g ηT t :=
       hasGeodesicEquationAt_comp_sub_const (hη (t - t) hmem0)
     refine HasGeodesicEquationAt.congr_of_eventuallyEq_at (γ' := ηT) ?_ hGηT_T hηeq
-    simp only [hG, hηT]; rw [if_neg (lt_irrefl t)]
+    simp only [hG, hηT]; rw [ite_eq_right (lt_irrefl t)]
   · have hGηT_t : G =ᶠ[𝓝 t] ηT :=
       Filter.eventually_of_mem ((isOpen_Ioi).mem_nhds hgt)
         (fun s hs => by
-          simp only [hG, hηT]; rw [if_neg (not_lt.mpr (le_of_lt (mem_Ioi.mp hs)))])
+          simp only [hG, hηT]; rw [ite_eq_right (not_lt.mpr (le_of_lt (mem_Ioi.mp hs)))])
     have hmem : t - T ∈ Set.Ioo (-δ) δ := ⟨by linarith, by linarith⟩
     have hηeq : HasGeodesicEquationAt (I := I) g ηT t :=
       hasGeodesicEquationAt_comp_sub_const (hη (t - T) hmem)
     refine HasGeodesicEquationAt.congr_of_eventuallyEq_at (γ' := ηT) ?_ hGηT_t hηeq
-    simp only [hG, hηT]; rw [if_neg (not_lt.mpr (le_of_lt hgt))]
+    simp only [hG, hηT]; rw [ite_eq_right (not_lt.mpr (le_of_lt hgt))]
 
 end Geodesic
 end Riemannian

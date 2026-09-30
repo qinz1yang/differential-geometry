@@ -575,7 +575,7 @@ theorem HasStageJetConvergence.pb_convergence
     apply hAconv.congr_eventually hVopen
     · filter_upwards [eventually_atTop.2 ⟨N, fun n hn ↦ hn⟩] with n hn
       intro z _hz
-      simp only [Ap, if_pos hn]
+      simp only [Ap, ite_eq_left hn]
     · exact Set.eqOn_refl id V
   have hBpconv : MapCInfConvergenceOnCompacts D Bp (gInf alpha) := by
     have hBsub : MapCInfConvergenceOnCompacts D B (gInf alpha) := by
@@ -584,24 +584,24 @@ theorem HasStageJetConvergence.pb_convergence
     apply hBsub.congr_eventually Metric.isOpen_ball
     · filter_upwards [eventually_atTop.2 ⟨N, fun n hn ↦ hn⟩] with n hn
       intro z _hz
-      simp only [Bp, if_pos hn]
+      simp only [Bp, ite_eq_left hn]
     · exact Set.eqOn_refl (gInf alpha) D
   have hApc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (Ap n) V := by
     intro n
     by_cases hn : N ≤ n
-    · simpa only [Ap, if_pos hn] using (hN n hn).1
-    · simpa only [Ap, if_neg hn] using
+    · simpa only [Ap, ite_eq_left hn] using (hN n hn).1
+    · simpa only [Ap, ite_eq_right hn] using
         (contDiff_id : ContDiff Real (∞ : WithTop ℕ∞) (id : E → E)).contDiffOn
   have hBpc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (Bp n) D := by
     intro n
     by_cases hn : N ≤ n
-    · simpa only [Bp, if_pos hn] using (hN n hn).2.2
-    · simpa only [Bp, if_neg hn] using hgInf
+    · simpa only [Bp, ite_eq_left hn] using (hN n hn).2.2
+    · simpa only [Bp, ite_eq_right hn] using hgInf
   have hApmap : ∀ n, Set.MapsTo (Ap n) V D := by
     intro n
     by_cases hn : N ≤ n
-    · simpa only [Ap, if_pos hn] using (hN n hn).2.1
-    · simp only [Ap, if_neg hn]
+    · simpa only [Ap, ite_eq_left hn] using (hN n hn).2.1
+    · simp only [Ap, ite_eq_right hn]
       intro z hz
       exact hVD hz
   have hpb := MapCInfConvergenceOnCompacts.pullbackForm_comp_fderiv
@@ -612,7 +612,7 @@ theorem HasStageJetConvergence.pb_convergence
   apply hpb.congr_eventually hVopen
   · filter_upwards [eventually_atTop.2 ⟨N, fun n hn ↦ hn⟩] with n hn
     intro z _hz
-    simp only [Ap, Bp, if_pos hn]
+    simp only [Ap, Bp, ite_eq_left hn]
   · intro z _hz
     change gInf alpha z =
       _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm

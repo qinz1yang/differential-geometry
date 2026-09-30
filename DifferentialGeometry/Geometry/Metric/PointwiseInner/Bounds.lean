@@ -8,8 +8,7 @@ open Bundle Manifold Set Filter Function
 open scoped Manifold Topology ContDiff ENNReal NNReal Matrix BigOperators
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Laplacian
+namespace SmoothRiemannianMetric
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -157,8 +156,7 @@ lemma abs_metric_inner_le_metricInnerOpNorm
   change |g.inner x v w| ≤ ContinuousLinearMap.opNorm (g.inner x) * ‖v‖ * ‖w‖
   rwa [Real.norm_eq_abs] at h
 
-end Laplacian
-end Analysis
+end SmoothRiemannianMetric
 end DifferentialGeometry
 
 end

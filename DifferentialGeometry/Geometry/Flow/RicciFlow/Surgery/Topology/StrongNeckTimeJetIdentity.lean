@@ -119,7 +119,7 @@ theorem TerminalLimitMetric.strongNeck_comparison_timeJet_eq
         dsimp [F]
         rw [pow_zero, mul_one, hzero, L.extendedMetric_before (htime u hu).2,
           metricTensorField_apply, SmoothRiemannianMetric.restrictOpen_inner,
-          shrinkingCylinderTimeJet, if_pos rfl]
+          shrinkingCylinderTimeJet, ite_eq_left rfl]
         have hmodel := cylinderReference_inner_eq_background nk.cylinder δ u hu.2 z w
         change _ - _ = _ - (strongNeckBackgroundMetric δ u).inner z (w 0) (w 1)
         apply congrArg₂ (fun a b : ℝ => a - b) ?_ hmodel
@@ -158,7 +158,7 @@ private theorem covNorm_add_le {δ : ℝ}
       tensor02CovDerivNormWith r A g g x + tensor02CovDerivNormWith r B g g x := by
   simp only [tensor02CovDerivNormWith, tensor02_cov_deriv_eq_cov_deriv_of_field,
     covDerivOfField_add, ContMDiffSection.coe_add, Pi.add_apply]
-  exact _root_.Tensor0SBundle.sqrt_normSq0S_add_le g x (r + 2) _ _
+  exact _root_.DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le g x (r + 2) _ _
 
 private theorem historical_coefficient_mul {q Q : ℝ} (hq : q ≠ 0) (hQ : Q ≠ 0) (b : ℕ) :
     ((Q / q) * (Q / q)⁻¹ ^ b) * (q * q⁻¹ ^ b) = Q * Q⁻¹ ^ b := by

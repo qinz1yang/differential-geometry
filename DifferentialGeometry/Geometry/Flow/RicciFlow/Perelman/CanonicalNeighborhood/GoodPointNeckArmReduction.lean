@@ -117,7 +117,7 @@ theorem twoArmNoReturnDepth_le_four_mul_of_armNeckHeights_le {M : Type u} [Topol
   have h1 := twoArmNoReturnDepth_le_four_mul_of_armNeckHeights neck a b hs h
   linarith
 
-def BufferedCanonical.enlarge_constants {M : Type u} [TopologicalSpace M]
+def BufferedCanonical.enlargeConstants {M : Type u} [TopologicalSpace M]
     [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D} {alpha C H : ℝ} {x : M}
     {t : ℝ} (B : BufferedCanonical S alpha C H x t) {C' : ℝ} (hC' : C < C') :
@@ -128,7 +128,7 @@ def BufferedCanonical.enlarge_constants {M : Type u} [TopologicalSpace M]
   have hmul : C * S.scalar t x < C' * S.scalar t x :=
     mul_lt_mul_of_pos_right hC' B.witness.Q_pos
   refine ⟨B.tolerance, B.tolerance_pos, B.tolerance_lt,
-    B.witness.enlarge_constants hC'.le hC'.le, B.a, B.b, B.margin, B.a_pos,
+    B.witness.enlargeConstants hC'.le hC'.le, B.a, B.b, B.margin, B.a_pos,
     B.margin_pos, B.radial_margin, B.inner_ball, B.outer_ball, ?_, ?_, ?_, ?_⟩
   · intro y hy
     exact ⟨(mul_lt_mul_of_pos_right hinv B.witness.Q_pos).trans (B.scalar_reserve y hy).1,
@@ -143,27 +143,27 @@ def BufferedCanonical.enlarge_constants {M : Type u} [TopologicalSpace M]
         simpa only [CanonicalWitness.enlarge_constants_requiresVolume] using hv))
   · intro cap hc
     obtain ⟨hdepth, halteq⟩ := hc
-    have hmono : (B.witness.enlarge_constants hC'.le hC'.le).alternative =
-        B.witness.alternative.mono_constant hC hC'.le B.witness.Q_pos.le := rfl
+    have hmono : (B.witness.enlargeConstants hC'.le hC'.le).alternative =
+        B.witness.alternative.monoConstant hC hC'.le B.witness.Q_pos.le := rfl
     rw [hmono] at halteq
     have halteq' : B.witness.alternative = CanonicalAlternative.cap cap hdepth := by
       cases hW : B.witness.alternative with
       | neck data =>
           rw [hW] at halteq
-          simp only [CanonicalAlternative.mono_constant] at halteq
+          simp only [CanonicalAlternative.monoConstant] at halteq
           exact absurd halteq (by simp)
       | cap data deep =>
           rw [hW] at halteq
-          simp only [CanonicalAlternative.mono_constant] at halteq
+          simp only [CanonicalAlternative.monoConstant] at halteq
           cases halteq
           rfl
       | positive whole data hsec =>
           rw [hW] at halteq
-          simp only [CanonicalAlternative.mono_constant] at halteq
+          simp only [CanonicalAlternative.monoConstant] at halteq
           exact absurd halteq (by simp)
       | round whole data =>
           rw [hW] at halteq
-          simp only [CanonicalAlternative.mono_constant] at halteq
+          simp only [CanonicalAlternative.monoConstant] at halteq
           exact absurd halteq (by simp)
     obtain ⟨v, neck, hv, hlo, hhi, hfar, hdiam⟩ := B.cap_collar cap ⟨hdepth, halteq'⟩
     exact ⟨v, neck, hv,

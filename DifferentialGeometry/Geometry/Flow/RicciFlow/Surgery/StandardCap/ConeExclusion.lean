@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.PositiveCurvature
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeChartCoordinates
+import DifferentialGeometry.Geometry.Metric.ConeChart.Coordinates
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph
 import Mathlib.Analysis.Normed.Module.RCLike.Real
@@ -79,7 +79,7 @@ private theorem coneChart_false_of_norm_lt
   have hpos : 0 < metricRm04StandardAt (scaleMetric c hc metric) (C.map z) u w w u := by
     rw [metricRmStandard_scale]
     exact mul_pos hc (metricRm04_pos (hzx ▸ hL) u w hgram0)
-  have hzero := Perelman.CanonicalNeighborhood.FiniteHorn.ConeChart.radial_curvature_zero
+  have hzero := DifferentialGeometry.Geometry.Riemannian.ConeChart.radial_curvature_zero
     C hz u w u
   exact (ne_of_gt hpos) hzero
 

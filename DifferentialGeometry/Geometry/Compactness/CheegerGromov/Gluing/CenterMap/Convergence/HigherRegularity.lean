@@ -1491,13 +1491,13 @@ theorem exists_supported_center_map_convergence
         have hc := d.atomOn_live_convergence inp P Lphi r
           alphaPhi gammaPhi (hgeom.1 alpha) (hJConvergence target)
           (hJStage target) (hJInf target) (hread target)
-        simpa only [aInf, dif_pos htarget, target, Jinf, beta, alphaPhi,
+        simpa only [aInf, dite_eq_left htarget, target, Jinf, beta, alphaPhi,
           gammaPhi, hslot, Lphi, NetLimitData.subseq_lamInf] using hc
       · cases hgamma : L.alive (gamma : Nat) with
         | false =>
             have hgammaPhi : Lphi.alive (gamma : Nat) = false := by
               simpa only [Lphi, NetLimitData.subseq] using hgamma
-            simpa only [aInf, dif_neg htarget] using
+            simpa only [aInf, dite_eq_right htarget] using
               atomOn_dead_convergence (I := I) d.chart inp.decay inp.divisor_pos P Lphi
                 inp.pack r beta gamma (hgeom.1 alpha) hgammaPhi
         | true =>
@@ -1524,7 +1524,7 @@ theorem exists_supported_center_map_convergence
                     (Lphi.hatBall inp.decay inp.D P inp.pack r k alpha.1) :=
                 Filter.Eventually.of_forall fun k z hz =>
                   ((hpatchPhi k).1 alpha).2 hz |>.1
-              simpa only [aInf, dif_neg htarget] using
+              simpa only [aInf, dite_eq_right htarget] using
                 atomOn_disjoint_convergence (I := I) d.chart inp.decay inp.divisor_pos P Lphi
                   inp.pack r beta alpha.1 gamma (hgeom.1 alpha)
                   hsourceTail hdisjointPhi
@@ -1538,7 +1538,7 @@ theorem exists_supported_center_map_convergence
           simpa only [Lphi, NetLimitData.subseq, hslot] using target.1.2
         rw [hgamma] at htrue
         contradiction
-      simp only [aInf, dif_neg hnone]
+      simp only [aInf, dite_eq_right hnone]
       rfl
     have hatomSmooth (k : Nat) (gamma : Fin (inp.pack.A r)) :
         ContDiffOn Real (∞ : WithTop ℕ∞)
@@ -1621,11 +1621,11 @@ theorem exists_supported_center_map_convergence
       by_cases htarget : ∃ target : InterSlot L inp.pack r alpha,
           target.1.1 = gamma
       · let target := Classical.choose htarget
-        simpa only [aInf, dif_pos htarget, target] using
+        simpa only [aInf, dite_eq_left htarget, target] using
           normBump_smooth (hJInf target)
             (L.lamInf (gamma : Nat))
             (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat)))
-      · simpa only [aInf, dif_neg htarget] using
+      · simpa only [aInf, dite_eq_right htarget] using
           (contDiffOn_const : ContDiffOn Real (∞ : WithTop ℕ∞)
             (fun _ : E => (0 : Real)) (U alpha))
     exact HasAtomWeightLimOn.of_atoms (I := I) d.chart inp.divisor_pos P Lphi

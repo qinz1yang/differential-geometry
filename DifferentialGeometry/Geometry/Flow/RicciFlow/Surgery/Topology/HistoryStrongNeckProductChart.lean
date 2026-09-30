@@ -15,7 +15,7 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHor
 
 universe u
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
   {F Hm N : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
   [TopologicalSpace Hm] {J : ModelWithCorners ℝ F Hm} [J.Boundaryless]
   [TopologicalSpace N] [ChartedSpace Hm N] [IsManifold J ∞ N]

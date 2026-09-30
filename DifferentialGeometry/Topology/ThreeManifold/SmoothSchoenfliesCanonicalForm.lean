@@ -20,7 +20,7 @@ private instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1
 private noncomputable def jordanSides (e : S² → ℝ³)
     (he : Manifold.IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e) :
     SphereSeparation.SmoothSphereSides (Set.range e) :=
-  SphereSeparation.jordanBrouwer_openThreeSpace e he (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)
+  SphereSeparation.smoothSphereSidesOpenThreeSpace e he (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)
 
 private theorem image_sphere_eq_range_of_image_ball_eq_compactSide (e : S² → ℝ³)
     (he : Manifold.IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e) (Φ : ℝ³ ≃ₘ[ℝ] ℝ³)

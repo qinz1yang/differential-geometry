@@ -20,7 +20,7 @@ theorem mem_openSimplex_stdVertices_iff {x : Fin (n + 2) → ℝ} :
     intro l
     funext j
     simp only [Finset.sum_apply, Pi.smul_apply, Pi.single_apply, smul_eq_mul, mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [stdVertices, mem_openSimplex_image_iff (stdVertex_injective n).injOn]
   constructor
   · rintro ⟨l, hl₀, hl₁, hlx⟩

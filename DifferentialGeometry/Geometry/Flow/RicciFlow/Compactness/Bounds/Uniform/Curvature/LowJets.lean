@@ -3,6 +3,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.C
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.PerturbationOperatorBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.CovariantDerivativeQuadraticBounds
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (abs_metric_inner_le_sqrt_metric_quadratic)
+
 set_option autoImplicit false
 
 noncomputable section

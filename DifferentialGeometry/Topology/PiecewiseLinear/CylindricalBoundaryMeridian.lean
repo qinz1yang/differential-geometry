@@ -16,7 +16,7 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 private theorem exists_closed_boundary_diagram_of_stdSimplex
     (M : Geometry.SimplicialComplex ℝ E3) [Finite M.faces]
     (hM : IsCombinatorialManifoldWithBoundary 3 M) {f : (Fin 3 → ℝ) × ℝ → E3}
-    (hf : IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) M.space) :
+    (hf : IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) M.space) :
     ∃ g : (Fin 3 → ℝ) × ℝ → E3,
       IsCylindricalDiagram g (stdSimplexBoundary 2) (frontier M.space) ∧
       (∀ x ∈ stdSimplexBoundary 2, g (x, 0) = g (x, 1)) ∧
@@ -28,7 +28,7 @@ private theorem exists_closed_boundary_diagram_of_stdSimplex
   obtain ⟨D, hDfin, hDsp⟩ := (isPLBall_stdSimplex 2).isPolyhedron.exists_simplicialComplex
   have : Finite D.faces := hDfin.to_subtype
   have hD : IsPLBall 2 D.space := hDsp.symm ▸ isPLBall_stdSimplex 2
-  have hid : IsPLHomeomorphOn id (stdSimplex ℝ (Fin 3)) D.space := by
+  have hid : IsPLHomeomorphOn id (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D.space := by
     rw [hDsp]
     exact (isPLBall_stdSimplex 2).isPolyhedron.isPLHomeomorphOn_id
   have hDb : (boundaryComplex 2 D).space = stdSimplexBoundary 2 := by
@@ -65,10 +65,10 @@ private theorem exists_closed_boundary_diagram_of_stdSimplex
 theorem IsCylindricalDiagram.boundary_slice_is_essential
     (M : Geometry.SimplicialComplex ℝ E3) [Finite M.faces]
     (hM : IsCombinatorialManifoldWithBoundary 3 M) {f : (Fin 3 → ℝ) × ℝ → E3}
-    (hf : IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) M.space) :
+    (hf : IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) M.space) :
     IsConnected (frontier M.space \ f '' (stdSimplexBoundary 2 ×ˢ {(0 : ℝ)})) ∧
       ¬ ∃ (D : Set E3) (r : (Fin 3 → ℝ) → E3),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ frontier M.space ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ frontier M.space ∧
           f '' (stdSimplexBoundary 2 ×ˢ {(0 : ℝ)}) = r '' stdSimplexBoundary 2 := by
   obtain ⟨g, hg, hends, hbase⟩ := exists_closed_boundary_diagram_of_stdSimplex M hM hf
   have hJ : IsPLSphere 1 (stdSimplexBoundary 2) := by

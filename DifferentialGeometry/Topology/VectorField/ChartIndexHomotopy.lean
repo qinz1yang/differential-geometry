@@ -63,7 +63,7 @@ private theorem region_sum_eq_ballDegree (hr : 0 < r)
   rw [DifferentialGeometry.LocalDegree.euclideanBallDegree_eq_finsum_localDegrees hr hF hf hFb]
   have hs : {y | F y = 0 ∧ y ∈ closedBall a r} = {y ∈ closedBall a r | F y = 0} :=
     Set.ext (fun _ => and_comm)
-  exact finsum_comp_equiv (Equiv.setCongr hs)
+  exact finsum_comp_equiv (Set.equivOfEq hs)
     (f := fun p : {y ∈ closedBall a r | F y = 0} => DifferentialGeometry.LocalDegree.euclideanLocalDegree F p.val
       (DifferentialGeometry.LocalDegree.isolatedZero_of_finite_closedBall_zeroSet hF hf hFb
         p.property.1 p.property.2))

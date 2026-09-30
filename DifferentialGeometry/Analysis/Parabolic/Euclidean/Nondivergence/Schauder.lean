@@ -293,7 +293,7 @@ theorem parabolic_nondivergence_rescaled_interior_schauder_estimate
     simpa only [d2v, NNReal.coe_mul, NNReal.coe_pow] using
       hd2uNormV p hp
   have hlocal :=
-    parabolic_nondivergence_centered_ball_schauder_estimate_of_local_source_estimates_of_small_freeze_defect
+    nondivergence_centered_ball_schauder_estimate_of_small_defect
       (alpha := alpha)
       (Ksource := Ksource * rho ^ (alpha : Real) * rho ^ 2)
       (Kc := Kc * rho ^ (alpha : Real) * rho ^ 2)
@@ -792,7 +792,7 @@ theorem exists_parabolic_nondivergence_schauder_estimate_of_interpolation
   have hduHolder : HolderWith
       (parabolicSpatialGradientInterpolationConst epsilon alpha C M) alpha
       (Q.domRestrict (fun p ↦ du p.time p.space)) := by
-    have hcomp := e1.lipschitz.holderWith.comp hjetHolder
+    have hcomp := e1.lipschitzWith.holderWith.comp hjetHolder
     have hfun : e1 ∘ Q.domRestrict
         (parabolicSpatialJet 1 (fun t x ↦ u t x)) =
           Q.domRestrict (fun p ↦ du p.time p.space) := by
@@ -812,7 +812,7 @@ theorem exists_parabolic_nondivergence_schauder_estimate_of_interpolation
   have hd2uHolder : HolderWith C alpha
       (Q.domRestrict (fun p ↦ d2u p.time p.space)) := by
     have hbase := parabolicSpatialJet_holderWith_restrict hgauge
-    have hcomp := e2.lipschitz.holderWith.comp hbase
+    have hcomp := e2.lipschitzWith.holderWith.comp hbase
     have hfun : e2 ∘ Q.domRestrict
         (parabolicSpatialJet 2 (fun t x ↦ u t x)) =
           Q.domRestrict (fun p ↦ d2u p.time p.space) := by

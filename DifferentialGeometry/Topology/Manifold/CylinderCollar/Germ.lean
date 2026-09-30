@@ -116,9 +116,7 @@ theorem exists_supported_diffeomorph_eq_zero_section_germ
     rfl
   refine ⟨G, V', hV', hS', hsub, hmatch, K', hK', hKband, hGfix, ?_⟩
   intro q hq
-  have hh := G.symm_apply_apply q
-  rw [hGfix hq] at hh
-  exact hh
+  exact (G.toEquiv.symm_apply_eq).2 (hGfix hq).symm
 
 
 theorem exists_supported_diffeomorph_eq_on_cylinder_collar

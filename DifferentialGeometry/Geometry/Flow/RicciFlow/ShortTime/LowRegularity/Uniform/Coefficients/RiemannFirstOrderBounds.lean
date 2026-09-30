@@ -17,6 +17,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -46,7 +47,7 @@ private lemma riemRiemannianFiberNormSq_neg
     riemannianFiberNormSq (I := I) (M := M) g r s x (-v) =
       riemannianFiberNormSq (I := I) (M := M) g r s x v := by
   rw [show (-v) = (-1 : ℝ) • v from by rw [neg_one_smul]]
-  rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+  rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
   norm_num
 
 omit [CompactSpace M] [SigmaCompactSpace M] in

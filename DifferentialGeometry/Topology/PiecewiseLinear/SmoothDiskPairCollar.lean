@@ -67,7 +67,7 @@ theorem exists_diffeomorph_boundary_of_isSmoothEmbedding_plane
     exact ⟨x, rfl⟩
   refine ⟨fB, g, Vb, fun w => rfl, hVb, fun x => ?_, hfBs, fun S hS => ?_, fun b hb => ?_⟩
   · have hΦx : Φ x = ⟨fB x, hfBV x⟩ := Subtype.ext (hΦ x)
-    simp only [g, dif_pos (hfBV x), ← hΦx, Diffeomorph.symm_apply_apply]
+    simp only [g, dite_eq_left (hfBV x), ← hΦx, Diffeomorph.symm_apply_apply]
   · have heq : fB '' S = Subtype.val '' (Φ '' S) := by
       ext b
       constructor
@@ -79,7 +79,7 @@ theorem exists_diffeomorph_boundary_of_isSmoothEmbedding_plane
     exact Vb.isOpen.isOpenMap_subtype_val _ (Φ.toHomeomorph.isOpenMap _ hS)
   · have hres : (fun x : Vb => g x) = Φ.symm := by
       funext x
-      simp only [g, dif_pos x.2]
+      simp only [g, dite_eq_left x.2]
     have h := Φ.symm.contMDiff ⟨b, hb⟩
     rw [← hres] at h
     exact contMDiffAt_subtype_iff.mp h
@@ -144,7 +144,7 @@ theorem exists_oneHandleCollar_of_isSmoothEmbedding
       have hn : {q : B × Icc (0 : ℝ) a₀ | q.1 ∈ W₀} ∈ 𝓝 q :=
         (W₀.isOpen.preimage continuous_fst).mem_nhds hq
       filter_upwards [hn] with q' hq'
-      simp only [G, if_pos (show q'.1 ∈ W₀ from hq')]
+      simp only [G, ite_eq_left (show q'.1 ∈ W₀ from hq')]
     · have hq0 : q.1 ∉ W₀ := by
         rw [← SetLike.mem_coe, hW₁] at hq
         obtain ⟨w, hw⟩ := hq
@@ -164,7 +164,7 @@ theorem exists_oneHandleCollar_of_isSmoothEmbedding
         obtain ⟨w, hw⟩ := hq''
         rw [← hw]
         exact hf₁W₀ w
-      simp only [G, if_neg hq'0]
+      simp only [G, ite_eq_right hq'0]
   let θ : M → EuclideanSpace ℝ (Fin 2) × ℝ :=
     fun m => if h : m ∈ Y then G (dc.symm ⟨m, h⟩).val else 0
   let Θ : EuclideanSpace ℝ (Fin 2) × ℝ → M := fun p =>
@@ -182,17 +182,17 @@ theorem exists_oneHandleCollar_of_isSmoothEmbedding
   have hθc : ∀ q : B × Icc (0 : ℝ) a₀, (q.2 : ℝ) < a₀ → θ (c q) = G q := by
     intro q hq
     obtain ⟨hY, hsymm⟩ := hcU q hq
-    simp only [θ, dif_pos hY, hsymm]
+    simp only [θ, dite_eq_left hY, hsymm]
   have hG0 : ∀ w (t : Icc (0 : ℝ) a₀), G (f₀ w, t) = (w, -1 - (t : ℝ)) := by
     intro w t
-    simp only [G, if_pos (hf₀W w), hg₀]
+    simp only [G, ite_eq_left (hf₀W w), hg₀]
   have hG1 : ∀ w (t : Icc (0 : ℝ) a₀), G (f₁ w, t) = (w, 1 + (t : ℝ)) := by
     intro w t
-    simp only [G, if_neg (hf₁W₀ w), hg₁]
+    simp only [G, ite_eq_right (hf₁W₀ w), hg₁]
   have hΘ0 : ∀ p : EuclideanSpace ℝ (Fin 2) × ℝ, p.2 < 0 →
-      Θ p = c (f₀ p.1, projIcc 0 a₀ ha₀.le (-1 - p.2)) := fun p hp => if_pos hp
+      Θ p = c (f₀ p.1, projIcc 0 a₀ ha₀.le (-1 - p.2)) := fun p hp => ite_eq_left hp
   have hΘ1 : ∀ p : EuclideanSpace ℝ (Fin 2) × ℝ, ¬ p.2 < 0 →
-      Θ p = c (f₁ p.1, projIcc 0 a₀ ha₀.le (p.2 - 1)) := fun p hp => if_neg hp
+      Θ p = c (f₁ p.1, projIcc 0 a₀ ha₀.le (p.2 - 1)) := fun p hp => ite_eq_right hp
   have hproj : ∀ x : ℝ, 0 ≤ x → x < a → (projIcc 0 a₀ ha₀.le x : ℝ) = x := by
     intro x h1 h2
     rw [projIcc_of_mem]
@@ -293,7 +293,7 @@ theorem exists_oneHandleCollar_of_isSmoothEmbedding
     apply ContMDiffAt.contMDiffWithinAt
     have hres : (fun x : Y => θ x) = G ∘ Subtype.val ∘ dc.symm := by
       funext x
-      simp only [θ, dif_pos x.2, Function.comp_apply]
+      simp only [θ, dite_eq_left x.2, Function.comp_apply]
     have h : ContMDiffAt (𝓡∂ 3) 𝓘(ℝ, EuclideanSpace ℝ (Fin 2) × ℝ) ∞ (fun x : Y => θ x)
         ⟨c q, hY⟩ := by
       rw [hres]

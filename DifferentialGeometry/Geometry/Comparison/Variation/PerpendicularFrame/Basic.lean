@@ -262,13 +262,13 @@ private theorem bGramSchmidt_orthonormal
   rcases Nat.lt_trichotomy i.val j.val with hlt | heq | hgt
   · have h := bGramSchmidt_orth_strong B Bsymm Bpos v hLI j.val j (le_refl _)
     have hne : i ≠ j := fun h_eq => by rw [h_eq] at hlt; omega
-    rw [if_neg hne]; exact h.2.1 i hlt
+    rw [ite_eq_right hne]; exact h.2.1 i hlt
   · have hij : i = j := Fin.ext heq
-    rw [if_pos hij, ← hij]
+    rw [ite_eq_left hij, ← hij]
     exact (bGramSchmidt_orth_strong B Bsymm Bpos v hLI i.val i (le_refl _)).2.2
   · have h := bGramSchmidt_orth_strong B Bsymm Bpos v hLI i.val i (le_refl _)
     have hne : i ≠ j := fun h_eq => by rw [h_eq] at hgt; omega
-    rw [if_neg hne, Bsymm]; exact h.2.1 j hgt
+    rw [ite_eq_right hne, Bsymm]; exact h.2.1 j hgt
 
 private theorem bGramSchmidt_mem
     (B : F →L[ℝ] F →L[ℝ] ℝ) {m : ℕ} (v : Fin m → F)

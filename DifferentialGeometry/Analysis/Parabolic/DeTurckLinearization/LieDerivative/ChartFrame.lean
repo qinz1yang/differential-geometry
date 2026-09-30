@@ -183,9 +183,9 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
       intro i' j'
       rw [Finset.sum_eq_single k
         (fun k' _ hne => by
-          rw [hrepr_basis k' k, if_neg hne]; ring)
+          rw [hrepr_basis k' k, ite_eq_right hne]; ring)
         (fun hm => (hm (Finset.mem_univ k)).elim)]
-      rw [hrepr_basis k k, if_pos rfl]
+      rw [hrepr_basis k k, ite_eq_left rfl]
       ring
     rw [show
       ∑ i' : Fin (Module.finrank ℝ E),
@@ -222,12 +222,12 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
         (fun i' _ hne => by
           refine Finset.sum_eq_zero (fun j' _ => ?_)
           have : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) i' = 0 := by
-            rw [hrepr_basis j i', if_neg (fun h => hne h.symm)]
+            rw [hrepr_basis j i', ite_eq_right (fun h => hne h.symm)]
           rw [this]; ring)
         (fun hm => (hm (Finset.mem_univ j)).elim)]
       refine Finset.sum_congr rfl (fun j' _ => ?_)
       have hjj : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) j = 1 := by
-        rw [hrepr_basis j j, if_pos rfl]
+        rw [hrepr_basis j j, ite_eq_left rfl]
       rw [hjj]; ring]
     have hrepr_chartCoeff : ∀ (j' : Fin (Module.finrank ℝ E)),
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
@@ -309,7 +309,7 @@ private lemma chartLieDerivMetricMatrix_alpha_algebraic
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x) := by
     intro k
     rw [Finset.sum_eq_single k
-      (fun l _ hl => by rw [if_neg hl]; ring)
+      (fun l _ hl => by rw [ite_eq_right hl]; ring)
       (fun hm => (hm (Finset.mem_univ k)).elim)]
     simp
   have hcoll2 : ∀ k : Fin (Module.finrank ℝ E),
@@ -319,7 +319,7 @@ private lemma chartLieDerivMetricMatrix_alpha_algebraic
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x) := by
     intro k
     rw [Finset.sum_eq_single k
-      (fun l _ hl => by rw [if_neg hl]; ring)
+      (fun l _ hl => by rw [ite_eq_right hl]; ring)
       (fun hm => (hm (Finset.mem_univ k)).elim)]
     simp
   conv_rhs =>
@@ -525,10 +525,10 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
       refine Finset.sum_congr rfl (fun i' _ => ?_)
       rw [Finset.sum_eq_single j
         (fun j' _ hne => by
-          rw [h_trivToE_wα, hrepr_basis j j', if_neg (fun h => hne h.symm)]
+          rw [h_trivToE_wα, hrepr_basis j j', ite_eq_right (fun h => hne h.symm)]
           ring)
         (fun hm => (hm (Finset.mem_univ j)).elim)]
-      rw [h_trivToE_wα, hrepr_basis j j, if_pos rfl, hgram i' j]
+      rw [h_trivToE_wα, hrepr_basis j j, ite_eq_left rfl, hgram i' j]
       ring]
   rw [show
     (∑ i' : Fin (Module.finrank ℝ E),
@@ -547,11 +547,11 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
       rw [Finset.sum_eq_single i
         (fun i' _ hne => by
           refine Finset.sum_eq_zero (fun j' _ => ?_)
-          rw [h_trivToE_vα, hrepr_basis i i', if_neg (fun h => hne h.symm)]
+          rw [h_trivToE_vα, hrepr_basis i i', ite_eq_right (fun h => hne h.symm)]
           ring)
         (fun hm => (hm (Finset.mem_univ i)).elim)]
       refine Finset.sum_congr rfl (fun j' _ => ?_)
-      rw [h_trivToE_vα, hrepr_basis i i, if_pos rfl, hgram i j']
+      rw [h_trivToE_vα, hrepr_basis i i, ite_eq_left rfl, hgram i j']
       ring]
   have hLC_vα : ∀ (i' : Fin (Module.finrank ℝ E)),
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
@@ -599,7 +599,7 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
               (if l = k then (1 : ℝ) else 0)) =
           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartCoeffOnE (I := I) α W k) (extChartAt I α x) := by
         rw [Finset.sum_eq_single k
-          (fun l _ hl => by rw [if_neg hl]; ring)
+          (fun l _ hl => by rw [ite_eq_right hl]; ring)
           (fun hm => (hm (Finset.mem_univ k)).elim)]
         simp
       rw [hpd_collapse]
@@ -628,7 +628,7 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
               (if l = k then (1 : ℝ) else 0)) =
           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartCoeffOnE (I := I) α W k) (extChartAt I α x) := by
         rw [Finset.sum_eq_single k
-          (fun l _ hl => by rw [if_neg hl]; ring)
+          (fun l _ hl => by rw [ite_eq_right hl]; ring)
           (fun hm => (hm (Finset.mem_univ k)).elim)]
         simp
       rw [hpd_collapse]

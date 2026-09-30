@@ -10,8 +10,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-theorem RetainedCoreHistory.CapWindowPoint.of_le_time {P₀ : OrientedThreeStage.{u}}
-    {H : RetainedCoreHistory P₀} {p : CutoffParameters}
+theorem RetainedCoreHistory.CapWindowPoint.of_le_time
+    {H : RetainedCoreHistory.{u}} {p : CutoffParameters}
     {records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p}
     {k : Fin (H.eventCount + 1)} {y : (H.stage k).Carrier} {σ t D θ θ' S : ℝ}
     (h : H.CapWindowPoint records k y σ D θ) (hσt : σ ≤ t)
@@ -31,8 +31,8 @@ theorem RetainedCoreHistory.CapWindowPoint.of_le_time {P₀ : OrientedThreeStage
         (θ' - θ) * (((records j).static b).neck.scale)⁻¹ := add_le_add hage hdiv
     _ = θ' * (((records j).static b).neck.scale)⁻¹ := by ring
 
-theorem RetainedCoreHistory.exists_forall_neck_scale_le {P₀ : OrientedThreeStage.{u}}
-    (H : RetainedCoreHistory P₀) {p : CutoffParameters}
+theorem RetainedCoreHistory.exists_forall_neck_scale_le
+    (H : RetainedCoreHistory.{u}) {p : CutoffParameters}
     (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p) :
     ∃ S : ℝ, 0 < S ∧ ∀ i b, ((records i).static b).neck.scale ≤ S := by
   obtain ⟨S₀, hS₀⟩ := (Set.finite_range fun ib :

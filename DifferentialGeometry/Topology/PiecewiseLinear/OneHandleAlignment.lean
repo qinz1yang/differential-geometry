@@ -11,8 +11,8 @@ open Set Topology Metric
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 theorem exists_oneHandle_end_assignment {M : Type} [TopologicalSpace M] [T2Space M]
-    (ψ : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} → M)
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} → M)
     (hψ : Continuous ψ) (f : Fin 2 → EuclideanSpace ℝ (Fin 2) → M) (hf : ∀ j, Continuous (f j))
     (hdisj : Disjoint (range (f 0)) (range (f 1)))
     (hrange : range ψ = ⋃ j, f j '' closedBall 0 1) :
@@ -42,8 +42,8 @@ theorem exists_oneHandle_end_assignment {M : Type} [TopologicalSpace M] [T2Space
       rcases he with rfl | rfl
       · exact Or.inl rfl
       · exact Or.inr rfl
-    let ι : stdSimplex ℝ (Fin 3) → {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-        z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} := fun x =>
+    let ι : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) → {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+        z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} := fun x =>
       ⟨⟨(x.val, e), x.2, heI⟩, x.2, he2⟩
     have hι : Continuous ι :=
       ((continuous_subtype_val.prodMk continuous_const).subtype_mk _).subtype_mk _
@@ -61,6 +61,8 @@ theorem exists_oneHandle_end_assignment {M : Type} [TopologicalSpace M] [T2Space
       · rintro ⟨x, rfl⟩
         exact ⟨ι x, rfl, rfl⟩
     rw [himg]
+    let : PreconnectedSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) :=
+      Subtype.preconnectedSpace (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin 3)).isPreconnected
     exact isPreconnected_range (hψ.comp hι)
   have hsplit : ∀ e : ℝ, (e = 0 ∨ e = 1) →
       ψ '' {z | z.val.val.2 = e} ⊆ C 0 ∨ ψ '' {z | z.val.val.2 = e} ⊆ C 1 := by
@@ -135,21 +137,21 @@ theorem exists_oneHandle_end_assignment {M : Type} [TopologicalSpace M] [T2Space
   · exact (hsame 1 h0 h1).elim
 
 theorem exists_endDisk_homeomorph {M : Type} [TopologicalSpace M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} → M)
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} → M)
     (hψ : IsClosedEmbedding ψ) (F : EuclideanSpace ℝ (Fin 2) → M) (hF : IsEmbedding F)
     {e : ℝ} (he : e = 0 ∨ e = 1) (himg : ψ '' {z | z.val.val.2 = e} = F '' closedBall 0 1) :
     ∃ γ : closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1 ≃ₜ
         closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1,
-      ∀ z : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-        z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)}, z.val.val.2 = e →
+      ∀ z : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+        z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)}, z.val.val.2 = e →
         ∀ w : closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1,
           w.val = (prismCylinderMap z.val).1 → F (γ w).val = ψ z := by
   classical
-  have hAc : CompactSpace {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} := hψ.compactSpace
-  let Ae : Set {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} := {z | z.val.val.2 = e}
+  have hAc : CompactSpace {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} := hψ.compactSpace
+  let Ae : Set {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} := {z | z.val.val.2 = e}
   have hAec : CompactSpace Ae := isCompact_iff_compactSpace.mp
     ((isClosed_eq ((continuous_snd.comp continuous_subtype_val).comp continuous_subtype_val)
       continuous_const).isCompact)
@@ -215,26 +217,26 @@ theorem closedBallReflection_apply (w : closedBall (0 : EuclideanSpace ℝ (Fin 
     (closedBallReflection w : EuclideanSpace ℝ (Fin 2)) = planarReflection w := rfl
 
 theorem exists_oneHandle_alignment {M : Type} [TopologicalSpace M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} → M)
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} → M)
     (hψ : IsClosedEmbedding ψ) (Fb Ft : EuclideanSpace ℝ (Fin 2) → M) (hFb : IsEmbedding Fb)
     (hFt : IsEmbedding Ft) (hb : ψ '' {z | z.val.val.2 = 0} = Fb '' closedBall 0 1)
     (ht : ψ '' {z | z.val.val.2 = 1} = Ft '' closedBall 0 1) :
     ∃ (L : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))
-      (Ext : (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) →
+      (Ext : (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) →
         EuclideanSpace ℝ (Fin 2) × ℝ),
       (L = id ∨ L = planarReflection) ∧ IsClosedEmbedding Ext ∧ range Ext = closedBall 0 1 ∧
       (∀ b, ‖(Ext b).1‖ = 1 ↔ b.val.1 ∈ stdSimplexBoundary 2) ∧
       (∀ b, |(Ext b).2| = 1 ↔ b.val.2 = 0 ∨ b.val.2 = 1) ∧
-      (∀ z : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-        z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)}, z.val.val.2 = 0 →
+      (∀ z : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+        z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)}, z.val.val.2 = 0 →
           (Ext z.val).2 = -1 ∧ Fb (Ext z.val).1 = ψ z) ∧
-      ∀ z : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-        z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)}, z.val.val.2 = 1 →
+      ∀ z : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+        z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)}, z.val.val.2 = 1 →
           (Ext z.val).2 = 1 ∧ Ft (L (Ext z.val).1) = ψ z := by
   classical
-  have hPc : CompactSpace (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) :=
-    isCompact_iff_compactSpace.mp ((isCompact_stdSimplex ℝ (Fin 3)).prod isCompact_Icc)
+  have hPc : CompactSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) :=
+    isCompact_iff_compactSpace.mp ((Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).prod isCompact_Icc)
   obtain ⟨γb, hγb⟩ := exists_endDisk_homeomorph ψ hψ Fb hFb (Or.inl rfl) hb
   obtain ⟨γt, hγt⟩ := exists_endDisk_homeomorph ψ hψ Ft hFt (Or.inr rfl) ht
   have hchoice : ∃ (L : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))

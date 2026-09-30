@@ -533,8 +533,7 @@ theorem qnorm_eq_zero
           =ᵐ[(volume : Measure (EuclideanSpace ℝ
             (Fin (Module.finrank ℝ E)))).restrict
               (chartTargetEuclid (I := I) (M := M) α)] 0 :=
-        (eLpNorm_eq_zero_iff
-          ((S.2 α Idx Jdx).memLp.aestronglyMeasurable) hp_zero).mp heLp
+        (eLpNorm_eq_zero_iff hp_zero).mp heLp
       rw [secChartComp_zero (I := I) (M := M)]
       exact hae
     change Quotient.mk

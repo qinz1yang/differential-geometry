@@ -174,7 +174,12 @@ private lemma wkpNorm_chartPushed_target_le_wkpNormChart_k
   classical
   let _ := g
   unfold wkpNormChart
-  exact ENNReal.le_tsum α
+  apply ENNReal.le_tsum (f := fun β : M =>
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
+      (d := Module.finrank ℝ E) k q
+      (chartPushed (I := I) (M := M)
+        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) β u)
+      (chartTargetEuclid (I := I) (M := M) β)) α
 
 private lemma wkpNorm_chartSmoothExt_target_eq_wkpNorm_chartPushed_target_k
     {q : ℝ≥0∞} (hq_one : 1 ≤ q) (k : ℕ) (α : M) (u : M → ℝ) :

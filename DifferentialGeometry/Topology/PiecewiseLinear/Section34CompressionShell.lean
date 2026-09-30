@@ -25,7 +25,7 @@ theorem exists_shell_of_pocket {P D J Es Eb Ys Yb Ls Lb Bs Bb As Ab Cs Cb Ts Tb 
     (hDAb : IsPLBall 2 (D ∪ Ab)) (hSb : IsPLSphere 2 (Lb ∪ Bb)) (hTb : IsPLBall 3 Tb)
     (hTbf : frontier Tb = D ∪ Ab ∪ Lb) (hEbB : Eb = Bb ∪ Ab) (hLBb : Lb ∩ Bb = Cb)
     (hBAb : Bb ∩ Ab = Cb) (hLPb : Lb ∩ P = Cb)
-    (hqBb : IsPLHomeomorphOn qBb (stdSimplex ℝ (Fin 3)) Bb)
+    (hqBb : IsPLHomeomorphOn qBb (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Bb)
     (hqBbC : qBb '' stdSimplexBoundary 2 = Cb) (hBbJ : Disjoint Bb J) (hLbD : Disjoint Lb D)
     (hTPb : Tb ∩ P = Ab) (hsideB : interior P ⊆ Yb → Disjoint (interior Tb) Yb) :
     ∃ W X : Set E3, IsPLBall 3 W ∧ IsPLBall 3 X ∧ X ⊆ interior W ∧
@@ -248,7 +248,7 @@ theorem exists_shell_of_pocket {P D J Es Eb Ys Yb Ls Lb Bs Bb As Ab Cs Cb Ts Tb 
   rw [hWbeq, ← hPYs, hYsWT, ← union_assoc]
 
 theorem exists_compressionShell {P V D F O : Set E3} {q : (Fin 3 → ℝ) → E3}
-    (hP : IsPLBall 3 P) (hV : IsPLBall 3 V) (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    (hP : IsPLBall 3 P) (hV : IsPLBall 3 V) (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDV : D ⊆ frontier V) (hDP : D ∩ P = q '' stdSimplexBoundary 2)
     (hcross : ∀ p ∈ q '' stdSimplexBoundary 2, HasPLCrossingAt (frontier V) (frontier P) p)
     (hF : IsClosed F) (hFD : Disjoint F D) (hO : IsOpen O) (hDO : D ⊆ O) :
@@ -301,7 +301,7 @@ theorem exists_compressionShell {P V D F O : Set E3} {q : (Fin 3 → ℝ) → E3
     exists_compressionSide hP hV hq hDV hDP hcross hq₂ hq₂J hq₁ hq₁J
       (by rw [union_comm]; exact hEu) (by rw [inter_comm]; exact hEi) hF hFD hO hDO
   have hDE : ∀ (Ei : Set E3) (qi : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn qi (stdSimplex ℝ (Fin 3)) Ei → qi '' stdSimplexBoundary 2 = J →
+      IsPLHomeomorphOn qi (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Ei → qi '' stdSimplexBoundary 2 = J →
       Ei ⊆ frontier P → D ∩ Ei = J := by
     intro Ei qi hqi hqiJ hEi
     apply Subset.antisymm

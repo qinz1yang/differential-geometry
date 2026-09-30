@@ -93,13 +93,13 @@ private theorem exists_finite_gluing_metric (n : ℕ)
         by_cases htc : t ≤ c
         · have htc' : t = c := le_antisymm htc ht.1
           subst t
-          rw [if_pos le_rfl]
+          rw [ite_eq_left le_rfl]
           exact hGc
-        · rw [if_neg htc]
+        · rw [ite_eq_right htc]
       · intro ht
         dsimp only
         have htc : t ≤ c := ht.2.trans (htime.monotone (by change j.val + 1 ≤ n + 1; omega))
-        rw [if_pos htc]
+        rw [ite_eq_left htc]
         exact hGeq j t ht
 
 theorem exists_isSolutionOn_finite_gluing (n : ℕ)

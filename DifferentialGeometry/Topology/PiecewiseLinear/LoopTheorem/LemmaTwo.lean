@@ -59,7 +59,7 @@ theorem exists_nonsingular_two_cell_of_disk_in_double_boundary_eqOn
   have hRball : IsPLBall 2 R := hR
   obtain ⟨p, hp⟩ := hR
   let r₀ := (g ∘ r) ∘ p
-  have hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) (g '' D) :=
+  have hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g '' D) :=
     hp.trans (hr.trans hgD)
   obtain ⟨Q, q, hq, hQK, hqboundary, hQboundary⟩ :=
     hK.exists_isPLHomeomorphOn_push_boundary_disk hr₀ hD₀
@@ -67,7 +67,7 @@ theorem exists_nonsingular_two_cell_of_disk_in_double_boundary_eqOn
   let q' := ι ∘ q
   have hQ : IsPLBall 2 Q := ⟨q, hq⟩
   have hιQ : IsPLHomeomorphOn ι Q Q' := hι.restrict hQ.isPolyhedron hQK
-  have hq' : IsPLHomeomorphOn q' (stdSimplex ℝ (Fin 3)) Q' := hq.trans hιQ
+  have hq' : IsPLHomeomorphOn q' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q' := hq.trans hιQ
   have hQcopy : Q' ⊆ L.space := (image_mono hQK).trans hcopy
   have hfrontR : frontier R ⊆ R := hRball.isPolyhedron.isClosed.frontier_subset
   have hrfrontD : r '' frontier R ⊆ D := by
@@ -100,7 +100,7 @@ theorem exists_nonsingular_two_cell_of_disk_in_double_boundary_eqOn
   obtain ⟨x, hx⟩ := hRball.nonempty
   let T := combinatorialPLPieceIn L hL ⟨H x, hQcopy (hH.bijOn.mapsTo hx)⟩
   have hval (y : E × E × ℝ) (hy : y ∈ L.space) : (T.map y : E × E × ℝ) = y := by
-    simp only [T, combinatorialPLPieceIn, dif_pos hy]
+    simp only [T, combinatorialPLPieceIn, dite_eq_left hy]
   have hHcopy : MapsTo H R L.space := fun _ hy => hQcopy (hH.bijOn.mapsTo hy)
   let A : SingularTwoCell L.space :=
     { domain := R
@@ -188,7 +188,7 @@ theorem exists_singular_two_cell_in_double (S : NormalSystem E) :
   obtain ⟨x, hx⟩ := S.source_isPLBall.nonempty
   let T := combinatorialPLPieceIn L hL ⟨F x, hFcopy hx⟩
   have hval (y : E × E × ℝ) (hy : y ∈ L.space) : (T.map y : E × E × ℝ) = y := by
-    simp only [T, combinatorialPLPieceIn, dif_pos hy]
+    simp only [T, combinatorialPLPieceIn, dite_eq_left hy]
   let D : SingularTwoCell L.space :=
     { domain := S.sourceComplex.space
       isPLBall_domain := S.source_isPLBall

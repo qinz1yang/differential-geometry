@@ -48,7 +48,7 @@ theorem IsLocalMax.mvfderiv_nonpos {f : M → ℝ} {x : M} (hmax : IsLocalMax f 
     rw [writtenInExtChartAt, extChartAt_model_space_eq_id]
     rfl
   rw [heq]
-  exact (hmax_chart.on (Set.range I)).fderivWithin_nonpos hv
+  exact (hmax_chart.isLocalMaxOn (Set.range I)).fderivWithin_nonpos hv
 
 theorem IsLocalMin.mvfderiv_nonneg {f : M → ℝ} {x : M} (hmin : IsLocalMin f x)
     {v : E} (hv : v ∈ posTangentConeAt (Set.range I) (extChartAt I x x)) :

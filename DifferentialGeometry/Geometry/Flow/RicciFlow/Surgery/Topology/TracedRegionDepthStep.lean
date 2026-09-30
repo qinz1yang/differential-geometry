@@ -12,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistor
 
 universe u
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 theorem scalar_le_two_mul_along_backward_traces_of_depth_step
     {Ctime : ℝ≥0} {qcan M : ℝ} {u' u t : Icc (0 : ℝ) H.toHistory.horizon} (hut : u ≤ t)

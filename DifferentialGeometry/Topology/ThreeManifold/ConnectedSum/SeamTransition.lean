@@ -132,7 +132,7 @@ theorem leftSeamTransition_eventuallyEq (x : csModel) (hx : x ∈ SeamShell) (h1
   have hU : {y : csModel | y ∈ SeamShell ∧ 1 < ‖y‖} ∈ 𝓝 x :=
     (isOpen_seamShell.inter (isOpen_lt continuous_const continuous_norm)).mem_nhds ⟨hx, h1⟩
   refine Filter.eventuallyEq_of_mem hU fun y hy => ?_
-  rw [leftSeamTransition, dif_pos ⟨hy.1, le_of_lt hy.2⟩]
+  rw [leftSeamTransition, dite_eq_left ⟨hy.1, le_of_lt hy.2⟩]
   exact seamChartX_inl_puncturedOfCoord c d a y hy.1 (le_of_lt hy.2)
 
 omit [IsManifold (𝓡 3) ∞ M] [IsManifold (𝓡 3) ∞ N] [T2Space M] [T2Space N] in
@@ -141,7 +141,7 @@ theorem rightSeamTransition_eventuallyEq (x : csModel) (hx : x ∈ SeamShell) (h
   have hU : {y : csModel | y ∈ SeamShell ∧ 1 < ‖y‖} ∈ 𝓝 x :=
     (isOpen_seamShell.inter (isOpen_lt continuous_const continuous_norm)).mem_nhds ⟨hx, h1⟩
   refine Filter.eventuallyEq_of_mem hU fun y hy => ?_
-  rw [rightSeamTransition, dif_pos ⟨hy.1, le_of_lt hy.2⟩]
+  rw [rightSeamTransition, dite_eq_left ⟨hy.1, le_of_lt hy.2⟩]
   exact seamChartX_inr_puncturedOfCoord c d a y hy.1 hy.2
 
 omit [IsManifold (𝓡 3) ∞ M] [IsManifold (𝓡 3) ∞ N] [T2Space M] [T2Space N] in

@@ -12,7 +12,6 @@ open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.Geometry
 
 open DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.Geodesic

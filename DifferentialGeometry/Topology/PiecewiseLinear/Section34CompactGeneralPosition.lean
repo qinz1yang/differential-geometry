@@ -16,7 +16,7 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem IsPLCellOn.exists_isPLHomeomorphOn_stdSimplex {d : ℕ} {S B : Set E3}
     (hS : IsPLCellOn d S B) : ∃ q : (Fin (d + 1) → ℝ) → E3,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin (d + 1))) S ∧ B = q '' stdSimplexBoundary d := by
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) S ∧ B = q '' stdSimplexBoundary d := by
   obtain ⟨q, hq, hB⟩ := hS.exists_isPLHomeomorphOn_image_chart
     (StructureGroupoid.chart_mem_maximalAtlas (plGroupoid 3) (0 : E3))
     (by rw [chartAt_self_eq]; exact subset_univ S)
@@ -45,7 +45,7 @@ theorem boundary_subset_frontier_union_of_inter_eq {B₁ B₂ D Db : Set E3} (h�
     intro i j k hij hki hkj
     exfalso
     cases i <;> cases j <;> cases k <;> simp_all
-  have hq' : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (cond true B₁ B₂ ∩ cond false B₁ B₂) := by
+  have hq' : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (cond true B₁ B₂ ∩ cond false B₁ B₂) := by
     change IsPLHomeomorphOn q _ (B₁ ∩ B₂)
     rw [hDeq]
     exact hq

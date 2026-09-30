@@ -134,9 +134,10 @@ theorem denseRange_smoothToLpDirichlet
     calc
       eLpNorm ((f : M → ℝ) - v.toFun) 2 μ ≤
           eLpNorm (S.indicator (fun _ : M => B)) 2 μ :=
-        eLpNorm_mono_ae hpoint
+        eLpNorm_mono_ae
+          (f.contMDiff.continuous.sub v.smooth.continuous).aestronglyMeasurable hpoint
       _ = ‖(B : ℝ)‖ₑ * μ S ^ (1 / (2 : ℝ≥0∞).toReal) :=
-        eLpNorm_indicator_const hS_meas (by norm_num) (by norm_num)
+        eLpNorm_indicator_const hS_meas.nullMeasurableSet (by norm_num) (by norm_num)
   have hroot : μ S ^ (1 / (2 : ℝ≥0∞).toReal) < q := by
     change μ S ^ (1 / 2 : ℝ) < q
     calc
@@ -161,7 +162,7 @@ theorem denseRange_smoothToLpDirichlet
   have hfv : dist fLp (smoothToLpDirichlet g v) < r / 2 := by
     change dist (hf_memLp.toLp (f : M → ℝ)) (hv_memLp.toLp v.toFun) < r / 2
     rw [Lp.dist_edist, Lp.edist_toLp_toLp]
-    have hreal := (ENNReal.toReal_lt_toReal (hf_memLp.sub hv_memLp).2.ne
+    have hreal := (ENNReal.toReal_lt_toReal (hf_memLp.sub hv_memLp).ne
       ENNReal.ofReal_ne_top).mpr heLp_lt
     rwa [ENNReal.toReal_ofReal hr2.le] at hreal
   refine ⟨smoothToLpDirichlet g v, ?_, ⟨v, rfl⟩⟩

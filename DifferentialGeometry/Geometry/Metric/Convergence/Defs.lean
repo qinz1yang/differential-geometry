@@ -79,3 +79,19 @@ structure MetricCInfConvergence
 
 end CheegerGromovCompactness
 end DifferentialGeometry
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+open DifferentialGeometry.CheegerGromovCompactness
+open scoped Manifold ContDiff
+
+theorem metricDerivNormSupOn_nonneg {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] [CompleteSpace E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+    (K : Set M) (p : ℕ) (gk gInf gRef : SmoothRiemannianMetric I M) :
+    0 ≤ metricDerivNormSupOn K p gk gInf gRef := by
+  rw [metricDerivNormSupOn]
+  exact Real.sSup_nonneg (by rintro r ⟨a, ha, x, hx, rfl⟩; rw [metricDerivNorm]; positivity)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

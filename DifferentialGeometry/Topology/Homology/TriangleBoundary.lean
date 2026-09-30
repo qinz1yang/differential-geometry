@@ -5,52 +5,54 @@ import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ZeroHom
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology ContinuousMap Set Module
+open Convexity.StdSimplex (coordinateSet coordinateEquiv coordinateHomeomorph)
 open scoped Simplicial Topology
 
 namespace DifferentialGeometry.Topology.SimplexDegree
 
 universe u
 
-def standardTriangleEdge (i : Fin 3) : C(stdSimplex ℝ (Fin 2), liftedSphereSpace.{u} 0) :=
-  affineSimplexMap (standardTriangleVertex ∘ i.succAbove)
+def standardTriangleEdge (i : Fin 3) : C(coordinateSet ℝ (Fin 2), liftedSphereSpace.{u} 0) :=
+  (affineSimplexMap (standardTriangleVertex ∘ i.succAbove)).comp
+    ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩
 
 theorem standardTriangleEdge_two_mem_negativeDiagonalRayComplement
-    (q : stdSimplex ℝ (Fin 2)) :
+    (q : coordinateSet ℝ (Fin 2)) :
     standardTriangleEdge 2 q ∈ planeNegativeDiagonalRayComplement.{u} := by
   rintro ⟨r, hr, hc⟩
   have hfin : (2 : Fin 3).succAbove (1 : Fin 2) = 1 := rfl
   have h0 := hc 0
   have h1 := hc 1
-  simp [standardTriangleEdge, affineSimplexMap, standardTriangleVertex, Fin.sum_univ_two, hfin] at h0 h1
+  simp [standardTriangleEdge, affineSimplexMap, standardTriangleVertex, coordinateHomeomorph, coordinateEquiv, Fin.sum_univ_two, hfin] at h0 h1
   have hs := q.property.2
   rw [Fin.sum_univ_two] at hs
   linarith
 
 theorem standardTriangleEdge_zero_mem_positiveDiagonalRayComplement
-    (q : stdSimplex ℝ (Fin 2)) :
+    (q : coordinateSet ℝ (Fin 2)) :
     standardTriangleEdge 0 q ∈ planePositiveDiagonalRayComplement.{u} := by
   rintro ⟨r, hr, hc⟩
   have h0 := hc 0
   have h1 := hc 1
-  simp [standardTriangleEdge, affineSimplexMap, standardTriangleVertex, Fin.sum_univ_two] at h0 h1
+  simp [standardTriangleEdge, affineSimplexMap, standardTriangleVertex, coordinateHomeomorph, coordinateEquiv, Fin.sum_univ_two] at h0 h1
   have hs := q.property.2
   have hn := q.property.1 1
   rw [Fin.sum_univ_two] at hs
   linarith
 
 theorem standardTriangleEdge_one_mem_positiveDiagonalRayComplement
-    (q : stdSimplex ℝ (Fin 2)) :
+    (q : coordinateSet ℝ (Fin 2)) :
     standardTriangleEdge 1 q ∈ planePositiveDiagonalRayComplement.{u} := by
   rintro ⟨r, hr, hc⟩
   have h0 := hc 0
   have h1 := hc 1
-  simp [standardTriangleEdge, affineSimplexMap, standardTriangleVertex, Fin.sum_univ_two] at h0 h1
+  simp [standardTriangleEdge, affineSimplexMap, standardTriangleVertex, coordinateHomeomorph, coordinateEquiv, Fin.sum_univ_two] at h0 h1
   have hs := q.property.2
   have hn := q.property.1 1
   rw [Fin.sum_univ_two] at hs
   linarith
 
-theorem standardTriangleEdge_ne_zero (i : Fin 3) (q : stdSimplex ℝ (Fin 2)) :
+theorem standardTriangleEdge_ne_zero (i : Fin 3) (q : coordinateSet ℝ (Fin 2)) :
     standardTriangleEdge i q ≠ (0 : liftedSphereSpace.{u} 0) := by
   intro h
   fin_cases i <;> dsimp at h
@@ -61,18 +63,19 @@ theorem standardTriangleEdge_ne_zero (i : Fin 3) (q : stdSimplex ℝ (Fin 2)) :
   · exact standardTriangleEdge_two_mem_negativeDiagonalRayComplement q
       ⟨0, le_rfl, fun i => by rw [h]; rfl⟩
 
-def puncturedTriangleEdge (i : Fin 3) : C(stdSimplex ℝ (Fin 2), puncturedPlane.{u}) :=
+def puncturedTriangleEdge (i : Fin 3) : C(coordinateSet ℝ (Fin 2), puncturedPlane.{u}) :=
   ⟨fun q => ⟨standardTriangleEdge i q, standardTriangleEdge_ne_zero i q⟩,
     (standardTriangleEdge i).continuous.subtype_mk _⟩
 
 private theorem triangle_simplexChain_comp {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
-    (n : ℕ) (f : C(X, Y)) (σ : C(stdSimplex ℝ (Fin (n + 1)), X)) :
+    (n : ℕ) (f : C(X, Y)) (σ : C(coordinateSet ℝ (Fin (n + 1)), X)) :
     integralSimplexChain n σ ≫ (integralSingularChainMap f).f n =
       integralSimplexChain n (f.comp σ) :=
   SSet.ι_chainComplexMap_f (TopCat.toSSet.obj (TopCat.of X))
     (TopCat.toSSet.obj (TopCat.of Y)) (TopCat.toSSet.map (TopCat.ofHom f))
     integralSingularCoefficients
-    ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n⦌)).symm σ)
+    ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n⦌)).symm
+      (σ.comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩))
 
 private def puncturedTriangleBoundaryChain : integralSingularCoefficients ⟶
     (integralSingularChains puncturedPlane.{u}).X 1 :=
@@ -80,16 +83,37 @@ private def puncturedTriangleBoundaryChain : integralSingularCoefficients ⟶
     integralSimplexChain 1 (puncturedTriangleEdge 1) +
       integralSimplexChain 1 (puncturedTriangleEdge 2)
 
+private theorem triangle_affineSimplexChain {E : Type u} [NormedAddCommGroup E]
+    [NormedSpace ℝ E] (n : ℕ) (v : Fin (n + 1) → E) :
+    integralSimplexChain n
+        ((affineSimplexMap v).comp ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩) (ULift.up 1) =
+      DifferentialGeometry.Topology.integralSimplexChain n (affineSingularSimplex n v) := by
+  have he : ((affineSimplexMap v).comp
+      ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩).comp
+        ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩ = affineSimplexMap v := by
+    apply ContinuousMap.ext
+    intro q
+    change affineSimplexMap v
+      ((coordinateHomeomorph ℝ _).symm (coordinateHomeomorph ℝ _ q)) = affineSimplexMap v q
+    rw [Homeomorph.symm_apply_apply]
+  change DifferentialGeometry.Topology.integralSimplexChain n
+    ((integralSingularSimplexEquiv n E).symm _) = _
+  rw [he]
+  rfl
+
 private theorem standardTriangleChain_boundary :
     (integralSingularChains (liftedSphereSpace.{u} 0)).d 2 1 standardTriangleChain =
       integralSimplexChain 1 (standardTriangleEdge 0) (ULift.up 1) -
         integralSimplexChain 1 (standardTriangleEdge 1) (ULift.up 1) +
           integralSimplexChain 1 (standardTriangleEdge 2) (ULift.up 1) := by
-  change (integralSingularChains (liftedSphereSpace.{u} 0)).d 2 1
-      (DifferentialGeometry.Topology.integralSimplexChain 2 (affineSingularSimplex 2 standardTriangleVertex)) = _
-  rw [DifferentialGeometry.Topology.integralSimplexChain_boundary_two]
+  have ht : standardTriangleChain = DifferentialGeometry.Topology.integralSimplexChain 2
+      (affineSingularSimplex 2 standardTriangleVertex.{u}) := triangle_affineSimplexChain 2 _
+  have he (i : Fin 3) : integralSimplexChain 1 (standardTriangleEdge i) (ULift.up 1) =
+      DifferentialGeometry.Topology.integralSimplexChain 1
+        (affineSingularSimplex 1 (standardTriangleVertex.{u} ∘ i.succAbove)) :=
+    triangle_affineSimplexChain 1 _
+  rw [ht, he 0, he 1, he 2, DifferentialGeometry.Topology.integralSimplexChain_boundary_two]
   simp only [affineSingularSimplex_face]
-  rfl
 
 private theorem puncturedTriangleBoundaryChain_inclusion :
     (integralSingularChainMap (singularSubspaceInclusion puncturedPlane.{u})).f 1
@@ -116,19 +140,19 @@ private theorem puncturedTriangleBoundaryChain_eq :
   rw [puncturedTriangleBoundaryChain_inclusion, standardTriangleBoundaryChain_inclusion]
 
 private def trianglePositiveEdgeZero :
-    C(stdSimplex ℝ (Fin 2), puncturedPlanePositiveRayComplement.{u}) :=
+    C(coordinateSet ℝ (Fin 2), puncturedPlanePositiveRayComplement.{u}) :=
   ⟨fun q => ⟨puncturedTriangleEdge 0 q,
       standardTriangleEdge_zero_mem_positiveDiagonalRayComplement.{u} q⟩,
     (puncturedTriangleEdge 0).continuous.subtype_mk _⟩
 
 private def trianglePositiveEdgeOne :
-    C(stdSimplex ℝ (Fin 2), puncturedPlanePositiveRayComplement.{u}) :=
+    C(coordinateSet ℝ (Fin 2), puncturedPlanePositiveRayComplement.{u}) :=
   ⟨fun q => ⟨puncturedTriangleEdge 1 q,
       standardTriangleEdge_one_mem_positiveDiagonalRayComplement.{u} q⟩,
     (puncturedTriangleEdge 1).continuous.subtype_mk _⟩
 
 private def triangleNegativeEdge :
-    C(stdSimplex ℝ (Fin 2), puncturedPlaneNegativeRayComplement.{u}) :=
+    C(coordinateSet ℝ (Fin 2), puncturedPlaneNegativeRayComplement.{u}) :=
   ⟨fun q => ⟨puncturedTriangleEdge 2 q,
       standardTriangleEdge_two_mem_negativeDiagonalRayComplement.{u} q⟩,
     (puncturedTriangleEdge 2).continuous.subtype_mk _⟩
@@ -185,16 +209,18 @@ private theorem affineSingularSimplex_zero_vertex {E : Type u} [NormedAddCommGro
     [NormedSpace ℝ E] (v : Fin 1 → E) :
     TopCat.toSSetObj₀Equiv (affineSingularSimplex 0 v) = v 0 := by
   change affineSimplexMap v default = v 0
-  rw [Subsingleton.elim (default : stdSimplex ℝ (Fin 1)) (stdSimplex.vertex 0), affineSimplexMap_vertex]
+  rw [Subsingleton.elim (default : Convexity.StdSimplex ℝ (Fin 1))
+    (Convexity.StdSimplex.single 0), affineSimplexMap_vertex]
 
 private theorem standardTriangleEdge_two_boundary :
     (integralSingularChains (liftedSphereSpace.{u} 0)).d 1 0
         (integralSimplexChain 1 (standardTriangleEdge 2) (ULift.up 1)) =
       integralVertexChain (standardTriangleVertex 1) - integralVertexChain (standardTriangleVertex 0) := by
-  change (integralSingularChains (liftedSphereSpace.{u} 0)).d 1 0
-    (DifferentialGeometry.Topology.integralSimplexChain 1
-      (affineSingularSimplex 1 (standardTriangleVertex ∘ (2 : Fin 3).succAbove))) = _
-  rw [DifferentialGeometry.Topology.integralSimplexChain_boundary_one]
+  have he : integralSimplexChain 1 (standardTriangleEdge 2) (ULift.up 1) =
+      DifferentialGeometry.Topology.integralSimplexChain 1
+        (affineSingularSimplex 1 (standardTriangleVertex.{u} ∘ (2 : Fin 3).succAbove)) :=
+    triangle_affineSimplexChain 1 _
+  rw [he, DifferentialGeometry.Topology.integralSimplexChain_boundary_one]
   simp only [affineSingularSimplex_face, integralSimplexChain_zero_vertex]
   congr 1
   · congr 1

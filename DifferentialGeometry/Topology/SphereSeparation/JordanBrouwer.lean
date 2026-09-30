@@ -92,7 +92,7 @@ noncomputable def topologicalSphereSidesOfComponentCount
     complementPairOfComponentCount hcompact.isClosed.isOpen_compl hcount
   exact sphereSidesOfComplementPair hcompact p happroach.1 happroach.2
 
-noncomputable def topologicalSphereSidesOfComponentCount_of_locallyTwoSided
+noncomputable def topologicalSphereSidesOfComponentCountOfLocallyTwoSided
     (e : SphereTwo → EuclideanThree)
     (he : Manifold.IsSmoothEmbedding
       (𝓘(ℝ, EuclideanSpace ℝ (Fin 2))) (𝓘(ℝ, EuclideanThree)) ∞ e)
@@ -134,7 +134,7 @@ noncomputable def topologicalSphereSidesOfAlexanderDuality
       (𝓘(ℝ, EuclideanSpace ℝ (Fin 2))) (𝓘(ℝ, EuclideanThree)) ∞ e)
     (hAD : HasAlexanderDualityH0Certificate e) :
     SphereSides (Set.range e) :=
-  topologicalSphereSidesOfComponentCount_of_locallyTwoSided e he
+  topologicalSphereSidesOfComponentCountOfLocallyTwoSided e he
     (hasTwoComplementComponents_of_alexanderDualityH0Certificate e he hAD)
     (locallyTwoSided_range_of_isSmoothEmbedding he)
 

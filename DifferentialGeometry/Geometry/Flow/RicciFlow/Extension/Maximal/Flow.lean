@@ -196,12 +196,12 @@ theorem exists_maximal_flowTo_of_bddAbove
       ∀ {U : Real} (Q : FlowTo (I := I) (M := M) g0 U), t < U →
         gmax t = Q.S.family.metric t := by
     intro t ht U Q htU
-    simp only [gmax, dif_pos ht]
+    simp only [gmax, dite_eq_left ht]
     exact flow_to_eq (I := I) (M := M) (cover t ht).flow Q ht.1
       (cover t ht).lt_end htU
   have hstart : gmax 0 = g0 := by
     have hzero : (0 : Real) ∈ Ico 0 omega := ⟨le_rfl, h0omega⟩
-    simp only [gmax, dif_pos hzero]
+    simp only [gmax, dite_eq_left hzero]
     exact (cover 0 hzero).flow.start
   have hjoint : ∀ (x0 : M) (i j : Fin (Module.finrank Real E)),
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞

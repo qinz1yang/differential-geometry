@@ -131,24 +131,24 @@ theorem lowerCollar_of_nonpos (p : CollarDomain) (ht : p.2.val ≤ 0) :
     lowerCollar c d hdisj a p =
       coreInclusion c d hdisj a
         (c.firstRadialMap d hdisj p.1 (1 - p.2.val) ⟨by linarith, by linarith [p.2.2.1]⟩) := by
-  simp only [lowerCollar, if_pos ht, lowerCore, max_eq_right (by linarith : 1 ≤ 1 - p.2.val)]
+  simp only [lowerCollar, ite_eq_left ht, lowerCore, max_eq_right (by linarith : 1 ≤ 1 - p.2.val)]
 
 theorem lowerCollar_of_pos (p : CollarDomain) (ht : 0 < p.2.val) :
     lowerCollar c d hdisj a p =
       bandInclusion c d hdisj a (p.1, ⟨p.2.val, ht.le, by linarith [p.2.2.2]⟩) := by
-  simp only [lowerCollar, if_neg (not_le.mpr ht), lowerBand, max_eq_right ht.le]
+  simp only [lowerCollar, ite_eq_right (not_le.mpr ht), lowerBand, max_eq_right ht.le]
 
 theorem upperCollar_of_nonneg (p : CollarDomain) (ht : 0 ≤ p.2.val) :
     upperCollar c d hdisj a p =
       coreInclusion c d hdisj a
         (c.secondRadialMap d hdisj (a p.1) (1 + p.2.val)
           ⟨by linarith, by linarith [p.2.2.2]⟩) := by
-  simp only [upperCollar, if_pos ht, upperCore, max_eq_right (by linarith : 1 ≤ 1 + p.2.val)]
+  simp only [upperCollar, ite_eq_left ht, upperCore, max_eq_right (by linarith : 1 ≤ 1 + p.2.val)]
 
 theorem upperCollar_of_neg (p : CollarDomain) (ht : p.2.val < 0) :
     upperCollar c d hdisj a p =
       bandInclusion c d hdisj a (p.1, ⟨1 + p.2.val, by linarith [p.2.2.1], by linarith⟩) := by
-  simp only [upperCollar, if_neg (not_le.mpr ht), upperBand,
+  simp only [upperCollar, ite_eq_right (not_le.mpr ht), upperBand,
     min_eq_right (by linarith : 1 + p.2.val ≤ 1)]
 
 theorem lowerCollar_zero (z : Sphere (n := 3)) :

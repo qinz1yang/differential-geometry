@@ -57,12 +57,12 @@ private theorem opensCurve_eventuallyEq
     (U : Opens M) (γ : ℝ → M) {t : ℝ} (ht : γ t ∈ U) (hγ : ContinuousAt γ t) :
     (fun s => (opensCurve U γ ⟨γ t, ht⟩ s : M)) =ᶠ[𝓝 t] γ := by
   filter_upwards [hγ.preimage_mem_nhds (U.isOpen.mem_nhds ht)] with s hs
-  simp only [opensCurve, dif_pos (show γ s ∈ U from hs)]
+  simp only [opensCurve, dite_eq_left (show γ s ∈ U from hs)]
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M] in
 private theorem opensCurve_self (U : Opens M) (γ : ℝ → M) {t : ℝ} (ht : γ t ∈ U) :
     opensCurve U γ ⟨γ t, ht⟩ t = ⟨γ t, ht⟩ := by
-  simp only [opensCurve, dif_pos ht]
+  simp only [opensCurve, dite_eq_left ht]
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M] in
 private theorem opensCurve_continuousAt

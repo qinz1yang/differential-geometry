@@ -5,6 +5,13 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calcu
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.TensorRS
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.ParallelRaise
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.UniformBound
+
+open DifferentialGeometry.TensorMetric (
+  coframeS coframeS_apply fiberNormSqComponent riemannianFiberNormSq
+  riemannianFiberNormSq_add_le riemannianFiberNormSq_eq_sum_componentRS_sq
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_zero tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -1161,7 +1168,7 @@ theorem ricci_sub_riemannianFiberNormSq
   riemannianFiberNormSq_iteratedCovGrad_ricciDeTurckPrincipalCoefficient_sub_le
     (I := I) (M := M) g₀ g₁ i x
 
-theorem ricciDeTurckPrincipalCoefficient_sub_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+theorem exists_ricciDeTurckPrincipalCoefficient_sub_pointwise_jet_bound
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧ ∀ (g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
@@ -1211,7 +1218,7 @@ theorem deTurckPrincipalCometricCoeff_toSection_clm_eq
       cometricDoubleTraceFib (I := I) g₁ 2 x - cometricDoubleTraceFib (I := I) g₀ 2 x :=
   deTurckCoeff_clm_eq_doubleTrace_sub (I := I) (M := M) g₀ g₁ x
 
-theorem deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+theorem exists_deTurckPrincipalCometricCoeff_pointwise_jet_bound
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧ ∀ (g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
@@ -1312,7 +1319,7 @@ theorem coeff_jet_l2_sq
           ‖iteratedCovGrad (I := I) g₀ 2 2 j
             (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)‖ ^ 2 := by
   obtain ⟨C, hC_nn, hC⟩ :=
-    deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+    exists_deTurckPrincipalCometricCoeff_pointwise_jet_bound
       (I := I) (M := M) g₀
   refine ⟨C, hC_nn, ?_⟩
   intro g₁ i

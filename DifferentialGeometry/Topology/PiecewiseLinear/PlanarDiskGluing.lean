@@ -14,7 +14,7 @@ theorem isSimplyEmbedded_union_sdiff_diskInterior
     {S₁ S₂ D : Set (EuclideanSpace ℝ (Fin 3))}
     (hS₁ : IsSimplyEmbedded S₁) (hS₂ : IsSimplyEmbedded S₂)
     {q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hD : S₁ ∩ S₂ = D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hD : S₁ ∩ S₂ = D)
     (s : AffineSubspace ℝ (EuclideanSpace ℝ (Fin 3)))
     (hs : Module.finrank ℝ s.direction = 2) (hDs : D ⊆ s) :
     IsSimplyEmbedded ((S₁ ∪ S₂) \ (D \ q '' stdSimplexBoundary 2)) := by
@@ -49,7 +49,7 @@ theorem isSimplyEmbedded_union_sdiff_diskInterior_of_subset_fiber
     {S₁ S₂ D : Set (EuclideanSpace ℝ (Fin 3))}
     (hS₁ : IsSimplyEmbedded S₁) (hS₂ : IsSimplyEmbedded S₂)
     {q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) {r : ℝ}
     (hDr : D ⊆ {x | ℓ x = r}) (hD : S₁ ∩ S₂ = D) :
     IsSimplyEmbedded ((S₁ ∪ S₂) \ (D \ q '' stdSimplexBoundary 2)) := by

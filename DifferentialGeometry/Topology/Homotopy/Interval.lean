@@ -5,13 +5,13 @@ namespace DifferentialGeometry.Topology.Homotopy
 open unitInterval
 
 def icoToI (t : Set.Ico (0 : ℝ) 1) : I :=
-  ⟨(t : ℝ), ⟨t.2.1, le_of_lt t.2.2⟩⟩
+  Set.inclusion Set.Ico_subset_Icc_self t
 
 @[simp]
 theorem icoToI_apply (t : Set.Ico (0 : ℝ) 1) : (icoToI t : ℝ) = (t : ℝ) :=
   rfl
 
-theorem continuous_icoToI : Continuous (icoToI : Set.Ico (0 : ℝ) 1 → I) := by
-  exact Continuous.subtype_mk continuous_subtype_val (fun t => ⟨t.2.1, le_of_lt t.2.2⟩)
+theorem continuous_icoToI : Continuous (icoToI : Set.Ico (0 : ℝ) 1 → I) :=
+  continuous_inclusion Set.Ico_subset_Icc_self
 
 end DifferentialGeometry.Topology.Homotopy

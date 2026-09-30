@@ -68,7 +68,7 @@ theorem IsLocalDiffeomorphAt.mdifferentiableAt_prodMap_of_comp
   have hmap : MDifferentiableAt (I₄.prod I₂) (I₄.prod I₁)
       (fun z : M₄ × M₂ => (z.1, hq.localInverse z.2)) (t, q x) :=
     mdifferentiableAt_fst.prodMk
-      ((hq.localInverse_mdifferentiableAt hn).comp (t, q x) mdifferentiableAt_snd)
+      ((hq.mdifferentiableAt_localInverse hn).comp (t, q x) mdifferentiableAt_snd)
   have hcomp := hf.comp_of_eq (t, q x) hmap (by
     simp only [hq.localInverse_left_inv hq.localInverse_mem_target])
   apply hcomp.congr_of_eventuallyEq

@@ -133,7 +133,7 @@ theorem nemytskiiOn_mixed
     filter_upwards [hsub, hNf, hNf', hsubff', hf, hf', hincldiff]
       with t ht htf htf' htdiff hft hft' htincl
     rw [ht, Pi.sub_apply, htf, htf']
-    simp only [aeSetLift, dif_pos hft, dif_pos hft']
+    simp only [aeSetLift, dite_eq_left hft, dite_eq_left hft']
     let u : lowerState (I := I) (M := M) g₀ a R := ⟨f t, hft⟩
     let u' : lowerState (I := I) (M := M) g₀ a R := ⟨f' t, hft'⟩
     have hsg := hsingle u u'

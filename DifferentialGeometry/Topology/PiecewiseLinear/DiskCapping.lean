@@ -15,9 +15,9 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensi
 
 theorem IsPLSphere.exists_isPLHomeomorphOn_of_union_disk
     {A D : Set E} (hS : IsPLSphere 2 (A ∪ D)) {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : A ∩ D = r '' stdSimplexBoundary 2) :
-    ∃ q : (Fin 3 → ℝ) → E, IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) A ∧
+    ∃ q : (Fin 3 → ℝ) → E, IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A ∧
       q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 := by
   have hcl : closure ((A ∪ D) \ D) = A := by
     rw [hS.closure_sdiff_eq_sdiff_image_stdSimplexBoundary hr subset_union_right, ← hmeet]
@@ -35,7 +35,7 @@ theorem IsPLSphere.exists_isPLHomeomorphOn_of_union_disk
 
 theorem IsPLSphere.nullhomotopic_inclusion_of_union_disk
     {A D S : Set E} (hSphere : IsPLSphere 2 (A ∪ D)) {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : A ∩ D = r '' stdSimplexBoundary 2) (hAS : A ⊆ S) :
     (⟨Set.inclusion ((hmeet.symm.subset.trans inter_subset_left).trans hAS),
       continuous_inclusion _⟩ : C(r '' stdSimplexBoundary 2, S)).Nullhomotopic := by
@@ -45,7 +45,7 @@ theorem IsPLSphere.nullhomotopic_inclusion_of_union_disk
 
 theorem IsPLSphere.nullhomotopic_inclusion_of_cylinder_into_complement
     {A D : Set E} (hSphere : IsPLSphere 2 (A ∪ D)) {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : A ∩ D = r '' stdSimplexBoundary 2)
     {C J S : Set F} {g : E → F} (hg : IsPLHomeomorphOn g A C)
     (hCS : C ⊆ S) (hJS : J ⊆ S) {ρ : F × ℝ → F}

@@ -137,7 +137,7 @@ private theorem tensor_abs_eval_le_of_unit_slots (g : SmoothRiemannianMetric I M
     |T v| ≤ K := by
   have hsqrt : Real.sqrt (normSq0S g p r T) ≤ K := Real.sqrt_le_iff.mpr ⟨hK, hbound⟩
   have hprod : (∏ i : Fin r, Real.sqrt (g.inner p (v i) (v i))) ≤ 1 := by
-    apply Finset.prod_le_one
+    apply Finset.prod_le_one₀
     · intro i _
       exact Real.sqrt_nonneg _
     · intro i _

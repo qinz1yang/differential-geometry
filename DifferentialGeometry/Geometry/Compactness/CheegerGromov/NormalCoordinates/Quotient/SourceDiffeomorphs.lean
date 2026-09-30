@@ -87,7 +87,7 @@ theorem IntrinsicBallChart.eventually_injOn_of_chart_convergence [Finite ι] :
     exact CheegerGromovCompactness.eventually_injOn_nhds_of_open_coordinate_convergence
       U e rfl (hchart i).contMDiff V (fun n => (c i n).hom) F hFsmooth
       (fun n => coords F i n) (hFconv i)
-      (fun n z => by dsimp only [coords]; rw [dif_pos z.property]; rfl)
+      (fun n z => by dsimp only [coords]; rw [dite_eq_left z.property]; rfl)
       (fun L hL hLdom => (hFimage i L hL hLdom).mono fun n hn z hz => hn z z.property hz)
       (hKV hp)
   · intro φ hφ q r hqK hrK a ha b hb hq hr heq
@@ -115,7 +115,7 @@ theorem IntrinsicBallChart.eventually_injOn_of_chart_convergence [Finite ι] :
       (fun i n => (c i n).hom.toOpenPartialHomeomorph) hsource hfar
       Metric.isOpen_ball (Metric.ball_subset_ball (by linarith)) htransconv hcont
       V F (fun i n => coords F i n) hFconv
-      (fun i n z => by dsimp only [coords]; rw [dif_pos z.property]; rfl)
+      (fun i n z => by dsimp only [coords]; rw [dite_eq_left z.property]; rfl)
       (fun i L hL hLdom => (hFimage i L hL hLdom).mono fun n hn z hz => hn z z.property hz)
       φ hφ q r a b (hKV ha) (hKV hb) hq hr heq
 
@@ -240,7 +240,7 @@ theorem IntrinsicBallChart.eventually_exists_partialDiffeomorph_of_chart_converg
       CheegerGromovCompactness.eventually_isLocalDiffeomorphOn_nhds_of_open_coordinate_convergence
         U e rfl (hchart i) V (fun n => (c i n).hom) F hFsmooth
         (fun n => coords F i n) (hFconv i)
-        (fun n z => by dsimp only [coords]; rw [dif_pos z.property]; rfl)
+        (fun n z => by dsimp only [coords]; rw [dite_eq_left z.property]; rfl)
         (fun L hL hLdom => (hFimage i L hL hLdom).mono fun n hn z hz => hn z z.property hz)
         (hKV hp)
     exact ⟨W, hW, hzW, hWV, hWlocal.mono fun n hn q hq => hn ⟨q, hq⟩⟩

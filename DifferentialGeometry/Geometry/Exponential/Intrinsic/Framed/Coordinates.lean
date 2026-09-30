@@ -113,7 +113,9 @@ theorem intrinsicFrame_mem_eball
       (expMapIntrinsic (I := I) g hEnorm p (normalFrame (I := I) g p z))]
     simpa only [intrinsicGeodesic_zero, ← expMapIntrinsic_def,
       intrinsicFrame_apply, normalFrame_sqrt, sub_zero, mul_one] using hdist
-  rw [Metric.mem_eball']
+  apply (@Metric.mem_eball' M
+    PseudoEMetricSpace.toUniformSpace.toTopologicalSpace inferInstance p
+    (intrinsicFramedExp (I := I) g hEnorm p z) (ENNReal.ofReal r)).mpr
   exact hrad.trans_lt
     ((ENNReal.ofReal_lt_ofReal_iff_of_nonneg (norm_nonneg z)).2 hz)
 
@@ -184,7 +186,7 @@ theorem intrinsicFrame_deriv_zero
     (I' := modelWithCornersSelf Real E) (I'' := I) 0 hF hL
   have hLderiv : mfderiv (modelWithCornersSelf Real E)
       (modelWithCornersSelf Real E) (fun z : E => L z) 0 = L := by
-    rw [mfderiv_eq_fderiv, ContinuousLinearMap.fderiv]
+    exact L.mfderiv_eq
   rw [hLderiv] at hchain
   have hFderiv : mfderiv (modelWithCornersSelf Real E) I F (L 0) =
       ContinuousLinearMap.id Real E := by
@@ -231,7 +233,7 @@ theorem intrinsicFrame_mfderiv
     (I' := modelWithCornersSelf Real E) (I'' := I) z hF hL
   have hLderiv : mfderiv (modelWithCornersSelf Real E)
       (modelWithCornersSelf Real E) (fun w : E => L w) z = L := by
-    rw [mfderiv_eq_fderiv, ContinuousLinearMap.fderiv]
+    exact L.mfderiv_eq
   rw [hLderiv] at hchain
   have happ := congrArg (fun D => D v) hchain
   have hjac :=

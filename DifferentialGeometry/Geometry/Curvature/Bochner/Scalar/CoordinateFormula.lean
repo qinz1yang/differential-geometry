@@ -200,9 +200,9 @@ private lemma centeredBasis_repr_eq_invGram_sum
     intro p _
     rw [h_inner_collapse p]]
   rw [Finset.sum_eq_single n]
-  · rw [if_pos rfl, mul_one]
+  · rw [ite_eq_left rfl, mul_one]
   · intro p _ hpn
-    rw [if_neg (fun h => hpn h.symm), mul_zero]
+    rw [ite_eq_right (fun h => hpn h.symm), mul_zero]
   · intro hn
     exact absurd (Finset.mem_univ n) hn
 

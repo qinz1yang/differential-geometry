@@ -20,7 +20,7 @@ private theorem memLp_cutoff_mul
     (hu : MemLp u 2 (volume.restrict Ω))
     (hχ : Continuous χ) (hχc : HasCompactSupport χ) (hχs : tsupport χ ⊆ Ω) :
     MemLp (fun x => χ x * u x) 2 volume := by
-  have hm : MemLp (fun x => χ x * u x) 2 (volume.restrict Ω) := hu.mul' ((hχ.memLp_of_hasCompactSupport hχc : MemLp χ ∞ volume).restrict Ω)
+  have hm : MemLp (fun x => χ x * u x) 2 (volume.restrict Ω) := ((hχ.memLp_of_hasCompactSupport hχc : MemLp χ ∞ volume).restrict Ω).fun_mul hu
   have hi := (memLp_indicator_iff_restrict hΩ.measurableSet).mpr hm
   have heq : Ω.indicator (fun x => χ x * u x) = fun x => χ x * u x := by
     funext x
@@ -129,9 +129,9 @@ theorem memLp_nirenbergTestFunction_partial_local
     ((continuous_const.mul hη.continuous).mul
       ((hη.continuous_fderiv (by simp)).clm_apply continuous_const)).memLp_of_hasCompactSupport hηDc
   have hfirst : MemLp (fun x => (η x)^2 * diffQuot k h w x) 2 volume :=
-    (memLp_diffQuot_two k h hw).mul' hηsq
+    hηsq.fun_mul (memLp_diffQuot_two k h hw)
   have hsecond : MemLp (fun x => 2 * η x * fderiv ℝ η x (EuclideanSpace.single j 1) * diffQuot k h v x)
-      2 volume := (memLp_diffQuot_two k h hv).mul' hηD
+      2 volume := hηD.fun_mul (memLp_diffQuot_two k h hv)
   exact memLp_diffQuot_two k (-h) (hfirst.add hsecond)
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction

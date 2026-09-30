@@ -111,7 +111,13 @@ private theorem chartPushed_cauchy_of_wkpNormChart_cauchy
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α'
             (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x))
           (chartTargetEuclid (I := I) (M := M) α') :=
-    ENNReal.le_tsum α
+    ENNReal.le_tsum (f := fun α' : M =>
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
+        (d := Module.finrank ℝ E) k p
+        (chartPushed (I := I) (M := M)
+          (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α'
+          (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x))
+        (chartTargetEuclid (I := I) (M := M) α')) α
   exact le_trans h_summand_le_tsum h_le
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -160,9 +166,6 @@ private theorem chartPushed_tendstoInMeasure
     {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (α : M)
     {v_α : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ}
-    (h_v_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-      (d := Module.finrank ℝ E) k p v_α
-      (chartTargetEuclid (I := I) (M := M) α))
     (h_v : Tendsto
       (fun n =>
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -204,17 +207,7 @@ private theorem chartPushed_tendstoInMeasure
     intro h
     rw [h] at hp_one
     exact absurd hp_one (by norm_num : ¬ ((1 : ℝ≥0∞) ≤ 0))
-  have h_aesm_seq : ∀ n, AEStronglyMeasurable
-      (chartPushed (I := I) (M := M)
-        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α
-        (wkpChartFun (f n)))
-      (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) := fun n =>
-    ((wkpChartFun_memWkpChart (f n)) α).memLp.aestronglyMeasurable
-  have h_aesm_lim : AEStronglyMeasurable v_α
-      (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) :=
-    h_v_mem.memLp.aestronglyMeasurable
-  exact tendstoInMeasure_of_tendsto_eLpNorm_of_ne_top hp_zero hp_top
-    h_aesm_seq h_aesm_lim h_eLp
+  exact tendstoInMeasure_of_tendsto_eLpNorm_of_ne_top hp_zero hp_top h_eLp
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem exists_subseq_chartPushed_ae_tendsto
@@ -224,9 +217,6 @@ private theorem exists_subseq_chartPushed_ae_tendsto
     {f : ℕ → WkpChart (I := I) (M := M) k p hp}
     (α : M)
     {v_α : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ}
-    (h_v_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-      (d := Module.finrank ℝ E) k p v_α
-      (chartTargetEuclid (I := I) (M := M) α))
     (h_v : Tendsto
       (fun n =>
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -244,7 +234,7 @@ private theorem exists_subseq_chartPushed_ae_tendsto
             (wkpChartFun (f (ns i))) y)
           atTop (𝓝 (v_α y)) := by
   have h_meas := chartPushed_tendstoInMeasure (I := I) (M := M)
-    (hp := hp) hp_one hp_top α h_v_mem h_v
+    (hp := hp) hp_one hp_top α h_v
   exact h_meas.exists_seq_tendsto_ae
 
 end

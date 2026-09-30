@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.Scalar
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.Application
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.ScalarMultiplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCompactSupportDense
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_nonneg tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

@@ -152,7 +152,8 @@ theorem timeL2.integral_mul_bilinear_le_of_forced_cutoff_steklov_identity
     simpa only [P, smul_apply, smul_eq_mul, ContinuousLinearMap.id_apply] using
       (hζsmooth.continuous.aestronglyMeasurable (μ := timeMeasure T)).mul_const (x y)
   obtain ⟨L, hL⟩ := eLpNormEssSup_lt_top_iff_isBoundedUnder.mp
-    (show eLpNormEssSup ζ volume < ∞ by simpa only [eLpNorm_exponent_top] using hζ.eLpNorm_lt_top)
+    (show eLpNormEssSup ζ volume < ∞ by
+      simpa only [eLpNorm_exponent_top hζ.aestronglyMeasurable] using hζ.eLpNorm_lt_top)
   have hAbound : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (L : ℝ) * max CF 0 := by
     filter_upwards [hCF, ae_restrict_of_ae hL] with t hFt hLt
     dsimp only [A]

@@ -68,7 +68,7 @@ theorem exists_presented_cap_window_scalar_lower_bound (Dcap Dstar : ℝ)
         simp only [inc, mfderiv_opens_incl] at hd
         dsimp only [TangentSpace] at hd ⊢
         rw [hd]
-        exact (S.window_smooth.isImmersion.isImmersionAt (inc p)).injective_mfderiv (by simp))
+        exact (S.window_smooth.isImmersion.isImmersionAt (inc p)).mfderiv_injective (by simp))
       rfl
   have hinj : Function.Injective (S.window ∘ inc) := fun p q h => by
     have h' := S.window_smooth.isEmbedding.injective h
@@ -96,11 +96,11 @@ theorem exists_presented_cap_window_scalar_lower_bound (Dcap Dstar : ℝ)
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 theorem exists_window_scalar_lower_bound (Dcap Dstar : ℝ) (hD : Dcap + 1 < Dstar) :
     ∃ ε₀ : ℝ, 0 < ε₀ ∧
-      ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) {p : CutoffParameters}
+      ∀ (H : RetainedCoreHistory.{u}) {p : CutoffParameters}
         (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p),
         (∀ i b, ((records i).static b).hasCanonicalWindow) →
         Dstar ≤ p.modelRadius → p.modelAccuracy ≤ ε₀ → 2 ≤ p.modelOrder →
@@ -110,7 +110,7 @@ theorem exists_window_scalar_lower_bound (Dcap Dstar : ℝ) (hD : Dcap + 1 < Dst
             metricScalarAt (H.initialMetric j.succ) (((records j).static b).window x) := by
   obtain ⟨ε₀, hε₀, hbound⟩ := exists_presented_cap_window_scalar_lower_bound.{u} Dcap Dstar hD
   refine ⟨ε₀, hε₀, ?_⟩
-  intro P₀ H p records hcan hDp hacc hm j b x hx
+  intro H p records hcan hDp hacc hm j b x hx
   change _ ≤ metricScalarAt (H.toHistory.initialMetric j.succ) _
   rw [← H.toHistory.event_output j]
   exact hbound (H.toHistory.event j) hDp hacc hm ((records j).static b) (hcan j b) x hx

@@ -65,7 +65,7 @@ private lemma euclideanSpace_basis_expansion (v : E) :
     rw [Finset.sum_eq_single i]
     · simp [smul_eq_mul]
     · intro j _ hj
-      rw [Pi.smul_apply, Pi.single_apply, if_neg hj.symm, smul_zero]
+      rw [Pi.smul_apply, Pi.single_apply, ite_eq_right hj.symm, smul_zero]
     · intro h
       exact absurd (Finset.mem_univ i) h
   have h_v_toLp : v = WithLp.toLp 2 (fun i : Fin d => v i) := by rfl
@@ -129,10 +129,19 @@ private theorem opNorm_le_sum_basis
     rw [h_map_smul α, smul_eq_mul, abs_mul, mul_comm]
     refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
     rw [Finset.abs_prod]
-    apply Finset.prod_le_prod
-    · intros; exact abs_nonneg _
-    · intros i _
-      exact euclideanSpace_coord_abs_le_norm (v i) (α i)
+    have hprod : ∀ s : Finset (Fin m),
+        (∀ i ∈ s, |v i (α i)| ≤ ‖v i‖) →
+          ∏ i ∈ s, |v i (α i)| ≤ ∏ i ∈ s, ‖v i‖ := by
+      intro s hs
+      induction s using Finset.induction_on with
+      | empty => simp
+      | @insert i s hi ih =>
+          rw [Finset.prod_insert hi, Finset.prod_insert hi]
+          exact mul_le_mul (hs i (by simp)) (ih (fun j hj => hs j (by simp [hj])))
+            (Finset.prod_nonneg (fun j hj => abs_nonneg _)) (norm_nonneg _)
+    apply hprod
+    intro i _
+    exact euclideanSpace_coord_abs_le_norm (v i) (α i)
   refine le_trans (Finset.sum_le_sum (fun α _ => h_each α)) ?_
   rw [← Finset.sum_mul]
 
@@ -213,32 +222,36 @@ private theorem norm_fderiv_iteratedFDeriv_apply_basisTuple_le
 
 omit [NeZero d] in
 private lemma eLpNorm_apply_basisTuple_le_eLpNorm_iteratedFDeriv
-    (u : E → ℝ) (m : ℕ) {p_e : ℝ≥0∞} {μ : Measure E} (α : Fin m → Fin d) :
+    (u : E → ℝ) (m : ℕ) (hu : ContDiff ℝ (⊤ : ℕ∞) u)
+    {p_e : ℝ≥0∞} {μ : Measure E} (α : Fin m → Fin d) :
     eLpNorm (fun y : E => (iteratedFDeriv ℝ m u y) (basisTuple α)) p_e μ ≤
       eLpNorm (fun y : E => ‖iteratedFDeriv ℝ m u y‖) p_e μ := by
   apply eLpNorm_mono
-  intro y
-  rw [Real.norm_eq_abs]
-  rw [show ‖‖iteratedFDeriv ℝ m u y‖‖ = ‖iteratedFDeriv ℝ m u y‖ from
-    Real.norm_of_nonneg (norm_nonneg _)]
-  exact abs_iteratedFDeriv_apply_basisTuple_le _ _ _
+  · exact (contDiff_iteratedFDeriv_apply_basisTuple hu α).continuous.aestronglyMeasurable
+  · intro y
+    rw [Real.norm_eq_abs]
+    rw [show ‖‖iteratedFDeriv ℝ m u y‖‖ = ‖iteratedFDeriv ℝ m u y‖ from
+      Real.norm_of_nonneg (norm_nonneg _)]
+    exact abs_iteratedFDeriv_apply_basisTuple_le _ _ _
 
 omit [NeZero d] in
 private lemma eLpNorm_fderiv_apply_basisTuple_le_eLpNorm_iteratedFDeriv_succ
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) (m : ℕ) {p_e : ℝ≥0∞} {μ : Measure E}
     (α : Fin m → Fin d) :
-    eLpNorm
+  eLpNorm
       (fun y : E => ‖fderiv ℝ (fun z => (iteratedFDeriv ℝ m u z) (basisTuple α)) y‖)
       p_e μ ≤
       eLpNorm (fun y : E => ‖iteratedFDeriv ℝ (m + 1) u y‖) p_e μ := by
   apply eLpNorm_mono
-  intro y
-  rw [show ‖‖fderiv ℝ (fun z => (iteratedFDeriv ℝ m u z) (basisTuple α)) y‖‖ =
-    ‖fderiv ℝ (fun z => (iteratedFDeriv ℝ m u z) (basisTuple α)) y‖ from
-    Real.norm_of_nonneg (norm_nonneg _)]
-  rw [show ‖‖iteratedFDeriv ℝ (m + 1) u y‖‖ = ‖iteratedFDeriv ℝ (m + 1) u y‖ from
-    Real.norm_of_nonneg (norm_nonneg _)]
-  exact norm_fderiv_iteratedFDeriv_apply_basisTuple_le hu α y
+  · exact ((contDiff_iteratedFDeriv_apply_basisTuple hu α).continuous_fderiv (by simp)).norm
+      |>.aestronglyMeasurable
+  · intro y
+    rw [show ‖‖fderiv ℝ (fun z => (iteratedFDeriv ℝ m u z) (basisTuple α)) y‖‖ =
+      ‖fderiv ℝ (fun z => (iteratedFDeriv ℝ m u z) (basisTuple α)) y‖ from
+      Real.norm_of_nonneg (norm_nonneg _)]
+    rw [show ‖‖iteratedFDeriv ℝ (m + 1) u y‖‖ = ‖iteratedFDeriv ℝ (m + 1) u y‖ from
+      Real.norm_of_nonneg (norm_nonneg _)]
+    exact norm_fderiv_iteratedFDeriv_apply_basisTuple_le hu α y
 
 omit [NeZero d] in
 private lemma smooth_iteratedFDeriv_norm_memLp_on_ball
@@ -324,7 +337,7 @@ theorem smooth_morrey_iteratedFDeriv_bound_uniform
         (eLpNorm (g α) (ENNReal.ofReal p)
           (volume.restrict (Metric.ball x₀ R))).toReal ≤ Nm := by
       apply ENNReal.toReal_mono hNm_finite
-      exact eLpNorm_apply_basisTuple_le_eLpNorm_iteratedFDeriv u m α
+      exact eLpNorm_apply_basisTuple_le_eLpNorm_iteratedFDeriv u m hu α
     have h2 :
         (eLpNorm (fun z => ‖fderiv ℝ (g α) z‖) (ENNReal.ofReal p)
           (volume.restrict (Metric.ball x₀ R))).toReal ≤ Nm1 := by
@@ -1065,23 +1078,23 @@ theorem iteratedFDeriv_cauchyLimitFun_eq
           (fun y => LC (D (j + 1) hj_succ y)) Filter.atTop := by
       have h_isom : Isometry LC := LC.isometry
       have h_uniform := h_uniform_D (j + 1) hj_succ
-      rw [Metric.tendstoUniformly_iff] at h_uniform ⊢
-      intro ε hε
-      obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp (h_uniform ε hε)
-      refine Filter.eventually_atTop.mpr ⟨N, fun n hn y => ?_⟩
-      have h_dist := hN n hn y
-      rw [dist_eq_norm] at h_dist ⊢
-      rw [← LC.map_sub, h_isom.norm_map_of_map_zero (map_zero _)]
-      exact h_dist
+      have h_comp := h_isom.uniformContinuous.comp_tendstoUniformly h_uniform
+      change @TendstoUniformly E (E →L[ℝ] E [×j]→L[ℝ] ℝ) ℕ
+        ContinuousLinearMap.uniformSpace
+        (fun n y => LC (iteratedFDeriv ℝ (j + 1) (g n) y))
+        (fun y => LC (D (j + 1) hj_succ y)) Filter.atTop
+      simpa only [Function.comp_def] using h_comp
     have h_tendsto_fderiv :
         TendstoUniformly (fun n y => fderiv ℝ (iteratedFDeriv ℝ j (g n)) y)
           (fun y => LC (D (j + 1) hj_succ y)) Filter.atTop := by
-      rw [Metric.tendstoUniformly_iff] at h_tendsto_LC ⊢
-      intro ε hε
-      obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp (h_tendsto_LC ε hε)
-      refine Filter.eventually_atTop.mpr ⟨N, fun n hn y => ?_⟩
-      rw [h_fderiv_eq n y]
-      exact hN n hn y
+      have hEq : (fun n y => fderiv ℝ (iteratedFDeriv ℝ j (g n)) y) =ᶠ[Filter.atTop]
+          (fun n y => LC (iteratedFDeriv ℝ (j + 1) (g n) y)) :=
+        Filter.Eventually.of_forall (fun n => funext (fun y => h_fderiv_eq n y))
+      change @TendstoUniformly E (E →L[ℝ] E [×j]→L[ℝ] ℝ) ℕ
+        ContinuousLinearMap.uniformSpace
+        (fun n y => fderiv ℝ (iteratedFDeriv ℝ j (g n)) y)
+        (fun y => LC (D (j + 1) hj_succ y)) Filter.atTop
+      exact (tendstoUniformly_congr hEq).mpr h_tendsto_LC
     refine hasFDerivAt_of_tendstoUniformly (f := fun n y => iteratedFDeriv ℝ j (g n) y)
       h_tendsto_fderiv ?_ ?_ x
     · intro n y'
@@ -1407,7 +1420,7 @@ theorem morrey_iteratedFDeriv_representative
     MeasureTheory.tendstoInMeasure_of_tendsto_eLpNorm
       (p := ENNReal.ofReal p) (l := Filter.atTop)
       (by simp [ENNReal.ofReal_eq_zero, not_le.mpr hp_pos])
-      hφ_ae_meas hχu_ae_meas h_eLp_tendsto'
+      h_eLp_tendsto'
   obtain ⟨ns, _hns_strict, hns_ae⟩ := h_in_measure.exists_seq_tendsto_ae
   have h_psi_one_R4 : ∀ x ∈ Metric.ball x₀ (R / 4), ψ x = 1 := fun x hx =>
     hψ_one x (Metric.ball_subset_closedBall hx)

@@ -107,8 +107,7 @@ private lemma mvfderiv_apply_scalar
     mvfderiv (I := I) f x v = mfderiv I 𝓘(ℝ, ℝ) f x v := by
   simp only [mvfderiv, ContinuousLinearMap.comp_apply,
     ContinuousLinearEquiv.coe_coe]
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk,
-    ]
+  simp only [NormedSpace.fromTangentSpace]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in

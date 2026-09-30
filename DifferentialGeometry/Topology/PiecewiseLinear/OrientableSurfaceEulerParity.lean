@@ -60,12 +60,12 @@ theorem SimplicialBoolCocycle.isCoboundary_of_isCoboundary_ofLe
     intro v hvQ
     by_cases hvP : {v} ∈ P.faces
     · have h := hc v (hvert v hvP hvQ)
-      simp only [δ, if_pos hvP]
+      simp only [δ, ite_eq_left hvP]
       revert h
       generalize δP v = p
       generalize δQ v = q
       cases p <;> cases q <;> cases c <;> simp
-    · simp only [δ, if_neg hvP]
+    · simp only [δ, ite_eq_right hvP]
   refine ⟨δ, fun a b hab => ?_⟩
   have ha : ({a} : Finset E) ⊆ {a, b} := by simp
   have hb : ({b} : Finset E) ⊆ {a, b} := by simp
@@ -73,7 +73,7 @@ theorem SimplicialBoolCocycle.isCoboundary_of_isCoboundary_ofLe
   · have haP := P.down_closed habP ha (Finset.singleton_nonempty a)
     have hbP := P.down_closed habP hb (Finset.singleton_nonempty b)
     have h : ε.parity a b = Bool.xor (δP a) (δP b) := hδP a b habP
-    simp only [δ, if_pos haP, if_pos hbP]
+    simp only [δ, ite_eq_left haP, ite_eq_left hbP]
     exact h
   · have h : ε.parity a b = Bool.xor (δQ a) (δQ b) := hδQ a b habQ
     rw [hδQ' a (Q.down_closed habQ ha (Finset.singleton_nonempty a)),
@@ -287,7 +287,7 @@ private theorem exists_closed_cap_of_isPLSphere_one
       (D : Set (E × ℝ)) (r : (Fin 3 → ℝ) → E × ℝ),
       letI := hPfin.to_subtype
       IsCombinatorialManifold 2 P ∧ IsConnected P.space ∧ eulerChar P = eulerChar K + 1 ∧
-      (IsOrientable 2 K → IsOrientable 2 P) ∧ IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+      (IsOrientable 2 K → IsOrientable 2 P) ∧ IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       r '' stdSimplexBoundary 2 = J ×ˢ {0} ∧ K.space ×ˢ {0} ∩ D = J ×ˢ {0} ∧
       P.space = K.space ×ˢ {0} ∪ D := by
   classical
@@ -384,7 +384,7 @@ private theorem exists_closed_cap_pair
     isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hD₁'poly
       ((isPiecewiseAffineOn_of_affine σ isOpen_univ).mono_of_isPolyhedron hD₁'poly
         (subset_univ _)) hσinj.injOn.bijOn_image
-  have hr₁ : IsPLHomeomorphOn (σ ∘ r₁') (stdSimplex ℝ (Fin 3)) (σ '' D₁') := hr₁'.trans hσD
+  have hr₁ : IsPLHomeomorphOn (σ ∘ r₁') (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (σ '' D₁') := hr₁'.trans hσD
   have hr₁b : (σ ∘ r₁') '' stdSimplexBoundary 2 = C₁ ×ˢ {0} := by
     rw [image_comp, hr₁'b]
     apply Subset.antisymm
@@ -526,7 +526,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_of_eulerChar
     (hK : IsCombinatorialManifoldWithBoundary 2 K) (hconn : IsConnected K.space)
     {J : Set E} (hJ : IsPLSphere 1 J) (hbd : (boundaryComplex 2 K).space = J)
     (hχ : eulerChar K = 1) :
-    ∃ r : (Fin 3 → ℝ) → E, IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) K.space ∧
+    ∃ r : (Fin 3 → ℝ) → E, IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) K.space ∧
       r '' stdSimplexBoundary 2 = J := by
   obtain ⟨P, hPfin, D, r, hP, hPc, hPχ, -, hr, hrb, hmeet, hPspace⟩ :=
     exists_closed_cap_of_isPLSphere_one K hK hconn hJ hbd

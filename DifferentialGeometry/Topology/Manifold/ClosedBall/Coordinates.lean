@@ -22,7 +22,7 @@ theorem extChartAt_closedCell_eq_shift {x : ClosedCell (m + 1)} (hx : ‖x.val�
     extChartAt (𝓡∂ (m + 1)) x y = closedCellShiftSucc m 1 y.val := by
   have hc : chartAt (EuclideanHalfSpace (m + 1)) x = closedCellInteriorChart m := by
     change closedCellChartAt x = _
-    rw [closedCellChartAt, dif_pos hx]
+    rw [closedCellChartAt, dite_eq_left hx]
   rw [extChartAt, OpenPartialHomeomorph.extend_coe, Function.comp_apply, hc]
   rfl
 
@@ -54,7 +54,7 @@ theorem mfderiv_closedCell_inclusion_of_norm_lt_one
 theorem injective_mfderiv_closedCell_inclusion (x : ClosedCell (m + 1)) :
     Function.Injective (mfderiv (𝓡∂ (m + 1)) (𝓡 (m + 1))
       (Subtype.val : ClosedCell (m + 1) → EuN) x) :=
-  ((isSmoothEmbedding_closedCell_inclusion m).isImmersion.isImmersionAt x).injective_mfderiv (by simp)
+  ((isSmoothEmbedding_closedCell_inclusion m).isImmersion.isImmersionAt x).mfderiv_injective (by simp)
 
 theorem extChartAt_closedCell_symm_val {α : ClosedCell (m + 1)} (hα : ‖α.val‖ < 1)
     {y : EuN} (hy : y ∈ (extChartAt (𝓡∂ (m + 1)) α).target) :
@@ -68,7 +68,7 @@ theorem extChartAt_closedCell_target {α : ClosedCell (m + 1)} (hα : ‖α.val�
     (extChartAt (𝓡∂ (m + 1)) α).target = {y : EuN | ‖closedCellShiftSucc m (-1) y‖ < 1} := by
   have hc : chartAt (EuclideanHalfSpace (m + 1)) α = closedCellInteriorChart m := by
     change closedCellChartAt α = _
-    rw [closedCellChartAt, dif_pos hα]
+    rw [closedCellChartAt, dite_eq_left hα]
   ext y
   constructor
   · intro hy

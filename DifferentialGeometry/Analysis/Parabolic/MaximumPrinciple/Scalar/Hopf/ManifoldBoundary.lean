@@ -142,7 +142,7 @@ private theorem boundaryHopf_deriv_nonneg_at_right_endpoint
     exact sub_mem_posTangentConeAt_of_segment_subset hseg
   have hnonneg : 0 ≤
       (fderivWithin Real f (Set.Icc 0 a) 0 : Real →L[Real] Real) (a - 0) :=
-    hmin.localize.fderivWithin_nonneg hdir
+    hmin.isLocalMinOn.fderivWithin_nonneg hdir
   have huniq : UniqueDiffWithinAt Real (Set.Icc 0 a) 0 :=
     (uniqueDiffOn_Icc ha).uniqueDiffWithinAt (left_mem_Icc.mpr ha.le)
   have hderivWithin : derivWithin f (Set.Icc 0 a) 0 = d := by

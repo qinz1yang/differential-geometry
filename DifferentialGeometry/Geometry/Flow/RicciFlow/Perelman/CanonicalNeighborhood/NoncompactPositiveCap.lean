@@ -42,7 +42,7 @@ theorem exists_localCap_at_base_of_noncompact_ancient_positive
       ∃ (neck : StrongNeck F.S epsilon v 0) (U : Set F.M) (cap : LocalCap F.S epsilon p 0 U),
         (neck = nk ∨ neck = nk.axialReflection) ∧ K ⊆ interior cap.core.carrier ∧
         U = cap.core.carrier ∪ neck.map '' (univ ×ˢ Icc (0 : ℝ) 1) ∧
-        cap.tube = neck.map '' (univ ×ˢ Icc (0 : ℝ) 1) ∧ cap.tube_map = neck.map ∧
+        cap.tube = neck.map '' (univ ×ˢ Icc (0 : ℝ) 1) ∧ cap.tubeMap = neck.map ∧
         ∃ j : Fin cap.chain.count, cap.chain.centers j = v ∧ HEq (cap.chain.necks j) neck ∧
           cap.chain.lo j = 0 ∧ cap.chain.hi j = 1 ∧ v ∈ cap.tube := by
   let _ : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
@@ -93,7 +93,7 @@ theorem exists_deep_localCap_at_base_of_noncompact_ancient_positive
       ∃ (neck : StrongNeck F.S epsilon v 0) (U : Set F.M) (cap : LocalCap F.S epsilon p 0 U),
         (neck = nk ∨ neck = nk.axialReflection) ∧ (∀ y ∈ cap.tube, H / Real.sqrt (F.S.scalar 0 p) ≤ metricDistance (F.S.base.metric 0) p y) ∧
         U = cap.core.carrier ∪ neck.map '' (univ ×ˢ Icc (0 : ℝ) 1) ∧
-        cap.tube = neck.map '' (univ ×ˢ Icc (0 : ℝ) 1) ∧ cap.tube_map = neck.map ∧
+        cap.tube = neck.map '' (univ ×ˢ Icc (0 : ℝ) 1) ∧ cap.tubeMap = neck.map ∧
         ∃ j : Fin cap.chain.count, cap.chain.centers j = v ∧ HEq (cap.chain.necks j) neck ∧
           cap.chain.lo j = 0 ∧ cap.chain.hi j = 1 ∧ v ∈ cap.tube := by
   let _ : ConnectedSpace F.M := hF.connected
@@ -152,7 +152,7 @@ theorem exists_localCap_ball_sandwich_of_noncompact_ancient_positive
           riemannianBallOf (F.S.base.metric 0) p r ⊆ U ∧
           U ⊆ riemannianBallOf (F.S.base.metric 0) p (2 * r) ∧
           (∀ y ∈ cap.tube, max 10000 H / Real.sqrt (F.S.scalar 0 p) ≤ metricDistance (F.S.base.metric 0) p y) ∧
-          cap.tube_map = neck.map ∧ cap.chain.count = 1 ∧
+          cap.tubeMap = neck.map ∧ cap.chain.count = 1 ∧
           (∀ j : Fin cap.chain.count, cap.chain.centers j = v ∧ HEq (cap.chain.necks j) neck ∧
             cap.chain.lo j = 0 ∧ cap.chain.hi j = 1) ∧ v ∈ cap.tube := by
   let _ : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩

@@ -466,7 +466,7 @@ theorem source_metric_covariant_lipschitz_bounds_of_flow
             isOpen_univ q hq_pos Bmax hBmax
             (fun _ t ht ↦ hequiv k t ht) Cg
             (fun r _hr1 hrq _ t ht y _hy => by
-              simpa only [Cg, dif_pos hrq] using
+              simpa only [Cg, dite_eq_left hrq] using
                 hcovPrev ⟨r, hrq⟩ k t ht y)
             Kq hKq0 (hShiQ k) ht₀
             (fun i y _hy t ht v => hev i y t ht v)
@@ -540,7 +540,7 @@ theorem source_metric_covariant_lipschitz_bounds_of_flow
                 isOpen_univ q hq_pos Bmax hBmax
                 (fun _ t' ht' ↦ hequiv k t' ht') Cg
                 (fun r _hr1 hrq _ t' ht' y' _hy' => by
-                  simpa only [Cg, dif_pos hrq] using
+                  simpa only [Cg, dite_eq_left hrq] using
                     hcovPrev ⟨r, hrq⟩ k t' ht' y')
                 Kq hKq0 (hShiQ k) 0 t ht y (Set.mem_univ y)
           have hbase :
@@ -956,7 +956,7 @@ theorem source_metric_covariant_lipschitz_bounds_of_solution
             isOpen_univ q hq_pos Bmax hBmax
             (fun _ t ht ↦ hequiv k t ht) Cg
             (fun r _hr1 hrq _ t ht y _hy => by
-              simpa only [Cg, dif_pos hrq] using
+              simpa only [Cg, dite_eq_left hrq] using
                 hcovPrev ⟨r, hrq⟩ k t ht y)
             Kq hKq0 (hShiQ k) ht₀
             (fun i y _hy t ht v => hev i y t ht v)
@@ -1030,7 +1030,7 @@ theorem source_metric_covariant_lipschitz_bounds_of_solution
                 isOpen_univ q hq_pos Bmax hBmax
                 (fun _ t' ht' ↦ hequiv k t' ht') Cg
                 (fun r _hr1 hrq _ t' ht' y' _hy' => by
-                  simpa only [Cg, dif_pos hrq] using
+                  simpa only [Cg, dite_eq_left hrq] using
                     hcovPrev ⟨r, hrq⟩ k t' ht' y')
                 Kq hKq0 (hShiQ k) 0 t ht y (Set.mem_univ y)
           have hbase :

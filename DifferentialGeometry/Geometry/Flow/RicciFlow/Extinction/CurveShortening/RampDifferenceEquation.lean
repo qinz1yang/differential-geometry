@@ -595,7 +595,7 @@ structure DifferenceSubsolution
   detects : ∀ x t, t ∈ Icc s T → discrepancy x t = 0 →
     c₁.map (x : Surgery.Topology.Circle) t = c₂.map (x : Surgery.Topology.Circle) t
 
-def differenceSubsolution_of_differenceEquation
+def differenceSubsolutionOfDifferenceEquation
     (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (s T : ℝ)
     (c₁ c₂ : ProductCurve M) (h : c₁.DifferenceEquation (I := I) g lambda s T c₂)
     (hsmooth : ContDiffOn ℝ ∞
@@ -641,7 +641,7 @@ def differenceSubsolution_of_differenceEquation
     linarith
   detects := h.detects
 
-def differenceSubsolution_self (g : ℝ → SmoothRiemannianMetric I M)
+def differenceSubsolutionSelf (g : ℝ → SmoothRiemannianMetric I M)
     (lambda : ℝ) (s T : ℝ) (c : ProductCurve M) :
     c.DifferenceSubsolution (I := I) g lambda s T c where
   discrepancy := fun _ _ => 0

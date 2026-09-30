@@ -737,7 +737,7 @@ private theorem holderWith_clm_comp
     {f : X → E} {K α : ℝ≥0} (hf : HolderWith K α f) :
     HolderWith (‖L‖₊ * K) α (fun x => L (f x)) := by
   simpa only [NNReal.coe_one, NNReal.rpow_one, one_mul, Function.comp_def] using
-    L.lipschitz.holderWith.comp hf
+    L.lipschitzWith.holderWith.comp hf
 
 private theorem exists_holderWith_quadraticBoundaryLiftingHessian
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -898,7 +898,7 @@ private theorem exists_holderWith_smul_comp_im_of_norm_le
   obtain ⟨M, A, hM, hA⟩ := Schauder.exists_norm_bound_and_holderWith_of_contDiff_hasCompactSupport ha hc hα
   have hp : HolderWith (A * ‖Complex.imCLM‖₊ ^ (α : ℝ)) α (fun z : ℂ => a z.im) := by
     simpa only [mul_one, Function.comp_def, Complex.imCLM_apply] using
-      hA.comp Complex.imCLM.lipschitz.holderWith
+      hA.comp Complex.imCLM.lipschitzWith.holderWith
   have h := Schauder.holderWith_smul_of_norm_le hp hf (fun z => hM z.im) hN
   exact ⟨_, h⟩
 

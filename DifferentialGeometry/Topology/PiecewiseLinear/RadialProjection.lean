@@ -189,13 +189,13 @@ theorem affineIndependent_image_radialProj [DecidableEq E] (p : E)
     if v = p then -(∑ u ∈ σ, a (radialProj p S u) * radialRatio p S u)
     else a (radialProj p S v) * radialRatio p S v
   have hb : ∀ v ∈ σ, b v = a (radialProj p S v) * radialRatio p S v := fun v hv => by
-    simp only [b, if_neg (ne_of_mem_of_not_mem hv hpσ)]
+    simp only [b, ite_eq_right (ne_of_mem_of_not_mem hv hpσ)]
   have hb₀ : ∑ v ∈ insert p σ, b v = 0 := by
     rw [Finset.sum_insert hpσ, Finset.sum_congr rfl hb]
     simp [b]
   have hb₁ : ∑ v ∈ insert p σ, b v • v = 0 := by
     rw [Finset.sum_insert hpσ, Finset.sum_congr rfl fun v hv => by rw [hb v hv]]
-    simp only [b, if_true]
+    simp only [b, ite_true]
     have hsplit : ∑ v ∈ σ, a (radialProj p S v) • radialProj p S v =
         ∑ v ∈ σ, a (radialProj p S v) • p +
           ∑ v ∈ σ, (a (radialProj p S v) * radialRatio p S v) • (v - p) := by

@@ -122,7 +122,7 @@ theorem cylinderLift_tracePhaseAnnulus {γ : loopCircle → M} {δ : loopCircle 
   exact congrArg (fun r : ℝ => (r : loopCircle)) (by ring)
 
 omit [FiniteDimensional ℝ E] in
-theorem cylinderArea_tracePhaseAnnulus_eq_zero [CompactSpace M] [T3Space M]
+theorem cylinderArea_tracePhaseAnnulus_eq_zero
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {γ : loopCircle → M}
     (hγ : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (fun t : ℝ => γ (t : loopCircle)))
     {ψ : ℝ → ℝ} (hψ : ContDiff ℝ ∞ ψ) {δ : loopCircle → ℝ}
@@ -325,7 +325,7 @@ theorem tracePhaseAnnulusStrip_lipschitz_of_strip (g : SmoothRiemannianMetric �
     (projIcc 0 1 zero_le_one q.1).property).trans (mul_le_mul' le_rfl (h1 p q))
 
 omit [FiniteDimensional ℝ E] in
-theorem cylinderArea_tracePhaseAnnulusStrip_eq_zero [CompactSpace M] [T3Space M]
+theorem cylinderArea_tracePhaseAnnulusStrip_eq_zero
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {γ : loopCircle → M}
     (hγ : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (fun t : ℝ => γ (t : loopCircle)))
     {ψ : ℝ → ℝ} (hψ : ContDiff ℝ ∞ ψ) {δ : loopCircle → ℝ}
@@ -351,7 +351,7 @@ theorem cylinderArea_tracePhaseAnnulusStrip_eq_zero [CompactSpace M] [T3Space M]
     _ = cylinderArea g (tracePhaseAnnulus γ δ) := by rw [cylinderArea, riemannianArea]
     _ = 0 := cylinderArea_tracePhaseAnnulus_eq_zero g hγ hψ hδ
 
-theorem exists_spanningDiskCompetitor_of_tracePhase_lipschitz [CompactSpace M] [T3Space M]
+theorem exists_spanningDiskCompetitor_of_tracePhase_lipschitz [T3Space M]
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {γ : freeLoop M}
     {σ : C(loopCircle, loopCircle)} {ψ : ℝ → ℝ} (hψ : ContDiff ℝ ∞ ψ)
     (hl : ∀ t : ℝ, (ψ t : loopCircle) = σ (t : loopCircle)) {δ : loopCircle → ℝ}

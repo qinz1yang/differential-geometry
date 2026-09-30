@@ -69,7 +69,7 @@ noncomputable def PoincareStandardConnectedSumPresentation.connectedSumFundament
     FundamentalGroup p.result p.result.basepoint ≃*
       Monoid.CoprodI
         (DifferentialGeometry.Topology.poincareStandardFundamentalGroupFactors Gamma b) :=
-  (fundamentalGroupEquiv_parenthesizedFiniteConnectedSum p.construction).trans
+  (fundamentalGroupEquivParenthesizedFiniteConnectedSum p.construction).trans
     (p.factorFreeProductEquiv Gamma b)
 
 theorem PoincareStandardConnectedSumPresentation.connectedSumFundamentalGroupEquiv_comp_factor
@@ -87,7 +87,7 @@ theorem PoincareStandardConnectedSumPresentation.connectedSumFundamentalGroupEqu
         (p.factorFundamentalGroupEquiv Gamma b i).toMonoidHom := by
   change
     (p.factorFreeProductEquiv Gamma b).toMonoidHom.comp
-        ((fundamentalGroupEquiv_parenthesizedFiniteConnectedSum
+        ((fundamentalGroupEquivParenthesizedFiniteConnectedSum
           p.construction).toMonoidHom.comp
             (p.construction.orderedFactorToResult i)) = _
   rw [fundamentalGroupEquiv_parenthesizedFiniteConnectedSum_comp_orderedFactorToResult]

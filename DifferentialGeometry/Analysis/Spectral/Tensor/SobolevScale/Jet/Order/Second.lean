@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.IteratedCovariantDerivative
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 
 set_option autoImplicit false
 

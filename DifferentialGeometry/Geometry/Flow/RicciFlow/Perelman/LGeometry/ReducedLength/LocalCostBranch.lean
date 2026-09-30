@@ -217,7 +217,7 @@ theorem lActBranch_smooth
   let hloc := lExp_localDiffeo S hS T x Z tau hdom hconj
   let U : Set M := hloc.localInverse.source ∩ hloc.localInverse ⁻¹' V
   have hUopen : IsOpen U :=
-    hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
+    hloc.contMDiffOn_localInverse.continuousOn.isOpen_inter_preimage
       hloc.localInverse_open_source hVopen
   have hinv : hloc.localInverse (lExp S T x Z tau) = Z :=
     hloc.localInverse_left_inv hloc.localInverse_mem_target
@@ -231,7 +231,7 @@ theorem lActBranch_smooth
       (fun W : E ↦ lRegularizedAction S T (lRegularizedCurve S T x W) 0
         (Real.sqrt tau)) V :=
     contMDiffOn_iff_contDiffOn.mpr hact
-  have hinvMD := hloc.localInverse_contMDiffOn.mono
+  have hinvMD := hloc.contMDiffOn_localInverse.mono
     (Set.inter_subset_left : U ⊆ hloc.localInverse.source)
   have hcomp := hray.comp hinvMD
     (fun y hy ↦ hy.2)
@@ -264,7 +264,7 @@ theorem lActBranch_cont
           fun W : E ↦ (W, Real.sqrt tau)) Z
     exact ContinuousAt.comp (f := fun W : E ↦ (W, Real.sqrt tau))
       hactJoint (continuousAt_id.prodMk continuousAt_const)
-  have hinv := hloc.localInverse_contMDiffAt.continuousAt
+  have hinv := hloc.contMDiffAt_localInverse.continuousAt
   have hinvZ : hloc.localInverse (lExp S T x Z tau) = Z :=
     hloc.localInverse_left_inv hloc.localInverse_mem_target
   have hcomp := hact.comp_of_eq hinv hinvZ
@@ -314,7 +314,7 @@ theorem lActBranch_hasMFD
     exact hRayM
   have hInv : MDifferentiableAt I (modelWithCornersSelf Real E)
       hloc.localInverse y :=
-    hloc.localInverse_mdifferentiableAt (by simp)
+    hloc.mdifferentiableAt_localInverse (by simp)
   have hdomE := hdom
   change (show E from Z, tau) ∈ lExpPosDom S T x at hdomE
   have hExp : MDifferentiableAt (modelWithCornersSelf Real E) I
@@ -400,7 +400,7 @@ private theorem lActBranch_mfd_at
       hasFDerivAt_lRegularizedAction_lRegularizedCurve S hS T x W hyDom
   have hInv : MDifferentiableAt I (modelWithCornersSelf Real E)
       hloc.localInverse y :=
-    (hloc.localInverse_contMDiffOn y hy).contMDiffAt
+    (hloc.contMDiffOn_localInverse y hy).contMDiffAt
       (hloc.localInverse_open_source.mem_nhds hy) |>.mdifferentiableAt (by simp)
   have hExp : MDifferentiableAt (modelWithCornersSelf Real E) I
       (fun Q : E ↦ lExp S T x Q tau) W := by
@@ -481,7 +481,7 @@ private theorem lActBranch_grad_on
       (continuous_id.prodMk continuous_const)
   have hpreOpen : IsOpen
       (hloc.localInverse.source ∩ hloc.localInverse ⁻¹' P) :=
-    hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
+    hloc.contMDiffOn_localInverse.continuousOn.isOpen_inter_preimage
       hloc.localInverse_open_source hPopen
   let U : Set M := U₀ ∩
     (hloc.localInverse.source ∩ hloc.localInverse ⁻¹' P)
@@ -582,7 +582,7 @@ private theorem lEndVelocity_cov
     (hloc.localInverse.source ∩ hloc.localInverse ⁻¹' V₀)
   have hpreOpen : IsOpen
       (hloc.localInverse.source ∩ hloc.localInverse ⁻¹' V₀) :=
-    hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
+    hloc.contMDiffOn_localInverse.continuousOn.isOpen_inter_preimage
       hloc.localInverse_open_source hVopen
   have hUopen : IsOpen U := hU₀open.inter hpreOpen
   have hinvZ : hloc.localInverse y = Z :=
@@ -598,7 +598,7 @@ private theorem lEndVelocity_cov
   have hzeta : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real E) ∞ zeta := by
     rw [← contMDiffOn_univ]
-    exact hloc.localInverse_contMDiffOn.comp heta.contMDiffOn
+    exact hloc.contMDiffOn_localInverse.comp heta.contMDiffOn
       (fun s _hs ↦ (hetaU s).2.1)
   have hzetaV : ∀ s : Real, zeta s ∈ V₀ :=
     fun s ↦ (hetaU s).2.2
@@ -611,7 +611,7 @@ private theorem lEndVelocity_cov
     have hInv0 : MDifferentiableAt I (modelWithCornersSelf Real E)
         hloc.localInverse (eta 0) := by
       simpa only [heta0, y] using
-        hloc.localInverse_contMDiffAt.mdifferentiableAt (by simp)
+        hloc.contMDiffAt_localInverse.mdifferentiableAt (by simp)
     have hc := mfderiv_comp 0 hInv0
       (heta.contMDiffAt.mdifferentiableAt (by simp))
     change mfderiv (modelWithCornersSelf Real Real)
@@ -698,13 +698,45 @@ private theorem lEndVelocity_cov
         (T% fun q ↦ gradientFun (I := I) g
           (lActBranch S hS T x Z tau hdom hconj) q) := by
     filter_upwards [hf₀eq.eventuallyEq_nhds] with q hq
+    have hq' : f₀ =ᶠ[nhds q]
+        (lActBranch S hS T x Z tau hdom hconj) := by
+      change f₀ =ᶠ[nhds q]
+        (lActBranch S hS T x Z tau hdom hconj) at hq
+      exact hq
     change TotalSpace.mk' E q (gradientFun (I := I) g f₀ q) =
       TotalSpace.mk' E q
         (gradientFun (I := I) g
           (lActBranch S hS T x Z tau hdom hconj) q)
     unfold gradientFun
-    unfold mvfderiv
-    rw [hq.mfderiv_eq, hq.eq_of_nhds]
+    have hmv : (mvfderiv (I := I) f₀ q).toLinearMap =
+        (mvfderiv (I := I)
+          (lActBranch S hS T x Z tau hdom hconj) q).toLinearMap := by
+      apply LinearMap.ext
+      intro V
+      change mvfderiv (I := I) f₀ q V =
+        mvfderiv (I := I)
+          (lActBranch S hS T x Z tau hdom hconj) q V
+      rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv,
+        DifferentialGeometry.mvfderiv_real_eq_mfderiv,
+        hq'.mfderiv_eq (I := I) (I' := 𝓘(Real, Real))]
+      rw [hq'.self_of_nhds]
+      have hcast :
+          (tangentSpaceCast 𝓘(Real, Real)
+            (lActBranch S hS T x Z tau hdom hconj q)
+            (lActBranch S hS T x Z tau hdom hconj q) :
+            TangentSpace 𝓘(Real, Real)
+                (lActBranch S hS T x Z tau hdom hconj q) →L[Real]
+              TangentSpace 𝓘(Real, Real)
+                (lActBranch S hS T x Z tau hdom hconj q)) =
+            ContinuousLinearMap.id Real _ := by
+        apply ContinuousLinearMap.ext
+        intro v
+        rfl
+      rw [hcast]
+      rfl
+    exact congrArg
+      (fun L : TangentSpace I q →ₗ[Real] Real ↦
+        TotalSpace.mk' E q (metricSharp (I := I) g q L)) hmv
   have hgradAt : MDifferentiableAt I
       (I.prod (modelWithCornersSelf Real E))
       (fun q ↦ TotalSpace.mk' E q
@@ -865,7 +897,7 @@ theorem lActBranch_upper
   have hsrc : hloc.localInverse.source ∈ nhds z :=
     hloc.localInverse_open_source.mem_nhds hloc.localInverse_mem_source
   have hpre : hloc.localInverse ⁻¹' U ∈ nhds z := by
-    apply hloc.localInverse_contMDiffAt.continuousAt.preimage_mem_nhds
+    apply hloc.contMDiffAt_localInverse.continuousAt.preimage_mem_nhds
     rw [hinvZ]
     exact hUopen.mem_nhds hZU
   filter_upwards [hsrc, hpre] with y hySource hyU
@@ -926,7 +958,7 @@ theorem exists_branch_deriv
   let U : Set M :=
     hloc.localInverse.source ∩ hloc.localInverse ⁻¹' V
   have hUopen : IsOpen U := by
-    exact hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
+    exact hloc.contMDiffOn_localInverse.continuousOn.isOpen_inter_preimage
       hloc.localInverse_open_source hVopen
   have hinvZ : hloc.localInverse (lExp S T x Z tau) = Z :=
     hloc.localInverse_left_inv hloc.localInverse_mem_target
@@ -943,7 +975,7 @@ theorem exists_branch_deriv
   have hzeta : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real E) (8 : Nat) zeta := by
     rw [← contMDiffOn_univ]
-    exact (hloc.localInverse_contMDiffOn.of_le h8inf).comp heta.contMDiffOn
+    exact (hloc.contMDiffOn_localInverse.of_le h8inf).comp heta.contMDiffOn
       (fun u _hu ↦ (hetaU u).1)
   have hzetaV : ∀ u : Real, zeta u ∈ V :=
     fun u ↦ (hetaU u).2

@@ -480,7 +480,7 @@ theorem localizedSpacetimeRpowNorm_inv_le_canonicalLateBombieriGiustiReverseCost
           inv p aOuter bOuter :=
       mul_le_mul_of_nonneg_left hmono (Real.rpow_nonneg hcost _)
 
-theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalBombieriGiustiThreshold_of_supersolution_of_summable
+theorem fixed_bombieri_giusti_late_reciprocal_bound_of_summable
     (g : SmoothRiemannianMetric I M)
     (hdim : 2 < (Module.finrank ℝ E : ℝ))
     (rho outer averagingCutoff : SmoothScalar g)
@@ -617,7 +617,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalBombieriGiustiT
           (canonicalLateBombieriGiustiReverseCost (I := I) (M := M)
             g hdim rho τ c d D lower upper k) / 4)) := by
   apply
-    late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalBombieriGiustiThreshold_of_supersolution_of_summable
+    fixed_bombieri_giusti_late_reciprocal_bound_of_summable
       g hdim rho outer averagingCutoff C hC hP u hu hpos hp₀ hτc hcd hdD
         hlowerUpper hmeasure hmeasure_le_one houter hmass hpde
   have hc₀ : 0 ≤

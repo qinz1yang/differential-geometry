@@ -202,7 +202,7 @@ theorem coveringNeighbor_base_of_face [FiniteDimensional ℝ E]
     {K : Geometry.SimplicialComplex ℝ E} {p : X' → K.space} (hp : IsCoveringMap p)
     (v : coveringVertex K p) (w : E) (hvw : {coveringVertex.base v, w} ∈ K.faces) :
     coveringVertex.base (coveringNeighbor hp v w) = w := by
-  rw [coveringNeighbor, dif_pos hvw, coveringVertexOfLift_base]
+  rw [coveringNeighbor, dite_eq_left hvw, coveringVertexOfLift_base]
 
 open Classical in
 def coveringFaceVertices {K : Geometry.SimplicialComplex ℝ E} {p : X' → K.space}
@@ -416,7 +416,7 @@ theorem coveringNeighbor_eq_of_mem_faceData [FiniteDimensional ℝ E]
     a.eq_of_base_image_eq_of_lift_eq hp du hbase hy heq
   have hnA : coveringNeighbor hp v (coveringVertex.base w) ∈
       coveringFaceVertices hedge g hg := by
-    rw [coveringNeighbor, dif_pos hedge]
+    rw [coveringNeighbor, dite_eq_left hedge]
     exact Finset.mem_image.mpr
       ⟨(⟨coveringVertex.base w, by simp⟩ :
           ({coveringVertex.base v, coveringVertex.base w} : Finset E)),
@@ -475,7 +475,7 @@ theorem coveringVertexPoint_injective : Function.Injective (coveringVertexPoint 
   have hcoord := congrArg
     (fun z : EuclideanSpace ℝ (Fin (Nat.card (coveringVertex K p))) =>
       z (coveringVertexEquiv K p v)) h
-  simp only [coveringVertexPoint, PiLp.single_apply, if_neg hvw] at hcoord
+  simp only [coveringVertexPoint, PiLp.single_apply, ite_eq_right hvw] at hcoord
   exact one_ne_zero hcoord
 
 omit [TopologicalSpace X'] in
@@ -557,7 +557,7 @@ open Classical in
 omit [TopologicalSpace X'] in
 theorem coveringBaseVertex_point (v : coveringVertex K p) :
     coveringBaseVertex K p (coveringVertexPoint K p v) = coveringVertex.base v := by
-  rw [coveringBaseVertex, dif_pos ⟨v, rfl⟩]
+  rw [coveringBaseVertex, dite_eq_left ⟨v, rfl⟩]
   exact congrArg coveringVertex.base
     (coveringVertexPoint_injective K p (Classical.choose_spec
       (show ∃ w, coveringVertexPoint K p w = coveringVertexPoint K p v from ⟨v, rfl⟩)))

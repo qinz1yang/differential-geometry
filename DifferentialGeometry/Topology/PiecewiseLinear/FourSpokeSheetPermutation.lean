@@ -35,7 +35,7 @@ theorem fourSpoke_separated_sheetPerm {X : Type*} [TopologicalSpace X]
     have h₂ : ∀ i : Fin 4, fourSpokeFlipPerm (i + 2) = fourSpokeFlipPerm i + 2 := by decide
     have h₃ : ∀ i : Fin 4, fourSpokeFlipPerm (i + 3) = fourSpokeFlipPerm i + 1 := by decide
     intro i U hU hconn hp hn
-    simp only [fourSpokeSheetPerm, if_true, h₁, h₂, h₃] at hU hp hn
+    simp only [fourSpokeSheetPerm, ite_true, h₁, h₂, h₃] at hU hp hn
     exact hsep (fourSpokeFlipPerm i) U hU hconn hn hp
 
 end DifferentialGeometry.Topology.PiecewiseLinear

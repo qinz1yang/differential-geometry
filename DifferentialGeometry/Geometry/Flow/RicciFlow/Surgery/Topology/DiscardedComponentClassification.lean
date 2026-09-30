@@ -130,7 +130,8 @@ theorem exists_poincareStandardDiscarded_tolerance_of_spatial_neighborhoods :
             ∀ x : ((H.stage i.castSucc).toClosedOrientedManifold.component c).Carrier, q < (H.event i).incoming.flow.scalar t x.val →
             ¬ Nonempty (SpatialNeck (((H.event i).incoming.flow.base.metric t).restrictOpen ((H.stage i.castSucc).componentOpen c)) eps x) →
             Nonempty (PositiveComponent (M := ((H.stage i.castSucc).toClosedOrientedManifold.component c).Carrier) univ) ∨
-            IsPositiveSpaceFormModel ((H.stage i.castSucc).toClosedOrientedManifold.component c) ∨
+            admitsConstantPositiveSectionalCurvature (I := ThreeModel)
+              (M := ((H.stage i.castSucc).toClosedOrientedManifold.component c).Carrier) ∨
             ∃ (K : CompactDomain ((H.stage i.castSucc).toClosedOrientedManifold.component c).Carrier) (v : ((H.stage i.castSucc).toClosedOrientedManifold.component c).Carrier)
               (nk : SpatialNeck (((H.event i).incoming.flow.base.metric t).restrictOpen ((H.stage i.castSucc).componentOpen c)) eps v) (level : ℝ),
               0 < metricScalarAt (((H.event i).incoming.flow.base.metric t).restrictOpen ((H.stage i.castSucc).componentOpen c)) x ∧
@@ -246,7 +247,7 @@ theorem exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods :
     | positive whole data sec => exact Or.inl whole
     | round whole data => exact Or.inl whole
     | cap data depth =>
-      refine Or.inr ⟨data.core.carrier, ⟨data.core_model⟩, data.core_inside.trans interior_subset, ?_⟩
+      refine Or.inr ⟨data.core.carrier, ⟨data.coreModel⟩, data.core_inside.trans interior_subset, ?_⟩
       have hball := DifferentialGeometry.Geometry.Metric.riemannianEDistOf_ball_subset_of_le_frontier_distance
         ((H.event i).incoming.flow.base.metric t) data.center_inside
         (r := ENNReal.ofReal (10000 / Real.sqrt ((H.event i).incoming.flow.scalar t x))) (by
@@ -275,7 +276,7 @@ theorem exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods :
     · exact Or.inl hp
     · obtain ⟨z, hr⟩ := hr
       exact Or.inr (Or.inl
-        (isPositiveSpaceFormModel_of_roundComponent
+        (admitsConstantPositiveSectionalCurvature_of_roundComponent
           ((H.stage i.castSucc).toClosedOrientedManifold.component c) hr.some))
     · exact Or.inr (Or.inr hc)
 

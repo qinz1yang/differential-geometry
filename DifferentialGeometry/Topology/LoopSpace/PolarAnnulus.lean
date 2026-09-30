@@ -19,7 +19,7 @@ def radialDirection (z : ℂ) : Circle :=
 theorem radialDirection_coe {z : ℂ} (hz : z ≠ 0) :
     (radialDirection z : ℂ) = NormedSpace.normalize z := by
   unfold radialDirection
-  erw [dif_neg hz]
+  erw [dite_eq_right hz]
 
 theorem radialDirection_reconstruct (z : ℂ) : ‖z‖ • (radialDirection z : ℂ) = z := by
   by_cases hz : z = 0

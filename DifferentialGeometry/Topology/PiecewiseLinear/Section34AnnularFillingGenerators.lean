@@ -43,7 +43,7 @@ theorem IsTopologicalSolidTorus.not_exterior_compression_of_carrier
     (hV : IsOpen V) (hu : IsPLHomeomorphInto 3 u V) (hRV : R.space ⊆ V)
     (hVS : u '' V ⊆ S) (hJR : J ⊆ u '' R.space)
     {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDV : D ⊆ V)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDV : D ⊆ V)
     (hmeet : D ∩ frontier R.space = r '' stdSimplexBoundary 2)
     (hess : ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ frontier R.space,
       ¬ (⟨inclusion hboundary, continuous_inclusion hboundary⟩ :

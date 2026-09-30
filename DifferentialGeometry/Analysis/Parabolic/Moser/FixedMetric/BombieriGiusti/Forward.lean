@@ -396,7 +396,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalEarlyBombieriGiustiReverseCost_of
     exact forward_initial_spatialCutoffBetween_le_bombieriGiustiSpatialCutoff_succ
       rho hlowerUpper k x
 
-theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThreshold_of_supersolution_of_summable
+theorem fixed_bombieri_giusti_early_bound_of_summable
     (g : SmoothRiemannianMetric I M)
     (hdim : 2 < (Module.finrank ℝ E : ℝ))
     (rho outer averagingCutoff : SmoothScalar g)
@@ -546,7 +546,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThre
           (canonicalEarlyBombieriGiustiReverseCost (I := I) (M := M)
             (Module.finrank ℝ E) g hdim p₀ A b τ B lower upper k) / 4)) := by
   apply
-    early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThreshold_of_supersolution_of_summable
+    fixed_bombieri_giusti_early_bound_of_summable
       g hdim rho outer averagingCutoff C hC hP u hu hpos hp₀ hp₀_one
         hAb hbτ hB hlowerUpper hrho hmeasure hmeasure_le_one houter hmass hpde
   let n := Module.finrank ℝ E

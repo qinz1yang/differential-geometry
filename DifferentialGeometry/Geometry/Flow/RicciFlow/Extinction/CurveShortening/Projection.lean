@@ -458,7 +458,7 @@ section
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 
 omit [CompleteSpace E] in
-theorem projection_velocity_sub_curvature [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+theorem projection_velocity_sub_curvature
     (hlambda : 0 < lambda) {J : Set ℝ}
     (hc : c.IsSolutionOn g lambda J) (hi : c.projection.ImmersedOn (I := I) J)
     (x t : ℝ) (ht : t ∈ J) :

@@ -52,7 +52,7 @@ private theorem cylinderDiagonalTautologicalEquiv_symm_continuous :
     (E := EuclideanSpace Real (Fin 3)) (n := 2) y
   let s (p : RealProjectivePlane) := hlocal.localInverse p
   have hs : ContinuousAt s z.1.1 := by
-    have h := hlocal.localInverse_contMDiffAt.continuousAt
+    have h := hlocal.contMDiffAt_localInverse.continuousAt
     change ContinuousAt s (realProjectivePlaneQuotientMap y) at h
     rw [hy] at h
     exact h

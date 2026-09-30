@@ -24,19 +24,19 @@ theorem finite_ancestry_restrict (H : ObservedHistory.{u})
     (t : Icc (0 : ℝ) H.horizon)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier) :
     ∀ j : Fin ((H.restrict t).eventCount + 1),
-      (rfs_finite_ancestor_chain (H.restrict t)
-        ((rfs_finite_ancestor_chain H terminal).component (H.activeStage t))).component j =
-      (rfs_finite_ancestor_chain H terminal).component
+      (finiteAncestorChain (H.restrict t)
+        ((finiteAncestorChain H terminal).component (H.activeStage t))).component j =
+      (finiteAncestorChain H terminal).component
         (Fin.castLE (Nat.add_le_add_right (Nat.le_of_lt_succ (H.activeStage t).isLt) 1) j) := by
   intro j
   induction j using Fin.reverseInduction with
   | last =>
-    exact (rfs_finite_ancestor_chain (H.restrict t)
-      ((rfs_finite_ancestor_chain H terminal).component (H.activeStage t))).terminal_eq
+    exact (finiteAncestorChain (H.restrict t)
+      ((finiteAncestorChain H terminal).component (H.activeStage t))).terminal_eq
   | cast j ih =>
-    rw [(rfs_finite_ancestor_chain (H.restrict t)
-      ((rfs_finite_ancestor_chain H terminal).component (H.activeStage t))).parent_eq, ih]
-    exact ((rfs_finite_ancestor_chain H terminal).parent_eq
+    rw [(finiteAncestorChain (H.restrict t)
+      ((finiteAncestorChain H terminal).component (H.activeStage t))).parent_eq, ih]
+    exact ((finiteAncestorChain H terminal).parent_eq
       (Fin.castLE (Nat.le_of_lt_succ (H.activeStage t).isLt) j)).symm
 
 namespace SamePresentation
@@ -62,20 +62,20 @@ theorem finite_ancestry
     (terminalH : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (terminalK : ConnectedComponents (K.stage (Fin.last K.eventCount)).Carrier)
     (hterminal : R.componentToOther (Fin.last H.eventCount) terminalH =
-      (rfs_finite_ancestor_chain K terminalK).component
+      (finiteAncestorChain K terminalK).component
         (Fin.cast (congrArg (· + 1) R.count_eq) (Fin.last H.eventCount))) :
     ∀ j : Fin (H.eventCount + 1), R.componentToOther j
-      ((rfs_finite_ancestor_chain H terminalH).component j) =
-      (rfs_finite_ancestor_chain K terminalK).component
+      ((finiteAncestorChain H terminalH).component j) =
+      (finiteAncestorChain K terminalK).component
         (Fin.cast (congrArg (· + 1) R.count_eq) j) := by
   intro j
   induction j using Fin.reverseInduction with
   | last =>
-    rw [(rfs_finite_ancestor_chain H terminalH).terminal_eq]
+    rw [(finiteAncestorChain H terminalH).terminal_eq]
     exact hterminal
   | cast j ih =>
-    rw [(rfs_finite_ancestor_chain H terminalH).parent_eq, R.componentToOther_parent, ih]
-    exact ((rfs_finite_ancestor_chain K terminalK).parent_eq (Fin.cast R.count_eq j)).symm
+    rw [(finiteAncestorChain H terminalH).parent_eq, R.componentToOther_parent, ih]
+    exact ((finiteAncestorChain K terminalK).parent_eq (Fin.cast R.count_eq j)).symm
 
 end SamePresentation
 end ObservedHistory

@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.GramUpperBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.Defs
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber
+open DifferentialGeometry.TensorMetric
+  (fiberNormSqSummand)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -396,7 +398,7 @@ private lemma sum_prod_gram_sq_le_uniform_const
       exact pow_le_pow_left₀ (abs_nonneg _) h_abs 2
     have h_prod_le :
         ∏ k : Fin r, G (Idx k) (Idx' k) ^ 2 ≤ ∏ _k : Fin r, C ^ 2 := by
-      refine Finset.prod_le_prod ?_ ?_
+      refine Finset.prod_le_prod₀ ?_ ?_
       · intro k _
         exact sq_nonneg _
       · intro k _

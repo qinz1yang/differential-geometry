@@ -30,7 +30,7 @@ private theorem scalar_linear_upper_bound (g : ℝ → SmoothRiemannianMetric I 
   classical
   let fbar : CurveMap ℝ := fun x t => if ht : t ∈ Icc s u then (hper t ht).lift x else 0
   have heq (x t : ℝ) (ht : t ∈ Icc s u) : fbar.lift x t = f x t := by
-    simp only [CurveMap.lift, fbar, dif_pos ht, Function.Periodic.lift_coe]
+    simp only [CurveMap.lift, fbar, dite_eq_left ht, Function.Periodic.lift_coe]
   have hfbar : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => fbar.lift p.1 p.2) (univ ×ˢ Icc s u) :=
     hf.congr (fun p hp => heq p.1 p.2 hp.2)
   have hspace (t : ℝ) (ht : t ∈ Icc s u) : (fun x => fbar.lift x t) = fun x => f x t :=

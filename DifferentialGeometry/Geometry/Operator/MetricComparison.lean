@@ -7,7 +7,6 @@ set_option autoImplicit false
 noncomputable section
 open Bundle DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.Analysis.Laplacian
 open scoped Manifold ContDiff
 namespace DifferentialGeometry.Geometry.Operator
 
@@ -24,7 +23,7 @@ theorem inner_gradFun_le_of_metric_lower_bound
   let v := gradFun g F x
   have hpair : g.inner x v u = h.inner x u u :=
     (inner_gradFun g F x u).trans (inner_gradFun h F x u).symm
-  have hcs := metric_inner_cauchy_schwarz_sq g x v u
+  have hcs := DifferentialGeometry.SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq g x v u
   rw [hpair] at hcs
   have hbound' := mul_le_mul_of_nonneg_left (hbound u) (metric_inner_self_nonneg g x v)
   have htotal := hcs.trans hbound'
@@ -75,7 +74,7 @@ theorem abs_hessFun_sub_le_of_connectionDifference_bound
       mvfderiv I F x (PDE.DeTurck.connectionDifference h g x w v) :=
     inner_gradFun g F x _
   rw [hessFun_sub_eq_connectionDifference g h F hF x v w, abs_neg, ← hdual]
-  apply (abs_metric_inner_le_sqrt_metric_quadratic g x _ _).trans
+  apply (DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic g x _ _).trans
   have hh := mul_le_mul_of_nonneg_left hbound
     (Real.sqrt_nonneg (g.inner x (gradFun g F x) (gradFun g F x)))
   convert hh using 1

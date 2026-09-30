@@ -66,9 +66,9 @@ theorem faceLink_values_of_geometric_boundary [DecidableEq E] [Finite K.faces] [
   classical
   have hpoint := face_mem_subcomplex_iff_boundary hLK e hboundary hs
   by_cases hL : s ∈ L.faces
-  · rw [if_pos hL]
+  · rw [ite_eq_left hL]
     exact faceEulerChar_faceLink_of_boundary K s hs e (hpoint.mp hL)
-  · rw [if_neg hL]
+  · rw [ite_eq_right hL]
     apply faceEulerChar_faceLink_of_interior K s hs e (𝓡∂ n)
     rw [ModelWithCorners.isInteriorPoint_iff_not_isBoundaryPoint]
     exact fun h => hL (hpoint.mpr h)
@@ -92,9 +92,9 @@ theorem vertexLink_values_of_geometric_boundary {s : Finset E}
   have hp : {p} ∈ K.faces := hcard.1
   have hpoint := singleton_mem_subcomplex_iff_boundary hLK e hboundary hp
   by_cases hL : {p} ∈ L.faces
-  · rw [if_pos hL]
+  · rw [ite_eq_left hL]
     exact faceEulerChar_vertexLink_of_boundary K p hp e (hpoint.mp hL)
-  · rw [if_neg hL]
+  · rw [ite_eq_right hL]
     apply faceEulerChar_vertexLink_three_interior K p hp e
     rw [ModelWithCorners.isInteriorPoint_iff_not_isBoundaryPoint]
     exact fun h => hL (hpoint.mpr h)

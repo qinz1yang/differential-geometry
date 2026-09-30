@@ -278,7 +278,7 @@ private theorem curvatureOperator_nonnegative_of_supplied_ancient_limits
   exact (metricAlgebraicCurvatureTensorAt_restrictOpen_mem_curvatureOperatorNonnegativeCone_iff
     (G t) (U n) ⟨x,hxn⟩).mp hnonneg
 
-theorem exists_complete_nonnegative_ancient_solution_subsequence_on_terminal_maps_of_scalar_deriv_nonneg_above
+theorem exists_complete_nonnegative_ancient_limit_of_scalar_deriv_nonneg_above
     (X : FlowSequence.{u}) (P : MetricCompactLimit (X.atTime 0))
     (U : ℕ → TopologicalSpace.Opens P.limit.M) (hU : Monotone U)
     (hcover : ∀ x : P.limit.M, ∃ n, x ∈ U n)
@@ -343,7 +343,8 @@ theorem exists_complete_nonnegative_ancient_solution_subsequence_on_terminal_map
     exact ⟨P.limit_complete.complete⟩
   · exact ⟨le_rfl,ht⟩
 
-theorem exists_complete_nonnegative_ancient_solution_subsequence_on_terminal_maps_of_strongNeck_above
+theorem
+  exists_complete_nonnegative_ancient_solution_subsequence_on_terminal_maps_of_strongNeck_above
     (X : FlowSequence.{u}) (P : MetricCompactLimit (X.atTime 0))
     (U : ℕ → TopologicalSpace.Opens P.limit.M) (hU : Monotone U)
     (hcover : ∀ x : P.limit.M, ∃ n, x ∈ U n)
@@ -394,7 +395,7 @@ theorem exists_complete_nonnegative_ancient_solution_subsequence_on_terminal_map
             ((G t).restrictOpen (U n)) (P.limit.metric.restrictOpen (U n)) < epsilon := by
   let _ (n : ℕ) : SigmaCompactSpace (U n) := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I3 (U n).isOpen)
-  apply exists_complete_nonnegative_ancient_solution_subsequence_on_terminal_maps_of_scalar_deriv_nonneg_above
+  apply exists_complete_nonnegative_ancient_limit_of_scalar_deriv_nonneg_above
     X P U hU hcover hpU D S hS hslab hreg hterminal N hq hscale hPhi hpinch ?_ hsource hmetric
   intro n K hK
   filter_upwards [hneck n K hK, hneckRegular n K hK] with j hj hjreg
@@ -402,7 +403,7 @@ theorem exists_complete_nonnegative_ancient_solution_subsequence_on_terminal_map
   obtain ⟨eps, ⟨nk⟩⟩ := hj x hx t ht hhigh
   exact (nk.scalar_derivWithin_pos (hS n j) (hjreg x hx t ht hhigh)).le
 
-theorem exists_complete_nonnegative_bounded_ancient_solution_subsequence_on_terminal_maps_of_scalar_deriv_nonneg_above
+theorem exists_complete_nonnegative_bounded_ancient_limit_of_scalar_deriv_nonneg_above
     (X : FlowSequence.{u}) (P : MetricCompactLimit (X.atTime 0))
     (U : ℕ → TopologicalSpace.Opens P.limit.M) (hU : Monotone U)
     (hcover : ∀ x : P.limit.M, ∃ n, x ∈ U n)
@@ -454,7 +455,7 @@ theorem exists_complete_nonnegative_bounded_ancient_solution_subsequence_on_term
   let _ (n : ℕ) : SigmaCompactSpace (U n) := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I3 (U n).isOpen)
   obtain ⟨rho,hrho,G,hG0,hGsol,hcone,hcomplete,hconv⟩ :=
-    exists_complete_nonnegative_ancient_solution_subsequence_on_terminal_maps_of_scalar_deriv_nonneg_above
+    exists_complete_nonnegative_ancient_limit_of_scalar_deriv_nonneg_above
       X P U hU hcover hpU D S hS hslab hreg hterminal N (q0 := fun _ => q0)
       (fun _ => hq) hscale hPhi hpinch hsign hsource hmetric
   have hscalar := metricScalarAt_le_max_terminal_of_supplied_ancient_limits
@@ -466,13 +467,14 @@ theorem exists_complete_nonnegative_bounded_ancient_solution_subsequence_on_term
   have hn : curvatureOperatorLowerBoundAt (G t) x (metricAlgebraicCurvatureTensorAt (G t) x) 0 := by
     simpa only [curvatureOperatorLowerBoundAt, zero_mul, add_zero] using
       (mem_algebraicCurvatureOperatorNonnegativeCone.mp (hcone t ht x))
-  have hrm := CanonicalNeighborhood.sqrt_rmNormSq_le_sqrt_three_mul_scalar_of_curvatureOperatorNonneg
-    L (by simp [ThreeSpace]) t x hn
+  have hrm :=
+    CanonicalNeighborhood.sqrt_rmNormSq_le_sqrt_three_mul_scalar_of_curvatureOperatorNonneg
+      L (by simp [ThreeSpace]) t x hn
   apply hrm.trans
   exact mul_le_mul_of_nonneg_left ((hscalar t ht x).trans
     (max_le_max le_rfl (hterminalBound x))) (Real.sqrt_nonneg 3)
 
-theorem exists_complete_nonnegative_bounded_ancient_solution_subsequence_on_terminal_maps_of_strongNeck_above
+theorem exists_complete_nonnegative_bounded_ancient_limit_of_strongNeck_above
     (X : FlowSequence.{u}) (P : MetricCompactLimit (X.atTime 0))
     (U : ℕ → TopologicalSpace.Opens P.limit.M) (hU : Monotone U)
     (hcover : ∀ x : P.limit.M, ∃ n, x ∈ U n)
@@ -527,7 +529,7 @@ theorem exists_complete_nonnegative_bounded_ancient_solution_subsequence_on_term
             ((G t).restrictOpen (U n)) (P.limit.metric.restrictOpen (U n)) < epsilon := by
   let _ (n : ℕ) : SigmaCompactSpace (U n) := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I3 (U n).isOpen)
-  apply exists_complete_nonnegative_bounded_ancient_solution_subsequence_on_terminal_maps_of_scalar_deriv_nonneg_above
+  apply exists_complete_nonnegative_bounded_ancient_limit_of_scalar_deriv_nonneg_above
     X P U hU hcover hpU D S hS hslab hreg hterminal N hq hterminalBound hscale hPhi hpinch
     ?_ hsource hmetric
   intro n K hK

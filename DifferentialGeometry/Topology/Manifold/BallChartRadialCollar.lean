@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.BallComplementRadialCollar
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
+import DifferentialGeometry.Topology.Manifold.BallChart.Defs
 
 set_option autoImplicit false
 noncomputable section

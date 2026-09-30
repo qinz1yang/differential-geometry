@@ -99,11 +99,11 @@ theorem tendsto_integral_weighted_sq_of_eLpNorm_two
       change R x * (f n x - u x) = R x * f n x - R x * u x
       ring
     have hd : (f n - u : α → ℝ) = fun x => f n x - u x := rfl
-    have h := eLpNorm_smul_le_eLpNorm_top_mul_eLpNorm 2 ((hf n).sub hu).aestronglyMeasurable R
+    have h := eLpNorm_smul_le_eLpNorm_top_mul_eLpNorm (f := f n - u) 2 hR.aestronglyMeasurable
     rw [hm, hd] at h
     exact h
-  have hprod := tendsto_integral_mul_of_eLpNorm_two_two hf (fun n => (hf n).mul' hR)
-    hu (hu.mul' hR) hlim hRlim
+  have hprod := tendsto_integral_mul_of_eLpNorm_two_two hf (fun n => hR.fun_mul (hf n))
+    hu (hR.fun_mul hu) hlim hRlim
   have heq (v : α → ℝ) : (∫ x, v x * (R x * v x) ∂μ) = ∫ x, R x * v x ^ 2 ∂μ := by
     congr 1
     funext x

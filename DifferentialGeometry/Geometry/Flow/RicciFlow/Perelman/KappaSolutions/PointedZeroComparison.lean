@@ -147,7 +147,7 @@ theorem eventually_pointed_zero_order_comparison
       subst t
       have hz : jet (q + 1) a x v = 0 := by
         have htest : a = b ∧ q + 1 ≠ 0 := ⟨heq, Nat.add_one_ne_zero q⟩
-        simp only [jet, if_pos htest]
+        simp only [jet, ite_eq_left htest]
         rfl
       rw [hz]
       symm

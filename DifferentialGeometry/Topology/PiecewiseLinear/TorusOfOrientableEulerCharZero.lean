@@ -33,7 +33,7 @@ variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensiona
 
 theorem exists_cone_disk_of_isPLSphere_one {C : Set E} (hC : IsPLSphere 1 C) :
     ∃ (D : Set (E × ℝ)) (r : (Fin 3 → ℝ) → E × ℝ),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       r '' stdSimplexBoundary 2 = C ×ˢ {0} ∧
       ∀ y ∈ D, 0 ≤ y.2 ∧ (y.2 = 0 → y ∈ C ×ˢ ({0} : Set ℝ)) := by
   classical
@@ -117,7 +117,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_annulus_of_e
     isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hD₁'poly
       ((isPiecewiseAffineOn_of_affine σ isOpen_univ).mono_of_isPolyhedron hD₁'poly
         (subset_univ _)) hσinj.injOn.bijOn_image
-  have hr₁ : IsPLHomeomorphOn (σ ∘ r₁') (stdSimplex ℝ (Fin 3)) (σ '' D₁') := hr₁'.trans hσD
+  have hr₁ : IsPLHomeomorphOn (σ ∘ r₁') (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (σ '' D₁') := hr₁'.trans hσD
   have hr₁b : (σ ∘ r₁') '' stdSimplexBoundary 2 = C₁ ×ˢ {0} := by
     rw [image_comp, hr₁'b]
     apply Subset.antisymm
@@ -175,8 +175,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_annulus_of_e
   have hR'P : R'.space ⊆ P.space := fun y hy => hPspace ▸ Or.inl (Or.inl hy)
   have hD₀P : D₀ ⊆ P.space := fun y hy => hPspace ▸ Or.inl (Or.inr hy)
   have hD₁P : σ '' D₁' ⊆ P.space := fun y hy => hPspace ▸ Or.inr hy
-  have hΔ : IsPLBall 2 (stdSimplex ℝ (Fin 3)) := isPLBall_stdSimplex 2
-  have hΔpoly : IsPolyhedron (stdSimplex ℝ (Fin 3)) := hΔ.isPolyhedron
+  have hΔ : IsPLBall 2 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := isPLBall_stdSimplex 2
+  have hΔpoly : IsPolyhedron (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := hΔ.isPolyhedron
   let _ : Finite (simplexBoundary (stdVertices 1) (stdVertices_affineIndependent 1)).faces :=
     (simplexBoundary_faces_finite _ _).to_subtype
   have hJpoly : IsPolyhedron (stdSimplexBoundary 2) := by
@@ -185,14 +185,14 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_annulus_of_e
   obtain ⟨Kd, hKdfin, hKdspace⟩ := hΔpoly.exists_simplicialComplex
   let _ : Finite Kd.faces := hKdfin.to_subtype
   have hKd : IsPLBall 2 Kd.space := hKdspace ▸ hΔ
-  have hid : IsPLHomeomorphOn id (stdSimplex ℝ (Fin (1 + 2))) Kd.space := by
+  have hid : IsPLHomeomorphOn id (Convexity.StdSimplex.coordinateSet ℝ (Fin (1 + 2))) Kd.space := by
     rw [hKdspace]
     exact isPLHomeomorphOn_id_of_isHPolytope (isHPolytope_stdSimplex _)
   have hprism := isPLBall_three_prod hΔ (isPLBall_Icc (zero_lt_one' ℝ))
   obtain ⟨A, hAfin, hAspace⟩ := hprism.isPolyhedron.exists_simplicialComplex
   let _ : Finite A.faces := hAfin.to_subtype
   have hA : IsPLBall 3 A.space := hAspace ▸ hprism
-  have hAbd : (boundaryComplex 3 A).space = stdSimplex ℝ (Fin 3) ×ˢ {0, 1} ∪
+  have hAbd : (boundaryComplex 3 A).space = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {0, 1} ∪
       stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 := by
     have h := boundaryComplex_space_prism Kd hKd (zero_lt_one' ℝ) A (by rw [hAspace, hKdspace])
     have h2 := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex (n := 1) Kd hid
@@ -203,16 +203,16 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_annulus_of_e
     convert isPLSphere_boundaryComplex_space_of_isPLBall A hA
   have hι₀ := hΔpoly.isPLHomeomorphOn_prod_const (0 : ℝ)
   have hι₁ := hΔpoly.isPLHomeomorphOn_prod_const (1 : ℝ)
-  have hD₀'S : stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ) ⊆ (boundaryComplex 3 A).space := by
+  have hD₀'S : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ) ⊆ (boundaryComplex 3 A).space := by
     rw [hAbd]
     rintro y ⟨hy1, hy2⟩
     exact Or.inl ⟨hy1, Or.inl hy2⟩
-  have hD₁'S : stdSimplex ℝ (Fin 3) ×ˢ ({1} : Set ℝ) ⊆ (boundaryComplex 3 A).space := by
+  have hD₁'S : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({1} : Set ℝ) ⊆ (boundaryComplex 3 A).space := by
     rw [hAbd]
     rintro y ⟨hy1, hy2⟩
     exact Or.inl ⟨hy1, Or.inr hy2⟩
-  have hdis' : Disjoint (stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ))
-      (stdSimplex ℝ (Fin 3) ×ˢ ({1} : Set ℝ)) := by
+  have hdis' : Disjoint (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ))
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({1} : Set ℝ)) := by
     rw [disjoint_left]
     rintro y ⟨-, h0⟩ ⟨-, h1⟩
     rw [mem_singleton_iff] at h0 h1
@@ -221,7 +221,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_annulus_of_e
   have hg := hr₀.symm.trans hι₀
   obtain ⟨G, hG, hGg, hGD₁⟩ := exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk hPsph hS'
     ⟨r₀, hr₀⟩ hD₀P ⟨σ ∘ r₁', hr₁⟩ hD₁P hdisD (hΔ.of_isPLHomeomorphOn hι₁) hD₁'S hdis' hg hD₀'S
-  have hGD₀ : G '' D₀ = stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ) := hGg.image_eq.trans hg.image_eq
+  have hGD₀ : G '' D₀ = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ) := hGg.image_eq.trans hg.image_eq
   have hB₀D : r₀ '' stdSimplexBoundary 2 ⊆ D₀ := by
     rintro _ ⟨x, hx, rfl⟩
     exact hr₀.bijOn.mapsTo hx.1
@@ -230,8 +230,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_annulus_of_e
       (hr₀.trans hg).image_stdSimplexBoundary_congr hι₀, prod_singleton]
   have hGB₁ : G '' ((σ ∘ r₁') '' stdSimplexBoundary 2) =
       stdSimplexBoundary 2 ×ˢ ({1} : Set ℝ) := by
-    have hGr : IsPLHomeomorphOn (G ∘ (σ ∘ r₁')) (stdSimplex ℝ (Fin 3))
-        (stdSimplex ℝ (Fin 3) ×ˢ ({1} : Set ℝ)) := by
+    have hGr : IsPLHomeomorphOn (G ∘ (σ ∘ r₁')) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({1} : Set ℝ)) := by
       have h := hr₁.trans (hG.restrict (IsPLBall.isPolyhedron ⟨_, hr₁⟩) hD₁P)
       rwa [hGD₁] at h
     rw [← image_comp, hGr.image_stdSimplexBoundary_congr hι₁, prod_singleton]
@@ -270,13 +270,13 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_annulus_of_e
       rw [hPspace] at hxP
       rcases hxP with (hxR | hxD₀) | hxD₁
       · exact mem_image_of_mem G hxR
-      · have hy0 : G x ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ) :=
+      · have hy0 : G x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ) :=
           hGD₀ ▸ mem_image_of_mem G hxD₀
         have hyB : G x ∈ stdSimplexBoundary 2 ×ˢ ({0} : Set ℝ) := ⟨hy.1, hy0.2⟩
         rw [← hGB₀] at hyB
         obtain ⟨x', hx'B, hx'x⟩ := hyB
         exact ⟨x', (hmeet₀.symm ▸ hx'B : x' ∈ R'.space ∩ D₀).1, hx'x⟩
-      · have hy1 : G x ∈ stdSimplex ℝ (Fin 3) ×ˢ ({1} : Set ℝ) :=
+      · have hy1 : G x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({1} : Set ℝ) :=
           hGD₁ ▸ mem_image_of_mem G hxD₁
         have hyB : G x ∈ stdSimplexBoundary 2 ×ˢ ({1} : Set ℝ) := ⟨hy.1, hy1.2⟩
         rw [← hGB₁] at hyB

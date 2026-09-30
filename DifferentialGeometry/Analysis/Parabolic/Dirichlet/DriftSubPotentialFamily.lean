@@ -83,7 +83,7 @@ theorem dirichletDriftSubPotentialFormOnIcc_eq
     (ht : t ∈ Icc (0 : ℝ) T) :
     dirichletDriftSubPotentialFormOnIcc q Y a T t =
       dirichletDriftSubPotentialForm q (Y t) (a t) := by
-  rw [dirichletDriftSubPotentialFormOnIcc, if_pos ht]
+  rw [dirichletDriftSubPotentialFormOnIcc, ite_eq_left ht]
 
 theorem dirichletDriftSubPotentialOnIcc_eq
     (q : SmoothRiemannianMetric (I_half n) M)
@@ -115,7 +115,7 @@ theorem norm_dirichletDriftSubPotentialFormOnIcc_le_of_bound
   · rw [dirichletDriftSubPotentialFormOnIcc_eq q Y a ht]
     exact norm_dirichletDriftSubPotentialForm_le_of_bound q (Y t) (a t)
       hB (hY t ht) hC (hcoeff t ht)
-  · rw [dirichletDriftSubPotentialFormOnIcc, if_neg ht, norm_zero]
+  · rw [dirichletDriftSubPotentialFormOnIcc, ite_eq_right ht, norm_zero]
     exact add_nonneg (Real.sqrt_nonneg B) (mul_nonneg hC (norm_nonneg _))
 
 theorem norm_dirichletDriftSubPotentialOnIcc_le_of_bound

@@ -55,7 +55,6 @@ theorem HasPLBoundaryCrossingAt.not_eventuallyEq
   have htend : Filter.Tendsto (fun t : ℝ => (t, (0 : ℝ), t)) (𝓝[>] 0)
       (𝓝 (0 : ℝ × ℝ × ℝ)) := by
     convert (hcont.tendsto 0).mono_left nhdsWithin_le_nhds using 1
-    rfl
   obtain ⟨t, ht, hpos⟩ := ((htend.eventually_mem htarget).and self_mem_nhdsWithin).exists
   have hsrc : e.symm (t, 0, t) ∈ e.source := e.map_target ht
   have hmemB : e.symm (t, 0, t) ∈ B := (hB hsrc).mp (by

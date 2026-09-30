@@ -550,7 +550,7 @@ theorem gSeqJet_of_solution
   have hcoreEq : (fun z : E => ((core z : SourceDomain (I := I) Φ k) : P.M)) =ᶠ[𝓝 y]
       (extChartAt I x₀).symm := by
     filter_upwards [hevSource] with z hz
-    simp only [core, dif_pos hz]
+    simp only [core, dite_eq_left hz]
   have hsymm : ContMDiffAt 𝓘(Real, E) I (∞ : WithTop ℕ∞)
       (extChartAt I x₀).symm y :=
     (contMDiffOn_extChartAt_symm (I := I) (n := (∞ : WithTop ℕ∞)) x₀).contMDiffAt
@@ -619,7 +619,7 @@ theorem gSeqJet_of_solution
     rcases hp with ⟨hpt, hps, hpW, hpi, hpj⟩
     set z : P.M := (extChartAt I x₀).symm p.2 with hz
     have hcorez : core p.2 = (⟨z, hps⟩ : SourceDomain (I := I) Φ k) := by
-      simp only [core, dif_pos hps, z]
+      simp only [core, dite_eq_left hps, z]
     have hViz : Vi (⟨z, hps⟩ : SourceDomain (I := I) Φ k) = σi z := by
       exact @DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection_apply E
         inferInstance

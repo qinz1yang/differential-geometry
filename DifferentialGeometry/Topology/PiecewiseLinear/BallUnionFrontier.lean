@@ -260,7 +260,7 @@ theorem image_stdSimplexBoundary_subset_frontier_iUnion {ι : Type*} [Finite ι]
     {B : ι → Set (EuclideanSpace ℝ (Fin 3))} (hB : ∀ i, IsPLBall 3 (B i))
     (h3 : ∀ i j k, i ≠ j → k ≠ i → k ≠ j → Disjoint (B i ∩ B j) (B k)) {i j : ι} (hij : i ≠ j)
     {q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (B i ∩ B j))
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (B i ∩ B j))
     (hDi : B i ∩ B j ⊆ frontier (B i)) :
     q '' stdSimplexBoundary 2 ⊆ frontier (⋃ k, B k) := by
   have hBc : ∀ k, IsClosed (B k) := fun k => (hB k).isPolyhedron.isClosed

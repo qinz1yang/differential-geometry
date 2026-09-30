@@ -84,11 +84,11 @@ theorem PLPieceIn.isPLCellOn_image_stdSimplexBoundary
     {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
     {Y : Set M} (T : PLPieceIn E 3 M Y) {d : ℕ} (hd : d ≤ 3)
     {r : (Fin (d + 1) → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (d + 1))) T.complex.space) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) T.complex.space) :
     IsPLCellOn d Y (T.map '' (r '' stdSimplexBoundary d)) := by
   obtain ⟨_, _, hcell, _⟩ := exists_isPLCellOn_of_le_three d hd
   obtain ⟨P, q, _, hq, _, _, _⟩ := hcell
-  let f := r ∘ Function.invFunOn q (stdSimplex ℝ (Fin (d + 1)))
+  let f := r ∘ Function.invFunOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)))
   have hf : IsPLHomeomorphOn f P T.complex.space := hq.symm.trans hr
   obtain ⟨K, hfin, hKP⟩ := (IsPLBall.isPolyhedron ⟨q, hq⟩).exists_simplicialComplex
   have hfK : IsPLHomeomorphOn f K.space T.complex.space := hKP.symm ▸ hf
@@ -111,7 +111,7 @@ theorem LocallyFinitePLPieceIn.isPLCellOn_image_stdSimplexBoundary
     (L : Geometry.SimplicialComplex ℝ E) (hfin : L.faces.Finite)
     (hsub : L.space ⊆ T.complex.space) {d : ℕ} (hd : d ≤ 3)
     {r : (Fin (d + 1) → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (d + 1))) L.space) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) L.space) :
     IsPLCellOn d (T.map '' L.space) (T.map '' (r '' stdSimplexBoundary d)) :=
   (T.restrict L hfin hsub).isPLCellOn_image_stdSimplexBoundary hd hr
 

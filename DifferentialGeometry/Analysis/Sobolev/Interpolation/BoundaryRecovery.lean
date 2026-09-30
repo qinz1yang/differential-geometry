@@ -41,7 +41,7 @@ theorem exists_lipschitz_inner_disk_rescaling
     have hz1 : ‖z‖ ≤ 1 := by simpa only [mem_closedBall, dist_zero_right] using hz
     nlinarith
   have hfe : LipschitzOnWith (K * ‖e‖₊) (f ∘ e) (closedBall (0 : ℂ) 1) :=
-    hK.comp e.lipschitz.lipschitzOnWith he
+    hK.comp e.lipschitzWith.lipschitzOnWith he
   obtain ⟨v, L, hv, heq⟩ := hfe.exists_lipschitz_extension
   exact ⟨v, L, hv, fun z hz => (heq hz).symm⟩
 
@@ -484,7 +484,7 @@ theorem exists_periodic_boundary_energy_recovery
     change Γ (ψn n (t + 1 - 1 / 2)) = Γ (ψn n (t - 1 / 2))
     rw [show t + 1 - 1 / 2 = (t - 1 / 2) + 1 by ring, (ψn n).map_add_one, hΓper]
   have hb (n : ℕ) : LipschitzWith (Kb n) (b n) := by
-    have hx := (hΓ.comp (hψLip n)).comp (isometry_add_right (-(1 / 2 : ℝ))).lipschitz
+    have hx := (hΓ.comp (hψLip n)).comp (isometry_add_right (-(1 / 2 : ℝ))).lipschitzWith
     simpa only [b, Kb, N, mul_one, Function.comp_def, sub_eq_add_neg] using hx
   have hbK (n : ℕ) (t : ℝ) : b n t ∈ K := hΓK _
   have hphase (t : ℝ) : f (circleMap 0 1 (2 * Real.pi * t - Real.pi)) =
@@ -840,7 +840,7 @@ theorem exists_periodic_boundary_energy_recovery_in_compact_neighborhood
     change Γ (ψn n (t + 1 - 1 / 2)) = Γ (ψn n (t - 1 / 2))
     rw [show t + 1 - 1 / 2 = (t - 1 / 2) + 1 by ring, (ψn n).map_add_one, hΓper]
   have hb (n : ℕ) : LipschitzWith (Kb n) (b n) := by
-    have hx := (hΓ.comp (hψLip n)).comp (isometry_add_right (-(1 / 2 : ℝ))).lipschitz
+    have hx := (hΓ.comp (hψLip n)).comp (isometry_add_right (-(1 / 2 : ℝ))).lipschitzWith
     simpa only [b, Kb, N, mul_one, Function.comp_def, sub_eq_add_neg] using hx
   have hbK (n : ℕ) (t : ℝ) : b n t ∈ K := hΓK _
   have hphase (t : ℝ) : f (circleMap 0 1 (2 * Real.pi * t - Real.pi)) =

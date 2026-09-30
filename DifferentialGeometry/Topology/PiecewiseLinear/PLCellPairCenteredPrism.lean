@@ -22,12 +22,12 @@ theorem exists_centered_prism_of_cell_pair_in_chart
     (hc : c ∈ (plGroupoid 3).maximalAtlas M)
     (hC₁c : C₁ ⊆ c.source) (hC₂c : C₂ ⊆ c.source) :
     ∃ (r : (Fin 3 → ℝ) → E3) (ρ : (Fin 3 → ℝ) × ℝ → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (c '' D) ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (c '' D) ∧
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) (c '' (C₁ ∪ C₂)) ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), ρ (x, 0) = r x) ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = c '' C₁ ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = c '' C₂ := by
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) (c '' (C₁ ∪ C₂)) ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ρ (x, 0) = r x) ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = c '' C₁ ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = c '' C₂ := by
   have hDc : D ⊆ c.source := by
     rw [← hmeet]
     exact inter_subset_left.trans hC₁c

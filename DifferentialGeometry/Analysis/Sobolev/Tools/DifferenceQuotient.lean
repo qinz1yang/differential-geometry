@@ -260,9 +260,7 @@ lemma memLp_translate
     (hv : MemLp v p volume) :
     MemLp (translate i h v) p volume := by
   have hMP := measurePreserving_translate (d := d) i h
-  have h_aesm : AEStronglyMeasurable (translate i h v) volume :=
-    hv.aestronglyMeasurable.comp_measurePreserving hMP
-  refine ⟨h_aesm, ?_⟩
+  rw [memLp_iff]
   unfold translate
   have h_eq :
       eLpNorm (fun x : E => v (x + h • EuclideanSpace.single i 1)) p volume =
@@ -737,8 +735,10 @@ theorem eLpNorm_diffQuot_le_eLpNorm_partialDeriv
         (fderiv ℝ v y) (EuclideanSpace.single i 1)) 2 (volume : Measure E) := by
   have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
   have h2_ne_top : (2 : ℝ≥0∞) ≠ ⊤ := by norm_num
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h2_ne_zero h2_ne_top,
-    eLpNorm_eq_lintegral_rpow_enorm_toReal h2_ne_zero h2_ne_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h2_ne_zero h2_ne_top
+      (continuous_diffQuot_of_continuous i h hv.continuous).aestronglyMeasurable,
+    eLpNorm_eq_lintegral_rpow_enorm_toReal h2_ne_zero h2_ne_top
+      ((hv.continuous_fderiv one_ne_zero).clm_apply continuous_const).aestronglyMeasurable]
   have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by
     show ENNReal.toReal 2 = 2
     rfl

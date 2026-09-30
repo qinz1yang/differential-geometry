@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.FixedBallMovingControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.FlowBall.Calabi
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Profile
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Barrier
@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Conne
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.Geometry.Riemannian
-open DifferentialGeometry.Analysis.Parabolic DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.Analysis.Parabolic
 open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -115,7 +115,7 @@ private theorem profile_of_scaled_support
     (hfinite : riemannianEDistOf (I := I) (S.base.metric t) O x ≠ ⊤)
     (F : DistanceBarrier.ScaledDistanceSupport (I := I) S O T t x n Lambda
       (riemannianEDistOf (I := I) (S.base.metric t) O x).toReal) :
-    Nonempty (ShiCutoffLowerSupportAt (I := I) (flowG S) T eps
+    Nonempty (ParabolicCutoffLowerSupportAt (I := I) (flowG S) T eps
       (fun s y => DifferentialGeometry.Analysis.CutoffProfile.evalue
         (ENNReal.ofReal (alpha * Real.exp (Lambda * s)) *
           riemannianEDistOf (I := I) (S.base.metric s) O y)) t x) := by
@@ -198,7 +198,7 @@ private theorem profile_of_scaled_support
   have hGu : (S.base.metric t).inner x
       (gradientFun (I := I) (S.base.metric t) (u t) x)
       (gradientFun (I := I) (S.base.metric t) (u t) x) ≤ alpha ^ 2 * U ^ 2 := by
-    rw [hgrad_u, metric_inner_smul_self]
+    rw [hgrad_u, SmoothRiemannianMetric.metric_inner_smul_self]
     exact (mul_le_mul_of_nonneg_left F.grad_sq (sq_nonneg alpha)).trans
       (mul_le_mul_of_nonneg_left hexp2 (sq_nonneg alpha))
   have hgrad_phi : gradientFun (I := I) (S.base.metric t) (phi t) x =
@@ -208,7 +208,7 @@ private theorem profile_of_scaled_support
   have hgradient : (S.base.metric t).inner x
       (gradientFun (I := I) (S.base.metric t) (phi t) x)
       (gradientFun (I := I) (S.base.metric t) (phi t) x) ≤ eps * phi t x := by
-    rw [hgrad_phi, metric_inner_smul_self]
+    rw [hgrad_phi, SmoothRiemannianMetric.metric_inner_smul_self]
     have hprofile := profileGradientCost_spec.2 (u t x)
     have hphi0 := (DifferentialGeometry.Analysis.CutoffProfile.mem_Icc (u t x)).1
     calc
@@ -399,7 +399,7 @@ theorem finite_distance_cutoff_on_controlled_ball
     ContinuousOn (fun p : ℝ × M => chi p.1 p.2) (spacetimeSlab (M := M) (time : ℝ)) ∧
     (∀ s ∈ Icc 0 (time : ℝ), ∀ x, 0 < chi s x → x ∈ B.setAt s) ∧
     (∀ s ∈ Icc 0 (time : ℝ), 0 < s → ∀ x, 0 < chi s x →
-      Nonempty (ShiCutoffLowerSupportAt (I := I) (flowG S) (time : ℝ) eps chi s x)) := by
+      Nonempty (ParabolicCutoffLowerSupportAt (I := I) (flowG S) (time : ℝ) eps chi s x)) := by
   let T : ℝ := time
   let R := B.radius
   let n : ℝ := Module.finrank ℝ E
@@ -573,7 +573,7 @@ theorem fixed_ball_finite_distance_cutoff
     (∀ s ∈ Icc 0 (R ^ 2), ∀ x, x ∉ Ksupport → chi s x = 0) ∧
     (∀ s ∈ Icc 0 (R ^ 2), ∀ x, 0 < chi s x → x ∈ B.set) ∧
     (∀ s ∈ Icc 0 (R ^ 2), 0 < s → ∀ x, 0 < chi s x →
-      Nonempty (ShiCutoffLowerSupportAt (I := I) (flowG S0) (R ^ 2)
+      Nonempty (ParabolicCutoffLowerSupportAt (I := I) (flowG S0) (R ^ 2)
         (finiteDistanceCutoffConstant (Module.finrank ℝ E) / R ^ 2) chi s x)) ∧
     (∀ s x, chi s x = DifferentialGeometry.Analysis.CutoffProfile.evalue
       (ENNReal.ofReal ((8 / R) * Real.exp (((Module.finrank ℝ E : ℝ) ^ 2 / R ^ 2) * s)) *

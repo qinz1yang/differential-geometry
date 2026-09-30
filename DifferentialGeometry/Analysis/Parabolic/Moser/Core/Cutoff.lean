@@ -3,6 +3,8 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothScalar.PreH1
 import DifferentialGeometry.Analysis.Parabolic.Energy.TimeCutoff
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
+open DifferentialGeometry.SmoothRiemannianMetric (metric_inner_smul_self)
+
 set_option autoImplicit false
 
 noncomputable section

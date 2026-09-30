@@ -118,18 +118,19 @@ theorem exists_cutoff_energy
       hφ.continuous.aestronglyMeasurable
     have hind : eLpNorm (A.indicator fun _ : M => (1 : ℝ)) 2 μ = m := by
       rw [eLpNorm_indicator_const (p := (2 : ENNReal))
-        hA.measurableSet (by norm_num) (by norm_num)]
+        hA.measurableSet.nullMeasurableSet (by norm_num) (by norm_num)]
       simp only [enorm_one, one_mul, ENNReal.toReal_ofNat]
       norm_num [m]
     have hind_le : eLpNorm (A.indicator fun _ : M => (1 : ℝ)) 2 μ ≤
         eLpNorm u 2 μ := by
       apply eLpNorm_mono_ae_real
-      exact Filter.Eventually.of_forall fun x => by
-        by_cases hx : x ∈ A
-        · rw [Set.indicator_of_mem hx, norm_one]
-          rw [show u x = 1 from riemTent_eq_one g a hr hx.le]
-        · rw [Set.indicator_of_notMem hx, norm_zero]
-          exact (riemTent_mem_Icc g a hr x).1
+      · exact aestronglyMeasurable_const.indicator hA.measurableSet
+      · exact Filter.Eventually.of_forall fun x => by
+          by_cases hx : x ∈ A
+          · rw [Set.indicator_of_mem hx, norm_one]
+            rw [show u x = 1 from riemTent_eq_one g a hr hx.le]
+          · rw [Set.indicator_of_notMem hx, norm_zero]
+            exact (riemTent_mem_Icc g a hr x).1
     have htri : eLpNorm u 2 μ ≤
         eLpNorm (fun x => u x - φ x) 2 μ + eLpNorm φ 2 μ := by
       have heq : u = (fun x => u x - φ x) + φ := by
@@ -143,8 +144,7 @@ theorem exists_cutoff_energy
           rw [show (fun x => u x - φ x) = u - φ by
             funext x
             rw [Pi.sub_apply]]
-          exact eLpNorm_add_le (p := (2 : ENNReal))
-            (hu_aesm.sub hφ_aesm) hφ_aesm (by norm_num)
+          exact eLpNorm_add_le (p := (2 : ENNReal)) (by norm_num)
     have hεm : ENNReal.ofReal ε ≤ m / 2 := by
       calc
         ENNReal.ofReal ε ≤ ENNReal.ofReal (m.toReal / 2) := by
@@ -215,11 +215,13 @@ theorem exists_cutoff_energy
         eLpNorm gu 2 μ ≤
             eLpNorm (U.indicator fun _ : M => 4 / r) 2 μ := by
           apply eLpNorm_mono_ae_real
-          exact Filter.Eventually.of_forall fun x => by
-            simpa only [gu, Real.norm_eq_abs,
-              abs_of_nonneg (Real.sqrt_nonneg _)] using hgu_point x
+          · exact hgu_aesm
+          · exact Filter.Eventually.of_forall fun x => by
+              simpa only [gu, Real.norm_eq_abs,
+                abs_of_nonneg (Real.sqrt_nonneg _)] using hgu_point x
         _ = ENNReal.ofReal (4 / r) * (μ U) ^ (1 / 2 : ℝ) := by
-          rw [eLpNorm_indicator_const hU.measurableSet (by norm_num) (by norm_num)]
+          rw [eLpNorm_indicator_const hU.measurableSet.nullMeasurableSet
+            (by norm_num) (by norm_num)]
           simp only [ENNReal.toReal_ofNat]
           rw [Real.enorm_eq_ofReal (div_nonneg (by norm_num) hr.le)]
     have hgp_point : ∀ᵐ x ∂μ, gp x ≤ gu x + ge x := by
@@ -242,7 +244,7 @@ theorem exists_cutoff_energy
               (gradFun (I := I) g u x)) + Real.sqrt (g.inner x
             (-(gradFun (I := I) g (fun y => u y - φ y) x))
             (-(gradFun (I := I) g (fun y => u y - φ y) x))) := by
-          exact DifferentialGeometry.Analysis.Laplacian.gNorm_add_le g x _ _
+          exact DifferentialGeometry.SmoothRiemannianMetric.gNorm_add_le g x _ _
         _ = Real.sqrt (g.inner x (gradFun (I := I) g u x)
               (gradFun (I := I) g u x)) +
             Real.sqrt (g.inner x
@@ -254,11 +256,11 @@ theorem exists_cutoff_energy
         eLpNorm gu 2 μ + eLpNorm ge 2 μ := by
       calc
         eLpNorm gp 2 μ ≤ eLpNorm (fun x => gu x + ge x) 2 μ :=
-          eLpNorm_mono_ae_real (hgp_point.mono fun x hx => by
-            simpa only [gp, Real.norm_eq_abs,
-              abs_of_nonneg (Real.sqrt_nonneg _)] using hx)
+          eLpNorm_mono_ae_real hgp_aesm (hgp_point.mono fun x hx => by
+              simpa only [gp, Real.norm_eq_abs,
+                abs_of_nonneg (Real.sqrt_nonneg _)] using hx)
         _ ≤ eLpNorm gu 2 μ + eLpNorm ge 2 μ :=
-          eLpNorm_add_le (p := (2 : ENNReal)) hgu_aesm hge_aesm (by norm_num)
+          eLpNorm_add_le (p := (2 : ENNReal)) (by norm_num)
     have hεq : ENNReal.ofReal ε ≤ q := by
       calc
         ENNReal.ofReal ε ≤ ENNReal.ofReal q.toReal := by

@@ -28,8 +28,8 @@ theorem exists_triangle_cap_with_singular_comparison
     (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
     {p : E} {Q Q' D J C : Set E}
     {u v : (Fin 3 → ℝ) → E}
-    (hu : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) Q)
-    (hv : IsPLHomeomorphOn v (stdSimplex ℝ (Fin 3)) D)
+    (hu : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q)
+    (hv : IsPLHomeomorphOn v (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (huJ : u '' stdSimplexBoundary 2 = J) (hvJ : v '' stdSimplexBoundary 2 = J)
     (hQD : IsPLSphere 2 (Q ∪ D)) (hunion : Q ∪ Q' = K.space)
     (hQ' : IsClosed Q') (hinter : Q ∩ Q' ⊆ D) (hQDinter : Q ∩ D ⊆ J)
@@ -80,7 +80,7 @@ theorem exists_triangle_cap_with_singular_comparison
   have hlevel : H '' D ⊆ {x | ℓ x = ℓ p} := by
     rintro _ ⟨x, hxD, rfl⟩
     exact (hheight x).trans (hDlevel hxD)
-  have hvH : IsPLHomeomorphOn (H ∘ v) (stdSimplex ℝ (Fin 3)) (H '' D) :=
+  have hvH : IsPLHomeomorphOn (H ∘ v) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (H '' D) :=
     hv.trans (hH.restrict hD.isPolyhedron (subset_univ D))
   have hlinear : ℓ.toLinearMap ≠ 0 := by
     intro hz

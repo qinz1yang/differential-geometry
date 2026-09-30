@@ -203,7 +203,7 @@ lemma cotangentCovAt_apply_of_diff
     cotangentCovAt cov θ x (X x) (Y x) = cotangentScalar (cov.toFun) θ x X Y := by
   classical
   unfold cotangentCovAt
-  rw [dif_pos hθ]
+  rw [dite_eq_left hθ]
   exact TensorialAt.mkHom₂_apply _ _ hX hY
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -214,7 +214,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     cotangentCovAt cov θ x = 0 := by
   classical
   unfold cotangentCovAt
-  rw [dif_neg hθ]
+  rw [dite_eq_right hθ]
 
 def cotangentCovFun
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _)) :

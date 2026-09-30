@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import Mathlib.Analysis.Normed.Operator.Extend
 
+open DifferentialGeometry.SmoothRiemannianMetric (abs_metric_inner_le_sqrt_metric_quadratic)
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter

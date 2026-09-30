@@ -1,4 +1,10 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.FirstOrder.Fiber
+
+open DifferentialGeometry.TensorMetric
+  (tensor00Scalar
+    tensor0SAsRS_apply
+    tensor0SToTensorRS
+    tensor0S_uncurry_cons_eval_orthonormal_natural)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

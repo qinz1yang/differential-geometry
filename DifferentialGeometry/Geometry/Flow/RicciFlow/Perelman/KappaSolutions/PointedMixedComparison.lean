@@ -102,7 +102,7 @@ theorem eventually_pointed_mixed_comparison
       subst t
       have hz : jet (q + 1) a x v = 0 := by
         have htest : a = b ∧ q + 1 ≠ 0 := ⟨heq, Nat.add_one_ne_zero q⟩
-        simp only [jet, if_pos htest]
+        simp only [jet, ite_eq_left htest]
         rfl
       rw [hz]
       symm
@@ -121,9 +121,9 @@ theorem eventually_pointed_mixed_comparison
     constructor <;> nlinarith
   · intro p q hpq t ht x hx
     by_cases htest : a = b ∧ q ≠ 0
-    · simp only [jet, if_pos htest, tensor02_covariant_norm_zero]
+    · simp only [jet, ite_eq_left htest, tensor02_covariant_norm_zero]
       exact hε.le
-    · simp only [jet, if_neg htest]
+    · simp only [jet, ite_eq_right htest]
       exact hi ⟨p, by omega⟩ ⟨q, by omega⟩ t (htimes ht) x hx
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

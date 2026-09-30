@@ -1,5 +1,6 @@
 import Mathlib.Geometry.Manifold.ContMDiff.Atlas
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Order.Lattice.Nat
 import Mathlib.Topology.LocallyClosed
@@ -169,8 +170,9 @@ theorem isOpen [FiniteDimensional ℝ E] {S : Set M}
 
 theorem isLocallyClosed {S : Set M} {d : ℕ} (hS : IsEmbeddedSlice I d S) :
     IsLocallyClosed S := by
-  apply ((isLocallyClosed_tfae S).out 2 0).mp
+  apply isLocallyClosed_iff_isLocallyClosedAt.mpr
   intro x hx
+  apply isLocallyClosedAt_iff_exists_isClosed_preimage_val.mpr
   obtain ⟨c, A, hA, hxc, hdim, himage⟩ := hS x hx
   let : FiniteDimensional ℝ A.direction := hA
   refine ⟨c.source, c.open_source.mem_nhds hxc, ?_⟩
@@ -203,8 +205,15 @@ theorem exists_param {S : Set E} {d : ℕ} (hS : IsEmbeddedSlice 𝓘(ℝ, E) d 
     c.symm.contMDiffOn_toFun.contDiffOn.comp hshift.contDiffOn (fun _ hv => hv)
   have hcLocal := c.symm.isLocalDiffeomorphAt 𝓘(ℝ, E) 𝓘(ℝ, E) ∞ hcx
   have hcinj : Function.Injective (fderiv ℝ (c.symm : E → E) (c x)) := by
-    rw [← mfderiv_eq_fderiv]
-    exact (hcLocal.mfderivToContinuousLinearEquiv (by simp)).injective
+    intro v w hvw
+    apply (NormedSpace.fromTangentSpace (𝕜 := ℝ) (c x)).symm.injective
+    have hinj : Function.Injective (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) (c.symm : E → E) (c x)) :=
+      (hcLocal.mfderivToContinuousLinearEquiv (by simp)).injective
+    apply hinj
+    rw [mfderiv_eq_fderiv]
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply] using
+      congrArg (NormedSpace.fromTangentSpace (𝕜 := ℝ) (c.symm (c x))).symm hvw
   have hcDiff : DifferentiableAt ℝ (c.symm : E → E) (c x) :=
     (hcLocal.mdifferentiableAt (by simp)).differentiableAt
   have hdf : HasFDerivAt f ((fderiv ℝ (c.symm : E → E) (c x)).comp L.subtypeL) 0 := by

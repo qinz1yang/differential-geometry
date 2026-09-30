@@ -249,13 +249,18 @@ theorem tendsto_eLpNorm_partial_normed_convolution_indicator_sub_weakGrad
         (volume.restrict S) ≤ eLpNorm (∑ i, fun x =>
           ‖(fderiv ℝ (U n) x (EuclideanSpace.single j 1)) i - G x i‖) 2
             (volume.restrict S) := by
-      apply eLpNorm_mono_real
+      refine eLpNorm_mono_real ?_ ?_
+      · exact (PiLp.continuous_toLp 2 (fun _ : ι => ℝ)).comp_aestronglyMeasurable
+          (aemeasurable_pi_iff.mpr fun i => (hm n i).aemeasurable).aestronglyMeasurable
       intro x
       simpa only [Finset.sum_apply, PiLp.sub_apply] using
         norm_le_sum_coordinates (fderiv ℝ (U n) x (EuclideanSpace.single j 1) - G x)
     _ ≤ ∑ i, eLpNorm (fun x => ‖(fderiv ℝ (U n) x (EuclideanSpace.single j 1)) i - G x i‖)
-        2 (volume.restrict S) := eLpNorm_sum_le (fun i _ => (hm n i).norm) (by norm_num)
-    _ = _ := by simp only [eLpNorm_norm]
+        2 (volume.restrict S) := eLpNorm_sum_le (by norm_num)
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro i _
+      exact eLpNorm_norm _ (hm n i)
 
 theorem tendsto_eLpNorm_normed_convolution_indicator_sub
     {Ω S : Set E} (hΩ : MeasurableSet Ω) (hSΩ : S ⊆ Ω)
@@ -305,12 +310,17 @@ theorem tendsto_eLpNorm_normed_convolution_indicator_sub
   calc
     eLpNorm (fun x => U n x - f x) 2 (volume.restrict S) ≤
         eLpNorm (∑ i, fun x => ‖U n x i - f x i‖) 2 (volume.restrict S) := by
-      apply eLpNorm_mono_real
+      refine eLpNorm_mono_real ?_ ?_
+      · exact (PiLp.continuous_toLp 2 (fun _ : ι => ℝ)).comp_aestronglyMeasurable
+          (aemeasurable_pi_iff.mpr fun i => (hm n i).aemeasurable).aestronglyMeasurable
       intro x
       simpa only [Finset.sum_apply, PiLp.sub_apply] using norm_le_sum_coordinates (U n x - f x)
     _ ≤ ∑ i, eLpNorm (fun x => ‖U n x i - f x i‖) 2 (volume.restrict S) :=
-      eLpNorm_sum_le (fun i _ => (hm n i).norm) (by norm_num)
-    _ = _ := by simp only [eLpNorm_norm]
+      eLpNorm_sum_le (by norm_num)
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro i _
+      exact eLpNorm_norm _ (hm n i)
 
 theorem memLp_fderiv_normed_convolution_apply_on_compact
     {H : Type*} [NormedAddCommGroup H] [NormedSpace ℝ H]

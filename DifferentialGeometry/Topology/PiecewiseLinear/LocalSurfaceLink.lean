@@ -24,7 +24,7 @@ theorem exists_ball_chart_of_homeomorph_isOpen {M : Set E} {U : Set (EuclideanSp
   classical
   let g : EuclideanSpace ℝ (Fin 2) → E := fun w =>
     if hw : w ∈ U then ((ψ.symm ⟨w, hw⟩ : M) : E) else y
-  have hgU : ∀ w (hw : w ∈ U), g w = ((ψ.symm ⟨w, hw⟩ : M) : E) := fun w hw => dif_pos hw
+  have hgU : ∀ w (hw : w ∈ U), g w = ((ψ.symm ⟨w, hw⟩ : M) : E) := fun w hw => dite_eq_left hw
   have hgc : ContinuousOn g U := by
     rw [continuousOn_iff_continuous_domRestrict]
     have heq : U.domRestrict g = fun w : U => ((ψ.symm w : M) : E) :=
@@ -165,7 +165,7 @@ theorem subset_or_subset_of_hinge_of_inter_eq (K : Geometry.SimplicialComplex �
   let g : EuclideanSpace ℝ (Fin 2) → E := fun p =>
     (1 - p 0 - |p 1|) • a + p 0 • b + max (p 1) 0 • c₁ + max (-p 1) 0 • c₂
   have hgc : Continuous g := by fun_prop
-  have hg₁ : ∀ p ∈ O, 0 ≤ p 1 → ![1 - p 0 - p 1, p 0, p 1] ∈ stdSimplex ℝ (Fin 3) ∧
+  have hg₁ : ∀ p ∈ O, 0 ≤ p 1 → ![1 - p 0 - p 1, p 0, p 1] ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ∧
       Fintype.linearCombination ℝ ![a, b, c₁] ![1 - p 0 - p 1, p 0, p 1] = g p := by
     intro p hp hp1
     have hp2 : p 0 + p 1 < 1 := by simpa [abs_of_nonneg hp1] using hp.2
@@ -174,7 +174,7 @@ theorem subset_or_subset_of_hinge_of_inter_eq (K : Geometry.SimplicialComplex �
     simp only [g, abs_of_nonneg hp1, max_eq_left hp1, max_eq_right (neg_nonpos.mpr hp1),
       zero_smul, add_zero, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
       Matrix.head_cons, Matrix.tail_cons]
-  have hg₂ : ∀ p ∈ O, p 1 ≤ 0 → ![1 - p 0 + p 1, p 0, -p 1] ∈ stdSimplex ℝ (Fin 3) ∧
+  have hg₂ : ∀ p ∈ O, p 1 ≤ 0 → ![1 - p 0 + p 1, p 0, -p 1] ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ∧
       Fintype.linearCombination ℝ ![a, b, c₂] ![1 - p 0 + p 1, p 0, -p 1] = g p := by
     intro p hp hp1
     have hp2 : p 0 + -p 1 < 1 := by simpa [abs_of_nonpos hp1] using hp.2
@@ -202,11 +202,11 @@ theorem subset_or_subset_of_hinge_of_inter_eq (K : Geometry.SimplicialComplex �
     · rintro ⟨h1 | h1 | h1, h2 | h2 | h2⟩ <;> simp_all
     · rintro (rfl | rfl) <;> simp
   have hflat : ∀ (c : E) (hi : AffineIndependent ℝ ![a, b, c]) (x : Fin 3 → ℝ),
-      x ∈ stdSimplex ℝ (Fin 3) → Fintype.linearCombination ℝ ![a, b, c] x ∈ segment ℝ a b →
+      x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) → Fintype.linearCombination ℝ ![a, b, c] x ∈ segment ℝ a b →
       x 2 = 0 := by
     intro c hi x hx hseg
     obtain ⟨l, m, hl, hm, hlm, hz⟩ := hseg
-    have hs : ![l, m, 0] ∈ stdSimplex ℝ (Fin 3) := mem_stdSimplex_triple hl hm le_rfl (by
+    have hs : ![l, m, 0] ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := mem_stdSimplex_triple hl hm le_rfl (by
       rw [add_zero]; exact hlm)
     have heq := (isPLHomeomorphOn_linearCombination_of_affineIndependent hi).bijOn.injOn hs hx
       (by rw [linearCombination_triple_apply, ← hz]; simp)
@@ -331,7 +331,7 @@ theorem false_of_maximal_face_of_inter_eq (K : Geometry.SimplicialComplex ℝ E)
     have hFi : InjOn F (Metric.ball c r) := by
       intro z hz z' hz' hzz
       have h0 := congrArg (fun w : EuclideanSpace ℝ (Fin 2) => w 0) hzz
-      simp only [F, PiLp.smul_apply, smul_eq_mul, PiLp.single_apply, if_true,
+      simp only [F, PiLp.smul_apply, smul_eq_mul, PiLp.single_apply, ite_true,
         mul_one] at h0
       obtain ⟨θ, hθ⟩ := hseg z hz
       obtain ⟨θ', hθ'⟩ := hseg z' hz'
@@ -400,12 +400,12 @@ theorem exists_second_triangle_of_inter_eq (K : Geometry.SimplicialComplex ℝ E
       · exact htI.1
     · rw [Finset.sum_pair hab]
       change (if a = a then 1 - t else t) + (if b = a then 1 - t else t) = 1
-      rw [if_pos rfl, if_neg (Ne.symm hab)]
+      rw [ite_eq_left rfl, ite_eq_right (Ne.symm hab)]
       ring
     · rw [Finset.sum_pair hab]
       change (if a = a then 1 - t else t) • a + (if b = a then 1 - t else t) • b =
         (1 - t) • a + t • b
-      rw [if_pos rfl, if_neg (Ne.symm hab)]
+      rw [ite_eq_left rfl, ite_eq_right (Ne.symm hab)]
   have hnhds := biUnion_convexHull_superset_mem_nhdsWithin K he hy
   have hN : (⋃ σ ∈ {σ ∈ K.faces | ({a, b} : Finset E) ⊆ σ}, convexHull ℝ (σ : Set E)) ⊆
       convexHull ℝ (↑({a, b, c} : Finset E) : Set E) := by
@@ -419,10 +419,10 @@ theorem exists_second_triangle_of_inter_eq (K : Geometry.SimplicialComplex ℝ E
   have hΦ := isPLHomeomorphOn_linearCombination_of_affineIndependent hi
   rw [range_vecCons_triple] at hΦ
   set Φ := Fintype.linearCombination ℝ ![a, b, c]
-  set Ψ := Function.invFunOn Φ (stdSimplex ℝ (Fin 3))
+  set Ψ := Function.invFunOn Φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hΨc : ContinuousOn Ψ (convexHull ℝ (↑({a, b, c} : Finset E) : Set E)) :=
     hΦ.isPiecewiseAffineOn_invFunOn.continuousOn
-  have hΨm : MapsTo Ψ (convexHull ℝ (↑({a, b, c} : Finset E) : Set E)) (stdSimplex ℝ (Fin 3)) :=
+  have hΨm : MapsTo Ψ (convexHull ℝ (↑({a, b, c} : Finset E) : Set E)) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) :=
     fun x hx => hΦ.bijOn.surjOn.mapsTo_invFunOn hx
   have hΦΨ : ∀ x ∈ convexHull ℝ (↑({a, b, c} : Finset E) : Set E), Φ (Ψ x) = x :=
     fun x hx => hΦ.bijOn.invOn_invFunOn.2 hx
@@ -454,7 +454,7 @@ theorem exists_second_triangle_of_inter_eq (K : Geometry.SimplicialComplex ℝ E
   have hyΦ : Φ ![1 - t, t, 0] = (1 - t) • a + t • b := by
     rw [linearCombination_triple_apply]
     simp
-  have hmid : ![1 - t, t, 0] ∈ stdSimplex ℝ (Fin 3) :=
+  have hmid : ![1 - t, t, 0] ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) :=
     mem_stdSimplex_triple (by linarith [htI.2]) htI.1.le le_rfl (by ring)
   have hΨy : Ψ ((1 - t) • a + t • b) = ![1 - t, t, 0] := by
     rw [← hyΦ]

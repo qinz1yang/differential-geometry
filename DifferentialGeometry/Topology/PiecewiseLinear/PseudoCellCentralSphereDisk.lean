@@ -21,7 +21,7 @@ theorem IsPseudoCell.exists_central_sphere_disk
     (hG : ∀ i, IsPLSphere 1 (G i)) (hdisj : Pairwise fun i j => Disjoint (G i) (G j))
     (htrace : frontier Bl ∩ Ec = ⋃ i, G i) :
     ∃ (i₀ : Fin n) (Δ : Set E3) (r : (Fin 3 → ℝ) → E3) (DJ DJint : Set E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier Bl ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier Bl ∧
       r '' stdSimplexBoundary 2 = G i₀ ∧ IsTopologicalCellWithInterior 2 DJ DJint ∧
       DJ ⊆ Dc ∧ DJ \ DJint = G i₀ ∧ P ∈ DJint ∧
       (∀ i, G i ⊆ Δ ∨ Disjoint (G i) Δ) ∧

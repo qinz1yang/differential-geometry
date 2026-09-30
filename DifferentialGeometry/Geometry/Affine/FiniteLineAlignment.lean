@@ -16,7 +16,7 @@ theorem finiteLineAffineAlignment_succ {n : ℕ} (s c : Fin n → ℝ) (j : Fin 
         (finiteLineAffineAlignment s c j.castSucc).2 -
           (finiteLineAffineAlignment s c j.castSucc).1 * s j * c j) := by
   simp only [finiteLineAffineAlignment, Fin.val_succ, Fin.val_castSucc,
-    lineAffineAlignment, dif_pos j.isLt]
+    lineAffineAlignment, dite_eq_left j.isLt]
 
 theorem finiteLineAffineAlignment_sign {n : ℕ} (s c : Fin n → ℝ)
     (hs : ∀ j, s j = 1 ∨ s j = -1) (i : Fin (n + 1)) :
@@ -40,7 +40,7 @@ theorem abs_finiteLineAffineAlignment_transition_error {n : ℕ} (s c : Fin n �
       split_ifs with hk
       · exact hs ⟨k, hk⟩
       · exact Or.inl rfl) j.val x y
-  simpa only [finiteLineAffineAlignment, Fin.val_succ, Fin.val_castSucc, dif_pos j.isLt] using h
+  simpa only [finiteLineAffineAlignment, Fin.val_succ, Fin.val_castSucc, dite_eq_left j.isLt] using h
 
 theorem finiteLineAffineAlignment_smul_eq {n : ℕ} (s c : Fin n → ℝ)
     (j : Fin n) (hs : s j = 1 ∨ s j = -1)

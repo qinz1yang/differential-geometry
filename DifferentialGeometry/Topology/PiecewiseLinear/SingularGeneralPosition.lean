@@ -1417,16 +1417,16 @@ theorem exists_small_affineIndependent_subsets_in_submodule [FiniteDimensional �
   let b₀ : ι → H := fun v => if hv : v ∈ B then ⟨φ₀ v, hB v hv⟩ else 0
   obtain ⟨b, _, hbclose, hbgood⟩ := exists_small_affineIndependent_subsets B b₀ (half_pos hε)
   let ψ₀ : ι → F := fun v => if v ∈ B then (b v : F) else φ₀ v
-  have hψB : ∀ v ∈ B, ψ₀ v = (b v : F) := fun v hv => if_pos hv
+  have hψB : ∀ v ∈ B, ψ₀ v = (b v : F) := fun v hv => ite_eq_left hv
   have hψclose : ∀ v, dist (ψ₀ v) (φ₀ v) < ε / 2 := by
     intro v
     by_cases hv : v ∈ B
     · rw [hψB v hv]
-      have heq : (b₀ v : F) = φ₀ v := by simp only [b₀, dif_pos hv]
+      have heq : (b₀ v : F) = φ₀ v := by simp only [b₀, dite_eq_left hv]
       rw [← heq]
       exact hbclose v
     · change dist (if v ∈ B then (b v : F) else φ₀ v) (φ₀ v) < ε / 2
-      simpa only [if_neg hv, dist_self] using half_pos hε
+      simpa only [ite_eq_right hv, dist_self] using half_pos hε
   have hdisj : Disjoint (V \ B) B := Finset.disjoint_left.mpr
     (fun _ hv hBv => (Finset.mem_sdiff.mp hv).2 hBv)
   obtain ⟨φ, hfix, hfixB, hclose, hgood⟩ :=
@@ -1434,7 +1434,7 @@ theorem exists_small_affineIndependent_subsets_in_submodule [FiniteDimensional �
   refine ⟨φ, ?_, ?_, ?_, ?_⟩
   · intro v hv
     have hvB : v ∉ B := fun h => hv (hBV h)
-    exact (hfix (fun h => hv (Finset.mem_sdiff.mp h).1)).trans (if_neg hvB)
+    exact (hfix (fun h => hv (Finset.mem_sdiff.mp h).1)).trans (ite_eq_right hvB)
   · intro v
     calc dist (φ v) (φ₀ v) ≤ dist (φ v) (ψ₀ v) + dist (ψ₀ v) (φ₀ v) := dist_triangle _ _ _
       _ < ε / 2 + ε / 2 := add_lt_add (hclose v) (hψclose v)
@@ -1489,7 +1489,7 @@ theorem vectorSpan_sup_eq_submodule_of_affineIndependent_subsets {ι : Type*}
     vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) = H := by
   let : DecidableEq H := Classical.typeDecidableEq H
   let ψ : ι → H := fun v => if hv : v ∈ B then ⟨φ v, hB v hv⟩ else 0
-  have hψ : ∀ v ∈ B, (ψ v : F) = φ v := fun v hv => by simp only [ψ, dif_pos hv]
+  have hψ : ∀ v ∈ B, (ψ v : F) = φ v := fun v hv => by simp only [ψ, dite_eq_left hv]
   have hgood : ∀ u : Finset ι, u ⊆ B → u.card ≤ Module.finrank ℝ H + 1 →
       AffineIndependent ℝ (fun v : u => ψ (v : ι)) := by
     intro u hu hcard
@@ -1555,11 +1555,11 @@ theorem exists_small_vertexMap_transverse_in_halfSpace [FiniteDimensional ℝ F]
   refine ⟨φ, hfix, hclose, hzero, hpos, hgood, ?_⟩
   intro s hs t ht hdisj hinter
   by_cases hsubB : s ∪ t ⊆ B
-  · rw [if_pos hsubB]
+  · rw [ite_eq_left hsubB]
     exact vectorSpan_sup_eq_submodule_of_affineIndependent_subsets B (LinearMap.ker ℓ) φ hzero
       hboundary
       (Finset.subset_union_left.trans hsubB) (Finset.subset_union_right.trans hsubB) hdisj hinter
-  · rw [if_neg hsubB]
+  · rw [ite_eq_right hsubB]
     apply vectorSpan_sup_eq_top_of_affineIndependent_subsets_relative V B φ _ hs ht hdisj hsubB
       hinter
     intro u hu hcard hBcard
@@ -2193,7 +2193,7 @@ theorem neighbors_of_inter_in_halfSpace_of_boundary_edges [FiniteDimensional ℝ
   have hst := htrans s hs t ht ⟨x, openSimplex_subset_convexHull s hxs,
     openSimplex_subset_convexHull t hxt⟩
   by_cases hx0 : ℓ x = 0
-  · rw [if_pos (hzero.mpr hx0)] at hst
+  · rw [ite_eq_left (hzero.mpr hx0)] at hst
     obtain ⟨a, b, hsc, htc, ha, hb, hKa, hLb⟩ := exists_unique_cofaces_of_transverse_boundary_faces
       K L hK hL hdim ℓ hKnonneg hLnonneg hKboundary hLboundary hs ht (hsiff.mp hx0) (htiff.mp hx0)
       ⟨x, openSimplex_subset_convexHull s hxs, openSimplex_subset_convexHull t hxt⟩ hst
@@ -2203,7 +2203,7 @@ theorem neighbors_of_inter_in_halfSpace_of_boundary_edges [FiniteDimensional ℝ
       exact hK.card_le K hu
     · rw [htc]
       exact hL.card_le L hu
-  · rw [if_neg (fun h => hx0 (hzero.mp h))] at hst
+  · rw [ite_eq_right (fun h => hx0 (hzero.mp h))] at hst
     exact Or.inr ⟨hx0, neighbors_singleton_or_pair_of_transverse_face K L G hK hL hdim hcard
       hspace hcarrier hs ht hxs hxt hxG hst⟩
 
@@ -2263,7 +2263,7 @@ theorem isCombinatorialManifoldWithBoundary_inter_in_halfSpace_of_boundary_edges
     have hbound := card_add_finrank_sup_le_of_subset_faces K L hs ht (G.indep hu)
       (G.nonempty_of_mem_faces hu) 0 hsub'
     by_cases hzero : ∀ v ∈ s ∪ t, ℓ v = 0
-    · rw [if_pos hzero] at hst
+    · rw [ite_eq_left hzero] at hst
       rw [hst] at hbound
       have hsbound : s.card ≤ 2 := by
         by_cases hsc : 2 ≤ s.card
@@ -2276,7 +2276,7 @@ theorem isCombinatorialManifoldWithBoundary_inter_in_halfSpace_of_boundary_edges
             (hLboundary t ht htc (fun v hv => hzero v (Finset.mem_union_right s hv)))).2.1
         · omega
       omega
-    · rw [if_neg hzero] at hst
+    · rw [ite_eq_right hzero] at hst
       rw [hst, finrank_top, hdim] at hbound
       have hsbound := hK.card_le K hs
       have htbound := hL.card_le L ht
@@ -2455,7 +2455,7 @@ theorem hasPLCrossingAt_or_hasPLBoundaryCrossingAt_of_transverse_faces [FiniteDi
     ⟨x, openSimplex_subset_convexHull s hxs, openSimplex_subset_convexHull t hxt⟩
   have hst := htrans s hs t ht hinter
   by_cases hx0 : ℓ x = 0
-  · rw [if_pos (hzero.mpr hx0)] at hst
+  · rw [ite_eq_left (hzero.mpr hx0)] at hst
     obtain ⟨a, b, hsc, htc, ha, hb, hKa, hLb⟩ := exists_unique_cofaces_of_transverse_boundary_faces
       K L hK hL hdim ℓ hKnonneg hLnonneg hKboundary hLboundary hs ht (hsiff.mp hx0) (htiff.mp hx0)
         hinter hst
@@ -2471,7 +2471,7 @@ theorem hasPLCrossingAt_or_hasPLBoundaryCrossingAt_of_transverse_faces [FiniteDi
       hKbound hLbound hKa hLb ℓ hst ha hb hx0 hxs hxt,
         eventually_mem_inter_iff_nonneg_ray_of_unique_cofaces K L hdim hs ht hsc htc
           hKbound hLbound hKa hLb ℓ hst ha hb hx0 hxs hxt⟩
-  · rw [if_neg (fun h => hx0 (hzero.mp h))] at hst
+  · rw [ite_eq_right (fun h => hx0 (hzero.mp h))] at hst
     have hxnonneg : 0 ≤ ℓ x := by
       have h := simplicialMap_nonneg_of_nonneg_vertices K ℓ hKnonneg hx.1
       have heq : simplicialMap K ℓ x = ℓ x := simplicialMap_eqOn_affine K ℓ.toAffineMap hx.1
@@ -2510,14 +2510,14 @@ theorem neighbors_eq_pair_of_inter_in_halfSpace_of_notMem_boundary [FiniteDimens
     ⟨x, openSimplex_subset_convexHull s hxs, openSimplex_subset_convexHull t hxt⟩
   have hst := htrans s hs t ht hinter
   by_cases hzero : ∀ v ∈ s ∪ t, ℓ v = 0
-  · rw [if_pos hzero] at hst
+  · rw [ite_eq_left hzero] at hst
     have hszero : ∀ v ∈ s, ℓ v = 0 := fun v hv => hzero v (Finset.mem_union_left t hv)
     have htzero : ∀ v ∈ t, ℓ v = 0 := fun v hv => hzero v (Finset.mem_union_right s hv)
     obtain ⟨a, b, hsc, _, _, _, _, _⟩ := exists_unique_cofaces_of_transverse_boundary_faces
       K L hK hL hdim ℓ hKnonneg hLnonneg hKboundary hLboundary hs ht hszero htzero hinter hst
     exact (hxK ((boundaryComplex 2 K).convexHull_subset_space (hKboundary s hs hsc.ge hszero)
       (openSimplex_subset_convexHull s hxs))).elim
-  · rw [if_neg hzero] at hst
+  · rw [ite_eq_right hzero] at hst
     exact neighbors_eq_pair_of_transverse_face K L G hK hL hdim hcard hspace hcarrier hs ht hxs hxt
       hxG hst hxK hxL
 
@@ -2805,14 +2805,14 @@ theorem exists_triangulation_doublePointSet_card_le_two_in_halfSpace [FiniteDime
     obtain ⟨y, hy⟩ := G.nonempty_of_mem_faces hu
     have hst := htrans s hs t ht hdisj ⟨y, hsub (subset_convexHull ℝ _ hy)⟩
     by_cases hzero : ∀ v ∈ s ∪ t, ℓ (φ v) = 0
-    · rw [if_pos hzero] at hst
+    · rw [ite_eq_left hzero] at hst
       rw [hst] at hbound
       have hsbound := ((hK.mem_boundaryComplex_faces_iff K).mp
         (hboundary s hs (fun v hv => hzero v (Finset.mem_union_left t hv)))).2.1
       have htbound := ((hK.mem_boundaryComplex_faces_iff K).mp
         (hboundary t ht (fun v hv => hzero v (Finset.mem_union_right s hv)))).2.1
       omega
-    · rw [if_neg hzero] at hst
+    · rw [ite_eq_right hzero] at hst
       rw [hst, finrank_top, hdim] at hbound
       have hsbound := hK.card_le K hs
       have htbound := hK.card_le K ht
@@ -2967,7 +2967,7 @@ theorem simplicialMap_indicator_compl_subcomplex_eq_zero_iff
       exact notMem_space_of_notMem_faces hLK (hd.mem_faces hu) hnot hxu hxL
     have htL : t ∈ L.faces := L.down_closed huL (htop t ht) (K.nonempty_of_mem_faces (hd.mem_faces
       ht))
-    rw [if_pos (L.convexHull_subset_space htL (openSimplex_subset_convexHull t (hc t (hd.mem_faces
+    rw [ite_eq_left (L.convexHull_subset_space htL (openSimplex_subset_convexHull t (hc t (hd.mem_faces
       ht))))]
 
 open Classical in
@@ -3031,22 +3031,22 @@ theorem exists_small_simplicialMap_in_halfSpace_of_subcomplex [FiniteDimensional
   have hcloseVertex : ∀ v, dist (φ v) (f v) < η := by
     intro v
     by_cases hv : v ∈ L.space
-    · simpa only [φ, if_pos hv, dist_self] using hη
-    · simpa only [φ, if_neg hv, dist_eq_norm, add_sub_cancel_left, norm_smul,
+    · simpa only [φ, ite_eq_left hv, dist_self] using hη
+    · simpa only [φ, ite_eq_right hv, dist_eq_norm, add_sub_cancel_left, norm_smul,
         Real.norm_eq_abs, abs_of_pos ha] using habound
   have hφnonneg : ∀ v ∈ R.vertices, 0 ≤ ℓ (φ v) := by
     intro v hv
     by_cases hvL : v ∈ L.space
-    · simp only [φ, if_pos hvL, hzero v hvL, le_refl]
-    · simp only [φ, if_neg hvL, map_add, map_smul, smul_eq_mul, hw, mul_one]
+    · simp only [φ, ite_eq_left hvL, hzero v hvL, le_refl]
+    · simp only [φ, ite_eq_right hvL, map_add, map_smul, smul_eq_mul, hw, mul_one]
       exact add_nonneg (hnonneg v (hVK v hv)) ha.le
   have hφzero : ∀ v ∈ R.vertices, ℓ (φ v) = 0 ↔ q v = 0 := by
     intro v hv
     rw [hqzero v (hVK v hv)]
     by_cases hvL : v ∈ L.space
-    · simp only [φ, if_pos hvL, hzero v hvL, hvL]
+    · simp only [φ, ite_eq_left hvL, hzero v hvL, hvL]
     · have hpos : 0 < ℓ (f v) + a := add_pos_of_nonneg_of_pos (hnonneg v (hVK v hv)) ha
-      simp only [φ, if_neg hvL, map_add, map_smul, smul_eq_mul, hw, mul_one, hpos.ne', hvL]
+      simp only [φ, ite_eq_right hvL, map_add, map_smul, smul_eq_mul, hw, mul_one, hpos.ne', hvL]
   obtain ⟨hstar, hlocal, hfiber⟩ := hstable φ (fun v _ => (hcloseVertex v).trans_le (min_le_left δ
     ε))
   refine ⟨R, φ, hR, hfinite, ?_, ?_, hstar, ?_, ?_, ?_, ?_, ?_⟩
@@ -3080,7 +3080,7 @@ theorem exists_small_simplicialMap_in_halfSpace_of_subcomplex [FiniteDimensional
     intro v hv
     have hvL := (hqzero v (hVK v (R.down_closed hs (Finset.singleton_subset_iff.mpr hv)
       (Finset.singleton_nonempty v)))).mp (hqs v hv)
-    rw [show φ v = f v by simp only [φ, if_pos hvL]]
+    rw [show φ v = f v by simp only [φ, ite_eq_left hvL]]
 
 open Classical in
 theorem singleton_mem_faces_of_eventually_nonneg_ray (G : Geometry.SimplicialComplex ℝ E)

@@ -149,14 +149,14 @@ theorem cover_segsOf (vs : List Plane) :
       · -- A repeated vertex contributes the point `u`, which the rest of the chain already
         -- holds.
         subst huv
-        rw [if_pos rfl, segment_same]
+        rw [ite_eq_left rfl, segment_same]
         have hmem : u ∈ poly (u :: rest) := mem_poly_of_mem (List.mem_cons_self ..)
         rcases ih with h | ⟨h1, h2⟩
         · exact Or.inl (by rw [h, union_eq_self_of_subset_left (singleton_subset_iff.2 hmem)])
         · refine Or.inr ⟨h1, ?_⟩
           rw [union_eq_self_of_subset_left (singleton_subset_iff.2 hmem)]
           exact h2
-      · rw [if_neg huv, cover_cons]
+      · rw [ite_eq_right huv, cover_cons]
         refine Or.inl ?_
         rcases ih with h | ⟨h1, h2⟩
         · rw [h]; rfl

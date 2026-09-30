@@ -234,7 +234,7 @@ private theorem degenerateCurvatureOperatorFamily_nonneg (t : ℝ) (ht : 0 ≤ t
   have h1 : (1 : Fin 3) ≠ 0 := by decide
   have h2 : (2 : Fin 3) ≠ 0 := by decide
   simp only [degenerateCurvatureOperatorFamily, LinearMap.coe_mk, AddHom.coe_mk,
-    Fin.sum_univ_three, h1, h2, if_false, if_true, one_mul]
+    Fin.sum_univ_three, h1, h2, ite_false, ite_true, one_mul]
   nlinarith [sq_nonneg (x 0), sq_nonneg (x 1), sq_nonneg (x 2)]
 
 private theorem degenerateCurvatureOperatorFamily_ker_zero :

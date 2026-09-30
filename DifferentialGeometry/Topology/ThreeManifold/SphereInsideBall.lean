@@ -49,7 +49,7 @@ theorem exists_ball_chart_inside_ball_of_sphere_embedding
           (0 : E3) zero_le_one)
       exact isConnected_univ
     simpa only [image_univ] using hs.image f hf.contMDiff.continuous.continuousOn
-  let d := SphereSeparation.jordanBrouwer_openThreeSpace f hf (Diffeomorph.refl (𝓡 3) E3 ∞)
+  let d := SphereSeparation.smoothSphereSidesOpenThreeSpace f hf (Diffeomorph.refl (𝓡 3) E3 ∞)
   have hdsub : closure d.compactSide ⊆ ball (0 : E3) 1 := by
     apply SphereSeparation.standardUnitSphereSides.closure_compactSide_subset_of_sphere_subset
       d.toSphereSides ?_ hfconn hfball

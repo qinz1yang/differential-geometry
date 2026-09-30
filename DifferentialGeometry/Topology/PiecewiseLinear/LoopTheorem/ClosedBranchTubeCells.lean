@@ -46,8 +46,8 @@ theorem exists_cylinder_of_markedCells {m : ℕ} (hm : 2 ≤ m) {c : ℕ → E}
     (hTT : ∀ k i j, i ≠ j → T k i ∩ T k j = {y₀ k, y₁ k})
     (hsep : ∀ k, ∀ i : Fin 4, ∀ U ⊆ (K k).space \ (T k i ∪ T k (i + 2)), IsPreconnected U →
       (U ∩ T k (i + 1)).Nonempty → (U ∩ T k (i + 3)).Nonempty → False)
-    (hq₀ : ∀ k, IsPLHomeomorphOn (q₀ k) (stdSimplex ℝ (Fin 3)) (D₀ k))
-    (hq₁ : ∀ k, IsPLHomeomorphOn (q₁ k) (stdSimplex ℝ (Fin 3)) (D₁ k))
+    (hq₀ : ∀ k, IsPLHomeomorphOn (q₀ k) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₀ k))
+    (hq₁ : ∀ k, IsPLHomeomorphOn (q₁ k) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₁ k))
     (hD₀S : ∀ k, D₀ k ⊆ (K k).space) (hD₁S : ∀ k, D₁ k ⊆ (K k).space)
     (hdis : ∀ k, Disjoint (D₀ k) (D₁ k))
     (hb₀ : ∀ k i, q₀ k '' stdSimplexBoundary 2 ∩ T k i = {γ k i (1 / 4)})
@@ -168,22 +168,22 @@ theorem exists_cylinder_of_markedCells {m : ℕ} (hm : 2 ≤ m) {c : ℕ → E}
     if k = 0 then G 0 '' (spliceSquare ×ˢ Icc (1 / 2 : ℝ) 1)
     else if k = m + 1 then G 0 '' (spliceSquare ×ˢ Icc (0 : ℝ) (1 / 2))
     else coneSet (c k) (K k).space
-  have hG'0 : G' 0 = G 0 ∘ Prod.map id fun t : ℝ => 1 / 2 * t + 1 / 2 := if_pos rfl
+  have hG'0 : G' 0 = G 0 ∘ Prod.map id fun t : ℝ => 1 / 2 * t + 1 / 2 := ite_eq_left rfl
   have hG'L : G' (m + 1) = G 0 ∘ Prod.map Prod.swap fun t : ℝ => 1 / 2 * t + 0 := by
     change (if m + 1 = 0 then _ else if m + 1 = m + 1 then _ else _) = _
-    rw [if_neg (Nat.succ_ne_zero m), if_pos rfl]
+    rw [ite_eq_right (Nat.succ_ne_zero m), ite_eq_left rfl]
   have hG'k : ∀ k, k ≠ 0 → k ≠ m + 1 → G' k = G k := by
     intro k h0 h1
     change (if k = 0 then _ else if k = m + 1 then _ else _) = _
-    rw [if_neg h0, if_neg h1]
-  have hB'0 : B' 0 = G 0 '' (spliceSquare ×ˢ Icc (1 / 2 : ℝ) 1) := if_pos rfl
+    rw [ite_eq_right h0, ite_eq_right h1]
+  have hB'0 : B' 0 = G 0 '' (spliceSquare ×ˢ Icc (1 / 2 : ℝ) 1) := ite_eq_left rfl
   have hB'L : B' (m + 1) = G 0 '' (spliceSquare ×ˢ Icc (0 : ℝ) (1 / 2)) := by
     change (if m + 1 = 0 then _ else if m + 1 = m + 1 then _ else _) = _
-    rw [if_neg (Nat.succ_ne_zero m), if_pos rfl]
+    rw [ite_eq_right (Nat.succ_ne_zero m), ite_eq_left rfl]
   have hB'k : ∀ k, k ≠ 0 → k ≠ m + 1 → B' k = coneSet (c k) (K k).space := by
     intro k h0 h1
     change (if k = 0 then _ else if k = m + 1 then _ else _) = _
-    rw [if_neg h0, if_neg h1]
+    rw [ite_eq_right h0, ite_eq_right h1]
   have hUsub : G 0 '' (spliceSquare ×ˢ Icc (1 / 2 : ℝ) 1) ⊆ coneSet (c 0) (K 0).space := by
     rw [← (hG 0).image_eq]
     exact image_mono (prod_mono subset_rfl (Icc_subset_Icc (by norm_num) le_rfl))

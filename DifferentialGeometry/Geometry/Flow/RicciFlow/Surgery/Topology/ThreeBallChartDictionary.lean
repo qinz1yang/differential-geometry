@@ -63,7 +63,7 @@ theorem standardNeckCapPointAmbient_false_zero :
       EuclideanSpace.single (Fin.last 3) (1 : ℝ) := by
   apply WithLp.ofLp_injective 2
   simp only [standardNeckCapPointAmbient, WithLp.ofLp_toLp, standardNeckCapUAmbient_zero,
-    standardNeckCapCAmbient_zero, Bool.false_eq_true, if_false]
+    standardNeckCapCAmbient_zero, Bool.false_eq_true, ite_false]
   funext i
   fin_cases i <;> simp [snocR, Fin.snoc, Fin.last]
 
@@ -72,7 +72,7 @@ theorem standardNeckCapPointAmbient_true_zero :
       - EuclideanSpace.single (Fin.last 3) (1 : ℝ) := by
   apply WithLp.ofLp_injective 2
   simp only [standardNeckCapPointAmbient, WithLp.ofLp_toLp, standardNeckCapUAmbient_zero,
-    standardNeckCapCAmbient_zero, if_true]
+    standardNeckCapCAmbient_zero, ite_true]
   funext i
   fin_cases i <;> simp [snocR, Fin.snoc, Fin.last]
 

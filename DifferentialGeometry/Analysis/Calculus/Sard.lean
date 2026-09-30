@@ -123,7 +123,7 @@ theorem volume_le_of_subset_slab {n : ℕ}
     intro i j
     obtain rfl : i = j := Subsingleton.elim i j
     have hi : (i : EuclideanSpace ℝ (Fin n)) = u := Set.mem_singleton_iff.mp i.2
-    rw [if_pos rfl, hi, real_inner_self_eq_norm_sq, hunorm]
+    rw [ite_eq_left rfl, hi, real_inner_self_eq_norm_sq, hunorm]
     norm_num
   obtain ⟨ι, b, hsub, hb⟩ := horth.exists_orthonormalBasis_extension
   have humem : u ∈ ι := by simpa using hsub (mem_singleton u)
@@ -259,7 +259,7 @@ private theorem jet_evaluation_derivative {f : E → F} {U : Set E}
 omit [NormedAddCommGroup F] [NormedSpace ℝ F] in
 private theorem measure_prod_eq_zero_of_sections {S : Set (ℝ × F)}
     [MeasurableSpace F] (hS : MeasurableSet S)
-    (ν : Measure F) (hs : ∀ t : ℝ, ν (Prod.mk t ⁻¹' S) = 0) :
+    (ν : Measure F) [SFinite ν] (hs : ∀ t : ℝ, ν (Prod.mk t ⁻¹' S) = 0) :
     ((volume : Measure ℝ).prod ν) S = 0 := by
   exact Measure.measure_prod_null_of_ae_null hS (Filter.Eventually.of_forall hs)
 

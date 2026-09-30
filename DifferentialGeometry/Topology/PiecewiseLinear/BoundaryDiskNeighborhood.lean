@@ -97,10 +97,10 @@ open Classical in
 theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_push_boundary_disk_subset
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {D U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDK : D ⊆ (boundaryComplex 3 K).space) (hU : U ∈ 𝓝ˢ[K.space] D) :
     ∃ (Q : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧ Q ⊆ K.space ∧ Q ⊆ U ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧ Q ⊆ K.space ∧ Q ⊆ U ∧
       q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 ∧
       Q ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2 := by
   classical

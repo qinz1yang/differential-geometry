@@ -253,11 +253,11 @@ private theorem chartGramMatrix_mul_invGramPullback [I.Boundaryless]
                 else 0) from by
           refine Finset.sum_congr rfl ?_; intro i _
           by_cases h : b = i
-          · rw [if_pos h, if_pos h, mul_one]
-          · rw [if_neg h, if_neg h, mul_zero]]
+          · rw [ite_eq_left h, ite_eq_left h, mul_one]
+          · rw [ite_eq_right h, ite_eq_right h, mul_zero]]
         rw [Finset.sum_ite_eq Finset.univ b
           (fun i => (J a k * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g β p a b) * (K l j * Gβinv i j))]
-        rw [if_pos (Finset.mem_univ b)]
+        rw [ite_eq_left (Finset.mem_univ b)]
     _ = ∑ a, J a k * K l a := by
         refine Finset.sum_congr rfl ?_; intro a _
         rw [Finset.sum_comm]
@@ -274,16 +274,16 @@ private theorem chartGramMatrix_mul_invGramPullback [I.Boundaryless]
             ring
           rw [this, hGβinvR a j]
           by_cases h : a = j
-          · rw [if_pos h, if_pos h, mul_one]
-          · rw [if_neg h, if_neg h, mul_zero]
+          · rw [ite_eq_left h, ite_eq_left h, mul_one]
+          · rw [ite_eq_right h, ite_eq_right h, mul_zero]
         rw [Finset.sum_congr rfl (fun j (_ : j ∈ Finset.univ) => hstep j)]
         rw [Finset.sum_ite_eq Finset.univ a (fun j => J a k * K l j)]
-        rw [if_pos (Finset.mem_univ a)]
+        rw [ite_eq_left (Finset.mem_univ a)]
     _ = (if k = l then (1 : ℝ) else 0) := by
         rw [hMut l k]
         by_cases h : k = l
-        · rw [if_pos h, if_pos h.symm]
-        · rw [if_neg h, if_neg (fun hh : l = k => h hh.symm)]
+        · rw [ite_eq_left h, ite_eq_left h.symm]
+        · rw [ite_eq_right h, ite_eq_right (fun hh : l = k => h hh.symm)]
 
 theorem chartInvGramMatrix_eq_sum_chartTransition [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α β : M) {p : M}
@@ -831,8 +831,8 @@ lemma chartChristoffelNumerator_transitionIdentity [I.Boundaryless]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl ?_; intro b _
     rw [Finset.sum_eq_single d]
-    · rw [if_pos rfl, one_mul]
-    · intro a _ ha; rw [if_neg ha, zero_mul]
+    · rw [ite_eq_left rfl, one_mul]
+    · intro a _ ha; rw [ite_eq_right ha, zero_mul]
     · intro hd; exact absurd (Finset.mem_univ d) hd
   set Acoef : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun t a => ∑ l, K l d * dJ t a l with hAcoef
@@ -984,11 +984,11 @@ lemma chartChristoffelNumerator_transitionIdentity [I.Boundaryless]
       rw [Finset.sum_eq_single d]
       · rw [show (∑ l, K l d * J d l) = (if d = d then (1 : ℝ) else 0) from by
           rw [← hFR d d]; refine Finset.sum_congr rfl ?_; intro l _; ring]
-        rw [if_pos rfl, one_mul]
+        rw [ite_eq_left rfl, one_mul]
       · intro c _ hc
         rw [show (∑ l, K l d * J c l) = (if c = d then (1 : ℝ) else 0) from by
           rw [← hFR c d]; refine Finset.sum_congr rfl ?_; intro l _; ring]
-        rw [if_neg hc, zero_mul]
+        rw [ite_eq_right hc, zero_mul]
       · intro hd; exact absurd (Finset.mem_univ d) hd
   have hSigma :
       (∑ l, K l d *
@@ -1178,12 +1178,12 @@ theorem chartChristoffel_transform [I.Boundaryless]
             (fun z => chartTransitionJacobianEntry (I := I) α β z b j) x else 0) from by
           rw [hDiag c b]
           by_cases h : c = b
-          · rw [if_pos h, if_pos h, one_mul]
-          · rw [if_neg h, if_neg h, zero_mul])]
+          · rw [ite_eq_left h, ite_eq_left h, one_mul]
+          · rw [ite_eq_right h, ite_eq_right h, zero_mul])]
       rw [Finset.sum_ite_eq Finset.univ c
         (fun b => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z => chartTransitionJacobianEntry (I := I) α β z b j) x)]
-      rw [if_pos (Finset.mem_univ c)]
+      rw [ite_eq_left (Finset.mem_univ c)]
       ring
   rw [chartChristoffel_def, hsymm_α]
   rw [show ((1 / 2 : ℝ) * ∑ l, chartInvGramMatrix (I := I) g α p k l *
@@ -1263,7 +1263,7 @@ lemma chartCoord_chartChristoffelContraction
             chartCoord (E := E) i v * chartCoord (E := E) j w := by
         rw [Finset.sum_eq_single l]
         · rw [hbasis l]; simp
-        · intro k _ hkl; rw [hbasis k, if_neg hkl]; ring
+        · intro k _ hkl; rw [hbasis k, ite_eq_right hkl]; ring
         · intro hl; exact absurd (Finset.mem_univ l) hl
 
 private lemma sum5_reorder {n : ℕ}
@@ -1422,10 +1422,10 @@ theorem chartChristoffelContraction_transform [I.Boundaryless]
     rw [← hTx_def]
     rw [Finset.sum_eq_single_of_mem l (Finset.mem_univ l)]
     · rw [map_smul, Finsupp.smul_apply, smul_eq_mul,
-        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply l l, if_pos rfl, mul_one]
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply l l, ite_eq_left rfl, mul_one]
     · intro k _ hkl
       rw [map_smul, Finsupp.smul_apply, smul_eq_mul,
-        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply k l, if_neg hkl, mul_zero]
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply k l, ite_eq_right hkl, mul_zero]
   rw [hcorr]
   have hinner : ∀ c : Fin (Module.finrank ℝ E),
       chartCoord (E := E) c
@@ -1681,10 +1681,10 @@ lemma fderiv_chartTransitionAt_apply_eq_pushCorrection [I.Boundaryless]
       Finsupp.finsetSum_apply]
     rw [Finset.sum_eq_single_of_mem c (Finset.mem_univ c)]
     · rw [map_smul, Finsupp.smul_apply, smul_eq_mul,
-        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply c c, if_pos rfl, mul_one]
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply c c, ite_eq_left rfl, mul_one]
     · intro k _ hkc
       rw [map_smul, Finsupp.smul_apply, smul_eq_mul,
-        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply k c, if_neg hkc, mul_zero]
+        (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self_apply k c, ite_eq_right hkc, mul_zero]
   rw [Finset.sum_congr rfl (fun c (_ : c ∈ Finset.univ) =>
     congrArg (fun t => chartTransitionJacobianEntry (I := I) α β x a c * t) (hcorrCoord c))]
   set D : Fin (Module.finrank ℝ E) → ℝ := fun d =>
@@ -1726,9 +1726,9 @@ lemma fderiv_chartTransitionAt_apply_eq_pushCorrection [I.Boundaryless]
           rw [chartTransitionJacobianEntry_reverse_mul_sum (I := I) α β hx a d]
     _ = D a := by
           rw [Finset.sum_eq_single_of_mem a (Finset.mem_univ a)]
-          · rw [if_pos rfl, one_mul]
+          · rw [ite_eq_left rfl, one_mul]
           · intro k _ hka
-            rw [if_neg (fun h => hka h.symm), zero_mul]
+            rw [ite_eq_right (fun h => hka h.symm), zero_mul]
 
 end Geodesic
 end Riemannian

@@ -17,17 +17,17 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 universe u
 
 theorem exists_closedCell_homeomorph_of_range_eq {M : Type} [TopologicalSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → M)
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → M)
     (hψ : IsEmbedding ψ) (d : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → M)
     (hd : IsEmbedding d) (hrange : range d = range ψ) :
-    ∃ Ext : stdSimplex ℝ (Fin 4) ≃ₜ ClosedCell 3,
+    ∃ Ext : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ≃ₜ ClosedCell 3,
       (∀ z, ‖(Ext z : EuclideanSpace ℝ (Fin 3))‖ = 1 ↔ z.val ∈ stdSimplexBoundary 3) ∧
-      ∀ (z : {z : stdSimplex ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3})
+      ∀ (z : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3})
         (u : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1),
         (u : EuclideanSpace ℝ (Fin 3)) = Ext z.val → d u = ψ z := by
   classical
   let c₀ := DifferentialGeometry.Cell.stdSimplexClosedCellHomeomorph 3
-  have hcb : ∀ x : stdSimplex ℝ (Fin 4),
+  have hcb : ∀ x : Convexity.StdSimplex.coordinateSet ℝ (Fin 4),
       ‖((c₀ x : ClosedCell 3) : EuclideanSpace ℝ (Fin 3))‖ = 1 ↔
         x.val ∈ stdSimplexBoundary 3 := by
     intro x
@@ -36,7 +36,7 @@ theorem exists_closedCell_homeomorph_of_range_eq {M : Type} [TopologicalSpace M]
     simpa [stdSimplexBoundary, DifferentialGeometry.Simplex.boundary] using
       (DifferentialGeometry.Simplex.stdSimplexNormedBallHomeomorph_mem_sphere_iff
         (e := (EuclideanSpace.equiv (Fin 3) ℝ).symm) x)
-  let a₀ : {z : stdSimplex ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} ≃ₜ
+  let a₀ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} ≃ₜ
       Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 :=
     hψ.toHomeomorph.trans ((Homeomorph.setCongr hrange.symm).trans hd.toHomeomorph.symm)
   have ha₀ : ∀ z, d (a₀ z) = ψ z := by
@@ -44,7 +44,7 @@ theorem exists_closedCell_homeomorph_of_range_eq {M : Type} [TopologicalSpace M]
     have h := hd.toHomeomorph.apply_symm_apply
       ((Homeomorph.setCongr hrange.symm) (hψ.toHomeomorph z))
     exact congrArg Subtype.val h
-  let c₀B : {z : stdSimplex ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} ≃ₜ CellBoundary 3 :=
+  let c₀B : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} ≃ₜ CellBoundary 3 :=
     { toFun := fun z => ⟨(c₀ z.val : EuclideanSpace ℝ (Fin 3)), (hcb _).mpr z.2⟩
       invFun := fun u => ⟨c₀.symm (cellBoundaryInclusion 3 u), (hcb _).mp (by
         rw [Homeomorph.apply_symm_apply]
@@ -87,20 +87,20 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 theorem isSmoothHandleStage_adjunction_three
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
     [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → M)
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → M)
     (hψ : IsClosedEmbedding ψ) (d : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → M)
     (hd : IsSmoothEmbedding (𝓡 2) (𝓡∂ 3) ∞ d) (hdbd : range d ⊆ (𝓡∂ 3).boundary M)
     (hrange : range d = range ψ) :
-    IsSmoothHandleStage (AdjunctionSpace (Subtype.val : _ → stdSimplex ℝ (Fin 4)) ψ)
+    IsSmoothHandleStage (AdjunctionSpace (Subtype.val : _ → Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) ψ)
       (adjunctionLower ψ '' ((𝓡∂ 3).boundary M \ range ψ)) := by
   obtain ⟨a, V, θ, Θ, ha, hV, -, hθV, hΘV, hΘθ, hθΘ, hΘd, hθs, hΘs⟩ :=
     exists_radialCollar_of_isSmoothEmbedding_sphere d hd hdbd
   obtain ⟨Ext, hExt1, hExt2⟩ :=
     exists_closedCell_homeomorph_of_range_eq ψ hψ.isEmbedding d hd.isEmbedding hrange
-  have hA : CompactSpace {z : stdSimplex ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} :=
+  have hA : CompactSpace {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} :=
     hψ.compactSpace
   have hi : IsClosedEmbedding (Subtype.val :
-      {z : stdSimplex ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → stdSimplex ℝ (Fin 4)) :=
+      {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) :=
     continuous_subtype_val.isClosedEmbedding Subtype.val_injective
   refine isSmoothHandleStage_adjunction_of_radialCollar hi hψ Ext (fun z => ?_) ha hV hθV hΘV
     hΘθ hθΘ (fun z => ?_) hθs hΘs

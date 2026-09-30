@@ -166,10 +166,10 @@ theorem entropy_support_le
     · filter_upwards with x
       dsimp only [ρ, X]
       by_cases hx : w x = 0
-      · simp only [hx, ENNReal.ofReal_zero, ENNReal.toReal_zero, if_pos,
+      · simp only [hx, ENNReal.ofReal_zero, ENNReal.toReal_zero, ite_eq_left,
           smul_eq_mul, zero_mul, norm_zero]
         exact zero_le_one
-      · simp only [ENNReal.toReal_ofReal (hw0 x), if_neg hx, smul_eq_mul,
+      · simp only [ENNReal.toReal_ofReal (hw0 x), ite_eq_right hx, smul_eq_mul,
           mul_inv_cancel₀ hx, norm_one, le_refl]
   have hlogint : Integrable (fun x => Real.log (X x)) ν := by
     rw [show ν = μ.withDensity ρ by rfl]
@@ -179,7 +179,7 @@ theorem entropy_support_le
     dsimp only [ρ, X]
     by_cases hx : w x = 0
     · simp [hx]
-    · simp only [ENNReal.toReal_ofReal (hw0 x), if_neg hx, smul_eq_mul,
+    · simp only [ENNReal.toReal_ofReal (hw0 x), ite_eq_right hx, smul_eq_mul,
         Real.log_inv, Pi.neg_apply]
       ring
   have hlogeq :
@@ -191,9 +191,9 @@ theorem entropy_support_le
     filter_upwards with x
     dsimp only [ρ, X]
     by_cases hx : w x = 0
-    · simp only [hx, ENNReal.ofReal_zero, ENNReal.toReal_zero, if_pos,
+    · simp only [hx, ENNReal.ofReal_zero, ENNReal.toReal_zero, ite_eq_left,
         smul_eq_mul, zero_mul, Real.log_one, neg_zero]
-    · simp only [ENNReal.toReal_ofReal (hw0 x), if_neg hx, smul_eq_mul,
+    · simp only [ENNReal.toReal_ofReal (hw0 x), ite_eq_right hx, smul_eq_mul,
         Real.log_inv]
       ring
   let S : Set α := {x | w x ≠ 0}
@@ -212,13 +212,13 @@ theorem entropy_support_le
         by_cases hx : w x = 0
         · have hxS : x ∉ {y | w y ≠ 0} := fun hne => hne hx
           rw [Set.indicator_of_notMem hxS]
-          simp only [hx, ENNReal.ofReal_zero, ENNReal.toReal_zero, if_pos,
+          simp only [hx, ENNReal.ofReal_zero, ENNReal.toReal_zero, ite_eq_left,
             smul_eq_mul, zero_mul]
         · have hxS : x ∈ {y | w y ≠ 0} := by
             change w x ≠ 0
             exact hx
           rw [Set.indicator_of_mem hxS]
-          simp only [ENNReal.toReal_ofReal (hw0 x), if_neg hx, smul_eq_mul,
+          simp only [ENNReal.toReal_ofReal (hw0 x), ite_eq_right hx, smul_eq_mul,
             mul_inv_cancel₀ hx]
       _ = (μ S).toReal := integral_indicator_one hS
   have hJ := int_log_le_moment (ν := ν) (X := X) (p := (1 : Real))

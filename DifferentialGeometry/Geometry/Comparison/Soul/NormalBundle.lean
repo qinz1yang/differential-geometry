@@ -171,17 +171,17 @@ private def pretrivialization : Pretrivialization FN
       right_inv' := ?_ }
   · rintro ⟨q, v⟩ hq
     change q.1 ∈ D.domain at hq
-    simp only [dif_pos hq, LinearEquiv.apply_symm_apply]
+    simp only [dite_eq_left hq, LinearEquiv.apply_symm_apply]
   · rintro ⟨q, v⟩ ⟨hq, _⟩
     change q.1 ∈ D.domain at hq
-    simp only [dif_pos hq, LinearEquiv.symm_apply_apply]
+    simp only [dite_eq_left hq, LinearEquiv.symm_apply_apply]
 
 private theorem pretrivialization_apply (q : S) (hq : q.1 ∈ D.domain)
     (v : normalBundleFiber g S q) :
     D.pretrivialization hB ⟨q, v⟩ = (q, (D.equiv hB q hq).symm v) := by
   classical
   change (q, if h : q.1 ∈ D.domain then (D.equiv hB q h).symm v else 0) = _
-  rw [dif_pos hq]
+  rw [dite_eq_left hq]
 
 private theorem pretrivialization_symm (q : S) (hq : q.1 ∈ D.domain) (v : FN) :
     (D.pretrivialization hB).symm q v = D.equiv hB q hq v := by

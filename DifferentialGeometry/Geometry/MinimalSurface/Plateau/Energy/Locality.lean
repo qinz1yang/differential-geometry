@@ -17,6 +17,7 @@ theorem diskMapEnergyDensity_congr_of_eventuallyEq
     (h : U =ᶠ[𝓝 z] W) : diskMapEnergyDensity g U z = diskMapEnergyDensity g W z := by
   unfold diskMapEnergyDensity diskMapPartial
   erw [h.mfderiv_eq, h.eq_of_nhds]
+  rfl
 
 theorem riemannianDiskEnergy_eq_integral_of_eqOn_openDisk
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {u : closedDisk → M} {U : ℂ → M}

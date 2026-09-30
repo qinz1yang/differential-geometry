@@ -244,7 +244,7 @@ private theorem necklace_angle_cosine {u v w δ : ℝ} (hu : 0 < u) (hv : 0 < v)
     (huv : u ≤ 2 * v) (hvu : v ≤ 2 * u) (hδ0 : 0 ≤ δ) (hδ1 : δ ≤ 1)
     (hw : (1 - δ) * (u + v) ≤ w) :
     Real.arccos (9 / 2 * δ - 1) ≤ comparisonAngle u v w := by
-  unfold comparisonAngle
+  unfold comparisonAngle comparisonCosine
   apply Real.arccos_le_arccos
   rw [div_le_iff₀ (by positivity)]
   have hs : 0 ≤ (1 - δ) * (u + v) := mul_nonneg (by linarith) (by linarith)

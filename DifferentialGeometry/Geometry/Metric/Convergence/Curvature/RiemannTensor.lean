@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelBounds
+import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.CoordinateBounds
 import DifferentialGeometry.Topology.UniformConvergence
 
@@ -119,7 +121,7 @@ theorem exists_abs_chartRiemannTensor_sub_le
   obtain ⟨Q, hQ0, hQ⟩ := chartGram_partial_bound_riem (I := I) gRef α hK hKchart B
   obtain ⟨Mb, hMb0, hMb⟩ := exists_abs_chartInvGramMatrix_le_of_lower_bound (I := I) gRef α hK
     (by rwa [trivializationAt_baseSet_eq_chartAt_source]) lam hlam
-  obtain ⟨CJ, hCJ0, hCJ⟩ := exists_chartMetricJet2DiffSup_le (I := I) gRef α hK hKchart
+  obtain ⟨CJ, hCJ0, hCJ⟩ := exists_chartMetricJet2DiffSum_le (I := I) gRef α hK hKchart
   set nR : Real := (Module.finrank Real E : Real) with hnR
   have hnR0 : 0 ≤ nR := Nat.cast_nonneg _
   set P : Real := 3 * Q with hP
@@ -167,10 +169,10 @@ theorem exists_abs_chartRiemannTensor_sub_le
     exact hMb y hy u' (hlowu' y hy) a b
   have hCinv' : ∀ a b : Fin (Module.finrank Real E),
       |chartInvGramOnE (I := I) u α a b z - chartInvGramOnE (I := I) u' α a b z| ≤
-        Cinv * chartGramDiffSup (I := I) (M := M) u u' α ((extChartAt I α).symm z) := by
+        Cinv * DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) u u' α ((extChartAt I α).symm z) := by
     intro a b
     rw [chartInvGramOnE_def, chartInvGramOnE_def, hψ]
-    have h := chartInvGramMatrix_entry_sub_abs_le_gramDiffSup (I := I) (M := M)
+    have h := chartInvGramMatrix_entry_sub_abs_le_chartGramDiffSum (I := I) (M := M)
       u u' α hybase
       (fun p q => hMb y hy u (hlowu y hy) p q)
       (fun p q => hMb y hy u' (hlowu' y hy) p q) a b
@@ -200,7 +202,7 @@ theorem exists_abs_chartRiemannTensor_sub_le
   have hCd' : ∀ d a b : Fin (Module.finrank Real E),
       |partialDeriv (E := E) d (chartInvGramOnE (I := I) u α a b) z -
         partialDeriv (E := E) d (chartInvGramOnE (I := I) u' α a b) z| ≤
-        Cd * chartMetricJet1DiffSup (I := I) (M := M) u u' α z := by
+        Cd * DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) u u' α z := by
     intro d a b
     have h := partialDeriv_chartInvGramOnE_sub_abs_le (I := I) (M := M)
       u u' α hzint hMb0 hQ0 hCinv0 hMbu hMbu' hQu hCinv' d a b
@@ -209,7 +211,7 @@ theorem exists_abs_chartRiemannTensor_sub_le
   have hClip' : ∀ a b c : Fin (Module.finrank Real E),
       |chartChristoffel (I := I) u α a b c z -
         chartChristoffel (I := I) u' α a b c z| ≤
-        Clip * chartMetricJet1DiffSup (I := I) (M := M) u u' α z := by
+        Clip * DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) u u' α z := by
     intro a b c
     have h := chartChristoffel_sub_abs_le (I := I) (M := M)
       u u' α hP0 hMb0 hMbu' hPu hCinv' hCinv0 a b c
@@ -218,7 +220,7 @@ theorem exists_abs_chartRiemannTensor_sub_le
   have hCdiff' : ∀ d a b c : Fin (Module.finrank Real E),
       |partialDeriv (E := E) d (chartChristoffel (I := I) u α a b c) z -
         partialDeriv (E := E) d (chartChristoffel (I := I) u' α a b c) z| ≤
-        Cdiff * chartMetricJet2DiffSup (I := I) (M := M) u u' α z := by
+        Cdiff * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) u u' α z := by
     intro d a b c
     have h := partialDeriv_chartChristoffel_sub_abs_le (I := I) (M := M)
       u u' α hzint hCd0 hCinv0 hMb0 hP0 hD0 hR0 d a b c
@@ -242,12 +244,12 @@ theorem exists_abs_chartRiemannTensor_sub_le
     exact h
   have hD1 := hCdiff' j i k l
   have hD2 := hCdiff' k i j l
-  set jet2 : Real := chartMetricJet2DiffSup (I := I) (M := M) u u' α z with hjet
-  have hjet0 : 0 ≤ jet2 := chartMetricJet2DiffSup_nonneg _ _ _ _
-  have hjet1 : chartMetricJet1DiffSup (I := I) (M := M) u u' α z ≤ jet2 :=
-    chartMetricJet1DiffSup_le_jet2 (I := I) (M := M) u u' α z
-  have hjet10 : 0 ≤ chartMetricJet1DiffSup (I := I) (M := M) u u' α z :=
-    chartMetricJet1DiffSup_nonneg _ _ _ _
+  set jet2 : Real := DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) u u' α z with hjet
+  have hjet0 : 0 ≤ jet2 := DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_nonneg _ _ _ _
+  have hjet1 : DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) u u' α z ≤ jet2 :=
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum_le_chartMetricJet2DiffSum (I := I) (M := M) u u' α z
+  have hjet10 : 0 ≤ DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) u u' α z :=
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum_nonneg _ _ _ _
   have hsum : ∀ m : Fin (Module.finrank Real E),
       |chartChristoffel (I := I) u α j m l z * chartChristoffel (I := I) u α i k m z -
           chartChristoffel (I := I) u' α j m l z * chartChristoffel (I := I) u' α i k m z| +

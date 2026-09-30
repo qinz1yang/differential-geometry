@@ -43,14 +43,14 @@ def concentrate (f : SmoothPartitionOfUnity ι I M s) (i₀ : ι)
     rw [finsum_eq_sum_of_fintype]
     change ∑ i, ((1 - β x) * f i x + if i = i₀ then β x else 0) = 1
     simp only [Finset.sum_add_distrib, ← Finset.mul_sum,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true,
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true,
       show ∑ i, f i x = 1 by simpa only [finsum_eq_sum_of_fintype] using f.sum_eq_one hx,
       mul_one, sub_add_cancel]
   · intro x
     rw [finsum_eq_sum_of_fintype]
     change ∑ i, ((1 - β x) * f i x + if i = i₀ then β x else 0) ≤ 1
     simp only [Finset.sum_add_distrib, ← Finset.mul_sum,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     have hf : ∑ i, f i x ≤ 1 := by simpa only [finsum_eq_sum_of_fintype] using f.sum_le_one x
     nlinarith [mul_le_mul_of_nonneg_left hf (sub_nonneg.mpr (hβ x).2)]
 
@@ -78,7 +78,7 @@ theorem isSubordinate_concentrate (f : SmoothPartitionOfUnity ι I M s) (i₀ : 
   apply Set.union_subset
   · exact (tsupport_mul_subset_right).trans (hf i)
   · by_cases hi : i = i₀
-    · simpa only [hi, if_true] using hs
+    · simpa only [hi, ite_true] using hs
     · simp only [hi, ↓reduceIte]
       change tsupport (0 : M → ℝ) ⊆ U i
       rw [tsupport_zero]

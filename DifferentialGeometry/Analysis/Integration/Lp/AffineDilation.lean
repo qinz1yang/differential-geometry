@@ -52,9 +52,6 @@ theorem tendsto_eLpNorm_comp_add_smul_sub_on_ball
   have hSlim (x : E) : Tendsto (fun n => S n x) atTop (𝓝 x) := by
     simpa only [S, sub_self, zero_smul, one_smul, zero_add] using
       (((tendsto_const_nhds (x := (1 : ℝ))).sub hrlim).smul_const c).add (hrlim.smul_const x)
-  have hfm (n : ℕ) : MemLp (fun x => f (S n x)) 2 volume := by
-    have h := hf.mono_measure (map_affine_le_volume_of_one_le ((1 - rn n) • c) (hrn n))
-    exact h.comp_of_map (hSc n).measurable.aemeasurable
   apply ENNReal.tendsto_nhds_zero.mpr
   intro ε hε
   by_cases hεtop : ε = ∞
@@ -101,15 +98,12 @@ theorem tendsto_eLpNorm_comp_add_smul_sub_on_ball
     change eLpNorm ((g : E → F) - f) 2 μ ≤ _
     rw [eLpNorm_sub_comm]
     exact (eLpNorm_mono_measure _ Measure.restrict_le_self).trans hfg
-  have hgmSn : MemLp (fun x => g (S n x)) 2 volume :=
-    (hgm.mono_measure (map_affine_le_volume_of_one_le ((1 - rn n) • c) (hrn n))).comp_of_map
-      (hSc n).measurable.aemeasurable
-  have htri := eLpNorm_add_le
-    (((hfm n).sub hgmSn).restrict (Metric.ball c R)).aestronglyMeasurable
-    ((hgmSn.sub hgm).restrict (Metric.ball c R)).aestronglyMeasurable (by norm_num : 1 ≤ (2 : ℝ≥0∞))
-  have htri' := eLpNorm_add_le
-    ((((hfm n).sub hgmSn).add (hgmSn.sub hgm)).restrict (Metric.ball c R)).aestronglyMeasurable
-    ((hgm.sub hf).restrict (Metric.ball c R)).aestronglyMeasurable (by norm_num : 1 ≤ (2 : ℝ≥0∞))
+  have htri := eLpNorm_add_le (μ := μ)
+    (f := fun x => f (S n x) - g (S n x)) (g := fun x => g (S n x) - g x)
+    (by norm_num : 1 ≤ (2 : ℝ≥0∞))
+  have htri' := eLpNorm_add_le (μ := μ)
+    (f := (fun x => f (S n x) - g (S n x)) + (fun x => g (S n x) - g x))
+    (g := fun x => g x - f x) (by norm_num : 1 ≤ (2 : ℝ≥0∞))
   have hbound : eLpNorm (fun x => f (S n x) - f x) 2 μ ≤
       ENNReal.ofReal δ + ENNReal.ofReal δ + ENNReal.ofReal δ := by
     calc

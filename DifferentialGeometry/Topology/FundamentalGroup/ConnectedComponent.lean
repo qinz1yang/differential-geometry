@@ -1,5 +1,7 @@
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Topology.Connected.Clopen
+import DifferentialGeometry.Topology.Connected.ComponentIn
+import DifferentialGeometry.Topology.FundamentalGroup.HomotopyEquiv
 
 set_option autoImplicit false
 
@@ -8,6 +10,13 @@ noncomputable section
 namespace DifferentialGeometry.Topology
 
 universe u
+
+theorem simplyConnectedSpace_connectedComponentIn_iff
+    {X : Type*} [TopologicalSpace X] {U : Set X} {x : X} (hx : x ∈ U) :
+    SimplyConnectedSpace (connectedComponentIn U x) ↔
+      SimplyConnectedSpace (connectedComponent (⟨x, hx⟩ : U)) :=
+  (ContinuousMap.HomotopyEquiv.simplyConnectedSpace_iff
+    (connectedComponentHomeomorphConnectedComponentIn hx).toHomotopyEquiv).symm
 
 theorem surjective_fundamentalGroup_connectedComponent
     {X : Type u} [TopologicalSpace X] (x : X) :

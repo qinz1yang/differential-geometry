@@ -122,11 +122,11 @@ section Gluing
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
 
 theorem exists_isPLHomeomorphOn_union_of_inter_eq_arc {Δ Z α : Set F}
-    {q r : (Fin 3 → ℝ) → F} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Δ)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Z) {γ : ℝ → F}
+    {q r : (Fin 3 → ℝ) → F} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Z) {γ : ℝ → F}
     (hγ : IsPLHomeomorphOn γ (Icc 0 1) α) (hΔZ : Δ ∩ Z = α)
     (hαΔ : α ⊆ q '' stdSimplexBoundary 2) (hαZ : α ⊆ r '' stdSimplexBoundary 2) :
-    ∃ q' : (Fin 3 → ℝ) → F, IsPLHomeomorphOn q' (stdSimplex ℝ (Fin 3)) (Δ ∪ Z) ∧
+    ∃ q' : (Fin 3 → ℝ) → F, IsPLHomeomorphOn q' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (Δ ∪ Z) ∧
       q' '' stdSimplexBoundary 2 =
         (q '' stdSimplexBoundary 2 ∪ r '' stdSimplexBoundary 2) \ (α \ {γ 0, γ 1}) := by
   classical

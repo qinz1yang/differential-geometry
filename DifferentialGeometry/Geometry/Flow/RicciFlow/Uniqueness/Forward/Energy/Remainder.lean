@@ -11,8 +11,10 @@ set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffAt metricDiffAt_apply metricDiffSq metricDiffSq_def traceNormSq_le)
+
 open Bundle DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
@@ -239,7 +241,7 @@ private theorem rem_repr_inner {Idx : Type*} [Finite Idx] [DecidableEq Idx]
     rw [metricTensorField_apply]
     simpa using hON l k
   simp only [hbb, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
 end ReLowerRemainder
 
@@ -257,7 +259,7 @@ theorem metricDiffSwap_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
       metricDiffAt (I := I) g₂ g₁ x = -metricDiffAt (I := I) g₁ g₂ x := by
     dsimp only [metricDiffAt]
     abel
-  rw [metricDiffSq_def, metricDiffSq_def, hswap, Tensor0SBundle.normSq0S_neg]
+  rw [metricDiffSq_def, metricDiffSq_def, hswap, DifferentialGeometry.Tensor0SBundle.normSq0S_neg]
   exact normSq0S_upper_le_of_equiv (I := I) g₁ g₂ x 2 hC hequiv _
 
 variable [NeZero (Module.finrank Real E)]
@@ -435,7 +437,7 @@ theorem lowerTriSwapSq_le (g₁ g₂ : SmoothRiemannianMetric I M)
           (normSq0S (I := I) g₂ x 4
               (lowerTri (I := I) (metricTensorField (I := I) g₂ x) A) *
             metricDiffSq (I := I) g₂ g₁ x) := by
-    rw [hlow, Tensor0SBundle.normSq0S_neg]
+    rw [hlow, DifferentialGeometry.Tensor0SBundle.normSq0S_neg]
     exact hraw
   calc
     normSq0S (I := I) g₁ x 4

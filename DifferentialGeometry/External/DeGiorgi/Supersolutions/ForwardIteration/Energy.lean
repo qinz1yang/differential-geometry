@@ -31,10 +31,8 @@ private theorem integrable_half_mul_add_two_mul
     {μ : Measure α} {f g : α → ℝ} (Λ : ℝ)
     (hf : Integrable f μ) (hg : Integrable g μ) :
     Integrable (fun x => (1 / 2 : ℝ) * g x + 2 * Λ * f x) μ := by
+  rw [real_continuousENorm_eq]
   convert (hg.const_mul (1 / 2 : ℝ)).add (hf.const_mul (2 * Λ)) using 1
-  · exact real_continuousENorm_eq
-  · funext x
-    rfl
 
 private theorem integrable_of_ae_nonneg_le
     {α : Type*} [MeasurableSpace α]
@@ -402,9 +400,8 @@ theorem superPowerCutoffFwd_energy_bound_reg
   have hcrossInner_int :
       Integrable crossInner μ := by
     convert hcore_int.add hleft_int using 1
-    · exact real_continuousENorm_eq
-    · funext x
-      simp [coreIntegrand]
+    funext x
+    simp [coreIntegrand]
   have hcrossInner_abs_le :
       ∀ᵐ x ∂μ, |crossInner x| ≤ crossAbs x := by
     filter_upwards with x
@@ -590,9 +587,6 @@ theorem superPowerCutoffFwd_energy_bound_reg
     have hupper_int :
         Integrable (fun x => 2 * termAfun x + 2 * termBfun x) μ := by
       convert (hTermA_int.const_mul (2 : ℝ)).add (hTermB_int.const_mul (2 : ℝ)) using 1
-      · exact real_continuousENorm_eq
-      · funext x
-        rfl
     have hmono :
         ∫ x, ‖hwv.weakGrad x‖ ^ 2 ∂μ ≤
           ∫ x, 2 * termAfun x + 2 * termBfun x ∂μ := by
@@ -884,8 +878,6 @@ theorem superPowerCutoffFwd_memW1p_energy_of_supersolution_core
             continuous_const).aestronglyMeasurable)
       have hprod := hcoord_meas.mul hHhalf_memLp.aestronglyMeasurable
       convert hprod using 1
-      funext x
-      rfl
     · filter_upwards with x
       have hcoord_le :
           |(fderiv ℝ η x) (EuclideanSpace.single i 1)| ≤ Cη := by
@@ -934,8 +926,6 @@ theorem superPowerCutoffFwd_memW1p_energy_of_supersolution_core
             (superEpsSeq_pos n) hu).aestronglyMeasurable
       have hprod := hcoord_meas.mul hshift_meas
       convert hprod using 1
-      funext x
-      rfl
     · filter_upwards [ae_restrict_mem Metric.isOpen_ball.measurableSet] with x hx
       have hux : 0 < u x := hu_pos x (hΩ_sub hx)
       have hshift_nonneg :
@@ -1056,8 +1046,6 @@ theorem superPowerCutoffFwd_memW1p_energy_of_supersolution_core
     intro n i
     have hsub := ((wfn n).weakGrad_component_memLp i).sub (hBn_memLp n i)
     convert hsub using 1
-    funext x
-    rfl
   have hAsingSeq_formula :
       ∀ n i x,
         AsingSeq n i x =
@@ -1240,9 +1228,6 @@ theorem superPowerCutoffFwd_memW1p_energy_of_supersolution_core
         Integrable (fun x => 2 * ‖(wfn n).weakGrad x‖ ^ 2 + 2 * (Bn n i x) ^ 2) μ := by
       convert ((wfn n).weakGrad_norm_memLp.integrable_sq.const_mul (2 : ℝ)).add
           ((hBn_memLp n i).integrable_sq.const_mul (2 : ℝ)) using 1
-      · exact real_continuousENorm_eq
-      · funext x
-        rfl
     calc
       ∫ x in Ω, (AsingSeq n i x) ^ 2 ∂volume
           = ∫ x, (AsingSeq n i x) ^ 2 ∂μ := by simp [μ]
@@ -1385,8 +1370,6 @@ theorem superPowerCutoffFwd_memW1p_energy_of_supersolution_core
       ring
     rw [hEq]
     convert (hAsing_fun_memLp n i).add (hBn_fun_memLp n i) using 1
-    funext x
-    rfl
   have hGn_tendsto :
       ∀ i : Fin d,
         Filter.Tendsto (fun n => eLpNorm (fun x => Gn n i x - gComp i x) 2 μ)
@@ -1406,13 +1389,11 @@ theorem superPowerCutoffFwd_memW1p_energy_of_supersolution_core
         dsimp [Gn, gComp, AsingSeq]
         ring
       rw [hEq]
-      have hadd := eLpNorm_add_le (p := (2 : ENNReal)) (μ := μ)
-        (hAsing_fun_memLp n i).aestronglyMeasurable
-        (hBn_fun_memLp n i).aestronglyMeasurable (by norm_num)
+      have hadd := eLpNorm_add_le
+        (f := fun x => AsingSeq n i x - Asing i x)
+        (g := fun x => Bn n i x - B i x)
+        (p := (2 : ENNReal)) (μ := μ) (by norm_num)
       convert hadd using 1
-      apply congrArg (fun h : E → ℝ => eLpNorm h 2 μ)
-      funext x
-      rfl
     have hsum_tendsto :
         Filter.Tendsto rhs Filter.atTop (nhds 0) := by
       simpa [rhs] using (hAsing_tendsto i).add (hBn_tendsto i)
@@ -1431,8 +1412,6 @@ theorem superPowerCutoffFwd_memW1p_energy_of_supersolution_core
       rw [hEq]
       have hsum : MemLp (fun x => Asing i x + B i x) 2 μ := by
         convert (hAsing_memLp i).add (hB_memLp i) using 1
-        funext x
-        rfl
       simpa using hsum
     have hGn_isWeak : ∀ n, HasWeakPartialDeriv i (Gn n i) (fn n) Ω := by
       intro n
@@ -1478,8 +1457,6 @@ theorem superPowerCutoffFwd_memW1p_energy_of_supersolution_core
           simp [gComp]
         rw [hEq']
         convert (hAsing_memLp i).add (hB_memLp i) using 1
-        funext x
-        rfl
       simpa using hgComp_memLp
     isWeakGrad := by
       intro i

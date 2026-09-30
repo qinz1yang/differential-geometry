@@ -69,7 +69,7 @@ theorem gradSq_joint
       ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun q : Real × M => dF q i) p := by
     simpa only [dF] using
-      DifferentialGeometry.prodExtDerivAt_smooth hF
+      DifferentialGeometry.contMDiffAt_partial_mvfderiv_apply_infty hF
         (hframe.contMDiffAt e.open_baseSet hxe i)
   have det_smooth
       (N : (Real × M) -> Matrix Idx Idx Real)
@@ -221,7 +221,7 @@ theorem normGradSq_time {x : M} {t : Real}
         (fun r : Real => A r (fun _ : Fin 1 => X))
         (Adot (fun _ : Fin 1 => X)) t := by
     simpa only [A, Adot, differential1FormFun_apply_eq_mvfderiv] using hdf X
-  have hbase := normSq_one_time (I := I) g Q A Adot hg hA
+  have hbase := hasDerivAt_normSq0S_one_of_metric_variation (I := I) g Q A Adot hg hA
   have hsharp (m : SmoothRiemannianMetric I M) (u : M -> Real) :
       cotangentSharp (I := I) m x (differential1FormFun (I := I) u x) =
         gradientFun (I := I) m u x := by

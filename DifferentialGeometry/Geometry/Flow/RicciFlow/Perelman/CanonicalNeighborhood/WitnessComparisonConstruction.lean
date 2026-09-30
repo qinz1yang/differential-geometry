@@ -220,7 +220,7 @@ def MetricComparisonOn.singleton
     exact C.jet_zero s y v
   · intro q s hs y _hy v
     obtain rfl := mem_singleton_iff.mp hs
-    simp only [jet, if_neg (Nat.add_one_ne_zero q)]
+    simp only [jet, ite_eq_right (Nat.add_one_ne_zero q)]
     change 0 = derivWithin (fun a => (if q = 0 then C.jet 0 a else 0) y v) {s} s
     symm
     apply derivWithin_zero_of_not_accPt
@@ -232,10 +232,10 @@ def MetricComparisonOn.singleton
   · intro a b hab s hs y hy
     obtain rfl := mem_singleton_iff.mp hs
     by_cases hb : b = 0
-    · simpa only [jet, if_pos hb] using C.close a 0 (by omega) _ ht y hy
+    · simpa only [jet, ite_eq_left hb] using C.close a 0 (by omega) _ ht y hy
     · have heps : 0 ≤ eps :=
         (Real.sqrt_nonneg _).trans (C.close 0 0 (by omega) _ ht y hy)
-      simp only [jet, if_neg hb]
+      simp only [jet, ite_eq_right hb]
       rw [tensor02CovDerivNormWith, tensor02_cov_deriv_eq_cov_deriv_of_field,
         covDerivOfField_zero_tensor]
       simpa only [ContMDiffSection.coe_zero, Pi.zero_apply, normSq0S, inner0S,

@@ -4,6 +4,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.FirstD
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.IntegratedSecondOrder
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -127,7 +128,7 @@ theorem exists_nonnegative_gardingBootstrapCoeff
   have hBsucc : ∀ n, B (n + 2) = K * (∑ i ∈ Finset.range (n + 2), B i) + 1 := by
     intro n
     rw [show B (n + 2) = (Bpair (n + 2)).1 from rfl, hBfst_succ (n + 1)]
-    simp only [Nat.succ_ne_zero, if_false]
+    simp only [Nat.succ_ne_zero, ite_false]
     rw [hBpair_sum (n + 1)]
   have hB_nonneg : ∀ p, 0 ≤ B p := by
     intro p

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Restart.SolutionBo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Limit.Smooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Limit.CurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.LinearAlgebra
+import DifferentialGeometry.Geometry.Metric.MetricFiberData.Hom
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.Product

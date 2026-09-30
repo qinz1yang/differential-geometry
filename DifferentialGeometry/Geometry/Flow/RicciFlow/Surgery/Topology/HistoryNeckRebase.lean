@@ -338,7 +338,7 @@ private theorem NormalizedNeck.normalizedMetric_scalar_center
   have hlocal : IsLocalDiffeomorph NeckCylinderModel ThreeModel ∞ N.chart :=
     DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv N.chart
       N.chart_smooth.contMDiff
-      (fun x => (N.chart_smooth.isImmersion.isImmersionAt x).injective_mfderiv (by simp))
+      (fun x => (N.chart_smooth.isImmersion.isImmersionAt x).mfderiv_injective (by simp))
       (by simp [ThreeSpace])
   have heq : N.normalizedMetric = localPullMetric (scaleMetric N.scale N.scale_pos g) N.chart hlocal := by
     apply SmoothRiemannianMetric.ext_inner
@@ -613,7 +613,7 @@ private theorem eventually_exists_lift_before_of_nhds_le
     intro z hz
     refine ⟨mem_univ _, ?_⟩
     have hz' : s + z.2 / q < s := hz.2
-    have hdiv : z.2 / q < 0 := (add_lt_iff_neg_left).mp hz'
+    have hdiv : z.2 / q < 0 := (add_lt_iff_neg_left s).mp hz'
     exact (div_lt_iff₀ hq).mp hdiv |>.trans_eq (zero_mul q)
   have h := eventually_exists_lift_nhdsWithin hmap hpre hP
   simp only [Prod.map_apply, zero_div, add_zero] at h

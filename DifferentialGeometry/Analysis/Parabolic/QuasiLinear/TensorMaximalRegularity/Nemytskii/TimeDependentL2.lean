@@ -64,7 +64,7 @@ theorem memLp_time_tame_of_timeL2
       _ = major t := rfl
   have hmajor0 : 0 ≤ major t := by dsimp only [major]; positivity
   change ‖N t (aeSetLift hzero f t)‖ ≤ ‖major t‖
-  have hu : aeSetLift hzero f t = u := by simp only [aeSetLift, dif_pos ht, u]
+  have hu : aeSetLift hzero f t = u := by simp only [aeSetLift, dite_eq_left ht, u]
   rw [hu, Real.norm_eq_abs, abs_of_nonneg hmajor0]
   exact hn
 
@@ -137,7 +137,7 @@ theorem timeNemyTameL2_sub_norm_le
     filter_upwards [Lp.coeFn_sub F G, hF, hG, hf, hg, htame,
       Lp.coeFn_sub f g, hpoint] with t hFG hFt hGt hft hgt hNt hfg hp
     rw [hFG, Pi.sub_apply, hFt, hGt]
-    simp only [aeSetLift, dif_pos hft, dif_pos hgt]
+    simp only [aeSetLift, dite_eq_left hft, dite_eq_left hgt]
     have hraw := hNt ⟨f t, hft⟩ ⟨g t, hgt⟩
     have hfg' : f t - g t = (f - g) t := hfg.symm
     simp only [hfg'] at hraw

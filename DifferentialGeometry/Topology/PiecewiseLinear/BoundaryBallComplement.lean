@@ -69,7 +69,7 @@ theorem isPLBall_closure_sdiff_of_boundary_disk
   obtain ⟨g, hg⟩ := hR
   have hK : IsPLBall 3 K.space := ⟨f, hf⟩
   have hR : IsPLBall 3 R.space := ⟨g, hg⟩
-  let u := g ∘ Function.invFunOn f (stdSimplex ℝ (Fin 4))
+  let u := g ∘ Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 4))
   have hu : IsPLHomeomorphOn u K.space R.space := hf.symm.trans hg
   have hA' := hA.of_isPLHomeomorphOn (hu.restrict hA.isPolyhedron hAK)
   have hD' : IsPLBall 2 ((u '' A) ∩ (boundaryComplex 3 R).space) := by

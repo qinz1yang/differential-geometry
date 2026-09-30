@@ -59,11 +59,11 @@ theorem exists_complementary_arcs_of_or {S β A B : Set F} (hS : IsPLSphere 1 S)
 end Arc
 
 theorem IsPLBall.exists_pocket_of_inter_eq_boundary {B Z : Set E3} (hB : IsPLBall 3 B)
-    {qZ : (Fin 3 → ℝ) → E3} (hqZ : IsPLHomeomorphOn qZ (stdSimplex ℝ (Fin 3)) Z)
+    {qZ : (Fin 3 → ℝ) → E3} (hqZ : IsPLHomeomorphOn qZ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Z)
     (hZB : Z ∩ B = qZ '' stdSimplexBoundary 2) (hZf : qZ '' stdSimplexBoundary 2 ⊆ frontier B) :
     ∃ (Ωp Ωq Yp : Set E3) (qp qq : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn qp (stdSimplex ℝ (Fin 3)) Ωp ∧
-      IsPLHomeomorphOn qq (stdSimplex ℝ (Fin 3)) Ωq ∧
+      IsPLHomeomorphOn qp (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Ωp ∧
+      IsPLHomeomorphOn qq (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Ωq ∧
       qp '' stdSimplexBoundary 2 = qZ '' stdSimplexBoundary 2 ∧
       qq '' stdSimplexBoundary 2 = qZ '' stdSimplexBoundary 2 ∧
       Ωp ∪ Ωq = frontier B ∧ Ωp ∩ Ωq = qZ '' stdSimplexBoundary 2 ∧
@@ -118,19 +118,19 @@ theorem IsPLBall.exists_pocket_of_inter_eq_boundary {B Z : Set E3} (hB : IsPLBal
 theorem exists_isPLBall_frontier_eq_of_interior_subset_pocket {B₁ B₂ : Set E3}
     (hB₁ : IsPLBall 3 B₁) (hB₂ : IsPLBall 3 B₂) {ι κ : Type*} [Finite ι] [Finite κ]
     {H : ι → Set E3} {rH : ι → (Fin 3 → ℝ) → E3}
-    (hrH : ∀ i, IsPLHomeomorphOn (rH i) (stdSimplex ℝ (Fin 3)) (H i))
+    (hrH : ∀ i, IsPLHomeomorphOn (rH i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (H i))
     (hHdisj : Pairwise fun i j => Disjoint (H i) (H j)) (h12 : B₁ ∩ B₂ = ⋃ i, H i)
     (hH₁ : ∀ i, H i ⊆ frontier B₁) (hH₂ : ∀ i, H i ⊆ frontier B₂)
     {D ρ₁ ρ₂ : κ → Set E3} {qD : κ → (Fin 3 → ℝ) → E3} {γ₂ : κ → ℝ → E3}
-    (hqD : ∀ s, IsPLHomeomorphOn (qD s) (stdSimplex ℝ (Fin 3)) (D s))
+    (hqD : ∀ s, IsPLHomeomorphOn (qD s) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D s))
     (hDdisj : Pairwise fun s s' => Disjoint (D s) (D s'))
     (hγ₂ : ∀ s, IsPLHomeomorphOn (γ₂ s) (Icc 0 1) (ρ₂ s))
     (hDB₁ : ∀ s, D s ∩ B₁ = ρ₁ s) (hDB₂ : ∀ s, D s ∩ B₂ = ρ₂ s)
     (hρ : ∀ s, qD s '' stdSimplexBoundary 2 = ρ₁ s ∪ ρ₂ s)
     (hρ₂₁ : ∀ s, ρ₁ s ∩ ρ₂ s = {γ₂ s 0, γ₂ s 1}) (hρ₁B : ∀ s, ρ₁ s ⊆ frontier B₁)
     {X Y : Set E3} {qX qY : (Fin 3 → ℝ) → E3}
-    (hqX : IsPLHomeomorphOn qX (stdSimplex ℝ (Fin 3)) X)
-    (hqY : IsPLHomeomorphOn qY (stdSimplex ℝ (Fin 3)) Y)
+    (hqX : IsPLHomeomorphOn qX (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) X)
+    (hqY : IsPLHomeomorphOn qY (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Y)
     (hXY : X ∪ Y ∪ ⋃ i, H i = frontier B₁) (hXYi : X ∩ Y = ⋃ s, ρ₁ s)
     {β : ι → Set E3} {γ : ι → ℝ → E3} (hγ : ∀ i, IsPLHomeomorphOn (γ i) (Icc 0 1) (β i))
     (hβ : ∀ i, β i ⊆ rH i '' stdSimplexBoundary 2)
@@ -139,15 +139,15 @@ theorem exists_isPLBall_frontier_eq_of_interior_subset_pocket {B₁ B₂ : Set E
     (hqXb : qX '' stdSimplexBoundary 2 = (⋃ s, ρ₁ s) ∪ ⋃ i, (X ∩ H i))
     (hqYb : qY '' stdSimplexBoundary 2 = (⋃ s, ρ₁ s) ∪ ⋃ i, (Y ∩ H i))
     {Ωp Yp : Set E3} {qp : (Fin 3 → ℝ) → E3}
-    (hqp : IsPLHomeomorphOn qp (stdSimplex ℝ (Fin 3)) Ωp)
+    (hqp : IsPLHomeomorphOn qp (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Ωp)
     (hqpb : qp '' stdSimplexBoundary 2 = (⋃ s, ρ₂ s) ∪ ⋃ i, (X ∩ H i))
     (hΩpB₂ : Ωp ⊆ frontier B₂) (hYp : IsPLBall 3 Yp) (hYpf : frontier Yp = X ∪ (⋃ s, D s) ∪ Ωp)
     (hpocket : Disjoint (interior B₂) Yp) (hne : (interior B₁ ∩ interior Yp).Nonempty) :
     ∃ (R A Ω : Set E3) (qA qΩ : (Fin 3 → ℝ) → E3), IsPLBall 3 R ∧
       frontier R = A ∪ (⋃ s, D s) ∪ Ω ∧ (A = X ∨ A = Y) ∧
-      IsPLHomeomorphOn qA (stdSimplex ℝ (Fin 3)) A ∧
+      IsPLHomeomorphOn qA (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A ∧
       qA '' stdSimplexBoundary 2 = (⋃ s, ρ₁ s) ∪ ⋃ i, (A ∩ H i) ∧
-      IsPLHomeomorphOn qΩ (stdSimplex ℝ (Fin 3)) Ω ∧
+      IsPLHomeomorphOn qΩ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Ω ∧
       qΩ '' stdSimplexBoundary 2 = (⋃ s, ρ₂ s) ∪ ⋃ i, (A ∩ H i) ∧
       Ω ⊆ frontier B₂ ∧ Ω ∩ B₁ = ⋃ i, (A ∩ H i) ∧ Disjoint (interior R) (B₁ ∪ B₂) := by
   classical
@@ -159,12 +159,12 @@ theorem exists_isPLBall_frontier_eq_of_interior_subset_pocket {B₁ B₂ : Set E
   have hB₁reg : closure (interior B₁) = B₁ := hB₁.closure_interior_of_finrank hdim
   have hB₂reg : closure (interior B₂) = B₂ := hB₂.closure_interior_of_finrank hdim
   have hbd : ∀ {P : Set E3} {q : (Fin 3 → ℝ) → E3},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) P → q '' stdSimplexBoundary 2 ⊆ P :=
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P → q '' stdSimplexBoundary 2 ⊆ P :=
     fun hq => by
       rw [← hq.image_eq]
       exact image_mono fun x hx => hx.1
   have hdc : ∀ {P : Set E3} {q : (Fin 3 → ℝ) → E3},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) P → IsClosed P :=
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P → IsClosed P :=
     fun hq => (show IsPLBall 2 _ from ⟨_, hq⟩).isPolyhedron.isClosed
   have hopen : ∀ {U P : Set E3}, IsOpen U → closure (interior P) = P →
       Disjoint U (interior P) → Disjoint U P := by
@@ -510,12 +510,12 @@ theorem exists_isPLBall_frontier_eq_of_interior_subset_pocket {B₁ B₂ : Set E
 theorem exists_isPLBall_frontier_eq_of_two_balls {B₁ B₂ : Set E3} (hB₁ : IsPLBall 3 B₁)
     (hB₂ : IsPLBall 3 B₂) {ι κ : Type*} [Finite ι] [Finite κ] {H : ι → Set E3}
     {rH : ι → (Fin 3 → ℝ) → E3}
-    (hrH : ∀ i, IsPLHomeomorphOn (rH i) (stdSimplex ℝ (Fin 3)) (H i))
+    (hrH : ∀ i, IsPLHomeomorphOn (rH i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (H i))
     (hHdisj : Pairwise fun i j => Disjoint (H i) (H j)) (h12 : B₁ ∩ B₂ = ⋃ i, H i)
     (hH₁ : ∀ i, H i ⊆ frontier B₁) (hH₂ : ∀ i, H i ⊆ frontier B₂)
     (hHint : ∀ i, H i \ rH i '' stdSimplexBoundary 2 ⊆ interior (B₁ ∪ B₂))
     {D ρ₁ ρ₂ : κ → Set E3} {qD : κ → (Fin 3 → ℝ) → E3} {γ₁ γ₂ : κ → ℝ → E3}
-    (hqD : ∀ s, IsPLHomeomorphOn (qD s) (stdSimplex ℝ (Fin 3)) (D s))
+    (hqD : ∀ s, IsPLHomeomorphOn (qD s) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D s))
     (hDdisj : Pairwise fun s s' => Disjoint (D s) (D s'))
     (hγ₁ : ∀ s, IsPLHomeomorphOn (γ₁ s) (Icc 0 1) (ρ₁ s))
     (hγ₂ : ∀ s, IsPLHomeomorphOn (γ₂ s) (Icc 0 1) (ρ₂ s))
@@ -524,8 +524,8 @@ theorem exists_isPLBall_frontier_eq_of_two_balls {B₁ B₂ : Set E3} (hB₁ : I
     (hρ₁₂ : ∀ s, ρ₁ s ∩ ρ₂ s = {γ₁ s 0, γ₁ s 1}) (hρ₂₁ : ∀ s, ρ₁ s ∩ ρ₂ s = {γ₂ s 0, γ₂ s 1})
     (hρ₁B : ∀ s, ρ₁ s ⊆ frontier B₁) (hρ₂B : ∀ s, ρ₂ s ⊆ frontier B₂)
     {X Y : Set E3} {qX qY : (Fin 3 → ℝ) → E3}
-    (hqX : IsPLHomeomorphOn qX (stdSimplex ℝ (Fin 3)) X)
-    (hqY : IsPLHomeomorphOn qY (stdSimplex ℝ (Fin 3)) Y)
+    (hqX : IsPLHomeomorphOn qX (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) X)
+    (hqY : IsPLHomeomorphOn qY (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Y)
     (hXY : X ∪ Y ∪ ⋃ i, H i = frontier B₁) (hXYi : X ∩ Y = ⋃ s, ρ₁ s)
     {β : ι → Set E3} {γ : ι → ℝ → E3} (hγ : ∀ i, IsPLHomeomorphOn (γ i) (Icc 0 1) (β i))
     (hβ : ∀ i, β i ⊆ rH i '' stdSimplexBoundary 2)
@@ -535,9 +535,9 @@ theorem exists_isPLBall_frontier_eq_of_two_balls {B₁ B₂ : Set E3} (hB₁ : I
     (hqYb : qY '' stdSimplexBoundary 2 = (⋃ s, ρ₁ s) ∪ ⋃ i, (Y ∩ H i)) :
     ∃ (R A Ω : Set E3) (qA qΩ : (Fin 3 → ℝ) → E3), IsPLBall 3 R ∧
       frontier R = A ∪ (⋃ s, D s) ∪ Ω ∧ (A = X ∨ A = Y) ∧
-      IsPLHomeomorphOn qA (stdSimplex ℝ (Fin 3)) A ∧
+      IsPLHomeomorphOn qA (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A ∧
       qA '' stdSimplexBoundary 2 = (⋃ s, ρ₁ s) ∪ ⋃ i, (A ∩ H i) ∧
-      IsPLHomeomorphOn qΩ (stdSimplex ℝ (Fin 3)) Ω ∧
+      IsPLHomeomorphOn qΩ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Ω ∧
       qΩ '' stdSimplexBoundary 2 = (⋃ s, ρ₂ s) ∪ ⋃ i, (A ∩ H i) ∧
       Ω ⊆ frontier B₂ ∧ Ω ∩ B₁ = ⋃ i, (A ∩ H i) ∧ Disjoint (interior R) (B₁ ∪ B₂) := by
   classical
@@ -548,12 +548,12 @@ theorem exists_isPLBall_frontier_eq_of_two_balls {B₁ B₂ : Set E3} (hB₁ : I
   have hB₁reg : closure (interior B₁) = B₁ := hB₁.closure_interior_of_finrank hdim
   have hB₂reg : closure (interior B₂) = B₂ := hB₂.closure_interior_of_finrank hdim
   have hbd : ∀ {P : Set E3} {q : (Fin 3 → ℝ) → E3},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) P → q '' stdSimplexBoundary 2 ⊆ P :=
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P → q '' stdSimplexBoundary 2 ⊆ P :=
     fun hq => by
       rw [← hq.image_eq]
       exact image_mono fun x hx => hx.1
   have hdc : ∀ {P : Set E3} {q : (Fin 3 → ℝ) → E3},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) P → IsClosed P :=
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P → IsClosed P :=
     fun hq => (show IsPLBall 2 _ from ⟨_, hq⟩).isPolyhedron.isClosed
   have hopen : ∀ {U P : Set E3}, IsOpen U → closure (interior P) = P →
       Disjoint U (interior P) → Disjoint U P := by

@@ -158,9 +158,9 @@ private theorem orthoFrame_basis_at_center (g : SmoothRiemannianMetric I M) (x :
       rw [(g.inner x (smoothOrthoFrame (I := I) g x k x)).map_smul (c j),
         smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) = Module.finrank ℝ E :=
     Fintype.card_fin _
   exact ⟨basisOfLinearIndependentOfCardEqFinrank he_li hcard,
@@ -189,9 +189,9 @@ private theorem orthoFrame_expansion_at_center (g : SmoothRiemannianMetric I M)
       rw [(g.inner x (smoothOrthoFrame (I := I) g x j x)).map_smul (bse.repr u i),
         smul_eq_mul, hbse i, horth j i])]
     rw [Finset.sum_eq_single_of_mem j (Finset.mem_univ j)]
-    · rw [if_pos rfl, mul_one]
+    · rw [ite_eq_left rfl, mul_one]
     · intro i _ hij
-      rw [if_neg (fun h => hij h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hij h.symm), mul_zero]
   calc u = ∑ i : Fin (Module.finrank ℝ E), bse.repr u i • bse i := (bse.sum_repr u).symm
     _ = ∑ i : Fin (Module.finrank ℝ E),
         g.inner x u (smoothOrthoFrame (I := I) g x i x) •
@@ -1216,7 +1216,7 @@ private lemma zero_tensor_bilinear_symm (g₀ : SmoothRiemannianMetric I M) :
   rw [ccTensorBilin_zero, ccTensorBilin_zero]
 
 omit [SigmaCompactSpace M] in
-theorem ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
+theorem ricci_curvature_coefficient_difference_apply_eq_residual_add_hessian
     (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)

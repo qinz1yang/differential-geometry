@@ -127,7 +127,7 @@ theorem exists_section34BigonCrosscutNeighborhood (hh : IsEmbedding (U.domRestri
         (show IsPLBall 1 (c '' B') from ⟨b', hb'⟩).isPolyhedron
         ((image_mono hB'D).trans hDk) (fun x hx => hDz x (image_mono hB'D hx)))
   have hends (R : Set E3) (u : (Fin 2 → ℝ) → E3)
-      (hu : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 2)) R) (hRZ : R ⊆ Z)
+      (hu : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) R) (hRZ : R ⊆ Z)
       (he : Disjoint D (u '' stdSimplexBoundary 1)) :
       Disjoint (f '' D) ((f ∘ u) '' stdSimplexBoundary 1) := by
     refine disjoint_left.mpr ?_

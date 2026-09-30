@@ -84,7 +84,7 @@ theorem sphereThreeCubeVector_norm (z : I^(Fin 3)) : ‖sphereThreeCubeVector z�
   have hd : 1 + u^2 + v^2 + w^2 ≠ 0 := by
     nlinarith [sq_nonneg u, sq_nonneg v, sq_nonneg w]
   have hsq : ‖sphereThreeCubeVector z‖^2 = 1 := by
-    simp only [sphereThreeCubeVector, if_neg hb]
+    simp only [sphereThreeCubeVector, ite_eq_right hb]
     change ‖(WithLp.toLp 2 ![2*u / (1+u^2+v^2+w^2), 2*v / (1+u^2+v^2+w^2),
       2*w / (1+u^2+v^2+w^2),
       (u^2+v^2+w^2-1) / (1+u^2+v^2+w^2)] : EuclideanSpace ℝ (Fin 4))‖^2 = 1
@@ -263,7 +263,7 @@ private lemma tendsto_sphereThreeCubeVector_of_boundary (z : I^(Fin 3)) (i : Fin
     have hval : sphereThreeCubeVector z' =
         sphereThreeInteriorParam (openCubeCoordinate ((z' 0 : I) : ℝ),
           openCubeCoordinate ((z' 1 : I) : ℝ), openCubeCoordinate ((z' 2 : I) : ℝ)) := by
-      simp only [sphereThreeCubeVector, hb', if_false]
+      simp only [sphereThreeCubeVector, hb', ite_false]
       exact orientedSphereThreeInterior_eq_param _
     have hsum : (1 / (2 * δ)) ^ 2 ≤ (openCubeCoordinate ((z' 0 : I) : ℝ)) ^ 2 +
         (openCubeCoordinate ((z' 1 : I) : ℝ)) ^ 2 +
@@ -311,7 +311,7 @@ private lemma tendsto_sphereThreeCubeVector_of_boundary (z : I^(Fin 3)) (i : Fin
     filter_upwards [hU] with z' hz'i
     by_cases hb' : z' ∈ Cube.boundary (Fin 3)
     · have hbval : sphereThreeCubeVector z' = EuclideanSpace.single 3 1 := by
-        simp only [sphereThreeCubeVector, hb', if_true]
+        simp only [sphereThreeCubeVector, hb', ite_true]
       rw [hbval, dist_self]
       exact hε
     · refine core z' hb' ?_
@@ -331,7 +331,7 @@ private lemma tendsto_sphereThreeCubeVector_of_boundary (z : I^(Fin 3)) (i : Fin
     filter_upwards [hU] with z' hz'i
     by_cases hb' : z' ∈ Cube.boundary (Fin 3)
     · have hbval : sphereThreeCubeVector z' = EuclideanSpace.single 3 1 := by
-        simp only [sphereThreeCubeVector, hb', if_true]
+        simp only [sphereThreeCubeVector, hb', ite_true]
       rw [hbval, dist_self]
       exact hε
     · refine core z' hb' ?_
@@ -349,7 +349,7 @@ theorem sphereThreeCubeVector_continuous : Continuous sphereThreeCubeVector := b
   intro z
   by_cases hz : z ∈ Cube.boundary (Fin 3)
   · have hzval : sphereThreeCubeVector z = EuclideanSpace.single 3 1 := by
-      simp only [sphereThreeCubeVector, hz, if_true]
+      simp only [sphereThreeCubeVector, hz, ite_true]
     rw [ContinuousAt, hzval]
     obtain ⟨i, hi | hi⟩ := hz
     · exact tendsto_sphereThreeCubeVector_of_boundary z i (Or.inl (by rw [hi]; rfl))
@@ -364,7 +364,7 @@ theorem sphereThreeCubeVector_continuous : Continuous sphereThreeCubeVector := b
         (fun z' : I^(Fin 3) => sphereThreeCubeVector z') := by
       filter_upwards [hU] with z' hz'
       have hz'' : z' ∉ Cube.boundary (Fin 3) := hz'
-      simp only [sphereThreeCubeVector, hz'', if_false]
+      simp only [sphereThreeCubeVector, hz'', ite_false]
       simpa only [PiLp.toLp_apply] using (orientedSphereThreeInterior_eq_param
         (WithLp.toLp 2 fun i : Fin 3 => ((z' i : I) : ℝ))).symm
     refine ContinuousAt.congr ?_ heq
@@ -444,22 +444,22 @@ private lemma sp_sphereCubeVector_eq_param (x : I^(Fin 2)) (hx : x ∉ Cube.boun
     sphereCubeVector x = sphereTwoInteriorParam (openCubeCoordinate ((x 0 : I) : ℝ),
       openCubeCoordinate ((x 1 : I) : ℝ)) := by
   classical
-  simp only [sphereCubeVector, if_neg hx, sphereTwoInteriorParam, openCubeCoordinate]
+  simp only [sphereCubeVector, ite_eq_right hx, sphereTwoInteriorParam, openCubeCoordinate]
 
 private lemma sp_sphereCubeVector_eq_north (x : I^(Fin 2)) (hx : x ∈ Cube.boundary (Fin 2)) :
     sphereCubeVector x = EuclideanSpace.single 2 1 := by
   classical
-  simp only [sphereCubeVector, if_pos hx]
+  simp only [sphereCubeVector, ite_eq_left hx]
 
 private lemma sp_single_two : (EuclideanSpace.single 2 1 : ThreeSpace) = PiLp.single 2 2 1 := rfl
 
 private lemma sp_single_two_zero : ((EuclideanSpace.single 2 1 : ThreeSpace)) 0 = 0 := by
   have h : ¬ ((0 : Fin 3) = 2) := by decide
-  simp only [sp_single_two, PiLp.single_apply, h, if_false]
+  simp only [sp_single_two, PiLp.single_apply, h, ite_false]
 
 private lemma sp_single_two_one : ((EuclideanSpace.single 2 1 : ThreeSpace)) 1 = 0 := by
   have h : ¬ ((1 : Fin 3) = 2) := by decide
-  simp only [sp_single_two, PiLp.single_apply, h, if_false]
+  simp only [sp_single_two, PiLp.single_apply, h, ite_false]
 
 private lemma sp_single_two_two : ((EuclideanSpace.single 2 1 : ThreeSpace)) 2 = 1 := by
   simp only [sp_single_two, PiLp.single_apply]
@@ -755,17 +755,17 @@ private lemma sp_single_three :
 private lemma sp_single_three_zero :
     ((EuclideanSpace.single 3 1 : EuclideanSpace ℝ (Fin 4))) 0 = 0 := by
   have h : ¬ ((0 : Fin 4) = 3) := by decide
-  simp only [sp_single_three, PiLp.single_apply, h, if_false]
+  simp only [sp_single_three, PiLp.single_apply, h, ite_false]
 
 private lemma sp_single_three_one :
     ((EuclideanSpace.single 3 1 : EuclideanSpace ℝ (Fin 4))) 1 = 0 := by
   have h : ¬ ((1 : Fin 4) = 3) := by decide
-  simp only [sp_single_three, PiLp.single_apply, h, if_false]
+  simp only [sp_single_three, PiLp.single_apply, h, ite_false]
 
 private lemma sp_single_three_two :
     ((EuclideanSpace.single 3 1 : EuclideanSpace ℝ (Fin 4))) 2 = 0 := by
   have h : ¬ ((2 : Fin 4) = 3) := by decide
-  simp only [sp_single_three, PiLp.single_apply, h, if_false]
+  simp only [sp_single_three, PiLp.single_apply, h, ite_false]
 
 private lemma sp_single_three_three :
     ((EuclideanSpace.single 3 1 : EuclideanSpace ℝ (Fin 4))) 3 = 1 := by
@@ -777,13 +777,13 @@ private lemma sp_threeCubeVector_eq_param (z : I^(Fin 3))
     sphereThreeCubeVector z = sphereThreeInteriorParam (openCubeCoordinate ((z 0 : I) : ℝ),
       openCubeCoordinate ((z 1 : I) : ℝ), openCubeCoordinate ((z 2 : I) : ℝ)) := by
   classical
-  simp only [sphereThreeCubeVector, if_neg hz, orientedSphereThreeInterior_eq_param]
+  simp only [sphereThreeCubeVector, ite_eq_right hz, orientedSphereThreeInterior_eq_param]
 
 private lemma sp_threeCubeVector_eq_north (z : I^(Fin 3))
     (hz : z ∈ Cube.boundary (Fin 3)) :
     sphereThreeCubeVector z = EuclideanSpace.single 3 1 := by
   classical
-  simp only [sphereThreeCubeVector, if_pos hz]
+  simp only [sphereThreeCubeVector, ite_eq_left hz]
 
 private lemma sp_three_fiber (a b : I^(Fin 3)) :
     sphereThreeCubeVector a = sphereThreeCubeVector b ↔

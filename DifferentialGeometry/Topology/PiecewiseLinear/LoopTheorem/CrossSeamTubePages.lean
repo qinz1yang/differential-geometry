@@ -556,23 +556,23 @@ theorem IsPLBall.exists_isOpen_isPreconnected_inter_interior
     ∃ V : Set (EuclideanSpace ℝ (Fin 2)), IsOpen V ∧ x ∈ V ∧ V ⊆ V₀ ∧
       IsPreconnected (V ∩ interior Dom) := by
   obtain ⟨φ, hφ⟩ := hDom
-  have hφc : ContinuousOn φ (stdSimplex ℝ (Fin 3)) := hφ.isPiecewiseAffineOn.continuousOn
-  have hinv : ContinuousOn (Function.invFunOn φ (stdSimplex ℝ (Fin 3))) Dom := by
-    have h := continuousOn_invFunOn_image_of_isCompact (isCompact_stdSimplex ℝ (Fin 3)) hφc
+  have hφc : ContinuousOn φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := hφ.isPiecewiseAffineOn.continuousOn
+  have hinv : ContinuousOn (Function.invFunOn φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))) Dom := by
+    have h := continuousOn_invFunOn_image_of_isCompact (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)) hφc
       hφ.bijOn.injOn
     rwa [hφ.bijOn.image_eq] at h
-  have hxex : ∃ a ∈ stdSimplex ℝ (Fin 3), φ a = x := hφ.bijOn.surjOn hx
+  have hxex : ∃ a ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), φ a = x := hφ.bijOn.surjOn hx
   obtain ⟨hy, hφy⟩ := Function.invFunOn_pos hxex
   have hcw : φ ⁻¹' interior V₀ ∈
-      𝓝[stdSimplex ℝ (Fin 3)] Function.invFunOn φ (stdSimplex ℝ (Fin 3)) x :=
+      𝓝[Convexity.StdSimplex.coordinateSet ℝ (Fin 3)] Function.invFunOn φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) x :=
     hφc _ hy (by rw [hφy]; exact isOpen_interior.mem_nhds (mem_interior_iff_mem_nhds.mpr hV₀))
   obtain ⟨r, hr, hrsub⟩ := Metric.mem_nhdsWithin_iff.mp hcw
   obtain ⟨V₁, hV₁, hV₁eq⟩ := continuousOn_iff'.mp hinv
-    (Metric.ball (Function.invFunOn φ (stdSimplex ℝ (Fin 3)) x) r) Metric.isOpen_ball
+    (Metric.ball (Function.invFunOn φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) x) r) Metric.isOpen_ball
   refine ⟨V₁ ∩ interior V₀, hV₁.inter isOpen_interior, ⟨?_, ?_⟩,
     inter_subset_right.trans interior_subset, ?_⟩
-  · have hxmem : x ∈ Function.invFunOn φ (stdSimplex ℝ (Fin 3)) ⁻¹'
-        Metric.ball (Function.invFunOn φ (stdSimplex ℝ (Fin 3)) x) r ∩ Dom :=
+  · have hxmem : x ∈ Function.invFunOn φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ⁻¹'
+        Metric.ball (Function.invFunOn φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) x) r ∩ Dom :=
       ⟨Metric.mem_ball_self hr, hx⟩
     rw [hV₁eq] at hxmem
     exact hxmem.1
@@ -581,27 +581,27 @@ theorem IsPLBall.exists_isOpen_isPreconnected_inter_interior
       hφ.image_openSimplex_eq_interior
     have heq : (V₁ ∩ interior V₀) ∩ interior Dom =
         φ '' (openSimplex (stdVertices 1) ∩
-          Metric.ball (Function.invFunOn φ (stdSimplex ℝ (Fin 3)) x) r) := by
+          Metric.ball (Function.invFunOn φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) x) r) := by
       ext z
       constructor
       · rintro ⟨⟨hzV₁, -⟩, hzint⟩
         have hzDom : z ∈ Dom := interior_subset hzint
         rw [← hint] at hzint
         obtain ⟨w, hw, rfl⟩ := hzint
-        have hwS : w ∈ stdSimplex ℝ (Fin 3) := openSimplex_stdVertices_subset_stdSimplex hw
-        have hball : φ w ∈ Function.invFunOn φ (stdSimplex ℝ (Fin 3)) ⁻¹'
-            Metric.ball (Function.invFunOn φ (stdSimplex ℝ (Fin 3)) x) r ∩ Dom := by
+        have hwS : w ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := openSimplex_stdVertices_subset_stdSimplex hw
+        have hball : φ w ∈ Function.invFunOn φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ⁻¹'
+            Metric.ball (Function.invFunOn φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) x) r ∩ Dom := by
           rw [hV₁eq]
           exact ⟨hzV₁, hzDom⟩
         refine ⟨w, ⟨hw, ?_⟩, rfl⟩
         have := hball.1
         rwa [mem_preimage, hφ.bijOn.injOn.leftInvOn_invFunOn hwS] at this
       · rintro ⟨w, ⟨hw, hwr⟩, rfl⟩
-        have hwS : w ∈ stdSimplex ℝ (Fin 3) := openSimplex_stdVertices_subset_stdSimplex hw
+        have hwS : w ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := openSimplex_stdVertices_subset_stdSimplex hw
         have hφwDom : φ w ∈ Dom := hφ.bijOn.mapsTo hwS
         refine ⟨⟨?_, ?_⟩, hint ▸ ⟨w, hw, rfl⟩⟩
-        · have hmem : φ w ∈ Function.invFunOn φ (stdSimplex ℝ (Fin 3)) ⁻¹'
-              Metric.ball (Function.invFunOn φ (stdSimplex ℝ (Fin 3)) x) r ∩ Dom := by
+        · have hmem : φ w ∈ Function.invFunOn φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ⁻¹'
+              Metric.ball (Function.invFunOn φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) x) r ∩ Dom := by
             refine ⟨?_, hφwDom⟩
             rw [mem_preimage, hφ.bijOn.injOn.leftInvOn_invFunOn hwS]
             exact hwr

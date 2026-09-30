@@ -19,12 +19,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 theorem exists_param_of_sdiff_eq_inter_isOpen {S J W O : Set E} (hS : IsPLSphere 2 S)
     (hJ : IsPLSphere 1 J) (hJW : J ⊆ W) (hWS : W ⊆ S) (hWc : IsClosed W) (hO : IsOpen O)
     (hWO : W \ J = S ∩ O) (hne : (W \ J).Nonempty) (hne' : (S \ W).Nonempty) :
-    ∃ r : (Fin 3 → ℝ) → E, IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) W ∧
+    ∃ r : (Fin 3 → ℝ) → E, IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) W ∧
       r '' stdSimplexBoundary 2 = J := by
   obtain ⟨D₁, D₂, hU, hI, f₁, f₂, hf₁, hf₂, hb₁, hb₂⟩ :=
     exists_disk_decomposition_of_isPLSphere_one_subset_two hS hJ (hJW.trans hWS)
   have hside : ∀ (D : Set E) (f : (Fin 3 → ℝ) → E), D ⊆ S →
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) D → f '' stdSimplexBoundary 2 = J →
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D → f '' stdSimplexBoundary 2 = J →
         D \ J ⊆ O ∨ D \ J ⊆ Wᶜ := by
     intro D f hDS hf hb
     have hc : IsPreconnected (D \ J) := by
@@ -76,7 +76,7 @@ theorem exists_param_of_sdiff_eq_inter_isOpen {S J W O : Set E} (hS : IsPLSphere
     · exact h₂ ⟨hx, hxJ⟩ hxW
 
 theorem exists_isPLHomeomorphOn_crosscut_move {W J β e : Set E} {u : (Fin 3 → ℝ) → E}
-    (hu : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) W) (huJ : u '' stdSimplexBoundary 2 = J)
+    (hu : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) W) (huJ : u '' stdSimplexBoundary 2 = J)
     {γ δ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) β) (hδ : IsPLHomeomorphOn δ (Icc 0 1) e)
     (hβW : β ⊆ W) (heW : e ⊆ W) (hβJ : β ∩ J = {γ 0, γ 1}) (heJ : e ∩ J = {γ 0, γ 1})
     (h0 : δ 0 = γ 0) (h1 : δ 1 = γ 1) :

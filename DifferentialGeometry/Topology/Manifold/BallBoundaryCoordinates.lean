@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
+import DifferentialGeometry.Topology.Manifold.BallChart.Defs
 import DifferentialGeometry.Topology.Manifold.SpherePolarCoordinates
 import DifferentialGeometry.Topology.Manifold.EuclideanBoundaryCoordinates
 

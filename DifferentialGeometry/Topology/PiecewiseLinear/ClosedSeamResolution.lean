@@ -294,26 +294,26 @@ noncomputable def closedSeamResolve (p : ℝ × ℝ) : Quotient spliceSetoid :=
 
 theorem closedSeamInclude_of_le_one {p : ℝ × ℝ} (h : p.2 ≤ 1) :
     closedSeamInclude p = spliceMk (((0 : ℝ), p.1), p.2) := by
-  rw [closedSeamInclude, if_pos h]
+  rw [closedSeamInclude, ite_eq_left h]
 
 theorem closedSeamInclude_of_one_le {p : ℝ × ℝ} (h : 1 ≤ p.2) :
     closedSeamInclude p = spliceMk ((p.1, (0 : ℝ)), p.2 - 1) := by
   rcases lt_or_eq_of_le h with hlt | heq
-  · rw [closedSeamInclude, if_neg (not_le.mpr hlt)]
-  · rw [closedSeamInclude, if_pos (le_of_eq heq.symm)]
+  · rw [closedSeamInclude, ite_eq_right (not_le.mpr hlt)]
+  · rw [closedSeamInclude, ite_eq_left (le_of_eq heq.symm)]
     refine spliceMk_eq_iff.mpr (Or.inr (Or.inr ⟨heq.symm, ?_, rfl⟩))
     rw [← heq]
     norm_num
 
 theorem closedSeamResolve_of_le_one {p : ℝ × ℝ} (h : p.2 ≤ 1) :
     closedSeamResolve p = spliceMk (crossSeamChordPos ((0 : ℝ), p.1), p.2) := by
-  rw [closedSeamResolve, if_pos h]
+  rw [closedSeamResolve, ite_eq_left h]
 
 theorem closedSeamResolve_of_one_le {p : ℝ × ℝ} (h : 1 ≤ p.2) :
     closedSeamResolve p = spliceMk (crossSeamChordNeg (p.1, (0 : ℝ)), p.2 - 1) := by
   rcases lt_or_eq_of_le h with hlt | heq
-  · rw [closedSeamResolve, if_neg (not_le.mpr hlt)]
-  · rw [closedSeamResolve, if_pos (le_of_eq heq.symm)]
+  · rw [closedSeamResolve, ite_eq_right (not_le.mpr hlt)]
+  · rw [closedSeamResolve, ite_eq_left (le_of_eq heq.symm)]
     refine spliceMk_eq_iff.mpr (Or.inr (Or.inr ⟨heq.symm, ?_, ?_⟩))
     · rw [← heq]
       norm_num

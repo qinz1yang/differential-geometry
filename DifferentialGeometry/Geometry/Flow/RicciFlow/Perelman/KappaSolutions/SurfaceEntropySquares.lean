@@ -141,10 +141,10 @@ theorem surfaceEntropy_traceFree_hessian_norm
   have hpair : inner0S (I := I) g x 2
       (hessTensorAt (I := I) g f x) (metricTensor0S (I := I) g x) =
       ΔG (I := I) g f x := by
-    rw [_root_.Tensor0SBundle.inner0S_comm]
+    rw [_root_.DifferentialGeometry.Tensor0SBundle.inner0S_comm]
     exact htrace
-  rw [_root_.Tensor0SBundle.normSq0S_sub,
-    _root_.Tensor0SBundle.inner0S_smul_right, normSq0S_smul, hpair, hmetric]
+  rw [_root_.DifferentialGeometry.Tensor0SBundle.normSq0S_sub,
+    _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_right, normSq0S_smul, hpair, hmetric]
   ring
 
 omit [CompleteSpace E] [IsManifold I 1 M] [T2Space M] in

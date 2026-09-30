@@ -230,7 +230,7 @@ theorem nonempty_annularConvergence_of_coneAnnulusRealization
       err a b i = el a b ha hab i + ed a b ha hab i + 1 / ((i : ℝ) + 1) := by
     intro a b ha hab i
     simp only [err]
-    rw [dif_pos ⟨ha, hab⟩]
+    rw [dite_eq_left ⟨ha, hab⟩]
   have herrpos : ∀ a b i, 0 < err a b i := by
     intro a b i
     by_cases h : 0 < a ∧ a < b
@@ -241,7 +241,7 @@ theorem nonempty_annularConvergence_of_coneAnnulusRealization
       linarith
     · have herr : err a b i = 1 := by
         simp only [err]
-        rw [dif_neg h]
+        rw [dite_eq_right h]
       rw [herr]
       norm_num
   have herrtend : ∀ a b, 0 < a → a < b → Filter.Tendsto (err a b) Filter.atTop (nhds 0) := by
@@ -356,11 +356,11 @@ theorem nonempty_annularConvergence_of_coneAnnulusRealization
 
 theorem finite_horn_cone_convergence_of_coneAnnulusRealization
     (h : ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ (angles : EndAngles H) (ray : EndRay H.endpoint) (d : ℕ → ℝ),
+      H₀ ≤ H.collarDepth → ∀ (angles : EndAngles H) (ray : EndRay H.endpoint) (d : ℕ → ℝ),
         (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
         ConeAnnulusRealization H angles ray d) :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ (angles : EndAngles H) (ray : EndRay H.endpoint) (d : ℕ → ℝ),
+      H₀ ≤ H.collarDepth → ∀ (angles : EndAngles H) (ray : EndRay H.endpoint) (d : ℕ → ℝ),
         (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
         Nonempty (AnnularConvergence H angles ray d) := by
   obtain ⟨H₀, hH₀, hcone⟩ := h
@@ -428,7 +428,7 @@ theorem exists_d_endComparisonAngle_le_angle {g : SmoothRiemannianMetric I3 W} (
 
 theorem finite_horn_endComparisonAngle_le_angle :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ angles : EndAngles H,
+      H₀ ≤ H.collarDepth → ∀ angles : EndAngles H,
       ∃ D : ℝ, 0 < D ∧ ∀ (γ γ' : EndRay H.endpoint) (s t : ℝ),
         s ∈ Set.Ioc 0 (min γ.length D) → t ∈ Set.Ioc 0 (min γ'.length D) →
           endComparisonAngle γ γ' s t ≤ angles.angle γ γ' := by
@@ -450,19 +450,19 @@ theorem coneAnnulusRealization_of_coneDistanceRealization
 
 theorem finite_horn_cone_convergence_of_coneDistanceRealization
     (h : ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ (angles : EndAngles H) (ray : EndRay H.endpoint) (d : ℕ → ℝ),
+      H₀ ≤ H.collarDepth → ∀ (angles : EndAngles H) (ray : EndRay H.endpoint) (d : ℕ → ℝ),
         (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
         ConeDistanceRealization H angles ray d) :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ (angles : EndAngles H) (ray : EndRay H.endpoint) (d : ℕ → ℝ),
+      H₀ ≤ H.collarDepth → ∀ (angles : EndAngles H) (ray : EndRay H.endpoint) (d : ℕ → ℝ),
         (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
         Nonempty (AnnularConvergence H angles ray d) := by
   obtain ⟨H₀, hH₀, hcone⟩ := h
   obtain ⟨H₁, hH₁, hangle⟩ := finite_horn_endComparisonAngle_le_angle (W := W)
   refine ⟨max H₀ H₁, lt_max_of_lt_left hH₀, ?_⟩
   intro g H hdepth angles ray d hd hzero
-  have hdepth₀ : H₀ ≤ H.collar_depth := (le_max_left H₀ H₁).trans hdepth
-  have hdepth₁ : H₁ ≤ H.collar_depth := (le_max_right H₀ H₁).trans hdepth
+  have hdepth₀ : H₀ ≤ H.collarDepth := (le_max_left H₀ H₁).trans hdepth
+  have hdepth₁ : H₁ ≤ H.collarDepth := (le_max_right H₀ H₁).trans hdepth
   exact nonempty_annularConvergence_of_coneAnnulusRealization H angles ray d hd hzero
     (coneAnnulusRealization_of_coneDistanceRealization (hangle g H hdepth₁ angles)
       (hcone g H hdepth₀ angles ray d hd hzero))

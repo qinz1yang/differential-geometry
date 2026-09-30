@@ -169,10 +169,10 @@ theorem exists_injective_boundaryParam_four_paths
     split_ifs with hhalf
     · change t ≤ 1 / 2 at hhalf
       change f₃ (2 * t) = H t
-      rw [hH, Schoenflies.concatenate, if_pos hhalf]
+      rw [hH, Schoenflies.concatenate, ite_eq_left hhalf]
     · change ¬t ≤ 1 / 2 at hhalf
       change f₄ (2 * t - 1) = H t
-      rw [hH, Schoenflies.concatenate, if_neg hhalf]
+      rw [hH, Schoenflies.concatenate, ite_eq_right hhalf]
   have hline₂ : ∀ (t : ℝ) (ht : t ∈ Set.Icc (0 : ℝ) 1),
       (((τ.trans (υ.trans φ)) ⟨t, ht⟩ : frontier P) : EuclideanSpace ℝ (Fin 2)) = G t := by
     intro t ht
@@ -180,9 +180,9 @@ theorem exists_injective_boundaryParam_four_paths
     split_ifs with hhalf
     · change t ≤ 1 / 2 at hhalf
       change f₂ (2 * t) = G t
-      rw [hG, Schoenflies.concatenate, if_pos hhalf]
+      rw [hG, Schoenflies.concatenate, ite_eq_left hhalf]
     · change ¬t ≤ 1 / 2 at hhalf
-      rw [hG, Schoenflies.concatenate, if_neg hhalf]
+      rw [hG, Schoenflies.concatenate, ite_eq_right hhalf]
       exact hline₃ (2 * t - 1) _
   have hline₁ : ∀ (t : ℝ) (ht : t ∈ Set.Icc (0 : ℝ) 1),
       (((σ.trans (τ.trans (υ.trans φ))) ⟨t, ht⟩ : frontier P) :
@@ -192,9 +192,9 @@ theorem exists_injective_boundaryParam_four_paths
     split_ifs with hhalf
     · change t ≤ 1 / 2 at hhalf
       change f₁ (2 * t) = Schoenflies.concatenate f₁ G t
-      rw [Schoenflies.concatenate, if_pos hhalf]
+      rw [Schoenflies.concatenate, ite_eq_left hhalf]
     · change ¬t ≤ 1 / 2 at hhalf
-      rw [Schoenflies.concatenate, if_neg hhalf]
+      rw [Schoenflies.concatenate, ite_eq_right hhalf]
       exact hline₂ (2 * t - 1) _
   have hrangeσ : Set.range (fun t : unitInterval => σ t) =
       {x : frontier P | (x : EuclideanSpace ℝ (Fin 2)) ∈ A₁} := by

@@ -57,7 +57,7 @@ theorem homBundleCovariantDerivativeGen_subtypeL_restrict
           (fun y => (S.fiber y).subtypeL) x v) u) =
         cov (fun y => (S.fiber y).subtypeL (σ y)) x v -
           (S.fiber x).subtypeL (cov.restrict S hS σ x v) := by
-    convert h using 1 <;> rfl
+    convert h using 1
   rw [h', hr, sub_self]
 
 end CovariantDerivative

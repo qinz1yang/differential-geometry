@@ -78,7 +78,7 @@ theorem nonempty_halfLineMetricConvergenceData
     have h := Classical.choose_spec (exists_nat_ge (-t))
     have hle : -(idx t : Real) ≤ t := by
       dsimp only [idx]
-      rw [dif_pos ht]
+      rw [dite_eq_left ht]
       linarith
     exact ⟨hle, ht⟩
   let gInf : letI : TopologicalSpace P.M := P.topology
@@ -92,7 +92,7 @@ theorem nonempty_halfLineMetricConvergenceData
     have ht0 : t ≤ 0 := ht.2
     have hdef : gInf t = gN (idx t) t := by
       dsimp only [gInf]
-      rw [dif_pos ht0]
+      rw [dite_eq_left ht0]
     rw [hdef]
     exact BumpMetricConvergence.unique (Φ := Φ) (hgN (idx t)) (hgN n) (hidx ht0) ht
   exact ⟨{

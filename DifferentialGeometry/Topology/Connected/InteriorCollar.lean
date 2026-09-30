@@ -5,7 +5,7 @@ open Set
 namespace DifferentialGeometry.Topology
 
 theorem isPreconnected_interior_of_frontier_nhds {X : Type*} [TopologicalSpace X] {K C : Set X}
-    (hK : IsPreconnected K) (hKc : IsClosed K) (hreg : closure (interior K) = K)
+    (hK : IsPreconnected K) (hreg : closure (interior K) = K)
     (hC : IsPreconnected C) (hCK : C ⊆ interior K)
     (hloc : ∀ p ∈ frontier K, ∃ U : Set X, IsOpen U ∧ p ∈ U ∧ U ∩ interior K ⊆ C) :
     IsPreconnected (interior K) := by
@@ -30,9 +30,7 @@ theorem isPreconnected_interior_of_frontier_nhds {X : Type*} [TopologicalSpace X
       · obtain ⟨y, ⟨hy, hyv⟩, -, hyu⟩ := mem_closure_iff.mp hpA (interior K ∩ v)
           (isOpen_interior.inter hv) ⟨hpint, hpv⟩
         exact hdisj y hy hyu hyv
-    · have hpf : p ∈ frontier K := by
-        rw [hKc.frontier_eq]
-        exact ⟨hpK, hpint⟩
+    · have hpf : p ∈ frontier K := ⟨subset_closure hpK, hpint⟩
       obtain ⟨U, hU, hpU, hUC⟩ := hloc p hpf
       obtain ⟨a, haU, haK, hau⟩ := mem_closure_iff.mp hpA U hU hpU
       obtain ⟨b, hbU, hbK, hbv⟩ := mem_closure_iff.mp hpB U hU hpU

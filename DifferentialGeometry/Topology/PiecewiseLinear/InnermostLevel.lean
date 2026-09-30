@@ -50,7 +50,7 @@ theorem exists_spanning_disk_of_mem_heightSingularPoints {E : Type*}
     {p : E} (hp : p ∈ heightSingularPoints K.space ℓ)
     {W : Set E} (hW : IsOpen W) (hWconv : Convex ℝ W) (hKW : K.space ⊆ W) :
     ∃ (D : Set E) (f : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       (f '' stdSimplexBoundary 2) ∈ levelPolygons K.space ℓ (ℓ p) ∧
       K.space ∩ D = f '' stdSimplexBoundary 2 ∧ D ⊆ W ∩ {x | ℓ x = ℓ p} ∧
       D ∉ 𝓝[{x | ℓ x = ℓ p}] p := by

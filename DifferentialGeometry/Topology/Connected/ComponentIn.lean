@@ -1,6 +1,6 @@
 import Mathlib.Topology.Connected.Basic
-import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-import DifferentialGeometry.Topology.FundamentalGroup.HomotopyEquiv
+import Mathlib.Topology.Homeomorph.Lemmas
+import Mathlib.Topology.Instances.Real.Lemmas
 
 open Set
 
@@ -58,11 +58,6 @@ def connectedComponentHomeomorphConnectedComponentIn :
   (Topology.IsEmbedding.subtypeVal.homeomorphImage
     (connectedComponent (⟨x, hx⟩ : U))).trans
       (Homeomorph.setCongr (connectedComponentIn_eq_image hx).symm)
-
-theorem simplyConnectedSpace_connectedComponentIn_iff :
-    SimplyConnectedSpace (connectedComponentIn U x) ↔
-      SimplyConnectedSpace (connectedComponent (⟨x, hx⟩ : U)) :=
-  (connectedComponentHomeomorphConnectedComponentIn hx).toHomotopyEquiv.simplyConnectedSpace_iff.symm
 
 end DifferentialGeometry.Topology
 

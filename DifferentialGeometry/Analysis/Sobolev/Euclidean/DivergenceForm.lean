@@ -32,7 +32,7 @@ theorem exists_lp_product_weakPartial
   let F : Z × E → ℝ := fun p =>
     A p * v p + fderiv ℝ (fun x => A (p.1, x)) p.2 (EuclideanSpace.single k 1) * u p
   have hF : MemLp F p (μ.prod (volume.restrict Ω)) :=
-    ((Lp.memLp v).mul hA).add ((Lp.memLp u).mul hDA)
+    (hA.mul (Lp.memLp v)).add (hDA.mul (Lp.memLp u))
   refine ⟨hF.toLp F, hF.coeFn_toLp, ?_⟩
   have hslices (w : Lp ℝ p (μ.prod (volume.restrict Ω))) :
       ∀ᵐ t ∂μ, MemLp (fun x => w (t, x)) p (volume.restrict Ω) := by
@@ -107,7 +107,7 @@ theorem exists_lp_divergence_of_weakPartials
         -∫ p, A i j p * V i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1)
           ∂μ.prod (volume.restrict Ω) := by
       have hflux : MemLp (fun p => A i j p * V i p) p (μ.prod (volume.restrict Ω)) :=
-        (Lp.memLp (V i)).mul (hA i j)
+        (hA i j).mul (Lp.memLp (V i))
       have hw := integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
         (hflux.locallyIntegrable hp)
         ((Lp.memLp (W i j)).locallyIntegrable hp) j (hWweak i j) φ hφ hφc hφs
@@ -156,7 +156,7 @@ theorem ae_eq_product_weak_partial
     apply lp_eq_of_integral_contDiff_mul_eq_on (hJ.prod hΩ) hmem hp
     intro φ hφ hφc hφs
     have hF'eq := integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
-      (((Lp.memLp u).mul (r := p) hA).locallyIntegrable hp)
+      ((hA.mul (r := p) (Lp.memLp u)).locallyIntegrable hp)
       ((Lp.memLp F').locallyIntegrable hp) k hF'weak φ hφ hφc
       (hφs.trans (prod_mono (subset_univ _) Subset.rfl))
     exact neg_injective ((hF φ hφ hφc hφs).symm.trans hF'eq)

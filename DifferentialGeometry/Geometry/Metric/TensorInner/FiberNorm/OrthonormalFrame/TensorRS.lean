@@ -9,8 +9,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
 open DifferentialGeometry.Tensor0SBundle
 
@@ -165,7 +164,7 @@ lemma tensorS_coframe_expansion
     rw [hcoframe J]]
   rw [Finset.sum_eq_single v]
   · rw [show (∏ k : Fin s, (if v k = v k then (1 : ℝ) else 0)) = 1 from by
-      refine Finset.prod_eq_one (fun k _ => ?_); rw [if_pos rfl]]
+      refine Finset.prod_eq_one (fun k _ => ?_); rw [ite_eq_left rfl]]
     rw [mul_one]
     change Tensor0SSpace.eval A (fun i : Fin s => e (v i)) =
       Tensor0SSpace.eval A (fun i : Fin s => e (v i))
@@ -179,7 +178,7 @@ lemma tensorS_coframe_expansion
     obtain ⟨k, hkne⟩ := hk
     rw [show (∏ k : Fin s, (if J k = v k then (1 : ℝ) else 0)) = 0 from by
       refine Finset.prod_eq_zero (Finset.mem_univ k) ?_
-      rw [if_neg hkne]]
+      rw [ite_eq_right hkne]]
     rw [mul_zero]
   · intro h; exact absurd (Finset.mem_univ v) h
 
@@ -571,8 +570,7 @@ lemma exists_tangent_orthonormalBasisRS_with_norm_sum
   · intro S
     rfl
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry
 
 end

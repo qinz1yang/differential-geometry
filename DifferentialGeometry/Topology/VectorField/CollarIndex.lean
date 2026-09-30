@@ -29,9 +29,13 @@ theorem mpullback_collarExtension_productChart
       (collarExtension (I := 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1)))) T b ρ) =
       euclideanCollarExtension T b ρ := by
   funext z
+  have hD : mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 2)))
+      ((𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1)))).prod 𝓘(ℝ, ℝ))
+      (euclideanProductChart d) z = (euclideanProductChart d).toContinuousLinearMap := by
+    rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod]
+    exact (euclideanProductChart d).mfderiv_eq
   unfold _root_.VectorField.mpullback
-  erw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod, mfderiv_eq_fderiv, (euclideanProductChart d).hasFDerivAt.fderiv,
-    ContinuousLinearMap.inverse_equiv]
+  erw [hD, ContinuousLinearMap.inverse_equiv]
   rfl
 
 theorem euclideanCollarExtension_point

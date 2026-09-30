@@ -1,5 +1,5 @@
 import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 
@@ -158,9 +158,9 @@ private lemma collapse_sum
     exact hcol k c
   rw [Finset.sum_congr rfl (fun k _ => by rw [hone k])]
   rw [Finset.sum_eq_single c]
-  · rw [if_pos rfl, one_mul]
+  · rw [ite_eq_left rfl, one_mul]
   · intro k _ hk
-    rw [if_neg hk, zero_mul]
+    rw [ite_eq_right hk, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ c) h
 

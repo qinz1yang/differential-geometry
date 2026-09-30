@@ -55,15 +55,15 @@ theorem IsCanonicalTower.exists_displayed_separators_of_stable_rows
       IsSeparatorIn I (towerSurface (E n) (fun i => (X n i).space) P') {a} {b} := by
     apply (hX n).isSeparatorIn_of_finite_even_annuli htw hI havoid (E n) (selected n)
     · intro i hi
-      rw [hE, if_neg hi]
+      rw [hE, ite_eq_right hi]
     · intro i hi
       obtain ⟨h₀, h₁⟩ := hmem n i hi
       refine ⟨H' i, Jhi (i - 1), Jlo i, ?_, (hhalf i).2.1, ?_, ?_, ?_, ?_⟩
-      · rw [hE, if_pos hi]
+      · rw [hE, ite_eq_left hi]
         exact (hhalf i).1
-      · rw [hE, if_pos hi]
+      · rw [hE, ite_eq_left hi]
         exact (hhalf i).2.2.1
-      · rw [hE, if_pos hi]
+      · rw [hE, ite_eq_left hi]
         exact (hhalf i).2.2.2
       · rw [hstable (i - 1) n h₁]
         simpa only [sub_add_cancel] using hhi (i - 1)
@@ -75,7 +75,7 @@ theorem IsCanonicalTower.exists_displayed_separators_of_stable_rows
   · apply htw.locally_eventually_eq_annularChain hET (fun n i => (hX n).carrier i)
     · intro i
       refine ⟨i.natAbs + (i - 1).natAbs + 2, fun n hn => ?_⟩
-      rw [hE, if_pos]
+      rw [hE, ite_eq_left]
       simp only [selected, Finset.mem_Icc]
       rcases Int.natAbs_eq i with habs | habs <;>
         rcases Int.natAbs_eq (i - 1) with hprev | hprev <;> omega

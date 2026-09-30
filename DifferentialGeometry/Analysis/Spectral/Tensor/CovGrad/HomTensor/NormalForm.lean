@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.SectionCalculus
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_sum_le_card_mul)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -206,9 +209,9 @@ theorem covariantOperatorNormalForm_succ (g : SmoothRiemannianMetric I M) (r d :
           (homTensorRSCovGradSec (I := I) (M := M) g r (rr + (k + 1)) (rr + d + p) (Qr (k + 1)))
           (iteratedCovGrad g r rr (k + 1) W) from by
     rw [Finset.sum_range_succ]
-    rw [dif_neg (by omega : ¬ (p + 1 < p + 1)), homTensorRSFieldApply_zero_left, add_zero]
+    rw [dite_eq_right (by omega : ¬ (p + 1 < p + 1)), homTensorRSFieldApply_zero_left, add_zero]
     refine Finset.sum_congr rfl (fun k hk => ?_)
-    rw [dif_pos (by simp only [Finset.mem_range] at hk; omega : k + 1 < p + 1)]]
+    rw [dite_eq_left (by simp only [Finset.mem_range] at hk; omega : k + 1 < p + 1)]]
   rw [Finset.sum_range_succ' (fun k =>
     homTensorRSFieldApply (I := I) (M := M) g r (rr + k) (rr + d + (p + 1))
       (homTensorRSCovGradSec (I := I) (M := M) g r (rr + k) (rr + d + p) (Qr k))

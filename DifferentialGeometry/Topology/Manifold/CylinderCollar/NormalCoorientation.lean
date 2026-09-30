@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalExtension
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.Coordinates
 
 set_option autoImplicit false
 noncomputable section

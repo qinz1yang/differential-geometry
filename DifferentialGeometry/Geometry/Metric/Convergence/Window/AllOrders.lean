@@ -121,7 +121,7 @@ theorem exists_metric_subsequence_tendsto_in_derivative_norm_uniformly_on_time_i
     refine ⟨k0, fun k hk a ha x hx => ?_⟩
     have hgInf_t : gInf t = gAt t ht := by
       dsimp [gInf]
-      exact dif_pos ht
+      exact dite_eq_left ht
     rw [hgInf_t]
     exact hk0 k hk a ha x hx
   have hInfLip :
@@ -187,7 +187,7 @@ theorem exists_metric_subsequence_tendsto_in_derivative_norm_uniformly_on_time_i
   refine ⟨phi, hphi, gInf, ?_, hwinPt⟩
   intro t ht
   refine ⟨psiAt t ht, hpsiAt t ht, ?_⟩
-  have hgInf_t : gInf t = gAt t ht := by dsimp [gInf]; exact dif_pos ht
+  have hgInf_t : gInf t = gAt t ht := by dsimp [gInf]; exact dite_eq_left ht
   rw [hgInf_t]
   exact (hgAt t ht).1
 
@@ -332,7 +332,7 @@ theorem exists_metric_subsequence_tendsto_uniformly_on_compacts_and_time_of_even
   set gInf : Real -> SmoothRiemannianMetric I M :=
     fun t => if ht : t ∈ Set.Icc beta psiT then gAt0 t ht else gRef with hgInfDef
   have hgInf_eq : forall t (ht : t ∈ Set.Icc beta psiT), gInf t = gAt0 t ht := by
-    intro t ht; rw [hgInfDef]; exact dif_pos ht
+    intro t ht; rw [hgInfDef]; exact dite_eq_left ht
   have hfullj : forall j : Nat, forall t, t ∈ Set.Icc beta psiT -> forall eps : Real, 0 < eps ->
       exists k0 : Nat, forall k : Nat, k0 <= k -> forall a : Nat, a <= j -> forall x, x ∈ Kx j ->
         metricDerivNorm (I := I) a (gSeq (phi k) t) (gInf t) gRef x < eps := by

@@ -40,10 +40,10 @@ theorem galerkinVec_norm_sq
   classical
   rw [TensorHs.norm_sq_eq_tsum]
   rw [tsum_eq_sum (s := F) (fun i hi => by
-    rw [scalarGalerkinVec_coeff, if_neg hi]
+    rw [scalarGalerkinVec_coeff, ite_eq_right hi]
     ring)]
   refine Finset.sum_congr rfl (fun i hi => ?_)
-  rw [scalarGalerkinVec_coeff, if_pos hi]
+  rw [scalarGalerkinVec_coeff, ite_eq_left hi]
 
 omit [BoundarylessManifold I M] in
 open scoped Classical in
@@ -80,7 +80,7 @@ private theorem galerkin_crit_nf
           tensorSobolevWeight (I := I) (M := M) i (k : Real) * (c i * f i) := by
     apply Finset.sum_congr rfl
     intro i hi
-    rw [scalarGalerkinVec_coeff, if_pos hi, hforce i]
+    rw [scalarGalerkinVec_coeff, ite_eq_left hi, hforce i]
   have hhigh :
       (∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i ((k + 1 : Nat) : Real) *
@@ -89,7 +89,7 @@ private theorem galerkin_crit_nf
           tensorSobolevWeight (I := I) (M := M) i ((k : Real) + 1) * (c i) ^ 2 := by
     apply Finset.sum_congr rfl
     intro i hi
-    rw [Nat.cast_add, Nat.cast_one, scalarGalerkinVec_coeff, if_pos hi]
+    rw [Nat.cast_add, Nat.cast_one, scalarGalerkinVec_coeff, ite_eq_left hi]
   have hlow :
       (∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i (k : Real) *
@@ -98,7 +98,7 @@ private theorem galerkin_crit_nf
           tensorSobolevWeight (I := I) (M := M) i (k : Real) * (c i) ^ 2 := by
     apply Finset.sum_congr rfl
     intro i hi
-    rw [scalarGalerkinVec_coeff, if_pos hi]
+    rw [scalarGalerkinVec_coeff, ite_eq_left hi]
   rw [hleft, hhigh, hlow] at hcrit
   exact hcrit
 

@@ -68,7 +68,7 @@ theorem dirichletCometricDifferenceFormComplOnIcc_apply_smooth
         hdelta_lt hdelta_nn hdelta t
         (smoothToH1ComplDirichlet q u) (smoothToH1ComplDirichlet q v) =
       dirichletCometricDifferenceForm q (g t) u v := by
-  rw [dirichletCometricDifferenceFormComplOnIcc, dif_pos ht,
+  rw [dirichletCometricDifferenceFormComplOnIcc, dite_eq_left ht,
     dirichletCometricDifferenceFormCompl_apply_smooth]
 
 theorem norm_dirichletCometricDifferenceFormComplOnIcc_le
@@ -82,10 +82,10 @@ theorem norm_dirichletCometricDifferenceFormComplOnIcc_le
     ‖dirichletCometricDifferenceFormComplOnIcc q g
       hdelta_lt hdelta_nn hdelta t‖ ≤ delta / (1 - delta) := by
   by_cases ht : t ∈ Icc (0 : ℝ) T
-  · rw [dirichletCometricDifferenceFormComplOnIcc, dif_pos ht]
+  · rw [dirichletCometricDifferenceFormComplOnIcc, dite_eq_left ht]
     exact norm_dirichletCometricDifferenceFormCompl_le q (g t)
       hdelta_lt hdelta_nn (hdelta t ht)
-  · rw [dirichletCometricDifferenceFormComplOnIcc, dif_neg ht, norm_zero]
+  · rw [dirichletCometricDifferenceFormComplOnIcc, dite_eq_right ht, norm_zero]
     exact div_nonneg hdelta_nn (by linarith)
 
 theorem dirichletCometricDifferenceFormComplOnIcc_aestronglyMeasurable
@@ -139,7 +139,7 @@ theorem dirichletCometricDifferenceLaplacianOnIcc_eq
       dirichletCometricDifferenceLaplacian q (g t)
         hdelta_lt hdelta_nn (hdelta t ht) := by
   unfold dirichletCometricDifferenceLaplacianOnIcc
-  rw [dirichletCometricDifferenceFormComplOnIcc, dif_pos ht]
+  rw [dirichletCometricDifferenceFormComplOnIcc, dite_eq_left ht]
   unfold dirichletCometricDifferenceLaplacian
   congr
 

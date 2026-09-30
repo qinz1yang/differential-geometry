@@ -86,7 +86,7 @@ private theorem local_frame_tangent_orientation_eq_on_nhds
       (hs.contMDiffAt hU hp i).continuousAt
     apply hc.congr_of_eventuallyEq
     filter_upwards [hT.mem_nhds hpT] with x hx
-    simp only [b, dif_pos hx, Basis.map_apply, IsLocalFrameOn.toBasisAt_coe]
+    simp only [b, dite_eq_left hx, Basis.map_apply, IsLocalFrameOn.toBasisAt_coe]
     rfl
   have hlocal := basis_orientation_eventually_eq b p hb
   have hmem : ∀ᶠ x in 𝓝 p, x ∈ T := hT.mem_nhds hpT
@@ -94,7 +94,7 @@ private theorem local_frame_tangent_orientation_eq_on_nhds
   refine ⟨V, fun x hx => (hV x hx).1.1, fun x hx => (hV x hx).1.2, hVo, hpV, ?_⟩
   intro x hx
   have heq := (hV x hx).2
-  simpa only [b, dif_pos (hV x hx).1, dif_pos hpT, Basis.orientation_map, A, e] using heq
+  simpa only [b, dite_eq_left (hV x hx).1, dite_eq_left hpT, Basis.orientation_map, A, e] using heq
 
 open Classical in
 theorem tangent_orientation_locality_of_local_frames
@@ -222,7 +222,7 @@ private theorem tangentOrientationPretrivialization_apply
         ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ x
           (by simpa only [TangentBundle.trivializationAt_baseSet] using hx)).toLinearEquiv ω) := by
   change (x, Orientation.map ι (tangentChartFiberEquiv p x).toLinearEquiv ω) = _
-  rw [tangentChartFiberEquiv, dif_pos hx]
+  rw [tangentChartFiberEquiv, dite_eq_left hx]
 
 open Classical in
 private theorem tangentOrientationPretrivialization_symm_apply
@@ -236,7 +236,7 @@ private theorem tangentOrientationPretrivialization_symm_apply
   change (⟨x, (Orientation.map ι (tangentChartFiberEquiv p x).toLinearEquiv).symm ω⟩ :
     TotalSpace (Orientation ℝ E ι)
       (fun y : M => Orientation ℝ (TangentSpace 𝓘(ℝ, E) y) ι)) = _
-  rw [Orientation.map_symm, tangentChartFiberEquiv, dif_pos hx,
+  rw [Orientation.map_symm, tangentChartFiberEquiv, dite_eq_left hx,
     ContinuousLinearEquiv.toLinearEquiv_symm]
 
 end DifferentialGeometry.Topology

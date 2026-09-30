@@ -438,11 +438,8 @@ theorem iteratedDeriv_two_intrinsicFrameGram_eq_riemannOp
       ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M]
-  [T2Space (TangentBundle I M)] in
+  [RiemannianBundle (fun x : M => TangentSpace I x)] [T2Space (TangentBundle I M)] in
 private theorem firstBianchiAt_metricRm04At
-    [BoundarylessManifold I M]
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M) (p : M) :
     FirstBianchiAt (I := I) (metricRm04At (I := I) (M := M) g p) := by
   have hreal : rm04RealizesConnection (I := I) g (metricCov (I := I) (M := M) g)
@@ -513,7 +510,6 @@ private theorem inner_riemannOp_eq_metricRm04StandardAt
 
 omit [T2Space (TangentBundle I M)] in
 theorem metricRm04StandardAt_normalFrame_eq_second_jet
-    [BoundarylessManifold I M]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
@@ -571,7 +567,6 @@ theorem metricRm04StandardAt_normalFrame_eq_second_jet
 
 omit [T2Space (TangentBundle I M)] in
 theorem abs_metricRm04StandardAt_normalFrame_le_of_second_jet_bound
-    [BoundarylessManifold I M]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
@@ -631,7 +626,6 @@ theorem abs_metricRm04StandardAt_normalFrame_le_of_second_jet_bound
 
 omit [T2Space (TangentBundle I M)] in
 theorem curvDerivNorm_zero_le_of_normalFrame_second_jet_bound
-    [BoundarylessManifold I M]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)

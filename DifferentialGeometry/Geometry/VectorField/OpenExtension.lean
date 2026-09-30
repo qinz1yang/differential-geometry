@@ -19,7 +19,7 @@ def extendOpenTangentField (U : TopologicalSpace.Opens M)
 theorem extendOpenTangentField_apply (U : TopologicalSpace.Opens M)
     (X : ∀ x : U, TangentSpace I x) (x : U) :
     extendOpenTangentField U X (x : M) = mfderiv I I (Subtype.val : U → M) x (X x) := by
-  simp only [extendOpenTangentField, dif_pos x.property]
+  simp only [extendOpenTangentField, dite_eq_left x.property]
 
 theorem contMDiffOn_extendOpenTangentField [IsManifold I ∞ M]
     (U : TopologicalSpace.Opens M) (X : ∀ x : U, TangentSpace I x)

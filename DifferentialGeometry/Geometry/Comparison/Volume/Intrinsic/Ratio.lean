@@ -126,7 +126,7 @@ private lemma hyperbolicSn_ge_id {q : Real} (hq : 0 ≤ q) {t : Real} (ht : 0 �
   by_cases hq0 : q = 0
   · simp [hyperbolicSn, hq0]
   · have hqpos : 0 < q := lt_of_le_of_ne hq (Ne.symm hq0)
-    rw [hyperbolicSn, if_neg hq0, le_div_iff₀ hqpos]
+    rw [hyperbolicSn, ite_eq_right hq0, le_div_iff₀ hqpos]
     calc t * q = q * t := mul_comm _ _
       _ ≤ Real.sinh (q * t) := Real.self_le_sinh_iff.mpr (mul_nonneg hq ht)
 

@@ -14,7 +14,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 open Classical in
 theorem isBridgeDisk_closure_boundary_sdiff_of_boundary_arc
     {C D β : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDC : D ⊆ C)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDC : D ⊆ C)
     {γ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) β)
     (hβ : β ⊆ r '' stdSimplexBoundary 2) (htrace : D ∩ frontier C = β) :
     IsBridgeDisk C (closure ((r '' stdSimplexBoundary 2) \ β)) D (γ 0) (γ 1) := by

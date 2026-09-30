@@ -38,7 +38,7 @@ theorem metricTracePair0SAt_tensor0SPullbackCLE
       metricTracePair0SAt gTarget A := by
   unfold metricTracePair0SAt
   rw [← tensor0SPullbackCLE_metricTensor0S gSource gTarget e hiso]
-  exact Tensor0SBundle.inner0S_tensor0SPullbackCLE gSource gTarget x y 2 e hiso _ A
+  exact DifferentialGeometry.Tensor0SBundle.inner0S_tensor0SPullbackCLE gSource gTarget x y 2 e hiso _ A
 
 private theorem freezeFirstTwo0S_tensor0SPullbackCLE
     {s : Nat} {x y : M}

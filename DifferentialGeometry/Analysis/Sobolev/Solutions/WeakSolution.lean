@@ -15,17 +15,6 @@ variable {d : ℕ} [NeZero d]
 
 local notation "E" => EuclideanSpace ℝ (Fin d)
 
-def IsWeakSolution
-    {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω) (u f : E → ℝ) : Prop :=
-  ∀ ψ : E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ Ω →
-    B.bilin u ψ = ∫ x in Ω, f x * ψ x
-
-theorem IsSmoothWeakSolution.toWeakSolution
-    {Ω : Set E} {B : SmoothEllipticBilinearForm d Ω} {u f : E → ℝ}
-    (h : B.IsSmoothWeakSolution u f) : B.IsWeakSolution u f := by
-  intro ψ hψ_smooth hψ_support hψ_tsub
-  exact h.2 ψ hψ_smooth hψ_support hψ_tsub
-
 def classicalApply
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω) (v : E → ℝ) : E → ℝ :=
   fun x =>
@@ -432,62 +421,6 @@ theorem integral_classicalApply_mollifyEps_eq_bilin
   have h_smooth_weak :=
     mollifyEps_isSmoothWeakSolution_classicalApply (d := d) hΩ B hu_local hε
   exact (h_smooth_weak.2 ψ hψ hψ_support hψ_tsub).symm
-
-theorem integral_classicalApply_mollifyEps_sub_eq_bilin_sub
-    {Ω : Set E} (hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
-    {u f : E → ℝ}
-    (hu_local : LocallyIntegrable u (volume : Measure E))
-    (h_weak : B.IsWeakSolution u f)
-    {ε : ℝ} (hε : 0 < ε)
-    {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_support : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
-    (hf_psi_int : Integrable (fun x : E => f x * ψ x) (volume.restrict Ω)) :
-    ∫ x in Ω, (B.classicalApply
-        (DifferentialGeometry.Analysis.Sobolev.mollifyEps
-          (d := d) hε u) x - f x) * ψ x =
-      B.bilin (DifferentialGeometry.Analysis.Sobolev.mollifyEps
-        (d := d) hε u) ψ - B.bilin u ψ := by
-  have h_lhs_split : ∫ x in Ω, (B.classicalApply
-        (DifferentialGeometry.Analysis.Sobolev.mollifyEps
-          (d := d) hε u) x - f x) * ψ x =
-      (∫ x in Ω, B.classicalApply
-        (DifferentialGeometry.Analysis.Sobolev.mollifyEps
-          (d := d) hε u) x * ψ x) -
-      ∫ x in Ω, f x * ψ x := by
-    have h_smooth_weak :=
-      mollifyEps_isSmoothWeakSolution_classicalApply (d := d) hΩ B hu_local hε
-    have h_pairing_int : Integrable (fun x : E => B.classicalApply
-        (DifferentialGeometry.Analysis.Sobolev.mollifyEps
-          (d := d) hε u) x * ψ x) (volume.restrict Ω) := by
-      have h_class_smooth : ContDiff ℝ (⊤ : ℕ∞) (B.classicalApply
-          (DifferentialGeometry.Analysis.Sobolev.mollifyEps
-            (d := d) hε u)) := by
-        refine contDiff_classicalApply (d := d) B ?_
-        exact DifferentialGeometry.Analysis.Sobolev.mollifyEps_contDiff
-          (d := d) hε hu_local
-      have h_cont : Continuous (fun x : E => B.classicalApply
-          (DifferentialGeometry.Analysis.Sobolev.mollifyEps
-            (d := d) hε u) x * ψ x) :=
-        h_class_smooth.continuous.mul hψ.continuous
-      have h_support : HasCompactSupport (fun x : E => B.classicalApply
-          (DifferentialGeometry.Analysis.Sobolev.mollifyEps
-            (d := d) hε u) x * ψ x) :=
-        hψ_support.mul_left
-      exact (h_cont.integrable_of_hasCompactSupport h_support).restrict
-    have h_fun_eq : (fun x : E => (B.classicalApply
-            (DifferentialGeometry.Analysis.Sobolev.mollifyEps
-              (d := d) hε u) x - f x) * ψ x) =
-          (fun x : E => B.classicalApply
-              (DifferentialGeometry.Analysis.Sobolev.mollifyEps
-                (d := d) hε u) x * ψ x - f x * ψ x) := by
-      funext x; ring
-    rw [h_fun_eq]
-    rw [integral_sub h_pairing_int hf_psi_int]
-  rw [h_lhs_split]
-  have h_classicalApply_pair := integral_classicalApply_mollifyEps_eq_bilin
-    (d := d) hΩ B hu_local hε hψ hψ_support hψ_tsub
-  have h_weak_eq := h_weak ψ hψ hψ_support hψ_tsub
-  rw [h_classicalApply_pair, h_weak_eq]
 
 end SmoothEllipticBilinearForm
 end DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean

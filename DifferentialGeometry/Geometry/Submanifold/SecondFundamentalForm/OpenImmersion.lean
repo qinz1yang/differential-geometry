@@ -70,9 +70,12 @@ theorem trivToE_mfderiv_eq_fderiv {A : Type*} [NormedAddCommGroup A] [NormedSpac
       = fderiv ℝ ((extChartAt I p) ∘ F) z w := by
   have hcomp := mfderiv_comp_apply (I := 𝓘(ℝ, A)) (I' := I) (I'' := 𝓘(ℝ, E)) (x := z)
     (f := F) (g := (↑(extChartAt I p) : M → E)) (mdifferentiableAt_extChartAt (I := I) hp) hF w
+  rw [mfderiv_eq_fderiv] at hcomp
+  have hw := congrArg (NormedSpace.fromTangentSpace (𝕜 := ℝ) (extChartAt I p (F z))) hcomp
   rw [trivToE, TangentBundle.continuousLinearMapAt_trivializationAt (I := I)
-    (x₀ := p) (x := F z) hp, ← mfderiv_eq_fderiv]
-  exact hcomp.symm
+    (x₀ := p) (x := F z) hp]
+  simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+    ContinuousLinearEquiv.apply_symm_apply] using! hw.symm
 
 theorem covDerivAlong_sourcePartial_chart (g : SmoothRiemannianMetric I M)
     {A : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A]

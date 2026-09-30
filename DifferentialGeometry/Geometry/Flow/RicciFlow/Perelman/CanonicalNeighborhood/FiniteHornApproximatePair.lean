@@ -16,7 +16,7 @@ variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
 
 theorem exists_finiteHorn_approximate_pair_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ outer : ℕ, ∃ (target middle : ℕ) (D : ℝ),
+      H₀ ≤ H.collarDepth → ∀ outer : ℕ, ∃ (target middle : ℕ) (D : ℝ),
         0 < D ∧ closure (H.subend target) ⊆ H.subend middle ∧
         closure (H.subend middle) ⊆ H.subend outer ∧
         (∀ x : W, dist (x : UniformSpace.Completion W) H.endpoint < D → x ∈ H.subend target) ∧
@@ -106,7 +106,7 @@ theorem exists_finiteHorn_approximate_pair_depth :
     ⟨div_nonneg hs.1.le (hr k).le, (div_le_one (hr k)).mpr hs.2⟩⟩
   have hz : (z : ℝ) ≠ 0 := (div_pos hs.1 (hr k)).ne'
   have h := hclose k z
-  rw [if_neg hz] at h
+  rw [ite_eq_right hz] at h
   simpa only [C, z, mul_div_cancel₀ _ (hr k).ne', UniformSpace.Completion.dist_eq, dist_comm] using h
 
 
@@ -210,7 +210,7 @@ theorem finiteHorn_approximate_pair_of_endRay_dist_lt_sum
     ⟨div_nonneg hs.1.le (hr k).le, (div_le_one (hr k)).mpr hs.2⟩⟩
   have hz : (z : ℝ) ≠ 0 := (div_pos hs.1 (hr k)).ne'
   have h := hclose k z
-  rw [if_neg hz] at h
+  rw [ite_eq_right hz] at h
   simpa only [C, z, mul_div_cancel₀ _ (hr k).ne', UniformSpace.Completion.dist_eq, dist_comm] using h
 
 

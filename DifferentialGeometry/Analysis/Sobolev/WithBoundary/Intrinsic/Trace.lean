@@ -161,6 +161,8 @@ theorem boundaryRestrict_eLpNorm_le_of_bound
       (modelWithCornersEuclideanHalfSpace n) M)
     (p : ℝ≥0∞)
     {u : M → ℝ} {C : ℝ}
+    (hu : AEStronglyMeasurable (boundaryRestrict (n := n) (M := M) u)
+      (surfaceMeasure (I := modelWithCornersEuclideanHalfSpace n) (M := M) g))
     (hC : ∀ x : M, ‖u x‖ ≤ C) :
     eLpNorm (boundaryRestrict (n := n) (M := M) u) p
         (surfaceMeasure (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) ≤
@@ -172,7 +174,7 @@ theorem boundaryRestrict_eLpNorm_le_of_bound
     refine Filter.Eventually.of_forall ?_
     intro x
     exact hC (x : M)
-  exact eLpNorm_le_of_ae_bound h_ae
+  exact eLpNorm_le_of_ae_bound hu h_ae
 
 theorem boundaryRestrict_eLpNorm_le_of_continuous
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
@@ -188,7 +190,8 @@ theorem boundaryRestrict_eLpNorm_le_of_continuous
   obtain ⟨C, hC_nonneg, hC⟩ :=
     exists_continuous_bound_of_compact (M := M) hu
   exact ⟨C, hC_nonneg,
-    boundaryRestrict_eLpNorm_le_of_bound (n := n) (M := M) g p hC⟩
+    boundaryRestrict_eLpNorm_le_of_bound (n := n) (M := M) g p
+      (boundaryRestrict_aestronglyMeasurable (n := n) (M := M) g hu) hC⟩
 
 def boundaryTrace (u : M → ℝ) :
     BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M → ℝ :=
@@ -256,12 +259,14 @@ theorem boundaryTrace_eLpNorm_le_of_bound
       (modelWithCornersEuclideanHalfSpace n) M)
     (p : ℝ≥0∞)
     {u : M → ℝ} {C : ℝ}
+    (hu : AEStronglyMeasurable (boundaryTrace (n := n) (M := M) u)
+      (surfaceMeasure (I := modelWithCornersEuclideanHalfSpace n) (M := M) g))
     (hC : ∀ x : M, ‖u x‖ ≤ C) :
     eLpNorm (boundaryTrace (n := n) (M := M) u) p
         (surfaceMeasure (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) ≤
       boundaryTotalMeasure (n := n) (M := M) g ^ p.toReal⁻¹ *
         ENNReal.ofReal C :=
-  boundaryRestrict_eLpNorm_le_of_bound (n := n) (M := M) g p hC
+  boundaryRestrict_eLpNorm_le_of_bound (n := n) (M := M) g p hu hC
 
 omit [IsManifold (𝓡∂ n) ∞ M] in
 theorem boundaryTrace_eq_restrict

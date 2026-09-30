@@ -31,7 +31,7 @@ theorem exists_four_arc_trace_of_circle_disks
     (hψ : IsPLHomeomorphOn ψ V (R.space ∩ Ω)) (hWΩ : W ⊆ Ω)
     (haxis : ∀ p ∈ V, ψ p ∈ Γ.space ↔ p.1 = 0)
     {P : Fin 4 → Set E} {q : Fin 4 → (Fin 3 → ℝ) → E}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (P i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P i))
     (hPR : ∀ i, (PiecewiseLinear.restrict R (P i)).space = P i)
     (hread : ∀ x ∈ R.space ∩ W, ∀ i,
       x ∈ P i ↔ Function.invFunOn ψ V x ∈ crossHalfPlane i)

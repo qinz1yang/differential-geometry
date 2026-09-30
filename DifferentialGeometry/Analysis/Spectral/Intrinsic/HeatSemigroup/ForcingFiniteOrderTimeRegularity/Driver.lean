@@ -631,7 +631,7 @@ private theorem spectralPathFiniteOrder_rawCompOnE_pdIter_euclidean_contDiffOn_l
     intro n hn
     have hspec := Classical.choose_spec (hmajorant n hn)
     have hveq : v n = Classical.choose (hmajorant n hn) := by
-      rw [hv_def]; exact dif_pos hn
+      rw [hv_def]; exact dite_eq_left hn
     rw [hveq]
     exact hspec
   have htsum_Bc : ContDiffOn ℝ (kk : ℕ)
@@ -810,11 +810,11 @@ private theorem anisoOn_realizeGram_adjugate
         (@Pi.single (Fin (Module.finrank ℝ E)) (fun _ => ℝ) _ _ a 1 c)
       refine hconst.congr hV _ (fun t ht y hy => ?_)
       beta_reduce
-      rw [Matrix.updateRow_apply, if_pos hr]
+      rw [Matrix.updateRow_apply, ite_eq_left hr]
     · refine (anisoOn_chartGramOnE_realizePath hT hδ_lt hδ hφ_smooth hcoeff
         hmodemass α r c).congr hV _ (fun t ht y hy => ?_)
       beta_reduce
-      rw [Matrix.updateRow_apply, if_neg hr]
+      rw [Matrix.updateRow_apply, ite_eq_right hr]
       rfl
   have hterm : ∀ σp : Equiv.Perm (Fin (Module.finrank ℝ E)),
       DifferentialGeometry.Analysis.AnisotropicJointContDiffOn k T
@@ -1821,7 +1821,7 @@ private theorem deTurckRHSReconstructedFiniteOrderSection_pathCoeff_timeContDiff
       heigM.comp contMDiff_fst
     have hpairing : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ((k : ℕ) : WithTop ℕ∞)
         (fun p : M × ℝ =>
-          DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+          DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
             (eig.toFun p.1) ((Rec p.2).toFun p.1))
         ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) :=
       tensorInnerPointwise_pair_section_jointContMDiffOn (I := I) (M := M) hkinf g₀
@@ -1829,7 +1829,7 @@ private theorem deTurckRHSReconstructedFiniteOrderSection_pathCoeff_timeContDiff
     have hcoeffInt : ∀ S : SmoothCcTensor g₀ 0 2,
         tensorL2Coeff (I := I) (M := M) hc
             (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) S) i =
-          ∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+          ∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
             (eig.toFun x) (S.toFun x) ∂μ := by
       intro S
       rw [tensorL2Coeff_eq_inner,
@@ -1840,7 +1840,7 @@ private theorem deTurckRHSReconstructedFiniteOrderSection_pathCoeff_timeContDiff
         SmoothCcTensor.inner_toL2, SmoothCcTensor.inner_def]
       rfl
     have hint := contDiffOn_integral_of_jointContMDiffOn_Icc_finiteOrder μ hT k
-      (fun x t => DifferentialGeometry.Integral.L2.tensorInnerPointwise
+      (fun x t => DifferentialGeometry.TensorMetric.tensorInnerPointwise
         (I := I) (M := M) g₀ 0 2 x (eig.toFun x) ((Rec t).toFun x)) hpairing
     exact hint.congr (fun t _ => hcoeffInt (Rec t))
   refine ⟨hconj1, ?_⟩
@@ -2115,7 +2115,7 @@ private theorem deTurckRHSReconstructedFiniteOrderSection_eigenPairing_jointCk_t
     (∀ i : TensorEigenIdx (I := I) (M := M) g₀ 0 2,
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ((k : ℕ) : WithTop ℕ∞)
         (fun p : M × ℝ =>
-          DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+          DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
             ((Analysis.Parabolic.TensorSpectral.eigenvectorSmooth
               (I := I) (M := M) g₀ 0 2 i).toFun p.1)
             ((deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F p.2) hδ_lt (hδ p.2)).toFun p.1))
@@ -2143,7 +2143,7 @@ private theorem deTurckRHSReconstructedFiniteOrderSection_eigenPairing_jointCk_t
   have hpairing : ∀ i : TensorEigenIdx (I := I) (M := M) g₀ 0 2,
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ((k : ℕ) : WithTop ℕ∞)
         (fun p : M × ℝ =>
-          DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+          DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
             ((Analysis.Parabolic.TensorSpectral.eigenvectorSmooth
               (I := I) (M := M) g₀ 0 2 i).toFun p.1)
             ((deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F p.2) hδ_lt (hδ p.2)).toFun p.1))
@@ -2180,7 +2180,7 @@ private theorem deTurckRHSReconstructedFiniteOrderSection_eigenPairing_jointCk_t
     have hcoeffInt : ∀ S : SmoothCcTensor g₀ 0 2,
         tensorL2Coeff (I := I) (M := M) hc
             (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) S) i =
-          ∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+          ∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
             (eig.toFun x) (S.toFun x) ∂μ := by
       intro S
       rw [tensorL2Coeff_eq_inner,
@@ -2198,11 +2198,11 @@ private theorem deTurckRHSReconstructedFiniteOrderSection_eigenPairing_jointCk_t
         hjointP x ht).of_le hjW
     have hfib : ∀ x : M,
         iteratedDerivWithin j
-            (fun s => DifferentialGeometry.Integral.L2.tensorInnerPointwise
+            (fun s => DifferentialGeometry.TensorMetric.tensorInnerPointwise
               (I := I) (M := M) g₀ 0 2 x (eig.toFun x)
               ((deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F s) hδ_lt (hδ s)).toFun x))
             (Set.Icc (0 : ℝ) T) t
-          = DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+          = DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
               (eig.toFun x) ((Rjet j t).toFun x) := by
       intro x
       have hL := clm_comm_iteratedDerivWithin_finiteOrder
@@ -2215,13 +2215,13 @@ private theorem deTurckRHSReconstructedFiniteOrderSection_eigenPairing_jointCk_t
     have hLHSfun : (fun s : ℝ => tensorL2Coeff (I := I) (M := M) hc
           (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2)
             (deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F s) hδ_lt (hδ s))) i)
-        = (fun s : ℝ => ∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise
+        = (fun s : ℝ => ∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise
             (I := I) (M := M) g₀ 0 2 x (eig.toFun x)
             ((deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F s) hδ_lt (hδ s)).toFun x) ∂μ) :=
       funext fun s => hcoeffInt
                         (deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F s) hδ_lt (hδ s))
     have hinter := iteratedDerivWithin_integral_param_Icc_finiteOrder μ hT j
-      (fun x s => DifferentialGeometry.Integral.L2.tensorInnerPointwise
+      (fun x s => DifferentialGeometry.TensorMetric.tensorInnerPointwise
         (I := I) (M := M) g₀ 0 2 x (eig.toFun x)
         ((deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F s) hδ_lt (hδ s)).toFun x))
       ((hpairing i).of_le hjW) t ht
@@ -2234,14 +2234,14 @@ private theorem deTurckRHSReconstructedFiniteOrderSection_eigenPairing_jointCk_t
       (N := ((0 : ℕ) : WithTop ℕ∞)) (by exact_mod_cast le_top) g₀ Sfam Sfam
       (hRjet_lap j hjk κ) (hRjet_lap j hjk κ)
     have hnormeq : (fun t : ℝ => ‖SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) (Sfam t)‖ ^ 2)
-        = fun t : ℝ => ∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise
+        = fun t : ℝ => ∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise
             (I := I) (M := M) g₀ 0 2 x ((Sfam t).toFun x) ((Sfam t).toFun x) ∂μ := by
       funext t
       rw [SmoothCcTensor.norm_toL2,
         Analysis.Parabolic.TensorSpectral.SmoothCcTensor.norm_sq_eq_inner_self]
       rfl
     have hcd := contDiffOn_integral_of_jointContMDiffOn_Icc_finiteOrder μ hT 0
-      (fun x t => DifferentialGeometry.Integral.L2.tensorInnerPointwise
+      (fun x t => DifferentialGeometry.TensorMetric.tensorInnerPointwise
         (I := I) (M := M) g₀ 0 2 x ((Sfam t).toFun x) ((Sfam t).toFun x)) hpair0
     have hfinal : ContinuousOn
         (fun t => ‖SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) (Sfam t)‖ ^ 2)
@@ -2301,7 +2301,7 @@ private theorem deTurckRHSRecon_pathCoeff_finiteOrder_timeContDiff_withinMass
     have hcoeffInt : ∀ S : SmoothCcTensor g₀ 0 2,
         tensorL2Coeff (I := I) (M := M) hc
             (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) S) i =
-          ∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+          ∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
             (eig.toFun x) (S.toFun x) ∂μ := by
       intro S
       rw [tensorL2Coeff_eq_inner,
@@ -2314,7 +2314,7 @@ private theorem deTurckRHSRecon_pathCoeff_finiteOrder_timeContDiff_withinMass
     refine ContDiffOn.congr ?_
       (fun t _ => hcoeffInt (deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F t) hδ_lt (hδ t)))
     exact contDiffOn_integral_of_jointContMDiffOn_Icc_finiteOrder μ hT k
-      (fun x t => DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M)
+      (fun x t => DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M)
         g₀ 0 2 x (eig.toFun x)
         ((deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F t) hδ_lt (hδ t)).toFun x))
       (hjoint i)
@@ -2875,7 +2875,7 @@ theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
       tensorL2Coeff (I := I) (M := M) hc
           (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) (F t)) i = φ i t := by
     intro t ht i
-    simp only [hF_def, ht, if_pos]
+    simp only [hF_def, ht, ite_eq_left]
     exact hS₀ t ht i
   have hF_smoothCc_coeff : ∀ t ∈ Set.Icc (0 : ℝ) d₂, ∀ i,
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (F t)).coeff i = φ i t := by
@@ -2948,7 +2948,7 @@ theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
         => ?_⟩
     by_cases ht : t ∈ Set.Icc (0 : ℝ) d₂
     · exact hp_ball (F t) (hball_pt t ht)
-    · have hF0 : F t = 0 := by simp only [hF_def, ht, if_neg, not_false_iff]
+    · have hF0 : F t = 0 := by simp only [hF_def, ht, ite_eq_right, not_false_iff]
       refine hp_ball (F t) ?_
       rw [hF0, hsmoothZero, norm_zero]
       exact hp_pos.le

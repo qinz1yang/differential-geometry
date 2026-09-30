@@ -41,7 +41,7 @@ theorem exists_isPLHomeomorphOn_euclidean_of_isPLBall {E : Type*} [NormedAddComm
       L x = (WithLp.linearEquiv 2 ℝ (Fin k → ℝ)).symm fun i : Fin k => x i.castSucc :=
     fun _ => rfl
   have hinj : InjOn (L : (Fin (k + 1) → ℝ) → EuclideanSpace ℝ (Fin k))
-      (stdSimplex ℝ (Fin (k + 1))) := by
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin (k + 1))) := by
     intro x hx y hy hxy
     have hco : (fun i : Fin k => x i.castSucc) = fun i : Fin k => y i.castSucc :=
       (WithLp.linearEquiv 2 ℝ (Fin k → ℝ)).symm.injective (by rw [← hLval, ← hLval]; exact hxy)
@@ -55,16 +55,16 @@ theorem exists_isPLHomeomorphOn_euclidean_of_isPLBall {E : Type*} [NormedAddComm
       Finset.sum_congr rfl fun i _ => hcoord i
     linarith
   have hA : IsPiecewiseAffineOn (L : (Fin (k + 1) → ℝ) → EuclideanSpace ℝ (Fin k))
-      (stdSimplex ℝ (Fin (k + 1))) :=
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin (k + 1))) :=
     (isPiecewiseAffineOn_of_affine_of_isHPolytope L.toAffineMap
       (isHPolytope_stdSimplex (Fin (k + 1)))).congr fun _ _ => rfl
   have hL : IsPLHomeomorphOn (L : (Fin (k + 1) → ℝ) → EuclideanSpace ℝ (Fin k))
-      (stdSimplex ℝ (Fin (k + 1))) (L '' stdSimplex ℝ (Fin (k + 1))) :=
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin (k + 1))) (L '' Convexity.StdSimplex.coordinateSet ℝ (Fin (k + 1))) :=
     isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn
       (isHPolytope_stdSimplex (Fin (k + 1))).isPolyhedron hA hinj.bijOn_image
-  exact ⟨L '' stdSimplex ℝ (Fin (k + 1)),
+  exact ⟨L '' Convexity.StdSimplex.coordinateSet ℝ (Fin (k + 1)),
     (L : (Fin (k + 1) → ℝ) → EuclideanSpace ℝ (Fin k)) ∘
-      Function.invFunOn r (stdSimplex ℝ (Fin (k + 1))),
+      Function.invFunOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (k + 1))),
     (isPLBall_stdSimplex k).of_isPLHomeomorphOn hL, hr.symm.trans hL⟩
 
 end EuclideanModel

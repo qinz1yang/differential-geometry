@@ -11,8 +11,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.TensorRSRiemannianBundle
@@ -99,6 +98,5 @@ theorem riemannianFiberNormSq_smul (g : SmoothRiemannianMetric I M) (r s : ℕ) 
   rw [← riemannianFiberNorm_sq, ← riemannianFiberNorm_sq, riemannianFiberNorm_smul,
     mul_pow, sq_abs]
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry

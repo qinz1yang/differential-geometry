@@ -389,6 +389,7 @@ theorem deriv_congr_nhds
   have hx : f x = g x := h.eq_of_nhds
   unfold mvfderiv
   rw [hmf, hx]
+  rfl
 
 theorem inverseMetric_derivative_solve
     [DecidableEq Idx]

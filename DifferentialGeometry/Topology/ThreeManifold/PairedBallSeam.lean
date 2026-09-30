@@ -79,7 +79,7 @@ def seamChart (p : SelfAttachment.directSeamDomain) : Quot (seamRel N endpoint c
 theorem seamChart_zero (z : SelfAttachment.Sphere (n := 3)) :
     seamChart N endpoint chart hdisj s a ⟨(z, 0), mem_univ _, by norm_num [SelfAttachment.directSeamDomain]⟩ =
       Quot.mk _ ⟨endpoint s false, boundaryPoint N endpoint chart hdisj s false z⟩ := by
-  rw [seamChart, dif_pos le_rfl]
+  rw [seamChart, dite_eq_left le_rfl]
   apply congrArg (Quot.mk _)
   apply congrArg (Sigma.mk (endpoint s false))
   apply Subtype.ext

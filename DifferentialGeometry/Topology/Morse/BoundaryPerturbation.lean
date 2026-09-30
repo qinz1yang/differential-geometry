@@ -5,7 +5,6 @@ import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Analysis.Convex.Deriv
 import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.Topology.Algebra.Support
-import Mathlib.Analysis.Calculus.Deriv.Prod
 
 open scoped ContDiff Topology Manifold
 

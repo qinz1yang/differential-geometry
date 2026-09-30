@@ -627,10 +627,7 @@ theorem expMap_contMDiffAt2_of_norm_lt
   have hsmul_cd : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, E) 2 (fun u : E => (1 / t') • u) := by
     have h0 : ContDiff ℝ (∞ : WithTop ℕ∞) (fun u : E => (1 / t') • u) :=
       contDiff_const.smul contDiff_id
-    have hle : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by
-      have h2le : ((2 : ℕ∞) : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) :=
-        by exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-      simpa using h2le
+    have hle : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by simp
     have h1 : ContDiff ℝ 2 (fun u : E => (1 / t') • u) := h0.of_le hle
     exact h1.contMDiff
   have hsmul_at : ContMDiffAt 𝓘(ℝ, E) 𝓘(ℝ, E) 2

@@ -12,6 +12,9 @@ import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Discre
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.HolderIntegrability
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.WeightedIntegrationByParts
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
+
 noncomputable section
 
 open MeasureTheory Set Filter Topology

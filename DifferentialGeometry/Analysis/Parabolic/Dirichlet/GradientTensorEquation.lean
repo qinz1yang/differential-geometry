@@ -159,7 +159,9 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_tensor_identity
   have hσmem : MemLp σ ∞ ν := hlift _ hσall.continuousOn
   have hAmem (i j) : MemLp (A i j) ∞ ν := hlift _ (hAall i j).continuousOn
   have hC (k) : MemLp (C k) 2 ν :=
-    ((Lp.memLp (F k)).mul (r := 2) hrinv).sub (((hV k).mul (r := 2) hσmem).mul (r := 2) (hrt.mul (r := ∞) hrinv))
+    (hrinv.fun_mul (r := 2) (Lp.memLp (F k))).sub
+      ((hrinv.fun_mul (r := ∞) hrt).fun_mul (r := 2)
+        (hσmem.fun_mul (r := 2) (hV k)))
   let : IsFiniteMeasure (volume.restrict Ω₀) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, univ_inter]
@@ -170,7 +172,7 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_tensor_identity
   have hP (k j) : MemLp (P k j) 2 ν := by
     apply memLp_finsetSum
     intro i _
-    exact (Lp.memLp (H k i)).mul (r := 2) (hAmem i j)
+    exact (hAmem i j).fun_mul (r := 2) (Lp.memLp (H k i))
   have hSsub : Ioo t₀ t₁ ×ˢ Ω₀ ⊆ D.regular ×ˢ Ω := by
     intro p hp
     exact ⟨hreg ⟨ht₀.le.trans hp.1.1.le, hp.1.2.le.trans ht₁.le⟩, hsub hp.2⟩
@@ -194,7 +196,7 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_tensor_identity
         (hψrc.fderiv_apply ℝ (0, EuclideanSpace.single j 1)) ν
     have hin (i j) : Integrable (fun p => A i j p * H k i p *
         fderiv ℝ (fun z => ψ z / r z) p (0, EuclideanSpace.single j 1)) ν :=
-      (((hdψ j).mul (r := 2) ((Lp.memLp (H k i)).mul (r := 2) (hAmem i j))).integrable (by norm_num))
+      ((((hAmem i j).fun_mul (r := 2) (Lp.memLp (H k i))).fun_mul (r := 2) (hdψ j)).integrable (by norm_num))
     have heach (j) : (∫ p, P k j p * fderiv ℝ (fun z => ψ z / r z) p
         (0, EuclideanSpace.single j 1) ∂ν) =
         ∑ i, ∫ p, A i j p * H k i p * fderiv ℝ (fun z => ψ z / r z) p

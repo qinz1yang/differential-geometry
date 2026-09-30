@@ -32,8 +32,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 theorem exists_arc_parametrization_marking_disjoint_caps
     {S D₀ D₁ T : Set E} {γ : ℝ → E} {q₀ q₁ : (Fin 3 → ℝ) → E} {x₀ x₁ : E}
     (hS : IsPLSphere 2 S) (hγ : IsPLHomeomorphOn γ (Icc 0 1) T) (hTS : T ⊆ S)
-    (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hq₁ : IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁)
+    (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hq₁ : IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
     (hD₀S : D₀ ⊆ S) (hdis : Disjoint D₀ D₁)
     (hzero : γ 0 ∈ D₀)
     (hzeroB : γ 0 ∉ q₀ '' stdSimplexBoundary 2)

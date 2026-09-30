@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetr
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.TensorMetric
 
 open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Connection
@@ -48,6 +48,6 @@ theorem metricDiffSq_def (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
       normSq0S (I := I) g₁ x 2 (metricDiffAt (I := I) g₁ g₂ x) := rfl
 
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.TensorMetric
 
 end

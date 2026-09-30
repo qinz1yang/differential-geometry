@@ -82,11 +82,11 @@ theorem isLocalDiffeomorphAt_uncappingInteriorMap_core
   have hc : IsLocalDiffeomorphAt (𝓡∂ 3) (𝓡 3) ∞ C.coreInclusion x :=
     Manifold.isLocalDiffeomorphAt_of_isInteriorPoint_of_injective_mfderiv
       C.core_embedding.contMDiff hx rfl
-      ((C.core_embedding.isImmersion.isImmersionAt x).injective_mfderiv (by simp))
+      ((C.core_embedding.isImmersion.isImmersionAt x).mfderiv_injective (by simp))
   have hs : IsLocalDiffeomorphAt (𝓡∂ 3) (𝓡 3) ∞ (Subtype.val : T.core → M.Carrier) x :=
     Manifold.isLocalDiffeomorphAt_of_isInteriorPoint_of_injective_mfderiv
       C.core_induced.contMDiff hx rfl
-      ((C.core_induced.isImmersion.isImmersionAt x).injective_mfderiv (by simp))
+      ((C.core_induced.isImmersion.isImmersionAt x).mfderiv_injective (by simp))
   let f : T.core → C.uncappingInterior := fun y => ⟨C.coreInclusion y,C.coreInclusion_mem_uncappingInterior y⟩
   have hf : IsLocalDiffeomorphAt (𝓡∂ 3) (𝓡 3) ∞ f x :=
     DifferentialGeometry.isLocalDiffeomorphAt_subtypeCodRestrict (C.coreInclusion_mem_uncappingInterior) hc
@@ -110,28 +110,28 @@ private theorem uncappingAnnulus_eq_radialTube
     T.cylinderMap b.1 (Ψ b.1 (z,
       ⟨(1 + (if b.2 then ρ r.val else -ρ r.val)) / 2, by
         have h := hρ r.property
-        cases b.2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+        cases b.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
           constructor <;> linarith [h.1, h.2]⟩)) =
       T.radialTube b.1 (C.attaching b) b.2 v (r.val • z.val) := by
   have hrρ : ρ r.val = r.val := houter r.val ((le_max_left _ _).trans hr)
   have hthird : (1 / 3 : ℝ) ≤ r.val := (le_max_right _ _).trans hr
   let t : unitInterval := ⟨(1 + (if b.2 then ρ r.val else -ρ r.val)) / 2, by
     have h := hρ r.property
-    cases b.2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+    cases b.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
       constructor <;> linarith [h.1, h.2]⟩
   have ht : Ψ b.1 (z, t) = (C.attaching b z, t) := by
     cases hb : b.2 with
     | false =>
       have htb : t.val ≤ 1 / 3 := by
         change (1 + (if b.2 then ρ r.val else -ρ r.val)) / 2 ≤ 1 / 3
-        simp only [hb, Bool.false_eq_true, if_false, hrρ]
+        simp only [hb, Bool.false_eq_true, ite_false, hrρ]
         linarith
       have hb' : (b.1, false) = b := Prod.ext rfl hb.symm
       simpa only [hb'] using hlo b.1 t htb z
     | true =>
       have htb : 2 / 3 ≤ t.val := by
         change 2 / 3 ≤ (1 + (if b.2 then ρ r.val else -ρ r.val)) / 2
-        simp only [hb, if_true, hrρ]
+        simp only [hb, ite_true, hrρ]
         linarith
       have hb' : (b.1, true) = b := Prod.ext rfl hb.symm
       simpa only [hb'] using hhi b.1 t htb z
@@ -149,7 +149,7 @@ private theorem uncappingAnnulus_eq_radialTube
   change 2 * t.val - 1 = if b.2 then ‖r.val • z.val‖ else -‖r.val • z.val‖
   change 2 * ((1 + (if b.2 then ρ r.val else -ρ r.val)) / 2) - 1 = _
   rw [hrρ, hnorm]
-  cases b.2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;> ring
+  cases b.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;> ring
 
 private theorem uncappingMap_normalized_annulus
     (B : T.Boundary → ClosedCell 3 ≃ₜ ClosedCell 3)
@@ -164,7 +164,7 @@ private theorem uncappingMap_normalized_annulus
       T.cylinderMap q.1.1 (Ψ q.1.1 (q.2.1,
         ⟨(1 + (if q.1.2 then ρ q.2.2.val else -ρ q.2.2.val)) / 2, by
           have h := hρ q.2.2.property
-          cases q.1.2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+          cases q.1.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
             constructor <;> linarith [h.1,h.2]⟩)))
     (b : T.Boundary) (z : S2) (r : Icc (1 / 4 : ℝ) 1)
     (y : ((⋃ b, (C.capBallChart b).chart '' ball (0 : E3) 1)ᶜ : Set N.Carrier))
@@ -174,7 +174,7 @@ private theorem uncappingMap_normalized_annulus
     C.uncappingMap H y = T.cylinderMap b.1 (Ψ b.1 (z,
       ⟨(1 + (if b.2 then ρ r.val else -ρ r.val)) / 2, by
         have h := hρ r.property
-        cases b.2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+        cases b.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
           constructor <;> linarith [h.1,h.2]⟩)) := by
   change H (C.uncappingProjection y) = _
   rw [C.uncappingProjection_cap_reparametrization B hsmall hboundary b (z,r) y hy]
@@ -314,7 +314,7 @@ theorem isLocalDiffeomorphAt_uncappingInteriorMap_outer
       T.cylinderMap q.1.1 (Ψ q.1.1 (q.2.1,
         ⟨(1 + (if q.1.2 then ρ q.2.2.val else -ρ q.2.2.val)) / 2, by
           have h := hρ q.2.2.property
-          cases q.1.2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+          cases q.1.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
             constructor <;> linarith [h.1,h.2]⟩)))
     (ε : ℝ) (hε : 0 < ε) (houter : ∀ r, 1 - ε ≤ r → ρ r = r)
     (b : T.Boundary) (v : S2)
@@ -389,7 +389,7 @@ theorem isLocalDiffeomorphAt_uncappingInteriorMap_annulus
       T.cylinderMap q.1.1 (Ψ q.1.1 (q.2.1,
         ⟨(1 + (if q.1.2 then ρ q.2.2.val else -ρ q.2.2.val)) / 2, by
           have h := hρ q.2.2.property
-          cases q.1.2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+          cases q.1.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
             constructor <;> linarith [h.1,h.2]⟩)))
     (b : T.Boundary) (v : S2) (q : S2 × ℝ) (hq : q.2 ∈ Ioo (1 / 4 : ℝ) 1) :
     IsLocalDiffeomorphAt (𝓡 3) (𝓡 3) ∞ (C.uncappingInteriorMap H)
@@ -407,7 +407,7 @@ theorem isLocalDiffeomorphAt_uncappingInteriorMap_annulus
   have hlo : 0 < ρ p.2 := by have h := hmono hp.1; rwa [hzero] at h
   have hhi : ρ p.2 < 1 := by have h := hmono hp.2; rwa [hone] at h
   have hu : (if b.2 then ρ p.2 else -ρ p.2) ∈ Ioo (-1 : ℝ) 1 := by
-    cases b.2 <;> simp only [Bool.false_eq_true, if_false, if_true, mem_Ioo] <;> constructor <;> linarith
+    cases b.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true, mem_Ioo] <;> constructor <;> linarith
   rw [T.reparametrizedTube_apply b.1 (Ψ b.1) _ hu]
   exact hh.trans (by
     apply congrArg (T.cylinderMap b.1)
@@ -434,7 +434,7 @@ private theorem homeomorph_uncappingSeam_eq
       T.cylinderMap q.1.1 (Ψ q.1.1 (q.2.1,
         ⟨(1 + (if q.1.2 then ρ q.2.2.val else -ρ q.2.2.val)) / 2, by
           have h := hρ q.2.2.property
-          cases q.1.2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+          cases q.1.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
             constructor <;> linarith [h.1,h.2]⟩)))
     (a : T.Index) (p : ConnectedSumQuotient.CollarDomain) :
     H (C.uncappingSeam a p) = T.reparametrizedTube a (Ψ a)
@@ -456,14 +456,14 @@ private theorem homeomorph_uncappingSeam_eq
     have hhi : ρ ((1 + p.2.val) / 4) < 1 := by
       have hh := hmono (by linarith [p.2.property.2] : (1 + p.2.val) / 4 < 1)
       rwa [hone] at hh
-    rw [if_pos ht, T.reparametrizedTube_apply a (Ψ a) _ (by
+    rw [ite_eq_left ht, T.reparametrizedTube_apply a (Ψ a) _ (by
       change -ρ ((1 + p.2.val) / 4) ∈ Ioo (-1 : ℝ) 1
       constructor <;> linarith)]
     apply congrArg (T.cylinderMap a)
     apply congrArg (Ψ a)
     apply Prod.ext
     · rfl
-    · apply Subtype.ext; dsimp only [q]; simp only [Bool.false_eq_true,if_false]; ring
+    · apply Subtype.ext; dsimp only [q]; simp only [Bool.false_eq_true,ite_false]; ring
   · have hbranch := congrArg (fun q : C.UncappingQuotient => H (R q))
       (C.uncappingSeam_of_nonpos a p (le_of_not_ge ht))
     let q : Σ _b : T.Boundary, Annulus :=
@@ -478,14 +478,14 @@ private theorem homeomorph_uncappingSeam_eq
     have hhi : ρ ((1 - p.2.val) / 4) < 1 := by
       have hh := hmono (by linarith [p.2.property.1] : (1 - p.2.val) / 4 < 1)
       rwa [hone] at hh
-    rw [if_neg ht, T.reparametrizedTube_apply a (Ψ a) _ (by
+    rw [ite_eq_right ht, T.reparametrizedTube_apply a (Ψ a) _ (by
       change ρ ((1 - p.2.val) / 4) ∈ Ioo (-1 : ℝ) 1
       constructor <;> linarith)]
     apply congrArg (T.cylinderMap a)
     apply congrArg (Ψ a)
     apply Prod.ext
     · rfl
-    · apply Subtype.ext; dsimp only [q]; simp only [if_true]; ring
+    · apply Subtype.ext; dsimp only [q]; simp only [ite_true]; ring
 
 theorem isLocalDiffeomorphAt_homeomorph_uncappingSeam
     (H : C.UncappingQuotient ≃ₜ M.Carrier)
@@ -502,7 +502,7 @@ theorem isLocalDiffeomorphAt_homeomorph_uncappingSeam
       T.cylinderMap q.1.1 (Ψ q.1.1 (q.2.1,
         ⟨(1 + (if q.1.2 then ρ q.2.2.val else -ρ q.2.2.val)) / 2, by
           have h := hρ q.2.2.property
-          cases q.1.2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+          cases q.1.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
             constructor <;> linarith [h.1,h.2]⟩)))
     (hgerm : (ρ : ℝ → ℝ) =ᶠ[𝓝 (1 / 4 : ℝ)] (fun r => r - 1 / 4))
     (a : T.Index) (z : S2) :

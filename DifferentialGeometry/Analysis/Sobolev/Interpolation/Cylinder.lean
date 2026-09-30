@@ -200,8 +200,8 @@ theorem integrableOn_energy_affineCylinderInterpolation
     (hdiff.comp_snd μ).const_smul h⁻¹
   have hsecond : MemLp (fun z : ℝ × ℝ =>
       (1 - z.1 / h) • deriv a z.2 + (z.1 / h) • deriv b z.2) 2 (μ.prod ν) :=
-    ((hda.comp_snd μ).smul (h₁.comp_fst ν)).add
-      ((hdb.comp_snd μ).smul (h₂.comp_fst ν))
+    ((h₁.comp_fst ν).smul (hda.comp_snd μ)).add
+      ((h₂.comp_fst ν).smul (hdb.comp_snd μ))
   have hader : ∀ᵐ z ∂μ.prod ν, DifferentiableAt ℝ a z.2 :=
     Measure.quasiMeasurePreserving_snd.ae (ae_restrict_of_ae (s := Icc 0 1) ha.ae_differentiableAt)
   have hbder : ∀ᵐ z ∂μ.prod ν, DifferentiableAt ℝ b z.2 :=

@@ -268,9 +268,6 @@ theorem intrinsicFrameMetric_first_jet_zero
       rfl
     dsimp only [T] at hdiag ⊢
     rw [htuple] at hdiag
-    have hmap0 :=
-      (iteratedFDeriv ℝ 1 (intrinsicFrameMetric (I := I) g hNorm p) 0).map_add_univ
-      (fun _ : Fin 1 ↦ x) (fun _ : Fin 1 ↦ y)
     have hmap :
         iteratedFDeriv ℝ 1 (intrinsicFrameMetric (I := I) g hNorm p) 0
             ((fun _ : Fin 1 ↦ x) + (fun _ : Fin 1 ↦ y)) =
@@ -278,18 +275,17 @@ theorem intrinsicFrameMetric_first_jet_zero
               (fun _ : Fin 1 ↦ x) +
             iteratedFDeriv ℝ 1 (intrinsicFrameMetric (I := I) g hNorm p) 0
               (fun _ : Fin 1 ↦ y) := by
-      have hmapSum := hmap0
-      simp at hmap0
-      have hsum :
-          (∑ s : Finset (Fin 1), iteratedFDeriv ℝ 1
-              (intrinsicFrameMetric (I := I) g hNorm p) 0
-                (s.piecewise (fun _ : Fin 1 ↦ x) (fun _ : Fin 1 ↦ y))) =
-            iteratedFDeriv ℝ 1 (intrinsicFrameMetric (I := I) g hNorm p) 0
-                (fun _ : Fin 1 ↦ x) +
-              iteratedFDeriv ℝ 1 (intrinsicFrameMetric (I := I) g hNorm p) 0
-                (fun _ : Fin 1 ↦ y) := by
-        simpa only [iteratedFDeriv_one_apply] using hmap0.symm
-      exact hmapSum.trans hsum
+      let F := iteratedFDeriv ℝ 1
+        (intrinsicFrameMetric (I := I) g hNorm p) 0
+      have hmap' := F.map_update_add (fun _ : Fin 1 ↦ (0 : E)) (0 : Fin 1) x y
+      have hconst (z : E) : Function.update (fun _ : Fin 1 ↦ (0 : E)) 0 z =
+          (fun _ : Fin 1 ↦ z) := by
+        funext i
+        have hi : i = 0 := Fin.eq_zero i
+        subst i
+        simp
+      rw [hconst (x + y), hconst x, hconst y] at hmap'
+      exact hmap'
     rw [hmap] at hdiag
     simp only [_root_.add_apply] at hdiag
     have hxmap :=
@@ -691,7 +687,7 @@ theorem normalExpJacobian_radial_jets_of_launch_jets
       ((stdOrthonormalBasis ℝ E) i) ((stdOrthonormalBasis ℝ E) j)
     have hcomp := hmetric.comp
       (contDiff_id.smul (contDiff_const : ContDiff ℝ ∞ (fun _ : ℝ ↦ u)))
-    convert hcomp using 1 <;> rfl
+    convert hcomp using 1; rfl
   have hGB : ∀ t i j, HasDerivAt (fun s ↦ G s i j) (B t i j) t := by
     intro t i j
     exact ((hG i j).differentiable (by simp) t).hasDerivAt

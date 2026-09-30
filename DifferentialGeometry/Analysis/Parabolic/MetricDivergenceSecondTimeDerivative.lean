@@ -166,7 +166,7 @@ theorem exists_local_weak_partial_trees_of_second_time_derivative_of_metric_dive
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) isOpen_Ioo hΩ₀ (1 : ℝ)
     ((Lp.memLp U).mono_measure hmeasure) ((Lp.memLp S).mono_measure hmeasure)
     V H hAb hDAb hAs hHV (hρ.mono hregion) (fun p hp => hρne p (hregion hp))
-    hρinv (hDρ.mul (r := ∞) hρinv) hweak₀
+    hρinv (hρinv.fun_mul (r := ∞) hDρ) hweak₀
   have hmem : ∀ᵐ p ∂ν₀, p ∈ Ioo c d ×ˢ Ω₀ := by
     have htime : μ₀ = volume.restrict (Ioo c d) := by
       change (volume.restrict (Icc a b)).restrict (Icc c d) = volume.restrict (Ioo c d)
@@ -336,7 +336,7 @@ theorem exists_local_second_weak_time_derivative_of_metric_divergence_equation
       (fun _ _ => Ft) (fun m hm => by omega) hFt
   exact ⟨Q 0 (fun i => Fin.elim0 i), Rt 0 (fun i => Fin.elim0 i), hQ, hRt⟩
 
-theorem exists_local_weak_partial_trees_of_all_orders_of_second_time_derivative_of_metric_divergence_equation
+theorem exists_local_weak_partial_trees_all_orders_of_metric_divergence_second_time_derivative
     {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
     (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
     {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.regular)

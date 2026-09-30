@@ -1,4 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.CometricRaise
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Norm
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_eq_tensorInnerPointwise tensorInnerPointwise_smul_left
+  tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
@@ -52,7 +57,7 @@ private lemma iteratedCovGrad_smul (g : SmoothRiemannianMetric I M) (r s j : ℕ
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul' (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
+private lemma DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul' (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (c : ℝ) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
       c ^ 2 * riemannianFiberNormSq (I := I) (M := M) g r s x v := by
@@ -110,7 +115,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le
         riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 0 (2 + k) x _ _
     _ = (1 / 2 : ℝ) * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + k) x (A.toSection x) +
           (1 / 2 : ℝ) * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + k) x (B.toSection x) := by
-        rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul', DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul']; ring
+        rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul', DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul']; ring
     _ ≤ (1 / 2 : ℝ) * R ^ 2 + (1 / 2 : ℝ) * R ^ 2 := by
         apply add_le_add
         · exact mul_le_mul_of_nonneg_left hRA (by norm_num)
@@ -184,10 +189,10 @@ theorem riemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_le
   have hbC : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x PC ≤ R ^ 2 :=
     riemannianFiberNormSq_iteratedCovGrad_domDomCongr_ccTensor02SymmCovGrad3_le (I := I) (M := M) g₀ a T hTjet
       (Equiv.swap (1 : Fin 3) 2) i hi x
-  rw [htoSec, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul']
+  rw [htoSec, DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul']
   have hnegC : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x (-PC) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x PC := by
-    have hh := DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul' (I := I) (M := M) g₀ 0 (3 + i) x (-1 : ℝ) PC
+    have hh := DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul' (I := I) (M := M) g₀ 0 (3 + i) x (-1 : ℝ) PC
     rw [neg_one_smul] at hh
     rw [hh]; norm_num
   have hsum : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x (PA + PB - PC) ≤

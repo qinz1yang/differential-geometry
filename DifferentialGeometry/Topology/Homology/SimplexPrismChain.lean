@@ -4,6 +4,8 @@ import DifferentialGeometry.Topology.Homology.SimplexDegreeChainLevel
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology ContinuousMap Set Module
+open Convexity.StdSimplex (coordinateSet coordinateMap continuous_coordinateMap
+  coordinateEquiv coordinateHomeomorph coordinateEquiv_map coordinateMap_comp_apply)
 open scoped Topology Simplicial
 
 namespace DifferentialGeometry.Topology.SimplexPrism
@@ -11,22 +13,20 @@ namespace DifferentialGeometry.Topology.SimplexPrism
 universe u
 
 def prismAffine (m : ℕ) {ι : Type*} [Fintype ι] (v : ι → Fin 2 × Fin (m + 1)) :
-    C(stdSimplex ℝ ι, unitInterval × stdSimplex ℝ (Fin (m + 1))) where
+    C(coordinateSet ℝ ι, unitInterval × coordinateSet ℝ (Fin (m + 1))) where
   toFun q :=
-    (⟨(stdSimplex.map (fun j => (v j).1) q).val 1,
-        (stdSimplex.map (fun j => (v j).1) q).property.1 1,
-        stdSimplex.le_one _ _⟩,
-      stdSimplex.map (fun j => (v j).2) q)
+    (Convexity.StdSimplex.coordinateEquivIcc ℝ (coordinateMap (fun j => (v j).1) q),
+      coordinateMap (fun j => (v j).2) q)
   continuous_toFun := by
     apply Continuous.prodMk
     · apply Continuous.subtype_mk
       exact (continuous_apply 1).comp
-        (continuous_subtype_val.comp (stdSimplex.continuous_map (fun j => (v j).1)))
-    · exact stdSimplex.continuous_map (fun j => (v j).2)
+        (continuous_subtype_val.comp (continuous_coordinateMap (fun j => (v j).1)))
+    · exact continuous_coordinateMap (fun j => (v j).2)
 
 def simplexFaceMap (n : ℕ) (i : Fin (n + 2)) :
-    C(stdSimplex ℝ (Fin (n + 1)), stdSimplex ℝ (Fin (n + 2))) :=
-  ⟨stdSimplex.map i.succAbove, stdSimplex.continuous_map _⟩
+    C(coordinateSet ℝ (Fin (n + 1)), coordinateSet ℝ (Fin (n + 2))) :=
+  ⟨coordinateMap i.succAbove, continuous_coordinateMap _⟩
 
 theorem prismAffine_face (m : ℕ) {k : ℕ} (v : Fin (k + 2) → Fin 2 × Fin (m + 1))
     (i : Fin (k + 2)) :
@@ -36,17 +36,19 @@ theorem prismAffine_face (m : ℕ) {k : ℕ} (v : Fin (k + 2) → Fin 2 × Fin (
   intro q
   apply Prod.ext
   · apply Subtype.ext
-    exact congrArg (fun s : stdSimplex ℝ (Fin 2) => s.val 1)
-      (stdSimplex.map_comp_apply i.succAbove (fun j : Fin (k + 2) => (v j).1) q)
-  · exact stdSimplex.map_comp_apply i.succAbove (fun j : Fin (k + 2) => (v j).2) q
+    exact congrArg (fun s : coordinateSet ℝ (Fin 2) => s.val 1)
+      (coordinateMap_comp_apply i.succAbove (fun j : Fin (k + 2) => (v j).1) q)
+  · exact coordinateMap_comp_apply i.succAbove (fun j : Fin (k + 2) => (v j).2) q
 
 def prismSimplex (m j : ℕ) {X : Type u} [TopologicalSpace X]
-    (H : C(unitInterval × stdSimplex ℝ (Fin (m + 1)), X))
+    (H : C(unitInterval × coordinateSet ℝ (Fin (m + 1)), X))
     (v : Fin (j + 1) → Fin 2 × Fin (m + 1)) : integralSingularSimplex j X :=
-  (integralSingularSimplexEquiv j X).symm (H.comp (prismAffine m v))
+  (integralSingularSimplexEquiv j X).symm
+    ((H.comp (prismAffine m v)).comp
+      ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩)
 
 theorem prismSimplex_face (m j : ℕ) {X : Type u} [TopologicalSpace X]
-    (H : C(unitInterval × stdSimplex ℝ (Fin (m + 1)), X))
+    (H : C(unitInterval × coordinateSet ℝ (Fin (m + 1)), X))
     (v : Fin (j + 2) → Fin 2 × Fin (m + 1)) (i : Fin (j + 2)) :
     (TopCat.toSSet.obj (TopCat.of X)).δ i (prismSimplex m (j + 1) H v) =
       prismSimplex m j H (fun t : Fin (j + 1) => v (i.succAbove t)) := by
@@ -58,17 +60,11 @@ theorem prismSimplex_face (m j : ℕ) {X : Type u} [TopologicalSpace X]
       (integralSingularSimplexEquiv j X)
         (prismSimplex m j H (fun t : Fin (j + 1) => v (i.succAbove t))) q
   rw [TopCat.toSSetObjEquiv_δ_apply]
-  change integralSingularSimplexEquiv (j + 1) X
-      ((integralSingularSimplexEquiv (j + 1) X).symm (H.comp (prismAffine m v)))
-        (stdSimplex.map i.succAbove q) =
-      integralSingularSimplexEquiv j X
-        ((integralSingularSimplexEquiv j X).symm
-          (H.comp (prismAffine m (fun t : Fin (j + 1) => v (i.succAbove t))))) q
-  rw [Equiv.apply_symm_apply, Equiv.apply_symm_apply]
-  change H ((prismAffine m v) (stdSimplex.map i.succAbove q)) =
-    H ((prismAffine m (fun t : Fin (j + 1) => v (i.succAbove t))) q)
-  rw [← prismAffine_face m v i]
-  rfl
+  change H (prismAffine m v (coordinateEquiv ℝ _
+      (Convexity.StdSimplex.map i.succAbove q))) =
+    H (prismAffine m (fun t : Fin (j + 1) => v (i.succAbove t)) (coordinateEquiv ℝ _ q))
+  rw [coordinateEquiv_map]
+  exact congrArg H (ContinuousMap.congr_fun (prismAffine_face m v i) (coordinateEquiv ℝ _ q))
 
 def triangularPrismCells : Fin 3 → Fin 4 → Fin 2 × Fin 3 :=
   ![![(0, 0), (1, 0), (1, 1), (1, 2)],
@@ -109,12 +105,12 @@ theorem triangularPrism_boundary {A : Type*} [AddCommGroup A]
   abel
 
 def triangularPrismChain {X : Type u} [TopologicalSpace X]
-    (H : C(unitInterval × stdSimplex ℝ (Fin 3), X)) : (integralSingularChains X).X 3 :=
+    (H : C(unitInterval × coordinateSet ℝ (Fin 3), X)) : (integralSingularChains X).X 3 :=
   ∑ k : Fin 3, (-1 : ℤ) ^ k.val •
     integralSimplexChain 3 (prismSimplex 2 3 H (triangularPrismCells k))
 
 theorem triangularPrismChain_boundary {X : Type u} [TopologicalSpace X]
-    (H : C(unitInterval × stdSimplex ℝ (Fin 3), X)) :
+    (H : C(unitInterval × coordinateSet ℝ (Fin 3), X)) :
     (integralSingularChains X).d 3 2 (triangularPrismChain H) =
       integralSimplexChain 2 (prismSimplex 2 2 H (triangularPrismEnd 1)) -
         integralSimplexChain 2 (prismSimplex 2 2 H (triangularPrismEnd 0)) +
@@ -165,12 +161,12 @@ theorem segmentPrism_boundary {A : Type*} [AddCommGroup A]
   abel
 
 def segmentPrismChain {X : Type u} [TopologicalSpace X]
-    (H : C(unitInterval × stdSimplex ℝ (Fin 2), X)) : (integralSingularChains X).X 2 :=
+    (H : C(unitInterval × coordinateSet ℝ (Fin 2), X)) : (integralSingularChains X).X 2 :=
   ∑ k : Fin 2, (-1 : ℤ) ^ k.val •
     integralSimplexChain 2 (prismSimplex 1 2 H (segmentPrismCells k))
 
 theorem segmentPrismChain_boundary {X : Type u} [TopologicalSpace X]
-    (H : C(unitInterval × stdSimplex ℝ (Fin 2), X)) :
+    (H : C(unitInterval × coordinateSet ℝ (Fin 2), X)) :
     (integralSingularChains X).d 2 1 (segmentPrismChain H) =
       integralSimplexChain 1 (prismSimplex 1 1 H (segmentPrismEnd 1)) -
         integralSimplexChain 1 (prismSimplex 1 1 H (segmentPrismEnd 0)) +
@@ -196,7 +192,7 @@ def pointPrismEnd (b : Fin 2) : Fin 1 → Fin 2 × Fin 1 :=
   fun _ => (b, 0)
 
 def pointPrismSimplex {X : Type u} [TopologicalSpace X]
-    (H : C(unitInterval × stdSimplex ℝ (Fin 1), X)) : integralSingularSimplex 1 X :=
+    (H : C(unitInterval × coordinateSet ℝ (Fin 1), X)) : integralSingularSimplex 1 X :=
   prismSimplex 0 1 H (pointPrismCells 0)
 
 theorem pointPrismCells_face_zero :
@@ -212,7 +208,7 @@ theorem pointPrismCells_face_one :
   rfl
 
 theorem pointPrismSimplex_boundary {X : Type u} [TopologicalSpace X]
-    (H : C(unitInterval × stdSimplex ℝ (Fin 1), X)) :
+    (H : C(unitInterval × coordinateSet ℝ (Fin 1), X)) :
     (integralSingularChains X).d 1 0 (integralSimplexChain 1 (pointPrismSimplex H)) =
       integralSimplexChain 0 (prismSimplex 0 0 H (pointPrismEnd 1)) -
         integralSimplexChain 0 (prismSimplex 0 0 H (pointPrismEnd 0)) := by
@@ -222,7 +218,7 @@ theorem pointPrismSimplex_boundary {X : Type u} [TopologicalSpace X]
     pointPrismCells_face_one]
 
 theorem exists_chain_boundary_pointPrism {X : Type u} [TopologicalSpace X]
-    (H : C(unitInterval × stdSimplex ℝ (Fin 1), X)) :
+    (H : C(unitInterval × coordinateSet ℝ (Fin 1), X)) :
     ∃ z : (integralSingularChains X).X 1,
       (integralSingularChains X).d 1 0 z =
         integralSimplexChain 0 (prismSimplex 0 0 H (pointPrismEnd 1)) -
@@ -235,7 +231,7 @@ theorem pointPrismEnd_one_ne_zero : pointPrismEnd (1 : Fin 2) ≠ pointPrismEnd 
   exact Fin.zero_ne_one (Prod.mk.inj h1).1.symm
 
 theorem exists_chain_boundary_pointPrism_liftedSphere
-    (H : C(unitInterval × stdSimplex ℝ (Fin 1), liftedHomotopySphere.{u} 1)) :
+    (H : C(unitInterval × coordinateSet ℝ (Fin 1), liftedHomotopySphere.{u} 1)) :
     ∃ z : (integralSingularChains (liftedHomotopySphere.{u} 1)).X 1,
       (integralSingularChains (liftedHomotopySphere.{u} 1)).d 1 0 z =
         integralSimplexChain 0 (prismSimplex 0 0 H (pointPrismEnd 1)) -

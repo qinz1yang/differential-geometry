@@ -169,7 +169,7 @@ theorem Tensor02ReactionAt.toRawSymm_eval_of_bilin
           (rawSym2_bilin (I := I) (M := M) hA))
         (vec2 (I := I) v w) := by
   unfold Tensor02ReactionAt.toRawSymm
-  rw [dif_pos (rawSym2_bilin (I := I) (M := M) hA)]
+  rw [dite_eq_left (rawSym2_bilin (I := I) (M := M) hA)]
 
 omit [IsManifold I 1 M] [IsManifold I 2 M] in
 theorem Tensor02ReactionAt.toRawSymm_symmInputOn
@@ -202,7 +202,7 @@ theorem Tensor02ReactionAt.toRawSymm_output_bilin
     constructor
     · intro X Y Z
       dsimp [Tensor02ReactionAt.toRawSymm]
-      rw [dif_pos hA, dif_pos hA, dif_pos hA]
+      rw [dite_eq_left hA, dite_eq_left hA, dite_eq_left hA]
       change T (vec2 (I := I) (X + Y) Z) =
         T (vec2 (I := I) X Z) + T (vec2 (I := I) Y Z)
       let m : Fin 2 -> TangentSpace I x := vec2 (I := I) X Z
@@ -223,7 +223,7 @@ theorem Tensor02ReactionAt.toRawSymm_output_bilin
       simpa [hleft, hX, hY] using hmap
     · intro c X Z
       dsimp [Tensor02ReactionAt.toRawSymm]
-      rw [dif_pos hA, dif_pos hA]
+      rw [dite_eq_left hA, dite_eq_left hA]
       change T (vec2 (I := I) (c • X) Z) =
         c * T (vec2 (I := I) X Z)
       let m : Fin 2 -> TangentSpace I x := vec2 (I := I) X Z
@@ -240,7 +240,7 @@ theorem Tensor02ReactionAt.toRawSymm_output_bilin
       simpa [hleft, hX, smul_eq_mul] using hmap
     · intro X Y Z
       dsimp [Tensor02ReactionAt.toRawSymm]
-      rw [dif_pos hA, dif_pos hA, dif_pos hA]
+      rw [dite_eq_left hA, dite_eq_left hA, dite_eq_left hA]
       change T (vec2 (I := I) X (Y + Z)) =
         T (vec2 (I := I) X Y) + T (vec2 (I := I) X Z)
       let m : Fin 2 -> TangentSpace I x := vec2 (I := I) X Y
@@ -261,7 +261,7 @@ theorem Tensor02ReactionAt.toRawSymm_output_bilin
       simpa [hleft, hY, hZ] using hmap
     · intro c X Z
       dsimp [Tensor02ReactionAt.toRawSymm]
-      rw [dif_pos hA, dif_pos hA]
+      rw [dite_eq_left hA, dite_eq_left hA]
       change T (vec2 (I := I) X (c • Z)) =
         c * T (vec2 (I := I) X Z)
       let m : Fin 2 -> TangentSpace I x := vec2 (I := I) X Z

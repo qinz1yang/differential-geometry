@@ -19,7 +19,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem IsPLBall.exists_pair_union_eq_inter_eq_of_boundary_trace
     {P D : Set (EuclideanSpace ℝ (Fin 3))} (hP : IsPLBall 3 P)
     {g : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) (hDP : D ⊆ P)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDP : D ⊆ P)
     (htrace : D ∩ frontier P = g '' stdSimplexBoundary 2) :
     ∃ P₀ P₁ : Set (EuclideanSpace ℝ (Fin 3)),
       IsPLBall 3 P₀ ∧ IsPLBall 3 P₁ ∧ P₀ ∪ P₁ = P ∧ P₀ ∩ P₁ = D ∧
@@ -44,7 +44,7 @@ theorem IsPLBall.exists_pair_union_eq_inter_eq_of_boundary_trace
     constructor <;> nlinarith
   obtain ⟨p, hp⟩ := id hP
   obtain ⟨q, hq⟩ := id hT
-  let u := q ∘ Function.invFunOn p (stdSimplex ℝ (Fin 4))
+  let u := q ∘ Function.invFunOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 4))
   have hu : IsPLHomeomorphOn u P T := hp.symm.trans hq
   let D' := u '' D
   let g' := u ∘ g
@@ -52,7 +52,7 @@ theorem IsPLBall.exists_pair_union_eq_inter_eq_of_boundary_trace
   have hD'T : D' ⊆ T := by
     dsimp only [D']
     exact (image_mono hDP).trans hu.image_eq.subset
-  have hg' : IsPLHomeomorphOn g' (stdSimplex ℝ (Fin 3)) D' := by
+  have hg' : IsPLHomeomorphOn g' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' := by
     dsimp only [g', D']
     exact hg.trans (hu.restrict hD.isPolyhedron hDP)
   have hfront : u '' frontier P = frontier T := by
@@ -240,8 +240,8 @@ theorem IsPLBall.exists_pair_union_eq_inter_eq_of_boundary_trace
     dsimp only [C₀, C₁]
     rw [← hv.bijOn.injOn.image_inter hB₀T hB₁T, hinter, hbackD]
   obtain ⟨b₀, hb₀⟩ := id hB₀
-  have hc₀ : IsPLHomeomorphOn (v ∘ b₀) (stdSimplex ℝ (Fin 4)) C₀ := hb₀.trans hv₀
-  have hc₁ : IsPLHomeomorphOn (v ∘ b₁) (stdSimplex ℝ (Fin 4)) C₁ := hb₁.trans hv₁
+  have hc₀ : IsPLHomeomorphOn (v ∘ b₀) (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) C₀ := hb₀.trans hv₀
+  have hc₁ : IsPLHomeomorphOn (v ∘ b₁) (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) C₁ := hb₁.trans hv₁
   have hDC₀ : D ⊆ frontier C₀ := by
     rw [← hc₀.image_stdSimplexBoundary_eq_frontier]
     calc
@@ -265,7 +265,7 @@ theorem IsPLBall.exists_pair_union_eq_inter_eq_of_boundary_trace
 private theorem IsPLBall.exists_pair_union_eq_inter_eq_with_boundary_of_boundary_trace
     {P D : Set (EuclideanSpace ℝ (Fin 3))} (hP : IsPLBall 3 P)
     {g : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) (hDP : D ⊆ P)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDP : D ⊆ P)
     (htrace : D ∩ frontier P = g '' stdSimplexBoundary 2) :
     ∃ P₀ P₁ : Set (EuclideanSpace ℝ (Fin 3)),
       IsPLBall 3 P₀ ∧ IsPLBall 3 P₁ ∧ P₀ ∪ P₁ = P ∧ P₀ ∩ P₁ = D ∧
@@ -338,7 +338,7 @@ open Classical in
 theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_with_boundary_of_boundary_trace
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 3 K.space)
     {D : Set E} {g : (Fin 3 → ℝ) → E}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (htrace : D ∩ (boundaryComplex 3 K).space = g '' stdSimplexBoundary 2) :
     ∃ K₀ K₁ : Geometry.SimplicialComplex ℝ E,
       K₀.faces.Finite ∧ K₁.faces.Finite ∧ IsPLBall 3 K₀.space ∧ IsPLBall 3 K₁.space ∧
@@ -356,7 +356,7 @@ theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_with_boundary_of_boundary
   have hT : IsPLBall 3 T := isPLBall_triangle_prism
   obtain ⟨p, hp⟩ := id hK
   obtain ⟨q, hq⟩ := id hT
-  let u := q ∘ Function.invFunOn p (stdSimplex ℝ (Fin 4))
+  let u := q ∘ Function.invFunOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 4))
   have hu : IsPLHomeomorphOn u K.space T := hp.symm.trans hq
   let D' := u '' D
   let g' := u ∘ g
@@ -364,7 +364,7 @@ theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_with_boundary_of_boundary
   have hD'T : D' ⊆ T := by
     dsimp only [D']
     exact (image_mono hDK).trans hu.image_eq.subset
-  have hg' : IsPLHomeomorphOn g' (stdSimplex ℝ (Fin 3)) D' := by
+  have hg' : IsPLHomeomorphOn g' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' := by
     dsimp only [g', D']
     exact hg.trans (hu.restrict hD.isPolyhedron hDK)
   have hfront : u '' (boundaryComplex 3 K).space = frontier T := by
@@ -420,8 +420,8 @@ theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_with_boundary_of_boundary
     rw [← hv.bijOn.injOn.image_inter hB₀T hB₁T, hinter, hbackD]
   obtain ⟨b₀, hb₀⟩ := id hB₀
   obtain ⟨b₁, hb₁⟩ := id hB₁
-  have hp₀ : IsPLHomeomorphOn (v ∘ b₀) (stdSimplex ℝ (Fin 4)) P₀ := hb₀.trans hv₀
-  have hp₁ : IsPLHomeomorphOn (v ∘ b₁) (stdSimplex ℝ (Fin 4)) P₁ := hb₁.trans hv₁
+  have hp₀ : IsPLHomeomorphOn (v ∘ b₀) (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) P₀ := hb₀.trans hv₀
+  have hp₁ : IsPLHomeomorphOn (v ∘ b₁) (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) P₁ := hb₁.trans hv₁
   obtain ⟨K₀, hK₀fin, hK₀space⟩ := hP₀.isPolyhedron.exists_simplicialComplex
   obtain ⟨K₁, hK₁fin, hK₁space⟩ := hP₁.isPolyhedron.exists_simplicialComplex
   let _ : Finite K₀.faces := hK₀fin.to_subtype
@@ -507,7 +507,7 @@ open Classical in
 theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_with_outer_boundary_of_boundary_trace
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 3 K.space)
     {D : Set E} {g : (Fin 3 → ℝ) → E}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (htrace : D ∩ (boundaryComplex 3 K).space = g '' stdSimplexBoundary 2) :
     ∃ K₀ K₁ : Geometry.SimplicialComplex ℝ E,
       K₀.faces.Finite ∧ K₁.faces.Finite ∧ IsPLBall 3 K₀.space ∧ IsPLBall 3 K₁.space ∧
@@ -525,7 +525,7 @@ open Classical in
 theorem IsPLBall.exists_complex_pair_union_eq_inter_eq_of_boundary_trace
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 3 K.space)
     {D : Set E} {g : (Fin 3 → ℝ) → E}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (htrace : D ∩ (boundaryComplex 3 K).space = g '' stdSimplexBoundary 2) :
     ∃ K₀ K₁ : Geometry.SimplicialComplex ℝ E,
       K₀.faces.Finite ∧ K₁.faces.Finite ∧ IsPLBall 3 K₀.space ∧ IsPLBall 3 K₁.space ∧

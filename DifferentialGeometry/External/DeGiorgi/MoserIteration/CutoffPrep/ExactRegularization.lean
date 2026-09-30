@@ -926,7 +926,8 @@ theorem moser_weighted_absorb
           (1 / 2 : ℝ) * η x ^ 2 * ψd x * Quad x +
             2 * Λ * ζ x ^ 2 * (|ψ x| ^ 2 / ψd x)) μ := by
     convert (hleft_int.const_mul (1 / 2 : ℝ)).add
-      (hbound_int.const_mul (2 * Λ)) using 1 <;> try rfl
+      (hbound_int.const_mul (2 * Λ)) using 1
+    try rfl
     ring_nf
     funext x
     rfl

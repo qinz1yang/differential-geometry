@@ -90,12 +90,12 @@ private def levelChart {f : M → ℝ} {a : ℝ}
     map_target' := by
       intro z hz
       change insertZero m z ∈ Φ.target at hz
-      simp only [mem_preimage, dif_pos hz]
+      simp only [mem_preimage, dite_eq_left hz]
       exact Φ.map_target hz
     left_inv' := by
       intro y hy
       change (y : M) ∈ Φ.source at hy
-      rw [dif_pos (hmap y hy)]
+      rw [dite_eq_left (hmap y hy)]
       apply Subtype.ext
       change Φ.symm (insertZero m (levelSetSplitFst m (Φ y))) = y
       rw [levelCoordinates_insert I hf hr x y hy]
@@ -103,7 +103,7 @@ private def levelChart {f : M → ℝ} {a : ℝ}
     right_inv' := by
       intro z hz
       change insertZero m z ∈ Φ.target at hz
-      rw [dif_pos hz]
+      rw [dite_eq_left hz]
       change levelSetSplitFst m (Φ (Φ.symm (insertZero m z))) = z
       erw [Φ.right_inv hz]
       exact fst_insertZero z
@@ -118,7 +118,7 @@ private def levelChart {f : M → ℝ} {a : ℝ}
         (contDiff_insertZero m).continuous.continuousOn (fun _ hz => hz)).congr
       intro z hz
       change insertZero m z ∈ Φ.target at hz
-      simp only [Function.comp_apply, dif_pos hz]
+      simp only [Function.comp_apply, dite_eq_left hz]
       rfl }
 
 private theorem levelChart_inverse {f : M → ℝ} {a : ℝ}

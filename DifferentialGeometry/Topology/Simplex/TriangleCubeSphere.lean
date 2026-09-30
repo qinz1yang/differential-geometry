@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.CubeParametrization
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 import DifferentialGeometry.Topology.Homotopy.CubeSphereProjection
@@ -5,6 +6,8 @@ import DifferentialGeometry.Topology.Homotopy.CubeSphereProjection
 noncomputable section
 
 open scoped unitInterval
+
+open Convexity.StdSimplex
 
 namespace DifferentialGeometry.Simplex
 
@@ -41,7 +44,7 @@ theorem triangleJoin_eq_iff (p q : unitInterval × unitInterval) :
   constructor
   · intro h
     have hfirst : (p.1 : ℝ) = q.1 := by
-      have hh := congrArg (fun z : stdSimplex ℝ (Fin 3) => z.val 0) h
+      have hh := congrArg (fun z : coordinateSet ℝ (Fin 3) => z.val 0) h
       simp only [triangleJoin, ContinuousMap.coe_mk, Matrix.cons_val_zero] at hh
       linarith
     have hs : p.1 = q.1 := Subtype.ext hfirst
@@ -50,7 +53,7 @@ theorem triangleJoin_eq_iff (p q : unitInterval × unitInterval) :
     · left
       refine Prod.ext hs ?_
       apply Subtype.ext
-      have hmul := congrArg (fun z : stdSimplex ℝ (Fin 3) => z.val 2) h
+      have hmul := congrArg (fun z : coordinateSet ℝ (Fin 3) => z.val 2) h
       simp only [triangleJoin, ContinuousMap.coe_mk, Matrix.cons_val_two, hfirst] at hmul
       exact (mul_left_cancel₀ (show (q.1 : ℝ) ≠ 0 from fun hh => hp (hs.trans (Subtype.ext hh)))) hmul
   · rintro (rfl | ⟨hp, hq⟩)
@@ -119,7 +122,7 @@ private theorem squareSphereProjection_factors :
       Topology.cubeSphereProjection_boundary 1 _ ⟨0, Or.inl hq⟩]
 
 def triangleCubeSphereMap :
-    C(stdSimplex ℝ (Fin 3), Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :=
+    C(coordinateSet ℝ (Fin 3), Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :=
   isQuotientMap_triangleJoin.lift squareSphereProjection squareSphereProjection_factors
 
 @[simp] theorem triangleCubeSphereMap_triangleJoin (p : unitInterval × unitInterval) :
@@ -128,7 +131,7 @@ def triangleCubeSphereMap :
       Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) => f p)
     (isQuotientMap_triangleJoin.lift_comp squareSphereProjection squareSphereProjection_factors)
 
-theorem triangleCubeSphereMap_boundary (p : stdSimplex ℝ (Fin 3))
+theorem triangleCubeSphereMap_boundary (p : coordinateSet ℝ (Fin 3))
     (hp : p ∈ boundary (Fin 3)) : triangleCubeSphereMap p = Topology.cubeSphereBasepoint 1 := by
   obtain ⟨q, rfl⟩ := triangleJoin_surjective p
   rw [triangleCubeSphereMap_triangleJoin]

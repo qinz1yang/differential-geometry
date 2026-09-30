@@ -60,7 +60,7 @@ theorem PartialStandardSolution.exists_canonicalWitness_with_cap_neck_charts_of_
     exact positiveAge_regular_window S W.window_mem
   obtain ⟨B, hB⟩ := htransfer _ (EuclideanSpace ℝ (Fin 3)) _ S.toSolutionOn S.isSolutionOn
     delta o x t le_rfl hreg hw
-  exact ⟨B.canonicalWitness_mono B.tolerance_lt.le hsmall,
+  exact ⟨B.canonicalWitnessMono B.tolerance_lt.le hsmall,
     hB.mono_eps B.tolerance_lt.le hsmall⟩
 
 theorem PartialStandardSolution.exists_canonicalWitness_with_cap_neck_charts_of_age

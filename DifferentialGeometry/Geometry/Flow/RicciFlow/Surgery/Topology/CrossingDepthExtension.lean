@@ -17,7 +17,7 @@ theorem depthExtendable_add_of_windowAnchorBound
     {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric} {Ctime : ℝ≥0} {phi : ℝ → ℝ}
     (hphi : Perelman.AdmissiblePinchingFunction phi)
     {D θcap qcan s t : ℕ → ℝ} {p₀ p : ℕ → CutoffParameters} {δb ρb : ℕ → ℝ}
-    {H : ℕ → RetainedCoreHistory P₀}
+    {H : ℕ → RetainedCoreHistory.{u}}
     {records : ∀ n i, GeometricCutoffRecord (H n).toHistory i (p n)}
     {G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n)}
@@ -43,7 +43,7 @@ theorem depthExtendable_add_of_windowAnchorBound
       (D n) (θcap n))
     (hRt : Tendsto (fun n => (G n).flow.scalar (t n) (y n) * t n) atTop atTop)
     {σ : ℕ → ℕ} (hσ : StrictMono σ) {Tstar M : ℝ} (hT : 0 < Tstar) (hM : 0 ≤ M) :
-    let K : ℕ → RetainedCoreHistory P₀ := fun n =>
+    let K : ℕ → RetainedCoreHistory.{u} := fun n =>
       (H n).extendAt (hend n) (G n) (hGi n) (hat n) (hts n)
     let τ : ∀ n, Icc (0 : ℝ) (K n).toHistory.horizon := fun n =>
       (H n).extendAtTime (hend n) (G n) (hGi n) (hat n) (hts n)

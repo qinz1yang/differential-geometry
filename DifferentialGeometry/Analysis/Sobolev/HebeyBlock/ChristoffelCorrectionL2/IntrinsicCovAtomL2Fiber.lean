@@ -9,6 +9,7 @@ noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
+  RealInnerProductSpace InnerProductSpace
 
 namespace DifferentialGeometry
 namespace Analysis
@@ -262,10 +263,103 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
     rw [hgF_def]
     exact mul_nonneg ((chartAtlasPOU I M).nonneg α b)
       (Real.sqrt_nonneg _)
+  have hgF_meas :
+      AEStronglyMeasurable gF (riemannianVolumeMeasure (I := I) (M := M) g) := by
+    let ρ : M → ℝ := fun x : M =>
+      ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x
+    have h_indicator : gF = (tsupport ρ).indicator gF := by
+      funext b
+      by_cases hb : b ∈ tsupport ρ
+      · rw [Set.indicator_of_mem hb]
+      · rw [Set.indicator_of_notMem hb]
+        have hρ_zero : ρ b = 0 := by
+          by_contra hne
+          exact hb (subset_tsupport _ hne)
+        rw [hgF_def]
+        change ρ b * _ = 0
+        simp only [hρ_zero, zero_mul]
+    rw [h_indicator, aestronglyMeasurable_indicator_iff
+      (isClosed_tsupport _).measurableSet]
+    refine ContinuousOn.aestronglyMeasurable_of_isCompact ?_
+      (covAtom_pouTsupport_isCompact (I := I) (M := M) α)
+      (isClosed_tsupport _).measurableSet
+    have hsub : tsupport ρ ⊆ (chartAt H α).source := by
+      rw [show ρ = fun x : M =>
+        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x by rfl]
+      exact covAtom_pouTsupport_subset_chartSource (I := I) (M := M) α
+    have h_pou : ContinuousOn ρ (tsupport ρ) := by
+      exact ((chartAtlasPOU I M α).contMDiff.continuous).continuousOn
+    have h_sumsq : ContinuousOn
+        (fun b : M =>
+          ∑ k : Fin (Module.finrank ℝ E),
+            ‖chartTensorRSCovariantDerivative (I := I) r s g α
+                (fun b' => S.toCcTensor.toSection b')
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2)
+        (chartAt H α).source := by
+      refine continuousOn_finsetSum _ (fun k _ => ?_)
+      have h_deriv : ContinuousOn
+          (fun b : M =>
+            (TotalSpace.mk' (TensorRSModel r s ℝ E)
+              (E := fun y : M => TensorRSSpace r s I y) b
+              (chartTensorRSCovariantDerivative (I := I) r s g α
+                (fun b' => S.toCcTensor.toSection b')
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b) :
+              TotalSpace (TensorRSModel r s ℝ E)
+                (fun y : M => TensorRSSpace r s I y)))
+          (chartAt H α).source := by
+        have hbase_eq :
+            (trivializationAt E (TangentSpace I) α).baseSet =
+              (chartAt H α).source :=
+          DifferentialGeometry.Integral.Measure.trivializationAt_baseSet_eq_chartAt_source α
+        have hsmooth :=
+          tensorCovDeriv_chartBasis_contMDiffOn (I := I) (M := M) g r s
+            S.toCcTensor α k
+        have hcont :
+            ContinuousOn
+              (fun b : M =>
+                (TotalSpace.mk' (TensorRSModel r s ℝ E)
+                  (E := fun y : M => TensorRSSpace r s I y) b
+                  (tensorCovDerivAt (I := I) (M := M) g r s S.toCcTensor b
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)) :
+                TotalSpace (TensorRSModel r s ℝ E)
+                  (fun y : M => TensorRSSpace r s I y)))
+              (trivializationAt E (TangentSpace I) α).baseSet :=
+          hsmooth.continuousOn
+        rw [hbase_eq] at hcont
+        refine hcont.congr ?_
+        intro b hb
+        have hcov_eq :=
+          chartTensorRSCovariantDerivative_eq_tensorCovDerivAt_at
+            (I := I) (M := M) g r s α S.toCcTensor
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) hb
+        simp only [hcov_eq]
+      have h_inner : ContinuousOn
+          (fun b : M =>
+            (⟪chartTensorRSCovariantDerivative (I := I) r s g α
+                (fun b' => S.toCcTensor.toSection b')
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b,
+              chartTensorRSCovariantDerivative (I := I) r s g α
+                (fun b' => S.toCcTensor.toSection b')
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b⟫_ℝ : ℝ))
+          (chartAt H α).source :=
+        ContinuousOn.inner_bundle h_deriv h_deriv
+      refine h_inner.congr ?_
+      intro b _
+      exact (real_inner_self_eq_norm_sq _).symm
+    have h_sqrt : ContinuousOn
+        (fun b : M =>
+          Real.sqrt
+            (∑ k : Fin (Module.finrank ℝ E),
+              ‖chartTensorRSCovariantDerivative (I := I) r s g α
+                  (fun b' => S.toCcTensor.toSection b')
+                  (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) b‖ ^ 2))
+        (chartAt H α).source :=
+      Real.continuous_sqrt.comp_continuousOn h_sumsq
+    exact h_pou.mul (h_sqrt.mono hsub)
   have h_mono :
       eLpNorm gF 2 (riemannianVolumeMeasure (I := I) (M := M) g) ≤
         eLpNorm (Cop • gM) 2 (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    refine eLpNorm_mono_real (fun b => ?_)
+    refine eLpNorm_mono_real hgF_meas (fun b => ?_)
     rw [Real.norm_of_nonneg (hgF_nn b)]
     simpa [Pi.smul_apply, smul_eq_mul] using h_ptwise b
   have h_smul :

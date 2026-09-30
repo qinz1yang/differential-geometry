@@ -51,11 +51,11 @@ theorem edist_map_le_mul_of_quad_le_on_closedEBall
     filter_upwards [eventually_lt_nhds hd] with r hrrho hdr
     have hr : 0 < r := ENNReal.toReal_nonneg.trans_lt hdr
     have hy : y ∈ Metric.eball x (ENNReal.ofReal r) := by
-      rw [Metric.mem_eball', ← ENNReal.ofReal_toReal hfinite]
+      rw [Metric.mem_eball, edist_comm, ← ENNReal.ofReal_toReal hfinite]
       exact (ENNReal.ofReal_lt_ofReal_iff hr).mpr hdr
     have himage := image_eball_subset_closedEBall_of_quad_le Φ hn
       hgnorm hhnorm hrrho.le hC hsub hquad (mem_image_of_mem (Φ : M → N) hy)
-    exact Metric.mem_closedEBall'.mp himage
+    simpa only [Metric.mem_closedEBall, edist_comm] using himage
   have hle := ge_of_tendsto htend hbound
   simpa only [ENNReal.ofReal_mul (Real.sqrt_nonneg C), ENNReal.ofReal_toReal hfinite]
     using hle

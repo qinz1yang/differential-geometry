@@ -77,11 +77,11 @@ theorem exists_supported_isotopy_of_transition_tube (c c' : OrientedBallChart M)
     · have h1 : Manifold.extendChartById c'.chart.symm.toOpenPartialHomeomorph (J 0) y
           = c'.chart.symm.toOpenPartialHomeomorph.symm
             (c'.chart.symm.toOpenPartialHomeomorph y) := by
-        rw [Manifold.extendChartById, if_pos hy, hJ0]
+        rw [Manifold.extendChartById, ite_eq_left hy, hJ0]
         rfl
       rw [h1, OpenPartialHomeomorph.left_inv _ hy]
       simp only [Diffeomorph.coe_refl, id_eq]
-    · rw [Manifold.extendChartById, if_neg hy]
+    · rw [Manifold.extendChartById, ite_eq_right hy]
       simp only [Diffeomorph.coe_refl, id_eq]
   · intro t y hy
     exact hHfix t y hy

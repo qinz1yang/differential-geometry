@@ -47,26 +47,27 @@ theorem HasWeakRiemannianGradLp.exists_smooth_entropy_integrals_approx
   let μ := riemannianVolumeMeasure I M g
   let : IsFiniteMeasure μ := riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   let : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
-  obtain ⟨f, hf, hscalar, hpointG, hmetric⟩ := hG.exists_smooth_metricL2_approx hu hGn
+  obtain ⟨f, hf, hscalar, _, hmetric⟩ := hG.exists_smooth_metricL2_approx hu hGn
   have hfn (n : ℕ) : MemLp (f n) 2 μ := (MemW1pIntrinsicLp_of_contMDiff g 2 (hf n)).1
   have hgrad (n : ℕ) : MemLp (fun x => Real.sqrt
       (g.inner x (gradFun g (f n) x) (gradFun g (f n) x))) 2 μ :=
     Equivalence.memLp_g_norm_gradFun_smooth g 2 (hf n)
   obtain ⟨Cv, hCv, hvbound⟩ := Integration.exists_eLpNorm_bound_of_tendsto_two hfn hu hscalar
-  have hnorm := tendsto_eLpNorm_metric_norm_sub_of_metricL2_tendsto g hmetric
+  have hnorm := tendsto_eLpNorm_metric_norm_sub_of_metricL2_tendsto g
+    (fun n => (hgrad n).aestronglyMeasurable) hmetric
   obtain ⟨Cg, hCg, hgbound⟩ := Integration.exists_eLpNorm_bound_of_tendsto_two hgrad hGn hnorm
   obtain ⟨q, hq, C, hC, hSobolev⟩ := exists_eLpNorm_gt_two_bound_smooth g hdim
   let B : ℝ≥0∞ := C * (Cv + Cg)
   have hB : B ≠ ⊤ := ENNReal.mul_ne_top hC (ENNReal.add_ne_top.mpr ⟨hCv, hCg⟩)
   have hqbound (n : ℕ) : eLpNorm (f n) (ENNReal.ofReal q) μ ≤ B :=
     (hSobolev (hf n)).trans (mul_le_mul_right (add_le_add (hvbound n) (hgbound n)) C)
-  have hInMeasure := tendstoInMeasure_of_tendsto_eLpNorm (by norm_num : (2 : ℝ≥0∞) ≠ 0)
-    (fun n => (hf n).continuous.aestronglyMeasurable) hu.aestronglyMeasurable hscalar
+  have hInMeasure : TendstoInMeasure μ f atTop u :=
+    tendstoInMeasure_of_tendsto_eLpNorm (f := f) (g := u) (p := (2 : ℝ≥0∞))
+      (by norm_num) hscalar
   obtain ⟨s, hs, hpoint⟩ := hInMeasure.exists_seq_tendsto_ae
   have huq : MemLp u (ENNReal.ofReal q) μ := by
-    refine ⟨hu.aestronglyMeasurable, ?_⟩
     exact (Lp.eLpNorm_le_of_ae_tendsto (Eventually.of_forall fun n => hqbound (s n))
-      (fun n => (hf (s n)).continuous.aestronglyMeasurable) hpoint).trans_lt hB.lt_top
+      (fun n => (hf (s n)).continuous.aestronglyMeasurable) hu.aestronglyMeasurable hpoint).trans_lt hB.lt_top
   have hentropy := Integration.tendsto_integral_sq_mul_log_sq_of_eLpNorm_bdd hq
     (fun n => (hf (s n)).continuous.aestronglyMeasurable) huq hB
     (fun n => hqbound (s n)) hpoint
@@ -75,14 +76,12 @@ theorem HasWeakRiemannianGradLp.exists_smooth_entropy_integrals_approx
   have hweighted := Integration.tendsto_integral_weighted_sq_of_eLpNorm_two hfn hu hRtop hscalar
   let V (n : ℕ) : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG g ⟨f n, hf n⟩
   have hV (n : ℕ) (x : M) : V n x = gradFun g (f n) x := grad_g_apply g ⟨f n, hf n⟩ x
-  have hpointV : ∀ᵐ x ∂μ, Tendsto (fun n => V n x) atTop (𝓝 (G x)) := by
-    simpa only [hV] using hpointG
   have hmetricV : Tendsto (fun n => eLpNorm (fun x => Real.sqrt
       (g.inner x (V n x - G x) (V n x - G x))) 2 μ) atTop (𝓝 0) := by
     simpa only [hV] using hmetric
   have henergy : Tendsto (fun n => ∫ x, g.inner x (gradFun g (f n) x) (gradFun g (f n) x) ∂μ)
       atTop (𝓝 (∫ x, g.inner x (G x) (G x) ∂μ)) := by
-    simpa only [hV] using tendsto_integral_metric_energy_of_smooth_limit g V hpointV hmetricV
+    simpa only [hV] using tendsto_integral_metric_energy_of_smooth_limit g V hmetricV
   exact ⟨fun n => f (s n), fun n => hf (s n), hmass.comp hs.tendsto_atTop,
     henergy.comp hs.tendsto_atTop, hweighted.comp hs.tendsto_atTop, hentropy⟩
 

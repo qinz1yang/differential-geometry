@@ -86,7 +86,7 @@ theorem exists_uniform_boundary_flow_of_inward
       ((hzero q y hq.2).trans (hzero p y hy).symm)
     intro t ht
     change (if h : y ∈ U then Φ (hindex y h).choose (y, t) else y) = Φ p (y, t)
-    rw [dif_pos hyU]
+    rw [dite_eq_left hyU]
     exact heq ht
   have hF : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) I ∞ F
       ((U : Set M) ×ˢ Icc (0 : ℝ) ε) := by

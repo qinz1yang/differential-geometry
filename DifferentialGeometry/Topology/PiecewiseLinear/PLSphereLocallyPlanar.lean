@@ -17,7 +17,7 @@ theorem IsPLSphere.exists_isOpen_inter_homeomorph_of_two {E : Type*} [NormedAddC
     ∃ W : Set E, IsOpen W ∧ x ∈ W ∧ ∃ U : Set (EuclideanSpace ℝ (Fin 2)),
       IsOpen U ∧ Nonempty (↥(W ∩ S) ≃ₜ U) := by
   obtain ⟨f, hf⟩ := hS
-  have hβ : ∀ z : stdSimplexBoundary 3, (⟨z.1, z.2.1⟩ : stdSimplex ℝ (Fin (3 + 1))) ∈
+  have hβ : ∀ z : stdSimplexBoundary 3, (⟨z.1, z.2.1⟩ : Convexity.StdSimplex.coordinateSet ℝ (Fin (3 + 1))) ∈
       DifferentialGeometry.Simplex.boundary (Fin (3 + 1)) := fun z => z.2.2
   have hβ' : ∀ z : DifferentialGeometry.Simplex.boundary (Fin (3 + 1)),
       (z.1.1 : Fin (3 + 1) → ℝ) ∈ stdSimplexBoundary 3 := fun z => ⟨z.1.2, z.2⟩

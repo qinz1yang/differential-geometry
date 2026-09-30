@@ -53,7 +53,7 @@ theorem exists_presented_cap_scalar_lower_bound_of_canonical_window
   have hlocal : IsLocalDiffeomorph ThreeModel ThreeModel ∞ S.window :=
     DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv S.window
       S.window_smooth.contMDiff
-      (fun p => (S.window_smooth.isImmersion.isImmersionAt p).injective_mfderiv (by simp)) rfl
+      (fun p => (S.window_smooth.isImmersion.isImmersionAt p).mfderiv_injective (by simp)) rfl
   have heq := (curvature_of_injective_local_isometry w.windowMetric
     (scaleMetric S.neck.scale S.neck.scale_pos E.outputMetric) S.window hlocal
     S.window_smooth.isEmbedding.injective (fun y v z => by
@@ -116,7 +116,7 @@ theorem exists_presented_cap_scalar_lower_bound_of_canonical_window_core
         simp only [inc, mfderiv_opens_incl] at hd
         dsimp only [TangentSpace] at hd ⊢
         rw [hd]
-        exact (S.window_smooth.isImmersion.isImmersionAt (inc p)).injective_mfderiv (by simp))
+        exact (S.window_smooth.isImmersion.isImmersionAt (inc p)).mfderiv_injective (by simp))
       rfl
   have hinj : Function.Injective (S.window ∘ inc) := fun p q h => by
     have h' := S.window_smooth.isEmbedding.injective h

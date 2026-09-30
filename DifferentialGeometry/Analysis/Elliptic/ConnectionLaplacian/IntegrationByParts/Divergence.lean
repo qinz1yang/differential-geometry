@@ -4,6 +4,12 @@ import DifferentialGeometry.Tensor.RSTensor.Algebra.Contraction
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.MetricTraceFrame
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.SlotCurryLeibniz
 
+open DifferentialGeometry.TensorMetric (covariantTensorInnerPointwise fiberNormSqComponent
+  tensor00Scalar tensor00Scalar_apply tensor0SAsRS_apply tensor0SToTensorRS tensorInnerPointwise
+  tensorInnerPointwise_0s_eq_diag_sum_orthoFrame tensorInnerPointwise_add_right
+  tensorInnerPointwise_eq_sum_componentS_mul tensorInnerPointwise_smul_right
+  tensorInnerPointwise_zero_left tensorInnerPointwise_zero_right)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -1098,10 +1104,10 @@ private lemma centeredFrame_basis_exists
       rw [hB_orth k j]
     rw [Finset.sum_congr rfl h_pull2] at h_zero
     rw [Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rw [if_pos rfl, mul_one] at h_zero
+    · rw [ite_eq_left rfl, mul_one] at h_zero
       exact h_zero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
       Module.finrank ℝ (TangentSpace I b) := by
     rw [Fintype.card_fin]

@@ -115,17 +115,17 @@ theorem wRoute_val {Idx : Type*} {x : M}
         else basis (m ⟨idx.val - 4, by have := idx.isLt; omega⟩) := by
   rw [metricTraceInput_apply]
   by_cases h0 : idx.val = 0
-  · rw [dif_pos h0, if_pos h0]
-  · rw [dif_neg h0, if_neg h0]
+  · rw [dite_eq_left h0, ite_eq_left h0]
+  · rw [dite_eq_right h0, ite_eq_right h0]
     by_cases h1 : idx.val = 1
-    · rw [dif_pos h1, if_pos h1]
-    · rw [dif_neg h1, if_neg h1, metricTraceInput_apply]
+    · rw [dite_eq_left h1, ite_eq_left h1]
+    · rw [dite_eq_right h1, ite_eq_right h1, metricTraceInput_apply]
       by_cases h2 : idx.val - 2 = 0
-      · rw [dif_pos (by simpa using h2), if_pos (by omega)]
-      · rw [dif_neg (by simpa using h2), if_neg (by omega)]
+      · rw [dite_eq_left (by simpa using h2), ite_eq_left (by omega)]
+      · rw [dite_eq_right (by simpa using h2), ite_eq_right (by omega)]
         by_cases h3 : idx.val - 2 = 1
-        · rw [dif_pos (by simpa using h3), if_pos (by omega)]
-        · rw [dif_neg (by simpa using h3), if_neg (by omega)]
+        · rw [dite_eq_left (by simpa using h3), ite_eq_left (by omega)]
+        · rw [dite_eq_right (by simpa using h3), ite_eq_right (by omega)]
           congr 2
 
 omit [Module.Finite ℝ E] in
@@ -169,18 +169,18 @@ theorem curvactStarPos
     rcases eq_or_ne p.val 0 with h0 | h0
     · have hcv : ((sigmaCurvPos k q hq) (Fin.castAdd (4 + 0) p)).val = 0 := by
         rw [sigmaCurvPos_cast_val]; split_ifs ; omega
-      rw [if_pos hcv, if_neg (Fin.ne_of_val_ne (by omega)),
+      rw [ite_eq_left hcv, ite_eq_right (Fin.ne_of_val_ne (by omega)),
         Fin.ext (a := p) (b := 0) h0, Fin.cons_zero]
     · rcases eq_or_ne p.val q.val with hq2 | hq2
       · have hcv : ((sigmaCurvPos k q hq) (Fin.castAdd (4 + 0) p)).val = 2 := by
           rw [sigmaCurvPos_cast_val]; split_ifs <;> omega
-        rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-          if_pos hcv, if_pos (Fin.ext hq2)]
+        rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+          ite_eq_left hcv, ite_eq_left (Fin.ext hq2)]
       · have hcv : ((sigmaCurvPos k q hq) (Fin.castAdd (4 + 0) p)).val = 4 + p.val := by
           rw [sigmaCurvPos_cast_val]; split_ifs <;> omega
-        rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-          if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-          if_neg (Fin.ne_of_val_ne (by omega)), hcons p (Fin.ne_of_val_ne h0)]
+        rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+          ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+          ite_eq_right (Fin.ne_of_val_ne (by omega)), hcons p (Fin.ne_of_val_ne h0)]
         congr 2
         simp only [hcv, Nat.add_sub_cancel_left, Fin.eta]
   have hR : (fun p => metricTraceInput (I := I) (basis i) (basis i)
@@ -195,13 +195,13 @@ theorem curvactStarPos
     rcases eq_or_ne p.val 0 with h0 | h0
     · have hcv : ((sigmaCurvPos k q hq) (Fin.natAdd (4 + (k + 1)) p)).val = 1 := by
         rw [sigmaCurvPos_nat_val]; split_ifs ; omega
-      rw [if_neg (by rw [hcv]; omega), if_pos hcv, if_pos (Fin.ext h0)]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv, ite_eq_left (Fin.ext h0)]
     · rcases eq_or_ne p.val 1 with h1 | h1
       · have hcv : ((sigmaCurvPos k q hq) (Fin.natAdd (4 + (k + 1)) p)).val = 4 := by
           rw [sigmaCurvPos_nat_val]; split_ifs <;> omega
-        rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-          if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-          if_neg (Fin.ne_of_val_ne h0), if_pos (Fin.ext h1)]
+        rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+          ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+          ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_left (Fin.ext h1)]
         congr 2
         simp only [hcv]; rfl
       · rcases eq_or_ne p.val 2 with h2 | h2
@@ -211,18 +211,18 @@ theorem curvactStarPos
               (fun l : Fin (4 + k) => basis (m l.succ))) q = basis (m q) := by
             conv_lhs => rw [← Fin.succ_pred q (Fin.ne_of_val_ne hq)]
             rw [Fin.cons_succ, Fin.succ_pred]
-          rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1),
-            if_pos (Fin.ext h2), hcons]
+          rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1),
+            ite_eq_left (Fin.ext h2), hcons]
           congr 2
           simp only [hcv, Nat.add_sub_cancel_left, Fin.eta]
         · have hcv : ((sigmaCurvPos k q hq) (Fin.natAdd (4 + (k + 1)) p)).val = 3 := by
             rw [sigmaCurvPos_nat_val]; split_ifs <;> omega
-          rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (by rw [hcv]; omega), if_pos hcv,
-            if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1),
-            if_neg (Fin.ne_of_val_ne h2)]
+          rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+            ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1),
+            ite_eq_right (Fin.ne_of_val_ne h2)]
   rw [hL, hR]
 
 def tf0 (k : ℕ) :
@@ -294,13 +294,13 @@ theorem curvactStar0
     rcases eq_or_ne p.val 0 with h0 | h0
     · have hcv : ((sigmaCurv0 k) (Fin.castAdd (4 + 0) p)).val = 2 := by
         rw [sigmaCurv0_cast_val]; split_ifs ; omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), if_pos hcv,
-        if_pos (Fin.ext h0)]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+        ite_eq_left (Fin.ext h0)]
     · have hcv : ((sigmaCurv0 k) (Fin.castAdd (4 + 0) p)).val = 4 + p.val := by
         rw [sigmaCurv0_cast_val]; split_ifs <;> omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-        if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-        if_neg (Fin.ne_of_val_ne h0), hcons p (Fin.ne_of_val_ne h0)]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+        ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+        ite_eq_right (Fin.ne_of_val_ne h0), hcons p (Fin.ne_of_val_ne h0)]
       congr 2
       simp only [hcv, Nat.add_sub_cancel_left, Fin.eta]
   have hR : (fun p => metricTraceInput (I := I) (basis i) (basis i)
@@ -313,26 +313,26 @@ theorem curvactStar0
     rcases eq_or_ne p.val 0 with h0 | h0
     · have hcv : ((sigmaCurv0 k) (Fin.natAdd (4 + (k + 1)) p)).val = 0 := by
         rw [sigmaCurv0_nat_val]; split_ifs ; omega
-      rw [if_pos hcv, if_pos (Fin.ext h0)]
+      rw [ite_eq_left hcv, ite_eq_left (Fin.ext h0)]
     · rcases eq_or_ne p.val 1 with h1 | h1
       · have hcv : ((sigmaCurv0 k) (Fin.natAdd (4 + (k + 1)) p)).val = 4 := by
           rw [sigmaCurv0_nat_val]; split_ifs <;> omega
-        rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-          if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-          if_neg (Fin.ne_of_val_ne h0), if_pos (Fin.ext h1)]
+        rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+          ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+          ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_left (Fin.ext h1)]
         congr 2
         simp only [hcv]; rfl
       · rcases eq_or_ne p.val 2 with h2 | h2
         · have hcv : ((sigmaCurv0 k) (Fin.natAdd (4 + (k + 1)) p)).val = 1 := by
             rw [sigmaCurv0_nat_val]; split_ifs <;> omega
-          rw [if_neg (by rw [hcv]; omega), if_pos hcv,
-            if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1), if_pos (Fin.ext h2)]
+          rw [ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+            ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1), ite_eq_left (Fin.ext h2)]
         · have hcv : ((sigmaCurv0 k) (Fin.natAdd (4 + (k + 1)) p)).val = 3 := by
             rw [sigmaCurv0_nat_val]; split_ifs <;> omega
-          rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (by rw [hcv]; omega), if_pos hcv,
-            if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1),
-            if_neg (Fin.ne_of_val_ne h2)]
+          rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+            ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1),
+            ite_eq_right (Fin.ne_of_val_ne h2)]
   rw [hL, hR]
 
 def tfDiffA (k : ℕ) (q : Fin (4 + k)) :
@@ -440,18 +440,18 @@ theorem slotdiffStarA
     rcases eq_or_ne p.val 0 with h0 | h0
     · have hcv : ((sigmaDiffA k q) (Fin.castAdd (4 + k) p)).val = 0 := by
         rw [sigmaDiffA_cast_val]; split_ifs ; omega
-      rw [if_pos hcv, if_pos (Fin.ext h0)]
+      rw [ite_eq_left hcv, ite_eq_left (Fin.ext h0)]
     · rcases eq_or_ne p.val 1 with h1 | h1
       · have hcv : ((sigmaDiffA k q) (Fin.castAdd (4 + k) p)).val = 1 := by
           rw [sigmaDiffA_cast_val]; split_ifs <;> omega
-        rw [if_neg (by rw [hcv]; omega), if_pos hcv,
-          if_neg (Fin.ne_of_val_ne h0), if_pos (Fin.ext h1)]
+        rw [ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+          ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_left (Fin.ext h1)]
       · rcases eq_or_ne p.val 2 with h2 | h2
         · have hcv : ((sigmaDiffA k q) (Fin.castAdd (4 + k) p)).val = 4 := by
             rw [sigmaDiffA_cast_val]; split_ifs <;> omega
-          rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1), if_pos (Fin.ext h2)]
+          rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1), ite_eq_left (Fin.ext h2)]
           congr 2
           have hidx :
               ((sigmaDiffA k q) (Fin.castAdd (4 + k) p)).val - 4 =
@@ -462,10 +462,10 @@ theorem slotdiffStarA
         · rcases eq_or_ne p.val 3 with h3 | h3
           · have hcv : ((sigmaDiffA k q) (Fin.castAdd (4 + k) p)).val = 5 + q.val := by
               rw [sigmaDiffA_cast_val]; split_ifs <;> omega
-            rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-              if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-              if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1),
-              if_neg (Fin.ne_of_val_ne h2), if_pos (Fin.ext h3)]
+            rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+              ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+              ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1),
+              ite_eq_right (Fin.ne_of_val_ne h2), ite_eq_left (Fin.ext h3)]
             congr 2
             have hidx :
                 ((sigmaDiffA k q) (Fin.castAdd (4 + k) p)).val - 4 = q.succ.val := by
@@ -474,9 +474,9 @@ theorem slotdiffStarA
             exact Fin.ext hidx
           · have hcv : ((sigmaDiffA k q) (Fin.castAdd (4 + k) p)).val = 2 := by
               rw [sigmaDiffA_cast_val]; split_ifs <;> omega
-            rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), if_pos hcv,
-              if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1),
-              if_neg (Fin.ne_of_val_ne h2), if_neg (Fin.ne_of_val_ne h3)]
+            rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+              ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1),
+              ite_eq_right (Fin.ne_of_val_ne h2), ite_eq_right (Fin.ne_of_val_ne h3)]
   have hR :
       (fun p => metricTraceInput (I := I) (basis i) (basis i)
         (metricTraceInput (I := I) (basis e) (basis e) (fun p => basis (m p)))
@@ -488,15 +488,15 @@ theorem slotdiffStarA
     · have hpq : p = q := Fin.ext hp
       have hcv : ((sigmaDiffA k q) (Fin.natAdd 5 p)).val = 3 := by
         rw [sigmaDiffA_nat_val]; split_ifs ; omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-        if_neg (by rw [hcv]; omega), if_pos hcv, if_pos hpq]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+        ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv, ite_eq_left hpq]
     · have hpq : p ≠ q := by
         intro h
         exact hp (by simp [h])
       have hcv : ((sigmaDiffA k q) (Fin.natAdd 5 p)).val = 5 + p.val := by
         rw [sigmaDiffA_nat_val]; split_ifs <;> omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-        if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), if_neg hpq]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+        ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), ite_eq_right hpq]
       congr 2
       have hidx :
           ((sigmaDiffA k q) (Fin.natAdd (4 + 1) p)).val - 4 = p.succ.val := by
@@ -613,13 +613,13 @@ theorem slotdiffStarB
     rcases eq_or_ne p.val 0 with h0 | h0
     · have hcv : ((sigmaDiffB k q) (Fin.castAdd (4 + (k + 1)) p)).val = 0 := by
         rw [sigmaDiffB_cast_val]; split_ifs ; omega
-      rw [if_pos hcv, if_pos (Fin.ext h0)]
+      rw [ite_eq_left hcv, ite_eq_left (Fin.ext h0)]
     · rcases eq_or_ne p.val 1 with h1 | h1
       · have hcv : ((sigmaDiffB k q) (Fin.castAdd (4 + (k + 1)) p)).val = 4 := by
           rw [sigmaDiffB_cast_val]; split_ifs <;> omega
-        rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-          if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-          if_neg (Fin.ne_of_val_ne h0), if_pos (Fin.ext h1)]
+        rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+          ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+          ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_left (Fin.ext h1)]
         congr 2
         have hidx :
             ((sigmaDiffB k q) (Fin.castAdd (4 + (k + 1)) p)).val - 4 =
@@ -630,9 +630,9 @@ theorem slotdiffStarB
       · rcases eq_or_ne p.val 2 with h2 | h2
         · have hcv : ((sigmaDiffB k q) (Fin.castAdd (4 + (k + 1)) p)).val = 5 + q.val := by
             rw [sigmaDiffB_cast_val]; split_ifs <;> omega
-          rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1), if_pos (Fin.ext h2)]
+          rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1), ite_eq_left (Fin.ext h2)]
           congr 2
           have hidx :
               ((sigmaDiffB k q) (Fin.castAdd (4 + (k + 1)) p)).val - 4 = q.succ.val := by
@@ -641,9 +641,9 @@ theorem slotdiffStarB
           exact Fin.ext hidx
         · have hcv : ((sigmaDiffB k q) (Fin.castAdd (4 + (k + 1)) p)).val = 2 := by
             rw [sigmaDiffB_cast_val]; split_ifs <;> omega
-          rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), if_pos hcv,
-            if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1),
-            if_neg (Fin.ne_of_val_ne h2)]
+          rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+            ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1),
+            ite_eq_right (Fin.ne_of_val_ne h2)]
   have hR :
       (fun p => metricTraceInput (I := I) (basis i) (basis i)
         (metricTraceInput (I := I) (basis e) (basis e) (fun p => basis (m p)))
@@ -656,7 +656,7 @@ theorem slotdiffStarB
     · have hp0 : p = 0 := Fin.ext h0
       have hcv : ((sigmaDiffB k q) (Fin.natAdd 4 p)).val = 1 := by
         rw [sigmaDiffB_nat_val]; split_ifs ; omega
-      rw [if_neg (by rw [hcv]; omega), if_pos hcv, hp0]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv, hp0]
       simp
     · rcases eq_or_ne p.val (q.val + 1) with hq | hq
       · have hpq : p = q.succ := by
@@ -664,8 +664,8 @@ theorem slotdiffStarB
           simpa [Fin.val_succ] using hq
         have hcv : ((sigmaDiffB k q) (Fin.natAdd 4 p)).val = 3 := by
           rw [sigmaDiffB_nat_val]; split_ifs <;> omega
-        rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-          if_neg (by rw [hcv]; omega), if_pos hcv, hpq]
+        rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+          ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv, hpq]
         simp
       · have hp0 : p ≠ 0 := by
           intro hp
@@ -683,9 +683,9 @@ theorem slotdiffStarB
                 (Function.update (fun p : Fin (4 + k) => basis (m p.succ)) q (basis e))) p =
               basis (m p) := by
           conv_lhs => rw [← Fin.succ_pred p hp0]
-          rw [Fin.cons_succ, Function.update_apply, if_neg hpred, Fin.succ_pred]
-        rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-          if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), hrhs]
+          rw [Fin.cons_succ, Function.update_apply, ite_eq_right hpred, Fin.succ_pred]
+        rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+          ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), hrhs]
         congr 2
         have hidx :
             ((sigmaDiffB k q) (Fin.natAdd (4 + 0) p)).val - 4 = p.val := by
@@ -793,8 +793,8 @@ theorem slotRic1
     rcases eq_or_ne p.val 0 with h0 | h0
     · have hcv : ((sigmaRic1 k q) (Fin.castAdd (4 + k) p)).val = 4 := by
         rw [sigmaRic1_cast_val]; split_ifs ; omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-        if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), if_pos (Fin.ext h0)]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+        ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), ite_eq_left (Fin.ext h0)]
       congr 2
       have hidx :
           ((sigmaRic1 k q) (Fin.castAdd (4 + k) p)).val - 4 =
@@ -804,13 +804,13 @@ theorem slotRic1
     · rcases eq_or_ne p.val 1 with h1 | h1
       · have hcv : ((sigmaRic1 k q) (Fin.castAdd (4 + k) p)).val = 0 := by
           rw [sigmaRic1_cast_val]; split_ifs <;> omega
-        rw [if_pos hcv, if_neg (Fin.ne_of_val_ne h0), if_pos (Fin.ext h1)]
+        rw [ite_eq_left hcv, ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_left (Fin.ext h1)]
       · rcases eq_or_ne p.val 2 with h2 | h2
         · have hcv : ((sigmaRic1 k q) (Fin.castAdd (4 + k) p)).val = 5 + q.val := by
             rw [sigmaRic1_cast_val]; split_ifs <;> omega
-          rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1), if_pos (Fin.ext h2)]
+          rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1), ite_eq_left (Fin.ext h2)]
           congr 2
           have hidx :
               ((sigmaRic1 k q) (Fin.castAdd (4 + k) p)).val - 4 = q.succ.val := by
@@ -819,14 +819,14 @@ theorem slotRic1
         · rcases eq_or_ne p.val 3 with h3 | h3
           · have hcv : ((sigmaRic1 k q) (Fin.castAdd (4 + k) p)).val = 2 := by
               rw [sigmaRic1_cast_val]; split_ifs <;> omega
-            rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), if_pos hcv,
-              if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1),
-              if_neg (Fin.ne_of_val_ne h2), if_pos (Fin.ext h3)]
+            rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+              ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1),
+              ite_eq_right (Fin.ne_of_val_ne h2), ite_eq_left (Fin.ext h3)]
           · have hcv : ((sigmaRic1 k q) (Fin.castAdd (4 + k) p)).val = 1 := by
               rw [sigmaRic1_cast_val]; split_ifs <;> omega
-            rw [if_neg (by rw [hcv]; omega), if_pos hcv,
-              if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1),
-              if_neg (Fin.ne_of_val_ne h2), if_neg (Fin.ne_of_val_ne h3)]
+            rw [ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+              ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1),
+              ite_eq_right (Fin.ne_of_val_ne h2), ite_eq_right (Fin.ne_of_val_ne h3)]
   have hR :
       (fun p => metricTraceInput (I := I) (basis i) (basis i)
         (metricTraceInput (I := I) (basis e) (basis e) (fun p => basis (m p)))
@@ -838,15 +838,15 @@ theorem slotRic1
     · have hpq : p = q := Fin.ext hp
       have hcv : ((sigmaRic1 k q) (Fin.natAdd 5 p)).val = 3 := by
         rw [sigmaRic1_nat_val]; split_ifs ; omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-        if_neg (by rw [hcv]; omega), if_pos hcv, if_pos hpq]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+        ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv, ite_eq_left hpq]
     · have hpq : p ≠ q := by
         intro h
         exact hp (by simp [h])
       have hcv : ((sigmaRic1 k q) (Fin.natAdd 5 p)).val = 5 + p.val := by
         rw [sigmaRic1_nat_val]; split_ifs <;> omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-        if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), if_neg hpq]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+        ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), ite_eq_right hpq]
       congr 2
       have hidx :
           ((sigmaRic1 k q) (Fin.natAdd (4 + 1) p)).val - 4 = p.succ.val := by
@@ -953,8 +953,8 @@ theorem slotRic2
     rcases eq_or_ne p.val 0 with h0 | h0
     · have hcv : ((sigmaRic2 k q) (Fin.castAdd (4 + k) p)).val = 5 + q.val := by
         rw [sigmaRic2_cast_val]; split_ifs ; omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-        if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), if_pos (Fin.ext h0)]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+        ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), ite_eq_left (Fin.ext h0)]
       congr 2
       have hidx :
           ((sigmaRic2 k q) (Fin.castAdd (4 + k) p)).val - 4 = q.succ.val := by
@@ -963,13 +963,13 @@ theorem slotRic2
     · rcases eq_or_ne p.val 1 with h1 | h1
       · have hcv : ((sigmaRic2 k q) (Fin.castAdd (4 + k) p)).val = 0 := by
           rw [sigmaRic2_cast_val]; split_ifs <;> omega
-        rw [if_pos hcv, if_neg (Fin.ne_of_val_ne h0), if_pos (Fin.ext h1)]
+        rw [ite_eq_left hcv, ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_left (Fin.ext h1)]
       · rcases eq_or_ne p.val 2 with h2 | h2
         · have hcv : ((sigmaRic2 k q) (Fin.castAdd (4 + k) p)).val = 4 := by
             rw [sigmaRic2_cast_val]; split_ifs <;> omega
-          rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1), if_pos (Fin.ext h2)]
+          rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1), ite_eq_left (Fin.ext h2)]
           congr 2
           have hidx :
               ((sigmaRic2 k q) (Fin.castAdd (4 + k) p)).val - 4 =
@@ -979,14 +979,14 @@ theorem slotRic2
         · rcases eq_or_ne p.val 3 with h3 | h3
           · have hcv : ((sigmaRic2 k q) (Fin.castAdd (4 + k) p)).val = 2 := by
               rw [sigmaRic2_cast_val]; split_ifs <;> omega
-            rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), if_pos hcv,
-              if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1),
-              if_neg (Fin.ne_of_val_ne h2), if_pos (Fin.ext h3)]
+            rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+              ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1),
+              ite_eq_right (Fin.ne_of_val_ne h2), ite_eq_left (Fin.ext h3)]
           · have hcv : ((sigmaRic2 k q) (Fin.castAdd (4 + k) p)).val = 1 := by
               rw [sigmaRic2_cast_val]; split_ifs <;> omega
-            rw [if_neg (by rw [hcv]; omega), if_pos hcv,
-              if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1),
-              if_neg (Fin.ne_of_val_ne h2), if_neg (Fin.ne_of_val_ne h3)]
+            rw [ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+              ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1),
+              ite_eq_right (Fin.ne_of_val_ne h2), ite_eq_right (Fin.ne_of_val_ne h3)]
   have hR :
       (fun p => metricTraceInput (I := I) (basis i) (basis i)
         (metricTraceInput (I := I) (basis e) (basis e) (fun p => basis (m p)))
@@ -998,15 +998,15 @@ theorem slotRic2
     · have hpq : p = q := Fin.ext hp
       have hcv : ((sigmaRic2 k q) (Fin.natAdd 5 p)).val = 3 := by
         rw [sigmaRic2_nat_val]; split_ifs ; omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-        if_neg (by rw [hcv]; omega), if_pos hcv, if_pos hpq]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+        ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv, ite_eq_left hpq]
     · have hpq : p ≠ q := by
         intro h
         exact hp (by simp [h])
       have hcv : ((sigmaRic2 k q) (Fin.natAdd 5 p)).val = 5 + p.val := by
         rw [sigmaRic2_nat_val]; split_ifs <;> omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-        if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), if_neg hpq]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+        ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), ite_eq_right hpq]
       congr 2
       have hidx :
           ((sigmaRic2 k q) (Fin.natAdd (4 + 1) p)).val - 4 = p.succ.val := by
@@ -1113,18 +1113,18 @@ theorem slotRic3
     rcases eq_or_ne p.val 0 with h0 | h0
     · have hcv : ((sigmaRic3 k q) (Fin.castAdd (4 + k) p)).val = 2 := by
         rw [sigmaRic3_cast_val]; split_ifs ; omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), if_pos hcv,
-        if_pos (Fin.ext h0)]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+        ite_eq_left (Fin.ext h0)]
     · rcases eq_or_ne p.val 1 with h1 | h1
       · have hcv : ((sigmaRic3 k q) (Fin.castAdd (4 + k) p)).val = 0 := by
           rw [sigmaRic3_cast_val]; split_ifs <;> omega
-        rw [if_pos hcv, if_neg (Fin.ne_of_val_ne h0), if_pos (Fin.ext h1)]
+        rw [ite_eq_left hcv, ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_left (Fin.ext h1)]
       · rcases eq_or_ne p.val 2 with h2 | h2
         · have hcv : ((sigmaRic3 k q) (Fin.castAdd (4 + k) p)).val = 4 := by
             rw [sigmaRic3_cast_val]; split_ifs <;> omega
-          rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-            if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1), if_pos (Fin.ext h2)]
+          rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+            ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1), ite_eq_left (Fin.ext h2)]
           congr 2
           have hidx :
               ((sigmaRic3 k q) (Fin.castAdd (4 + k) p)).val - 4 =
@@ -1134,10 +1134,10 @@ theorem slotRic3
         · rcases eq_or_ne p.val 3 with h3 | h3
           · have hcv : ((sigmaRic3 k q) (Fin.castAdd (4 + k) p)).val = 5 + q.val := by
               rw [sigmaRic3_cast_val]; split_ifs <;> omega
-            rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-              if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-              if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1),
-              if_neg (Fin.ne_of_val_ne h2), if_pos (Fin.ext h3)]
+            rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+              ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+              ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1),
+              ite_eq_right (Fin.ne_of_val_ne h2), ite_eq_left (Fin.ext h3)]
             congr 2
             have hidx :
                 ((sigmaRic3 k q) (Fin.castAdd (4 + k) p)).val - 4 = q.succ.val := by
@@ -1145,9 +1145,9 @@ theorem slotRic3
             exact Fin.ext hidx
           · have hcv : ((sigmaRic3 k q) (Fin.castAdd (4 + k) p)).val = 1 := by
               rw [sigmaRic3_cast_val]; split_ifs <;> omega
-            rw [if_neg (by rw [hcv]; omega), if_pos hcv,
-              if_neg (Fin.ne_of_val_ne h0), if_neg (Fin.ne_of_val_ne h1),
-              if_neg (Fin.ne_of_val_ne h2), if_neg (Fin.ne_of_val_ne h3)]
+            rw [ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv,
+              ite_eq_right (Fin.ne_of_val_ne h0), ite_eq_right (Fin.ne_of_val_ne h1),
+              ite_eq_right (Fin.ne_of_val_ne h2), ite_eq_right (Fin.ne_of_val_ne h3)]
   have hR :
       (fun p => metricTraceInput (I := I) (basis i) (basis i)
         (metricTraceInput (I := I) (basis e) (basis e) (fun p => basis (m p)))
@@ -1159,15 +1159,15 @@ theorem slotRic3
     · have hpq : p = q := Fin.ext hp
       have hcv : ((sigmaRic3 k q) (Fin.natAdd 5 p)).val = 3 := by
         rw [sigmaRic3_nat_val]; split_ifs ; omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-        if_neg (by rw [hcv]; omega), if_pos hcv, if_pos hpq]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+        ite_eq_right (by rw [hcv]; omega), ite_eq_left hcv, ite_eq_left hpq]
     · have hpq : p ≠ q := by
         intro h
         exact hp (by simp [h])
       have hcv : ((sigmaRic3 k q) (Fin.natAdd 5 p)).val = 5 + p.val := by
         rw [sigmaRic3_nat_val]; split_ifs <;> omega
-      rw [if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega),
-        if_neg (by rw [hcv]; omega), if_neg (by rw [hcv]; omega), if_neg hpq]
+      rw [ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega),
+        ite_eq_right (by rw [hcv]; omega), ite_eq_right (by rw [hcv]; omega), ite_eq_right hpq]
       congr 2
       have hidx :
           ((sigmaRic3 k q) (Fin.natAdd (4 + 1) p)).val - 4 = p.succ.val := by

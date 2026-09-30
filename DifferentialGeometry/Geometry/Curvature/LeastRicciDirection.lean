@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.FiniteDimensional.EigenvectorAxisEstimate
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricci
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.MetricData
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 
 noncomputable section
 open scoped Manifold ContDiff InnerProductSpace
@@ -26,7 +26,7 @@ theorem exists_least_ricci_direction_of_axis_error
       |μ| ≤ ε ∧ 0 < g.inner x v w ∧
       Real.sqrt (g.inner x (w - v) (w - v)) ≤ 4 * ε / κ ∧
       Module.End.eigenspace (ricciSharp g x).toLinearMap μ = Submodule.span ℝ {w} := by
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core ℝ (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup ℝ (TangentSpace I x) _ _ _ D.toCore
@@ -34,7 +34,7 @@ theorem exists_least_ricci_direction_of_axis_error
     @InnerProductSpace.ofCore ℝ (TangentSpace I x) _ _ _ D.toCore.toCore
   have hi (a b : TangentSpace I x) : ⟪a, b⟫_ℝ = g.inner x a b := by
     exact (MetricFiberData.toCore_inner D a b).trans
-      (TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen g x) a b)
+      (TangentMetricData.inner_eq (tangentMetricData g x) a b)
   have hn (a : TangentSpace I x) : ‖a‖ = Real.sqrt (g.inner x a a) := by
     rw [← hi, real_inner_self_eq_norm_sq, Real.sqrt_sq (norm_nonneg _)]
   let : CompleteSpace (TangentSpace I x) := FiniteDimensional.complete ℝ (TangentSpace I x)

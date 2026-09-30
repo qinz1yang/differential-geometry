@@ -55,10 +55,11 @@ private lemma tendsto_sub_unitBallExtension_pointwise_ae
 -- Standalone helper: indicator eLpNorm monotonicity for dominated families.
 omit [NeZero d] in
 private lemma eLpNorm_indicator_le_of_norm_le {F : E → ℝ} {H : E → ℝ}
-    (hFH : ∀ x, ‖F x‖ ≤ ‖H x‖) (s : Set E) {p : ℝ≥0∞} :
+    (hF : AEStronglyMeasurable F volume)
+    (hFH : ∀ x, ‖F x‖ ≤ ‖H x‖) (s : Set E) (hs : MeasurableSet s) {p : ℝ≥0∞} :
     eLpNorm (s.indicator F) p (volume : Measure E) ≤
       eLpNorm (s.indicator H) p (volume : Measure E) :=
-  eLpNorm_mono fun x => by
+  eLpNorm_mono (hF.indicator hs) fun x => by
     unfold Set.indicator
     split
     · exact hFH x
@@ -132,18 +133,21 @@ private theorem tendsto_eLpNorm_smoothUnitBallExtensionApprox_sub_unitBallExtens
     simp only [Real.norm_eq_abs] at this ⊢
     exact this.trans (le_abs_self _)
   have huiF : UnifIntegrable F (ENNReal.ofReal p) volume := by
-    intro ε hε
+    refine unifIntegrable_iff.mpr fun ε hε => ?_
     obtain ⟨δ, hδ, hδ'⟩ :=
-      MeasureTheory.unifIntegrable_const (p := ENNReal.ofReal p) hHp hHp' hH_memLp hε
-    exact ⟨δ, hδ, fun n s hs hμs =>
-      le_trans (eLpNorm_indicator_le_of_norm_le (d := d) (fun x => hF_dom_norm n x) s)
-        (hδ' 0 s hs hμs)⟩
+      unifIntegrable_iff.mp
+        (MeasureTheory.unifIntegrable_const (ι := ℕ) (p := ENNReal.ofReal p)
+          hHp hHp' hH_memLp) ε hε
+    exact ⟨δ, hδ, fun n s hμs =>
+      le_trans (eLpNorm_mono (hF_meas n).restrict (fun x => hF_dom_norm n x))
+        (hδ' 0 s hμs)⟩
   have hutF : UnifTight F (ENNReal.ofReal p) volume := by
     intro ε hε
-    obtain ⟨s, hμs, hs'⟩ := MeasureTheory.unifTight_const
-      (p := ENNReal.ofReal p) hHp' hH_memLp hε
-    exact ⟨s, hμs, fun n =>
-      le_trans (eLpNorm_indicator_le_of_norm_le (d := d) (fun x => hF_dom_norm n x) sᶜ) (hs' 0)⟩
+    obtain ⟨s, hs, hμs, hs'⟩ := (MeasureTheory.unifTight_const
+      (ι := ℕ) (p := ENNReal.ofReal p) hHp' hH_memLp).exists_measurableSet_indicator hε.ne'
+    exact ⟨s, hμs.ne, fun n =>
+      le_trans (eLpNorm_indicator_le_of_norm_le (d := d) (hF_meas n)
+        (fun x => hF_dom_norm n x) sᶜ hs.compl) (hs' 0)⟩
   have hF_ae : ∀ᵐ x ∂volume, Tendsto (fun n => F n x) atTop (nhds 0) := by
     have hae1 : ∀ᵐ x ∂(volume : Measure E), x ∉ Metric.sphere (0 : E) 1 := by
       rw [ae_iff]; simpa [Metric.sphere, dist_zero_right] using
@@ -812,20 +816,22 @@ private theorem tendsto_eLpNorm_fderiv_smoothUnitBallExtensionApprox_sub_exactGr
     exact hx.trans (le_abs_self _)
   -- UnifIntegrable and UnifTight
   have huiF : UnifIntegrable F (ENNReal.ofReal p) volume := by
-    intro ε hε
+    refine unifIntegrable_iff.mpr fun ε hε => ?_
     obtain ⟨δ, hδ, hδ'⟩ :=
-      MeasureTheory.unifIntegrable_const (p := ENNReal.ofReal p) hHp hHp' hH_memLp hε
-    exact ⟨δ, hδ, fun n s hs hμs =>
-      le_trans (eLpNorm_mono_ae ((hF_dom_norm n).mono fun x hx => by
-        simp only [Set.indicator]; split <;> [exact hx; exact le_refl _]))
-        (hδ' 0 s hs hμs)⟩
+      unifIntegrable_iff.mp
+        (MeasureTheory.unifIntegrable_const (ι := ℕ) (p := ENNReal.ofReal p)
+          hHp hHp' hH_memLp) ε hε
+    exact ⟨δ, hδ, fun n s hμs =>
+      le_trans (eLpNorm_mono_ae (hF_meas n).restrict
+        ((hF_dom_norm n).filter_mono ae_restrict_le)) (hδ' 0 s hμs)⟩
   have hutF : UnifTight F (ENNReal.ofReal p) volume := by
     intro ε hε
-    obtain ⟨s, hμs, hs'⟩ := MeasureTheory.unifTight_const
-      (p := ENNReal.ofReal p) hHp' hH_memLp hε
-    exact ⟨s, hμs, fun n =>
-      le_trans (eLpNorm_mono_ae ((hF_dom_norm n).mono fun x hx => by
-        simp only [Set.indicator]; split <;> [exact hx; exact le_refl _]))
+    obtain ⟨s, hs, hμs, hs'⟩ := (MeasureTheory.unifTight_const
+      (ι := ℕ) (p := ENNReal.ofReal p) hHp' hH_memLp).exists_measurableSet_indicator hε.ne'
+    exact ⟨s, hμs.ne, fun n =>
+      le_trans (eLpNorm_mono_ae ((hF_meas n).indicator hs.compl)
+        ((hF_dom_norm n).mono fun x hx => by
+          simp only [Set.indicator]; split <;> [exact hx; exact le_refl _]))
         (hs' 0)⟩
   -- Pointwise AE convergence
   have hF_ae : ∀ᵐ x ∂volume, Tendsto (fun n => F n x) atTop (nhds 0) := by

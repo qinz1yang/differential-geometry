@@ -15,9 +15,9 @@ variable {E F : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 /-- Continuous linear maps act on the SAME barycentric affine maps. -/
 theorem affineSimplexMap_linear {ι : Type*} [Fintype ι] (f : E →L[ℝ] F)
-    (v : ι → E) (t : stdSimplex ℝ ι) :
+    (v : ι → E) (t : Convexity.StdSimplex ℝ ι) :
     f (affineSimplexMap v t) = affineSimplexMap (f ∘ v) t := by
-  change f (∑ i, t.val i • v i) = ∑ i, t.val i • f (v i)
+  change f (∑ i, t.weights i • v i) = ∑ i, t.weights i • f (v i)
   rw [map_sum]
   apply Finset.sum_congr rfl
   intro i _

@@ -20,7 +20,7 @@ omit [NormedSpace ℝ E] in
 private theorem small_vertices_mem {n : ℕ} (σ : (A : SSet) _⦋n⦌) (i : Fin (n + 1)) :
     singularSimplexVertices σ.val i ∈ s := by
   obtain ⟨_, hσ⟩ := σ.property
-  exact hσ ⟨stdSimplex.vertex i, rfl⟩
+  exact hσ ⟨Convexity.StdSimplex.single i, rfl⟩
 
 
 def smallBarycenter {n : ℕ} (σ : (A : SSet) _⦋n⦌) : s :=
@@ -77,7 +77,7 @@ def smallAffineCone (p : s) (n : ℕ) : (KA).X n ⟶ (KA).X (n + 1) :=
 theorem ι_smallAffineCone (p : s) {n : ℕ} (σ : (A : SSet) _⦋n⦌) :
     (A : SSet).ιChainComplex σ ≫ smallAffineCone hs R p n =
       (A : SSet).ιChainComplex (smallConeSimplex hs p σ) :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 
 @[reassoc]
@@ -107,7 +107,7 @@ theorem ι_smallAffineSubdivisionMap_succ (n : ℕ) (σ : (A : SSet) _⦋n + 1�
     (A : SSet).ιChainComplex σ ≫ smallAffineSubdivisionMap hs R (n + 1) =
       (A : SSet).ιChainComplex σ ≫ (KA).d (n + 1) n ≫
         smallAffineSubdivisionMap hs R n ≫ smallAffineCone hs R (smallBarycenter hs σ) n :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 
 theorem smallAffineSubdivisionMap_inclusion (n : ℕ) :
@@ -161,7 +161,7 @@ theorem ι_smallAffineSubdivisionHomotopyMap_succ (n : ℕ) (σ : (A : SSet) _�
         (A : SSet).ιChainComplex σ ≫ (KA).d (n + 1) n ≫
           smallAffineSubdivisionHomotopyMap hs R n) ≫
         smallAffineCone hs R (smallBarycenter hs σ) (n + 1) :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 theorem smallAffineSubdivisionHomotopyMap_inclusion (n : ℕ) :
     smallAffineSubdivisionHomotopyMap hs R n ≫ (I).f (n + 1) =

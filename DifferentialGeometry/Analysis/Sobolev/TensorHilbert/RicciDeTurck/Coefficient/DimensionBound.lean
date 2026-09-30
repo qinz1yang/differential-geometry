@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.CometricTraceSelf
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.Extraction
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 set_option autoImplicit false
 
 noncomputable section

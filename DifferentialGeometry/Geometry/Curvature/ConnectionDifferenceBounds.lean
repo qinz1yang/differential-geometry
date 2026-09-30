@@ -11,6 +11,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Tensor
+open DifferentialGeometry.Geometry.Connection (metricLoweredConnectionDifferenceField)
 open scoped Manifold ContDiff BigOperators
 namespace DifferentialGeometry.Geometry.Curvature
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -23,7 +24,7 @@ private theorem jet_add_le (U : Opens E) (G : SmoothRiemannianMetric 𝓘(ℝ, E
       Real.sqrt (normSq0S G x (r + j) (iterCov G r T j x)) +
         Real.sqrt (normSq0S G x (r + j) (iterCov G r V j x)) := by
   rw [iterCov_add]
-  exact Tensor0SBundle.sqrt_normSq0S_add_le G x (r + j) _ _
+  exact DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le G x (r + j) _ _
 
 private theorem jet_sub_le (U : Opens E) (G : SmoothRiemannianMetric 𝓘(ℝ, E) U)
     {r : ℕ} (T V : Tensor0SField (I := 𝓘(ℝ, E)) (M := U) ∞ r) (j : ℕ) (x : U) :
@@ -31,7 +32,7 @@ private theorem jet_sub_le (U : Opens E) (G : SmoothRiemannianMetric 𝓘(ℝ, E
       Real.sqrt (normSq0S G x (r + j) (iterCov G r T j x)) +
         Real.sqrt (normSq0S G x (r + j) (iterCov G r V j x)) := by
   rw [iterCov_sub]
-  exact Tensor0SBundle.sqrt_normSq0S_sub_le G x (r + j) _ _
+  exact DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_sub_le G x (r + j) _ _
 
 theorem exists_iterCov_rm04Section_connection_bound_on_opens (j : ℕ) :
     ∃ C > 0, ∀ (U : Opens E) (G g : SmoothRiemannianMetric 𝓘(ℝ, E) U) (x : U),

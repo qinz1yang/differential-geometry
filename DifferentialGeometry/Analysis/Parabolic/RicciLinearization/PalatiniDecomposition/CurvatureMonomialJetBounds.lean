@@ -15,6 +15,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainde
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.LieCovariantDerivative
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.EndomorphismTermAlgebra
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.CovariantDerivativeTerm
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_sum_le_card_mul)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -308,7 +311,7 @@ lemma antidiagonalTupleGridWindow_mono (b b' : ℕ → ℝ) (hb : ∀ j, 0 ≤ b
   rw [Combinatorics.antidiagonalTupleGrid, Combinatorics.antidiagonalTupleGrid]
   refine Finset.sum_le_sum fun n _ => ?_
   refine Finset.sum_le_sum fun e _ => ?_
-  exact Finset.prod_le_prod (fun m _ => hb (e m)) (fun m _ => hbb (e m))
+  exact Finset.prod_le_prod₀ (fun m _ => hb (e m)) (fun m _ => hbb (e m))
 
 lemma le_antidiagonalTupleGrid (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) (q : ℕ) (hq : 1 ≤ q) :
     b q ≤ Combinatorics.antidiagonalTupleGrid b q := by
@@ -475,7 +478,7 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
         have hCSl : CS l = 1 := by
           rw [hCS_def]
           dsimp only
-          rw [if_neg (by omega)]
+          rw [ite_eq_right (by omega)]
         rw [hCSl, one_mul]
         exact le_trans hsymm (le_trans hsingle hgw)
     calc riemannianFiberNormSq (I := I) (M := M) g₀ 4 (6 + l) x
@@ -785,7 +788,7 @@ theorem exists_curvatureDecompositionMonomialCoeffField_ccTensor02Symm_metricPer
           s • ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x) from by
         rw [SmoothCcTensor.toSection_smul]
         rfl]
-      rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l) x]
+      rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l) x]
       have hs2 : s ^ 2 ≤ 1 := by nlinarith
       nlinarith [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x
         ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)]

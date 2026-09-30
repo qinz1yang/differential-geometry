@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.BallCoordinates
 
 set_option autoImplicit false
@@ -5,6 +6,8 @@ set_option autoImplicit false
 noncomputable section
 
 open Set Metric Topology
+
+open Convexity.StdSimplex
 
 namespace DifferentialGeometry.Simplex
 
@@ -40,12 +43,12 @@ def coordinateSimplexBallHomeomorph (n : ℕ) :
 
 
 def stdSimplexBallHomeomorph (n : ℕ) :
-    stdSimplex ℝ (Fin (n + 1)) ≃ₜ closedBall (0 : Fin n → ℝ) 1 :=
+    coordinateSet ℝ (Fin (n + 1)) ≃ₜ closedBall (0 : Fin n → ℝ) 1 :=
   (stdSimplexCoordinateHomeomorph n).trans (coordinateSimplexBallHomeomorph n)
 
 
 theorem stdSimplexBallHomeomorph_mem_sphere_iff (n : ℕ)
-    (x : stdSimplex ℝ (Fin (n + 1))) :
+    (x : coordinateSet ℝ (Fin (n + 1))) :
     (stdSimplexBallHomeomorph n x).val ∈ sphere (0 : Fin n → ℝ) 1 ↔
       x ∈ boundary (Fin (n + 1)) := by
   change coordinateSimplexBallAmbientHomeomorph n (stdSimplexCoordinateHomeomorph n x).val ∈
@@ -57,7 +60,7 @@ theorem stdSimplexBallHomeomorph_mem_sphere_iff (n : ℕ)
 
 
 theorem stdSimplexBallHomeomorph_norm_eq_one_iff (n : ℕ)
-    (x : stdSimplex ℝ (Fin (n + 1))) :
+    (x : coordinateSet ℝ (Fin (n + 1))) :
     ‖(stdSimplexBallHomeomorph n x).val‖ = 1 ↔ x ∈ boundary (Fin (n + 1)) := by
   simpa only [mem_sphere_zero_iff_norm] using stdSimplexBallHomeomorph_mem_sphere_iff n x
 

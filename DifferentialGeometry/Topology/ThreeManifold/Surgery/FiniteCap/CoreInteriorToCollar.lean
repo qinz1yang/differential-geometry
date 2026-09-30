@@ -74,7 +74,7 @@ theorem cutCoreInteriorHalfChart_to_collar_contMDiff
       (c.open_target.mem_nhds hz.1)
   have hlocal : ContMDiffAt I ToCollarIC ∞ (hF u).localInverse (R z) := by
     rw [← hFu]
-    exact (hF u).localInverse_contMDiffAt
+    exact (hF u).contMDiffAt_localInverse
   have hmem : R z ∈ (hF u).localInverse.source := by
     rw [← hFu]
     exact (hF u).localInverse_mem_source

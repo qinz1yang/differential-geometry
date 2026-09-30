@@ -125,22 +125,22 @@ theorem exists_injective_extend {N : ℕ} (v : ℕ → Plane)
   intro k l hkl
   dsimp only at hkl
   by_cases hk : k < N <;> by_cases hl : l < N
-  · rw [if_pos hk, if_pos hl] at hkl
+  · rw [ite_eq_left hk, ite_eq_left hl] at hkl
     exact hv k hk l hl hkl
   · -- A listed point cannot equal a padded one: its first coordinate is too small.
     exfalso
-    rw [if_pos hk, if_neg hl] at hkl
+    rw [ite_eq_left hk, ite_eq_right hl] at hkl
     have h1 : v k 0 = M + 1 + (l : ℝ) := by rw [hkl]; exact Plane.mk_zero _ _
     have h2 : (0 : ℝ) ≤ (l : ℝ) := Nat.cast_nonneg l
     have h3 := hM k hk
     linarith
   · exfalso
-    rw [if_neg hk, if_pos hl] at hkl
+    rw [ite_eq_right hk, ite_eq_left hl] at hkl
     have h1 : v l 0 = M + 1 + (k : ℝ) := by rw [← hkl]; exact Plane.mk_zero _ _
     have h2 : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
     have h3 := hM l hl
     linarith
-  · rw [if_neg hk, if_neg hl] at hkl
+  · rw [ite_eq_right hk, ite_eq_right hl] at hkl
     have h1 : M + 1 + (k : ℝ) = M + 1 + (l : ℝ) := by
       rw [← Plane.mk_zero (M + 1 + (k : ℝ)) 0, hkl]; exact Plane.mk_zero _ _
     exact_mod_cast (by linarith : (k : ℝ) = (l : ℝ))
@@ -159,9 +159,9 @@ variable {i k : ℕ}
 /-- The index map that skips over vertex `i + 1`. -/
 def skipIdx (i k : ℕ) : ℕ := if k ≤ i then k else k + 1
 
-theorem skipIdx_of_le (h : k ≤ i) : skipIdx i k = k := if_pos h
+theorem skipIdx_of_le (h : k ≤ i) : skipIdx i k = k := ite_eq_left h
 
-theorem skipIdx_of_lt (h : i < k) : skipIdx i k = k + 1 := if_neg (by omega)
+theorem skipIdx_of_lt (h : i < k) : skipIdx i k = k + 1 := ite_eq_right (by omega)
 
 theorem skipIdx_injective (i : ℕ) : Function.Injective (skipIdx i) := by
   intro k l h
@@ -575,18 +575,18 @@ theorem exists_preArc_of_isArcBetween {P : Set Plane} {a b : Plane}
   -- The linear vertex list: the ends, in the order the arc reaches them, and then `b`.
   set vf : ℕ → Plane := fun k => if h : k < n then f (par TF hcard ⟨k, h⟩) else b with hvf
   have hvflt : ∀ (k : ℕ) (hk : k < n), vf k = f (tp ⟨k, hk⟩) := by
-    intro k hk; rw [hvf]; simp only [dif_pos hk, htp]
-  have hvfn : vf n = b := by rw [hvf]; simp only [dif_neg (lt_irrefl n)]
+    intro k hk; rw [hvf]; simp only [dite_eq_left hk, htp]
+  have hvfn : vf n = b := by rw [hvf]; simp only [dite_eq_right (lt_irrefl n)]
   -- `f 1 = b` is the right end of the last gap, so the list has the right successor at each step.
   have hvfsucc : ∀ (k : ℕ) (hk : k < n), vf (k + 1) = f (nx ⟨k, hk⟩) := by
     intro k hk
     by_cases hk1 : k + 1 < n
     · rw [hvflt (k + 1) hk1, htp, hnx, parNext,
-        dif_pos (show (⟨k, hk⟩ : Fin n).val + 1 < n from hk1)]
+        dite_eq_left (show (⟨k, hk⟩ : Fin n).val + 1 < n from hk1)]
       rfl
     · have : k + 1 = n := by omega
       rw [this, hvfn, hnx, parNext,
-        dif_neg (show ¬ ((⟨k, hk⟩ : Fin n).val + 1 < n) from hk1), hf1]
+        dite_eq_right (show ¬ ((⟨k, hk⟩ : Fin n).val + 1 < n) from hk1), hf1]
   -- The vertex list is injective on `{0, …, n}`: `f` is, and the parameters are increasing.
   have hvfinj : ∀ i < n + 1, ∀ j < n + 1, vf i = vf j → i = j := by
     have hkey : ∀ i < n, ∀ j < n, vf i = vf j → i = j := by

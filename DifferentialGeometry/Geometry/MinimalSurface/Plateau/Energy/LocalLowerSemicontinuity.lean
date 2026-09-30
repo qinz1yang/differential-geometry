@@ -62,6 +62,7 @@ theorem integral_weighted_disk_energy_of_affine_restriction
       exact diskExtension_coe w ⟨y, ball_subset_closedBall hy⟩
     unfold diskMapEnergyDensity diskMapPartial
     rw [he.mfderiv_eq, he.eq_of_nhds]
+    rfl
   rw [heq, integral_weighted_diskMapEnergyDensity_comp_affine g U ρ b hr.ne']
   have himage : (fun w : ℂ => b + r • w) '' closedBall 0 1 = closedBall b r := by
     simpa only [← image_vadd, ← image_smul, image_image, vadd_eq_add] using

@@ -34,14 +34,13 @@ theorem IsCompact.isPreconnected_iInter_of_directed {X ι : Type*}
       exact hx.2 (hScover hxS)
     obtain ⟨i, hi⟩ :=
       (hcompact.inter_right (hU.union hV).isClosed_compl).elim_directed_family_closed
-        K hclosed hempty hdir
+        K hclosed (disjoint_iff_inter_eq_empty.mpr hempty) hdir
     obtain ⟨k, hk₀, hki⟩ := hdir i₀ i
     refine ⟨k, ?_⟩
     intro x hx
     by_contra hxUV
     have hm : x ∈ (K i₀ ∩ (U ∪ V)ᶜ) ∩ K i := ⟨⟨hk₀ hx, hxUV⟩, hki hx⟩
-    rw [hi] at hm
-    exact hm
+    exact hi.le_bot hm
   obtain ⟨i, hi⟩ := hex
   obtain ⟨x, hxS, hxF⟩ := hSF
   obtain ⟨y, hyS, hyG⟩ := hSG
@@ -60,12 +59,12 @@ theorem IsCompact.isConnected_iInter_of_directed {X ι : Type*}
     (fun i => (hconn i).isPreconnected)⟩
   by_contra h
   have hempty : K i₀ ∩ ⋂ i, K i = ∅ := by rw [not_nonempty_iff_eq_empty.mp h, inter_empty]
-  obtain ⟨i, hi⟩ := hcompact.elim_directed_family_closed K hclosed hempty hdir
+  obtain ⟨i, hi⟩ := hcompact.elim_directed_family_closed K hclosed
+    (disjoint_iff_inter_eq_empty.mpr hempty) hdir
   obtain ⟨k, hk₀, hki⟩ := hdir i₀ i
   obtain ⟨x, hx⟩ := (hconn k).nonempty
   have hm : x ∈ K i₀ ∩ K i := ⟨hk₀ hx, hki hx⟩
-  rw [hi] at hm
-  exact hm
+  exact hi.le_bot hm
 
 theorem Continuous.isPreconnected_ge_of_isPreconnected_gt {X α : Type*}
     [TopologicalSpace X] [T2Space X] [LinearOrder α] [DenselyOrdered α]

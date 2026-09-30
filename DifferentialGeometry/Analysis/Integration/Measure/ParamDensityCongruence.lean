@@ -21,6 +21,7 @@ theorem paramGramMatrix_eq_of_eventuallyEq
   ext i j
   simp only [paramGramMatrix_apply]
   rw [hm, hx]
+  rfl
 
 theorem paramDensity_eq_of_eventuallyEq
     (g : SmoothRiemannianMetric I M)

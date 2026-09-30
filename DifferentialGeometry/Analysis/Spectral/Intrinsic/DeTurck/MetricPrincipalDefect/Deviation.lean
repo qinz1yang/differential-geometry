@@ -4,6 +4,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturali
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.InverseMetricDifferenceCoefficient
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.SymmetricCoefficientBounds
 
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_sub_le)
+
 noncomputable section
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
@@ -27,7 +30,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-theorem deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+theorem deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormSq_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (CTH CR : ℝ) (x : M)
     (hTH : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
         ((traceHessianCoeff (I := I) (M := M) g₀ g₁

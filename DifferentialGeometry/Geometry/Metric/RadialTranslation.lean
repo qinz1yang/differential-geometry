@@ -1,3 +1,4 @@
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import DifferentialGeometry.Geometry.Metric.RadialField
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Analysis.Calculus.Deriv.Inv

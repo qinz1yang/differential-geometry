@@ -103,7 +103,7 @@ theorem comparable_circle_face_mem_page_boundary [FiniteDimensional ℝ E]
     (R Γ : Geometry.SimplicialComplex ℝ E) [Finite R.faces]
     (hΓR : Γ.faces ⊆ R.faces) {s : Finset E} (hs : s ∈ Γ.faces)
     {W : Set E} {P : Fin 4 → Set E} {q : Fin 4 → (Fin 3 → ℝ) → E}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (P i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P i))
     (hPR : ∀ i, (PiecewiseLinear.restrict R (P i)).space = P i)
     (hbd : ∀ x ∈ R.space ∩ W, ∀ i, x ∈ q i '' stdSimplexBoundary 2 ↔ x ∈ Γ.space)
     (hstar : (⋃ v ∈ s, closedStar R v) ⊆ W)

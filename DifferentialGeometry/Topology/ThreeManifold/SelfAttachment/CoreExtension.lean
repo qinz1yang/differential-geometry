@@ -24,7 +24,7 @@ def coreExtension (x : M) : Quotient c d hcd a := by
 
 omit [T2Space M] in
 theorem coreExtension_apply (x : c.DoublePunctured d) : coreExtension c d hcd a x.val = coreInclusion c d hcd a x :=
-  dif_pos x.property
+  dite_eq_left x.property
 
 theorem coreExtension_coreInterior : (fun x : coreInterior c d => coreExtension c d hcd a x.val) =
     coreInteriorInclusion c d hcd a := by

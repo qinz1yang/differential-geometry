@@ -268,7 +268,7 @@ theorem exists_pointed_line_of_asymptotically_isometric_curves_with_bounded_cent
       simpa only [← hdistReal] using hinv
     apply hinvReal.congr'
     filter_upwards [eventually_ge_atTop N] with k hk
-    simp only [a, if_pos hk]
+    simp only [a, ite_eq_left hk]
   obtain ⟨gamma, hgamma, _⟩ :=
     DifferentialGeometry.Geometry.Topology.exists_isometry_of_approximate_distance_limits
       a (by simpa only [one_add_one_eq_two] using hcompact) haCenter ha

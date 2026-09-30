@@ -30,7 +30,7 @@ theorem IsPLCellOn.boundary_subset_frontier_union_of_model
     (inter_subset_left.trans hAU)
   have hg : InjOn g (u '' P) := Function.invFunOn_injOn_image u P
   have hinter : g '' (A ∩ B) = g '' A ∩ g '' B := hg.image_inter hAU hBU
-  have hq' : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (g '' A ∩ g '' B) := hinter ▸ hq
+  have hq' : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g '' A ∩ g '' B) := hinter ▸ hq
   have hAa : IsPLBall 3 (g '' A) := ⟨a, ha⟩
   have hBb : IsPLBall 3 (g '' B) := ⟨b, hb⟩
   have hDa : g '' A ∩ g '' B ⊆ frontier (g '' A) :=
@@ -78,7 +78,7 @@ theorem IsPLCellOn.sdiff_subset_interior_union_of_model
     (inter_subset_left.trans hAU)
   have hg : InjOn g (u '' P) := Function.invFunOn_injOn_image u P
   have hinter : g '' (A ∩ B) = g '' A ∩ g '' B := hg.image_inter hAU hBU
-  have hq' : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (g '' A ∩ g '' B) := hinter ▸ hq
+  have hq' : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g '' A ∩ g '' B) := hinter ▸ hq
   have hAa : IsPLBall 3 (g '' A) := ⟨a, ha⟩
   have hBb : IsPLBall 3 (g '' B) := ⟨b, hb⟩
   have hDa : g '' A ∩ g '' B ⊆ frontier (g '' A) :=

@@ -92,7 +92,7 @@ theorem IsPLSphere.isPLBall_closure_sdiff {S D : Set E}
 
 theorem IsPLSphere.inter_closure_sdiff_eq_image_stdSimplexBoundary {S D : Set E}
     (hS : IsPLSphere 2 S) {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDS : D ⊆ S) :
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDS : D ⊆ S) :
     D ∩ closure (S \ D) = q '' stdSimplexBoundary 2 := by
   classical
   have hD : IsPLBall 2 D := ⟨q, hq⟩
@@ -132,7 +132,7 @@ theorem IsPLSphere.inter_closure_sdiff_eq_image_stdSimplexBoundary {S D : Set E}
 
 theorem IsPLSphere.closure_sdiff_eq_sdiff_image_stdSimplexBoundary {S D : Set E}
     (hS : IsPLSphere 2 S) {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDS : D ⊆ S) :
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDS : D ⊆ S) :
     closure (S \ D) = S \ (D \ q '' stdSimplexBoundary 2) := by
   have hJ := hS.inter_closure_sdiff_eq_image_stdSimplexBoundary hq hDS
   have hAS : closure (S \ D) ⊆ S := closure_minimal sdiff_subset hS.isPolyhedron.isClosed
@@ -166,7 +166,7 @@ theorem IsPLSphere.closure_sdiff_closure_sdiff_eq {S D : Set E}
 
 theorem IsPLSphere.image_stdSimplexBoundary_complement {S D : Set E}
     (hS : IsPLSphere 2 S) (hD : IsPLBall 2 D) (hDS : D ⊆ S)
-    {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (closure (S \ D))) :
+    {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (closure (S \ D))) :
     q '' stdSimplexBoundary 2 = closure (S \ D) ∩ D := by
   have hA : closure (S \ D) ⊆ S := closure_minimal sdiff_subset hS.isPolyhedron.isClosed
   have h := hS.inter_closure_sdiff_eq_image_stdSimplexBoundary hq hA

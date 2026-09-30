@@ -46,7 +46,7 @@ private noncomputable def trivEquiv (x : B) :
 instance tensorFiberTopology_isTopologicalAddGroup (x : B) :
     @IsTopologicalAddGroup (E₁ x ⊗[𝕜] E₂ x) (tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂ x) _ := by
   change @IsTopologicalAddGroup _ (TopologicalSpace.induced _ _) _
-  exact topologicalAddGroup_induced _
+  exact isTopologicalAddGroup_induced _
 
 instance tensorFiberTopology_continuousSMul (x : B) :
     @ContinuousSMul 𝕜 (E₁ x ⊗[𝕜] E₂ x) _ _

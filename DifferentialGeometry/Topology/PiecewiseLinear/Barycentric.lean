@@ -124,7 +124,7 @@ theorem subset_convexHull_of_mem_openSimplex {s t u : Finset E}
     intro v hv q hq hqu
     have h0 : ∑ v' ∈ s, w v' * μ v' q = 0 := by
       have := heq q hq
-      simp only [ν, ω', hqu, if_false] at this
+      simp only [ν, ω', hqu, ite_false] at this
       exact this
     have hall := (Finset.sum_eq_zero_iff_of_nonneg fun v' hv' =>
       mul_nonneg (hw₀ v' hv').le (hμ₀ v' hv' q hq)).mp h0 v hv
@@ -189,7 +189,7 @@ noncomputable def weights (s : Finset E) (x : E) : E → ℝ :=
 theorem weights_spec {s : Finset E} {x : E} (hx : x ∈ convexHull ℝ (s : Set E)) :
     (∀ v ∈ s, 0 ≤ weights s x v) ∧ ∑ v ∈ s, weights s x v = 1 ∧
       ∑ v ∈ s, weights s x v • v = x := by
-  rw [weights, dif_pos hx]
+  rw [weights, dite_eq_left hx]
   exact Classical.choose_spec (mem_convexHull_iff_exists_weights.mp hx)
 
 theorem weights_nonneg {s : Finset E} {x : E} (hx : x ∈ convexHull ℝ (s : Set E)) {v : E}

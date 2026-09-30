@@ -173,7 +173,8 @@ theorem weakGrad_fixed_by_fderiv_retraction_on_ball
       ae_mono (Measure.restrict_mono_set volume hBΩ) hfK
     exact hfk.mono fun x hx => hfixR _ hx
   obtain ⟨L, hL⟩ := hR.lipschitzWith_of_hasCompactSupport hRc (by simp)
-  have hRval := hL.tendsto_eLpNorm_comp_sub_of_fixed_ae v f hfixed hval
+  have hRval := hL.tendsto_eLpNorm_comp_sub_of_fixed_ae v f
+    (hfm.mono_measure (Measure.restrict_mono_set volume hBΩ)).aestronglyMeasurable hfixed hval
   have hRv (n : ℕ) (i : ι) : ContDiff ℝ ∞ (fun x => R (v n x) i) := by
     exact (EuclideanSpace.proj i : F →L[ℝ] ℝ).contDiff.comp (hR.comp (hv n))
   have hum (n : ℕ) (i : ι) : MemLp (fun x => R (v n x) i) 2 (volume.restrict B) :=
@@ -193,7 +194,9 @@ theorem weakGrad_fixed_by_fderiv_retraction_on_ball
       2 (volume.restrict B)) atTop (𝓝 0) := by
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hRval (fun _ => zero_le)
     intro n
-    exact eLpNorm_mono_ae (Filter.Eventually.of_forall fun x =>
+    exact eLpNorm_mono_ae
+      ((hum n i).sub ((hb i).memLp)).aestronglyMeasurable
+      (Filter.Eventually.of_forall fun x =>
       PiLp.norm_apply_le (R (v n x) - f x) i)
   have hder (j : Fin d) : Tendsto (fun n => eLpNorm (fun x =>
       fderiv ℝ (v n) x (EuclideanSpace.single j 1) -

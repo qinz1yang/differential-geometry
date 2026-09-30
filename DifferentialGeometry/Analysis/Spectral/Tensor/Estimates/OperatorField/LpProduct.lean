@@ -1,9 +1,13 @@
 import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormIdentity
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise
+  riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -170,10 +174,10 @@ theorem fiber_mul3_l632
       eLpNorm (fun x => f6 x * f3 x) 2 μ ≤
         eLpNorm f6 6 μ * eLpNorm f3 3 μ := by
     simpa using
-      (eLpNorm_le_eLpNorm_mul_eLpNorm'_of_norm
+      (eLpNorm_le_eLpNorm_mul_eLpNorm_of_norm
         (p := (6 : ENNReal)) (q := 3) (r := 2) (μ := μ)
+        (fun a b : ℝ => a * b) 1 (by fun_prop)
         hf6c.aestronglyMeasurable hf3c.aestronglyMeasurable
-        (fun a b : ℝ => a * b) 1
         (Filter.Eventually.of_forall (fun _ => by
           rw [Real.norm_eq_abs, abs_mul]
           norm_num)))
@@ -181,10 +185,10 @@ theorem fiber_mul3_l632
       eLpNorm (fun x => (f6 x * f3 x) * f2 x) 1 μ ≤
         eLpNorm (fun x => f6 x * f3 x) 2 μ * eLpNorm f2 2 μ := by
     have h :=
-      eLpNorm_le_eLpNorm_mul_eLpNorm'_of_norm
+      eLpNorm_le_eLpNorm_mul_eLpNorm_of_norm
         (p := (2 : ENNReal)) (q := 2) (r := 1) (μ := μ)
+        (fun a b : ℝ => a * b) 1 (by fun_prop)
         (hf6c.mul hf3c).aestronglyMeasurable hf2c.aestronglyMeasurable
-        (fun a b : ℝ => a * b) 1
         (Filter.Eventually.of_forall (fun _ => by
           rw [Real.norm_eq_abs, abs_mul]
           norm_num))
@@ -203,11 +207,11 @@ theorem fiber_mul3_l632
       (ENNReal.mul_ne_top hf6mem.eLpNorm_ne_top hf3mem.eLpNorm_ne_top)
       hf2mem.eLpNorm_ne_top
   have hreal := ENNReal.toReal_mono hfinite hENN
-  rw [toReal_eLpNorm hfc.aestronglyMeasurable,
+  rw [toReal_eLpNorm,
     ENNReal.toReal_mul, ENNReal.toReal_mul,
-    toReal_eLpNorm hf6mem.aestronglyMeasurable,
-    toReal_eLpNorm hf3mem.aestronglyMeasurable,
-    toReal_eLpNorm hf2mem.aestronglyMeasurable] at hreal
+    toReal_eLpNorm,
+    toReal_eLpNorm,
+    toReal_eLpNorm] at hreal
   rw [lpNorm_one_eq_integral_norm hfc.aestronglyMeasurable] at hreal
   have hnonneg : ∀ x : M, 0 ≤ f6 x * f3 x * f2 x := fun x =>
     mul_nonneg
@@ -259,20 +263,20 @@ theorem fiber_mul3_linf22
       eLpNorm (fun x => f2a x * f2b x) 1 μ ≤
         eLpNorm f2a 2 μ * eLpNorm f2b 2 μ := by
     simpa using
-      (eLpNorm_le_eLpNorm_mul_eLpNorm'_of_norm
+      (eLpNorm_le_eLpNorm_mul_eLpNorm_of_norm
         (p := (2 : ENNReal)) (q := 2) (r := 1) (μ := μ)
+        (fun a b : ℝ => a * b) 1 (by fun_prop)
         hf2ac.aestronglyMeasurable hf2bc.aestronglyMeasurable
-        (fun a b : ℝ => a * b) 1
         (Filter.Eventually.of_forall (fun _ => by
           rw [Real.norm_eq_abs, abs_mul]
           norm_num)))
   have hfinite : eLpNorm f2a 2 μ * eLpNorm f2b 2 μ ≠ ⊤ :=
     ENNReal.mul_ne_top hf2amem.eLpNorm_ne_top hf2bmem.eLpNorm_ne_top
   have hreal := ENNReal.toReal_mono hfinite h22
-  rw [toReal_eLpNorm hfc.aestronglyMeasurable,
+  rw [toReal_eLpNorm,
     ENNReal.toReal_mul,
-    toReal_eLpNorm hf2amem.aestronglyMeasurable,
-    toReal_eLpNorm hf2bmem.aestronglyMeasurable] at hreal
+    toReal_eLpNorm,
+    toReal_eLpNorm] at hreal
   rw [lpNorm_one_eq_integral_norm hfc.aestronglyMeasurable] at hreal
   have hprod_nonneg : ∀ x : M, 0 ≤ f2a x * f2b x := fun x =>
     mul_nonneg (fiberLpFun_nonneg g r2a s2a B x)
@@ -356,8 +360,8 @@ theorem fiberLp3_le_6
       (1 / (3 : ℝ≥0∞).toReal - 1 / (6 : ℝ≥0∞).toReal) ≠ ⊤ :=
     ENNReal.mul_ne_top hmem.eLpNorm_ne_top hpow
   have hreal := ENNReal.toReal_mono htop hcmp
-  rw [toReal_eLpNorm hcont.aestronglyMeasurable, ENNReal.toReal_mul,
-    toReal_eLpNorm hcont.aestronglyMeasurable,
+  rw [toReal_eLpNorm, ENNReal.toReal_mul,
+    toReal_eLpNorm,
     show 1 / (3 : ℝ≥0∞).toReal - 1 / (6 : ℝ≥0∞).toReal =
       (1 / 6 : ℝ) by norm_num] at hreal
   simpa only [μ, mul_comm] using hreal
@@ -391,8 +395,8 @@ theorem fiberLp3_le_lp6
       (1 / (3 : ℝ≥0∞).toReal - 1 / (6 : ℝ≥0∞).toReal) ≠ ⊤ :=
     ENNReal.mul_ne_top hmem.eLpNorm_ne_top hpow
   have hreal := ENNReal.toReal_mono htop hcmp
-  rw [toReal_eLpNorm hcont.aestronglyMeasurable, ENNReal.toReal_mul,
-    toReal_eLpNorm hcont.aestronglyMeasurable,
+  rw [toReal_eLpNorm, ENNReal.toReal_mul,
+    toReal_eLpNorm,
     show 1 / (3 : ℝ≥0∞).toReal - 1 / (6 : ℝ≥0∞).toReal =
       (1 / 6 : ℝ) by norm_num] at hreal
   simpa only [V, mul_comm] using hreal
@@ -490,7 +494,7 @@ theorem operatorFieldApplication_l6_l3_l2
   have hmono :
       eLpNorm (fiberLpFun g 0 s Y) 2 μ ≤
         eLpNorm (fun x => fiberLpFun g r s Φ x * fiberLpFun g 0 r W x) 2 μ := by
-    apply eLpNorm_mono
+    apply eLpNorm_mono hYmem.aestronglyMeasurable
     intro x
     rw [Real.norm_eq_abs, abs_of_nonneg (fiberLpFun_nonneg g 0 s Y x),
       Real.norm_eq_abs, abs_of_nonneg
@@ -502,10 +506,10 @@ theorem operatorFieldApplication_l6_l3_l2
         eLpNorm (fiberLpFun g r s Φ) 6 μ *
           eLpNorm (fiberLpFun g 0 r W) 3 μ := by
     simpa using
-      (eLpNorm_le_eLpNorm_mul_eLpNorm'_of_norm
+      (eLpNorm_le_eLpNorm_mul_eLpNorm_of_norm
         (p := (6 : ENNReal)) (q := 3) (r := 2) (μ := μ)
-        (hΦc.aestronglyMeasurable) (hWc.aestronglyMeasurable)
-        (fun a b : ℝ => a * b) 1
+        (fun a b : ℝ => a * b) 1 (by fun_prop)
+        hΦc.aestronglyMeasurable hWc.aestronglyMeasurable
         (Filter.Eventually.of_forall (fun x => by
           rw [Real.norm_eq_abs, abs_mul]
           norm_num)))
@@ -515,9 +519,9 @@ theorem operatorFieldApplication_l6_l3_l2
           eLpNorm (fiberLpFun g 0 r W) 3 μ ≠ ⊤ :=
     ENNReal.mul_ne_top hΦmem.eLpNorm_ne_top hWmem.eLpNorm_ne_top
   have hreal := ENNReal.toReal_mono hfinite hENN
-  rw [toReal_eLpNorm hYmem.aestronglyMeasurable,
-    ENNReal.toReal_mul, toReal_eLpNorm hΦmem.aestronglyMeasurable,
-    toReal_eLpNorm hWmem.aestronglyMeasurable] at hreal
+  rw [toReal_eLpNorm,
+    ENNReal.toReal_mul, toReal_eLpNorm,
+    toReal_eLpNorm] at hreal
   rw [← fiber_lp2_eq_l2 (I := I) (M := M) g 0 s Y]
   exact hreal
 

@@ -225,14 +225,14 @@ theorem nonempty_bumpFamily : Nonempty (BumpFamily (I := I) Φ) := by
     intro k
     simp only [grow]
     by_cases h : fits k
-    · rw [if_pos h]; exact h
-    · rw [if_neg h]; exact Set.empty_subset _
+    · rw [ite_eq_left h]; exact h
+    · rw [ite_eq_right h]; exact Set.empty_subset _
   have hgrow_compact : forall k, IsCompact (grow k) := by
     intro k
     simp only [grow]
     by_cases h : fits k
-    · rw [if_pos h]; exact Kx.isCompact _
-    · rw [if_neg h]; exact isCompact_empty
+    · rw [ite_eq_left h]; exact Kx.isCompact _
+    · rw [ite_eq_right h]; exact isCompact_empty
   have hgrow_cover : forall K : Set P.M, IsCompact K ->
       exists k0 : Nat, forall k : Nat, k0 <= k -> K ⊆ grow k := by
     intro K hK
@@ -246,7 +246,7 @@ theorem nonempty_bumpFamily : Nonempty (BumpFamily (I := I) Φ) := by
     have hPbidx : Pfit k (bidx k) := Nat.findGreatest_spec hj0k hPj0
     have hfitsk : fits k := hPbidx
     have hsub : (Kx j0 : Set P.M) ⊆ grow k := by
-      simp only [grow]; rw [if_pos hfitsk]; exact Kx.subset hle
+      simp only [grow]; rw [ite_eq_left hfitsk]; exact Kx.subset hle
     exact hj0.trans hsub
   have hchoice : forall k : Nat, exists f : P.M -> Real,
       ContMDiff I 𝓘(ℝ, ℝ) ∞ f /\ (forall x : P.M, f x ∈ Set.Icc (0 : Real) 1) /\

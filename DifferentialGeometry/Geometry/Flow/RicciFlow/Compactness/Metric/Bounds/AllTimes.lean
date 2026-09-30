@@ -343,7 +343,7 @@ theorem metricCovOrderWindow_of_evolution
     have hspec := Classical.choose_spec (derivData s hswin)
     have hchoose : U' s = Classical.choose (derivData s hswin) := by
       dsimp [U']
-      exact dif_pos hswin
+      exact dite_eq_left hswin
     simpa [hchoose] using hspec.1
   have halpha_pos : 0 < metricCovOrderEvolutionAlpha Hin.Cpp := by
     unfold metricCovOrderEvolutionAlpha
@@ -361,7 +361,7 @@ theorem metricCovOrderWindow_of_evolution
     have hspec := Classical.choose_spec (derivData s hswin)
     have hchoose : U' s = Classical.choose (derivData s hswin) := by
       dsimp [U']
-      exact dif_pos hswin
+      exact dite_eq_left hswin
     have hbase :
         |U' s| <=
           U s +

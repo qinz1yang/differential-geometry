@@ -18,7 +18,7 @@ local notation "Plane" => EuclideanSpace ℝ (Fin 2)
 theorem IsPLSphere.isPLCirclePositive_iff_of_disk_family
     {ι : Type*} {S : Set E} (hS : IsPLSphere 2 S)
     {D : ι → Set E} {q : ι → (Fin 3 → ℝ) → E}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDS : ∀ i, D i ⊆ S) (hdis : Pairwise fun i j => Disjoint (D i) (D j))
     {G : E → E} (hG : IsPLHomeomorphOn G S S) (hGD : ∀ i, G '' D i = D i) (i j : ι) :
     IsPLCirclePositive (q i '' stdSimplexBoundary 2) G ↔
@@ -72,7 +72,7 @@ theorem IsPLSphere.isPLCirclePositive_iff_of_disk_family
 theorem IsPLSphere.exists_disk_family_map_reversing_circles
     {ι : Type*} [Finite ι] {S : Set E} (hS : IsPLSphere 2 S)
     {D : ι → Set E} {q : ι → (Fin 3 → ℝ) → E}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDS : ∀ i, D i ⊆ S) (hdis : Pairwise fun i j => Disjoint (D i) (D j)) :
     ∃ G : E → E, IsPLHomeomorphOn G S S ∧ (∀ i, G '' D i = D i) ∧
       ∀ i, ¬ IsPLCirclePositive (q i '' stdSimplexBoundary 2) G := by

@@ -20,7 +20,7 @@ private theorem closedCell_chart_eq {x y : ClosedCell (m + 1)}
     (hx : ‖x.val‖ < 1) (hy : ‖y.val‖ < 1) :
     chartAt (EuclideanHalfSpace (m + 1)) x = chartAt (EuclideanHalfSpace (m + 1)) y := by
   change closedCellChartAt x = closedCellChartAt y
-  rw [closedCellChartAt, dif_pos hx, closedCellChartAt, dif_pos hy]
+  rw [closedCellChartAt, dite_eq_left hx, closedCellChartAt, dite_eq_left hy]
 
 theorem chartBasisVecFiber_closedCell_of_norm_lt_one
     {α x : ClosedCell (m + 1)} (hα : ‖α.val‖ < 1) (hx : ‖x.val‖ < 1)

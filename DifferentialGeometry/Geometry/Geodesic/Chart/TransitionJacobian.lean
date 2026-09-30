@@ -86,7 +86,7 @@ theorem chartTransitionJacobianEntry_mul_sum [I.Boundaryless]
     rw [(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self i, Finsupp.single_apply]
     by_cases h : c = i
     · subst h; simp
-    · rw [if_neg (fun hh : i = c => h hh.symm), if_neg h]
+    · rw [ite_eq_right (fun hh : i = c => h hh.symm), ite_eq_right h]
   exact hrepr
 
 theorem chartTransitionJacobianEntry_reverse_mul_sum [I.Boundaryless]
@@ -142,7 +142,7 @@ theorem chartTransitionJacobianEntry_reverse_mul_sum [I.Boundaryless]
   rw [(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr_self i, Finsupp.single_apply]
   by_cases h : b = i
   · subst h; simp
-  · rw [if_neg (fun hh : i = b => h hh.symm), if_neg h]
+  · rw [ite_eq_right (fun hh : i = b => h hh.symm), ite_eq_right h]
 
 lemma chartTransitionJacobianEntry_forward_reverse_collapse [I.Boundaryless]
     (α β : M) {p : M}

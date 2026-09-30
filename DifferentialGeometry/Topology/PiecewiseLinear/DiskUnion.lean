@@ -18,7 +18,7 @@ theorem isPLBall_union_of_inter_isPLBall_one_in_ball {B C D : Set E}
   obtain ⟨f, hf⟩ := hB
   obtain ⟨g, hg⟩ := hR
   have h := hf.symm.trans hg
-  let u := g ∘ Function.invFunOn f (stdSimplex ℝ (Fin 3))
+  let u := g ∘ Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hu : IsPLHomeomorphOn u B R.space := h
   have hC' := hC.of_isPLHomeomorphOn (hu.restrict hC.isPolyhedron hCB)
   have hD' := hD.of_isPLHomeomorphOn (hu.restrict hD.isPolyhedron hDB)

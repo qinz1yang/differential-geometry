@@ -337,9 +337,9 @@ private lemma chartModelBasis_repr_christoffelVWSum
   simp only [map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.coe_smul,
     Pi.smul_apply, smul_eq_mul]
   rw [Finset.sum_eq_single q
-    (fun m _ hm => by rw [Module.Basis.repr_self_apply, if_neg hm, mul_zero])
+    (fun m _ hm => by rw [Module.Basis.repr_self_apply, ite_eq_right hm, mul_zero])
     (fun hq => absurd (Finset.mem_univ q) hq)]
-  rw [Module.Basis.repr_self_apply, if_pos rfl, mul_one]
+  rw [Module.Basis.repr_self_apply, ite_eq_left rfl, mul_one]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

@@ -56,19 +56,19 @@ theorem hasAtLeastEnds_two_of_proper_maps_into_separated_sets
   refine hasAtLeastEnds_of_proper_maps K hK a ?_ b ?_ ?_
   · intro i
     by_cases hi : i = 0
-    · simpa only [a, hi, if_true] using hf
-    · simpa only [a, hi, if_false] using hg
+    · simpa only [a, hi, ite_true] using hf
+    · simpa only [a, hi, ite_false] using hg
   · intro i y
     by_cases hi : i = 0
-    · simpa only [a, hi, if_true, mem_compl_iff] using hBK (hfst (mem_range_self y))
-    · simpa only [a, hi, if_false, mem_compl_iff] using hEK (hsnd (mem_range_self y))
+    · simpa only [a, hi, ite_true, mem_compl_iff] using hBK (hfst (mem_range_self y))
+    · simpa only [a, hi, ite_false, mem_compl_iff] using hEK (hsnd (mem_range_self y))
   · intro i j hij
     by_cases hi : i = 0
     · by_cases hj : j = 0
       · exact hi.trans hj.symm
-      · exact (hne (by simpa only [a, b, hi, hj, if_true, if_false] using hij)).elim
+      · exact (hne (by simpa only [a, b, hi, hj, ite_true, ite_false] using hij)).elim
     · by_cases hj : j = 0
-      · exact (hne (by simpa only [a, b, hi, hj, if_true, if_false] using hij.symm)).elim
+      · exact (hne (by simpa only [a, b, hi, hj, ite_true, ite_false] using hij.symm)).elim
       · exact (Fin.eq_one_of_ne_zero i hi).trans (Fin.eq_one_of_ne_zero j hj).symm
 
 end DifferentialGeometry.Geometry.Topology

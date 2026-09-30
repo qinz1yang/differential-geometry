@@ -44,7 +44,8 @@ theorem integral_sum_norm_sq_weak_gradient_le_liminf_on_subset
     filter_upwards [] with x
     intro z
     by_cases hx : x ∈ S
-    · rw [show B x = innerSL ℝ by simp only [B, indicator_of_mem hx]]
+    · rw [show B x = (innerSL ℝ : F →L[ℝ] F →L[ℝ] ℝ) by
+        simp only [B, indicator_of_mem hx]]
       change 0 ≤ inner ℝ z z
       exact real_inner_self_nonneg
     · simp only [B, indicator_of_notMem hx, zero_apply, le_refl]
@@ -53,7 +54,8 @@ theorem integral_sum_norm_sq_weak_gradient_le_liminf_on_subset
     have hi : (fun x => B x (w x) (w x)) = S.indicator (fun x => ‖w x‖ ^ 2) := by
       funext x
       by_cases hx : x ∈ S
-      · rw [show B x = innerSL ℝ by simp only [B, indicator_of_mem hx], indicator_of_mem hx]
+      · rw [show B x = (innerSL ℝ : F →L[ℝ] F →L[ℝ] ℝ) by
+          simp only [B, indicator_of_mem hx], indicator_of_mem hx]
         change inner ℝ (w x) (w x) = ‖w x‖ ^ 2
         exact real_inner_self_eq_norm_sq _
       · simp only [B, indicator_of_notMem hx, zero_apply]

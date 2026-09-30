@@ -29,7 +29,7 @@ theorem fundamentalClassCandidate_eq_choose {M : Type u} [TopologicalSpace M]
       absoluteToRelative M ({x}ᶜ) 3 z = localOrientationClass o x) :
     fundamentalClassCandidate o = Classical.choose h := by
   unfold fundamentalClassCandidate
-  rw [dif_pos h]
+  rw [dite_eq_left h]
 
 theorem fundamentalClassCandidate_local {M : Type u} [TopologicalSpace M]
     [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]

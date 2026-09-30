@@ -34,7 +34,7 @@ theorem smoothDisk_subtypeVal_iff (U : TopologicalSpace.Opens Q) (v : C(Disk, U)
       intro y hy
       have hh := congrArg (fun z : U => (z : Q)) (F.agrees hy)
       change (F.map y : Q) = diskExtension (Q := Q) (fun z => (v z : Q)) y
-      simpa only [hu, diskExtension, dif_pos hy.2] using hh
+      simpa only [hu, diskExtension, dite_eq_left hy.2] using hh
     exact ⟨⟨w, hwsmooth⟩, fun _ => rfl⟩
   · rintro ⟨u, hu⟩
     have hvsmooth : ∀ z : Disk, Nonempty (DiskLocalExtension (I := I) v z) := by
@@ -55,7 +55,7 @@ theorem smoothDisk_subtypeVal_iff (U : TopologicalSpace.Opens Q) (v : C(Disk, U)
       have hF0 : EqOn (Subtype.val ∘ F0) F.map S := by
         intro y hy
         have hyU : F.map y ∈ U := hy.2
-        simp only [Function.comp_apply, F0, dif_pos hyU]
+        simp only [Function.comp_apply, F0, dite_eq_left hyU]
       have hF0smooth : ContMDiffOn 𝓘(ℝ, ℂ) I ∞ F0 S := by
         have hcompose : ContMDiffOn 𝓘(ℝ, ℂ) I ∞ (Subtype.val ∘ F0) S :=
           (F.smooth.mono inter_subset_left).congr hF0
@@ -72,12 +72,12 @@ theorem smoothDisk_subtypeVal_iff (U : TopologicalSpace.Opens Q) (v : C(Disk, U)
       apply Subtype.ext
       have hFy := F.agrees ⟨hy.1.1, hy.2⟩
       have hFy' : F.map y = u.map (⟨y, hy.2⟩ : Disk) := by
-        simpa only [diskExtension, dif_pos hy.2] using hFy
+        simpa only [diskExtension, dite_eq_left hy.2] using hFy
       have huv := hu (⟨y, hy.2⟩ : Disk)
       change (F0 y : Q) = ((diskExtension (Q := U) v y : U) : Q)
       have hF0y : (F0 y : Q) = F.map y := hF0 hy.1
       rw [hF0y]
-      simpa only [diskExtension, dif_pos hy.2] using hFy'.trans huv
+      simpa only [diskExtension, dite_eq_left hy.2] using hFy'.trans huv
     exact ⟨⟨v, hvsmooth⟩, rfl⟩
 
 end SmoothExtension
@@ -118,12 +118,12 @@ theorem parametricJacobian_subtypeVal (g : SmoothRiemannianMetric I Q)
   by_cases hu : MDifferentiableWithinAt 𝓘(ℝ, ℂ) I u s z
   · have hv := (mdifferentiableWithinAt_subtypeVal_iff U u s z).mpr hu
     have hd := mfderivWithin_subtypeVal U u s z hu hs
-    simp only [parametricJacobian, if_pos hu, if_pos hv]
+    simp only [parametricJacobian, ite_eq_left hu, ite_eq_left hv]
     rw [hd]
     rfl
   · have hv : ¬ MDifferentiableWithinAt 𝓘(ℝ, ℂ) I (Subtype.val ∘ u) s z :=
       fun h => hu ((mdifferentiableWithinAt_subtypeVal_iff U u s z).mp h)
-    simp only [parametricJacobian, if_neg hu, if_neg hv]
+    simp only [parametricJacobian, ite_eq_right hu, ite_eq_right hv]
 
 omit [T2Space Q] in
 theorem diskExtension_subtypeVal (U : TopologicalSpace.Opens Q) (u : Disk → U) :

@@ -185,7 +185,8 @@ noncomputable def sphereStageConnected : ConnectedClosedOrientedManifold.{0} 3 w
 theorem discardedComponentsRoundOrSphereProduct_sphereStage :
     DiscardedComponentsRoundOrSphereProduct sphereStage.toClosedOrientedManifold := by
   intro C
-  exact Or.inl (isPositiveSpaceFormModel_of_diffeomorph_sphereThree _
+  exact Or.inl (admitsConstantPositiveSectionalCurvature_of_diffeomorph_sphereThree
+    (sphereStage.toClosedOrientedManifold.component C)
     (sphereStageConnected.componentOrientedDiffeomorph C).1)
 
 theorem nonempty_connectedComponents_sphereStage :

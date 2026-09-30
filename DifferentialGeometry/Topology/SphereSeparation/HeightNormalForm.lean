@@ -53,7 +53,7 @@ theorem exists_global_height_preserving_normal_form {e : SphereTwo → Euclidean
       I L hf BoundarylessManifold.isInteriorPoint hnd.1).trans hindex
   obtain ⟨r, hr, χ, Ψ, hrs, hχ0, hheight, hnormal⟩ :=
     exists_global_height_preserving_morse_normal_form he'.contMDiff
-      ((he'.isImmersion.isImmersionAt p).injective_mfderiv (by simp)) k hk hnd' hindex'
+      ((he'.isImmersion.isImmersionAt p).mfderiv_injective (by simp)) k hk hnd' hindex'
   let χ' : PartialDiffeomorph I I (EuclideanSpace ℝ (Fin 2)) SphereTwo ∞ :=
     { toPartialEquiv := χ.toPartialEquiv
       open_source := χ.open_source

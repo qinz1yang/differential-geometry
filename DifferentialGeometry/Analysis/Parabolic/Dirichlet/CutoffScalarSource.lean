@@ -69,7 +69,7 @@ private theorem exists_lp_scalar_source_of_weak_gradient
     apply integral_finsetSum
     intro i _
     have hflux : MemLp (fun p => A i j p * V p) 2 (μ.prod (volume.restrict Ω)) :=
-      (Lp.memLp V).mul (hA i j)
+      (hA i j).fun_mul (r := 2) (Lp.memLp V)
     exact (hflux.locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport
       ((hφ.continuous_fderiv (by simp)).clm_apply continuous_const)
       (hφc.fderiv_apply ℝ (0, EuclideanSpace.single j 1))

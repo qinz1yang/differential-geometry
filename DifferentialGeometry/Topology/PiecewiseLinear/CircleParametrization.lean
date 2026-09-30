@@ -101,10 +101,10 @@ theorem nonempty_homeomorph_loopCircle_of_isPLSphere_one [FiniteDimensional ℝ 
       rw [hθ]
     rw [hFval t₁, hFval t₂] at hv
     by_cases hc1 : (t₁ : ℝ) ≤ 1 / 2 <;> by_cases hc2 : (t₂ : ℝ) ≤ 1 / 2
-    · rw [if_pos hc1, if_pos hc2] at hv
+    · rw [ite_eq_left hc1, ite_eq_left hc2] at hv
       have h := hγinj (hmemγ t₁ hc1) (hmemγ t₂ hc2) hv
       exact congrArg _ (by linarith : (t₁ : ℝ) = (t₂ : ℝ))
-    · rw [if_pos hc1, if_neg hc2] at hv
+    · rw [ite_eq_left hc1, ite_eq_right hc2] at hv
       have hmem : γ (2 * (t₁ : ℝ)) ∈ A ∩ B :=
         ⟨hγ.1.mapsTo (hmemγ t₁ hc1), hv ▸ hδ.1.mapsTo (hmemδ t₂ hc2)⟩
       rw [hinter] at hmem
@@ -122,7 +122,7 @@ theorem nonempty_homeomorph_loopCircle_of_isPLSphere_one [FiniteDimensional ℝ 
         have e2 : 2 - 2 * (t₂ : ℝ) = 1 :=
           hδinj (hmemδ t₂ hc2) hone (by rw [← hv, hval]; exact hδ1.symm)
         exact hc2 (by linarith)
-    · rw [if_neg hc1, if_pos hc2] at hv
+    · rw [ite_eq_right hc1, ite_eq_left hc2] at hv
       have hmem : γ (2 * (t₂ : ℝ)) ∈ A ∩ B :=
         ⟨hγ.1.mapsTo (hmemγ t₂ hc2), hv ▸ hδ.1.mapsTo (hmemδ t₁ hc1)⟩
       rw [hinter] at hmem
@@ -140,7 +140,7 @@ theorem nonempty_homeomorph_loopCircle_of_isPLSphere_one [FiniteDimensional ℝ 
         have e2 : 2 - 2 * (t₁ : ℝ) = 1 :=
           hδinj (hmemδ t₁ hc1) hone (by rw [hv, hval]; exact hδ1.symm)
         exact hc1 (by linarith)
-    · rw [if_neg hc1, if_neg hc2] at hv
+    · rw [ite_eq_right hc1, ite_eq_right hc2] at hv
       have h := hδinj (hmemδ t₁ hc1) (hmemδ t₂ hc2) hv
       exact congrArg _ (by linarith : (t₁ : ℝ) = (t₂ : ℝ))
   have hsurj : Function.Surjective F := by
@@ -150,7 +150,7 @@ theorem nonempty_homeomorph_loopCircle_of_isPLSphere_one [FiniteDimensional ℝ 
     · obtain ⟨u, hu, hsy⟩ := hγ.1.surjOn hyA
       have ht : u / 2 ∈ Icc (0 : ℝ) 1 := ⟨by linarith [hu.1], by linarith [hu.2]⟩
       refine ⟨((u / 2 : ℝ) : loopCircle), Subtype.ext ?_⟩
-      rw [hFval' (u / 2) ht, if_pos (by linarith [hu.2] : u / 2 ≤ 1 / 2),
+      rw [hFval' (u / 2) ht, ite_eq_left (by linarith [hu.2] : u / 2 ≤ 1 / 2),
         show 2 * (u / 2) = u by ring]
       exact hsy
     · obtain ⟨u, hu, hsy⟩ := hδ.1.surjOn hyB
@@ -158,13 +158,13 @@ theorem nonempty_homeomorph_loopCircle_of_isPLSphere_one [FiniteDimensional ℝ 
       refine ⟨((1 - u / 2 : ℝ) : loopCircle), Subtype.ext ?_⟩
       rw [hFval' (1 - u / 2) ht]
       by_cases hcase : (1 : ℝ) - u / 2 ≤ 1 / 2
-      · rw [if_pos hcase]
+      · rw [ite_eq_left hcase]
         have hu1 : u = 1 := by linarith [hu.2]
         rw [show 2 * (1 - u / 2) = 2 - u by ring, hu1]
         rw [show (2 : ℝ) - 1 = 1 by norm_num, hγ1, ← hδ1]
         rw [hu1] at hsy
         exact hsy
-      · rw [if_neg hcase, show 2 - 2 * (1 - u / 2) = u by ring]
+      · rw [ite_eq_right hcase, show 2 - 2 * (1 - u / 2) = u by ring]
         exact hsy
   exact ⟨Continuous.homeoOfEquivCompactToT2 (f := Equiv.ofBijective F ⟨hinj, hsurj⟩) F.continuous⟩
 

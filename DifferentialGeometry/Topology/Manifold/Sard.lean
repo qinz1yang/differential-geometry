@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.Sard
 import Mathlib.Geometry.Manifold.ContMDiff.Atlas
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Topology.Algebra.Support
 
 noncomputable section
@@ -48,12 +49,14 @@ theorem ContMDiff.sard_of_isCompact {f : M → F}
       rw [(c p).left_inv hxp]
       exact hf.mdifferentiableAt (by simp)
     have heq := mfderiv_comp ((c p) x) hf' hinv
-    rw [mfderiv_eq_fderiv, (c p).left_inv hxp] at heq
-    rw [heq] at hsurj
-    apply hxcrit
-    intro v
-    obtain ⟨w, hw⟩ := hsurj v
-    exact ⟨mfderiv 𝓘(ℝ, E) I (c p).symm ((c p) x) w, hw⟩
+    have hsurjM : Function.Surjective
+        (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, F) (f ∘ (c p).symm) ((c p) x)) := by
+      rw [mfderiv_eq_fderiv]
+      exact (NormedSpace.fromTangentSpace (𝕜 := ℝ) (f ((c p).symm ((c p) x)))).symm.surjective.comp
+        (hsurj.comp (NormedSpace.fromTangentSpace (𝕜 := ℝ) ((c p) x)).surjective)
+    rw [(c p).left_inv hxp] at heq
+    rw [heq] at hsurjM
+    exact hxcrit (Function.Surjective.of_comp hsurjM)
   · exact congrArg f ((c p).left_inv hxp)
 
 theorem ContMDiff.exists_regular_value_of_hasCompactSupport {f : M → ℝ}

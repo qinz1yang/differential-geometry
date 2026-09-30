@@ -5,7 +5,6 @@ set_option autoImplicit false
 noncomputable section
 open Bundle DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.Analysis.Laplacian
 open scoped Manifold ContDiff
 namespace DifferentialGeometry.Geometry.Operator
 

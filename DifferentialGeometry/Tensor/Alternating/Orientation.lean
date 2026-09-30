@@ -2,7 +2,7 @@ import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.Analysis.Convex.Basic
 import Mathlib.LinearAlgebra.Orientation
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Topology.Instances.Matrix
 import DifferentialGeometry.Bundle.Orientation.Classes
 

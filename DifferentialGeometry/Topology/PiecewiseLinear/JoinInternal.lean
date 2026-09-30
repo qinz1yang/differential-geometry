@@ -114,20 +114,20 @@ noncomputable def internalJoinVertexInv (z : E × E × ℝ) : E :=
 
 theorem internalJoinVertex_of_mem {v : E} (hv : {v} ∈ A.faces) :
     internalJoinVertex A v = joinFst E E v := by
-  rw [internalJoinVertex, if_pos hv]
+  rw [internalJoinVertex, ite_eq_left hv]
 
 theorem internalJoinVertex_of_notMem {v : E} (hv : {v} ∉ A.faces) :
     internalJoinVertex A v = joinSnd E E v := by
-  rw [internalJoinVertex, if_neg hv]
+  rw [internalJoinVertex, ite_eq_right hv]
 
 theorem internalJoinVertexInv_joinFst (v : E) : internalJoinVertexInv (joinFst E E v) = v := by
-  rw [internalJoinVertexInv, if_pos (glueHeight_joinFst (F := E) v), glueFst_joinFst]
+  rw [internalJoinVertexInv, ite_eq_left (glueHeight_joinFst (F := E) v), glueFst_joinFst]
 
 theorem internalJoinVertexInv_joinSnd (w : E) : internalJoinVertexInv (joinSnd E E w) = w := by
   have h : ¬glueHeight E E (joinSnd E E w) = 0 := by
     rw [glueHeight_joinSnd]
     exact one_ne_zero
-  rw [internalJoinVertexInv, if_neg h, glueSnd_joinSnd]
+  rw [internalJoinVertexInv, ite_eq_right h, glueSnd_joinSnd]
 
 theorem internalJoinVertexInv_comp_joinFst :
     internalJoinVertexInv ∘ joinFst E E = (id : E → E) :=

@@ -214,3 +214,44 @@ assembly remain in native `Topology/PlanarJordan/ArcDiskNeighborhood.lean` and
 consume these external declarations. Existing PL sphere/disk and finite-family
 corollaries remain in their native modules. This replaces the former source
 attribution in `docs/third_party/PlanarArcNeighborhood.md`.
+
+## 2026-09-27: Lean and Mathlib 4.34.1 compatibility
+
+The owner-authorized compatibility update addresses diagnostics from the
+Lean and Mathlib 4.34.1 build without changing mathematical statements,
+imports, namespaces, source organization, attribution, or upstream documentation.
+
+- Replaced 235 diagnosed references to deprecated names with their supported
+  replacements: `if_pos` with `ite_eq_left`, `if_neg` with `ite_eq_right`,
+  `if_true` with `ite_true`, `dif_pos` with `dite_eq_left`, `dif_neg` with
+  `dite_eq_right`, and `cond_true` / `cond_false` with
+  `Bool.cond_true` / `Bool.cond_false`. Changes are limited to the reported
+  source positions in `ArcMonotone.lean`, `Concatenate.lean`, `Endgame.lean`,
+  `FiniteTransferTargetMesh.lean`, `GeneratedStructure.lean`,
+  `Graph/K33Land.lean`, `InitialPair.lean`, `LimitMap.lean`,
+  `LocallyPolygonal.lean`, `MatchedSplit.lean`, `OverlayGraph.lean`,
+  `Parity.lean`, `ParitySplitting.lean`, `PolyArcRealize.lean`,
+  `PrePolygonArc.lean`, `Realization.lean`, `RealizeSplit.lean`,
+  `RealizeSubdiv.lean`, `RefinementStars.lean`, `SimpleArc.lean`,
+  `SkeletonLocal.lean`, `SourceAttachment.lean`, `SourceJoining.lean`,
+  `SourceOverlay.lean`, `SquareCycle.lean`, `SquareMesh.lean`,
+  `SquareMeshClosed.lean`, `SquareMeshConnected.lean`,
+  `SquareMeshFixed.lean`, and `SquareMover.lean`.
+- In `Jordan.lean`, replaced the diagnosed `rw [inter_comm]; assumption`
+  proof step with the compiler-suggested `rwa [inter_comm]` to avoid repeated
+  suggestion output. The proof still uses commutativity of intersection and
+  the same local hypothesis.
+
+All pre-existing comments, copyright and license text, author headers, and
+local provenance notices are preserved verbatim. No linter suppression was
+added.
+
+## 2026-09-28: Graph bridge namespace collision under Mathlib 4.34.1
+
+Mathlib 4.34.1 now provides `Graph.IsBridge` for singleton edge cuts. The
+vendor cycle layer's independently defined no-cycle predicate therefore could
+not be imported after Mathlib's edge-cut module. To preserve both meanings,
+the vendor predicate and its methods were renamed from `Graph.IsBridge` to
+`Graph.IsCycleBridge`; the cycle proofs, all other graph declarations, and
+their statements are unchanged. The compatibility rename preserves the
+original copyright and author headers and introduces no linter suppression.

@@ -2,6 +2,11 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Polarization
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.LpProduct
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
+
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_sub_le)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -232,7 +237,7 @@ theorem fullMetricComparisonCoefficient_covariantDerivative_bound (g : SmoothRie
               ((iteratedCovGrad (I := I) g 0 2 1 T).toSection x) := by
   classical
   obtain ⟨C, hC, hgrid⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_slot_covariant_jet_bound
       (I := I) (M := M) g (show (1 / 2 : Real) < 1 by norm_num)
   refine ⟨C 1, hC 1, ?_⟩
   intro gm T htie delta hdelta hdelta0 hbound x
@@ -1019,7 +1024,7 @@ theorem ricciDeTurckTopOrderPairingAdjoint_norm_bound (g : SmoothRiemannianMetri
     rw [show iteratedCovGrad (I := I) g 0 2 1 P =
         s • iteratedCovGrad (I := I) g 0 2 1 T from by
       simp only [P, iteratedCovGrad_smul]]
-    rw [smoothCcTensor_toSection_smul_apply, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+    rw [smoothCcTensor_toSection_smul_apply, DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     exact mul_le_of_le_one_left
       (riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 3 y _) hs2
   let T0 : Real := riemannianFiberNormSq (I := I) (M := M) g 0 2 x
@@ -1054,7 +1059,7 @@ theorem ricciDeTurckTopOrderPairingAdjoint_norm_bound (g : SmoothRiemannianMetri
       N (a • Q) = a ^ 2 * N Q := by
     intro a Q
     dsimp only [N]
-    rw [smoothCcTensor_toSection_smul_apply, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+    rw [smoothCcTensor_toSection_smul_apply, DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
   have hkernel : ∀ qq : Fin 4 → Equiv.Perm (Fin 4),
       N (riemannTopOrderPairingAdjoint (I := I) (M := M) g gm T qq) ≤ 4 * B := by
     intro qq
@@ -1286,7 +1291,7 @@ theorem ricciDeTurckTopOrderPairingAdjoint_covariantDerivative_bound (g : Smooth
     rw [show iteratedCovGrad (I := I) g 0 2 1 P =
         s • iteratedCovGrad (I := I) g 0 2 1 T from by
       simp only [P, iteratedCovGrad_smul]]
-    rw [smoothCcTensor_toSection_smul_apply, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+    rw [smoothCcTensor_toSection_smul_apply, DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     exact mul_le_of_le_one_left
       (riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 3 y _) hs2
   let T1 : Real := riemannianFiberNormSq (I := I) (M := M) g 0 3 x
@@ -1323,7 +1328,7 @@ theorem ricciDeTurckTopOrderPairingAdjoint_covariantDerivative_bound (g : Smooth
     intro a Q
     dsimp only [N]
     rw [covGrad_smul, smoothCcTensor_toSection_smul_apply,
-      DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+      DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
   have hkernel : ∀ qq : Fin 4 → Equiv.Perm (Fin 4),
       N (riemannTopOrderPairingAdjoint (I := I) (M := M) g gm T qq) ≤ 4 * B := by
     intro qq

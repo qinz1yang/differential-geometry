@@ -16,6 +16,9 @@ import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.KatoSe
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.WeightedIntegrationByParts
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.SecondOrderInterpolation
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -127,7 +130,7 @@ private theorem lpFiberJet_logConvex_iteratedCovGrad_rs
     rcases eq_or_ne i k with hik | hik
     · subst hik
       rw [hJdef]
-      simp only [lpFiberJetLadder_rs, if_neg (show i ≠ 0 by omega), if_true]
+      simp only [lpFiberJetLadder_rs, ite_eq_right (show i ≠ 0 by omega), ite_true]
       set t : ℝ := Integral.L2.tensorL2Norm (I := I) g r (s + i)
         (DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad (I := I) g r s i u).toFun with ht
       have htnn : 0 ≤ t := Integral.L2.tensorL2Norm_nonneg (I := I) (M := M) g r (s + i) _
@@ -154,7 +157,7 @@ private theorem lpFiberJet_logConvex_iteratedCovGrad_rs
               rw [← Real.rpow_natCast t 2, ← Real.rpow_mul htnn]
               norm_num
     · rw [hJdef]
-      simp only [lpFiberJetLadder_rs, if_neg (show i ≠ 0 by omega), if_neg hik]
+      simp only [lpFiberJetLadder_rs, ite_eq_right (show i ≠ 0 by omega), ite_eq_right hik]
   rcases eq_or_lt_of_le hVnn with hV0 | hVpos
   · have hmuzero : (Integral.Measure.riemannianVolumeMeasure I M g) = 0 := by
       have hfin : (Integral.Measure.riemannianVolumeMeasure I M g) Set.univ ≠ ⊤ := by
@@ -190,7 +193,7 @@ private theorem lpFiberJet_logConvex_iteratedCovGrad_rs
       have hc0eq : lpFiberJetLadder_rs (I := I) (M := M) g r s k u Λ₀ 0 = Λ₀ * V := by
         rw [show lpFiberJetLadder_rs (I := I) (M := M) g r s k u Λ₀ 0
               = Λ₀ * Real.sqrt ((Integral.Measure.riemannianVolumeMeasure I M g) Set.univ).toReal
-            from by unfold lpFiberJetLadder_rs; rw [if_pos rfl], ← hV]
+            from by unfold lpFiberJetLadder_rs; rw [ite_eq_left rfl], ← hV]
       rw [hc0eq]
       have hstep := hsupc s u Λ₀ hΛ₀ hsup
       have e1 : (1 : ℝ) = ((1 : ℕ) : ℝ) := by norm_num
@@ -279,16 +282,16 @@ theorem gn_rs_bound
   have hpow : (c j) ^ k ≤ K ^ (k ^ 3) * (c 0) ^ (k - j) * (c k) ^ j :=
     discrete_log_convex_power_interpolation c hc_nn K hK1 j k hc_lc hj0 hjk
   have hc0_eq : c 0 = Λ₀ * V := by
-    simp only [hc_def, lpFiberJetLadder_rs, if_pos rfl]
+    simp only [hc_def, lpFiberJetLadder_rs, ite_eq_left rfl]
     rw [hV]
   have hck_eq : c k = Integral.L2.tensorL2Norm (I := I) g r (s + k)
       (DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad (I := I) g r s k u).toFun := by
-    simp only [hc_def, lpFiberJetLadder_rs, if_neg (show k ≠ 0 by omega), if_true]
+    simp only [hc_def, lpFiberJetLadder_rs, ite_eq_right (show k ≠ 0 by omega), ite_true]
   have hcj_sq : (c j) ^ 2 =
       (∫ x, (riemannianFiberNormSq (I := I) (M := M) g r (s + j) x
               ((DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad (I := I) g r s j u).toSection x)) ^ ((k : ℝ) / j)
           ∂(Integral.Measure.riemannianVolumeMeasure I M g)) ^ ((j : ℝ) / k) := by
-    simp only [hc_def, lpFiberJetLadder_rs, if_neg (show j ≠ 0 by omega), if_neg
+    simp only [hc_def, lpFiberJetLadder_rs, ite_eq_right (show j ≠ 0 by omega), ite_eq_right
       (show j ≠ k by omega)]
     set Iint : ℝ := ∫ x, (riemannianFiberNormSq (I := I) (M := M) g r (s + j) x
             ((DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad (I := I) g r s j u).toSection x)) ^ ((k : ℝ) / j)

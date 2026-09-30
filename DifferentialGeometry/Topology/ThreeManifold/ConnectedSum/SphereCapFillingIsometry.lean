@@ -402,7 +402,13 @@ noncomputable def unitFillingOfSphereChartIso :
 
 @[simp]
 theorem unitFillingOfSphereChartIso_fill (q : d.toBallChart.Punctured) :
-    (unitFillingOfSphereChartIso A P d hd c).fill q
+    @DFunLike.coe
+      (@BallChart.Punctured (EuclideanSpace ℝ (Fin 3)) _ _
+        (EuclideanSpace ℝ (Fin 3)) _ 3 (𝓡 3) (ULift.{u} SphereUnitFilling.S3)
+        standardThreeSphereLift.{u}.topology standardThreeSphereLift.{u}.charts
+        d.toBallChart ≃ₜ
+        {x : M.Carrier // x ∈ BallImage c}) _ _ _
+      (unitFillingOfSphereChartIso A P d hd c).fill q
       = (SphereUnitFilling.capFillIso A P c.toBallChart)
         ((BallChart.puncturedHomeomorphOfImage d.toBallChart
           (SphereUnitFilling.sphereBallChart P) uliftSphereHomeomorph
@@ -453,16 +459,18 @@ theorem ballComplementCollar_unitFillingOfSphereChartIso :
     rw [hL, hR, hd ((1 - (p.2 : ℝ)) • (boundaryAttachment.1 p.1 : csE3))]
     congr 1
     rw [map_smul, hneg_p, hneg_w, map_neg, hwcoe]
-  rw [unitFillingOfSphereChartIso_fill A P d hd c, hbd]
+  have hfill := congrArg Subtype.val
+    (unitFillingOfSphereChartIso_fill A P d hd c
+      (ConnectedSumQuotient.radialRightClamp d.toBallChart (boundaryAttachment.1 p.1) p))
+  rw [hbd] at hfill
   have hval : (SphereUnitFilling.capFillIso A P c.toBallChart
         (ConnectedSumQuotient.radialRightClamp (SphereUnitFilling.sphereBallChart P)
           (SphereUnitFilling.sphereAnti w) p) : M.Carrier)
       = c.toBallChart.chart ((1 + (p.2 : ℝ)) • (A.symm (w : SphereUnitFilling.E3))) :=
     congrArg Subtype.val
       (SphereUnitFilling.capFillIso_radialRightClamp A P c.toBallChart w p hp)
-  rw [hval]
-  exact congrArg c.toBallChart.chart
-    (congrArg (fun v => (1 + (p.2 : ℝ)) • v) (A.symm_apply_apply (p.1 : csE3)))
+  exact hfill.trans (hval.trans (congrArg c.toBallChart.chart
+    (congrArg (fun v => (1 + (p.2 : ℝ)) • v) (A.symm_apply_apply (p.1 : csE3)))))
 
 lemma mem_interior_lift_iso
     (A : SphereUnitFilling.E3 ≃ₗᵢ[ℝ] SphereUnitFilling.E3) (P : SphereUnitFilling.S3)
@@ -521,9 +529,11 @@ theorem unitFillingOfSphereChartIso_fill_eq
       : SphereUnitFilling.S3) = ULift.down (α := SphereUnitFilling.S3) x.1 := by
     rw [puncturedHomeomorph_apply_val_iso A P d hd]
     rfl
-  rw [unitFillingOfSphereChartIso_fill, SphereUnitFilling.capFillIso_apply,
-    SphereUnitFilling.capFillMapIso_val, SphereUnitFilling.capPointIso_apply,
-    SphereUnitFilling.capPoint_apply, hΦ]
+  have hfill := congrArg Subtype.val
+    (unitFillingOfSphereChartIso_fill A P d hd c (d.toBallChart.interiorToPunctured x))
+  refine hfill.trans ?_
+  rw [SphereUnitFilling.capFillIso_apply, SphereUnitFilling.capFillMapIso_val,
+    SphereUnitFilling.capPointIso_apply, SphereUnitFilling.capPoint_apply, hΦ]
 
 theorem ballComplementSmooth_unitFillingOfSphereChartIso
     (A : SphereUnitFilling.E3 ≃ₗᵢ[ℝ] SphereUnitFilling.E3) (P : SphereUnitFilling.S3)
@@ -788,8 +798,8 @@ open DifferentialGeometry.Topology.SphereUnitFilling (E3)
 
 noncomputable def compPartialDiffeomorph
     {M : Type*} {N : Type*} [TopologicalSpace M]
-    [ChartedSpace E3 M] [IsManifold (𝓡 3) ∞ M]
-    [TopologicalSpace N] [ChartedSpace E3 N] [IsManifold (𝓡 3) ∞ N]
+    [ChartedSpace E3 M]
+    [TopologicalSpace N] [ChartedSpace E3 N]
     (φ : PartialDiffeomorph 𝓘(ℝ, E3) (𝓡 3)
       E3 M ∞)
     (Φ : M ≃ₘ⟮𝓡 3, 𝓡 3⟯ N) :
@@ -824,8 +834,8 @@ noncomputable def compPartialDiffeomorph
 @[simp]
 lemma compPartialDiffeomorph_apply
     {M : Type*} {N : Type*} [TopologicalSpace M]
-    [ChartedSpace E3 M] [IsManifold (𝓡 3) ∞ M]
-    [TopologicalSpace N] [ChartedSpace E3 N] [IsManifold (𝓡 3) ∞ N]
+    [ChartedSpace E3 M]
+    [TopologicalSpace N] [ChartedSpace E3 N]
     (φ : PartialDiffeomorph 𝓘(ℝ, E3) (𝓡 3)
       E3 M ∞)
     (Φ : M ≃ₘ⟮𝓡 3, 𝓡 3⟯ N) (u : E3) :
@@ -833,8 +843,8 @@ lemma compPartialDiffeomorph_apply
 
 lemma compPartialDiffeomorph_source
     {M : Type*} {N : Type*} [TopologicalSpace M]
-    [ChartedSpace E3 M] [IsManifold (𝓡 3) ∞ M]
-    [TopologicalSpace N] [ChartedSpace E3 N] [IsManifold (𝓡 3) ∞ N]
+    [ChartedSpace E3 M]
+    [TopologicalSpace N] [ChartedSpace E3 N]
     (φ : PartialDiffeomorph 𝓘(ℝ, E3) (𝓡 3)
       E3 M ∞)
     (Φ : M ≃ₘ⟮𝓡 3, 𝓡 3⟯ N) :

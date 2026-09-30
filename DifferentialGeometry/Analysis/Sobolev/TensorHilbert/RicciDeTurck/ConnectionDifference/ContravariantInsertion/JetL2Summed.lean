@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.L2JetMoser
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.ConnectionDifference.OrderOne.TameEnvelope
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -330,7 +333,7 @@ theorem connectionDifferenceContravariantInsertionField_perOrder_l2_topOrderSepa
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem
     Icc_subset_metricPerturbationPathDomain) in
-theorem connectionDifferenceContravariantInsertionField_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
+theorem connectionDifferenceContravariantInsertionField_metricPerturbationPath_jet_l2_sq_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -441,7 +444,7 @@ theorem connectionDifferenceContravariantInsertionField_metricPerturbationPath_j
       (fun j (_ : j ∈ Finset.range (i + 2)) => hwin j)
     linarith
 
-theorem connectionDifferenceContravariantInsertionField_metricPerturbationPath_jetL2_summed_topOrderSeparated
+theorem connectionDifferenceContravariantInsertionField_metricPerturbationPath_sum_jet_l2_sq_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -465,7 +468,7 @@ theorem connectionDifferenceContravariantInsertionField_metricPerturbationPath_j
                 (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hper⟩ :=
-    connectionDifferenceContravariantInsertionField_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
+    connectionDifferenceContravariantInsertionField_metricPerturbationPath_jet_l2_sq_le
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨Ktop, hKtop_nn, ∑ i ∈ Finset.range (a + 1), Kc i,
     Finset.sum_nonneg (fun i _ => hKc_nn i), ?_⟩

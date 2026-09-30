@@ -56,7 +56,7 @@ theorem good_point_buffered_canonical {kappa alpha theta : ℝ}
   obtain ⟨B⟩ := hbuffer kappa M D S hS epsStar o x t (min_le_right _ _) hreg hw
   let P : PointedFlowData.{u, 0, 0} I3 D := { M := M, basepoint := x, S := S, isSolution := hS }
   have harm' := harm D P o epsStar x t hw.choose (min_le_left _ _) hreg
-  refine ⟨⟨B.enlarge_constants (by dsimp only [C]; linarith [le_max_right CArm CBuffer])⟩, ?_⟩
+  refine ⟨⟨B.enlargeConstants (by dsimp only [C]; linarith [le_max_right CArm CBuffer])⟩, ?_⟩
   intro a b s v hs hv hsa hvb hang
   obtain ⟨neck, path, hinter, hano, hbno, hdiam⟩ := harm' a b s v hs hv hsa hvb hang
   refine ⟨neck, path, hinter, hano, hbno, ?_⟩

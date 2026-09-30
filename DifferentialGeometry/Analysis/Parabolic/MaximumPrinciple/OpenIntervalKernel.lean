@@ -134,7 +134,7 @@ theorem kernel_rigidity_on_open_interval
     split_ifs with ht
     · exact hcov t ht
     · exact hcov t₀ ht₀
-  have heq : ∀ t ∈ J, cov' t = cov t := fun t ht => if_pos ht
+  have heq : ∀ t ∈ J, cov' t = cov t := fun t ht => ite_eq_left ht
   have hAspace := contMDiffOnSpacetimeEndomorphism_of_contMDiffOn_hom_bundle
     (I := I) (F := F) (V := V) (n := ∞) (A := fun t x => A t x) hA
   have hAsymm : ∀ t ∈ J, ∀ x,
@@ -145,9 +145,9 @@ theorem kernel_rigidity_on_open_interval
   have hnull : ∀ t x, satisfiesNullEigenvectorCondition (reaction' t x) := by
     intro t x
     by_cases ht : t ∈ J
-    · simpa only [reaction', if_pos ht] using hreactionNull t ht x
+    · simpa only [reaction', ite_eq_left ht] using hreactionNull t ht x
     · intro B hB v hv
-      simp only [reaction', if_neg ht, zero_apply, inner_zero_left, le_refl]
+      simp only [reaction', ite_eq_right ht, zero_apply, inner_zero_left, le_refl]
   have hevol : ∀ t ∈ J, ∀ x,
       deriv (fun s ↦ A s x) t =
         rawBundleEndomorphismConnLap (I := I) (g t) (cov' t)
@@ -156,7 +156,7 @@ theorem kernel_rigidity_on_open_interval
             I M F V F V (cov' t) (cov' t) (fun y ↦ A t y) x (X t x) +
           reaction' t x (A t x) := by
     intro t ht x
-    simpa only [reaction', if_pos ht, heq t ht] using (hevolution t ht x).deriv
+    simpa only [reaction', ite_eq_left ht, heq t ht] using (hevolution t ht x).deriv
   have hrig (a b : ℝ) (hsub : Ioo a b ⊆ J) :=
     kernel_rigidity_of_constant_range_rank g cov' hcov' A
       (hAspace.mono (Set.prod_mono hsub Set.Subset.rfl)) q
@@ -176,15 +176,15 @@ theorem kernel_rigidity_on_open_interval
   · intro t ht
     obtain ⟨a, b, hat, _, hsub⟩ :=
       exists_Ioo_mem_subset_of_isOpen_ordConnected hJopen hJ ht ht
-    simpa only [reaction', if_pos ht] using (hrig a b hsub).2.2.1 t hat
+    simpa only [reaction', ite_eq_left ht] using (hrig a b hsub).2.2.1 t hat
   · intro t ht
     obtain ⟨a, b, hat, _, hsub⟩ :=
       exists_Ioo_mem_subset_of_isOpen_ordConnected hJopen hJ ht ht
-    simpa only [reaction', if_pos ht] using (hrig a b hsub).2.2.2.1 t hat
+    simpa only [reaction', ite_eq_left ht] using (hrig a b hsub).2.2.2.1 t hat
   · intro t ht
     obtain ⟨a, b, hat, _, hsub⟩ :=
       exists_Ioo_mem_subset_of_isOpen_ordConnected hJopen hJ ht ht
-    simpa only [reaction', if_pos ht] using (hrig a b hsub).2.2.2.2 t hat
+    simpa only [reaction', ite_eq_left ht] using (hrig a b hsub).2.2.2.2 t hat
 
 theorem exists_smooth_parallel_kernel_on_open_interval
     {J : Set ℝ}
@@ -291,7 +291,7 @@ theorem kernel_time_constant_on_open_interval
     split_ifs with ht
     · exact hcov t ht
     · exact hcov t₀ ht₀
-  have heq : ∀ t ∈ J, cov' t = cov t := fun t ht => if_pos ht
+  have heq : ∀ t ∈ J, cov' t = cov t := fun t ht => ite_eq_left ht
   have hAspace := contMDiffOnSpacetimeEndomorphism_of_contMDiffOn_hom_bundle
     (I := I) (F := F) (V := V) (n := ∞) (A := fun t x => A t x) hA
   have hAsymm : ∀ t ∈ J, ∀ x,
@@ -302,9 +302,9 @@ theorem kernel_time_constant_on_open_interval
   have hnull : ∀ t x, satisfiesNullEigenvectorCondition (reaction' t x) := by
     intro t x
     by_cases ht : t ∈ J
-    · simpa only [reaction', if_pos ht] using hreactionNull t ht x
+    · simpa only [reaction', ite_eq_left ht] using hreactionNull t ht x
     · intro B hB v hv
-      simp only [reaction', if_neg ht, zero_apply, inner_zero_left, le_refl]
+      simp only [reaction', ite_eq_right ht, zero_apply, inner_zero_left, le_refl]
   have hevol : ∀ t ∈ J, ∀ x,
       deriv (fun s ↦ A s x) t =
         rawBundleEndomorphismConnLap (I := I) (g t) (cov' t)
@@ -313,7 +313,7 @@ theorem kernel_time_constant_on_open_interval
             I M F V F V (cov' t) (cov' t) (fun y ↦ A t y) x (X t x) +
           reaction' t x (A t x) := by
     intro t ht x
-    simpa only [reaction', if_pos ht, heq t ht] using (hevolution t ht x).deriv
+    simpa only [reaction', ite_eq_left ht, heq t ht] using (hevolution t ht x).deriv
   have hA_time (y : M) : ContDiffOn ℝ 1 (fun t ↦ A t y) J := by
     let _ : FiniteDimensional ℝ (V y) := VectorBundle.finiteDimensional ℝ F V y
     let c : C^∞⟮𝓘(ℝ, ℝ).prod I, ℝ × M; I, M⟯ := ContMDiffMap.snd
@@ -363,7 +363,7 @@ theorem kernel_time_constant_on_open_interval
     (fun y => (hA_time y).mono hsub) q (fun u hu => hrange u (hsub hu))
     (fun u hu => hAsymm u (hsub hu)) (fun u hu => hApos u (hsub hu))
     X reaction' hnull (fun u hu x v hv => by
-      simpa only [reaction', if_pos (hsub hu)] using hreactionAnn u (hsub hu) x v hv)
+      simpa only [reaction', ite_eq_left (hsub hu)] using hreactionAnn u (hsub hu) x v hv)
     (fun u hu x => (hevolution u (hsub hu) x).differentiableAt) (fun u hu => hevol u (hsub hu)) has hbt
 
 end PositiveSystem

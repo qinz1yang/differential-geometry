@@ -75,7 +75,7 @@ theorem rfs_exterior_branches_of_side_data (P : OrientedThreeStage.{u})
   ⟨⟨side, hcover, hinter, hbdry, hdisj⟩⟩
 
 theorem rfs_exterior_branches_of_boundary_sides (P : OrientedThreeStage.{u})
-    [ConnectedSpace P.Carrier] [SimplyConnectedSpace P.Carrier] (C : SmoothSphericalRegion P)
+    (C : SmoothSphericalRegion P)
     (side : C.Boundary → Set P.Carrier)
     (hopen : ∀ b, IsOpen (side b))
     (hconn : ∀ b, IsConnected (side b))
@@ -269,7 +269,7 @@ theorem interiorImage_subset_compl_sphere (P : OrientedThreeStage.{u})
         (I := (𝓡∂ 3)) (M := C.region)).le_bot ⟨hne ▸ hp, hmem⟩
 
 theorem interiorImage_subset_side_of_union (P : OrientedThreeStage.{u})
-    (C : SmoothSphericalRegion P) [ConnectedSpace P.Carrier] (b : C.Boundary) {B D : Set P.Carrier}
+    (C : SmoothSphericalRegion P) (b : C.Boundary) {B D : Set P.Carrier}
     (hBopen : IsOpen B) (hDopen : IsOpen D) (hdisjoint : Disjoint B D)
     (hunion : (Set.range (fun y : Sphere 2 => (C.sphere b y).1))ᶜ = B ∪ D) :
     letI := C.charts

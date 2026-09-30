@@ -1,4 +1,5 @@
 import Batteries.Tactic.OpenPrivate
+import DifferentialGeometry.Geometry.Curvature.Metric.ConstantSectional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSpatialCanonicalAlternatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactCanonicalCover
 import DifferentialGeometry.Geometry.Neck.CompactCapClassification
@@ -232,17 +233,18 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHor
 
 universe u
 
-theorem isPositiveSpaceFormModel_of_spatialRoundComponent
+theorem admitsConstantPositiveSectionalCurvature_of_spatialRoundComponent
     (M : ConnectedClosedOrientedManifold.{u} 3) {g : SmoothRiemannianMetric I3 M.Carrier}
     {eps : ℝ} {x : M.Carrier} (R : SpatialRoundComponent g eps x univ) :
-    IsPositiveSpaceFormModel M := by
+    admitsConstantPositiveSectionalCurvature (I := I3) (M := M.Carrier) := by
   let _ : TopologicalSpace R.Z := R.topology
   let _ : ChartedSpace ThreeSpace R.Z := R.charted
   let _ : IsManifold I3 ∞ R.Z := R.smooth
   let _ : T2Space R.Z := R.t2
   let _ : CompactSpace R.Z := R.compact
   let _ : ConnectedSpace R.Z := R.connected
-  have hZ : IsConstantPositiveSectionalCurvature R.metric := by
+  have hZ : constantPositiveSectionalCurvatureMetric R.metric := by
+    apply (constantPositiveSectionalCurvatureMetric_iff (I := I3) R.metric).2
     refine ⟨1 / 6, by norm_num, fun z v w hLI => ?_⟩
     have hvec : (fun i : Fin 4 => ![v, w, w, v] i) = vec4 v w w v := by
       funext i
@@ -256,7 +258,7 @@ theorem isPositiveSpaceFormModel_of_spatialRoundComponent
     field_simp [ne_of_gt hden]
   exact ⟨Diffeomorph.pullbackMetric R.metric
       (diffeomorphOfPartialDiffeomorphUniv R.map R.source_eq R.target_eq).symm,
-    isConstantPositiveSectionalCurvature_of_pullbackMetric R.metric hZ
+    constantPositiveSectionalCurvatureMetric_pullback R.metric hZ
       (diffeomorphOfPartialDiffeomorphUniv R.map R.source_eq R.target_eq).symm⟩
 
 theorem exists_compact_component_spatial_poincareStandard_tolerance :
@@ -281,7 +283,7 @@ theorem exists_compact_component_spatial_poincareStandard_tolerance :
       U xU hU (hchart x) hx with hp | hr | hc
   · exact Or.inl hp
   · exact Or.inr (Or.inl
-      (isPositiveSpaceFormModel_of_spatialRoundComponent (M.component c) hr.some))
+      (admitsConstantPositiveSectionalCurvature_of_spatialRoundComponent (M.component c) hr.some))
   · exact Or.inr (Or.inr hc)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

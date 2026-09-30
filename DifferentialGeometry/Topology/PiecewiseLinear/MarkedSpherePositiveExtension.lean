@@ -31,7 +31,7 @@ private theorem isPLHomeomorphOn_conjugate_subset
 theorem IsPLSphere.exists_extension_of_positive_disk_family
     {ι : Type*} [Finite ι] {S : Set E3} (hS : IsPLSphere 2 S)
     {D : ι → Set E3} {q : ι → (Fin 3 → ℝ) → E3}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDS : ∀ i, D i ⊆ S) (hdis : Pairwise fun i j => Disjoint (D i) (D j))
     {δ : ι → E3 → E3} (hδ : ∀ i, IsPLHomeomorphOn (δ i) (D i) (D i))
     (hpos : ∀ i, IsPLCirclePositive (q i '' stdSimplexBoundary 2) (δ i)) :

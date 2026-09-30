@@ -14,7 +14,7 @@ namespace Real.smoothAbs
 noncomputable def homeomorphIci {ε : ℝ} (hε : 0 < ε) :
     Ici (0 : ℝ) ≃ₜ Ici (Real.smoothAbs ε 0) :=
   ((StrictMonoOn.orderIso (Real.smoothAbs ε) (Ici 0) (strictMonoOn_Ici hε)).trans
-    (OrderIso.setCongr _ _ (image_Ici hε))).toHomeomorph
+    (Set.orderIsoOfEq _ _ (image_Ici hε))).toHomeomorph
 
 @[simp] theorem homeomorphIci_apply {ε : ℝ} (hε : 0 < ε) (x : Ici (0 : ℝ)) :
     (homeomorphIci hε x).val = Real.smoothAbs ε x.val := rfl

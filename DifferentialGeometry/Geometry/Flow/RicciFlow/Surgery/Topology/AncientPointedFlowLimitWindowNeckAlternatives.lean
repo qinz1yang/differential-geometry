@@ -286,7 +286,7 @@ theorem neck_alternatives_of_local_flow_limit_on_window {alpha : ℝ} (halpha : 
     else (G s).restrictOpen (V k)
   have hseq_eq : ∀ i (hi : N k ≤ ψ i),
       seq i = localPullMetric (h k (f (ψ i)) (σ s (f (ψ i)))) (φ k (ψ i) hi) (hφ k (ψ i) hi) :=
-    fun i hi => dif_pos hi
+    fun i hi => dite_eq_left hi
   have hconvk : MetricCInfConvergenceOnCompacts seq
       ((G s).restrictOpen (V k)) (P.metric.restrictOpen (V k)) := by
     intro K hK p η hη

@@ -2,6 +2,9 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Tensor.P
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorThirdOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.UniformBound
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

@@ -228,7 +228,7 @@ theorem exists_eventually_canonical_clauses_of_isTracedRegion :
       hage W h hid f hf P F hPc hballF V N hV hVF φ hφ hφF G hG hG0 ψ hψ hconv _ hanc hbase o
     filter_upwards [hW, hDG'] with i hwi hdi
     obtain ⟨K, hK⟩ := hwi
-    exact ⟨fun _ => ⟨K.enlarge_constants (le_max_left _ _) (le_max_left _ _),
+    exact ⟨fun _ => ⟨K.enlargeConstants (le_max_left _ _) (le_max_left _ _),
       hK.enlarge_constants (le_max_left _ _) (le_max_left _ _)⟩, hdi⟩
   · filter_upwards [hDG'] with i hdi
     refine ⟨fun hold => absurd (hm (f (ψ i))) (not_lt.mpr ?_), hdi⟩

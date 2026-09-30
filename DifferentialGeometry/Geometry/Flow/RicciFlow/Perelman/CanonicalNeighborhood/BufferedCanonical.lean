@@ -78,12 +78,12 @@ theorem CanonicalWitness.exists_bufferedCanonical_with_witness
               (max C1 C2 + 1) / Real.sqrt (S.scalar t x))) :
     ∃ B : BufferedCanonical S alpha (max C1 C2 + 1) H x t,
       B.tolerance = tolerance ∧ HEq B.witness
-        (W.enlarge_constants
+        (W.enlargeConstants
           (show C1 ≤ max C1 C2 + 1 by linarith [le_max_left C1 C2])
           (show C2 ≤ max C1 C2 + 1 by linarith [le_max_right C1 C2])) := by
   obtain ⟨hC, hC1, hC2, hscalar, hrm, hvolume⟩ := W.strict_curvature_volume_reserves
   let W' : CanonicalWitness S tolerance (max C1 C2 + 1) (max C1 C2 + 1) x t :=
-    W.enlarge_constants hC1.le hC2.le
+    W.enlargeConstants hC1.le hC2.le
   obtain ⟨a, b, margin, ha, har, hm, hbm, hinner, houter⟩ := W'.exists_radial_reserve
   refine ⟨{ tolerance := tolerance
             tolerance_pos := W.eps_pos
@@ -103,25 +103,25 @@ theorem CanonicalWitness.exists_bufferedCanonical_with_witness
               simpa only [W', CanonicalWitness.enlarge_constants_requiresVolume] using hv)
             cap_collar := fun cap hc => ?_ }, rfl, HEq.rfl⟩
   obtain ⟨hdepth, halteq⟩ := hc
-  simp only [W', CanonicalWitness.enlarge_constants] at halteq
+  simp only [W', CanonicalWitness.enlargeConstants] at halteq
   have halteq' : W.alternative = CanonicalAlternative.cap cap hdepth := by
     cases hW : W.alternative with
     | neck data =>
         rw [hW] at halteq
-        simp only [CanonicalAlternative.mono_constant] at halteq
+        simp only [CanonicalAlternative.monoConstant] at halteq
         exact absurd halteq (by simp)
     | cap data deep =>
         rw [hW] at halteq
-        simp only [CanonicalAlternative.mono_constant] at halteq
+        simp only [CanonicalAlternative.monoConstant] at halteq
         cases halteq
         rfl
     | positive whole data hsec =>
         rw [hW] at halteq
-        simp only [CanonicalAlternative.mono_constant] at halteq
+        simp only [CanonicalAlternative.monoConstant] at halteq
         exact absurd halteq (by simp)
     | round whole data =>
         rw [hW] at halteq
-        simp only [CanonicalAlternative.mono_constant] at halteq
+        simp only [CanonicalAlternative.monoConstant] at halteq
         exact absurd halteq (by simp)
   exact hcap cap ⟨hdepth, halteq'⟩
 
@@ -173,9 +173,9 @@ theorem CanonicalWitness.exists_bufferedCanonical_of_neck
       ∃ nk' : LocalNeck S B.tolerance p t B.witness.domain.carrier,
         B.witness.alternative = CanonicalAlternative.neck nk' ∧ HEq nk' nk := by
   obtain ⟨_hC, hA, hC', hscalar, hrm, hvolume⟩ := K.strict_curvature_volume_reserves
-  let K' := K.enlarge_constants hA.le hC'.le
+  let K' := K.enlargeConstants hA.le hC'.le
   have halt : K'.alternative = CanonicalAlternative.neck nk := by
-    change K.alternative.mono_constant (zero_lt_one.trans_le K.one_le_comparison_constant) hC'.le K.Q_pos.le = _
+    change K.alternative.monoConstant (zero_lt_one.trans_le K.one_le_comparison_constant) hC'.le K.Q_pos.le = _
     rw [hneck]
     rfl
   obtain ⟨a, b, margin, ha, _har, hm, hab, hinner, houter⟩ := K'.exists_radial_reserve
@@ -212,11 +212,11 @@ theorem CanonicalWitness.exists_bufferedCanonical_of_positive
       ∃ whole data sec,
         B.witness.alternative = CanonicalAlternative.positive whole data sec := by
   obtain ⟨_hC, hA, hC', hscalar, hrm, hvolume⟩ := K.strict_curvature_volume_reserves
-  let K' := K.enlarge_constants hA.le hC'.le
+  let K' := K.enlargeConstants hA.le hC'.le
   obtain ⟨whole, data, sec, hpositive⟩ := hpositive
   have hpositive' : ∃ whole data sec,
       K'.alternative = CanonicalAlternative.positive whole data sec := by
-    dsimp only [K', CanonicalWitness.enlarge_constants]
+    dsimp only [K', CanonicalWitness.enlargeConstants]
     rw [hpositive]
     exact ⟨whole, data, _, rfl⟩
   obtain ⟨whole', data', sec', halt⟩ := hpositive'

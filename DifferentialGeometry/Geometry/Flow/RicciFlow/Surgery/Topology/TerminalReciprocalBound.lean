@@ -4,7 +4,6 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter
 open DifferentialGeometry.Geometry.Curvature
-open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 open scoped Manifold ContDiff NNReal Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
@@ -27,7 +26,7 @@ theorem TerminalLimitMetric.inv_max_scalar_sub_terminal_le_on_time_window
     · intro t ht
       exact (G.equation.scalarTime (K := Ioo c s) ht (fun _ ht => ⟨hac.trans ht.1.le, ht.2⟩) x.val).continuousWithinAt
     · intro t ht _
-      exact hasDerivWithinAt_left_of_mem_nhdsLE
+      exact DifferentialGeometry.Analysis.hasDerivWithinAt_left_of_mem_nhdsLE
         (G.equation.scalarTime (K := Ioo c s) ht (fun _ ht => ⟨hac.trans ht.1.le, ht.2⟩) x.val)
         (mem_nhdsWithin_of_mem_nhds (Ioo_mem_nhds ht.1 ht.2))
     · exact hbound

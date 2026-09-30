@@ -94,7 +94,7 @@ private lemma slotExtendIter_rank_two_by_rank_three_apply (g₀ : SmoothRiemanni
     (K : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 5 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 3 2 K).toSection x) D =
-    tensor0SProdKappaFib (I := I) (p := 2) (q := 3) x
+    DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 3) x
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from K.toSection x)
         (unitTensor (I := I) (M := M) x)) D := by
   apply Tensor0SSpace.toModel_injective
@@ -150,7 +150,7 @@ private lemma slotExtendIter_rank_two_by_rank_three_apply (g₀ : SmoothRiemanni
     first
       | rfl
       | (congr 1; first | rfl | (congr 1; funext k; fin_cases k <;> rfl))
-  rw [hLHS, tensor0SProdKappaFib_apply (I := I) x κ D,
+  rw [hLHS, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply (I := I) x κ D,
     Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
   congr 1
@@ -164,7 +164,7 @@ private lemma slotExtendIter_rank_three_by_rank_three_apply (g₀ : SmoothRieman
     (K : SmoothCcTensor g₀ 0 3) (x : M) (D : Tensor0SSpace 3 I x) :
     (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 6 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 3 3 K).toSection x) D =
-    tensor0SProdKappaFib (I := I) (p := 3) (q := 3) x
+    DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 3) (q := 3) x
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from K.toSection x)
         (unitTensor (I := I) (M := M) x)) D := by
   apply Tensor0SSpace.toModel_injective
@@ -193,7 +193,7 @@ private lemma slotExtendIter_rank_three_by_rank_three_apply (g₀ : SmoothRieman
       tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD₂
     rw [slotExtendIter_rank_two_by_rank_three_apply (I := I) (M := M) g₀ K x D₂, ← hκ,
-      tensor0SProdKappaFib_apply (I := I) x κ D₂,
+      DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply (I := I) x κ D₂,
       Tensor0SSpace.toModel_ofModel,
       Bundle.continuousMultilinearMap.modelProduct_apply]
     have hD₂val : Tensor0SSpace.toModel D₂
@@ -209,7 +209,7 @@ private lemma slotExtendIter_rank_three_by_rank_three_apply (g₀ : SmoothRieman
     first
       | rfl
       | (congr 2; funext j; fin_cases j <;> rfl)
-  rw [hLHS, tensor0SProdKappaFib_apply (I := I) x κ D,
+  rw [hLHS, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply (I := I) x κ D,
     Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
   congr 1
@@ -255,29 +255,29 @@ def lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation : Equiv.Perm (Fin
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma lieCorrectionZeroMixedConnection_trace_output_swap (g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (x : M) (Z : Tensor0SSpace 4 I x) :
-    domDomCongrFibRank (I := I) 2 (Equiv.swap (0 : Fin 2) 1) x
+    DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 2 (Equiv.swap (0 : Fin 2) 1) x
       (lieCorrectionZeroTraceStep (I := I) g₁ 2 σ x Z) =
     lieCorrectionZeroTraceStep (I := I) g₁ 2 (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * σ) x Z := by
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro w
   beta_reduce
-  rw [domDomCongrFibRank_apply (I := I) 2 (Equiv.swap (0 : Fin 2) 1) x,
+  rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply (I := I) 2 (Equiv.swap (0 : Fin 2) 1) x,
     Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
   rw [show lieCorrectionZeroTraceStep (I := I) g₁ 2 σ x Z =
       cometricDoubleTraceFib (I := I) g₁ 2 x
-        (domDomCongrFibRank (I := I) 4 σ x Z) from rfl]
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 4 σ x Z) from rfl]
   rw [show lieCorrectionZeroTraceStep (I := I) g₁ 2 (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * σ) x Z =
       cometricDoubleTraceFib (I := I) g₁ 2 x
-        (domDomCongrFibRank (I := I) 4 (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * σ) x Z) from rfl]
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 4 (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * σ) x Z) from rfl]
   rw [cometricDoubleTraceFib_toModel (I := I) g₁ 2 x,
     cometricDoubleTraceFib_toModel (I := I) g₁ 2 x]
   rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) g₁ x),
     modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) g₁ x)]
   refine Finset.sum_congr rfl fun k _ => ?_
-  rw [domDomCongrFibRank_apply (I := I) 4 σ x Z,
+  rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply (I := I) 4 σ x Z,
     Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
-  rw [domDomCongrFibRank_apply (I := I) 4 (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * σ) x Z,
+  rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply (I := I) 4 (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * σ) x Z,
     Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
   congr 1
   funext i
@@ -311,10 +311,10 @@ private lemma lieCorrectionZeroMixedConnectionHalfExpansion_apply (g₀ g₁ gB 
       (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g₀ g₁ gB σlast).toSection x) D =
     lieCorrectionZeroTraceStep (I := I) g₁ 2 σlast x
       (lieCorrectionZeroTraceStep (I := I) g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne x
-        (tensor0SProdKappaFib (I := I) (p := 3) (q := 3) x
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 3) (q := 3) x
           (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ gB x)
           (lieCorrectionZeroTraceStep (I := I) g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour x
-            (tensor0SProdKappaFib (I := I) (p := 2) (q := 3) x
+            (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 3) x
               (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D)))) := by
   simp only [lieCorrectionZeroMixedConnectionHalfExpansion, operatorFieldComposition_toSection, ContinuousLinearMap.comp_apply]
   rw [slotExtendIter_rank_two_by_rank_three_apply (I := I) (M := M) g₀
@@ -323,10 +323,10 @@ private lemma lieCorrectionZeroMixedConnectionHalfExpansion_apply (g₀ g₁ gB 
   rw [show
       (show Tensor0SSpace 5 I x →L[ℝ] Tensor0SSpace 3 I x from
         (reindexedPureTrace (I := I) (M := M) g₀ g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour).toSection x)
-          (tensor0SProdKappaFib (I := I) (p := 2) (q := 3) x
+          (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 3) x
             (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D) =
       lieCorrectionZeroTraceStep (I := I) g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour x
-        (tensor0SProdKappaFib (I := I) (p := 2) (q := 3) x
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 3) x
           (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D) from
     congrFun (congrArg DFunLike.coe
       (reindexedPureTrace_toSection (I := I) (M := M) g₀ g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour x)) _]
@@ -336,16 +336,16 @@ private lemma lieCorrectionZeroMixedConnectionHalfExpansion_apply (g₀ g₁ gB 
   rw [show
       (show Tensor0SSpace 6 I x →L[ℝ] Tensor0SSpace 4 I x from
         (reindexedPureTrace (I := I) (M := M) g₀ g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne).toSection x)
-          (tensor0SProdKappaFib (I := I) (p := 3) (q := 3) x
+          (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 3) (q := 3) x
             (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ gB x)
             (lieCorrectionZeroTraceStep (I := I) g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour x
-              (tensor0SProdKappaFib (I := I) (p := 2) (q := 3) x
+              (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 3) x
                 (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D))) =
       lieCorrectionZeroTraceStep (I := I) g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne x
-        (tensor0SProdKappaFib (I := I) (p := 3) (q := 3) x
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 3) (q := 3) x
           (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ gB x)
           (lieCorrectionZeroTraceStep (I := I) g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour x
-            (tensor0SProdKappaFib (I := I) (p := 2) (q := 3) x
+            (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 3) x
               (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D))) from
     congrFun (congrArg DFunLike.coe
       (reindexedPureTrace_toSection (I := I) (M := M) g₀ g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne x)) _]
@@ -376,7 +376,7 @@ private lemma lieCorrectionZeroMixedConnectionExpansion_apply (g₀ g₁ gB : Sm
   rw [← lieCorrectionZeroMixedConnection_trace_output_swap (I := I) (M := M) g₁ lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne x _]
   rw [show lieCorrectionZeroMixedConnectionFib (I := I) g₀ g₁ gB x D =
       (2 : ℝ) • (lieCorrectionZeroMixedConnectionHalfFib (I := I) g₀ g₁ gB x D +
-        domDomCongrFibRank (I := I) 2 (Equiv.swap 0 1) x
+        DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 2 (Equiv.swap 0 1) x
           (lieCorrectionZeroMixedConnectionHalfFib (I := I) g₀ g₁ gB x D)) from by
     rw [lieCorrectionZeroMixedConnectionFib, smul_apply,
       add_apply, ContinuousLinearMap.comp_apply]]

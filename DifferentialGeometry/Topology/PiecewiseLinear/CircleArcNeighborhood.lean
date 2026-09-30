@@ -18,7 +18,7 @@ theorem IsPLSphere.exists_isPLBall_one_neighborhood {S F U : Set E}
     (hS : IsPLSphere 1 S) (hF : IsPLBall 1 F) (hFS : F ⊆ S)
     (hU : IsOpen U) (hFU : F ⊆ U) :
     ∃ (A : Set E) (q : (Fin 2 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧ A ⊆ S ∩ U ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧ A ⊆ S ∩ U ∧
       F ⊆ A ∧ A ∈ 𝓝ˢ[S] F ∧ Disjoint F (q '' stdSimplexBoundary 1) := by
   classical
   let _ : DecidableEq E := Classical.decEq _

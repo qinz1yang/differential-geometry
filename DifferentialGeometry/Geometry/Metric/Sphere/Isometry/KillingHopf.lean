@@ -392,13 +392,11 @@ theorem sphere_diffeo_one
     · have heq : F =ᶠ[𝓝 x] Fp :=
         Filter.eventuallyEq_of_mem (hPopen.mem_nhds hxP) hFP
       rw [heq.eq_of_nhds, heq.mfderiv_eq]
-      simpa only [Fp] using
-        punctCartan_inner hRound g hEnorm p p' i hi hR hxP Y Z
+      exact punctCartan_inner hRound g hEnorm p p' i hi hR hxP Y Z
     · have heq : F =ᶠ[𝓝 x] Fq :=
         Filter.eventuallyEq_of_mem (hQopen.mem_nhds hxQ) hFQ
       rw [heq.eq_of_nhds, heq.mfderiv_eq]
-      simpa only [Fq] using
-        punctCartan_inner hRound g hEnorm q q' j hj' hR hxQ Y Z
+      exact punctCartan_inner hRound g hEnorm q q' j hj' hR hxQ Y Z
   have hfr : 1 < Module.finrank ℝ A := by
     rw [show Module.finrank ℝ A = n + 1 from Fact.out]
     omega

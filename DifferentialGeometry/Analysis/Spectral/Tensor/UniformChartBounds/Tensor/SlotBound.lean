@@ -1,4 +1,3 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.ChartTransition.LocallyConstantAtlas
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChristoffelCorrection.ChristoffelBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.CovNormBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.ChartTwistBound
@@ -554,7 +553,7 @@ private lemma tangentSlotCLM_prod_norm_le (n : ℕ) (b : M)
   have h_pow : (max ‖Φ‖ 1) ^ n = ∏ _i : Fin n, max ‖Φ‖ 1 := by
     rw [Finset.prod_const]; simp
   rw [h_pow]
-  refine Finset.prod_le_prod ?_ ?_
+  refine Finset.prod_le_prod₀ ?_ ?_
   · intro i _; exact norm_nonneg _
   · intro i _; exact tangentSlotCLM_factor_norm_le (I := I) n b k Φ i
 

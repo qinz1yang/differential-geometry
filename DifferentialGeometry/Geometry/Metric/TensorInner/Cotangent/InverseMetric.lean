@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Duality
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Riemannian
 import Mathlib.Data.Matrix.Mul
 import Mathlib.LinearAlgebra.Dual.Basis
@@ -274,4 +275,88 @@ theorem cotangentInner_dualToCotangent_tangentFlat
 end
 
 end Tensor0SBundle
+end DifferentialGeometry
+
+namespace DifferentialGeometry
+
+noncomputable section
+
+open Tensor0SBundle
+open Geometry.Operator (metricSharp metricSharp_def inner_metricSharp)
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+def inverseMetricSharpFib (g : SmoothRiemannianMetric I M) (x : M) :
+    Tensor0SSpace 1 I x →L[ℝ] TangentSpace I x :=
+  LinearMap.toContinuousLinearMap
+    { toFun := fun α => metricSharp (I := I) g x (cotangentToDualLinear (I := I) (x := x) α)
+      map_add' := fun α β => by
+        rw [map_add (cotangentToDualLinear (I := I) (x := x))]
+        rw [metricSharp_def, metricSharp_def, metricSharp_def, map_add]
+      map_smul' := fun c α => by
+        rw [map_smul (cotangentToDualLinear (I := I) (x := x))]
+        rw [metricSharp_def, metricSharp_def, map_smul]; rfl }
+@[simp] lemma inverseMetricSharpFib_apply (g : SmoothRiemannianMetric I M) (x : M)
+    (α : Tensor0SSpace 1 I x) :
+    inverseMetricSharpFib (I := I) g x α =
+      metricSharp (I := I) g x (cotangentToDualLinear (I := I) (x := x) α) := by
+  rw [inverseMetricSharpFib, LinearMap.coe_toContinuousLinearMap']; rfl
+lemma inverseMetricSharpFib_inner (g : SmoothRiemannianMetric I M) (x : M)
+    (α : Tensor0SSpace 1 I x) (w : TangentSpace I x) :
+    g.inner x (inverseMetricSharpFib (I := I) g x α) w =
+      cotangentToDualLinear (I := I) (x := x) α w := by
+  rw [inverseMetricSharpFib_apply]
+  exact inner_metricSharp (I := I) g x (cotangentToDualLinear (I := I) (x := x) α) w
+lemma inverseMetricSharpFib_zero (g : SmoothRiemannianMetric I M) (x : M) :
+    inverseMetricSharpFib (I := I) g x 0 = 0 := by
+  rw [inverseMetricSharpFib_apply, map_zero]
+  rw [metricSharp_def, map_zero]
+lemma inverseMetricSharpFib_ne_zero_of_ne_zero (g : SmoothRiemannianMetric I M) (x : M)
+    {α : Tensor0SSpace 1 I x} (hα : α ≠ 0) :
+    inverseMetricSharpFib (I := I) g x α ≠ 0 := by
+  intro hzero
+  apply hα
+  have hdual : cotangentToDualLinear (I := I) (x := x) α = 0 := by
+    ext w
+    rw [← inverseMetricSharpFib_inner (I := I) g x α w, hzero]
+    simp
+  exact cotangentToDualLinear_injective (I := I) (x := x) (by rw [hdual, map_zero])
+def cometricBilin (g : SmoothRiemannianMetric I M) (x : M)
+    (α β : Tensor0SSpace 1 I x) : ℝ :=
+  g.inner x (inverseMetricSharpFib (I := I) g x α) (inverseMetricSharpFib (I := I) g x β)
+lemma cometricBilin_eq_inner_sharp (g : SmoothRiemannianMetric I M) (x : M)
+    (α β : Tensor0SSpace 1 I x) :
+    cometricBilin (I := I) g x α β =
+      g.inner x (inverseMetricSharpFib (I := I) g x α)
+        (inverseMetricSharpFib (I := I) g x β) := rfl
+lemma cometricBilin_eq_dual_sharp (g : SmoothRiemannianMetric I M) (x : M)
+    (α β : Tensor0SSpace 1 I x) :
+    cometricBilin (I := I) g x α β =
+      cotangentToDualLinear (I := I) (x := x) α (inverseMetricSharpFib (I := I) g x β) := by
+  rw [cometricBilin_eq_inner_sharp]
+  exact inverseMetricSharpFib_inner (I := I) g x α (inverseMetricSharpFib (I := I) g x β)
+lemma cometricBilin_symm (g : SmoothRiemannianMetric I M) (x : M)
+    (α β : Tensor0SSpace 1 I x) :
+    cometricBilin (I := I) g x α β = cometricBilin (I := I) g x β α := by
+  rw [cometricBilin_eq_inner_sharp, cometricBilin_eq_inner_sharp]
+  exact g.symm x _ _
+lemma cometricBilin_self_nonneg (g : SmoothRiemannianMetric I M) (x : M)
+    (α : Tensor0SSpace 1 I x) :
+    0 ≤ cometricBilin (I := I) g x α α := by
+  rw [cometricBilin_eq_inner_sharp]
+  rcases eq_or_ne (inverseMetricSharpFib (I := I) g x α) 0 with h | h
+  · rw [h]; simp
+  · exact le_of_lt (g.pos x (inverseMetricSharpFib (I := I) g x α) h)
+lemma cometricBilin_self_pos (g : SmoothRiemannianMetric I M) (x : M)
+    {α : Tensor0SSpace 1 I x} (hα : α ≠ 0) :
+    0 < cometricBilin (I := I) g x α α := by
+  rw [cometricBilin_eq_inner_sharp]
+  exact g.pos x (inverseMetricSharpFib (I := I) g x α)
+    (inverseMetricSharpFib_ne_zero_of_ne_zero (I := I) g x hα)
+
+end
+
 end DifferentialGeometry

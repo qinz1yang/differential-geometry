@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.Sectio
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CotangentCovariantDerivative
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -708,10 +711,10 @@ private lemma flatTermVecCLM_apply (g₀ g₁ : SmoothRiemannianMetric I M) (kin
     flatTermVecCLM (I := I) g₀ g₁ kind x om v0 = flatTermVec (I := I) g₀ g₁ kind x om v0 := by
   cases kind with
   | true =>
-      simp only [flatTermVecCLM, flatTermVec, if_true]
+      simp only [flatTermVecCLM, flatTermVec, ite_true]
       rw [neg_apply]
   | false =>
-      simp only [flatTermVecCLM, flatTermVec, if_neg (by decide : ¬ (false = true))]
+      simp only [flatTermVecCLM, flatTermVec, ite_eq_right (by decide : ¬ (false = true))]
       simp only [ContinuousLinearMap.comp_apply, neg_apply,
         ContinuousLinearMap.compL_apply, dualCotangentCLM_eq]
 
@@ -724,9 +727,9 @@ private lemma flatTermVec_add_om (g₀ g₁ : SmoothRiemannianMetric I M) (kind 
       flatTermVec (I := I) g₀ g₁ kind x om v0 + flatTermVec (I := I) g₀ g₁ kind x om' v0 := by
   cases kind with
   | true =>
-      simp only [flatTermVec, if_true, map_add, add_apply, neg_add]
+      simp only [flatTermVec, ite_true, map_add, add_apply, neg_add]
   | false =>
-      simp only [flatTermVec, if_neg (by decide : ¬ (false = true)), ← dualCotangentCLM_eq]
+      simp only [flatTermVec, ite_eq_right (by decide : ¬ (false = true)), ← dualCotangentCLM_eq]
       rw [cotangentToCLM_add]
       rw [show (-(cotangentToCLM (I := I) om + cotangentToCLM (I := I) om').comp
               ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).flip v0))
@@ -746,9 +749,9 @@ private lemma flatTermVec_smul_om (g₀ g₁ : SmoothRiemannianMetric I M) (kind
       c • flatTermVec (I := I) g₀ g₁ kind x om v0 := by
   cases kind with
   | true =>
-      simp only [flatTermVec, if_true, map_smul, smul_apply, smul_neg]
+      simp only [flatTermVec, ite_true, map_smul, smul_apply, smul_neg]
   | false =>
-      simp only [flatTermVec, if_neg (by decide : ¬ (false = true)), ← dualCotangentCLM_eq]
+      simp only [flatTermVec, ite_eq_right (by decide : ¬ (false = true)), ← dualCotangentCLM_eq]
       rw [cotangentToCLM_smul]
       rw [show (-(c • cotangentToCLM (I := I) om).comp
               ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).flip v0))
@@ -973,7 +976,7 @@ private lemma flatTermVec_section_contMDiff (g₀ g₁ : SmoothRiemannianMetric 
               (inverseMetricSharpFib (I := I) g₁ x (om x)) (V0 x))) :=
         PDE.DeTurck.connectionDifference_contMDiff (I := I) g₁ g₀ hsharp V0.contMDiff
       refine (hconn.neg_section).congr (fun x => ?_)
-      simp only [flatTermVec, if_true]
+      simp only [flatTermVec, ite_true]
       rfl
   | false =>
       have hcovec : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 1 ℝ E)) ∞
@@ -988,7 +991,7 @@ private lemma flatTermVec_section_contMDiff (g₀ g₁ : SmoothRiemannianMetric 
         ContMDiff.clm_bundle_apply (b := id)
           (inverseMetricSharpField_contMDiff (I := I) g₁) hcovec
       refine hsharp.congr (fun x => ?_)
-      simp only [flatTermVec, if_neg (by decide : ¬ (false = true))]
+      simp only [flatTermVec, ite_eq_right (by decide : ¬ (false = true))]
       rfl
 
 omit [CompactSpace M] in
@@ -1537,13 +1540,13 @@ private lemma cotangentToCLM_tensorCovDerivAt_sharpFlatEndoCc_eq
   rw [show flatTermVec (I := I) g₀ g₁ true x D v0
         = - PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
             (inverseMetricSharpFib (I := I) g₁ x D) v0 from by
-    simp only [flatTermVec, if_true]]
+    simp only [flatTermVec, ite_true]]
   rw [show flatTermVec (I := I) g₀ g₁ false x D v0
         = inverseMetricSharpFib (I := I) g₁ x
             (dualToCotangent (I := I)
               (-(cotangentToCLM (I := I) D).comp
                   ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x).flip v0)).toLinearMap) from by
-    simp only [flatTermVec, if_neg (by decide : ¬ (false = true))]]
+    simp only [flatTermVec, ite_eq_right (by decide : ¬ (false = true))]]
   rw [show (g₀.inner x)
         (- PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
             (inverseMetricSharpFib (I := I) g₁ x D) v0) w
@@ -2003,18 +2006,6 @@ theorem riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_le
         mul_le_mul_of_nonneg_left hinner hKi_nn
     _ ≤ B i * ∑ l ∈ Finset.range (j + 1 - i), S l :=
         mul_le_mul_of_nonneg_right (hKos i hile) hinnerS_nn
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-private lemma DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
-    (c : ℝ) (v : TensorRSSpace r s I x) :
-    riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
-      c ^ 2 * riemannianFiberNormSq (I := I) (M := M) g r s x v := by
-  rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x (c • v),
-    riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x v]
-  rw [TensorRSSpace.toModel_smul, tensorInnerPointwise_smul_left,
-    tensorInnerPointwise_smul_right]
-  ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_sharpFlatEndoCc_succ_le_terms

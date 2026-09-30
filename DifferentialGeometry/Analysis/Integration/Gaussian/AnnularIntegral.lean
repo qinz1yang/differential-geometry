@@ -127,7 +127,7 @@ theorem gaussian_lintegral_le_inner_add_cubic_tail
       dsimp only [a] at h ⊢
       rw [← ENNReal.ofReal_mul (by positivity)] at h
       rw [← ENNReal.ofReal_mul (by positivity)]
-      convert h using 1 <;> congr 1
+      convert h using 1; congr 1
       ring
     have h := ENNReal.tsum_le_tsum hterm
     rw [ENNReal.tsum_mul_left,

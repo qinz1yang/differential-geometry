@@ -65,7 +65,7 @@ theorem isSimplyEmbedded_frontier_sublevel_of_heightIndex_eq_zero (I : Schoenfli
   have hfiber (a : ℝ) (ha : ∃ x ∈ frontier K.space, ℓ x < a)
       (hb : ∃ x ∈ frontier K.space, a < ℓ x) :
       ∃ g : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3),
-        IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (K.space ∩ {x | ℓ x = a}) ∧
+        IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (K.space ∩ {x | ℓ x = a}) ∧
         g '' stdSimplexBoundary 2 = frontier K.space ∩ {x | ℓ x = a} := by
     obtain ⟨_, _, _, _, g, hg, hgb⟩ := exists_isPLDiskDecomposition_fiber_of_heightIndex_eq_zero
       K hK hS (by simp) hreg hconn ℓ hℓ hinj hzero a ha hb

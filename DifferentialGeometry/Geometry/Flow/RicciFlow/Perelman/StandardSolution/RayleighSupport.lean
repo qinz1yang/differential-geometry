@@ -121,7 +121,7 @@ private theorem normalized_local_operator
     filter_upwards [hnear] with y hy
     have hh := (hbspace.mdifferentiableAt (x := y) (by simp)).mul
       ((hdspace.mdifferentiableAt (x := y) (by simp)).inv hy)
-    convert hh using 1 <;> rfl
+    convert hh using 1; rfl
   have hqAt : ContMDiffAt I 𝓘(ℝ, ℝ) ∞ (q t) x :=
     hbspace.contMDiffAt.div₀ hdspace.contMDiffAt hdne
   have hqgrad :

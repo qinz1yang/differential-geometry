@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Embedding.MorreyManifold
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.HigherOrder
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.LocalFormula
 import DifferentialGeometry.External.DeGiorgi.LpFunctionToolkit
 
@@ -189,11 +189,11 @@ private lemma chartPushedRaw_eq_chartSmoothExt_comp_toEuclidean_symm
   · rw [DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_apply_of_mem
       (I := I_hs) (M := M) α f (hy_iff.mpr hy)]
     unfold chartSmoothExt
-    rw [if_pos hy]
+    rw [ite_eq_left hy]
   · rw [DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_apply_of_notMem
       (I := I_hs) (M := M) α f (hy_iff.not.mpr hy)]
     unfold chartSmoothExt
-    rw [if_neg hy]
+    rw [ite_eq_right hy]
 
 omit [IsManifold I_hs ∞ M] [T2Space M] [CompactSpace M] in
 private lemma exists_eLpNorm_chartPushedRaw_le_const_mul_chartSmoothExt
@@ -325,8 +325,6 @@ private lemma tsupport_pou_mul_sub_subset_tsupport_pou
 private lemma eLpNorm_sub_cauchy_of_tendsto_zero
     {X : Type*} [MeasurableSpace X]
     {μ : Measure X} {v : ℕ → X → ℝ} {w : X → ℝ}
-    (hv : ∀ k, AEStronglyMeasurable (v k) μ)
-    (hw : AEStronglyMeasurable w μ)
     (hconv : Tendsto
       (fun k => eLpNorm (fun x => v k x - w x) 2 μ) atTop (𝓝 0)) :
     ∀ ε : ℝ, 0 < ε →
@@ -345,8 +343,7 @@ private lemma eLpNorm_sub_cauchy_of_tendsto_zero
       funext x
       ring
     rw [hfun]
-    exact eLpNorm_add_le
-      ((hv j).sub hw) (hw.sub (hv k)) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    exact eLpNorm_add_le (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have hswap : eLpNorm (fun x => w x - v k x) 2 μ =
       eLpNorm (fun x => v k x - w x) 2 μ := by
     have hfun : (fun x => w x - v k x) = -(fun x => v k x - w x) := by
@@ -372,8 +369,6 @@ private lemma eLpNorm_pou_mul_sub_cauchy_of_chart_tendsto
     (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M)
     {u : ℕ → M → ℝ}
     (hu_smooth : ∀ k, ContMDiff I_hs 𝓘(ℝ, ℝ) ∞ (u k))
-    (hu_int : ∀ k,
-      tsupport (u k) ⊆ (modelWithCornersEuclideanHalfSpace n).interior M)
     (α : M) {φ : ℕ → ℕ} {R : ℝ}
     (hsupp : ∀ k, tsupport
       (chartSmoothExt (n := n) (M := M) α
@@ -382,7 +377,6 @@ private lemma eLpNorm_pou_mul_sub_cauchy_of_chart_tendsto
             : C^∞⟮I_hs, M; ℝ⟯) x * u (φ k) x)) ⊆
       Metric.ball (0 : EuN) R)
     {w : EuN → ℝ}
-    (hw : MemLp w 2 (volume.restrict (Metric.ball (0 : EuN) R)))
     (hconv : Tendsto
       (fun k => eLpNorm
         (fun z => chartSmoothExt (n := n) (M := M) α
@@ -409,17 +403,6 @@ private lemma eLpNorm_pou_mul_sub_cauchy_of_chart_tendsto
       (fun x : M =>
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
           : C^∞⟮I_hs, M; ℝ⟯) x * u (φ k) x)
-  have hv : ∀ k,
-      AEStronglyMeasurable (v k)
-        (volume.restrict (Metric.ball (0 : EuN) R)) := by
-    intro k
-    obtain ⟨R', hR', hcontrol⟩ :=
-      exists_chart_smooth_extension_sobolev_control (n := n) (M := M) g α
-    have hsmooth := (hcontrol (q := 2) (by norm_num)
-      (hu_smooth (φ k))
-      (allChartsInteriorSupport_of_tsupport_subset_interior
-        (n := n) (M := M) (hu_int (φ k)))).1
-    exact hsmooth.continuous.measurable.aestronglyMeasurable
   obtain ⟨C, hC_pos, hC_bound⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Chart.eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw_uniform_of_subset
       (I := I_hs) (M := M) g α
@@ -435,7 +418,7 @@ private lemma eLpNorm_pou_mul_sub_cauchy_of_chart_tendsto
   have hA_toReal_pos : 0 < A.toReal := ENNReal.toReal_pos hA_pos.ne' hA_top
   have hD_pos : 0 < D := mul_pos hC_pos hA_toReal_pos
   intro ε hε
-  rcases eLpNorm_sub_cauchy_of_tendsto_zero hv hw.1 hconv
+  rcases eLpNorm_sub_cauchy_of_tendsto_zero hconv
       (ε / D) (div_pos hε hD_pos) with ⟨N, hN⟩
   refine ⟨N, fun j hj k hk => ?_⟩
   let f : M → ℝ := fun x =>
@@ -559,9 +542,9 @@ theorem rellich_kondrachov_chart_seq_of_tsupport_subset_interior
                   : C^∞⟮I_hs, M; ℝ⟯) x * u (φ k) x)
             2 μg ≤ ENNReal.ofReal δ := by
       intro α
-      rcases hcharts α.1 α.2 with ⟨R, hR, hsupp, w, hw, hconv⟩
+      rcases hcharts α.1 α.2 with ⟨R, hR, hsupp, w, _hw, hconv⟩
       exact eLpNorm_pou_mul_sub_cauchy_of_chart_tendsto
-        (n := n) (M := M) g hu_smooth hu_int α.1 hsupp hw hconv δ hδ_pos
+        (n := n) (M := M) g hu_smooth α.1 hsupp hconv δ hδ_pos
     choose N hN using hN_exists
     let Nmax : ℕ := S.attach.sup N
     refine ⟨(Nmax, Nmax), ?_⟩
@@ -627,22 +610,7 @@ theorem rellich_kondrachov_chart_seq_of_tsupport_subset_interior
       rw [Finset.sum_apply]
     rw [show fSeq j - fSeq k = fun x => u (φ j) x - u (φ k) x from rfl,
       hdiff_eq, hsum_fun]
-    have hmeas : ∀ α ∈ S.attach,
-        AEStronglyMeasurable
-          (fun x : M =>
-            (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α.1
-                : C^∞⟮I_hs, M; ℝ⟯) x * u (φ j) x -
-              (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α.1
-                : C^∞⟮I_hs, M; ℝ⟯) x * u (φ k) x)
-          μg := by
-      intro α _
-      exact (((DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α.1
-          : C^∞⟮I_hs, M; ℝ⟯).contMDiff.continuous.measurable.mul
-            (hu_smooth (φ j)).continuous.measurable).sub
-          ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α.1
-          : C^∞⟮I_hs, M; ℝ⟯).contMDiff.continuous.measurable.mul
-            (hu_smooth (φ k)).continuous.measurable)).aestronglyMeasurable
-    refine (eLpNorm_sum_le hmeas (by norm_num)).trans ?_
+    refine (eLpNorm_sum_le (by norm_num : (1 : ℝ≥0∞) ≤ 2)).trans ?_
     have hterm : ∀ α ∈ S.attach,
         eLpNorm
           (fun x : M =>

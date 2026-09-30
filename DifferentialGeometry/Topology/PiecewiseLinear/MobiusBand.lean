@@ -178,7 +178,7 @@ theorem coef_mobius_zero (r : LinearOrder (Fin 5 → ℝ)) {i j : Fin 5} (hj : j
   rw [simplexBoundaryCoefficient]
   refine Finset.sum_eq_zero fun x hx => ?_
   obtain ⟨v, -, rfl⟩ := Finset.mem_image.mp hx
-  exact if_neg fun h =>
+  exact ite_eq_right fun h =>
     mobiusTriIdx_erase_ne i j v hj hj' ((erase_mobiusTri_eq_mobiusEdge_iff _ i j v).mp h)
 
 theorem fin5_ne_succ : ∀ i : Fin 5, i ≠ i + 1 := by decide

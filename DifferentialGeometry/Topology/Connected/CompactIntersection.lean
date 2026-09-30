@@ -31,7 +31,8 @@ theorem isPreconnected_iInter_of_directed_isCompact [Nonempty ι] (C : ι → Se
     exact (hcover hx).elim (fun h => Or.inl (hAU ⟨hx, h⟩))
       (fun h => Or.inr (hBV ⟨hx, h⟩))
   obtain ⟨i, hi⟩ := exists_subset_nhds_of_isCompact' hdir hcompact
-    (fun i => (hcompact i).isClosed) (fun x hx => (hU.union hV).mem_nhds (hcover' hx))
+    (fun i => (hcompact i).isClosed)
+    (mem_nhdsSet_iff_forall.mpr fun x hx => (hU.union hV).mem_nhds (hcover' hx))
   rcases (hconn i).subset_or_subset hU hV hUV hi with hCU | hCV
   · refine Or.inl fun x hx => (hcover hx).resolve_right ?_
     intro hxB

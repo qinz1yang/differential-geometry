@@ -46,26 +46,26 @@ variable {G : CollaredGluing I X ι}
 theorem left_ne_right (i : ι) : G.left i ≠ G.right i := by
   intro h
   have hc := G.blocks_injective (a₁ := (i, true)) (a₂ := (i, false)) (by
-    simp only [cond_true, cond_false]
+    simp only [Bool.cond_true, Bool.cond_false]
     exact h)
   nomatch (Prod.mk.inj hc).2
 
 theorem left_ne_left {i j : ι} (h : i ≠ j) : G.left i ≠ G.left j := by
   intro hij
   exact h (Prod.mk.inj (G.blocks_injective (a₁ := (i, true)) (a₂ := (j, true)) (by
-    simp only [cond_true]
+    simp only [Bool.cond_true]
     exact hij))).1
 
 theorem left_ne_right' (i j : ι) : G.left i ≠ G.right j := by
   intro hij
   exact nomatch (Prod.mk.inj (G.blocks_injective (a₁ := (i, true)) (a₂ := (j, false)) (by
-    simp only [cond_true, cond_false]
+    simp only [Bool.cond_true, Bool.cond_false]
     exact hij))).2
 
 theorem right_ne_right {i j : ι} (h : i ≠ j) : G.right i ≠ G.right j := by
   intro hij
   exact h (Prod.mk.inj (G.blocks_injective (a₁ := (i, false)) (a₂ := (j, false)) (by
-    simp only [cond_false]
+    simp only [Bool.cond_false]
     exact hij))).1
 
 theorem disjoint_blocks {i j : ι} (h : i ≠ j) :
@@ -169,7 +169,7 @@ theorem seamChart_apply_of_nonneg [IsManifold I 1 X] (G : CollaredGluing I X ι)
     (p : ↥(G.left i).carrier × Icc (-(G.ε i)) (G.ε i)) (hp : 0 ≤ (p.2 : ℝ)) :
     G.seamChart i p = Quotient.mk'' (G.collarRight i (G.attaching i p.1,
       ⟨(p.2 : ℝ), hp, p.2.2.2⟩)) := by
-  simp only [seamChart, ContinuousMap.coe_mk, if_pos hp]
+  simp only [seamChart, ContinuousMap.coe_mk, ite_eq_left hp]
   refine congrArg (Quotient.mk'' (s₁ := (G.toBoundaryGluing).setoid)) ?_
   refine congrArg (G.collarRight i : ↥(G.right i).carrier × Icc (0 : ℝ) (G.ε i) → X) ?_
   exact Prod.ext rfl (Subtype.ext (max_eq_left hp))
@@ -179,7 +179,7 @@ theorem seamChart_apply_of_nonpos [IsManifold I 1 X] (G : CollaredGluing I X ι)
     G.seamChart i p = Quotient.mk'' (G.collarLeft i (p.1,
       ⟨-(p.2 : ℝ), neg_nonneg.mpr hp, by linarith [p.2.2.1]⟩)) := by
   rcases lt_or_eq_of_le hp with h | h
-  · simp only [seamChart, ContinuousMap.coe_mk, if_neg h.not_ge]
+  · simp only [seamChart, ContinuousMap.coe_mk, ite_eq_right h.not_ge]
     refine congrArg (Quotient.mk'' (s₁ := (G.toBoundaryGluing).setoid)) ?_
     refine congrArg (G.collarLeft i : ↥(G.left i).carrier × Icc (0 : ℝ) (G.ε i) → X) ?_
     exact Prod.ext rfl (Subtype.ext (max_eq_left (neg_nonneg.mpr hp)))

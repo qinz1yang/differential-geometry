@@ -27,9 +27,9 @@ theorem exists_isPLHomeomorphOn_slab_prism_of_affineIndependent
   let _ : Fintype ι := Fintype.ofFinite ι
   let A := Fintype.linearCombination ℝ v
   let g := ℓ.comp A
-  let P := stdSimplex ℝ ι ∩ {x | a ≤ g x ∧ g x ≤ b}
-  let Q := stdSimplex ℝ ι ∩ {x | g x = r}
-  have hA : IsPLHomeomorphOn A (stdSimplex ℝ ι) (convexHull ℝ (range v)) :=
+  let P := Convexity.StdSimplex.coordinateSet ℝ ι ∩ {x | a ≤ g x ∧ g x ≤ b}
+  let Q := Convexity.StdSimplex.coordinateSet ℝ ι ∩ {x | g x = r}
+  have hA : IsPLHomeomorphOn A (Convexity.StdSimplex.coordinateSet ℝ ι) (convexHull ℝ (range v)) :=
     isPLHomeomorphOn_linearCombination_of_affineIndependent hv
   have hP : IsPolyhedron P :=
     ((isHPolytope_stdSimplex ι).inter_preimage isHPolytope_Icc g.toAffineMap).isPolyhedron

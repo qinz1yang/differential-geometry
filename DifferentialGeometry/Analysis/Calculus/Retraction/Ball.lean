@@ -160,7 +160,7 @@ theorem lipschitzWith_one_ballRetraction {R : ℝ} (hR : 0 ≤ R) :
   have hp0 : 0 ≤ ‖x‖ := norm_nonneg x
   have hq0 : 0 ≤ ‖y‖ := norm_nonneg y
   have hcs : ⟪x, y⟫_ℝ ≤ ‖x‖ * ‖y‖ := real_inner_le_norm x y
-  have hab : 0 ≤ 1 - a * b := by nlinarith [mul_le_one₀ ha1 hb0 hb1]
+  have hab : 0 ≤ 1 - a * b := sub_nonneg.mpr ((mul_le_of_le_one_left hb0 ha1).trans hb1)
   have hmin : (a * ‖x‖ - b * ‖y‖) ^ 2 ≤ (‖x‖ - ‖y‖) ^ 2 := by
     rw [hax, hby]
     have hlip : LipschitzWith 1 (fun t : ℝ => min t R) := (LipschitzWith.id).min_const R

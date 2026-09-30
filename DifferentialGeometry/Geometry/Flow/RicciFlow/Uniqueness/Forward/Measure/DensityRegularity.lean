@@ -12,6 +12,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffAt metricDiffAt_apply metricDiffSq metricDiffSq_def)
+
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
@@ -20,7 +23,6 @@ open DifferentialGeometry.Integral
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
-open _root_.Tensor0SBundle
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature

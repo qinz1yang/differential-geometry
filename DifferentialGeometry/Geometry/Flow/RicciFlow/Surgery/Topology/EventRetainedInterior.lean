@@ -106,13 +106,13 @@ theorem exists_regularCrossing_of_mem_interior_oldOutput
   let f : V → P.Carrier := Subtype.val ∘ k
   have hf : ContMDiff ThreeModel ThreeModel ∞ f := E.transition.core_induced.contMDiff.comp hk
   have hkinj (y : V) : Injective (mfderiv ThreeModel (𝓡∂ 3) k y) := by
-    have hinj := (hz.isImmersion.isImmersionAt y).injective_mfderiv (by simp)
+    have hinj := (hz.isImmersion.isImmersionAt y).mfderiv_injective (by simp)
     rw [← hkz, mfderiv_comp y
       (E.transition.core_inclusion_smooth.contMDiff.mdifferentiableAt (by simp))
       (hk.mdifferentiableAt (by simp))] at hinj
     exact Function.Injective.of_comp hinj
   have hfinj (y : V) : Injective (mfderiv ThreeModel ThreeModel f y) := by
-    have hi := (E.transition.core_induced.isImmersion.isImmersionAt (k y)).injective_mfderiv (by simp)
+    have hi := (E.transition.core_induced.isImmersion.isImmersionAt (k y)).mfderiv_injective (by simp)
     rw [show f = Subtype.val ∘ k from rfl,
       mfderiv_comp y (E.transition.core_induced.contMDiff.mdifferentiableAt (by simp))
         (hk.mdifferentiableAt (by simp))]

@@ -32,9 +32,9 @@ theorem nonempty_homeomorph_of_cylinder_ends
     apply Subtype.ext
     exact homeomorphUnitSphereProd_apply_snd_coe E x
   let F : E → X := fun x => if hx : x = 0 then P else c (r ⟨x, hx⟩)
-  have hF₀ : F 0 = P := dif_pos rfl
+  have hF₀ : F 0 = P := dite_eq_left rfl
   have hF (x : ({0}ᶜ : Set E)) : F x = c (r x) := by
-    exact dif_neg (show (x : E) ≠ 0 from x.property)
+    exact dite_eq_right (show (x : E) ≠ 0 from x.property)
   have hFU (x : E) : F x ∈ U ∪ {P} := by
     by_cases hx : x = 0
     · subst x

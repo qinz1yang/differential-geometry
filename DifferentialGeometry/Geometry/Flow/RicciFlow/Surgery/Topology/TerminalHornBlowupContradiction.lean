@@ -22,7 +22,7 @@ universe u
 
 theorem exists_tolerance_false_of_deep_horn_sequence :
     ∃ epsW : ℝ, 0 < epsW ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : ℕ → RetainedCoreHistory P₀)
+    ∀ (H : ℕ → RetainedCoreHistory.{u})
       (hend : ∀ n, (H n).time (Fin.last (H n).eventCount) = (H n).horizon) {s τ : ℕ → ℝ}
       (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
         ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -144,7 +144,7 @@ theorem exists_tolerance_false_of_deep_horn_sequence :
   obtain ⟨etaD, hetaD, hdeepL⟩ :=
     ObservedHistory.exists_tolerance_eventually_neckAlternative_of_isTracedRegion_uniform.{u}
   refine ⟨min epsW₀ etaD, lt_min hepsW₀ hetaD, ?_⟩
-  intro P₀ H hend s τ G hG hat hτs y R hR hscal hRlim hRt κ ε ε₁ C1 C2 qcan Cq Ctime phi hκ hε
+  intro H hend s τ G hG hat hτs y R hR hscal hRlim hRt κ ε ε₁ C1 C2 qcan Cq Ctime phi hκ hε
     hεW hεcross hε₁ hqC hphi hpinch hpinchG hderiv hderivG hclass hcanG hnc hncG hballLow hballUp
     htopneck S V W hV hW hVW hS hpoints eps heps heps11 hnoneck
   have hεW₀ : ε ≤ epsW₀ := hεW.trans (min_le_left _ _)

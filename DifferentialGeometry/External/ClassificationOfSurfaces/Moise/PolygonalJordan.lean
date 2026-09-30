@@ -3021,7 +3021,7 @@ theorem eventually_edgeCrossed_iff {P : Plane} (hP : P ∉ J.carrier) (i : ZMod 
     fun hc => (isOpen_lt (continuous_coord 0) (continuous_crossingX _ _)).eventually_mem hc
   by_cases hU : i ∈ J.upLeftEdges P
   · -- rising flipping edge: status iff (P 1 ≤ Q 1) eventually
-    simp only [hU, if_pos]
+    simp only [hU, ite_eq_left]
     have hU' := hU
     simp only [upLeftEdges, Finset.mem_filter, Finset.mem_univ, true_and] at hU'
     obtain ⟨hbase1, hbase0, htop⟩ | ⟨hbase1, hbase0, htop⟩ := hU'
@@ -3049,7 +3049,7 @@ theorem eventually_edgeCrossed_iff {P : Plane} (hP : P ∉ J.carrier) (i : ZMod 
         exact ⟨Or.inr ⟨by rw [hbase1]; exact hQ1, hQtop⟩, hQx⟩
   by_cases hD : i ∈ J.downLeftEdges P
   · -- falling flipping edge: status iff (Q 1 < P 1) eventually
-    simp only [hU, hD, if_neg, if_pos, not_false_iff]
+    simp only [hU, hD, ite_eq_right, ite_eq_left, not_false_iff]
     have hD' := hD
     simp only [downLeftEdges, Finset.mem_filter, Finset.mem_univ, true_and] at hD'
     obtain ⟨hbase1, hbase0, hbot⟩ | ⟨hbase1, hbase0, hbot⟩ := hD'
@@ -3076,7 +3076,7 @@ theorem eventually_edgeCrossed_iff {P : Plane} (hP : P ∉ J.carrier) (i : ZMod 
       · intro hQ1
         exact ⟨Or.inl ⟨hQbot.le, by rw [hbase1]; exact hQ1⟩, hQx⟩
   · -- non-flipping edge: status eventually constant
-    simp only [hU, hD, if_neg, not_false_iff]
+    simp only [hU, hD, ite_eq_right, not_false_iff]
     by_cases hAB : (J.vertex i) 1 = (J.vertex (i + 1)) 1
     · -- horizontal: never crossed on either side
       filter_upwards [] with Q

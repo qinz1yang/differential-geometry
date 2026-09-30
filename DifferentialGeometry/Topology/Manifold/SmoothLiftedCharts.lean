@@ -20,7 +20,7 @@ theorem contMDiffOn_lift_openEmbedding (f : S → T)
     (e : OpenPartialHomeomorph S Z) (he : ContMDiffOn I K ∞ e e.source) :
     ContMDiffOn J K ∞ (e.lift_openEmbedding hf) (e.lift_openEmbedding hf).source := by
   rintro y ⟨x, hx, rfl⟩
-  have hi := (hs x).localInverse_contMDiffAt
+  have hi := (hs x).contMDiffAt_localInverse
   have hix : (hs x).localInverse (f x) = x :=
     (hs x).localInverse_left_inv (hs x).localInverse_mem_target
   have hc : ContMDiffAt I K ∞ e ((hs x).localInverse (f x)) := by

@@ -16,7 +16,7 @@ theorem IsPLHomeomorphOn.isPseudoCell_of_mem_interior
     {Δ : Set (EuclideanSpace ℝ (Fin 3))}
     {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
     {P : EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hP : P ∈ Δ \ r '' stdSimplexBoundary 2) :
     IsPseudoCell Δ (Δ \ r '' stdSimplexBoundary 2)
       (r '' stdSimplexBoundary 2) P := by

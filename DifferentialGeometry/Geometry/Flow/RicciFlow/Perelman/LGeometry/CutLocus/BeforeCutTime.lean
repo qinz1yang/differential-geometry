@@ -345,9 +345,15 @@ theorem lMinimizingVector_unique_lt
   have hposChosen : alphaW c = alphaZ c := by
     exact hWgerm.eq_of_nhds.symm.trans (hnode.trans hZgerm.eq_of_nhds)
   have hvelChosen : lVelocity (I := I) alphaW c = lVelocity (I := I) alphaZ c := by
+    have hWval : alphaW c = gammaW c := hWgerm.eq_of_nhds.symm
+    have hZval : alphaZ c = gammaZ c := hZgerm.eq_of_nhds.symm
+    have hderW := hWgerm.symm.mfderiv_eq
+      (I := modelWithCornersSelf Real Real) (I' := I)
+    have hderZ := hZgerm.symm.mfderiv_eq
+      (I := modelWithCornersSelf Real Real) (I' := I)
     unfold lVelocity
-    rw [← hWgerm.mfderiv_eq (I := modelWithCornersSelf Real Real) (I' := I),
-      ← hZgerm.mfderiv_eq (I := modelWithCornersSelf Real Real) (I' := I)]
+    rw [hWval, hZval]
+    rw [hderW, hderZ]
     exact hnodeVelocity
   have hsolEq := lRegularizedSolution_eqOn S hS T hJWopen hJWconn hcJW hJZopen hJZconn hcJZ
     hchosenW.2.2 hchosenZ.2.2 hposChosen hvelChosen

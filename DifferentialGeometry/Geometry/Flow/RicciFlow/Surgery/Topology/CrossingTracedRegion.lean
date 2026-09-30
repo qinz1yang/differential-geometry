@@ -16,8 +16,8 @@ universe u
 
 namespace RetainedCoreHistory
 
-private theorem capWindowPoint_of_stage_eq {P₀ : OrientedThreeStage.{u}}
-    {H : RetainedCoreHistory P₀} {p : CutoffParameters}
+private theorem capWindowPoint_of_stage_eq
+    {H : RetainedCoreHistory.{u}} {p : CutoffParameters}
     {records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p}
     {k k' : Fin (H.eventCount + 1)} (hk : k = k') {y : (H.stage k).Carrier}
     {y' : (H.stage k').Carrier} (hy : HEq y y') {t D θ : ℝ}
@@ -35,7 +35,7 @@ private theorem derivativeBoundBefore_double {P : OrientedThreeStage.{u}} {a s :
   push_cast
   nlinarith [Ctime.coe_nonneg, sq_nonneg (G.flow.scalar t y)]
 
-theorem derivativeBound_inputs_extendAt {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+theorem derivativeBound_inputs_extendAt (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -71,7 +71,7 @@ theorem exists_eventually_isTracedRegion_extendAt_of_scalar_le_along_traces
     {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric} {Ctime : ℝ≥0} {phi : ℝ → ℝ}
     (hphi : Perelman.AdmissiblePinchingFunction phi)
     {D θcap qcan s t : ℕ → ℝ} {p₀ p : ℕ → CutoffParameters} {δb ρb : ℕ → ℝ}
-    {H : ℕ → RetainedCoreHistory P₀}
+    {H : ℕ → RetainedCoreHistory.{u}}
     {records : ∀ n i, GeometricCutoffRecord (H n).toHistory i (p n)}
     {G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n)}

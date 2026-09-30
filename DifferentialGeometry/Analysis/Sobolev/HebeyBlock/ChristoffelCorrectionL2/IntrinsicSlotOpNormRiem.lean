@@ -187,7 +187,8 @@ private lemma slotInputConjCLM_prod_norm_le_on_pouTsupport
         ‖slotInputConjCLM (I := I) g r α
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) i b j‖)
       ≤ ∏ _j : Fin r, max C₀ 1 :=
-        Finset.prod_le_prod (fun j _ => norm_nonneg _) (fun j _ => h_factor_le j)
+        Finset.prod_le_prod₀ (fun j _ => norm_nonneg _)
+          (fun j _ => h_factor_le j)
     _ = (max C₀ 1) ^ r := by rw [Finset.prod_const]; simp
 
 private lemma slotOutputConjCLM_prod_norm_le_on_pouTsupport
@@ -220,7 +221,8 @@ private lemma slotOutputConjCLM_prod_norm_le_on_pouTsupport
         ‖slotOutputConjCLM (I := I) g s α
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) l b j‖)
       ≤ ∏ _j : Fin s, max C₀ 1 :=
-        Finset.prod_le_prod (fun j _ => norm_nonneg _) (fun j _ => h_factor_le j)
+        Finset.prod_le_prod₀ (fun j _ => norm_nonneg _)
+          (fun j _ => h_factor_le j)
     _ = (max C₀ 1) ^ s := by rw [Finset.prod_const]; simp
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]

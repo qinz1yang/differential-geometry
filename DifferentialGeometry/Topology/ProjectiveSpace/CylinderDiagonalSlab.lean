@@ -19,7 +19,8 @@ local notation "S" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 private def absAxialCoordinate : CylinderDiagonalQuotient → ℝ :=
   Quotient.lift (fun p : S × ℝ => |p.2|) (by
     intro p q h
-    rcases h with h | h
+    have hpq : proj p = proj q := Quotient.sound h
+    rcases (proj_eq_iff p q).mp hpq with h | h
     · rw [h]
     · rw [h]
       exact (abs_neg p.2).symm)

@@ -183,7 +183,7 @@ end OrientedThreeStage.IncomingSlab
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 theorem eventSlabsSpatiallyCanonical_mono_eps {ε ε' C1 C2 q : ℝ}
     {k : Fin (H.eventCount + 1)} (hε : ε ≤ ε') (hε' : ε' < 1 / 11) :

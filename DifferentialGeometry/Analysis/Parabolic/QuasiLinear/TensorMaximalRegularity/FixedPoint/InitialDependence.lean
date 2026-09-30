@@ -64,7 +64,7 @@ theorem quasilinear_fixed_forcing_initial_sub_norm_le
     filter_upwards [timeNemyTame_ae hzero hR J hstate N A B C D hD hzeroN htame
       (L G) hstateG hmeasG, hN, hstateG] with t ht hn hgt
     rw [ht]
-    simpa only [aeSetLift, dif_pos hgt] using hn ⟨L G t, hgt⟩
+    simpa only [aeSetLift, dite_eq_left hgt] using hn ⟨L G t, hgt⟩
   have hshift := quasilinear_forcing_shift_sub_norm_le m Q J alpha reaction
     (fun t => offset t (L G t)) f g (L G) NG G ha halpha hreaction
       hstatef hstateg hbound hNG hG

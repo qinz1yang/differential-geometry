@@ -483,7 +483,7 @@ private theorem spatial_cap_fair_anchored_frontier_process [PreconnectedSpace M]
   obtain ⟨n, hn, hsi⟩ := hfair i hi₀ (max N (k + 1))
   have hNn : N ≤ n := (le_max_left _ _).trans hn
   have hin : i ∈ (seq n).anchoredLabels g eps ι A := (hactive n hNn).symm ▸ hi
-  have hselect : selected n = i := (if_pos (hsi.symm ▸ hin)).trans hsi
+  have hselect : selected n = i := (ite_eq_left (hsi.symm ▸ hin)).trans hsi
   exact ⟨n, hselect, lt_of_lt_of_le (Nat.lt_succ_self k) ((le_max_right _ _).trans hn)⟩
 
 

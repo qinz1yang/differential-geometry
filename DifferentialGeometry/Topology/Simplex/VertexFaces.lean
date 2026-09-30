@@ -1,15 +1,18 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.VertexHomeomorphism
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 
 set_option autoImplicit false
 noncomputable section
 open Set Finset
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 variable {ι E : Type*} [Fintype ι]
   [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 theorem vertexMap_mem_convexHull_image_iff {v : ι → E} (hv : AffineIndependent ℝ v)
-    (s : Set ι) (x : stdSimplex ℝ ι) :
+    (s : Set ι) (x : coordinateSet ℝ ι) :
     vertexMap v x ∈ convexHull ℝ (v '' s) ↔ ∀ i ∉ s, x.val i = 0 := by
   classical
   constructor
@@ -32,7 +35,7 @@ theorem vertexMap_mem_convexHull_image_iff {v : ι → E} (hv : AffineIndependen
 
 
 theorem vertexMap_mem_proper_face_iff {v : ι → E} (hv : AffineIndependent ℝ v)
-    (x : stdSimplex ℝ ι) :
+    (x : coordinateSet ℝ ι) :
     (∃ s : Finset ι, s ≠ Finset.univ ∧ vertexMap v x ∈ convexHull ℝ (v '' (s : Set ι))) ↔
       x ∈ boundary ι := by
   classical

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Analysis.Parabolic.Bernstein.FirstOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Regularity.Norm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.SolutionHeatEquation
@@ -64,7 +65,7 @@ theorem nablaRm_normSq_cutoff_le
     let w := nablaKRm04NormSqIntrinsic S
     have hheat (k : ℕ) (hk : k ≤ 1) :
         TowerHeatBoundOn (D := D) w (nablaKNormLap S) c k := by
-      apply TowerHeatBoundOn.mono_cost (h := towerHeatBoundOn_of_solution S hS k)
+      apply TowerHeatBoundOn.mono_const (h := towerHeatBoundOn_of_solution S hS k)
       rcases (show k = 0 ∨ k = 1 by omega) with rfl | rfl
       · exact le_max_left _ _
       · exact le_max_right _ _

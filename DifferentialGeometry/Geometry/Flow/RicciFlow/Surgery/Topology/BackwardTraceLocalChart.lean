@@ -49,13 +49,13 @@ def prepend (A : BackwardPointTrace H i.succ last hle endpoint)
       have := i.castSucc_lt_succ
       rw [h] at hle
       exact (not_le_of_gt this) hle
-    simp only [dif_neg hne]
+    simp only [dite_eq_right hne]
     exact A.endpoint_eq
   crossing j hf hl := by
     by_cases hji : j = i
     · subst j
       have hsne : i.succ ≠ i.castSucc := ne_of_gt i.castSucc_lt_succ
-      simpa only [dif_pos True.intro, dif_neg hsne] using hcross
+      simpa only [dite_eq_left True.intro, dite_eq_right hsne] using hcross
     · have hcast : j.castSucc ≠ i.castSucc := by
         intro h
         exact hji (Fin.castSucc_injective _ h)
@@ -68,7 +68,7 @@ def prepend (A : BackwardPointTrace H i.succ last hle endpoint)
         apply Fin.le_iff_val_le_val.mpr
         have hlt : i.castSucc < j.castSucc := lt_of_le_of_ne hf (Ne.symm hcast)
         exact Nat.succ_le_iff.mpr hlt
-      simpa only [dif_neg hcast, dif_neg hsne] using A.crossing j hfirst hl
+      simpa only [dite_eq_right hcast, dite_eq_right hsne] using A.crossing j hfirst hl
 
 @[simp] theorem prepend_point_first (A : BackwardPointTrace H i.succ last hle endpoint)
     (p : (H.stage i.castSucc).Carrier)

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.TetrahedronJoinQuotient
 import DifferentialGeometry.Topology.Simplex.TetrahedronGenLoop
 import DifferentialGeometry.Topology.Simplex.TetrahedronJoinBoundary
@@ -5,6 +6,8 @@ import DifferentialGeometry.Topology.Simplex.TetrahedronJoinBoundary
 noncomputable section
 open ContinuousMap
 open scoped unitInterval
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 variable {X : Type*} [TopologicalSpace X] {x : X}
 
@@ -19,7 +22,7 @@ private theorem genLoopCubeMap_one (p : GenLoop (Fin 3) X x) (t u v : I) :
     genLoopCubeMap p (1,t,u) = genLoopCubeMap p (1,v,u) := by
   exact (p.property _ ⟨2,Or.inr rfl⟩).trans (p.property _ ⟨2,Or.inr rfl⟩).symm
 
-def tetrahedronGenLoopRepresentative (p : GenLoop (Fin 3) X x) : C(stdSimplex ℝ (Fin 4), X) :=
+def tetrahedronGenLoopRepresentative (p : GenLoop (Fin 3) X x) : C(coordinateSet ℝ (Fin 4), X) :=
   tetrahedronJoinDesc (genLoopCubeMap p) (genLoopCubeMap_zero p) (genLoopCubeMap_one p)
 
 theorem tetrahedronGenLoopRepresentative_join (p : GenLoop (Fin 3) X x) (q : I × I × I) :
@@ -27,7 +30,7 @@ theorem tetrahedronGenLoopRepresentative_join (p : GenLoop (Fin 3) X x) (q : I �
   tetrahedronJoinDesc_apply (genLoopCubeMap p) (genLoopCubeMap_zero p) (genLoopCubeMap_one p) q
 
 theorem tetrahedronGenLoopRepresentative_boundary (p : GenLoop (Fin 3) X x)
-    (q : stdSimplex ℝ (Fin 4)) (hq : q ∈ boundary (Fin 4)) :
+    (q : coordinateSet ℝ (Fin 4)) (hq : q ∈ boundary (Fin 4)) :
     tetrahedronGenLoopRepresentative p q = x := by
   obtain ⟨r, rfl⟩ := tetrahedronJoin_surjective q
   rw [tetrahedronGenLoopRepresentative_join]
@@ -43,13 +46,13 @@ theorem tetrahedronGenLoop_representative (p : GenLoop (Fin 3) X x) :
   fin_cases i <;> rfl
 
 theorem exists_tetrahedronGenLoop_eq (p : GenLoop (Fin 3) X x) :
-    ∃ g : C(stdSimplex ℝ (Fin 4), X), ∃ hg : ∀ q ∈ boundary (Fin 4), g q = x,
+    ∃ g : C(coordinateSet ℝ (Fin 4), X), ∃ hg : ∀ q ∈ boundary (Fin 4), g q = x,
       tetrahedronGenLoop g x hg = p :=
   ⟨tetrahedronGenLoopRepresentative p, tetrahedronGenLoopRepresentative_boundary p,
     tetrahedronGenLoop_representative p⟩
 
 theorem exists_tetrahedronGenLoop_class_eq (a : HomotopyGroup (Fin 3) X x) :
-    ∃ g : C(stdSimplex ℝ (Fin 4), X), ∃ hg : ∀ q ∈ boundary (Fin 4), g q = x,
+    ∃ g : C(coordinateSet ℝ (Fin 4), X), ∃ hg : ∀ q ∈ boundary (Fin 4), g q = x,
       (⟦tetrahedronGenLoop g x hg⟧ : HomotopyGroup (Fin 3) X x) = a := by
   induction a using Quotient.inductionOn with
   | h p =>

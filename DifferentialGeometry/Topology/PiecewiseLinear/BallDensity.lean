@@ -23,7 +23,7 @@ theorem IsPLBall.closure_sdiff_eq_of_isPLBall {n m : ℕ} {P A : Set E}
   have hQ : IsPLBall (n + 1) Q := isPLBall_convexHull_of_affineIndependent T hT hTcard
   obtain ⟨p, hp⟩ := hP
   obtain ⟨q, hq⟩ := hQ
-  let f := q ∘ Function.invFunOn p (stdSimplex ℝ (Fin (n + 2)))
+  let f := q ∘ Function.invFunOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)))
   have hf : IsPLHomeomorphOn f P Q := hp.symm.trans hq
   have hA' : IsPLBall m (f '' A) := hA.of_isPLHomeomorphOn (hf.restrict hA.isPolyhedron hAP)
   have hempty : interior (f '' A) = ∅ := hA'.interior_eq_empty_of_lt_finrank (by simpa using hm)
@@ -92,11 +92,11 @@ theorem IsPLBall.closure_sdiff_eq_of_inter_subset_iUnion {ι : Type*} {n : ℕ} 
 omit [FiniteDimensional ℝ E] in
 theorem IsPLBall.nontrivial {n : ℕ} {P : Set E} (hP : IsPLBall (n + 1) P) : P.Nontrivial := by
   obtain ⟨f, hf⟩ := hP
-  refine ⟨f (Pi.single 0 1), hf.bijOn.mapsTo (single_mem_stdSimplex ℝ 0),
-    f (Pi.single 1 1), hf.bijOn.mapsTo (single_mem_stdSimplex ℝ 1), ?_⟩
+  refine ⟨f (Pi.single 0 1), hf.bijOn.mapsTo (Convexity.StdSimplex.single_mem_coordinateSet ℝ 0),
+    f (Pi.single 1 1), hf.bijOn.mapsTo (Convexity.StdSimplex.single_mem_coordinateSet ℝ 1), ?_⟩
   intro heq
-  have h := congrFun (hf.bijOn.injOn (single_mem_stdSimplex ℝ 0)
-    (single_mem_stdSimplex ℝ 1) heq) 0
+  have h := congrFun (hf.bijOn.injOn (Convexity.StdSimplex.single_mem_coordinateSet ℝ 0)
+    (Convexity.StdSimplex.single_mem_coordinateSet ℝ 1) heq) 0
   simp only [Pi.single_eq_same, Pi.single_eq_of_ne (show (0 : Fin (n + 2)) ≠ 1 by simp)] at h
   exact one_ne_zero h
 

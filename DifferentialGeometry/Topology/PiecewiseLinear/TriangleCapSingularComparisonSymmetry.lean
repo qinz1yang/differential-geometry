@@ -16,8 +16,8 @@ theorem exists_triangle_cap_with_singular_comparison_of_cap_below
     (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
     {p : E} {Q Q' D J C : Set E}
     {u v : (Fin 3 → ℝ) → E}
-    (hu : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) Q)
-    (hv : IsPLHomeomorphOn v (stdSimplex ℝ (Fin 3)) D)
+    (hu : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q)
+    (hv : IsPLHomeomorphOn v (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (huJ : u '' stdSimplexBoundary 2 = J) (hvJ : v '' stdSimplexBoundary 2 = J)
     (hQD : IsPLSphere 2 (Q ∪ D)) (hunion : Q ∪ Q' = K.space)
     (hQ' : IsClosed Q') (hinter : Q ∩ Q' ⊆ D) (hQDinter : Q ∩ D ⊆ J)

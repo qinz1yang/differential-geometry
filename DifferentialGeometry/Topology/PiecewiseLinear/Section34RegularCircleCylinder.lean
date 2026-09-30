@@ -60,7 +60,7 @@ theorem IsPLDerivedNeighborhoodExhaustion.exists_cylindrical_piece_of_isPolyhedr
     ∃ (m : ℕ) (T : PLPieceIn (EuclideanSpace ℝ (Fin m)) 3 X N)
       (f : (Fin 3 → ℝ) × ℝ → EuclideanSpace ℝ (Fin m)),
       IsCombinatorialManifoldWithBoundary 3 T.complex ∧
-      IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) T.complex.space := by
+      IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) T.complex.space := by
   obtain ⟨m, T, A, L, hAfin, hLfin, hAT, hLA, -, hA, hD, hNimage, hJimage⟩ :=
     h.exists_finite_stage_of_isCompact hN
   let _ : DecidableEq (EuclideanSpace ℝ (Fin m)) := Classical.decEq _
@@ -81,7 +81,7 @@ theorem IsPLDerivedNeighborhoodExhaustion.exists_cylindrical_piece_of_isPolyhedr
   have hout : ∃ Q : PLPieceIn (EuclideanSpace ℝ (Fin m)) 3 X
       (T.map '' (derivedNeighborhood A L).space),
       IsCombinatorialManifoldWithBoundary 3 Q.complex ∧
-      IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) Q.complex.space := by
+      IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q.complex.space := by
     exact ⟨Q, hQD.symm ▸ hD, hQD.symm ▸ hf⟩
   rw [hNimage] at hout
   obtain ⟨Q, hQ, hf⟩ := hout
@@ -149,8 +149,8 @@ theorem IsPLHomeomorphInto.exists_cylindrical_regular_circle_model
       (f : (Fin 3 → ℝ) × ℝ → EuclideanSpace ℝ (Fin 3)),
       R.faces.Finite ∧ R.space = Function.invFunOn u P '' N ∧ R.space ⊆ P ∧
       u '' R.space = N ∧ IsCombinatorialManifoldWithBoundary 3 R ∧
-      IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) R.space ∧
-      ∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = f (x, 1) := by
+      IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) R.space ∧
+      ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = f (x, 1) := by
   obtain ⟨m, T, f₀, hT, hf₀⟩ := h.exists_cylindrical_piece_of_isPolyhedralSphere hN hJ
   let _ : Finite T.complex.faces := T.finite_faces.to_subtype
   have hτ := T.isPLHomeomorphOn_invFunOn_comp hu hNP
@@ -212,8 +212,8 @@ theorem exists_section34_outer_tube_cylindrical_model
       IsPLBall 3 P ∧ IsPLHomeomorphInto 3 u P ∧ u '' P = G (ends e).1 '' Cc (ends e).1 ∧
       R.faces.Finite ∧ R.space ⊆ P ∧ u '' R.space = Sp e ∧
       IsCombinatorialManifoldWithBoundary 3 R ∧
-      IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) R.space ∧
-      ∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = f (x, 1) := by
+      IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) R.space ∧
+      ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = f (x, 1) := by
   obtain ⟨-, hCc, -, -, -, -, -, -, -, hJ, hreg, htor, hSn, -⟩ := id hprep
   obtain ⟨hG, -, -, htube, -⟩ := id hpack
   obtain ⟨P, r, u, hr, hu, hcell, -⟩ := hCc (ends e).1

@@ -46,11 +46,12 @@ theorem eLpNorm_spatial_diffQuot_le_eLpNorm_weakPartial_local
   calc
     _ = eLpNorm (fun t => eLpNorm (diffQuot k h (fun x => U (t, x)))
         2 (volume.restrict Ω'')) 2 μ :=
-      (eLpNorm_eLpNorm (by norm_num) hDQ.aestronglyMeasurable.enorm).symm
+      (eLpNorm_eLpNorm (by norm_num) hDQ.aestronglyMeasurable).symm
     _ ≤ eLpNorm (fun t => eLpNorm (fun x => V (t, x))
         2 (volume.restrict Ω')) 2 μ := by
       apply eLpNorm_mono_enorm_ae
+        (aestronglyMeasurable_eLpNorm_prodMk_left (by norm_num) hDQ.aestronglyMeasurable)
       simpa only [enorm_eq_self] using hslice
-    _ = _ := eLpNorm_eLpNorm (by norm_num) (Lp.stronglyMeasurable V).aestronglyMeasurable.enorm
+    _ = _ := eLpNorm_eLpNorm (by norm_num) (Lp.stronglyMeasurable V).aestronglyMeasurable
 
 end DifferentialGeometry.Analysis.Sobolev

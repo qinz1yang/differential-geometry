@@ -31,7 +31,7 @@ private theorem endpoint_scalar_eq' {P : OrientedThreeStage.{u}} {a s : ℝ}
 
 private theorem normalized_inner_ball_volume_lower_bound_of_scaled_tests
     (Phi : ℝ → ℝ) (hPhi : Perelman.AdmissiblePinchingFunction Phi) {C : ℝ≥0}
-    (P : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (s : ℕ → ℝ)
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -180,7 +180,7 @@ private theorem normalized_inner_ball_volume_lower_bound_of_scaled_tests
     (htested n)
 
 theorem RetainedCoreHistory.exists_pointed_convergence_at_scalar_escape_of_final_slab_window
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
       ((H i).time (Fin.last (H i).eventCount)) (time i)) :
     let G := fun i => (A i).restrictIncoming le_rfl (A i).lt le_rfl;
@@ -349,7 +349,7 @@ theorem RetainedCoreHistory.exists_pointed_convergence_at_scalar_escape_of_final
     obtain ⟨r, Amax, θ, hrr, hrrho, hAmax, hθ, hbudget, hb⟩ := hbuf R hR hRrho
     exact ⟨r, Amax, θ, hrr, hrrho, hAmax, hθ, hbudget, hind.tendsto_atTop.eventually hb⟩
   have hvol := normalized_inner_ball_volume_lower_bound_of_scaled_tests
-    Phi hPhi (fun i => P₀ (ind i)) (fun i => H (ind i)) (fun i => time (ind i))
+    Phi hPhi (fun i => H (ind i)) (fun i => time (ind i))
     (fun i => G (ind i)) (fun i => L (ind i)) (fun i => hinit (ind i))
     (fun i => hs (ind i)) (fun i => x (ind i)) (fun i => q (ind i))
     (fun i => (A (ind i)).flow.scalar (time (ind i)) (x (ind i)).val) (fun i => hq (ind i))
@@ -391,7 +391,7 @@ theorem RetainedCoreHistory.exists_pointed_convergence_at_scalar_escape_of_final
     hscalarEscape.comp hf.tendsto_atTop⟩
 
 theorem RetainedCoreHistory.noncollapsedBefore_closedPrefix_of_terminalNoncollapsedBefore
-    {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+    (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =

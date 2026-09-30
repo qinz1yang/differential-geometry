@@ -113,26 +113,28 @@ private theorem local_spacetime_weak_form_terms_memLp
   have hap : MemLp (fun p : ℝ × EuStd => a p.1) ∞ μ :=
     hlift _ (ha.comp continuous_fst.continuousOn (fun _ hp => hp.1))
   have hUφ : MemLp (fun p : ℝ × EuStd => U p * φ p) 2 μ :=
-    MemLp.mul' (p := 2) (q := ∞) (r := 2) hφp (Lp.memLp U)
+    (Lp.memLp U).fun_mul (p := 2) (q := ∞) (r := 2) hφp
   have hUφt : MemLp (fun p : ℝ × EuStd => U p * fderiv ℝ φ p (1, 0)) 2 μ :=
-    MemLp.mul' (p := 2) (q := ∞) (r := 2) hφt (Lp.memLp U)
-  refine ⟨MemLp.mul' (r := 2) hUφ hρ, MemLp.mul' (r := 2) hUφt hρ, ?_, ?_, ?_⟩
-  · exact MemLp.mul' (r := 2) (MemLp.mul' (r := 2) hUφ (hτ.const_mul (1 / 2 : ℝ))) hρ
+    (Lp.memLp U).fun_mul (p := 2) (q := ∞) (r := 2) hφt
+  refine ⟨hρ.fun_mul (r := 2) hUφ, hρ.fun_mul (r := 2) hUφt, ?_, ?_, ?_⟩
+  · simpa only [mul_assoc] using
+      hρ.fun_mul (r := 2) ((hτ.const_mul (1 / 2 : ℝ)).fun_mul (r := 2) hUφ)
   · intro i
     have hsum : MemLp (fun p : ℝ × EuStd =>
         ∑ j : Fin (Module.finrank ℝ EuN),
           A p.1 i j p.2 * fderiv ℝ (fun z => φ (p.1, z)) p.2 (EuclideanSpace.single j 1)) ∞ μ := by
       exact memLp_finsetSum Finset.univ fun j _ =>
-        MemLp.mul' (p := ∞) (q := ∞) (r := ∞) (hφd j) (hA i j)
+        (hA i j).fun_mul (p := ∞) (q := ∞) (r := ∞) (hφd j)
     have hf : MemLp (fun p : ℝ × EuStd =>
         (∑ j : Fin (Module.finrank ℝ EuN),
           A p.1 i j p.2 * fderiv ℝ (fun z => φ (p.1, z)) p.2 (EuclideanSpace.single j 1)) * ρ p.1 p.2 -
           B p.1 i p.2 * ρ p.1 p.2 * φ p) ∞ μ :=
-      (MemLp.mul' (r := ∞) hρ hsum).sub
-        (MemLp.mul' (r := ∞) hφp (MemLp.mul' (r := ∞) hρ (hB i)))
-    exact MemLp.mul' (p := 2) (q := ∞) (r := 2) hf (Lp.memLp (DU i))
-  · exact MemLp.mul' (p := 2) (q := ∞) (r := 2)
-      (MemLp.mul' (r := ∞) hφp hap) (MemLp.mul' (r := 2) (Lp.memLp U) hρ)
+      (hsum.fun_mul (r := ∞) hρ).sub
+        ((hB i).fun_mul (r := ∞) hρ |>.fun_mul (r := ∞) hφp)
+    exact (Lp.memLp (DU i)).fun_mul (p := 2) (q := ∞) (r := 2) hf
+  · simpa only [mul_assoc] using
+      hρ.fun_mul (r := 2) ((Lp.memLp U).fun_mul (r := 2)
+        (hap.fun_mul (r := ∞) hφp))
 
 theorem IsWeakEvolutionSolution.integral_product_test
     {q : SmoothRiemannianMetric I_hs M}
@@ -546,8 +548,12 @@ theorem IsWeakEvolutionSolution.integral_spacetime_test_divergence
     have hd : MemLp (fun p => fderiv ℝ φ p (0, EuclideanSpace.single j 1)) ∞ ν :=
       ((hφ.continuous_fderiv (by norm_num)).clm_apply continuous_const).memLp_top_of_hasCompactSupport
         (hφc.fderiv_apply ℝ (0, EuclideanSpace.single j 1)) ν
-    exact (hd.mul (r := 2) (((Lp.memLp (V i)).mono_measure hmeasure).mul (r := 2) (hA i j))).integrable
-      (by norm_num)
+    have hprod := ((Lp.memLp (V i)).mono_measure hmeasure).fun_mul
+      (r := 2) (hA i j)
+    have hfull := (hd.fun_mul (r := 2) hprod).integrable (by norm_num)
+    exact hfull.congr (Filter.Eventually.of_forall fun p => by
+      dsimp only [Q]
+      ring)
   have hQsum : Integrable (fun p => ∑ i, ∑ j, Q i j p) ν :=
     integrable_finsetSum Finset.univ fun i _ => integrable_finsetSum Finset.univ fun j _ => hQ i j
   have heq (p) : f p = ρ p * U p * fderiv ℝ φ p (1, 0) + L p * φ p - ∑ i, ∑ j, Q i j p := by

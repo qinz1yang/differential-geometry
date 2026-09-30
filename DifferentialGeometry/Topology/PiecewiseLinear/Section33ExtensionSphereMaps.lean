@@ -76,7 +76,7 @@ theorem IsHandleDecompositionOfTube.exists_sphere_maps
     (hgD : ∀ e ∈ K.faces, e.card = 2 → g '' Dbd e = Ec e ∩ X)
     (hApoly : ∀ v ∈ K.vertices, IsPolyhedron (Cpp v ∩ X)) {F : Finset E3 → Set E3}
     (hF : ∀ e ∈ K.faces, e.card = 2 → ∃ r : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (F e) ∧ r '' stdSimplexBoundary 2 = Ec e ∩ X)
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (F e) ∧ r '' stdSimplexBoundary 2 = Ec e ∩ X)
     (hFX : ∀ e ∈ K.faces, e.card = 2 → F e ∩ X = Ec e ∩ X)
     (hFdisj : ∀ e ∈ K.faces, e.card = 2 → ∀ e' ∈ K.faces, e'.card = 2 → e ≠ e' →
       Disjoint (F e) (F e')) :
@@ -114,7 +114,7 @@ theorem IsHandleDecompositionOfTube.exists_sphere_maps
       exact disjoint_left.mp (ht.splitDisjoint hch.1.1 hch.1.2 he hc hne) hch.2 hx
     change (if hx : ∃ e, (e ∈ K.faces ∧ e.card = 2) ∧ x ∈ D e then φ hx.choose x else g x) =
       φ e x
-    rw [dif_pos hex, heq]
+    rw [dite_eq_left hex, heq]
   have hψg : EqOn ψ g (frontier N) := by
     intro x hx
     by_cases hex : ∃ e, (e ∈ K.faces ∧ e.card = 2) ∧ x ∈ D e
@@ -126,7 +126,7 @@ theorem IsHandleDecompositionOfTube.exists_sphere_maps
       exact (hφ e he hc).2 hxb
     · change (if hx : ∃ e, (e ∈ K.faces ∧ e.card = 2) ∧ x ∈ D e then φ hx.choose x else g x) =
         g x
-      rw [dif_neg hex]
+      rw [dite_eq_right hex]
   have hψDF : ∀ e ∈ K.faces, e.card = 2 → IsPLHomeomorphOn ψ (D e) (F e) :=
     fun e he hc => (hφ e he hc).1.congr (hψD e he hc)
   refine ⟨ψ, hψg, hψDF, fun v hv => ?_⟩
@@ -252,7 +252,7 @@ theorem IsTube.exists_isPLHomeomorphOn_glue {D Dbd : Finset E3 → Set E3}
     have hex : ∃ v, v ∈ K.vertices ∧ x ∈ C v := ⟨v, hv, hx⟩
     have hch := hex.choose_spec
     change (if hx : ∃ v, v ∈ K.vertices ∧ x ∈ C v then fv hx.choose x else x) = fv v x
-    rw [dif_pos hex]
+    rw [dite_eq_left hex]
     by_cases heq : hex.choose = v
     · rw [heq]
     · have h1 : x ∈ frontier (C hex.choose) :=

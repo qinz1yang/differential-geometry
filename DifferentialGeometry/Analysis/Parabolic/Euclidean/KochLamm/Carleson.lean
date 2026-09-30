@@ -19,10 +19,11 @@ variable {V F G : Type*}
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [BorelSpace V] [NormedSpace ℝ G] in
-theorem eLpNorm_two_sq (d : ℝ × V → G) (μ : Measure (ℝ × V)) :
+theorem eLpNorm_two_sq (d : ℝ × V → G) (μ : Measure (ℝ × V))
+    (hd : AEStronglyMeasurable d μ) :
     eLpNorm d 2 μ ^ 2 = ∫⁻ z, ENNReal.ofReal (‖d z‖ ^ 2) ∂μ := by
   rw [eLpNorm_eq_lintegral_rpow_enorm_toReal
-    (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ ∞)]
+    (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ ∞) hd]
   have hpow :
       (∫⁻ z, ‖d z‖ₑ ^ (2 : ℝ≥0∞).toReal ∂μ) =
         ∫⁻ z, ENNReal.ofReal (‖d z‖ ^ 2) ∂μ := by
@@ -90,11 +91,13 @@ theorem kochLammSourceOne_gradientCarlesonBound {T : ℝ} {A₂ Aₚ : ℝ≥0}
             ((spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)) ≤
           (A₂ : ℝ≥0∞) * (kochLammL2Scale (V := V) R)⁻¹ := by
       simpa [kochLammVolume, spaceTimeVolume, kochLammCylinder, forwardParabolicCylinder, mul_comm] using hi
+    have hf : AEStronglyMeasurable f (spaceTimeVolume : Measure (ℝ × V)) := by
+      simpa [kochLammVolume, spaceTimeVolume] using h.ae
     calc
       gradientCarlesonMass f x R =
           eLpNorm f 2
             ((spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)) ^ 2 := by
-              rw [eLpNorm_two_sq]
+              rw [eLpNorm_two_sq f _ hf.restrict]
               rfl
       _ ≤ ((A₂ : ℝ≥0∞) * (kochLammL2Scale (V := V) R)⁻¹) ^ 2 :=
         pow_le_pow_left₀ (by positivity) hi' 2
@@ -119,11 +122,13 @@ theorem KochLammPath.gradientCarlesonBound {T : ℝ} {A₀ A₂ Aₚ : ℝ≥0}
             ((spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)) ≤
           (A₂ : ℝ≥0∞) * (kochLammL2Scale (V := V) R)⁻¹ := by
       simpa [kochLammVolume, spaceTimeVolume, kochLammCylinder, forwardParabolicCylinder, mul_comm] using hi
+    have hd : AEStronglyMeasurable d (spaceTimeVolume : Measure (ℝ × V)) := by
+      simpa [kochLammVolume, spaceTimeVolume] using h.grad_ae
     calc
       gradientCarlesonMass d x R =
           eLpNorm d 2
             ((spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)) ^ 2 := by
-              rw [eLpNorm_two_sq]
+              rw [eLpNorm_two_sq d _ hd.restrict]
               rfl
       _ ≤ ((A₂ : ℝ≥0∞) * (kochLammL2Scale (V := V) R)⁻¹) ^ 2 :=
         pow_le_pow_left₀ (by positivity) hi' 2

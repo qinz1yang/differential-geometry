@@ -907,7 +907,7 @@ noncomputable def diamondFanSupportHomeomorph (a b : ℝ)
 noncomputable def diamondFanCenterRealization (a : ℝ) (ha0 : -2 < a) (ha1 : a < 2) :
     GeometricRealization (Fin 5) (diamondFanMesh a ha0 ha1).toPlaneComplex.cells := by
   let x : Fin 5 → ℝ := Pi.single 4 1
-  refine ⟨x, single_mem_stdSimplex ℝ 4, {0, 4, 2}, ?_, ?_⟩
+  refine ⟨x, ⟨fun w => (Pi.single_nonneg.mpr zero_le_one : (0 : Fin 5 → ℝ) ≤ Pi.single 4 1) w, by simp [x]⟩, {0, 4, 2}, ?_, ?_⟩
   · simp [PlaneComplex.cells, TriangleMesh.toPlaneComplex, TriangleMesh.faces,
       diamondFanMesh, diamondFanTriangles]
   · intro v hv
@@ -995,8 +995,8 @@ theorem diamondFanPatchHomeomorph_fixed_frontier (a b : ℝ)
   let x : GeometricRealization (Fin 5)
       (diamondFanMesh a ha0 ha1).toPlaneComplex.cells := e.symm z
   let weights : Fin 5 → ℝ := x.1
-  have hxstd : weights ∈ stdSimplex ℝ (Fin 5) := by
-    simpa only [weights, diamondFanMesh, TriangleMesh.toPlaneComplex] using x.property.1
+  have hxstd : (∀ v, 0 ≤ weights v) ∧ ∑ v, weights v = 1 := by
+    exact x.property.1
   have hxeval : (diamondFanMesh a ha0 ha1).toPlaneComplex.baryEval weights = p := by
     have he : e x = z := e.apply_symm_apply z
     exact congrArg Subtype.val he

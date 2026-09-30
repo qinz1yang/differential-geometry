@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTrace
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg riemannianFiberNormSq_zero)
+
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -65,7 +68,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_pairTraceOp_diff_grid
                 ((iteratedCovGrad (I := I) g₀ 0 2 j' T).toSection x)) l := by
   classical
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨c2, hc2_nn, hc2⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor
     (I := I) (M := M) g₀ 4 2 (cometricDoubleTraceField (I := I) g₀ 2)
@@ -176,7 +179,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_pairTraceOp_diff_grid
       intro m' hm'
       match m' with
       | 0 =>
-          rw [if_pos rfl]
+          rw [ite_eq_left rfl]
           have hphi0 : riemannianFiberNormSq (I := I) (M := M) g₀ (ss + 2) (ss + 0) x
               ((iteratedCovGrad (I := I) g₀ (ss + 2) ss 0
                 (cometricDoubleTraceField (I := I) g₀ ss)).toSection x) ≤ cS := by
@@ -211,7 +214,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_pairTraceOp_diff_grid
               riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ (ss + 2) ((ss + 2) + l) x _
           exact mul_le_mul hphi0 hsum_le hsum_nn hcS_nn
       | (m'' + 1) =>
-          rw [if_neg (by omega)]
+          rw [ite_eq_right (by omega)]
           rw [iteratedCovGrad_zero_of_covGrad_zero (I := I) (M := M) g₀ (ss + 2) ss
             (cometricDoubleTraceField (I := I) g₀ ss)
             (cometricDoubleTraceField_covGrad_eq_zero (I := I) g₀ ss) m'']
@@ -223,7 +226,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_pairTraceOp_diff_grid
     refine le_trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum hphi)
       (operatorFieldApplicationGdiag_nonneg (E := E) m)) ?_
     rw [Finset.sum_ite_eq' (Finset.range (m + 1)) 0]
-    rw [if_pos (Finset.mem_range.mpr (by omega))]
+    rw [ite_eq_left (Finset.mem_range.mpr (by omega))]
     have hinner : (∑ l ∈ Finset.range (m + 1),
         dim ^ (ss + 1) * (CD l * Combinatorics.antidiagonalTupleGrid b l)) ≤
         dim ^ (ss + 1) * CDS m *

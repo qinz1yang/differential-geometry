@@ -154,13 +154,13 @@ theorem exists_arcPatternStraightening_end_step_of_lt {ι : Type*} (P : ι → S
   have hN₃N₂ : N₃ ⊆ G ⁻¹' V := inter_subset_left
   have hEq₁ : EqOn Φ' Φ N₁ := by
     rintro p (hp | hp)
-    · exact if_pos (le_of_lt hp.2)
+    · exact ite_eq_left (le_of_lt hp.2)
     · by_cases h : p.2 ≤ τ
-      · exact if_pos h
+      · exact ite_eq_left h
       · change (if p.2 ≤ τ then Φ p else ψ (G p)) = Φ p
-        rw [if_neg h]
+        rw [ite_eq_right h]
         exact (hGloc p hp).2
-  have hEq₃ : EqOn Φ' (ψ ∘ G) N₃ := fun p hp => if_neg (not_le.mpr hp.2)
+  have hEq₃ : EqOn Φ' (ψ ∘ G) N₃ := fun p hp => ite_eq_right (not_le.mpr hp.2)
   have hpt : ∀ p : (ℝ × ℝ) × ℝ, p.1 = 0 → p = ((0, 0), τ + (p.2 - τ)) := fun p hp =>
     Prod.ext (hp.trans Prod.mk_zero_zero.symm) (by ring)
   have hKlow : ∀ p ∈ coreSegment τ', p.2 ≤ τ → p ∈ N₁ := by
@@ -191,7 +191,7 @@ theorem exists_arcPatternStraightening_end_step_of_lt {ι : Type*} (P : ι → S
       rw [hGp]
       exact hwV r hr
     · change (if p.2 ≤ τ then Φ p else ψ (G p)) = γ r
-      rw [if_neg (not_le.mpr h), hGp, hψw r hr]
+      rw [ite_eq_right (not_le.mpr h), hGp, hψw r hr]
   have hKN : coreSegment τ' ⊆ N₁ ∪ N₃ := by
     intro p hp
     by_cases h : p.2 ≤ τ
@@ -211,7 +211,7 @@ theorem exists_arcPatternStraightening_end_step_of_lt {ι : Type*} (P : ι → S
   have hlowimg : ∀ p ∈ coreSegment τ', p.2 ≤ τ → Φ' p ∈ γ '' Icc 0 s := by
     intro p hp h
     rw [← hΦcore]
-    exact ⟨p, ⟨hp.1, hp.2.1, h⟩, (if_pos h).symm⟩
+    exact ⟨p, ⟨hp.1, hp.2.1, h⟩, (ite_eq_left h).symm⟩
   have hinjK : InjOn Φ' (coreSegment τ') := by
     intro p hp q hq hpq
     by_cases hp2 : p.2 ≤ τ <;> by_cases hq2 : q.2 ≤ τ
@@ -246,11 +246,11 @@ theorem exists_arcPatternStraightening_end_step_of_lt {ι : Type*} (P : ι → S
       (τ < p.2 ∧ G p ∈ V ∧ Φ' p = ψ (G p)) := by
     intro p hp
     by_cases h : p.2 ≤ τ
-    · refine Or.inl ⟨h, ?_, if_pos h⟩
+    · refine Or.inl ⟨h, ?_, ite_eq_left h⟩
       rcases hN''sub hp with h1 | h1
       · exact hN₁N h1
       · exact absurd h1.2 (not_lt.mpr h)
-    · refine Or.inr ⟨not_le.mp h, ?_, if_neg h⟩
+    · refine Or.inr ⟨not_le.mp h, ?_, ite_eq_right h⟩
       rcases hN''sub hp with h1 | h1
       · rcases h1 with h1 | h1
         · exact absurd h1.2 (not_lt.mpr (not_le.mp h).le)
@@ -266,7 +266,7 @@ theorem exists_arcPatternStraightening_end_step_of_lt {ι : Type*} (P : ι → S
     have hr's : r' = s' := hνi hr' hs'mem hwr'
     rw [← hr's, ← hψw r' hr', ← hGr']
     change (if τ' ≤ τ then Φ _ else ψ (G _)) = _
-    rw [if_neg (not_le.mpr hττ'), hτ'def]
+    rw [ite_eq_right (not_le.mpr hττ'), hτ'def]
   refine ⟨Φ', N'', Ω'', τ', hN''o, hΩ''o, hΦ'PL, hττ', hKN'', ?_, htip, ?_, ?_, ?_, ?_, ?_⟩
   · apply Subset.antisymm
     · rintro _ ⟨p, hp, rfl⟩
@@ -280,7 +280,7 @@ theorem exists_arcPatternStraightening_end_step_of_lt {ι : Type*} (P : ι → S
           rw [hΦcore]
           exact ⟨r, ⟨hr.1, hrs⟩, rfl⟩
         obtain ⟨p, hp, hpeq⟩ := hmem
-        exact ⟨p, ⟨hp.1, hp.2.1, hp.2.2.trans hττ'.le⟩, by rw [← hpeq]; exact if_pos hp.2.2⟩
+        exact ⟨p, ⟨hp.1, hp.2.1, hp.2.2.trans hττ'.le⟩, by rw [← hpeq]; exact ite_eq_left hp.2.2⟩
       · rw [not_le] at hrs
         have hrmem : r ∈ Icc s s' := ⟨hrs.le, hr.2⟩
         have hv : 0 < (w r).2 - (w s).2 := sub_pos.mpr (hνmono hsmem hrmem hrs)
@@ -300,7 +300,7 @@ theorem exists_arcPatternStraightening_end_step_of_lt {ι : Type*} (P : ι → S
           ⟨rfl, by nlinarith, by rw [hτ'def]; nlinarith⟩
         refine ⟨_, hmem, ?_⟩
         change (if τ + μ * ((w r).2 - (w s).2) ≤ τ then Φ _ else ψ (G _)) = γ r
-        rw [if_neg (by nlinarith), hGr', hr'r, hψw r hrmem]
+        rw [ite_eq_right (by nlinarith), hGr', hr'r, hψw r hrmem]
   · intro p hp
     rcases hcase p hp with ⟨h, hpN, heq⟩ | ⟨h, hGV, heq⟩
     · rw [heq]
@@ -325,7 +325,7 @@ theorem exists_arcPatternStraightening_end_step_of_lt {ι : Type*} (P : ι → S
     · rw [heq]
       exact iff_of_false (hψBd _ hGV) (fun heq => by linarith [heq.2])
   · intro p _ h
-    exact if_pos h.le
+    exact ite_eq_left h.le
 
 theorem exists_arcPatternStraightening_end_step {ι : Type*} (P : ι → Set (ℝ × ℝ))
     (hP : ∀ i v (t : ℝ), 0 < t → (t • v ∈ P i ↔ v ∈ P i))

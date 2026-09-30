@@ -14,7 +14,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 theorem IsPLHomeomorphOn.isPLBall_prism_top_union_side
-    {D : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {D : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     {a b : ℝ} (hab : a < b) :
     IsPLBall 2 (D ×ˢ {b} ∪ (r '' stdSimplexBoundary 2) ×ˢ Icc a b) := by
   have hD : IsPLBall 2 D := ⟨r, hr⟩
@@ -45,9 +45,9 @@ theorem IsPLHomeomorphOn.isPLBall_prism_top_union_side
   exact h
 
 theorem IsPLHomeomorphOn.image_stdSimplexBoundary_prism_top_union_side
-    {D : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {D : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     {a b : ℝ} (hab : a < b) {q : (Fin 3 → ℝ) → E × ℝ}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       (D ×ˢ {b} ∪ (r '' stdSimplexBoundary 2) ×ˢ Icc a b)) :
     q '' stdSimplexBoundary 2 = (r '' stdSimplexBoundary 2) ×ˢ {a} := by
   let J := r '' stdSimplexBoundary 2
@@ -89,9 +89,9 @@ theorem IsPLHomeomorphOn.image_stdSimplexBoundary_prism_top_union_side
   exact h.symm
 
 theorem IsPLSphere.exists_isPLHomeomorphOn_pushOff_disk {S D : Set E} (hS : IsPLSphere 2 S)
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDS : D ⊆ S) :
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDS : D ⊆ S) :
     ∃ (D' : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D' ∧ D' ⊆ S ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' ∧ D' ⊆ S ∧
         q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 ∧
           D' ∩ D = r '' stdSimplexBoundary 2 := by
   obtain ⟨q, hq⟩ := hS.isPLBall_closure_sdiff ⟨r, hr⟩ hDS
@@ -102,11 +102,11 @@ theorem IsPLSphere.exists_isPLHomeomorphOn_pushOff_disk {S D : Set E} (hS : IsPL
     (hS.image_stdSimplexBoundary_complement ⟨r, hr⟩ hDS hq).trans hmeet, hmeet⟩
 
 theorem IsPLHomeomorphOn.exists_isPLHomeomorphOn_pushOff_of_collar {D C : Set E}
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) {a b : ℝ}
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {a b : ℝ}
     (hab : a < b) {ρ : E × ℝ → E} (hρ : IsPLHomeomorphOn ρ (D ×ˢ Icc a b) C)
     (hbase : ∀ x ∈ D, ρ (x, a) = x) :
     ∃ (D' : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D' ∧ D' ⊆ C ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' ∧ D' ⊆ C ∧
         q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 ∧
           D' ∩ D = r '' stdSimplexBoundary 2 := by
   have hJD : r '' stdSimplexBoundary 2 ⊆ D :=
@@ -145,11 +145,11 @@ theorem IsPLHomeomorphOn.exists_isPLHomeomorphOn_pushOff_of_collar {D C : Set E}
       exact ⟨⟨(x, a), Or.inr ⟨hx, le_rfl, hab.le⟩, hbase x (hJD hx)⟩, hJD hx⟩
 
 theorem IsPLHomeomorphOn.exists_isPLSphere_inter_pushOff_of_collar {D C : Set E}
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) {a b : ℝ}
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {a b : ℝ}
     (hab : a < b) {ρ : E × ℝ → E} (hρ : IsPLHomeomorphOn ρ (D ×ˢ Icc a b) C)
     (hbase : ∀ x ∈ D, ρ (x, a) = x) :
     ∃ (D' : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D' ∧ D' ⊆ C ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' ∧ D' ⊆ C ∧
         q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 ∧
           IsPLSphere 1 (D' ∩ D) ∧ Disjoint (D' \ r '' stdSimplexBoundary 2) D := by
   obtain ⟨D', q, hq, hDC, hbd, hmeet⟩ :=

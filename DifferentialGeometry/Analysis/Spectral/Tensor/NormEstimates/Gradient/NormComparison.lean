@@ -5,6 +5,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.Inn
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise)
 
 
 noncomputable section

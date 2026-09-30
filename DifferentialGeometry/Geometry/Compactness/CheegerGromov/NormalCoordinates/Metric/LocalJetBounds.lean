@@ -55,7 +55,7 @@ structure LocalBoundedGeometryOn
   bound : ∀ k : Nat, HasLocalCurvDerivBound (I := I) X p A k (C k)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-def LocalBoundedGeometryOn.of_boundedGeometry
+def LocalBoundedGeometryOn.ofBoundedGeometry
     (X : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hX : BoundedGeometry (I := I) X) (p : X.M) (A : Real) :
     LocalBoundedGeometryOn (I := I) X p A where
@@ -466,7 +466,7 @@ theorem CurvatureJetTerm.eval_le_at_local
                   ((slots i).eval (I := I) g hEnorm p u a b q)
                   ((slots i).eval (I := I) g hEnorm p u a b q))) <=
             ∏ i : Fin (k + 3), (slots i).majorant C B := by
-        apply Finset.prod_le_prod
+        apply Finset.prod_le_prod₀
         · intro i hi
           exact Real.sqrt_nonneg _
         · intro i hi
@@ -1289,7 +1289,7 @@ theorem CurvatureJetTerm.curvOrderAtMost_launchDeriv {N : Nat} :
 theorem intrinsicJacobiCorrectionTerm.curvOrderAtMost (m : Nat) :
     (intrinsicJacobiCorrectionTerm m).curvOrderAtMost 1 := by
   simp only [intrinsicJacobiCorrectionTerm, CurvatureJetTerm.curvOrderAtMost]
-  repeat' first | constructor | (intro i; fin_cases i <;> trivial)
+  repeat' first | exact le_rfl | constructor | (intro i; fin_cases i <;> trivial)
 
 theorem intrinsicJacobiResidualTerm.curvOrderAtMost (n : Nat) :
     (intrinsicJacobiResidualTerm n).curvOrderAtMost n := by
@@ -1634,7 +1634,7 @@ theorem CurvatureJetTerm.eval_le_at_local_order
                   ((slots i).eval (I := I) g hEnorm p u a b q)
                   ((slots i).eval (I := I) g hEnorm p u a b q))) <=
             ∏ i : Fin (k + 3), (slots i).majorant C B := by
-        apply Finset.prod_le_prod
+        apply Finset.prod_le_prod₀
         · intro i hi
           exact Real.sqrt_nonneg _
         · intro i hi

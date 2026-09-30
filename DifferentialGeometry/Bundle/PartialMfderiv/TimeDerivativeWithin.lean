@@ -33,5 +33,17 @@ theorem ContMDiffOn.time_derivWithin {J : Set ℝ} {U : Set M}
     (g₂ := fun _ : ℝ × M => (1 : ℝ)) (x₀ := p₀)
     hcomp contMDiffWithinAt_fst contMDiffWithinAt_id contMDiffWithinAt_const hmn
     (mapsTo_id _) hp₀ (fun _ hp => hp.1) hJ.uniqueMDiffOn
-  simpa only [inTangentCoordinates_model_space, mfderivWithin_eq_fderivWithin,
-    derivWithin] using hd
+  convert hd using 1
+  funext p
+  simp only [inTangentCoordinates, mfderivWithin_eq_fderivWithin]
+  dsimp only [ContinuousLinearMap.inCoordinates]
+  simp only [Prod.mk.eta, TangentBundle.continuousLinearMapAt_model_space,
+    TangentBundle.symmL_model_space]
+  change derivWithin (fun t => f (t, p.2)) J p.1 =
+    (NormedSpace.fromTangentSpace (𝕜 := ℝ) (f (p.1, p.2)))
+      ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (f (p.1, p.2))).symm
+        (fderivWithin ℝ (fun t => f (t, p.2)) J p.1
+          ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1)
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1).symm 1))))
+  simp only [ContinuousLinearEquiv.apply_symm_apply]
+  rfl

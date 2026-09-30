@@ -242,7 +242,7 @@ theorem timeDependentPrincipalOperatorH2_ae_eq
   have hmem :
       f t ∈ principalOperatorDomainBall (I := I) (M := M) g ρ := by
     simpa only [principalOperatorDomainBall, Set.mem_ofPred_eq] using ht
-  simp only [timeDependentPrincipalOperatorH2, principalOperatorOnBall, aeSetLift, dif_pos hmem]
+  simp only [timeDependentPrincipalOperatorH2, principalOperatorOnBall, aeSetLift, dite_eq_left hmem]
 
 theorem timeDependentPrincipalOperatorH2_ae_norm_bound
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 ≤ ρ)

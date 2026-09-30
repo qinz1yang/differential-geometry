@@ -14,13 +14,13 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem IsPLHomeomorphOn.image_stdSimplexBoundary {n : ℕ}
     {P : Set (EuclideanSpace ℝ (Fin (n + 1)))}
     {f : (Fin (n + 2) → ℝ) → EuclideanSpace ℝ (Fin (n + 1))}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) P) :
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) P) :
     f '' stdSimplexBoundary (n + 1) = frontier P := by
   classical
   have hP : IsPLBall (n + 1) P := ⟨f, hf⟩
   obtain ⟨K, hKfin, hKP⟩ := hP.isPolyhedron.exists_simplicialComplex
   let _ : Finite K.faces := hKfin.to_subtype
-  have hfK : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) K.space := hKP.symm ▸ hf
+  have hfK : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) K.space := hKP.symm ▸ hf
   have hK : IsPLBall (n + 1) K.space := ⟨f, hfK⟩
   rw [← hKP, frontier_space_eq_boundaryComplex_space (n := n)
       hK.isCombinatorialManifoldWithBoundary]
@@ -44,7 +44,7 @@ theorem IsPLBall.isPLSphere_frontier {n : ℕ}
 theorem IsPLHomeomorphOn.image_stdSimplexBoundary_eq_frontier {n : ℕ}
     {P : Set (EuclideanSpace ℝ (Fin (n + 1)))}
     {f : (Fin (n + 2) → ℝ) → EuclideanSpace ℝ (Fin (n + 1))}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) P) :
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) P) :
     f '' stdSimplexBoundary (n + 1) = frontier P := by
   classical
   let _ : DecidableEq (EuclideanSpace ℝ (Fin (n + 1))) := Classical.decEq _
@@ -70,8 +70,8 @@ theorem IsPLBall.closure_interior {n : ℕ}
   obtain ⟨f, hf⟩ := hP
   have hmap : MapsTo f (openSimplex (stdVertices n)) (interior P) :=
     fun _ hx => mem_interior_image_of_isPLHomeomorphOn_stdSimplex hf hx
-  have hclsub : closure (openSimplex (stdVertices n)) ⊆ stdSimplex ℝ (Fin (n + 2)) :=
-    closure_minimal openSimplex_stdVertices_subset_stdSimplex (isClosed_stdSimplex ℝ _)
+  have hclsub : closure (openSimplex (stdVertices n)) ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) :=
+    closure_minimal openSimplex_stdVertices_subset_stdSimplex (Convexity.StdSimplex.isCompact_coordinateSet ℝ _).isClosed
   have hclmap := hmap.closure_of_continuousOn (hf.isPiecewiseAffineOn.continuousOn.mono hclsub)
   intro y hy
   obtain ⟨x, hx, rfl⟩ := hf.bijOn.surjOn hy

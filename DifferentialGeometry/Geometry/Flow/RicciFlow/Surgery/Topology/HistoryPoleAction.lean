@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIveyPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryParabolicBall
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.AbsoluteContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.AbsoluteContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryPartition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MasterFlowCompatibility
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
@@ -33,7 +33,7 @@ private theorem stage_scalar_continuousOn
         (RealTimeInterval.closed (H.time (Fin.last H.eventCount)) H.horizon h.le).carrier at hh
       simpa only [ObservedHistory.stageMetric_last_of_lt (h := h), ObservedHistory.stageDomain,
         Fin.lastCases_last, SolutionOn.scalar, SolutionFamily.scalar, RealTimeInterval.closed] using hh
-    · simp only [ObservedHistory.stageMetric, Fin.lastCases_last, dif_neg h]
+    · simp only [ObservedHistory.stageMetric, Fin.lastCases_last, dite_eq_right h]
       exact continuousOn_const
 
 private theorem stage_const_lagrangian_eq

@@ -30,7 +30,7 @@ theorem range_bicollarSliceMap {N : Type*} {a : ℝ}
       · exact hp.2
     exact ⟨p.1, by rw [bicollarSliceMap, ← hpEq]⟩
 
-noncomputable def topologicalSphereSides_bicollarSlice_of_alexanderDuality
+noncomputable def bicollarSliceSidesOfAlexanderDualityCertificate
     {a : ℝ} (Φ : SphereTwo × AxialInterval a → EuclideanThree)
     (hΦ : Manifold.IsSmoothEmbedding
       ((𝓘(ℝ, EuclideanSpace ℝ (Fin 2))).prod 𝓘(ℝ))
@@ -66,7 +66,7 @@ theorem sliceImage_equiv_comp
   · rintro ⟨z, ⟨p, hp, rfl⟩, rfl⟩
     exact ⟨p, hp, rfl⟩
 
-noncomputable def topologicalSphereSidesOpenThreeSpace_bicollarSlice_of_alexanderDuality
+noncomputable def bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificate
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
     {a : ℝ} (Φ : SphereTwo × AxialInterval a → N)
     (hΦ : Manifold.IsSmoothEmbedding
@@ -83,7 +83,7 @@ noncomputable def topologicalSphereSidesOpenThreeSpace_bicollarSlice_of_alexande
       (𝓘(ℝ, EuclideanThree)) ∞ (ψ ∘ Φ) :=
     hΦ.postcomp_diffeomorph ψ
   let dℝ : SphereSides (sliceImage (ψ ∘ Φ) c) :=
-    topologicalSphereSides_bicollarSlice_of_alexanderDuality
+    bicollarSliceSidesOfAlexanderDualityCertificate
       (ψ ∘ Φ) hΦℝ c hAD
   have himage :
       sliceImage (ψ ∘ Φ) c = ψ '' sliceImage Φ c :=
@@ -94,7 +94,7 @@ noncomputable def topologicalSphereSidesOpenThreeSpace_bicollarSlice_of_alexande
   rw [← hback]
   exact dℝ.imageDiffeomorph ψ.symm
 
-noncomputable def bicollarSliceSidesOpenThreeSpace_of_alexanderDuality
+noncomputable def bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificates
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
     {a : ℝ} (Φ : SphereTwo × AxialInterval a → N)
     (hΦ : Manifold.IsSmoothEmbedding
@@ -106,7 +106,7 @@ noncomputable def bicollarSliceSidesOpenThreeSpace_of_alexanderDuality
       (bicollarSliceMap (ψ ∘ Φ) c))
     (c : AxialInterval a) :
     SphereSides (sliceImage Φ c) :=
-  topologicalSphereSidesOpenThreeSpace_bicollarSlice_of_alexanderDuality
+  bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificate
     Φ hΦ ψ c (hAD c)
 
 theorem bicollar_sides_openThreeSpace_of_alexanderDuality
@@ -121,7 +121,7 @@ theorem bicollar_sides_openThreeSpace_of_alexanderDuality
     (hAD : HasAlexanderDualityH0Certificate
       (bicollarSliceMap (ψ ∘ Φ) (axialZero ha))) :
     let d :=
-      topologicalSphereSidesOpenThreeSpace_bicollarSlice_of_alexanderDuality
+      bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificate
         Φ hΦ ψ (axialZero ha) hAD
     Xor
       (negativeHalfImage Φ ha ⊆ d.compactSide ∧
@@ -129,7 +129,7 @@ theorem bicollar_sides_openThreeSpace_of_alexanderDuality
       (negativeHalfImage Φ ha ⊆ d.endSide ∧
         positiveHalfImage Φ ha ⊆ d.compactSide) := by
   let d :=
-    topologicalSphereSidesOpenThreeSpace_bicollarSlice_of_alexanderDuality
+    bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificate
       Φ hΦ ψ (axialZero ha) hAD
   change Xor
     (negativeHalfImage Φ ha ⊆ d.compactSide ∧
@@ -151,9 +151,9 @@ theorem bicollar_order_openThreeSpace_of_alexanderDuality
     (hAD : ∀ c, HasAlexanderDualityH0Certificate
       (bicollarSliceMap (ψ ∘ Φ) c))
     (o₀ : IsAxiallyOrientedAtZero ha Φ
-      (bicollarSliceSidesOpenThreeSpace_of_alexanderDuality Φ hΦ ψ hAD))
+      (bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificates Φ hΦ ψ hAD))
     {s t : AxialInterval a} (hst : s < t) :
-    let d := bicollarSliceSidesOpenThreeSpace_of_alexanderDuality Φ hΦ ψ hAD
+    let d := bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificates Φ hΦ ψ hAD
     (closure (d s).compactSide ⊆ (d t).compactSide ∧
       (d t).compactSide = interior (closure (d t).compactSide)) ∧
     closure (d t).compactSide =
@@ -164,7 +164,7 @@ theorem bicollar_order_openThreeSpace_of_alexanderDuality
     closure (d s).compactSide ⊂ (d t).compactSide ∧
     closure (d s).compactSide ⊂ closure (d t).compactSide := by
   exact bicollar_order_of_atZero ha Φ hΦ
-    (bicollarSliceSidesOpenThreeSpace_of_alexanderDuality Φ hΦ ψ hAD)
+    (bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificates Φ hΦ ψ hAD)
     o₀ hst
 
 end DifferentialGeometry.Topology.SphereSeparation

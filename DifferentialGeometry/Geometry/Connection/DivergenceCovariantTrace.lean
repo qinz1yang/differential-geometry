@@ -280,15 +280,15 @@ lemma chartCoord_leviCivita_chartBasis
     rw [Finset.sum_eq_single m]
     · refine Finset.sum_congr rfl (fun c _ => ?_)
       rw [Finset.sum_eq_single k]
-      · rw [if_pos rfl, if_pos rfl, hZcoeff c]
+      · rw [ite_eq_left rfl, ite_eq_left rfl, hZcoeff c]
         ring
       · intro d _ hdk
-        rw [if_neg hdk]
+        rw [ite_eq_right hdk]
         ring
       · intro hk
         exact absurd (Finset.mem_univ k) hk
     · intro a _ ham
-      rw [if_neg (Ne.symm ham)]
+      rw [ite_eq_right (Ne.symm ham)]
       simp
     · intro hm
       exact absurd (Finset.mem_univ m) hm
@@ -509,9 +509,9 @@ lemma metricTrace_eq_coord_covariant_divergence
       refine Finset.sum_congr rfl (fun k _ => ?_)
       rw [hδ m k]]
   rw [Finset.sum_eq_single m]
-  · rw [if_pos rfl, mul_one, hA_def]
+  · rw [ite_eq_left rfl, mul_one, hA_def]
   · intro k _ hkm
-    rw [if_neg (Ne.symm hkm), mul_zero]
+    rw [ite_eq_right (Ne.symm hkm), mul_zero]
   · intro hm
     exact absurd (Finset.mem_univ m) hm
 

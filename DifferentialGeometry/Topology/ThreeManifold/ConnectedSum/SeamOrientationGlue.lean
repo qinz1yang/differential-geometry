@@ -221,7 +221,7 @@ theorem contMDiffAt_gL (hLq : AtlasLeft c d aD) (x : qL c d aD hLq) :
         (gL c d aD hLq x)).localInverse
       (x : ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph) :=
     hx ▸ (interiorLeft_isLocalDiffeomorph c.toBallChart d.toBallChart aD hLq
-      (gL c d aD hLq x)).localInverse_contMDiffAt
+      (gL c d aD hLq x)).contMDiffAt_localInverse
   refine (hfinv.comp x contMDiff_subtype_val.contMDiffAt).congr_of_eventuallyEq ?_
   exact gL_eventuallyEq_localInverse c d aD hLq x
 
@@ -238,7 +238,7 @@ theorem contMDiffAt_gR (hRq : AtlasRight c d aD) (x : qR c d aD hRq) :
         (gR c d aD hRq x)).localInverse
       (x : ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph) :=
     hx ▸ (interiorRight_isLocalDiffeomorph c.toBallChart d.toBallChart aD hRq
-      (gR c d aD hRq x)).localInverse_contMDiffAt
+      (gR c d aD hRq x)).contMDiffAt_localInverse
   refine (hfinv.comp x contMDiff_subtype_val.contMDiffAt).congr_of_eventuallyEq ?_
   exact gR_eventuallyEq_localInverse c d aD hRq x
 
@@ -424,11 +424,11 @@ theorem oNrestrict_apply (v : d.toBallChart.interior) :
     orientationFinrank reindexManifoldOrientation
   rfl
 
-def SO_L (hLq : AtlasLeft c d aD) : SmoothOrientation (𝓡 3) (qL c d aD hLq) :=
+def leftSmoothOrientation (hLq : AtlasLeft c d aD) : SmoothOrientation (𝓡 3) (qL c d aD hLq) :=
   pullbackSmoothOrientation (𝓡 3) (𝓡 3) (gL c d aD hLq)
     (contMDiff_gL c d aD hLq) (bijective_mfderiv_gL c d aD hLq) (oMrestrict c)
 
-def SO_R (hRq : AtlasRight c d aD) : SmoothOrientation (𝓡 3) (qR c d aD hRq) :=
+def rightSmoothOrientation (hRq : AtlasRight c d aD) : SmoothOrientation (𝓡 3) (qR c d aD hRq) :=
   pullbackSmoothOrientation (𝓡 3) (𝓡 3) (gR c d aD hRq)
     (contMDiff_gR c d aD hRq) (bijective_mfderiv_gR c d aD hRq) (oNrestrict d)
 
@@ -484,7 +484,7 @@ theorem bijective_mfderiv_seamChartFun (hS : seamChartX c.toBallChart d.toBallCh
       x.2).mfderivToContinuousLinearEquiv (show (∞ : ℕ∞ω) ≠ 0 by simp)).bijective
   exact hb
 
-def SO_S (hS : seamChartX c.toBallChart d.toBallChart aD.toHomeomorph ∈
+def seamSmoothOrientation (hS : seamChartX c.toBallChart d.toBallChart aD.toHomeomorph ∈
     atlas csModel (ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph)) :
     SmoothOrientation (𝓡 3) (qS c d aD) :=
   pullbackSmoothOrientation (𝓡 3) 𝓘(ℝ, csModel) (seamChartFun c d aD)
@@ -844,16 +844,16 @@ theorem seamDifferential_apply (y : qS c d aD) (v : csModel) :
     seamDifferential c d aD hS y v =
       mfderiv (𝓡 3) (𝓡 3) (seamChartFun c d aD) y v := rfl
 
-theorem SO_S_apply (y : qS c d aD) :
-    (SO_S c d aD hS).val y =
+theorem seamSmoothOrientation_apply (y : qS c d aD) :
+    (seamSmoothOrientation c d aD hS).val y =
       tangentOrientationEquiv (seamDifferential c d aD hS y).symm.toLinearEquiv
         stdOrientationModel := rfl
 
-theorem SO_S_apply_map (y : qS c d aD) :
-    (SO_S c d aD hS).val y =
+theorem seamSmoothOrientation_apply_map (y : qS c d aD) :
+    (seamSmoothOrientation c d aD hS).val y =
       Orientation.map (Fin (Module.finrank ℝ csModel))
         (seamDifferential c d aD hS y).symm.toLinearEquiv stdOrientationModel := by
-  rw [SO_S_apply, tangentOrientationEquiv_self]
+  rw [seamSmoothOrientation_apply, tangentOrientationEquiv_self]
 
 def leftDifferentialEquiv (hLq : AtlasLeft c d aD) (x : qL c d aD hLq) :
     csModel ≃L[ℝ] csModel :=
@@ -875,18 +875,18 @@ theorem leftDifferential_symm_apply (hLq : AtlasLeft c d aD) (x : qL c d aD hLq)
       mfderiv (𝓡 3) (𝓡 3) (interiorLeft c.toBallChart d.toBallChart aD) (gL c d aD hLq x) v :=
   rfl
 
-theorem SO_L_apply (hLq : AtlasLeft c d aD) (x : qL c d aD hLq) :
-    (SO_L c d aD hLq).val x =
+theorem leftSmoothOrientation_apply (hLq : AtlasLeft c d aD) (x : qL c d aD hLq) :
+    (leftSmoothOrientation c d aD hLq).val x =
       tangentOrientationEquiv (leftDifferentialEquiv c d aD hLq x).symm.toLinearEquiv
         ((oMrestrict c).val (gL c d aD hLq x)) := rfl
 
-theorem SO_L_apply_map (hLq : AtlasLeft c d aD) (x : qL c d aD hLq) :
-    (SO_L c d aD hLq).val x =
+theorem leftSmoothOrientation_apply_map (hLq : AtlasLeft c d aD) (x : qL c d aD hLq) :
+    (leftSmoothOrientation c d aD hLq).val x =
       Orientation.map (Fin (Module.finrank ℝ csModel))
         (leftDifferentialEquiv c d aD hLq x).symm.toLinearEquiv
         (Orientation.reindex ℝ csModel csIdx
           (M.orientation.orientation (gL c d aD hLq x))) := by
-  rw [SO_L_apply, oMrestrict_apply, tangentOrientationEquiv_self]
+  rw [leftSmoothOrientation_apply, oMrestrict_apply, tangentOrientationEquiv_self]
 
 def rightDifferentialEquiv (hRq : AtlasRight c d aD) (x : qR c d aD hRq) :
     csModel ≃L[ℝ] csModel :=
@@ -904,18 +904,18 @@ theorem rightDifferential_symm_apply (hRq : AtlasRight c d aD) (x : qR c d aD hR
       mfderiv (𝓡 3) (𝓡 3) (interiorRight c.toBallChart d.toBallChart aD) (gR c d aD hRq x) v :=
   rfl
 
-theorem SO_R_apply (hRq : AtlasRight c d aD) (x : qR c d aD hRq) :
-    (SO_R c d aD hRq).val x =
+theorem rightSmoothOrientation_apply (hRq : AtlasRight c d aD) (x : qR c d aD hRq) :
+    (rightSmoothOrientation c d aD hRq).val x =
       tangentOrientationEquiv (rightDifferentialEquiv c d aD hRq x).symm.toLinearEquiv
         ((oNrestrict d).val (gR c d aD hRq x)) := rfl
 
-theorem SO_R_apply_map (hRq : AtlasRight c d aD) (x : qR c d aD hRq) :
-    (SO_R c d aD hRq).val x =
+theorem rightSmoothOrientation_apply_map (hRq : AtlasRight c d aD) (x : qR c d aD hRq) :
+    (rightSmoothOrientation c d aD hRq).val x =
       Orientation.map (Fin (Module.finrank ℝ csModel))
         (rightDifferentialEquiv c d aD hRq x).symm.toLinearEquiv
         (Orientation.reindex ℝ csModel csIdx
           (N.orientation.orientation (gR c d aD hRq x))) := by
-  rw [SO_R_apply, oNrestrict_apply, tangentOrientationEquiv_self]
+  rw [rightSmoothOrientation_apply, oNrestrict_apply, tangentOrientationEquiv_self]
 
 end Differentials
 
@@ -967,13 +967,13 @@ theorem seamDifferential_symm_eq (hLq : AtlasLeft c d aD)
     ((c.toBallChart.chart : csModel → M.Carrier)) w v)]
   exact ((chartSymmEquiv c w (chart_source_of_mem_SeamShell c w hw)).right_inv v).symm
 
-theorem SO_L_eq_SO_S (hLq : AtlasLeft c d aD)
+theorem leftSmoothOrientation_apply_eq_seamSmoothOrientation (hLq : AtlasLeft c d aD)
     (hS : seamChartX c.toBallChart d.toBallChart aD.toHomeomorph ∈
       atlas csModel (ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph))
     (x : qL c d aD hLq)
     (hSp : (x : ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph) ∈ qS c d aD) :
-    (SO_L c d aD hLq).val x =
-      (SO_S c d aD hS).val ⟨(x : ConnectedSumQuotient c.toBallChart
+    (leftSmoothOrientation c d aD hLq).val x =
+      (seamSmoothOrientation c d aD hS).val ⟨(x : ConnectedSumQuotient c.toBallChart
         d.toBallChart aD.toHomeomorph), hSp⟩ := by
   obtain ⟨w, hw, h1w, hdeep, -⟩ := exists_left_coordinate c d aD hLq x hSp
   have hchain := seamDifferential_symm_eq c d aD hLq hS x w hw h1w hdeep hSp
@@ -984,7 +984,7 @@ theorem SO_L_eq_SO_S (hLq : AtlasLeft c d aD)
         (stdOrientation w) := by
     rw [hdeep]
     exact orientation_eq_map_chartTangentEquiv c (chart_source_of_mem_SeamShell c w hw)
-  rw [SO_L_apply_map, SO_S_apply_map, hchain]
+  rw [leftSmoothOrientation_apply_map, seamSmoothOrientation_apply_map, hchain]
   erw [← orientation_map_map_trans (R := ℝ)
     (chartTangentEquiv c (chart_source_of_mem_SeamShell c w hw)).toLinearEquiv
     (leftDifferential c d aD hLq x).symm.toLinearEquiv stdOrientationModel]
@@ -1121,7 +1121,7 @@ theorem seam_interiorRight_eventuallyEq (x : qR c d aD hRq) (y : csModel)
       hzShell hz1 = d.toBallChart.interiorToPunctured z := by
     apply Subtype.ext
     rw [puncturedOfCoord_val, BallChart.interiorToPunctured_val, hzchart]
-  rw [rightSeamTransition, dif_pos ⟨hzShell, hz1⟩]
+  rw [rightSeamTransition, dite_eq_left ⟨hzShell, hz1⟩]
   congr 1
   rw [show interiorRight c.toBallChart d.toBallChart aD z =
       inr c.toBallChart d.toBallChart aD.toHomeomorph (d.toBallChart.interiorToPunctured z)
@@ -1545,15 +1545,15 @@ theorem seamDifferential_symm_eq_right
   rw [hz, mfderiv_eq_fderiv]
   exact ((ContinuousLinearEquiv.apply_symm_apply (reflectDifferential (aD := aD) hy) w)).symm
 
-theorem SO_R_eq_SO_S
+theorem rightSmoothOrientation_apply_eq_seamSmoothOrientation
     (ha : aD.preservesOrientation (DifferentialGeometry.sphereOrientation 2 (by decide))
       (DifferentialGeometry.sphereOrientation 2 (by decide)).opposite)
     (hS : seamChartX c.toBallChart d.toBallChart aD.toHomeomorph ∈
       atlas csModel (ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph))
     (x : qR c d aD hRq)
     (hSp : (x : ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph) ∈ qS c d aD) :
-    (SO_R c d aD hRq).val x =
-      (SO_S c d aD hS).val ⟨(x : ConnectedSumQuotient c.toBallChart
+    (rightSmoothOrientation c d aD hRq).val x =
+      (seamSmoothOrientation c d aD hS).val ⟨(x : ConnectedSumQuotient c.toBallChart
         d.toBallChart aD.toHomeomorph), hSp⟩ := by
   obtain ⟨y, hy, h1y, hdeep, -⟩ := exists_right_coordinate c d aD hRq x hSp
     (half_lt_norm_seamChartX_of_mem_qS c d aD _ hSp)
@@ -1564,7 +1564,8 @@ theorem SO_R_eq_SO_S
       Orientation.map (Fin 3) (chartTangentEquiv d hysrc).toLinearEquiv (stdOrientation y) := by
     rw [hdeep]
     exact orientation_eq_map_chartTangentEquiv d hysrc
-  rw [SO_R_apply_map, SO_S_apply_map, hchain, rightDifferentialEquiv_eq]
+  rw [rightSmoothOrientation_apply_map, seamSmoothOrientation_apply_map, hchain,
+    rightDifferentialEquiv_eq]
   erw [← orientation_map_map_trans (R := ℝ)
     (reflectDifferential (aD := aD) hy).symm.toLinearEquiv
     ((chartTangentEquiv d hysrc).toLinearEquiv.trans
@@ -1648,9 +1649,9 @@ theorem exists_manifoldOrientation_of_pieces
     | some true => qS c d aD
   let piece : (i : Option Bool) → SmoothOrientation (𝓡 3) (U i) := fun i =>
     match i with
-    | none => SO_L c d aD hLq
-    | some false => SO_R c d aD hRq
-    | some true => SO_S c d aD hS
+    | none => leftSmoothOrientation c d aD hLq
+    | some false => rightSmoothOrientation c d aD hRq
+    | some true => seamSmoothOrientation c d aD hS
   have hcover : ∀ p : ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph,
       ∃ i, p ∈ U i := by
     intro p
@@ -1667,13 +1668,13 @@ theorem exists_manifoldOrientation_of_pieces
     · rfl
     · exact absurd hj (Set.disjoint_left.mp
         (range_interiorLeft_disjoint_range_interiorRight c d aD) hi)
-    · exact SO_L_eq_SO_S c d aD hLq hS ⟨p, hi⟩ hj
+    · exact leftSmoothOrientation_apply_eq_seamSmoothOrientation c d aD hLq hS ⟨p, hi⟩ hj
     · exact absurd hi (Set.disjoint_left.mp
         (range_interiorLeft_disjoint_range_interiorRight c d aD) hj)
     · rfl
-    · exact SO_R_eq_SO_S c d aD hRq ha hS ⟨p, hi⟩ hj
-    · exact (SO_L_eq_SO_S c d aD hLq hS ⟨p, hj⟩ hi).symm
-    · exact (SO_R_eq_SO_S c d aD hRq ha hS ⟨p, hj⟩ hi).symm
+    · exact rightSmoothOrientation_apply_eq_seamSmoothOrientation c d aD hRq ha hS ⟨p, hi⟩ hj
+    · exact (leftSmoothOrientation_apply_eq_seamSmoothOrientation c d aD hLq hS ⟨p, hj⟩ hi).symm
+    · exact (rightSmoothOrientation_apply_eq_seamSmoothOrientation c d aD hRq ha hS ⟨p, hj⟩ hi).symm
     · rfl
   let SO : SmoothOrientation (𝓡 3)
       (ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph) :=
@@ -1682,19 +1683,19 @@ theorem exists_manifoldOrientation_of_pieces
   refine ⟨reindexManifoldOrientation (𝓡 3) csIdx.symm O', ?_, ?_⟩
   · intro x
     have hSO : SO.val (interiorLeft c.toBallChart d.toBallChart aD x)
-        = (SO_L c d aD hLq).val
+        = (leftSmoothOrientation c d aD hLq).val
             ⟨interiorLeft c.toBallChart d.toBallChart aD x, ⟨x, rfl⟩⟩ :=
       glueSmoothOrientations_apply (𝓡 3) U piece hcover heq none
         ⟨interiorLeft c.toBallChart d.toBallChart aD x, ⟨x, rfl⟩⟩
     have hgL : gL c d aD hLq
         ⟨interiorLeft c.toBallChart d.toBallChart aD x, ⟨x, rfl⟩⟩ = x := gL_apply c d aD hLq x
-    have hval : (SO_L c d aD hLq).val
+    have hval : (leftSmoothOrientation c d aD hLq).val
         ⟨interiorLeft c.toBallChart d.toBallChart aD x, ⟨x, rfl⟩⟩
         = Orientation.map (Fin (Module.finrank ℝ csModel))
             (leftDifferential c d aD hLq
               ⟨interiorLeft c.toBallChart d.toBallChart aD x, ⟨x, rfl⟩⟩).symm.toLinearEquiv
             (Orientation.reindex ℝ csModel csIdx (M.orientation.orientation x)) := by
-      rw [SO_L_apply_map, hgL, leftDifferentialEquiv_eq]
+      rw [leftSmoothOrientation_apply_map, hgL, leftDifferentialEquiv_eq]
       rfl
     have hleft : (leftDifferential c d aD hLq
           ⟨interiorLeft c.toBallChart d.toBallChart aD x, ⟨x, rfl⟩⟩).symm.toLinearEquiv
@@ -1720,19 +1721,19 @@ theorem exists_manifoldOrientation_of_pieces
         (by simp) x).toLinearEquiv (M.orientation.orientation x)).symm
   · intro x
     have hSO : SO.val (interiorRight c.toBallChart d.toBallChart aD x)
-        = (SO_R c d aD hRq).val
+        = (rightSmoothOrientation c d aD hRq).val
             ⟨interiorRight c.toBallChart d.toBallChart aD x, ⟨x, rfl⟩⟩ :=
       glueSmoothOrientations_apply (𝓡 3) U piece hcover heq (some false)
         ⟨interiorRight c.toBallChart d.toBallChart aD x, ⟨x, rfl⟩⟩
     have hgR : gR c d aD hRq
         ⟨interiorRight c.toBallChart d.toBallChart aD x, ⟨x, rfl⟩⟩ = x := gR_apply c d aD hRq x
-    have hval : (SO_R c d aD hRq).val
+    have hval : (rightSmoothOrientation c d aD hRq).val
         ⟨interiorRight c.toBallChart d.toBallChart aD x, ⟨x, rfl⟩⟩
         = Orientation.map (Fin (Module.finrank ℝ csModel))
             (rightDifferential c d aD hRq
               ⟨interiorRight c.toBallChart d.toBallChart aD x, ⟨x, rfl⟩⟩).symm.toLinearEquiv
             (Orientation.reindex ℝ csModel csIdx (N.orientation.orientation x)) := by
-      rw [SO_R_apply_map, hgR, rightDifferentialEquiv_eq]
+      rw [rightSmoothOrientation_apply_map, hgR, rightDifferentialEquiv_eq]
       rfl
     have hright : (rightDifferential c d aD hRq
           ⟨interiorRight c.toBallChart d.toBallChart aD x, ⟨x, rfl⟩⟩).symm.toLinearEquiv

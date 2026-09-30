@@ -187,7 +187,7 @@ private def yPartMap (X Y Z : ConnectedClosedOrientedManifold.{u} 3)
 private theorem yPartMap_of_mem (X Y Z : ConnectedClosedOrientedManifold.{u} 3)
     (δ dY' : OrientedBallChart Y.toClosedOrientedManifold) (h2 : disjointInl Y δ dY')
     {y : δ.Punctured} (hy : (y : Y.Carrier) ∉ dY'.chart '' ball (0 : E3) 1) :
-    yPartMap X Y Z δ dY' h2 y = yPartRight X Y Z δ dY' h2 y hy := dif_pos hy
+    yPartMap X Y Z δ dY' h2 y = yPartRight X Y Z δ dY' h2 y hy := dite_eq_left hy
 
 private theorem yPartMap_boundary (X Y Z : ConnectedClosedOrientedManifold.{u} 3)
     (δ dY' : OrientedBallChart Y.toClosedOrientedManifold) (h2 : disjointInl Y δ dY')
@@ -425,7 +425,7 @@ private theorem xPartMap_of_mem (X Y Z : ConnectedClosedOrientedManifold.{u} 3)
     (δ dY' : OrientedBallChart Y.toClosedOrientedManifold) (h1 : disjointInr Y δ dY')
     {y : dY'.Punctured}
     (hy : (y : Y.Carrier) ∉ δ.chart '' ball (0 : E3) 1) :
-    xPartMap X Y Z δ dY' h1 y = xPartLeft X Y Z δ dY' h1 y hy := dif_pos hy
+    xPartMap X Y Z δ dY' h1 y = xPartLeft X Y Z δ dY' h1 y hy := dite_eq_left hy
 
 private theorem xPartMap_boundary (X Y Z : ConnectedClosedOrientedManifold.{u} 3)
     (δ dY' : OrientedBallChart Y.toClosedOrientedManifold) (h1 : disjointInr Y δ dY')

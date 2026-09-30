@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.Polyhedra
-import Mathlib.Data.Sign.Defs
+import Mathlib.Basic.Sign.Defs
 
 open Set Topology
 

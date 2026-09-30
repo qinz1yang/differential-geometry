@@ -75,15 +75,15 @@ lemma dualCovariantCMM_apply_basis_tuple (r : ℕ)
   rw [dualCovariantCMM_apply]
   by_cases hEq : Idx = Jdx
   · subst hEq
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     have hone : ∀ k : Fin r,
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Idx k)) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Idx k)) = 1 := by
       intro k
       rw [Module.Basis.coord_apply, Module.Basis.repr_self,
-        Finsupp.single_apply, if_pos rfl]
+        Finsupp.single_apply, ite_eq_left rfl]
     rw [Finset.prod_congr rfl (fun k _ => hone k)]
     simp
-  · rw [if_neg hEq]
+  · rw [ite_eq_right hEq]
     have h_exists : ∃ k : Fin r, Idx k ≠ Jdx k := by
       by_contra h_all
       apply hEq
@@ -94,7 +94,7 @@ lemma dualCovariantCMM_apply_basis_tuple (r : ℕ)
     have hzero : ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord (Idx k₀)) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E (Jdx k₀)) = 0 := by
       rw [Module.Basis.coord_apply, Module.Basis.repr_self,
         Finsupp.single_apply]
-      exact if_neg hk₀.symm
+      exact ite_eq_right hk₀.symm
     refine Finset.prod_eq_zero (Finset.mem_univ k₀) ?_
     exact hzero
 
@@ -439,7 +439,7 @@ private lemma tensorTrivProj_contMDiffOn_chart_source
   unfold tensorTrivProj
   change (trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) α).linearMapAt ℝ x (S.toSection x) = _
-  rw [Bundle.Trivialization.linearMapAt_apply, if_pos hx_base]
+  rw [Bundle.Trivialization.linearMapAt_apply, ite_eq_left hx_base]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -913,7 +913,7 @@ lemma tensorChartPushedRawModel_apply_of_mem
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) := by
   classical
   unfold tensorChartPushedRawModel
-  exact if_pos hy
+  exact ite_eq_left hy
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 lemma tensorChartPushedRawModel_apply_of_notMem
@@ -925,7 +925,7 @@ lemma tensorChartPushedRawModel_apply_of_notMem
     tensorChartPushedRawModel (I := I) (M := M) g r s S α y = 0 := by
   classical
   unfold tensorChartPushedRawModel
-  exact if_neg hy
+  exact ite_eq_right hy
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem chartPushedRaw_eq_sum_tensorChartComponent

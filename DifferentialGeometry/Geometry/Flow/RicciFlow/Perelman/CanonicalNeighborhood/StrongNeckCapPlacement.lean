@@ -88,7 +88,7 @@ theorem exists_localCap_of_disjoint_escaping_neckWitnesses
         K ⊆ interior cap.core.carrier ∧
         cap.core.carrier = closure (nk.bicollarSides psi (axialZero (inv_pos.mpr nk.eps_pos))).compactSide ∧
         U = cap.core.carrier ∪ neck.map '' (univ ×ˢ Icc (0 : ℝ) 1) ∧
-        cap.tube = neck.map '' (univ ×ˢ Icc (0 : ℝ) 1) ∧ cap.tube_map = neck.map ∧
+        cap.tube = neck.map '' (univ ×ˢ Icc (0 : ℝ) 1) ∧ cap.tubeMap = neck.map ∧
         ∃ j : Fin cap.chain.count, cap.chain.centers j = centers i ∧ HEq (cap.chain.necks j) neck ∧
           cap.chain.lo j = 0 ∧ cap.chain.hi j = 1 ∧ centers i ∈ cap.tube := by
   obtain ⟨i, nk, hsrc, htgt, hcenter, hmap, hcentralNk, _neck, _hneck, _ho, hinside'⟩ :=

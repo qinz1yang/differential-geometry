@@ -37,8 +37,14 @@ theorem exists_lipschitzWith_affinePeriodic_parameterLift
     have hder : fderiv ℝ Γ t =
         (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) e (γ (t : loopCircle))).comp
           (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (fun s : ℝ => γ (s : loopCircle)) t) := by
-      rw [← mfderiv_eq_fderiv]
-      exact mfderiv_comp t (he.mdifferentiableAt (by simp)) (hγ.mdifferentiableAt (by simp))
+      have h := mfderiv_comp t (he.mdifferentiableAt (by simp)) (hγ.mdifferentiableAt (by simp))
+      rw [mfderiv_eq_fderiv] at h
+      apply ContinuousLinearMap.ext
+      intro v
+      have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ)
+        (e (γ (t : loopCircle))) (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm v))) h
+      simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+        ContinuousLinearEquiv.apply_symm_apply] using! hv
     rw [hder]
     exact (hei _ (hN (mem_range_self _))).comp
       (realContinuousLinearMap_injective_of_one_ne_zero _ (him t))

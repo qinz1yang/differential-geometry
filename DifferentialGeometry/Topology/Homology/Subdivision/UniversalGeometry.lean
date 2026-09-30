@@ -13,26 +13,40 @@ namespace DifferentialGeometry.Homology
 
 def simplexCoordinateEmbedding (n : ℕ) :
     SimplexCategory.toTop.{u}.obj ⦋n⦌ ⟶ TopCat.of (ULift.{u} (Fin (n + 1) → ℝ)) :=
-  TopCat.ofHom ⟨fun x ↦ ⟨x.down.val⟩,
-    continuous_uliftUp.comp (continuous_subtype_val.comp continuous_uliftDown)⟩
+  TopCat.ofHom ⟨fun x ↦ ⟨x.down.weights⟩,
+    continuous_uliftUp.comp
+      ((Convexity.StdSimplex.isEmbedding_toFun_comp_weights ℝ (Fin (n + 1))).continuous.comp
+        continuous_uliftDown)⟩
 
 private def coordinateRegion (n : ℕ) : Set (ULift.{u} (Fin (n + 1) → ℝ)) :=
-  ULift.down ⁻¹' stdSimplex ℝ (Fin (n + 1))
+  ULift.down ⁻¹' Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))
 
 private theorem convex_coordinateRegion (n : ℕ) : Convex ℝ (coordinateRegion.{u} n) := by
   intro x hx y hy a b ha hb hab
-  exact (convex_stdSimplex ℝ (Fin (n + 1))) hx hy ha hb hab
+  exact (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin (n + 1))) hx hy ha hb hab
 
 private def coordinateRegionHomeo (n : ℕ) :
     SimplexCategory.toTop.{u}.obj ⦋n⦌ ≃ₜ coordinateRegion.{u} n where
-  toFun x := ⟨⟨x.down.val⟩, x.down.property⟩
-  invFun x := ⟨⟨x.val.down, x.property⟩⟩
-  left_inv _ := rfl
-  right_inv _ := rfl
+  toFun x := ⟨⟨x.down.weights⟩, x.down.weights_nonneg, x.down.total_of_fintype⟩
+  invFun x := ⟨(Convexity.StdSimplex.coordinateEquiv ℝ (Fin (n + 1))).symm
+    ⟨x.val.down, x.property⟩⟩
+  left_inv x := by
+    apply ULift.ext
+    exact (Convexity.StdSimplex.coordinateEquiv ℝ (Fin (n + 1))).left_inv x.down
+  right_inv x := by
+    apply Subtype.ext
+    apply ULift.ext
+    exact congrArg Subtype.val
+      ((Convexity.StdSimplex.coordinateEquiv ℝ (Fin (n + 1))).right_inv
+        ⟨x.val.down, x.property⟩)
   continuous_toFun :=
-    (continuous_uliftUp.comp (continuous_subtype_val.comp continuous_uliftDown)).subtype_mk _
+    (continuous_uliftUp.comp
+      ((Convexity.StdSimplex.isEmbedding_toFun_comp_weights ℝ (Fin (n + 1))).continuous.comp
+        continuous_uliftDown)).subtype_mk _
   continuous_invFun :=
-    continuous_uliftUp.comp ((continuous_uliftDown.comp continuous_subtype_val).subtype_mk _)
+    continuous_uliftUp.comp
+      ((Convexity.StdSimplex.coordinateHomeomorph ℝ (Fin (n + 1))).symm.continuous.comp
+        ((continuous_uliftDown.comp continuous_subtype_val).subtype_mk _))
 
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
@@ -88,22 +102,21 @@ theorem simplexSubdivision_coordinateEmbedding (n : ℕ) :
   rw [← Category.assoc ((coordinateChainIso R n).hom), coordinateChainIso_inclusion]
 
 
-theorem affineSimplex_coordinateVertices (n : ℕ) (x : stdSimplex ℝ (Fin (n + 1))) :
-    affineSimplex (fun i ↦ (ULift.up (stdSimplex.vertex (S := ℝ) i).val :
-      ULift.{u} (Fin (n + 1) → ℝ))) x = ULift.up x.val := by
+theorem affineSimplex_coordinateVertices (n : ℕ) (x : Convexity.StdSimplex ℝ (Fin (n + 1))) :
+    affineSimplex (fun i ↦ (ULift.up (Pi.single i (1 : ℝ)) :
+      ULift.{u} (Fin (n + 1) → ℝ))) x = ULift.up (x.weights : Fin (n + 1) → ℝ) := by
   apply ULift.ext
   change (ULift.moduleEquiv : ULift.{u} (Fin (n + 1) → ℝ) ≃ₗ[ℝ] (Fin (n + 1) → ℝ))
-      (∑ i, x i • ULift.up (stdSimplex.vertex (S := ℝ) i).val) = x.val
+      (∑ i, x.weights i • ULift.up (Pi.single i (1 : ℝ))) = (x.weights : Fin (n + 1) → ℝ)
   rw [map_sum]
   simp only [map_smul, ULift.moduleEquiv_apply]
   ext i
   simp [Finset.sum_apply, Pi.single_apply]
-  rfl
 
 
 theorem singularSimplexMap_coordinateVertices (n : ℕ) :
     singularSimplexMap (TopCat.of (ULift.{u} (Fin (n + 1) → ℝ)))
-        (affineSingularSimplex (fun i ↦ ULift.up (stdSimplex.vertex (S := ℝ) i).val)) =
+        (affineSingularSimplex (fun i ↦ ULift.up (Pi.single i (1 : ℝ)))) =
       simplexCoordinateEmbedding n := by
   apply TopCat.ext
   intro x
@@ -114,7 +127,7 @@ theorem barycentricSimplexChain_coordinateEmbedding (n : ℕ) :
     barycentricSimplexChain R n ≫
         (SSet.chainComplexMap (TopCat.toSSet.map (simplexCoordinateEmbedding n)) R).f n =
       (TopCat.toSSet.obj (TopCat.of (ULift.{u} (Fin (n + 1) → ℝ)))).ιChainComplex
-        (affineSingularSimplex (fun i ↦ ULift.up (stdSimplex.vertex (S := ℝ) i).val)) ≫
+        (affineSingularSimplex (fun i ↦ ULift.up (Pi.single i (1 : ℝ)))) ≫
           affineSubdivisionMap R n := by
   have h := HomologicalComplex.congr_hom (simplexSubdivision_coordinateEmbedding R n) n
   simp only [HomologicalComplex.comp_f, affineSubdivision_f] at h
@@ -139,7 +152,7 @@ def vertexCoordinateMap {n : ℕ} (v : Fin (n + 1) → E) :
 
 @[simp]
 theorem vertexCoordinateMap_vertex {n : ℕ} (v : Fin (n + 1) → E) (i : Fin (n + 1)) :
-    vertexCoordinateMap v (ULift.up (stdSimplex.vertex (S := ℝ) i).val) = v i := by
+    vertexCoordinateMap v (ULift.up (Pi.single i (1 : ℝ))) = v i := by
   simp [vertexCoordinateMap, Pi.single_apply]
 
 
@@ -175,7 +188,7 @@ theorem singularSubdivisionMap_affine {n : ℕ} (v : Fin (n + 1) → E) :
   change (_ ≫ (SSet.chainComplexMap _ R).f n) ≫ _ = _
   rw [SSet.ι_chainComplexMap_f, map_affineSingularSimplex_linear]
   have hv : vertexCoordinateMap v ∘
-      (fun i ↦ ULift.up (stdSimplex.vertex (S := ℝ) i).val) = v := by
+      (fun i ↦ ULift.up (Pi.single i (1 : ℝ))) = v := by
     funext i
     exact vertexCoordinateMap_vertex v i
   rw [hv]

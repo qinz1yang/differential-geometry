@@ -167,7 +167,7 @@ theorem chart_pou_lip
         exact (toEuclidean (E := E)).symm.continuous.continuousAt.preimage_mem_nhds hs_full
       let D : ℝ≥0 := ‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖₊
       have hto : LipschitzWith D (toEuclidean (E := E)).symm := by
-        simpa only [D] using (toEuclidean (E := E)).symm.lipschitz
+        simpa only [D] using (toEuclidean (E := E)).symm.lipschitzWith
       have hraw : LipschitzOnWith (L * C * D) raw (S ∩ Ω) := by
         intro a ha b hb
         rw [show raw a =
@@ -218,7 +218,7 @@ theorem chart_pou_lip
         change dist
           (if (toEuclidean (E := E)).symm z ∈ (extChartAt I α).target then
             ρ ((extChartAt I α).symm ((toEuclidean (E := E)).symm z)) else 0) 0 ≤ 1
-        rw [if_pos hzE, Real.dist_eq, sub_zero, abs_of_nonneg (hρ_nonneg _)]
+        rw [ite_eq_left hzE, Real.dist_eq, sub_zero, abs_of_nonneg (hρ_nonneg _)]
         exact hρ_le_one _
       have hraw0 : ∀ z ∈ w, dist (raw z) 0 ≤ (B : ℝ) := by
         intro z hz
@@ -252,7 +252,7 @@ theorem chart_pou_lip
         change _ = (if (toEuclidean (E := E)).symm z ∈
             (extChartAt I α).target then
           ρ ((extChartAt I α).symm ((toEuclidean (E := E)).symm z)) else 0) * _
-        rw [if_pos hzE]
+        rw [ite_eq_left hzE]
       rw [hfac a ha, hfac b hb]
       exact hprod ha hb
     · refine ⟨0, {z | v z = 0}, ?_, ?_⟩
@@ -377,7 +377,7 @@ private lemma chart_raw_locLip
     (toEuclidean (E := E)).symm.continuous.continuousAt.preimage_mem_nhds hs_full
   let D : ℝ≥0 := ‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖₊
   have hto : LipschitzWith D (toEuclidean (E := E)).symm := by
-    simpa only [D] using (toEuclidean (E := E)).symm.lipschitz
+    simpa only [D] using (toEuclidean (E := E)).symm.lipschitzWith
   refine ⟨L * C * D, S ∩ chartTargetEuclid (I := I) (M := M) α,
     inter_mem (mem_nhdsWithin_of_mem_nhds hS) self_mem_nhdsWithin, ?_⟩
   intro z hz w hw
@@ -529,7 +529,7 @@ theorem exists_lipschitzWith_chartPullZero_mul
         simpa only [(toEuclidean (E := E)).symm_apply_apply] using hy)
   refine ⟨C * ‖(toEuclidean (E := E)).toContinuousLinearMap‖₊, ?_⟩
   rw [heq]
-  exact hC.comp (toEuclidean (E := E)).lipschitz
+  exact hC.comp (toEuclidean (E := E)).lipschitzWith
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -574,7 +574,7 @@ theorem exists_chartPushedRaw_memW1p_on_ball_of_lipschitz
   have hcutRaw : LipschitzWith
       (C * ‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖₊) cutRaw := by
     rw [hraw_eq]
-    exact hcut_pull'.comp (toEuclidean (E := E)).symm.lipschitz
+    exact hcut_pull'.comp (toEuclidean (E := E)).symm.lipschitzWith
   have hcut_support : Function.support cut ⊆ tsupport (χ : M → ℝ) := by
     intro x hx
     apply subset_tsupport

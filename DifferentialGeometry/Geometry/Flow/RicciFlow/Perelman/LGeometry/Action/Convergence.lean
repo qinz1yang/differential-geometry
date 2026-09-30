@@ -1141,7 +1141,7 @@ theorem FlowMetricConvergenceData.lRegularizedAction_le_liminf_of_timeH1
       _ = liminf kin atTop + liminf pot atTop := by rw [hPot.liminf_eq]
       _ ≤ liminf (fun n => kin n + pot n) atTop := by
         convert (le_liminf_add hKinLo hKinHi
-          hPot.isBoundedUnder_ge hPot.isCoboundedUnder_ge) using 1 <;> rfl
+          hPot.isBoundedUnder_ge hPot.isCoboundedUnder_ge) using 1
   have hLiminfAct : liminf act atTop =
       liminf (fun n ↦ kin n + pot n) atTop :=
     Filter.liminf_congr hSplit

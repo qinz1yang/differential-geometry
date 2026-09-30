@@ -65,13 +65,13 @@ def CollapseDegreeLipschitzInput {c : ConnectedComponents (H.stage i.succ).Carri
   ∀ (y z : (G.Parent c).Carrier),
     ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
     ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
-    riemannianEDistOf (H.event i).outputMetric (K.rfs_whole_parent_map y).1
-      (K.rfs_whole_parent_map z).1 ≤
+    riemannianEDistOf (H.event i).outputMetric (K.canonicalWholeParentMap y).1
+      (K.canonicalWholeParentMap z).1 ≤
     riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩
 
 def CollapseDegreeClassInput {c : ConnectedComponents (H.stage i.succ).Carrier}
     (K : G.ComparisonSupport c) : Prop :=
-  integralHomologyMap 3 K.rfs_whole_parent_map (fundamentalClass (G.Parent c).orientation) =
+  integralHomologyMap 3 K.canonicalWholeParentMap (fundamentalClass (G.Parent c).orientation) =
     fundamentalClass (G.Child c).orientation
 
 def ClassDegreeData {c : ConnectedComponents (H.stage i.succ).Carrier}
@@ -84,15 +84,15 @@ theorem classDegreeData_iff_multiplierForm {c : ConnectedComponents (H.stage i.s
     (K : G.ComparisonSupport c) :
     ClassDegreeData K ↔
       ∃ (k : ℤ) (φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ),
-        integralHomologyMap 3 K.rfs_whole_parent_map
+        integralHomologyMap 3 K.canonicalWholeParentMap
             (fundamentalClass (G.Parent c).orientation) =
           k • fundamentalClass (G.Child c).orientation ∧
         0 < k ∧
-        φ (integralHomologyMap 3 K.rfs_whole_parent_map
+        φ (integralHomologyMap 3 K.canonicalWholeParentMap
           (fundamentalClass (G.Parent c).orientation)) = 1 := by
   constructor
   · rintro ⟨hclass, φ, hφ⟩
-    have hc : integralHomologyMap 3 K.rfs_whole_parent_map
+    have hc : integralHomologyMap 3 K.canonicalWholeParentMap
         (fundamentalClass (G.Parent c).orientation) =
         fundamentalClass (G.Child c).orientation := hclass
     exact ⟨1, φ, by rw [hc, one_zsmul], one_pos, by rw [hc, hφ]⟩
@@ -105,16 +105,16 @@ theorem classDegreeData_iff_multiplierForm {c : ConnectedComponents (H.stage i.s
 theorem rfs_collapse_degree_of_namedInputs {c : ConnectedComponents (H.stage i.succ).Carrier}
     (K : G.ComparisonSupport c)
     (hlip : CollapseDegreeLipschitzInput K) (hclass : CollapseDegreeClassInput K) :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
+    K.LocalTerminalLengthControl K.canonicalWholeParentMap ∧
     (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      K.rfs_whole_parent_map y = K.rfs_whole_parent_map x) ∧
+      K.canonicalWholeParentMap y = K.canonicalWholeParentMap x) ∧
     (∀ x : G.transition.ChildCore c,
-      K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+      K.canonicalWholeParentMap (G.transition.childCoreIntoParent c x) =
         G.transition.childCoreInclusion c x) ∧
-    integralHomologyMap 3 K.rfs_whole_parent_map
+    integralHomologyMap 3 K.canonicalWholeParentMap
       (fundamentalClass (G.Parent c).orientation) =
       fundamentalClass (G.Child c).orientation ∧
-    Function.Surjective K.rfs_whole_parent_map :=
+    Function.Surjective K.canonicalWholeParentMap :=
   K.rfs_collapse_degree_of_lipschitz_and_degree hlip hclass
 
 end GeometricCutoffRecord.ComparisonSupport
@@ -144,13 +144,13 @@ theorem nonempty_childComparisonInputs_of_classDegreeData
      convergence := hconv
      multiplier := fun _ => 1
      map_eq := fun c => by
-       have hc : integralHomologyMap 3 (Kc c).rfs_whole_parent_map
+       have hc : integralHomologyMap 3 (Kc c).canonicalWholeParentMap
            (fundamentalClass (G.Parent c).orientation) =
            fundamentalClass (G.Child c).orientation := hclass c
        rw [hc, one_zsmul]
      generator := fun c => by
        refine ⟨(hgen c).choose, ?_⟩
-       have hc : integralHomologyMap 3 (Kc c).rfs_whole_parent_map
+       have hc : integralHomologyMap 3 (Kc c).canonicalWholeParentMap
            (fundamentalClass (G.Parent c).orientation) =
            fundamentalClass (G.Child c).orientation := hclass c
        rw [hc]
@@ -169,7 +169,7 @@ theorem rfs_child_comparison_of_classDegreeData
       φ (fundamentalClass (G.Child c).orientation) = 1) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       C((G.Parent c).Carrier, (G.Child c).Carrier),
-    (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+    (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
     (∀ c, integralHomologyMap 3 (f c) (fundamentalClass (G.Parent c).orientation) =
       fundamentalClass (G.Child c).orientation) ∧
     ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,

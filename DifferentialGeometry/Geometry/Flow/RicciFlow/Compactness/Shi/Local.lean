@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.SolutionHeatEquation
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Estimate
@@ -267,16 +268,16 @@ private theorem exists_trunc_tower
     if k ≤ top then wLap k else fun _ _ ↦ 0
   have hw'_le : ∀ k : Nat, k ≤ top → w' k = w k := by
     intro k hk
-    simp only [w', if_pos hk]
+    simp only [w', ite_eq_left hk]
   have hw'_gt : ∀ k : Nat, ¬ k ≤ top → w' k = fun _ _ ↦ 0 := by
     intro k hk
-    simp only [w', if_neg hk]
+    simp only [w', ite_eq_right hk]
   have hwLap'_le : ∀ k : Nat, k ≤ top → wLap' k = wLap k := by
     intro k hk
-    simp only [wLap', if_pos hk]
+    simp only [wLap', ite_eq_left hk]
   have hwLap'_gt : ∀ k : Nat, ¬ k ≤ top → wLap' k = fun _ _ ↦ 0 := by
     intro k hk
-    simp only [wLap', if_neg hk]
+    simp only [wLap', ite_eq_right hk]
   have hw'_val_le : ∀ k : Nat, k ≤ top → ∀ s : Real, ∀ y : M,
       w' k s y = w k s y := by
     intro k hk s y
@@ -483,7 +484,7 @@ private theorem complete_of_cutoff
     (hw_grad : ∀ k : Nat, ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t → ∀ x : M,
       MDifferentiableAt I (I.prod 𝓘(Real, E))
         (T% fun y : M ↦ gradientFun (I := I) (G.metric t) (w k t) y) x)
-    (cut : ShiCutoffData (I := I) G T)
+    (cut : ParabolicCutoffSequence (I := I) G T)
     (m : Nat) (c : Real) (hc : 0 ≤ c)
     (hlevelC : ∀ k : Nat, k ≤ m + 1 → levelC k ≤ c)
     (hKato : ∀ k : Nat, k ≤ m → ∀ s : Real, s ∈ Set.Icc 0 T → 0 < s → ∀ y : M,
@@ -497,7 +498,7 @@ private theorem complete_of_cutoff
     exists_trunc_tower (I := I) G levelC K aScale T hT hK haScale hslab
       hregular hw_nonneg hw0_bound hTK hheat hLap hw_cont hw_space hw_grad
       (m + 1) c hc hlevelC
-  have cutB : ShiCutoffData (I := I) G B.T := by
+  have cutB : ParabolicCutoffSequence (I := I) G B.T := by
     simpa only [hBT] using cut
   have hgradB : TowerNormGradUpTo (I := I) B m := by
     intro k hk s hs hspos y
@@ -554,7 +555,7 @@ private theorem complete_of_barrier
       MDifferentiableAt I (I.prod 𝓘(Real, E))
         (T% fun y : M ↦ gradientFun (I := I) (G.metric t) (w k t) y) x)
     (hcut : ∀ O : M,
-      Nonempty (ShiBarrierCutoffData (I := I) G T O))
+      Nonempty (ParabolicBarrierCutoffSequence (I := I) G T O))
     (m : Nat) (c : Real) (hc : 0 ≤ c)
     (hlevelC : ∀ k : Nat, k ≤ m + 1 → levelC k ≤ c)
     (hKato : ∀ k : Nat, k ≤ m → ∀ s : Real, s ∈ Set.Icc 0 T → 0 < s → ∀ y : M,
@@ -569,7 +570,7 @@ private theorem complete_of_barrier
       hregular hw_nonneg hw0_bound hTK hheat hLap hw_cont hw_space hw_grad
       (m + 1) c hc hlevelC
   have cutB : ∀ O : M,
-      Nonempty (ShiBarrierCutoffData (I := I) G B.T O) := by
+      Nonempty (ParabolicBarrierCutoffSequence (I := I) G B.T O) := by
     intro O
     simpa only [hBT] using hcut O
   have hgradB : TowerNormGradUpTo (I := I) B m := by
@@ -933,7 +934,7 @@ theorem movingRm_of_bound
       with_unfolding_all exact hraw
     exact hraw'.trans hCK
   have hcut : ∀ O : F.M,
-      Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S0) T O) := by
+      Nonempty (ParabolicBarrierCutoffSequence (I := I) (flowG (I := I) S0) T O) := by
     exact nonempty_shi_barrier_cutoff_data_of_solution
       (I := I) (S := S0) hS0 hT hSlab hreg0
       hRiemannT0 hKNonneg hcurv0
@@ -1300,7 +1301,7 @@ theorem movingShi_of_bound
       with_unfolding_all exact hraw
     exact hraw'.trans hCK
   have hcut : ∀ O : F.M,
-      Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S0) T O) := by
+      Nonempty (ParabolicBarrierCutoffSequence (I := I) (flowG (I := I) S0) T O) := by
     exact nonempty_shi_barrier_cutoff_data_of_solution
       (I := I) (S := S0) hS0 hT hSlab hreg0
       hRiemannT0 hKNonneg hcurv0

@@ -1,6 +1,10 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34AlternatingPathMatchings
 import Mathlib.Data.Bool.Basic
-import Mathlib.Data.Set.Lattice
+import Mathlib.Data.Set.Lattice.Bounded
+import Mathlib.Data.Set.Lattice.Disjoint
+import Mathlib.Data.Set.Lattice.Image
+import Mathlib.Data.Set.Lattice.Indexed
+import Mathlib.Data.Set.Lattice.Order
 
 namespace Bool
 
@@ -25,9 +29,9 @@ theorem alternating_eq_iff_mod_two_eq {n : ℕ} {s : ℕ → Bool}
   · simp only [hpar]
   have hcases : (i % 2 = 0 ∧ j % 2 ≠ 0) ∨ (i % 2 ≠ 0 ∧ j % 2 = 0) := by omega
   rcases hcases with ⟨hi₀, hj₀⟩ | ⟨hi₀, hj₀⟩
-  · rw [if_pos hi₀, if_neg hj₀]
+  · rw [ite_eq_left hi₀, ite_eq_right hj₀]
     exact iff_of_false (not_ne_self (s 0)).symm hpar
-  · rw [if_neg hi₀, if_pos hj₀]
+  · rw [ite_eq_right hi₀, ite_eq_left hj₀]
     exact iff_of_false (not_ne_self (s 0)) hpar
 
 end Bool

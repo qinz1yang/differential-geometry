@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 import Mathlib.Topology.Homeomorph.Lemmas
 
@@ -7,11 +8,13 @@ noncomputable section
 
 universe u v
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 variable (I : Type v) [Fintype I]
 
-def uliftHomeomorph : ULift.{u} (stdSimplex ℝ I) ≃ₜ stdSimplex ℝ (ULift.{u} I) where
+def uliftHomeomorph : ULift.{u} (coordinateSet ℝ I) ≃ₜ coordinateSet ℝ (ULift.{u} I) where
   toFun p := ⟨fun i ↦ p.down.val i.down, ⟨fun i ↦ p.down.property.1 i.down, by
     exact (Equiv.ulift.sum_comp p.down.val).trans p.down.property.2⟩⟩
   invFun q := ULift.up ⟨fun i ↦ q.val (ULift.up i), ⟨fun i ↦ q.property.1 (ULift.up i), by
@@ -32,16 +35,16 @@ def uliftHomeomorph : ULift.{u} (stdSimplex ℝ I) ≃ₜ stdSimplex ℝ (ULift.
 
 
 @[simp]
-theorem uliftHomeomorph_apply (p : ULift.{u} (stdSimplex ℝ I)) (i : ULift.{u} I) :
+theorem uliftHomeomorph_apply (p : ULift.{u} (coordinateSet ℝ I)) (i : ULift.{u} I) :
     (uliftHomeomorph I p).val i = p.down.val i.down := rfl
 
 
 @[simp]
-theorem uliftHomeomorph_symm_apply (q : stdSimplex ℝ (ULift.{u} I)) (i : I) :
+theorem uliftHomeomorph_symm_apply (q : coordinateSet ℝ (ULift.{u} I)) (i : I) :
     ((uliftHomeomorph I).symm q).down.val i = q.val (ULift.up i) := rfl
 
 
-theorem uliftHomeomorph_mem_boundary (p : ULift.{u} (stdSimplex ℝ I)) :
+theorem uliftHomeomorph_mem_boundary (p : ULift.{u} (coordinateSet ℝ I)) :
     p.down ∈ boundary I ↔ uliftHomeomorph I p ∈ boundary (ULift.{u} I) := by
   constructor
   · rintro ⟨i, hi⟩
@@ -51,13 +54,13 @@ theorem uliftHomeomorph_mem_boundary (p : ULift.{u} (stdSimplex ℝ I)) :
 
 
 def boundaryUliftHomeomorph :
-    {p : ULift.{u} (stdSimplex ℝ I) // p.down ∈ boundary I} ≃ₜ boundary (ULift.{u} I) :=
+    {p : ULift.{u} (coordinateSet ℝ I) // p.down ∈ boundary I} ≃ₜ boundary (ULift.{u} I) :=
   (uliftHomeomorph I).subtype (uliftHomeomorph_mem_boundary I)
 
 
 @[simp]
 theorem boundaryUliftHomeomorph_val
-    (p : {p : ULift.{u} (stdSimplex ℝ I) // p.down ∈ boundary I}) :
+    (p : {p : ULift.{u} (coordinateSet ℝ I) // p.down ∈ boundary I}) :
     (boundaryUliftHomeomorph I p).val = uliftHomeomorph I p.val := rfl
 
 end DifferentialGeometry.Simplex

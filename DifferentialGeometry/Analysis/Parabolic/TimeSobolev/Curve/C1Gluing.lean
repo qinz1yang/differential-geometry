@@ -76,7 +76,7 @@ theorem contDiffOn_Icc_join {f : ℝ → X} {a c b : ℝ}
     rw [show L ∪ R = J by
       simpa only [L, R, J] using Icc_union_Icc_eq_Icc hac.le hcb.le] at hu
     rw [show d x = fderivWithin ℝ f L x by
-      simp only [d, Set.piecewise, if_pos (show x ∈ Iic c from hxc.le)]]
+      simp only [d, Set.piecewise, ite_eq_left (show x ∈ Iic c from hxc.le)]]
     exact hu
   · have hcL : x ∈ L := ⟨hac.le, le_rfl⟩
     have hcR : x ∈ R := ⟨le_rfl, hcb.le⟩
@@ -89,7 +89,7 @@ theorem contDiffOn_Icc_join {f : ℝ → X} {a c b : ℝ}
     rw [show L ∪ R = J by
       simpa only [L, R, J] using Icc_union_Icc_eq_Icc hac.le hcb.le] at hu
     rw [show d x = fderivWithin ℝ f L x by
-      simp only [d, Set.piecewise, if_pos (mem_Iic.mpr le_rfl)]]
+      simp only [d, Set.piecewise, ite_eq_left (mem_Iic.mpr le_rfl)]]
     exact hu
   · have hxR : x ∈ R := ⟨hcx.le, hx.2⟩
     have hright : HasFDerivWithinAt f (fderivWithin ℝ f R x) R x :=
@@ -102,7 +102,7 @@ theorem contDiffOn_Icc_join {f : ℝ → X} {a c b : ℝ}
     rw [show L ∪ R = J by
       simpa only [L, R, J] using Icc_union_Icc_eq_Icc hac.le hcb.le] at hu
     rw [show d x = fderivWithin ℝ f R x by
-      simp only [d, Set.piecewise, if_neg
+      simp only [d, Set.piecewise, ite_eq_right
         (show x ∉ Iic c from not_le.mpr hcx)]]
     exact hu
 

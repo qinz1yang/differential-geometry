@@ -10,6 +10,10 @@ open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
+open DifferentialGeometry.TensorMetric
+  (abs_tensorInnerPointwise_le_mul riemannianFiberNormSq
+    riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg tensorInnerPointwise
+    tensorPointwiseNorm)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Analysis.Sobolev

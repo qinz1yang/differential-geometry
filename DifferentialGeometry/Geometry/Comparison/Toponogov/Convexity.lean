@@ -165,45 +165,28 @@ theorem convexOn_of_lowerSupport {I : Set ℝ} {f : ℝ → ℝ} (hI : Convex �
     convert (hasDerivAt_const s (f x)).add
       (((hasDerivAt_id s).sub_const x).mul_const m) using 1
     · rfl
-    · rfl
-    · funext t
-      simp
     · ring
   have hbump_deriv (s : ℝ) : HasDerivAt bump ((z - s) - (s - x)) s := by
     dsimp [bump]
     convert ((hasDerivAt_id s).sub_const x).mul
       ((hasDerivAt_const s z).sub (hasDerivAt_id s)) using 1
     · rfl
-    · rfl
-    · funext t
-      simp
     · simp
       ring
   have hk_deriv (s : ℝ) (hs : s ∈ S.domain) : HasDerivAt k (k' s) s := by
     dsimp [k, k']
-    convert ((S.hasDerivAt_support s hs).sub (hline_deriv s)).sub
-      ((hbump_deriv s).const_mul η) using 1
-    · rfl
-    · rfl
-    · funext t
-      simp
+    exact ((S.hasDerivAt_support s hs).sub (hline_deriv s)).sub
+      ((hbump_deriv s).const_mul η)
   have hlinear_deriv : HasDerivAt (fun s : ℝ => (z - s) - (s - x)) (-2) r := by
     convert ((hasDerivAt_const r z).sub (hasDerivAt_id r)).sub
       ((hasDerivAt_id r).sub_const x) using 1
     · rfl
-    · rfl
-    · funext t
-      simp
     · ring
   have hk'_deriv : HasDerivAt k' (S.supportSecondDeriv + 2 * η) r := by
     dsimp [k']
     convert (S.hasDerivAt_supportDeriv.sub_const m).sub
       (hlinear_deriv.const_mul η) using 1
-    · rfl
-    · rfl
-    · funext t
-      simp
-    · ring
+    ring
   have hk''_nonpos : S.supportSecondDeriv + 2 * η ≤ 0 :=
     secondDeriv_nonpos_of_isLocalMax hk_localMax S.domain_mem_nhds hk_deriv hk'_deriv
   linarith [S.supportSecondDeriv_nonneg, hη]

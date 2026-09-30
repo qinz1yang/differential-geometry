@@ -114,7 +114,7 @@ private theorem smoothTransition_deriv_le_forty_of_le_quarter (x : ℝ) (hx0 : 0
     deriv Real.smoothTransition x ≤ 40 := by
   have hExpGlue : ∀ y : ℝ, 0 < y → expNegInvGlue y = Real.exp (-y⁻¹) := by
     intro y hy
-    rw [expNegInvGlue, if_neg (not_le.mpr hy)]
+    rw [expNegInvGlue, ite_eq_right (not_le.mpr hy)]
   rw [smoothTransition_deriv_eq hx0 hx1]
   have hA : 0 < expNegInvGlue x := expNegInvGlue.pos_of_pos hx0
   have hB : 0 < expNegInvGlue (1 - x) := expNegInvGlue.pos_of_pos (by linarith)
@@ -217,7 +217,7 @@ private theorem smoothTransition_deriv_le_forty_of_ge_three_quarters (x : ℝ) (
     deriv Real.smoothTransition x ≤ 40 := by
   have hExpGlue : ∀ y : ℝ, 0 < y → expNegInvGlue y = Real.exp (-y⁻¹) := by
     intro y hy
-    rw [expNegInvGlue, if_neg (not_le.mpr hy)]
+    rw [expNegInvGlue, ite_eq_right (not_le.mpr hy)]
   rw [smoothTransition_deriv_eq hx0 hx1]
   have hA : 0 < expNegInvGlue x := expNegInvGlue.pos_of_pos hx0
   have hB : 0 < expNegInvGlue (1 - x) := expNegInvGlue.pos_of_pos (by linarith)
@@ -430,7 +430,7 @@ theorem cellMap_posIdx {n k : ℕ} (hk : k ≤ n) (ε : ℝ)
     (x : EuclideanSpace ℝ (Fin k)) (j : Fin (n - k)) :
     cellMap ε x (posIdx hk j) = 0 := by
   dsimp [cellMap, posIdx]
-  rw [dif_neg]
+  rw [dite_eq_right]
   omega
 
 theorem morseNormalForm_cellMap {n k : ℕ} (hk : k ≤ n) (c ε : ℝ)
@@ -538,7 +538,7 @@ theorem recombine_posPart {n k : ℕ} (hk : k ≤ n) (a : EuclideanSpace ℝ (Fi
     (b : EuclideanSpace ℝ (Fin (n - k))) (j : Fin (n - k)) :
     recombine hk a b (posIdx hk j) = b j := by
   dsimp [recombine, posIdx]
-  rw [dif_neg (by omega : ¬ k + (j : ℕ) < k)]
+  rw [dite_eq_right (by omega : ¬ k + (j : ℕ) < k)]
   apply congrArg b.ofLp
   apply Fin.ext
   simp
@@ -548,7 +548,7 @@ theorem recombine_top {n : ℕ} (a : EuclideanSpace ℝ (Fin n))
     recombine (le_rfl : n ≤ n) a b = a := by
   funext i
   dsimp [recombine]
-  rw [dif_pos i.isLt]
+  rw [dite_eq_left i.isLt]
 
 theorem recombine_bot {n : ℕ} (a : EuclideanSpace ℝ (Fin 0))
     (b : EuclideanSpace ℝ (Fin n)) :
@@ -986,7 +986,7 @@ theorem continuous_recombine {n k : ℕ} (hk : k ≤ n) :
         recombine hk q.1 q.2 i) = fun q => q.1 ⟨i.val, hi⟩ := by
       funext q
       dsimp [recombine]
-      rw [dif_pos hi]
+      rw [dite_eq_left hi]
     rw [hfun]
     exact (PiLp.continuous_apply (p := (2 : ENNReal)) (β := fun _ : Fin k => ℝ)
       ⟨i.val, hi⟩).continuousAt.comp continuous_fst.continuousAt
@@ -998,7 +998,7 @@ theorem continuous_recombine {n k : ℕ} (hk : k ≤ n) :
         recombine hk q.1 q.2 i) = fun q => q.2 ⟨i.val - k, hproof⟩ := by
       funext q
       dsimp [recombine]
-      rw [dif_neg hi]
+      rw [dite_eq_right hi]
     rw [hfun]
     exact (PiLp.continuous_apply (p := (2 : ENNReal)) (β := fun _ : Fin (n - k) => ℝ)
       ⟨i.val - k, hproof⟩).continuousAt.comp continuous_snd.continuousAt
@@ -1038,7 +1038,7 @@ theorem continuous_cellMap {n k : ℕ} (r : ℝ) :
         fun q : ClosedCell k => r * (q : EuclideanSpace ℝ (Fin k)) ⟨i.val, hi⟩ := by
       funext q
       dsimp [cellMap]
-      rw [dif_pos hi]
+      rw [dite_eq_left hi]
     rw [hfun]
     exact ((continuous_const.mul (PiLp.continuous_apply (p := (2 : ENNReal)) (β := fun _ : Fin k => ℝ)
       ⟨i.val, hi⟩)).comp continuous_subtype_val).continuousAt
@@ -1046,7 +1046,7 @@ theorem continuous_cellMap {n k : ℕ} (r : ℝ) :
       fun _ => 0 := by
       funext q
       dsimp [cellMap]
-      rw [dif_neg hi]
+      rw [dite_eq_right hi]
     rw [hfun]
     exact continuous_const.continuousAt
 
@@ -1476,7 +1476,7 @@ theorem recombine_contDiff {n k : ℕ} (hk : k ≤ n) (r ε : ℝ) :
       have hrew : recombine hk (negPart hk (cellMap (Real.sqrt (2 * ε)) p.1)) (r • p.2) i =
           (negPart hk (cellMap (Real.sqrt (2 * ε)) p.1)) ⟨i.val, hi⟩ := by
         dsimp [recombine]
-        rw [dif_pos hi]
+        rw [dite_eq_left hi]
       rw [hrew]
       exact negPart_cellMap_apply hk (Real.sqrt (2 * ε)) p.1 ⟨i.val, hi⟩
     rw [hcomp]
@@ -1490,7 +1490,7 @@ theorem recombine_contDiff {n k : ℕ} (hk : k ≤ n) (r ε : ℝ) :
             omega⟩ := by
       funext p
       dsimp [recombine]
-      rw [dif_neg hi]
+      rw [dite_eq_right hi]
     rw [hcomp]
     fun_prop
 
@@ -1510,7 +1510,7 @@ theorem recombine_contDiff_cocore {n k : ℕ} (hk : k ≤ n) (r ε : ℝ) (hε :
             (r • p.2) i = (negPart hk (cellMap (Real.sqrt (2 * ε + r ^ 2 * ‖p.2‖ ^ 2)) p.1))
             ⟨i.val, hi⟩ := by
         dsimp [recombine]
-        rw [dif_pos hi]
+        rw [dite_eq_left hi]
       rw [hrew]
       exact negPart_cellMap_apply hk (Real.sqrt (2 * ε + r ^ 2 * ‖p.2‖ ^ 2)) p.1 ⟨i.val, hi⟩
     rw [hcomp]
@@ -1539,7 +1539,7 @@ theorem recombine_contDiff_cocore {n k : ℕ} (hk : k ≤ n) (r ε : ℝ) (hε :
             omega⟩ := by
       funext p
       dsimp [recombine]
-      rw [dif_neg hi]
+      rw [dite_eq_right hi]
     rw [hcomp]
     fun_prop
 
@@ -3167,7 +3167,7 @@ theorem contDiff_modelAttachedStretch {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ)
         fun y : MorseModel n => y (negIdx hk ⟨i.val, hi⟩) := by
       funext y
       dsimp [modelAttachedStretch]
-      rw [recombine, dif_pos hi]
+      rw [recombine, dite_eq_left hi]
       rfl
     rw [hcomp]
     fun_prop
@@ -3180,7 +3180,7 @@ theorem contDiff_modelAttachedStretch {n k : ℕ} (hk : k ≤ n) (ε r δ : ℝ)
               omega⟩) := by
       funext y
       dsimp [modelAttachedStretch]
-      rw [recombine, dif_neg hi]
+      rw [recombine, dite_eq_right hi]
       rfl
     rw [hcomp]
     have hcoord : ContDiff ℝ (⊤ : ℕ∞)
@@ -3230,7 +3230,7 @@ theorem contDiff_modelAttachedUnstretch {n k : ℕ} (hk : k ≤ n) (ε r δ : �
         fun y : MorseModel n => y (negIdx hk ⟨i.val, hi⟩) := by
       funext y
       dsimp [modelAttachedUnstretch]
-      rw [recombine, dif_pos hi]
+      rw [recombine, dite_eq_left hi]
       rfl
     rw [hcomp]
     fun_prop
@@ -3243,7 +3243,7 @@ theorem contDiff_modelAttachedUnstretch {n k : ℕ} (hk : k ≤ n) (ε r δ : �
               omega⟩) := by
       funext y
       dsimp [modelAttachedUnstretch]
-      rw [recombine, dif_neg hi]
+      rw [recombine, dite_eq_right hi]
       rfl
     rw [hcomp]
     have hcoord : ContDiff ℝ (⊤ : ℕ∞)
@@ -3414,7 +3414,7 @@ theorem contDiff_modelRoundedUnstretchDamped {n k : ℕ} (hk : k ≤ n) (ε r δ
         fun y : MorseModel n => y (negIdx hk ⟨i.val, hi⟩) := by
       funext y
       dsimp [modelRoundedUnstretchDamped]
-      rw [recombine, dif_pos hi]
+      rw [recombine, dite_eq_left hi]
       rfl
     rw [hcomp]
     fun_prop
@@ -3429,7 +3429,7 @@ theorem contDiff_modelRoundedUnstretchDamped {n k : ℕ} (hk : k ≤ n) (ε r δ
               omega⟩) := by
       funext y
       dsimp [modelRoundedUnstretchDamped]
-      rw [recombine, dif_neg hi]
+      rw [recombine, dite_eq_right hi]
       rfl
     rw [hcomp]
     have hcoord : ContDiff ℝ (⊤ : ℕ∞)
@@ -3460,7 +3460,7 @@ theorem modelRoundedUnstretchDamped_mem_upper {n k : ℕ} (hk : k ≤ n) (c ε r
       (1 - Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))) ∈ Set.Icc (0 : ℝ) 1 := by
     constructor
     · exact mul_nonneg hβ₁01.1 hβ₂01.1
-    · exact mul_le_one₀ hβ₁01.2 hβ₂01.1 hβ₂01.2
+    · exact (mul_le_of_le_one_left hβ₂01.1 hβ₁01.2).trans hβ₂01.2
   have hS : (1 + (Real.sqrt ((‖negPart hk y‖ ^ 2 + r ^ 2) / smoothCap ε r δ (‖negPart hk y‖ ^ 2)) - 1) *
         (1 - Real.smoothTransition ((‖negPart hk y‖ ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))) *
       (1 - Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2)))) ^ 2 ≤
@@ -3573,7 +3573,7 @@ theorem modelRoundedUnstretchDamped_norm_sq_le {n k : ℕ} (hk : k ≤ n) (ε r 
       (1 - Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))) ∈ Set.Icc (0 : ℝ) 1 := by
     constructor
     · exact mul_nonneg hβ₁01.1 hβ₂01.1
-    · exact mul_le_one₀ hβ₁01.2 hβ₂01.1 hβ₂01.2
+    · exact (mul_le_of_le_one_left hβ₂01.1 hβ₁01.2).trans hβ₂01.2
   have hSnonneg : 0 ≤ 1 + (Real.sqrt ((‖negPart hk y‖ ^ 2 + r ^ 2) / smoothCap ε r δ (‖negPart hk y‖ ^ 2)) - 1) *
         (1 - Real.smoothTransition ((‖negPart hk y‖ ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))) *
         (1 - Real.smoothTransition ((morseNorm n y ^ 2 - R₀ ^ 2) / (R₁ ^ 2 - R₀ ^ 2))) := by
@@ -3798,7 +3798,7 @@ theorem contDiff_modelLevelDampedUnstretch {n k : ℕ} (hk : k ≤ n) (ε r δ :
         fun y : MorseModel n => y (negIdx hk ⟨i.val, hi⟩) := by
       funext y
       dsimp [modelLevelDampedUnstretch]
-      rw [recombine, dif_pos hi]
+      rw [recombine, dite_eq_left hi]
       rfl
     rw [hcomp]
     fun_prop
@@ -3812,7 +3812,7 @@ theorem contDiff_modelLevelDampedUnstretch {n k : ℕ} (hk : k ≤ n) (ε r δ :
               omega⟩) := by
       funext y
       dsimp [modelLevelDampedUnstretch]
-      rw [recombine, dif_neg hi]
+      rw [recombine, dite_eq_right hi]
       rfl
     rw [hcomp]
     fun_prop
@@ -4383,7 +4383,7 @@ theorem contDiff_modelLevelRadiusDampedUnstretch {n k : ℕ} (hk : k ≤ n) (ε 
         fun y : MorseModel n => y (negIdx hk ⟨i.val, hi⟩) := by
       funext y
       dsimp [modelLevelRadiusDampedUnstretch]
-      rw [recombine, dif_pos hi]
+      rw [recombine, dite_eq_left hi]
       rfl
     rw [hcomp]
     fun_prop
@@ -4398,7 +4398,7 @@ theorem contDiff_modelLevelRadiusDampedUnstretch {n k : ℕ} (hk : k ≤ n) (ε 
               omega⟩) := by
       funext y
       dsimp [modelLevelRadiusDampedUnstretch]
-      rw [recombine, dif_neg hi]
+      rw [recombine, dite_eq_right hi]
       rfl
     rw [hcomp]
     fun_prop
@@ -5594,7 +5594,7 @@ theorem exists_reindexEquiv {n k : ℕ} (hk : k ≤ n) (w : Fin n → ℝ)
               rw [← Finset.coe_orderIsoOfFin_apply]
               exact hmem
             dsimp
-            rw [dif_pos hmem']
+            rw [dite_eq_left hmem']
             apply congrArg Sum.inl
             exact (negs.orderIsoOfFin hneg_card).symm_apply_apply i
         | inr j =>
@@ -5606,7 +5606,7 @@ theorem exists_reindexEquiv {n k : ℕ} (hk : k ≤ n) (w : Fin n → ℝ)
               rw [← Finset.coe_orderIsoOfFin_apply]
               exact hnot
             dsimp
-            rw [dif_neg hnot']
+            rw [dite_eq_right hnot']
             apply congrArg Sum.inr
             calc
               (poss.orderIsoOfFin hpos_card).symm ⟨poss.orderEmbOfFin hpos_card j, _⟩ =
@@ -5619,7 +5619,7 @@ theorem exists_reindexEquiv {n k : ℕ} (hk : k ≤ n) (w : Fin n → ℝ)
         intro z
         by_cases h : z ∈ negs
         · dsimp
-          rw [dif_pos h]
+          rw [dite_eq_left h]
           exact congrArg (fun w : negs => (w : Fin n))
             ((negs.orderIsoOfFin hneg_card).apply_symm_apply ⟨z, h⟩)
         · have hposs' : z ∈ poss := by
@@ -5630,7 +5630,7 @@ theorem exists_reindexEquiv {n k : ℕ} (hk : k ≤ n) (w : Fin n → ℝ)
             · exact (hne hwz).elim
             · simp [poss, hwz]
           dsimp
-          rw [dif_neg h]
+          rw [dite_eq_right h]
           exact congrArg (fun w : poss => (w : Fin n))
             ((poss.orderIsoOfFin hpos_card).apply_symm_apply ⟨z, hposs'⟩) }
   refine ⟨e0.symm.trans e1, ?_, ?_⟩

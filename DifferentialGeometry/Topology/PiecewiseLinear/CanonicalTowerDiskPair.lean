@@ -22,12 +22,12 @@ theorem IsCanonicalTower.exists_innermost_disk_pair_with_trace
     ∃ (j : ℤ) (Δ U D₁ D₂ : Set E3) (r r₁ r₂ : (Fin 3 → ℝ) → E3),
       (j = i - 1 ∨ j = i) ∧
       r '' stdSimplexBoundary 2 ∈ traceCircles (canonicalOddPiece S'' T'' j) (T'' (2 * i)) ∧
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' (2 * i) ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' (2 * i) ∧
       IsOpen U ∧ Δ ⊆ U ∧ U ⊆ I ∧ U ⊆ φ '' S (2 * i) ∧
       Disjoint U ({P', a, b} : Set E3) ∧
       Disjoint (initialSurface S'' T'' P' \ (T'' (2 * i) ∪ canonicalOddPiece S'' T'' j)) U ∧
-      IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
-      IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂ ∧
+      IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂ ∧
       Δ ⊆ D₁ \ r₁ '' stdSimplexBoundary 2 ∧ Δ ⊆ D₂ \ r₂ '' stdSimplexBoundary 2 ∧
       D₁ ∩ D₂ = Δ ∧ D₁ ∩ T'' (2 * i) = Δ ∧ D₂ ⊆ T'' (2 * i) ∧
       D₁ ∪ D₂ ⊆ initialSurface S'' T'' P' ∩ U ∧
@@ -202,12 +202,12 @@ theorem IsCanonicalTower.exists_innermost_disk_pair
     ∃ (j : ℤ) (Δ U D₁ D₂ : Set E3) (r r₁ r₂ : (Fin 3 → ℝ) → E3),
       (j = i - 1 ∨ j = i) ∧
       r '' stdSimplexBoundary 2 ∈ traceCircles (canonicalOddPiece S'' T'' j) (T'' (2 * i)) ∧
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' (2 * i) ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' (2 * i) ∧
       IsOpen U ∧ Δ ⊆ U ∧ U ⊆ I ∧ U ⊆ φ '' S (2 * i) ∧
       Disjoint U ({P', a, b} : Set E3) ∧
       Disjoint (initialSurface S'' T'' P' \ (T'' (2 * i) ∪ canonicalOddPiece S'' T'' j)) U ∧
-      IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
-      IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂ ∧
+      IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂ ∧
       Δ ⊆ D₁ \ r₁ '' stdSimplexBoundary 2 ∧ Δ ⊆ D₂ \ r₂ '' stdSimplexBoundary 2 ∧
       D₁ ∩ D₂ = Δ ∧ D₁ ∩ T'' (2 * i) = Δ ∧ D₂ ⊆ T'' (2 * i) ∧
       D₁ ∪ D₂ ⊆ initialSurface S'' T'' P' ∩ U ∧

@@ -32,37 +32,6 @@ def hasPositiveSectionalCurvature
       0 < metricRm04StandardAt (I := I) (M := M) g x W T T W
 
 omit [I.Boundaryless] [SigmaCompactSpace M] [BoundarylessManifold I M] in
-theorem metricRm04StandardAt_eq_zero_of_not_linearIndependent
-    (g : SmoothRiemannianMetric I M) (x : M)
-    (W T : TangentSpace I x) (hdep : ¬ LinearIndependent ℝ ![W, T]) :
-    metricRm04StandardAt (I := I) (M := M) g x W T T W = 0 := by
-  let B : TangentSpace I x → TangentSpace I x → TangentSpace I x →
-      TangentSpace I x → ℝ :=
-    fun X Y Z U ↦ metricRm04StandardAt (I := I) (M := M) g x X Y Z U
-  have hB : IsAlgCurvForm B := by
-    change IsAlgCurvForm
-      (tensor04StandardAt (I := I) (M := M)
-        (metricRm04At (I := I) (M := M) g x))
-    exact mem_algebraicCurvatureTensorSubmodule.mp
-      (metricRm04At_mem_algebraicCurvatureTensorSubmodule
-        (I := I) (M := M) g x)
-  by_cases hW : W = 0
-  · subst W
-    have hzero := hB.smul_left 0 (0 : TangentSpace I x) T T 0
-    simpa [B] using hzero
-  · rw [LinearIndependent.pair_iff' hW] at hdep
-    push Not at hdep
-    obtain ⟨a, rfl⟩ := hdep
-    have hdiag : B W W (a • W) W = 0 := by
-      have hskew := hB.anti_first W W (a • W) W
-      linarith
-    have hskew := hB.anti_first W (a • W) (a • W) W
-    have hsmul := hB.smul_left a W W (a • W) W
-    change B W (a • W) (a • W) W = 0
-    rw [hskew, hsmul, hdiag]
-    ring
-
-omit [I.Boundaryless] [SigmaCompactSpace M] [BoundarylessManifold I M] in
 theorem hasPositiveSectionalCurvature.toNonnegative
     {g : SmoothRiemannianMetric I M}
     (hsec : hasPositiveSectionalCurvature (I := I) g) :
@@ -145,7 +114,8 @@ end DifferentialGeometry.Geometry
 
 namespace DifferentialGeometry.Geometry
 
-@[reducible] alias HasPositiveSectionalCurvature := DifferentialGeometry.Geometry.hasPositiveSectionalCurvature
+@[reducible]
+alias HasPositiveSectionalCurvature := DifferentialGeometry.Geometry.hasPositiveSectionalCurvature
 end DifferentialGeometry.Geometry
 
 namespace DifferentialGeometry.Geometry.HasPositiveSectionalCurvature

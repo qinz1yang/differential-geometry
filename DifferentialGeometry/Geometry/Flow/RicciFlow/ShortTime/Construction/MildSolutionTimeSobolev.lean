@@ -1,13 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.ScaleLipschitz
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackEvaluationChainRule
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Lipschitz
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.LocallyLipschitz
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.DeTurckNonlinearity
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 open DifferentialGeometry.Geometry.Curvature
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -15,10 +7,6 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle
 open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
 open DifferentialGeometry.Analysis.Spectral
-open DifferentialGeometry.PDE.DeTurck
-open DifferentialGeometry.Analysis.ODE
-open DifferentialGeometry.PDE.RicciFlow.Pullback
-open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -35,7 +23,7 @@ variable
       [I.Boundaryless] [T2Space M]
 
 omit [BoundarylessManifold I M] in
-theorem exists_deturck_remainder_mild_solution_with_time_sobolev_one
+theorem exists_tensor_mild_solution_of_l2_coeff_bound
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (u₀ : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
     (N_cont : TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1) →
@@ -78,13 +66,16 @@ theorem exists_deturck_remainder_mild_solution_with_time_sobolev_one
               (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) (a : ℝ) hT u₀ gforce t)) := by
   let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E)))
-  obtain ⟨L_R, R, hR, hLip⟩ :=
-    deturck_nemytskii_operator_hs_lipschitz_of_l2coeff_lipschitz (I := I) (M := M) g_bg a u₀ N_cont
-      Nsec hN_coeff hNsec_lip
+  obtain ⟨K, hK⟩ := hNsec_lip
+  have hLip : LipschitzWith K N_cont :=
+    TensorHs.lipschitzWith_of_l2_coeff_bound N_cont
+      (fun u => DifferentialGeometry.Integral.L2.SmoothCcTensor.toL2 (Nsec u))
+      (tensorResolventL2_isCompactOperator (I := I) (M := M) g_bg 0 2)
+      hN_coeff (fun u u' => (hK u u').2)
   obtain ⟨T₀, hT₀_pos, hsol⟩ :=
     quasilinear_strong_existence_of_lipschitz_on_closed_ball
       (I := I) (M := M) (g := g_bg) (r := 0) (s := 2)
-      (a := (a : ℝ)) (N := N_cont) (L_R := L_R) (R := R) hR u₀ hLip
+      (a := (a : ℝ)) (N := N_cont) (L_R := K) (R := 1) zero_lt_one u₀ hLip.lipschitzOnWith
   refine ⟨min T₀ 1, lt_min hT₀_pos one_pos, ?_⟩
   obtain ⟨u, gforce, hduh, hforce, htrace, _hderiv⟩ :=
     hsol (lt_min hT₀_pos one_pos) (min_le_left _ _)

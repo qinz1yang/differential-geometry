@@ -13,23 +13,23 @@ open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
-attribute [local instance] CheegerGromovLimit.metric_space CheegerGromovLimit.charted
+attribute [local instance] CheegerGromovLimit.metricSpace CheegerGromovLimit.charted
   CheegerGromovLimit.smooth CheegerGromovLimit.sigmaCompact
 
 noncomputable def hornScaleRadii {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
-    [IsManifold I3 ∞ W] [SigmaCompactSpace W] {g : SmoothRiemannianMetric I3 W}
+    [IsManifold I3 ∞ W] {g : SmoothRiemannianMetric I3 W}
     (H : FiniteHorn g) : ℕ → ℝ :=
   fun i => min (H.axial.length / 2) ((i : ℝ) + 1)⁻¹
 
 theorem hornScaleRadii_mem {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
-    [IsManifold I3 ∞ W] [SigmaCompactSpace W] {g : SmoothRiemannianMetric I3 W}
+    [IsManifold I3 ∞ W] {g : SmoothRiemannianMetric I3 W}
     (H : FiniteHorn g) (i : ℕ) : hornScaleRadii H i ∈ Set.Ioc 0 H.axial.length := by
   have hhalf : 0 < H.axial.length / 2 := half_pos H.axial.length_pos
   have hpos : 0 < ((i : ℝ) + 1)⁻¹ := inv_pos.mpr (by positivity)
   exact ⟨lt_min hhalf hpos, (min_le_left _ _).trans (by linarith [H.axial.length_pos])⟩
 
 theorem hornScaleRadii_tendsto_zero {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
-    [IsManifold I3 ∞ W] [SigmaCompactSpace W] {g : SmoothRiemannianMetric I3 W}
+    [IsManifold I3 ∞ W] {g : SmoothRiemannianMetric I3 W}
     (H : FiniteHorn g) : Filter.Tendsto (hornScaleRadii H) Filter.atTop (nhds 0) := by
   have hhalf : 0 ≤ H.axial.length / 2 := (half_pos H.axial.length_pos).le
   have hrec : Filter.Tendsto (fun i : ℕ => ((i : ℝ) + 1)⁻¹) Filter.atTop (nhds 0) := by
@@ -42,7 +42,7 @@ theorem hornScaleRadii_tendsto_zero {W : Type u} [MetricSpace W] [ChartedSpace T
 
 theorem nonempty_hornOnLimit_of_finiteHorn_of_frontiers {X : FlowSequence.{u}}
     {L : CheegerGromovLimit X} (horn : FiniteHorn L.metric)
-    (hdepth : hornDepthThreshold.{u} ≤ horn.collar_depth)
+    (hdepth : hornDepthThreshold.{u} ≤ horn.collarDepth)
     (hnet : ScaleDirectionNet L.metric horn)
     (hsep : ScaleSeparatedEndRays L.metric horn)
     (hcone : ∀ (angles : EndAngles horn) (ray : EndRay horn.endpoint) (d : ℕ → ℝ),
@@ -62,7 +62,7 @@ theorem nonempty_hornOnLimit_of_finiteHorn_of_frontiers {X : FlowSequence.{u}}
 
 theorem finiteHorn_frontiers_of_hornOnLimit {X : FlowSequence.{u}} {L : CheegerGromovLimit X}
     (K : HornOnLimit X L) :
-    hornDepthThreshold.{u} ≤ K.horn.collar_depth ∧
+    hornDepthThreshold.{u} ≤ K.horn.collarDepth ∧
       ScaleDirectionNet L.metric K.horn ∧ ScaleSeparatedEndRays L.metric K.horn ∧
       (∀ (angles : EndAngles K.horn) (ray : EndRay K.horn.endpoint) (d : ℕ → ℝ),
         (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
@@ -73,16 +73,16 @@ theorem finiteHorn_frontiers_of_hornOnLimit {X : FlowSequence.{u}} {L : CheegerG
 theorem nonempty_hornOnLimit_of_collarDepthFrontiers {X : FlowSequence.{u}}
     {L : CheegerGromovLimit X} {H₀ : ℝ}
     (hnet : ∀ (g : SmoothRiemannianMetric I3 L.space) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ScaleDirectionNet g H)
+      H₀ ≤ H.collarDepth → ScaleDirectionNet g H)
     (hsep : ∀ (g : SmoothRiemannianMetric I3 L.space) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ScaleSeparatedEndRays g H)
+      H₀ ≤ H.collarDepth → ScaleSeparatedEndRays g H)
     (hcone : ∀ (g : SmoothRiemannianMetric I3 L.space) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth →
+      H₀ ≤ H.collarDepth →
       ∀ (angles : EndAngles H) (ray : EndRay H.endpoint) (d : ℕ → ℝ),
         (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
         ConeDistanceRealization H angles ray d)
     (horn : FiniteHorn L.metric)
-    (hdepth : max H₀ (hornDepthThreshold.{u}) ≤ horn.collar_depth)
+    (hdepth : max H₀ (hornDepthThreshold.{u}) ≤ horn.collarDepth)
     (hupper : ScaleCurvatureUpperBound horn horn.axial (hornScaleRadii horn)) :
     Nonempty (HornOnLimit X L) :=
   nonempty_hornOnLimit_of_finiteHorn_of_frontiers horn
@@ -96,7 +96,7 @@ def FiniteHornEndRealization.{v} (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop 
     ∀ X : NormalizedSequence.{v} eps kappa sigma Phi,
       RealizedDistanceCurvatureEscape X →
         ∃ L : CheegerGromovLimit X.toFlowSequence, ∃ horn : FiniteHorn L.metric,
-          hornDepthThreshold.{v} ≤ horn.collar_depth ∧
+          hornDepthThreshold.{v} ≤ horn.collarDepth ∧
           ScaleDirectionNet L.metric horn ∧ ScaleSeparatedEndRays L.metric horn ∧
           (∀ (angles : EndAngles horn) (ray : EndRay horn.endpoint) (d : ℕ → ℝ),
             (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
@@ -167,7 +167,7 @@ def ScalarBoundedAbove {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   ∃ C : ℝ, ∀ x : M, metricScalarAt g x ≤ C
 
 theorem not_nonempty_finiteHorn_of_scalarBoundedAbove {W : Type u} [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W]
     {g : SmoothRiemannianMetric I3 W} (h : ScalarBoundedAbove g) :
     ¬ Nonempty (FiniteHorn g) := by
   rintro ⟨H⟩
@@ -180,7 +180,7 @@ theorem not_nonempty_finiteHorn_of_scalarBoundedAbove {W : Type u} [MetricSpace 
   linarith
 
 theorem scalarBoundedAbove_of_ricciTensor_eq_zero {W : Type u} [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W]
     {g : SmoothRiemannianMetric I3 W}
     (hric : ∀ x (v w : TangentSpace I3 x), ricciTensor g x v w = 0) :
     ScalarBoundedAbove g :=
@@ -188,7 +188,7 @@ theorem scalarBoundedAbove_of_ricciTensor_eq_zero {W : Type u} [MetricSpace W]
     rw [metricScalarAt_eq_zero_of_ricciTensor_eq_zero g x (hric x)]⟩
 
 theorem not_nonempty_finiteHorn_of_compactSpace {W : Type u} [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W] [CompactSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [CompactSpace W]
     {g : SmoothRiemannianMetric I3 W} : ¬ Nonempty (FiniteHorn g) := by
   rintro ⟨H⟩
   obtain ⟨d, hd, -, htail⟩ := H.cofinal_axial 0

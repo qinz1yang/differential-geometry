@@ -723,6 +723,16 @@ theorem branchEnergy_hess
     unfold gradientFun mvfderiv
     rw [hz.eq_of_nhds]
     rw [hz.mfderiv_eq]
+    have hcast :
+        (tangentSpaceCast 𝓘(ℝ, ℝ) (branchEnergy (I := I) g B z) (eSmooth z) :
+          TangentSpace 𝓘(ℝ, ℝ) (branchEnergy (I := I) g B z) →L[ℝ]
+            TangentSpace 𝓘(ℝ, ℝ) (eSmooth z)) =
+        ContinuousLinearMap.id ℝ _ := by
+      apply ContinuousLinearMap.ext
+      intro w
+      rfl
+    rw [hcast]
+    congr 1
   have hgrad_total :
       (T% fun z => gradientFun (I := I) g eSmooth z) =ᶠ[𝓝 q]
         (T% fun z => gradientFun (I := I) g
@@ -900,6 +910,17 @@ theorem branchHess_jacobi
     unfold gradientFun mvfderiv
     rw [hz.eq_of_nhds]
     rw [hz.mfderiv_eq]
+    have hcast :
+        (tangentSpaceCast 𝓘(ℝ, ℝ) (branchRadius (I := I) g B z)
+            (rSmooth z) :
+          TangentSpace 𝓘(ℝ, ℝ) (branchRadius (I := I) g B z) →L[ℝ]
+            TangentSpace 𝓘(ℝ, ℝ) (rSmooth z)) =
+        ContinuousLinearMap.id ℝ _ := by
+      apply ContinuousLinearMap.ext
+      intro w
+      rfl
+    rw [hcast]
+    congr 1
   have hgrad_total :
       (T% fun z => gradientFun (I := I) g rSmooth z) =ᶠ[𝓝 q]
         (T% fun z => gradientFun (I := I) g

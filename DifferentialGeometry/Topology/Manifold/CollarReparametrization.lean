@@ -86,16 +86,16 @@ theorem exists_collar_reparametrization_isotopy
     by_cases hy : y ∈ e.target
     · rw [OpenPartialHomeomorph.extendById]
       change (if y ∈ e.target then e (D 0 (e.symm y)) else y) = y
-      rw [if_pos hy]
+      rw [ite_eq_left hy]
       change e ((e.symm y).1, φ 0 (e.symm y).2) = y
       rw [hφ0]
       exact e.right_inv hy
-    · exact if_neg hy
+    · exact ite_eq_right hy
   · intro s z hz
     rw [(heq s (e z)).1, OpenPartialHomeomorph.extendById]
     change (if e z ∈ e.target then e (D s (e.symm (e z))) else e z) =
       e (z.1, φ s z.2)
-    rw [if_pos (e.map_source hz)]
+    rw [ite_eq_left (e.map_source hz)]
     have hleft : e.symm (e z) = z := e.left_inv hz
     rw [hleft]
     rfl
@@ -103,7 +103,7 @@ theorem exists_collar_reparametrization_isotopy
     rw [(heq s (e z)).2, OpenPartialHomeomorph.extendById]
     change (if e z ∈ e.target then e ((D s).symm (e.symm (e z))) else e z) =
       e (z.1, (φ s).symm z.2)
-    rw [if_pos (e.map_source hz)]
+    rw [ite_eq_left (e.map_source hz)]
     have hleft : e.symm (e z) = z := e.left_inv hz
     rw [hleft]
     rfl

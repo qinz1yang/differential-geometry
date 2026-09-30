@@ -150,7 +150,7 @@ theorem symm_bilin_orthonormal_trace_invariant
   rw [Finset.sum_eq_single_of_mem k (Finset.mem_univ k)]
   · rw [hB k k]; simp
   · intro l _ hlk
-    rw [hB k l, if_neg (fun h => hlk h.symm)]; ring
+    rw [hB k l, ite_eq_right (fun h => hlk h.symm)]; ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem scalarCurv_eq_orthonormal_trace
@@ -1079,7 +1079,7 @@ theorem contracted_second_bianchi
     fin_cases k <;> rfl
   simp only [metricTrace0S2InBasis, hslots] at h
   simp only [identityInvMetric, diagonalInvMetric, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true] at h
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h
   have heval (j : Fin (Module.finrank ℝ E)) :
       totalNabla0SFun (I := I) 2 (metricCov (I := I) g)
           (metricRicci (I := I) g) x (vec3 (basis j) (basis j) (V x)) =

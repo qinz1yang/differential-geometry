@@ -1,4 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.CovariantTensor.Basic
+
+open DifferentialGeometry.TensorMetric (lowerAllUpperIndices lowerAllUpperIndices_apply)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

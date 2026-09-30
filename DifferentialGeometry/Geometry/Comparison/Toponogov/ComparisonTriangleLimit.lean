@@ -63,7 +63,7 @@ theorem tendsto_comparisonAngle_pi_of_tendsto_zero {ι : Type*} {l : Filter ι}
   have hid (i : ι) : comparisonAngle (a i) (c i) (b i) =
       Real.arccos ((a i / b i - Real.cos (comparisonAngle (a i) (b i) (c i))) /
         (c i / b i)) := by
-    rw [comparisonAngle,
+    rw [comparisonAngle, comparisonCosine,
       comparison_cosine_quotient_eq (ha i) (hb i) (hc i) (hlower i) (hupper i)]
   simpa only [Real.arccos_neg_one, hid, Function.comp_def] using harccos
 

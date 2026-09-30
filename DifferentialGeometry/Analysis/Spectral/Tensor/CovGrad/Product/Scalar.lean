@@ -1,4 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.PreHilbert
+
+open DifferentialGeometry.TensorMetric (gramMatrixAt tensorInnerPointwise
+  tensorInnerPointwise_add_left tensorInnerPointwise_add_right tensorInnerPointwise_smul_left
+  tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

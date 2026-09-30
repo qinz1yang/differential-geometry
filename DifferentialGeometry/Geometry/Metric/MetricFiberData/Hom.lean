@@ -65,7 +65,7 @@ def ofFiniteDimensional (V : Type*) [AddCommGroup V] [Module ℝ V]
     (WithLp.linearEquiv 2 ℝ (Fin (Module.finrank ℝ V) → ℝ)).symm
   pullback e ofInnerProductSpace
 
-private def homFlatLinear [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+def homFlatLinear [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
     [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
     (DV : MetricFiberData V) (DW : MetricFiberData W) :
     (V →ₗ[Real] W) →ₗ[Real] Module.Dual Real (V →ₗ[Real] W) where
@@ -116,7 +116,7 @@ private def homFlatLinear [AddCommGroup V] [Module Real V] [FiniteDimensional Re
     rw [hdual]
     simp [LinearMap.smul_comp, LinearMap.comp_smul, map_smul]
 
-private theorem trace_adjoint_comp_eq_sum_inner
+theorem trace_adjoint_comp_eq_sum_inner
     {V W : Type*}
     [NormedAddCommGroup V] [InnerProductSpace Real V] [FiniteDimensional Real V]
     [NormedAddCommGroup W] [InnerProductSpace Real W] [FiniteDimensional Real W]
@@ -125,32 +125,21 @@ private theorem trace_adjoint_comp_eq_sum_inner
       ∑ i : Fin (Module.finrank Real V),
         Inner.inner Real (A (stdOrthonormalBasis Real V i))
           (B (stdOrthonormalBasis Real V i)) := by
-  rw [LinearMap.trace_eq_matrix_trace Real
-    (stdOrthonormalBasis Real V).toBasis ((LinearMap.adjoint A).comp B)]
-  rw [Matrix.trace]
-  simp only [Matrix.diag_apply]
+  rw [LinearMap.trace_eq_sum_inner _ (stdOrthonormalBasis Real V)]
   apply Finset.sum_congr rfl
   intro i _
-  rw [show
-      (LinearMap.toMatrix (stdOrthonormalBasis Real V).toBasis
-        (stdOrthonormalBasis Real V).toBasis
-        ((LinearMap.adjoint A).comp B)) i i =
-        (LinearMap.toMatrixOrthonormal (stdOrthonormalBasis Real V)
-          ((LinearMap.adjoint A).comp B)) i i from rfl]
-  rw [LinearMap.toMatrixOrthonormal_apply_apply]
   exact LinearMap.adjoint_inner_right A
     (stdOrthonormalBasis Real V i) (B (stdOrthonormalBasis Real V i))
 
-private theorem trace_adjoint_comp_nonneg
+theorem trace_adjoint_comp_nonneg
     {V W : Type*}
     [NormedAddCommGroup V] [InnerProductSpace Real V] [FiniteDimensional Real V]
     [NormedAddCommGroup W] [InnerProductSpace Real W] [FiniteDimensional Real W]
     (A : V →ₗ[Real] W) :
     0 <= LinearMap.trace Real V ((LinearMap.adjoint A).comp A) := by
-  rw [trace_adjoint_comp_eq_sum_inner]
-  exact Finset.sum_nonneg fun _ _ => real_inner_self_nonneg
+  exact (LinearMap.isPositive_adjoint_comp_self A).trace_nonneg
 
-private theorem trace_adjoint_comp_eq_zero_iff
+theorem trace_adjoint_comp_eq_zero_iff
     {V W : Type*}
     [NormedAddCommGroup V] [InnerProductSpace Real V] [FiniteDimensional Real V]
     [NormedAddCommGroup W] [InnerProductSpace Real W] [FiniteDimensional Real W]
@@ -184,7 +173,7 @@ private theorem trace_adjoint_comp_eq_zero_iff
   · intro hA
     simp [hA]
 
-private theorem trace_adjoint_comp_comm
+theorem trace_adjoint_comp_comm
     {V W : Type*}
     [NormedAddCommGroup V] [InnerProductSpace Real V] [FiniteDimensional Real V]
     [NormedAddCommGroup W] [InnerProductSpace Real W] [FiniteDimensional Real W]
@@ -197,7 +186,7 @@ private theorem trace_adjoint_comp_comm
   exact (real_inner_comm (A (stdOrthonormalBasis Real V i))
     (B (stdOrthonormalBasis Real V i))).symm
 
-private theorem metric_adjoint_eq_adjoint
+theorem metric_adjoint_eq_adjoint
     [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
     [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
     (DV : MetricFiberData V) (DW : MetricFiberData W) (A : V →ₗ[Real] W) :
@@ -232,7 +221,7 @@ private theorem metric_adjoint_eq_adjoint
   rw [← DW.toCore_inner y (A x), ← DV.toCore_inner (LinearMap.adjoint A y) x]
   exact (LinearMap.adjoint_inner_left A x y).symm
 
-private theorem homFlatLinear_comm [AddCommGroup V] [Module Real V]
+theorem homFlatLinear_comm [AddCommGroup V] [Module Real V]
     [FiniteDimensional Real V] [AddCommGroup W] [Module Real W]
     [FiniteDimensional Real W]
     (DV : MetricFiberData V) (DW : MetricFiberData W)
@@ -255,7 +244,7 @@ private theorem homFlatLinear_comm [AddCommGroup V] [Module Real V]
   rw [hA, hB]
   exact trace_adjoint_comp_comm A B
 
-private theorem homFlatLinear_nonneg [AddCommGroup V] [Module Real V]
+theorem homFlatLinear_nonneg [AddCommGroup V] [Module Real V]
     [FiniteDimensional Real V] [AddCommGroup W] [Module Real W]
     [FiniteDimensional Real W]
     (DV : MetricFiberData V) (DW : MetricFiberData W)
@@ -276,7 +265,7 @@ private theorem homFlatLinear_nonneg [AddCommGroup V] [Module Real V]
   rw [hA]
   exact trace_adjoint_comp_nonneg A
 
-private theorem homFlatLinear_self_eq_zero_iff [AddCommGroup V] [Module Real V]
+theorem homFlatLinear_self_eq_zero_iff [AddCommGroup V] [Module Real V]
     [FiniteDimensional Real V] [AddCommGroup W] [Module Real W]
     [FiniteDimensional Real W]
     (DV : MetricFiberData V) (DW : MetricFiberData W)

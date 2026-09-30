@@ -79,7 +79,7 @@ theorem zero_sphere_boundary_class_outward_chart_maps
       integralZeroChainClass (integralVertexChain (⟨-1, by norm_num⟩ : sphere (0 : ℝ) 1)))) = _
   rcases real_unit_sphere_eq_positive_or_negative x with rfl | rfl
   · rw [sphereOutwardOrientation_real_positive,
-      Orientation.map_positiveOrientation_of_isEmpty, if_pos rfl]
+      Orientation.map_positiveOrientation_of_isEmpty, ite_eq_left rfl]
     have hother : (⟨-1, by norm_num⟩ : sphere (0 : ℝ) 1) ∈
         ({(⟨1, by norm_num⟩ : sphere (0 : ℝ) 1)}ᶜ : Set (sphere (0 : ℝ) 1)) := by
       intro h
@@ -110,7 +110,7 @@ theorem zero_sphere_boundary_class_outward_chart_maps
       Ne.symm (Module.Ray.ne_neg_self
         (positiveOrientation : Orientation ℝ (EuclideanSpace ℝ (Fin 0)) (Fin 0)))
     rw [sphereOutwardOrientation_real_negative, Orientation.map_neg,
-      Orientation.map_positiveOrientation_of_isEmpty, if_neg hneg]
+      Orientation.map_positiveOrientation_of_isEmpty, ite_eq_right hneg]
     have hother : (⟨1, by norm_num⟩ : sphere (0 : ℝ) 1) ∈
         ({(⟨-1, by norm_num⟩ : sphere (0 : ℝ) 1)}ᶜ : Set (sphere (0 : ℝ) 1)) := by
       intro h

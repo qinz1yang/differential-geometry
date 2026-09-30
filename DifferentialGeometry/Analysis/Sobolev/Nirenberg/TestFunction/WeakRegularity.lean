@@ -158,8 +158,7 @@ private lemma eLpNorm_translate_eq (k : Fin d) (h : ℝ) (F : EuclN → ℝ) :
 
 omit [NeZero d] in
 private lemma eLpNorm_diffQuot_neg_le
-    (k : Fin d) {h : ℝ} (hh : h ≠ 0) {F : EuclN → ℝ}
-    (hF_aesm : AEStronglyMeasurable F (volume : Measure EuclN)) :
+    (k : Fin d) {h : ℝ} (hh : h ≠ 0) {F : EuclN → ℝ} :
     eLpNorm (diffQuot k (-h) F) 2 (volume : Measure EuclN) ≤
       (2 / ENNReal.ofReal |h|) * eLpNorm F 2 (volume : Measure EuclN) := by
   have hnh : (-h) ≠ 0 := neg_ne_zero.mpr hh
@@ -175,18 +174,11 @@ private lemma eLpNorm_diffQuot_neg_le
       fun x => (-h)⁻¹ * ((translate k (-h) F - F) x) := by
     funext x; simp [Pi.sub_apply]
   rw [h_eq2, eLpNorm_const_mul (-h)⁻¹ (translate k (-h) F - F)]
-  have hτF_aesm : AEStronglyMeasurable (translate k (-h) F)
-      (volume : Measure EuclN) := by
-    have hMP : MeasurePreserving
-        (fun x : EuclN => x + (-h) • EuclideanSpace.single k 1)
-        volume volume :=
-      measurePreserving_add_right volume _
-    exact hF_aesm.comp_measurePreserving hMP
   have h_minkowski : eLpNorm (translate k (-h) F - F) 2
       (volume : Measure EuclN) ≤
         eLpNorm (translate k (-h) F) 2 (volume : Measure EuclN) +
           eLpNorm F 2 (volume : Measure EuclN) :=
-    eLpNorm_sub_le hτF_aesm hF_aesm (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    eLpNorm_sub_le (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have h_τF_eq : eLpNorm (translate k (-h) F) 2 (volume : Measure EuclN) =
       eLpNorm F 2 (volume : Measure EuclN) :=
     eLpNorm_translate_eq (d := d) k (-h) F
@@ -214,112 +206,21 @@ private lemma eLpNorm_diffQuot_neg_le
 omit [NeZero d] in
 private lemma eLpNorm_eta_sq_diffQuot_le
     (k : Fin d) (h : ℝ) {η u : EuclN → ℝ}
-    {M_η : ℝ} (_hM_η_nn : 0 ≤ M_η) (hM_η : ∀ x, |η x| ≤ M_η) :
+    {M_η : ℝ} (hM_η_nn : 0 ≤ M_η) (hM_η : ∀ x, |η x| ≤ M_η)
+    (hf : AEStronglyMeasurable (fun y => (η y) ^ 2 * diffQuot k h u y)
+      (volume : Measure EuclN)) :
     eLpNorm (fun y => (η y)^2 * diffQuot k h u y) 2
         (volume : Measure EuclN) ≤
       ENNReal.ofReal (M_η^2) *
         eLpNorm (diffQuot k h u) 2 (volume : Measure EuclN) := by
-  classical
-  have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
-  have h2_ne_top : (2 : ℝ≥0∞) ≠ ∞ := by norm_num
-  have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
-  have h_pow_eq : ∀ a : ℝ≥0∞, a ^ (2 : ℝ) = a ^ (2 : ℕ) := by
-    intro a
-    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) from by norm_num, ENNReal.rpow_natCast]
-  have h_pt : ∀ y : EuclN,
-      (‖(η y)^2 * diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ) ≤
-        ENNReal.ofReal (M_η^4) * (‖diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ) := by
-    intro y
-    have h_real : ((η y)^2 * diffQuot k h u y)^2 ≤
-        M_η^4 * (diffQuot k h u y)^2 := by
-      have h_eta_sq_le : (η y)^2 ≤ M_η^2 := by
-        have hY := hM_η y
-        have h_abs_sq : (η y)^2 = |η y|^2 := by rw [sq_abs]
-        rw [h_abs_sq]
-        exact pow_le_pow_left₀ (abs_nonneg _) hY 2
-      have h_eta_sq_sq_le : ((η y)^2)^2 ≤ (M_η^2)^2 := by
-        have h_sq_nn : 0 ≤ (η y)^2 := sq_nonneg _
-        exact pow_le_pow_left₀ h_sq_nn h_eta_sq_le 2
-      have h_dq_sq_nn : 0 ≤ (diffQuot k h u y)^2 := sq_nonneg _
-      have h_step : ((η y)^2 * diffQuot k h u y)^2 =
-          ((η y)^2)^2 * (diffQuot k h u y)^2 := by ring
-      have hM4 : (M_η^2)^2 = M_η^4 := by ring
-      calc ((η y)^2 * diffQuot k h u y)^2
-          = ((η y)^2)^2 * (diffQuot k h u y)^2 := h_step
-        _ ≤ (M_η^2)^2 * (diffQuot k h u y)^2 :=
-            mul_le_mul_of_nonneg_right h_eta_sq_sq_le h_dq_sq_nn
-        _ = M_η^4 * (diffQuot k h u y)^2 := by rw [hM4]
-    have h_lhs_eq :
-        (‖(η y)^2 * diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ) =
-          ENNReal.ofReal (((η y)^2 * diffQuot k h u y)^2) := by
-      rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _) 2,
-        sq_abs]
-    have h_rhs_eq :
-        (‖diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ) =
-          ENNReal.ofReal ((diffQuot k h u y)^2) := by
-      rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _) 2,
-        sq_abs]
-    rw [h_lhs_eq, h_rhs_eq]
-    have hM4_nn : 0 ≤ M_η^4 := by positivity
-    rw [show ENNReal.ofReal (M_η^4) *
-        ENNReal.ofReal ((diffQuot k h u y)^2) =
-      ENNReal.ofReal (M_η^4 * (diffQuot k h u y)^2) from
-      (ENNReal.ofReal_mul hM4_nn).symm]
-    exact ENNReal.ofReal_le_ofReal h_real
-  have h_lint_le :
-      ∫⁻ y : EuclN, (‖(η y)^2 * diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ)
-          ∂(volume : Measure EuclN) ≤
-        ENNReal.ofReal (M_η^4) *
-          ∫⁻ y : EuclN, (‖diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ)
-          ∂(volume : Measure EuclN) := by
-    calc ∫⁻ y : EuclN, (‖(η y)^2 * diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ)
-        ≤ ∫⁻ y : EuclN, ENNReal.ofReal (M_η^4) *
-            (‖diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ) := by
-          refine lintegral_mono_ae ?_
-          filter_upwards with y using h_pt y
-      _ = ENNReal.ofReal (M_η^4) *
-            ∫⁻ y : EuclN, (‖diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ) := by
-          rw [lintegral_const_mul']
-          exact ENNReal.ofReal_ne_top
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h2_ne_zero h2_ne_top,
-    eLpNorm_eq_lintegral_rpow_enorm_toReal h2_ne_zero h2_ne_top]
-  rw [h2_toReal]
-  have h_lhs_pow_eq :
-      (∫⁻ y : EuclN, (‖(η y)^2 * diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℝ)
-          ∂(volume : Measure EuclN)) =
-        ∫⁻ y : EuclN, (‖(η y)^2 * diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ)
-          ∂(volume : Measure EuclN) := by
-    refine lintegral_congr_ae ?_
-    filter_upwards with y using h_pow_eq _
-  have h_rhs_pow_eq :
-      (∫⁻ y : EuclN, (‖diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℝ)
-          ∂(volume : Measure EuclN)) =
-        ∫⁻ y : EuclN, (‖diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ)
-          ∂(volume : Measure EuclN) := by
-    refine lintegral_congr_ae ?_
-    filter_upwards with y using h_pow_eq _
-  rw [h_lhs_pow_eq, h_rhs_pow_eq]
-  refine le_trans (ENNReal.rpow_le_rpow h_lint_le (by norm_num : (0 : ℝ) ≤ 1/2)) ?_
-  have h_pull :
-      (ENNReal.ofReal (M_η^4) *
-          ∫⁻ y : EuclN, (‖diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ)) ^ ((1 : ℝ) / 2) =
-        (ENNReal.ofReal (M_η^4))^((1 : ℝ) / 2) *
-          (∫⁻ y : EuclN, (‖diffQuot k h u y‖ₑ : ℝ≥0∞)^(2 : ℕ))^((1 : ℝ) / 2) := by
-    rw [ENNReal.mul_rpow_of_nonneg _ _ (by norm_num : (0 : ℝ) ≤ 1/2)]
-  rw [h_pull]
-  have h_sqrt_M4 :
-      (ENNReal.ofReal (M_η^4))^((1 : ℝ) / 2) = ENNReal.ofReal (M_η^2) := by
-    have hM2_nn : 0 ≤ M_η^2 := sq_nonneg _
-    have h_M4_to_pow :
-        ENNReal.ofReal (M_η^4) = (ENNReal.ofReal (M_η^2))^(2 : ℕ) := by
-      rw [show M_η^4 = (M_η^2)^(2 : ℕ) from by ring,
-        ENNReal.ofReal_pow hM2_nn 2]
-    rw [h_M4_to_pow]
-    rw [← ENNReal.rpow_natCast (ENNReal.ofReal (M_η^2)) 2,
-      ← ENNReal.rpow_mul]
-    have h_calc : ((2 : ℕ) : ℝ) * (1 / 2) = 1 := by norm_num
-    rw [h_calc, ENNReal.rpow_one]
-  rw [h_sqrt_M4]
+  refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul hf ?_ 2
+  filter_upwards [] with y
+  rw [norm_mul, Real.norm_eq_abs ((η y)^2), abs_of_nonneg (sq_nonneg _)]
+  apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
+  have hbound : |η y| ≤ |M_η| := by
+    rw [abs_of_nonneg hM_η_nn]
+    exact hM_η y
+  simpa only [sq_abs] using pow_le_pow_left₀ (abs_nonneg (η y)) hbound 2
 
 omit [NeZero d] in
 theorem eLpNorm_nirenbergTestFunction_le
@@ -342,12 +243,12 @@ theorem eLpNorm_nirenbergTestFunction_le
     exact h1.mul h2
   have h_step_A : eLpNorm (diffQuot k (-h) F) 2 (volume : Measure EuclN) ≤
       (2 / ENNReal.ofReal |h|) * eLpNorm F 2 (volume : Measure EuclN) :=
-    eLpNorm_diffQuot_neg_le (d := d) k hh hF_aesm
+    eLpNorm_diffQuot_neg_le (d := d) (F := F) k hh
   have h_step_B : eLpNorm F 2 (volume : Measure EuclN) ≤
       ENNReal.ofReal (M_η^2) *
         eLpNorm (diffQuot k h u) 2 (volume : Measure EuclN) := by
     rw [hF_def]
-    exact eLpNorm_eta_sq_diffQuot_le (d := d) k h hM_η_nn hM_η
+    exact eLpNorm_eta_sq_diffQuot_le (d := d) k h hM_η_nn hM_η hF_aesm
   have h_lhs_unfold : nirenbergTestFunction k h η u = diffQuot k (-h) F := rfl
   rw [h_lhs_unfold]
   calc eLpNorm (diffQuot k (-h) F) 2 (volume : Measure EuclN)

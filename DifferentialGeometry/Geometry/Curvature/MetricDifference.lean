@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.MetricData
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 
 set_option autoImplicit false
 
@@ -63,14 +63,14 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
 private theorem metric_inner_abs_le (g : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     |g.inner x v w| ≤ metricVectorNorm g x v * metricVectorNorm g x w := by
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let _ : InnerProductSpace.Core ℝ (TangentSpace I x) := D.toCore
   let _ : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup ℝ (TangentSpace I x) _ _ _ D.toCore
   let _ : InnerProductSpace ℝ (TangentSpace I x) :=
     @InnerProductSpace.ofCore ℝ (TangentSpace I x) _ _ _ D.toCore.toCore
   have hi (a b : TangentSpace I x) : g.inner x a b = inner ℝ a b := by
-    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x) a b]
+    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x) a b]
     exact (MetricFiberData.toCore_inner D a b).symm
   have hn (a : TangentSpace I x) : metricVectorNorm g x a = ‖a‖ := by
     rw [metricVectorNorm, hi, real_inner_self_eq_norm_sq, Real.sqrt_sq_eq_abs, abs_norm]

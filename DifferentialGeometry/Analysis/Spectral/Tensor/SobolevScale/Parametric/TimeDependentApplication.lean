@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.App
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.TimeDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetIntegral
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -536,7 +537,7 @@ private theorem coeffRem0_apply
   have heq :
       coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint a h =
         coeffRem (I := I) (M := M) g b c dΦ S hS hdjoint a h hseg := by
-    simp only [coeffRem0, dif_pos hseg]
+    simp only [coeffRem0, dite_eq_left hseg]
   have happ :
       ‖appHs g b c n
         (coeffRem (I := I) (M := M) g b c dΦ S hS hdjoint a h hseg) U‖ < ε := by
@@ -585,7 +586,7 @@ private theorem coeffRem0_move
   have heq :
       coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint a h =
         coeffRem (I := I) (M := M) g b c dΦ S hS hdjoint a h hseg := by
-    simp only [coeffRem0, dif_pos hseg]
+    simp only [coeffRem0, dite_eq_left hseg]
   have happ :
       ‖appHs g b c n
         (coeffRem (I := I) (M := M) g b c dΦ S hS hdjoint a h hseg)
@@ -660,7 +661,7 @@ theorem exists_appHsDeriv
     have hrem_eq :
         coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint t h =
           coeffRem (I := I) (M := M) g b c dΦ S hS hdjoint t h hseg := by
-      simp only [coeffRem0, dif_pos hseg]
+      simp only [coeffRem0, dite_eq_left hseg]
     have hsec := coeff_secant (I := I) (M := M)
       g b c Φ dΦ hS hdjoint hderiv t h hseg
     have hact := congrArg
@@ -754,7 +755,7 @@ theorem exists_timeDerivative_appHs
     have hrem_eq :
         coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint t h =
           coeffRem (I := I) (M := M) g b c dΦ S hS hdjoint t h hseg := by
-      simp only [coeffRem0, dif_pos hseg]
+      simp only [coeffRem0, dite_eq_left hseg]
     have hsec := coeff_secant (I := I) (M := M)
       g b c Φ dΦ hS hdjoint hderiv t h hseg
     have hact := congrArg
@@ -870,7 +871,7 @@ theorem exists_appHsDyn
     have hrem_eq :
         coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint t h =
           coeffRem (I := I) (M := M) g b c dΦ S hS hdjoint t h hseg := by
-      simp only [coeffRem0, dif_pos hseg]
+      simp only [coeffRem0, dite_eq_left hseg]
     have hsec := coeff_secant (I := I) (M := M)
       g b c Φ dΦ hS hdjoint hderiv t h hseg
     have hact := congrArg
@@ -1037,7 +1038,7 @@ theorem appHs_dyn_cont
     have hrem_eq :
         coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint t h =
           coeffRem (I := I) (M := M) g b c dΦ S hS hdjoint t h hseg := by
-      simp only [coeffRem0, dif_pos hseg]
+      simp only [coeffRem0, dite_eq_left hseg]
     have hsec := coeff_secant (I := I) (M := M)
       g b c Φ dΦ hS hdjoint hderiv t h hseg
     have hact := congrArg

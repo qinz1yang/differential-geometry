@@ -339,7 +339,7 @@ private lemma fiberHamiltonIveySupport_eq
       4 * hamiltonIveyConvexMatrixRegionSupportEuclidean K τ
         (matrixToEuclidean (curvatureOperatorMatrixAt (I := I) x (basisAt x) ⟨ν, hν⟩)) := by
   unfold fiberHamiltonIveySupport
-  rw [dif_pos hν]
+  rw [dite_eq_left hν]
 
 omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 2 M]
   [SigmaCompactSpace M] [T2Space M] in

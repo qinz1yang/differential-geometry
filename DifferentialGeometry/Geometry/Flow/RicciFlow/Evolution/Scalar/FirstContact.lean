@@ -25,7 +25,7 @@ private theorem norm_gradient_le_iff_differential_le
       (Real.sqrt_le_left hA).mpr h
     change |mvfderiv (I := I) f x v| ≤ _
     rw [← inner_gradientFun]
-    exact (Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic g x _ v).trans
+    exact (SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic g x _ v).trans
       (mul_le_mul_of_nonneg_right hs (Real.sqrt_nonneg _))
   · intro h
     have hh := h (gradientFun g f x)

@@ -45,7 +45,8 @@ theorem det_radial_pos_iff_det_chart_pos
       ((fderiv ℝ g (e v)).comp (ContinuousLinearMap.snd ℝ ℝ ℂ)) a := by
     dsimp only [a]
     convert hga.comp (1, e v) (show HasFDerivAt (Prod.snd : ℝ × ℂ → ℂ)
-      (ContinuousLinearMap.snd ℝ ℝ ℂ) (1, e v) from hasFDerivAt_snd) using 1 <;> rfl
+      (ContinuousLinearMap.snd ℝ ℝ ℂ) (1, e v) from hasFDerivAt_snd) using 1
+    rfl
   have hG : HasFDerivAt G ((ContinuousLinearMap.id ℝ ℝ).prodMap (fderiv ℝ g (e v))) a :=
     hasFDerivAt_fst.prodMk hgsnd
   have hca : c a = (v : EuclideanSpace ℝ (Fin 3)) := by

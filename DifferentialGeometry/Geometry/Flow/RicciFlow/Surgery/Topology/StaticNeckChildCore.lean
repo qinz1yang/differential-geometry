@@ -158,7 +158,7 @@ theorem staticNeckChart_notMem_retainedCore_of_coordinate_le_neg_two
     intro h hh
     have hh' : h ∈ Icc (min s₀ c₀) (max s₀ c₀) := hh
     by_cases hpos : 0 < s₀
-    · have hc₀one : c₀ = 1 := by rw [hc₀]; exact if_pos hpos
+    · have hc₀one : c₀ = 1 := by rw [hc₀]; exact ite_eq_left hpos
       have hs₀one : 1 ≤ s₀ := by
         have := abs_of_pos hpos
         linarith [hs₀_abs, this]
@@ -166,7 +166,7 @@ theorem staticNeckChart_notMem_retainedCore_of_coordinate_le_neg_two
       rw [hmin] at hh'
       rw [abs_of_pos (lt_of_lt_of_le zero_lt_one hh'.1)]
       exact hh'.1
-    · have hc₀neg : c₀ = -1 := by rw [hc₀]; exact if_neg hpos
+    · have hc₀neg : c₀ = -1 := by rw [hc₀]; exact ite_eq_right hpos
       have hs₀neg : s₀ ≤ -1 := by
         have := abs_of_nonpos (le_of_not_gt hpos)
         linarith [hs₀_abs, this]

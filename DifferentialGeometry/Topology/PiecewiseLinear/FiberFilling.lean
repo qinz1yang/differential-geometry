@@ -19,7 +19,7 @@ theorem exists_isPLHomeomorphOn_closure_inter_fiber
     (hJ : IsPLSphere 1 (frontier U ∩ {x | ℓ x = r}))
     (hne : (U ∩ {x | ℓ x = r}).Nonempty) :
     ∃ f : (Fin 3 → ℝ) → E,
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) (closure U ∩ {x | ℓ x = r}) ∧
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (closure U ∩ {x | ℓ x = r}) ∧
       f '' stdSimplexBoundary 2 = frontier U ∩ {x | ℓ x = r} := by
   obtain ⟨e, π, hleft, hfixed, hheight⟩ := exists_affine_coordinates_of_linear_fiber hdim ℓ hℓ r
   let J := frontier U ∩ {x | ℓ x = r}
@@ -43,7 +43,7 @@ theorem exists_isPLHomeomorphOn_closure_inter_fiber
       exact hx.1
   have hWopen : IsOpen W := hU.preimage e.continuous_of_finiteDimensional
   have hWbounded : Bornology.IsBounded W :=
-    ((LinearMap.toContinuousLinearMap π).lipschitz.isBounded_image hbounded).subset
+    ((LinearMap.toContinuousLinearMap π).lipschitzWith.isBounded_image hbounded).subset
       (fun y hy => ⟨e y, hy, hleft y⟩)
   have hWne : W.Nonempty := by
     obtain ⟨x, hxU, hxr⟩ := hne
@@ -102,7 +102,7 @@ theorem exists_isPLHomeomorphOn_filling_fiber_of_heightIndex_eq_zero
     (hzero : heightIndex L.space ℓ = 0) (r : ℝ)
     (hbelow : ∃ x ∈ L.space, ℓ x < r) (habove : ∃ y ∈ L.space, r < ℓ y) :
     ∃ f : (Fin 3 → ℝ) → E,
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) (R.space ∩ {x | ℓ x = r}) ∧
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (R.space ∩ {x | ℓ x = r}) ∧
       f '' stdSimplexBoundary 2 = L.space ∩ {x | ℓ x = r} := by
   have hUfront : frontier (interior R.space) = L.space := by
     rw [frontier, hRcl, interior_interior, ← (isPolyhedron_space R).isClosed.frontier_eq, hRfront]

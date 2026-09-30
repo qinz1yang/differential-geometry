@@ -272,8 +272,8 @@ theorem exists_c1_of_flat_const_nhds_endpoints
   have hpieces_c1 (n k : Nat) :
       ContMDiff (modelWithCornersSelf Real Real) I 1 (pieces n k) := by
     by_cases hk : k < m
-    · simpa only [pieces, dif_pos hk] using hlift_c1 ⟨k, hk⟩ n
-    · simp only [pieces, dif_neg hk]
+    · simpa only [pieces, dite_eq_left hk] using hlift_c1 ⟨k, hk⟩ n
+    · simp only [pieces, dite_eq_right hk]
       exact contMDiff_const
   have hpieces_zero (n : Nat) :
       (fun _ : Real ↦ gamma a) =ᶠ[nhds (tNat 0)] pieces n 0 := by
@@ -283,13 +283,13 @@ theorem exists_c1_of_flat_const_nhds_endpoints
         rw [← ht0]
         congr
       rw [htNat_zero]
-      simp only [pieces, dif_pos hm]
+      simp only [pieces, dite_eq_left hm]
       simpa only [hnode] using h
     · have hm0 : m = 0 := Nat.eq_zero_of_not_pos hm
       have hab : a = b := by
         subst m
         simpa only [Fin.last_zero] using ht0.symm.trans htlast
-      simp only [pieces, dif_neg hm]
+      simp only [pieces, dite_eq_right hm]
       with_unfolding_all exact
         (Eventually.of_forall fun _ : Real ↦ congrArg gamma hab)
   have hpieces_join (n k : Nat) :
@@ -306,7 +306,7 @@ theorem exists_c1_of_flat_const_nhds_endpoints
         have hr := hlift_right i n
         have hl := hlift_left j n
         rw [hleftNode] at hl
-        simpa only [pieces, dif_pos hk, dif_pos hks] using hr.trans hl.symm
+        simpa only [pieces, dite_eq_left hk, dite_eq_left hks] using hr.trans hl.symm
       · have hkm : k + 1 = m := by omega
         let i : Fin m := ⟨k, hk⟩
         have hnode : tNat (k + 1) = b := by simpa only [hkm] using htNat_m
@@ -318,9 +318,9 @@ theorem exists_c1_of_flat_const_nhds_endpoints
         rw [hnode]
         have hr := hlift_right i n
         rw [hiRight] at hr
-        simpa only [pieces, dif_pos hk, dif_neg hks] using hr
+        simpa only [pieces, dite_eq_left hk, dite_eq_right hks] using hr
     · have hks : ¬ k + 1 < m := by omega
-      simp only [pieces, dif_neg hk, dif_neg hks, EventuallyEq.rfl]
+      simp only [pieces, dite_eq_right hk, dite_eq_right hks, EventuallyEq.rfl]
   let alpha : Nat → Real → M := fun n ↦
     flatJoin (gamma a) tNat (pieces n) m
   have halpha_c1 (n : Nat) :
@@ -344,7 +344,7 @@ theorem exists_c1_of_flat_const_nhds_endpoints
     have hclosed := flatJoin_closed (gamma a) tNat (pieces n) htNat
       (hzero_val n) (hnode_val n) i.2
       (show s ∈ Icc (tNat i) (tNat (i + 1)) by simpa only [hti, htis] using hs)
-    simpa only [alpha, pieces, dif_pos i.2] using hclosed
+    simpa only [alpha, pieces, dite_eq_left i.2] using hclosed
   have halpha_left (n : Nat) : alpha n a = gamma a := by
     have hstable := flatJoin_stable (gamma a) tNat (pieces n) htNat
       (Nat.zero_le m) (s := a) (by rw [htNat_zero])
@@ -448,7 +448,7 @@ theorem exists_c1_of_flat_const_nhds_endpoints
     simpa only [alpha, htNat_zero] using
       flatJoin_eventuallyEq_left (gamma a) tNat (pieces n) htNat (hpieces_zero n) (hpieces_join n) m
   have hflatRight (n : ℕ) : alpha n =ᶠ[𝓝 b] fun _ ↦ gamma b := by
-    simpa only [alpha, htNat_m, pieces, dif_neg (Nat.lt_irrefl m)] using
+    simpa only [alpha, htNat_m, pieces, dite_eq_right (Nat.lt_irrefl m)] using
       flatJoin_eventuallyEq_right (gamma a) tNat (pieces n) htNat (hpieces_zero n) (hpieces_join n) m
   exact ⟨alpha, halpha_c1, halpha_left, halpha_right, halpha_rep,
     halpha_source, halpha_uniform, hflatLeft, hflatRight⟩

@@ -78,7 +78,7 @@ private theorem continuous_inwardValue [CompactSpace B] [T2Space X] {K : Set X}
       classical
       change _ = c.inwardValue K q.val
       unfold inwardValue
-      rw [dif_pos (show q.val.2.val ∈ c.range from q.property)]
+      rw [dite_eq_left (show q.val.2.val ∈ c.range from q.property)]
 
 private theorem toFun_mem_interior_of_neg {K : Set X}
     (hfront : frontier K ⊆ Set.range e)

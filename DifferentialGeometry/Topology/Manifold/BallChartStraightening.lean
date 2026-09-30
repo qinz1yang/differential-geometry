@@ -14,7 +14,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 theorem ballChartIsotopicAwayFromCompact_of_modelIsotopy {U : Type u} [TopologicalSpace U]
-    [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U] [T2Space U]
+    [ChartedSpace ThreeSpace U] [T2Space U]
     (b b' : BallChart 3 (𝓡 3) U) (C : Set U)
     (D : ℝ → Diffeomorph ThreeModel ThreeModel ThreeSpace ThreeSpace ∞)
     (hDc : ContDiff ℝ ∞ (fun q : ℝ × ThreeSpace => D q.1 q.2))
@@ -43,13 +43,13 @@ theorem ballChartIsotopicAwayFromCompact_of_modelIsotopy {U : Type u} [Topologic
           = b'.chart.symm.toOpenPartialHomeomorph.symm
             (b'.chart.symm.toOpenPartialHomeomorph y) := by
         rw [hD0]
-        exact if_pos hy
+        exact ite_eq_left hy
       rw [h1, OpenPartialHomeomorph.left_inv _ hy]
       simp only [Diffeomorph.coe_refl, id_eq]
     · have h2 : DifferentialGeometry.Topology.Manifold.extendChartById
             b'.chart.symm.toOpenPartialHomeomorph (D 0) y = y := by
         rw [hD0]
-        exact if_neg hy
+        exact ite_eq_right hy
       rw [h2]
       rfl
   refine ⟨J, b'.chart.symm.toOpenPartialHomeomorph.symm '' K, hKc, ?_, hJ0, hJc, hJi, ?_, ?_,
@@ -67,7 +67,7 @@ theorem ballChartIsotopicAwayFromCompact_of_modelIsotopy {U : Type u} [Topologic
       hact x hx]
 
 theorem ballChartIsotopicAwayFromCompact_of_matching_refl {U : Type u} [TopologicalSpace U]
-    [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U] [T2Space U]
+    [ChartedSpace ThreeSpace U] [T2Space U]
     (b b' : BallChart 3 (𝓡 3) U) (C : Set U)
     (hover : b.chart '' Metric.closedBall (0 : ThreeSpace) 1 ⊆ b'.chart.target)
     (hpoint : ∀ x ∈ Metric.closedBall (0 : ThreeSpace) 1, b'.chart.symm (b.chart x) = x) :

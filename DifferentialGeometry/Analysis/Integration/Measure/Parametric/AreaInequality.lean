@@ -107,7 +107,9 @@ private theorem lintegral_image_le_of_injOn
     (((continuousOn_paramDensity (I := I) g hU hf).mono hPU).aemeasurable hP).ennreal_ofReal
   rw [← map_withDensity_paramDensity (I := I) g hU hP hPU hf hinj,
     withDensity_congr_ae hJ.ae_eq_mk]
-  refine (lintegral_map_le _ _).trans ?_
+  have hfm := (hf.continuousOn.mono hPU).aemeasurable (μ := modelHaar (E := E)) hP
+  refine (lintegral_map_le _
+    (hfm.mono_ac (withDensity_absolutelyContinuous _ _))).trans ?_
   refine (lintegral_withDensity_le_lintegral_mul _ hJ.measurable_mk _).trans (le_of_eq ?_)
   refine lintegral_congr_ae ?_
   filter_upwards [hJ.ae_eq_mk] with x hx

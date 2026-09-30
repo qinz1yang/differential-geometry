@@ -30,7 +30,7 @@ theorem IsPLHomeomorphInto.exists_cylinder_with_marked_meridian
       (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
       IsCylindricalDiagram g' B.space R.space ∧
       (∀ z ∈ B.space, g' (z, 0) = g' (z, 1)) ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (g' '' (B.space ×ˢ {1 / 2})) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g' '' (B.space ×ˢ {1 / 2})) ∧
       q '' stdSimplexBoundary 2 ⊆ frontier R.space ∧
       g' '' (B.space ×ˢ {1 / 2}) ⊆ R.space ∧
       ∀ z ∈ Q, ∃ x ∈ J,
@@ -121,7 +121,7 @@ theorem exists_section34_marked_filling_meridian_disk
       Pg e i = (u ∘ f) '' (J ×ˢ {p 0}) ∧ Pg e j = (u ∘ f) '' (J ×ˢ {p 1}) ∧
       IsCylindricalDiagram g' V R.space ∧
       (∀ z ∈ V, g' (z, 0) = g' (z, 1)) ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (g' '' (V ×ˢ {1 / 2})) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g' '' (V ×ˢ {1 / 2})) ∧
       q '' stdSimplexBoundary 2 ⊆ frontier R.space ∧
       g' '' (V ×ˢ {1 / 2}) ⊆ R.space ∧
       ∀ z ∈ Q, ∃ x ∈ J,

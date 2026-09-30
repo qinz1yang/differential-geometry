@@ -245,7 +245,7 @@ theorem deepContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
       obtain ⟨W, hWc⟩ := hW P a s G y t hts (hq.trans hR.le) hwin
         (fun v hv z => hpinch v ⟨hwin.trans hv.1, hv.2.trans_lt hts⟩ z)
         (fun τ B _ h2 h3 h4 => hncη τ B (h2.trans_lt htη) h3 h4)
-      refine ⟨fun _ => ⟨W.enlarge_constants hC1 hC2, hWc.enlarge_constants hC1 hC2⟩, ?_, ?_⟩
+      refine ⟨fun _ => ⟨W.enlargeConstants hC1 hC2, hWc.enlarge_constants hC1 hC2⟩, ?_, ?_⟩
       · exact W.time_derivative.trans (mul_le_mul_of_nonneg_right hCt' (sq_nonneg _))
       · intro v
         exact (W.gradient v).trans (mul_le_mul_of_nonneg_right

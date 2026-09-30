@@ -25,7 +25,7 @@ theorem exists_compact_canonical_poincareStandard_tolerance :
   rcases (W x).spatial_cap_or_whole_of_not_spatial_neck (hchart x) hx with hp | hr | hc
   · exact Or.inl hp
   · obtain ⟨z, hr⟩ := hr
-    exact Or.inr (Or.inl (isPositiveSpaceFormModel_of_roundComponent M hr.some))
+    exact Or.inr (Or.inl (admitsConstantPositiveSectionalCurvature_of_roundComponent M hr.some))
   · exact Or.inr (Or.inr hc)
 
 
@@ -53,7 +53,8 @@ theorem exists_compact_component_canonical_poincareStandard_tolerance :
       U xU hU (hchart x) hx with hp | hr | hc
   · exact Or.inl hp
   · obtain ⟨z, hr⟩ := hr
-    exact Or.inr (Or.inl (isPositiveSpaceFormModel_of_roundComponent (M.component c) hr.some))
+    exact Or.inr (Or.inl
+      (admitsConstantPositiveSectionalCurvature_of_roundComponent (M.component c) hr.some))
   · exact Or.inr (Or.inr hc)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

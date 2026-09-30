@@ -63,24 +63,6 @@ def PreparedFamilyFlowConclusion (B : RicciBackground (I := I) (M := Q) D a b) {
               FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared)
 
 omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
-theorem preparedFamilyFlowInput_iff_rampFamilyFrontiers
-    (B : RicciBackground (I := I) (M := Q) D a b) {d : ℕ}
-    (e : SmoothLoopEmbedding (I := I) (Q := Q) d) :
-    PreparedFamilyFlowInput (I := I) (Q := Q) (D := D) (a := a) (b := b) B e ↔
-      RampFamilyFlowSolutionsFrontier (I := I) (Q := Q) (D := D) (a := a) (b := b) B e ∧
-        RampFamilyProjectedDeformationFrontier (I := I) (Q := Q) (D := D) (a := a) (b := b)
-          B e :=
-  Iff.rfl
-
-omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
-theorem rampFamilyFlowSolutionsFrontier_of_input
-    (B : RicciBackground (I := I) (M := Q) D a b) {d : ℕ}
-    (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
-    (h : PreparedFamilyFlowInput (I := I) (Q := Q) (D := D) (a := a) (b := b) B e) :
-    RampFamilyFlowSolutionsFrontier (I := I) (Q := Q) (D := D) (a := a) (b := b) B e :=
-  h.1
-
-omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
 theorem preparedFamilyFlowInput_of_conclusion_and_unique
     (B : RicciBackground (I := I) (M := Q) D a b) {d : ℕ}
     (e : SmoothLoopEmbedding (I := I) (Q := Q) d)

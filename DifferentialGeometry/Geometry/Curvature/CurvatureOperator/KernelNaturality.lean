@@ -54,7 +54,7 @@ theorem curvatureOperatorPairingAt_congrLeft
         (algebraicCurvatureTensorPullbackCLE (I := I) (M := M) e A) a b := by
   unfold curvatureOperatorPairingAt
   congr 1
-  rw [← Tensor0SBundle.inner0S_tensor0SPullbackCLE
+  rw [← DifferentialGeometry.Tensor0SBundle.inner0S_tensor0SPullbackCLE
     (I := I) gSource gTarget x y 4 e hiso]
   have hproduct :
       tensor0SPullbackCLE (I := I) (M := M) 4 e
@@ -74,7 +74,7 @@ theorem curvatureOperatorPairingAt_congrLeft
             (twoFormTensorAt (I := I)
               (e.toContinuousLinearEquiv.continuousAlternatingMapCongrLeft
                 (ι := Fin 2) b))) := by
-    simpa using Tensor0SBundle.tensor0SPullbackCLE_product
+    simpa using DifferentialGeometry.Tensor0SBundle.tensor0SPullbackCLE_product
       (I := I) (r := 2) (s := 2) e
       (twoFormTensorAt (I := I)
         (e.toContinuousLinearEquiv.continuousAlternatingMapCongrLeft

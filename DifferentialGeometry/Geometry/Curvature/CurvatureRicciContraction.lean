@@ -118,7 +118,7 @@ theorem curvatureRicciContractionAt_eq_neg_rm04RicciContractionAt
       rw [basis_repr_eq_sum_inv_inner (I := I) g x basis
         (identityInvMetric (Idx := Idx)) hinv]
       rw [Finset.sum_eq_single j]
-      · simp only [identityInvMetric, diagonalInvMetric, if_pos, one_mul]
+      · simp only [identityInvMetric, diagonalInvMetric, ite_eq_left, one_mul]
         rw [inner_ricEndoRaisedFib (I := I) (M := M)]
       · intro k _ hkj
         simp [identityInvMetric, diagonalInvMetric, Ne.symm hkj]
@@ -225,7 +225,7 @@ theorem curvatureRicciContractionAt_nonneg_of_sectionalNonnegative
     0 ≤ curvatureRicciContractionAt (I := I) (M := M) g x
       (vec2 (I := I) v v) := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _

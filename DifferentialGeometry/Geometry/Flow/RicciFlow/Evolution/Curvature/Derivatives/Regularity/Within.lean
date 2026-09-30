@@ -46,7 +46,7 @@ theorem iterRmComp_joint
       simpa [iteratedRmComp_zero] using hbase m
   | succ k ih =>
       intro n
-      have hext := prodExtDeriv_joint (I := I) hu ht hx
+      have hext := contMDiffWithinAt_partial_mvfderiv_apply (I := I) hu ht hx
         (hF := ih (Fin.tail n))
         (hX := hframe.contMDiffAt hu hx (n 0))
       have hsum :

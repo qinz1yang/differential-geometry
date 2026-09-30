@@ -117,12 +117,12 @@ theorem IsHandleDecompositionOfTube.exists_plDisks (h324 : Moise324)
     (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
     (h34 : HasSinglePolygonTraces K h Ec XK.space) {δ₀ : ℝ} (hδ₀ : 0 < δ₀) :
     ∃ F : Finset E3 → Set E3, ∀ e ∈ K.faces, e.card = 2 →
-      (∃ r : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (F e) ∧
+      (∃ r : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (F e) ∧
         r '' stdSimplexBoundary 2 = Ec e ∩ frontier XK.space) ∧
       F e ⊆ (Ec e ∩ XK.space) ∪ Metric.ball (h (e.centroid ℝ id)) δ₀ ∧
       (Ec e ∩ XK.space) \ Metric.ball (h (e.centroid ℝ id)) δ₀ ⊆ F e := by
   have hex : ∀ e : Finset E3, ∃ Fe : Set E3, e ∈ K.faces → e.card = 2 →
-      (∃ r : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Fe ∧
+      (∃ r : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Fe ∧
         r '' stdSimplexBoundary 2 = Ec e ∩ frontier XK.space) ∧
       Fe ⊆ (Ec e ∩ XK.space) ∪ Metric.ball (h (e.centroid ℝ id)) δ₀ ∧
       (Ec e ∩ XK.space) \ Metric.ball (h (e.centroid ℝ id)) δ₀ ⊆ Fe := by

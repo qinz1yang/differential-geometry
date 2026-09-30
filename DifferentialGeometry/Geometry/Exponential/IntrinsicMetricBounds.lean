@@ -90,7 +90,7 @@ theorem intrFrameMetric_bound_of_rm04
   have hk1 : k ≤ 1 := hkκ.trans hκ1
   have herr : gronwallBound 0 (max k 1) k 1 ≤ 1 / 4 := by
     rw [max_eq_right hk1]
-    simp only [gronwallBound, one_ne_zero, if_false, zero_mul, zero_add,
+    simp only [gronwallBound, one_ne_zero, ite_false, zero_mul, zero_add,
       div_one, one_mul]
     calc
       k * (Real.exp 1 - 1) ≤ k * (Real.exp 1 + 1) :=
@@ -100,7 +100,7 @@ theorem intrFrameMetric_bound_of_rm04
   have hscale : gronwallBound 0 (max k 1) (k * ‖v‖) 1 =
       ‖v‖ * gronwallBound 0 (max k 1) k 1 := by
     rw [max_eq_right hk1]
-    simp only [gronwallBound, one_ne_zero, if_false, zero_mul, zero_add,
+    simp only [gronwallBound, one_ne_zero, ite_false, zero_mul, zero_add,
       div_one, one_mul]
     ring
   have herror : gronwallBound 0 (max k 1) (k * ‖v‖) 1 ≤ (1 / 4 : ℝ) * ‖v‖ := by

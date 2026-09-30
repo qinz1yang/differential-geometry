@@ -293,7 +293,7 @@ theorem SmoothCutCapTransition.outwardVector_eq (b : X.trace.tubes.Boundary)
         (0, (if b.2 then (-1 : ℝ) else 1) • EuclideanSpace.single 0 (1 : ℝ)) := by
   rcases b with ⟨i, side⟩
   cases side <;> simp only [DifferentialGeometry.Topology.SphericalTubeSystem.outwardVector,
-    Bool.false_eq_true, if_false, if_true, one_smul, neg_smul]
+    Bool.false_eq_true, ite_false, ite_true, one_smul, neg_smul]
   all_goals rfl
 
 theorem SmoothCutCapTransition.boundaryFrameReversing_iff_tubeFrame :

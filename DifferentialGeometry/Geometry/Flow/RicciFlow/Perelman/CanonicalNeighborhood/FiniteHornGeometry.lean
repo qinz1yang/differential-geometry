@@ -187,20 +187,20 @@ structure LocalCap {D : RealTimeInterval} (S : SolutionOn (I := I3) (M := M) D)
   core : CompactDomain M
   core_inside : core.carrier ⊆ interior U
   center_inside : x ∈ interior core.carrier
-  core_model : CapCore core.carrier
+  coreModel : CapCore core.carrier
   tube : Set M
-  tube_map : PartialDiffeomorph IC I3 Cylinder M ∞
-  tube_domain : Set.univ ×ˢ Set.Icc (0 : ℝ) 1 ⊆ tube_map.source
-  tube_eq : tube_map '' (Set.univ ×ˢ Set.Icc (0 : ℝ) 1) = tube
+  tubeMap : PartialDiffeomorph IC I3 Cylinder M ∞
+  tube_domain : Set.univ ×ˢ Set.Icc (0 : ℝ) 1 ⊆ tubeMap.source
+  tube_eq : tubeMap '' (Set.univ ×ˢ Set.Icc (0 : ℝ) 1) = tube
   union_eq : U = core.carrier ∪ tube
   overlap_eq : core.carrier ∩ tube = frontier core.carrier
-  inner_boundary : tube_map '' (Set.univ ×ˢ ({0} : Set ℝ)) = frontier core.carrier
-  outer_boundary : tube_map '' (Set.univ ×ˢ ({1} : Set ℝ)) = frontier U
+  inner_boundary : tubeMap '' (Set.univ ×ˢ ({0} : Set ℝ)) = frontier core.carrier
+  outer_boundary : tubeMap '' (Set.univ ×ˢ ({1} : Set ℝ)) = frontier U
   boundary_eq : frontier tube = frontier core.carrier ∪ frontier U
   boundaries_disjoint : Disjoint (frontier core.carrier) (frontier U)
   chain : OrderedNeckChain S eps t tube
-  core_boundary_map : Sphere 2 → M
-  core_boundary_eq : ∀ z, core_boundary_map z = tube_map (z, 0)
+  coreBoundaryMap : Sphere 2 → M
+  core_boundary_eq : ∀ z, coreBoundaryMap z = tubeMap (z, 0)
 
 
 def SecLower (g : SmoothRiemannianMetric I3 M) (c : ℝ) (U : Set M) : Prop :=

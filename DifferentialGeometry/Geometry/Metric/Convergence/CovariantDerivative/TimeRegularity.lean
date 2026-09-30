@@ -217,7 +217,7 @@ theorem covDerivOfField_eval_contMDiffAt
         congr 1
         refine Finset.sum_congr rfl fun a _ => ?_
         rw [hupd a]
-      have h1 := prodExtDerivAt_smooth (I := I)
+      have h1 := contMDiffAt_partial_mvfderiv_apply_infty (I := I)
         (F := fun q : Real × M =>
           (covDerivOfField (I := I) gRef (A q.1) p) q.2
             (fun a : Fin (p + 2) => V a.succ q.2))

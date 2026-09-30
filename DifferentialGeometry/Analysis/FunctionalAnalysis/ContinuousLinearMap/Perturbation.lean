@@ -82,10 +82,7 @@ private theorem tendsto_of_coercive_of_operator_perturbation
   have hratio : Tendsto (fun p =>
       C * (‖J (x₁ p - x₀)‖ + ‖Q₁ p (x₁ p) - Q₀ x₀‖ +
         ‖Q₁ p - Q₀‖ * ‖x₀‖) / (1 - C * ‖Q₁ p - Q₀‖)) l (𝓝 0) := by
-    convert hnum.div hden one_ne_zero using 1
-    · funext p
-      rfl
-    · norm_num
+    simpa only [Pi.div_def, zero_div] using hnum.div hden one_ne_zero
   apply (tendsto_iff_norm_sub_tendsto_zero).2
   apply squeeze_zero'
     (Eventually.of_forall fun p => norm_nonneg (x₁ p - x₀))

@@ -14,7 +14,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 theorem exists_nonsingular_two_cell_of_isPLBall
     {D : Set (EuclideanSpace ℝ (Fin 3))} {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) :
     ∃ A : SingularTwoCell (EuclideanSpace ℝ (Fin 3)),
       A.IsNonsingular ∧ A '' A.domain = D ∧ Set.range A.boundary = r '' stdSimplexBoundary 2 := by
   classical
@@ -24,7 +24,7 @@ theorem exists_nonsingular_two_cell_of_isPLBall
     isPLBall_convexHull_of_affineIndependent T hT hcard
   obtain ⟨p, hp⟩ := hP
   let P := convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2)))
-  let f := r ∘ Function.invFunOn p (stdSimplex ℝ (Fin 3))
+  let f := r ∘ Function.invFunOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hf : IsPLHomeomorphOn f P D := hp.symm.trans hr
   let A : SingularTwoCell (EuclideanSpace ℝ (Fin 3)) :=
     { domain := P
@@ -47,7 +47,7 @@ theorem exists_nonsingular_two_cell_of_boundary_ball
     {M BdM C D : Set (EuclideanSpace ℝ (Fin 3))}
     (hC : IsPLBall 3 C) (hCM : C ⊆ M)
     {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDC : D ⊆ frontier C) (hCB : C ∩ BdM = D) :
     ∃ A : SingularTwoCell (EuclideanSpace ℝ (Fin 3)),
       A.IsNonsingular ∧ A '' A.domain ⊆ M ∧
@@ -78,7 +78,7 @@ theorem exists_nonsingular_two_cell_in_boundary_ball
     {M C D : Set (EuclideanSpace ℝ (Fin 3))}
     (hC : IsPLBall 3 C) (hCM : C ⊆ M)
     {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDC : D ⊆ C) (hDM : D ⊆ frontier M) :
     ∃ A : SingularTwoCell (EuclideanSpace ℝ (Fin 3)),
       A.IsNonsingular ∧ A '' A.domain ⊆ M ∧
@@ -91,7 +91,7 @@ theorem exists_nonsingular_two_cell_in_boundary_ball
 theorem exists_nonsingular_two_cell_in_ball
     {M D : Set (EuclideanSpace ℝ (Fin 3))} (hM : IsPLBall 3 M)
     {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDM : D ⊆ frontier M) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDM : D ⊆ frontier M) :
     ∃ A : SingularTwoCell (EuclideanSpace ℝ (Fin 3)),
       A.IsNonsingular ∧ A '' A.domain ⊆ M ∧
       Set.range A.boundary = r '' stdSimplexBoundary 2 ∧
@@ -106,7 +106,7 @@ theorem exists_nhdsWithin_nonsingular_two_cells
     {x : EuclideanSpace ℝ (Fin 3)} (hx : x ∈ frontier K.space) :
     ∃ U : Set (EuclideanSpace ℝ (Fin 3)), U ∈ 𝓝[K.space] x ∧
       ∀ (D : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D → D ⊆ U → D ⊆ frontier K.space →
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D → D ⊆ U → D ⊆ frontier K.space →
         ∃ A : SingularTwoCell (EuclideanSpace ℝ (Fin 3)),
           A.IsNonsingular ∧ A '' A.domain ⊆ K.space ∧
           Set.range A.boundary = r '' stdSimplexBoundary 2 ∧

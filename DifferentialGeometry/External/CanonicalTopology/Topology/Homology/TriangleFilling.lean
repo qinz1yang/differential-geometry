@@ -28,22 +28,22 @@ theorem exists_integralPathTriangle (p : Path a b) (q : Path b c) (r : Path a c)
       (triangleBoundaryMap p q r)
   let σ : integralSingularSimplex 2 X := (integralSingularSimplexEquiv 2 X).symm
     (F.comp ⟨simplexTriangleHomeomorph, simplexTriangleHomeomorph.continuous⟩)
-  have hf (i : Fin 3) (t : stdSimplex ℝ (Fin 2)) :
+  have hf (i : Fin 3) (t : Convexity.StdSimplex ℝ (Fin 2)) :
       integralSingularSimplexEquiv 1 X ((TopCat.toSSet.obj (TopCat.of X)).δ i σ) t =
-        triangleBoundaryPaths p q r (i, stdSimplexHomeomorphUnitInterval t) := by
+        triangleBoundaryPaths p q r (i, Convexity.StdSimplex.homeomorphI t) := by
     change (TopCat.of X).toSSetObjEquiv _ ((TopCat.toSSet.obj (TopCat.of X)).δ i σ) t = _
     rw [TopCat.toSSetObjEquiv_δ_apply]
     change integralSingularSimplexEquiv 2 X ((integralSingularSimplexEquiv 2 X).symm
       (F.comp ⟨simplexTriangleHomeomorph, simplexTriangleHomeomorph.continuous⟩))
-        (stdSimplex.map i.succAbove t) = _
+        (Convexity.StdSimplex.map i.succAbove t) = _
     rw [Equiv.apply_symm_apply]
-    change F (simplexTriangleHomeomorph (stdSimplex.map i.succAbove t)) = _
-    let z := planeTriangleEdge i (stdSimplexHomeomorphUnitInterval t)
-    have he : simplexTriangleHomeomorph (stdSimplex.map i.succAbove t) =
+    change F (simplexTriangleHomeomorph (Convexity.StdSimplex.map i.succAbove t)) = _
+    let z := planeTriangleEdge i (Convexity.StdSimplex.homeomorphI t)
+    have he : simplexTriangleHomeomorph (Convexity.StdSimplex.map i.succAbove t) =
         (⟨z.val, isClosed_planeTriangle.frontier_subset z.property⟩ : planeTriangle) :=
       Subtype.ext (simplexTriangleHomeomorph_face i t)
     rw [he]
-    exact (hF z).trans (triangleBoundaryMap_edge p q r i (stdSimplexHomeomorphUnitInterval t))
+    exact (hF z).trans (triangleBoundaryMap_edge p q r i (Convexity.StdSimplex.homeomorphI t))
   refine ⟨σ, fun i => (integralSingularSimplexEquiv 1 X).injective ?_⟩
   apply ContinuousMap.ext
   intro t

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.DerivativeENorm
-import DifferentialGeometry.Tensor.Metric.CompactBounds
+import DifferentialGeometry.Geometry.Metric.Tensor.CompactBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Comparison
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison

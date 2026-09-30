@@ -135,8 +135,8 @@ private theorem hamiltonBlockRawKProduct_eq_inner0S
     rw [Tensor0SSpace.product_apply, tensor0S_curry_apply_cons,
       tensor0S_curry_apply_cons]
     congr 1 <;> apply congrArg DU <;> funext i <;> fin_cases i <;> rfl
-  rw [Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 4 basis hinv]
-  simp_rw [Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 4 basis hinv]
+  rw [DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 4 basis hinv]
+  simp_rw [DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 4 basis hinv]
   rw [sum_fin_four_fun]
   simp_rw [sum_fin_four_fun]
   unfold hamiltonBlockRawKProduct
@@ -225,9 +225,9 @@ private theorem hamiltonBlockRawPProduct_eq_inner0S
       funext i
       fin_cases i
       rfl
-  rw [Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 3 basis hinv]
-  rw [Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 3 basis hinv]
-  simp_rw [Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 3 basis hinv]
+  rw [DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 3 basis hinv]
+  rw [DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 3 basis hinv]
+  simp_rw [DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 3 basis hinv]
   rw [sum_fin_three_fun, sum_fin_three_fun]
   simp_rw [sum_fin_three_fun]
   unfold hamiltonBlockRawPProduct
@@ -278,8 +278,8 @@ private theorem hamiltonBlockRawMProduct_eq_inner0S
       funext i
       fin_cases i
       rfl
-  rw [Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 2 basis hinv]
-  rw [Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 2 basis hinv]
+  rw [DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 2 basis hinv]
+  rw [DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 2 basis hinv]
   rw [sum_fin_two_fun, sum_fin_two_fun]
   unfold hamiltonBlockRawMProduct
   simp only [component0S_apply]

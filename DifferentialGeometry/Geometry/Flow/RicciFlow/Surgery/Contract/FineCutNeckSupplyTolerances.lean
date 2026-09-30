@@ -25,7 +25,7 @@ theorem inv_add_one_le_inv_of_le_div_one_add {εc eps : ℝ} (hεc : 0 < εc) (h
 
 theorem exists_fineCutNeckSupplyStrong_tolerances :
     ∃ eta εcone : ℝ, 0 < eta ∧ 0 < εcone ∧ εcone ≤ eta ∧ εcone ≤ 1 / 1000 ∧
-    (∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (k : Fin (H.eventCount + 1))
+    (∀ (H : RetainedCoreHistory.{u}) (k : Fin (H.eventCount + 1))
       {s : ℝ} (G : (H.stage k).IncomingSlab (H.time k) s) (L : G.TerminalLimitMetric)
       (hsing : G.SingularEndpoint) (parameters : CutoffParameters) {εP Λ : ℝ}
       (P : TerminalCorePresentation
@@ -90,7 +90,7 @@ theorem exists_fineCutNeckSupplyStrong_tolerances :
   have heta : 0 < min eta₁ (min eta₂ eta₃) := lt_min heta₁ (lt_min heta₂ heta₃)
   refine ⟨min eta₁ (min eta₂ eta₃), min (min eta₁ (min eta₂ eta₃)) (1 / 1000), heta,
     lt_min heta (by norm_num), min_le_left _ _, min_le_right _ _, ?_, ?_, ?_⟩
-  · intro P₀ H k s G L hsing parameters εP Λ P hεP c e B hB hBsub ε ε₁ C1 C2 qcan hε hεη
+  · intro H k s G L hsing parameters εP Λ P hεP c e B hB hBsub ε ε₁ C1 C2 qcan hε hεη
     exact h₁ H k G L hsing parameters P (hεP.trans (min_le_left _ _)) c e hB hBsub hε
       (hεη.trans (min_le_left _ _))
   · intro D ε Λ P hε

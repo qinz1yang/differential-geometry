@@ -151,7 +151,13 @@ theorem chartPushed_cauchy_of_wkpNormChart_cauchy
               (modelWithCornersEuclideanHalfSpace n) M) α'
             (fun x => wkpChartFun (f i) x - wkpChartFun (f j) x))
           (chartTargetEuclid (n := n) (M := M) α') :=
-    ENNReal.le_tsum α
+    ENNReal.le_tsum (f := fun α' : M =>
+      Euclidean.wkpNormHalfSpace (d := n) k p
+        (chartPushed (n := n) (M := M)
+          (DifferentialGeometry.Integral.Measure.chartAtlasPOU
+            (modelWithCornersEuclideanHalfSpace n) M) α'
+          (fun x => wkpChartFun (f i) x - wkpChartFun (f j) x))
+        (chartTargetEuclid (n := n) (M := M) α')) α
   exact le_trans h_summand_le_tsum h_le
 
 theorem exists_chart_limit
@@ -271,7 +277,7 @@ theorem chartPushed_tendstoInMeasure
           (chartTargetEuclid (n := n) (M := M) α))) :=
     h_v_mem.memLp.aestronglyMeasurable
   exact tendstoInMeasure_of_tendsto_eLpNorm_of_ne_top hp_zero hp_top
-    h_aesm_seq h_aesm_lim h_eLp
+    h_eLp
 
 theorem exists_subseq_chartPushed_ae_tendsto
     [T2Space M] [SigmaCompactSpace M]

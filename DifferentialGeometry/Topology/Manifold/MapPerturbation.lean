@@ -30,11 +30,11 @@ def patchMap (e : PartialDiffeomorph I J M N n) (f : P → M) (g : P → N) (x :
 
 theorem patchMap_of_mem (e : PartialDiffeomorph I J M N n) (f : P → M) (g : P → N)
     {x : P} (hx : f x ∈ e.source) : patchMap e f g x = e.symm (g x) :=
-  if_pos hx
+  ite_eq_left hx
 
 theorem patchMap_of_not_mem (e : PartialDiffeomorph I J M N n) (f : P → M) (g : P → N)
     {x : P} (hx : f x ∉ e.source) : patchMap e f g x = f x :=
-  if_neg hx
+  ite_eq_right hx
 
 theorem patchMap_eq_self (e : PartialDiffeomorph I J M N n) (f : P → M) (g : P → N)
     {x : P} (hx : g x = e (f x)) : patchMap e f g x = f x := by

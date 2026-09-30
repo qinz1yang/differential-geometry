@@ -28,9 +28,9 @@ theorem IsOpenTopologicalCell.exists_planarChart {X : Type*} [TopologicalSpace X
     if hx : x ∈ M then (ψ ⟨x, hx⟩ : Schoenflies.Plane) else 0
   let Φ : Schoenflies.Plane → X := fun p =>
     if hp : p ∈ Metric.ball (0 : Schoenflies.Plane) 1 then (ψ.symm ⟨p, hp⟩ : X) else x₀
-  have hΨ : ∀ x (hx : x ∈ M), Ψ x = ψ ⟨x, hx⟩ := fun x hx => dif_pos hx
+  have hΨ : ∀ x (hx : x ∈ M), Ψ x = ψ ⟨x, hx⟩ := fun x hx => dite_eq_left hx
   have hΦ : ∀ p (hp : p ∈ Metric.ball (0 : Schoenflies.Plane) 1), Φ p = ψ.symm ⟨p, hp⟩ :=
-    fun p hp => dif_pos hp
+    fun p hp => dite_eq_left hp
   refine ⟨Ψ, Φ, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · rw [continuousOn_iff_continuous_domRestrict]
     have heq : M.domRestrict Ψ = fun x => (ψ x : Schoenflies.Plane) := funext fun x => hΨ x.1 x.2

@@ -21,7 +21,7 @@ theorem mem_heightSingularPoints_congr {S T : Set E} {ℓ : E → ℝ} {p : E}
     ⟨fun h => h.congr hST (Filter.Eventually.of_forall fun _ => Iff.rfl),
       fun h => h.congr (hST.mono fun _ h => h.symm) (Filter.Eventually.of_forall fun _ => Iff.rfl)⟩
   have hnhds : 𝓝[S ∩ {x | ℓ x = ℓ p}] p = 𝓝[T ∩ {x | ℓ x = ℓ p}] p := by
-    apply nhdsWithin_eq_iff_eventuallyEq.mpr
+    apply nhdsWithin_eq_iff_eventuallyEqSet.mpr
     filter_upwards [hST] with x hx
     exact propext (and_congr_left fun _ => hx)
   change (p ∈ S ∧ ¬ HasPLCrossingAt S {x | ℓ x = ℓ p} p ∧ _) ↔

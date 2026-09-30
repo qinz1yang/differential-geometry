@@ -234,12 +234,12 @@ theorem hasExactlyEnds_prod_real_of_compact [T2Space X] [ConnectedSpace X]
   · intro i
     rw [hc i]
     by_cases hi : i = 0
-    · rw [if_pos hi]
+    · rw [ite_eq_left hi]
       apply not_isCompact_closure_of_unbounded_snd_above
       intro R
       exact ⟨(z, max R 0 + 1), ⟨trivial, by change 0 < max R 0 + 1; linarith [le_max_right R 0]⟩,
         by dsimp; linarith [le_max_left R 0]⟩
-    · rw [if_neg hi]
+    · rw [ite_eq_right hi]
       apply not_isCompact_closure_of_unbounded_snd_below
       intro R
       exact ⟨(z, min R 0 - 1), ⟨trivial, by change min R 0 - 1 < 0; linarith [min_le_right R 0]⟩,

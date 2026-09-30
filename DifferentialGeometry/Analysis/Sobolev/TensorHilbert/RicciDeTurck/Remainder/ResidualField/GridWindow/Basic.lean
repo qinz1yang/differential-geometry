@@ -5,6 +5,11 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredCoefficient
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.InverseMetricQuadraticResidual
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.BackgroundDecomposition.Conversion
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg riemannianFiberNormSq_sub_le tensorInnerPointwise_smul_left
+    tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -265,7 +270,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroBackgroundRCommCoeff
         ring
 
 
-theorem riemannianFiberNormSq_iteratedCovGrad_ricciCovariantTermSharpGradKoszulResidualMetricDiff_gridWindow_le
+theorem ricciCovariantTermSharpGradKoszulResidualField_metric_difference_jet_norm_sq_le_gridWindow
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -286,16 +291,16 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciCovariantTermSharpGradKoszulR
   obtain ⟨CPT, hCPT_nn, hCPT⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_movingMetricPairTraceOperator_window (I := I) (M := M) g₀ hδ₀
   obtain ⟨CW1, hCW1_nn, hCW1⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le (I := I)
+    koszulConnectionDifferenceContractionWeight_jet_norm_sq_le_gridWindow (I := I)
       (M := M) g₀ sharpGradKoszulKernelPositivePermutation hδ₀
   obtain ⟨CW2, hCW2_nn, hCW2⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le (I := I)
+    koszulConnectionDifferenceContractionWeight_jet_norm_sq_le_gridWindow (I := I)
       (M := M) g₀ sharpGradKoszulKernelPositiveKoszulSwapPermutation hδ₀
   obtain ⟨CW3, hCW3_nn, hCW3⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le (I := I)
+    koszulConnectionDifferenceContractionWeight_jet_norm_sq_le_gridWindow (I := I)
       (M := M) g₀ sharpGradKoszulKernelNegativePermutation hδ₀
   obtain ⟨CW4, hCW4_nn, hCW4⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le (I := I)
+    koszulConnectionDifferenceContractionWeight_jet_norm_sq_le_gridWindow (I := I)
       (M := M) g₀ sharpGradKoszulKernelNegativeKoszulSwapPermutation hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
@@ -609,7 +614,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciCovariantTermSharpGradKoszulR
 
 
 theorem
-    riemannianFiberNormSq_iteratedCovGrad_ricciContractionRemainderFieldMetricDifference_boundedFactorGridWindow_le
+    ricciContractionRemainderField_metric_difference_jet_norm_sq_le_gridWindow
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -891,7 +896,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
   exact Tensor0SSpace.ofModel_toModel D
 
 
-theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderFieldInputSymm_boundedFactorGridWindow_le
+theorem backgroundRicciCommutatorDiffDecompositionRemainderField_input_symm_jet_norm_sq_le_gridWindow
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -914,10 +919,10 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
     riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroBackgroundRCommCoeffDiff_gridWindow_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨C₂, hC₂_nn, hC₂⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciCovariantTermSharpGradKoszulResidualMetricDiff_gridWindow_le
+    ricciCovariantTermSharpGradKoszulResidualField_metric_difference_jet_norm_sq_le_gridWindow
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨C₃, hC₃_nn, hC₃⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciContractionRemainderFieldMetricDifference_boundedFactorGridWindow_le
+    ricciContractionRemainderField_metric_difference_jet_norm_sq_le_gridWindow
       (I := I) (M := M) g₀ hδ₀
   have hSW_ex : ∀ q : ℕ, ∃ c : ℝ, 0 ≤ c ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + q) x
@@ -1465,10 +1470,10 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroAACommCoeffFiel
   obtain ⟨CPT, hCPT_nn, hCPT⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_movingMetricPairTraceOperator_window (I := I) (M := M) g₀ hδ₀
   obtain ⟨CW1, hCW1_nn, hCW1⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le (I := I)
+    koszulConnectionDifferenceContractionWeight_jet_norm_sq_le_gridWindow (I := I)
       (M := M) g₀ sigmaQ1 hδ₀
   obtain ⟨CW2, hCW2_nn, hCW2⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le (I := I)
+    koszulConnectionDifferenceContractionWeight_jet_norm_sq_le_gridWindow (I := I)
       (M := M) g₀ sigmaQ2 hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
@@ -1670,7 +1675,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
-theorem riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroAACommCoeffFieldInputSymm_boundedFactorGridWindow_le
+theorem ricciOrderZeroAACommCoeffField_input_symm_jet_norm_sq_le_gridWindow
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -2161,7 +2166,7 @@ private theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernel
   exact quarter_four_term_bound h1 h2 h3 h4 hs1 hs2 hs3 hgrid_nn (hC4_nn i)
 
 
-theorem riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContractionFieldInputSymm_boundedFactorGridWindow_le
+theorem decompositionKernelContractionField_input_symm_jet_norm_sq_le_gridWindow
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)

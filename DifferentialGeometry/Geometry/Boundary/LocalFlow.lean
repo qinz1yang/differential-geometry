@@ -40,6 +40,7 @@ private theorem isMIntegralCurveOn_chartInverse (x : M) {v : (x : M) → Tangent
   apply (hs.comp t hd (fun s hs ↦ extChartAt_target_subset_range x (hmem hs))).congr_mfderiv
   apply ContinuousLinearMap.ext
   intro a
+  change ℝ at a
   have h := congrArg
     (fun L : TangentSpace I ((extChartAt I x).symm (γ t)) →L[ℝ]
       TangentSpace I ((extChartAt I x).symm (γ t)) ↦ L (v ((extChartAt I x).symm (γ t))))

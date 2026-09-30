@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.MinimumTime
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.Density
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.MinimumTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.Density
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TowerInductionStep
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MasterFlowCompatibility
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
@@ -323,7 +323,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 theorem RetainedCoreHistory.incomingFootprint_stage_maps_extendHorizon
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric)
     (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
@@ -422,7 +422,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 theorem RetainedCoreHistory.exists_incomingFootprint_regularizedCost_minimum
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric)
     (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
@@ -559,7 +559,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 theorem RetainedCoreHistory.exists_incomingFootprint_spatial_cost_minimum_of_uniform_escape_barrier
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric)
     (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))

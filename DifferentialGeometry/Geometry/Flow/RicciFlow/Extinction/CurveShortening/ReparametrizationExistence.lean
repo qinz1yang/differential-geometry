@@ -171,11 +171,11 @@ private theorem exists_smooth_homeomorph_family_of_affine_periodic_initial_ident
     else Homeomorph.refl _
   have hP (t : ℝ) (ht : t ∈ V) (x : ℝ) :
       P t (x : AddCircle (1 : ℝ)) = (F (t, x) : AddCircle (1 : ℝ)) := by
-    simp only [P, dif_pos ht]
+    simp only [P, dite_eq_left ht]
     rfl
   have hPinv (t : ℝ) (ht : t ∈ V) (x : ℝ) :
       (P t).symm (x : AddCircle (1 : ℝ)) = (R (t, x) : AddCircle (1 : ℝ)) := by
-    simp only [P, dif_pos ht]
+    simp only [P, dite_eq_left ht]
     rfl
   refine ⟨V, hV, haV, P, hP, ?_, ?_⟩
   · apply AddCircle.contMDiffOn_of_comp_coe

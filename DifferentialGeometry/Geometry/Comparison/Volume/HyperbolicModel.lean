@@ -52,7 +52,7 @@ theorem hasDerivAt_hyperbolicSnD (q r : ℝ) :
       funext x
       simp [hyperbolicSnDeriv, hq]
     have hderiv : Real.sinh (q * r) * q = q ^ 2 * hyperbolicSn q r := by
-      rw [hyperbolicSn, if_neg hq]
+      rw [hyperbolicSn, ite_eq_right hq]
       field_simp
     have hderiv' : Real.sinh (q * id r) * (q * 1) = q ^ 2 * hyperbolicSn q r := by
       simpa only [id_eq, mul_one] using hderiv
@@ -64,7 +64,7 @@ theorem hyperbolicSn_energy (q r : ℝ) :
   by_cases hq : q = 0
   · subst q
     simp [hyperbolicSnDeriv, hyperbolicSn]
-  · rw [hyperbolicSnDeriv, if_neg hq, hyperbolicSn, if_neg hq]
+  · rw [hyperbolicSnDeriv, ite_eq_right hq, hyperbolicSn, ite_eq_right hq]
     calc
       Real.cosh (q * r) ^ 2 - q ^ 2 * (Real.sinh (q * r) / q) ^ 2 =
           Real.cosh (q * r) ^ 2 - Real.sinh (q * r) ^ 2 := by
@@ -79,7 +79,7 @@ theorem hyperbolicSn_pos {q r : ℝ} (hq : 0 ≤ q) (hr : 0 < r) :
   by_cases hq0 : q = 0
   · simpa [hyperbolicSn, hq0] using hr
   · have hqpos : 0 < q := lt_of_le_of_ne hq (Ne.symm hq0)
-    rw [hyperbolicSn, if_neg hq0]
+    rw [hyperbolicSn, ite_eq_right hq0]
     exact div_pos (Real.sinh_pos_iff.mpr (mul_pos hqpos hr)) hqpos
 
 def hyperbolicDensity (q : ℝ) (d : ℕ) (r : ℝ) : ℝ :=
@@ -144,7 +144,7 @@ theorem hyperbolicMeanCurv_le
     have hratio :
         Real.cosh (q * r) / (Real.sinh (q * r) / q) ≤ 1 / r + q :=
       (div_le_iff₀ (div_pos hsinh hqpos)).mpr hmodel
-    rw [hyperbolicMeanCurv, hyperbolicSnDeriv, if_neg hq0, hyperbolicSn, if_neg hq0]
+    rw [hyperbolicMeanCurv, hyperbolicSnDeriv, ite_eq_right hq0, hyperbolicSn, ite_eq_right hq0]
     calc
       (d : ℝ) * Real.cosh (q * r) / (Real.sinh (q * r) / q) =
           (d : ℝ) * (Real.cosh (q * r) /

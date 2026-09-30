@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotPairing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.Extraction
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
@@ -21,6 +22,11 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.HomFiel
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.CovariantDivergence
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.SlotSwapPairingCalculus
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.HomFieldJetDecomposition
+
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_nonneg tensorInnerPointwise
+  tensorInnerPointwise_smul_right)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -93,6 +99,7 @@ private noncomputable def negGInvDiffSlotApplied
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private theorem slotInsertEndoFib_neg_left (s : ℕ) (k : Fin s) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) :
     slotInsertEndoFib (I := I) (M := M) s k x (-Λ) =
@@ -159,6 +166,7 @@ private theorem negGInvDiffRaisedEndo_inner_self_le
     _ ≤ (δ / (1 - δ)) * (Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x v v)) := hbnd
     _ = (δ / (1 - δ)) * g₀.inner x v v := by rw [hsq]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M] in
 private theorem tensorInnerPointwise_negGInvDiffSlot_le
@@ -310,9 +318,9 @@ private lemma termResidual_orthoFrame_expansion (g₀ : SmoothRiemannianMetric I
       rw [(g₀.inner b (smoothOrthoFrame (I := I) g₀ b k b)).map_smul (c j),
         smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) = Module.finrank ℝ E :=
     Fintype.card_fin _
   set bse := basisOfLinearIndependentOfCardEqFinrank he_li hcard with hbse_def
@@ -328,9 +336,9 @@ private lemma termResidual_orthoFrame_expansion (g₀ : SmoothRiemannianMetric I
       rw [(g₀.inner b (smoothOrthoFrame (I := I) g₀ b j b)).map_smul (bse.repr u i),
         smul_eq_mul, hbse i, horth j i])]
     rw [Finset.sum_eq_single_of_mem j (Finset.mem_univ j)]
-    · rw [if_pos rfl, mul_one]
+    · rw [ite_eq_left rfl, mul_one]
     · intro i _ hij
-      rw [if_neg (fun h => hij h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hij h.symm), mul_zero]
   calc u = ∑ i : Fin (Module.finrank ℝ E), bse.repr u i • bse i := (bse.sum_repr u).symm
     _ = ∑ i : Fin (Module.finrank ℝ E),
         g₀.inner b u (smoothOrthoFrame (I := I) g₀ b i b) •
@@ -3294,6 +3302,7 @@ private theorem exists_oneMinusConnLapIter_pairing_remainder
       (I := I) (M := M) g₀ g₁ n h htie hδ_lt hδ_nn hδ
   exact ⟨Clower, hClower_nn, hbound⟩
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
 private theorem termPrincipalSlotPairing_le_dirichlet_top
     (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)
@@ -3379,6 +3388,7 @@ private theorem termPrincipalSlotPairing_le_dirichlet_top
   rw [hnorm] at hslot
   exact hslot
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
 theorem edgeTerm_slot_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)

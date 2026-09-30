@@ -35,7 +35,7 @@ theorem IsSmoothEmbedding.isInteriorPoint_of_mem_interior_range
   have hcomp : f ∘ g = (Subtype.val : U → N) := funext (hf.comp_lift hsub)
   have hfull : Function.Injective (mfderiv J J (f ∘ g) y) := by
     rw [hcomp]
-    exact ((IsSmoothEmbedding.of_opens (I := J) (n := ∞) U).isImmersion.isImmersionAt y).injective_mfderiv
+    exact ((IsSmoothEmbedding.of_opens (I := J) (n := ∞) U).isImmersion.isImmersionAt y).mfderiv_injective
       (by simp)
   rw [mfderiv_comp y (hf.contMDiff.mdifferentiableAt (by simp))
     (hg.mdifferentiableAt (by simp))] at hfull

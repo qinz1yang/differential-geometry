@@ -73,7 +73,7 @@ private theorem exists_mixed_curvature_fields_of_polynomial
     fun q t => if ht : t ∈ J then B q ⟨t, ht⟩ else 0
   have hA (q : ℕ) (t : ℝ) (ht : t ∈ J) (x : M) :
       A q t x = mixedCurvatureTensor S p q t x := by
-    simp only [A, dif_pos ht]
+    simp only [A, dite_eq_left ht]
     exact hB q ⟨t, ht⟩ x
   refine ⟨A, fun q t ht x => ⟨hA q t ht x, ?_⟩⟩
   have hd := (hactual q t ht x (Module.finBasis ℝ (TangentSpace I x))).1.hasDerivWithinAt

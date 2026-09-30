@@ -394,9 +394,9 @@ noncomputable def CoverAssignment.ofIsCovered {X : Type u} [TopologicalSpace X] 
   refine ⟨fun i => if range (standardSubpath p i) ⊆ U then .left else .right, ?_⟩
   intro i
   by_cases hU : range (standardSubpath p i) ⊆ U
-  · simp only [if_pos hU, CoverSide.set]
+  · simp only [ite_eq_left hU, CoverSide.set]
     exact hU
-  · simp only [if_neg hU, CoverSide.set]
+  · simp only [ite_eq_right hU, CoverSide.set]
     exact (h i).resolve_left hU
 
 def CoverAssignment.constant {X : Type u} [TopologicalSpace X] {x y : X}

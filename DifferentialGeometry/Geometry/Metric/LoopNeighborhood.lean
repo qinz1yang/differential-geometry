@@ -49,8 +49,14 @@ theorem exists_loop_neighborhood_embedding_retraction
     have hder : fderiv ℝ G t =
         (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) e (γ (t : loopCircle))).comp
           (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (fun s : ℝ => γ (s : loopCircle)) t) := by
-      rw [← mfderiv_eq_fderiv]
-      exact mfderiv_comp t (he.mdifferentiableAt (by simp)) (hγ.smooth.mdifferentiableAt (by simp))
+      have h := mfderiv_comp t (he.mdifferentiableAt (by simp)) (hγ.smooth.mdifferentiableAt (by simp))
+      rw [mfderiv_eq_fderiv] at h
+      apply ContinuousLinearMap.ext
+      intro v
+      have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ)
+        (e (γ (t : loopCircle))) (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm v))) h
+      simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+        ContinuousLinearEquiv.apply_symm_apply] using! hv
     rw [hder]
     exact (hi _ (hN (mem_range_self _))).comp
       (realContinuousLinearMap_injective_of_one_ne_zero _ (hγ.immersed t))
@@ -64,9 +70,15 @@ theorem exists_loop_neighborhood_embedding_retraction
     change Injective D
     have hA : Surjective A := (AddCircle.bijective_mfderiv_coe t).2
     have hd : fderiv ℝ G t = D.comp A := by
-      rw [← mfderiv_eq_fderiv]
-      exact mfderiv_comp t (hΓs.mdifferentiableAt (by simp))
+      have h := mfderiv_comp t (hΓs.mdifferentiableAt (by simp))
         (AddCircle.contMDiff_coe.mdifferentiableAt (by simp))
+      rw [mfderiv_eq_fderiv] at h
+      apply ContinuousLinearMap.ext
+      intro v
+      have hv := congrArg (fun L => NormedSpace.fromTangentSpace (𝕜 := ℝ) (G t)
+        (L ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm v))) h
+      simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+        ContinuousLinearEquiv.apply_symm_apply] using! hv
     intro x y hxy
     obtain ⟨a, ha⟩ := hA x
     obtain ⟨b, hb⟩ := hA y

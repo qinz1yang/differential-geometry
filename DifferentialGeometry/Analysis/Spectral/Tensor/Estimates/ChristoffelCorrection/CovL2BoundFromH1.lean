@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.PreHilbert
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.H1Compl
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
 import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise_nonneg)
 
 
 noncomputable section
@@ -97,12 +98,13 @@ private lemma
     exact mul_nonneg hC_nn hQ_nn
 
 private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq
-    {α : Type*} [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) :
+    {α : Type*} [MeasurableSpace α] (μ : Measure α) (f : α → ℝ)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
   classical
   have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
   have h2_ne_top : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by norm_num
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top hf]
   have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
   rw [h2_toReal]
   have h_inner_eq : ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
@@ -173,8 +175,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] in
 private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
-    (w : M → ℝ) (hw_nn : ∀ x, 0 ≤ w x) (hw_le_one : ∀ x, w x ≤ 1)
-    {K_M : Set M} (hK_M_compact : IsCompact K_M)
+    (w : M → ℝ) {K_M : Set M}
+    (hw_meas : AEStronglyMeasurable w
+      ((riemannianVolumeMeasure (I := I) (M := M) g).restrict K_M))
+    (hw_nn : ∀ x, 0 ≤ w x) (hw_le_one : ∀ x, w x ≤ 1)
+    (hK_M_compact : IsCompact K_M)
     (hK_M_sub_baseSet :
       K_M ⊆ (trivializationAt E (TangentSpace I) α).baseSet)
     (hw_support : tsupport w ⊆ K_M) :
@@ -232,7 +237,46 @@ private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
       rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _) 2,
         sq_abs]]
     exact ENNReal.ofReal_le_ofReal (h_pt_sq b)
-  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq μ f]
+  have hSqSum_cont : ContinuousOn SqSum K_M := by
+    rw [hSqSum_def]
+    refine continuousOn_finsetSum _ (fun i _ => ?_)
+    have htriv := (tensorCovDeriv_chartBasis_trivImage_contMDiffOn
+      (I := I) (M := M) g r s S.toCcTensor α i).continuousOn
+    have hcov : ContinuousOn
+        (fun b : M => chartRSTwistInv (I := I) (M := M) α b r s
+          (TensorRSSpace.toModel
+            (tensorCovDerivAt (I := I) (M := M) g r s S.toCcTensor b
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))))
+        (trivializationAt E (TangentSpace I) α).baseSet := by
+      refine htriv.congr (fun b hb => ?_)
+      rw [← triv_continuousLinearMapAt_eq_chartRSTwistInv_toModel
+        (I := I) (M := M) r s α hb]
+      have hbRS : b ∈ (trivializationAt (TensorRSModel r s ℝ E)
+          (fun y : M => TensorRSSpace r s I y) α).baseSet := by
+        change b ∈ (trivializationAt E (TangentSpace I) α).baseSet ∩
+          (trivializationAt E (TangentSpace I) α).baseSet
+        exact ⟨hb, hb⟩
+      change (trivializationAt (TensorRSModel r s ℝ E)
+        (fun y : M => TensorRSSpace r s I y) α).linearMapAt ℝ b _ = _
+      rw [Bundle.Trivialization.linearMapAt_apply, ite_eq_left hbRS]
+      rfl
+    exact (hcov.norm.pow 2).mono hK_M_sub_baseSet
+  have hf_ae : AEStronglyMeasurable f μ := by
+    have hK_meas : MeasurableSet K_M := hK_M_compact.measurableSet
+    have hf_restrict : AEStronglyMeasurable f (μ.restrict K_M) :=
+      hw_meas.mul
+        (hSqSum_cont.sqrt.aestronglyMeasurable hK_meas)
+    have hf_indicator : K_M.indicator f = f := by
+      funext b
+      by_cases hb : b ∈ K_M
+      · exact Set.indicator_of_mem hb f
+      · have hw_zero : w b = 0 := by
+          by_contra hne
+          exact hb (hw_support (subset_tsupport w hne))
+        simp only [Set.indicator_of_notMem hb, hf_def, hρ_def, hw_zero, zero_mul]
+    rw [← hf_indicator]
+    exact (aestronglyMeasurable_indicator_iff hK_meas).2 hf_restrict
+  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq μ f hf_ae]
   have h_grad_int :
       Integrable (tensorCovDerivPointwiseInner
         (I := I) (M := M) g r s S.toCcTensor S.toCcTensor) μ :=
@@ -291,8 +335,11 @@ private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem exists_eLpNorm_chartWeight_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_const_mul_h1Norm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
-    (w : M → ℝ) (hw_nn : ∀ x, 0 ≤ w x) (hw_le_one : ∀ x, w x ≤ 1)
-    {K_M : Set M} (hK_M_compact : IsCompact K_M)
+    (w : M → ℝ) {K_M : Set M}
+    (hw_meas : AEStronglyMeasurable w
+      ((riemannianVolumeMeasure (I := I) (M := M) g).restrict K_M))
+    (hw_nn : ∀ x, 0 ≤ w x) (hw_le_one : ∀ x, w x ≤ 1)
+    (hK_M_compact : IsCompact K_M)
     (hK_M_sub_baseSet :
       K_M ⊆ (trivializationAt E (TangentSpace I) α).baseSet)
     (hw_support : tsupport w ⊆ K_M) :
@@ -313,7 +360,7 @@ theorem exists_eLpNorm_chartWeight_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_c
   classical
   obtain ⟨C, hC_nn, h_sq⟩ :=
     sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
-      (I := I) (M := M) g r s α w hw_nn hw_le_one hK_M_compact hK_M_sub_baseSet
+      (I := I) (M := M) g r s α w hw_meas hw_nn hw_le_one hK_M_compact hK_M_sub_baseSet
       hw_support
   refine ⟨Real.sqrt C, Real.sqrt_nonneg _, ?_⟩
   intro S
@@ -353,6 +400,7 @@ theorem exists_eLpNorm_chartPou_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_cons
   exists_eLpNorm_chartWeight_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_const_mul_h1Norm
     (I := I) (M := M) g r s α
     (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
+    (chartAtlasPOU I M α).contMDiff.continuous.measurable.aestronglyMeasurable
     (fun x => (chartAtlasPOU I M).nonneg α x)
     (fun x => (chartAtlasPOU I M).le_one α x)
     ((isClosed_tsupport _).isCompact)

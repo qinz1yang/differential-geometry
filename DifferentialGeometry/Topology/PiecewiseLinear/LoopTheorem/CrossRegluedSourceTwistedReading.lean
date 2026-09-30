@@ -187,13 +187,13 @@ private theorem coord_pos {x : EuclideanSpace ℝ (Fin 2)}
     (hx : x ∈ seamWitnessPlane '' bandPos) :
     coord x = (true, sheetPos (seamWitnessPlane.symm x)) := by
   have h := mem_image_seamWitnessPlane.mp hx
-  exact if_pos (by linarith [h.1.1])
+  exact ite_eq_left (by linarith [h.1.1])
 
 private theorem coord_neg {x : EuclideanSpace ℝ (Fin 2)}
     (hx : x ∈ seamWitnessPlane '' bandNeg) :
     coord x = (false, sheetNeg (seamWitnessPlane.symm x)) := by
   have h := mem_image_seamWitnessPlane.mp hx
-  exact if_neg (by linarith [h.1.2])
+  exact ite_eq_right (by linarith [h.1.2])
 
 private def faceRect : Set (ℝ × ℝ) :=
   (Icc (-1 / 4 : ℝ) (-1 / 16) ×ˢ Icc (0 : ℝ) 1) ∪

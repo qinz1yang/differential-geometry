@@ -23,23 +23,17 @@ def ofBallEmbedding (ball : ClosedCell 3 → N.Carrier)
     (ball_embedding : IsSmoothEmbedding (𝓡∂ 3) (𝓡 3) ∞ ball) : MarkedBall N where
   ball := ball
   ball_embedding := ball_embedding
-  collar := univ
-  collar_isOpen := isOpen_univ
-  ball_subset_collar := Set.subset_univ (range ball)
-  collarBudget := 1
-  collarBudget_pos := one_pos
+  neighborhood := univ
+  isOpen_neighborhood := isOpen_univ
+  range_ball_subset_neighborhood := Set.subset_univ (range ball)
 
 theorem ofBallEmbedding_ball (ball : ClosedCell 3 → N.Carrier)
     (ball_embedding : IsSmoothEmbedding (𝓡∂ 3) (𝓡 3) ∞ ball) :
     (ofBallEmbedding ball ball_embedding).ball = ball := rfl
 
-theorem ofBallEmbedding_collar (ball : ClosedCell 3 → N.Carrier)
+theorem ofBallEmbedding_neighborhood (ball : ClosedCell 3 → N.Carrier)
     (ball_embedding : IsSmoothEmbedding (𝓡∂ 3) (𝓡 3) ∞ ball) :
-    (ofBallEmbedding ball ball_embedding).collar = univ := rfl
-
-theorem ofBallEmbedding_collarBudget (ball : ClosedCell 3 → N.Carrier)
-    (ball_embedding : IsSmoothEmbedding (𝓡∂ 3) (𝓡 3) ∞ ball) :
-    (ofBallEmbedding ball ball_embedding).collarBudget = 1 := rfl
+    (ofBallEmbedding ball ball_embedding).neighborhood = univ := rfl
 
 theorem nonempty_iff_exists_isSmoothEmbedding :
     Nonempty (MarkedBall N) ↔
@@ -48,19 +42,19 @@ theorem nonempty_iff_exists_isSmoothEmbedding :
   ⟨fun ⟨B⟩ => ⟨B.ball, B.ball_embedding⟩,
     fun ⟨ball, hball⟩ => ⟨ofBallEmbedding ball hball⟩⟩
 
-theorem collar_nonempty (B : MarkedBall N) : B.collar.Nonempty :=
+theorem neighborhood_nonempty (B : MarkedBall N) : B.neighborhood.Nonempty :=
   ⟨B.ball (closedCellCenter 3),
-    B.ball_subset_collar (mem_range_self (closedCellCenter 3))⟩
+    B.range_ball_subset_neighborhood (mem_range_self (closedCellCenter 3))⟩
 
-theorem collar_ne_univ_of_disjoint (B : MarkedBall N) {C : Set N.Carrier}
-    (h : Disjoint B.collar C) (hC : C.Nonempty) : B.collar ≠ univ := by
+theorem neighborhood_ne_univ_of_disjoint (B : MarkedBall N) {C : Set N.Carrier}
+    (h : Disjoint B.neighborhood C) (hC : C.Nonempty) : B.neighborhood ≠ univ := by
   intro hc
   obtain ⟨x, hx⟩ := hC
   exact Set.disjoint_left.mp h (by simp [hc]) hx
 
-theorem not_disjoint_of_collar_eq_univ (B B' : MarkedBall N) (h : B.collar = univ) :
-    ¬ Disjoint B.collar B'.collar :=
-  fun hd => collar_ne_univ_of_disjoint B hd B'.collar_nonempty h
+theorem not_disjoint_of_neighborhood_eq_univ (B B' : MarkedBall N) (h : B.neighborhood = univ) :
+    ¬ Disjoint B.neighborhood B'.neighborhood :=
+  fun hd => neighborhood_ne_univ_of_disjoint B hd B'.neighborhood_nonempty h
 
 end MarkedBall
 
@@ -74,8 +68,8 @@ def markedBall (E : SphericalCapping M N T) (b : T.Boundary) : MarkedBall N :=
 theorem markedBall_ball (E : SphericalCapping M N T) (b : T.Boundary) :
     (markedBall E b).ball = E.cap b := rfl
 
-theorem markedBall_collar (E : SphericalCapping M N T) (b : T.Boundary) :
-    (markedBall E b).collar = univ := rfl
+theorem markedBall_neighborhood (E : SphericalCapping M N T) (b : T.Boundary) :
+    (markedBall E b).neighborhood = univ := rfl
 
 theorem nonempty_markedBall_of_boundary (E : SphericalCapping M N T)
     (h : Nonempty T.Boundary) : Nonempty (MarkedBall N) :=
@@ -101,16 +95,16 @@ private theorem set_nonempty_cast {V : Type u} (X : V → Type u) {a b : V} (h :
   cases h
   exact hS
 
-theorem flag_collar_ne_univ_of_ne (e e' : G.Edge) (b b' : Bool)
+theorem flag_neighborhood_ne_univ_of_ne (e e' : G.Edge) (b b' : Bool)
     (hv : G.endpoint e' b' = G.endpoint e b) (h : (e, b) ≠ (e', b')) :
-    (G.flag e b).collar ≠ univ := by
+    (G.flag e b).neighborhood ≠ univ := by
   classical
   have hne : (⟨(e, b), rfl⟩ : {p : G.Edge × Bool // G.endpoint p.1 p.2 = G.endpoint e b}) ≠
       ⟨(e', b'), hv⟩ := fun hh => h (congrArg Subtype.val hh)
-  have hdisj : Disjoint (G.flag e b).collar (hv ▸ (G.flag e' b').collar) := by
-    simpa using G.flag_collar_disjoint (G.endpoint e b) ⟨(e, b), rfl⟩ ⟨(e', b'), hv⟩ hne
-  exact MarkedBall.collar_ne_univ_of_disjoint (G.flag e b) hdisj
-    (set_nonempty_cast (fun v => (G.vertexManifold v).Carrier) hv (G.flag e' b').collar_nonempty)
+  have hdisj : Disjoint (G.flag e b).neighborhood (hv ▸ (G.flag e' b').neighborhood) := by
+    simpa using G.flag_neighborhood_disjoint (G.endpoint e b) ⟨(e, b), rfl⟩ ⟨(e', b'), hv⟩ hne
+  exact MarkedBall.neighborhood_ne_univ_of_disjoint (G.flag e b) hdisj
+    (set_nonempty_cast (fun v => (G.vertexManifold v).Carrier) hv (G.flag e' b').neighborhood_nonempty)
 
 end MarkedManifoldGraph
 

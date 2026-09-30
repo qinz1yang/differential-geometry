@@ -13,7 +13,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem HasPushPropertyAt.exists_homeomorph_fixed_on_of_inter_subset
     {C D A U : Set (EuclideanSpace ℝ (Fin 3))} (hCD : HasPushPropertyAt C D)
     {f : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) D)
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hA : IsPolyhedron A) (hCA : C ∩ A ⊆ f '' stdSimplexBoundary 2)
     (hdense : A ⊆ closure (A \ C)) (hU : IsOpen U) (hCU : C ⊆ U) :
     ∃ h : EuclideanSpace ℝ (Fin 3) ≃ₜ EuclideanSpace ℝ (Fin 3),

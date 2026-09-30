@@ -3,6 +3,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficien
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Residual.FlatGagliardoNirenberg
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorGridIntegral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
+
 noncomputable section
 
 
@@ -94,7 +96,7 @@ theorem boundedFactorGrid_cappedTopLayer_integral_flat
         (I := I) (M := M) g₀ 0 (2 + 2) k hk).choose = Cgn k := by
     intro k hk
     rw [hCgn]
-    simp only [dif_pos hk]
+    simp only [dite_eq_left hk]
   set vol : ℝ := ((riemannianVolumeMeasure (I := I) (M := M) g₀) Set.univ).toReal with hvol
   have hvol_nn : 0 ≤ vol := ENNReal.toReal_nonneg
   set MB : ℕ → ℝ := fun i => 1 + vol + Lam + ∑ k ∈ Finset.range (i + 1), Cgn k with hMBdef

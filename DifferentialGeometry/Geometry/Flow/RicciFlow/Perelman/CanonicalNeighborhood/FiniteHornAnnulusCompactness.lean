@@ -19,7 +19,7 @@ theorem finiteHorn_mem_range_of_mem_closure_subend (g : SmoothRiemannianMetric I
     (hne : z ≠ H.endpoint) : z ∈ range (fun x : W => (x : UniformSpace.Completion W)) := by
   have hd : 0 < dist z H.endpoint := dist_pos.mpr hne
   obtain ⟨j, hsmall⟩ := finiteHorn_subend_radial_small g H (half_pos hd)
-  let K : Set W := H.tube.map '' (univ ×ˢ Icc (H.cut_height j) (H.cut_height i))
+  let K : Set W := H.tube.map '' (univ ×ˢ Icc (H.cutHeight j) (H.cutHeight i))
   have hK : IsCompact K := H.tube.isCompact_slab (H.cut_height_mem j).1 (H.cut_height_mem i).2
   have hKC : IsCompact ((fun x : W => (x : UniformSpace.Completion W)) '' K) :=
     hK.image (UniformSpace.Completion.continuous_coe W)
@@ -31,13 +31,13 @@ theorem finiteHorn_mem_range_of_mem_closure_subend (g : SmoothRiemannianMetric I
     · exact Or.inr (hsmall x hxj).le
     · apply Or.inl
       refine ⟨x, ?_, rfl⟩
-      have hxlow : H.cut_height j ≤ H.tube.height x := by
+      have hxlow : H.cutHeight j ≤ H.tube.height x := by
         apply le_of_not_gt
         intro hlt
         apply hxj
         rw [H.subend_eq j]
         exact hlt
-      have hxhigh : H.tube.height x ≤ H.cut_height i := by
+      have hxhigh : H.tube.height x ≤ H.cutHeight i := by
         rw [H.subend_eq i] at hx
         exact hx.le
       refine ⟨H.tube.map.symm x, ⟨mem_univ _, hxlow, hxhigh⟩, ?_⟩

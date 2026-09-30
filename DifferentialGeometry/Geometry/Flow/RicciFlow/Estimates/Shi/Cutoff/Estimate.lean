@@ -1,5 +1,7 @@
+import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Higher
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Operator.Gradient.PowerBounds
@@ -92,14 +94,14 @@ theorem upTo
 
 end TowerNormGradOn
 
-namespace ShiCutoffData
+section
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] in
-theorem cross_le
+theorem _root_.DifferentialGeometry.Analysis.Parabolic.ParabolicCutoffSequence.cross_le
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     {m n k : Nat} (hgrad : TowerNormGradUpTo (I := I) B m) (hk : k ≤ m)
     {t : Real} (ht : t ∈ Set.Icc 0 B.T) (htpos : 0 < t) (x : M) :
     -2 * (G.metric t).inner x
@@ -130,7 +132,7 @@ theorem cross_le
     calc
       c ^ 2 ≤
           (G.metric t).inner x a a * (G.metric t).inner x b b := by
-        exact DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
+        exact DifferentialGeometry.SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq
           (I := I) (M := M) (G.metric t) x a b
       _ ≤ (cut.err n * cut.chi n t x) *
           (4 * B.w k t x * B.w (k + 1) t x) :=
@@ -148,9 +150,9 @@ theorem cross_le
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] [I.Boundaryless] in
-theorem pow_parabolic_le
+theorem _root_.DifferentialGeometry.Analysis.Parabolic.ParabolicCutoffSequence.pow_parabolic_le
     {G : MetricConnectionFamily (I := I) (M := M) Real} {T : Real}
-    (cut : ShiCutoffData (I := I) G T) (n p : Nat)
+    (cut : ParabolicCutoffSequence (I := I) G T) (n p : Nat)
     {t : Real} (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t) (x : M) :
     parabolicOperatorWithDrift (I := I) G T
         (fun _ y => (0 : TangentSpace I y))
@@ -244,10 +246,10 @@ theorem pow_parabolic_le
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] in
-theorem pow_cross_le
+theorem _root_.DifferentialGeometry.Analysis.Parabolic.ParabolicCutoffSequence.pow_cross_le
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     {m n k p : Nat} (hgrad : TowerNormGradUpTo (I := I) B m) (hk : k ≤ m)
     {t : Real} (ht : t ∈ Set.Icc 0 B.T) (htpos : 0 < t) (x : M) :
     -2 * (G.metric t).inner x
@@ -286,7 +288,7 @@ theorem pow_cross_le
         (4 * B.w k t x * B.w (k + 1) t x) := by
     calc
       c₀ ^ 2 ≤ (G.metric t).inner x a a * (G.metric t).inner x b b := by
-        exact DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
+        exact DifferentialGeometry.SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq
           (I := I) (M := M) (G.metric t) x a b
       _ ≤ (cut.err n * cut.chi n t x) *
           (4 * B.w k t x * B.w (k + 1) t x) :=
@@ -322,7 +324,7 @@ theorem pow_cross_le
   dsimp [c, q₁, q₂, b] at hneg ⊢
   linarith
 
-end ShiCutoffData
+end
 
 def cutErrCoeff (i : Nat) : Real :=
   8 * (i + 1 : Real) ^ 2 + (i + 1 : Real)
@@ -343,14 +345,14 @@ theorem cutErrCoeff_mono : Monotone cutErrCoeff := by
   unfold cutErrCoeff
   nlinarith
 
-namespace ShiCutoffData
+section
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] [I.Boundaryless]
   [VectorBundle Real E (TangentSpace I : M → Type _)] in
-theorem cutErr_small
+theorem _root_.DifferentialGeometry.Analysis.Parabolic.ParabolicCutoffSequence.cutErr_small
     {G : MetricConnectionFamily (I := I) (M := M) Real} {T : Real}
-    (cut : ShiCutoffData (I := I) G T) (m : Nat) :
+    (cut : ParabolicCutoffSequence (I := I) G T) (m : Nat) :
     ∀ᶠ n in Filter.atTop, ∀ i ∈ Finset.range (m + 1),
       cutErrCoeff i * cut.err n * T < (1 : Real) / 4 := by
   refine (Filter.eventually_all_finset (Finset.range (m + 1))).mpr ?_
@@ -362,7 +364,7 @@ theorem cutErr_small
       (cut.err_tendsto.const_mul (cutErrCoeff i)).mul_const T
   exact hlim.eventually_lt_const (by norm_num)
 
-end ShiCutoffData
+end
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] in
@@ -371,7 +373,7 @@ private theorem support_pow_cross
     (B : BernsteinTower (I := I) G)
     {m k p : Nat} (hgrad : TowerNormGradUpTo (I := I) B m) (hk : k ≤ m)
     {eps t : Real} {chi : Real → M → Real} {x : M}
-    (support : ShiCutoffLowerSupportAt (I := I) G B.T eps chi t x)
+    (support : ParabolicCutoffLowerSupportAt (I := I) G B.T eps chi t x)
     (ht : t ∈ Set.Icc 0 B.T) (htpos : 0 < t) (heps : 0 ≤ eps) :
     -2 * (G.metric t).inner x
         (gradientFun (I := I) (G.metric t)
@@ -404,7 +406,7 @@ private noncomputable def GfunLocal
 noncomputable def GfunCut
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     (m n : Nat) (t : Real) (x : M) : Real :=
   ∑ i ∈ Finset.range (m + 1),
     BernsteinTower.Gcoef (I := I) B m i * t ^ i *
@@ -415,7 +417,7 @@ omit [SigmaCompactSpace M]
 theorem GfunCut_nonneg
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     (m n : Nat) {t : Real} (ht : t ∈ Set.Icc 0 B.T) (x : M) :
     0 ≤ GfunCut (I := I) B cut m n t x := by
   rw [GfunCut]
@@ -434,7 +436,7 @@ omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
 @[simp] theorem GfunCut_zero
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     {m n : Nat} {t : Real} {x : M}
     (hchi : cut.chi n t x = 0) :
     GfunCut (I := I) B cut m n t x = 0 := by
@@ -445,7 +447,7 @@ omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
 theorem GfunCut_off
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     (m n : Nat) {t : Real} (ht : t ∈ Set.Icc 0 B.T)
     {x : M} (hx : x ∉ cut.support n) :
     GfunCut (I := I) B cut m n t x = 0 :=
@@ -456,7 +458,7 @@ omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
 theorem GfunCut_cont
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     (m n : Nat) :
     ContinuousOn (fun p : Real × M => GfunCut (I := I) B cut m n p.1 p.2)
       (spacetimeSlab (M := M) B.T) := by
@@ -476,7 +478,7 @@ omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
 theorem GfunCut_one
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     {m n : Nat} {t : Real} {x : M}
     (hchi : cut.chi n t x = 1) :
     GfunCut (I := I) B cut m n t x = BernsteinTower.Gfun (I := I) B m t x := by
@@ -552,7 +554,7 @@ private theorem cutWterms_nonpos
     have hkle : k ≤ m := hkm.le
     have hGk : BernsteinTower.Gcoef (I := I) B m k =
         beta * towerFactCoeff m k := by
-      rw [BernsteinTower.Gcoef, if_neg (by omega : ¬ k = m)]
+      rw [BernsteinTower.Gcoef, ite_eq_right (by omega : ¬ k = m)]
     have hfac : (k : Real) * towerFactCoeff m k =
         towerFactCoeff m (k - 1) :=
       nat_mul_towerFactCoeff m hk1
@@ -816,7 +818,7 @@ private theorem supportLevel_le
     (B : BernsteinTower (I := I) G)
     {m i : Nat} (hgrad : TowerNormGradUpTo (I := I) B m) (hi : i ≤ m)
     {eps t : Real} {chi : Real → M → Real} {x : M}
-    (support : ShiCutoffLowerSupportAt (I := I) G B.T eps chi t x)
+    (support : ParabolicCutoffLowerSupportAt (I := I) G B.T eps chi t x)
     (ht : t ∈ Set.Icc 0 B.T) (htpos : 0 < t) (heps : 0 ≤ eps)
     (d : Real)
     (hd : HasDerivWithinAt (fun s : Real => B.w i s x) d (Set.Icc 0 B.T) t)
@@ -1093,7 +1095,7 @@ omit [NeZero (Module.finrank Real E)] [CompleteSpace E]
 private theorem cutLevel_le
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     {m n i : Nat} (hgrad : TowerNormGradUpTo (I := I) B m) (hi : i ≤ m)
     {t : Real} (ht : t ∈ Set.Icc 0 B.T) (htpos : 0 < t) (x : M)
     (d : Real)
@@ -1113,7 +1115,7 @@ private theorem cutLevel_le
             B.w (i + 1) t x +
           cutErrCoeff i * cut.err n * t ^ i * cut.chi n t x ^ i *
             B.w i t x) := by
-  let support : ShiCutoffLowerSupportAt
+  let support : ParabolicCutoffLowerSupportAt
       (I := I) G B.T (cut.err n) (cut.chi n) t x :=
     { phi := cut.chi n
       eq_at := rfl
@@ -1136,7 +1138,7 @@ private theorem GfunSupport_parabolic_le
     {m : Nat} (hm : 1 ≤ m)
     (hgrad : TowerNormGradUpTo (I := I) B m)
     {eps t : Real} {chi : Real → M → Real} {x : M}
-    (support : ShiCutoffLowerSupportAt (I := I) G B.T eps chi t x)
+    (support : ParabolicCutoffLowerSupportAt (I := I) G B.T eps chi t x)
     (ht : t ∈ Set.Icc 0 B.T) (htpos : 0 < t)
     (hchi : chi t x ∈ Set.Icc (0 : Real) 1) (heps : 0 ≤ eps)
     (hIH : ∀ j, j < m →
@@ -1350,7 +1352,7 @@ private theorem GfunSupport_parabolic_le
     have him : i < m := Finset.mem_range.mp hi
     have hGi : BernsteinTower.Gcoef (I := I) B m i =
         beta * towerFactCoeff m i := by
-      rw [BernsteinTower.Gcoef, if_neg (by omega : ¬ i = m), hbeta, hC]
+      rw [BernsteinTower.Gcoef, ite_eq_right (by omega : ¬ i = m), hbeta, hC]
     have hR := BernsteinTower.tpow_mul_reactionSum_le (I := I) B i htpos
       (fun j hj ↦ hIH j (lt_of_le_of_lt hj him))
     rw [← hC] at hR
@@ -1485,7 +1487,7 @@ omit [NeZero (Module.finrank Real E)] [CompleteSpace E]
 theorem GfunCut_parabolic_le
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     {m n : Nat} (hm : 1 ≤ m)
     (hgrad : TowerNormGradUpTo (I := I) B m)
     {t : Real} (ht : t ∈ Set.Icc 0 B.T) (htpos : 0 < t) (x : M)
@@ -1501,7 +1503,7 @@ theorem GfunCut_parabolic_le
               towerFactCoeff m i *
                 towerBarGood B.c (towerConst B.c B.α) i) * B.K ^ 3 +
         9 * cut.err n * BernsteinTower.Gcoef (I := I) B m 0 * B.K ^ 2 := by
-  let support : ShiCutoffLowerSupportAt
+  let support : ParabolicCutoffLowerSupportAt
       (I := I) G B.T (cut.err n) (cut.chi n) t x :=
     { phi := cut.chi n
       eq_at := rfl
@@ -1526,7 +1528,7 @@ omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
 private theorem GfunCut_time_diff
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     (m n : Nat) {t : Real} (ht : t ∈ Set.Icc 0 B.T) (htpos : 0 < t)
     (x : M) :
     DifferentiableWithinAt Real
@@ -1567,7 +1569,7 @@ omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M] [T
 private theorem GfunCut_space_diff
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     (m n : Nat) {t : Real} (ht : t ∈ Set.Icc 0 B.T) (htpos : 0 < t)
     (x : M) :
     MDifferentiableAt I 𝓘(Real, Real)
@@ -1585,10 +1587,13 @@ private theorem GfunCut_space_diff
     intro i _
     simp only [c, f]
     ring]
-  exact mdifferentiableAt_finset_sum_smul (I := I)
-    (Finset.range (m + 1)) f c x (fun i _ ↦ by
-      exact ((cut.space_diff (n := n) ht x).pow (i + 1)).mul
-        (B.spatial_differentiable i t ht htpos x))
+  rw [show (fun y : M => ∑ i ∈ Finset.range (m + 1), c i * f i y) =
+      ∑ i ∈ Finset.range (m + 1), c i • f i by
+    funext y
+    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]]
+  exact MDifferentiableAt.sum (fun i _ =>
+    (((cut.space_diff (n := n) ht x).pow (i + 1)).mul
+      (B.spatial_differentiable i t ht htpos x)).const_smul (c i))
 
 namespace BernsteinTower
 
@@ -1597,7 +1602,7 @@ omit [NeZero (Module.finrank Real E)] in
 theorem estimate_cutoff_at
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     (m : Nat)
     (hgrad : TowerNormGradUpTo (I := I) B m) :
     ∀ t : Real, t ∈ Set.Icc 0 B.T → 0 < t → ∀ x : M,
@@ -1755,8 +1760,13 @@ theorem estimate_cutoff_at
             intro i _
             simp only [c, f]
             ring]
-          exact mdiffAt_gradientFun_finset_sum_smul (I := I)
-            (Finset.range (m + 1)) G s f c y hf hgradf
+          refine mdifferentiableAt_gradientFun_finset_sum (G.metric s)
+            (Finset.range (m + 1)) (fun i z => c i * f i z) y ?_ ?_
+          · intro i hi
+            exact Filter.Eventually.of_forall fun z => (hf i hi z).const_smul (c i)
+          · intro i hi
+            exact mdifferentiableAt_gradientFun_const_mul (G.metric s) (c i)
+              (Filter.Eventually.of_forall (hf i hi)) (hgradf i hi)
         have hFcont : ContinuousOn (fun p : Real × M ↦ F p.1 p.2)
             (Set.Icc 0 B.T ×ˢ cut.support n) := by
           simpa only [F] using
@@ -1779,7 +1789,7 @@ theorem estimate_cutoff_at
               simp at h
           have hGc0 : BernsteinTower.Gcoef (I := I) B m 0 =
               beta * (Nat.factorial (m - 1) : Real) := by
-            rw [BernsteinTower.Gcoef, if_neg (by omega : ¬ (0 : Nat) = m),
+            rw [BernsteinTower.Gcoef, ite_eq_right (by omega : ¬ (0 : Nat) = m),
               towerFactCoeff]
             rw [Nat.factorial_zero, Nat.cast_one, div_one, ← hC, ← hbeta]
           have hchi := cut.range n 0 y h0mem
@@ -1894,10 +1904,11 @@ theorem estimate_cutoff_at
                 bBar n - parabolicOperatorWithDrift (I := I) G B.T
                   (fun _ z ↦ (0 : TangentSpace I z)) F s y := by
             simpa only [w] using
-              parabolicOperatorWithDrift_affine_sub (I := I) G B.T
+              parabolic_affine_sub_nhds (I := I) (G := G) B.T
                 (fun _ z ↦ (0 : TangentSpace I z)) F aBar (bBar n) s y
                 huniq (hFtime s hs hspos y)
-                (fun z ↦ hFspace s hs hspos z) (hFgrad s hs hspos y)
+                (Filter.Eventually.of_forall (fun z ↦ hFspace s hs hspos z))
+                (hFgrad s hs hspos y)
           have hsub := GfunCut_parabolic_le (I := I) B cut hmpos
             hgrad hs hspos y
             (fun j hj ↦ by
@@ -1983,7 +1994,7 @@ theorem estimate_barrier_at
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
     (hcut : ∀ O : M,
-      Nonempty (ShiBarrierCutoffData (I := I) G B.T O))
+      Nonempty (ParabolicBarrierCutoffSequence (I := I) G B.T O))
     (m : Nat)
     (hgrad : TowerNormGradUpTo (I := I) B m) :
     ∀ t : Real, t ∈ Set.Icc 0 B.T → 0 < t → ∀ x : M,
@@ -2034,7 +2045,7 @@ theorem estimate_barrier_at
             mul_le_mul_of_nonneg_right (hs.2.trans B.time_le_scale_div_curvatureBound) (le_of_lt B.curvatureBound_pos)
           _ = B.α := div_mul_cancel₀ B.α (ne_of_gt B.curvatureBound_pos)
       have hbound_cut : ∀ {O : M}
-          (cut : ShiBarrierCutoffData (I := I) G B.T O) (n : Nat),
+          (cut : ParabolicBarrierCutoffSequence (I := I) G B.T O) (n : Nat),
           2 * cut.err n * B.T * cutErrCoeff m ≤ 1 →
           ∀ s : Real, s ∈ Set.Icc 0 B.T → ∀ y : M,
             GfunLocal (I := I) B (cut.chi n) m s y ≤
@@ -2086,7 +2097,7 @@ theorem estimate_barrier_at
             · simp
           have hGc0 : BernsteinTower.Gcoef (I := I) B m 0 =
               beta * (Nat.factorial (m - 1) : Real) := by
-            rw [BernsteinTower.Gcoef, if_neg (by omega : ¬ (0 : Nat) = m),
+            rw [BernsteinTower.Gcoef, ite_eq_right (by omega : ¬ (0 : Nat) = m),
               towerFactCoeff, Nat.factorial_zero, Nat.cast_one, div_one,
               ← hC, ← hbeta]
           have hchi := cut.range n 0 y h0mem
@@ -2236,7 +2247,7 @@ theorem estimate_barrier_at
         dsimp only [w, bBar, bErr] at hw
         linarith
       intro t ht htpos x
-      let cut : ShiBarrierCutoffData (I := I) G B.T x :=
+      let cut : ParabolicBarrierCutoffSequence (I := I) G B.T x :=
         Classical.choice (hcut x)
       have hwm_le_G :
           t ^ m * B.w m t x ≤ BernsteinTower.Gfun (I := I) B m t x := by
@@ -2314,7 +2325,7 @@ omit [NeZero (Module.finrank Real E)] in
 theorem estimate_of_cutoff
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     (B : BernsteinTower (I := I) G)
-    (cut : ShiCutoffData (I := I) G B.T)
+    (cut : ParabolicCutoffSequence (I := I) G B.T)
     (hgrad : TowerNormGradOn (I := I) B) :
     ∀ m : Nat, ∀ t : Real, t ∈ Set.Icc 0 B.T → 0 < t → ∀ x : M,
       t ^ m * B.w m t x ≤ (towerConst B.c B.α m) ^ 2 * B.K ^ 2 := by

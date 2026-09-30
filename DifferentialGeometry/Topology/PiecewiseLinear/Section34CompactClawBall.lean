@@ -148,7 +148,7 @@ theorem Section34CompactCutFrame.exists_vertexIndex_path
   have hwspec : ∀ i ≤ n, (w i).1 = {L (c i)} := fun i hi => by
     change (if h : i ≤ n then Classical.choose (hw i h)
       else Classical.choose (hw 0 (Nat.zero_le n))).1 = _
-    rw [dif_pos hi]
+    rw [dite_eq_left hi]
     exact Classical.choose_spec (hw i hi)
   have hinj : ∀ i ≤ n, ∀ j ≤ n, c i = c j → i = j := fun i hi j hj h =>
     hmono.injOn (show i ∈ Iic n from hi) (show j ∈ Iic n from hj) h
@@ -161,7 +161,7 @@ theorem Section34CompactCutFrame.exists_vertexIndex_path
     if h : i < n then Classical.choose (he i h) else Classical.choose (he 0 hn)
   have hespec : ∀ i < n, (e i).1 = {L (c i), L (c (i + 1))} := fun i hi => by
     change (if h : i < n then Classical.choose (he i h) else Classical.choose (he 0 hn)).1 = _
-    rw [dif_pos hi]
+    rw [dite_eq_left hi]
     exact Classical.choose_spec (he i hi)
   refine ⟨n, w, e, hn, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · rw [hwspec 0 (Nat.zero_le n), hc0, AffineMap.lineMap_apply_zero]

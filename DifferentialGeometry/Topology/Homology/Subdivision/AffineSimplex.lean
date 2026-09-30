@@ -1,5 +1,6 @@
 import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
 import Mathlib.Analysis.Normed.Module.Basic
+import Mathlib.Analysis.Convex.Combination
 
 set_option autoImplicit false
 
@@ -15,47 +16,47 @@ variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
 def affineSimplex {n : ℕ} (v : Fin (n + 1) → E) :
-    C(stdSimplex ℝ (Fin (n + 1)), E) where
-  toFun x := ∑ i, x i • v i
+    C(Convexity.StdSimplex ℝ (Fin (n + 1)), E) where
+  toFun x := ∑ i, x.weights i • v i
   continuous_toFun := continuous_finsetSum _ (fun i _ ↦
-    ((continuous_apply i).comp continuous_subtype_val).smul continuous_const)
+    (Convexity.StdSimplex.continuous_weights_apply ℝ i).smul continuous_const)
 
 
 theorem affineSimplex_apply {n : ℕ} (v : Fin (n + 1) → E)
-    (x : stdSimplex ℝ (Fin (n + 1))) : affineSimplex v x = ∑ i, x i • v i := rfl
+    (x : Convexity.StdSimplex ℝ (Fin (n + 1))) : affineSimplex v x = ∑ i, x.weights i • v i := rfl
 
 
 @[simp]
 theorem affineSimplex_vertex {n : ℕ} (v : Fin (n + 1) → E) (i : Fin (n + 1)) :
-    affineSimplex v (stdSimplex.vertex i) = v i := by
-  simp [affineSimplex, Pi.single_apply]
+    affineSimplex v (Convexity.StdSimplex.single i) = v i := by
+  change ∑ j, (Finsupp.single i (1 : ℝ)) j • v j = v i
+  rw [← Finsupp.sum_fintype (Finsupp.single i (1 : ℝ))
+    (fun j a => a • v j) (fun _ => zero_smul _ _), Finsupp.sum_single_index]
+  · exact one_smul ℝ _
+  · exact zero_smul ℝ _
 
 theorem affineSimplex_comp_map {n m : ℕ} (v : Fin (n + 1) → E)
     (f : Fin (m + 1) → Fin (n + 1)) :
-    (affineSimplex v).comp ⟨stdSimplex.map f, stdSimplex.continuous_map f⟩ =
+    (affineSimplex v).comp ⟨Convexity.StdSimplex.map f, Convexity.StdSimplex.continuous_map ℝ f⟩ =
       affineSimplex (v ∘ f) := by
   ext x
-  change ∑ j, (FunOnFinite.linearMap ℝ ℝ f x.val) j • v j = ∑ i, x i • v (f i)
-  simp only [FunOnFinite.linearMap_apply_apply, Finset.sum_smul]
-  calc
-    _ = ∑ j, ∑ i ∈ Finset.univ with f i = j, x i • v (f i) := by
-      apply Finset.sum_congr rfl
-      intro j _
-      apply Finset.sum_congr rfl
-      intro i hi
-      rw [(Finset.mem_filter.mp hi).2]
-      rfl
-    _ = _ := Finset.sum_fiberwise Finset.univ f _
+  change ∑ j, (x.weights.mapDomain f) j • v j = ∑ i, x.weights i • v (f i)
+  rw [← Finsupp.sum_fintype (x.weights.mapDomain f)
+    (fun j a => a • v j) (fun _ => zero_smul _ _),
+    ← Finsupp.sum_fintype x.weights (fun i a => a • v (f i)) (fun _ => zero_smul _ _)]
+  exact Finsupp.sum_mapDomain_index (fun _ => zero_smul _ _)
+    (fun _ _ _ => add_smul _ _ _)
+
 
 
 theorem range_affineSimplex_subset {n : ℕ} (v : Fin (n + 1) → E) {s : Set E}
     (hs : Convex ℝ s) (hv : ∀ i, v i ∈ s) : Set.range (affineSimplex v) ⊆ s := by
   rintro _ ⟨x, rfl⟩
-  exact hs.sum_mem (fun i _ ↦ x.property.1 i) x.property.2 (fun i _ ↦ hv i)
+  exact hs.sum_mem (fun i _ ↦ x.weights_nonneg i) x.total_of_fintype (fun i _ ↦ hv i)
 
 
 def affineSimplexIn {s : Set E} (hs : Convex ℝ s) {n : ℕ} (v : Fin (n + 1) → s) :
-    C(stdSimplex ℝ (Fin (n + 1)), s) :=
+    C(Convexity.StdSimplex ℝ (Fin (n + 1)), s) :=
   ⟨fun x ↦ ⟨affineSimplex (fun i ↦ (v i : E)) x,
       range_affineSimplex_subset _ hs (fun i ↦ (v i).property) ⟨x, rfl⟩⟩,
     (affineSimplex (fun i ↦ (v i : E))).continuous.subtype_mk _⟩
@@ -68,7 +69,7 @@ def affineSingularSimplex {n : ℕ} (v : Fin (n + 1) → E) :
 
 def singularSimplexVertices {n : ℕ} (σ : TopCat.toSSet.obj (TopCat.of E) _⦋n⦌) :
     Fin (n + 1) → E :=
-  fun i ↦ (TopCat.of E).toSSetObjEquiv (op ⦋n⦌) σ (stdSimplex.vertex i)
+  fun i ↦ (TopCat.of E).toSSetObjEquiv (op ⦋n⦌) σ (Convexity.StdSimplex.single i)
 
 
 @[simp]
@@ -84,8 +85,8 @@ theorem singularSimplexVertices_map {n m : ℕ} (f : ⦋m⦌ ⟶ ⦋n⦌)
       singularSimplexVertices σ ∘ f := by
   funext i
   change (TopCat.of E).toSSetObjEquiv (op ⦋n⦌) σ
-      (stdSimplex.map f (stdSimplex.vertex i)) = _
-  rw [stdSimplex.map_vertex]
+      (Convexity.StdSimplex.map f (Convexity.StdSimplex.single i)) = _
+  rw [Convexity.StdSimplex.map_single]
   rfl
 
 omit [NormedSpace ℝ E] in
@@ -102,7 +103,7 @@ theorem map_affineSingularSimplex {n m : ℕ} (f : ⦋m⦌ ⟶ ⦋n⦌) (v : Fin
       affineSingularSimplex (v ∘ f) := by
   apply ((TopCat.of E).toSSetObjEquiv (op ⦋m⦌)).injective
   change (affineSimplex v).comp
-    ⟨stdSimplex.map f, stdSimplex.continuous_map f⟩ = affineSimplex (v ∘ f)
+    ⟨Convexity.StdSimplex.map f, Convexity.StdSimplex.continuous_map ℝ f⟩ = affineSimplex (v ∘ f)
   exact affineSimplex_comp_map v f
 
 def affineStraightening : TopCat.toSSet.obj (TopCat.of E) ⟶ TopCat.toSSet.obj (TopCat.of E) where
@@ -129,7 +130,7 @@ theorem affineSingularSimplex_vertices_zero (σ : TopCat.toSSet.obj (TopCat.of E
     affineSingularSimplex (singularSimplexVertices σ) = σ := by
   apply ((TopCat.of E).toSSetObjEquiv (op ⦋0⦌)).injective
   ext x
-  obtain rfl := Subsingleton.elim x (stdSimplex.vertex (0 : Fin 1))
+  obtain rfl := Subsingleton.elim x (Convexity.StdSimplex.single (0 : Fin 1))
   exact affineSimplex_vertex _ 0
 
 
@@ -139,7 +140,7 @@ theorem δ_affineSingularSimplex {n : ℕ} (v : Fin (n + 2) → E) (i : Fin (n +
       affineSingularSimplex (v ∘ i.succAbove) := by
   apply ((TopCat.of E).toSSetObjEquiv (op ⦋n⦌)).injective
   change (affineSimplex v).comp
-    ⟨stdSimplex.map i.succAbove, stdSimplex.continuous_map i.succAbove⟩ =
+    ⟨Convexity.StdSimplex.map i.succAbove, Convexity.StdSimplex.continuous_map ℝ i.succAbove⟩ =
       affineSimplex (v ∘ i.succAbove)
   exact affineSimplex_comp_map v i.succAbove
 

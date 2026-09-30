@@ -229,11 +229,11 @@ theorem tensorChartComponentRaw_tensorBundleSectionOfChartComponents
   rw [Finset.sum_congr rfl (fun Q _ => hterm Q)]
   rw [Finset.sum_eq_single P]
   · rw [show ((P.1, P.2) : TensorCompIdx (E := E) r s) = P from Prod.ext rfl rfl]
-    rw [if_pos rfl, mul_one]
+    rw [ite_eq_left rfl, mul_one]
     exact chartPushedRaw_chartTestPullback_eqOn (I := I) (M := M) α (u P) hy
   · intro Q _ hne
     rw [show ((P.1, P.2) : TensorCompIdx (E := E) r s) = P from Prod.ext rfl rfl]
-    rw [if_neg (fun h => hne h.symm), mul_zero]
+    rw [ite_eq_right (fun h => hne h.symm), mul_zero]
   · intro hP
     exact absurd (Finset.mem_univ P) hP
 

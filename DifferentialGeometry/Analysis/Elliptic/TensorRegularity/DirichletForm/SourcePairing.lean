@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.Defs
+
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_add_right
+  tensorInnerPointwise_zero_right)
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -381,9 +384,9 @@ private lemma tensorInnerPointwise_F_rotatedSummand_chart
     intro P
     rw [Finset.sum_eq_single Q]
     · rw [show ((Q.1, Q.2) : CompIdx E r s) = Q from Prod.ext rfl rfl,
-        if_pos rfl, mul_one]
+        ite_eq_left rfl, mul_one]
     · intro Q' _ hne
-      rw [if_neg (fun h => hne (Prod.ext (congrArg Prod.fst h)
+      rw [ite_eq_right (fun h => hne (Prod.ext (congrArg Prod.fst h)
         (congrArg Prod.snd h))), mul_zero, mul_zero, mul_zero]
     · intro hQ
       exact absurd (Finset.mem_univ Q) hQ

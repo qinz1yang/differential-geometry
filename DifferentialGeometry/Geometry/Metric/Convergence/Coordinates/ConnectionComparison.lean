@@ -141,7 +141,7 @@ theorem akActTerm_eq {q : ℕ} (A : (Fin (2 + 1) → Idx) → Real)
       · have hjl : Fin.castSucc j' ≠ Fin.last q := (Fin.castSucc_lt_last j').ne
         rw [Equiv.swap_apply_of_ne_of_ne hjs hjl, Fin.snoc_castSucc,
           show n (akSlotEquiv s (Fin.natAdd 2 j')) = n ((Fin.castSucc j').succ) from by
-            rw [akSlotEquiv_natAdd, if_neg hjs]]
+            rw [akSlotEquiv_natAdd, ite_eq_right hjs]]
         rfl
       · rw [Equiv.swap_apply_right]
         have hs : s ≠ Fin.last q := fun h => hjs h.symm
@@ -149,7 +149,7 @@ theorem akActTerm_eq {q : ℕ} (A : (Fin (2 + 1) → Idx) → Real)
         · rw [Fin.snoc_castSucc,
             show n (akSlotEquiv (Fin.castSucc s') (Fin.natAdd 2 s')) =
               n ((Fin.last q).succ) from by
-              rw [akSlotEquiv_natAdd, if_pos rfl]]
+              rw [akSlotEquiv_natAdd, ite_eq_left rfl]]
           rfl
         · exact absurd rfl hs
 

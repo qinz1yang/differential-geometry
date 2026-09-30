@@ -1,47 +1,32 @@
 import DifferentialGeometry.Topology.ThreeManifold.CutCapPoincareStandard
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinction
-import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
-import DifferentialGeometry.Topology.ThreeManifold.CutCapGluing
-import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 
 noncomputable section
 
-open Manifold
-open DifferentialGeometry.Topology
 open scoped Manifold ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.Surgery
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.PoincareControlledExtinction
 
 universe u
 
-namespace PoincareControlledExtinction
-
-variable {M : ClosedOrientedManifold.{u} 3}
+variable {M : DifferentialGeometry.Topology.ClosedOrientedManifold.{u} 3}
   {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
 
-theorem isPoincareStandard [ConnectedSpace M.Carrier] (W : PoincareControlledExtinction M g)
-    (hsum : ∀ i : Fin W.history.eventCount,
-      (W.history.cutCapTrace.transition i).componentConnectedSumDecomposition)
-    (hsumClosed : poincareStandardSumClosed.{u}) :
-    isPoincareStandard M.Carrier :=
-  W.history.cutCapTrace.isPoincareStandard_of_initialIdentification
-    (fun i => (W.history.cutCapTrace.transition i).localReconstruction_of_incidenceGluing
-      (fun C => FiniteCutCapTrace.cutIncidenceGraph_connected _ i C) (hsum i))
-    W.controlled (W.history.extinct_trace W.extinct) hsumClosed M W.initial.cutCapIdentification
-
-end PoincareControlledExtinction
-
-
-namespace PoincareControlledExtinction
-variable {M : ClosedOrientedManifold.{u} 3}
-  {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
-
-theorem isPoincareStandard_of_controlledExtinction [ConnectedSpace M.Carrier]
+theorem isPoincareStandard [ConnectedSpace M.Carrier]
     (W : PoincareControlledExtinction M g) :
     DifferentialGeometry.Topology.isPoincareStandard M.Carrier :=
   W.history.cutCapTrace.isPoincareStandard_of_initialIdentification_of_poincareControlled_extinct
     W.controlled_extinct_trace.1 W.controlled_extinct_trace.2 M W.initialCutCapIdentification
 
-end PoincareControlledExtinction
+theorem nonempty_diffeomorph_sphere
+    {M : DifferentialGeometry.Topology.ClosedOrientedManifold.{u} 3}
+    {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
+    (W : PoincareControlledExtinction M g) [SimplyConnectedSpace M.Carrier] :
+    Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ Metric.sphere (0 : EuclideanSpace ℝ (Fin 4)) 1) := by
+  obtain ⟨f⟩ :=
+    DifferentialGeometry.Topology.exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
+      W.isPoincareStandard
+  exact ⟨f.trans DifferentialGeometry.Topology.standardThreeSphereLiftDiffeomorph.symm⟩
 
-end DifferentialGeometry.PDE.RicciFlow.Surgery
+end DifferentialGeometry.PDE.RicciFlow.Surgery.PoincareControlledExtinction

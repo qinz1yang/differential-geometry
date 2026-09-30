@@ -1,3 +1,4 @@
+import DifferentialGeometry.Bundle.TangentChart
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
@@ -15,6 +16,9 @@ noncomputable section
 
 open Set Filter Topology Metric Bundle Manifold Function
 open scoped Manifold Topology ContDiff
+
+open TangentBundle
+  (chartFiberCoord chartFiberCoord_def extChartAt_tangent_apply_snd extChartAt_tangent_zero_apply)
 
 namespace DifferentialGeometry
 namespace Geometry

@@ -67,8 +67,11 @@ theorem edist_comp_le_lintegral_of_metric_mfderiv_bound
     (hγt.mdifferentiableAt one_ne_zero)
   have hder : deriv (f ∘ γ) t =
       (mfderiv I 𝓘(ℝ, F) f (γ t)) (mfderiv 𝓘(ℝ) I γ t (1 : ℝ)) := by
-    rw [← fderiv_apply_one_eq_deriv, ← mfderiv_eq_fderiv, hD]
-    rfl
+    rw [mfderiv_eq_fderiv] at hD
+    have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (f (γ t))
+      (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm (1 : ℝ)))) hD
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply, fderiv_apply_one_eq_deriv] using! hv
   rw [hder]
   have hb := ENNReal.ofReal_le_ofReal
     (hbound t ht (mfderiv 𝓘(ℝ) I γ t (1 : ℝ)))

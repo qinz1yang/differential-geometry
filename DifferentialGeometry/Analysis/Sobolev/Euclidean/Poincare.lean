@@ -57,7 +57,7 @@ theorem exists_poincare_constant
     have hnorm : eLpNorm (smoothGradNorm (φ n)) 2 (volume.restrict Ω) =
         eLpNorm (hφw n).weakGrad 2 (volume.restrict Ω) := by
       change eLpNorm (fun x => ‖(hφw n).weakGrad x‖) 2 (volume.restrict Ω) = _
-      exact eLpNorm_norm _
+      exact eLpNorm_norm _ (hφw n).weakGrad_memLp.aestronglyMeasurable
     rw [hnorm, ENNReal.toReal_mul] at hreal
     simpa only [smoothFunToLp, gradLpOfWitness, Lp.norm_toLp] using hreal
   rw [hGeq] at hG

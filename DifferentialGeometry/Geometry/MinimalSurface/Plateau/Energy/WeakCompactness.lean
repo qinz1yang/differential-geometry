@@ -67,7 +67,7 @@ theorem exists_embedded_disk_weak_memW1p_subseq
   have hfun (n : ℕ) (x : EuclideanSpace ℝ (Fin 2)) : ‖f n x‖ ≤ D :=
     hD _ (mem_range_self (diskExtension (u n) (e x)))
   have hf (n : ℕ) : LipschitzWith (C * K n) (f n) := by
-    simpa only [mul_one] using ((hC (u n) (K n) (hK n)).1.comp e.isometry.lipschitz)
+    simpa only [mul_one] using ((hC (u n) (K n) (hK n)).1.comp e.isometry.lipschitzWith)
   have hfi (n : ℕ) : IntegrableOn (fun x => ‖fderiv ℝ (f n) x‖ ^ 2)
       (Metric.closedBall 0 1) := by
     apply (integrableOn_const (C := ((C * K n : ℝ≥0) : ℝ) ^ 2)

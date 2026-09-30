@@ -54,11 +54,11 @@ theorem not_subsingleton_fundamentalGroup_of_not_subsingleton_deckGroup
   fun h' => h (subsingleton_deckGroup_of_subsingleton_fundamentalGroup D x₀ h')
 
 theorem exists_diffeomorph_sphereThree_of_subsingleton_deckGroup
-    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     (D : RoundSphereQuotient (EuclideanSpace ℝ (Fin 4)) 3) [Subsingleton D.Γ]
     (e : Diffeomorph (𝓡 3) I3 D.Q M ∞) :
     Nonempty (Diffeomorph (𝓡 3) I3 (Sphere 3) M ∞) :=
-  ⟨(RoundSphereQuotient.sphereDiffeomorph_of_subsingleton_deckGroup D).trans e⟩
+  ⟨(RoundSphereQuotient.sphereDiffeomorphOfSubsingletonDeckGroup D).trans e⟩
 
 theorem subsingleton_fundamentalGroup_sphereThree (x₀ : Sphere 3) :
     Subsingleton (FundamentalGroup (Sphere 3) x₀) := by

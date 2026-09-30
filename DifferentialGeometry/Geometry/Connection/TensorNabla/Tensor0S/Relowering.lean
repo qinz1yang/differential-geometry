@@ -13,6 +13,9 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.TensorMetric (reLower reLowerPair reLower_eval reLowerPair_eval
+  reLowerPermutationWithTwoInputs reLowerPermutationWithTwoInputs_first_block
+  reLowerPermutationWithTwoInputs_tail_zero reLowerPermutationWithTwoInputs_tail_one)
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]

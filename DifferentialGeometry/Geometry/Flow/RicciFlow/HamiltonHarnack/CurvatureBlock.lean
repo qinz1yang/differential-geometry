@@ -178,7 +178,7 @@ theorem inner_comm (g : SmoothRiemannianMetric I M) {x : M}
     (U V : HamiltonHarnackTwoForm (TangentSpace I x)) :
     inner g U V = inner g V U := by
   unfold inner rawInner
-  rw [_root_.Tensor0SBundle.inner0S_comm]
+  rw [_root_.DifferentialGeometry.Tensor0SBundle.inner0S_comm]
 
 noncomputable def metricData (g : SmoothRiemannianMetric I M) (x : M) :
     MetricFiberData (HamiltonHarnackTwoForm (TangentSpace I x)) := by
@@ -194,7 +194,7 @@ noncomputable def metricData (g : SmoothRiemannianMetric I M) (x : M) :
             intro c V
             change inner g U (c • V) = c • inner g U V
             simp only [inner, rawInner, toTensor0S_smul,
-              _root_.Tensor0SBundle.inner0S_smul_right, smul_eq_mul]
+              _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_right, smul_eq_mul]
             ring }
       map_add' := by
         intro U V
@@ -207,7 +207,7 @@ noncomputable def metricData (g : SmoothRiemannianMetric I M) (x : M) :
         ext V
         change inner g (c • U) V = c • inner g U V
         simp only [inner, rawInner, toTensor0S_smul,
-          _root_.Tensor0SBundle.inner0S_smul_left, smul_eq_mul]
+          _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left, smul_eq_mul]
         ring }
   refine MetricFiberData.ofFlat flat ?_ ?_ ?_
   · intro U V hUV
@@ -296,7 +296,7 @@ theorem curvatureBlock_eq_sum {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
           (U (vec2 (I := I) (basis (slots 0)) (basis (slots 1))) *
             V (vec2 (I := I) (basis (slots 2)) (basis (slots 3)))) := by
   rw [curvatureBlock,
-    Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 4 basis hinv]
+    DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 4 basis hinv]
   apply Finset.sum_congr rfl
   intro slots _
   rw [component0S_apply, component0S_apply,
@@ -390,7 +390,7 @@ theorem curvatureBlock_comm {x : M}
     curvatureBlock g A U V = curvatureBlock g A V U := by
   obtain ⟨basis, hON⟩ := exists_orthonormal_basis (I := I) g x
   have hinv := metricInverseInBasis_of_orthonormal (I := I) g basis hON
-  have h := Tensor0SBundle.inner0S_domDomCongr (I := I) g x basis hinv
+  have h := DifferentialGeometry.Tensor0SBundle.inner0S_domDomCongr (I := I) g x basis hinv
     (finAddFlip (m := 2) (n := 2))
     ((A : Tensor0SSpace 4 I x).domDomCongr curvatureSlotSwap)
     (U.toTensor0S.product V.toTensor0S)
@@ -463,7 +463,7 @@ private theorem curvatureBlock_smul_right {x : M}
     (c : Real) (U V : HamiltonHarnackTwoForm (TangentSpace I x)) :
     curvatureBlock g A U (c • V) = c * curvatureBlock g A U V := by
   unfold curvatureBlock
-  rw [product_smul_right, _root_.Tensor0SBundle.inner0S_smul_right]
+  rw [product_smul_right, _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_right]
 
 private theorem curvatureBlock_smul_left {x : M}
     (g : SmoothRiemannianMetric I M)
@@ -471,7 +471,7 @@ private theorem curvatureBlock_smul_left {x : M}
     (c : Real) (U V : HamiltonHarnackTwoForm (TangentSpace I x)) :
     curvatureBlock g A (c • U) V = c * curvatureBlock g A U V := by
   unfold curvatureBlock
-  rw [product_smul_left, _root_.Tensor0SBundle.inner0S_smul_right]
+  rw [product_smul_left, _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_right]
 
 noncomputable def curvatureBlockDual {x : M}
     (g : SmoothRiemannianMetric I M)

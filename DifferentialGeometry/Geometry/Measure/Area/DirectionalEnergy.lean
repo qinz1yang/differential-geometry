@@ -56,8 +56,13 @@ private theorem metric_mfderiv_apply_eq_chart (g : SmoothRiemannianMetric 𝓘(�
     have hi := mdifferentiableAt_atlas_symm (I := 𝓘(ℝ, E))
       (ChartedSpace.chart_mem_atlas p) ((chartAt E p).map_source hp)
     have heq := chart_reconstruction_eventuallyEq p hu hp
+    have hderiv : mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E)
+        ((chartAt E p).symm ∘ ((chartAt E p) ∘ u)) z =
+        mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E) u z := by
+      rw [heq.mfderiv_eq]
+      rfl
     unfold chartDirectionalEnergy
-    conv_lhs => rw [← heq.mfderiv_eq, ← heq.eq_of_nhds]
+    conv_lhs => rw [← hderiv, ← heq.eq_of_nhds]
     rw [mfderiv_comp z hi (mdifferentiableAt_iff_differentiableAt.mpr hc), mfderiv_eq_fderiv]
     rfl
   · have hc : ¬ DifferentiableAt ℝ ((chartAt E p) ∘ u) z :=

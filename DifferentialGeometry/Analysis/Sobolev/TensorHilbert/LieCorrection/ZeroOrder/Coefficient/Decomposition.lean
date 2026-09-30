@@ -8,6 +8,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.Interio
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.SlotFree
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTrace
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -23,13 +26,7 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckLieEndoTermField deTurckLieEndoTermField_toSection deTurckLieCovariantDerivativeInsertionFib
-    reindexCoefficientInputSlots reindexCoefficientInputSlots_toSection reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply
-    domDomCongrFibRank domDomCongrFibRank_apply tensor0SProdKappaFib
-    tensor0SProdKappaFib_apply unitModel unitTensor
-    metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_contMDiff
-    metricConnectionDifferenceLoweredFib_toModel)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoTermField deTurckLieEndoTermField_toSection deTurckLieCovariantDerivativeInsertionFib reindexCoefficientInputSlots reindexCoefficientInputSlots_toSection reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply unitModel unitTensor metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_contMDiff metricConnectionDifferenceLoweredFib_toModel)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPath convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem
     Icc_subset_metricPerturbationPathDomain)
@@ -159,9 +156,9 @@ theorem reindexedCometricDoubleTrace_eq_pureTrace
 
 private noncomputable def lieCorrectionZeroRiemannLiftFib (g₀ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x :=
-  (domDomCongrFibRank (I := I) 4 lieCorrectionZeroRiemPerm2 x).comp
+  (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 4 lieCorrectionZeroRiemPerm2 x).comp
     ((lieCorrectionZeroTraceStep (I := I) g₀ 4 lieCorrectionZeroRiemPerm1 x).comp
-      (tensor0SProdKappaFib (I := I) (p := 2) (q := 4) x
+      (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 4) x
         (lieCorrectionZeroRiemLoweredFib (I := I) g₀ x)))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
@@ -181,16 +178,16 @@ private theorem lieCorrectionZeroRiemannLiftFib_contMDiff (g₀ : SmoothRiemanni
     (fun x => Y x) (fun x => lieCorrectionZeroRiemLoweredFib (I := I) g₀ x)
     Y.contMDiff (lieCorrectionZeroRiemLoweredFib_section_contMDiff (I := I) g₀)
   have htr1 := lieCorrectionZeroTraceStep_section_contMDiff (I := I) g₀ 4 lieCorrectionZeroRiemPerm1
-    (fun x => tensor0SProdKappaFib (I := I) x (lieCorrectionZeroRiemLoweredFib (I := I) g₀ x) (Y x))
+    (fun x => DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x (lieCorrectionZeroRiemLoweredFib (I := I) g₀ x) (Y x))
     hprod
   have hddc := lieCorrectionZero_ddc_section_contMDiff (I := I) (d := 4) lieCorrectionZeroRiemPerm2
     (fun x => lieCorrectionZeroTraceStep (I := I) g₀ 4 lieCorrectionZeroRiemPerm1 x
-      (tensor0SProdKappaFib (I := I) x (lieCorrectionZeroRiemLoweredFib (I := I) g₀ x) (Y x))) htr1
+      (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x (lieCorrectionZeroRiemLoweredFib (I := I) g₀ x) (Y x))) htr1
   refine hddc.congr (fun x => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
     (E := fun z : M => Tensor0SSpace 4 I z) x t) ?_
   rw [lieCorrectionZeroRiemannLiftFib]
-  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, domDomCongrFibRank_apply]
+  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
 
 noncomputable def lieCorrectionZeroRiemannLift (g₀ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 4 where
@@ -221,8 +218,8 @@ private lemma lieCorrectionZeroRiemannLift_sum
             (smoothOrthoFrame (I := I) g x e x) := by
   classical
   set Y : Tensor0SSpace 6 I x :=
-    domDomCongrFibRank (I := I) 6 lieCorrectionZeroRiemPerm1 x
-      (tensor0SProdKappaFib (I := I) (p := 2) (q := 4) x
+    DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 6 lieCorrectionZeroRiemPerm1 x
+      (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 4) x
         (lieCorrectionZeroRiemLoweredFib (I := I) g x) D) with hY_def
   have hYval : ∀ w : Fin 6 → E,
       Tensor0SSpace.toModel Y w =
@@ -234,10 +231,10 @@ private lemma lieCorrectionZeroRiemannLift_sum
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 4)))
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0)) := by
     intro w
-    rw [hY_def, domDomCongrFibRank_apply,
+    rw [hY_def, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply,
       Tensor0SSpace.toModel_ofModel,
       ContinuousMultilinearMap.domDomCongr_apply,
-      tensor0SProdKappaFib_apply,
+      DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply,
       Tensor0SSpace.toModel_ofModel,
       Bundle.continuousMultilinearMap.modelProduct_apply]
     have hDargs :
@@ -262,7 +259,7 @@ private lemma lieCorrectionZeroRiemannLift_sum
       (lieCorrectionZeroRiemannLiftFib (I := I) g x D) v = _
   rw [lieCorrectionZeroRiemannLiftFib, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply,
-    domDomCongrFibRank_apply,
+    DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply,
     Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
   have htop :
@@ -1114,8 +1111,8 @@ private theorem lieCorrectionZeroInsertionDiff_metricPerturbationPath_perOrder_t
 
 private noncomputable def lieCorrectionZeroVectorBundleLiftFib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x :=
-  (domDomCongrFibRank (I := I) 4 lieCorrectionZeroVectorBundleTracePermutation x).comp
-    ((tensor0SProdKappaFib (I := I) (p := 1) (q := 3) x
+  (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 4 lieCorrectionZeroVectorBundleTracePermutation x).comp
+    ((DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 1) (q := 3) x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)).comp
       (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x)))
@@ -1145,7 +1142,7 @@ private theorem lieCorrectionZeroVectorBundleLiftFib_contMDiff (g₀ g₁ : Smoo
     (fun x => metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
     hip (metricConnectionDifferenceLoweredFib_contMDiff (I := I) g₁ g₁ g₀)
   have hddc := lieCorrectionZero_ddc_section_contMDiff (I := I) (d := 4) lieCorrectionZeroVectorBundleTracePermutation
-    (fun x => tensor0SProdKappaFib (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
+    (fun x => DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
       (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) (Y x)))
     hprod
@@ -1153,7 +1150,7 @@ private theorem lieCorrectionZeroVectorBundleLiftFib_contMDiff (g₀ g₁ : Smoo
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
     (E := fun z : M => Tensor0SSpace 4 I z) x t) ?_
   rw [lieCorrectionZeroVectorBundleLiftFib]
-  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, domDomCongrFibRank_apply]
+  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
 
 noncomputable def lieCorrectionZeroVectorBundleLift (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 4 where
@@ -1189,8 +1186,8 @@ theorem lieCorrectionZeroVectorBundle_eq_ccOperatorFieldComp (g₀ g₁ : Smooth
 
 private noncomputable def lieCorrectionZeroVectorBundleMetricConnectionDifferenceTermFiber (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x :=
-  (domDomCongrFibRank (I := I) 4 lieCorrectionZeroVectorBundleTracePermutation x).comp
-    (tensor0SProdKappaFib (I := I) (p := 1) (q := 3) x
+  (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 4 lieCorrectionZeroVectorBundleTracePermutation x).comp
+    (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 1) (q := 3) x
       (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -1209,13 +1206,13 @@ private theorem lieCorrectionZeroVectorBundleMetricConnectionDifferenceTermFiber
     (fun x => Y x) (fun x => metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
     Y.contMDiff (metricConnectionDifferenceLoweredFib_contMDiff (I := I) g₁ g₁ g₀)
   have hddc := lieCorrectionZero_ddc_section_contMDiff (I := I) (d := 4) lieCorrectionZeroVectorBundleTracePermutation
-    (fun x => tensor0SProdKappaFib (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
+    (fun x => DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
       (Y x)) hprod
   refine hddc.congr (fun x => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
     (E := fun z : M => Tensor0SSpace 4 I z) x t) ?_
   rw [lieCorrectionZeroVectorBundleMetricConnectionDifferenceTermFiber]
-  rw [ContinuousLinearMap.comp_apply, domDomCongrFibRank_apply]
+  rw [ContinuousLinearMap.comp_apply, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
 
 noncomputable def lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 1 4 where
@@ -1265,7 +1262,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma vbPK_eq_slotExt (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (B : Tensor0SSpace 1 I x) :
     Tensor0SSpace.toModel
-        (tensor0SProdKappaFib (I := I) (p := 1) (q := 3) x
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 1) (q := 3) x
           (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) B) =
       Tensor0SSpace.toModel
         (slotExtendFib (I := I) (M := M) 0 3 x
@@ -1275,7 +1272,7 @@ private lemma vbPK_eq_slotExt (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
   apply ContinuousMultilinearMap.ext
   intro u
   rw [show (u : Fin 4 → E) = Fin.cons (u 0) (Fin.tail u) from (Fin.cons_self_tail u).symm]
-  rw [tensor0SProdKappaFib_apply, Tensor0SSpace.toModel_ofModel,
+  rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply, Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
   rw [slotExtendFib_apply_eval (I := I) (M := M) 0 3 x
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
@@ -1332,10 +1329,10 @@ private lemma lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_toMode
   intro y d
   rw [show ((show Tensor0SSpace 1 I y →L[ℝ] Tensor0SSpace 4 I y from
       (lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (I := I) (M := M) g₀ g₁).toSection y) d) =
-      domDomCongrFibRank (I := I) 4 lieCorrectionZeroVectorBundleTracePermutation y
-        (tensor0SProdKappaFib (I := I) (p := 1) (q := 3) y
+      DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 4 lieCorrectionZeroVectorBundleTracePermutation y
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 1) (q := 3) y
           (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ y) d) from rfl]
-  rw [domDomCongrFibRank_apply, Tensor0SSpace.toModel_ofModel]
+  rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply, Tensor0SSpace.toModel_ofModel]
   exact congrArg (ContinuousMultilinearMap.domDomCongr lieCorrectionZeroVectorBundleTracePermutation)
     (vbPK_eq_slotExt (I := I) (M := M) g₀ g₁ y d)
 

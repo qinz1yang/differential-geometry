@@ -45,8 +45,8 @@ theorem exists_integral_sq_le_mul_integral_norm_fderiv_sq_of_lipschitz
   have hgrad : ‖DeGiorgi.gradLpOfWitness hw‖ ^ 2 =
       ∫ x in Ω, ‖fderiv ℝ f x‖ ^ 2 := by
     rw [DeGiorgi.gradLpOfWitness, Lp.norm_toLp, hnorm]
-    simpa only [eLpNorm_norm] using
-      (DifferentialGeometry.Analysis.Integration.integral_sq_eq_l2 hdfm.norm).symm
+    rw [← eLpNorm_norm (fderiv ℝ f) hdfm.aestronglyMeasurable]
+    exact (DifferentialGeometry.Analysis.Integration.integral_sq_eq_l2 hdfm.norm).symm
   have hp2 := (sq_le_sq₀ (norm_nonneg (hw.memLp.toLp f))
     (mul_nonneg hC (norm_nonneg (DeGiorgi.gradLpOfWitness hw)))).mpr hp
   rw [mul_pow, hsq, hgrad] at hp2
@@ -86,7 +86,7 @@ theorem exists_integral_sq_le_mul_integral_norm_fderiv_sq_complex_ball_of_lipsch
   refine ⟨C, hC, ?_⟩
   intro f K hf hcompact hsupport
   have hfe : LipschitzWith K (f ∘ e) := by
-    simpa only [mul_one] using hf.comp e.lipschitz
+    simpa only [mul_one] using hf.comp e.lipschitzWith
   have hcompacte : HasCompactSupport (f ∘ e) := hcompact.comp_homeomorph e.toHomeomorph
   have hsupporte : tsupport (f ∘ e) ⊆ ball (0 : EuclideanSpace ℝ (Fin 2)) 1 := by
     rw [← hball]

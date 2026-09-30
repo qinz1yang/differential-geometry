@@ -1,8 +1,14 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotPairing
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.TameEstimates
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.SlotInsertSelfAdjointPairing
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.Divergence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Algebra
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.LowOrderDecomposition
+
+open DifferentialGeometry.TensorMetric (
+  coframeS coframeS_zero_eq_unitZeroSec fiberNormSqComponent riemannianFiberNormSq
+  riemannianFiberNormSq_add_le tensorInnerPointwise tensorInnerPointwise_eq_sum_componentS_mul)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

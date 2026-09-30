@@ -27,7 +27,7 @@ theorem MetricComparisonOn.hasDerivWithinAt_jet
       DifferentiableWithinAt ℝ (fun a => c.jet b a x v) times s) :
     HasDerivWithinAt (fun a => c.jet b a x) (c.jet (b + 1) s x) times s := by
   let basis := Module.finBasis ℝ (TangentSpace I x)
-  apply tensor0S_hasDerivWithinAt_of_components basis
+  apply Tensor0SBundle.tensor0S_hasDerivWithinAt_of_components basis
   intro slots
   change HasDerivWithinAt (fun a => c.jet b a x (fun j => basis (slots j)))
     (c.jet (b + 1) s x (fun j => basis (slots j))) times s

@@ -4,6 +4,12 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Algeb
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.HomFieldActionJets
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SlotExtension.Parallelism
 import DifferentialGeometry.Geometry.Connection.TensorNabla.FiberNorm.SliceBound
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.CovariantTwoTensor.FrameExpansion
+
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply fiberNormSqComponent
+  riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_sum_le_card_mul riemannianFiberNormSq_zero tensor00Scalar
+  tensor00Scalar_apply tensorS_coframe_expansion)
 
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -59,9 +65,9 @@ private lemma exists_orthoFrame_basis (g : SmoothRiemannianMetric I M) (x : M) :
       intro j _
       rw [map_smul, horth k j, smul_eq_mul]
     rw [Finset.sum_congr rfl h_pull] at h_zero
-    rw [Finset.sum_eq_single k (fun j _ hj => by rw [if_neg (Ne.symm hj), mul_zero])
+    rw [Finset.sum_eq_single k (fun j _ hj => by rw [ite_eq_right (Ne.symm hj), mul_zero])
       (fun hk => absurd hk_mem hk)] at h_zero
-    rwa [if_pos rfl, mul_one] at h_zero
+    rwa [ite_eq_left rfl, mul_one] at h_zero
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
       Module.finrank ℝ (TangentSpace I x) := by
     rw [Fintype.card_fin]
@@ -80,7 +86,7 @@ theorem riemannianFiberNormSq_eq_sum_componentSq_of_basis
     riemannianFiberNormSq (I := I) (M := M) g r s x S =
       ∑ K : Fin r → Fin n, ∑ J : Fin s → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g x r s S n e K J) ^ 2 :=
-  DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_eq_sum_component_sq_of_basis
+  DifferentialGeometry.TensorMetric.riemannianFiberNormSq_eq_sum_component_sq_of_basis
     (I := I) (M := M) g r s x S e bse hn hbse horth
 
 alias riemannianFiberNormSq_rs_eq_sum_componentSq_of_basis :=
@@ -149,8 +155,8 @@ private lemma fiberNormSqComponent_slotExtendFib_eq
     rw [Tensor0SSpace.eval_smul, smul_eq_mul, Tensor0SSpace.eval_eq]
     rw [coframeS_apply (I := I) (M := M) g x r e (fun k => K' (Fin.succ k)) u]
     by_cases h : K' 0 = J' 0
-    · rw [if_pos h, if_pos h.symm]
-    · rw [if_neg h, if_neg (fun hc => h hc.symm)]
+    · rw [ite_eq_left h, ite_eq_left h.symm]
+    · rw [ite_eq_right h, ite_eq_right (fun hc => h hc.symm)]
   rw [hcurry, map_smul, Tensor0SSpace.eval_smul, smul_eq_mul]
   congr 1
 
@@ -185,8 +191,8 @@ private lemma riemannianFiberNormSq_slotExtendFib_eq_frame
     intro K' J'
     rw [fiberNormSqComponent_slotExtendFib_eq (I := I) (M := M) g r s x A e horth K' J']
     by_cases h : J' 0 = K' 0
-    · rw [if_pos h]; ring
-    · rw [if_neg h]; ring
+    · rw [ite_eq_left h]; ring
+    · rw [ite_eq_right h]; ring
   rw [Finset.sum_congr rfl (fun K' _ => Finset.sum_congr rfl (fun J' _ => hcompsq K' J'))]
   set comp : (Fin r → Fin n) → (Fin s → Fin n) → ℝ := fun K J =>
     (fiberNormSqComponent (I := I) (M := M) g x r s (show TensorRSSpace r s I x from A) n e K J) ^ 2
@@ -217,7 +223,7 @@ private lemma riemannianFiberNormSq_slotExtendFib_eq_frame
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl (fun J _ => ?_)
       rw [← Finset.sum_mul, Finset.sum_ite_eq' Finset.univ k0 (fun _ => (1 : ℝ)),
-        if_pos (Finset.mem_univ k0), one_mul]]]
+        ite_eq_left (Finset.mem_univ k0), one_mul]]]
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
@@ -1366,7 +1372,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_operatorFieldApplicationLeibnizPsi
               ((iteratedCovGrad (I := I) g (b + (j + 1)) (c + (i + 1)) m Aif).toSection x) ≤
               diagonalGridGrowthFactor (E := E) i * R := by
             rcases lt_or_ge (j + 1) (i + 1) with hlt | hge
-            · rw [hAif_def, if_pos hlt]
+            · rw [hAif_def, ite_eq_left hlt]
               have hcomp : riemannianFiberNormSq (I := I) (M := M) g (b + (j + 1))
                   ((c + (i + 1)) + m) x
                   ((iteratedCovGrad (I := I) g (b + (j + 1)) (c + (i + 1)) m
@@ -1387,7 +1393,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_operatorFieldApplicationLeibnizPsi
               exact hbound
             · have hji' : j = i := by omega
               subst hji'
-              rw [hAif_def, if_neg (by omega : ¬ (j + 1 < j + 1))]
+              rw [hAif_def, ite_eq_right (by omega : ¬ (j + 1 < j + 1))]
               rw [iteratedCovGrad_zero_arg (I := I) (M := M) g (b + (j + 1)) (c + (j + 1)) m]
               rw [show ((0 : SmoothCcTensor g (b + (j + 1)) (c + (j + 1) + m)).toSection x :
                   TensorRSSpace (b + (j + 1)) (c + (j + 1) + m) I x) = 0 from by
@@ -1671,7 +1677,7 @@ private lemma sum_sq_component_slotExtendIterFib_le (g : SmoothRiemannianMetric 
               simp only [mul_ite, ite_mul, one_mul, zero_mul, mul_zero]
               rw [Finset.sum_ite_eq Finset.univ (J 0) (fun p₀ =>
                 V (Fin.cons p₀ P') * cw P' (fun k => J (Fin.succ k)))]
-              rw [if_pos (Finset.mem_univ (J 0))]
+              rw [ite_eq_left (Finset.mem_univ (J 0))]
       calc (∑ J : Fin (c + (w + 1)) → Fin n,
             (∑ P : Fin (b + (w + 1)) → Fin n,
               V P * fiberNormSqComponent (I := I) (M := M) g x (b + (w + 1)) (c + (w + 1))
@@ -1781,7 +1787,7 @@ private lemma operatorFieldApplicationLeibnizPsi_diag_toSection (g : SmoothRiema
           slotExtend (I := I) (M := M) g (b + i) (c + i)
             (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ i i) := by
         rw [operatorFieldApplicationLeibnizPsi_succ_succ_eq (I := I) (M := M) g b c Φ i i]
-        rw [if_neg (by omega : ¬ (i + 1 < i + 1)), zero_add]
+        rw [ite_eq_right (by omega : ¬ (i + 1 < i + 1)), zero_add]
       rw [hdiag]
       rw [show (slotExtendIterFib (I := I) (M := M) g b c x
             (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x) (i + 1)) =

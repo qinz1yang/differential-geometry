@@ -51,9 +51,9 @@ theorem secLower_of_scaled_eigenvalue_lower_bound {a c : ℝ} (ha : 0 < a)
     SecLower g (c * a) U :=
   (secLower_scaleMetric_iff ha g U).mp ((secLower_iff_scaled_eigenvalue_lower_bound ha g U).mpr h)
 
+omit [SigmaCompactSpace M] in
 theorem canonicalAlternative_transport_positive_of_scaled_eigenvalue_lower_bound
-    {P : Type u} [TopologicalSpace P] [ChartedSpace ThreeSpace P] [IsManifold I3 ∞ P]
-    [T2Space P] [SigmaCompactSpace P]
+    {P : Type u} [TopologicalSpace P] [ChartedSpace ThreeSpace P]
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
     {x : M} {t : ℝ} {eps C : ℝ} {U : Set P}
     (data : PositiveComponent (M := P) U) (e : PartialDiffeomorph I3 I3 P M ∞)

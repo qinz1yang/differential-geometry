@@ -11,6 +11,10 @@ import Mathlib.Topology.Algebra.Module.Multilinear.Topology
 import Mathlib.Topology.FiberBundle.Trivialization
 import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
+open DifferentialGeometry.TensorMetric
+  (separableFormAt
+    separableFormAt_apply
+    tensorInnerPointwise)
 
 
 noncomputable section

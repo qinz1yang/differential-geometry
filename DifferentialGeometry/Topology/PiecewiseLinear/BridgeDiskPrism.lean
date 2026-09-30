@@ -16,7 +16,7 @@ local notation "V2" => Fin 3 → ℝ
 theorem IsBridgeDisk.exists_prism_axis
     {C A B : Set E3} {a b : E3} (h : IsBridgeDisk C A B a b) (hC : IsPLBall 3 C) :
     ∃ ρ : V2 × ℝ → E3,
-      IsPLHomeomorphOn ρ (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) C ∧
+      IsPLHomeomorphOn ρ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) C ∧
       ρ '' ({stdCenter 1} ×ˢ Icc (0 : ℝ) 1) = A ∧
       ρ (stdCenter 1, 0) = a ∧ ρ (stdCenter 1, 1) = b := by
   obtain ⟨C₀, B₀, ρ₀, hC₀, hρ₀, hb₀⟩ := exists_isBridgeDisk_prism_axis

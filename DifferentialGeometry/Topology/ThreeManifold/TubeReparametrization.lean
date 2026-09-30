@@ -57,6 +57,10 @@ private theorem unitTubeParameter_injective_mfderiv {t : ℝ} (ht : t ∈ Ioo (-
     ((contMDiff_subtypeVal_Icc (x := (0 : ℝ)) (y := 1) (n := ∞)).mdifferentiableAt (by simp))
     ((unitTubeParameter_contMDiffAt ht).mdifferentiableAt (by simp))
   rw [(unitTubeParameter_val_eventually ht).mfderiv_eq] at hchain
+  replace hchain : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) parameterAffine t =
+      (mfderiv (𝓡∂ 1) 𝓘(ℝ, ℝ) (Subtype.val : Unit → ℝ) (unitTubeParameter t)).comp
+        (mfderiv 𝓘(ℝ, ℝ) (𝓡∂ 1) unitTubeParameter t) :=
+    (ContinuousLinearMap.ext fun _ => rfl).trans hchain
   have hinj : Injective (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) parameterAffine t) :=
     (parameterAffine.mfderivToContinuousLinearEquiv (by simp) t).injective
   rw [hchain] at hinj
@@ -86,7 +90,7 @@ private theorem expandedTubeParameter_injective_mfderiv (t : Unit) :
       parameterAffine.symm ∘ (Subtype.val : Unit → ℝ) from rfl, hchain]
     exact (parameterAffine.symm.mfderivToContinuousLinearEquiv (by simp) t.val).injective.comp
       ((isSmoothEmbedding_subtypeVal_Icc (x := (0 : ℝ)) (y := 1) (n := ∞)).isImmersion.isImmersionAt t
-        |>.injective_mfderiv (by simp))
+        |>.mfderiv_injective (by simp))
   rw [mfderiv_comp t
     ((contMDiff_subtypeVal_Icc (x := (-2 : ℝ)) (y := 2) (n := ∞)).mdifferentiableAt (by simp))
     (expandedTubeParameter_contMDiff.mdifferentiableAt (by simp))] at hi
@@ -141,7 +145,7 @@ private theorem reparametrizedTube_injective_mfderiv (a : T.Index)
   rw [mfderiv_comp p (hk.mdifferentiableAt (by simp))
     ((Ψ.contMDiff.contMDiffAt.comp p hj).mdifferentiableAt (by simp))]
   rw [mfderiv_comp p (Ψ.contMDiff.mdifferentiableAt (by simp)) (hj.mdifferentiableAt (by simp))]
-  exact ((T.smooth a).isImmersion.isImmersionAt _ |>.injective_mfderiv (by simp)).comp
+  exact ((T.smooth a).isImmersion.isImmersionAt _ |>.mfderiv_injective (by simp)).comp
     (hDk.comp ((Ψ.mfderivToContinuousLinearEquiv (by simp) (j p)).injective.comp hDj))
 
 theorem isLocalDiffeomorphAt_reparametrizedTube (a : T.Index)

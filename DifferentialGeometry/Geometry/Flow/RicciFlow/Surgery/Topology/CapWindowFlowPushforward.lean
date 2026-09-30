@@ -37,7 +37,7 @@ def partialDiffeomorphOfInjective [Nonempty M] {f : M → N} (hf : IsLocalDiffeo
         rw [← he.toOpenPartialHomeomorph_target f]
         exact hy
       obtain ⟨x, rfl⟩ := hy'
-      have hloc := (hf x).localInverse_contMDiffAt
+      have hloc := (hf x).contMDiffAt_localInverse
       refine (hloc.congr_of_eventuallyEq ?_).contMDiffWithinAt
       filter_upwards [(hf x).localInverse.open_source.mem_nhds (hf x).localInverse_mem_source]
         with z hz

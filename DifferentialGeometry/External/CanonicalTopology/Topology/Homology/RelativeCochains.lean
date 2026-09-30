@@ -137,7 +137,7 @@ private theorem integralSingularSubspaceChainRetraction_simplex
       integralSimplexChain n (integralSingularSimplexRestriction n A σ hσ) := by
   classical
   rw [← integralSingularChainBasis_apply, integralSingularSubspaceChainRetraction,
-    Basis.constr_basis, dif_pos hσ]
+    Basis.constr_basis, dite_eq_left hσ]
 
 private theorem integralSingularSubspaceChainRetraction_inclusion
     {X : Type u} [TopologicalSpace X] (n : ℕ) (A : Set X) :

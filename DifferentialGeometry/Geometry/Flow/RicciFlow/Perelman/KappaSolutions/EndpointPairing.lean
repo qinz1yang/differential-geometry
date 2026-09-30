@@ -84,7 +84,7 @@ theorem abs_lRegularized_endpoint_pairing_le_of_ancient_action_eq_lCost
           rw [show (12 : ℝ) = 4 * 3 by norm_num, Real.sqrt_mul (by norm_num)]
           norm_num
         rw [h12]
-  have hCS := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+  have hCS := DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
     g q v w
   have hbound := hCS.trans (mul_le_mul_of_nonneg_left hsqrt (Real.sqrt_nonneg _))
   change |g.inner q v w / (2 * Real.sqrt tau)| ≤

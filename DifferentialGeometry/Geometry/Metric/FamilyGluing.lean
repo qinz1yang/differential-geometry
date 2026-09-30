@@ -21,10 +21,10 @@ private theorem family_contMDiffAt_of_inclusion {U V : TopologicalSpace.Opens M}
   have hFU : (fun y : U => F (y : M)) =
       (fun y : U => f (TopologicalSpace.Opens.inclusion hUV y)) := by
     funext y
-    simp only [F, dif_pos (hUV y.property)]
+    simp only [F, dite_eq_left (hUV y.property)]
   have hFV : (fun y : V => F (y : M)) = f := by
     funext y
-    simp only [F, dif_pos y.property]
+    simp only [F, dite_eq_left y.property]
   have hF : ContMDiffAt I 𝓘(ℝ) ∞ F (x : M) := by
     apply contMDiffAt_subtype_iff.mp
     rw [hFU]

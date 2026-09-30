@@ -22,7 +22,7 @@ private theorem moduleCat_sum_apply {ι : Type*} {M N : ModuleCat.{u} ℤ} (s : 
   | insert a s ha ih => simp [Finset.sum_insert ha]
 
 theorem integralSimplexChain_symm_mem_chainsIn (n : ℕ) (A : Set X)
-    (σ : C(stdSimplex ℝ (Fin (n + 1)), X)) (hσ : ∀ t, σ t ∈ A) :
+    (σ : C(Convexity.StdSimplex ℝ (Fin (n + 1)), X)) (hσ : ∀ t, σ t ∈ A) :
     integralSimplexChain n ((integralSingularSimplexEquiv n X).symm σ) ∈
       integralSingularChainsIn n A := by
   refine Submodule.subset_span ⟨(integralSingularSimplexEquiv n X).symm σ, ?_, rfl⟩
@@ -31,7 +31,7 @@ theorem integralSimplexChain_symm_mem_chainsIn (n : ℕ) (A : Set X)
   exact hσ t
 
 theorem singularSimplexChain_apply_one_eq_integralSimplexChain (n : ℕ)
-    (σ : C(stdSimplex ℝ (Fin (n + 1)), X)) :
+    (σ : C(Convexity.StdSimplex ℝ (Fin (n + 1)), X)) :
     singularSimplexChain σ (ULift.up (1 : ℤ)) =
       integralSimplexChain n ((integralSingularSimplexEquiv n X).symm σ) := rfl
 

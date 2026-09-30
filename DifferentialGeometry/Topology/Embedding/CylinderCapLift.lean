@@ -62,7 +62,7 @@ theorem IsSmoothEmbedding.exists_partialDiffeomorph_cylinderCap
   obtain ⟨V, C, hV, hC, _⟩ :=
     DifferentialGeometry.Topology.Manifold.exists_diffeomorph_onto_range_of_injective_immersion
       c hc.contMDiff hc.isEmbedding.injective
-      (fun x => (hc.isImmersion.isImmersionAt x).injective_mfderiv (by simp)) rfl
+      (fun x => (hc.isImmersion.isImmersionAt x).mfderiv_injective (by simp)) rfl
   have hVne : Nonempty V := ⟨C ⟨v, hv⟩⟩
   let iU := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph 𝓘(ℝ, E) U hUne
   let iV := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph I V hVne

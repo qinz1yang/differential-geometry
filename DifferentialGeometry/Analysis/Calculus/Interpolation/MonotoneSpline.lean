@@ -64,14 +64,14 @@ private theorem splineProfile_formula (ψ : CircleDeg1Lift) {N i : ℕ} (hN : 0 
   have hterm (k : ℕ) : Δ k * splineRamp ((N : ℝ) * t - k) =
       if k < i then Δ k else if k = i then Δ i * ((N : ℝ) * t - i) else 0 := by
     by_cases hk : k < i
-    · rw [if_pos hk, splineRamp_one_of_one_le, mul_one]
+    · rw [ite_eq_left hk, splineRamp_one_of_one_le, mul_one]
       have hki : (k : ℝ) + 1 ≤ i := by exact_mod_cast hk
       linarith
-    · rw [if_neg hk]
+    · rw [ite_eq_right hk]
       by_cases hki : k = i
       · subst k
-        rw [if_pos rfl, splineRamp_eq_of_mem ⟨by linarith, by linarith⟩]
-      · rw [if_neg hki, splineRamp_zero_of_nonpos, mul_zero]
+        rw [ite_eq_left rfl, splineRamp_eq_of_mem ⟨by linarith, by linarith⟩]
+      · rw [ite_eq_right hki, splineRamp_zero_of_nonpos, mul_zero]
         have hki' : i + 1 ≤ k := by omega
         have hcast : (i : ℝ) + 1 ≤ k := by exact_mod_cast hki'
         linarith

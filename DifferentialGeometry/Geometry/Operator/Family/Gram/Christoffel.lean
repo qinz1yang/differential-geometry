@@ -32,7 +32,7 @@ private lemma chartGramOp_eq_sum {D : RealTimeInterval}
   rw [chartGramOp, IsCoercive.gramCLM_apply,
     InnerProductSpace.continuousLinearMapOfBilin_apply]
   simpa only [chartGramOnE_def, chartCoord_def, Module.Basis.equivFun_apply] using
-    (chartGramBilin_apply (I := I) (M := M) (G.metric z.1) p
+    (DifferentialGeometry.Tensor.Coordinates.chartGramBilin_apply (I := I) (M := M) (G.metric z.1) p
       ((extChartAt I p).symm z.2) u v)
 
 theorem chartGram_spatial {D : RealTimeInterval}

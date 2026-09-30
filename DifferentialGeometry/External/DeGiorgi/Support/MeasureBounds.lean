@@ -135,7 +135,7 @@ theorem essSup_add_const_of_bdd
     (hu_bdd_above : Filter.IsBoundedUnder (· ≤ ·) (ae μ) u) :
     essSup (fun x => u x + c) μ = essSup u μ + c := by
   have : NeZero μ := ⟨hμ⟩
-  have : (ae μ).NeBot := Measure.ae.neBot
+  have : (ae μ).NeBot := inferInstance
   dsimp [essSup]
   simpa using
     (limsup_add_const (ae μ) u c hu_bdd_above hu_bdd_below.isCoboundedUnder_le)
@@ -147,7 +147,7 @@ theorem essInf_add_const_of_bdd
     (hu_bdd_above : Filter.IsBoundedUnder (· ≤ ·) (ae μ) u) :
     essInf (fun x => u x + c) μ = essInf u μ + c := by
   have : NeZero μ := ⟨hμ⟩
-  have : (ae μ).NeBot := Measure.ae.neBot
+  have : (ae μ).NeBot := inferInstance
   dsimp [essInf]
   simpa using
     (liminf_add_const (ae μ) u c hu_bdd_above.isCoboundedUnder_ge hu_bdd_below)
@@ -161,7 +161,7 @@ theorem essSup_neg_of_bdd
     (hneg_bdd_above : Filter.IsBoundedUnder (· ≤ ·) (ae μ) (fun x => -u x)) :
     essSup (fun x => -u x) μ = - essInf u μ := by
   have : NeZero μ := ⟨hμ⟩
-  have : (ae μ).NeBot := Measure.ae.neBot
+  have : (ae μ).NeBot := inferInstance
   dsimp [essSup, essInf]
   have hdual :=
     (OrderIso.liminf_apply (β := ℝ) (γ := ℝᵒᵈ) (f := ae μ) (u := u) (g := OrderIso.neg ℝ)
@@ -180,7 +180,7 @@ theorem essInf_neg_of_bdd
     (hneg_bdd_above : Filter.IsBoundedUnder (· ≤ ·) (ae μ) (fun x => -u x)) :
     essInf (fun x => -u x) μ = - essSup u μ := by
   have : NeZero μ := ⟨hμ⟩
-  have : (ae μ).NeBot := Measure.ae.neBot
+  have : (ae μ).NeBot := inferInstance
   dsimp [essSup, essInf]
   have hdual :=
     (OrderIso.limsup_apply (β := ℝ) (γ := ℝᵒᵈ) (f := ae μ) (u := u) (g := OrderIso.neg ℝ)

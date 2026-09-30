@@ -32,7 +32,7 @@ private theorem holderOnWith_apply_clm
     {Q : Set E} {f : E → V →L[ℝ] F} {K α : ℝ≥0}
     (hf : HolderOnWith K α f Q) (v : V) :
     ∃ C : ℝ≥0, HolderOnWith C α (fun x => f x v) Q := by
-  have h := (ContinuousLinearMap.apply ℝ F v).lipschitz.holderWith.comp_holderOnWith hf
+  have h := (ContinuousLinearMap.apply ℝ F v).lipschitzWith.holderWith.comp_holderOnWith hf
   refine ⟨‖ContinuousLinearMap.apply ℝ F v‖₊ * K, ?_⟩
   intro x hx y hy
   simpa only [Function.comp_def, one_mul, NNReal.coe_one, NNReal.rpow_one] using! h x hx y hy

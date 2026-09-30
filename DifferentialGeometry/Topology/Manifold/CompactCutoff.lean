@@ -43,7 +43,7 @@ theorem exists_contMDiff_cutoff_of_isCompact {K O : Set M} (hK : IsCompact K)
     have hnonneg : 0 ≤ ∏ i : t, (1 - b i x) :=
       Finset.prod_nonneg (fun i _ => sub_nonneg.mpr ((b i).le_one))
     have hle : ∏ i : t, (1 - b i x) ≤ 1 :=
-      Finset.prod_le_one (fun i _ => sub_nonneg.mpr ((b i).le_one))
+      Finset.prod_le_one₀ (fun i _ => sub_nonneg.mpr ((b i).le_one))
         (fun i _ => sub_le_self _ ((b i).nonneg))
     exact ⟨sub_nonneg.mpr hle, sub_le_self _ hnonneg⟩
   · apply eventually_nhdsSet_iff_forall.mpr

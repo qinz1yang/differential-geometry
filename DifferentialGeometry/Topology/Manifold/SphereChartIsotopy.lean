@@ -39,13 +39,13 @@ theorem exists_sphere_isotopy_of_positive_chart_derivative
     rw [(hBe 0 x).1, hD0]
     change extendChartById e (id : ℂ → ℂ) x = x
     by_cases hx : x ∈ e.source
-    · exact (show extendChartById e id x = e.symm (e x) from if_pos hx).trans (e.left_inv hx)
-    · exact if_neg hx
+    · exact (show extendChartById e id x = e.symm (e x) from ite_eq_left hx).trans (e.left_inv hx)
+    · exact ite_eq_right hx
   let g := f.trans (B 1)
   have hgv : g v = v := by
     change B 1 (f v) = v
     rw [(hBe 1 (f v)).1]
-    have hx : extendChartById e (D 1) (f v) = e.symm (D 1 (e (f v))) := if_pos hfv
+    have hx : extendChartById e (D 1) (f v) = e.symm (D 1 (e (f v))) := ite_eq_left hfv
     rw [hx, hmove, hiv]
   let F : ℂ → ℂ := fun z ↦ e (f (e.symm z))
   let G : ℂ → ℂ := fun z ↦ e (g (e.symm z))
@@ -61,7 +61,7 @@ theorem exists_sphere_isotopy_of_positive_chart_derivative
     change e (B 1 (f (e.symm z))) = D 1 (F z)
     rw [(hBe 1 (f (e.symm z))).1]
     have hx : extendChartById e (D 1) (f (e.symm z)) =
-        e.symm (D 1 (e (f (e.symm z)))) := if_pos hz
+        e.symm (D 1 (e (f (e.symm z)))) := ite_eq_left hz
     rw [hx, e.right_inv (htarget ▸ mem_univ _)]
   have hGpos : 0 < (fderiv ℝ G 0).toLinearMap.det := by
     have hFA := ((hF.contDiffAt (hU.mem_nhds h0U)).differentiableAt (by simp)).hasFDerivAt

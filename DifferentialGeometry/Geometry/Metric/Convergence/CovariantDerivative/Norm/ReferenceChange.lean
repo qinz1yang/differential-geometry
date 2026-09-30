@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.TensorError
-import DifferentialGeometry.Tensor.Metric.ScaleNorm
+import DifferentialGeometry.Geometry.Metric.Tensor.Scaling
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import Mathlib.Topology.Compactness.LocallyCompact

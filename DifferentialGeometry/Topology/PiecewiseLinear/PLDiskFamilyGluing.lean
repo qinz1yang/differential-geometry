@@ -12,14 +12,14 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
 
 theorem exists_isPLHomeomorphOn_union_biUnion_of_inter_eq_arc {Δ : Set F}
-    {q : (Fin 3 → ℝ) → F} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Δ) {ι : Type*}
+    {q : (Fin 3 → ℝ) → F} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ) {ι : Type*}
     {Z α : ι → Set F} {r : ι → (Fin 3 → ℝ) → F} {γ : ι → ℝ → F}
-    (hr : ∀ i, IsPLHomeomorphOn (r i) (stdSimplex ℝ (Fin 3)) (Z i))
+    (hr : ∀ i, IsPLHomeomorphOn (r i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (Z i))
     (hγ : ∀ i, IsPLHomeomorphOn (γ i) (Icc 0 1) (α i)) (s : Finset ι)
     (hΔZ : ∀ i ∈ s, Δ ∩ Z i = α i) (hαΔ : ∀ i ∈ s, α i ⊆ q '' stdSimplexBoundary 2)
     (hαZ : ∀ i ∈ s, α i ⊆ r i '' stdSimplexBoundary 2)
     (hdisj : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → Disjoint (Z i) (Z j)) :
-    ∃ q' : (Fin 3 → ℝ) → F, IsPLHomeomorphOn q' (stdSimplex ℝ (Fin 3)) (Δ ∪ ⋃ i ∈ s, Z i) ∧
+    ∃ q' : (Fin 3 → ℝ) → F, IsPLHomeomorphOn q' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (Δ ∪ ⋃ i ∈ s, Z i) ∧
       q' '' stdSimplexBoundary 2 = (q '' stdSimplexBoundary 2 ∪
         ⋃ i ∈ s, r i '' stdSimplexBoundary 2) \ ⋃ i ∈ s, (α i \ {γ i 0, γ i 1}) := by
   classical

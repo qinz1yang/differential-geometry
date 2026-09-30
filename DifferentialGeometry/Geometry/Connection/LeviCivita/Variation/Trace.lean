@@ -58,18 +58,18 @@ theorem metricTracePair0SAt_connectionDifferenceOutput_leviCivitaVariation_eq_ze
         (fun p : ℝ × M => (g p.1).inner p.2 (Y p.2) (Z p.2)) (t, y))
     (x : M) (α : Tensor0SSpace (I := I) 1 x) :
     metricTracePair0SAt (I := I) (g t)
-      (connectionDifferenceOutput (I := I) (leviCivitaVariation g t x) α) = 0 := by
+      (bilinearCovectorComp (I := I) (leviCivitaVariation g t x) α) = 0 := by
   classical
   let basis := Module.finBasis ℝ (TangentSpace I x)
   let B := basisInvMetric (I := I) (g t) x basis
   have hB := basisInvMetric_isInverse (I := I) (g t) x basis
   rw [metricTracePair0SAt_eq_sum_basis (g t) basis B hB]
-  have hA (i j) : connectionDifferenceOutput (I := I)
+  have hA (i j) : bilinearCovectorComp (I := I)
       (leviCivitaVariation g t x) α (vec2 (basis i) (basis j)) =
         α (fun _ : Fin 1 => (leviCivitaVariation g t x (basis j) (basis i))) := by
-    change Tensor0SSpace.eval (connectionDifferenceOutput (I := I)
+    change Tensor0SSpace.eval (bilinearCovectorComp (I := I)
       (leviCivitaVariation g t x) α) (vec2 (basis i) (basis j)) = _
-    rw [connectionDifferenceOutput_apply]
+    rw [bilinearCovectorComp_apply]
     rfl
   simp only [hA]
   have hzero : ∑ i, ∑ j, B i j • leviCivitaVariation g t x (basis j) (basis i) = 0 := by

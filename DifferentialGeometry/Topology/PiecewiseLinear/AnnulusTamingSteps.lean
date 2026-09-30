@@ -18,7 +18,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 theorem exists_halfAnnulus_param_of_isClosedEmbedding
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    (ψ : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
       z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1} → M)
     (hψ : IsClosedEmbedding ψ) (hψbd : range ψ ⊆ (𝓡∂ 3).boundary M) :
     ∃ e : {x : EuclideanSpace ℝ (Fin 2) // 1 / 2 ≤ ‖x‖ ∧ ‖x‖ ≤ 1} →
@@ -37,7 +37,7 @@ theorem exists_halfAnnulus_param_of_isClosedEmbedding
   let s : {x : EuclideanSpace ℝ (Fin 2) // 1 / 2 ≤ ‖x‖ ∧ ‖x‖ ≤ 1} → Icc (0 : ℝ) 1 := fun v =>
     ⟨2 * ‖v.val‖ - 1, by linarith [v.2.1], by linarith [v.2.2]⟩
   let z : {x : EuclideanSpace ℝ (Fin 2) // 1 / 2 ≤ ‖x‖ ∧ ‖x‖ ≤ 1} →
-      (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) := fun v =>
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) := fun v =>
     prismBallHomeomorph.symm (u v, s v)
   have hzbd : ∀ v, (z v).val.1 ∈ stdSimplexBoundary 2 := by
     intro v
@@ -46,7 +46,7 @@ theorem exists_halfAnnulus_param_of_isClosedEmbedding
     rw [Homeomorph.apply_symm_apply]
     exact mem_sphere_zero_iff_norm.mpr (hun v)
   let zz : {x : EuclideanSpace ℝ (Fin 2) // 1 / 2 ≤ ‖x‖ ∧ ‖x‖ ≤ 1} →
-      {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
         z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1} := fun v =>
     ⟨z v, hzbd v, (z v).2.2⟩
   let e : {x : EuclideanSpace ℝ (Fin 2) // 1 / 2 ≤ ‖x‖ ∧ ‖x‖ ≤ 1} →
@@ -127,7 +127,7 @@ theorem exists_openPartialHomeomorph_of_halfAnnulus_embedding {S : Type*} [Topol
   let F : EuclideanSpace ℝ (Fin 2) → S := fun x =>
     if h : 1 / 2 ≤ ‖(1 / 2 : ℝ) • x‖ ∧ ‖(1 / 2 : ℝ) • x‖ ≤ 1 then e ⟨(1 / 2 : ℝ) • x, h⟩ else e v₀
   have hFU : ∀ x (hx : x ∈ U), F x = e ⟨(1 / 2 : ℝ) • x, hmem x hx⟩ := fun x hx =>
-    dif_pos (hmem x hx)
+    dite_eq_left (hmem x hx)
   have hFc : ContinuousOn F U := by
     rw [continuousOn_iff_continuous_domRestrict]
     have h : U.domRestrict F = e ∘ (fun x : U => (⟨(1 / 2 : ℝ) • x.val, hmem x.val x.2⟩ :

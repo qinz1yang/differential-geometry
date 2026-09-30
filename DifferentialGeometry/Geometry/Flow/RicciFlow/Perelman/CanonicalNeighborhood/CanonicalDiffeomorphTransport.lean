@@ -78,7 +78,7 @@ theorem LocalCap.eventually_transport_of_diffeomorph_tendsto
     ∀ᶠ n in atTop, ∃ cap' : LocalCap S (2 * alpha) (Y (τ n) x) 0 (Y (τ n) '' U),
       cap'.tube = Y (τ n) '' cap.tube ∧
       cap'.core.carrier = Y (τ n) '' cap.core.carrier ∧
-      cap'.tube_map = cap.tube_map.trans (Y (τ n)).toPartialDiffeomorph := by
+      cap'.tubeMap = cap.tubeMap.trans (Y (τ n)).toPartialDiffeomorph := by
   classical
   have hnecks : ∀ j : Fin cap.chain.count, ∀ᶠ n in atTop,
       ∃ nk : StrongNeck S (2 * alpha) (Y (τ n) (cap.chain.centers j)) 0,
@@ -91,7 +91,7 @@ theorem LocalCap.eventually_transport_of_diffeomorph_tendsto
     heps.le.trans ((neckModelTolerance_le alpha).trans (by linarith))
   filter_upwards [eventually_all.mpr hnecks] with n hn
   choose necks hmap using hn
-  exact ⟨LocalCap.mapOfNeckFamily (cap.mono_eps htol hsmall)
+  exact ⟨LocalCap.mapOfNeckFamily (cap.monoEps htol hsmall)
     (Y (τ n)).toPartialDiffeomorph (subset_univ U) necks (fun j => hmap j), rfl, rfl, rfl⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

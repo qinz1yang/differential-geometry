@@ -3,6 +3,8 @@ import DifferentialGeometry.Topology.Simplex.Extension
 
 noncomputable section
 
+open Convexity.StdSimplex (coordinateSet coordinateMap coordinateEquiv
+  coordinateHomeomorph coordinateEquiv_map)
 open scoped Simplicial
 
 namespace DifferentialGeometry.Topology
@@ -21,24 +23,40 @@ private theorem exists_integralSingularSimplex_three_of_compatible_faces_of_boun
       ∑ i : Fin 4, (-1 : ℤ) ^ i.val • integralSimplexChain 2 (f i)) :
     ∃ σ : integralSingularSimplex 3 X,
       ∀ i : Fin 4, (TopCat.toSSet.obj (TopCat.of X)).δ i σ = f i := by
-  let F : Fin 4 → C(stdSimplex ℝ (Fin 3), X) :=
-    fun i => integralSingularSimplexEquiv 2 X (f i)
-  have hF : ∀ (i : Fin 4) (j : Fin 3) (p : stdSimplex ℝ (Fin 2)),
-      F i (stdSimplex.map j.succAbove p) =
-        F (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p) := by
+  let F : Fin 4 → C(coordinateSet ℝ (Fin 3), X) :=
+    fun i => (integralSingularSimplexEquiv 2 X (f i)).comp
+      ⟨(coordinateEquiv ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩
+  have hF : ∀ (i : Fin 4) (j : Fin 3) (p : coordinateSet ℝ (Fin 2)),
+      F i (coordinateMap j.succAbove p) =
+        F (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p) := by
     intro i j p
+    obtain ⟨p, rfl⟩ := (coordinateEquiv ℝ _).surjective p
     have he := congrArg (fun s => integralSingularSimplexEquiv 1 X s p) (h i j)
     change (TopCat.of X).toSSetObjEquiv _ ((TopCat.toSSet.obj (TopCat.of X)).δ j (f i)) p =
       (TopCat.of X).toSSetObjEquiv _
         ((TopCat.toSSet.obj (TopCat.of X)).δ (j.predAbove i) (f (i.succAbove j))) p at he
     rw [TopCat.toSSetObjEquiv_δ_apply, TopCat.toSSetObjEquiv_δ_apply] at he
+    change integralSingularSimplexEquiv 2 X (f i)
+        ((coordinateEquiv ℝ _).symm (coordinateMap j.succAbove (coordinateEquiv ℝ _ p))) =
+      integralSingularSimplexEquiv 2 X (f (i.succAbove j))
+        ((coordinateEquiv ℝ _).symm
+          (coordinateMap (j.predAbove i).succAbove (coordinateEquiv ℝ _ p)))
+    rw [← coordinateEquiv_map, Equiv.symm_apply_apply,
+      ← coordinateEquiv_map, Equiv.symm_apply_apply]
     exact he
+  have hF_comp (i : Fin 4) :
+      (F i).comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩ =
+        integralSingularSimplexEquiv 2 X (f i) := by
+    apply ContinuousMap.ext
+    intro p
+    exact congrArg (integralSingularSimplexEquiv 2 X (f i))
+      ((coordinateEquiv ℝ _).symm_apply_apply p)
   let g := Simplex.boundarySphereDesc F hF
   have hgchain : (integralSingularChainMap
       (g.comp (liftedHomotopySphereDown 1))).f 2 (simplexBoundarySphereChain.{u} 1) =
       (integralSingularChains X).d 3 2 b := by
     rw [hb]
-    simpa only [F, g, liftedHomotopySphereDown, Equiv.symm_apply_apply] using
+    simpa only [g, liftedHomotopySphereDown, hF_comp, Equiv.symm_apply_apply] using
       integralSingularChainMap_boundarySphereDesc_simplexBoundarySphereChain 1 F hF
   have hgzero : freeSphereHomologyImage 1 (simplexBoundarySphereClass.{u} 1)
       (ZerothHomotopy.mk g) = 0 := by
@@ -61,17 +79,23 @@ private theorem exists_integralSingularSimplex_three_of_compatible_faces_of_boun
     exact hgnull.comp_left ⟨e, e.continuous⟩
   obtain ⟨H, hH⟩ := Simplex.exists_continuous_extension_of_nullhomotopic 3
     (Simplex.boundaryDesc F hF) hboundary
-  refine ⟨(integralSingularSimplexEquiv 3 X).symm H, ?_⟩
+  let H' := H.comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩
+  refine ⟨(integralSingularSimplexEquiv 3 X).symm H', ?_⟩
   intro i
   apply (integralSingularSimplexEquiv 2 X).injective
   ext p
   change (TopCat.of X).toSSetObjEquiv _
-    ((TopCat.toSSet.obj (TopCat.of X)).δ i ((integralSingularSimplexEquiv 3 X).symm H)) p = _
+    ((TopCat.toSSet.obj (TopCat.of X)).δ i ((integralSingularSimplexEquiv 3 X).symm H')) p = _
   rw [TopCat.toSSetObjEquiv_δ_apply]
-  change H (stdSimplex.map i.succAbove p) = _
-  exact (hH ⟨stdSimplex.map i.succAbove p,
-    ⟨i, Simplex.map_succAbove_apply_pivot i p⟩⟩).trans
-      (Simplex.boundaryDesc_face F hF i p)
+  change H (coordinateEquiv ℝ _ (Convexity.StdSimplex.map i.succAbove p)) = _
+  rw [coordinateEquiv_map]
+  have hface := (hH ⟨coordinateMap i.succAbove (coordinateEquiv ℝ _ p),
+    ⟨i, Simplex.map_succAbove_apply_pivot i _⟩⟩).trans
+      (Simplex.boundaryDesc_face F hF i (coordinateEquiv ℝ _ p))
+  change H (coordinateMap i.succAbove (coordinateEquiv ℝ _ p)) =
+    integralSingularSimplexEquiv 2 X (f i)
+      ((coordinateEquiv ℝ _).symm (coordinateEquiv ℝ _ p)) at hface
+  rwa [Equiv.symm_apply_apply] at hface
 
 theorem exists_integralSingularSimplex_three_iff_boundary_of_compatible_faces
     (f : Fin 4 → integralSingularSimplex 2 X)

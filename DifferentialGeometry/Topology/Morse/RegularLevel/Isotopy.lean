@@ -50,7 +50,6 @@ private theorem familyChartRep_contDiffOn
       (hs := by intro x hx; exact ⟨hx.1, trivial⟩)).1
       (hFOn.mono (by intro x hx; trivial))
     convert hraw using 1
-    · with_reducible_and_instances rfl
     · funext q
       rfl
     · ext q
@@ -181,7 +180,6 @@ private theorem familyTimeDeriv_contMDiffOn
     have hc := contMDiffOn_extChartAt (I := I.prod 𝓘(ℝ, ℝ)) (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))
       (x := (x₀, (0 : ℝ)))
     convert hc using 1
-    · with_reducible_and_instances rfl
     · funext p
       rfl
     · simp [chartAt_self_eq]
@@ -484,7 +482,6 @@ private theorem familyChartRep_coefficient_contMDiffOn
     have hc := contMDiffOn_extChartAt (I := I.prod 𝓘(ℝ, ℝ)) (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))
       (x := (x₀, (0 : ℝ)))
     convert hc using 1
-    · with_reducible_and_instances rfl
     · funext p
       rfl
     · simp [chartAt_self_eq]
@@ -544,9 +541,8 @@ private theorem familyTangentSection_contMDiffWithinAt_section_iff
           (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1 (σ q)).2))
         (s := a) (x := p) (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))).1 h2'
       convert hsplit.2 using 1
-      · with_reducible_and_instances rfl
-      · funext q
-        rfl
+      funext q
+      rfl
     simpa [σ, hσp] using (contMDiffWithinAt_iff_target (I := I.prod 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, MorseModel (m + 1)))
       (f := fun q : M × ℝ => (trivializationAt (MorseModel (m + 1)) (TangentSpace I) p.1 (σ q)).2)
       (s := a) (x := p) (n := (↑(⊤ : ℕ∞) : WithTop ℕ∞))).mpr
@@ -2703,8 +2699,8 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
   have hχt_le1 : ∀ s : ℝ, χt s ≤ 1 := by
     intro s
     dsimp [χt]
-    exact mul_le_one₀ (Real.smoothTransition.le_one _) (Real.smoothTransition.nonneg _)
-      (Real.smoothTransition.le_one _)
+    exact (mul_le_of_le_one_left (Real.smoothTransition.nonneg _)
+      (Real.smoothTransition.le_one _)).trans (Real.smoothTransition.le_one _)
   have hχt_support : IsCompact (tsupport χt) := by
     have hsupp0 : Function.support χt ⊆ Set.Icc (-1) 2 := by
       intro s hs
@@ -2958,8 +2954,8 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
       constructor
       · exact mul_nonneg (hρ01 (curveAt Vsusp hcomplete (x, 0) t)).1
           (hχt_ge0 (curveAt Vsusp hcomplete (x, 0) t).2)
-      · exact mul_le_one₀ (hρ01 (curveAt Vsusp hcomplete (x, 0) t)).2
-          (hχt_ge0 (curveAt Vsusp hcomplete (x, 0) t).2)
+      · exact (mul_le_of_le_one_left (hχt_ge0 (curveAt Vsusp hcomplete (x, 0) t).2)
+          (hρ01 (curveAt Vsusp hcomplete (x, 0) t)).2).trans
           (hχt_le1 (curveAt Vsusp hcomplete (x, 0) t).2)
     · exact hu
   have hA_inv_fwd : ∀ (x : M), x ∈ A → ∀ t : ℝ, t ∈ Set.Icc 0 1 →
@@ -3388,8 +3384,8 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
         constructor
         · exact mul_nonneg (hρ01 (curveAt Vsusp hcomplete (y, 1) (-t))).1
             (hχt_ge0 (curveAt Vsusp hcomplete (y, 1) (-t)).2)
-        · exact mul_le_one₀ (hρ01 (curveAt Vsusp hcomplete (y, 1) (-t))).2
-            (hχt_ge0 (curveAt Vsusp hcomplete (y, 1) (-t)).2)
+        · exact (mul_le_of_le_one_left (hχt_ge0 (curveAt Vsusp hcomplete (y, 1) (-t)).2)
+            (hρ01 (curveAt Vsusp hcomplete (y, 1) (-t))).2).trans
             (hχt_le1 (curveAt Vsusp hcomplete (y, 1) (-t)).2)
       simpa using hβ01
     have hsmain := snd_range_of_deriv_unit (s := s) (by

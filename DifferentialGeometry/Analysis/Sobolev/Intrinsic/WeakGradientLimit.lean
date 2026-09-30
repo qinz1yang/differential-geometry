@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.WeakGradientUnique
-import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.PositiveDefiniteBilinearQuadraticLowerBound
+import DifferentialGeometry.Analysis.FiniteDimensional.Coercivity
 import Mathlib.MeasureTheory.Function.LpSpace.InfiniteSum
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 
@@ -24,10 +24,12 @@ private local instance : BorelSpace M := ⟨rfl⟩
 private lemma norm_le_mul_sqrt_inner (g : SmoothRiemannianMetric I M) (x : M) :
     ∃ C : ℝ, 0 < C ∧ ∀ v : TangentSpace I x,
       ‖v‖ ≤ C * Real.sqrt (g.inner x v v) := by
-  obtain ⟨c, hc, hbound⟩ := posDef_bilin_quadratic_lower_bound (g.inner x) (g.pos x)
+  obtain ⟨c, hc, hbound⟩ := (g.inner x).isCoercive_of_posDef (g.pos x)
   have hsqrt : 0 < Real.sqrt c := Real.sqrt_pos.mpr hc
   refine ⟨(Real.sqrt c)⁻¹, inv_pos.mpr hsqrt, fun v => ?_⟩
-  have h := Real.sqrt_le_sqrt (hbound v)
+  have hquad : c * ‖v‖ ^ 2 ≤ g.inner x v v := by
+    simpa only [pow_two, mul_assoc] using hbound v
+  have h := Real.sqrt_le_sqrt hquad
   rw [Real.sqrt_mul hc.le, Real.sqrt_sq_eq_abs, abs_norm] at h
   calc
     ‖v‖ ≤ Real.sqrt (g.inner x v v) / Real.sqrt c :=
@@ -37,15 +39,12 @@ private lemma norm_le_mul_sqrt_inner (g : SmoothRiemannianMetric I M) (x : M) :
 
 theorem exists_ae_tendsto_of_summable_metric_steps [CompactSpace M] [T2Space M]
     (g : SmoothRiemannianMetric I M) (V : ℕ → ∀ x : M, TangentSpace I x)
-    (hV : ∀ n, AEStronglyMeasurable (fun x => Real.sqrt
-      (g.inner x (V (n + 1) x - V n x) (V (n + 1) x - V n x)))
-      (riemannianVolumeMeasure I M g))
     (hsum : (∑' n, eLpNorm (fun x => Real.sqrt
       (g.inner x (V (n + 1) x - V n x) (V (n + 1) x - V n x))) 2
       (riemannianVolumeMeasure I M g)) ≠ ⊤) :
     ∃ G : ∀ x : M, TangentSpace I x,
       ∀ᵐ x ∂riemannianVolumeMeasure I M g, Tendsto (fun n => V n x) atTop (𝓝 (G x)) := by
-  have hseries := summable_norm_of_tsum_eLpNorm_ne_top (by norm_num : (1 : ℝ≥0∞) ≤ 2) hV hsum
+  have hseries := summable_norm_of_tsum_eLpNorm_ne_top (by norm_num : (1 : ℝ≥0∞) ≤ 2) hsum
   have hpoint : ∀ᵐ x ∂riemannianVolumeMeasure I M g,
       ∃ v : TangentSpace I x, Tendsto (fun n => V n x) atTop (𝓝 v) := by
     filter_upwards [hseries] with x hx
@@ -63,7 +62,7 @@ theorem exists_ae_tendsto_of_summable_metric_steps [CompactSpace M] [T2Space M]
     if hx : ∃ v : TangentSpace I x, Tendsto (fun n => V n x) atTop (𝓝 v) then hx.choose else 0
   refine ⟨G, ?_⟩
   filter_upwards [hpoint] with x hx
-  simpa only [G, dif_pos hx] using hx.choose_spec
+  simpa only [G, dite_eq_left hx] using hx.choose_spec
 
 
 theorem eLpNorm_metric_sub_limit_le [CompactSpace M] [T2Space M]
@@ -77,14 +76,21 @@ theorem eLpNorm_metric_sub_limit_le [CompactSpace M] [T2Space M]
       (g.inner x (W x - V n x) (W x - V n x))) 2 (riemannianVolumeMeasure I M g) ≤ C) :
     eLpNorm (fun x => Real.sqrt (g.inner x (W x - G x) (W x - G x))) 2
       (riemannianVolumeMeasure I M g) ≤ C := by
-  apply Lp.eLpNorm_le_of_ae_tendsto hbound hV
-  filter_upwards [hlim] with x hx
-  have hcont : Continuous (fun v : TangentSpace I x =>
-      Real.sqrt (g.inner x (W x - v) (W x - v))) :=
-    Real.continuous_sqrt.comp
-      (((g.inner x).continuous.comp (continuous_const.sub continuous_id)).clm_apply
-        (continuous_const.sub continuous_id))
-  exact (hcont.tendsto _).comp hx
+  have h_tendsto : ∀ᵐ x ∂riemannianVolumeMeasure I M g,
+      Tendsto (fun n => Real.sqrt (g.inner x (W x - V n x) (W x - V n x))) atTop
+        (𝓝 (Real.sqrt (g.inner x (W x - G x) (W x - G x)))) := by
+    filter_upwards [hlim] with x hx
+    have hcont : Continuous (fun v : TangentSpace I x =>
+        Real.sqrt (g.inner x (W x - v) (W x - v))) :=
+      Real.continuous_sqrt.comp
+        (((g.inner x).continuous.comp (continuous_const.sub continuous_id)).clm_apply
+          (continuous_const.sub continuous_id))
+    exact (hcont.tendsto _).comp hx
+  have hG : AEStronglyMeasurable
+      (fun x => Real.sqrt (g.inner x (W x - G x) (W x - G x)))
+      (riemannianVolumeMeasure I M g) :=
+    aestronglyMeasurable_of_tendsto_ae atTop hV h_tendsto
+  exact Lp.eLpNorm_le_of_ae_tendsto hbound hV hG h_tendsto
 
 
 theorem exists_metricL2_limit_of_summable_steps [CompactSpace M] [T2Space M]
@@ -103,8 +109,7 @@ theorem exists_metricL2_limit_of_summable_steps [CompactSpace M] [T2Space M]
       Tendsto (fun n => eLpNorm (fun x => Real.sqrt
         (g.inner x (V n x - G x) (V n x - G x))) 2 (riemannianVolumeMeasure I M g))
         atTop (𝓝 0) := by
-  obtain ⟨G, hlim⟩ := exists_ae_tendsto_of_summable_metric_steps g V
-    (fun n => hV (n + 1) n) hsum
+  obtain ⟨G, hlim⟩ := exists_ae_tendsto_of_summable_metric_steps g V hsum
   refine ⟨G, hlim, ?_⟩
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hr (fun _ => bot_le)
   intro n

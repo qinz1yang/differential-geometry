@@ -34,16 +34,28 @@ theorem cubePathExtension_interface (n : ℕ) (p : Path x y) (Γ : GenLoop (Fin 
 
 
 
-theorem continuous_cubePathExtension (n : ℕ) (p : Path x y)
-    (Γ : GenLoop (Fin (n + 1)) X x) : Continuous (cubePathExtension n p Γ) := by
+theorem continuous_cubePathExtension_joint (n : ℕ) :
+    Continuous (fun z : (Path x y × GenLoop (Fin (n + 1)) X x) ×
+      (unitInterval × (Fin (n + 1) → unitInterval)) =>
+        cubePathExtension n z.1.1 z.1.2 z.2) := by
   apply Continuous.if
   · intro z hz
     have heq := frontier_le_subset_eq
-      ((continuous_cubeRadius n).comp continuous_snd)
-      (continuous_const.sub ((continuous_subtype_val.comp continuous_fst).div_const 2)) hz
-    exact cubePathExtension_interface n p Γ z heq
-  · exact Γ.val.continuous.comp (continuous_cubePrismRetract n).snd
-  · exact p.continuous.comp (continuous_cubePrismRetract n).fst
+      ((continuous_cubeRadius n).comp (continuous_snd.comp continuous_snd))
+      (continuous_const.sub
+        ((continuous_subtype_val.comp (continuous_fst.comp continuous_snd)).div_const 2)) hz
+    exact cubePathExtension_interface n z.1.1 z.1.2 z.2 heq
+  · exact continuous_eval.comp
+      ((continuous_subtype_val.comp (continuous_snd.comp continuous_fst)).prodMk
+        ((continuous_cubePrismRetract n).snd.comp continuous_snd))
+  · exact (Path.continuous_uncurry_iff.mpr continuous_id).comp
+      ((continuous_fst.comp continuous_fst).prodMk
+        ((continuous_cubePrismRetract n).fst.comp continuous_snd))
+
+theorem continuous_cubePathExtension (n : ℕ) (p : Path x y)
+    (Γ : GenLoop (Fin (n + 1)) X x) : Continuous (cubePathExtension n p Γ) := by
+  exact (continuous_cubePathExtension_joint (X := X) (x := x) (y := y) n).comp
+    (f := fun z => ((p, Γ), z)) (continuous_const.prodMk continuous_id)
 
 
 theorem cubePathExtension_zero (n : ℕ) (p : Path x y) (Γ : GenLoop (Fin (n + 1)) X x)
@@ -52,7 +64,7 @@ theorem cubePathExtension_zero (n : ℕ) (p : Path x y) (Γ : GenLoop (Fin (n + 
     simpa only [zero_div, sub_zero] using cubeRadius_le_one n v
   change (if cubeRadius n v ≤ 1 - (0 : ℝ) / 2 then Γ (cubePrismRetract n (0, v)).2
     else p (cubePrismRetract n (0, v)).1) = Γ v
-  rw [if_pos hc, cubePrismRetract_bottom]
+  rw [ite_eq_left hc, cubePrismRetract_bottom]
 
 
 

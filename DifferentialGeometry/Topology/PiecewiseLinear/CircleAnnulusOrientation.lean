@@ -87,7 +87,7 @@ theorem exists_loopCircle_param_of_arc_decomposition
     intro s hs
     have hsI : s ∈ Icc (0 : ℝ) 1 := ⟨hs.1, by linarith [hs.2]⟩
     have hcoe := pathToCircle_coe ℓ ⟨s, hsI⟩
-    rw [hcoe, hℓdef, Path.trans_apply, dif_pos (show ((⟨s, hsI⟩ : unitInterval) : ℝ) ≤ 1 / 2 from
+    rw [hcoe, hℓdef, Path.trans_apply, dite_eq_left (show ((⟨s, hsI⟩ : unitInterval) : ℝ) ≤ 1 / 2 from
       hs.2)]
     rfl
   refine ⟨pathToCircle ℓ, (pathToCircle ℓ).continuous, ⟨?_, hinj.injOn, ?_⟩, ?_, ?_, ?_⟩
@@ -119,9 +119,9 @@ theorem exists_pair_ne_of_isPLSphere_one {S : Set E}
     (hS : IsPLSphere 1 S) : ∃ x ∈ S, ∃ y ∈ S, x ≠ y := by
   obtain ⟨f, hf⟩ := hS
   have h0 : (Pi.single (0 : Fin 3) (1 : ℝ)) ∈ stdSimplexBoundary 2 :=
-    ⟨single_mem_stdSimplex ℝ _, ⟨1, by simp⟩⟩
+    ⟨Convexity.StdSimplex.single_mem_coordinateSet ℝ _, ⟨1, by simp⟩⟩
   have h1 : (Pi.single (1 : Fin 3) (1 : ℝ)) ∈ stdSimplexBoundary 2 :=
-    ⟨single_mem_stdSimplex ℝ _, ⟨0, by simp⟩⟩
+    ⟨Convexity.StdSimplex.single_mem_coordinateSet ℝ _, ⟨0, by simp⟩⟩
   refine ⟨f _, hf.bijOn.mapsTo h0, f _, hf.bijOn.mapsTo h1, fun h => ?_⟩
   have heq := hf.bijOn.injOn h0 h1 h
   have hval := congrFun heq (0 : Fin 3)
@@ -422,14 +422,14 @@ theorem isPLPseudoIsotopicToId_of_boundary_isPLCirclePositive [FiniteDimensional
     refine (hu.prodMap hsing1.isPLHomeomorphOn_id).congr ?_
     rintro z ⟨-, hz2⟩
     have hz2' : z.2 = 1 := hz2
-    simp only [hθdef, if_pos hz2']
+    simp only [hθdef, ite_eq_left hz2']
     rfl
   have hθ00 : IsPLHomeomorphOn θ (K.space ×ˢ ({0} : Set ℝ)) (K.space ×ˢ ({0} : Set ℝ)) := by
     refine hW00poly.isPLHomeomorphOn_id.congr ?_
     rintro z ⟨-, hz2⟩
     have hz2' : z.2 = 0 := hz2
     have hz1 : z.2 ≠ 1 := by rw [hz2']; norm_num
-    simp only [hθdef, if_neg hz1, if_pos hz2']
+    simp only [hθdef, ite_eq_right hz1, ite_eq_left hz2']
     rfl
   have hθD : IsPLHomeomorphOn θ ((boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1)
       ((boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1) := by
@@ -437,13 +437,13 @@ theorem isPLPseudoIsotopicToId_of_boundary_isPLCirclePositive [FiniteDimensional
     rintro z ⟨hz1, hz2⟩
     by_cases h1 : z.2 = 1
     · have hz : z = (z.1, (1 : ℝ)) := Prod.ext rfl h1
-      simp only [hθdef, if_pos h1]
+      simp only [hθdef, ite_eq_left h1]
       rw [hz, hΦ1 z.1 hz1, ← h1]
     · by_cases h0 : z.2 = 0
       · have hz : z = (z.1, (0 : ℝ)) := Prod.ext rfl h0
-        simp only [hθdef, if_neg h1, if_pos h0]
+        simp only [hθdef, ite_eq_right h1, ite_eq_left h0]
         rw [hz, hΦ0 z.1 hz1]
-      · simp only [hθdef, if_neg h1, if_neg h0]
+      · simp only [hθdef, ite_eq_right h1, ite_eq_right h0]
   have hmeet0 : (K.space ×ˢ ({0} : Set ℝ)) ∩ ((boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1) =
       (boundaryComplex 2 K).space ×ˢ ({0} : Set ℝ) := by
     ext z
@@ -457,7 +457,7 @@ theorem isPLPseudoIsotopicToId_of_boundary_isPLCirclePositive [FiniteDimensional
     rintro z ⟨-, hz2⟩
     have hz2' : z.2 = 0 := hz2
     have hz1 : z.2 ≠ 1 := by rw [hz2']; norm_num
-    simp only [hθdef, if_neg hz1, if_pos hz2']
+    simp only [hθdef, ite_eq_right hz1, ite_eq_left hz2']
   have hθ0 : IsPLHomeomorphOn θ
       (K.space ×ˢ ({0} : Set ℝ) ∪ (boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1)
       (K.space ×ˢ ({0} : Set ℝ) ∪ (boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1) := by
@@ -481,7 +481,7 @@ theorem isPLPseudoIsotopicToId_of_boundary_isPLCirclePositive [FiniteDimensional
     have hval : ∀ z ∈ (boundaryComplex 2 K).space ×ˢ ({1} : Set ℝ), θ z = (u z.1, z.2) := by
       rintro z ⟨-, hz2⟩
       have hz2' : z.2 = 1 := hz2
-      simp only [hθdef, if_pos hz2']
+      simp only [hθdef, ite_eq_left hz2']
     rw [image_congr hval]
     ext w
     constructor

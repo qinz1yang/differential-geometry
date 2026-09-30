@@ -16,14 +16,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 open Classical in
 private theorem frontier_simplex_prism_image
     {a b : ℝ} (hab : a < b) {f : (Fin 3 → ℝ) × ℝ → E} {N : Set E}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc a b) N)
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc a b) N)
     (hdim : Module.finrank ℝ E = 3) :
-    frontier N = f '' (stdSimplex ℝ (Fin 3) ×ˢ {a, b} ∪ stdSimplexBoundary 2 ×ˢ Icc a b) := by
+    frontier N = f '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {a, b} ∪ stdSimplexBoundary 2 ×ˢ Icc a b) := by
   let _ : DecidableEq (Fin 3 → ℝ) := Classical.decEq _
   obtain ⟨Q, hQfin, hQspace⟩ := (isPLBall_stdSimplex 2).isPolyhedron.exists_simplicialComplex
   let _ : Finite Q.faces := hQfin.to_subtype
   have hQ : IsPLBall 2 Q.space := hQspace.symm ▸ isPLBall_stdSimplex 2
-  have hi : IsPLHomeomorphOn id (stdSimplex ℝ (Fin 3)) Q.space := by
+  have hi : IsPLHomeomorphOn id (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q.space := by
     rw [hQspace]
     exact (isPLBall_stdSimplex 2).isPolyhedron.isPLHomeomorphOn_id
   have hQbd : (boundaryComplex 2 Q).space = stdSimplexBoundary 2 := by
@@ -36,13 +36,13 @@ open Classical in
 theorem IsPLBall.exists_centered_prism_subset_of_boundary_neighborhood
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 3 K.space)
     (hdim : Module.finrank ℝ E = 3) {D S : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (hproper : D ∩ frontier K.space = r '' stdSimplexBoundary 2)
     (hSboundary : S ∩ K.space ⊆ frontier K.space)
     (hSnhds : S ∈ 𝓝ˢ[frontier K.space] (r '' stdSimplexBoundary 2)) :
     ∃ (N : Set E) (f : (Fin 3 → ℝ) × ℝ → E),
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N ∧
-      N ⊆ K.space ∧ (∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = r x) ∧
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N ∧
+      N ⊆ K.space ∧ (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = r x) ∧
       S ∩ N = f '' (stdSimplexBoundary 2 ×ˢ Icc (-1 : ℝ) 1) ∧ D ⊆ N := by
   have hproper' : D ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2 := by
     rwa [← frontier_space_eq_boundaryComplex_space_of_finrank hdim K
@@ -73,8 +73,8 @@ theorem IsPLBall.exists_centered_prism_subset_of_boundary_neighborhood
     dsimp [ε]
     have h := min_le_right δ 1
     linarith
-  have hsmall : stdSimplex ℝ (Fin 3) ×ˢ Icc (-ε) ε ⊆
-      stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
+  have hsmall : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-ε) ε ⊆
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
     rintro ⟨x, t⟩ ⟨hx, ht⟩
     exact ⟨hx, by linarith [ht.1], by linarith [ht.2]⟩
   have hwallS : φ '' (stdSimplexBoundary 2 ×ˢ Icc (-ε) ε) ⊆ S := by
@@ -109,15 +109,15 @@ theorem IsPLBall.exists_centered_prism_subset_of_boundary_neighborhood
           linarith [ht.2]
       · rw [hτapply]
         field_simp
-  let N := φ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-ε) ε)
+  let N := φ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-ε) ε)
   let f := φ ∘ Prod.map (id : (Fin 3 → ℝ) → (Fin 3 → ℝ)) τ
-  have hPsmall : IsPolyhedron (stdSimplex ℝ (Fin 3) ×ˢ Icc (-ε) ε) :=
+  have hPsmall : IsPolyhedron (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-ε) ε) :=
     (isPLBall_three_prod (isPLBall_stdSimplex 2) (isPLBall_Icc (by linarith))).isPolyhedron
-  have hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N :=
+  have hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N :=
     ((isPLBall_stdSimplex 2).isPolyhedron.isPLHomeomorphOn_id.prodMap hτ).trans
       (hφ.restrict hPsmall hsmall)
   have hNK : N ⊆ K.space := (image_mono hsmall).trans hφ.image_eq.subset
-  have hzero (x : Fin 3 → ℝ) (hx : x ∈ stdSimplex ℝ (Fin 3)) : f (x, 0) = r x := by
+  have hzero (x : Fin 3 → ℝ) (hx : x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) : f (x, 0) = r x := by
     change φ (x, τ 0) = r x
     rw [hτapply, mul_zero, hφzero x hx]
   have hwall : f '' (stdSimplexBoundary 2 ×ˢ Icc (-1 : ℝ) 1) =
@@ -129,7 +129,7 @@ theorem IsPLBall.exists_centered_prism_subset_of_boundary_neighborhood
     · rintro y ⟨hyS, z, hz, rfl⟩
       have hφz : φ z ∈ frontier K.space := hSboundary ⟨hyS, hφ.bijOn.mapsTo (hsmall hz)⟩
       obtain ⟨w, hw, heq⟩ := hfront.subset hφz
-      have hwP : w ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
+      have hwP : w ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
         rcases hw with hw | hw
         · rcases hw.2 with ht | ht
           · exact ⟨hw.1, ht.symm ▸ ⟨le_rfl, by norm_num⟩⟩
@@ -157,11 +157,11 @@ theorem IsCombinatorialManifold.exists_centered_prism_neighborhood_of_spanning_d
     (S : Geometry.SimplicialComplex ℝ E) [Finite S.faces]
     (hS : IsCombinatorialManifold 2 S) (hSc : IsConnected S.space)
     (hdim : Module.finrank ℝ E = 3) {D U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2) (hU : IsOpen U) (hDU : D ⊆ U) :
     ∃ (N : Set E) (f : (Fin 3 → ℝ) × ℝ → E),
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N ∧ N ⊆ U ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = r x) ∧
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N ∧ N ⊆ U ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = r x) ∧
       S.space ∩ N = f '' (stdSimplexBoundary 2 ×ˢ Icc (-1 : ℝ) 1) ∧ D ⊆ N := by
   have hcompact : IsCompact (S.space ∪ D) :=
     (isPolyhedron_space S).isCompact.union (show IsPLBall 2 D from ⟨r, hr⟩).isPolyhedron.isCompact
@@ -192,9 +192,9 @@ theorem IsCombinatorialManifold.exists_centered_prism_neighborhood_of_spanning_d
 open Classical in
 theorem IsPLHomeomorphOn.exists_wall_and_caps_of_centered_prism
     {N D : Set E} {f : (Fin 3 → ℝ) × ℝ → E} {r : (Fin 3 → ℝ) → E}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
-    (hzero : ∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = r x)
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
+    (hzero : ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = r x)
     (hdim : Module.finrank ℝ E = 3) :
     ∃ (W D₀ D₁ : Set E) (ρ : E × ℝ → E) (r₀ r₁ : (Fin 3 → ℝ) → E),
       IsPLBall 3 N ∧ D ⊆ N ∧ D \ r '' stdSimplexBoundary 2 ⊆ interior N ∧
@@ -203,8 +203,8 @@ theorem IsPLHomeomorphOn.exists_wall_and_caps_of_centered_prism
       IsPLHomeomorphOn ρ ((r '' stdSimplexBoundary 2) ×ˢ Icc (-1 : ℝ) 1) W ∧
       (∀ x ∈ r '' stdSimplexBoundary 2, ρ (x, 0) = x) ∧
       (∀ x ∈ stdSimplexBoundary 2, ∀ t ∈ Icc (-1 : ℝ) 1, ρ (r x, t) = f (x, t)) ∧
-      IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀ ∧
-      IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁ ∧ Disjoint D₀ D₁ ∧
+      IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ ∧
+      IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧ Disjoint D₀ D₁ ∧
       frontier N = W ∪ D₀ ∪ D₁ ∧
       W ∩ D₀ = r₀ '' stdSimplexBoundary 2 ∧ W ∩ D₁ = r₁ '' stdSimplexBoundary 2 ∧
       r₀ '' stdSimplexBoundary 2 = ρ '' ((r '' stdSimplexBoundary 2) ×ˢ {(-1 : ℝ)}) ∧
@@ -212,7 +212,7 @@ theorem IsPLHomeomorphOn.exists_wall_and_caps_of_centered_prism
   have hJstd : IsPLSphere 1 (stdSimplexBoundary 2) := by
     rw [← simplexBoundary_stdVertices_space 1]
     exact isPLSphere_simplexBoundary_std 1
-  have hJsub : stdSimplexBoundary 2 ⊆ stdSimplex ℝ (Fin 3) := fun _ hx => hx.1
+  have hJsub : stdSimplexBoundary 2 ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := fun _ hx => hx.1
   have hrest := hr.restrict hJstd.isPolyhedron hJsub
   let W := f '' (stdSimplexBoundary 2 ×ˢ Icc (-1 : ℝ) 1)
   have hside := hf.restrict (hJstd.isPolyhedron.prod isHPolytope_Icc.isPolyhedron)
@@ -229,8 +229,8 @@ theorem IsPLHomeomorphOn.exists_wall_and_caps_of_centered_prism
     change f (Function.invFunOn r (stdSimplexBoundary 2) (r x), t) = f (x, t)
     rw [hrest.bijOn.invOn_invFunOn.1 hx]
   have hslice (t : ℝ) (ht : t ∈ Icc (-1 : ℝ) 1) :
-      IsPLHomeomorphOn (fun x => f (x, t)) (stdSimplex ℝ (Fin 3))
-        (f '' (stdSimplex ℝ (Fin 3) ×ˢ {t})) := by
+      IsPLHomeomorphOn (fun x => f (x, t)) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
+        (f '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {t})) := by
     have hconst := (isPLBall_stdSimplex 2).isPolyhedron.isPLHomeomorphOn_prod_const t
     exact hconst.trans (hf.restrict
       ((isPLBall_stdSimplex 2).of_isPLHomeomorphOn hconst).isPolyhedron
@@ -241,10 +241,10 @@ theorem IsPLHomeomorphOn.exists_wall_and_caps_of_centered_prism
     change _ = (f ∘ Prod.map (Function.invFunOn r (stdSimplexBoundary 2)) id) '' _
     rw [image_comp, prodMap_image_prod, image_id, hrest.symm.image_eq, prod_singleton, image_image]
   have hmeet (t : ℝ) (ht : t ∈ Icc (-1 : ℝ) 1) :
-      W ∩ f '' (stdSimplex ℝ (Fin 3) ×ˢ {t}) =
+      W ∩ f '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {t}) =
         (fun x => f (x, t)) '' stdSimplexBoundary 2 := by
-    have hsub : stdSimplex ℝ (Fin 3) ×ˢ {t} ⊆
-        stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := fun z hz => ⟨hz.1, hz.2.symm ▸ ht⟩
+    have hsub : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {t} ⊆
+        Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := fun z hz => ⟨hz.1, hz.2.symm ▸ ht⟩
     change f '' _ ∩ f '' _ = _
     rw [← hf.bijOn.injOn.image_inter (prod_mono hJsub Subset.rfl) hsub, prod_inter_prod,
       inter_eq_left.mpr hJsub, inter_eq_right.mpr (singleton_subset_iff.mpr ht),
@@ -263,7 +263,7 @@ theorem IsPLHomeomorphOn.exists_wall_and_caps_of_centered_prism
     · rintro y ⟨hyD, hyN⟩
       obtain ⟨x, hx, rfl⟩ := hr.bijOn.surjOn hyD
       obtain ⟨z, hz, heq⟩ := hfront.subset hyN
-      have hzP : z ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
+      have hzP : z ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
         rcases hz with hz | hz
         · exact ⟨hz.1, by rcases hz.2 with h | h <;> rw [h] <;> norm_num⟩
         · exact ⟨hz.1.1, hz.2⟩
@@ -280,23 +280,23 @@ theorem IsPLHomeomorphOn.exists_wall_and_caps_of_centered_prism
     rintro x ⟨hxD, hxJ⟩
     rw [← self_sdiff_frontier N]
     exact ⟨hDN hxD, fun hxF => hxJ (hproper.subset ⟨hxD, hxF⟩)⟩
-  let D₀ := f '' (stdSimplex ℝ (Fin 3) ×ˢ {(-1 : ℝ)})
-  let D₁ := f '' (stdSimplex ℝ (Fin 3) ×ˢ {(1 : ℝ)})
+  let D₀ := f '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(-1 : ℝ)})
+  let D₁ := f '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(1 : ℝ)})
   have hdis : Disjoint D₀ D₁ := by
     apply disjoint_left.mpr
     rintro y ⟨z, hz, rfl⟩ ⟨w, hw, heq⟩
     have heq' := hf.bijOn.injOn
-      (show w ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 from
+      (show w ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 from
         ⟨hw.1, hw.2.symm ▸ by norm_num⟩)
-      (show z ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 from
+      (show z ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 from
         ⟨hz.1, hz.2.symm ▸ by norm_num⟩) heq
     have ht := congrArg Prod.snd heq'
     have hw' : w.2 = 1 := hw.2
     have hz' : z.2 = -1 := hz.2
     linarith
   have hfront' : frontier N = W ∪ D₀ ∪ D₁ := by
-    rw [hfront, show stdSimplex ℝ (Fin 3) ×ˢ {(-1 : ℝ), 1} =
-      stdSimplex ℝ (Fin 3) ×ˢ {(-1 : ℝ)} ∪ stdSimplex ℝ (Fin 3) ×ˢ {(1 : ℝ)} by
+    rw [hfront, show Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(-1 : ℝ), 1} =
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(-1 : ℝ)} ∪ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(1 : ℝ)} by
         rw [← prod_union, singleton_union], image_union, image_union]
     ext x
     simp only [W, D₀, D₁, mem_union]

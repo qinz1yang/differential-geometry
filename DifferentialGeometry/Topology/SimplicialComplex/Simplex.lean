@@ -239,7 +239,7 @@ theorem faceEulerChar_boundarySimplex_eq_two_mul_of_card_eq_four
     have hsp := hproper hs (by decide)
     obtain ⟨⟨hsne, hsub⟩, hsc⟩ := (mem_facesOfCard (simplex vertices)).mp hs
     have hboundary : s ∈ boundarySimplex vertices := ⟨hsne, hsp⟩
-    rw [if_pos hboundary]
+    rw [ite_eq_left hboundary]
     have hlink : (facesOfCard (link (simplex vertices) s) 1).card = 1 := by
       simpa [link_simplex hsub, card_sdiff_of_subset hsub, hcard, hsc] using
         card_facesOfCard_simplex (vertices \ s) 1 (by decide)
@@ -249,13 +249,13 @@ theorem faceEulerChar_boundarySimplex_eq_two_mul_of_card_eq_four
     have hsp := hproper hs (by decide)
     have hboundary : s ∈ boundarySimplex vertices :=
       ⟨((mem_facesOfCard (simplex vertices)).mp hs).1.1, hsp⟩
-    rw [if_pos hboundary]
+    rw [ite_eq_left hboundary]
     exact faceEulerChar_link_simplex hsp
   · intro s hs
     have hsp := hproper hs (by decide)
     have hboundary : s ∈ boundarySimplex vertices :=
       ⟨((mem_facesOfCard (simplex vertices)).mp hs).1.1, hsp⟩
-    rw [if_pos hboundary]
+    rw [ite_eq_left hboundary]
     exact faceEulerChar_link_simplex hsp
 
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NoncollapsingThroughSurgeryLeaves
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.ReducedVolumeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionExistenceReduction
 
 set_option autoImplicit false
@@ -31,7 +31,7 @@ theorem stageMetric_scalar_ge_of_stageInitial {c : ℝ} (hc : 0 < c)
       by_cases hfin : H.time (Fin.last H.eventCount) < H.horizon
       · have hmetric : H.stageMetric (Fin.last H.eventCount) t =
             (H.finalSlab hfin).flow.base.metric t := by
-          simp only [stageMetric, Fin.lastCases_last, dif_pos hfin]
+          simp only [stageMetric, Fin.lastCases_last, dite_eq_left hfin]
         rw [hmetric]
         exact closedSlab_scalarLowerBarrier_le hfin (H.time_nonneg _) hc (H.finalSlab hfin)
           (fun z => by rw [H.final_initial hfin]; exact hstage _ z) ht x
@@ -39,7 +39,7 @@ theorem stageMetric_scalar_ge_of_stageInitial {c : ℝ} (hc : 0 < c)
           le_antisymm (ht.2.trans (le_of_not_gt hfin)) ht.1
         have hmetric : H.stageMetric (Fin.last H.eventCount) t =
             H.initialMetric (Fin.last H.eventCount) := by
-          simp only [stageMetric, Fin.lastCases_last, dif_neg hfin]
+          simp only [stageMetric, Fin.lastCases_last, dite_eq_right hfin]
         rw [hmetric, ht']
         exact hstage _ x
     | cast i =>
@@ -259,9 +259,9 @@ theorem measurable_regularizedDensity_of_isClosed_regularizedCost_le
           (3 / 2 : ℝ) * Real.log (v ^ 2) - (3 / 2 : ℝ) * Real.log (4 * Real.pi))) := by
     funext q
     by_cases h : cost q = ⊤
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       exact H.regularizedDensity_eq_zero_of_regularizedCost_eq_top first last hle T B v p q h
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       obtain ⟨r, hr⟩ := WithTop.ne_top_iff_exists.mp h
       rw [← hr, WithTop.untopD_coe]
       exact H.regularizedDensity_eq_exp_of_regularizedCost_eq first last hle T B hv p q
@@ -274,13 +274,13 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u})
 
 private local instance (P : OrientedThreeStage.{u}) : MeasurableSpace P.Carrier :=
   borel P.Carrier
 
 theorem exists_stageMetric_scalar_lower_bound_of_inCutoffClass {g₀ : P₀.Metric} {B : ℝ}
-    {p₀ : CutoffParameters} {δbound ρbound : ℝ} (hH : H.InCutoffClass g₀ B p₀ δbound ρbound) :
+    {p₀ : CutoffParameters} {δbound ρbound : ℝ} (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound) :
     ∃ b : ℝ, 0 < b ∧ ∀ (j : Fin (H.eventCount + 1)), ∀ t ∈ H.toHistory.stageDomain j,
       ∀ x : (H.stage j).Carrier, -b ≤ metricScalarAt (H.toHistory.stageMetric j t) x := by
   obtain ⟨_, -, -, -, -, -, records, -⟩ := hH.2.2.2.1
@@ -301,7 +301,7 @@ theorem reducedVolume_eq_of_scalar_lower_bound_le (k : Fin (H.eventCount + 1))
           (H.stage (H.toHistory.activeStage
             (projIcc 0 H.horizon H.horizon_nonneg (T - v ^ 2)))).Carrier
           (H.toHistory.stageMetric _ (T - v ^ 2)) := by
-  simp only [reducedVolume, dif_pos hle]
+  simp only [reducedVolume, dite_eq_left hle]
   refine (Filter.limsup_congr (Filter.eventually_atTop.2 ⟨B₀, fun B hB => ?_⟩)).trans
     (Filter.limsup_const _)
   rw [ObservedHistory.regularMinimizerEndpoints_eq_of_scalar_lower_bound_le (H := H.toHistory)
@@ -324,7 +324,7 @@ theorem reducedVolume_le_of_scalar_lower_bound (k : Fin (H.eventCount + 1))
       H.toHistory.regularizedDensity_le_exp _ k hle T b hv p q).trans ?_
     rw [setLIntegral_const]
     exact mul_le_mul' le_rfl (measure_mono (subset_univ _))
-  · simp only [reducedVolume, dif_neg hle]
+  · simp only [reducedVolume, dite_eq_right hle]
     exact bot_le
 
 theorem reducedVolume_lt_top_of_scalar_lower_bound (k : Fin (H.eventCount + 1))
@@ -337,7 +337,7 @@ theorem reducedVolume_lt_top_of_scalar_lower_bound (k : Fin (H.eventCount + 1))
 
 omit hfloor in
 theorem exists_reducedVolume_eq_lintegral_of_inCutoffClass {g₀ : P₀.Metric} {B : ℝ}
-    {p₀ : CutoffParameters} {δbound ρbound : ℝ} (hH : H.InCutoffClass g₀ B p₀ δbound ρbound) :
+    {p₀ : CutoffParameters} {δbound ρbound : ℝ} (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound) :
     ∃ B₀ : ℝ, ∀ (k : Fin (H.eventCount + 1)) (p : (H.stage k).Carrier) (T v : ℝ)
       (hle : H.toHistory.activeStage (projIcc 0 H.horizon H.horizon_nonneg (T - v ^ 2)) ≤ k),
       H.reducedVolume k p T v =
@@ -347,15 +347,15 @@ theorem exists_reducedVolume_eq_lintegral_of_inCutoffClass {g₀ : P₀.Metric} 
             (H.stage (H.toHistory.activeStage
               (projIcc 0 H.horizon H.horizon_nonneg (T - v ^ 2)))).Carrier
             (H.toHistory.stageMetric _ (T - v ^ 2)) := by
-  obtain ⟨b, -, hfloor⟩ := H.exists_stageMetric_scalar_lower_bound_of_inCutoffClass hH
+  obtain ⟨b, -, hfloor⟩ := H.exists_stageMetric_scalar_lower_bound_of_inCutoffClass (P₀ := P₀) hH
   exact ⟨b, fun k p T v hle => reducedVolume_eq_of_scalar_lower_bound_le hfloor k p T v le_rfl hle⟩
 
 omit hfloor in
 theorem reducedVolume_lt_top_of_inCutoffClass {g₀ : P₀.Metric} {B : ℝ}
-    {p₀ : CutoffParameters} {δbound ρbound : ℝ} (hH : H.InCutoffClass g₀ B p₀ δbound ρbound)
+    {p₀ : CutoffParameters} {δbound ρbound : ℝ} (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound)
     (k : Fin (H.eventCount + 1)) (p : (H.stage k).Carrier) (T : ℝ) {v : ℝ} (hv : 0 < v) :
     H.reducedVolume k p T v < ⊤ := by
-  obtain ⟨b, -, hfloor⟩ := H.exists_stageMetric_scalar_lower_bound_of_inCutoffClass hH
+  obtain ⟨b, -, hfloor⟩ := H.exists_stageMetric_scalar_lower_bound_of_inCutoffClass (P₀ := P₀) hH
   exact reducedVolume_lt_top_of_scalar_lower_bound hfloor k p T hv
 
 end RetainedCoreHistory

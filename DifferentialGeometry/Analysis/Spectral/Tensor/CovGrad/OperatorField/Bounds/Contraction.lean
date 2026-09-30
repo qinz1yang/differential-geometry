@@ -3,6 +3,14 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Tensor.F
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.UniformBound
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lowering
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.ParallelNaturality
+
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply covariantTensorInnerPointwise
+  exists_tangent_orthonormalBasisRS_with_norm_sum fiberNormSqComponent fiberNormSqSummand
+  fiberNormSqSummand_eq_component_sq lowerAllUpperIndices lowerAllUpperIndices_apply
+  riemannianFiberNormSq riemannianFiberNormSq_eq_sum_componentRS_sq
+  riemannianFiberNormSq_eq_sum_componentS_sq riemannianFiberNormSq_eq_tensorInnerPointwise
+  riemannianFiberNormSq_nonneg tensorInnerPointwise
+  tensorInnerPointwise_0s_eq_diag_sum_orthoFrame tensorS_coframe_expansion)
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -57,8 +65,8 @@ lemma riemannianFiberNormSq_repr_of_orthoFrame_cb
       intro j _
       rw [(g.inner x (e k)).map_smul (c j) (e j), smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
-    · intro j _ hjk; rw [if_neg (fun h => hjk h.symm), mul_zero]
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
+    · intro j _ hjk; rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ (TangentSpace I x))) =
       Module.finrank ℝ (TangentSpace I x) := Fintype.card_fin _
   set bse : Module.Basis (Fin (Module.finrank ℝ (TangentSpace I x))) ℝ (TangentSpace I x) :=

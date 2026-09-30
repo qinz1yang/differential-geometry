@@ -46,7 +46,7 @@ theorem MapCInfConvergenceOnCompacts.tendsto_comp
   let y' : ℕ → F := fun n => if N ≤ n then y n else yinf
   have heq : y' =ᶠ[atTop] y := by
     filter_upwards [eventually_ge_atTop N] with n hn
-    simp only [y', if_pos hn]
+    simp only [y', ite_eq_left hn]
   have hy' : Tendsto y' atTop (𝓝 yinf) := hy.congr' heq.symm
   let K : Set F := insert yinf (Set.range y')
   have hKV : K ⊆ V := by

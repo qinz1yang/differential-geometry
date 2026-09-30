@@ -63,29 +63,14 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
   (extChartAt_target_subset_interior_of_boundaryless)
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
-  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
-  linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero
-  exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
-  linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
-  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrectionField linearizedRicciFirstOrderBaseCoeff
-  linearizedRicciFirstOrderCorrectionField ricciDeTurckPrincipalCoefficient traceHessianCoeff
-  linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
-  linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
-  exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
-  unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
-  ccTensor02Symm_sub smoothCcTensorBilinForm_ccTensor02Symm iteratedCovGrad_ccTensor02Symm_eq domDomCongrSection
-  riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrectionField linearizedRicciFirstOrderBaseCoeff linearizedRicciFirstOrderCorrectionField ricciDeTurckPrincipalCoefficient traceHessianCoeff linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm ccTensor02Symm_sub smoothCcTensorBilinForm_ccTensor02Symm iteratedCovGrad_ccTensor02Symm_eq domDomCongrSection riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
 open DifferentialGeometry.PDE.DeTurck (deTurckVF)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
   hasDerivAt_realizedRicciChartSum metricPerturbationPath)
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
-  symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -119,13 +104,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (lieDeTurckChartSlope deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope
   lieDeTurckChartSlope_eq_orderSplit)
 open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (reindexCoefficientInputSlots reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply reindexCoefficientInputSlots_toSection
-  deTurckLieSecondOrderPrincipalCoeff deTurckLieFirstOrderCoeff deTurckLieCoeffField
-  deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth
-  deTurckLieCoeffField_metricPerturbationPath_jointSmooth deTurckLieSecondOrderPrincipalCoeff_apply_eq
-  cometricFinBasisTrace_eq_chartInvGram_bilin quadrilinearMapSlotBilinearAt
-  unitModel4SlotBilin_apply)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (reindexCoefficientInputSlots reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply reindexCoefficientInputSlots_toSection deTurckLieSecondOrderPrincipalCoeff deTurckLieFirstOrderCoeff deTurckLieCoeffField deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth deTurckLieCoeffField_metricPerturbationPath_jointSmooth deTurckLieSecondOrderPrincipalCoeff_apply_eq cometricFinBasisTrace_eq_chartInvGram_bilin quadrilinearMapSlotBilinearAt unitModel4SlotBilin_apply)
 
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -241,17 +220,7 @@ private lemma lieSecondOrder_operatorFieldApplication_value_invGram
   ring
 
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization (realizedGramDeriv)
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (domDomCongrSection_unitModel unitModel_basisChart_eq_tensorChartComponentRaw
-  tensorChartComponentRaw tensorChartComponentRaw_add tensorChartComponentRaw_smul
-  secondOrderCovariantDerivativeCorrection firstOrderCovariantDerivativeCorrection iteratedCovGrad2_chartComponent_decomposition
-  iteratedCovGrad1_chartComponent_decomposition partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2
-  partialDeriv_realizedGramDeriv_eq_half_sum_euclidPartial
-  realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw
-  euclidPartial_swap_chartPushedRaw_tensorChartComponentRaw covDerivLowerOrderTerm02_center_eq
-  covDerivLowerOrderTerm03_center_eq euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE
-  partialDeriv_scalarOnE_eq_euclidPartial_local toEuclidean_extChartAt_mem_chartTargetEuclid
-  symm_toEuclidean_symm_toEuclidean_extChartAt)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (domDomCongrSection_unitModel unitModel_basisChart_eq_tensorChartComponentRaw tensorChartComponentRaw tensorChartComponentRaw_add tensorChartComponentRaw_smul secondOrderCovariantDerivativeCorrection firstOrderCovariantDerivativeCorrection iteratedCovGrad2_chartComponent_decomposition iteratedCovGrad1_chartComponent_decomposition partialDeriv2_realizedGramDeriv_eq_half_sum_euclidPartial2 partialDeriv_realizedGramDeriv_eq_half_sum_euclidPartial realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw euclidPartial_swap_chartPushedRaw_tensorChartComponentRaw covDerivLowerOrderTerm02_center_eq covDerivLowerOrderTerm03_center_eq euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE partialDeriv_scalarOnE_eq_euclidPartial_local toEuclidean_extChartAt_mem_chartTargetEuclid symm_toEuclidean_symm_toEuclidean_extChartAt)
 open DifferentialGeometry.Analysis.Sobolev.Chart
   (chartPushedRaw chartPushedRaw_apply_of_mem chartTargetEuclid chartTargetEuclid_isOpen)
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
@@ -807,9 +776,9 @@ private lemma lieTerm_P2_halfCollapse
           ((if l = e then (1 : ℝ) else 0) *
             (pd2 d a l b + pd2 d b l a - pd2 d l a b))))]
     rw [Finset.sum_eq_single e]
-    · rw [if_pos rfl, one_mul]
+    · rw [ite_eq_left rfl, one_mul]
     · intro l _ hl
-      rw [if_neg hl, zero_mul, mul_zero, mul_zero]
+      rw [ite_eq_right hl, zero_mul, mul_zero, mul_zero]
     · intro h
       exact absurd (Finset.mem_univ e) h
   rw [Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => hstep2 a b))]
@@ -846,10 +815,7 @@ private lemma lieTerm_P2_halfCollapse
   rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl (fun l _ => ?_)
   ring
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckLieSecondOrderPrincipalCoeff deTurckLieSecondOrderPrincipalCoeff_apply_eq
-  cometricFinBasisTrace_eq_chartInvGram_bilin quadrilinearMapSlotBilinearAt
-  unitModel4SlotBilin_apply)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieSecondOrderPrincipalCoeff deTurckLieSecondOrderPrincipalCoeff_apply_eq cometricFinBasisTrace_eq_chartInvGram_bilin quadrilinearMapSlotBilinearAt unitModel4SlotBilin_apply)
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -1063,9 +1029,7 @@ private lemma lieTerm_cometric_doubleTrace_eq_invGram
   rw [smul_eq_mul]
   rfl
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (unitModel3SlotBilin metricConnectionDifferenceLoweredTrilin metricConnectionDifferenceLoweredTrilin_apply
-  deTurckLieFirstOrderCoeff deTurckLieFirstOrderCoeff_apply_eq)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (unitModel3SlotBilin metricConnectionDifferenceLoweredTrilin metricConnectionDifferenceLoweredTrilin_apply deTurckLieFirstOrderCoeff deTurckLieFirstOrderCoeff_apply_eq)
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieTerm_unitModel3SlotBilin_apply
@@ -2075,9 +2039,9 @@ variable {n : ℕ}
 private lemma o1_sum_ite (g : Fin n → ℝ) (p : Fin n) :
     (∑ q : Fin n, g q * (if p = q then (1 : ℝ) else 0)) = g p := by
   rw [Finset.sum_eq_single p]
-  · rw [if_pos rfl, mul_one]
+  · rw [ite_eq_left rfl, mul_one]
   · intro q _ hq
-    rw [if_neg (fun h => hq h.symm), mul_zero]
+    rw [ite_eq_right (fun h => hq h.symm), mul_zero]
   · intro h
     exact absurd (Finset.mem_univ p) h
 
@@ -2222,9 +2186,9 @@ variable {n : ℕ}
 private lemma o1_sum_ite2 (g : Fin n → ℝ) (p : Fin n) :
     (∑ q : Fin n, (if q = p then (1 : ℝ) else 0) * g q) = g p := by
   rw [Finset.sum_eq_single p]
-  · rw [if_pos rfl, one_mul]
+  · rw [ite_eq_left rfl, one_mul]
   · intro q _ hq
-    rw [if_neg hq, zero_mul]
+    rw [ite_eq_right hq, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ p) h
 
@@ -2400,9 +2364,9 @@ private lemma o1_neg_push1 (t : ℝ) (P : Fin n → Fin n → ℝ) :
 private lemma o1_sum_ite' (g : Fin n → ℝ) (p : Fin n) :
     (∑ q : Fin n, g q * (if q = p then (1 : ℝ) else 0)) = g p := by
   rw [Finset.sum_eq_single p]
-  · rw [if_pos rfl, mul_one]
+  · rw [ite_eq_left rfl, mul_one]
   · intro q _ hq
-    rw [if_neg hq, mul_zero]
+    rw [ite_eq_right hq, mul_zero]
   · intro h
     exact absurd (Finset.mem_univ p) h
 
@@ -4981,11 +4945,7 @@ private theorem lieTerm_hjAbsorb (g₀ : SmoothRiemannianMetric I M) {δ δ' : �
   rw [symmAbsorbedCoeff, smoothCcTensor_toSection_add_apply,
     smoothCcTensor_toSection_smul_apply, smoothCcTensor_toSection_smul_apply]
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv
-  connectionDifferenceOp_homSection_contMDiff metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_toModel
-  metricConnectionDifferenceLoweredFib_contMDiff domDomCongrFibRank domDomCongrFibRank_apply
-  tensor0SProdKappaFib tensor0SProdKappaFib_apply)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv connectionDifferenceOp_homSection_contMDiff metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_toModel metricConnectionDifferenceLoweredFib_contMDiff)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
   (cometricDoubleTraceFib cometricDoubleTraceFib_toModel cometricDoubleTraceFib_contMDiff)
 

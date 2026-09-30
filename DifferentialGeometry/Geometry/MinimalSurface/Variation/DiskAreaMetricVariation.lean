@@ -46,7 +46,7 @@ theorem riemannianAreaDensity_pullbackMetricCross
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] [T2Space Q] hBoundary in
 private theorem diskMapPartial_comp_diffeomorphCross
-    {A : Type*} [TopologicalSpace A] [ChartedSpace E A] [IsManifold 𝓘(ℝ, E) ∞ A]
+    {A : Type*} [TopologicalSpace A] [ChartedSpace E A]
     (φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (U : ℂ → Q) (z v : ℂ)
     (hU : MDifferentiableAt 𝓘(ℝ, ℂ) I U z) :
     diskMapPartial (E := E) (M := A) (fun w => φ (U w)) z v =
@@ -68,7 +68,7 @@ private theorem inner_pullbackMetricCross_comp_diffeomorphCross
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] [T2Space Q] hBoundary in
 private theorem mfderiv_symm_apply_mfderiv_apply
-    {A : Type*} [TopologicalSpace A] [ChartedSpace E A] [IsManifold 𝓘(ℝ, E) ∞ A]
+    {A : Type*} [TopologicalSpace A] [ChartedSpace E A]
     (φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (p : Q) (X : TangentSpace I p) :
     mfderiv 𝓘(ℝ, E) I (φ.symm : A → Q) (φ p) (mfderiv I 𝓘(ℝ, E) (φ : Q → A) p X) = X := by
   have h1 : MDifferentiableAt I 𝓘(ℝ, E) (φ : Q → A) p :=
@@ -86,7 +86,6 @@ variable {D : RealTimeInterval} {t₀ : ℝ}
 
 omit [T2Space Q] hBoundary in
 theorem hasDerivAt_integral_riemannianAreaDensity_metricFamily
-    [SigmaCompactSpace Q]
     (c : Topology.StandardModelCopy I Q E) [CompactSpace c.Q]
     {g : ℝ → SmoothRiemannianMetric I Q} {hG : MetricFamilySmoothOn D g}
     (ht₀ : D.regular ∈ 𝓝 t₀)

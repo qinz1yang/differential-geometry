@@ -151,7 +151,7 @@ theorem CurvatureExpression.eval_norm_le {D : RealTimeInterval}
   | @add s A B ihA ihB =>
       have ha := ihA (fun k hk => hbound k (hk.trans (Nat.le_max_left _ _)))
       have hb := ihB (fun k hk => hbound k (hk.trans (Nat.le_max_right _ _)))
-      exact (_root_.Tensor0SBundle.sqrt_normSq0S_add_le g x s (A.eval S t x) (B.eval S t x)).trans
+      exact (_root_.DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le g x s (A.eval S t x) (B.eval S t x)).trans
         (add_le_add ha hb)
   | @smul s c A ih =>
       change Real.sqrt (normSq0S g x s (c • A.eval S t x)) ≤ |c| * A.normBound _ C

@@ -39,7 +39,7 @@ theorem exists_isSubdivision_subcomplex_isGlueIso_planar
   let _ : Finite C.faces := hCfin.to_subtype
   obtain ⟨f, hf⟩ := hD
   obtain ⟨g, hg⟩ := hQ
-  let φ := g ∘ Function.invFunOn f (stdSimplex ℝ (Fin 3))
+  let φ := g ∘ Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hφ : IsPLHomeomorphOn φ A₀.space C.space := by
     rw [hA₀, hCspace]
     exact hf.symm.trans hg
@@ -78,7 +78,7 @@ theorem exists_isSubdivision_isGlueIso_planar [DecidableEq Plane]
   have : Finite C.faces := hCfin.to_subtype
   obtain ⟨f, hf⟩ := hK
   obtain ⟨g, hg⟩ := hQ
-  have hφ : IsPLHomeomorphOn (g ∘ Function.invFunOn f (stdSimplex ℝ (Fin 3))) K.space C.space := by
+  have hφ : IsPLHomeomorphOn (g ∘ Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))) K.space C.space := by
     rw [hCspace]
     exact hf.symm.trans hg
   obtain ⟨A, L, ψ, hA, hAfin, hL, hLfin, hiso, -⟩ := exists_isGlueIso_of_isPLHomeomorphOn K C hφ

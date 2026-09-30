@@ -23,10 +23,10 @@ def restrictSubtypes (e : _root_.OpenPartialHomeomorph X Y) (s : Set X) (t : Set
   let g : t → s := fun y ↦ if hy : e.symm y ∈ s then ⟨e.symm y, hy⟩ else hs
   have hf (x : s) (hx : (x : X) ∈ e.source) : (f x : Y) = e x := by
     dsimp [f]
-    rw [dif_pos ((h x hx).mp x.property)]
+    rw [dite_eq_left ((h x hx).mp x.property)]
   have hg (y : t) (hy : (y : Y) ∈ e.target) : (g y : X) = e.symm y := by
     dsimp [g]
-    rw [dif_pos ((h (e.symm y) (e.map_target hy)).mpr (by
+    rw [dite_eq_left ((h (e.symm y) (e.map_target hy)).mpr (by
       rw [e.right_inv hy]; exact y.property))]
   exact {
     toFun := f
@@ -68,7 +68,7 @@ theorem restrictSubtypes_apply (e : _root_.OpenPartialHomeomorph X Y) (s : Set X
     (restrictSubtypes e s t hs ht h x : Y) = e x := by
   classical
   change (if hy : e x ∈ t then (⟨e x, hy⟩ : t) else ht).val = e x
-  rw [dif_pos ((h x hx).mp x.property)]
+  rw [dite_eq_left ((h x hx).mp x.property)]
 
 theorem restrictSubtypes_symm_apply (e : _root_.OpenPartialHomeomorph X Y) (s : Set X) (t : Set Y)
     (hs : s) (ht : t) (h : ∀ x ∈ e.source, x ∈ s ↔ e x ∈ t)
@@ -76,6 +76,6 @@ theorem restrictSubtypes_symm_apply (e : _root_.OpenPartialHomeomorph X Y) (s : 
     ((restrictSubtypes e s t hs ht h).symm y : X) = e.symm y := by
   classical
   change (if hx : e.symm y ∈ s then (⟨e.symm y, hx⟩ : s) else hs).val = e.symm y
-  rw [dif_pos ((h (e.symm y) (e.map_target hy)).mpr (by rw [e.right_inv hy]; exact y.property))]
+  rw [dite_eq_left ((h (e.symm y) (e.map_target hy)).mpr (by rw [e.right_inv hy]; exact y.property))]
 
 end DifferentialGeometry.Topology.OpenPartialHomeomorph

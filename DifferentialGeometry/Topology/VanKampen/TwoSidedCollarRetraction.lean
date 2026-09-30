@@ -57,7 +57,7 @@ theorem negativeRetractionValue_eq_of_mem_collarSlice
         ⟨x.1, h.collarSlice_subset_range _ hx⟩
       h.toFun (p.1, min p.2 0) := by
   unfold negativeRetractionValue
-  rw [dif_pos (h.collarSlice_subset_range _ hx)]
+  rw [dite_eq_left (h.collarSlice_subset_range _ hx)]
 
 theorem continuous_negativeRetractionValue
     [CompactSpace S] [Nonempty S] [T2Space X] [ConnectedSpace S] [ConnectedSpace X]
@@ -131,7 +131,7 @@ theorem negativeRetractionValue_eq_of_mem_zeroSlice
     ⟨(s, 0), ⟨trivial, by norm_num⟩, (h.zero_eq s).trans hs⟩
   have hxR : x.1 ∈ h.range := h.collarSlice_subset_range _ hxC
   unfold negativeRetractionValue
-  rw [dif_pos hxR]
+  rw [dite_eq_left hxR]
   let p := h.homeomorphRange.symm
     (⟨x.1, hxR⟩ : h.range)
   have hpval : h.toFun p = x.1 :=
@@ -195,7 +195,7 @@ theorem positiveRetractionValue_eq_of_mem_collarSlice
         ⟨x.1, h.collarSlice_subset_range _ hx⟩
       h.toFun (p.1, max p.2 0) := by
   unfold positiveRetractionValue
-  rw [dif_pos (h.collarSlice_subset_range _ hx)]
+  rw [dite_eq_left (h.collarSlice_subset_range _ hx)]
 
 theorem continuous_positiveRetractionValue
     [CompactSpace S] [Nonempty S] [T2Space X] [ConnectedSpace S] [ConnectedSpace X]
@@ -269,7 +269,7 @@ theorem positiveRetractionValue_eq_of_mem_zeroSlice
     ⟨(s, 0), ⟨trivial, by norm_num⟩, (h.zero_eq s).trans hs⟩
   have hxR : x.1 ∈ h.range := h.collarSlice_subset_range _ hxC
   unfold positiveRetractionValue
-  rw [dif_pos hxR]
+  rw [dite_eq_left hxR]
   let p := h.homeomorphRange.symm
     (⟨x.1, hxR⟩ : h.range)
   have hpval : h.toFun p = x.1 :=

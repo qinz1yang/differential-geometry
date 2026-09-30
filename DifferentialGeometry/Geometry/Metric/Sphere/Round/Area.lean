@@ -57,7 +57,7 @@ noncomputable def sphereGraphParametrization (hv : ‖v‖ = 1)
 theorem coe_sphereGraphParametrization (hv : ‖v‖ = 1) (R : E2 ≃ₗᵢ[ℝ] (ℝ ∙ v)ᗮ)
     {y : E2} (hy : y ∈ ball (0 : E2) 1) :
     (sphereGraphParametrization hv R y : E3) = sphereGraphMap R y := by
-  rw [sphereGraphParametrization, dif_pos hy]
+  rw [sphereGraphParametrization, dite_eq_left hy]
 
 private theorem contDiffAt_sphereGraphMap (R : E2 ≃ₗᵢ[ℝ] (ℝ ∙ v)ᗮ)
     {y : E2} (hy : ‖y‖ < 1) :
@@ -104,7 +104,7 @@ private theorem contMDiffAt_sphereGraphParametrization (hv : ‖v‖ = 1)
         (⟨sphereGraphMap R (z : E2), sphereGraphMap_mem_sphere hv R
           (mem_ball_zero_iff.mp (mem_graphDomain_iff.mp z.2))⟩ : sphere (0 : E3) 1) := by
     funext z
-    rw [sphereGraphParametrization, dif_pos (mem_graphDomain_iff.mp z.2)]
+    rw [sphereGraphParametrization, dite_eq_left (mem_graphDomain_iff.mp z.2)]
   have hsub : ContMDiffAt 𝓘(ℝ, E2) (𝓡 2) ∞
       (fun z : graphDomain => sphereGraphParametrization hv R (z : E2)) ⟨y, hy⟩ := by
     rw [heq]
@@ -326,10 +326,10 @@ private noncomputable def tangentProfile : ℝ → ℝ :=
   fun r => if r < 1 then Real.sqrt ((1 - r ^ 2)⁻¹) else 0
 
 private theorem tangentProfile_apply_of_lt {r : ℝ} (hr : r < 1) :
-    tangentProfile r = Real.sqrt ((1 - r ^ 2)⁻¹) := if_pos hr
+    tangentProfile r = Real.sqrt ((1 - r ^ 2)⁻¹) := ite_eq_left hr
 
 private theorem tangentProfile_apply_of_ge {r : ℝ} (hr : 1 ≤ r) : tangentProfile r = 0 :=
-  if_neg (not_lt.mpr hr)
+  ite_eq_right (not_lt.mpr hr)
 
 private theorem tangentProfile_mul_eq (r : ℝ) :
     r * tangentProfile r = r * Real.sqrt ((1 - r ^ 2)⁻¹) := by

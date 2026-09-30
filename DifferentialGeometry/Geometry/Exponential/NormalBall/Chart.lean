@@ -300,7 +300,7 @@ theorem transition_isom (g : SmoothRiemannianMetric I M) {p q : M}
     have hderiv := Filter.EventuallyEq.mfderiv_eq
       (I := modelWithCornersSelf Real E) (I' := I) heq
     rw [mfderiv_comp z hdDiff htransDiff] at hderiv
-    simpa only using hderiv
+    exact hderiv.trans (by ext w; rfl)
   rw [d.metric_apply g, c.metric_apply g, hovl.map_eq hz]
   have hu := DFunLike.congr_fun hcomp u
   have hv := DFunLike.congr_fun hcomp v

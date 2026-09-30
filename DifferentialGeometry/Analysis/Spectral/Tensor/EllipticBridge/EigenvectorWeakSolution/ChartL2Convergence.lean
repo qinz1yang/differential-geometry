@@ -44,7 +44,6 @@ lemma memLp_bdd_mul
     (hf : MemLp f 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     MemLp (fun y => c y * f y) 2 (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
-  refine ⟨hc_meas.mul hf.1, ?_⟩
   have hpt : ∀ y : EuclN, ‖c y * f y‖ ≤ ‖(C : ℝ) • f y‖ := by
     intro y
     have h1 : ‖c y * f y‖ = ‖c y‖ * ‖f y‖ := norm_mul _ _
@@ -53,18 +52,20 @@ lemma memLp_bdd_mul
     rw [h1, h2]
     exact mul_le_mul_of_nonneg_right (hc_bd y) (norm_nonneg _)
   have hmono := eLpNorm_mono (μ := chartLebesgueMeasure (I := I) (M := M) α)
-    (p := 2) hpt
+    (p := 2) (hc_meas.mul hf.aestronglyMeasurable) hpt
   calc eLpNorm (fun y => c y * f y) 2 (chartLebesgueMeasure (I := I) (M := M) α)
       ≤ eLpNorm ((C : ℝ) • f) 2 (chartLebesgueMeasure (I := I) (M := M) α) := hmono
     _ = ‖(C : ℝ)‖ₑ * eLpNorm f 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
         eLpNorm_const_smul (C : ℝ) f 2 _
-    _ < ⊤ := ENNReal.mul_lt_top (by simp) hf.2
+    _ < ⊤ := ENNReal.mul_lt_top (by simp) hf
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 lemma eLpNorm_bdd_mul_le
     (α : M) {c : EuclN → ℝ} {C : ℝ} (hC : 0 ≤ C) (hc_bd : ∀ y, ‖c y‖ ≤ C)
-    (f : EuclN → ℝ) :
+    (f : EuclN → ℝ)
+    (hcf : AEStronglyMeasurable (fun y => c y * f y)
+      (chartLebesgueMeasure (I := I) (M := M) α)) :
     eLpNorm (fun y => c y * f y) 2 (chartLebesgueMeasure (I := I) (M := M) α) ≤
       ENNReal.ofReal C *
         eLpNorm f 2 (chartLebesgueMeasure (I := I) (M := M) α) := by
@@ -78,7 +79,7 @@ lemma eLpNorm_bdd_mul_le
     exact mul_le_mul_of_nonneg_right (hc_bd y) (norm_nonneg _)
   calc eLpNorm (fun y => c y * f y) 2 (chartLebesgueMeasure (I := I) (M := M) α)
       ≤ eLpNorm ((C : ℝ) • f) 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
-        eLpNorm_mono hpt
+        eLpNorm_mono hcf hpt
     _ = ‖(C : ℝ)‖ₑ * eLpNorm f 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
         eLpNorm_const_smul (C : ℝ) f 2 _
     _ = ENNReal.ofReal C *
@@ -129,6 +130,8 @@ lemma tendsto_bdd_mul
   rw [hsub_eq]
   have hle := eLpNorm_bdd_mul_le (I := I) (M := M) α hC hc_bd
     (fun y => (F n : EuclN → ℝ) y - (Flim : EuclN → ℝ) y)
+    (hc_meas.mul ((Lp.memLp (F n)).aestronglyMeasurable.sub
+      (Lp.memLp Flim).aestronglyMeasurable))
   have hsub_ae :
       (fun y => (F n : EuclN → ℝ) y - (Flim : EuclN → ℝ) y)
         =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
@@ -142,7 +145,7 @@ lemma tendsto_bdd_mul
     have hfin : eLpNorm
         (((F n) - Flim : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
           EuclN → ℝ) 2 (chartLebesgueMeasure (I := I) (M := M) α) ≠ ⊤ :=
-      (Lp.memLp ((F n) - Flim)).2.ne
+      (Lp.memLp ((F n) - Flim)).ne
     rw [eLpNorm_congr_ae hsub_ae, Lp.dist_def,
       ENNReal.ofReal_toReal ((eLpNorm_congr_ae hsub_ae) ▸ hfin)]
     exact (eLpNorm_congr_ae hsub_ae).symm

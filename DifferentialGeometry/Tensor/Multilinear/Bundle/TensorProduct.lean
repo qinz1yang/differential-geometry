@@ -252,8 +252,7 @@ theorem fromTensor_map_ofModel {s q : ℕ} {x : B}
         ContinuousMultilinearMap 𝕜 (fun _ : Fin q => F) 𝕜 →ₗ[𝕜]
         Bundle.continuousMultilinearMap 𝕜 q F E x) t) =
     ofModel (F := F) (E := E) (x := x) (modelFromTensor s q t) := by
-  induction t using TensorProduct.induction_on with
-  | zero => simp [fromTensor, modelFromTensor, ofModel]
+  induction t using TensorProduct.inductionOn with
   | add t₁ t₂ ih₁ ih₂ =>
     simp only [map_add, ofModel]
     exact congrArg₂ (· + ·) ih₁ ih₂
@@ -343,12 +342,7 @@ theorem triv_fromTensor_eq_modelFromTensor (s q : ℕ) (x₀ x : B)
       (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x) x₀).baseSet := hx
   have hxq : x ∈ (trivializationAt (MLF q)
       (fun x => Bundle.continuousMultilinearMap 𝕜 q F E x) x₀).baseSet := hx
-  induction t using TensorProduct.induction_on with
-  | zero =>
-    simp only [map_zero]
-    change (trivializationAt _ _ x₀
-      ⟨x, (0 : Bundle.continuousMultilinearMap 𝕜 (s + q) F E x)⟩).2 = 0
-    ext w; rfl
+  induction t using TensorProduct.inductionOn with
   | add t₁ t₂ ih₁ ih₂ =>
     have hlin : ∀ (a b : Bundle.continuousMultilinearMap 𝕜 s F E x ⊗[𝕜]
         Bundle.continuousMultilinearMap 𝕜 q F E x),
@@ -547,8 +541,7 @@ theorem multilinearTensorFiberwiseEquiv_symm_eq (s q : ℕ) (x : B)
     (t : TensorProduct 𝕜 (Bundle.continuousMultilinearMap 𝕜 s F E x)
       (Bundle.continuousMultilinearMap 𝕜 q F E x)) :
     (multilinearTensorFiberwiseEquiv s q x).symm t = fromTensor s q x t := by
-  induction t using TensorProduct.induction_on with
-  | zero => simp [multilinearTensorFiberwiseEquiv, fromTensor]
+  induction t using TensorProduct.inductionOn with
   | add _ _ ih₁ ih₂ => simp only [map_add, ih₁, ih₂]
   | tmul a b =>
     simp only [multilinearTensorFiberwiseEquiv, LinearEquiv.trans_symm,

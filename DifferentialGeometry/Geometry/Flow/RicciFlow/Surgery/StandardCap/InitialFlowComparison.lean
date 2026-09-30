@@ -112,7 +112,7 @@ theorem exists_uniform_initial_standard_cap_comparison
     rw [hzero]
     have hh := w.window_metricCovDerivNorm_le (hjN.trans hNm) (hx.trans_le hR₁D)
     have hne : j ≠ 0 := by omega
-    simp only [if_neg hne, zero_add] at hh
+    simp only [ite_eq_right hne, zero_add] at hh
     exact hh.trans hζhalf
   have hRicL := hRic (fun _ s => L.base.metric s) U 0 θ
     (fun j hj _ s hs x hx => hcurv j hj s hs x hx)

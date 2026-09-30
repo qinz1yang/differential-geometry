@@ -339,8 +339,10 @@ theorem exists_lp_weak_gradient_equation_of_heat_timeH1
   let DL := fun k p => c p * V k p + fderiv ℝ c p (0, EuclideanSpace.single k 1) * U p +
     (ρ p * Df k p + fderiv ℝ ρ p (0, EuclideanSpace.single k 1) * F p)
   have hDL (k) : MemLp (DL k) 2 ν :=
-    (((hV k).mul' (hlift hc)).add (hU.mul' (hlift (hdiff hc _)))).add
-      (((Lp.memLp (Df k)).mul' (hlift hρ)).add (hF.mul' (hlift (hdiff hρ _))))
+    (((hlift hc).fun_mul (r := 2) (hV k)).add
+      ((hlift (hdiff hc _)).fun_mul (r := 2) hU)).add
+        (((hlift hρ).fun_mul (r := 2) (Lp.memLp (Df k))).add
+          ((hlift (hdiff hρ _)).fun_mul (r := 2) hF))
   have hLweak (k) : ∀ ψ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
       tsupport ψ ⊆ S → (∫ p, L p * fderiv ℝ ψ p (0, EuclideanSpace.single k 1) ∂ν) =
         -∫ p, DL k p * ψ p ∂ν := by
@@ -362,7 +364,8 @@ theorem exists_lp_weak_gradient_equation_of_heat_timeH1
     have hLsplit : (∫ p, L p * fderiv ℝ ψ p v ∂ν) =
         (∫ p, c p * U p * fderiv ℝ ψ p v ∂ν) +
           ∫ p, ρ p * F p * fderiv ℝ ψ p v ∂ν := by
-      rw [← integral_add (hintd _ (hU.mul' (hlift hc))) (hintd _ (hF.mul' (hlift hρ)))]
+      rw [← integral_add (hintd _ ((hlift hc).fun_mul (r := 2) hU))
+        (hintd _ ((hlift hρ).fun_mul (r := 2) hF))]
       apply integral_congr_ae
       exact Eventually.of_forall fun p => by dsimp only [L, c]; ring
     have hDLsplit : (∫ p, DL k p * ψ p ∂ν) =
@@ -374,8 +377,10 @@ theorem exists_lp_weak_gradient_equation_of_heat_timeH1
           apply integral_congr_ae
           exact Eventually.of_forall fun p => add_mul _ _ _
         _ = _ := integral_add
-          (hint _ (((hV k).mul' (hlift hc)).add (hU.mul' (hlift (hdiff hc v)))))
-          (hint _ (((Lp.memLp (Df k)).mul' (hlift hρ)).add (hF.mul' (hlift (hdiff hρ v)))))
+          (hint _ (((hlift hc).fun_mul (r := 2) (hV k)).add
+            ((hlift (hdiff hc v)).fun_mul (r := 2) hU)))
+          (hint _ (((hlift hρ).fun_mul (r := 2) (Lp.memLp (Df k))).add
+            ((hlift (hdiff hρ v)).fun_mul (r := 2) hF)))
     rw [hLsplit, hDLsplit]
     linarith
   have hex (k : Fin (Module.finrank ℝ EuN)) :=
@@ -498,7 +503,7 @@ theorem exists_lp_weak_gradient_equation_fixed_density_of_heat_timeH1
     fun t ht => hreg ⟨ha.le.trans ht.1.le, ht.2.le.trans hb.le⟩
   intro k φ hφ hφc hφs
   exact integral_fixed_density_eq_of_weighted_identity hG q α isOpen_Ioo hJ hΩ₀
-    (hsub.trans hchart) (((hV k).mul (r := 2) hσmem).locallyIntegrable (by norm_num))
+    (hsub.trans hchart) ((hσmem.fun_mul (r := 2) (hV k)).locallyIntegrable (by norm_num))
     ((Lp.memLp (Q k)).locallyIntegrable (by norm_num))
     (fun ψ => ∑ i, ∑ j, ∫ p, A i j p * H k i p *
       fderiv ℝ ψ p (0, EuclideanSpace.single j 1) ∂ν) (hQ k) hφ hφc hφs

@@ -293,7 +293,7 @@ theorem spectralChartComponent_tendsto
       (fun n => tensorChartComponent (I := I) (M := M) g 0 2 (F n) β P.1 P.2)
       atTop (tensorChartComponent (I := I) (M := M) g 0 2 Trep β P.1 P.2) :=
     MeasureTheory.tendstoInMeasure_of_tendsto_eLpNorm (μ := μ) (p := 2) (by norm_num)
-      (fun n => (hmemFn n).aestronglyMeasurable) hmemTrep.aestronglyMeasurable heLp
+      heLp
   obtain ⟨σ, hσ_mono, hσ_ae⟩ := h_tim.exists_seq_tendsto_ae
   have hae_eq : (uP P) =ᵐ[μ] tensorChartComponent (I := I) (M := M) g 0 2 Trep β P.1 P.2 := by
     filter_upwards [hσ_ae] with z hz

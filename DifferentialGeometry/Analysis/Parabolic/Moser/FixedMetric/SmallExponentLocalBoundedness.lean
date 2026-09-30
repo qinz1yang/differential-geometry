@@ -492,10 +492,10 @@ theorem moserPositiveExponentLocalBoundFactor_nonneg
     0 ≤ moserPositiveExponentLocalBoundFactor (I := I) (M := M)
       g hdim rho p τ c d D lower upper := by
   by_cases hp_two : p < 2
-  · rw [moserPositiveExponentLocalBoundFactor, if_pos hp_two]
+  · rw [moserPositiveExponentLocalBoundFactor, ite_eq_left hp_two]
     exact moserSmallExponentLocalBoundFactor_nonneg
       g hdim rho hp hp_two
-  · rw [moserPositiveExponentLocalBoundFactor, if_neg hp_two]
+  · rw [moserPositiveExponentLocalBoundFactor, ite_eq_right hp_two]
     exact (Real.exp_pos _).le
 
 theorem local_boundedness_of_subsolution_rpow
@@ -521,12 +521,12 @@ theorem local_boundedness_of_subsolution_rpow
           localizedSpacetimeRpowNorm (I := I) (M := M)
             (spatialCutoffBetween rho outerLower outerUpper) u p τ D := by
   by_cases hp_two : p < 2
-  · simpa only [moserPositiveExponentLocalBoundFactor, if_pos hp_two] using
+  · simpa only [moserPositiveExponentLocalBoundFactor, ite_eq_left hp_two] using
       (local_boundedness_of_subsolution_of_lt_two
         (I := I) (M := M) g hdim rho u hu hpos hp hp_two hτc hcd hdD
           houter houterLower hlowerUpper hpde)
   · have hpTwo : 2 ≤ p := le_of_not_gt hp_two
-    simpa only [moserPositiveExponentLocalBoundFactor, if_neg hp_two] using
+    simpa only [moserPositiveExponentLocalBoundFactor, ite_eq_right hp_two] using
       (local_boundedness_of_subsolution_of_two_le
         (I := I) (M := M) g hdim rho u hu hpos hpTwo hτc hcd hdD
           houter houterLower hlowerUpper hpde)

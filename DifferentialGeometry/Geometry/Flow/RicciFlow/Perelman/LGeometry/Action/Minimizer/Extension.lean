@@ -311,12 +311,12 @@ theorem exists_lRegularizedExtOn
   let alpha : Real → M := fun s ↦
     if s < a then eta s else if s ≤ b then gamma s else theta s
   have halpha_a : alpha a = gamma a := by simp only [alpha, lt_self_iff_false,
-    if_false, hab.le, if_true]
+    ite_false, hab.le, ite_true]
   have halpha_b : alpha b = gamma b := by simp only [alpha, not_lt_of_ge hab.le,
-    if_false, le_rfl, if_true]
+    ite_false, le_rfl, ite_true]
   have halpha_eq : EqOn alpha gamma (Icc a b) := by
     intro s hs
-    simp only [alpha, if_neg (not_lt_of_ge hs.1), if_pos hs.2]
+    simp only [alpha, ite_eq_right (not_lt_of_ge hs.1), ite_eq_left hs.2]
   have ha_local : a ∈ Ioo (a - epsa) (a + epsa) := ⟨by linarith, by linarith⟩
   have hb_local : b ∈ Ioo (b - epsb) (b + epsb) := ⟨by linarith, by linarith⟩
   have heta_a := hetaSolution a ha_local
@@ -328,7 +328,7 @@ theorem exists_lRegularizedExtOn
       apply heta_cont.continuousWithinAt.congr
       · intro s hs
         rcases lt_or_eq_of_le (show s ≤ a from hs) with hsa | rfl
-        · simp only [alpha, if_pos hsa]
+        · simp only [alpha, ite_eq_left hsa]
         · simpa only [halpha_a] using heta0.symm
       · simpa only [halpha_a] using heta0.symm
     have hright0 : ContinuousWithinAt gamma (Ici a) a :=
@@ -338,7 +338,7 @@ theorem exists_lRegularizedExtOn
       · filter_upwards [self_mem_nhdsWithin,
           Filter.Eventually.filter_mono nhdsWithin_le_nhds
             (Iic_mem_nhds hab)] with s hs hsb
-        simp only [alpha, if_neg (not_lt_of_ge (show a ≤ s from hs)), if_pos hsb]
+        simp only [alpha, ite_eq_right (not_lt_of_ge (show a ≤ s from hs)), ite_eq_left hsb]
       · exact halpha_a
     have hunion := hleft.union hright
     simpa only [Iic_union_Ici, continuousWithinAt_univ] using hunion
@@ -350,16 +350,16 @@ theorem exists_lRegularizedExtOn
       · filter_upwards [self_mem_nhdsWithin,
           Filter.Eventually.filter_mono nhdsWithin_le_nhds
             (Ioi_mem_nhds hab)] with s hs has
-        simp only [alpha, if_neg (not_lt_of_ge has.le),
-          if_pos (show s ≤ b from hs)]
+        simp only [alpha, ite_eq_right (not_lt_of_ge has.le),
+          ite_eq_left (show s ≤ b from hs)]
       · exact halpha_b
     have hright : ContinuousWithinAt alpha (Ici b) b := by
       apply htheta_cont.continuousWithinAt.congr
       · intro s hs
         rcases eq_or_lt_of_le (show b ≤ s from hs) with rfl | hbs
         · simpa only [halpha_b] using htheta0.symm
-        · simp only [alpha, if_neg (not_lt_of_ge (hab.trans hbs).le),
-            if_neg (not_le_of_gt hbs)]
+        · simp only [alpha, ite_eq_right (not_lt_of_ge (hab.trans hbs).le),
+            ite_eq_right (not_le_of_gt hbs)]
       · simpa only [halpha_b] using htheta0.symm
     have hunion := hleft.union hright
     simpa only [Iic_union_Ici, continuousWithinAt_univ] using hunion
@@ -401,16 +401,16 @@ theorem exists_lRegularizedExtOn
       apply veta_diff.continuousAt.continuousWithinAt.congr
       · intro s hs
         rcases lt_or_eq_of_le (show s ≤ a from hs) with hsa | rfl
-        · simp only [vA, if_pos hsa]
-        · simp only [vA, lt_self_iff_false, if_false, veta_a]
-      · simp only [vA, lt_self_iff_false, if_false, veta_a]
+        · simp only [vA, ite_eq_left hsa]
+        · simp only [vA, lt_self_iff_false, ite_false, veta_a]
+      · simp only [vA, lt_self_iff_false, ite_false, veta_a]
     have hright : ContinuousWithinAt vA (Ici a) a := by
       have h := (hva_cont a ⟨le_rfl, hada.le⟩).mono_of_mem_nhdsWithin
         (Icc_mem_nhdsGE hada)
       apply h.congr
       · intro s hs
-        simp only [vA, if_neg (not_lt_of_ge (show a ≤ s from hs))]
-      · simp only [vA, lt_self_iff_false, if_false]
+        simp only [vA, ite_eq_right (not_lt_of_ge (show a ≤ s from hs))]
+      · simp only [vA, lt_self_iff_false, ite_false]
     have hunion := hleft.union hright
     simpa only [Iic_union_Ici, continuousWithinAt_univ] using hunion
   have hvB_cont : ContinuousAt vB b := by
@@ -419,15 +419,15 @@ theorem exists_lRegularizedExtOn
         (Icc_mem_nhdsLE hdbb)
       apply h.congr
       · intro s hs
-        simp only [vB, if_pos (show s ≤ b from hs)]
-      · simp only [vB, le_rfl, if_true]
+        simp only [vB, ite_eq_left (show s ≤ b from hs)]
+      · simp only [vB, le_rfl, ite_true]
     have hright : ContinuousWithinAt vB (Ici b) b := by
       apply vtheta_diff.continuousAt.continuousWithinAt.congr
       · intro s hs
         rcases eq_or_lt_of_le (show b ≤ s from hs) with rfl | hbs
-        · simp only [vB, le_rfl, if_true, vtheta_b]
-        · simp only [vB, if_neg (not_le_of_gt hbs)]
-      · simp only [vB, le_rfl, if_true, vtheta_b]
+        · simp only [vB, le_rfl, ite_true, vtheta_b]
+        · simp only [vB, ite_eq_right (not_le_of_gt hbs)]
+      · simp only [vB, le_rfl, ite_true, vtheta_b]
     have hunion := hleft.union hright
     simpa only [Iic_union_Ici, continuousWithinAt_univ] using hunion
   have hsrcA : ∀ᶠ s in 𝓝 a, alpha s ∈ (chartAt H (alpha a)).source :=
@@ -464,22 +464,22 @@ theorem exists_lRegularizedExtOn
     rcases lt_or_gt_of_ne hrne with hra' | har'
     · have hcurve : alpha =ᶠ[𝓝 r] eta := by
         filter_upwards [Iio_mem_nhds hra'] with s hsa
-        simp only [alpha, if_pos (show s < a from hsa)]
+        simp only [alpha, ite_eq_left (show s < a from hsa)]
       have hv : vA =ᶠ[𝓝 r] chartRepAtBase (I := I) xa eta Xeta := by
         filter_upwards [Iio_mem_nhds hra'] with s hsa
-        simp only [vA, if_pos (show s < a from hsa), veta]
+        simp only [vA, ite_eq_left (show s < a from hsa), veta]
       simpa only [halpha_a, xa] using
         phase_of_germ (I := I) S T xa hcurve hv hreta_source
           (hetaSolution r hrlocal)
     · have hrb : r < b := hrda.trans_le hda_le
       have hrgerm : alpha =ᶠ[𝓝 r] gamma := by
         filter_upwards [Ioo_mem_nhds har' hrb] with s hs
-        simp only [alpha, if_neg (not_lt_of_ge hs.1.le), if_pos hs.2.le]
+        simp only [alpha, ite_eq_right (not_lt_of_ge hs.1.le), ite_eq_left hs.2.le]
       have hvgerm : vA =ᶠ[𝓝 r]
           chartRepAtBase (I := I) xa gamma
             (fun s ↦ lVelocity (I := I) gamma s) := by
         filter_upwards [Ioo_mem_nhds har' hrda] with s hs
-        simp only [vA, if_neg (not_lt_of_ge hs.1.le)]
+        simp only [vA, ite_eq_right (not_lt_of_ge hs.1.le)]
         have hsfull : s ∈ Ioo a b := ⟨hs.1, hs.2.trans_le hda_le⟩
         have hsdata := hsol s hsfull
         have hs_source := hda_source ⟨hs.1.le, hs.2.le⟩
@@ -507,12 +507,12 @@ theorem exists_lRegularizedExtOn
     rcases lt_or_gt_of_ne hrne with hra' | har'
     · have hcurve : alpha =ᶠ[𝓝 r] eta := by
         filter_upwards [Iio_mem_nhds hra'] with s hsa
-        simp only [alpha, if_pos (show s < a from hsa)]
+        simp only [alpha, ite_eq_left (show s < a from hsa)]
       exact (hetaSolution r hrlocal).1.congr_of_eventuallyEq hcurve
     · have hrb : r < b := hrda.trans_le hda_le
       have hcurve : alpha =ᶠ[𝓝 r] gamma := by
         filter_upwards [Ioo_mem_nhds har' hrb] with s hs
-        simp only [alpha, if_neg (not_lt_of_ge hs.1.le), if_pos hs.2.le]
+        simp only [alpha, ite_eq_right (not_lt_of_ge hs.1.le), ite_eq_left hs.2.le]
       exact (hsol r ⟨har', hrb⟩).1.congr_of_eventuallyEq hcurve
   have hregA := regularityAt_of_punct (I := I) S hS T a alpha vA
     (hreg a ⟨le_rfl, hab.le⟩) hqcontA hvA_cont hsrcA hmdA hphaseA
@@ -533,12 +533,12 @@ theorem exists_lRegularizedExtOn
     · have har : a < r := lt_of_le_of_lt ha_db hdbr
       have hrgerm : alpha =ᶠ[𝓝 r] gamma := by
         filter_upwards [Ioo_mem_nhds har hrb'] with s hs
-        simp only [alpha, if_neg (not_lt_of_ge hs.1.le), if_pos hs.2.le]
+        simp only [alpha, ite_eq_right (not_lt_of_ge hs.1.le), ite_eq_left hs.2.le]
       have hvgerm : vB =ᶠ[𝓝 r]
           chartRepAtBase (I := I) xb gamma
             (fun s ↦ lVelocity (I := I) gamma s) := by
         filter_upwards [Ioo_mem_nhds hdbr hrb'] with s hs
-        simp only [vB, if_pos hs.2.le]
+        simp only [vB, ite_eq_left hs.2.le]
         have hsfull : s ∈ Ioo a b := ⟨lt_of_le_of_lt ha_db hs.1, hs.2⟩
         have hsdata := hsol s hsfull
         have hs_source := hdb_source ⟨hs.1.le, hs.2.le⟩
@@ -556,11 +556,11 @@ theorem exists_lRegularizedExtOn
           (hsol r ⟨har, hrb'⟩)
     · have hcurve : alpha =ᶠ[𝓝 r] theta := by
         filter_upwards [Ioi_mem_nhds hbr'] with s hbs
-        simp only [alpha, if_neg (not_lt_of_ge (hab.trans hbs).le),
-          if_neg (not_le_of_gt (show b < s from hbs))]
+        simp only [alpha, ite_eq_right (not_lt_of_ge (hab.trans hbs).le),
+          ite_eq_right (not_le_of_gt (show b < s from hbs))]
       have hv : vB =ᶠ[𝓝 r] chartRepAtBase (I := I) xb theta Xtheta := by
         filter_upwards [Ioi_mem_nhds hbr'] with s hbs
-        simp only [vB, if_neg (not_le_of_gt (show b < s from hbs)), vtheta]
+        simp only [vB, ite_eq_right (not_le_of_gt (show b < s from hbs)), vtheta]
       simpa only [halpha_b, xb] using
         phase_of_germ (I := I) S T xb hcurve hv hrtheta_source
           (hthetaSolution r hrlocal)
@@ -577,12 +577,12 @@ theorem exists_lRegularizedExtOn
     · have har : a < r := lt_of_le_of_lt ha_db hdbr
       have hcurve : alpha =ᶠ[𝓝 r] gamma := by
         filter_upwards [Ioo_mem_nhds har hrb'] with s hs
-        simp only [alpha, if_neg (not_lt_of_ge hs.1.le), if_pos hs.2.le]
+        simp only [alpha, ite_eq_right (not_lt_of_ge hs.1.le), ite_eq_left hs.2.le]
       exact (hsol r ⟨har, hrb'⟩).1.congr_of_eventuallyEq hcurve
     · have hcurve : alpha =ᶠ[𝓝 r] theta := by
         filter_upwards [Ioi_mem_nhds hbr'] with s hbs
-        simp only [alpha, if_neg (not_lt_of_ge (hab.trans hbs).le),
-          if_neg (not_le_of_gt (show b < s from hbs))]
+        simp only [alpha, ite_eq_right (not_lt_of_ge (hab.trans hbs).le),
+          ite_eq_right (not_le_of_gt (show b < s from hbs))]
       exact (hthetaSolution r hrlocal).1.congr_of_eventuallyEq hcurve
   have hregB := regularityAt_of_punct (I := I) S hS T b alpha vB
     (hreg b ⟨hab.le, le_rfl⟩) hqcontB hvB_cont hsrcB hmdB hphaseB
@@ -605,7 +605,7 @@ theorem exists_lRegularizedExtOn
     have hsdata := hsol s hsopen
     have heq : alpha =ᶠ[𝓝 s] gamma := by
       filter_upwards [Ioo_mem_nhds has hsb] with r hr
-      simp only [alpha, if_neg (not_lt_of_ge hr.1.le), if_pos hr.2.le]
+      simp only [alpha, ite_eq_right (not_lt_of_ge hr.1.le), ite_eq_left hr.2.le]
     exact (lRegularizedData_congr (I := I) S T s heq ⟨hreg s hs, hsdata⟩).2
   let timeMap : Real → Real := fun s ↦ T - s ^ 2
   have htime_cont : Continuous timeMap :=
@@ -644,7 +644,7 @@ theorem exists_lRegularizedExtOn
     have heq : alpha =ᶠ[𝓝 s] eta := by
       filter_upwards [Iio_mem_nhds hsa] with r hr
       change r < a at hr
-      simp only [alpha, if_pos hr]
+      simp only [alpha, ite_eq_left hr]
     exact lRegularizedData_congr (I := I) S T s heq ⟨hsRegularity, hetaSolution s hlocal⟩
   by_cases hbs : b < s
   · have hlocal : s ∈ Ioo (b - epsb) (b + epsb) := by
@@ -659,8 +659,8 @@ theorem exists_lRegularizedExtOn
     have heq : alpha =ᶠ[𝓝 s] theta := by
       filter_upwards [Ioi_mem_nhds hbs] with r hr
       change b < r at hr
-      simp only [alpha, if_neg (not_lt_of_ge (hab.trans hr).le),
-        if_neg (not_le_of_gt hr)]
+      simp only [alpha, ite_eq_right (not_lt_of_ge (hab.trans hr).le),
+        ite_eq_right (not_le_of_gt hr)]
     exact lRegularizedData_congr (I := I) S T s heq ⟨hsRegularity, hthetaSolution s hlocal⟩
   exact hclosed s ⟨le_of_not_gt hsa, le_of_not_gt hbs⟩
 

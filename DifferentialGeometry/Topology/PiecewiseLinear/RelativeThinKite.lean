@@ -80,7 +80,7 @@ theorem TriangleMesh.exists_eventually_transportedThinKitePatch_inter_edge_subse
       convexHull ℝ (M.position '' (({v, w} : Finset M.Vertex) : Set M.Vertex)) =
         segment ℝ (M.position v) (M.position w) := by
     rw [show M.position '' (({v, w} : Finset M.Vertex) : Set M.Vertex) =
-      {M.position v, M.position w} by ext p; simp [eq_comm]]
+      {M.position v, M.position w} by ext p; simp]
     exact convexHull_pair _ _
   have hsegmentImage : E '' segment ℝ a b =
       segment ℝ (M.position v) (M.position w) := by

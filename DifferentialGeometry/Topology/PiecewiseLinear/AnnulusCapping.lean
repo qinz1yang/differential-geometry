@@ -29,8 +29,8 @@ theorem IsCombinatorialManifold.exists_capped_annulus_complement
     (hcover : W ∪ R.space = K.space) (htrace : W ∩ R.space = ρ '' (J ×ˢ {a, b}))
     (hboundary : (boundaryComplex 2 R).space = ρ '' (J ×ˢ {a, b}))
     {D₀ D₁ : Set E} {r₀ r₁ : (Fin 3 → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
     (hmeet₀ : R.space ∩ D₀ = r₀ '' stdSimplexBoundary 2)
     (hmeet₁ : R.space ∩ D₁ = r₁ '' stdSimplexBoundary 2)
     (hbd₀ : r₀ '' stdSimplexBoundary 2 = ρ '' (J ×ˢ {a}))
@@ -76,8 +76,8 @@ theorem IsCombinatorialManifold.exists_capped_pair_of_separating_essential_annul
     (hsep : ¬ IsPreconnected (K.space \ J))
     (hnon : ¬ (⟨Set.inclusion hJK, continuous_inclusion hJK⟩ : C(J, K.space)).Nullhomotopic)
     {D₀ D₁ : Set E} {r₀ r₁ : (Fin 3 → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
     (hmeet₀ : R.space ∩ D₀ = r₀ '' stdSimplexBoundary 2)
     (hmeet₁ : R.space ∩ D₁ = r₁ '' stdSimplexBoundary 2)
     (hbd₀ : r₀ '' stdSimplexBoundary 2 = ρ '' (J ×ˢ {(-1 : ℝ)}))
@@ -120,7 +120,7 @@ theorem IsCombinatorialManifold.exists_capped_pair_of_separating_essential_annul
         (hmeet₁.symm.subset hx).2⟩)
   have hnonsphere (M : Geometry.SimplicialComplex ℝ E) [Finite M.faces]
       {D : Set E} {r : (Fin 3 → ℝ) → E}
-      (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+      (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
       (hMD : M.space ∩ D = r '' stdSimplexBoundary 2) (hMK : M.space ⊆ K.space)
       {t : ℝ} (ht : t = -1 ∨ t = 1)
       (hbd : r '' stdSimplexBoundary 2 = ρ '' (J ×ˢ {t})) :

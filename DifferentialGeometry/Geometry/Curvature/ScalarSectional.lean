@@ -61,7 +61,7 @@ theorem metricScalarAt_pos_of_sectionalCurvature_pos
     have hs := hpos (B j) (B i) (by simp [hB, hij.symm])
     rw [sectionalCurvature_eq_metricRm04StandardAt_of_unit_orthogonal g x (B j) (B i)
       (by simpa using hB j j) (by simpa using hB i i)
-      (by simpa only [if_neg hij.symm] using hB j i)] at hs
+      (by simpa only [ite_eq_right hij.symm] using hB j i)] at hs
     exact hs
   have hdiag (i : Fin (Module.finrank ℝ E)) : metricRm04StandardAt g x (B i) (B i) (B i) (B i) = 0 := by
     have ha := (mem_algebraicCurvatureTensorSubmodule_iff_symmetries.mp

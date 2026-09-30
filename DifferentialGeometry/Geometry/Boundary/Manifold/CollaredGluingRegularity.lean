@@ -35,7 +35,7 @@ def CollarOpenEmbedding (G : CollaredGluing I X ι) : Prop :=
   (∀ i, IsOpenEmbedding (G.collarLeftOpen i)) ∧
     (∀ i, IsOpenEmbedding (G.collarRightOpen i))
 
-def attachingExtend (G : CollaredGluing I X ι) [IsManifold I ∞ X]
+def attachingExtend (G : CollaredGluing I X ι)
     (i : ι) (y : BoundaryManifold I X) : BoundaryManifold I X := by
   classical
   refine ⟨if h : (y : X) ∈ (G.left i).carrier then
@@ -68,17 +68,17 @@ theorem isOpen_range_collarRightOpen (G : CollaredGluing I X ι)
     (h : G.CollarOpenEmbedding) (i : ι) : IsOpen (range (G.collarRightOpen i)) :=
   (h.2 i).isOpen_range
 
-theorem attachingExtend_apply_of_mem (G : CollaredGluing I X ι) [IsManifold I ∞ X] {i : ι}
+theorem attachingExtend_apply_of_mem (G : CollaredGluing I X ι) {i : ι}
     {y : BoundaryManifold I X} (h : (y : X) ∈ (G.left i).carrier) :
     (G.attachingExtend i y : X) = ((G.attaching i) ⟨(y : X), h⟩ : X) := by
   rw [attachingExtend]
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
 
-theorem attachingExtend_apply_of_notMem (G : CollaredGluing I X ι) [IsManifold I ∞ X] {i : ι}
+theorem attachingExtend_apply_of_notMem (G : CollaredGluing I X ι) {i : ι}
     {y : BoundaryManifold I X} (h : (y : X) ∉ (G.left i).carrier) :
     (G.attachingExtend i y : X) = (y : X) := by
   rw [attachingExtend]
-  simp only [dif_neg h]
+  simp only [dite_eq_right h]
 
 end CollaredGluing
 
@@ -306,10 +306,10 @@ theorem unitIntervalCollaredGluing_attachingSmooth :
         rw [← carrier_right_singleton]
         exact (unitIntervalCollaredGluing.attaching 0 ⟨(y : Icc (0:ℝ) 1), h⟩).2
       rw [CollaredGluing.attachingExtend]
-      simp only [dif_pos h]
+      simp only [dite_eq_left h]
       exact Subtype.ext (by simpa only [Set.mem_singleton_iff] using hmem)
     · rw [CollaredGluing.attachingExtend]
-      simp only [dif_neg h]
+      simp only [dite_eq_right h]
       rcases hy with hy | hy
       · rw [carrier_left_singleton, Set.mem_singleton_iff] at h
         exact absurd hy h

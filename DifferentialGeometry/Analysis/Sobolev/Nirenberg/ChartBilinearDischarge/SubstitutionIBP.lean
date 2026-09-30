@@ -213,14 +213,7 @@ private lemma memLp_diffQuot_of_memLp
     MemLp (DifferentialGeometry.Analysis.Sobolev.diffQuot
       (d := Module.finrank ℝ E) k h F) 2 (volume : Measure EuclN) := by
   classical
-  have hF_aesm : AEStronglyMeasurable F (volume : Measure EuclN) :=
-    hF_lp.aestronglyMeasurable
-  have hdq_aesm : AEStronglyMeasurable
-      (DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h F) (volume : Measure EuclN) :=
-    DifferentialGeometry.Analysis.Sobolev.aestronglyMeasurable_diffQuot
-      (d := Module.finrank ℝ E) k h hF_aesm
-  refine ⟨hdq_aesm, ?_⟩
+  rw [memLp_iff]
   have h_dq_eq : DifferentialGeometry.Analysis.Sobolev.diffQuot
       (d := Module.finrank ℝ E) k h F =
       h⁻¹ • (DifferentialGeometry.Analysis.Sobolev.translate

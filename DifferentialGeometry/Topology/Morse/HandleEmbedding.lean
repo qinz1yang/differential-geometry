@@ -392,7 +392,7 @@ private theorem cocoreLevelChartInverse_val (hε : 0 < ε)
     (cocoreLevelChartInverse hk c ε r data pole b x₀ z).val =
       data.χ (cocoreLevelChartInvPoint hk ε r pole b z) := by
   simp only [cocoreLevelChartInverse,
-    dif_pos (cocoreLevelChart_invPoint_value hk c ε r data pole b hε z hz)]
+    dite_eq_left (cocoreLevelChart_invPoint_value hk c ε r data pole b hε z hz)]
 
 private theorem cocoreLevelChart_inverse_coordinates (hε : 0 < ε) (hr : r ≠ 0)
     (x₀ : LevelSetSpace f (c - ε)) (z : Q)

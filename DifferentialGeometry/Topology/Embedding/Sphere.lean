@@ -109,7 +109,7 @@ theorem sphereChartEquiv_norm_sq {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)]
   calc
     _ = ‖(U.symm p.1 : E)‖ ^ 2 + ‖p.2 • (v : E)‖ ^ 2 := by
       simpa only [← sq] using norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero _ _ ho
-    _ = _ := by simp [← Submodule.coe_norm, norm_smul, sq_abs]
+    _ = _ := by simp [Submodule.norm_coe, norm_smul, sq_abs]
 
 
 private theorem sphereChartEquiv_apply_zero {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)]

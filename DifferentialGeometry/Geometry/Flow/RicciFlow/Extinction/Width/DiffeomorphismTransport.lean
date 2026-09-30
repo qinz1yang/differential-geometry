@@ -53,7 +53,7 @@ theorem mfderiv_apply_mfderiv_symm_apply (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A)
   exact (congrArg (fun (L : TangentSpace 𝓘(ℝ, E) y →L[ℝ] TangentSpace 𝓘(ℝ, E) y) => L X)
     hcomp).symm
 
-theorem inner_pullbackMetricCross_comp [T2Space Q] [T2Space A]
+theorem inner_pullbackMetricCross_comp [T2Space A]
     (g : SmoothRiemannianMetric I Q) (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (p : Q)
     (v w : TangentSpace I p) :
     (Diffeomorph.pullbackMetricCross g Φ.symm).inner (Φ p)
@@ -94,7 +94,7 @@ theorem X_postcomposeDiffeomorph (c : CurveMap Q) (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, 
   rw [mfderiv_comp x hΦ hf]
   rfl
 
-theorem speed_postcomposeDiffeomorph [T2Space Q] [T2Space A] (c : CurveMap Q)
+theorem speed_postcomposeDiffeomorph [T2Space A] (c : CurveMap Q)
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : ℝ → SmoothRiemannianMetric I Q) (x t : ℝ)
     (hf : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) x) :
     (c.postcomposeDiffeomorph Φ).speed (fun s => Diffeomorph.pullbackMetricCross (g s) Φ.symm) x t =
@@ -106,7 +106,7 @@ theorem speed_postcomposeDiffeomorph [T2Space Q] [T2Space A] (c : CurveMap Q)
     Diffeomorph.inner_pullbackMetricCross_comp (g t) Φ (c.lift x t) (c.X x t) (c.X x t)
   rw [CurveMap.speed, CurveMap.speed, CurveMap.lift_postcomposeDiffeomorph,
     CurveMap.X_postcomposeDiffeomorph c Φ x t hf, hinner]
-theorem unitTangent_postcomposeDiffeomorph [T2Space Q] [T2Space A] (c : CurveMap Q)
+theorem unitTangent_postcomposeDiffeomorph [T2Space A] (c : CurveMap Q)
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : ℝ → SmoothRiemannianMetric I Q) (x t : ℝ)
     (hf : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) x) :
     (c.postcomposeDiffeomorph Φ).unitTangent
@@ -163,8 +163,7 @@ theorem slice_contMDiffAt (c : CurveMap Q) (J : Set ℝ) (hc : c.SmoothOn (I := 
     Filter.univ_mem)
 
 omit [FiniteDimensional ℝ E] in
-theorem unitTangent_chartRep_differentiableAt [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)]
+theorem unitTangent_chartRep_differentiableAt
     (c : CurveMap Q) (g : ℝ → SmoothRiemannianMetric I Q) (t x : ℝ)
     (hc : c.SmoothOn (I := I) univ) (hi : c.ImmersedOn (I := I) univ) :
     DifferentiableAt ℝ (chartRepAt (I := I) (fun y => c.lift y t)
@@ -179,7 +178,7 @@ theorem slice_mdifferentiableAt (c : CurveMap Q) (J : Set ℝ) (hc : c.SmoothOn 
     MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) x :=
   (CurveMap.slice_contMDiffAt c J hc t ht x).mdifferentiableAt (by simp)
 
-theorem curvatureVector_postcomposeDiffeomorph [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
+theorem curvatureVector_postcomposeDiffeomorph [I.Boundaryless]
     [T2Space Q] [T2Space A]
     (c : CurveMap Q) (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : ℝ → SmoothRiemannianMetric I Q)
     (hc : c.SmoothOn (I := I) univ) (hi : c.ImmersedOn (I := I) univ) (x t : ℝ) :
@@ -215,23 +214,23 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] [IsManifold 𝓘(ℝ, E) ∞ A] in
 theorem diskExtension_comp_diffeomorph (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A)
     (u : SmoothDisk (I := I) (Q := Q)) :
-    diskExtension (SmoothDisk.comp_diffeomorph Φ u).map =
+    diskExtension (SmoothDisk.compDiffeomorph Φ u).map =
       fun z => Φ (diskExtension u.map z) := by
   funext z
   by_cases hz : z ∈ Metric.closedBall (0 : ℂ) 1
-  · rw [diskExtension, dif_pos hz, diskExtension, dif_pos hz]
+  · rw [diskExtension, dite_eq_left hz, diskExtension, dite_eq_left hz]
     rfl
-  · rw [diskExtension, dif_neg hz, diskExtension, dif_neg hz]
+  · rw [diskExtension, dite_eq_right hz, diskExtension, dite_eq_right hz]
     rfl
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] [IsManifold 𝓘(ℝ, E) ∞ A] in
 theorem SmoothDisk.differential_comp_diffeomorph (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A)
     (u : SmoothDisk (I := I) (Q := Q)) (z : Disk) (X : ℂ) :
-    (SmoothDisk.comp_diffeomorph Φ u).differential z X =
+    (SmoothDisk.compDiffeomorph Φ u).differential z X =
       mfderiv I 𝓘(ℝ, E) (Φ : Q → A) (u.map z) (u.differential z X) := by
-  have hL : (SmoothDisk.comp_diffeomorph Φ u).differential z X =
+  have hL : (SmoothDisk.compDiffeomorph Φ u).differential z X =
       mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E)
-        (diskExtension (SmoothDisk.comp_diffeomorph Φ u).map)
+        (diskExtension (SmoothDisk.compDiffeomorph Φ u).map)
         (Metric.closedBall (0 : ℂ) 1) (z : ℂ) X := rfl
   have hR : u.differential z X =
       mfderivWithin 𝓘(ℝ, ℂ) I (diskExtension u.map)
@@ -262,9 +261,9 @@ theorem SmoothDisk.inner_comp_diffeomorph [T2Space A]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : SmoothDisk (I := I) (Q := Q)) (z : Disk) (X Y : ℂ) :
     (Diffeomorph.pullbackMetricCross g Φ.symm).inner
-        ((SmoothDisk.comp_diffeomorph Φ u).map z)
-        ((SmoothDisk.comp_diffeomorph Φ u).differential z X)
-        ((SmoothDisk.comp_diffeomorph Φ u).differential z Y) =
+        ((SmoothDisk.compDiffeomorph Φ u).map z)
+        ((SmoothDisk.compDiffeomorph Φ u).differential z X)
+        ((SmoothDisk.compDiffeomorph Φ u).differential z Y) =
       g.inner (u.map z) (u.differential z X) (u.differential z Y) := by
   rw [SmoothDisk.comp_diffeomorph_map]
   rw [SmoothDisk.differential_comp_diffeomorph, SmoothDisk.differential_comp_diffeomorph]
@@ -274,14 +273,14 @@ theorem SmoothDisk.inner_comp_diffeomorph [T2Space A]
 theorem SmoothDisk.conformalFactor_comp_diffeomorph [T2Space A]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : SmoothDisk (I := I) (Q := Q)) (z : Disk) :
-    (SmoothDisk.comp_diffeomorph Φ u).conformalFactor
+    (SmoothDisk.compDiffeomorph Φ u).conformalFactor
         (Diffeomorph.pullbackMetricCross g Φ.symm) z = u.conformalFactor g z := by
   rw [SmoothDisk.conformalFactor, SmoothDisk.conformalFactor, SmoothDisk.inner_comp_diffeomorph]
 
 theorem SmoothDisk.isConformal_comp_diffeomorph [T2Space A]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : SmoothDisk (I := I) (Q := Q)) (h : u.IsConformal g) :
-    (SmoothDisk.comp_diffeomorph Φ u).IsConformal
+    (SmoothDisk.compDiffeomorph Φ u).IsConformal
       (Diffeomorph.pullbackMetricCross g Φ.symm) := by
   intro z
   obtain ⟨h1, h2⟩ := h z
@@ -322,35 +321,35 @@ theorem sectionalCurvature_pullbackMetricCross_comp [I.Boundaryless] [T2Space Q]
 theorem SmoothDisk.sectionalDensity_comp_diffeomorph [I.Boundaryless] [T2Space Q] [T2Space A]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : SmoothDisk (I := I) (Q := Q)) (z : Disk) :
-    (SmoothDisk.comp_diffeomorph Φ u).sectionalDensity
+    (SmoothDisk.compDiffeomorph Φ u).sectionalDensity
         (Diffeomorph.pullbackMetricCross g Φ.symm) z = u.sectionalDensity g z := by
   rw [SmoothDisk.sectionalDensity, SmoothDisk.sectionalDensity,
     SmoothDisk.conformalFactor_comp_diffeomorph]
   by_cases hpos : 0 < u.conformalFactor g z
-  · rw [if_pos hpos, if_pos hpos]
+  · rw [ite_eq_left hpos, ite_eq_left hpos]
     congr 1
     rw [SmoothDisk.differential_comp_diffeomorph, SmoothDisk.differential_comp_diffeomorph]
     exact sectionalCurvature_pullbackMetricCross_comp g Φ (u.map z)
       (u.differential z 1) (u.differential z Complex.I)
-  · rw [if_neg hpos, if_neg hpos]
+  · rw [ite_eq_right hpos, ite_eq_right hpos]
 
 
-theorem SmoothDisk.inwardConormal_comp_diffeomorph [T2Space Q] [T2Space A]
+theorem SmoothDisk.inwardConormal_comp_diffeomorph [T2Space A]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : SmoothDisk (I := I) (Q := Q)) (z : Disk) :
-    (SmoothDisk.comp_diffeomorph Φ u).inwardConormal
+    (SmoothDisk.compDiffeomorph Φ u).inwardConormal
         (Diffeomorph.pullbackMetricCross g Φ.symm) z =
       mfderiv I 𝓘(ℝ, E) (Φ : Q → A) (u.map z) (u.inwardConormal g z) := by
   have hcf := SmoothDisk.conformalFactor_comp_diffeomorph Φ g u z
   rw [SmoothDisk.inwardConormal, SmoothDisk.inwardConormal, SmoothDisk.comp_diffeomorph_map, hcf]
   by_cases h : 0 < u.conformalFactor g z
-  · rw [if_pos h, if_pos h, SmoothDisk.differential_comp_diffeomorph, map_smul]
-  · rw [if_neg h, if_neg h, map_zero]
+  · rw [ite_eq_left h, ite_eq_left h, SmoothDisk.differential_comp_diffeomorph, map_smul]
+  · rw [ite_eq_right h, ite_eq_right h, map_zero]
 
-theorem SmoothDisk.boundarySpeed_comp_diffeomorph [T2Space Q] [T2Space A]
+theorem SmoothDisk.boundarySpeed_comp_diffeomorph [T2Space A]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : SmoothDisk (I := I) (Q := Q)) (x : ℝ) :
-    (SmoothDisk.comp_diffeomorph Φ u).boundarySpeed
+    (SmoothDisk.compDiffeomorph Φ u).boundarySpeed
         (Diffeomorph.pullbackMetricCross g Φ.symm) x = u.boundarySpeed g x := by
   rw [SmoothDisk.boundarySpeed, SmoothDisk.boundarySpeed, SmoothDisk.comp_diffeomorph_map,
     SmoothDisk.differential_comp_diffeomorph, Diffeomorph.inner_pullbackMetricCross_comp]
@@ -365,14 +364,14 @@ theorem disk_curvature_inequality_of_standardModelCopy
     (γ' : RegularLoop 𝓘(ℝ, E) c.Q)
     (hγ' : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (loopLift γ'.toContinuousLoop))
     (himm' : ∀ x, loopVelocity (I := 𝓘(ℝ, E)) γ'.toContinuousLoop x ≠ 0)
-    (htrace' : ∀ theta, (SmoothDisk.comp_diffeomorph c.equiv u).map (diskBoundary theta) =
+    (htrace' : ∀ theta, (SmoothDisk.compDiffeomorph c.equiv u).map (diskBoundary theta) =
       γ' (sigma.map theta))
-    (hnonconstant' : ¬ ∃ q : c.Q, ∀ z : Disk, (SmoothDisk.comp_diffeomorph c.equiv u).map z = q)
-    (hconformal' : (SmoothDisk.comp_diffeomorph c.equiv u).IsConformal
+    (hnonconstant' : ¬ ∃ q : c.Q, ∀ z : Disk, (SmoothDisk.compDiffeomorph c.equiv u).map z = q)
+    (hconformal' : (SmoothDisk.compDiffeomorph c.equiv u).IsConformal
       (Diffeomorph.pullbackMetricCross g c.equiv.symm))
-    (hharmonic' : (SmoothDisk.comp_diffeomorph c.equiv u).IsHarmonic
+    (hharmonic' : (SmoothDisk.compDiffeomorph c.equiv u).IsHarmonic
       (Diffeomorph.pullbackMetricCross g c.equiv.symm))
-    (hbd : ∀ x : ℝ, (SmoothDisk.comp_diffeomorph c.equiv u).boundaryCurvatureDensity
+    (hbd : ∀ x : ℝ, (SmoothDisk.compDiffeomorph c.equiv u).boundaryCurvatureDensity
         (Diffeomorph.pullbackMetricCross g c.equiv.symm) γ' sigma htrace' x =
       u.boundaryCurvatureDensity g γ sigma htrace x) :
     IntegrableOn (diskExtension (u.sectionalDensity g)) (Metric.closedBall (0 : ℂ) 1) ∧
@@ -382,15 +381,15 @@ theorem disk_curvature_inequality_of_standardModelCopy
         ∫ x in (0 : ℝ)..1, u.boundaryCurvatureDensity g γ sigma htrace x := by
   let _ := hdim
   let g' : SmoothRiemannianMetric 𝓘(ℝ, E) c.Q := Diffeomorph.pullbackMetricCross g c.equiv.symm
-  let u' : SmoothDisk (I := 𝓘(ℝ, E)) (Q := c.Q) := SmoothDisk.comp_diffeomorph c.equiv u
+  let u' : SmoothDisk (I := 𝓘(ℝ, E)) (Q := c.Q) := SmoothDisk.compDiffeomorph c.equiv u
   obtain ⟨hint1, hint2, hineq⟩ := SmoothDisk.curvature_inequality_standardModel g' u'
     hnonconstant' hconformal' hharmonic' γ' hγ' himm' sigma htrace'
   have hsd : diskExtension (u'.sectionalDensity g') = diskExtension (u.sectionalDensity g) := by
     funext z
     by_cases hz : z ∈ Metric.closedBall (0 : ℂ) 1
-    · rw [diskExtension, dif_pos hz, diskExtension, dif_pos hz]
+    · rw [diskExtension, dite_eq_left hz, diskExtension, dite_eq_left hz]
       exact SmoothDisk.sectionalDensity_comp_diffeomorph c.equiv g u ⟨z, hz⟩
-    · rw [diskExtension, dif_neg hz, diskExtension, dif_neg hz]
+    · rw [diskExtension, dite_eq_right hz, diskExtension, dite_eq_right hz]
       exact SmoothDisk.sectionalDensity_comp_diffeomorph c.equiv g u diskCenter
   refine ⟨?_, ?_, ?_⟩
   · rw [← hsd]
@@ -458,7 +457,7 @@ theorem chartRepAt_straightLine_differentiableAt {F : ℂ → Q} {z v : ℂ}
   simp only [chartRepAt_apply, mfderiv_comp_straightLine (I := I) hs]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] [IsManifold 𝓘(ℝ, E) ∞ A] in
-theorem mfderiv_compDiffeomorph_straightLine [T2Space Q] [T2Space A]
+theorem mfderiv_compDiffeomorph_straightLine
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) {F : ℂ → Q} {z v : ℂ} {s : ℝ}
     (hF : MDifferentiableAt 𝓘(ℝ, ℂ) I F (z + s • v)) :
     mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (fun w => Φ (F w)) (z + s • v) v =
@@ -564,7 +563,7 @@ theorem diskLocalTension_natCrossAt [I.Boundaryless] [T2Space Q] [T2Space A]
 theorem SmoothDisk.isHarmonic_comp_diffeomorph [I.Boundaryless] [T2Space Q] [T2Space A]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : SmoothDisk (I := I) (Q := Q)) (h : u.IsHarmonic g) :
-    (SmoothDisk.comp_diffeomorph Φ u).IsHarmonic
+    (SmoothDisk.compDiffeomorph Φ u).IsHarmonic
       (Diffeomorph.pullbackMetricCross g Φ.symm) := by
   intro z F
   set G : ℂ → Q := fun w => Φ.symm (F.map w) with hG
@@ -578,9 +577,9 @@ theorem SmoothDisk.isHarmonic_comp_diffeomorph [I.Boundaryless] [T2Space Q] [T2S
     intro w hw
     obtain ⟨hwd, hwb⟩ := hw
     have hFw : F.map w = Φ (u.map ⟨w, hwb⟩) := by
-      have h1 : F.map w = diskExtension (SmoothDisk.comp_diffeomorph Φ u).map w :=
+      have h1 : F.map w = diskExtension (SmoothDisk.compDiffeomorph Φ u).map w :=
         F.agrees ⟨hwd, hwb⟩
-      rw [h1, diskExtension, dif_pos hwb, SmoothDisk.comp_diffeomorph_map]
+      rw [h1, diskExtension, dite_eq_left hwb, SmoothDisk.comp_diffeomorph_map]
     change Φ.symm (F.map w) = diskExtension u.map w
     rw [hFw, Φ.symm_apply_apply]
     exact (diskExtension_coe u.map ⟨w, hwb⟩).symm
@@ -651,20 +650,20 @@ theorem boundaryDensityValue_eq (g : SmoothRiemannianMetric I Q) (p : Q)
     boundaryDensityValue g p v n s = g.inner p v n * s := rfl
 
 theorem SmoothDisk.boundaryCurvatureDensity_comp_diffeomorph [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)] [T2Space Q] [T2Space A]
+    [T2Space Q] [T2Space A]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : SmoothDisk (I := I) (Q := Q)) (γ : RegularLoop I Q)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
     (himm : ∀ x, loopVelocity (I := I) γ.toContinuousLoop x ≠ 0)
     (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = γ (sigma.map theta))
-    (htrace' : ∀ theta, (SmoothDisk.comp_diffeomorph Φ u).map (diskBoundary theta) =
+    (htrace' : ∀ theta, (SmoothDisk.compDiffeomorph Φ u).map (diskBoundary theta) =
       (γ.postcomposeDiffeomorph Φ) (sigma.map theta)) (x : ℝ) :
-    (SmoothDisk.comp_diffeomorph Φ u).boundaryCurvatureDensity
+    (SmoothDisk.compDiffeomorph Φ u).boundaryCurvatureDensity
         (Diffeomorph.pullbackMetricCross g Φ.symm) (γ.postcomposeDiffeomorph Φ) sigma
         htrace' x =
       u.boundaryCurvatureDensity g γ sigma htrace x := by
-  rw [SmoothDisk.boundaryCurvatureDensity_eq (u := SmoothDisk.comp_diffeomorph Φ u)
+  rw [SmoothDisk.boundaryCurvatureDensity_eq (u := SmoothDisk.compDiffeomorph Φ u)
         (g := Diffeomorph.pullbackMetricCross g Φ.symm) (γ := γ.postcomposeDiffeomorph Φ)
         (sigma := sigma) (htrace := htrace') (x := x),
       SmoothDisk.boundaryCurvatureDensity_eq (u := u) (g := g) (γ := γ) (sigma := sigma)
@@ -704,7 +703,7 @@ theorem SmoothDisk.boundaryCurvatureDensity_comp_diffeomorph [I.Boundaryless]
       (w := u.inwardConormal g (diskBoundary (x : Surgery.Topology.Circle)))]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] [IsManifold 𝓘(ℝ, E) ∞ A] in
-theorem loopVelocity_postcomposeDiffeomorph [I.Boundaryless] [T2Space Q] [T2Space A]
+theorem loopVelocity_postcomposeDiffeomorph
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (γ : RegularLoop I Q)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop)) (x : ℝ) :
     loopVelocity (I := 𝓘(ℝ, E)) (γ.postcomposeDiffeomorph Φ).toContinuousLoop x =
@@ -759,7 +758,6 @@ theorem disk_curvature_inequality [hBoundary : I.Boundaryless] [hT2 : T2Space Q]
   let c : Geometry.Topology.StandardModelCopy I Q E :=
     Geometry.Topology.standardModelCopy (I := I) (M := Q) (e := ContinuousLinearEquiv.refl ℝ E)
   let _ : CompactSpace c.Q := c.equiv.toHomeomorph.compactSpace
-  have : NeZero (Module.finrank ℝ E) := ⟨by rw [hdim]; norm_num⟩
   have hγ' : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞
       (loopLift (γ.postcomposeDiffeomorph c.equiv).toContinuousLoop) := by
     have h := c.equiv.contMDiff.comp hγ
@@ -771,13 +769,13 @@ theorem disk_curvature_inequality [hBoundary : I.Boundaryless] [hT2 : T2Space Q]
     intro x hzero
     rw [loopVelocity_postcomposeDiffeomorph c.equiv γ hγ x] at hzero
     exact himm x ((mfderiv_eq_zero_iff_of_diffeomorph c.equiv _).mp hzero)
-  have htrace' : ∀ theta, (SmoothDisk.comp_diffeomorph c.equiv u).map (diskBoundary theta) =
+  have htrace' : ∀ theta, (SmoothDisk.compDiffeomorph c.equiv u).map (diskBoundary theta) =
       (γ.postcomposeDiffeomorph c.equiv) (sigma.map theta) := by
     intro theta
     rw [SmoothDisk.comp_diffeomorph_map, htrace theta]
     rfl
   have hnonconstant' : ¬ ∃ q : c.Q, ∀ z : Disk,
-      (SmoothDisk.comp_diffeomorph c.equiv u).map z = q := by
+      (SmoothDisk.compDiffeomorph c.equiv u).map z = q := by
     rintro ⟨q, hq⟩
     refine hnonconstant ⟨c.equiv.symm q, fun z => ?_⟩
     have h := hq z
@@ -794,18 +792,18 @@ theorem SmoothDisk.isConformal_comp_diffeomorph_symm [T2Space A]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := A))
     (h : u.IsConformal (Diffeomorph.pullbackMetricCross g Φ.symm)) :
-    (SmoothDisk.comp_diffeomorph Φ.symm u).IsConformal g := by
-  let v := SmoothDisk.comp_diffeomorph Φ.symm u
+    (SmoothDisk.compDiffeomorph Φ.symm u).IsConformal g := by
+  let v := SmoothDisk.compDiffeomorph Φ.symm u
   have hext (v₁ v₂ : SmoothDisk (I := 𝓘(ℝ, E)) (Q := A))
       (hm : v₁.map = v₂.map) : v₁ = v₂ := by
     cases v₁
     cases v₂
     cases hm
     rfl
-  have hback : SmoothDisk.comp_diffeomorph Φ v = u := by
+  have hback : SmoothDisk.compDiffeomorph Φ v = u := by
     apply hext
     exact ContinuousMap.ext fun z => Φ.apply_symm_apply (u.map z)
-  have hforward : (SmoothDisk.comp_diffeomorph Φ v).IsConformal
+  have hforward : (SmoothDisk.compDiffeomorph Φ v).IsConformal
       (Diffeomorph.pullbackMetricCross g Φ.symm) := by
     rw [hback]
     exact h
@@ -823,7 +821,7 @@ theorem SmoothDisk.isHarmonic_comp_diffeomorph_symm
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := A))
     (h : u.IsHarmonic (Diffeomorph.pullbackMetricCross g Φ.symm)) :
-    (SmoothDisk.comp_diffeomorph Φ.symm u).IsHarmonic g := by
+    (SmoothDisk.compDiffeomorph Φ.symm u).IsHarmonic g := by
   intro z F
   let G : DiskLocalExtension (I := 𝓘(ℝ, E)) u.map z := {
     map := fun w => Φ (F.map w)
@@ -835,7 +833,7 @@ theorem SmoothDisk.isHarmonic_comp_diffeomorph_symm
       intro w hw
       have hF : F.map w = Φ.symm (u.map ⟨w, hw.2⟩) :=
         (F.agrees hw).trans
-          (diskExtension_coe (SmoothDisk.comp_diffeomorph Φ.symm u).map ⟨w, hw.2⟩)
+          (diskExtension_coe (SmoothDisk.compDiffeomorph Φ.symm u).map ⟨w, hw.2⟩)
       change Φ (F.map w) = diskExtension u.map w
       rw [hF, Φ.apply_symm_apply]
       exact (diskExtension_coe u.map ⟨w, hw.2⟩).symm }

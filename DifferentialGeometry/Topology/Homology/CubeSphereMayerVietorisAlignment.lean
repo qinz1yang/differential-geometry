@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Algebra.Module.InfiniteCyclicCriterion
 import DifferentialGeometry.Topology.Homology.CubeSphereDegreeUnit
 import DifferentialGeometry.Topology.Homology.LiftedSphereRelativeBridge
 
@@ -29,7 +30,7 @@ theorem integralSphereTopHomologyEquiv_succ_apply {E : Type u} [NormedAddCommGro
 abbrev CubeSphereMayerVietorisSource :=
   integralSingularHomology 3 (sphere (0 : liftedSphereSpace.{u} 2) 1)
 
-def integralSphereHomologyShiftEquiv_cubeSphereFundamentalClass
+def cubeSquareHomologyAlignment
     {B : Type u} [AddCommGroup B] [Module ℤ B]
     (f : CubeSphereMayerVietorisSource.{u} ≃ₗ[ℤ] B)
     (τ : B ≃ₗ[ℤ] integralSingularHomology 2 (liftedHomotopySphere.{u} 1)) : Prop :=
@@ -65,7 +66,7 @@ theorem isSphereHomologyGenerator_cubeSphereFundamentalClass_iff_squareSphereFun
     {B : Type u} [AddCommGroup B] [Module ℤ B]
     (f : CubeSphereMayerVietorisSource.{u} ≃ₗ[ℤ] B) (g : B ≃ₗ[ℤ] ℤ)
     (τ : B ≃ₗ[ℤ] integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
-    (halign : integralSphereHomologyShiftEquiv_cubeSphereFundamentalClass f τ) :
+    (halign : cubeSquareHomologyAlignment f τ) :
     IsSphereHomologyGenerator.{u} 2 cubeSphereFundamentalClass.{u} ↔
       IsSphereHomologyGenerator.{u} 1 squareSphereFundamentalClass.{u} := by
   rw [isSphereHomologyGenerator_cubeSphereFundamentalClass_iff_isUnit_apply_trans f g,
@@ -89,7 +90,7 @@ theorem isSphereHomologyGenerator_cubeSphereFundamentalClass_of_squareSphereFund
     {B : Type u} [AddCommGroup B] [Module ℤ B]
     (f : CubeSphereMayerVietorisSource.{u} ≃ₗ[ℤ] B) (g : B ≃ₗ[ℤ] ℤ)
     (τ : B ≃ₗ[ℤ] integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
-    (halign : integralSphereHomologyShiftEquiv_cubeSphereFundamentalClass f τ)
+    (halign : cubeSquareHomologyAlignment f τ)
     (hsq : IsSphereHomologyGenerator.{u} 1 squareSphereFundamentalClass.{u}) :
     IsSphereHomologyGenerator.{u} 2 cubeSphereFundamentalClass.{u} :=
   (isSphereHomologyGenerator_cubeSphereFundamentalClass_iff_squareSphereFundamentalClass
@@ -99,7 +100,7 @@ theorem isSphereHomologyGenerator_cubeSphereFundamentalClass_of_squareRelativeFu
     {B : Type u} [AddCommGroup B] [Module ℤ B]
     (f : CubeSphereMayerVietorisSource.{u} ≃ₗ[ℤ] B) (g : B ≃ₗ[ℤ] ℤ)
     (τ : B ≃ₗ[ℤ] integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
-    (halign : integralSphereHomologyShiftEquiv_cubeSphereFundamentalClass f τ)
+    (halign : cubeSquareHomologyAlignment f τ)
     (hrel : ∃ ψ : integralRelativeHomology 2 (liftedSphereBasepoint.{u}) →ₗ[ℤ] ℤ,
       ψ (integralAbsoluteToRelative 2 (liftedSphereBasepoint.{u})
         squareSphereFundamentalClass.{u}) = 1) :

@@ -117,7 +117,7 @@ theorem IsCombinatorialManifoldWithBoundary.section34CompactLinkCondition
     (hK.subset (geometricLink_faces_subset K {v})).to_subtype
   have hlink : IsPLSphere 2 (SimplicialComplex.geometricLink K {v}).space ∨
       IsPLBall 2 (SimplicialComplex.geometricLink K {v}).space := by
-    convert hKm v hv <;> rfl
+    convert hKm v hv
   rcases hlink with hS | hB
   · exact hS.isCombinatorialManifold.isCombinatorialManifoldWithBoundary
       |>.mem_connectedComponentIn_sdiff_openEdge hS.isConnected he hcard ha hb

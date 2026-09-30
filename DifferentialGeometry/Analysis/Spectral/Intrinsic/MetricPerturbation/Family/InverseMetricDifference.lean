@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturba
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.PositiveDefinitePerturbation
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 noncomputable section
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle

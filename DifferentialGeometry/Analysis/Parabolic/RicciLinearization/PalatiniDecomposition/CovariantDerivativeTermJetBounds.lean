@@ -17,6 +17,8 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomp
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.EndomorphismTermAlgebra
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.EndomorphismTermBounds
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.CovariantDerivativeTerm
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -74,7 +76,7 @@ private lemma lrBFGW_mono_of_le (b b' : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
   rw [Combinatorics.boundedFactorGrid, Combinatorics.boundedFactorGrid]
   refine Finset.sum_le_sum fun n _ => ?_
   refine Finset.sum_le_sum fun e _ => ?_
-  exact Finset.prod_le_prod (fun m _ => hb (e m)) (fun m _ => hbb (e m))
+  exact Finset.prod_le_prod₀ (fun m _ => hb (e m)) (fun m _ => hbb (e m))
 
 private lemma lrWindow_le_bFGW (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {K W W' : ℕ}
     (hK : W ≤ K + 1) (hW : W ≤ W') (_hW1 : 1 ≤ W') :
@@ -388,7 +390,7 @@ private theorem lrOmegaHat_gridWindow (g₀ : SmoothRiemannianMetric I M)
     intro l'
     rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
       (finRotate 3) (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) l' x]
-    rw [palatiniRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ l' x]
+    rw [connection_difference_lowering_preserves_covariant_jet_norm_sq (I := I) (M := M) g₀ g₁ l' x]
     have h := hCA g₁ P htie hδ_le hδ0 hbound l' x
     rwa [show (∑ k ∈ Finset.range (l' + 2), Combinatorics.antidiagonalTupleGrid b k) =
       Combinatorics.antidiagonalTupleGridWindow b (l' + 2) from rfl] at h
@@ -741,7 +743,7 @@ private lemma lrGridWindow_mono_of_le (b b' : ℕ → ℝ) (hb : ∀ j, 0 ≤ b 
   rw [Combinatorics.antidiagonalTupleGrid, Combinatorics.antidiagonalTupleGrid]
   refine Finset.sum_le_sum fun n _ => ?_
   refine Finset.sum_le_sum fun e _ => ?_
-  exact Finset.prod_le_prod (fun m _ => hb (e m)) (fun m _ => hbb (e m))
+  exact Finset.prod_le_prod₀ (fun m _ => hb (e m)) (fun m _ => hbb (e m))
 
 private theorem riemannCurvatureRemainderGridWindow (g₀ : SmoothRiemannianMetric I M) (Λ0 : ℝ)
     (hΛ0 : 0 ≤ Λ0)
@@ -804,7 +806,7 @@ private theorem riemannCurvatureRemainderGridWindow (g₀ : SmoothRiemannianMetr
         s • ((iteratedCovGrad (I := I) g₀ 0 2 l' T).toSection x) from by
       rw [SmoothCcTensor.toSection_smul]
       rfl]
-    rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l') x]
+    rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l') x]
     nlinarith only [hb l', hss, hs2]
   have hsub : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
       ((iteratedCovGrad (I := I) g₀ 0 4 w
@@ -829,7 +831,7 @@ private theorem riemannCurvatureRemainderGridWindow (g₀ : SmoothRiemannianMetr
           (riemannCurvatureCoefficientField (I := I) (M := M) g₀ T)).toSection x) from by
       rw [SmoothCcTensor.toSection_smul]
       rfl]
-    rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (4 + w) x]
+    rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (4 + w) x]
     have hbase := hCF T hT0 w K (by omega) x
     have hbase' : CF w * Combinatorics.boundedFactorGridWindow b K (w + 2) ≤ CF w * W := by
       refine mul_le_mul_of_nonneg_left ?_ (hCF_nn w)
@@ -938,7 +940,7 @@ theorem deTurckLieCovariantDerivativeTermDifferenceGridWindow (g₀ : SmoothRiem
         s • ((iteratedCovGrad (I := I) g₀ 0 2 l' T).toSection y) from by
       rw [SmoothCcTensor.toSection_smul]
       rfl]
-    rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l') y]
+    rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l') y]
     nlinarith only [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l') y
       ((iteratedCovGrad (I := I) g₀ 0 2 l' T).toSection y), hss, hs2]
   have hlift : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
@@ -975,7 +977,7 @@ theorem deTurckLieCovariantDerivativeTermDifferenceGridWindow (g₀ : SmoothRiem
                 (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s))))).toSection x) from by
       rw [SmoothCcTensor.toSection_smul]
       rfl]
-    rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+    rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     norm_num
   rw [hlift]
   refine le_trans

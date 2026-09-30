@@ -91,14 +91,14 @@ theorem IsLocalDiffeomorph.contMDiff_alternating_of_pullback
   intro y
   obtain ⟨x, rfl⟩ := hsurj y
   let s := (hf x).localInverse
-  have hs : ContMDiffAt J I ∞ s (f x) := (hf x).localInverse_contMDiffAt
+  have hs : ContMDiffAt J I ∞ s (f x) := (hf x).contMDiffAt_localInverse
   have h := hs.alternating_pullback (hα (s (f x)))
   apply h.congr_of_eventuallyEq
   have heq : f ∘ s =ᶠ[𝓝 (f x)] id := (hf x).localInverse_eventuallyEq_right
   have hdiff : ∀ᶠ z in 𝓝 (f x), MDifferentiableAt J I s z := by
     filter_upwards [(hf x).localInverse.open_source.mem_nhds
       (hf x).localInverse_mem_source] with z hz
-    exact ((hf x).localInverse_contMDiffOn.contMDiffAt
+    exact ((hf x).contMDiffOn_localInverse.contMDiffAt
       ((hf x).localInverse.open_source.mem_nhds hz)).mdifferentiableAt (by simp)
   filter_upwards [heq, heq.eventuallyEq_nhds, hdiff] with z hz hloc hsz
   congr 1

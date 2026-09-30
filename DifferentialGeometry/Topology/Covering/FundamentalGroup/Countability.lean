@@ -212,7 +212,7 @@ theorem uc_pi1_countable_anchors
   refine ⟨fun p => if h : (B p.1 ∩ B p.2).Nonempty then h.choose
                    else Classical.arbitrary X, ?_⟩
   intro p hp
-  simp only [hp, dif_pos]
+  simp only [hp, dite_eq_left]
   exact hp.choose_spec
 
 theorem uc_pi1_countable_lebesgue_subdivision
@@ -655,14 +655,14 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
       ∀ (i : Fin k) (hi : 0 < (i : ℕ)),
         γ (t i.castSucc) ∈ B (ref i) := by
     intro i hi
-    simp only [ref, dif_pos hi]
+    simp only [ref, dite_eq_left hi]
     exact (href_exists i hi).choose_spec.1
   have href_sub :
       ∀ (i : Fin k) (hi : 0 < (i : ℕ)),
         B (ref i) ⊆
           B (idx ⟨(i : ℕ) - 1, by omega⟩) ∩ B (idx i) := by
     intro i hi
-    simp only [ref, dif_pos hi]
+    simp only [ref, dite_eq_left hi]
     exact (href_exists i hi).choose_spec.2
   refine ⟨⟨k, idx, ref⟩, ?_⟩
   let T : (i : Fin k) →
@@ -715,7 +715,7 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     · have hpv : polyVertex idx ref i.castSucc = x := by
         change (if h : 0 < (i.castSucc : ℕ) ∧ (i.castSucc : ℕ) < k
               then anchor _ else x) = x
-        rw [dif_neg]
+        rw [dite_eq_right]
         intro ⟨hpos, _⟩
         rw [hcast_val] at hpos
         omega
@@ -735,7 +735,7 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
         change (if h : 0 < (i.castSucc : ℕ) ∧ (i.castSucc : ℕ) < k
               then anchor (ref ⟨(i.castSucc : ℕ), h.2⟩) else x)
             = anchor (ref i)
-        rw [dif_pos ⟨hpos', hlt⟩]
+        rw [dite_eq_left ⟨hpos', hlt⟩]
       rw [hpv]
       exact ((href_sub i hpos) (hanchor (ref i))).2
   have hVertex_succ : ∀ i : Fin k,
@@ -745,7 +745,7 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     · have hpv : polyVertex idx ref i.succ = x := by
         change (if h : 0 < (i.succ : ℕ) ∧ (i.succ : ℕ) < k
               then anchor _ else x) = x
-        rw [dif_neg]
+        rw [dite_eq_right]
         intro ⟨_, hlt⟩
         rw [hsucc_val] at hlt
         omega
@@ -767,7 +767,7 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
         change (if h : 0 < (i.succ : ℕ) ∧ (i.succ : ℕ) < k
               then anchor (ref ⟨(i.succ : ℕ), h.2⟩) else x)
             = anchor (ref i_next)
-        rw [dif_pos ⟨by rw [hsucc_val]; omega, by simpa [hsucc_val]⟩]
+        rw [dite_eq_left ⟨by rw [hsucc_val]; omega, by simpa [hsucc_val]⟩]
       rw [hpv]
       have hprev_eq : (⟨(i_next : ℕ) - 1, by omega⟩ : Fin k) = i := by
         apply Fin.ext
@@ -811,7 +811,7 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     else
       FundamentalGroup.fromPath ⟦_root_.Path.refl x⟧)
       = FundamentalGroup.fromPath ⟦polyLoop⟧
-    rw [dif_pos hvalid]
+    rw [dite_eq_left hvalid]
   rw [hf_unfold]
   have hg_unfold : g = FundamentalGroup.fromPath q := rfl
   rw [hg_unfold]
@@ -901,7 +901,7 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
           have hp0_ref : p₀ j ∈ B (ref jf) := by
             change (if h : 0 < (j : ℕ) ∧ (j : ℕ) < k then
                 anchor (ref ⟨(j : ℕ), h.2⟩) else x) ∈ B (ref jf)
-            rw [dif_pos (And.intro hjpos hjlt)]
+            rw [dite_eq_left (And.intro hjpos hjlt)]
             simpa [jf] using hanchor (ref jf)
           have hgv_ref : γv j ∈ B (ref jf) := by
             rw [hγv_eq]

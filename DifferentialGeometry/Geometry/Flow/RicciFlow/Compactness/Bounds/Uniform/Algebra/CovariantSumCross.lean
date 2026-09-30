@@ -47,7 +47,7 @@ private lemma det_le_one_of_rayleigh
       RCLike.re (dotProduct (star ⇑v) (Matrix.mulVec A ⇑v)) ≤ 1) :
     A.det ≤ 1 := by
   rw [hA.isHermitian.det_eq_prod_eigenvalues]
-  refine Finset.prod_le_one (fun i _ => ?_) (fun i _ => ?_)
+  refine Finset.prod_le_one₀ (fun i _ => ?_) (fun i _ => ?_)
   · exact_mod_cast hA.eigenvalues_nonneg i
   · exact_mod_cast eigenvalues_le_of_rayleigh hA.isHermitian hray i
 
@@ -1039,7 +1039,7 @@ theorem iterCovG1_two
     hEq hjet hx 2 ?_
   intro m hm
   interval_cases m
-  · simp only [if_neg (by norm_num : (0 : ℕ) ≠ 1), zero_mul]
+  · simp only [ite_eq_right (by norm_num : (0 : ℕ) ≠ 1), zero_mul]
     rw [show telescAccum (I := I) g₁ g₂ r T 0 = 0 from rfl, covariant_derivative_step_zero]
     simp only [ContMDiffSection.coe_zero, Pi.zero_apply, sqrt_covariant_tensor_norm_sq_zero, le_refl]
   · simp only [reduceIte]

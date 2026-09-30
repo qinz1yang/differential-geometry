@@ -71,7 +71,7 @@ theorem covDerivAlong_curveVelocity_of_local_lift
     filter_upwards [hθ.eventually (by norm_num), heq.eventually_nhds] with y hy hyeq
     have hyeq : (fun s => (θ s : AddCircle (1 : ℝ))) =ᶠ[𝓝 y] γ := hyeq
     have hd := hy.differentiableAt (by norm_num)
-    rw [← hyeq.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))]
+    rw [hyeq.symm.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))]
     have hcomp := mfderiv_comp y
       (contMDiff_coe.mdifferentiableAt (x := θ y) (by decide)) hd.mdifferentiableAt
     change (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ)

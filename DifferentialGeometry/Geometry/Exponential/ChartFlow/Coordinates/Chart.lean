@@ -15,6 +15,10 @@ noncomputable section
 open Set Function Filter Bundle Manifold
 open scoped Topology Manifold ContDiff
 
+open TangentBundle
+  (chartFiberCoord chartFiberCoord_self_zero extChartAt_tangent_eq_at_proj
+    extChartAt_tangent_zero_apply_chartFiber)
+
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian

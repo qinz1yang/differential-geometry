@@ -339,6 +339,7 @@ private theorem exists_oriented_ball_chart_data (M : ConnectedClosedOrientedMani
     have hid : mfderiv (𝓡 3) 𝓘(ℝ, E3) ((⇑e) ∘ (⇑e.symm)) (τ x)
         = ContinuousLinearMap.id ℝ (TangentSpace 𝓘(ℝ, E3) (τ x)) := by
       rw [Filter.EventuallyEq.mfderiv_eq hone, mfderiv_id]
+      rfl
     have hBcomp : Bclm ∘L mfderiv (𝓡 3) (𝓡 3) (⇑e.symm) (τ x)
         = ContinuousLinearMap.id ℝ (TangentSpace (𝓡 3) (τ x)) := by
       rw [hBclm_eq]
@@ -522,7 +523,6 @@ theorem connectedSum_charts (M : ConnectedClosedOrientedManifold.{u} 3)
       (orientedBallChart M).toBallChart (orientedBallChart N).toBallChart
       boundaryAttachment.1.toHomeomorph := rfl
 
-@[simp]
 theorem connectedSum_smooth (M : ConnectedClosedOrientedManifold.{u} 3)
     (N : ConnectedClosedOrientedManifold.{v} 3) :
     (connectedSum M N).smooth = ConnectedSumQuotient.csIsManifold

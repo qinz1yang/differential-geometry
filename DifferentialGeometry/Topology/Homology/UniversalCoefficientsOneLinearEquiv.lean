@@ -172,24 +172,24 @@ private def integralCocycleOfCycleFunctionalOnCyclesAddMonoidHom [PathConnectedS
   map_zero' := integralCocycleOfCycleFunctionalOnCycles_zero a
   map_add' := integralCocycleOfCycleFunctionalOnCycles_add a
 
-def integralCycleFunctionalOfHomology [PathConnectedSpace X]
+def integralCycleFunctionalOfHomology
     (g : integralSingularHomology 1 X →ₗ[ℤ] ℤ) : ↥(integralCycleFunctionalSubmodule X) :=
   ⟨g.comp (integralSingularCycleClassLinearMap 0 X), fun c => by
     rw [LinearMap.comp_apply, integralSingularCycleClassLinearMap_boundary 0 X c, map_zero]⟩
 
-theorem integralCycleFunctionalOfHomology_coe [PathConnectedSpace X]
+theorem integralCycleFunctionalOfHomology_coe
     (g : integralSingularHomology 1 X →ₗ[ℤ] ℤ) :
     (integralCycleFunctionalOfHomology g).1 =
       g.comp (integralSingularCycleClassLinearMap 0 X) :=
   rfl
 
-theorem integralCycleFunctionalOfHomology_apply [PathConnectedSpace X]
+theorem integralCycleFunctionalOfHomology_apply
     (g : integralSingularHomology 1 X →ₗ[ℤ] ℤ) (z : integralSingularCycles 0 X) :
     (integralCycleFunctionalOfHomology g).1 z =
       g (integralSingularCycleClassLinearMap 0 X z) :=
   rfl
 
-theorem integralCycleFunctionalOfHomology_add [PathConnectedSpace X]
+theorem integralCycleFunctionalOfHomology_add
     (g h : integralSingularHomology 1 X →ₗ[ℤ] ℤ) :
     integralCycleFunctionalOfHomology (g + h) =
       integralCycleFunctionalOfHomology g + integralCycleFunctionalOfHomology h := by
@@ -199,14 +199,14 @@ theorem integralCycleFunctionalOfHomology_add [PathConnectedSpace X]
       h.comp (integralSingularCycleClassLinearMap 0 X)
   rw [LinearMap.add_comp]
 
-theorem integralCycleFunctionalOfHomology_zero [PathConnectedSpace X] :
+theorem integralCycleFunctionalOfHomology_zero :
     integralCycleFunctionalOfHomology (0 : integralSingularHomology 1 X →ₗ[ℤ] ℤ) = 0 := by
   apply Subtype.ext
   change (0 : integralSingularHomology 1 X →ₗ[ℤ] ℤ).comp
     (integralSingularCycleClassLinearMap 0 X) = 0
   rw [LinearMap.zero_comp]
 
-private def integralCycleFunctionalOfHomologyAddMonoidHom [PathConnectedSpace X] :
+private def integralCycleFunctionalOfHomologyAddMonoidHom :
     (integralSingularHomology 1 X →ₗ[ℤ] ℤ) →+ ↥(integralCycleFunctionalSubmodule X) where
   toFun := integralCycleFunctionalOfHomology
   map_zero' := integralCycleFunctionalOfHomology_zero

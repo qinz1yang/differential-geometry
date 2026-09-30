@@ -36,9 +36,9 @@ theorem faceEulerChar_boundary_of_geometric_pair :
     have hsK : s ∈ K.faces := (Set.toFinite K.faces).mem_toFinset.mp hs
     rw [faceLink_values_of_geometric_boundary hLK e hboundary hsK]
     by_cases hsL : s ∈ L.faces
-    · rw [if_pos hsL, if_pos hsL]
+    · rw [ite_eq_left hsL, ite_eq_left hsL]
       ring
-    · rw [if_neg hsL, if_neg hsL, sub_zero]
+    · rw [ite_eq_right hsL, ite_eq_right hsL, sub_zero]
       have hc : s.card - 1 + 1 = s.card := Nat.sub_add_cancel
         (Finset.card_pos.mpr (K.nonempty_of_mem_faces hsK))
       have hw : w s = (-1 : ℤ) ^ (s.card - 1) := by

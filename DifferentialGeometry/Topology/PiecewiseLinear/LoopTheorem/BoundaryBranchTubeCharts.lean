@@ -119,7 +119,7 @@ theorem exists_isPLHomeomorphOn_val_symm_of_mem_maximalAtlas (L : Geometry.Simpl
   obtain ⟨x, hx, rfl⟩ := hq
   rw [hinj.leftInvOn_invFunOn hx]
   beta_reduce
-  rw [dif_pos (e.symm x).2, Subtype.coe_eta, e.right_inv (hU₀t hx)]
+  rw [dite_eq_left (e.symm x).2, Subtype.coe_eta, e.right_inv (hU₀t hx)]
 
 def crossNormalFormEquiv : (ℝ × ℝ × ℝ) ≃ₗ[ℝ] (ℝ × ℝ) × ℝ where
   toFun x := ((x.2.1, x.2.2), x.1)

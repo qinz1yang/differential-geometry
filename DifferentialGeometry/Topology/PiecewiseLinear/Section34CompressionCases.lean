@@ -31,12 +31,12 @@ theorem subset_interior_or_disjoint_sdiff_of_isPLCellOn
     have hFbc : Fb ⊆ c.source := hF.boundary_subset.trans hFc
     exact (c.injOn.image_eq_image_iff hfrc hFbc).mp h1
   have hJD : Jd ⊆ Dj := hD.boundary_subset
-  have hopen : c '' (Dj \ Jd) = q '' (stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2) := by
+  have hopen : c '' (Dj \ Jd) = q '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2) := by
     rw [(c.injOn.mono hDc).image_sdiff_subset hJD, ← hq.image_eq, hqJ,
       hq.bijOn.injOn.image_sdiff_subset (fun x hx => hx.1)]
-  have hconv : Convex ℝ (stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2) := by
+  have hconv : Convex ℝ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2) := by
     intro x hx y hy a b ha hb hab
-    refine ⟨(convex_stdSimplex ℝ (Fin 3)) hx.1 hy.1 ha hb hab, ?_⟩
+    refine ⟨(Convexity.StdSimplex.convex_coordinateSet ℝ (Fin 3)) hx.1 hy.1 ha hb hab, ?_⟩
     rintro ⟨-, i, hi⟩
     have hxi : 0 < x i := lt_of_le_of_ne (hx.1.1 i) fun h => hx.2 ⟨hx.1, i, h.symm⟩
     have hyi : 0 < y i := lt_of_le_of_ne (hy.1.1 i) fun h => hy.2 ⟨hy.1, i, h.symm⟩
@@ -47,7 +47,7 @@ theorem subset_interior_or_disjoint_sdiff_of_isPLCellOn
       subst hab
       nlinarith
     · nlinarith [mul_pos ha' hxi, mul_nonneg hb hyi.le]
-  have hpcq : IsPreconnected (q '' (stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2)) :=
+  have hpcq : IsPreconnected (q '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2)) :=
     hconv.isPreconnected.image q (hq.isPiecewiseAffineOn.continuousOn.mono fun x hx => hx.1)
   have hDJc : Dj \ Jd ⊆ c.source := sdiff_subset.trans hDc
   have hpc : IsPreconnected (Dj \ Jd) := by

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientCanonicalNeighborhood
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelsReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalClassificationNormalization
 
 set_option autoImplicit false
 
@@ -48,7 +48,7 @@ def OrientedCanonicalPullbackAt (eps : ℝ) : Prop :=
         OrientedWitness S o delta kappa x t → Nonempty (CanonicalWitness S eps C1 C2 x t)
 
 omit [T2Space M] [SigmaCompactSpace M] in
-def WindowedModelWitness.mono_kappa {eps kappa kappa' : ℝ} {x : M} {t : ℝ}
+def WindowedModelWitness.monoKappa {eps kappa kappa' : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa' S x t) (hpos : 0 < kappa) (hle : kappa ≤ kappa') :
     WindowedModelWitness eps kappa S x t :=
   { W with model_ancient := isAncientKappaSolution_of_kappa_le W.model_ancient hpos hle }
@@ -59,7 +59,7 @@ theorem OrientedWitness.mono_kappa {eps kappa kappa' : ℝ} {x : M} {t : ℝ}
     (hpos : 0 < kappa) (hle : kappa ≤ kappa') :
     OrientedWitness S o eps kappa x t := by
   obtain ⟨W', oN, hO⟩ := W
-  exact ⟨W'.mono_kappa hpos hle, oN, hO⟩
+  exact ⟨W'.monoKappa hpos hle, oN, hO⟩
 
 theorem windowedCanonicalPullbackAt_mono {eps eps' : ℝ}
     (h : WindowedCanonicalPullbackAt.{u} eps) (hle : eps ≤ eps') (hsmall : eps' < 1 / 11) :
@@ -69,7 +69,7 @@ theorem windowedCanonicalPullbackAt_mono {eps eps' : ℝ}
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hkappa
   refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS x t hreg hw => ?_⟩
   obtain ⟨W⟩ := himp M D S hS x t hreg hw
-  exact ⟨W.mono_eps hle hsmall⟩
+  exact ⟨W.monoEps hle hsmall⟩
 
 theorem orientedCanonicalPullbackAt_mono {eps eps' : ℝ}
     (h : OrientedCanonicalPullbackAt.{u} eps) (hle : eps ≤ eps') (hsmall : eps' < 1 / 11) :
@@ -79,7 +79,7 @@ theorem orientedCanonicalPullbackAt_mono {eps eps' : ℝ}
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hkappa
   refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
   obtain ⟨W⟩ := himp M D S hS o x t hreg hw
-  exact ⟨W.mono_eps hle hsmall⟩
+  exact ⟨W.monoEps hle hsmall⟩
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem orientedCanonicalPullbackAt_of_windowedCanonicalPullbackAt {eps : ℝ}
@@ -113,7 +113,7 @@ theorem windowedCanonicalPullbackAt_iff_kappa_le_one {eps : ℝ} :
     · exact hmain kappa hkappa hkappa1
     · obtain ⟨delta, hd, hd1, himp⟩ := hmain 1 one_pos le_rfl
       exact ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS x t hreg hw =>
-        himp M D S hS x t hreg (hw.mono_kappa one_pos (not_le.mp hkappa1).le)⟩
+        himp M D S hS x t hreg (hw.monoKappa one_pos (not_le.mp hkappa1).le)⟩
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem orientedCanonicalPullbackAt_iff_kappa_le_one {eps : ℝ} :
@@ -151,17 +151,18 @@ theorem windowedCanonicalPullback_iff_forall_eps_le :
   · intro h
     exact ⟨1 / 44, by norm_num, fun eps heps heps44 => h eps heps heps44⟩
 
-theorem bufferedCanonicalPullbackFrontier_iff_forall_eps_le :
-    BufferedCanonicalPullbackFrontier.{u} ↔
+theorem kappaUniformCanonicalClassification_iff_forall_eps_le :
+    kappaUniformCanonicalClassification.{u} ↔
       ∀ eps : ℝ, 0 < eps → eps ≤ 1 / 44 → OrientedCanonicalPullbackAt.{u} eps := by
   constructor
   · intro h eps heps heps44
-    obtain ⟨epsCan, hepsCan, hmain⟩ := h
+    obtain ⟨epsCan, hepsCan, hmain⟩ := buffered_canonical_pullback_of_classification h
     exact orientedCanonicalPullbackAt_mono
       (hmain (min eps epsCan) (lt_min heps hepsCan) (min_le_right _ _))
       (min_le_left _ _) (by linarith)
   · intro h
-    exact ⟨1 / 44, by norm_num, fun eps heps heps44 => h eps heps heps44⟩
+    exact kappaUniformCanonicalClassification_of_buffered_canonical_pullback
+      ⟨1 / 44, by norm_num, fun eps heps heps44 => h eps heps heps44⟩
 
 theorem windowedCanonicalPullback_iff_forall_nat :
     windowedCanonicalPullback.{u} ↔
@@ -198,8 +199,7 @@ theorem not_windowedCanonicalPullbackAt_of_one_le {kappa : ℝ}
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hanc.kappa_pos
   obtain ⟨W, _, _⟩ := orientedWitness_self P hanc hbase o hd hd1
   obtain ⟨Wc⟩ := himp P.M ancientTimeInterval P.S P.isSolution P.basepoint 0 (fun _ hs => hs.2) W
-  exact (isEmpty_canonicalWitness_of_one_le (S := P.S) (x := P.basepoint) (t := 0)
-    (eps := eps) (C1 := C1) (C2 := C2) heps).false Wc
+  exact absurd Wc.eps_lt_one (not_lt.mpr heps)
 
 theorem not_orientedCanonicalPullbackAt_of_one_le {kappa : ℝ}
     (P : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
@@ -212,8 +212,7 @@ theorem not_orientedCanonicalPullbackAt_of_one_le {kappa : ℝ}
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hanc.kappa_pos
   obtain ⟨Wc⟩ := himp P.M ancientTimeInterval P.S P.isSolution o P.basepoint 0 (fun _ hs => hs.2)
     (orientedWitness_self P hanc hbase o hd hd1)
-  exact (isEmpty_canonicalWitness_of_one_le (S := P.S) (x := P.basepoint) (t := 0)
-    (eps := eps) (C1 := C1) (C2 := C2) heps).false Wc
+  exact absurd Wc.eps_lt_one (not_lt.mpr heps)
 
 theorem kappa_canonical_neighborhood_of_windowedCanonicalPullback
     (h : windowedCanonicalPullback.{u}) :
@@ -249,7 +248,8 @@ theorem windowedCanonicalPullback_of_ancientModelClassification_halfWindow
       [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
       (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
       IsSolutionOn S → ∀ (x : M) (t : ℝ),
-      Set.Ioo (t - ((1 / 2) * S.scalar t x)⁻¹) t ⊆ D.regular → ∀ (W : WindowedModelWitness (1 / 2) kappa S x t),
+      Set.Ioo (t - ((1 / 2) * S.scalar t x)⁻¹) t ⊆ D.regular →
+      ∀ (W : WindowedModelWitness (1 / 2) kappa S x t),
       Nonempty (CanonicalWitness W.model.S (eps / 2) C1 C2 W.model.basepoint 0) →
         Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t)) :
     windowedCanonicalPullback.{u} := by

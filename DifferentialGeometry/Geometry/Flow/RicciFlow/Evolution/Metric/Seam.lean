@@ -174,15 +174,15 @@ theorem metricTensorField_iteratedDerivWithin_eq_of_ricciFlow
   have heqL : EqOn (fun t => Tensor0SBundle.metricTensorField (g t) x)
       (fun t => Tensor0SBundle.metricTensorField (gL t) x) (Icc a c) := by
     intro t ht
-    simp only [g, if_pos ht.2]
+    simp only [g, ite_eq_left ht.2]
   have heqR : EqOn (fun t => Tensor0SBundle.metricTensorField (g t) x)
       (fun t => Tensor0SBundle.metricTensorField (gR t) x) (Icc c b) := by
     intro t ht
     by_cases htc : t ≤ c
     · have he : t = c := le_antisymm htc ht.1
       subst t
-      simp only [g, if_pos le_rfl, hmatch]
-    · simp only [g, if_neg htc]
+      simp only [g, ite_eq_left le_rfl, hmatch]
+    · simp only [g, ite_eq_right htc]
   rw [← iteratedDerivWithin_congr heqL ⟨ha.le, le_rfl⟩,
     ← iteratedDerivWithin_congr heqR ⟨le_rfl, hb.le⟩,
     iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Icc ha)

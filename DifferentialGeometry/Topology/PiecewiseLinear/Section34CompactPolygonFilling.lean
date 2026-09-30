@@ -30,7 +30,7 @@ theorem exists_vertex_disk_of_disjoint_face_trace
     (hJγ : ∀ e : Section34CompactEdgeIndex K K', Section34Incident e.1 t.1 →
       Disjoint J (section34CompactSplitDiskImage srcBd f₁ e)) :
     ∃ (D : Set E3) (q : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = J ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = J ∧
         D ⊆ section34CompactVertexBallImage srcBd f₁ w ∧
         ∀ e : Section34CompactEdgeIndex K K', Section34Incident e.1 t.1 →
           Disjoint D (section34CompactSplitDiskImage src f₁ e) := by

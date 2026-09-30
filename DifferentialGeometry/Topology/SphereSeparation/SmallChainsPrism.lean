@@ -101,7 +101,7 @@ theorem ιChainComplex_smallBarycentricSubdivisionDegreeMap
           (smallSingularSubcomplex X V W : SSet).ιChainComplex
             (R := ModuleCat.of ℤ ℤ) (smallBarycentricPiece X V W s σ) := by
   dsimp [smallBarycentricSubdivisionDegreeMap, SSet.ιChainComplex]
-  rw [Sigma.ι_desc]
+  rw [Sigma.ι_comp_desc]
 
 set_option backward.isDefEq.respectTransparency false in
 theorem smallBarycentricSubdivisionDegreeMap_comp_inclusion
@@ -298,7 +298,7 @@ theorem smallBarycentricSubdivisionPrismGenerator_comp_inclusion
         barycentricSubdivisionPrismComponent n X := by
   classical
   by_cases hV : SmallSimplexFactorsLeftOf X V W s
-  · rw [smallBarycentricSubdivisionPrismGenerator, dif_pos hV]
+  · rw [smallBarycentricSubdivisionPrismGenerator, dite_eq_left hV]
     have ht :
         (TopCat.toSSet.map (topologicalSubspaceInclusion V)).app _
             (Classical.choose hV) =
@@ -332,7 +332,7 @@ theorem smallBarycentricSubdivisionPrismGenerator_comp_inclusion
           (ι_map_barycentricSubdivisionPrismComponent
             (topologicalSubspaceInclusion V) n (Classical.choose hV)).symm
       _ = _ := by rw [ht]
-  · rw [smallBarycentricSubdivisionPrismGenerator, dif_neg hV]
+  · rw [smallBarycentricSubdivisionPrismGenerator, dite_eq_right hV]
     let hW : SmallSimplexFactorsRightOf X V W s := by
       rcases smallSimplex_factors_left_or_right X V W s with h | h
       · exact False.elim (hV h)
@@ -388,7 +388,7 @@ theorem ι_smallBarycentricSubdivisionPrismComponent
         smallBarycentricSubdivisionPrismComponent X V W n =
       smallBarycentricSubdivisionPrismGenerator X V W s := by
   dsimp [smallBarycentricSubdivisionPrismComponent, SSet.ιChainComplex]
-  rw [Sigma.ι_desc]
+  rw [Sigma.ι_comp_desc]
 
 set_option backward.isDefEq.respectTransparency false in
 theorem smallBarycentricSubdivisionPrismComponent_comp_inclusion

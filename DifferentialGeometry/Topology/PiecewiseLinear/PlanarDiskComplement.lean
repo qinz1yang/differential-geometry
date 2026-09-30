@@ -89,7 +89,7 @@ theorem isPLBall_closure_sdiff_of_inter_boundaryComplex
   obtain ⟨g, hg⟩ := hR
   have hK : IsPLBall 2 K.space := ⟨f, hf⟩
   have hR : IsPLBall 2 R.space := ⟨g, hg⟩
-  let u := g ∘ Function.invFunOn f (stdSimplex ℝ (Fin 3))
+  let u := g ∘ Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hu : IsPLHomeomorphOn u K.space R.space := hf.symm.trans hg
   have hC' := hC.of_isPLHomeomorphOn (hu.restrict hC.isPolyhedron hCK)
   have hbd : u '' (boundaryComplex 2 K).space = frontier R.space := by
@@ -122,7 +122,7 @@ theorem eq_of_isPLBall_of_boundaryComplex_subset
   obtain ⟨g, hg⟩ := hR
   have hK : IsPLBall 2 K.space := ⟨f, hf⟩
   have hR : IsPLBall 2 R.space := ⟨g, hg⟩
-  let u := g ∘ Function.invFunOn f (stdSimplex ℝ (Fin 3))
+  let u := g ∘ Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hu : IsPLHomeomorphOn u K.space R.space := hf.symm.trans hg
   have hC' := hC.of_isPLHomeomorphOn (hu.restrict hC.isPolyhedron hCK)
   have hbd' : frontier R.space ⊆ u '' C := by

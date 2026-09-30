@@ -56,7 +56,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_handlePieceSurface
   let Jall : Set E3 := ⋃ e ∈ eF, Ec e ∩ frontier XK.space
   have hJpoly : IsPolyhedron Jall := by
     have heq : Jall = ⋃ e ∈ eF, (if e ∈ eF then Ec e ∩ frontier XK.space else ∅) :=
-      iUnion₂_congr fun e he => (if_pos he).symm
+      iUnion₂_congr fun e he => (ite_eq_left he).symm
     rw [heq]
     refine IsPolyhedron.finsetBiUnion eF fun e => ?_
     split_ifs with he
@@ -534,7 +534,7 @@ theorem exists_hasConnectedHandlePieces
     fun v => if hv : v ∈ K.vertices then (hex v hv).choose else X'
   refine ⟨X', AK', hX', hspt', hXc', hFc', fun v hv => ?_⟩
   obtain ⟨hA1, hA2, hA3, hA4, hA5⟩ := (hex v hv).choose_spec
-  have hAK : AK' v = (hex v hv).choose := dif_pos hv
+  have hAK : AK' v = (hex v hv).choose := dite_eq_left hv
   rw [hAK]
   refine ⟨hA1, hA2, hA3, hA4, ?_⟩
   convert hA5 using 3

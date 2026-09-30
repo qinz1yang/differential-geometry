@@ -575,7 +575,7 @@ private theorem extendClosedBall_apply
     (N : ℝ → Metric.closedBall (0 : X) R → Y) (t : ℝ) (x : X)
     (hx : x ∈ Metric.closedBall (0 : X) R) :
     extendClosedBall hR N t x = N t ⟨x, hx⟩ := by
-  simp only [extendClosedBall, dif_pos hx]
+  simp only [extendClosedBall, dite_eq_left hx]
 
 private theorem extendClosedBall_bounds
     {X Y : Type*} [NormedAddCommGroup X] [NormedAddCommGroup Y]

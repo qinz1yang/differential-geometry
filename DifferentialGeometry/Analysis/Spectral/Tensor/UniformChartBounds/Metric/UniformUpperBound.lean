@@ -9,6 +9,8 @@ import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Separation.Basic
 import Mathlib.Topology.Algebra.Module.FiniteDimension
+open DifferentialGeometry.TensorMetric
+  (modelInnerAt)
 
 
 noncomputable section
@@ -23,10 +25,8 @@ namespace Parabolic
 namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
-open DifferentialGeometry.Analysis.Laplacian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [InnerProductSpace ℝ E]
@@ -61,15 +61,15 @@ private lemma g_inner_eq_chartGramBilin_of_chartAt_eq
     (h_chart : chartAt H b = chartAt H b₀)
     (hb : b ∈ (chartAt H b₀).source) (v : E) :
     modelInnerAt (I := I) (M := M) g b v v =
-      chartGramBilin (I := I) (M := M) g b₀ b v v := by
-  rw [chartGramBilin_eq_innerJinv (I := I) (M := M) g b₀ b v v]
+      DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b v v := by
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramBilin_eq_innerJinv (I := I) (M := M) g b₀ b v v]
   rw [chartJinv_eq_id_of_chartAt_eq (I := I) (M := M) h_chart hb]
   rfl
 
 omit [InnerProductSpace ℝ E] [T2Space M] in
 private lemma chartGramBilin_continuousOn_chartSource
     (g : SmoothRiemannianMetric I M) (b₀ : M) :
-    ContinuousOn (fun b : M => chartGramBilin (I := I) (M := M) g b₀ b)
+    ContinuousOn (fun b : M => DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b)
       (chartAt H b₀).source := by
   classical
   let hAdd : AddGroup (E →L[ℝ] E →L[ℝ] ℝ) := inferInstance
@@ -77,11 +77,11 @@ private lemma chartGramBilin_continuousOn_chartSource
   let _ : ContinuousAdd (E →L[ℝ] E →L[ℝ] ℝ) :=
     @IsTopologicalAddGroup.toContinuousAdd _ _ hAdd hTop
   have h_eq : ∀ b : M,
-      chartGramBilin (I := I) (M := M) g b₀ b =
+      DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b =
         ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g b₀ b j k •
-              (chartCoordCLM E j).smulRight (chartCoordCLM E k) := by
+              (DifferentialGeometry.Tensor.Coordinates.chartCoordCLM E j).smulRight (DifferentialGeometry.Tensor.Coordinates.chartCoordCLM E k) := by
     intro b; rfl
   refine ContinuousOn.congr ?_ (fun b _ => (h_eq b).symm)
   refine continuousOn_finsetSum _ (fun j _ => ?_)
@@ -99,7 +99,7 @@ private lemma chartGramBilin_continuousOn_chartSource
 omit [InnerProductSpace ℝ E] [T2Space M] in
 private lemma chartGramBilin_norm_continuousOn
     (g : SmoothRiemannianMetric I M) (b₀ : M) :
-    ContinuousOn (fun b : M => ‖chartGramBilin (I := I) (M := M) g b₀ b‖)
+    ContinuousOn (fun b : M => ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b‖)
       (chartAt H b₀).source := by
   let hNorm : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] ℝ) :=
     ContinuousLinearMap.toNormedAddCommGroup
@@ -116,67 +116,67 @@ private lemma g_inner_le_chartGramBilin_norm_sq
     (h_chart : chartAt H b = chartAt H b₀)
     (hb : b ∈ (chartAt H b₀).source) (v : E) :
     modelInnerAt (I := I) (M := M) g b v v ≤
-      ‖chartGramBilin (I := I) (M := M) g b₀ b‖ * ‖v‖ ^ 2 := by
+      ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b‖ * ‖v‖ ^ 2 := by
   have h_eq : modelInnerAt (I := I) (M := M) g b v v =
-      chartGramBilin (I := I) (M := M) g b₀ b v v :=
+      DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b v v :=
     g_inner_eq_chartGramBilin_of_chartAt_eq (I := I) (M := M) g h_chart hb v
   rw [h_eq]
   have h_abs_le :
-      |chartGramBilin (I := I) (M := M) g b₀ b v v| ≤
-        ‖chartGramBilin (I := I) (M := M) g b₀ b‖ * ‖v‖ * ‖v‖ := by
-    have h := (chartGramBilin (I := I) (M := M) g b₀ b).le_opNorm₂ v v
+      |DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b v v| ≤
+        ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b‖ * ‖v‖ * ‖v‖ := by
+    have h := (DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b).le_opNorm₂ v v
     simpa [Real.norm_eq_abs] using h
-  calc chartGramBilin (I := I) (M := M) g b₀ b v v
-      ≤ |chartGramBilin (I := I) (M := M) g b₀ b v v| := le_abs_self _
-    _ ≤ ‖chartGramBilin (I := I) (M := M) g b₀ b‖ * ‖v‖ * ‖v‖ := h_abs_le
-    _ = ‖chartGramBilin (I := I) (M := M) g b₀ b‖ * ‖v‖ ^ 2 := by ring
+  calc DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b v v
+      ≤ |DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b v v| := le_abs_self _
+    _ ≤ ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b‖ * ‖v‖ * ‖v‖ := h_abs_le
+    _ = ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b‖ * ‖v‖ ^ 2 := by ring
 
 omit [InnerProductSpace ℝ E] [T2Space M] in
 private lemma exists_norm_bound_on_compact_subset_of_chartSource
     (g : SmoothRiemannianMetric I M) (b₀ : M)
     {K : Set M} (hK : IsCompact K) (hKsub : K ⊆ (chartAt H b₀).source) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ b ∈ K,
-      ‖chartGramBilin (I := I) (M := M) g b₀ b‖ ≤ C := by
+      ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b‖ ≤ C := by
   by_cases h_empty : K = ∅
   · refine ⟨0, le_refl 0, ?_⟩
     intro b hb
     rw [h_empty] at hb
     exact absurd hb (Set.notMem_empty _)
   have h_cont : ContinuousOn
-      (fun b : M => ‖chartGramBilin (I := I) (M := M) g b₀ b‖) K :=
+      (fun b : M => ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b‖) K :=
     (chartGramBilin_norm_continuousOn (I := I) (M := M) g b₀).mono hKsub
   have h_bdd : BddAbove
-      ((fun b : M => ‖chartGramBilin (I := I) (M := M) g b₀ b‖) '' K) :=
+      ((fun b : M => ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b‖) '' K) :=
     hK.bddAbove_image h_cont
   rcases h_bdd with ⟨C, hC⟩
   refine ⟨max C 0, le_max_right _ _, ?_⟩
   intro b hb
-  have h1 : ‖chartGramBilin (I := I) (M := M) g b₀ b‖ ≤ C :=
+  have h1 : ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g b₀ b‖ ≤ C :=
     hC ⟨b, hb, rfl⟩
   exact h1.trans (le_max_left _ _)
 
 omit [InnerProductSpace ℝ E] [T2Space M] in
 private lemma chartGramBilin_self_nonneg
     (g : SmoothRiemannianMetric I M) (α b : M) (v : E) :
-    0 ≤ chartGramBilin (I := I) (M := M) g α b v v := by
-  rw [chartGramBilin_eq_innerJinv (I := I) (M := M) g α b v v]
+    0 ≤ DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b v v := by
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramBilin_eq_innerJinv (I := I) (M := M) g α b v v]
   exact metric_inner_self_nonneg (I := I) (M := M) g b
     (chartTrivializationLinearMapSymm (I := I) (M := M) α b v)
 
 omit [InnerProductSpace ℝ E] [T2Space M] in
 private lemma chartGramBilin_self_le_norm_sq
     (g : SmoothRiemannianMetric I M) (α b : M) (v : E) :
-    chartGramBilin (I := I) (M := M) g α b v v ≤
-      ‖chartGramBilin (I := I) (M := M) g α b‖ * ‖v‖ ^ 2 := by
+    DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b v v ≤
+      ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖ * ‖v‖ ^ 2 := by
   have h_abs_le :
-      |chartGramBilin (I := I) (M := M) g α b v v| ≤
-        ‖chartGramBilin (I := I) (M := M) g α b‖ * ‖v‖ * ‖v‖ := by
-    have h := (chartGramBilin (I := I) (M := M) g α b).le_opNorm₂ v v
+      |DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b v v| ≤
+        ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖ * ‖v‖ * ‖v‖ := by
+    have h := (DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b).le_opNorm₂ v v
     simpa [Real.norm_eq_abs] using h
-  calc chartGramBilin (I := I) (M := M) g α b v v
-      ≤ |chartGramBilin (I := I) (M := M) g α b v v| := le_abs_self _
-    _ ≤ ‖chartGramBilin (I := I) (M := M) g α b‖ * ‖v‖ * ‖v‖ := h_abs_le
-    _ = ‖chartGramBilin (I := I) (M := M) g α b‖ * ‖v‖ ^ 2 := by ring
+  calc DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b v v
+      ≤ |DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b v v| := le_abs_self _
+    _ ≤ ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖ * ‖v‖ * ‖v‖ := h_abs_le
+    _ = ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖ * ‖v‖ ^ 2 := by ring
 
 omit [InnerProductSpace ℝ E] [T2Space M] in
 theorem g_inner_sqrt_uniform_upper_bound_on_compact
@@ -184,7 +184,7 @@ theorem g_inner_sqrt_uniform_upper_bound_on_compact
     {K_base : Set M} (hK_base : IsCompact K_base)
     (hK_sub : K_base ⊆ (chartAt H α).source) :
     ∃ K : ℝ, 0 < K ∧ ∀ b ∈ K_base, ∀ v : E,
-      Real.sqrt (chartGramBilin (I := I) (M := M) g α b v v) ≤ K * ‖v‖ := by
+      Real.sqrt (DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b v v) ≤ K * ‖v‖ := by
   classical
   obtain ⟨C, hC_nn, h_norm_bound⟩ :=
     exists_norm_bound_on_compact_subset_of_chartSource
@@ -193,16 +193,16 @@ theorem g_inner_sqrt_uniform_upper_bound_on_compact
   · have h_sqrt_nn : 0 ≤ Real.sqrt C := Real.sqrt_nonneg _
     linarith
   intro b hb v
-  have h_norm_le : ‖chartGramBilin (I := I) (M := M) g α b‖ ≤ C :=
+  have h_norm_le : ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖ ≤ C :=
     h_norm_bound b hb
   have h_norm_sq_nn : 0 ≤ ‖v‖ ^ 2 := sq_nonneg _
   have h_sq_bound :
-      chartGramBilin (I := I) (M := M) g α b v v ≤ C * ‖v‖ ^ 2 := by
+      DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b v v ≤ C * ‖v‖ ^ 2 := by
     refine (chartGramBilin_self_le_norm_sq (I := I) (M := M) g α b v).trans ?_
     exact mul_le_mul_of_nonneg_right h_norm_le h_norm_sq_nn
   have h_norm_nn : 0 ≤ ‖v‖ := norm_nonneg _
   have h_sqrt_le :
-      Real.sqrt (chartGramBilin (I := I) (M := M) g α b v v) ≤
+      Real.sqrt (DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b v v) ≤
         Real.sqrt (C * ‖v‖ ^ 2) :=
     Real.sqrt_le_sqrt h_sq_bound
   have h_sqrt_prod : Real.sqrt (C * ‖v‖ ^ 2) = Real.sqrt C * ‖v‖ := by
@@ -227,7 +227,7 @@ theorem g_inner_chartJinv_sqrt_uniform_upper_bound_on_compact
       (I := I) (M := M) g α hK_base hK_sub
   refine ⟨K, hK_pos, ?_⟩
   intro b hb v
-  rw [← chartGramBilin_eq_innerJinv (I := I) (M := M) g α b v v]
+  rw [← DifferentialGeometry.Tensor.Coordinates.chartGramBilin_eq_innerJinv (I := I) (M := M) g α b v v]
   exact h b hb v
 
 end TensorSpectral

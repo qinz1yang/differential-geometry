@@ -177,7 +177,7 @@ theorem IsWeakEvolutionSolution.exists_timeH1_integral
     filter_upwards [hac.ae_eq hv] with x hx
     rw [hx]
   · filter_upwards [hwmass, hmem] with t ht htc
-    rw [dirichletMassComplOnIcc, dif_pos ⟨htc.1, htc.2.le⟩,
+    rw [dirichletMassComplOnIcc, dite_eq_left ⟨htc.1, htc.2.le⟩,
       dirichletMassCompl_apply_eq_integral,
       H1ComplDirichletToLp_smoothToH1ComplDirichlet] at ht
     refine Eq.trans ?_ ht
@@ -188,9 +188,9 @@ theorem IsWeakEvolutionSolution.exists_timeH1_integral
     filter_upwards [hac.ae_eq hv] with x hx
     rw [hx]
   · filter_upwards [hwderiv, hmem] with t ht htc
-    rw [ht, dirichletMassVariationComplOnIco, dif_pos htc,
+    rw [ht, dirichletMassVariationComplOnIco, dite_eq_left htc,
       dirichletMassVariationCompl_apply_eq_integral,
-      dirichletWeakFormComplOnIco, dif_pos htc,
+      dirichletWeakFormComplOnIco, dite_eq_left htc,
       dirichletWeakFormCompl_apply_eq_integral_adjoint]
 
 theorem dirichletMassVariationCompl_apply_eq_integral_volumeDensity

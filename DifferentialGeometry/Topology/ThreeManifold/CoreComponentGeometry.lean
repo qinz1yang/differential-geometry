@@ -28,7 +28,7 @@ theorem image_interior_core :
   simpa only [Subtype.range_val] using image_interior_eq_of_fullRank_embedding
     (Subtype.val : T.core → M.Carrier) C.core_induced.contMDiff
     C.core_induced.isEmbedding
-    (fun x => (C.core_induced.isImmersion.isImmersionAt x).injective_mfderiv (by simp))
+    (fun x => (C.core_induced.isImmersion.isImmersionAt x).mfderiv_injective (by simp))
     (by simp)
 
 include C in
@@ -38,7 +38,7 @@ theorem closure_interior_core : closure (interior T.core) = T.core := by
   simpa only [Subtype.range_val] using closure_interior_range_of_fullRank_closedEmbedding
     (Subtype.val : T.core → M.Carrier) C.core_induced.contMDiff
     C.core_compact.isClosed.isClosedEmbedding_subtypeVal
-    (fun x => (C.core_induced.isImmersion.isImmersionAt x).injective_mfderiv (by simp))
+    (fun x => (C.core_induced.isImmersion.isImmersionAt x).mfderiv_injective (by simp))
     (by simp)
 
 include C in
@@ -48,7 +48,7 @@ theorem frontier_core : frontier T.core = ⋃ b : T.Boundary, range (T.boundaryS
   have hh := image_boundary_eq_frontier_of_fullRank_closedEmbedding
     (Subtype.val : T.core → M.Carrier) C.core_induced.contMDiff
     C.core_compact.isClosed.isClosedEmbedding_subtypeVal
-    (fun x => (C.core_induced.isImmersion.isImmersionAt x).injective_mfderiv (by simp))
+    (fun x => (C.core_induced.isImmersion.isImmersionAt x).mfderiv_injective (by simp))
     (by simp)
   rw [Subtype.range_val, C.core_boundary, image_iUnion] at hh
   rw [← hh]

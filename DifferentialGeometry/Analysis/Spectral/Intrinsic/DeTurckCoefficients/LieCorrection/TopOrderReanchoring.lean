@@ -708,9 +708,9 @@ private lemma lieTerm_P2_halfCollapse
           ((if l = e then (1 : ℝ) else 0) *
             (pd2 d a l b + pd2 d b l a - pd2 d l a b))))]
     rw [Finset.sum_eq_single e]
-    · rw [if_pos rfl, one_mul]
+    · rw [ite_eq_left rfl, one_mul]
     · intro l _ hl
-      rw [if_neg hl, zero_mul, mul_zero, mul_zero]
+      rw [ite_eq_right hl, zero_mul, mul_zero, mul_zero]
     · intro h
       exact absurd (Finset.mem_univ e) h
   rw [Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => hstep2 a b))]

@@ -27,19 +27,19 @@ open Classical in
 theorem crossRegluedPullback_eq_left (hx : x ∈ P') (hhx : h x ∈ P) :
     crossRegluedPullback P' P h f₁ f₂ f₃ x = f₁ (h x) := by
   change (if x ∈ P' then (if h x ∈ P then f₁ (h x) else f₂ (h x)) else f₃ x) = f₁ (h x)
-  rw [if_pos hx, if_pos hhx]
+  rw [ite_eq_left hx, ite_eq_left hhx]
 
 open Classical in
 theorem crossRegluedPullback_eq_middle (hx : x ∈ P') (hhx : h x ∉ P) :
     crossRegluedPullback P' P h f₁ f₂ f₃ x = f₂ (h x) := by
   change (if x ∈ P' then (if h x ∈ P then f₁ (h x) else f₂ (h x)) else f₃ x) = f₂ (h x)
-  rw [if_pos hx, if_neg hhx]
+  rw [ite_eq_left hx, ite_eq_right hhx]
 
 open Classical in
 theorem crossRegluedPullback_eq_right (hx : x ∉ P') :
     crossRegluedPullback P' P h f₁ f₂ f₃ x = f₃ x := by
   change (if x ∈ P' then (if h x ∈ P then f₁ (h x) else f₂ (h x)) else f₃ x) = f₃ x
-  rw [if_neg hx]
+  rw [ite_eq_right hx]
 
 end Values
 

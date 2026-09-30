@@ -10,6 +10,9 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Tens
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.AllOrder
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.HomFieldActionL2JetBound
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_smul_left
+  tensorInnerPointwise_smul_right)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

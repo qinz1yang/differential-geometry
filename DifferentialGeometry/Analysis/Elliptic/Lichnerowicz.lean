@@ -380,9 +380,9 @@ private theorem g_inner_self_eq_sum_sq_inner_orthonormal
       intro j _
       rw [hB_orth k j]]
     rw [Finset.sum_eq_single k]
-    · rw [if_pos rfl, mul_one]
+    · rw [ite_eq_left rfl, mul_one]
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
     · intro hk
       exact absurd (Finset.mem_univ k) hk
   have hgoal :
@@ -462,10 +462,10 @@ private theorem laplacian_sq_le_dim_mul_chartHessFrobeniusSq_pointwise
       rw [hB_orth k j]
     rw [Finset.sum_congr rfl h_pull2] at h_zero
     rw [Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rw [if_pos rfl, mul_one] at h_zero
+    · rw [ite_eq_left rfl, mul_one] at h_zero
       exact h_zero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hpos : 0 < Module.finrank ℝ E := Nat.pos_of_ne_zero (NeZero.ne _)
   have : Nonempty (Fin (Module.finrank ℝ E)) :=
     Fin.pos_iff_nonempty.mp hpos

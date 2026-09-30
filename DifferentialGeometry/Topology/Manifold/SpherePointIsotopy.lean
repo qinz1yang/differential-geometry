@@ -48,10 +48,10 @@ theorem exists_sphere_isotopy_moving_point
     rw [(hJe 0 x).1, hD0]
     change extendChartById e (id : ℂ → ℂ) x = x
     by_cases hx : x ∈ e.source
-    · exact (show extendChartById e id x = e.symm (e x) from if_pos hx).trans (e.left_inv hx)
-    · exact if_neg hx
+    · exact (show extendChartById e id x = e.symm (e x) from ite_eq_left hx).trans (e.left_inv hx)
+    · exact ite_eq_right hx
   · rw [(hJe 1 a).1]
-    have hx : extendChartById e (D 1) a = e.symm (D 1 (e a)) := if_pos ha
+    have hx : extendChartById e (D 1) a = e.symm (D 1 (e a)) := ite_eq_left ha
     rw [hx, hmove, e.left_inv hb]
 
 end DifferentialGeometry.Topology.Manifold

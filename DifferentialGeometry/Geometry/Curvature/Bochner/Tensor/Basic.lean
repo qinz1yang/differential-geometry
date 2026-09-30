@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
 import DifferentialGeometry.Geometry.Coordinates.Fields.Tensor
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.LinearAlgebra
+import DifferentialGeometry.Geometry.Metric.MetricFiberData.Hom
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.Product
@@ -226,7 +226,7 @@ theorem inner02_eq_coord_direct
         gInv i k * gInv j l *
           A (vec2 (basis i) (basis j)) *
             B (vec2 (basis k) (basis l)) := by
-  have h := Tensor0SBundle.inner0S_two_eq_coord_direct
+  have h := Tensor0SBundle.inner0S_two_eq_coord
     (I := I) (M := M) g x basis gInv hinv A B
   change inner02 (I := I) g x A B =
     ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,

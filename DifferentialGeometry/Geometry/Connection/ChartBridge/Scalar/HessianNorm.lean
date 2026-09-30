@@ -216,11 +216,11 @@ theorem chartHessFrobeniusSq_eq_frobeniusSqFun_hessFun_of_orthonormal
           chartHessianTensor (I := I) g x f k j x := by
     intro k
     rw [Finset.sum_eq_single j]
-    · rw [if_pos rfl]
+    · rw [ite_eq_left rfl]
       ring
     · intro l _ hlj
       have hjl : ¬ j = l := fun h => hlj h.symm
-      rw [if_neg hjl]
+      rw [ite_eq_right hjl]
       ring
     · intro hj
       exact absurd (Finset.mem_univ j) hj
@@ -237,11 +237,11 @@ theorem chartHessFrobeniusSq_eq_frobeniusSqFun_hessFun_of_orthonormal
           chartHessianTensor (I := I) g x f k j x from
     Finset.sum_congr rfl (fun k _ => hl k)]
   rw [Finset.sum_eq_single i]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
     ring
   · intro k _ hki
     have hik : ¬ i = k := fun h => hki h.symm
-    rw [if_neg hik]
+    rw [ite_eq_right hik]
     ring
   · intro hi
     exact absurd (Finset.mem_univ i) hi

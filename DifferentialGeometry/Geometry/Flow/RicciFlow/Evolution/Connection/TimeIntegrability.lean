@@ -72,7 +72,7 @@ theorem intervalIntegrable_connectionVariationSpeed_pairing_of_metric_comparison
       ≤ Real.sqrt ((S.base.metric 0).inner x
           (connectionVariationSpeed S s x u w) (connectionVariationSpeed S s x u w)) *
           Real.sqrt ((S.base.metric 0).inner x v v) :=
-        DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+        DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
           (S.base.metric 0) x (connectionVariationSpeed S s x u w) v
     _ ≤ (3 * (cn * Real.sqrt (nablaKRm04NormSqIntrinsic S 1 s x)) *
           Real.exp (3 * c) * Real.sqrt ((S.base.metric 0).inner x u u) *

@@ -241,3 +241,41 @@ ClassificationOfSurfaces copyright and authors header.
 `DECLARATION_MAP_topology.json` records the per-declaration classification and source hashes.
 `SOURCE_MAP_topology_e3c7230.json` and `migrate_topology_e3c7230.py` replay the integrated split.
 No duplicate implementation or alias was introduced.
+
+## Lean 4.34.1 and Mathlib compatibility, 2026-09-27
+
+The dependency upgrade emitted deprecation and unused-simp-argument diagnostics
+for the files listed below. These compatibility edits preserve every original
+source header, comment, documentation block, attribution, namespace, and
+mathematical statement. They introduce no linter suppression or resource option.
+
+- `Moise/PlaneComplex.lean`, `Moise/PolygonalJordan.lean`,
+  `Moise/PolygonalCrosscut.lean`, and `Moise/LineSubdivision.lean`: replace the
+  diagnosed `if_pos` and `if_neg` references by their current names
+  `ite_eq_left` and `ite_eq_right`.
+- `Moise/LineSubdivision.lean`, `Moise/ConeExtension.lean`, and
+  `Moise/FinitePLHomeomorph.lean`: replace the diagnosed `dif_pos` and `dif_neg`
+  references by `dite_eq_left` and `dite_eq_right`. These are direct replacement
+  names for the same conditional equations.
+- `Moise/FreeTriangleMove.lean`, `Moise/PolygonalSchoenflies.lean`, and
+  `TriangleMeshGeometricFree.lean`: remove only the 19 `eq_comm` simp arguments
+  reported unused by the upgraded simplifier. The surrounding proofs and all
+  declarations retain their original mathematical content.
+
+- `Moise/GeometricTriangulation.lean`: replace deprecated `stdSimplex` uses by
+  its exact coordinate predicate, nonnegative coordinates with finite sum one.
+  This preserves the existing set-of-functions realization and face interfaces
+  definitionally. Obtain closedness and compactness from the current
+  `Convexity.StdSimplex` weight embedding and its range formula; prove the
+  point-mass membership from `Pi.single_nonneg` and the finite sum formula.
+- `Moise/ElementaryMove.lean`: use the same coordinate predicate for the existing
+  weight hypothesis and the same point-mass proof for the diamond fan center.
+  The geometric objects and conclusions are unchanged.
+
+All comment blocks, line comments, and pre-import attribution text in the 11
+modified Lean files were compared byte-for-byte with their pre-upgrade `HEAD`
+source and preserved exactly. No source file was moved, renamed, merged, or split.
+Direct checks of `Moise/GeometricTriangulation.lean` and `Moise/ElementaryMove.lean`
+with the existing Lake setup files and `lean -E warning` exited successfully with
+no diagnostics. These checks produced no build artifacts. Complete dependent
+compilation, linter, and axiom acceptance remain coordinated repository gates.

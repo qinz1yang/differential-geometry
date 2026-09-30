@@ -65,6 +65,8 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
+
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -151,10 +153,10 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
               - deTurckMetricPrincipalDefectTotal (I := I) (M := M) g₀ g₀)‖ ^ 2) ≤ Γd ^ 2 := by
   classical
   obtain ⟨CTH, hCTH_nn, hCTH⟩ :=
-    traceHessianCoeff_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient (I := I)
+    traceHessianCoeff_sub_jet_norm_sq_le (I := I)
       (M := M) g₀
   obtain ⟨CR, hCR_nn, hCR⟩ :=
-    ricciDeTurckPrincipalCoefficient_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_ricciDeTurckPrincipalCoefficient_sub_pointwise_jet_bound
       (I := I) (M := M) g₀
   obtain ⟨DTH, hDTH_nn, hDTH⟩ :=
     traceHessianCoeff_metricPerturbationPath_sub_background_jetL2_perOrder_ballUniform (I := I) (M := M) g₀
@@ -357,7 +359,7 @@ theorem deTurckPhiTotPathIntegral_deviation_fibreWeighted_jetL2_ballUniform
             ((inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection x) := by
         have h := hCR g₁ 0 x
         simpa using h
-      have hdev := deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+      have hdev := deTurckMetricPrincipalDefectTotal_deviation_riemannianFiberNormSq_le
         (I := I) (M := M) g₀ g₁ (CTH 0) (CR 0) x hTH0 hR0
       have hslot := metricPerturbationPath_inverseMetricDifferenceSlotCoefficient_riemannianFiberNormSq_le
         (I := I) (M := M) g₀ hδ₀ hδ₀_nn T T' hδ_le hδ hδ'_le hδ'

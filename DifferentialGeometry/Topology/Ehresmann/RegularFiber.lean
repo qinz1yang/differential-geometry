@@ -449,9 +449,9 @@ theorem regularLevelFlowDiffeomorphOnBand_apply
       s t hs ht) x).1 =
       curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x.1 (s - t) := by
   by_cases hst : s ≤ t
-  · simp only [regularLevelFlowDiffeomorphOnBand, dif_pos hst]
+  · simp only [regularLevelFlowDiffeomorphOnBand, dite_eq_left hst]
     rfl
-  · simp only [regularLevelFlowDiffeomorphOnBand, dif_neg hst]
+  · simp only [regularLevelFlowDiffeomorphOnBand, dite_eq_right hst]
     rfl
 
 theorem regularLevelFlowDiffeomorphOnBand_symm_apply
@@ -485,9 +485,9 @@ theorem regularLevelFlowDiffeomorphOnBand_symm_apply
       curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x.1 (t - s) := by
   dsimp only
   by_cases hst : s ≤ t
-  · simp only [regularLevelFlowDiffeomorphOnBand, dif_pos hst]
+  · simp only [regularLevelFlowDiffeomorphOnBand, dite_eq_left hst]
     rfl
-  · simp only [regularLevelFlowDiffeomorphOnBand, dif_neg hst]
+  · simp only [regularLevelFlowDiffeomorphOnBand, dite_eq_right hst]
     rfl
 
 theorem regularLevelFlowDiffeomorphOnBand_self_apply

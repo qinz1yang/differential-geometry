@@ -6,7 +6,7 @@ noncomputable section
 
 open Set Filter Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic
 open scoped Manifold ContDiff Topology BigOperators
 
 namespace DifferentialGeometry.Analysis
@@ -49,7 +49,7 @@ private theorem gradient_const_mul_local (g : SmoothRiemannianMetric I M)
 theorem parabolic_clock_cutoff_pair_le
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (T ε L t : ℝ) (χ : ℝ → M → ℝ) (x : M)
-    (F : ShiCutoffLowerSupportAt G T ε χ t x)
+    (F : ParabolicCutoffLowerSupportAt G T ε χ t x)
     (huniq : UniqueDiffWithinAt ℝ (Icc 0 T) t)
     (hε : 0 ≤ ε) (ht : t ∈ Icc 0 L) (hχ : χ t x ∈ Icc 0 1)
     (u v : ℝ → M → ℝ) (w a b B A : ℝ)

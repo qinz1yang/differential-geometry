@@ -119,7 +119,7 @@ private theorem memLp_flux_factor
     (ha : MemLp a ∞ μ) (hb : MemLp b ∞ μ) (he : MemLp e ∞ μ)
     (hp : MemLp p 2 μ) (hz : MemLp z 2 μ) :
     MemLp (fun x => a x * p x + b x * e x * z x) 2 μ :=
-  (hp.mul' (r := 2) ha).add (hz.mul' (r := 2) (he.mul' (r := ∞) hb))
+  (ha.fun_mul (r := 2) hp).add ((hb.fun_mul (r := ∞) he).fun_mul (r := 2) hz)
 
 theorem abs_integral_flux_sub_integral_principal_le
     {a b e t p q z w : α → ℝ} {L ε : ℝ}
@@ -140,12 +140,12 @@ theorem abs_integral_flux_sub_integral_principal_le
   have htLp : MemLp t ∞ μ := memLp_top_of_bound ht L (by simpa only [Real.norm_eq_abs] using htL)
   have hf1 := memLp_flux_factor haLp hbLp heLp hp hz
   have hf2 : MemLp (fun x => q x + 2 * t x * w x) 2 μ :=
-    hq.add (hw.mul' (r := 2) (htLp.const_mul 2))
+    hq.add ((htLp.const_mul 2).fun_mul hw)
   have hflux : Integrable
       (fun x => (a x * p x + b x * e x * z x) * (q x + 2 * t x * w x)) μ :=
     hf1.integrable_mul hf2
   have hprin : Integrable (fun x => a x * p x * q x) μ :=
-    (hp.mul' (r := 2) haLp).integrable_mul hq
+    (haLp.fun_mul (r := 2) hp).integrable_mul hq
   rw [← integral_sub hflux hprin]
   refine abs_integral_le_integral_abs.trans ?_
   calc
@@ -183,7 +183,7 @@ theorem abs_integral_lower_order_flux_le
   have hbLp : MemLp b ∞ μ := memLp_top_of_bound hb L (by simpa only [Real.norm_eq_abs] using hbL)
   have heLp : MemLp e ∞ μ := memLp_top_of_bound he 1 (by simpa only [Real.norm_eq_abs] using heL)
   have hf1 := memLp_flux_factor haLp hbLp heLp hp hz
-  have hflux := hf1.integrable_mul (hw.mul' (r := 2) heLp)
+  have hflux := hf1.integrable_mul (heLp.fun_mul (r := 2) hw)
   refine abs_integral_le_integral_abs.trans ?_
   calc
     _ ≤ ∫ x, ε * p x ^ 2 + L ^ 2 / 2 * z x ^ 2 +
@@ -243,7 +243,7 @@ private theorem integral_sum_quadratic_ge
     lam * (∫ x, ∑ i, (v i x) ^ 2 ∂μ) ≤
       ∑ i, ∑ j, ∫ x, A i j x * v i x * v j x ∂μ := by
   have hint (i j) : Integrable (fun x => A i j x * v i x * v j x) μ :=
-    ((hv i).mul' (r := 2) (hA i j)).integrable_mul (hv j)
+    ((hA i j).fun_mul (r := 2) (hv i)).integrable_mul (hv j)
   rw [← integral_const_mul]
   simp_rw [← integral_finsetSum _ (fun j _ => hint _ j)]
   rw [← integral_finsetSum _ (fun i _ => integrable_finsetSum _ (fun j _ => hint i j))]
@@ -675,7 +675,8 @@ private theorem memLp_nirenberg_flux_local
       2 * η x * fderiv ℝ η x (EuclideanSpace.single j 1) * diffQuot k h u x) 2 volume := by
   have hηlp : MemLp η ∞ volume := hη.continuous.memLp_of_hasCompactSupport hηc
   have hfirst : MemLp (fun x => η x * (η x * diffQuot k h g x)) 2 volume :=
-    (memLp_cutoff_mul_diffQuot_local hΩ hg hη.continuous hηc k h hηs).mul' hηlp
+    hηlp.fun_mul (r := 2)
+      (memLp_cutoff_mul_diffQuot_local hΩ hg hη.continuous hηc k h hηs)
   let χ := fun x => 2 * η x * fderiv ℝ η x (EuclideanSpace.single j 1)
   have hχ : Continuous χ := (continuous_const.mul hη.continuous).mul
     ((hη.continuous_fderiv (by simp)).clm_apply continuous_const)
@@ -744,7 +745,8 @@ theorem integral_normalized_multiplier_nirenberg_flux_eq_local
   have hηdu := memLp_cutoff_mul_diffQuot_local hΩ hu hη.continuous hηc k h hηs
   have hN : MemLp (nirenbergTestFunction k h η u) 2 (volume.restrict Ω) := by
     have hηsq : MemLp (fun x => (η x)^2 * diffQuot k h u x) 2 volume := by
-      convert hηdu.mul' (r := 2) (hη.continuous.memLp_of_hasCompactSupport hηc : MemLp η ∞ volume) using 1
+      convert (hη.continuous.memLp_of_hasCompactSupport hηc : MemLp η ∞ volume).fun_mul
+        (r := 2) hηdu using 1
       ext x
       ring
     exact (memLp_diffQuot_two k (-h) hηsq).restrict Ω

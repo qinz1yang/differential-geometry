@@ -60,9 +60,9 @@ theorem exists_isPLHomeomorphOn_eqOn_disk_crosscut
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {D J P : Set E} {D' J' P' : Set F}
-    {u : (Fin 3 → ℝ) → E} (hu : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) D)
+    {u : (Fin 3 → ℝ) → E} (hu : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (huJ : u '' stdSimplexBoundary 2 = J)
-    {u' : (Fin 3 → ℝ) → F} (hu' : IsPLHomeomorphOn u' (stdSimplex ℝ (Fin 3)) D')
+    {u' : (Fin 3 → ℝ) → F} (hu' : IsPLHomeomorphOn u' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D')
     (huJ' : u' '' stdSimplexBoundary 2 = J')
     {γ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) P)
     (hPD : P ⊆ D) (hinter : P ∩ J = {γ 0, γ 1}) (hPD' : P' ⊆ D')

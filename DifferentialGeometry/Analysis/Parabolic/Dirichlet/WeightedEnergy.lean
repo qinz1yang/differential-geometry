@@ -352,8 +352,8 @@ theorem exists_uniform_volumeDensity_energy_bound
       rw [mul_inv_cancel₀ hLpos.ne'] at h
       exact h
     nlinarith [mul_nonneg (sub_nonneg.mpr hmul) (norm_nonneg (H1ComplDirichletToLp q u x))]
-  rw [dirichletMassVariationComplOnIco, dif_pos ht,
-    dirichletWeakFormComplOnIco, dif_pos ht]
+  rw [dirichletMassVariationComplOnIco, dite_eq_left ht,
+    dirichletWeakFormComplOnIco, dite_eq_left ht]
   have hv' := (le_abs_self _).trans hv
   calc
     _ ≤ B * ‖H1ComplDirichletToLp q u‖ ^ 2 := by

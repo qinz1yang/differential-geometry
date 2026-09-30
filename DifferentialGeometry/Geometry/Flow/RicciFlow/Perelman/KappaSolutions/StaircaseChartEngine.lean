@@ -109,7 +109,7 @@ theorem nonempty_seqBallNormalChartData_of_boundedGeometryNormalChartData
     {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalChartData (I := I) X hd) :
     Nonempty (SeqBallNormalChartData (I := I) X hd) :=
-  ⟨SeqBallNormalChartData.of_boundedGeometryNormalChartData (I := I) d⟩
+  ⟨SeqBallNormalChartData.ofBoundedGeometryNormalChartData (I := I) d⟩
 
 theorem nonempty_seqBallNormalChartData_of_seqBoundedGeometry
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
@@ -122,7 +122,7 @@ theorem nonempty_seqBallNormalChartData_of_seqBoundedGeometry
     Nonempty (SeqBallNormalChartData (I := I) X hd) := by
   obtain ⟨d⟩ :=
     nonempty_bounded_geometry_normal_chart_data (I := I) X hcomplete hconn hgeom hd hreal
-  exact ⟨SeqBallNormalChartData.of_boundedGeometryNormalChartData (I := I) d⟩
+  exact ⟨SeqBallNormalChartData.ofBoundedGeometryNormalChartData (I := I) d⟩
 
 namespace SeqBallNormalChartData
 
@@ -217,7 +217,7 @@ theorem staircaseChartSeedFrontier_of_metricCompactSeedFrontier
   intro Y hcomplete hconnected hinj hball
   obtain ⟨psi, hpsi, b, hd⟩ := hseed Y hcomplete hconnected hinj hball
   exact ⟨psi, hpsi, b,
-    ⟨SeqBallNormalChartData.of_boundedGeometryNormalChartData (I := I)
+    ⟨SeqBallNormalChartData.ofBoundedGeometryNormalChartData (I := I)
       (Classical.choice hd)⟩⟩
 
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions in
@@ -277,7 +277,7 @@ theorem staircaseSeedChartDataFrontier_of_staircaseSeedChartFrontier
     StaircaseSeedChartDataFrontier (I := I) X hd := by
   intro hcomplete hconn hinj hball hreal
   obtain ⟨d⟩ := h hcomplete hconn hinj hball hreal
-  exact ⟨SeqBallNormalChartData.of_boundedGeometryNormalChartData (I := I) d⟩
+  exact ⟨SeqBallNormalChartData.ofBoundedGeometryNormalChartData (I := I) d⟩
 
 theorem staircaseSeedChartDataFrontier_of_seqBoundedGeometry
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))

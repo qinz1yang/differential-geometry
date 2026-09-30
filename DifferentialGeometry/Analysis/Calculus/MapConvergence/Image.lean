@@ -38,7 +38,7 @@ private theorem eventually_closedBall_subset_image
     · exact contDiffOn_id
   have hgeq : ∀ᶠ n in atTop, g n = f n := by
     filter_upwards [hreg] with n hn
-    simp only [g, if_pos hn]
+    simp only [g, ite_eq_left hn]
   have hconvD : MapCInfConvergenceOnCompacts D f id :=
     fun L hL hLD p => hconv L hL (hLD.trans hDU) p
   have hgconv : MapCInfConvergenceOnCompacts D g id :=

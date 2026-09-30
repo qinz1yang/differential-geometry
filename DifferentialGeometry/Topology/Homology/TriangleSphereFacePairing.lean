@@ -45,7 +45,7 @@ theorem integralSingularTriangleSphereHomologyPairing_sphereHurewicz_mk
 
 theorem integralSingularTriangleSphereHomologyPairing_terminal_faces
     (x : X) (f : C(Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1, X))
-    (g : Fin 4 → C(stdSimplex ℝ (Fin 3), X))
+    (g : Fin 4 → C(Convexity.StdSimplex.coordinateSet ℝ (Fin 3), X))
     (hg : ∀ i, ∀ p ∈ Simplex.boundary (Fin 3), g i p = x)
     (hcones : ∀ i, (integralSingularConeSphereMap x (integralSingularSphereFace f i)).Homotopic
       (Simplex.triangleSphereMap (g i) x (hg i))) :

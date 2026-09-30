@@ -41,13 +41,13 @@ theorem mem_source_quarter_iff_crossHalfPlane (hD : NormalSingularCellData D BdM
     rw [hbranch _ hxU]
     have hother := (hsheet b (D x) hxU).mp ⟨x, hx, rfl⟩
     cases hb : b
-    · simp only [hb, Bool.false_eq_true, if_false] at hother ⊢
+    · simp only [hb, Bool.false_eq_true, ite_false] at hother ⊢
       constructor
       · intro hz
         exact Prod.ext hz hother
       · intro hz
         exact congrArg Prod.fst hz
-    · simp only [hb, if_true] at hother ⊢
+    · simp only [hb, ite_true] at hother ⊢
       constructor
       · intro hz
         exact Prod.ext hother hz

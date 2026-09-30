@@ -63,7 +63,7 @@ theorem contDiffOn_coreThree_to_finiteCap
     (contMDiff_subtype_val (I := I) (U := coreInteriorDomain f)).contMDiffAt.comp y hr
   have hl : ContMDiffAt I (𝓡 3) ∞ (hF a).localInverse (R y) := by
     rw [← hRa]
-    exact (hF a).localInverse_contMDiffAt
+    exact (hF a).contMDiffAt_localInverse
   let G : ReverseE3 → ReverseE3 := fun z => ((hF a).localInverse (R z)).val
   have hG : ContMDiffAt (𝓡 3) (𝓡 3) ∞ G y :=
     (contMDiff_subtype_val (I := 𝓡 3) (U := cuttingAnnulus L (precision b.1))).contMDiffAt.comp y (hl.comp y hR)

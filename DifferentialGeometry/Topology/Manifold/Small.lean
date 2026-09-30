@@ -1,7 +1,7 @@
 import Mathlib.Geometry.Manifold.ChartedSpace
 import Mathlib.Topology.Compactness.Lindelof
 import Mathlib.Logic.Small.Set
-import Mathlib.Data.Countable.Small
+import Mathlib.Basic.Countable.Small
 
 universe u v w
 

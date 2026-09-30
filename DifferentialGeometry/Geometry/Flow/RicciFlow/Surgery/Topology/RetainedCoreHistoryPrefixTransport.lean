@@ -15,10 +15,10 @@ universe u
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 def eventPrefix (j : Fin H.eventCount) (T : ℝ) (hjT : H.time j.castSucc < T)
-    (hTj : T < H.time j.succ) : RetainedCoreHistory P₀ :=
+    (hTj : T < H.time j.succ) : RetainedCoreHistory.{u} :=
   (H.prefixAt j.castSucc).extendHorizon T hjT.le
     ((H.toHistory.event j).incoming.closedPrefix T hjT hTj) (H.event_initial j)
 

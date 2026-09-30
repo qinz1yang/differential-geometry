@@ -145,7 +145,7 @@ private theorem frame_not_conj
     (I' := modelWithCornersSelf Real E) (I'' := I) z hF hL
   have hLderiv : mfderiv (modelWithCornersSelf Real E)
       (modelWithCornersSelf Real E) (fun w : E => L w) z = L := by
-    rw [mfderiv_eq_fderiv, ContinuousLinearMap.fderiv]
+    exact L.mfderiv_eq
   rw [hLderiv] at hchain
   have hchain' :
       mfderiv (modelWithCornersSelf Real E) I

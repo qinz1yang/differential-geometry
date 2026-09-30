@@ -92,7 +92,7 @@ end ObservedHistory
 theorem exists_initial_layer_noncollapsed (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ κ η ρ₁ : ℝ, 0 < κ ∧ 0 < η ∧ 0 < ρ₁ ∧
       ∀ (B : ℝ) (p₀ : CutoffParameters) (δbound ρbound : ℝ), ρbound ≤ ρ₁ →
-      ∀ H : RetainedCoreHistory P₀, H.InCutoffClass g₀ B p₀ δbound ρbound →
+      ∀ H : RetainedCoreHistory.{u}, H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound →
       ∀ (t : Icc (0 : ℝ) H.toHistory.horizon) (p : (H.toHistory.stageAt t).Carrier) (r : ℝ),
         (t : ℝ) ≤ η → r ≤ 1 → H.toHistory.isParabolicallyRmControlledBall t p r →
         ENNReal.ofReal κ * ENNReal.ofReal r ^ 3 ≤

@@ -46,7 +46,7 @@ theorem chartMap_of_boundedGeometryNormalChartData
      letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
      letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
      letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
-     (of_boundedGeometryNormalChartData (I := I) d).chartMap k x = d.chartMap k x) :=
+     (ofBoundedGeometryNormalChartData (I := I) d).chartMap k x = d.chartMap k x) :=
   rfl
 
 omit [CompleteSpace E] in
@@ -130,16 +130,16 @@ theorem exists_metricBounds_of_lt_radius
       equiv := fun z hz v => d.metric_equiv j x z (hsub hz) v
       deriv := fun q z hz => ?_ }, rfl, ?_⟩
   · by_cases h : n + q ≤ j
-    · simpa only [h, if_true] using d.metricC_nonneg n q
-    · simpa only [h, if_false] using le_max_left 0 _
+    · simpa only [h, ite_true] using d.metricC_nonneg n q
+    · simpa only [h, ite_false] using le_max_left 0 _
   · by_cases h : n + q ≤ j
-    · simpa only [h, if_true] using d.metric_deriv n q j h x hx z (hsub hz)
-    · simpa only [h, if_false] using
+    · simpa only [h, ite_true] using d.metric_deriv n q j h x hx z (hsub hz)
+    · simpa only [h, ite_false] using
         ((Classical.choose_spec
           (exists_metricDerivBound_of_lt_radius (I := I) d j x q σ hσ)).2 z hz).trans
           (le_max_right 0 _)
   · intro q hq
-    simp only [hq, if_true]
+    simp only [hq, ite_true]
 
 omit [CompleteSpace E] in
 theorem offShell_metricDerivBound_of_radius_eq

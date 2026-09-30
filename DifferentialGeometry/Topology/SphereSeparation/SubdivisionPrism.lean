@@ -65,23 +65,20 @@ private noncomputable def prismChainsPUnitHomotopyEquivSingleZero :
 
 noncomputable def standardSimplexChainsHomotopyEquivSingleZero (n : ℕ) :
     HomotopyEquiv
-      (PrismChains (TopCat.of (stdSimplex ℝ (Fin (n + 1)))))
+      (PrismChains (TopCat.of (Convexity.StdSimplex ℝ (Fin (n + 1)))))
       ((HomologicalComplex.single (ModuleCat ℤ) (ComplexShape.down ℕ) 0).obj
         (ModuleCat.of ℤ ℤ)) := by
-  letI : ContractibleSpace (stdSimplex ℝ (Fin (n + 1))) :=
-    (convex_stdSimplex ℝ (Fin (n + 1))).contractibleSpace
-      ⟨stdSimplex.barycenter, stdSimplex.barycenter.property⟩
   let e : ContinuousMap.HomotopyEquiv
-      (stdSimplex ℝ (Fin (n + 1))) PUnit :=
+      (Convexity.StdSimplex ℝ (Fin (n + 1))) PUnit :=
     (Classical.choice
-      (ContractibleSpace.hequiv_unit (stdSimplex ℝ (Fin (n + 1))))).trans
+      (ContractibleSpace.hequiv_unit (Convexity.StdSimplex ℝ (Fin (n + 1))))).trans
       (Homeomorph.homeomorphOfUnique Unit PUnit).toHomotopyEquiv
   exact (prismChainHomotopyEquivOfHomotopyEquiv e).trans
     prismChainsPUnitHomotopyEquivSingleZero
 
 noncomputable def standardSimplexPositiveContraction (n : ℕ) :
     _root_.Homotopy
-      (𝟙 (PrismChains (TopCat.of (stdSimplex ℝ (Fin (n + 1))))))
+      (𝟙 (PrismChains (TopCat.of (Convexity.StdSimplex ℝ (Fin (n + 1))))))
       ((standardSimplexChainsHomotopyEquivSingleZero n).hom ≫
         (standardSimplexChainsHomotopyEquivSingleZero n).inv) :=
   (standardSimplexChainsHomotopyEquivSingleZero n).homotopyHomInvId.symm
@@ -99,12 +96,12 @@ theorem standardSimplexProjection_f_succ (n k : ℕ) :
 theorem standardSimplexPositiveContraction_fillsCycle
     (n k : ℕ)
     (z : ModuleCat.of ℤ ℤ ⟶
-      (PrismChains (TopCat.of (stdSimplex ℝ (Fin (n + 1))))).X (k + 1))
+      (PrismChains (TopCat.of (Convexity.StdSimplex ℝ (Fin (n + 1))))).X (k + 1))
     (hz : z ≫
-      (PrismChains (TopCat.of (stdSimplex ℝ (Fin (n + 1))))).d
+      (PrismChains (TopCat.of (Convexity.StdSimplex ℝ (Fin (n + 1))))).d
         (k + 1) k = 0) :
     z ≫ (standardSimplexPositiveContraction n).hom (k + 1) (k + 2) ≫
-        (PrismChains (TopCat.of (stdSimplex ℝ (Fin (n + 1))))).d
+        (PrismChains (TopCat.of (Convexity.StdSimplex ℝ (Fin (n + 1))))).d
           (k + 2) (k + 1) = z := by
   have h := congr_arg (fun q => z ≫ q)
     ((standardSimplexPositiveContraction n).comm (k + 1))
@@ -119,14 +116,14 @@ theorem standardSimplexPositiveContraction_fillsCycle
 
 
 noncomputable def standardSimplexIdentitySingularSimplex (n : ℕ) :
-    (TopCat.toSSet.obj (TopCat.of (stdSimplex ℝ (Fin (n + 1))))) _⦋n⦌ :=
-  ((TopCat.of (stdSimplex ℝ (Fin (n + 1)))).toSSetObjEquiv _).symm
+    (TopCat.toSSet.obj (TopCat.of (Convexity.StdSimplex ℝ (Fin (n + 1))))) _⦋n⦌ :=
+  ((TopCat.of (Convexity.StdSimplex ℝ (Fin (n + 1)))).toSSetObjEquiv _).symm
     (ContinuousMap.id _)
 
 
 noncomputable def singularSimplexRealizationMap
     (X : TopCat) {n : ℕ} (s : (TopCat.toSSet.obj X) _⦋n⦌) :
-    TopCat.of (stdSimplex ℝ (Fin (n + 1))) ⟶ X :=
+    TopCat.of (Convexity.StdSimplex ℝ (Fin (n + 1))) ⟶ X :=
   TopCat.ofHom (X.toSSetObjEquiv _ s)
 
 @[simp]
@@ -167,7 +164,7 @@ theorem chainComplexMap_singularSimplexRealizationMap_naturality
 theorem ι_standardSimplex_comp_singularSimplexRealizationMap
     (X : TopCat) {n : ℕ} (s : (TopCat.toSSet.obj X) _⦋n⦌) :
     (TopCat.toSSet.obj
-      (TopCat.of (stdSimplex ℝ (Fin (n + 1))))).ιChainComplex
+      (TopCat.of (Convexity.StdSimplex ℝ (Fin (n + 1))))).ιChainComplex
         (R := ModuleCat.of ℤ ℤ)
           (standardSimplexIdentitySingularSimplex n) ≫
       (SSet.chainComplexMap
@@ -205,8 +202,8 @@ private noncomputable def successorPrismModelError
       (PrismChains X).X (k + 1)) :
     ModuleCat.of ℤ ℤ ⟶
       (PrismChains
-        (TopCat.of (stdSimplex ℝ (Fin (k + 2))))).X (k + 1) :=
-  let Δ := TopCat.of (stdSimplex ℝ (Fin (k + 2)))
+        (TopCat.of (Convexity.StdSimplex ℝ (Fin (k + 2))))).X (k + 1) :=
+  let Δ := TopCat.of (Convexity.StdSimplex ℝ (Fin (k + 2)))
   (TopCat.toSSet.obj Δ).ιChainComplex (R := ModuleCat.of ℤ ℤ)
       (standardSimplexIdentitySingularSimplex (k + 1)) ≫
         (signedBarycentricSubdivisionDifference Δ).f (k + 1) -
@@ -251,7 +248,7 @@ theorem ι_barycentricSubdivisionPrismComponent_succ
           (TopCat.toSSet.map (singularSimplexRealizationMap X s))
           (ModuleCat.of ℤ ℤ)).f (k + 2) := by
   dsimp [barycentricSubdivisionPrismComponent, SSet.ιChainComplex]
-  rw [Sigma.ι_desc]
+  rw [Sigma.ι_comp_desc]
 
 set_option backward.isDefEq.respectTransparency false in
 theorem barycentricSubdivisionPrismComponent_naturality
@@ -344,8 +341,8 @@ private theorem successorPrismModelError_comp_d_eq_zero
         (barycentricSubdivisionPrismNullMap X).f k) :
     successorPrismModelError k (barycentricSubdivisionPrismComponent k) ≫
       (PrismChains
-        (TopCat.of (stdSimplex ℝ (Fin (k + 2))))).d (k + 1) k = 0 := by
-  let Δ := TopCat.of (stdSimplex ℝ (Fin (k + 2)))
+        (TopCat.of (Convexity.StdSimplex ℝ (Fin (k + 2))))).d (k + 1) k = 0 := by
+  let Δ := TopCat.of (Convexity.StdSimplex ℝ (Fin (k + 2)))
   let ιΔ : ModuleCat.of ℤ ℤ ⟶ (PrismChains Δ).X (k + 1) :=
     (TopCat.toSSet.obj Δ).ιChainComplex
       (R := ModuleCat.of ℤ ℤ)
@@ -380,7 +377,7 @@ theorem signedBarycentricSubdivisionDifference_f_eq_prismNullMap_f
       apply SSet.chainComplex_hom_ext
       intro s
       rw [Preadditive.comp_add]
-      let Δ := TopCat.of (stdSimplex ℝ (Fin (k + 1 + 1)))
+      let Δ := TopCat.of (Convexity.StdSimplex ℝ (Fin (k + 1 + 1)))
       let F : PrismChains Δ ⟶ PrismChains X :=
         ((AlgebraicTopology.singularChainComplexFunctor (ModuleCat ℤ)).obj
           (ModuleCat.of ℤ ℤ)).map (singularSimplexRealizationMap X s)
@@ -420,7 +417,7 @@ theorem signedBarycentricSubdivisionDifference_f_eq_prismNullMap_f
                 (ModuleCat.of ℤ ℤ)).f k ≫
                   barycentricSubdivisionPrismComponent k X =
               barycentricSubdivisionPrismComponent k
-                  (TopCat.of (stdSimplex ℝ (Fin (k + 1 + 1)))) ≫
+                  (TopCat.of (Convexity.StdSimplex ℝ (Fin (k + 1 + 1)))) ≫
                 (SSet.chainComplexMap
                   (TopCat.toSSet.map (singularSimplexRealizationMap X s))
                   (ModuleCat.of ℤ ℤ)).f (k + 1)

@@ -1,20 +1,23 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import Mathlib.Analysis.Convex.StdSimplex
 
 noncomputable section
+
+open Convexity.StdSimplex
 
 namespace DifferentialGeometry.Simplex
 
 variable {ι : Type*} [Fintype ι]
 
-def supportFace (s : Finset ι) : Set (stdSimplex ℝ ι) :=
+def supportFace (s : Finset ι) : Set (coordinateSet ℝ ι) :=
   {p | ∀ i, i ∉ s → p i = 0}
 
 @[simp]
-theorem mem_supportFace (s : Finset ι) (p : stdSimplex ℝ ι) :
+theorem mem_supportFace (s : Finset ι) (p : coordinateSet ℝ ι) :
     p ∈ supportFace s ↔ ∀ i, i ∉ s → p i = 0 := Iff.rfl
 
 theorem isClosed_supportFace (s : Finset ι) : IsClosed (supportFace s) := by
-  have h : supportFace s = ⋂ (i : ι) (_ : i ∉ s), {p : stdSimplex ℝ ι | p i = 0} := by
+  have h : supportFace s = ⋂ (i : ι) (_ : i ∉ s), {p : coordinateSet ℝ ι | p i = 0} := by
     ext p
     simp [supportFace]
   rw [h]
@@ -37,15 +40,15 @@ theorem supportFace_inter [DecidableEq ι] (s t : Finset ι) :
     · exact ht i (fun hit ↦ hi (Finset.mem_inter.mpr ⟨his, hit⟩))
     · exact hs i his
 
-theorem map_subtype_val_apply_mem (s : Finset ι) (p : stdSimplex ℝ s) (i : s) :
-    (stdSimplex.map Subtype.val p) i.val = p i := by
+theorem map_subtype_val_apply_mem (s : Finset ι) (p : coordinateSet ℝ s) (i : s) :
+    (coordinateMap Subtype.val p) i.val = p i := by
   classical
   change FunOnFinite.linearMap ℝ ℝ Subtype.val p i.val = p i
   rw [FunOnFinite.linearMap_apply_apply]
-  simp only [Subtype.val_inj, Finset.filter_eq', Finset.mem_univ, if_true, Finset.sum_singleton]
+  simp only [Subtype.val_inj, Finset.filter_eq', Finset.mem_univ, ite_true, Finset.sum_singleton]
 
-theorem map_subtype_val_apply_notMem (s : Finset ι) (p : stdSimplex ℝ s) (i : ι)
-    (hi : i ∉ s) : (stdSimplex.map Subtype.val p) i = 0 := by
+theorem map_subtype_val_apply_notMem (s : Finset ι) (p : coordinateSet ℝ s) (i : ι)
+    (hi : i ∉ s) : (coordinateMap Subtype.val p) i = 0 := by
   classical
   change FunOnFinite.linearMap ℝ ℝ Subtype.val p i = 0
   rw [FunOnFinite.linearMap_apply_apply]
@@ -53,11 +56,11 @@ theorem map_subtype_val_apply_notMem (s : Finset ι) (p : stdSimplex ℝ s) (i :
   intro j hj
   exact (hi ((Finset.mem_filter.mp hj).2 ▸ j.property)).elim
 
-def supportFaceInsert (s : Finset ι) : C(stdSimplex ℝ s, supportFace s) :=
-  ⟨fun p ↦ ⟨stdSimplex.map Subtype.val p, map_subtype_val_apply_notMem s p⟩,
-    (stdSimplex.continuous_map Subtype.val).subtype_mk _⟩
+def supportFaceInsert (s : Finset ι) : C(coordinateSet ℝ s, supportFace s) :=
+  ⟨fun p ↦ ⟨coordinateMap Subtype.val p, map_subtype_val_apply_notMem s p⟩,
+    (continuous_coordinateMap Subtype.val).subtype_mk _⟩
 
-def supportFaceRestrict (s : Finset ι) : C(supportFace s, stdSimplex ℝ s) :=
+def supportFaceRestrict (s : Finset ι) : C(supportFace s, coordinateSet ℝ s) :=
   ⟨fun p ↦ ⟨fun i ↦ p.val i.val, ⟨fun i ↦ p.val.property.1 _, by
       classical
       rw [Finset.sum_coe_sort]
@@ -67,7 +70,7 @@ def supportFaceRestrict (s : Finset ι) : C(supportFace s, stdSimplex ℝ s) :=
       (continuous_subtype_val.comp continuous_subtype_val)).subtype_mk _⟩
 
 @[simp]
-theorem supportFaceRestrict_supportFaceInsert (s : Finset ι) (p : stdSimplex ℝ s) :
+theorem supportFaceRestrict_supportFaceInsert (s : Finset ι) (p : coordinateSet ℝ s) :
     supportFaceRestrict s (supportFaceInsert s p) = p := by
   apply Subtype.ext
   funext i
@@ -84,7 +87,7 @@ theorem supportFaceInsert_supportFaceRestrict (s : Finset ι) (p : supportFace s
   · exact map_subtype_val_apply_mem s (supportFaceRestrict s p) ⟨i, hi⟩
   · exact (map_subtype_val_apply_notMem s _ i hi).trans (p.property i hi).symm
 
-def supportFaceHomeomorph (s : Finset ι) : stdSimplex ℝ s ≃ₜ supportFace s where
+def supportFaceHomeomorph (s : Finset ι) : coordinateSet ℝ s ≃ₜ supportFace s where
   toFun := supportFaceInsert s
   invFun := supportFaceRestrict s
   left_inv := supportFaceRestrict_supportFaceInsert s
@@ -93,8 +96,8 @@ def supportFaceHomeomorph (s : Finset ι) : stdSimplex ℝ s ≃ₜ supportFace 
   continuous_invFun := (supportFaceRestrict s).continuous
 
 @[simp]
-theorem supportFaceHomeomorph_apply_val (s : Finset ι) (p : stdSimplex ℝ s) :
-    (supportFaceHomeomorph s p).val = stdSimplex.map Subtype.val p := rfl
+theorem supportFaceHomeomorph_apply_val (s : Finset ι) (p : coordinateSet ℝ s) :
+    (supportFaceHomeomorph s p).val = coordinateMap Subtype.val p := rfl
 
 @[simp]
 theorem supportFaceHomeomorph_symm_apply (s : Finset ι) (p : supportFace s) (i : s) :

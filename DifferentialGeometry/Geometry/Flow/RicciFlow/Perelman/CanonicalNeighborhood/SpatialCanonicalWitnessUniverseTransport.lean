@@ -156,7 +156,7 @@ private def projectivePresentationULift (pr : ProjectivePresentation Z) :
   smooth := (uliftDiffeomorph I3 Z : Z ≃ₘ⟮I3, I3⟯ ULift.{u} Z).contMDiff.comp pr.smooth
   onto y := by
     obtain ⟨a, ha⟩ := pr.onto y.down
-    exact ⟨a, ULift.ext _ _ ha⟩
+    exact ⟨a, ULift.ext ha⟩
   fibers a b := by
     rw [ULift.up_inj]
     exact pr.fibers a b

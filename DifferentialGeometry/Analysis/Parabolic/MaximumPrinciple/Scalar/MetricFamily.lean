@@ -127,7 +127,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential_of_
       hG hslab (uniqueDiffOn_Icc hT) hconn hrho)
     V L u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super hV hy
 
-theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential_positive_of_metricFamilySmoothOn
+theorem scalar_strong_maximum_principle_with_potential_positive_of_metricFamilySmoothOn
     [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
@@ -164,7 +164,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_potential_pos
       hG hslab (uniqueDiffOn_Icc hT) hconn hrho)
     V L u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super hV ht hx y
 
-theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_potential_of_metricFamilySmoothOn
+theorem scalar_strong_maximum_principle_with_drift_and_potential_of_metricFamilySmoothOn
     [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
@@ -207,7 +207,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_pot
           hG hslab (uniqueDiffOn_Icc hT) hconn X hrho (hdrift rho hrho))
         V L u hu_cont hu_nonneg hu_time hu_mdiff hu_grad hu_super hV hy
 
-theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_potential_positive_of_metricFamilySmoothOn
+theorem scalar_strong_maximum_principle_with_drift_and_potential_positive_of_metricFamilySmoothOn
     [I.Boundaryless]
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
@@ -284,7 +284,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_of_metr
     {y : M} (hy : u T y = 0) :
     ∀ t ∈ Set.Icc 0 T, ∀ x : M, u t x = 0 := by
   apply
-    scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_potential_of_metricFamilySmoothOn
+    scalar_strong_maximum_principle_with_drift_and_potential_of_metricFamilySmoothOn
       (I := I) G hT hG hslab hconn X hdrift (fun _ _ => 0) 0 u
         hu_cont hu_nonneg hu_time hu_mdiff hu_grad
   · simpa using hu_super
@@ -326,7 +326,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_positiv
     (y : M) :
     0 < u T y := by
   apply
-    scalar_strong_maximum_principle_time_dependent_metric_with_drift_and_potential_positive_of_metricFamilySmoothOn
+    scalar_strong_maximum_principle_with_drift_and_potential_positive_of_metricFamilySmoothOn
       (I := I) G hT hG hslab hconn X hdrift (fun _ _ => 0) 0 u
         hu_cont hu_nonneg hu_time hu_mdiff hu_grad
   · simpa using hu_super

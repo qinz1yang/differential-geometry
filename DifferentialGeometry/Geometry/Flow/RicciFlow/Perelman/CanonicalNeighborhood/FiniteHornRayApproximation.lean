@@ -16,10 +16,10 @@ variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
 
 theorem exists_finiteHorn_ray_approximation_in_subend_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ outer : ℕ, ∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
+      H₀ ≤ H.collarDepth → ∀ outer : ℕ, ∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
         ∀ lo hi : Fin 2 → ℝ, (∀ k, 0 < lo k) → (∀ k, lo k ≤ hi k) →
           hi 0 ≤ a.length → hi 1 ≤ b.length → (∀ k, hi k ≤ d) →
-          ∃ A : RayApproximation H a b lo hi, A.connector_index = outer := by
+          ∃ A : RayApproximation H a b lo hi, A.connectorIndex = outer := by
   classical
   obtain ⟨H₀, hH₀, hpairs⟩ := exists_finiteHorn_approximate_pair_depth (W := W)
   refine ⟨H₀, hH₀, ?_⟩
@@ -84,9 +84,9 @@ theorem exists_finiteHorn_ray_approximation_in_subend_depth :
     (ray k).dist_lt_of_clamped_approximation (hrho k n) (hrhoR k n).le (hRlength k)
       (arm n k) (hpoint n k) ⟨(hlo k).trans_le hs.1, hs.2.trans (hiR k)⟩
   refine ⟨{
-    target_index := target
-    arm_index := middle
-    connector_index := outer
+    targetIndex := target
+    armIndex := middle
+    connectorIndex := outer
     target_buffer := htarget
     arm_buffer := hmiddle
     target_mem := ⟨htargetMem 0, htargetMem 1⟩
@@ -139,7 +139,7 @@ theorem exists_finiteHorn_ray_approximation_in_subend_depth :
 
 theorem exists_finiteHorn_ray_approximation_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
+      H₀ ≤ H.collarDepth → ∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
         ∀ lo hi : Fin 2 → ℝ, (∀ k, 0 < lo k) → (∀ k, lo k ≤ hi k) →
           hi 0 ≤ a.length → hi 1 ≤ b.length → (∀ k, hi k ≤ d) →
           Nonempty (RayApproximation H a b lo hi) := by
@@ -161,7 +161,7 @@ theorem finiteHorn_ray_approximation_in_subend_of_endRay_dist_lt_sum
     ∀ outer : ℕ, ∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
         ∀ lo hi : Fin 2 → ℝ, (∀ k, 0 < lo k) →
           hi 0 ≤ a.length → hi 1 ≤ b.length → (∀ k, hi k ≤ d) →
-          ∃ A : RayApproximation H a b lo hi, A.connector_index = outer := by
+          ∃ A : RayApproximation H a b lo hi, A.connectorIndex = outer := by
   classical
   intro outer
   obtain ⟨target, middle, D, hD, htarget, hmiddle, hcapture, hpair⟩ :=
@@ -225,9 +225,9 @@ theorem finiteHorn_ray_approximation_in_subend_of_endRay_dist_lt_sum
     (ray k).dist_lt_of_clamped_approximation (hrho k n) (hrhoR k n).le (hRlength k)
       (arm n k) (hpoint n k) ⟨(hlo k).trans_le hs.1, hs.2.trans (hiR k)⟩
   refine ⟨{
-    target_index := target
-    arm_index := middle
-    connector_index := outer
+    targetIndex := target
+    armIndex := middle
+    connectorIndex := outer
     target_buffer := htarget
     arm_buffer := hmiddle
     target_mem := ⟨htargetMem 0, htargetMem 1⟩

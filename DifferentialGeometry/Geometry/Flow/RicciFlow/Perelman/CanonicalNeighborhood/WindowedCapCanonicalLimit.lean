@@ -61,7 +61,7 @@ theorem CanonicalWitness.eventually_image_of_windowed_models_of_cap_with_strict_
           (W (phi i)).embedding) '' cap.tube ∧
         cap'.core.carrier = (partialDiffeomorphTransMixed (F.partialDiffeomorph i)
           (W (phi i)).embedding) '' cap.core.carrier ∧
-        cap'.tube_map = cap.tube_map.trans
+        cap'.tubeMap = cap.tubeMap.trans
           (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) := by
   let _ : TopologicalSpace L.M := L.topology
   let _ : ChartedSpace ThreeSpace L.M := L.charted

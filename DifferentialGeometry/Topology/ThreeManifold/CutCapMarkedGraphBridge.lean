@@ -52,7 +52,7 @@ private theorem exists_isOpen_pairwiseDisjoint_of_isCompact
     exact (hUV i).mono Set.inter_subset_left
       (Set.inter_subset_right.trans (Set.iInter_subset _ ⟨i, hij⟩))
 
-private theorem mem_transport_collar {E' : ClosedOrientedManifold.{u} 3}
+private theorem mem_transport_neighborhood {E' : ClosedOrientedManifold.{u} 3}
     {c c' : ConnectedComponents E'.Carrier} (h : c = c')
     {S : Set E'.Carrier} {x : (E'.component c').Carrier} :
     (x ∈ h ▸ {y : (E'.component c).Carrier | y.val ∈ S}) ↔ x.val ∈ S := by
@@ -63,25 +63,21 @@ namespace SphericalCutCapTransition
 
 variable {M Q : ClosedOrientedManifold.{u} 3} (E : SphericalCutCapTransition M Q)
 
-structure CutCapCollarFamily where
-  collar : E.tubes.Boundary → Set E.capped.Carrier
-  collar_isOpen : ∀ b, IsOpen (collar b)
-  capRange_subset_collar : ∀ b, range (E.capping.cap b) ⊆ collar b
-  collarBudget : E.tubes.Boundary → ℝ
-  collarBudget_pos : ∀ b, 0 < collarBudget b
-  collar_pairwiseDisjoint : Pairwise (Disjoint on collar)
+structure CutCapNeighborhoodFamily where
+  neighborhood : E.tubes.Boundary → Set E.capped.Carrier
+  isOpen_neighborhood : ∀ b, IsOpen (neighborhood b)
+  range_cap_subset_neighborhood : ∀ b, range (E.capping.cap b) ⊆ neighborhood b
+  pairwise_disjoint_neighborhood : Pairwise (Disjoint on neighborhood)
 
-theorem nonempty_cutCapCollarFamily : Nonempty E.CutCapCollarFamily := by
+theorem nonempty_cutCapNeighborhoodFamily : Nonempty E.CutCapNeighborhoodFamily := by
   choose U hKU hUo hUd using exists_isOpen_pairwiseDisjoint_of_isCompact
     (K := fun b : E.tubes.Boundary => range (E.capping.cap b))
     (fun b => isCompact_range (E.capping.cap b).continuous)
     (fun b b' hbb' => E.capping.cap_disjoint hbb')
-  exact ⟨{ collar := U
-           collar_isOpen := hUo
-           capRange_subset_collar := hKU
-           collarBudget := fun _ => 1
-           collarBudget_pos := fun _ => one_pos
-           collar_pairwiseDisjoint := hUd }⟩
+  exact ⟨{ neighborhood := U
+           isOpen_neighborhood := hUo
+           range_cap_subset_neighborhood := hKU
+           pairwise_disjoint_neighborhood := hUd }⟩
 
 noncomputable def cutCapVertex (a : E.tubes.Index) (side : Bool) :
     ConnectedComponents E.capped.Carrier :=
@@ -116,7 +112,7 @@ theorem capRange_subset_componentSet (a : E.tubes.Index) (side : Bool) :
   exact (ConnectedComponents.coe_eq_coe'.mpr
     (hpre.subset_connectedComponent ⟨_, rfl⟩ hy)).trans hmem
 
-noncomputable def cutCapFlag (K : E.CutCapCollarFamily) (a : E.tubes.Index) (side : Bool) :
+noncomputable def cutCapFlag (K : E.CutCapNeighborhoodFamily) (a : E.tubes.Index) (side : Bool) :
     MarkedBall (E.capped.component (E.cutCapVertex a side)).toClosedOrientedManifold where
   ball := fun x => ⟨E.capping.cap (a, side) x,
     E.capRange_subset_componentSet a side ⟨x, rfl⟩⟩
@@ -124,26 +120,24 @@ noncomputable def cutCapFlag (K : E.CutCapCollarFamily) (a : E.tubes.Index) (sid
     refine DifferentialGeometry.Topology.Manifold.isSmoothEmbedding_intoOpen (𝓡∂ 3) (𝓡 3)
       (E.capped.componentOpen (E.cutCapVertex a side)) _ ?_
     exact E.capping.cap_embedding (a, side)
-  collar := {y | y.val ∈ K.collar (a, side)}
-  collar_isOpen :=
-    isOpen_induced_iff.mpr ⟨K.collar (a, side), K.collar_isOpen (a, side), rfl⟩
-  ball_subset_collar := by
+  neighborhood := {y | y.val ∈ K.neighborhood (a, side)}
+  isOpen_neighborhood :=
+    isOpen_induced_iff.mpr ⟨K.neighborhood (a, side), K.isOpen_neighborhood (a, side), rfl⟩
+  range_ball_subset_neighborhood := by
     rintro y ⟨x, rfl⟩
-    exact K.capRange_subset_collar (a, side) ⟨x, rfl⟩
-  collarBudget := K.collarBudget (a, side)
-  collarBudget_pos := K.collarBudget_pos (a, side)
+    exact K.range_cap_subset_neighborhood (a, side) ⟨x, rfl⟩
 
-theorem cutCapFlag_collar_eq (K : E.CutCapCollarFamily) (a : E.tubes.Index) (side : Bool) :
-    (E.cutCapFlag K a side).collar =
+theorem cutCapFlag_neighborhood_eq (K : E.CutCapNeighborhoodFamily) (a : E.tubes.Index) (side : Bool) :
+    (E.cutCapFlag K a side).neighborhood =
       {y : (E.capped.component (E.cutCapVertex a side)).Carrier |
-        y.val ∈ K.collar (a, side)} := rfl
+        y.val ∈ K.neighborhood (a, side)} := rfl
 
-theorem cutCapFlag_collar_pairwiseDisjoint (K : E.CutCapCollarFamily) :
+theorem cutCapFlag_neighborhood_pairwise_disjoint (K : E.CutCapNeighborhoodFamily) :
     ∀ (v : ConnectedComponents E.capped.Carrier)
       (f f' : {p : ULift.{u, 0} E.tubes.Index × Bool //
         E.cutCapVertex p.1.down p.2 = v}), f ≠ f' →
-      Disjoint (f.2 ▸ (E.cutCapFlag K f.1.1.down f.1.2).collar)
-        (f'.2 ▸ (E.cutCapFlag K f'.1.1.down f'.1.2).collar) := by
+      Disjoint (f.2 ▸ (E.cutCapFlag K f.1.1.down f.1.2).neighborhood)
+        (f'.2 ▸ (E.cutCapFlag K f'.1.1.down f'.1.2).neighborhood) := by
   rintro v ⟨⟨a, side⟩, hv⟩ ⟨⟨a', side'⟩, hv'⟩ hne
   have hb : (a, side) ≠ (a', side') := fun h => hne (Subtype.ext h)
   have hbd : (a.down, side) ≠ (a'.down, side') := fun h => by
@@ -151,11 +145,11 @@ theorem cutCapFlag_collar_pairwiseDisjoint (K : E.CutCapCollarFamily) :
     have h2 : side = side' := congrArg Prod.snd h
     exact hb (Prod.ext h1 h2)
   refine Set.disjoint_left.mpr fun x hx hx' => ?_
-  rw [cutCapFlag_collar_eq, mem_transport_collar] at hx
-  rw [cutCapFlag_collar_eq, mem_transport_collar] at hx'
-  exact Set.disjoint_left.mp (K.collar_pairwiseDisjoint hbd) hx hx'
+  rw [cutCapFlag_neighborhood_eq, mem_transport_neighborhood] at hx
+  rw [cutCapFlag_neighborhood_eq, mem_transport_neighborhood] at hx'
+  exact Set.disjoint_left.mp (K.pairwise_disjoint_neighborhood hbd) hx hx'
 
-noncomputable def cutCapMarkedGraph (K : E.CutCapCollarFamily) : MarkedManifoldGraph.{u} where
+noncomputable def cutCapMarkedGraph (K : E.CutCapNeighborhoodFamily) : MarkedManifoldGraph.{u} where
   Vertex := ConnectedComponents E.capped.Carrier
   Edge := ULift.{u, 0} E.tubes.Index
   vertexFintype := @Fintype.ofFinite _ (ClosedOrientedManifold.finite_components E.capped)
@@ -164,50 +158,50 @@ noncomputable def cutCapMarkedGraph (K : E.CutCapCollarFamily) : MarkedManifoldG
   endpoint := fun a side => E.cutCapVertex a.down side
   vertexManifold := fun v => E.capped.component v
   flag := fun a side => E.cutCapFlag K a.down side
-  flag_collar_disjoint := E.cutCapFlag_collar_pairwiseDisjoint K
+  flag_neighborhood_disjoint := E.cutCapFlag_neighborhood_pairwise_disjoint K
   attach := fun a side z => ⟨E.capping.cap (a.down, side) (sphereToClosedCell z),
     E.capRange_subset_componentSet a.down side ⟨_, rfl⟩⟩
   attach_eq := fun _ _ _ => rfl
 
-theorem cutCapMarkedGraph_Vertex (K : E.CutCapCollarFamily) :
+theorem cutCapMarkedGraph_Vertex (K : E.CutCapNeighborhoodFamily) :
     (E.cutCapMarkedGraph K).Vertex = ConnectedComponents E.capped.Carrier := rfl
 
-theorem cutCapMarkedGraph_Edge (K : E.CutCapCollarFamily) :
+theorem cutCapMarkedGraph_Edge (K : E.CutCapNeighborhoodFamily) :
     (E.cutCapMarkedGraph K).Edge = ULift.{u, 0} E.tubes.Index := rfl
 
-theorem cutCapMarkedGraph_endpoint (K : E.CutCapCollarFamily)
+theorem cutCapMarkedGraph_endpoint (K : E.CutCapNeighborhoodFamily)
     (a : ULift.{u, 0} E.tubes.Index) (side : Bool) :
     (E.cutCapMarkedGraph K).endpoint a side = E.cutCapVertex a.down side := rfl
 
-theorem cutCapMarkedGraph_vertexManifold (K : E.CutCapCollarFamily)
+theorem cutCapMarkedGraph_vertexManifold (K : E.CutCapNeighborhoodFamily)
     (v : ConnectedComponents E.capped.Carrier) :
     (E.cutCapMarkedGraph K).vertexManifold v = E.capped.component v := rfl
 
-theorem cutCapMarkedGraph_flag_ball (K : E.CutCapCollarFamily)
+theorem cutCapMarkedGraph_flag_ball (K : E.CutCapNeighborhoodFamily)
     (a : ULift.{u, 0} E.tubes.Index) (side : Bool) (x : ClosedCell 3) :
     ((E.cutCapMarkedGraph K).flag a side).ball x =
       ⟨E.capping.cap (a.down, side) x,
         E.capRange_subset_componentSet a.down side ⟨x, rfl⟩⟩ := rfl
 
-theorem cutCapMarkedGraph_attach (K : E.CutCapCollarFamily)
+theorem cutCapMarkedGraph_attach (K : E.CutCapNeighborhoodFamily)
     (a : ULift.{u, 0} E.tubes.Index) (side : Bool) (z : S2) :
     (E.cutCapMarkedGraph K).attach a side z =
       ⟨E.capping.cap (a.down, side) (sphereToClosedCell z),
         E.capRange_subset_componentSet a.down side ⟨_, rfl⟩⟩ := rfl
 
-theorem cutCapMarkedGraph_vertexBlockList_eq (K : E.CutCapCollarFamily)
+theorem cutCapMarkedGraph_vertexBlockList_eq (K : E.CutCapNeighborhoodFamily)
     (S : Finset (ULift.{u, 0} E.tubes.Index)) (v : ConnectedComponents E.capped.Carrier) :
     (E.cutCapMarkedGraph K).vertexBlockList S v =
       ((E.cutCapMarkedGraph K).vertexBlock S v).toList.map
         (fun w => E.capped.component w) := rfl
 
-theorem removedBallSet_empty_cutCapMarkedGraph (K : E.CutCapCollarFamily)
+theorem removedBallSet_empty_cutCapMarkedGraph (K : E.CutCapNeighborhoodFamily)
     (v : ConnectedComponents E.capped.Carrier) :
     (E.cutCapMarkedGraph K).removedBallSet
       (∅ : Finset (ULift.{u, 0} E.tubes.Index)) v = ∅ :=
   MarkedManifoldGraph.removedBallSet_empty (G := E.cutCapMarkedGraph K) v
 
-noncomputable def cutCapEmptyRealization (K : E.CutCapCollarFamily) :
+noncomputable def cutCapEmptyRealization (K : E.CutCapNeighborhoodFamily) :
     PartialRealization (E.cutCapMarkedGraph K)
       (∅ : Finset (ULift.{u, 0} E.tubes.Index)) where
   realization := E.capped
@@ -216,11 +210,9 @@ noncomputable def cutCapEmptyRealization (K : E.CutCapCollarFamily) :
   survivingFlag := fun e _ =>
     { ball := E.capping.cap (e.down, false)
       ball_embedding := E.capping.cap_embedding (e.down, false)
-      collar := K.collar (e.down, false)
-      collar_isOpen := K.collar_isOpen (e.down, false)
-      ball_subset_collar := K.capRange_subset_collar (e.down, false)
-      collarBudget := K.collarBudget (e.down, false)
-      collarBudget_pos := K.collarBudget_pos (e.down, false) }
+      neighborhood := K.neighborhood (e.down, false)
+      isOpen_neighborhood := K.isOpen_neighborhood (e.down, false)
+      range_ball_subset_neighborhood := K.range_cap_subset_neighborhood (e.down, false) }
   covers := fun x => by
     let hx : E.capped.Carrier := x
     have hmem : (⟨hx, rfl⟩ : E.capped.componentSet (ConnectedComponents.mk hx)) ∉
@@ -229,11 +221,11 @@ noncomputable def cutCapEmptyRealization (K : E.CutCapCollarFamily) :
       rw [removedBallSet_empty_cutCapMarkedGraph]
       exact Set.notMem_empty _
     exact Or.inl ⟨ConnectedComponents.mk hx, ⟨⟨⟨hx, rfl⟩, hmem⟩, rfl⟩⟩
-  survivingFlag_collar_disjoint := fun e e' _ _ hne =>
-    K.collar_pairwiseDisjoint fun h =>
+  survivingFlag_neighborhood_disjoint := fun e e' _ _ hne =>
+    K.pairwise_disjoint_neighborhood fun h =>
       hne (ULift.down_injective (congrArg Prod.fst h))
 
-theorem cutCapEmptyRealization_componentCorrespondence (K : E.CutCapCollarFamily) :
+theorem cutCapEmptyRealization_componentCorrespondence (K : E.CutCapNeighborhoodFamily) :
     (E.cutCapEmptyRealization K).componentCorrespondence := by
   intro v v' y y'
   rw [show (E.cutCapMarkedGraph K).processedGraph (∅ : Finset (ULift.{u, 0} E.tubes.Index)) =
@@ -246,7 +238,7 @@ theorem cutCapEmptyRealization_componentCorrespondence (K : E.CutCapCollarFamily
     subst h
     exact y.1.2.trans y'.1.2.symm
 
-theorem cutCapEmptyRealization_hasBlockPresentation (K : E.CutCapCollarFamily)
+theorem cutCapEmptyRealization_hasBlockPresentation (K : E.CutCapNeighborhoodFamily)
     (S : ConnectedClosedOrientedManifold.{u} 3) :
     (E.cutCapEmptyRealization K).HasBlockPresentation S := by
   refine ⟨fun _ => 0, fun _ _ _ => rfl, fun v y => ?_⟩
@@ -259,7 +251,7 @@ theorem cutCapEmptyRealization_hasBlockPresentation (K : E.CutCapCollarFamily)
   rw [y.1.2]
   exact ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩
 
-theorem cutCapEmptyRealization_cylinderComponentCovering (K : E.CutCapCollarFamily) :
+theorem cutCapEmptyRealization_cylinderComponentCovering (K : E.CutCapNeighborhoodFamily) :
     (E.cutCapEmptyRealization K).CylinderComponentCovering := by
   intro x
   let hx : E.capped.Carrier := x
@@ -270,28 +262,28 @@ theorem cutCapEmptyRealization_cylinderComponentCovering (K : E.CutCapCollarFami
     exact Set.notMem_empty _
   exact ⟨ConnectedComponents.mk hx, ⟨⟨⟨hx, rfl⟩, hmem⟩, rfl⟩⟩
 
-theorem cutCapEmptyRealization_isBlockInvariant (K : E.CutCapCollarFamily)
+theorem cutCapEmptyRealization_isBlockInvariant (K : E.CutCapNeighborhoodFamily)
     (S : ConnectedClosedOrientedManifold.{u} 3) :
     (E.cutCapEmptyRealization K).IsBlockInvariant S :=
   ⟨E.cutCapEmptyRealization_componentCorrespondence K,
     E.cutCapEmptyRealization_hasBlockPresentation K S,
     E.cutCapEmptyRealization_cylinderComponentCovering K⟩
 
-theorem exists_cutCapEmptyRealization_blockInvariant (K : E.CutCapCollarFamily)
+theorem exists_cutCapEmptyRealization_blockInvariant (K : E.CutCapNeighborhoodFamily)
     (S : ConnectedClosedOrientedManifold.{u} 3) :
     ∃ P : PartialRealization (E.cutCapMarkedGraph K)
       (∅ : Finset (ULift.{u, 0} E.tubes.Index)), P.IsBlockInvariant S :=
   ⟨E.cutCapEmptyRealization K, E.cutCapEmptyRealization_isBlockInvariant K S⟩
 
-theorem cutCapMarkedGraph_flag (K : E.CutCapCollarFamily)
+theorem cutCapMarkedGraph_flag (K : E.CutCapNeighborhoodFamily)
     (a : ULift.{u, 0} E.tubes.Index) (side : Bool) :
     (E.cutCapMarkedGraph K).flag a side = E.cutCapFlag K a.down side := rfl
 
-theorem cutCapMarkedGraph_flag_collar (K : E.CutCapCollarFamily)
+theorem cutCapMarkedGraph_flag_neighborhood (K : E.CutCapNeighborhoodFamily)
     (a : ULift.{u, 0} E.tubes.Index) (side : Bool) :
-    ((E.cutCapMarkedGraph K).flag a side).collar =
+    ((E.cutCapMarkedGraph K).flag a side).neighborhood =
       {y : (E.capped.component (E.cutCapVertex a.down side)).Carrier |
-        y.val ∈ K.collar (a.down, side)} := rfl
+        y.val ∈ K.neighborhood (a.down, side)} := rfl
 
 noncomputable def cutCapEdgeFinset (T : Finset E.tubes.Index) :
     Finset (ULift.{u, 0} E.tubes.Index) :=
@@ -307,7 +299,7 @@ theorem cutCapEdgeFinset_card (T : Finset E.tubes.Index) :
     (E.cutCapEdgeFinset T).card = T.card :=
   Finset.card_map _
 
-structure CutCapGraphRealization (K : E.CutCapCollarFamily)
+structure CutCapGraphRealization (K : E.CutCapNeighborhoodFamily)
     (S : ConnectedClosedOrientedManifold.{u} 3) where
   realization : PartialRealization (E.cutCapMarkedGraph K) Finset.univ
   blockInvariant : realization.IsBlockInvariant S
@@ -323,7 +315,7 @@ structure CutCapGraphRealization (K : E.CutCapCollarFamily)
           B.toClosedOrientedManifold))
         ((E.cutCapMarkedGraph K).vertexBlockList Finset.univ v) (E.cappedCutPieceFactorList C)
 
-theorem componentPresentationData_of_cutCapGraphRealization (K : E.CutCapCollarFamily)
+theorem componentPresentationData_of_cutCapGraphRealization (K : E.CutCapNeighborhoodFamily)
     (S : ConnectedClosedOrientedManifold.{u} 3) (h : E.CutCapGraphRealization K S) :
     E.ComponentPresentationData S := by
   intro C hC
@@ -332,13 +324,13 @@ theorem componentPresentationData_of_cutCapGraphRealization (K : E.CutCapCollarF
   exact ⟨(E.cutCapMarkedGraph K).vertexBlockList Finset.univ v, b v, hpieces,
     hcomp.map fun ρ => ρ.trans (hb v y).some⟩
 
-theorem sphericalSummandCompletion_of_cutCapGraphRealization (K : E.CutCapCollarFamily)
+theorem sphericalSummandCompletion_of_cutCapGraphRealization (K : E.CutCapNeighborhoodFamily)
     (S : ConnectedClosedOrientedManifold.{u} 3) (h : E.CutCapGraphRealization K S) :
     E.sphericalSummandCompletion S :=
   E.sphericalSummandCompletion_of_componentPresentationData S
     (E.componentPresentationData_of_cutCapGraphRealization K S h)
 
-theorem blockStepLaw_of_isEmpty_index (K : E.CutCapCollarFamily)
+theorem blockStepLaw_of_isEmpty_index (K : E.CutCapNeighborhoodFamily)
     (S : ConnectedClosedOrientedManifold.{u} 3) [IsEmpty E.tubes.Index] :
     BlockStepLaw (E.cutCapMarkedGraph K) S := by
   have hEdge : IsEmpty (E.cutCapMarkedGraph K).Edge :=

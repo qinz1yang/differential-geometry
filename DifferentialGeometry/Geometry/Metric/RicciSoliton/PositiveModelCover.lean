@@ -46,7 +46,7 @@ private theorem normalizedGradientRicciSoliton_potential_eq_one_of_compact_of_fi
     let i : Fin (Module.finrank Real E) := ⟨0, by omega⟩
     let v : TangentSpace I x := smoothOrthoFrame (I := I) g x i x
     have hv : g.inner x v v = 1 := by
-      simpa only [v, i, if_pos] using
+      simpa only [v, i, ite_eq_left] using
         smoothOrthoFrame_orthonormal_at_center (I := I) g x i i
     have hRicDim :=
       ricciTensor_eq_half_metricScalarAt_mul_inner_of_finrank_eq_two

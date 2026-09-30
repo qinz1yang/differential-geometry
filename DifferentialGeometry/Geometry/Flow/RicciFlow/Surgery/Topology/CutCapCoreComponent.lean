@@ -107,7 +107,7 @@ theorem connectedComponent_eq_preimage_of_capCore_of_spatialNeck
     apply nk.domain
     change (z, if b.2 then 1 - t else -1 + t) ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹
     refine ⟨mem_univ _, ?_, ?_⟩ <;> cases b.2 <;>
-      simp only [Bool.false_eq_true, if_false, if_true] <;> linarith [ht.1, ht.2]
+      simp only [Bool.false_eq_true, ite_false, ite_true] <;> linarith [ht.1, ht.2]
   · intro z
     rw [happ]
     change _ = T.tube b.1 (z, boundaryLevel b.2)
@@ -116,7 +116,7 @@ theorem connectedComponent_eq_preimage_of_capCore_of_spatialNeck
   · intro z t ht
     let v : ℝ := if b.2 then 1 - t else -1 + t
     have hv : v ∈ Ioo (-1 : ℝ) 1 := by
-      cases hb : b.2 <;> simp only [v, hb, Bool.false_eq_true, if_false, if_true] <;>
+      cases hb : b.2 <;> simp only [v, hb, Bool.false_eq_true, ite_false, ite_true] <;>
         constructor <;> linarith [ht.1, ht.2]
     let q : TubeDomain := (z, ⟨v, by constructor <;> linarith [hv.1, hv.2]⟩)
     refine ⟨q, hv, ?_⟩
@@ -153,6 +153,7 @@ theorem isSmoothEmbedding_boundarySphere (b : T.Boundary)
     (by decide)
 
 
+omit [IsManifold ThreeModel ∞ M] in
 private theorem exists_openPartialHomeomorph_tube_interior (a : T.Index)
     (hs : IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     ∃ e : OpenPartialHomeomorph (Sphere 2 × ℝ) M,
@@ -205,6 +206,7 @@ private theorem exists_openPartialHomeomorph_tube_interior (a : T.Index)
     rfl
 
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem isClopen_preimage_of_capCore_of_boundarySphere
     [T2Space M] {K : Set M} (cap : CapCore K)
     (b : T.Boundary) (hdisj : Disjoint K (T.removedBand b.1)) (hfront : frontier K = range (T.boundarySphere b))
@@ -234,7 +236,7 @@ theorem isClopen_preimage_of_capCore_of_boundarySphere
     apply hEsource
     change (z, if b.2 then 1 - t else -1 + t) ∈ univ ×ˢ Ioo (-2 : ℝ) 2
     refine ⟨mem_univ _, ?_, ?_⟩ <;> cases b.2 <;>
-      simp only [Bool.false_eq_true, if_false, if_true] <;> linarith [ht.1, ht.2]
+      simp only [Bool.false_eq_true, ite_false, ite_true] <;> linarith [ht.1, ht.2]
   · intro z
     rw [happ]
     change _ = T.tube b.1 (z, boundaryLevel b.2)
@@ -243,13 +245,14 @@ theorem isClopen_preimage_of_capCore_of_boundarySphere
   · intro z t ht
     let v : ℝ := if b.2 then 1 - t else -1 + t
     have hv : v ∈ Ioo (-1 : ℝ) 1 := by
-      cases hb : b.2 <;> simp only [v, hb, Bool.false_eq_true, if_false, if_true] <;>
+      cases hb : b.2 <;> simp only [v, hb, Bool.false_eq_true, ite_false, ite_true] <;>
         constructor <;> linarith [ht.1, ht.2]
     let q : TubeDomain := (z, ⟨v, by constructor <;> linarith [hv.1, hv.2]⟩)
     refine ⟨q, hv, ?_⟩
     rw [← hE q (by constructor <;> linarith [hv.1, hv.2])]
     rfl
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem connectedComponent_eq_preimage_of_capCore_of_boundarySphere
     [T2Space M] {K : Set M} (cap : CapCore K) (hcore : K ⊆ T.core)
     (b : T.Boundary) (hfront : frontier K = range (T.boundarySphere b))
@@ -266,6 +269,7 @@ theorem connectedComponent_eq_preimage_of_capCore_of_boundarySphere
   exact Subset.antisymm (hcl.connectedComponent_subset hx) (hpre.subset_connectedComponent hx)
 
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem connectedComponent_subset_preimage_of_capCore_of_boundarySphere
     [T2Space M] {K : Set M} (cap : CapCore K)
     (b : T.Boundary) (hdisj : Disjoint K (T.removedBand b.1))

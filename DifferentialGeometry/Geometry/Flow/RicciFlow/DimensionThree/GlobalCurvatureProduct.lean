@@ -76,9 +76,9 @@ theorem exists_global_product_of_curvatureOperatorImage_rank_eq_one
     fun t => if ht : t ∈ J then h ⟨t, ht⟩ else h ⟨t₀, ht₀⟩
   refine ⟨N, htop, hcs, hmanifold, ht2, hσ, h', F, hconn, hsimply, ?_, ?_⟩
   · intro t ht hc
-    simpa only [h', dif_pos ht] using hcomp ⟨t, ht⟩ hc
+    simpa only [h', dite_eq_left ht] using hcomp ⟨t, ht⟩ hc
   · intro t ht
-    simpa only [h', dif_pos ht] using hprod ⟨t, ht⟩
+    simpa only [h', dite_eq_left ht] using hprod ⟨t, ht⟩
 
 theorem exists_global_product_on_interval_of_curvatureOperatorImage_rank_eq_one
     [SimplyConnectedSpace M]

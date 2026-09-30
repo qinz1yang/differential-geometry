@@ -717,10 +717,7 @@ private theorem sum_abstractHessian_smoothOrthoFrame_cov_eq_zero
     rw [smoothOrthoFrame_cov_skew (I := I) g x j i v]
     rw [g.symm x (smoothOrthoFrame (I := I) g x j x)
       ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x v)]
-  have h_hf_2 : ContMDiffAt I 𝓘(ℝ, ℝ) (2 : ℕ∞) f x := hf.contMDiffAt.of_le (by
-    have h1 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
-      exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-    simpa using h1)
+  have h_hf_2 : ContMDiffAt I 𝓘(ℝ, ℝ) (2 : ℕ∞) f x := hf.contMDiffAt.of_le (by simp)
   have h_hess_symm : ∀ a b : TangentSpace I x,
       abstractHessian (I := I) g f x a b =
       abstractHessian (I := I) g f x b a := fun a b =>
@@ -898,10 +895,7 @@ private lemma heart_per_summand_swap [I.Boundaryless]
         g.inner x (cov.toFun P x (B x)) (B x) +
           g.inner x (P x) (cov.toFun B x (B x)) := by
     rw [← hmc_QW, h_mfderiv_eq, hmc_PB]
-  have hf_2 : ContMDiffAt I 𝓘(ℝ, ℝ) (2 : ℕ∞) f x := hf.contMDiffAt.of_le (by
-    have h1 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
-      exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-    simpa using h1)
+  have hf_2 : ContMDiffAt I 𝓘(ℝ, ℝ) (2 : ℕ∞) f x := hf.contMDiffAt.of_le (by simp)
   have hQx_inner : g.inner x (Q x) (cov.toFun W x (B x)) =
       g.inner x (cov.toFun Gf x (cov.toFun W x (B x))) (B x) := by
     have hQx_eq : Q x = cov.toFun Gf x (B x) := rfl
@@ -1100,10 +1094,7 @@ private lemma heart_per_summand_assembled [I.Boundaryless]
     rw [show v = Xv x from hXv_eq.symm]
     rw [inner_cov_gradFun_eq_abstractHessian (I := I) g hf
         (X := Xv) (Y := B) (x := x) hB_smooth]
-    exact (abstractHessian_symm (I := I) g (hf.contMDiffAt.of_le (by
-      have h1 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
-        exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-      simpa using h1)) (Xv x) (B x))
+    exact (abstractHessian_symm (I := I) g (hf.contMDiffAt.of_le (by simp)) (Xv x) (B x))
   rw [h_Hess_BcovBW] at h_LCQW_B
   rw [h_swap, h_riem, h_LCQW_B, h_Hess_BcovBW]
   ring

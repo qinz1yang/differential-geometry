@@ -41,7 +41,7 @@ theorem kochLammLatePiece_int {T R : ℝ} {A₁ A_q : ℝ≥0}
   let : ENNReal.HolderConjugate
       (ENNReal.ofReal (kochLammQDual V)) (ENNReal.ofReal (kochLammQReal V)) :=
     (kochLammQ_holder (V := V)).ennrealOfReal
-  exact memLp_one_iff_integrable.mp (hf.smul hk)
+  exact memLp_one_iff_integrable.mp (hk.smul hf)
 
 omit [CompleteSpace F] in
 theorem kochLammLateCover_est {T R k : ℝ} {A₁ A_q : ℝ≥0}

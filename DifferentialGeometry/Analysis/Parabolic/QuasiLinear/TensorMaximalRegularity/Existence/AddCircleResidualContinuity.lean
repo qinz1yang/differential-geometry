@@ -135,7 +135,7 @@ private theorem principal_ae_sub_norm_le
         AddCircle.parameterPrincipalOperatorHsPi (ι := ι) g (a0 t)‖ ≤
           (principalCoefficientConstant g : ℝ) * ‖a - a0‖ := by
   have hnorm : ∀ᵐ t ∂timeMeasure T, ‖(a - a0) t‖ ≤ ‖a - a0‖ := by
-    simpa only [← toReal_eLpNorm (Lp.memLp (a - a0)).aestronglyMeasurable, Lp.norm_def] using
+    simpa only [← toReal_eLpNorm, Lp.norm_def] using
       ae_le_lpNorm_exponent_top (Lp.memLp (a - a0))
   filter_upwards [hnorm, Lp.coeFn_sub a a0] with t ht hsub
   have hsmall : ‖a t - a0 t‖ ≤ ‖a - a0‖ := by

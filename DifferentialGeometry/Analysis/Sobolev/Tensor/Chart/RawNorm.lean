@@ -115,7 +115,7 @@ theorem chartPushedRaw_mul_eq_chartSmoothExt_mul_chartPushedRaw
         ρ ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
        else 0) *
       u ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
-    rw [if_pos hsymm]
+    rw [ite_eq_left hsymm]
   · rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α _ hy]
     rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α u hy]
     rw [mul_zero]

@@ -14,7 +14,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLHomeomorphOn.exists_rounded_annulus_atlas
     {g : (Fin 3 → ℝ) × ℝ → E} {C A : Set E}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) C)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) C)
     (htrace : g '' (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) = C ∩ A) :
     let _ := prismAnnulusChartedSpace
     ∃ U : TopologicalSpace.Opens C,
@@ -35,7 +35,7 @@ theorem IsPLHomeomorphOn.exists_rounded_annulus_atlas
               atlas (ModelProd (EuclideanSpace ℝ (Fin 1)) (EuclideanHalfSpace 2)) U := by
   let _ := prismAnnulusChartedSpace
   let _ : IsManifold ((𝓡 1).prod (𝓡∂ 2)) ∞ prismAnnulusSource := prismAnnulus_isManifold
-  let P := stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
+  let P := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
   let e : P ≃ₜ C := hg.homeomorph
   let U : TopologicalSpace.Opens C :=
     ⟨e '' (prismAnnulusSource : Set P), e.isOpenMap _ prismAnnulusSource.isOpen⟩

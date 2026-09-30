@@ -51,7 +51,8 @@ theorem bounded_curvature_at_distance_of_terminalParabolicRmBallWindowProducer
   bounded_curvature_at_distance_of_terminalDerivativeBoundProducer
     (terminalDerivativeBoundProducer_of_terminalParabolicRmBallWindowProducer h)
 
-theorem bounded_curvature_at_distance_of_terminalRmBallBoundAtSameTimeProducer_and_ricciTensorBoundProducer
+theorem
+ bounded_curvature_at_distance_of_terminalRmBallBoundAtSameTimeProducer_and_ricciTensorBoundProducer
     {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hrm : TerminalRmBallBoundAtSameTimeProducer.{u} kappa sigma Phi)
     (hric : RicciTensorBoundProducer.{u} kappa sigma Phi) :
@@ -71,16 +72,16 @@ theorem terminalDerivativeBoundProducer_of_bounded_curvature_at_distance
   obtain ⟨e, he, hb⟩ := h
   exact ⟨e, he, fun eps hp hle X => (hb eps hp hle X).2⟩
 
-theorem bounded_curvature_at_distance_of_terminalScalarBallBoundAtSameTimeProducer_and_ricciTensorBoundProducer
+theorem bounded_curvature_at_distance_of_parabolic_scalar_ball_and_ricci_bounds
     {kappa sigma : ℝ} {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
     (hscl : TerminalScalarBallBoundAtSameTimeProducer.{u} kappa sigma Phi)
     (hric : RicciTensorBoundProducer.{u} kappa sigma Phi) :
     ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
       ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
-        BoundedAtDistance X ∧ TerminalDerivativeBounds X :=
-  bounded_curvature_at_distance_of_terminalDerivativeBoundProducer
-    (terminalDerivativeBoundProducer_of_scalarBallBoundAtSameTimeProducer_and_ricciTensorBoundProducer
-      hPhi hscl hric)
+        BoundedAtDistance X ∧ TerminalDerivativeBounds X := by
+  obtain ⟨K, hK, hric⟩ := hric
+  exact bounded_curvature_at_distance_of_scalarBallBoundAtSameTime_and_ricciTensorBound
+    hPhi hK hscl hric
 
 theorem bounded_curvature_at_distance_iff_terminalDerivativeBoundProducer
     {kappa sigma : ℝ} {Phi : ℝ → ℝ} :

@@ -155,7 +155,7 @@ theorem exists_local_lp_weak_gradient_equation_of_weighted_weak_equation
     simp_rw [Finset.sum_mul]
     apply integral_finsetSum
     intro i _
-    exact (((hV i).mul (r := 2) (hAmem i j)).locallyIntegrable
+    exact (((hAmem i j).fun_mul (r := 2) (hV i)).locallyIntegrable
       (by norm_num)).integrable_smul_right_of_hasCompactSupport
         ((hφ.continuous_fderiv (by simp)).clm_apply continuous_const)
         (hφc.fderiv_apply ℝ (0, EuclideanSpace.single j 1))

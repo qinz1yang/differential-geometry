@@ -12,6 +12,8 @@ open scoped Manifold Topology ContDiff ENNReal NNReal InnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
+
 open DifferentialGeometry.Analysis
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Analysis.Sobolev
@@ -725,7 +727,7 @@ private theorem exists_galerkin_energy_three_bound_parameters_explicit (hDim : M
               (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i := by
       intro i hi
       rw [galerkinForceTerm (I := I) (M := M) g₀ hδ hδ0 hδ3 hCtop hB1 hρ hP hreal
-        hcore (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i, if_pos hi]
+        hcore (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i, ite_eq_left hi]
       simp only [galerkinActionVector]
       module
     have hstat : ∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,

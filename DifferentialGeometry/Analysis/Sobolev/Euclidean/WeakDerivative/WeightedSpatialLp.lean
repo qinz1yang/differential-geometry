@@ -29,7 +29,7 @@ theorem memLp_weighted_spatial_fderiv_of_locallyLipschitzOn
     rw [Measure.prod_restrict]
     exact (hc i).memLp_top_of_subset_isCompact (isCompact_Icc.prod hΩc)
       (measurableSet_Icc.prod hΩ.measurableSet) (prod_mono Subset.rfl subset_closure)
-  exact (memLp_spatial_fderiv_of_locallyLipschitzOn hΩ hΩc hu p i).mul' (r := p) hci
+  exact hci.fun_mul (r := p) (memLp_spatial_fderiv_of_locallyLipschitzOn hΩ hΩc hu p i)
 
 theorem integrable_weighted_fderiv_pairings_of_locallyLipschitzOn
     {a b : ℝ} {Ω : Set E} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
@@ -67,6 +67,6 @@ theorem integrable_weighted_fderiv_pairings_of_locallyLipschitzOn
       exact (htest (0, EuclideanSpace.single j 1)).continuousOn.memLp_top_of_subset_isCompact
         (isCompact_Icc.prod hΩc) (measurableSet_Icc.prod hΩ.measurableSet)
         (prod_mono Subset.rfl subset_closure)
-    exact memLp_one_iff_integrable.mp (htestMem.mul' (r := 1) hweighted)
+    exact memLp_one_iff_integrable.mp (hweighted.fun_mul (r := 1) htestMem)
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean

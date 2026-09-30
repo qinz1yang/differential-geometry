@@ -206,9 +206,9 @@ private lemma inputSlot_sum_reindex
   rw [Fintype.sum_prod_type]
   refine Finset.sum_congr rfl (fun Idx' _ => ?_)
   rw [Finset.sum_eq_single Jdx]
-  · rw [if_pos rfl, mul_one]
+  · rw [ite_eq_left rfl, mul_one]
   · intro Jdx' _ hJdx'
-    rw [if_neg hJdx', mul_zero, zero_mul]
+    rw [ite_eq_right hJdx', mul_zero, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ Jdx) h
 
@@ -234,10 +234,10 @@ private lemma outputSlot_sum_reindex
   refine Eq.symm ?_
   rw [Fintype.sum_prod_type, Finset.sum_eq_single Idx]
   · refine Finset.sum_congr rfl (fun Jdx' _ => ?_)
-    rw [if_pos rfl, mul_one]
+    rw [ite_eq_left rfl, mul_one]
   · intro Idx' _ hIdx'
     refine Finset.sum_eq_zero (fun Jdx' _ => ?_)
-    rw [if_neg hIdx', mul_zero, zero_mul]
+    rw [ite_eq_right hIdx', mul_zero, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ Idx) h
 

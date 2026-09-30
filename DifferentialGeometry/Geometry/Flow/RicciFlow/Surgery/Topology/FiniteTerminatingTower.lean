@@ -28,7 +28,7 @@ theorem finiteEvents_absorbingTower
       towerExtinct T.toObservationTower ∧
       ∃ N : ℕ, 0 < N ∧ H.horizon ≤ (N : ℝ) ∧
         ∃ hN : H.horizon ≤ (N : ℝ),
-          T.history N = @RetainedCoreHistory.emptyExtension _ H (by exact hHempty) (N : ℝ) hN
+          T.history N = @RetainedCoreHistory.emptyExtension H (by exact hHempty) (N : ℝ) hN
  := by
   dsimp
   let H := ofEvents time htime hzero stage metric event hinitial houtput hOld
@@ -48,8 +48,8 @@ theorem finiteEvents_absorbingTower
     have hNpos : 0 < N := by
       dsimp [N]
       exact Nat.succ_pos _
-    have hNhist : T.history N = @RetainedCoreHistory.emptyExtension _ H hE (N : ℝ) hN := by
-      exact @RetainedCoreHistory.absorbingHistory_eq_emptyExtension _ H hE N hN
+    have hNhist : T.history N = @RetainedCoreHistory.emptyExtension H hE (N : ℝ) hN := by
+      exact @RetainedCoreHistory.absorbingHistory_eq_emptyExtension H hE N hN
     exact ⟨N, hNpos, hN, hN, hNhist⟩
 
 end RetainedCoreHistory

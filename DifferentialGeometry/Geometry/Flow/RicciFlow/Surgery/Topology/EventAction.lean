@@ -277,8 +277,8 @@ theorem exists_survivor_solution_approximating_event_competitors
   let S : SolutionOn (I := ThreeModel) (M := W) (RealTimeInterval.closed c d (hcs.trans hsd).le) :=
     { base.metric := fun t => if t ≤ s then (E.terminal.extendedMetric t).restrictOpen W else Splus.base.metric t }
   have hleft (t : ℝ) (ht : t ≤ s) : S.base.metric t = (E.terminal.extendedMetric t).restrictOpen W :=
-    if_pos ht
-  have hright (t : ℝ) (ht : s < t) : S.base.metric t = Splus.base.metric t := if_neg (not_le.mpr ht)
+    ite_eq_left ht
+  have hright (t : ℝ) (ht : s < t) : S.base.metric t = Splus.base.metric t := ite_eq_right (not_le.mpr ht)
   refine ⟨F, S, hFsource, hFcross, hS, (fun t ht => hleft t ht.2), ?_, ?_⟩
   · intro t ht x v w
     rw [hright t ht.1]
@@ -1423,7 +1423,7 @@ theorem exists_survivor_curve_action_eq_of_confined_event_competitor
   have hleft : EqOn (g ∘ gamma) alpha (Icc u d) := by
     intro r hr
     change g (gamma r) = alpha r
-    rw [show gamma r = alpha' r from if_pos hr.2]
+    rw [show gamma r = alpha' r from ite_eq_left hr.2]
     exact halphaEq hr
   have hright : EqOn (f ∘ gamma) beta (Icc d v) := by
     intro r hr
@@ -1432,7 +1432,7 @@ theorem exists_survivor_curve_action_eq_of_confined_event_competitor
       · subst r
         exact (show gamma d = alpha' d from
           piecewise_eq_of_mem (Iic d) alpha' beta' (show d ∈ Iic d from le_refl d)).trans hmatch
-      · exact if_neg (not_le.mpr hrd)
+      · exact ite_eq_right (not_le.mpr hrd)
     change f (gamma r) = beta r
     rw [hright]
     exact hbetaEq hr
@@ -1556,20 +1556,20 @@ theorem lRegularizedAction_le_of_minimal_event_competitor
     Manifold.absolutelyContinuousOnInterval_piecewise_Iic halphaLeft hgdelta hlc hcw hmatchLeft
   have hbeta' : Manifold.absolutelyContinuousOnInterval ThreeModel beta' w r :=
     Manifold.absolutelyContinuousOnInterval_piecewise_Iic hfdelta hbetaRight hwd hdr hmatchRight
-  have halphaEqLeft : EqOn alpha' alpha (Icc l c) := fun _ ht => if_pos ht.2
+  have halphaEqLeft : EqOn alpha' alpha (Icc l c) := fun _ ht => ite_eq_left ht.2
   have halphaEqRight : EqOn alpha' (g ∘ delta) (Icc c w) := by
     intro t ht
     rcases ht.1.eq_or_lt with ht | ht
     · subst t
       exact (show alpha' c = alpha c from piecewise_eq_of_mem (Iic c) alpha (g ∘ delta) (show c ∈ Iic c from le_refl c)).trans hmatchLeft
-    · exact if_neg (not_le.mpr ht)
-  have hbetaEqLeft : EqOn beta' (f ∘ delta) (Icc w d) := fun _ ht => if_pos ht.2
+    · exact ite_eq_right (not_le.mpr ht)
+  have hbetaEqLeft : EqOn beta' (f ∘ delta) (Icc w d) := fun _ ht => ite_eq_left ht.2
   have hbetaEqRight : EqOn beta' beta (Icc d r) := by
     intro t ht
     rcases ht.1.eq_or_lt with ht | ht
     · subst t
       exact (show beta' d = (f ∘ delta) d from piecewise_eq_of_mem (Iic d) (f ∘ delta) beta (show d ∈ Iic d from le_refl d)).trans hmatchRight
-    · exact if_neg (not_le.mpr ht)
+    · exact ite_eq_right (not_le.mpr ht)
   have hlag {Y : Type uLocalMin} [TopologicalSpace Y] [ChartedSpace ThreeSpace Y]
       [IsManifold ThreeModel ∞ Y] {D' : RealTimeInterval}
       (R : SolutionOn (I := ThreeModel) (M := Y) D')
@@ -1583,7 +1583,8 @@ theorem lRegularizedAction_le_of_minimal_event_competitor
     have hv := hn.self_of_nhds
     have hder := hn.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel)
     unfold lRegularizedLagrangian lVelocity
-    rw [hv, hder]
+    rw [hder, hv]
+    rfl
   have halphaIntLeft : IntervalIntegrable (lRegularizedLagrangian G.flow T alpha) volume l c := halphaInt.mono_set (by
     simpa only [uIcc_of_le hlc, uIcc_of_le hlw] using Icc_subset_Icc le_rfl hcw)
   have halphaIntRight : IntervalIntegrable (lRegularizedLagrangian G.flow T alpha) volume c w := halphaInt.mono_set (by

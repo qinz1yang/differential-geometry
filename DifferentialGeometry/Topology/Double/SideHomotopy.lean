@@ -69,7 +69,7 @@ theorem exists_doublePositive_neighborhood_homotopyEquiv
     intro q
     change g q = G q.val
     dsimp only [G]
-    rw [dif_pos (show h q.val.2.val ≤ 0 from q.property)]
+    rw [dite_eq_left (show h q.val.2.val ≤ 0 from q.property)]
   have hGfix (q : unitInterval × U) (hq : 0 ≤ h q.2.val) : G q = q.2 := by
     dsimp only [G]
     split_ifs with hneg

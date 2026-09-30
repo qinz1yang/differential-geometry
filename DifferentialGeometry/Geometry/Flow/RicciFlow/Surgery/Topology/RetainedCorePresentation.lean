@@ -132,7 +132,6 @@ def toRetainedCoreEvent (D : RetainedCoreEventData P Q a s) : RetainedCoreEvent 
   oldOutput := D.transition.retainedOutputMap
   oldOutput_eq := fun x => D.transition.retainedOutputMap_eq x
   old_metric_eq := D.retained_metric_eq
-  old_contains_outside := fun _ hx _ => hx
   every_child_meets_old := D.completion.exists_retainedOutputMap_eq
 
 theorem coreCompatibility (D : RetainedCoreEventData P Q a s) :
@@ -322,7 +321,7 @@ theorem toSurgeryFiniteSurgeryHistory_poincareControlled_iff {H : ObservedHistor
       IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞
         (fun x : (H.event i).old =>
           (H.event i).transition.trace.capping.coreInclusion x.1)) :
-    (H.toSurgeryFiniteSurgeryHistory_of_cutCapCompletion hn hc hout).poincareControlled ↔
+    (H.toSurgeryFiniteSurgeryHistoryOfCutCapCompletion hn hc hout).poincareControlled ↔
       ∀ i : Fin H.eventCount, (H.event i).poincareStandardDiscarded :=
   Iff.rfl
 

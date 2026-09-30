@@ -10,12 +10,13 @@ import Mathlib.Topology.Homotopy.Equiv
 noncomputable section
 
 open ContinuousMap
+open Convexity.StdSimplex
 
 namespace DifferentialGeometry.Simplex
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem triangleSphereMap_natural (g : C(stdSimplex ℝ (Fin 3), X)) (x : X)
+theorem triangleSphereMap_natural (g : C(coordinateSet ℝ (Fin 3), X)) (x : X)
     (hg : ∀ p ∈ boundary (Fin 3), g p = x) (f : C(X, Y)) :
     triangleSphereMap (f.comp g) (f x) (fun p hp => congrArg f (hg p hp)) =
       f.comp (triangleSphereMap g x hg) := by
@@ -24,7 +25,7 @@ theorem triangleSphereMap_natural (g : C(stdSimplex ℝ (Fin 3), X)) (x : X)
     (EuclideanSpace.equiv (Fin 3) ℝ).symm).surjective z
   obtain ⟨i, hi⟩ := p.property
   let q := faceDelete i ⟨p.val, hi⟩
-  have he : p = ⟨stdSimplex.map i.succAbove q,
+  have he : p = ⟨coordinateMap i.succAbove q,
       ⟨i, map_succAbove_apply_pivot i q⟩⟩ := by
     apply Subtype.ext
     exact (congrArg Subtype.val (faceInsert_faceDelete i ⟨p.val, hi⟩)).symm
@@ -34,7 +35,7 @@ theorem triangleSphereMap_natural (g : C(stdSimplex ℝ (Fin 3), X)) (x : X)
   fin_cases i <;> rfl
 
 
-theorem genLoopSphereHomeomorph_triangleGenLoop_comp (g : C(stdSimplex ℝ (Fin 3), X))
+theorem genLoopSphereHomeomorph_triangleGenLoop_comp (g : C(coordinateSet ℝ (Fin 3), X))
     (x : X) (hg : ∀ p ∈ boundary (Fin 3), g p = x) :
     (Topology.genLoopSphereHomeomorph 1 x (triangleGenLoop g x hg)).val.comp
       triangleCubeSphereMap = g := by
@@ -51,7 +52,7 @@ def triangleSphereCollapse :
     triangleCubeSphereMap_boundary
 
 theorem triangleSphereMap_eq_comp_triangleSphereCollapse
-    (g : C(stdSimplex ℝ (Fin 3), X)) (x : X)
+    (g : C(coordinateSet ℝ (Fin 3), X)) (x : X)
     (hg : ∀ p ∈ boundary (Fin 3), g p = x) :
     triangleSphereMap g x hg =
       (Topology.genLoopSphereHomeomorph 1 x (triangleGenLoop g x hg)).val.comp
@@ -97,7 +98,7 @@ private theorem inactiveDiskContraction_apply (t : unitInterval) (q : inactiveDi
   rfl
 
 private def inactiveVertex0 : inactiveDisk :=
-  ⟨⟨stdSimplex.vertex (S := ℝ) (0 : Fin 4), by
+  ⟨⟨coordinateSingle (S := ℝ) (0 : Fin 4), by
     exact ⟨1, by simp⟩⟩, by
     exact ⟨1, by decide, by simp⟩⟩
 
@@ -122,7 +123,7 @@ private theorem inactiveDiskContraction_vertex (t : unitInterval) :
 private def boundaryTriangleToInactive :
     C(boundary (Fin 3), inactiveDisk) where
   toFun q :=
-    ⟨⟨stdSimplex.map (0 : Fin 4).succAbove q.1,
+    ⟨⟨coordinateMap (0 : Fin 4).succAbove q.1,
       ⟨0, map_succAbove_apply_pivot (0 : Fin 4) q.1⟩⟩, by
       obtain ⟨j, hz⟩ := q.2
       refine ⟨(0 : Fin 4).succAbove j, Fin.succAbove_ne _ _, ?_⟩
@@ -131,7 +132,7 @@ private def boundaryTriangleToInactive :
   continuous_toFun := by
     apply Continuous.subtype_mk
     apply Continuous.subtype_mk
-    exact (stdSimplex.continuous_map (0 : Fin 4).succAbove).comp continuous_subtype_val
+    exact (continuous_coordinateMap (0 : Fin 4).succAbove).comp continuous_subtype_val
 
 private def inactiveDiskBoundaryInclusion :
     C(inactiveDisk, boundary (Fin 4)) :=
@@ -145,7 +146,7 @@ private def boundaryTriangleContraction :
 
 private theorem boundaryTriangleContraction_apply (t : unitInterval) (q : boundary (Fin 3)) :
     (boundaryTriangleContraction (t, q)).val =
-      vertexContraction (0 : Fin 4) (t, stdSimplex.map (0 : Fin 4).succAbove q.val) :=
+      vertexContraction (0 : Fin 4) (t, coordinateMap (0 : Fin 4).succAbove q.val) :=
   rfl
 
 private theorem boundaryTriangleContraction_mem_inactiveDisk
@@ -155,7 +156,7 @@ private theorem boundaryTriangleContraction_mem_inactiveDisk
 
 private theorem boundaryTriangleContraction_zero (q : boundary (Fin 3)) :
     boundaryTriangleContraction (0, q) =
-      ⟨stdSimplex.map (0 : Fin 4).succAbove q.1,
+      ⟨coordinateMap (0 : Fin 4).succAbove q.1,
         ⟨0, map_succAbove_apply_pivot (0 : Fin 4) q.1⟩⟩ := by
   apply Subtype.ext
   exact vertexContraction_zero (0 : Fin 4) _
@@ -166,17 +167,17 @@ private theorem boundaryTriangleContraction_one (q : boundary (Fin 3)) :
   exact vertexContraction_one (0 : Fin 4) _
 
 private def tetrahedronFaceInclusion (i : Fin 4) :
-    C(stdSimplex ℝ (Fin 3), boundary (Fin 4)) where
-  toFun p := ⟨stdSimplex.map i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩
-  continuous_toFun := (stdSimplex.continuous_map i.succAbove).subtype_mk _
+    C(coordinateSet ℝ (Fin 3), boundary (Fin 4)) where
+  toFun p := ⟨coordinateMap i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩
+  continuous_toFun := (continuous_coordinateMap i.succAbove).subtype_mk _
 
 private def inactiveFaceInclusion (i : Fin 4) (hi : i ≠ 0) :
-    C(stdSimplex ℝ (Fin 3), inactiveDisk) where
+    C(coordinateSet ℝ (Fin 3), inactiveDisk) where
   toFun p := ⟨tetrahedronFaceInclusion i p, ⟨i, hi, map_succAbove_apply_pivot i p⟩⟩
   continuous_toFun := (tetrahedronFaceInclusion i).continuous.subtype_mk _
 
 private def inactiveFaceContraction (i : Fin 4) (hi : i ≠ 0) :
-    C(unitInterval × stdSimplex ℝ (Fin 3), boundary (Fin 4)) :=
+    C(unitInterval × coordinateSet ℝ (Fin 3), boundary (Fin 4)) :=
   inactiveDiskBoundaryInclusion.comp
     (inactiveDiskContraction.comp
       (ContinuousMap.prodMap (ContinuousMap.id unitInterval) (inactiveFaceInclusion i hi)))
@@ -189,44 +190,44 @@ private theorem exists_boundaryHomotopy_contraction_inactiveDisk :
   classical
   obtain ⟨F, hF, hside⟩ := exists_continuous_homotopy_extension 2
     (tetrahedronFaceInclusion 0) boundaryTriangleContraction boundaryTriangleContraction_zero
-  let L (i : Fin 4) : C(unitInterval × stdSimplex ℝ (Fin 3), boundary (Fin 4)) :=
+  let L (i : Fin 4) : C(unitInterval × coordinateSet ℝ (Fin 3), boundary (Fin 4)) :=
     if hi : i = 0 then F else inactiveFaceContraction i hi
   have hL (i : Fin 4) (j : Fin 3) (t : unitInterval)
-      (p : stdSimplex ℝ (Fin 2)) :
-      (L i (t, stdSimplex.map j.succAbove p)).val =
+      (p : coordinateSet ℝ (Fin 2)) :
+      (L i (t, coordinateMap j.succAbove p)).val =
         vertexContraction (0 : Fin 4)
-          (t, stdSimplex.map i.succAbove (stdSimplex.map j.succAbove p)) := by
+          (t, coordinateMap i.succAbove (coordinateMap j.succAbove p)) := by
     by_cases hi : i = 0
     · subst i
-      simp only [L, dif_pos rfl]
+      simp only [L, dite_eq_left rfl]
       exact congrArg Subtype.val (hside t
-        ⟨stdSimplex.map j.succAbove p, ⟨j, map_succAbove_apply_pivot j p⟩⟩)
-    · simp only [L, dif_neg hi]
+        ⟨coordinateMap j.succAbove p, ⟨j, map_succAbove_apply_pivot j p⟩⟩)
+    · simp only [L, dite_eq_right hi]
       rfl
   have hfaces (i : Fin 4) (j : Fin 3) (t : unitInterval)
-      (p : stdSimplex ℝ (Fin 2)) :
-      L i (t, stdSimplex.map j.succAbove p) =
-        L (i.succAbove j) (t, stdSimplex.map (j.predAbove i).succAbove p) := by
+      (p : coordinateSet ℝ (Fin 2)) :
+      L i (t, coordinateMap j.succAbove p) =
+        L (i.succAbove j) (t, coordinateMap (j.predAbove i).succAbove p) := by
     apply Subtype.ext
     rw [hL, hL]
     congr 2
-    rw [stdSimplex.map_comp_apply, stdSimplex.map_comp_apply]
+    rw [coordinateMap_comp_apply, coordinateMap_comp_apply]
     congr 1
     funext k
     exact (Fin.succAbove_succAbove_succAbove_predAbove i j k).symm
-  let G (i : Fin 4) : C(stdSimplex ℝ (Fin 3), C(unitInterval, boundary (Fin 4))) :=
+  let G (i : Fin 4) : C(coordinateSet ℝ (Fin 3), C(unitInterval, boundary (Fin 4))) :=
     ((L i).comp ContinuousMap.prodSwap).curry
-  have hG (i : Fin 4) (j : Fin 3) (p : stdSimplex ℝ (Fin 2)) :
-      G i (stdSimplex.map j.succAbove p) =
-        G (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p) := by
+  have hG (i : Fin 4) (j : Fin 3) (p : coordinateSet ℝ (Fin 2)) :
+      G i (coordinateMap j.succAbove p) =
+        G (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p) := by
     apply ContinuousMap.ext
     intro t
     exact hfaces i j t p
   let K : C(unitInterval × boundary (Fin 4), boundary (Fin 4)) :=
     (boundaryDesc G hG).uncurry.comp ContinuousMap.prodSwap
-  have hK (i : Fin 4) (t : unitInterval) (p : stdSimplex ℝ (Fin 3)) :
+  have hK (i : Fin 4) (t : unitInterval) (p : coordinateSet ℝ (Fin 3)) :
       K (t, tetrahedronFaceInclusion i p) = L i (t, p) := by
-    change boundaryDesc G hG ⟨stdSimplex.map i.succAbove p,
+    change boundaryDesc G hG ⟨coordinateMap i.succAbove p,
       ⟨i, map_succAbove_apply_pivot i p⟩⟩ t = L i (t, p)
     rw [boundaryDesc_face]
     rfl
@@ -236,13 +237,13 @@ private theorem exists_boundaryHomotopy_contraction_inactiveDisk :
     let q := faceDelete i ⟨p.val, hi⟩
     have hq : tetrahedronFaceInclusion i q = p := by
       apply Subtype.ext
-      change stdSimplex.map i.succAbove q = p.val
+      change coordinateMap i.succAbove q = p.val
       exact congrArg (fun r : face i => r.val) (faceInsert_faceDelete i ⟨p.val, hi⟩)
     rw [← hq, hK]
     by_cases hi0 : i = 0
     · subst i
       exact hF q
-    · simp only [L, dif_neg hi0]
+    · simp only [L, dite_eq_right hi0]
       apply Subtype.ext
       exact vertexContraction_zero (0 : Fin 4) _
   · intro t p hp
@@ -250,10 +251,10 @@ private theorem exists_boundaryHomotopy_contraction_inactiveDisk :
     let q := faceDelete i ⟨p.val, hi⟩
     have hq : tetrahedronFaceInclusion i q = p := by
       apply Subtype.ext
-      change stdSimplex.map i.succAbove q = p.val
+      change coordinateMap i.succAbove q = p.val
       exact congrArg (fun r : face i => r.val) (faceInsert_faceDelete i ⟨p.val, hi⟩)
     rw [← hq, hK]
-    simp only [L, dif_neg hi0]
+    simp only [L, dite_eq_right hi0]
     rfl
 
 private theorem exists_boundaryHomotopy_preserves_inactiveDisk :
@@ -276,21 +277,21 @@ private theorem exists_boundaryHomotopy_preserves_inactiveDisk :
 private abbrev B := boundary (Fin 4)
 private abbrev S := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 
-private def vertexZero : B := ⟨stdSimplex.vertex (S := ℝ) 0, ⟨1, by simp⟩⟩
+private def vertexZero : B := ⟨coordinateSingle (S := ℝ) 0, ⟨1, by simp⟩⟩
 
 private def inactive : Set B := {p : B | ∃ j : Fin 4, j ≠ 0 ∧ p.val.val j = 0}
 
-private def faceB (i : Fin 4) : C(stdSimplex ℝ (Fin 3), B) where
-  toFun p := ⟨stdSimplex.map i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩
-  continuous_toFun := (stdSimplex.continuous_map i.succAbove).subtype_mk _
+private def faceB (i : Fin 4) : C(coordinateSet ℝ (Fin 3), B) where
+  toFun p := ⟨coordinateMap i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩
+  continuous_toFun := (continuous_coordinateMap i.succAbove).subtype_mk _
 
-private theorem face_zero_boundary (p : stdSimplex ℝ (Fin 3))
+private theorem face_zero_boundary (p : coordinateSet ℝ (Fin 3))
     (hp : p ∈ boundary (Fin 3)) : faceB 0 p ∈ inactive := by
   obtain ⟨j, hj⟩ := hp
   exact ⟨(0 : Fin 4).succAbove j, Fin.succAbove_ne _ _, by
     simpa only [faceB, ContinuousMap.coe_mk, map_succAbove_apply_image] using hj⟩
 
-private theorem face_inactive (i : Fin 4) (hi : i ≠ 0) (p : stdSimplex ℝ (Fin 3)) :
+private theorem face_inactive (i : Fin 4) (hi : i ≠ 0) (p : coordinateSet ℝ (Fin 3)) :
     faceB i p ∈ inactive := ⟨i, hi, map_succAbove_apply_pivot i p⟩
 
 private def collapseBoundary : C(B, S) :=
@@ -298,7 +299,7 @@ private def collapseBoundary : C(B, S) :=
     (triangleSphereFaces_compatible triangleCubeSphereMap (Topology.cubeSphereBasepoint 1)
       triangleCubeSphereMap_boundary)
 
-private theorem collapseBoundary_face (i : Fin 4) (p : stdSimplex ℝ (Fin 3)) :
+private theorem collapseBoundary_face (i : Fin 4) (p : coordinateSet ℝ (Fin 3)) :
     collapseBoundary (faceB i p) =
       triangleSphereFaces triangleCubeSphereMap (Topology.cubeSphereBasepoint 1) i p :=
   boundaryDesc_face _ _ i p
@@ -312,7 +313,7 @@ private theorem collapseBoundary_inactive (p : B) (hp : p ∈ inactive) :
   rw [he, collapseBoundary_face]
   fin_cases i <;> first | contradiction | rfl
 
-private theorem collapseBoundary_zero (p : stdSimplex ℝ (Fin 3)) :
+private theorem collapseBoundary_zero (p : coordinateSet ℝ (Fin 3)) :
     collapseBoundary (faceB 0 p) = triangleCubeSphereMap p :=
   collapseBoundary_face 0 p
 
@@ -322,7 +323,7 @@ private theorem exists_collapseBoundary_homotopyEquiv
     (hone : ∀ p ∈ inactive, K (1, p) = vertexZero)
     (hpres : ∀ t p, p ∈ inactive → K (t, p) ∈ inactive) :
     ∃ e : HomotopyEquiv B S, e.toFun = collapseBoundary := by
-  let g : C(stdSimplex ℝ (Fin 3), B) :=
+  let g : C(coordinateSet ℝ (Fin 3), B) :=
     K.comp ⟨fun p => (1, faceB 0 p), continuous_const.prodMk (faceB 0).continuous⟩
   have hg : ∀ p ∈ boundary (Fin 3), g p = vertexZero :=
     fun p hp => hone (faceB 0 p) (face_zero_boundary p hp)
@@ -341,7 +342,7 @@ private theorem exists_collapseBoundary_homotopyEquiv
     by_cases h : i = 0
     · subst i
       rw [collapseBoundary_zero]
-      exact congrArg (fun F : C(stdSimplex ℝ (Fin 3), B) => F q) hRg
+      exact congrArg (fun F : C(coordinateSet ℝ (Fin 3), B) => F q) hRg
     · rw [collapseBoundary_inactive _ (face_inactive i h q), hRb]
       exact (hone _ (face_inactive i h q)).symm
   have hleft : (R.comp collapseBoundary).Homotopic (ContinuousMap.id B) := by
@@ -418,7 +419,7 @@ namespace DifferentialGeometry.Simplex
 variable {X : Type*} [TopologicalSpace X] [SimplyConnectedSpace X]
 
 theorem triangleSphereMap_class_eq_precompose
-    (g : C(stdSimplex ℝ (Fin 3), X)) (x : X)
+    (g : C(coordinateSet ℝ (Fin 3), X)) (x : X)
     (hg : ∀ p ∈ boundary (Fin 3), g p = x) :
     (Topology.homotopyGroupFreeSphereEquiv 1 x).symm
       (ZerothHomotopy.mk (triangleSphereMap g x hg)) =

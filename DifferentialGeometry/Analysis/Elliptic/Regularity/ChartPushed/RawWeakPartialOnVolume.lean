@@ -192,7 +192,7 @@ noncomputable def chartPushedRawPartialCLM
       have h_lhs_finite : eLpNorm (chartPushedRawPartial (I := I) (M := M) g α j v) 2
           ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α)) ≠ ⊤ :=
-        (hLip.memLp v).2.ne
+        (hLip.memLp v).ne
       have h_rhs_eq : ENNReal.ofReal hLip.C * (‖v‖₊ : ℝ≥0∞) =
           ENNReal.ofReal (hLip.C * ‖v‖) := by
         rw [show ((‖v‖₊ : ℝ≥0∞) : ℝ≥0∞) = ENNReal.ofReal ‖v‖ from by

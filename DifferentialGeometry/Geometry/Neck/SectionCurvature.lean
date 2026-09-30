@@ -93,7 +93,7 @@ theorem NormalizedNeck.exists_metricRm04_centralSphere_pos
     simpa using hB j j
   have huv : (Geometry.roundMetric (E := ThreeSpace) (n := 2)).inner y (basis i) (basis j) = 0 := by
     have hij : i ≠ j := by intro hij; have := congrArg Fin.val hij; norm_num [i, j] at this
-    simpa only [hij, if_false] using hB i j
+    simpa only [hij, ite_false] using hB i j
   have hpos := N.metricRm04_chart_horizontal_pos hδ hk x hx (basis i) (basis j) hu hv huv
   have hF : ContMDiff (𝓡 2) NeckCylinderModel ∞ F := by
     apply (DifferentialGeometry.Manifold.contMDiff_subtypeVal_comp_iff (neckBuffer δ) F).mp
@@ -156,7 +156,8 @@ theorem NormalizedNeck.metricRm04_chart_lower_bound_of_normalized
           (mfderiv NeckCylinderModel ThreeModel N.chart x u)))
   rw [hRm, N.normalized_inner, N.normalized_inner, N.normalized_inner] at hbound
   apply (mul_le_mul_iff_right₀ N.scale_pos).mp
-  convert hbound using 1 <;> first | rfl | ring
+  convert hbound using 1
+  first | rfl | ring
 
 theorem NormalizedNeck.metricRm04_centralSphere_lower_bound_of_normalized
     (N : NormalizedNeck g δ k) (c : ℝ) (y : Sphere 2)
@@ -320,7 +321,8 @@ private theorem metricRm04_map_horizontal_lower_bound
     exact metricRm04_cylindricalChart_eq nk x (u, 0) (v, 0) (v, 0) (u, 0)
   erw [hRm, hinner, hinner, hinner] at hbound
   apply (mul_le_mul_iff_right₀ nk.Q_pos).mp
-  convert hbound using 1 <;> first | rfl | ring
+  convert hbound using 1
+  first | rfl | ring
 
 theorem SpatialNeck.metricRm04_section_lower_bound
     (nk : SpatialNeck g eps p) (heps : eps ≤ 1 / 1000)

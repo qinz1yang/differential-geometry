@@ -43,7 +43,7 @@ theorem section34_trace_of_intrinsic_operation_dichotomies
   classical
   choose r F hr hF hdis hFN hFT using hcircles
   let J := fun s (i : ℕ) => if hi : i < r s then F s ⟨i, hi⟩ else ∅
-  have hJi (s) (i : ℕ) (hi : i < r s) : J s i = F s ⟨i, hi⟩ := dif_pos hi
+  have hJi (s) (i : ℕ) (hi : i < r s) : J s i = F s ⟨i, hi⟩ := dite_eq_left hi
   have hU (s) : (⋃ i < r s, J s i) = ⋃ i : Fin (r s), F s i := by
     ext x
     simp only [mem_iUnion]

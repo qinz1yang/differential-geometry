@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homeomorph.EmbeddedNeighborhood
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeDistance
+import DifferentialGeometry.Geometry.Metric.ConeDistance
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import Mathlib.Topology.Algebra.GroupWithZero
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.OriginalSourceConeEmbedding
@@ -46,7 +46,7 @@ theorem exists_local_distance_cone_of_scaled_embedding
   · intro x hx z hz
     obtain ⟨y, rfl, hey⟩ := heforward x hx
     obtain ⟨w, rfl, hew⟩ := heforward z hz
-    rw [hdist, heEval, heEval, hey, hew, openConeDistance_radial_smul, abs_of_pos hlambda]
+    rw [hdist, heEval, heEval, hey, hew, Metric.coneDistance_radial_mul, abs_of_pos hlambda]
   · intro x hx
     obtain ⟨y, hy, hey⟩ := heforward x hx
     exact ⟨y, hy, (heEval x).trans (congrArg (fun z : ℝ × Y => (lambda * z.1, z.2)) hey)⟩
@@ -71,7 +71,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u v
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact EndAngles.metric
 
 theorem RealizedFiniteHorn.exists_marked_original_source_local_distance_cone

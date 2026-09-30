@@ -38,7 +38,7 @@ theorem collarImage_subset_of_supported_matching_of_le
   exact hfix _ ⟨(s, t), lt_of_lt_of_le hq hδη, rfl⟩
 
 theorem eqOn_symm_comp_of_eqOn_id {M : Type u} [TopologicalSpace M]
-    [ChartedSpace (EuclideanHalfSpace 3) M] [IsManifold (𝓡∂ 3) ∞ M]
+    [ChartedSpace (EuclideanHalfSpace 3) M]
     {Φ Ψ : Diffeomorph (𝓡∂ 3) (𝓡∂ 3) M M ∞} {K : Set M}
     (hΦ : Set.EqOn Φ id Kᶜ) (hΨ : Set.EqOn Ψ id Kᶜ) :
     Set.EqOn (Φ.trans Ψ) id Kᶜ ∧ Set.EqOn (Φ.trans Ψ).symm id Kᶜ := by
@@ -61,7 +61,7 @@ theorem eqOn_symm_comp_of_eqOn_id {M : Type u} [TopologicalSpace M]
     _ = x := Diffeomorph.symm_apply_apply _ x
 
 private theorem eqOn_symm_of_eqOn_id' {M : Type u} [TopologicalSpace M]
-    [ChartedSpace (EuclideanHalfSpace 3) M] [IsManifold (𝓡∂ 3) ∞ M]
+    [ChartedSpace (EuclideanHalfSpace 3) M]
     {Φ : Diffeomorph (𝓡∂ 3) (𝓡∂ 3) M M ∞} {X : Set M}
     (h : Set.EqOn Φ id X) : Set.EqOn Φ.symm id X := by
   intro x hx
@@ -125,45 +125,6 @@ theorem relativeCollarUniqueness_of_boundaryCollarStraighteningWithPrescribedSup
       (hU p t (lt_of_lt_of_le ht ((min_le_left δ δsrc).trans hδε))).2⟩
   · exact hmatch p t (lt_of_lt_of_le ht (min_le_left δ δsrc))
 
-theorem boundaryCollarStraighteningWithPrescribedSupport_of_boundaryCollarStraightening
-    {C : ℝ} (hC : 1 ≤ C) (h : BoundaryCollarStraightening.{u} C) :
-    BoundaryCollarStraighteningWithPrescribedSupport.{u} := by
-  intro S _ _ _ _ _ M _ _ _ _ _ c₀ c₁ hsrc hcore hbdy ε hε
-  have hCpos : 0 < C := lt_of_lt_of_le zero_lt_one hC
-  obtain ⟨δ, hδ, hδε, Φ, hmatch, hsupp⟩ :=
-    h c₀ c₁ hsrc hcore hbdy (ε / C) (div_pos hε hCpos)
-  have hδC : C * δ ≤ ε := by
-    have h1 : δ * C ≤ (ε / C) * C := mul_le_mul_of_nonneg_right hδε hCpos.le
-    rw [div_mul_cancel₀ ε hCpos.ne'] at h1
-    linarith [h1]
-  have hδε' : δ ≤ ε := by
-    have h1 : ε / C ≤ ε := by
-      rw [div_le_iff₀ hCpos]
-      exact le_mul_of_one_le_right hε.le hC
-    exact hδε.trans h1
-  have hstrip_mono : {q : S × EuclideanHalfSpace 1 | q.2.1 0 < C * δ} ⊆
-      {q : S × EuclideanHalfSpace 1 | q.2.1 0 < ε} := by
-    intro q hq
-    exact lt_of_lt_of_le hq hδC
-  exact ⟨δ, hδ, hδε', Φ, hmatch,
-    Set.EqOn.mono (Set.compl_subset_compl.mpr (Set.image_mono hstrip_mono)) hsupp⟩
-
-theorem boundaryCollarStraighteningWithPrescribedSupport_of_boundedSupport
-    (h : BoundaryCollarStraighteningWithBoundedSupport.{u}) :
-    BoundaryCollarStraighteningWithPrescribedSupport.{u} := by
-  obtain ⟨C, hC, h'⟩ := h
-  exact boundaryCollarStraighteningWithPrescribedSupport_of_boundaryCollarStraightening hC h'
-
-theorem boundaryCollarStraighteningWithPrescribedSupport_of_regularization
-    (h : BoundaryCollarRegularization.{u}) :
-    BoundaryCollarStraighteningWithPrescribedSupport.{u} := by
-  intro S _ _ _ _ _ M _ _ _ _ _ c₀ c₁ hsrc hcore hbdy ε hε
-  obtain ⟨δ, hδ, hδε, Φ, hmatch, hsupp⟩ := h c₀ c₁ hsrc hcore hbdy ε hε
-  have hstrip_mono : {q : S × EuclideanHalfSpace 1 | q.2.1 0 < δ} ⊆
-      {q : S × EuclideanHalfSpace 1 | q.2.1 0 < ε} := fun q hq => lt_of_lt_of_le hq hδε
-  exact ⟨δ, hδ, hδε, Φ, hmatch,
-    Set.EqOn.mono (Set.compl_subset_compl.mpr (Set.image_mono hstrip_mono)) hsupp⟩
-
 theorem exists_dilationStrip_subset_of_prescribedStrip
     (S : Type*) (lam ε : ℝ) (hε : 0 < ε) :
     ∃ δ : ℝ, 0 < δ ∧ δ ≤ ε ∧
@@ -181,9 +142,7 @@ theorem exists_dilationStrip_subset_of_prescribedStrip
 
 theorem exists_supported_diffeomorph_of_eqOn_prescribedStrip
     {S : Type u} [TopologicalSpace S] [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S]
-    [IsManifold (𝓡 2) ∞ S] [T2Space S] [CompactSpace S]
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [SigmaCompactSpace M]
     (c₀ c₁ : PartialDiffeomorph ((𝓡 2).prod (𝓡∂ 1)) (𝓡∂ 3)
       (S × EuclideanHalfSpace 1) M ∞)
     {ε : ℝ} (hε : 0 < ε)

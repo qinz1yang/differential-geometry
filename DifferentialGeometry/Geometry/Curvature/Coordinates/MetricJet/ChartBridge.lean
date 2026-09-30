@@ -1,11 +1,10 @@
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Christoffel.Perturbation
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelDerivative
 import DifferentialGeometry.Geometry.Operator.Hessian.TraceFormula
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentityOffCenter
 import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.EntryDerivatives
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Parametric
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Evolution
-open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -247,7 +246,7 @@ private theorem bilin_deriv_basis
       (∑ j, ∑ i, (b.repr w j * b.repr v i) • F' (b i) (b j)) t :=
     HasDerivAt.fun_sum fun j _ =>
       HasDerivAt.fun_sum fun i _ => by
-        convert (hbasis i j).const_smul (b.repr w j * b.repr v i) using 1 ; rfl
+        exact (hbasis i j).const_smul (b.repr w j * b.repr v i)
   simpa only [← hexp] using hstep
 
 omit [NeZero (Module.finrank ℝ E)] in

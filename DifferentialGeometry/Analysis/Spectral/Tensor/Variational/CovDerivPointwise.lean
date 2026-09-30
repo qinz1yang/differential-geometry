@@ -14,6 +14,19 @@ import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Function.L1Space.Integrable
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.Topology.ContinuousOn
+open DifferentialGeometry.TensorMetric
+  (gramMatrixAt
+    gramMatrixAt_inv_isHermitian
+    gramMatrixAt_inv_posSemidef
+    tensorInnerPointwise
+    tensorInnerPointwise_add_left
+    tensorInnerPointwise_add_right
+    tensorInnerPointwise_nonneg
+    tensorInnerPointwise_smul_left
+    tensorInnerPointwise_smul_right
+    tensorInnerPointwise_symm
+    tensorInnerPointwise_zero_left
+    tensorInnerPointwise_zero_right)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

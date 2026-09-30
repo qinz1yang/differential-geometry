@@ -108,7 +108,7 @@ theorem exists_neckRadius_finite_spherical_barrier_cover
   intro y hy hnoncompact
   exact hcover D.terminal A y hA hscale hy hnoncompact
 
-theorem exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives_and_scale_bound_of_canonical_neighborhoods :
+theorem exists_neckRadius_spherical_region_with_exterior_alternatives_of_canonical_neighborhoods :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∀ C1 C2 q : ℝ, 1 ≤ C2 → 0 < q →
       ∀ D : OneStepIncoming.{u},
@@ -252,7 +252,7 @@ theorem exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives_a
                       metricScalarAt (D'.terminal.metric.restrictOpen U) w <
                         C * metricScalarAt (D'.terminal.metric.restrictOpen U) x) := by
   obtain ⟨eta, heta, hmain⟩ :=
-    exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives_and_scale_bound_of_canonical_neighborhoods.{u}
+    exists_neckRadius_spherical_region_with_exterior_alternatives_of_canonical_neighborhoods.{u}
   refine ⟨min eta (1 / 8646), lt_min heta (by norm_num), ?_⟩
   intro δ hδ hδη
   have heps : 0 < δ / 4 := by positivity

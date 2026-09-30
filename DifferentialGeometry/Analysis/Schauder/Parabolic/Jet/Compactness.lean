@@ -178,7 +178,7 @@ theorem exists_parabolic_jet_subseq_of_locally_holderOnWith
     rw [tendstoLocallyUniformlyOn_iff_tendstoLocallyUniformly_comp_coe]
     have heq : u ∘ ((↑) : Q → ParabolicPoint E) = fun p => (g p).1.1 := by
       funext p
-      simp only [u, Function.comp_apply, dif_pos p.2]
+      simp only [u, Function.comp_apply, dite_eq_left p.2]
     rw [heq]
     simpa only [jetApprox] using huSub
   have hdtimeU : TendstoLocallyUniformlyOn
@@ -186,7 +186,7 @@ theorem exists_parabolic_jet_subseq_of_locally_holderOnWith
     rw [tendstoLocallyUniformlyOn_iff_tendstoLocallyUniformly_comp_coe]
     have heq : dtimeU ∘ ((↑) : Q → ParabolicPoint E) = fun p => (g p).1.2 := by
       funext p
-      simp only [dtimeU, Function.comp_apply, dif_pos p.2]
+      simp only [dtimeU, Function.comp_apply, dite_eq_left p.2]
     rw [heq]
     simpa only [jetApprox] using hdtimeUSub
   have hdu : TendstoLocallyUniformlyOn
@@ -194,7 +194,7 @@ theorem exists_parabolic_jet_subseq_of_locally_holderOnWith
     rw [tendstoLocallyUniformlyOn_iff_tendstoLocallyUniformly_comp_coe]
     have heq : du ∘ ((↑) : Q → ParabolicPoint E) = fun p => (g p).2.1 := by
       funext p
-      simp only [du, Function.comp_apply, dif_pos p.2]
+      simp only [du, Function.comp_apply, dite_eq_left p.2]
     rw [heq]
     simpa only [jetApprox] using hduSub
   have hd2u : TendstoLocallyUniformlyOn
@@ -202,7 +202,7 @@ theorem exists_parabolic_jet_subseq_of_locally_holderOnWith
     rw [tendstoLocallyUniformlyOn_iff_tendstoLocallyUniformly_comp_coe]
     have heq : d2u ∘ ((↑) : Q → ParabolicPoint E) = fun p => (g p).2.2 := by
       funext p
-      simp only [d2u, Function.comp_apply, dif_pos p.2]
+      simp only [d2u, Function.comp_apply, dite_eq_left p.2]
     rw [heq]
     simpa only [jetApprox] using hd2uSub
   have hd2uContinuous : ContinuousOn d2u Q := by
@@ -211,7 +211,7 @@ theorem exists_parabolic_jet_subseq_of_locally_holderOnWith
       continuous_snd.comp (continuous_snd.comp hg)
     have heq : Q.domRestrict d2u = fun p => (g p).2.2 := by
       funext p
-      simp only [Set.domRestrict_apply, d2u, dif_pos p.2]
+      simp only [Set.domRestrict_apply, d2u, dite_eq_left p.2]
     rw [heq]
     exact hproj
   have hlimit : ParabolicJetRealizesOn Q u dtimeU du d2u :=

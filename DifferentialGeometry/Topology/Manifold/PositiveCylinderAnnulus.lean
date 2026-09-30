@@ -42,7 +42,7 @@ theorem exists_smooth_positive_cylinder_lower_annulus
     have h := SphereSeparation.frontier_image_subtype_val_positive_product p
       (p.frontier_left_eq hleft) a ha hlow
     rw [← range_comp] at h
-    convert h using 1 <;> rfl
+    convert h using 1; rfl
   have hs : IsSmoothEmbedding (𝓡 2) SphereCylinderModel ∞ (fun q : S2 => (σ q).val) :=
     isSmoothEmbedding_fromOpen (𝓡 2) SphereCylinderModel Pos σ hσ
   have hz : IsSmoothEmbedding (𝓡 2) SphereCylinderModel ∞ (fun q : S2 => (q,(0 : ℝ))) := by

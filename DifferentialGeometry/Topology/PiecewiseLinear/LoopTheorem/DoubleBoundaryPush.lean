@@ -17,7 +17,7 @@ open Classical in
 theorem exists_nonsingular_two_cell_of_boundary_disk
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {D : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hD : D ⊆ (boundaryComplex 3 K).space) :
     letI := combinatorialChartedSpace (double 3 K) (isCombinatorialManifold_double_succ_succ K hK)
     let ι := simplicialMap K (glueEmbed₂ (boundaryComplex 3 K) id)
@@ -58,7 +58,7 @@ theorem exists_nonsingular_two_cell_of_disk_in_double_boundary
     letI := combinatorialChartedSpace (double 3 K) (isCombinatorialManifold_double_succ_succ K hK)
     let ι := simplicialMap K (glueEmbed₂ (boundaryComplex 3 K) id)
     ∀ {D : Set (E × E × ℝ)} {r : (Fin 3 → ℝ) → E × E × ℝ},
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D → D ⊆ ι '' (boundaryComplex 3 K).space →
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D → D ⊆ ι '' (boundaryComplex 3 K).space →
       ∃ A : SingularTwoCell (double 3 K).space, A.IsNonsingular ∧
         Subtype.val '' (A '' A.domain) ⊆ ι '' K.space ∧
         Set.range (fun x => (A.boundary x : E × E × ℝ)) = r '' stdSimplexBoundary 2 ∧

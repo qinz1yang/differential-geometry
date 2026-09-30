@@ -1,4 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalCoorientation
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalDerivative
+import Mathlib.Analysis.Normed.Module.Connected
 
 set_option autoImplicit false
 noncomputable section

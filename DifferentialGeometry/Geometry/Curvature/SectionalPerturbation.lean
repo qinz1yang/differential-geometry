@@ -7,6 +7,9 @@ import DifferentialGeometry.Geometry.Curvature.RiemannPerturbation
 import DifferentialGeometry.Geometry.Curvature.SectionalOrthonormalization
 import DifferentialGeometry.Geometry.Curvature.Product
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (abs_metric_inner_le_sqrt_metric_quadratic)
+
 set_option autoImplicit false
 noncomputable section
 open scoped Manifold ContDiff

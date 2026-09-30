@@ -81,7 +81,7 @@ theorem LocallyFinitePLPieceIn.exists_isPLHomeomorphOn_cell_preimage
     (T : LocallyFinitePLPieceIn E 3 M U) {d : ℕ} {C B : Set M}
     (hC : IsPLCellOn d C B) (hCU : C ⊆ U) :
     ∃ r : (Fin (d + 1) → ℝ) → E,
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin (d + 1)))
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)))
         (T.complex.space ∩ T.map ⁻¹' C) ∧
       r '' stdSimplexBoundary d = T.complex.space ∩ T.map ⁻¹' B := by
   obtain ⟨P, p, u, hp, hu, hCP, hBP⟩ := hC

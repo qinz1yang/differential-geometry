@@ -38,16 +38,16 @@ theorem IsCylindricalDiagram.exists_seam_rotation
       · exact Or.inr ⟨hz.1, h, hz.2.2⟩
   have hfirst : EqOn g (f ∘ τ r) Q₀ := by
     intro z hz
-    exact if_pos hz.2.2
+    exact ite_eq_left hz.2.2
   have hsecond : EqOn g (f ∘ τ (r - 1)) Q₁ := by
     intro z hz
     by_cases hc : z.2 ≤ 1 - r
     · have heq : z.2 = 1 - r := le_antisymm hc hz.2.1
       change (if z.2 ≤ 1 - r then _ else _) = f (z.1, z.2 + (r - 1))
-      rw [if_pos hc, heq]
+      rw [ite_eq_left hc, heq]
       convert (hends z.1 hz.1).symm using 1 <;> congr 1 <;> congr 1 <;> ring
     · change (if z.2 ≤ 1 - r then _ else _) = f (z.1, z.2 + (r - 1))
-      rw [if_neg hc]
+      rw [ite_eq_right hc]
       congr 1
       ext <;> simp [sub_eq_add_neg, add_assoc]
   have hpa₀ : IsPiecewiseAffineOn (f ∘ τ r) Q₀ := by
@@ -69,21 +69,21 @@ theorem IsCylindricalDiagram.exists_seam_rotation
     · rintro ⟨z, hz, rfl⟩
       by_cases hc : z.2 ≤ 1 - r
       · exact ⟨(z.1, z.2 + r), ⟨hz.1, by linarith [hz.2.1, hr.1],
-          by linarith⟩, (if_pos hc).symm⟩
+          by linarith⟩, (ite_eq_left hc).symm⟩
       · exact ⟨(z.1, z.2 + r - 1), ⟨hz.1, by linarith,
-          by linarith [hz.2.2, hr.2]⟩, (if_neg hc).symm⟩
+          by linarith [hz.2.2, hr.2]⟩, (ite_eq_right hc).symm⟩
     · rintro ⟨z, hz, rfl⟩
       by_cases hc : r ≤ z.2
       · refine ⟨(z.1, z.2 - r), ⟨hz.1, by linarith, by linarith [hz.2.2, hr.1]⟩, ?_⟩
         have hcut : z.2 - r ≤ 1 - r := by linarith [hz.2.2]
         change (if z.2 - r ≤ 1 - r then _ else _) = f z
-        rw [if_pos hcut, sub_add_cancel]
+        rw [ite_eq_left hcut, sub_add_cancel]
       · refine ⟨(z.1, z.2 - r + 1),
           ⟨hz.1, by linarith [hz.2.1, hr.2], by linarith⟩, ?_⟩
         by_cases hz0 : z.2 = 0
         · have hcut : z.2 - r + 1 ≤ 1 - r := by linarith
           change (if z.2 - r + 1 ≤ 1 - r then _ else _) = f z
-          rw [if_pos hcut]
+          rw [ite_eq_left hcut]
           have htime : z.2 - r + 1 + r = 1 := by linarith
           rw [htime]
           have hzP : z.1 ∈ P := hQP hz.1
@@ -91,7 +91,7 @@ theorem IsCylindricalDiagram.exists_seam_rotation
         · have hzpos : 0 < z.2 := lt_of_le_of_ne hz.2.1 (Ne.symm hz0)
           have hcut : ¬z.2 - r + 1 ≤ 1 - r := by linarith
           change (if z.2 - r + 1 ≤ 1 - r then _ else _) = f z
-          rw [if_neg hcut]
+          rw [ite_eq_right hcut]
           congr 1
           ext
           · rfl
@@ -118,16 +118,16 @@ theorem IsCylindricalDiagram.exists_seam_rotation
       exact ⟨(x, 1), ⟨hx, rfl⟩, (hend x).2.trans (hend x).1.symm⟩
   · intro x hx y hy hxy
     by_cases hxc : x.2 ≤ 1 - r <;> by_cases hyc : y.2 ≤ 1 - r
-    · have hfx : g x = f (x.1, x.2 + r) := if_pos hxc
-      have hfy : g y = f (y.1, y.2 + r) := if_pos hyc
+    · have hfx : g x = f (x.1, x.2 + r) := ite_eq_left hxc
+      have hfy : g y = f (y.1, y.2 + r) := ite_eq_left hyc
       have heq := hf.injOn_strip hr.1.le le_rfl (Or.inl hr.1)
         (x₁ := (x.1, x.2 + r)) (x₂ := (y.1, y.2 + r))
         ⟨hx.1, by linarith [hx.2.1], by linarith⟩
         ⟨hy.1, by linarith [hy.2.1], by linarith⟩ (hfx.symm.trans (hxy.trans hfy))
       exact Or.inl (Prod.ext (by simpa only using congrArg Prod.fst heq)
         (by have := congrArg Prod.snd heq; dsimp at this; linarith))
-    · have hfx : g x = f (x.1, x.2 + r) := if_pos hxc
-      have hfy : g y = f (y.1, y.2 + r - 1) := if_neg hyc
+    · have hfx : g x = f (x.1, x.2 + r) := ite_eq_left hxc
+      have hfy : g y = f (y.1, y.2 + r - 1) := ite_eq_right hyc
       rcases hf.eq_or_endpoints (x.1, x.2 + r)
         ⟨hx.1, by linarith [hx.2.1, hr.1], by linarith⟩
         (y.1, y.2 + r - 1) ⟨hy.1, by linarith, by linarith [hy.2.2, hr.2]⟩
@@ -142,8 +142,8 @@ theorem IsCylindricalDiagram.exists_seam_rotation
       · have he := heq.2
         dsimp at he
         linarith
-    · have hfx : g x = f (x.1, x.2 + r - 1) := if_neg hxc
-      have hfy : g y = f (y.1, y.2 + r) := if_pos hyc
+    · have hfx : g x = f (x.1, x.2 + r - 1) := ite_eq_right hxc
+      have hfy : g y = f (y.1, y.2 + r) := ite_eq_left hyc
       rcases hf.eq_or_endpoints (x.1, x.2 + r - 1)
         ⟨hx.1, by linarith, by linarith [hx.2.2, hr.2]⟩
         (y.1, y.2 + r) ⟨hy.1, by linarith [hy.2.1, hr.1], by linarith⟩
@@ -158,8 +158,8 @@ theorem IsCylindricalDiagram.exists_seam_rotation
       · have he := heq.2
         dsimp at he
         linarith [hy.2.1, hr.1]
-    · have hfx : g x = f (x.1, x.2 + r - 1) := if_neg hxc
-      have hfy : g y = f (y.1, y.2 + r - 1) := if_neg hyc
+    · have hfx : g x = f (x.1, x.2 + r - 1) := ite_eq_right hxc
+      have hfy : g y = f (y.1, y.2 + r - 1) := ite_eq_right hyc
       have heq := hf.injOn_strip le_rfl hr.2.le (Or.inr hr.2)
         (x₁ := (x.1, x.2 + r - 1)) (x₂ := (y.1, y.2 + r - 1))
         ⟨hx.1, by linarith, by linarith [hx.2.2]⟩
@@ -189,9 +189,9 @@ theorem IsCylindricalDiagram.exists_seam_rotation_with_coordinates
       e.symm (x, ((t : ℝ) : loopCircle) + (r : loopCircle)) := rfl
   rw [he', hgformula]
   by_cases hc : (t : ℝ) ≤ 1 - r
-  · rw [if_pos hc, ← AddCircle.coe_add]
+  · rw [ite_eq_left hc, ← AddCircle.coe_add]
     exact he x ⟨t + r, by linarith [t.2.1, hr.1], by linarith⟩
-  · rw [if_neg hc]
+  · rw [ite_eq_right hc]
     have hcoe : ((t : ℝ) : loopCircle) + (r : loopCircle) =
         (((t : ℝ) + r - 1 : ℝ) : loopCircle) := by
       rw [AddCircle.coe_sub, AddCircle.coe_add, AddCircle.coe_period, sub_zero]

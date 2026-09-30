@@ -17,13 +17,13 @@ theorem exists_prism_coordinates_of_PL_ball_pair
     {P Q D : Set E3} (hP : IsPLBall 3 P) (hQ : IsPLBall 3 Q)
     (hPQ : P ∩ Q = D) (hDP : D ⊆ frontier P) (hDQ : D ⊆ frontier Q)
     {r : (Fin 3 → ℝ) → E3}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) :
     ∃ ρ : (Fin 3 → ℝ) × ℝ → E3,
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) (P ∪ Q) ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), ρ (x, 0) = r x) ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = P ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = Q := by
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) (P ∪ Q) ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ρ (x, 0) = r x) ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = P ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = Q := by
   classical
   obtain ⟨L, hLfin, hLspace⟩ := hP.isPolyhedron.exists_simplicialComplex
   obtain ⟨M, hMfin, hMspace⟩ := hQ.isPolyhedron.exists_simplicialComplex
@@ -52,7 +52,7 @@ theorem exists_prism_coordinates_of_PL_ball_pair
     exact hPQ
   obtain ⟨ρ, hρ, hρmid, hρminus, hρplus⟩ :=
     exists_isPLHomeomorphOn_centered_prism_of_boundary_disk_pair
-      (E := Fin 3 → ℝ) (F := E3) (P := stdSimplex ℝ (Fin 3))
+      (E := Fin 3 → ℝ) (F := E3) (P := Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       (D := D) (g := r) (isPLBall_stdSimplex 2) L M hL hM hDL hDM hLM hr
   simp only [hLspace, hMspace] at hρ hρminus hρplus
   exact ⟨ρ, hρ, hρmid, hρminus, hρplus⟩
@@ -65,14 +65,14 @@ theorem IsTube.exists_prism_coordinates_extending_split_disk
     {u v : E3} (hu : u ∈ K.vertices) (hv : v ∈ K.vertices)
     (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces) :
     ∃ (r : (Fin 3 → ℝ) → E3) (ρ : (Fin 3 → ℝ) × ℝ → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (D {u, v}) ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D {u, v}) ∧
       r '' stdSimplexBoundary 2 = Dbd {u, v} ∧
       r (stdCenter 1) = ({u, v} : Finset E3).centroid ℝ id ∧
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) (C u ∪ C v) ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), ρ (x, 0) = r x) ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = C u ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = C v := by
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) (C u ∪ C v) ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ρ (x, 0) = r x) ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = C u ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = C v := by
   have hcard : ({u, v} : Finset E3).card = 2 := Finset.card_pair huv
   obtain ⟨r, hr, hrbd, hrcenter⟩ :=
     ht.exists_centered_splitDisk_parametrization he hcard
@@ -108,16 +108,16 @@ theorem IsTube.exists_centered_prism_coordinates
     (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces) :
     ∃ ρ : (Fin 3 → ℝ) × ℝ → E3,
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) (C u ∪ C v) ∧
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) (C u ∪ C v) ∧
       ρ (stdCenter 1, 0) = ({u, v} : Finset E3).centroid ℝ id ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ {(0 : ℝ)}) = D {u, v} ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(0 : ℝ)}) = D {u, v} ∧
       ρ '' (stdSimplexBoundary 2 ×ˢ {(0 : ℝ)}) = Dbd {u, v} ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = C u ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = C v := by
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = C u ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = C v := by
   obtain ⟨r, ρ, hr, hrbd, hrcenter, hρ, hρmid, hρminus, hρplus⟩ :=
     ht.exists_prism_coordinates_extending_split_disk hu hv huv he
   refine ⟨ρ, hρ, ?_, ?_, ?_, hρminus, hρplus⟩
-  · have hc : stdCenter 1 ∈ stdSimplex ℝ (Fin 3) :=
+  · have hc : stdCenter 1 ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) :=
       openSimplex_stdVertices_subset_stdSimplex (stdCenter_mem_openSimplex 1)
     rw [hρmid _ hc, hrcenter]
   · ext y

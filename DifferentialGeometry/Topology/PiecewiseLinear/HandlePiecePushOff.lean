@@ -288,7 +288,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_disjoint_pseudoCel
   have hO : IsOpen (interior N' \ h '' K.space) := isOpen_interior.sdiff hKc
   have hΔc : IsCompact Δ := by
     rw [← hr.image_eq]
-    exact (isCompact_stdSimplex ℝ (Fin 3)).image_of_continuousOn
+    exact (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).image_of_continuousOn
       hr.isPiecewiseAffineOn.continuousOn
   have hΔpoly : IsPolyhedron Δ := by
     rw [← hr.image_eq]
@@ -323,7 +323,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_disjoint_pseudoCel
   have hb' : (Φ ∘ r) '' stdSimplexBoundary 2 ⊆ frontier XK.space := by
     rw [himg]
     exact inter_subset_right
-  have hr' : IsPLHomeomorphOn (Φ ∘ r) (stdSimplex ℝ (Fin 3)) (Φ '' Δ) :=
+  have hr' : IsPLHomeomorphOn (Φ ∘ r) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (Φ '' Δ) :=
     IsPLHomeomorphOn.trans hr (IsPLHomeomorphOn.restrict hΦ hΔpoly (subset_univ Δ))
   refine ⟨Φ '' Δ, ⟨Φ ∘ r, hr', ?_, himg.symm, hb', fun hnull' => hnull ?_⟩,
     image_subset_iff.mpr fun y hy => hΦC ⟨y, hy, rfl⟩, hΦA⟩

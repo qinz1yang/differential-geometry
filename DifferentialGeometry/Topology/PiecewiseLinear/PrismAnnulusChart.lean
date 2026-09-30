@@ -15,7 +15,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 open DifferentialGeometry.Manifold
 
 noncomputable def prismBallHomeomorph :
-    (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) ≃ₜ
+    (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) ≃ₜ
       (closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1 × Icc (0 : ℝ) 1) :=
   (_root_.Homeomorph.Set.prod _ _).trans
     (_root_.Homeomorph.prodCongr
@@ -23,7 +23,7 @@ noncomputable def prismBallHomeomorph :
         (EuclideanSpace.equiv (Fin 2) ℝ).symm) (_root_.Homeomorph.refl _))
 
 theorem prismBallHomeomorph_mem_sphere_iff
-    (p : (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ))) :
+    (p : (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ))) :
     (prismBallHomeomorph p).1.val ∈ sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 ↔
       p.val.1 ∈ stdSimplexBoundary 2 := by
   have h := DifferentialGeometry.Simplex.stdSimplexNormedBallHomeomorph_mem_sphere_iff
@@ -31,7 +31,7 @@ theorem prismBallHomeomorph_mem_sphere_iff
   exact h.trans ⟨fun hp => ⟨p.property.1, hp⟩, fun hp => hp.2⟩
 
 noncomputable def prismAnnulusSource : TopologicalSpace.Opens
-    (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) where
+    (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) where
   carrier := prismBallHomeomorph ⁻¹' ballPrismCollar (EuclideanSpace ℝ (Fin 2))
   is_open' := (ballPrismCollar _).isOpen.preimage prismBallHomeomorph.continuous
 
@@ -40,7 +40,7 @@ noncomputable def prismAnnulusHomeomorph :
   prismBallHomeomorph.subtype (fun _ => Iff.rfl)
 
 theorem mem_prismAnnulusSource_of_boundary
-    (p : (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)))
+    (p : (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)))
     (hp : p.val.1 ∈ stdSimplexBoundary 2) : p ∈ prismAnnulusSource := by
   have hn := mem_sphere_zero_iff_norm.mp ((prismBallHomeomorph_mem_sphere_iff p).mpr hp)
   change (prismBallHomeomorph p).1.val ≠ 0

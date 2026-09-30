@@ -86,18 +86,18 @@ theorem isPLBall_sdiff_interior_tube_of_crossing {X W O U : Set E3} (hX : IsPLBa
   set u' : ℕ → E3 := fun i => if i ≤ m then w (j + i) + lo i • d (j + i)
     else w k + tp • d k with hu'
   have hu'i : ∀ i ≤ m, u' i = w (j + i) + lo i • d (j + i) := fun i hi' => by
-    simp only [hu', if_pos hi']
+    simp only [hu', ite_eq_left hi']
   have hu'succ : ∀ i ≤ m, u' (i + 1) = w (j + i) + hi i • d (j + i) := by
     intro i hi'
     rcases Nat.lt_or_ge i m with him | him
     · have hle : i + 1 ≤ m := him
       rw [hu'i (i + 1) hle]
-      simp only [hlo, hhi, if_neg (Nat.succ_ne_zero i), if_neg (Nat.ne_of_lt him), zero_smul,
+      simp only [hlo, hhi, ite_eq_right (Nat.succ_ne_zero i), ite_eq_right (Nat.ne_of_lt him), zero_smul,
         add_zero]
       rw [show j + (i + 1) = j + i + 1 by omega, hwd]
     · have him' : i = m := le_antisymm hi' him
       subst him'
-      simp only [hu', hhi, if_neg (Nat.not_succ_le_self m), if_pos rfl]
+      simp only [hu', hhi, ite_eq_right (Nat.not_succ_le_self m), ite_eq_left rfl]
       rw [hjm]
   have hlohi : ∀ i ≤ m, 0 ≤ lo i ∧ lo i < hi i ∧ hi i ≤ 1 := by
     intro i hi'
@@ -123,16 +123,16 @@ theorem isPLBall_sdiff_interior_tube_of_crossing {X W O U : Set E3} (hX : IsPLBa
     by_cases h : i = 0
     · subst h
       simp [hlo]
-    · rw [if_neg (by omega)]
-      simp only [hlo, if_neg h]
+    · rw [ite_eq_right (by omega)]
+      simp only [hlo, ite_eq_right h]
   have hlok : (if k = j then ta else 0) = lo m := by
     by_cases h : m = 0
-    · rw [if_pos (by omega)]
-      simp only [hlo, if_pos h]
-    · rw [if_neg (by omega)]
-      simp only [hlo, if_neg h]
-  have hhim : hi m = tp := by simp only [hhi, if_pos rfl]
-  have hhilt : ∀ i < m, hi i = 1 := fun i him => by simp only [hhi, if_neg (Nat.ne_of_lt him)]
+    · rw [ite_eq_left (by omega)]
+      simp only [hlo, ite_eq_left h]
+    · rw [ite_eq_right (by omega)]
+      simp only [hlo, ite_eq_right h]
+  have hhim : hi m = tp := by simp only [hhi, ite_eq_left rfl]
+  have hhilt : ∀ i < m, hi i = 1 := fun i him => by simp only [hhi, ite_eq_right (Nat.ne_of_lt him)]
   set ν : ℕ → E3 := fun i => if i = 0 then na else
     ‖d (j + i)‖⁻¹ • d (j + i) + ‖d (j + i - 1)‖⁻¹ • d (j + i - 1) with hνdef
   have hbis : ∀ i, 1 ≤ i → i ≤ m →
@@ -152,7 +152,7 @@ theorem isPLBall_sdiff_interior_tube_of_crossing {X W O U : Set E3} (hX : IsPLBa
       have := bisector_ne_zero_of_notMem_affineSpan h1 (hncol (j + i) (by omega) hjiN)
       simpa only [hd, hidx] using this
     have := inner_bisector_pos hx hy hxy
-    simp only [hνdef, if_neg (by omega : i ≠ 0)]
+    simp only [hνdef, ite_eq_right (by omega : i ≠ 0)]
     exact this
   have hu0 : u' 0 = w j + ta • (w (j + 1) - w j) := by
     rw [hu'i 0 (Nat.zero_le _)]
@@ -161,9 +161,9 @@ theorem isPLBall_sdiff_interior_tube_of_crossing {X W O U : Set E3} (hX : IsPLBa
   have hum1 : u' (m + 1) = w k + tp • d k := by rw [hu'succ m le_rfl, hhim, hjm]
   have hlom : lo m < tb := by
     by_cases h : m = 0
-    · simp only [hlo, if_pos h]
+    · simp only [hlo, ite_eq_left h]
       exact hkj (by omega)
-    · simp only [hlo, if_neg h]
+    · simp only [hlo, ite_eq_right h]
       exact htb0
   have hlo0 : 0 ≤ lo m := (hlohi m le_rfl).1
   have hcsegO : ∀ i ≤ m, segment ℝ (u' i) (u' (i + 1)) ⊆ O ∩ U := by
@@ -247,7 +247,7 @@ theorem isPLBall_sdiff_interior_tube_of_crossing {X W O U : Set E3} (hX : IsPLBa
     obtain ⟨s, ⟨hs1, hs2⟩, rfl⟩ := exists_param_of_mem_segment_affine (hlohi i hi').2.1.le hx
     by_cases h : i = 0
     · subst h
-      simp only [hlo, if_pos rfl, add_zero] at hs1 ⊢
+      simp only [hlo, ite_eq_left rfl, add_zero] at hs1 ⊢
       rcases hs1.lt_or_eq with hlt | heq
       · exact absurd hxX (hafter s hlt (hs2.trans (hlohi 0 hi').2.2))
       · rw [hu0, ← heq]

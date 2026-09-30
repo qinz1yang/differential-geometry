@@ -45,7 +45,7 @@ theorem IsPLCellOn.exists_disk_in_annulus_or_separating_ends {M : Type*}
     rw [image_image]
     exact (image_congr fun x hx => hright (hXP hx)).trans (image_id' X)
   have hcell (D : Set (EuclideanSpace ℝ (Fin 3))) (q : (Fin 3 → ℝ) →
-      EuclideanSpace ℝ (Fin 3)) (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+      EuclideanSpace ℝ (Fin 3)) (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
       (hDP : D ⊆ P) (hqb : q '' stdSimplexBoundary 2 = τ '' J) :
       IsPLCellOn 2 (u '' D) J := by
     have hpoly : IsPolyhedron D := IsPLBall.isPolyhedron ⟨q, hq⟩

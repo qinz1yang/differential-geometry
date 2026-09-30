@@ -116,9 +116,9 @@ theorem exists_intrinsicGeodesic_interpolation_at_zero
   have hz0 : z 0 = (extChartAt I p p, 0) := by
     dsimp only [z]
     rw [hζ0]
-    rw [extChartAt_tangent_zero_apply_chartFiber (I := I) p
+    rw [TangentBundle.extChartAt_tangent_zero_apply_chartFiber (I := I) p
       (p := p₀) (mem_chart_source H p)]
-    exact Prod.ext rfl (chartFiberCoord_self_zero (I := I) p)
+    exact Prod.ext rfl (TangentBundle.chartFiberCoord_self_zero (I := I) p)
   have hz : ContDiffAt ℝ 1 z 0 := by
     have hchart : ContMDiffAt I.tangent 𝓘(ℝ, E × E) 1
         (extChartAt I.tangent p₀) (ζ 0) := by

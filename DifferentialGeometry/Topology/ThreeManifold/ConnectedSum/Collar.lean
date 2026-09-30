@@ -138,14 +138,14 @@ theorem collarMap_of_nonneg (p : CollarDomain) (ht : 0 ≤ (p.2 : ℝ)) :
       (c.radialMap p.1 (1 + (p.2 : ℝ)) (by
         have hr := collar_left_radius p.2 ht
         exact ⟨hr.1, le_trans (le_of_lt hr.2) (by norm_num)⟩)) := by
-  simp only [collarMap, dif_pos ht]
+  simp only [collarMap, dite_eq_left ht]
 
 theorem collarMap_of_neg (p : CollarDomain) (ht : (p.2 : ℝ) < 0) :
     collarMap c d a p = inr c d a.toHomeomorph
       (d.radialMap (a p.1) (1 - (p.2 : ℝ)) (by
         have hr := collar_right_radius p.2 ht.le
         exact ⟨hr.1, le_trans (le_of_lt hr.2) (by norm_num)⟩)) := by
-  simp only [collarMap, dif_neg (not_le.mpr ht)]
+  simp only [collarMap, dite_eq_right (not_le.mpr ht)]
 
 theorem collarMap_zero_left (z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
     collarMap c d a (z, ⟨0, by constructor <;> norm_num [collarInterval]⟩) =
@@ -324,8 +324,8 @@ theorem collarMap_eq_if :
       if 0 ≤ (p.2 : ℝ) then collarLeft c d a p else collarRight c d a p := by
   funext p
   by_cases ht : 0 ≤ (p.2 : ℝ)
-  · rw [if_pos ht, ← collarLeft_of_nonneg c d a p ht]
-  · rw [if_neg ht, ← collarRight_of_neg c d a p (lt_of_not_ge ht)]
+  · rw [ite_eq_left ht, ← collarLeft_of_nonneg c d a p ht]
+  · rw [ite_eq_right ht, ← collarRight_of_neg c d a p (lt_of_not_ge ht)]
 
 theorem continuous_collarMap : Continuous (collarMap c d a) := by
   rw [collarMap_eq_if]

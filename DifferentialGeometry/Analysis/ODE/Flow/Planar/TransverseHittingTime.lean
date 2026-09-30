@@ -18,7 +18,7 @@ theorem exists_contDiffOn_transverse_hittingTime
   classical
   let τ : E → ℝ := fun p ↦ if hp : p ∈ S then (hcross p hp).exists.choose else 0
   have hroot (p : E) (hp : p ∈ S) : h (p, τ p) = c p := by
-    simpa only [τ, dif_pos hp] using (hcross p hp).exists.choose_spec
+    simpa only [τ, dite_eq_left hp] using (hcross p hp).exists.choose_spec
   have huniq (p : E) (hp : p ∈ S) (t : ℝ) (ht : h (p, t) = c p) : t = τ p :=
     (hcross p hp).unique ht (hroot p hp)
   refine ⟨τ, ?_, hroot, huniq⟩

@@ -153,7 +153,7 @@ private theorem correct_variation_endpoint
         ((isOpen_extChartAt_target (I := I) p).mem_nhds (htarget z.1 z.2 he ht))
       apply (hi.comp z (hcoordAt z he ht)).congr_of_eventuallyEq
       filter_upwards [continuous_snd.continuousAt.eventually (Metric.isOpen_ball.mem_nhds ht)] with y hy
-      exact if_pos (show y.2 ∈ W from hy)
+      exact ite_eq_left (show y.2 ∈ W from hy)
     · have hout : radius / 2 < dist z.2 c := by
         have hn : d ≤ dist z.2 c := le_of_not_gt ht
         have hrD : radius ≤ d := min_le_left _ _
@@ -215,7 +215,7 @@ private theorem correct_variation_endpoint
       have heq : (fun e => extChartAt I p (F (e, t))) =ᶠ[𝓝 0]
           fun e => coord (e, t) := by
         filter_upwards [isOpen_Ioo.mem_nhds h0d] with e he
-        dsimp only [F]; rw [if_pos ht]
+        dsimp only [F]; rw [ite_eq_left ht]
         exact (extChartAt I p).right_inv (htarget e t he ht)
       dsimp only [Function.comp_def, id_eq]
       rw [heq.fderiv_eq, fderiv_apply_one_eq_deriv, fderiv_apply_one_eq_deriv]
@@ -227,13 +227,13 @@ private theorem correct_variation_endpoint
         (deriv (fun e => extChartAt I p (f (e, t))) 0 + cut t • (0 : E)) 0 at hraw
       simpa only [smul_zero, add_zero] using hraw.deriv
     · have heq : (fun e => F (e, t)) = fun e => f (e, t) := by
-        funext e; exact if_neg ht
+        funext e; exact ite_eq_right ht
       exact congrArg (fun z : ℝ → M => (mfderiv 𝓘(ℝ, ℝ) I z 0 1 : E)) heq
   refine ⟨delta, hdelta, hsub, F, fun z hz => (hFAt z hz.1).contMDiffWithinAt,
     hcenter, hfield, ?_, ?_⟩
   · intro e he
     have hone : cut c = 1 := cut.one_of_mem_closedBall (Metric.mem_closedBall_self (by positivity))
-    dsimp only [F]; rw [if_pos hcW]
+    dsimp only [F]; rw [ite_eq_left hcW]
     dsimp only [coord, B]; rw [hone, one_smul, add_sub_cancel]
     exact (extChartAt I p).left_inv (hdbgood (heB e he)).1
   · intro e he

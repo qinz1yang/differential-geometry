@@ -201,7 +201,7 @@ theorem IsStableCrossingBlock.exists_kink_recentre [T2Space M]
     intro z hz ht0
     by_cases hb : w₀.2.2 = 0
     · have hbnd' : bnd := ⟨ht0, hb⟩
-      have htl : tlo' = 0 := by rw [htlo'def, if_pos hbnd']
+      have htl : tlo' = 0 := by rw [htlo'def, ite_eq_left hbnd']
       have h1 : 0 ≤ (A' (ec' z)).2.2 := by
         have := hz.2.2.2.1
         rwa [htl] at this
@@ -268,13 +268,13 @@ theorem IsStableCrossingBlock.exists_kink_recentre [T2Space M]
     by_cases hb : bnd
     · obtain ⟨ht0, hw0⟩ := hb
       right
-      refine ⟨by rw [htlo'def, if_pos ⟨ht0, hw0⟩], ht0, ?_, ?_, (hbd ht0 hw0).1⟩
+      refine ⟨by rw [htlo'def, ite_eq_left ⟨ht0, hw0⟩], ht0, ?_, ?_, (hbd ht0 hw0).1⟩
       · rw [hw0]
         exact kinkHeight_nonneg_iff hκ
       · rw [hw0]
         exact kinkHeight_eq_zero_iff hκ
     · left
-      refine ⟨by rw [htlo'def, if_neg hb], ?_⟩
+      refine ⟨by rw [htlo'def, ite_eq_right hb], ?_⟩
       rcases hside0 with ⟨-, hdis⟩ | ⟨ht, hheight, -⟩
       · exact hdis.mono_left hsub
       · rw [Set.disjoint_left]
@@ -306,7 +306,7 @@ theorem IsStableCrossingBlock.exists_kink_recentre [T2Space M]
     · obtain ⟨U, hUo, hpU, hUP⟩ := mem_nhdsWithin.mp hP
       by_cases hb : w₀.2.2 = 0
       · refine ⟨U, hUo.mem_nhds hpU, fun q hq => hUP ⟨hq.1, fun _ => ?_⟩⟩
-        have htl : tlo' = 0 := by rw [htlo'def, if_pos ⟨ht, hb⟩]
+        have htl : tlo' = 0 := by rw [htlo'def, ite_eq_left ⟨ht, hb⟩]
         have h1 : 0 ≤ kinkHeight w₀.2.2 κ q.2 := hq.2 htl
         rw [hb] at h1
         exact (kinkHeight_nonneg_iff hκ q.2).1 h1

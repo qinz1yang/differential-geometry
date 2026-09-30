@@ -106,9 +106,10 @@ theorem simplyConnectedSpace_capComponent_of_componentwise
     let := fundamentalGroup_subsingleton_of_components hM (G x)
     exact (fundamentalGroupMulEquivOfHomotopyEquiv G.toHomotopyEquiv x (G x)
         rfl).injective.subsingleton
+  let x₀ : (N (assign K)).Carrier := Classical.choice inferInstance
   have hsc : SimplyConnectedSpace (N (assign K)).Carrier :=
     simplyConnectedSpace_sigma_fiber_of_subsingleton_fundamentalGroup
-      (fun w => (N w).Carrier) (assign K) hpi
+      (fun w => (N w).Carrier) (assign K) x₀ (hpi ⟨assign K, x₀⟩)
   have hfac := (simplyConnectedSpace_finiteConnectedSum_append_replicate_iff
     ((L (assign K)).map E.capped.component) (sphereTwoTimesCircleLift.ulift.{0, u})
     (k (assign K)) not_simplyConnectedSpace_sphereTwoTimesCircleLift_ulift).mp hsc
@@ -150,7 +151,7 @@ theorem simplyConnectedSpace_retainedComponent_of_componentwise (hM : ∀ C :
     (K : ConnectedComponents Q.Carrier) : SimplyConnectedSpace (Q.component K).Carrier := by
   obtain ⟨q, rfl⟩ := ConnectedComponents.surjective_coe K
   have hsc := E.simplyConnectedSpace_presentedComponent_of_componentwise hM (Sum.inl q)
-  exact (ClosedOrientedManifold.sumComponentInl_orientedDiffeomorph
+  exact (ClosedOrientedManifold.sumComponentInlOrientedDiffeomorph
     (X := Q) (Y := E.discarded) q).val.toHomeomorph.toHomotopyEquiv.simplyConnectedSpace_iff.mp hsc
 
 theorem simplyConnectedSpace_discardedComponent_of_componentwise (hM : ∀ C :
@@ -159,7 +160,7 @@ theorem simplyConnectedSpace_discardedComponent_of_componentwise (hM : ∀ C :
     SimplyConnectedSpace (E.discarded.component K).Carrier := by
   obtain ⟨d, rfl⟩ := ConnectedComponents.surjective_coe K
   have hsc := E.simplyConnectedSpace_presentedComponent_of_componentwise hM (Sum.inr d)
-  exact (ClosedOrientedManifold.sumComponentInr_orientedDiffeomorph
+  exact (ClosedOrientedManifold.sumComponentInrOrientedDiffeomorph
     (X := Q) (Y := E.discarded) d).val.toHomeomorph.toHomotopyEquiv.simplyConnectedSpace_iff.mp hsc
 
 end DifferentialGeometry.Topology.SphericalCutCapTransition

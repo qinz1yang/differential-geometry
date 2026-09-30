@@ -17,7 +17,7 @@ theorem mem_boundaryComplex_of_comparable_face_of_local_reading
     (R Γ : Geometry.SimplicialComplex ℝ E) [Finite R.faces] (hΓR : Γ.faces ⊆ R.faces)
     {s t : Finset E} (hs : s ∈ Γ.faces) (ht : t ∈ Γ.faces) (hcomp : s ⊆ t ∨ t ⊆ s)
     {P W : Set E} {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) P)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (hPR : (PiecewiseLinear.restrict R P).space = P)
     (hbd : ∀ x ∈ R.space ∩ W, x ∈ q '' stdSimplexBoundary 2 ↔ x ∈ Γ.space)
     (hstar : (⋃ v ∈ s, closedStar R v) ⊆ W) :

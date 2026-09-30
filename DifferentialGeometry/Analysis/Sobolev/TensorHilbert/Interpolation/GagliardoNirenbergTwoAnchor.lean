@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Pointwis
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
 import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiniteProductHolder
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
+
 noncomputable section
 
 
@@ -491,7 +494,7 @@ theorem gnProdJet (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) :
           ‖iteratedCovGrad (I := I) g₀ r s m Ψ‖ ^ (2 * θ j) := fun j hj =>
     hC Ψ hΛ₀0 hΛ₀1 hΛ₁0 hsup0 hsup1 m (c j) (hc2 j hj) (hcltm j hj) (θ j)
       (hθband j hj).1 (hθband j hj).2
-  refine le_trans (Finset.prod_le_prod hfacnn hfac) ?_
+  refine le_trans (Finset.prod_le_prod₀ hfacnn hfac) ?_
   have hαsum : ∑ j ∈ t, 2 * ((c j : ℝ) - θ j * (m : ℝ)) = 2 :=
     gnExpSum t (fun j => (c j : ℝ)) θ (m : ℝ) hcfsum hθsum
   have hθ2sum : ∑ j ∈ t, 2 * θ j = 2 := by rw [← Finset.mul_sum, hθsum, mul_one]

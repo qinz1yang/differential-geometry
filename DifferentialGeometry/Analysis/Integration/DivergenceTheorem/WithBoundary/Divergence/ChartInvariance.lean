@@ -8,7 +8,7 @@ import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 import Mathlib.MeasureTheory.Function.AEEqOfIntegral
 import Mathlib.MeasureTheory.Measure.OpenPos
-import Mathlib.Data.ENNReal.Basic
+import Mathlib.Basic.ENNReal.Basic
 
 
 noncomputable section

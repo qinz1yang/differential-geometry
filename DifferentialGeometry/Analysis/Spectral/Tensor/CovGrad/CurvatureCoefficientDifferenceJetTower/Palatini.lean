@@ -1,5 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Lowered
 
+open DifferentialGeometry.TensorMetric (coframeS coframeS_zero_eq_unitZeroSec
+  exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent riemannianFiberNormSq
+  riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg riemannianFiberNormSq_zero)
+
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -97,10 +101,10 @@ lemma quadraticConnectionDifferenceCc_toModel (g₀ g₁ : SmoothRiemannianMetri
         Fin 2 → TangentSpace I x) from by
     funext j
     refine Fin.cases ?_ ?_ j
-    · rw [if_pos rfl, ContinuousLinearEquiv.symm_apply_apply]
+    · rw [ite_eq_left rfl, ContinuousLinearEquiv.symm_apply_apply]
       rfl
     · intro i
-      rw [if_neg (Fin.succ_ne_zero i)]
+      rw [ite_eq_right (Fin.succ_ne_zero i)]
       rfl]
   rw [connectionDifferencePairing_apply]
   rw [cotangentToDual_apply]
@@ -835,9 +839,9 @@ lemma riemannianFiberNormSq_eq_sum_componentSq_of_horth_pt
       intro j _
       rw [map_smul, horth k j, smul_eq_mul]
     rw [Finset.sum_congr rfl h_pull] at h_zero
-    rw [Finset.sum_eq_single k (fun j _ hj => by rw [if_neg (Ne.symm hj), mul_zero])
+    rw [Finset.sum_eq_single k (fun j _ hj => by rw [ite_eq_right (Ne.symm hj), mul_zero])
       (fun hk => absurd hk_mem hk)] at h_zero
-    rwa [if_pos rfl, mul_one] at h_zero
+    rwa [ite_eq_left rfl, mul_one] at h_zero
   have hrank : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := rfl
   have hcard : Fintype.card (Fin n) = Module.finrank ℝ (TangentSpace I x) := by
     rw [Fintype.card_fin, hrank]; exact hn
@@ -903,9 +907,9 @@ lemma riemannianFiberNormSq_ccTensor02Symm_zero_le_of_ball (g₀ : SmoothRiemann
     rw [hval]
     have habs := hbound x (e (J 0)) (e (J 1))
     have h00 : g₀.inner x (e (J 0)) (e (J 0)) = 1 := by
-      rw [horth (J 0) (J 0), if_pos rfl]
+      rw [horth (J 0) (J 0), ite_eq_left rfl]
     have h11 : g₀.inner x (e (J 1)) (e (J 1)) = 1 := by
-      rw [horth (J 1) (J 1), if_pos rfl]
+      rw [horth (J 1) (J 1), ite_eq_left rfl]
     rw [h00, h11, Real.sqrt_one, mul_one, mul_one] at habs
     have := abs_nonneg (ccTensorBilinSymm (I := I) g₀ T x (e (J 0)) (e (J 1)))
     nlinarith [habs, sq_abs (ccTensorBilinSymm (I := I) g₀ T x (e (J 0)) (e (J 1)))]
@@ -1621,7 +1625,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciMixedSharpBackgroundDifferenc
     intro i' _
     match i' with
     | 0 =>
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         have hA0 : riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + 0) x
             ((iteratedCovGrad (I := I) g₀ 4 2 0
               (cometricDoubleTraceField (I := I) g₀ 2)).toSection x) ≤ cPhi := by
@@ -1630,12 +1634,12 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciMixedSharpBackgroundDifferenc
         refine mul_le_mul hA0 (hBmono 0) (Finset.sum_nonneg fun l _ =>
           riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + l) x _) hcPhi_nn
     | (m + 1) =>
-        rw [if_neg (by omega)]
+        rw [ite_eq_right (by omega)]
         rw [hAzero m, zero_mul]
   refine le_trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum hterm)
     (operatorFieldApplicationGdiag_nonneg (E := E) i)) ?_
   rw [Finset.sum_ite_eq' (Finset.range (i + 1)) 0]
-  rw [if_pos (Finset.mem_range.mpr (by omega))]
+  rw [ite_eq_left (Finset.mem_range.mpr (by omega))]
   have hBackgroundrid : (∑ l ∈ Finset.range (i + 1),
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + l) x
         ((iteratedCovGrad (I := I) g₀ 0 4 l
@@ -1761,7 +1765,7 @@ lemma diagonalGrid_arith (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
 
 end CurvatureCoefficientDifferenceJetTower
 
-theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackgroundDifferenceField_diagonalProductGrid_le
+theorem exists_ricEndoBackgroundDifferenceField_covariant_jet_bound
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1785,7 +1789,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_ricEndoBackg
     riemannianFiberNormSq_iteratedCovGrad_ricciMixedSharpBackgroundDifference_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_backgroundJet_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 1 1
     (slotInsertEndoCc (I := I) (M := M) g₀ 0 (ricEndoRaisedField (I := I) (M := M) g₀))

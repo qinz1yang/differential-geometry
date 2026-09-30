@@ -63,8 +63,10 @@ theorem IntrinsicBallChart.eventually_mapsTo_eball_on_compact
     intro z hz
     have ht := hk z z.property ⟨z, hz, rfl⟩
     rw [IntrinsicBallChart.target_eq_eball (g k) (hEnorm k) (x i k) (c i k),
-      Metric.mem_eball'] at ht
-    rw [Metric.mem_eball']
+      @Metric.mem_eball' (M k) PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
+        inferInstance] at ht
+    rw [@Metric.mem_eball' (M k) PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
+      inferInstance]
     calc
       edist (b k) (F k (D.toGlueData.ι i z)) ≤
           edist (b k) (x i k) + edist (x i k) (F k (D.toGlueData.ι i z)) := edist_triangle _ _ _

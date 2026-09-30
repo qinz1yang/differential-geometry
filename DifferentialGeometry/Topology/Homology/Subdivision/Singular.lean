@@ -50,7 +50,7 @@ theorem ι_singularSubdivisionMap {n : ℕ} (σ : TopCat.toSSet.obj X _⦋n⦌) 
     (TopCat.toSSet.obj X).ιChainComplex σ ≫ singularSubdivisionMap R X n =
       barycentricSimplexChain R n ≫
         (SSet.chainComplexMap (TopCat.toSSet.map (singularSimplexMap X σ)) R).f n :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 
 @[simp]
@@ -101,7 +101,7 @@ theorem ι_singularSubdivisionHomotopyMap {n : ℕ} (σ : TopCat.toSSet.obj X _�
     (TopCat.toSSet.obj X).ιChainComplex σ ≫ singularSubdivisionHomotopyMap R X n =
       barycentricSimplexHomotopyChain R n ≫
         (SSet.chainComplexMap (TopCat.toSSet.map (singularSimplexMap X σ)) R).f (n + 1) :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 
 @[simp]
@@ -141,17 +141,17 @@ def singularSubdivisionHomotopy : Homotopy (singularSubdivision R X) (𝟙 (K)) 
     singularSubdivisionHomotopyMap R X i ≫ eqToHom (congrArg (K).X h) else 0
   zero i j hij := by
     change ¬ i + 1 = j at hij
-    exact dif_neg hij
+    exact dite_eq_right hij
   comm n := by
     cases n with
     | zero =>
       rw [Homotopy.dNext_zero_chainComplex, Homotopy.prevD_chainComplex]
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id,
+      simp only [dite_eq_left rfl, eqToHom_refl, Category.comp_id,
         singularSubdivisionHomotopyMap_zero, zero_comp, zero_add,
         singularSubdivision_f, singularSubdivisionMap_zero, HomologicalComplex.id_f]
     | succ n =>
       rw [Homotopy.dNext_succ_chainComplex, Homotopy.prevD_chainComplex]
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id,
+      simp only [dite_eq_left rfl, eqToHom_refl, Category.comp_id,
         singularSubdivision_f, HomologicalComplex.id_f]
       exact sub_eq_iff_eq_add.mp (singularSubdivisionHomotopyMap_comm R X n)
 
@@ -162,7 +162,7 @@ theorem singularSubdivisionHomotopy_hom (n : ℕ) :
       singularSubdivisionHomotopyMap R X n := by
   change (if h : n + 1 = n + 1 then
     singularSubdivisionHomotopyMap R X n ≫ eqToHom (congrArg (K).X h) else 0) = _
-  rw [dif_pos rfl, eqToHom_refl, Category.comp_id]
+  rw [dite_eq_left rfl, eqToHom_refl, Category.comp_id]
 
 variable {Y : TopCat.{u}} (f : X ⟶ Y)
 

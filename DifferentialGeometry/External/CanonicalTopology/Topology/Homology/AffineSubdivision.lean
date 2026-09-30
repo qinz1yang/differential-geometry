@@ -15,7 +15,7 @@ variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 /-- The actual barycenter of the specified original ordered vertices. -/
 def affineSimplexBarycenter (n : ℕ) (v : Fin (n + 1) → E) : E :=
-  affineSimplexMap v stdSimplex.barycenter
+  affineSimplexMap v Convexity.StdSimplex.barycenter
 
 /-- This barycenter lies in every convex carrier of the original vertices. -/
 theorem affineSimplexBarycenter_mem (n : ℕ) (v : Fin (n + 1) → E)
@@ -56,7 +56,7 @@ theorem affineSingularSubdivision_succ (n : ℕ) (v : Fin (n + 2) → E) :
       (integralSimplexChain (n + 1) (affineSingularSimplex (n + 1) v)) = _
   rw [← integralSingularChainBasis_apply, Basis.constr_basis]
   let h : ∃ w, affineSingularSimplex (n + 1) w = affineSingularSimplex (n + 1) v := ⟨v, rfl⟩
-  rw [dif_pos h, affineSingularSimplex_injective (n + 1) h.choose_spec]
+  rw [dite_eq_left h, affineSingularSimplex_injective (n + 1) h.choose_spec]
   rfl
 
 /-- Subdivision preserves the same actual convex carrier in every degree. -/

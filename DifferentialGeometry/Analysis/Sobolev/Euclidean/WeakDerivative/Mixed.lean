@@ -139,7 +139,7 @@ theorem exists_lp_mixed_weak_partial_tree_of_finite_time_trees
       ∀ α i, ∀ᵐ t ∂volume.restrict (Icc a b), DeGiorgi.HasWeakPartialDeriv i
         (fun x => V j (n + 1) (Fin.cons i α) (t, x)) (fun x => V j n α (t, x)) Ω := by
     have hj : j < K + 1 := by omega
-    simpa only [V, dif_pos hj] using hspace ⟨j, hj⟩ n hjn
+    simpa only [V, dite_eq_left hj] using hspace ⟨j, hj⟩ n hjn
   have hVtime j n (hjn : j + n < K) : ∀ α (φ : ℝ × E → ℝ),
       ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ Ioo a b ×ˢ Ω →
       (∫ q, V j n α q * fderiv ℝ φ q (1, 0) ∂ν) =
@@ -149,11 +149,11 @@ theorem exists_lp_mixed_weak_partial_tree_of_finite_time_trees
     have hj₁ : j + 1 < K + 1 := by omega
     have hcast : (⟨j, hj⟩ : Fin K).castSucc = ⟨j, hj₀⟩ := Fin.ext rfl
     have hsucc : (⟨j, hj⟩ : Fin K).succ = ⟨j + 1, hj₁⟩ := Fin.ext rfl
-    simpa only [V, dif_pos hj₀, dif_pos hj₁, hcast, hsucc] using htime ⟨j, hj⟩ n hjn
+    simpa only [V, dite_eq_left hj₀, dite_eq_left hj₁, hcast, hsucc] using htime ⟨j, hj⟩ n hjn
   obtain ⟨Y, hYzero, hYweak⟩ := exists_lp_mixed_weak_partial_tree hp K V hVspace hVtime
   refine ⟨Y, ?_, hYweak⟩
   have hz : (⟨0, Nat.zero_lt_succ K⟩ : Fin (K + 1)) = 0 := Fin.ext rfl
-  simpa only [V, dif_pos (Nat.zero_lt_succ K), hz] using hYzero
+  simpa only [V, dite_eq_left (Nat.zero_lt_succ K), hz] using hYzero
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean
 

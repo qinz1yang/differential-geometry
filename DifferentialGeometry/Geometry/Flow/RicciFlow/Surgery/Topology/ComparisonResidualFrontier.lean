@@ -25,7 +25,7 @@ variable {c : ConnectedComponents (H.stage i.succ).Carrier}
 
 theorem localTerminalDistanceControl_of_collapseDegreeLipschitzInput
     {K : G.ComparisonSupport c} (hlip : CollapseDegreeLipschitzInput K) :
-    K.LocalTerminalDistanceControl K.rfs_whole_parent_map := by
+    K.LocalTerminalDistanceControl K.canonicalWholeParentMap := by
   intro x hx
   refine ⟨{y : (G.Parent c).Carrier | y.1 ∈ (H.event i).incoming.terminalRegularRegion},
     ((H.event i).incoming.terminalRegularRegion_isOpen.preimage continuous_subtype_val).mem_nhds
@@ -36,16 +36,16 @@ theorem localTerminalDistanceControl_of_collapseDegreeLipschitzInput
 theorem rfs_collapse_degree_of_lipschitzInput_and_classGenerator
     {K : G.ComparisonSupport c} (hlip : CollapseDegreeLipschitzInput K)
     (a : IntegralHomology (G.Parent c).Carrier 3) (b : IntegralHomology (G.Child c).Carrier 3)
-    {k : ℤ} (hmap : integralHomologyMap 3 K.rfs_whole_parent_map a = k • b)
+    {k : ℤ} (hmap : integralHomologyMap 3 K.canonicalWholeParentMap a = k • b)
     (hgen : K.CollapseClassGenerator a) (hk : 0 < k) :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
+    K.LocalTerminalLengthControl K.canonicalWholeParentMap ∧
     (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      K.rfs_whole_parent_map y = K.rfs_whole_parent_map x) ∧
+      K.canonicalWholeParentMap y = K.canonicalWholeParentMap x) ∧
     (∀ x : G.transition.ChildCore c,
-      K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+      K.canonicalWholeParentMap (G.transition.childCoreIntoParent c x) =
         G.transition.childCoreInclusion c x) ∧
-    integralHomologyMap 3 K.rfs_whole_parent_map a = b ∧
-    Function.Surjective K.rfs_whole_parent_map :=
+    integralHomologyMap 3 K.canonicalWholeParentMap a = b ∧
+    Function.Surjective K.canonicalWholeParentMap :=
   K.rfs_collapse_degree_of_localTerminalDistanceControl_and_class_generator a b
     (K.localTerminalDistanceControl_of_collapseDegreeLipschitzInput hlip) hmap hgen hk
 
@@ -59,7 +59,7 @@ theorem rfs_child_comparison_of_inputs
     (h : G.ChildComparisonInputs a b) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       (∀ c, integralHomologyMap 3 (f c) (a c) = b c) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧

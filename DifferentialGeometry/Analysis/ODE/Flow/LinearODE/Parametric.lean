@@ -1237,21 +1237,21 @@ theorem linearODESolution_hasFDerivAt_param
       gronwallBound δ M ε (β - α) = δ * E_δ + ε * E_T := by
     intro δ ε
     by_cases hMeq : M = 0
-    · have hEδ_val : E_δ = 1 := by rw [hEδ_def, if_pos hMeq]
-      have hET_val : E_T = β - α := by rw [hET_def, if_pos hMeq]
+    · have hEδ_val : E_δ = 1 := by rw [hEδ_def, ite_eq_left hMeq]
+      have hET_val : E_T = β - α := by rw [hET_def, ite_eq_left hMeq]
       rw [hMeq, hEδ_val, hET_val, gronwallBound_K0]; ring
     · have hEδ_val : E_δ = Real.exp (M * (β - α)) := by
-        rw [hEδ_def, if_neg hMeq]
+        rw [hEδ_def, ite_eq_right hMeq]
       have hET_val : E_T = (Real.exp (M * (β - α)) - 1) / M := by
-        rw [hET_def, if_neg hMeq]
+        rw [hET_def, ite_eq_right hMeq]
       rw [hEδ_val, hET_val, gronwallBound_of_K_ne_0 hMeq]
       field_simp
   have hET_nn : 0 ≤ E_T := by
     by_cases hMeq : M = 0
-    · have : E_T = β - α := by rw [hET_def, if_pos hMeq]
+    · have : E_T = β - α := by rw [hET_def, ite_eq_left hMeq]
       rw [this]; linarith
     · have : E_T = (Real.exp (M * (β - α)) - 1) / M := by
-        rw [hET_def, if_neg hMeq]
+        rw [hET_def, ite_eq_right hMeq]
       rw [this]
       have hexp_ge : 1 ≤ Real.exp (M * (β - α)) :=
         Real.one_le_exp (mul_nonneg hM_nn hβα_nn)
@@ -1259,9 +1259,9 @@ theorem linearODESolution_hasFDerivAt_param
       exact div_nonneg this hM_nn
   have hEδ_pos : 0 < E_δ := by
     by_cases hMeq : M = 0
-    · have : E_δ = 1 := by rw [hEδ_def, if_pos hMeq]
+    · have : E_δ = 1 := by rw [hEδ_def, ite_eq_left hMeq]
       rw [this]; norm_num
-    · have : E_δ = Real.exp (M * (β - α)) := by rw [hEδ_def, if_neg hMeq]
+    · have : E_δ = Real.exp (M * (β - α)) := by rw [hEδ_def, ite_eq_right hMeq]
       rw [this]; exact Real.exp_pos _
   have hEδ_nn : 0 ≤ E_δ := hEδ_pos.le
   set c₁ : ℝ := c / (2 * E_δ) with hc₁_def
@@ -1558,7 +1558,7 @@ private theorem variationalW_clm_continuousOn
     change (if hx : x ∈ U then if ht : t ∈ Set.Ioo a b' then
             variationalWClm h₀_mem hU hA_cont hDA_cont hZ₀_cont hx ht
           else 0 else 0) v = _
-    rw [dif_pos hxU, dif_pos htI]
+    rw [dite_eq_left hxU, dite_eq_left htI]
     exact variationalW_clm_apply h₀_mem hU hA_cont hDA_cont hZ₀_cont hxU htI v
   refine ContinuousOn.congr ?_ h_eq
   have hZ₀'_cont : ContinuousOn (fun x => (fderiv ℝ Z₀ x) v) U :=
@@ -1789,7 +1789,7 @@ private theorem linearODESolution_contDiffOn_one
           variationalWClm h₀_mem hU hA_cont hDA_cont hZ₀_cont hx' ht'
         else 0
       else 0) = variationalWClm h₀_mem hU hA_cont hDA_cont hZ₀_cont hx ht := by
-      rw [dif_pos hx, dif_pos ht]
+      rw [dite_eq_left hx, dite_eq_left ht]
     change fderiv ℝ (uncurry Z) p
         = ((if hx' : p.1 ∈ U then
               if ht' : p.2 ∈ Set.Ioo a b' then
@@ -2035,7 +2035,7 @@ theorem linearODESolution_contDiffOn
         intro v'
         refine (h_varW_v_n v').congr (fun p hp => ?_)
         obtain ⟨hx, ht⟩ := Set.mem_prod.mp hp
-        simp only [dif_pos hx, dif_pos ht]
+        simp only [dite_eq_left hx, dite_eq_left ht]
         exact (variationalW_clm_apply h₀_mem hU hA_cont hDA_cont hZ₀_cont
           hx ht v').symm
       have h_coprod_n : ContDiffOn ℝ (↑n : ℕ∞)
@@ -2057,7 +2057,7 @@ theorem linearODESolution_contDiffOn
             variationalWClm h₀_mem hU hA_cont hDA_cont hZ₀_cont hx' ht'
           else 0
         else 0) = variationalWClm h₀_mem hU hA_cont hDA_cont hZ₀_cont hx ht := by
-        rw [dif_pos hx, dif_pos ht]
+        rw [dite_eq_left hx, dite_eq_left ht]
       change fderiv ℝ (Function.uncurry Z) p
           = ((if hx' : p.1 ∈ U then
                 if ht' : p.2 ∈ Set.Ioo a b' then

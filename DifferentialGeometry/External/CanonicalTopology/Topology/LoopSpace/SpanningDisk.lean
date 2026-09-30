@@ -32,8 +32,7 @@ instance : CompactSpace closedDisk := isCompact_iff_compactSpace.mp (isCompact_c
 /-- The positively parametrized boundary with period one. -/
 def diskBoundary : C(loopCircle, closedDisk) :=
   ⟨fun θ => ⟨(AddCircle.toCircle θ : ℂ), by
-      simpa [Metric.mem_closedBall, dist_zero_right] using
-        (AddCircle.toCircle θ).property.le⟩,
+      simp [Metric.mem_closedBall, dist_zero_right]⟩,
     by
       apply Continuous.subtype_mk
       exact continuous_subtype_val.comp AddCircle.continuous_toCircle⟩

@@ -56,7 +56,7 @@ private theorem exists_smooth_quadratic_scaling
   have humem (p : ℝ × ℝ) : u p ∈ Icc (0 : ℝ) 1 := by
     constructor
     · exact mul_nonneg (Real.smoothTransition.nonneg _) χ.nonneg
-    · exact mul_le_one₀ (Real.smoothTransition.le_one _) χ.nonneg χ.le_one
+    · exact (mul_le_of_le_one_left χ.nonneg (Real.smoothTransition.le_one _)).trans χ.le_one
   have hloc (p : ℝ × ℝ) (hp : χ p.2 ≠ 0) : dist p.2 b < η := by
     have hlt : dist p.2 b < η / 2 := lt_of_not_ge (fun h => hp (χ.zero_of_le_dist h))
     linarith

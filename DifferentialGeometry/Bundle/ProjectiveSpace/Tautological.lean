@@ -131,7 +131,7 @@ private theorem tautologicalSectionTrivializationInv_apply
     (z : RealProjectiveSpace A × Real) (hz : z.1 ∈ U) :
     tautologicalTotalEmbedding (tautologicalSectionTrivializationInv U s hq z) =
       (z.1, z.2 • (s z.1 : A)) := by
-  simp only [tautologicalTotalEmbedding, tautologicalSectionTrivializationInv, dif_pos hz]
+  simp only [tautologicalTotalEmbedding, tautologicalSectionTrivializationInv, dite_eq_left hz]
 
 def realProjectiveTautologicalTrivialization
     (U : Set (RealProjectiveSpace A)) (hU : IsOpen U)
@@ -152,7 +152,7 @@ def realProjectiveTautologicalTrivialization
     · apply heq_of_eq
       apply Subtype.ext
       change (if h : z.1 ∈ U then _ else (0 : RealProjectiveTautologicalFiber z.1)).1 = (z.2 : A)
-      rw [dif_pos hz]
+      rw [dite_eq_left hz]
       exact realProjectiveTautologicalLine_inner_smul (s z.1) z.2 (by rw [hq z.1 hz]; exact z.2.property)
   right_inv' z hz := by
     classical

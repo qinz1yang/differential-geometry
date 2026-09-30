@@ -477,7 +477,7 @@ theorem MemW1pIntrinsic.eLpNorm_lt_top
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} {u : M → ℝ}
     (h : MemW1pIntrinsic (I := I) (M := M) g p u) :
     eLpNorm u p (riemannianVolumeMeasure I M g) < ⊤ :=
-  h.memLp_self.2
+  h.memLp_self.eLpNorm_lt_top
 
 theorem MemW1pIntrinsic.gradInfimum_lt_top
     [T2Space M] [SigmaCompactSpace M]
@@ -487,7 +487,7 @@ theorem MemW1pIntrinsic.gradInfimum_lt_top
   obtain ⟨_, G, hG_weak, hG_p⟩ := h
   refine lt_of_le_of_lt
     (gradInfimum_le_of_weakGrad g hG_weak) ?_
-  exact hG_p.2
+  exact hG_p.eLpNorm_lt_top
 
 theorem MemW1pIntrinsic.w1pNormIntrinsic_lt_top
     [T2Space M] [SigmaCompactSpace M]
@@ -627,7 +627,8 @@ private lemma gradInfimum_add_le_of_weakGrads
       eLpNorm (fun x : M => Real.sqrt (g.inner x (G x) (G x)) +
           Real.sqrt (g.inner x (G' x) (G' x))) p
         (riemannianVolumeMeasure I M g) := by
-    refine eLpNorm_mono ?_
+    refine eLpNorm_mono
+      (continuous_g_norm_smooth_section g (G + G')).aestronglyMeasurable ?_
     intro x
     rw [Real.norm_eq_abs (Real.sqrt _)]
     rw [Real.norm_eq_abs (Real.sqrt (g.inner x (G x) (G x)) +
@@ -635,14 +636,6 @@ private lemma gradInfimum_add_le_of_weakGrads
     rw [abs_of_nonneg (Real.sqrt_nonneg _)]
     rw [abs_of_nonneg (by positivity)]
     exact h_triangle_pt x
-  have h_aem_G : AEStronglyMeasurable
-      (fun x : M => Real.sqrt (g.inner x (G x) (G x)))
-      (riemannianVolumeMeasure I M g) :=
-    (continuous_g_norm_smooth_section g G).aestronglyMeasurable
-  have h_aem_G' : AEStronglyMeasurable
-      (fun x : M => Real.sqrt (g.inner x (G' x) (G' x)))
-      (riemannianVolumeMeasure I M g) :=
-    (continuous_g_norm_smooth_section g G').aestronglyMeasurable
   have htri : eLpNorm (fun x : M => Real.sqrt (g.inner x (G x) (G x)) +
         Real.sqrt (g.inner x (G' x) (G' x))) p
         (riemannianVolumeMeasure I M g) ≤
@@ -650,7 +643,7 @@ private lemma gradInfimum_add_le_of_weakGrads
         (riemannianVolumeMeasure I M g) +
       eLpNorm (fun x : M => Real.sqrt (g.inner x (G' x) (G' x))) p
         (riemannianVolumeMeasure I M g) :=
-    eLpNorm_add_le h_aem_G h_aem_G' hp
+    eLpNorm_add_le hp
   refine le_trans ?_ (hmono.trans htri)
   exact gradInfimum_le_of_weakGrad g hsum_weak
 
@@ -671,10 +664,7 @@ theorem w1pNormIntrinsic_add_le
         (riemannianVolumeMeasure I M g) ≤
       eLpNorm u p (riemannianVolumeMeasure I M g) +
         eLpNorm v p (riemannianVolumeMeasure I M g) := by
-    have h := eLpNorm_add_le hu_p.aestronglyMeasurable hv_p.aestronglyMeasurable hp
-    have heq : (fun x : M => u x + v x) = u + v := by funext x; rfl
-    rw [heq]
-    exact h
+    exact eLpNorm_add_le hp
   have h_grad_bound :
       gradInfimum (I := I) (M := M) g p (fun x : M => u x + v x) ≤
         gradInfimum (I := I) (M := M) g p u +

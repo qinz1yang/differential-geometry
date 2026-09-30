@@ -16,7 +16,21 @@ theorem IsPLCellOn.exists_eq_singleton {S B : Set M} (h : IsPLCellOn 0 S B) :
     ∃ x : M, S = {x} := by
   obtain ⟨P, r, u, hr, -, hS, -⟩ := h
   refine ⟨u (r (fun _ => 1)), ?_⟩
-  rw [hS, ← hr.bijOn.image_eq, stdSimplex_unique ℝ (Fin 1), image_singleton, image_singleton]
+  have hsimplex : Convexity.StdSimplex.coordinateSet ℝ (Fin 1) =
+      {fun _ : Fin 1 => (1 : ℝ)} := by
+    ext x
+    constructor
+    · intro hx
+      rw [mem_singleton_iff]
+      funext i
+      have hi : i = 0 := Subsingleton.elim _ _
+      subst i
+      simpa [Fin.sum_univ_one] using hx.2
+    · intro hx
+      rw [mem_singleton_iff] at hx
+      subst x
+      exact ⟨fun i => by simp, by simp⟩
+  rw [hS, ← hr.bijOn.image_eq, hsimplex, image_singleton, image_singleton]
 
 theorem IsPLCellOn.exists_boundary_eq_pair {S B : Set M} (h : IsPLCellOn 1 S B) :
     ∃ x y : M, x ≠ y ∧ B = {x, y} := by

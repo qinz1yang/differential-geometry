@@ -230,12 +230,12 @@ theorem hasMFDerivWithinAt_piecewise_of_agree_at_junction
   intro t ht
   set g : ℝ → M := fun s => if s ≤ c then f1 s else f2 s with hg
   by_cases htc : t < c
-  · have hval : g t = f1 t := by simp only [hg, if_pos (le_of_lt htc)]
+  · have hval : g t = f1 t := by simp only [hg, ite_eq_left (le_of_lt htc)]
     have heq : g =ᶠ[𝓝[Set.Ici (0:ℝ)] t] f1 := by
       have hmem : Set.Iio c ∈ 𝓝[Set.Ici (0:ℝ)] t :=
         nhdsWithin_le_nhds (Iio_mem_nhds htc)
       filter_upwards [hmem] with s hs
-      simp only [hg, if_pos (le_of_lt (Set.mem_Iio.mp hs))]
+      simp only [hg, ite_eq_left (le_of_lt (Set.mem_Iio.mp hs))]
     have hbase := hf1 t ⟨ht.1, htc⟩
     rw [show ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (g t)))
         = ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (f1 t))) by rw [hval]]
@@ -243,18 +243,18 @@ theorem hasMFDerivWithinAt_piecewise_of_agree_at_junction
   · rw [not_lt] at htc
     rcases eq_or_lt_of_le htc with htc_eq | htc_lt
     · have htval : t = c := htc_eq.symm
-      have hgc_val : g c = f1 c := by simp only [hg, if_pos (le_refl c)]
+      have hgc_val : g c = f1 c := by simp only [hg, ite_eq_left (le_refl c)]
       have heqL : g =ᶠ[𝓝[Set.Iic c] c] f1 := by
         filter_upwards [self_mem_nhdsWithin] with s hs
-        simp only [hg, if_pos (Set.mem_Iic.mp hs)]
+        simp only [hg, ite_eq_left (Set.mem_Iic.mp hs)]
       have hL : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I g (Set.Iic c) c
           ((1 : ℝ →L[ℝ] ℝ).smulRight (X c (f1 c))) :=
         hf1c.congr_of_eventuallyEq heqL hgc_val
       have heqR : g =ᶠ[𝓝[Set.Ici c] c] f2 := by
         filter_upwards [self_mem_nhdsWithin] with s hs
         rcases eq_or_lt_of_le (Set.mem_Ici.mp hs) with hsc | hsc
-        · simp only [hg, ← hsc, if_pos (le_refl c), hagree]
-        · simp only [hg, if_neg (not_le.mpr hsc)]
+        · simp only [hg, ← hsc, ite_eq_left (le_refl c), hagree]
+        · simp only [hg, ite_eq_right (not_le.mpr hsc)]
       have hgc_val2 : g c = f2 c := by rw [hgc_val, hagree]
       have hf2c := hf2 c ⟨le_refl c, hcc'⟩
       have hR : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I g (Set.Ici c) c
@@ -276,12 +276,12 @@ theorem hasMFDerivWithinAt_piecewise_of_agree_at_junction
       have hgc2 : (X c (g c)) = (X c (f1 c)) := by rw [hgc_val]
       rw [hgc2]
       exact hfull
-    · have hval : g t = f2 t := by simp only [hg, if_neg (not_le.mpr htc_lt)]
+    · have hval : g t = f2 t := by simp only [hg, ite_eq_right (not_le.mpr htc_lt)]
       have heq : g =ᶠ[𝓝[Set.Ici (0:ℝ)] t] f2 := by
         have hmem : Set.Ioi c ∈ 𝓝[Set.Ici (0:ℝ)] t :=
           nhdsWithin_le_nhds (Ioi_mem_nhds htc_lt)
         filter_upwards [hmem] with s hs
-        simp only [hg, if_neg (not_le.mpr (Set.mem_Ioi.mp hs))]
+        simp only [hg, ite_eq_right (not_le.mpr (Set.mem_Ioi.mp hs))]
       have hbase := hf2 t ⟨le_of_lt htc_lt, ht.2⟩
       have hmono : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I f2 (Set.Ici (0:ℝ)) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (f2 t))) := by
@@ -678,7 +678,7 @@ private theorem existsForwardIntegralCurveUpTo_extend
   obtain ⟨c, hc0, hc⟩ := hR
   set f2 : ℝ → M := fun u => W (c e) u with hf2def
   refine ⟨fun t => if t ≤ e then c t else f2 t, ?_, ?_⟩
-  · simp only [if_pos (le_of_lt he0)]; exact hc0
+  · simp only [ite_eq_left (le_of_lt he0)]; exact hc0
   · have hf1 : ∀ t ∈ Set.Ico (0:ℝ) e, HasMFDerivWithinAt 𝓘(ℝ, ℝ) I c (Set.Ici (0:ℝ)) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (c t))) :=
       fun t ht => hc t ⟨ht.1, lt_trans ht.2 hes⟩

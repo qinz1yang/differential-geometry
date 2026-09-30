@@ -220,7 +220,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-def NoncollapsedAtRegularTimesBefore {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+def NoncollapsedAtRegularTimesBefore (H : RetainedCoreHistory.{u})
     (κ ρ t₀ : ℝ) : Prop :=
   ∀ (t : Icc (0 : ℝ) H.toHistory.horizon) (p : (H.toHistory.stageAt t).Carrier) (r : ℝ),
     (t : ℝ) < t₀ → (∀ i : Fin (H.eventCount + 1), H.time i ≠ t) → r ≤ ρ →
@@ -233,7 +233,7 @@ def NoncollapsedAtRegularTimesBefore {P₀ : OrientedThreeStage.{u}} (H : Retain
 end RetainedCoreHistory
 
 theorem exists_noncollapsedBefore_of_regularTimes :
-    ∃ c : ℝ, 0 < c ∧ c ≤ 1 ∧ ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+    ∃ c : ℝ, 0 < c ∧ c ≤ 1 ∧ ∀ (H : RetainedCoreHistory.{u})
       {κ ρ t₀ : ℝ}, 0 < κ → H.NoncollapsedAtRegularTimesBefore κ ρ t₀ →
         H.NoncollapsedBefore (c * κ) ρ t₀ := by
   have he : 0 < Real.exp 3 := Real.exp_pos 3
@@ -241,7 +241,7 @@ theorem exists_noncollapsedBefore_of_regularTimes :
   refine ⟨1 / (512 * Real.exp 3), by positivity, ?_, ?_⟩
   · rw [div_le_one (by positivity)]
     nlinarith
-  intro P₀ H κ ρ t₀ hκ hreg t p r ht hrρ hball
+  intro H κ ρ t₀ hκ hreg t p r ht hrρ hball
   have hr : 0 < r := hball.1
   have hrt : r ^ 2 ≤ (t : ℝ) := hball.radius_sq_le_time H.toHistory
   have hlt : (t : ℝ) - r ^ 2 / 9 < t := by

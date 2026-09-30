@@ -14,7 +14,7 @@ universe u v
 private abbrev E3 := EuclideanSpace ℝ (Fin 3)
 
 theorem exists_disjointBallChart_closedBall {M : Type*} [TopologicalSpace M]
-    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [IsManifold (𝓡 3) ∞ M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
     (c : BallChart 3 (𝓡 3) M) :
     ∃ d δ : BallChart 3 (𝓡 3) M,
       (∀ x ∈ Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 2,
@@ -148,7 +148,7 @@ theorem exists_ballChart_inr (c : BallChart 3 (𝓡 3) M) (d : BallChart 3 (𝓡
   have huW : ∀ x (hx : x ∈ W),
       u x = inr c d a.toHomeomorph ⟨d'.chart x, hmemW hx⟩ := by
     intro x hx
-    simp only [u, dif_pos hx]
+    simp only [u, dite_eq_left hx]
   have hinj : Set.InjOn u W := by
     intro x hx y hy hxy
     have h1 : (⟨d'.chart x, hmemW hx⟩ : d.Punctured) = ⟨d'.chart y, hmemW hy⟩ :=
@@ -250,7 +250,7 @@ theorem exists_ballChart_inl (c : BallChart 3 (𝓡 3) M) (d : BallChart 3 (𝓡
   have huW : ∀ x (hx : x ∈ W),
       u x = inl c d a.toHomeomorph ⟨c'.chart x, hmemW hx⟩ := by
     intro x hx
-    simp only [u, dif_pos hx]
+    simp only [u, dite_eq_left hx]
   have hinj : Set.InjOn u W := by
     intro x hx y hy hxy
     have h1 : (⟨c'.chart x, hmemW hx⟩ : c.Punctured) = ⟨c'.chart y, hmemW hy⟩ :=

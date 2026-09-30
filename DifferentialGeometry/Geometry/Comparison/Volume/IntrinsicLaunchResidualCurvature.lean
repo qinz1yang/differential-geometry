@@ -645,7 +645,7 @@ theorem intrJetResidual_two_zero_eq_curvature
       exact hA.trans hdA.symm)]
     rw [hz02 _ (by
       rw [Function.update_apply]
-      rw [if_pos (show (2 : Fin 3) = (Fin.succ 0).succ by rfl)]
+      rw [ite_eq_left (show (2 : Fin 3) = (Fin.succ 0).succ by rfl)]
       change ((DifferentialGeometry.CheegerGromovCompactness.CurvatureJetTerm.atom
         (DifferentialGeometry.CheegerGromovCompactness.IntrinsicJacobiJetAtom.bTime 0)).launchDeriv).eval
           (I := I) g hEnorm p 0 a b (0, 1) = 0

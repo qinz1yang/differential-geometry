@@ -70,7 +70,7 @@ theorem sphereCollarExtension_holds (N : ConnectedClosedOrientedManifold.{u} 3)
       (fun _ : ℝ => F) hD hDi hK hKt hfix
   have hEval : ∀ z ∈ e.target, (Jf 0) (e.symm z) = e.symm (F z) := by
     intro z hz
-    rw [(hJfeq 0 (e.symm z)).1, Manifold.extendChartById, if_pos (e.map_target hz),
+    rw [(hJfeq 0 (e.symm z)).1, Manifold.extendChartById, ite_eq_left (e.map_target hz),
       e.right_inv hz]
   have hcenter : (0 : EuclideanSpace ℝ (Fin 3)) ∈ e.target :=
     d.toBallChart.closedBall_subset_source (Metric.mem_closedBall_self (by norm_num))
@@ -86,7 +86,7 @@ theorem sphereCollarExtension_holds (N : ConnectedClosedOrientedManifold.{u} 3)
     exact ⟨hx1, hx2⟩
   have hΨid : (Jf 0) =ᶠ[𝓝 (e.symm 0)] id := by
     filter_upwards [hnbhd] with x hx
-    rw [(hJfeq 0 x).1, Manifold.extendChartById, if_pos hx.1,
+    rw [(hJfeq 0 x).1, Manifold.extendChartById, ite_eq_left hx.1,
       hFsmall (e x) (le_of_lt hx.2), e.left_inv hx.1]
     rfl
   have hball : (Jf 0) '' (d.toBallChart.chart '' Metric.ball (0 : EuclideanSpace ℝ (Fin 3)) 1)

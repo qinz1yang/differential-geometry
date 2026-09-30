@@ -91,6 +91,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
+omit [FiniteDimensional ℝ E] in
 lemma slotInsertFib_comp (s : ℕ) (x : M)
     (A B : TangentSpace I x →L[ℝ] TangentSpace I x) :
     ContinuousLinearMap.comp
@@ -113,6 +114,7 @@ lemma slotInsertFib_comp (s : ℕ) (x : M)
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
+omit [FiniteDimensional ℝ E] in
 lemma slotInsertFib_id (s : ℕ) (x : M) :
     slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (ContinuousLinearMap.id ℝ (TangentSpace I x)) =
@@ -180,6 +182,7 @@ lemma slotInsertEndoCc_smul (g : SmoothRiemannianMetric I M) (s : ℕ) (a : ℝ)
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
+omit [FiniteDimensional ℝ E] in
 lemma curry_slotInsertEndoFib_zero (s : ℕ) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (A : Tensor0SSpace (s + 1) I x) :
     tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
@@ -393,6 +396,7 @@ theorem iteratedCovGrad_slotInsertEndoCc_expansion (g : SmoothRiemannianMetric I
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
+omit [FiniteDimensional ℝ E] in
 lemma cotangent_slot_apply (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (om : Tensor0SSpace 1 I x)
     (w : TangentSpace I x) :

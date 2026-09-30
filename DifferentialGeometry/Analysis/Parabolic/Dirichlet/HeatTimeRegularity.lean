@@ -102,8 +102,9 @@ private theorem exists_local_lp_density_time_deriv_of_heat_divergence
     rw [← Measure.prod_restrict] at h
     exact (h.mono_measure hmeasure).const_mul (1 / 2 : ℝ)
   have hL : MemLp L 2 ν :=
-    ((((Lp.memLp U).mono_measure hmeasure).mul' (r := 2) hτ).add
-      ((Lp.memLp F).mono_measure hmeasure)).mul' (r := 2) hρ
+    hρ.fun_mul (r := 2)
+      ((hτ.fun_mul (r := 2) ((Lp.memLp U).mono_measure hmeasure)).add
+        ((Lp.memLp F).mono_measure hmeasure))
   let R := fun p => B p + L p
   have hR : MemLp R 2 ν := (Lp.memLp B).add hL
   refine ⟨hR.toLp R, hR.coeFn_toLp, ?_⟩
@@ -260,7 +261,7 @@ theorem exists_local_lp_weak_time_deriv_of_heat_timeH1
     (μ := ν) (S := S) (isOpen_Ioo.prod hΩ₀) (by norm_num : (1 : ℝ≥0∞) ≤ 2) v hU (Lp.memLp R)
     (hρsmooth.mono (Set.prod_mono hreg₀ (hsub.trans (subset_closure.trans hΩV))))
     (fun p hp => hρne p (hsub.trans (subset_closure.trans hΩV) hp.2))
-    hρinv (hDρ.mul (r := ∞) hρinv) hR
+    hρinv (hρinv.fun_mul (r := ∞) hDρ) hR
   exact ⟨R₀, hR₀⟩
 
 theorem weak_time_derivative_eq_source_of_heat_timeH1
@@ -339,7 +340,7 @@ theorem weak_time_derivative_eq_source_of_heat_timeH1
     exact h.mono_measure hmeasure
   let Q := fun p => (ρ p)⁻¹ * B p + F p
   have hQ : MemLp Q 2 ν :=
-    ((Lp.memLp B).mul' (r := 2) hρinv).add ((Lp.memLp F).mono_measure hmeasure)
+    (hρinv.fun_mul (r := 2) (Lp.memLp B)).add ((Lp.memLp F).mono_measure hmeasure)
   have hQval : (fun p => (ρ p)⁻¹ * S p - ((ρ p)⁻¹ * fderiv ℝ ρ p (1, 0)) * U p)
       =ᵐ[ν] Q := by
     filter_upwards [hSval, ae_mem_interior_time_prod hΩ₀.measurableSet] with p hp hpmem

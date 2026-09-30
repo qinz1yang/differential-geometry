@@ -31,7 +31,7 @@ theorem pos_of_continuous_ne_zero_of_pos_zero {f : ℝ → ℝ} (hf : Continuous
     exact hne c hc
 
 private theorem orientation_map_coordinates_comp {U : Type u} [TopologicalSpace U]
-    [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U] [PreconnectedSpace U]
+    [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
     {o : ManifoldOrientation ThreeModel U 3} (R : Diffeomorph ThreeModel ThreeModel U U ∞)
     (x₀ : U) (T : TangentSpace ThreeModel x₀ ≃ₗ[ℝ] ThreeSpace)
     (T' : TangentSpace ThreeModel (R x₀) ≃ₗ[ℝ] ThreeSpace) (q : Orientation ℝ ThreeSpace (Fin 3))
@@ -238,7 +238,7 @@ theorem preservesOrientation_of_jointlySmooth_isotopy {U : Type u} [TopologicalS
       simp [Diffeomorph.preservesOrientation_refl]
     have hpos := pos_of_continuous_ne_zero_of_pos_zero hfcont hfne hf0 t₁
     by_contra hcon
-    simp only [f, hcon, if_false] at hpos
+    simp only [f, hcon, ite_false] at hpos
     norm_num at hpos
 
 theorem isotopyPreservesOrientation_holds : isotopyPreservesOrientation.{u} := by

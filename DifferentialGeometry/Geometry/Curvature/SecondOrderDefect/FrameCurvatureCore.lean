@@ -1,5 +1,9 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.FrozenFrameTrace
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq
+    riemannianFiberNormSq_sum_le_card_mul)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

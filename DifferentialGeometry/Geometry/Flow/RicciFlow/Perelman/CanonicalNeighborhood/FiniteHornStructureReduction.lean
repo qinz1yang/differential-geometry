@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BoundedAtDistanceFromRmBallBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.DistanceCurvatureEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornBarrierFrontierWeb
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornBarriersMinimalFrontier
@@ -23,7 +22,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.topology PointedRiemannianManifold.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact
 
 theorem not_nonempty_finiteControlledRadius_of_boundedAtDistanceShell
@@ -42,13 +41,13 @@ theorem finite_horn_construction_of_realizedDistanceCurvatureEscapeShell
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             RealizedDistanceCurvatureEscape X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth) :
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth) :
     ∃ alphaMax collarMin : ℝ, 0 < alphaMax ∧ alphaMax < 1 / 11 ∧ 0 < collarMin ∧
       ∀ alpha : ℝ, 0 < alpha → alpha ≤ alphaMax → ∀ collar : ℝ, collarMin ≤ collar →
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth := by
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth := by
   let _ := hkappa
   let _ := hsigma
   let _ := hPhi
@@ -65,13 +64,13 @@ theorem finite_horn_construction_iff_realizedDistanceCurvatureEscapeShell
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             RealizedDistanceCurvatureEscape X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth) ↔
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth) ↔
     (∃ alphaMax collarMin : ℝ, 0 < alphaMax ∧ alphaMax < 1 / 11 ∧ 0 < collarMin ∧
       ∀ alpha : ℝ, 0 < alpha → alpha ≤ alphaMax → ∀ collar : ℝ, collarMin ≤ collar →
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth) := by
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth) := by
   constructor
   · rintro ⟨a, c, ha, ha', hc, hmain⟩
     exact ⟨a, c, ha, ha', hc, fun alpha halpha hle collar hcol =>
@@ -131,22 +130,6 @@ theorem noSubsequenceCurvatureEscapeShell_iff_boundedAtDistanceShell_of_smallSca
       BoundedAtDistanceShell.{u} kappa sigma Phi :=
   ⟨boundedAtDistanceShell_of_noSubsequenceCurvatureEscapeShell hsmall,
     noSubsequenceCurvatureEscapeShell_of_boundedAtDistanceShell⟩
-
-theorem bounded_curvature_at_distance_of_noSubsequenceCurvatureEscapeShell_and_terminalDerivativeBoundProducer
-    {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (hsmall : ∃ epsStar r : ℝ, 0 < epsStar ∧ 0 < r ∧
-      ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-        ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, CurvatureBoundedWithin X r)
-    (hesc : NoSubsequenceCurvatureEscapeShell.{u} kappa sigma Phi)
-    (hder : TerminalDerivativeBoundProducer.{u} kappa sigma Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
-        BoundedAtDistance X ∧ TerminalDerivativeBounds X := by
-  obtain ⟨e₁, he₁, hb⟩ := boundedAtDistanceShell_of_noSubsequenceCurvatureEscapeShell hsmall hesc
-  obtain ⟨e₂, he₂, hd⟩ := hder
-  exact ⟨min e₁ e₂, lt_min he₁ he₂, fun eps hp hle X =>
-    ⟨hb eps hp (le_trans hle (min_le_left e₁ e₂)) X,
-      hd eps hp (le_trans hle (min_le_right e₁ e₂)) X⟩⟩
 
 variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
   [IsManifold I3 ∞ W] [SigmaCompactSpace W]

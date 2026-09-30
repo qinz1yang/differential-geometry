@@ -302,7 +302,7 @@ theorem metricScalarAt_productMetric
       LinearMap.trace ℝ F (ricciSharp h x.2).toLinearMap
   exact LinearMap.trace_prodMap' _ _
 
-theorem metricRicciAt_productMetric_apply [I.Boundaryless] [J.Boundaryless]
+theorem metricRicciAt_productMetric_apply
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
     (x : M × N) (v : Fin 2 → TangentSpace (I.prod J) x) :
     metricRicciAt (g.prod h) x v =

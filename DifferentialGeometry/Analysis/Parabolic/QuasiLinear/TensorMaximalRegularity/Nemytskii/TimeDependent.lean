@@ -98,7 +98,7 @@ theorem memLp_time_tame
     exact add_nonneg (mul_nonneg hK (norm_nonneg _)) hQ
   change ‖N t (aeSetLift hzero f t)‖ ≤ ‖major t‖
   have hu : aeSetLift hzero f t = u := by
-    simp only [aeSetLift, dif_pos ht, u]
+    simp only [aeSetLift, dite_eq_left ht, u]
   rw [hu, Real.norm_eq_abs, abs_of_nonneg hmajor0]
   exact hn
 

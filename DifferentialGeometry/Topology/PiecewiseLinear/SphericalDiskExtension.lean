@@ -80,7 +80,7 @@ theorem exists_isPLHomeomorphOn_eqOn_disk_of_boundaryComplex
 
 theorem exists_isPLHomeomorphOn_eqOn_disk_of_eqOn_boundary
     {S D : Set E} (hS : IsPLSphere 2 S)
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDS : D ⊆ S) {g : E → E} (hg : IsPLHomeomorphOn g D D)
     (hfix : EqOn g id (r '' stdSimplexBoundary 2)) :
     ∃ G : E → E, IsPLHomeomorphOn G S S ∧ EqOn G g D ∧
@@ -117,7 +117,7 @@ open Classical in
 theorem exists_isPLHomeomorphOn_eqOn_boundary_disk_of_eqOn_boundary
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsPLBall 3 K.space) {D : Set E}
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDK : D ⊆ (boundaryComplex 3 K).space)
     {g : E → E} (hg : IsPLHomeomorphOn g D D)
     (hfix : EqOn g id (r '' stdSimplexBoundary 2)) :
@@ -135,7 +135,7 @@ open Classical in
 theorem exists_isPLHomeomorphOn_eqOn_boundary_disk_union
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsPLBall 3 K.space) {D Q : Set E}
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDK : D ⊆ (boundaryComplex 3 K).space)
     {g : E → E} (hg : IsPLHomeomorphOn g D D)
     (hfix : EqOn g id (r '' stdSimplexBoundary 2)) (hQ : IsPolyhedron Q)

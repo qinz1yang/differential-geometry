@@ -38,7 +38,7 @@ theorem SmoothDisk.integrableOn_scalar_mul_conformalFactor
   filter_upwards [ae_restrict_mem measurableSet_closedBall] with z hz
   rw [show diskExtension (fun w : Disk => metricScalarAt (I := 𝓘(ℝ, E)) g (u.map w) *
       u.conformalFactor g w) z = metricScalarAt (I := 𝓘(ℝ, E)) g (u.map ⟨z, hz⟩) *
-      u.conformalFactor g ⟨z, hz⟩ from dif_pos hz]
+      u.conformalFactor g ⟨z, hz⟩ from dite_eq_left hz]
   rw [SmoothDisk.conformalFactor_eq_diskMapConformalCoefficient u g ⟨hUeq, N, hN, hDN, hUN⟩,
     hUeq ⟨z, hz⟩]
 
@@ -329,7 +329,7 @@ private theorem leastArea_slope_le_of_conformal_minimizing_disk_standardModel
   let gamma : ℝ → Width.RegularLoop 𝓘(ℝ, E) M := fun s =>
     if hs : s ∈ Icc a b then regularLoopSlice γ hγ s hs else regularLoopSlice γ hγ t htcc
   have hGamma (s : ℝ) (hs : s ∈ Icc a b) : (gamma s).toContinuousLoop = γ s := by
-    simp only [gamma, dif_pos hs, regularLoopSlice]
+    simp only [gamma, dite_eq_left hs, regularLoopSlice]
   have hgamma : (curveOfLoopFamily (fun s => (gamma s).toContinuousLoop)).SmoothOn
       (I := 𝓘(ℝ, E)) (Icc a b) := by
     apply hγ.congr
@@ -416,17 +416,17 @@ private theorem minimizing_comp_diffeomorph
     ∀ v : Width.SmoothDisk (I := 𝓘(ℝ, E)) (Q := A),
       (∀ theta, v.map (Width.diskBoundary theta) = Φ (γ theta)) →
         Width.diskArea (Diffeomorph.pullbackMetricCross g Φ.symm)
-          (Width.SmoothDisk.comp_diffeomorph Φ u).map ≤
+          (Width.SmoothDisk.compDiffeomorph Φ u).map ≤
         Width.diskArea (Diffeomorph.pullbackMetricCross g Φ.symm) v.map := by
   intro v hv
-  have htr : ∀ theta, (Width.SmoothDisk.comp_diffeomorph Φ.symm v).map
+  have htr : ∀ theta, (Width.SmoothDisk.compDiffeomorph Φ.symm v).map
       (Width.diskBoundary theta) = γ theta := by
     intro theta
     change Φ.symm (v.map (Width.diskBoundary theta)) = γ theta
     rw [hv, Φ.symm_apply_apply]
-  have hm := hmin (Width.SmoothDisk.comp_diffeomorph Φ.symm v) htr
+  have hm := hmin (Width.SmoothDisk.compDiffeomorph Φ.symm v) htr
   rw [Width.diskArea_pullbackMetricCross, Width.diskArea_pullbackMetricCross]
-  have hu : (fun z : Width.Disk => Φ.symm ((Width.SmoothDisk.comp_diffeomorph Φ u).map z)) =
+  have hu : (fun z : Width.Disk => Φ.symm ((Width.SmoothDisk.compDiffeomorph Φ u).map z)) =
       u.map := by
     funext z
     exact Φ.symm_apply_apply (u.map z)
@@ -462,7 +462,7 @@ theorem leastArea_slope_le_of_conformal_minimizing_disk
   let Φ : M ≃ₘ⟮I, 𝓘(ℝ, E)⟯ c.Q := c.equiv
   let γ' : ℝ → ContinuousFreeLoop c.Q :=
     fun s => (⟨Φ, Φ.continuous⟩ : C(M, c.Q)).comp (γ s)
-  let u' : Width.SmoothDisk (I := 𝓘(ℝ, E)) (Q := c.Q) := Width.SmoothDisk.comp_diffeomorph Φ u
+  let u' : Width.SmoothDisk (I := 𝓘(ℝ, E)) (Q := c.Q) := Width.SmoothDisk.compDiffeomorph Φ u
   obtain ⟨B', hB'⟩ := exists_ricciBackground_pullback B Φ
   have hm (s : ℝ) : B'.family.metric s =
       Diffeomorph.pullbackMetricCross (B.family.metric s) Φ.symm :=

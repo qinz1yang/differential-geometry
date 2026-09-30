@@ -37,7 +37,7 @@ private theorem abs_mvfderiv_le_normGrad (g : SmoothRiemannianMetric I M)
     |mvfderiv I f x v| ≤ Real.sqrt (normGradSqFun g f x) *
       Real.sqrt (g.inner x v v) := by
   rw [mvfderiv_real_eq_mfderiv, ← inner_gradFun g f x v]
-  exact DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic g x _ v
+  exact DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic g x _ v
 
 private theorem continuous_partition_gradient_sum
     (g : SmoothRiemannianMetric I M) (ρ : SmoothPartitionOfUnity ι I M) :

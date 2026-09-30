@@ -13,10 +13,10 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 theorem RetainedCoreHistory.exists_extension_or_singular_incomingSlab
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
+    (H : RetainedCoreHistory.{u})
     (htime : H.time (Fin.last H.eventCount) = H.horizon)
     {B : ℝ} (hB : H.horizon < B) :
-    (∃ K : RetainedCoreHistory P, K.horizon = B ∧
+    (∃ K : RetainedCoreHistory.{u}, K.horizon = B ∧
       H.toHistory.IsPrefixOf K.toHistory ∧ K.eventCount = H.eventCount) ∨
       ∃ (s : ℝ) (G : (H.stage (Fin.last H.eventCount)).IncomingSlab
           (H.time (Fin.last H.eventCount)) s),
@@ -32,10 +32,10 @@ theorem RetainedCoreHistory.exists_extension_or_singular_incomingSlab
   · exact Or.inr ⟨s, G, hs, hinit, hsing⟩
 
 theorem RetainedCoreHistory.exists_extension_or_oneStepIncoming
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
+    (H : RetainedCoreHistory.{u})
     (htime : H.time (Fin.last H.eventCount) = H.horizon)
     (parameters : CutoffParameters) {B : ℝ} (hB : H.horizon < B) :
-    (∃ K : RetainedCoreHistory P, K.horizon = B ∧
+    (∃ K : RetainedCoreHistory.{u}, K.horizon = B ∧
       H.toHistory.IsPrefixOf K.toHistory ∧ K.eventCount = H.eventCount) ∨
       ∃ (s : ℝ) (G : (H.stage (Fin.last H.eventCount)).IncomingSlab
           (H.time (Fin.last H.eventCount)) s)

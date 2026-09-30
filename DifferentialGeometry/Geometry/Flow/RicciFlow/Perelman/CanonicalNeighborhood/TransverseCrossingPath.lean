@@ -132,9 +132,9 @@ theorem exists_transversePath_of_opposite_arms [T2Space M] {J : RealTimeInterval
     refine ⟨fun τ => if τ ≤ 1 / 3 then a.point (a.length - 3 * τ * (a.length - s))
       else if τ ≤ 2 / 3 then neck.map (γ τ, k + (l - k) * (3 * τ - 1))
       else b.point (v + (3 * τ - 2) * (b.length - v)),
-      fun τ hτ => if_pos hτ, fun τ h1 h2 => ?_, fun τ h => ?_⟩
-    · exact (if_neg (not_le.mpr h1)).trans (if_pos h2)
-    · exact (if_neg (not_le.mpr (by linarith : (1 : ℝ) / 3 < τ))).trans (if_neg (not_le.mpr h))
+      fun τ hτ => ite_eq_left hτ, fun τ h1 h2 => ?_, fun τ h => ?_⟩
+    · exact (ite_eq_right (not_le.mpr h1)).trans (ite_eq_left h2)
+    · exact (ite_eq_right (not_le.mpr (by linarith : (1 : ℝ) / 3 < τ))).trans (ite_eq_right (not_le.mpr h))
   have hcleft : ∀ τ ∈ Icc (0 : ℝ) (1 / 3),
       c τ = a.point (a.length - 3 * τ * (a.length - s)) := fun τ hτ => hcA τ hτ.2
   have hcmid : ∀ τ ∈ Icc (1 / 3 : ℝ) (2 / 3),
@@ -338,14 +338,14 @@ theorem exists_transversePath_of_opposite_arms [T2Space M] {J : RealTimeInterval
       have hcon' : 0 ≤ k := not_lt.mp hcon
       nlinarith [mul_nonneg hcon' hlpos.le]
     have hpos : (0 : ℝ) < (l - k) * 3 := by linarith
-    simp only [TransversePath.intersection, Finset.sum_singleton, hderiv, if_pos hpos]
+    simp only [TransversePath.intersection, Finset.sum_singleton, hderiv, ite_eq_left hpos]
   · intro hlneg
     have hkpos : (0 : ℝ) < k := by
       by_contra hcon
       have hcon' : k ≤ 0 := not_lt.mp hcon
       nlinarith [mul_nonneg (neg_nonneg.mpr hcon') (neg_nonneg.mpr hlneg.le)]
     have hneg : ¬ (0 : ℝ) < (l - k) * 3 := not_lt.mpr (by linarith)
-    simp only [TransversePath.intersection, Finset.sum_singleton, hderiv, if_neg hneg]
+    simp only [TransversePath.intersection, Finset.sum_singleton, hderiv, ite_eq_right hneg]
 
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

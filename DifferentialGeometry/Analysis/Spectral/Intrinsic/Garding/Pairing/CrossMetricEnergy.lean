@@ -102,7 +102,7 @@ private theorem cross_point_le
   let HessK := leviHessSec (I := I) k f hf x
   let du := duSec (I := I) f hf x
   let Dt := connectionDifferenceTensorAt (I := I) covQ covK x
-  let B := connectionDifferenceOutput (I := I)
+  let B := bilinearCovectorComp (I := I)
     (CovariantDerivative.difference covQ covK x) du
   have hEq' :=
     DifferentialGeometry.CheegerGromovCompactness.metricUniformEquivalentOn_symm
@@ -189,7 +189,7 @@ private theorem cross_point_le
         Real.sqrt (normSq0S (I := I) q x 2 HessQ) +
           Real.sqrt (normSq0S (I := I) q x 2 B) := by
     rw [hHess]
-    exact Tensor0SBundle.sqrt_normSq0S_add_le
+    exact DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le
       (I := I) q x 2 HessQ B
   have htriSq : normSq0S (I := I) q x 2 HessK <=
       2 * normSq0S (I := I) q x 2 HessQ +

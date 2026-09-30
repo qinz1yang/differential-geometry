@@ -167,7 +167,7 @@ private theorem extendChartById_chartSymm
     extendChartById φ.symm.toOpenPartialHomeomorph f y = φ (f (φ.symm y)) := by
   rw [extendChartById]
   have hsrc : y ∈ φ.symm.toOpenPartialHomeomorph.source := hy
-  rw [if_pos hsrc]
+  rw [ite_eq_left hsrc]
   rfl
 
 variable [T2Space M]
@@ -189,19 +189,6 @@ theorem ballChartTransport_of_modelDiffeomorph (c c' : BallChart 3 (𝓡 3) M)
       hK hKt (fun _ z hz => hfix z hz)
   refine ⟨J (), fun x hx => ?_⟩
   rw [(hJe () (c.chart x)).1, extendChartById_chartSymm c'.chart D (hover x hx), hact x hx]
-
-def LocalizedModelTransportInput (c c' : BallChart 3 (𝓡 3) M) : Prop :=
-  (∀ x ∈ Metric.closedBall (0 : ballChartModel) 2, c.chart x ∈ c'.chart.target) ∧
-    ∃ (D : Diffeomorph 𝓘(ℝ, ballChartModel) 𝓘(ℝ, ballChartModel) ballChartModel
-        ballChartModel ∞) (K : Set ballChartModel),
-      IsCompact K ∧ K ⊆ c'.chart.source ∧
-        (∀ z, z ∉ K → D z = z ∧ D.symm z = z) ∧
-        ∀ x ∈ Metric.closedBall (0 : ballChartModel) 2, D (c'.chart.symm (c.chart x)) = x
-
-theorem ballChartTransport_of_localizedModelTransportInput {c c' : BallChart 3 (𝓡 3) M}
-    (h : LocalizedModelTransportInput c c') : BallChartTransport c c' := by
-  obtain ⟨hover, D, K, hK, hKt, hfix, hact⟩ := h
-  exact ballChartTransport_of_modelDiffeomorph c c' D hK hKt hfix hover hact
 
 end DifferentialGeometry.Topology.Manifold
 namespace DifferentialGeometry.Topology

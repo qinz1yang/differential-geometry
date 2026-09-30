@@ -48,7 +48,7 @@ private theorem tendsto_uniformCauchySeqOnLimit
     (hF : UniformCauchySeqOn F atTop s) {x : α} (hx : x ∈ s) :
     Tendsto (fun i => F i x) atTop
       (𝓝 (uniformCauchySeqOnLimit F s hF x)) := by
-  rw [uniformCauchySeqOnLimit, dif_pos hx]
+  rw [uniformCauchySeqOnLimit, dite_eq_left hx]
   exact Classical.choose_spec
     (cauchySeq_tendsto_of_complete (hF.cauchySeq hx))
 
@@ -88,7 +88,7 @@ private theorem intervalIntegrable_inner_timeL2
     change Integrable ((fun t => ‖f t‖) * fun t => ‖g t‖) ν
     exact hf.norm.integrable_mul hg.norm
   have hinner : Integrable (fun t => inner ℝ (f t) (g t)) ν := by
-    refine hprod.mono' (hf.1.inner hg.1) ?_
+    refine hprod.mono' (hf.aestronglyMeasurable.inner hg.aestronglyMeasurable) ?_
     filter_upwards [] with t
     exact norm_inner_le_norm _ _
   rw [intervalIntegrable_iff]
@@ -147,16 +147,16 @@ private theorem finset_sum_le_tsum_compl
   have hgnn : ∀ i, 0 ≤ g i := by
     intro i
     by_cases hi : i ∉ s
-    · simp only [g, if_pos hi]
+    · simp only [g, ite_eq_left hi]
       exact hfnn i
-    · simp only [g, if_neg hi]
+    · simp only [g, ite_eq_right hi]
       exact le_rfl
   have hgle : ∀ i, g i ≤ f i := by
     intro i
     by_cases hi : i ∉ s
-    · simp only [g, if_pos hi]
+    · simp only [g, ite_eq_left hi]
       exact le_rfl
-    · simp only [g, if_neg hi]
+    · simp only [g, ite_eq_right hi]
       exact hfnn i
   have hg : Summable g :=
     Summable.of_nonneg_of_le hgnn hgle hf
@@ -164,15 +164,15 @@ private theorem finset_sum_le_tsum_compl
     ∑ i ∈ d, f i = ∑ i ∈ d, g i := by
       apply Finset.sum_congr rfl
       intro i hi
-      simp only [g, if_pos (hd i hi)]
+      simp only [g, ite_eq_left (hd i hi)]
     _ ≤ ∑' i, g i := hg.sum_le_tsum d fun i hi => hgnn i
     _ = ∑' i, ({x | x ∉ s} : Set α).indicator f i := by
       apply tsum_congr
       intro i
       by_cases hi : i ∉ s
-      · rw [show g i = f i by simp only [g, if_pos hi],
+      · rw [show g i = f i by simp only [g, ite_eq_left hi],
           Set.indicator_of_mem (show i ∈ {x | x ∉ s} from hi)]
-      · rw [show g i = 0 by simp only [g, if_neg hi],
+      · rw [show g i = 0 by simp only [g, ite_eq_right hi],
           Set.indicator_of_notMem (show i ∉ {x | x ∉ s} from hi)]
     _ = ∑' i : {x // x ∉ s}, f i :=
       (tsum_subtype {x | x ∉ s} f).symm

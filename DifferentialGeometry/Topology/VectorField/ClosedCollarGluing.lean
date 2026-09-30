@@ -93,9 +93,9 @@ theorem exists_closedCollarGluing
     convert h using 1
     funext q
     by_cases hq : q.val.2 ≤ 0 <;> simp [G, Set.piecewise, hq]
-  have hGneg (q : U) (hq : q.val.2 ≤ 0) : G q = N q := if_pos hq
+  have hGneg (q : U) (hq : q.val.2 ≤ 0) : G q = N q := ite_eq_left hq
   have hGpos (q : U) (hq : 0 < q.val.2) : G q = collarExtension T b collarTransition q.val :=
-    if_neg hq.not_ge
+    ite_eq_right hq.not_ge
   refine ⟨κ, hκ, hκeq, hκbound, G, hGs, (fun q hq => (hGneg q hq).trans (hNeq q)),
     hGpos, ?_, ?_, ?_⟩
   · intro q hq

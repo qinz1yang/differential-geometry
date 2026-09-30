@@ -197,15 +197,15 @@ theorem rampFamilyInput_of_windowExtension
     refine ⟨sol, ?_, ?_⟩
     · refine continuousAt_of_eq_subtype_val (tX := smoothProductCylinderTopology e (Icc a b))
         hU sols hcont hxU ?_ ?_
-      · simp only [sol, dif_pos hxU]
+      · simp only [sol, dite_eq_left hxU]
       · intro x hx
-        simp only [sol, dif_pos hx]
+        simp only [sol, dite_eq_left hx]
     · intro c hs hr
       by_cases h : (⟨c, hs, hr⟩ :
           RampInitialData (I := I) (Q := Q) (D := D) (a := a) (b := b) B lambda) ∈ U
-      · simp only [sol, dif_pos h]
+      · simp only [sol, dite_eq_left h]
         exact ⟨hsol ⟨_, h⟩, hramp ⟨_, h⟩, hinit ⟨_, h⟩⟩
-      · simp only [sol, dif_neg h]
+      · simp only [sol, dite_eq_right h]
         exact ⟨(K.exists_solution c hs hr).choose_spec.1,
           (K.exists_solution c hs hr).choose_spec.2.1,
           (K.exists_solution c hs hr).choose_spec.2.2.1⟩
@@ -215,7 +215,7 @@ theorem rfs_csf_ramp_family_of_windowExtension
     (B : RicciBackground (I := I) (M := Q) D a b) (lambda omega : ℝ)
     (hlambda : 0 < lambda) (hlambda_one : lambda ≤ 1)
     {d : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
-    {P : Type*} [TopologicalSpace P] [CompactSpace P] (initial : P → ProductCurve Q)
+    {P : Type*} [TopologicalSpace P] (initial : P → ProductCurve Q)
     (hcontinuous : @Continuous P (ProductCurve Q) inferInstance
       (smoothProductInitialTopology e a) initial)
     (hsmooth : ∀ p, (initial p).SmoothOn (I := I) {a})

@@ -65,11 +65,11 @@ theorem exists_inv_seq
     by_cases hn : N ≤ n
     · have hsrc : (Φ n hn).source = W :=
         (Classical.choose_spec (hex n hn)).1
-      simp only [e, dif_pos hn]
+      simp only [e, dite_eq_left hn]
       change closure Q ⊆ (Φ n hn).source
       rw [hsrc]
       exact hQW
-    · simp only [e, dif_neg hn, OpenPartialHomeomorph.refl_source,
+    · simp only [e, dite_eq_right hn, OpenPartialHomeomorph.refl_source,
         subset_univ]
   have hstage_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (e n : E → E) Q := by
     intro n
@@ -86,7 +86,7 @@ theorem exists_inv_seq
       rw [show e n = (Φ n hn).toOpenPartialHomeomorph by simp [e, hn]]
       rw [← OpenPartialHomeomorph.coe_toPartialEquiv]
       exact hcd'.mono (subset_closure.trans hQW)
-    · simpa only [e, dif_neg hn, OpenPartialHomeomorph.refl_apply,
+    · simpa only [e, dite_eq_right hn, OpenPartialHomeomorph.refl_apply,
         id_eq] using
         (contDiff_id : ContDiff Real (∞ : WithTop ℕ∞) (id : E → E)).contDiffOn
   have he_convergence : MapCInfConvergenceOnCompacts Q (fun n ↦ (e n : E → E)) id := by

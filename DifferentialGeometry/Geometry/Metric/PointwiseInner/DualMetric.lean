@@ -14,8 +14,7 @@ open Manifold Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace Integral
-namespace L2
+namespace TensorMetric
 
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -257,7 +256,7 @@ private lemma update_castAdd_first
   by_cases hk : k = i
   · subst hk
     simp
-  · rw [if_neg hk, if_neg]
+  · rw [ite_eq_right hk, ite_eq_right]
     intro h
     exact hk (Fin.castAdd_injective r s h.symm).symm
 
@@ -269,7 +268,7 @@ private lemma update_castAdd_first_noop_last
   classical
   funext j
   rw [Function.update_apply]
-  rw [if_neg (natAdd_ne_castAdd j i)]
+  rw [ite_eq_right (natAdd_ne_castAdd j i)]
 
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E] in
 private lemma update_natAdd_last_noop_first
@@ -279,7 +278,7 @@ private lemma update_natAdd_last_noop_first
   classical
   funext k
   rw [Function.update_apply]
-  rw [if_neg (castAdd_ne_natAdd k j)]
+  rw [ite_eq_right (castAdd_ne_natAdd k j)]
 
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E] in
 private lemma update_natAdd_last
@@ -292,7 +291,7 @@ private lemma update_natAdd_last
   by_cases hk : k = j
   · subst hk
     simp
-  · rw [if_neg hk, if_neg]
+  · rw [ite_eq_right hk, ite_eq_right]
     intro h
     exact hk (Fin.natAdd_injective s r h.symm).symm
 
@@ -451,7 +450,7 @@ private lemma lowerAllUpperIndicesML_norm_bound
     rw [h_mkPi] at h₁
     rw [one_mul] at h₁
     refine h₁.trans ?_
-    refine Finset.prod_le_prod (fun _ _ => norm_nonneg _) ?_
+    refine Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _) ?_
     intro i _
     exact (modelInnerAt (I := I) (M := M) g x).le_opNorm (v (Fin.castAdd s i))
   calc ‖T α (fun j : Fin s => v (Fin.natAdd r j))‖
@@ -766,11 +765,11 @@ theorem lowerAllUpperIndices_injective
       by_cases hjk : jdx = kdx'
       · subst hjk
         simp
-      · rw [if_neg hjk]
+      · rw [ite_eq_right hjk]
         have hjk' : ∃ k : Fin r, jdx k ≠ kdx' k := Function.ne_iff.mp hjk
         obtain ⟨k₀, hk₀⟩ := hjk'
         refine Finset.prod_eq_zero (Finset.mem_univ k₀) ?_
-        rw [if_neg hk₀]
+        rw [ite_eq_right hk₀]
     have hsimplify :
         ∑ jdx : Fin r → Fin n,
             α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k)) *
@@ -807,7 +806,7 @@ theorem lowerAllUpperIndices_injective
       rw [hsum]
       have h := Finset.sum_ite_eq' Finset.univ kdx'
         (fun jdx => α (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (jdx k)))
-      rw [h, if_pos (Finset.mem_univ _)]
+      rw [h, ite_eq_left (Finset.mem_univ _)]
     rw [hsimplify]
   rw [hspan]
   rw [map_sum]
@@ -818,8 +817,7 @@ theorem lowerAllUpperIndices_injective
     smul_eq_mul]
   rw [hTβ idx, mul_zero]
 
-end L2
-end Integral
+end TensorMetric
 end DifferentialGeometry
 
 end

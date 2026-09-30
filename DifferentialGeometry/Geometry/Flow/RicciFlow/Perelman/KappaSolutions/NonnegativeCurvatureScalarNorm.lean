@@ -59,7 +59,7 @@ theorem sqrt_metricRm_normSq_le_finrank_sq_mul_scalar
       exact Finset.single_le_sum (fun k _ => hsec k j) (Finset.mem_univ i)
     have hupper := metricRicciAt_le_half_scalar_mul_inner_of_curvatureOperator_nonnegative
       g x hoperator (basis j)
-    rw [hON j j, if_pos rfl, mul_one] at hupper
+    rw [hON j j, ite_eq_left rfl, mul_one] at hupper
     change metricRicciAt (I := I) g x (vec2 (basis j) (basis j)) ≤ R / 2 at hupper
     linarith
   have hsym := mem_algebraicCurvatureTensorSubmodule.mp

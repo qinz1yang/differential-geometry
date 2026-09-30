@@ -95,132 +95,6 @@ def oppositeConnectedSumLaws : Prop :=
     standardThreeSphereLift.{u}.opposite.toClosedOrientedManifold
     standardThreeSphereLift.{u}.toClosedOrientedManifold)
 
-theorem finiteConnectedSum_append_of_connectedSumLaws (h : connectedSumLaws.{u})
-    (L K : List (ConnectedClosedOrientedManifold.{u} 3)) :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (finiteConnectedSum (L ++ K)).toClosedOrientedManifold
-      (connectedSum (finiteConnectedSum L) (finiteConnectedSum K)).toClosedOrientedManifold) := by
-  rcases h with ⟨hunitR, hunitL, -, hassoc, -, htransportR⟩
-  induction L generalizing K with
-  | nil =>
-      rw [List.nil_append, finiteConnectedSum_nil]
-      exact nonemptyOrientedDiffeomorph_symm (hunitL (finiteConnectedSum K))
-  | cons M L ih =>
-      cases L with
-      | nil =>
-          cases K with
-          | nil =>
-              simp only [List.append_nil, finiteConnectedSum_nil, finiteConnectedSum_singleton]
-              exact nonemptyOrientedDiffeomorph_symm (hunitR M)
-          | cons N K =>
-              simp only [List.cons_append, List.nil_append, finiteConnectedSum_singleton,
-                finiteConnectedSum_cons_cons]
-              exact ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩
-      | cons N L =>
-          simp only [List.cons_append, finiteConnectedSum_cons_cons]
-          exact nonemptyOrientedDiffeomorph_trans
-            (htransportR M (finiteConnectedSum ((N :: L) ++ K))
-              (connectedSum (finiteConnectedSum (N :: L)) (finiteConnectedSum K)) (ih K))
-            (nonemptyOrientedDiffeomorph_symm
-              (hassoc M (finiteConnectedSum (N :: L)) (finiteConnectedSum K)))
-
-theorem finiteConnectedSum_perm_of_connectedSumLaws (h : connectedSumLaws.{u})
-    {L K : List (ConnectedClosedOrientedManifold.{u} 3)} (hp : L.Perm K) :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (finiteConnectedSum L).toClosedOrientedManifold
-      (finiteConnectedSum K).toClosedOrientedManifold) := by
-  rcases h with ⟨-, -, hcomm, hassoc, htransportL, htransportR⟩
-  refine List.Perm.rec (motive := fun L K _ =>
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (finiteConnectedSum L).toClosedOrientedManifold
-      (finiteConnectedSum K).toClosedOrientedManifold)) ?_ ?_ ?_ ?_ hp
-  · exact ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩
-  · intro x l₁ l₂ hl ih
-    cases l₁ with
-    | nil =>
-        have hl₂ : l₂ = [] := List.Perm.eq_nil hl.symm
-        subst hl₂
-        exact ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩
-    | cons a l₁' =>
-        cases l₂ with
-        | nil => exact absurd (List.Perm.eq_nil hl) (by simp)
-        | cons b l₂' =>
-            simp only [finiteConnectedSum_cons_cons]
-            exact htransportR x (finiteConnectedSum (a :: l₁'))
-              (finiteConnectedSum (b :: l₂')) ih
-  · intro x y l
-    cases l with
-    | nil =>
-        simp only [finiteConnectedSum_singleton, finiteConnectedSum_cons_cons]
-        exact hcomm y x
-    | cons z l =>
-        simp only [finiteConnectedSum_cons_cons]
-        exact nonemptyOrientedDiffeomorph_trans
-          (nonemptyOrientedDiffeomorph_symm (hassoc y x (finiteConnectedSum (z :: l))))
-          (nonemptyOrientedDiffeomorph_trans
-            (htransportL (connectedSum y x) (connectedSum x y) (finiteConnectedSum (z :: l))
-              (hcomm y x))
-            (hassoc x y (finiteConnectedSum (z :: l))))
-  · intro l₁ l₂ l₃ h₁ h₂ ih₁ ih₂
-    exact nonemptyOrientedDiffeomorph_trans ih₁ ih₂
-
-theorem finiteConnectedSum_congr_of_connectedSumLaws (h : connectedSumLaws.{u})
-    {L K : List (ConnectedClosedOrientedManifold.{u} 3)}
-    (hf : List.Forall₂ (fun (M N : ConnectedClosedOrientedManifold.{u} 3) =>
-      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-        M.toClosedOrientedManifold N.toClosedOrientedManifold)) L K) :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (finiteConnectedSum L).toClosedOrientedManifold
-      (finiteConnectedSum K).toClosedOrientedManifold) := by
-  rcases h with ⟨-, -, -, -, htransportL, htransportR⟩
-  refine List.Forall₂.rec (motive := fun L K _ =>
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (finiteConnectedSum L).toClosedOrientedManifold
-      (finiteConnectedSum K).toClosedOrientedManifold)) ?_ ?_ hf
-  · exact ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩
-  · intro M N L' K' hM hL' ih
-    cases L' with
-    | nil =>
-        have hK' : K' = [] := List.forall₂_nil_left_iff.mp hL'
-        subst hK'
-        simp only [finiteConnectedSum_singleton]
-        exact hM
-    | cons M2 L'' =>
-        cases K' with
-        | nil => exact absurd (List.forall₂_nil_right_iff.mp hL') (by simp)
-        | cons N2 K'' =>
-            simp only [finiteConnectedSum_cons_cons]
-            exact nonemptyOrientedDiffeomorph_trans
-              (htransportL M N (finiteConnectedSum (M2 :: L'')) hM)
-              (htransportR N (finiteConnectedSum (M2 :: L''))
-                (finiteConnectedSum (N2 :: K'')) ih)
-
-theorem finiteConnectedSum_opposite_of_connectedSumLaws
-    (h : connectedSumLaws.{u})
-    (hbin : ∀ X Y : ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-        (connectedSum X Y).opposite.toClosedOrientedManifold
-        (connectedSum X.opposite Y.opposite).toClosedOrientedManifold))
-    (hsphere : Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      standardThreeSphereLift.{u}.opposite.toClosedOrientedManifold
-      standardThreeSphereLift.{u}.toClosedOrientedManifold))
-    (L : List (ConnectedClosedOrientedManifold.{u} 3)) :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (finiteConnectedSum L).opposite.toClosedOrientedManifold
-      (finiteConnectedSum (L.map ConnectedClosedOrientedManifold.opposite)).toClosedOrientedManifold) := by
-  rcases h with ⟨-, -, -, -, htransportL, htransportR⟩
-  induction L with
-  | nil => simpa only [List.map_nil, finiteConnectedSum_nil] using hsphere
-  | cons M L ih =>
-      cases L with
-      | nil => exact ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩
-      | cons N L' =>
-          simp only [List.map_cons, finiteConnectedSum_cons_cons]
-          exact nonemptyOrientedDiffeomorph_trans
-            (hbin M (finiteConnectedSum (N :: L')))
-            (htransportR M.opposite (finiteConnectedSum (N :: L')).opposite
-              (finiteConnectedSum ((N :: L').map ConnectedClosedOrientedManifold.opposite)) ih)
-
 theorem finiteConnectedSum_append_of_unit_assoc_transport
     (hunitR : ∀ X : ConnectedClosedOrientedManifold.{u} 3,
       Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
@@ -266,62 +140,6 @@ theorem finiteConnectedSum_append_of_unit_assoc_transport
               (connectedSum (finiteConnectedSum (N :: L)) (finiteConnectedSum K)) (ih K))
             (nonemptyOrientedDiffeomorph_symm
               (hassoc M (finiteConnectedSum (N :: L)) (finiteConnectedSum K)))
-
-end DifferentialGeometry.Topology
-
-namespace DifferentialGeometry.Topology
-
-universe u v u' v'
-
-def connectedSumTransport : Prop :=
-  ∀ (M : ConnectedClosedOrientedManifold.{u} 3) (M' : ConnectedClosedOrientedManifold.{v} 3)
-    (N : ConnectedClosedOrientedManifold.{u'} 3) (N' : ConnectedClosedOrientedManifold.{v'} 3),
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      M.toClosedOrientedManifold M'.toClosedOrientedManifold) →
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      N.toClosedOrientedManifold N'.toClosedOrientedManifold) →
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (connectedSum M N).toClosedOrientedManifold
-      (connectedSum M' N').toClosedOrientedManifold)
-
-theorem standardThreeSphereLift_orientedDiffeomorph :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (standardThreeSphereLift.{u}).toClosedOrientedManifold
-      (standardThreeSphereLift.{v}).toClosedOrientedManifold) :=
-  ⟨(ClosedOrientedManifold.uliftOrientedDiffeomorph.{0, u}
-      standardThreeSphere.toClosedOrientedManifold).symm.trans
-    (ClosedOrientedManifold.uliftOrientedDiffeomorph.{0, v}
-      standardThreeSphere.toClosedOrientedManifold)⟩
-
-theorem finiteConnectedSum_congr_of_connectedSumTransport
-    (h : connectedSumTransport.{u, v, u, v})
-    {L : List (ConnectedClosedOrientedManifold.{u} 3)}
-    {K : List (ConnectedClosedOrientedManifold.{v} 3)}
-    (hf : List.Forall₂ (fun (M : ConnectedClosedOrientedManifold.{u} 3)
-      (N : ConnectedClosedOrientedManifold.{v} 3) =>
-        Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-          M.toClosedOrientedManifold N.toClosedOrientedManifold)) L K) :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (finiteConnectedSum L).toClosedOrientedManifold
-      (finiteConnectedSum K).toClosedOrientedManifold) := by
-  induction hf with
-  | nil => exact standardThreeSphereLift_orientedDiffeomorph
-  | cons hhead htail ih =>
-      cases htail with
-      | nil => exact hhead
-      | cons hhead' htail' =>
-          exact h _ _ _ _ hhead ih
-
-theorem connectedSumTransport_of_binaryConnectedSumLaws
-    (h : binaryConnectedSumLaws.{u}) : connectedSumTransport.{u, u, u, u} :=
-  h.2.2.2.2
-
-end DifferentialGeometry.Topology
-
-
-namespace DifferentialGeometry.Topology
-
-universe u v
 
 theorem finiteConnectedSum_perm_of_comm_assoc_transport
     (hcomm : ∀ X Y : ConnectedClosedOrientedManifold.{u} 3,
@@ -399,7 +217,8 @@ theorem finiteConnectedSum_opposite_of_binary_transport
     (L : List (ConnectedClosedOrientedManifold.{u} 3)) :
     Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
       (finiteConnectedSum L).opposite.toClosedOrientedManifold
-      (finiteConnectedSum (L.map ConnectedClosedOrientedManifold.opposite)).toClosedOrientedManifold) := by
+      (finiteConnectedSum
+        (L.map ConnectedClosedOrientedManifold.opposite)).toClosedOrientedManifold) := by
   induction L with
   | nil => simpa only [List.map_nil, finiteConnectedSum_nil] using hsphere
   | cons M L ih =>
@@ -412,7 +231,122 @@ theorem finiteConnectedSum_opposite_of_binary_transport
             (htransportR M.opposite (finiteConnectedSum (N :: L')).opposite
               (finiteConnectedSum ((N :: L').map ConnectedClosedOrientedManifold.opposite)) ih)
 
+theorem finiteConnectedSum_append_of_connectedSumLaws (h : connectedSumLaws.{u})
+    (L K : List (ConnectedClosedOrientedManifold.{u} 3)) :
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (finiteConnectedSum (L ++ K)).toClosedOrientedManifold
+      (connectedSum (finiteConnectedSum L) (finiteConnectedSum K)).toClosedOrientedManifold) := by
+  rcases h with ⟨hunitR, hunitL, -, hassoc, -, htransportR⟩
+  exact finiteConnectedSum_append_of_unit_assoc_transport
+    hunitR hunitL hassoc htransportR L K
+
+theorem finiteConnectedSum_perm_of_connectedSumLaws (h : connectedSumLaws.{u})
+    {L K : List (ConnectedClosedOrientedManifold.{u} 3)} (hp : L.Perm K) :
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (finiteConnectedSum L).toClosedOrientedManifold
+      (finiteConnectedSum K).toClosedOrientedManifold) := by
+  rcases h with ⟨-, -, hcomm, hassoc, htransportL, htransportR⟩
+  exact finiteConnectedSum_perm_of_comm_assoc_transport
+    hcomm hassoc htransportL htransportR hp
+
+theorem finiteConnectedSum_congr_of_connectedSumLaws (h : connectedSumLaws.{u})
+    {L K : List (ConnectedClosedOrientedManifold.{u} 3)}
+    (hf : List.Forall₂ (fun (M N : ConnectedClosedOrientedManifold.{u} 3) =>
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        M.toClosedOrientedManifold N.toClosedOrientedManifold)) L K) :
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (finiteConnectedSum L).toClosedOrientedManifold
+      (finiteConnectedSum K).toClosedOrientedManifold) := by
+  rcases h with ⟨-, -, -, -, htransportL, htransportR⟩
+  refine List.Forall₂.rec (motive := fun L K _ =>
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (finiteConnectedSum L).toClosedOrientedManifold
+      (finiteConnectedSum K).toClosedOrientedManifold)) ?_ ?_ hf
+  · exact ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩
+  · intro M N L' K' hM hL' ih
+    cases L' with
+    | nil =>
+        have hK' : K' = [] := List.forall₂_nil_left_iff.mp hL'
+        subst hK'
+        simp only [finiteConnectedSum_singleton]
+        exact hM
+    | cons M2 L'' =>
+        cases K' with
+        | nil => exact absurd (List.forall₂_nil_right_iff.mp hL') (by simp)
+        | cons N2 K'' =>
+            simp only [finiteConnectedSum_cons_cons]
+            exact nonemptyOrientedDiffeomorph_trans
+              (htransportL M N (finiteConnectedSum (M2 :: L'')) hM)
+              (htransportR N (finiteConnectedSum (M2 :: L''))
+                (finiteConnectedSum (N2 :: K'')) ih)
+
+theorem finiteConnectedSum_opposite_of_connectedSumLaws
+    (h : connectedSumLaws.{u})
+    (hbin : ∀ X Y : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        (connectedSum X Y).opposite.toClosedOrientedManifold
+        (connectedSum X.opposite Y.opposite).toClosedOrientedManifold))
+    (hsphere : Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      standardThreeSphereLift.{u}.opposite.toClosedOrientedManifold
+      standardThreeSphereLift.{u}.toClosedOrientedManifold))
+    (L : List (ConnectedClosedOrientedManifold.{u} 3)) :
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (finiteConnectedSum L).opposite.toClosedOrientedManifold
+      (finiteConnectedSum
+        (L.map ConnectedClosedOrientedManifold.opposite)).toClosedOrientedManifold) := by
+  exact finiteConnectedSum_opposite_of_binary_transport hbin h.2.2.2.2.2 hsphere L
+
 end DifferentialGeometry.Topology
+
+namespace DifferentialGeometry.Topology
+
+universe u v u' v'
+
+def connectedSumTransport : Prop :=
+  ∀ (M : ConnectedClosedOrientedManifold.{u} 3) (M' : ConnectedClosedOrientedManifold.{v} 3)
+    (N : ConnectedClosedOrientedManifold.{u'} 3) (N' : ConnectedClosedOrientedManifold.{v'} 3),
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      M.toClosedOrientedManifold M'.toClosedOrientedManifold) →
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      N.toClosedOrientedManifold N'.toClosedOrientedManifold) →
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (connectedSum M N).toClosedOrientedManifold
+      (connectedSum M' N').toClosedOrientedManifold)
+
+theorem standardThreeSphereLift_orientedDiffeomorph :
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (standardThreeSphereLift.{u}).toClosedOrientedManifold
+      (standardThreeSphereLift.{v}).toClosedOrientedManifold) :=
+  ⟨(ClosedOrientedManifold.uliftOrientedDiffeomorph.{0, u}
+      standardThreeSphere.toClosedOrientedManifold).symm.trans
+    (ClosedOrientedManifold.uliftOrientedDiffeomorph.{0, v}
+      standardThreeSphere.toClosedOrientedManifold)⟩
+
+theorem finiteConnectedSum_congr_of_connectedSumTransport
+    (h : connectedSumTransport.{u, v, u, v})
+    {L : List (ConnectedClosedOrientedManifold.{u} 3)}
+    {K : List (ConnectedClosedOrientedManifold.{v} 3)}
+    (hf : List.Forall₂ (fun (M : ConnectedClosedOrientedManifold.{u} 3)
+      (N : ConnectedClosedOrientedManifold.{v} 3) =>
+        Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+          M.toClosedOrientedManifold N.toClosedOrientedManifold)) L K) :
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (finiteConnectedSum L).toClosedOrientedManifold
+      (finiteConnectedSum K).toClosedOrientedManifold) := by
+  induction hf with
+  | nil => exact standardThreeSphereLift_orientedDiffeomorph
+  | cons hhead htail ih =>
+      cases htail with
+      | nil => exact hhead
+      | cons hhead' htail' =>
+          exact h _ _ _ _ hhead ih
+
+theorem connectedSumTransport_of_binaryConnectedSumLaws
+    (h : binaryConnectedSumLaws.{u}) : connectedSumTransport.{u, u, u, u} :=
+  h.2.2.2.2
+
+end DifferentialGeometry.Topology
+
 namespace DifferentialGeometry.Topology
 
 universe u

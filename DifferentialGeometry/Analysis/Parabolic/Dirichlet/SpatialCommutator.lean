@@ -231,8 +231,8 @@ theorem IsWeakEvolutionSolution.exists_lp_spatial_commutator
   let F : ℝ × EuStd → ℝ := fun p =>
     Fdiv p + (∑ i, DB i p * V i p) - a p.1 * Dρ p * U p - Dρ p * R p
   have hF : MemLp F 2 (μ.prod (volume.restrict Ω₀)) :=
-    (((Lp.memLp Fdiv).add (memLp_finsetSum Finset.univ fun i _ => (hV i).mul (hDB i))).sub
-      (hU.mul (hDρ.mul (r := ∞) ha))).sub ((Lp.memLp R).mul hDρ)
+    (((Lp.memLp Fdiv).add (memLp_finsetSum Finset.univ fun i _ => (hDB i).fun_mul (r := 2) (hV i))).sub
+      ((ha.fun_mul (r := ∞) hDρ).fun_mul (r := 2) hU)).sub (hDρ.fun_mul (r := 2) (Lp.memLp R))
   exact ⟨R, Fdiv, hF.toLp F, hR, hFdiv, hF.coeFn_toLp⟩
 
 theorem IsWeakEvolutionSolution.exists_lp_weak_gradient_commutator

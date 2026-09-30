@@ -39,7 +39,7 @@ theorem exists_reindexed_piercing_family_of_strict_decrease
   let Pc : ℕ → Set M := fun i =>
     if hi : i < Nat.card ι then C (r.symm ⟨i, hi⟩) else ∅
   have hPc (i : ℕ) (hi : i < Nat.card ι) : Pc i = C (r.symm ⟨i, hi⟩) := by
-    simp only [Pc, dif_pos hi]
+    simp only [Pc, dite_eq_left hi]
   have hcover : (⋃ i < Nat.card ι, Pc i) = ⋃ j, C j := by
     ext y
     constructor

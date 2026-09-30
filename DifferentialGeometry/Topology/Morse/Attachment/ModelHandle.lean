@@ -310,14 +310,14 @@ noncomputable def modelModifiedFiberRoot (ε δ r : ℝ) (hε : 0 < ε) (hδ : 0
 theorem modelModifiedFiberRoot_nonneg {ε δ r s w2 : ℝ} (hε : 0 < ε) (hδ : 0 < δ)
     (hr : r ≠ 0) (hs : 0 ≤ s) (hw : 0 ≤ w2) :
     0 ≤ modelModifiedFiberRoot ε δ r hε hδ hr s w2 := by
-  rw [modelModifiedFiberRoot, dif_pos hs, dif_pos hw]
+  rw [modelModifiedFiberRoot, dite_eq_left hs, dite_eq_left hw]
   exact (Classical.choose_spec (exists_modelModifiedFiberRoot ε δ r s w2 hε hδ hr hs hw)).1
 
 theorem modelModifiedFiberRoot_eq {ε δ r s w2 : ℝ} (hε : 0 < ε) (hδ : 0 < δ)
     (hr : r ≠ 0) (hs : 0 ≤ s) (hw : 0 ≤ w2) :
     modelModifiedFiberRoot ε δ r hε hδ hr s w2 * (s + r ^ 2) =
       w2 * (s + 2 * modelModifiedFiberDip ε δ s (modelModifiedFiberRoot ε δ r hε hδ hr s w2) - 2 * ε) := by
-  rw [modelModifiedFiberRoot, dif_pos hs, dif_pos hw]
+  rw [modelModifiedFiberRoot, dite_eq_left hs, dite_eq_left hw]
   exact (Classical.choose_spec (exists_modelModifiedFiberRoot ε δ r s w2 hε hδ hr hs hw)).2
 
 
@@ -813,7 +813,7 @@ theorem recombine_pair_contDiff {n k : ℕ} (hk : k ≤ n) :
         recombine hk p.1 p.2 i) = fun p => p.1 ⟨i.val, hi⟩ := by
       funext p
       dsimp [recombine]
-      rw [dif_pos hi]
+      rw [dite_eq_left hi]
     rw [hcomp]
     fun_prop
   · have hcomp : (fun p : EuclideanSpace ℝ (Fin k) × EuclideanSpace ℝ (Fin (n - k)) =>
@@ -823,7 +823,7 @@ theorem recombine_pair_contDiff {n k : ℕ} (hk : k ≤ n) :
           omega⟩ := by
       funext p
       dsimp [recombine]
-      rw [dif_neg hi]
+      rw [dite_eq_right hi]
     rw [hcomp]
     fun_prop
 
@@ -4367,32 +4367,32 @@ noncomputable def cutoffTransition (a ε' w : ℝ) (t : ℝ) : ℝ :=
 theorem cutoffTransition_nonpos {a ε' w t : ℝ} (ht : t ≤ 0) :
     cutoffTransition a ε' w t = 0 := by
   dsimp [cutoffTransition]
-  rw [if_pos ht]
+  rw [ite_eq_left ht]
 
 theorem cutoffTransition_eq_affine {a ε' w t : ℝ} (hε' : 0 < ε') (htε : ε' < t) :
     cutoffTransition a ε' w t = a * t := by
   dsimp [cutoffTransition]
-  rw [if_neg (not_le_of_gt (lt_trans hε' htε))]
-  rw [if_neg (not_le_of_gt htε)]
+  rw [ite_eq_right (not_le_of_gt (lt_trans hε' htε))]
+  rw [ite_eq_right (not_le_of_gt htε)]
 
 theorem cutoffTransition_middle {a ε' w t : ℝ} (ht0 : 0 < t) (htε : t < ε') :
     cutoffTransition a ε' w t = a * t * Real.smoothTransition ((t / ε') ^ w) := by
   dsimp [cutoffTransition]
-  rw [if_neg (not_le_of_gt ht0)]
-  rw [if_pos (le_of_lt htε)]
+  rw [ite_eq_right (not_le_of_gt ht0)]
+  rw [ite_eq_left (le_of_lt htε)]
 
 theorem cutoffTransition_nonneg {a ε' w t : ℝ} (ha : 0 ≤ a) :
     0 ≤ cutoffTransition a ε' w t := by
   dsimp [cutoffTransition]
   by_cases ht : t ≤ 0
-  · rw [if_pos ht]
-  · rw [if_neg ht]
+  · rw [ite_eq_left ht]
+  · rw [ite_eq_right ht]
     by_cases htε : t ≤ ε'
-    · rw [if_pos htε]
+    · rw [ite_eq_left htε]
       have ht0 : 0 ≤ t := le_of_lt (lt_of_not_ge ht)
       have hσ : 0 ≤ Real.smoothTransition ((t / ε') ^ w) := Real.smoothTransition.nonneg _
       exact mul_nonneg (mul_nonneg ha ht0) hσ
-    · rw [if_neg htε]
+    · rw [ite_eq_right htε]
       exact mul_nonneg ha (le_of_lt (lt_of_not_ge ht))
 
 theorem cutoffTransition_le_one {a ε' w t : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1)
@@ -4400,12 +4400,12 @@ theorem cutoffTransition_le_one {a ε' w t : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1)
     cutoffTransition a ε' w t ≤ 1 := by
   dsimp [cutoffTransition]
   by_cases ht : t ≤ 0
-  · rw [if_pos ht]
+  · rw [ite_eq_left ht]
     exact zero_le_one
-  · rw [if_neg ht]
+  · rw [ite_eq_right ht]
     have ht0 : 0 ≤ t := le_of_lt (lt_of_not_ge ht)
     by_cases htε : t ≤ ε'
-    · rw [if_pos htε]
+    · rw [ite_eq_left htε]
       have hσ : Real.smoothTransition ((t / ε') ^ w) ≤ 1 := Real.smoothTransition.le_one _
       have hσ0 : 0 ≤ Real.smoothTransition ((t / ε') ^ w) := Real.smoothTransition.nonneg _
       have hat : a * t ≤ 1 := by nlinarith only [ha, ht0, ht1]
@@ -4413,7 +4413,7 @@ theorem cutoffTransition_le_one {a ε' w t : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1)
       have hatσ : a * t * Real.smoothTransition ((t / ε') ^ w) ≤ a * t :=
         by simpa using (mul_le_mul_of_nonneg_left hσ hat0)
       exact le_trans hatσ hat
-    · rw [if_neg htε]
+    · rw [ite_eq_right htε]
       simpa using (mul_le_mul ha ht1 ht0 (by norm_num : 0 ≤ (1 : ℝ)))
 
 theorem cutoffTransition_affine_slope {a ε' w t : ℝ} (hε' : 0 < ε') (htε : ε' < t) :
@@ -4423,8 +4423,8 @@ theorem cutoffTransition_affine_slope {a ε' w t : ℝ} (hε' : 0 < ε') (htε :
       intro u hu
       dsimp [cutoffTransition]
       have hu0 : 0 < u := lt_trans hε' hu
-      rw [if_neg (not_le_of_gt hu0)]
-      rw [if_neg (not_le_of_gt hu)])
+      rw [ite_eq_right (not_le_of_gt hu0)]
+      rw [ite_eq_right (not_le_of_gt hu)])
   have hder : deriv (fun u : ℝ => a * u) t = a := by
     have hd := deriv_const_mul (c := a) (d := fun u : ℝ => u) (x := t)
       (hd := differentiableAt_id)
@@ -4446,8 +4446,8 @@ theorem cutoffTransition_deriv_middle {a ε' w t : ℝ} (hε' : 0 < ε') (ht0 : 
       dsimp [cutoffTransition]
       have hu0 : 0 < u := hu.1
       have huε : u < ε' := hu.2
-      rw [if_neg (not_le_of_gt hu0)]
-      rw [if_pos (le_of_lt huε)])
+      rw [ite_eq_right (not_le_of_gt hu0)]
+      rw [ite_eq_left (le_of_lt huε)])
   have hder : deriv (fun u : ℝ => a * u * Real.smoothTransition ((u / ε') ^ w)) t =
       a * (Real.smoothTransition ((t / ε') ^ w) +
         w * (t / ε') ^ w * deriv Real.smoothTransition ((t / ε') ^ w)) := by
@@ -4548,18 +4548,18 @@ theorem cutoffTransition_le_mul {a ε' w t : ℝ} (ha0 : 0 ≤ a) (ht0 : 0 ≤ t
     cutoffTransition a ε' w t ≤ a * t := by
   dsimp [cutoffTransition]
   by_cases ht : t ≤ 0
-  · rw [if_pos ht]
+  · rw [ite_eq_left ht]
     have h : 0 ≤ a * t := mul_nonneg ha0 ht0
     exact h
-  · rw [if_neg ht]
+  · rw [ite_eq_right ht]
     by_cases htε : t ≤ ε'
-    · rw [if_pos htε]
+    · rw [ite_eq_left htε]
       have hσ : Real.smoothTransition ((t / ε') ^ w) ≤ 1 := Real.smoothTransition.le_one _
       have ht0' : 0 < t := lt_of_not_ge ht
       have hmain : a * t * Real.smoothTransition ((t / ε') ^ w) ≤ a * t :=
         by simpa using (mul_le_mul_of_nonneg_left hσ (mul_nonneg ha0 (le_of_lt ht0')))
       exact hmain
-    · rw [if_neg htε]
+    · rw [ite_eq_right htε]
 
 theorem cutoffTransition_deriv_le {a ε' w t : ℝ} (ha0 : 0 ≤ a) (hε' : 0 < ε')
     (ht0 : 0 < t) (htε : t < ε') (hw : 0 < w) :
@@ -4638,43 +4638,43 @@ noncomputable def cutoffFunction (a ε' w η₁ : ℝ) (t : ℝ) : ℝ :=
 theorem cutoffFunction_nonpos {a ε' w η₁ t : ℝ} (ht : t ≤ 0) :
     cutoffFunction a ε' w η₁ t = 0 := by
   dsimp [cutoffFunction]
-  rw [if_pos ht]
+  rw [ite_eq_left ht]
 
 theorem cutoffFunction_eq_affine {a ε' w η₁ t : ℝ} (hε' : 0 < ε') (htε : ε' < t)
     (ht₁ : t ≤ 1 - η₁) :
     cutoffFunction a ε' w η₁ t = a * t := by
   dsimp [cutoffFunction]
-  rw [if_neg (not_le_of_gt (lt_trans hε' htε))]
-  rw [if_neg (not_le_of_gt htε)]
-  rw [if_pos ht₁]
+  rw [ite_eq_right (not_le_of_gt (lt_trans hε' htε))]
+  rw [ite_eq_right (not_le_of_gt htε)]
+  rw [ite_eq_left ht₁]
 
 theorem cutoffFunction_eq_one {a ε' w η₁ t : ℝ} (hη₁ : 0 < η₁) (hε'1 : ε' < 1)
     (ht1 : 1 < t) :
     cutoffFunction a ε' w η₁ t = 1 := by
   dsimp [cutoffFunction]
-  rw [if_neg (not_le_of_gt (by nlinarith only [ht1]))]
-  rw [if_neg (not_le_of_gt (by nlinarith only [hε'1, ht1]))]
-  rw [if_neg (not_le_of_gt (by nlinarith only [hη₁, ht1]))]
-  rw [if_neg (not_le_of_gt ht1)]
+  rw [ite_eq_right (not_le_of_gt (by nlinarith only [ht1]))]
+  rw [ite_eq_right (not_le_of_gt (by nlinarith only [hε'1, ht1]))]
+  rw [ite_eq_right (not_le_of_gt (by nlinarith only [hη₁, ht1]))]
+  rw [ite_eq_right (not_le_of_gt ht1)]
 
 theorem cutoffFunction_nonneg {a ε' w η₁ t : ℝ} (ha : 0 ≤ a) (ha1 : a ≤ 1) :
     0 ≤ cutoffFunction a ε' w η₁ t := by
   dsimp [cutoffFunction]
   by_cases ht : t ≤ 0
-  · rw [if_pos ht]
-  · rw [if_neg ht]
+  · rw [ite_eq_left ht]
+  · rw [ite_eq_right ht]
     have ht0 : 0 ≤ t := le_of_lt (lt_of_not_ge ht)
     by_cases htε : t ≤ ε'
-    · rw [if_pos htε]
+    · rw [ite_eq_left htε]
       have hσ : 0 ≤ Real.smoothTransition ((t / ε') ^ w) := Real.smoothTransition.nonneg _
       exact mul_nonneg (mul_nonneg ha ht0) hσ
-    · rw [if_neg htε]
+    · rw [ite_eq_right htε]
       by_cases ht₁ : t ≤ 1 - η₁
-      · rw [if_pos ht₁]
+      · rw [ite_eq_left ht₁]
         exact mul_nonneg ha ht0
-      · rw [if_neg ht₁]
+      · rw [ite_eq_right ht₁]
         by_cases ht₂ : t ≤ 1
-        · rw [if_pos ht₂]
+        · rw [ite_eq_left ht₂]
           have hσ : 0 ≤ Real.smoothTransition ((t - (1 - η₁)) / η₁) :=
             Real.smoothTransition.nonneg _
           have h1 : 0 ≤ a * t := mul_nonneg ha ht0
@@ -4684,7 +4684,7 @@ theorem cutoffFunction_nonneg {a ε' w η₁ t : ℝ} (ha : 0 ≤ a) (ha1 : a �
           have h2 : 0 ≤ 1 - a * t := by linarith
           have hprod := mul_nonneg h2 hσ
           nlinarith only [h1, hprod]
-        · rw [if_neg ht₂]
+        · rw [ite_eq_right ht₂]
           exact zero_le_one
 
 theorem cutoffFunction_le_one {a ε' w η₁ t : ℝ} (ha0 : 0 ≤ a) (ha : a ≤ 1)
@@ -4692,12 +4692,12 @@ theorem cutoffFunction_le_one {a ε' w η₁ t : ℝ} (ha0 : 0 ≤ a) (ha : a �
     cutoffFunction a ε' w η₁ t ≤ 1 := by
   dsimp [cutoffFunction]
   by_cases ht : t ≤ 0
-  · rw [if_pos ht]
+  · rw [ite_eq_left ht]
     exact zero_le_one
-  · rw [if_neg ht]
+  · rw [ite_eq_right ht]
     have ht0 : 0 ≤ t := le_of_lt (lt_of_not_ge ht)
     by_cases htε : t ≤ ε'
-    · rw [if_pos htε]
+    · rw [ite_eq_left htε]
       have hσ : Real.smoothTransition ((t / ε') ^ w) ≤ 1 := Real.smoothTransition.le_one _
       have hσ0 : 0 ≤ Real.smoothTransition ((t / ε') ^ w) := Real.smoothTransition.nonneg _
       have hat : a * t ≤ 1 := by
@@ -4706,13 +4706,13 @@ theorem cutoffFunction_le_one {a ε' w η₁ t : ℝ} (ha0 : 0 ≤ a) (ha : a �
       have hatσ : a * t * Real.smoothTransition ((t / ε') ^ w) ≤ a * t :=
         by simpa using (mul_le_mul_of_nonneg_left hσ hat0)
       exact le_trans hatσ hat
-    · rw [if_neg htε]
+    · rw [ite_eq_right htε]
       by_cases ht₁ : t ≤ 1 - η₁
-      · rw [if_pos ht₁]
+      · rw [ite_eq_left ht₁]
         simpa using (mul_le_mul ha ht1 ht0 (by norm_num : 0 ≤ (1 : ℝ)))
-      · rw [if_neg ht₁]
+      · rw [ite_eq_right ht₁]
         by_cases ht₂ : t ≤ 1
-        · rw [if_pos ht₂]
+        · rw [ite_eq_left ht₂]
           have hσ : Real.smoothTransition ((t - (1 - η₁)) / η₁) ≤ 1 :=
             Real.smoothTransition.le_one _
           have hσ0 : 0 ≤ Real.smoothTransition ((t - (1 - η₁)) / η₁) :=
@@ -4726,7 +4726,7 @@ theorem cutoffFunction_le_one {a ε' w η₁ t : ℝ} (ha0 : 0 ≤ a) (ha : a �
             nlinarith only [hmul]
           have hmain' : a * t + (1 - a * t) ≤ 1 := by nlinarith only [hat1]
           nlinarith only [hmain, hmain']
-        · rw [if_neg ht₂]
+        · rw [ite_eq_right ht₂]
 
 theorem modelRoundedFunction_value_le_of_posPart_eq_zero {n k : ℕ} (hk : k ≤ n)
     (c ε r δ R₀ R₁ : ℝ) (hε : 0 < ε) (hδ : 0 < δ) (hδr : δ < r ^ 2) (hR : R₀ < R₁) (hR0 : 0 ≤ R₀)
@@ -4917,9 +4917,9 @@ theorem cutoffFunction_deriv_affine {a ε' w η₁ t : ℝ} (hε' : 0 < ε')
     have hu0 : 0 < u := lt_trans hε' hu.1
     have huε : ε' < u := hu.1
     have hu₁ : u < 1 - η₁ := hu.2
-    rw [if_neg (not_le_of_gt hu0)]
-    rw [if_neg (not_le_of_gt huε)]
-    rw [if_pos (le_of_lt hu₁)])
+    rw [ite_eq_right (not_le_of_gt hu0)]
+    rw [ite_eq_right (not_le_of_gt huε)]
+    rw [ite_eq_left (le_of_lt hu₁)])
   have hder : deriv (fun u : ℝ => a * u) t = a := by
     have hd := deriv_const_mul (c := a) (d := fun u : ℝ => u) (x := t)
       (hd := differentiableAt_id)
@@ -4941,9 +4941,9 @@ theorem cutoffFunction_differentiableAt_affine {a ε' w η₁ t : ℝ} (hε' : 0
     have hu0 : 0 < u := lt_trans hε' hu.1
     have huε : ε' < u := hu.1
     have hu₁ : u < 1 - η₁ := hu.2
-    rw [if_neg (not_le_of_gt hu0)]
-    rw [if_neg (not_le_of_gt huε)]
-    rw [if_pos (le_of_lt hu₁)])
+    rw [ite_eq_right (not_le_of_gt hu0)]
+    rw [ite_eq_right (not_le_of_gt huε)]
+    rw [ite_eq_left (le_of_lt hu₁)])
   have hloc' : cutoffFunction a ε' w η₁ =ᶠ[nhds t] (fun x : ℝ => a) * id := by
     filter_upwards [hloc] with u hu
     simpa using hu

@@ -7,6 +7,11 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainde
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.Extraction
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.KoszulTopOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Residual.Base
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg riemannianFiberNormSq_sum_le_card_mul riemannianFiberNormSq_zero
+    tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -31,7 +36,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
     traceHessianCoeff traceHessianCoeff_toSection traceHessianFib traceHessianSlotPerm
     domDomCongrFib domDomCongrFib_apply deTurckPrincipalCometricCoeff
     deTurckPrincipalCometricCoeff_toSection_clm_eq
-    deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+    exists_deTurckPrincipalCometricCoeff_pointwise_jet_bound
     reindexCoefficientInputSlots reindexCoefficientInputSlots_toSection reindexCoefficientInputSlotsFiber_apply
     ricciOrderZeroRiemannCoeff ricciOrderZeroCurvCoeff ricciFirstOrderKoszulCoeff raisedKoszul)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
@@ -189,22 +194,7 @@ theorem linearizedRicciFirstOrderBaseCoeff_metricPerturbationPath_jetL2_perOrder
   exact hK (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) (convexPerturbation (I := I) g₀ T T' s)
     hδP_le hδP htie hPball i hi
 
-theorem ricciDeTurckPrincipalCoefficient_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
-    (g₀ : SmoothRiemannianMetric I M) :
-    ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
-      ∀ (g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M),
-        riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
-            ((iteratedCovGrad (I := I) g₀ 4 2 i
-              (ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₁
-                - ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀ g₀)).toSection x) ≤
-          C i * ∑ j ∈ Finset.range (i + 1),
-            riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + j) x
-              ((iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection
-                x) :=
-  Analysis.Parabolic.TensorSpectral.ricciDeTurckPrincipalCoefficient_sub_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
-    g₀
-
-theorem ricciDeTurckPrincipalCoefficient_sub_background_jetL2_le_inverseMetricDifferenceSlotCoefficient_jetL2
+theorem ricciDeTurckPrincipalCoefficient_sub_jet_l2_sq_le
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (i : ℕ),
@@ -214,7 +204,7 @@ theorem ricciDeTurckPrincipalCoefficient_sub_background_jetL2_le_inverseMetricDi
           C i * ∑ j ∈ Finset.range (i + 1),
             ‖iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)‖ ^ 2 := by
   obtain ⟨C, hC_nn, hP⟩ :=
-    ricciDeTurckPrincipalCoefficient_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_ricciDeTurckPrincipalCoefficient_sub_pointwise_jet_bound
       (I := I) (M := M) g₀
   refine ⟨C, hC_nn, ?_⟩
   intro g₁ i
@@ -266,7 +256,7 @@ theorem ricciDeTurckPrincipalCoefficient_metricPerturbationPath_sub_background_j
   obtain ⟨K, hK_nn, hK⟩ :=
     inverseMetricDifferenceSlotCoefficient_metricPerturbationPath_perOrder_l2_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨C, hC_nn, hC⟩ :=
-    ricciDeTurckPrincipalCoefficient_sub_background_jetL2_le_inverseMetricDifferenceSlotCoefficient_jetL2 (I := I) (M := M) g₀
+    ricciDeTurckPrincipalCoefficient_sub_jet_l2_sq_le (I := I) (M := M) g₀
   refine ⟨fun i => C i * ∑ j ∈ Finset.range (i + 1), K j,
     fun i => mul_nonneg (hC_nn i) (Finset.sum_nonneg fun j _ => hK_nn j), ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i hi s hs
@@ -348,7 +338,7 @@ private theorem traceHessianCoeff_sub_eq_reindex_deTurckPrincipalCometricCoeff
     traceHessianFib, traceHessianFib, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, domDomCongrFib_apply]
 
-theorem traceHessianCoeff_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+theorem traceHessianCoeff_sub_jet_norm_sq_le
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M),
@@ -361,7 +351,7 @@ theorem traceHessianCoeff_sub_background_perOrder_riemannianFiberNormSq_le_inver
               ((iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection
                 x) := by
   obtain ⟨C, hC_nn, hC⟩ :=
-    deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient (I := I) (M := M) g₀
+    exists_deTurckPrincipalCometricCoeff_pointwise_jet_bound (I := I) (M := M) g₀
   refine ⟨C, hC_nn, ?_⟩
   intro g₁ i x
   rw [traceHessianCoeff_sub_eq_reindex_deTurckPrincipalCometricCoeff (I := I) (M := M) g₀ g₁,
@@ -379,7 +369,7 @@ theorem traceHessianCoeff_sub_background_jetL2_le_inverseMetricDifferenceSlotCoe
           C i * ∑ j ∈ Finset.range (i + 1),
             ‖iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)‖ ^ 2 := by
   obtain ⟨C, hC_nn, hP⟩ :=
-    traceHessianCoeff_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+    traceHessianCoeff_sub_jet_norm_sq_le
       (I := I) (M := M) g₀
   refine ⟨C, hC_nn, ?_⟩
   intro g₁ i

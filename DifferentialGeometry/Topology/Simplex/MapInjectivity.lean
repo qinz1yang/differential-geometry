@@ -1,13 +1,14 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import Mathlib.Analysis.Convex.StdSimplex
 import Mathlib.Order.WellFounded
-namespace stdSimplex
+namespace Convexity.StdSimplex
 
 variable {S : Type*} [Semiring S] [PartialOrder S] [IsOrderedRing S]
 
 lemma map_apply_of_injective {X Y : Type*} [Fintype X] [Fintype Y]
     {f : X → Y} (hf : Function.Injective f)
-    (p : stdSimplex S X) (x : X) :
-    (stdSimplex.map f p) (f x) = p x := by
+    (p : coordinateSet S X) (x : X) :
+    (coordinateMap f p) (f x) = p x := by
   classical
   change FunOnFinite.linearMap S S f p (f x) = p x
   rw [FunOnFinite.linearMap_apply_apply]
@@ -17,8 +18,8 @@ lemma map_apply_of_injective {X Y : Type*} [Fintype X] [Fintype Y]
   · simp
 
 lemma map_apply_eq_zero_of_not_mem_range {X Y : Type*} [Fintype X] [Fintype Y]
-    (f : X → Y) (p : stdSimplex S X) {y : Y} (hy : y ∉ Set.range f) :
-    (stdSimplex.map f p) y = 0 := by
+    (f : X → Y) (p : coordinateSet S X) {y : Y} (hy : y ∉ Set.range f) :
+    (coordinateMap f p) y = 0 := by
   classical
   change FunOnFinite.linearMap S S f p y = 0
   rw [FunOnFinite.linearMap_apply_apply]
@@ -27,8 +28,8 @@ lemma map_apply_eq_zero_of_not_mem_range {X Y : Type*} [Fintype X] [Fintype Y]
 
 lemma range_subset_of_map_eq_of_nonzero {X Y : Type*} [Fintype X] [Fintype Y]
     {f g : X → Y} (hf : Function.Injective f)
-    {p q : stdSimplex S X} (hp : ∀ x, p x ≠ 0)
-    (h : stdSimplex.map f p = stdSimplex.map g q) : Set.range f ⊆ Set.range g := by
+    {p q : coordinateSet S X} (hp : ∀ x, p x ≠ 0)
+    (h : coordinateMap f p = coordinateMap g q) : Set.range f ⊆ Set.range g := by
   rintro y ⟨x, rfl⟩
   by_contra hx
   apply hp x
@@ -37,27 +38,28 @@ lemma range_subset_of_map_eq_of_nonzero {X Y : Type*} [Fintype X] [Fintype Y]
 
 lemma map_injective {X Y : Type*} [Fintype X] [Fintype Y]
     {f : X → Y} (hf : Function.Injective f) :
-    Function.Injective (stdSimplex.map (S := S) f) := by
+    Function.Injective (coordinateMap (S := S) f) := by
   intro p q h
   ext x
   have hx := DFunLike.congr_fun h (f x)
-  simpa only [map_apply_of_injective hf] using hx
+  exact (map_apply_of_injective hf p x).symm.trans
+    (hx.trans (map_apply_of_injective hf q x))
 
 lemma eq_and_eq_of_map_eq_of_strictMono
     {X Y : Type*} [Fintype X] [Fintype Y] [LinearOrder X] [Preorder Y]
     {f g : X → Y}
     (hf : StrictMono f) (hg : StrictMono g)
-    {p q : stdSimplex S X} (hp : ∀ x, p x ≠ 0)
-    (h : stdSimplex.map f p = stdSimplex.map g q) : f = g ∧ p = q := by
+    {p q : coordinateSet S X} (hp : ∀ x, p x ≠ 0)
+    (h : coordinateMap f p = coordinateMap g q) : f = g ∧ p = q := by
   classical
   have hsub := range_subset_of_map_eq_of_nonzero hf.injective hp h
   have hcardf := Fintype.card_congr (Equiv.ofInjective f hf.injective)
   have hcardg := Fintype.card_congr (Equiv.ofInjective g hg.injective)
   have heq : Set.range f = Set.range g :=
     Set.eq_of_subset_of_card_le hsub (by omega)
-  have hfg := hf.range_inj hg |>.mp heq
+  have hfg := hf.range_inj_of_wellFoundedLT hg |>.mp heq
   refine ⟨hfg, ?_⟩
   subst g
   exact map_injective hf.injective h
 
-end stdSimplex
+end Convexity.StdSimplex

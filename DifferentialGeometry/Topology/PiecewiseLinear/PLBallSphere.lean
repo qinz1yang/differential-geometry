@@ -41,7 +41,7 @@ theorem IsPLSphere.isPolyhedron [FiniteDimensional ℝ E] {n : ℕ} {P : Set E}
 theorem isConnected_stdSimplexBoundary (n : ℕ) : IsConnected (stdSimplexBoundary (n + 2)) := by
   classical
   let C : Fin (n + 3) → Set (Fin (n + 3) → ℝ) :=
-    fun i => {x | x ∈ stdSimplex ℝ (Fin (n + 3)) ∧ x i = 0}
+    fun i => {x | x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 3)) ∧ x i = 0}
   have hthird : ∀ i j : Fin (n + 3), ∃ k : Fin (n + 3), k ≠ i ∧ k ≠ j := by
     intro i j
     by_contra! h
@@ -56,15 +56,15 @@ theorem isConnected_stdSimplexBoundary (n : ℕ) : IsConnected (stdSimplexBounda
     omega
   have hmem : ∀ i j : Fin (n + 3), j ≠ i → Pi.single j (1 : ℝ) ∈ C i := by
     intro i j hji
-    exact ⟨single_mem_stdSimplex ℝ j, by simp only [Pi.single_eq_of_ne (Ne.symm hji)]⟩
+    exact ⟨Convexity.StdSimplex.single_mem_coordinateSet ℝ j, by simp only [Pi.single_eq_of_ne (Ne.symm hji)]⟩
   have hconv : ∀ i, Convex ℝ (C i) := fun i =>
-    (convex_stdSimplex ℝ (Fin (n + 3))).inter
+    (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin (n + 3))).inter
       ((convex_singleton (0 : ℝ)).linear_preimage (LinearMap.proj i : (Fin (n + 3) → ℝ) →ₗ[ℝ] ℝ))
   have hcover : stdSimplexBoundary (n + 2) = ⋃ i, C i := by
     ext x
     rw [mem_iUnion]
-    change (x ∈ stdSimplex ℝ (Fin (n + 3)) ∧ ∃ i, x i = 0) ↔
-      ∃ i, x ∈ stdSimplex ℝ (Fin (n + 3)) ∧ x i = 0
+    change (x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 3)) ∧ ∃ i, x i = 0) ↔
+      ∃ i, x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 3)) ∧ x i = 0
     constructor
     · rintro ⟨hx, i, hi⟩
       exact ⟨i, hx, hi⟩
@@ -82,8 +82,8 @@ theorem isConnected_stdSimplexBoundary (n : ℕ) : IsConnected (stdSimplexBounda
 theorem IsPLBall.isConnected {n : ℕ} {P : Set E} (hP : IsPLBall n P) : IsConnected P := by
   obtain ⟨f, hf⟩ := hP
   rw [← hf.image_eq]
-  exact ((convex_stdSimplex ℝ (Fin (n + 1))).isConnected
-    ⟨Pi.single 0 1, single_mem_stdSimplex ℝ 0⟩).image f hf.isPiecewiseAffineOn.continuousOn
+  exact ((Convexity.StdSimplex.convex_coordinateSet ℝ (Fin (n + 1))).isConnected
+    ⟨Pi.single 0 1, Convexity.StdSimplex.single_mem_coordinateSet ℝ 0⟩).image f hf.isPiecewiseAffineOn.continuousOn
 
 theorem IsPLSphere.isConnected {n : ℕ} {P : Set E} (hP : IsPLSphere (n + 1) P) : IsConnected P := by
   obtain ⟨f, hf⟩ := hP
@@ -91,10 +91,10 @@ theorem IsPLSphere.isConnected {n : ℕ} {P : Set E} (hP : IsPLSphere (n + 1) P)
   exact (isConnected_stdSimplexBoundary n).image f hf.isPiecewiseAffineOn.continuousOn
 
 theorem eulerChar_stdSimplex (n : ℕ) :
-    Homology.eulerChar ℚ (TopCat.of (stdSimplex ℝ (Fin (n + 1)))) = 1 := by
-  have : ContractibleSpace (stdSimplex ℝ (Fin (n + 1))) :=
-    (convex_stdSimplex ℝ (Fin (n + 1))).contractibleSpace
-      ⟨_, single_mem_stdSimplex ℝ (0 : Fin (n + 1))⟩
+    Homology.eulerChar ℚ (TopCat.of (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1)))) = 1 := by
+  have : ContractibleSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) :=
+    (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin (n + 1))).contractibleSpace
+      ⟨_, Convexity.StdSimplex.single_mem_coordinateSet ℝ (0 : Fin (n + 1))⟩
   exact Homology.eulerChar_of_contractible ℚ
 
 theorem simplexBoundary_toPreAbstractSimplicialComplex {T : Finset E}
@@ -134,10 +134,10 @@ theorem eulerChar_stdSimplexBoundary (n : ℕ) :
 
 theorem not_isPLHomeomorphOn_stdSimplex_stdSimplexBoundary (n : ℕ)
     (f : (Fin (n + 1) → ℝ) → (Fin (n + 2) → ℝ)) :
-    ¬ IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 1))) (stdSimplexBoundary (n + 1)) := by
+    ¬ IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) (stdSimplexBoundary (n + 1)) := by
   intro hf
   have h := Homology.eulerChar_eq_of_homeomorph ℚ
-    (X := TopCat.of (stdSimplex ℝ (Fin (n + 1))))
+    (X := TopCat.of (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))))
     (Y := TopCat.of (stdSimplexBoundary (n + 1))) hf.homeomorph
   rw [eulerChar_stdSimplex, eulerChar_stdSimplexBoundary] at h
   have hzero : ((-1 : ℤ) ^ n) = 0 := by linarith

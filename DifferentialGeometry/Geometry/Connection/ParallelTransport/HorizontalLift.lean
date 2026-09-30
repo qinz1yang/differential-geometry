@@ -69,7 +69,7 @@ theorem IsMetricCompatible.exists_horizontal_frame_on_interval
     else FiberBundle.linearIsometryEquivAt (F := F) V (γ t)
   have hpQ (t : ℝ) (ht : t ∈ J) : (p t).toContinuousLinearEquiv = Q t := by
     dsimp only [p]
-    rw [dif_pos ht]
+    rw [dite_eq_left ht]
     ext v
     rfl
   have hpiQ (t : ℝ) (ht : t ∈ J) (w : F) : (p t).symm w = (Q t).symm w := by

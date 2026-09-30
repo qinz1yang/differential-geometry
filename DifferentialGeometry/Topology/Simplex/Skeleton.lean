@@ -1,13 +1,16 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.SupportFace
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 
 noncomputable section
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 variable (ι : Type*) [Fintype ι]
 
-def skeleton (k : ℕ) : Set (stdSimplex ℝ ι) :=
+def skeleton (k : ℕ) : Set (coordinateSet ℝ ι) :=
   {p | ∃ s : Finset ι, s.card ≤ k + 1 ∧ p ∈ supportFace s}
 
 variable {ι}
@@ -28,7 +31,7 @@ theorem isClosed_skeleton (k : ℕ) : IsClosed (skeleton ι k) := by
   exact isClosed_iUnion_of_finite fun s ↦ isClosed_supportFace s.val
 
 theorem mem_skeleton_of_zero_coordinate {k : ℕ} {s : Finset ι}
-    (hs : s.card ≤ k + 2) {p : stdSimplex ℝ ι} (hp : p ∈ supportFace s)
+    (hs : s.card ≤ k + 2) {p : coordinateSet ℝ ι} (hp : p ∈ supportFace s)
     {i : ι} (hi : i ∈ s) (hpi : p i = 0) : p ∈ skeleton ι k := by
   classical
   refine ⟨s.erase i, ?_, ?_⟩
@@ -96,7 +99,7 @@ namespace DifferentialGeometry.Simplex
 variable {ι : Type*} [Fintype ι]
 
 theorem mem_skeleton_iff_exists_supportFace_card_eq {k : ℕ}
-    (hk : k + 1 ≤ Fintype.card ι) {p : stdSimplex ℝ ι} :
+    (hk : k + 1 ≤ Fintype.card ι) {p : coordinateSet ℝ ι} :
     p ∈ skeleton ι k ↔ ∃ s : Finset ι, s.card = k + 1 ∧ p ∈ supportFace s := by
   constructor
   · intro hp

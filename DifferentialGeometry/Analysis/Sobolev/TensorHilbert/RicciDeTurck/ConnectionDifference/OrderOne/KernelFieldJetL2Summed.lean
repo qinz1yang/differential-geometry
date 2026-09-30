@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.ConnectionDifference.ContravariantInsertion.JetL2Summed
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -244,7 +247,7 @@ private theorem lie_normSq_le_25 (g₀ g₁ : SmoothRiemannianMetric I M) (i : �
     _ = 25 * ‖iteratedCovGrad (I := I) g₀ 3 4 i
           (connectionDifferenceContravariantInsertionField (I := I) g₀ g₁)‖ ^ 2 := by ring
 
-theorem linearizedRicciConnectionDifferenceOrder1KernelField_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
+theorem linearizedRicciConnectionDifferenceOrder1KernelField_metricPerturbationPath_jet_l2_sq_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -267,7 +270,7 @@ theorem linearizedRicciConnectionDifferenceOrder1KernelField_metricPerturbationP
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hcd⟩ :=
-    connectionDifferenceContravariantInsertionField_metricPerturbationPath_jetL2_perOrder_topOrderSeparated
+    connectionDifferenceContravariantInsertionField_metricPerturbationPath_jet_l2_sq_le
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨25 * Ktop, mul_nonneg (by norm_num) hKtop_nn,
     fun i => 25 * Kc i, fun i => mul_nonneg (by norm_num) (hKc_nn i), ?_⟩
@@ -292,7 +295,7 @@ theorem linearizedRicciConnectionDifferenceOrder1KernelField_metricPerturbationP
             (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by ring
 
-theorem linearizedRicciConnectionDifferenceOrder1KernelField_metricPerturbationPath_jetL2_summed_topOrderSeparated
+theorem linearizedRicciConnectionDifferenceOrder1KernelField_metricPerturbationPath_sum_jet_l2_sq_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -316,7 +319,7 @@ theorem linearizedRicciConnectionDifferenceOrder1KernelField_metricPerturbationP
                 (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                   ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) := by
   obtain ⟨Ktop, hKtop_nn, Kc, hKc_nn, hcd⟩ :=
-    connectionDifferenceContravariantInsertionField_metricPerturbationPath_jetL2_summed_topOrderSeparated
+    connectionDifferenceContravariantInsertionField_metricPerturbationPath_sum_jet_l2_sq_le
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨25 * Ktop, mul_nonneg (by norm_num) hKtop_nn,
     25 * Kc, mul_nonneg (by norm_num) hKc_nn, ?_⟩

@@ -478,7 +478,7 @@ theorem observe_finite_ancestry
       (Fin.last (T.observe b hb).eventCount)).Carrier) :
     let H := T.observe b hb
     let h0 := (T.observeInitial b hb).components_simplyConnected hP
-    let chain := rfs_finite_ancestor_chain H terminal
+    let chain := finiteAncestorChain H terminal
     let hSC := rfs_simply_connected_history H h0
     (∀ j : Fin (H.eventCount + 1),
       let P := (H.stage j).component (chain.component j)
@@ -500,10 +500,10 @@ theorem observe_finite_ancestry
       letI : SimplyConnectedSpace P.Carrier := hSC j.castSucc ((H.event j).transition.childParent child)
       letI : SimplyConnectedSpace Q.Carrier := hSC j.succ child
       ∃ K : G.ComparisonSupport child,
-        (∀ p : P.Carrier, basedHomotopyMap K.rfs_whole_parent_map p
+        (∀ p : P.Carrier, basedHomotopyMap K.canonicalWholeParentMap p
           (positiveHomotopyClass P.orientation p) =
-            positiveHomotopyClass Q.orientation (K.rfs_whole_parent_map p)) ∧
-        FreeHomotopyClass.map (contractibleLoopPostcompose K.rfs_whole_parent_map)
+            positiveHomotopyClass Q.orientation (K.canonicalWholeParentMap p)) ∧
+        FreeHomotopyClass.map (contractibleLoopPostcompose K.canonicalWholeParentMap)
           (positiveFreeContractibleClass P.orientation) = positiveFreeContractibleClass Q.orientation) := by
   exact rfs_finite_ancestry (T.observe b hb) parameters cutoff
     ((T.observeInitial b hb).components_simplyConnected hP) terminal
@@ -515,7 +515,7 @@ theorem observe_initial_classes
       (Fin.last (T.observe b hb).eventCount)).Carrier) :
     let H := T.observe b hb
     let A := T.observeInitial b hb
-    let c := (rfs_finite_ancestor_chain H terminal).component 0
+    let c := (finiteAncestorChain H terminal).component 0
     let P₀ := P.component (A.sourceComponent c)
     let Q₀ := (H.stage 0).component c
     letI : ConnectedSpace P₀.Carrier := P.component_connected (A.sourceComponent c)
@@ -529,7 +529,7 @@ theorem observe_initial_classes
       FreeHomotopyClass.map (contractibleLoopPostcompose ⟨e, e.continuous⟩)
         (positiveFreeContractibleClass P₀.orientation) = positiveFreeContractibleClass Q₀.orientation := by
   exact (T.observeInitial b hb).component_classes hP
-    ((rfs_finite_ancestor_chain (T.observe b hb) terminal).component 0)
+    ((finiteAncestorChain (T.observe b hb) terminal).component 0)
 
 private theorem stage_component_transport_surjective {P Q : OrientedThreeStage.{u}}
     (h : P = Q) : Function.Surjective
@@ -549,10 +549,10 @@ theorem observe_ancestry_restrict (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (hab
         (Fin.cast (congrArg (· + 1) R.count_eq) j)
     ∃ earlier : ConnectedComponents (S.stage (Fin.last S.eventCount)).Carrier,
       R.componentToOther (Fin.last S.eventCount) earlier =
-        (rfs_finite_ancestor_chain H terminal).component (oldIndex (Fin.last S.eventCount)) ∧
+        (finiteAncestorChain H terminal).component (oldIndex (Fin.last S.eventCount)) ∧
       ∀ j : Fin (S.eventCount + 1), R.componentToOther j
-        ((rfs_finite_ancestor_chain S earlier).component j) =
-        (rfs_finite_ancestor_chain H terminal).component (oldIndex j) := by
+        ((finiteAncestorChain S earlier).component j) =
+        (finiteAncestorChain H terminal).component (oldIndex j) := by
   let H := T.observe b hb
   let S := T.observe a ha
   let t : Icc (0 : ℝ) H.horizon := ⟨a, ha, hab⟩
@@ -560,14 +560,14 @@ theorem observe_ancestry_restrict (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (hab
   let oldIndex : Fin (S.eventCount + 1) → Fin (H.eventCount + 1) := fun j =>
     Fin.castLE (Nat.add_le_add_right (Nat.le_of_lt_succ (H.activeStage t).isLt) 1)
       (Fin.cast (congrArg (· + 1) R.count_eq) j)
-  let terminalK := (rfs_finite_ancestor_chain H terminal).component (H.activeStage t)
+  let terminalK := (finiteAncestorChain H terminal).component (H.activeStage t)
   have hf := H.finite_ancestry_restrict t terminal
   obtain ⟨earlier, hearlier⟩ := stage_component_transport_surjective
     (R.stage_eq (Fin.last S.eventCount))
-    ((rfs_finite_ancestor_chain H terminal).component (oldIndex (Fin.last S.eventCount)))
+    ((finiteAncestorChain H terminal).component (oldIndex (Fin.last S.eventCount)))
   refine ⟨earlier, hearlier, ?_⟩
   have hterminal : R.componentToOther (Fin.last S.eventCount) earlier =
-      (rfs_finite_ancestor_chain (H.restrict t) terminalK).component
+      (finiteAncestorChain (H.restrict t) terminalK).component
         (Fin.cast (congrArg (· + 1) R.count_eq) (Fin.last S.eventCount)) :=
     hearlier.trans (hf _).symm
   intro j

@@ -1,10 +1,9 @@
 import DifferentialGeometry.Topology.Connected.RegularClosedComponents
-import DifferentialGeometry.Geometry.Neck.Spatial
+import Mathlib.Topology.Instances.Real.Lemmas
 
 set_option autoImplicit false
 noncomputable section
 open Set
-open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.Topology
 

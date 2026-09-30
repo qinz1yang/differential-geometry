@@ -953,7 +953,7 @@ theorem abs_spatialComm_nablaKRm_ortho_le
       · intro h; exact absurd (Finset.mem_univ j) h
   rw [spatialComm_nablaKRm_split (I := I) S t k basis gInv hinv (basis c')
     (fun p : Fin (4 + k) => basis (m' p))]
-  simp only [hgInv, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [hgInv, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
   refine le_trans (Finset.sum_le_sum fun i _ =>
     abs_spatialBracket_nablaKRm_ortho_le (I := I) S t k x₀ basis horth i i c' m') ?_

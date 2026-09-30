@@ -147,7 +147,7 @@ theorem integrable_diskMapEnergyDensity_and_energy_eq_chartPartitionEnergyDensit
       Metric.isOpen_ball.measurableSet
     rwa [hepre] at hh
   have hvqe : v ∘ e =ᵐ[volume.restrict (Metric.ball (0 : EuclideanSpace ℝ (Fin 2)) 1)]
-      diskExtension q ∘ e := hemp.quasiMeasurePreserving.ae_eq hvq
+      diskExtension q ∘ e := hemp.quasiMeasurePreserving.ae_eq_comp hvq
   obtain ⟨henergy, heq⟩ :=
     integrable_diskMapEnergyDensity_and_energy_eq_chartPartitionEnergyDensity
       (g.restrictOpen N) L Φ χ ρ hρ (v ∘ e) hw q hq hvqe hD

@@ -161,30 +161,30 @@ theorem exists_closed_terminal_family_of_reference_bounds (hne : Nonempty M)
   let G := fun t => if t < T then g t else gT
   have heG (t : ℝ) (ht : t ∈ Icc 0 T) : MetricUniformEquivalentOn univ gRef (G t) Λ := by
     by_cases htT : t < T
-    · simpa only [G, if_pos htT] using he t ⟨ht.1, htT⟩
-    · simpa only [G, if_neg htT] using heT
+    · simpa only [G, ite_eq_left htT] using he t ⟨ht.1, htT⟩
+    · simpa only [G, ite_eq_right htT] using heT
   have hcG (N : ℕ) (t : ℝ) (ht : t ∈ Icc 0 T) (x : M) :
       metricCovDerivNorm N (G t) gRef x ≤ C N := by
     by_cases htT : t < T
-    · simpa only [G, if_pos htT] using hc N t ⟨ht.1, htT⟩ x
-    · simpa only [G, if_neg htT] using hcT N x
+    · simpa only [G, ite_eq_left htT] using hc N t ⟨ht.1, htT⟩ x
+    · simpa only [G, ite_eq_right htT] using hcT N x
   have hlG (N : ℕ) (s : ℝ) (hs : s ∈ Icc 0 T) (t : ℝ) (ht : t ∈ Icc 0 T) (x : M) :
       metricDerivNorm N (G s) (G t) gRef x ≤ L N * |s - t| := by
     by_cases hsT : s < T
     · by_cases htT : t < T
-      · simpa only [G, if_pos hsT, if_pos htT] using hl N s ⟨hs.1, hsT⟩ t ⟨ht.1, htT⟩ x
+      · simpa only [G, ite_eq_left hsT, ite_eq_left htT] using hl N s ⟨hs.1, hsT⟩ t ⟨ht.1, htT⟩ x
       · have htEq : t = T := le_antisymm ht.2 (le_of_not_gt htT)
         subst t
-        simpa only [G, if_pos hsT, lt_self_iff_false, if_false,
+        simpa only [G, ite_eq_left hsT, lt_self_iff_false, ite_false,
           abs_of_nonpos (sub_nonpos.mpr hsT.le), neg_sub] using hrate N s ⟨hs.1, hsT⟩ x
     · have hsEq : s = T := le_antisymm hs.2 (le_of_not_gt hsT)
       subst s
       by_cases htT : t < T
-      · simpa only [G, if_pos htT, lt_self_iff_false, if_false, metricDerivNorm_symm,
+      · simpa only [G, ite_eq_left htT, lt_self_iff_false, ite_false, metricDerivNorm_symm,
           abs_of_nonneg (sub_nonneg.mpr htT.le)] using hrate N t ⟨ht.1, htT⟩ x
-      · simp only [G, lt_self_iff_false, if_false, if_neg htT, metricDerivNorm_self]
+      · simp only [G, lt_self_iff_false, ite_false, ite_eq_right htT, metricDerivNorm_self]
         exact mul_nonneg (hL N) (abs_nonneg _)
-  refine ⟨G, fun t ht => if_pos ht.2, ?_, heG, hcG, hlG, ?_⟩
+  refine ⟨G, fun t ht => ite_eq_left ht.2, ?_, heG, hcG, hlG, ?_⟩
   · intro t ht
     exact RiemannianMetricComplete.of_lower hRef
       (inv_pos.mpr (lt_of_lt_of_le zero_lt_one hΛ))

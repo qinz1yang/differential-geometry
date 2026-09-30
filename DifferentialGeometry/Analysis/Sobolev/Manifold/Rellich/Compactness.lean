@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.Basic
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
@@ -699,7 +699,10 @@ lemma eLpNorm_chartPushed_le_wkpNormChart
           ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
             (chartTargetEuclid (I := I) (M := M) α)))]
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial_zero]
-  exact hbound1.trans (ENNReal.le_tsum α)
+  exact hbound1.trans (ENNReal.le_tsum (f := fun α =>
+    Euclidean.iteratedWeakSobolevNorm 1 p
+      (chartPushed (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
+      (chartTargetEuclid (I := I) α)) α)
 
 lemma eLpNorm_rellich_chosenWeakGrad_le_wkpNormChart
     [NeZero (Module.finrank ℝ E)]
@@ -801,7 +804,10 @@ lemma eLpNorm_rellich_chosenWeakGrad_le_wkpNormChart
     rw [← hf_α_i]
     exact Finset.single_le_sum (f := f)
       (fun α' _ => zero_le) (Finset.mem_univ α_i)
-  exact h_in_wkpNorm.trans (ENNReal.le_tsum α)
+  exact h_in_wkpNorm.trans (ENNReal.le_tsum (f := fun α =>
+    Euclidean.iteratedWeakSobolevNorm 1 (ENNReal.ofReal p)
+      (chartPushed (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
+      (chartTargetEuclid (I := I) α)) α)
 
 private lemma exists_chart_rellich_subseq
     [NeZero (Module.finrank ℝ E)]
@@ -963,7 +969,10 @@ private lemma exists_chart_rellich_subseq
           rw [h_iter, hEquiv_app α']
       rw [← h_sum_eq]
     refine h_grad_sum_le_wkpNorm.trans ?_
-    exact ENNReal.le_tsum α
+    exact ENNReal.le_tsum (f := fun α =>
+      Euclidean.iteratedWeakSobolevNorm 1 (ENNReal.ofReal p)
+        (chartPushed (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α (u (ψ n)))
+        (chartTargetEuclid (I := I) α)) α
   have h_neighborhood_open := chartNeighborhood_isOpen (I := I) (M := M) α
   have h_neighborhood_bdd := chartNeighborhood_isBounded (I := I) (M := M) α
   have hp_le : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p := by
@@ -1367,10 +1376,9 @@ private lemma memLp_pou_mul_riemannianMeasure
       (pou_mul_measurable (I := I) (M := M) α hu_meas)
       (tsupport_pou_mul_subset_chart_source (I := I) (M := M) α u)
       (image_extChartAt_tsupport_pou_mul_subset_kPouCompact (I := I) (M := M) α u)
-    refine ⟨(pou_mul_measurable (I := I) (M := M) α hu_meas).aestronglyMeasurable, ?_⟩
     refine lt_of_le_of_lt h_bnd ?_
     apply ENNReal.mul_lt_top ENNReal.ofReal_lt_top
-    exact h_raw_memLp.2
+    exact h_raw_memLp.eLpNorm_lt_top
   · have hρ_zero : ∀ x : M,
         ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0 := by

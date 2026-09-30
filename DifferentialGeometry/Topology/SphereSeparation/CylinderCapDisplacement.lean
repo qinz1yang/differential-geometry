@@ -152,7 +152,7 @@ theorem exists_two_morse_cylinderCap_displacements_of_regular_height
   let s : Fin 2 → ℝ := fun i => if i = 0 then σ else -σ
   have hs (i : Fin 2) : s i = 1 ∨ s i = -1 := by
     by_cases hi : i = 0
-    · simpa only [s, if_pos hi] using hσ
+    · simpa only [s, ite_eq_left hi] using hσ
     · rcases hσ with hσ | hσ <;> simp [s, hi, hσ]
   have hsa (i : Fin 2) : s i * (ε / 2) = a i := by
     dsimp [s, a]

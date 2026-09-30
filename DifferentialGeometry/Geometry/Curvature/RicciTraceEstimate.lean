@@ -45,7 +45,7 @@ theorem abs_ricci_difference_le_of_riemann_difference
         rw [basis_repr_eq_sum_inv_inner gRef x b _ hinv]
         simp [identityInvMetric, diagonalInvMetric]
       rw [hrepr]
-      have hcs := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic gRef x (A (b i)) (b i)
+      have hcs := DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic gRef x (A (b i)) (b i)
       rw [hu, Real.sqrt_one, mul_one] at hcs
       apply hcs.trans
       have hd := hR (b i) v w

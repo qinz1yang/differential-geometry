@@ -74,7 +74,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 set_option backward.isDefEq.respectTransparency false in
 private theorem scaleMetric_prod {E₂ : Type*} [NormedAddCommGroup E₂] [NormedSpace ℝ E₂]
     [FiniteDimensional ℝ E₂] {H₂ : Type*} [TopologicalSpace H₂]
-    {J : ModelWithCorners ℝ E₂ H₂} [J.Boundaryless]
+    {J : ModelWithCorners ℝ E₂ H₂}
     {N : Type*} [TopologicalSpace N] [ChartedSpace H₂ N] [IsManifold J ∞ N] [T2Space N]
     (c : ℝ) (hc : 0 < c) (g : SmoothRiemannianMetric (𝓡 2) SphereTwo)
     (h : SmoothRiemannianMetric J N) :
@@ -86,9 +86,9 @@ private theorem scaleMetric_prod {E₂ : Type*} [NormedAddCommGroup E₂] [Norme
 
 set_option backward.isDefEq.respectTransparency false in
 private theorem scaleMetric_scaleMetric {E' : Type*} [NormedAddCommGroup E']
-    [NormedSpace ℝ E'] [FiniteDimensional ℝ E'] {H' : Type*} [TopologicalSpace H']
-    {I' : ModelWithCorners ℝ E' H'} [I'.Boundaryless]
-    {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M'] [IsManifold I' ∞ M'] [T2Space M']
+    [NormedSpace ℝ E'] {H' : Type*} [TopologicalSpace H']
+    {I' : ModelWithCorners ℝ E' H'}
+    {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M'] [IsManifold I' ∞ M']
     (c d : ℝ) (hc : 0 < c) (hd : 0 < d) (g : SmoothRiemannianMetric I' M') :
     scaleMetric c hc (scaleMetric d hd g) = scaleMetric (c * d) (mul_pos hc hd) g := by
   apply SmoothRiemannianMetric.ext_inner
@@ -98,9 +98,9 @@ private theorem scaleMetric_scaleMetric {E' : Type*} [NormedAddCommGroup E']
 
 set_option backward.isDefEq.respectTransparency false in
 private theorem scaleMetric_one {E' : Type*} [NormedAddCommGroup E']
-    [NormedSpace ℝ E'] [FiniteDimensional ℝ E'] {H' : Type*} [TopologicalSpace H']
-    {I' : ModelWithCorners ℝ E' H'} [I'.Boundaryless]
-    {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M'] [IsManifold I' ∞ M'] [T2Space M']
+    [NormedSpace ℝ E'] {H' : Type*} [TopologicalSpace H']
+    {I' : ModelWithCorners ℝ E' H'}
+    {M' : Type*} [TopologicalSpace M'] [ChartedSpace H' M'] [IsManifold I' ∞ M']
     (g : SmoothRiemannianMetric I' M') :
     scaleMetric 1 (by norm_num) g = g := by
   apply SmoothRiemannianMetric.ext_inner
@@ -143,7 +143,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M]
 set_option backward.isDefEq.respectTransparency false in
 private theorem localPullMetric_comp_diffeomorph
     {E₁ : Type*} [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [FiniteDimensional ℝ E₁]
-    {H₁ : Type*} [TopologicalSpace H₁] {I₁ : ModelWithCorners ℝ E₁ H₁} [I₁.Boundaryless]
+    {H₁ : Type*} [TopologicalSpace H₁] {I₁ : ModelWithCorners ℝ E₁ H₁}
     {N₁ : Type*} [TopologicalSpace N₁] [ChartedSpace H₁ N₁] [IsManifold I₁ ∞ N₁] [T2Space N₁]
     (g : SmoothRiemannianMetric I M) (Phi : N₁ → M) (hPhi : IsLocalDiffeomorph I₁ I ∞ Phi)
     (e : Cylinder ≃ₘ⟮CylinderI, I₁⟯ N₁) :

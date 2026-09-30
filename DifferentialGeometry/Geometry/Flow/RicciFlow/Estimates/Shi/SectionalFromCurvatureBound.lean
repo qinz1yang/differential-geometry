@@ -119,7 +119,7 @@ theorem sectionalBoundedBelowAt_neg_sqrt_of_normSq0S_le
   have hN0 : 0 ≤ N := Real.sqrt_nonneg _
   have hNC : N ≤ Real.sqrt C := Real.sqrt_le_sqrt hC
   have harea : 0 ≤ g.inner y v v * g.inner y w w - g.inner y v w ^ 2 := by
-    have hcs := DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
+    have hcs := DifferentialGeometry.SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq
       (I := I) (M := M) g y v w
     linarith
   have hvv : 0 ≤ g.inner y v v :=

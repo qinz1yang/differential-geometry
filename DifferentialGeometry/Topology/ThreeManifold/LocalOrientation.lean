@@ -1,4 +1,6 @@
+import DifferentialGeometry.Topology.Algebra.Module.InfiniteCyclicCriterion
 import DifferentialGeometry.Topology.Homology.Relative.Basic
+import DifferentialGeometry.Topology.Homology.IntegralChainMaps
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
 import DifferentialGeometry.Topology.Homology.LiftedSphere
@@ -6,6 +8,7 @@ import DifferentialGeometry.Topology.Homology.ContractibleCoverChainEvaluation
 import DifferentialGeometry.Topology.Homology.EuclideanLocalTop
 import Mathlib.AlgebraicTopology.SingularHomology.HomotopyInvariance
 import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import Mathlib.Algebra.Category.ModuleCat.Abelian
 import Mathlib.Algebra.Category.ModuleCat.Colimits
 import Mathlib.Algebra.Module.ULift
@@ -25,22 +28,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 
-def integralCoefficients : ModuleCat.{u} ℤ := ModuleCat.of ℤ (ULift.{u} ℤ)
-
-
-def integralChainsFunctor : TopCat.{u} ⥤ ChainComplex (ModuleCat.{u} ℤ) ℕ :=
-  (singularChainComplexFunctor (ModuleCat.{u} ℤ)).obj integralCoefficients
-
-
-def integralHomologyFunctor (n : ℕ) : TopCat.{u} ⥤ ModuleCat.{u} ℤ :=
-  (singularHomologyFunctor (ModuleCat.{u} ℤ) n).obj integralCoefficients
-
 variable (X : Type u) [TopologicalSpace X]
-
-abbrev IntegralChains := integralChainsFunctor.obj (TopCat.of X)
-
-abbrev IntegralHomology (n : ℕ) := (integralHomologyFunctor n).obj (TopCat.of X)
-
 
 def subspaceInclusion (A : Set X) : TopCat.of A ⟶ TopCat.of X :=
   TopCat.ofHom ⟨Subtype.val, continuous_subtype_val⟩
@@ -66,11 +54,6 @@ abbrev LocalIntegralHomology (x : X) (n : ℕ) :=
   RelativeIntegralHomology X ({x}ᶜ) n
 
 variable {X} {Y : Type u} [TopologicalSpace Y]
-
-
-def integralHomologyMap (n : ℕ) (f : C(X, Y)) :
-    IntegralHomology X n ⟶ IntegralHomology Y n :=
-  (integralHomologyFunctor n).map (TopCat.ofHom f)
 
 
 theorem integralHomologyMap_eq_of_homotopic {f g : C(X, Y)}
@@ -140,12 +123,6 @@ theorem absoluteToRelative_compl_singleton_injective_of_subsingleton (x : X)
   absoluteToRelative_injective_of_subsingleton ({x}ᶜ) 3 h
 
 
-def singularSimplexChain {n : ℕ} (f : C(stdSimplex ℝ (Fin (n + 1)), X)) :
-    integralCoefficients ⟶ (IntegralChains X).X n :=
-  (TopCat.toSSet.obj (TopCat.of X)).ιChainComplex
-    ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n⦌)).symm f)
-
-
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M]
 
@@ -176,7 +153,7 @@ private theorem exists_orientation_adjustment (o : Orientation ℝ ThreeSpace (F
 
 private theorem exists_tetrahedron_radius (U : Set ThreeSpace) (hU : IsOpen U)
     (y : ThreeSpace) (hy : y ∈ U) :
-    ∃ r : ℝ, 0 < r ∧ ∀ q : stdSimplex ℝ (Fin 4),
+    ∃ r : ℝ, 0 < r ∧ ∀ q : Convexity.StdSimplex ℝ (Fin 4),
       y + r • positiveTetrahedron q ∈ U := by
   obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hU y hy
   obtain ⟨R, hR, hbound⟩ :=
@@ -258,22 +235,20 @@ def OrientedChartSimplex.relativeChain {o : TangentOrientationSection M} {x : M}
   singularSimplexChain S.simplex ≫ (cokernel.π (subspaceChainInclusion M ({x}ᶜ))).f 3
 
 private def orientedSimplexFace (i : Fin 4) :
-    C(stdSimplex ℝ (Fin 3), stdSimplex ℝ (Fin 4)) :=
-  ⟨stdSimplex.map (SimplexCategory.δ i).toOrderHom,
-    stdSimplex.continuous_map (SimplexCategory.δ i).toOrderHom⟩
-
-private theorem orientedSimplexFace_zero (i : Fin 4) (q : stdSimplex ℝ (Fin 3)) :
-    (orientedSimplexFace i q).val i = 0 := by
-  change FunOnFinite.linearMap ℝ ℝ i.succAbove (q : Fin 3 → ℝ) i = 0
-  rw [FunOnFinite.linearMap_apply_apply]
-  apply Finset.sum_eq_zero
-  intro j hj
-  exact False.elim (Fin.succAbove_ne i j (Finset.mem_filter.mp hj).2)
+    C(Convexity.StdSimplex ℝ (Fin 3), Convexity.StdSimplex ℝ (Fin 4)) :=
+  ⟨Convexity.StdSimplex.map (SimplexCategory.δ i).toOrderHom,
+    Convexity.StdSimplex.continuous_map ℝ (SimplexCategory.δ i).toOrderHom⟩
+private theorem orientedSimplexFace_zero (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)) :
+    (orientedSimplexFace i q).weights i = 0 := by
+  change (q.weights.mapDomain i.succAbove) i = 0
+  apply Finsupp.mapDomain_of_notMem_range
+  rintro ⟨j, hj⟩
+  exact Fin.succAbove_ne i j hj
 
 variable {o : TangentOrientationSection M} {x : M}
 
 private theorem orientedSimplex_face_ne_center (S : OrientedChartSimplex o x)
-    (i : Fin 4) (q : stdSimplex ℝ (Fin 3)) : S.simplex (orientedSimplexFace i q) ≠ x := by
+    (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)) : S.simplex (orientedSimplexFace i q) ≠ x := by
   intro heq
   have hcoord := positiveTetrahedron_face_ne_zero (orientedSimplexFace i q) i
     (orientedSimplexFace_zero i q)
@@ -287,7 +262,7 @@ private theorem orientedSimplex_face_ne_center (S : OrientedChartSimplex o x)
   exact hcoord ((smul_eq_zero.mp hs).resolve_left (ne_of_gt S.radius_pos))
 
 private def orientedSimplex_puncturedFace (S : OrientedChartSimplex o x) (i : Fin 4) :
-    C(stdSimplex ℝ (Fin 3), ({x}ᶜ : Set M)) :=
+    C(Convexity.StdSimplex ℝ (Fin 3), ({x}ᶜ : Set M)) :=
   ⟨fun q => ⟨S.simplex (orientedSimplexFace i q), orientedSimplex_face_ne_center S i q⟩,
     (S.simplex.continuous.comp (orientedSimplexFace i).continuous).subtype_mk
       (fun q => orientedSimplex_face_ne_center S i q)⟩
@@ -367,22 +342,22 @@ private theorem relativePrism_finite_boundary {A : Type*} [AddCommGroup A]
   abel
 
 private def relativePrismAffine {n : ℕ} (v : Fin (n + 1) → RelativePrismVertex) :
-    C(stdSimplex ℝ (Fin (n + 1)), unitInterval × stdSimplex ℝ (Fin 4)) where
+    C(Convexity.StdSimplex ℝ (Fin (n + 1)), unitInterval × Convexity.StdSimplex ℝ (Fin 4)) where
   toFun q :=
-    (⟨(stdSimplex.map (fun j => (v j).1) q).val 1,
-      (stdSimplex.map (fun j => (v j).1) q).property.1 1,
-      stdSimplex.le_one _ _⟩, stdSimplex.map (fun j => (v j).2) q)
+    (⟨(Convexity.StdSimplex.map (fun j => (v j).1) q).weights 1,
+      (Convexity.StdSimplex.map (fun j => (v j).1) q).weights_nonneg 1,
+      Convexity.StdSimplex.weights_apply_le_one _ _⟩, Convexity.StdSimplex.map (fun j => (v j).2) q)
   continuous_toFun := by
     apply Continuous.prodMk
     · apply Continuous.subtype_mk
-      exact (continuous_apply 1).comp
-        (continuous_subtype_val.comp (stdSimplex.continuous_map (fun j => (v j).1)))
-    · exact stdSimplex.continuous_map (fun j => (v j).2)
+      exact (Convexity.StdSimplex.continuous_weights_apply ℝ 1).comp
+        (Convexity.StdSimplex.continuous_map ℝ (fun j => (v j).1))
+    · exact Convexity.StdSimplex.continuous_map ℝ (fun j => (v j).2)
 
 private def relativePrismFace (n : ℕ) (i : Fin (n + 2)) :
-    C(stdSimplex ℝ (Fin (n + 1)), stdSimplex ℝ (Fin (n + 2))) :=
-  ⟨stdSimplex.map (SimplexCategory.δ i).toOrderHom,
-    stdSimplex.continuous_map (SimplexCategory.δ i).toOrderHom⟩
+    C(Convexity.StdSimplex ℝ (Fin (n + 1)), Convexity.StdSimplex ℝ (Fin (n + 2))) :=
+  ⟨Convexity.StdSimplex.map (SimplexCategory.δ i).toOrderHom,
+    Convexity.StdSimplex.continuous_map ℝ (SimplexCategory.δ i).toOrderHom⟩
 
 private theorem relativePrismAffine_face {n : ℕ}
     (v : Fin (n + 2) → RelativePrismVertex) (i : Fin (n + 2)) :
@@ -392,40 +367,38 @@ private theorem relativePrismAffine_face {n : ℕ}
   intro q
   apply Prod.ext
   · apply Subtype.ext
-    exact congrArg (fun s : stdSimplex ℝ (Fin 2) => s.val 1)
-      (stdSimplex.map_comp_apply i.succAbove (fun j => (v j).1) q)
-  · exact stdSimplex.map_comp_apply i.succAbove (fun j => (v j).2) q
+    exact congrArg (fun s : Convexity.StdSimplex ℝ (Fin 2) => s.weights 1)
+      (q.map_map i.succAbove (fun j => (v j).1))
+  · exact q.map_map i.succAbove (fun j => (v j).2)
 
-private theorem relativePrismAffine_end (b : Fin 2) (q : stdSimplex ℝ (Fin 4)) :
+private theorem relativePrismAffine_end (b : Fin 2) (q : Convexity.StdSimplex ℝ (Fin 4)) :
     relativePrismAffine (relativePrismEnd b) q = (⟨b.val, by
       constructor
       · exact Nat.cast_nonneg _
       · exact_mod_cast (show b.val ≤ 1 by omega)⟩, q) := by
   apply Prod.ext
   · apply Subtype.ext
-    change FunOnFinite.linearMap ℝ ℝ (fun _ : Fin 4 => b) q.val 1 = (b.val : ℝ)
-    fin_cases b
-    · simp [FunOnFinite.linearMap_apply_apply]
-    · simpa [FunOnFinite.linearMap_apply_apply] using q.property.2
-  · exact stdSimplex.map_id_apply q
+    change (Convexity.StdSimplex.map (fun _ : Fin 4 => b) q).weights 1 = (b.val : ℝ)
+    rw [Convexity.StdSimplex.map_const]
+    fin_cases b <;> simp
+  · exact q.map_id
 
 private theorem relativePrism_side_missing (k : Fin 12) :
     ∃ i : Fin 4, ∀ j : Fin 4, (relativePrismSides k j).2 ≠ i := by
   fin_cases k <;> decide
 
 private theorem relativePrism_side_boundary (k : Fin 12)
-    (q : stdSimplex ℝ (Fin 4)) :
-    ∃ i : Fin 4, (relativePrismAffine (relativePrismSides k) q).2.val i = 0 := by
+    (q : Convexity.StdSimplex ℝ (Fin 4)) :
+    ∃ i : Fin 4, (relativePrismAffine (relativePrismSides k) q).2.weights i = 0 := by
   obtain ⟨i, hi⟩ := relativePrism_side_missing k
   refine ⟨i, ?_⟩
-  change FunOnFinite.linearMap ℝ ℝ (fun j => (relativePrismSides k j).2) q.val i = 0
-  rw [FunOnFinite.linearMap_apply_apply]
-  apply Finset.sum_eq_zero
-  intro j hj
-  exact False.elim (hi j (Finset.mem_filter.mp hj).2)
+  change (q.weights.mapDomain (fun j => (relativePrismSides k j).2)) i = 0
+  apply Finsupp.mapDomain_of_notMem_range
+  rintro ⟨j, hj⟩
+  exact hi j hj
 
 private theorem relativePrism_singular_boundary {X : Type u} [TopologicalSpace X] {n : ℕ}
-    (s : C(stdSimplex ℝ (Fin (n + 2)), X)) :
+    (s : C(Convexity.StdSimplex ℝ (Fin (n + 2)), X)) :
     singularSimplexChain s ≫ (IntegralChains X).d (n + 1) n =
       ∑ i : Fin (n + 2), (-1 : ℤ) ^ i.val •
         singularSimplexChain (s.comp (relativePrismFace n i)) := by
@@ -433,13 +406,13 @@ private theorem relativePrism_singular_boundary {X : Type u} [TopologicalSpace X
     ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n + 1⦌)).symm s)
 
 private def relativePrismChain {X : Type u} [TopologicalSpace X]
-    {f g : C(stdSimplex ℝ (Fin 4), X)} (H : f.Homotopy g) :
+    {f g : C(Convexity.StdSimplex ℝ (Fin 4), X)} (H : f.Homotopy g) :
     integralCoefficients ⟶ (IntegralChains X).X 4 :=
   ∑ k : Fin 4, (-1 : ℤ) ^ k.val •
     singularSimplexChain (H.toContinuousMap.comp (relativePrismAffine (relativePrismCells k)))
 
 private theorem relativePrism_end_maps {X : Type u} [TopologicalSpace X]
-    {f g : C(stdSimplex ℝ (Fin 4), X)} (H : f.Homotopy g) :
+    {f g : C(Convexity.StdSimplex ℝ (Fin 4), X)} (H : f.Homotopy g) :
     H.toContinuousMap.comp (relativePrismAffine (relativePrismEnd 0)) = f ∧
       H.toContinuousMap.comp (relativePrismAffine (relativePrismEnd 1)) = g := by
   constructor
@@ -459,7 +432,7 @@ private theorem relativePrism_end_maps {X : Type u} [TopologicalSpace X]
     exact H.map_one_left q
 
 private theorem relativePrismChain_boundary {X : Type u} [TopologicalSpace X]
-    {f g : C(stdSimplex ℝ (Fin 4), X)} (H : f.Homotopy g) :
+    {f g : C(Convexity.StdSimplex ℝ (Fin 4), X)} (H : f.Homotopy g) :
     relativePrismChain H ≫ (IntegralChains X).d 4 3 =
       singularSimplexChain g - singularSimplexChain f +
         ∑ k : Fin 12, relativePrismSideSigns k •
@@ -471,19 +444,19 @@ private theorem relativePrismChain_boundary {X : Type u} [TopologicalSpace X]
   simpa only [(relativePrism_end_maps H).1, (relativePrism_end_maps H).2] using h
 
 private def relativePrism_puncturedSide {X : Type u} [TopologicalSpace X] (x : X)
-    {f g : C(stdSimplex ℝ (Fin 4), X)} (H : f.Homotopy g)
-    (hside : ∀ (t : unitInterval) (q : stdSimplex ℝ (Fin 4)),
-      (∃ i : Fin 4, q.val i = 0) → H (t, q) ≠ x) (k : Fin 12) :
-    C(stdSimplex ℝ (Fin 4), ({x}ᶜ : Set X)) :=
+    {f g : C(Convexity.StdSimplex ℝ (Fin 4), X)} (H : f.Homotopy g)
+    (hside : ∀ (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)),
+      (∃ i : Fin 4, q.weights i = 0) → H (t, q) ≠ x) (k : Fin 12) :
+    C(Convexity.StdSimplex ℝ (Fin 4), ({x}ᶜ : Set X)) :=
   ⟨fun q => ⟨H (relativePrismAffine (relativePrismSides k) q),
     hside _ _ (relativePrism_side_boundary k q)⟩,
     (H.continuous.comp (relativePrismAffine (relativePrismSides k)).continuous).subtype_mk
       (fun q => hside _ _ (relativePrism_side_boundary k q))⟩
 
 private theorem relativePrism_side_zero {X : Type u} [TopologicalSpace X] (x : X)
-    {f g : C(stdSimplex ℝ (Fin 4), X)} (H : f.Homotopy g)
-    (hside : ∀ (t : unitInterval) (q : stdSimplex ℝ (Fin 4)),
-      (∃ i : Fin 4, q.val i = 0) → H (t, q) ≠ x) (k : Fin 12) :
+    {f g : C(Convexity.StdSimplex ℝ (Fin 4), X)} (H : f.Homotopy g)
+    (hside : ∀ (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)),
+      (∃ i : Fin 4, q.weights i = 0) → H (t, q) ≠ x) (k : Fin 12) :
     singularSimplexChain (H.toContinuousMap.comp (relativePrismAffine (relativePrismSides k))) ≫
       (cokernel.π (subspaceChainInclusion X ({x}ᶜ))).f 3 = 0 := by
   have hf : singularSimplexChain (relativePrism_puncturedSide x H hside k) ≫
@@ -503,8 +476,8 @@ theorem OrientedChartSimplex.localClass_eq_of_simplexFamily
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M] {o : TangentOrientationSection M} {x : M}
     (S T : OrientedChartSimplex o x) (H : S.simplex.Homotopy T.simplex)
-    (hside : ∀ (t : unitInterval) (q : stdSimplex ℝ (Fin 4)),
-      (∃ i : Fin 4, q.val i = 0) → H (t, q) ≠ x) :
+    (hside : ∀ (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)),
+      (∃ i : Fin 4, q.weights i = 0) → H (t, q) ≠ x) :
     S.localClass = T.localClass := by
   let K := RelativeIntegralChains M ({x}ᶜ)
   let quotientMap := cokernel.π (subspaceChainInclusion M ({x}ᶜ))
@@ -542,22 +515,25 @@ theorem OrientedChartSimplex.localClass_eq_of_simplexFamily
     φ (ULift.up 1)) he
 
 private def tetrahedronContract (a : ℝ) (ha : a ∈ Icc (0 : ℝ) 1)
-    (q : stdSimplex ℝ (Fin 4)) : stdSimplex ℝ (Fin 4) :=
-  ⟨fun j => a * q.val j + (1 - a) / 4, by
-    constructor
-    · intro j
-      exact add_nonneg (mul_nonneg ha.1 (q.property.1 j))
+    (q : Convexity.StdSimplex ℝ (Fin 4)) : Convexity.StdSimplex ℝ (Fin 4) :=
+  { weights := Finsupp.equivFunOnFinite.symm (fun j => a * q.weights j + (1 - a) / 4)
+    nonneg := by
+      intro j
+      exact add_nonneg (mul_nonneg ha.1 (q.weights_nonneg j))
         (div_nonneg (sub_nonneg.mpr ha.2) (by norm_num))
-    · simp only [Finset.sum_add_distrib, ← Finset.mul_sum, q.property.2,
+    total := by
+      rw [Finsupp.sum_fintype _ _ (by simp)]
+      simp only [Finsupp.coe_equivFunOnFinite_symm,
+        Finset.sum_add_distrib, ← Finset.mul_sum, q.total_of_fintype,
         Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-      ring⟩
+      ring }
 
 private theorem positiveTetrahedron_contract (a : ℝ) (ha : a ∈ Icc (0 : ℝ) 1)
-    (q : stdSimplex ℝ (Fin 4)) :
+    (q : Convexity.StdSimplex ℝ (Fin 4)) :
     positiveTetrahedron (tetrahedronContract a ha q) = a • positiveTetrahedron q := by
   ext i
   rw [positiveTetrahedron_coordinate]
-  change (a * q.val i.succ + (1 - a) / 4) - (a * q.val 0 + (1 - a) / 4) =
+  change (a * q.weights i.succ + (1 - a) / 4) - (a * q.weights 0 + (1 - a) / 4) =
     a * positiveTetrahedron q i
   rw [positiveTetrahedron_coordinate]
   ring
@@ -566,7 +542,7 @@ private theorem positive_simplex_smaller_radius
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M] {o : TangentOrientationSection M} {x : M}
     (S : OrientedChartSimplex o x) {r : ℝ} (hr : 0 ≤ r) (hrS : r ≤ S.radius)
-    (q : stdSimplex ℝ (Fin 4)) :
+    (q : Convexity.StdSimplex ℝ (Fin 4)) :
     S.chart x + r • positiveTetrahedron q ∈ S.chart.target := by
   let a := r / S.radius
   have ha : a ∈ Icc (0 : ℝ) 1 :=
@@ -586,8 +562,8 @@ theorem OrientedChartSimplex.exists_sameChart_simplexFamily
     [IsManifold ThreeModel ∞ M] {o : TangentOrientationSection M} {x : M}
     (S T : OrientedChartSimplex o x) (hchart : S.chart = T.chart) :
     ∃ H : S.simplex.Homotopy T.simplex,
-      ∀ (t : unitInterval) (q : stdSimplex ℝ (Fin 4)),
-        (∃ i : Fin 4, q.val i = 0) → H (t, q) ≠ x := by
+      ∀ (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)),
+        (∃ i : Fin 4, q.weights i = 0) → H (t, q) ≠ x := by
   let r (t : unitInterval) : ℝ := (1 - (t : ℝ)) * S.radius + (t : ℝ) * T.radius
   have hrLower (t : unitInterval) : min S.radius T.radius ≤ r t := by
     have h₁ := mul_nonneg (sub_nonneg.mpr t.property.2)
@@ -605,7 +581,7 @@ theorem OrientedChartSimplex.exists_sameChart_simplexFamily
       (sub_nonneg.mpr (le_max_right S.radius T.radius))
     dsimp [r]
     nlinarith
-  have hinside (t : unitInterval) (q : stdSimplex ℝ (Fin 4)) :
+  have hinside (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)) :
       S.chart x + r t • positiveTetrahedron q ∈ S.chart.target := by
     by_cases hST : S.radius ≤ T.radius
     · have hrT : r t ≤ T.radius := by simpa only [max_eq_right hST] using hrUpper t
@@ -747,36 +723,6 @@ theorem isUnit_apply_iff_bijective_zsmul (e : A ≃ₗ[ℤ] ℤ) (c : A) :
       exact h
     exact isUnit_iff_exists_inv.mpr ⟨k, by rw [mul_comm]; exact hk'⟩
 
-theorem isUnit_apply_iff_of_int_linearEquiv (φ : ℤ ≃ₗ[ℤ] ℤ) (m : ℤ) :
-    IsUnit (φ m) ↔ IsUnit m := by
-  have hg : IsUnit (φ 1) := by
-    refine isUnit_iff_exists_inv.mpr ⟨φ.symm 1, ?_⟩
-    have hs := map_smul φ (φ.symm 1) (1 : ℤ)
-    simp only [smul_eq_mul, mul_one, LinearEquiv.apply_symm_apply] at hs
-    rw [mul_comm]
-    exact hs.symm
-  have hm : φ m = m * (φ 1) := by
-    have hs := map_smul φ m (1 : ℤ)
-    simpa only [smul_eq_mul, mul_one] using hs
-  have hφ : φ 1 = 1 ∨ φ 1 = -1 := Int.isUnit_iff.mp hg
-  rw [hm]
-  rcases hφ with h | h
-  · rw [h, mul_one]
-  · rw [h, mul_neg_one]
-    exact ⟨fun hh => by simpa using hh.neg, fun hh => hh.neg⟩
-
-theorem isUnit_apply_iff_isUnit_apply_of_linearEquiv (e e' : A ≃ₗ[ℤ] ℤ) (c : A) :
-    IsUnit (e c) ↔ IsUnit (e' c) := by
-  have h : (e.symm.trans e') (e c) = e' c := by
-    rw [LinearEquiv.trans_apply, LinearEquiv.symm_apply_apply]
-  rw [← h]
-  exact (isUnit_apply_iff_of_int_linearEquiv (e.symm.trans e') (e c)).symm
-
-theorem isUnit_apply_iff_isUnit_apply_of_linearEquiv_trans {B : Type*} [AddCommGroup B]
-    [Module ℤ B] (f : A ≃ₗ[ℤ] B) (e : B ≃ₗ[ℤ] ℤ) (e' : A ≃ₗ[ℤ] ℤ) (c : A) :
-    IsUnit (e (f c)) ↔ IsUnit (e' c) :=
-  isUnit_apply_iff_isUnit_apply_of_linearEquiv (f.trans e) e' c
-
 theorem isUnit_apply_iff_exists_surjective_functional (e : A ≃ₗ[ℤ] ℤ) (c : A) :
     IsUnit (e c) ↔ ∃ φ : A →ₗ[ℤ] ℤ, Function.Surjective φ ∧ φ c = 1 := by
   constructor
@@ -863,22 +809,22 @@ section
 open DifferentialGeometry.Topology
 
 def integralSimplexChainMap {X : Type u} [TopologicalSpace X] (n : ℕ)
-    (σ : C(stdSimplex ℝ (Fin (n + 1)), X)) :
+    (σ : C(Convexity.StdSimplex ℝ (Fin (n + 1)), X)) :
     integralSingularCoefficients ⟶ (integralSingularChains X).X n :=
   (TopCat.toSSet.obj (TopCat.of X)).ιChainComplex
     ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n⦌)).symm σ)
 
 private def euclideanPuncturedFace {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p)
-    (i : Fin 4) : C(stdSimplex ℝ (Fin 3), ({p}ᶜ : Set X)) :=
+    (σ : C(Convexity.StdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p)
+    (i : Fin 4) : C(Convexity.StdSimplex ℝ (Fin 3), ({p}ᶜ : Set X)) :=
   ⟨fun q => ⟨σ (orientedSimplexFace i q), hσ i q⟩,
     (σ.continuous.comp (orientedSimplexFace i).continuous).subtype_mk _⟩
 
 set_option backward.isDefEq.respectTransparency false in
 private theorem euclideanPuncturedFace_chain {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p)
+    (σ : C(Convexity.StdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p)
     (i : Fin 4) :
     integralSimplexChainMap 2 (euclideanPuncturedFace p σ hσ i) ≫
       (integralSingularChainMap (singularSubspaceInclusion ({(p : X)}ᶜ : Set X))).f 2 =
@@ -892,7 +838,7 @@ private theorem euclideanPuncturedFace_chain {X : Type u} [TopologicalSpace X] (
 
 set_option backward.isDefEq.respectTransparency false in
 private theorem euclideanSimplexChain_boundary {X : Type u} [TopologicalSpace X]
-    (σ : C(stdSimplex ℝ (Fin 4), X)) :
+    (σ : C(Convexity.StdSimplex ℝ (Fin 4), X)) :
     integralSimplexChainMap 3 σ ≫ (integralSingularChains X).d 3 2 =
       ∑ i : Fin 4, (-1 : ℤ) ^ i.val •
         integralSimplexChainMap 2 (σ.comp (orientedSimplexFace i)) :=
@@ -901,8 +847,8 @@ private theorem euclideanSimplexChain_boundary {X : Type u} [TopologicalSpace X]
 
 set_option backward.isDefEq.respectTransparency false in
 private theorem euclideanRelativeChain_boundary {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (σ : C(Convexity.StdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
     (integralSimplexChainMap 3 σ ≫ (cokernel.π (integralSingularChainMap
       (singularSubspaceInclusion ({(p : X)}ᶜ : Set X)))).f 3) ≫
       (integralRelativeChains ({(p : X)}ᶜ : Set X)).d 3 2 = 0 := by
@@ -921,8 +867,8 @@ private theorem euclideanRelativeChain_boundary {X : Type u} [TopologicalSpace X
   simp only [Preadditive.sum_comp, Linear.smul_comp, hf, smul_zero, Finset.sum_const_zero]
 
 def simplexLocalClass {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (σ : C(Convexity.StdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
     integralLocalHomology 3 p :=
   ((integralRelativeChains ({(p : X)}ᶜ : Set X)).liftCycles
       (integralSimplexChainMap 3 σ ≫ (cokernel.π (integralSingularChainMap
@@ -931,14 +877,15 @@ def simplexLocalClass {X : Type u} [TopologicalSpace X] (p : X)
       (euclideanRelativeChain_boundary p σ hσ) ≫
     (integralRelativeChains ({(p : X)}ᶜ : Set X)).homologyπ 3) (ULift.up 1)
 
-private def liftedPositiveTetrahedron : C(stdSimplex ℝ (Fin 4), DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) where
+private def liftedPositiveTetrahedron :
+    C(Convexity.StdSimplex ℝ (Fin 4), DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) where
   toFun q := (ULift.up (positiveTetrahedron q) : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)
   continuous_toFun :=
     (Homeomorph.ulift (X := ThreeSpace) : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1 ≃ₜ ThreeSpace).symm.continuous.comp
       positiveTetrahedron.continuous
 
 private theorem liftedPositiveTetrahedron_face_ne_zero (i : Fin 4)
-    (q : stdSimplex ℝ (Fin 3)) :
+    (q : Convexity.StdSimplex ℝ (Fin 3)) :
     liftedPositiveTetrahedron (orientedSimplexFace i q) ≠ (0 : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) := by
   intro hh
   exact positiveTetrahedron_face_ne_zero (orientedSimplexFace i q) i
@@ -949,14 +896,14 @@ def euclideanStandardSimplexClass : integralLocalHomology 3 (0 : DifferentialGeo
     (fun i q => liftedPositiveTetrahedron_face_ne_zero i q)
 
 def puncturedSimplexBoundary {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (σ : C(Convexity.StdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
     integralSingularCoefficients ⟶ (integralSingularChains ({(p : X)}ᶜ : Set X)).X 2 :=
   ∑ i : Fin 4, (-1 : ℤ) ^ i.val • integralSimplexChainMap 2 (euclideanPuncturedFace p σ hσ i)
 
 theorem puncturedSimplexBoundary_chain {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (σ : C(Convexity.StdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
     puncturedSimplexBoundary p σ hσ ≫
         (integralSingularChainMap (singularSubspaceInclusion ({(p : X)}ᶜ : Set X))).f 2 =
       integralSimplexChainMap 3 σ ≫ (integralSingularChains X).d 3 2 := by
@@ -966,8 +913,8 @@ theorem puncturedSimplexBoundary_chain {X : Type u} [TopologicalSpace X] (p : X)
   rw [← euclideanSimplexChain_boundary σ]
 
 theorem puncturedSimplexBoundary_boundary {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (σ : C(Convexity.StdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
     puncturedSimplexBoundary p σ hσ ≫
       (integralSingularChains ({(p : X)}ᶜ : Set X)).d 2 1 = 0 := by
   rw [← cancel_mono
@@ -978,8 +925,8 @@ theorem puncturedSimplexBoundary_boundary {X : Type u} [TopologicalSpace X] (p :
     HomologicalComplex.d_comp_d, comp_zero]
 
 theorem integralRelativeConnecting_simplexLocalClass {X : Type u} [TopologicalSpace X] (p : X)
-    (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    (σ : C(Convexity.StdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
     integralRelativeConnecting 2 ({(p : X)}ᶜ : Set X) (simplexLocalClass p σ hσ) =
       (((integralSingularChains ({(p : X)}ᶜ : Set X)).liftCycles
         (puncturedSimplexBoundary p σ hσ) 1 ((ComplexShape.down ℕ).next_eq' (by rfl))
@@ -1049,7 +996,7 @@ theorem euclideanStandardSimplexClass_generator_iff_forall_exists_zsmul :
       euclideanStandardSimplexBoundaryClass)
 
 theorem integralSimplexChainMap_naturality {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
-    (n : ℕ) (f : C(X, Y)) (s : C(stdSimplex ℝ (Fin (n + 1)), X)) :
+    (n : ℕ) (f : C(X, Y)) (s : C(Convexity.StdSimplex ℝ (Fin (n + 1)), X)) :
     integralSimplexChainMap n s ≫ (integralSingularChainMap f).f n = integralSimplexChainMap n (f.comp s) := by
   have h := SSet.ι_chainComplexMap_f (TopCat.toSSet.obj (TopCat.of X))
     (TopCat.toSSet.obj (TopCat.of Y)) (TopCat.toSSet.map (TopCat.ofHom f))
@@ -1089,14 +1036,14 @@ theorem integralRelativeHomologyMap_liftCycles_apply
 
 set_option backward.isDefEq.respectTransparency false in
 theorem relativeChain_subspaceInclusion_apply {X : Type u} [TopologicalSpace X] (A : Set X) (p : A)
-    (σ : C(stdSimplex ℝ (Fin 4), A)) :
+    (σ : C(Convexity.StdSimplex ℝ (Fin 4), A)) :
     (integralSimplexChainMap 3 σ ≫ (cokernel.π (integralSingularChainMap
         (singularSubspaceInclusion ({(p : A)}ᶜ : Set A)))).f 3) ≫
       (integralRelativeChainMap (singularSubspaceInclusion A)
         (A := ({(p : A)}ᶜ : Set A)) (B := ({(p : X)}ᶜ : Set X))
         (fun _ hy hyx => hy (Subtype.ext hyx))).f 3 =
       integralSimplexChainMap 3 (⟨fun q => (σ q : X), σ.continuous.subtype_val⟩ :
-        C(stdSimplex ℝ (Fin 4), X)) ≫
+        C(Convexity.StdSimplex ℝ (Fin 4), X)) ≫
       (cokernel.π (integralSingularChainMap
         (singularSubspaceInclusion ({(p : X)}ᶜ : Set X)))).f 3 := by
   have hnat := congrArg (fun k => k.f 3) (integralRelativeChainMap_π
@@ -1110,7 +1057,8 @@ theorem relativeChain_subspaceInclusion_apply {X : Type u} [TopologicalSpace X] 
 set_option backward.isDefEq.respectTransparency false in
 theorem relativeChain_map_apply {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
     (g : C(X, Y)) {A : Set X} {B : Set Y} (hg : MapsTo g A B)
-    (σ : C(stdSimplex ℝ (Fin 4), X)) (σ' : C(stdSimplex ℝ (Fin 4), Y)) (hσ' : σ' = g.comp σ) :
+    (σ : C(Convexity.StdSimplex ℝ (Fin 4), X))
+    (σ' : C(Convexity.StdSimplex ℝ (Fin 4), Y)) (hσ' : σ' = g.comp σ) :
     (integralSimplexChainMap 3 σ ≫ (cokernel.π (integralSingularChainMap
         (singularSubspaceInclusion A))).f 3) ≫
       (integralRelativeChainMap g hg).f 3 =
@@ -1199,9 +1147,9 @@ private theorem bijective_zsmul_iff_of_linearEquiv_apply {A B : Type*} [AddCommG
   exact (bijective_zsmul_iff_of_linearEquiv f c).symm
 
 private theorem bijective_zsmul_simplexLocalClass_of_basepoint_eq {X : Type u} [TopologicalSpace X]
-    {p q : X} (hp : p = q) (σ : C(stdSimplex ℝ (Fin 4), X))
-    (hσp : ∀ (i : Fin 4) (t : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i t) ≠ p)
-    (hσq : ∀ (i : Fin 4) (t : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i t) ≠ q)
+    {p q : X} (hp : p = q) (σ : C(Convexity.StdSimplex ℝ (Fin 4), X))
+    (hσp : ∀ (i : Fin 4) (t : Convexity.StdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i t) ≠ p)
+    (hσq : ∀ (i : Fin 4) (t : Convexity.StdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i t) ≠ q)
     (h : Function.Bijective (fun z : ℤ => z • simplexLocalClass q σ hσq)) :
     Function.Bijective (fun z : ℤ => z • simplexLocalClass p σ hσp) := by
   subst hp
@@ -1226,15 +1174,15 @@ theorem localOrientationClass_generator_of_euclideanStandardSimplex
   have hxU : x ∈ chartU.source := by
     rw [OpenPartialHomeomorph.trans_source]
     exact ⟨S.center_mem, Set.mem_univ _⟩
-  have hSU : ∀ q : stdSimplex ℝ (Fin 4), S.simplex q ∈ chartU.source := by
+  have hSU : ∀ q : Convexity.StdSimplex ℝ (Fin 4), S.simplex q ∈ chartU.source := by
     intro q
     rw [OpenPartialHomeomorph.trans_source]
     exact ⟨S.chart.map_target (S.simplex_inside q), Set.mem_univ _⟩
-  let SU : C(stdSimplex ℝ (Fin 4), chartU.source) :=
+  let SU : C(Convexity.StdSimplex ℝ (Fin 4), chartU.source) :=
     ⟨fun q => ⟨S.simplex q, hSU q⟩, S.simplex.continuous.subtype_mk hSU⟩
-  have hSface : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)),
+  have hSface : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)),
       S.simplex (orientedSimplexFace i q) ≠ x := fun i q => orientedSimplex_face_ne_center S i q
-  have hSUne : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)),
+  have hSUne : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)),
       SU (orientedSimplexFace i q) ≠ (⟨x, hxU⟩ : chartU.source) :=
     fun i q hh => hSface i q (congrArg Subtype.val hh)
   let zU : integralSingularCoefficients ⟶
@@ -1285,24 +1233,25 @@ theorem localOrientationClass_generator_of_euclideanStandardSimplex
     (bijective_zsmul_iff_of_linearEquiv_apply
       ((integralLocalHomologyNeighborhoodIso 3 x chartU.source chartU.open_source hxU).toLinearEquiv.symm)
       (localOrientationClass o x) cU rfl).symm
-  let tauU : C(stdSimplex ℝ (Fin 4), LM) :=
+  let tauU : C(Convexity.StdSimplex ℝ (Fin 4), LM) :=
     ⟨fun q => chartU (S.simplex q), chartU.continuousOn.comp_continuous S.simplex.continuous hSU⟩
-  have hchartU (q : stdSimplex ℝ (Fin 4)) :
+  have hchartU (q : Convexity.StdSimplex ℝ (Fin 4)) :
       tauU q = (ULift.up (S.chart x + S.radius • positiveTetrahedron q) : LM) := by
     change chartU (S.simplex q) = (ULift.up (S.chart x + S.radius • positiveTetrahedron q) : LM)
     change uliftSymm (S.chart (S.chart.symm (S.chart x + S.radius • positiveTetrahedron q))) =
       (ULift.up (S.chart x + S.radius • positiveTetrahedron q) : LM)
     rw [S.chart.right_inv (S.simplex_inside q)]
     rfl
-  have htauUne : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)),
+  have htauUne : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)),
       tauU (orientedSimplexFace i q) ≠ chartU x := by
     intro i q hh
     exact hSface i q (chartU.injOn (hSU (orientedSimplexFace i q)) hxU hh)
-  let tauV : C(stdSimplex ℝ (Fin 4), chartU.target) :=
+  let tauV : C(Convexity.StdSimplex ℝ (Fin 4), chartU.target) :=
     ⟨fun q => ⟨chartU (S.simplex q), chartU.map_source (hSU q)⟩,
       (chartU.continuousOn.comp_continuous S.simplex.continuous hSU).subtype_mk _⟩
   let p₀ : chartU.target := chartU.toHomeomorphSourceTarget (⟨x, hxU⟩ : chartU.source)
-  have htauVne : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), tauV (orientedSimplexFace i q) ≠ p₀ :=
+  have htauVne : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)),
+      tauV (orientedSimplexFace i q) ≠ p₀ :=
     fun i q hh => htauUne i q (congrArg Subtype.val hh)
   let zV : integralSingularCoefficients ⟶
       (integralRelativeChains ({(p₀ : chartU.target)}ᶜ : Set chartU.target)).X 3 :=
@@ -1374,9 +1323,9 @@ theorem localOrientationClass_generator_of_euclideanStandardSimplex
         p₀.property).toLinearEquiv) cV cT rfl).symm
   let tr : LM ≃ₜ LM := Homeomorph.addRight (-(chartU x))
   have htr0 : tr (chartU x) = (0 : LM) := add_neg_cancel _
-  let tauT : C(stdSimplex ℝ (Fin 4), LM) :=
+  let tauT : C(Convexity.StdSimplex ℝ (Fin 4), LM) :=
     ⟨fun q => tr (tauU q), tr.continuous.comp tauU.continuous⟩
-  have htauTne : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)),
+  have htauTne : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)),
       tauT (orientedSimplexFace i q) ≠ tr (chartU x) := by
     intro i q hh
     exact htauUne i q (tr.injective hh)
@@ -1410,9 +1359,9 @@ theorem localOrientationClass_generator_of_euclideanStandardSimplex
       ((integralLocalHomologyHomeomorphIso 3 tr (chartU x)).toLinearEquiv) cT cT' rfl).symm
   let sc : LM ≃ₜ LM :=
     Homeomorph.smulOfNeZero (S.radius⁻¹) (inv_ne_zero (ne_of_gt S.radius_pos))
-  let tauS : C(stdSimplex ℝ (Fin 4), LM) :=
+  let tauS : C(Convexity.StdSimplex ℝ (Fin 4), LM) :=
     ⟨fun q => sc (tauT q), sc.continuous.comp tauT.continuous⟩
-  have htauSne : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)),
+  have htauSne : ∀ (i : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)),
       tauS (orientedSimplexFace i q) ≠ sc (tr (chartU x)) := by
     intro i q hh
     exact htauTne i q (sc.injective hh)
@@ -1462,7 +1411,7 @@ theorem localOrientationClass_generator_of_euclideanStandardSimplex
       Function.Bijective (fun z : ℤ => z • cT') :=
     (bijective_zsmul_iff_of_linearEquiv_apply
       ((integralLocalHomologyHomeomorphIso 3 sc (tr (chartU x))).toLinearEquiv) cT' cS rfl).symm
-  have hliftedSne : ∀ (i : Fin 4) (t : stdSimplex ℝ (Fin 3)),
+  have hliftedSne : ∀ (i : Fin 4) (t : Convexity.StdSimplex ℝ (Fin 3)),
       liftedPositiveTetrahedron (orientedSimplexFace i t) ≠ sc (tr (chartU x)) := by
     intro i t
     rw [← htauS]

@@ -227,7 +227,7 @@ theorem exists_uniform_scaled_window_ball_volume_lower (R₀ : ℝ) :
   intro N _ _ _ _ _ D g Φ hemb q hq hmetric p hp r hr hr1 hmargin
   have hlocal : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Φ :=
     DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv Φ
-      hemb.contMDiff (fun x => (hemb.isImmersion.isImmersionAt x).injective_mfderiv (by decide)) rfl
+      hemb.contMDiff (fun x => (hemb.isImmersion.isImmersionAt x).mfderiv_injective (by decide)) rfl
   have hv := (mul_le_mul' (le_rfl : ENNReal.ofReal (1 / 8 : ℝ) ≤ _)
     (hvol p.val hp r hr hr1)).trans
       (window_ball_volume_ge_of_metric_bounds (scaleMetric q hq g) Φ hlocal
@@ -284,7 +284,7 @@ theorem exists_uniform_nearby_scaled_window_ball_volume_lower (R₁ : ℝ) (hR�
   intro N _ _ _ _ _ D g Φ hemb q Q C hq hQ hC hscale hmetric hmargin u y d hd hnear hreserve a ha hsmall
   have hlocal : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Φ :=
     DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv Φ
-      hemb.contMDiff (fun x => (hemb.isImmersion.isImmersionAt x).injective_mfderiv (by decide)) rfl
+      hemb.contMDiff (fun x => (hemb.isImmersion.isImmersionAt x).mfderiv_injective (by decide)) rfl
   have hnorm : ‖u.val‖ < R₁ := by
     nlinarith [norm_nonneg u.val, mul_nonneg hd (Real.sqrt_nonneg C)]
   obtain ⟨⟨v, hv, hvy⟩, _⟩ :=

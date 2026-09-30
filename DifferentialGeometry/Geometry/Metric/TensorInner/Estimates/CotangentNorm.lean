@@ -25,7 +25,8 @@ theorem normSq0S_one_le_iff (g : SmoothRiemannianMetric I M) (x : M)
   constructor
   · intro h w
     rw [← heval]
-    exact (Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic g x v w).trans
+    exact (SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
+      g x v w).trans
       (mul_le_mul_of_nonneg_right ((Real.sqrt_le_iff).mpr ⟨hC, h⟩) (Real.sqrt_nonneg _))
   · intro h
     have hs := h v

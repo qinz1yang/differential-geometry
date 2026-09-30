@@ -157,7 +157,7 @@ theorem BallMarking.transport_of_supportDiffeomorphFamily_refl (B : BallMarking 
     (fun _ ↦ ∅) (fun _ _ _ ↦ by simp) (fun _ _ _ ↦ ⟨rfl, rfl⟩)
     (fun _ _ _ _ _ ↦ by simp) (fun _ _ _ ↦ rfl)
 
-theorem G_ball_of_supportFamily
+theorem connectedBallMarkingIsotopy_of_supportFamily
     (h : ∀ (M : ClosedOrientedManifold.{u} 3) [ConnectedSpace M.Carrier] (I : Type u) [Fintype I]
       (B B' : BallMarking M I),
       ∃ (J : I → ℝ → Diffeomorph (𝓡 3) (𝓡 3) M.Carrier M.Carrier ∞)
@@ -173,7 +173,7 @@ theorem G_ball_of_supportFamily
           (B.ball i).chart x ∉ U j) ∧
         (∀ i, ∀ x ∈ Metric.closedBall (0 : E₃) 2,
           J i 1 ((B.ball i).chart x) = (B'.ball i).chart x)) :
-    G_ball.{u} := by
+    connectedBallMarkingIsotopy.{u} := by
   intro M _ I _ B B'
   obtain ⟨J, U, hJ, hJi, hJ0, hdisj, hfix, hU, hJ1⟩ := h M I B B'
   exact B.isotopic_of_supportFamily B' J U hJ hJi hJ0 hdisj hfix hU hJ1

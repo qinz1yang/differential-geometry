@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ProjectiveCapCore
 import DifferentialGeometry.Topology.ProjectiveSpace.CylinderDiagonalSlab
-import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeomorph
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderDiagonalSlab
 
 section
@@ -8,7 +7,6 @@ open private capCore_diagonalSlab from DifferentialGeometry.Geometry.Flow.RicciF
 open private closedSlab closedSlab_eq_image isCompact_closedSlab isConnected_closedSlab
   closure_interior_closedSlab from DifferentialGeometry.Topology.ProjectiveSpace.CylinderDiagonalSlab
 open private exists_boundary_chart_closedSlab_image from DifferentialGeometry.Topology.ProjectiveSpace.CylinderDiagonalSlab
-open private exists_diffeomorph_orbitQuotient from DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeomorph
 
 noncomputable section
 
@@ -29,26 +27,21 @@ private theorem exists_projective_compactDomain_diagonalSlab
     ∃ K : CompactDomain M,
       K.carrier = d '' (Geometry.cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-L) L)) ∧
       Nonempty (CapCore K.carrier) := by
-  obtain ⟨e,he⟩ := exists_diffeomorph_orbitQuotient
-  let D := e.trans d
-  have hr : D '' closedSlab L =
+  have hr : d '' closedSlab L =
       d '' (Geometry.cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-L) L)) := by
-    rw [closedSlab_eq_image, Set.image_image, Set.image_image]
-    apply Set.image_congr
-    intro p hp
-    change d (e (proj p)) = d (Geometry.cylinderDiagonalQuotientMap p)
-    rw [he p]
+    rw [closedSlab_eq_image]
+    rfl
   let K : CompactDomain M :=
-    { carrier := D '' closedSlab L
-      compact := (isCompact_closedSlab L).image D.continuous
-      connected := (isConnected_closedSlab hL.le).image D D.continuous.continuousOn
+    { carrier := d '' closedSlab L
+      compact := (isCompact_closedSlab L).image d.continuous
+      connected := (isConnected_closedSlab hL.le).image d d.continuous.continuousOn
       regular_closed := by
-        change closure (interior (D.toHomeomorph '' closedSlab L)) = D.toHomeomorph '' closedSlab L
-        rw [← D.toHomeomorph.image_interior, ← D.toHomeomorph.image_closure,
+        change closure (interior (d.toHomeomorph '' closedSlab L)) = d.toHomeomorph '' closedSlab L
+        rw [← d.toHomeomorph.image_interior, ← d.toHomeomorph.image_closure,
           closure_interior_closedSlab hL]
-      boundary_chart := fun x hx => exists_boundary_chart_closedSlab_image D hL x hx }
+      boundary_chart := fun x hx => exists_boundary_chart_closedSlab_image d hL x hx }
   refine ⟨K, hr, ?_⟩
-  change Nonempty (CapCore (D '' closedSlab L))
+  change Nonempty (CapCore (d '' closedSlab L))
   rw [hr]
   exact capCore_diagonalSlab d hL
 

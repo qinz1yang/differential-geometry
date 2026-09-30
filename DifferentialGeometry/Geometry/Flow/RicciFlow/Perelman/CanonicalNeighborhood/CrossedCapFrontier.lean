@@ -25,7 +25,7 @@ theorem exists_cap_filling_at_crossed_cut_neck_tolerance :
             10000 / Real.sqrt (S.scalar t x) ≤ metricDistance (S.base.metric t) x z),
           witness.alternative = CanonicalAlternative.cap cap depth →
           ∀ (nk : SpatialNeck (S.base.metric t) eps p) (u v : Sphere 2) (a level : ℝ),
-            |a| ≤ 1 → nk.map (u, a) = cap.tube_map (v, 0) → |level| ≤ 1 →
+            |a| ≤ 1 → nk.map (u, a) = cap.tubeMap (v, 0) → |level| ≤ 1 →
             ∀ W R : Set M, closure (interior W) = W → IsPreconnected (interior W) → IsClosed R →
               frontier W = range (fun z : Sphere 2 => nk.map (z, level)) ∪ R →
               Disjoint (range (fun z : Sphere 2 => nk.map (z, level))) R →

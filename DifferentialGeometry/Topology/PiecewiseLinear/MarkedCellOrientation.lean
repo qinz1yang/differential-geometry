@@ -17,7 +17,7 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 theorem IsPLBall.exists_disk_family_map_with_circle_parity
     {P : Set E3} (hP : IsPLBall 3 P) {ι : Type*} [Finite ι]
     {D : ι → Set E3} {q : ι → (Fin 3 → ℝ) → E3}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDP : ∀ i, D i ⊆ frontier P) (hdis : Pairwise fun i j => Disjoint (D i) (D j))
     (σ : ZMod 2) :
     ∃ N : E3 → E3, IsPLHomeomorphOn N P P ∧ (∀ i, N '' D i = D i) ∧

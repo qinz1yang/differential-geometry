@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.JetDifference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Bounds.UniformFamily
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Bounds.FirstDerivativeUniform
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.InverseGramLowerBound
@@ -115,7 +116,7 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
         ∀ i j : Fin (Module.finrank ℝ E),
           |chartDeTurckRHSComp (I := I) gBase (gSeq k₁) α i j (extChartAt I α b) -
             chartDeTurckRHSComp (I := I) gBase (gSeq k₂) α i j (extChartAt I α b)| ≤
-              D.rhsLip * chartMetricJet2DiffSup (I := I) (M := M)
+              D.rhsLip * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
                 (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
   rhs_d1_lipschitz :
     ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
@@ -128,7 +129,7 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
               (chartDeTurckRHSComp (I := I) gBase (gSeq k₂) α i j)
                 (extChartAt I α b)| ≤
-              D.rhsD1Lip * metricJet3DiffSup (I := I) (M := M)
+              D.rhsD1Lip * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
                 (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
 
 omit [NeZero (Module.finrank ℝ E)] in

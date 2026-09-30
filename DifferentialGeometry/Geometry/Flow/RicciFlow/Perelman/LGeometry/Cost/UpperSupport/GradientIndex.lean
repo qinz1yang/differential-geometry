@@ -129,7 +129,7 @@ theorem exists_contMDiffOn_lCost_upper_support_gradient_hess_le_index
     (hloc.localInverse.source ∩ hloc.localInverse ⁻¹' V)
   have hbranchOpen : IsOpen
       (hloc.localInverse.source ∩ hloc.localInverse ⁻¹' V) :=
-    hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
+    hloc.contMDiffOn_localInverse.continuousOn.isOpen_inter_preimage
       hloc.localInverse_open_source hVopen
   have hUopen : IsOpen U := hU0open.inter hbranchOpen
   have hzSource : lExp S T x Z tau ∈ hloc.localInverse.source := by
@@ -250,6 +250,7 @@ theorem exists_contMDiffOn_lCost_upper_support_gradient_hess_le_index
         DifferentialGeometry.mvfderiv_real_eq_mfderiv,
         hF0germ.mfderiv_eq (I := IM) (I' := 𝓘(Real, Real))]
       rw [hF0germ.self_of_nhds]
+      simp [tangentSpaceCast]
     exact congrArg (metricSharp (I := IM) (S.base.metric (T - tau))
       (lExp S T x Z tau)) hmv
   have hF0diff : MDifferentiableAt IM 𝓘(Real, Real) F0 (lExp S T x Z tau) :=

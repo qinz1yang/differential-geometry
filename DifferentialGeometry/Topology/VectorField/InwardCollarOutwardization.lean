@@ -115,12 +115,12 @@ theorem exists_inwardCollar_outwardization
       change (T q.val.1, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-a * (L q).2)) = 0
       rw [show T q.val.1 = 0 from hTz, hNz, mul_zero, map_zero]
       rfl
-  refine ⟨G, hG, fun q hq => if_pos hq, ?_, ?_, ?_⟩
+  refine ⟨G, hG, fun q hq => ite_eq_left hq, ?_, ?_, ?_⟩
   · intro q hq
-    rw [show G q = N q from if_neg (by linarith)]
+    rw [show G q = N q from ite_eq_right (by linarith)]
     exact hNself q (by linarith)
   · intro q hq
-    rw [show G q = R q from if_pos (by linarith)]
+    rw [show G q = R q from ite_eq_left (by linarith)]
     change (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2)
       ((DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc q.val.2).symm (-a * (L q).2)) = -a
     rw [ContinuousLinearEquiv.apply_symm_apply]
@@ -129,11 +129,11 @@ theorem exists_inwardCollar_outwardization
     rw [hL, mul_one]
   · intro q
     by_cases hq : q.val.2.val ≤ a
-    · rw [show G q = R q from if_pos hq, hRzero q]
+    · rw [show G q = R q from ite_eq_left hq, hRzero q]
       simp only [hq, true_and]
       rfl
     · have hnonzero : N q ≠ 0 := fun h => hn (κ q) ((hNz q).mp h)
-      rw [show G q = N q from if_neg hq]
+      rw [show G q = N q from ite_eq_right hq]
       simp only [hnonzero, hq, false_and]
 
 end DifferentialGeometry.VectorField

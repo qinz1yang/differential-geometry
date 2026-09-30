@@ -348,7 +348,7 @@ private lemma eLpNorm_le_of_bound_and_support_le_measure
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {p : ℝ≥0∞}
-    {h : M → ℝ} (_h_meas : AEStronglyMeasurable h
+    {h : M → ℝ} (h_meas : AEStronglyMeasurable h
       (riemannianVolumeMeasure (I := I) (M := M) g))
     {δ : ℝ} (hδ : 0 ≤ δ)
     (h_bound : ∀ x : M, ‖h x‖ ≤ δ)
@@ -375,13 +375,13 @@ private lemma eLpNorm_le_of_bound_and_support_le_measure
         show ‖(δ : ℝ)‖ = δ from by rw [Real.norm_eq_abs]; exact abs_of_nonneg hnonneg]
       exact h_bound x
     · rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem hx]
+  have hKmeas : MeasurableSet K := hK.isClosed.measurableSet
   have h1 : eLpNorm (K.indicator h) p μ ≤
       eLpNorm (K.indicator (fun _ : M => δ)) p μ :=
-    eLpNorm_mono hpt
-  have hKmeas : MeasurableSet K := hK.isClosed.measurableSet
+    eLpNorm_mono (h_meas.indicator hKmeas) hpt
   have h2 : eLpNorm (K.indicator (fun _ : M => δ)) p μ ≤
       ‖(δ : ℝ)‖ₑ * μ K ^ (p.toReal⁻¹) := by
-    have := eLpNorm_indicator_const_le (μ := μ) (s := K) (c := δ) p
+    have := eLpNorm_indicator_const_le (μ := μ) (s := K) (c := δ) p hKmeas.nullMeasurableSet
     simpa [one_div] using this
   have hδ_enorm : ‖(δ : ℝ)‖ₑ = ENNReal.ofReal δ := by
     rw [Real.enorm_eq_ofReal hδ]
@@ -538,12 +538,6 @@ theorem compactlySupportedSmoothFunctions_denseRange_in_Lp
   have heLp_eq : eLpNorm ((u - fLp : Lp ℝ p μ) : M → ℝ) p μ =
       eLpNorm ((u : M → ℝ) - (f : M → ℝ)) p μ :=
     eLpNorm_congr_ae h_sub_eq_ae
-  have h_u_minus_φ_aem : AEStronglyMeasurable ((u : M → ℝ) - φ) μ :=
-    hu_mem.1.sub φ_cont.aestronglyMeasurable
-  have h_φ_minus_f_aem : AEStronglyMeasurable (φ - (f : M → ℝ)) μ :=
-    φ_cont.aestronglyMeasurable.sub f.contMDiff.continuous.aestronglyMeasurable
-  have htri_raw := eLpNorm_add_le (p := p) (μ := μ)
-    h_u_minus_φ_aem h_φ_minus_f_aem hp
   have h_sum_eq : ((u : M → ℝ) - φ) + (φ - (f : M → ℝ)) =
       (u : M → ℝ) - (f : M → ℝ) := by
     funext x
@@ -551,7 +545,8 @@ theorem compactlySupportedSmoothFunctions_denseRange_in_Lp
     ring
   have htri : eLpNorm ((u : M → ℝ) - (f : M → ℝ)) p μ ≤
       eLpNorm ((u : M → ℝ) - φ) p μ + eLpNorm (φ - (f : M → ℝ)) p μ := by
-    rw [← h_sum_eq]; exact htri_raw
+    rw [← h_sum_eq]
+    exact eLpNorm_add_le hp
   have hsum_bound : eLpNorm ((u : M → ℝ) - (f : M → ℝ)) p μ ≤
       ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) :=
     htri.trans (add_le_add φ_approx f_approx)

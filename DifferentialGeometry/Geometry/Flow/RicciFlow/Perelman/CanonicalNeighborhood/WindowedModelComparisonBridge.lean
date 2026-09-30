@@ -134,7 +134,7 @@ theorem MetricComparisonOn.toModelComparison_jet {eps : ℝ}
     (C.toModelComparison hext hball hbase hcap).jet = C.jet :=
   rfl
 
-def modelComparison_refl (g : ℝ → SmoothRiemannianMetric I3 M) (p : M) {eps : ℝ}
+def modelComparisonRefl (g : ℝ → SmoothRiemannianMetric I3 M) (p : M) {eps : ℝ}
     (heps : 0 < eps) [IsManifold I3 1 M] :
     ModelComparison (I := I3) eps g g p p (PartialDiffeomorph.refl (I := I3) M) := by
   have hfun : (↑(PartialDiffeomorph.refl (I := I3) M) : M → M) = id := by funext w; rfl

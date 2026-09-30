@@ -23,8 +23,8 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 theorem exists_homeomorph_smooth_disks_of_isClosedEmbedding
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
     [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} → M)
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} → M)
     (hψ : IsClosedEmbedding ψ) (hψbd : range ψ ⊆ (𝓡∂ 3).boundary M) :
     ∃ θ : M ≃ₜ M, θ '' (𝓡∂ 3).boundary M = (𝓡∂ 3).boundary M ∧
       ∃ f : Fin 2 → EuclideanSpace ℝ (Fin 2) → M,
@@ -53,8 +53,8 @@ theorem exists_homeomorph_smooth_disks_of_isClosedEmbedding
         (prismBallHomeomorph.symm (w, ⟨c, hcI⟩)).val.2 = c := fun w =>
       congrArg (fun x => (x.2 : ℝ)) (prismBallHomeomorph.apply_symm_apply (w, ⟨c, hcI⟩))
     let z : Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1 →
-        {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-          z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} := fun w =>
+        {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+          z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} := fun w =>
       ⟨prismBallHomeomorph.symm (w, ⟨c, hcI⟩),
         (prismBallHomeomorph.symm (w, ⟨c, hcI⟩)).2.1, by rw [hp2 w]; exact hc2⟩
     have hzc : Continuous z :=
@@ -62,8 +62,8 @@ theorem exists_homeomorph_smooth_disks_of_isClosedEmbedding
         (continuous_id.prodMk continuous_const)).subtype_mk _
     refine ⟨fun w => ψ (z w), hψ.continuous.comp hzc, fun w w' h => ?_, ?_⟩
     · have h1 : z w = z w' := hψ.injective h
-      have h2 := congrArg (fun q : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-          z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} => (prismBallHomeomorph q.val).1) h1
+      have h2 := congrArg (fun q : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+          z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} => (prismBallHomeomorph q.val).1) h1
       simpa only [z, Homeomorph.apply_symm_apply] using h2
     · ext y
       constructor

@@ -170,7 +170,7 @@ theorem gradInnerLaplacianRhsOfPairings_norm_lt_top
         ((gradInnerLaplacianRhsOfPairings (I := I) (M := M) g φ hu_h
             h_ricci_part h_hess_part : Lp ℝ 2 _) : M → ℝ) 2
         (riemannianVolumeMeasure (I := I) (M := M) g) < ⊤ :=
-  (Lp.memLp _).2
+  Lp.memLp _
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gradInnerLaplacianRhsOfPairings_norm_le

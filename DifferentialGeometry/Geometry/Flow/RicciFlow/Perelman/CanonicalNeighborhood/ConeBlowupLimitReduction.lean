@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BoundedAtDistanceFromRmBallBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonComposition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EscapeReindexingReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornStructureReduction
@@ -156,18 +155,6 @@ theorem curvatureEscapeRealization_of_smallScale_of_coneBlowupLimitRealization
   curvatureEscapeRealization_of_boundedAtDistance
     (boundedAtDistanceShell_of_smallScale_of_coneBlowupLimitRealization hsmall h)
 
-theorem bounded_curvature_at_distance_of_smallScale_of_coneBlowupLimitRealization
-    {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (hsmall : ∃ epsStar r : ℝ, 0 < epsStar ∧ 0 < r ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, CurvatureBoundedWithin X r)
-    (h : ConeBlowupLimitRealization.{u} kappa sigma Phi)
-    (hder : TerminalDerivativeBoundProducer.{u} kappa sigma Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
-        BoundedAtDistance X ∧ TerminalDerivativeBounds X :=
-  bounded_curvature_at_distance_of_noSubsequenceCurvatureEscapeShell_and_terminalDerivativeBoundProducer
-    hsmall (noSubsequenceCurvatureEscapeShell_of_coneBlowupLimitRealization h) hder
-
 theorem boundedAtDistanceShell_of_modelCurvatureBound_of_coneBlowupLimitRealization
     {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) (hsigma : 0 < sigma)
@@ -178,20 +165,8 @@ theorem boundedAtDistanceShell_of_modelCurvatureBound_of_coneBlowupLimitRealizat
   exact boundedAtDistanceShell_of_smallScale_of_coneBlowupLimitRealization
     ⟨e, r, he, hr, fun eps hp hle X => hb eps hp hle sigma hsigma Phi hPhi X⟩ h
 
-theorem bounded_curvature_at_distance_of_modelCurvatureBound_of_coneBlowupLimitRealization
-    {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) (hsigma : 0 < sigma)
-    (hPhi : AdmissiblePinchingFunction Phi)
-    (h : ConeBlowupLimitRealization.{u} kappa sigma Phi)
-    (hder : TerminalDerivativeBoundProducer.{u} kappa sigma Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
-        BoundedAtDistance X ∧ TerminalDerivativeBounds X := by
-  obtain ⟨e, r, he, hr, hb⟩ := exists_pos_curvatureBoundedWithin_of_modelScale hmod
-  exact bounded_curvature_at_distance_of_smallScale_of_coneBlowupLimitRealization
-    ⟨e, r, he, hr, fun eps hp hle X => hb eps hp hle sigma hsigma Phi hPhi X⟩ h hder
-
-private def emptyConeChart : ConeChart (euclideanMetric (E := ThreeSpace)) (∅ : Set ThreeSpace) where
+private def emptyConeChart :
+    ConeChart (euclideanMetric (E := ThreeSpace)) (∅ : Set ThreeSpace) where
   surface := EuclideanSpace ℝ (Fin 2)
   metric := euclideanMetric (E := EuclideanSpace ℝ (Fin 2))
   map :=
@@ -235,7 +210,7 @@ theorem exists_curvatureOperatorNonnegative_and_metricScalarAt_ne_zero :
       norm_num⟩
 
 theorem exists_metricScalarAt_ne_zero_of_finiteHorn {W : Type u} [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W]
     {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) :
     ∃ x : W, metricScalarAt g x ≠ 0 := by
   obtain ⟨i, hi⟩ := H.curvature_diverges 0

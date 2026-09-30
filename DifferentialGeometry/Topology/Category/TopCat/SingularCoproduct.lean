@@ -27,7 +27,8 @@ def singularSigmaCofanIsColimit : IsColimit (singularSigmaCofan X) := by
     have hh : (ContinuousMap.sigmaMk (X := fun i => ↥(X i)) a.1).comp ((X a.1).toSSetObjEquiv n a.2) =
         (ContinuousMap.sigmaMk (X := fun i => ↥(X i)) b.1).comp ((X b.1).toSSetObjEquiv n b.2) :=
       congrArg ((TopCat.of (Σ i, X i)).toSSetObjEquiv n) hab
-    have h : (⟨a.1, (X a.1).toSSetObjEquiv n a.2⟩ : Σ i, C(stdSimplex ℝ (Fin (n.unop.len + 1)), X i)) =
+    have h : (⟨a.1, (X a.1).toSSetObjEquiv n a.2⟩ :
+        Σ i, C(Convexity.StdSimplex ℝ (Fin (n.unop.len + 1)), X i)) =
         ⟨b.1, (X b.1).toSSetObjEquiv n b.2⟩ := ContinuousMap.isEmbedding_sigmaMk_comp.injective hh
     obtain ⟨i,a⟩ := a
     obtain ⟨j,b⟩ := b

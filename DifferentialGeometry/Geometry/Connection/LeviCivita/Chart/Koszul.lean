@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Metric
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Equation.Koszul
-import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.InnerBridge
+import DifferentialGeometry.Geometry.Metric.Coordinates.ChartBilinear
 
 
 set_option autoImplicit false
@@ -14,10 +14,9 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Tensor.Coordinates
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 open scoped Manifold ContDiff _root_.Topology BigOperators
 

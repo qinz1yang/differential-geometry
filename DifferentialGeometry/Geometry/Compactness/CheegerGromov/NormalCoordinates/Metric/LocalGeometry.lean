@@ -457,7 +457,7 @@ theorem normalGeo_map
     if ht : t ∈ s then ⟨gamma t, hmem t ht⟩ else z0
   have hval : ∀ t ∈ s, (gammaQ t : E) = gamma t := by
     intro t ht
-    simp only [gammaQ, dif_pos ht]
+    simp only [gammaQ, dite_eq_left ht]
   have hbaseSmooth : ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) ∞
       (fun t ↦ (gammaQ t : E)) s :=
     hgamma.congr hval

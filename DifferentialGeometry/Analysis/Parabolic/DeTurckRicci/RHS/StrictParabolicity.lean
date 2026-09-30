@@ -116,11 +116,11 @@ private lemma partialDeriv_testLinearForm (x : M) (ξ : E)
     rw [hap, Module.Basis.coord_apply, Module.Basis.repr_self]
     by_cases hpa : p = a
     · rw [hpa]; simp
-    · rw [if_neg hpa, Finsupp.single_eq_of_ne (Ne.symm hpa)]
+    · rw [ite_eq_right hpa, Finsupp.single_eq_of_ne (Ne.symm hpa)]
   rw [Finset.sum_congr rfl (fun a _ => hterm a)]
   rw [Finset.sum_eq_single p]
-  · rw [if_pos rfl]; ring
-  · intro b _ hb; rw [if_neg (Ne.symm hb)]; ring
+  · rw [ite_eq_left rfl]; ring
+  · intro b _ hb; rw [ite_eq_right (Ne.symm hb)]; ring
   · intro hp; exact absurd (Finset.mem_univ p) hp
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]

@@ -19,7 +19,7 @@ theorem IsTube.exists_centered_splitDisk_parametrization
     (ht : IsTube K N C D Dbd h N') {e : Finset E3}
     (he : e ∈ K.faces) (hcard : e.card = 2) :
     ∃ r : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (D e) ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D e) ∧
       r '' stdSimplexBoundary 2 = Dbd e ∧
       r (stdCenter 1) = e.centroid ℝ id := by
   obtain ⟨r, hr, hrbd⟩ := ht.splitCell e he hcard

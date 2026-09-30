@@ -124,9 +124,9 @@ theorem exists_diffeomorph_ball_of_flat_cap_reconstruction
       Ψ '' (closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1 ×ˢ {0}))
     (D : Fin 2 → EuclideanThree ≃ₘ[ℝ] EuclideanThree)
     (hD : ∀ i, D i '' closedBall 0 1 = closure
-      (jordanBrouwer_openThreeSpace (f i) (hf i)
+      (smoothSphereSidesOpenThreeSpace (f i) (hf i)
         (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides.compactSide) :
-    let d := (jordanBrouwer_openThreeSpace e he
+    let d := (smoothSphereSidesOpenThreeSpace e he
       (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides
     ∃ H : EuclideanThree ≃ₘ[ℝ] EuclideanThree,
       H '' closedBall 0 1 = closure d.compactSide ∧ H '' sphere 0 1 = range e := by
@@ -151,9 +151,9 @@ theorem exists_diffeomorph_ball_of_flat_cap_reconstruction
     nlinarith
   obtain ⟨Φ, C, dg, _, hrel⟩ := exists_flat_cap_reconstruction_regions he hb hbboundary hcover
     hinter Ψ hR hS hboundary χ hχ hχD hsa hab hf hcap hffix hside hflat hgfix hrange hgin hgun
-  let d := (jordanBrouwer_openThreeSpace e he
+  let d := (smoothSphereSidesOpenThreeSpace e he
     (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides
-  let df := fun i => (jordanBrouwer_openThreeSpace (f i) (hf i)
+  let df := fun i => (smoothSphereSidesOpenThreeSpace (f i) (hf i)
     (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides
   have hcyl : ∀ p ∈ ball (0 : EuclideanSpace ℝ (Fin 2)) R ×ˢ Ioo (-ε) ε,
       Ψ p ∈ range e ↔ ‖p.1‖ = 1 := by

@@ -48,7 +48,7 @@ theorem exists_isPLHomeomorphOn_derivedNeighborhoodCell_vertex
     (hL : ∀ t ∈ L.faces, t.card ≤ 1) {s : Finset E} (hs : s ∈ K.faces)
     (hcard : s.card = 1) (hsL : s ∉ L.faces) :
     ∃ g : (Fin (n + 3) → ℝ) → E,
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin (n + 3))) (derivedNeighborhoodCell K s).space ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 3))) (derivedNeighborhoodCell K s).space ∧
       IsPLHomeomorphOn g ∅
         ((derivedNeighborhoodCell K s).space ∩ (derivedNeighborhood K L).space) := by
   classical
@@ -77,8 +77,8 @@ theorem exists_isPLHomeomorphOn_derivedNeighborhoodCell_edge_pair
     (hcard : s.card = 2) (hsL : s ∉ L.faces)
     (hproper : ∀ t : Finset E, t.Nonempty → t ⊂ s → t ∈ L.faces) :
     ∃ g : (Fin 3 → ℝ) × ℝ → E,
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3) ×ˢ Icc 0 1) (derivedNeighborhoodCell K s).space ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ))
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc 0 1) (derivedNeighborhoodCell K s).space ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ))
         ((derivedNeighborhoodCell K s).space ∩ (derivedNeighborhood K L).space) := by
   classical
   obtain ⟨a, b, hab, rfl⟩ := Finset.card_eq_two.mp hcard
@@ -99,7 +99,7 @@ theorem exists_isPLHomeomorphOn_derivedNeighborhoodCell_edge_pair
     exact iUnion_derivedNeighborhoodCell_space K L hLK
   rw [hU] at hmeet
   obtain ⟨g, hg, hg0, hg1⟩ := exists_isPLHomeomorphOn_derivedNeighborhoodCell_edge K hK hab hs
-  let P := stdSimplex ℝ (Fin 3)
+  let P := Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
   have hends : P ×ˢ ({0, 1} : Set ℝ) = P ×ˢ {0} ∪ P ×ˢ {1} := by
     ext z
     simp only [mem_prod, mem_insert_iff, mem_singleton_iff, mem_union]

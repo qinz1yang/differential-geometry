@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.IntegratedNullity
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorThirdOrder
+
+open DifferentialGeometry.TensorMetric (covariantTensorInnerPointwise lowerAllUpperIndices)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

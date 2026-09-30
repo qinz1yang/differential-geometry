@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficien
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Residual.RadiusFreeIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Residual.TameWindow
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg riemannianFiberNormSq_sub_le)
+
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -90,10 +93,10 @@ theorem ricciOrderZeroBaseCoeff_perOrder_l2_topOrderSeparated_up_to_order
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨KtCr, hKtCr_nn, KcCr, hKcCr_nn, hCr⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroRiemannCoeff_backgroundDifference_topOrderSeparated_le
+    exists_ricciOrderZeroRiemannCoeff_sub_top_order_split
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨KtCu, hKtCu_nn, KcCu, hKcCu_nn, hCu⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroCurvCoeff_backgroundDifference_topOrderSeparated_le
+    exists_ricciOrderZeroCurvCoeff_sub_top_order_split
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_backgroundJet_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 2 2
     (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀ -

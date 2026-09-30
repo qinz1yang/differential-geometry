@@ -4,6 +4,10 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.SlotPermutation
 import Mathlib.Data.Fin.Tuple.Basic
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Logic.Equiv.Fin.Basic
+
+open DifferentialGeometry.TensorMetric (covariantTensorInnerPointwise gramMatrixAt
+  lowerAllUpperIndices lowerAllUpperIndices_apply separableFormAt tensorInnerPointwise
+  tensorInnerPointwise_0s_eq_sum)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -282,7 +286,7 @@ private lemma crossDiffSlot_succAbove_castAdd (r s : ℕ) (a : Fin r) :
     rw [Fin.lt_def]
     simp only [Fin.val_castSucc, Fin.val_castAdd, crossDiffSlot]
     exact a.isLt
-  rw [Fin.succAbove, if_pos hcond]
+  rw [Fin.succAbove, ite_eq_left hcond]
   simp only [Fin.val_castSucc, Fin.val_castAdd]
 
 private lemma crossDiffSlot_succAbove_natAdd (r s : ℕ) (a : Fin s) :
@@ -294,7 +298,7 @@ private lemma crossDiffSlot_succAbove_natAdd (r s : ℕ) (a : Fin s) :
     rw [Fin.lt_def, not_lt]
     simp only [Fin.val_castSucc, Fin.val_natAdd, crossDiffSlot]
     omega
-  rw [Fin.succAbove, if_neg hcond]
+  rw [Fin.succAbove, ite_eq_right hcond]
   simp only [Fin.val_succ, Fin.val_natAdd]
   omega
 

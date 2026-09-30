@@ -68,6 +68,9 @@ theorem hasWeakPartialDeriv_second_mul_cutoff_univ
       (hlocal hgk (hDη j).continuous (hDηc j) (hDηs j)))
     ((hlocal hgj (hDη k).continuous (hDηc k) (hDηs k)).add
       (hlocal hu hDDη hDDηc hDDηs))
-  convert hsum using 1 <;> (ext x; simp only [Pi.add_apply, Dη] <;> ring)
+  convert hsum using 1
+  ext x
+  simp only [Pi.add_apply, Dη]
+  ring
 
 end DifferentialGeometry.Analysis.Sobolev

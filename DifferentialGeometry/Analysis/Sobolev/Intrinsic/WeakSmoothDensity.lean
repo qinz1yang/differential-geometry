@@ -148,7 +148,7 @@ theorem HasWeakRiemannianGradLp.exists_smooth_metricL2_approx
     simpa only [hV] using Equivalence.hasWeakRiemannianGradLp_gradFun g (hf n)
   have hG' : HasWeakRiemannianGradLp g u₀ G' :=
     HasWeakRiemannianGradLp.of_metricL2_limit V hfn hu₀ hweak hpoint hscalar hmetric
-  have hG'n := memLp_metric_norm_of_smooth_limit g V hpoint hmetric
+  have hG'n := memLp_metric_norm_of_smooth_limit g V hmetric
   have heq : G' =ᵐ[μ] G := hG'.ae_eq hG₀
     (hG'n.mono_exponent hp) (hGn.mono_exponent hp)
   refine ⟨f, hf, ?_, ?_, ?_⟩

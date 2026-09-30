@@ -2116,7 +2116,7 @@ theorem normal_transition_isometry
     have hderiv := Filter.EventuallyEq.mfderiv_eq
       (I := 𝓘(Real, E')) (I' := I) heq
     rw [mfderiv_comp z hdy hT] at hderiv
-    simpa only using hderiv
+    convert hderiv using 1; rfl
   rw [normal_coord_metric_apply (I := I), normal_coord_metric_apply (I := I), hbase]
   have hu := DFunLike.congr_fun hcomp u
   have hv := DFunLike.congr_fun hcomp v

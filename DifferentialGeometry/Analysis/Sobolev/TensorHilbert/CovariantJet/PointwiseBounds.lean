@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.SharpC0JetSum
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalTerm.EnergyCrossTerm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -205,7 +208,7 @@ private lemma prodShift {b : ℕ → ℝ} (hb : ∀ j, 0 ≤ b j) {Λ : ℝ} (h�
   have hsmall : (∏ q ∈ Sc, b (e q)) ≤ Λ ^ Sc.card := by
     calc (∏ q ∈ Sc, b (e q))
         ≤ ∏ _q ∈ Sc, Λ := by
-          refine Finset.prod_le_prod (fun q _ => hb _) (fun q hq => ?_)
+          refine Finset.prod_le_prod₀ (fun q _ => hb _) (fun q hq => ?_)
           rw [hScdef, Finset.mem_filter] at hq
           have hq2 : e q = 0 ∨ e q = 1 := by omega
           rcases hq2 with h | h <;> rw [h]

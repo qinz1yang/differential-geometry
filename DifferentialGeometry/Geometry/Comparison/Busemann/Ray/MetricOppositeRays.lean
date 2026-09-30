@@ -48,7 +48,7 @@ def oppositeRayLine (alpha beta : ℝ → X) (t : ℝ) : X :=
 omit [MetricSpace X] in
 theorem oppositeRayLine_of_nonneg (alpha beta : ℝ → X) {t : ℝ} (ht : 0 ≤ t) :
     oppositeRayLine alpha beta t = alpha t := by
-  simp only [oppositeRayLine, if_pos ht]
+  simp only [oppositeRayLine, ite_eq_left ht]
 
 omit [MetricSpace X] in
 theorem oppositeRayLine_neg_of_nonneg {alpha beta : ℝ → X}
@@ -58,7 +58,7 @@ theorem oppositeRayLine_neg_of_nonneg {alpha beta : ℝ → X}
   · subst t
     simpa only [neg_zero, oppositeRayLine, le_refl, ite_true] using hcenter
   · have hn : ¬0 ≤ -t := by linarith
-    simp only [oppositeRayLine, if_neg hn, neg_neg]
+    simp only [oppositeRayLine, ite_eq_right hn, neg_neg]
 
 theorem isometry_oppositeRayLine {alpha beta : ℝ → X}
     (halpha : ∀ s t, 0 ≤ s → 0 ≤ t → dist (alpha s) (alpha t) = |s - t|)
@@ -73,22 +73,22 @@ theorem isometry_oppositeRayLine {alpha beta : ℝ → X}
   intro s t
   by_cases hs : 0 ≤ s
   · by_cases ht : 0 ≤ t
-    · simpa only [oppositeRayLine, if_pos hs, if_pos ht, Real.dist_eq] using
+    · simpa only [oppositeRayLine, ite_eq_left hs, ite_eq_left ht, Real.dist_eq] using
         halpha s t hs ht
     · have hnt : 0 ≤ -t := by linarith
       have hst : 0 ≤ s - t := by linarith
-      simp only [oppositeRayLine, if_pos hs, if_neg ht]
+      simp only [oppositeRayLine, ite_eq_left hs, ite_eq_right ht]
       rw [hcross s (-t) hs hnt, Real.dist_eq, abs_of_nonneg hst]
       ring
   · have hns : 0 ≤ -s := by linarith
     by_cases ht : 0 ≤ t
     · have hst : s - t ≤ 0 := by linarith
-      simp only [oppositeRayLine, if_neg hs, if_pos ht]
+      simp only [oppositeRayLine, ite_eq_right hs, ite_eq_left ht]
       rw [dist_comm (beta (-s)) (alpha t), hcross t (-s) ht hns, Real.dist_eq,
         abs_of_nonpos hst]
       ring
     · have hnt : 0 ≤ -t := by linarith
-      simp only [oppositeRayLine, if_neg hs, if_neg ht]
+      simp only [oppositeRayLine, ite_eq_right hs, ite_eq_right ht]
       rw [hbeta (-s) (-t) hns hnt, Real.dist_eq, neg_sub_neg, abs_sub_comm]
 
 theorem exists_isometry_of_opposite_minimizing_rays {alpha beta : ℝ → X} {p : X}

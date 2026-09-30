@@ -111,18 +111,18 @@ theorem lRegularizedAction_chart_of_carrier
         have hk' : k < m := Finset.mem_range.mp hk
         have hk0 : k ≤ m := Nat.le_of_lt hk'
         have hk1 : k + 1 ≤ m := Nat.succ_le_of_lt hk'
-        rw [dif_pos hk']
-        simp only [tNat, Nat.lt_succ_iff, dif_pos hk0, dif_pos hk1]
+        rw [dite_eq_left hk']
+        simp only [tNat, Nat.lt_succ_iff, dite_eq_left hk0, dite_eq_left hk1]
         congr 2
       _ = lRegularizedAction S T gamma (tNat 0) (tNat m) :=
         lRegularizedAction_sum S T gamma (fun k hk ↦ by
           have hk' : k < m := hk
-          simp only [tNat, dif_pos (Nat.lt_trans hk' (Nat.lt_succ_self m)),
-            dif_pos (Nat.succ_lt_succ hk')]
+          simp only [tNat, dite_eq_left (Nat.lt_trans hk' (Nat.lt_succ_self m)),
+            dite_eq_left (Nat.succ_lt_succ hk')]
           with_unfolding_all exact hLag ⟨k, hk'⟩)
       _ = lRegularizedAction S T gamma a b := by
-        simp only [tNat, dif_pos (Nat.succ_pos m),
-          dif_pos (Nat.lt_succ_self m)]
+        simp only [tNat, dite_eq_left (Nat.succ_pos m),
+          dite_eq_left (Nat.lt_succ_self m)]
         change lRegularizedAction S T gamma (t 0) (t (Fin.last m)) =
           lRegularizedAction S T gamma a b
         rw [ht0, htlast]

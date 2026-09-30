@@ -1,13 +1,14 @@
 import DifferentialGeometry.Analysis.Parabolic.Energy.ParabolicLocalAlgebra
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
+
+open DifferentialGeometry.SmoothRiemannianMetric (metric_inner_cauchy_schwarz_sq)
 
 set_option autoImplicit false
 noncomputable section
 open Set Filter Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.Analysis.Parabolic DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.Analysis.Parabolic
 open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.Analysis
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -49,7 +50,7 @@ private theorem gradient_product_local (g : SmoothRiemannianMetric I M)
 
 theorem parabolic_cutoff_pair_le (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (T ε t : ℝ) (χ : ℝ → M → ℝ) (x : M)
-    (F : ShiCutoffLowerSupportAt G T ε χ t x)
+    (F : ParabolicCutoffLowerSupportAt G T ε χ t x)
     (huniq : UniqueDiffWithinAt ℝ (Icc 0 T) t)
     (hε : 0 ≤ ε) (hε1 : ε ≤ 1) (hχ : χ t x ∈ Icc 0 1)
     (u v : ℝ → M → ℝ) (w a b L : ℝ)

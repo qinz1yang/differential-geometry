@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.Parametr
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.GalerkinPairing
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.JetIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
@@ -107,7 +108,7 @@ private lemma grid_mono {a b : ℕ → ℝ}
   rw [DifferentialGeometry.Combinatorics.antidiagonalTupleGrid,
     DifferentialGeometry.Combinatorics.antidiagonalTupleGrid]
   refine Finset.sum_le_sum (fun n _ => Finset.sum_le_sum (fun e _ => ?_))
-  exact Finset.prod_le_prod (fun m _ => ha (e m)) (fun m _ => hab (e m))
+  exact Finset.prod_le_prod₀ (fun m _ => ha (e m)) (fun m _ => hab (e m))
 
 omit [SigmaCompactSpace M] in
 private theorem flux_jet_of_bdd

@@ -10,9 +10,11 @@ open Bundle Manifold Set Topology
 namespace DifferentialGeometry.Topology
 namespace ConnectedSumQuotient
 
-variable {M : Type} [TopologicalSpace M] [ChartedSpace csModel M]
+universe u v
+
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace csModel M]
   [IsManifold (𝓡 3) ∞ M] [T2Space M]
-variable {N : Type} [TopologicalSpace N] [ChartedSpace csModel N]
+variable {N : Type v} [TopologicalSpace N] [ChartedSpace csModel N]
   [IsManifold (𝓡 3) ∞ N] [T2Space N]
 variable (c : BallChart 3 (𝓡 3) M) (d : BallChart 3 (𝓡 3) N)
 variable (aD : csSphere ≃ₘ⟮𝓡 2, 𝓡 2⟯ csSphere)

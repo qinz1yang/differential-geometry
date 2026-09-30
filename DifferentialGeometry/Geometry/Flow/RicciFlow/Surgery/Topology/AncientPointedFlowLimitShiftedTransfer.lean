@@ -114,7 +114,7 @@ theorem abs_derivWithin_scalar_le_of_local_flow_limit_of_shrinking_sliver
       refine ⟨j₀, fun i hi => ?_⟩
       obtain ⟨hi', hb⟩ := hj₀ i hi
       change metricDerivNormSupOn {xk} 2 (if hi : N k ≤ ψ i then _ else _) _ _ < η
-      rw [dif_pos hi']
+      rw [dite_eq_left hi']
       exact hb s hs
     have hu := (hcp.tendstoUniformlyOn_metricScalarAt isCompact_singleton).tendsto_at
       (mem_singleton xk)
@@ -123,7 +123,7 @@ theorem abs_derivWithin_scalar_le_of_local_flow_limit_of_shrinking_sliver
       F i s = metricScalarAt (h k (f (ψ i)) s) (φ k (ψ i) hi xk) := by
     intro i hi s
     change metricScalarAt (if hi : N k ≤ ψ i then _ else _) xk = _
-    rw [dif_pos hi, metricScalarAt_localPull]
+    rw [dite_eq_left hi, metricScalarAt_localPull]
   have hfψ : Tendsto (fun i => f (ψ i)) atTop atTop := (hf.comp hψ).tendsto_atTop
   have hta : Tendsto (fun i => F i t) atTop (𝓝 a) := hlim t ⟨htk.le, ht.le⟩
   have hev : ∀ᶠ i in atTop, ∃ hi : N k ≤ ψ i,
@@ -300,12 +300,12 @@ theorem tendsto_metricDerivNormSupOn_localPull_shifted_of_time_lipschitz
       (localPullMetric (h k (f (ψ i)) 0) (φ k (ψ i) hi) (hφ k (ψ i) hi)) x ≤ 1 / 2 := by
     intro x hx q hq
     have h1 := hsw x (subset_closure hx) q hq
-    simpa only [dif_pos hi] using h1
+    simpa only [dite_eq_left hi] using h1
   have hS2 : metricDerivNormSupOn K p
       (localPullMetric (h k (f (ψ i)) s) (φ k (ψ i) hi) (hφ k (ψ i) hi))
       ((G s).restrictOpen (V k)) (P.metric.restrictOpen (V k)) < η / 2 := by
     have h1 := hj₁ i hij₁
-    simpa only [dif_pos hi] using h1
+    simpa only [dite_eq_left hi] using h1
   set σi := σ (f (ψ i)) with hσi_def
   set A := localPullMetric (h k (f (ψ i)) σi) (φ k (ψ i) hi) (hφ k (ψ i) hi) with hA_def
   set B := localPullMetric (h k (f (ψ i)) s) (φ k (ψ i) hi) (hφ k (ψ i) hi) with hB_def
@@ -426,7 +426,7 @@ theorem neck_alternatives_of_local_flow_limit_at_shifted_times {alpha : ℝ} (ha
     else (G s).restrictOpen (V k)
   have hseq_eq : ∀ k i (hi : N k ≤ ψ i),
       seq k i = localPullMetric (h k (f (ψ i)) (σ s (f (ψ i)))) (φ k (ψ i) hi) (hφ k (ψ i) hi) :=
-    fun k i hi => dif_pos hi
+    fun k i hi => dite_eq_left hi
   have hconvk : ∀ k, k₀ ≤ k → MetricCInfConvergenceOnCompacts (seq k)
       ((G s).restrictOpen (V k)) (P.metric.restrictOpen (V k)) := by
     intro k hk K hK p η hη

@@ -9,8 +9,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 
 private theorem disk_chart_boundary_eq {D : Set E} {p q : (Fin 3 → ℝ) → E}
-    (hp : IsPLHomeomorphOn p (stdSimplex ℝ (Fin 3)) D)
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) :
+    (hp : IsPLHomeomorphOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) :
     p '' stdSimplexBoundary 2 = q '' stdSimplexBoundary 2 := by
   classical
   obtain ⟨K, hKfin, hKspace⟩ := (IsPLBall.isPolyhedron ⟨p, hp⟩).exists_simplicialComplex
@@ -21,8 +21,8 @@ private theorem disk_chart_boundary_eq {D : Set E} {p q : (Fin 3 → ℝ) → E}
 theorem exists_isPLHomeomorphOn_lateral_annulus_cover_of_disjoint_disks
     {S D₀ D₁ J₀ J₁ : Set E} (hS : IsPLSphere 2 S)
     {r₀ r₁ : (Fin 3 → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
     (hb₀ : r₀ '' stdSimplexBoundary 2 = J₀)
     (hb₁ : r₁ '' stdSimplexBoundary 2 = J₁)
     (hD₀S : D₀ ⊆ S) (hD₁S : D₁ ⊆ S) (hdis : Disjoint D₀ D₁) :
@@ -35,7 +35,7 @@ theorem exists_isPLHomeomorphOn_lateral_annulus_cover_of_disjoint_disks
       (φ '' (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)) ∩ D₀ = J₀ ∧
       (φ '' (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)) ∩ D₁ = J₁ ∧
       S ⊆ D₀ ∪ D₁ ∪ φ '' (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) := by
-  let Δ := stdSimplex ℝ (Fin 3)
+  let Δ := Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
   let A := stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1
   let P := Δ ×ˢ ({0, 1} : Set ℝ) ∪ A
   have hΔ : IsPolyhedron Δ := (isPLBall_stdSimplex 2).isPolyhedron
@@ -101,8 +101,8 @@ theorem exists_isPLHomeomorphOn_lateral_annulus_cover_of_disjoint_disks
 theorem exists_isPLHomeomorphOn_lateral_annulus_of_disjoint_disks
     {S D₀ D₁ J₀ J₁ : Set E} (hS : IsPLSphere 2 S)
     {r₀ r₁ : (Fin 3 → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
     (hb₀ : r₀ '' stdSimplexBoundary 2 = J₀)
     (hb₁ : r₁ '' stdSimplexBoundary 2 = J₁)
     (hD₀S : D₀ ⊆ S) (hD₁S : D₁ ⊆ S) (hdis : Disjoint D₀ D₁) :
@@ -143,8 +143,8 @@ private theorem exists_annular_band_cover_of_end_disks
     {S A A₀ A₁ D₀ D₁ J₀ J₁ : Set E} (hS : IsPLSphere 2 S)
     (hA : IsAnnulusOn A A₀ A₁) (hAS : A ⊆ S)
     {r₀ r₁ : (Fin 3 → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
     (hb₀ : r₀ '' stdSimplexBoundary 2 = J₀)
     (hb₁ : r₁ '' stdSimplexBoundary 2 = J₁)
     (hD₀S : D₀ ⊆ S) (hD₁S : D₁ ⊆ S) (hdis : Disjoint D₀ D₁)
@@ -184,14 +184,14 @@ theorem IsPLSphere.exists_annular_band_with_end_caps
     (hJA : J ⊆ A) (hLA : L ⊆ A) (hJL : Disjoint J L)
     (hJend : Disjoint J (A₀ ∪ A₁)) (hLend : Disjoint L (A₀ ∪ A₁))
     (hJess : ¬ ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ A ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ A ∧
         r '' stdSimplexBoundary 2 = J)
     (hLess : ¬ ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ A ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ A ∧
         r '' stdSimplexBoundary 2 = L) :
     ∃ (D₀ D₁ : Set E) (r₀ r₁ : (Fin 3 → ℝ) → E) (φ : (Fin 3 → ℝ) × ℝ → E),
-      IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀ ∧
-      IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ ∧
+      IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
       r₀ '' stdSimplexBoundary 2 = J ∧ r₁ '' stdSimplexBoundary 2 = L ∧
       D₀ ⊆ S ∧ D₁ ⊆ S ∧ Disjoint D₀ D₁ ∧
       ((A₀ ⊆ D₀ ∧ A₁ ⊆ D₁) ∨ (A₁ ⊆ D₀ ∧ A₀ ⊆ D₁)) ∧
@@ -263,10 +263,10 @@ theorem IsPLSphere.exists_annular_band_of_essential_pair
     (hJA : J ⊆ A) (hLA : L ⊆ A) (hJL : Disjoint J L)
     (hJend : Disjoint J (A₀ ∪ A₁)) (hLend : Disjoint L (A₀ ∪ A₁))
     (hJess : ¬ ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ A ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ A ∧
         r '' stdSimplexBoundary 2 = J)
     (hLess : ¬ ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ A ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ A ∧
         r '' stdSimplexBoundary 2 = L) :
     ∃ φ : (Fin 3 → ℝ) × ℝ → E,
       IsPLHomeomorphOn φ (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)

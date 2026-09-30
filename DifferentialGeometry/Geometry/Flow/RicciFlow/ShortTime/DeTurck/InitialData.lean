@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Defs
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Regularity.JointChart
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.QuasilinearExistence
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.MetricExistence
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -126,6 +126,9 @@ theorem deTurckRicci_solution_with_jointRegularity
         (fiberwiseOperatorNormBound_of_tensorSymmetrization (I := I) (M := M) g₀ S hδ)
     rw [← hreal]
     exact deTurckRHSSection_ccTensorBilinSymm_eq_deTurckRicciRHS (I := I) g_bg gDT x v w
+  obtain ⟨C₁, C₂, hMix⟩ :=
+    deTurckSobolevNHa2Symm_mixed_lipschitz_pointwise (I := I) (M := M)
+      (g₀ := g₀) (g_bg := g_bg) (4 * Module.finrank ℝ E + 10) ha_super
   exact quasilinear_metric_short_time_existence_of_nemytskii (I := I)
     (deTurckRicciRHS (I := I) g_bg) g₀ (4 * Module.finrank ℝ E + 10) rfl
     (deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg (4 * Module.finrank ℝ E + 10))
@@ -134,10 +137,10 @@ theorem deTurckRicci_solution_with_jointRegularity
         (fiberwiseOperatorNormBound_of_tensorSymmetrization (I := I) (M := M) g₀ S hδ))
     (deTurckSobolevNHa2Symm_lipschitzWith_lipConst (I := I) (M := M) (g₀ := g₀) (g_bg := g_bg)
       (4 * Module.finrank ℝ E + 10) ha_super)
-    (deTurckSobolevNHa2Symm_mixed_lipschitz_pointwise (I := I) (M := M) (g₀ := g₀)
-      (g_bg := g_bg) (4 * Module.finrank ℝ E + 10) ha_super)
+    C₁ C₂ hMix
     hRepr
-    (deTurckRicci_forcingBootstrap_symm (I := I) (M := M) g₀ g_bg
+    (deTurckRicci_forcingBootstrap_symm (C₁ := C₁) (C₂ := C₂) (hMix := hMix)
+      (I := I) (M := M) g₀ g_bg
       (4 * Module.finrank ℝ E + 10) (by omega))
 
 theorem deturck_ricci_flow_parabolic_short_time_existence

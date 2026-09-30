@@ -533,7 +533,7 @@ private lemma base_f_chart_ae_zero_off_chart_image_pou_tsupport
       hB_compact hB_compact.measurableSet
     have h_prod_memLp : MemLp (fun y => densityOnEuclid (I := I) g α y *
         D.fChart y) 2 ((volume : Measure EuclN).restrict B) :=
-      MemLp.mul' (p := ∞) (q := 2) (r := 2) h_fchart_K_memLp h_density_memLp_top
+      MemLp.fun_mul (p := ∞) (q := 2) (r := 2) h_density_memLp_top h_fchart_K_memLp
     have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
     have : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
       refine ⟨?_⟩

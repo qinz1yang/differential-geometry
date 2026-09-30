@@ -60,8 +60,6 @@ theorem exists_piercing_square_roof_with_sign_closures {K : Set (ℝ × ℝ)} (h
     have hsnd : IsPiecewiseAffineOn (Prod.snd : ℝ × ℝ → ℝ) univ :=
       isPiecewiseAffineOn_of_affine (LinearMap.snd ℝ ℝ ℝ).toAffineMap isOpen_univ
     convert hfst.abs.max hsnd.abs using 1
-    ext x
-    exact (Prod.norm_def x).trans (by rw [Real.norm_eq_abs, Real.norm_eq_abs])
   have hg : IsPiecewiseAffineOn g univ := by
     let A : ℝ →ᵃ[ℝ] ℝ := (-c) • AffineMap.id ℝ ℝ + AffineMap.const ℝ ℝ (c * r)
     have hcomp := (isPiecewiseAffineOn_of_affine A isOpen_univ).comp hnorm

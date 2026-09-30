@@ -87,7 +87,7 @@ private theorem isCompact_closedBall_of_lt_dist_puncture {W : Type*} [MetricSpac
     hKr).mpr hKc
 
 theorem RetainedCoreHistory.final_slab_scalar_buffer_of_spatialCanonicalWitness_of_traces
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ m, RetainedCoreHistory (P₀ m)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ m, ((H m).stage (Fin.last (H m).eventCount)).ClosedSlab
       ((H m).time (Fin.last (H m).eventCount)) (time m))
     (Ctime : ℝ≥0) (q : ℕ → ℝ)
@@ -180,7 +180,7 @@ theorem RetainedCoreHistory.final_slab_scalar_buffer_of_spatialCanonicalWitness_
       linarith
 
 theorem RetainedCoreHistory.exists_local_backward_limit_at_final_slab_end_of_trace_chains
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
       ((H i).time (Fin.last (H i).eventCount)) (time i))
     (hinit : ∀ i, (A i).flow.base.metric ((H i).time (Fin.last (H i).eventCount)) =
@@ -322,7 +322,7 @@ theorem RetainedCoreHistory.exists_local_backward_limit_at_final_slab_end_of_tra
   have hC2 : 1 ≤ C2 := W₀.one_le_comparison_constant
   have hbuffer₂ :=
     RetainedCoreHistory.final_slab_scalar_buffer_of_spatialCanonicalWitness_of_traces
-    (fun m => P₀ (f (k m))) (fun m => H (f (k m))) (fun m => time (f (k m)))
+    (fun m => H (f (k m))) (fun m => time (f (k m)))
     (fun m => A (f (k m))) Ctime (fun m => q (f (k m))) y Q₂ hQ₂ (fun m => hLscalar _ _) hC2
     (fun m => hW (f (k m))) hqy hθ₂ (fun m => htrace m (k m) (hk.id_le m))
   have hσpos (i : ℕ) : 0 < σ i := by
@@ -366,7 +366,7 @@ theorem RetainedCoreHistory.exists_local_backward_limit_at_final_slab_end_of_tra
   obtain ⟨j, hj, P₂, V, hp, hpath, tau, htau, g, hgb, hbase₂, hsol, hnonneg, C, hcenter, r, hr,
       hcpt, hcap, hdist⟩ :=
     RetainedCoreHistory.exists_nonnegative_local_flow_with_comparison_of_final_slab_window
-      (fun m => P₀ (f (k m))) (fun m => H (f (k m))) (fun m => time (f (k m)))
+      (fun m => H (f (k m))) (fun m => time (f (k m)))
       (fun m => A (f (k m))) (fun m => hinit _) Ctime (fun m => q (f (k m))) (fun m => hq _)
       (fun m => hderiv _) (fun m => hfinal _) y Q₂ hQ₂ hqQ₂ hQ₂lim hPhi (fun m => hpinch _)
       (fun m => hpinchFinal _) hbuffer₂ (fun m => hs _) (fun m => rfl) (fun m => σ (f (k m)))
@@ -378,7 +378,7 @@ theorem RetainedCoreHistory.exists_local_backward_limit_at_final_slab_end_of_tra
     hcenter, r, hr, hcpt, hcap, hdist⟩
 
 theorem RetainedCoreHistory.exists_local_backward_limit_at_final_slab_end_of_eventual_traces
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
       ((H i).time (Fin.last (H i).eventCount)) (time i))
     (hinit : ∀ i, (A i).flow.base.metric ((H i).time (Fin.last (H i).eventCount)) =
@@ -486,12 +486,12 @@ theorem RetainedCoreHistory.exists_local_backward_limit_at_final_slab_end_of_eve
     rw [hcanonical (ψ n)]
     rfl
   exact RetainedCoreHistory.exists_local_backward_limit_at_final_slab_end_of_trace_chains
-    P₀ H time A hinit hs Ctime q hq hderiv hfinal x hQ hqQ hPhi hpinch hpinchFinal σ hκ hσ₀
+    H time A hinit hs Ctime q hq hderiv hfinal x hQ hqQ hPhi hpinch hpinchFinal σ hκ hσ₀
     hσQ htested hW (hf.comp hψ) Pl (F.compSubseq ψ hψ) (M.compSubseq ψ hψ) hcan' W xW hR₀ hQW
     hQWlim hcompactW hθ₂ (fun m n hmn => hN m (ψ n) (hNψ m n hmn))
 
 theorem RetainedCoreHistory.final_slab_punctured_cone_end_exclusion_of_trace_chains
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
       ((H i).time (Fin.last (H i).eventCount)) (time i))
     (hinit : ∀ i, (A i).flow.base.metric ((H i).time (Fin.last (H i).eventCount)) =
@@ -630,7 +630,7 @@ theorem RetainedCoreHistory.final_slab_punctured_cone_end_exclusion_of_trace_cha
   obtain ⟨j, hj, A₂, hA₂, hratio, P₂, V, hp, hpath, tau, htau, g, hgb, hsol, hnonneg, hbase₂,
       C, hcenter, r, hr, hcpt, hcap, hdist⟩ :=
     RetainedCoreHistory.exists_local_backward_limit_at_final_slab_end_of_eventual_traces
-      P₀ H time A
+      H time A
       hinit hs Ctime q hq hderiv hfinal x hQ hqQ hPhi hpinch hpinchFinal σ hκ
       hσ₀ hσQ htested hW hf Pl F M hcanonical W xW' hR₀ (fun n => (hN' n).1) hQW' hcompactW
       hθ₂ (fun m => htrace (m + N))

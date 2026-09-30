@@ -63,8 +63,20 @@ lemma eLpNorm_volume_restrict_contDiffOn_mul_le
     · obtain ⟨C₀, hC₀⟩ := hK_compact.bddAbove_image hcontOn_K.norm
       exact ⟨max C₀ 0, le_max_right _ _,
         fun y hy => (hC₀ ⟨y, hy, rfl⟩).trans (le_max_left _ _)⟩
-  obtain ⟨C, hC_nn, hC_bd⟩ := hbdd
+  obtain ⟨C₀, _, hC₀_bd⟩ := hbdd
+  let C : ℝ := max C₀ 1
+  have hC_pos : 0 < C := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+  have hC_nn : 0 ≤ C := hC_pos.le
+  have hC_bd : ∀ y ∈ K, ‖c y‖ ≤ C :=
+    fun y hy => (hC₀_bd y hy).trans (le_max_left _ _)
   refine ⟨C, hC_nn, ?_⟩
+  by_cases hw : AEStronglyMeasurable w μ
+  swap
+  · rw [eLpNorm_of_not_aestronglyMeasurable hw,
+      ENNReal.mul_top (ENNReal.ofReal_pos.mpr hC_pos).ne']
+    exact le_top
+  have hcw : AEStronglyMeasurable (fun y => c y * w y) μ :=
+    (hcontOn_K.aestronglyMeasurable hK_meas).mul hw
   have h_dom : ∀ᵐ y ∂μ, ‖c y * w y‖ ≤ ‖(C : ℝ) • w y‖ := by
     rw [hμ_def, ae_restrict_iff' hK_meas]
     refine Filter.Eventually.of_forall (fun y hyK => ?_)
@@ -75,7 +87,7 @@ lemma eLpNorm_volume_restrict_contDiffOn_mul_le
     exact mul_le_mul_of_nonneg_right (hC_bd y hyK) (norm_nonneg _)
   have h_mono :
       eLpNorm (fun y => c y * w y) 2 μ ≤ eLpNorm (fun y => (C : ℝ) • w y) 2 μ :=
-    eLpNorm_mono_ae (μ := μ) h_dom
+    eLpNorm_mono_ae hcw h_dom
   have h_smul :
       eLpNorm (fun y => (C : ℝ) • w y) 2 μ
         = ENNReal.ofReal C * eLpNorm w 2 μ := by
@@ -95,7 +107,6 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 lemma eLpNorm_sum_le_const_mul_aggregate
     {ι : Type*} [Fintype ι] {μ : Measure EuclN} (F : ι → EuclN → ℝ)
     (A : ℝ≥0∞)
-    (hF : ∀ j : ι, MemLp (F j) 2 μ)
     (hbd : ∀ j : ι, ∃ C : ℝ, 0 ≤ C ∧ eLpNorm (F j) 2 μ ≤ ENNReal.ofReal C * A) :
     ∃ C : ℝ, 0 ≤ C ∧
       eLpNorm (fun y => ∑ j : ι, F j y) 2 μ ≤ ENNReal.ofReal C * A := by
@@ -108,7 +119,7 @@ lemma eLpNorm_sum_le_const_mul_aggregate
     exact (Finset.sum_apply y Finset.univ F).symm
   rw [h_fun]
   have h_tri : eLpNorm (∑ j : ι, F j) 2 μ ≤ ∑ j : ι, eLpNorm (F j) 2 μ :=
-    eLpNorm_sum_le (fun j _ => (hF j).aestronglyMeasurable) (by norm_num)
+    eLpNorm_sum_le (by norm_num)
   have h_step : ∑ j : ι, eLpNorm (F j) 2 μ
       ≤ ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A := by
     refine Finset.sum_le_sum (fun j _ => ?_)
@@ -157,8 +168,20 @@ lemma eLpNorm_volume_restrict_contDiffOn_mul_le_uniform
     · obtain ⟨C₀, hC₀⟩ := hK_compact.bddAbove_image hcontOn_K.norm
       exact ⟨max C₀ 0, le_max_right _ _,
         fun y hy => (hC₀ ⟨y, hy, rfl⟩).trans (le_max_left _ _)⟩
-  obtain ⟨C, hC_nn, hC_bd⟩ := hbdd
+  obtain ⟨C₀, _, hC₀_bd⟩ := hbdd
+  let C : ℝ := max C₀ 1
+  have hC_pos : 0 < C := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+  have hC_nn : 0 ≤ C := hC_pos.le
+  have hC_bd : ∀ y ∈ K, ‖c y‖ ≤ C :=
+    fun y hy => (hC₀_bd y hy).trans (le_max_left _ _)
   refine ⟨C, hC_nn, fun w => ?_⟩
+  by_cases hw : AEStronglyMeasurable w μ
+  swap
+  · rw [eLpNorm_of_not_aestronglyMeasurable hw,
+      ENNReal.mul_top (ENNReal.ofReal_pos.mpr hC_pos).ne']
+    exact le_top
+  have hcw : AEStronglyMeasurable (fun y => c y * w y) μ :=
+    (hcontOn_K.aestronglyMeasurable hK_meas).mul hw
   have h_dom : ∀ᵐ y ∂μ, ‖c y * w y‖ ≤ ‖(C : ℝ) • w y‖ := by
     rw [hμ_def, ae_restrict_iff' hK_meas]
     refine Filter.Eventually.of_forall (fun y hyK => ?_)
@@ -169,7 +192,7 @@ lemma eLpNorm_volume_restrict_contDiffOn_mul_le_uniform
     exact mul_le_mul_of_nonneg_right (hC_bd y hyK) (norm_nonneg _)
   have h_mono :
       eLpNorm (fun y => c y * w y) 2 μ ≤ eLpNorm (fun y => (C : ℝ) • w y) 2 μ :=
-    eLpNorm_mono_ae (μ := μ) h_dom
+    eLpNorm_mono_ae hcw h_dom
   have h_smul :
       eLpNorm (fun y => (C : ℝ) • w y) 2 μ
         = ENNReal.ofReal C * eLpNorm w 2 μ := by
@@ -188,7 +211,6 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 lemma eLpNorm_sum_le_const_mul_aggregate_uniform
     {ι : Type*} [Fintype ι] {ν : Type*} {μ : Measure EuclN}
     (F : ι → ν → EuclN → ℝ) (A : ν → ℝ≥0∞)
-    (hF : ∀ (j : ι) (n : ν), MemLp (F j n) 2 μ)
     (hbd : ∀ j : ι, ∃ C : ℝ, 0 ≤ C ∧
       ∀ n : ν, eLpNorm (F j n) 2 μ ≤ ENNReal.ofReal C * A n) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -204,7 +226,7 @@ lemma eLpNorm_sum_le_const_mul_aggregate_uniform
     exact (Finset.sum_apply y Finset.univ (fun j => F j n)).symm
   rw [h_fun]
   have h_tri : eLpNorm (∑ j : ι, F j n) 2 μ ≤ ∑ j : ι, eLpNorm (F j n) 2 μ :=
-    eLpNorm_sum_le (fun j _ => (hF j n).aestronglyMeasurable) (by norm_num)
+    eLpNorm_sum_le (by norm_num)
   have h_step : ∑ j : ι, eLpNorm (F j n) 2 μ
       ≤ ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A n := by
     refine Finset.sum_le_sum (fun j _ => ?_)

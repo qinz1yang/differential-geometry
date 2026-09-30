@@ -32,12 +32,11 @@ theorem isManifold_morseModelEuclideanModel {n : ℕ} {M : Type*} [TopologicalSp
     (𝓘(ℝ, MorseModel n)) (𝓡 n) (morseModelEuclideanModelEquiv n).toHomeomorph
     (morseModelEuclideanModelEquiv n) (morseModelEuclideanModelCompat n)
 
-noncomputable def diffeomorph_morseModelEuclideanModel {n : ℕ} {M : Type*} [TopologicalSpace M]
-    [ChartedSpace (MorseModel n) M] [IsManifold (𝓘(ℝ, MorseModel n)) ∞ M] :
+noncomputable def morseModelEuclideanModelDiffeomorph {n : ℕ} {M : Type*} [TopologicalSpace M]
+    [ChartedSpace (MorseModel n) M] :
     letI := morseModelEuclideanModelChartedSpace n M
     M ≃ₘ⟮𝓡 n, 𝓘(ℝ, MorseModel n)⟯ M := by
   letI := morseModelEuclideanModelChartedSpace n M
-  letI := isManifold_morseModelEuclideanModel (n := n) (M := M)
   refine ⟨Equiv.refl M, ?_, ?_⟩
   · change ContMDiff (𝓡 n) (𝓘(ℝ, MorseModel n)) ∞ (id : M → M)
     exact (DifferentialGeometry.Manifold.contMDiff_chartedSpaceTransHomeomorph_iff
@@ -50,14 +49,14 @@ noncomputable def diffeomorph_morseModelEuclideanModel {n : ℕ} {M : Type*} [To
       (morseModelEuclideanModelEquiv n) (morseModelEuclideanModelCompat n)
       (I₀ := 𝓘(ℝ, MorseModel n)) (f := id)).mpr contMDiff_id
 
-theorem diffeomorph_morseModelEuclideanModel_apply {n : ℕ} {M : Type*} [TopologicalSpace M]
-    [ChartedSpace (MorseModel n) M] [IsManifold (𝓘(ℝ, MorseModel n)) ∞ M] (x : M) :
+theorem morseModelEuclideanModelDiffeomorph_apply {n : ℕ} {M : Type*} [TopologicalSpace M]
+    [ChartedSpace (MorseModel n) M] (x : M) :
     letI := morseModelEuclideanModelChartedSpace n M
-    (diffeomorph_morseModelEuclideanModel (n := n) (M := M) : M → M) x = x := rfl
+    (morseModelEuclideanModelDiffeomorph (n := n) (M := M) : M → M) x = x := rfl
 
-theorem nonempty_diffeomorph_morseModelEuclideanModel_self (n : ℕ) :
+theorem exists_morseModelEuclideanModelDiffeomorph_self (n : ℕ) :
     letI := morseModelEuclideanModelChartedSpace n (MorseModel n)
     ∃ f : MorseModel n ≃ₘ⟮𝓡 n, 𝓘(ℝ, MorseModel n)⟯ MorseModel n, f 0 = 0 :=
-  ⟨diffeomorph_morseModelEuclideanModel, rfl⟩
+  ⟨morseModelEuclideanModelDiffeomorph, rfl⟩
 
 end DifferentialGeometry.Topology.Morse

@@ -163,10 +163,10 @@ private theorem map_chartInverseOn_le_smul_chartLocalMeasure
   rw [hmap]
   have hm : AEMeasurable (extChartAt I α).symm
       ((((modelHaar (E := E)).restrict (extChartAt I α).target).withDensity d)) :=
-    (aemeasurable_extChartAt_symm_restrict_target (I := I) α).mono'
+    (aemeasurable_extChartAt_symm_restrict_target (I := I) α).mono_ac
       (withDensity_absolutelyContinuous _ _)
   have h := Measure.map_mono_of_aemeasurable hν ((aemeasurable_smul_measure_iff hc₀).2 hm)
-  rw [Measure.map_smul] at h
+  rw [Measure.map_smul _ hm] at h
   exact h
 
 private theorem exists_map_chartInverseOn_le_smul_riemannianVolumeMeasure

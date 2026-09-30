@@ -402,7 +402,7 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
       tensorL2Coeff (I := I) (M := M) hc
           (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) (F t)) i = φ i t := by
     intro t ht i
-    simp only [hF_def, ht, if_pos]
+    simp only [hF_def, ht, ite_eq_left]
     exact hS₀ t ht i
   have hF_smoothCc_coeff : ∀ t ∈ Set.Icc (0 : ℝ) d₂, ∀ i,
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (F t)).coeff i = φ i t := by
@@ -475,7 +475,7 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
         => ?_⟩
     by_cases ht : t ∈ Set.Icc (0 : ℝ) d₂
     · exact hp_ball (F t) (hball_pt t ht)
-    · have hF0 : F t = 0 := by simp only [hF_def, ht, if_neg, not_false_iff]
+    · have hF0 : F t = 0 := by simp only [hF_def, ht, ite_eq_right, not_false_iff]
       refine hp_ball (F t) ?_
       rw [hF0, hsmoothZero, norm_zero]
       exact hp_pos.le

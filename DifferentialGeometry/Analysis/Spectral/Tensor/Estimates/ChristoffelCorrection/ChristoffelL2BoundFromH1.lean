@@ -3,6 +3,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.H1Compl
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Integrability
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
 import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise
+  tensorInnerPointwise_nonneg)
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
@@ -124,12 +126,13 @@ private lemma chartPou_mul_chart_christoffel_correction_sum_sq_le_const_mul_tens
     exact mul_nonneg hC_nn hQ_nn
 
 private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq
-    {α : Type*} [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) :
+    {α : Type*} [MeasurableSpace α] (μ : Measure α) (f : α → ℝ)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
   classical
   have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
   have h2_ne_top : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by norm_num
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top hf]
   have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
   rw [h2_toReal]
   have h_inner_eq : ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
@@ -202,6 +205,22 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_eLpNorm_chartPou_mul_sqrt_chart_christoffel_correction_le_const_mul_h1Norm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (X : Π b' : M, TangentSpace I b')
+    (hInput_meas : ∀ (S : SmoothCcTensor g r s) (k : Fin r),
+      AEStronglyMeasurable
+        (fun b : M => TensorRSSpace.toModel
+          (chartTensorRSInputSlotCorrection (I := I) r s g α
+            (fun b' => S.toSection b') X b k))
+        ((riemannianVolumeMeasure (I := I) (M := M) g).restrict
+          (tsupport (fun x : M =>
+            ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x))))
+    (hOutput_meas : ∀ (S : SmoothCcTensor g r s) (l : Fin s),
+      AEStronglyMeasurable
+        (fun b : M => TensorRSSpace.toModel
+          (chartTensorRSOutputSlotCorrection (I := I) r s g α
+            (fun b' => S.toSection b') X b l))
+        ((riemannianVolumeMeasure (I := I) (M := M) g).restrict
+          (tsupport (fun x : M =>
+            ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x))))
     {M_F : ℝ}
     (hM_F_input : ∀ (S : SmoothCcTensor g r s) {b : M},
         b ∈ tsupport (fun x : M =>
@@ -255,6 +274,27 @@ theorem exists_eLpNorm_chartPou_mul_sqrt_chart_christoffel_correction_le_const_m
             (fun b' => S.toCcTensor.toSection b') X b l‖ ^ 2) with hSumSq_def
   set f : M → ℝ := fun b : M => ρ b * Real.sqrt (SumSq b) with hf_def
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
+  have hSumSq_meas : AEStronglyMeasurable SumSq (μ.restrict (tsupport ρ)) := by
+    apply AEStronglyMeasurable.add
+    · exact Finset.aestronglyMeasurable_fun_sum Finset.univ
+        (fun k _ => (hInput_meas S.toCcTensor k).norm.pow 2)
+    · exact Finset.aestronglyMeasurable_fun_sum Finset.univ
+        (fun l _ => (hOutput_meas S.toCcTensor l).norm.pow 2)
+  have hf_ae : AEStronglyMeasurable f μ := by
+    have hK_meas : MeasurableSet (tsupport ρ) := (isClosed_tsupport ρ).measurableSet
+    have hf_restrict : AEStronglyMeasurable f (μ.restrict (tsupport ρ)) :=
+      (chartAtlasPOU I M α).contMDiff.continuous.aestronglyMeasurable.mul
+        (Real.continuous_sqrt.comp_aestronglyMeasurable hSumSq_meas)
+    have hf_indicator : (tsupport ρ).indicator f = f := by
+      funext b
+      by_cases hb : b ∈ tsupport ρ
+      · exact Set.indicator_of_mem hb f
+      · have hρ_zero : ρ b = 0 := by
+          by_contra hne
+          exact hb (subset_tsupport ρ hne)
+        simp only [Set.indicator_of_notMem hb, hf_def, hρ_zero, zero_mul]
+    rw [← hf_indicator]
+    exact (aestronglyMeasurable_indicator_iff hK_meas).2 hf_restrict
   have hSumSq_nn : ∀ b : M, 0 ≤ SumSq b := by
     intro b
     rw [hSumSq_def]
@@ -305,7 +345,7 @@ theorem exists_eLpNorm_chartPou_mul_sqrt_chart_christoffel_correction_le_const_m
     integral_tensorInnerPointwise_diagonal_le_h1NormSq
       (I := I) (M := M) g r s S
   have h_sq : (eLpNorm f 2 μ) ^ 2 ≤ ENNReal.ofReal (C * ‖S‖ ^ 2) := by
-    rw [sq_eLpNorm_two_eq_lintegral_enorm_sq μ f]
+    rw [sq_eLpNorm_two_eq_lintegral_enorm_sq μ f hf_ae]
     calc ∫⁻ b, (‖f b‖ₑ : ℝ≥0∞) ^ 2 ∂μ
         ≤ ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise
             (I := I) (M := M) g r s b

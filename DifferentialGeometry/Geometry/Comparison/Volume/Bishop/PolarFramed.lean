@@ -257,7 +257,7 @@ theorem normalHaar_eq
           (ENNReal.ofReal
               (paramDensity (I := I) g (framedExpDiffeo (I := I) g p) 0) •
             modelHaar (E := E)) := by
-      rw [Measure.map_smul, hmap]
+      rw [Measure.map_smul _ L.continuous.aemeasurable, hmap]
     _ = Measure.map L (volume : Measure E) := by
       rw [framedDens_haar (I := I) g p]
 

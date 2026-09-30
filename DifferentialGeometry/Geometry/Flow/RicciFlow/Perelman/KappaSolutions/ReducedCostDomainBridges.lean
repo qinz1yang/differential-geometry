@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.AbsolutelyContinuous
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.DiniComparison
+import DifferentialGeometry.Analysis.Calculus.DiniComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.MovingSlope
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Minimizer.Domain
@@ -101,55 +101,6 @@ theorem mem_lMinDomain_of_mem_lInjDomain
 end Compact
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
-
-namespace DifferentialGeometry.PDE.RicciFlow.Extinction.Families
-
-open Filter
-open scoped Topology
-
-variable {f g : ℝ → ℝ} {x d e c : ℝ}
-
-private theorem slope_const_mul (c : ℝ) (f : ℝ → ℝ) (x y : ℝ) :
-    slope (fun z : ℝ => c * f z) x y = c * slope f x y := by
-  rw [slope_def_field, slope_def_field]
-  ring
-
-theorem upperRightDiniLE_of_forall_lt
-    (h : ∀ ε > 0, ∀ᶠ y in 𝓝[>] x, slope f x y < d + ε) :
-    UpperRightDiniLE f x d :=
-  fun ε hε => (h ε hε).mono fun _ hy => hy.le
-
-theorem upperRightDiniLE_const_mul (hc : 0 ≤ c)
-    (h : UpperRightDiniLE f x d) :
-    UpperRightDiniLE (fun y => c * f y) x (c * d) := by
-  rcases eq_or_lt_of_le hc with hc0 | hcpos
-  · rw [← hc0]
-    intro ε hε
-    filter_upwards with y
-    rw [slope_const_mul]
-    simp only [zero_mul, zero_add]
-    exact hε.le
-  · intro ε hε
-    have hεc : 0 < ε / c := div_pos hε hcpos
-    filter_upwards [h (ε / c) hεc] with y hy
-    rw [slope_const_mul]
-    calc c * slope f x y ≤ c * (d + ε / c) :=
-          mul_le_mul_of_nonneg_left hy hcpos.le
-      _ = c * d + ε := by field_simp
-
-theorem upperRightDiniLE_add
-    (hf : UpperRightDiniLE f x d) (hg : UpperRightDiniLE g x e) :
-    UpperRightDiniLE (fun y => f y + g y) x (d + e) := by
-  intro ε hε
-  filter_upwards [hf (ε / 2) (by linarith), hg (ε / 2) (by linarith)] with y hfy hgy
-  rw [slope_def_field] at hfy hgy ⊢
-  have hsplit : ((f y + g y) - (f x + g x)) / (y - x) =
-      (f y - f x) / (y - x) + (g y - g x) / (y - x) := by
-    ring
-  rw [hsplit]
-  linarith
-
-end DifferentialGeometry.PDE.RicciFlow.Extinction.Families
 
 namespace DifferentialGeometry.PDE.RicciFlow
 

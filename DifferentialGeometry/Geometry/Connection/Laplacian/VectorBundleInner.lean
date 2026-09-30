@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.MetricData
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 
 set_option autoImplicit false
 
@@ -171,7 +171,7 @@ private theorem sum_abstractHessian_smoothOrthoFrame_eq_laplacian
           (smoothOrthoFrame (I := I) g x i x) =
       laplacian (I := I) (LeviCivita (I := I) g) g f x := by
   classical
-  let D := (DifferentialGeometry.Tensor0SBundle.tangentMetricDataGen
+  let D := (DifferentialGeometry.Tensor0SBundle.tangentMetricData
     (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=

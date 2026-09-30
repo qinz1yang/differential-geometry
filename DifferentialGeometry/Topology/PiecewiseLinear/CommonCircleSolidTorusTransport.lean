@@ -20,10 +20,10 @@ def IsParametrizedSolidTorusTransport (g : E → F) (N : Set E) : Prop :=
     IsCombinatorialManifoldWithBoundary 3 P' ∧
     P.space = N ∧ P'.space = g '' N ∧
     IsTopologicalSolidTorus N ∧ IsTopologicalSolidTorus (g '' N) ∧
-    IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) N ∧
-    IsCylindricalDiagram f' (stdSimplex ℝ (Fin 3)) (g '' N) ∧
-    (∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = f (x, 1)) ∧
-    ∀ x ∈ stdSimplex ℝ (Fin 3), f' (x, 0) = f' (x, 1)
+    IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N ∧
+    IsCylindricalDiagram f' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g '' N) ∧
+    (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = f (x, 1)) ∧
+    ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f' (x, 0) = f' (x, 1)
 
 omit [NormedAddCommGroup F] [NormedSpace ℝ F] in
 open Classical in

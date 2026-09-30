@@ -20,6 +20,7 @@ private theorem model_mpullback_congr
       _root_.VectorField.mpullback 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I g V a := by
   unfold _root_.VectorField.mpullback
   erw [h.mfderiv_eq, h.eq_of_nhds]
+  rfl
 
 omit [IsManifold I 1 M] in
 private theorem model_mpullback_comp

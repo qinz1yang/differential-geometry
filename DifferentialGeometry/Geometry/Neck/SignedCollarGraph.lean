@@ -63,15 +63,15 @@ theorem cylindricalChart.exists_signed_graph_band_of_gradient_close
   have hneg : (-1 : ℝ) ≠ 1 := by norm_num
   have hLR : L < R := by
     rcases hτ₀ with rfl | rfl
-    · simpa only [L, R, if_pos rfl] using hlr
-    · simpa only [L, R, if_neg hneg] using neg_lt_neg hlr
+    · simpa only [L, R, ite_eq_left rfl] using hlr
+    · simpa only [L, R, ite_eq_right hneg] using neg_lt_neg hlr
   have hsquare₀ : τ₀ * τ₀ = 1 := by rcases hτ₀ with rfl | rfl <;> norm_num
   have hsquare₁ : τ₁ * τ₁ = 1 := by rcases hτ₁ with rfl | rfl <;> norm_num
   have hinterval (t : Icc L R) : τ₀ * (t : ℝ) ∈ Icc l r := by
     rcases hτ₀ with rfl | rfl
-    · simpa only [L, R, if_pos rfl, one_mul] using t.property
+    · simpa only [L, R, ite_eq_left rfl, one_mul] using t.property
     · have ht : -r ≤ (t : ℝ) ∧ (t : ℝ) ≤ -l := by
-        simpa only [L, R, if_neg hneg, mem_Icc] using t.property
+        simpa only [L, R, ite_eq_right hneg, mem_Icc] using t.property
       constructor <;> linarith only [ht.1, ht.2]
   let ρ : S × Icc L R → S × Icc l r := fun x ↦ (x.1, ⟨τ₀ * (x.2 : ℝ), hinterval x.2⟩)
   have hpoint (x : S × Icc L R) : (x.1, (x.2 : ℝ)) = ((ρ x).1, τ₀ * ((ρ x).2 : ℝ)) := by
@@ -92,8 +92,8 @@ theorem cylindricalChart.exists_signed_graph_band_of_gradient_close
     have hx : τ₀ * (x.2 : ℝ) ∈ Icc L R := by
       have hx := x.2.property
       rcases hτ₀ with rfl | rfl
-      · simpa only [L, R, if_pos rfl, one_mul] using hx
-      · simp only [L, R, if_neg hneg, mem_Icc]
+      · simpa only [L, R, ite_eq_left rfl, one_mul] using hx
+      · simp only [L, R, ite_eq_right hneg, mem_Icc]
         constructor <;> linarith only [hx.1, hx.2]
     refine ⟨(x.1, ⟨τ₀ * (x.2 : ℝ), hx⟩), Prod.ext rfl (Subtype.ext ?_)⟩
     change τ₀ * (τ₀ * (x.2 : ℝ)) = (x.2 : ℝ)
@@ -107,8 +107,8 @@ theorem cylindricalChart.exists_signed_graph_band_of_gradient_close
     rcases hτ₀ with rfl | rfl <;> rcases hτ₁ with rfl | rfl <;> norm_num
   have hwidth : R - L = r - l := by
     rcases hτ₀ with rfl | rfl
-    · simp only [L, R, if_pos rfl]
-    · simp only [L, R, if_neg hneg]
+    · simp only [L, R, ite_eq_left rfl]
+    · simp only [L, R, ite_eq_right hneg]
       ring
   obtain ⟨u, v, hucont, hvcont, horder, hu, hv, huface, hvface, hband, hrange⟩ :=
     C₀.exists_raw_graph_band_of_gradient_close C₁ g L R hLR hc ht ε hε hsmall
@@ -130,8 +130,8 @@ theorem cylindricalChart.exists_signed_graph_band_of_gradient_close
       exact (between_signed τ₁ _ _ _ hτ₁ (hord x.1)).symm
     refine ⟨fun p ↦ τ₁ * u p, fun p ↦ τ₁ * v p, continuous_const.mul hucont,
       continuous_const.mul hvcont, hord, ha, hb, ?_, ?_, ?_, ?_⟩
-    · simpa only [L, if_pos rfl, ← mul_assoc, hsquare₁, one_mul] using huface
-    · simpa only [R, if_pos rfl, ← mul_assoc, hsquare₁, one_mul] using hvface
+    · simpa only [L, ite_eq_left rfl, ← mul_assoc, hsquare₁, one_mul] using huface
+    · simpa only [R, ite_eq_left rfl, ← mul_assoc, hsquare₁, one_mul] using hvface
     · simpa only [hset] using hband
     · simpa only [hset] using hrange
   · have ha (p : S) : (p, τ₁ * (τ₁ * v p)) ∈ C₁.domain := by
@@ -149,9 +149,9 @@ theorem cylindricalChart.exists_signed_graph_band_of_gradient_close
         (between_signed τ₁ _ _ _ hτ₁ (hord x.1)).symm
     refine ⟨fun p ↦ τ₁ * v p, fun p ↦ τ₁ * u p, continuous_const.mul hvcont,
       continuous_const.mul hucont, hord, ha, hb, ?_, ?_, ?_, ?_⟩
-    · simpa only [R, show (-1 : ℝ) ≠ 1 by norm_num, if_false, ← mul_assoc, hsquare₁,
+    · simpa only [R, show (-1 : ℝ) ≠ 1 by norm_num, ite_false, ← mul_assoc, hsquare₁,
         one_mul, neg_one_mul] using hvface
-    · simpa only [L, show (-1 : ℝ) ≠ 1 by norm_num, if_false, ← mul_assoc, hsquare₁,
+    · simpa only [L, show (-1 : ℝ) ≠ 1 by norm_num, ite_false, ← mul_assoc, hsquare₁,
         one_mul, neg_one_mul] using huface
     · simpa only [hset] using hband
     · simpa only [hset] using hrange

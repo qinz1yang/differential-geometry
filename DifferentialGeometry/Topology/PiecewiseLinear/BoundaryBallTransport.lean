@@ -34,7 +34,7 @@ theorem exists_isPLBall_subset_inter_boundaryComplex {n : ℕ}
   obtain ⟨v, hv⟩ := hK
   have hK : IsPLBall (n + 1) K.space := ⟨v, hv⟩
   have hR : IsPLBall (n + 1) R.space := ⟨u, hu⟩
-  let f := v ∘ Function.invFunOn u (stdSimplex ℝ (Fin (n + 2)))
+  let f := v ∘ Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)))
   have hf : IsPLHomeomorphOn f R.space K.space := hu.symm.trans hv
   let g := Function.invFunOn f R.space
   have hD0 : IsPLBall n (g '' D) := hD.of_isPLHomeomorphOn

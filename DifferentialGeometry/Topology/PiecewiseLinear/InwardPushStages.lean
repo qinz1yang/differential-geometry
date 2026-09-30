@@ -67,7 +67,7 @@ theorem exists_forall_eqOn_of_forall_le {A : ℕ → Set X} (F : ℕ → X → Y
   classical
   refine ⟨fun x => if hx : ∃ i, x ∈ A i then F (Nat.find hx) x else F 0 x, fun i x hx => ?_⟩
   have hex : ∃ j, x ∈ A j := ⟨i, hx⟩
-  simp only [dif_pos hex]
+  simp only [dite_eq_left hex]
   exact (hF (Nat.find hex) i (Nat.find_min' hex hx) (Nat.find_spec hex)).symm
 
 end Glue

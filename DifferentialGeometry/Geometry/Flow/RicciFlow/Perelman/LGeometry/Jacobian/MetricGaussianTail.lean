@@ -27,10 +27,10 @@ private theorem metricGram_eq_gramMatrixAt {H : Type*} [TopologicalSpace H]
     (Matrix.of fun i k : Fin (Module.finrank ℝ E) =>
         g.inner x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
           (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)) =
-      DifferentialGeometry.Integral.L2.gramMatrixAt (I := I) (M := X) g x := by
+      DifferentialGeometry.TensorMetric.gramMatrixAt (I := I) (M := X) g x := by
   ext i j
-  simp only [Matrix.of_apply, DifferentialGeometry.Integral.L2.gramMatrixAt_apply,
-    DifferentialGeometry.Integral.L2.modelInnerAt_apply]
+  simp only [Matrix.of_apply, DifferentialGeometry.TensorMetric.gramMatrixAt_apply,
+    DifferentialGeometry.TensorMetric.modelInnerAt_apply]
   with_unfolding_all
     simp only [tangentSpaceModelContinuousLinearEquiv_symm_apply]
 
@@ -99,7 +99,7 @@ theorem exists_uniform_tail_gaussian_metric_of_finrank_eq {n : ℕ}
       (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E k)
   have hA : A.PosDef := by
     rw [show A = _ from metricGram_eq_gramMatrixAt g x]
-    exact DifferentialGeometry.Integral.L2.gramMatrixAt_posDef (I := I) (M := X) g x
+    exact DifferentialGeometry.TensorMetric.gramMatrixAt_posDef (I := I) (M := X) g x
   let e := toEuclidean (E := E)
   let sE : Set E := {Z | R < Real.sqrt (g.inner x Z Z)}
   let sU : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
