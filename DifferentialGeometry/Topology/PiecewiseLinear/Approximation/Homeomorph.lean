@@ -73,7 +73,7 @@ theorem exists_isPLHomeomorphInto_image_eq_dist_lt_of_approximation
     ∃ f : M₁ → M₂, IsPLHomeomorphInto (m + 1) f U ∧ f '' U = h '' U ∧
       ∀ x ∈ U, dist (f x) (h x) < φ x := by
   obtain ⟨ε, hεcont, hεpos, hεle, himage⟩ :=
-    exists_continuousOn_pos_image_eq_of_isOpen hU hh φ hφ hpos
+    exists_continuousOn_pos_image_eq_of_isOpen (m := m) hU hh φ hφ hpos
   obtain ⟨f, hf, hclose⟩ := happrox ε hεcont hεpos
   exact ⟨f, hf, himage f hf.continuousOn hf.injOn (hf.isOpenMap_domRestrict hU) hclose,
     fun x hx => (hclose x hx).trans_le (hεle x hx)⟩
