@@ -20,7 +20,7 @@ theorem finite_affine_family_normal_reduction
     let Q := (⨆ a ∈ s, Module.End.eigenspace O.toLinearMap a).starProjection
     Module.finrank 𝕜 V ≤ S.card * (k + 1) ∧
       Module.finrank 𝕜 (ContinuousLinearMap.id 𝕜 H - O).range ≤ S.card * k ∧
-      Set.MapsTo O V V ∧ (∀ v ∈ Vᗮ, O v = v) ∧
+      Set.MapsTo O V V ∧ (∀ v ∈ Vᗮ, O v = v) ∧ (∀ v ∈ Vᗮ, Q v = v) ∧
       Vᗮ.starProjection (∑ i ∈ S, w i • Q (z - x i)) = Vᗮ.starProjection z := by
   classical
   let V := S.sup (fun i => 𝕜 ∙ x i ⊔ L i)
@@ -30,9 +30,11 @@ theorem finite_affine_family_normal_reduction
   have hx (i : A) (hi : i ∈ S) : x i ∈ V :=
     (le_sup_left.trans (Finset.le_sup (f := fun i => 𝕜 ∙ x i ⊔ L i) hi) : 𝕜 ∙ x i ≤ V)
       (mem_span_singleton_self (x i))
+  have hfix (v : H) (hv : v ∈ Vᗮ) : O v = v :=
+    sum_smul_starProjection_orthogonal_apply_of_mem_orthogonal V S L w hw
+      (fun i hi _ => hL i hi) hv
   refine ⟨?_, ?_, sum_smul_starProjection_orthogonal_mapsTo V S L w (fun i hi _ => hL i hi),
-    fun v hv => sum_smul_starProjection_orthogonal_apply_of_mem_orthogonal V S L w hw
-      (fun i hi _ => hL i hi) hv, ?_⟩
+    hfix, ?_, ?_⟩
   · apply (finrank_finset_sup_span_singleton_sup_le S L x).trans
     calc
       ∑ i ∈ S, (Module.finrank 𝕜 (L i) + 1) ≤ ∑ _i ∈ S, (k + 1) :=
@@ -42,6 +44,8 @@ theorem finite_affine_family_normal_reduction
     calc
       ∑ i ∈ S, Module.finrank 𝕜 (L i) ≤ ∑ _i ∈ S, k := Finset.sum_le_sum hdim
       _ = S.card * k := by simp
+  · intro v hv
+    exact starProjection_eq_self_iff.mpr (le_iSup_eigenspace_of_fixed Vᗮ O.toLinearMap s hs hfix hv)
   · exact starProjection_weighted_normal_section Vᗮ S L x w hw
       (fun i hi _ => (hL i hi).trans V.le_orthogonal_orthogonal)
       (fun i hi _ => V.le_orthogonal_orthogonal (hx i hi)) s hs z

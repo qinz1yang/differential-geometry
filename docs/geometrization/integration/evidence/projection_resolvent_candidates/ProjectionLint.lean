@@ -1,0 +1,14 @@
+import DifferentialGeometry.Tensor.LinearAlgebra.Eigenspace.FixedSubspace
+import DifferentialGeometry.Analysis.InnerProductSpace.NormalSpectralSection
+import DifferentialGeometry.Analysis.InnerProductSpace.FiniteNormalReduction
+import DifferentialGeometry.Analysis.InnerProductSpace.ProjectionSpectrum
+import DifferentialGeometry.Analysis.InnerProductSpace.ProjectionResolvent
+import DifferentialGeometry.Analysis.Calculus.Resolvent
+import Mathlib.Tactic.Linter
+
+#lint- only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Tensor.LinearAlgebra.Eigenspace.FixedSubspace
+#lint- only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.InnerProductSpace.NormalSpectralSection
+#lint- only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.InnerProductSpace.FiniteNormalReduction
+#lint- only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.InnerProductSpace.ProjectionSpectrum
+#lint- only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.InnerProductSpace.ProjectionResolvent
+#lint- only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.Calculus.Resolvent

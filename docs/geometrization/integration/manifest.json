@@ -34000,7 +34000,7 @@
       "role": "independent",
       "source_checkout": "GC_MIGRATED_435_RC3",
       "original_sha256": "03a7763e37a7cbca154748210a877fb90a36a91566c52db14f73da00055481a3",
-      "sha256": "03a7763e37a7cbca154748210a877fb90a36a91566c52db14f73da00055481a3",
+      "sha256": "bc472872b94c17fd7d9cb6f15c1fe44d9396edd12a7f22c497dcc57985152ee7",
       "declarations": [
         {
           "name": "Submodule.starProjection_eigenspace_iSup_of_fixed",
@@ -34010,9 +34010,16 @@
           "direct_sorry": false
         },
         {
+          "name": "Submodule.eigenspace_iSup_starProjection_comp_of_fixed",
+          "kind": "theorem",
+          "line": 22,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
           "name": "Submodule.starProjection_weighted_normal_section",
           "kind": "theorem",
-          "line": 28,
+          "line": 31,
           "private": false,
           "direct_sorry": false
         }
@@ -34023,12 +34030,160 @@
       "role": "independent",
       "source_checkout": "GC_MIGRATED_435_RC3",
       "original_sha256": "d255eaba17d1f5c6e39c0ecce9706a820f17697c8f05452c032f07a8c3b1583b",
-      "sha256": "d255eaba17d1f5c6e39c0ecce9706a820f17697c8f05452c032f07a8c3b1583b",
+      "sha256": "3b590f36ff0144446e3fbcdc2b40c718e5d6c89cbbb98f4343a2ae564b5c15a5",
       "declarations": [
         {
           "name": "Submodule.finite_affine_family_normal_reduction",
           "kind": "theorem",
           "line": 14,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Tensor/LinearAlgebra/Eigenspace/FixedSubspace.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "2f092e8afe1fb0774e63e56c597bd809725d3fa6ce8f1d854102d3ee05823306",
+      "sha256": "2f092e8afe1fb0774e63e56c597bd809725d3fa6ce8f1d854102d3ee05823306",
+      "declarations": [
+        {
+          "name": "Submodule.le_iSup_eigenspace_of_fixed",
+          "kind": "theorem",
+          "line": 9,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/ProjectionSpectrum.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "6074ababbaf5cabe72ee374c40ca33f755d1a412db9630011ccb993942f7e774",
+      "sha256": "6074ababbaf5cabe72ee374c40ca33f755d1a412db9630011ccb993942f7e774",
+      "declarations": [
+        {
+          "name": "ContinuousLinearMap.projection_error_components",
+          "kind": "theorem",
+          "line": 14,
+          "private": true,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.eigenvector_projection_error_bounds",
+          "kind": "theorem",
+          "line": 27,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.min_norm_mul_norm_le_norm_smul_sub_starProjection",
+          "kind": "theorem",
+          "line": 43,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.norm_smul_sub_apply_ge_of_norm_sub_starProjection_le",
+          "kind": "theorem",
+          "line": 61,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.norm_eigenvalue_or_sub_one_le_of_norm_sub_starProjection_le",
+          "kind": "theorem",
+          "line": 72,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.spectrum_subset_closedBall_union_of_norm_sub_starProjection_le",
+          "kind": "theorem",
+          "line": 85,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.norm_sub_spectrum_ge_of_norm_sub_starProjection_le",
+          "kind": "theorem",
+          "line": 96,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/ProjectionResolvent.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "e65b4080dda93c4b2eb4017638bf21ecccff57e5d24e144c69931f56873d1c66",
+      "sha256": "e65b4080dda93c4b2eb4017638bf21ecccff57e5d24e144c69931f56873d1c66",
+      "declarations": [
+        {
+          "name": "ContinuousLinearMap.mem_resolventSet_of_norm_sub_starProjection_lt",
+          "kind": "theorem",
+          "line": 12,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.norm_resolvent_le_of_norm_sub_starProjection_le",
+          "kind": "theorem",
+          "line": 29,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/Resolvent.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "80bda9d0ec20660b59c2092ef34db510d1433b1110c1252d207f6c2314590018",
+      "sha256": "80bda9d0ec20660b59c2092ef34db510d1433b1110c1252d207f6c2314590018",
+      "declarations": [
+        {
+          "name": "ContDiffWithinAt.resolvent",
+          "kind": "theorem",
+          "line": 12,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContDiffAt.resolvent",
+          "kind": "theorem",
+          "line": 20,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContDiffOn.resolvent",
+          "kind": "theorem",
+          "line": 26,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContDiff.resolvent",
+          "kind": "theorem",
+          "line": 32,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "HasFDerivAt.resolvent",
+          "kind": "theorem",
+          "line": 38,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentiableAt.norm_fderiv_resolvent_le",
+          "kind": "theorem",
+          "line": 49,
           "private": false,
           "direct_sorry": false
         }
@@ -34060,10 +34215,10 @@
     "GC.LongTime.late_derivative_tests_of_flow",
     "GC.LongTime.local_disk_comparisons_of_cusp_exterior"
   ],
-  "audit_sha256": "d2c91ee4220904abcb4297a9c4c19fe3762e8b2bd970453b5e79554d1dfc216b",
+  "audit_sha256": "cd9aeadebc745cb69ffd36d982575a49169da590444911e1f607c97d43d9b50d",
   "registry_sha256": {
     "docs/geometrization/skeleton/manifest.json": "991f5516f9483478a9da209aae88c2518cae29bf5408ff99a7f891849b0360a8",
-    "docs/geometrization/chapter3/manifest.json": "ae4e3861e58c42902e916c06e1c78cc6f0820969cc6f766f72a65f8ab929e19c",
+    "docs/geometrization/chapter3/manifest.json": "1e43c57f99ce5f295f491ec1790f234dd2dbc92c35165602a333941b158f8da3",
     "docs/geometrization/MODULE_PLACEMENT.json": "dfebe13f228a574c8ba28286b3654cc766c14efd2cdca503fdd4ee464fc66d2c",
     "docs/geometrization/integration/historical/skeleton_67f27962/manifest.json": "c45e8acb4658d358e3e4208e843220a8f81095b01a77e445f46dcee53fea08b5",
     "docs/geometrization/integration/historical/original_options.json": "832d46987ba0f4611fc3c7adc6bd95f05e079e0031837db7e727ca2620880628",

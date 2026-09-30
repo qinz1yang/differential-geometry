@@ -5859,7 +5859,7 @@
         "FC29",
         "CFS24"
       ],
-      "contract_notes": "../chapter14/finite_normal_reduction.md",
+      "contract_notes": "../chapter14/projection_resolvent.md",
       "status": "proved-subclaims"
     },
     {
@@ -5867,7 +5867,43 @@
       "blueprint_nodes": [
         "FC29"
       ],
-      "contract_notes": "../chapter14/finite_normal_reduction.md",
+      "contract_notes": "../chapter14/projection_resolvent.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Tensor/LinearAlgebra/Eigenspace/FixedSubspace.lean",
+      "blueprint_nodes": [
+        "FC29",
+        "CFS24"
+      ],
+      "contract_notes": "../chapter14/projection_resolvent.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/ProjectionSpectrum.lean",
+      "blueprint_nodes": [
+        "CFS04",
+        "CFS12"
+      ],
+      "contract_notes": "../chapter14/projection_resolvent.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/ProjectionResolvent.lean",
+      "blueprint_nodes": [
+        "CFS04",
+        "CFS12"
+      ],
+      "contract_notes": "../chapter14/projection_resolvent.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/Resolvent.lean",
+      "blueprint_nodes": [
+        "CFS04",
+        "CFS12"
+      ],
+      "contract_notes": "../chapter14/projection_resolvent.md",
       "status": "proved-subclaims"
     }
   ],

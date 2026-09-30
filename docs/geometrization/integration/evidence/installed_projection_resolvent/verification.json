@@ -1,0 +1,259 @@
+{
+  "success": true,
+  "scope": "Fresh direct elaboration of six installed Chapter 14 source files, five linters per module, literal public axiom prints, full generated declaration audits, and twenty-one actual applications. Imports resolved only from accepted production checkout and pinned RC3 packages; no scratch overlay.",
+  "checks": [
+    {
+      "source": "DifferentialGeometry/Tensor/LinearAlgebra/Eigenspace/FixedSubspace.lean",
+      "source_sha256": "2f092e8afe1fb0774e63e56c597bd809725d3fa6ce8f1d854102d3ee05823306",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Tensor/LinearAlgebra/Eigenspace/FixedSubspace.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_resolvent/FixedSubspace.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 1.3311641216278076
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/NormalSpectralSection.lean",
+      "source_sha256": "bc472872b94c17fd7d9cb6f15c1fe44d9396edd12a7f22c497dcc57985152ee7",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Analysis/InnerProductSpace/NormalSpectralSection.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_resolvent/NormalSpectralSection.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 2.0764451026916504
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/FiniteNormalReduction.lean",
+      "source_sha256": "3b590f36ff0144446e3fbcdc2b40c718e5d6c89cbbb98f4343a2ae564b5c15a5",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Analysis/InnerProductSpace/FiniteNormalReduction.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_resolvent/FiniteNormalReduction.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 1.782607078552246
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/ProjectionSpectrum.lean",
+      "source_sha256": "6074ababbaf5cabe72ee374c40ca33f755d1a412db9630011ccb993942f7e774",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Analysis/InnerProductSpace/ProjectionSpectrum.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_resolvent/ProjectionSpectrum.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 1.9961540699005127
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/ProjectionResolvent.lean",
+      "source_sha256": "e65b4080dda93c4b2eb4017638bf21ecccff57e5d24e144c69931f56873d1c66",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Analysis/InnerProductSpace/ProjectionResolvent.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_resolvent/ProjectionResolvent.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 1.722499132156372
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/Calculus/Resolvent.lean",
+      "source_sha256": "80bda9d0ec20660b59c2092ef34db510d1433b1110c1252d207f6c2314590018",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Analysis/Calculus/Resolvent.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_resolvent/Resolvent.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 1.737009048461914
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/projection_resolvent_candidates/SpectralApplications.lean",
+      "source_sha256": "ce2f41652b5e8edd464c243a5a731b6cf44cc5142ce266138b1d23c8612dd7ec",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/projection_resolvent_candidates/SpectralApplications.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_resolvent/SpectralApplications.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 2.9862749576568604
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/projection_resolvent_candidates/ProjectionSpectrumApplications.lean",
+      "source_sha256": "a90e2aaf94bd22735dda4e5c7b657e403c07c91703d30a6e6cb6e6c69c94717b",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/projection_resolvent_candidates/ProjectionSpectrumApplications.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_resolvent/ProjectionSpectrumApplications.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 2.0900843143463135
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/projection_resolvent_candidates/ResolventCalculusApplications.lean",
+      "source_sha256": "672265d4c9b30284d13662c73e4651de365a806c16ce647fb11cb31e27e41d64",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/projection_resolvent_candidates/ResolventCalculusApplications.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_resolvent/ResolventCalculusApplications.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 2.5871071815490723
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/projection_resolvent_candidates/ProjectionLint.lean",
+      "source_sha256": "186d5a98002b1fbc198adfa1ad96c7d47e952d11e72b212cd098398354f21567",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/projection_resolvent_candidates/ProjectionLint.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_resolvent/ProjectionLint.log",
+      "log_sha256": "b84eb42e16652919d6c71468cef798a582a8a338d1ffefd17906be0e7f0c88f5",
+      "silent": false,
+      "seconds": 4.19920015335083
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/projection_resolvent_candidates/ProjectionAxioms.lean",
+      "source_sha256": "aec4e00cc45297c19f6709afd2facac283d09b5570d61043b0747d03af9e9181",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/projection_resolvent_candidates/ProjectionAxioms.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_resolvent/ProjectionAxioms.log",
+      "log_sha256": "b4e1da854170287688326433e148ba7f5cdaec1fd10fc7764f8ca4b3890d9c3a",
+      "silent": false,
+      "seconds": 1.6238961219787598
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/projection_resolvent_candidates/ProjectionAudit.lean",
+      "source_sha256": "858b89ab8621f87835eeffce3c30cb6682597c9ac2ddb8a0a2447d7f6f9328fd",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "-DmaxHeartbeats=16000000",
+        "-DmaxRecDepth=100000",
+        "-Dpp.maxSteps=50000",
+        "-Dpp.universes=true",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/projection_resolvent_candidates/ProjectionAudit.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_resolvent/ProjectionAudit.log",
+      "log_sha256": "10713529a2395285a1c18dde900602f2756e0060f21182016fcd1d72617971bc",
+      "silent": false,
+      "seconds": 20.925677061080933
+    }
+  ],
+  "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "elaborated_declarations": 24,
+  "upstream_commit": "777299070a5529e96345e0033979706fd00c7e62",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e"
+}

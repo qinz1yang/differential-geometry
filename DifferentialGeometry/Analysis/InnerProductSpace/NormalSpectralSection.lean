@@ -1,4 +1,4 @@
-import Mathlib.Analysis.InnerProductSpace.Spectrum
+import DifferentialGeometry.Tensor.LinearAlgebra.Eigenspace.FixedSubspace
 import DifferentialGeometry.Analysis.InnerProductSpace.NormalProjectionSpan
 
 set_option autoImplicit false
@@ -16,14 +16,17 @@ theorem starProjection_eigenspace_iSup_of_fixed
     (V : Submodule 𝕜 H) (O : H →L[𝕜] H) (s : Set 𝕜) (hs : 1 ∈ s)
     (hfix : ∀ v ∈ V, O v = v) :
     V.starProjection.comp (⨆ a ∈ s, Module.End.eigenspace O.toLinearMap a).starProjection =
+      V.starProjection :=
+  starProjection_comp_starProjection_of_le (le_iSup_eigenspace_of_fixed V O.toLinearMap s hs hfix)
+
+theorem eigenspace_iSup_starProjection_comp_of_fixed
+    (V : Submodule 𝕜 H) (O : H →L[𝕜] H) (s : Set 𝕜) (hs : 1 ∈ s)
+    (hfix : ∀ v ∈ V, O v = v) :
+    (⨆ a ∈ s, Module.End.eigenspace O.toLinearMap a).starProjection.comp V.starProjection =
       V.starProjection := by
-  apply starProjection_comp_starProjection_of_le
-  intro v hv
-  have hv1 : v ∈ Module.End.eigenspace O.toLinearMap 1 := by
-    rw [Module.End.mem_eigenspace_iff]
-    simpa only [ContinuousLinearMap.coe_coe, one_smul] using hfix v hv
-  exact (le_iSup₂_of_le (1 : 𝕜) hs le_rfl :
-    Module.End.eigenspace O.toLinearMap 1 ≤ _) hv1
+  ext v
+  exact starProjection_eq_self_iff.mpr
+    (le_iSup_eigenspace_of_fixed V O.toLinearMap s hs hfix (V.starProjection_apply_mem v))
 
 theorem starProjection_weighted_normal_section
     {A : Type*} (V : Submodule 𝕜 H) (S : Finset A)

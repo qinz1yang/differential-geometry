@@ -1,0 +1,38 @@
+[
+  {
+    "path": "DifferentialGeometry/Tensor/LinearAlgebra/Eigenspace/FixedSubspace.lean",
+    "module": "DifferentialGeometry.Tensor.LinearAlgebra.Eigenspace.FixedSubspace",
+    "source_sha256": "2f092e8afe1fb0774e63e56c597bd809725d3fa6ce8f1d854102d3ee05823306",
+    "candidate": "FixedSubspace.lean"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/InnerProductSpace/NormalSpectralSection.lean",
+    "module": "DifferentialGeometry.Analysis.InnerProductSpace.NormalSpectralSection",
+    "source_sha256": "bc472872b94c17fd7d9cb6f15c1fe44d9396edd12a7f22c497dcc57985152ee7",
+    "candidate": "NormalSpectralSection.lean"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/InnerProductSpace/FiniteNormalReduction.lean",
+    "module": "DifferentialGeometry.Analysis.InnerProductSpace.FiniteNormalReduction",
+    "source_sha256": "3b590f36ff0144446e3fbcdc2b40c718e5d6c89cbbb98f4343a2ae564b5c15a5",
+    "candidate": "FiniteNormalReduction.lean"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/InnerProductSpace/ProjectionSpectrum.lean",
+    "module": "DifferentialGeometry.Analysis.InnerProductSpace.ProjectionSpectrum",
+    "source_sha256": "6074ababbaf5cabe72ee374c40ca33f755d1a412db9630011ccb993942f7e774",
+    "candidate": "ProjectionSpectrum.lean"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/InnerProductSpace/ProjectionResolvent.lean",
+    "module": "DifferentialGeometry.Analysis.InnerProductSpace.ProjectionResolvent",
+    "source_sha256": "e65b4080dda93c4b2eb4017638bf21ecccff57e5d24e144c69931f56873d1c66",
+    "candidate": "ProjectionResolvent.lean"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/Resolvent.lean",
+    "module": "DifferentialGeometry.Analysis.Calculus.Resolvent",
+    "source_sha256": "80bda9d0ec20660b59c2092ef34db510d1433b1110c1252d207f6c2314590018",
+    "candidate": "Resolvent.lean"
+  }
+]
