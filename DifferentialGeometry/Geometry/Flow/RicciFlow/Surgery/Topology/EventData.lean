@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.Orientation
 import DifferentialGeometry.Topology.LoopSpace.Continuous
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
 import DifferentialGeometry.Geometry.Metric.CurveVariation.Comparison
 import DifferentialGeometry.Geometry.Metric.CurveVariation.Distance
 import DifferentialGeometry.Geometry.Metric.CurveVariation.WeakDerivative

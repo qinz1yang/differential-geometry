@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
 
 set_option autoImplicit false
 noncomputable section

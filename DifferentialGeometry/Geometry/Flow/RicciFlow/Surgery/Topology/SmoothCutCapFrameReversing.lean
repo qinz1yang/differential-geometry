@@ -12,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 open private standardNeckCapSum_false_apply
-  from DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCapInstance
+  from DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.Capping
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 

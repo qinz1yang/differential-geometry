@@ -444,7 +444,7 @@ theorem mdifferentiableAt_standardNeckCapFun (side : Bool) :
   (contMDiff_standardNeckCapFun side).contMDiffAt.mdifferentiableAt (by norm_num)
 
 open private standardNeckCapSum standardNeckCapSum_eq_inl_of standardNeckCapSum_eq_inr_of
-  from DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCapInstance
+  from DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.Capping
 
 abbrev standardNeckBoundaryFalse : standardNeckTubeSystem.Boundary := (PUnit.unit, false)
 

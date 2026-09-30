@@ -12,11 +12,6 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-private def sphereTwoPoint : Sphere 2 :=
-  ⟨EuclideanSpace.single 0 1, by
-    rw [Metric.mem_sphere, dist_eq_norm, sub_zero, PiLp.norm_single]
-    norm_num⟩
-
 private def sphereThreePoint : Sphere 3 :=
   ⟨EuclideanSpace.single 0 1, by
     rw [Metric.mem_sphere, dist_eq_norm, sub_zero, PiLp.norm_single]
@@ -40,43 +35,6 @@ theorem standardNeckTubeSystem_tube_smooth (h : standardNeckTubeIsSmoothEmbeddin
         (standardNeckTubeSystem.tube a) := by
   intro a
   exact h
-
-theorem standardNeckTubeSystem_nontrivial :
-    Nonempty standardNeckTubeSystem.Index ∨ Nonempty (Sphere 3) :=
-  Or.inl standardNeckTubeSystem_index_nonempty
-
-theorem standardNeckTubeSystem_boundarySpheres_disjoint :
-    Disjoint (Set.range (standardNeckTubeSystem.boundarySphere (PUnit.unit, false)))
-      (Set.range (standardNeckTubeSystem.boundarySphere (PUnit.unit, true))) := by
-  rw [Set.disjoint_left]
-  rintro p ⟨x, rfl⟩ ⟨y, hy⟩
-  have h' : standardNeckTubeFun (x, TubeSystem.boundaryLevel false) =
-      standardNeckTubeFun (y, TubeSystem.boundaryLevel true) := hy.symm
-  have h2 : (TubeSystem.boundaryLevel false : ℝ) = (TubeSystem.boundaryLevel true : ℝ) :=
-    congrArg (fun z : TubeDomain => (z.2 : ℝ)) (standardNeckTubeFun_injective h')
-  exact absurd h2 (by norm_num [TubeSystem.boundaryLevel])
-
-theorem standardNeckTubeSystem_boundarySphere_ne :
-    standardNeckTubeSystem.boundarySphere (PUnit.unit, false) ≠
-      standardNeckTubeSystem.boundarySphere (PUnit.unit, true) := by
-  intro h
-  have hmem : standardNeckTubeSystem.boundarySphere (PUnit.unit, false) sphereTwoPoint ∈
-      Set.range (standardNeckTubeSystem.boundarySphere (PUnit.unit, true)) := by
-    rw [← h]
-    exact Set.mem_range_self _
-  exact Set.disjoint_left.mp standardNeckTubeSystem_boundarySpheres_disjoint
-    (Set.mem_range_self _) hmem
-
-theorem standardNeckTubeSystem_core_nonempty : (standardNeckTubeSystem.core).Nonempty :=
-  ⟨standardNeckTubeSystem.boundarySphere (PUnit.unit, false) sphereTwoPoint,
-    TubeSystem.boundarySphere_mem_core (T := standardNeckTubeSystem) _ _⟩
-
-theorem standardNeckTubeSystem_removedBand_ne_univ :
-    standardNeckTubeSystem.removedBand PUnit.unit ≠ Set.univ := by
-  intro h
-  obtain ⟨x, hx⟩ := standardNeckTubeSystem_core_nonempty
-  rw [TubeSystem.core, Set.mem_compl_iff] at hx
-  exact hx (Set.mem_iUnion.mpr ⟨PUnit.unit, by rw [h]; exact Set.mem_univ x⟩)
 
 local instance : ChartedSpace ThreeSpace PEmpty where
   atlas := ∅

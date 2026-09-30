@@ -6471,7 +6471,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledE
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CoreCompatibleExtinctionTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CoreInclusionRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CoreRestrictedDistanceComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCompletion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapPresentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapTransitionSkeleton
@@ -12223,9 +12222,6 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ConnectingCylind
 import DifferentialGeometry.Geometry.Neck.SpatialBandCoverage
 import DifferentialGeometry.Topology.Manifold.SmoothTwoSidedCollarRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.BaseHornMetricEvent
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.FineCutNeckSupplyStrong
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.FineCutNeckSupplyStrongLeaf
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.FineCutNeckSupplyTolerances
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.OutwardGraphBand
 import DifferentialGeometry.Geometry.Neck.SpatialFrontierRecentering
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.BallComplementCylinder
@@ -12551,8 +12547,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPoin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPointedFlowLimitTerminalNoncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HornSeparationFrontierScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFineCutNecksLongSlab
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.UniformDebitSurgeryStepOfFactory
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.UniformDebitSurgeryStepOfFineCutNeckSupply
 import DifferentialGeometry.Topology.Sequences.ExceptionalSetApproximation
 import DifferentialGeometry.Topology.Sequences.NestedSubsequence
 import DifferentialGeometry.Topology.Sequences.RescalingFactor
@@ -17514,3 +17508,13 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.RelativeCoverDe
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.TwoSidedSurface
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialComplexity.Factorization
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallEmbeddingIsotopy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Horn.UniformFactory
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.UniformDebit.LongSlab
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.UniformDebit.SpatialNecks
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.FineNecks.UniformExistence
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Components
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Defs
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.Capping
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.TubeSystem.Defs
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.TubeSystem.Empty
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.TubeSystem.SphereModel

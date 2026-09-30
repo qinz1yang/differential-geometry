@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Components
 import DifferentialGeometry.Topology.Manifold.ClosedOriented
 import DifferentialGeometry.Topology.Handle.Manifold
 import Mathlib.Geometry.Manifold.Instances.Sphere
@@ -209,3 +210,77 @@ abbrev InitialIdentification (T : FiniteCutCapTrace.{u})
 end FiniteCutCapTrace
 
 end DifferentialGeometry.Topology
+
+end
+
+noncomputable section
+
+open Set Function Relation
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+structure CutCapTopology (M Q D N : Type*) [TopologicalSpace M] [TopologicalSpace Q]
+    [TopologicalSpace D] [TopologicalSpace N] where
+  tubes : TubeSystem M
+  capping : Capping tubes N
+  presentation : N ≃ₜ Q ⊕ D
+  nontrivial : Nonempty tubes.Index ∨ Nonempty D
+
+namespace CutCapTopology
+
+variable {M Q D N : Type*} [TopologicalSpace M] [TopologicalSpace Q]
+    [TopologicalSpace D] [TopologicalSpace N] (E : CutCapTopology M Q D N)
+
+
+def retainedCore : Set E.tubes.core :=
+  {x | ∃ q : Q, E.presentation (E.capping.coreInclusion x) = Sum.inl q}
+
+
+def cappedChild (c : ConnectedComponents Q) : ConnectedComponents N :=
+  (E.presentation.symm.continuous.comp continuous_inl).connectedComponentsMap c
+
+
+def childCore [CompactSpace E.tubes.core] [LocallyConnectedSpace E.tubes.core] [T2Space N]
+    (c : ConnectedComponents Q) : ConnectedComponents E.tubes.core :=
+  E.capping.componentEquiv.symm (E.cappedChild c)
+
+
+def childParent [CompactSpace E.tubes.core] [LocallyConnectedSpace E.tubes.core] [T2Space N]
+    (c : ConnectedComponents Q) : ConnectedComponents M :=
+  continuous_subtype_val.connectedComponentsMap (E.childCore c)
+
+
+theorem childCore_unique [CompactSpace E.tubes.core] [LocallyConnectedSpace E.tubes.core]
+    [T2Space N] (c : ConnectedComponents Q) :
+    ∃! d : ConnectedComponents E.tubes.core,
+      E.capping.componentMap d = E.cappedChild c := by
+  exact E.capping.rfs_cap_component_bijection.existsUnique _
+
+theorem childCore_subset_retainedCore [CompactSpace E.tubes.core]
+    [LocallyConnectedSpace E.tubes.core] [T2Space N]
+    (c : ConnectedComponents Q) {z : E.tubes.core}
+    (hz : ConnectedComponents.mk z = E.childCore c) : z ∈ E.retainedCore := by
+  classical
+  obtain ⟨q, hq⟩ := ConnectedComponents.surjective_coe c
+  have hcore : E.capping.componentMap (E.childCore c) = E.cappedChild c :=
+    E.capping.componentEquiv.apply_symm_apply _
+  have hx : ConnectedComponents.mk (E.capping.coreInclusion z) = E.cappedChild c := by
+    rw [← hcore, ← hz]
+    rfl
+  have hpres : ConnectedComponents.mk (E.presentation (E.capping.coreInclusion z)) =
+      ConnectedComponents.mk (Sum.inl q : Q ⊕ D) := by
+    have h := congrArg E.presentation.continuous.connectedComponentsMap hx
+    simpa [CutCapTopology.cappedChild, ← hq] using h
+  have hmem : E.presentation (E.capping.coreInclusion z) ∈
+      connectedComponent (Sum.inl q : Q ⊕ D) :=
+    ConnectedComponents.coe_eq_coe'.mp hpres
+  have hrange : E.presentation (E.capping.coreInclusion z) ∈ Set.range (Sum.inl : Q → Q ⊕ D) :=
+    isClopen_range_inl.connectedComponent_subset (Set.mem_range_self q) hmem
+  obtain ⟨q', hq'⟩ := hrange
+  exact ⟨q', hq'.symm⟩
+end CutCapTopology
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end

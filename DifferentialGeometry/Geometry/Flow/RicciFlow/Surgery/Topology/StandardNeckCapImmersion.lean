@@ -21,7 +21,7 @@ local instance : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 
 open private isEmbedding_standardNeckCapFun
-  from DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCapInstance
+  from DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.Capping
 
 private def capE4Embed (v : CapE3) : CapE4 :=
   WithLp.toLp 2 (snocR (fun i : Fin 3 => v.ofLp i) 0)

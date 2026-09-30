@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 
 noncomputable section
