@@ -1,24 +1,8 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDiskTower
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoSpine
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverDescentConstruction
 
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
-
-def LemmaTwoBufferedStatement : Prop :=
-  ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
-    {M : ℕ} {S : NormalSystem F} {T : NormalSystem (EuclideanSpace ℝ (Fin M))}
-    (R : NormalSystem.DoubleCoverReduction S T),
-    T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
-      frontier T.sourceComplex.space →
-    T.basepoint = T.boundaryLoop 0 →
-    (∀ x ∈ T.boundaryNeighborhood.space,
-      S.boundaryNeighborhood.space ∈ 𝓝[S.boundaryComplex.space] (R.projection x)) →
-    Nonempty (NormalSystem.EmbeddedDisk T) → Nonempty (NormalSystem.EmbeddedDisk S)
-
-theorem lemmaTwoBufferedStatement_of_lemmaTwoStatement (lemmaTwo : LemmaTwoStatement) :
-    LemmaTwoBufferedStatement :=
-  fun R hproper hbase _ hdisk => lemmaTwo R hproper hbase hdisk
 
 theorem exists_embeddedDisk_of_stallings_induction_buffered
     (lemmaTwo :
@@ -57,7 +41,16 @@ theorem exists_embeddedDisk_of_stallings_induction_buffered
     (inductionStatement S.atBoundaryLoop.complexity N S.atBoundaryLoop rfl hproper rfl)
 
 theorem exists_embeddedDisk_of_stallings_induction_general_buffered
-    (lemmaTwo : LemmaTwoBufferedStatement)
+    (lemmaTwo :
+        ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+          {M : ℕ} {S : NormalSystem F} {T : NormalSystem (EuclideanSpace ℝ (Fin M))}
+          (R : NormalSystem.DoubleCoverReduction S T),
+          T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
+            frontier T.sourceComplex.space →
+          T.basepoint = T.boundaryLoop 0 →
+          (∀ x ∈ T.boundaryNeighborhood.space,
+            S.boundaryNeighborhood.space ∈ 𝓝[S.boundaryComplex.space] (R.projection x)) →
+          Nonempty (NormalSystem.EmbeddedDisk T) → Nonempty (NormalSystem.EmbeddedDisk S))
     {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     (S : NormalSystem E)
     (hproper : S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
@@ -81,60 +74,70 @@ theorem exists_embeddedDisk_of_stallings_induction_general_buffered
   exact NormalSystem.nonempty_embeddedDisk_of_atBoundaryLoop
     (normalised S.atBoundaryLoop hproper rfl)
 
-theorem moise252_of_lemmaTwoBuffered (lemmaTwo : LemmaTwoBufferedStatement) : Moise252 :=
-  moise252_of_normalSystemDiskOfProper fun S hproper =>
-    exists_embeddedDisk_of_stallings_induction_general_buffered lemmaTwo S hproper
-
-theorem moise304_of_lemmaTwoBuffered (lemmaTwo : LemmaTwoBufferedStatement) : Moise304 :=
-  moise304_of_moise252 (moise252_of_lemmaTwoBuffered lemmaTwo)
-
 open Classical in
-def GeneralPositionInDoubleBufferedStatement : Prop :=
-  ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    (S : NormalSystem E),
-    let K := S.manifoldComplex
-    letI : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
-    letI := combinatorialChartedSpace (double 3 K)
-      (isCombinatorialManifold_double_succ_succ K S.isManifold)
-    let ι := simplicialMap K (glueEmbed₂ (PiecewiseLinear.boundaryComplex 3 K) id)
-    let C := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹' (ι '' K.space)
-    let Bd := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹'
-      (ι '' (PiecewiseLinear.boundaryComplex 3 K).space)
-    let B := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹'
-      (ι '' S.boundaryNeighborhood.space)
-    ∀ (G : SingularTwoCell (double 3 K).space)
-      (β : ContinuousMap loopCircle (frontier G.domain))
-      (γ : freeLoop S.boundaryNeighborhoodSpace),
-      (∀ x ∈ G.domain, ∃ U ∈ 𝓝[G.domain] x, Set.InjOn G U) →
-      (∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2) →
-      Set.range G.boundary ⊆ B →
-      (∀ z ∈ Set.range G.boundary, B ∈ 𝓝[Bd] z) →
-      G '' G.domain ∩ Bd = Set.range G.boundary →
-      MapsTo G G.domain C →
-      G.domain ∩ G ⁻¹' Bd = frontier G.domain →
-      Function.Surjective β →
-      (∀ θ, ((G (β θ) : (double 3 K).space) : E × E × ℝ) = ι (γ θ)) →
-      ¬loopClassMeets γ S.basepoint S.normalSubgroup →
-      ∃ (A : SingularTwoCell (double 3 K).space) (_ : NormalSingularCellData A Bd B),
-        A.domain = G.domain ∧ MapsTo A A.domain C ∧
-        (∀ z ∈ Set.range A.boundary, B ∈ 𝓝[Bd] z) ∧
-        ∃ (c : loopCircle ≃ₜ frontier A.domain) (δ : freeLoop S.boundaryNeighborhoodSpace),
-          (∀ θ, ((A (c θ) : (double 3 K).space) : E × E × ℝ) = ι (δ θ)) ∧
-            ¬loopClassMeets δ S.basepoint S.normalSubgroup
-
-theorem generalPositionInDoubleBufferedStatement_of_generalPositionInDoubleStatement
-    (generalPosition : GeneralPositionInDoubleStatement) :
-    GeneralPositionInDoubleBufferedStatement :=
-  fun S G β γ hinj hfiber hsubset _ hinter hside hproper hsurj hparam havoid =>
-    generalPosition S G β γ hinj hfiber hsubset hinter hside hproper hsurj hparam havoid
-
-theorem lemmaTwoBufferedStatement_of_generalPosition_of_descentStep
-    (generalPosition : GeneralPositionInDoubleBufferedStatement)
-    (descentStep : DescentStepStatement) :
-    LemmaTwoBufferedStatement := by
+theorem NormalSystem.DoubleCoverReduction.nonempty_embeddedDisk_of_buffered_normalization_of_descent
+    {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {M : ℕ} {S : NormalSystem F} {T : NormalSystem (EuclideanSpace ℝ (Fin M))}
+    (R : NormalSystem.DoubleCoverReduction S T)
+    (normalize :
+      let K := S.manifoldComplex
+      letI : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
+      letI := combinatorialChartedSpace (double 3 K)
+        (isCombinatorialManifold_double_succ_succ K S.isManifold)
+      let ι := simplicialMap K (glueEmbed₂ (PiecewiseLinear.boundaryComplex 3 K) id)
+      let C := ((↑) : (double 3 K).space → F × F × ℝ) ⁻¹' (ι '' K.space)
+      let Bd := ((↑) : (double 3 K).space → F × F × ℝ) ⁻¹'
+        (ι '' (PiecewiseLinear.boundaryComplex 3 K).space)
+      let B := ((↑) : (double 3 K).space → F × F × ℝ) ⁻¹'
+        (ι '' S.boundaryNeighborhood.space)
+      ∀ (G : SingularTwoCell (double 3 K).space)
+        (β : ContinuousMap loopCircle (frontier G.domain))
+        (γ : freeLoop S.boundaryNeighborhoodSpace),
+        (∀ x ∈ G.domain, ∃ U ∈ 𝓝[G.domain] x, Set.InjOn G U) →
+        (∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2) →
+        Set.range G.boundary ⊆ B →
+        (∀ z ∈ Set.range G.boundary, B ∈ 𝓝[Bd] z) →
+        G '' G.domain ∩ Bd = Set.range G.boundary →
+        MapsTo G G.domain C →
+        G.domain ∩ G ⁻¹' Bd = frontier G.domain →
+        Function.Surjective β →
+        (∀ θ, ((G (β θ) : (double 3 K).space) : F × F × ℝ) = ι (γ θ)) →
+        ¬loopClassMeets γ S.basepoint S.normalSubgroup →
+        ∃ (A : SingularTwoCell (double 3 K).space) (_ : NormalSingularCellData A Bd B),
+          A.domain = G.domain ∧ MapsTo A A.domain C ∧
+          (∀ z ∈ Set.range A.boundary, B ∈ 𝓝[Bd] z) ∧
+          ∃ (c : loopCircle ≃ₜ frontier A.domain) (δ : freeLoop S.boundaryNeighborhoodSpace),
+            (∀ θ, ((A (c θ) : (double 3 K).space) : F × F × ℝ) = ι (δ θ)) ∧
+              ¬loopClassMeets δ S.basepoint S.normalSubgroup)
+    (descend :
+      let K := S.manifoldComplex
+      letI : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
+      letI := combinatorialChartedSpace (double 3 K)
+        (isCombinatorialManifold_double_succ_succ K S.isManifold)
+      let ι := simplicialMap K (glueEmbed₂ (PiecewiseLinear.boundaryComplex 3 K) id)
+      let C := ((↑) : (double 3 K).space → F × F × ℝ) ⁻¹' (ι '' K.space)
+      let Bd := ((↑) : (double 3 K).space → F × F × ℝ) ⁻¹'
+        (ι '' (PiecewiseLinear.boundaryComplex 3 K).space)
+      let B := ((↑) : (double 3 K).space → F × F × ℝ) ⁻¹'
+        (ι '' S.boundaryNeighborhood.space)
+      ∀ (D₀ : SingularTwoCell (double 3 K).space) (hD₀ : NormalSingularCellData D₀ Bd B),
+        hD₀.singularSet.complexity ≠ 0 →
+        MapsTo D₀ D₀.domain C →
+        (∀ z ∈ Set.range D₀.boundary, B ∈ 𝓝[Bd] z) →
+        (∃ (c : loopCircle ≃ₜ frontier D₀.domain) (δ : freeLoop S.boundaryNeighborhoodSpace),
+          (∀ θ, ((D₀ (c θ) : (double 3 K).space) : F × F × ℝ) = ι (δ θ)) ∧
+            ¬loopClassMeets δ S.basepoint S.normalSubgroup) →
+        ∃ Sg : hD₀.DescendingSurgery,
+          MapsTo Sg.cell Sg.cell.domain C ∧
+          (∀ z ∈ Set.range Sg.cell.boundary, B ∈ 𝓝[Bd] z) ∧
+          ∃ (c : loopCircle ≃ₜ frontier Sg.cell.domain)
+            (δ : freeLoop S.boundaryNeighborhoodSpace),
+            (∀ θ, ((Sg.cell (c θ) : (double 3 K).space) : F × F × ℝ) = ι (δ θ)) ∧
+              ¬loopClassMeets δ S.basepoint S.normalSubgroup)
+    (hbuffer : ∀ x ∈ T.boundaryNeighborhood.space,
+      S.boundaryNeighborhood.space ∈ 𝓝[S.boundaryComplex.space] (R.projection x))
+    (D : NormalSystem.EmbeddedDisk T) : Nonempty (NormalSystem.EmbeddedDisk S) := by
   classical
-  intro F _ _ _ M S T R _ _ hbuffer hdisk
-  obtain ⟨D⟩ := hdisk
   let K := S.manifoldComplex
   let _ : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
   let _ := combinatorialChartedSpace (double 3 K)
@@ -204,7 +207,7 @@ theorem lemmaTwoBufferedStatement_of_generalPosition_of_descentStep
       rw [← hπw]
       exact hwV
   obtain ⟨A, hA, -, hAside, hAbuffer, hAloop⟩ :=
-    generalPosition S G β γ (Covering.isLocallyInjective_domRestrict_iff.mp hloc) hcard
+    normalize G β γ (Covering.isLocallyInjective_domRestrict_iff.mp hloc) hcard
       hBsub hbufferBd hinterBd hmapC hproperBd hβsurj hβ havoidγ
   obtain ⟨A', hA', -, hnonsingular, -, hside, -, hloop⟩ :=
     NormalSingularCellData.exists_complexity_eq_zero_of_descendingSurgery_of_motive
@@ -214,7 +217,7 @@ theorem lemmaTwoBufferedStatement_of_generalPosition_of_descentStep
           (∀ θ, ((A₀ (c θ) : (double 3 K).space) : F × F × ℝ) = ι (δ θ)) ∧
             ¬loopClassMeets δ S.basepoint S.normalSubgroup)
       (fun A₀ hA₀ hcomplexity hmotive =>
-        descentStep S A₀ hA₀ hcomplexity hmotive.1 hmotive.2.1 hmotive.2.2)
+        descend A₀ hA₀ hcomplexity hmotive.1 hmotive.2.1 hmotive.2.2)
       hA ⟨hAside, hAbuffer, hAloop⟩
   refine S.exists_embeddedDisk_of_nonsingular_two_cell_in_double A' hnonsingular ?_
     hA'.image_inter_boundary hloop

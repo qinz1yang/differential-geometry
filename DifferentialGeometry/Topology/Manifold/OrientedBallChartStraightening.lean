@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.BallEmbeddingFamilyStraightening
+import DifferentialGeometry.Topology.Manifold.BallEmbedding.FamilyStraightening
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallEmbeddingIsotopy
 import DifferentialGeometry.Topology.Manifold.OrientationDiffeomorphTransport
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransportConnected
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
@@ -349,15 +350,6 @@ theorem ballEmbeddingAmbientIsotopic_of_orientedBallChartStraighteningAwayFromCo
   exact ⟨H, hH0, hHc, hHi, K, hK, hKfix, hKfixi, 1, by norm_num, le_rfl,
     fun i x hx => hmatch i (hs i) x hx⟩
 
-theorem ballEmbeddingIsotopy_of_orientedBallChartStraighteningAwayFromCompact
-    (h : orientedBallChartStraighteningAwayFromCompact.{u})
-    (horient : isotopyPreservesOrientation.{u}) :
-    ballEmbeddingIsotopy.{u} := by
-  rw [ballEmbeddingIsotopy_iff_ambientIsotopic]
-  intro ι _ U _ _ _ _ _ o e e' he he'
-  exact ballEmbeddingAmbientIsotopic_of_orientedBallChartStraighteningAwayFromCompact
-    h horient o e e' he he'
-
 private theorem exists_notMem_of_isCompact_threeSpace {K : Set ThreeSpace} (hK : IsCompact K) :
     ∃ x₀ : ThreeSpace, x₀ ∉ K := by
   obtain ⟨r, hr⟩ := (Metric.isBounded_iff_subset_closedBall (0 : ThreeSpace)).mp hK.isBounded
@@ -401,12 +393,11 @@ private theorem det_negLinearEquiv :
   rw [h, ← neg_one_smul ℝ (1 : ThreeSpace →ₗ[ℝ] ThreeSpace), LinearMap.det_smul]
   norm_num
 
-theorem not_ballChartStraighteningAwayFromCompact :
-    ¬ ballChartStraighteningAwayFromCompact.{0} := by
-  intro h
-  obtain ⟨J, K, hK, -, hJ0, hJc, hJi, hKfix, hKfixi, hmatch0⟩ :=
-    h ThreeSpace identityBallChart negBallChart ∅
-      isCompact_empty (by simp) (by simp)
+theorem exists_ballChart_not_isotopicAwayFromCompact :
+    ∃ b b' : BallChart 3 (𝓡 3) ThreeSpace,
+      ¬ ballChartIsotopicAwayFromCompact b b' ∅ := by
+  refine ⟨identityBallChart, negBallChart, ?_⟩
+  rintro ⟨J, K, hK, -, hJ0, hJc, hJi, hKfix, hKfixi, hmatch0⟩
   have hmatch : ∀ x ∈ Metric.closedBall (0 : ThreeSpace) 1, J 1 x = -x :=
     fun x hx => hmatch0 x hx
   obtain ⟨x₀, hx₀⟩ := exists_notMem_of_isCompact_threeSpace hK

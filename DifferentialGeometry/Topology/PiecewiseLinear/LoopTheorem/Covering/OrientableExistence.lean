@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.CoveringOrientation
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverReductionOrientable
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Induction.Orientable
 
 open Set Topology
 
@@ -200,8 +200,20 @@ theorem exists_doubleCoverReduction_isOrientableManifold_of_isCoveringMap
 end NormalSystem
 
 open Classical in
-theorem orientableCoverReductionStatement : OrientableCoverReductionStatement := by
-  intro E _ _ _ S hproper hbase hor hnot
+theorem NormalSystem.exists_orientable_doubleCoverReduction
+    {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (S : NormalSystem E)
+    (hproper : S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
+      frontier S.sourceComplex.space)
+    (hbase : S.basepoint = S.boundaryLoop 0) (hor : S.IsOrientableManifold)
+    (hnot : ¬ IsPLSphere 2 S.boundaryComponent) :
+    ∃ (N : ℕ) (T : NormalSystem (EuclideanSpace ℝ (Fin N)))
+      (R : NormalSystem.DoubleCoverReduction S T),
+      T.basepoint = T.boundaryLoop 0 ∧
+      T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
+        frontier T.sourceComplex.space ∧ T.IsOrientableManifold ∧
+      ∀ x ∈ T.boundaryNeighborhood.space,
+        S.boundaryNeighborhood.space ∈ 𝓝[S.boundaryComplex.space] (R.projection x) := by
   let K := S.manifoldComplex
   let _ : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
   let _ : Finite S.boundaryComplex.faces := S.boundaryComplex_faces_finite.to_subtype
@@ -226,23 +238,5 @@ theorem orientableCoverReductionStatement : OrientableCoverReductionStatement :=
   intro y
   rw [← (ε.finite_fiber y).cast_ncard_eq, ← Nat.card_coe_set_eq, ε.card_fiber]
   rfl
-
-theorem moise252_of_lemmaTwoOrientable (lemmaTwo : LemmaTwoBufferedOrientableStatement) :
-    Moise252 :=
-  moise252_of_lemmaTwoBufferedOrientable orientableCoverReductionStatement lemmaTwo
-
-theorem moise304_of_lemmaTwoOrientable (lemmaTwo : LemmaTwoBufferedOrientableStatement) :
-    Moise304 :=
-  moise304_of_lemmaTwoBufferedOrientable orientableCoverReductionStatement lemmaTwo
-
-theorem moise305_tame_of_lemmaTwoOrientable (lemmaTwo : LemmaTwoBufferedOrientableStatement) :
-    Moise305Tame :=
-  moise305_tame_of_lemmaTwoBufferedOrientable orientableCoverReductionStatement lemmaTwo
-
-theorem moise304_of_generalPositionBuffered_of_descentStepOrientable
-    (generalPosition : GeneralPositionInDoubleBufferedStatement)
-    (descentStep : DescentStepOrientableStatement) : Moise304 :=
-  moise304_of_generalPosition_of_descentStepOrientable orientableCoverReductionStatement
-    generalPosition descentStep
 
 end DifferentialGeometry.Topology.PiecewiseLinear

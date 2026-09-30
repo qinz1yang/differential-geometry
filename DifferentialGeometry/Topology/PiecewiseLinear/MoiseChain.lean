@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.SolidTorus.Spine
 import DifferentialGeometry.Topology.SolidTorus.Shell
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaThree
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Induction
 import DifferentialGeometry.Topology.PiecewiseLinear.ComponentComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorus
 import DifferentialGeometry.Topology.Connected.Separation
@@ -22,10 +22,6 @@ universe u
 def IsNullHomotopic {X : Type u} [TopologicalSpace X] (γ : freeLoop X) : Prop :=
   ∃ x : X, γ.Homotopic (ContinuousMap.const _ x)
 
-def Moise251 : Prop :=
-  ∀ {N : ℕ} (S : NormalSystem (EuclideanSpace ℝ (Fin N))),
-    Nonempty (NormalSystem.NonsingularCell S)
-
 open Classical in
 def Moise252 : Prop :=
   ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -46,28 +42,6 @@ def Moise252 : Prop :=
           ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
             C(r '' stdSimplexBoundary 2,
               (connectedComponentComplex (boundaryComplex 3 K) c).space)).Nullhomotopic
-
-open Classical in
-def Moise264 : Prop :=
-  ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    (K : Geometry.SimplicialComplex ℝ E) (_ : Finite K.faces),
-    IsCombinatorialManifoldWithBoundary 3 K →
-    ∀ (L : Geometry.SimplicialComplex ℝ E) (_ : Finite L.faces),
-      IsCombinatorialManifold 2 L →
-      L.space ⊆ K.space \ (boundaryComplex 3 K).space → IsTwoSided L.space →
-    let S := L.space
-    ∀ (x : S) (g : FundamentalGroup S x),
-      g ≠ 1 →
-      (∀ hsub : S ⊆ K.space,
-        FundamentalGroup.map (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ :
-          C(S, K.space)) x g = 1) →
-      ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
-        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
-        Δ ⊆ K.space \ (boundaryComplex 3 K).space ∧
-        Δ ∩ S = r '' stdSimplexBoundary 2 ∧
-        ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ S,
-          ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
-            C(r '' stdSimplexBoundary 2, S)).Nullhomotopic
 
 def IsTopologicalCell (n : ℕ) {E : Type u} [TopologicalSpace E] (C : Set E) : Prop :=
   Nonempty (C ≃ₜ Metric.closedBall (0 : EuclideanSpace ℝ (Fin n)) 1)

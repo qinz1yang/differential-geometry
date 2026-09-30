@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Covering.EmbeddedProjection
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaThree
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Induction
 
 open Set Topology
 

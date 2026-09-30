@@ -1,9 +1,9 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Covering.Existence
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalSystem.Basepoint
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryComponent.Sphere
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MoiseChainPL
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalSystem.Realization
 
-open Set
+open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -71,38 +71,5 @@ theorem exists_embeddedDisk_of_stallings_induction_general
           T hproperT)
   exact NormalSystem.nonempty_embeddedDisk_of_atBoundaryLoop
     (normalised S.atBoundaryLoop hproper rfl)
-
-theorem nonempty_embeddedDisk_of_lemmaTwo_of_properness
-    (lemmaTwo :
-      ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
-        {M : ℕ} {S : NormalSystem F} {T : NormalSystem (EuclideanSpace ℝ (Fin M))},
-        NormalSystem.DoubleCoverReduction S T →
-        T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
-          frontier T.sourceComplex.space →
-        T.basepoint = T.boundaryLoop 0 →
-        Nonempty (NormalSystem.EmbeddedDisk T) → Nonempty (NormalSystem.EmbeddedDisk S))
-    (properness :
-      ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
-        (S : NormalSystem F),
-        S.sourceComplex.space ∩ S.singularMap ⁻¹' S.boundaryComplex.space =
-          frontier S.sourceComplex.space) :
-    ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-      (S : NormalSystem E), Nonempty (NormalSystem.EmbeddedDisk S) :=
-  fun S => exists_embeddedDisk_of_stallings_induction_general
-    (fun reduction hproper' hbase' hdisk' => lemmaTwo reduction hproper' hbase' hdisk')
-    S (properness S)
-
-theorem moise252_of_lemmaTwo
-    (lemmaTwo :
-      ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
-        {M : ℕ} {S : NormalSystem F} {T : NormalSystem (EuclideanSpace ℝ (Fin M))},
-        NormalSystem.DoubleCoverReduction S T →
-        T.sourceComplex.space ∩ T.singularMap ⁻¹' T.boundaryComplex.space =
-          frontier T.sourceComplex.space →
-        T.basepoint = T.boundaryLoop 0 →
-        Nonempty (NormalSystem.EmbeddedDisk T) → Nonempty (NormalSystem.EmbeddedDisk S)) :
-    Moise252 :=
-  moise252_of_normalSystemDiskOfProper fun S hproper =>
-    exists_embeddedDisk_of_stallings_induction_general lemmaTwo S hproper
 
 end DifferentialGeometry.Topology.PiecewiseLinear

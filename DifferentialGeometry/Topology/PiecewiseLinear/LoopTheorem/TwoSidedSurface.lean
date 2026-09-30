@@ -1,20 +1,35 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BallReplacement
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskBoundaryCollar
-import DifferentialGeometry.Topology.PiecewiseLinear.ExtendedLoopTheoremStatement
 import DifferentialGeometry.Topology.PiecewiseLinear.MobiusEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.BicollarComplementCollars
 import DifferentialGeometry.Topology.PiecewiseLinear.BicollarBoundaryLoop
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Orientable
+import DifferentialGeometry.Topology.PiecewiseLinear.ExtendedLoopTheoremStatement
 
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-
-theorem moise264_orientable (h252 : Moise252) : Moise264Orientable := by
+open Classical in
+theorem exists_compressing_disk_of_twoSided_surface
+    {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (hKfin : Finite K.faces)
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) (hKo : IsOrientable 3 K)
+    (L : Geometry.SimplicialComplex ℝ E) (hLfin : Finite L.faces)
+    (hL : IsCombinatorialManifold 2 L)
+    (hLK : L.space ⊆ K.space \ (boundaryComplex 3 K).space)
+    (htwo : IsTwoSided (((↑) : K.space → E) ⁻¹' L.space))
+    (x : L.space) (g : FundamentalGroup L.space x) (hg : g ≠ 1)
+    (hgin : FundamentalGroup.map
+      (⟨Set.inclusion (hLK.trans sdiff_subset), continuous_inclusion _⟩ : C(L.space, K.space)) x g = 1) :
+    ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
+      Δ ⊆ K.space \ (boundaryComplex 3 K).space ∧
+      Δ ∩ L.space = r '' stdSimplexBoundary 2 ∧
+      ∃ hb : r '' stdSimplexBoundary 2 ⊆ L.space,
+        ¬ (⟨Set.inclusion hb, continuous_inclusion hb⟩ : C(r '' stdSimplexBoundary 2, L.space)).Nullhomotopic := by
   classical
-  intro E _ _ _ K hKfin hK hKo L hLfin hL hLK htwo x g hg hgin
   let _ : Finite K.faces := hKfin
   let _ : Finite L.faces := hLfin
   obtain ⟨W, ρ, R, hRfin, hρ, hρzero, hW, hWnhds, hR, hRspace, hRK, hRL,
@@ -26,7 +41,7 @@ theorem moise264_orientable (h252 : Moise252) : Moise264Orientable := by
     exists_nontrivial_boundary_loop_of_bicollar_complement K L R hK hL hLK hR
       W ρ hρ hρzero hW hWnhds hRspace x g hg hgin
   obtain ⟨D, r, hr, hDR, hDr, hb, hessential⟩ :=
-    h252 R hRfin hR hRo c hsub γ hγR hγ
+    loop_theorem R hRfin hR hRo c hsub γ hγR hγ
   obtain ⟨σ, hσ, hσzero, hσW, hσR, hσL, f, p, hf, hpf⟩ := hcollars c hcW
   let B := (connectedComponentComplex (boundaryComplex 3 R) c).space
   let J := r '' stdSimplexBoundary 2

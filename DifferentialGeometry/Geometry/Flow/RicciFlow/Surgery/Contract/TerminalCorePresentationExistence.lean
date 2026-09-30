@@ -1,4 +1,13 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Protection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Precision
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
+import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
+import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 import DifferentialGeometry.Topology.Manifold.OpenSubsetImage
 import DifferentialGeometry.Topology.ProperMap.HalfCylinder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalComponentEnds

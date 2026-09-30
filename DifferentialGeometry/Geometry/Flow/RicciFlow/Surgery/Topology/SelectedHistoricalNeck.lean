@@ -4,7 +4,8 @@ import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NormalizedConvergence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckFields
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Neck.Historical
 
 set_option autoImplicit false
 noncomputable section

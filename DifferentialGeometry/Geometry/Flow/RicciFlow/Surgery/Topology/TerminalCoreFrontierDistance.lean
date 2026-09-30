@@ -1,7 +1,16 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureBounds.InverseSqrtScalarDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Protection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Precision
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
+import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
+import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodInduction
 
 set_option autoImplicit false

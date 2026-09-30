@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.BallEmbeddingIsotopy
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallEmbeddingIsotopy
 
 set_option autoImplicit false
 
@@ -200,5 +200,148 @@ theorem not_forall_supportedBallEmbeddingIsotopy_universal :
   have hchartc : (OrientedBallEmbedding.ofOrientedBallChart c).chart = c.chart := rfl
   have hchartd : (OrientedBallEmbedding.ofOrientedBallChart d).chart = d.chart := rfl
   simpa [h0, h1, hchartc, hchartd] using hne.symm
+
+theorem exists_disjoint_ballEmbedding_family_not_eqOn_closedBall :
+    ∃ (e e' : ULift.{u, 0} (Fin 2) → OrientedBallEmbedding
+        DifferentialGeometry.Topology.standardThreeSphereLift.{u}.Carrier
+        DifferentialGeometry.Topology.standardThreeSphereLift.{u}.orientation),
+      (Pairwise fun i j =>
+        Disjoint ((e i).chart '' Metric.closedBall (0 : ThreeSpace) 1)
+          ((e j).chart '' Metric.closedBall (0 : ThreeSpace) 1)) ∧
+      (Pairwise fun i j =>
+        Disjoint ((e' i).chart '' Metric.closedBall (0 : ThreeSpace) 1)
+          ((e' j).chart '' Metric.closedBall (0 : ThreeSpace) 1)) ∧
+      ¬ ∃ F : DifferentialGeometry.Topology.standardThreeSphereLift.{u}.Carrier →
+          DifferentialGeometry.Topology.standardThreeSphereLift.{u}.Carrier,
+        ∀ i x, x ∈ Metric.closedBall (0 : ThreeSpace) 2 →
+          F ((e i).chart x) = (e' i).chart x := by
+  let M : DifferentialGeometry.Topology.ClosedOrientedManifold.{u} 3 :=
+    DifferentialGeometry.Topology.standardThreeSphereLift.{u}.toClosedOrientedManifold
+  let c : DifferentialGeometry.Topology.OrientedBallChart M :=
+    DifferentialGeometry.Topology.orientedBallChart
+      DifferentialGeometry.Topology.standardThreeSphereLift.{u}
+  set s : ThreeSpace := (3 / 2 : ℝ) • EuclideanSpace.single (0 : Fin 3) (1 : ℝ) with hsdef
+  set s' : ThreeSpace := (3 / 2 : ℝ) • EuclideanSpace.single (1 : Fin 3) (1 : ℝ) with hs'def
+  set z : ThreeSpace := (7 / 5 : ℝ) • EuclideanSpace.single (0 : Fin 3) (1 : ℝ) with hzdef
+  set x : ThreeSpace := (-(2 / 5) : ℝ) • EuclideanSpace.single (0 : Fin 3) (1 : ℝ) with hxdef
+  have hnorm : ‖s‖ = 3 / 2 := by
+    rw [hsdef, norm_smul, Real.norm_eq_abs, abs_of_pos (by norm_num : (0 : ℝ) < 3 / 2)]
+    simp
+  have hnorm' : ‖s'‖ = 3 / 2 := by
+    rw [hs'def, norm_smul, Real.norm_eq_abs, abs_of_pos (by norm_num : (0 : ℝ) < 3 / 2)]
+    simp
+  have hznorm : ‖z‖ = 7 / 5 := by
+    rw [hzdef, norm_smul, Real.norm_eq_abs, abs_of_pos (by norm_num : (0 : ℝ) < 7 / 5)]
+    simp
+  have hxnorm : ‖x‖ = 2 / 5 := by
+    rw [hxdef, norm_smul]
+    simp
+  have hr : (0 : ℝ) < 1 / 4 := by norm_num
+  have hs : ‖s‖ + 2 * (1 / 4 : ℝ) ≤ 2 := by rw [hnorm]; norm_num
+  have hs' : ‖s'‖ + 2 * (1 / 4 : ℝ) ≤ 2 := by rw [hnorm']; norm_num
+  have hbig : 1 + (1 / 4 : ℝ) < ‖s‖ := by rw [hnorm]; norm_num
+  have hbig' : 1 + (1 / 4 : ℝ) < ‖s'‖ := by rw [hnorm']; norm_num
+  let d : DifferentialGeometry.Topology.OrientedBallChart M := c.affine s (1 / 4) hr hs
+  let d' : DifferentialGeometry.Topology.OrientedBallChart M := c.affine s' (1 / 4) hr hs'
+  let eFin : Fin 2 → OrientedBallEmbedding M.Carrier M.orientation :=
+    fun i => if i = 0 then OrientedBallEmbedding.ofOrientedBallChart c
+      else OrientedBallEmbedding.ofOrientedBallChart d
+  let eFin' : Fin 2 → OrientedBallEmbedding M.Carrier M.orientation :=
+    fun i => if i = 0 then OrientedBallEmbedding.ofOrientedBallChart c
+      else OrientedBallEmbedding.ofOrientedBallChart d'
+  let e : ULift.{u, 0} (Fin 2) → OrientedBallEmbedding M.Carrier M.orientation :=
+    fun i => eFin i.down
+  let e' : ULift.{u, 0} (Fin 2) → OrientedBallEmbedding M.Carrier M.orientation :=
+    fun i => eFin' i.down
+  have hchartc : (OrientedBallEmbedding.ofOrientedBallChart c).chart = c.chart := rfl
+  have hchartd : (OrientedBallEmbedding.ofOrientedBallChart d).chart = d.chart := rfl
+  have hchartd' : (OrientedBallEmbedding.ofOrientedBallChart d').chart = d'.chart := rfl
+  have hdisjc : Disjoint (c.chart '' Metric.closedBall (0 : ThreeSpace) 1)
+      (d.chart '' Metric.closedBall (0 : ThreeSpace) 1) :=
+    disjoint_chart_image_closedBall_affine c s (1 / 4) hr hs hbig
+  have hdisjc' : Disjoint (c.chart '' Metric.closedBall (0 : ThreeSpace) 1)
+      (d'.chart '' Metric.closedBall (0 : ThreeSpace) 1) :=
+    disjoint_chart_image_closedBall_affine c s' (1 / 4) hr hs' hbig'
+  have he0 : eFin 0 = OrientedBallEmbedding.ofOrientedBallChart c := by simp [eFin]
+  have he1 : eFin 1 = OrientedBallEmbedding.ofOrientedBallChart d := by simp [eFin]
+  have he0' : eFin' 0 = OrientedBallEmbedding.ofOrientedBallChart c := by simp [eFin']
+  have he1' : eFin' 1 = OrientedBallEmbedding.ofOrientedBallChart d' := by simp [eFin']
+  have hdisjFin : Pairwise fun i j : Fin 2 =>
+      Disjoint ((eFin i).chart '' Metric.closedBall (0 : ThreeSpace) 1)
+        ((eFin j).chart '' Metric.closedBall (0 : ThreeSpace) 1) := by
+    intro i j hij
+    fin_cases i <;> fin_cases j
+    · exact absurd rfl hij
+    · simpa [he0, he1, hchartc, hchartd] using hdisjc
+    · simpa [he0, he1, hchartc, hchartd] using hdisjc.symm
+    · exact absurd rfl hij
+  have hdisjFin' : Pairwise fun i j : Fin 2 =>
+      Disjoint ((eFin' i).chart '' Metric.closedBall (0 : ThreeSpace) 1)
+        ((eFin' j).chart '' Metric.closedBall (0 : ThreeSpace) 1) := by
+    intro i j hij
+    fin_cases i <;> fin_cases j
+    · exact absurd rfl hij
+    · simpa [he0', he1', hchartc, hchartd'] using hdisjc'
+    · simpa [he0', he1', hchartc, hchartd'] using hdisjc'.symm
+    · exact absurd rfl hij
+  have hdisj : Pairwise fun i j : ULift.{u, 0} (Fin 2) =>
+      Disjoint ((e i).chart '' Metric.closedBall (0 : ThreeSpace) 1)
+        ((e j).chart '' Metric.closedBall (0 : ThreeSpace) 1) :=
+    fun i j hij => hdisjFin (i := i.down) (j := j.down) fun hd => hij (ULift.down_injective hd)
+  have hdisj' : Pairwise fun i j : ULift.{u, 0} (Fin 2) =>
+      Disjoint ((e' i).chart '' Metric.closedBall (0 : ThreeSpace) 1)
+        ((e' j).chart '' Metric.closedBall (0 : ThreeSpace) 1) :=
+    fun i j hij => hdisjFin' (i := i.down) (j := j.down) fun hd => hij (ULift.down_injective hd)
+  refine ⟨e, e', hdisj, hdisj', ?_⟩
+  rintro ⟨F, hball⟩
+  have he1e : e (ULift.up 1) = OrientedBallEmbedding.ofOrientedBallChart d := by
+    simp [e, eFin]
+  have he0e : e (ULift.up 0) = OrientedBallEmbedding.ofOrientedBallChart c := by
+    simp [e, eFin]
+  have he1'e : e' (ULift.up 1) = OrientedBallEmbedding.ofOrientedBallChart d' := by
+    simp [e', eFin']
+  have he0'e : e' (ULift.up 0) = OrientedBallEmbedding.ofOrientedBallChart c := by
+    simp [e', eFin']
+  have hz2 : z ∈ Metric.closedBall (0 : ThreeSpace) 2 := by
+    rw [Metric.mem_closedBall, dist_zero_right, hznorm]
+    norm_num
+  have hx2 : x ∈ Metric.closedBall (0 : ThreeSpace) 2 := by
+    rw [Metric.mem_closedBall, dist_zero_right, hxnorm]
+    norm_num
+  have hvec : s + (1 / 4 : ℝ) • x = z := by
+    rw [hsdef, hxdef, hzdef]
+    simp only [smul_smul, ← add_smul]
+    norm_num
+  have hsame : (e (ULift.up 1)).chart x = (e (ULift.up 0)).chart z := by
+    rw [he1e, he0e, hchartd, hchartc,
+      DifferentialGeometry.Topology.OrientedBallChart.affine_apply c s (1 / 4) hr hs x, hvec]
+  have hEq : (e' (ULift.up 1)).chart x = (e' (ULift.up 0)).chart z := by
+    have h1 := hball (ULift.up 1) x hx2
+    have h0 := hball (ULift.up 0) z hz2
+    rw [hsame] at h1
+    exact h1.symm.trans h0
+  have hsrc : s' + (1 / 4 : ℝ) • x ∈ c.chart.source := by
+    apply c.closedBall_subset_source
+    rw [Metric.mem_closedBall, dist_zero_right]
+    have hquarter : ‖(1 / 4 : ℝ) • x‖ = (1 / 4) * ‖x‖ := by
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos hr]
+    calc ‖s' + (1 / 4 : ℝ) • x‖ ≤ ‖s'‖ + ‖(1 / 4 : ℝ) • x‖ := norm_add_le _ _
+      _ = ‖s'‖ + (1 / 4) * ‖x‖ := by rw [hquarter]
+      _ ≤ 3 / 2 + (1 / 4) * (2 / 5) := by rw [hnorm', hxnorm]
+      _ ≤ 2 := by norm_num
+  have hsrc0 : z ∈ c.chart.source := by
+    apply c.closedBall_subset_source
+    rw [Metric.mem_closedBall, dist_zero_right, hznorm]
+    norm_num
+  rw [he1'e, he0'e, hchartd', hchartc,
+    DifferentialGeometry.Topology.OrientedBallChart.affine_apply c s' (1 / 4) hr hs' x] at hEq
+  have hvec' : s' + (1 / 4 : ℝ) • x = z :=
+    c.chart.toPartialEquiv.injOn hsrc hsrc0 hEq
+  have hne : s' + (1 / 4 : ℝ) • x ≠ z := by
+    intro hcontra
+    have hc := congrArg (fun y : ThreeSpace => y 1) hcontra
+    rw [hs'def, hxdef, hzdef] at hc
+    simp at hc
+  exact hne hvec'
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

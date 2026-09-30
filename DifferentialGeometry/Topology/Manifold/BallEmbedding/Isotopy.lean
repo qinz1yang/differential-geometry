@@ -1,7 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruction
+import DifferentialGeometry.Topology.Manifold.BallEmbedding.Defs
 import DifferentialGeometry.Topology.Manifold.DiffeomorphFamily
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarkingSupport
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarkingRelativeIsotopy
 
 set_option autoImplicit false
 
@@ -10,21 +9,6 @@ noncomputable section
 open Bundle Manifold Set Topology
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Topology.Manifold
-
-namespace DifferentialGeometry.Topology.Manifold
-
-variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
-  {I : ModelWithCorners ℝ E H}
-
-theorem eqOn_symm_of_eqOn_compl {Φ : Diffeomorph I I M M ∞} {K : Set M}
-    (h : Set.EqOn Φ id Kᶜ) : Set.EqOn Φ.symm id Kᶜ := by
-  intro x hx
-  have h1 : Φ x = x := h hx
-  calc Φ.symm x = Φ.symm (Φ x) := by rw [h1]
-    _ = x := Φ.symm_apply_apply x
-
-end DifferentialGeometry.Topology.Manifold
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
@@ -61,20 +45,6 @@ def SupportedBallEmbeddingIsotopy (ι : Type u) (U : Type u) [TopologicalSpace U
       J i 1 ((e i).chart x) = (e' i).chart x) ∧
     (∀ i j, i ≠ j → ∀ x : ThreeSpace, x ∈ Metric.closedBall 0 r →
       (e i).chart x ∉ V j)
-
-theorem ballEmbeddingIsotopy_iff_ambientIsotopic :
-    ballEmbeddingIsotopy.{u} ↔
-      ∀ (ι : Type u) [Fintype ι] (U : Type u) [TopologicalSpace U]
-        [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U] [T2Space U] [ConnectedSpace U]
-        (o : ManifoldOrientation ThreeModel U 3) (e e' : ι → OrientedBallEmbedding U o),
-        (Pairwise fun i j =>
-          Disjoint ((e i).chart '' Metric.closedBall (0 : ThreeSpace) 1)
-            ((e j).chart '' Metric.closedBall (0 : ThreeSpace) 1)) →
-        (Pairwise fun i j =>
-          Disjoint ((e' i).chart '' Metric.closedBall (0 : ThreeSpace) 1)
-            ((e' j).chart '' Metric.closedBall (0 : ThreeSpace) 1)) →
-        BallEmbeddingAmbientIsotopic ι U o e e' :=
-  Iff.rfl
 
 theorem ballEmbeddingAmbientIsotopic_of_supportedBallEmbeddingIsotopy {ι : Type u} [Finite ι]
     {U : Type u} [TopologicalSpace U] [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
@@ -116,16 +86,6 @@ theorem ballEmbeddingAmbientIsotopic_of_supportedBallEmbeddingIsotopy {ι : Type
       (fun j _ hji => havoid i j (Ne.symm hji) x hx)]
     exact hJ1 i x hx
 
-theorem ballEmbeddingIsotopy_of_supportedBallEmbeddingIsotopy
-    (h : ∀ (ι : Type u) [Fintype ι] (U : Type u) [TopologicalSpace U]
-      [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U] [T2Space U] [ConnectedSpace U]
-      (o : ManifoldOrientation ThreeModel U 3) (e e' : ι → OrientedBallEmbedding U o),
-      SupportedBallEmbeddingIsotopy ι U o e e') :
-    ballEmbeddingIsotopy.{u} := by
-  rw [ballEmbeddingIsotopy_iff_ambientIsotopic]
-  intro ι _ U _ _ _ _ _ o e e' _ _
-  exact ballEmbeddingAmbientIsotopic_of_supportedBallEmbeddingIsotopy (h ι U o e e')
-
 theorem supportedBallEmbeddingIsotopy_self {ι : Type u} {U : Type u}
     [TopologicalSpace U] [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
     (o : ManifoldOrientation ThreeModel U 3) (e : ι → OrientedBallEmbedding U o) :
@@ -159,46 +119,5 @@ theorem supportedBallEmbeddingIsotopy_of_isEmpty {ι : Type u} [IsEmpty ι]
     fun _ => contMDiff_snd, fun _ => rfl, fun _ => isCompact_empty, fun _ _ _ => by simp,
     fun _ _ _ _ => rfl, by norm_num, le_rfl, fun i => isEmptyElim i,
     fun i => isEmptyElim i⟩
-
-def OrientedBallEmbedding.ofOrientedBallChart
-    {M : DifferentialGeometry.Topology.ClosedOrientedManifold.{u} 3}
-    (c : DifferentialGeometry.Topology.OrientedBallChart M) :
-    OrientedBallEmbedding M.Carrier M.orientation where
-  chart := c.chart
-  closedBall_subset_source := c.closedBall_subset_source
-  preserves_orientation := c.preserves_orientation
-
-theorem ballEmbeddingAmbientIsotopic_of_ballMarkingIsotopic
-    {M : DifferentialGeometry.Topology.ClosedOrientedManifold.{u} 3}
-    (I : Type u) [Fintype I] (B B' : DifferentialGeometry.Topology.BallMarking M I)
-    (h : B.Isotopic B') :
-    BallEmbeddingAmbientIsotopic I M.Carrier M.orientation
-      (fun i => OrientedBallEmbedding.ofOrientedBallChart (B.ball i))
-      (fun i => OrientedBallEmbedding.ofOrientedBallChart (B'.ball i)) := by
-  obtain ⟨H, hHc, hHi, hH0, hH1⟩ := h
-  refine ⟨H, hH0, hHc, hHi, Set.univ, isCompact_univ, ?_, ?_, 1, by norm_num, le_rfl,
-    fun i x hx => hH1 i x (Metric.closedBall_subset_closedBall (by norm_num) hx)⟩
-  · intro t x hx
-    exact absurd (Set.mem_univ x) hx
-  · intro t x hx
-    exact absurd (Set.mem_univ x) hx
-
-theorem ballEmbeddingAmbientIsotopic_standardThreeSphere :
-    BallEmbeddingAmbientIsotopic PUnit
-      DifferentialGeometry.Topology.standardThreeSphereLift.{u}.Carrier
-      DifferentialGeometry.Topology.standardThreeSphereLift.{u}.orientation
-      (fun _ => OrientedBallEmbedding.ofOrientedBallChart
-        (DifferentialGeometry.Topology.orientedBallChart
-          DifferentialGeometry.Topology.standardThreeSphereLift.{u}))
-      (fun _ => OrientedBallEmbedding.ofOrientedBallChart
-        (DifferentialGeometry.Topology.OrientedBallChart.affine
-          (DifferentialGeometry.Topology.orientedBallChart
-            DifferentialGeometry.Topology.standardThreeSphereLift.{u})
-          (0 : ThreeSpace) (1 / 2) (by norm_num) (by norm_num))) := by
-  exact ballEmbeddingAmbientIsotopic_of_ballMarkingIsotopic PUnit _ _
-    (DifferentialGeometry.Topology.BallMarking.singleton_isotopic_of_affine
-      (DifferentialGeometry.Topology.orientedBallChart
-        DifferentialGeometry.Topology.standardThreeSphereLift.{u})
-      (0 : ThreeSpace) (1 / 2) (by norm_num) (by norm_num))
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

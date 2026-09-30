@@ -1,6 +1,15 @@
+import DifferentialGeometry.Topology.ThreeManifold.Orientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Protection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Precision
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
+import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
+import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Extinction.ControlledExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
 import DifferentialGeometry.Topology.Manifold.CollarFamily
@@ -17,16 +26,6 @@ open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
-
-theorem disjointBoundaryCollarFamily_holds :
-    disjointBoundaryCollarFamily.{u} := by
-  intro X _ _ ι _ S _ _ e c hc h0 hdisj
-  exact DifferentialGeometry.Topology.Collar.disjointBoundaryCollarFamily hc h0 hdisj
-
-theorem seifertVanKampenPushout_holds :
-    seifertVanKampenPushout.{u} := by
-  intro X _ U V hU hV hcover
-  exact DifferentialGeometry.Topology.VanKampen.seifertVanKampen U V hU hV hcover
 
 def TangentOrientationSection.toManifoldOrientation {M : Type u} [TopologicalSpace M]
     [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]

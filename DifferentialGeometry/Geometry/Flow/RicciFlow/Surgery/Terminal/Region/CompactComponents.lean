@@ -1,7 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSmoothSphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarSublevel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.Region.EmptyBoundary
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckFields
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Neck.Historical
 
 noncomputable section
 open Set Manifold

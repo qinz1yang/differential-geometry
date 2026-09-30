@@ -141,3 +141,18 @@ theorem isLocalDiffeomorphAt_diffeomorphList_of_basis
   exact ((hg 0).mdifferentiableAt (by simp)).hasMFDerivAt
 
 end DifferentialGeometry.Topology.Manifold
+
+namespace DifferentialGeometry.Topology.Manifold
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
+  {I : ModelWithCorners ℝ E H}
+
+theorem eqOn_symm_of_eqOn_compl {Φ : Diffeomorph I I M M ∞} {K : Set M}
+    (h : Set.EqOn Φ id Kᶜ) : Set.EqOn Φ.symm id Kᶜ := by
+  intro x hx
+  have h1 : Φ x = x := h hx
+  calc Φ.symm x = Φ.symm (Φ x) := by rw [h1]
+    _ = x := Φ.symm_apply_apply x
+
+end DifferentialGeometry.Topology.Manifold

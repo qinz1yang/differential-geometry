@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Connected.ClosedCover
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryGeneration
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaThree
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Induction
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInteriorConnected
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldRelativeTopology

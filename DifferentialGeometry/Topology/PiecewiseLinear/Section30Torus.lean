@@ -9,7 +9,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ExistsCombinatorialTriangul
 import DifferentialGeometry.Topology.PiecewiseLinear.NontrivialKernelInSolidTorus
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsIsPLBallSupersetOfExteriorCompression
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsBallPairOfInteriorEssentialDisk
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Moise252Producer
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.TwoSidedSurface
 
 open Set Topology
 
@@ -108,9 +108,9 @@ theorem moise307_of_moise252 (h252 : Moise252) : Moise307 := by
   exact moise307_of_moise306_of_moise252 (moise306_of_moise252 h252) h252
 
 theorem moise306 : Moise306 :=
-  moise306_of_moise252 moise252
+  moise306_of_moise252 loop_theorem
 
 theorem moise307 : Moise307 :=
-  moise307_of_moise252 moise252
+  moise307_of_moise252 loop_theorem
 
 end DifferentialGeometry.Topology.PiecewiseLinear

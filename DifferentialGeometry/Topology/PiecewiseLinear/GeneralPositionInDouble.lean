@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingBlock
 import DifferentialGeometry.Topology.PiecewiseLinear.DoublePointFibreAgreement
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.GeneralPosition.BoundaryHomotopy
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoBuffered
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.RelativeCoverDescent
 import DifferentialGeometry.Topology.PiecewiseLinear.DoubleHalfSpaceChart
 import DifferentialGeometry.Topology.PiecewiseLinear.TransitionSubdivisionOnOverlap
 import DifferentialGeometry.Topology.PiecewiseLinear.GluedCellInAdaptedChart
@@ -869,9 +869,40 @@ theorem freeSourceGerm_of_mem_closure (D : SingularTwoCell M) {W V : Set M} {ε 
 end MetricAmbient
 
 open Classical in
-theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStatement := by
+theorem NormalSystem.exists_normal_singular_cell_in_double
+    {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (S : NormalSystem E) :
+  let K := S.manifoldComplex
+  letI : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
+  letI := combinatorialChartedSpace (double 3 K)
+    (isCombinatorialManifold_double_succ_succ K S.isManifold)
+  let ι := simplicialMap K (glueEmbed₂ (PiecewiseLinear.boundaryComplex 3 K) id)
+  let C := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹' (ι '' K.space)
+  let Bd := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹'
+    (ι '' (PiecewiseLinear.boundaryComplex 3 K).space)
+  let B := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹'
+    (ι '' S.boundaryNeighborhood.space)
+  ∀ (G : SingularTwoCell (double 3 K).space)
+    (β : ContinuousMap loopCircle (frontier G.domain))
+    (γ : freeLoop S.boundaryNeighborhoodSpace),
+    (∀ x ∈ G.domain, ∃ U ∈ 𝓝[G.domain] x, Set.InjOn G U) →
+    (∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2) →
+    Set.range G.boundary ⊆ B →
+    (∀ z ∈ Set.range G.boundary, B ∈ 𝓝[Bd] z) →
+    G '' G.domain ∩ Bd = Set.range G.boundary →
+    MapsTo G G.domain C →
+    G.domain ∩ G ⁻¹' Bd = frontier G.domain →
+    Function.Surjective β →
+    (∀ θ, ((G (β θ) : (double 3 K).space) : E × E × ℝ) = ι (γ θ)) →
+    ¬loopClassMeets γ S.basepoint S.normalSubgroup →
+    ∃ (A : SingularTwoCell (double 3 K).space) (_ : NormalSingularCellData A Bd B),
+      A.domain = G.domain ∧ MapsTo A A.domain C ∧
+      (∀ z ∈ Set.range A.boundary, B ∈ 𝓝[Bd] z) ∧
+      ∃ (c : loopCircle ≃ₜ frontier A.domain) (δ : freeLoop S.boundaryNeighborhoodSpace),
+        (∀ θ, ((A (c θ) : (double 3 K).space) : E × E × ℝ) = ι (δ θ)) ∧
+          ¬loopClassMeets δ S.basepoint S.normalSubgroup := by
   classical
-  intro E _ _ _ S K
+  intro K
   let _ : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
   let _ := combinatorialChartedSpace (double 3 K)
     (isCombinatorialManifold_double_succ_succ K S.isManifold)
