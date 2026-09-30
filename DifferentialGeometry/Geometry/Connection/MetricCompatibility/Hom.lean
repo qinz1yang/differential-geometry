@@ -1,3 +1,4 @@
+import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Metric
 import DifferentialGeometry.Geometry.Metric.BundleHom
 import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
