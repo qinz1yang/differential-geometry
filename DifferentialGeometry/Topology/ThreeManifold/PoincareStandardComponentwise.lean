@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardOriented
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardOrientationRefinement
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardFactorOrientation
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardModels
 
 set_option autoImplicit false
@@ -85,13 +85,12 @@ theorem componentwiseConnectedSumStandardFactor_iff_isOrientedPoincareStandard :
     obtain ⟨p⟩ := h C
     exact ⟨p.factors, p.standard, ⟨p.diffeomorph⟩⟩
 
-theorem componentwiseConnectedSumStandardFactor_of_orientationRefinement
-    (h : poincareStandardOrientationRefinement.{u})
+theorem componentwiseConnectedSumStandardFactor_of_componentwise_isPoincareStandard
     (hD : ∀ C : ConnectedComponents D.Carrier,
       isPoincareStandard (D.component C).Carrier) :
     D.componentwiseConnectedSumStandardFactor :=
   (D.componentwiseConnectedSumStandardFactor_iff_isOrientedPoincareStandard).mpr fun C =>
-    h (D.component C) (hD C)
+    isOrientedPoincareStandard_of_isPoincareStandard (D.component C) (hD C)
 
 end ClosedOrientedManifold
 

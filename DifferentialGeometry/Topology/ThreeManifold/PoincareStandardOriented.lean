@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLawInstances
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OppositeInvarianceObstruction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.LeftUnitLaw
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormTrivial
@@ -155,14 +156,11 @@ theorem exists_diffeomorph_standardThreeSphere_of_isOrientedPoincareStandard
 
 
 
-def isOrientedPoincareStandardSumClosed : Prop :=
-  ∀ L : List (ConnectedClosedOrientedManifold.{u} 3),
-    (∀ F ∈ L, isOrientedPoincareStandard F.toClosedOrientedManifold) →
-      isOrientedPoincareStandard (finiteConnectedSum L).toClosedOrientedManifold
-
-theorem isOrientedPoincareStandardSumClosed_of_connectedSumLaws
-    (h : connectedSumLaws.{u}) : isOrientedPoincareStandardSumClosed.{u} := by
-  intro L
+theorem isOrientedPoincareStandard_finiteConnectedSum
+    (L : List (ConnectedClosedOrientedManifold.{u} 3))
+    (hL : ∀ F ∈ L, isOrientedPoincareStandard F.toClosedOrientedManifold) :
+    isOrientedPoincareStandard (finiteConnectedSum L).toClosedOrientedManifold := by
+  revert hL
   induction L with
   | nil => intro _; exact isOrientedPoincareStandard_sphere
   | cons M L ih =>
@@ -182,52 +180,11 @@ theorem isOrientedPoincareStandardSumClosed_of_connectedSumLaws
               [M, finiteConnectedSum (N :: L)]
               [finiteConnectedSum PM.factors, finiteConnectedSum PT.factors] :=
             List.Forall₂.cons ⟨PM.diffeomorph⟩ (List.Forall₂.cons ⟨PT.diffeomorph⟩ List.Forall₂.nil)
-          obtain ⟨c⟩ := finiteConnectedSum_congr_of_connectedSumLaws h hforall
-          obtain ⟨ap⟩ := finiteConnectedSum_append_of_connectedSumLaws h PM.factors PT.factors
+          obtain ⟨c⟩ := finiteConnectedSum_congr hforall
+          obtain ⟨ap⟩ := finiteConnectedSum_append PM.factors PT.factors
           exact isOrientedPoincareStandard_of_orientedDiffeomorph (c.trans ap.symm)
             (isOrientedPoincareStandard_finite_sum (PM.factors ++ PT.factors) fun F hF =>
               (List.mem_append.mp hF).elim (fun hh => PM.standard F hh)
                 (fun hh => PT.standard F hh))
-
-theorem isOrientedPoincareStandard_of_isPoincareStandard_of_simplyConnected
-    (F : ConnectedClosedOrientedManifold.{u} 3) [SimplyConnectedSpace F.Carrier]
-    (h : isPoincareStandard F.Carrier) :
-    isOrientedPoincareStandard F.toClosedOrientedManifold := by
-  classical
-  obtain ⟨P⟩ := h
-  let x : (i : Fin P.factors.length) → (P.factors.get i).Carrier :=
-    fun i => Classical.choice (inferInstance : Nonempty (P.factors.get i).Carrier)
-  let y : (finiteConnectedSum P.factors).Carrier := Classical.choice inferInstance
-  have hbase : Subsingleton (FundamentalGroup (finiteConnectedSum P.factors).Carrier y) := by
-    have he : FundamentalGroup (finiteConnectedSum P.factors).Carrier y ≃*
-        FundamentalGroup F.Carrier (P.diffeomorph.symm y) :=
-      fundamentalGroupMulEquivOfHomotopyEquiv P.diffeomorph.symm.toHomeomorph.toHomotopyEquiv
-        y (P.diffeomorph.symm y) rfl
-    exact he.subsingleton
-  have hcoprod : Subsingleton (Monoid.CoprodI (fun i : Fin P.factors.length =>
-      FundamentalGroup (P.factors.get i).Carrier (x i))) :=
-    @Equiv.subsingleton _ _
-      ((fundamentalGroup_finiteConnectedSum_freeProduct P.factors x y).some.symm : _ ≃ _) hbase
-  have hsub : ∀ i : Fin P.factors.length,
-      Subsingleton (FundamentalGroup (P.factors.get i).Carrier (x i)) :=
-    (DifferentialGeometry.Algebra.Group.coprodI_subsingleton_iff _).mp hcoprod
-  have hL : ∀ F ∈ P.factors, Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      F.toClosedOrientedManifold standardThreeSphereLift.{u}.toClosedOrientedManifold) := by
-    intro F hF
-    obtain ⟨i, rfl⟩ := List.get_of_mem hF
-    exact exists_orientedDiffeomorph_standardThreeSphere_of_isStandardFactor
-      (P.factors.get i) (x i) (P.standard _ hF) (hsub i)
-  obtain ⟨s⟩ := exists_diffeomorph_finiteConnectedSum_standardThreeSphere P.factors hL
-  obtain ⟨g⟩ := nonempty_orientedDiffeomorph_standardThreeSphere_of_diffeomorph F
-    ⟨P.diffeomorph.trans s⟩
-  exact isOrientedPoincareStandard_of_orientedDiffeomorph g isOrientedPoincareStandard_sphere
-
-theorem poincareStandardSumClosed_of_isOrientedPoincareStandardSumClosed
-    (h : isOrientedPoincareStandardSumClosed.{u})
-    (hup : ∀ F : ConnectedClosedOrientedManifold.{u} 3,
-      isPoincareStandard F.Carrier → isOrientedPoincareStandard F.toClosedOrientedManifold) :
-    poincareStandardSumClosed.{u} :=
-  fun L hL => isPoincareStandard_of_isOrientedPoincareStandard
-    (h L fun F hF => hup F (hL F hF))
 
 end DifferentialGeometry.Topology

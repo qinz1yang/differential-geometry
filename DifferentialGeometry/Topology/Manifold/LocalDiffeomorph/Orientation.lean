@@ -77,7 +77,7 @@ theorem localDiffeomorph_orientation_comp
 theorem exists_orientationReversing_sphereTwoTimesCircleLift :
     ∃ r : sphereTwoTimesCircleLift.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ sphereTwoTimesCircleLift.Carrier,
       r.preservesOrientation sphereTwoTimesCircleLift.orientation.opposite sphereTwoTimesCircleLift.orientation := by
-  obtain ⟨r, hr⟩ := sphereTwoTimesCircleOrientationClosure_holds
+  obtain ⟨r, hr⟩ := exists_orientationReversing_diffeomorph_sphereTwoTimesCircle
   let E := sphereTwoTimesCircleModelCopy.equiv
   have hE := Diffeomorph.preservesOrientation_symm sphereTwoTimesCircleLift_preservesOrientation
   refine ⟨(E.symm.trans r).trans E, ?_⟩

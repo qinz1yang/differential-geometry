@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormGroup
 import DifferentialGeometry.Topology.Manifold.SphereLinearIsometry
 import DifferentialGeometry.Topology.Manifold.Quotient
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardSphericalSpaceFormReduction
+import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 
 set_option autoImplicit false
 noncomputable section
@@ -12,6 +12,14 @@ open scoped Manifold ContDiff
 namespace DifferentialGeometry.Topology
 
 universe u
+
+private theorem orientation_map_trans {A F G : Type*} [AddCommGroup A] [Module ℝ A]
+    [AddCommGroup F] [Module ℝ F] [AddCommGroup G] [Module ℝ G]
+    (e : A ≃ₗ[ℝ] F) (f : F ≃ₗ[ℝ] G) (o : Orientation ℝ A (Fin 3)) :
+    Orientation.map (Fin 3) (e.trans f) o =
+      Orientation.map (Fin 3) f (Orientation.map (Fin 3) e o) := by
+  induction o using Module.Ray.ind with
+  | h v hv => rfl
 
 private abbrev W4 := EuclideanSpace ℝ (Fin 4)
 private abbrev S3 := Metric.sphere (0 : W4) 1
@@ -305,8 +313,11 @@ theorem conjOrbitDiffeomorph_preservesOrientation_opposite
   rw [hφx, Orientation.map_neg]
   exact (neg_neg _).trans hpos'
 
-theorem sphericalSpaceFormOrientationClosure_holds : sphericalSpaceFormOrientationClosure := by
-  intro G
+theorem SphericalSpaceFormGroup.exists_orientedDiffeomorph_opposite
+    (G : SphericalSpaceFormGroup) :
+    ∃ G' : SphericalSpaceFormGroup,
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        G.manifold.opposite.toClosedOrientedManifold G'.manifold.toClosedOrientedManifold) := by
   let v : W4 := (EuclideanSpace.basisFun (Fin 4) ℝ).toBasis 0
   have hv : v ≠ 0 := (EuclideanSpace.basisFun (Fin 4) ℝ).toBasis.ne_zero 0
   have hφ : (Geometry.sphereDiffeo (n := 3) ((ℝ ∙ v)ᗮ.reflection)).preservesOrientation
@@ -316,15 +327,5 @@ theorem sphericalSpaceFormOrientationClosure_holds : sphericalSpaceFormOrientati
   exact ⟨conjSphericalSpaceFormGroup G ((ℝ ∙ v)ᗮ.reflection),
     ⟨conjOrbitDiffeomorph G ((ℝ ∙ v)ᗮ.reflection),
       conjOrbitDiffeomorph_preservesOrientation_opposite G ((ℝ ∙ v)ᗮ.reflection) hφ⟩⟩
-
-theorem factorOrientationClosure_holds : factorOrientationClosure.{u} :=
-  factorOrientationClosure_of_sphericalSpaceFormOrientationClosure
-    sphericalSpaceFormOrientationClosure_holds
-
-theorem poincareStandardOrientationRefinement_holds : poincareStandardOrientationRefinement.{u} :=
-  poincareStandardOrientationRefinement_of_factorOrientationClosure factorOrientationClosure_holds
-
-theorem poincareStandardSumClosed_holds : poincareStandardSumClosed.{u} :=
-  poincareStandardSumClosed_of_factorOrientationClosure factorOrientationClosure_holds
 
 end DifferentialGeometry.Topology

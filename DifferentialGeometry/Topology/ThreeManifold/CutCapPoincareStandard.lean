@@ -24,8 +24,9 @@ theorem componentwise_isPoincareStandard_of_poincareControlled
     List.replicate (k w) (sphereTwoTimesCircleLift.ulift.{0, u}))).toClosedOrientedManifold
   have hN (w : W) : isOrientedPoincareStandard (N w) :=
     E.isOrientedPoincareStandard_capComponent_finiteConnectedSum
-      (fun K => poincareStandardOrientationRefinement_holds (Q.component K) (hnext K))
-      (fun K => poincareStandardOrientationRefinement_holds (E.discarded.component K) (hctrl K))
+      (fun K => isOrientedPoincareStandard_of_isPoincareStandard (Q.component K) (hnext K))
+      (fun K => isOrientedPoincareStandard_of_isPoincareStandard
+        (E.discarded.component K) (hctrl K))
       (L w) (k w)
   have hcomponents : ∀ C : ConnectedComponents (closedOrientedUnion N).Carrier,
       isPoincareStandard ((closedOrientedUnion N).component C).Carrier := by

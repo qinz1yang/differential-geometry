@@ -44,8 +44,9 @@ theorem isOrientedPoincareStandard_capComponent_of_poincareControlled
     (K : ConnectedComponents E.capped.Carrier) :
     isOrientedPoincareStandard (E.capped.component K).toClosedOrientedManifold :=
   E.isOrientedPoincareStandard_capComponent
-    (fun K => poincareStandardOrientationRefinement_holds (Q.component K) (hnext K))
-    (fun K => poincareStandardOrientationRefinement_holds (E.discarded.component K) (hctrl K)) K
+    (fun K => isOrientedPoincareStandard_of_isPoincareStandard (Q.component K) (hnext K))
+    (fun K => isOrientedPoincareStandard_of_isPoincareStandard
+      (E.discarded.component K) (hctrl K)) K
 
 theorem isOrientedPoincareStandard_capComponent_finiteConnectedSum
     (hnext : ∀ K : ConnectedComponents Q.Carrier,
@@ -56,7 +57,7 @@ theorem isOrientedPoincareStandard_capComponent_finiteConnectedSum
     isOrientedPoincareStandard
       (finiteConnectedSum (L.map E.capped.component ++
         List.replicate k (sphereTwoTimesCircleLift.ulift.{0, u}))).toClosedOrientedManifold := by
-  apply isOrientedPoincareStandardSumClosed_holds
+  apply isOrientedPoincareStandard_finiteConnectedSum
   intro F hF
   rcases List.mem_append.mp hF with hF | hF
   · obtain ⟨K, _, rfl⟩ := List.mem_map.mp hF
