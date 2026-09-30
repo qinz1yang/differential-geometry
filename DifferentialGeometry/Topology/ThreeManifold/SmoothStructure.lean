@@ -13,8 +13,8 @@ theorem exists_isManifold_three {M : Type u} [TopologicalSpace M] [T2Space M] [C
       letI := C
       IsManifold (𝓡 3) ∞ M := by
   obtain ⟨C, hC⟩ := exists_chartedSpace_hasGroupoid_plGroupoid_three (X := M)
-  letI := C
-  letI : HasGroupoid M (plGroupoid 3) := hC
+  let := C
+  let : HasGroupoid M (plGroupoid 3) := hC
   exact exists_isManifold_of_hasGroupoid_plGroupoid_three (X := M)
 
 end DifferentialGeometry.Topology.PiecewiseLinear
