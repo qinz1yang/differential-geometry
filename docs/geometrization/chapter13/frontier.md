@@ -1,3 +1,7 @@
+# Current status after restoration and wrap-up
+
+The user has requested a handoff to a new task. The migration pause is lifted. See the current root HANDOFF.md and ../chapter14/higher_projection_derivatives.md. The active checkout is now /Users/bennettchow/Developer/differential-geometry-dev-geometrization. The 859-module pre-restart joint gate and fresh post-restart scoped checks have distinct receipts; the full root has not been rebuilt after restoration. The branch is published in the private development repository. The preceding frontier below remains a historical record; its old network and path limitations do not describe current delivery.
+
 # Chapters 13 and 14: current work frontier
 
 The active checkout is `GC_MIGRATED_435_RC3`, branch `codex/geometrization-435rc3-integration`, origin `qinz1yang/differential-geometry-dev`. The accepted upstream commit is `777299070a5529e96345e0033979706fd00c7e62`: Lean 4.35.0-rc3, mathlib `c55e6e786f49471c72fbddbec5415808896aec1e`. The user now confirms migration is finished. Exact accepted-foundation bindings can proceed; the earlier changing-PC pause no longer governs this work. A current upstream refresh remains unverified after sandbox DNS failure and approval-review timeout.

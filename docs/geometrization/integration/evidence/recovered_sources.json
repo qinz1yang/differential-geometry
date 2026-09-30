@@ -1,0 +1,30 @@
+{
+  "source_session": "/Users/bennettchow/.codex/sessions/2026/09/29/rollout-2026-09-29T19-28-10-01a0f024-0f0c-7333-b691-506da7df8467.jsonl",
+  "method": "Exact prior tool output and authored patches/heredocs; all sources require fresh validation after recovery.",
+  "files": [
+    {
+      "path": "/Users/bennettchow/Developer/geometrization-recovery/higher/HigherDerivativeApplications.lean",
+      "sha256": "8c29d8231a63fe2286ab8ed842f553ba1b029e251142afa4b418470d79c2db6b"
+    },
+    {
+      "path": "/Users/bennettchow/Developer/geometrization-recovery/higher/DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionRegularity.lean",
+      "sha256": "b94361c57b5c9981ac38b31bb3bf47c0403d844546bc2b7f3416336180d8385b"
+    },
+    {
+      "path": "/Users/bennettchow/Developer/geometrization-recovery/higher/DifferentialGeometry/Analysis/Calculus/CircleResolvent.lean",
+      "sha256": "d3331cb236b80304378828b39c19f663cbb26e2bc5d8723a8584879f3f48f15d"
+    },
+    {
+      "path": "/Users/bennettchow/Developer/geometrization-recovery/higher/DifferentialGeometry/Analysis/Calculus/IteratedDerivative/ResolventBounds.lean",
+      "sha256": "45d7de388f9933b87ed918d8af0add20f1b29698cc6c43383dfe1628e4f798dd"
+    },
+    {
+      "path": "/Users/bennettchow/Developer/geometrization-recovery/weighted/DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionPerturbation.lean",
+      "sha256": "fab0103235f8d55c164e93569ed80d375174f653a051cec5242d22b70a058821"
+    },
+    {
+      "path": "/Users/bennettchow/Developer/geometrization-recovery/weighted/DifferentialGeometry/Analysis/Calculus/IteratedDerivative/WeightedSumBounds.lean",
+      "sha256": "97cc0901158225794c2a82d9b99be96dac5148034d967ebf92fac8228a5f79c6"
+    }
+  ]
+}

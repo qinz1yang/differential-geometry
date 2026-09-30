@@ -1,0 +1,18 @@
+{
+  "restored_checkout": "/Users/bennettchow/Developer/differential-geometry-dev-geometrization",
+  "origin": "https://github.com/qinz1yang/differential-geometry-dev.git",
+  "branch": "codex/geometrization-435rc3-integration",
+  "restored_pushed_commit": "999e09b73603659e411884cb292b1bee7620e6a4",
+  "source_session": "01a0f024-0f0c-7333-b691-506da7df8467",
+  "pre_restart_receipt_recovered_from_session_row": 17139,
+  "pre_restart_joint_manifest_sha256": "61e46def2e0b3ec3348de4e4af6bd75d509fa9852f894ffc5d621f20677d28cb",
+  "restored_joint_manifest_sha256": "61e46def2e0b3ec3348de4e4af6bd75d509fa9852f894ffc5d621f20677d28cb",
+  "exact_manifest_match": true,
+  "pre_restart_joint_raw_logs_available": false,
+  "pre_restart_joint_declaration_dump_available": false,
+  "stale_858_outputs_preserved_under": "historical/installed_858_first_derivatives",
+  "fresh_candidate_success": true,
+  "fresh_production_success": true,
+  "mathlib_cache_restored": true,
+  "full_root_after_restart_executed": false
+}

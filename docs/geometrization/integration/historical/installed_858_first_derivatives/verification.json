@@ -1,0 +1,42 @@
+{
+  "success": true,
+  "started_utc": "2026-09-30T19:47:43Z",
+  "upstream_commit": "777299070a5529e96345e0033979706fd00c7e62",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "manifest_sha256": "ce2db3041f9b99c9b090b0c04667c4c7902a36d1e6baa6570f517fb50e6c8289",
+  "commands": [
+    {
+      "command": [
+        "lake",
+        "build",
+        "DifferentialGeometry"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/verified_full_root.log",
+      "log_sha256": "2126c1cb19d69bf87e452e9cf6074248f7828aee3783b783a80888c890c6d2ba"
+    },
+    {
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "-DmaxHeartbeats=16000000",
+        "-DmaxRecDepth=100000",
+        "-Dpp.maxSteps=50000",
+        "-Dpp.universes=true",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/IntegrationAudit.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/fresh_integration_audit.log",
+      "log_sha256": "f2d96af87cb7d2a81500effa2e31cf90415a54f75ec48af4bc983fb637fd08ea"
+    }
+  ],
+  "modules": 858,
+  "declarations": 8367,
+  "direct_admissions": 22,
+  "upstream_mathematical_sources_unchanged": true,
+  "endpoint_proved_without_sorry": false,
+  "audit_evidence": "fresh elaboration",
+  "finished_utc": "2026-09-30T19:54:06Z"
+}

@@ -34231,7 +34231,7 @@
       "role": "independent",
       "source_checkout": "GC_MIGRATED_435_RC3",
       "original_sha256": "8ae105c9eee8ee937d382783b2b1b0ce91ccbfe9e65d4bdc437a5c04cc2ad18b",
-      "sha256": "d3331cb236b80304378828b39c19f663cbb26e2bc5d8723a8584879f3f48f15d",
+      "sha256": "5dcb049872f4d6e2d0549bad35508e9054f67296ef5df3d0dd97525f4fc7e9e3",
       "declarations": [
         {
           "name": "ContinuousMap.ringInverse_apply",
@@ -34265,13 +34265,6 @@
           "name": "DifferentiableAt.norm_fderiv_normalized_circleIntegral_resolvent_le",
           "kind": "theorem",
           "line": 78,
-          "private": false,
-          "direct_sorry": false
-        },
-        {
-          "name": "ContDiffOn.norm_iteratedFDeriv_normalized_circleIntegral_resolvent_le",
-          "kind": "theorem",
-          "line": 158,
           "private": false,
           "direct_sorry": false
         }
@@ -34395,7 +34388,7 @@
       "role": "independent",
       "source_checkout": "GC_MIGRATED_435_RC3",
       "original_sha256": "27c42fe387d1518fc6c4e68f59dd370dd2fac5a922bfc4c9ec6bf7598ce5954f",
-      "sha256": "b94361c57b5c9981ac38b31bb3bf47c0403d844546bc2b7f3416336180d8385b",
+      "sha256": "ad3781ca0bddedacb0fbd45b8ad14c93de106bc6cfc2cd118b9fda8ddde263d3",
       "declarations": [
         {
           "name": "ContDiffOn.starProjection_eigenspace_ball",
@@ -34408,50 +34401,6 @@
           "name": "DifferentiableAt.norm_fderiv_starProjection_eigenspace_ball_le",
           "kind": "theorem",
           "line": 29,
-          "private": false,
-          "direct_sorry": false
-        },
-        {
-          "name": "ContDiffOn.norm_iteratedFDeriv_starProjection_eigenspace_ball_le",
-          "kind": "theorem",
-          "line": 53,
-          "private": false,
-          "direct_sorry": false
-        }
-      ]
-    },
-    {
-      "path": "DifferentialGeometry/Analysis/Calculus/IteratedDerivative/ResolventBounds.lean",
-      "role": "independent",
-      "source_checkout": "GC_MIGRATED_435_RC3",
-      "original_sha256": "45d7de388f9933b87ed918d8af0add20f1b29698cc6c43383dfe1628e4f798dd",
-      "sha256": "45d7de388f9933b87ed918d8af0add20f1b29698cc6c43383dfe1628e4f798dd",
-      "declarations": [
-        {
-          "name": "norm_iteratedFDeriv_succ_resolvent_le",
-          "kind": "theorem",
-          "line": 14,
-          "private": false,
-          "direct_sorry": false
-        },
-        {
-          "name": "resolventDerivativeBound",
-          "kind": "def",
-          "line": 54,
-          "private": false,
-          "direct_sorry": false
-        },
-        {
-          "name": "resolventDerivativeBound_mono",
-          "kind": "theorem",
-          "line": 59,
-          "private": false,
-          "direct_sorry": false
-        },
-        {
-          "name": "norm_iteratedFDeriv_resolvent_le_of_small_derivatives",
-          "kind": "theorem",
-          "line": 62,
           "private": false,
           "direct_sorry": false
         }
@@ -34483,10 +34432,10 @@
     "GC.LongTime.late_derivative_tests_of_flow",
     "GC.LongTime.local_disk_comparisons_of_cusp_exterior"
   ],
-  "audit_sha256": "02f13339acad45ef51decc3d53f4ee06113ef309072ce77323efaf801a92aceb",
+  "audit_sha256": "40a7bcb02c88c017d7213c5943908bb61d2c1b36644829a9d32c7d0c97942f63",
   "registry_sha256": {
     "docs/geometrization/skeleton/manifest.json": "991f5516f9483478a9da209aae88c2518cae29bf5408ff99a7f891849b0360a8",
-    "docs/geometrization/chapter3/manifest.json": "413709b653bbaccccc10dc1ef3ef5dd2cd434f9ee142dc76cb6c01d077e9281c",
+    "docs/geometrization/chapter3/manifest.json": "8f41b03491dab6d940046622879d1dafc88b40ab8a2d8867bc9daad4c969872f",
     "docs/geometrization/MODULE_PLACEMENT.json": "dfebe13f228a574c8ba28286b3654cc766c14efd2cdca503fdd4ee464fc66d2c",
     "docs/geometrization/integration/historical/skeleton_67f27962/manifest.json": "c45e8acb4658d358e3e4208e843220a8f81095b01a77e445f46dcee53fea08b5",
     "docs/geometrization/integration/historical/original_options.json": "832d46987ba0f4611fc3c7adc6bd95f05e079e0031837db7e727ca2620880628",

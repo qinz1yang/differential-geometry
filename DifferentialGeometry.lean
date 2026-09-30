@@ -18756,3 +18756,4 @@ import DifferentialGeometry.Analysis.InnerProductSpace.ProjectionRankStability
 import DifferentialGeometry.Analysis.Integration.Integral.Resolvent
 import DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjectionBounds
 import DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjectionRegularity
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.ResolventBounds

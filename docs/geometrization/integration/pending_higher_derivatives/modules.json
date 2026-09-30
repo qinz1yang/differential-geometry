@@ -1,0 +1,20 @@
+[
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/IteratedDerivative/ResolventBounds.lean",
+    "module": "DifferentialGeometry.Analysis.Calculus.IteratedDerivative.ResolventBounds",
+    "source_sha256": "45d7de388f9933b87ed918d8af0add20f1b29698cc6c43383dfe1628e4f798dd",
+    "candidate": "ResolventBounds.lean"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/CircleResolvent.lean",
+    "module": "DifferentialGeometry.Analysis.Calculus.CircleResolvent",
+    "source_sha256": "d3331cb236b80304378828b39c19f663cbb26e2bc5d8723a8584879f3f48f15d",
+    "candidate": "CircleResolvent.lean"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionRegularity.lean",
+    "module": "DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjectionRegularity",
+    "source_sha256": "b94361c57b5c9981ac38b31bb3bf47c0403d844546bc2b7f3416336180d8385b",
+    "candidate": "SpectralProjectionRegularity.lean"
+  }
+]

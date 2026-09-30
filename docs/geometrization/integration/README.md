@@ -1,3 +1,7 @@
+# Current integration status
+
+See the current root HANDOFF.md and evidence/restoration.json. The restored development checkout contains the 859-module forest whose exact source manifest passed the pre-restart full-root gate. The higher-derivative layer passes fresh post-restart production checks. Full-root raw logs from the 859 run were not recovered; its receipt is explicitly historical, and no new full-root success is claimed. The 22 historical skeleton admissions and inherited lint debt remain explicit. The branch has been published to the confirmed-private development repository. The earlier integration narrative below records previous milestones and superseded path/network conditions.
+
 # Geometrization integration on the accepted 4.35 baseline
 
 The user accepted Ziyang’s uploaded `differential-geometry/main` on September 30 and requested that the existing skeletons be infused into that version, working only in a Codex branch of `differential-geometry-dev`.
