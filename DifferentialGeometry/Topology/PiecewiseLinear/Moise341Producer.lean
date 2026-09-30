@@ -1,8 +1,3 @@
-/-
-Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: DifferentialGeometry contributors
--/
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Moise252Producer
 import DifferentialGeometry.Topology.PiecewiseLinear.Section32PseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.Section33Approximation

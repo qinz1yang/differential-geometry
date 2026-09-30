@@ -1,8 +1,3 @@
-/-
-Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: DifferentialGeometry contributors
--/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryFixedPLEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.TorusSubsurfaceCapping
 import DifferentialGeometry.Topology.PiecewiseLinear.TorusSubsurfaceAnnulus
