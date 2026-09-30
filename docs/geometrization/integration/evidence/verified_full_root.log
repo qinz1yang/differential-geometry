@@ -1,4 +1,4 @@
-⚠ [23137/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.Kurosh
+⚠ [22953/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.Kurosh
 warning: DifferentialGeometry/External/GraphCoveringTheory/Kurosh.lean:282:4: This simp argument is unused:
   wordInv_wordInv
 
@@ -179,7 +179,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [23138/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshTree
+⚠ [22954/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshTree
 warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshTree.lean:66:16: Variable name `w` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -423,7 +423,7 @@ The difference between `have` and `haveI` is that `haveI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [23139/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshFreePart
+⚠ [22955/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshFreePart
 warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshFreePart.lean:608:8: Unused tactic linter: `(try rfl)` does nothing
 
 Note: This linter can be disabled with `set_option linter.unusedTactic false`
@@ -496,7 +496,7 @@ Hint: Omit it from the simp argument list.
   [apply] simp only [testFreePathHom]
 
 Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
-⚠ [23140/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshFreeCorollary
+⚠ [22956/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshFreeCorollary
 warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshFreeCorollary.lean:175:8: Try this: 
   letI̵
 
@@ -505,7 +505,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [23141/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshCover
+⚠ [22957/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshCover
 warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:146:8: Unused tactic linter: `change
   (treeKuroshProductToH G H p).1 • rawTreeRepresentative G H a =
     (treeKuroshProductToH G H q).1 • rawTreeRepresentative G H a` does nothing
@@ -578,7 +578,7 @@ warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:547:
 Note: This linter can be disabled with `set_option linter.flexible false`
 info: DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:549:4: `exact (treeKuroshFreeInclusion G H).map_one`
 modifies the current goal, which was modified by the flexible tactic `simp` on line 547!
-⚠ [23142/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshCoverStar
+⚠ [22958/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshCoverStar
 warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverStar.lean:256:10: `simp [mul_assoc]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
 
 Note: This linter can be disabled with `set_option linter.flexible false`
@@ -586,32 +586,7 @@ info: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverStar.lean:256
   [apply] simp only [mul_inv_rev, map_mul, treeKuroshProductToH_vertex, Subgroup.coe_mul, InvMemClass.coe_inv]
 info: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverStar.lean:257:10: `exact test_rawEdgeAlign_spec G H _`
 modifies the current goal, which was modified by the flexible tactic `simp` on line 256!
-⚠ [23143/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshCoverLocal
-warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLocal.lean:184:10: `simp [coverEdgeLetter, treeKuroshProductToH_free,
-            kuroshFreePartHom_quotientEdgeLoop, mul_assoc]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
-
-Note: This linter can be disabled with `set_option linter.flexible false`
-info: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLocal.lean:184:10: Try this:
-  [apply] simp only [mul_inv_rev, map_mul, treeKuroshProductToH_vertex, Subgroup.coe_mul, InvMemClass.coe_inv]
-info: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLocal.lean:186:10: `exact test_rawEdgeAlign_spec G H _`
-modifies the current goal, which was modified by the flexible tactic `simp` on line 184!
-⚠ [23146/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshFreeFiber
-warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshFreeFiber.lean:31:43: This simp argument is unused:
-  Prefunctor.mapPath
-
-Hint: Omit it from the simp argument list.
-  [apply] simp only [coverFreeGroupoidPathHom]
-
-Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
-⚠ [23147/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshCoverConnected
-warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverConnected.lean:36:4: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
-
-Note: This linter can be disabled with `set_option linter.flexible false`
-info: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverConnected.lean:36:4: Try this:
-  [apply] simp only [IsIso.inv_id, Category.comp_id]
-info: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverConnected.lean:37:4: `exact hq`
-modifies the current goal, which was modified by the flexible tactic `simp` on line 36!
-⚠ [23150/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.Grushko
+⚠ [22959/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.Grushko
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/Grushko.lean:171:4: `simp` already closes the goal
 
 Hint: Use `simp` instead of `simpa`:
@@ -625,7 +600,7 @@ warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/Grushk
 Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
 
 Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
-⚠ [23151/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoGeneral
+⚠ [22960/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoGeneral
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoGeneral.lean:417:0: `coprodI_freeGroup_fg` does not use the following hypotheses in its type:
   • [Fintype ι] (#2)
   • [(i : ι) → Fintype (α i)] (#4)
@@ -633,7 +608,7 @@ warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/Grushk
 Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
 
 Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
-⚠ [23152/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoReduction
+⚠ [22961/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoReduction
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoReduction.lean:221:35: `dif_pos` has been deprecated: Use `dite_eq_left` instead
 
 Hint: Replace the deprecated name:
@@ -740,7 +715,7 @@ Hint: Omit it from the simp argument list.
   [apply] simp [y, hki]
 
 Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
-⚠ [23153/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoFold
+⚠ [22962/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoFold
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoFold.lean:39:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.binaryRuns_flatten`:
   [Group G]
   [Group H]
@@ -808,7 +783,7 @@ Hint: Use `simp` instead of `simpa`:
   [apply] simp [binaryRunTags, hruns]
 
 Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
-⚠ [23154/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoGraph
+⚠ [22963/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoGraph
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoGraph.lean:36:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.path_length_cast`:
   [HasInvolutiveReverse V]
 consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
@@ -843,7 +818,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [23155/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoFoldStep
+⚠ [22964/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoFoldStep
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoFoldStep.lean:141:48: This simp argument is unused:
   hz₀
 
@@ -1493,7 +1468,201 @@ Hint: Use `simp` instead of `simpa`:
   [apply] simp [e₀]
 
 Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
-⚠ [23156/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoEdge
+⚠ [22966/27716] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.KappaModelVolume
+warning: DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/KappaModelVolume.lean:21:28: missing space in the source
+
+This part of the code
+  'PointedFlowData.{u,0,0}'
+should be written as
+  'PointedFlowData.{u, 0, 0}'
+
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`
+warning: DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/KappaModelVolume.lean:21:30: missing space in the source
+
+This part of the code
+  'PointedFlowData.{u,0,0} I3'
+should be written as
+  '0, 0} I3'
+
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`
+⚠ [22970/27716] Replayed DifferentialGeometry.Topology.ThreeManifold.TorusCut.MarkedSeams
+warning: DifferentialGeometry/Topology/ThreeManifold/TorusCut/MarkedSeams.lean:4:0: 'Mathlib.Data.Finite.Sigma' has been deprecated: please replace this import by
+
+import Mathlib.Basic.Finite.Sigma
+⚠ [22979/27716] Replayed DifferentialGeometry.Geometry.Thurston.ModelAtlas
+warning: DifferentialGeometry/Geometry/Thurston/ModelAtlas.lean:36:0: Please, write a comment here or remove this line, but do not place empty lines within commands!
+Context:
+                                                          ↓
+  ⏎omit [FiniteDimensional ℝ F] [FiniteDimensional ℝ G] in⏎⏎theorem ModelAtlas.pullback [T2Space M] [T2Space N]⏎
+
+Note: This linter can be disabled with `set_option linter.style.emptyLine false`
+⚠ [22983/27716] Replayed DifferentialGeometry.Geometry.Thurston.Atlas
+warning: DifferentialGeometry/Geometry/Thurston/Atlas.lean:49:0: Please, write a comment here or remove this line, but do not place empty lines within commands!
+Context:
+                                  ↓
+  ⏎omit [FiniteDimensional ℝ E] in⏎⏎theorem coordinateModelAtlas_iff_modelAtlas (g : SmoothRiemannianMetric I M)⏎
+
+Note: This linter can be disabled with `set_option linter.style.emptyLine false`
+⚠ [23000/27716] Replayed DifferentialGeometry.Topology.FundamentalGroup.FiniteGeneration.FiniteCoverGroups
+warning: DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/FiniteCoverGroups.lean:39:26: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+⚠ [23003/27716] Replayed DifferentialGeometry.Topology.FundamentalGroup.SigmaFundamentalGroup
+warning: DifferentialGeometry/Topology/FundamentalGroup/SigmaFundamentalGroup.lean:22:21: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+⚠ [23006/27716] Replayed DifferentialGeometry.Topology.VanKampen.FreeFactors.ThinOverlapGroups
+warning: DifferentialGeometry/Topology/VanKampen/FreeFactors/ThinOverlapGroups.lean:328:0: Please, write a comment here or remove this line, but do not place empty lines within commands!
+Context:
+                                   ↓
+  ⏎omit [SimplyConnectedSpace V] in⏎⏎theorem thinOverlapWordMap_core (hU : IsOpen U) (hV : IsOpen V)⏎
+
+Note: This linter can be disabled with `set_option linter.style.emptyLine false`
+⚠ [23007/27716] Replayed DifferentialGeometry.Topology.VanKampen.FreeFactors.CollarFreeFactor
+warning: DifferentialGeometry/Topology/VanKampen/FreeFactors/CollarFreeFactor.lean:23:28: `simp_all [A, disjoint_left]` is a flexible tactic modifying `⊢`. Try `simp_all?` and use the suggested `simp_all only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: DifferentialGeometry/Topology/VanKampen/FreeFactors/CollarFreeFactor.lean:24:14: `exact fun _ h => h.le`
+modifies the current goal, which was modified by the flexible tactic `simp_all` on line 23!
+warning: DifferentialGeometry/Topology/VanKampen/FreeFactors/CollarFreeFactor.lean:23:28: `simp_all [A, disjoint_left]` is a flexible tactic modifying `⊢`. Try `simp_all?` and use the suggested `simp_all only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: DifferentialGeometry/Topology/VanKampen/FreeFactors/CollarFreeFactor.lean:24:14: `exact fun _ h => h.le`
+modifies the current goal, which was modified by the flexible tactic `simp_all` on line 23!
+ℹ [23014/27716] Replayed DifferentialGeometry.Geometry.Metric.Scaling.RiemannianBalls
+info: DifferentialGeometry/Geometry/Metric/Scaling/RiemannianBalls.lean:38:0: DifferentialGeometry.edistOf_scale.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type u_2} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type u_3} [TopologicalSpace M]
+  [ChartedSpace H M] [IsManifold I ∞ M] (c : ℝ) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x y : M) :
+  riemannianEDistOf (scaleMetric c hc g) x y = ENNReal.ofReal √c * riemannianEDistOf g x y
+info: DifferentialGeometry/Geometry/Metric/Scaling/RiemannianBalls.lean:39:0: DifferentialGeometry.riemannianClosedBallOf_scaleMetric.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] {H : Type u_2} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type u_3} [TopologicalSpace M]
+  [ChartedSpace H M] [IsManifold I ∞ M] (c : ℝ) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x : M) (r : ℝ) :
+  riemannianClosedBallOf (scaleMetric c hc g) x (√c * r) = riemannianClosedBallOf g x r
+info: DifferentialGeometry/Geometry/Metric/Scaling/RiemannianBalls.lean:40:0: GC.MetricGeometry.normalized_closedBall.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type u_2} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type u_3} [TopologicalSpace M]
+  [ChartedSpace H M] [IsManifold I ∞ M] (g : SmoothRiemannianMetric I M) (p : M) (r : ℝ) (hr : 0 < r) :
+  riemannianClosedBallOf (scaleMetric (r⁻¹ ^ 2) ⋯ g) p 1 = riemannianClosedBallOf g p r
+info: DifferentialGeometry/Geometry/Metric/Scaling/RiemannianBalls.lean:41:0: GC.MetricGeometry.normalized_buffer_inclusion.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type u_2} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type u_3} [TopologicalSpace M]
+  [ChartedSpace H M] [IsManifold I ∞ M] (g : SmoothRiemannianMetric I M) (p : M) (r : ℝ) (hr : 0 < r) {R S : ℝ}
+  (hRS : R ≤ S) : riemannianClosedBallOf (scaleMetric (r⁻¹ ^ 2) ⋯ g) p R ⊆ riemannianClosedBallOf g p (r * S)
+⚠ [23016/27716] Replayed DifferentialGeometry.Geometry.Thurston.Models.CoordinateMetrics
+warning: DifferentialGeometry/Geometry/Thurston/Models/CoordinateMetrics.lean:87:0: Please, write a comment here or remove this line, but do not place empty lines within commands!
+Context:
+                                  ↓
+  ⏎omit [FiniteDimensional ℝ E] in⏎⏎theorem coordinateModelAtlas_iff_actualModelAtlas⏎
+
+Note: This linter can be disabled with `set_option linter.style.emptyLine false`
+⚠ [23018/27716] Replayed DifferentialGeometry.Analysis.Calculus.Compactness.FiniteOrder
+warning: DifferentialGeometry/Analysis/Calculus/Compactness/FiniteOrder.lean:11:8: declaration uses `sorry`
+⚠ [23019/27716] Replayed DifferentialGeometry.Geometry.Comparison.SectionalLowerBound
+warning: DifferentialGeometry/Geometry/Comparison/SectionalLowerBound.lean:17:0: automatically included section variable(s) unused in theorem `DifferentialGeometry.Geometry.Riemannian.gInner_sq_le_mul`:
+  [FiniteDimensional ℝ E]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [FiniteDimensional ℝ E] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [23023/27716] Replayed DifferentialGeometry.Geometry.Collapse.Parameters
+warning: DifferentialGeometry/Geometry/Collapse/Parameters.lean:1:0: 'Mathlib.Data.Real.Basic' has been deprecated: please replace this import by
+
+import Mathlib.Basic.Real.Basic
+⚠ [23027/27716] Replayed DifferentialGeometry.Geometry.MinimalSurface.ExteriorDiskArea
+warning: DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean:90:35: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+⚠ [23028/27716] Replayed DifferentialGeometry.Geometry.Hyperbolic.Rigidity
+warning: DifferentialGeometry/Geometry/Hyperbolic/Rigidity.lean:24:8: declaration uses `sorry`
+⚠ [23031/27716] Replayed DifferentialGeometry.Geometry.Hyperbolic.ModelAtlas
+warning: DifferentialGeometry/Geometry/Hyperbolic/ModelAtlas.lean:18:8: declaration uses `sorry`
+⚠ [23032/27716] Replayed DifferentialGeometry.Geometry.Metric.Pullback.FiniteRegularity
+warning: DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean:16:8: declaration uses `sorry`
+⚠ [24005/27718] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshCoverLocal
+warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLocal.lean:184:10: `simp [coverEdgeLetter, treeKuroshProductToH_free,
+            kuroshFreePartHom_quotientEdgeLoop, mul_assoc]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLocal.lean:184:10: Try this:
+  [apply] simp only [mul_inv_rev, map_mul, treeKuroshProductToH_vertex, Subgroup.coe_mul, InvMemClass.coe_inv]
+info: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLocal.lean:186:10: `exact test_rawEdgeAlign_spec G H _`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 184!
+⚠ [24008/27718] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshFreeFiber
+warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshFreeFiber.lean:31:43: This simp argument is unused:
+  Prefunctor.mapPath
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [coverFreeGroupoidPathHom]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [24009/27718] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshCoverConnected
+warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverConnected.lean:36:4: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverConnected.lean:36:4: Try this:
+  [apply] simp only [IsIso.inv_id, Category.comp_id]
+info: DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverConnected.lean:37:4: `exact hq`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 36!
+⚠ [24012/27718] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshPathRelationInvariant
+warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshPathRelationInvariant.lean:19:5: Variable name `a` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _a
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [24013/27718] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshPathInjective
+warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshPathInjective.lean:76:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshPathInjective.lean:79:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [24014/27718] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshPathEndpoint
+warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshPathEndpoint.lean:113:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [24015/27718] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshKernel
+warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshKernel.lean:183:8: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [factorCosetMk, rightCosetMk]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshKernel.lean:204:8: Unused tactic linter: `change (x.1 : FreeProduct G) ∈ intersectionFactor H i (Quotient.out c)` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [24016/27718] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshActive
+warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshActive.lean:217:8: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshActive.lean:277:10: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+⚠ [24017/27718] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoEdge
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoEdge.lean:51:2: Try this: 
   letI̵
 
@@ -1558,7 +1727,7 @@ consider restructuring your `variable` declarations so that the variables are no
   omit [Group H] in theorem ...
 
 Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
-⚠ [23157/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoRose
+⚠ [24018/27718] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoRose
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRose.lean:42:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.rosePosition_zero`:
   [Group G]
   [Group H]
@@ -1613,7 +1782,7 @@ Note: This linter can be disabled with `set_option linter.unusedTactic false`
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRose.lean:198:43: this tactic is never executed
 
 Note: This linter can be disabled with `set_option linter.unreachableTactic false`
-⚠ [23158/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoInvariant
+⚠ [24019/27718] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoInvariant
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoInvariant.lean:87:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.roseEdge_card`:
   [Group G]
   [Group H]
@@ -1642,7 +1811,7 @@ consider restructuring your `variable` declarations so that the variables are no
   omit [Group G] [Group H] in theorem ...
 
 Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
-⚠ [23159/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoReductionChain
+⚠ [24020/27718] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoReductionChain
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoReductionChain.lean:11:0: Unscoped option maxHeartbeats is not allowed:
 Please scope this to individual declarations, as in
 ```
@@ -1740,7 +1909,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [23160/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoUnfold
+⚠ [24021/27718] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoUnfold
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:55:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.unfoldOld_ne_new`:
   [Fintype V]
   [HasInvolutiveReverse V]
@@ -2484,7 +2653,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [23161/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoRemove
+⚠ [24022/27718] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoRemove
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean:132:62: This simp argument is unused:
   mul_assoc
 
@@ -2849,7 +3018,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _hbase
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [23162/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoUnsafe
+⚠ [24023/27718] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoUnsafe
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnsafe.lean:39:0: `foldVertexMk_eq_of_not_eq` does not use the following hypotheses in its type:
   • [Fintype V] (#2)
   • [(a b : V) → Fintype (a ⟶ b)] (#5)
@@ -3020,7 +3189,7 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _hcard₁
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [23163/27716] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoFull
+⚠ [24024/27718] Replayed DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoFull
 warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoFull.lean:12:0: Unscoped option maxHeartbeats is not allowed:
 Please scope this to individual declarations, as in
 ```
@@ -3219,212 +3388,36 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [23165/27716] Replayed DifferentialGeometry.Topology.ThreeManifold.TorusCut.MarkedSeams
-warning: DifferentialGeometry/Topology/ThreeManifold/TorusCut/MarkedSeams.lean:4:0: 'Mathlib.Data.Finite.Sigma' has been deprecated: please replace this import by
-
-import Mathlib.Basic.Finite.Sigma
-⚠ [23174/27716] Replayed DifferentialGeometry.Geometry.Thurston.ModelAtlas
-warning: DifferentialGeometry/Geometry/Thurston/ModelAtlas.lean:36:0: Please, write a comment here or remove this line, but do not place empty lines within commands!
-Context:
-                                                          ↓
-  ⏎omit [FiniteDimensional ℝ F] [FiniteDimensional ℝ G] in⏎⏎theorem ModelAtlas.pullback [T2Space M] [T2Space N]⏎
-
-Note: This linter can be disabled with `set_option linter.style.emptyLine false`
-⚠ [23178/27716] Replayed DifferentialGeometry.Geometry.Thurston.Atlas
-warning: DifferentialGeometry/Geometry/Thurston/Atlas.lean:49:0: Please, write a comment here or remove this line, but do not place empty lines within commands!
-Context:
-                                  ↓
-  ⏎omit [FiniteDimensional ℝ E] in⏎⏎theorem coordinateModelAtlas_iff_modelAtlas (g : SmoothRiemannianMetric I M)⏎
-
-Note: This linter can be disabled with `set_option linter.style.emptyLine false`
-⚠ [23197/27716] Replayed DifferentialGeometry.Topology.FundamentalGroup.FiniteGeneration.FiniteCoverGroups
-warning: DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/FiniteCoverGroups.lean:39:26: `dif_pos` has been deprecated: Use `dite_eq_left` instead
-
-Hint: Replace the deprecated name:
-  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
-⚠ [23200/27716] Replayed DifferentialGeometry.Topology.FundamentalGroup.SigmaFundamentalGroup
-warning: DifferentialGeometry/Topology/FundamentalGroup/SigmaFundamentalGroup.lean:22:21: `dif_neg` has been deprecated: Use `dite_eq_right` instead
-
-Hint: Replace the deprecated name:
-  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
-⚠ [23203/27716] Replayed DifferentialGeometry.Topology.VanKampen.FreeFactors.ThinOverlapGroups
-warning: DifferentialGeometry/Topology/VanKampen/FreeFactors/ThinOverlapGroups.lean:328:0: Please, write a comment here or remove this line, but do not place empty lines within commands!
-Context:
-                                   ↓
-  ⏎omit [SimplyConnectedSpace V] in⏎⏎theorem thinOverlapWordMap_core (hU : IsOpen U) (hV : IsOpen V)⏎
-
-Note: This linter can be disabled with `set_option linter.style.emptyLine false`
-⚠ [23204/27716] Replayed DifferentialGeometry.Topology.VanKampen.FreeFactors.CollarFreeFactor
-warning: DifferentialGeometry/Topology/VanKampen/FreeFactors/CollarFreeFactor.lean:23:28: `simp_all [A, disjoint_left]` is a flexible tactic modifying `⊢`. Try `simp_all?` and use the suggested `simp_all only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
-
-Note: This linter can be disabled with `set_option linter.flexible false`
-info: DifferentialGeometry/Topology/VanKampen/FreeFactors/CollarFreeFactor.lean:24:14: `exact fun _ h => h.le`
-modifies the current goal, which was modified by the flexible tactic `simp_all` on line 23!
-warning: DifferentialGeometry/Topology/VanKampen/FreeFactors/CollarFreeFactor.lean:23:28: `simp_all [A, disjoint_left]` is a flexible tactic modifying `⊢`. Try `simp_all?` and use the suggested `simp_all only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
-
-Note: This linter can be disabled with `set_option linter.flexible false`
-info: DifferentialGeometry/Topology/VanKampen/FreeFactors/CollarFreeFactor.lean:24:14: `exact fun _ h => h.le`
-modifies the current goal, which was modified by the flexible tactic `simp_all` on line 23!
-ℹ [23211/27716] Replayed DifferentialGeometry.Geometry.Metric.Scaling.RiemannianBalls
-info: DifferentialGeometry/Geometry/Metric/Scaling/RiemannianBalls.lean:38:0: DifferentialGeometry.edistOf_scale.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {H : Type u_2} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type u_3} [TopologicalSpace M]
-  [ChartedSpace H M] [IsManifold I ∞ M] (c : ℝ) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x y : M) :
-  riemannianEDistOf (scaleMetric c hc g) x y = ENNReal.ofReal √c * riemannianEDistOf g x y
-info: DifferentialGeometry/Geometry/Metric/Scaling/RiemannianBalls.lean:39:0: DifferentialGeometry.riemannianClosedBallOf_scaleMetric.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E]
-  [NormedSpace ℝ E] {H : Type u_2} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type u_3} [TopologicalSpace M]
-  [ChartedSpace H M] [IsManifold I ∞ M] (c : ℝ) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x : M) (r : ℝ) :
-  riemannianClosedBallOf (scaleMetric c hc g) x (√c * r) = riemannianClosedBallOf g x r
-info: DifferentialGeometry/Geometry/Metric/Scaling/RiemannianBalls.lean:40:0: GC.MetricGeometry.normalized_closedBall.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {H : Type u_2} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type u_3} [TopologicalSpace M]
-  [ChartedSpace H M] [IsManifold I ∞ M] (g : SmoothRiemannianMetric I M) (p : M) (r : ℝ) (hr : 0 < r) :
-  riemannianClosedBallOf (scaleMetric (r⁻¹ ^ 2) ⋯ g) p 1 = riemannianClosedBallOf g p r
-info: DifferentialGeometry/Geometry/Metric/Scaling/RiemannianBalls.lean:41:0: GC.MetricGeometry.normalized_buffer_inclusion.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {H : Type u_2} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type u_3} [TopologicalSpace M]
-  [ChartedSpace H M] [IsManifold I ∞ M] (g : SmoothRiemannianMetric I M) (p : M) (r : ℝ) (hr : 0 < r) {R S : ℝ}
-  (hRS : R ≤ S) : riemannianClosedBallOf (scaleMetric (r⁻¹ ^ 2) ⋯ g) p R ⊆ riemannianClosedBallOf g p (r * S)
-⚠ [23213/27716] Replayed DifferentialGeometry.Geometry.Thurston.Models.CoordinateMetrics
-warning: DifferentialGeometry/Geometry/Thurston/Models/CoordinateMetrics.lean:87:0: Please, write a comment here or remove this line, but do not place empty lines within commands!
-Context:
-                                  ↓
-  ⏎omit [FiniteDimensional ℝ E] in⏎⏎theorem coordinateModelAtlas_iff_actualModelAtlas⏎
-
-Note: This linter can be disabled with `set_option linter.style.emptyLine false`
-⚠ [23215/27716] Replayed DifferentialGeometry.Geometry.Thurston.Models.HomogeneousCompleteness
+⚠ [24036/27718] Replayed DifferentialGeometry.Geometry.Thurston.Models.HomogeneousCompleteness
 warning: DifferentialGeometry/Geometry/Thurston/Models/HomogeneousCompleteness.lean:40:0: Please, write a comment here or remove this line, but do not place empty lines within commands!
 Context:
                                               ↓
   ⏎  Tensor0SBundle.tangentSpaceNormedSpace in⏎⏎theorem homogeneousMetric_complete (g : SmoothRiemannianMetric I M)⏎
 
 Note: This linter can be disabled with `set_option linter.style.emptyLine false`
-⚠ [23216/27716] Replayed DifferentialGeometry.Analysis.Calculus.Compactness.FiniteOrder
-warning: DifferentialGeometry/Analysis/Calculus/Compactness/FiniteOrder.lean:11:8: declaration uses `sorry`
-⚠ [23217/27716] Replayed DifferentialGeometry.Geometry.Comparison.SectionalLowerBound
-warning: DifferentialGeometry/Geometry/Comparison/SectionalLowerBound.lean:17:0: automatically included section variable(s) unused in theorem `DifferentialGeometry.Geometry.Riemannian.gInner_sq_le_mul`:
-  [FiniteDimensional ℝ E]
-consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
-  omit [FiniteDimensional ℝ E] in theorem ...
-
-Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
-⚠ [23223/27716] Replayed DifferentialGeometry.Geometry.Collapse.Parameters
-warning: DifferentialGeometry/Geometry/Collapse/Parameters.lean:1:0: 'Mathlib.Data.Real.Basic' has been deprecated: please replace this import by
-
-import Mathlib.Basic.Real.Basic
-⚠ [23224/27716] Replayed DifferentialGeometry.Geometry.Hyperbolic.Cusp
+⚠ [24039/27718] Replayed DifferentialGeometry.Geometry.Hyperbolic.Cusp
 warning: DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean:25:8: declaration uses `sorry`
-⚠ [23228/27716] Replayed DifferentialGeometry.Geometry.Thurston.NonnegativeClassification
+⚠ [24042/27718] Replayed DifferentialGeometry.Geometry.Thurston.NonnegativeClassification
 warning: DifferentialGeometry/Geometry/Thurston/NonnegativeClassification.lean:11:8: declaration uses `sorry`
-⚠ [23229/27716] Replayed DifferentialGeometry.Geometry.Thurston.GraphPresentation
+⚠ [24043/27718] Replayed DifferentialGeometry.Geometry.Thurston.GraphPresentation
 warning: DifferentialGeometry/Geometry/Thurston/GraphPresentation.lean:11:8: declaration uses `sorry`
 warning: DifferentialGeometry/Geometry/Thurston/GraphPresentation.lean:18:8: declaration uses `sorry`
 warning: DifferentialGeometry/Geometry/Thurston/GraphPresentation.lean:25:8: declaration uses `sorry`
-⚠ [23232/27716] Replayed DifferentialGeometry.Topology.ThreeManifold.GraphManifold.SphereSplitting
+⚠ [24044/27718] Replayed DifferentialGeometry.Geometry.Collapse.GraphManifold
+warning: DifferentialGeometry/Geometry/Collapse/GraphManifold.lean:84:8: declaration uses `sorry`
+warning: DifferentialGeometry/Geometry/Collapse/GraphManifold.lean:138:8: declaration uses `sorry`
+⚠ [24045/27718] Replayed DifferentialGeometry.Topology.ThreeManifold.GraphManifold.SphereSplitting
 warning: DifferentialGeometry/Topology/ThreeManifold/GraphManifold/SphereSplitting.lean:11:8: declaration uses `sorry`
 warning: DifferentialGeometry/Topology/ThreeManifold/GraphManifold/SphereSplitting.lean:16:8: declaration uses `sorry`
-⚠ [23234/27716] Replayed DifferentialGeometry.Geometry.Collapse.UniformDerivativeBounds
+⚠ [24047/27718] Replayed DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Refinement
+warning: DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean:35:8: declaration uses `sorry`
+warning: DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean:50:8: declaration uses `sorry`
+⚠ [24049/27718] Replayed DifferentialGeometry.Geometry.Collapse.UniformDerivativeBounds
 warning: DifferentialGeometry/Geometry/Collapse/UniformDerivativeBounds.lean:52:20: `if_pos` has been deprecated: Use `ite_eq_left` instead
 
 Hint: Replace the deprecated name:
   i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
-⚠ [23235/27716] Replayed DifferentialGeometry.Geometry.MinimalSurface.ExteriorDiskArea
-warning: DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean:90:35: `dif_pos` has been deprecated: Use `dite_eq_left` instead
-
-Hint: Replace the deprecated name:
-  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
-⚠ [23236/27716] Replayed DifferentialGeometry.Geometry.Hyperbolic.Rigidity
-warning: DifferentialGeometry/Geometry/Hyperbolic/Rigidity.lean:24:8: declaration uses `sorry`
-⚠ [23241/27716] Replayed DifferentialGeometry.Geometry.Hyperbolic.ModelAtlas
-warning: DifferentialGeometry/Geometry/Hyperbolic/ModelAtlas.lean:18:8: declaration uses `sorry`
-⚠ [23242/27716] Replayed DifferentialGeometry.Geometry.Metric.Pullback.FiniteRegularity
-warning: DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean:16:8: declaration uses `sorry`
-⚠ [23736/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshPathRelationInvariant
-warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshPathRelationInvariant.lean:19:5: Variable name `a` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _a
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [23737/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshPathInjective
-warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshPathInjective.lean:76:2: Try this: 
-  letI̵
-
-The goal is a proposition, so `let` is preferred over `letI`.
-The difference between `let` and `letI` is that `letI` inlines the value.
-But this is not relevant for proofs because of proof irrelevance.
-
-Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshPathInjective.lean:79:2: Try this: 
-  letI̵
-
-The goal is a proposition, so `let` is preferred over `letI`.
-The difference between `let` and `letI` is that `letI` inlines the value.
-But this is not relevant for proofs because of proof irrelevance.
-
-Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [23738/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshPathEndpoint
-warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshPathEndpoint.lean:113:2: Try this: 
-  letI̵
-
-The goal is a proposition, so `let` is preferred over `letI`.
-The difference between `let` and `letI` is that `letI` inlines the value.
-But this is not relevant for proofs because of proof irrelevance.
-
-Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [23739/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshKernel
-warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshKernel.lean:183:8: `simp` already closes the goal
-
-Hint: Use `simp` instead of `simpa`:
-  [apply] simp [factorCosetMk, rightCosetMk]
-
-Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
-warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshKernel.lean:204:8: Unused tactic linter: `change (x.1 : FreeProduct G) ∈ intersectionFactor H i (Quotient.out c)` does nothing
-
-Note: This linter can be disabled with `set_option linter.unusedTactic false`
-⚠ [23740/27716] Replayed DifferentialGeometry.External.GraphCoveringTheory.KuroshActive
-warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshActive.lean:217:8: Try this: 
-  letI̵
-
-The goal is a proposition, so `let` is preferred over `letI`.
-The difference between `let` and `letI` is that `letI` inlines the value.
-But this is not relevant for proofs because of proof irrelevance.
-
-Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshActive.lean:277:10: `dif_neg` has been deprecated: Use `dite_eq_right` instead
-
-Hint: Replace the deprecated name:
-  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
-⚠ [23742/27716] Replayed DifferentialGeometry.Topology.Algebra.Group.FreeProduct.FiniteKurosh
-warning: DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteKurosh.lean:93:4: `simp` already closes the goal
-
-Hint: Use `simp` instead of `simpa`:
-  [apply] simp [f, e, cr, c, MulAut.conj_apply]
-
-Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
-⚠ [23744/27716] Replayed DifferentialGeometry.Geometry.Collapse.GraphManifold
-warning: DifferentialGeometry/Geometry/Collapse/GraphManifold.lean:84:8: declaration uses `sorry`
-warning: DifferentialGeometry/Geometry/Collapse/GraphManifold.lean:138:8: declaration uses `sorry`
-⚠ [23745/27716] Replayed DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Refinement
-warning: DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean:35:8: declaration uses `sorry`
-warning: DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean:50:8: declaration uses `sorry`
-⚠ [26817/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.KappaModelVolume
-warning: DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/KappaModelVolume.lean:21:28: missing space in the source
-
-This part of the code
-  'PointedFlowData.{u,0,0}'
-should be written as
-  'PointedFlowData.{u, 0, 0}'
-
-
-Note: This linter can be disabled with `set_option linter.style.whitespace false`
-warning: DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/KappaModelVolume.lean:21:30: missing space in the source
-
-This part of the code
-  'PointedFlowData.{u,0,0} I3'
-should be written as
-  '0, 0} I3'
-
-
-Note: This linter can be disabled with `set_option linter.style.whitespace false`
-⚠ [26821/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.SurgeryEventControl
+⚠ [25173/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.SurgeryEventControl
 warning: DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/SurgeryEventControl.lean:15:24: extra space in the source
 
 This part of the code
@@ -3434,7 +3427,7 @@ should be written as
 
 
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
-⚠ [26822/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.FiniteConcatenation
+⚠ [25174/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.FiniteConcatenation
 warning: DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/FiniteConcatenation.lean:11:26: missing space in the source
 
 This part of the code
@@ -3444,7 +3437,14 @@ should be written as
 
 
 Note: This linter can be disabled with `set_option linter.style.whitespace false`
-⚠ [27698/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.Checks.AxiomAudit
+⚠ [25176/27718] Replayed DifferentialGeometry.Topology.Algebra.Group.FreeProduct.FiniteKurosh
+warning: DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteKurosh.lean:93:4: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [f, e, cr, c, MulAut.conj_apply]
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+⚠ [27703/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.Checks.AxiomAudit
 warning: DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/AxiomAudit.lean:158:0: Unscoped option maxHeartbeats is not allowed:
 Please scope this to individual declarations, as in
 ```
@@ -3455,22 +3455,22 @@ example : ... := ...
 
 Note: This linter can be disabled with `set_option linter.style.setOption false`
 info: DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/AxiomAudit.lean:161:0: Team axiom audit passed for 4322 declarations.
-⚠ [27700/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.ExteriorDiskFlow
+⚠ [27705/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.ExteriorDiskFlow
 warning: DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean:74:51: `dif_pos` has been deprecated: Use `dite_eq_left` instead
 
 Hint: Replace the deprecated name:
   d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
-⚠ [27701/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.AnalyticAdmissibility
+⚠ [27706/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.AnalyticAdmissibility
 warning: DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/AnalyticAdmissibility.lean:115:8: declaration uses `sorry`
-⚠ [27704/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateCutGeometry
+⚠ [27709/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateCutGeometry
 warning: DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateCutGeometry.lean:148:8: declaration uses `sorry`
 warning: DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateCutGeometry.lean:158:8: declaration uses `sorry`
-⚠ [27706/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspExteriorProducers
+⚠ [27711/27718] Replayed DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspExteriorProducers
 warning: DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspExteriorProducers.lean:16:8: declaration uses `sorry`
 warning: DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspExteriorProducers.lean:28:8: declaration uses `sorry`
 warning: DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspExteriorProducers.lean:38:8: declaration uses `sorry`
 warning: DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspExteriorProducers.lean:48:8: declaration uses `sorry`
-⚠ [27709/27718] Replayed DifferentialGeometry.Topology.ThreeManifold.Geometrization.Checks.DeclarationAudit
+⚠ [27714/27718] Replayed DifferentialGeometry.Topology.ThreeManifold.Geometrization.Checks.DeclarationAudit
 warning: DifferentialGeometry/Topology/ThreeManifold/Geometrization/Checks/DeclarationAudit.lean:52:0: Unscoped option maxHeartbeats is not allowed:
 Please scope this to individual declarations, as in
 ```
@@ -4494,12 +4494,7 @@ info: DifferentialGeometry/Topology/ThreeManifold/Geometrization/Checks/Declarat
 info: DifferentialGeometry/Topology/ThreeManifold/Geometrization/Checks/DeclarationAudit.lean:57:0: SKELETON_DECL {"axioms":["propext","Classical.choice","Quot.sound"],"dependencies":["instOneENat","InnerProductSpace.toNormedSpace","NormedCommRing.toSeminormedCommRing","PiLp.completeSpace","Real.instLE","Real","Algebra.to_smulCommClass","WithLp.instModuleFinite","Prod.normedSpace","NonUnitalCommRing.toNonUnitalNonAssocCommRing","PiLp.normedSpace","GC.Endpoint.Torus","Semiring.toModule","fact_one_le_two_ennreal","HMul.hMul","chartedSpaceSelf","Prod.normedAddCommGroup","CommRing.toNonUnitalCommRing","DifferentialGeometry.SmoothRiemannianMetric._proof_1","TangentSpace.fiberBundle","ENat.instNatCast","ContinuousLinearMap.topologicalSpace","Real.denselyNormedField","Real.instZero","instTopENat","Monoid.toMulOneClass","Real.instRCLike","CommSemiring.toSemiring","AddCommGroup.toAddCommMonoid","IsSemitopologicalRing.toIsSemitopologicalSemiring","instAddCommGroupTangentSpace","SeparatelyContinuousMul.to_continuousSMul","ContinuousLinearMap.funLike","NormedSpace.toModule","Pi.module","Nat.instAtLeastTwoHAddOfNat","EuclideanHalfSpace","ContMDiffMul.toIsManifold","FiniteDimensional.rclike_to_real","DifferentialGeometry.SmoothRiemannianMetric._proof_2","PseudoMetricSpace.toUniformSpace","instTopologicalSpaceProd","ContinuousLinearMap.addCommMonoid","DifferentialGeometry.Geometry.Curvature.metricRm04StandardAt","instLieGroupRealEuclideanSpaceFinOfNatNatModelWithCornersSelfTopWithTopENatCircle","WithLp.instAddCommGroup","NormedField.toField","IsManifold.instOfTopWithTopENat","Module.Finite.prod","Real.semiring","instIsTopologicalRingReal","Algebra.id","Fin.instOfNat","MulOne.toMul","instTopologicalSpaceModelProd","instModuleTangentSpace","instIsManifoldMinSmoothnessOfNatWithTopENat_1","NonUnitalNonAssocRing.toNonUnitalNonAssocSemiring","minSmoothness","DivInvMonoid.toMonoid","DifferentialGeometry.Geometry.Hyperbolic.CuspHalfSpace","AddMonoidWithOne.toNatCast","Real.normedAddCommGroup","ContinuousLinearMap.module","DivisionRing.toRing","instOfNatNat","EuclideanSpace","AddCommMonoidWithOne.toAddMonoidWithOne","instTopologicalSpaceCircle","LE.le","Real.exp","Finite.of_fintype","Real.commRing","CompleteSpace.prod","Real.instAddCommGroup","Bundle.ContMDiffRiemannianMetric.inner","Field.toSemifield","instTopologicalSpaceTangentSpace","WithTop.some","GC.Endpoint.halfCollarModel","Prod.fst","instIsManifoldMinSmoothnessOfNatWithTopENat","Fin.fintype","FiniteDimensional.finiteDimensional_pi'","Real.instAdd","ContinuousLinearMap","Group.toDivInvMonoid","SeminormedAddCommGroup.toSeminormedAddGroup","instHAdd","instTopologicalSpaceEuclideanHalfSpace","MulOneClass.toMulOne","IsSemitopologicalSemiring.toSeparatelyContinuousMul","modelWithCornersEuclideanHalfSpace","IsManifold.prod","SeminormedAddCommGroup.toPseudoMetricSpace","WithTop.top","Real.normedCommRing","HAdd.hAdd","SeminormedAddGroup.toPseudoMetricSpace","SeminormedAddCommGroup.toAddCommGroup","Nat.instNeZeroSucc","Real.instCompleteSpace","PseudoEMetricSpace.toUniformSpace","NonUnitalSeminormedCommRing.toNonUnitalSeminormedRing","Nat","Circle","DifferentialGeometry.Geometry.Hyperbolic.HyperbolicCusp.mk","Real.instMul","DifferentialGeometry.SmoothRiemannianMetric","ENat","instIsManifoldModelSpace","instLieGroupOfTopWithTopENat","Real.instDivisionRing","NonUnitalNonAssocCommRing.toNonUnitalNonAssocRing","Pi.addCommGroup","TangentSpace","Real.instNeg","WithTop.natCast","instIsManifoldOfNatWithTopENatOfMinSmoothness_1","ENNReal","instChartedSpaceEuclideanSpaceRealFinOfNatNatCircle","GC.Endpoint.halfCollarModel._proof_1","IsTopologicalRing.toIsSemitopologicalRing","NonUnitalSeminormedRing.toSeminormedAddCommGroup","Real.instAddCommMonoid","One.toOfNat1","PiLp.innerProductSpace._proof_1","Zero.toOfNat0","NontriviallyNormedField.toNormedField","instIsTopologicalAddGroupReal","Real.pseudoMetricSpace","Real.normedField","DifferentialGeometry.Geometry.Hyperbolic.HyperbolicCusp","Circle.instCommGroup","DifferentialGeometry.Geometry.Hyperbolic.CuspHalfSpace._proof_1","Semifield.toCommSemiring","DenselyNormedField.toNontriviallyNormedField","modelWithCornersSelf","CommGroup.toGroup","instTopologicalSpaceTangentBundle","prodChartedSpace","SeminormedCommRing.toNonUnitalSeminormedCommRing","Prod","Top.top","OfNat.ofNat","Fin","Subtype.val","NormedAddCommGroup.toSeminormedAddCommGroup","RingHom.id","UniformSpace.toTopologicalSpace","Semiring.toNonAssocSemiring","Ring.toSemiring","Eq","WithLp.ofLp","Prod.snd","ModelProd","DFunLike.coe","instOfNatAtLeastTwo","ENNReal.instAddCommMonoidWithOne","Neg.neg","RCLike.toInnerProductSpaceReal","GC.Endpoint.torusModel","IsSemitopologicalSemiring.toContinuousAdd","LieGroup.toContMDiffMul","Real.instCommSemiring","instHMul","PseudoMetricSpace.toPseudoEMetricSpace","PiLp.normedAddCommGroup","WithTop.one","WithTop"],"direct_sorry":false,"module":"DifferentialGeometry.Geometry.Hyperbolic.Cusp","name":"DifferentialGeometry.Geometry.Hyperbolic.HyperbolicCusp.mk","theorem":false,"type":"(torusMetric : DifferentialGeometry.SmoothRiemannianMetric.{0, 0, 0} GC.Endpoint.torusModel GC.Endpoint.Torus) →\n  (∀ (p : GC.Endpoint.Torus) (v w : TangentSpace.{0, 0, 0, 0} GC.Endpoint.torusModel p),\n      Eq.{1} (DifferentialGeometry.Geometry.Curvature.metricRm04StandardAt.{0, 0, 0} torusMetric p v w w v) 0) →\n    (metric :\n        DifferentialGeometry.SmoothRiemannianMetric.{0, 0, 0} GC.Endpoint.halfCollarModel\n          DifferentialGeometry.Geometry.Hyperbolic.CuspHalfSpace) →\n      (∀ (p : DifferentialGeometry.Geometry.Hyperbolic.CuspHalfSpace)\n          (v w : TangentSpace.{0, 0, 0, 0} GC.Endpoint.halfCollarModel p),\n          Eq.{1} (((Bundle.ContMDiffRiemannianMetric.inner.{0, 0, 0, 0, 0} metric p) v) w)\n            (HAdd.hAdd.{0, 0, 0} (HMul.hMul.{0, 0, 0} (WithLp.ofLp.{0} v.2 0) (WithLp.ofLp.{0} w.2 0))\n              (HMul.hMul.{0, 0, 0} (Real.exp (Neg.neg.{0} (WithLp.ofLp.{0} (↑p.2) 0)))\n                (((Bundle.ContMDiffRiemannianMetric.inner.{0, 0, 0, 0, 0} torusMetric p.1) v.1) w.1)))) →\n        DifferentialGeometry.Geometry.Hyperbolic.HyperbolicCusp"}
 info: DifferentialGeometry/Topology/ThreeManifold/Geometrization/Checks/DeclarationAudit.lean:57:0: SKELETON_DECL {"axioms":["propext","Classical.choice","Quot.sound"],"dependencies":["DifferentialGeometry.Topology.ModelBoundaryKind.withBoundary","Nat.instMulZeroClass","Real","Pi.topologicalSpace","instTopologicalSpaceEuclideanHalfSpace._proof_4","DifferentialGeometry.Topology.ModelBoundaryKind.casesOn","PseudoMetricSpace.toUniformSpace","Exists","PiLp","AddMonoidWithOne.toNatCast","DifferentialGeometry.Topology.ModelBoundaryKind","AddCommMonoidWithOne.toAddMonoidWithOne","DifferentialGeometry.Topology.ModelBoundaryKind.Space","TopologicalSpace.mk","TopologicalSpace","And","DifferentialGeometry.Topology.ModelBoundaryKind.closed","Set.preimage","Nat","DifferentialGeometry.Topology.instTopologicalSpaceSpace._proof_3","ENNReal","Eq.ndrec","PiLp.innerProductSpace._proof_1","Eq.refl","Real.pseudoMetricSpace","IsOpen","instTopologicalSpaceEuclideanHalfSpace._proof_3","DifferentialGeometry.Topology.instTopologicalSpaceSpace._proof_2","NeZero","OfNat.ofNat","Eq.symm","Fin","UniformSpace.toTopologicalSpace","Eq","WithLp.ofLp","instOfNatAtLeastTwo","ENNReal.instAddCommMonoidWithOne","instTopologicalSpaceEuclideanHalfSpace._aux_1","instTopologicalSpaceEuclideanHalfSpace._proof_5","MulZeroClass.toZero","DifferentialGeometry.Topology.instTopologicalSpaceSpace._proof_1","Set"],"direct_sorry":false,"module":"DifferentialGeometry.Topology.Manifold.CompactModel","name":"DifferentialGeometry.Topology.instTopologicalSpaceSpace","theorem":false,"type":"(k : DifferentialGeometry.Topology.ModelBoundaryKind) →\n  (n : ℕ) → [inst : NeZero.{0} n] → TopologicalSpace.{0} (k.Space n)"}
 info: DifferentialGeometry/Topology/ThreeManifold/Geometrization/Checks/DeclarationAudit.lean:57:0: Skeleton declaration audit: 1007 declarations, 22 direct admissions.
-✔ [27710/27718] Built DifferentialGeometry.Analysis.Integration.Integral.Circle (6.2s)
-✔ [27711/27718] Built DifferentialGeometry.Analysis.InnerProductSpace.ProjectionRankStability (6.2s)
-✔ [27712/27718] Built DifferentialGeometry.Analysis.Integration.Integral.Resolvent (6.2s)
-✔ [27713/27718] Built DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjection (6.5s)
-✔ [27714/27718] Built DifferentialGeometry.Analysis.Calculus.CircleResolvent (1.7s)
-✔ [27715/27718] Built DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjectionBounds (2.2s)
-✔ [27716/27718] Built DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjectionRegularity (1.8s)
-✔ [27717/27718] Built DifferentialGeometry (36s)
+✔ [27715/27718] Built DifferentialGeometry.Analysis.Calculus.CircleResolvent (10s)
+✔ [27716/27718] Built DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjectionRegularity (1.9s)
+✔ [27717/27718] Built DifferentialGeometry (38s)
 Build completed successfully (27718 jobs).

@@ -1,0 +1,9 @@
+import DifferentialGeometry.Analysis.Calculus.CircleResolvent
+import DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjectionRegularity
+
+#print axioms isOpen_setOf_circle_subset_resolventSet
+#print axioms contDiffOn_circleIntegral_resolvent
+#print axioms ContDiffOn.circleIntegral_resolvent
+#print axioms DifferentiableAt.norm_fderiv_normalized_circleIntegral_resolvent_le
+#print axioms ContDiffOn.starProjection_eigenspace_ball
+#print axioms DifferentiableAt.norm_fderiv_starProjection_eigenspace_ball_le

@@ -1,0 +1,139 @@
+{
+  "success": true,
+  "scope": "Fresh direct elaboration of two installed Chapter 14 source files, five linters per module, literal public axiom prints, full generated declaration audits, and fourteen actual applications. Imports resolved only from accepted production checkout and pinned RC3 packages; no scratch overlay.",
+  "checks": [
+    {
+      "source": "DifferentialGeometry/Analysis/Calculus/CircleResolvent.lean",
+      "source_sha256": "5dcb049872f4d6e2d0549bad35508e9054f67296ef5df3d0dd97525f4fc7e9e3",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Analysis/Calculus/CircleResolvent.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_derivatives/CircleResolvent.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 3.231799840927124
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionRegularity.lean",
+      "source_sha256": "ad3781ca0bddedacb0fbd45b8ad14c93de106bc6cfc2cd118b9fda8ddde263d3",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionRegularity.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_derivatives/SpectralProjectionRegularity.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 2.479681968688965
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/projection_derivative_candidates/ContourDerivativeApplications.lean",
+      "source_sha256": "2097c70ea1cfb71ec2e62f06a668901811ade61af5393e168da08c6cee9294cd",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/projection_derivative_candidates/ContourDerivativeApplications.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_derivatives/ContourDerivativeApplications.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 5.687158107757568
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/projection_derivative_candidates/DerivativeLint.lean",
+      "source_sha256": "6515ad0bf3a7458eafd4ac0b8e59f2e183c1d9e4b77bb6effbef0f261051db0c",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/projection_derivative_candidates/DerivativeLint.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_derivatives/DerivativeLint.log",
+      "log_sha256": "e7d56c397204b428e3e21e660a554de4675df7ccfb3fc2e253a61442caa432cc",
+      "silent": false,
+      "seconds": 2.6467840671539307
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/projection_derivative_candidates/DerivativeAxioms.lean",
+      "source_sha256": "70ff06c6f691be6fdf8a02457328f279fcacacc9c6ab7ef2b0ccaa1d8e7162c2",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/projection_derivative_candidates/DerivativeAxioms.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_derivatives/DerivativeAxioms.log",
+      "log_sha256": "ed503e6f1dbfe21044a33c6fd8f3ca7ba7c621ac3f22ee479472e940abea250b",
+      "silent": false,
+      "seconds": 1.7878170013427734
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/projection_derivative_candidates/DerivativeAudit.lean",
+      "source_sha256": "5f0e52e24409ae96580cc1c6c205f93443cda21db607a1353312be1b4deb0ffe",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "-DmaxHeartbeats=16000000",
+        "-DmaxRecDepth=100000",
+        "-Dpp.maxSteps=50000",
+        "-Dpp.universes=true",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/projection_derivative_candidates/DerivativeAudit.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_projection_derivatives/DerivativeAudit.log",
+      "log_sha256": "15f574345e636f2de37b17b16841b09c416aa0400da0b57f6b0f3facd89ec1c4",
+      "silent": false,
+      "seconds": 21.733107805252075
+    }
+  ],
+  "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "elaborated_declarations": 7,
+  "upstream_commit": "777299070a5529e96345e0033979706fd00c7e62",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e"
+}

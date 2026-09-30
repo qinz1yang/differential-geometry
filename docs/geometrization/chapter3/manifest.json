@@ -5921,7 +5921,7 @@
         "CFS04",
         "CFS12"
       ],
-      "contract_notes": "../chapter14/contour_projection.md",
+      "contract_notes": "../chapter14/projection_derivatives.md",
       "status": "proved-subclaims"
     },
     {
@@ -5966,7 +5966,7 @@
         "CFS04",
         "CFS12"
       ],
-      "contract_notes": "../chapter14/contour_projection.md",
+      "contract_notes": "../chapter14/projection_derivatives.md",
       "status": "proved-subclaims"
     }
   ],

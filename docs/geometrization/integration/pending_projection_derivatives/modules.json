@@ -1,0 +1,14 @@
+[
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/CircleResolvent.lean",
+    "module": "DifferentialGeometry.Analysis.Calculus.CircleResolvent",
+    "source_sha256": "5dcb049872f4d6e2d0549bad35508e9054f67296ef5df3d0dd97525f4fc7e9e3",
+    "candidate": "CircleResolvent.lean"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionRegularity.lean",
+    "module": "DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjectionRegularity",
+    "source_sha256": "ad3781ca0bddedacb0fbd45b8ad14c93de106bc6cfc2cd118b9fda8ddde263d3",
+    "candidate": "SpectralProjectionRegularity.lean"
+  }
+]

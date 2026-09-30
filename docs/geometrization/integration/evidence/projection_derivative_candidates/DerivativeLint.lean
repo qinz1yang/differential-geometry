@@ -1,0 +1,6 @@
+import DifferentialGeometry.Analysis.Calculus.CircleResolvent
+import DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjectionRegularity
+import Mathlib.Tactic.Linter
+
+#lint- only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.Calculus.CircleResolvent
+#lint- only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjectionRegularity

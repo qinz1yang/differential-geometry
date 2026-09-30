@@ -34231,26 +34231,40 @@
       "role": "independent",
       "source_checkout": "GC_MIGRATED_435_RC3",
       "original_sha256": "8ae105c9eee8ee937d382783b2b1b0ce91ccbfe9e65d4bdc437a5c04cc2ad18b",
-      "sha256": "8ae105c9eee8ee937d382783b2b1b0ce91ccbfe9e65d4bdc437a5c04cc2ad18b",
+      "sha256": "5dcb049872f4d6e2d0549bad35508e9054f67296ef5df3d0dd97525f4fc7e9e3",
       "declarations": [
         {
           "name": "ContinuousMap.ringInverse_apply",
           "kind": "theorem",
-          "line": 13,
+          "line": 14,
           "private": true,
+          "direct_sorry": false
+        },
+        {
+          "name": "isOpen_setOf_circle_subset_resolventSet",
+          "kind": "theorem",
+          "line": 24,
+          "private": false,
           "direct_sorry": false
         },
         {
           "name": "contDiffOn_circleIntegral_resolvent",
           "kind": "theorem",
-          "line": 27,
+          "line": 43,
           "private": false,
           "direct_sorry": false
         },
         {
           "name": "ContDiffOn.circleIntegral_resolvent",
           "kind": "theorem",
-          "line": 55,
+          "line": 71,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentiableAt.norm_fderiv_normalized_circleIntegral_resolvent_le",
+          "kind": "theorem",
+          "line": 78,
           "private": false,
           "direct_sorry": false
         }
@@ -34374,12 +34388,19 @@
       "role": "independent",
       "source_checkout": "GC_MIGRATED_435_RC3",
       "original_sha256": "27c42fe387d1518fc6c4e68f59dd370dd2fac5a922bfc4c9ec6bf7598ce5954f",
-      "sha256": "27c42fe387d1518fc6c4e68f59dd370dd2fac5a922bfc4c9ec6bf7598ce5954f",
+      "sha256": "ad3781ca0bddedacb0fbd45b8ad14c93de106bc6cfc2cd118b9fda8ddde263d3",
       "declarations": [
         {
           "name": "ContDiffOn.starProjection_eigenspace_ball",
           "kind": "theorem",
-          "line": 13,
+          "line": 14,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentiableAt.norm_fderiv_starProjection_eigenspace_ball_le",
+          "kind": "theorem",
+          "line": 29,
           "private": false,
           "direct_sorry": false
         }
@@ -34411,10 +34432,10 @@
     "GC.LongTime.late_derivative_tests_of_flow",
     "GC.LongTime.local_disk_comparisons_of_cusp_exterior"
   ],
-  "audit_sha256": "90a03b5cc9a7eb30c80b9820022b266f9555e9b2caf611c7cc0cb26892afb531",
+  "audit_sha256": "40a7bcb02c88c017d7213c5943908bb61d2c1b36644829a9d32c7d0c97942f63",
   "registry_sha256": {
     "docs/geometrization/skeleton/manifest.json": "991f5516f9483478a9da209aae88c2518cae29bf5408ff99a7f891849b0360a8",
-    "docs/geometrization/chapter3/manifest.json": "4aabf238417a468fc40a12e7fa1d232053ef188a2fc599a9bccea633c8320436",
+    "docs/geometrization/chapter3/manifest.json": "8f41b03491dab6d940046622879d1dafc88b40ab8a2d8867bc9daad4c969872f",
     "docs/geometrization/MODULE_PLACEMENT.json": "dfebe13f228a574c8ba28286b3654cc766c14efd2cdca503fdd4ee464fc66d2c",
     "docs/geometrization/integration/historical/skeleton_67f27962/manifest.json": "c45e8acb4658d358e3e4208e843220a8f81095b01a77e445f46dcee53fea08b5",
     "docs/geometrization/integration/historical/original_options.json": "832d46987ba0f4611fc3c7adc6bd95f05e079e0031837db7e727ca2620880628",
