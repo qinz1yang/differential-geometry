@@ -17,14 +17,14 @@ open Surgery.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
-def graphLift (γ : ℝ → ContinuousFreeLoop E) : ℝ × ℝ → ℝ × E :=
+def graphLift (γ : ℝ → DifferentialGeometry.Topology.freeLoop E) : ℝ × ℝ → ℝ × E :=
   fun q => (q.1, γ q.1 (q.2 : Surgery.Topology.Circle))
 
-def velocityLift (γ : ℝ → ContinuousFreeLoop E) (q : ℝ × ℝ) : E :=
+def velocityLift (γ : ℝ → DifferentialGeometry.Topology.freeLoop E) (q : ℝ × ℝ) : E :=
   deriv (fun s : ℝ => γ s (q.2 : Surgery.Topology.Circle)) q.1
 
 omit [FiniteDimensional ℝ E] in
-theorem velocityLift_eq_of_graphLift_eq {γ : ℝ → ContinuousFreeLoop E}
+theorem velocityLift_eq_of_graphLift_eq {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     (hemb : ∀ t, Function.Injective (fun z : Surgery.Topology.Circle => γ t z)) {y y' : ℝ × ℝ}
     (h : graphLift γ y = graphLift γ y') : velocityLift γ y = velocityLift γ y' := by
   have h1 : y.1 = y'.1 := congrArg (fun z : ℝ × E => z.1) h
@@ -40,14 +40,14 @@ theorem velocityLift_eq_of_graphLift_eq {γ : ℝ → ContinuousFreeLoop E}
   simp only [velocityLift, h1, hfun]
 
 omit [FiniteDimensional ℝ E] in
-theorem contDiffOn_graphLift {γ : ℝ → ContinuousFreeLoop E} {O : Set (ℝ × ℝ)}
+theorem contDiffOn_graphLift {γ : ℝ → DifferentialGeometry.Topology.freeLoop E} {O : Set (ℝ × ℝ)}
     (hγ : ContDiffOn ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle)) O) :
     ContDiffOn ℝ ∞ (graphLift γ) O := by
   have hfst : ContDiffOn ℝ ∞ (fun q : ℝ × ℝ => q.1) O := contDiff_fst.contDiffOn
   have h := hfst.prodMk hγ
   exact h
 
-theorem exists_local_velocityExtension {γ : ℝ → ContinuousFreeLoop E} {O : Set (ℝ × ℝ)}
+theorem exists_local_velocityExtension {γ : ℝ → DifferentialGeometry.Topology.freeLoop E} {O : Set (ℝ × ℝ)}
     (hO : IsOpen O) (hγ : ContDiffOn ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle)) O)
     {p : ℝ × ℝ} (hp : p ∈ O)
     (hinj : Function.Injective (fderiv ℝ (graphLift γ) p)) :
@@ -76,13 +76,13 @@ theorem coe_add_intCast_period (x : ℝ) (k : ℤ) :
   rw [AddCircle.coe_add, AddCircle.coe_zsmul, AddCircle.coe_period (1 : ℝ), smul_zero, add_zero]
 
 omit [NormedSpace ℝ E] [FiniteDimensional ℝ E] in
-theorem graphLift_add_intCast {γ : ℝ → ContinuousFreeLoop E} (t x : ℝ) (k : ℤ) :
+theorem graphLift_add_intCast {γ : ℝ → DifferentialGeometry.Topology.freeLoop E} (t x : ℝ) (k : ℤ) :
     graphLift γ (t, x + (k : ℝ)) = graphLift γ (t, x) := by
   simp only [graphLift, Prod.mk.injEq, true_and]
   rw [coe_add_intCast_period]
 
 omit [FiniteDimensional ℝ E] in
-theorem velocityLift_add_intCast {γ : ℝ → ContinuousFreeLoop E} (t x : ℝ) (k : ℤ) :
+theorem velocityLift_add_intCast {γ : ℝ → DifferentialGeometry.Topology.freeLoop E} (t x : ℝ) (k : ℤ) :
     velocityLift γ (t, x + (k : ℝ)) = velocityLift γ (t, x) := by
   have hfun : (fun s : ℝ => γ s ((x + (k : ℝ) : ℝ) : Surgery.Topology.Circle)) =
       (fun s : ℝ => γ s (x : Surgery.Topology.Circle)) := by
@@ -105,14 +105,14 @@ theorem exists_lift_mem_Icc (z : Surgery.Topology.Circle) :
   exact ⟨x, ⟨hx.1, hx.2.le⟩, hxz⟩
 
 omit [FiniteDimensional ℝ E] in
-theorem continuous_graphLift {γ : ℝ → ContinuousFreeLoop E}
+theorem continuous_graphLift {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     (hγ : ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle))) :
     Continuous (graphLift γ) := by
   rw [← continuousOn_univ]
   exact (contDiffOn_graphLift hγ.contDiffOn).continuousOn
 
 omit [FiniteDimensional ℝ E] in
-theorem contDiff_velocityLift {γ : ℝ → ContinuousFreeLoop E}
+theorem contDiff_velocityLift {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     (hγ : ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle))) :
     ContDiff ℝ ∞ (velocityLift γ) := by
   have hjoint : ContDiff ℝ ∞
@@ -131,7 +131,7 @@ theorem contDiff_velocityLift {γ : ℝ → ContinuousFreeLoop E}
   funext q
   simp only [velocityLift, fderiv_apply_one_eq_deriv]
 
-theorem exists_local_target_extension {γ : ℝ → ContinuousFreeLoop E} {A : Set (ℝ × ℝ)}
+theorem exists_local_target_extension {γ : ℝ → DifferentialGeometry.Topology.freeLoop E} {A : Set (ℝ × ℝ)}
     (hA : IsCompact A)
     (hγ : ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle)))
     (hi : ∀ q : ℝ × ℝ, Function.Injective (fderiv ℝ (graphLift γ) q))
@@ -259,7 +259,7 @@ theorem exists_contDiff_eqOn_of_localCover {ι : Type*} {K : Set (ℝ × E)} (hK
     change (∑ o, ρ o q • G' o q) = g i q
     rw [hcongr, ← Finset.sum_smul, hsum, one_smul]
 
-theorem exists_contDiff_loopFamilyVelocity (a b : ℝ) (γ : ℝ → ContinuousFreeLoop E)
+theorem exists_contDiff_loopFamilyVelocity (a b : ℝ) (γ : ℝ → DifferentialGeometry.Topology.freeLoop E)
     (hemb : ∀ t, Function.Injective (fun z : Surgery.Topology.Circle => γ t z))
     (hγ : ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle)))
     (hi : ∀ q : ℝ × ℝ, Function.Injective (fderiv ℝ (graphLift γ) q)) :

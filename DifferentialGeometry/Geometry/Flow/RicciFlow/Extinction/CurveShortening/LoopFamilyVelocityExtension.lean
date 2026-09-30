@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
+import DifferentialGeometry.Topology.LoopSpace.Continuous
 
 noncomputable section
 
@@ -16,9 +16,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-def curveOfLoopFamily (γ : ℝ → ContinuousFreeLoop M) : CurveMap M := fun z t => γ t z
+def curveOfLoopFamily (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) : CurveMap M := fun z t => γ t z
 
-def LoopFamilyVelocityExtension (a b : ℝ) (γ : ℝ → ContinuousFreeLoop M) : Prop :=
+def LoopFamilyVelocityExtension (a b : ℝ) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) : Prop :=
   ∃ X : ℝ → (p : M) → TangentSpace I p,
     ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M =>
@@ -31,7 +31,7 @@ def LoopFamilyVelocityExtension (a b : ℝ) (γ : ℝ → ContinuousFreeLoop M) 
         ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t z)))
 
 theorem loopFamilyVelocityExtension_zero (a b : ℝ)
-    (γ : ℝ → ContinuousFreeLoop M) (hconst : ∀ t t' : ℝ, γ t = γ t') :
+    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (hconst : ∀ t t' : ℝ, γ t = γ t') :
     LoopFamilyVelocityExtension (I := I) a b γ := by
   refine ⟨fun _ _ => 0, ?_, ?_, ?_⟩
   · exact (Bundle.contMDiff_zeroSection ℝ (TangentSpace I (M := M))).comp
@@ -63,7 +63,7 @@ theorem liftLoopFamily_contMDiff (X : ℝ → (p : M) → TangentSpace I p)
 
 variable {a b : ℝ}
 
-theorem loopFamilyVelocityExtension_of_subset {a' b' : ℝ} {γ : ℝ → ContinuousFreeLoop M}
+theorem loopFamilyVelocityExtension_of_subset {a' b' : ℝ} {γ : ℝ → DifferentialGeometry.Topology.freeLoop M}
     (ha : a' ≤ a) (hb : b ≤ b') (h : LoopFamilyVelocityExtension (I := I) a' b' γ) :
     LoopFamilyVelocityExtension (I := I) a b γ := by
   obtain ⟨X, hX, hIco, hIoc⟩ := h

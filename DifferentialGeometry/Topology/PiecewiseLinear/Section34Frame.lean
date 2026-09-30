@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartLocalApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePLPastingManifold
-import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
+import DifferentialGeometry.Topology.SolidTorus.FundamentalGroup
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOn
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralGraph
@@ -192,7 +192,8 @@ theorem carriesFundamentalGroupOnto_of_nestedSolidTorus {Y : Type*} [Topological
     (hspine : IsSpine S₁ Je) (hJe : Je ⊆ Te) :
     CarriesFundamentalGroupOnto J T := by
   refine carriesFundamentalGroupOnto_of_homeomorph hJT hJe Φ hΦ ⟨hJe, fun hsub b => ?_⟩
-  exact (moise308Nested S₁ Te S₂ Je hS₁ hS₂ hTe h₁T hT₂ hshell hspine hsub b).2
+  exact (fundamentalGroup_map_inclusion_bijective_of_nested
+    hS₁ hS₂ hTe.1 h₁T hT₂ hshell hspine hsub b).2
 
 end Generator
 

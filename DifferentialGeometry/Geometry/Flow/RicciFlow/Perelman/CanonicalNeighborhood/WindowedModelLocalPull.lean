@@ -7,7 +7,8 @@ import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 import DifferentialGeometry.Geometry.Metric.PullbackCompleteness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Ancient.Pullback
 import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
+import DifferentialGeometry.Topology.ThreeManifold.Orientation
+import DifferentialGeometry.Topology.LoopSpace.Continuous
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationCompatible
 import DifferentialGeometry.External.CanonicalTopology.LinearAlgebra.Orientation
 

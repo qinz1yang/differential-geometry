@@ -25,7 +25,7 @@ theorem homBundleCovariantDerivativeGen_innerSL
     {σ : ∀ y, V y} {x : M}
     (hσ : MDifferentiableAt I (I.prod 𝓘(ℝ, F)) (T% σ) x)
     (v : TangentSpace I x) :
-    homBundleCovariantDerivativeGen I M F V ℝ (Bundle.Trivial M ℝ)
+    _root_.CovariantDerivative.hom I M F V ℝ (Bundle.Trivial M ℝ)
       cov (CovariantDerivative.trivial I M ℝ) (fun y => innerSL ℝ (σ y)) x v =
       innerSL ℝ (cov σ x v) := by
   ext w
@@ -34,7 +34,7 @@ theorem homBundleCovariantDerivativeGen_innerSL
   obtain ⟨Y, hY⟩ := ContMDiffSection.exists_eq_at
     (I := I) (F := F) (V := V) (n := (⊤ : ℕ∞)) x w
   rw [← hX, ← hY]
-  rw [homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt I M F V ℝ
+  rw [_root_.CovariantDerivative.hom_apply_of_mdifferentiableAt I M F V ℝ
     (Bundle.Trivial M ℝ) cov (CovariantDerivative.trivial I M ℝ)
     (fun y => innerSL ℝ (σ y)) hσ.innerSL_bundle X.mdifferentiableAt Y.mdifferentiableAt]
   change mvfderiv I (fun y => inner ℝ (σ y) (Y y)) x (X x) -

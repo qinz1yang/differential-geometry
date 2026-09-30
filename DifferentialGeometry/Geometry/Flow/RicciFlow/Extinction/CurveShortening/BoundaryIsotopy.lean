@@ -146,7 +146,7 @@ private theorem phaseFlow_trajectory_eq (X : ℝ → (p : M) → TangentSpace I 
     (hX : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)))
     (χ : ℝ → ℝ) (hχ : ContDiff ℝ ∞ χ) (hχc : HasCompactSupport χ)
-    {r : ℝ} (hr : 0 < r) {a b : ℝ} {γ : ℝ → ContinuousFreeLoop M}
+    {r : ℝ} (hr : 0 < r) {a b : ℝ} {γ : ℝ → DifferentialGeometry.Topology.freeLoop M}
     (hvelIci : ∀ t ∈ Ico a b, ∀ z : Surgery.Topology.Circle,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => γ s z) (Ici t) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t z))))
@@ -487,7 +487,7 @@ private noncomputable def phaseSlice (X : ℝ → (p : M) → TangentSpace I p)
 
 omit [CompleteSpace E] hNonempty in
 theorem rfs_csf_boundary_isotopy_of_velocityExtension (a b : ℝ)
-    (γ : ℝ → ContinuousFreeLoop M) (t₀ : ℝ) (ht₀ : t₀ ∈ Icc a b)
+    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (t₀ : ℝ) (ht₀ : t₀ ∈ Icc a b)
     (hvel : LoopFamilyVelocityExtension (I := I) a b γ) :
     ∃ ε > 0, ∃ Φ : ℝ → Diffeomorph I I M M ∞,
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) I ∞ (fun p : M × ℝ => Φ p.2 p.1)

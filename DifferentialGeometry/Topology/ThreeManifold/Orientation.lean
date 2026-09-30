@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
+import DifferentialGeometry.Topology.ThreeManifold.Model
 import DifferentialGeometry.Topology.Manifold.Orientation
 import Mathlib.LinearAlgebra.Orientation
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
@@ -11,7 +11,6 @@ open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 
-abbrev ThreeModel := 𝓘(ℝ, ThreeSpace)
 
 variable (M : Type*) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M]
@@ -19,7 +18,7 @@ variable (M : Type*) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
 def tangentChartEquiv (p x : M)
     (hx : x ∈ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet) :
     TangentSpace ThreeModel x ≃ₗ[ℝ] ThreeSpace :=
-  (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).linearEquivAt ℝ x hx
+  DifferentialGeometry.tangentChartEquiv ThreeModel M p x hx
 
 structure TangentOrientationSection where
   orientation : (x : M) → Orientation ℝ (TangentSpace ThreeModel x) (Fin 3)

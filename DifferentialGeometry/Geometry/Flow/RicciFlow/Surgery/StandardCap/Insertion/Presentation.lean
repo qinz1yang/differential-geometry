@@ -183,7 +183,7 @@ def toStaticCapWitness (hD : 0 < D) :
     have h := w.collapse_length γ a b hγ
     change DifferentialGeometry.Geometry.riemannianCurveVariation liftedMetric
       (e ∘ w.collapse ∘ γ) a b ≤
-        riemannianCurveLength g (fun t => d.oriented.map (γ t).1) a b
+        DifferentialGeometry.Geometry.riemannianCurveVariation g (fun t => d.oriented.map (γ t).1) a b
     unfold DifferentialGeometry.Geometry.riemannianCurveVariation
     simp only [liftedMetric, Function.comp_apply,
       DifferentialGeometry.Geometry.Metric.edistOf_pullbackMetricCross,

@@ -37,7 +37,7 @@ end CurveMap
 omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
   [SigmaCompactSpace M] in
 def HasBoundaryIsotopyVelocityExtension (a b : ℝ) : Prop :=
-  ∀ γ : ℝ → ContinuousFreeLoop M,
+  ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop M,
     (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) →
     (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b) →
     (∀ t ∈ Icc a b, Topology.IsEmbedding (γ t)) →
@@ -46,7 +46,7 @@ def HasBoundaryIsotopyVelocityExtension (a b : ℝ) : Prop :=
 omit [CompleteSpace E] hNonempty in
 theorem rfs_csf_boundary_isotopy_of_hasBoundaryIsotopyVelocityExtension
     (hfront : HasBoundaryIsotopyVelocityExtension (I := I) (M := M) a b)
-    (γ : ℝ → ContinuousFreeLoop M)
+    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t))
@@ -63,7 +63,7 @@ theorem rfs_csf_boundary_isotopy_of_hasBoundaryIsotopyVelocityExtension
 omit [CompleteSpace E] hNonempty in
 theorem rfs_csf_boundary_isotopy_of_hasBoundaryIsotopyVelocityExtension_subset
     {α β : ℝ} (hfront : HasBoundaryIsotopyVelocityExtension (I := I) (M := M) a b)
-    (γ : ℝ → ContinuousFreeLoop M)
+    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc α β))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc α β))
     (hemb : ∀ t ∈ Icc α β, Topology.IsEmbedding (γ t))
@@ -81,7 +81,7 @@ theorem rfs_csf_boundary_isotopy_of_hasBoundaryIsotopyVelocityExtension_subset
 
 omit [CompleteSpace E] hNonempty in
 theorem rfs_csf_boundary_isotopy_of_constantLoopFamily
-    (γ : ℝ → ContinuousFreeLoop M) (hconst : ∀ t t' : ℝ, γ t = γ t')
+    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (hconst : ∀ t t' : ℝ, γ t = γ t')
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t))
@@ -100,7 +100,7 @@ theorem rfs_csf_boundary_isotopy_of_constantLoopFamily
 
 omit [CompleteSpace E] hCompact hNonempty [SigmaCompactSpace M] in
 theorem loopFamilyVelocityExtension_of_compactSupportFlow
-    (γ₀ : ContinuousFreeLoop M) (v : (x : M) → TangentSpace I x)
+    (γ₀ : DifferentialGeometry.Topology.freeLoop M) (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
     (hsupp : IsCompact (tsupport v)) (a b : ℝ) :

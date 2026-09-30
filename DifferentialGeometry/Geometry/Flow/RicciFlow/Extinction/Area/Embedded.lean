@@ -26,10 +26,10 @@ include hBoundary hT2 hCompact hNonempty
 
 
 theorem rfs_csf_embedded_area (B : RicciBackground (I := I) (M := M) D a b)
-    (hdim : Module.finrank ℝ E = 3) (γ : ℝ → ContinuousFreeLoop M)
+    (hdim : Module.finrank ℝ E = 3) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
+    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t)) :
     ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
       (loopFamilyLeastArea B.family.metric γ (t + h) -

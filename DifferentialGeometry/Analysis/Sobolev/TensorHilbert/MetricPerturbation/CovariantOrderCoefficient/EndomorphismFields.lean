@@ -248,14 +248,14 @@ private local instance tensor0STotalSpaceTopology (s : ℕ) :
 def bilinEndoCovariantDerivative (g : SmoothRiemannianMetric I M) :
     CovariantDerivative I (E →L[ℝ] (E →L[ℝ] E))
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) :=
-  HomConnection.homBundleCovariantDerivative I M
+  _root_.CovariantDerivative.hom I M
     E (fun x : M => TangentSpace I x)
     (E →L[ℝ] E) (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)
     (LeviCivita (I := I) g) (endoCovariantDerivative (I := I) (M := M) g)
 
 instance bilinEndoCovariantDerivative_contMDiff (g : SmoothRiemannianMetric I M) :
     (bilinEndoCovariantDerivative (I := I) (M := M) g).ContMDiffCovariantDerivative ∞ :=
-  HomConnection.homBundleCovariantDerivative_contMDiff I M
+  _root_.CovariantDerivative.hom_contMDiff I M
     E (fun x : M => TangentSpace I x)
     (E →L[ℝ] E) (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)
     (LeviCivita (I := I) g) (endoCovariantDerivative (I := I) (M := M) g)
@@ -269,7 +269,7 @@ theorem bilinEndoCovariantDerivative_apply (g : SmoothRiemannianMetric I M)
     ((bilinEndoCovariantDerivative (I := I) (M := M) g) Term x v) (Y x) =
       (endoCovariantDerivative (I := I) (M := M) g) (fun y => (Term y) (Y y)) x v -
         (Term x) ((LeviCivita (I := I) g) (fun y => Y y) x v) :=
-  HomConnection.homBundleCovariantDerivative_apply I M
+  _root_.CovariantDerivative.hom_apply I M
     E (fun x : M => TangentSpace I x)
     (E →L[ℝ] E) (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)
     (LeviCivita (I := I) g) (endoCovariantDerivative (I := I) (M := M) g) Term Y x v

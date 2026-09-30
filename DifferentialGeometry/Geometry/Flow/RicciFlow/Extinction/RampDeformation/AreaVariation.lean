@@ -28,9 +28,9 @@ theorem projected_leastArea_slope_le_of_angle_le
     (hc : c.IsSolutionOn B.family.metric lambda (Icc a b))
     (hlen : c.length B.family.metric lambda a ≤ L)
     (hcurv : c.totalCurvature B.family.metric lambda a ≤ Theta)
-    (γ : ℝ → ContinuousFreeLoop Q)
+    (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q)
     (hγ : ∀ s ∈ Icc a b, ∀ z, γ s z = c.projection z s)
-    (hctr : ∀ s ∈ Icc a b, IsContractibleLoop (γ s))
+    (hctr : ∀ s ∈ Icc a b, ContinuousMap.Nullhomotopic (γ s))
     {t : ℝ} (ht : t ∈ Ico a b)
     (hu : ∀ x, |c.angle B.family.metric lambda x t| ≤ eta) :
     ∀ eps > 0, ∃ dd > 0, ∀ h ∈ Ioo (0 : ℝ) dd, t + h ≤ b →

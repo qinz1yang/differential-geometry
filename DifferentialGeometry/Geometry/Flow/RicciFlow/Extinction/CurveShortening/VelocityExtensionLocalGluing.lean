@@ -20,11 +20,11 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [hBoundary : I.Boundaryless] [hT2 : T2Space M] [hCompact : CompactSpace M]
     [hNonempty : Nonempty M] [SigmaCompactSpace M]
-variable {a b : ℝ} {γ : ℝ → ContinuousFreeLoop M}
+variable {a b : ℝ} {γ : ℝ → DifferentialGeometry.Topology.freeLoop M}
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
   [SigmaCompactSpace M] in
-def LoopFamilyVelocityExtensionOn (γ : ℝ → ContinuousFreeLoop M) (a b : ℝ)
+def LoopFamilyVelocityExtensionOn (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (a b : ℝ)
     (O : Set (ℝ × M)) (X : ℝ → (p : M) → TangentSpace I p) : Prop :=
   (∀ t ∈ Ico a b, ∀ z : Surgery.Topology.Circle, (t, γ t z) ∈ O →
     HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => γ s z) (Ici t) t
@@ -35,7 +35,7 @@ def LoopFamilyVelocityExtensionOn (γ : ℝ → ContinuousFreeLoop M) (a b : ℝ
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
   [SigmaCompactSpace M] in
-def LoopFamilyVelocityExtensionLocalAt (γ : ℝ → ContinuousFreeLoop M) (a b : ℝ)
+def LoopFamilyVelocityExtensionLocalAt (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (a b : ℝ)
     (q : ℝ × M) : Prop :=
   ∃ (X : ℝ → (p : M) → TangentSpace I p) (O : Set (ℝ × M)),
     IsOpen O ∧ q ∈ O ∧
@@ -45,7 +45,7 @@ def LoopFamilyVelocityExtensionLocalAt (γ : ℝ → ContinuousFreeLoop M) (a b 
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
   [SigmaCompactSpace M] in
-def LoopFamilyVelocityExtensionLocalCover (γ : ℝ → ContinuousFreeLoop M) (a b : ℝ) : Prop :=
+def LoopFamilyVelocityExtensionLocalCover (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (a b : ℝ) : Prop :=
   ∀ t ∈ Icc a b, ∀ x : ℝ,
     LoopFamilyVelocityExtensionLocalAt (I := I) γ a b (t, γ t (x : Surgery.Topology.Circle))
 
@@ -272,7 +272,7 @@ theorem loopFamilyVelocityExtension_of_localCover
 
 omit [CompleteSpace E] hBoundary hCompact hNonempty in
 theorem loopFamilyVelocityExtensionProducer_of_localCover
-    (h : ∀ γ : ℝ → ContinuousFreeLoop M,
+    (h : ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop M,
       (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) →
       (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b) →
       (∀ t ∈ Icc a b, Topology.IsEmbedding (γ t)) →
@@ -301,7 +301,7 @@ theorem loopFamilyVelocityExtensionLocalCover_iff_of_smoothOn
 omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
   [SigmaCompactSpace M] in
 theorem loopFamilyVelocityExtensionLocalCover_of_constantLoopFamily
-    (γ : ℝ → ContinuousFreeLoop M) (hconst : ∀ t t' : ℝ, γ t = γ t') :
+    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (hconst : ∀ t t' : ℝ, γ t = γ t') :
     LoopFamilyVelocityExtensionLocalCover (I := I) γ a b :=
   loopFamilyVelocityExtensionLocalCover_of_velocityExtension (I := I)
     (loopFamilyVelocityExtension_zero (I := I) a b γ hconst)
@@ -309,7 +309,7 @@ theorem loopFamilyVelocityExtensionLocalCover_of_constantLoopFamily
 omit [CompleteSpace E] hBoundary hCompact hNonempty in
 theorem loopFamilyVelocityExtensionProducer_iff_localCover :
     LoopFamilyVelocityExtensionProducer (I := I) (M := M) a b ↔
-      ∀ γ : ℝ → ContinuousFreeLoop M,
+      ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop M,
         (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) →
         (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b) →
         (∀ t ∈ Icc a b, Topology.IsEmbedding (γ t)) →

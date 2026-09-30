@@ -47,11 +47,11 @@ private theorem local_length_comparison_of_local_terminal_edist_comparison
     obtain ⟨z, hz, heq⟩ := (hmap ht).1
     have heq' : γT t = z := Subtype.ext ((hγeq t ht).trans heq.symm)
     exact heq' ▸ hz
-  have hlength : riemannianCurveLength
+  have hlength : DifferentialGeometry.Geometry.riemannianCurveVariation
       ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
       (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
-        riemannianCurveLength (H.event i).terminal.metric γT a b := by
-    unfold riemannianCurveLength
+        DifferentialGeometry.Geometry.riemannianCurveVariation (H.event i).terminal.metric γT a b := by
+    unfold DifferentialGeometry.Geometry.riemannianCurveVariation
     apply iSup_le
     intro p
     refine (Finset.sum_le_sum fun j hj => ?_).trans
@@ -67,8 +67,8 @@ private theorem local_length_comparison_of_local_terminal_edist_comparison
     convert hb using 1
     congr 1 <;> apply Subtype.ext <;>
       simp only [γT, projIcc_of_mem, ht₀, ht₁]
-  have hmetric : riemannianCurveLength (H.event i).terminal.metric γT a b ≤
-      ENNReal.ofReal (ell s) * riemannianCurveLength
+  have hmetric : DifferentialGeometry.Geometry.riemannianCurveVariation (H.event i).terminal.metric γT a b ≤
+      ENNReal.ofReal (ell s) * DifferentialGeometry.Geometry.riemannianCurveVariation
         (((H.event i).incoming.flow.base.metric s).restrictOpen
           (H.event i).incoming.terminalRegularOpen) γT a b := by
     have hb := DifferentialGeometry.Geometry.riemannianCurveVariation_le_of_quad_on
@@ -79,12 +79,12 @@ private theorem local_length_comparison_of_local_terminal_edist_comparison
       (c := (ell s) ^ 2) (sq_pos_of_pos (lt_of_lt_of_le zero_lt_one (hell s hs)))
       (fun y hy v => hquad s hs y (interior_subset hy) v)
       hγT.continuousOn hγK
-    simpa only [riemannianCurveLength, DifferentialGeometry.Geometry.riemannianCurveVariation,
+    simpa only [DifferentialGeometry.Geometry.riemannianCurveVariation, DifferentialGeometry.Geometry.riemannianCurveVariation,
       Real.sqrt_sq (zero_le_one.trans (hell s hs))] using hb
-  have hincoming : riemannianCurveLength
+  have hincoming : DifferentialGeometry.Geometry.riemannianCurveVariation
       (((H.event i).incoming.flow.base.metric s).restrictOpen
         (H.event i).incoming.terminalRegularOpen) γT a b =
-      riemannianCurveLength ((H.stage i.castSucc).componentMetric
+      DifferentialGeometry.Geometry.riemannianCurveVariation ((H.stage i.castSucc).componentMetric
         ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) γ a b := by
     change DifferentialGeometry.Geometry.riemannianCurveVariation
       (((H.event i).incoming.flow.base.metric s).restrictOpen

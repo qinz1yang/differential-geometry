@@ -19,19 +19,19 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 theorem riemannianCurveLength_le_of_quad (g h : SmoothRiemannianMetric I M) {c : ℝ}
     (hc : 0 < c) (hgh : ∀ x v, h.inner x v v ≤ c * g.inner x v v)
     (γ : ℝ → M) (a b : ℝ) :
-    riemannianCurveLength h γ a b ≤
-      ENNReal.ofReal (Real.sqrt c) * riemannianCurveLength g γ a b := by
+    DifferentialGeometry.Geometry.riemannianCurveVariation h γ a b ≤
+      ENNReal.ofReal (Real.sqrt c) * DifferentialGeometry.Geometry.riemannianCurveVariation g γ a b := by
   exact DifferentialGeometry.Geometry.riemannianCurveVariation_le_of_quad g h hc hgh γ a b
 theorem le_riemannianCurveLength_of_quad (g h : SmoothRiemannianMetric I M) {c : ℝ}
     (hc : 0 < c) (hl : ∀ x v, c * g.inner x v v ≤ h.inner x v v)
     (γ : ℝ → M) (a b : ℝ) :
-    ENNReal.ofReal (Real.sqrt c) * riemannianCurveLength g γ a b ≤
-      riemannianCurveLength h γ a b := by
+    ENNReal.ofReal (Real.sqrt c) * DifferentialGeometry.Geometry.riemannianCurveVariation g γ a b ≤
+      DifferentialGeometry.Geometry.riemannianCurveVariation h γ a b := by
   exact DifferentialGeometry.Geometry.le_riemannianCurveVariation_of_quad g h hc hl γ a b
 theorem riemannianCurveLength_scaleMetric (c : ℝ) (hc : 0 < c)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (a b : ℝ) :
-    riemannianCurveLength (scaleMetric (I := I) c hc g) γ a b =
-      ENNReal.ofReal (Real.sqrt c) * riemannianCurveLength g γ a b := by
+    DifferentialGeometry.Geometry.riemannianCurveVariation (scaleMetric (I := I) c hc g) γ a b =
+      ENNReal.ofReal (Real.sqrt c) * DifferentialGeometry.Geometry.riemannianCurveVariation g γ a b := by
   exact DifferentialGeometry.Geometry.riemannianCurveVariation_scaleMetric c hc g γ a b
 
 namespace GeometricCutoffRecord
@@ -47,13 +47,13 @@ def LocalLengthComparison
     ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ x ∈ (Kc c).support.region,
       ∃ U ∈ 𝓝 x, ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
         a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
-        riemannianCurveLength ((H.stage i.castSucc).componentMetric
+        DifferentialGeometry.Geometry.riemannianCurveVariation ((H.stage i.castSucc).componentMetric
           ((H.event i).incoming.flow.base.metric s)
           (G.transition.childParent c)) γ a b ≠ ⊤ →
-        riemannianCurveLength
+        DifferentialGeometry.Geometry.riemannianCurveVariation
           ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
           (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
-        ENNReal.ofReal (ell s) * riemannianCurveLength
+        ENNReal.ofReal (ell s) * DifferentialGeometry.Geometry.riemannianCurveVariation
           ((H.stage i.castSucc).componentMetric
             ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) γ a b
 
@@ -83,9 +83,9 @@ theorem rfs_child_comparison_metric_of_local_length_comparison
   have hlocFull : ∀ x : (G.Parent c).Carrier, ∃ U ∈ 𝓝 x,
       ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
         a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
-        riemannianCurveLength gs γ a b ≠ ⊤ →
-        riemannianCurveLength hc (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
-          ENNReal.ofReal (ell s) * riemannianCurveLength gs γ a b := by
+        DifferentialGeometry.Geometry.riemannianCurveVariation gs γ a b ≠ ⊤ →
+        DifferentialGeometry.Geometry.riemannianCurveVariation hc (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
+          ENNReal.ofReal (ell s) * DifferentialGeometry.Geometry.riemannianCurveVariation gs γ a b := by
     intro x
     by_cases hx : x ∈ (Kc c).support.region
     · obtain ⟨U, hU, hU'⟩ := hloc c s hs x hx
@@ -104,6 +104,10 @@ theorem rfs_child_comparison_metric_of_local_length_comparison
     ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (G.Parent c).Carrier
   let : SecondCountableTopology (G.Child c).Carrier :=
     ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (G.Child c).Carrier
+  letI : RegularSpace (G.Parent c).Carrier :=
+    DifferentialGeometry.Topology.Manifold.regularSpace_of_chartedSpace ThreeModel
+  letI : RegularSpace (G.Child c).Carrier :=
+    DifferentialGeometry.Topology.Manifold.regularSpace_of_chartedSpace ThreeModel
   by_cases hfin : riemannianEDistOf gs x y = ⊤
   · rw [hfin, ENNReal.mul_top (ne_of_gt (ENNReal.ofReal_pos.mpr
       (lt_of_lt_of_le (zero_lt_one : (0 : ℝ) < 1) (hell s hs))))]
@@ -111,14 +115,14 @@ theorem rfs_child_comparison_metric_of_local_length_comparison
   · have hlocCoe : ∀ x : (G.Parent c).Carrier, ∃ U ∈ 𝓝 x,
         ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
           a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
-          riemannianCurveLength gs γ a b ≠ ⊤ →
-          riemannianCurveLength hc (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
-            ↑(NNReal.mk (ell s) hL) * riemannianCurveLength gs γ a b :=
+          DifferentialGeometry.Geometry.riemannianCurveVariation gs γ a b ≠ ⊤ →
+          DifferentialGeometry.Geometry.riemannianCurveVariation hc (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
+            ↑(NNReal.mk (ell s) hL) * DifferentialGeometry.Geometry.riemannianCurveVariation gs γ a b :=
       fun x => by
         obtain ⟨U, hU, hU'⟩ := hlocFull x
         exact ⟨U, hU, fun a b γ hab hγ hmap hfin => by
           simpa only [ENNReal.ofReal_eq_coe_nnreal hL] using hU' a b γ hab hγ hmap hfin⟩
-    have h := rfs_local_to_global_length_of_ne_top gs hc
+    have h := DifferentialGeometry.Geometry.riemannianEDistOf_comp_le_of_local_riemannianCurveVariation_of_ne_top gs hc
       ((Kc c).canonicalWholeParentMap) (NNReal.mk (ell s) hL) hlocCoe hfin
     rwa [ENNReal.ofReal_eq_coe_nnreal hL]
 

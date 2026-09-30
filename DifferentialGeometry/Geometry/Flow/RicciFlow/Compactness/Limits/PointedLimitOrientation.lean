@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
+import DifferentialGeometry.Topology.ThreeManifold.Orientation
+import DifferentialGeometry.Topology.LoopSpace.Continuous
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
 import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Exhaustion

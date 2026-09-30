@@ -3,7 +3,8 @@ import DifferentialGeometry.Topology.Manifold.RelativeCollar
 import DifferentialGeometry.Topology.Manifold.ClosedOriented
 import DifferentialGeometry.Topology.Manifold.SphereOrientation
 import DifferentialGeometry.Topology.VanKampen.FullGroupoid
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
+import DifferentialGeometry.Topology.ThreeManifold.Orientation
+import DifferentialGeometry.Topology.LoopSpace.Continuous
 import Mathlib.Geometry.Manifold.Instances.Real
 
 set_option autoImplicit false

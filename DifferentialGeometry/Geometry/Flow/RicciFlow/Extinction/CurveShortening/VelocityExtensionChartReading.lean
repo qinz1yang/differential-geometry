@@ -16,7 +16,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-private theorem contMDiffOn_loopFamilyReading {a b : ℝ} {γ : ℝ → ContinuousFreeLoop M}
+private theorem contMDiffOn_loopFamilyReading {a b : ℝ} {γ : ℝ → DifferentialGeometry.Topology.freeLoop M}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b)) :
     ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I ∞
       (fun p : ℝ × ℝ => γ p.1 (p.2 : Surgery.Topology.Circle)) (Icc a b ×ˢ univ) := by
@@ -29,7 +29,7 @@ private theorem contMDiffOn_loopFamilyReading {a b : ℝ} {γ : ℝ → Continuo
   exact ContMDiffOn.comp hG hf fun p hp => ⟨trivial, hp.1⟩
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-private theorem exists_ball_mem_chartAt {a b t₀ x₀ : ℝ} {γ : ℝ → ContinuousFreeLoop M}
+private theorem exists_ball_mem_chartAt {a b t₀ x₀ : ℝ} {γ : ℝ → DifferentialGeometry.Topology.freeLoop M}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b)) (ht₀ : t₀ ∈ Icc a b) :
     ∃ ε > 0, ∀ p : ℝ × ℝ, p ∈ Icc a b ×ˢ (univ : Set ℝ) → dist p (t₀, x₀) < ε →
       γ p.1 (p.2 : Surgery.Topology.Circle)
@@ -46,7 +46,7 @@ private theorem exists_ball_mem_chartAt {a b t₀ x₀ : ℝ} {γ : ℝ → Cont
 
 omit [FiniteDimensional ℝ E] in
 private theorem chartReading_of_mem_Ioo {a b t₀ x₀ : ℝ}
-    {γ : ℝ → ContinuousFreeLoop M}
+    {γ : ℝ → DifferentialGeometry.Topology.freeLoop M}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b)) (ht₀ : t₀ ∈ Ioo a b) :
     LoopFamilyVelocityExtensionChartReading (I := I) γ a b t₀ x₀ := by
   set α : M := γ t₀ (x₀ : Surgery.Topology.Circle)
@@ -71,7 +71,7 @@ private theorem chartReading_of_mem_Ioo {a b t₀ x₀ : ℝ}
   · intro p hp _
     exact ⟨hWsub hp.1, rfl⟩
 
-private theorem chartReading_of_leftEndpoint {a b x₀ : ℝ} {γ : ℝ → ContinuousFreeLoop M}
+private theorem chartReading_of_leftEndpoint {a b x₀ : ℝ} {γ : ℝ → DifferentialGeometry.Topology.freeLoop M}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b)) (hab : a < b) :
     LoopFamilyVelocityExtensionChartReading (I := I) γ a b a x₀ := by
   set α : M := γ a (x₀ : Surgery.Topology.Circle)
@@ -144,7 +144,7 @@ private theorem chartReading_of_leftEndpoint {a b x₀ : ℝ} {γ : ℝ → Cont
     rw [show a + (p.1 - a) = p.1 from by ring] at heq
     exact heq
 
-private theorem chartReading_of_rightEndpoint {a b x₀ : ℝ} {γ : ℝ → ContinuousFreeLoop M}
+private theorem chartReading_of_rightEndpoint {a b x₀ : ℝ} {γ : ℝ → DifferentialGeometry.Topology.freeLoop M}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b)) (hab : a < b) :
     LoopFamilyVelocityExtensionChartReading (I := I) γ a b b x₀ := by
   set α : M := γ b (x₀ : Surgery.Topology.Circle)
@@ -218,7 +218,7 @@ private theorem chartReading_of_rightEndpoint {a b x₀ : ℝ} {γ : ℝ → Con
     exact heq
 
 omit [FiniteDimensional ℝ E] in
-private theorem chartReading_of_eq {a x₀ : ℝ} {γ : ℝ → ContinuousFreeLoop M}
+private theorem chartReading_of_eq {a x₀ : ℝ} {γ : ℝ → DifferentialGeometry.Topology.freeLoop M}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a a)) :
     LoopFamilyVelocityExtensionChartReading (I := I) γ a a a x₀ := by
   set α : M := γ a (x₀ : Surgery.Topology.Circle)
@@ -248,7 +248,7 @@ private theorem chartReading_of_eq {a x₀ : ℝ} {γ : ℝ → ContinuousFreeLo
     · rw [hp1]
 
 theorem loopFamilyVelocityExtensionChartReading_of_smoothOn {a b t₀ x₀ : ℝ}
-    {γ : ℝ → ContinuousFreeLoop M}
+    {γ : ℝ → DifferentialGeometry.Topology.freeLoop M}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b)) (ht₀ : t₀ ∈ Icc a b) :
     LoopFamilyVelocityExtensionChartReading (I := I) γ a b t₀ x₀ := by
   rcases lt_or_ge a b with hab | hba
@@ -267,13 +267,13 @@ theorem loopFamilyVelocityExtensionChartReading_of_smoothOn {a b t₀ x₀ : ℝ
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem smoothOn_constLoopFamily (m : M) (a b : ℝ) :
-    (curveOfLoopFamily (fun _ : ℝ => constantLoops m)).SmoothOn (I := I) (Icc a b) :=
+    (curveOfLoopFamily (fun _ : ℝ => DifferentialGeometry.Topology.FreeLoop.constants m)).SmoothOn (I := I) (Icc a b) :=
   contMDiffOn_const
 
 variable [T2Space M]
 
 theorem loopFamilyVelocityExtensionLocalCover_of_smoothOn {a b : ℝ}
-    {γ : ℝ → ContinuousFreeLoop M}
+    {γ : ℝ → DifferentialGeometry.Topology.freeLoop M}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t)) :
@@ -283,7 +283,7 @@ theorem loopFamilyVelocityExtensionLocalCover_of_smoothOn {a b : ℝ}
 
 variable [SigmaCompactSpace M]
 
-theorem loopFamilyVelocityExtension_of_smoothOn {a b : ℝ} {γ : ℝ → ContinuousFreeLoop M}
+theorem loopFamilyVelocityExtension_of_smoothOn {a b : ℝ} {γ : ℝ → DifferentialGeometry.Topology.freeLoop M}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t)) :

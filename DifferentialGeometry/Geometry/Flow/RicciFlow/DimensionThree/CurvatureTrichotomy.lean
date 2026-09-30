@@ -85,7 +85,7 @@ theorem positive_time_rank_spreading
       deriv (fun s => A s x) t =
         rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t)
             (fun y => A t y) x +
-          HomConnectionGen.homBundleCovariantDerivativeGen
+          _root_.CovariantDerivative.hom
             I M F V F V (cov t) (cov t) (fun y => A t y) x (X t x) +
           reaction t x (A t x)) :
     (∀ t ∈ Ioc 0 T, ∀ x y,
@@ -129,7 +129,7 @@ theorem positive_time_kernel_rigidity
       deriv (fun s => A s x) t =
         rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y => A t y) x +
-          HomConnectionGen.homBundleCovariantDerivativeGen
+          _root_.CovariantDerivative.hom
             I M F V F V (cov t) (cov t) (fun y => A t y) x (X t x) +
           reaction t x (A t x)) :
     And

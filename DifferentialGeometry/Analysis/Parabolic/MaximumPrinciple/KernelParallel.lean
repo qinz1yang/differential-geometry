@@ -53,7 +53,7 @@ theorem kernel_isParallelSet_of_constant_range_rank
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y ↦ A t y) x +
-          HomConnectionGen.homBundleCovariantDerivativeGen
+          _root_.CovariantDerivative.hom
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           reaction t x (A t x)) t) :
     ∀ t ∈ Ioo a b,

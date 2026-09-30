@@ -40,9 +40,9 @@ theorem rfs_finite_ancestry (H : ObservedHistory.{u}) (parameters : CutoffParame
       letI : SimplyConnectedSpace P.Carrier := hSC j (chain.component j)
       ∀ q : P.Carrier,
         Function.Injective (fun z : ℤ => positiveHomotopyClass P.orientation q ^ z) ∧
-        positiveFreeContractibleClass P.orientation ≠ FreeHomotopyClass.mk
+        positiveFreeContractibleClass P.orientation ≠ DifferentialGeometry.Topology.FreeHomotopyClass.mk
           (ContinuousMap.const (Sphere 2)
-            (⟨constantLoops q, isContractibleLoop_constant q⟩ : ContractibleContinuousLoop P.Carrier))) ∧
+            (⟨DifferentialGeometry.Topology.FreeLoop.constants q, ContinuousMap.nullhomotopic_of_constant q⟩ : DifferentialGeometry.Topology.contractibleLoop P.Carrier))) ∧
     (∀ j : Fin H.eventCount,
       let G := cutoff j
       let child := chain.component j.succ
@@ -57,7 +57,7 @@ theorem rfs_finite_ancestry (H : ObservedHistory.{u}) (parameters : CutoffParame
         (∀ p : P.Carrier, basedHomotopyMap K.canonicalWholeParentMap p
           (positiveHomotopyClass P.orientation p) =
             positiveHomotopyClass Q.orientation (K.canonicalWholeParentMap p)) ∧
-        FreeHomotopyClass.map (contractibleLoopPostcompose K.canonicalWholeParentMap)
+        DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose K.canonicalWholeParentMap)
           (positiveFreeContractibleClass P.orientation) = positiveFreeContractibleClass Q.orientation) := by
   let chain := finiteAncestorChain H terminal
   let hSC := rfs_simply_connected_history H h0

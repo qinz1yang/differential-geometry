@@ -81,7 +81,7 @@ theorem loopTimeFold_mem_Icc {a b α β t : ℝ} (hα : α < a) (hab : a ≤ b) 
 
 omit [FiniteDimensional ℝ E] in
 theorem loopFamilyGlobalSmoothExtension_of_smoothOn_superwindow {α β : ℝ}
-    (hα : α < a) (hab : a ≤ b) (hβ : b < β) {γ : ℝ → ContinuousFreeLoop E}
+    (hα : α < a) (hab : a ≤ b) (hβ : b < β) {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     (hγ : ContDiffOn ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle))
       (Icc α β ×ˢ univ))
     (hemb : ∀ t ∈ Icc α β, Function.Injective (fun z : Surgery.Topology.Circle => γ t z))
@@ -111,7 +111,7 @@ theorem loopFamilyGlobalSmoothExtension_of_smoothOn_superwindow {α β : ℝ}
     exact injective_fderiv_graphLift_of_immersedOn hsm himm (mem_univ q)
 
 theorem loopFamilyVelocityExtension_modelSpace_of_smoothOn_superwindow {α β : ℝ}
-    (hα : α < a) (hab : a ≤ b) (hβ : b < β) {γ : ℝ → ContinuousFreeLoop E}
+    (hα : α < a) (hab : a ≤ b) (hβ : b < β) {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     (hγ : ContDiffOn ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle))
       (Icc α β ×ˢ univ))
     (hemb : ∀ t ∈ Icc α β, Function.Injective (fun z : Surgery.Topology.Circle => γ t z))
@@ -121,7 +121,7 @@ theorem loopFamilyVelocityExtension_modelSpace_of_smoothOn_superwindow {α β : 
     (loopFamilyGlobalSmoothExtension_of_smoothOn_superwindow hα hab hβ hγ hemb hi)
 
 omit [FiniteDimensional ℝ E] in
-theorem contDiffOn_loopFamily_swap {γ : ℝ → ContinuousFreeLoop E} {J : Set ℝ}
+theorem contDiffOn_loopFamily_swap {γ : ℝ → DifferentialGeometry.Topology.freeLoop E} {J : Set ℝ}
     (h : (curveOfLoopFamily γ).SmoothOn (I := 𝓘(ℝ, E)) J) :
     ContDiffOn ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle))
       (J ×ˢ univ) := by
@@ -140,7 +140,7 @@ variable [CompactSpace E] [Nonempty E] [SigmaCompactSpace E]
 
 omit [Nonempty E] in
 theorem rfs_csf_boundary_isotopy_modelSpace_of_smoothOn_superwindow {α β : ℝ}
-    (hα : α < a) (hab : a ≤ b) (hβ : b < β) {γ : ℝ → ContinuousFreeLoop E}
+    (hα : α < a) (hab : a ≤ b) (hβ : b < β) {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     (hγ : ContDiffOn ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle))
       (Icc α β ×ˢ univ))
     (hemb : ∀ t ∈ Icc α β, Function.Injective (fun z : Surgery.Topology.Circle => γ t z))
@@ -167,12 +167,12 @@ variable [hBoundary : I.Boundaryless] [hT2 : T2Space M] [hCompact : CompactSpace
 omit hNonempty in
 theorem rfs_csf_boundary_isotopy_of_producerOnSuperwindow {α β : ℝ}
     (hα : α ≤ a) (hβ : b ≤ β)
-    (h : ∀ γ : ℝ → ContinuousFreeLoop M,
+    (h : ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop M,
       (curveOfLoopFamily γ).SmoothOn (I := I) (Icc α β) →
       (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc α β) →
       (∀ t ∈ Icc α β, Topology.IsEmbedding (γ t)) →
       LoopFamilyVelocityExtension (I := I) α β γ)
-    (γ : ℝ → ContinuousFreeLoop M)
+    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t))

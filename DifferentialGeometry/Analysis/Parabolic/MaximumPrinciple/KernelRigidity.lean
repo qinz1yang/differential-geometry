@@ -5,6 +5,8 @@ import DifferentialGeometry.Analysis.InnerProductSpace.Kernel
 import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
+import DifferentialGeometry.Geometry.Connection.HomBundle.Kernel
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint
 
 set_option autoImplicit false
 
@@ -46,7 +48,7 @@ private theorem kernel_covariantDerivatives_mem_and_reaction_inner_eq_zero
     (hevolution :
       deriv (fun s => A s x) t =
         rawBundleEndomorphismConnLap (I := I) g cov (fun y => A t y) x +
-          HomConnectionGen.homBundleCovariantDerivativeGen
+          _root_.CovariantDerivative.hom
             I M F V F V cov cov (fun y => A t y) x Z + B) :
     (∀ i : Fin (Module.finrank ℝ E),
       cov (fun y => w y) x (smoothOrthoFrame (I := I) g x i x) ∈
@@ -54,10 +56,10 @@ private theorem kernel_covariantDerivatives_mem_and_reaction_inner_eq_zero
       inner ℝ (B (w x)) (w x) = 0 := by
   have hdrift :
       inner ℝ
-          ((HomConnectionGen.homBundleCovariantDerivativeGen
+          ((_root_.CovariantDerivative.hom
               I M F V F V cov cov (fun y => A t y) x Z) (w x))
           (w x) = 0 :=
-    HomConnectionGen.inner_homBundleCovariantDerivativeGen_apply_of_eventually_mem_ker
+    _root_.CovariantDerivative.inner_hom_apply_of_eventually_mem_ker
       cov (A t) hA w hU hxU hw Z
   have hlap :=
     inner_rawBundleEndomorphismConnLap_apply_of_eventually_mem_ker
@@ -95,7 +97,7 @@ theorem kernel_isCovariantlyInvariant_of_deriv_inner_eq_zero
     (hevolution : ∀ x,
       deriv (fun s => A s x) t =
         rawBundleEndomorphismConnLap (I := I) g cov (fun y => A t y) x +
-          HomConnectionGen.homBundleCovariantDerivativeGen
+          _root_.CovariantDerivative.hom
             I M F V F V cov cov (fun y => A t y) x (Z x) + B x) :
     IsCovariantlyInvariantSubmoduleFamily cov (fun x => (A t x).ker) := by
   apply DifferentialGeometry.Analysis.Elliptic.kernel_isCovariantlyInvariant_of_laplacian_add_drift_nonpos_on_kernel
@@ -129,7 +131,7 @@ theorem local_kernel_section_covariantDerivative_mem_and_reaction_inner_eq_zero
     (hevolution :
       deriv (fun s => A s x) t =
         rawBundleEndomorphismConnLap (I := I) g cov (fun y => A t y) x +
-          HomConnectionGen.homBundleCovariantDerivativeGen
+          _root_.CovariantDerivative.hom
             I M F V F V cov cov (fun y => A t y) x Z + B) :
     (∀ Y : TangentSpace I x,
       cov (fun y => w (t, y)) x Y ∈ (A t x).ker) ∧
@@ -226,7 +228,7 @@ private theorem exists_local_kernel_frame_covariantDerivative_mem_and_reaction_i
     (hevolution :
       deriv (fun s => A s x) t =
         rawBundleEndomorphismConnLap (I := I) g cov (fun y => A t y) x +
-          HomConnectionGen.homBundleCovariantDerivativeGen
+          _root_.CovariantDerivative.hom
             I M F V F V cov cov (fun y => A t y) x Z + B) :
     ∃ (U : Set (ℝ × M)) (w : Fin k → (p : ℝ × M) → V p.2),
       IsOpen U ∧ (t, x) ∈ U ∧ U ⊆ W ∧
@@ -297,7 +299,7 @@ theorem kernel_reaction_inner_eq_zero_of_constant_rank
     (hevolution :
       deriv (fun s => A s x) t =
         rawBundleEndomorphismConnLap (I := I) g cov (fun y => A t y) x +
-          HomConnectionGen.homBundleCovariantDerivativeGen
+          _root_.CovariantDerivative.hom
             I M F V F V cov cov (fun y => A t y) x Z + B) :
     ∀ v, A t x v = 0 → inner ℝ (B v) v = 0 := by
   let c : C^∞⟮𝓘(ℝ, ℝ).prod I, ℝ × M; I, M⟯ := ContMDiffMap.snd
@@ -369,12 +371,12 @@ theorem kernel_isCovariantlyInvariant_of_constant_rank
     (hevolution : ∀ x,
       deriv (fun s => A s x) t =
         rawBundleEndomorphismConnLap (I := I) g cov (fun y => A t y) x +
-          HomConnectionGen.homBundleCovariantDerivativeGen
+          _root_.CovariantDerivative.hom
             I M F V F V cov cov (fun y => A t y) x (Z x) + B x) :
     IsCovariantlyInvariantSubmoduleFamily cov (fun x => (A t x).ker) := by
   have hderivKer : ∀ (x : M) (Y : TangentSpace I x) (v : V x),
       v ∈ (A t x).ker →
-        (HomConnectionGen.homBundleCovariantDerivativeGen
+        (_root_.CovariantDerivative.hom
           I M F V F V cov cov (fun y => A t y) x Y) v = 0 := by
     intro x Y v hv
     obtain ⟨U, w, hU, htxU, _, _, hwspan, hwsmooth, hwderiv⟩ :=
@@ -389,7 +391,7 @@ theorem kernel_isCovariantlyInvariant_of_constant_rank
     apply Finset.sum_eq_zero
     intro i hi
     rw [map_smul]
-    suffices (HomConnectionGen.homBundleCovariantDerivativeGen
+    suffices (_root_.CovariantDerivative.hom
         I M F V F V cov cov (fun y => A t y) x Y) (w i (t, x)) = 0 by
       rw [this, smul_zero]
     let S : Set M := (fun y : M => (t, y)) ⁻¹' U
@@ -423,7 +425,7 @@ theorem kernel_isCovariantlyInvariant_of_constant_rank
       exact cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq
         w₀.mdifferentiableAt hlocalDiff Filter.univ_mem hw₀eq
     have happly :=
-      HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_eventually_mem_ker
+      _root_.CovariantDerivative.hom_apply_of_eventually_mem_ker
         cov (A t) w₀ hQ hxQ hw₀ker Y
     have hcovmem : cov (fun y => w₀ y) x Y ∈ (A t x).ker := by
       rw [hcovEq]
@@ -437,7 +439,7 @@ theorem kernel_isCovariantlyInvariant_of_constant_rank
     intro y hy
     exact LinearMap.mem_ker.mp (hs y hy)
   have happly :=
-    HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_eventually_mem_ker
+    _root_.CovariantDerivative.hom_apply_of_eventually_mem_ker
       cov (A t) s hU hx hsKer Y
   have hzero := hderivKer x Y (s x) (hs x hx)
   rw [hzero] at happly
@@ -467,7 +469,7 @@ theorem kernel_motion_of_isCovariantlyInvariant
     (hevolution :
       deriv (fun s => A s x) t =
         rawBundleEndomorphismConnLap (I := I) g cov (fun y => A t y) x +
-          HomConnectionGen.homBundleCovariantDerivativeGen
+          _root_.CovariantDerivative.hom
             I M F V F V cov cov (fun y => A t y) x Z + B) :
     A t x (deriv (fun s => w (s, x)) t) = -B (w (t, x)) ∧
       deriv (fun s => A s x) t (w (t, x)) = B (w (t, x)) := by
@@ -510,10 +512,10 @@ theorem kernel_motion_of_isCovariantlyInvariant
     rawBundleEndomorphismConnLap_apply_eq_zero_of_isCovariantlyInvariant
       g cov (A := A t) w₁ S hS hAk hU₁ hxU₁ hw₁ker
   have hdrift :
-      (HomConnectionGen.homBundleCovariantDerivativeGen
+      (_root_.CovariantDerivative.hom
           I M F V F V cov cov (A t) x
           Z) (w₁ x) = 0 := by
-    rw [HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_eventually_mem_ker
+    rw [_root_.CovariantDerivative.hom_apply_of_eventually_mem_ker
       cov (A t) w₁ hU₁ hxU₁ hAw]
     have hcovwS : cov (fun y => w₁ y) x Z ∈ S x :=
       hS.covariantDerivative_mem w₁ hU₁ hw₁ker hxU₁ Z

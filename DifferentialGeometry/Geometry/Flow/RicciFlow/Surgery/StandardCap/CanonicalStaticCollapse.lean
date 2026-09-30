@@ -65,8 +65,8 @@ theorem collapse_radial (x : neckCentralDomain δ)
 
 theorem collapse_length (γ : ℝ → neckCentralDomain δ) (a b : ℝ)
     (hγ : ContinuousOn γ (Icc a b)) :
-    riemannianCurveLength w.data.outMetric (w.collapse ∘ γ) a b ≤
-      riemannianCurveLength g (fun t => d.oriented.map (γ t).1) a b := by
+    DifferentialGeometry.Geometry.riemannianCurveVariation w.data.outMetric (w.collapse ∘ γ) a b ≤
+      DifferentialGeometry.Geometry.riemannianCurveVariation g (fun t => d.oriented.map (γ t).1) a b := by
   exact w.collapse_length_of_toNormalizedNeck γ a b hγ
 
 theorem collapse_locallyLipschitz (x : neckCentralDomain δ) :

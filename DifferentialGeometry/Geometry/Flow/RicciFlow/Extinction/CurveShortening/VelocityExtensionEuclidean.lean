@@ -37,7 +37,7 @@ theorem hasMFDerivWithinAt_smulRight_of_hasDerivWithinAt {f : ℝ → E} {t : �
   h.hasFDerivWithinAt.hasMFDerivWithinAt
 
 omit [FiniteDimensional ℝ E] in
-theorem contDiff_loopSlice {γ : ℝ → ContinuousFreeLoop E}
+theorem contDiff_loopSlice {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     (hγ : ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle)))
     (z : Surgery.Topology.Circle) : ContDiff ℝ ∞ (fun r : ℝ => γ r z) := by
   obtain ⟨x, -, hx⟩ := exists_lift_mem_Icc z
@@ -46,7 +46,7 @@ theorem contDiff_loopSlice {γ : ℝ → ContinuousFreeLoop E}
   simpa only [hx] using h
 
 omit [FiniteDimensional ℝ E] in
-theorem hasMFDerivWithinAt_loopSlice_of_deriv_eq {γ : ℝ → ContinuousFreeLoop E}
+theorem hasMFDerivWithinAt_loopSlice_of_deriv_eq {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     {X : ℝ → E → E} {t : ℝ} {z : Surgery.Topology.Circle} {s : Set ℝ}
     (hγ : ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle)))
     (hX : X t (γ t z) = deriv (fun r : ℝ => γ r z) t) :
@@ -60,7 +60,7 @@ theorem hasMFDerivWithinAt_loopSlice_of_deriv_eq {γ : ℝ → ContinuousFreeLoo
   exact hasMFDerivWithinAt_smulRight_of_hasDerivWithinAt hd.hasDerivWithinAt
 
 omit [FiniteDimensional ℝ E] in
-theorem fderiv_graphLift_apply {γ : ℝ → ContinuousFreeLoop E}
+theorem fderiv_graphLift_apply {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     (hγ : ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle)))
     (q : ℝ × ℝ) :
     fderiv ℝ (graphLift γ) q =
@@ -74,7 +74,7 @@ theorem fderiv_graphLift_apply {γ : ℝ → ContinuousFreeLoop E}
   rw [(differentiableAt_fst (p := q)).fderiv_prodMk hΓ, fderiv_fst]
 
 omit [FiniteDimensional ℝ E] in
-theorem fderiv_slice_apply_zero_one_eq_deriv {γ : ℝ → ContinuousFreeLoop E}
+theorem fderiv_slice_apply_zero_one_eq_deriv {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     (hγ : ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle)))
     (q : ℝ × ℝ) :
     fderiv ℝ (fun p : ℝ × ℝ => γ p.1 (p.2 : Surgery.Topology.Circle)) q (0, 1) =
@@ -93,7 +93,7 @@ theorem fderiv_slice_apply_zero_one_eq_deriv {γ : ℝ → ContinuousFreeLoop E}
   simp [ContinuousLinearMap.comp_apply]
 
 omit [FiniteDimensional ℝ E] in
-theorem injective_fderiv_graphLift_of_slice_deriv_ne {γ : ℝ → ContinuousFreeLoop E}
+theorem injective_fderiv_graphLift_of_slice_deriv_ne {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     (hγ : ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle)))
     {q : ℝ × ℝ}
     (hne : deriv (fun y : ℝ => γ q.1 (y : Surgery.Topology.Circle)) q.2 ≠ 0) :
@@ -129,7 +129,7 @@ theorem injective_fderiv_graphLift_of_slice_deriv_ne {γ : ℝ → ContinuousFre
   have hz : u - v = 0 := Prod.ext h1 h3
   exact sub_eq_zero.mp hz
 
-theorem loopFamilyVelocityExtension_modelSpace (a b : ℝ) (γ : ℝ → ContinuousFreeLoop E)
+theorem loopFamilyVelocityExtension_modelSpace (a b : ℝ) (γ : ℝ → DifferentialGeometry.Topology.freeLoop E)
     (hemb : ∀ t, Function.Injective (fun z : Surgery.Topology.Circle => γ t z))
     (hγ : ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle)))
     (hi : ∀ q : ℝ × ℝ, Function.Injective (fderiv ℝ (graphLift γ) q)) :
@@ -143,7 +143,7 @@ theorem loopFamilyVelocityExtension_modelSpace (a b : ℝ) (γ : ℝ → Continu
     exact hasMFDerivWithinAt_loopSlice_of_deriv_eq hγ (hXeq t (Ioc_subset_Icc_self ht) z)
 
 omit [FiniteDimensional ℝ E] in
-private theorem deriv_loopSlice_ne_zero_of_immersedOn {γ : ℝ → ContinuousFreeLoop E}
+private theorem deriv_loopSlice_ne_zero_of_immersedOn {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     {J : Set ℝ} {x t : ℝ} (ht : t ∈ J)
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := 𝓘(ℝ, E)) J) :
     deriv (fun y : ℝ => γ t (y : Surgery.Topology.Circle)) x ≠ 0 := by
@@ -153,7 +153,7 @@ private theorem deriv_loopSlice_ne_zero_of_immersedOn {γ : ℝ → ContinuousFr
   exact hzero
 
 omit [FiniteDimensional ℝ E] in
-theorem injective_fderiv_graphLift_of_immersedOn {γ : ℝ → ContinuousFreeLoop E}
+theorem injective_fderiv_graphLift_of_immersedOn {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     (hγ : ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle)))
     {J : Set ℝ} (hi : (curveOfLoopFamily γ).ImmersedOn (I := 𝓘(ℝ, E)) J)
     {x t : ℝ} (ht : t ∈ J) :

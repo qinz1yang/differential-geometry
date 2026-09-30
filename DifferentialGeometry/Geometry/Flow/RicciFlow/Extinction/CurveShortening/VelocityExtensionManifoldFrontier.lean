@@ -20,12 +20,8 @@ variable [hBoundary : I.Boundaryless] [hT2 : T2Space M] [hCompact : CompactSpace
     [hNonempty : Nonempty M] [SigmaCompactSpace M]
 variable {a b : ℝ}
 
-/-- The single analytic input that the boundary isotopy headline consumes: on an immersed
-family of embedded loops, smooth on the closed time window, the temporal velocity field extends
-to a global smooth time dependent vector field whose one sided time derivatives reproduce the
-family on the window. -/
 def LoopFamilyVelocityExtensionProducer (a b : ℝ) : Prop :=
-  ∀ γ : ℝ → ContinuousFreeLoop M,
+  ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop M,
     (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) →
     (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b) →
     (∀ t ∈ Icc a b, Topology.IsEmbedding (γ t)) →
@@ -34,7 +30,7 @@ def LoopFamilyVelocityExtensionProducer (a b : ℝ) : Prop :=
 omit [CompleteSpace E] hNonempty in
 theorem rfs_csf_boundary_isotopy_of_velocityExtensionProducer
     (h : LoopFamilyVelocityExtensionProducer (I := I) (M := M) a b)
-    (γ : ℝ → ContinuousFreeLoop M)
+    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t))
@@ -50,7 +46,7 @@ theorem rfs_csf_boundary_isotopy_of_velocityExtensionProducer
 omit [CompleteSpace E] [FiniteDimensional ℝ E] hBoundary hT2 hCompact hNonempty
   [SigmaCompactSpace M] in
 theorem loopFamilyVelocityExtensionProducer_of_allWindows
-    (h : ∀ (a' b' : ℝ) (γ : ℝ → ContinuousFreeLoop M),
+    (h : ∀ (a' b' : ℝ) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M),
       (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a' b') →
       (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a' b') →
       (∀ t ∈ Icc a' b', Topology.IsEmbedding (γ t)) →
@@ -65,11 +61,8 @@ section ModelSpace
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {a b : ℝ}
 
-/-- The remaining genuinely analytic gap of the model space producer: a family that is only
-smooth on the closed time window has to be replaced by a globally smooth family with the same
-values on the window and with injective graph lift derivative. -/
-def LoopFamilyGlobalSmoothExtension (a b : ℝ) (γ : ℝ → ContinuousFreeLoop E) : Prop :=
-  ∃ γ' : ℝ → ContinuousFreeLoop E,
+def LoopFamilyGlobalSmoothExtension (a b : ℝ) (γ : ℝ → DifferentialGeometry.Topology.freeLoop E) : Prop :=
+  ∃ γ' : ℝ → DifferentialGeometry.Topology.freeLoop E,
     (∀ t ∈ Icc a b, γ' t = γ t) ∧
     ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ' q.1 (q.2 : Surgery.Topology.Circle)) ∧
     (∀ t, Function.Injective (fun z : Surgery.Topology.Circle => γ' t z)) ∧
@@ -77,7 +70,7 @@ def LoopFamilyGlobalSmoothExtension (a b : ℝ) (γ : ℝ → ContinuousFreeLoop
 
 omit [FiniteDimensional ℝ E] in
 theorem loopFamilyGlobalSmoothExtension_of_globalSmooth
-    {γ : ℝ → ContinuousFreeLoop E}
+    {γ : ℝ → DifferentialGeometry.Topology.freeLoop E}
     (hγ : ContDiff ℝ ∞ (fun q : ℝ × ℝ => γ q.1 (q.2 : Surgery.Topology.Circle)))
     (hemb : ∀ t, Function.Injective (fun z : Surgery.Topology.Circle => γ t z))
     (hi : ∀ q, Function.Injective (fderiv ℝ (graphLift γ) q)) :
@@ -85,7 +78,7 @@ theorem loopFamilyGlobalSmoothExtension_of_globalSmooth
   ⟨γ, fun _ _ => rfl, hγ, hemb, hi⟩
 
 theorem loopFamilyVelocityExtension_modelSpace_of_globalSmoothExtension
-    {γ : ℝ → ContinuousFreeLoop E} (h : LoopFamilyGlobalSmoothExtension a b γ) :
+    {γ : ℝ → DifferentialGeometry.Topology.freeLoop E} (h : LoopFamilyGlobalSmoothExtension a b γ) :
     LoopFamilyVelocityExtension (I := 𝓘(ℝ, E)) a b γ := by
   obtain ⟨γ', hagree, hγ', hemb', hi'⟩ := h
   obtain ⟨X, hX, hIco, hIoc⟩ := loopFamilyVelocityExtension_modelSpace a b γ' hemb' hγ' hi'
@@ -107,9 +100,9 @@ theorem loopFamilyVelocityExtension_modelSpace_of_globalSmoothExtension
           self_mem_nhdsWithin) hsub
     have heq : (fun s : ℝ => γ s z) =ᶠ[𝓝[Ici t] t] (fun s : ℝ => γ' s z) :=
       eventually_of_mem hmem fun s hs =>
-        (congrArg (fun f : ContinuousFreeLoop E => f z) (hagree s hs)).symm
+        (congrArg (fun f : DifferentialGeometry.Topology.freeLoop E => f z) (hagree s hs)).symm
     have hx : γ t z = γ' t z :=
-      (congrArg (fun f : ContinuousFreeLoop E => f z) (hagree t htIcc)).symm
+      (congrArg (fun f : DifferentialGeometry.Topology.freeLoop E => f z) (hagree t htIcc)).symm
     have hbase := hIco t ht z
     rw [show X t (γ' t z) = X t (γ t z) from by rw [hx]] at hbase
     exact hbase.congr_of_eventuallyEq heq hx
@@ -130,9 +123,9 @@ theorem loopFamilyVelocityExtension_modelSpace_of_globalSmoothExtension
           self_mem_nhdsWithin) hsub
     have heq : (fun s : ℝ => γ s z) =ᶠ[𝓝[Iic t] t] (fun s : ℝ => γ' s z) :=
       eventually_of_mem hmem fun s hs =>
-        (congrArg (fun f : ContinuousFreeLoop E => f z) (hagree s hs)).symm
+        (congrArg (fun f : DifferentialGeometry.Topology.freeLoop E => f z) (hagree s hs)).symm
     have hx : γ t z = γ' t z :=
-      (congrArg (fun f : ContinuousFreeLoop E => f z) (hagree t htIcc)).symm
+      (congrArg (fun f : DifferentialGeometry.Topology.freeLoop E => f z) (hagree t htIcc)).symm
     have hbase := hIoc t ht z
     rw [show X t (γ' t z) = X t (γ t z) from by rw [hx]] at hbase
     exact hbase.congr_of_eventuallyEq heq hx

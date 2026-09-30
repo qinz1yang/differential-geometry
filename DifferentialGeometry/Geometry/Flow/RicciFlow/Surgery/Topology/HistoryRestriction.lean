@@ -318,3 +318,20 @@ def restrict (A : InitialIdentification P g H) (t : Icc (0 : ℝ) H.horizon) :
     (A.restrict t).map = A.map := rfl
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.InitialIdentification
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+theorem stageMetric_eq_closedPrefixAt {H : ObservedHistory.{u}} (t : Icc (0 : ℝ) H.horizon)
+    (h : H.time (H.activeStage t) < t.1) :
+    H.stageMetric (H.activeStage t) = (H.closedPrefixAt t h).flow.base.metric := by
+  funext τ
+  exact (H.closedPrefixAt_metric t h τ).symm
+
+theorem stageMetric_castSucc_eq_flow {H : ObservedHistory.{u}} (i : Fin H.eventCount) :
+    H.stageMetric i.castSucc = (H.event i).incoming.flow.base.metric := by
+  funext t
+  simp only [ObservedHistory.stageMetric, Fin.lastCases_castSucc]
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

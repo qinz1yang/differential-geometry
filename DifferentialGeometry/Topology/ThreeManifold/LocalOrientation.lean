@@ -1,7 +1,8 @@
 import DifferentialGeometry.Topology.Algebra.Module.InfiniteCyclicCriterion
 import DifferentialGeometry.Topology.Homology.Relative.Basic
 import DifferentialGeometry.Topology.Homology.IntegralChainMaps
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
+import DifferentialGeometry.Topology.ThreeManifold.Orientation
+import DifferentialGeometry.Topology.LoopSpace.Continuous
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
 import DifferentialGeometry.Topology.Homology.LiftedSphere
 import DifferentialGeometry.Topology.Homology.ContractibleCoverChainEvaluation

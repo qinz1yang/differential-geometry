@@ -9,7 +9,6 @@ noncomputable section
 open Bundle Manifold Set Filter
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Geometry.Curvature
-open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology (ContinuousFreeLoop)
 
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
@@ -258,7 +257,7 @@ theorem cylinderJetTopology_le {N : ℕ} (s u : ℝ)
   iInf_le (cylinderJetFamily s u) ⟨N, e⟩
 
 def continuousFreeLoopOfImmersion (d : SmoothImmersion (I := I) (M := M)) :
-    ContinuousFreeLoop M :=
+    DifferentialGeometry.Topology.freeLoop M :=
   ⟨d.map, ⟨fun s hs => by
     have hq : Topology.IsCoinducing (fun x : ℝ => (x : AddCircle (1 : ℝ))) :=
       (QuotientAddGroup.isQuotientMap_mk (AddSubgroup.zmultiples (1 : ℝ))).isCoinducing

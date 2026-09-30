@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
+import Mathlib.Analysis.InnerProductSpace.PiL2
 import DifferentialGeometry.Topology.Homotopy.ConvexProduct
 import Mathlib.Topology.Piecewise
 
@@ -6,6 +6,14 @@ open Set
 open scoped ContinuousMap
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
+
+universe u
+
+def IsToroidalShell {E : Type u} [TopologicalSpace E] (Y T₀ T₁ : Set E) : Prop :=
+  ∃ φ : ((Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 ×
+      Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1) × Set.Icc (0 : ℝ) 1) ≃ₜ Y,
+    T₀ = Subtype.val '' (φ '' {p | (p.2 : ℝ) = 0}) ∧
+    T₁ = Subtype.val '' (φ '' {p | (p.2 : ℝ) = 1})
 
 private abbrev ShellCircle := Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1
 private abbrev ShellModel := (ShellCircle × ShellCircle) × Set.Icc (0 : ℝ) 1
@@ -35,7 +43,7 @@ private theorem frontier_eq_inter_closure_diff
       intro y hy
       exact hy.2) hxX
 
-private theorem solidTorus_union_shell
+private theorem eq_union_closure_diff
     {S₁ S₂ : Set (EuclideanSpace ℝ (Fin 3))}
     (hS₂ : IsClosed S₂) (hsub : S₁ ⊆ interior S₂) :
     S₂ = S₁ ∪ closure (S₂ \ S₁) := by
@@ -106,7 +114,7 @@ private theorem shell_coordinate_zero_on_frontier
   exact hzero.trans hz.symm
 
 open Classical in
-theorem homotopyEquiv_inclusion_of_isToroidalShell
+theorem exists_homotopyEquiv_leftInverse_inclusion_of_isToroidalShell
     {S₁ S₂ : Set (EuclideanSpace ℝ (Fin 3))}
     (hS₁ : IsClosed S₁) (hS₂ : IsClosed S₂)
     (hsub : S₁ ⊆ interior S₂)
@@ -121,7 +129,7 @@ theorem homotopyEquiv_inclusion_of_isToroidalShell
   let hfrontier : frontier S₁ = S₁ ∩ X := by
     exact frontier_eq_inter_closure_diff hS₁ hsub
   let hunion : S₂ = U := by
-    exact solidTorus_union_shell hS₂ hsub
+    exact eq_union_closure_diff hS₂ hsub
   let z : Set.Icc (0 : ℝ) 1 := ⟨0, by constructor <;> norm_num⟩
   let g₀ : C(X, EuclideanSpace ℝ (Fin 3)) :=
     { toFun := fun x => (φ ((φ.symm x).1, z) : EuclideanSpace ℝ (Fin 3))

@@ -157,7 +157,7 @@ theorem fderiv_chartReading_eq (c : ℝ → M) (α : M) (t : ℝ)
 
 omit [FiniteDimensional ℝ E] in
 theorem injective_fderiv_chartGraph
-    {γ : ℝ → ContinuousFreeLoop M} {a b t₀ x₀ : ℝ} {α : M}
+    {γ : ℝ → DifferentialGeometry.Topology.freeLoop M} {a b t₀ x₀ : ℝ} {α : M}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (ht₀ : t₀ ∈ Icc a b) (hα : α = γ t₀ (x₀ : Surgery.Topology.Circle))

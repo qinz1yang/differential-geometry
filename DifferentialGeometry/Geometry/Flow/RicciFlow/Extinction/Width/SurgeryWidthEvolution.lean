@@ -224,14 +224,14 @@ theorem rfs_comparison_width_transition
     (oM : TangentOrientationSection M) (oN : TangentOrientationSection N)
     (hcomposition : ∀ (g : SmoothRiemannianMetric ThreeModel M)
       (h : SmoothRiemannianMetric ThreeModel N) (f : C(M, N)) (L : ℝ≥0),
-      FreeHomotopyClass.map (contractibleLoopPostcompose f)
+      DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose f)
         (positiveFreeContractibleClass oM) = positiveFreeContractibleClass oN →
       (∀ x y, riemannianEDistOf h (f x) (f y) ≤
         (L : ℝ≥0∞) * riemannianEDistOf g x y) →
       canonicalWidth h oN ≤ (L : ℝ) ^ 2 * canonicalWidth g oM)
     (g : ℝ → SmoothRiemannianMetric ThreeModel M)
     (h : SmoothRiemannianMetric ThreeModel N) (f : C(M, N))
-    (hclass : FreeHomotopyClass.map (contractibleLoopPostcompose f)
+    (hclass : DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose f)
       (positiveFreeContractibleClass oM) = positiveFreeContractibleClass oN)
     {t : ℝ} (ell : ℝ → ℝ) (hell : Tendsto ell (𝓝[<] t) (𝓝 1))
     (hlip : ∀ᶠ s in 𝓝[<] t, 0 ≤ ell s ∧
@@ -332,7 +332,7 @@ theorem rfs_actual_width_jump {H : ObservedHistory.{u}} {i : Fin H.eventCount}
     simpa only [one_smul] using hdegree c
   have hcomp : ∀ (g : (G.Parent c).Metric) (h : (G.Child c).Metric)
       (f : C((G.Parent c).Carrier, (G.Child c).Carrier)) (L : ℝ≥0),
-      FreeHomotopyClass.map (contractibleLoopPostcompose f)
+      DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose f)
           (positiveFreeContractibleClass (G.Parent c).orientation) =
         positiveFreeContractibleClass (G.Child c).orientation →
       (∀ x y, riemannianEDistOf h (f x) (f y) ≤

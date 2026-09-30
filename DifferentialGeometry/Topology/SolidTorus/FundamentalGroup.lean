@@ -1,144 +1,21 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
-import DifferentialGeometry.Topology.PiecewiseLinear.Moise308NestedShell
-import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorus
+import DifferentialGeometry.Topology.SolidTorus.Spine
+import DifferentialGeometry.Topology.SolidTorus.Shell
+import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusFundamentalGroup
 import DifferentialGeometry.Topology.FundamentalGroup.Retraction
-import DifferentialGeometry.Topology.FundamentalGroup.Circle
-import DifferentialGeometry.Topology.Homotopy.ConvexProduct
-import Mathlib.Analysis.InnerProductSpace.PiL2
-import Mathlib.Topology.Piecewise
+import Mathlib.Algebra.Group.Int.Units
+import Mathlib.Data.Int.Cast.Lemmas
 
 open Set
 open scoped ContinuousMap
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-private abbrev DiskModel := Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1
-private abbrev CircleModel := Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1
-
-private noncomputable def circleModelHomeomorph : Circle ≃ₜ CircleModel := by
-  let e : ℂ ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin 2) :=
-    Complex.isometryOfOrthonormal (EuclideanSpace.basisFun (Fin 2) ℝ)
-  refine
-    { toFun := fun z =>
-        ⟨e z, by
-          apply mem_sphere_zero_iff_norm.mpr
-          rw [e.norm_map]
-          exact Circle.norm_coe z⟩
-      invFun := fun y =>
-        ⟨e.symm y, by
-          change e.symm (y : EuclideanSpace ℝ (Fin 2)) ∈ Metric.sphere (0 : ℂ) 1
-          apply mem_sphere_zero_iff_norm.mpr
-          rw [e.symm.norm_map]
-          exact mem_sphere_zero_iff_norm.mp y.property⟩
-      left_inv := by
-        intro z
-        apply Subtype.ext
-        exact e.symm_apply_apply z
-      right_inv := by
-        intro y
-        apply Subtype.ext
-        exact e.apply_symm_apply y
-      continuous_toFun := by fun_prop
-      continuous_invFun := by fun_prop }
-
-private noncomputable def fundamentalGroupSolidTorusEquivInt
-  {S : Set (EuclideanSpace ℝ (Fin 3))} (hS : IsTopologicalSolidTorus S) (x : S) :
-    FundamentalGroup S x ≃* Multiplicative ℤ := by
-  let φ : S ≃ₜ (DiskModel × CircleModel) := Classical.choice hS
-  let p : DiskModel := ⟨0, by simp⟩
-  let e₁ : S ≃ₕ (DiskModel × CircleModel) := φ.toHomotopyEquiv
-  let e₂ : (DiskModel × CircleModel) ≃ₕ (CircleModel × DiskModel) :=
-    (Homeomorph.prodComm DiskModel CircleModel).toHomotopyEquiv
-  let e₃ : (CircleModel × DiskModel) ≃ₕ CircleModel :=
-    DifferentialGeometry.HomotopyEquiv.productConvex CircleModel
-      (convex_closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1) p
-  let e₄ : CircleModel ≃ₕ Circle := circleModelHomeomorph.symm.toHomotopyEquiv
-  let e := e₁.trans (e₂.trans (e₃.trans e₄))
-  let q : Path (e x) (1 : Circle) := PathConnectedSpace.somePath _ _
-  exact
-    (DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
-        e x (e x) rfl).trans
-      ((FundamentalGroup.fundamentalGroupMulEquivOfPath q).trans
-        DifferentialGeometry.Topology.fundamentalGroupCircleEquivInt)
-
-open Classical in
-private theorem spine_homotopy_equiv
-    {S J : Set (EuclideanSpace ℝ (Fin 3))} (hJ : IsSpine S J) (hJS : J ⊆ S) :
-    ∃ (e : S ≃ₕ J), Function.LeftInverse e
-      (⟨Set.inclusion hJS, continuous_inclusion hJS⟩ : C(J, S)) := by
-  obtain ⟨φ, p, hp, hJset⟩ := hJ
-  let p' : DiskModel := ⟨p, interior_subset hp⟩
-  let i : C(J, S) :=
-    ⟨Set.inclusion hJS, continuous_inclusion hJS⟩
-  let j : CircleModel ≃ₜ J :=
-    { toFun := fun q =>
-        ⟨(φ (p', q) : EuclideanSpace ℝ (Fin 3)), by
-          rw [hJset]
-          exact ⟨φ (p', q), ⟨(p', q), rfl, rfl⟩, rfl⟩⟩
-      invFun := fun y =>
-        (φ.symm (⟨(y : EuclideanSpace ℝ (Fin 3)), hJS y.property⟩ : S)).2
-      left_inv := by
-        intro q
-        apply Subtype.ext
-        change ((φ.symm (φ (p', q))).2 : EuclideanSpace ℝ (Fin 2)) = q
-        exact congrArg Subtype.val (congrArg Prod.snd (φ.symm_apply_apply (p', q)))
-      right_inv := by
-        intro y
-        let ys : S := ⟨(y : EuclideanSpace ℝ (Fin 3)), hJS y.property⟩
-        have hy : (y : EuclideanSpace ℝ (Fin 3)) ∈
-            Subtype.val '' (φ '' {q | q.1 = p}) := hJset ▸ y.property
-        obtain ⟨z, ⟨q, hq, hqφ⟩, hyz⟩ := hy
-        have hzy : z = ys := by
-          apply Subtype.ext
-          exact hyz
-        have hqeq : q = φ.symm ys := by
-          apply φ.injective
-          rw [φ.apply_symm_apply]
-          exact hqφ.trans hzy
-        have hqp : q.1 = p' := Subtype.ext hq
-        have harg : (p', (φ.symm ys).2) = q := by
-          apply Prod.ext
-          · exact hqp.symm
-          · exact (congrArg Prod.snd hqeq).symm
-        apply Subtype.ext
-        change (φ (p', (φ.symm ys).2) : EuclideanSpace ℝ (Fin 3)) = y
-        rw [harg]
-        exact (congrArg Subtype.val hqφ).trans hyz }
-  let e₁ : S ≃ₕ (DiskModel × CircleModel) := φ.symm.toHomotopyEquiv
-  let e₂ : (DiskModel × CircleModel) ≃ₕ (CircleModel × DiskModel) :=
-    (Homeomorph.prodComm DiskModel CircleModel).toHomotopyEquiv
-  let e₃ : (CircleModel × DiskModel) ≃ₕ CircleModel :=
-    DifferentialGeometry.HomotopyEquiv.productConvex CircleModel
-      (convex_closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1) p'
-  let e₄ : CircleModel ≃ₕ J := j.toHomotopyEquiv
-  let e := e₁.trans (e₂.trans (e₃.trans e₄))
-  refine ⟨e, ?_⟩
-  intro x
-  have hx : (x : EuclideanSpace ℝ (Fin 3)) ∈
-      Subtype.val '' (φ '' {q | q.1 = p}) := hJset ▸ x.property
-  obtain ⟨y, ⟨q, hq, hqφ⟩, hxy⟩ := hx
-  have hqeq : q = φ.symm (⟨(x : EuclideanSpace ℝ (Fin 3)), hJS x.property⟩ : S) := by
-    apply φ.injective
-    rw [φ.apply_symm_apply]
-    exact hqφ.trans (Subtype.ext hxy)
-  have hqp : q.1 = p' := Subtype.ext hq
-  simp only [ContinuousMap.coe_mk]
-  apply Subtype.ext
-  change (φ (p', (φ.symm (⟨(x : EuclideanSpace ℝ (Fin 3)), hJS x.property⟩ : S)).2) :
-      EuclideanSpace ℝ (Fin 3)) = x
-  have harg : (p', (φ.symm (⟨(x : EuclideanSpace ℝ (Fin 3)), hJS x.property⟩ : S)).2) = q := by
-    apply Prod.ext
-    · exact hqp.symm
-    · exact (congrArg Prod.snd hqeq).symm
-  rw [harg]
-  exact (congrArg Subtype.val hqφ).trans hxy
-
 open Classical in
 theorem fundamentalGroup_map_inclusion_bijective_of_isSpine
     {S J : Set (EuclideanSpace ℝ (Fin 3))} (hJ : IsSpine S J) (hJS : J ⊆ S) :
     ∀ x : J, Function.Bijective (FundamentalGroup.map
       (⟨Set.inclusion hJS, continuous_inclusion hJS⟩ : C(J, S)) x) := by
-  obtain ⟨e, hri⟩ := spine_homotopy_equiv hJ hJS
+  obtain ⟨e, hri⟩ := IsSpine.exists_homotopyEquiv_leftInverse hJ hJS
   intro x
   let i : C(J, S) :=
     ⟨Set.inclusion hJS, continuous_inclusion hJS⟩
@@ -291,28 +168,19 @@ private theorem bijective_of_cyclic_factorization
     bijective_of_cyclic_conjugate eH eK g hg'⟩
 
 open Classical in
-def Moise308Nested : Prop :=
-  ∀ (S₁ S S₂ J : Set (EuclideanSpace ℝ (Fin 3))),
-    IsTopologicalSolidTorus S₁ → IsTopologicalSolidTorus S₂ → IsCombinatorialSolidTorus S →
-    S₁ ⊆ interior S → S ⊆ interior S₂ →
-    IsToroidalShell (closure (S₂ \ S₁)) (frontier S₁) (frontier S₂) →
-    IsSpine S₁ J → ∀ hJS : J ⊆ S, ∀ x : J,
-      Function.Bijective (FundamentalGroup.map
-        (⟨Set.inclusion hJS, continuous_inclusion hJS⟩ : C(J, S)) x)
-
-open Classical in
 private theorem isCompact_of_isTopologicalSolidTorus_nested
     {S : Set (EuclideanSpace ℝ (Fin 3))} (hS : IsTopologicalSolidTorus S) :
     IsCompact S := by
-  let φ : S ≃ₜ (DiskModel × CircleModel) := Classical.choice hS
+  let φ : S ≃ₜ (Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1 ×
+      Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1) := Classical.choice hS
   let _ : CompactSpace S := φ.symm.compactSpace
   exact isCompact_iff_compactSpace.mpr inferInstance
 
 open Classical in
-private theorem fundamentalGroup_map_inclusion_bijective_of_nested
+theorem fundamentalGroup_map_inclusion_bijective_of_nested
     {S₁ S S₂ J : Set (EuclideanSpace ℝ (Fin 3))}
     (hS₁ : IsTopologicalSolidTorus S₁) (hS₂ : IsTopologicalSolidTorus S₂)
-    (hS : IsCombinatorialSolidTorus S) (hS₁S : S₁ ⊆ interior S)
+    (hS : IsTopologicalSolidTorus S) (hS₁S : S₁ ⊆ interior S)
     (hSS₂ : S ⊆ interior S₂)
     (hshell : IsToroidalShell (closure (S₂ \ S₁)) (frontier S₁) (frontier S₂))
     (hJ : IsSpine S₁ J) :
@@ -338,7 +206,7 @@ private theorem fundamentalGroup_map_inclusion_bijective_of_nested
   have hclosed₂ : IsClosed S₂ :=
     (isCompact_of_isTopologicalSolidTorus_nested hS₂).isClosed
   obtain ⟨eShell, heShell⟩ :=
-    homotopyEquiv_inclusion_of_isToroidalShell hclosed₁ hclosed₂ h₁₂ hshell
+    exists_homotopyEquiv_leftInverse_inclusion_of_isToroidalShell hclosed₁ hclosed₂ h₁₂ hshell
   have hi₁₂ : Function.Bijective (FundamentalGroup.map i₁₂ (iJ₁ x)) :=
     DifferentialGeometry.Topology.bijective_fundamentalGroup_map_of_homotopyEquiv_leftInverse
       eShell i₁₂ heShell (iJ₁ x)
@@ -349,15 +217,15 @@ private theorem fundamentalGroup_map_inclusion_bijective_of_nested
       rfl
     rw [← heq, fundamentalGroup_map_comp]
     exact hi₁₂.comp hiJ₁
-  obtain ⟨eSpine, heSpine⟩ := spine_homotopy_equiv hJ hJ₁
+  obtain ⟨eSpine, heSpine⟩ := IsSpine.exists_homotopyEquiv_leftInverse hJ hJ₁
   let eJ : FundamentalGroup J x ≃* Multiplicative ℤ :=
     (DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
       eSpine.symm x (eSpine.symm x) rfl).trans
-      (fundamentalGroupSolidTorusEquivInt hS₁ (eSpine.symm x))
+      (IsTopologicalSolidTorus.fundamentalGroupEquivInt hS₁ (eSpine.symm x))
   let eS : FundamentalGroup S (iJS x) ≃* Multiplicative ℤ :=
-    fundamentalGroupSolidTorusEquivInt hS.1 (iJS x)
+    IsTopologicalSolidTorus.fundamentalGroupEquivInt hS (iJS x)
   let eS₂ : FundamentalGroup S₂ (iJ₂ x) ≃* Multiplicative ℤ :=
-    fundamentalGroupSolidTorusEquivInt hS₂ (iJ₂ x)
+    IsTopologicalSolidTorus.fundamentalGroupEquivInt hS₂ (iJ₂ x)
   let f : FundamentalGroup J x →* FundamentalGroup S (iJS x) :=
     FundamentalGroup.map iJS x
   let g : FundamentalGroup S (iJS x) →* FundamentalGroup S₂ (iJ₂ x) :=
@@ -369,11 +237,6 @@ private theorem fundamentalGroup_map_inclusion_bijective_of_nested
     rw [heq]
     exact hiJ₂
   exact hfg.1
-
-theorem moise308Nested : Moise308Nested := by
-  intro S₁ S S₂ J hS₁ hS₂ hS hS₁S hSS₂ hshell hJ
-  exact fundamentalGroup_map_inclusion_bijective_of_nested hS₁ hS₂ hS hS₁S hSS₂
-    hshell hJ
 
 open Classical in
 theorem fundamentalGroup_map_inclusion_bijective_of_isSpine_of_isTopologicalSolidTorus
@@ -397,15 +260,15 @@ theorem fundamentalGroup_map_inclusion_bijective_of_isSpine_of_isTopologicalSoli
       rfl
     rw [← heq]
     exact hi
-  obtain ⟨eSpine, _heSpine⟩ := spine_homotopy_equiv hJ hJT
+  obtain ⟨eSpine, _heSpine⟩ := IsSpine.exists_homotopyEquiv_leftInverse hJ hJT
   let eJ : FundamentalGroup J x ≃* Multiplicative ℤ :=
     (DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
       eSpine.symm x (eSpine.symm x) rfl).trans
-      (fundamentalGroupSolidTorusEquivInt hT (eSpine.symm x))
+      (IsTopologicalSolidTorus.fundamentalGroupEquivInt hT (eSpine.symm x))
   let eS : FundamentalGroup S (iJS x) ≃* Multiplicative ℤ :=
-    fundamentalGroupSolidTorusEquivInt hS (iJS x)
+    IsTopologicalSolidTorus.fundamentalGroupEquivInt hS (iJS x)
   let eT : FundamentalGroup T (iJT x) ≃* Multiplicative ℤ :=
-    fundamentalGroupSolidTorusEquivInt hT (iJT x)
+    IsTopologicalSolidTorus.fundamentalGroupEquivInt hT (iJT x)
   let f : FundamentalGroup J x →* FundamentalGroup S (iJS x) :=
     FundamentalGroup.map iJS x
   let g : FundamentalGroup S (iJS x) →* FundamentalGroup T (iJT x) :=

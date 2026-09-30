@@ -32,9 +32,9 @@ theorem rfs_csf_projection_upper_control (B : RicciBackground (I := I) (M := M) 
     let C_A := Real.exp (2 * B.B₀ * delta) * (2 * B.B₀ * AStar + ThetaStar)
     ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve M,
       c.IsSolutionOn B.family.metric lambda (Icc a b) →
-      ∀ γ : ℝ → ContinuousFreeLoop M,
+      ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop M,
         (∀ z t, t ∈ Icc a b → γ t z = c.projection z t) →
-        (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+        (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
         ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) →
         c.length B.family.metric lambda a ≤ L₀ →
         c.totalCurvature B.family.metric lambda a ≤ Theta₀ →

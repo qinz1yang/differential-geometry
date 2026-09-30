@@ -1,3 +1,5 @@
+import DifferentialGeometry.Topology.SolidTorus.Spine
+import DifferentialGeometry.Topology.SolidTorus.Shell
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaThree
 import DifferentialGeometry.Topology.PiecewiseLinear.ComponentComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorus
@@ -100,12 +102,6 @@ def IsPLTorus (T : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
   IsPolyhedron T ∧
     Nonempty (T ≃ₜ (Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 ×
       Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1))
-
-def IsToroidalShell {E : Type u} [TopologicalSpace E] (Y T₀ T₁ : Set E) : Prop :=
-  ∃ φ : ((Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 ×
-      Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1) × Set.Icc (0 : ℝ) 1) ≃ₜ Y,
-    T₀ = Subtype.val '' (φ '' {p | (p.2 : ℝ) = 0}) ∧
-    T₁ = Subtype.val '' (φ '' {p | (p.2 : ℝ) = 1})
 
 def Moise306 : Prop :=
   ∀ (Y T₀ T₁ : Set (EuclideanSpace ℝ (Fin 3))),
@@ -238,20 +234,6 @@ theorem plManifoldMapApproximation : PLManifoldMapApproximation := by
 
 def TopologicalCellComplementConnected : Prop :=
   ∀ C : Set (EuclideanSpace ℝ (Fin 3)), IsTopologicalCell 3 C → IsConnected Cᶜ
-
-def IsSpine (S J : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
-  ∃ (φ : (Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1 ×
-      Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1) ≃ₜ S)
-    (p : EuclideanSpace ℝ (Fin 2)),
-    p ∈ interior (Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1) ∧
-    J = Subtype.val '' (φ '' {q | (q.1 : EuclideanSpace ℝ (Fin 2)) = p})
-
-def Moise308 : Prop :=
-  ∀ (S J : Set (EuclideanSpace ℝ (Fin 3))),
-    HasCylindricalDiagram S → IsSpine S J →
-    ∀ hJS : J ⊆ S, ∀ x : J,
-      Subgroup.closure (Set.range (FundamentalGroup.map
-        (⟨Set.inclusion hJS, continuous_inclusion hJS⟩ : C(J, S)) x)) = ⊤
 
 section AnnularSeparation
 

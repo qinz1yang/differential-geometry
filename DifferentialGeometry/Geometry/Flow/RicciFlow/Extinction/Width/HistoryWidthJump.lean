@@ -47,7 +47,7 @@ theorem rfs_actual_width_jump_of_child_comparison {H : ObservedHistory.{u}} {i :
     simpa only [one_smul] using hdegree c
   have hcomp : ∀ (g : (G.Parent c).Metric) (h : (G.Child c).Metric)
       (f : C((G.Parent c).Carrier, (G.Child c).Carrier)) (L : ℝ≥0),
-      FreeHomotopyClass.map (contractibleLoopPostcompose f)
+      DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose f)
           (positiveFreeContractibleClass (G.Parent c).orientation) =
         positiveFreeContractibleClass (G.Child c).orientation →
       (∀ x y, riemannianEDistOf h (f x) (f y) ≤

@@ -431,7 +431,7 @@ theorem component_classes (A : InitialIdentification P g H)
       (∀ x : P₀.Carrier, (e x).1 = A.map x.1) ∧
       (∀ p : P₀.Carrier, basedHomotopyMap ⟨e, e.continuous⟩ p
         (positiveHomotopyClass P₀.orientation p) = positiveHomotopyClass Q₀.orientation (e p)) ∧
-      FreeHomotopyClass.map (contractibleLoopPostcompose ⟨e, e.continuous⟩)
+      DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose ⟨e, e.continuous⟩)
         (positiveFreeContractibleClass P₀.orientation) = positiveFreeContractibleClass Q₀.orientation := by
   let P₀ := P.component (A.sourceComponent c)
   let Q₀ := (H.stage 0).component c
@@ -486,9 +486,9 @@ theorem observe_finite_ancestry
       letI : SimplyConnectedSpace P.Carrier := hSC j (chain.component j)
       ∀ q : P.Carrier,
         Function.Injective (fun z : ℤ => positiveHomotopyClass P.orientation q ^ z) ∧
-        positiveFreeContractibleClass P.orientation ≠ FreeHomotopyClass.mk
+        positiveFreeContractibleClass P.orientation ≠ DifferentialGeometry.Topology.FreeHomotopyClass.mk
           (ContinuousMap.const (Sphere 2)
-            (⟨constantLoops q, isContractibleLoop_constant q⟩ : ContractibleContinuousLoop P.Carrier))) ∧
+            (⟨DifferentialGeometry.Topology.FreeLoop.constants q, ContinuousMap.nullhomotopic_of_constant q⟩ : DifferentialGeometry.Topology.contractibleLoop P.Carrier))) ∧
     (∀ j : Fin H.eventCount,
       let G := cutoff j
       let child := chain.component j.succ
@@ -503,7 +503,7 @@ theorem observe_finite_ancestry
         (∀ p : P.Carrier, basedHomotopyMap K.canonicalWholeParentMap p
           (positiveHomotopyClass P.orientation p) =
             positiveHomotopyClass Q.orientation (K.canonicalWholeParentMap p)) ∧
-        FreeHomotopyClass.map (contractibleLoopPostcompose K.canonicalWholeParentMap)
+        DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose K.canonicalWholeParentMap)
           (positiveFreeContractibleClass P.orientation) = positiveFreeContractibleClass Q.orientation) := by
   exact rfs_finite_ancestry (T.observe b hb) parameters cutoff
     ((T.observeInitial b hb).components_simplyConnected hP) terminal
@@ -526,7 +526,7 @@ theorem observe_initial_classes
       (∀ x : P₀.Carrier, (e x).1 = A.map x.1) ∧
       (∀ p : P₀.Carrier, basedHomotopyMap ⟨e, e.continuous⟩ p
         (positiveHomotopyClass P₀.orientation p) = positiveHomotopyClass Q₀.orientation (e p)) ∧
-      FreeHomotopyClass.map (contractibleLoopPostcompose ⟨e, e.continuous⟩)
+      DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose ⟨e, e.continuous⟩)
         (positiveFreeContractibleClass P₀.orientation) = positiveFreeContractibleClass Q₀.orientation := by
   exact (T.observeInitial b hb).component_classes hP
     ((finiteAncestorChain (T.observe b hb) terminal).component 0)

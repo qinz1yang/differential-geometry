@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Homology.HurewiczOne
 import Mathlib.Analysis.Normed.Module.Connected
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereTopHomology
-import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
+import DifferentialGeometry.Topology.SolidTorus.FundamentalGroup
 
 open Set Topology
 open scoped ContinuousMap

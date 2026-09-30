@@ -316,9 +316,9 @@ structure StaticCapWitness {h : SmoothRiemannianMetric ThreeModel M}
       collapse x = capChart ⟨radial x.1.1.2 • x.1.1.1.1, hx⟩
   collapse_length : ∀ (γ : ℝ → neckCentralDomain δ) (a b : ℝ),
     a ≤ b → ContinuousOn γ (Icc a b) →
-    riemannianCurveLength h (fun t => neck.chart (γ t).1) a b ≠ ⊤ →
-    riemannianCurveLength metric (fun t => collapse (γ t)) a b ≤
-      riemannianCurveLength h (fun t => neck.chart (γ t).1) a b
+    DifferentialGeometry.Geometry.riemannianCurveVariation h (fun t => neck.chart (γ t).1) a b ≠ ⊤ →
+    DifferentialGeometry.Geometry.riemannianCurveVariation metric (fun t => collapse (γ t)) a b ≤
+      DifferentialGeometry.Geometry.riemannianCurveVariation h (fun t => neck.chart (γ t).1) a b
 
 attribute [instance] StaticCapWitness.outputTopology StaticCapWitness.outputCharts
   StaticCapWitness.outputSmooth StaticCapWitness.outputHausdorff StaticCapWitness.outputCountable

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
+import DifferentialGeometry.Topology.LoopSpace.Continuous
 import Mathlib.Analysis.Normed.Module.Connected
 import Mathlib.Topology.Connected.TotallyDisconnected
 import Mathlib.Topology.Connected.LocallyConnected

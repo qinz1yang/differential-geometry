@@ -3868,7 +3868,6 @@ import DifferentialGeometry.Geometry.Connection.Hessian.PullbackTensor
 import DifferentialGeometry.Geometry.Connection.Hessian.Restriction
 import DifferentialGeometry.Geometry.Connection.Hessian.Scalar
 import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
-import DifferentialGeometry.Geometry.Connection.HomBundle.General
 import DifferentialGeometry.Geometry.Connection.Laplacian.Congruence
 import DifferentialGeometry.Geometry.Connection.Laplacian.ConnectionLaplacian
 import DifferentialGeometry.Geometry.Connection.Laplacian.CovariantTensor
@@ -5302,11 +5301,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Stability.Examples
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Stability.JetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Stability.Local
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Stability.TimeInterval
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.EmptyAdmissiblePaths
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.HistoryPinning
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.PoleAvoidance
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Realization
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.VariationalStrip
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.AmbientSpatialCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.BufferedControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.EndNeckPerturbation
@@ -6435,7 +6429,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.UniformD
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.UniformTerminalCutCapEvents
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WideModelChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WideStaticRequests
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BallDiffeomorph
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BasedTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapAmbientDerivatives
@@ -6557,7 +6550,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalOrient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalOrientationClassGeneratorCriterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalOrientationClassGeneratorFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopClass
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHurewiczCubeBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHurewiczCubeCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHurewiczThreeSphere
@@ -6638,7 +6630,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ThreeBallCh
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ThreeFrameOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ThreeManifoldHomologyFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.VanKampen
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WeakLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WorldBridges
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.DeTurckWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Algebra.Relowering
@@ -13143,8 +13134,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverReductionO
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkGraphConnectivity
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePLHomeomorphGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.MarkedCircleSector
-import DifferentialGeometry.Topology.PiecewiseLinear.Moise308NestedShell
-import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
 import DifferentialGeometry.Topology.LoopSpace.PathLoopInjectivity
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryAdaptation
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneSource
@@ -14691,7 +14680,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SphereChartTriangulation
 import DifferentialGeometry.Topology.Manifold.SphereDiffeomorph
 import DifferentialGeometry.Topology.Manifold.SurfaceArcFamilySmoothing
 import DifferentialGeometry.Topology.PiecewiseLinear.PairedChartSubdivision
-import DifferentialGeometry.Topology.PlanarJordan.JordanDiskReplacementDraftC23
 import DifferentialGeometry.Topology.PlanarJordan.SmoothDiskExtension
 import DifferentialGeometry.Topology.Combinatorics.StableUnion
 import DifferentialGeometry.Topology.Connected.UnboundedComplement
@@ -17506,3 +17494,15 @@ import DifferentialGeometry.Topology.VectorField.PoincareHopf.RelativeChosenColl
 import DifferentialGeometry.Topology.VectorField.PoincareHopf.RelativeChosenCollarOne
 import DifferentialGeometry.Topology.VectorField.PoincareHopf.RelativePoincareHopf
 import DifferentialGeometry.Topology.VectorField.PoincareHopf.RelativePoincareHopfOne
+import DifferentialGeometry.Geometry.Connection.HomBundle.Composition
+import DifferentialGeometry.Geometry.Connection.HomBundle.Kernel
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.AdmissibilityExamples
+import DifferentialGeometry.Topology.Homotopy.FreeHomotopyClass
+import DifferentialGeometry.Topology.LoopSpace.Continuous
+import DifferentialGeometry.Topology.PlanarJordan.RelativeDiskSmoothing
+import DifferentialGeometry.Topology.SolidTorus.FundamentalGroup
+import DifferentialGeometry.Topology.SolidTorus.Shell
+import DifferentialGeometry.Topology.SolidTorus.Spine
+import DifferentialGeometry.Topology.ThreeManifold.Model
+import DifferentialGeometry.Topology.ThreeManifold.Orientation

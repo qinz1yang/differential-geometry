@@ -1,6 +1,10 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
+import DifferentialGeometry.Topology.ThreeManifold.Orientation
+import DifferentialGeometry.Topology.LoopSpace.Continuous
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WeakLength
+import DifferentialGeometry.Geometry.Metric.CurveVariation.Comparison
+import DifferentialGeometry.Geometry.Metric.CurveVariation.Distance
+import DifferentialGeometry.Geometry.Metric.CurveVariation.WeakDerivative
+import DifferentialGeometry.Topology.Manifold.LocalCompactness
 import DifferentialGeometry.Geometry.Metric.StandardCap.Metric
 import DifferentialGeometry.Geometry.Metric.StandardCap.ConformalCoordinate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic

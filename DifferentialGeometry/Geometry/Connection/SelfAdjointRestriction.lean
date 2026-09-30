@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.SelfAdjointSubbundle
 import DifferentialGeometry.Geometry.Connection.SubbundleRestriction
 import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint
 
 set_option autoImplicit false
 
@@ -29,9 +30,9 @@ def selfAdjoint
   let S := Bundle.selfAdjointSubbundle (I := I) (F := F) (V := V) (n := ∞)
   letI := S.totalSpaceTopology
   letI := S.fiberBundle
-  exact (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov)
+  exact (_root_.CovariantDerivative.hom I M F V F V cov cov)
     |>.restrict S
-      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_isCovariantlyInvariant_selfAdjoint
+      (_root_.CovariantDerivative.hom_isCovariantlyInvariant_selfAdjoint
         cov hcov)
 
 theorem selfAdjoint_subtypeVal
@@ -42,14 +43,14 @@ theorem selfAdjoint_subtypeVal
     ∀ (A : Cₛ^∞⟮I; Fin S.rank → ℝ, fun x => S.fiber x⟯)
       (x : M) (v : TangentSpace I x),
       (cov.selfAdjoint hcov A x v : V x →L[ℝ] V x) =
-        DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
+        _root_.CovariantDerivative.hom I M F V F V cov cov
           (fun y => (A y : V y →L[ℝ] V y)) x v := by
   let S := Bundle.selfAdjointSubbundle (I := I) (F := F) (V := V) (n := ∞)
   let _ := S.totalSpaceTopology
   let _ := S.fiberBundle
-  exact (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov)
+  exact (_root_.CovariantDerivative.hom I M F V F V cov cov)
     |>.restrict_subtypeVal S
-      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_isCovariantlyInvariant_selfAdjoint
+      (_root_.CovariantDerivative.hom_isCovariantlyInvariant_selfAdjoint
         cov hcov)
 
 theorem contMDiff_selfAdjoint
@@ -64,9 +65,9 @@ theorem contMDiff_selfAdjoint
   let _ := S.totalSpaceTopology
   let _ := S.fiberBundle
   let _ := S.vector_bundle
-  exact (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov)
+  exact (_root_.CovariantDerivative.hom I M F V F V cov cov)
     |>.contMDiff_restrict S
-      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_isCovariantlyInvariant_selfAdjoint
+      (_root_.CovariantDerivative.hom_isCovariantlyInvariant_selfAdjoint
         cov hcov) inferInstance
 
 end CovariantDerivative

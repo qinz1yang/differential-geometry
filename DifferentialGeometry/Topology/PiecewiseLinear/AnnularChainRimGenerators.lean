@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnularChainRimCylinder
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSpineRevolutionOfOfMemCellInterior
-import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
+import DifferentialGeometry.Topology.SolidTorus.FundamentalGroup
 import DifferentialGeometry.Topology.FundamentalGroup.Retraction
 import DifferentialGeometry.Topology.Homotopy.ConvexProduct
 

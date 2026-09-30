@@ -28,13 +28,13 @@ variable [CompleteSpace E]
 def endoCovariantDerivative (g : SmoothRiemannianMetric I M) :
     CovariantDerivative I (E →L[ℝ] E)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x) :=
-  HomConnection.homBundleCovariantDerivative I M
+  _root_.CovariantDerivative.hom I M
     E (fun x : M => TangentSpace I x) E (fun x : M => TangentSpace I x)
     (LeviCivita (I := I) g) (LeviCivita (I := I) g)
 
 instance endoCovariantDerivative_contMDiff (g : SmoothRiemannianMetric I M) :
     (endoCovariantDerivative (I := I) (M := M) g).ContMDiffCovariantDerivative ∞ :=
-  HomConnection.homBundleCovariantDerivative_contMDiff I M
+  _root_.CovariantDerivative.hom_contMDiff I M
     E (fun x : M => TangentSpace I x) E (fun x : M => TangentSpace I x)
     (LeviCivita (I := I) g) (LeviCivita (I := I) g)
 
@@ -47,7 +47,7 @@ theorem endoCovariantDerivative_apply (g : SmoothRiemannianMetric I M)
     ((endoCovariantDerivative (I := I) (M := M) g) Λ x v) (Y x) =
       (LeviCivita (I := I) g) (fun y => (Λ y) (Y y)) x v -
         (Λ x) ((LeviCivita (I := I) g) (fun y => Y y) x v) :=
-  HomConnection.homBundleCovariantDerivative_apply I M
+  _root_.CovariantDerivative.hom_apply I M
     E (fun x : M => TangentSpace I x) E (fun x : M => TangentSpace I x)
     (LeviCivita (I := I) g) (LeviCivita (I := I) g) Λ Y x v
 
