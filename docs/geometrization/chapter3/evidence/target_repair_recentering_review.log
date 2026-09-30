@@ -1,0 +1,27 @@
+'_private._stdin.0.GCAC7778Review.zero_repair_all_points' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC7778Review.nonzero_repair_at_and_away' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC7778Review.exact_tolerance' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC7778Review.repaired_recenter_preserves_remote_value' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCAC7778Review.half_line_not_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC7778Review.incomplete_source_actual_map_recenter' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.PointedBallApprox.repairTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.PointedBallApprox.repairTarget_apply_of_ne' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.PointedBallApprox.repairTarget_dist_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.recenterTolerance' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.recenterTolerance_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.KleinerLottApprox.recenterWithTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.KleinerLottApprox.recenterWithTarget_apply_of_ne' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.KleinerLottApprox.recenterWithTarget_dist_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.KleinerLottApprox.recenterWithTarget_self_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

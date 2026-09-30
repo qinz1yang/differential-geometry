@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "new_public_theorems": 3,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 4,
+  "combined_modules": 268,
+  "combined_jobs": 3102,
+  "combined_owned_declarations": 1253,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/Approximation/ControlledPointedIsometry.lean": "1801908a888d7c312a8086f294e7050e082115df8f713e4128283e53ed194509",
+    "DifferentialGeometry/Geometry/Metric/Approximation/CommonSourceControl.lean": "20c7396b4c051b112d79aba657af90cd5b1db57598df72e09b48ae4fb392f521"
+  },
+  "logs": {
+    "controlled_isometry_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "controlled_isometry_review.log": "755deac7094e5d9524d7d6d6abbd66087cbca9449265adbc1adb3b0a61273b8d",
+    "controlled_isometry_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "1e4748d9c52706828dd10d42eb04b540675537ea277cdf95ab359f474a182764",
+  "git_head_at_check": "c716f53653188a342a3a1d06eecc83e76bf03523",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

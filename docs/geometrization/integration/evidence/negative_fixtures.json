@@ -1,0 +1,34 @@
+{
+  "success": true,
+  "scope": "in-memory source/locator corruption; full joint static gate",
+  "manifest_sha256": "26ad5948df529977de314887cb7e938821700b72993c670cd3dfe478e28b08c3",
+  "gate_sha256": "6a37a323d5f7cbd401e5176ee32063e407cdc9c6dbcb233147928c184c71dbd1",
+  "test_sha256": "32687f0bfc436c089d2b65fe9d19ff0eec8f29133e89e98a96b1be2ebc8875df",
+  "fixtures": [
+    {
+      "fixture": "independent_kernel_bypass",
+      "rejected": true,
+      "reason": "DifferentialGeometry/Topology/MetricSpace/LipschitzEnvelope.lean"
+    },
+    {
+      "fixture": "skeleton_extra_option",
+      "rejected": true,
+      "reason": "Forbidden set_option in DifferentialGeometry/Analysis/ODE/ReciprocalTimeBarrier.lean: set_option maxHeartbeats 0"
+    },
+    {
+      "fixture": "foundation_new_option",
+      "rejected": true,
+      "reason": "('Changed inherited elaboration options', 'DifferentialGeometry/Analysis/Order/CommonProfile.lean')"
+    },
+    {
+      "fixture": "unregistered_admission",
+      "rejected": true,
+      "reason": "DifferentialGeometry/Topology/MetricSpace/LipschitzEnvelope.lean"
+    },
+    {
+      "fixture": "incorrect_source_label",
+      "rejected": true,
+      "reason": "Crosswalk locator failures:\nDifferentialGeometry.Geometry.Collapse.curvatureRadius: incorrect label locator master207A.tex:19752: sec:independent-collapse-contracts"
+    }
+  ]
+}

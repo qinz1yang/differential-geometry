@@ -1,0 +1,21 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.PairedComparisonPacket' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.PairedComparisonPacket.exists_distance_coordinate_move' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.PairedComparisonPacket.exists_distance_residual_correction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.PairedComparisonPacket.exists_preimage_in_complete_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.PairedComparisonPacket.ball_subset_distanceCoordinates_image' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.PairedComparisonPacket.isOpenMap_distanceCoordinates_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.PairedComparisonPacket.isOpenMap_distanceCoordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/CommonTangentDimension.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_CommonTangentDimension.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "c13837fbe916272b5eab549e1801f39faf1c297a69e4a1bf64d59200e11f1bd6"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_common_tangent_dimension_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "f72d3b3c34e32049135b47ec8ddca193e7d66606",
+  "review_reports": [
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_common_tangent_dimH_of_intrinsic_eight_comparison_and_dimH",
+    "GCDirectionSpaceReview.original_real_same_integer_for_every_inner_tangent",
+    "GCDirectionSpaceReview.original_singleton_same_zero_for_every_inner_tangent",
+    "GCPlaneDirectionPackingReview.original_plane_same_integer_for_every_inner_tangent"
+  ],
+  "review_driver_sha256": "47331ddf79695e136e0ce1980cbedc575ac05d763dfff691005cf7c9a489740a",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Comparison/CommonTangentDimension.lean": "d03fbfdb6e889a6b706c8e7b5f5b350b740d4b23549d3f7a8559ac963ce106ea"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "a27e50574c4d3683d92fef5e68ae76c91b17e24d97a5a417ddfc0343c88a079b"
+}

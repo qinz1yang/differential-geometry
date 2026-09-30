@@ -1,0 +1,33 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC02 2141\u20132190; AC64 5374\u20135421; preparation only"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-ed6a16eb2a3c/defs-CBB.tex",
+      "sha256": "b80b54fafc6e30cbac121880c1b80265ee62afcd90d8a3ab77c0deef1a0e1f9c",
+      "locator": "516\u2013557 thm:conc/comp-kappa full function-comparison statement/proof, independently reread by root/peer;953\u20131218 unchanged cradle/selection route reused"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-ed6a16eb2a3c/model.tex",
+      "sha256": "db849cb9a051e0c3f8ec335942c954f14223c542eee1a40c4bca4ea2a63af9f8",
+      "locator": "Independent peer read38\u201394,150\u2013157: standard functions/negative curvature normalization/md-diff-eq"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Analysis/ODE/HyperbolicSupport.lean",
+      "sha256": "ec5a5bb41ee892068206268a900acf5521b9e8bc952f9ef7ced94ba453ddfcae",
+      "locator": "Root read existing derivative-support alternative and quotient consumer; reused algebra pattern, NO derivative premise or result imported into the new continuous-only principle"
+    }
+  ],
+  "reused_source_checks": [
+    "sixteen_radius_comparison_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "akp_branch": "vol1",
+  "akp_commit": "ed6a16eb2a3c66c1f0f54b183bd1a4176e78b245",
+  "scope": "Preparatory exact comparison and scalar tools; not source-geometric original8R completion",
+  "errata": "Unchanged retained source/errata comparison reused; no new external retrieval",
+  "independent_root_and_peer_proof_review": true
+}

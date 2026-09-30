@@ -1,0 +1,37 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/TangentDimension.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_TangentDimension.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "3c41817b21309a09146a1c2828065359d12249f9ec6c9b2e97e7b1473e35a0f2"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_tangent_dimension_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "b326bde42f2d3c94b35b5e78012edf743603a649",
+  "review_reports": [
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.tangent_dimH_le_of_local_comparison_and_dimH",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.tangent_dimH_le_of_intrinsic_eight_comparison_and_dimH",
+    "GCDirectionSpaceReview.actual_real_original_eight_tangent_dimension_outside_halfball",
+    "GCDirectionSpaceReview.actual_real_unbounded_open_region_tangent_dimension",
+    "GCDirectionSpaceReview.actual_singleton_empty_directions_tangent_dimension"
+  ],
+  "review_driver_sha256": "ab314f7c2c0d809276f3b5373029b0cfa81fdd3a77a5df72e4f096f59eac5aa5",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Comparison/TangentDimension.lean": "67fa1167bef5382127b1b3482274ad88663b68454f3619d28d0b9ca957ac8b16"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "2de9b0ed1cd2a2726a33105950cc8939b7b0c40aabfffa1b64aa32efdcffe484"
+}

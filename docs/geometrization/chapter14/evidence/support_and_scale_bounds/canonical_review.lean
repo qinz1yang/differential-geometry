@@ -1,0 +1,37 @@
+import Mathlib.Tactic.Linter
+import DifferentialGeometry.Geometry.Metric.SupportDomainBuffer
+import DifferentialGeometry.Geometry.Metric.ZeroSupportIsolation
+import DifferentialGeometry.Geometry.Metric.SupportScalePacking
+import DifferentialGeometry.Analysis.Calculus.FreezeScale
+import DifferentialGeometry.Analysis.Calculus.NormalizedScale
+import DifferentialGeometry.Analysis.Integration.Measure.FinitePacking
+
+#check GC.MetricGeometry.support_meeting_ball_buffer
+#print axioms GC.MetricGeometry.support_meeting_ball_buffer
+
+#check GC.MetricGeometry.ball_subset_zero_core_of_support_meeting
+#print axioms GC.MetricGeometry.ball_subset_zero_core_of_support_meeting
+
+#check GC.MetricGeometry.subsingleton_zero_supports_meeting_ball
+#print axioms GC.MetricGeometry.subsingleton_zero_supports_meeting_ball
+
+#check GC.MetricGeometry.scale_ratio_of_support_meeting
+#print axioms GC.MetricGeometry.scale_ratio_of_support_meeting
+
+#check GC.MetricGeometry.enlarged_core_ball_subset_of_supports_meeting
+#print axioms GC.MetricGeometry.enlarged_core_ball_subset_of_supports_meeting
+
+#check DifferentialGeometry.Analysis.scalar_weight_c1_perturbation_le
+#print axioms DifferentialGeometry.Analysis.scalar_weight_c1_perturbation_le
+
+#check DifferentialGeometry.Analysis.freeze_scale_product_c1_le
+#print axioms DifferentialGeometry.Analysis.freeze_scale_product_c1_le
+
+#check DifferentialGeometry.Analysis.freeze_scale_quotient_c1_le
+#print axioms DifferentialGeometry.Analysis.freeze_scale_quotient_c1_le
+
+#check DifferentialGeometry.Analysis.normalized_scale_in_affine_coordinates
+#print axioms DifferentialGeometry.Analysis.normalized_scale_in_affine_coordinates
+
+#check MeasureTheory.card_le_of_disjoint_measure_comparison
+#print axioms MeasureTheory.card_le_of_disjoint_measure_comparison

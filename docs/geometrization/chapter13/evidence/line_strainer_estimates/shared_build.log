@@ -1,0 +1,6 @@
+⚠ [2730/2962] Replayed DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
+warning: DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean:18:8: declaration uses `sorry`
+✔ [3570/3572] Built DifferentialGeometry.Topology.MetricSpace.EqualRadiusEndpoints (1.6s)
+✔ [3571/3572] Built DifferentialGeometry.Geometry.Comparison.EqualLegAngleDefect (2.2s)
+✔ [3572/3572] Built DifferentialGeometry.Geometry.Metric.Approximation.OppositeLineLifts (1.5s)
+Build completed successfully (3572 jobs).

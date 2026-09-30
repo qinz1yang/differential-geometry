@@ -1,0 +1,25 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_closedBall_net_of_local_eight_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_closedBall_net_of_intrinsic_local_eight_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_closedBall_net_of_bounded_eight_local_curvature_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_closedBall_net_of_bounded_intrinsic_eight_local_curvature_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_ambient_eight_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCOriginalEightMidpointReview.original_intrinsic_eight_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_bounded_ambient_eight_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_bounded_intrinsic_eight_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_singleton_bounded_eight_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

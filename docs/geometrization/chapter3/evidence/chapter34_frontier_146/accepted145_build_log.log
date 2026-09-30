@@ -1,0 +1,7 @@
+⚠ [2730/3057] Replayed DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
+warning: DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean:18:8: declaration uses `sorry`
+✔ [3348/3351] Built DifferentialGeometry.Geometry.Comparison.ConeSineInterpolation (12s)
+✔ [3349/3351] Built DifferentialGeometry.Geometry.Comparison.SphericalAngleShortening (1.5s)
+✔ [3350/3351] Built DifferentialGeometry.Geometry.Comparison.GlobalSphericalComparison (1.6s)
+✔ [3351/3351] Built DifferentialGeometry.Geometry.Comparison.GlobalSphericalDirections (1.0s)
+Build completed successfully (3351 jobs).

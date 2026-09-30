@@ -1,0 +1,10 @@
+✔ [2702/2710] Built DifferentialGeometry.Analysis.Convex.Affine (9.3s)
+✔ [2703/2710] Built DifferentialGeometry.Geometry.Comparison.LineDistance (2.4s)
+✔ [2704/2710] Built DifferentialGeometry.Geometry.Comparison.LineCoordinate (2.1s)
+✔ [2705/2710] Built DifferentialGeometry.Geometry.Comparison.CalibratedRay (2.6s)
+✔ [2706/2710] Built DifferentialGeometry.Geometry.Comparison.CalibratedLine (2.3s)
+✔ [2707/2710] Built DifferentialGeometry.Geometry.Comparison.ParallelLines (2.3s)
+✔ [2708/2710] Built DifferentialGeometry.Geometry.Comparison.LineTranslation (2.3s)
+✔ [2709/2710] Built DifferentialGeometry.Geometry.Comparison.LineSplitting (4.2s)
+✔ [2710/2710] Built DifferentialGeometry.Geometry.Metric.Approximation.LineSplitting (2.7s)
+Build completed successfully (2710 jobs).

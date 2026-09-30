@@ -1,0 +1,166 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/BuragoBuragoIvanovBook.pdf",
+      "sha256": "4efaa168dcc83e7e9f5663d14824f9543104beab21642ca3830a5dd1c684c971",
+      "version": "Archived BBI book",
+      "locator": "10.8.16\u201318,10.8.24 printed387\u2013390/PDF402\u2013405; full10.9.10\u201313 printed393\u2013395/PDF408\u2013410",
+      "review_provenance": "Fresh full proof passages read for this suite; detailed retained source record and archived errata bound below."
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KapovitchLebedevaPetruninAlexandrov.pdf",
+      "sha256": "3dc0a166ec88b1c7e50aeebd9924f747ece6fb1957c7b31dcbe17a90a9e61d67",
+      "version": "Archived v1 July14 2026",
+      "locator": "6.18\u20136.20 printed69/PDF71; semisolutions137\u2013138/PDF139\u2013140; reused actual dimension and tangent contracts through135",
+      "review_provenance": "Retained direct source checks from the preceding dimension/tangent work, unchanged here."
+    }
+  ],
+  "reused_source_checks": [
+    "exact_direction_dimension_sources.json",
+    "global_integer_dimension_sources.json",
+    "global_tangent_dimension_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "blueprint": {
+    "path": "docs/geometrization/blueprint/master207A.tex",
+    "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+    "locator": "AC28\u201329, lines3460\u20133550, actual finite maximal-rank and open distance-chart proof route"
+  },
+  "errata": {
+    "version": "Retained July6,2024 BBI errata",
+    "sha256": "68338c7a8b37b8637efbad8af5f547f6cf789675df020fbc6aa04d4babdde42e",
+    "locator": "387 line\u221213 sign >;394 line\u221210 corrected opposite-pair index",
+    "review_provenance": "Direct source-agent retained errata read recorded in Post135 frontier assessment; no new external retrieval claimed."
+  },
+  "scope": "Original complete metric geometry, arbitrarily short continuous curves, finite natural global Hausdorff upper and local comparison1 everywhere imply ONE actual global integer and a dense G-delta of original points with pointed ONTO isometry of the literal actual tangent to E_m.",
+  "proof_route": "Scaled maximal-rank quality ladder and actual chart/image dimension force the common global rank; Baire produces arbitrary-quality packets at each fixed point; actual same-endpoint-path hinge comparison transfers to completed directions; compact coherent signed arrays and actual triple-angle sum give exact orthogonal frames; actual cone lines, oriented splitting and full-rank factor elimination give pointed Euclidean tangents.",
+  "conventions": "Parameter1 means lower curvature -1; all derived angles/completions/tangents are actual same source objects. Nonempty open-region qualification retained. Empty/singleton and rank0 handled explicitly.",
+  "not_claimed": [
+    "improvement of a supplied strainer",
+    "equality of chosen S with entire regular locus",
+    "every-point Euclidean tangents",
+    "angular CBB1",
+    "near-isometric charts",
+    "automatic angular obstruction",
+    "linear/topological dimension identification",
+    "full Chapters3\u20134 completion",
+    "migration-bound smooth foundation reuse validation"
+  ],
+  "independent_peer_proof_review": true,
+  "proof_records": [
+    {
+      "path": "/tmp/gc_Post135_frontier_source_assessment.md",
+      "sha256": "784bb8684b6584137c13e55034554a66798294991c2f1c5d507cf7cb0603200b"
+    },
+    {
+      "path": "/tmp/gc_RankBaire_record.md",
+      "sha256": "95d4eafd03c0f1be1dd9adbb41ca63faec857f90404a3cf73f963088499a2a0a"
+    },
+    {
+      "path": "/tmp/gc_RankBaire_source_test_independent_read.md",
+      "sha256": "bc7902f0c84c52bb9bc3c4a246f2c7f8715c4fb7b4f212deaa06c10d9ed81e3c"
+    },
+    {
+      "path": "/tmp/gc_ScaledPairedChart_record.md",
+      "sha256": "386faf5993eb742be342826ebee7e26c993df4afb3717fbe80a32639947b8e0a"
+    },
+    {
+      "path": "/tmp/gc_ArbitraryQualityPairedPackets_source_independent_read.md",
+      "sha256": "f09706eef762421e4d03e07c8d8f6d95b08bddf8214f564c190dcd338f4796e2"
+    },
+    {
+      "path": "/tmp/gc_ScaledPairedChart_source_test_independent_read.md",
+      "sha256": "fa9934e11b017511273659a745401f6a3daa598085afea9af7faed7df375e2e3"
+    },
+    {
+      "path": "/tmp/gc_PairedPacketDirections_record.md",
+      "sha256": "60f74d9c642fe80e6600f15cb341e3ddcf0eb8e3e8736f6707c51d14d64a4987"
+    },
+    {
+      "path": "/tmp/gc_PairedPacketDirections_half_independent_read.md",
+      "sha256": "515fc3eab06d346390b5357a0f9df95fc8aa187cbe60b0cfa8a73cb55bf4eda3"
+    },
+    {
+      "path": "/tmp/gc_PairedPacketDirections_65_independent_read.md",
+      "sha256": "5c28e959e918169f25309812ced69ba047d7e7598e08f337a28be1d6e69f7648"
+    },
+    {
+      "path": "/tmp/gc_AngularFrame_record.md",
+      "sha256": "e4104638658b1e40e5f9e9abec90900ebf229b7a1a414f7a4762b181a9af7080"
+    },
+    {
+      "path": "/tmp/gc_AngularFrame_source_independent_read.md",
+      "sha256": "b54c78f5a778aa301748ae606e9cabd7cb57b6b89101ad30872bf155ab1fff70"
+    },
+    {
+      "path": "/tmp/gc_AngularFrame_root_read_receipt.md",
+      "sha256": "913893a40342c29156db98190662e968b172baaeb0851100b2d42f21550aa9dd"
+    },
+    {
+      "path": "/tmp/gc_EuclideanTangentFrame_record.md",
+      "sha256": "6c353c000c3c55e3e5716b2b97456316e0c1602c4af44a9d1a2351de46145339"
+    },
+    {
+      "path": "/tmp/gc_AngularFrameEuclidean_half_independent_read.md",
+      "sha256": "92fd6beb8d8fa4edf4ff37627d6694d21a28f1279295fe389b9cd84b9e52a338"
+    },
+    {
+      "path": "/tmp/gc_DenseAngularFrames_record.md",
+      "sha256": "88f8d7d466a9d86cbd0064810497426d6f9fc0b610c32fd0b9580291c399b9db"
+    },
+    {
+      "path": "/tmp/gc_DenseAngularFrames_half_independent_read.md",
+      "sha256": "2d23bc779b5f3c0e7144d12e2e69a3a67288fd338032c790ea5d73676d7b9342"
+    },
+    {
+      "path": "/tmp/gc_DenseEuclideanTangents_record.md",
+      "sha256": "57395a02700f87c7d6fd2217b5ecf84fb665ea6d177460d026e132f480a79ead"
+    },
+    {
+      "path": "/tmp/gc_DenseEuclideanTangents_source_independent_read.md",
+      "sha256": "5f58f216209049536969413c0cb1591d350ecef3279d99b1e5900b6507dbace5"
+    },
+    {
+      "path": "/tmp/gc_DenseEuclideanTangents_half_independent_read.md",
+      "sha256": "134f2e6fa92c15240112f7dd5e12b45447ac67d72c6abaf3addf3f140dc0e7a1"
+    },
+    {
+      "path": "/tmp/gc_DenseEuclideanTangents_65_independent_read.md",
+      "sha256": "ae9c529264a9d214cc9336861fc2ee3e672424bad3a8e7f4db352ed8123db770"
+    }
+  ],
+  "upstream_freezes": [
+    {
+      "path": "/tmp/gc_RankBaire_freeze.json",
+      "sha256": "3f5257dcb037d193a9a003479d7f86de70261c1cee31967f1967d1c17e0fe047"
+    },
+    {
+      "path": "/tmp/gc_ScaledPairedChart_freeze.json",
+      "sha256": "7f7b1b6b78de58b3e00464376cbf8977c36d344718f00bda009e820889674c50"
+    },
+    {
+      "path": "/tmp/gc_PairedPacketDirections_freeze.json",
+      "sha256": "589b30df4a73acc9d1c186b16d96d136e1541db5b2df8406e5eedbb2911a1e99"
+    },
+    {
+      "path": "/tmp/gc_AngularFrame_freeze.json",
+      "sha256": "65fb99dd5b19c594f648a3b66e5f643318e91a41dcc44fb82e13093bec497536"
+    },
+    {
+      "path": "/tmp/gc_EuclideanTangentFrame_freeze.json",
+      "sha256": "5d3d92ddb09e0ee52fe15c50566498a60b5935bae897298bc82499d48fb603ac"
+    },
+    {
+      "path": "/tmp/gc_DenseAngularFrames_freeze.json",
+      "sha256": "b855572012e5a45e770a492bcff1c27474accda4effc520a46ea966e85f69286"
+    },
+    {
+      "path": "/tmp/gc_DenseEuclideanTangents_half_review_freeze.json",
+      "sha256": "2c10c161c06c6d61f91bc4ee80788c732911e71931eb641da1f3376aa060adb7"
+    },
+    {
+      "path": "/tmp/gc_DenseEuclideanTangents_freeze.json",
+      "sha256": "1a2a063d206ab621e9353539169f77c523b3c51c1d8539446d287b9da97bd42e"
+    }
+  ]
+}

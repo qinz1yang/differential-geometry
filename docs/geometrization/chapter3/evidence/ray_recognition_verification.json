@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 5,
+  "new_private_theorems": 0,
+  "new_definitions": 1,
+  "new_owned_declarations": 8,
+  "combined_modules": 231,
+  "combined_jobs": 3065,
+  "combined_owned_declarations": 1150,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/RayCoordinate.lean": "60d10b9f26c5190fa8e1506af7480efd3a15c038a7c74c1dc40ee58663c6e06e",
+    "DifferentialGeometry/Topology/MetricSpace/LineOrRayModel.lean": "d37e12ca8f6e1e04685c87e784a5933e31026139efaf917e070c82406eac64a0",
+    "DifferentialGeometry/Geometry/Comparison/RayRecognition.lean": "e11bfd0d19c55619ce90ae4af5052b281d6c8ec1052b848d143c773dd66df05d"
+  },
+  "logs": {
+    "ray_recognition_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ray_recognition_review.log": "ad4c6ceb405936e245c93b8124332d16e59c22b74aad68c265d3d3c4f8ccec06",
+    "ray_recognition_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "a2fdbf5a7ffb88e9ffcff8bdf7693a3eb3661a774493191eeb4c98d39b530c7e",
+  "git_head_at_check": "b659f36e8c22386af862f01a30679949cce69ec8",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

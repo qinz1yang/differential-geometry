@@ -1,0 +1,37 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC55 full statement/proof4892-4937; fixed-rank and uniform quantifiers"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf",
+      "sha256": "7a860b4dd95b35fe33b06bf040100ec243d72c80528d927f4763391aaf79cb6e",
+      "locator": "Lemma4.15(2) printed31-32/PDF26-27, rendered rank bound, curvature-sigma and radius1/sigma independently reopened"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/KL_corrections.pdf",
+      "sha256": "b5849571508231ce7328ef842eaa0a8a74e34804de7741dab548c406dea11e19",
+      "locator": "retained May15,2015 correction sheet, PDF1, independently reopened; entries6.5/14.1(2)/20.2"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/SequentialPrescribedSplitting.lean",
+      "sha256": "63de7d6b3b5b26edb4111ab4c398f816c8d10f13bc551ca87401f33bf438992d",
+      "locator": "actual original-input compactness and same-factor all-delta map producer"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Data/Fintype/Pigeonhole.lean",
+      "sha256": "8cfc46ff22cbef1594addded39543bf50ba6d3e314adb6b024b58c1237149b69",
+      "locator": "Finite.exists_infinite_fiber lines86-95, actual proof read"
+    }
+  ],
+  "reused_source_checks": [
+    "sequential_prescribed_splitting_sources.json",
+    "original_oriented_product_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Full original-input AC55 uniform parameter across bounded positive ranks and all source spaces; exact whole-source original coordinates.",
+  "independent_agent_proof_review": true,
+  "errata": "Actual retained KL correction sheet reopened; no new remote freshness claim."
+}

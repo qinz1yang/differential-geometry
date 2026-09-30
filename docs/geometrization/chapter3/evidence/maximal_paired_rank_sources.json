@@ -1,0 +1,31 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC28 full statement and proof, lines3442\u20133515, reread; exact finite hierarchy, maximum and chart constants"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/reference_checks_revision66.md",
+      "sha256": "2b452e9e8c10bfc2ea1f0375da5ea7d62e80675bd77f69996c6a9f502b3617b1",
+      "locator": "full historical source comparison reopened"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/BuragoGromovPerelman1992.pdf",
+      "sha256": "c4c665d7e0bfb9d515e9b14ab06523fb9fd75edc89165fe3dc8173c47dea57d9",
+      "locator": "English1992 Remark6.9, printed22/PDF23, full page freshly reopened; approximate comparison and stratification not imported"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Data/Nat/Find.lean",
+      "sha256": "5a07ff428d4fbd44e2921e630dce57685bc1a1ff544360a7109175aba9fc2640",
+      "locator": "pinned c55e6e786f49471c72fbddbec5415808896aec1e, lines192\u2013239, bounded maximum proof bodies"
+    }
+  ],
+  "reused_source_checks": [
+    "rank_exclusion_chart_sources.json",
+    "angle_reversal_midpoint_sources.json",
+    "paired_distance_local_openness_sources.json"
+  ],
+  "errata": "Reused previously checked official/retained BGP and BBI correction records for unchanged claims; no new external identity claim.",
+  "scope": "Finite hierarchy and maximum only; final centered AC28 chart remains."
+}

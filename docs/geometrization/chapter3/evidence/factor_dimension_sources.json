@@ -1,0 +1,432 @@
+{
+  "blueprint_revision": 207,
+  "dag": "docs/geometrization/blueprint/current_dependency_graph.json",
+  "dag_sha256": "b79069323caf650e4cd31e48d76664a3bffa9b69fa934a5a3175d2db5bda439f",
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/BuragoBuragoIvanovBook.pdf",
+      "sha256": "4efaa168dcc83e7e9f5663d14824f9543104beab21642ca3830a5dd1c684c971",
+      "version": "AMS 2001, GSM 33, archived English edition",
+      "locator": "Proposition 1.7.19, printed 23 / PDF 38",
+      "reading": "Targeted body reread. Dimension facts used through actual Mathlib proofs; grid counting is the expanded blueprint argument, not an attributed BBI theorem."
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf",
+      "sha256": "7a860b4dd95b35fe33b06bf040100ec243d72c80528d927f4763391aaf79cb6e",
+      "version": "Asterisque 365 (2014), archived Locally collapsed 3-manifolds",
+      "locator": "Section 2.2 printed 20 / PDF 15; Definitions 4.1\u20134.2 and Sublemma 4.5 printed 28 / PDF 23",
+      "reading": "Targeted body reread for Pythagorean metric, onto splitting and factor conventions."
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/bbi-errata-2024-07-06.pdf",
+      "sha256": "68338c7a8b37b8637efbad8af5f547f6cf789675df020fbc6aa04d4babdde42e",
+      "version": "Retained author errata dated July 6, 2024",
+      "locator": "PDF 1\u20132 and 13: finite nets, Euclidean Hausdorff measure proof and line-splitting corrections",
+      "reading": "Retained-sheet body reread. Printed 22 correction retained; independent Mathlib dimension proofs used. Current remote bytes not verified."
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/KL_corrections.pdf",
+      "sha256": "b5849571508231ce7328ef842eaa0a8a74e34804de7741dab548c406dea11e19",
+      "version": "Retained author correction sheet dated May 15, 2015",
+      "locator": "PDF 1, all three entries",
+      "reading": "Body reread: corrections to 6.5, 14.1(2), 20.2 do not list these selected metric passages. Not a full-source or current-remote errata clearance."
+    }
+  ],
+  "modules": [
+    {
+      "file": "DifferentialGeometry/Geometry/Metric/L2Product.lean",
+      "nodes": [
+        "AC42",
+        "AC44"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "def:alexandrov-exact-splitting",
+          "line": 4257
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-factor-geometry",
+          "line": 4321
+        }
+      ],
+      "declarations": [
+        {
+          "name": "WithLp.prod_dist_sq_eq_add_sq",
+          "kind": "theorem",
+          "line": 16,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "WithLp.isometry_prodMk_left",
+          "kind": "theorem",
+          "line": 23,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "WithLp.isometry_prodMk_right",
+          "kind": "theorem",
+          "line": 30,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "WithLp.fst_eq_of_dist_add_eq",
+          "kind": "theorem",
+          "line": 37,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "IsometryEquiv.l2ProductSlice",
+          "kind": "def",
+          "line": 57,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "IsometryEquiv.isClosed_l2ProductSlice",
+          "kind": "theorem",
+          "line": 73,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "IsometryEquiv.completeSpace_l2_product_factor",
+          "kind": "theorem",
+          "line": 77,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "IsometryEquiv.properSpace_l2_product_factor",
+          "kind": "theorem",
+          "line": 83,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved; verification receipts determine executed scope",
+      "downstream_application": "factor geometry and dimension on the same limit; full-rank Euclidean recognition; curvature-to-covering, line production and one-dimensional recognition remain separate"
+    },
+    {
+      "file": "DifferentialGeometry/Analysis/InnerProductSpace/SeparatedGrid.lean",
+      "nodes": [
+        "AC45"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-factor-dimension",
+          "line": 4353
+        }
+      ],
+      "declarations": [
+        {
+          "name": "EuclideanSpace.exists_separated_grid",
+          "kind": "theorem",
+          "line": 14,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved; verification receipts determine executed scope",
+      "downstream_application": "factor geometry and dimension on the same limit; full-rank Euclidean recognition; curvature-to-covering, line production and one-dimensional recognition remain separate"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Comparison/FactorGeometry.lean",
+      "nodes": [
+        "AC44"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-factor-geometry",
+          "line": 4321
+        }
+      ],
+      "declarations": [
+        {
+          "name": "IsometryEquiv.l2_product_fst_eq_of_dist_add_eq",
+          "kind": "theorem",
+          "line": 14,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "IsometryEquiv.exists_segment_l2_product_factor",
+          "kind": "theorem",
+          "line": 26,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "IsometryEquiv.dimH_l2_product_factor_le",
+          "kind": "theorem",
+          "line": 64,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "IsometryEquiv.euclidean_rank_le_dimH",
+          "kind": "theorem",
+          "line": 70,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison.of_isometry",
+          "kind": "theorem",
+          "line": 86,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_l2_product_factor",
+          "kind": "theorem",
+          "line": 94,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved; verification receipts determine executed scope",
+      "downstream_application": "factor geometry and dimension on the same limit; full-rank Euclidean recognition; curvature-to-covering, line production and one-dimensional recognition remain separate"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Metric/EuclideanFactorCovering.lean",
+      "nodes": [
+        "AC45"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-factor-dimension",
+          "line": 4353
+        }
+      ],
+      "declarations": [
+        {
+          "name": "IsometryEquiv.exists_finset_net_euclidean_factor",
+          "kind": "theorem",
+          "line": 15,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "IsometryEquiv.dimH_euclidean_factor_le",
+          "kind": "theorem",
+          "line": 97,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved; verification receipts determine executed scope",
+      "downstream_application": "factor geometry and dimension on the same limit; full-rank Euclidean recognition; curvature-to-covering, line production and one-dimensional recognition remain separate"
+    },
+    {
+      "file": "DifferentialGeometry/Topology/MetricSpace/GeodesicDimension.lean",
+      "nodes": [
+        "AC48"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "cor:alexandrov-low-dimensional-products",
+          "line": 4504
+        }
+      ],
+      "declarations": [
+        {
+          "name": "Metric.one_le_dimH_of_nonconstant_segment",
+          "kind": "theorem",
+          "line": 13,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "Metric.subsingleton_of_dimH_lt_one",
+          "kind": "theorem",
+          "line": 34,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved; verification receipts determine executed scope",
+      "downstream_application": "factor geometry and dimension on the same limit; full-rank Euclidean recognition; curvature-to-covering, line production and one-dimensional recognition remain separate"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Comparison/EuclideanFactorDimension.lean",
+      "nodes": [
+        "AC45",
+        "AC48"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-factor-dimension",
+          "line": 4353
+        },
+        {
+          "file": "master207A.tex",
+          "label": "cor:alexandrov-low-dimensional-products",
+          "line": 4504
+        }
+      ],
+      "declarations": [
+        {
+          "name": "IsometryEquiv.dimH_real_factor_le",
+          "kind": "theorem",
+          "line": 13,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "IsometryEquiv.subsingleton_euclidean_factor_of_polynomial_nets",
+          "kind": "theorem",
+          "line": 32,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "IsometryEquiv.exists_pointed_isometryEquiv_euclidean_of_splitting",
+          "kind": "theorem",
+          "line": 48,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved; verification receipts determine executed scope",
+      "downstream_application": "factor geometry and dimension on the same limit; full-rank Euclidean recognition; curvature-to-covering, line production and one-dimensional recognition remain separate"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Metric/Approximation/FactorDimension.lean",
+      "nodes": [
+        "AC40",
+        "AC45"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:alexandrov-limit-dimension",
+          "line": 4159
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-factor-dimension",
+          "line": 4353
+        }
+      ],
+      "declarations": [
+        {
+          "name": "GC.MetricGeometry.PointedGHConverges.exists_polynomial_nets_at",
+          "kind": "theorem",
+          "line": 15,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.MetricGeometry.PointedGHConverges.dimH_euclidean_factor_le",
+          "kind": "theorem",
+          "line": 48,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.MetricGeometry.PointedGHConverges.dimH_real_factor_le",
+          "kind": "theorem",
+          "line": 60,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved; verification receipts determine executed scope",
+      "downstream_application": "factor geometry and dimension on the same limit; full-rank Euclidean recognition; curvature-to-covering, line production and one-dimensional recognition remain separate"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Metric/Approximation/FactorSplitting.lean",
+      "nodes": [
+        "AC41",
+        "AC43",
+        "AC44",
+        "AC45",
+        "AC48"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "cor:alexandrov-assembled-extraction",
+          "line": 4209
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:alexandrov-line-splitting-input",
+          "line": 4286
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-factor-geometry",
+          "line": 4321
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-factor-dimension",
+          "line": 4353
+        },
+        {
+          "file": "master207A.tex",
+          "label": "cor:alexandrov-low-dimensional-products",
+          "line": 4504
+        }
+      ],
+      "declarations": [
+        {
+          "name": "GC.MetricGeometry.PointedGHConverges.euclidean_rank_le_of_polynomial_covering",
+          "kind": "theorem",
+          "line": 17,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.MetricGeometry.PointedGHConverges.exists_pointed_isometryEquiv_euclidean",
+          "kind": "theorem",
+          "line": 29,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.MetricGeometry.PointedGHConverges.exists_isometryEquiv_real_prod_dimH_le",
+          "kind": "theorem",
+          "line": 45,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.MetricGeometry.exists_pointedGHConverges_with_line_factor_dimension",
+          "kind": "theorem",
+          "line": 69,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved; verification receipts determine executed scope",
+      "downstream_application": "factor geometry and dimension on the same limit; full-rank Euclidean recognition; curvature-to-covering, line production and one-dimensional recognition remain separate"
+    }
+  ],
+  "blueprint_reading": {
+    "path": "GEOMETRIZATION_BLUEPRINT/master207A.tex",
+    "locators": "AC44\u2013AC45 lines 4321\u20134419; AC48 lines 4503\u20134531",
+    "historical_comparison": "GEOMETRIZATION_BLUEPRINT/reference_checks_revision71.md",
+    "scope": "Covering-input AC45 only; final geometric specialization through AC07/AC04 not implemented"
+  }
+}

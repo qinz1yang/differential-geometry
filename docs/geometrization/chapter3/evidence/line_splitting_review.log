@@ -1,0 +1,87 @@
+@exists_isometryEquiv_real_prod : ∀ {X : Type u_1} [inst : MetricSpace X] [ProperSpace X],
+  fourPointComparison 0 univ →
+    ∀ {γ : ℝ → X},
+      Isometry γ →
+        (∀ (a b : X),
+            ∃ f,
+              Continuous f ∧
+                f ⟨0, ⋯⟩ = a ∧ f ⟨1, ⋯⟩ = b ∧ ∀ (s t : ↑(Icc 0 1)), dist (f s) (f t) = dist a b * dist s t) →
+          ∃ Y m p e,
+            (∀ (t : ℝ), e (γ t) = WithLp.toLp 2 (t, p)) ∧
+              ProperSpace Y ∧
+                CompleteSpace Y ∧
+                  fourPointComparison 0 univ ∧
+                    (∀ (a b : Y),
+                        ∃ f,
+                          Continuous f ∧
+                            f ⟨0, ⋯⟩ = a ∧
+                              f ⟨1, ⋯⟩ = b ∧ ∀ (s t : ↑(Icc 0 1)), dist (f s) (f t) = dist a b * dist s t) ∧
+                      dimH univ ≤ dimH univ
+@PointedGHConverges.exists_isometryEquiv_real_prod : ∀ {X : ℕ → Type u_1} {Y : Type u_2}
+  [inst : (i : ℕ) → MetricSpace (X i)] [inst_1 : MetricSpace Y] {p : (i : ℕ) → X i} {q : Y} {κ : ℕ → ℝ} [ProperSpace Y],
+  PointedGHConverges p q →
+    (∀ (i : ℕ), 0 ≤ κ i) →
+      Tendsto κ atTop (𝓝 0) →
+        (∀ (R : ℝ), 0 < R → ∀ᶠ (i : ℕ) in atTop, fourPointComparison (κ i) (Metric.ball (p i) R)) →
+          (∀ (a b : Y),
+              ∃ f,
+                Continuous f ∧
+                  f ⟨0, ⋯⟩ = a ∧ f ⟨1, ⋯⟩ = b ∧ ∀ (s t : ↑(Icc 0 1)), dist (f s) (f t) = dist a b * dist s t) →
+            ∀ {γ : ℝ → Y},
+              Isometry γ →
+                ∃ Z m z e,
+                  (∀ (t : ℝ), e (γ t) = WithLp.toLp 2 (t, z)) ∧
+                    ProperSpace Z ∧
+                      CompleteSpace Z ∧
+                        fourPointComparison 0 univ ∧
+                          (∀ (a b : Z),
+                              ∃ f,
+                                Continuous f ∧
+                                  f ⟨0, ⋯⟩ = a ∧
+                                    f ⟨1, ⋯⟩ = b ∧ ∀ (s t : ↑(Icc 0 1)), dist (f s) (f t) = dist a b * dist s t) ∧
+                            dimH univ ≤ dimH univ
+@exists_pointedGHConverges_with_line_splitting : ∀ {X : ℕ → Type u_1} [inst : (i : ℕ) → MetricSpace (X i)] {κ : ℕ → ℝ}
+  (p : (i : ℕ) → X i) {d : ℝ},
+  0 ≤ d →
+    (∀ (R : ℝ),
+        0 < R →
+          ∃ C,
+            0 < C ∧
+              ∀ (η : ℝ),
+                0 < η →
+                  η ≤ 1 →
+                    ∀ᶠ (i : ℕ) in atTop,
+                      ∃ F,
+                        ↑F.card ≤ C * η ^ (-d) ∧
+                          (∀ x ∈ F, dist x (p i) ≤ R) ∧ ∀ (x : X i), dist x (p i) ≤ R → ∃ y ∈ F, dist x y ≤ η) →
+      (∀ (i : ℕ) (a b : X i) (ε : ℝ),
+          0 < ε → ∃ c, Continuous c ∧ c 0 = a ∧ c 1 = b ∧ eVariationOn c univ < ENNReal.ofReal (dist a b + ε)) →
+        (∀ (i : ℕ), 0 ≤ κ i) →
+          Tendsto κ atTop (𝓝 0) →
+            (∀ (R : ℝ), 0 < R → ∀ᶠ (i : ℕ) in atTop, fourPointComparison (κ i) (Metric.ball (p i) R)) →
+              ∃ Y m q φ,
+                StrictMono φ ∧
+                  ProperSpace Y ∧
+                    PointedGHConverges (fun i => p (φ i)) q ∧
+                      dimH univ ≤ ENNReal.ofReal d ∧
+                        fourPointComparison 0 univ ∧
+                          (∀ (a b : Y),
+                              ∃ f,
+                                Continuous f ∧
+                                  f ⟨0, ⋯⟩ = a ∧
+                                    f ⟨1, ⋯⟩ = b ∧ ∀ (s t : ↑(Icc 0 1)), dist (f s) (f t) = dist a b * dist s t) ∧
+                            ∀ (γ : ℝ → Y),
+                              Isometry γ →
+                                ∃ Z mZ z e,
+                                  (∀ (t : ℝ), e (γ t) = WithLp.toLp 2 (t, z)) ∧
+                                    ProperSpace Z ∧
+                                      CompleteSpace Z ∧
+                                        fourPointComparison 0 univ ∧
+                                          (∀ (a b : Z),
+                                              ∃ f,
+                                                Continuous f ∧
+                                                  f ⟨0, ⋯⟩ = a ∧
+                                                    f ⟨1, ⋯⟩ = b ∧
+                                                      ∀ (s t : ↑(Icc 0 1)), dist (f s) (f t) = dist a b * dist s t) ∧
+                                            dimH univ ≤ ENNReal.ofReal d
+"LINE_SPLITTING_REVIEW_PASS"

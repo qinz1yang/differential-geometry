@@ -1,0 +1,98 @@
+{
+  "status": "Registered and verified in the 832-module migrated forest; original scratch source provenance retained.",
+  "prior_verified_head": "6eecde33cc2b5f64dd95b68faea66ddd5b3c4313",
+  "prior_verified_modules": 600,
+  "files": [
+    {
+      "file": "gc_edge_point.lean",
+      "sha256": "2912fd2660bd0e288add75f75b796a6e38624890a5362166cd554c802894ec14"
+    },
+    {
+      "file": "gc_strip_chart.lean",
+      "sha256": "ffec070003320ebbbd4abd83a13f772dd19cf39d53faa26afabfcc9dc411c170"
+    },
+    {
+      "file": "gc_rescale_composition.lean",
+      "sha256": "e0d8fa20509796e3a4476f7abb60769d6326d8f903a2ee60282ce25c3b531086"
+    },
+    {
+      "file": "gc_edge_local_model.lean",
+      "sha256": "42fd947eb6ed3d4aea355b37d7dc20bf55a8b787c8c1fb229234a52cc96ec7d3"
+    },
+    {
+      "file": "gc_edge_border_lifts.lean",
+      "sha256": "5049c4a7225edec852501104d710812f48fafdcc4d6fecc7779adb996daf9225"
+    },
+    {
+      "file": "gc_padded_strip_boundary.lean",
+      "sha256": "3aebe7d84dd081897cba1794e869ee52b54628604b61fb3cc8191dd9836b6c76"
+    },
+    {
+      "file": "gc_edge_height.lean",
+      "sha256": "4c098a17950b86dbd04f6aa15a3e965966eadd67b81fdb888dcda5e97d10a9a2"
+    },
+    {
+      "file": "gc_edge_coarse_border.lean",
+      "sha256": "fed2d308087a8b88c1df8eb34181cbf22100496eee7a31beb8c80b51b7603fef"
+    },
+    {
+      "file": "gc_strong_edge_point.lean",
+      "sha256": "9e994f729260ac91c04fd69983713e3defc67534c07295cc4c33363f2b8da01d"
+    },
+    {
+      "file": "gc_endpoint_product_lifts.lean",
+      "sha256": "cdac4bf76985444e8c2e07389b69b79d89cb981ca0814ec43fa27a01f1212cab"
+    },
+    {
+      "file": "gc_strong_edge_lifts.lean",
+      "sha256": "cfcb8debfa767dbb0af061450c8cd3df3d22a1f4018a1c02d7afd5c1b6119c22"
+    },
+    {
+      "file": "gc_strong_edge_density.lean",
+      "sha256": "4f1467fba0115a31921b30ffc209ad34121bb030e3ab3d542efa7751d4a5b545"
+    },
+    {
+      "file": "gc_marked_model_height.lean",
+      "sha256": "c250b99aed76d4e438d2ba91ec8431705a484f89f70f7de603449927169f0083"
+    },
+    {
+      "file": "gc_weak_edge_density.lean",
+      "sha256": "0a5fa1bf215c395cfeae9d4aabf635db5a1f3bf3880671bb8f209bd46fb80ed7"
+    },
+    {
+      "file": "gc_lipschitz_ball_selection.lean",
+      "sha256": "ac10fa85403381fd90cfbbc54e743603856f855546f32350f6fc0ea2c2de2ef2"
+    },
+    {
+      "file": "gc_edge_disk_coverage.lean",
+      "sha256": "9b0718567abb865b67ea02d67ddcdf2c68133db67e3a24f1a940da0534fbfad8"
+    },
+    {
+      "file": "gc_prescribed_low_dimensional_model.lean",
+      "sha256": "9e9ef8e883a9354687bddd50eae78cebd4107f1bfa1e5d4aa78b76a51fb21751"
+    },
+    {
+      "file": "gc_nonslim_factor_endpoint.lean",
+      "sha256": "698f46f7d0e6e30a91bcdf4351b625dbc66576c235ad571e285854262e6a030a"
+    },
+    {
+      "file": "gc_compatible_endpoint_models.lean",
+      "sha256": "eb10ffa4efc754ad00a4e040c08b4c0a48945e3d3d762fe25c712e90a44a13a5"
+    },
+    {
+      "file": "gc_strong_edge_production.lean",
+      "sha256": "4b8e4c79d178a23618c0497a5a9260a7f58da65f48f4bdb0dc14021beeaa53bc"
+    },
+    {
+      "file": "gc_physical_strong_edge_density.lean",
+      "sha256": "c879aafb734e90e00a0c710e6eb91e9d9d4c4654bb16776718ac0e1bc13901e0"
+    },
+    {
+      "file": "gc_real_splitting.lean",
+      "sha256": "9f5dcb2fa144e416e3fc7b56c8e09ac8bb9c2c4bce7f4536bee71b9f913a26c6"
+    }
+  ],
+  "current_candidates": "Twenty-two modules installed and verified: twenty-one new and one compatible extension. Production-import checks and the full joint gate pass.",
+  "scratch_verification": "../evidence/edge_candidates/candidate_verification.json",
+  "production_verification": "../evidence/installed_ch13/verification.json"
+}

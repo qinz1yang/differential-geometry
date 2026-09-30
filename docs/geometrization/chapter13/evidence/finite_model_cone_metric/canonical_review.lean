@@ -1,0 +1,29 @@
+import Mathlib.Tactic.Linter
+import DifferentialGeometry.Topology.MetricSpace.PseudometricLimit
+import DifferentialGeometry.Topology.MetricSpace.ProperRadialImage
+import DifferentialGeometry.Geometry.Metric.RadialConeQuotient
+import DifferentialGeometry.Geometry.Metric.Approximation.CompactParameterMaps
+
+#check PseudoMetricSpace.ofPointwiseDistLimit
+#print axioms PseudoMetricSpace.ofPointwiseDistLimit
+
+#check PseudoMetricSpace.ofPointwiseDistLimit_dist
+#print axioms PseudoMetricSpace.ofPointwiseDistLimit_dist
+
+#check Metric.tendstoUniformlyOn_dist_of_dominated_antitone
+#print axioms Metric.tendstoUniformlyOn_dist_of_dominated_antitone
+
+#check ProperSpace.of_surjective_dist_basepoint_eq
+#print axioms ProperSpace.of_surjective_dist_basepoint_eq
+
+#check GC.MetricGeometry.radialConeDataSeparationQuotient
+#print axioms GC.MetricGeometry.radialConeDataSeparationQuotient
+
+#check GC.MetricGeometry.radialConeDataSeparationQuotient_map_mk
+#print axioms GC.MetricGeometry.radialConeDataSeparationQuotient_map_mk
+
+#check GC.MetricGeometry.exists_onto_ball_map_of_compact_parameters
+#print axioms GC.MetricGeometry.exists_onto_ball_map_of_compact_parameters
+
+#check GC.MetricGeometry.exists_kleinerLott_approx_of_compact_parameters
+#print axioms GC.MetricGeometry.exists_kleinerLott_approx_of_compact_parameters

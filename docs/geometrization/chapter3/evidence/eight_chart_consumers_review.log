@@ -1,0 +1,43 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.radial_contraction_of_chosen_isometries_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_radial_contraction_of_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_closedBall_net_of_intrinsic_8_comparison_and_chart' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.MinimizingHinge.comparisonAngle_le_of_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.MinimizingHinge.modelSide_ge_dist_of_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_uniform_strut_chart_of_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_eight_chosen_contraction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_contraction_exact_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_zero_arm_retained' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCOriginalEightMidpointReview.original_eight_net_arbitrary_chart_radius' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightHingeReview.same_original_offcenter_hinge_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightHingeReview.same_original_offcenter_hinge_angle_pi' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightHingeReview.same_original_hinge_with_zero_left_arm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightHingeReview.same_original_hinge_with_zero_right_arm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCIntrinsicUniformStrutChartReview.original_intrinsic_geometry_has_padded_uniform_chart' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

@@ -1,0 +1,15 @@
+'GC.MetricGeometry.eventual_internal_nets_of_growing_local_geometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.eventual_fourPointComparison_of_growing_local_geometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.exists_geodesic_pointedGHConverges_of_ceil_covering_and_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.exists_pointed_limit_of_growing_local_geometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.exists_pointed_limit_of_growing_intrinsic_local_geometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

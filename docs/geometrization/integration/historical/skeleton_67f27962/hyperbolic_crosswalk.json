@@ -1,0 +1,1790 @@
+{
+  "blueprint_revision": 207,
+  "scope": "Six reviewed principal leaves; not all Chapter8 nodes. Four sorry-based mathematical leaves and actual compositions. Root owns broader selected-flow producer.",
+  "direct_sorry_count": 2,
+  "files": [
+    {
+      "path": "DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean",
+      "sha256": "0c6b17d810670900f7723034aee47170ee226f429e3cca45d83821a42ec95b29"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/ODE/ReciprocalTimeBarrier.lean",
+      "sha256": "2b074226c3b1ee059e58c3521a0b8b31a7b3ce3b0f290ef37be46153d5950079"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspIncompressibility.lean",
+      "sha256": "c7d468edf3cd6e06e57b5ea44be93fb36842543ddef63eb3a8826860cf22937c"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "sha256": "17f3cfd0079e0e4a2624b97f9091f3e6250b385bbce347b1cf9bba14745657dc"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/ModelAtlas.lean",
+      "sha256": "c4fc7e842a7b69868b314d70eefa6532e72bdc85fe42a14edfa0acbc7724d0b6"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Rigidity.lean",
+      "sha256": "51069cd7c6fc930e2c50bacf9cde4f92f2190b51f626b2f393ad71f809538107"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "sha256": "1ebd4828638db75da5a19f118e90bb62f4266931a3e935c31a5360ae676abea6"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskReparametrization.lean",
+      "sha256": "2880e37124aa39754b0889a9d8b5aeef2f5586881dd68ba64561195fd5a751f2"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/FundamentalGroup/AreaObstruction.lean",
+      "sha256": "d6ed1d1efdab28fb29f1ee6ce57654bfa625f6204ef5abbeede8baaacb3d722e"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/CylinderIncompressibility.lean",
+      "sha256": "df282874737c1c826d9a3b7802c33a1a2e81e301cdc4ede485b914a8135a540a"
+    }
+  ],
+  "declarations": [
+    {
+      "declaration": "DifferentialGeometry.Analysis.hasLocalSmoothUpperBarrier",
+      "file": "DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean",
+      "line": 15,
+      "kind": "def",
+      "status": "definition",
+      "blueprint_nodes": [
+        "HG13",
+        "HG14",
+        "IMS09",
+        "IAU03"
+      ],
+      "scope_note": "Immediate reusable adapter or corollary; inspect exact signature for retained hypotheses.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "found:hyp-area-barrier-input",
+          "label_line": 18100,
+          "reading_lines": [
+            18099,
+            18112
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:hyp-area-contradiction",
+          "label_line": 18114,
+          "reading_lines": [
+            18113,
+            18137
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-upper-barriers",
+          "label_line": 18561,
+          "reading_lines": [
+            18560,
+            18610
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:ambient-audited-written-endpoint",
+          "label_line": 18796,
+          "reading_lines": [
+            18795,
+            18879
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers_shift",
+      "file": "DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean",
+      "line": 87,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "HG13",
+        "HG14",
+        "IMS09",
+        "IAU03"
+      ],
+      "scope_note": "Exact prior theorem type proved by the reciprocal-time logarithmic upper-barrier comparison; positivity of D retained for public compatibility.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "found:hyp-area-barrier-input",
+          "label_line": 18100,
+          "reading_lines": [
+            18099,
+            18112
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:hyp-area-contradiction",
+          "label_line": 18114,
+          "reading_lines": [
+            18113,
+            18137
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-upper-barriers",
+          "label_line": 18561,
+          "reading_lines": [
+            18560,
+            18610
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:ambient-audited-written-endpoint",
+          "label_line": 18796,
+          "reading_lines": [
+            18795,
+            18879
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers_pi_shift",
+      "file": "DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean",
+      "line": 102,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "HG13",
+        "HG14",
+        "IMS09",
+        "IAU03"
+      ],
+      "scope_note": "Immediate reusable adapter or corollary; inspect exact signature for retained hypotheses.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "found:hyp-area-barrier-input",
+          "label_line": 18100,
+          "reading_lines": [
+            18099,
+            18112
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:hyp-area-contradiction",
+          "label_line": 18114,
+          "reading_lines": [
+            18113,
+            18137
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-upper-barriers",
+          "label_line": 18561,
+          "reading_lines": [
+            18560,
+            18610
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:ambient-audited-written-endpoint",
+          "label_line": 18796,
+          "reading_lines": [
+            18795,
+            18879
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Hyperbolic.hasConstantSectionalCurvature",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/Rigidity.lean",
+      "line": 20,
+      "kind": "def",
+      "status": "definition",
+      "blueprint_nodes": [
+        "HG04",
+        "MPR79"
+      ],
+      "scope_note": "Immediate reusable adapter or corollary; inspect exact signature for retained hypotheses.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "found:hyp-mostow-prasad",
+          "label_line": 12497,
+          "reading_lines": [
+            12496,
+            12547
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:mostow-full-marked-producer",
+          "label_line": 15393,
+          "reading_lines": [
+            15392,
+            15423
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Hyperbolic.mostow_prasad",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/Rigidity.lean",
+      "line": 24,
+      "kind": "theorem",
+      "status": "admitted",
+      "blueprint_nodes": [
+        "HG04",
+        "MPR79"
+      ],
+      "scope_note": "Same K<0; dimension three, completeness, connectedness, finite volume; no orientability/compactness; independent tangent pairs; actual homotopy class, uniqueness.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "found:hyp-mostow-prasad",
+          "label_line": 12497,
+          "reading_lines": [
+            12496,
+            12547
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:mostow-full-marked-producer",
+          "label_line": 15393,
+          "reading_lines": [
+            15392,
+            15423
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": true,
+      "primary_source_checked": false,
+      "source_locators": [
+        "Blueprint-only exact contract: master207A.tex:12497 found:hyp-mostow-prasad; reading [12496, 12547]",
+        "Blueprint-only exact contract: master207A.tex:15393 thm:mostow-full-marked-producer; reading [15392, 15423]"
+      ],
+      "source_checks": [
+        {
+          "file": "master207A.tex",
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+          "label": "found:hyp-mostow-prasad",
+          "read_lines": [
+            [
+              12496,
+              12547
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        },
+        {
+          "file": "master207A.tex",
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+          "label": "thm:mostow-full-marked-producer",
+          "read_lines": [
+            [
+              15392,
+              15423
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        }
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Hyperbolic.has_hyperbolic_atlas_of_curvature_neg_one",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/ModelAtlas.lean",
+      "line": 18,
+      "kind": "theorem",
+      "status": "admitted",
+      "blueprint_nodes": [
+        "HG01",
+        "HG16",
+        "HG17"
+      ],
+      "scope_note": "Retained local space-form foundational interface; curvature \u22121 matches existing coordinate atlas. Does not assert accepted-release absence.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:hyp-rescaling",
+          "label_line": 10648,
+          "reading_lines": [
+            10647,
+            10667
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:hyp-whole-interior",
+          "label_line": 18881,
+          "reading_lines": [
+            18880,
+            18898
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:hyp-thick-certificate",
+          "label_line": 18900,
+          "reading_lines": [
+            18899,
+            18915
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": true,
+      "primary_source_checked": false,
+      "source_locators": [
+        "Blueprint-only exact contract: master207A.tex:10648 lem:hyp-rescaling; reading [10647, 10667]",
+        "Blueprint-only exact contract: master207A.tex:18881 lem:hyp-whole-interior; reading [18880, 18898]",
+        "Blueprint-only exact contract: master207A.tex:18900 thm:hyp-thick-certificate; reading [18899, 18915]"
+      ],
+      "source_checks": [
+        {
+          "file": "master207A.tex",
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+          "label": "lem:hyp-rescaling",
+          "read_lines": [
+            [
+              10647,
+              10667
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        },
+        {
+          "file": "master207A.tex",
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+          "label": "lem:hyp-whole-interior",
+          "read_lines": [
+            [
+              18880,
+              18898
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        },
+        {
+          "file": "master207A.tex",
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+          "label": "thm:hyp-thick-certificate",
+          "read_lines": [
+            [
+              18899,
+              18915
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        }
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Hyperbolic.hyperbolicGeometricStructure",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/ModelAtlas.lean",
+      "line": 24,
+      "kind": "def",
+      "status": "definition",
+      "blueprint_nodes": [
+        "HG01",
+        "HG16",
+        "HG17"
+      ],
+      "scope_note": "Real assembly scales curvature \u22121/4 metric by 1/4 to curvature \u22121; reuses accepted completeness and volume scaling on same carrier.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:hyp-rescaling",
+          "label_line": 10648,
+          "reading_lines": [
+            10647,
+            10667
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:hyp-whole-interior",
+          "label_line": 18881,
+          "reading_lines": [
+            18880,
+            18898
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:hyp-thick-certificate",
+          "label_line": 18900,
+          "reading_lines": [
+            18899,
+            18915
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Hyperbolic.hyperbolicGeometricStructure_model",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/ModelAtlas.lean",
+      "line": 43,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "HG01",
+        "HG16",
+        "HG17"
+      ],
+      "scope_note": "Immediate reusable adapter or corollary; inspect exact signature for retained hypotheses.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:hyp-rescaling",
+          "label_line": 10648,
+          "reading_lines": [
+            10647,
+            10667
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:hyp-whole-interior",
+          "label_line": 18881,
+          "reading_lines": [
+            18880,
+            18898
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:hyp-thick-certificate",
+          "label_line": 18900,
+          "reading_lines": [
+            18899,
+            18915
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.MinimalSurface.isExteriorSpanningDisk",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 16,
+      "kind": "def",
+      "status": "definition",
+      "blueprint_nodes": [
+        "IMS03",
+        "IMS07",
+        "IMS08",
+        "IAU02"
+      ],
+      "scope_note": "Exact parametrized boundary in frontier W; smooth extension, immersion on closed disk, embedding; disk interior in interior W.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-common-disk-carrier",
+          "label_line": 18482,
+          "reading_lines": [
+            18481,
+            18533
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 23,
+      "kind": "def",
+      "status": "definition",
+      "blueprint_nodes": [
+        "IMS03",
+        "IMS07",
+        "IMS08",
+        "IAU02"
+      ],
+      "scope_note": "Real sInf of inherited metric area of exact exterior embedded disks; empty infimum is not attainment.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-common-disk-carrier",
+          "label_line": 18482,
+          "reading_lines": [
+            18481,
+            18533
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea_nonneg",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 28,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "IMS03",
+        "IMS07",
+        "IMS08",
+        "IAU02"
+      ],
+      "scope_note": "Immediate reusable adapter or corollary; inspect exact signature for retained hypotheses.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-common-disk-carrier",
+          "label_line": 18482,
+          "reading_lines": [
+            18481,
+            18533
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea_le",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 34,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "IMS03",
+        "IMS07",
+        "IMS08",
+        "IAU02"
+      ],
+      "scope_note": "Immediate reusable adapter or corollary; inspect exact signature for retained hypotheses.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-common-disk-carrier",
+          "label_line": 18482,
+          "reading_lines": [
+            18481,
+            18533
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.MinimalSurface.exteriorDiskAreaOn",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 44,
+      "kind": "def",
+      "status": "definition",
+      "blueprint_nodes": [
+        "IMS03",
+        "IMS07",
+        "IMS08",
+        "IAU02"
+      ],
+      "scope_note": "Loops indexed only for t\u2265T; zero extension before T avoids nonexistent earlier loops on empty slices.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-common-disk-carrier",
+          "label_line": 18482,
+          "reading_lines": [
+            18481,
+            18533
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.MinimalSurface.exteriorDiskAreaOn_nonneg",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 53,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "IMS03",
+        "IMS07",
+        "IMS08",
+        "IAU02"
+      ],
+      "scope_note": "Immediate reusable adapter or corollary; inspect exact signature for retained hypotheses.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-common-disk-carrier",
+          "label_line": 18482,
+          "reading_lines": [
+            18481,
+            18533
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.MinimalSurface.continuousOn_leastExteriorDiskArea_of_local_disk_comparisons",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 66,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "IMS03",
+        "IMS07",
+        "IMS08",
+        "IAU02"
+      ],
+      "scope_note": "Two-direction competitors supplied only from actual minimizers; attainment for all t\u2265T; carriers may change; no global ambient diffeomorphism or chosen minimizer continuity.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-common-disk-carrier",
+          "label_line": 18482,
+          "reading_lines": [
+            18481,
+            18533
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false,
+      "proof_evidence": "Prepared audit proof installed and checked on Lean 4.33.1; current final gate receipt gives installation status."
+    },
+    {
+      "declaration": "GC.Topology.torusAt_injective_iff",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/CylinderIncompressibility.lean",
+      "line": 7,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "HG15",
+        "IMS10",
+        "IAU03"
+      ],
+      "scope_note": "Real proof using actual product-collar homotopy and inherited basepoint tracking; no model-to-ambient inference.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:hyp-ambient-cusp-injection",
+          "label_line": 18139,
+          "reading_lines": [
+            18138,
+            18201
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:ambient-actual-cusp-injection",
+          "label_line": 18612,
+          "reading_lines": [
+            18611,
+            18681
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:ambient-audited-written-endpoint",
+          "label_line": 18796,
+          "reading_lines": [
+            18795,
+            18879
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false,
+      "renamed_from": "DifferentialGeometry.Geometry.RicciFlow.cusp_slice_injective_iff"
+    },
+    {
+      "declaration": "GC.LongTime.incompressible_of_shifted_area_barriers",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspIncompressibility.lean",
+      "line": 13,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "HG15",
+        "IMS10",
+        "IAU03"
+      ],
+      "scope_note": "Same map adapter with c>0 for physical initial scalar shift; no claim normalized arbitrary g has shift1/4.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:hyp-ambient-cusp-injection",
+          "label_line": 18139,
+          "reading_lines": [
+            18138,
+            18201
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:ambient-actual-cusp-injection",
+          "label_line": 18612,
+          "reading_lines": [
+            18611,
+            18681
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:ambient-audited-written-endpoint",
+          "label_line": 18796,
+          "reading_lines": [
+            18795,
+            18879
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false,
+      "renamed_from": "DifferentialGeometry.Geometry.RicciFlow.incompressible_of_shifted_area_barriers"
+    },
+    {
+      "declaration": "GC.LongTime.postStage",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 18,
+      "kind": "def",
+      "status": "definition",
+      "blueprint_nodes": [
+        "LP02",
+        "IMS03",
+        "IMS08",
+        "IMS09",
+        "IAU02"
+      ],
+      "scope_note": "Actual post-event last stage of observe(max t 0), all real times; applications restricted to positive late times.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "def:longtime-same-slice",
+          "label_line": 19444,
+          "reading_lines": [
+            19443,
+            19452
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-upper-barriers",
+          "label_line": 18561,
+          "reading_lines": [
+            18560,
+            18610
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.LongTime.postMetric",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 22,
+      "kind": "def",
+      "status": "definition",
+      "blueprint_nodes": [
+        "LP02",
+        "IMS03",
+        "IMS08",
+        "IMS09",
+        "IAU02"
+      ],
+      "scope_note": "Actual physical stageMetric on the same observation prefix at the same time; no normalization.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "def:longtime-same-slice",
+          "label_line": 19444,
+          "reading_lines": [
+            19443,
+            19452
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-upper-barriers",
+          "label_line": 18561,
+          "reading_lines": [
+            18560,
+            18610
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.LongTime.postStage_regularSlice",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 26,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "LP02",
+        "IMS03",
+        "IMS08",
+        "IMS09",
+        "IAU02"
+      ],
+      "scope_note": "Exact equality to the existing positive regular slice stage.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "def:longtime-same-slice",
+          "label_line": 19444,
+          "reading_lines": [
+            19443,
+            19452
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-upper-barriers",
+          "label_line": 18561,
+          "reading_lines": [
+            18560,
+            18610
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.LongTime.postMetric_regularSlice",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 37,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "LP02",
+        "IMS03",
+        "IMS08",
+        "IMS09",
+        "IAU02"
+      ],
+      "scope_note": "Exact heterogeneous equality to the existing positive regular slice physical metric.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "def:longtime-same-slice",
+          "label_line": 19444,
+          "reading_lines": [
+            19443,
+            19452
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-upper-barriers",
+          "label_line": 18561,
+          "reading_lines": [
+            18560,
+            18610
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.LongTime.exteriorDiskArea",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 57,
+      "kind": "def",
+      "status": "definition",
+      "blueprint_nodes": [
+        "LP02",
+        "IMS03",
+        "IMS08",
+        "IMS09",
+        "IAU02"
+      ],
+      "scope_note": "Actual inherited metric infimum on this same observation tower; exterior W and prescribed loop only at t\u2265T.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "def:longtime-same-slice",
+          "label_line": 19444,
+          "reading_lines": [
+            19443,
+            19452
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-upper-barriers",
+          "label_line": 18561,
+          "reading_lines": [
+            18560,
+            18610
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.LongTime.exteriorDiskArea_nonneg",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 62,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "LP02",
+        "IMS03",
+        "IMS08",
+        "IMS09",
+        "IAU02"
+      ],
+      "scope_note": "Immediate theorem from actual exterior disk area definition.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "def:longtime-same-slice",
+          "label_line": 19444,
+          "reading_lines": [
+            19443,
+            19452
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-upper-barriers",
+          "label_line": 18561,
+          "reading_lines": [
+            18560,
+            18610
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.LongTime.exteriorDiskArea_eq",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 68,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "LP02",
+        "IMS03",
+        "IMS08",
+        "IMS09",
+        "IAU02"
+      ],
+      "scope_note": "Pins the actual numerical value at every t\u2265T to the exact physical-metric leastExteriorDiskArea.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "def:longtime-same-slice",
+          "label_line": 19444,
+          "reading_lines": [
+            19443,
+            19452
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-upper-barriers",
+          "label_line": 18561,
+          "reading_lines": [
+            18560,
+            18610
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Analysis.not_nonnegative_of_upper_barriers_div_time",
+      "file": "DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean",
+      "line": 20,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "HG13",
+        "HG14"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:hyp-area-contradiction",
+          "label_line": 18114,
+          "reading_lines": [
+            18099,
+            18136
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "sources": [
+        {
+          "file": "KleinerLottPerelman.pdf",
+          "sha256": "55a24f25c1b7cfc793706b9b6b937fefbbd6030755f7c3d6f56878d7c60b1f1b",
+          "locator": "Lemma 91.12 and Proposition 91.2 final argument; printed pp. 2821\u20132823; PDF pp. 235\u2013237",
+          "check_scope": "Reused unchanged primary-source check from interface_frontier.md; blueprint HG13\u2013HG15 and IMS09\u2013IMS10 reopened in this task. General logarithmic comparison is an elementary extension, not attributed as a source statement."
+        }
+      ],
+      "scope_note": "Proved general reciprocal-time upper-barrier comparison, ported to Lean 4.33.1 and consumed by the installed shifted theorem.",
+      "direct_sorry": false,
+      "source_scope": "Proved general reciprocal-time upper-barrier comparison, ported to Lean 4.33.1 and consumed by the installed shifted theorem."
+    },
+    {
+      "declaration": "DifferentialGeometry.Analysis.false_of_area_upper_barriers",
+      "file": "DifferentialGeometry/Analysis/ODE/ReciprocalTimeBarrier.lean",
+      "line": 7,
+      "kind": "alias",
+      "status": "proved",
+      "blueprint_nodes": [
+        "HG13",
+        "HG14"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:hyp-area-contradiction",
+          "label_line": 18114,
+          "reading_lines": [
+            18099,
+            18136
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "sources": [
+        {
+          "file": "KleinerLottPerelman.pdf",
+          "sha256": "55a24f25c1b7cfc793706b9b6b937fefbbd6030755f7c3d6f56878d7c60b1f1b",
+          "locator": "Lemma 91.12 and Proposition 91.2 final argument; printed pp. 2821\u20132823; PDF pp. 235\u2013237",
+          "check_scope": "Reused unchanged primary-source check from interface_frontier.md; blueprint HG13\u2013HG15 and IMS09\u2013IMS10 reopened in this task. General logarithmic comparison is an elementary extension, not attributed as a source statement."
+        }
+      ],
+      "scope_note": "Lean alias of the proved shifted theorem; no duplicate proof.",
+      "direct_sorry": false
+    },
+    {
+      "declaration": "ContinuousMap.fundamentalGroup_map_injective_of_area_obstructions",
+      "file": "DifferentialGeometry/Topology/FundamentalGroup/AreaObstruction.lean",
+      "line": 12,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "HG14",
+        "HG15"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:hyp-ambient-cusp-injection",
+          "label_line": 18139,
+          "reading_lines": [
+            18112,
+            18154
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "sources": [
+        {
+          "file": "KleinerLottPerelman.pdf",
+          "sha256": "55a24f25c1b7cfc793706b9b6b937fefbbd6030755f7c3d6f56878d7c60b1f1b",
+          "locator": "Lemma 91.12 and Proposition 91.2 final argument; printed pp. 2821\u20132823; PDF pp. 235\u2013237",
+          "check_scope": "Reused unchanged primary-source check from interface_frontier.md; blueprint HG13\u2013HG15 and IMS09\u2013IMS10 reopened in this task. General logarithmic comparison is an elementary extension, not attributed as a source statement."
+        }
+      ],
+      "scope_note": "Proved general fundamental-group injection adapter, ported to the unified 4.33.1 environment and checked by the interface application.",
+      "direct_sorry": false,
+      "source_scope": "Proved general fundamental-group injection adapter, ported to the unified 4.33.1 environment and checked by the interface application."
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea_eq_zero_of_empty",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 157,
+      "kind": "theorem",
+      "status": "proved",
+      "blueprint_nodes": [
+        "IMS03",
+        "IMS07",
+        "IMS08",
+        "IAU02"
+      ],
+      "scope_note": "Immediate reusable adapter or corollary; inspect exact signature for retained hypotheses.",
+      "locator_repair_note": "Replaced mid-sentence point locators with exact labelled node reading ranges. AT01, when previously listed, is only mentioned in prose and has no titled node; it is not a locator.",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-common-disk-carrier",
+          "label_line": 18482,
+          "reading_lines": [
+            18481,
+            18533
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-area-continuity",
+          "label_line": 18535,
+          "reading_lines": [
+            18534,
+            18559
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-audit-profile-carrier",
+          "label_line": 18726,
+          "reading_lines": [
+            18725,
+            18794
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.MinimalSurface.isExteriorSpanningDisk.comp_smooth_disk_reparametrization",
+      "kind": "theorem",
+      "private": false,
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskReparametrization.lean",
+      "line": 28,
+      "status": "proved",
+      "direct_sorry": false,
+      "blueprint_nodes": [
+        "IMS03"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "scope_note": "Proved from the existing smooth disk-extension and manifold chain-rule APIs; preserves the prescribed exterior, boundary parametrization, embedding and immersion.",
+      "generated_members_covered": false,
+      "source_verification": "Proved from the existing smooth disk-extension and manifold chain-rule APIs; preserves the prescribed exterior, boundary parametrization, embedding and immersion.",
+      "source_scope": "Proved from the existing smooth disk-extension and manifold chain-rule APIs; preserves the prescribed exterior, boundary parametrization, embedding and immersion.",
+      "source_locators": [
+        "Perelman II section7.3\u20137.4, GrishaPerelman2.tex:1091\u20131181; SHA256 pinned in source_checks.json",
+        "Kleiner\u2013Lott Notes author archive 2013-02-20, HPI context sections89\u201391; analytic derivative route: Lemmas70.1\u201370.2 PDF165/printed2751, Corollary81.3 PDF202\u2013208/printed2788\u20132794, Propositions84.1\u201384.2 PDF207\u2013208/printed2793\u20132794, Lemma92.13 PDF241\u2013242/printed2827\u20132828",
+        "Hamilton1999 sections11\u201312, printed716\u2013728/PDF22\u201334; volume-normalized free-boundary route is contextual, not a literal proof of the fixed-boundary unnormalized contract",
+        "Meeks\u2013Yau1982 MathZ Theorem1 and Theorem2, printed153\u2013158/PDF4\u20139; fixed Jordan boundary, mean-convex compact domain; nullhomotopy supplied explicitly by the exterior spanning-disk witness"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.MinimalSurface.isExteriorSpanningDisk.area_comp_reparametrization",
+      "kind": "theorem",
+      "private": false,
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskReparametrization.lean",
+      "line": 81,
+      "status": "proved",
+      "direct_sorry": false,
+      "blueprint_nodes": [
+        "IMS03"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:ambient-fixed-boundary-minimizer",
+          "label_line": 18306,
+          "reading_lines": [
+            18305,
+            18348
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "scope_note": "Proved using the existing riemannianDiskArea_reparametrize theorem and Lipschitz bounds; no new minimizer-existence result is asserted.",
+      "generated_members_covered": false,
+      "source_verification": "Proved using the existing riemannianDiskArea_reparametrize theorem and Lipschitz bounds; no new minimizer-existence result is asserted.",
+      "source_scope": "Proved using the existing riemannianDiskArea_reparametrize theorem and Lipschitz bounds; no new minimizer-existence result is asserted.",
+      "source_locators": [
+        "Perelman II section7.3\u20137.4, GrishaPerelman2.tex:1091\u20131181; SHA256 pinned in source_checks.json",
+        "Kleiner\u2013Lott Notes author archive 2013-02-20, HPI context sections89\u201391; analytic derivative route: Lemmas70.1\u201370.2 PDF165/printed2751, Corollary81.3 PDF202\u2013208/printed2788\u20132794, Propositions84.1\u201384.2 PDF207\u2013208/printed2793\u20132794, Lemma92.13 PDF241\u2013242/printed2827\u20132828",
+        "Hamilton1999 sections11\u201312, printed716\u2013728/PDF22\u201334; volume-normalized free-boundary route is contextual, not a literal proof of the fixed-boundary unnormalized contract",
+        "Meeks\u2013Yau1982 MathZ Theorem1 and Theorem2, printed153\u2013158/PDF4\u20139; fixed Jordan boundary, mean-convex compact domain; nullhomotopy supplied explicitly by the exterior spanning-disk witness"
+      ]
+    }
+  ],
+  "source_records": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/reference_checks_revision118.md",
+      "sha256": "f928e5d701d580ca69a830530e124671956fa55183ed6a0d0409cf6c5e629105",
+      "role": "reused targeted source audit, not whole-source fresh reading"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/reference_checks_revision167.md",
+      "sha256": "0d377afdf640e4e9fd68e8dbfd179d430b1c86d293e769b2b5976b7ef85c5d7f",
+      "role": "reused targeted source audit, not whole-source fresh reading"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/reference_checks_revision168.md",
+      "sha256": "c98c44e77ffbc69b641ef1ff7d3e31e9721136d0a80967f75191442aa55606df",
+      "role": "reused targeted source audit, not whole-source fresh reading"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/research/incompressibility_2026-09-27/source_checks_revision168.json",
+      "sha256": "78813a57c3db217396777afa708920489b9fc94a5b07086c1c6146a506ac1b40",
+      "role": "reused targeted source audit, not whole-source fresh reading"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/MSM206.tex",
+      "sha256": "a0a2637c02673dd10760ae18a8bd6ef8646d4475b63f2a606da078f77c8b205e",
+      "role": "source body freshly read",
+      "locator": "MosTowSection lines17115\u201317163"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/GrishaPerelman2.tex",
+      "sha256": "7fda5d7d25eeb83e75fe1c1a57803fe4e5b58b274edceb4f62d0706e4c689818",
+      "role": "source body freshly read",
+      "locator": "Section7.3 lines1105\u20131135"
+    }
+  ],
+  "corner_cases": [
+    "same negative curvature normalization",
+    "dependent tangent vectors excluded",
+    "finite volume not compactness",
+    "unbased marking not exact arbitrary based homomorphism",
+    "whole late half-line including surgery contacts",
+    "T+c positive",
+    "strict derivative barrier",
+    "minimizers only in common carrier",
+    "exact parametrized boundary and side",
+    "no loops required before chosen threshold",
+    "empty cusp family",
+    "separate core embedding versus full-interior diffeomorphism"
+  ],
+  "checks": {
+    "leaf_build_success": true,
+    "lean_version": "4.33.1",
+    "warm_cache": true,
+    "whole_root_build": false,
+    "build_log": ".lake/gc/hyperbolic-skeleton-build.log",
+    "additional_build_log": ".lake/gc/exterior-disk-flow-build.log",
+    "same_flow_helper_lean_check_success": true,
+    "same_flow_helper_check_log": ".lake/gc/exterior-disk-flow-check.log"
+  },
+  "not_separately_implemented": [
+    "QRG quantitative global core/end comparison",
+    "HPI persistent family and coverage",
+    "Meeks\u2013Yau existence and stability",
+    "surgery-neck avoidance and common-carrier producer",
+    "actual controlled-flow upper-barrier producer",
+    "full separate source-to-Lean premise census"
+  ]
+}

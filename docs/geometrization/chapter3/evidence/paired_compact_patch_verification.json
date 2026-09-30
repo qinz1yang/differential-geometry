@@ -1,0 +1,21 @@
+{
+  "success": true,
+  "new_public_theorems": 3,
+  "new_owned_declarations": 4,
+  "combined_modules": 114,
+  "combined_jobs": 2902,
+  "combined_owned_declarations": 708,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/CompactChart.lean": "f4ef3409218b01bdb37c0a64fc5068e58f1013226f10001b95ab3f2634721e84",
+    "DifferentialGeometry/Geometry/Comparison/PairedCompactPatch.lean": "e1dd720d2cfaf830c19ce84072c6750bf8b9def79acc4a91fadd9aacee53aac0"
+  },
+  "logs": {
+    "paired_compact_patch_review.log": "947a35645ba48f7512bee1f131275d416de216eb1ad6ac350f089b888bebb620",
+    "paired_compact_patch_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758",
+    "paired_compact_patch_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "review_driver_sha256": "01c13607fe24de6b8e2ce9cc4a44535593555bf69c451b50411ccf7acc400bad",
+  "git_head_at_check": "861caf4c0dcf720b63e736c1d1032e409f3c4939",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

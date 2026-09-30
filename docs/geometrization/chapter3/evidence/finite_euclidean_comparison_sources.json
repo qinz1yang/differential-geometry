@@ -1,0 +1,73 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KapovitchLebedevaPetruninAlexandrov.pdf",
+      "sha256": "3dc0a166ec88b1c7e50aeebd9924f747ece6fb1957c7b31dcbe17a90a9e61d67",
+      "locator": "Section6A, Proposition6.1 full statement and proof printed61\u201362/PDF63\u201364; archived text lines2560\u20132620.",
+      "version": "Archived v1 July14,2026; distinguished from moving author source and other books",
+      "review_provenance": "Root and two independent agents read complete relevant source/proof passages; author/peer records separate mathematical review and actual compiler evidence."
+    }
+  ],
+  "reused_source_checks": [
+    "dense_euclidean_tangents_sources.json",
+    "actual_log_dimension_sources.json",
+    "finite_linear_dimension_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "blueprint_locator": "Frozen master207A related dimension/dense-chart AC11/12/28 and finite-radial AC30; this nonnegative finite-configuration extension leaves the master unchanged. SHA277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b.",
+  "scope": "Original complete global near-short-curve metric source, finite Hausdorff bound and local comparison0 everywhere yield ONE actual integer rank for every finite Euclidean comparison configuration, retaining original basepoints/labels, exact radial norms and simultaneous pairwise expansion.",
+  "source_conventions": "Parameter0 is nonnegative curvature. Model center0 represents the distinguished point. A finite type may be empty and original endpoints may repeat or equal the basepoint; actual rank0 and empty ambient spaces are allowed by the headline.",
+  "proof_route": "Two exact quadratic side comparisons yield sharp expansion for the SAME chosen original segmentLog. Dense actual Euclidean tangents produce finite radial arrays, and one compact finite-product limit retains all norms/pair bounds. Original source properness/segments/globalcomparison/dense actual tangent isometries and common rank are derived internally.",
+  "no_new_premises": [
+    "supplied global comparison",
+    "supplied properness",
+    "supplied endpoint segments",
+    "supplied regular points or actual tangent isometries",
+    "supplied finite comparison configurations",
+    "positive dimension",
+    "distinct anchors",
+    "nonempty label type"
+  ],
+  "errata": "Archived source and prior source/errata distinctions retained; no fresh external errata retrieval or absence-of-errata claim.",
+  "independent_peer_proof_review": true,
+  "not_claimed": [
+    "spherical or hyperbolic finite comparison",
+    "canonical or unique model configuration",
+    "coherent infinite configurations",
+    "all-point tangent regularity",
+    "changing PC foundation validation",
+    "completion of Chapters3\u20134"
+  ],
+  "proof_records": [
+    {
+      "path": "/tmp/gc_NonnegativeFiniteComparison_root_record.md",
+      "sha256": "d355cfc7c461d41068fe0889c870c05410c5998126eebaaeadbbf08fd7dca7c8"
+    },
+    {
+      "path": "/tmp/gc_NonnegativeSegmentLog_65_independent_review.md",
+      "sha256": "fd86381de7ba3cab74c3716835fc2b2506918306078ef6ad4d3d5dc2185b59d6"
+    },
+    {
+      "path": "/tmp/gc_FiniteEuclideanComparison_half_independent_read.md",
+      "sha256": "1e891b30542d769ce847b89c68953394b9cb544f298a1c1d5dccf2481527b0b5"
+    },
+    {
+      "path": "/tmp/gc_NonnegativeFiniteComparison_65_independent_review.md",
+      "sha256": "7973bfbbecc50e9a3d25c35c3ca7964c0513ce43ea464bc97c110d83bbca8a63"
+    }
+  ],
+  "upstream_freezes": [
+    {
+      "path": "/tmp/gc_NonnegativeFiniteComparison_root_freeze.json",
+      "sha256": "4cc00e95f3965d585f9a94d8a6480bb51ed6180dccbf1a66aa04c2e4f5bd0918"
+    },
+    {
+      "path": "/tmp/gc_NonnegativeSegmentLog_65_review_freeze.json",
+      "sha256": "fff0c577cf36330e87105242fbcfb88e80c91a0af239e4ffc629a382f9caed9f"
+    },
+    {
+      "path": "/tmp/gc_NonnegativeFiniteComparison_65_review_freeze.json",
+      "sha256": "aecb274865a90f03ce7c207b01aee53444a7ac71252760dd883e451c1f55c17f"
+    }
+  ]
+}

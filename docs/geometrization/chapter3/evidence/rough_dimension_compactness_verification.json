@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "new_public_theorems": 4,
+  "new_definitions": 0,
+  "new_owned_declarations": 4,
+  "combined_modules": 139,
+  "combined_jobs": 2927,
+  "combined_owned_declarations": 801,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/RoughDimensionCompactness.lean": "d58bd936db31f290ba861702aee0c8cce21353cb64dac41dacc7205f7e148bfd",
+    "DifferentialGeometry/Geometry/Comparison/RoughLocalCompactness.lean": "bd932fdf16b6974a7c82cfcf797276d0eade12cccad3fabcc722fe747fe98bc0"
+  },
+  "logs": {
+    "rough_dimension_compactness_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rough_dimension_compactness_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758",
+    "rough_dimension_compactness_review.log": "0375d704ee64c6c8973792d368381a0adced92b30921b2a06a0f1ff61a91908b"
+  },
+  "review_driver_sha256": "a7ca5674f0cfb70e6c114505b28538a4cb01295fbbc5b0a91a3d5fafc5404e61",
+  "git_head_at_check": "c9928fa88f3736c9c4c0ad691d47301aec7a2703",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

@@ -1,0 +1,38 @@
+'Metric.EuclideanCone.twoRayPath' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.twoRayPath_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.twoRayPath_neg_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.twoRayPath_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dist_mk_eq_add_of_pi_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.isometry_twoRayPath_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_twoRayPath_mk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_twoRayPath_mk_eq_zero_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.EuclideanCone.dist_eq_of_dist_mk_sq_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.exists_base_segment_of_cone_arc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCConeAntipodalLineReview.unbounded_angular_cap_preserves_both_rays' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeAntipodalLineReview.sub_pi_directions_do_not_form_a_line' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_real_antipodal_tangent_line' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCPlaneDirectionPackingReview.actual_plane_unequal_domain_antipodal_tangent_line' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeAntipodalLineReview.actual_equator_cap_and_zero_radius' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.actual_plane_original_direction_coordinate' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeArcDirectionsReview.actual_radius_two_full_pi_arc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCConeArcDirectionsReview.actual_radius_two_coincident_arc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCConeArcDirectionsReview.zero_radius_does_not_recover_angle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeArcDirectionsReview.cap_does_not_recover_uncapped_distance' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

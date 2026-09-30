@@ -1,0 +1,30 @@
+{
+  "success": true,
+  "new_public_theorems": 10,
+  "new_owned_declarations": 10,
+  "combined_modules": 105,
+  "combined_jobs": 2893,
+  "combined_owned_declarations": 677,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/SegmentCurves.lean": "bb8c8d0322d8ced2435fa3d8703f8f26ce69306fac7b33dd455fcbbbdb2a073c",
+    "DifferentialGeometry/Geometry/Comparison/OneDimensionalRank.lean": "cb3822407d2f1e45eb9b9a7cdcd1da4f312779457d625b93f50496848bf413cb",
+    "DifferentialGeometry/Geometry/Comparison/OneDimensionalSegments.lean": "114ea316af615abe999e4c41f1291798e1f17a1494d7d069082618740349c6cc",
+    "DifferentialGeometry/Geometry/Comparison/OneDimensionalRecognition.lean": "44b0ca9a373894a2b965c58929ca657789a026a4b8d45278204d41e8d821bf5d",
+    "DifferentialGeometry/Geometry/Comparison/FactorRecognition.lean": "e788e21c0dc3624f2c654a1b0ab7c9960f2f1893e8f9f66ceaafcb92728dcc56",
+    "DifferentialGeometry/Geometry/Metric/Approximation/FactorRecognition.lean": "eed0a1457032c47672fb7e22a5af4b4bdffbf3dbf46b142d62be3b5215b481c7"
+  },
+  "logs": {
+    "one_dimensional_recognition_lint_0.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "one_dimensional_recognition_lint_1.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "one_dimensional_recognition_lint_3.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "one_dimensional_recognition_lint_2.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "one_dimensional_recognition_lint_5.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "one_dimensional_recognition_lint_4.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "one_dimensional_recognition_review.log": "fc57cc30b8ece7bd0a3b50b3e3a7e32ce7091ec7ef3c281e0b09e86a60160601",
+    "one_dimensional_recognition_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "140843b3b7e4449dec77952d2050662d7bc97b66c9242cf394f3e1a4e6e9e458",
+  "git_head_at_check": "22bbdeb11dd11664877636b6f5266a59dd4b1ab8",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

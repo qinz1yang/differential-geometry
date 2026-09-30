@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 6,
+  "new_owned_declarations": 7,
+  "combined_modules": 75,
+  "combined_jobs": 2855,
+  "combined_owned_declarations": 602,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/AlmostRadialPoint.lean": "30e9e23a2369f09cc961dbdc8fa86dc36942b0c2d9135b3071bddb38d9bf1604",
+    "DifferentialGeometry/Geometry/Comparison/AlmostStraightTriangle.lean": "01bd30174bc8f9385467171921cf294bc3da3a3dd0018755d6ce80da3d82fc27",
+    "DifferentialGeometry/Geometry/Comparison/AlmostRadialPoint.lean": "144ba12fab4165095573c2d56a0429a688f18febae822bd34cd2262dc48f65a8"
+  },
+  "logs": {
+    "almost_radial_point_geometry_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "almost_radial_point_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758",
+    "almost_radial_point_path_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "almost_radial_point_review.log": "37462604078a01e7d64d64d77480d36d89c589c37fb5d17de5475afe3b21238b",
+    "almost_radial_point_model_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "review_driver_sha256": "c949d6390f4a8e1ab79d9dedd7367640e20e80842b04651c8605472b0c841bea",
+  "git_head_at_check": "904b833937f386dd534d66de5ed5bfce3047e020",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

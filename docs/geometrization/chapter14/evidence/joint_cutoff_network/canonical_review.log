@@ -1,0 +1,190 @@
+DifferentialGeometry.Analysis.unit_scalar_product_derivative_bounds.{u_1} {E : Type u_1} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] {f g : E → ℝ} (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g) {x : E} {a b A B : ℝ} (hfv : |f x| ≤ 1)
+  (hgv : |g x| ≤ 1) (hDf : ‖fderiv ℝ f x‖ ≤ a) (hDg : ‖fderiv ℝ g x‖ ≤ b) (hDDf : ‖fderiv ℝ (fderiv ℝ f) x‖ ≤ A)
+  (hDDg : ‖fderiv ℝ (fderiv ℝ g) x‖ ≤ B) :
+  ‖fderiv ℝ (fun y ↦ f y * g y) x‖ ≤ a + b ∧ ‖fderiv ℝ (fderiv ℝ fun y ↦ f y * g y) x‖ ≤ A + 2 * a * b + B
+'DifferentialGeometry.Analysis.unit_scalar_product_derivative_bounds' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+DifferentialGeometry.Analysis.finite_sum_derivative_bounds.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] {ι : Type u_2} {H : Type u_3} [Fintype ι] [NormedAddCommGroup H] [NormedSpace ℝ H] {f : ι → E → H}
+  (hf : ∀ (i : ι), ContDiff ℝ 2 (f i)) {a b : ℝ} (hfirst : ∀ (i : ι) (x : E), ‖fderiv ℝ (f i) x‖ ≤ a)
+  (hsecond : ∀ (i : ι) (x : E), ‖fderiv ℝ (fderiv ℝ (f i)) x‖ ≤ b) (x : E) :
+  ‖fderiv ℝ (fun y ↦ ∑ i, f i y) x‖ ≤ ↑(Fintype.card ι) * a ∧
+    ‖fderiv ℝ (fderiv ℝ fun y ↦ ∑ i, f i y) x‖ ≤ ↑(Fintype.card ι) * b
+'DifferentialGeometry.Analysis.finite_sum_derivative_bounds' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.edgeCutoff.{u_1} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E] (Δ : ℝ)
+  (f g : ℝ → ℝ) (u v : E →L[ℝ] ℝ) (x : E) : ℝ
+'DifferentialGeometry.Analysis.edgeCutoff' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.jointEdgeCutoff.{u_1, u_2} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {ι : Type u_2} [Fintype ι] (Δ : ℝ) (f g h χ : ℝ → ℝ) (u : ι → E →L[ℝ] ℝ) (v : E →L[ℝ] ℝ) (x : E) : ℝ
+'DifferentialGeometry.Analysis.jointEdgeCutoff' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.contDiff_edgeCutoff.{u_1} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {f g : ℝ → ℝ} {n : WithTop ℕ∞} (hf : ContDiff ℝ n f) (hg : ContDiff ℝ n g) (Δ : ℝ) (u v : E →L[ℝ] ℝ) :
+  ContDiff ℝ n (DifferentialGeometry.Analysis.edgeCutoff Δ f g u v)
+'DifferentialGeometry.Analysis.contDiff_edgeCutoff' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.contDiff_jointEdgeCutoff.{u_1, u_2} {E : Type u_1} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] {ι : Type u_2} [Fintype ι] {f g h χ : ℝ → ℝ} {n : WithTop ℕ∞} (hf : ContDiff ℝ n f)
+  (hg : ContDiff ℝ n g) (hh : ContDiff ℝ n h) (hχ : ContDiff ℝ n χ) (Δ : ℝ) (u : ι → E →L[ℝ] ℝ) (v : E →L[ℝ] ℝ) :
+  ContDiff ℝ n (DifferentialGeometry.Analysis.jointEdgeCutoff Δ f g h χ u v)
+'DifferentialGeometry.Analysis.contDiff_jointEdgeCutoff' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.edgeCutoff_mem_Icc.{u_1} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {f g : ℝ → ℝ} (hf : ∀ (x : ℝ), f x ∈ Set.Icc 0 1) (hg : ∀ (x : ℝ), g x ∈ Set.Icc 0 1) (Δ : ℝ) (u v : E →L[ℝ] ℝ)
+  (x : E) : DifferentialGeometry.Analysis.edgeCutoff Δ f g u v x ∈ Set.Icc 0 1
+'DifferentialGeometry.Analysis.edgeCutoff_mem_Icc' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.jointEdgeCutoff_mem_Icc.{u_1, u_2} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {ι : Type u_2} [Fintype ι] {h χ : ℝ → ℝ} (hh : ∀ (x : ℝ), h x ∈ Set.Icc 0 1) (hχ : ∀ (x : ℝ), χ x ∈ Set.Icc 0 1)
+  (Δ : ℝ) (f g : ℝ → ℝ) (u : ι → E →L[ℝ] ℝ) (v : E →L[ℝ] ℝ) (x : E) :
+  DifferentialGeometry.Analysis.jointEdgeCutoff Δ f g h χ u v x ∈ Set.Icc 0 1
+'DifferentialGeometry.Analysis.jointEdgeCutoff_mem_Icc' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.edgeCutoff_derivative_bounds.{u_1} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {f g : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g) {Δ P : ℝ} (hΔ : 0 < Δ) (hP : 1 ≤ P)
+  (hfv : ∀ (x : ℝ), f x ∈ Set.Icc 0 1) (hgv : ∀ (x : ℝ), g x ∈ Set.Icc 0 1) (hDf : ∀ (x : ℝ), ‖fderiv ℝ f x‖ ≤ P)
+  (hDg : ∀ (x : ℝ), ‖fderiv ℝ g x‖ ≤ P) (hDDf : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ f) x‖ ≤ P)
+  (hDDg : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ g) x‖ ≤ P) (u v : E →L[ℝ] ℝ) (hu : ‖u‖ ≤ 1) (hv : ‖v‖ ≤ 1) (x : E) :
+  ‖fderiv ℝ (DifferentialGeometry.Analysis.edgeCutoff Δ f g u v) x‖ ≤ 2 * P * Δ⁻¹ ∧
+    ‖fderiv ℝ (fderiv ℝ (DifferentialGeometry.Analysis.edgeCutoff Δ f g u v)) x‖ ≤ 4 * P ^ 2 * Δ⁻¹ ^ 2
+'DifferentialGeometry.Analysis.edgeCutoff_derivative_bounds' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.edgeCutoff_weight_bound.{u_1} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {f g : ℝ → ℝ} {Δ : ℝ} (hΔ : 0 < Δ) (hf : tsupport f ⊆ Set.Icc (-9) 9) (u v : E →L[ℝ] ℝ) {x : E}
+  (hx : x ∈ tsupport (DifferentialGeometry.Analysis.edgeCutoff Δ f g u v)) : |u x| ≤ 9 * Δ
+'DifferentialGeometry.Analysis.edgeCutoff_weight_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.jointEdgeCutoff_weight_bound.{u_1, u_2} {E : Type u_1} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] {ι : Type u_2} [Fintype ι] {f g h χ : ℝ → ℝ} {Δ : ℝ} (hΔ : 0 < Δ)
+  (hh : tsupport h ⊆ Set.Icc (1 / 5) 9) (u : ι → E →L[ℝ] ℝ) (v : E →L[ℝ] ℝ) {x : E}
+  (hx : x ∈ tsupport (DifferentialGeometry.Analysis.jointEdgeCutoff Δ f g h χ u v)) : |v x| ≤ 9 * Δ
+'DifferentialGeometry.Analysis.jointEdgeCutoff_weight_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.jointEdgeCutoff_derivative_bounds.{u_1, u_2} {E : Type u_1} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] {ι : Type u_2} [Fintype ι] {f g h χ : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g)
+  (hh : ContDiff ℝ 2 h) (hχ : ContDiff ℝ 2 χ) {Δ P : ℝ} (hΔ : 0 < Δ) (hP : 1 ≤ P) (hfv : ∀ (x : ℝ), f x ∈ Set.Icc 0 1)
+  (hgv : ∀ (x : ℝ), g x ∈ Set.Icc 0 1) (hhv : ∀ (x : ℝ), h x ∈ Set.Icc 0 1) (hχv : ∀ (x : ℝ), χ x ∈ Set.Icc 0 1)
+  (hDf : ∀ (x : ℝ), ‖fderiv ℝ f x‖ ≤ P) (hDg : ∀ (x : ℝ), ‖fderiv ℝ g x‖ ≤ P) (hDh : ∀ (x : ℝ), ‖fderiv ℝ h x‖ ≤ P)
+  (hDχ : ∀ (x : ℝ), ‖fderiv ℝ χ x‖ ≤ P) (hDDf : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ f) x‖ ≤ P)
+  (hDDg : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ g) x‖ ≤ P) (hDDh : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ h) x‖ ≤ P)
+  (hDDχ : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ χ) x‖ ≤ P) (u : ι → E →L[ℝ] ℝ) (v : E →L[ℝ] ℝ) (hu : ∀ (i : ι), ‖u i‖ ≤ 1)
+  (hv : ‖v‖ ≤ 1) (x : E) :
+  have n := ↑(Fintype.card ι);
+  ‖fderiv ℝ (DifferentialGeometry.Analysis.jointEdgeCutoff Δ f g h χ u v) x‖ ≤ (1 + 2 * n) * P ^ 2 * Δ⁻¹ ∧
+    ‖fderiv ℝ (fderiv ℝ (DifferentialGeometry.Analysis.jointEdgeCutoff Δ f g h χ u v)) x‖ ≤
+      (1 + 8 * n + 4 * n ^ 2) * P ^ 3 * Δ⁻¹ ^ 2
+'DifferentialGeometry.Analysis.jointEdgeCutoff_derivative_bounds' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+DifferentialGeometry.Analysis.jointEdgeCutoff_eq_zero_of_all_edgeCutoff_zero.{u_1, u_2} {E : Type u_1}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] {ι : Type u_2} [Fintype ι] {Δ : ℝ} {f g h χ : ℝ → ℝ} (hχ : χ 0 = 0)
+  (u : ι → E →L[ℝ] ℝ) (v : E →L[ℝ] ℝ) {x : E}
+  (hx : ∀ (i : ι), DifferentialGeometry.Analysis.edgeCutoff Δ f g (u i) v x = 0) :
+  DifferentialGeometry.Analysis.jointEdgeCutoff Δ f g h χ u v x = 0
+'DifferentialGeometry.Analysis.jointEdgeCutoff_eq_zero_of_all_edgeCutoff_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+DifferentialGeometry.Analysis.joint_cutoff_common_constant {n P : ℝ} (hn : 0 ≤ n) (hP : 1 ≤ P) :
+  have K := 10 * (n + 1) ^ 2 * P ^ 3;
+  2 * P ≤ K ∧ 4 * P ^ 2 ≤ K ∧ (1 + 2 * n) * P ^ 2 ≤ K ∧ (1 + 8 * n + 4 * n ^ 2) * P ^ 3 ≤ K
+'DifferentialGeometry.Analysis.joint_cutoff_common_constant' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.weightedCoordinateCutoff.{u_1} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  (s : ℝ) (φ : E → ℝ) (u : E →L[ℝ] ℝ) (x : E) : WithLp 2 (ℝ × ℝ)
+'DifferentialGeometry.Analysis.weightedCoordinateCutoff' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.contDiff_weightedCoordinateCutoff.{u_1} {E : Type u_1} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] {φ : E → ℝ} {n : WithTop ℕ∞} (hφ : ContDiff ℝ n φ) (s : ℝ) (u : E →L[ℝ] ℝ) :
+  ContDiff ℝ n (DifferentialGeometry.Analysis.weightedCoordinateCutoff s φ u)
+'DifferentialGeometry.Analysis.contDiff_weightedCoordinateCutoff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+DifferentialGeometry.Analysis.weightedCoordinateCutoff_bounds.{u_1} {E : Type u_1} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] {φ : E → ℝ} (hφ : ContDiff ℝ 2 φ) (u : E →L[ℝ] ℝ) (hu : ‖u‖ ≤ 1) {s Δ K : ℝ} (hs : |s| ≤ 2)
+  (hΔ : 1 ≤ Δ) (hK : 0 ≤ K) (hvalue : ∀ (y : E), φ y ∈ Set.Icc 0 1) (hfirst : ∀ (y : E), ‖fderiv ℝ φ y‖ ≤ K / Δ)
+  (hsecond : ∀ (y : E), ‖fderiv ℝ (fderiv ℝ φ) y‖ ≤ K / Δ ^ 2) (hsupport : ∀ y ∈ tsupport φ, |u y| ≤ 9 * Δ) (x : E) :
+  ‖DifferentialGeometry.Analysis.weightedCoordinateCutoff s φ u x‖ ≤ 20 * Δ ∧
+    ‖fderiv ℝ (DifferentialGeometry.Analysis.weightedCoordinateCutoff s φ u) x‖ ≤ 2 + 20 * K ∧
+      ‖fderiv ℝ (fderiv ℝ (DifferentialGeometry.Analysis.weightedCoordinateCutoff s φ u)) x‖ ≤ 24 * K / Δ
+'DifferentialGeometry.Analysis.weightedCoordinateCutoff_bounds' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+DifferentialGeometry.Analysis.orthogonalBlocks.{u_1, u_2, u_3} {E : Type u_1} {ι : Type u_2} {F : ι → Type u_3}
+  (f : (i : ι) → E → F i) (x : E) : PiLp 2 F
+'DifferentialGeometry.Analysis.orthogonalBlocks' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.contDiff_orthogonalBlocks.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] {ι : Type u_2} [Fintype ι] {F : ι → Type u_3} [(i : ι) → NormedAddCommGroup (F i)]
+  [(i : ι) → InnerProductSpace ℝ (F i)] {f : (i : ι) → E → F i} {n : WithTop ℕ∞} (hf : ∀ (i : ι), ContDiff ℝ n (f i)) :
+  ContDiff ℝ n (DifferentialGeometry.Analysis.orthogonalBlocks f)
+'DifferentialGeometry.Analysis.contDiff_orthogonalBlocks' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.norm_orthogonalBlocks_le.{u_1, u_2, u_3} {E : Type u_1} {ι : Type u_2} [Fintype ι]
+  {F : ι → Type u_3} [(i : ι) → NormedAddCommGroup (F i)] {f : (i : ι) → E → F i} {x : E} {A : ℝ} (hA : 0 ≤ A)
+  (hv : ∀ (i : ι), ‖f i x‖ ≤ A) : ‖DifferentialGeometry.Analysis.orthogonalBlocks f x‖ ≤ √↑(Fintype.card ι) * A
+'DifferentialGeometry.Analysis.norm_orthogonalBlocks_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.orthogonalBlocks_derivative_bounds.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] {ι : Type u_2} [Fintype ι] {F : ι → Type u_3} [(i : ι) → NormedAddCommGroup (F i)]
+  [(i : ι) → InnerProductSpace ℝ (F i)] {f : (i : ι) → E → F i} (hf : ∀ (i : ι), ContDiff ℝ 2 (f i)) {A B C : ℝ}
+  (hA : 0 ≤ A) (hB : 0 ≤ B) (hC : 0 ≤ C) (hvalue : ∀ (i : ι) (x : E), ‖f i x‖ ≤ A)
+  (hfirst : ∀ (i : ι) (x : E), ‖fderiv ℝ (f i) x‖ ≤ B) (hsecond : ∀ (i : ι) (x : E), ‖fderiv ℝ (fderiv ℝ (f i)) x‖ ≤ C)
+  (x : E) :
+  ‖DifferentialGeometry.Analysis.orthogonalBlocks f x‖ ≤ √↑(Fintype.card ι) * A ∧
+    ‖fderiv ℝ (DifferentialGeometry.Analysis.orthogonalBlocks f) x‖ ≤ √↑(Fintype.card ι) * B ∧
+      ‖fderiv ℝ (fderiv ℝ (DifferentialGeometry.Analysis.orthogonalBlocks f)) x‖ ≤ √↑(Fintype.card ι) * C
+'DifferentialGeometry.Analysis.orthogonalBlocks_derivative_bounds' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+DifferentialGeometry.Analysis.jointCutoffBlockFamily.{u_1, u_2} {E : Type u_1} {ι : Type u_2} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] [Fintype ι] (Δ : ℝ) (s : ι → ℝ) (f g h χ : ℝ → ℝ) (u : ι → E →L[ℝ] ℝ) (v : E →L[ℝ] ℝ) :
+  Option ι → E → WithLp 2 (ℝ × ℝ)
+'DifferentialGeometry.Analysis.jointCutoffBlockFamily' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.jointCutoffNetwork.{u_1, u_2} {E : Type u_1} {ι : Type u_2} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] [Fintype ι] (Δ : ℝ) (s : ι → ℝ) (f g h χ : ℝ → ℝ) (u : ι → E →L[ℝ] ℝ) (v : E →L[ℝ] ℝ) :
+  E → PiLp 2 fun x ↦ WithLp 2 (ℝ × ℝ)
+'DifferentialGeometry.Analysis.jointCutoffNetwork' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.contDiff_jointCutoffNetwork.{u_1, u_2} {E : Type u_1} {ι : Type u_2}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [Fintype ι] {f g h χ : ℝ → ℝ} {n : WithTop ℕ∞} (hf : ContDiff ℝ n f)
+  (hg : ContDiff ℝ n g) (hh : ContDiff ℝ n h) (hχ : ContDiff ℝ n χ) (Δ : ℝ) (s : ι → ℝ) (u : ι → E →L[ℝ] ℝ)
+  (v : E →L[ℝ] ℝ) : ContDiff ℝ n (DifferentialGeometry.Analysis.jointCutoffNetwork Δ s f g h χ u v)
+'DifferentialGeometry.Analysis.contDiff_jointCutoffNetwork' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.jointCutoffNetwork_bounds.{u_1, u_2} {E : Type u_1} {ι : Type u_2} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] [Fintype ι] {f g h χ : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g) (hh : ContDiff ℝ 2 h)
+  (hχ : ContDiff ℝ 2 χ) {Δ P : ℝ} (hΔ : 1 ≤ Δ) (hP : 1 ≤ P) (hfv : ∀ (x : ℝ), f x ∈ Set.Icc 0 1)
+  (hgv : ∀ (x : ℝ), g x ∈ Set.Icc 0 1) (hhv : ∀ (x : ℝ), h x ∈ Set.Icc 0 1) (hχv : ∀ (x : ℝ), χ x ∈ Set.Icc 0 1)
+  (hDf : ∀ (x : ℝ), ‖fderiv ℝ f x‖ ≤ P) (hDg : ∀ (x : ℝ), ‖fderiv ℝ g x‖ ≤ P) (hDh : ∀ (x : ℝ), ‖fderiv ℝ h x‖ ≤ P)
+  (hDχ : ∀ (x : ℝ), ‖fderiv ℝ χ x‖ ≤ P) (hDDf : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ f) x‖ ≤ P)
+  (hDDg : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ g) x‖ ≤ P) (hDDh : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ h) x‖ ≤ P)
+  (hDDχ : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ χ) x‖ ≤ P) (hfsupp : tsupport f ⊆ Set.Icc (-9) 9)
+  (hhsupp : tsupport h ⊆ Set.Icc (1 / 5) 9) (s : ι → ℝ) (hs : ∀ (i : ι), s i ∈ Set.Icc (1 / 2) 2) (u : ι → E →L[ℝ] ℝ)
+  (v : E →L[ℝ] ℝ) (hu : ∀ (i : ι), ‖u i‖ ≤ 1) (hv : ‖v‖ ≤ 1) (x : E) :
+  have N := ↑(Fintype.card ι) + 1;
+  have K := 10 * N ^ 2 * P ^ 3;
+  ‖DifferentialGeometry.Analysis.jointCutoffNetwork Δ s f g h χ u v x‖ ≤ 20 * √N * Δ ∧
+    ‖fderiv ℝ (DifferentialGeometry.Analysis.jointCutoffNetwork Δ s f g h χ u v) x‖ ≤ √N * (2 + 20 * K) ∧
+      ‖fderiv ℝ (fderiv ℝ (DifferentialGeometry.Analysis.jointCutoffNetwork Δ s f g h χ u v)) x‖ ≤ 24 * √N * K / Δ
+'DifferentialGeometry.Analysis.jointCutoffNetwork_bounds' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.jointCutoffNetwork_c1_comp_sub_le.{u_1, u_2, u_3} {E : Type u_1} {ι : Type u_2}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [Fintype ι] {f g h χ : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g)
+  (hh : ContDiff ℝ 2 h) (hχ : ContDiff ℝ 2 χ) {Δ P : ℝ} (hΔ : 1 ≤ Δ) (hP : 1 ≤ P) (hfv : ∀ (x : ℝ), f x ∈ Set.Icc 0 1)
+  (hgv : ∀ (x : ℝ), g x ∈ Set.Icc 0 1) (hhv : ∀ (x : ℝ), h x ∈ Set.Icc 0 1) (hχv : ∀ (x : ℝ), χ x ∈ Set.Icc 0 1)
+  (hDf : ∀ (x : ℝ), ‖fderiv ℝ f x‖ ≤ P) (hDg : ∀ (x : ℝ), ‖fderiv ℝ g x‖ ≤ P) (hDh : ∀ (x : ℝ), ‖fderiv ℝ h x‖ ≤ P)
+  (hDχ : ∀ (x : ℝ), ‖fderiv ℝ χ x‖ ≤ P) (hDDf : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ f) x‖ ≤ P)
+  (hDDg : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ g) x‖ ≤ P) (hDDh : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ h) x‖ ≤ P)
+  (hDDχ : ∀ (x : ℝ), ‖fderiv ℝ (fderiv ℝ χ) x‖ ≤ P) (hfsupp : tsupport f ⊆ Set.Icc (-9) 9)
+  (hhsupp : tsupport h ⊆ Set.Icc (1 / 5) 9) (s : ι → ℝ) (hs : ∀ (i : ι), s i ∈ Set.Icc (1 / 2) 2) (u : ι → E →L[ℝ] ℝ)
+  (v : E →L[ℝ] ℝ) (hu : ∀ (i : ι), ‖u i‖ ≤ 1) (hv : ‖v‖ ≤ 1) {X : Type u_3} [NormedAddCommGroup X] [NormedSpace ℝ X]
+  {U V : X → E} {x : X} (hU : DifferentiableAt ℝ U x) (hV : DifferentiableAt ℝ V x) {ε L₀ : ℝ} (hε : 0 ≤ ε)
+  (hL₀ : 0 ≤ L₀) (hclose : ‖U x - V x‖ ≤ ε) (hDclose : ‖fderiv ℝ U x - fderiv ℝ V x‖ ≤ ε) (hDV : ‖fderiv ℝ V x‖ ≤ L₀) :
+  have N := ↑(Fintype.card ι) + 1;
+  have K := 10 * N ^ 2 * P ^ 3;
+  have W := DifferentialGeometry.Analysis.jointCutoffNetwork Δ s f g h χ u v;
+  max ‖W (U x) - W (V x)‖ ‖fderiv ℝ (W ∘ U) x - fderiv ℝ (W ∘ V) x‖ ≤ (√N * (2 + 20 * K) + 24 * √N * K / Δ * L₀) * ε
+'DifferentialGeometry.Analysis.jointCutoffNetwork_c1_comp_sub_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+DifferentialGeometry.Analysis.jointCutoffNetwork_some.{u_1, u_2} {E : Type u_1} {ι : Type u_2} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] [Fintype ι] (Δ : ℝ) (s : ι → ℝ) (f g h χ : ℝ → ℝ) (u : ι → E →L[ℝ] ℝ) (v : E →L[ℝ] ℝ) (x : E)
+  (i : ι) :
+  (DifferentialGeometry.Analysis.jointCutoffNetwork Δ s f g h χ u v x).ofLp (some i) =
+    WithLp.toLp 2
+      (s i * ((u i) x * DifferentialGeometry.Analysis.edgeCutoff Δ f g (u i) v x),
+        s i * DifferentialGeometry.Analysis.edgeCutoff Δ f g (u i) v x)
+'DifferentialGeometry.Analysis.jointCutoffNetwork_some' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.jointCutoffNetwork_none.{u_1, u_2} {E : Type u_1} {ι : Type u_2} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] [Fintype ι] (Δ : ℝ) (s : ι → ℝ) (f g h χ : ℝ → ℝ) (u : ι → E →L[ℝ] ℝ) (v : E →L[ℝ] ℝ) (x : E) :
+  (DifferentialGeometry.Analysis.jointCutoffNetwork Δ s f g h χ u v x).ofLp none =
+    WithLp.toLp 2
+      (v x * DifferentialGeometry.Analysis.jointEdgeCutoff Δ f g h χ u v x,
+        DifferentialGeometry.Analysis.jointEdgeCutoff Δ f g h χ u v x)
+'DifferentialGeometry.Analysis.jointCutoffNetwork_none' depends on axioms: [propext, Classical.choice, Quot.sound]

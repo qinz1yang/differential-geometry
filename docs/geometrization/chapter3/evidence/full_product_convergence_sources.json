@@ -1,0 +1,39 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC74 full statement and proof5872-5912; adjacent AC75 domains5914-5982"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf",
+      "sha256": "7a860b4dd95b35fe33b06bf040100ec243d72c80528d927f4763391aaf79cb6e",
+      "locator": "Lemma4.17 full statement/proof printed32-33/PDF27-28; printed32 rendered; strict/equal-rank mismatch separately retained"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/KL_corrections.pdf",
+      "sha256": "b5849571508231ce7328ef842eaa0a8a74e34804de7741dab548c406dea11e19",
+      "locator": "retained May15,2015 correction sheet PDF1; no relevant correction listed"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/ControlledProductLimit.lean",
+      "sha256": "3c809036a5690fbb7f5881fedafa76df8286ce631c635eb7203b302068e71ca0",
+      "locator": "accepted actual maps, factor extraction and controlled isometry proof reused without changes"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/ApproximateFactorCompactness.lean",
+      "sha256": "816aec4269118e7580cb6427dba62efcc6a002070f05060024bf814e4af87498",
+      "locator": "accepted actual maps, factor extraction and controlled isometry proof reused without changes"
+    }
+  ],
+  "reused_source_checks": [
+    "approximate_factor_compactness_sources.json",
+    "controlled_product_limit_sources.json",
+    "exact_splitting_compatibility_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Full AC74 from original pointed convergence; both original maps, same returned source maps and explicit factor domains; arbitrary proper fixed first factors",
+  "source_rank_discrepancy": "KL Def4.8(2) j<k versus Lemma4.17 j<=k<=n, both rendered pages checked; blueprint equal-rank interface explicitly extended and proved.",
+  "errata": "Retained May15,2015 KL sheet checked; no new current-web freshness claim",
+  "independent_agent_proof_review": true
+}

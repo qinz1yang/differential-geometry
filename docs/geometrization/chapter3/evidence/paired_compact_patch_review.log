@@ -1,0 +1,5 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_compact_closedBall_in_open_set' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.isCompact_closedBall_of_chart' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.isCompact_of_bounded_bilipschitz_image' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "new_public_theorems": 3,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 12,
+  "combined_modules": 208,
+  "combined_jobs": 3042,
+  "combined_owned_declarations": 1086,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/RadialChartNet.lean": "54b44ecca41197bd55ac57b0aadfc45f07a74d8fcc09fac7181ed1d956b7c685",
+    "DifferentialGeometry/Geometry/Comparison/LocalChartCovering.lean": "4fe5c242bba9a33c815808b7d05d15bf3cf507b42124782a0416e3b77e79e4a1"
+  },
+  "logs": {
+    "local_chart_covering_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "local_chart_covering_review.log": "031ae7781a5fd8393566f67e96d94e3d43c7ef7783e616c30ecc5aadfe22e4bf",
+    "local_chart_covering_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "67514bef62b3b15d6b2c26a253d754b80cce4342b98afadac9ef896d5f18a6e2",
+  "git_head_at_check": "ff16069b4560c3bb7f30633599fab6158d2ff3c0",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

@@ -1,0 +1,94 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KapovitchLebedevaPetruninAlexandrov.pdf",
+      "sha256": "3dc0a166ec88b1c7e50aeebd9924f747ece6fb1957c7b31dcbe17a90a9e61d67",
+      "version": "Archived v1July14,2026",
+      "locator": "Full3.3 statement/proof printed36--37/PDF38--39, actual directions/cone definitions printed35--36/PDF37--38, retained gc140/KLP.txt lines1536--1610.",
+      "review_provenance": "Full proof read by root and independent agents, no fresh remote errata claim."
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/AlexanderKapovitchPetrunin303Alexandrov.pdf",
+      "sha256": "1ba6f6f011a8333d9a20bdbf49d36d68b61bf1aababb19296ed48ecea37248ed",
+      "locator": "11.6(a) converse printed/PDF175; local secant-lift route and separate globalization, reused141 exact source/convention record."
+    }
+  ],
+  "reused_source_checks": [
+    "geodesic_directions_sources.json",
+    "euclidean_cone_sources.json",
+    "local_spherical_directions_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "blueprint_locator": "Frozen207A actual directions/tangent structural dependencies forAC11/AC12; no blueprint edit.",
+  "scope": "Original local metric comparison alone implies flat four-point comparison on SAME literal tangent and LOCAL spherical comparison on SAME completed directions.",
+  "source_conventions": "\u03ba\u22650 is geometric lower bound\u2212\u03ba. Tangent comparison is not geodesicity/fullAlex0. Local spherical output keeps141 strict2pi model guards and no globalization claim.",
+  "proof_route": "Actual representative density including tip, four original finite-domain radial-speed paths, six simultaneous first-order distances, exact\u03ba*t\u00b2 rescaling, closure of the genuine dense subcone; then actual-cone secant-lift comparison.",
+  "no_new_premises": [
+    "CompleteSpaceX",
+    "near-short curves",
+    "source length structure",
+    "finite dimension",
+    "local compactness",
+    "compact\u03a3",
+    "properT",
+    "pointedGH identification",
+    "nonempty directions",
+    "supplied tangent comparison"
+  ],
+  "errata": "Existing source/errata distinctions retained; KLP body freshly reread but no fresh KLP external errata retrieval. AKP factor-two source inconsistency and fresh errata evidence are inherited unchanged from141.",
+  "independent_peer_proof_review": true,
+  "not_claimed": [
+    "tangent geodesicity",
+    "compactness/properness",
+    "pointedGH convergence",
+    "dimension equality",
+    "globalCBB1",
+    "positive-curvature globalization",
+    "PC migration validation",
+    "completion of Chapters3--4"
+  ],
+  "proof_records": [
+    {
+      "path": "/tmp/gc_DirectTangentComparison_record.md",
+      "sha256": "3395a8322683ad97a2cc437a649684365604ac1d1bf677da9cffe7a4563289b5"
+    },
+    {
+      "path": "/tmp/gc_DirectTangentComparison_feasibility_audit.md",
+      "sha256": "8f4e6ed352c172bf70e4f60ff54d08e5908b808a8658cb3c600099f137e06caf"
+    },
+    {
+      "path": "/tmp/gc_DirectTangentComparison_source_independent_read.md",
+      "sha256": "09fd662b34665194deaf848ee495929cc8d6d84b35c045a3a1988291cf51f2d9"
+    },
+    {
+      "path": "/tmp/gc_DirectSphericalDirections_record.md",
+      "sha256": "055e8624be653fd3b3c6f66af8b4c067cca0fdaf133f8048df9be1deaaae6fd3"
+    },
+    {
+      "path": "/tmp/gc_DirectSphericalDirections_source_independent_read.md",
+      "sha256": "1777e8e09302a38db2e7fb6a9ff140c852fdebe5fda48a94d06dadf355ca7fea"
+    },
+    {
+      "path": "/tmp/gc_DirectTangentComparison_review_record.md",
+      "sha256": "ee7015f20dea07ecc3dd9c926972098286ab51b1659955b47f16d520011ae2f3"
+    },
+    {
+      "path": "/tmp/gc_DirectTangentComparison_half_independent_read.md",
+      "sha256": "998ffc18f33b9828e6e2b40aea6c01732bbfc33cc4d1c721b8c9dd5eb8457b55"
+    }
+  ],
+  "upstream_freezes": [
+    {
+      "path": "/tmp/gc_DirectTangentComparison_production_freeze.json",
+      "sha256": "bdf97616e47f2778c8216f79033489f15a018073b5407a7450f3ba90bbfc4204"
+    },
+    {
+      "path": "/tmp/gc_DirectSphericalDirections_freeze.json",
+      "sha256": "e3108c6a4c2c3f7b9c1cdf3a7e619fb8de1c15bb9f3ba9ce37fa4108ae9750b1"
+    },
+    {
+      "path": "/tmp/gc_DirectTangentComparison_review_freeze.json",
+      "sha256": "464806fa63529d4e77d3ccc1e04cc379db0414581aaa6d51c7cf043a0758635e"
+    }
+  ]
+}

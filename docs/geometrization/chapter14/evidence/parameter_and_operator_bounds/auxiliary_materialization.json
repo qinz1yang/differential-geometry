@@ -1,0 +1,92 @@
+{
+  "commit": "5a70a68f96473f22c717a1553b689c2a50cef55e",
+  "accepted_pushed_commit": "7db4adebcdbf87bef9c885a33bcabfdc8edd3f16",
+  "last_gate_finished": "2026-09-30T10:19:39Z",
+  "meaning": "Materialize unchanged baseline source blobs identical in current and accepted pushed commits; preserve original cloud placeholders by inode.",
+  "files": [
+    {
+      "path": "DifferentialGeometry/External/CanonicalTopology/migration/consumers/DifferentialGeometry_Analysis_Calculus_DiskTraceApproximation.patch",
+      "git_blob": "0aba8d9b79287ac9fb9df1c2240ae0761ff21398",
+      "sha256": "384f0b2952b5d98b3b03c408ef2743ae64955899f585f7d64012e2108aad5136",
+      "size": 182,
+      "original_placeholder": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/External/CanonicalTopology/migration/consumers/DifferentialGeometry_Analysis_Calculus_DiskTraceApproximation.patch.cloud-preserved-20260930",
+      "preserved_inode": 34003110,
+      "preserved_mtime_ns": 1790632238250328063,
+      "placeholder_present_at_postcheck": false
+    },
+    {
+      "path": "DifferentialGeometry/External/CanonicalTopology/migration/consumers/DifferentialGeometry_Analysis_Complex_BoundaryLens_Geometry.patch",
+      "git_blob": "af21d821efa58c14c014c986a2f3679742d7bc16",
+      "sha256": "2feabff5dddeb9a9123623e30b2dcbe6b2c920cc582c24f180d70c3605507319",
+      "size": 182,
+      "original_placeholder": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/External/CanonicalTopology/migration/consumers/DifferentialGeometry_Analysis_Complex_BoundaryLens_Geometry.patch.cloud-preserved-20260930",
+      "preserved_inode": 34003111,
+      "preserved_mtime_ns": 1790632238250395774,
+      "placeholder_present_at_postcheck": false
+    },
+    {
+      "path": "DifferentialGeometry/External/CanonicalTopology/migration/postpin/LocalZeroNaturality.patch",
+      "git_blob": "77d6667f39579100861d22fec4254a850eaa4f27",
+      "sha256": "10936fe9ecb91bbf87987695d114e02ec1fd50f2074ea47b741183c3d5f70680",
+      "size": 8819,
+      "original_placeholder": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/External/CanonicalTopology/migration/postpin/LocalZeroNaturality.patch.cloud-preserved-20260930",
+      "preserved_inode": 34003271,
+      "preserved_mtime_ns": 1790632238260076974,
+      "placeholder_present_at_postcheck": false
+    },
+    {
+      "path": "DifferentialGeometry/External/CanonicalTopology/migration/postpin/NormedLocalCapDuality.patch",
+      "git_blob": "2148e7baedc037304d6bbd9077c82808b89058e3",
+      "sha256": "86453f8617c28e1e354daa4b32a59e58c42344125d0ba6937fe7dda6c9f713a0",
+      "size": 11364,
+      "original_placeholder": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/External/CanonicalTopology/migration/postpin/NormedLocalCapDuality.patch.cloud-preserved-20260930",
+      "preserved_inode": 34003275,
+      "preserved_mtime_ns": 1790632238260381809,
+      "placeholder_present_at_postcheck": false
+    },
+    {
+      "path": "DifferentialGeometry/External/CanonicalTopology/upstream/canonical-topology/PROJECT_CONTEXT.md",
+      "git_blob": "4706ec640cb5411b929bf85bf23ddb1b709f6246",
+      "sha256": "8a9e4ed3f8baf216d54a05dc27924f2b04d19139ed1374c0112e641fb181e85f",
+      "size": 8616,
+      "original_placeholder": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/External/CanonicalTopology/upstream/canonical-topology/PROJECT_CONTEXT.md.cloud-preserved-20260930",
+      "preserved_inode": 34003287,
+      "preserved_mtime_ns": 1790632238261074564,
+      "placeholder_present_at_postcheck": false
+    },
+    {
+      "path": "DifferentialGeometry/External/CanonicalTopology/upstream/canonical-topology/README.md",
+      "git_blob": "7c582f76ad1dd2800a8e2ea189f4ca2dc5ec59cd",
+      "sha256": "1914ab020ec7baa38818832706e7ba5d06407aa7551a934f55096d449791ea16",
+      "size": 77596,
+      "original_placeholder": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/External/CanonicalTopology/upstream/canonical-topology/README.md.cloud-preserved-20260930",
+      "preserved_inode": 34003288,
+      "preserved_mtime_ns": 1790632238261254274,
+      "placeholder_present_at_postcheck": false
+    },
+    {
+      "path": "DifferentialGeometry/External/CanonicalTopologyProvenance/Ayush4ca15d0de/provenance/APACHE-2.0.txt",
+      "git_blob": "8dada3edaf50dbc082c9a125058f25def75e625a",
+      "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+      "size": 11357,
+      "original_placeholder": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/External/CanonicalTopologyProvenance/Ayush4ca15d0de/provenance/APACHE-2.0.txt.cloud-preserved-20260930",
+      "preserved_inode": 34003334,
+      "preserved_mtime_ns": 1790632238265687432,
+      "placeholder_present_at_postcheck": false
+    },
+    {
+      "path": "DifferentialGeometry/External/CanonicalTopologyProvenance/Ayush4ca15d0de/provenance/SNAPSHOT.json",
+      "git_blob": "164b601cebb4cf9c0d6b2cd4c8194ff3bdf6f115",
+      "sha256": "eb15b9b88cf6d199d854b2b75834e0f4042623a923c9047b47a60d846623b7f8",
+      "size": 219314,
+      "original_placeholder": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/External/CanonicalTopologyProvenance/Ayush4ca15d0de/provenance/SNAPSHOT.json.cloud-preserved-20260930",
+      "preserved_inode": 34003338,
+      "preserved_mtime_ns": 1790632238266115852,
+      "placeholder_present_at_postcheck": false
+    }
+  ],
+  "postcheck": {
+    "materialized_sha256_verified": 8,
+    "preserved_paths_still_present": 0
+  }
+}

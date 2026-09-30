@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 2,
+  "new_private_theorems": 1,
+  "new_owned_declarations": 3,
+  "combined_modules": 357,
+  "combined_jobs": 3192,
+  "combined_owned_declarations": 1627,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/Approximation/VaryingKleinerLottConvergence.lean": "347be22c8dc1080c51b2f1fd0f78adc9fd8cfefc2d3dfb3fa2f033762083bdb0",
+    "DifferentialGeometry/Geometry/Metric/Approximation/OverlappingConeSplitting.lean": "e324f40baf4b2f9bc30415612a843db5197d5c5af7dfcf6ca9c608456ebca816"
+  },
+  "logs": {
+    "overlapping_cones_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "overlapping_cones_review.log": "24e3ecaa43522e8e0de5ffea32306f0d0d95d1e21d676ecca13c07413e83a5c1",
+    "overlapping_cones_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "8e688a31ef8e4c8ff138e1fc20416fe6d22588e4a6de96dc0f33750eeb69ae39",
+  "git_head_at_check": "27a2ee6441a7cc6af811b47c7e047e7730630806",
+  "independent_agent_proof_review": true,
+  "actual_uniform_unknown_tolerance_and_incomplete_varying_KL_both_directions_tests": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

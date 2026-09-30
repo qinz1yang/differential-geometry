@@ -1,0 +1,41 @@
+GC.MetricGeometry.le_on_closure_of_coarse_bound.{u_1} {X : Type u_1} [PseudoMetricSpace X] {s U : Set X} (hU : IsOpen U)
+  {f : X → ℝ} {A δ : ℝ} (hsource : ∀ x ∈ s ∩ U, f x ≤ A) (hcoarse : ∀ x ∈ U, ∀ y ∈ U, |f x - f y| ≤ dist x y + δ)
+  {x : X} (hx : x ∈ closure s ∩ U) : f x ≤ A + δ
+'GC.MetricGeometry.le_on_closure_of_coarse_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.strong_edge_ray_rescaling_bounds {Δ s η c d a h e θ : ℝ} (hΔ : 1 ≤ Δ) (hs : 0 < s) (hs1 : s < 1 / 100)
+  (hη : 0 < η) (hηs : η ≤ s / 1000) (hηΔ : η ≤ 1 / (100000 * Δ)) (hc : 1 / 2 ≤ c ∧ c ≤ 2) (hd : d ≤ 13 * Δ + 1)
+  (ha : a ≤ Δ / 2) (he : e ≤ s / 1000) (hθ : θ ≤ s / 1000) (hh : h ≤ 2 * e + θ) :
+  have D := max (201 * Δ) (4 / s);
+  200 * Δ < D ∧ d + s⁻¹ / c ≤ η⁻¹ ∧ s⁻¹ / c + a + η ≤ η⁻¹ ∧ 3 * c * η + c * h ≤ s ∧ s⁻¹ + c * h + c * η ≤ D
+'GC.MetricGeometry.strong_edge_ray_rescaling_bounds' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.KleinerLottApprox.recenterRescaleRayToInterval.{u_1} {X : Type u_1} [mX : MetricSpace X] {p : X}
+  {q : ↑(Set.Ici 0)} {ε δ c L : ℝ} (f : GC.MetricGeometry.KleinerLottApprox p q ε) (a : X) (hc : 0 < c) (hδ : 0 < δ)
+  (hδone : δ < 1) (hsource : dist a p + δ⁻¹ / c ≤ ε⁻¹) (htarget : δ⁻¹ / c + ↑q + ε ≤ ε⁻¹)
+  (hbudget : 3 * c * ε + c * ↑(f.toFun a) ≤ δ) (hclip : δ⁻¹ + c * ↑(f.toFun a) + c * ε ≤ L) :
+  have hL := ⋯;
+  GC.MetricGeometry.KleinerLottApprox a ⟨0, ⋯⟩ δ
+'GC.MetricGeometry.KleinerLottApprox.recenterRescaleRayToInterval' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GC.MetricGeometry.KleinerLottApprox.recenterRescaleRayToInterval_apply.{u_1} {X : Type u_1} [mX : MetricSpace X] {p : X}
+  {q : ↑(Set.Ici 0)} {ε δ c L : ℝ} (f : GC.MetricGeometry.KleinerLottApprox p q ε) (a : X) (hc : 0 < c) (hδ : 0 < δ)
+  (hδone : δ < 1) (hsource : dist a p + δ⁻¹ / c ≤ ε⁻¹) (htarget : δ⁻¹ / c + ↑q + ε ≤ ε⁻¹)
+  (hbudget : 3 * c * ε + c * ↑(f.toFun a) ≤ δ) (hclip : δ⁻¹ + c * ↑(f.toFun a) + c * ε ≤ L) (x : X) :
+  have value := min (c * ↑(f.toFun x)) L;
+  have g := f.recenterRescaleRayToInterval a hc hδ hδone hsource htarget hbudget hclip;
+  ↑(g.toFun x) = if x = a then 0 else value
+'GC.MetricGeometry.KleinerLottApprox.recenterRescaleRayToInterval_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GC.MetricGeometry.KleinerLottApprox.exists_strong_edge_ray_model.{u_1} {X : Type u_1} [mX : MetricSpace X] {p : X}
+  {q : ↑(Set.Ici 0)} {ε δ c : ℝ} (f : GC.MetricGeometry.KleinerLottApprox p q ε) (a : X) {Δ e θ : ℝ} (hΔ : 1 ≤ Δ)
+  (hδ : 0 < δ) (hδsmall : δ < 1 / 100) (hεs : ε ≤ δ / 1000) (hεΔ : ε ≤ 1 / (100000 * Δ)) (hc : 1 / 2 ≤ c ∧ c ≤ 2)
+  (ha : dist a p ≤ 13 * Δ + 1) (hq : ↑q ≤ Δ / 2) (he : e ≤ δ / 1000) (hθ : θ ≤ δ / 1000)
+  (hh : ↑(f.toFun a) ≤ 2 * e + θ) :
+  have D := max (201 * Δ) (4 / δ);
+  have values := fun x ↦ min (c * ↑(f.toFun x)) D;
+  have hc0 := ⋯;
+  ∃ (hD : 0 ≤ D), ∃ g, 200 * Δ < D ∧ g.toFun a = ⟨0, ⋯⟩ ∧ ∀ (x : X), x ≠ a → ↑(g.toFun x) = values x
+'GC.MetricGeometry.KleinerLottApprox.exists_strong_edge_ray_model' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

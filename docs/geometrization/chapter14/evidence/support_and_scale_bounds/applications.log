@@ -1,0 +1,17 @@
+'SupportScaleRegression.original_two_stratum_domain_margin' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SupportScaleRegression.distant_zero_core_covers_original_test_ball' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'SupportScaleRegression.actual_meeting_cores_share_enlarged_ball' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'SupportScaleRegression.saturated_three_core_measure_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SupportScaleRegression.actual_nonconstant_scale_product_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'SupportScaleRegression.actual_nonconstant_scale_quotient_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'SupportScaleRegression.actual_affine_scale_bounds_on_closed_ball' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

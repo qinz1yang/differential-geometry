@@ -1,0 +1,14 @@
+import Mathlib.Tactic.Linter
+import DifferentialGeometry.Analysis.InnerProductSpace.PositiveInverseBounds
+
+#check ContinuousLinearMap.norm_inverse_apply_le_of_inner_lower_bound
+#print axioms ContinuousLinearMap.norm_inverse_apply_le_of_inner_lower_bound
+
+#check ContinuousLinearMap.inner_inverse_apply_lower_bound
+#print axioms ContinuousLinearMap.inner_inverse_apply_lower_bound
+
+#check ContinuousLinearMap.dual_apply_inverse_lower_bound
+#print axioms ContinuousLinearMap.dual_apply_inverse_lower_bound
+
+#check ContinuousLinearMap.dual_apply_inverse_pos
+#print axioms ContinuousLinearMap.dual_apply_inverse_pos

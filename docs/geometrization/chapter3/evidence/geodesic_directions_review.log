@@ -1,0 +1,106 @@
+'Real.angle_triangle_of_cosine_distance_triangle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_mul_scale' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.dist_div_tendsto_of_joint_comparisonAngle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.angle_triangle_of_joint_comparisonAngle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.germComparisonAngle_triangle_of_local_fourPointComparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.tendsto_comparisonAngleNegCurvature_sub_curvature_zero_of_radial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.tendsto_curvature_zero_comparisonAngle_of_tendsto' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.germComparisonAngle_eq_curvature_zero_of_tendsto' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.GeodesicRepresentative.path_of_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.path_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.dist_path' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.dist_base_path' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.shorten_path' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.hasAnglesAt_of_local_fourPointComparison_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.angle_mem_Icc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.angle_comm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.angle_self' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.angle_shorten_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.angle_triangle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.dist_geodesicDirection' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.geodesicDirection_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicDirections.isometry_toDirection' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.dist_direction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.direction_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.direction_shorten' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.SpaceOfDirections.exists_representative_dist_lt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.SpaceOfDirections.dist_le_pi' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.tendsto_comparisonAngle_dist_direction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.hasAnglesAt_of_local_fourPointComparison' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.tendsto_comparisonAngle_dist_direction_of_local_fourPointComparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.GeodesicRepresentative.path' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.shorten' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.angle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicDirections' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.SpaceOfDirections' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.geodesicDirection' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicDirections.toDirection' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative.direction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.GeodesicRepresentative' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.HasAnglesAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCGermDistanceReview.opposite_joint_angle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCGermDistanceReview.same_joint_angle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCGermDistanceReview.unequal_speeds_opposite' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCGermDistanceReview.unequal_speeds_same' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCGermAngleTriangleReview.actual_translated_plane_triangle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCGermAngleTriangleReview.actual_finite_interval_positive_curvature_triangle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCGermAngleTriangleReview.false_zero_angle_data_fail_distance_triangle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCGermAngleTriangleReview.finite_interval_is_incomplete_and_rays_are_not_lines' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCGermAngleTriangleReview.actual_translated_plane_curvature_independent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCGermAngleTriangleReview.actual_translated_plane_joint_roundtrip' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCGermAngleTriangleReview.actual_highly_unequal_arms' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCDirectionSpaceReview.unequal_length_representatives' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCDirectionSpaceReview.shortening_retains_actual_original_path' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.singleton_representatives_empty' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCDirectionSpaceReview.unequal_length_same_geodesic_direction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.unequal_length_same_completed_direction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.opposite_completed_directions_distance' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.shortening_preserves_completed_direction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.approximation_by_actual_positive_segment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.singleton_completed_directions_empty' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCDirectionSpaceReview.curvature_four_defines_actual_angles' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCDirectionSpaceReview.same_paths_joint_curvature_limit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCDirectionSpaceReview.same_paths_joint_curvature_limit_pi' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCDirectionSpaceReview.unequal_positive_paths_joint_curvature_four_limit_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

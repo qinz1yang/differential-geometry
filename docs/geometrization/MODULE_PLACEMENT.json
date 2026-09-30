@@ -1,0 +1,2510 @@
+{
+  "schema": 1,
+  "source_commit": "1f72c16c9c1795f6f1c5aa1e550cd542dc62d60e",
+  "scope": "subject placement, imports, comments and two topology/algebra separation boundaries; no new mathematics",
+  "modules": [
+    {
+      "old_path": "Geometrization/Baseline/FiniteCoprodSupport.lean",
+      "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteCoprodSupport.lean",
+      "old_module": "Geometrization.Baseline.FiniteCoprodSupport",
+      "module": "DifferentialGeometry.Topology.Algebra.Group.FreeProduct.FiniteCoprodSupport",
+      "source_sha256": "bf9d194055220d1d87ff4cd4eef59c22e5486d1c662aae78e63ee870c179d8e9",
+      "sha256": "2d464f6a55aaf65756961a1a2c98040f8c1014d4aa9b2e234e0bcd88f3d0d0f4",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/FiniteFreeFactors.lean",
+      "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteFreeFactors.lean",
+      "old_module": "Geometrization.Baseline.FiniteFreeFactors",
+      "module": "DifferentialGeometry.Topology.Algebra.Group.FreeProduct.FiniteFreeFactors",
+      "source_sha256": "2082db7ac966251f0c1ba42a982cefe6fd4b11c48f1cfe3e8f897f920fb9ba1e",
+      "sha256": "fa518bb1997a31ef278bf8ad60d482f699dc72630447b47078f5feb8f9e1072b",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/FiniteIndecomposable.lean",
+      "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteIndecomposable.lean",
+      "old_module": "Geometrization.Baseline.FiniteIndecomposable",
+      "module": "DifferentialGeometry.Topology.Algebra.Group.FreeProduct.FiniteIndecomposable",
+      "source_sha256": "7ccd0aea099d71744d6f12feb46cdaada2ed7699eb9ce9d65aca9e636e6fed51",
+      "sha256": "faef3452a5a84accb6f0461d3ac5fbc220e39e1471111b984f4ef29fd8089814",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/FiniteKurosh.lean",
+      "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteKurosh.lean",
+      "old_module": "Geometrization.Baseline.FiniteKurosh",
+      "module": "DifferentialGeometry.Topology.Algebra.Group.FreeProduct.FiniteKurosh",
+      "source_sha256": "b0b43661130c053b1e4091b3d98493ea87d2bc91b1fa25c76182c0f3e767874b",
+      "sha256": "ac31111c3dda86af199d18c29d4c834c0694323c905c97267d702690e0202894",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/FiniteProductPresentation.lean",
+      "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteProductPresentation.lean",
+      "old_module": "Geometrization.Baseline.FiniteProductPresentation",
+      "module": "DifferentialGeometry.Topology.Algebra.Group.FreeProduct.FiniteProductPresentation",
+      "source_sha256": "9f2ad7c898b3f9655ed89f3da392e26848f0cded33f5ff537369529e7e6889ca",
+      "sha256": "12c38093f93f56c979eed6eed6a2d07b5e7a765d0de3a7a57d031a7fa519a845",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/FixedFactorComparison.lean",
+      "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FixedFactorComparison.lean",
+      "old_module": "Geometrization.Baseline.FixedFactorComparison",
+      "module": "DifferentialGeometry.Topology.Algebra.Group.FreeProduct.FixedFactorComparison",
+      "source_sha256": "e5416dece0e67dfa81ecceb70c68b14305892e165d8b1b60e3775f5545e66bb3",
+      "sha256": "f2941ba136ec7503f5fe675de27b59e5f9281d0f9cd333e3ddcf06edec03c2d2",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/FreeFactor.lean",
+      "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FreeFactor.lean",
+      "old_module": "Geometrization.Baseline.FreeFactor",
+      "module": "DifferentialGeometry.Topology.Algebra.Group.FreeProduct.FreeFactor",
+      "source_sha256": "aa6d58757c63fad80b085d75c3768cfe34ced4b6f87c26ecf36f82541b895372",
+      "sha256": "a3daefbc2217903841a1fc426a6eb5f0ce9c03e886ddc83f0dae75962c51ac59",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/InheritedFreeFactor.lean",
+      "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/InheritedFreeFactor.lean",
+      "old_module": "Geometrization.Baseline.InheritedFreeFactor",
+      "module": "DifferentialGeometry.Topology.Algebra.Group.FreeProduct.InheritedFreeFactor",
+      "source_sha256": "4ab3ff2acb81992664b681143ff55c5d92106a01d8f323d50ece82f660323efa",
+      "sha256": "540789094d3d51e36d5cc10b1de4f4f49f403b68f9e74533bd5ca20b8a60095e",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/KuroshFreeFactors.lean",
+      "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/KuroshFreeFactors.lean",
+      "old_module": "Geometrization.Baseline.KuroshFreeFactors",
+      "module": "DifferentialGeometry.Topology.Algebra.Group.FreeProduct.KuroshFreeFactors",
+      "source_sha256": "51fcabc9164401debc1d6623ab48fda0ff6674de02ce78a415f49f51a19436a9",
+      "sha256": "025acdae3846df21662db9bccdb5c48ad7cc88c8281969be27aaf5f8a2b5d344",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/LargeFreeFactor.lean",
+      "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/LargeFreeFactor.lean",
+      "old_module": "Geometrization.Baseline.LargeFreeFactor",
+      "module": "DifferentialGeometry.Topology.Algebra.Group.FreeProduct.LargeFreeFactor",
+      "source_sha256": "dd875dfd9cf78a24350a1421bd354e7f52269f0ab6e2afbf6493c531f7f44854",
+      "sha256": "d102ad7e8c32b66ee140e0d1755323ca69180178801366e5ec1fcd86af51b418",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ActualCoverConnectors.lean",
+      "path": "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/CoverConnectors.lean",
+      "old_module": "Geometrization.Baseline.ActualCoverConnectors",
+      "module": "DifferentialGeometry.Topology.FundamentalGroup.FiniteGeneration.CoverConnectors",
+      "source_sha256": "2d3b3b00b596661099eb6c15ce33a538b6f64f192c300a2210accd43ffe97e54",
+      "sha256": "03d176e91703a37bacf21d07bada350749d11e0377d2a7134f0a509413cc8af6",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/CompactFundamentalGroup.lean",
+      "path": "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/CompactFundamentalGroup.lean",
+      "old_module": "Geometrization.Baseline.CompactFundamentalGroup",
+      "module": "DifferentialGeometry.Topology.FundamentalGroup.FiniteGeneration.CompactFundamentalGroup",
+      "source_sha256": "af8e1da5bce624962e55e144ab170404f564cc41320608230e872e2e152a4a67",
+      "sha256": "d8cf784c06d2e09e03c4b7e5e33918ef72f757f0ae4219e9195b4561691f4d30",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/CoverSubdivision.lean",
+      "path": "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/CoverSubdivision.lean",
+      "old_module": "Geometrization.Baseline.CoverSubdivision",
+      "module": "DifferentialGeometry.Topology.FundamentalGroup.FiniteGeneration.CoverSubdivision",
+      "source_sha256": "0dd9d8505f42258776842479fe6f3e50d8d00596ad4b590b9734d5aa285000a2",
+      "sha256": "1e0f317ca7dccab737a30b6fa0ee6fab00e557a83a086739b9c96cf25d55ecb0",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/FiniteCoverGroups.lean",
+      "path": "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/FiniteCoverGroups.lean",
+      "old_module": "Geometrization.Baseline.FiniteCoverGroups",
+      "module": "DifferentialGeometry.Topology.FundamentalGroup.FiniteGeneration.FiniteCoverGroups",
+      "source_sha256": "bcc301d83c7213e9296ae187bfcc9dfde15ac6d6c2620d00620d4461f5ca335b",
+      "sha256": "706a9c8615d56d2dea8ed405dcd29a05a26e310ed58473cd2ae9124565fa1bd9",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/FiniteLocalCover.lean",
+      "path": "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/FiniteLocalCover.lean",
+      "old_module": "Geometrization.Baseline.FiniteLocalCover",
+      "module": "DifferentialGeometry.Topology.FundamentalGroup.FiniteGeneration.FiniteLocalCover",
+      "source_sha256": "1efedbf63304292342ef0fc2606f42ef4c00cbcf35803cedeb69a2a2c15a6bfd",
+      "sha256": "58d6b45076ea762e4a0413040029e7783ed93d426f4da3603b575baac139271a",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/CollarFreeFactor.lean",
+      "path": "DifferentialGeometry/Topology/VanKampen/FreeFactors/CollarFreeFactor.lean",
+      "old_module": "Geometrization.Baseline.CollarFreeFactor",
+      "module": "DifferentialGeometry.Topology.VanKampen.FreeFactors.CollarFreeFactor",
+      "source_sha256": "17304cb5abcab222782f3a4233539429e00a650341974c9ce9f13b3f5bf59c31",
+      "sha256": "757bc982131d213b7ec3dd4566417f417a0b4fb82bda69f0c6db9a54eb0d4a9f",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/FiniteCollarFreeFactors.lean",
+      "path": "DifferentialGeometry/Topology/VanKampen/FreeFactors/FiniteCollarFreeFactors.lean",
+      "old_module": "Geometrization.Baseline.FiniteCollarFreeFactors",
+      "module": "DifferentialGeometry.Topology.VanKampen.FreeFactors.FiniteCollarFreeFactors",
+      "source_sha256": "70f1a0a3fbd3c45e69be5db727e83559b66156abc5cf6552d373eccda175d3dc",
+      "sha256": "ed8b3f53ccbac367836f690b363b3cdcf276dcf104978d508af8c0fb0952d436",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/OpenCoverFreeFactors.lean",
+      "path": "DifferentialGeometry/Topology/VanKampen/FreeFactors/OpenCoverFreeFactors.lean",
+      "old_module": "Geometrization.Baseline.OpenCoverFreeFactors",
+      "module": "DifferentialGeometry.Topology.VanKampen.FreeFactors.OpenCoverFreeFactors",
+      "source_sha256": "c79e1b7ecee4a60141a0321403576c233b35fe069097eebfa2afbde6a1264dd2",
+      "sha256": "1cb376731a6c988b160920aa56672b2617af99d5ea7665c622acdb4d7c24472d",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/SeparatedCollarGroups.lean",
+      "path": "DifferentialGeometry/Topology/VanKampen/FreeFactors/SeparatedCollarGroups.lean",
+      "old_module": "Geometrization.Baseline.SeparatedCollarGroups",
+      "module": "DifferentialGeometry.Topology.VanKampen.FreeFactors.SeparatedCollarGroups",
+      "source_sha256": "1678150720bba8b030704a1aec0a34524ae27e897e1bbbc9e022784ec009852b",
+      "sha256": "54bfd4c48fc2475c358d9f7c68822dd5ee5ec322b2415e0f31866d9c5cfbb2dc",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/StarCoverGroups.lean",
+      "path": "DifferentialGeometry/Topology/VanKampen/FreeFactors/StarCoverGroups.lean",
+      "old_module": "Geometrization.Baseline.StarCoverGroups",
+      "module": "DifferentialGeometry.Topology.VanKampen.FreeFactors.StarCoverGroups",
+      "source_sha256": "5eec62864af98c33ba12b96b84a2529b7213b834b65962513e61ba54cc8313e0",
+      "sha256": "a3c4843ee3b35f2c83061ed9bbab6f1d95724e48a93e5a465bf8a82ebde3b4ee",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ThinOverlapGroups.lean",
+      "path": "DifferentialGeometry/Topology/VanKampen/FreeFactors/ThinOverlapGroups.lean",
+      "old_module": "Geometrization.Baseline.ThinOverlapGroups",
+      "module": "DifferentialGeometry.Topology.VanKampen.FreeFactors.ThinOverlapGroups",
+      "source_sha256": "3affb99c7e810a4e5cc895ca785d989702442e9c12f981c7209d64752dd66fca",
+      "sha256": "97ccf3b0155ac41de6770905ab0e86010c60d77bc5cfc6201e5b2f49a126c460",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/MarkedFundamentalGroup.lean",
+      "path": "DifferentialGeometry/Topology/FundamentalGroup/MarkedFundamentalGroup.lean",
+      "old_module": "Geometrization.Baseline.MarkedFundamentalGroup",
+      "module": "DifferentialGeometry.Topology.FundamentalGroup.MarkedFundamentalGroup",
+      "source_sha256": "f19e0b1bd630665107ffe9dac220f49d3b50331c5d895ef43d4f1f7e7513a8cf",
+      "sha256": "2a9e4f1d543de95f7acb3c7f386e72156d5f36b5f0bf0224119fb1846c1c6b20",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/SigmaFundamentalGroup.lean",
+      "path": "DifferentialGeometry/Topology/FundamentalGroup/SigmaFundamentalGroup.lean",
+      "old_module": "Geometrization.Baseline.SigmaFundamentalGroup",
+      "module": "DifferentialGeometry.Topology.FundamentalGroup.SigmaFundamentalGroup",
+      "source_sha256": "8f0b9cd2792b9b97f7f571269056f16968cfd10663bdff62a804482404eb0f8f",
+      "sha256": "d20a522fc5d5a99c555c195b097d49a78f18551e86fc12dd727f272d119ed599",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/MarkedSeams.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/MarkedSeams.lean",
+      "old_module": "Geometrization.Baseline.MarkedSeams",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.TorusCut.MarkedSeams",
+      "source_sha256": "6290ba074fc0c687c8ab7c934b34edbbed085190799c57bd238f7dace99b4d80",
+      "sha256": "1f04f8f311b99d8ed39c31f98051f984ff98d67cf9697f55648d1b0363ec114e",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/MarkedSeamConsumer.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/SeamExamples.lean",
+      "old_module": "Geometrization.Baseline.MarkedSeamConsumer",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.TorusCut.SeamExamples",
+      "source_sha256": "bb1b5d08a81185fcbe82752f3ddc4832078be7420b8eb123751f69f8f5ab540c",
+      "sha256": "d79757cc0d6fbfcb770b72ca16842c2b7ffad6d6920608be740a55a089f161ee",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/TorusCylinderConsumer.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/TorusCylinder.lean",
+      "old_module": "Geometrization.Baseline.TorusCylinderConsumer",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.TorusCut.TorusCylinder",
+      "source_sha256": "c0c59f001e9c8794a06ce9a5b14cb26a1043509caf9c996cd2b7b34a867b8468",
+      "sha256": "161384a73f8016066ebdd48d383e0b20255257a16cf26b5b4cd2ad09dcf310f5",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/OrientedPresentation.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/ConnectedSum/OrientedPresentation.lean",
+      "old_module": "Geometrization.Baseline.OrientedPresentation",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedPresentation",
+      "source_sha256": "3a5bf2e1e6861f3669e3beeba3f8d016f345a915be60f5bad1019510b581f18e",
+      "sha256": "cfb7e74f6ea4b88062743fbebf72ad0e3e4f29c6725bfc3cfa7e53c0b525bc82",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ElementaryModels.lean",
+      "path": "DifferentialGeometry/Geometry/Thurston/ElementaryModels.lean",
+      "old_module": "Geometrization.Baseline.ElementaryModels",
+      "module": "DifferentialGeometry.Geometry.Thurston.ElementaryModels",
+      "source_sha256": "e781cc0b72ff7b20481cce74bfbd0125288130f43c8ae899be431a900abe1100",
+      "sha256": "87d0b13b6ded3562b6fe4e8f8baf342a293ffadee890e5de9b28814cbd369520",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ModelAtlas.lean",
+      "path": "DifferentialGeometry/Geometry/Thurston/ModelAtlas.lean",
+      "old_module": "Geometrization.Baseline.ModelAtlas",
+      "module": "DifferentialGeometry.Geometry.Thurston.ModelAtlas",
+      "source_sha256": "17a07cfe5b0897b50759857a83a5f80127f8faa627dc80b29bebaad7610bd445",
+      "sha256": "ca7a8487a5a8a23ae144a2e7a14a7cbcb00a8a92f6e7cdb997b841a0e68e9fdf",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/NonemptyGeometricPresentation.lean",
+      "path": "DifferentialGeometry/Geometry/Thurston/NonemptyGeometricPresentation.lean",
+      "old_module": "Geometrization.Baseline.NonemptyGeometricPresentation",
+      "module": "DifferentialGeometry.Geometry.Thurston.NonemptyGeometricPresentation",
+      "source_sha256": "211ccaeeb1336f5793bf95f7cbd0827f8c76882580d41785a3d45b9f1e1fb06c",
+      "sha256": "d9c0ccf8cbe855b07c21d16f26cfbc1ceb84c8e7570e1d7fb5853ee623cac6ad",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/SphericalProductPiece.lean",
+      "path": "DifferentialGeometry/Geometry/Thurston/SphericalProductPiece.lean",
+      "old_module": "Geometrization.Baseline.SphericalProductPiece",
+      "module": "DifferentialGeometry.Geometry.Thurston.SphericalProductPiece",
+      "source_sha256": "6d51eba4785faebe351d9171f9106e4e0f13a751466ea047e66874870372a62f",
+      "sha256": "993f23b7194582c58e941d5a340d3ce9ab8ee8818b9aa5ca5b81b7e313e1158c",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/StandardFactorGeometry.lean",
+      "path": "DifferentialGeometry/Geometry/Thurston/StandardFactorGeometry.lean",
+      "old_module": "Geometrization.Baseline.StandardFactorGeometry",
+      "module": "DifferentialGeometry.Geometry.Thurston.StandardFactorGeometry",
+      "source_sha256": "2bf1fe7784ab3e5f52d938dadf4dfac582d0ada75cbb59fa530cac088221f137",
+      "sha256": "a7155a217eee845d7cccba3c674bcd301a42cfc5835437c2616028d7dd39945c",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/SphericalMetric.lean",
+      "path": "DifferentialGeometry/Geometry/Metric/Sphere/Quotient/SphericalMetric.lean",
+      "old_module": "Geometrization.Baseline.SphericalMetric",
+      "module": "DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SphericalMetric",
+      "source_sha256": "98060a50c1f16a689b440ed1c1df12ad0703bf1307f6fc7c9c914385eb947061",
+      "sha256": "85b1941b4a3173884fefb0a0ae02433d11ff5638ea0efc0ea58a30862ef535cf",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ExplicitSphericalConsumers.lean",
+      "path": "DifferentialGeometry/Geometry/Metric/Sphere/Quotient/AntipodalQuotient.lean",
+      "old_module": "Geometrization.Baseline.ExplicitSphericalConsumers",
+      "module": "DifferentialGeometry.Geometry.Metric.Sphere.Quotient.AntipodalQuotient",
+      "source_sha256": "a24d0499aa134342352a0c8d87f823bd73e0154e1cb91f05cc501e28cf6f2904",
+      "sha256": "23a4dceb124ce013e113c8b353b680a3bcb6b0620eae4168166538cef7ec897d",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/PointedBallApprox.lean",
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/PointedBallApproximation.lean",
+      "old_module": "Geometrization.Baseline.PointedBallApprox",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.PointedBallApproximation",
+      "source_sha256": "6b9536f0df352adcb7d60d00facf7ca256435e6a0e71857fa6e75c9158c802a7",
+      "sha256": "c80d9e691fa0e0040f3802e67e064435780d049d97b7cdb2d056fe18d1d2a530",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/PointedBallConsumers.lean",
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/RealBallExamples.lean",
+      "old_module": "Geometrization.Baseline.PointedBallConsumers",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.RealBallExamples",
+      "source_sha256": "9cbcdc936282e4e63070b9dc7f572b08e1e5de9620cd654a7de1eeabf86a57f3",
+      "sha256": "6b9cc696b5e7e9250dbfa351bd492b7ac59bca55c83afbc024537f34c058785d",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/RiemannianScaleConsumer.lean",
+      "path": "DifferentialGeometry/Geometry/Metric/Scaling/RiemannianBalls.lean",
+      "old_module": "Geometrization.Baseline.RiemannianScaleConsumer",
+      "module": "DifferentialGeometry.Geometry.Metric.Scaling.RiemannianBalls",
+      "source_sha256": "e4fba4a5d2ac54e3c30bc97b954ebc6cfea886492c5de5a961bfead2693b8b27",
+      "sha256": "dec3cdc3fc9a8acb334e0556d06d4763da0f610dd684f131b4dc1c0d21c38ddd",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/EuclideanScaleConsumer.lean",
+      "path": "DifferentialGeometry/Geometry/Metric/Scaling/EuclideanBalls.lean",
+      "old_module": "Geometrization.Baseline.EuclideanScaleConsumer",
+      "module": "DifferentialGeometry.Geometry.Metric.Scaling.EuclideanBalls",
+      "source_sha256": "1284e5cb07490bba52bd87bf278614b8f041b1cda257fed492b4fed07c59d55e",
+      "sha256": "96fe9d10fcb01f59d748fd42ccaf436a9bc2ada09bff7ae2c03f665e85f66fe1",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/CommonProfile.lean",
+      "path": "DifferentialGeometry/Analysis/Order/CommonProfile.lean",
+      "old_module": "Geometrization.Baseline.CommonProfile",
+      "module": "DifferentialGeometry.Analysis.Order.CommonProfile",
+      "source_sha256": "83bcf4aa06ce69a45620ac09fe8bafd4056eace7efa3480c582d99855b4c036f",
+      "sha256": "44b7f48267f1f74e5403d5d2a11afac701221899bed35334c0bfad11673d10e1",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/KappaLoss.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/KappaLoss.lean",
+      "old_module": "Geometrization.Baseline.KappaLoss",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.KappaLoss",
+      "source_sha256": "4ec9b932ccaacb940df93a2d94439e2477ff720f52ef29a6a3c7c1dcb129066b",
+      "sha256": "80dd0989e8b423c4bfc1bde5e3b0faea09ecd76c0ab80e4fb0edf8bfdeb8c5b5",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ComponentVolumeBridge.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/ComponentVolumeBridge.lean",
+      "old_module": "Geometrization.Baseline.ComponentVolumeBridge",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComponentVolumeBridge",
+      "source_sha256": "68bcef51d8bc68e6e5a513b55f935d3fe1c10b44bdd3d05405dc4ed683e903e8",
+      "sha256": "30e2c89dfc230bea39bd29393e0e4798e16c588ee9600eef9e460d96567af674",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/KappaModelVolume.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/KappaModelVolume.lean",
+      "old_module": "Geometrization.Baseline.KappaModelVolume",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.KappaModelVolume",
+      "source_sha256": "15c469acc9c10e4056b9cb622c16f6170f96a013275212ff21a54ab9d6995b3c",
+      "sha256": "40eea2c9d0f6ad2ce7535c125de6bbaa541702f13269c51a0d6cd1bbca01975c",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ModelBallConsumer.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/ModelBallVolume.lean",
+      "old_module": "Geometrization.Baseline.ModelBallConsumer",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelBallVolume",
+      "source_sha256": "d38a08126363f97922c3f544d215d482a5e1ed089decec6bb3731ff5910768dd",
+      "sha256": "2be1993357467bfa548dabc01e20ec47a0ca8e82ae441e6f1b29a57b10f5abbb",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/RoundCoverVolume.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/RoundCoverVolume.lean",
+      "old_module": "Geometrization.Baseline.RoundCoverVolume",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundCoverVolume",
+      "source_sha256": "f9d5340069fba5b6c40b02f20c330fa9ebafe1b6160941e42dcf39671b5eb653",
+      "sha256": "e20fa3a76d1bc5ce25053ea3cb734d45b3280e97286de61f3ce4b86406132bd4",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/RoundImageVolume.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/RoundImageVolume.lean",
+      "old_module": "Geometrization.Baseline.RoundImageVolume",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundImageVolume",
+      "source_sha256": "ddc06e496d0eeb233d0dbff169e5f3fbdf1aaf50e08bf2f39be5d8a583761198",
+      "sha256": "2a3a57c3a6d9f239771f3033dc6b83bd299693e6d8e3014bc897f8d1c2416229",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/RoundReservedProducer.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/RoundReservedWitness.lean",
+      "old_module": "Geometrization.Baseline.RoundReservedProducer",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundReservedWitness",
+      "source_sha256": "2cd3187bc306f7baae92091f3da2909185f0423b5aef9dcf445ec9a89a1742ad",
+      "sha256": "f97b0928179e4d7283af3b857e9a4e0cb979895f66783e0bff17bdef34c821c4",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/SpatialRoundFiniteDegree.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/SpatialRoundFiniteDegree.lean",
+      "old_module": "Geometrization.Baseline.SpatialRoundFiniteDegree",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialRoundFiniteDegree",
+      "source_sha256": "b2d632791dd8624a0994d4821bc86efffa4d8725592c4e6a9543774b2e9fca89",
+      "sha256": "392dc535532adcbf08fc43a24fd913063fb54f5f3741bd688f931fca559cbbae",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/WindowedVolumeSupplier.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/WindowedVolume.lean",
+      "old_module": "Geometrization.Baseline.WindowedVolumeSupplier",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedVolume",
+      "source_sha256": "16aca1cb279df3d55768c0dc11835f221bc0afb842b21167ebf5a6935e3ab8b3",
+      "sha256": "7dd1f1006ff003c6bacfb9096c4f39436bf392c89e3fb312818a1f948737dbaa",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ReservedCanonical.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/ReservedCanonical.lean",
+      "old_module": "Geometrization.Baseline.ReservedCanonical",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ReservedCanonical",
+      "source_sha256": "839523eb4bfbc5f27e0d92942a3839cdf14878a952552ecdce91d14d3449acc1",
+      "sha256": "7d62619292ae6bf3dac6176799da5ef66febd59b4a591962e925f9bc7fe93301",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ChildCapGroups.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/ChildCapGroups.lean",
+      "old_module": "Geometrization.Baseline.ChildCapGroups",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCapGroups",
+      "source_sha256": "1c1b297668a39a86a316b9bbd8596c312bccc9a848d3fac8c366aff7d6e92adf",
+      "sha256": "a9195aae3667d70ff5ff0b2d377b181582dea8e056d661bd6f18d16ea909536a",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/CutCapFreeFactor.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/CutCapFreeFactor.lean",
+      "old_module": "Geometrization.Baseline.CutCapFreeFactor",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapFreeFactor",
+      "source_sha256": "2d1b59ec409e36bd1323f596fe4694d7a3cfb7cb02b3277f7dbc73be4aa395cc",
+      "sha256": "ac0fc07a7f5e85db8af0b107210720ed0bc379c2bae852ffe543feb2b6ac2cbc",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/CutCapReconstruction.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/CutCapReconstruction.lean",
+      "old_module": "Geometrization.Baseline.CutCapReconstruction",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapReconstruction",
+      "source_sha256": "c1e0a8294f91ef9fd79a297d767272501dba5915bb75d0e4c9c5373189cb612c",
+      "sha256": "8f19e3c24e987a34e810cbc021096e633c8883042f0746aecce6b9d78aa73a57",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/DiscardedComponentGeometry.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/DiscardedComponentGeometry.lean",
+      "old_module": "Geometrization.Baseline.DiscardedComponentGeometry",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedComponentGeometry",
+      "source_sha256": "dce1d1c75f7d44f98b3b612d9375b0f1ba1867a43b3538e4985b263fabef8115",
+      "sha256": "95471e8437be59a13da7f508a901d4698c713006477dc7269068750b1a54b6dc",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/MarkedDiscardedGeometry.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/MarkedDiscardedGeometry.lean",
+      "old_module": "Geometrization.Baseline.MarkedDiscardedGeometry",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MarkedDiscardedGeometry",
+      "source_sha256": "c2e625f570870c16eb1b7be1c887e1ab9a1a0aed76a6306b465a3fe38ceebb78",
+      "sha256": "1aea8daac5834050859d2ac4660b33630486355ddb24e427efa74858f3d18e4e",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/MarkedReconstructionConsumer.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/MarkedReconstruction.lean",
+      "old_module": "Geometrization.Baseline.MarkedReconstructionConsumer",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MarkedReconstruction",
+      "source_sha256": "806af7a3a46d1bfa89edfeb67b7c97e631777debb9e33ec323a8b76e5d420aa0",
+      "sha256": "eafe433b92c23cd6971db445e9d4be3f7bed8c9623792148e75d5246d71a8446",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ReconstructionSlots.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/ReconstructionSlots.lean",
+      "old_module": "Geometrization.Baseline.ReconstructionSlots",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ReconstructionSlots",
+      "source_sha256": "aaa58889ec006e793c51e767c51b272c1ecca1225c163cfa24f54406da7c82a8",
+      "sha256": "ff04dedaf718349c0a20455483e2689cb9bd8f5d1dca371d5de74797fc51d65b",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/RetainedDiscardedLabels.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/RetainedDiscardedLabels.lean",
+      "old_module": "Geometrization.Baseline.RetainedDiscardedLabels",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedDiscardedLabels",
+      "source_sha256": "221a12690f62cc924eec7615c328dad495c3d3541e2e2091a530804de38d0505",
+      "sha256": "1679d212470bafdc908e74f3477233f2e10c7e582237b6924a4caf1210a8c03a",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/TubeFreeFactors.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/TubeFreeFactors.lean",
+      "old_module": "Geometrization.Baseline.TubeFreeFactors",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TubeFreeFactors",
+      "source_sha256": "629c7b3e77e35926b4d56adf1698200bee9aed76ed151e8e95e40d50017a8392",
+      "sha256": "0aae997d92585c9527f6a93f501364d16109ac6735b18bbefcdb3e0cf31d27be",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/CoherentSurgeryTower.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/CoherentSurgeryTower.lean",
+      "old_module": "Geometrization.Baseline.CoherentSurgeryTower",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.CoherentSurgeryTower",
+      "source_sha256": "4c343bae8eed4073922f29779fe0bca689633fb5f2e68c9625610502dc445bfd",
+      "sha256": "6de4dcec715984a176aa62ef232ec917f2686021bc85d6ab6e7635290d8435b4",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ConcatenationHorizon.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/ConcatenationHorizon.lean",
+      "old_module": "Geometrization.Baseline.ConcatenationHorizon",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.ConcatenationHorizon",
+      "source_sha256": "c9380db10bd320aef2d73720c201cb8a922c0f882b62da8b28d2661caa9c0757",
+      "sha256": "75df8ba428e0ae2db83eaca0c789e96d48b29488bd9859d510fb7b0ab62e1215",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/FiniteConcatenation.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/FiniteConcatenation.lean",
+      "old_module": "Geometrization.Baseline.FiniteConcatenation",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.FiniteConcatenation",
+      "source_sha256": "d6bfadfef2f54fe1537167b0ece1249e1fdfe767c9159c8efd32290262808416",
+      "sha256": "4bf0a015a0fefeccd6e5b3342b6b7ca0191a8dbc943bd79d7023728d3708816f",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/GeneralPrefixExtension.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/GeneralPrefixExtension.lean",
+      "old_module": "Geometrization.Baseline.GeneralPrefixExtension",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.GeneralPrefixExtension",
+      "source_sha256": "d6f6272511821f966b7f73a4469a9b9c823ef5dca618fb0fd16ef1d32963688e",
+      "sha256": "668b983b1c0ef1faddf11c43a823d9bb1f3bf801c1dc03a41260f8a7f566b8df",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/GeneralTowerConsumers.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/CoherentTowerConsequences.lean",
+      "old_module": "Geometrization.Baseline.GeneralTowerConsumers",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.CoherentTowerConsequences",
+      "source_sha256": "91480fc41d12fa0cdc04026e1066716020ad2395831cf4dfb357da5e86cc6abd",
+      "sha256": "443e65a0fefbcf588358072810a7c72614f59cfe1e36ddd9ea6014b96e193068",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/MarkedContinuation.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/MarkedContinuation.lean",
+      "old_module": "Geometrization.Baseline.MarkedContinuation",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.MarkedContinuation",
+      "source_sha256": "8897aee332f8d1467d84e0dfd926b76fe719b0f2a2243f75924b1dfe6840dd25",
+      "sha256": "f745a482126c919c7a5f9f5634fdc22044357774bd2af512ee1b63e4eccdaf3d",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/SlabCompatibility.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/SlabCompatibility.lean",
+      "old_module": "Geometrization.Baseline.SlabCompatibility",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.SlabCompatibility",
+      "source_sha256": "ebf3d0e4f8452e45fc493bfeebd49a79f6d55a32dff80ae329b6eff5bb33b8f3",
+      "sha256": "2c3bd309d1e9d3c22ac12e3e3bbe46348921d5f04c431b7b33fe487e2354e670",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/SurgeryEventControl.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/SurgeryEventControl.lean",
+      "old_module": "Geometrization.Baseline.SurgeryEventControl",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.SurgeryEventControl",
+      "source_sha256": "65023cf6eba07363df8a486e6029b54e8307342b248ab49c16d8ea0ef5efead6",
+      "sha256": "cb8831f347a8fa7651f2aed9fa473bc751833fe3b034d1a7dc5e8310537eddce",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/TerminalTimeTranslation.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/TerminalTimeTranslation.lean",
+      "old_module": "Geometrization.Baseline.TerminalTimeTranslation",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.TerminalTimeTranslation",
+      "source_sha256": "d43f621a25822a2d2cdc02a2716afc44205ad0d43a101c167b56e9d30934313b",
+      "sha256": "80ef0f74e55a3e8e26a11a0e0ee8f6cbfb8e23e706006ab1f1f41147ac7d4811",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/EventTimeTranslation.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/EventTimeTranslation.lean",
+      "old_module": "Geometrization.Baseline.EventTimeTranslation",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.EventTimeTranslation",
+      "source_sha256": "6e0d29b75853cad377a2c1fde809eeefede04114f1f1947223cc608202e2dd2c",
+      "sha256": "efbc3a02af5e343f9df1416281cb5531238c4420ae39e3e258dc6b81e88a43a3",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/TowerConsumers.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/LateOrEmpty.lean",
+      "old_module": "Geometrization.Baseline.TowerConsumers",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.LateOrEmpty",
+      "source_sha256": "7db4f3bedf0cd8f30830cc52a130825f0c9fca7ee06161d39c2a0e626537c241",
+      "sha256": "ffbc3431c37a64ea0177c3af9252a81856ade618a3db171d2c7b2778fe405fc5",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/TowerFinitePrefixes.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/TowerFinitePrefixes.lean",
+      "old_module": "Geometrization.Baseline.TowerFinitePrefixes",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.TowerFinitePrefixes",
+      "source_sha256": "a924bb5a1f1b42a16cbcfe50a95f60ecf1df1544f9c4fe8eee409b9b878fb728",
+      "sha256": "78f6fb618e3b1eef5b23fba713ee88b4f9f10a0fa8360fd4712c293553d80491",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ActualEventGeometry.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/ActualEventGeometry.lean",
+      "old_module": "Geometrization.Baseline.ActualEventGeometry",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.ActualEventGeometry",
+      "source_sha256": "57a3ce134bb8b17e04b485faf17bc6ec67ba28682eb54e2f5511f9e134f0dba2",
+      "sha256": "88c3574481339ca751e6960f7a207b018539fcfc61ad07523cc8341c2ea11687",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/CompletedHistoryDegree.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/CompletedHistoryDegree.lean",
+      "old_module": "Geometrization.Baseline.CompletedHistoryDegree",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.CompletedHistoryDegree",
+      "source_sha256": "793dd781ae16503d114ee1b3676fefd75ce5b69821d537f315ba1b963f1e4415",
+      "sha256": "b113c77a5230c19557de2e0081b67f0cfcbd964f00e2a303f41d62f251d0a8c8",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/DegreeBoundCanonical.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/DegreeBoundCanonical.lean",
+      "old_module": "Geometrization.Baseline.DegreeBoundCanonical",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.DegreeBoundCanonical",
+      "source_sha256": "ef610451b4a43d3e3bb192d498e12efd5c2d127c45dab20cd7aaad209660f1e8",
+      "sha256": "712d4ff9a29f033b89c170b002605350aae9b89b7c6ecac4999e675eace5039f",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/DegreeGeometricHorizon.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/DegreeGeometricHorizon.lean",
+      "old_module": "Geometrization.Baseline.DegreeGeometricHorizon",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.DegreeGeometricHorizon",
+      "source_sha256": "37e6a371f774fa06d8725c55af348cbbd8742c509268e937833580c42b45c2c0",
+      "sha256": "08314a9ebe8e98ace2ca6e3eb536bf746db91f5f9750d2e5297a0c8cb243b813",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/FiniteGeometricHorizon.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/FiniteGeometricHorizon.lean",
+      "old_module": "Geometrization.Baseline.FiniteGeometricHorizon",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.FiniteGeometricHorizon",
+      "source_sha256": "ef83befbca19dae6ac4703b61fd4f407fe48edd74a7fc59b36319b036594c73d",
+      "sha256": "95e31728c49fcfb4babad9851c7ab3fc82a0b7ca3c3f4bb6d50d20aa13dc527d",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/FiniteInitialDegree.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/FiniteInitialDegree.lean",
+      "old_module": "Geometrization.Baseline.FiniteInitialDegree",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.FiniteInitialDegree",
+      "source_sha256": "701a2470f2950348efbe9db5cd8ba9ae3b8a9e97aa166aeed5f0f501b5e53832",
+      "sha256": "88b33ca4b32d38a453e454660a9388fe7fd5aeea3d8e3e9b6bacfcac7104d25a",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/GeneralCanonicalFromSmallScale.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeneralCanonicalFromSmallScale.lean",
+      "old_module": "Geometrization.Baseline.GeneralCanonicalFromSmallScale",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.GeneralCanonicalFromSmallScale",
+      "source_sha256": "9ada06d02a32a78e1df293c3f7376c38592de07b849ceac2ee669c245b68d38b",
+      "sha256": "1ebd3805b25c79fc49df65ccb7671b9afa9a51a8eddddddf34178c28ed7af97a",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/GeneralCanonicalProduction.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeneralCanonicalProduction.lean",
+      "old_module": "Geometrization.Baseline.GeneralCanonicalProduction",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.GeneralCanonicalProduction",
+      "source_sha256": "4f5343a5e5adc5c9ef91ed37f47597660ce7f540b4b7fba4e506c60f9166779a",
+      "sha256": "d0def05dc65fe27d7aa18c9fb99267da95dfd7b729a0285f4bd69b572f6fdd16",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/GeneralInitialBound.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeneralInitialBound.lean",
+      "old_module": "Geometrization.Baseline.GeneralInitialBound",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.GeneralInitialBound",
+      "source_sha256": "4e56f3d7768f859f4cd906ede5b78d2d87d572ed9143512aaa53b8e0429177fa",
+      "sha256": "4c2fc59705b792011b542c9fb6a9fb1d04496f4b0036ccf2010bc118bcbb3f2c",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/GeometricHorizonProduction.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeometricHorizons.lean",
+      "old_module": "Geometrization.Baseline.GeometricHorizonProduction",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.GeometricHorizons",
+      "source_sha256": "3a8a19dd449b9fb2890a73d9a221a33f69075a33fed5705dfb6a74cc7f2bc317",
+      "sha256": "7f3b470a369d14ec2155002481a52589542f6f6c52ba416a1465ff9f3c4cbfc5",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/HistoryDegreeBound.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/HistoryDegreeBound.lean",
+      "old_module": "Geometrization.Baseline.HistoryDegreeBound",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.HistoryDegreeBound",
+      "source_sha256": "c1db57e2ba1940cc8b761565e33f37e089245fe1598a63b1fe7e15917f12b31b",
+      "sha256": "cff3715b27882f0c428cacda572957353de54bc3e6066a54b978f840f117cc2c",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/HistoryFreeFactors.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/HistoryFreeFactors.lean",
+      "old_module": "Geometrization.Baseline.HistoryFreeFactors",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.HistoryFreeFactors",
+      "source_sha256": "fdb071f2fc0b38fa0e3803bda3a96f847876bee6f295da855fc0e802a2395113",
+      "sha256": "fa4f1d9681f45af5c18eb4d433ee49ada39cd3045f6eb04ce0e320af30bc9ee0",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/InitialDecomposition.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/InitialDecomposition.lean",
+      "old_module": "Geometrization.Baseline.InitialDecomposition",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.InitialDecomposition",
+      "source_sha256": "29bab420d47469bfdf2219933d537ccd91f0438a47c166a7e3e92e6392ca3efb",
+      "sha256": "9c859d155fd640b0dfe114f1d567b9e10ffb7c4554e353e4e34ca3aba3a2d12e",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ProfileCutoffConsumer.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/CutoffProfiles.lean",
+      "old_module": "Geometrization.Baseline.ProfileCutoffConsumer",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.CutoffProfiles",
+      "source_sha256": "7c1fad5f1afe8200eba115e6a95c668aafac253d273397442e9170559b21636f",
+      "sha256": "6c4c16aef4cf45d91b2ee6272b70f658b817c6e93dd9329599759b839591d922",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ProfileQuantifiers.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/ProfileQuantifiers.lean",
+      "old_module": "Geometrization.Baseline.ProfileQuantifiers",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.ProfileQuantifiers",
+      "source_sha256": "084802b077ef5379808803620ee0d53d74bae7f5679c9f7797e488a3a589dece",
+      "sha256": "75889525a2797daa1e30c47f9029d7750afe2a9947fc1da1f46388b6acbfa2c3",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/ReserveContinuation.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/ReserveContinuation.lean",
+      "old_module": "Geometrization.Baseline.ReserveContinuation",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.ReserveContinuation",
+      "source_sha256": "684ef46d137835903efd0ca5459677f04807ba69b536270839dad02598c9fa9e",
+      "sha256": "d786d184cc43ec304f14b09d8ba6a906322c9429e9041501d425cfb163f14b92",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/SmallScaleFromDegree.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/SmallScaleFromDegree.lean",
+      "old_module": "Geometrization.Baseline.SmallScaleFromDegree",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.SmallScaleFromDegree",
+      "source_sha256": "31acf4c87132385cf693c2741543453ca6b962cf30463e07d97a1d64888ec845",
+      "sha256": "f44ae0dbad45f3e60c6f11a6c837c8426066770e67d5c06cbd6bd1258fb93da4",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/SmallScaleGeometricHorizon.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/SmallScaleGeometricHorizon.lean",
+      "old_module": "Geometrization.Baseline.SmallScaleGeometricHorizon",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.SmallScaleGeometricHorizon",
+      "source_sha256": "73e5be3158723a934829678a9c1ec23e4c30a1c9eeb7128cef6aece2e23d94fa",
+      "sha256": "3ec2db82d58d0171622de78d8a5ddd2e0e01523520d3e087457179122ac9ea3e",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/TwoRegisterConsumer.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/JointCutoffProfiles.lean",
+      "old_module": "Geometrization.Baseline.TwoRegisterConsumer",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.JointCutoffProfiles",
+      "source_sha256": "093b37c1e136773a7e9cc0454b78a6559cddd80b2365e93f181e7036fb381422",
+      "sha256": "f253bf015c0f60e05a321c77d65db48d8308f4142b3526ca3243ce9ad9b39ca0",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Baseline/GeometricConsumers.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/MetricAndSeamExamples.lean",
+      "old_module": "Geometrization.Baseline.GeometricConsumers",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.Checks.MetricAndSeamExamples",
+      "source_sha256": "c623caeae230a7b13177324a0f4a6cf3cd5065d41fd6e0628c03c19ee93ba11a",
+      "sha256": "823c83d70a326b3157e992062a3d5b20757f1cb2d622da94fb51c40116b0793a",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoReductionChain.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoReductionChain",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoReductionChain",
+      "source_sha256": "be933f8a54c8b79166e29b029a1596de0b221992c48e2e17f62f24b02e4c15f8",
+      "sha256": "1566c596cb8829cdc61e28234572085c71aaaaddf9c242631a753a51756e32e8",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoInvariant.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoInvariant.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoInvariant",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoInvariant",
+      "source_sha256": "242505db47da22b3276e689d37cc02ad0737ea0d1deb342cf72e607f34173793",
+      "sha256": "ad8a7ca938b3f21033729c2fa570ea8265cce33b142ace12c11d038ad796c398",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoFold.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoFold.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoFold",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoFold",
+      "source_sha256": "88bec9f65485ae4c7915d17d44a1639fcdb7027bdae40ca62b4bf5a16f1030f2",
+      "sha256": "79851a39fc88d001bd0eafcfc40d15950b37429a2d1bb759fe2fa1815b320b99",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoRose.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRose.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoRose",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoRose",
+      "source_sha256": "ab3107e6c3678329751a52b265124add82a9e1998c8d0839e7fdadc0f79203d9",
+      "sha256": "9891b09abe7a9e88aef3917e65532b83e21192684f2f5e7561caec0ce361c12c",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoUnfold",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoUnfold",
+      "source_sha256": "6b21ba22df27421cde5110577516626bbbeb198af87147567408d88c9f2fcd4c",
+      "sha256": "9836205a8f986535aefdf1376316c78389b335c46d3da5dcdb0ceda4794d28f2",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoEdge.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoEdge.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoEdge",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoEdge",
+      "source_sha256": "a1788b2e509d61d2477dc8a5484108b63ab93af76e457e0bd5a9a84c460514c6",
+      "sha256": "2b6699bdab00117791ae1301f9017246ffbfb91975ca8b0d7caeb970d8d35412",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoRemove.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoRemove",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoRemove",
+      "source_sha256": "bff577437dd53e29df0a5b297eaa5ff3a6d895a57624068476c55b2d69206efe",
+      "sha256": "69ba43a5e02c0e8f63aa964de322b9146b835674c8b0871b38e6d23319fe528e",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoFoldStep.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoFoldStep",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoFoldStep",
+      "source_sha256": "486f7109fa6e5e2a8cf4b642277dea06ee520af76fb1a3498cb7b7eda9f3d9e2",
+      "sha256": "8ed66245855f667445e9f646479d33891ed9a4ed9cf02dcb7c71a0c50d4fd764",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoGeneral.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoGeneral.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoGeneral",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoGeneral",
+      "source_sha256": "cee3bf53bc0efcab756df9c1349338d8961432e8c66f262b06e6fc8923617ba7",
+      "sha256": "4efa936723ee2c6afda05be17c0004c203bfd09f379ed02951b13c54d4afdf08",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoGraph.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoGraph.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoGraph",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoGraph",
+      "source_sha256": "c5df000b489d6d9a3d2a26dc69b80662c967a2e477c381b9da068cc9b7653efc",
+      "sha256": "d7f8717acd5336d6b4728a051aa9777f86882d20e3b261d53ef201b09033b808",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoFull.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoFull.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoFull",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoFull",
+      "source_sha256": "912ae1e43858ab7d133588fa83f076dbb532e9245b48f8d214979de53ecfd515",
+      "sha256": "ae7d2a4a2269b49b8e45555bfa0d3da1337004045e7b159c0589a8bbc52ce5cb",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/Grushko.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/Grushko.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.Grushko",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.Grushko",
+      "source_sha256": "c49218f96d5d4c7e2fb44c8fcff0451d0ec0aff887879bae80aa79391caff3c9",
+      "sha256": "c49218f96d5d4c7e2fb44c8fcff0451d0ec0aff887879bae80aa79391caff3c9",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoReduction.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoReduction.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoReduction",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoReduction",
+      "source_sha256": "8434538f1da8819af912d71671d6bf45e22c56d450ae8ec9f925dbc2bc1434bd",
+      "sha256": "97e321b9376f3b43e8cb03a1167329e032fc38a78b20a9020b4d90bf77e3326b",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean",
+      "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnsafe.lean",
+      "old_module": "Geometrization.Vendor.MarshallHall.GrushkoUnsafe",
+      "module": "DifferentialGeometry.External.GrushkoNeumannTheorem.MarshallHall.GrushkoUnsafe",
+      "source_sha256": "3d1120f4171d6487117b42abd3110379d42146ecf8c93297235f6d49215f5271",
+      "sha256": "5d5a8597ea369ebb7b6891f855b0617bc0331681ed22f18d24ea68ba8ad3de9d",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshTheorem.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshTheorem.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshTheorem",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshTheorem",
+      "source_sha256": "a7fe7ba52301a9c9a59e84799e7022dba4bc344e7096b194c59e3ccc6560c9a6",
+      "sha256": "fd38e58e494e4500d93131dfca1dfdf0dcbde774ec6e74db261c59f030ecc6c4",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshPathInjective.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshPathInjective.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshPathInjective",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshPathInjective",
+      "source_sha256": "5c6b099f14f1992b6497d12e90b1b5d1a3f1e77acaadb529ca3ea25306f62a02",
+      "sha256": "2d145fae71556691e70db98aa7ba46cd4f787ba449c5bbaa247d60bab3ac7732",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshFreeFiber.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshFreeFiber.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshFreeFiber",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshFreeFiber",
+      "source_sha256": "930d641a90d50bbb3b105dc70f70fc5c6bd41c8e1782d8281bb91f060b4b6892",
+      "sha256": "824db3d9a1d79ad852ac69da0298fe06466afdea23191729db37153357dd2c92",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshFreePart.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshFreePart",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshFreePart",
+      "source_sha256": "e8ef0dac6013c82d8e6c2962aff0ef617feff929f2816e23ee300af49c847cdb",
+      "sha256": "35fa2ff9c9598842a1f65c16b7c9c95391e93ae01fc1a3be5419681365b532f4",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshCoverLocal.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLocal.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshCoverLocal",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshCoverLocal",
+      "source_sha256": "0b874cd9e463c77aaa6e1a5d5524da7e8d0eda7df952f49e45fa3dc266ecc488",
+      "sha256": "9a8d98c455d588bb50862b1ebc0c38e9c400b6f860711336644fafdcbd8cb0f4",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshPathRelation.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshPathRelation.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshPathRelation",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshPathRelation",
+      "source_sha256": "ad97f1d107032f7fabf8bb87cc39f31f98dea9d38c5b31983ec32f52fd7bce3d",
+      "sha256": "1ed4a7499bb061c2184f897f9d4b0c2a803b42d9a0a2a8a43f0810756eb25e69",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshCoverLift.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLift.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshCoverLift",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshCoverLift",
+      "source_sha256": "6bf62de3ede67db029d303cf7462c58f745ca54f13066e666bc8e0f38ea3255e",
+      "sha256": "8dbd6874fc97d1725aa777fbf45050cfd763a5153dd294de505fb62925d78896",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshCoverAction.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverAction.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshCoverAction",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshCoverAction",
+      "source_sha256": "1816c4b6410a68c45aa90ee720b18fe1ca7d9e6d16626b64b391486bf5902926",
+      "sha256": "b3c1c30ca328e89800dfd67a9fac3d03ad9716ffb893c9bc2da7c800092d01f3",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshRawPathValue.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshRawPathValue.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshRawPathValue",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshRawPathValue",
+      "source_sha256": "44e00d3cc3f3fa3d80d14bc389fe0f1c6e78040157aa1b918f58d88909267271",
+      "sha256": "6d35589896363d4c41de430cc7c39f0021e26585beeeebdfbaa7a494d44b1657",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshPathEndpoint.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshPathEndpoint.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshPathEndpoint",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshPathEndpoint",
+      "source_sha256": "61311ee561883aea8421bed114f9fc854de8ce6bf061dc9fc582dd91ba50d716",
+      "sha256": "f88716d06ab6a7e44e9d6e64d871e7cf41e8f74513a5c6e4534ea1d81f954372",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshCover.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshCover",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshCover",
+      "source_sha256": "6cb0c5d4710ffe29d969d52c0b87fe4643201e2793625ccf87c81e16881b68bf",
+      "sha256": "59fe14b001c7499f7d4e78571f2ff64fd2a55ee3a28b93f6c04540de6dea5b8e",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshActive.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshActive.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshActive",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshActive",
+      "source_sha256": "25475815244c23159558bfb99254d046cc49b3b161ea121f5ae2b85cc75acd27",
+      "sha256": "9ca1942e012c7bea0721233737ed13f90ca8dc4491665d0dea48f4b4943352ea",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshKernel.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshKernel.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshKernel",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshKernel",
+      "source_sha256": "c5ee52a30f494aab7957fee90810d3d590dd3895568d1da4f36b8b395a9bb658",
+      "sha256": "0649b08b26b02dc38c7321ca6b69c9ff438e9b09415d42277379674089c0aca4",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshFreeCorollary.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshFreeCorollary.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshFreeCorollary",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshFreeCorollary",
+      "source_sha256": "429839854d7c066749b560ef7a6c3237b19000debac99e530bdf36def9753327",
+      "sha256": "d00e324ba10e1281c7d707f5d30cb701410271c67e8399824ebeeecb8a2f746d",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/Kurosh.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.Kurosh",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.Kurosh",
+      "source_sha256": "cc8ed0703d37051afe28fffa916366ac0d75e147162834d0a527ee2dca6bdc2a",
+      "sha256": "cc8ed0703d37051afe28fffa916366ac0d75e147162834d0a527ee2dca6bdc2a",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshTree.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshTree",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshTree",
+      "source_sha256": "0677a9b9d649881c5342d3e4e312fb635952494800ce210d452954c18d1c818f",
+      "sha256": "25c739101df0c949d514be7757eb831cdaf7787f8da3d5d6ed8b500622c191d2",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshPathRelationInvariant.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshPathRelationInvariant.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshPathRelationInvariant",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshPathRelationInvariant",
+      "source_sha256": "fc0ba2d814536bb3fe44f7cb88581a0230732b77a93d3ad95235014aecf3c2c6",
+      "sha256": "14ab37f2d84fe298002528048a37e4b6068c20c0cf823d8b845a4e8c50f9335b",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshCoverStar.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverStar.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshCoverStar",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshCoverStar",
+      "source_sha256": "13780549e83cd49adf93e591e563d181821031fab62d8c9853845175ab82c07c",
+      "sha256": "95b8bae2cf0a530a39f0721c9ee8ed6ee556d73961d592dc492acde18723a7bd",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Vendor/GraphCoveringTheory/KuroshCoverConnected.lean",
+      "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverConnected.lean",
+      "old_module": "Geometrization.Vendor.GraphCoveringTheory.KuroshCoverConnected",
+      "module": "DifferentialGeometry.External.GraphCoveringTheory.KuroshCoverConnected",
+      "source_sha256": "7cc6b0d528c470a9f7b96a096a5b9d731cc1e6e24170bb45cf5bad6e9c0350ab",
+      "sha256": "e738cb83fd3c26ab1342c55f93d765e619e336231dd643bb63ebeba4dca3e41b",
+      "vendor": true
+    },
+    {
+      "old_path": "Geometrization/Geometry/Models/CoordinateMetrics.lean",
+      "path": "DifferentialGeometry/Geometry/Thurston/Models/CoordinateMetrics.lean",
+      "old_module": "Geometrization.Geometry.Models.CoordinateMetrics",
+      "module": "DifferentialGeometry.Geometry.Thurston.Models.CoordinateMetrics",
+      "source_sha256": "1a56cffbf48c1f2c17d6f6298f514f55081bf8859b70ee8449ab71586d3d6724",
+      "sha256": "94365bd3bd984bb2ac05279f766a5a362fa82d29df07a7cd88850eee96d3d3d7",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Geometry/Models/CoordinateHomogeneity.lean",
+      "path": "DifferentialGeometry/Geometry/Thurston/Models/CoordinateHomogeneity.lean",
+      "old_module": "Geometrization.Geometry.Models.CoordinateHomogeneity",
+      "module": "DifferentialGeometry.Geometry.Thurston.Models.CoordinateHomogeneity",
+      "source_sha256": "f6df0db2c696d57a2e396cd2a2719642cc182ce3a48534ceccd8020ecf5c0803",
+      "sha256": "3dffaeda870f452ed1913f3a0fedccd552620aa3a476cf06c29085e571dac877",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Geometry/Models/HomogeneousCompleteness.lean",
+      "path": "DifferentialGeometry/Geometry/Thurston/Models/HomogeneousCompleteness.lean",
+      "old_module": "Geometrization.Geometry.Models.HomogeneousCompleteness",
+      "module": "DifferentialGeometry.Geometry.Thurston.Models.HomogeneousCompleteness",
+      "source_sha256": "090fec79647bf5b39c401e63a6fc436297c177ec3a785f05cfbd57e305045bbb",
+      "sha256": "e6f4f3bff0f5b2fda954548c43d09519ccb7f4eabf4acf74e7e64dd2ed78033a",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Geometry/Thurston/Transport.lean",
+      "path": "DifferentialGeometry/Geometry/Thurston/Transport.lean",
+      "old_module": "Geometrization.Geometry.Thurston.Transport",
+      "module": "DifferentialGeometry.Geometry.Thurston.Transport",
+      "source_sha256": "a2aa181b396e0bc88abf11c4e800e3e38cdb8a4456c3f67e9ebeed12bcad0538",
+      "sha256": "4d3420c1ff643a9b68843928afcb5ef4949fb0712e0d6d5fee3667530cde0f38",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Geometry/Thurston/Atlas.lean",
+      "path": "DifferentialGeometry/Geometry/Thurston/Atlas.lean",
+      "old_module": "Geometrization.Geometry.Thurston.Atlas",
+      "module": "DifferentialGeometry.Geometry.Thurston.Atlas",
+      "source_sha256": "e64bc791ebbd453a43777a1572e604c7d050caa27dbfb8c4c278feabd5869f77",
+      "sha256": "ab95636d07fc8cccb375727da5d2f848ba3397f9ada092bf78d12864ab1bfd31",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Geometry/Thurston/Models.lean",
+      "path": "DifferentialGeometry/Geometry/Thurston/Models.lean",
+      "old_module": "Geometrization.Geometry.Thurston.Models",
+      "module": "DifferentialGeometry.Geometry.Thurston.Models",
+      "source_sha256": "f46d96c30a2b43b0b9219f51862fc5c4702320f7cb1d70d5efc01350506586fa",
+      "sha256": "818bb27ee1cea825a47269e64f517e8063f289696fda6fb3b3a2e8432eb1ffff",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Topology/Endpoint/StandardPrimes.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/StandardPrimes.lean",
+      "old_module": "Geometrization.Topology.Endpoint.StandardPrimes",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.StandardPrimes",
+      "source_sha256": "b4d451b29a223db5a6ce14624729514d4b385bea58bf174f504162d945eb7300",
+      "sha256": "d8c9842614dc894a878196ac8bbb887b8647412939c9759868d6ef34db0d3f48",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Topology/Endpoint/SphereExample.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SphereExample.lean",
+      "old_module": "Geometrization.Topology.Endpoint.SphereExample",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.SphereExample",
+      "source_sha256": "64b226232c9993a0c21b9da4e74dd8cb2830220236ad66d09fcd5bf562cfd0ad",
+      "sha256": "1e3a558d64ae279081ac2b2ee1e3e0b8138b0800739158d699a3c39832e8ed80",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Topology/Endpoint/StandardCertificates.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/StandardCertificates.lean",
+      "old_module": "Geometrization.Topology.Endpoint.StandardCertificates",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.StandardCertificates",
+      "source_sha256": "35bbc23e8327301c145d7c8c4d553ea6cbdc8d01a5388ef9e4348891f91fc1b9",
+      "sha256": "456c96639278ccebe28d34a15886d1aad5d1a449ee22703dd5028a062f8d32f3",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Topology/Endpoint/OrientationTransport.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/OrientationTransport.lean",
+      "old_module": "Geometrization.Topology.Endpoint.OrientationTransport",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.OrientationTransport",
+      "source_sha256": "7ab376554aaf2840f035fcc9987494636716fe4bab2435f0697e781efb47e6c9",
+      "sha256": "991820a25abc9856a9122cf8918565e577e01d80d3d38488784b067af6d6176b",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Topology/Endpoint/Carrier.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Carrier.lean",
+      "old_module": "Geometrization.Topology.Endpoint.Carrier",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.Carrier",
+      "source_sha256": "9a18c0ed797d0c144c18ddedcaec9ad557de22e22ee01426689d2ee4ba15f62e",
+      "sha256": "8232b242792364a3c07fb9832f32a57a8be3c98790d504771df85d8b3dae12fa",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Topology/Endpoint/Prime.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Prime.lean",
+      "old_module": "Geometrization.Topology.Endpoint.Prime",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.Prime",
+      "source_sha256": "deb2ebebf6e95240440dd3e58ee7a7a287eec4a33c712255aca51fdfebe365bf",
+      "sha256": "4762f97213aad1aafc178c5760dd8918a140126aeeab7b061322474adb3cc04a",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Topology/Endpoint/TorusGluing.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/TorusGluing.lean",
+      "old_module": "Geometrization.Topology.Endpoint.TorusGluing",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.TorusGluing",
+      "source_sha256": "922fec9e68c1555d200c89032f9cfd1c72a93df2030c3c69b157f138f49d7b73",
+      "sha256": "534611e35aec716d57509a2f1c9b15e8f750c512171cf9395b067553b55e257e",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Topology/Endpoint/NoCuts.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/NoCuts.lean",
+      "old_module": "Geometrization.Topology.Endpoint.NoCuts",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.NoCuts",
+      "source_sha256": "58766e6fa627d9a5c2b9fdbe36b88f0b02ba5225546b6caa8c1bdcf7de1bbab9",
+      "sha256": "172761b26352b3817c492f6a5b66610ce28ceb7403e68bf0a4e2c28888d0f246",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Topology/Endpoint/SmoothAssembly.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SmoothTorusReconstruction.lean",
+      "old_module": "Geometrization.Topology.Endpoint.SmoothAssembly",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.SmoothTorusReconstruction",
+      "source_sha256": "0ef18c6d6a7dff139de37ed224d92e448087deb6d18e9d9e230bf617c24f2408",
+      "sha256": "4d75cbf7682da2723434a9661d8f269c071e99ee35b3b5186b1f362a175d94c3",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Topology/Reconstruction/EndpointDescent.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/OrientedReconstruction.lean",
+      "old_module": "Geometrization.Topology.Reconstruction.EndpointDescent",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.OrientedReconstruction",
+      "source_sha256": "20c28d3ac764048f93d9b2bb380db64cff9bfc77add14f0ab787a9dfb5df8739",
+      "sha256": "37777b1621fa3531a7e38fff8227c79967fb7ae7af6431cfc160603b56a39215",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Topology/Reconstruction/SmoothEndpointDescent.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/SmoothReconstruction.lean",
+      "old_module": "Geometrization.Topology.Reconstruction.SmoothEndpointDescent",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.SmoothReconstruction",
+      "source_sha256": "95a0f800f26b592f867e5ab1b783b55af1b084e15d335ab6e51de390c0d97d19",
+      "sha256": "9a01c898819d127d8dae9433fa2695ffce10e3996aecbc1a1e968a57e528515d",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Endpoint/StandardHistoryAssembly.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ClassifiedHistory.lean",
+      "old_module": "Geometrization.Endpoint.StandardHistoryAssembly",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.ClassifiedHistory",
+      "source_sha256": "facf7f630daf2fd111f1bb6fb52bd597f0be21e4cdbbcc1e0688468324aafb6a",
+      "sha256": "eabcdffbb9e078fe6807e9c3c761b3571c0d16dac2d5d8df6fe635880c72aaf4",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Endpoint/Contracts.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Statement.lean",
+      "old_module": "Geometrization.Endpoint.Contracts",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.Statement",
+      "source_sha256": "c1aec92b7d6a82db8e46c75f199e4b56489d27e0fa9300662da968470db3aeae",
+      "sha256": "7ffb585a1ea09a93fd1bf5b760cf3e448d272350ad2ac970ceb1bcbb369a482c",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Endpoint/RawHistoryAssembly.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/RawHistory.lean",
+      "old_module": "Geometrization.Endpoint.RawHistoryAssembly",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.RawHistory",
+      "source_sha256": "358a3c8a7df02df02d6a286d1274a6b4255e7deb9db4fe4428684cce71245d79",
+      "sha256": "280f005cbb2a286f6a7511ec73a6b5efeeed673c8ddca432d0a954a6bb2027d5",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Endpoint/Assembly.lean",
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/FiniteConnectedSum.lean",
+      "old_module": "Geometrization.Endpoint.Assembly",
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.FiniteConnectedSum",
+      "source_sha256": "a187fc08523b1aa7737a2d80cb4de59cdf8640cee7bb98b31742a03bd5178c48",
+      "sha256": "d0a3c2d47b1773316b8c2a497bcc2fe276d799583c312a1943078d738fc1dbdf",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Endpoint/ObservedHistory.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ObservedHistory.lean",
+      "old_module": "Geometrization.Endpoint.ObservedHistory",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.ObservedHistory",
+      "source_sha256": "59b7feeb41b46914239f7f17617809543b4682994cc7fdf7c206ef45fec45087",
+      "sha256": "37912eaedb3148b45ebcaddc2a28d766d7d81598b1bd0028a8d66529c2b74e29",
+      "vendor": false
+    },
+    {
+      "old_path": "Geometrization/Interface/RawSurgery.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/RawSurgery.lean",
+      "old_module": "Geometrization.Interface.RawSurgery",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.RawSurgery",
+      "source_sha256": "ad887524e2a350d67ebf5f1bae23e9c57a85ce25315960aae6135434b8032ccb",
+      "sha256": "9f5586d4865e8badd538b4767fa847ec9f23beca4c883fdf3e023a7dd5a63b75",
+      "vendor": false
+    },
+    {
+      "old_path": "GeometrizationChecks/SmoothHistoryConsumers.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/SmoothHistoryExamples.lean",
+      "old_module": "GeometrizationChecks.SmoothHistoryConsumers",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.Checks.SmoothHistoryExamples",
+      "source_sha256": "e86c2c0400f981e305f8d2ed5c63e6275bc894ff7c65fd769775441c23874c49",
+      "sha256": "c890720ba9fecf3bc451b7ff251ca4f75bb8a4e5b0a69118055b921e87c8ac3d",
+      "vendor": false
+    },
+    {
+      "old_path": "GeometrizationChecks/StandardFactorConsumers.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/StandardFactorExamples.lean",
+      "old_module": "GeometrizationChecks.StandardFactorConsumers",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.Checks.StandardFactorExamples",
+      "source_sha256": "5b73786d99e40a600eb754dc0fad6ff3ae4b1e29eeeb76170517d9ae0b5d6052",
+      "sha256": "fb0dbe40be0fdedd9928a108a0bf0bc852ae14680e25da213be18453c57856e3",
+      "vendor": false
+    },
+    {
+      "old_path": "GeometrizationChecks/AssemblyConsumers.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ConnectedSumExamples.lean",
+      "old_module": "GeometrizationChecks.AssemblyConsumers",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.Checks.ConnectedSumExamples",
+      "source_sha256": "a138574f07107ca1fa5ca0515f9a714d3d7d0269e11250148a01b9171ca46632",
+      "sha256": "4247f085981c2e04a9a99b09759982ed41d3725c339147bca1896938d3c453a4",
+      "vendor": false
+    },
+    {
+      "old_path": "GeometrizationChecks/Consumers.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/RawSurgeryExamples.lean",
+      "old_module": "GeometrizationChecks.Consumers",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.Checks.RawSurgeryExamples",
+      "source_sha256": "737da82fe82411c3dd40dbf77354d005f0d33c2f03d3dde27b352dd7b4a6960f",
+      "sha256": "4f1f6106a2c98dbf59e471617a20d66fab25262ef09e8654adf033054ba105ea",
+      "vendor": false
+    },
+    {
+      "old_path": "GeometrizationChecks/ObservedHistoryConsumers.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ObservedHistoryExamples.lean",
+      "old_module": "GeometrizationChecks.ObservedHistoryConsumers",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.Checks.ObservedHistoryExamples",
+      "source_sha256": "bf2ddbb3fe3e144ac929a7c0b5b395845478c0c005033fbcb87827a63d5dc404",
+      "sha256": "6a93b1c0f672d0f35c22278cf2ea9d1e537ab5dc1ec8a66f437aac0e3a93b692",
+      "vendor": false
+    },
+    {
+      "old_path": "GeometrizationChecks/Axioms.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/AxiomAudit.lean",
+      "old_module": "GeometrizationChecks.Axioms",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.Checks.AxiomAudit",
+      "source_sha256": "774efa707418d09aeab70cfc20e08b44d8d9de7c4160a5b4f26947ee5e365398",
+      "sha256": "0bacca48ce015056664f6f404cf5302e9d94229ace814587e1d1cd0989f50e4e",
+      "vendor": false
+    },
+    {
+      "old_path": "GeometrizationChecks/EndpointConsumers.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/CertificateExamples.lean",
+      "old_module": "GeometrizationChecks.EndpointConsumers",
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.Checks.CertificateExamples",
+      "source_sha256": "bc4ab88e0129474834ef689debe8ab3fe1a1e9b79d5a20ee5d902d3afe7c2ed7",
+      "sha256": "329cd3c9958f16aae671aedfa3dba97055e65ce8e71896e8ef2d4491ee2c6436",
+      "vendor": false
+    }
+  ],
+  "retired_aggregates": [
+    "Geometrization.lean",
+    "GeometrizationChecks.lean"
+  ],
+  "external_imports_only": true,
+  "split_outputs": [
+    {
+      "original": "Geometrization/Baseline/CompactFundamentalGroup.lean",
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/InitialFundamentalGroup.lean",
+      "sha256": "d5ba35bddba12ce178600e4717f74a4b9898f85f97fb7e79bef8c79df8739b78"
+    },
+    {
+      "original": "Geometrization/Topology/Endpoint/StandardPrimes.lean",
+      "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/Commutative.lean",
+      "sha256": "a6670408d5aa84063ccdcbecbbcdd973de320c209794118e313bbc5a8f6f6d74"
+    }
+  ],
+  "archived_sources": [
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision172/PointedBallApprox.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision172/PointedBallApprox.lean.txt",
+      "sha256": "3c98159a921c0ebd80c003890db4df9f936d87ad70fb80274899740fe0bb161d"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision172/PointedBallConsumers.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision172/PointedBallConsumers.lean.txt",
+      "sha256": "6546c6be266b861e169bcf81fe525ead061f86e6bff22bcd56e7f0b41b789fb6"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision173/RiemannianScaleConsumer.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision173/RiemannianScaleConsumer.lean.txt",
+      "sha256": "a83609e05a18cdcdcaa4382025acdf63f19cd6d5983d45773c43ac19b50e0d63"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision174/EuclideanScaleConsumer.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision174/EuclideanScaleConsumer.lean.txt",
+      "sha256": "74cabb92b5104a4f330745baf0e3bc7b1996e7dbf2a00e242d0d19690abb9bc6"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision174/MarkedFundamentalGroup.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision174/MarkedFundamentalGroup.lean.txt",
+      "sha256": "744e7bab1901c8ecf37f1e6e0ce01653668a8ad5fab993bd7c4812577aae05ca"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision174/MarkedSeamConsumer.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision174/MarkedSeamConsumer.lean.txt",
+      "sha256": "cdd23ef4dbac0cc9efcbea2aba8d34a168a623487d5823e6afe22af275089dda"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision174/MarkedSeams.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision174/MarkedSeams.lean.txt",
+      "sha256": "ff1ba8760ee2630dfebd96fab9b44742e9e6d01fdc8e9efe589486df2842e2c0"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision174/TorusCylinderConsumer.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision174/TorusCylinderConsumer.lean.txt",
+      "sha256": "bf9cc89363f856010884cbfc79b8abc347c69b5364fae43093e5d8c70b066a02"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision175/ProfileQuantifiers.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision175/ProfileQuantifiers.lean.txt",
+      "sha256": "b05d0a3b7ceb7c62a50bceb288c81ced964659553e2eb093efb7479ffd8ba80f"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision175/TowerConsumers.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision175/TowerConsumers.lean.txt",
+      "sha256": "6a567d2a1bd3fe4acbd9d82fb6dc73cb97bd3abdb4f1870de3985c2ac2330321"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision175/TowerFinitePrefixes.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision175/TowerFinitePrefixes.lean.txt",
+      "sha256": "12028201eaa78e4a62ffc61beb3e4e519348d001d93815fd547185a7557a74a7"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision176/ExplicitSphericalConsumers.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision176/ExplicitSphericalConsumers.lean.txt",
+      "sha256": "53d46b29c887e9e6f5e462d0b6806b522b73c5ab7304850c41de5a7310db5702"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision176/OrientedPresentation.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision176/OrientedPresentation.lean.txt",
+      "sha256": "99f7ca46266ec7203827bb22724b68a8c1c4c0925e01f905f1d12bc2d1f5a96c"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision176/SphericalMetric.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision176/SphericalMetric.lean.txt",
+      "sha256": "493a31f0d5af9efd224c6419c1fc018988f11db5b3cd26dd2ba42fd0e871dc5c"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision177/CutCapReconstruction.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision177/CutCapReconstruction.lean.txt",
+      "sha256": "5570d3f6e870be43753df464fd9fb4914b72844c8b99c20ed10a6a3cc9d779f8"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision177/ReconstructionSlots.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision177/ReconstructionSlots.lean.txt",
+      "sha256": "b7640f2b4e83ebe281a6a7a54bd1fcc8ab76d382432a4110adc031b53f527837"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision177/RetainedDiscardedLabels.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision177/RetainedDiscardedLabels.lean.txt",
+      "sha256": "01ebe6e499f3598930b3f1fb87f10b24f715d2b0c01e9780766393e9cb307cc7"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision179/CommonProfile.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision179/CommonProfile.lean.txt",
+      "sha256": "c0a15eedf6418f3807cebdbee83cf2b891240b6dd6fc2f0fbabbaa4ebfbe7fe5"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision179/ComponentVolumeBridge.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision179/ComponentVolumeBridge.lean.txt",
+      "sha256": "6439bc2473b17286d13f48621e2a57bc9f615463c3d445bff647d734cc6c78b8"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision179/ProfileCutoffConsumer.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision179/ProfileCutoffConsumer.lean.txt",
+      "sha256": "74a22fc188229aa81fcea850aa987513e73801749de13de02f3c27a7e4ccb082"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision179/RejectedProfileRetrofit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision179/RejectedProfileRetrofit.lean.txt",
+      "sha256": "8b8dc96003361de1c00965b97c5e2efccdec4019e975be2c547018c40b7dce81"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision180/KappaModelVolume.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision180/KappaModelVolume.lean.txt",
+      "sha256": "3645190cf75882f58a21df186eb6599ead0c94140d20c12791730d2190ef215d"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision180/ModelBallConsumer.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision180/ModelBallConsumer.lean.txt",
+      "sha256": "c3d8773d95848f6899bc5c70551b2ba817cd954f7fc8b6957274b99745d8bbba"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision180/RoundImageVolume.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision180/RoundImageVolume.lean.txt",
+      "sha256": "687451b962dc41aa02d884820628b816c49eb1c8c85ee44cb95d40d6c4eb49e4"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision180/WindowedVolumeSupplier.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision180/WindowedVolumeSupplier.lean.txt",
+      "sha256": "53da4b60a078a790c7871175bae715370d089fef16cc8ba4445ed4796ddfa904"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision181/KappaLoss.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision181/KappaLoss.lean.txt",
+      "sha256": "3dd9d005230ac54f8d804179db9950c39e2401dc05d292650a4262fe7e7ef6bf"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision181/ReserveContinuation.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision181/ReserveContinuation.lean.txt",
+      "sha256": "7406ec432a185927430848e04da5d2475a09673f7f8ff527c573bf1f1142f291"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision181/ReservedCanonical.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision181/ReservedCanonical.lean.txt",
+      "sha256": "d8d34e1b35b17b3dc4ccafe8c7c204dcb599ce16b6d6f529bfe44d630999c365"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision181/RoundReservedProducer.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision181/RoundReservedProducer.lean.txt",
+      "sha256": "65f8d13b968851bd4b0f0e5be4a3c714a6362d76c6e499d4068f0c96f07567eb"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision182/DeclarationAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision182/DeclarationAudit.lean.txt",
+      "sha256": "fac67ce9aa607267c3c7f9a0f37080ef45875a9e323ab6a99824c9c8cf106f87"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision182/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision182/RunAudit.lean.txt",
+      "sha256": "d8541b084a6e0396c30ca1e8bee42e60d07e06e5f90f8a58dca37b8a5787dd43"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision183/GeometricConsumers.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision183/GeometricConsumers.lean.txt",
+      "sha256": "2a320873e907df374cbf6190e32b875aa1c1f5e46f6737aa599cbbe097d41f31"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision183/MarkedReconstructionConsumer.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision183/MarkedReconstructionConsumer.lean.txt",
+      "sha256": "571ba8a8c28e801edbd498cc385fad97e21a6adb80d1db18feec290a46bbf6a8"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision183/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision183/RunAudit.lean.txt",
+      "sha256": "b40156ead51ead28f0c4769b4aeb57b963aa41e0038462d9600cf2151f65be2e"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision183/TwoRegisterConsumer.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision183/TwoRegisterConsumer.lean.txt",
+      "sha256": "8b11f324e8fe73049a5c4342e020d8dd957b6f83d115f671cc5fa38f860c2637"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision183/exploration/TwoRegisterConsumer_before_profile_output.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision183/exploration/TwoRegisterConsumer_before_profile_output.lean.txt",
+      "sha256": "e85473834adabda332b817865db0afb7bcb6b8721fcc70458264b750e3d45884"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/ElementaryModels.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/ElementaryModels.lean.txt",
+      "sha256": "944bc931a71e608e192c7e467a72ea4447bdf5fe5745ec5c2c8b1dc368b2039b"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/ModelAtlas.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/ModelAtlas.lean.txt",
+      "sha256": "5d86dfa403b77e15adb0dde0f7e5b028a7b97432062c61698331a9176293ce29"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/Probe.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/Probe.lean.txt",
+      "sha256": "9bd21c33fd1e45a70e24f2d76b4d73ba0f6d72b909c7bf20b013eb2c01d7a441"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/RunAudit.lean.txt",
+      "sha256": "acac9f63ac64c4cd0ac5857cb12c27eb3960da61f74d3ecfa4cfc0783264359c"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/SphericalProductPiece.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/SphericalProductPiece.lean.txt",
+      "sha256": "1426e6a5307d3a9eead1ba3248394a19e91901c397be518f09cd9a6277f2bde3"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/StandardFactorGeometry.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/StandardFactorGeometry.lean.txt",
+      "sha256": "dd7a467e861c26e1706afc2191cd62fbcd00a09b499593316f5d121bd65f5a90"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/exploration/initial-final-RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision184/exploration/initial-final-RunAudit.lean.txt",
+      "sha256": "ff503676db6ffd4b7748e487fbe6f05ef3d847ad68d1ddcff7ec88a8e5d88a74"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision185/DiscardedComponentGeometry.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision185/DiscardedComponentGeometry.lean.txt",
+      "sha256": "c3d010b9e54125d412e62c2dc4891b344344ab17a842ece0e6f8961d12a8a6f2"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision185/MarkedDiscardedGeometry.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision185/MarkedDiscardedGeometry.lean.txt",
+      "sha256": "18e678c540c8d5f0f862cc6318f6e9fba93e5221fd4b1b98a371042aa91aad72"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision185/NonemptyGeometricPresentation.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision185/NonemptyGeometricPresentation.lean.txt",
+      "sha256": "be65d42ffbfa4b5d00f4f778a68308e9341966e5c0a3625334e68c51251b9a9c"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision185/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision185/RunAudit.lean.txt",
+      "sha256": "aa875ac996ed025b4fd97aa15db824b393113a996d6fd2bc2942587deef3ba1c"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision186/ActualEventGeometry.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision186/ActualEventGeometry.lean.txt",
+      "sha256": "4c3034d9cdd0d6bd57234bda77d5097354b7af1764ce107ab7ce5bd5629943a6"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision186/FiniteGeometricHorizon.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision186/FiniteGeometricHorizon.lean.txt",
+      "sha256": "216653e3c26fa472d790d18c7b7cae0322b8c1092b50e23f518ae21b59ce26ad"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision186/GeometricHorizonProduction.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision186/GeometricHorizonProduction.lean.txt",
+      "sha256": "04651e1151cfb2f3d69ecad6ee8313a1c3419492a5a0d24b38d8311fe24bbd2a"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision186/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision186/RunAudit.lean.txt",
+      "sha256": "17959655483d19beb20f497c02337d62b8f62b3273bec3944fc8aa11bf13c44e"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision186/exploration/license-header-attempt-GeometricHorizonProduction.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision186/exploration/license-header-attempt-GeometricHorizonProduction.lean.txt",
+      "sha256": "35fa0b1e8ce0d9a9938dab9e392b02f731a95a8955dab61383f213a35d74ef31"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision187/GeneralCanonicalFromSmallScale.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision187/GeneralCanonicalFromSmallScale.lean.txt",
+      "sha256": "b9db9e28f506b5d8c164bcc57fd24e412deb6aba659d47e2dcdc73ee9fd9cce4"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision187/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision187/RunAudit.lean.txt",
+      "sha256": "ff2df238a73adf9c33988806d767cfe6e81e1a2ad8c55bf6f29c20502baee74d"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision187/SmallScaleGeometricHorizon.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision187/SmallScaleGeometricHorizon.lean.txt",
+      "sha256": "f48cd986eb7fdd20f8213923fa067688f627db85a8279d3bec2ee8a137a1684d"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision187/attempts/axiom-print-format/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision187/attempts/axiom-print-format/RunAudit.lean.txt",
+      "sha256": "01a3f2bfce9cd7c790839c359cc31d6610e8aadc962173b8b181f3c2b243affb"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision188/DegreeBoundCanonical.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision188/DegreeBoundCanonical.lean.txt",
+      "sha256": "c9ccfedd10ebbcfe17856c292cb5a67647bfb4ff72f2b6c352c73560dffe6b64"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision188/RoundCoverVolume.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision188/RoundCoverVolume.lean.txt",
+      "sha256": "533d292ee43270133f980c10c00d88a03f82f1bac724c59f97d0bff5e5afb574"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision188/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision188/RunAudit.lean.txt",
+      "sha256": "598e71bcf6ea4f8171c95ade5d7ab3501cf8d392b686b9347aa435d79e468d2b"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision188/SpatialRoundFiniteDegree.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision188/SpatialRoundFiniteDegree.lean.txt",
+      "sha256": "d9c6ea42851fdc8b5976bba5cd40e10e7096fe6239bc475bdb7b6637388e1757"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision189/DegreeGeometricHorizon.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision189/DegreeGeometricHorizon.lean.txt",
+      "sha256": "ece76ad6b8757ddcbf9ff0d85f20c80d543008686218ed70d7cc002835a4c135"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision189/HistoryDegreeBound.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision189/HistoryDegreeBound.lean.txt",
+      "sha256": "b89e5759840dfd6c18f66c0b21cfd345258bad640c9fb4c0f8266f9ce4ee5696"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision189/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision189/RunAudit.lean.txt",
+      "sha256": "00983f35967ae98e696b8afcd61d8dd43fe4116ca66708e10483edc922de2105"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision189/SmallScaleFromDegree.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision189/SmallScaleFromDegree.lean.txt",
+      "sha256": "67d86c31805e962e2980ec5964e2f52fa4a303a69f4b36338591351c9f475463"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision190/CompletedHistoryDegree.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision190/CompletedHistoryDegree.lean.txt",
+      "sha256": "069ff166a34a926dffc66c7198e5df63b24db0733e9cab6e313aefe92540a095"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision190/CutCapFreeFactor.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision190/CutCapFreeFactor.lean.txt",
+      "sha256": "3f21870b17013ecf7f67b7ff78f567f1ce8d2fcaeacafb0fef5409d4fb537d77"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision190/FreeFactor.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision190/FreeFactor.lean.txt",
+      "sha256": "35bc6d31f2bbeb29e55c5289b1def279a2306ac5e66f3b65a2c57597e2adf343"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision190/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision190/RunAudit.lean.txt",
+      "sha256": "acb3d2b393c6eb4e2f60badbbc4bb0d40997686261a5f1bd1ac3a8b122be8544"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision190/SigmaFundamentalGroup.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision190/SigmaFundamentalGroup.lean.txt",
+      "sha256": "d441f75ffa2bde2de6d29c4aaeb30bc0d71068d2b54cc55fdfabcf5dff0e0fac"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision191/ChildCapGroups.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision191/ChildCapGroups.lean.txt",
+      "sha256": "248cfcc19c9234931e6c34a29b35bbf022b505c8888ce2b0bf2160d0443fc49d"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision191/Probe.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision191/Probe.lean.txt",
+      "sha256": "41d2eb3e394eca4d7f7ddb2e994d7ab7774e5be4ad470a291d53afe9b22b1b2a"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision191/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision191/RunAudit.lean.txt",
+      "sha256": "7d1137e10cb47a4528857feab7f3e883198c46f669328d7ee5c55e38f597fa99"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision191/StarCoverGroups.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision191/StarCoverGroups.lean.txt",
+      "sha256": "8d224540d20aedb32acb59fda88cfd3119b46adcb9b314346ce41e9338a52fba"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision192/FiniteFreeFactors.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision192/FiniteFreeFactors.lean.txt",
+      "sha256": "33de1fed8c8c2cf0e592c265b897ffa734a10f4396f2f86698cc2c9977a478be"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision192/FiniteInitialDegree.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision192/FiniteInitialDegree.lean.txt",
+      "sha256": "33955fc61a6b21b0ac67f7915f4f949b2710d561885448d791d2e8fa2627a933"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision192/Probe.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision192/Probe.lean.txt",
+      "sha256": "a3efd35d1d718f56792e7473376caa7ecd61a0b932d48ba215a8844d501dadc3"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision192/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision192/RunAudit.lean.txt",
+      "sha256": "f158254f91c7e11b4a4c0b2519b4638a2853135455df42617c225847a30ccfa7"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision193/CollarFreeFactor.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision193/CollarFreeFactor.lean.txt",
+      "sha256": "9e2f1c0ff7ca6544a77b030c2f87baf841981aef8ce4f795e18d53bd416b39d9"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision193/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision193/RunAudit.lean.txt",
+      "sha256": "83256441c9baec4a0170fc93e664d4bf04d85a9306dc9d3737f80f5e5666f88e"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision193/ThinOverlapGroups.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision193/ThinOverlapGroups.lean.txt",
+      "sha256": "86aacd5e72e28e45ce7346e760f7d6a2655065bda6baedac90894b79716eb713"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision194/OpenCoverFreeFactors.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision194/OpenCoverFreeFactors.lean.txt",
+      "sha256": "5c3eb4bb97f23446cb23b37cefb9780d3685e89b4c3963d5c79a5fe55025f478"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision194/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision194/RunAudit.lean.txt",
+      "sha256": "3b620e0fca00accb6b9160516604a8ed1d6e70db80959242b6db0bd458978483"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision194/SeparatedCollarGroups.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision194/SeparatedCollarGroups.lean.txt",
+      "sha256": "850989ae4b3edc96992a90473c9dd86c5d8b7eed3d6fe1c73f913a7c693a6ca9"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision195/FiniteCollarFreeFactors.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision195/FiniteCollarFreeFactors.lean.txt",
+      "sha256": "02cab61b4df5f728387c0a855a6da546b5785d7ea3bb4214f95a66b8d84db984"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision195/HistoryFreeFactors.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision195/HistoryFreeFactors.lean.txt",
+      "sha256": "67e3bf044f3ffe07ca1eb283104e256e84e0557ad11ff61851f8eed6084e14e1"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision195/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision195/RunAudit.lean.txt",
+      "sha256": "38192c29d111888b08cf1deacbaa0c0338ac4b5e06bde211dbb1eccbcbeb3f14"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision195/TubeFreeFactors.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision195/TubeFreeFactors.lean.txt",
+      "sha256": "452f46f4f2d62f33a373a26568ebc71871c0e584f881704aee8b95625d08ae3e"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision196/ActualCoverConnectors.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision196/ActualCoverConnectors.lean.txt",
+      "sha256": "0226a0baa2f0426b8b7d1b5085645f50b5530964f883e8baed5ed6a694820def"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision196/CompactFundamentalGroup.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision196/CompactFundamentalGroup.lean.txt",
+      "sha256": "8d9cfbb1660f89b2049ca733de87c2758e8f378ce552a74ea030206e4195e59d"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision196/CoverSubdivision.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision196/CoverSubdivision.lean.txt",
+      "sha256": "7fe25d95b38f2e354ce1de998151d5109a95b1f311d6d47c1784fcfc9225bd48"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision196/FiniteCoverGroups.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision196/FiniteCoverGroups.lean.txt",
+      "sha256": "1ebd281dcd85c53cbb7eff629972b6c1e395248f8af6136b65d2d2276530109d"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision196/FiniteLocalCover.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision196/FiniteLocalCover.lean.txt",
+      "sha256": "7293e7b234028ee5fde0ee3cd208296f9479f3d009d9cafaa9bda1011a44c70a"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision196/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision196/RunAudit.lean.txt",
+      "sha256": "681520aa83287c5c1ea9c3b08d45573568921029735085e01b1545a271915cfc"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/FiniteCoprodSupport.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/FiniteCoprodSupport.lean.txt",
+      "sha256": "1b726679cb1c4b5fd8ae3b3519708dbca4243d3bcfe57577600c43b9e7031e78"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/FiniteKurosh.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/FiniteKurosh.lean.txt",
+      "sha256": "ef1bc7ac9975fe8bc8bc7a0796203748ec5db65c121db83fb03bba719f90f633"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/RunAudit.lean.txt",
+      "sha256": "c12d1faa63460a780f7963c115a12085dcd26a0e146ef1e462ef2f92548c3470"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/Kurosh.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/Kurosh.lean.txt",
+      "sha256": "47915886cc9b0dd19fd9923dd2e77189cb96672f4ffa6ce1dd570bc655b8a2e5"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshActive.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshActive.lean.txt",
+      "sha256": "e069ab2eaab4a7c79727fcc6edd699b5fa51956c2d925aef836335ab7877e68e"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshCover.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshCover.lean.txt",
+      "sha256": "b0e0b1125aae9036dcdc151424d69b9b4f2bd7cb2e74493451fbcc5a88e9370b"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshCoverAction.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshCoverAction.lean.txt",
+      "sha256": "93afdc73ae5c780e85f5c02495650b15f5645d6c9f67884057815d68fb8f9c9d"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshCoverConnected.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshCoverConnected.lean.txt",
+      "sha256": "058b19df67a3780860afe119f81f1b421e811cacfab45ffea62f094c06880fbc"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshCoverLift.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshCoverLift.lean.txt",
+      "sha256": "0123fc800c7176e7f33679d2948944dea9ae32e66097094cb31d185b0806cb7e"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshCoverLocal.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshCoverLocal.lean.txt",
+      "sha256": "c91565e43e548361d24ec0da9505591ca387ad095187df75396b00792ca8a582"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshCoverStar.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshCoverStar.lean.txt",
+      "sha256": "7d0fead3034e61512aacaf00d5e8d0361dba1896b5ec4dde4663e86373e8bab3"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshFreeCorollary.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshFreeCorollary.lean.txt",
+      "sha256": "aac66e98074a1db7d85af2954ff40dff0442de3b74e42cbb2597fca18fb966f0"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshFreeFiber.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshFreeFiber.lean.txt",
+      "sha256": "9325c589cb271c46615ff973e6658c8dc1936a6ca089841fad3591010b8c9c6a"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshFreePart.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshFreePart.lean.txt",
+      "sha256": "43ce73acd89c2f420d62c23bbc51b4962036b02f75beb63dcf9e2b49d5fb560b"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshKernel.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshKernel.lean.txt",
+      "sha256": "97d6769072fda23af8827d78d4af78622463c6707dce2e7381de9e31af9bbe39"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshPathEndpoint.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshPathEndpoint.lean.txt",
+      "sha256": "2e82836ef39f7bb9f9213cb0cc90464105da67c9afc926abc95e5b5647a8cb3f"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshPathInjective.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshPathInjective.lean.txt",
+      "sha256": "7e173e60ad71e6a945065176ac5996554e997cb1c5fc792dd9554117a0389dbc"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshPathRelation.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshPathRelation.lean.txt",
+      "sha256": "cbfa13477f6b6aafa64bf9a5c9c23413f8ba0efb6b96bc776282e3744ed196b4"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshPathRelationInvariant.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshPathRelationInvariant.lean.txt",
+      "sha256": "fbe70e2e22ce6a3aad623bbe252784d83d0cfbb8f9744e4d39f89fb183ec53bf"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshRawPathValue.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshRawPathValue.lean.txt",
+      "sha256": "e43550a2fd9e87bada2f9647e63972354dd21b621dd590499b1821ff7ba96e55"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshTheorem.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshTheorem.lean.txt",
+      "sha256": "65eb89910db5b9f2c2882ef2509e70ab9e10893749c1e3d71e697befcdef61a2"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshTree.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision197/kurosh_port/GraphCoveringTheory/KuroshTree.lean.txt",
+      "sha256": "28ecad0e03b45b839e2a5de225bb91797172d252e509f8a5082b6d8789f2fb94"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/FiniteIndecomposable.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/FiniteIndecomposable.lean.txt",
+      "sha256": "e130a2abe4afc70ab0284b39ff2f9d301fb78c4995735a96cefe3239b54294a2"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/FiniteProductPresentation.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/FiniteProductPresentation.lean.txt",
+      "sha256": "6f4aa88e9c15d43d599f88e5decf507b19ad5802676e3ce6cc2c5b18fd93119b"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/InitialDecomposition.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/InitialDecomposition.lean.txt",
+      "sha256": "ba3f99f22d46ec7f00ee5a5144a63a0a427b4097ab163c53d10b3d691cf72cc7"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/RunAudit.lean.txt",
+      "sha256": "fa93520fc038e2c43415eb9334a6c9677afe40378e09439b7d8c29e6ae32c940"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/Grushko.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/Grushko.lean.txt",
+      "sha256": "0940efe070878eaa47bb1f2c2aec436cfe1e26c8c09b35013267d646a5fe76af"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoEdge.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoEdge.lean.txt",
+      "sha256": "71055734f07d9438eeea627c4a1a8ee51e97824197d9cdc1874174ebf3cddc4b"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoFold.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoFold.lean.txt",
+      "sha256": "54bc9120f32b44b3ecf3ee62233f6365d0dbed5b9e027e8777d964e683c05c06"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoFoldStep.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoFoldStep.lean.txt",
+      "sha256": "e189331682d7a2f2ad7275f07690847bda6fb73ddb69c87a39976ec41d66db32"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoFull.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoFull.lean.txt",
+      "sha256": "08beb82122ed07430e597367c1db1cf28a03add13410b7ffcd0cb81f42309a02"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoGeneral.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoGeneral.lean.txt",
+      "sha256": "63877732b28e6189ec0dd92b880bd7f6ad149f16889051a7392ec44d925cd76a"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoGraph.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoGraph.lean.txt",
+      "sha256": "564c21c166fb58e0e036786a16cd2a63f3261fe378df1d49c9a08a0aa8e1eda1"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoInvariant.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoInvariant.lean.txt",
+      "sha256": "c1a6637479ab107fa0cd3d80f71fac1e5f64e3b2bb7a02cf85970b1a59d178f4"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoReduction.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoReduction.lean.txt",
+      "sha256": "d11f085c02508aca3739c8301c3e3621a530701b979d4c52d6d24623dc2aba87"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoReductionChain.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoReductionChain.lean.txt",
+      "sha256": "613c78b65153d46361b60d8e517e092a428a684057cd8af2bca5d264761ba01a"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoRemove.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoRemove.lean.txt",
+      "sha256": "b8259b1d210e02d638ef6d8b12e0c41cabef0c98a7e636087bec0ce92fc76a72"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoRose.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoRose.lean.txt",
+      "sha256": "60587b30898736023cf2d5fc23c98517f4d40ef0c2d69eec6df5615dbdf0f79e"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoUnfold.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoUnfold.lean.txt",
+      "sha256": "a9b308078c5470c8ad01068bec3c7405376f0e973019a42e2f8c34a82d2a55eb"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoUnsafe.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision198/grushko_port/MarshallHall/GrushkoUnsafe.lean.txt",
+      "sha256": "d625e5880fc29be6a269054b12292ded4eb56aa49e6cac1bff5299a5c0404618"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/FixedFactorComparison.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/FixedFactorComparison.lean.txt",
+      "sha256": "d817672dd2acc029e518a14f81739e103fdb52f34763d29e14a8991060d4661c"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/GeneralCanonicalProduction.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/GeneralCanonicalProduction.lean.txt",
+      "sha256": "76f572bdd1eda3e28b3538bae9d579210dcd50509247bdda1a6c917c89e2c7a5"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/GeneralInitialBound.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/GeneralInitialBound.lean.txt",
+      "sha256": "381729b14ee917632d76e37ccadb7a06cfffceb2341db3b82699598e2b2a5826"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/InheritedFreeFactor.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/InheritedFreeFactor.lean.txt",
+      "sha256": "98e0c9c092d73c0b5dc2e67c860b095f998f455dc4cf3850040a1fcd830e37bd"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/KuroshFreeFactors.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/KuroshFreeFactors.lean.txt",
+      "sha256": "c3e794b42caf19573a731ea16a771799c213243ac562315bd19294de9a8e1d29"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/LargeFreeFactor.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/LargeFreeFactor.lean.txt",
+      "sha256": "1bbe49192df90b5ddfe352beef690c8f50c8e97bcd02d6603ecbe33c1abf7ca8"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision199/RunAudit.lean.txt",
+      "sha256": "35e8b70c0b5baa5d7430486c64a34e7d111d1ace39457b50dc91392d6d727b38"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision200/EventTimeTranslation.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision200/EventTimeTranslation.lean.txt",
+      "sha256": "014642f48c29f447af80234ec2cdc581d332629c5a33e340d796f9ec72fdbbb8"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision200/MarkedContinuation.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision200/MarkedContinuation.lean.txt",
+      "sha256": "f340413f80138bf26fa9e3666e999bbac5445c144c803e26346e3878fcc9f271"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision200/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision200/RunAudit.lean.txt",
+      "sha256": "c52350bd63cd746cb2cbec33e3cf38ad2216e4a2a70bc23e514fa80dd2abbeb9"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision200/SlabCompatibility.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision200/SlabCompatibility.lean.txt",
+      "sha256": "ee48b7a7dbed3f7c07a7a7b6f2a0a21d3d0ac4ee5b95b3c97153d6ad0e2b6717"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision200/TerminalTimeTranslation.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision200/TerminalTimeTranslation.lean.txt",
+      "sha256": "7e0153061e9a05e123fe4402edc27a0cd4c634bc542b9698b05cd32a89172a13"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/CoherentSurgeryTower.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/CoherentSurgeryTower.lean.txt",
+      "sha256": "a3c4f13c07674e70a58c7ff1ff57deed5ac88adc9873c3d1a3eddedc6b58bbee"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/ConcatenationHorizon.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/ConcatenationHorizon.lean.txt",
+      "sha256": "16266fc28ea36d990f0ffde7e75d8b2ea47767098d048f62cfb0574fe47b00a0"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/FiniteConcatenation.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/FiniteConcatenation.lean.txt",
+      "sha256": "0bcab3b3ded9ed615dcc0590f7c62db8613fab85cb7235dbc3ebac78b5bf21d3"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/GeneralPrefixExtension.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/GeneralPrefixExtension.lean.txt",
+      "sha256": "13b23b069a0d605bd1e31b58bbe1908e82db3255fd73b8a9c899c94078bc963a"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/GeneralTowerConsumers.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/GeneralTowerConsumers.lean.txt",
+      "sha256": "c8b4dabcca413d034b2f59a7c5c131f38e3f20f88a7368336377406771785504"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/RunAudit.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/RunAudit.lean.txt",
+      "sha256": "d9d4151bcb3bb45cb176844ccba05317164140867f81a3757eff64a3fd2f3134"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/SurgeryEventControl.lean",
+      "path": "Examples/GeometrizationBaseline/GC_PROOF_PILOTS/revision201/SurgeryEventControl.lean.txt",
+      "sha256": "3e7b03c443258be2ef3a0bbd99983a788128e78e073ffd894f571c5299997963"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/Kurosh.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/Kurosh.lean.txt",
+      "sha256": "e7a698defc8479028518cb5d6209494b3891d59fc31812592b4c7251f3ac9947"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshActive.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshActive.lean.txt",
+      "sha256": "d758b93be300de4a08273f573423cd3f1e9d3621550c95fb71eb5feabb6f8837"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshCover.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshCover.lean.txt",
+      "sha256": "e277de6501cf14315fdecfc3209198cae2b430458a11c1e75758c52f2de5baf0"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshCoverAction.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshCoverAction.lean.txt",
+      "sha256": "6d970b67916ecfef9f97df03a7a38ca80a294efeeca0149a304ed78804ea3d24"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshCoverConnected.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshCoverConnected.lean.txt",
+      "sha256": "3dbab5163e3ebb8919b686eab759d257ca842a6cb0b3030b0b0f0979dd2c60c2"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshCoverLift.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshCoverLift.lean.txt",
+      "sha256": "ea2b13c51c902718add438c2e681f1faae4ad5b07903808c2444ce0d2d0bd95c"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshCoverLocal.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshCoverLocal.lean.txt",
+      "sha256": "6037aa7ae33b3030399bd708ad93ee6f4d62b3550d6870634c82b660ffaba07d"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshCoverStar.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshCoverStar.lean.txt",
+      "sha256": "bb8869dcc3909969e85578de6ad861bd33ca053472574eeafcb6b803c2bcc786"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshFreeCorollary.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshFreeCorollary.lean.txt",
+      "sha256": "ac2a64271e2f53811bd37ea389e46d9e21baeb3b4116f08288b05f82032dcacf"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshFreeFiber.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshFreeFiber.lean.txt",
+      "sha256": "bfe3a8c5d3b08e3e7966be65b763d36d3ec2405f9dcc478651ba97971d4fdf0f"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshFreePart.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshFreePart.lean.txt",
+      "sha256": "735c48d3525ed53e9f1d6990ac62c6b163b5527a655e6998e75e39de24885877"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshKernel.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshKernel.lean.txt",
+      "sha256": "d87898acf03a1e40997d0783bab668299615450c944371372e5e2d60ec1d9856"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshPathEndpoint.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshPathEndpoint.lean.txt",
+      "sha256": "465f4123780508c6e37e413a81a36f9432b982982f73702b292cb00ceb8600de"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshPathInjective.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshPathInjective.lean.txt",
+      "sha256": "387c9aef816c6c2b7241dc15ad4caa009ab3c4be17901e2b028aac39605be7fe"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshPathRelation.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshPathRelation.lean.txt",
+      "sha256": "4647a80b5aa016199772b4b0ee0b88d732793dbd04f1d13f5b51e79e3b40450e"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshPathRelationInvariant.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshPathRelationInvariant.lean.txt",
+      "sha256": "4f9a34031d298f44e6e29eaa691e1ae3be5525db2e05a8aff814754deb287b46"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshRawPathValue.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshRawPathValue.lean.txt",
+      "sha256": "beff70caf8ca2dc34c010e5e3d60d6d528a51935f4ba6a6f3eccc414cc3eeafd"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshTheorem.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshTheorem.lean.txt",
+      "sha256": "076a79e44fa047143653fa343d4df6aea1568b95373eea04c0fd2544cc04c7f5"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshTree.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision197_sources/GraphCoveringTheory/GraphCoveringTheory/KuroshTree.lean.txt",
+      "sha256": "5283fc5a38f9acdfb6847ecd3f427ff47909fddb2ddf9ce3944940a00b95c197"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/GrushkoNeumann.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/GrushkoNeumann.lean.txt",
+      "sha256": "b190743d0459a6c10abab599fd24dea4dcf1af788526cc42f14a1d781908e261"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/Grushko.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/Grushko.lean.txt",
+      "sha256": "0940efe070878eaa47bb1f2c2aec436cfe1e26c8c09b35013267d646a5fe76af"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoEdge.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoEdge.lean.txt",
+      "sha256": "b390b4a176be36edc4e7be9bd4f40c1b7cfe9bab7fa884fe2af8232cb9af5c45"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoFold.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoFold.lean.txt",
+      "sha256": "924c32160b8c2d43c09e62e2198891edee75ca6d2b236255c3f6d50a9b73963c"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoFoldStep.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoFoldStep.lean.txt",
+      "sha256": "8d13da0ad660fafe37a9d85da817c3d81b4a2d33361248c9460d789b82a14a22"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoFull.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoFull.lean.txt",
+      "sha256": "b1710697b3748c75537139e13da011d5bc2655648bd20847c2d1a39f2b9de9a3"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoGeneral.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoGeneral.lean.txt",
+      "sha256": "63877732b28e6189ec0dd92b880bd7f6ad149f16889051a7392ec44d925cd76a"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoGraph.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoGraph.lean.txt",
+      "sha256": "93b6a5cf43d8d3ea0636170469cd014aa46290c71d7cc7cfe388cdccf3e9fa3d"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoInvariant.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoInvariant.lean.txt",
+      "sha256": "6dec227bd5970431e03f59f356e2fadf4f068fbdf309d58ecaacac32d41c0de6"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoReduction.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoReduction.lean.txt",
+      "sha256": "55d451f47f3b102d7da4ee8b084cba820bdbd1cbc4dbd84717ec7ab453340fc2"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoReductionChain.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoReductionChain.lean.txt",
+      "sha256": "67da28aee9470703aaf00f2e9ea0b52b5ad81e5d9c972467cba0578530e225c9"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean.txt",
+      "sha256": "ced2981dc322cc9008b52c711bd2a5fa113a1c48cd2ea874a9ba9adc11a65d72"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoRose.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoRose.lean.txt",
+      "sha256": "34c9508ab4c0ef833bbfcc474bb8118dcc42fca6ad71e07c53c4af474c60c96d"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean.txt",
+      "sha256": "f0a03d19ce314351bd25435a6050fc463e67f3f19c5c7d95b2b74eed26088314"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoUnsafe.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall/GrushkoUnsafe.lean.txt",
+      "sha256": "386ef8a1cc4bbe7d65b4e49c8807ab528fc3c9df18787db206e8ec5c6a781756"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall.lean",
+      "path": "Examples/GeometrizationBaseline/GEOMETRIZATION_BLUEPRINT/research/revision198_sources/GrushkoNeumannTheorem/MarshallHall.lean.txt",
+      "sha256": "f048de9f9d64f4f7fa967ebe7cbcc6645cb58c7ab0830ed1dd9ffed2ac354427"
+    },
+    {
+      "old_path": "Examples/GeometrizationBaseline/PC_RELEASE_AUDIT/v0.1.3/evidence/RootProbe.lean",
+      "path": "Examples/GeometrizationBaseline/PC_RELEASE_AUDIT/v0.1.3/evidence/RootProbe.lean.txt",
+      "sha256": "1838c03c68a3fbece74b776778a4a18d838d479be61e08ac05eb977c16c28031"
+    }
+  ],
+  "policy_source": {
+    "path": "/Users/bennettchow/Documents/Codex/wt30",
+    "commit": "94210f01eec433caeed0115d5c50e2881f7c3624",
+    "files": {
+      "NAMING.md": "3c592fef47b189cba1bf3c3fd084363ea6b9e41950576e5d882d322833983dca",
+      "STRUCTURE.md": "30ed0e22f5cc653b0bd471fc16e67b3dcd4a1064ba8238d9d10262f5ce25c1db"
+    }
+  },
+  "module_paths": [
+    "DifferentialGeometry/Analysis/Order/CommonProfile.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/Kurosh.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshActive.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverAction.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverConnected.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLift.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLocal.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverStar.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshFreeCorollary.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshFreeFiber.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshFreePart.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshKernel.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshPathEndpoint.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshPathInjective.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshPathRelation.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshPathRelationInvariant.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshRawPathValue.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshTheorem.lean",
+    "DifferentialGeometry/External/GraphCoveringTheory/KuroshTree.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/Grushko.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoEdge.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoFold.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoFoldStep.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoFull.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoGeneral.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoGraph.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoInvariant.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoReduction.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoReductionChain.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRose.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean",
+    "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnsafe.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/ComponentVolumeBridge.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/KappaLoss.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/KappaModelVolume.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/ModelBallVolume.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/ReservedCanonical.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/RoundCoverVolume.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/RoundImageVolume.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/RoundReservedWitness.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/SpatialRoundFiniteDegree.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/WindowedVolume.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/AxiomAudit.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/CertificateExamples.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ConnectedSumExamples.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/MetricAndSeamExamples.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ObservedHistoryExamples.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/RawSurgeryExamples.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/SmoothHistoryExamples.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/StandardFactorExamples.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ClassifiedHistory.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ObservedHistory.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/OrientedReconstruction.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/RawHistory.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/SmoothReconstruction.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/ActualEventGeometry.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/CoherentSurgeryTower.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/CoherentTowerConsequences.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/ConcatenationHorizon.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/EventTimeTranslation.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/FiniteConcatenation.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/GeneralPrefixExtension.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/LateOrEmpty.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/MarkedContinuation.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/RawSurgery.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/SlabCompatibility.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/SurgeryEventControl.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/TerminalTimeTranslation.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/TowerFinitePrefixes.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/CompletedHistoryDegree.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/CutoffProfiles.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/DegreeBoundCanonical.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/DegreeGeometricHorizon.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/FiniteGeometricHorizon.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/FiniteInitialDegree.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeneralCanonicalFromSmallScale.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeneralCanonicalProduction.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeneralInitialBound.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeometricHorizons.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/HistoryDegreeBound.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/HistoryFreeFactors.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/InitialDecomposition.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/JointCutoffProfiles.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/ProfileQuantifiers.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/ReserveContinuation.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/SmallScaleFromDegree.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/SmallScaleGeometricHorizon.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/ChildCapGroups.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/CutCapFreeFactor.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/CutCapReconstruction.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/DiscardedComponentGeometry.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/InitialFundamentalGroup.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/MarkedDiscardedGeometry.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/MarkedReconstruction.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/ReconstructionSlots.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/RetainedDiscardedLabels.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/TubeFreeFactors.lean",
+    "DifferentialGeometry/Geometry/Metric/Approximation/PointedBallApproximation.lean",
+    "DifferentialGeometry/Geometry/Metric/Approximation/RealBallExamples.lean",
+    "DifferentialGeometry/Geometry/Metric/Scaling/EuclideanBalls.lean",
+    "DifferentialGeometry/Geometry/Metric/Scaling/RiemannianBalls.lean",
+    "DifferentialGeometry/Geometry/Metric/Sphere/Quotient/AntipodalQuotient.lean",
+    "DifferentialGeometry/Geometry/Metric/Sphere/Quotient/SphericalMetric.lean",
+    "DifferentialGeometry/Geometry/Thurston/Atlas.lean",
+    "DifferentialGeometry/Geometry/Thurston/ElementaryModels.lean",
+    "DifferentialGeometry/Geometry/Thurston/ModelAtlas.lean",
+    "DifferentialGeometry/Geometry/Thurston/Models.lean",
+    "DifferentialGeometry/Geometry/Thurston/Models/CoordinateHomogeneity.lean",
+    "DifferentialGeometry/Geometry/Thurston/Models/CoordinateMetrics.lean",
+    "DifferentialGeometry/Geometry/Thurston/Models/HomogeneousCompleteness.lean",
+    "DifferentialGeometry/Geometry/Thurston/NonemptyGeometricPresentation.lean",
+    "DifferentialGeometry/Geometry/Thurston/SphericalProductPiece.lean",
+    "DifferentialGeometry/Geometry/Thurston/StandardFactorGeometry.lean",
+    "DifferentialGeometry/Geometry/Thurston/Transport.lean",
+    "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/Commutative.lean",
+    "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteCoprodSupport.lean",
+    "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteFreeFactors.lean",
+    "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteIndecomposable.lean",
+    "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteKurosh.lean",
+    "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteProductPresentation.lean",
+    "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FixedFactorComparison.lean",
+    "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FreeFactor.lean",
+    "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/InheritedFreeFactor.lean",
+    "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/KuroshFreeFactors.lean",
+    "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/LargeFreeFactor.lean",
+    "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/CompactFundamentalGroup.lean",
+    "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/CoverConnectors.lean",
+    "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/CoverSubdivision.lean",
+    "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/FiniteCoverGroups.lean",
+    "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/FiniteLocalCover.lean",
+    "DifferentialGeometry/Topology/FundamentalGroup/MarkedFundamentalGroup.lean",
+    "DifferentialGeometry/Topology/FundamentalGroup/SigmaFundamentalGroup.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/ConnectedSum/OrientedPresentation.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Carrier.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/FiniteConnectedSum.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/NoCuts.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/OrientationTransport.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Prime.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SmoothTorusReconstruction.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SphereExample.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/StandardCertificates.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/StandardPrimes.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Statement.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/TorusGluing.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/TorusCut/MarkedSeams.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/TorusCut/SeamExamples.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/TorusCut/TorusCylinder.lean",
+    "DifferentialGeometry/Topology/VanKampen/FreeFactors/CollarFreeFactor.lean",
+    "DifferentialGeometry/Topology/VanKampen/FreeFactors/FiniteCollarFreeFactors.lean",
+    "DifferentialGeometry/Topology/VanKampen/FreeFactors/OpenCoverFreeFactors.lean",
+    "DifferentialGeometry/Topology/VanKampen/FreeFactors/SeparatedCollarGroups.lean",
+    "DifferentialGeometry/Topology/VanKampen/FreeFactors/StarCoverGroups.lean",
+    "DifferentialGeometry/Topology/VanKampen/FreeFactors/ThinOverlapGroups.lean"
+  ],
+  "expected_new_modules": 155,
+  "whole_library_root": "DifferentialGeometry.lean"
+}

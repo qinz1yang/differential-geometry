@@ -1,0 +1,1616 @@
+### line 2102: Compact balls inside a locally compact region; AC01
+\begin{lemma}[Compact balls inside a locally compact region; AC01]
+\label{lem:alexandrov-local-balls}
+Let $X$ be a complete length space, let $p\in X$, and let $L>0$.
+Suppose $B_X(p,L)$ is locally compact. Then
+$\overline B_X(p,r)$ is compact whenever $0<r<L$.
+If $2r<L$, any two points of $\overline B_X(p,r)$ admit an
+ambient minimizing path, lying in $\overline B_X(p,2r)$.
+\end{lemma}
+
+### line 2141: A sufficient controlled radius for radial comparison; AC02
+\begin{lemma}[A sufficient controlled radius for radial comparison; AC02]
+\label{lem:alexandrov-eight-radius}
+Let $R>0$ and let $X$ be a complete length space. Suppose
+$U=B_X(p,8R)$ is locally compact and is finite-dimensional with local
+Alexandrov curvature at least $-1$, interpreted in its intrinsic length
+metric $d_U$. For $q\in B_X(p,R/2)$ and
+$x,y\in\overline B_X(p,R)$ choose ambient minimizing paths from $q$
+to $x$ and $y$. Radial subtriangles on these paths satisfy the lower
+comparison inequality in curvature $-1$ supplied by KL Section 3.3.
+All their distances agree whether computed using $d_X$ or $d_U$.
+\end{lemma}
+
+### line 2193: Quantitative radial contraction at curvature minus one; AC03
+\begin{lemma}[Quantitative radial contraction at curvature minus one; AC03]
+\label{lem:alexandrov-radial-contraction}
+Under Lemma~\ref{lem:alexandrov-eight-radius}, choose $0<\delta<R$,
+put $t=\delta/(2R)$, and choose one minimizing path from $q$ to each
+$x\in A=\overline B_X(p,R)$. Write $h_t(x)$ for the point at fraction
+$t$ of its length, taking $h_t(q)=q$ if necessary. Then
+\[
+ h_t(A)\subset B_X(q,\delta),\qquad
+ d_X(h_t(x),h_t(y))\geq
+ \frac{\delta}{\sinh(2R)}\,d_X(x,y).
+\]
+No continuity of the chosen map is asserted or needed.
+\end{lemma}
+
+### line 2232: A small chart supplies uniform nets in a large ball; AC04
+\begin{theorem}[A small chart supplies uniform nets in a large ball; AC04]
+\label{thm:alexandrov-chart-covering}
+Assume Lemma~\ref{lem:alexandrov-eight-radius}. Suppose $n\geq1$,
+$L\geq1$, and, for the point $q\in B_X(p,R/2)$, there are a number
+$\delta_0>0$ and a map
+$\phi:B_X(q,\delta_0)\to\mathbb R^n$ with $\phi(q)=0$ such that
+\[
+ L^{-1}d_X(u,v)\leq |\phi(u)-\phi(v)|\leq Ld_X(u,v).
+\]
+For every $\epsilon>0$, the ball $A=\overline B_X(p,R)$ has an
+internal $\epsilon$-net with at most
+\[
+ N(n,L,R,\epsilon)=
+ \left(1+\left\lceil
+   \frac{4L^2\sqrt n\,\sinh(2R)}{\epsilon}
+ \right\rceil\right)^n
+\]
+points. In particular, the bound does not depend on $\delta_0$.
+\end{theorem}
+
+### line 2282: Small smooth charts control ambient distance; AC05
+\begin{lemma}[Small smooth charts control ambient distance; AC05]
+\label{lem:alexandrov-smooth-chart}
+In a smooth Riemannian manifold of positive dimension $n$, every point
+$q$ has a radius $\delta_0>0$ and a chart on $B_M(q,\delta_0)$
+satisfying the preceding theorem with $L=2$ and $\phi(q)=0$.
+Distances are those of the whole manifold.
+\end{lemma}
+
+### line 2321: Eventual nets for smooth sources; AC06
+\begin{corollary}[Eventual nets for smooth sources; AC06]
+\label{cor:alexandrov-smooth-eventual-nets}
+Let $(M_i,p_i)$ be complete connected smooth Riemannian $n$-manifolds,
+with fixed $n\geq1$. Suppose $c_i\geq0$, $c_i\to0$, $r_i\to\infty$,
+and sectional curvature is at least $-c_i$ on $B_{M_i}(p_i,r_i)$.
+For every $R,\epsilon>0$, all sufficiently late closed $R$-balls
+have internal $\epsilon$-nets of at most $N(n,2,R,\epsilon)$ points.
+Consequently Theorem~\ref{thm:metric-eventual-compactness} produces
+one complete proper pointed metric limit along a subsequence.
+\end{corollary}
+
+### line 2357: Local structure input to be bound; AC07
+\begin{definition}[Local structure input to be bound; AC07]
+\label{def:alexandrov-local-chart-input}
+For complete length sources with a growing controlled open region
+having curvature at least $-1$ and Hausdorff dimension at most $n$, the required
+local structure producer must establish the following facts in each
+sufficiently interior $8R$-ball:
+\begin{enumerate}[leftmargin=*]
+\item Local compactness at all points of that ball, in the ambient
+metric (equivalently in its locally identical intrinsic metric).
+\item Unless the source is a singleton, a point $q\in B_X(p,R/2)$
+and some $\delta_0>0$ admitting the ambient-distance chart of
+Theorem~\ref{thm:alexandrov-chart-covering}, with a distortion
+$L(n)\geq1$ depending only on the dimension bound. The chart dimension
+may be any positive integer at most $n$.
+\end{enumerate}
+The uniform chart \emph{distortion}, not its radius, is the required
+quantifier. Both clauses now have written producers below: AC33 and
+AC17 supply local compactness, and
+Corollary~\ref{cor:alexandrov-ambient-paired-chart} supplies the chart.
+This does not accept the limit-geometry conclusions of KL Lemma 3.10.
+\end{definition}
+
+### line 2401: General extraction conditional on local structure; AC08
+\begin{corollary}[General extraction conditional on local structure; AC08]
+\label{cor:alexandrov-conditional-eventual-nets}
+Take the complete length sources of MC18, with fixed finite dimension
+bound $n\geq1$, curvature at least $-c_i$ on growing $r_i$-regions,
+$c_i\to0$ and $r_i\to\infty$. Suppose the local structure input AC07
+has been supplied with one $L(n)$ for all sufficiently late controlled
+balls. Then their closed $R$-balls have eventual internal
+$\epsilon$-nets of at most $N(n,L(n),R,\epsilon)$ points, for every
+$R,\epsilon>0$. They admit a subsequence converging in MC13's
+approximation sense to one complete proper pointed metric space.
+\end{corollary}
+
+### line 2470: An explicit negative-curvature estimate; AC09
+\begin{lemma}[An explicit negative-curvature estimate; AC09]
+\label{lem:alexandrov-short-hinge}
+Let $0<\theta<\pi/2$, $a_0>0$, and put $\sigma=\sin\theta$.
+Suppose an ambient minimizing hinge $[xy],[xz]$ has lengths
+$a=d(x,z)\geq a_0$ and $\ell=d(x,y)>0$, angle at most
+$\pi/2-\theta$, and satisfies the lower-curvature $-1$ hinge comparison.
+If
+\[
+ \ell\leq\tau(a_0,\theta):=
+ \min\{1,a_0/2,(\sigma/2)\tanh a_0\},
+\]
+then
+\[
+ d(x,z)-d(y,z)\geq(\sigma/2)\,d(x,y).
+\]
+The comparison must hold for this actual hinge in its controlled domain.
+\end{lemma}
+
+### line 2536: Quantitative distance-coordinate embedding; AC10
+\begin{theorem}[Quantitative distance-coordinate embedding; AC10]
+\label{thm:alexandrov-distance-embedding}
+Let $V=B_X(q,\rho)$, $m\geq1$, $0<\theta<\pi/2$, and $a_0>0$.
+Choose anchors $z_0=b,z_1,\ldots,z_m$ outside $V$. Assume:
+\begin{enumerate}[leftmargin=*]
+\item $d(x,z_j)\geq a_0$ for every $x\in V$ and every $j$, and
+$2\rho\leq\tau(a_0,\theta)$.
+\item For every $x\in V$ there are chosen ambient minimizing paths to
+all anchors. Their initial directions have pairwise angles greater than
+$\pi/2+\theta$, and $H(m,\theta;x)$ holds.
+\item For every ordered pair of distinct points $x,y\in V$, an ambient
+minimizing path $[xy]$ is available, and the curvature $-1$ hinge
+comparison holds between that path and each chosen anchor path.
+\end{enumerate}
+Set $\sigma=\sin\theta$ and
+\[
+ F(x)=\bigl(d(x,z_1)-d(q,z_1),\ldots,
+                 d(x,z_m)-d(q,z_m)\bigr).
+\]
+Then $F(q)=0$ and for all $x,y\in V$,
+\[
+ (\sigma/2)d(x,y)\leq |F(x)-F(y)|
+                         \leq\sqrt m\,d(x,y).
+\]
+Thus $F$ is a bilipschitz embedding for the ambient distances.
+No openness or surjectivity onto a Euclidean neighborhood is asserted.
+\end{theorem}
+
+### line 2600: A dimension-controlled strut margin; AC11
+\begin{lemma}[A dimension-controlled strut margin; AC11]
+\label{lem:alexandrov-simplex-struts}
+Let $1\leq m\leq n$ and put $\theta_n=1/(8n)$. Suppose the tangent
+cone at $q$ is cone-isometric to $\mathbb R^m$, its unit directions are
+the completion of geodesic directions, and the curvature $-1$
+comparison angles of shortened representative geodesics tend to their
+angular distances. Then there are anchors $z_0,\ldots,z_m$ at a common
+positive distance $s$ from $q$, as small as prescribed, with
+\[
+ \widetilde\angle_{-1}(z_j,q,z_k)>\pi/2+5\theta_n
+                       \qquad(j\ne k).
+\]
+After shrinking an ambient neighborhood $B_X(q,\rho)$, the same
+comparison angles at every $x$ in that neighborhood exceed
+$\pi/2+4\theta_n$, and $d(x,z_j)>s/2$.
+\end{lemma}
+
+### line 2640: Conditional uniform chart part of AC07; AC12
+\begin{corollary}[Conditional uniform chart part of AC07; AC12]
+\label{cor:alexandrov-uniform-chart-part}
+Fix $n\geq1$, $R>0$, and a complete length source with a locally compact
+curvature-controlled region $B_X(p,8R)$ as in AC02. Suppose there is
+$q\in B_X(p,R/2)$ and an integer $1\leq m\leq n$ satisfying AC11's
+tangent and angle hypotheses. Suppose also that
+$H(m,\theta_n;x)$ holds throughout some neighborhood of $q$.
+Then the chart part of AC07 is supplied with the uniform distortion
+\[
+ L(n)=\max\{\sqrt n,\,2/\sin(1/(8n))\}.
+\]
+The chart radius may depend on the source and on $q$.
+\end{corollary}
+
+### line 2713: Intrinsic local completeness without compactness; AC13
+\begin{lemma}[Intrinsic local completeness without compactness; AC13]
+\label{lem:alexandrov-intrinsic-local-completeness}
+Let $(X,d_X)$ be a complete length space, $p\in X$, $L>0$, and
+$U=B_X(p,L)$. Give $U$ the intrinsic length distance $d_U$, obtained
+by taking lengths of curves in $U$ in the ambient metric.
+Then $d_U$ is finite, is a length metric and induces the ambient
+subspace topology. For $x\in U$ and $h>0$ with
+\[
+ d_X(p,x)+4h<L,
+\]
+the metrics agree on $\overline B_X(x,h)$, and
+\[
+ \overline B_{(U,d_U)}(x,h)=\overline B_X(x,h).
+\]
+This common closed ball is complete in either metric. Local
+compactness and existence of minimizing geodesics are not assumptions.
+\end{lemma}
+
+### line 2759: Successive corrections stay in a complete buffer; AC14
+\begin{lemma}[Successive corrections stay in a complete buffer; AC14]
+\label{lem:alexandrov-buffered-correction}
+Let $C=\overline B_Y(x_0,r)$ be a complete closed ball in a metric
+space $Y$, with $r>0$. Let $F:O\to E$ be continuous, where
+$C\subset O\subset Y$ and $E$ is a normed space. Fix $v\in E$,
+$\mu>0$ and $0\leq\lambda<1$, and set $e(x)=\|F(x)-v\|$.
+Assume $e(x_0)<\mu r$. For every $x\in C$ with $e(x)>0$, suppose
+there exists $x'\in O$ satisfying
+\[
+ e(x')\leq\lambda e(x),\qquad
+ \mu d_Y(x,x')\leq e(x)-e(x').
+\]
+Then there is $x_\infty\in C$ with
+\[
+ F(x_\infty)=v,\qquad
+ d_Y(x_0,x_\infty)\leq e(x_0)/\mu<r.
+\]
+The correction point need not be assumed to lie in $C$ in advance;
+the cumulative displacement estimate proves this for the iteration.
+\end{lemma}
+
+### line 2808: An open distance image bounds coordinate rank; AC15
+\begin{lemma}[An open distance image bounds coordinate rank; AC15]
+\label{lem:alexandrov-open-image-rank}
+Suppose $A$ is a subset of a metric region of Hausdorff dimension at
+most $n$, and $F:A\to\mathbb R^m$ is Lipschitz. If $F(A)$ contains
+a nonempty Euclidean open ball, then $m\leq n$.
+\end{lemma}
+
+### line 2850: Local rough-dimension producer; AC16
+\begin{definition}[Local rough-dimension producer; AC16]
+\label{def:alexandrov-local-rough-dimension}
+The geometric producer has the following contract, supplied by AC33 below.
+Let $Y$ be a locally complete length space with local curvature
+comparison at least $-1$. Suppose each point has a neighborhood of
+Hausdorff dimension at most a fixed finite $n$.
+For every $x\in Y$, produce a bounded neighborhood $W$ of $x$ such that
+\[
+ \dim_{\rm rough}W<\infty.
+\]
+No local compactness or available minimizing geodesics may be
+inserted as extra assumptions. Theorem~\ref{thm:alexandrov-local-rough-dimension-produced}
+now supplies this implication in written mathematics, not Lean.
+\end{definition}
+
+### line 2888: Local compactness from AC16; AC17
+\begin{proposition}[Local compactness from AC16; AC17]
+\label{prop:alexandrov-local-compactness-rough}
+Let $X$ be a complete length space and $U=B_X(p,L)$ a controlled
+region with local lower curvature comparison at least $-1$ and
+ambient Hausdorff dimension at most $n<\infty$. If AC16 is supplied,
+then every point of $U$ has a compact ambient closed-ball neighborhood
+contained in $U$. Thus the local compactness part of AC07 follows.
+No family-uniform covering estimate is asserted by this proposition.
+\end{proposition}
+
+### line 2929: A nontrivial length space has positive local dimension; AC18
+\begin{lemma}[A nontrivial length space has positive local dimension; AC18]
+\label{lem:alexandrov-zero-dimensional-singleton}
+Let $X$ be a length space, $p\in X$ and $L>0$. If
+$\dim_H B_X(p,L)<1$, then $X=\{p\}$. In particular this handles
+the dimension-zero branch of AC07 without curvature, completeness,
+strainers or tangent cones.
+\end{lemma}
+
+### line 2980: Uniform hyperbolic finite difference; AC19
+\begin{lemma}[Uniform hyperbolic finite difference; AC19]
+\label{lem:alexandrov-hyperbolic-finite-difference}
+Fix $0<a\leq A$ and define
+\[
+ K=K(a,A):=\frac{4\cosh(A+1)}{\sinh a}.
+\]
+For any metric triangle $x,y,z$ with $r=d(x,z)\in[a,A]$ and
+$0<t=d(x,y)\leq\min\{1,a/2\}$, put $c=d(y,z)$ and
+$\theta=\theta_x(z,y)$. Then
+\[
+ |c-r+t\cos\theta|\leq Kt^2.
+\]
+This is a model identity estimate; no curvature hypothesis is needed.
+\end{lemma}
+
+### line 3013: An almost-short path supplies an almost-radial point; AC20
+\begin{lemma}[An almost-short path supplies an almost-radial point; AC20]
+\label{lem:alexandrov-almost-radial-point}
+Let $X$ be a length space, $0<\delta\leq1/100$, and $0<a\leq A$.
+Set
+\[
+ C=\frac{\sinh(A+1)}{\sinh(a/2)},\qquad
+ \nu=\min\{\delta^2,(1-\cos\delta)/C,1\}>0.
+\]
+If $r=d(x,u)\in[a,A]$ and $0<t\leq\min\{1,a/2\}$,
+there is $y$ with $d(x,y)=t$ such that, writing $s=d(y,u)$,
+\[
+ r-t\leq s<r-t+\nu t,\qquad
+ \theta_y(x,u)\geq\pi-\delta,\qquad
+ \theta_x(y,u)\leq\delta.
+\]
+In particular $(1-\delta^2)t\leq r-s\leq t$.
+The initial path from $x$ to $y$ can be kept in $\overline B(x,t)$.
+\end{lemma}
+
+### line 3076: One geometric correction move; AC21
+\begin{lemma}[One geometric correction move; AC21]
+\label{lem:alexandrov-paired-correction-move}
+Let $X$ be a length space with the paired packet just specified.
+Choose $x\in V$, $0<t\leq t_0$, and
+$\overline B(x,t)\subset V$. For either ordered choice
+$(u,v)=(a_i,b_i)$ or $(b_i,a_i)$, there is $y\in V$ with
+$d(x,y)=t$ and
+\begin{align*}
+ (1-\delta^2)t&\leq d(x,u)-d(y,u)\leq t,\\
+ (1-3\delta^2)t&\leq d(y,v)-d(x,v)\leq t,\\
+ |d(y,a_j)-d(x,a_j)|&\leq6\delta t\qquad(j\ne i).
+\end{align*}
+\end{lemma}
+
+### line 3123: Largest-residual correction with a displacement budget; AC22
+\begin{lemma}[Largest-residual correction with a displacement budget; AC22]
+\label{lem:alexandrov-residual-correction}
+Use the packet of AC21 and the distance map
+$F(z)=(d(z,a_1),\ldots,d(z,a_m))$. For a target $w\in\mathbb R^m$
+write $e(z)=\lVert F(z)-w\rVert_1$, and put
+\[
+ \mu=1-3\delta^2-6(m-1)\delta,\qquad
+ \lambda=1-\mu/m.
+\]
+Then $9/10\leq\mu<1$ and $0\leq\lambda<1$.
+If $e(x)>0$, set $h=\max_j|F_j(x)-w_j|$.
+Provided $h\leq t_0$ and $\overline B(x,h)\subset V$, there is
+$y\in V$ such that
+\[
+ d(x,y)=h,\qquad e(y)\leq\lambda e(x),\qquad
+ \mu d(x,y)\leq e(x)-e(y).
+\]
+\end{lemma}
+
+### line 3160: Local openness from a common paired packet; AC23
+\begin{theorem}[Local openness from a common paired packet; AC23]
+\label{thm:alexandrov-local-distance-openness}
+Let $X$ be a locally complete length space and let $q$ and $2m$
+distinct anchors lie in one common comparison neighborhood
+$\Omega$, with $m\geq1$. Fix $0<\delta\leq1/(100m)$.
+Assume the paired angle inequalities at $q$ hold with quality
+$\delta/2$ in place of $\delta$. Then there is an open neighborhood
+$V$ of $q$ with a paired packet of quality $\delta$ as above, on
+which the distance map $F:V\longrightarrow\mathbb R^m$ is open.
+It is $m$-Lipschitz for the $\ell^1$ norm and $\sqrt m$-Lipschitz
+for the Euclidean norm. If $\dim_H V\leq n<\infty$, then $m\leq n$.
+No injectivity or bilipschitz lower bound is asserted.
+\end{theorem}
+
+### line 3260: Comparison-angle reversal and complements; AC24
+\begin{lemma}[Comparison-angle reversal and complements; AC24]
+\label{lem:alexandrov-angle-reversal}
+Let $x,z,u$ be points with $s=d(x,z)>0$,
+$d(x,u),d(z,u)\in[a,A]$, and
+$s\leq\min\{1,a/2\}$. Put $K=K(a,A)$ as in AC19 and
+$\omega=\pi\sqrt{Ks}$. Then
+\[
+ |\theta_z(u,x)+\theta_x(u,z)-\pi|\leq\omega.
+\]
+If $u,v,x,z$ lie in one common comparison neighborhood, both anchors
+have these bounds at $x,z$, and
+$\theta_x(u,v),\theta_z(u,v)>\pi-\delta$, then
+\[
+ \pi-\delta-2\omega
+ \leq\theta_z(u,x)+\theta_z(v,x)\leq\pi+\delta.
+\]
+\end{lemma}
+
+### line 3299: Balanced almost midpoint without a minimizer; AC25
+\begin{lemma}[Balanced almost midpoint without a minimizer; AC25]
+\label{lem:alexandrov-balanced-midpoint}
+Let $X$ be a length space, $0<L=d(x,y)\leq1$ and $0<\tau\leq1$.
+Define
+\[
+ \nu_\tau=\min\{1/2,(1-\cos\tau)/(8\cosh2)\}>0.
+\]
+There is $z$ with
+\[
+ d(x,z)=d(y,z)=s,\qquad L/2\leq s<(1+\nu_\tau)L/2\leq3L/4,
+ \qquad \theta_z(x,y)>\pi-\tau.
+\]
+\end{lemma}
+
+### line 3338: Quantitative rank increase at an almost midpoint; AC26
+\begin{lemma}[Quantitative rank increase at an almost midpoint; AC26]
+\label{lem:alexandrov-midpoint-rank-increase}
+Let $m\geq1$, $0<\beta\leq1/(200(m+1))$ and
+$0<\delta\leq\beta/100$. Suppose the rank-$m$ packet just
+specified is given in a length space. Set
+\[
+ \epsilon_\beta=\left(\frac{\beta}{100\pi}\right)^2,
+ \qquad \ell_\beta=\min\{1,a/2,\epsilon_\beta/K(a,A)\}.
+\]
+If $x,y\in V$, $0<L=d(x,y)\leq\ell_\beta$,
+$\overline B(x,L)\subset V$, and
+\[
+ |d(x,a_i)-d(y,a_i)|\leq\epsilon_\beta L
+                         \qquad(1\leq i\leq m),
+\]
+then there is $z\in V$ at which the old pairs together with $(x,y)$
+form a rank-$(m+1)$ packet of quality $\beta$ at that point, with
+all anchors in $\Omega$. No uniform neighborhood is asserted yet.
+\end{lemma}
+
+### line 3404: A chart from exclusion of the next rank; AC27
+\begin{theorem}[A chart from exclusion of the next rank; AC27]
+\label{thm:alexandrov-rank-exclusion-chart}
+Let $X$ be a locally complete length space with the packet and
+parameters of AC26. Suppose there is no rank-$(m+1)$ quality-$\beta$
+packet centered in $V$ with all anchors in $\Omega$.
+Choose $q\in V$ and $r>0$ with
+\[
+ B(q,3r)\subset V,\qquad 2r\leq\ell_\beta.
+\]
+Then the map $F=(d(\cdot,a_1),\ldots,d(\cdot,a_m))$ on
+$B(q,r)$ is a homeomorphism onto an open subset of $\mathbb R^m$,
+and for all $x,y$ in that ball
+\[
+ \epsilon_\beta d(x,y)\leq|F(x)-F(y)|
+                              \leq\sqrt m\,d(x,y).
+\]
+\end{theorem}
+
+### line 3442: A chart in every comparison neighborhood; AC28
+\begin{theorem}[A chart in every comparison neighborhood; AC28]
+\label{thm:alexandrov-finite-rank-chart}
+Let $X$ be a non-singleton locally complete length space, let
+$\Omega$ be a common comparison neighborhood with
+$\dim_H\Omega\leq n$, where $n\geq1$ is an integer, and let
+$O\subset\Omega$ be nonempty and open. Define
+\[
+ \tau_k=\frac{200^{\,k-(n+1)}}{400(n+1)}
+          \quad(1\leq k\leq n+1),\qquad
+ L_n=\max\left\{\sqrt n,\left(\frac{100\pi}{\tau_1}\right)^2\right\}.
+\]
+There are $q\in O$, $r>0$ and $1\leq m\leq n$ with
+$B_X(q,r)\subset O$ and a distance-coordinate chart $\phi$ on
+that ball, centered by $\phi(q)=0$, such that
+\[
+ L_n^{-1}d_X(x,y)\leq|\phi(x)-\phi(y)|\leq L_n d_X(x,y).
+\]
+Its image is open in $\mathbb R^m$. The distortion depends only
+on $n$; no uniform lower bound on the chart radius is claimed.
+\end{theorem}
+
+### line 3508: The nearby ambient chart part of AC07; AC29
+\begin{corollary}[The nearby ambient chart part of AC07; AC29]
+\label{cor:alexandrov-ambient-paired-chart}
+Let $X$ be a non-singleton complete length space, $p\in X$ and
+$R>0$. Suppose $U=B_X(p,8R)$ has local lower comparison at least
+$-1$ and ambient Hausdorff dimension at most an integer $n\geq1$,
+in the conventions of AC07. Then there are $q\in B_X(p,R/2)$,
+$\rho>0$ and $1\leq m\leq n$ with an ambient-distance chart
+$\phi:B_X(q,\rho)\to\mathbb R^m$, $\phi(q)=0$, satisfying
+\[
+ L_n^{-1}d_X(x,y)\leq|\phi(x)-\phi(y)|\leq L_n d_X(x,y).
+\]
+No local compactness, regular tangent or angular obstruction is an
+additional hypothesis of this corollary.
+\end{corollary}
+
+### line 3571: Finite radial comparison; AC30
+\begin{lemma}[Finite radial comparison; AC30]
+\label{lem:alexandrov-finite-radial-comparison}
+In a metric space whose relevant finite configurations satisfy the
+curvature-$-1$ four-point inequality, let $q,x,y,u,v$ obey
+\[
+\begin{gathered}
+0<r=d(q,x)\leq D,\quad 0<s=d(q,y)\leq D,\quad 0<t<1,\\
+d(q,u)=tr,\quad d(u,x)=(1-t)r,\\
+d(q,v)=ts,\quad d(v,y)=(1-t)s.
+\end{gathered}
+\]
+Then, with $\lambda=tD/\sinh D>0$,
+\[
+ d(u,v)\geq\lambda d(x,y).
+\]
+Only these five points are required; the exact metric equalities do
+not assert the existence of paths realizing them.
+\end{lemma}
+
+### line 3637: Uniform finite-distance stability; AC31
+\begin{lemma}[Uniform finite-distance stability; AC31]
+\label{lem:alexandrov-radial-defect-stability}
+Fix $0<a\leq D$, $0<t<1$ and $\epsilon>0$, and put
+$\lambda=tD/\sinh D$. There is $\eta>0$, depending on these
+four parameters, such that every five-point metric configuration
+satisfying four-point comparison and
+\[
+\begin{gathered}
+r=d(q,x),\ s=d(q,y),\quad r,s\in[a,D],\qquad d(x,y)\geq\epsilon,\\
+d(q,u)=tr,\quad (1-t)r\leq d(u,x)\leq(1-t)r+\eta,\\
+d(q,v)=ts,\quad (1-t)s\leq d(v,y)\leq(1-t)s+\eta
+\end{gathered}
+\]
+satisfies $d(u,v)\geq(\lambda/2)d(x,y)$.
+The same $\eta$ works for all such configurations; no effective
+formula for it is asserted.
+\end{lemma}
+
+### line 3680: Packing transport through almost-short paths; AC32
+\begin{proposition}[Packing transport through almost-short paths; AC32]
+\label{prop:alexandrov-finite-packing-transport}
+Let $Y$ be a length space and $\Omega$ a common comparison
+neighborhood for its metric. Suppose
+\[
+ q\in\Omega,\qquad B_Y(q,\rho)\subset\Omega,\qquad
+ W\subset\Omega\cap\{x:a\leq d(q,x)\leq D\},
+\]
+where $\rho>0$ and $0<a\leq D$. Fix $0<t<1$ with $tD<\rho$,
+and set $\lambda=tD/\sinh D$.
+For every $\epsilon>0$ and every finite $\epsilon$-separated set
+$S\subset W$, there is a map $f_S:S\to B_Y(q,\rho)$ such that
+\[
+ d(f_S(x),f_S(y))\geq(\lambda/2)d(x,y)
+       \quad(x,y\in S).
+\]
+Consequently, with the non-strict packing convention of AC16,
+\[
+ P_W(\epsilon)\leq P_{B_Y(q,\rho)}(\lambda\epsilon/2).
+\]
+No local completeness, local compactness, or minimizing path is
+assumed. The map may depend on the finite set and on $\epsilon$.
+\end{proposition}
+
+### line 3723: Local rough dimension is produced; AC33
+\begin{theorem}[Local rough dimension is produced; AC33]
+\label{thm:alexandrov-local-rough-dimension-produced}
+The producer AC16 has a written proof: in a locally complete length
+space with local lower comparison $-1$ and a finite local Hausdorff
+bound, every prescribed point has a bounded neighborhood of finite
+rough dimension. No local compactness or minimizing-geodesic
+hypothesis is added.
+\end{theorem}
+
+### line 3809: Lifting a finite configuration; AC34
+\begin{lemma}[Lifting a finite configuration; AC34]
+\label{lem:alexandrov-finite-lifting}
+Let $f:\overline B_Z(o,R)\to Y$ satisfy
+$\mathcal A_{R,\epsilon}$, where $0<\epsilon<1/4$.
+Let $y_0,\ldots,y_m\in Y$, with distinguished point $q\in Y$, and put
+\[
+ M=\max\{1,d(q,y_0),\ldots,d(q,y_m)\},\qquad R=M+2.
+\]
+Here $o,q$ are the basepoints in $\mathcal A_{R,\epsilon}$.
+There are $z_0,\ldots,z_m$ in the actual domain of $f$ such that
+\[
+ \begin{split}
+ d_Y(f(z_a),y_a)&<\epsilon,\qquad
+ d_Z(o,z_a)<d_Y(q,y_a)+2\epsilon<R,\\
+ |d_Z(z_a,z_b)-d_Y(y_a,y_b)|&<3\epsilon.
+ \end{split}
+\]
+If the $y_a$ are pairwise distinct with minimum pairwise distance
+$\delta>0$, then the $z_a$ are pairwise distinct whenever
+$3\epsilon<\delta$. No continuity of $f$ is required.
+\end{lemma}
+
+### line 3843: Comparison angles as negative curvature tends to zero; AC35
+\begin{lemma}[Comparison angles as negative curvature tends to zero; AC35]
+\label{lem:alexandrov-angle-zero-limit}
+Suppose $\kappa_j\geq0$ tends to zero and
+$(a_j,b_j,h_j)\to(a,b,h)$, where $a,b>0$ and each triple has
+positive first two entries and satisfies the triangle inequalities.
+Then
+\[
+ \Theta_{-\kappa_j}(a_j,b_j,h_j)
+       \longrightarrow\Theta_0(a,b,h).
+\]
+This includes $h=|a-b|$ and $h=a+b$, and does not require the
+angles to stay away from zero or $\pi$.
+\end{lemma}
+
+### line 3885: Four-point comparison on an interior ball; AC36
+\begin{lemma}[Four-point comparison on an interior ball; AC36]
+\label{lem:alexandrov-buffered-four-point}
+Let $R>0$, $\kappa\geq0$, and let $(Z,o)$ be a complete length
+space. Suppose $U=B_Z(o,16R)$ is locally compact, and its intrinsic
+length metric $d_U$ has finite Hausdorff dimension and local
+Alexandrov curvature at least $-\kappa$. Using the local Toponogov
+input recorded in AC02, every four distinct points
+$x,y_1,y_2,y_3\in B_Z(o,R)$ satisfy, for ambient distances,
+\[
+ \theta^{-\kappa}_x(y_1,y_2)+
+ \theta^{-\kappa}_x(y_2,y_3)+
+ \theta^{-\kappa}_x(y_3,y_1)\leq2\pi.
+\]
+The whole space $Z$ is not assumed proper, and $U$ is not assumed
+complete.
+\end{lemma}
+
+### line 3959: The extracted limit has nonnegative comparison; AC37
+\begin{theorem}[The extracted limit has nonnegative comparison; AC37]
+\label{thm:alexandrov-limit-nonnegative-comparison}
+Under the source hypotheses of MC18, let $(Y,q)$ be a complete
+proper pointed metric limit of a subsequence, as produced by
+MC13 and AC08. Then $Y$ is a geodesic length space and satisfies
+the global curvature-zero four-point inequality. For every geodesic
+$\gamma:[0,1]\to Y$ from $a$ to $b$, parametrized proportionally
+to length, every $v\in Y$ and $0\leq t\leq1$, it also satisfies
+\[
+ d(v,\gamma(t))^2\geq
+ (1-t)d(v,a)^2+t\,d(v,b)^2-t(1-t)d(a,b)^2.
+\]
+This is the Euclidean lower triangle-comparison inequality. The
+Hausdorff bound $\dim_HY\leq n$ is not a conclusion of this theorem;
+it is still required for MC18 and KL's finite-dimensional convention.
+\end{theorem}
+
+### line 4075: Transferring internal nets to a limit ball; AC38
+\begin{lemma}[Transferring internal nets to a limit ball; AC38]
+\label{lem:alexandrov-net-transfer}
+Let $(Z,o),(Y,q)$ be pointed metric spaces, $R>0$, $\delta>0$, and
+$0<\varepsilon<\min(1/4,\delta/8)$. Suppose $f$ satisfies
+$\mathcal A_{R+2,\varepsilon}((Z,o),(Y,q))$ in MC06's convention,
+and $F\subset\overline B_Z(o,R+1)$ is an internal
+$\delta/4$-net with at most $N$ points. Then
+$\overline B_Y(q,R)$ has an internal strict $\delta$-net of at most
+$N$ points. No continuity of $f$ is required.
+\end{lemma}
+
+### line 4109: Polynomial nets give a Hausdorff upper bound; AC39
+\begin{lemma}[Polynomial nets give a Hausdorff upper bound; AC39]
+\label{lem:alexandrov-polynomial-hausdorff}
+Let $A$ be a metric space, $n\geq0$, and $0<C<\infty$.
+Suppose that for every $0<\delta\leq1$ there is an internal
+$\delta$-net of size at most $C\delta^{-n}$. Then
+$\mathcal H^s(A)=0$ for every $s>n$, and $\dim_H A\leq n$.
+The same vanishing conclusion holds for a countable union of subsets
+each having zero $s$-dimensional Hausdorff measure in the restricted
+metric.
+\end{lemma}
+
+### line 4158: Dimension of the extracted pointed limit; AC40
+\begin{theorem}[Dimension of the extracted pointed limit; AC40]
+\label{thm:alexandrov-limit-dimension}
+Use MC18's source hypotheses and an existing pointed limit $(Y,q)$
+in MC06's approximation sense along a subsequence. Suppose the
+AC08 nets are supplied with the same $L=L(n)$ for all sufficiently
+late controlled source balls. Then, for every $R>0$ and
+$0<\delta\leq1$, the closed $R$-ball in $Y$ has an internal
+$\delta$-net with at most $C_R\delta^{-n}$ points, where
+\[
+ A_R=16L(n)^2\sqrt n\,\sinh(2(R+1)),
+ \qquad C_R=(2+A_R)^n.
+\]
+Consequently $\mathcal H^s(Y)=0$ for all $s>n$, and
+$\dim_H Y\leq n$. No curvature or dimension hypothesis on the
+limit is used in this proof.
+\end{theorem}
+
+### line 4208: Assembled growing-region compactness bridge; AC41
+\begin{corollary}[Assembled growing-region compactness bridge; AC41]
+\label{cor:alexandrov-assembled-extraction}
+Under MC18's hypotheses, the written producers above yield a
+subsequence converging to a complete proper geodesic pointed space
+with nonnegative Alexandrov comparison and Hausdorff dimension
+at most $n$. This is the conclusion of KL Lemma 3.10, conditional
+on the retained source-qualified local Toponogov theorem in
+AC02/AC36 and the stated metric and analytic inputs.
+\end{corollary}
+
+### line 4256: Pointed Euclidean splitting; AC42
+\begin{definition}[Pointed Euclidean splitting; AC42]
+\label{def:alexandrov-exact-splitting}
+A pointed $k$-splitting, $k\in\mathbb N$, of a nonempty pointed metric
+space $(X,p)$ consists of a nonempty pointed metric space $(Y,y_0)$ and
+an onto isometry
+\[
+ \alpha:X\longrightarrow\mathbb R^k\times Y,
+ \qquad \alpha(p)=(0,y_0),
+\]
+where the product distance is
+\[
+ d((u,y),(v,z))=\sqrt{\|u-v\|_2^2+d_Y(y,z)^2}.
+\]
+For a specified unit-speed line $\gamma:\mathbb R\to X$, meaning
+$d_X(\gamma(s),\gamma(t))=|s-t|$ for all real $s,t$, a $1$-splitting
+is aligned with $\gamma$ if $p=\gamma(0)$ and
+$\alpha(\gamma(t))=(t,y_0)$. A ray only has domain $[0,\infty)$
+and is not a line. Both coordinate projections are $1$-Lipschitz;
+this follows directly from the product formula.
+\end{definition}
+
+### line 4285: Global line splitting input; AC43
+\begin{theorem}[Global line splitting input; AC43]
+\label{thm:alexandrov-line-splitting-input}
+Let $X$ be a nonempty complete proper geodesic Alexandrov space of
+global curvature at least zero and finite Hausdorff dimension.
+Given a unit-speed line $\gamma:\mathbb R\to X$, there exists an
+aligned pointed $1$-splitting in the sense of AC42. Its transverse
+factor may be chosen to be a complete proper geodesic nonnegatively
+curved Alexandrov space.
+\end{theorem}
+
+### line 4320: Geometry inherited by an exact factor; AC44
+\begin{lemma}[Geometry inherited by an exact factor; AC44]
+\label{lem:alexandrov-factor-geometry}
+Suppose $X$ is complete, proper and geodesic, with global nonnegative
+Alexandrov comparison, and $\alpha$ is an onto pointed $k$-splitting.
+Then $Y$ is complete, proper and geodesic and has the same comparison
+lower bound. Every minimizing geodesic in $X$ between points in
+$\alpha^{-1}(\{0\}\times Y)$ stays in that slice. Moreover,
+$\dim_H Y\leq\dim_H X$, and $k\leq\dim_H X$.
+\end{lemma}
+
+### line 4352: Quantitative dimension bound for an exact factor; AC45
+\begin{lemma}[Quantitative dimension bound for an exact factor; AC45]
+\label{lem:alexandrov-factor-dimension}
+Suppose a pointed metric space $(X,p)$ has an onto $k$-splitting,
+where $0\leq k\leq n$ are integers. Assume that for each $S>0$ there
+is a finite $C_S>0$ such that, for all $0<\varepsilon\leq1$,
+$\overline B_X(p,S)$ has an internal $\varepsilon$-net with at most
+$C_S\varepsilon^{-n}$ points. Then, for every $R>0$ and
+$0<\delta\leq1$, the ball $\overline B_Y(y_0,R)$ has an internal
+$\delta$-net of size at most
+\[
+ 3^n C_{R+\sqrt{k}+1}\,\delta^{-(n-k)}.
+\]
+In particular $\dim_H Y\leq n-k$.
+For a complete proper geodesic nonnegatively curved Alexandrov $X$
+with $\dim_H X\leq n$, $n\geq1$, the required net hypothesis follows
+from AC07 and AC04. No general product-dimension equality is assumed.
+\end{lemma}
+
+### line 4421: One-dimensional local recognition input; AC46
+\begin{proposition}[One-dimensional local recognition input; AC46]
+\label{prop:alexandrov-one-dimensional-recognition}
+A nonempty complete proper geodesic nonnegatively curved Alexandrov
+space $Y$ with $\dim_H Y\leq1$ is either a singleton or has the
+following local structure: for every $y\in Y$ there is $r>0$ such
+that $B_Y(y,r)$, with its restricted metric and basepoint $y$, is
+isometric to either $((-r,r),0)$ or $([0,r),0)$.
+\end{proposition}
+
+### line 4445: Complete pointed one-dimensional models; AC47
+\begin{proposition}[Complete pointed one-dimensional models; AC47]
+\label{prop:alexandrov-one-dimensional-models}
+Conditional on AC46's local-recognition input, every space in AC46
+is isometric to exactly one of the following metric types, with the
+indicated positive parameters:
+\[
+ \{*\},\qquad \mathbb R,\qquad [0,\infty),\qquad
+ [0,\ell]\ (\ell>0),\qquad
+ S^1_\ell=\mathbb R/\ell\mathbb Z\ (\ell>0).
+\]
+Intervals have their usual distance. The circle has its length metric
+\[
+ d_{S^1_\ell}([s],[t])=\min\{|s-t+j\ell|:j\in\mathbb Z\}.
+\]
+The pointed types retain $a\geq0$ on the ray and $a\in[0,\ell]$
+on the segment. On the segment, reflection changes $a$ to $\ell-a$;
+it does not move every basepoint to an endpoint. Translations allow
+the line and circle basepoints to be represented by zero.
+\end{proposition}
+
+### line 4503: Exact products in dimension at most two; AC48
+\begin{corollary}[Exact products in dimension at most two; AC48]
+\label{cor:alexandrov-low-dimensional-products}
+Let $X$ be a nonempty complete proper geodesic nonnegatively curved
+Alexandrov space with $\dim_H X\leq2$.
+If an exact pointed $2$-splitting is supplied, its transverse factor
+is a singleton and $X$ is the Euclidean plane.
+If an exact pointed $1$-splitting is supplied, then, conditional on
+AC46, $X$ is one of the Pythagorean products
+\[
+ \mathbb R,\quad \mathbb R^2,\quad
+ \mathbb R\times[0,\infty),\quad
+ \mathbb R\times[0,\ell],\quad
+ \mathbb R\times S^1_\ell\qquad(\ell>0).
+\]
+For a specified line in $X$, AC43 supplies the required $1$-splitting
+as a separate source-qualified input. The half-plane and strip
+basepoints retain their transverse coordinate $a$ from AC47.
+\end{corollary}
+
+### line 4575: Normalized approximate splitting; AC49
+\begin{definition}[Normalized approximate splitting; AC49]
+\label{def:alexandrov-approximate-splitting}
+For an integer $k\geq0$ and $0<\delta<1$, a normalized
+$(k,\delta)$-splitting of $(X,p)$ consists of a pointed metric
+space $(Y,y)$ and a whole-space pointed map
+\[
+ \phi=(u,v):(X,p)\longrightarrow
+       (\mathbb R^k\times Y,(0,y)).
+\]
+Write $P=\mathbb R^k\times Y$ and let $\pi_E$ be its Euclidean
+projection. The map is a KL $\delta$-approximation: distortion on
+$B_X(p,\delta^{-1})$ is at most $\delta$, and every point of
+$B_P((0,y),\delta^{-1}-\delta)$ has distance
+at most $\delta$ from the image of that source ball. Products use
+the Pythagorean metric. This is an infimum bound, not an assertion
+that the infimum is attained. The factor $Y$ need not be complete,
+proper or a length space. The map need not be continuous.
+\end{definition}
+
+### line 4604: Eventual nets in the approximate factors; AC50
+\begin{lemma}[Eventual nets in the approximate factors; AC50]
+\label{lem:alexandrov-approximate-factor-nets}
+Suppose $(X_i,p_i)\to(X,p)$, where $X$ is complete and proper,
+and each $X_i$ has a supplied normalized $(k,\delta_i)$-splitting
+$\phi_i:X_i\to\mathbb R^k\times Y_i$, with fixed $k$ and
+$\delta_i\to0$. Then the $Y_i$ satisfy the eventual internal-net
+condition of MC13. A subsequence converges to a complete proper
+pointed space $(Y,y)$. No properness of the individual factors
+or source spaces is required.
+\end{lemma}
+
+### line 4650: Limit of actual approximate product maps; AC51
+\begin{theorem}[Limit of actual approximate product maps; AC51]
+\label{thm:alexandrov-approximate-product-limit}
+Under AC50's hypotheses, after passing to a subsequence there is
+an onto pointed isometry
+\[
+ \alpha:(X,p)\longrightarrow(\mathbb R^k\times Y,(0,y)).
+\]
+The factor and subsequence can be chosen so that, for suitable
+pointed approximations $f_i:X_i\to X$ on growing balls and every
+fixed $R>0$,
+\[
+ \sup_{x\in\overline B_{X_i}(p_i,R)}
+ \|u_i(x)-\pi_E\alpha(f_i(x))\|_2
+          \longrightarrow0.
+\]
+The assertion is along the selected subsequence. It makes no
+uniqueness claim for $\alpha$ or the limiting coordinate functions.
+\end{theorem}
+
+### line 4741: Restoring prescribed Euclidean coordinates; AC52
+\begin{lemma}[Restoring prescribed Euclidean coordinates; AC52]
+\label{lem:alexandrov-prescribed-coordinate-transfer}
+Let $\alpha:(X,p)\to(\mathbb R^k\times Y,(0,y))$ be an exact
+splitting, let $\mathcal A_{S,e}(f:(Z,o)\to(X,p))$, and let
+$h:Z\to\mathbb R^k$ satisfy $h(o)=0$. Suppose on
+$\overline B_Z(o,S)$ that
+\[
+ \|h-\pi_E\alpha f\|_2\leq\rho,
+ \qquad E=e+2\rho<S.
+\]
+Then on that ball the map
+\[
+ \psi=(h,\pi_Y\alpha f)
+\]
+satisfies $\mathcal A_{S,E}$. In particular, if $(Z_i,o_i)\to(X,p)$
+and the displayed coordinate discrepancy tends to zero on every
+fixed ball, then for every fixed $0<\delta<1$, all sufficiently
+large $i$ have a normalized $(k,\delta)$-splitting with Euclidean
+coordinate exactly $h_i$.
+\end{lemma}
+
+### line 4786: Oriented orthogonal lines give the coordinate splitting; AC53
+\begin{lemma}[Oriented orthogonal lines give the coordinate splitting; AC53]
+\label{lem:alexandrov-orthogonal-line-coordinates}
+Let $(X,p)$ be a complete proper finite-dimensional geodesic
+nonnegatively curved Alexandrov space. Suppose unit-speed lines
+$\gamma_1,\ldots,\gamma_k:\mathbb R\to X$ pass through $p$ at
+parameter zero, and their positive rays have pairwise Alexandrov
+angle $\pi/2$ at $p$. Conditional on AC43, there is an exact
+pointed splitting $\alpha:X\to\mathbb R^k\times Y$ with
+\[
+ \alpha(\gamma_j(t))=(t e_j,y),\qquad
+ \pi_j\alpha(x)=-b_j(x),\qquad
+ b_j(x)=\lim_{t\to\infty}\bigl(d(x,\gamma_j(t))-t\bigr).
+\]
+The sign is fixed by the chosen positive ray. For $k=0$ use the
+identity splitting with factor $X$.
+\end{lemma}
+
+### line 4839: Long-strainer ray and coordinate input; AC54
+\begin{proposition}[Long-strainer ray and coordinate input; AC54]
+\label{prop:alexandrov-long-strainer-input}
+Let $1\leq k\leq n$, $\sigma_i>0$ with $\sigma_i\to0$, and
+let $(X_i,p_i)$ be complete pointed length spaces with curvature
+at least $-\sigma_i$ and Hausdorff dimension at most $n$ on
+$B(p_i,\sigma_i^{-1})$, in the local convention of AC41.
+Suppose $p_i$ has a KL $k$-strainer
+$\{a_{i,j}^+,a_{i,j}^-\}_{j=1}^k$ of quality $\sigma_i$ and
+scale $\sigma_i^{-1}$. In particular, both endpoint distances
+are exactly $\sigma_i^{-1}$; the comparison angles use curvature
+$-\sigma_i$, with opposite angles greater than $\pi-\sigma_i$
+and cross-pair angles for distinct indices greater than
+$\pi/2-\sigma_i$.
+Let $X$ be a complete proper nonnegatively curved limit supplied
+by AC41. After a further subsequence there are opposite rays
+$\gamma_j^\pm$ from $p$, forming unit-speed lines $\gamma_j$
+whose positive rays have pairwise angle $\pi/2$, and approximations
+$f_i$ realizing that same limit such that, on each fixed source ball,
+\[
+ \sup_{x\in\overline B_{X_i}(p_i,R)}
+ \left|h_{i,j}(x)+b_j(f_i(x))\right|\longrightarrow0,
+ \quad
+ h_{i,j}(x)=d(p_i,a_{i,j}^+)-d(x,a_{i,j}^+),
+\]
+where $b_j$ is the Busemann function of the positive limiting ray.
+\emph{AC66 below supplies the written proof, conditional on the retained comparison and splitting inputs.}
+\end{proposition}
+
+### line 4893: Long strainers produce the prescribed coordinates; AC55
+\begin{theorem}[Long strainers produce the prescribed coordinates; AC55]
+\label{thm:alexandrov-long-strainer-splitting}
+Conditional on AC54 and AC43, for every integer $n\geq1$ and
+$0<\delta<1$ there is $0<\sigma=\sigma(n,\delta)<1$ with the
+following property, uniformly for $1\leq k\leq n$.
+If a complete pointed length space $(Z,o)$ has curvature at least
+$-\sigma$ and Hausdorff dimension at most $n$ on
+$B(o,\sigma^{-1})$, and a KL $k$-strainer
+$\{a_j^+,a_j^-\}$ of quality $\sigma$ at scale $\sigma^{-1}$,
+then it has a normalized $(k,\delta)$-splitting $\psi$ whose
+$j$th Euclidean coordinate is exactly
+\[
+ h_j(z)=d(o,a_j^+)-d(z,a_j^+).
+\]
+The local geometric convention is that of AC41. This is the
+source-qualified geometric content of KL 4.15(2), with the final
+metric contradiction written below. No explicit modulus or
+monotonicity in the parameter $\sigma$ is claimed.
+\end{theorem}
+
+### line 4939: Splitting of the given Alexandrov limit; AC56
+\begin{corollary}[Splitting of the given Alexandrov limit; AC56]
+\label{cor:alexandrov-given-limit-splitting}
+Let $n\geq1$, $0\leq k\leq n$ be integers. Let $(X_i,p_i)$
+be complete pointed length spaces with positive $\delta_i\to0$,
+curvature at least $-\delta_i$ and Hausdorff dimension at most
+$n$ on $B(p_i,\delta_i^{-1})$, in the convention of AC41.
+Suppose they have supplied normalized $(k,\delta_i)$-splittings
+on a tail and converge to a specified complete proper pointed
+space $(X,p)$. Then this same $X$ is geodesic and nonnegatively
+curved, has $\dim_H X\leq n$, and admits an exact pointed
+$k$-splitting. Its factor is complete proper geodesic and
+nonnegatively curved, with Hausdorff dimension at most $n-k$.
+The original Euclidean coordinates converge to those of a
+chosen exact splitting along a subsequence as in AC51.
+\end{corollary}
+
+### line 4992: Opposite comparison angles give vanishing excess; AC57
+\begin{lemma}[Opposite comparison angles give vanishing excess; AC57]
+\label{lem:alexandrov-opposite-endpoint-excess}
+Let $0<\sigma\leq1$ and let $p,a^+,a^-$ be points in a metric
+space with $d(p,a^+)=d(p,a^-)=L=\sigma^{-1}$. If the comparison
+angle at $p$ in the curvature $-\sigma$ model is at least
+$\pi-\sigma$, then, writing $c=d(a^+,a^-)$,
+\[
+ 0\leq E:=2L-c\leq
+ \omega(\sigma):=-\frac{2}{\sqrt\sigma}\log\cos(\sigma/2)
+ \leq\frac{\sigma^{3/2}}2.
+\]
+No curvature or geodesic assumption on the source space is needed
+beyond the stated comparison-angle condition on its distances.
+\end{lemma}
+
+### line 5033: Almost-shortest prefixes and their calibration; AC58
+\begin{lemma}[Almost-shortest prefixes and their calibration; AC58]
+\label{lem:alexandrov-short-prefix-calibration}
+Let $(Z,o)$ be a length space with finite-valued metric,
+$d(o,a^+)=d(o,a^-)=L>0$, and $E=2L-d(a^+,a^-)\geq0$.
+For every $\eta>0$ choose paths from $o$ to $a^\pm$ of lengths
+$\ell_\pm<L+\eta$, parametrized by arc length, and let
+$q^\pm(t)$ be their points at time $0\leq t\leq L$.
+These paths exist without completeness or local compactness.
+For $0\leq s\leq t\leq L$ and $0\leq u\leq L$,
+\[
+ \begin{aligned}
+ t-\eta&\leq d(o,q^\pm(t))\leq t,\\
+ t-s-\eta&\leq d(q^\pm(s),q^\pm(t))\leq t-s,\\
+ t+u-E-2\eta&\leq d(q^+(t),q^-(u))\leq t+u.
+ \end{aligned}
+\]
+For $h(z)=L-d(z,a^+)$ one also has
+\[
+ t-\eta\leq h(q^+(t))\leq t,\qquad
+ -t\leq h(q^-(t))\leq -t+E+\eta.
+\]
+The whole prefix up to time $T\leq L$ is contained in
+$\overline B(o,T)$; the full path need not remain in $B(o,L)$.
+\end{lemma}
+
+### line 5089: A limiting line from almost opposite endpoints; AC59
+\begin{proposition}[A limiting line from almost opposite endpoints; AC59]
+\label{prop:alexandrov-endpoint-limit-line}
+Let pointed length spaces $(X_i,p_i)$ with finite-valued metrics
+converge to a complete proper pointed metric space $(X,p)$.
+Suppose $d(p_i,a_i^+)=d(p_i,a_i^-)=L_i\to\infty$ and
+$E_i=2L_i-d(a_i^+,a_i^-)\to0$. Choose $\eta_i>0$ tending to
+zero and the prefixes of AC58. Choose actual approximations
+$f_i$ to this same $X$ with domains tending to infinity and
+errors tending to zero, as in MC06. After a subsequence there is
+an isometric line $\gamma:\mathbb R\to X$, $\gamma(0)=p$, with
+\[
+ f_i(q_i^+(t))\longrightarrow\gamma(t),\qquad
+ f_i(q_i^-(t))\longrightarrow\gamma(-t)
+ \quad\text{for every fixed }t\geq0.
+\]
+Convergence is uniform for $t$ in each bounded parameter interval.
+The same subsequence can be chosen for any fixed finite number
+of endpoint pairs satisfying these hypotheses. Individual $X_i$
+need not be proper, complete, geodesic or Alexandrov.
+\end{proposition}
+
+### line 5148: Distance coordinates converge along a split line; AC60
+\begin{lemma}[Distance coordinates converge along a split line; AC60]
+\label{lem:alexandrov-two-sided-busemann-squeeze}
+Use the data, prefixes, subsequence and line of AC59. Suppose an
+onto pointed isometry $\alpha:X\to\mathbb R\times Y$ is supplied
+with $\alpha(\gamma(t))=(t,y)$, using the Pythagorean metric.
+Write $\alpha(x)=(u(x),z(x))$, and set
+$h_i(x)=L_i-d(x,a_i^+)$. Then for every fixed $R>0$,
+\[
+ \sup_{x\in\overline B_{X_i}(p_i,R)}
+ |h_i(x)-u(f_i(x))|\longrightarrow0.
+\]
+Moreover $u=-b_+$, where $b_+(x)=\lim_{T\to\infty}
+(d(x,\gamma(T))-T)$ is the Busemann function of the positive ray.
+No orthogonality between different lines is needed for this
+single-coordinate assertion.
+\end{lemma}
+
+### line 5209: Long-strainer lines and their individual coordinates; AC61
+\begin{corollary}[Long-strainer lines and their individual coordinates; AC61]
+\label{cor:alexandrov-long-strainer-individual-lines}
+In the setting of AC54, with the complete proper nonnegative limit
+from AC41, the following part of its conclusion has a written proof,
+conditional on AC43. After one further subsequence there are
+unit-speed lines $\gamma_1,\ldots,\gamma_k$ through $p$, with
+positive and negative rays obtained from the respective endpoint
+prefixes, and, on every fixed source ball,
+\[
+ \sup_x|h_{i,j}(x)+b_j(f_i(x))|\longrightarrow0
+ \qquad (1\leq j\leq k).
+\]
+This conclusion does not yet assert that distinct lines are
+orthogonal, distinct as unoriented sets, or axes of one common
+$k$-splitting.
+\end{corollary}
+
+### line 5276: Geodesics to the boundary of a locally compact ball; AC62
+\begin{lemma}[Geodesics to the boundary of a locally compact ball; AC62]
+\label{lem:alexandrov-boundary-radial-geodesic}
+Let $X$ be a complete length space, let $L>0$, and suppose
+$B_X(p,L)$ is locally compact. Every point $a\in X$ with
+$d(p,a)=L$ is joined to $p$ by an isometric segment
+$\gamma:[0,L]\to X$, with $\gamma(0)=p$ and $\gamma(L)=a$.
+No local compactness at $a$ or outside $B_X(p,L)$ is assumed.
+\end{lemma}
+
+### line 5303: Shortening equal radial legs in the hyperbolic model; AC63
+\begin{lemma}[Shortening equal radial legs in the hyperbolic model; AC63]
+\label{lem:alexandrov-model-angle-shortening}
+Let $\lambda>0$, $L\geq r>0$, and let two isometric segments
+$[p,a]$ and $[p,b]$ have length $L$. Write $a_r,b_r$ for their
+points at distance $r$ from $p$. Suppose the comparison angle of
+$(p;a,b)$ in curvature $-\lambda^2$ is at least
+$\theta_0\in(0,\pi]$. Put $q=\sin(\theta_0/2)$ and
+$B=\lambda r$. If $\theta_r$ is the comparison angle of
+$(p;a_r,b_r)$ in that same model, then
+\[
+ \sin(\theta_r/2)\geq
+ q-\frac{q^{-1}-q}{e^{2B}-1}.
+\]
+This assertion uses no curvature hypothesis on the source space.
+In particular, if $\theta_{0,i}\to\pi/2$ and
+$\lambda_i r_i\to\infty$, then
+$\liminf_i\theta_{r_i}\geq\pi/2$.
+\end{lemma}
+
+### line 5374: Comparison-angle monotonicity on buffered radial segments; AC64
+\begin{lemma}[Comparison-angle monotonicity on buffered radial segments; AC64]
+\label{lem:alexandrov-buffered-angle-monotonicity}
+Let $X$ be a complete length space, $p\in X$, $\kappa>0$, and
+$0<8r<L$. Suppose $B_X(p,L)$ is locally compact and has local
+Alexandrov curvature at least $-\kappa$ and Hausdorff dimension
+at most $n$, in the ambient/intrinsic convention of AC41.
+For any two isometric radial segments $\alpha,\beta:[0,r]\to X$
+starting at $p$, and $0<s,t\leq r$, one has, conditional on
+the local comparison input retained in AC02,
+\[
+ \Theta_{-\kappa}\bigl(s,t,d(\alpha(s),\beta(t))\bigr)
+ \geq
+ \Theta_{-\kappa}\bigl(r,r,d(\alpha(r),\beta(r))\bigr).
+\]
+All endpoint distances here are ambient distances. The comparison
+is used only inside the open $8r$-ball, not at radius $L$.
+\end{lemma}
+
+### line 5423: The long-strainer lines are mutually orthogonal; AC65
+\begin{proposition}[The long-strainer lines are mutually orthogonal; AC65]
+\label{prop:alexandrov-long-strainer-orthogonality}
+Use the hypotheses and the specified proper limit of AC54, without
+assuming its conclusion. Choose the source radial segments to each
+$a_{i,j}^\pm$ by AC62. On a common subsequence their fixed-time
+prefixes converge to lines $\gamma_j$ as in AC59. For every pair
+of distinct indices $j,h$, their positive rays have Alexandrov
+angle $\pi/2$ at $p$. This assertion is conditional on AC41's
+comparison input and the same local Toponogov input in AC02;
+it requires no line-splitting theorem.
+\end{proposition}
+
+### line 5477: Written assembly of the long-strainer coordinate input; AC66
+\begin{theorem}[Written assembly of the long-strainer coordinate input; AC66]
+\label{thm:alexandrov-long-strainer-input-assembly}
+The conclusion of AC54 has a written proof conditional on the
+local comparison input in AC02/AC41 and the aligned line-splitting
+input AC43. In its specified limit $X$ there is an onto pointed
+splitting $\alpha:X\to\mathbb R^k\times Y$ with
+\[
+ \alpha(\gamma_j(t))=(te_j,y),\qquad
+ \pi_j\alpha=-b_j,\qquad
+ \sup_{x\in\overline B_{X_i}(p_i,R)}
+ |h_{i,j}(x)-\pi_j\alpha(f_i(x))|\longrightarrow0
+\]
+for each fixed $R>0$ and $j$. The same original coordinates
+$h_{i,j}=d(p_i,a_{i,j}^+)-d(\,\cdot\,,a_{i,j}^+)$ are retained.
+No stronger source curvature, larger controlled ball or changed
+strainer scale is required.
+\end{theorem}
+
+### line 5530: Exact-radius lifting of the coordinate axes; AC67
+\begin{lemma}[Exact-radius lifting of the coordinate axes; AC67]
+\label{lem:alexandrov-exact-radius-lifting}
+Let $X$ be a geodesic metric space, $k\geq1$, $r>0$, and
+$0<\varepsilon<1$. Suppose $\phi:(X,p)\to
+(\mathbb R^k\times Y,(0,y))$ is a normalized
+$(k,\varepsilon)$-splitting as in AC49, and
+\[
+ r+5\varepsilon<\varepsilon^{-1}.
+\]
+For every signed coordinate vector $v\in\{e_1,-e_1,\ldots,e_k,-e_k\}$
+there is $a_v\in X$ such that
+\[
+ \begin{aligned}
+ d(p,a_v)&=r,\\
+ d_P\bigl(\phi(a_v),(rv,y)\bigr)&<14\varepsilon,\\
+ \bigl|d(a_v,a_w)-r\|v-w\|_2\bigr|&<27\varepsilon
+ \qquad\hbox{for all signed axes }v,w.
+ \end{aligned}
+\]
+The factor $Y$ need not be proper, complete or geodesic. No
+continuity of $\phi$ or extension of a geodesic beyond its endpoint
+is required.
+\end{lemma}
+
+### line 5595: A positive margin for equal-radius strainer angles; AC68
+\begin{lemma}[A positive margin for equal-radius strainer angles; AC68]
+\label{lem:alexandrov-strainer-angle-margin}
+For $r>0$ and $0<\alpha\leq1$, define
+\[
+ \begin{aligned}
+ \mu(r,\alpha)=\min\bigl\{
+ &2r\bigl(1-\cos(\alpha/2)\bigr),\\
+ &\sqrt2\,r-2r\sin(\pi/4-\alpha/2)\bigr\}>0.
+ \end{aligned}
+\]
+Suppose points $a_v$ in a metric space satisfy $d(p,a_v)=r$ for
+all signed coordinate axes, and, for some $0\leq D<\mu(r,\alpha)$,
+\[
+ \bigl|d(a_v,a_w)-r\|v-w\|_2\bigr|\leq D.
+\]
+Then their Euclidean comparison angles at $p$ satisfy
+\[
+ \begin{aligned}
+ \Theta_0(p;a_{e_j},a_{-e_j})&>\pi-\alpha,\\
+ \Theta_0(p;a_{\epsilon e_j},a_{\epsilon' e_h})
+ &>\pi/2-\alpha
+ \quad(j\ne h,\ \epsilon,\epsilon'\in\{-1,1\}).
+ \end{aligned}
+\]
+All the labeled endpoints are distinct. These are comparison
+angles in curvature zero; the assertion requires no curvature
+hypothesis on the metric space itself.
+\end{lemma}
+
+### line 5644: A quantitative metric reverse implication; AC69
+\begin{proposition}[A quantitative metric reverse implication; AC69]
+\label{prop:alexandrov-metric-reverse-strainer}
+For any $r>0$ and $0<\alpha\leq1$, put
+\[
+ \varepsilon_0(r,\alpha)=
+ \min\left\{\frac18,\frac1{4(r+1)},
+                   \frac{\mu(r,\alpha)}{60}\right\}>0.
+\]
+For every finite $k\geq1$, every geodesic pointed metric space
+with a normalized $(k,\varepsilon)$-splitting,
+$0<\varepsilon\leq\varepsilon_0(r,\alpha)$, has the equal-radius
+configuration of AC68 at radius $r$, with its strict angle bounds.
+Its endpoints additionally obey the $14\varepsilon$ map-coordinate
+bound of AC67. The same $\varepsilon_0$ works for every rank $k$.
+\end{proposition}
+
+### line 5678: The exact-scale reverse KL strainer implication; AC70
+\begin{corollary}[The exact-scale reverse KL strainer implication; AC70]
+\label{cor:alexandrov-kl-reverse-strainer}
+Let $\delta>0$, $r=\delta^{-1}$, and
+$\alpha=\min\{\delta,1\}$. Choose
+$\delta'=\varepsilon_0(r,\alpha)$. For every $k\geq1$, if
+$(X,p)$ is a complete pointed globally nonnegatively curved
+finite-dimensional Alexandrov space with a normalized
+$(k,\delta')$-splitting, then $p$ has a KL $k$-strainer of
+quality $\delta$ at scale exactly $\delta^{-1}$, using
+curvature-zero comparison triangles. The same conclusion holds
+for any supplied approximation parameter
+$0<\varepsilon\leq\delta'$. The chosen strainer obeys AC67's
+map-coordinate estimate for that supplied map.
+\end{corollary}
+
+### line 5745: Normalized directed approximate compatibility; AC71
+\begin{definition}[Normalized directed approximate compatibility; AC71]
+\label{def:alexandrov-directed-compatibility}
+Let $0\leq j\leq k$, $0<\tau<1$, and let
+\[
+ \phi=(u,z):(X,p)\to(\mathbb R^j\times A,(0,a)),\qquad
+ \psi=(v,w):(X,p)\to(\mathbb R^k\times B,(0,b))
+\]
+be normalized approximate splittings. Say that $\phi$ is
+$\tau$-compatible with $\psi$ if there exist an orthogonal
+isomorphism $Q=(Q_1,Q_2):\mathbb R^k\to
+\mathbb R^j\times\mathbb R^{k-j}$ and whole-space pointed
+KL $\tau$-approximations
+\[
+ E:\mathbb R^j\to\mathbb R^j,\qquad
+ F:(\mathbb R^{k-j}\times B,(0,b))\to(A,a)
+\]
+such that, writing $P=\mathbb R^j\times A$, for every
+$x\in B_X(p,\tau^{-1})$,
+\[
+ d_P
+ \bigl((E(Q_1v(x)),F(Q_2v(x),w(x))),\phi(x)\bigr)\leq\tau.
+\]
+All products are Pythagorean. The approximation tests for $E$ and
+$F$ include distortion and coverage of their own factor balls;
+control just on the image of $X$ is insufficient.
+\end{definition}
+
+### line 5781: Cancellation with a shared Euclidean coordinate; AC72
+\begin{lemma}[Cancellation with a shared Euclidean coordinate; AC72]
+\label{lem:alexandrov-shared-coordinate-cancellation}
+Suppose $a:X\to\mathbb R^j\times A$ and
+$c:X\to\mathbb R^j\times C$ are onto pointed isometries and
+$\pi_E a=\pi_E c$. There is a unique pointed onto isometry
+$H:C\to A$ such that
+\[
+ a=(\operatorname{Id},H)\circ c.
+\]
+No curvature, geodesicity or completeness is needed.
+\end{lemma}
+
+### line 5809: Maximal exact splittings are compatible; AC73
+\begin{proposition}[Maximal exact splittings are compatible; AC73]
+\label{prop:alexandrov-maximal-exact-compatibility}
+Let $X$ be a complete, proper, geodesic, finite-dimensional
+nonnegatively curved Alexandrov space. Suppose there are exact pointed splittings
+\[
+ a:X\to\mathbb R^j\times A,\qquad
+ b:X\to\mathbb R^k\times B,\qquad 1\leq j\leq k,
+\]
+with factor basepoints $a_0,b_0$, and suppose $X$ has no exact
+$(k+1)$-splitting. Conditional on AC43,
+there are an orthogonal $Q=(Q_1,Q_2)$ and a pointed onto isometry
+$H:\mathbb R^{k-j}\times B\to A$ with
+\[
+ a(x)=\bigl(Q_1\pi_E b(x),
+             H(Q_2\pi_E b(x),\pi_B b(x))\bigr)
+ \quad(x\in X).
+\]
+This is the CBB-zero case needed below, not a claim to have
+reproved KL 4.4 for every metric space.
+\end{proposition}
+
+### line 5872: Simultaneous full product convergence; AC74
+\begin{lemma}[Simultaneous full product convergence; AC74]
+\label{lem:alexandrov-two-product-convergence}
+Suppose $(X_i,p_i)\to(X,p)$ with $X$ complete and proper, and
+there are supplied normalized splittings
+\[
+ \phi_i=(u_i,z_i):X_i\to\mathbb R^j\times A_i,\qquad
+ \psi_i=(v_i,w_i):X_i\to\mathbb R^k\times B_i
+\]
+of fixed ranks whose two positive approximation parameters tend
+to zero. On a common subsequence there are complete proper factor
+limits $A,B$, exact pointed splittings $a:X\to\mathbb R^j\times A$
+and $b:X\to\mathbb R^k\times B$, and pointed approximations
+$f_i:X_i\to X$, $g_i:A_i\to A$, $h_i:B_i\to B$ on growing
+balls, such that on every fixed source ball
+\[
+ \begin{aligned}
+ d\bigl((u_i(x),g_i(z_i(x))),a(f_i(x))\bigr)&\longrightarrow0,\\
+ d\bigl((v_i(x),h_i(w_i(x))),b(f_i(x))\bigr)&\longrightarrow0
+ \end{aligned}
+\]
+uniformly in $x$. Write $a_i,b_i$ for the source factor basepoints
+and $a_0,b_0$ for those of $A,B$. The same $f_i$ and subsequence
+work for both maps.
+Neither the $X_i$ nor the individual factors need be proper.
+\end{lemma}
+
+### line 5914: Transfer compatible limits to the original maps; AC75
+\begin{proposition}[Transfer compatible limits to the original maps; AC75]
+\label{prop:alexandrov-compatibility-transfer}
+Use the full convergence data in AC74 and suppose there are
+$Q,H$ with the exact identity in AC73. Then for every fixed
+$0<\tau<1$, all sufficiently large $i$ have $\phi_i$
+$\tau$-compatible with $\psi_i$ in AC71. One can take $E$ to be
+the identity and the same $Q$ as in the limit. The required maps
+$F_i:\mathbb R^{k-j}\times B_i\to A_i$ are constructed explicitly
+from factor approximations and local quasi-inverses.
+This implication is metric; it uses no curvature or splitting theorem.
+\end{proposition}
+
+### line 5986: Uniform compatibility without an extra factor; AC76
+\begin{theorem}[Uniform compatibility without an extra factor; AC76]
+\label{thm:alexandrov-uniform-compatibility}
+Fix integers $1\leq j\leq k\leq n$ and $0<\tau,\nu<1$.
+There exists $0<\varepsilon<1$ such that the following holds,
+conditional on AC41's local comparison input and AC43.
+Let $(Z,o)$ be a complete pointed length space with local
+curvature at least $-\varepsilon$ and Hausdorff dimension at most
+$n$ on $B(o,\varepsilon^{-1})$, in the convention of AC41.
+Suppose $(Z,o)$ has no normalized $(k+1,\nu)$-splitting.
+Then \emph{every} supplied normalized $(j,\varepsilon)$-splitting
+is $\tau$-compatible with \emph{every} supplied normalized
+$(k,\varepsilon)$-splitting.
+The number $\varepsilon$ depends only on $j,k,n,\tau,\nu$.
+\end{theorem}
+
+### line 6063: One-point target repair; AC77
+\begin{lemma}[One-point target repair; AC77]
+\label{lem:alexandrov-target-basepoint-repair}
+Let $f:\overline B_X(a,R)\to Y$ satisfy $\mathcal A_{R,e}$ with
+$f(a)=q$. Suppose $d_Y(q,b)\leq\eta$, where $\eta\geq0$ and
+$E=e+2\eta<R$. Define
+\[
+ \widehat f(x)=
+ \begin{cases} b,&x=a,\\ f(x),&x\ne a.\end{cases}
+\]
+Then $\widehat f$, based at $a,b$, satisfies $\mathcal A_{R,E}$,
+and $d_Y(\widehat f(x),f(x))\leq\eta$ everywhere on its domain.
+No continuity of the repaired map is asserted.
+\end{lemma}
+
+### line 6089: Uniform recentering with a nearby target; AC78
+\begin{proposition}[Uniform recentering with a nearby target; AC78]
+\label{prop:alexandrov-kl-recentering}
+For $0<\delta<1$ and $C\geq0$, put
+\[
+ \vartheta(\delta,C)=
+ \min\left\{\frac{\delta}{100},
+             \frac{1}{100(C+\delta^{-1}+2)}\right\}.
+\]
+Let $f:(X,p)\to(Y,q)$ be a whole-space pointed KL
+$\varepsilon$-approximation with
+$0<\varepsilon\leq\vartheta(\delta,C)$. If
+$d_X(p,a)\leq C$ and $d_Y(f(a),b)\leq\varepsilon$, change
+only the value at $a$ to $b$. The resulting whole-space map
+$\widehat f:(X,a)\to(Y,b)$ is a KL $\delta$-approximation.
+No completeness, properness or length-space hypothesis is needed.
+\end{proposition}
+
+### line 6141: Normalized splitting at a new basepoint; AC79
+\begin{corollary}[Normalized splitting at a new basepoint; AC79]
+\label{cor:alexandrov-splitting-recenter}
+Let $k\geq0$, $0<\delta<1$ and $C\geq0$. Suppose
+$\phi=(u,z):(X,p)\to(\mathbb R^k\times A,(0,a_0))$ is a
+normalized $(k,\varepsilon)$-splitting and
+$0<\varepsilon\leq\vartheta(\delta,C)$. For every $c\in X$
+with $d_X(p,c)\leq C$, the actual map
+\[
+ \phi_c(x)=(u(x)-u(c),z(x))
+\]
+is a normalized $(k,\delta)$-splitting of $(X,c)$ with residual
+basepoint $z(c)$. The tolerance is independent of $k$ and $X$.
+\end{corollary}
+
+### line 6164: Compatibility after changing basepoint; AC80
+\begin{theorem}[Compatibility after changing basepoint; AC80]
+\label{thm:alexandrov-compatibility-recenter}
+Fix $0<\delta<1$, $C\geq0$ and integers $0\leq j\leq k$.
+Suppose the normalized $(j,\varepsilon)$-splitting
+$\phi=(u,z):X\to\mathbb R^j\times A$ is
+$\varepsilon$-compatible with the normalized $(k,\varepsilon)$-
+splitting $\psi=(v,w):X\to\mathbb R^k\times B$ at $p$, and
+\[
+ 0<\varepsilon\leq\vartheta(\delta,C+1).
+\]
+For every $c$ with $d_X(p,c)\leq C$, the original recentered maps
+$\phi_c=(u-u(c),z)$ and $\psi_c=(v-v(c),w)$ are normalized
+splittings of quality $\delta$, and $\phi_c$ is
+$\delta$-compatible with $\psi_c$. One may retain the same
+orthogonal map $Q$ as in the original compatibility witness.
+This is uniform over $c$, both maps and both ranks.
+\end{theorem}
+
+### line 6250: Moving-basepoint convergence; AC81
+\begin{proposition}[Moving-basepoint convergence; AC81]
+\label{prop:alexandrov-moving-basepoint-limit}
+Suppose $X$ is complete and there are actual pointed maps
+$f_i:\overline B_{X_i}(p_i,R_i)\to(X,p)$ satisfying
+$\mathcal A_{R_i,e_i}$, with $R_i\to\infty$ and $e_i\to0$.
+Let $d_{X_i}(p_i,c_i)\leq C$ for a fixed $C\geq0$.
+If $f_i(c_i)\to c\in X$, then $(X_i,c_i)\to(X,c)$ in MC06's
+pointed convergence convention.
+If $X$ is also proper, a subsequence with such a limit $c$ always
+exists. If moreover $d_{X_i}(p_i,c_i)\to d$, then $d_X(p,c)=d$.
+In particular, source separation one gives distinct limit points
+at separation one, not an unidentified second copy of the limit.
+\end{proposition}
+
+### line 6305: Radial metric-cone data; AC82
+\begin{definition}[Radial metric-cone data; AC82]
+\label{def:alexandrov-radial-cone}
+For a pointed metric space $(X,p)$ put
+\[
+ r_x=d(p,x),\qquad
+ B_p(x,y)=\frac{r_x^2+r_y^2-d(x,y)^2}{2}.
+\]
+A radial metric-cone structure at $p$ consists of maps
+$H_t:X\to X$ for every real $t\geq0$, with $H_0x=p$, $H_1x=x$,
+and the identity
+\[
+ d(H_sx,H_ty)^2=s^2r_x^2+t^2r_y^2-2stB_p(x,y)
+ \qquad(s,t\geq0,\ x,y\in X).
+\]
+The function $B_p$ is a metric kernel, not an asserted bilinear form.
+The one-point space is allowed, with all maps constant. Neither
+curvature, completeness, properness nor the length property is part
+of this definition.
+\end{definition}
+
+### line 6340: Radial identities and the two-ray convention; AC83
+\begin{lemma}[Radial identities and the two-ray convention; AC83]
+\label{lem:alexandrov-radial-cone-identities}
+AC82 implies
+\[
+ \begin{aligned}
+ H_t p&=p,& r_{H_t x}&=t r_x,\\
+ d(H_sx,H_tx)&=|s-t|r_x,&d(H_tx,H_ty)&=t\,d(x,y),\\
+ B_p(H_tx,y)&=tB_p(x,y),&H_s(H_tx)&=H_{st}x.
+ \end{aligned}
+\]
+For $t>0$, $H_t$ is onto and has inverse $H_{1/t}$.
+Every non-apex point lies on a unique unit-speed ray from $p$,
+and its minimizing segment from $p$ is unique and radial.
+For a nontrivial space, AC82 is equivalent to KL's two-ray
+metric-cone convention: the space is covered by rays from its
+apex, and each pair has the metric of two Euclidean rays from
+the origin. The one-point case is the explicit degenerate extension.
+\end{lemma}
+
+### line 6403: Two cone apices give a line; AC84
+\begin{theorem}[Two cone apices give a line; AC84]
+\label{thm:alexandrov-two-cone-apices-line}
+Let the same metric space $X$ carry AC82 structures at distinct
+points $p,q$, and put $L=d(p,q)>0$. Then there is an isometric
+map $\gamma:\mathbb R\to X$ with $\gamma(0)=p$ and
+$\gamma(L)=q$. No curvature, completeness or length hypothesis
+is needed for this metric assertion.
+\end{theorem}
+
+### line 6447: Proper pointed limits retain cone data; AC85
+\begin{proposition}[Proper pointed limits retain cone data; AC85]
+\label{prop:alexandrov-cone-limit-closure}
+Suppose $(X_i,p_i)$ carry AC82 structures and converge in MC06's
+pointed convention to a complete proper pointed metric space
+$(X,p)$. Then $(X,p)$ has an AC82 structure. The source spaces
+need not be proper, length spaces or Alexandrov spaces.
+\end{proposition}
+
+### line 6501: Compactness of the nonnegative cone models; AC86
+\begin{corollary}[Compactness of the nonnegative cone models; AC86]
+\label{cor:alexandrov-cone-model-compactness}
+Fix an integer $n\geq1$. Every sequence of complete pointed length
+spaces with global curvature at least zero, Hausdorff dimension
+at most $n$, and AC82 cone data has a subsequence converging to a
+complete proper geodesic nonnegatively curved space of dimension
+at most $n$, carrying AC82 data at its limiting basepoint.
+This is conditional on the local comparison input retained by AC41.
+\end{corollary}
+
+### line 6521: Normalized overlapping-cone splitting; AC87
+\begin{theorem}[Normalized overlapping-cone splitting; AC87]
+\label{thm:alexandrov-overlapping-cone-splitting}
+Conditional on AC41's retained local comparison and AC43,
+for every integer $n\geq1$ and $0<\delta<1$ there is
+$0<\varepsilon=\varepsilon(n,\delta)<1$ with the following
+property. Let $Z$ be a complete length space and let $p,q\in Z$
+satisfy $d_Z(p,q)=1$. Suppose there are actual pointed KL
+$\varepsilon$-approximations
+\[
+ (Z,p)\longrightarrow(C,o),\qquad
+ (Z,q)\longrightarrow(D,v),
+\]
+where $C,D$ are complete nonnegatively curved length spaces of
+Hausdorff dimension at most $n$, with AC82 structures at $o,v$.
+Then $(Z,q)$ has a normalized $(1,\delta)$-splitting.
+No curvature or dimension hypothesis is imposed on $Z$.
+The tolerance is uniform over $Z,p,q$, the two models and their
+approximation maps; no explicit modulus is asserted.
+\end{theorem}
+
+### line 7278: Model gluing and local germ angles; ALG01
+\begin{lemma}[Model gluing and local germ angles; ALG01]
+\label{lem:alexandrov-local-germ-angles}
+Let a metric space satisfy the local curvature-$k$ four-point
+condition, with $k\leq0$. For any two specified minimizing geodesic
+germs starting at $x$, the comparison angles have a joint limit
+$\alpha_x\in[0,\pi]$ as the two positive arm lengths independently
+tend to zero. Shortening a germ does not change this limit. Three
+germs have pairwise limits whose sum is at most $2\pi$; if two are
+opposite parts of one minimizing segment, the two adjacent limits
+have sum at most $\pi$. For hinges contained in one sufficiently
+small common comparison neighborhood, $\alpha_x$ is at least the
+comparison angle of their endpoints. These small-hinge radii are
+bounded below by a positive number near each point.
+\end{lemma}
+
+### line 7339: A quantitative cat's-cradle enlargement; ALG02
+\begin{lemma}[A quantitative cat's-cradle enlargement; ALG02]
+\label{lem:alexandrov-cradle-enlargement}
+Fix $\ell>0$ and endpoints $p,q$ in a locally curvature-$k$ space,
+$k\leq0$. Suppose every hinge with one endpoint $p$ or $q$ and sum
+of arms less than $2\ell/3$ satisfies $\alpha\geq\theta^k$.
+Suppose also that the joins from each center $x$ with
+$d(x,p)+d(x,q)<\ell$ to $p,q$ are available as minimizing segments
+in a common region where the local four-point condition holds.
+Then every specified hinge $(x;p,q)$ with sum of arms less than
+$\ell$ satisfies $\alpha_x\geq\theta^k_x(p,q)$.
+All new centers obey the same sum-of-arms bound. If the required
+joins exist in $B(p,2\ell)$, the proof stays in that ball.
+\end{lemma}
+
+### line 7417: Almost minimum using one complete ball; ALG03
+\begin{lemma}[Almost minimum using one complete ball; ALG03]
+\label{lem:alexandrov-buffered-almost-minimum}
+Let $r:Y\to(0,\infty)$ be finite-valued and locally bounded below
+by a positive number. For $o\in Y$ and $0<\epsilon<1$, assume
+$\overline B(o,r(o)/\epsilon^2)$ is complete. There is a point
+$p$ in this closed ball with $r(p)\leq r(o)$ such that
+\[
+ r(q)>(1-\epsilon)r(p)
+ \quad\hbox{whenever }d(p,q)\leq r(p)/\epsilon.
+\]
+The quantifier over $q$ is in $Y$, not a truncated ball.
+\end{lemma}
+
+### line 7447: Complete geodesic globalization for nonpositive bounds; ALG04
+\begin{theorem}[Complete geodesic globalization for nonpositive bounds; ALG04]
+\label{thm:alexandrov-written-complete-globalization}
+A complete geodesic space with local curvature-$k$ four-point
+comparison, $k\leq0$, has global hinge and four-point comparison.
+It also has point-on-side lower comparison and independent radial
+comparison-angle monotonicity for all specified minimizing segments.
+\end{theorem}
+
+### line 7486: Comparison inside a complete interior buffer; ALG05
+\begin{theorem}[Comparison inside a complete interior buffer; ALG05]
+\label{thm:alexandrov-written-coarse-local-globalization}
+Let $Y$ be a locally compact length space with local curvature-$k$
+four-point comparison, $k\leq0$. If $\overline B_Y(o,L)$ is
+complete, every specified hinge with endpoint $o$ and sum of arms
+less than $L/20$ satisfies $\alpha\geq\theta^k$.
+The space $Y$ itself need not be complete or globally geodesic.
+\end{theorem}
+
+### line 7536: Ambient comparison with a written larger margin; ALG06
+\begin{corollary}[Ambient comparison with a written larger margin; ALG06]
+\label{cor:alexandrov-written-ambient-buffer}
+Let $(X,p)$ be a complete length space and $R>0$. Suppose
+$U=B_X(p,256R)$ is locally compact and its intrinsic metric has
+local curvature-$k$ four-point comparison, $k\leq0$.
+Then four-point comparison holds for the ambient distances on
+$B_X(p,R)$. All radial triangles used in AC02--AC04 at radius
+$R$ have point-on-side lower comparison and independent-arm
+comparison-angle monotonicity, for every choice of their minimizing
+segments. With their remaining hypotheses, the numerical conclusions
+of AC03--AC04 are unchanged.
+\end{corollary}
+
+### line 7582: Growing-region compactness without the sharp local input; ALG07
+\begin{theorem}[Growing-region compactness without the sharp local input; ALG07]
+\label{thm:alexandrov-growing-region-written-comparison}
+Under the ORIGINAL hypotheses of MC18, the conclusion of AC41
+holds without importing the source-qualified local Toponogov
+statements AC02 or AC36. All its metric, length, comparison and
+Hausdorff-dimension conclusions, and the net constants in AC08
+and AC40, are retained. Accepted-foundation and Lean bindings are
+still separate obligations.
+\end{theorem}
+
+### line 7619: Specified comparison consumers and their parameter choices; ALG08
+\begin{proposition}[Specified comparison consumers and their parameter choices; ALG08]
+\label{prop:alexandrov-written-comparison-consumers}
+The written comparison above supplies the formerly source-qualified
+comparison uses in AC65's long-strainer orthogonality, LC12's
+lifted packet, and LC78's product-anchor directions, with their
+original quantified conclusions. It also supplies the global
+comparison input whenever the space is already complete and
+geodesic and the local comparison hypothesis holds. The old fixed-margin statements AC02, AC36 and AC64
+are not thereby proved at their original constants.
+\end{proposition}

@@ -1,0 +1,601 @@
+{
+  "accepted_commit": "9f5f8d2c624110d0bc79d3ddebfb655112d57100",
+  "manifest_sha256": "b9ea39d42c058ac4e8fa5c88df6dedc2d26bf9ea31c8daca1ddde3905a9c01a2",
+  "receipt_sha256": "734f1d29dca08c5b5d22b538d3bbe1a2a47d6401da2321623d75b50d4d09d4f2",
+  "sources": [
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/RescaleComparison.lean",
+      "sha256": "99a311d2c61d99f44413c79d018bb7503fd79c09eb3250358695ea674b87d2d9",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC10",
+        "AC04",
+        "AC35",
+        "AC64",
+        "ALG07"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ApproximateFactorCompactness.lean",
+      "sha256": "816aec4269118e7580cb6427dba62efcc6a002070f05060024bf814e4af87498",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "AC49",
+        "AC50",
+        "MC13"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ApproximateProductLimit.lean",
+      "sha256": "761388bfa2c3ab8263eb6ab7998f985a9acb41c1e3f55f695aa6e725107adc5b",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "AC50",
+        "AC51",
+        "MC24"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ApproximateSources.lean",
+      "sha256": "d2411711b85ef070a05152ecabf06856a65d34ce7fcfcebf17d9516bd8e1bfcb",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "AC50",
+        "AC51",
+        "MC24"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/BBIApproximation.lean",
+      "sha256": "c812d3b6d9c406e9cea17ea8ebf7c10032100ba7d14e252a1db5c8c614112bd5",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC11"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/Bilipschitz.lean",
+      "sha256": "23550420ba57550fd92b7a81fe5aa97b9a042f978d8b5f38b1f110194b2d6bc9",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC17"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/CeilComparisonExtraction.lean",
+      "sha256": "c40d5c4207d43d87b5cd5fea82c4b069713b5ae1d9ef975e07b534cf4305ffd9",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC13",
+        "MC14",
+        "MC18",
+        "AC08",
+        "AC37",
+        "AC40",
+        "AC41",
+        "ALG07"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ClosedBallConvergence.lean",
+      "sha256": "8bbef7b92e18ae1202310d5391825fd7f66780ba5d9490155734bd0038b75e48",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC15"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/CommonSourceControl.lean",
+      "sha256": "20c7396b4c051b112d79aba657af90cd5b1db57598df72e09b48ae4fb392f521",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC24",
+        "AC51"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/CompactComparison.lean",
+      "sha256": "29ff361b29509659a86dd9c3787f4954586fc52b5b173eb26fe00dc055c5d681",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC05",
+        "MC11"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ComparisonLimit.lean",
+      "sha256": "a96b4ffdacc43eb08ff92eacbd0eb6f0e8d5cf305104109d8fbef74569e7b71b",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "AC37",
+        "AC41",
+        "MC18"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ControlledPointedIsometry.lean",
+      "sha256": "1801908a888d7c312a8086f294e7050e082115df8f713e4128283e53ed194509",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC24",
+        "AC51"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ControlledProductLimit.lean",
+      "sha256": "3c809036a5690fbb7f5881fedafa76df8286ce631c635eb7203b302068e71ca0",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "AC49",
+        "AC50",
+        "AC51",
+        "MC24"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/Correspondence.lean",
+      "sha256": "8f1450a47a48753193b41148789e2b5d9a30128de05b40868a1ce308db5a5820",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC04",
+        "MC05"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/DimensionLimit.lean",
+      "sha256": "c342b9e1f2dc5a5dc33c3e63674868292720b4f935b0b2fb427aa3515373765a",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "AC40",
+        "MC13",
+        "MC18"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/EscapingPoint.lean",
+      "sha256": "0c3a035e63b330730f39aa6a19942f696c85985a44b2c462117dc57bd7c4fe95",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC11"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/FactorNetTransfer.lean",
+      "sha256": "7f99c48897d68047abb26185eefdab63958434350eb9b461c973053191048e92",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "AC49",
+        "AC50",
+        "MC13"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/FiniteNetComparison.lean",
+      "sha256": "d7935c189da6551e5c39260f446ef53e625116538f36da49ddf7f1bd3994f473",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC03",
+        "MC04"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/GrowingRegionExtraction.lean",
+      "sha256": "057be8b5dea6bf4428d5cba9c55c9548951ec15356fa14ad38c46fa5edebdcb4",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC13",
+        "MC14",
+        "MC18",
+        "AC08",
+        "AC37",
+        "AC40",
+        "AC41",
+        "ALG07"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/GrowingRegionGeometry.lean",
+      "sha256": "49b487a45f26d3eace599dc7ee328f6d59b304383b2f73ba180b489d97e927cc",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC13",
+        "MC14",
+        "MC18",
+        "AC08",
+        "AC37",
+        "AC40",
+        "AC41",
+        "ALG07"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/KleinerLottApproximation.lean",
+      "sha256": "dfc3da99348de87c7640bfb4127b530bfb0e6dddeafa843400518c11dac65615",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC11"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/KleinerLottConvergence.lean",
+      "sha256": "469ac2560819b6dd06d4bf5ce8cb0939170b4a53bc04a5a3e94cffee806d73c4",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC11"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/LengthLimitExtraction.lean",
+      "sha256": "17eb29f001222dbf274e2613373881b6276c1ee9cf1c683e02d1cb19c631e82a",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC02",
+        "MC13",
+        "MC14",
+        "MC18"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/MidpointTransfer.lean",
+      "sha256": "1e4317bec3bba4391e191797dd6b60d84efb3feb9d2b2c46a45620183ae9dcaf",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC14",
+        "MC21"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/OpenBallApproximation.lean",
+      "sha256": "c3e788e74bc9549013e552c4cf709724f104f362a96506c84c79627f59f2a6d0",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC11"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/PairedNets.lean",
+      "sha256": "bd3023f5ca5a2e97f1ad017d12022514de7d608c14a021b4aae6caf611790eee",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC13"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/PointedBallApproximation.lean",
+      "sha256": "c80d9e691fa0e0040f3802e67e064435780d049d97b7cdb2d056fe18d1d2a530",
+      "receipt_hash_match": false,
+      "in_receipt": false,
+      "nodes": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/PointedConvergence.lean",
+      "sha256": "5db64a4e6f759d31efed85046fa990d555f8b379aba5cee255773a17e9c7d79f",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC11"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/PointedEndpointLines.lean",
+      "sha256": "01832ea1b74002db048a139e7082587a0e99b5f881e6a84e3d945e32981dd371",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "AC59",
+        "AC60",
+        "MC06"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/PointedIsometry.lean",
+      "sha256": "ee5f1280a775d376f12b61a810df594e733f93ae49005825550e5d0970d88f59",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC24"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/PointedPrecompactness.lean",
+      "sha256": "96ce97e82b2d132641fe43c27900c1e560bcceac06af5c0bca813a151bd1fa4d",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC13"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/PrefixCoordinateConvergence.lean",
+      "sha256": "2a59184a61b85ff5add431033a9ac632b70b797a30d23b4c3d3ee8f3b68a4c20",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "AC59",
+        "AC60",
+        "MC06"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ProductApproximation.lean",
+      "sha256": "aab2f90950add3677a5b4f16fbbb6c7c34f622b48b24f8c37f99453fe89069af",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "AC50",
+        "AC51",
+        "MC24"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ProductCollapse.lean",
+      "sha256": "544f7b8fcde5b2cf7f0f271810ddb8c982649ade490584ce04f14d0c34c8cd09",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC16"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ProductCoordinateApproximation.lean",
+      "sha256": "af7e37d2fb90e48035d040ac512d23e7d6a5e852b03b53437254f24b25309f40",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "AC49",
+        "AC50",
+        "AC51",
+        "MC24"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ScaledProductCollapse.lean",
+      "sha256": "d14ea93a318ca449e80eadba32bf5b53544a597403e7bb85657ba2268e3b343f",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC16"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/Transport.lean",
+      "sha256": "ddeb62e08777967247821dc53dd6e8cc782703c43e25d02e614f910ef3976e21",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC10"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Scaling/Rescale.lean",
+      "sha256": "f43c664fa07197e1646cde8f23f6f91a5ede091aa63543c5e3cccdfdc22c02be",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC10",
+        "MC16"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Scaling/RescaleGeometry.lean",
+      "sha256": "a9946a1e44dc23a7c089bc5838d411811e892aa25a399e40294f01f709472936",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC10",
+        "AC04",
+        "AC35",
+        "AC64",
+        "ALG07"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Scaling/RescaleLength.lean",
+      "sha256": "2d76fb142113e10375a791ac86fb6bbff173bcff055d7d4c0f9250297bad4cc5",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC10",
+        "AC04",
+        "AC35",
+        "AC64",
+        "ALG07"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/ApproximateMidpoint.lean",
+      "sha256": "76a857b170c3302a67a0a3f924109b70f50e93959612e0446985b4dddb9a943f",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC22"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/CompactMinimizingCurve.lean",
+      "sha256": "29a4b41c624749790f8fdb52866f6bd90440e8e60faca975e2855d05d4f86b68",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC01",
+        "AC01",
+        "ALG05"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/CountableNetLabels.lean",
+      "sha256": "09261a99db474f2d83eae761476e6a934ff9b1b6b4cb8ba9e7a4aec145245ae7",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC13"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/CurveMidpoint.lean",
+      "sha256": "06eff33283a4f9fd79d121904dc77bcb1ecd144bb39c62531646df3376d87f1d",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC21"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/CurveVariation.lean",
+      "sha256": "a8fa49d09143dff1c9323e2f37029b041018522aca1894b42b45d44bab113046",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC01"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/DistanceMatrixLimit.lean",
+      "sha256": "df83a6224e9e00a39b5913fd4a3947bbcd5a8994687c89ab0568b63824bcf16b",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC13"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/FiniteNets.lean",
+      "sha256": "87486a8c7bbfce157936a23a1f3935303d22ea9f555b1df67ebd170f4854dd7d",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC02",
+        "MC13"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/GeodesicMidpoint.lean",
+      "sha256": "f4c50dc2ac90c6de96ad63da613ae01c39bd389aa2099913d1ee3b53f1d5f16d",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC23"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/GromovHausdorffCompactness.lean",
+      "sha256": "3cb92746dad3e670a6d9e6f3313568f7ba2ea170c3653c7f3927526e9a3353cc",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC12"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/HopfRinow.lean",
+      "sha256": "a37945aee58222bcafb106892e9f5cc2601f75480b19e44c0ef4c3efcdc8f5ea",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC01",
+        "MC22",
+        "MC23"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/IntervalRecognition.lean",
+      "sha256": "104ea876b489a21b56c7de7603c4cb22f94cea36a4b32c619705061ce4440004",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC23",
+        "ALR04",
+        "ALR05",
+        "AC46"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/LipschitzCompactness.lean",
+      "sha256": "49d63b23a1709eda5939e69c0052d88f44eb38d2bbb7113733ff550034bd2972",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC01"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/LipschitzEnvelope.lean",
+      "sha256": "ed19ebac77f4d5bba1bb8edb8510a0ed9a6179ac8c8dba740ea6e739f417486f",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC19",
+        "MG02"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/RescaleNetBound.lean",
+      "sha256": "53a83986ac871726ed96590fb301bfc901103b79162683a7b138badcf605c797",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC10",
+        "AC04",
+        "AC35",
+        "AC64",
+        "ALG07"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/SegmentConcatenation.lean",
+      "sha256": "3f17634f6b178070a7a8039c6924e4a6f2bbb5cbb515352e2e071228b992de88",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC23",
+        "ALR04",
+        "ALR05",
+        "AC46"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/VariationParametrization.lean",
+      "sha256": "4535641c6e1250a42a218b30a533c8f21093768f9f24694f37f6946033892a79",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "AC58"
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Sequences/EventualDiagonal.lean",
+      "sha256": "9ad38053fc5cae920444d4dcf67c4107f83375fa0cd22675a225db8614755c26",
+      "receipt_hash_match": true,
+      "in_receipt": true,
+      "nodes": [
+        "MC11"
+      ]
+    }
+  ]
+}

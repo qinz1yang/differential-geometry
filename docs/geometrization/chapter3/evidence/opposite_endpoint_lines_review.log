@@ -1,0 +1,6 @@
+'Metric.exists_signed_prefix_of_opposite_prefixes' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.exists_calibrated_signed_prefix' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.exists_isometric_lines_of_signed_prefixes' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.exists_calibrated_lines_of_opposite_endpoints' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

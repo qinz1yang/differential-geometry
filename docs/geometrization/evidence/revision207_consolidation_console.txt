@@ -1,0 +1,16 @@
+{
+  "revision": 207,
+  "scope": "body/history/source preservation, current path and DAG consistency; no mathematical proof",
+  "all_mathematical_body_bytes_preserved": true,
+  "historical_master206_preserved": true,
+  "source_inventories_unchanged": true,
+  "old_DAG_dependencies_and_Lean_status_preserved": true,
+  "nodes": 1196,
+  "edges": 2443,
+  "selected": 649,
+  "current_file_pointers_checked": 58,
+  "retained_labels": 1037,
+  "retained_statement_environments": 720,
+  "semantic_premise_census_complete": false,
+  "full_geometrization_proved": false
+}

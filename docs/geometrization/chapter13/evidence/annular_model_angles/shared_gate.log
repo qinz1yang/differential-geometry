@@ -1,0 +1,6 @@
+⚠ [2730/3228] Replayed DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
+warning: DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean:18:8: declaration uses `sorry`
+✔ [3585/3585] Built DifferentialGeometry.Geometry.Comparison.TriangleExcessAngle (1.6s)
+Build completed successfully (3585 jobs).
+CHAPTER3_AUDIT_PASS 2513 declarations
+Original packed-refs restored unchanged

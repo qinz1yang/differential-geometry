@@ -1,0 +1,90 @@
+import Mathlib.Tactic.Linter
+import DifferentialGeometry.Analysis.Calculus.ScalarDerivativeBounds
+import DifferentialGeometry.Analysis.Calculus.JointCutoffBounds
+import DifferentialGeometry.Analysis.Calculus.WeightedCoordinateCutoff
+import DifferentialGeometry.Analysis.Calculus.OrthogonalBlockDerivatives
+import DifferentialGeometry.Analysis.Calculus.JointCutoffNetwork
+
+#check DifferentialGeometry.Analysis.unit_scalar_product_derivative_bounds
+#print axioms DifferentialGeometry.Analysis.unit_scalar_product_derivative_bounds
+
+#check DifferentialGeometry.Analysis.finite_sum_derivative_bounds
+#print axioms DifferentialGeometry.Analysis.finite_sum_derivative_bounds
+
+#check DifferentialGeometry.Analysis.edgeCutoff
+#print axioms DifferentialGeometry.Analysis.edgeCutoff
+
+#check DifferentialGeometry.Analysis.jointEdgeCutoff
+#print axioms DifferentialGeometry.Analysis.jointEdgeCutoff
+
+#check DifferentialGeometry.Analysis.contDiff_edgeCutoff
+#print axioms DifferentialGeometry.Analysis.contDiff_edgeCutoff
+
+#check DifferentialGeometry.Analysis.contDiff_jointEdgeCutoff
+#print axioms DifferentialGeometry.Analysis.contDiff_jointEdgeCutoff
+
+#check DifferentialGeometry.Analysis.edgeCutoff_mem_Icc
+#print axioms DifferentialGeometry.Analysis.edgeCutoff_mem_Icc
+
+#check DifferentialGeometry.Analysis.jointEdgeCutoff_mem_Icc
+#print axioms DifferentialGeometry.Analysis.jointEdgeCutoff_mem_Icc
+
+#check DifferentialGeometry.Analysis.edgeCutoff_derivative_bounds
+#print axioms DifferentialGeometry.Analysis.edgeCutoff_derivative_bounds
+
+#check DifferentialGeometry.Analysis.edgeCutoff_weight_bound
+#print axioms DifferentialGeometry.Analysis.edgeCutoff_weight_bound
+
+#check DifferentialGeometry.Analysis.jointEdgeCutoff_weight_bound
+#print axioms DifferentialGeometry.Analysis.jointEdgeCutoff_weight_bound
+
+#check DifferentialGeometry.Analysis.jointEdgeCutoff_derivative_bounds
+#print axioms DifferentialGeometry.Analysis.jointEdgeCutoff_derivative_bounds
+
+#check DifferentialGeometry.Analysis.jointEdgeCutoff_eq_zero_of_all_edgeCutoff_zero
+#print axioms DifferentialGeometry.Analysis.jointEdgeCutoff_eq_zero_of_all_edgeCutoff_zero
+
+#check DifferentialGeometry.Analysis.joint_cutoff_common_constant
+#print axioms DifferentialGeometry.Analysis.joint_cutoff_common_constant
+
+#check DifferentialGeometry.Analysis.weightedCoordinateCutoff
+#print axioms DifferentialGeometry.Analysis.weightedCoordinateCutoff
+
+#check DifferentialGeometry.Analysis.contDiff_weightedCoordinateCutoff
+#print axioms DifferentialGeometry.Analysis.contDiff_weightedCoordinateCutoff
+
+#check DifferentialGeometry.Analysis.weightedCoordinateCutoff_bounds
+#print axioms DifferentialGeometry.Analysis.weightedCoordinateCutoff_bounds
+
+#check DifferentialGeometry.Analysis.orthogonalBlocks
+#print axioms DifferentialGeometry.Analysis.orthogonalBlocks
+
+#check DifferentialGeometry.Analysis.contDiff_orthogonalBlocks
+#print axioms DifferentialGeometry.Analysis.contDiff_orthogonalBlocks
+
+#check DifferentialGeometry.Analysis.norm_orthogonalBlocks_le
+#print axioms DifferentialGeometry.Analysis.norm_orthogonalBlocks_le
+
+#check DifferentialGeometry.Analysis.orthogonalBlocks_derivative_bounds
+#print axioms DifferentialGeometry.Analysis.orthogonalBlocks_derivative_bounds
+
+#check DifferentialGeometry.Analysis.jointCutoffBlockFamily
+#print axioms DifferentialGeometry.Analysis.jointCutoffBlockFamily
+
+#check DifferentialGeometry.Analysis.jointCutoffNetwork
+#print axioms DifferentialGeometry.Analysis.jointCutoffNetwork
+
+#check DifferentialGeometry.Analysis.contDiff_jointCutoffNetwork
+#print axioms DifferentialGeometry.Analysis.contDiff_jointCutoffNetwork
+
+#check DifferentialGeometry.Analysis.jointCutoffNetwork_bounds
+#print axioms DifferentialGeometry.Analysis.jointCutoffNetwork_bounds
+
+#check DifferentialGeometry.Analysis.jointCutoffNetwork_c1_comp_sub_le
+#print axioms DifferentialGeometry.Analysis.jointCutoffNetwork_c1_comp_sub_le
+
+#check DifferentialGeometry.Analysis.jointCutoffNetwork_some
+#print axioms DifferentialGeometry.Analysis.jointCutoffNetwork_some
+
+#check DifferentialGeometry.Analysis.jointCutoffNetwork_none
+#print axioms DifferentialGeometry.Analysis.jointCutoffNetwork_none

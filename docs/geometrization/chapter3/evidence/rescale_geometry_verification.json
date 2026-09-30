@@ -1,0 +1,25 @@
+{
+  "success": true,
+  "new_public_theorems": 9,
+  "new_private_theorems": 0,
+  "new_definitions": 1,
+  "new_owned_declarations": 20,
+  "combined_modules": 217,
+  "combined_jobs": 3051,
+  "combined_owned_declarations": 1120,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/Scaling/RescaleGeometry.lean": "a9946a1e44dc23a7c089bc5838d411811e892aa25a399e40294f01f709472936",
+    "DifferentialGeometry/Geometry/Metric/Scaling/RescaleLength.lean": "2d76fb142113e10375a791ac86fb6bbff173bcff055d7d4c0f9250297bad4cc5",
+    "DifferentialGeometry/Geometry/Comparison/RescaleComparison.lean": "99a311d2c61d99f44413c79d018bb7503fd79c09eb3250358695ea674b87d2d9",
+    "DifferentialGeometry/Topology/MetricSpace/RescaleNetBound.lean": "53a83986ac871726ed96590fb301bfc901103b79162683a7b138badcf605c797"
+  },
+  "logs": {
+    "rescale_geometry_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rescale_geometry_review.log": "6677733cbbe46f0fbfd8221f1a9ad5567bfefd1303f5ffb448ca35d805d6f373",
+    "rescale_geometry_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "574f92f5bd79269309d730ba62c5e38d0590d61544ae6263964e9569ce39c3a6",
+  "git_head_at_check": "11262ab586a274dc17afe16e348d0d2c0e14d4d9",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

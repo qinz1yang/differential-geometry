@@ -1,0 +1,3 @@
+'GC.MetricGeometry.exists_isometry_family_subsequence_of_local_distortion' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

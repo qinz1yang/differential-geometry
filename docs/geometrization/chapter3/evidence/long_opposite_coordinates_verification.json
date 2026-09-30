@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 3,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 3,
+  "combined_modules": 294,
+  "combined_jobs": 3129,
+  "combined_owned_declarations": 1349,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/Approximation/OppositeEndpointCoordinates.lean": "8acafbe4cfb938570b70e357dfb21714c5e8dbf3467750454dc4cc169d8aa9b9",
+    "DifferentialGeometry/Geometry/Metric/Approximation/LongOppositeCoordinates.lean": "ca2844eeaf5fb9e44c866d1ed42c4d9df8be93a6e4d5f8fbc19d8fc95285ac7c"
+  },
+  "logs": {
+    "long_opposite_coordinates_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "long_opposite_coordinates_review.log": "146c3401814a22d1fe4b9c743536f640a067e2a08017f50675ca8d29ce81d516",
+    "long_opposite_coordinates_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "154931e3466476b22a10ef52f2be2c23372e4d6e1701562af65c8991b1365ea5",
+  "git_head_at_check": "ab8f9657de40cc1daf044d1cebc625b92fdd36b6",
+  "independent_agent_statement_review": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

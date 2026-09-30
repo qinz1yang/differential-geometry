@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "new_public_theorems": 4,
+  "new_definitions": 0,
+  "new_owned_declarations": 11,
+  "combined_modules": 128,
+  "combined_jobs": 2916,
+  "combined_owned_declarations": 762,
+  "sources": {
+    "DifferentialGeometry/Analysis/InnerProductSpace/FiniteBoxPacking.lean": "c9e0d9c32d6ab3d935918758d8fe787e3bf6f38729b083e5e54ca6a8279eaa8d",
+    "DifferentialGeometry/Topology/MetricSpace/EuclideanPacking.lean": "31af22fa4023718a62227ec4991fb1ca9a4920d3324c610e1c54ff57e0495de1",
+    "DifferentialGeometry/Topology/MetricSpace/CompactPackingTransport.lean": "a3dee550a3d6d0fa974049ef89d75c57bc18d471d43bc31c61c10e8050cfa3df"
+  },
+  "logs": {
+    "euclidean_packing_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "euclidean_packing_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758",
+    "euclidean_packing_review.log": "42b38c2a717bc84a6cb6bdb2d62aecd3cfc853561480eaacdc96eab1034bdede"
+  },
+  "review_driver_sha256": "0390a53db1f90afba2a1700bda264dbee122b79ed350f05108a0c337f05672e2",
+  "git_head_at_check": "55b271001e7d8cb19ea02bc75cf48911f981c6cb",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

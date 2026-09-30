@@ -1,0 +1,25 @@
+{
+  "success": true,
+  "new_public_theorems": 4,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 5,
+  "combined_modules": 285,
+  "combined_jobs": 3120,
+  "combined_owned_declarations": 1320,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/SignedPrefix.lean": "a8e83ee75d2ce4709f1290381b955360542d369855904f0641562bfc32f3a365",
+    "DifferentialGeometry/Topology/MetricSpace/CalibratedSignedPrefix.lean": "58cb53cbb1cf5a2049b301eb4347bb4017422d89bf3fa041d59676ae2e4f37f5",
+    "DifferentialGeometry/Geometry/Metric/Approximation/PrefixLineLimit.lean": "fc607b64c76d4080cbaf7207050bb080355a599bc2f2bd418708ba1b9f8f4a00",
+    "DifferentialGeometry/Geometry/Metric/Approximation/OppositeEndpointLines.lean": "b572acbad6137ac62536f2b67a565b9a4fb8332892ef764f8f1335e7e8e05511"
+  },
+  "logs": {
+    "opposite_endpoint_lines_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "opposite_endpoint_lines_review.log": "a697cdda00e3aa66eed055ae839c12b422db54a3a2a382adeb630980de7ae75b",
+    "opposite_endpoint_lines_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "4361bf9ad49e33b379fc91624cafe424376dec3d88d09f8a3283ad4cb6dc3063",
+  "git_head_at_check": "53bf8c98b972faa43256ac8b5a254d3d83d2f85f",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

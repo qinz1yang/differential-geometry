@@ -1,0 +1,121 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/AlexanderKapovitchPetrunin303Alexandrov.pdf",
+      "sha256": "1ba6f6f011a8333d9a20bdbf49d36d68b61bf1aababb19296ed48ecea37248ed",
+      "locator": "Full11.6(a)--11.8 pp/PDF173--175, converse175; defining6B pp63--64,8.1--8.5 pp81--83, separate globalization8.31 p95.",
+      "version": "Archived PDF distinct from pinned author TeX and later errata",
+      "review_provenance": "Full actual proof/body reads by root and independent agents; retained text used, no fresh successful visual rendering claimed for partially dataless archive."
+    },
+    {
+      "path": "/tmp/claude-501/-Users-bennettchow-Documents/cad9c0d5-a847-4481-b630-e6d97ac0fcbb/scratchpad/audit/verify/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-ed6a16eb2a3c/model.tex",
+      "sha256": "db849cb9a051e0c3f8ec335942c954f14223c542eee1a40c4bca4ea2a63af9f8",
+      "commit": "ed6a16eb2a3c66c1f0f54b183bd1a4176e78b245",
+      "locator": "lines17--18 varpi,26--34 actual model triangle perimeter<2varpi"
+    },
+    {
+      "path": "/tmp/claude-501/-Users-bennettchow-Documents/cad9c0d5-a847-4481-b630-e6d97ac0fcbb/scratchpad/audit/verify/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-ed6a16eb2a3c/defs-CBB.tex",
+      "sha256": "b80b54fafc6e30cbac121880c1b80265ee62afcd90d8a3ab77c0deef1a0e1f9c",
+      "commit": "ed6a16eb2a3c66c1f0f54b183bd1a4176e78b245",
+      "locator": "lines8--10 inconsistent recap missing factor2, explicitly not adopted"
+    },
+    {
+      "path": "/tmp/gc141_AKP_erratum_2026-09-29.pdf",
+      "sha256": "8f4642b105b03a52f23f920b6201a9156a2e0ceef63a37774c88e0d912801a79",
+      "url": "https://anton-petrunin.github.io/book/erratum.pdf",
+      "retrieved": "2026-09-29",
+      "version": "Author errata datedJuly12,2026",
+      "locator": "Full errata read by source_review; no correction of8.1 factor-two discrepancy listed"
+    }
+  ],
+  "reused_source_checks": [
+    "euclidean_cone_sources.json",
+    "geodesic_directions_sources.json",
+    "tangent_blowup_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "blueprint_locator": "Frozen master207A AC11/AC12 actual-direction structural context; SHA277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b. No blueprint edit.",
+  "scope": "Generic actual secant lifts and coneCBB0 imply LOCAL spherical comparison; original ambient-open/intrinsic8R geometry supplies comparison on SAME completed directions for every original q and all natural upper bounds including0.",
+  "source_conventions": "New spherical angle is curvature+1. Earlier parameter1 source comparison is the curvature minus1 convention. Geometric central arms are positive; all three model perimeters are strictly<2pi. The6B/model.tex defining convention is used despite the recorded8.1/defs-CBB missing2; no author correction is invented.",
+  "proof_route": "Exact Euclidean specialization of AKP11.6 converse: SAME actual cone vertex/lifts give exact tan arms and cosine-law quotient. Actual cone four-point comparison yields local spherical star bounds and pi/4 balls; accepted SAME-tangent geometry yields the original-source consumers.",
+  "no_new_premises": [
+    "global base diameter",
+    "generic base completeness/length/properness/nonemptiness",
+    "supplied angular comparison",
+    "supplied cone metric or side law",
+    "supplied tangent realization",
+    "complete original open region",
+    "positive source rank"
+  ],
+  "errata": "Fresh authoritative author errata retrieval and exact bytes/hash retained; archive/pinnedTeX/currenterrata distinguished. No missing-factor correction listed. Source consistency decision explicit.",
+  "independent_peer_proof_review": true,
+  "not_claimed": [
+    "global CBB1",
+    "positive-curvature globalization",
+    "global direction length structure",
+    "all-point Euclidean regularity",
+    "TopDim identity",
+    "PC migration validation",
+    "completion of Chapters3--4"
+  ],
+  "proof_records": [
+    {
+      "path": "/tmp/gc_Post140_frontier_source_assessment.md",
+      "sha256": "6ae73cca1c8888d9ee599706a470ed5c25c8ae49469c9868ddec1431148f0b3e"
+    },
+    {
+      "path": "/tmp/gc_SphericalModelAngle_record.md",
+      "sha256": "eb199230d1df2210c6a45bd9356c7ef908d0d84e25271e2936b4bedcbabe4b2c"
+    },
+    {
+      "path": "/tmp/gc_SphericalModelAngle_half_independent_read.md",
+      "sha256": "2de52bc40b9d85c2eae5f632d31b62620cb3758cb25334f5bd0703d894519a80"
+    },
+    {
+      "path": "/tmp/gc_ConeSecantLift_record.md",
+      "sha256": "6b4172e956562c45a1c8ff57b2c172bb1697898babde0ca8034202dbf0259ec5"
+    },
+    {
+      "path": "/tmp/gc_ConeSecantLift_source_independent_read.md",
+      "sha256": "986d5283ab64742697b3c0f040b902ffe9919878e72ab8d999fc592ebc991708"
+    },
+    {
+      "path": "/tmp/gc_LocalSphericalComparison_source_independent_read.md",
+      "sha256": "64a9a57b9ab792040d3ad76e1ec87df83af1819faff559f98289162bb2329841"
+    },
+    {
+      "path": "/tmp/gc_LocalSphericalDirections_root_record.md",
+      "sha256": "91eb5a61757c29a48eff3d98b555d05e0cb960678781603a7d01776b6134434b"
+    },
+    {
+      "path": "/tmp/gc_LocalSphericalDirections_half_independent_read.md",
+      "sha256": "9fb90d9ab28413bbfeea96b2bc9a913846833e40588907687ac34b19907447bf"
+    },
+    {
+      "path": "/tmp/gc_LocalSphericalDirections_review_record.md",
+      "sha256": "71d8a98031ad1b2340dc61d0426fc3f44f1a239e1ec701374024e3ffb3282461"
+    },
+    {
+      "path": "/tmp/gc_LocalSphericalDirections_tests_half_independent_read.md",
+      "sha256": "76095a75a88bb87f6589ddfdaf9e49b64856f519e367edbb803520f8f8a8033d"
+    }
+  ],
+  "upstream_freezes": [
+    {
+      "path": "/tmp/gc_SphericalModelAngle_freeze.json",
+      "sha256": "660fd5658e53311c678d74309027d607e42bfe3ea90f9324b1ca30b12a02eba1"
+    },
+    {
+      "path": "/tmp/gc_ConeSecantLift_freeze.json",
+      "sha256": "5d192063f30c1bf38fbdef50f75dc300eec7c0b583a171b064249fabe153bdac"
+    },
+    {
+      "path": "/tmp/gc_LocalSphericalDirections_root_freeze.json",
+      "sha256": "c653c9f8558ddfb7997305b6032ceefc370f4e365378ec03f37f03ac1c27b14e"
+    },
+    {
+      "path": "/tmp/gc_LocalSphericalDirections_review_freeze.json",
+      "sha256": "fd6dba2884a890acb9986a74eee0a38538b5b30e19beb4b4960036f9b3dd2c36"
+    }
+  ]
+}

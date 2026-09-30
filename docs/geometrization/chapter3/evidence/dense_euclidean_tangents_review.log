@@ -1,0 +1,95 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_maximal_paired_rank_of_quality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_distance_chart_of_scaled_quality_in_open_set' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_global_rank_paired_packets_of_local_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_dense_isGδ_all_paired_qualities' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_endpoint_representatives_of_complete_local_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.PairedComparisonPacket.exists_directions_of_complete_local_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.SpaceOfDirections.dist_add_dist_add_dist_le_two_pi_of_local_fourPointComparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.exists_subsequence_antipodal_orthogonal_frame' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.germComparisonAngle_twoRayPath' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_pointed_euclidean_tangent_of_orthogonal_frame' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_dense_isGδ_orthogonal_direction_frames_of_local_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_dense_euclidean_tangents_of_local_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCRankBaireReview.decreasing_quality_ladder_real_maximal_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCRankBaireReview.real_dense_isGδ_with_all_pointwise_qualities' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCRankBaireReview.empty_source_rank_zero_has_full_dense_output' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCScaledPairedChartReview.real_arbitrary_scale_preserves_both_anchors_and_full_chart' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCScaledPairedChartReview.real_global_rank_one_all_open_sets_all_positive_qualities' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCScaledPairedChartReview.zero_scale_cannot_retain_positive_rank_packet' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.actual_plane_global_rank_two_all_open_sets_all_positive_qualities' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.actual_unequal_real_packet_same_original_endpoints' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.actual_translated_plane_original_unequal_endpoints' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.actual_empty_packet_without_invented_direction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.completed_plane_triple_sum_from_original_local_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.alternating_original_plane_arrays_extract_one_exact_frame' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.empty_direction_space_admits_empty_array_extraction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.actual_translated_plane_frame_gives_pointed_onto_euclidean_tangent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_real_original_opposite_rays_give_pointed_euclidean_tangent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_singleton_empty_frame_gives_pointed_zero_dimensional_tangent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeFrameReview.angular_cap_cannot_be_removed_even_for_actual_two_ray_paths' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.original_real_dense_euclidean_tangents_with_exact_common_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.original_singleton_dense_set_is_all_and_tangents_are_zero_euclidean' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.original_plane_dense_euclidean_tangents_with_exact_common_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDenseEuclideanTangentsReview.original_empty_dense_euclidean_tangents_without_chosen_point' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

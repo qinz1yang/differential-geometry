@@ -1,0 +1,53 @@
+{
+  "success": true,
+  "blueprint_static_audit": {
+    "status": "failed",
+    "success": false,
+    "latest_completed_exit_code": 1,
+    "reason": "Historical source path is missing: /Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/MatveevBook2ndEd.pdf",
+    "running_session": null,
+    "unchanged_audit_sha256": "a71b3b706ed68f757debfad4dbbbf4f80a243ed1db2f56fa5054d23dd54e2018",
+    "blueprint_revision": 207,
+    "lean_gate_independent": true,
+    "current_milestone": 145,
+    "note": "The unchanged separate static audit completed with exit 1; no static pass is claimed.",
+    "completed_session": 82024
+  },
+  "milestone": 145,
+  "new_public_theorems": 8,
+  "new_public_definitions": 0,
+  "new_instances": 0,
+  "new_private_theorems": 2,
+  "new_declared_declarations": 10,
+  "new_generated_declarations": 1,
+  "new_owned_declarations": 11,
+  "observed_previous_owned_declarations": 2351,
+  "observed_previous_modules": 509,
+  "combined_modules": 513,
+  "combined_jobs": 3351,
+  "combined_owned_declarations": 2362,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/ConeSineInterpolation.lean": "93c576b3ef0f69159a366a26f20b74b9c2ffe911bf2e8122ddb0b0cac22a6821",
+    "DifferentialGeometry/Geometry/Comparison/SphericalAngleShortening.lean": "4b2cbdd05f19c39fe5178b3ecc82b41cda44bc2857263368114fb68921f3d8f9",
+    "DifferentialGeometry/Geometry/Comparison/GlobalSphericalComparison.lean": "d65d59771a3e28791db17dff8a1594ab4e7c18976278bc0f962b64dc2ea6de8a",
+    "DifferentialGeometry/Geometry/Comparison/GlobalSphericalDirections.lean": "6103a6262383fbd3965a83a4b53dc441be7432f99aeaa0eacea9e4f85358826c"
+  },
+  "logs": {
+    "global_spherical_comparison_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "global_spherical_comparison_review.log": "4182154abad598e344b7c1659201d46e6455e75fb089c60b006a8788071218a8",
+    "global_spherical_comparison_blueprint_audit.log": "2be310aa5ac57d2368512587a6bf55059337096d08ced113af53e82080b78e03",
+    "global_spherical_comparison_blueprint_status.json": "6433ef871802ce01d4a00d0db58d93ba364cf5e114ae23b4522230246803d78f"
+  },
+  "checks_receipt_sha256": "e86e96a56d7f8c409abd51591db630d1495df93e3ffde6b1868c4a008d361fc5",
+  "shared_gate_receipt_sha256": "71a06c6bd0b7d40ffa94403fa3985d21a8e5d597b89aa95c80db02c2e2f04820",
+  "previous_milestone_receipt_sha256": "ae6d483cacc67bf5439d8948c08f6eed913720db80cff16b8c3b34b1e4a429a5",
+  "review_driver_sha256": "33e419459bc0a3d2166270893218187585494e9a907cd939fcefa6720601e6fa",
+  "registration_plan_sha256": "7ad4618d6e93307d9c1560afb41eb911945709ecce1891499850502cc3a6c553",
+  "source_receipt_sha256": "d110768c02bc9d0d8d04ec5ee5128e3afb5c5c2c686450b57ee91d9d411dbc94",
+  "git_head_at_check": "9f5f8d2c624110d0bc79d3ddebfb655112d57100",
+  "independent_peer_proof_review": true,
+  "new_concrete_regressions": 11,
+  "expected_review_reports": 19,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

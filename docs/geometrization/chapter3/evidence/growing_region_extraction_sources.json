@@ -1,0 +1,68 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "MC13 refinement full1331-1434; MC14 full1684-1702; MC18 full1762-1769 and discussion1771-1814; AC08 full2401-2418; AC40 full4158-4206; AC41 full4208-4229; ALG07 full7582-7617"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf",
+      "sha256": "7a860b4dd95b35fe33b06bf040100ec243d72c80528d927f4763391aaf79cb6e",
+      "locator": "Asterisque365(2014), Section3.3 printed22-24/PDF17-19; full Lemma3.10 printed24/PDF19, actual text and visual check; only similar-proof citation, not detailed proof"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/KL_corrections.pdf",
+      "sha256": "b5849571508231ce7328ef842eaa0a8a74e34804de7741dab548c406dea11e19",
+      "locator": "May15,2015 retained author sheet, PDF1 full, entries6.5/14.1(2)/20.2; none addresses3.10"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/PointedPrecompactness.lean",
+      "sha256": "96ce97e82b2d132641fe43c27900c1e560bcceac06af5c0bca813a151bd1fa4d",
+      "locator": "96-113 accepted actual eventual-net completion construction; no source properness"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/DimensionLimit.lean",
+      "sha256": "c342b9e1f2dc5a5dc33c3e63674868292720b4f935b0b2fb427aa3515373765a",
+      "locator": "full accepted body; exact ceiling dimension transfer and same-subsequence restriction"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/ComparisonLimit.lean",
+      "sha256": "a96b4ffdacc43eb08ff92eacbd0eb6f0e8d5cf305104109d8fbef74569e7b71b",
+      "locator": "full accepted body; actual finite lifts, angle limit and same-limit comparison"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/CoveringLimit.lean",
+      "sha256": "ae63f76a2af574456b377e4481fdad501fcca7139388ab6a967fbd51c8802969",
+      "locator": "full accepted body; strict internal target coverage and exact(2+4B)^n coefficient"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/VaryingCurvatureCovering.lean",
+      "sha256": "44b8891ba3316929d5e2584ca4963d43668390f0e9fc35390415e26491aad947",
+      "locator": "full accepted body, exact source ceiling bound"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/VaryingLocalGeometry.lean",
+      "sha256": "d3473b27affeefb0dfb7e7c89d345e50a5c895be2432eb50f5a635186aab56ff",
+      "locator": "full accepted body, original-kappa buffered comparison"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+      "sha256": "6320c2e81caeea51c7a80593bea9723294e20acf2355d9a747685de6ba637b96",
+      "locator": "60-83, actual eventually_atTop quantified-tail equivalence"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Order/Filter/AtTopBot/Tendsto.lean",
+      "sha256": "0ec2f390f3a7c9648018b095b58735895d75f7895635ffaedd02baa5e6db5301",
+      "locator": "60-67, tendsto_atTop characterization"
+    }
+  ],
+  "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "reused_source_checks": [
+    "varying_local_covering_sources.json",
+    "rescale_geometry_sources.json",
+    "intrinsic_buffer_radial_sources.json",
+    "factor_dimension_sources.json"
+  ],
+  "scope": "Complete original-input ALG07/MC18/AC41 metric extraction with exact AC08/AC40 constants, actual ambient/intrinsic local alternatives and one common constructed limit.",
+  "errata": "Retained KL May15,2015 sheet fully reread. Previous BBI/AKP pinned and dated qualifications retained. No current-remote or full-source errata clearance; no sharp8R/KL comparison imported."
+}

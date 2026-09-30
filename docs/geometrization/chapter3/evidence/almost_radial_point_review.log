@@ -1,0 +1,14 @@
+'Metric.exists_first_dist_eq_of_continuous_curve' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.exists_almost_radial_point_of_curve' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.exists_almost_radial_point_of_arbitrarily_short_curves' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngles_of_small_triangle_excess' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.almost_radial_constants_pos' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_almost_radial_point_with_comparison_angles' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

@@ -1,0 +1,58 @@
+GC.MetricGeometry.strip_height_lt_of_local_half_plane_model.{u_1} {X : Type u_1} [PseudoMetricSpace X] {p z : X}
+  {R S r t δ ε C : ℝ} (ht : 0 < t) (hδ : 0 < δ) (hε : 0 ≤ ε) (hbuffer : R + 2 * δ + t < S) (htop : R + δ + t < C)
+  (hlocal : t + 3 * δ < r) (hsmall : 5 * δ + ε ≤ t / 1000) (Q W : X → WithLp 2 (ℝ × ℝ)) (hQp : Q p = 0) (hWz : W z = 0)
+  (hQdist : ∀ x ∈ Metric.ball p S, ∀ y ∈ Metric.ball p S, |dist (Q x) (Q y) - dist x y| ≤ δ)
+  (hcover : ∀ (y : WithLp 2 (ℝ × ℝ)), y.snd ∈ Set.Icc 0 C → ‖y‖ < S - δ → Metric.infDist y (Q '' Metric.ball p S) ≤ δ)
+  (hWheight : ∀ x ∈ Metric.ball z r, 0 ≤ (W x).snd)
+  (hWdist : ∀ x ∈ Metric.ball z r, ∀ y ∈ Metric.ball z r, |dist (W x) (W y) - dist x y| ≤ ε)
+  (hz : z ∈ Metric.ball p R) : (Q z).snd < t
+'GC.MetricGeometry.strip_height_lt_of_local_half_plane_model' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.padded_strip_height_lt_of_half_plane_model.{u_1} {X : Type u_1} [PseudoMetricSpace X] {p z : X}
+  {Δ δ C : ℝ} (hΔ : 0 < Δ) (hδ : 0 < δ) (hδsmall : δ ≤ Δ / 1000000) (hC : 200 * Δ < C) (Q W : X → WithLp 2 (ℝ × ℝ))
+  (hQp : Q p = 0) (hWz : W z = 0)
+  (hQdist : ∀ x ∈ Metric.ball p (200 * Δ), ∀ y ∈ Metric.ball p (200 * Δ), |dist (Q x) (Q y) - dist x y| ≤ δ)
+  (hcover :
+    ∀ (y : WithLp 2 (ℝ × ℝ)),
+      y.snd ∈ Set.Icc 0 C → ‖y‖ < 200 * Δ - δ → Metric.infDist y (Q '' Metric.ball p (200 * Δ)) ≤ δ)
+  (hWheight : ∀ x ∈ Metric.ball z Δ, 0 ≤ (W x).snd)
+  (hWdist : ∀ x ∈ Metric.ball z Δ, ∀ y ∈ Metric.ball z Δ, |dist (W x) (W y) - dist x y| ≤ δ)
+  (hz : z ∈ Metric.ball p (120 * Δ)) : (Q z).snd < Δ / 10
+'GC.MetricGeometry.padded_strip_height_lt_of_half_plane_model' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GC.MetricGeometry.tsupport_slim_chart_cutoff_subset.{u_1, u_2} {X : Type u_1} {Z : Type u_2} [MetricSpace X]
+  [MetricSpace Z] {p : X} {Δ : ℝ} (hΔ : 0 < Δ) (z₀ : Z) (φ : ↑(Metric.ball p (1000000 * Δ)) → WithLp 2 (ℝ × Z))
+  (η : ↑(Metric.ball p (1000000 * Δ)) → ℝ) (hbase : φ ⟨p, ⋯⟩ = WithLp.toLp 2 (0, z₀))
+  (hdist : ∀ (x y : ↑(Metric.ball p (1000000 * Δ))), |dist (φ x) (φ y) - dist ↑x ↑y| ≤ Δ)
+  (hfactor : ∀ (z : Z), dist z z₀ ≤ 1000 * Δ) (hvalue : ∀ (x : ↑(Metric.ball p (1000000 * Δ))), |η x - (φ x).fst| ≤ Δ) :
+  have ζ :=
+    Function.extend Subtype.val
+      (fun x ↦ DifferentialGeometry.Analysis.intervalPlateauProfile (-900000) (-800000) 800000 900000 (η x / Δ)) 0;
+  tsupport ζ ⊆ Metric.closedBall p (901002 * Δ) ∧ Metric.closedBall p (901002 * Δ) ⊆ Metric.ball p (950000 * Δ)
+'GC.MetricGeometry.tsupport_slim_chart_cutoff_subset' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.tsupport_edge_chart_cutoff_subset.{u_1} {X : Type u_1} [MetricSpace X] {p : X} {Δ δ C : ℝ}
+  {Λ : NNReal} (hΔ : 1 ≤ Δ) (hδ : 0 < δ) (hδsmall : δ ≤ Δ / 1000000) (hC : 200 * Δ < C) (ρ P : X → ℝ)
+  (hρ : LipschitzWith Λ ρ) (hpos : ∀ (x : X), 0 < ρ x) (hρp : ρ p = 1) (hslow : Δ * ↑Λ ≤ 1 / 10000) (E : Set X)
+  (hE : E.Nonempty) (hP : ∀ x ∈ Metric.ball p (100 * Δ), |P x - Metric.infDist x E| ≤ ρ x / 100)
+  (Q : X → WithLp 2 (ℝ × ℝ)) (hQp : Q p = 0)
+  (hQdist : ∀ x ∈ Metric.ball p (200 * Δ), ∀ y ∈ Metric.ball p (200 * Δ), |dist (Q x) (Q y) - dist x y| ≤ δ)
+  (hcover :
+    ∀ (y : WithLp 2 (ℝ × ℝ)),
+      y.snd ∈ Set.Icc 0 C → ‖y‖ < 200 * Δ - δ → Metric.infDist y (Q '' Metric.ball p (200 * Δ)) ≤ δ)
+  (hQheight : ∀ x ∈ Metric.ball p (100 * Δ), 0 ≤ (Q x).snd)
+  (hweak :
+    ∀ z ∈ E,
+      z ∈ Metric.ball p (120 * Δ) →
+        ∃ W,
+          W z = 0 ∧
+            (∀ x ∈ Metric.ball z Δ, 0 ≤ (W x).snd) ∧
+              ∀ x ∈ Metric.ball z Δ, ∀ y ∈ Metric.ball z Δ, |dist (W x) (W y) - dist x y| ≤ δ)
+  (η : ↑(Metric.ball p (100 * Δ)) → ℝ) (hvalue : ∀ (x : ↑(Metric.ball p (100 * Δ))), |η x - (Q ↑x).fst| ≤ Δ / 100) :
+  have ζ :=
+    Function.extend Subtype.val
+      (fun x ↦
+        DifferentialGeometry.Analysis.edgeCoordinateProfile (η x / Δ) *
+          DifferentialGeometry.Analysis.edgeHeightProfile (P ↑x / (Δ * ρ ↑x)))
+      0;
+  tsupport ζ ⊆ Metric.closedBall p (15 * Δ) ∧ Metric.closedBall p (15 * Δ) ⊆ Metric.ball p (20 * Δ)
+'GC.MetricGeometry.tsupport_edge_chart_cutoff_subset' depends on axioms: [propext, Classical.choice, Quot.sound]

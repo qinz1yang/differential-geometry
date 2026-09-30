@@ -1,0 +1,6 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.totallyBounded_annulus_of_compact_radial_target' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_compact_closedBall_at_of_fourPointComparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

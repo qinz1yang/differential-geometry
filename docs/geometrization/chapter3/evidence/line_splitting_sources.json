@@ -1,0 +1,584 @@
+{
+  "blueprint_revision": 207,
+  "dag": "docs/geometrization/blueprint/current_dependency_graph.json",
+  "dag_sha256": "b79069323caf650e4cd31e48d76664a3bffa9b69fa934a5a3175d2db5bda439f",
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/BuragoBuragoIvanovBook.pdf",
+      "sha256": "4efaa168dcc83e7e9f5663d14824f9543104beab21642ca3830a5dd1c684c971",
+      "version": "AMS 2001, GSM 33, archived English edition",
+      "locator": "10.5.1–10.5.6 and three-step splitting proof, printed 366–369 / PDF 381–384",
+      "reading": "Targeted body reading from the preceding recommendation and revision138 comparison reused; current hash, blueprint and new proofs rechecked. Not a full-book audit."
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/bbi-errata-2024-07-06.pdf",
+      "sha256": "68338c7a8b37b8637efbad8af5f547f6cf789675df020fbc6aa04d4babdde42e",
+      "version": "retained author errata, July 6, 2024",
+      "locator": "PDF 13: printed 366, 367, 369 corrections",
+      "reading": "Targeted retained-sheet reading from the preceding recommendation reused; hash rechecked. Revision138 remote 502 report retained; current remote bytes not verified."
+    }
+  ],
+  "modules": [
+    {
+      "file": "DifferentialGeometry/Analysis/Convex/Affine.lean",
+      "nodes": [
+        "ALS02"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-line-distance-quadratic",
+          "line": 6780,
+          "excerpt_sha256": "7a6bf296d57cedb5708802d6b8862b436d727fbb21075313442e5d45a9c03200",
+          "chapter": "CH04",
+          "statement_proof_sha256": "a0458fee7960fa88a0ab5905005b41b1b64f72ced40c990db193f2d5bd1e7111"
+        }
+      ],
+      "declarations": [
+        {
+          "name": "ConcaveOn.eq_of_nonneg_univ",
+          "kind": "theorem",
+          "line": 11,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ConcaveOn.eq_affine_of_add_neg_nonneg",
+          "kind": "theorem",
+          "line": 16,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved, narrow build passed; combined gate receipt is authoritative",
+      "downstream_application": "actual translation/product construction and same-limit application; concrete line and geometric source producers remain explicit"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Comparison/AngleMonotonicity.lean",
+      "nodes": [
+        "ALS01"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-global-four-point-side",
+          "line": 6732,
+          "excerpt_sha256": "a68d7d7def198ce6f3e23ef32563d45bc25e382dc0244eec330f513f40e212af",
+          "chapter": "CH04",
+          "statement_proof_sha256": "2bc5f43e14ff67bd52da3d05743e0e24aaf94225da0a392588b9d1a5dd27eccf"
+        }
+      ],
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.metricComparisonAngle_le_of_shortening_right",
+          "kind": "theorem",
+          "line": 9,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.metricComparisonAngle_le_of_shortening_left",
+          "kind": "theorem",
+          "line": 32,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved, narrow build passed; combined gate receipt is authoritative",
+      "downstream_application": "actual translation/product construction and same-limit application; concrete line and geometric source producers remain explicit"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Comparison/LineDistance.lean",
+      "nodes": [
+        "ALS02",
+        "ALS03"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-line-distance-quadratic",
+          "line": 6780,
+          "excerpt_sha256": "7a6bf296d57cedb5708802d6b8862b436d727fbb21075313442e5d45a9c03200",
+          "chapter": "CH04",
+          "statement_proof_sha256": "a0458fee7960fa88a0ab5905005b41b1b64f72ced40c990db193f2d5bd1e7111"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-affine-line-coordinate",
+          "line": 6838,
+          "excerpt_sha256": "9ab2b26d571639af2c7665a0f7c23d71ff942ecbfa3d6648a28e511fd3955dd8",
+          "chapter": "CH04",
+          "statement_proof_sha256": "1cb1364087b32429deb0dc33db18a593a094423308a9fd728b8ac6eb7bd14379"
+        }
+      ],
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate",
+          "kind": "def",
+          "line": 12,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.concaveOn_sq_dist_sub_sq_of_isometry",
+          "kind": "theorem",
+          "line": 15,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.sq_dist_isometry_line",
+          "kind": "theorem",
+          "line": 39,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.sq_dist_isometry_line_projection",
+          "kind": "theorem",
+          "line": 58,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.existsUnique_line_distance_parameters",
+          "kind": "theorem",
+          "line": 67,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.dist_line_projection_le",
+          "kind": "theorem",
+          "line": 84,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.dist_line_projection_eq_iff",
+          "kind": "theorem",
+          "line": 92,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.existsUnique_nearest_point_on_isometry_line",
+          "kind": "theorem",
+          "line": 104,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_apply_isometry",
+          "kind": "theorem",
+          "line": 115,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_affine_of_dist",
+          "kind": "theorem",
+          "line": 121,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved, narrow build passed; combined gate receipt is authoritative",
+      "downstream_application": "actual translation/product construction and same-limit application; concrete line and geometric source producers remain explicit"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Comparison/LineCoordinate.lean",
+      "nodes": [
+        "ALS03"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-affine-line-coordinate",
+          "line": 6838,
+          "excerpt_sha256": "9ab2b26d571639af2c7665a0f7c23d71ff942ecbfa3d6648a28e511fd3955dd8",
+          "chapter": "CH04",
+          "statement_proof_sha256": "1cb1364087b32429deb0dc33db18a593a094423308a9fd728b8ac6eb7bd14379"
+        }
+      ],
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_sub_le_dist",
+          "kind": "theorem",
+          "line": 12,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lipschitzWith_lineCoordinate",
+          "kind": "theorem",
+          "line": 36,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved, narrow build passed; combined gate receipt is authoritative",
+      "downstream_application": "actual translation/product construction and same-limit application; concrete line and geometric source producers remain explicit"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Comparison/CalibratedRay.lean",
+      "nodes": [
+        "ALS03"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-affine-line-coordinate",
+          "line": 6838,
+          "excerpt_sha256": "9ab2b26d571639af2c7665a0f7c23d71ff942ecbfa3d6648a28e511fd3955dd8",
+          "chapter": "CH04",
+          "statement_proof_sha256": "1cb1364087b32429deb0dc33db18a593a094423308a9fd728b8ac6eb7bd14379"
+        }
+      ],
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_calibrated_ray",
+          "kind": "theorem",
+          "line": 15,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved, narrow build passed; combined gate receipt is authoritative",
+      "downstream_application": "actual translation/product construction and same-limit application; concrete line and geometric source producers remain explicit"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Comparison/CalibratedLine.lean",
+      "nodes": [
+        "ALS03"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-affine-line-coordinate",
+          "line": 6838,
+          "excerpt_sha256": "9ab2b26d571639af2c7665a0f7c23d71ff942ecbfa3d6648a28e511fd3955dd8",
+          "chapter": "CH04",
+          "statement_proof_sha256": "1cb1364087b32429deb0dc33db18a593a094423308a9fd728b8ac6eb7bd14379"
+        }
+      ],
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_reverse",
+          "kind": "theorem",
+          "line": 12,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_calibrated_line",
+          "kind": "theorem",
+          "line": 21,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved, narrow build passed; combined gate receipt is authoritative",
+      "downstream_application": "actual translation/product construction and same-limit application; concrete line and geometric source producers remain explicit"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Comparison/ParallelLines.lean",
+      "nodes": [
+        "ALS04"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-parallel-line-distance-law",
+          "line": 6895,
+          "excerpt_sha256": "e198ffc17e91809341d228442edaa69ef3f00806c419cc4b60c8f98475699b3e",
+          "chapter": "CH04",
+          "statement_proof_sha256": "fdb98f9a6729ee578b01b00166b99dc2959602f848deca6550f0e4cfd25fd231"
+        }
+      ],
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_eq_sub_of_calibrated_line",
+          "kind": "theorem",
+          "line": 11,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.sq_dist_calibrated_line",
+          "kind": "theorem",
+          "line": 36,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.sq_dist_calibrated_lines",
+          "kind": "theorem",
+          "line": 45,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.calibrated_line_unique",
+          "kind": "theorem",
+          "line": 60,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved, narrow build passed; combined gate receipt is authoritative",
+      "downstream_application": "actual translation/product construction and same-limit application; concrete line and geometric source producers remain explicit"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Comparison/LineTranslation.lean",
+      "nodes": [
+        "ALS04"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:alexandrov-parallel-line-distance-law",
+          "line": 6895,
+          "excerpt_sha256": "e198ffc17e91809341d228442edaa69ef3f00806c419cc4b60c8f98475699b3e",
+          "chapter": "CH04",
+          "statement_proof_sha256": "fdb98f9a6729ee578b01b00166b99dc2959602f848deca6550f0e4cfd25fd231"
+        }
+      ],
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineTranslation",
+          "kind": "def",
+          "line": 15,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.isometry_lineTranslation_time",
+          "kind": "theorem",
+          "line": 18,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineTranslation_zero",
+          "kind": "theorem",
+          "line": 22,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_lineTranslation",
+          "kind": "theorem",
+          "line": 25,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.sq_dist_lineTranslation",
+          "kind": "theorem",
+          "line": 29,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineTranslation_add",
+          "kind": "theorem",
+          "line": 40,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.isometry_lineTranslation",
+          "kind": "theorem",
+          "line": 53,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineTranslation_apply_line",
+          "kind": "theorem",
+          "line": 60,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved, narrow build passed; combined gate receipt is authoritative",
+      "downstream_application": "actual translation/product construction and same-limit application; concrete line and geometric source producers remain explicit"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Comparison/LineSplitting.lean",
+      "nodes": [
+        "ALS05",
+        "AC43"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:alexandrov-written-aligned-splitting",
+          "line": 6948,
+          "excerpt_sha256": "415ed7377619c92d77968a7cd072eddd948995d5b8a1e5a92c2aa4dc2fd04ab9",
+          "chapter": "CH04",
+          "statement_proof_sha256": "5af734cacffd9de0ec60fe7add5e3bd21eef0bf100040e490195d56040b53693"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:alexandrov-line-splitting-input",
+          "line": 4286
+        }
+      ],
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineSplitting",
+          "kind": "def",
+          "line": 19,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineSplitting_fst",
+          "kind": "theorem",
+          "line": 59,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineSplitting_symm_apply",
+          "kind": "theorem",
+          "line": 62,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineSplitting_apply_line",
+          "kind": "theorem",
+          "line": 65,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.isClosed_lineCoordinate_zero",
+          "kind": "theorem",
+          "line": 77,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.properSpace_lineCoordinate_zero",
+          "kind": "theorem",
+          "line": 81,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.completeSpace_lineCoordinate_zero",
+          "kind": "theorem",
+          "line": 85,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_lineCoordinate_zero",
+          "kind": "theorem",
+          "line": 91,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_segment_lineCoordinate_zero",
+          "kind": "theorem",
+          "line": 100,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.dimH_lineCoordinate_zero_le",
+          "kind": "theorem",
+          "line": 124,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_isometryEquiv_real_prod",
+          "kind": "theorem",
+          "line": 130,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved, narrow build passed; combined gate receipt is authoritative",
+      "downstream_application": "actual translation/product construction and same-limit application; concrete line and geometric source producers remain explicit"
+    },
+    {
+      "file": "DifferentialGeometry/Geometry/Metric/Approximation/LineSplitting.lean",
+      "nodes": [
+        "AC41",
+        "AC43",
+        "ALS05"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "cor:alexandrov-assembled-extraction",
+          "line": 4209
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:alexandrov-line-splitting-input",
+          "line": 4286
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:alexandrov-written-aligned-splitting",
+          "line": 6948,
+          "excerpt_sha256": "415ed7377619c92d77968a7cd072eddd948995d5b8a1e5a92c2aa4dc2fd04ab9",
+          "chapter": "CH04",
+          "statement_proof_sha256": "5af734cacffd9de0ec60fe7add5e3bd21eef0bf100040e490195d56040b53693"
+        }
+      ],
+      "declarations": [
+        {
+          "name": "GC.MetricGeometry.PointedGHConverges.exists_isometryEquiv_real_prod",
+          "kind": "theorem",
+          "line": 17,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.MetricGeometry.exists_pointedGHConverges_with_line_splitting",
+          "kind": "theorem",
+          "line": 37,
+          "private": false,
+          "direct_sorry": false
+        }
+      ],
+      "mathematical_specification": "assistant-reviewed exact metric contract; human approval not claimed",
+      "proof_status": "proved, narrow build passed; combined gate receipt is authoritative",
+      "downstream_application": "actual translation/product construction and same-limit application; concrete line and geometric source producers remain explicit"
+    }
+  ],
+  "proof_departures": [
+    "ALS02 uses concavity and a globally nonnegative even part instead of angle limits.",
+    "ALS03 Lipschitz coordinate uses finite quadratic inequalities instead of Busemann limits.",
+    "Ray extraction uses one common ultrafilter; parameter n+1 is coordinate displacement and speeds tend to one."
+  ],
+  "full_chapter_complete": false,
+  "actual_line_produced_from_limit": false,
+  "full_PC_root_built": false,
+  "reused_project_declarations": [
+    {
+      "file": "DifferentialGeometry/Analysis/Convex/Concavity.lean",
+      "sha256": "90152447bf724057d44d2a86369787f12afe1c05850a225b07ea72a4aa1ee8bf",
+      "declaration": "DifferentialGeometry.eq_of_concaveOn_univ_of_bddBelow",
+      "scope": "Exact real-line concave bounded-below constancy; source inspected and unchanged module compiled on pinned target; transitive axiom audit through new corollary."
+    }
+  ]
+}

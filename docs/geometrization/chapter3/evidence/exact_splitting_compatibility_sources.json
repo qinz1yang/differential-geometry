@@ -1,0 +1,59 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC71-73 full5744-5870, original-map direction, unique cancellation, maximality and exact compatibility"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf",
+      "sha256": "7a860b4dd95b35fe33b06bf040100ec243d72c80528d927f4763391aaf79cb6e",
+      "locator": "Definitions4.1/4.2 and Sublemma4.5(1) printed28-29/PDF23-24; rendered Definition4.8 printed30/PDF25 strict j<k; rendered Lemma4.17 printed32/PDF27 j<=k<=n, internal convention mismatch"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/KL_corrections.pdf",
+      "sha256": "b5849571508231ce7328ef842eaa0a8a74e34804de7741dab548c406dea11e19",
+      "locator": "retained May15,2015 correction sheet PDF1; no relevant correction listed"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+      "sha256": "1c3057b11ada6eeb6d62194239bb0c360b9e1359c840385e60658bbb1e8a0b26",
+      "locator": "exists_orthonormalBasis_extension_of_card_eq full1047-1065 and original repr coordinates443-447"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+      "sha256": "925c12b0bdd954bb84b8318c2518311ab459537aef2c06e2629f9f60b27bd442",
+      "locator": "sumPiLpEquivProdLpPiLp actual construction/evaluation992-1008"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/CrossingLineCoordinates.lean",
+      "sha256": "4eebff5a9143ccb812195195fe946f686087865fc356e3d9a37cc626ae58aa6c",
+      "locator": "actual crossing-line linear coordinates on global CBB0 source"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/LineSplitting.lean",
+      "sha256": "21d9854ee99cb9668214148c786cc889fef9aa2426abef6137e626d1f1029b62",
+      "locator": "actual factor-line onto splitting; original Proper/CBB0/segment inputs"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/FactorGeometry.lean",
+      "sha256": "66be979f1df9cd29723b94034edd76da8bd11495b9a650eef55188189e3816d9",
+      "locator": "inherit actual factor segments and comparison from original onto product"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/L2Product.lean",
+      "sha256": "65e9a66118a89a3ac85021a7c5b2c063819bbe8b3d859eded830857fc5cce1a0",
+      "locator": "arbitrary-metric Pythagorean square identity, factor properness and original slices"
+    }
+  ],
+  "reused_source_checks": [
+    "orthogonal_line_coordinates_sources.json",
+    "maximal_low_dimensional_products_sources.json",
+    "approximate_factor_compactness_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Full AC71-73, explicit equal-rank compatibility extension and original maximality producer; CBB0 specialization rather than arbitrary-metric KL4.4.",
+  "source_rank_discrepancy": "KL Def4.8(2) j<k versus Lemma4.17 j<=k<=n, both rendered pages checked; blueprint equal-rank interface explicitly extended and proved.",
+  "independent_agent_proof_review": true,
+  "errata": "Retained KL sheet checked; no current remote freshness claim."
+}

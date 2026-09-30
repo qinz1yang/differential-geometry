@@ -1,0 +1,9 @@
+'Metric.MinimizingHinge.modelSide_ge_dist_of_small_hinges' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.MinimizingHinge.comparisonAngle_le_of_small_hinges' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.MinimizingHinge.exists_cradle_successor_of_modelSide_lt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.MinimizingHinge.exists_hinge_with_forward_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_le_iff_le_modelSide' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

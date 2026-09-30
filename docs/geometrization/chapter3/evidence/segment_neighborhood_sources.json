@@ -1,0 +1,37 @@
+{
+  "scope": "metric consequences of supplied local distance injectivity or open segment interiors; not AC46 curvature/dimension producer",
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/AlexanderKapovitchPetrunin303Alexandrov.pdf",
+      "sha256": "1ba6f6f011a8333d9a20bdbf49d36d68b61bf1aababb19296ed48ecea37248ed",
+      "locator": "Theorem 15.18, printed/PDF page 238; full statement and proof read"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-ed6a16eb2a3c/dim.tex",
+      "sha256": "67eca5a867c045bd91dd07a3411280f2b105c00b362b259c3af6e02abab0e9cd",
+      "locator": "branch vol1, commit ed6a16eb2a3c66c1f0f54b183bd1a4176e78b245, lines 874\u2013951; thm:dim=1.CBB and three local claims"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "lines 7093\u20137216; ALR02\u2013ALR05, especially no-exit/endpoint proofs"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/reference_checks_revision139.md",
+      "sha256": "990c0e0366b3330fbec7e1a5eebaf55fee3ace4a5f81da833cadf55f6d13a9f2",
+      "locator": "retained source comparison; no additional dimension producer claimed"
+    }
+  ],
+  "external_errata": {
+    "url": "https://anton-petrunin.github.io/book/erratum.pdf",
+    "read_date": "2026-09-29",
+    "body_date": "2026-07-12",
+    "pages_read": "both",
+    "disposition": "Published-page238 Section J correction is distinct from archived-page238 Theorem15.18; no linear-dimension or tangent theorem used. Remote/local byte identity not checked."
+  },
+  "preservation": {
+    "blueprint_revision": 207,
+    "earlier_mathematical_sources": "unchanged",
+    "migration_boundary": "no PC or Riemannian interfaces changed"
+  }
+}

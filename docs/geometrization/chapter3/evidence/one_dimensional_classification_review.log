@@ -1,0 +1,14 @@
+'Metric.not_nonempty_isometryEquiv_of_endpoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.not_isometry_real_of_dist_bounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.not_isometry_Ici_of_dist_bounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.not_nonempty_real_Ici' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.not_nonempty_real_Icc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.not_nonempty_real_addCircle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.not_nonempty_Ici_Icc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.not_nonempty_Ici_addCircle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.not_nonempty_Icc_addCircle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.not_nonempty_subsingleton_models' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.one_dimensional_model_types_pairwise' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.pointed_one_dimensional_classification' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

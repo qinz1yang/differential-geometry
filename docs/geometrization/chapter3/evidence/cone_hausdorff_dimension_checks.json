@@ -1,0 +1,86 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/PositiveHausdorffCover.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_PositiveHausdorffCover.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "2f6faa3f330d8a2d8220267836027f43c9a8c5e6087f7d982eea4cda6993cf8b"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/MetricSpace/IntervalProductDimension.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_IntervalProductDimension.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "27b4825eab60a189da21718bad4e6992250e34790aa2f38d220887edbd91974d"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/ConeRadialParametrization.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_ConeRadialParametrization.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "6ada2b03e272e808f8dc417e04692549981a9dfd683a886a873f84078378b6fe"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/ConeHausdorffDimension.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_ConeHausdorffDimension.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "4535397fd9f178041cf180eb2ba66c9d987eac1c9b1a85abd1ede8e4b82831cf"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_cone_hausdorff_dimension_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "1ac22458e7ff4c9681b6b82718f3a8a014f9d425",
+  "review_reports": [
+    "MeasureTheory.Measure.exists_cover_by_positive_radii_of_hausdorffMeasure_zero",
+    "MeasureTheory.Measure.hausdorffMeasure_Icc_prod_eq_zero",
+    "dimH_Icc_prod_le_add_one",
+    "Metric.EuclideanCone.lipschitzWith_bounded_mk",
+    "Metric.EuclideanCone.range_bounded_mk",
+    "Metric.EuclideanCone.dimH_univ_le_dimH_base_add_one",
+    "GCPositiveHausdorffCoverReview.actual_countable_rational_cover",
+    "GCPositiveHausdorffCoverReview.actual_empty_carrier_cover",
+    "GCPositiveHausdorffCoverReview.zero_exponent_positive_cost_obstruction",
+    "GCIntervalProductDimensionReview.rational_base_interval_measure_zero",
+    "GCIntervalProductDimensionReview.rational_base_interval_sharp_dimension_one",
+    "GCIntervalProductDimensionReview.empty_base_interval_dimension_zero",
+    "GCConeRadialParametrizationReview.unbounded_real_base_full_range_and_capped_distance",
+    "GCConeRadialParametrizationReview.zero_bound_whole_map_collapses_with_exact_range",
+    "GCConeRadialParametrizationReview.empty_base_lipschitz_but_range_misses_the_tip",
+    "GCConeHausdorffDimensionReview.empty_base_cone_is_zero_and_upper_bound_is_strict",
+    "GCConeHausdorffDimensionReview.singleton_base_cone_has_exact_dimension_one",
+    "GCConeHausdorffDimensionReview.rational_base_cone_has_exact_dimension_one"
+  ],
+  "review_driver_sha256": "65b5c26ff7c8b4c660a0a5834d2acfc1a91966063ea559bec3051d12d8ff4cdc",
+  "production_sources": {
+    "DifferentialGeometry/Topology/MetricSpace/PositiveHausdorffCover.lean": "cef6002f9b1f357dca79094fca92191a27b25e9b57c04f5171c75bd8b4688ac6",
+    "DifferentialGeometry/Topology/MetricSpace/IntervalProductDimension.lean": "3a2c7779306aac658b9893f9eeac89b7d7d058c64bc8e934b330955d8dd53f42",
+    "DifferentialGeometry/Geometry/Metric/ConeRadialParametrization.lean": "87bc2e797a93606044e8999ef7cd7b518e6127eff85b3c4854e945528c320b36",
+    "DifferentialGeometry/Geometry/Metric/ConeHausdorffDimension.lean": "38d387c05b588ef6465971d4dc2f2ee068c610948e06c5c2b53a2fd390921f6d"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "aa4447b81d00aa46d1ef84f57100d92403732957cfc574aa83944f408e3c792e"
+}

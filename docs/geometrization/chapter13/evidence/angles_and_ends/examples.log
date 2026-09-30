@@ -1,0 +1,6 @@
+'Chapter13Examples.straight_euclidean_angle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Chapter13Examples.hyperbolic_angle_at_curvature_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Chapter13Examples.line_with_alternating_centers' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Chapter13Examples.line_through_compact_singleton' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Chapter13Examples.plane_unbounded_components_agree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Chapter13Examples.bounded_open_factor_blowdown' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,220 @@
+{
+  "status": "Fresh checked scratch candidates; not installed or registered in production",
+  "upstream_commit": "777299070a5529e96345e0033979706fd00c7e62",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "modules": [
+    {
+      "candidate": "gc_edge_point.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.EdgePoint",
+      "source_sha256": "2912fd2660bd0e288add75f75b796a6e38624890a5362166cd554c802894ec14",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_strip_chart.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.StripChart",
+      "source_sha256": "ffec070003320ebbbd4abd83a13f772dd19cf39d53faa26afabfcc9dc411c170",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_rescale_composition.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Scaling.RescaleComposition",
+      "source_sha256": "e0d8fa20509796e3a4476f7abb60769d6326d8f903a2ee60282ce25c3b531086",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_edge_local_model.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.EdgeHalfPlaneModel",
+      "source_sha256": "42fd947eb6ed3d4aea355b37d7dc20bf55a8b787c8c1fb229234a52cc96ec7d3",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_edge_border_lifts.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.EdgeBorderLifts",
+      "source_sha256": "5049c4a7225edec852501104d710812f48fafdcc4d6fecc7779adb996daf9225",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_padded_strip_boundary.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.PaddedStripBoundary",
+      "source_sha256": "3aebe7d84dd081897cba1794e869ee52b54628604b61fb3cc8191dd9836b6c76",
+      "kind": "compatible extension of existing PaddedStripBoundary",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_edge_height.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.EdgeHeight",
+      "source_sha256": "4c098a17950b86dbd04f6aa15a3e965966eadd67b81fdb888dcda5e97d10a9a2",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_edge_coarse_border.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.EdgeCoarseBorder",
+      "source_sha256": "fed2d308087a8b88c1df8eb34181cbf22100496eee7a31beb8c80b51b7603fef",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_strong_edge_point.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.StrongEdgePoint",
+      "source_sha256": "9e994f729260ac91c04fd69983713e3defc67534c07295cc4c33363f2b8da01d",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_endpoint_product_lifts.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.EndpointProductLifts",
+      "source_sha256": "cdac4bf76985444e8c2e07389b69b79d89cb981ca0814ec43fa27a01f1212cab",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_strong_edge_lifts.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.StrongEdgeLifts",
+      "source_sha256": "cfcb8debfa767dbb0af061450c8cd3df3d22a1f4018a1c02d7afd5c1b6119c22",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_strong_edge_density.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.StrongEdgeDensity",
+      "source_sha256": "4f1467fba0115a31921b30ffc209ad34121bb030e3ab3d542efa7751d4a5b545",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_marked_model_height.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.MarkedModelHeight",
+      "source_sha256": "c250b99aed76d4e438d2ba91ec8431705a484f89f70f7de603449927169f0083",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_weak_edge_density.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.WeakEdgeDensity",
+      "source_sha256": "0a5fa1bf215c395cfeae9d4aabf635db5a1f3bf3880671bb8f209bd46fb80ed7",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_lipschitz_ball_selection.lean",
+      "module": "DifferentialGeometry.Topology.MetricSpace.LipschitzBallSelection",
+      "source_sha256": "ac10fa85403381fd90cfbbc54e743603856f855546f32350f6fc0ea2c2de2ef2",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_edge_disk_coverage.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.EdgeDiskCoverage",
+      "source_sha256": "9b0718567abb865b67ea02d67ddcdf2c68133db67e3a24f1a940da0534fbfad8",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_prescribed_low_dimensional_model.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.PrescribedLowDimensionalModel",
+      "source_sha256": "9e9ef8e883a9354687bddd50eae78cebd4107f1bfa1e5d4aa78b76a51fb21751",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_nonslim_factor_endpoint.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.NonslimFactorEndpoint",
+      "source_sha256": "698f46f7d0e6e30a91bcdf4351b625dbc66576c235ad571e285854262e6a030a",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_compatible_endpoint_models.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.CompatibleEndpointModels",
+      "source_sha256": "eb10ffa4efc754ad00a4e040c08b4c0a48945e3d3d762fe25c712e90a44a13a5",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_strong_edge_production.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.StrongEdgeProduction",
+      "source_sha256": "4b8e4c79d178a23618c0497a5a9260a7f58da65f48f4bdb0dc14021beeaa53bc",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_physical_strong_edge_density.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.PhysicalStrongEdgeDensity",
+      "source_sha256": "c879aafb734e90e00a0c710e6eb91e9d9d4c4654bb16776718ac0e1bc13901e0",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "candidate": "gc_real_splitting.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.Approximation.RealSplitting",
+      "source_sha256": "9f5dcb2fa144e416e3fc7b56c8e09ac8bb9c2c4bce7f4536bee71b9f913a26c6",
+      "kind": "new module",
+      "silent_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "authored_declarations": 57,
+  "public_declarations": 47,
+  "elaborated_declarations": 80,
+  "direct_admissions": 0,
+  "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "fresh_audit": "Audit22.log",
+  "literal_print_axioms": "Axioms22.log",
+  "linters": [
+    "unusedArguments",
+    "simpNF",
+    "synTaut",
+    "unusedHavesSuffices",
+    "explicitVarsOfIff"
+  ],
+  "lint_logs": [
+    "Lint22.log"
+  ],
+  "actual_example_count": 16,
+  "application_files": [
+    "Applications.lean",
+    "StrongApplications.lean",
+    "StrongLiftApplications.lean",
+    "DensityApplications.lean",
+    "WeakDensityApplications.lean",
+    "SelectionApplications.lean",
+    "DiskCoverageApplications.lean",
+    "ModelApplications.lean"
+  ],
+  "source_scope": "Frozen Blueprint207A LC16 and project proof expansions LFR28\u201333 and LFR39\u201344. KL Asterisque cited through retained Blueprint records only.",
+  "evidence_hashes": {
+    "Applications.lean": "911ae4c767989975833840349740a69d507ee743eaa75c98c72946c432307fae",
+    "Applications.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "Audit22.lean": "3af595558c623216c5812631b42ec5c4420dc541b504d4bbbfa10ce321c8208e",
+    "Audit22.log": "9c3155318d151adccc39ab90daf7bea63dc84d58dabfdd6ff85631767960b6da",
+    "Axioms22.lean": "a507cd83a7ef3d5e12811f865ed608bd851ccfe5c66dcf99a7ec74d662986677",
+    "Axioms22.log": "ecedf0a974b190b76fa6ef1abc637fce1b01e857c06519ffcf019d6e949ebbe9",
+    "DensityApplications.lean": "e19b39cf8ebab461a8bff333065bbbecd62201edce0a9b3a65ce7ff39fa8d5f7",
+    "DensityApplications.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "DiskCoverageApplications.lean": "7806ca712baf0c44f62600bb113a27d21292b5025a6d85196d887259a10c2048",
+    "DiskCoverageApplications.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "Lint22.lean": "f19938bf0fedcacb85c825b75005a1cab123dc79e8fd3b73990bc499d9c8680c",
+    "Lint22.log": "8a63b3e262f50be36bbd6b5b81d4ab685d8519b2518fcdacac52b0e47c51caff",
+    "ModelApplications.lean": "33aeafef7d019160e4c5a284d0d7520d69732407233ace689ad1114b1334b2de",
+    "ModelApplications.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "SelectionApplications.lean": "04a74b992ee1cca4fdacf28ee985845cecdf1865692da9431421ec2bfb898d0e",
+    "SelectionApplications.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "StrongApplications.lean": "7e1bbe45fa9427b94ed37ddb253546b52dceeaee5240c18feeaad91317021266",
+    "StrongApplications.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "StrongLiftApplications.lean": "6429c0f76d29aa87853bc28a5c2b649ee88badabc893c7fac4049a2475e55aa6",
+    "StrongLiftApplications.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "WeakDensityApplications.lean": "22580120074d0aae9c01896b197ee07e4efd4d01b8d4ddc9bc9d6f8c23331195",
+    "WeakDensityApplications.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fresh22_builds.json": "2432a6cb4329421285827f27d35872ee168a871c3c51b77c7c78701ca910ab05"
+  }
+}

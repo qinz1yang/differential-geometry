@@ -1,0 +1,5 @@
+'Real.sq_div_four_le_one_sub_cos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Real.pi_sub_four_mul_le_of_one_add_cos_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_paired_geometric_correction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

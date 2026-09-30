@@ -1,0 +1,4 @@
+'Metric.intrinsicEDist_le_eVariationOn_Icc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicEMetricSpace_eVariationOn' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicMetricSpace_eVariationOn' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicBallMetricSpace_arbitrarily_short_curves' depends on axioms: [propext, Classical.choice, Quot.sound]

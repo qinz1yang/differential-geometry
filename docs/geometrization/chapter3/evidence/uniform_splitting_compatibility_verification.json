@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "new_public_theorems": 4,
+  "new_definitions": 0,
+  "new_owned_declarations": 4,
+  "new_generated_declarations": 0,
+  "combined_modules": 341,
+  "combined_jobs": 3176,
+  "combined_owned_declarations": 1477,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/Approximation/ExactLimitApproximation.lean": "48d2f6a91c66e184300b2de9278a90b3e9d4f5e654622731eebfeeb744cc5443",
+    "DifferentialGeometry/Geometry/Metric/Approximation/UniformSplittingCompatibility.lean": "9b5c2dda1d86878992d169901b7c3f8261f5abf07131d405ee45ca3252c24164"
+  },
+  "logs": {
+    "uniform_splitting_compatibility_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "uniform_splitting_compatibility_review.log": "273b7650e1b0f9e3537834a72d5c3a2a9fb17c43c63882d1dfad00f32d4059e0",
+    "uniform_splitting_compatibility_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "0848ec254ce5ac67f1bb2a143f73ef74db43e3f804e88fab865feaa4412df934",
+  "git_head_at_check": "4dec0beee075f632554f0df518cada09b38f8da7",
+  "independent_agent_proof_review": true,
+  "actual_unknown_sigma_original_maps_and_proved_fixed_quality_exclusion_regression": true,
+  "explicit_universe_exclusion_and_incomplete_source_regression": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

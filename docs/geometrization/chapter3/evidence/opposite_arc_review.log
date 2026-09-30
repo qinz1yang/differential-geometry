@@ -1,0 +1,8 @@
+'Metric.segment_interior_outside_of_point_outside' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.exists_isometric_segment_through_of_dist_add_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.mem_range_or_mem_range_of_opposite_diameter_arcs' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_opposite_diameter_arc_of_point_outside' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

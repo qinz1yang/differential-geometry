@@ -1,0 +1,3166 @@
+⚠ [15036/15492] Replayed Geometrization.Baseline.FiniteConcatenation
+warning: Geometrization/Baseline/FiniteConcatenation.lean:13:26: missing space in the source
+
+This part of the code
+  '(K.eventCount+1)) where'
+should be written as
+  '(K.eventCount + 1))'
+
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`
+⚠ [15042/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.Kurosh
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:282:4: This simp argument is unused:
+  wordInv_wordInv
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [rightAppend, wordInv_prod, Word.prod_cons, map_inv, mul_inv_rev]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:369:22: This simp argument is unused:
+  Subtype.coe_mk
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [inv_inv, wordInv_wordInv]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:632:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:767:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:769:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:899:10: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:904:10: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:1280:14: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:1300:14: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:1316:14: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:1336:14: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:1265:6: Variable name `p` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _p
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:1375:2: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:1577:6: Unused tactic linter: `change
+  (quotientEdgeTargetAlign G H e).1 •
+      ((quotientEdgeSourceAlign G H e).1 • rawBassSerreEdgeDataTarget G (quotientEdgeRawData G H e)) =
+    _` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:1640:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:1658:0: Definition `_private.Geometrization.Vendor.GraphCoveringTheory.Kurosh.0.GraphCoveringTheory.Kurosh.freeGroupoidCategoryQuiver` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:1664:0: Definition `_private.Geometrization.Vendor.GraphCoveringTheory.Kurosh.0.GraphCoveringTheory.Kurosh.freeGroupoidGeneratorQuiver` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:1826:2: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:1962:5: Variable name `a` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _a
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:2081:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:2112:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:2155:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/Kurosh.lean:2159:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [15043/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshTree
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:66:16: Variable name `w` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _w
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:187:12: This simp argument is unused:
+  h
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:229:0: Definition `GraphCoveringTheory.Kurosh.testBassSerreFullArborescence` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:399:10: Try `simp at hxy` instead of `simpa using hxy`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:405:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:407:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:410:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:452:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:467:2: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:534:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:580:8: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:657:4: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:659:4: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:767:4: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:769:4: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:786:6: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:791:8: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:793:8: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:867:6: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:868:6: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:870:6: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:891:6: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:892:6: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:894:6: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:922:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:941:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:945:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:986:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:1188:25: Unused tactic linter: `apply Subsingleton.elim` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:1188:25: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:1594:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:1598:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshTree.lean:1607:4: Try this: 
+  haveI̵
+
+The goal is a proposition, so `have` is preferred over `haveI`.
+The difference between `have` and `haveI` is that `haveI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [15044/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshFreePart
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:608:8: Unused tactic linter: `(try rfl)` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:609:8: Unused tactic linter: `(try (congr 1 <;> apply Subsingleton.elim))` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:608:8: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:609:8: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:750:8: Unused tactic linter: `(try rfl)` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:751:8: Unused tactic linter: `(try (congr 1 <;> apply Subsingleton.elim))` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:750:8: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:751:8: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:986:0: Definition `testRawOrbitFreeGroupoidFunctor_obj` is a proposition; use `theorem` instead of `def`
+
+Note: This linter can be disabled with `set_option linter.defProp false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:1106:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:1110:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:1196:4: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:1211:19: This simp argument is unused:
+  Functor.map_id
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hraw, test_homOfEq_id] at hfun
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:1211:35: This simp argument is unused:
+  test_homOfEq_id
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [hraw, Functor.map_id] at hfun
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreePart.lean:1260:34: This simp argument is unused:
+  Prefunctor.mapPath
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [testFreePathHom]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [15045/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshFreeCorollary
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreeCorollary.lean:175:8: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [15046/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshCover
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCover.lean:146:8: Unused tactic linter: `change
+  (treeKuroshProductToH G H p).1 • rawTreeRepresentative G H a =
+    (treeKuroshProductToH G H q).1 • rawTreeRepresentative G H a` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCover.lean:513:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCover.lean:519:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCover.lean:559:19: This simp argument is unused:
+  Sum.rec
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCover.lean:573:34: This simp argument is unused:
+  Category.comp_id
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Groupoid.inv_eq_inv, Category.assoc, IsIso.inv_hom_id_assoc, Category.id_comp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCover.lean:573:52: This simp argument is unused:
+  Category.id_comp
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Groupoid.inv_eq_inv, Category.assoc, IsIso.inv_hom_id_assoc, Category.comp_id]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCover.lean:598:50: This simp argument is unused:
+  Groupoid.inv_comp
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Groupoid.inv_eq_inv, IsIso.inv_comp, IsIso.inv_inv, IsIso.inv_hom_id_assoc, Category.assoc,
+    Category.comp_id, Category.id_comp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCover.lean:599:10: This simp argument is unused:
+  Category.comp_id
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Groupoid.inv_eq_inv, IsIso.inv_comp, IsIso.inv_inv, IsIso.inv_hom_id_assoc, Category.assoc,
+    Groupoid.inv_comp, Category.id_comp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCover.lean:599:28: This simp argument is unused:
+  Category.id_comp
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Groupoid.inv_eq_inv, IsIso.inv_comp, IsIso.inv_inv, IsIso.inv_hom_id_assoc, Category.assoc,
+    Groupoid.inv_comp, Category.comp_id]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCover.lean:547:4: `simp [coverPathValue, coverPathFreeLoop, coverFreeGroupoidPathHom,
+      coverQuotientTreePathHom_root]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Geometrization/Vendor/GraphCoveringTheory/KuroshCover.lean:549:4: `exact (treeKuroshFreeInclusion G H).map_one`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 547!
+⚠ [15047/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshCoverStar
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCoverStar.lean:256:10: `simp [mul_assoc]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Geometrization/Vendor/GraphCoveringTheory/KuroshCoverStar.lean:256:10: Try this:
+  [apply] simp only [mul_inv_rev, map_mul, treeKuroshProductToH_vertex, Subgroup.coe_mul, InvMemClass.coe_inv]
+info: Geometrization/Vendor/GraphCoveringTheory/KuroshCoverStar.lean:257:10: `exact test_rawEdgeAlign_spec G H _`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 256!
+⚠ [15048/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshCoverLocal
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCoverLocal.lean:184:10: `simp [coverEdgeLetter, treeKuroshProductToH_free,
+            kuroshFreePartHom_quotientEdgeLoop, mul_assoc]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Geometrization/Vendor/GraphCoveringTheory/KuroshCoverLocal.lean:184:10: Try this:
+  [apply] simp only [mul_inv_rev, map_mul, treeKuroshProductToH_vertex, Subgroup.coe_mul, InvMemClass.coe_inv]
+info: Geometrization/Vendor/GraphCoveringTheory/KuroshCoverLocal.lean:186:10: `exact test_rawEdgeAlign_spec G H _`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 184!
+⚠ [15051/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshFreeFiber
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshFreeFiber.lean:31:43: This simp argument is unused:
+  Prefunctor.mapPath
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [coverFreeGroupoidPathHom]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [15052/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshCoverConnected
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshCoverConnected.lean:36:4: `simp` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Geometrization/Vendor/GraphCoveringTheory/KuroshCoverConnected.lean:36:4: Try this:
+  [apply] simp only [IsIso.inv_id, Category.comp_id]
+info: Geometrization/Vendor/GraphCoveringTheory/KuroshCoverConnected.lean:37:4: `exact hq`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 36!
+⚠ [15055/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshPathRelationInvariant
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshPathRelationInvariant.lean:19:5: Variable name `a` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _a
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [15056/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshPathInjective
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshPathInjective.lean:76:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshPathInjective.lean:79:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [15057/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshPathEndpoint
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshPathEndpoint.lean:113:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [15058/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshKernel
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshKernel.lean:183:8: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshKernel.lean:204:8: Unused tactic linter: `change (x.1 : FreeProduct G) ∈ intersectionFactor H i (Quotient.out c)` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [15059/15492] Replayed Geometrization.Vendor.GraphCoveringTheory.KuroshActive
+warning: Geometrization/Vendor/GraphCoveringTheory/KuroshActive.lean:217:8: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [15061/15492] Replayed Geometrization.Baseline.FiniteKurosh
+warning: Geometrization/Baseline/FiniteKurosh.lean:103:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+⚠ [15065/15492] Replayed Geometrization.Vendor.MarshallHall.Grushko
+warning: Geometrization/Vendor/MarshallHall/Grushko.lean:171:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/MarshallHall/Grushko.lean:224:0: `binaryFreeProduct_fg` does not use the following hypotheses in its type:
+  • [Fintype α] (#3)
+  • [Fintype β] (#4)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+⚠ [15066/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoGeneral
+warning: Geometrization/Vendor/MarshallHall/GrushkoGeneral.lean:417:0: `coprodI_freeGroup_fg` does not use the following hypotheses in its type:
+  • [Fintype ι] (#2)
+  • [(i : ι) → Fintype (α i)] (#4)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+⚠ [15067/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoReduction
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:388:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.binarySumIndex_inl`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:391:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.binarySumIndex_inr`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:399:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.binarySumIndex_sigma`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:659:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.binarySigmaToSum_sumToSigma`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:663:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.sumToSigma_snd_inl`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:666:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.sumToSigma_snd_inr`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:669:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.sumToSigma_fst`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:1007:18: This simp argument is unused:
+  hij
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hij.symm]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:1010:25: This simp argument is unused:
+  hij
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hki, hij.symm]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:1010:30: This simp argument is unused:
+  hij.symm
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hki, hij]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:1011:20: This simp argument is unused:
+  hEq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hki, hkj]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:1011:30: This simp argument is unused:
+  hkj
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hEq, hki]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:1080:15: This simp argument is unused:
+  hij
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [y, hij.symm, mul_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReduction.lean:1081:20: This simp argument is unused:
+  hij
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [y, hki]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [15068/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoFold
+warning: Geometrization/Vendor/MarshallHall/GrushkoFold.lean:39:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.binaryRuns_flatten`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFold.lean:43:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.binaryRuns_ne_nil`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFold.lean:47:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.binaryRuns_isChain`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFold.lean:55:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.binaryRuns_boundary`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFold.lean:68:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.binaryRun_allSame`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFold.lean:81:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.exists_map_inl_of_idx_false`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFold.lean:99:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.exists_map_inr_of_idx_true`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFold.lean:145:8: Variable name `h` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFold.lean:157:5: Variable name `hc` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hc
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFold.lean:274:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+⚠ [15069/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoGraph
+warning: Geometrization/Vendor/MarshallHall/GrushkoGraph.lean:36:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.path_length_cast`:
+  [HasInvolutiveReverse V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [HasInvolutiveReverse V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoGraph.lean:96:18: This simp argument is unused:
+  pathLabels
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [pathRead, factorWordProd, separatedMap]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoGraph.lean:444:33: This simp argument is unused:
+  Path.comp_assoc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [SymmRunChain.path]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoGraph.lean:588:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.BinaryLabelling.exists_first_edge_comp`:
+  [HasInvolutiveReverse V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [HasInvolutiveReverse V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoGraph.lean:853:4: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [15070/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoFoldStep
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:141:48: This simp argument is unused:
+  hz₀
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [f, hz₁]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:141:53: This simp argument is unused:
+  hz₁
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [f, hz₀]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:168:8: Variable name `b` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _b
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:168:11: Variable name `e` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:171:5: Variable name `a` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _a
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:171:11: Variable name `e` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:177:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.allArrowSource_of`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:177:0: `allArrowSource_of` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:181:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.allArrowTarget_of`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:181:0: `allArrowTarget_of` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:185:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.allArrowHom_of`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:185:0: `allArrowHom_of` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:192:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.allArrowOf_reverse`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:192:0: `allArrowOf_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:196:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.allArrowSource_reverse`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:196:0: `allArrowSource_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:201:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.allArrowTarget_reverse`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:201:0: `allArrowTarget_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:206:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.allArrowReverse_reverse`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:206:0: `allArrowReverse_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:211:0: `allArrowReverse_injective` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:227:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.foldCode_rel`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:227:0: `foldCode_rel` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:231:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.foldCode_eq_none_iff`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:231:0: `foldCode_eq_none_iff` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:236:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.foldCode_eq_some_iff`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:236:0: `foldCode_eq_some_iff` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:324:0: `foldQuotient_card_add_one_eq` does not use the following hypothesis in its type:
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing this hypothesis with the corresponding instance of `Finite` and using `Fintype.ofFinite` in the proof, or removing it entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:331:17: Variable name `a` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _a
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:331:19: Variable name `b` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _b
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:350:0: Definition `MarshallHall.GeneralGrushko.foldQuiverHomFintype` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:373:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.foldAllArrowToAllArrow_injective`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:373:0: `foldAllArrowToAllArrow_injective` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:412:0: `foldAllArrowToDeletedEdge_injective` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:422:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:465:0: Definition `MarshallHall.GeneralGrushko.foldHasReverse` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:490:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:491:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:492:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:493:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:506:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.pathRead_mem_closure_allArrowLabels`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:506:0: `pathRead_mem_closure_allArrowLabels` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:522:0: `allArrowLabels_closure_eq_top_of_markedGraph` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:616:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.foldPathAvoid_comp`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:616:0: `foldPathAvoid_comp` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:626:0: `foldPathAvoid_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:818:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.symmAllArrow_inl`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:818:0: `symmAllArrow_inl` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:822:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.symmAllArrow_inr`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:822:0: `symmAllArrow_inr` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:826:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.symmAllArrow_reverse`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:826:0: `symmAllArrow_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:840:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.symmOrientedArrow_source`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:840:0: `symmOrientedArrow_source` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:845:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.symmOrientedArrow_target`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:845:0: `symmOrientedArrow_target` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:850:0: `symmAllArrow_eq_oriented_or_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:862:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.symmLabel_eq_allArrowLabel_oriented`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:862:0: `symmLabel_eq_allArrowLabel_oriented` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:893:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.symmPathEdges_nil`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:893:0: `symmPathEdges_nil` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:898:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.symmPathEdges_toPath`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:898:0: `symmPathEdges_toPath` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:903:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.symmPathEdges_comp`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:903:0: `symmPathEdges_comp` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:919:0: `foldSymmPathAvoid_of_geometricallySimple` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:986:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.foldSymmPathAvoid_cast`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:986:0: `foldSymmPathAvoid_cast` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1029:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.foldSymmPathAvoid_comp`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1029:0: `foldSymmPathAvoid_comp` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1046:0: `foldSymmPathAvoid_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1655:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.foldedMarkedGraph_card_lt`:
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1656:5: Variable name `M` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _M
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1658:5: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1661:5: Variable name `hq` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hq
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1655:0: `foldedMarkedGraph_card_lt` does not use the following hypothesis in its type:
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing this hypothesis with the corresponding instance of `Finite` and using `Fintype.ofFinite` in the proof, or removing it entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1682:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.foldSymmPathAvoid_or_occurrence`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1682:0: `foldSymmPathAvoid_or_occurrence` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1706:0: `exists_safe_or_reused_fold_data` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1725:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.safeFoldData_of_nullPath`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1725:0: `safeFoldData_of_nullPath` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1749:0: `safeSymmFoldData_of_nullPath` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1810:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFoldStep.lean:1813:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+⚠ [15071/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoRose
+warning: Geometrization/Vendor/MarshallHall/GrushkoRose.lean:42:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.rosePosition_zero`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRose.lean:47:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.rosePosition_last`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRose.lean:52:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.rosePosition_interior`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRose.lean:78:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.roseEdgeSource_flip`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRose.lean:85:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.roseEdgeTarget_flip`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRose.lean:197:6: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRose.lean:195:45: This simp argument is unused:
+  List.append_assoc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [BinaryLabelling.pathLabels]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRose.lean:198:43: Unused tactic linter: `omega` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRose.lean:198:43: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+⚠ [15072/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoEdge
+warning: Geometrization/Vendor/MarshallHall/GrushkoEdge.lean:51:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoEdge.lean:52:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoEdge.lean:53:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoEdge.lean:54:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoEdge.lean:77:5: Variable name `hfree` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hfree
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoEdge.lean:189:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.allArrowLabel_reverse`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoEdge.lean:189:0: `allArrowLabel_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoEdge.lean:230:28: Variable name `h` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoEdge.lean:234:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.padSeparated_contains_original`:
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [15073/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoInvariant
+warning: Geometrization/Vendor/MarshallHall/GrushkoInvariant.lean:87:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.roseEdge_card`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoInvariant.lean:96:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.roseVertex_card`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoInvariant.lean:103:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.roseWords_length_le`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoInvariant.lean:113:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.roseAllArrow_card_eq_roseEdge_card`:
+  [Group G]
+  [Group H]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Group G] [Group H] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [15074/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoReductionChain
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:11:0: Unscoped option maxHeartbeats is not allowed:
+Please scope this to individual declarations, as in
+```
+set_option maxHeartbeats in
+-- comment explaining why this is necessary
+example : ... := ...
+```
+
+Note: This linter can be disabled with `set_option linter.style.setOption false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:43:5: Variable name `hV` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hV
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:44:5: Variable name `hHom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hHom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:73:5: Variable name `hV` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hV
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:74:5: Variable name `hHom` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hHom
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:209:10: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:210:10: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:212:10: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:214:10: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:225:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:228:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:232:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoReductionChain.lean:236:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [15075/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoUnfold
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:55:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.unfoldOld_ne_new`:
+  [Fintype V]
+  [HasInvolutiveReverse V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [HasInvolutiveReverse V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:55:0: `unfoldOld_ne_new` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:59:0: `unfoldNew_ne_old` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:85:6: `simp [unfoldVertexAt, unfoldOld, hcol]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:85:6: Try this:
+  [apply] simp only [Bool.true_eq_false, and_false, iff_false]
+info: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:86:8: `exact (unfoldOld_ne_new a).symm`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 85!
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:85:6: `simp [unfoldVertexAt, unfoldOld, hcol]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:85:6: Try this:
+  [apply] simp only [Bool.false_eq_true, and_false, iff_false]
+info: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:86:8: `exact (unfoldOld_ne_new a).symm`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 85!
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:76:0: `unfoldVertexAt_eq_old_iff` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:98:6: `simp [unfoldVertexAt, unfoldNew, hcol]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:98:6: Try this:
+  [apply] simp only [ne_eq, not_true_eq_false, and_false, iff_false]
+info: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:99:8: `exact unfoldOld_ne_new a`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 98!
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:98:6: `simp [unfoldVertexAt, unfoldNew, hcol]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:98:6: Try this:
+  [apply] simp only [ne_eq, not_true_eq_false, and_false, iff_false]
+info: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:99:8: `exact unfoldOld_ne_new a`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 98!
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:89:0: `unfoldVertexAt_eq_new_iff` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:102:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.unfoldVertexAt_of_ne`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:102:0: `unfoldVertexAt_of_ne` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:109:0: `unfoldEdgeColor_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:120:19: Variable name `e₀` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _e₀
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:134:0: `unfoldEdgeReverse_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:165:0: `unfoldEdgeSource_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:176:0: `unfoldEdgeTarget_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:194:0: Definition `MarshallHall.GeneralGrushko.unfoldQuiverHomFintype` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:227:0: Definition `MarshallHall.GeneralGrushko.unfoldHasReverse` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:251:0: `unfoldEdgeLabel_reverse` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:287:0: `unfold_old_incident_color` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:334:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.unfoldOriginalEdge_label`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:334:0: `unfoldOriginalEdge_label` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:358:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.unfoldOriginalEdgeAtColor_label`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:358:0: `unfoldOriginalEdgeAtColor_label` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:408:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:409:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:436:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.unfoldEdge_card`:
+  [HasInvolutiveReverse V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [HasInvolutiveReverse V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:482:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:477:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.unfoldVertex_card`:
+  [HasInvolutiveReverse V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [HasInvolutiveReverse V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:477:0: `unfoldVertex_card` does not use the following hypothesis in its type:
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing this hypothesis with the corresponding instance of `Finite` and using `Fintype.ofFinite` in the proof, or removing it entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:535:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:537:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:538:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:540:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:645:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:646:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:660:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:661:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:667:21: This simp argument is unused:
+  separatedMap_factorWordInv
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [unfoldDuplicateForward, unfoldBaseReverseEdge, unfoldLabelling, unfoldEdgeLabel]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:666:2: `simp [unfoldDuplicateForward, unfoldBaseReverseEdge, unfoldLabelling,
+    unfoldEdgeLabel, separatedMap_factorWordInv]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:668:2: `change separatedMap (allArrowLabel L e₀) * separatedMap (allArrowLabel L (allArrowReverse e₀)) = 1`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 666!
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:666:2: `simp [unfoldDuplicateForward, unfoldBaseReverseEdge, unfoldLabelling,
+    unfoldEdgeLabel, separatedMap_factorWordInv]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:670:2: `rw [allArrowLabel_reverse]`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 666!
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:679:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.unfoldCanonical_eq_old`:
+  [Fintype V]
+  [HasInvolutiveReverse V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [HasInvolutiveReverse V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:679:0: `unfoldCanonical_eq_old` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:683:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.unfoldCanonical_eq_vertexAt_of_ne`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:683:0: `unfoldCanonical_eq_vertexAt_of_ne` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:691:0: `unfoldVertexAt_eq_new_of_ne_color` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:830:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:831:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:834:29: This simp argument is unused:
+  unfoldCanonical_eq_vertexAt_of_ne
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [unfoldPrePath, hx, BinaryLabelling.pathRead_cast]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:841:39: This simp argument is unused:
+  unfoldCanonical_eq_old
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [unfoldPrePath, hx, hcolor, BinaryLabelling.pathRead_cast]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:843:39: This simp argument is unused:
+  unfoldCanonical_eq_old
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [unfoldPrePath, hx, hcolor, BinaryLabelling.pathRead_cast, unfoldSwitchOldNew_read]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:852:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:853:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:856:30: This simp argument is unused:
+  unfoldCanonical_eq_vertexAt_of_ne
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [unfoldPostPath, hy, BinaryLabelling.pathRead_cast]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:863:40: This simp argument is unused:
+  unfoldCanonical_eq_old
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [unfoldPostPath, hy, hcolor, BinaryLabelling.pathRead_cast]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:865:40: This simp argument is unused:
+  unfoldCanonical_eq_old
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [unfoldPostPath, hy, hcolor, BinaryLabelling.pathRead_cast, unfoldSwitchNewOld_read]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:875:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:876:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:910:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:911:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:968:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:969:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:992:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:993:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:998:8: This simp argument is unused:
+  BinaryLabelling.pathLabels
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [unfoldSymmLiftPath, BinaryLabelling.pathRead, BinaryLabelling.symmPathRead,
+    BinaryLabelling.symmPathLabels, factorWordProd]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1080:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1081:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1086:38: This simp argument is unused:
+  BinaryLabelling.pathLabels
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [unfoldSymmMonochromaticPath, BinaryLabelling.pathRead, BinaryLabelling.symmPathRead,
+    BinaryLabelling.symmPathLabels, factorWordProd]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1170:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1171:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1205:4: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1191:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.unfoldPathEdges_comp`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1191:0: `unfoldPathEdges_comp` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1225:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1226:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1243:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.unfoldMonochromaticPath_edges_original`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1243:0: `unfoldMonochromaticPath_edges_original` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1284:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1285:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1367:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1368:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1449:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1450:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1508:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1509:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1527:5: Variable name `hq` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hq
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1520:0: `unfoldDuplicateFoldPath_target_eq_old` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1572:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1574:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1633:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1635:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1730:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1732:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1790:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1792:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1801:0: `unfoldNew_ne_sourceAt_color` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1816:0: `unfoldNew_ne_vertexAt_of_ne_source` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1886:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1888:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1890:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnfold.lean:1892:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [15076/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoRemove
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:132:62: This simp argument is unused:
+  mul_assoc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all [factorMul, factorWordInv]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:139:62: This simp argument is unused:
+  mul_assoc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp_all [factorMul, factorWordInv]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:160:5: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:169:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.removeEndpoint_eq_of_ne`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:169:0: `removeEndpoint_eq_of_ne` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:174:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.removeEndpoint_eq_anchor`:
+  [Fintype V]
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:174:0: `removeEndpoint_eq_anchor` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:194:0: Definition `MarshallHall.GeneralGrushko.removeQuiverHomFintype` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:204:5: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:204:34: Variable name `hn` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hn
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:239:0: Definition `MarshallHall.GeneralGrushko.removeHasReverse` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:265:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:266:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:267:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:269:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:327:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:329:4: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:322:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.removedVertex_card_add_one`:
+  hV
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit hV [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:322:0: `removedVertex_card_add_one` does not use the following hypothesis in its type:
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing this hypothesis with the corresponding instance of `Finite` and using `Fintype.ofFinite` in the proof, or removing it entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:344:5: Variable name `hn` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hn
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:395:6: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:363:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.removeEdgeLabel_index`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:390:44: This simp argument is unused:
+  hg
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [removeEdgeLabel, hs, ht, g₀, l, hl, hxy]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:363:0: `removeEdgeLabel_index` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:397:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.removeEdgeLabel_eq_source_target`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:397:0: `removeEdgeLabel_eq_source_target` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:409:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.removeEdgeLabel_eq_source_only`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:409:0: `removeEdgeLabel_eq_source_only` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:421:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.removeEdgeLabel_eq_target_only`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:421:0: `removeEdgeLabel_eq_target_only` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:432:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.removeEdgeLabel_eq_neither`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:432:0: `removeEdgeLabel_eq_neither` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:653:30: Variable name `color` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _color
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:658:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.removePotential_eq_vertex`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:658:0: `removePotential_eq_vertex` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:664:8: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.removePotential_eq_one_of_ne`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:664:0: `removePotential_eq_one_of_ne` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:707:8: This simp argument is unused:
+  mul_assoc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [removePotential, hs, ht, g₀, l, separatedMap_factorWordInv]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:716:44: This simp argument is unused:
+  mul_assoc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [removePotential, hs, ht, g₀, l]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:718:37: This simp argument is unused:
+  g₀
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [removePotential, hs, ht, l, mul_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:718:41: This simp argument is unused:
+  l
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [removePotential, hs, ht, g₀, mul_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:718:44: This simp argument is unused:
+  mul_assoc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [removePotential, hs, ht, g₀, l]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:670:0: `removeEdgeLabel_read` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:763:10: This simp argument is unused:
+  separatedMap_factorWordInv
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:795:10: This simp argument is unused:
+  he₀
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [removeEdgePath, removeDeletedPath, removeDeletedPath_backward, her, hneq, BinaryLabelling.pathRead_cast,
+    BinaryLabelling.pathRead_nil]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:835:12: This simp argument is unused:
+  mul_assoc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:1011:12: This simp argument is unused:
+  mul_assoc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:1115:68: This simp argument is unused:
+  mul_assoc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [removePotential_eq_one_of_ne M.labeling e₀ color hbase]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:1174:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:1175:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:1176:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:1178:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoRemove.lean:1159:13: Variable name `hbase` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hbase
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [15077/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoUnsafe
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:39:0: `foldVertexMk_eq_of_not_eq` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:107:31: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:72:0: `exists_nonloop_incident_of_symm_path` does not use the following hypotheses in its type:
+  • [Fintype V] (#2)
+  • [(a b : V) → Fintype (a ⟶ b)] (#5)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:114:5: Variable name `hgen` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hgen
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:114:29: Variable name `hconn` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hconn
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:115:5: Variable name `hfree` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hfree
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:116:5: Variable name `hEuler` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hEuler
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:174:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:175:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:176:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:178:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:228:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:230:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:232:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:420:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:422:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:424:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:426:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:429:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:435:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:439:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:443:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoUnsafe.lean:305:5: Variable name `hcard₁` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hcard₁
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [15078/15492] Replayed Geometrization.Vendor.MarshallHall.GrushkoFull
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:12:0: Unscoped option maxHeartbeats is not allowed:
+Please scope this to individual declarations, as in
+```
+set_option maxHeartbeats in
+-- comment explaining why this is necessary
+example : ... := ...
+```
+
+Note: This linter can be disabled with `set_option linter.style.setOption false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:53:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.ordinaryPathOfSymm_read`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:53:0: `ordinaryPathOfSymm_read` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:84:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.rerootMarkedGraph_read`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:84:0: `rerootMarkedGraph_read` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:99:0: `rerootMarkedGraph_isGenerating` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:108:0: automatically included section variable(s) unused in theorem `MarshallHall.GeneralGrushko.rerootMarkedGraph_weaklyConnected`:
+  [Fintype V]
+  [(a b : V) → Fintype (a ⟶ b)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [(a b : V) → Fintype (a ⟶ b)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:108:0: `rerootMarkedGraph_weaklyConnected` does not use the following hypotheses in its type:
+  • [Fintype V] (#6)
+  • [(a b : V) → Fintype (a ⟶ b)] (#9)
+
+Consider replacing these hypotheses with the corresponding instances of `Finite` and using `Fintype.ofFinite` in the proof, or removing them entirely.
+
+Note: This linter can be disabled with `set_option linter.unusedFintypeInType false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:122:5: Variable name `hW` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hW
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:123:5: Variable name `hHomW` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hHomW
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:286:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:288:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:290:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:292:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:294:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:300:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:304:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:308:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:402:10: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:403:10: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:404:10: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:405:10: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:413:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:416:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:420:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Geometrization/Vendor/MarshallHall/GrushkoFull.lean:424:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [15092/15492] Replayed Geometrization.Baseline.CollarFreeFactor
+warning: Geometrization/Baseline/CollarFreeFactor.lean:27:28: `simp_all [A, disjoint_left]` is a flexible tactic modifying `⊢`. Try `simp_all?` and use the suggested `simp_all only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Geometrization/Baseline/CollarFreeFactor.lean:28:14: `exact fun _ h => h.le`
+modifies the current goal, which was modified by the flexible tactic `simp_all` on line 27!
+warning: Geometrization/Baseline/CollarFreeFactor.lean:27:28: `simp_all [A, disjoint_left]` is a flexible tactic modifying `⊢`. Try `simp_all?` and use the suggested `simp_all only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Geometrization/Baseline/CollarFreeFactor.lean:28:14: `exact fun _ h => h.le`
+modifies the current goal, which was modified by the flexible tactic `simp_all` on line 27!
+ℹ [20162/20189] Replayed Geometrization.Baseline.RiemannianScaleConsumer
+info: Geometrization/Baseline/RiemannianScaleConsumer.lean:44:0: DifferentialGeometry.edistOf_scale.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type u_2} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type u_3} [TopologicalSpace M]
+  [ChartedSpace H M] [IsManifold I ∞ M] (c : ℝ) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x y : M) :
+  riemannianEDistOf (scaleMetric c hc g) x y = ENNReal.ofReal √c * riemannianEDistOf g x y
+info: Geometrization/Baseline/RiemannianScaleConsumer.lean:45:0: DifferentialGeometry.riemannianClosedBallOf_scaleMetric.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] {H : Type u_2} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type u_3} [TopologicalSpace M]
+  [ChartedSpace H M] [IsManifold I ∞ M] (c : ℝ) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x : M) (r : ℝ) :
+  riemannianClosedBallOf (scaleMetric c hc g) x (√c * r) = riemannianClosedBallOf g x r
+info: Geometrization/Baseline/RiemannianScaleConsumer.lean:46:0: GC.MetricGeometry.normalized_closedBall.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type u_2} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type u_3} [TopologicalSpace M]
+  [ChartedSpace H M] [IsManifold I ∞ M] (g : SmoothRiemannianMetric I M) (p : M) (r : ℝ) (hr : 0 < r) :
+  riemannianClosedBallOf (scaleMetric (r⁻¹ ^ 2) ⋯ g) p 1 = riemannianClosedBallOf g p r
+info: Geometrization/Baseline/RiemannianScaleConsumer.lean:47:0: GC.MetricGeometry.normalized_buffer_inclusion.{u_1, u_2, u_3} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type u_2} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} {M : Type u_3} [TopologicalSpace M]
+  [ChartedSpace H M] [IsManifold I ∞ M] (g : SmoothRiemannianMetric I M) (p : M) (r : ℝ) (hr : 0 < r) {R S : ℝ}
+  (hRS : R ≤ S) : riemannianClosedBallOf (scaleMetric (r⁻¹ ^ 2) ⋯ g) p R ⊆ riemannianClosedBallOf g p (r * S)
+⚠ [20173/20189] Replayed Geometrization.Baseline.KappaModelVolume
+warning: Geometrization/Baseline/KappaModelVolume.lean:24:28: missing space in the source
+
+This part of the code
+  'PointedFlowData.{u,0,0}'
+should be written as
+  'PointedFlowData.{u, 0, 0}'
+
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`
+warning: Geometrization/Baseline/KappaModelVolume.lean:24:30: missing space in the source
+
+This part of the code
+  'PointedFlowData.{u,0,0} I3'
+should be written as
+  '0, 0} I3'
+
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`
+⚠ [20180/20189] Replayed Geometrization.Baseline.RoundReservedProducer
+warning: Geometrization/Baseline/RoundReservedProducer.lean:25:40: missing space in the source
+
+This part of the code
+  '1/11) :'
+should be written as
+  '1 / 11)'
+
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`
+warning: Geometrization/Baseline/RoundReservedProducer.lean:60:32: missing space in the source
+
+This part of the code
+  '1/11) (hκ'
+should be written as
+  '1 / 11)'
+
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`
+⚠ [20187/20189] Built GeometrizationChecks.Axioms (221s)
+warning: GeometrizationChecks/Axioms.lean:9:0: Unscoped option maxHeartbeats is not allowed:
+Please scope this to individual declarations, as in
+```
+set_option maxHeartbeats in
+-- comment explaining why this is necessary
+example : ... := ...
+```
+
+Note: This linter can be disabled with `set_option linter.style.setOption false`
+info: GeometrizationChecks/Axioms.lean:12:0: Team axiom audit passed for 3503 declarations.
+✔ [20188/20189] Built GeometrizationChecks (3.7s)
+Build completed successfully (20189 jobs).

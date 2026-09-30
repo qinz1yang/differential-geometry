@@ -1,0 +1,170 @@
+{
+  "blueprint_revision": 207,
+  "scope": "Finite-order projections of LC81 selected consumer route, not full LFR14 compactness.",
+  "declarations": [
+    {
+      "declaration": "DifferentialGeometry.Geometry.exists_pullback_metric_of_finite_diffeomorph",
+      "file": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "line": 16,
+      "status": "admitted",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:collapse-finite-derivative-ledger",
+          "label_line": 24827,
+          "reading_lines": [
+            24826,
+            24861
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [
+        "Only local coefficient extraction or same-tensor category pullback; no pointed manifold limit, whole-domain comparison embeddings, completeness, curvature passage, metric smoothing, or smooth fiber-type producer."
+      ],
+      "kind": "theorem",
+      "direct_sorry": true,
+      "primary_source_checked": false,
+      "source_locators": [
+        "Blueprint-only exact contract: master207A.tex:24827 lem:collapse-finite-derivative-ledger; reading [24826, 24861]"
+      ],
+      "source_checks": [
+        {
+          "file": "master207A.tex",
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+          "label": "lem:collapse-finite-derivative-ledger",
+          "read_lines": [
+            [
+              24826,
+              24861
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        }
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.exists_pullback_metric_of_diffeomorph_one_order_higher",
+      "file": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "line": 26,
+      "status": "proved",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:collapse-finite-derivative-ledger",
+          "label_line": 24827,
+          "reading_lines": [
+            24826,
+            24861
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [
+        "Only local coefficient extraction or same-tensor category pullback; no pointed manifold limit, whole-domain comparison embeddings, completeness, curvature passage, metric smoothing, or smooth fiber-type producer."
+      ],
+      "kind": "theorem",
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.exists_pullback_metric_of_diffeomorph_three_orders_lower",
+      "file": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "line": 35,
+      "status": "proved",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "lem:collapse-finite-derivative-ledger",
+          "label_line": 24827,
+          "reading_lines": [
+            24826,
+            24861
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:collapse-soul-flow-smooth-carrier",
+          "label_line": 28976,
+          "reading_lines": [
+            28975,
+            29036
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [
+        "Only local coefficient extraction or same-tensor category pullback; no pointed manifold limit, whole-domain comparison embeddings, completeness, curvature passage, metric smoothing, or smooth fiber-type producer."
+      ],
+      "kind": "theorem",
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.CheegerGromovCompactness.exists_bilinear_form_limit_subsequence_of_bounded_derivatives",
+      "file": "DifferentialGeometry/Analysis/Calculus/Compactness/FiniteOrder.lean",
+      "line": 11,
+      "status": "admitted",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:collapse-finite-consumer-compactness",
+          "label_line": 25870,
+          "reading_lines": [
+            25869,
+            26085
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [
+        "Only local coefficient extraction or same-tensor category pullback; no pointed manifold limit, whole-domain comparison embeddings, completeness, curvature passage, metric smoothing, or smooth fiber-type producer."
+      ],
+      "kind": "theorem",
+      "direct_sorry": true,
+      "primary_source_checked": false,
+      "source_locators": [
+        "Blueprint-only exact contract: master207A.tex:25870 thm:collapse-finite-consumer-compactness; reading [25869, 26085]"
+      ],
+      "source_checks": [
+        {
+          "file": "master207A.tex",
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+          "label": "thm:collapse-finite-consumer-compactness",
+          "read_lines": [
+            [
+              25869,
+              26085
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/Compactness/FiniteOrder.lean",
+      "sha256": "4ed6ea0f202fe17dff1a6c71ad9d1921ec5ae2b3f69594a59127adae1e37b335"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "sha256": "450c54f12872ce6917f5bb5f85436a7e34c522b3dfd66c2ab2a553619f3c990e"
+    }
+  ],
+  "source_records": [
+    "GEOMETRIZATION_BLUEPRINT/reference_checks_revision126.md",
+    "GEOMETRIZATION_BLUEPRINT/reference_checks_revision128.md",
+    "GEOMETRIZATION_BLUEPRINT/reference_checks_revision135.md",
+    "GEOMETRIZATION_BLUEPRINT/checks/evidence/revision126_finite_sources.json",
+    "GEOMETRIZATION_BLUEPRINT/checks/evidence/revision128_compactness_sources.json"
+  ],
+  "validation": {
+    "build_log": ".lake/gc/skeleton-finite-regularity-build.log",
+    "result": "passed;2intentionalproducer-sorries,2provedspecializations"
+  },
+  "cross_review": {
+    "root": "Independently reread all4finite-order statements; finite jets valid includingK1/emptyU.",
+    "collapse_agent": "Independent review passed K1,emptyU,m4,r0,s1. No smooth-limit/completeness/atlas implication.",
+    "author_followup": "Compared pullback hypotheses to existing Cross; no T2/SigmaCompact needed for local same-tensor construction."
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "success": true,
+  "blueprint_static_audit": {
+    "status": "pending",
+    "success": false,
+    "latest_completed_exit_code": 1,
+    "reason": "iCloud placeholders and metadata refresh during historical input reads",
+    "running_session": 82024,
+    "unchanged_audit_sha256": "a71b3b706ed68f757debfad4dbbbf4f80a243ed1db2f56fa5054d23dd54e2018",
+    "blueprint_revision": 207,
+    "lean_gate_independent": true,
+    "current_milestone": 131,
+    "note": "The separate unchanged static audit is ongoing; no pass is claimed."
+  },
+  "milestone": 131,
+  "new_public_theorems": 1,
+  "new_public_definitions": 0,
+  "new_instances": 0,
+  "new_declared_declarations": 1,
+  "new_generated_declarations": 0,
+  "new_owned_declarations": 1,
+  "observed_previous_owned_declarations": 2191,
+  "observed_previous_modules": 457,
+  "combined_modules": 458,
+  "combined_jobs": 3296,
+  "combined_owned_declarations": 2192,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/CommonTangentDimension.lean": "d03fbfdb6e889a6b706c8e7b5f5b350b740d4b23549d3f7a8559ac963ce106ea"
+  },
+  "logs": {
+    "common_tangent_dimension_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "common_tangent_dimension_review.log": "a27e50574c4d3683d92fef5e68ae76c91b17e24d97a5a417ddfc0343c88a079b",
+    "common_tangent_dimension_blueprint_audit.log": "0ca1bac2127309e19b4684f4ed03707a28aa17aab1b38e820ede8f05d5d2589b",
+    "common_tangent_dimension_blueprint_status.json": "2f15962f62c7cca5d120e96aff33f0f3d9677c8543462743cfa3e41e12887c43"
+  },
+  "checks_receipt_sha256": "521fc5d0e88a99050beaa2443c20ccdf32c9ed0a5f6d129cf76f6a941dd2f578",
+  "shared_gate_receipt_sha256": "158eb73f9584008a12010e6dfd3b287f3ca3110a28851a70ef43bee42056e29a",
+  "previous_milestone_receipt_sha256": "59df7d7a5faf1454e6a6618b3e2372ce391105e17f0c60506f70505cd13d45ae",
+  "review_driver_sha256": "47331ddf79695e136e0ce1980cbedc575ac05d763dfff691005cf7c9a489740a",
+  "registration_plan_sha256": "4729d662e7186374399219c22af160ce02646b761eceed1db94d85872f347292",
+  "source_receipt_sha256": "6b51f45f7dd4994b54d23598fa10382ff45aa82584d183444643a04c677e2fe5",
+  "git_head_at_check": "f72d3b3c34e32049135b47ec8ddca193e7d66606",
+  "independent_peer_proof_review": true,
+  "new_concrete_regressions": 3,
+  "expected_review_reports": 4,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

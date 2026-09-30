@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "new_public_theorems": 21,
+  "new_private_theorems": 0,
+  "new_definitions": 3,
+  "new_structures": 1,
+  "new_owned_declarations": 53,
+  "combined_modules": 173,
+  "combined_jobs": 3007,
+  "combined_owned_declarations": 956,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/MinimizingHinge.lean": "06678d0779403322a30ffe2928c52e719f2cbbb066189d83a4888e7ce5afbef5",
+    "DifferentialGeometry/Geometry/Comparison/ModelSideOrder.lean": "b7ad3f68ddad513026e6b54cd78b5396639443e3437d749b56fe21cf3fc947ac",
+    "DifferentialGeometry/Geometry/Comparison/HingeModel.lean": "8609c2319faf8b0ac60df3beb7fb0ad3649df9ad62a49b8fccbda7a164fa32b5",
+    "DifferentialGeometry/Geometry/Comparison/HingeSuccessor.lean": "7fa85c46298f2b85e262eb8ebe69c46f71a307c575b34fab71b5156ccf4f5c46",
+    "DifferentialGeometry/Geometry/Comparison/GeometricCradleStep.lean": "c6c41fd0b20851d2e349dbe5e948a7d08d3222669aa246d77e41a5d83abaa210",
+    "DifferentialGeometry/Geometry/Comparison/CradleEnlargement.lean": "24d5d872d1f9e7137136befb462fa9be92a77aeea4af398b05d5eb5a01bd1bfa"
+  },
+  "logs": {
+    "cradle_enlargement_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cradle_enlargement_review.log": "3ce8b02d5dc7cdbbae57335d04effe04bb0bdd1c8ec18dfbff01acc135a4f898",
+    "cradle_enlargement_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "cdb17ff684c0fa01fa30665f12cd146f04db9d01c92e2da9c26eeba7211107f8",
+  "git_head_at_check": "10d67559e40b5d564046dffea040cd70f22c7954",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

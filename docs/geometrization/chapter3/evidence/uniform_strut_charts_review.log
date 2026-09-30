@@ -1,0 +1,12 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.strutChartDistortion' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_uniform_strut_chart_of_dense_directions' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCSimplexShorteningReview.original_translated_opposite_paths_have_arbitrarily_small_struts' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCUniformStrutChartReview.original_dense_paths_have_padded_uniform_chart' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

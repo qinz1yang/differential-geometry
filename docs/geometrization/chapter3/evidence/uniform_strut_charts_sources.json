@@ -1,0 +1,17 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC04 chart-input clause2236ff; full AC09\u201312 especially2640\u20132690 original conditional chart and remaining-structural-work paragraph"
+    }
+  ],
+  "reused_source_checks": [
+    "angular_distance_charts_sources.json",
+    "simplex_strut_neighborhoods_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Full conditional metric chart assembly from actual supplied directions, same original radial representatives and same-domain hinges; source8R producer remains explicit",
+  "errata": "Unchanged checked AKP/KLP source and retained errata records reused; no new external retrieval",
+  "independent_root_proof_review": true
+}

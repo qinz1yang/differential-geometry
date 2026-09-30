@@ -1,0 +1,42 @@
+{
+  "success": true,
+  "blueprint_static_audit": {
+    "status": "pending",
+    "success": false,
+    "latest_completed_exit_code": 1,
+    "reason": "iCloud placeholders and metadata refresh during historical input reads",
+    "running_session": 82024,
+    "unchanged_audit_sha256": "a71b3b706ed68f757debfad4dbbbf4f80a243ed1db2f56fa5054d23dd54e2018",
+    "blueprint_revision": 207,
+    "lean_gate_independent": true
+  },
+  "milestone": 121,
+  "new_public_theorems": 3,
+  "new_instances": 0,
+  "new_generated_declarations": 0,
+  "new_owned_declarations": 3,
+  "combined_modules": 430,
+  "combined_jobs": 3268,
+  "combined_owned_declarations": 2069,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/UniformRayEndpoint.lean": "6b79b653a1fcef7313b6a417410349e4c12bd2ae87938c66355e357f2e1f0651",
+    "DifferentialGeometry/Geometry/Metric/FiniteGeodesicDirections.lean": "0e26ba336f69b24a8e30bc374c0595d27ed891bcc88dd0da467541e5eaecf7c7"
+  },
+  "logs": {
+    "uniform_ray_endpoint_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "uniform_ray_endpoint_review.log": "2b88efe90b255296c34d4bb611c46b33b31fa33f846502827877d60bcaef4e5b",
+    "uniform_ray_endpoint_blueprint_audit.log": "678ded14bd148403660ccafbf1bbabd5f86091f49c44212d38cc56689cffa600"
+  },
+  "checks_receipt_sha256": "5e55d0cf1294a050c102bfcb7393415130acd22abd964326e17946698f794dfc",
+  "shared_gate_receipt_sha256": "b4213ebf71e01d001d785c0ab648585be2a2836609571cd0670eee07a9f2bc2a",
+  "previous_milestone_receipt_sha256": "70b15940d7459e1c881e3bd44278319f3e537d2eed2819e4a529624e8ac9f3a4",
+  "review_driver_sha256": "0a352b76cfc306af35ef6920bf0ca3a767ceac9430159c97edd5a75d685ca855",
+  "registration_plan_sha256": "fb3e694981a2c49fd770db3e82da0fd93cc8c4cdce1d155f11294335dd1a4a0b",
+  "source_receipt_sha256": "e770e761943d695819042b76bc6d9571250b7bda165385b353b9e71a1013726d",
+  "git_head_at_check": "bd7dbe480b48add6b63ac7f263508a82ea54377b",
+  "independent_peer_proof_review": true,
+  "new_actual_original_geometry_regressions": 7,
+  "expected_review_reports": 10,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

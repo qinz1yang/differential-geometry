@@ -1,0 +1,25 @@
+{
+  "success": true,
+  "new_public_theorems": 10,
+  "new_private_theorems": 0,
+  "new_definitions": 1,
+  "new_owned_declarations": 12,
+  "combined_modules": 177,
+  "combined_jobs": 3011,
+  "combined_owned_declarations": 968,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/ComparisonRadius.lean": "3aab299c79b735e9cea1c274cc45b32109389eff10b4293d0bf3a4ae55040969",
+    "DifferentialGeometry/Topology/MetricSpace/GermSegment.lean": "1831aad2201ca6268454a8df6d37489d90ec6d112cae5bdc8470554af101fe8a",
+    "DifferentialGeometry/Geometry/Comparison/HingeOfGerms.lean": "04cdf6ebe1dbce72891479b9b844adf9796afef6d2da7f1152b292d1af6ecbe8",
+    "DifferentialGeometry/Geometry/Comparison/EndpointEnlargement.lean": "ffae31dd821e2cf69b39429b7b0a368d3d466c6049a1921a43bd849040d1c8ee"
+  },
+  "logs": {
+    "comparison_radius_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "comparison_radius_review.log": "01a8d38e472f880eae5bf917bee8119c1cd0f562a88546570af44b44af7704e1",
+    "comparison_radius_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "f8a7261a6dcce8a4217d943578e83ab85daffb957f75640c98812d111cf8432a",
+  "git_head_at_check": "ea10e3843649078b7543c1b202d50434faacafab",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

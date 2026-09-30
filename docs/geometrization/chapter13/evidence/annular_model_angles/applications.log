@@ -1,0 +1,6 @@
+'AnnularRegression.unequal_flat_triangle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnnularRegression.curved_zero_excess' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnnularRegression.annular_original_budget_at_curvature_boundary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'AnnularRegression.mixed_arm_original_constant' depends on axioms: [propext, Classical.choice, Quot.sound]

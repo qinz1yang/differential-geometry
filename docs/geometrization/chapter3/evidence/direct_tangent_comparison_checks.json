@@ -1,0 +1,76 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/FourPointClosure.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_FourPointClosure.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "75acb02df177bee7637b3cdb69d84bce7c2f0862f15b4c6d85ec13843f41381b"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/TangentConeDensity.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_TangentConeDensity.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "1b373923fe5abc41d0a834ffcaf2a8eecba928267a95f4b118b53c847f6a330e"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/TangentComparison.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_TangentComparison.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "3b34e316348719daf43616f1a0628e655e882e5224f42bac333ea01d1ea091ff"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/DirectSphericalDirections.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_DirectSphericalDirections.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "566489f5f5206ef32b529d67da83d0c177d545eee91bce848d02dabdfe81c03c"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_direct_tangent_comparison_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "6d21ad0c002350eeb31676aad75f9fc89f9ccbe3",
+  "review_reports": [
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison.closure_zero",
+    "Metric.TangentCone.dense_representative_vectors",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.tangentCone_fourPointComparison_zero_of_local_fourPointComparison",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.spherical_direction_comparison_of_local_fourPointComparison",
+    "GCDirectionSpaceReview.actual_noncomplete_interval_nonzero_tangent_comparison",
+    "GCDirectionSpaceReview.actual_singleton_empty_directions_tip_density_and_comparison",
+    "GCDirectionSpaceReview.closure_adds_boundary_with_repeated_anchors",
+    "GCPlaneDirectionPackingReview.actual_translated_plane_non_tip_quadruple_comparison"
+  ],
+  "review_driver_sha256": "eaa5574ce2edef9fe68ab3837e9df6485245dfc5e3c0206d028d065242b4e486",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Comparison/FourPointClosure.lean": "6547c99c9023adcc44a633c0638987b867bd972737a22577ff5548a643dd137e",
+    "DifferentialGeometry/Geometry/Metric/TangentConeDensity.lean": "67645116ff60bb1fab185f53e0a7f251403fb3bcc643764bc414d038d743c81c",
+    "DifferentialGeometry/Geometry/Comparison/TangentComparison.lean": "0548ef81a51c4b5b82bd36d7c9031ee9f1f9c9de6ccdfbde9f38d018053199b4",
+    "DifferentialGeometry/Geometry/Comparison/DirectSphericalDirections.lean": "a645de13c1b19382aceb5da71b0d2321c5ac9a1a76cefe82cfb46ad2b784aca2"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "cb728f8ab766da4177b3ac50a37a0d4b4a080ebea6467aaa98fe7a0ab3bcc2b4"
+}

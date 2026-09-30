@@ -1,0 +1,28 @@
+{
+  "id": "T03",
+  "title": "Marked finite-history reconstruction",
+  "status": "interface-review",
+  "owner": null,
+  "reviewer": null,
+  "branch": "codex/geometrization-team-foundation",
+  "base_commit": "18d75b36ea78e5cceca18c3cae89c0e15496bc85",
+  "proposed_responsibility": "Ayush or another topology owner; Yuan transport review",
+  "depends_on": [],
+  "write_scope": [
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/OrientedReconstruction.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/SmoothReconstruction.lean"
+  ],
+  "blueprint_nodes": [
+    "AT21",
+    "AT22",
+    "AT24",
+    "AT25",
+    "revision177/185/201/204",
+    "revision205"
+  ],
+  "interface_review": "Extend actual event/discard data to marked smooth reconstruction; compare zero-event, empty and disconnected cases.",
+  "acceptance": "Finite history recovers the initial marked carrier with labelled ports, multiplicities and cycle factors; a group-only theorem is insufficient.",
+  "lean_contract_status": "Revision206 produces full endpoints for all PC standard factors using actual primeness and whole-carrier metrics. Raw terminal descent needs only actual emptiness; raw late descent retains LateComponentSupply. Stronger protected-port/cycle/decorated-history outputs and global analytic production remain separate.",
+  "instructions": "Bounded proved standard-factor supplier and compiling actual-history consumers; no parent completion. See INTERFACE_ITERATION206.md. Parent remains open and unclaimed; the general late supply remains unproduced.",
+  "placement_record": "docs/geometrization/MODULE_PLACEMENT.json"
+}

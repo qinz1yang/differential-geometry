@@ -1,0 +1,22 @@
+'Metric.intrinsicBall_dist_eq_on_inner_closedBall' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicBall_ball_image' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicBallMetricSpace_locallyCompact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.endpointHingeComparison_intrinsic_256_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_intrinsic_two_ball_of_256_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_ambient_two_ball_of_intrinsic_256_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_ambient_ball_of_intrinsic_256_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.exists_radial_metric_segment_in_two_ball' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.radial_point_on_side_of_intrinsic_256_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.independent_radial_monotonicity_of_intrinsic_256_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

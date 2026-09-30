@@ -1,0 +1,31 @@
+{
+  "status": "FINAL_TMP_BUNDLE_READY_FOR_ROOT_REVIEW_AND_COPY",
+  "audit_baseline_commit": "9f5f8d2c624110d0bc79d3ddebfb655112d57100",
+  "delivery_commit": "45111b9d91f50111658f0497be2320e750325ca6",
+  "new_compiler_or_build_commands": false,
+  "new_network_or_push_commands": false,
+  "repository_copy_executed": false,
+  "temporary_copy_validated": true,
+  "observed_counts": {
+    "modules": 513,
+    "owned": 2362,
+    "jobs": 3351
+  },
+  "source_copy_rows": 33,
+  "installed_files_including_index": 34,
+  "self_contained_report_links": 28,
+  "post_delivery_static_audit_requires_separate_record": true,
+  "files": {
+    "/tmp/gc_finalize_chapter34_frontier_after145.py": "a069036c369b398a9dd87696e3fd020481982fc71b89ed9a9558f01d0994ce8d",
+    "/tmp/gc_chapter34_frontier_finalization_notes.md": "368d43c6fb424a987890dd026b3b4c18825d9ac220892d3d5a1df2d08655fc25",
+    "/tmp/gc_chapter34_frontier_final_after145/chapter34_frontier_final.md": "581861bd18cc4d793f721459ac71c3e303b64554c60c83e51acbbeb9b6cb4e58",
+    "/tmp/gc_chapter34_frontier_final_after145/index.json": "d1ff6fffa87d1f26a7d7d4a3a18258ae82cd70ecc53d17876d1f1ab8614360d4",
+    "/tmp/gc_chapter34_frontier_final_after145/copy_evidence.py": "2852911bb65e4da39da4522c2e21f9ad25b85c087008ff02a30338e60a737221",
+    "/tmp/gc_chapter34_frontier_final_after145/finalization_record.json": "e3bd0389d54faf6cc3a36e9f346f810f12b1027e40be067db261c3d359e15afd",
+    "/tmp/gc_chapter34_frontier_final_validation.json": "72d54d8b7e528d3d9f11700ce4c08426852135117e8fa5ed552b0e98a67bd7e5",
+    "/tmp/gc_chapter34_frontier_final_stage_validation.json": "10e1618ca5f5a3ba2d52b482a7f4f7ccd351cbb783f9e362e54d2f362c627d13",
+    "/tmp/gc_chapter34_frontier_final_selfcheck.json": "6d8a90d7558d0c938331906f8c9626b4b2f50ae9169fb9e7e34fbd4bdeefd100"
+  },
+  "root_remote_record_sha256": "c569059868430efa48463675307a29aa73d911677bb82080073b88672941c2c4",
+  "targeted_challenge_sha256": "bb98ade89dc5245dfe8b75e316cfc537eb0f6354ff511ce2838cb63f8f23eb02"
+}

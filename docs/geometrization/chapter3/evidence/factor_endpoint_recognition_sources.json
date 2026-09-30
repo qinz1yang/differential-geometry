@@ -1,0 +1,41 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC47/48 full proof4446\u20134550, actual factor composition and retained basepoint coordinates"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/FactorGeometry.lean",
+      "sha256": "66be979f1df9cd29723b94034edd76da8bd11495b9a650eef55188189e3816d9",
+      "locator": "accepted factor segments/comparison proofs, full file reread"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/L2Product.lean",
+      "sha256": "65e9a66118a89a3ac85021a7c5b2c063819bbe8b3d859eded830857fc5cce1a0",
+      "locator": "accepted completeSpace_l2_product_factor and closed slice proofs, full file reread"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/FactorDimension.lean",
+      "sha256": "4067055e5f162f989143c447abfc1de7f89e16fa3819039745d7c75d23b8a689",
+      "locator": "accepted same-limit dimension proof47\u201361 and its polynomial-net input, reread"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/FactorSplitting.lean",
+      "sha256": "313725da4ed52380d8937740e989589a5c80c82b340d2468d88e3e8d43f5fe34",
+      "locator": "accepted same-limit exact splitting consumers, full file reread"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean",
+      "sha256": "b5e22368465eebb962655b55c646743b8aeb9a14c53785beef00b4353e12b1a3",
+      "locator": "pin c55e6e786f49471c72fbddbec5415808896aec1e; withLpProdMap and withLpProdCongr full proof1097\u20131117; review uses unique-factor identity1150\u20131168"
+    }
+  ],
+  "reused_source_checks": [
+    "endpoint_recognition_sources.json",
+    "one_dimensional_recognition_sources.json",
+    "factor_dimension_sources.json"
+  ],
+  "errata": "Previously checked unchanged endpoint/factor source and errata records reused.",
+  "scope": "AC48 endpoint branches on the actual factor and same supplied pointed limit; first coordinate unchanged and transverse distance coordinate explicit for every point."
+}

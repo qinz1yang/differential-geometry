@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "new_public_theorems": 4,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 4,
+  "combined_modules": 311,
+  "combined_jobs": 3146,
+  "combined_owned_declarations": 1392,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/BufferedRadialComparison.lean": "2249d7b0a5903f1b7f295e0f99c3cf1133bf0ea2bc9aaef20ac431096485055f",
+    "DifferentialGeometry/Geometry/Comparison/OppositeCrossAngles.lean": "6ce3c2e1f1ed585b6afa8cebb650bdf15f5007a503ca7452f8ca74db6bd2822f",
+    "DifferentialGeometry/Geometry/Comparison/BufferedAngleShortening.lean": "e910cf656de0e50f590b9def0e24a40ce02930419e99d15c9821516c6d9a9810"
+  },
+  "logs": {
+    "buffered_cross_angles_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "buffered_cross_angles_review.log": "7b2e7fbdc7e90389372bb38fe84d418cc6ecba2232509280236976e0d9f8ac89",
+    "buffered_cross_angles_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "933edd9eed849bcac032a62b7d3b2a1646684660f6a9d47fb5d776a187fbdd33",
+  "git_head_at_check": "245348efa987b2b1d92030a05ef75f01dea110d1",
+  "independent_agent_proof_review": true,
+  "independent_agent_boundary_driver": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

@@ -1,0 +1,25 @@
+'GCExactLimitApproximationReview.incomplete_rational_source_product_transfer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCExactLimitApproximationReview.lifted_universe_point_excludes_exact_line_factor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCExactLimitApproximationReview.same_universe_point_excludes_exact_line_factor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCUniformSplittingCompatibilityReview.real_no_rank_two_fixed_quality' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCUniformSplittingCompatibilityReview.actual_uniform_parameter_opposite_real_maps' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.PointedGHConverges.eventually_kleinerLott_approx_isometric_target' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.PointedGHConverges.not_exists_product_isometry_of_frequently_no_kleinerLott' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.PointedGHConverges.not_exists_small_product_isometry_of_frequently_no_kleinerLott' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.exists_splitting_compatibility_parameter' depends on axioms: [propext, Classical.choice, Quot.sound]

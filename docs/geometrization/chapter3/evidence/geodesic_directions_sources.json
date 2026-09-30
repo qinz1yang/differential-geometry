@@ -1,0 +1,27 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC11\u201312 2600\u20132688"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/AlexanderKapovitchPetrunin303Alexandrov.pdf",
+      "sha256": "1ba6f6f011a8333d9a20bdbf49d36d68b61bf1aababb19296ed48ecea37248ed",
+      "locator": "Chapter6C\u2013E printed/PDF64\u201368, Lemma6.4, Theorem6.5, direction quotient/completion and arbitrary-speed distance"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/Toponogov/HyperbolicComparisonAngle.lean",
+      "sha256": "cdfaf14c841771ba0d87dc080d94ff9758e34bbbd4c93a9b74ec7996e05e45be",
+      "locator": "Full scalar proof; last file commit8f2b806e1442030f4c749feedf7a77ea86d61c37; targeted2192-job build exit0"
+    }
+  ],
+  "reused_source_checks": [
+    "canonical_germ_cradle_sources.json",
+    "germ_angle_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Actual joint angle asymptotics/triangle/curvature independence and actual geodesic-direction quotient/completion; tangent realization remains separate",
+  "errata": "Retained AKP source/author errata checked; no fresh external retrieval",
+  "independent_root_and_peer_proof_review": true
+}

@@ -1,0 +1,5 @@
+'Path.eVariationOn_trans' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicEDist_triangle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicEDist_eq_edist_of_arbitrarily_short_curves' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicEMetricSpace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicMetricSpace' depends on axioms: [propext, Classical.choice, Quot.sound]

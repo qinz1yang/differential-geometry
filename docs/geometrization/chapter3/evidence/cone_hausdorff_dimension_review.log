@@ -1,0 +1,42 @@
+'MeasureTheory.Measure.exists_cover_by_positive_radii_of_hausdorffMeasure_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'MeasureTheory.Measure.hausdorffMeasure_Icc_prod_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'dimH_Icc_prod_le_add_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.lipschitzWith_bounded_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.range_bounded_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dimH_univ_le_dimH_base_add_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCPositiveHausdorffCoverReview.actual_countable_rational_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPositiveHausdorffCoverReview.actual_empty_carrier_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCPositiveHausdorffCoverReview.zero_exponent_positive_cost_obstruction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCIntervalProductDimensionReview.rational_base_interval_measure_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCIntervalProductDimensionReview.rational_base_interval_sharp_dimension_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCIntervalProductDimensionReview.empty_base_interval_dimension_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeRadialParametrizationReview.unbounded_real_base_full_range_and_capped_distance' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeRadialParametrizationReview.zero_bound_whole_map_collapses_with_exact_range' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeRadialParametrizationReview.empty_base_lipschitz_but_range_misses_the_tip' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeHausdorffDimensionReview.empty_base_cone_is_zero_and_upper_bound_is_strict' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeHausdorffDimensionReview.singleton_base_cone_has_exact_dimension_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeHausdorffDimensionReview.rational_base_cone_has_exact_dimension_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

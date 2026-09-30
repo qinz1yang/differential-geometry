@@ -1,0 +1,51 @@
+{
+  "success": true,
+  "blueprint_static_audit": {
+    "status": "pending",
+    "success": false,
+    "latest_completed_exit_code": 1,
+    "reason": "iCloud placeholders and metadata refresh during historical input reads",
+    "running_session": 82024,
+    "unchanged_audit_sha256": "a71b3b706ed68f757debfad4dbbbf4f80a243ed1db2f56fa5054d23dd54e2018",
+    "blueprint_revision": 207,
+    "lean_gate_independent": true,
+    "current_milestone": 138,
+    "note": "The separate unchanged static audit is ongoing; no pass is claimed."
+  },
+  "milestone": 138,
+  "new_public_theorems": 5,
+  "new_public_definitions": 0,
+  "new_instances": 0,
+  "new_declared_declarations": 5,
+  "new_generated_declarations": 5,
+  "new_owned_declarations": 10,
+  "observed_previous_owned_declarations": 2242,
+  "observed_previous_modules": 479,
+  "combined_modules": 483,
+  "combined_jobs": 3321,
+  "combined_owned_declarations": 2252,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/LocalPairedQualities.lean": "b5a1332269917c2b6a2fb25c31b1bffe87cf85a1847a7e7e681e8869931dad02",
+    "DifferentialGeometry/Geometry/Comparison/IntrinsicPacketDirections.lean": "cebb3104770d1f74a952319fb7ae97c2085f1975af73c1d5cbb7f8cffe8e3ac9",
+    "DifferentialGeometry/Geometry/Comparison/LocalDenseEuclideanTangents.lean": "3965cbceb3e7ff4d8707a34d06b0a1573d608925d220b122be5f2282790d58bc",
+    "DifferentialGeometry/Geometry/Comparison/LocalEuclideanStrut.lean": "efdb32cbe5f2076c278e1e0f569cbef4d7229303ceae5e78c2364da581c3447b"
+  },
+  "logs": {
+    "local_euclidean_tangents_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "local_euclidean_tangents_review.log": "051e5fbd639e38a5264a71cabcbb94e2d87628f3b447032885c5418a9dab63fb",
+    "local_euclidean_tangents_blueprint_audit.log": "b3b71800a9cd3bf92fbf59d0783164a2715705c89b41d70d74b5e8249086b3a9",
+    "local_euclidean_tangents_blueprint_status.json": "1bf070e90896a1446c1156b075cdbf856397eadb62ee3451c7a9e99c2e7e21a0"
+  },
+  "checks_receipt_sha256": "b58d3421c4c0eda4751c45017342e62cee4befcaeb49b10dd791324f6c8091fb",
+  "shared_gate_receipt_sha256": "008a26ea2c99841e8335f7e368a386807009d1404858e6ab7c8604bdbe09b070",
+  "previous_milestone_receipt_sha256": "b65049f27ebf7c935ec370a9969ae77c0c161bd9b63d27a71e00ea37eb7e37ca",
+  "review_driver_sha256": "c9d153cafc78ced9eddb04b1b4425c4da7d2428961d4306c02492317b41f5710",
+  "registration_plan_sha256": "41f8139b9f41ecf0ef380ede6ef1a4eb6708af66191ba01cb72ea7909f8070f4",
+  "source_receipt_sha256": "374249380676f9ec38a05abe035712eff8121912560bc10a09ed1e8e1ca86b1e",
+  "git_head_at_check": "565f61794204e945145e1fb3a4f0db7821ec6389",
+  "independent_peer_proof_review": true,
+  "new_concrete_regressions": 8,
+  "expected_review_reports": 13,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

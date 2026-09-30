@@ -1,0 +1,19 @@
+import Mathlib.Tactic.Linter
+import DifferentialGeometry.Geometry.Metric.CoarseClosure
+import DifferentialGeometry.Geometry.Metric.Approximation.RayRescalingBounds
+import DifferentialGeometry.Geometry.Metric.Approximation.RayTargetRescaling
+
+#check GC.MetricGeometry.le_on_closure_of_coarse_bound
+#print axioms GC.MetricGeometry.le_on_closure_of_coarse_bound
+
+#check GC.MetricGeometry.strong_edge_ray_rescaling_bounds
+#print axioms GC.MetricGeometry.strong_edge_ray_rescaling_bounds
+
+#check GC.MetricGeometry.KleinerLottApprox.recenterRescaleRayToInterval
+#print axioms GC.MetricGeometry.KleinerLottApprox.recenterRescaleRayToInterval
+
+#check GC.MetricGeometry.KleinerLottApprox.recenterRescaleRayToInterval_apply
+#print axioms GC.MetricGeometry.KleinerLottApprox.recenterRescaleRayToInterval_apply
+
+#check GC.MetricGeometry.KleinerLottApprox.exists_strong_edge_ray_model
+#print axioms GC.MetricGeometry.KleinerLottApprox.exists_strong_edge_ray_model

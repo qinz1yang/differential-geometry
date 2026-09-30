@@ -1,0 +1,58 @@
+# Geometrization project instructions
+
+These standing instructions implement the user's request for active, source-checked use of the reference collection. Read `HANDOFF.md` and `GEOMETRIZATION_BLUEPRINT/HANDOFF.md` for the current revision, work frontier, and existing decisions. Preserve the one-file blueprint approach and historical revisions. Do not restart the project or redesign its architecture.
+
+## Consult the relevant references before fixing mathematical contracts
+
+The local reference archive is `/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers`. Treat it as read-only. Use the existing reference inventory, source manifest, and comparison records to locate relevant material.
+
+Before introducing or substantially revising a mathematical theorem contract, proof route, dependency claim, or reuse/gap classification:
+
+1. Read the relevant source theorem, its definitions, and the proof passages needed to establish the proposed dependencies. Expand the reading when an imported result or hidden hypothesis matters.
+2. Check the full hypotheses, quantifier order and uniformity, regularity, curvature and time normalization, metric and domain conventions, boundary conditions, and precise conclusion. Distinguish local results from their applications to flow and from final reconstruction.
+3. Record the actual source version, theorem/section identifier, printed page, and PDF page when applicable. For TeX sources, record the label or an exact section/line locator. Verify the body rather than relying on a filename or contents page. Tie records to existing source hashes where available.
+4. Check applicable author or publisher errata. Use authoritative external sources when the local copy is incomplete, ambiguous, or lacks corrections; distinguish externally checked material from the archived version.
+5. Compare sources when their statements, conventions, or graph/geometric definitions differ. Name the required translations and leave unresolved implications explicit. Do not silently strengthen a conclusion, weaken a hypothesis, or treat a citation as an adapter proof.
+6. Update the relevant existing inventories and comparison records with the contract. If evidence exposes a mismatch in the current design, record it and assess the affected consumers before changing the contract.
+
+Use targeted reading. Access to the collection does not mean every work has been read. Reuse documented source checks when the source and relevant claim are unchanged; reopen passages when a new question or discrepancy warrants it. Do not restart completed work merely to impose this policy retrospectively.
+
+### Alexandrov references available for future work
+
+The archive also includes `BuragoGromovPerelman1992.pdf`, the English 1992 paper *A.D. Alexandrov spaces with curvature bounded below*, Russian Mathematical Surveys 47(2), 1--58. The local PDF has a prefixed cover sheet, so PDF page = printed page + 1. Use it as a primary source for Alexandrov structure, alongside AKP, BBI and the collapse sources. Its local-completeness definition and Sections 5--6 are especially relevant; retain Remark 5.1.1's curvature-zero constants and assumed-geodesics qualifications when implementing the general case. Exact identity and targeted reading begin in `GEOMETRIZATION_BLUEPRINT/reference_checks_revision64.md`; this is a historical record, not a claim that the entire paper was audited.
+
+The archive now includes `AlexanderKapovitchPetrunin303Alexandrov.pdf` (Alexander--Kapovitch--Petrunin, *Alexandrov geometry: foundations*), `KapovitchLebedevaPetruninAlexandrov.pdf` (Kapovitch--Lebedeva--Petrunin, *Lectures on Alexandrov spaces with curvature bounded below*), and `PetruninCourse.pdf` (Petrunin's course notes). Consult these alongside BBI and the existing collapse references when their content is relevant. The AKP source repository is https://github.com/anton-petrunin/book; the author book/errata page is https://anton-petrunin.github.io/book/.
+
+Pin any source checkout to its actual branch and commit, and record TeX labels or line locators. Keep the archived PDF, published edition, moving repository, and author errata distinct: their dates, numbering and contents need not agree. Revision63's exact identities, targeted reading and retained source snapshot are in `GEOMETRIZATION_BLUEPRINT/reference_checks_revision63.md` and `checks/evidence/revision63_alexandrov_sources.json`. The course notes are catalogued, not yet used as theorem-proof evidence. Check the archive for later additions when opening a new topic; do not infer that every archived book has been read.
+
+## Preserve the established source roles
+
+- Morgan--Tian 2014 is the global Geometrization spine and assembly guide; keep manuscript and published-book locators distinct.
+- Kleiner--Lott 2008 is the detailed analytic exposition.
+- Perelman's papers are primary sources.
+- Hamilton 1999 and MSM206 guide the hyperbolic branch.
+- Kleiner--Lott Asterisque 365 is the provisional local-collapse route; Morgan--Tian supplies the global comparison/application route. Retain the compatibility gates in the current handoff.
+
+## Preserve the PC reuse boundary
+
+Reuse the completed PC project's geometric, analytic, and topological foundation. M2/M2A is an inherited-foundation audit and adapter, not new foundational geometry. The first genuinely new analytic layer remains the surviving M3 Ricci-flow PDE gaps after completed-release comparison.
+
+The current unfinished PC snapshot is read-only discovery material, not the completed release. Pause expansion of adapters and declaration probes tied to that changing snapshot until the completed release or an explicitly stabilized interface is available. Continue independent collapse, hyperbolic, topology, and reconstruction specifications according to the current handoff; their eventual Lean implementations must use the audited foundation.
+
+Treat user-confirmed PC results, including Hamilton--Ivey and smooth Schoenflies, as inherited reuse candidates. Do not plan to reprove them or label them absent merely because a declaration has not been located. Distinguish the user's report, a source-inspected declaration, and a theorem validated against the accepted release. Verify exact scope, hypotheses, imports, and axiom evidence when binding the release.
+
+Preserve the late-thick/thin-or-terminal-exceptional outcome. Finite-time extinction remains outside the default GC route. Keep unresolved endpoint and source-compatibility issues visible rather than silently changing their requirements.
+
+## Report the evidence accurately
+
+Distinguish:
+
+- source-verified mathematical statements;
+- proposed formalization interfaces and proof decompositions;
+- provisional PC source discoveries;
+- declarations actually elaborated and checked in Lean;
+- static audits and document builds.
+
+For each substantive mathematical update, briefly identify the sources and locators actually checked, the changes they motivated, unresolved comparisons, and checks actually run. Label strategic workload estimates and other judgments as estimates; state when a material claim is based on general knowledge or inference instead of a checked source.
+
+Rerun `python3 GEOMETRIZATION_BLUEPRINT/audit_blueprint.py` after blueprint or inventory changes. This is a consistency check, not a mathematical proof. Claim Lean, PDF, or Overleaf verification only when the corresponding tools and projects were available and the check actually ran; report its scope. Preserve Arabic page numbering from Chapter 1 when editing the blueprint.

@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "new_public_theorems": 3,
+  "new_owned_declarations": 5,
+  "combined_modules": 77,
+  "combined_jobs": 2865,
+  "combined_owned_declarations": 607,
+  "sources": {
+    "DifferentialGeometry/Analysis/SpecialFunctions/Trigonometric/AngleEstimates.lean": "d7e646ed73661d1a860bd16aa2cf5093fafbeb21413241665c92adf8be250083",
+    "DifferentialGeometry/Geometry/Comparison/PairedCorrection.lean": "a8d8dc79d9bf4be77980dc332f58d5b5231799b233ec2929c2400f0f8aafefab"
+  },
+  "logs": {
+    "paired_correction_geometric_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "paired_correction_analytic_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "paired_correction_review.log": "dc4874294feb9b07a1e004ef11e2922cf52f960b2fdea93458dfa67bd32abd20",
+    "paired_correction_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "91dfd8bf82754d2374ca914ba31bb715326ef12427a54233bbbb94370460cb52",
+  "git_head_at_check": "dab47ac103f0bd753e365a3d727e27c53826e741",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

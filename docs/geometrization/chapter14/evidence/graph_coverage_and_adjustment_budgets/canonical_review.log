@@ -1,0 +1,63 @@
+GC.MetricGeometry.hausdorffDist_truncated_range_le.{u_1, u_2} {H : Type u_1} [NormedAddCommGroup H] [NormedSpace ℝ H]
+  {E : Type u_2} [NormedAddCommGroup E] [NormedSpace ℝ E] (T : E →L[ℝ] H) (hT : ∀ (v : E), ‖v‖ ≤ ‖T v‖) (X : Set H)
+  (x : H) (hx : x ∈ X) {R q : ℝ} (hR : 0 < R) (hq : 0 ≤ q)
+  (hforward : ∀ y ∈ X ∩ Metric.closedBall x R, ∃ v, dist y (x + T v) ≤ q)
+  (hbackward : ∀ (v : E), ‖v‖ ≤ R → ∃ y ∈ X, dist y (x + T v) ≤ q) :
+  Metric.hausdorffDist (X ∩ Metric.closedBall x R) ((fun v ↦ x + T v) '' Set.univ ∩ Metric.closedBall x R) ≤ 3 * q
+'GC.MetricGeometry.hausdorffDist_truncated_range_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.hausdorffDist_graph_tangent_closedBall_le.{u_1, u_2} {E : Type u_1} {H : Type u_2}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup H] [NormedSpace ℝ H] [CompleteSpace H] (Φ : E → H)
+  (P : H →L[ℝ] E) (hP : ∀ (z : H), ‖P z‖ ≤ ‖z‖) (hgraph : ∀ (u : E), P (Φ u) = u) (X : Set H) (x : H) (hx : x ∈ X)
+  {R B e : ℝ} (hR : 0 < R) (hB : 0 ≤ B) (he : 0 ≤ e) (hreg : ∀ u ∈ Metric.closedBall (P x) R, ContDiffAt ℝ 2 Φ u)
+  (hsecond : ∀ u ∈ Metric.closedBall (P x) R, ‖iteratedFDeriv ℝ 2 Φ u‖ ≤ B)
+  (hforward : ∀ y ∈ X ∩ Metric.closedBall x R, dist y (Φ (P y)) ≤ e)
+  (hbackward : ∀ u ∈ Metric.closedBall (P x) R, ∃ y ∈ X, dist y (Φ u) ≤ e) :
+  Metric.hausdorffDist (X ∩ Metric.closedBall x R)
+      ((fun v ↦ x + (fderiv ℝ Φ (P x)) v) '' Set.univ ∩ Metric.closedBall x R) ≤
+    3 * (2 * e + B * R ^ 2 / 2)
+'GC.MetricGeometry.hausdorffDist_graph_tangent_closedBall_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.graph_coverage_relative_error_le {σ Γ r B e : ℝ} (hσ : 0 < σ) (hΓ : 0 < Γ) (hB : 0 ≤ B)
+  (hrlow : σ / 2 ≤ r) (hrhigh : r ≤ 2 * σ) (he : e ≤ Γ * σ / 24) (hcurv : B * σ ≤ Γ ^ 3 / 6) :
+  3 * (2 * e + B * (r / Γ) ^ 2 / 2) / r ≤ Γ
+'GC.MetricGeometry.graph_coverage_relative_error_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.scale_comparison_of_retained_marker.{u_1, u_2, u_3} {P : Type u_1} {X : Type u_2} {I : Type u_3}
+  (f : P → X) (ρ : P → ℝ) (marker : I → X → ℝ) (R : I → ℝ) (hR : ∀ (i : I), 0 < R i)
+  (hsupport : ∀ (i : I) (p : P), 0 < marker i (f p) → 3 * R i / 4 ≤ ρ p ∧ ρ p ≤ 5 * R i / 4) {p q : P} (heq : f p = f q)
+  (i : I) (hfull : marker i (f p) = R i) : 0 < ρ p ∧ 3 / 5 * ρ p ≤ ρ q ∧ ρ q ≤ 5 / 3 * ρ p
+'GC.MetricGeometry.scale_comparison_of_retained_marker' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.radius_control_of_retained_markers.{u_1, u_2, u_3} {P : Type u_1} {X : Type u_2} {I : Type u_3}
+  [PseudoMetricSpace X] (f : P → X) (ρ : P → ℝ) (marker : I → X → ℝ) (R : I → ℝ) (hR : ∀ (i : I), 0 < R i)
+  (hmarker : ∀ (i : I), LipschitzWith 1 (marker i)) (hfull : ∀ (p : P), ∃ i, marker i (f p) = R i)
+  (hsupport : ∀ (i : I) (p : P), 0 < marker i (f p) → 3 * R i / 4 ≤ ρ p ∧ ρ p ≤ 5 * R i / 4) {σ : ℝ} (hσ : 0 ≤ σ)
+  (hσhalf : σ ≤ 1 / 2) (p q : P) : |σ * ρ q - σ * ρ p| ≤ 2 * (dist (f p) (f q) + σ * ρ p)
+'GC.MetricGeometry.radius_control_of_retained_markers' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.scale_bounds_on_closedBall.{u_1} {P : Type u_1} [PseudoMetricSpace P] {ρ : P → ℝ} {Λ : NNReal}
+  (hρ : LipschitzWith Λ ρ) {p q : P} {C : ℝ} (hp : 0 < ρ p) (hsmall : ↑Λ * C ≤ 1 / 4)
+  (hq : q ∈ Metric.closedBall p (C * ρ p)) : 3 * ρ p / 4 ≤ ρ q ∧ ρ q ≤ 5 * ρ p / 4
+'GC.MetricGeometry.scale_bounds_on_closedBall' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Analysis.adjustment_errors_le_of_budget {c μ α b L ε σ E H ν : ℝ} (hc : 0 < c) (hc1 : c ≤ 1)
+  (hμ : 0 < μ) (hα : 0 ≤ α) (hb : 0 ≤ b) (hL : 0 ≤ L) (hε : 0 ≤ ε) (hE : 0 ≤ E) (hH : 0 ≤ H) (hsmall : ε ≤ 1 / 10)
+  (hεα : ε ≤ α) (hσhalf : σ ≤ 1 / 2) (hEα : E ≤ α) (hHα : H ≤ α) (hν : ν ≤ c / 16)
+  (hvalue : 16 * α * (1 + b) * (1 + L) ≤ c) (hrank : 8 * α * (1 + L) ≤ μ) :
+  have a := 5 / 3 * ε * σ + (1 + ε) * E;
+  E + a ≤ 3 * c / 16 ∧ a * b * (L + H) + ε * (L + H) + ν + 2 * H ≤ 3 * c / 8 ∧ ε * (L + H) + H < μ
+'DifferentialGeometry.Analysis.adjustment_errors_le_of_budget' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+DifferentialGeometry.Analysis.adjustment_threshold_pos_and_bounds {c μ b L : ℝ} (hc : 0 < c) (hμ : 0 < μ) (hb : 0 ≤ b)
+  (hL : 0 ≤ L) :
+  have α := min (c / (16 * (1 + b) * (1 + L))) (μ / (8 * (1 + L)));
+  0 < α ∧ 16 * α * (1 + b) * (1 + L) ≤ c ∧ 8 * α * (1 + L) ≤ μ
+'DifferentialGeometry.Analysis.adjustment_threshold_pos_and_bounds' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+DifferentialGeometry.Analysis.adjustment_errors_lt_of_threshold {c μ b L ε σ E H ν : ℝ} (hc : 0 < c) (hc1 : c ≤ 1)
+  (hμ : 0 < μ) (hb : 0 ≤ b) (hL : 0 ≤ L) (hε : 0 ≤ ε) (hE : 0 ≤ E) (hH : 0 ≤ H) (hsmall : ε ≤ 1 / 10)
+  (hσhalf : σ ≤ 1 / 2) (hν : ν ≤ c / 16) (hεα : ε ≤ min (c / (16 * (1 + b) * (1 + L))) (μ / (8 * (1 + L))))
+  (hEα : E ≤ min (c / (16 * (1 + b) * (1 + L))) (μ / (8 * (1 + L))))
+  (hHα : H ≤ min (c / (16 * (1 + b) * (1 + L))) (μ / (8 * (1 + L)))) :
+  have a := 5 / 3 * ε * σ + (1 + ε) * E;
+  E + a < c ∧ a * b * (L + H) + ε * (L + H) + ν + 2 * H < c ∧ ε * (L + H) + H < μ
+'DifferentialGeometry.Analysis.adjustment_errors_lt_of_threshold' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

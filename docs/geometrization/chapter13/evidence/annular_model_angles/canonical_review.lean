@@ -1,0 +1,11 @@
+import Mathlib.Tactic.Linter
+import DifferentialGeometry.Geometry.Comparison.TriangleExcessAngle
+
+#check DifferentialGeometry.Geometry.Comparison.Toponogov.one_add_cos_comparisonAngle_le_excess
+#print axioms DifferentialGeometry.Geometry.Comparison.Toponogov.one_add_cos_comparisonAngle_le_excess
+
+#check DifferentialGeometry.Geometry.Comparison.Toponogov.one_add_cos_comparisonAngle_equal_le_small
+#print axioms DifferentialGeometry.Geometry.Comparison.Toponogov.one_add_cos_comparisonAngle_equal_le_small
+
+#check DifferentialGeometry.Geometry.Comparison.Toponogov.pi_sub_lt_comparisonAngle_annular
+#print axioms DifferentialGeometry.Geometry.Comparison.Toponogov.pi_sub_lt_comparisonAngle_annular

@@ -1,0 +1,6 @@
+'Real.dist_le_mul_of_directed_step' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PiLp.dist_le_sub_of_coordinate_correction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PiLp.dist_le_mul_of_largest_coordinate_correction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.exists_residual_correction_of_coordinate_moves' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.paired_correction_constants' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.exists_preimage_of_coordinate_moves' depends on axioms: [propext, Classical.choice, Quot.sound]

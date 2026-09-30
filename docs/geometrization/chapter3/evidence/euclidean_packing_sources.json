@@ -1,0 +1,32 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC33 full proof3730\u20133768 and compactness consumer3769\u20133779, reread"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Algebra/Order/Floor/Semiring.lean",
+      "sha256": "3dd73657084881e68e006a6443121eecb1f0fe2e17b65cbf7bfc34fa7a1f82d8",
+      "locator": "c55e6e786f49471c72fbddbec5415808896aec1e; natural floor proofs35\u201398"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+      "sha256": "925c12b0bdd954bb84b8318c2518311ab459537aef2c06e2629f9f60b27bd442",
+      "locator": "same pin; squared metric/norm proofs787\u2013806"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/FiniteNets.lean",
+      "sha256": "87486a8c7bbfce157936a23a1f3935303d22ea9f555b1df67ebd170f4854dd7d",
+      "locator": "accepted compact-cover and maximal separated-net proofs, full file read and reused unchanged"
+    }
+  ],
+  "reused_source_checks": [
+    "packing_transport_sources.json",
+    "uniform_radial_defect_sources.json",
+    "finite_radial_comparison_sources.json"
+  ],
+  "errata": "Accepted BGP6.3 and BBI10.8.20 readings and retained BBI errata page13 checks reused.",
+  "scope": "AC33 pure grid bound and compact-target transfer only; no geometric application or rough-volume asymptotics yet.",
+  "convention": "Non-strict epsilon<=dist in project finitePackingNumber."
+}

@@ -1,0 +1,45 @@
+'GC.MetricGeometry.radialConeKernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.radialConeKernel_self' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.radialConeKernel_comm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.radialConeKernel_bounds' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.dist_apex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.map_apex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.same_ray_dist' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.similarity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.kernel_map_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.kernel_map_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.map_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.map_inv_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.map_map_inv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.map_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.map_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.unitRay' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.unitRay_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.unitRay_through' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.unitRay_isometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.eq_map_of_radial_distances' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.eq_map_of_radial_distances_abs' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.RadialConeData.unitRay_dist_apex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.unitRay_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.two_apex_cross_dist' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.twoApexLine' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.twoApexLine_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.twoApexLine_nonpos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.twoApexLine_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.twoApexLine_through' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.twoApexLine_isometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.RadialConeData.exists_line_through_two_apices' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.RadialConeData.exists_pointed_product_at_second_apex' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCRadialConeReview.translated_plane_actual_cones' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCRadialConeReview.translated_plane_two_apices' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCRadialConeReview.singleton_actual_cone' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCTwoConeSplittingReview.translated_reversed_real_apices_product' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

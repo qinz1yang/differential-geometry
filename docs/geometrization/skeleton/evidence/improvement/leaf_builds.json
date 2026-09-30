@@ -1,0 +1,597 @@
+{
+  "finished_utc": "2026-09-30T05:37:42.887458+00:00",
+  "command": "lake env lean [exact project leanOptions] <source>",
+  "fresh_direct_source_elaborations": true,
+  "all_returncode_zero": true,
+  "all_proof_only_modules_silent": true,
+  "literal_all_modules_silent": false,
+  "modules": [
+    {
+      "module": "DifferentialGeometry.Analysis.Calculus.Compactness.FiniteOrder",
+      "source": "DifferentialGeometry/Analysis/Calculus/Compactness/FiniteOrder.lean",
+      "source_sha256": "4ed6ea0f202fe17dff1a6c71ad9d1921ec5ae2b3f69594a59127adae1e37b335",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Analysis.Calculus.Compactness.FiniteOrder.log",
+      "log_sha256": "1aad54096450f8247d3d3d9173c4c1663aec203338c37b593106f270f2e83aad",
+      "silent": false,
+      "direct_admissions": [
+        "DifferentialGeometry.CheegerGromovCompactness.exists_bilinear_form_limit_subsequence_of_bounded_derivatives"
+      ],
+      "diagnostics": "DifferentialGeometry/Analysis/Calculus/Compactness/FiniteOrder.lean:11:8: warning: declaration uses `sorry`\n"
+    },
+    {
+      "module": "DifferentialGeometry.Analysis.ODE.AreaUpperBarrier",
+      "source": "DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean",
+      "source_sha256": "0c6b17d810670900f7723034aee47170ee226f429e3cca45d83821a42ec95b29",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Analysis.ODE.AreaUpperBarrier.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Analysis.ODE.ReciprocalTimeBarrier",
+      "source": "DifferentialGeometry/Analysis/ODE/ReciprocalTimeBarrier.lean",
+      "source_sha256": "2b074226c3b1ee059e58c3521a0b8b31a7b3ce3b0f290ef37be46153d5950079",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Analysis.ODE.ReciprocalTimeBarrier.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Collapse.CompactBounds",
+      "source": "DifferentialGeometry/Geometry/Collapse/CompactBounds.lean",
+      "source_sha256": "35ab02a5a8dca45438ec425508ea11b2cf18e52555d667a768663c94c3c3483e",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Collapse.CompactBounds.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Collapse.CurvatureScale",
+      "source": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "source_sha256": "ef302d211b842ebad30c0f5cd60ff358dd453b3fc3463e4d2299fe3d6ae297de",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Collapse.CurvatureScale.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Collapse.CuspBoundary",
+      "source": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "source_sha256": "389890aaede5590a0bc05f40b23dee275ab04c939e56829f34e98b0c7db68ddc",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Collapse.CuspBoundary.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Collapse.GraphManifold",
+      "source": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "source_sha256": "f6f3901d6cfbea29841311894835dc35518a4eb9f932bfa35e7f4e212fd5f38e",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Collapse.GraphManifold.log",
+      "log_sha256": "1f67a84271bc0bbbd26b045ef215d01487dcfa0797534547056c54baa1d96c5b",
+      "silent": false,
+      "direct_admissions": [
+        "DifferentialGeometry.Geometry.Collapse.exists_closed_graph_threshold_of_finite_scales",
+        "DifferentialGeometry.Geometry.Collapse.exists_boundary_graph_threshold"
+      ],
+      "diagnostics": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean:84:8: warning: declaration uses `sorry`\nDifferentialGeometry/Geometry/Collapse/GraphManifold.lean:138:8: warning: declaration uses `sorry`\n"
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Collapse.LatePieceGeometry",
+      "source": "DifferentialGeometry/Geometry/Collapse/LatePieceGeometry.lean",
+      "source_sha256": "19857610cfa5f278b8d135130dda1112c4d3413f3e21a0e40d0504b669b9f431",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Collapse.LatePieceGeometry.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Collapse.Parameters",
+      "source": "DifferentialGeometry/Geometry/Collapse/Parameters.lean",
+      "source_sha256": "1aadfd55bd83a26745fc437156a945844f6e9c642e07a2cf18a2dcd9ffbda5a0",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Collapse.Parameters.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Collapse.UniformDerivativeBounds",
+      "source": "DifferentialGeometry/Geometry/Collapse/UniformDerivativeBounds.lean",
+      "source_sha256": "1833a0d87a936bc820c69b7fb8fac850c984940791174a7ff02ecc9a93b7754a",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Collapse.UniformDerivativeBounds.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Comparison.SectionalLowerBound",
+      "source": "DifferentialGeometry/Geometry/Comparison/SectionalLowerBound.lean",
+      "source_sha256": "696b093ece23087fc30f8959c05aa31360296c5f62f219cb0f03faa374bc31fb",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Comparison.SectionalLowerBound.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Metric",
+      "source": "DifferentialGeometry/Geometry/Connection/TensorNabla/Iterated/Metric.lean",
+      "source_sha256": "8be16d229ac175e3e584f366bf3915133ce689d7777fb4ce0d22706d1340dacc",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Metric.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Curvature.Metric.DerivativeNorm",
+      "source": "DifferentialGeometry/Geometry/Curvature/Metric/DerivativeNorm.lean",
+      "source_sha256": "f4053fdbe7f6c37fc07ace48cca39add9032f7fd32fe95e9e16faf5407ff44cc",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Curvature.Metric.DerivativeNorm.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.AnalyticAdmissibility",
+      "source": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/AnalyticAdmissibility.lean",
+      "source_sha256": "172f1d788f713fecd73767cff7598630c90bce3a1d58aeefaebcc4b887c484d1",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.AnalyticAdmissibility.log",
+      "log_sha256": "811d773a7b7b90d68c44a31d22cb4b2053598cb1c5e0d0632e617d9ebba9b7a8",
+      "silent": false,
+      "direct_admissions": [
+        "GC.LongTime.exists_surgery_with_decaying_accuracy"
+      ],
+      "diagnostics": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/AnalyticAdmissibility.lean:115:8: warning: declaration uses `sorry`\n"
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspExterior",
+      "source": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspExterior.lean",
+      "source_sha256": "3de6ba18f5579d31cf137978da168d4df2768e58de78277689699a03761e5184",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspExterior.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspExteriorProducers",
+      "source": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspExteriorProducers.lean",
+      "source_sha256": "7be4a5b5006a95944e069789c99cadd75c70eb87a2d9585d5c0c9edd6c1e901f",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspExteriorProducers.log",
+      "log_sha256": "a793548926bc9a0847549065ecf18ef320f9f8a691fb1aedb866257ead9446eb",
+      "silent": false,
+      "direct_admissions": [
+        "GC.LongTime.exists_primitive_meridian_of_compressible_seam",
+        "GC.LongTime.exists_attained_leastExteriorDiskArea",
+        "GC.LongTime.local_disk_comparisons_of_cusp_exterior",
+        "GC.LongTime.exists_local_upper_barrier_of_exteriorDiskArea"
+      ],
+      "diagnostics": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspExteriorProducers.lean:16:8: warning: declaration uses `sorry`\nDifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspExteriorProducers.lean:28:8: warning: declaration uses `sorry`\nDifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspExteriorProducers.lean:38:8: warning: declaration uses `sorry`\nDifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspExteriorProducers.lean:48:8: warning: declaration uses `sorry`\n"
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspIncompressibility",
+      "source": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspIncompressibility.lean",
+      "source_sha256": "c7d468edf3cd6e06e57b5ea44be93fb36842543ddef63eb3a8826860cf22937c",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspIncompressibility.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.ExteriorDiskComparisons",
+      "source": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskComparisons.lean",
+      "source_sha256": "63e37e64e8504e48762b27a1cfca7c63db2cedb9767f29cd66f07a89cc7c3122",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.ExteriorDiskComparisons.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.ExteriorDiskFlow",
+      "source": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "source_sha256": "17f3cfd0079e0e4a2624b97f9091f3e6250b385bbce347b1cf9bba14745657dc",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.ExteriorDiskFlow.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Geometrization",
+      "source": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/Geometrization.lean",
+      "source_sha256": "2fabd11597674a80c206dced81a6bd954950f84064df3af2441dd1c24f513314",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Geometrization.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateCutGeometry",
+      "source": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateCutGeometry.lean",
+      "source_sha256": "169c87bb034eb23faff4b0add84cc4b919b3680d7058064b167da7d9e2f9e3a7",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateCutGeometry.log",
+      "log_sha256": "f25fe082bdf90342b5c7e0b898d417ac5bb00ff296e70f0cd53e482277ce4c55",
+      "silent": false,
+      "direct_admissions": [
+        "GC.LongTime.exists_late_cut_family",
+        "GC.LongTime.late_derivative_tests_of_flow"
+      ],
+      "diagnostics": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateCutGeometry.lean:148:8: warning: declaration uses `sorry`\nDifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateCutGeometry.lean:158:8: warning: declaration uses `sorry`\n"
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateDecomposition",
+      "source": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateDecomposition.lean",
+      "source_sha256": "6afe527f0abeff99ed7939a394147252e7387a5bc51e0e5bd92adee0b5bd3500",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateDecomposition.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Parameters",
+      "source": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/Parameters.lean",
+      "source_sha256": "5ca08a18ee6cbef1fed58858d818c3ab9406ccdf2b041b52cec550aa8c2ecd3c",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Parameters.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.PersistentHyperbolicCores",
+      "source": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/PersistentHyperbolicCores.lean",
+      "source_sha256": "9bc50729a606657054fdac513c9cbac1ab430edb63bc8866b0bdfaca77c557be",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.PersistentHyperbolicCores.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.RegularSlice",
+      "source": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "source_sha256": "d83e2ff18e975ef18acdb51562f0a0863af234e8e7550279dd434ee77f233062",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.RegularSlice.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Hyperbolic.Cusp",
+      "source": "DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean",
+      "source_sha256": "47d7fdd11da0f39db7545cd6c6e86917ecf0a137a30051ba7838a3dbb47701cc",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Hyperbolic.Cusp.log",
+      "log_sha256": "485bc24d887ffda65d1ffc96b1724c9a8c6e493a4529bb07b04715bf9f7b8f36",
+      "silent": false,
+      "direct_admissions": [
+        "DifferentialGeometry.Geometry.Hyperbolic.cusp_constant_sectional_curvature"
+      ],
+      "diagnostics": "DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean:25:8: warning: declaration uses `sorry`\n"
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Hyperbolic.FiniteVolumeModel",
+      "source": "DifferentialGeometry/Geometry/Hyperbolic/FiniteVolumeModel.lean",
+      "source_sha256": "65b2a494206bf46653c865039a3c85da3abc852dbec04117459f927e92e74fb0",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Hyperbolic.FiniteVolumeModel.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Hyperbolic.ModelAtlas",
+      "source": "DifferentialGeometry/Geometry/Hyperbolic/ModelAtlas.lean",
+      "source_sha256": "c4fc7e842a7b69868b314d70eefa6532e72bdc85fe42a14edfa0acbc7724d0b6",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Hyperbolic.ModelAtlas.log",
+      "log_sha256": "c14108807fd3a58d3f85a01e01f111b778ede7ad0e14bd5ba844fc215df20f2c",
+      "silent": false,
+      "direct_admissions": [
+        "DifferentialGeometry.Geometry.Hyperbolic.has_hyperbolic_atlas_of_curvature_neg_one"
+      ],
+      "diagnostics": "DifferentialGeometry/Geometry/Hyperbolic/ModelAtlas.lean:18:8: warning: declaration uses `sorry`\n"
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Hyperbolic.Rigidity",
+      "source": "DifferentialGeometry/Geometry/Hyperbolic/Rigidity.lean",
+      "source_sha256": "51069cd7c6fc930e2c50bacf9cde4f92f2190b51f626b2f393ad71f809538107",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Hyperbolic.Rigidity.log",
+      "log_sha256": "e0e83d1e95adec4d5bf86eb146b06e0d7e2f0b4b1c9c64f9a51eac87bd0d2ed1",
+      "silent": false,
+      "direct_admissions": [
+        "DifferentialGeometry.Geometry.Hyperbolic.mostow_prasad"
+      ],
+      "diagnostics": "DifferentialGeometry/Geometry/Hyperbolic/Rigidity.lean:24:8: warning: declaration uses `sorry`\n"
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Hyperbolic.Truncation",
+      "source": "DifferentialGeometry/Geometry/Hyperbolic/Truncation.lean",
+      "source_sha256": "8d8b11f1a408298516a387aa3ed3be5591150e97a3675ffda0b857e22b4f2746",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Hyperbolic.Truncation.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Metric.Distance.Neighborhood",
+      "source": "DifferentialGeometry/Geometry/Metric/Distance/Neighborhood.lean",
+      "source_sha256": "38a5347debee57c6ca7c1590532a59ff08d4721f878edce1615b8c9395e249d1",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Metric.Distance.Neighborhood.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Metric.Pullback.FiniteRegularity",
+      "source": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "source_sha256": "450c54f12872ce6917f5bb5f85436a7e34c522b3dfd66c2ab2a553619f3c990e",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Metric.Pullback.FiniteRegularity.log",
+      "log_sha256": "1414c8a912bf18357d3d1d5905f356622a4f5a556f954747cef11f4b7c6c6150",
+      "silent": false,
+      "direct_admissions": [
+        "DifferentialGeometry.Geometry.exists_pullback_metric_of_finite_diffeomorph"
+      ],
+      "diagnostics": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean:16:8: warning: declaration uses `sorry`\n"
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.MinimalSurface.ExteriorDiskArea",
+      "source": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "source_sha256": "1ebd4828638db75da5a19f118e90bb62f4266931a3e935c31a5360ae676abea6",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.MinimalSurface.ExteriorDiskArea.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.MinimalSurface.ExteriorDiskReparametrization",
+      "source": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskReparametrization.lean",
+      "source_sha256": "2880e37124aa39754b0889a9d8b5aeef2f5586881dd68ba64561195fd5a751f2",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.MinimalSurface.ExteriorDiskReparametrization.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Thurston.GraphPresentation",
+      "source": "DifferentialGeometry/Geometry/Thurston/GraphPresentation.lean",
+      "source_sha256": "859075f5a86d11cb408c415edd9a19a1a1c1f5dcdc8309387af786a446ea6f9e",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Thurston.GraphPresentation.log",
+      "log_sha256": "2d7fa96c7283dc0be4a131995ed8c9473ca192c9d37b273a84d3eedd9e29e1dc",
+      "silent": false,
+      "direct_admissions": [
+        "GC.GraphManifold.rawGraphPresentation_of_sphericalSpaceForm",
+        "GC.GraphManifold.rawGraphPresentation_of_sphericalProduct",
+        "GC.GraphManifold.rawGraphPresentation_of_flat"
+      ],
+      "diagnostics": "DifferentialGeometry/Geometry/Thurston/GraphPresentation.lean:11:8: warning: declaration uses `sorry`\nDifferentialGeometry/Geometry/Thurston/GraphPresentation.lean:18:8: warning: declaration uses `sorry`\nDifferentialGeometry/Geometry/Thurston/GraphPresentation.lean:25:8: warning: declaration uses `sorry`\n"
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Thurston.NonnegativeClassification",
+      "source": "DifferentialGeometry/Geometry/Thurston/NonnegativeClassification.lean",
+      "source_sha256": "12a01119c4af3b944cb0d8cff5373409cb8e5c5621c1b1074646af0c07673736",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Geometry.Thurston.NonnegativeClassification.log",
+      "log_sha256": "ca8789795796f571a67a3089989a4e4c419dbae89f5e58e33c7b4b26c687f8c8",
+      "silent": false,
+      "direct_admissions": [
+        "GC.Geometry.closed_nonnegative_sectional_classification"
+      ],
+      "diagnostics": "DifferentialGeometry/Geometry/Thurston/NonnegativeClassification.lean:11:8: warning: declaration uses `sorry`\n",
+      "refreshed_utc": "2026-09-30T06:09:29.260802+00:00"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.Connected.FinitePartitions",
+      "source": "DifferentialGeometry/Topology/Connected/FinitePartitions.lean",
+      "source_sha256": "8f09946717e87de17bb8c41cbd6ddf8d8888b01ef95c80150aca1d63528d6c4c",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Topology.Connected.FinitePartitions.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Topology.FundamentalGroup.AreaObstruction",
+      "source": "DifferentialGeometry/Topology/FundamentalGroup/AreaObstruction.lean",
+      "source_sha256": "d6ed1d1efdab28fb29f1ee6ce57654bfa625f6204ef5abbeede8baaacb3d722e",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Topology.FundamentalGroup.AreaObstruction.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Topology.Manifold.CompactModel",
+      "source": "DifferentialGeometry/Topology/Manifold/CompactModel.lean",
+      "source_sha256": "64b428632e608f24425288cb811767ed8df94097d0ec7ad812dae194cf91dc0a",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Topology.Manifold.CompactModel.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": "",
+      "refreshed_utc": "2026-09-30T06:09:28.705399+00:00"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.SphereSummand",
+      "source": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SphereSummand.lean",
+      "source_sha256": "9e12fba2568a0e7294d341ece9ca1bcece4dd30136371ac08c500374d668da94",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Topology.ThreeManifold.Geometrization.SphereSummand.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": "",
+      "refreshed_utc": "2026-09-30T06:09:30.990148+00:00"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.ThreeManifold.Geometrization.Transport",
+      "source": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Transport.lean",
+      "source_sha256": "c96ee77be7f3de40f4aba84a00e871ace00bf1f64b1cf07aaf4425b4d6988288",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Topology.ThreeManifold.Geometrization.Transport.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Presentation",
+      "source": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "source_sha256": "7fcae3dd8550a5c2bcc1cffc8734d106c4be195b0e99a0cf5a3b37a6d8c71052",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Presentation.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Refinement",
+      "source": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "source_sha256": "467285a54770d7af5dba09b5bfc561f08fdcbf8f603791eef372cf2642534652",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Refinement.log",
+      "log_sha256": "be26fa744174655cc5bac93baae684d39a3e90e10e1216bf37c9817a9d5b4784",
+      "silent": false,
+      "direct_admissions": [
+        "GC.GraphManifold.exists_geometric_decomposition_of_prime_rawGraphPresentation",
+        "GC.GraphManifold.exists_prime_geometric_decomposition_of_hyperbolicOrGraph"
+      ],
+      "diagnostics": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean:35:8: warning: declaration uses `sorry`\nDifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean:50:8: warning: declaration uses `sorry`\n"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.ThreeManifold.GraphManifold.SphereSplitting",
+      "source": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/SphereSplitting.lean",
+      "source_sha256": "80ef936134a903e8d4831064fae4cbd969fd95c62a3717da0ad5f4230cf77a9b",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Topology.ThreeManifold.GraphManifold.SphereSplitting.log",
+      "log_sha256": "75638ba65856cc1ca0479019978aa696b43e0802c86a17d72157401bd9701a00",
+      "silent": false,
+      "direct_admissions": [
+        "GC.GraphManifold.sphere_split_of_rawGraphPresentation",
+        "GC.GraphManifold.rawGraphPresentation_of_sphere_summand"
+      ],
+      "diagnostics": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/SphereSplitting.lean:11:8: warning: declaration uses `sorry`\nDifferentialGeometry/Topology/ThreeManifold/GraphManifold/SphereSplitting.lean:16:8: warning: declaration uses `sorry`\n"
+    },
+    {
+      "module": "DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Transport",
+      "source": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Transport.lean",
+      "source_sha256": "9609d911b70316a553e8e8e135688afb9af2f2cf6a57582073a5ce5458829f3e",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Transport.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Topology.ThreeManifold.TorusCut.CylinderIncompressibility",
+      "source": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/CylinderIncompressibility.lean",
+      "source_sha256": "df282874737c1c826d9a3b7802c33a1a2e81e301cdc4ede485b914a8135a540a",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Topology.ThreeManifold.TorusCut.CylinderIncompressibility.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Topology.ThreeManifold.TorusCut.Decomposition",
+      "source": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "source_sha256": "6be9cb6cac36454ddedf913ae3fe0f24f663da9a42da11e9aba59c93845c8189",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Topology.ThreeManifold.TorusCut.Decomposition.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    },
+    {
+      "module": "DifferentialGeometry.Topology.ThreeManifold.TorusCut.NoCuts",
+      "source": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/NoCuts.lean",
+      "source_sha256": "d059bf79b5dab3d33761c7e6d98f722d6ce83e0f1e32c978f983cac707f27278",
+      "returncode": 0,
+      "log": "docs/geometrization/skeleton/evidence/improvement/leaf_builds/DifferentialGeometry.Topology.ThreeManifold.TorusCut.NoCuts.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "direct_admissions": [],
+      "diagnostics": ""
+    }
+  ],
+  "command_argv_template": [
+    "lake",
+    "env",
+    "lean",
+    "-Dpp.unicode.fun=true",
+    "-DautoImplicit=false",
+    "-DmaxSynthPendingDepth=3",
+    "-Dweak.linter.mathlibStandardSet=true",
+    "-Dlinter.style.header=false",
+    "-Dlinter.style.longLine=false",
+    "<source>"
+  ],
+  "lakefile_sha256": "2a5404369d027bb8288a5842e185e430703c6816d19886cda2919a900a7ce548",
+  "executed_driver": "docs/geometrization/skeleton/evidence/improvement/leaf_driver.py.txt",
+  "executed_driver_sha256": "08133479152b3ee9a54d749a9717ded5cab235634b4ef0dcfb133644f9dda7cf",
+  "last_refreshed_utc": "2026-09-30T06:09:30.990298+00:00",
+  "refreshed_after_EOF_cleanup": [
+    "DifferentialGeometry/Geometry/Thurston/NonnegativeClassification.lean",
+    "DifferentialGeometry/Topology/Manifold/CompactModel.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SphereSummand.lean"
+  ]
+}

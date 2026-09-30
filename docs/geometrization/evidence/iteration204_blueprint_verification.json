@@ -1,0 +1,32 @@
+{
+  "revision": 204,
+  "scope": "bounded actual-history interfaces and conditional endpoint descent; general endpoint open",
+  "lean_modules": 147,
+  "audited_declarations": 4224,
+  "frozen_promoted_modules": 123,
+  "blueprint_guards": {
+    "positive_groups": 13,
+    "rejected": 3319
+  },
+  "static_audit_success": true,
+  "static_audit_log_sha256": "9997c3b3bd195b1883d96a9bcfa3d4575748b789986839f2b8e84deaff52ddc0",
+  "DAG_nodes": 1196,
+  "DAG_edges": 2443,
+  "selected_nodes": 649,
+  "all_prior_dependency_and_acceptance_states_preserved": true,
+  "semantic_premise_census_complete": false,
+  "general_geometrization_proved": false,
+  "master203_preserved": true,
+  "PDF_pages": 827,
+  "chapter1_PDF_page": 21,
+  "new_section_PDF_pages": [
+    748,
+    749
+  ],
+  "new_section_printed_pages": [
+    728,
+    729
+  ],
+  "cold_machine_build": false,
+  "Overleaf_invoked": false
+}

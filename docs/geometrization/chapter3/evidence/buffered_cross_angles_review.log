@@ -1,0 +1,40 @@
+'_private._stdin.0.GCBufferedCrossAnglesReview.bridge_pi_at_half' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCBufferedCrossAnglesReview.early_raw_bound_negative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCBufferedCrossAnglesReview.early_shift_negative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCBufferedCrossAnglesReview.bridge_early_negative_expression' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCBufferedCrossAnglesReview.buffered_positive' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCBufferedCrossAnglesReview.buffered_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCBufferedCrossAnglesReview.buffered_endpoints' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCBufferedCrossAnglesReview.plane_fixed_radius_right_angle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCBufferedCrossAnglesReview.plane_all_signed_pythagoras' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCBufferedCrossAnglesReview.coincident_fails_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_le_of_radial_isometries_in_local_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.germComparisonAngle_eq_pi_div_two_of_opposite_cross_lower_bounds' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.sq_dist_crossing_isometries_of_opposite_cross_lower_bounds' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparison_angle_lower_bound_at_fixed_time_of_long_radial_isometries' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

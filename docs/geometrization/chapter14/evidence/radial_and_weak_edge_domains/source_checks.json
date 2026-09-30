@@ -1,0 +1,59 @@
+[
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/RadialSupportBuffer.lean",
+    "sha256": "e7e6ea1377ae64984e40db3acbcd4c7c8d72f0e1e2272e5a57f64e2deb41c05c",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/RadialSupportBuffer.olean",
+      "DifferentialGeometry/Geometry/Metric/RadialSupportBuffer.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "c9b0c15c6ef16024d618b3ead18332713f719d52b6b296780f453d4591f0068f"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/SlowScaleQuotient.lean",
+    "sha256": "dbe2f532743950c635e72370958290d7cedd6f2d71d3f2533b54727aa930f83e",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/SlowScaleQuotient.olean",
+      "DifferentialGeometry/Geometry/Metric/SlowScaleQuotient.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "64e85028748b94f00cb4fa31f9099121fa9d648f849807c8bf267c6b39018495"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/WeakEdgeLocalization.lean",
+    "sha256": "6cd435875fba24c3484dc82e34872b1b0b306b349da43138623ad12b357821a8",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/WeakEdgeLocalization.olean",
+      "DifferentialGeometry/Geometry/Metric/WeakEdgeLocalization.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "0c28ec9a9854214ed14ee612a61a53d3b9ccc0f6878d3f10ae0614215c57101e"
+  }
+]

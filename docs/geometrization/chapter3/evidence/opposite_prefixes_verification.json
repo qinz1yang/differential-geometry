@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 5,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 7,
+  "combined_modules": 280,
+  "combined_jobs": 3115,
+  "combined_owned_declarations": 1314,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/VariationParametrization.lean": "4535641c6e1250a42a218b30a533c8f21093768f9f24694f37f6946033892a79",
+    "DifferentialGeometry/Topology/MetricSpace/ShortCurvePrefix.lean": "c7ac22b200b9a2ba05150ef6cbe4ec84ff35bedab9f40fad968f0e379dc2baf3",
+    "DifferentialGeometry/Topology/MetricSpace/OppositePrefixes.lean": "6751fb108e7571d427631c444754cc641ca08b8eb0e6913d45f64151c9ab9664"
+  },
+  "logs": {
+    "opposite_prefixes_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "opposite_prefixes_review.log": "6634b2a91007a0706cc1d5235954e44126153070e61e33baeae6549a1bf200ef",
+    "opposite_prefixes_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "5547dc74a538ef441028f325424ddc64214fe1d1f3b2345825738640fe3d93f6",
+  "git_head_at_check": "70776e7f90cf6ac5a08782aa79696b2c37b8d2ac",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

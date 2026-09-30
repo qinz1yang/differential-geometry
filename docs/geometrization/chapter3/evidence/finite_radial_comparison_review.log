@@ -1,0 +1,8 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.dist_radial_points_lower_of_fourPointComparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_one_le_of_shortening_left' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Real.radial_side_lower_of_cosine_laws' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Real.convexOn_sinh_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]

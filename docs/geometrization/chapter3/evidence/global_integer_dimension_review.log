@@ -1,0 +1,18 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_global_integer_dimH_of_local_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.original_real_global_integer_for_all_nonempty_open_sets' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.original_singleton_global_zero_for_all_nonempty_open_sets' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.nonempty_open_qualification_is_necessary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.original_plane_global_integer_for_all_nonempty_open_sets' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCGlobalIntegerDimensionReview.original_empty_global_zero_with_full_open_set_output' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

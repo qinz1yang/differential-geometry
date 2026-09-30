@@ -1,0 +1,42 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC48 full4503-4530 and qualifications4532-4550; actual statements and proof"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/FactorGeometry.lean",
+      "sha256": "66be979f1df9cd29723b94034edd76da8bd11495b9a650eef55188189e3816d9",
+      "locator": "13-120; actual same-slice minimizing curves and comparison inheritance"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/FactorEndpointRecognition.lean",
+      "sha256": "c0b0794965264cd93c2748b428db6402dce7cdbed26cb121c5c59a4ab65f435d",
+      "locator": "full existing product composition proof with first-coordinate preservation"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/FactorDimension.lean",
+      "sha256": "4067055e5f162f989143c447abfc1de7f89e16fa3819039745d7c75d23b8a689",
+      "locator": "15-72; recentered polynomial nets and exact factor dimension"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/GrowingRegionFactorGeometry.lean",
+      "sha256": "8249d2761744c15b78c26a57d2058113f4f4621ebf1af73eb197d6ecb48ddcc1",
+      "locator": "full body; internally derived rank, comparison and segments on given limit"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/NoncompactRecognition.lean",
+      "sha256": "2d51cf3d2c3901788239d1e7779c154c4e33042996439cf98cbff85a707851af",
+      "locator": "full body; original-input noncompact recognition"
+    }
+  ],
+  "reused_source_checks": [
+    "factor_dimension_sources.json",
+    "factor_endpoint_recognition_sources.json",
+    "growing_factor_geometry_sources.json",
+    "noncompact_recognition_sources.json"
+  ],
+  "scope": "Exact noncompact transverse products on the same given target; full AC48 and compact circle branch excluded.",
+  "errata": "Unchanged accepted source/errata records reused; no fresh external comprehensive errata clearance claimed."
+}

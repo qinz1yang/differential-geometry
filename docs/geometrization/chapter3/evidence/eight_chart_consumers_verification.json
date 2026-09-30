@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "new_public_theorems": 6,
+  "new_private_theorems": 0,
+  "new_generated_declarations": 8,
+  "new_definitions": 0,
+  "new_owned_declarations": 14,
+  "combined_modules": 398,
+  "combined_jobs": 3233,
+  "combined_owned_declarations": 1802,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/EightRadialContraction.lean": "2f08ceb4827f132557b2f64ec4b6ad01b972d7753df2f67d1029c47837afd920",
+    "DifferentialGeometry/Geometry/Comparison/EightChartCovering.lean": "a2b020f601069babb33ac598f3700864e0bb987d12e481a13ef54ee56de8726c",
+    "DifferentialGeometry/Geometry/Comparison/IntrinsicEightHingeComparison.lean": "5090282e0d99b0c1867611c32bb8cde358be13688409209887fa896b09c3ebd0",
+    "DifferentialGeometry/Geometry/Comparison/IntrinsicUniformStrutChart.lean": "84e1b0e4c1ee71a6bc84ccc2b1de25f18165a9c65b7caa78f1b72758bd482845"
+  },
+  "logs": {
+    "eight_chart_consumers_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "eight_chart_consumers_review.log": "d75ed2281921a0bd1e94ebd6cb2c9073f18e3fd46986d5c9d1ecdd2eb2feb7b8",
+    "eight_chart_consumers_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "1e2cad3745570d7abc74816c207b6a19804acc02188400578a7b5216c1c3e748",
+  "git_head_at_check": "c6e7db266541330f5877e0f2bd75440486cc861d",
+  "independent_root_and_peer_proof_review": true,
+  "actual_original_contraction_arbitrary_chart_radius_same_hinge_and_padded_chart_regressions": 9,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

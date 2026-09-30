@@ -1,0 +1,10 @@
+'SupportBufferRegression.actual_half_plane_padded_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SupportBufferRegression.actual_half_plane_with_asymmetric_errors' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'SupportBufferRegression.actual_edge_cutoff_has_buffer' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SupportBufferRegression.actual_edge_cutoff_is_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SupportBufferRegression.actual_slim_cutoff_has_buffer' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SupportBufferRegression.actual_slim_cutoff_preserves_large_plateau' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

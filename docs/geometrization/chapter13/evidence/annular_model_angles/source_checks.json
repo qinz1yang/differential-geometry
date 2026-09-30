@@ -1,0 +1,21 @@
+[
+  {
+    "path": "DifferentialGeometry/Geometry/Comparison/TriangleExcessAngle.lean",
+    "sha256": "c24720c91a005c85045c6f4abfce4a4d2e391abd6fbeebc65e484840d53994dc",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Comparison/TriangleExcessAngle.olean",
+      "DifferentialGeometry/Geometry/Comparison/TriangleExcessAngle.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "cac430533c706f2996005203148ea6a921186f43a08d2a973ee55f3a3807d69f"
+  }
+]

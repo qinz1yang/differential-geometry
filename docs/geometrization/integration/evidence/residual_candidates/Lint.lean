@@ -1,0 +1,8 @@
+import DifferentialGeometry.Geometry.Metric.Approximation.ProductResidualBound
+import DifferentialGeometry.Geometry.Metric.Approximation.VanishingProductResidual
+import DifferentialGeometry.Geometry.Metric.Approximation.TestedResidualParameter
+import Mathlib.Tactic.Linter
+
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Metric.Approximation.ProductResidualBound
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Metric.Approximation.VanishingProductResidual
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Metric.Approximation.TestedResidualParameter

@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "new_public_theorems": 11,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 13,
+  "combined_modules": 188,
+  "combined_jobs": 3022,
+  "combined_owned_declarations": 994,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/LipschitzBufferCompleteness.lean": "ef1a69a0cba550725fec24008e0d09a54a7077b5dacc4ec1489bbb80e9221365",
+    "DifferentialGeometry/Geometry/Comparison/MetricTransfer.lean": "382c254f4715adb77a5983d5f281fb81e74ade59ba9d8356e7b1c5f8a709302b",
+    "DifferentialGeometry/Geometry/Comparison/RegionFourPoint.lean": "905115c105b99b0d671b941644095328ad12339974341e875b4fe923025778ec",
+    "DifferentialGeometry/Geometry/Comparison/InteriorBallComparison.lean": "762b57a31546018e9aa39e9b66ceacb5e85bb8c63a9b969023bd7d49db20bb11",
+    "DifferentialGeometry/Geometry/Comparison/AmbientBufferComparison.lean": "3254c65702bdd33b842cd29981d05dd1f92f3df0ce0c970ca46956fcc3fd51ab"
+  },
+  "logs": {
+    "metric_buffer_transfer_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "metric_buffer_transfer_review.log": "ea4678918a2d5eb841d7e402be412ae57a023d12a2f656b647ca20bdac236616",
+    "metric_buffer_transfer_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "47b4d4cbca555757dde583a2283cf8a0208973a1c03390100e77e75bdcb784b0",
+  "git_head_at_check": "3cbf14ef494dde1fce47e9938e223fb8e066b8c6",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

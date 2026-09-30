@@ -1,0 +1,71 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/SegmentLog.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_SegmentLog.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "20a6d10c29d8cdc74d1713b5fdf59c1d83e141706b2f2bf22ea787fd658549fe"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/IntrinsicLogDimension.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_IntrinsicLogDimension.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "8976bfef3bd26a4b6d61fa2610fcefff7563b254a8e75e3e6b860adcc4911458"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/LocalTangentDimension.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_LocalTangentDimension.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "2e088bfff64698bad3ef2bab188d4a5a6fc052fab4dfb307664c4c9c7c75170e"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_actual_log_dimension_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "1b0e883fd5cb7935c3681c9d9ae8ad8c80341899",
+  "review_reports": [
+    "Metric.segmentLog",
+    "Metric.segmentLog_radius",
+    "Metric.segmentLog_self",
+    "Metric.dist_div_tendsto_segmentLog",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.antilipschitz_segmentLog_of_chosen_isometries_intrinsic_8_buffer",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.dimH_closedBall_le_tangent_of_intrinsic_8_buffer",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.directions_geodesic_of_intrinsic_eight_comparison_and_dimH_gt_one",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.tangent_dimH_eq_of_intrinsic_eight_comparison_and_local_dimH_lower",
+    "GCDirectionSpaceReview.original_real_chosen_log_all_points",
+    "GCDirectionSpaceReview.actual_unequal_opposite_log_and_zero_arm",
+    "GCDirectionSpaceReview.original_singleton_log_lower_dimension",
+    "GCPlaneDirectionPackingReview.original_translated_plane_log_lower_dimension",
+    "GCDirectionSpaceReview.original_real_off_center_tangent_dimension_exact_one",
+    "GCDirectionSpaceReview.original_singleton_local_lower_zero_tangent_dimension",
+    "GCPlaneDirectionPackingReview.original_translated_plane_actual_lower_bound_geodesicity_and_dimension"
+  ],
+  "review_driver_sha256": "831380494f69fce8036e65269e9b5d0d6f058c61871c562052c5f96c7fd512e5",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Metric/SegmentLog.lean": "ea4829b6e7d25b99312384a36f333b2ca8e02f90d74ecc4b9d2d1b7f96547bb6",
+    "DifferentialGeometry/Geometry/Comparison/IntrinsicLogDimension.lean": "b2563e8618688a5aef5c90bc4cbfd2a3b802a2285f832ba949872d844ab5641c",
+    "DifferentialGeometry/Geometry/Comparison/LocalTangentDimension.lean": "cec31d48377cd72acf64fa52b4fc2004c0aadcd7e5c17276dd09b351d83b1c57"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "8e03246a5cf9a0603e3e9c2642449e37b0254e9d9d2564309572dec7c5278180"
+}

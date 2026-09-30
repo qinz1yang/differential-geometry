@@ -1,0 +1,53 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/UniformRayEndpoint.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_UniformRayEndpoint.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "c4c5be13b8929e719283fd5936e9d283a42e291f1432c2c142157089520fe150"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/FiniteGeodesicDirections.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_FiniteGeodesicDirections.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "f1a13a07c2c2625eee58c64c37acb301def93cfd29674cb9ab7b4b3fcc789fd2"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_uniform_ray_endpoint_review.lean"
+  ],
+  "review_exit_code": 0,
+  "review_reports": [
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.side_le_sinh_mul_comparisonAngle_one",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.dist_same_radius_le_mul_dist_direction_of_intrinsic_8_buffer",
+    "Metric.exists_finite_representative_net_with_common_length",
+    "GCPlaneDirectionPackingReview.actual_noncollinear_same_original_ray_bound",
+    "GCPlaneDirectionPackingReview.actual_identical_same_original_ray_boundary",
+    "GCPlaneDirectionPackingReview.actual_opposite_same_original_ray_boundary",
+    "GCPlaneDirectionPackingReview.actual_scalar_equal_leg_boundary_and_interior",
+    "GCDirectionSpaceReview.actual_empty_direction_net_positive_cutoff",
+    "GCDirectionSpaceReview.actual_real_representative_net_two_members_positive_cutoff",
+    "GCPlaneDirectionPackingReview.actual_plane_representative_net_three_members_positive_cutoff"
+  ],
+  "review_driver_sha256": "0a352b76cfc306af35ef6920bf0ca3a767ceac9430159c97edd5a75d685ca855",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Comparison/UniformRayEndpoint.lean": "6b79b653a1fcef7313b6a417410349e4c12bd2ae87938c66355e357f2e1f0651",
+    "DifferentialGeometry/Geometry/Metric/FiniteGeodesicDirections.lean": "0e26ba336f69b24a8e30bc374c0595d27ed891bcc88dd0da467541e5eaecf7c7"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "2b88efe90b255296c34d4bb611c46b33b31fa33f846502827877d60bcaef4e5b"
+}

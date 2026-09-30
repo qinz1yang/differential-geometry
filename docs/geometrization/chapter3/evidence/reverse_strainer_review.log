@@ -1,0 +1,45 @@
+'_private._stdin.0.GCAC68Review.opposite_threshold_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC68Review.cross_threshold_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC68Review.strict_threshold_counterchecks' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCAC68Review.plane_configuration' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC68Review.collapsed_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC68Review.straight_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCQuantitativeReverseStrainerReview.two_axes_at_tolerance_endpoint' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCQuantitativeReverseStrainerReview.tolerance_endpoint_strict_guards' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalReverseStrainerReview.original_real_delta_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.equalRadiusStrainerMargin' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.equalRadiusStrainerMargin_pos' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngle_eq_two_arcsin_of_equal_legs' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.opposite_angle_of_equal_radius_chord_error' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.cross_angle_of_equal_radius_chord_error' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.equal_radius_strainer_angles_of_chord_errors' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.reverseStrainerTolerance' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.reverseStrainerTolerance_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.reverseStrainerTolerance_lt_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.radius_buffer_and_chord_error_of_le_reverseStrainerTolerance' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.KleinerLottApprox.exists_exact_radius_strainer_of_le_reverseStrainerTolerance' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.KleinerLottApprox.exists_exact_scale_strainer_of_nonnegative_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

@@ -1,0 +1,47 @@
+DifferentialGeometry.Geometry.Comparison.Toponogov.one_add_cos_comparisonAngle_equal_le {κ r c : ℝ} (hκ : 0 ≤ κ)
+  (hr : 0 < r) (hc : 0 ≤ c) (hc2 : c ≤ 2 * r) (hκr : κ * r ≤ 1) :
+  0 ≤ 1 + Real.cos (DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature (κ ^ 2) r r c) ∧
+    1 + Real.cos (DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature (κ ^ 2) r r c) ≤
+      4 * (2 * r - c) / r
+'DifferentialGeometry.Geometry.Comparison.Toponogov.one_add_cos_comparisonAngle_equal_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+DifferentialGeometry.Geometry.Comparison.Toponogov.pi_sub_lt_comparisonAngle_equal {κ r c τ : ℝ} (hκ : 0 ≤ κ)
+  (hr : 0 < r) (hc : 0 ≤ c) (hc2 : c ≤ 2 * r) (hκr : κ * r ≤ 1) (hτ : 0 ≤ τ)
+  (hbudget : 4 * (2 * r - c) / r < 1 - Real.cos τ) :
+  Real.pi - τ < DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature (κ ^ 2) r r c
+'DifferentialGeometry.Geometry.Comparison.Toponogov.pi_sub_lt_comparisonAngle_equal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+Metric.exists_equal_radius_endpoints_with_excess_le.{u_1} {X : Type u_1} [MetricSpace X]
+  (hsegments :
+    ∀ (x y : X), ∃ c, c ⟨0, ⋯⟩ = x ∧ c ⟨1, ⋯⟩ = y ∧ ∀ (s t : ↑(Set.Icc 0 1)), dist (c s) (c t) = dist x y * dist s t)
+  (p a b : X) {r : ℝ} (hr : 0 ≤ r) (hra : r ≤ dist p a) (hrb : r ≤ dist p b) :
+  ∃ a' b',
+    dist p a' = r ∧
+      dist p b' = r ∧
+        dist a' a = dist p a - r ∧
+          dist b' b = dist p b - r ∧ 0 ≤ 2 * r - dist a' b' ∧ 2 * r - dist a' b' ≤ dist p a + dist p b - dist a b
+'Metric.exists_equal_radius_endpoints_with_excess_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.KleinerLottApprox.exists_opposite_line_lifts.{u_1} {X : Type u_1} [MetricSpace X] {p q : X}
+  {o δ r : ℝ} (f : GC.MetricGeometry.KleinerLottApprox p o δ) (hq : q ∈ Metric.ball p δ⁻¹) (hr : 0 < r)
+  (hbuffer : dist (f.toFun q) o + r < δ⁻¹ - δ) :
+  ∃ a b,
+    a ∈ Metric.ball p δ⁻¹ ∧
+      b ∈ Metric.ball p δ⁻¹ ∧
+        dist (f.toFun a) (f.toFun q - r) < 2 * δ ∧
+          dist (f.toFun b) (f.toFun q + r) < 2 * δ ∧
+            |dist q a - r| < 3 * δ ∧ |dist q b - r| < 3 * δ ∧ |dist a b - 2 * r| < 5 * δ
+'GC.MetricGeometry.KleinerLottApprox.exists_opposite_line_lifts' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GC.MetricGeometry.KleinerLottApprox.exists_equal_radius_line_lifts.{u_1} {X : Type u_1} [MetricSpace X] {p q : X}
+  {o δ r : ℝ} (f : GC.MetricGeometry.KleinerLottApprox p o δ)
+  (hsegments :
+    ∀ (x y : X), ∃ c, c ⟨0, ⋯⟩ = x ∧ c ⟨1, ⋯⟩ = y ∧ ∀ (s t : ↑(Set.Icc 0 1)), dist (c s) (c t) = dist x y * dist s t)
+  (hq : q ∈ Metric.ball p δ⁻¹) (hr : 0 < r) (hbuffer : dist (f.toFun q) o + r < δ⁻¹ - δ) :
+  ∃ D a b,
+    r - 3 * δ < D ∧ D < r + 3 * δ ∧ dist q a = D ∧ dist q b = D ∧ 0 ≤ 2 * D - dist a b ∧ 2 * D - dist a b < 11 * δ
+'GC.MetricGeometry.KleinerLottApprox.exists_equal_radius_line_lifts' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

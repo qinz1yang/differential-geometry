@@ -1,0 +1,2728 @@
+{
+  "revision": 207,
+  "scope": "Authoritative current interpretation of selected historical rows; does not rewrite past evidence or assert Lean acceptance.",
+  "environment": "public-PC-v0.1.3-root-built-and-endpoints-accepted; exact GC foundation/producer bindings remain per-consumer",
+  "accepted_PC_release": true,
+  "production_ready": false,
+  "targets": {
+    "AC14": {
+      "mathematics": "The common-packet correction argument is written; the old AC16 transport frontier is supplied by AC30-AC33.",
+      "open": "Inherited comparison/dimension bindings and Lean implementation remain; do not replay the superseded transport task.",
+      "refined_by": [
+        "AC19",
+        "AC23",
+        "AC29",
+        "AC33"
+      ]
+    },
+    "AC15": {
+      "mathematics": "The conditional open-image/dimension argument is written. AC33 supplies the old AC16 producer frontier.",
+      "open": "Hausdorff-dimension library binding and inherited structural hypotheses remain.",
+      "refined_by": [
+        "AC23",
+        "AC29",
+        "AC33"
+      ]
+    },
+    "AC16": {
+      "mathematics": "Written producer proof via AC30-AC33; not kernel checked.",
+      "open": "Formal binding remains; no new minimizing-geodesic or local-compactness assumption.",
+      "refined_by": [
+        "AC30",
+        "AC31",
+        "AC32",
+        "AC33"
+      ]
+    },
+    "AC17": {
+      "mathematics": "Written conditional argument; its historical 'AC16 remains open' sentence is superseded by AC33.",
+      "open": "Inherited source-qualified structure, formal binding, chart distortion and actual-dimension obstruction remain separate; no finite critical rough-volume premise.",
+      "refined_by": [
+        "AC33"
+      ]
+    },
+    "FC28": {
+      "mathematics": "The unrestricted FC28 statement remains refuted by CFS06. The selected static application has a written replacement through CFS07-CFS15, actual clouds SGP06/EGP07/TCP06, GAF adjustment/fiber preservation and CAA02, under the retained foundations audited in revision159.",
+      "open": "Bind the retained foundations and implement the selected replacement in Lean. Do not reopen the completed written static application, and do not accept the refuted unrestricted FC28 statement. Flow application is a separate chain.",
+      "refined_by": [
+        "CFS01",
+        "CFS02",
+        "CFS03",
+        "CFS04",
+        "CFS05",
+        "CFS06",
+        "CFS07",
+        "CFS08",
+        "CFS09",
+        "CFS10",
+        "CFS11",
+        "CFS12",
+        "CFS13",
+        "CFS14",
+        "CFS15",
+        "R104.cloud_weakening",
+        "R104.smoothing_modulus",
+        "SGP06",
+        "EGP07",
+        "TCP06",
+        "GAF07",
+        "CAA02"
+      ],
+      "development_record": "checks/evidence/revision123_cloud_development.json",
+      "parent_complete": false,
+      "contract_status": "unrestricted-contract-refuted; selected-static-replacement-written-and-audited; Lean-binding-pending",
+      "historical_development_records": [
+        "checks/evidence/revision121_cloud_development.json",
+        "checks/evidence/revision122_cloud_development.json"
+      ],
+      "general_contract_valid": false,
+      "application_replacement_complete": false,
+      "strengthened_smoothing_theorem_written": true,
+      "global_graph_certificate_produced_under_MCb": true,
+      "full_pointed_coverage_proved_under_MCb": true,
+      "actual_cloud_producers_bound": false,
+      "uniform_cutoff_development_record": "checks/evidence/revision125_cutoff_development.json",
+      "actual_marker_development_record": "checks/evidence/revision144_marker_development.json",
+      "marker_frontier_revision144": "CFS26-CFS31 prove actual support/plane locality for pruned graph models and sequential ZM relative to rough-cloud producers; no separate ZM/ZL premise. Rough graph/coverage and global assembly remain.",
+      "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+      "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+      "actual_slim_cloud_development_record": "checks/evidence/revision146_slim_cloud_development.json",
+      "slim_frontier_revision146": "SGP01-06 produce actual slim raw/differential comparisons, model-support localization, early graph modulus, every-preimage rank and both cloud coverage directions from local geometry. First and edge clouds remain.",
+      "actual_edge_cloud_development_record": "checks/evidence/revision147_edge_cloud_development.json",
+      "edge_frontier_revision147": "EGP01-07 produce actual edge exclusion, whole comparison lists, raw/differential comparisons with original asymmetric tests, larger exact core section, early graph modulus, every-preimage rank and both cloud coverage directions. Together with146, both projected clouds are written; the first cloud remains.",
+      "actual_first_cloud_development_record": "checks/evidence/revision148_first_cloud_development.json",
+      "first_frontier_revision148": "TCP01-06 produce the actual first cloud, including early circle tests/Gram bound, same high-height collar, coupled cutoff and variable scale, early graph modulus, all-preimage rank2 and both coverage directions. Together with146-147, all three original clouds are written.",
+      "actual_adjustment_and_closed_fiber_development_record": "checks/evidence/revision149_adjustment_fiber_development.json",
+      "frontier_revision149": "GAF01-07 bind actual three-stage adjustments, prove every full-marker contributor and exact base markers, and construct proper WHOLE circle/slim bundles with original fibers and full stage/final fiber equality before piece removal.",
+      "historical_status_revision171": {
+        "mathematics": "CFS06 refutes literal general FC28/KL20.2. CFS11-CFS14 now construct ONE global interpolant with full pointed coverage, witness-radius proximity, properness, normal control and nearest-point projection on FULL N_r(S), under MCb at scale128/epsilon on ALL enlarged-set pairs. CFS15 supplies the modulus and forward Sigma<=Xi/640 marker condition.",
+        "open": "Written FC33 and proper whole circle/slim fibers now supplied under retained foundations. Zero extraction/removals, proper height-bounded edge disks, faces/corners, full FC44 and nearly cuspidal boundary assembly remain. Accepted-PC/Lean bindings pending.",
+        "refined_by": [
+          "CFS01",
+          "CFS02",
+          "CFS03",
+          "CFS04",
+          "CFS05",
+          "CFS06",
+          "CFS07",
+          "CFS08",
+          "CFS09",
+          "CFS10",
+          "CFS11",
+          "CFS12",
+          "CFS13",
+          "CFS14",
+          "CFS15",
+          "R104.cloud_weakening",
+          "R104.smoothing_modulus"
+        ],
+        "development_record": "checks/evidence/revision123_cloud_development.json",
+        "parent_complete": false,
+        "contract_status": "refuted-at-stated-generality; strengthened-replacement-written; producer-binding-open",
+        "historical_development_records": [
+          "checks/evidence/revision121_cloud_development.json",
+          "checks/evidence/revision122_cloud_development.json"
+        ],
+        "general_contract_valid": false,
+        "application_replacement_complete": false,
+        "strengthened_smoothing_theorem_written": true,
+        "global_graph_certificate_produced_under_MCb": true,
+        "full_pointed_coverage_proved_under_MCb": true,
+        "actual_cloud_producers_bound": false,
+        "uniform_cutoff_development_record": "checks/evidence/revision125_cutoff_development.json",
+        "actual_marker_development_record": "checks/evidence/revision144_marker_development.json",
+        "marker_frontier_revision144": "CFS26-CFS31 prove actual support/plane locality for pruned graph models and sequential ZM relative to rough-cloud producers; no separate ZM/ZL premise. Rough graph/coverage and global assembly remain.",
+        "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+        "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+        "actual_slim_cloud_development_record": "checks/evidence/revision146_slim_cloud_development.json",
+        "slim_frontier_revision146": "SGP01-06 produce actual slim raw/differential comparisons, model-support localization, early graph modulus, every-preimage rank and both cloud coverage directions from local geometry. First and edge clouds remain.",
+        "actual_edge_cloud_development_record": "checks/evidence/revision147_edge_cloud_development.json",
+        "edge_frontier_revision147": "EGP01-07 produce actual edge exclusion, whole comparison lists, raw/differential comparisons with original asymmetric tests, larger exact core section, early graph modulus, every-preimage rank and both cloud coverage directions. Together with146, both projected clouds are written; the first cloud remains.",
+        "actual_first_cloud_development_record": "checks/evidence/revision148_first_cloud_development.json",
+        "first_frontier_revision148": "TCP01-06 produce the actual first cloud, including early circle tests/Gram bound, same high-height collar, coupled cutoff and variable scale, early graph modulus, all-preimage rank2 and both coverage directions. Together with146-147, all three original clouds are written.",
+        "actual_adjustment_and_closed_fiber_development_record": "checks/evidence/revision149_adjustment_fiber_development.json",
+        "frontier_revision149": "GAF01-07 bind actual three-stage adjustments, prove every full-marker contributor and exact base markers, and construct proper WHOLE circle/slim bundles with original fibers and full stage/final fiber equality before piece removal."
+      },
+      "application_replacement_written_complete": true,
+      "actual_cloud_producers_written_complete": true,
+      "status_field_convention": "written_complete records audited prose under retained inputs; complete/bound remain false until exact Lean acceptance.",
+      "selected_application": {
+        "id": "CAA02",
+        "tex_label": "thm:fibration-written-static-goal-completion",
+        "record": "checks/evidence/revision159_chapter14_final_audit.json",
+        "written_status": "complete-under-retained-foundations",
+        "Lean_status": "not-accepted",
+        "scope": "static closed and nearly cuspidal boundary collapse, not flow production"
+      }
+    },
+    "FC44": {
+      "mathematics": "PBR01 and BBR01, refined by CAA01, bind all active closed/boundary choices and uniform tails; final written audit complete under retained foundations.",
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "refined_by": [
+        "R104.smoothing_modulus"
+      ],
+      "adjustment_development_record": "checks/evidence/revision124_adjustment_development.json",
+      "uniform_cutoff_development_record": "checks/evidence/revision125_cutoff_development.json",
+      "actual_marker_development_record": "checks/evidence/revision144_marker_development.json",
+      "marker_frontier_revision144": "CFS26-CFS31 prove actual support/plane locality for pruned graph models and sequential ZM relative to rough-cloud producers; no separate ZM/ZL premise. Rough graph/coverage and global assembly remain.",
+      "parent_complete": false,
+      "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+      "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+      "actual_slim_cloud_development_record": "checks/evidence/revision146_slim_cloud_development.json",
+      "slim_frontier_revision146": "SGP01-06 produce actual slim raw/differential comparisons, model-support localization, early graph modulus, every-preimage rank and both cloud coverage directions from local geometry. First and edge clouds remain.",
+      "actual_edge_cloud_development_record": "checks/evidence/revision147_edge_cloud_development.json",
+      "edge_frontier_revision147": "EGP01-07 produce actual edge exclusion, whole comparison lists, raw/differential comparisons with original asymmetric tests, larger exact core section, early graph modulus, every-preimage rank and both cloud coverage directions. Together with146, both projected clouds are written; the first cloud remains.",
+      "actual_first_cloud_development_record": "checks/evidence/revision148_first_cloud_development.json",
+      "first_frontier_revision148": "TCP01-06 produce the actual first cloud, including early circle tests/Gram bound, same high-height collar, coupled cutoff and variable scale, early graph modulus, all-preimage rank2 and both coverage directions. Together with146-147, all three original clouds are written.",
+      "actual_adjustment_and_closed_fiber_development_record": "checks/evidence/revision149_adjustment_fiber_development.json",
+      "frontier_revision149": "GAF01-07 bind actual three-stage adjustments, prove every full-marker contributor and exact base markers, and construct proper WHOLE circle/slim bundles with original fibers and full stage/final fiber equality before piece removal.",
+      "actual_zero_slim_development_record": "checks/evidence/revision150_zero_slim_development.json",
+      "frontier_revision150": "ZSP01-05 prove actual zero-block isolation, compact zero domains, whole zero/slim fiber saturation, compact slim extraction with complete shared faces/collars, and relative-interior remaining carrier.",
+      "actual_edge_disk_development_record": "checks/evidence/revision151_edge_disk_development.json",
+      "frontier_revision151": "EDP01-06 produce actual slow scale, all height-preimage localization, original-source compact trace, proper whole disks, independent horizontal/vertical faces and exact agreement with whole circle fibers.",
+      "actual_final_decomposition_record": "checks/evidence/revision152_final_decomposition.json",
+      "frontier_revision152": "Actual compact edge piece and whole-circle remainder with relative common faces supply the closed geometric certificate and FC42 assembly for the common assignment.",
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "closed_binding_written": true,
+      "boundary_scale_adapter_record": "checks/evidence/revision154_boundary_scale_adapter.json",
+      "frontier_revision154": "BSA01-06 give convex-boundary comparison, capped first scales, whole-carrier smooth scale and exhausting interior buffers. Actual boundary cloud/core construction remains.",
+      "actual_cusp_collar_record": "checks/evidence/revision155_actual_cusp_collars.json",
+      "frontier_revision155": "BCP01-05 give actual heights/product maps, product-or-disjoint collars, restricted families and zero-ball separation. Actual augmented clouds and adjusted cores remain.",
+      "actual_boundary_cloud_record": "checks/evidence/revision156_actual_boundary_clouds.json",
+      "frontier_revision156": "BCG01-07 give actual augmented clouds, every-contributor markers, physical isolation, actual adjusted torus cores and saturated internal frontiers. Boundary graph assembly and parameter/threshold remain.",
+      "boundary_graph_assembly_record": "checks/evidence/revision157_boundary_graph_assembly.json",
+      "frontier_revision157": "BCF01-04 give the actual boundary decomposition, complete face partition, no cusp disk faces and finite graph presentation with labeled external tori. Full parameter/threshold binding remains.",
+      "boundary_parameter_binding_record": "checks/evidence/revision158_boundary_parameter_binding.json",
+      "frontier_revision158": "BBR01-03 bind the full boundary construction to one BR00-BR31 assignment and uniform tail, yielding its static threshold under retained foundations. The final full-goal mathematical audit remains.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "LC81": {
+      "mathematics": "LFR01-LFR05 finite category consumers; LFR08-LFR10 local injectivity and actual buffered embedding adapters; LFR11 complete C^K factor and C^(K+1) actual product from exact metric splitting; metric unchanged. LFR12-LFR15 produce the initial finite models/maps for the specified consumers at metric order K-1, map order K, including actual approximate-splitting limit. LFR16-LFR20 now complete the finite-category slim consumer, with eventual ballwise bounds and compact surface geometry. LFR21-LFR24 now supply the finite surface topology and model disk/collar for the edge consumer. LFR25-LFR28 supply source disk transfer on the same finite model from explicit coarse-border geometry, with endpoint tolerances fixed before noncollapse. LFR29-LFR33 produce the edge-border input and common finite-family smoothing without changing the finite model metric. LFR34-LFR38 complete the source full edge collar on the unchanged metric with SAME distance smoothing as disk transfer. LFR39-LFR44 add strong-edge density and actual disk-domain coverage without further changes to finite-category models. LFR45-LFR49 supply finite soul directions, actual normal flow, a smooth zero-consumer carrier with UNCHANGED C^(K-5) metric, pointed smooth buffered embeddings, and the joint zero core packet conditional on its supplied cone. LFR50-LFR54 supply compact auxiliary-metric type classification and actual noncompact soul-bundle/core types, then classify the SAME zero packet with its comparison metric unchanged. LFR55-LFR59 discharge the supplied-cone premise for these finite models, with the SAME metric and actual all-large-real-scale maps. ALS01-ALS05 now supply the exact global line-splitting input AC43 from the written global four-point hypothesis; local comparison and recognition remain separate. ALR05 supplies AC46 exact metric recognition from the written paired charts; no tangent-space dimension machinery is imported. ALG01-ALG08 now write complete and coarse-buffer comparison; MC18/AC41 and named AC65/LC12/LC78 consumers use explicit permitted parameter choices. LCP01-LCP06 close the remaining interior local comparison uses with original buffers and original radial function. LPA01-LPA06 now supply simultaneous interior local production from the closed standing sequence.",
+      "open": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "refined_by": [
+        "LFR01",
+        "LFR02",
+        "LFR03",
+        "LFR04",
+        "LFR05",
+        "LFR08",
+        "LFR09",
+        "LFR10",
+        "LFR11",
+        "LFR12",
+        "LFR13",
+        "LFR14",
+        "LFR15",
+        "LFR16",
+        "LFR17",
+        "LFR18",
+        "LFR19",
+        "LFR20",
+        "LFR21",
+        "LFR22",
+        "LFR23",
+        "LFR24",
+        "LFR25",
+        "LFR26",
+        "LFR27",
+        "LFR28",
+        "LFR29",
+        "LFR30",
+        "LFR31",
+        "LFR32",
+        "LFR33",
+        "LFR34",
+        "LFR35",
+        "LFR36",
+        "LFR37",
+        "LFR38",
+        "LFR39",
+        "LFR40",
+        "LFR41",
+        "LFR42",
+        "LFR43",
+        "LFR44",
+        "LFR45",
+        "LFR46",
+        "LFR47",
+        "LFR48",
+        "LFR49",
+        "LFR50",
+        "LFR51",
+        "LFR52",
+        "LFR53",
+        "LFR54",
+        "LFR55",
+        "LFR56",
+        "LFR57",
+        "LFR58",
+        "LFR59",
+        "ALS01",
+        "ALS02",
+        "ALS03",
+        "ALS04",
+        "ALS05",
+        "ALR01",
+        "ALR02",
+        "ALR03",
+        "ALR04",
+        "ALR05",
+        "ALG01",
+        "ALG02",
+        "ALG03",
+        "ALG04",
+        "ALG05",
+        "ALG06",
+        "ALG07",
+        "ALG08",
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06",
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "finite_category_development_record": "checks/evidence/revision126_finite_development.json",
+      "parent_complete": false,
+      "finite_model_development_record": "checks/evidence/revision127_finite_development.json",
+      "revision127_scope": "Written local injectivity adapter; actual maps become buffered embeddings covering smaller source balls; exact metric splitting gives C^(K+1) product and complete C^K factor. Initial compactness maps, exact splitting existence and geometric fiber inputs still required.",
+      "consumer_compactness_development_record": "checks/evidence/revision128_compactness_development.json",
+      "revision128_scope": "LFR12-LFR15 construct consumer-sufficient C^(K-1) models and C^K actual embeddings/products from smooth sources with ballwise bounds0..K; same approximate Euclidean coordinates retained; stronger historical C^K metric and geometric packets not claimed.",
+      "slim_development_record": "checks/evidence/revision129_slim_development.json",
+      "edge_core_development_record": "checks/evidence/revision130_edge_core_development.json",
+      "edge_transfer_development_record": "checks/evidence/revision131_edge_transfer_development.json",
+      "edge_border_development_record": "checks/evidence/revision132_edge_border_development.json",
+      "edge_collar_development_record": "checks/evidence/revision133_edge_collar_development.json",
+      "edge_coverage_development_record": "checks/evidence/revision134_edge_coverage_development.json",
+      "zero_core_development_record": "checks/evidence/revision135_zero_core_development.json",
+      "classification_development_record": "checks/evidence/revision136_classification_development.json",
+      "finite_cone_development_record": "checks/evidence/revision137_finite_cone_development.json",
+      "line_splitting_development_record": "checks/evidence/revision138_line_splitting_development.json",
+      "recognition_development_record": "checks/evidence/revision139_recognition_development.json",
+      "globalization_development_record": "checks/evidence/revision140_globalization_development.json",
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate.",
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true
+    },
+    "G07": {
+      "mathematics": "Closed bundle monodromy classification remains an optional uncut-model constructor. Actual supplied torus-bundle/semibundle presentations have a retained-cut E1 route.",
+      "open": "The bypass does not recognize general graphs, produce prime witnesses, or remove closed small-Seifert Nil/tilde-SL2 realization.",
+      "refined_by": [
+        "R104.torus_bundle",
+        "R104.torus_semibundle"
+      ],
+      "selected_E1_route": "Not required: RG05 retains essential good-block seams; GM06 supplies metrics on cut interiors.",
+      "parent_complete": false,
+      "production_ready": false
+    },
+    "G09": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "refined_by": [
+        "R104.torus_bundle",
+        "R104.torus_semibundle"
+      ],
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "GA06": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "refined_by": [
+        "R104.torus_bundle",
+        "R104.torus_semibundle"
+      ],
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json",
+      "lean_bindings": [
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Thurston/Models/HomogeneousCompleteness.lean",
+          "declaration": "GC.Geometry.coordinateModelMetric_complete",
+          "status": "proved bounded model lemma; general quotients/realization open",
+          "source_record": "reference_checks_revision203.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ConnectedSumExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Thurston/Models/CoordinateMetrics.lean",
+          "declaration": "GC.Geometry.coordinateModelAtlas_iff_actualModelAtlas",
+          "status": "proved exact tensor-to-metric atlas adapter",
+          "source_record": "reference_checks_revision203.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ConnectedSumExamples.lean"
+        }
+      ],
+      "parent_accepted_by_revision203": false
+    },
+    "AT26": {
+      "mathematics": "Pullback uses orientation-free local metric charts on oriented carriers; reconstruction orientation remains a separate required field.",
+      "open": "Inherited length, volume, completeness and smooth-map bindings.",
+      "refined_by": [
+        "R104.chart_orientation"
+      ],
+      "lean_bindings": [
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Topology/ThreeManifold/Geometrization/OrientationTransport.lean",
+          "declaration": "GC.Endpoint.GeometricDecomposition.opposite",
+          "status": "proved full cut/interior transport; same actual torus maps",
+          "source_record": "reference_checks_revision205.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/SmoothHistoryExamples.lean"
+        }
+      ],
+      "frontier_revision205": "Smooth event reconstruction and raw event controls now suffice for conditional endpoint descent. Standard-factor endpoints and actual late geometry remain open. Stronger oriented/protected-port/cycle/decorated-history outputs remain separate; no parent acceptance."
+    },
+    "GA09": {
+      "mathematics": "The metric transport constructor uses orientation-free chart signs; actual oriented reconstruction and marks are not discarded.",
+      "open": "Bind AT26 on the accepted foundation.",
+      "refined_by": [
+        "R104.chart_orientation"
+      ],
+      "lean_bindings": [
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Topology/ThreeManifold/Geometrization/OrientationTransport.lean",
+          "declaration": "GC.Endpoint.geometrizes_of_diffeomorph",
+          "status": "proved full endpoint transport; no orientation-reflection model premise",
+          "source_record": "reference_checks_revision205.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/SmoothHistoryExamples.lean"
+        }
+      ],
+      "frontier_revision205": "Smooth event reconstruction and raw event controls now suffice for conditional endpoint descent. Standard-factor endpoints and actual late geometry remain open. Stronger oriented/protected-port/cycle/decorated-history outputs remain separate; no parent acceptance."
+    },
+    "ModelGeometry": {
+      "output_sort": "Type",
+      "declaration_kind": "structure",
+      "mathematics": "Reference-oriented model carrier is allowed; local metric charts have no orientation-sign constraint."
+    },
+    "StandardModelCertificate": {
+      "mathematics": "Separate ModelGeometry witnesses from E1 piece certificates. Whole H3 is a model, not a finite-volume hyperbolic piece.",
+      "open": "Use a supplied actual finite-volume HG02 manifold for conditional piece regressions; an explicit closed example is a separate construction."
+    },
+    "GeometricPieceCertificate": {
+      "output_sort": "Type",
+      "declaration_kind": "structure",
+      "mathematics": "Actual carrier and chosen complete metric; orientation-free metric charts; Hyperbolic tag requires finite volume of that same metric; marked reconstruction remains oriented."
+    },
+    "GeometrizationCertificate": {
+      "output_sort": "Type",
+      "declaration_kind": "structure",
+      "mathematics": "Actual dependent witnesses; chosen once, transported as one package."
+    },
+    "Geometrizes": {
+      "output_sort": "Prop",
+      "declaration_kind": "def",
+      "mathematics": "Nonempty (GeometrizationCertificate M). A Prop-valued definition is legitimate; proof-producing declarations are theorems."
+    },
+    "LongTimeOutcome": {
+      "output_sort": "Type",
+      "declaration_kind": "inductive",
+      "mathematics": "Two constructors carrying actual late or terminal records; not Prop-level Or."
+    },
+    "long_time_outcome": {
+      "output_sort": "Type",
+      "declaration_kind": "noncomputable def if selecting from nonemptiness",
+      "mathematics": "Separate existence theorem in Prop from selected data wrapper; exact declaration split pending."
+    },
+    "assemble_geometrization": {
+      "output_sort": "Type",
+      "declaration_kind": "def; localized noncomputable def only if needed",
+      "mathematics": "Data constructor from supplied fields, with separate theorem specifications."
+    },
+    "CertificateOfAssembledData": {
+      "mathematics": "Pure constructor: metric producers supply its inputs but are not called by it.",
+      "dependency_interpretation": "The coarse ConvertExceptionalPrimes edge denotes production of supplied witnesses, not an import/proof call of the constructor."
+    },
+    "RicciFlowPDE": {
+      "mathematics": "Only surviving M3 gaps after completed-release comparison are new.",
+      "open": "Broad production aliases need exact consumer-scoped accepted bindings; no current absence inference."
+    },
+    "LC71": {
+      "mathematics": "LC79 supplies the formerly qualified radial rank-one conclusion conditionally.",
+      "open": "LC28 smoothing and inherited first variation/comparison; not a rank-two producer.",
+      "refined_by": [
+        "LC79"
+      ]
+    },
+    "AC76": {
+      "mathematics": "Compatibility is written conditionally; later basepoint and overlapping-cone arguments are supplied by AC77-AC87. ALS05 now supplies the AC43 premise of the transverse-factor argument once AC44 provides the complete proper global nonnegative factor and its actual line.",
+      "open": "Upstream local-to-global comparison and exact retained-foundation/Lean bindings remain. ALS05 now supplies AC43 from global four-point comparison and an actual line.",
+      "refined_by": [
+        "AC80",
+        "AC81",
+        "AC87",
+        "ALS01",
+        "ALS02",
+        "ALS03",
+        "ALS04",
+        "ALS05"
+      ],
+      "line_splitting_development_record": "checks/evidence/revision138_line_splitting_development.json",
+      "parent_complete": false
+    },
+    "LC58": {
+      "mathematics": "LC60-LC61 strengthen the same-model comparison on OPEN INTERIORS. LFR49 supplies finite-category joint witnesses using LFR14 and SAME supplied cone, with exact K-5 metric ledger and actual smooth maps. LFR54 classifies the actual smooth sublevels including boundary without changing any witness, scale or tail. LFR59 now supplies that LC21 cone on the SAME finite model; its threshold is model-dependent and its scale is chosen before the common index tail.",
+      "open": "Uniform statement still requires the finite-package premise for EVERY index/basepoint sequence and the other retained inputs. No class-uniform cone rate or smooth-metric LC56 upgrade is asserted; exact foundation/Lean bindings pending.",
+      "refined_by": [
+        "LC60",
+        "LC61",
+        "LFR45",
+        "LFR46",
+        "LFR47",
+        "LFR48",
+        "LFR49",
+        "LFR50",
+        "LFR51",
+        "LFR52",
+        "LFR53",
+        "LFR54",
+        "LFR55",
+        "LFR56",
+        "LFR57",
+        "LFR58",
+        "LFR59",
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "zero_core_development_record": "checks/evidence/revision135_zero_core_development.json",
+      "parent_complete": false,
+      "classification_development_record": "checks/evidence/revision136_classification_development.json",
+      "finite_cone_development_record": "checks/evidence/revision137_finite_cone_development.json",
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true
+    },
+    "LC87": {
+      "mathematics": "This is a supplied packet with closed and boundary alternatives.",
+      "dependency_interpretation": "LC88 boundary family is used only for the boundary branch; the coarse coverage graph is not a conjunctive closed-case signature.",
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "refined_by": [
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06",
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "parent_complete": false,
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate.",
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true
+    },
+    "FC45": {
+      "mathematics": "PBR03 and BBR03 supply both distinct static endpoints; CAA02 binds the actual finite graph presentations to this static handoff under retained foundations.",
+      "dependency_interpretation": "FC43 is a boundary-branch input, not compulsory for the closed branch.",
+      "actual_final_decomposition_record": "checks/evidence/revision152_final_decomposition.json",
+      "frontier_revision152": "Actual compact edge piece and whole-circle remainder with relative common faces supply the closed geometric certificate and FC42 assembly for the common assignment.",
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "closed_static_threshold_written": true,
+      "boundary_scale_adapter_record": "checks/evidence/revision154_boundary_scale_adapter.json",
+      "frontier_revision154": "BSA01-06 give convex-boundary comparison, capped first scales, whole-carrier smooth scale and exhausting interior buffers. Actual boundary cloud/core construction remains.",
+      "actual_cusp_collar_record": "checks/evidence/revision155_actual_cusp_collars.json",
+      "frontier_revision155": "BCP01-05 give actual heights/product maps, product-or-disjoint collars, restricted families and zero-ball separation. Actual augmented clouds and adjusted cores remain.",
+      "actual_boundary_cloud_record": "checks/evidence/revision156_actual_boundary_clouds.json",
+      "frontier_revision156": "BCG01-07 give actual augmented clouds, every-contributor markers, physical isolation, actual adjusted torus cores and saturated internal frontiers. Boundary graph assembly and parameter/threshold remain.",
+      "boundary_graph_assembly_record": "checks/evidence/revision157_boundary_graph_assembly.json",
+      "frontier_revision157": "BCF01-04 give the actual boundary decomposition, complete face partition, no cusp disk faces and finite graph presentation with labeled external tori. Full parameter/threshold binding remains.",
+      "boundary_parameter_binding_record": "checks/evidence/revision158_boundary_parameter_binding.json",
+      "frontier_revision158": "BBR01-03 bind the full boundary construction to one BR00-BR31 assignment and uniform tail, yielding its static threshold under retained foundations. The final full-goal mathematical audit remains.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "HG04": {
+      "mathematics": "Full qualitative HG04 has a written proof relative to twelve explicit inherited-interface families. Revision120 completes the requested final working mathematical audit of all78 MPR statement/argument entries and33 MGL statements/proofs, clarifying the plane-homeomorphism hypotheses in MPR25/MPR29; no further gap found at this boundary. This is assistant review, not independent certification or Lean acceptance.",
+      "open": "No further qualitative proof iteration currently identified. Bind inherited interfaces and implement the proof when the accepted PC release or a stabilized interface is available. New findings or incompatible bindings reopen the affected segment. HG06 radial construction, stabilization and flow applications remain separate.",
+      "proof_development_inventory": "mostow_prasad_proof_obligations.csv",
+      "proof_development_section": "sec:mostow-qi-rigidity",
+      "dependency_audit": "checks/evidence/revision118_mostow_dependency_audit.json",
+      "final_working_audit": "checks/evidence/revision120_mostow_final_audit.json",
+      "final_working_audit_done": true,
+      "production_ready": false
+    },
+    "HG03": {
+      "mathematics": "Written constant-curvature Margulis/Zassenhaus, geometric cusp/core and actual peripheral-map proof integrated from master112; 33 subordinate contracts MGL00-MGL32 reviewed. Oriented HG03; separate MGL32 unoriented geometry.",
+      "open": "Accepted inherited model/covering/algebra/analysis/topology bindings and Lean implementation. No quantitative flow comparison or ambient-flow injection follows.",
+      "proof_development_section": "margulis:section",
+      "refined_by": [
+        "MGL00",
+        "MGL01",
+        "MGL02",
+        "MGL03",
+        "MGL04",
+        "MGL05",
+        "MGL06",
+        "MGL07",
+        "MGL08",
+        "MGL09",
+        "MGL10",
+        "MGL11",
+        "MGL12",
+        "MGL13",
+        "MGL14",
+        "MGL15",
+        "MGL16",
+        "MGL17",
+        "MGL18",
+        "MGL19",
+        "MGL20",
+        "MGL21",
+        "MGL22",
+        "MGL23",
+        "MGL24",
+        "MGL25",
+        "MGL26",
+        "MGL27",
+        "MGL28",
+        "MGL29",
+        "MGL30",
+        "MGL31",
+        "MGL32"
+      ],
+      "proof_development_inventory": "margulis_proof_obligations.csv"
+    },
+    "HG06": {
+      "mathematics": "Revision160 QRG04--QRG09 prove the actual global core/end comparison: buffered injectivity, actual radial transversality, one sheet and side, all target boundaries, hidden-tube exclusion, cusp count and global diffeomorphism. Together with QRG03 this supplies HG06 under retained foundations.",
+      "open": "Accepted inherited/source estimate bindings and Lean implementation remain pending; ambient incompressibility, essential refinement and reconstruction are separate.",
+      "quantitative_development": "checks/evidence/revision119_quantitative_development.json",
+      "parent_status": "historical source-qualified parent preserved; current written producer supplied in160",
+      "production_ready": false,
+      "actual_core_end_development": "checks/evidence/revision160_qrg_development.json",
+      "written_complete_under_retained_foundations": true,
+      "parent_complete": false,
+      "differentiable_compact_consumer": "HPS02 in revision161",
+      "final_written_analytic_audit": "checks/evidence/revision166_longtime_final_audit.json"
+    },
+    "FC29": {
+      "mathematics": "Finite-span identity retained. CFS02-CFS04 now supply a fixed uniformly bounded active list on a whole neighborhood and control all ambient derivative directions for the smaller-cover construction.",
+      "open": "FC28 full-tube projection and full pointed coverage are not consequences of this finite-span identity.",
+      "refined_by": [
+        "CFS02",
+        "CFS03",
+        "CFS04"
+      ]
+    },
+    "L148": {
+      "mathematics": "Literal KL20.2 remains refuted. CFS14 supplies a written replacement under explicit stronger scale control at128/epsilon; CFS15 uses retained markers with Sigma<=Xi/640. This is a project repair, not author-confirmed or Lean certified.",
+      "open": "Bind actual clouds and consumers to stronger hypotheses, with parameter order retained. Parent source row remains historical provenance.",
+      "source_comparison": "CLOUDY_SMOOTHING_COMPARISON_2026-09-25.md",
+      "contract_status": "literal-source-implication-refuted; application-repair-open"
+    },
+    "CP09": {
+      "mathematics": "Historical general-premise argument remains conditional. CFS15 now proves a replacement modulus from CFS14 with Gamma thenXi thenSigma<=Xi/640.",
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope.",
+      "contract_status": "strengthened-modulus-written; actual-parameter-binding-open",
+      "refined_by": [
+        "CFS15"
+      ],
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false
+    },
+    "FC30": {
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "adjustment_development_record": "checks/evidence/revision124_adjustment_development.json",
+      "mathematics": "CFS22-CFS23 give explicit replacement edge/slim auxiliary cutoffs with uniform CLOSED support, exact plateau and full ambient derivative bounds underZM. CFS21 shows rho-relative closeness alone is insufficient. CFS24 gives a sufficient spectral zero-marker mechanism.",
+      "refined_by": [
+        "CFS16",
+        "CFS18",
+        "CFS19",
+        "CFS21",
+        "CFS22",
+        "CFS23",
+        "CFS24",
+        "CFS25"
+      ],
+      "uniform_cutoff_development_record": "checks/evidence/revision125_cutoff_development.json",
+      "uniform_cutoff_calculus_written_under_ZM": true,
+      "actual_zero_marker_bound_proved": false,
+      "actual_marker_development_record": "checks/evidence/revision144_marker_development.json",
+      "marker_frontier_revision144": "CFS26-CFS31 prove actual support/plane locality for pruned graph models and sequential ZM relative to rough-cloud producers; no separate ZM/ZL premise. Rough graph/coverage and global assembly remain.",
+      "parent_complete": false,
+      "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+      "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "FC33": {
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "adjustment_development_record": "checks/evidence/revision124_adjustment_development.json",
+      "uniform_cutoff_development_record": "checks/evidence/revision125_cutoff_development.json",
+      "actual_marker_development_record": "checks/evidence/revision144_marker_development.json",
+      "marker_frontier_revision144": "CFS26-CFS31 prove actual support/plane locality for pruned graph models and sequential ZM relative to rough-cloud producers; no separate ZM/ZL premise. Rough graph/coverage and global assembly remain.",
+      "parent_complete": false,
+      "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+      "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+      "actual_slim_cloud_development_record": "checks/evidence/revision146_slim_cloud_development.json",
+      "slim_frontier_revision146": "SGP01-06 produce actual slim raw/differential comparisons, model-support localization, early graph modulus, every-preimage rank and both cloud coverage directions from local geometry. First and edge clouds remain.",
+      "actual_edge_cloud_development_record": "checks/evidence/revision147_edge_cloud_development.json",
+      "edge_frontier_revision147": "EGP01-07 produce actual edge exclusion, whole comparison lists, raw/differential comparisons with original asymmetric tests, larger exact core section, early graph modulus, every-preimage rank and both cloud coverage directions. Together with146, both projected clouds are written; the first cloud remains.",
+      "actual_first_cloud_development_record": "checks/evidence/revision148_first_cloud_development.json",
+      "first_frontier_revision148": "TCP01-06 produce the actual first cloud, including early circle tests/Gram bound, same high-height collar, coupled cutoff and variable scale, early graph modulus, all-preimage rank2 and both coverage directions. Together with146-147, all three original clouds are written.",
+      "actual_adjustment_and_closed_fiber_development_record": "checks/evidence/revision149_adjustment_fiber_development.json",
+      "frontier_revision149": "GAF01-07 bind actual three-stage adjustments, prove every full-marker contributor and exact base markers, and construct proper WHOLE circle/slim bundles with original fibers and full stage/final fiber equality before piece removal.",
+      "written_complete_under_retained_foundations": true,
+      "actual_zero_slim_development_record": "checks/evidence/revision150_zero_slim_development.json",
+      "frontier_revision150": "ZSP01-05 prove actual zero-block isolation, compact zero domains, whole zero/slim fiber saturation, compact slim extraction with complete shared faces/collars, and relative-interior remaining carrier.",
+      "actual_edge_disk_development_record": "checks/evidence/revision151_edge_disk_development.json",
+      "frontier_revision151": "EDP01-06 produce actual slow scale, all height-preimage localization, original-source compact trace, proper whole disks, independent horizontal/vertical faces and exact agreement with whole circle fibers.",
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots."
+    },
+    "FC31": {
+      "adjustment_development_record": "checks/evidence/revision124_adjustment_development.json",
+      "mathematics": "FC31 retained. CFS17 gives the missing perturbed-input increment and cumulative C1/rank bounds using the ORIGINAL cloud; CFS20 supplies explicit numeric budgets.",
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "refined_by": [
+        "CFS17",
+        "CFS20"
+      ],
+      "actual_marker_development_record": "checks/evidence/revision144_marker_development.json",
+      "marker_frontier_revision144": "CFS26-CFS31 prove actual support/plane locality for pruned graph models and sequential ZM relative to rough-cloud producers; no separate ZM/ZL premise. Rough graph/coverage and global assembly remain.",
+      "parent_complete": false,
+      "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+      "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "CP10": {
+      "refined_by": [
+        "CFS18",
+        "CFS19",
+        "CFS21",
+        "CFS22",
+        "CFS23",
+        "CFS24",
+        "CFS25"
+      ],
+      "mathematics": "CFS22-CFS23 supply uniform support/exact plateau/derivative calculus underZM; CFS24 provides conditional spectral preservation. Fixed-data CFS19 is retained as historical weaker route.",
+      "adjustment_development_record": "checks/evidence/revision124_adjustment_development.json",
+      "parent_complete": false,
+      "uniform_cutoff_development_record": "checks/evidence/revision125_cutoff_development.json",
+      "actual_marker_development_record": "checks/evidence/revision144_marker_development.json",
+      "marker_frontier_revision144": "CFS26-CFS31 prove actual support/plane locality for pruned graph models and sequential ZM relative to rough-cloud producers; no separate ZM/ZL premise. Rough graph/coverage and global assembly remain.",
+      "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+      "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope.",
+      "actual_slim_cloud_development_record": "checks/evidence/revision146_slim_cloud_development.json",
+      "slim_frontier_revision146": "SGP01-06 produce actual slim raw/differential comparisons, model-support localization, early graph modulus, every-preimage rank and both cloud coverage directions from local geometry. First and edge clouds remain.",
+      "actual_edge_cloud_development_record": "checks/evidence/revision147_edge_cloud_development.json",
+      "edge_frontier_revision147": "EGP01-07 produce actual edge exclusion, whole comparison lists, raw/differential comparisons with original asymmetric tests, larger exact core section, early graph modulus, every-preimage rank and both cloud coverage directions. Together with146, both projected clouds are written; the first cloud remains.",
+      "actual_first_cloud_development_record": "checks/evidence/revision148_first_cloud_development.json",
+      "first_frontier_revision148": "TCP01-06 produce the actual first cloud, including early circle tests/Gram bound, same high-height collar, coupled cutoff and variable scale, early graph modulus, all-preimage rank2 and both coverage directions. Together with146-147, all three original clouds are written.",
+      "actual_adjustment_and_closed_fiber_development_record": "checks/evidence/revision149_adjustment_fiber_development.json",
+      "frontier_revision149": "GAF01-07 bind actual three-stage adjustments, prove every full-marker contributor and exact base markers, and construct proper WHOLE circle/slim bundles with original fibers and full stage/final fiber equality before piece removal.",
+      "actual_zero_slim_development_record": "checks/evidence/revision150_zero_slim_development.json",
+      "frontier_revision150": "ZSP01-05 prove actual zero-block isolation, compact zero domains, whole zero/slim fiber saturation, compact slim extraction with complete shared faces/collars, and relative-interior remaining carrier.",
+      "actual_edge_disk_development_record": "checks/evidence/revision151_edge_disk_development.json",
+      "frontier_revision151": "EDP01-06 produce actual slow scale, all height-preimage localization, original-source compact trace, proper whole disks, independent horizontal/vertical faces and exact agreement with whole circle fibers.",
+      "actual_final_decomposition_record": "checks/evidence/revision152_final_decomposition.json",
+      "frontier_revision152": "Actual compact edge piece and whole-circle remainder with relative common faces supply the closed geometric certificate and FC42 assembly for the common assignment.",
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations."
+    },
+    "CP11": {
+      "refined_by": [
+        "CFS17",
+        "CFS20"
+      ],
+      "mathematics": "Original-cloud perturbed-input value/C1/rank bounds written conditional on actual producers",
+      "adjustment_development_record": "checks/evidence/revision124_adjustment_development.json",
+      "parent_complete": false,
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope."
+    },
+    "CP12": {
+      "refined_by": [
+        "CFS20",
+        "CFS25"
+      ],
+      "mathematics": "CFS25 adds E<=4kappa/5 withkappa depending only on fixedN,P; retain CFS20 half-tube reverse selection order. ActualZM is a separate structural producer.",
+      "adjustment_development_record": "checks/evidence/revision124_adjustment_development.json",
+      "parent_complete": false,
+      "uniform_cutoff_development_record": "checks/evidence/revision125_cutoff_development.json",
+      "actual_marker_development_record": "checks/evidence/revision144_marker_development.json",
+      "marker_frontier_revision144": "CFS26-CFS31 prove actual support/plane locality for pruned graph models and sequential ZM relative to rough-cloud producers; no separate ZM/ZL premise. Rough graph/coverage and global assembly remain.",
+      "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+      "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope.",
+      "actual_slim_cloud_development_record": "checks/evidence/revision146_slim_cloud_development.json",
+      "slim_frontier_revision146": "SGP01-06 produce actual slim raw/differential comparisons, model-support localization, early graph modulus, every-preimage rank and both cloud coverage directions from local geometry. First and edge clouds remain.",
+      "actual_edge_cloud_development_record": "checks/evidence/revision147_edge_cloud_development.json",
+      "edge_frontier_revision147": "EGP01-07 produce actual edge exclusion, whole comparison lists, raw/differential comparisons with original asymmetric tests, larger exact core section, early graph modulus, every-preimage rank and both cloud coverage directions. Together with146, both projected clouds are written; the first cloud remains.",
+      "actual_first_cloud_development_record": "checks/evidence/revision148_first_cloud_development.json",
+      "first_frontier_revision148": "TCP01-06 produce the actual first cloud, including early circle tests/Gram bound, same high-height collar, coupled cutoff and variable scale, early graph modulus, all-preimage rank2 and both coverage directions. Together with146-147, all three original clouds are written.",
+      "actual_adjustment_and_closed_fiber_development_record": "checks/evidence/revision149_adjustment_fiber_development.json",
+      "frontier_revision149": "GAF01-07 bind actual three-stage adjustments, prove every full-marker contributor and exact base markers, and construct proper WHOLE circle/slim bundles with original fibers and full stage/final fiber equality before piece removal.",
+      "actual_zero_slim_development_record": "checks/evidence/revision150_zero_slim_development.json",
+      "frontier_revision150": "ZSP01-05 prove actual zero-block isolation, compact zero domains, whole zero/slim fiber saturation, compact slim extraction with complete shared faces/collars, and relative-interior remaining carrier.",
+      "actual_edge_disk_development_record": "checks/evidence/revision151_edge_disk_development.json",
+      "frontier_revision151": "EDP01-06 produce actual slow scale, all height-preimage localization, original-source compact trace, proper whole disks, independent horizontal/vertical faces and exact agreement with whole circle fibers.",
+      "actual_final_decomposition_record": "checks/evidence/revision152_final_decomposition.json",
+      "frontier_revision152": "Actual compact edge piece and whole-circle remainder with relative common faces supply the closed geometric certificate and FC42 assembly for the common assignment.",
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations."
+    },
+    "FC23": {
+      "uniform_cutoff_development_record": "checks/evidence/revision125_cutoff_development.json",
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "actual_marker_development_record": "checks/evidence/revision144_marker_development.json",
+      "marker_frontier_revision144": "CFS26-CFS31 prove actual support/plane locality for pruned graph models and sequential ZM relative to rough-cloud producers; no separate ZM/ZL premise. Rough graph/coverage and global assembly remain.",
+      "parent_complete": false,
+      "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+      "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+      "actual_slim_cloud_development_record": "checks/evidence/revision146_slim_cloud_development.json",
+      "slim_frontier_revision146": "SGP01-06 produce actual slim raw/differential comparisons, model-support localization, early graph modulus, every-preimage rank and both cloud coverage directions from local geometry. First and edge clouds remain.",
+      "actual_edge_cloud_development_record": "checks/evidence/revision147_edge_cloud_development.json",
+      "edge_frontier_revision147": "EGP01-07 produce actual edge exclusion, whole comparison lists, raw/differential comparisons with original asymmetric tests, larger exact core section, early graph modulus, every-preimage rank and both cloud coverage directions. Together with146, both projected clouds are written; the first cloud remains.",
+      "actual_first_cloud_development_record": "checks/evidence/revision148_first_cloud_development.json",
+      "first_frontier_revision148": "TCP01-06 produce the actual first cloud, including early circle tests/Gram bound, same high-height collar, coupled cutoff and variable scale, early graph modulus, all-preimage rank2 and both coverage directions. Together with146-147, all three original clouds are written.",
+      "all_three_original_clouds_written_complete_under_retained_foundations": true,
+      "actual_adjustment_and_closed_fiber_development_record": "checks/evidence/revision149_adjustment_fiber_development.json",
+      "frontier_revision149": "GAF01-07 bind actual three-stage adjustments, prove every full-marker contributor and exact base markers, and construct proper WHOLE circle/slim bundles with original fibers and full stage/final fiber equality before piece removal.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "FC27": {
+      "uniform_cutoff_development_record": "checks/evidence/revision125_cutoff_development.json",
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "actual_marker_development_record": "checks/evidence/revision144_marker_development.json",
+      "marker_frontier_revision144": "CFS26-CFS31 prove actual support/plane locality for pruned graph models and sequential ZM relative to rough-cloud producers; no separate ZM/ZL premise. Rough graph/coverage and global assembly remain.",
+      "parent_complete": false,
+      "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+      "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+      "actual_slim_cloud_development_record": "checks/evidence/revision146_slim_cloud_development.json",
+      "slim_frontier_revision146": "SGP01-06 produce actual slim raw/differential comparisons, model-support localization, early graph modulus, every-preimage rank and both cloud coverage directions from local geometry. First and edge clouds remain.",
+      "slim_cloud_written_complete_under_retained_foundations": true,
+      "actual_edge_cloud_development_record": "checks/evidence/revision147_edge_cloud_development.json",
+      "edge_frontier_revision147": "EGP01-07 produce actual edge exclusion, whole comparison lists, raw/differential comparisons with original asymmetric tests, larger exact core section, early graph modulus, every-preimage rank and both cloud coverage directions. Together with146, both projected clouds are written; the first cloud remains.",
+      "edge_cloud_written_complete_under_retained_foundations": true,
+      "both_projected_clouds_written_complete_under_retained_foundations": true,
+      "actual_first_cloud_development_record": "checks/evidence/revision148_first_cloud_development.json",
+      "first_frontier_revision148": "TCP01-06 produce the actual first cloud, including early circle tests/Gram bound, same high-height collar, coupled cutoff and variable scale, early graph modulus, all-preimage rank2 and both coverage directions. Together with146-147, all three original clouds are written.",
+      "actual_adjustment_and_closed_fiber_development_record": "checks/evidence/revision149_adjustment_fiber_development.json",
+      "frontier_revision149": "GAF01-07 bind actual three-stage adjustments, prove every full-marker contributor and exact base markers, and construct proper WHOLE circle/slim bundles with original fibers and full stage/final fiber equality before piece removal.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "LC28": {
+      "mathematics": "LFR02 writes localized controlled distance smoothing for a complete C2 metric on a smooth carrier, including compact support and global Lipschitz difference.",
+      "open": "Inherited finite-calculus, Rademacher, mollification and minimizing-geodesic bindings remain; no new Lean proof.",
+      "refined_by": [
+        "LFR02",
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06",
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "finite_category_development_record": "checks/evidence/revision126_finite_development.json",
+      "parent_complete": false,
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate.",
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true
+    },
+    "LC82": {
+      "mathematics": "LFR03 writes the C^r to C^(r-1) ambient isotopy with boundary, r>=3, common compact isolation and both transversality conditions.",
+      "open": "Bind inherited finite ODE/implicit-function machinery; produce actual geometric interpolation estimates.",
+      "refined_by": [
+        "LFR03"
+      ],
+      "finite_category_development_record": "checks/evidence/revision126_finite_development.json",
+      "parent_complete": false,
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true,
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted."
+    },
+    "LC83": {
+      "mathematics": "LFR06 writes actual rank-two coordinates with Gram control, same-map value/direction estimates and buffered Lipschitz proof; LFR07 assembles the conditional circle packet.",
+      "open": "Retained AC41/AC48/AC51 residual-factor and collapsed-model hypotheses plus inherited comparison/bundle bindings remain.",
+      "refined_by": [
+        "LFR06",
+        "LFR07",
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06",
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "finite_category_development_record": "checks/evidence/revision126_finite_development.json",
+      "parent_complete": false,
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate.",
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true
+    },
+    "LC84": {
+      "mathematics": "LFR21-LFR24 provide the finite model disk. LFR25-LFR28 now construct source distance/gradient control, variable-scale smoothing, a smooth core preserving the actual sublevel, entire-source-fiber enclosure and the proper smooth disk bundle, from an explicit buffered coarse-border chart. LFR29-LFR32 produce that coarse-border input from actual edge maps, with closure, scale recentering and strict endpoint repair. LFR33 gives ONE smoothing and actual disk bundles for a finite verified family. LFR34-LFR38 give the ORIGINAL pair its full rank-two adapted collar, with enlarged lower smoothing region, actual plane maps, ALL adapted conditions, own-scale normalization and common disk/collar smoothing. LFR39-LFR44 supply strong-edge density and a finite cover by ACTUAL disk domains/cutoff plateaux with shared smoothing; original real coordinate, slim quality and ordered tolerances retained. ALR05 now supplies AC46 recognition for the one-dimensional factors used by LFR43-LFR44. ALG01-ALG08 now write complete and coarse-buffer comparison; MC18/AC41 and named AC65/LC12/LC78 consumers use explicit permitted parameter choices. LCP01-LCP06 close the remaining interior local comparison uses with original buffers and original radial function. LPA01-LPA06 now supply simultaneous interior local production from the closed standing sequence.",
+      "open": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "refined_by": [
+        "LFR02",
+        "LFR03",
+        "LFR04",
+        "LFR05",
+        "LFR08",
+        "LFR09",
+        "LFR10",
+        "LFR11",
+        "LFR12",
+        "LFR13",
+        "LFR14",
+        "LFR15",
+        "LFR21",
+        "LFR22",
+        "LFR23",
+        "LFR24",
+        "LFR25",
+        "LFR26",
+        "LFR27",
+        "LFR28",
+        "LFR29",
+        "LFR30",
+        "LFR31",
+        "LFR32",
+        "LFR33",
+        "LFR34",
+        "LFR35",
+        "LFR36",
+        "LFR37",
+        "LFR38",
+        "LFR39",
+        "LFR40",
+        "LFR41",
+        "LFR42",
+        "LFR43",
+        "LFR44",
+        "ALR01",
+        "ALR02",
+        "ALR03",
+        "ALR04",
+        "ALR05",
+        "ALG01",
+        "ALG02",
+        "ALG03",
+        "ALG04",
+        "ALG05",
+        "ALG06",
+        "ALG07",
+        "ALG08",
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06",
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "finite_category_development_record": "checks/evidence/revision126_finite_development.json",
+      "parent_complete": false,
+      "finite_model_development_record": "checks/evidence/revision127_finite_development.json",
+      "revision127_scope": "Written local injectivity adapter; actual maps become buffered embeddings covering smaller source balls; exact metric splitting gives C^(K+1) product and complete C^K factor. Initial compactness maps, exact splitting existence and geometric fiber inputs still required.",
+      "consumer_compactness_development_record": "checks/evidence/revision128_compactness_development.json",
+      "revision128_scope": "LFR12-LFR15 construct consumer-sufficient C^(K-1) models and C^K actual embeddings/products from smooth sources with ballwise bounds0..K; same approximate Euclidean coordinates retained; stronger historical C^K metric and geometric packets not claimed.",
+      "edge_core_development_record": "checks/evidence/revision130_edge_core_development.json",
+      "finite_model_disk_core_written": true,
+      "edge_transfer_development_record": "checks/evidence/revision131_edge_transfer_development.json",
+      "source_transfer_written_under_coarse_border_input": true,
+      "edge_border_development_record": "checks/evidence/revision132_edge_border_development.json",
+      "coarse_border_producer_written": true,
+      "finite_verified_family_shared_smoothing_written": true,
+      "edge_collar_development_record": "checks/evidence/revision133_edge_collar_development.json",
+      "full_adapted_collar_written": true,
+      "edge_coverage_development_record": "checks/evidence/revision134_edge_coverage_development.json",
+      "strong_edge_density_written": true,
+      "actual_disk_domain_cover_written": true,
+      "recognition_development_record": "checks/evidence/revision139_recognition_development.json",
+      "globalization_development_record": "checks/evidence/revision140_globalization_development.json",
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate.",
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true
+    },
+    "LC85": {
+      "mathematics": "LFR16-LFR20 supply the complete LOCAL slim geometric packet under the stated analytic and actual bounded-factor splitting hypotheses, including compact model factor, finite Gauss-Bonnet/type adapter, all-direction derivative transfer, entire-source-fiber enclosure, compact transverse interpolation, smooth proper trivial S2/T2 bundle and cutoff.",
+      "open": "Accepted smooth foundation and Lean bindings remain pending; normalized analytic inputs still come from scale/static/flow hypotheses; global overlaps/assembly are separate. No remaining unwritten slim geometry clause under LFR20 inputs.",
+      "refined_by": [
+        "LFR03",
+        "LFR04",
+        "LFR05",
+        "LFR08",
+        "LFR09",
+        "LFR10",
+        "LFR11",
+        "LFR12",
+        "LFR13",
+        "LFR14",
+        "LFR15",
+        "LFR16",
+        "LFR17",
+        "LFR18",
+        "LFR19",
+        "LFR20",
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06",
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "finite_category_development_record": "checks/evidence/revision126_finite_development.json",
+      "parent_complete": false,
+      "finite_model_development_record": "checks/evidence/revision127_finite_development.json",
+      "revision127_scope": "Written local injectivity adapter; actual maps become buffered embeddings covering smaller source balls; exact metric splitting gives C^(K+1) product and complete C^K factor. Initial compactness maps, exact splitting existence and geometric fiber inputs still required.",
+      "consumer_compactness_development_record": "checks/evidence/revision128_compactness_development.json",
+      "revision128_scope": "LFR12-LFR15 construct consumer-sufficient C^(K-1) models and C^K actual embeddings/products from smooth sources with ballwise bounds0..K; same approximate Euclidean coordinates retained; stronger historical C^K metric and geometric packets not claimed.",
+      "slim_development_record": "checks/evidence/revision129_slim_development.json",
+      "local_geometric_producer_written": true,
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate.",
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true
+    },
+    "LC21": {
+      "mathematics": "LFR55-LFR59 construct LC21 for actual complete C^m Riemannian models m>=4 with sec>=0. Same finite metric; proper radial cone; all-large-real-scale actual whole-space pointed KL maps; nonnegative/geodesic/dimension conclusion.",
+      "open": "General Alexandrov cone theorem and intrinsic Tits-boundary identification not claimed or required for these consumers. Retained finite Riemannian foundations and exact accepted PC/Lean bindings remain.",
+      "refined_by": [
+        "LFR55",
+        "LFR56",
+        "LFR57",
+        "LFR58",
+        "LFR59",
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "parent_complete": false,
+      "finite_cone_development_record": "checks/evidence/revision137_finite_cone_development.json",
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true
+    },
+    "AC43": {
+      "mathematics": "ALS01-ALS05 give a written metric proof from GLOBAL nonnegative four-point comparison, complete proper geodesic X and an actual specified line. Exact quadratic distances, affine coordinate, unique parallel lines and inverse onto pointed product isometries; factor geometry and dimension retained.",
+      "open": "Exact retained metric foundation and accepted Lean bindings remain pending. This theorem assumes global four-point comparison; upstream local globalization AC02/AC36 and independent AC46 recognition are not proved by it.",
+      "refined_by": [
+        "ALS01",
+        "ALS02",
+        "ALS03",
+        "ALS04",
+        "ALS05"
+      ],
+      "parent_complete": false,
+      "written_splitting_producer_complete": true,
+      "line_splitting_development_record": "checks/evidence/revision138_line_splitting_development.json",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true,
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted."
+    },
+    "AC46": {
+      "mathematics": "ALR01-ALR05 produce exact interval/half-interval charts under GLOBAL four-point comparison and the given Hausdorff bound. Existing paired-chart injectivity plus original segment coordinates, then compact last intersections. No tangent dimension theorem or gradient flow.",
+      "open": "Retained metric foundation and accepted Lean bindings remain pending; global comparison is an explicit input. Local globalization and final local parameter binding remain separate.",
+      "refined_by": [
+        "ALR01",
+        "ALR02",
+        "ALR03",
+        "ALR04",
+        "ALR05"
+      ],
+      "parent_complete": false,
+      "written_recognition_producer_complete": true,
+      "recognition_development_record": "checks/evidence/revision139_recognition_development.json",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true,
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted."
+    },
+    "AC02": {
+      "mathematics": "Historical domain verification retained. ALG01-ALG08 prove a coarser complete-buffer theorem and named consumer translations, separately.",
+      "open": "Original sharp-margin local comparison remains source-qualified. Do not infer it from complete-space globalization or silently enlarge a fixed hypothesis.",
+      "refined_by": [
+        "ALG01",
+        "ALG02",
+        "ALG03",
+        "ALG04",
+        "ALG05",
+        "ALG06",
+        "ALG07",
+        "ALG08"
+      ],
+      "parent_complete": false,
+      "original_margin_proved": false,
+      "globalization_development_record": "checks/evidence/revision140_globalization_development.json"
+    },
+    "AC36": {
+      "mathematics": "Historical domain verification retained. ALG01-ALG08 prove a coarser complete-buffer theorem and named consumer translations, separately.",
+      "open": "Original sharp-margin local comparison remains source-qualified. Do not infer it from complete-space globalization or silently enlarge a fixed hypothesis.",
+      "refined_by": [
+        "ALG01",
+        "ALG02",
+        "ALG03",
+        "ALG04",
+        "ALG05",
+        "ALG06",
+        "ALG07",
+        "ALG08"
+      ],
+      "parent_complete": false,
+      "original_margin_proved": false,
+      "globalization_development_record": "checks/evidence/revision140_globalization_development.json"
+    },
+    "AC64": {
+      "mathematics": "Historical domain verification retained. ALG01-ALG08 prove a coarser complete-buffer theorem and named consumer translations, separately.",
+      "open": "Original sharp-margin local comparison remains source-qualified. Do not infer it from complete-space globalization or silently enlarge a fixed hypothesis.",
+      "refined_by": [
+        "ALG01",
+        "ALG02",
+        "ALG03",
+        "ALG04",
+        "ALG05",
+        "ALG06",
+        "ALG07",
+        "ALG08"
+      ],
+      "parent_complete": false,
+      "original_margin_proved": false,
+      "globalization_development_record": "checks/evidence/revision140_globalization_development.json"
+    },
+    "AC41": {
+      "mathematics": "ALG07 supplies the original MC18/AC41 conclusion via written ALG05/06. Growing r_i permit 256R windows; original net/dimension constants and hypotheses retained.",
+      "open": "Retained metric/analytic foundation and accepted Lean bindings; sharp AC02/AC36 contracts are separate and not imported here.",
+      "refined_by": [
+        "ALG01",
+        "ALG02",
+        "ALG03",
+        "ALG04",
+        "ALG05",
+        "ALG06",
+        "ALG07",
+        "ALG08"
+      ],
+      "parent_complete": false,
+      "written_comparison_producer_complete": true,
+      "globalization_development_record": "checks/evidence/revision140_globalization_development.json"
+    },
+    "AC65": {
+      "mathematics": "ALG08 uses the same radial segments shortened to L_i/1024, AC63 numerical comparison, then ALG06; AC65 original orthogonality conclusion retained.",
+      "open": "Retained metric foundation and accepted Lean bindings; original fixed 8r AC64 is not claimed.",
+      "refined_by": [
+        "ALG06",
+        "ALG07",
+        "ALG08",
+        "ALG01",
+        "ALG02",
+        "ALG03",
+        "ALG04",
+        "ALG05"
+      ],
+      "parent_complete": false,
+      "globalization_development_record": "checks/evidence/revision140_globalization_development.json"
+    },
+    "LC27": {
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "refined_by": [
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06"
+      ],
+      "parent_complete": false,
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate."
+    },
+    "LC65": {
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "refined_by": [
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06"
+      ],
+      "parent_complete": false,
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate."
+    },
+    "LC66": {
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "refined_by": [
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06"
+      ],
+      "parent_complete": false,
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate."
+    },
+    "LC69": {
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "refined_by": [
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06"
+      ],
+      "parent_complete": false,
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate."
+    },
+    "LC70": {
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "refined_by": [
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06"
+      ],
+      "parent_complete": false,
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate."
+    },
+    "LC73": {
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "refined_by": [
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06"
+      ],
+      "parent_complete": false,
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate."
+    },
+    "LC76": {
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "refined_by": [
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06"
+      ],
+      "parent_complete": false,
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate."
+    },
+    "LC77": {
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "refined_by": [
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06"
+      ],
+      "parent_complete": false,
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate."
+    },
+    "LC78": {
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "refined_by": [
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06"
+      ],
+      "parent_complete": false,
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate."
+    },
+    "LC79": {
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "refined_by": [
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06"
+      ],
+      "parent_complete": false,
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate."
+    },
+    "LC80": {
+      "local_comparison_development_record": "checks/evidence/revision141_local_comparison_development.json",
+      "refined_by": [
+        "LCP01",
+        "LCP02",
+        "LCP03",
+        "LCP04",
+        "LCP05",
+        "LCP06",
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "parent_complete": false,
+      "comparison_route": "LCP01-06 supply original annular/radial/edge comparison consumers using ALG05/06. Original sharp AC02/36/64 contracts remain separate.",
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true
+    },
+    "LC02": {
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "refined_by": [
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "parent_complete": false,
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Full original-local-goal review and retained foundation/accepted PC/Lean bindings pending. LC87 overlap and boundary fields/global FC44 are distinct; not complete."
+    },
+    "LC04": {
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "refined_by": [
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "parent_complete": false,
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Full original-local-goal review and retained foundation/accepted PC/Lean bindings pending. LC87 overlap and boundary fields/global FC44 are distinct; not complete."
+    },
+    "LC61": {
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "refined_by": [
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "parent_complete": false,
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true
+    },
+    "LC86": {
+      "local_assembly_development_record": "checks/evidence/revision142_local_assembly_development.json",
+      "refined_by": [
+        "LPA01",
+        "LPA02",
+        "LPA03",
+        "LPA04",
+        "LPA05",
+        "LPA06"
+      ],
+      "parent_complete": false,
+      "joint_local_production": "LPA01-06 bind common normalized analytic data, every-center sequence compactness, finite uniform zero scale, one local parameter assignment and four finite interior families in closed standing sequence. Actual metrics/functions/embeddings retained.",
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted.",
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true
+    },
+    "MC17": {
+      "final_consumer_audit": "checks/evidence/revision143_consumer_audit.json",
+      "written_consumer_development_complete": true,
+      "parent_complete": false,
+      "current_completion_boundary": "Requested written finite-category/local-model consumer development audited under retained foundations. Exact accepted foundation/PC/Lean bindings remain pending. Stronger historical parents, LC87 different-chart comparison/boundary fields and global assembly are not promoted."
+    },
+    "FC07": {
+      "actual_marker_development_record": "checks/evidence/revision144_marker_development.json",
+      "marker_frontier_revision144": "CFS26-CFS31 prove actual support/plane locality for pruned graph models and sequential ZM relative to rough-cloud producers; no separate ZM/ZL premise. Rough graph/coverage and global assembly remain.",
+      "parent_complete": false,
+      "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+      "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+      "actual_slim_cloud_development_record": "checks/evidence/revision146_slim_cloud_development.json",
+      "slim_frontier_revision146": "SGP01-06 produce actual slim raw/differential comparisons, model-support localization, early graph modulus, every-preimage rank and both cloud coverage directions from local geometry. First and edge clouds remain.",
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "actual_edge_cloud_development_record": "checks/evidence/revision147_edge_cloud_development.json",
+      "edge_frontier_revision147": "EGP01-07 produce actual edge exclusion, whole comparison lists, raw/differential comparisons with original asymmetric tests, larger exact core section, early graph modulus, every-preimage rank and both cloud coverage directions. Together with146, both projected clouds are written; the first cloud remains.",
+      "actual_first_cloud_development_record": "checks/evidence/revision148_first_cloud_development.json",
+      "first_frontier_revision148": "TCP01-06 produce the actual first cloud, including early circle tests/Gram bound, same high-height collar, coupled cutoff and variable scale, early graph modulus, all-preimage rank2 and both coverage directions. Together with146-147, all three original clouds are written.",
+      "first_cloud_written_complete_under_retained_foundations": true,
+      "actual_adjustment_and_closed_fiber_development_record": "checks/evidence/revision149_adjustment_fiber_development.json",
+      "frontier_revision149": "GAF01-07 bind actual three-stage adjustments, prove every full-marker contributor and exact base markers, and construct proper WHOLE circle/slim bundles with original fibers and full stage/final fiber equality before piece removal.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "FC01": {
+      "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+      "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+      "parent_complete": false
+    },
+    "FC02": {
+      "marked_base_development_record": "checks/evidence/revision145_base_development.json",
+      "base_frontier_revision145": "CGP01-03 bind actual profiles, early derivative and inner sections; CGP04-08 prove all-patch witnesses, one-sheetness and later-image nonmerging under the still-open rough-graph inputs. Fiber equality only on original plateau carriers.",
+      "parent_complete": false
+    },
+    "FC36": {
+      "actual_adjustment_and_closed_fiber_development_record": "checks/evidence/revision149_adjustment_fiber_development.json",
+      "frontier_revision149": "GAF01-07 bind actual three-stage adjustments, prove every full-marker contributor and exact base markers, and construct proper WHOLE circle/slim bundles with original fibers and full stage/final fiber equality before piece removal.",
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "proper_whole_slim_fibers_written_before_removals": true,
+      "actual_zero_slim_development_record": "checks/evidence/revision150_zero_slim_development.json",
+      "frontier_revision150": "ZSP01-05 prove actual zero-block isolation, compact zero domains, whole zero/slim fiber saturation, compact slim extraction with complete shared faces/collars, and relative-interior remaining carrier.",
+      "written_complete_under_retained_foundations": true,
+      "actual_final_decomposition_record": "checks/evidence/revision152_final_decomposition.json",
+      "frontier_revision152": "Actual compact edge piece and whole-circle remainder with relative common faces supply the closed geometric certificate and FC42 assembly for the common assignment.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots."
+    },
+    "FC38": {
+      "actual_adjustment_and_closed_fiber_development_record": "checks/evidence/revision149_adjustment_fiber_development.json",
+      "frontier_revision149": "GAF01-07 bind actual three-stage adjustments, prove every full-marker contributor and exact base markers, and construct proper WHOLE circle/slim bundles with original fibers and full stage/final fiber equality before piece removal.",
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "proper_whole_circle_fibers_written_before_removals": true,
+      "actual_zero_slim_development_record": "checks/evidence/revision150_zero_slim_development.json",
+      "frontier_revision150": "ZSP01-05 prove actual zero-block isolation, compact zero domains, whole zero/slim fiber saturation, compact slim extraction with complete shared faces/collars, and relative-interior remaining carrier.",
+      "actual_edge_disk_development_record": "checks/evidence/revision151_edge_disk_development.json",
+      "frontier_revision151": "EDP01-06 produce actual slow scale, all height-preimage localization, original-source compact trace, proper whole disks, independent horizontal/vertical faces and exact agreement with whole circle fibers.",
+      "vertical_whole_circle_fibers_agree_written": true,
+      "actual_final_decomposition_record": "checks/evidence/revision152_final_decomposition.json",
+      "frontier_revision152": "Actual compact edge piece and whole-circle remainder with relative common faces supply the closed geometric certificate and FC42 assembly for the common assignment.",
+      "compact_actual_circle_remainder_written": true,
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "FC35": {
+      "actual_zero_slim_development_record": "checks/evidence/revision150_zero_slim_development.json",
+      "frontier_revision150": "ZSP01-05 prove actual zero-block isolation, compact zero domains, whole zero/slim fiber saturation, compact slim extraction with complete shared faces/collars, and relative-interior remaining carrier.",
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "written_complete_under_retained_foundations": true,
+      "actual_final_decomposition_record": "checks/evidence/revision152_final_decomposition.json",
+      "frontier_revision152": "Actual compact edge piece and whole-circle remainder with relative common faces supply the closed geometric certificate and FC42 assembly for the common assignment.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots."
+    },
+    "FC37": {
+      "actual_zero_slim_development_record": "checks/evidence/revision150_zero_slim_development.json",
+      "frontier_revision150": "ZSP01-05 prove actual zero-block isolation, compact zero domains, whole zero/slim fiber saturation, compact slim extraction with complete shared faces/collars, and relative-interior remaining carrier.",
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "actual_edge_disk_development_record": "checks/evidence/revision151_edge_disk_development.json",
+      "frontier_revision151": "EDP01-06 produce actual slow scale, all height-preimage localization, original-source compact trace, proper whole disks, independent horizontal/vertical faces and exact agreement with whole circle fibers.",
+      "proper_whole_edge_disks_and_transverse_faces_written": true,
+      "actual_final_decomposition_record": "checks/evidence/revision152_final_decomposition.json",
+      "frontier_revision152": "Actual compact edge piece and whole-circle remainder with relative common faces supply the closed geometric certificate and FC42 assembly for the common assignment.",
+      "compact_actual_edge_piece_written": true,
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "FC39": {
+      "actual_zero_slim_development_record": "checks/evidence/revision150_zero_slim_development.json",
+      "frontier_revision150": "ZSP01-05 prove actual zero-block isolation, compact zero domains, whole zero/slim fiber saturation, compact slim extraction with complete shared faces/collars, and relative-interior remaining carrier.",
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "actual_edge_disk_development_record": "checks/evidence/revision151_edge_disk_development.json",
+      "frontier_revision151": "EDP01-06 produce actual slow scale, all height-preimage localization, original-source compact trace, proper whole disks, independent horizontal/vertical faces and exact agreement with whole circle fibers.",
+      "actual_final_decomposition_record": "checks/evidence/revision152_final_decomposition.json",
+      "frontier_revision152": "Actual compact edge piece and whole-circle remainder with relative common faces supply the closed geometric certificate and FC42 assembly for the common assignment.",
+      "actual_closed_geometric_certificate_written": true,
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "boundary_graph_assembly_record": "checks/evidence/revision157_boundary_graph_assembly.json",
+      "frontier_revision157": "BCF01-04 give the actual boundary decomposition, complete face partition, no cusp disk faces and finite graph presentation with labeled external tori. Full parameter/threshold binding remains.",
+      "boundary_parameter_binding_record": "checks/evidence/revision158_boundary_parameter_binding.json",
+      "frontier_revision158": "BBR01-03 bind the full boundary construction to one BR00-BR31 assignment and uniform tail, yielding its static threshold under retained foundations. The final full-goal mathematical audit remains.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "FC42": {
+      "actual_final_decomposition_record": "checks/evidence/revision152_final_decomposition.json",
+      "frontier_revision152": "Actual compact edge piece and whole-circle remainder with relative common faces supply the closed geometric certificate and FC42 assembly for the common assignment.",
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "boundary_graph_assembly_record": "checks/evidence/revision157_boundary_graph_assembly.json",
+      "frontier_revision157": "BCF01-04 give the actual boundary decomposition, complete face partition, no cusp disk faces and finite graph presentation with labeled external tori. Full parameter/threshold binding remains.",
+      "boundary_parameter_binding_record": "checks/evidence/revision158_boundary_parameter_binding.json",
+      "frontier_revision158": "BBR01-03 bind the full boundary construction to one BR00-BR31 assignment and uniform tail, yielding its static threshold under retained foundations. The final full-goal mathematical audit remains.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "CP01": {
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false,
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope."
+    },
+    "CP02": {
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false,
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope."
+    },
+    "CP03": {
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false,
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope."
+    },
+    "CP04": {
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false,
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope."
+    },
+    "CP05": {
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false,
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope."
+    },
+    "CP06": {
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false,
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope."
+    },
+    "CP07": {
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false,
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope."
+    },
+    "CP08": {
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false,
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope."
+    },
+    "CP13": {
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false,
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope."
+    },
+    "CP14": {
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false,
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope."
+    },
+    "CP15": {
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false,
+      "open": "Separate nearly cuspidal boundary construction/parameter rows/threshold reduction; final full-goal audit; accepted-PC/Lean bindings. Flow application rows retain distinct scope."
+    },
+    "CP19": {
+      "closed_parameter_binding_record": "checks/evidence/revision153_closed_parameter_binding.json",
+      "frontier_revision153": "PR01-PR28 bind the current closed route; PBR02/PBR03 give the uniform standing tail and single closed static threshold under retained foundations.",
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "boundary_scale_adapter_record": "checks/evidence/revision154_boundary_scale_adapter.json",
+      "frontier_revision154": "BSA01-06 give convex-boundary comparison, capped first scales, whole-carrier smooth scale and exhausting interior buffers. Actual boundary cloud/core construction remains.",
+      "actual_cusp_collar_record": "checks/evidence/revision155_actual_cusp_collars.json",
+      "frontier_revision155": "BCP01-05 give actual heights/product maps, product-or-disjoint collars, restricted families and zero-ball separation. Actual augmented clouds and adjusted cores remain.",
+      "actual_boundary_cloud_record": "checks/evidence/revision156_actual_boundary_clouds.json",
+      "frontier_revision156": "BCG01-07 give actual augmented clouds, every-contributor markers, physical isolation, actual adjusted torus cores and saturated internal frontiers. Boundary graph assembly and parameter/threshold remain.",
+      "boundary_graph_assembly_record": "checks/evidence/revision157_boundary_graph_assembly.json",
+      "frontier_revision157": "BCF01-04 give the actual boundary decomposition, complete face partition, no cusp disk faces and finite graph presentation with labeled external tori. Full parameter/threshold binding remains.",
+      "boundary_parameter_binding_record": "checks/evidence/revision158_boundary_parameter_binding.json",
+      "frontier_revision158": "BBR01-03 bind the full boundary construction to one BR00-BR31 assignment and uniform tail, yielding its static threshold under retained foundations. The final full-goal mathematical audit remains.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "FC43": {
+      "boundary_scale_adapter_record": "checks/evidence/revision154_boundary_scale_adapter.json",
+      "frontier_revision154": "BSA01-06 give convex-boundary comparison, capped first scales, whole-carrier smooth scale and exhausting interior buffers. Actual boundary cloud/core construction remains.",
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "actual_cusp_collar_record": "checks/evidence/revision155_actual_cusp_collars.json",
+      "frontier_revision155": "BCP01-05 give actual heights/product maps, product-or-disjoint collars, restricted families and zero-ball separation. Actual augmented clouds and adjusted cores remain.",
+      "actual_boundary_cloud_record": "checks/evidence/revision156_actual_boundary_clouds.json",
+      "frontier_revision156": "BCG01-07 give actual augmented clouds, every-contributor markers, physical isolation, actual adjusted torus cores and saturated internal frontiers. Boundary graph assembly and parameter/threshold remain.",
+      "boundary_graph_assembly_record": "checks/evidence/revision157_boundary_graph_assembly.json",
+      "frontier_revision157": "BCF01-04 give the actual boundary decomposition, complete face partition, no cusp disk faces and finite graph presentation with labeled external tori. Full parameter/threshold binding remains.",
+      "boundary_parameter_binding_record": "checks/evidence/revision158_boundary_parameter_binding.json",
+      "frontier_revision158": "BBR01-03 bind the full boundary construction to one BR00-BR31 assignment and uniform tail, yielding its static threshold under retained foundations. The final full-goal mathematical audit remains.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "CP16": {
+      "boundary_scale_adapter_record": "checks/evidence/revision154_boundary_scale_adapter.json",
+      "frontier_revision154": "BSA01-06 give convex-boundary comparison, capped first scales, whole-carrier smooth scale and exhausting interior buffers. Actual boundary cloud/core construction remains.",
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope.",
+      "actual_cusp_collar_record": "checks/evidence/revision155_actual_cusp_collars.json",
+      "frontier_revision155": "BCP01-05 give actual heights/product maps, product-or-disjoint collars, restricted families and zero-ball separation. Actual augmented clouds and adjusted cores remain.",
+      "actual_boundary_cloud_record": "checks/evidence/revision156_actual_boundary_clouds.json",
+      "frontier_revision156": "BCG01-07 give actual augmented clouds, every-contributor markers, physical isolation, actual adjusted torus cores and saturated internal frontiers. Boundary graph assembly and parameter/threshold remain.",
+      "boundary_graph_assembly_record": "checks/evidence/revision157_boundary_graph_assembly.json",
+      "frontier_revision157": "BCF01-04 give the actual boundary decomposition, complete face partition, no cusp disk faces and finite graph presentation with labeled external tori. Full parameter/threshold binding remains.",
+      "boundary_parameter_binding_record": "checks/evidence/revision158_boundary_parameter_binding.json",
+      "frontier_revision158": "BBR01-03 bind the full boundary construction to one BR00-BR31 assignment and uniform tail, yielding its static threshold under retained foundations. The final full-goal mathematical audit remains.",
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true
+    },
+    "FC32": {
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true,
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope."
+    },
+    "FC34": {
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true,
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope."
+    },
+    "FC40": {
+      "final_written_static_audit_record": "checks/evidence/revision159_chapter14_final_audit.json",
+      "frontier_revision159": "Written actual closed and nearly cuspidal static construction complete under retained foundations; final mathematical audit performed, CAA01 numerical binding repair applied. Historical frontier fields are revision snapshots.",
+      "written_complete_under_retained_foundations": true,
+      "parent_complete": false,
+      "open": "Accepted-foundation declaration binding and Lean formalization remain; downstream flow/refinement/reconstruction retain separate scope."
+    },
+    "HG08": {
+      "mathematics": "Revision164 HPI01--HPI08 produce actual minimal-cusp corrections, vanishing jumps, a finite disjoint family and matching-radius coverage; HPS04 supplies smooth physical speed. HG07 is supplied by LTF05.",
+      "open": "Accepted inherited/source estimate bindings and Lean implementation remain pending; ambient incompressibility, essential refinement and reconstruction are separate.",
+      "persistence_smoothing": "checks/evidence/revision161_persistence_smoothing.json",
+      "written_smoothing_complete_under_discrete_hypotheses": true,
+      "parent_complete": false,
+      "production_ready": false,
+      "actual_persistent_family": "checks/evidence/revision164_actual_persistence.json",
+      "written_complete_under_retained_foundations": true,
+      "actual_discrete_inputs_produced": true,
+      "final_written_analytic_audit": "checks/evidence/revision166_longtime_final_audit.json"
+    },
+    "LC90": {
+      "mathematics": "Revision165 TCF01--TCF07 supply actual slow truncations, labeled collars, interior intrinsic/ambient scale and ball equality, boundary-near whole-ball derivatives, large-radius exclusion, LC89 one A before static w0 and actual late graph carriers.",
+      "open": "Accepted inherited/source estimate bindings and Lean implementation remain pending; ambient incompressibility, essential refinement and reconstruction are separate.",
+      "ambient_whole_ball": "checks/evidence/revision162_ambient_whole_ball.json",
+      "written_ambient_whole_ball_complete": true,
+      "parent_complete": false,
+      "production_ready": false,
+      "strict_canonical_scale_adapter": "Revision163 fixes the literal source endpoint by choosing scale1/2 and D>4 in WBD02.",
+      "actual_thin_application": "checks/evidence/revision165_actual_thin_application.json",
+      "written_analytic_application_complete_under_retained_foundations": true,
+      "final_written_analytic_audit": "checks/evidence/revision166_longtime_final_audit.json",
+      "normalized_component_guard": "LAU02 explicitly retains WBD03 negative-plane ambient-component hypothesis in WBD04; all actual uses verified."
+    },
+    "HG07": {
+      "mathematics": "Revision163 LTF01--LTF05 supply actual complete finite-volume pointed hyperbolic limits, compact limit family and uniform all-order unscathed dyadic windows for the chosen flow, under retained basic analytic estimates.",
+      "open": "Accepted inherited/source estimate bindings and Lean implementation remain pending; ambient incompressibility, essential refinement and reconstruction are separate.",
+      "actual_flow_producer": "checks/evidence/revision163_thick_flow_production.json",
+      "written_complete_under_retained_foundations": true,
+      "parent_complete": false,
+      "production_ready": false,
+      "final_written_analytic_audit": "checks/evidence/revision166_longtime_final_audit.json"
+    },
+    "HG10": {
+      "mathematics": "Selected endpoint uses fixed-boundary Meeks--Yau after actual exterior/curve hypotheses. Historical free-boundary contract is not proved verbatim.",
+      "refined_by": [
+        "IMS01",
+        "IMS02",
+        "IMS03"
+      ],
+      "record": "checks/evidence/revision167_ambient_incompressibility.json",
+      "open": "Accepted-foundation bindings and Lean implementation; fixed-boundary Meeks--Yau remains independent retained input. Written actual application complete under IAU02 profile convention.",
+      "parent_complete": false,
+      "production_ready": false,
+      "final_written_ambient_audit": "checks/evidence/revision168_ambient_final_audit.json"
+    },
+    "HG11": {
+      "mathematics": "Actual minimizing disks excluded from protected surgery bands by the written local stability radius proof;common carrier for all nearby minimizers.",
+      "refined_by": [
+        "IMS05",
+        "IMS06",
+        "IMS07"
+      ],
+      "record": "checks/evidence/revision167_ambient_incompressibility.json",
+      "open": "Accepted-foundation bindings and Lean implementation; fixed-boundary Meeks--Yau remains independent retained input. Written actual application complete under IAU02 profile convention.",
+      "parent_complete": false,
+      "production_ready": false,
+      "final_written_ambient_audit": "checks/evidence/revision168_ambient_final_audit.json"
+    },
+    "HG12": {
+      "mathematics": "Selected endpoint uses the prescribed meridian boundary estimate with correct slope-before-depth order. Historical free-boundary statement remains alternate.",
+      "refined_by": [
+        "IMS02",
+        "IMS04"
+      ],
+      "record": "checks/evidence/revision167_ambient_incompressibility.json",
+      "open": "Accepted-foundation bindings and Lean implementation; fixed-boundary Meeks--Yau remains independent retained input. Written actual application complete under IAU02 profile convention.",
+      "parent_complete": false,
+      "production_ready": false,
+      "final_written_ambient_audit": "checks/evidence/revision168_ambient_final_audit.json"
+    },
+    "HG13": {
+      "mathematics": "Actual global continuous minimum and smooth upper barriers across nontrivial sphere surgery for the prescribed-boundary problem.",
+      "refined_by": [
+        "IMS07",
+        "IMS08",
+        "IMS09"
+      ],
+      "record": "checks/evidence/revision167_ambient_incompressibility.json",
+      "open": "Accepted-foundation bindings and Lean implementation; fixed-boundary Meeks--Yau remains independent retained input. Written actual application complete under IAU02 profile convention.",
+      "parent_complete": false,
+      "production_ready": false,
+      "final_written_ambient_audit": "checks/evidence/revision168_ambient_final_audit.json"
+    },
+    "HG15": {
+      "mathematics": "Actual ambient cusp injection follows from constructed area function and HG14,under retained foundation.",
+      "refined_by": [
+        "IMS10"
+      ],
+      "record": "checks/evidence/revision167_ambient_incompressibility.json",
+      "open": "Accepted-foundation bindings and Lean implementation; fixed-boundary Meeks--Yau remains independent retained input. Written actual application complete under IAU02 profile convention.",
+      "parent_complete": false,
+      "production_ready": false,
+      "final_written_ambient_audit": "checks/evidence/revision168_ambient_final_audit.json"
+    },
+    "AT01": {
+      "mathematics": "Actual fixed and TCF01 moving hyperbolic-thin seam inclusions are injective,under retained foundation.",
+      "refined_by": [
+        "IMS10",
+        "IMS11"
+      ],
+      "record": "checks/evidence/revision167_ambient_incompressibility.json",
+      "open": "Accepted-foundation bindings and Lean implementation; fixed-boundary Meeks--Yau remains independent retained input. Written actual application complete under IAU02 profile convention.",
+      "parent_complete": false,
+      "production_ready": false,
+      "final_written_ambient_audit": "checks/evidence/revision168_ambient_final_audit.json"
+    },
+    "AT02": {
+      "mathematics": "Actual carrier inclusions follow by IMS11/IAU03 finite gluing after actual AT01 seam injections.",
+      "final_written_ambient_audit": "checks/evidence/revision168_ambient_final_audit.json",
+      "parent_complete": false,
+      "production_ready": false,
+      "open": "Accepted foundation bindings and Lean implementation; refinement/reconstruction separate."
+    },
+    "G01": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "G02": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "G03": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "G04": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "G05": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "G08": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "J01": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "J02": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "J05": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "R01": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "R02": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "R07": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "F02": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "AT13": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "AT16": {
+      "mathematics": "Written selected E1 application complete under retained classical foundations viaRG01--RG06/GM01--GM06/GAU01--GAU03; one final audit complete.",
+      "open": "Exact retained-foundation binding and Lean implementation; stronger optional historical signatures remain distinct.",
+      "parent_complete": false,
+      "production_ready": false,
+      "relative_graph_record": "checks/evidence/revision169_relative_graph.json",
+      "graph_model_record": "checks/evidence/revision170_graph_models.json",
+      "final_written_graph_audit": "checks/evidence/revision171_graph_final_audit.json"
+    },
+    "G06": {
+      "selected_E1_route": "Not required: RG05 retains essential good-block seams; GM06 supplies metrics on cut interiors.",
+      "parent_complete": false,
+      "production_ready": false
+    },
+    "J03": {
+      "selected_E1_route": "Not required: RG05 retains essential good-block seams; GM06 supplies metrics on cut interiors.",
+      "parent_complete": false,
+      "production_ready": false
+    },
+    "J04": {
+      "selected_E1_route": "Not required: RG05 retains essential good-block seams; GM06 supplies metrics on cut interiors.",
+      "parent_complete": false,
+      "production_ready": false
+    },
+    "F04": {
+      "selected_E1_route": "Not required: RG05 retains essential good-block seams; GM06 supplies metrics on cut interiors.",
+      "parent_complete": false,
+      "production_ready": false
+    },
+    "GA14": {
+      "mathematics": "Retains the existing blueprint contract.",
+      "open": "General producer and full premise census remain open.",
+      "refined_by": [],
+      "lean_bindings": [
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Topology/ThreeManifold/Geometrization/Statement.lean",
+          "declaration": "GC.Endpoint.GeometrizationCertificate",
+          "status": "concrete endpoint definition; general existence open",
+          "source_record": "reference_checks_revision203.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/CertificateExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Topology/ThreeManifold/Geometrization/StandardCertificates.lean",
+          "declaration": "GC.Endpoint.primeGeometricCertificate",
+          "status": "proved actual singleton-prime, zero-torus endpoint constructor",
+          "source_record": "reference_checks_revision206.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/StandardFactorExamples.lean"
+        }
+      ],
+      "parent_accepted_by_revision203": false,
+      "parent_accepted_by_revision206": false,
+      "frontier_revision206": "StandardFactorEndpoints now produced with actual prime and complete metric witnesses. Raw terminal consumer needs only actual empty observation; raw late consumer retains only same-tower LateComponentSupply. Controlled analytic production and stronger marked-history outputs remain open."
+    },
+    "GA22": {
+      "mathematics": "Retains the existing blueprint contract.",
+      "open": "General producer and full premise census remain open.",
+      "refined_by": [],
+      "lean_bindings": [
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Topology/ThreeManifold/Geometrization/FiniteConnectedSum.lean",
+          "declaration": "GC.Endpoint.geometrizes_of_markedFactors",
+          "status": "conditional composition; requires actual marked factor reconstruction and each factor certificate",
+          "source_record": "reference_checks_revision203.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ConnectedSumExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ObservedHistory.lean",
+          "declaration": "GC.Endpoint.geometrizes_of_rawSurgery_supplies",
+          "status": "proved conditional consumer on the same raw tower; both supplies open",
+          "source_record": "reference_checks_revision204.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ObservedHistoryExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/RawHistory.lean",
+          "declaration": "GC.Endpoint.geometrizes_of_raw_observation",
+          "status": "raw event controls supply completion and classification; standard and final endpoints conditional",
+          "source_record": "reference_checks_revision205.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/SmoothHistoryExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ClassifiedHistory.lean",
+          "declaration": "GC.Endpoint.geometrizes_of_raw_final_components",
+          "status": "proved actual observed-prefix descent; only final component endpoints supplied",
+          "source_record": "reference_checks_revision206.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/StandardFactorExamples.lean"
+        }
+      ],
+      "parent_accepted_by_revision203": false,
+      "parent_accepted_by_revision204": false,
+      "frontier_revision205": "Smooth event reconstruction and raw event controls now suffice for conditional endpoint descent. Standard-factor endpoints and actual late geometry remain open. Stronger oriented/protected-port/cycle/decorated-history outputs remain separate; no parent acceptance.",
+      "parent_accepted_by_revision206": false,
+      "frontier_revision206": "StandardFactorEndpoints now produced with actual prime and complete metric witnesses. Raw terminal consumer needs only actual empty observation; raw late consumer retains only same-tower LateComponentSupply. Controlled analytic production and stronger marked-history outputs remain open."
+    },
+    "GA23": {
+      "mathematics": "Retains the existing blueprint contract.",
+      "open": "General producer and full premise census remain open.",
+      "refined_by": [],
+      "lean_bindings": [
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Topology/ThreeManifold/Geometrization/Statement.lean",
+          "declaration": "GC.Endpoint.GeometrizationConjecture",
+          "status": "defined proposition, not proved",
+          "source_record": "reference_checks_revision203.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/CertificateExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Topology/ThreeManifold/Geometrization/SphereExample.lean",
+          "declaration": "GC.Endpoint.standardThreeSphereLift_geometrizes",
+          "status": "proved sphere example only",
+          "source_record": "reference_checks_revision203.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/CertificateExamples.lean"
+        }
+      ],
+      "parent_accepted_by_revision203": false
+    },
+    "AT21": {
+      "mathematics": "Retains the existing blueprint contract.",
+      "open": "General producer and full premise census remain open.",
+      "refined_by": [],
+      "lean_bindings": [
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/OrientedReconstruction.lean",
+          "declaration": "GC.Endpoint.OrientedEventReconstruction",
+          "status": "proposed exact oriented refinement; existence producer open",
+          "source_record": "reference_checks_revision204.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ObservedHistoryExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/OrientedReconstruction.lean",
+          "declaration": "GC.Endpoint.OrientedEventReconstruction.componentsGeometrize",
+          "status": "proved conditional actual-event endpoint descent",
+          "source_record": "reference_checks_revision204.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ObservedHistoryExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/SmoothReconstruction.lean",
+          "declaration": "GC.Endpoint.componentsGeometrize_of_cutCap",
+          "status": "proved conditional endpoint descent using produced smooth reconstruction; stronger port-marked refinement separate",
+          "source_record": "reference_checks_revision205.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/SmoothHistoryExamples.lean"
+        }
+      ],
+      "parent_accepted_by_revision204": false,
+      "frontier_revision205": "Smooth event reconstruction and raw event controls now suffice for conditional endpoint descent. Standard-factor endpoints and actual late geometry remain open. Stronger oriented/protected-port/cycle/decorated-history outputs remain separate; no parent acceptance.",
+      "frontier_revision206": "StandardFactorEndpoints now produced with actual prime and complete metric witnesses. Raw terminal consumer needs only actual empty observation; raw late consumer retains only same-tower LateComponentSupply. Controlled analytic production and stronger marked-history outputs remain open."
+    },
+    "AT24": {
+      "mathematics": "Retains the existing blueprint contract.",
+      "open": "General producer and full premise census remain open.",
+      "refined_by": [],
+      "lean_bindings": [
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ObservedHistory.lean",
+          "declaration": "GC.Endpoint.HistoryEndpointInputs.stages",
+          "status": "proved conditional backward descent; no flattened protected-port ledger",
+          "source_record": "reference_checks_revision204.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ObservedHistoryExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/RawHistory.lean",
+          "declaration": "GC.Endpoint.componentsGeometrize_history",
+          "status": "proved conditional actual-history descent; full decorated ledger not claimed",
+          "source_record": "reference_checks_revision205.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/SmoothHistoryExamples.lean"
+        }
+      ],
+      "parent_accepted_by_revision204": false,
+      "frontier_revision205": "Smooth event reconstruction and raw event controls now suffice for conditional endpoint descent. Standard-factor endpoints and actual late geometry remain open. Stronger oriented/protected-port/cycle/decorated-history outputs remain separate; no parent acceptance.",
+      "frontier_revision206": "StandardFactorEndpoints now produced with actual prime and complete metric witnesses. Raw terminal consumer needs only actual empty observation; raw late consumer retains only same-tower LateComponentSupply. Controlled analytic production and stronger marked-history outputs remain open."
+    },
+    "GA20": {
+      "mathematics": "Retains the existing blueprint contract.",
+      "open": "General producer and full premise census remain open.",
+      "refined_by": [],
+      "lean_bindings": [
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ObservedHistory.lean",
+          "declaration": "GC.Endpoint.HistoryEndpointInputs.terminal",
+          "status": "proved conditional terminal consumer; event and factor producers remain explicit",
+          "source_record": "reference_checks_revision204.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ObservedHistoryExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/RawHistory.lean",
+          "declaration": "GC.Endpoint.geometrizes_of_raw_terminal",
+          "status": "proved conditional terminal descent; only standard endpoints and actual emptiness",
+          "source_record": "reference_checks_revision205.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/SmoothHistoryExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/SmoothReconstruction.lean",
+          "declaration": "GC.Endpoint.StandardFactorEndpoints",
+          "status": "defined proposition on actual classified factors; producer open",
+          "source_record": "reference_checks_revision205.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/SmoothHistoryExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ClassifiedHistory.lean",
+          "declaration": "GC.Endpoint.geometrizes_of_raw_empty",
+          "status": "proved endpoint from actual raw empty observation; no exceptional or late premise",
+          "source_record": "reference_checks_revision206.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/StandardFactorExamples.lean"
+        }
+      ],
+      "parent_accepted_by_revision204": false,
+      "frontier_revision205": "Smooth event reconstruction and raw event controls now suffice for conditional endpoint descent. Standard-factor endpoints and actual late geometry remain open. Stronger oriented/protected-port/cycle/decorated-history outputs remain separate; no parent acceptance.",
+      "parent_accepted_by_revision206": false,
+      "frontier_revision206": "StandardFactorEndpoints now produced with actual prime and complete metric witnesses. Raw terminal consumer needs only actual empty observation; raw late consumer retains only same-tower LateComponentSupply. Controlled analytic production and stronger marked-history outputs remain open."
+    },
+    "GA21": {
+      "mathematics": "Retains the existing blueprint contract.",
+      "open": "General producer and full premise census remain open.",
+      "refined_by": [],
+      "lean_bindings": [
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ObservedHistory.lean",
+          "declaration": "GC.Endpoint.geometrizes_of_observation_supplies",
+          "status": "proved conditional elimination of actual marked tower dichotomy",
+          "source_record": "reference_checks_revision204.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ObservedHistoryExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/RawHistory.lean",
+          "declaration": "GC.Endpoint.geometrizes_of_raw_standard_late",
+          "status": "proved same-tower dichotomy composition; standard endpoints and late supply remain open",
+          "source_record": "reference_checks_revision205.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/SmoothHistoryExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ClassifiedHistory.lean",
+          "declaration": "GC.Endpoint.geometrizes_of_raw_late",
+          "status": "proved conditional same-tower assembly; only late component supplier remains",
+          "source_record": "reference_checks_revision206.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/StandardFactorExamples.lean"
+        }
+      ],
+      "parent_accepted_by_revision204": false,
+      "frontier_revision205": "Smooth event reconstruction and raw event controls now suffice for conditional endpoint descent. Standard-factor endpoints and actual late geometry remain open. Stronger oriented/protected-port/cycle/decorated-history outputs remain separate; no parent acceptance.",
+      "parent_accepted_by_revision206": false,
+      "frontier_revision206": "StandardFactorEndpoints now produced with actual prime and complete metric witnesses. Raw terminal consumer needs only actual empty observation; raw late consumer retains only same-tower LateComponentSupply. Controlled analytic production and stronger marked-history outputs remain open."
+    },
+    "LP12": {
+      "mathematics": "Retains the existing blueprint contract.",
+      "open": "General producer and full premise census remain open.",
+      "refined_by": [],
+      "lean_bindings": [
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ObservedHistory.lean",
+          "declaration": "GC.Endpoint.LateComponentSupply",
+          "status": "defined output obligation, not proved long-time analytic production",
+          "source_record": "reference_checks_revision204.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ObservedHistoryExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/RawHistory.lean",
+          "declaration": "GC.Endpoint.geometrizes_of_raw_standard_late",
+          "status": "proved consumer; late supply remains unproduced, global control separate",
+          "source_record": "reference_checks_revision205.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/SmoothHistoryExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ClassifiedHistory.lean",
+          "declaration": "GC.Endpoint.geometrizes_of_raw_late",
+          "status": "proved consumer of unchanged late obligation; analytic production remains open",
+          "source_record": "reference_checks_revision206.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/StandardFactorExamples.lean"
+        }
+      ],
+      "parent_accepted_by_revision204": false,
+      "frontier_revision205": "Smooth event reconstruction and raw event controls now suffice for conditional endpoint descent. Standard-factor endpoints and actual late geometry remain open. Stronger oriented/protected-port/cycle/decorated-history outputs remain separate; no parent acceptance.",
+      "parent_accepted_by_revision206": false,
+      "frontier_revision206": "StandardFactorEndpoints now produced with actual prime and complete metric witnesses. Raw terminal consumer needs only actual empty observation; raw late consumer retains only same-tower LateComponentSupply. Controlled analytic production and stronger marked-history outputs remain open."
+    },
+    "AT25": {
+      "mathematics": "Retains the existing blueprint contract.",
+      "open": "General parent producer and semantic premise census remain open.",
+      "refined_by": [],
+      "lean_bindings": [
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Topology/ThreeManifold/Geometrization/StandardPrimes.lean",
+          "declaration": "GC.Endpoint.isPrime_of_isStandardFactor",
+          "status": "proved actual standard-factor primality using accepted smooth PC",
+          "source_record": "reference_checks_revision206.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/StandardFactorExamples.lean"
+        },
+        {
+          "workspace_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Topology/ThreeManifold/Geometrization/StandardCertificates.lean",
+          "declaration": "GC.Endpoint.standardFactorEndpoints",
+          "status": "proved full endpoint supplier for actual PC standard classification",
+          "source_record": "reference_checks_revision206.md",
+          "consumer_file": "GC_BASELINE_EXPORT/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/StandardFactorExamples.lean"
+        }
+      ],
+      "parent_accepted_by_revision206": false,
+      "frontier_revision206": "StandardFactorEndpoints now produced with actual prime and complete metric witnesses. Raw terminal consumer needs only actual empty observation; raw late consumer retains only same-tower LateComponentSupply. Controlled analytic production and stronger marked-history outputs remain open.",
+      "standard_factor_endpoint_leaf_proved_revision206": true
+    }
+  },
+  "refinements": [
+    {
+      "id": "R104.chart_orientation",
+      "parents": [
+        "AT26",
+        "GA09",
+        "GeometricPieceCertificate"
+      ],
+      "chapter": "CH07",
+      "tex_label": "sec:model-atlas-orientation-audit",
+      "status": "contract-corrected; conditional transport argument",
+      "proof_inputs": [
+        "actual smooth diffeomorphism",
+        "chosen metric and local isometries"
+      ],
+      "excluded_requirements": [
+        "model orientation-reversing isometry"
+      ],
+      "release_binding": "pending; inherits parent coverage",
+      "source_evidence": "reference_checks_revision104.md;book_audit/revision104/"
+    },
+    {
+      "id": "R104.torus_bundle",
+      "parents": [
+        "G07",
+        "G09",
+        "GA06"
+      ],
+      "chapter": "CH07",
+      "tex_label": "prop:retained-torus-bundle",
+      "status": "written-conditional-project-proof; not-formalized",
+      "proof_inputs": [
+        "actual oriented prime mapping-torus and smooth cut presentation",
+        "covering injection",
+        "complete flat product interior",
+        "actual marked transport"
+      ],
+      "excluded_requirements": [
+        "G06",
+        "G07 monodromy classification",
+        "J03",
+        "finite-cover geometric descent"
+      ],
+      "release_binding": "pending; inherits parent coverage",
+      "source_evidence": "reference_checks_revision104.md;book_audit/revision104/"
+    },
+    {
+      "id": "R104.torus_semibundle",
+      "parents": [
+        "G07",
+        "G09",
+        "GA06"
+      ],
+      "chapter": "CH07",
+      "tex_label": "prop:retained-torus-semibundle",
+      "status": "written-conditional-project-proof; not-formalized",
+      "proof_inputs": [
+        "actual prime presentation by two orientable twisted interval bundles",
+        "index-two boundary injections",
+        "finite gluing injection",
+        "complete flat twisted interiors",
+        "actual collar reconstruction"
+      ],
+      "excluded_requirements": [
+        "G06",
+        "G07 monodromy classification",
+        "J03",
+        "finite-cover geometric descent"
+      ],
+      "release_binding": "pending; inherits parent coverage",
+      "source_evidence": "reference_checks_revision104.md;book_audit/revision104/"
+    },
+    {
+      "id": "R104.cloud_weakening",
+      "parents": [
+        "FC28",
+        "FC44"
+      ],
+      "chapter": "CH14",
+      "tex_label": "lem:fibration-cloud-quality-weakening",
+      "status": "written-elementary-project-proof; not-formalized",
+      "proof_inputs": [
+        "common cloud center lies in tested enlarged set and affine plane",
+        "positive error",
+        "same-radius two-sided Hausdorff estimate",
+        "radial affine contraction"
+      ],
+      "excluded_requirements": [
+        "attained nearest point",
+        "compactness",
+        "geometric smoothing producer"
+      ],
+      "release_binding": "pending; inherits parent coverage",
+      "source_evidence": "reference_checks_revision104.md;book_audit/revision104/"
+    },
+    {
+      "id": "R104.smoothing_modulus",
+      "parents": [
+        "FC28",
+        "FC44"
+      ],
+      "chapter": "CH14",
+      "tex_label": "lem:fibration-smoothing-modulus-selection",
+      "status": "written-conditional-project-proof; not-formalized",
+      "proof_inputs": [
+        "R104.cloud_weakening",
+        "supplied FC28 threshold for every positive accuracy with its original uniformity",
+        "finite minimum and geometric sequence"
+      ],
+      "excluded_requirements": [
+        "arbitrary improvement of a fixed cloud",
+        "automatic H1-H4 realization"
+      ],
+      "release_binding": "pending; inherits parent coverage",
+      "source_evidence": "reference_checks_revision104.md;book_audit/revision104/"
+    }
+  ],
+  "chapter14_written_static_completion": {
+    "record": "checks/evidence/revision159_chapter14_final_audit.json",
+    "complete_under_retained_foundations": true,
+    "final_mathematical_audit": "completed-with-one-repaired-numerical-binding-finding",
+    "accepted_lean_binding": null,
+    "production_ready": false
+  },
+  "longtime_analytic_goal": {
+    "status": "written-complete-under-explicit-retained-foundations",
+    "baseline": "master159.tex",
+    "completed_written_steps": [
+      "QRG00/HG06 via QRG04--QRG09",
+      "HPS01--HPS05 controlled time smoothing under explicit discrete inputs",
+      "WBD01--WBD04 actual ambient whole-ball finite derivatives under retained analytic estimates",
+      "LTF01--LTF05 actual HG07 limits and dyadic-window producer under retained analytic foundations",
+      "HPI01--HPI08 actual HG08 finite disjoint persistent family and matching-ball coverage",
+      "TCF01--TCF07 actual intrinsic thin carriers and LC90 analytic static-collapse application",
+      "LAU01--LAU03 ONE final analytic audit; finite-family threshold repair and component-guard clarification"
+    ],
+    "next": [
+      "accepted-release analytic input classification and Lean binding when available",
+      "essential graph refinement and reconstruction; ambient written application now completed in168 under its retained inputs"
+    ],
+    "final_mathematical_audit_performed": true,
+    "production_ready": false,
+    "audit_count": 1,
+    "audit_record": "checks/evidence/revision166_longtime_final_audit.json",
+    "unresolved_in_scope_written_findings": []
+  },
+  "ambient_incompressibility_goal": {
+    "status": "written-complete-under-explicit-retained-foundations",
+    "baseline": "master166.tex",
+    "route": "prescribed meridian;fixed-boundary Meeks--Yau;local stability radius;common compact surgery carrier;continuous area and barriers",
+    "record": "checks/evidence/revision167_ambient_incompressibility.json",
+    "final_mathematical_audit_performed": true,
+    "audit_count": 1,
+    "production_ready": false,
+    "retained_minimal_surface_input": "Meeks--Yau1982 fixed-boundary existence/embeddedness/regularity;independent formalization remains open",
+    "audit_record": "checks/evidence/revision168_ambient_final_audit.json",
+    "unresolved_in_scope_written_findings": [],
+    "flow_profile_guard": "One preselected admissible profile with eventual delta<universal delta_*; delta(t)->0 suffices; chosen at flow construction.",
+    "next": [
+      "Independent Meeks--Yau and accepted foundation bindings/Lean implementation",
+      "Essential graph refinement/model conversion and finite-history reconstruction"
+    ]
+  },
+  "relative_graph_realization_goal": {
+    "status": "written-complete-under-explicit-retained-foundations",
+    "baseline": "master168.tex",
+    "audit_count": 1,
+    "final_mathematical_audit_performed": true,
+    "production_ready": false,
+    "accepted_PC_binding": false,
+    "records": [
+      "checks/evidence/revision169_relative_graph.json",
+      "checks/evidence/revision170_graph_models.json"
+    ],
+    "retained_inputs": [
+      "smooth surface/collar/isotopy and torus mapping-class interfaces",
+      "Loop Theorem; Seifert irreducibility and boundary-disk criterion already retained in52",
+      "elementary constant-curvature triangle geometry",
+      "smooth forms, corrected ordinary de Rham facts, model calculus and completeness"
+    ],
+    "not_needed_for_selected_endpoint": [
+      "canonical JSJ uniqueness",
+      "J03/J04 optional coarsening",
+      "F04 general bundle fiber-parallel formula",
+      "G07 uncut Sol/semibundle classification",
+      "comparison to prescribed prime factors"
+    ],
+    "not_claimed": [
+      "all Lean implementations",
+      "arbitrary spherical group recognition",
+      "finite surgery-history reconstruction",
+      "full GC"
+    ],
+    "unresolved_in_scope_written_findings": [],
+    "final_audit": "checks/evidence/revision171_graph_final_audit.json",
+    "completion": "Actual chosen prime/good-block data and complete metrics on the same marked cut interiors; actual late-slice AT13/16 and graph GA06 binding",
+    "next": [
+      "accepted-release foundation bindings and Lean implementation",
+      "finite-history reconstruction and other exceptional producers; full GC assembly"
+    ]
+  },
+  "implementation_record": "formalization/implementation_bindings.json",
+  "active_graph_record": "formalization/active_graph_revision207.json",
+  "pc_metric_binding_record": "formalization/pc_metric_bindings.json",
+  "public_release_comparisons": "formalization/public_release_comparisons.json",
+  "topology_implementation_acceptance": "formalization/topology_bindings.json",
+  "tower_implementation": "formalization/tower_bindings.json",
+  "spherical_implementation": {
+    "record": "formalization/spherical_bindings.json",
+    "atoms": [
+      "AT25.spherical_metric",
+      "GA07.complete_metric_transport",
+      "AT25.positive_space_form",
+      "AT25.oriented_factor_slots"
+    ],
+    "axiom_queries": 14,
+    "scope": "actual spherical metrics and oriented factor-list consumers; not discard/prime/port production or GC",
+    "full_GC_accepted": false
+  },
+  "event_reconstruction_implementation": {
+    "record": "formalization/event_bindings.json",
+    "atoms": [
+      "AT21.actual_smooth_sum",
+      "AT21.actual_component_slots",
+      "AT28.empty_event_discard"
+    ],
+    "axiom_queries": 18,
+    "scope": "actual supplied cut/cap reconstruction and retained/discarded labeling; not full oriented relative event transport or GC",
+    "full_GC_accepted": false
+  },
+  "public_PC_binding_record": "formalization/public_pc_acceptance.json",
+  "public_PC_acceptance_scope": "topological and smooth PC endpoint declarations and exact consumers; no blanket GC general-flow or all-library consumer acceptance",
+  "model_volume_implementation": {
+    "record": "formalization/model_volume_bindings.json",
+    "atoms": [
+      "GlobalRicciFlowSurgery.kappa_model_volume_supplier"
+    ],
+    "axiom_queries": 7,
+    "scope": "actual ancient-kappa-model domain volume and image/component supplier; no general flow existence or history-uniform model production",
+    "full_GC_accepted": false
+  },
+  "reserved_canonical_implementation": {
+    "record": "formalization/reserved_canonical_bindings.json",
+    "atoms": [
+      "GlobalRicciFlowSurgery.reserved_canonical_packet",
+      "GlobalRicciFlowSurgery.reserve_continuation",
+      "GlobalRicciFlowSurgery.same_kappa_shortcut"
+    ],
+    "axiom_queries": 11,
+    "scope": "actual round packet and reserve-preserving continuation, plus obstruction to this same-kappa shortcut; analytic uniform-history production remains open",
+    "full_GC_accepted": false
+  },
+  "actual_declaration_evidence": {
+    "record": "formalization/composition_resolution_evidence.json",
+    "historical_record": "formalization/lean_declaration_evidence.json",
+    "roots": 134,
+    "declarations": 302,
+    "registered_pairs": 28,
+    "syntactic_value_paths": 27,
+    "parallel_specialization_bundles": 1,
+    "composition_reviews_required": 0,
+    "semantic_premise_closure": false,
+    "scope": "Five actual applied consumers; one correctly parallel Euclidean pair; no parent or full GC acceptance"
+  },
+  "model_atlas_implementation": {
+    "record": "formalization/model_atlas_bindings.json",
+    "axiom_queries": 13,
+    "proof_modules": 4,
+    "full_eight_model_endpoint_accepted": false,
+    "full_GC_accepted": false
+  },
+  "discarded_geometry_implementation": {
+    "record": "formalization/discarded_geometry_bindings.json",
+    "axiom_queries": 12,
+    "proof_modules": 3,
+    "full_marked_history_accepted": false,
+    "full_GC_accepted": false
+  },
+  "finite_geometric_horizon_implementation": {
+    "record": "formalization/finite_horizon_bindings.json",
+    "axiom_queries": 6,
+    "proof_modules": 3,
+    "general_canonical_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "general_canonical_dependency_implementation": {
+    "record": "formalization/general_canonical_bindings.json",
+    "axiom_queries": 9,
+    "new_declarations": 3,
+    "applied_public_general_suppliers": 6,
+    "proof_modules": 2,
+    "general_small_scale_producer_accepted": false,
+    "general_canonical_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "round_degree_volume_implementation": {
+    "record": "formalization/round_degree_bindings.json",
+    "axiom_queries": 9,
+    "new_declarations": 6,
+    "proof_modules": 3,
+    "uniform_history_degree_bound_accepted": false,
+    "general_small_scale_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "history_degree_small_scale_implementation": {
+    "record": "formalization/history_degree_bindings.json",
+    "axiom_queries": 7,
+    "new_declarations": 4,
+    "proof_modules": 3,
+    "uniform_history_degree_bound_accepted": false,
+    "general_small_scale_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "free_factor_history_implementation": {
+    "record": "formalization/free_factor_bindings.json",
+    "axiom_queries": 19,
+    "new_declarations": 16,
+    "proof_modules": 4,
+    "all_cutoff_completions_accepted": false,
+    "initial_free_factor_bound_accepted": false,
+    "uniform_history_degree_bound_accepted": false,
+    "general_small_scale_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "cap_group_implementation": {
+    "record": "formalization/cap_group_bindings.json",
+    "axiom_queries": 12,
+    "new_declarations": 9,
+    "proof_modules": 2,
+    "parent_punctured_free_factor_accepted": false,
+    "all_cutoff_completions_accepted": false,
+    "initial_free_factor_bound_accepted": false,
+    "uniform_history_degree_bound_accepted": false,
+    "general_small_scale_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "finite_factor_implementation": {
+    "record": "formalization/finite_factor_bindings.json",
+    "axiom_queries": 21,
+    "new_declarations": 16,
+    "proof_modules": 2,
+    "finite_initial_bound_producer_accepted": true,
+    "general_initial_bound_accepted": false,
+    "all_cutoff_completions_accepted": false,
+    "uniform_history_degree_bound_accepted": false,
+    "general_small_scale_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "thin_overlap_implementation": {
+    "record": "formalization/thin_overlap_bindings.json",
+    "axiom_queries": 39,
+    "new_declarations": 35,
+    "proof_modules": 2,
+    "thin_overlap_equivalence_accepted": true,
+    "nonseparating_collar_free_factor_accepted": true,
+    "all_parent_punctured_free_factors_accepted": false,
+    "all_cutoff_completions_accepted": false,
+    "uniform_history_degree_bound_accepted": false,
+    "general_small_scale_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "collar_component_implementation": {
+    "record": "formalization/collar_component_bindings.json",
+    "axiom_queries": 21,
+    "new_declarations": 15,
+    "proof_modules": 2,
+    "every_single_collar_component_accepted": true,
+    "all_parent_punctured_free_factors_accepted": false,
+    "all_cutoff_completions_accepted": false,
+    "uniform_history_degree_bound_accepted": false,
+    "general_small_scale_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "finite_cut_history_implementation": {
+    "record": "formalization/finite_cut_history_bindings.json",
+    "axiom_queries": 22,
+    "new_declarations": 12,
+    "proof_modules": 3,
+    "finite_collar_family_accepted": true,
+    "actual_retained_history_free_factor_accepted": true,
+    "finite_initial_group_degree_producer_accepted": true,
+    "all_cutoff_completions_accepted": false,
+    "uniform_history_degree_bound_accepted": false,
+    "initial_free_factor_bound_accepted": false,
+    "general_small_scale_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "initial_fg_implementation": {
+    "record": "formalization/initial_fg_bindings.json",
+    "axiom_queries": 37,
+    "new_declarations": 31,
+    "proof_modules": 5,
+    "actual_initial_fundamental_group_fg_accepted": true,
+    "actual_initial_free_factor_fg_complement_accepted": true,
+    "initial_free_factor_bound_accepted": false,
+    "grushko_existence_uniqueness_accepted": false,
+    "uniform_history_degree_bound_accepted": false,
+    "general_small_scale_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "finite_kurosh_implementation": {
+    "record": "formalization/finite_kurosh_bindings.json",
+    "axiom_queries": 14,
+    "new_declarations": 9,
+    "new_proof_modules": 2,
+    "external_proof_modules": 19,
+    "finite_subgroup_actual_containment_accepted": true,
+    "finite_factor_order_consumer_accepted": true,
+    "initial_free_factor_bound_accepted": false,
+    "grushko_existence_uniqueness_accepted": false,
+    "uniform_history_degree_bound_accepted": false,
+    "general_small_scale_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "finite_decomposition_implementation": {
+    "record": "formalization/finite_decomposition_bindings.json",
+    "axiom_queries": 11,
+    "new_declarations": 7,
+    "new_proof_modules": 3,
+    "external_proof_modules": 14,
+    "grushko_rank_supplier_accepted": true,
+    "finite_indecomposable_existence_accepted": true,
+    "actual_initial_decomposition_accepted": true,
+    "initial_free_factor_bound_accepted": false,
+    "grushko_uniqueness_accepted": false,
+    "uniform_history_degree_bound_accepted": false,
+    "general_small_scale_producer_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "full_GC_accepted": false
+  },
+  "general_initial_bound_implementation": {
+    "record": "formalization/general_initial_bound_bindings.json",
+    "axiom_queries": 26,
+    "new_declarations": 17,
+    "new_proof_modules": 6,
+    "initial_free_factor_bound_accepted": true,
+    "uniform_history_degree_bound_accepted": true,
+    "general_small_scale_producer_accepted": true,
+    "general_strong_canonical_producer_accepted": true,
+    "general_finite_horizons_accepted": true,
+    "full_coherent_tower_accepted": false,
+    "full_marked_history_accepted": false,
+    "full_GC_accepted": false
+  },
+  "actual_continuation_implementation": {
+    "record": "formalization/actual_continuation_bindings.json",
+    "axiom_queries": 29,
+    "new_declarations": 20,
+    "new_proof_modules": 4,
+    "actual_slab_compatibility_accepted": true,
+    "actual_time_translation_accepted": true,
+    "initial_marking_preservation_accepted": true,
+    "general_finite_concatenation_accepted": false,
+    "full_coherent_tower_accepted": false,
+    "common_global_cutoff_profile_accepted": false,
+    "full_GC_accepted": false
+  },
+  "coherent_tower_implementation": {
+    "record": "formalization/coherent_tower_bindings.json",
+    "axiom_queries": 32,
+    "new_declarations": 21,
+    "new_proof_modules": 6,
+    "general_finite_concatenation_accepted": true,
+    "raw_coherent_tower_accepted": true,
+    "initial_marking_preservation_accepted": true,
+    "full_coherent_tower_accepted": false,
+    "common_global_cutoff_profile_accepted": false,
+    "full_GC_accepted": false
+  },
+  "execution_scope": {
+    "mode": "blueprint-wrap-up-and-authorized-module-placement",
+    "Lean_development_authorized": false,
+    "historical_frozen_baseline_revision": 201,
+    "private_team_branch": "codex/geometrization-team-foundation",
+    "full_GC_accepted": false,
+    "current_user_priority": "Finish the blueprint and the explicitly requested DifferentialGeometry module placement; further proof development awaits discussion.",
+    "module_placement_authorized": true
+  },
+  "working_edition": {
+    "revision": 207,
+    "guide": "master207A.tex: Purpose and current working guide",
+    "handoff": "BLUEPRINT_HANDOFF_REVISION207.md",
+    "mathematical_body": "unchanged from revision206",
+    "semantic_premise_census_complete": false,
+    "general_geometrization_proved": false,
+    "module_placement": "GC_BASELINE_EXPORT/docs/geometrization/MODULE_PLACEMENT.json",
+    "historical_status_rule": "Dated progress notices and old release gates retain their original evidence scope; this guide and current_view govern the present interpretation."
+  }
+}

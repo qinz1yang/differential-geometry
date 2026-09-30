@@ -1,0 +1,52 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/UnitComparisonSegments.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_UnitComparisonSegments.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "97023c95fc5acbceba651b78f641790eb06cc56444f452d023db87abe7381b5c"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/LocalOneDimensionalClassification.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_LocalOneDimensionalClassification.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "d6e069b5daee20c70b6112c6b16be98fb162cb63bb36b027de7635189a380fd6"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_local_one_dimensional_classification_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "916f504a8621cae5d18632ec459d6c888f41288c",
+  "review_reports": [
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.isOpen_segment_image_of_unit_comparison_and_dimH_le_one",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.pointed_one_dimensional_classification_of_local_unit_comparison",
+    "GCLocalOneDimensionalClassificationReview.original_circle_local_comparison_full_pointed_classification",
+    "GCLocalOneDimensionalClassificationReview.original_translated_closed_interval_full_pointed_classification",
+    "GCLocalOneDimensionalClassificationReview.original_translated_halfline_full_pointed_classification",
+    "GCLocalOneDimensionalClassificationReview.original_real_full_pointed_classification_at_seven",
+    "GCLocalOneDimensionalClassificationReview.original_zero_dimensional_full_pointed_classification",
+    "GCLocalOneDimensionalClassificationReview.actual_segment_interior_is_open_but_full_image_is_not"
+  ],
+  "review_driver_sha256": "f72b9e4cf359c9394b24c4797b598d5d9c48205b4f1ee278dd5439205e557f44",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Comparison/UnitComparisonSegments.lean": "4ce2ee2fe836779a612d78d3c7771fcd8065c15fc9ba88434bbb5ad6a35fb13a",
+    "DifferentialGeometry/Geometry/Comparison/LocalOneDimensionalClassification.lean": "4306941e3a28acbe13b17ca41334b2f16015416809845861e61fa635547f23f7"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "2816b5dfe3f1395072c28c4886a6f70de0a64f721091cb467cfc7edf1b55c805"
+}

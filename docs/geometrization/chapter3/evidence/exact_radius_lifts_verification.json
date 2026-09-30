@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 2,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 2,
+  "combined_modules": 322,
+  "combined_jobs": 3157,
+  "combined_owned_declarations": 1408,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/Approximation/ExactRadiusLifts.lean": "66e8e2d10c0fe0e05495ad0d497c51e10e7ee82c948b3e23ab9ae148b0daad0a"
+  },
+  "logs": {
+    "exact_radius_lifts_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "exact_radius_lifts_review.log": "7a4be863e38b3110e613175bcd8219dfddc1f4052944b6946cc1badf98714a73",
+    "exact_radius_lifts_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "eb9c7dd04d9b7de5548355e65f0cc58d5d6ba001fc51397edfcb2332e1d1aa1b",
+  "git_head_at_check": "d1e3213519c6e21abcc9f977189eef22108a0948",
+  "independent_agent_proof_review": true,
+  "independent_agent_incomplete_factor_and_signed_boundary_drivers": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

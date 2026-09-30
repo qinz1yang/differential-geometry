@@ -1,0 +1,45 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "ALG03 full statement and proof7416-7445; exact complete-ball radius and ambient-space quantifier"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-ed6a16eb2a3c/defs-CBB.tex",
+      "sha256": "b80b54fafc6e30cbac121880c1b80265ee62afcd90d8a3ab77c0deef1a0e1f9c",
+      "locator": "vol1 ed6a16eb2a3c66c1f0f54b183bd1a4176e78b245; lem:alm-min1091-1130 full statement and proof"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/PointPicking.lean",
+      "sha256": "a1a92d57feb46e5b460e20b18c73250bafaf51fdc1fc10f25bafb0d394099a3c",
+      "locator": "full existing compact/continuous weighted selection proof inspected; different assumptions, not an adapter for ALG03"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/ResidualCorrection.lean",
+      "sha256": "29a6d65d02e51d3f995111f745d0e889b281d0fc7bd1d5b8ac86573b0cc38234",
+      "locator": "full accepted file reread, geometric sequence in a distance-plus-residual budget set"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+      "sha256": "8fcc07ae72e60998b5caa4b5f11796f4c04768fbb4fc52fb85e0ab8bdd1a366c",
+      "locator": "mathlib c55e6e786f49471c72fbddbec5415808896aec1e; geometric power convergence184-205 and geometric Cauchy proof/auxiliary summability510-535"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/UniformSpace/Cauchy.lean",
+      "sha256": "fb63ead90606f7c034f4fe28ffddbe46142cf64db9acce86ba105dabe22f2e68",
+      "locator": "same mathlib pin; cauchySeq_tendsto_of_isComplete424-439"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+      "sha256": "e311dbc7fca744dc0f0d4a10e3c838eb4996c2fa8b63e833077c40f763f05444",
+      "locator": "same mathlib pin; closed-order limit bound and generated dual124-143"
+    }
+  ],
+  "reused_source_checks": [
+    "../GEOMETRIZATION_BLUEPRINT/reference_checks_revision140.md",
+    "germ_angle_sources.json"
+  ],
+  "errata": "Unchanged pinned AKP source and author-errata distinctions previously checked in this continuation/revision140 are reused; no fresh remote identity claim.",
+  "scope": "ALG03 exact complete-ball almost minimum for an actual positive radius function; all nearby ambient points quantified."
+}

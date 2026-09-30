@@ -1,0 +1,46 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC46 full4421-4428, source conventions4430-4443; AC47 full4445-4501; ALR03 full7134-7161 and ALR04 full7163-7195; actual bodies read"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/SegmentNeighborhood.lean",
+      "sha256": "36405b1c5087c608cfd16a2c88d3ec4cf3664018954eb4e53832caa6eb0cd7b2",
+      "locator": "full no-exit and interior-ball equality proof83-136, read with its hypotheses"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/ClosedBallDensity.lean",
+      "sha256": "78362167285a7a74f91ca378201519e5db90b57966f41bc02eb6b8606a2cb7ce",
+      "locator": "full body, density from actual segments without completeness"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/SegmentConcatenation.lean",
+      "sha256": "3f17634f6b178070a7a8039c6924e4a6f2bbb5cbb515352e2e071228b992de88",
+      "locator": "13-35, actual arc-length parametrized segment producer"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/ModelSide.lean",
+      "sha256": "849095c5e43a3f4a19c1eae06b261199ef847cb7e1ee122a4ff413543a445996",
+      "locator": "1-123, zero-angle identity and inverse comparison-angle/model-side proof, all kappa>=0"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/FourPoint.lean",
+      "sha256": "dc31e8b986c2d13899992b9c5a219dd392e3ae23a7626f3a78ac4ef301143344",
+      "locator": "1-25, actual four-point definition and set restriction"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/ModelAngle.lean",
+      "sha256": "eb1d2524535435874502aff4690ba71516faef86f34881d1dbe09eed30fd5877",
+      "locator": "17-25 angle range;64-85 exact straight angle, including kappa=0"
+    }
+  ],
+  "reused_source_checks": [
+    "one_dimensional_recognition_sources.json",
+    "endpoint_recognition_sources.json",
+    "model_side_sources.json"
+  ],
+  "scope": "Closed segment balls, exact distance outside a supplied isometric ray, and same-opposite-point metric collinearity. Explicit new decomposition; global AC47 not claimed.",
+  "errata": "Unchanged local-recognition/model results retain prior pinned/dated AKP/BBI checks; no current-remote or full-source clearance."
+}

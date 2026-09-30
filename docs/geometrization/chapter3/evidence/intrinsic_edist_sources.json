@@ -1,0 +1,52 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC13 full2713-2755; ALG06 full7536-7580, unchanged reading reused"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/BuragoBuragoIvanovBook.pdf",
+      "sha256": "4efaa168dcc83e7e9f5663d14824f9543104beab21642ca3830a5dd1c684c971",
+      "locator": "AMS2001; printed26-29/PDF41-44 and printed34-38/PDF49-53 full targeted text read; Def2.3.1,Prop2.3.4,Prop2.3.12,Prop2.4.1"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/bbi-errata-2024-07-06.pdf",
+      "sha256": "68338c7a8b37b8637efbad8af5f547f6cf789675df020fbc6aa04d4babdde42e",
+      "locator": "July6,2024 retained author sheet PDF1-3 full freshly read; constants, finite distances and lower semicontinuity correction retained"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/Path.lean",
+      "sha256": "023a5bf72992c93696d616b44037a7c16c2547aac7a72e5d55e2cbbddd96cdfd",
+      "locator": "60-104 Path and endpoints;140-168 constant/reversal;191-255 extension;274-323 concatenation/branches"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/EMetricSpace/BoundedVariation.lean",
+      "sha256": "c2af939b40f2210ec534c0a4e26cbe2a459c2abe0129be8e19c620e7abbc268b",
+      "locator": "54-95 partition definition;184-228 lower bound/zero;399-411 additivity;490-575 monotone and antitone reparametrization"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+      "sha256": "7c380e4488f38997fe9961ccac981ff4a5709c5f52560e0d40405cbc024fc60c",
+      "locator": "543-554 infimum addition"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+      "sha256": "4bb08346c7d2d06c348764f7c355d6b00aa88c17ee4fd1cde999a9ad138bc3a5",
+      "locator": "603-617 positive-error order limit"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/EMetricSpace/Defs.lean",
+      "sha256": "af9bb87cb3dc397f81c06bee09599beeb4fb5d5c1db7824f5dc609383d914101",
+      "locator": "260-273 generated topology;775-787 separation"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/MetricSpace/Basic.lean",
+      "sha256": "436cca315c86e33d4101560d75087e75b5ccb6c96419960c68d1aeb147eed49b",
+      "locator": "73-90 finite conversion; edistance/uniformity retained"
+    }
+  ],
+  "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "errata": "Retained July6,2024 BBI PDF1-3 read. Earlier authoritative endpoint check was unavailable(502), so no current remote-version or byte-identity claim.",
+  "scope": "Actual all-path intrinsic extended distance and finite metric construction; open-ball finiteness, topology/local equality and induced length property remain separate."
+}

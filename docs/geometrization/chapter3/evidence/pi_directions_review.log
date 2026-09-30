@@ -1,0 +1,32 @@
+'Metric.exists_metric_segment_of_midpoints_lt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.exists_angular_midpoint_of_cone_midpoint' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.EuclideanCone.exists_base_segment_of_cone_segments' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.compact_pi_geodesic_directions_of_local_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.compact_pi_geodesic_directions_of_intrinsic_eight_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCRestrictedMidpointReview.disconnected_source_short_pair_has_actual_segment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCRestrictedMidpointReview.disconnected_source_exact_threshold_has_no_segment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_real_directions_strict_pi_segments_and_threshold_exclusion' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeAngularMidpointReview.unbounded_real_angular_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCConeAngularMidpointReview.coincident_unit_points' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCConeAngularMidpointReview.strict_pi_boundary_is_necessary' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCPlaneDirectionPackingReview.original_plane_noncollinear_direction_segment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.original_real_far_point_compact_pi_and_antipodal_exclusion' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.original_singleton_empty_compact_pi_directions' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

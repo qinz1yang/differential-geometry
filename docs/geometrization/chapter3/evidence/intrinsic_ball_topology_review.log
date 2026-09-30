@@ -1,0 +1,7 @@
+'PseudoMetricSpace.toTopology_eq_of_locally_dist_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicBallMetricSpace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicBallMetricSpace_toTopology' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicBallMetricSpace_isOpenEmbedding' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicBallMetricSpace_lipschitzWith_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.isComplete_intrinsicBall_closedBall' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.intrinsicBall_closedBall_image' depends on axioms: [propext, Classical.choice, Quot.sound]

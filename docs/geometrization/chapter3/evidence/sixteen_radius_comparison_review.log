@@ -1,0 +1,42 @@
+'Metric.exists_relative_almost_minimum_with_budget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.MinimizingHinge.modelSide_ge_dist_of_complete_budget_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.MinimizingHinge.comparisonAngle_le_of_complete_budget_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.endpointHingeComparison_of_complete_budget_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_ball_of_complete_vertex_budget_buffers' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.endpointHingeComparison_intrinsic_16_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_intrinsic_ball_of_16_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_ambient_ball_of_intrinsic_16_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCBudgetSelectionReview.exists_moved_almost_minimum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCBudgetSelectionReview.zero_decay_parameter' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCOriginalSixteenBufferReview.original_intrinsic_sixteen_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalSixteenBufferReview.original_ambient_sixteen_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalSixteenBufferReview.original_endpoint_comparison_near_inner_boundary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalSixteenBufferReview.original_complete_buffer_reaches_near_outer_boundary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalSixteenBufferReview.actual_intrinsic_open_ball_is_incomplete' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalSixteenBufferReview.original_nonzero_curvature_near_boundary_configuration' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

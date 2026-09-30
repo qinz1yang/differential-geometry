@@ -1,0 +1,158 @@
+{
+  "scope": "Independent bounded Chapter 3/4 frontier contract review. Static binding checks below are not a new proof audit or compiler execution.",
+  "accepted_commit": "9f5f8d2c624110d0bc79d3ddebfb655112d57100",
+  "accepted_module_count": 509,
+  "current_registered_manifest": {
+    "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/manifest.json",
+    "sha256": "5c279e69b8b815dab6735fce65025d5d5bb6efde6e4b22ca183fbb30dab0cfce",
+    "module_count": 513,
+    "acceptance_claim": false
+  },
+  "independently_reconciled_receipt_rows": {
+    "ac_alg_als_alr": 475,
+    "owned_mc": 56,
+    "mc_baseline_separate": 1,
+    "unmatched": []
+  },
+  "fresh_complete_proof_reads": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/FiniteNets.lean",
+      "sha256": "87486a8c7bbfce157936a23a1f3935303d22ea9f555b1df67ebd170f4854dd7d",
+      "accepted144_shared_source_match": true,
+      "fresh_read_scope": "complete statement and proof body"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/EightNestedRadial.lean",
+      "sha256": "6722ec163ecc6dde53b0a6a35605d41acb0063c9adc550d6a4bbbc8c90ab72df",
+      "accepted144_shared_source_match": true,
+      "fresh_read_scope": "complete statement and proof body"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/GrowingRegionExtraction.lean",
+      "sha256": "057be8b5dea6bf4428d5cba9c55c9548951ec15356fa14ad38c46fa5edebdcb4",
+      "accepted144_shared_source_match": true,
+      "fresh_read_scope": "complete statement and proof body"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/LocalUniformStrutCharts.lean",
+      "sha256": "96d523f93502e5cc8ad8fcb868cc5b039268157eca986466d0425eac5616976c",
+      "accepted144_shared_source_match": true,
+      "fresh_read_scope": "complete statement and proof body"
+    }
+  ],
+  "input_hashes": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/AGENTS.md",
+      "sha256": "f309791e5507990a4ab5b7e6de8fdae27e1d02a9bb8b1e57de8767045c7aa650"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+    },
+    {
+      "path": "/tmp/gc146_accepted144_manifest.json",
+      "sha256": "b9ea39d42c058ac4e8fa5c88df6dedc2d26bf9ea31c8daca1ddde3905a9c01a2"
+    },
+    {
+      "path": "/tmp/gc146_accepted144_shared_verification.json",
+      "sha256": "734f1d29dca08c5b5d22b538d3bbe1a2a47d6401da2321623d75b50d4d09d4f2"
+    },
+    {
+      "path": "/tmp/gc146_accepted144_milestone_verification.json",
+      "sha256": "ae6d483cacc67bf5439d8948c08f6eed913720db80cff16b8c3b34b1e4a429a5"
+    },
+    {
+      "path": "/tmp/gc_MC01_24_frontier_assessment.md",
+      "sha256": "80feb85c7791cce5187f3ee28ae46383db824ec5a79562489bed8d39106dea69"
+    },
+    {
+      "path": "/tmp/gc_MC01_24_source_hash_check.json",
+      "sha256": "4292738a831e4a0cd4e4b409ff7d3d752c3df0fc0f1ea7a7af44e66b7e322357"
+    },
+    {
+      "path": "/tmp/gc146_AC_ALG_receipt_binding.json",
+      "sha256": "3ac617c8945945bebb1467cf972f99d7a3763753fa0f171cfee7ec73c2151480"
+    },
+    {
+      "path": "/tmp/gc140/KLP.txt",
+      "sha256": "17248a72d6354278fef73d75c4bda9a060a90bf959ea3a28a6fcfde2b2e2509c"
+    },
+    {
+      "path": "/tmp/gc125_assessment/BuragoBuragoIvanovBook.txt",
+      "sha256": "1aec5dd2afafcb5dacbbb8cba2cd86b3ebdf38d180f0fd2b1cdc89309168af3f"
+    },
+    {
+      "path": "/tmp/gc146_AC_frontier_assessment.md",
+      "sha256": "a6e2fa4d2667b8c06a7f4d5d60b8ad0e310437903691b279aa3d498de1b11b8b"
+    },
+    {
+      "path": "/tmp/gc146_AC_frontier_freeze.json",
+      "sha256": "2f5fe8e0b1a3386b676de582b76604e3ec52e49435d80e1ec5005ea2d049c2e9"
+    },
+    {
+      "path": "/tmp/gc146_compact_target_net_export.lean",
+      "sha256": "46bddbb6e6b52bb0074f0348d20fe163e02c535be3d0b666c446abcb4d773d20"
+    },
+    {
+      "path": "/tmp/gc146_compact_target_net_example.lean",
+      "sha256": "2251200b2eab316863c64b7fc26690e557eb9a468b411c0ec095156e0c419289"
+    },
+    {
+      "path": "/tmp/gc146_compact_target_net_review.lean",
+      "sha256": "45514faaf1cb321c222e54fb75029aafe1d1b8da64e0263644bde663689be79b"
+    },
+    {
+      "path": "/tmp/gc146_compact_target_net_review.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/gc146_compact_target_net_lint.lean",
+      "sha256": "c179cd2075161cab92565dd7bf9da64dff781afef442b28c2c5de538087d6242"
+    },
+    {
+      "path": "/tmp/gc146_compact_target_net_lint.log",
+      "sha256": "e697fe35879a2d3411a8a39d8243eb85af198c3e41a5af27a431d98b8987d080"
+    }
+  ],
+  "new_lean_commands_run": false,
+  "new_blueprint_audit_run": false,
+  "repository_mutations": false,
+  "pc_snapshot_probes": false,
+  "peer_export_check": {
+    "author": "/root/ac57_source_review",
+    "normal_session": 22358,
+    "normal_exit_code_reported": 0,
+    "normal_log_independently_confirmed_empty": true,
+    "selected_lint_session": 67423,
+    "selected_lint_exit_code_reported": 0,
+    "independently_read_reports": 2,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "proof_and_concrete_example_read_in_full": true,
+    "new_production": false,
+    "duplicate_compilation_by_reviewer": false
+  },
+  "final_verdict": "Accepted bounded frontier classification; no whole-chapter completion or milestone145 acceptance claim",
+  "metadata_correction": {
+    "scope": "Two source-agent record hashes only; source commit typo fixed",
+    "actual_commit": "9f5f8d2c624110d0bc79d3ddebfb655112d57100",
+    "mathematical_changes": false,
+    "preserved_prior_independent_files": [
+      {
+        "path": "/tmp/gc_Chapter34_frontier_65_independent_assessment_before_source_commit_metadata_fix.md",
+        "sha256": "09e9d01ba2fe8d8d52133148ca8cb4f16b5b1489e33a299d8eebf2efc3deb8da"
+      },
+      {
+        "path": "/tmp/gc_Chapter34_frontier_65_evidence_before_source_commit_metadata_fix.json",
+        "sha256": "3497c304046efc102b0f93421810d00bdf67ffc730fefea18752a74ad1bcb200"
+      },
+      {
+        "path": "/tmp/gc_Chapter34_frontier_65_freeze_before_source_commit_metadata_fix.json",
+        "sha256": "6a04cafb0c8cddfa939ec7b0f9cf7fabc9b481a96b7e22e46e9da30d382e51f6"
+      }
+    ]
+  }
+}

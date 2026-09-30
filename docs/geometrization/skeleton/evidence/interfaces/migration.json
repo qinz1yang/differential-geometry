@@ -1,0 +1,38 @@
+{
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "command": [
+    "lake",
+    "build",
+    "DifferentialGeometry.Bundle.PartialMfderiv.Basic",
+    "DifferentialGeometry.Geometry.Metric.MetricFiberData.Defs",
+    "DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic"
+  ],
+  "environment": {
+    "LEAN_NUM_THREADS": "4"
+  },
+  "exit_code": 1,
+  "log": "migration_blockers.log",
+  "unchanged_sources": {
+    "DifferentialGeometry/Bundle/PartialMfderiv/Basic.lean": "2ddbb0fff897cb51476cadf50a0bb2359e450a02dc57edc4802833a80545d116",
+    "DifferentialGeometry/Geometry/Metric/MetricFiberData/Defs.lean": "a89055ffffffdb552b42f665b4c66f56bc3f6964cddeb9803129f7922b641aba",
+    "DifferentialGeometry/Analysis/Integration/Measure/Riemannian/Basic.lean": "e75911f058dee6d4e2f605c2961b6d13f21f2d54c10caaae844f62206c8550a1"
+  },
+  "broader_attempt": {
+    "log": "interface_build.log",
+    "completed": false,
+    "intentionally_interrupted_after_errors": true,
+    "additional_error_files": [
+      "DifferentialGeometry/Geometry/Metric/TensorInner/Tensor0S/Coordinates/KroneckerQuadraticForm.lean",
+      "DifferentialGeometry/Geometry/Connection/ChartFrame/ChartLieBracket.lean"
+    ]
+  },
+  "resolution": "Rebind the new consumers after Ziyang supplies the accepted migration; no existing mathematical files edited",
+  "remote_main_inspection": {
+    "repository": "qinz1yang/differential-geometry-dev",
+    "private": true,
+    "commit": "948eea804614a1f9c25b986ec82fce0530a5b312",
+    "lean_toolchain": "leanprover/lean4:v4.33.1",
+    "scope": "read-only default-branch toolchain check; no claim about private local migration work"
+  }
+}

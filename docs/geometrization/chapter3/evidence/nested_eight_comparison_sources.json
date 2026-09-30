@@ -1,0 +1,29 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC02 full2141\u20132190, including all radial subtriangles and intrinsic distance agreement"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-ed6a16eb2a3c/defs-CBB.tex",
+      "sha256": "b80b54fafc6e30cbac121880c1b80265ee62afcd90d8a3ab77c0deef1a0e1f9c",
+      "locator": "516\u2013557 FunctionComparison/thm:conc/comp-kappa;817\u2013872 conc-loc/2-sum-loc/monoton-loc"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-ed6a16eb2a3c/model.tex",
+      "sha256": "db849cb9a051e0c3f8ec335942c954f14223c542eee1a40c4bca4ea2a63af9f8",
+      "locator": "45\u2013100 exact curvature\u2212kappa/sqrt(kappa) modified-distance convention"
+    }
+  ],
+  "reused_source_checks": [
+    "original_eight_comparison_sources.json",
+    "perimeter_budget_comparison_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "akp_branch": "vol1",
+  "akp_commit": "ed6a16eb2a3c66c1f0f54b183bd1a4176e78b245",
+  "scope": "Full original AC02 supplied-path four-parameter radial comparison, all zero-arm model-side cases, same-value intrinsic lifts and all cross-distance agreement",
+  "errata": "Pinned and published author correction checks reused from unchanged source passages; no new external retrieval",
+  "independent_root_and_peer_proof_review": true
+}

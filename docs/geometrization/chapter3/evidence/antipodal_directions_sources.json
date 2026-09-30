@@ -1,0 +1,66 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KapovitchLebedevaPetruninAlexandrov.pdf",
+      "sha256": "3dc0a166ec88b1c7e50aeebd9924f747ece6fb1957c7b31dcbe17a90a9e61d67",
+      "version": "Archived v1, July14 2026",
+      "locator": "Cone formula, tangent definition and Exercise3.2 printed36/PDF38; Proposition3.3 and full proof printed36-37/PDF38-39; Exercise6.20(a)-(c) printed69/PDF71 and entire semisolution138/PDF140",
+      "review_provenance": "Actual source bodies were read by the implementers and independent reviewer as distinguished in the frozen records; preceding cone-line audit also read5.5 printed52-54/PDF54-56 and5.8/semisolution printed54,133-134/PDF56,135-136."
+    }
+  ],
+  "reused_source_checks": [
+    "cone_antipodes_sources.json",
+    "pi_directions_sources.json",
+    "tangent_blowup_sources.json",
+    "euclidean_cone_sources.json",
+    "geodesic_directions_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Exact actual cone-tip comparison angles and pi-additivity; an actual pi-speed angular segment through the SAME supplied third direction, preserving its two original chosen isometric pieces; full original ambient and intrinsic8R geometric producers at the SAME point.",
+  "source_conventions": "The cone uses min(pi,angular distance); both radii must be positive for angle recovery. Generic additivity needs diameter<=pi and actual cone four-point comparison0. Original local comparison parameter1 is the curvature -1 convention. The intrinsic wrapper permits EVERY q in the original open8R ball.",
+  "proof_route": "Direct actual cone-tip four-point comparison gives distance additivity, then strict-pi segments and accepted metric concatenation give the SAME angular segment. This is an explicitly recorded alternative to the source suspension proof.",
+  "remaining_source_condition": "The actual third direction c distinct from both poles remains supplied. A Hausdorff upper bound does not imply its existence or the source LinDim>1/nonempty transverse suspension condition.",
+  "errata": "Retained applicable source/version and author-correction qualifications reused. No fresh external errata retrieval or absence-of-errata claim.",
+  "independent_peer_proof_review": true,
+  "not_claimed": [
+    "automatic third-direction existence",
+    "full KLP6.20(c) from a dimension upper bound",
+    "dimension equality",
+    "CBB1 for the direction space",
+    "full spherical-suspension identification",
+    "unconditional all-pairs angular geodesicity",
+    "full Chapters3-4 completion"
+  ],
+  "proof_records": [
+    {
+      "path": "/tmp/gc_ConeComparisonAngle_record.md",
+      "sha256": "ab637bb315d91949600e8fd95d02533a8b95bfb6811579da76f8e18b0d55d09d"
+    },
+    {
+      "path": "/tmp/gc_ConeComparisonAngle_independent_review_record.md",
+      "sha256": "e64b10d7b3dc2d52c97018d601f72649e2d8cde290db21aab9860c74d11b7e12"
+    },
+    {
+      "path": "/tmp/gc_ConeAntipodalGeodesic_record.md",
+      "sha256": "63bbbe368c4bda44a6ea5c8a3733a172d33a1579c17efdbb5ea010a1816b34eb"
+    },
+    {
+      "path": "/tmp/gc_FiniteDimensionalAntipodalDirections_record.md",
+      "sha256": "38a3769da51ed851526fb9b2db66ac62e520957906128fba894c699fead0bd72"
+    },
+    {
+      "path": "/tmp/gc_FiniteDimensionalAntipodalDirections_independent_read.md",
+      "sha256": "6ed08984e93f41e47a33b458fb5e30794281109d2d8fdfdcface399aec241db5"
+    },
+    {
+      "path": "/tmp/gc_FiniteDimensionalAntipodalDirections_tests_independent_read.md",
+      "sha256": "4503bb8e06faa3c1eba9b8c98c67f5c6163beb8d30c6e5f08d355e7fff9e1b3a"
+    }
+  ],
+  "upstream_freezes": [
+    {
+      "path": "/tmp/gc_ConeAntipodalGeodesic_freeze.json",
+      "sha256": "d1b139f2a80ecdf784fdf6ac86837fa61976177353b8e8d71d441346f4e726e3"
+    }
+  ]
+}

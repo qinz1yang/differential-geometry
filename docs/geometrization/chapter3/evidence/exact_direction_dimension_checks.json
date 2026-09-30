@@ -1,0 +1,37 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/ExactDirectionDimension.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_ExactDirectionDimension.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "0bf504472fe29c20c6b22649b041e55cde186051a2a73f2abdc09fe074000fa5"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_exact_direction_dimension_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "2069e4a8bc05ab92e11993df07d372463cc82453",
+  "review_reports": [
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_global_exact_tangent_direction_dimH_of_local_comparison_and_dimH",
+    "GCDirectionSpaceReview.original_real_exact_direction_dimension_everywhere",
+    "GCDirectionSpaceReview.original_singleton_exact_zero_without_false_dimension_shift",
+    "GCPlaneDirectionPackingReview.original_plane_exact_direction_dimension_and_all_segments",
+    "GCExactDirectionDimensionReview.original_empty_exact_dimension_without_chosen_point"
+  ],
+  "review_driver_sha256": "c342196e56f87d8240d52f0a13cbd410ffe4cdadeb29312ee5c3b33bf5a76569",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Comparison/ExactDirectionDimension.lean": "3b8935ab9c205615cd02e2ed99d6df79218aa36065dd1884da205bc37f28f328"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "b99af07585365b06a7419c2c111db3dd724640702952df40b2a22ca94649f0f7"
+}

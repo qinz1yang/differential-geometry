@@ -1,0 +1,10 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.abs_comparisonAngleNegCurvature_sum_sub_pi_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_complement_bounds' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_balanced_midpoint_with_comparison_angle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Real.sq_sub_le_pi_sq_mul_abs_cos_sub' depends on axioms: [propext, Classical.choice, Quot.sound]

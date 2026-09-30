@@ -1,0 +1,7 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.le_modelSideNegCurvature_of_cradle_steps' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Isometry.IccExtend_forward_isometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.germComparisonAngle_IccExtend_forward' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

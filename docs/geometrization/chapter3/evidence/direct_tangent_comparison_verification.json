@@ -1,0 +1,53 @@
+{
+  "success": true,
+  "blueprint_static_audit": {
+    "status": "failed",
+    "success": false,
+    "latest_completed_exit_code": 1,
+    "reason": "Historical source path is missing: /Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/MatveevBook2ndEd.pdf",
+    "running_session": null,
+    "unchanged_audit_sha256": "a71b3b706ed68f757debfad4dbbbf4f80a243ed1db2f56fa5054d23dd54e2018",
+    "blueprint_revision": 207,
+    "lean_gate_independent": true,
+    "current_milestone": 142,
+    "note": "The unchanged separate static audit completed with exit 1; no static pass is claimed.",
+    "completed_session": 82024
+  },
+  "milestone": 142,
+  "new_public_theorems": 4,
+  "new_public_definitions": 0,
+  "new_instances": 0,
+  "new_private_theorems": 2,
+  "new_declared_declarations": 6,
+  "new_generated_declarations": 1,
+  "new_owned_declarations": 7,
+  "observed_previous_owned_declarations": 2297,
+  "observed_previous_modules": 495,
+  "combined_modules": 499,
+  "combined_jobs": 3337,
+  "combined_owned_declarations": 2304,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/FourPointClosure.lean": "6547c99c9023adcc44a633c0638987b867bd972737a22577ff5548a643dd137e",
+    "DifferentialGeometry/Geometry/Metric/TangentConeDensity.lean": "67645116ff60bb1fab185f53e0a7f251403fb3bcc643764bc414d038d743c81c",
+    "DifferentialGeometry/Geometry/Comparison/TangentComparison.lean": "0548ef81a51c4b5b82bd36d7c9031ee9f1f9c9de6ccdfbde9f38d018053199b4",
+    "DifferentialGeometry/Geometry/Comparison/DirectSphericalDirections.lean": "a645de13c1b19382aceb5da71b0d2321c5ac9a1a76cefe82cfb46ad2b784aca2"
+  },
+  "logs": {
+    "direct_tangent_comparison_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "direct_tangent_comparison_review.log": "cb728f8ab766da4177b3ac50a37a0d4b4a080ebea6467aaa98fe7a0ab3bcc2b4",
+    "direct_tangent_comparison_blueprint_audit.log": "2be310aa5ac57d2368512587a6bf55059337096d08ced113af53e82080b78e03",
+    "direct_tangent_comparison_blueprint_status.json": "cd24bf3cd539678275536c0fef709e2fae45d2db930faae2495ec83ea85860af"
+  },
+  "checks_receipt_sha256": "fb1531c1d12fbc68411700a0952f2e11c8331aa257231eda7f4e871202dbd7c1",
+  "shared_gate_receipt_sha256": "835edf45269309cf8249992ac5fbdb33eedebbb101ee7582ec4a873e64f6dd4e",
+  "previous_milestone_receipt_sha256": "df12192ca674898799d3a29bc3a5d5662e1dd09214440e9589fe16c65184c8d0",
+  "review_driver_sha256": "eaa5574ce2edef9fe68ab3837e9df6485245dfc5e3c0206d028d065242b4e486",
+  "registration_plan_sha256": "cbcdf056d964d686d981a4de03b7a263c3fdac3df3ba45e942409c2efdb29116",
+  "source_receipt_sha256": "163accdc3ad2f893f1791d3455d1fe736dc1d88dd67aef53345483cb82fa043b",
+  "git_head_at_check": "6d21ad0c002350eeb31676aad75f9fc89f9ccbe3",
+  "independent_peer_proof_review": true,
+  "new_concrete_regressions": 4,
+  "expected_review_reports": 8,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

@@ -1,0 +1,16 @@
+'Topology.IsEmbedding.isComplete_closedBall_of_nonexpansive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_image_iff_of_dist_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.germComparisonAngle_comp_of_dist_eq_on' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_of_endpoint_hinges' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.endpointHingeComparison_of_embedded_256_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_of_embedded_256_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

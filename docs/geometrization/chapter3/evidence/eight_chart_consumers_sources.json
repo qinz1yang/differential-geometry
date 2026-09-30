@@ -1,0 +1,24 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC02 full2141\u20132190; AC03/04 full2193\u20132269; AC09\u201312 full2469\u20132690"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-ed6a16eb2a3c/defs-CBB.tex",
+      "sha256": "b80b54fafc6e30cbac121880c1b80265ee62afcd90d8a3ab77c0deef1a0e1f9c",
+      "locator": "307\u2013378 thm:defs_of_alex/angle and point-on-side to angle proof;418\u2013447 cor:monoton and two-side/sup clauses"
+    }
+  ],
+  "reused_source_checks": [
+    "nested_eight_comparison_sources.json",
+    "uniform_strut_charts_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "akp_branch": "vol1",
+  "akp_commit": "ed6a16eb2a3c66c1f0f54b183bd1a4176e78b245",
+  "scope": "Original AC03/04, actual canonical hinge comparison, source-facing conditional AC12 with tangent/direction and obstruction inputs",
+  "errata": "Retained author correction/source checks reused for unchanged arguments; no new external retrieval",
+  "independent_root_and_peer_proof_review": true
+}

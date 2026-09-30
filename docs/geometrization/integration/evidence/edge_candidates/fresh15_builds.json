@@ -1,0 +1,257 @@
+[
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.EdgePoint",
+    "candidate": "gc_edge_point.lean",
+    "sha256": "2912fd2660bd0e288add75f75b796a6e38624890a5362166cd554c802894ec14",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/EdgePoint.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/EdgePoint.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 5.6270599365234375
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.StripChart",
+    "candidate": "gc_strip_chart.lean",
+    "sha256": "ffec070003320ebbbd4abd83a13f772dd19cf39d53faa26afabfcc9dc411c170",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/StripChart.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/StripChart.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 4.622231960296631
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Scaling.RescaleComposition",
+    "candidate": "gc_rescale_composition.lean",
+    "sha256": "e0d8fa20509796e3a4476f7abb60769d6326d8f903a2ee60282ce25c3b531086",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Scaling/RescaleComposition.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Scaling/RescaleComposition.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 2.692816734313965
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.EdgeHalfPlaneModel",
+    "candidate": "gc_edge_local_model.lean",
+    "sha256": "42fd947eb6ed3d4aea355b37d7dc20bf55a8b787c8c1fb229234a52cc96ec7d3",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/EdgeHalfPlaneModel.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/EdgeHalfPlaneModel.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 3.955142021179199
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.EdgeBorderLifts",
+    "candidate": "gc_edge_border_lifts.lean",
+    "sha256": "5049c4a7225edec852501104d710812f48fafdcc4d6fecc7779adb996daf9225",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/EdgeBorderLifts.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/EdgeBorderLifts.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 6.517376184463501
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.PaddedStripBoundary",
+    "candidate": "gc_padded_strip_boundary.lean",
+    "sha256": "3aebe7d84dd081897cba1794e869ee52b54628604b61fb3cc8191dd9836b6c76",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/PaddedStripBoundary.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/PaddedStripBoundary.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 5.769615888595581
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.EdgeHeight",
+    "candidate": "gc_edge_height.lean",
+    "sha256": "4c098a17950b86dbd04f6aa15a3e965966eadd67b81fdb888dcda5e97d10a9a2",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/EdgeHeight.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/EdgeHeight.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 7.463691711425781
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.EdgeCoarseBorder",
+    "candidate": "gc_edge_coarse_border.lean",
+    "sha256": "fed2d308087a8b88c1df8eb34181cbf22100496eee7a31beb8c80b51b7603fef",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/EdgeCoarseBorder.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/EdgeCoarseBorder.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 7.732816934585571
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.StrongEdgePoint",
+    "candidate": "gc_strong_edge_point.lean",
+    "sha256": "9e994f729260ac91c04fd69983713e3defc67534c07295cc4c33363f2b8da01d",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/StrongEdgePoint.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/StrongEdgePoint.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 4.888266086578369
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.EndpointProductLifts",
+    "candidate": "gc_endpoint_product_lifts.lean",
+    "sha256": "cdac4bf76985444e8c2e07389b69b79d89cb981ca0814ec43fa27a01f1212cab",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/EndpointProductLifts.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/EndpointProductLifts.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 3.599792003631592
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.StrongEdgeLifts",
+    "candidate": "gc_strong_edge_lifts.lean",
+    "sha256": "cfcb8debfa767dbb0af061450c8cd3df3d22a1f4018a1c02d7afd5c1b6119c22",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/StrongEdgeLifts.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/StrongEdgeLifts.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 3.586946964263916
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.StrongEdgeDensity",
+    "candidate": "gc_strong_edge_density.lean",
+    "sha256": "4f1467fba0115a31921b30ffc209ad34121bb030e3ab3d542efa7751d4a5b545",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/StrongEdgeDensity.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/StrongEdgeDensity.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 4.455695867538452
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.MarkedModelHeight",
+    "candidate": "gc_marked_model_height.lean",
+    "sha256": "c250b99aed76d4e438d2ba91ec8431705a484f89f70f7de603449927169f0083",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/MarkedModelHeight.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/MarkedModelHeight.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 6.072583913803101
+  },
+  {
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.WeakEdgeDensity",
+    "candidate": "gc_weak_edge_density.lean",
+    "sha256": "0a5fa1bf215c395cfeae9d4aabf635db5a1f3bf3880671bb8f209bd46fb80ed7",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/WeakEdgeDensity.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/WeakEdgeDensity.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 6.050818204879761
+  },
+  {
+    "module": "DifferentialGeometry.Topology.MetricSpace.LipschitzBallSelection",
+    "candidate": "gc_lipschitz_ball_selection.lean",
+    "sha256": "ac10fa85403381fd90cfbbc54e743603856f855546f32350f6fc0ea2c2de2ef2",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Topology/MetricSpace/LipschitzBallSelection.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Topology/MetricSpace/LipschitzBallSelection.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 3.1199800968170166
+  }
+]

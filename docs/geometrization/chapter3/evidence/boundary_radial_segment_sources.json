@@ -1,0 +1,36 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC62 statement/proof5276-5301, ALG08 consumers7619-7643"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/BuragoBuragoIvanovBook.pdf",
+      "sha256": "4efaa168dcc83e7e9f5663d14824f9543104beab21642ca3830a5dd1c684c971",
+      "locator": "2.5.7/9 printed45-46/PDF60-61;2.5.22 printed49-50/PDF64-65 statement and full proof freshly read by agent"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/bbi-errata-2024-07-06.pdf",
+      "sha256": "68338c7a8b37b8637efbad8af5f547f6cf789675df020fbc6aa04d4babdde42e",
+      "locator": "PDF2 finite-metric qualification and PDF3 natural-length correction freshly read"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/LocalHopfRinow.lean",
+      "sha256": "4c89b5ba414398ad70f2bff48427b4b7fbe4f9aab1bd096c5235a503ac0708f5",
+      "locator": "116-122 actual compactness of strictly smaller closed balls from complete length and locally compact open ball"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/ShortCurvePrefix.lean",
+      "sha256": "c7ac22b200b9a2ba05150ef6cbe4ec84ff35bedab9f40fad968f0e379dc2baf3",
+      "locator": "entire actual prefix construction and exact radial/tail/pairwise estimates"
+    }
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "reused_source_checks": [
+    "opposite_prefixes_sources.json"
+  ],
+  "scope": "Full AC62 exact radial segment to original boundary endpoint; no boundary compactness, stronger compact-inner-ball auxiliary allows incomplete spaces and p=a.",
+  "independent_agent_proof_review": true,
+  "errata": "Retained BBI corrections freshly read; no remote freshness claim."
+}

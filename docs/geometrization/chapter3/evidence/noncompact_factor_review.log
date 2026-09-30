@@ -1,0 +1,9 @@
+'IsometryEquiv.exists_line_or_ray_product_of_noncompact_factor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.PointedGHConverges.exists_line_or_ray_product_of_noncompact_factor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.PointedGHConverges.exists_line_or_ray_product_of_growing_local_geometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

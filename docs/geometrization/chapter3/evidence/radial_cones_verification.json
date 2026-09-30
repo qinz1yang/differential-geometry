@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "new_public_theorems": 29,
+  "new_definitions": 3,
+  "new_structures": 1,
+  "new_owned_declarations": 58,
+  "new_generated_declarations": 25,
+  "combined_modules": 353,
+  "combined_jobs": 3188,
+  "combined_owned_declarations": 1621,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/RadialConeData.lean": "e689b27fc0c511e3ba02e5ea3e3f3bf36ee3ad959ea0fd33d0dce6f9de45c1ee",
+    "DifferentialGeometry/Geometry/Metric/RadialConeIdentities.lean": "01d611d97800f6c5b81a096c30d3bd001e68ab5d5df93177f0e933bf8cb8bda3",
+    "DifferentialGeometry/Geometry/Metric/RadialConeRays.lean": "0d1d36eb900e22114c37161b59c5764b10a4c7c61596753bad400bcb04045f26",
+    "DifferentialGeometry/Geometry/Metric/TwoConeApices.lean": "d4f04937ae14a8529c696417ced8dd55d350e4e442890ca96a6ac3437d9d5b8c",
+    "DifferentialGeometry/Geometry/Comparison/TwoConeSplitting.lean": "41ca9867cd0fbbd6f8e31a63984ece9d7a319c629ea80fa5df89a274e1d38bd0"
+  },
+  "logs": {
+    "radial_cones_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "radial_cones_review.log": "708d08b42072cc4c8a5344413640a23fb7fdfa5a5dd9d9afa53c04a437220495",
+    "radial_cones_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "15114fecc5d4a8318424f46903769f0ca41ebf40b220c826714fa5d6a2f82a67",
+  "git_head_at_check": "dec14f42b177da93e7b6166cc15a9e4e27feaa56",
+  "independent_agent_proof_review": true,
+  "translated_plane_both_signs_and_original_reversed_real_consumer_tests": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

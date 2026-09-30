@@ -1,0 +1,21 @@
+[
+  {
+    "path": "DifferentialGeometry/Analysis/InnerProductSpace/PositiveInverseBounds.lean",
+    "sha256": "ea01c38c37a836a016f6ee289e0115916326f135c630ab4f40b1668925856490",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/InnerProductSpace/PositiveInverseBounds.olean",
+      "DifferentialGeometry/Analysis/InnerProductSpace/PositiveInverseBounds.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "92461ebe1ca6cd94c95c956f383e2029234b9e13b4da7d566a0b808ed39acc5c"
+  }
+]

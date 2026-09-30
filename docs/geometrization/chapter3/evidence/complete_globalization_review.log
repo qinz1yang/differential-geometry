@@ -1,0 +1,15 @@
+'Metric.MinimizingHinge.modelSide_ge_dist_of_complete_local_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.endpointHingeComparison_of_complete_local_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_of_complete_local_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.point_on_side_comparison_of_complete_local_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.independent_radial_monotonicity_of_complete_local_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

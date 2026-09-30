@@ -1,0 +1,9 @@
+'GC.MetricGeometry.PointedGHConverges.exists_controlled_product_of_growing_local_geometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.PointedGHConverges.exists_controlled_product_of_reciprocal_local_geometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.PointedGHConverges.exists_controlled_product_of_eventual_reciprocal_local_geometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

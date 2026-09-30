@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "new_public_theorems": 5,
+  "new_definitions": 0,
+  "new_owned_declarations": 5,
+  "new_generated_declarations": 0,
+  "combined_modules": 336,
+  "combined_jobs": 3171,
+  "combined_owned_declarations": 1457,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/Approximation/ProductLimitEvaluation.lean": "24d74910c3e6b99027d0efaa0c039fcd96be6d14e34d036f6a6d886561ce5b0f",
+    "DifferentialGeometry/Geometry/Metric/Approximation/FullProductLimit.lean": "01e0eac6675c8d80cc849dcd7ddd4a824a0157963d48fb578e3314af9e804223",
+    "DifferentialGeometry/Geometry/Metric/Approximation/TwoFullProductLimits.lean": "1087126caaa4aa630005ed38d2d78bd1305da98eb364faa5a1125d6c56552dc5",
+    "DifferentialGeometry/Geometry/Metric/Approximation/PointedFullProductLimits.lean": "4a779bd4540fc8fe101c0f3ae706dd394906b50bad1e456f243a247310f76124"
+  },
+  "logs": {
+    "full_product_convergence_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "full_product_convergence_review.log": "b741e7651ca8442e0c62c06f478e7fc4ae2c742c34fac771b51137cca2c0442f",
+    "full_product_convergence_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "dc23f1d92303f3370f7ca48a6f1f902d7aaee803b66963cf28ae5de8f3d37fca",
+  "git_head_at_check": "7d7ced5f43ec6310ad62ef7e86166c760998ec3c",
+  "independent_agent_proof_review": true,
+  "incomplete_sources_distinct_original_maps_and_pointed_input_regression": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

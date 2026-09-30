@@ -1,0 +1,40 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC76 full statement/proof and source discrepancy5986-6048"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf",
+      "sha256": "7a860b4dd95b35fe33b06bf040100ec243d72c80528d927f4763391aaf79cb6e",
+      "locator": "Lemma4.17 full printed32-33/PDF27-28, rendered ranks and shrinking-versus-growing-ball discrepancy"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/KL_corrections.pdf",
+      "sha256": "b5849571508231ce7328ef842eaa0a8a74e34804de7741dab548c406dea11e19",
+      "locator": "retained May15,2015 correction sheet PDF1; no relevant correction listed"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/MetricSpace/Basic.lean",
+      "sha256": "436cca315c86e33d4101560d75087e75b5ccb6c96419960c68d1aeb147eed49b",
+      "locator": "ULift metric induced by down,142-143"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Constructions.lean",
+      "sha256": "fac54be28ca7fe2f4afaee7a041456caf5614b394067471cc64eb437a7763787",
+      "locator": "ULift pseudo metric and exact dist/up equality156-170"
+    }
+  ],
+  "reused_source_checks": [
+    "full_product_convergence_sources.json",
+    "splitting_compatibility_transfer_sources.json",
+    "exact_splitting_compatibility_sources.json",
+    "growing_region_extraction_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Full AC76 original-source uniform theorem, both original map quantifiers, explicit small-factor universe lift; exact-limit metric transfer",
+  "source_rank_discrepancy": "KL Def4.8(2) j<k versus Lemma4.17 j<=k<=n, both rendered pages checked; blueprint equal-rank interface explicitly extended and proved.",
+  "errata": "Retained May15,2015 KL sheet checked; no new current-web freshness claim",
+  "independent_agent_proof_review": true
+}

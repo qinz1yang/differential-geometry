@@ -1,0 +1,5 @@
+'GC.MetricGeometry.exists_isometryEquiv_subsequence_of_pointed_approximations' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.commonSourceComparison_forward_error' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.MetricGeometry.exists_controlled_common_limit_isometry' depends on axioms: [propext, Classical.choice, Quot.sound]

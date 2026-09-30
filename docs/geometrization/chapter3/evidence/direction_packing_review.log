@@ -1,0 +1,55 @@
+'Metric.GeodesicRepresentative.tendsto_comparisonAngleNegCurvature_dist_direction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_common_shortening_strut_of_separated_directions' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_strut_neighborhood_of_separated_directions' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_endpoint_directions_of_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.isOpen_direction_packing_of_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_original_unequal_length_joint_limit' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_real_common_radius' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCDirectionSpaceReview.actual_real_same_endpoints_persist' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCDirectionSpaceReview.actual_singleton_empty_family' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCDirectionSpaceReview.singleton_one_anchor_comparison_is_vacuous' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.singleton_one_direction_family_is_impossible' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCIntrinsicStrutDirectionsReview.original_infinite_anchor_family_has_actual_directions' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCIntrinsicStrutDirectionsReview.empty_index_keeps_the_original_source' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCIntrinsicStrutDirectionsReview.singleton_source_exposes_noncentrality_guard' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.actual_translated_plane_direction_packing' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.actual_plane_curvature_four_common_shortening' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.actual_plane_same_anchor_neighborhoods' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_real_singleton_direction_shortening' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_singleton_source_empty_family' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCDirectionSpaceReview.actual_real_two_direction_packing_open_and_univ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_singleton_zero_direction_packing_open_and_univ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

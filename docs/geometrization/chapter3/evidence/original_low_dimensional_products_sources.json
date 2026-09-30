@@ -1,0 +1,47 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC03/04 full2193-2269; AC43 full4286-4318; AC44/45 full4320-4418; AC47/48 full4445-4550"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/FiniteDimensionalCovering.lean",
+      "sha256": "f196db65cfc8b07ee13d688df5f59a14c7e1cd5530b0c165b011b49ef867024e",
+      "locator": "full body; original-input internal nets with exact fixed-n ceiling bound"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/CeilCoveringBound.lean",
+      "sha256": "e25cc1bedf8ef8236214a4d03a0067d3085ced68ef15e961abe32cc4aea93277",
+      "locator": "full body; exact polynomial constant"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/CurvatureWeakening.lean",
+      "sha256": "dd07b364148562982ac3494698ca2e07157c0ff6d7672bd4ede5370427f73b10",
+      "locator": "full body; zero-to-kappa four-point comparison"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/EuclideanFactorCovering.lean",
+      "sha256": "047ba6c008f1a1b6dd0936fe162491a11b92f9558b99d84979c4feb86b2c070b",
+      "locator": "full body; exact3^n exponent-subtraction bound"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/EuclideanFactorDimension.lean",
+      "sha256": "0b27c0a1ce0bfd87f46ea64bf12156ed7a3c785f0f7d8176c3e518866ba0492f",
+      "locator": "full body; real-factor adapter and full-rank collapse"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/LineSplitting.lean",
+      "sha256": "21d9854ee99cb9668214148c786cc889fef9aa2426abef6137e626d1f1029b62",
+      "locator": "full body; actual onto splitting and canonical first coordinate"
+    }
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "reused_source_checks": [
+    "finite_dimensional_covering_sources.json",
+    "factor_global_models_sources.json",
+    "line_splitting_sources.json"
+  ],
+  "scope": "Original-global AC45 net/rank/dimension specialization and AC48 metric product alternatives; actual specified-line application through accepted AC43.",
+  "errata": "Unchanged imported geometry reuses retained author corrections and exact source records; no new full-source/current-remote clearance."
+}

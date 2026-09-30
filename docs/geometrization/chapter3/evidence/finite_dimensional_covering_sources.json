@@ -1,0 +1,37 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC04 full2232-2269 and note2271-2277; AC07 full2357-2377; AC08 full2401-2418; AC29 full3508-3535; ALG07 full7582-7617; body reading reused/fresh for AC08"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/FiniteDimensionalLocalCompactness.lean",
+      "sha256": "2b5e3178761fab89c34af0210aa510abcce7e3ec913da1ba3709531e9e2d89a5",
+      "locator": "full accepted body, actual all-point local compactness without compactness input"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/NearbyPairedChart.lean",
+      "sha256": "8a499a146f7b6f6b0aec004c4107b5f9894d23562f21e46d35aa8d6a9afab963",
+      "locator": "full accepted body, actual nearby chart with fixed L_n and rank m<=n"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/LocalChartCovering.lean",
+      "sha256": "4fe5c242bba9a33c815808b7d05d15bf3cf507b42124782a0416e3b77e79e4a1",
+      "locator": "full accepted body, exact internal net with rank-dependent ceiling bound"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/CurvatureWeakening.lean",
+      "sha256": "dd07b364148562982ac3494698ca2e07157c0ff6d7672bd4ede5370427f73b10",
+      "locator": "full body inspected: only zero-to-kappa weakening; general0<=kappa<=1 weakening remains distinct"
+    }
+  ],
+  "reused_source_checks": [
+    "finite_local_structure_sources.json",
+    "local_chart_covering_sources.json",
+    "radial_contraction_sources.json"
+  ],
+  "scope": "Complete fixed-curvature-1 uniform-covering producer from original local comparison and finite ambient dimension, including singleton. General varying-curvature/growing-region extraction remains.",
+  "proof_route": "Monotone rank bound retains exact N(n,L_n,R,epsilon) without constructing a padded chart.",
+  "errata": "Unchanged mathematical source claims retain earlier pinned/dated BBI/BGP/AKP checks; no fresh remote-version claim."
+}

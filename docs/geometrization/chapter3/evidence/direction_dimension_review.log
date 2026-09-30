@@ -1,0 +1,41 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_tangent_polynomial_net_of_local_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_tangent_polynomial_net_of_intrinsic_eight_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.EuclideanCone.exists_finset_net_base_of_polynomial_covering' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.EuclideanCone.dimH_base_le_of_polynomial_covering' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.direction_covering_and_dimH_of_local_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.direction_covering_and_dimH_of_intrinsic_eight_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_real_far_point_tangent_net_two_centers' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_unbounded_region_large_radius_tangent_net' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_zero_dimension_tangent_net_exact_tip' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeAngularCoveringReview.empty_base_net_and_dimension' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCConeAngularCoveringReview.singleton_base_zero_dimensional_and_nonempty_net' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeAngularCoveringReview.two_point_base_retains_two_centers_and_dimension_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_real_direction_dimension_zero_and_finite_net' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_singleton_direction_dimension_zero_and_empty_net' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.actual_plane_direction_dimension_one_and_three_center_net' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

@@ -1,0 +1,48 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC47 full4445-4501; AC48 full4503-4550; unchanged targeted reading reused"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/GlobalOneDimensionalModels.lean",
+      "sha256": "16cc676cb8b88292dcc8a5c20e73d31816ad8a7389741e2af462df2b4414983f",
+      "locator": "full body; original-input five pointed model existence"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/MetricEndpoint.lean",
+      "sha256": "08942b9cfe976225db41dcbae6f5589212ffcd98ce5b67ec493a5d6074cd6fcb",
+      "locator": "full body; actual metric endpoint and its invariance"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/CircleEndpoint.lean",
+      "sha256": "b6653e5b04293350237595b872621162cd5e3b37d503c238e7309180985f4ee4",
+      "locator": "full body; no endpoint in positive-period quotient circle"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/ModelParameterRigidity.lean",
+      "sha256": "437cd4238463fd2230d31d84859cb59c470eea1a514b686d2952e7f4a084aa79",
+      "locator": "full body; lengths, global orientation and pointed coordinates"
+    },
+    {
+      "path": "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/src/lean/Init/Data/List/Basic.lean",
+      "sha256": "566e74dd5c3e72b2111af000b8bd1552f1aaffe29be317ba01bc91c9e5b55293",
+      "locator": "1352-1385; actual Pairwise definition/cons equivalence"
+    },
+    {
+      "path": "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/src/lean/Init/Data/List/Lemmas.lean",
+      "sha256": "9365fb1c6da0313a4c73e8cf096377e69c28ece28d38290a0423e5f8cc1fdfdb",
+      "locator": "414-426; finite-membership expansion"
+    }
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "lean_version": "v4.35.0-rc3",
+  "reused_source_checks": [
+    "global_one_dimensional_models_sources.json",
+    "model_parameter_rigidity_sources.json",
+    "original_low_dimensional_products_sources.json"
+  ],
+  "scope": "Full AC47 original-input metric classification, all ten type exclusions, with accepted parameter uniqueness. AC48 recognition input complete.",
+  "errata": "All unchanged geometric imports retain the precise source/errata scope of the reused records. No new remote or whole-book audit claimed."
+}

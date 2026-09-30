@@ -1,0 +1,31 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC27 full statement/proof lines3404\u20133438, AC28 lines3442\u20133515; ALR01\u2013ALR05 full bodies lines7056\u20137235 reopened for next consumer"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+      "sha256": "801ce3aba7c1beebc49dd9811d4a007e3c5d23ad0bc0c9eec4abd10fce7b16f8",
+      "locator": "pin c55e6e786f49471c72fbddbec5415808896aec1e, lines49\u201365 distance characterization and148\u2013170 inducing/embedding proof"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/Homeomorph/Lemmas.lean",
+      "sha256": "7259045703d326907a76c01de6763e9bf28c4cfd05ae70b6501402fe60e7a4d1",
+      "locator": "same pin, lines408\u2013426 embedding-to-actual-range construction and inverse property"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+      "sha256": "925c12b0bdd954bb84b8318c2518311ab459537aef2c06e2629f9f60b27bd442",
+      "locator": "same pin, lines644\u2013655 coordinate distance domination"
+    }
+  ],
+  "reused_source_checks": [
+    "angle_reversal_midpoint_sources.json",
+    "paired_distance_local_openness_sources.json",
+    "distance_coordinates_sources.json"
+  ],
+  "errata": "Unchanged source claims; prior BBI/BGP/AKP checks reused",
+  "scope": "Exact AC27 actual chart; rank bound for supplied pointwise packets. Finite maximal rank selection remains."
+}

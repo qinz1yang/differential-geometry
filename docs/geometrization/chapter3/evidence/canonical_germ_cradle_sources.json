@@ -1,0 +1,35 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "ALG01/ALG02 full bodies7264-7415"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-ed6a16eb2a3c/defs-CBB.tex",
+      "sha256": "b80b54fafc6e30cbac121880c1b80265ee62afcd90d8a3ab77c0deef1a0e1f9c",
+      "locator": "vol1 ed6a16eb2a3c66c1f0f54b183bd1a4176e78b245; thm:defs_of_alex307-386 and key-lem:globalization951-1090"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Order/LiminfLimsup.lean",
+      "sha256": "a092c5ad7e8310e9ba9d3d67e9858f3e8fbf9fba49be9126558266e0c53b7c9c",
+      "locator": "mathlib c55e6e786f49471c72fbddbec5415808896aec1e; limsup_comp90-91, bounds110-147, congruence/constants201-219, frequently lower bound241-249"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+      "sha256": "b92b683c7f4395efd7231c918e9e11a8f6f5e231cb65a0b84593b62e493bba10",
+      "locator": "same pin; convergent limsup170-193"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Order/Filter/Prod.lean",
+      "sha256": "b481dd72784fdb91babc22452b2dd986612f2f0a318edecddc9962d36b6b48b2",
+      "locator": "same pin; eventuality145-157 and product symmetry229-237"
+    }
+  ],
+  "reused_source_checks": [
+    "germ_angle_sources.json",
+    "model_side_sources.json"
+  ],
+  "errata": "Unchanged previously checked source/author-errata comparisons are reused; no remote byte-identity claim.",
+  "scope": "Canonical local germ values, joint limits, local angle bounds and actual metric cradle center/range construction; geometric globalization remains open."
+}

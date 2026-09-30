@@ -1,0 +1,74 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC57 full4990-5031; AC61 full5207-5262"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-ed6a16eb2a3c/model.tex",
+      "sha256": "db849cb9a051e0c3f8ec335942c954f14223c542eee1a40c4bca4ea2a63af9f8",
+      "locator": "vol1 commit ed6a16eb2a3c66c1f0f54b183bd1a4176e78b245; scaling71-95, cosine law191-206; independently freshly read"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/AlexanderKapovitchPetrunin303Alexandrov.pdf",
+      "sha256": "1ba6f6f011a8333d9a20bdbf49d36d68b61bf1aababb19296ed48ecea37248ed",
+      "locator": "printed/PDF15-17 independently freshly read"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-erratum-2026-07-12.pdf",
+      "sha256": "8f4642b105b03a52f23f920b6201a9156a2e0ceef63a37774c88e0d912801a79",
+      "locator": "both pages independently freshly read, no relevant model correction"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/AKP_erratum_2026-09-26.txt",
+      "sha256": "79839a8f6d291151a334eb5763b1b862075bedf8afbd4b6d2be4c8fa418493b2",
+      "locator": "full text root read, dated July12,2026"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/ModelAngle.lean",
+      "sha256": "eb1d2524535435874502aff4690ba71516faef86f34881d1dbe09eed30fd5877",
+      "locator": "1-66 actual curvature normalization and valid cosine-law domain"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/ModelSide.lean",
+      "sha256": "849095c5e43a3f4a19c1eae06b261199ef847cb7e1ee122a4ff413543a445996",
+      "locator": "88-136 actual model triangles and angle inverse used in compiled nonzero-excess review"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean",
+      "sha256": "81bf2e312b013997ba412329fae6a9bf372092ee29452f29cfa0083078a334ee",
+      "locator": "110-127 quadratic cosine estimate"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Log/Basic.lean",
+      "sha256": "5c3ecb5112d5d46df46d3dff3efa1548095356259633b34885db8ab4275340a2",
+      "locator": "300-315 actual elementary log inequalities"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/DerivHyp.lean",
+      "sha256": "56e10f82610c7a0e4dceee69f13f72376eb80dbc7ba8af176dced1b0857e7adf",
+      "locator": "382-404 sinh strict monotonicity"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+      "sha256": "a6aebc0f4ed4cb273f60fbac323fc2c47857fefed587f50f29e8996a720eec68",
+      "locator": "208-210 rpow_add;990-1000 sqrt/rpow identities"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/Complex/Trigonometric.lean",
+      "sha256": "b63dc0d49ca3deb88ffb47292745448b2611bf2d43b4ea05931628f8aa286b3b",
+      "locator": "740-767 sinh/cosh exponential formulas,812-835 squared and double-angle identities"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/Order/Basic.lean",
+      "sha256": "70041d69776fc6d4a8c15c7c9da1b6c01b11fe8d3194ca7aebccebec539c7db2",
+      "locator": "219-238 eventual squeeze proof"
+    }
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "reused_source_checks": [],
+  "scope": "Full AC57 exact absolute modulus, generalized positive equal arms, metric and eventual-angle sequential consumers.",
+  "independent_source_review": true,
+  "errata": "Retained July12,2026 PDF and September26 retained text checked, no relevant correction; no remote freshness claim."
+}

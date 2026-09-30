@@ -1,0 +1,1855 @@
+{
+  "reviewed_commit": "ea0fae60ee01ef8c8d9b57a51794c6538f679c5d",
+  "declaration_count": 121,
+  "direct_admissions": 17,
+  "declarations": [
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.cutPieceMap",
+      "file": "DifferentialGeometry/Geometry/Collapse/TorusDecomposition.lean",
+      "line": 11,
+      "anchor": "f3-induced-cut-metric",
+      "report": "endpoint_and_flow.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.isInducedCutMetric",
+      "file": "DifferentialGeometry/Geometry/Collapse/TorusDecomposition.lean",
+      "line": 16,
+      "anchor": "f3-induced-cut-metric",
+      "report": "endpoint_and_flow.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.HyperbolicOrCollapsed",
+      "file": "DifferentialGeometry/Geometry/Collapse/TorusDecomposition.lean",
+      "line": 25,
+      "anchor": "f3-induced-cut-metric",
+      "report": "endpoint_and_flow.md",
+      "kind": "inductive",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.geometrizes_of_hyperbolicOrCollapsed",
+      "file": "DifferentialGeometry/Geometry/Collapse/TorusDecomposition.lean",
+      "line": 41,
+      "anchor": "f3-induced-cut-metric",
+      "report": "endpoint_and_flow.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "GC.LongTime.hasCommonNeckAccuracy",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateDecomposition.lean",
+      "line": 17,
+      "anchor": "f4-common-accuracy",
+      "report": "endpoint_and_flow.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.RegularSlice.componentMetric",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateDecomposition.lean",
+      "line": 23,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.hasExteriorAreaObstructionAfter",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateDecomposition.lean",
+      "line": 29,
+      "anchor": "f5-area-obstruction",
+      "report": "endpoint_and_flow.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.hasLateSequenceTests",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateDecomposition.lean",
+      "line": 47,
+      "anchor": "f6-sequence-tests",
+      "report": "endpoint_and_flow.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.exists_surgery_with_late_sequence_tests",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateDecomposition.lean",
+      "line": 62,
+      "anchor": "f7-selected-flow",
+      "report": "endpoint_and_flow.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "GC.LongTime.components_geometrize_of_late_sequence_tests",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateDecomposition.lean",
+      "line": 71,
+      "anchor": "f8-bad-sequence-proof",
+      "report": "endpoint_and_flow.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "GC.LongTime.geometrizes_of_metric",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateDecomposition.lean",
+      "line": 99,
+      "anchor": "f9-capstone",
+      "report": "endpoint_and_flow.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "GC.LongTime.RegularSlice",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "line": 13,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "structure",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.RegularSlice.history",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "line": 24,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "abbrev",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.RegularSlice.stage",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "line": 26,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "abbrev",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.RegularSlice.metric",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "line": 29,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.RegularSlice.normalizedMetric",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "line": 32,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.RegularSlice.curvatureOneMetric",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "line": 35,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.RegularSlice.initial",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "line": 38,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.hasArbitrarilyLateNonemptySlices",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "line": 43,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.exists_regular_slice_after",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "line": 47,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "GC.LongTime.empty_slice_or_arbitrarily_late",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "line": 53,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "GC.LongTime.exists_common_late_slice",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "line": 67,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "GC.LongTime.geometrizes_of_late_slice_supply",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "line": 91,
+      "anchor": "f2-slices",
+      "report": "endpoint_and_flow.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "GC.Endpoint.geometrization",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Theorem.lean",
+      "line": 10,
+      "anchor": "f9-capstone",
+      "report": "endpoint_and_flow.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "GC.Endpoint.geometrization_conjecture",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Theorem.lean",
+      "line": 14,
+      "anchor": "f9-capstone",
+      "report": "endpoint_and_flow.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "GC.Endpoint.smooth_geometrization_conjecture",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Theorem.lean",
+      "line": 16,
+      "anchor": "f9-capstone",
+      "report": "endpoint_and_flow.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.curvatureRadius",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 23,
+      "anchor": "collapse-radius",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.ballVolume",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 28,
+      "anchor": "collapse-radius",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.euclideanUnitBallVolume",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 31,
+      "anchor": "collapse-radius",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.volumeCollapsedAtCurvatureScale",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 33,
+      "anchor": "collapse-radius",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.curvatureDerivativesControlled",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 38,
+      "anchor": "collapse-radius",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.curvatureRadius_pos",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 46,
+      "anchor": "collapse-radius",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.curvatureRadius_eq_top_iff",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 50,
+      "anchor": "collapse-radius",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.curvatureDerivativesControlled_mono_threshold",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 55,
+      "anchor": "collapse-radius",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.cuspMetricError",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 15,
+      "anchor": "collapse-cuspembedding",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.cuspMetricErrorBound",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 22,
+      "anchor": "collapse-cuspembedding",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.CuspEmbedding",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 29,
+      "anchor": "collapse-cuspembedding",
+      "report": "collapse.md",
+      "kind": "structure",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.NearlyCuspidalBoundary",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 43,
+      "anchor": "collapse-cuspembedding",
+      "report": "collapse.md",
+      "kind": "structure",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.distanceToBoundary",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 56,
+      "anchor": "collapse-boundarydistance",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.boundaryVolumeCollapsed",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 60,
+      "anchor": "collapse-boundarydistance",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.CuspEmbedding.weaken",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 64,
+      "anchor": "collapse-cuspembedding",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.NearlyCuspidalBoundary.weaken",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 70,
+      "anchor": "collapse-cuspembedding",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.exists_common_curvature_derivative_bound",
+      "file": "DifferentialGeometry/Geometry/Collapse/UniformDerivativeBounds.lean",
+      "line": 10,
+      "anchor": "collapse-uniform",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Hyperbolic.CuspHalfSpace",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean",
+      "line": 10,
+      "anchor": "collapse-cuspmodel",
+      "report": "collapse.md",
+      "kind": "abbrev",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Hyperbolic.cuspDomain",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean",
+      "line": 12,
+      "anchor": "collapse-cuspmodel",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Hyperbolic.HyperbolicCusp",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean",
+      "line": 14,
+      "anchor": "collapse-cuspmodel",
+      "report": "collapse.md",
+      "kind": "structure",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Hyperbolic.cusp_constant_sectional_curvature",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean",
+      "line": 23,
+      "anchor": "collapse-cuspmodel",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.closedCollapseHypotheses",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 11,
+      "anchor": "collapse-hypotheses",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.boundaryCollapseHypotheses",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 17,
+      "anchor": "collapse-hypotheses",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.staticCollapseHypotheses",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 22,
+      "anchor": "collapse-hypotheses",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.volumeCollapsedAtCurvatureScale_mono",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 26,
+      "anchor": "collapse-hypotheses",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.closedCollapseHypotheses_mono",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 35,
+      "anchor": "collapse-hypotheses",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.boundaryCollapseHypotheses_mono",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 43,
+      "anchor": "collapse-hypotheses",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.exists_rawGraphPresentation_of_nonnegative",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 52,
+      "anchor": "collapse-admitted",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.exists_closed_graph_threshold",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 60,
+      "anchor": "collapse-admitted",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.exists_boundary_graph_threshold",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 68,
+      "anchor": "collapse-admitted",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.exists_graph_threshold",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 80,
+      "anchor": "collapse-composition",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Collapse.exists_componentwise_graph_threshold",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 97,
+      "anchor": "collapse-composition",
+      "report": "collapse.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Connection.metricCovariantDerivative",
+      "file": "DifferentialGeometry/Geometry/Connection/TensorNabla/Iterated/Metric.lean",
+      "line": 17,
+      "anchor": "collapse-tensor",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Connection.iteratedMetricCovariantDerivative",
+      "file": "DifferentialGeometry/Geometry/Connection/TensorNabla/Iterated/Metric.lean",
+      "line": 30,
+      "anchor": "collapse-tensor",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Curvature.curvatureDerivativeNorm",
+      "file": "DifferentialGeometry/Geometry/Curvature/Metric/DerivativeNorm.lean",
+      "line": 18,
+      "anchor": "collapse-tensor",
+      "report": "collapse.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Analysis.hasLocalSmoothUpperBarrier",
+      "file": "DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean",
+      "line": 13,
+      "anchor": "ha-2-1",
+      "report": "hyperbolic_area.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers_shift",
+      "file": "DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean",
+      "line": 18,
+      "anchor": "ha-2-2",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers",
+      "file": "DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean",
+      "line": 28,
+      "anchor": "ha-2-3",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers_pi_shift",
+      "file": "DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean",
+      "line": 39,
+      "anchor": "ha-2-3",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers_pi",
+      "file": "DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean",
+      "line": 52,
+      "anchor": "ha-2-3",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Hyperbolic.hasConstantSectionalCurvature",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/Rigidity.lean",
+      "line": 20,
+      "anchor": "ha-1-1",
+      "report": "hyperbolic_area.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Hyperbolic.mostow_prasad",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/Rigidity.lean",
+      "line": 24,
+      "anchor": "ha-1-2",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Hyperbolic.has_hyperbolic_atlas_of_curvature_neg_one",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/ModelAtlas.lean",
+      "line": 17,
+      "anchor": "ha-1-3",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Hyperbolic.finiteVolumeGeometricStructure",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/ModelAtlas.lean",
+      "line": 23,
+      "anchor": "ha-1-4",
+      "report": "hyperbolic_area.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction; admitted dependence"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.Hyperbolic.finiteVolumeGeometricStructure_model",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/ModelAtlas.lean",
+      "line": 42,
+      "anchor": "ha-1-4",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.MinimalSurface.isExteriorSpanningDisk",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 15,
+      "anchor": "ha-3-1",
+      "report": "hyperbolic_area.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 22,
+      "anchor": "ha-3-2",
+      "report": "hyperbolic_area.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea_nonneg",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 27,
+      "anchor": "ha-3-2",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea_le",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 33,
+      "anchor": "ha-3-2",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.MinimalSurface.exteriorDiskAreaOn",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 43,
+      "anchor": "ha-3-3",
+      "report": "hyperbolic_area.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.MinimalSurface.exteriorDiskAreaOn_nonneg",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 52,
+      "anchor": "ha-3-3",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.MinimalSurface.continuousOn_leastExteriorDiskArea_of_local_disk_comparisons",
+      "file": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "line": 65,
+      "anchor": "ha-3-4",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.RicciFlow.cusp_injective_of_exterior_area_barriers",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspIncompressibility.lean",
+      "line": 15,
+      "anchor": "ha-4-1",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.RicciFlow.cusp_slice_injective_iff",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspIncompressibility.lean",
+      "line": 43,
+      "anchor": "ha-4-2",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.RicciFlow.incompressible_of_area_barriers",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspIncompressibility.lean",
+      "line": 51,
+      "anchor": "ha-4-3",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.RicciFlow.incompressible_of_shifted_area_barriers",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspIncompressibility.lean",
+      "line": 67,
+      "anchor": "ha-4-3",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "GC.LongTime.postStage",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 18,
+      "anchor": "ha-5-1",
+      "report": "hyperbolic_area.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.postMetric",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 22,
+      "anchor": "ha-5-2",
+      "report": "hyperbolic_area.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.postStage_regularSlice",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 26,
+      "anchor": "ha-5-3",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "GC.LongTime.postMetric_regularSlice",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 37,
+      "anchor": "ha-5-3",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "GC.LongTime.exteriorDiskArea",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 57,
+      "anchor": "ha-5-4",
+      "report": "hyperbolic_area.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.LongTime.exteriorDiskArea_nonneg",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 62,
+      "anchor": "ha-5-4",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "GC.LongTime.exteriorDiskArea_eq",
+      "file": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "line": 68,
+      "anchor": "ha-5-4",
+      "report": "hyperbolic_area.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "DifferentialGeometry.CheegerGromovCompactness.exists_bilinear_form_limit_subsequence_of_bounded_derivatives",
+      "file": "DifferentialGeometry/Analysis/Calculus/Compactness/FiniteOrder.lean",
+      "line": 11,
+      "anchor": "fr1",
+      "report": "topology_finite_regularity.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.exists_pullback_metric_of_finite_diffeomorph",
+      "file": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "line": 16,
+      "anchor": "fr2",
+      "report": "topology_finite_regularity.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.exists_pullback_metric_of_diffeomorph_one_order_higher",
+      "file": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "line": 26,
+      "anchor": "fr3",
+      "report": "topology_finite_regularity.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.exists_pullback_metric_of_diffeomorph_three_orders_lower",
+      "file": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "line": 35,
+      "anchor": "fr3",
+      "report": "topology_finite_regularity.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "GC.GraphManifold.SurfaceModel",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 10,
+      "anchor": "t1",
+      "report": "topology_finite_regularity.md",
+      "kind": "inductive",
+      "direct_sorry": false,
+      "axioms": [],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.SurfaceModel.Space",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 13,
+      "anchor": "t1",
+      "report": "topology_finite_regularity.md",
+      "kind": "abbrev",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.SurfaceModel.model",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 22,
+      "anchor": "t1",
+      "report": "topology_finite_regularity.md",
+      "kind": "abbrev",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.CompactSurface",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 28,
+      "anchor": "t1",
+      "report": "topology_finite_regularity.md",
+      "kind": "structure",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.CircleFibration",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 43,
+      "anchor": "t1",
+      "report": "topology_finite_regularity.md",
+      "kind": "structure",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 55,
+      "anchor": "t2",
+      "report": "topology_finite_regularity.md",
+      "kind": "structure",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.torusMap",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 64,
+      "anchor": "t2",
+      "report": "topology_finite_regularity.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.image",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 67,
+      "anchor": "t2",
+      "report": "topology_finite_regularity.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.zero_mem_source",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 70,
+      "anchor": "t2",
+      "report": "topology_finite_regularity.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.torusMap_smooth",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 77,
+      "anchor": "t2",
+      "report": "topology_finite_regularity.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.boundaryMap",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 82,
+      "anchor": "t2",
+      "report": "topology_finite_regularity.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.torusMap_isEmbedding",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 86,
+      "anchor": "t2",
+      "report": "topology_finite_regularity.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; no skeleton admission"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.incompressible",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 93,
+      "anchor": "t2",
+      "report": "topology_finite_regularity.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.TorusPairing",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 98,
+      "anchor": "t3",
+      "report": "topology_finite_regularity.md",
+      "kind": "structure",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.TorusPairing.QuotientSpace",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 118,
+      "anchor": "t3",
+      "report": "topology_finite_regularity.md",
+      "kind": "abbrev",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.TorusPairing.quotientMap",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 124,
+      "anchor": "t3",
+      "report": "topology_finite_regularity.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.RawGraphPresentation",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 129,
+      "anchor": "t4",
+      "report": "topology_finite_regularity.md",
+      "kind": "structure",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.isHyperbolicInteriorGeometry",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 11,
+      "anchor": "t9",
+      "report": "topology_finite_regularity.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.HyperbolicOrGraph",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 17,
+      "anchor": "t9",
+      "report": "topology_finite_regularity.md",
+      "kind": "inductive",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.exists_prime_decomposition_of_rawGraphPresentation",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 23,
+      "anchor": "t6",
+      "report": "topology_finite_regularity.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "GC.GraphManifold.exists_geometric_decomposition_of_prime_rawGraphPresentation",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 31,
+      "anchor": "t7",
+      "report": "topology_finite_regularity.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "GC.GraphManifold.geometrizes_of_rawGraphPresentation",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 37,
+      "anchor": "t8",
+      "report": "topology_finite_regularity.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "GC.GraphManifold.exists_prime_geometric_decomposition_of_hyperbolicOrGraph",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 46,
+      "anchor": "t9",
+      "report": "topology_finite_regularity.md",
+      "kind": "theorem",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Admitted"
+    },
+    {
+      "name": "GC.GraphManifold.geometrizes_of_hyperbolicOrGraph",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 54,
+      "anchor": "t10",
+      "report": "topology_finite_regularity.md",
+      "kind": "theorem",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Written proof; admitted dependence"
+    },
+    {
+      "name": "GC.GraphManifold.componentCarrier",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "line": 10,
+      "anchor": "t5",
+      "report": "topology_finite_regularity.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.TorusDecomposition",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "line": 17,
+      "anchor": "t5",
+      "report": "topology_finite_regularity.md",
+      "kind": "structure",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.TorusDecomposition.component",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "line": 30,
+      "anchor": "t5",
+      "report": "topology_finite_regularity.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    },
+    {
+      "name": "GC.GraphManifold.TorusDecomposition.toGeometricDecomposition",
+      "file": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "line": 34,
+      "anchor": "t5",
+      "report": "topology_finite_regularity.md",
+      "kind": "def",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "status": "Definition/construction"
+    }
+  ]
+}

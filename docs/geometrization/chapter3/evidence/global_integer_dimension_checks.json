@@ -1,0 +1,38 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/GlobalIntegerDimension.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_GlobalIntegerDimension.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "899fd758ad85f3fe2def181a720fd9a0a166b507c55d9cb70514839f977c22ff"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_global_integer_dimension_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "7f2ddfd874ed73fe7a5d667e90e5a751695e182d",
+  "review_reports": [
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_global_integer_dimH_of_local_comparison_and_dimH",
+    "GCDirectionSpaceReview.original_real_global_integer_for_all_nonempty_open_sets",
+    "GCDirectionSpaceReview.original_singleton_global_zero_for_all_nonempty_open_sets",
+    "GCDirectionSpaceReview.nonempty_open_qualification_is_necessary",
+    "GCPlaneDirectionPackingReview.original_plane_global_integer_for_all_nonempty_open_sets",
+    "GCGlobalIntegerDimensionReview.original_empty_global_zero_with_full_open_set_output"
+  ],
+  "review_driver_sha256": "dbb696fb4ab5bcc0b8b28cf62b6a527b2f5db391f35110c80a2c0e63e094921f",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Comparison/GlobalIntegerDimension.lean": "448e55c5a14140a310a8a41142dab351810158eed874607def0307c3f09290b1"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "1ce936b14016e8e3e9a2b20673d214b3fc3c5fd1db7103dbd990cb0b4e3c1305"
+}

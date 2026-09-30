@@ -1,0 +1,59 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC54 full4840-4891; AC65 full5423-5479; AC66 context5483-5514; ALG08 original L/1024 substitution7630-7643, fresh body reads"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf",
+      "sha256": "7a860b4dd95b35fe33b06bf040100ec243d72c80528d927f4763391aaf79cb6e",
+      "locator": "Def3.6/equation3.7 printed23/PDF18; Lemma4.15(2) printed31/PDF26 rendered statement and32/PDF27 proof independently freshly checked"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/KL_corrections.pdf",
+      "sha256": "b5849571508231ce7328ef842eaa0a8a74e34804de7741dab548c406dea11e19",
+      "locator": "May15,2015 full sheet freshly read independently; only6.5,14.1,20.2 entries"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/LineDistance.lean",
+      "sha256": "b7c6a879b09f8fa4626e5f6b775db292dea27ab120a64b97c86bf7113a66fee6",
+      "locator": "entire CBB0 to quadratic line-distance argument; no LineSplitting dependency"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/CrossingLineCoordinates.lean",
+      "sha256": "4eebff5a9143ccb812195195fe946f686087865fc356e3d9a37cc626ae58aa6c",
+      "locator": "constant crossing coefficient/model and canonical germ angle; no product-splitting dependency"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/VaryingLocalGeometry.lean",
+      "sha256": "d3473b27affeefb0dfb7e7c89d345e50a5c895be2432eb50f5a635186aab56ff",
+      "locator": "original local curvature/dimension to local compactness"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/BoundaryRadialSegment.lean",
+      "sha256": "8b2b6ecd0417945a925efb5277e71e66644fc17e4063d42245975a99fec1147d",
+      "locator": "actual radial isometry to exact boundary endpoint"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/PointedRadialEndpointLines.lean",
+      "sha256": "269284588ed9218f92c8888616142f22db2f95d9c32655f75e5840e38c9f7563",
+      "locator": "one composed subsequence with same original q\u00b1/Q/f/targetlines"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/PrefixCrossComparison.lean",
+      "sha256": "cd5f3880aeb7de6dae7667b000a005737b80c96967c45e184d4ddb5b9cc75397",
+      "locator": "same-map fixed-time model-angle limit"
+    }
+  ],
+  "reused_source_checks": [
+    "angle_shortening_sources.json",
+    "buffered_cross_angles_sources.json",
+    "radial_line_transfer_sources.json",
+    "growing_region_extraction_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Full AC65 original local curvature/dimension/long-strainer input to same target orthogonal lines; no sharp8r claim, coordinate assembly separate.",
+  "independent_agent_proof_review": true,
+  "errata": "Retained KL May15,2015 sheet freshly checked; BBI/AKP checks reused unchanged; no current remote freshness claim."
+}

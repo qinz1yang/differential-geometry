@@ -1,0 +1,9 @@
+'LocalizationRegression.large_zero_radius_retains_original_shell' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'LocalizationRegression.actual_nonsmooth_numerator_has_both_domain_bounds' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'LocalizationRegression.original_support_center_supplies_strong_edge_proximity' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

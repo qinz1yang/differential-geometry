@@ -1,0 +1,19 @@
+import Mathlib.Tactic.Linter
+import DifferentialGeometry.Geometry.Comparison.EqualLegAngleDefect
+import DifferentialGeometry.Topology.MetricSpace.EqualRadiusEndpoints
+import DifferentialGeometry.Geometry.Metric.Approximation.OppositeLineLifts
+
+#check DifferentialGeometry.Geometry.Comparison.Toponogov.one_add_cos_comparisonAngle_equal_le
+#print axioms DifferentialGeometry.Geometry.Comparison.Toponogov.one_add_cos_comparisonAngle_equal_le
+
+#check DifferentialGeometry.Geometry.Comparison.Toponogov.pi_sub_lt_comparisonAngle_equal
+#print axioms DifferentialGeometry.Geometry.Comparison.Toponogov.pi_sub_lt_comparisonAngle_equal
+
+#check Metric.exists_equal_radius_endpoints_with_excess_le
+#print axioms Metric.exists_equal_radius_endpoints_with_excess_le
+
+#check GC.MetricGeometry.KleinerLottApprox.exists_opposite_line_lifts
+#print axioms GC.MetricGeometry.KleinerLottApprox.exists_opposite_line_lifts
+
+#check GC.MetricGeometry.KleinerLottApprox.exists_equal_radius_line_lifts
+#print axioms GC.MetricGeometry.KleinerLottApprox.exists_equal_radius_line_lifts

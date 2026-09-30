@@ -1,0 +1,603 @@
+{
+  "schema": 1,
+  "reviewed_commit": "ea0fae60ee01ef8c8d9b57a51794c6538f679c5d",
+  "report": "docs/geometrization/skeleton/review_for_chow_lu/topology_finite_regularity.md",
+  "report_sha256": "ae9c94b42a42cda10f6dfc9c1570d8de9056c57021085a6ccda2a1fdff48acab",
+  "scope": "All authored declarations of the five listed skeleton modules; referenced baseline definitions expanded for interpretation. No Lean code edits or new proof claims.",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/Compactness/FiniteOrder.lean",
+      "sha256": "4ed6ea0f202fe17dff1a6c71ad9d1921ec5ae2b3f69594a59127adae1e37b335"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "sha256": "450c54f12872ce6917f5bb5f85436a7e34c522b3dfd66c2ab2a553619f3c990e"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "sha256": "1a6d7d693b2b2083cf96a80732672beb229ed3f369de3212285f28c47da4134f"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "sha256": "2535a88b0a675350f776fd7c144e6233d4ff14b7022405c962930a66f420462e"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "sha256": "ed5195dc4cf4ee936dc73f24e8ca672665884c9a681624f00f9e680bfe5e7e78"
+    }
+  ],
+  "declaration_count": 32,
+  "status_counts": {
+    "admitted": 5,
+    "conditional_proof": 4,
+    "definition_or_data_construction": 20,
+    "independent_proof": 3
+  },
+  "declarations": [
+    {
+      "name": "DifferentialGeometry.CheegerGromovCompactness.exists_bilinear_form_limit_subsequence_of_bounded_derivatives",
+      "kind": "theorem",
+      "line": 11,
+      "private": false,
+      "direct_sorry": true,
+      "path": "DifferentialGeometry/Analysis/Calculus/Compactness/FiniteOrder.lean",
+      "report_section": "FR1",
+      "status": "admitted",
+      "recorded_axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "fr1"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.exists_pullback_metric_of_finite_diffeomorph",
+      "kind": "theorem",
+      "line": 16,
+      "private": false,
+      "direct_sorry": true,
+      "path": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "report_section": "FR2",
+      "status": "admitted",
+      "recorded_axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "fr2"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.exists_pullback_metric_of_diffeomorph_one_order_higher",
+      "kind": "theorem",
+      "line": 26,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "report_section": "FR3",
+      "status": "conditional_proof",
+      "recorded_axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "fr3"
+    },
+    {
+      "name": "DifferentialGeometry.Geometry.exists_pullback_metric_of_diffeomorph_three_orders_lower",
+      "kind": "theorem",
+      "line": 35,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "report_section": "FR3",
+      "status": "conditional_proof",
+      "recorded_axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "fr3"
+    },
+    {
+      "name": "GC.GraphManifold.SurfaceModel",
+      "kind": "inductive",
+      "line": 10,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T1",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [],
+      "report_anchor": "t1"
+    },
+    {
+      "name": "GC.GraphManifold.SurfaceModel.Space",
+      "kind": "abbrev",
+      "line": 13,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T1",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t1"
+    },
+    {
+      "name": "GC.GraphManifold.SurfaceModel.model",
+      "kind": "abbrev",
+      "line": 22,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T1",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t1"
+    },
+    {
+      "name": "GC.GraphManifold.CompactSurface",
+      "kind": "structure",
+      "line": 28,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T1",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t1"
+    },
+    {
+      "name": "GC.GraphManifold.CircleFibration",
+      "kind": "structure",
+      "line": 43,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T1",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t1"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori",
+      "kind": "structure",
+      "line": 55,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T2",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t2"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.torusMap",
+      "kind": "def",
+      "line": 64,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T2",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t2"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.image",
+      "kind": "def",
+      "line": 67,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T2",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t2"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.zero_mem_source",
+      "kind": "theorem",
+      "line": 70,
+      "private": true,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T2",
+      "status": "independent_proof",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t2"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.torusMap_smooth",
+      "kind": "theorem",
+      "line": 77,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T2",
+      "status": "independent_proof",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t2"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.boundaryMap",
+      "kind": "def",
+      "line": 82,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T2",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t2"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.torusMap_isEmbedding",
+      "kind": "theorem",
+      "line": 86,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T2",
+      "status": "independent_proof",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t2"
+    },
+    {
+      "name": "GC.GraphManifold.BoundaryTori.incompressible",
+      "kind": "def",
+      "line": 93,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T2",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t2"
+    },
+    {
+      "name": "GC.GraphManifold.TorusPairing",
+      "kind": "structure",
+      "line": 98,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T3",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t3"
+    },
+    {
+      "name": "GC.GraphManifold.TorusPairing.QuotientSpace",
+      "kind": "abbrev",
+      "line": 118,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T3",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t3"
+    },
+    {
+      "name": "GC.GraphManifold.TorusPairing.quotientMap",
+      "kind": "def",
+      "line": 124,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T3",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t3"
+    },
+    {
+      "name": "GC.GraphManifold.RawGraphPresentation",
+      "kind": "structure",
+      "line": 129,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "report_section": "T4",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t4"
+    },
+    {
+      "name": "GC.GraphManifold.isHyperbolicInteriorGeometry",
+      "kind": "def",
+      "line": 11,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "report_section": "T9",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t9"
+    },
+    {
+      "name": "GC.GraphManifold.HyperbolicOrGraph",
+      "kind": "inductive",
+      "line": 17,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "report_section": "T9",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t9"
+    },
+    {
+      "name": "GC.GraphManifold.exists_prime_decomposition_of_rawGraphPresentation",
+      "kind": "theorem",
+      "line": 23,
+      "private": false,
+      "direct_sorry": true,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "report_section": "T6",
+      "status": "admitted",
+      "recorded_axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t6"
+    },
+    {
+      "name": "GC.GraphManifold.exists_geometric_decomposition_of_prime_rawGraphPresentation",
+      "kind": "theorem",
+      "line": 31,
+      "private": false,
+      "direct_sorry": true,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "report_section": "T7",
+      "status": "admitted",
+      "recorded_axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t7"
+    },
+    {
+      "name": "GC.GraphManifold.geometrizes_of_rawGraphPresentation",
+      "kind": "theorem",
+      "line": 37,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "report_section": "T8",
+      "status": "conditional_proof",
+      "recorded_axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t8"
+    },
+    {
+      "name": "GC.GraphManifold.exists_prime_geometric_decomposition_of_hyperbolicOrGraph",
+      "kind": "theorem",
+      "line": 46,
+      "private": false,
+      "direct_sorry": true,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "report_section": "T9",
+      "status": "admitted",
+      "recorded_axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t9"
+    },
+    {
+      "name": "GC.GraphManifold.geometrizes_of_hyperbolicOrGraph",
+      "kind": "theorem",
+      "line": 54,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "report_section": "T10",
+      "status": "conditional_proof",
+      "recorded_axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t10"
+    },
+    {
+      "name": "GC.GraphManifold.componentCarrier",
+      "kind": "def",
+      "line": 10,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "report_section": "T5",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t5"
+    },
+    {
+      "name": "GC.GraphManifold.TorusDecomposition",
+      "kind": "structure",
+      "line": 17,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "report_section": "T5",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t5"
+    },
+    {
+      "name": "GC.GraphManifold.TorusDecomposition.component",
+      "kind": "def",
+      "line": 30,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "report_section": "T5",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t5"
+    },
+    {
+      "name": "GC.GraphManifold.TorusDecomposition.toGeometricDecomposition",
+      "kind": "def",
+      "line": 34,
+      "private": false,
+      "direct_sorry": false,
+      "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "report_section": "T5",
+      "status": "definition_or_data_construction",
+      "recorded_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "report_anchor": "t5"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "scope_limitation",
+      "section": "T9",
+      "summary": "Mixed theorem is one admitted endpoint consequence, not yet an assembly from closed graph producers; it does not preserve input seams, hyperbolic metrics or the full relative sphere/cap/marking data.",
+      "report_anchor": "t9"
+    },
+    {
+      "severity": "scope_limitation",
+      "section": "FR1",
+      "summary": "Finite compactness is only a fixed-domain coefficient subsequence result, not global pointed finite-category model construction.",
+      "report_anchor": "fr1"
+    },
+    {
+      "severity": "scope_limitation",
+      "section": "FR2",
+      "summary": "Finite pullback starts with smooth carriers and gives only finite metric regularity; no compatible smoothing or curvature-invariance theorem is supplied.",
+      "report_anchor": "fr2"
+    },
+    {
+      "severity": "integration_gap",
+      "section": "R1",
+      "summary": "Finite compactness and pullback have no demonstrated consuming application in the principal admitted flow/static producers at the reviewed commit.",
+      "report_anchor": "topology-r1"
+    }
+  ],
+  "no_specific_counterexample_found": true,
+  "fresh_lean_build_claimed": false,
+  "fresh_primary_source_audit_claimed": false,
+  "report_heading_anchors": {
+    "T0": "t0",
+    "T1": "t1",
+    "T2": "t2",
+    "T3": "t3",
+    "T4": "t4",
+    "T5": "t5",
+    "T6": "t6",
+    "T7": "t7",
+    "T8": "t8",
+    "T9": "t9",
+    "T10": "t10",
+    "FR1": "fr1",
+    "FR2": "fr2",
+    "FR3": "fr3",
+    "R1": "topology-r1",
+    "R2": "topology-r2",
+    "R3": "topology-r3"
+  }
+}

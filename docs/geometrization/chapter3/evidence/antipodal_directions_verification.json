@@ -1,0 +1,50 @@
+{
+  "success": true,
+  "blueprint_static_audit": {
+    "status": "pending",
+    "success": false,
+    "latest_completed_exit_code": 1,
+    "reason": "iCloud placeholders and metadata refresh during historical input reads",
+    "running_session": 82024,
+    "unchanged_audit_sha256": "a71b3b706ed68f757debfad4dbbbf4f80a243ed1db2f56fa5054d23dd54e2018",
+    "blueprint_revision": 207,
+    "lean_gate_independent": true,
+    "current_milestone": 126,
+    "note": "The separate unchanged static audit is ongoing; no pass is claimed."
+  },
+  "milestone": 126,
+  "new_public_theorems": 5,
+  "new_public_definitions": 0,
+  "new_instances": 0,
+  "new_declared_declarations": 5,
+  "new_generated_declarations": 7,
+  "new_owned_declarations": 12,
+  "observed_previous_owned_declarations": 2125,
+  "observed_previous_modules": 443,
+  "combined_modules": 446,
+  "combined_jobs": 3284,
+  "combined_owned_declarations": 2137,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/ConeComparisonAngle.lean": "58dfe0c1f2cf5cc15b0ddd9327f83007c08cd0ca9e98fb5daa1013e71edf0883",
+    "DifferentialGeometry/Geometry/Comparison/ConeAntipodalGeodesic.lean": "501f3eff2f9ca1c21d78dae6b8f3d72bac2943bc831df861683b5666ccb471a3",
+    "DifferentialGeometry/Geometry/Comparison/FiniteDimensionalAntipodalDirections.lean": "1fcd888b357553aaa76649a4d030dbe5120c7cd4f880d5047755979b7934d585"
+  },
+  "logs": {
+    "antipodal_directions_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "antipodal_directions_review.log": "ce6e52217d6d051a986d7e067acb097b72c5385f7e142f4e43e2900c70883e74",
+    "antipodal_directions_blueprint_audit.log": "3e1674611d6555b12bda25a09541cc9840c3c8172fb061c5a8d8cc8976b7da3d",
+    "antipodal_directions_blueprint_status.json": "ec9ac9b78046ee45ed73d945075a2370255f09865b7e62782ed900605f6ccb58"
+  },
+  "checks_receipt_sha256": "2db6462fb80b133b3ba51658c0c672df425ff25a5f709d42efdcbf0f585965ea",
+  "shared_gate_receipt_sha256": "4df0f57685b7b0dfeec5ea1f0fa6fc8d3fe0e532496fad721d3b95265e2fecec",
+  "previous_milestone_receipt_sha256": "acf66947271e6d1e9d9f25dcbcc3d4a5044d09fa66d860795ba52102f576205a",
+  "review_driver_sha256": "e902c1bfb6bb06cae60dbf45a1bb4ff12a8d970cccdc5e6495fbfe96ffc85016",
+  "registration_plan_sha256": "abe551af5d2ecde879ed8a7699bb924dcb47262e3e3bb27a7ddd021edfec8cfe",
+  "source_receipt_sha256": "85a6879c30da5b8dd7905a848583111774ec5965d1ae052fed205dc79d96907f",
+  "git_head_at_check": "072aa50d398be9e6d1d13770262fc81edc1f0765",
+  "independent_peer_proof_review": true,
+  "new_concrete_regressions": 6,
+  "expected_review_reports": 11,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

@@ -1,0 +1,11 @@
+Static gate passed: 151 Lean modules, 9 task cards.
+Running lake build Geometrization GeometrizationChecks
+-- comment explaining why this is necessary
+example : ... := ...
+```
+
+Note: This linter can be disabled with `set_option linter.style.setOption false`
+info: GeometrizationChecks/Axioms.lean:16:0: Team axiom audit passed for 4269 declarations.
+✔ [20217/20218] Built GeometrizationChecks (3.8s)
+Build completed successfully (20218 jobs).
+Lean build and axiom gate passed. Receipt: .lake/gc/verification.json

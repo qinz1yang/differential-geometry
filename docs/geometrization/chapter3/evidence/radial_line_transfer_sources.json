@@ -1,0 +1,48 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC59 full5089-5139, AC62 full5276-5301, AC65 full5423-5479, ALG08 consumer7630-7643"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/OppositePrefixes.lean",
+      "sha256": "6751fb108e7571d427631c444754cc641ca08b8eb0e6913d45f64151c9ab9664",
+      "locator": "actual radial/tail calibration theorem, specialized eta=0"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/SignedPrefix.lean",
+      "sha256": "a8e83ee75d2ce4709f1290381b955360542d369855904f0641562bfc32f3a365",
+      "locator": "original positive/negative prefix alignment and lower distortion"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/PrefixLineLimit.lean",
+      "sha256": "fc607b64c76d4080cbaf7207050bb080355a599bc2f2bd418708ba1b9f8f4a00",
+      "locator": "finite-family same-map actual line extraction"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/PointedEndpointLines.lean",
+      "sha256": "01832ea1b74002db048a139e7082587a0e99b5f881e6a84e3d945e32981dd371",
+      "locator": "existing actual pointed approximation diagonal and composed subsequence pattern"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/PointedBallApproximation.lean",
+      "sha256": "c80d9e691fa0e0040f3802e67e064435780d049d97b7cdb2d056fe18d1d2a530",
+      "locator": "actual strict distortion, pointed base and source ball carriers"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/ModelAngle.lean",
+      "sha256": "eb1d2524535435874502aff4690ba71516faef86f34881d1dbe09eed30fd5877",
+      "locator": "tendsto_comparisonAngleNegCurvature_zero, eventual nonnegative curvature and positive limiting arms"
+    }
+  ],
+  "reused_source_checks": [
+    "pointed_line_coordinates_sources.json",
+    "boundary_radial_segment_sources.json",
+    "buffered_cross_angles_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Supplied-original-radial same-map line extraction and exact fixed-signed-time distance/angle transfer, no full AC65 original curvature-input assembly yet.",
+  "independent_agent_proof_review": true,
+  "errata": "Retained BBI/KL/AKP source checks reused unchanged; no new remote freshness claim."
+}

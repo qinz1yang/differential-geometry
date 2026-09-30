@@ -1,0 +1,7 @@
+{
+  "files_removed": 11281,
+  "logical_bytes": 33665977153,
+  "scope": ".lake/build/ir",
+  "reason": "Regenerable compiler invocation metadata from completed/failed first diagnostic build; no Lake output artifacts, hashes, sources, or evidence removed",
+  "source_check": "Lean 4.35.0-rc3 Lake/Build/Actions.lean:54-56 and Lake/Build/Module.lean:986-1005; setup is rewritten only on actual compilation and is not a cached output artifact"
+}

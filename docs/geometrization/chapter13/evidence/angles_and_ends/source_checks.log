@@ -1,0 +1,25 @@
+build AlmostOppositeAngle 0
+lint AlmostOppositeAngle 0
+build CompactBaseIsometry 0
+lint CompactBaseIsometry 0
+build GeodesicLine 0
+lint GeodesicLine 0
+build ProductEnds 0
+lint ProductEnds 0
+build LpProductEnds 0
+lint LpProductEnds 0
+build MultipleEndsSplitting 0
+lint MultipleEndsSplitting 0
+build RescaleIsometry 0
+lint RescaleIsometry 0
+build ConvergenceIsometry 0
+lint ConvergenceIsometry 0
+build NormedProductBlowdown 0
+lint NormedProductBlowdown 0
+build ProductBlowdownRecognition 0
+lint ProductBlowdownRecognition 0
+build KleinerLottCriterion 0
+lint KleinerLottCriterion 0
+build MultipleEndsBlowdown 0
+lint MultipleEndsBlowdown 0
+canonical 0

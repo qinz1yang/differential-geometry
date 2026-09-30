@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/audit_blueprint.py", line 2501, in <module>
+    main()
+  File "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/audit_blueprint.py", line 2219, in main
+    runpy.run_path(str(root / 'checks/finite_model_maps.py'))['check'](root, text)
+  File "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/checks/finite_model_maps.py", line 48, in check
+    assert hashlib.sha256(Path(row['path']).read_bytes()).hexdigest() == row['sha256'], row['reference_key']
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1249, in read_bytes
+    with self.open(mode='rb') as f:
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1242, in open
+    return io.open(self, mode, buffering, encoding, errors, newline,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py", line 1110, in _opener
+    return self._accessor.open(self, flags, mode)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf'

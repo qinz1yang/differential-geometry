@@ -1,0 +1,37 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC47 full4445-4501; five explicit metric types, exactly-one wording, positive parameters and pointed conventions"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/DiameterCircleIsometry.lean",
+      "sha256": "63baca804cf498d6509c1c7943fd5b072ef533375a71f083e5bd8a237a48deec",
+      "locator": "full body; onto actual AddCircle, explicit positive circumference"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/NoncompactRecognition.lean",
+      "sha256": "2d51cf3d2c3901788239d1e7779c154c4e33042996439cf98cbff85a707851af",
+      "locator": "full body; original-input noncompact classification"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/DiameterSegmentExistence.lean",
+      "sha256": "79d5f0c59a6cffbbe6b886af36b7bd393ac040a9db25a9c210fc01312d7a641f",
+      "locator": "full body; actual positive maximum diameter segment"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean",
+      "sha256": "200a2c973fd15e6b95fe4be293c7d210b90a9e49942c6f8a3b267f6024fab89a",
+      "locator": "145-173; actual multiplication/division isometries and generated additive translations"
+    }
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "reused_source_checks": [
+    "diameter_circle_sources.json",
+    "noncompact_recognition_sources.json",
+    "one_dimensional_recognition_sources.json"
+  ],
+  "scope": "AC47 global metric model EXISTENCE with pointed coordinates, from original length geometry. Model-class exclusivity and parameter uniqueness are not asserted.",
+  "errata": "Existing pinned/archived geometric source and errata records retained; no new comprehensive current-remote clearance."
+}

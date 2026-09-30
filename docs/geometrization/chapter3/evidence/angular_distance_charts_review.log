@@ -1,0 +1,26 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.shortHingeScale' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.shortHingeScale_pos' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSide_short_hinge_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.MinimizingHinge.distance_drop_of_short_hinge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.exists_nonauxiliary_distance_separation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.distanceCoordinates_lower_of_endpoint_reversal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.exists_centered_distance_embedding_of_endpoint_reversal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.isCompact_closedBall_of_endpoint_reversal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.AngularObstruction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.AngularObstruction.exists_acute_anchor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_centered_distance_embedding_of_angular_obstruction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCShortHingeReview.exact_short_hinge_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCShortHingeReview.actual_positive_hinge_at_threshold' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCShortHingeReview.shortness_is_necessary' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCAngularDistanceReview.actual_angular_distance_embedding' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCAngularDistanceReview.both_endpoint_orientations' depends on axioms: [propext, Classical.choice, Quot.sound]

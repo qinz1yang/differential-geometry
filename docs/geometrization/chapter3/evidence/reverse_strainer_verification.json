@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "new_public_theorems": 10,
+  "new_private_theorems": 2,
+  "new_definitions": 2,
+  "new_owned_declarations": 19,
+  "new_generated_declarations": 5,
+  "combined_modules": 326,
+  "combined_jobs": 3161,
+  "combined_owned_declarations": 1427,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/EqualRadiusStrainerMargin.lean": "54790238b85f705115a2e34e23e470ac0804b099da374c2279befa057d17a52e",
+    "DifferentialGeometry/Geometry/Metric/Approximation/EqualRadiusStrainerConfiguration.lean": "7039810badade620a611df2a8cd41cf0e6913213932760d85b4f88eeb64e662c",
+    "DifferentialGeometry/Geometry/Metric/Approximation/QuantitativeReverseStrainer.lean": "bbbee7ebffbe2cfa0f2af2b56797d6a9d92d10e1be65f75033dd718cd248f1c2",
+    "DifferentialGeometry/Geometry/Metric/Approximation/OriginalReverseStrainer.lean": "2d5021e81efed01c7d7f7e860ac68f349d758a748800e949d57f9ba57bb7b112"
+  },
+  "logs": {
+    "reverse_strainer_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "reverse_strainer_review.log": "9da22a4bf953c0f7775886fa91812415cdc5fd05de4e17bc9dc260cefa268933",
+    "reverse_strainer_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "36b2da09c446321a72ebdbd42f1535d1e25ea84dbd049cf7c455e9c10dffd1c1",
+  "git_head_at_check": "feacac36de3ee6536f51a2dedc2350f74dd04cc7",
+  "independent_agent_proof_review": true,
+  "independent_agent_scalar_boundary_metric_endpoint_and_original_input_drivers": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

@@ -1,0 +1,18 @@
+{
+  "turn_start_commit": "67d9718bee8b3f3b7afc467d3aed0b5b14d9b35e",
+  "previous_mathematical_leaves_unchanged": true,
+  "old_baseline_clean": true,
+  "old_baseline_commit": "b456fb0eab29f8e61795123bf7df5dc5b3a824c8",
+  "blueprint_hashes": {
+    "master207.tex": "59a650117152ba9b652cab5bb436599cf0b2ca1b28932cd9c49af8ef4cba413f",
+    "master207A.tex": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+    "master207B.tex": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+  },
+  "full_root_built": false,
+  "blueprint_static_audit": {
+    "exit_code": 1,
+    "log": "factor_dimension_blueprint_audit.log",
+    "log_sha256": "a189693840e3d73f017ce54dab96413ccfd1606920d5695ac24d610411c57f6d",
+    "reason": "Historical absolute archive path no longer exists after folder relocation. TeX files unchanged; not a passing static audit."
+  }
+}

@@ -1,0 +1,8 @@
+'CoverageRegression.original_ball_identity_model' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CoverageRegression.actual_L2_graph_projection' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CoverageRegression.coverage_original_relative_budget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CoverageRegression.unequal_scales_over_same_image' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CoverageRegression.original_preimages_radius_control' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CoverageRegression.explicit_threshold_at_unit_constants' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CoverageRegression.nonzero_cumulative_adjustment' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CoverageRegression.missing_coordinate_coverage_rejected' depends on axioms: [propext, Classical.choice, Quot.sound]

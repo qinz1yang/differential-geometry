@@ -1,0 +1,561 @@
+{
+  "reviewed_commit": "ea0fae60ee01ef8c8d9b57a51794c6538f679c5d",
+  "scope": "All 35 authored declarations in seven static-collapse-related skeleton modules; generated projections covered via structure fields",
+  "report": "collapse.md",
+  "declaration_count": 35,
+  "direct_admission_count": 7,
+  "coverage_complete_for_assigned_modules": true,
+  "lean_code_modified": false,
+  "report_sha256": "5c54dc2de9e8536745af8a227928212ec683a5654fb022a2bc2b87c227916d20",
+  "files": [
+    {
+      "path": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "sha256": "8819178f11914c64d0d73d3a8a9fa90ac7cdb2cee0f31288bc67ba3677f9d85d"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "sha256": "7a612475ca86bc2802571e048bb2f9a341e3f27a75af133d542fdc499a918bff"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Collapse/UniformDerivativeBounds.lean",
+      "sha256": "e3d44eaaf14176aefa65fc2ebcb0ea73609ab5f289f8e66da2e9f1e515f60359"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean",
+      "sha256": "056e8e499ab4f937f9c9ef931b30415db36ba2ce37a5d34497312dde10dffd41"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "sha256": "906eb9bf6f6438a550885cde28c9e0e87d77ed27493929db5388f6abcf7180ca"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Connection/TensorNabla/Iterated/Metric.lean",
+      "sha256": "8be16d229ac175e3e584f366bf3915133ce689d7777fb4ce0d22706d1340dacc"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Curvature/Metric/DerivativeNorm.lean",
+      "sha256": "57a34a04b0c8c380e1f24df59270631c8e81db73f189a23d0fbe5bb7d8e5ae22"
+    }
+  ],
+  "declarations": [
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.curvatureRadius",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 23,
+      "kind": "def",
+      "section": "collapse.md#collapse-radius",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.ballVolume",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 28,
+      "kind": "def",
+      "section": "collapse.md#collapse-radius",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.euclideanUnitBallVolume",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 31,
+      "kind": "def",
+      "section": "collapse.md#collapse-radius",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.volumeCollapsedAtCurvatureScale",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 33,
+      "kind": "def",
+      "section": "collapse.md#collapse-radius",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.curvatureDerivativesControlled",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 38,
+      "kind": "def",
+      "section": "collapse.md#collapse-radius",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.curvatureRadius_pos",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 46,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-radius",
+      "status": "admitted",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.curvatureRadius_eq_top_iff",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 50,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-radius",
+      "status": "admitted",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.curvatureDerivativesControlled_mono_threshold",
+      "file": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "line": 55,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-radius",
+      "status": "proved_without_sorryAx",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.cuspMetricError",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 15,
+      "kind": "def",
+      "section": "collapse.md#collapse-cuspembedding",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.cuspMetricErrorBound",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 22,
+      "kind": "def",
+      "section": "collapse.md#collapse-cuspembedding",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.CuspEmbedding",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 29,
+      "kind": "structure",
+      "section": "collapse.md#collapse-cuspembedding",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.NearlyCuspidalBoundary",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 43,
+      "kind": "structure",
+      "section": "collapse.md#collapse-cuspembedding",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.distanceToBoundary",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 56,
+      "kind": "def",
+      "section": "collapse.md#collapse-boundarydistance",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.boundaryVolumeCollapsed",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 60,
+      "kind": "def",
+      "section": "collapse.md#collapse-boundarydistance",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.CuspEmbedding.weaken",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 64,
+      "kind": "def",
+      "section": "collapse.md#collapse-cuspembedding",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.NearlyCuspidalBoundary.weaken",
+      "file": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "line": 70,
+      "kind": "def",
+      "section": "collapse.md#collapse-cuspembedding",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.exists_common_curvature_derivative_bound",
+      "file": "DifferentialGeometry/Geometry/Collapse/UniformDerivativeBounds.lean",
+      "line": 10,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-uniform",
+      "status": "admitted",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Hyperbolic.CuspHalfSpace",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean",
+      "line": 10,
+      "kind": "abbrev",
+      "section": "collapse.md#collapse-cuspmodel",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Hyperbolic.cuspDomain",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean",
+      "line": 12,
+      "kind": "def",
+      "section": "collapse.md#collapse-cuspmodel",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Hyperbolic.HyperbolicCusp",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean",
+      "line": 14,
+      "kind": "structure",
+      "section": "collapse.md#collapse-cuspmodel",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Hyperbolic.cusp_constant_sectional_curvature",
+      "file": "DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean",
+      "line": 23,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-cuspmodel",
+      "status": "admitted",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.closedCollapseHypotheses",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 11,
+      "kind": "def",
+      "section": "collapse.md#collapse-hypotheses",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.boundaryCollapseHypotheses",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 17,
+      "kind": "def",
+      "section": "collapse.md#collapse-hypotheses",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.staticCollapseHypotheses",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 22,
+      "kind": "def",
+      "section": "collapse.md#collapse-hypotheses",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.volumeCollapsedAtCurvatureScale_mono",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 26,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-hypotheses",
+      "status": "proved_without_sorryAx",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.closedCollapseHypotheses_mono",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 35,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-hypotheses",
+      "status": "proved_without_sorryAx",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.boundaryCollapseHypotheses_mono",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 43,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-hypotheses",
+      "status": "proved_without_sorryAx",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.exists_rawGraphPresentation_of_nonnegative",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 52,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-admitted",
+      "status": "admitted",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.exists_closed_graph_threshold",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 60,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-admitted",
+      "status": "admitted",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.exists_boundary_graph_threshold",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 68,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-admitted",
+      "status": "admitted",
+      "direct_sorry": true,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.exists_graph_threshold",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 80,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-composition",
+      "status": "proved_composition_with_admissions",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Collapse.exists_componentwise_graph_threshold",
+      "file": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "line": 97,
+      "kind": "theorem",
+      "section": "collapse.md#collapse-composition",
+      "status": "proved_composition_with_admissions",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "sorryAx",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Connection.metricCovariantDerivative",
+      "file": "DifferentialGeometry/Geometry/Connection/TensorNabla/Iterated/Metric.lean",
+      "line": 17,
+      "kind": "def",
+      "section": "collapse.md#collapse-tensor",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Connection.iteratedMetricCovariantDerivative",
+      "file": "DifferentialGeometry/Geometry/Connection/TensorNabla/Iterated/Metric.lean",
+      "line": 30,
+      "kind": "def",
+      "section": "collapse.md#collapse-tensor",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "DifferentialGeometry.Geometry.Curvature.curvatureDerivativeNorm",
+      "file": "DifferentialGeometry/Geometry/Curvature/Metric/DerivativeNorm.lean",
+      "line": 18,
+      "kind": "def",
+      "section": "collapse.md#collapse-tensor",
+      "status": "definition_or_constructed_operation",
+      "direct_sorry": false,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  ],
+  "review_concerns": [
+    {
+      "kind": "interface_scope",
+      "description": "No pairwise disjointness assertion for positive-depth cusp collars."
+    },
+    {
+      "kind": "interface_scope",
+      "description": "Boundary producer preserves boundary indices and actual image sets, not prescribed parameterizations, slope bases, fiber markings or cusp collars."
+    },
+    {
+      "kind": "implementation_obligation",
+      "description": "Raw covariant-derivative operation is total on arbitrary tensor fields; geometric identification requires regularity at use sites."
+    },
+    {
+      "kind": "intentional_vacuity",
+      "description": "Volume collapse at curvature scale is vacuous at infinite curvature radius; nonnegative closed recognition is separate, and finite-radius sequence premise excludes such nonempty components."
+    }
+  ],
+  "definite_false_statement_found": false,
+  "limits": "No new full mathematical proof of the seven admissions; no fresh external literature or errata audit; no claim of covering all blueprint collapse nodes."
+}

@@ -1,0 +1,42 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC75 full statement/proof5914-5982; original factor coverage, inverse/domain and same-map estimates"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf",
+      "sha256": "7a860b4dd95b35fe33b06bf040100ec243d72c80528d927f4763391aaf79cb6e",
+      "locator": "Lemma4.17 proof printed32-33/PDF27-28; compressed original-map compatibility transfer"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/KL_corrections.pdf",
+      "sha256": "b5849571508231ce7328ef842eaa0a8a74e34804de7741dab548c406dea11e19",
+      "locator": "retained May15,2015 correction sheet PDF1; no relevant correction listed"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/ProductApproximation.lean",
+      "sha256": "aab2f90950add3677a5b4f16fbbb6c7c34f622b48b24f8c37f99453fe89069af",
+      "locator": "actual product/metric perturbation or directed compatibility definition reused unchanged"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/PerturbApproximation.lean",
+      "sha256": "dcc6b5bebdb6fca82b6168612b26b13b0e2295e386f402b9fb84bee1767ac708",
+      "locator": "actual product/metric perturbation or directed compatibility definition reused unchanged"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/DirectedSplittingCompatibility.lean",
+      "sha256": "a01b6a6f80260b48ae5d69ab46d41e8511cc5ffb8eba23afe64f2b14423133e2",
+      "locator": "actual product/metric perturbation or directed compatibility definition reused unchanged"
+    }
+  ],
+  "reused_source_checks": [
+    "full_product_convergence_sources.json",
+    "exact_splitting_compatibility_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Full AC75: same Q, both original maps, original sequence, actual whole-factor coverage; arbitrary metric factor kernel",
+  "errata": "Retained May15,2015 KL sheet checked; no new current-web freshness claim",
+  "independent_agent_proof_review": true
+}

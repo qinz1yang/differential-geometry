@@ -1,0 +1,14 @@
+⚠ [2730/3084] Replayed DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
+warning: DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean:18:8: declaration uses `sorry`
+✔ [3362/3371] Built DifferentialGeometry.Geometry.Metric.Scaling.RescaleIsometry (1.5s)
+✔ [3363/3371] Built DifferentialGeometry.Geometry.Metric.Approximation.ConvergenceIsometry (1.7s)
+✔ [3364/3371] Built DifferentialGeometry.Topology.MetricSpace.LpProductEnds (1.9s)
+✔ [3365/3371] Built DifferentialGeometry.Geometry.Metric.Approximation.KleinerLottCriterion (1.9s)
+✔ [3366/3371] Built DifferentialGeometry.Topology.MetricSpace.GeodesicLine (2.1s)
+✔ [3367/3371] Built DifferentialGeometry.Geometry.Metric.Approximation.NormedProductBlowdown (2.1s)
+✔ [3368/3371] Built DifferentialGeometry.Geometry.Metric.Approximation.ProductBlowdownRecognition (1.3s)
+✔ [3369/3371] Built DifferentialGeometry.Geometry.Comparison.MultipleEndsSplitting (1.5s)
+✔ [3370/3371] Built DifferentialGeometry.Geometry.Comparison.AlmostOppositeAngle (3.7s)
+✔ [3371/3371] Built DifferentialGeometry.Geometry.Metric.Approximation.MultipleEndsBlowdown (1.4s)
+Build completed successfully (3371 jobs).
+CHAPTER3_AUDIT_PASS 2407 declarations

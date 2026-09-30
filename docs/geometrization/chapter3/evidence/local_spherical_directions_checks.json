@@ -1,0 +1,109 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/SphericalModelAngle.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_SphericalModelAngle.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "616d7b7a9c93ff2a4f668dfa5ad742ed9c2d50d465febd7d52744f7db884c7a9"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/SphericalFourPointComparison.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_SphericalFourPointComparison.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "1f9542cf058200290da906e14c4d46c8395538db75d41b0b7cff75dd6b74b3c8"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/ConeSecantLift.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_ConeSecantLift.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "7b9495d2d6dfeda4786b6717fe6fcaec5cf3896a135d1a7dc29a960c7377be16"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/ConeSphericalComparison.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_ConeSphericalComparison.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "ebf622121525ba30afb3b3cc3e9e7f73e4283ac1b114c9c10b9ad361c344c1c8"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/LocalSphericalDirections.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_LocalSphericalDirections.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "bca7d838befbe66318ffd0c9d8152cfdfb3af2a5d3accdd429fa0ed4cef7383f"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_local_spherical_directions_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "c1815a6770e95e6f05b4f9c8ec7d4d2e245bd4fb",
+  "review_reports": [
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.sphericalComparisonAngle",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.sphericalComparisonAngle_mem_Icc",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.sphericalComparisonAngle_comm",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.spherical_comparison_cosine_mem_Icc",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.cos_sphericalComparisonAngle",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.spherical_comparison_cosine_eq_secant_quotient",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointSphericalComparison",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointSphericalComparison.mono",
+    "Metric.EuclideanCone.secLift",
+    "Metric.EuclideanCone.radius_secLift",
+    "Metric.EuclideanCone.secLift_self",
+    "Metric.EuclideanCone.dist_mk_one_secLift",
+    "Metric.EuclideanCone.dist_mk_one_secLift_pos",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngle_secLift",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.sphericalComparisonAngle_sum_le_of_cone_comparison",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointSphericalComparison_ball_of_cone_comparison",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.spherical_direction_comparison_of_local_comparison_and_dimH",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.spherical_direction_comparison_of_intrinsic_eight_comparison_and_dimH",
+    "GCSphericalModelAngleReview.hemispherical_triangle_valid_beyond_erroneous_cutoff",
+    "GCSphericalModelAngleReview.reflected_large_arm_triangle",
+    "GCSphericalModelAngleReview.secant_normalization_on_opposite_short_arms",
+    "GCSphericalModelAngleReview.strict_perimeter_and_zero_arm_controls",
+    "GCConeSecantLiftReview.actual_unbounded_base_sec_lifts",
+    "GCConeSecantLiftReview.actual_opposite_sec_lifts_angle_pi",
+    "GCConeSecantLiftReview.actual_zero_arm_total_angle",
+    "GCConeSecantLiftReview.actual_cutoff_boundary_negative_control",
+    "GCDirectionSpaceReview.actual_real_open_region_spherical_directions",
+    "GCDirectionSpaceReview.actual_singleton_zero_dimensional_spherical_directions",
+    "GCPlaneDirectionPackingReview.actual_plane_full_eight_ball_spherical_directions"
+  ],
+  "review_driver_sha256": "359dada4fd9209ca49a52722691fc5fb3e1c19136aaec5c841f1005a6bbb4f3a",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Comparison/SphericalModelAngle.lean": "a2aff2cc84ac258e411761c950499541598600c16a3918aa2cfc188190ffb97e",
+    "DifferentialGeometry/Geometry/Comparison/SphericalFourPointComparison.lean": "3a4f7cd40df57712e0ca518395641403485af9d5867ce44eebea8a7ff483448e",
+    "DifferentialGeometry/Geometry/Comparison/ConeSecantLift.lean": "47212f0d8e421500c9656e76ae7ceee7f68b254cb75efeaf2e8b3948b42a3635",
+    "DifferentialGeometry/Geometry/Comparison/ConeSphericalComparison.lean": "57cc56835703d94fba6106e59c9fc1051492e5ec06dd558d9d570bc6bc9d92dd",
+    "DifferentialGeometry/Geometry/Comparison/LocalSphericalDirections.lean": "47e274fd2a51dbfffaabebd2a06f02257fcb9e1e85ce19133a028a83dd50b461"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "a1756c829d4237ab4b3cbf919e27847170bbf7a20e6b0409863001ed51a8683e"
+}

@@ -1,0 +1,21 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/AlexanderKapovitchPetrunin303Alexandrov.pdf",
+      "sha256": "1ba6f6f011a8333d9a20bdbf49d36d68b61bf1aababb19296ed48ecea37248ed",
+      "locator": "Section6E printed/PDF67\u201368; complete-base application printed/PDF128"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/ConeDistance.lean",
+      "sha256": "330f7cad296ca2270d0775d8647e8a5423ca8b9a92f92b40b4da2def15c119b2",
+      "locator": "Full unchanged self-contained scalar cone-distance API; targeted build exit0"
+    }
+  ],
+  "reused_source_checks": [
+    "geodesic_directions_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Actual generic cosine-law cone, pointed empty-base extension, radial laws and completeness; tangent consumers remain separate",
+  "errata": "Retained AKP errata checks reused; no fresh external retrieval",
+  "independent_root_and_peer_proof_review": true
+}

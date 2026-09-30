@@ -1,0 +1,11 @@
+{
+  "revision": 202,
+  "status": "unchanged historical mathematical planning snapshot; not a proof-closure certificate",
+  "source_sha256": {
+    "master202.tex": "62d6de4cbf2d6de45db80fc26a3346486555674d7fd8e3f10adadcfc6c12c9e7",
+    "master202A.tex": "913aeb258dbb099bc221a9a6443a5bfb0c73aa925ee12b494d9fd8673cc64b42",
+    "master202B.tex": "c68e6352c6acfa0506db1a38fcc0e41982e1fde9eec3c0875ec7997810dbafaa",
+    "formalization/active_graph_revision202.json": "0421100f6a648d31ebd931528ec963107da0fa04bdb4d03c32c27cc1f0dadf2b",
+    "planning_frontier_revision202.csv": "00afd60a070786b60dda7942bc8c2090b7a9f4809023777f0c15b9c1084f09a6"
+  }
+}

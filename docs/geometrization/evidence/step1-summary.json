@@ -1,0 +1,25 @@
+{
+  "scope": "team integration setup; not full GC proof",
+  "source_sha256": {
+    ".gitignore": "50e60b2047a17a07dd4362ffabf9560585cc0d8da93c4da1d10fe42ea7d7a4c4",
+    "lakefile.toml": "61b9fddd2a7d18d7f147790c39d96ef01b168cc8cd910fc526c39ff8260e7c6f",
+    "lean-toolchain": "3aac669c7a910ec2389f4e4f921b605adf6ebf2d1e0c9b9cd0be4d33f3f5db71",
+    "lake-manifest.json": "660ee55ac9deabd7be914399979d694405eca813cec1065a551de12711a92264",
+    "tools/gc/check.py": "c3398b947f987b85828617a7092d49c232eaf80c9ea6eff3a47c937b7ef674fc",
+    "tools/gc/test_axiom_gate.py": "6d012d063f1a27f0ea51dc6689791423d32a4a5df604931fe2053f67ecaf5553",
+    ".github/workflows/geometrization-static.yml": "5e600b17589f6a6eabf33eeb8165e3681122392aede8a767361d5abb140b27e9"
+  },
+  "proof_receipt": "verification.json",
+  "fresh_axiom_audit_declarations": 3503,
+  "promoted_modules": 123,
+  "team_lean_modules": 128,
+  "historical_pilot_files_unchanged": 152,
+  "accepted_pc_tracked_clean": true,
+  "upstream_source_and_pins_unchanged": true,
+  "blueprint_revision": 202,
+  "blueprint_static_audit_exit_code": 0,
+  "cold_PC_build": false,
+  "other_platform_build": false,
+  "full_GC_accepted": false,
+  "note": "Verification wrapper initially always reran axioms; final wrapper makes redundant fresh rerun optional via --fresh-audit. Both actual runs passed; source hashes match."
+}

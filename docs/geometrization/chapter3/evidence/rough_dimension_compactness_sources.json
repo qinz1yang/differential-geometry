@@ -1,0 +1,30 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC17 full proof2890\u20132924; AC33 consumer3769\u20133779, reread"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Order/LiminfLimsup.lean",
+      "sha256": "a092c5ad7e8310e9ba9d3d67e9858f3e8fbf9fba49be9126558266e0c53b7c9c",
+      "locator": "pin c55e6e786f49471c72fbddbec5415808896aec1e; eventually_lt_of_limsup_lt generated dual of full proof605\u2013613"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Data/ENat/Basic.lean",
+      "sha256": "85e7cc5f6c20aaef979b4f3f57f7c1f8ec5d42b03d1017fcbcb19fee14942143",
+      "locator": "same pin; finite-value witness ne_top_iff_exists324"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/FiniteNets.lean",
+      "sha256": "87486a8c7bbfce157936a23a1f3935303d22ea9f555b1df67ebd170f4854dd7d",
+      "locator": "accepted MC02 maximal finite-net proof, full body read and reused unchanged"
+    }
+  ],
+  "reused_source_checks": [
+    "local_rough_dimension_sources.json",
+    "local_compactness_sources.json"
+  ],
+  "scope": "AC17 metric core, actual rough-dimension producer consumer including n=0. Intrinsic/ambient wrapper remains separate.",
+  "errata": "Earlier unchanged BGP/BBI and retained errata checks reused."
+}

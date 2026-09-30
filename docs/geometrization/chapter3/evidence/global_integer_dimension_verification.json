@@ -1,0 +1,48 @@
+{
+  "success": true,
+  "blueprint_static_audit": {
+    "status": "pending",
+    "success": false,
+    "latest_completed_exit_code": 1,
+    "reason": "iCloud placeholders and metadata refresh during historical input reads",
+    "running_session": 82024,
+    "unchanged_audit_sha256": "a71b3b706ed68f757debfad4dbbbf4f80a243ed1db2f56fa5054d23dd54e2018",
+    "blueprint_revision": 207,
+    "lean_gate_independent": true,
+    "current_milestone": 132,
+    "note": "The separate unchanged static audit is ongoing; no pass is claimed."
+  },
+  "milestone": 132,
+  "new_public_theorems": 1,
+  "new_public_definitions": 0,
+  "new_instances": 0,
+  "new_declared_declarations": 1,
+  "new_generated_declarations": 0,
+  "new_owned_declarations": 1,
+  "observed_previous_owned_declarations": 2192,
+  "observed_previous_modules": 458,
+  "combined_modules": 459,
+  "combined_jobs": 3297,
+  "combined_owned_declarations": 2193,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/GlobalIntegerDimension.lean": "448e55c5a14140a310a8a41142dab351810158eed874607def0307c3f09290b1"
+  },
+  "logs": {
+    "global_integer_dimension_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "global_integer_dimension_review.log": "1ce936b14016e8e3e9a2b20673d214b3fc3c5fd1db7103dbd990cb0b4e3c1305",
+    "global_integer_dimension_blueprint_audit.log": "b2e9ffdbf67035d02507a13f31f01478b6d08ece6bf1a46ee295fb8f9084bc37",
+    "global_integer_dimension_blueprint_status.json": "b0827379a25dc22ec27d0265db4116f2305f1bbf8d6a8840ecca5f9e52d607a1"
+  },
+  "checks_receipt_sha256": "9d9fc5073ab4197ff06f8e3a5307ab6a7c4c0cff7d01fd16671151aab370bab7",
+  "shared_gate_receipt_sha256": "25b658cc6c5de6e5d17bdd960b1a0617b0a62f60993a8eae8cf06e25f2b5a516",
+  "previous_milestone_receipt_sha256": "1990c8f7364aac261ca47c9517a4cbfa89d5f7a40e8f3164c7bdda1c957348ff",
+  "review_driver_sha256": "dbb696fb4ab5bcc0b8b28cf62b6a527b2f5db391f35110c80a2c0e63e094921f",
+  "registration_plan_sha256": "c17960ab5a9786c55682a5b9072178f19fd90988d4fd0640f8829e4b571f2abb",
+  "source_receipt_sha256": "7155e3a5a70f2d2ed47a166089ed4fb974d8e3f178ea085f6203b8938edddd7a",
+  "git_head_at_check": "7f2ddfd874ed73fe7a5d667e90e5a751695e182d",
+  "independent_peer_proof_review": true,
+  "new_concrete_regressions": 5,
+  "expected_review_reports": 6,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

@@ -1,0 +1,46 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "MC24 full1614-1682 and AC51 full4650-4733"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/PointedIsometry.lean",
+      "sha256": "ee5f1280a775d376f12b61a810df594e733f93ae49005825550e5d0970d88f59",
+      "locator": "full actual ultrafilter proof; refined to retain supplied-map convergence"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/RealBallExamples.lean",
+      "sha256": "6b9cc696b5e7e9250dbfa351bd492b7ac59bca55c83afbc024537f34c058785d",
+      "locator": "12-24 actual commonSourceComparison and its error-index transport"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/PointedBallApproximation.lean",
+      "sha256": "c80d9e691fa0e0040f3802e67e064435780d049d97b7cdb2d056fe18d1d2a530",
+      "locator": "107-184 actual inverseLift, radial/left error and quasiInverse"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/FiniteNets.lean",
+      "sha256": "87486a8c7bbfce157936a23a1f3935303d22ea9f555b1df67ebd170f4854dd7d",
+      "locator": "33-44 internal compact finite nets"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Order/Filter/Finite.lean",
+      "sha256": "b26d5f2f5e115eb5733aef6a27f4607628921704d5e17c9935c2861733c44017",
+      "locator": "246-262 finite intersections of eventual estimates"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+      "sha256": "6320c2e81caeea51c7a80593bea9723294e20acf2355d9a747685de6ba637b96",
+      "locator": "109-140 strict subsequence extraction"
+    }
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "reused_source_checks": [
+    "approximate_product_limit_sources.json",
+    "approximate_factor_compactness_sources.json"
+  ],
+  "scope": "Actual-map uniform subsequence refinement of MC24 and controlled common-source isometry; AC51 product assembly remains.",
+  "errata": "No additional external mathematical assertion; reuse unchanged KL correction checks."
+}

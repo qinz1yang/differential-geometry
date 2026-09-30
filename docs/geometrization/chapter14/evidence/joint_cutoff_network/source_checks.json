@@ -1,0 +1,97 @@
+[
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/ScalarDerivativeBounds.lean",
+    "sha256": "f08972ee965729650065eb053d1dc4557cac40b65a02d1184f756b4edbca130c",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/ScalarDerivativeBounds.olean",
+      "DifferentialGeometry/Analysis/Calculus/ScalarDerivativeBounds.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "c2b2863ef0172508a17382cbe36975206bf4be426b9c362600f59c66c31fc19a"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/JointCutoffBounds.lean",
+    "sha256": "1f97731ebe5d1bb2ae2a7243c2e4b870bf63ba547a0a17cbf9a521c64ba73f2c",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/JointCutoffBounds.olean",
+      "DifferentialGeometry/Analysis/Calculus/JointCutoffBounds.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "4d5ba95f08d22642dd05c2042a92d3b61ad23a7b931d00ed628bab43e1d40bd6"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/WeightedCoordinateCutoff.lean",
+    "sha256": "565cb28c9f501f821dd894a3bfd35f6a76e1be54be612f5862ecb2cacb4d7383",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/WeightedCoordinateCutoff.olean",
+      "DifferentialGeometry/Analysis/Calculus/WeightedCoordinateCutoff.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "47c33d8475cc24805f87a38a3e1f4f8d8bc766377276db61247e3040de3ad51e"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/OrthogonalBlockDerivatives.lean",
+    "sha256": "b7ab6cda438b9a64d2abac92a3c7fe9ab6ba91caf7bfcbd79c8f06cfde318943",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/OrthogonalBlockDerivatives.olean",
+      "DifferentialGeometry/Analysis/Calculus/OrthogonalBlockDerivatives.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "50fd880db725bcaa449466cd77a9eb1b56787ebb8798950bde441e706fbf5015"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/JointCutoffNetwork.lean",
+    "sha256": "304044265b8b74d3dab45dab74519573bf06e16b4cf98fde3419ca0314498115",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/JointCutoffNetwork.olean",
+      "DifferentialGeometry/Analysis/Calculus/JointCutoffNetwork.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "7dc5942570927c062ae68b51a9c27c62b66d565bd5309d8578003b2097c0dc6c"
+  }
+]

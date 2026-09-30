@@ -1,0 +1,30 @@
+{
+  "success": true,
+  "new_public_theorems": 28,
+  "new_private_theorems": 4,
+  "new_private_definitions": 2,
+  "new_generated_declarations": 33,
+  "new_definitions": 5,
+  "new_instances": 2,
+  "new_owned_declarations": 74,
+  "combined_modules": 412,
+  "combined_jobs": 3250,
+  "combined_owned_declarations": 2011,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/ConeDistanceTriangle.lean": "9e60725e8dc3fa508b8c7fd655b11b65063cf3dc1cf1a54da81947f532cd4f87",
+    "DifferentialGeometry/Geometry/Metric/EuclideanCone.lean": "eed2f02de02cee428ab2831cc086561de0807fb8f9dbc60af80cdff04110cbd4",
+    "DifferentialGeometry/Geometry/Metric/ConeDirectionControl.lean": "6d7d480a194ef5eaca1f8137ad6c97c6cc5a84578b69d6d8c78cbcc47f020ced",
+    "DifferentialGeometry/Geometry/Metric/EuclideanConeComplete.lean": "e5526745893619194715f2088cbefff9374ee20063129872678f88ad1a5c8eb7"
+  },
+  "logs": {
+    "euclidean_cone_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "euclidean_cone_review.log": "2680712b25033caf24522ec00eca427ab7c6ef51588457a85758e111cb5b3fe8",
+    "euclidean_cone_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "7daa9ac40fee0bfc986a146978dc5cac043996a01f75cab202637cf863e3ab54",
+  "git_head_at_check": "17379434efd394947b61c94548fe1a5c436db56e",
+  "independent_root_and_peer_proof_review": true,
+  "actual_original_geometry_regressions": 17,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

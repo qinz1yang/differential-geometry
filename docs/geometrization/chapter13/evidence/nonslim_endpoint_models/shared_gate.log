@@ -1,0 +1,9 @@
+⚠ [2730/3121] Replayed DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
+warning: DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean:18:8: declaration uses `sorry`
+✔ [3586/3589] Built DifferentialGeometry.Geometry.Metric.Approximation.TargetBallIsometry (1.6s)
+✔ [3587/3589] Built DifferentialGeometry.Topology.MetricSpace.RealBallCharts (1.7s)
+✔ [3588/3589] Built DifferentialGeometry.Geometry.Metric.ProductBallIsometry (1.7s)
+✔ [3589/3589] Built DifferentialGeometry.Geometry.Metric.Approximation.NonslimEndpointRecognition (1.8s)
+Build completed successfully (3589 jobs).
+CHAPTER3_AUDIT_PASS 2577 declarations
+Original packed-refs restored unchanged

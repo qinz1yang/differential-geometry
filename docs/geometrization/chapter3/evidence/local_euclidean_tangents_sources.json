@@ -1,0 +1,86 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/BuragoBuragoIvanovBook.pdf",
+      "sha256": "4efaa168dcc83e7e9f5663d14824f9543104beab21642ca3830a5dd1c684c971",
+      "version": "Archived BBI book",
+      "locator": "Full10.9.7,10.9.10\u201313 printed393\u2013395/PDF408\u2013410",
+      "review_provenance": "Retained actual source bodies freshly reread for the local frontier assessment; archived corrections remain distinct."
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KapovitchLebedevaPetruninAlexandrov.pdf",
+      "sha256": "3dc0a166ec88b1c7e50aeebd9924f747ece6fb1957c7b31dcbe17a90a9e61d67",
+      "version": "Archived v1 July14 2026",
+      "locator": "6.2,6.4 and beginning of6.5 printed62\u201363/PDF64\u201365; preceding local-dimension and tangent contracts6.18\u20136.20 reused unchanged",
+      "review_provenance": "Targeted retained body reading in the local frontier assessment; no fresh archive hash or external correction query."
+    }
+  ],
+  "reused_source_checks": [
+    "dense_euclidean_tangents_sources.json",
+    "common_tangent_dimension_sources.json",
+    "original_eight_comparison_sources.json",
+    "actual_direction_chart_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "blueprint": {
+    "path": "docs/geometrization/blueprint/master207A.tex",
+    "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+    "locator": "AC11/12 lines2580\u20132695; local actual Euclidean tangent/common-radius struts and the separate angular obstruction"
+  },
+  "errata": {
+    "version": "Retained July6,2024 BBI errata",
+    "sha256": "68338c7a8b37b8637efbad8af5f547f6cf789675df020fbc6aa04d4babdde42e",
+    "locator": "387 line\u221213 sign >;394 line\u221210 corrected opposite-pair index",
+    "review_provenance": "Direct source-agent retained errata read recorded in Post135 frontier assessment; no new external retrieval claimed."
+  },
+  "scope": "Original complete ambient geometry and finite-dimensional intrinsic local comparison ONLY on open8R yield one common local rank and a relative dense G-delta of pointed Euclidean ORIGINAL AMBIENT tangents; NontrivialX additionally yields all actual AC11 common-radius struts.",
+  "proof_route": "Open Baire subtype with ambient comparison charts keeps both anchors bounded; same protected original endpoint representatives and hinges transfer packets to ambient completed directions; one whole finite-array limit and exact full-rank recognition preserve the same tangent. A real source curve proves rank positivity for the strut consumer.",
+  "conventions": "Comparison parameter1 means curvature lower bound minus1. The half-ball uses its ambient restriction metric and is not assumed complete. All HasAnglesAt/completion/tangent objects are ambient and derived from the original intrinsic8R data. Rankzero includes singleton sources without choosing a direction.",
+  "not_claimed": [
+    "regularity at every point",
+    "global curvature outside the original8R region",
+    "completeness of the open half-ball",
+    "angular CBB1",
+    "automatic AC12 angular obstruction",
+    "near-isometric charts",
+    "full Chapters3\u20134 completion",
+    "migration-dependent smooth foundation validation"
+  ],
+  "independent_peer_proof_review": true,
+  "proof_records": [
+    {
+      "path": "/tmp/gc_LocalEuclideanTangent_frontier_assessment.md",
+      "sha256": "5b7cf95901bb97bfa628894c3f472cd82a74da09b9ce7e655070312a65f3b45e"
+    },
+    {
+      "path": "/tmp/gc_LocalPairedQualities_record.md",
+      "sha256": "4fb172fb77f8652198325ce111798d6167ef143188765fe39c294fabc1a9d452"
+    },
+    {
+      "path": "/tmp/gc_LocalPairedQualities_half_independent_read.md",
+      "sha256": "15f7cf85696692abe89acd61c2adccef70a24c2e2b082a3dc140ee3aac098bbd"
+    },
+    {
+      "path": "/tmp/gc_LocalEuclideanTangents_record.md",
+      "sha256": "8f3b596ac93d8adac1758398ff4ab8edd4a6108e1621914f26dbf76beefe755c"
+    },
+    {
+      "path": "/tmp/gc_LocalEuclideanTangents_65_independent_read.md",
+      "sha256": "1a970851752a843ebe9670a1ef60efceb5b0aa0b873460e65d3d7eae274b2677"
+    },
+    {
+      "path": "/tmp/gc_LocalEuclideanTangents_root_read_receipt.md",
+      "sha256": "98a172a389e6336daba291fe2f478de0ab7ed444eba04404c27b697c5714c18d"
+    }
+  ],
+  "upstream_freezes": [
+    {
+      "path": "/tmp/gc_LocalPairedQualities_freeze.json",
+      "sha256": "405a3b8a6b228eee303963e3b47d743b7fdb270a182d656eb55f2b74dc915f51"
+    },
+    {
+      "path": "/tmp/gc_LocalEuclideanTangents_freeze.json",
+      "sha256": "0a8f22ebbbb94ebc18c6ce138199a67eba5650104cccac9367b1690bb2c1e9f1"
+    }
+  ]
+}

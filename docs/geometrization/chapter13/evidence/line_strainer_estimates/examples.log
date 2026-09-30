@@ -1,0 +1,4 @@
+'StrainerRegression.flat_straight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'StrainerRegression.hyperbolic_radius_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]
+'StrainerRegression.zero_radius_and_zero_leg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'StrainerRegression.shifted_line_equal_legs' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,21 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "ALG01/02 full bodies7264-7415; exact unchanged source checks reused"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/akp-ed6a16eb2a3c/defs-CBB.tex",
+      "sha256": "b80b54fafc6e30cbac121880c1b80265ee62afcd90d8a3ab77c0deef1a0e1f9c",
+      "locator": "vol1 ed6a16eb2a3c66c1f0f54b183bd1a4176e78b245;307-386,951-1090; exact unchanged source checks reused"
+    }
+  ],
+  "reused_source_checks": [
+    "canonical_germ_cradle_sources.json",
+    "segment_cradle_comparison_sources.json",
+    "model_side_sources.json"
+  ],
+  "errata": "Previously checked unchanged source/author-errata comparisons reused; no remote byte-identity claim.",
+  "scope": "Uniform endpoint small-hinge comparison and actual chosen-join cradle nonincrease; iteration/globalization not assembled."
+}

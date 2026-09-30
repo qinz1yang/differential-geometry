@@ -1,0 +1,59 @@
+[
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/HalfPlanePacking.lean",
+    "sha256": "4c895e2ff2503a1e5e9c2bde495ad78cd59d185254910a0d73016eb99355a8af",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/HalfPlanePacking.olean",
+      "DifferentialGeometry/Geometry/Metric/HalfPlanePacking.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "c1a70060b977a16815c91d825979753907413c052c0fe40a420e19adff3dc589"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/ProductFactorComposition.lean",
+    "sha256": "0fe6f6f3647624549ee24b9c7b7a998a1e21ab93306424052d437a7cfd4e7177",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Approximation/ProductFactorComposition.olean",
+      "DifferentialGeometry/Geometry/Metric/Approximation/ProductFactorComposition.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "303d58752b1246fa1cabcdd60addd38e045b33df0f6b4c5470ae720eed50f5cc"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/IntervalTargetExtension.lean",
+    "sha256": "d64dc55bff8c471423fdc46e04b90855d99d8de6aa7047c79e540d21d7386be4",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Approximation/IntervalTargetExtension.olean",
+      "DifferentialGeometry/Geometry/Metric/Approximation/IntervalTargetExtension.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "5fd877d002f2e0e77f62b5f649755d65f4b331b3902da428d7ca2c5b3d3f7678"
+  }
+]

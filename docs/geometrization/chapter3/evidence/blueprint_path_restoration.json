@@ -1,0 +1,17 @@
+{
+  "operation": "restore missing historical project prefix as symlink",
+  "alias": "/Users/bennettchow/Documents/Codex/Geometrization",
+  "target": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization",
+  "archive_or_blueprint_source_edits": false,
+  "audit_script_edits": false,
+  "historical_hash_or_path_record_edits": false,
+  "command": "python3 GEOMETRIZATION_BLUEPRINT/audit_blueprint.py",
+  "exit_code": 0,
+  "result": "BLUEPRINT_STATIC_OK",
+  "scope": "static source/evidence consistency; no new Lean or PDF build",
+  "blueprint_sha256": {
+    "master207.tex": "59a650117152ba9b652cab5bb436599cf0b2ca1b28932cd9c49af8ef4cba413f",
+    "master207A.tex": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+    "master207B.tex": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+  }
+}

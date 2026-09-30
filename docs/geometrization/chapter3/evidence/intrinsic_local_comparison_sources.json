@@ -1,0 +1,36 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC13 full2713-2755; ALG06 full7536-7580; ALG07 full7582-7617; body reading reused from this continuation"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/MetricTransfer.lean",
+      "sha256": "382c254f4715adb77a5983d5f281fb81e74ade59ba9d8356e7b1c5f8a709302b",
+      "locator": "full body, exact image comparison and local open-image transfer"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/IntrinsicBallTopology.lean",
+      "sha256": "461d5f6c2614f08c16c41adaa0b78ea4d1e8e7afe263461154ab254f943c640a",
+      "locator": "full body, actual intrinsic topology and open/nonexpansive inclusion"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/IntrinsicBallGeometry.lean",
+      "sha256": "9338c426c6a48852dee05f81d7014a78a7b0931296cc04acc21b2b4a58799dce",
+      "locator": "full body, exact local pairwise distances"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/IntrinsicBufferComparison.lean",
+      "sha256": "8cda8fe0d59669ebb083a1a83e29282a4b585581aaff8500dc92f312f824137d",
+      "locator": "full body, actual intrinsic256R buffer to ambient2R comparison"
+    }
+  ],
+  "reused_source_checks": [
+    "intrinsic_buffer_radial_sources.json",
+    "intrinsic_ball_length_sources.json",
+    "metric_buffer_transfer_sources.json"
+  ],
+  "scope": "Local ambient/intrinsic comparison iff on the actual constructed metric; original local ambient hypotheses produce2R ambient comparison. Full ALG07 extraction and covering not claimed.",
+  "errata": "Unchanged source claims retain the earlier pinned AKP and dated BBI/BGP checks. No new remote-version claim."
+}

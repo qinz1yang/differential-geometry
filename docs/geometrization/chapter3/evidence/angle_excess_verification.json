@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "new_public_theorems": 10,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 24,
+  "combined_modules": 292,
+  "combined_jobs": 3127,
+  "combined_owned_declarations": 1346,
+  "sources": {
+    "DifferentialGeometry/Analysis/SpecialFunctions/Trigonometric/LogCosineBound.lean": "b5657be74a24b02856dd560f6e1759137aeeec512a19a0c654dd8e40a9accaff",
+    "DifferentialGeometry/Analysis/SpecialFunctions/Trigonometric/HyperbolicLogShift.lean": "24351e92ba8afb8f635dad08c5c52258caa2f1c0549b9eb392397ceb2f4bb0cf",
+    "DifferentialGeometry/Geometry/Comparison/EqualSideHalfAngle.lean": "0b726fde31b8aa1eade96a6c6c675acc3ebd7e57d6e6ad6456ce0f20bce922c1",
+    "DifferentialGeometry/Geometry/Comparison/AngleExcess.lean": "c30c4ba9e2c0cd1754c6bddf8645a40c9a9160b5e4babb331f0f82e9c5df5496",
+    "DifferentialGeometry/Geometry/Comparison/OppositeAngleExcess.lean": "2f63b1a8de7611f727ff533ed9aae88def6d9f34d57327f361b9c82d6f9ef64c"
+  },
+  "logs": {
+    "angle_excess_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "angle_excess_review.log": "3d834a07874826572a3e2db142ce943a85e6d655d938935e25e263a306035bed",
+    "angle_excess_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "3408ea74b584b904cc78b33e2fc39b4ec55f429cfd573e72460e603cfd3f075c",
+  "git_head_at_check": "8a029f6a4896d91d4d445e94edd30b7cf276815b",
+  "independent_agent_source_review": true,
+  "half_angle_agent_implementation": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

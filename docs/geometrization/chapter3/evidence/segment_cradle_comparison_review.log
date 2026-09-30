@@ -1,0 +1,10 @@
+'Isometry.IccExtend_opposite_dist' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.germComparisonAngle_IccExtend_adjacent_sum_le_pi' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_cradle_step_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.dist_le_modelSideNegCurvature_of_between' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

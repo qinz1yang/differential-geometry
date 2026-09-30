@@ -1,0 +1,14 @@
+'MetricSpace.rescaleUniformEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MetricSpace.rescale_completeSpace_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MetricSpace.rescale_dimH' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MetricSpace.rescale_ball' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MetricSpace.rescale_closedBall' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MetricSpace.rescale_eVariationOn_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MetricSpace.rescale_arbitrarily_short_curves' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison_rescale_sqrt_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.local_fourPointComparison_rescale_sqrt_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.chart_net_bound_rescale_le' depends on axioms: [propext, Classical.choice, Quot.sound]

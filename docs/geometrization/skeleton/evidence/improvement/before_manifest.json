@@ -1,0 +1,1017 @@
+{
+  "schema": 1,
+  "blueprint_revision": 207,
+  "baseline_commit": "3167083409cd58f39742a7872dab504a65d24b56",
+  "trust": "User-authorized sorry skeleton; not a proof-complete library",
+  "audit_file": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Checks/DeclarationAudit.lean",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/Compactness/FiniteOrder.lean",
+      "sha256": "4ed6ea0f202fe17dff1a6c71ad9d1921ec5ae2b3f69594a59127adae1e37b335",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.CheegerGromovCompactness.exists_bilinear_form_limit_subsequence_of_bounded_derivatives",
+          "kind": "theorem",
+          "line": 11,
+          "private": false,
+          "direct_sorry": true
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean",
+      "sha256": "b7817f1335a0811846005a3186a55c3188221604891497cffeac7a0212b4f3d4",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Analysis.hasLocalSmoothUpperBarrier",
+          "kind": "def",
+          "line": 13,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers_shift",
+          "kind": "theorem",
+          "line": 18,
+          "private": false,
+          "direct_sorry": true
+        },
+        {
+          "name": "DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers",
+          "kind": "theorem",
+          "line": 28,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers_pi_shift",
+          "kind": "theorem",
+          "line": 39,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers_pi",
+          "kind": "theorem",
+          "line": 52,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Collapse/CurvatureScale.lean",
+      "sha256": "8819178f11914c64d0d73d3a8a9fa90ac7cdb2cee0f31288bc67ba3677f9d85d",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.curvatureRadius",
+          "kind": "def",
+          "line": 23,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.ballVolume",
+          "kind": "def",
+          "line": 28,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.euclideanUnitBallVolume",
+          "kind": "def",
+          "line": 31,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.volumeCollapsedAtCurvatureScale",
+          "kind": "def",
+          "line": 33,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.curvatureDerivativesControlled",
+          "kind": "def",
+          "line": 38,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.curvatureRadius_pos",
+          "kind": "theorem",
+          "line": 46,
+          "private": false,
+          "direct_sorry": true
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.curvatureRadius_eq_top_iff",
+          "kind": "theorem",
+          "line": 50,
+          "private": false,
+          "direct_sorry": true
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.curvatureDerivativesControlled_mono_threshold",
+          "kind": "theorem",
+          "line": 55,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Collapse/CuspBoundary.lean",
+      "sha256": "7a612475ca86bc2802571e048bb2f9a341e3f27a75af133d542fdc499a918bff",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.cuspMetricError",
+          "kind": "def",
+          "line": 15,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.cuspMetricErrorBound",
+          "kind": "def",
+          "line": 22,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.CuspEmbedding",
+          "kind": "structure",
+          "line": 29,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.NearlyCuspidalBoundary",
+          "kind": "structure",
+          "line": 43,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.distanceToBoundary",
+          "kind": "def",
+          "line": 56,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.boundaryVolumeCollapsed",
+          "kind": "def",
+          "line": 60,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.CuspEmbedding.weaken",
+          "kind": "def",
+          "line": 64,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.NearlyCuspidalBoundary.weaken",
+          "kind": "def",
+          "line": 70,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Collapse/GraphManifold.lean",
+      "sha256": "906eb9bf6f6438a550885cde28c9e0e87d77ed27493929db5388f6abcf7180ca",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.closedCollapseHypotheses",
+          "kind": "def",
+          "line": 11,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.boundaryCollapseHypotheses",
+          "kind": "def",
+          "line": 17,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.staticCollapseHypotheses",
+          "kind": "def",
+          "line": 22,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.volumeCollapsedAtCurvatureScale_mono",
+          "kind": "theorem",
+          "line": 26,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.closedCollapseHypotheses_mono",
+          "kind": "theorem",
+          "line": 35,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.boundaryCollapseHypotheses_mono",
+          "kind": "theorem",
+          "line": 43,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.exists_rawGraphPresentation_of_nonnegative",
+          "kind": "theorem",
+          "line": 52,
+          "private": false,
+          "direct_sorry": true
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.exists_closed_graph_threshold",
+          "kind": "theorem",
+          "line": 60,
+          "private": false,
+          "direct_sorry": true
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.exists_boundary_graph_threshold",
+          "kind": "theorem",
+          "line": 68,
+          "private": false,
+          "direct_sorry": true
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.exists_graph_threshold",
+          "kind": "theorem",
+          "line": 80,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.exists_componentwise_graph_threshold",
+          "kind": "theorem",
+          "line": 97,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Collapse/TorusDecomposition.lean",
+      "sha256": "81746a1e9434cefdf81495217c679f46aa6a46c3682a046ebe14a50135bd4571",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.cutPieceMap",
+          "kind": "def",
+          "line": 11,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.isInducedCutMetric",
+          "kind": "def",
+          "line": 16,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.HyperbolicOrCollapsed",
+          "kind": "inductive",
+          "line": 25,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.geometrizes_of_hyperbolicOrCollapsed",
+          "kind": "theorem",
+          "line": 41,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Collapse/UniformDerivativeBounds.lean",
+      "sha256": "e3d44eaaf14176aefa65fc2ebcb0ea73609ab5f289f8e66da2e9f1e515f60359",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Collapse.exists_common_curvature_derivative_bound",
+          "kind": "theorem",
+          "line": 10,
+          "private": false,
+          "direct_sorry": true
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Connection/TensorNabla/Iterated/Metric.lean",
+      "sha256": "8be16d229ac175e3e584f366bf3915133ce689d7777fb4ce0d22706d1340dacc",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Connection.metricCovariantDerivative",
+          "kind": "def",
+          "line": 17,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Connection.iteratedMetricCovariantDerivative",
+          "kind": "def",
+          "line": 30,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Curvature/Metric/DerivativeNorm.lean",
+      "sha256": "57a34a04b0c8c380e1f24df59270631c8e81db73f189a23d0fbe5bb7d8e5ae22",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Curvature.curvatureDerivativeNorm",
+          "kind": "def",
+          "line": 18,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/CuspIncompressibility.lean",
+      "sha256": "779cd7fae1095b52ef81e90ac428bdccbd316f4ee8b7401704bd532b717ed3fd",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.RicciFlow.cusp_injective_of_exterior_area_barriers",
+          "kind": "theorem",
+          "line": 15,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.RicciFlow.cusp_slice_injective_iff",
+          "kind": "theorem",
+          "line": 43,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.RicciFlow.incompressible_of_area_barriers",
+          "kind": "theorem",
+          "line": 51,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.RicciFlow.incompressible_of_shifted_area_barriers",
+          "kind": "theorem",
+          "line": 67,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/ExteriorDiskFlow.lean",
+      "sha256": "4cd1569c9aa855af6a557cc7a7b325df1446f3bedb5fddc9bc71f91d0cb97ab3",
+      "declarations": [
+        {
+          "name": "GC.LongTime.postStage",
+          "kind": "def",
+          "line": 18,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.postMetric",
+          "kind": "def",
+          "line": 22,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.postStage_regularSlice",
+          "kind": "theorem",
+          "line": 26,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.postMetric_regularSlice",
+          "kind": "theorem",
+          "line": 37,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.exteriorDiskArea",
+          "kind": "def",
+          "line": 57,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.exteriorDiskArea_nonneg",
+          "kind": "theorem",
+          "line": 62,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.exteriorDiskArea_eq",
+          "kind": "theorem",
+          "line": 68,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/LateDecomposition.lean",
+      "sha256": "85aba9853ea8ca07803cf854a7282a4dfa9fdbe1599528087323d4b78e4709d5",
+      "declarations": [
+        {
+          "name": "GC.LongTime.hasCommonNeckAccuracy",
+          "kind": "def",
+          "line": 17,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.RegularSlice.componentMetric",
+          "kind": "def",
+          "line": 23,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.hasExteriorAreaObstructionAfter",
+          "kind": "def",
+          "line": 29,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.hasLateSequenceTests",
+          "kind": "def",
+          "line": 47,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.exists_surgery_with_late_sequence_tests",
+          "kind": "theorem",
+          "line": 62,
+          "private": false,
+          "direct_sorry": true
+        },
+        {
+          "name": "GC.LongTime.components_geometrize_of_late_sequence_tests",
+          "kind": "theorem",
+          "line": 71,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.geometrizes_of_metric",
+          "kind": "theorem",
+          "line": 99,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/RegularSlice.lean",
+      "sha256": "d83e2ff18e975ef18acdb51562f0a0863af234e8e7550279dd434ee77f233062",
+      "declarations": [
+        {
+          "name": "GC.LongTime.RegularSlice",
+          "kind": "structure",
+          "line": 13,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.RegularSlice.history",
+          "kind": "abbrev",
+          "line": 24,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.RegularSlice.stage",
+          "kind": "abbrev",
+          "line": 26,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.RegularSlice.metric",
+          "kind": "def",
+          "line": 29,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.RegularSlice.normalizedMetric",
+          "kind": "def",
+          "line": 32,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.RegularSlice.curvatureOneMetric",
+          "kind": "def",
+          "line": 35,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.RegularSlice.initial",
+          "kind": "def",
+          "line": 38,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.hasArbitrarilyLateNonemptySlices",
+          "kind": "def",
+          "line": 43,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.exists_regular_slice_after",
+          "kind": "theorem",
+          "line": 47,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.empty_slice_or_arbitrarily_late",
+          "kind": "theorem",
+          "line": 53,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.exists_common_late_slice",
+          "kind": "theorem",
+          "line": 67,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.LongTime.geometrizes_of_late_slice_supply",
+          "kind": "theorem",
+          "line": 91,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Cusp.lean",
+      "sha256": "056e8e499ab4f937f9c9ef931b30415db36ba2ce37a5d34497312dde10dffd41",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Hyperbolic.CuspHalfSpace",
+          "kind": "abbrev",
+          "line": 10,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Hyperbolic.cuspDomain",
+          "kind": "def",
+          "line": 12,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Hyperbolic.HyperbolicCusp",
+          "kind": "structure",
+          "line": 14,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Hyperbolic.cusp_constant_sectional_curvature",
+          "kind": "theorem",
+          "line": 23,
+          "private": false,
+          "direct_sorry": true
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/ModelAtlas.lean",
+      "sha256": "28cdfa5a8df3402af0755ec3b16a960cc374d83fba33564d2554fde35948dc3d",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Hyperbolic.has_hyperbolic_atlas_of_curvature_neg_one",
+          "kind": "theorem",
+          "line": 17,
+          "private": false,
+          "direct_sorry": true
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Hyperbolic.finiteVolumeGeometricStructure",
+          "kind": "def",
+          "line": 23,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Hyperbolic.finiteVolumeGeometricStructure_model",
+          "kind": "theorem",
+          "line": 42,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Rigidity.lean",
+      "sha256": "51069cd7c6fc930e2c50bacf9cde4f92f2190b51f626b2f393ad71f809538107",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.Hyperbolic.hasConstantSectionalCurvature",
+          "kind": "def",
+          "line": 20,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.Hyperbolic.mostow_prasad",
+          "kind": "theorem",
+          "line": 24,
+          "private": false,
+          "direct_sorry": true
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Pullback/FiniteRegularity.lean",
+      "sha256": "450c54f12872ce6917f5bb5f85436a7e34c522b3dfd66c2ab2a553619f3c990e",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.exists_pullback_metric_of_finite_diffeomorph",
+          "kind": "theorem",
+          "line": 16,
+          "private": false,
+          "direct_sorry": true
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.exists_pullback_metric_of_diffeomorph_one_order_higher",
+          "kind": "theorem",
+          "line": 26,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.exists_pullback_metric_of_diffeomorph_three_orders_lower",
+          "kind": "theorem",
+          "line": 35,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/MinimalSurface/ExteriorDiskArea.lean",
+      "sha256": "44664d2de4b4825ca28604dec223756111e5c4e45e5d2b92fe35887d3e5bc60d",
+      "declarations": [
+        {
+          "name": "DifferentialGeometry.Geometry.MinimalSurface.isExteriorSpanningDisk",
+          "kind": "def",
+          "line": 15,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea",
+          "kind": "def",
+          "line": 22,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea_nonneg",
+          "kind": "theorem",
+          "line": 27,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea_le",
+          "kind": "theorem",
+          "line": 33,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.MinimalSurface.exteriorDiskAreaOn",
+          "kind": "def",
+          "line": 43,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.MinimalSurface.exteriorDiskAreaOn_nonneg",
+          "kind": "theorem",
+          "line": 52,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "DifferentialGeometry.Geometry.MinimalSurface.continuousOn_leastExteriorDiskArea_of_local_disk_comparisons",
+          "kind": "theorem",
+          "line": 65,
+          "private": false,
+          "direct_sorry": true
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Theorem.lean",
+      "sha256": "2fabd11597674a80c206dced81a6bd954950f84064df3af2441dd1c24f513314",
+      "declarations": [
+        {
+          "name": "GC.Endpoint.geometrization",
+          "kind": "theorem",
+          "line": 10,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.Endpoint.geometrization_conjecture",
+          "kind": "theorem",
+          "line": 14,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.Endpoint.smooth_geometrization_conjecture",
+          "kind": "theorem",
+          "line": 16,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "sha256": "1a6d7d693b2b2083cf96a80732672beb229ed3f369de3212285f28c47da4134f",
+      "declarations": [
+        {
+          "name": "GC.GraphManifold.SurfaceModel",
+          "kind": "inductive",
+          "line": 10,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.SurfaceModel.Space",
+          "kind": "abbrev",
+          "line": 13,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.SurfaceModel.model",
+          "kind": "abbrev",
+          "line": 22,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.CompactSurface",
+          "kind": "structure",
+          "line": 28,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.CircleFibration",
+          "kind": "structure",
+          "line": 43,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.BoundaryTori",
+          "kind": "structure",
+          "line": 55,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.BoundaryTori.torusMap",
+          "kind": "def",
+          "line": 64,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.BoundaryTori.image",
+          "kind": "def",
+          "line": 67,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.BoundaryTori.zero_mem_source",
+          "kind": "theorem",
+          "line": 70,
+          "private": true,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.BoundaryTori.torusMap_smooth",
+          "kind": "theorem",
+          "line": 77,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.BoundaryTori.boundaryMap",
+          "kind": "def",
+          "line": 82,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.BoundaryTori.torusMap_isEmbedding",
+          "kind": "theorem",
+          "line": 86,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.BoundaryTori.incompressible",
+          "kind": "def",
+          "line": 93,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.TorusPairing",
+          "kind": "structure",
+          "line": 98,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.TorusPairing.QuotientSpace",
+          "kind": "abbrev",
+          "line": 118,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.TorusPairing.quotientMap",
+          "kind": "def",
+          "line": 124,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.RawGraphPresentation",
+          "kind": "structure",
+          "line": 129,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "sha256": "2535a88b0a675350f776fd7c144e6233d4ff14b7022405c962930a66f420462e",
+      "declarations": [
+        {
+          "name": "GC.GraphManifold.isHyperbolicInteriorGeometry",
+          "kind": "def",
+          "line": 11,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.HyperbolicOrGraph",
+          "kind": "inductive",
+          "line": 17,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.exists_prime_decomposition_of_rawGraphPresentation",
+          "kind": "theorem",
+          "line": 23,
+          "private": false,
+          "direct_sorry": true
+        },
+        {
+          "name": "GC.GraphManifold.exists_geometric_decomposition_of_prime_rawGraphPresentation",
+          "kind": "theorem",
+          "line": 31,
+          "private": false,
+          "direct_sorry": true
+        },
+        {
+          "name": "GC.GraphManifold.geometrizes_of_rawGraphPresentation",
+          "kind": "theorem",
+          "line": 37,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.exists_prime_geometric_decomposition_of_hyperbolicOrGraph",
+          "kind": "theorem",
+          "line": 46,
+          "private": false,
+          "direct_sorry": true
+        },
+        {
+          "name": "GC.GraphManifold.geometrizes_of_hyperbolicOrGraph",
+          "kind": "theorem",
+          "line": 54,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "sha256": "ed5195dc4cf4ee936dc73f24e8ca672665884c9a681624f00f9e680bfe5e7e78",
+      "declarations": [
+        {
+          "name": "GC.GraphManifold.componentCarrier",
+          "kind": "def",
+          "line": 10,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.TorusDecomposition",
+          "kind": "structure",
+          "line": 17,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.TorusDecomposition.component",
+          "kind": "def",
+          "line": 30,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.GraphManifold.TorusDecomposition.toGeometricDecomposition",
+          "kind": "def",
+          "line": 34,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    }
+  ],
+  "direct_admissions": [
+    "DifferentialGeometry.CheegerGromovCompactness.exists_bilinear_form_limit_subsequence_of_bounded_derivatives",
+    "DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers_shift",
+    "DifferentialGeometry.Geometry.Collapse.curvatureRadius_pos",
+    "DifferentialGeometry.Geometry.Collapse.curvatureRadius_eq_top_iff",
+    "DifferentialGeometry.Geometry.Collapse.exists_rawGraphPresentation_of_nonnegative",
+    "DifferentialGeometry.Geometry.Collapse.exists_closed_graph_threshold",
+    "DifferentialGeometry.Geometry.Collapse.exists_boundary_graph_threshold",
+    "DifferentialGeometry.Geometry.Collapse.exists_common_curvature_derivative_bound",
+    "GC.LongTime.exists_surgery_with_late_sequence_tests",
+    "DifferentialGeometry.Geometry.Hyperbolic.cusp_constant_sectional_curvature",
+    "DifferentialGeometry.Geometry.Hyperbolic.has_hyperbolic_atlas_of_curvature_neg_one",
+    "DifferentialGeometry.Geometry.Hyperbolic.mostow_prasad",
+    "DifferentialGeometry.Geometry.exists_pullback_metric_of_finite_diffeomorph",
+    "DifferentialGeometry.Geometry.MinimalSurface.continuousOn_leastExteriorDiskArea_of_local_disk_comparisons",
+    "GC.GraphManifold.exists_prime_decomposition_of_rawGraphPresentation",
+    "GC.GraphManifold.exists_geometric_decomposition_of_prime_rawGraphPresentation",
+    "GC.GraphManifold.exists_prime_geometric_decomposition_of_hyperbolicOrGraph"
+  ],
+  "mathematical_modules": 22,
+  "authored_declarations": 121,
+  "direct_sorry_count": 17,
+  "blueprint_sha256": {
+    "master207.tex": "59a650117152ba9b652cab5bb436599cf0b2ca1b28932cd9c49af8ef4cba413f",
+    "master207A.tex": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+    "master207B.tex": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+  },
+  "full_DAG_translation_claimed": false,
+  "audit_sha256": "1bddd69138f602bebcd4f1e0a26107bc6f4dfbc297e0bc4d9f75dcc8e90b8431"
+}

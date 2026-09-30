@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "new_public_theorems": 4,
+  "new_private_theorems": 0,
+  "new_definitions": 1,
+  "new_owned_declarations": 8,
+  "combined_modules": 261,
+  "combined_jobs": 3095,
+  "combined_owned_declarations": 1228,
+  "sources": {
+    "DifferentialGeometry/Analysis/InnerProductSpace/EuclideanProduct.lean": "1dca17576829f14c8e3e00d29828c233424dc54ea4f3930435278787fa4af3f8",
+    "DifferentialGeometry/Geometry/Comparison/MaximalLowDimensionalProducts.lean": "606411307a542d4344b8ab16b22dccef1e2ef805d1213de3c29778e28337ae23"
+  },
+  "logs": {
+    "maximal_low_dimensional_products_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "maximal_low_dimensional_products_review.log": "825376ce10a5a148d311a7139b6d81e4e9f6558b0751a11ee4bb1c3dddbf0d9c",
+    "maximal_low_dimensional_products_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "69e97ffd6de1d52c52cd3bf3711ccd83b27509f71bba5a54878da0678e1ea487",
+  "git_head_at_check": "d1322254eecf9d3bbb5556fd7bf92b3ebe1d15a8",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

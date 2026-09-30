@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "new_public_theorems": 9,
+  "new_definitions": 2,
+  "new_private_theorems": 1,
+  "new_generated_declarations": 2,
+  "new_owned_declarations": 14,
+  "combined_modules": 364,
+  "combined_jobs": 3199,
+  "combined_owned_declarations": 1706,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/ShortHingeEstimate.lean": "6167e2be800c35d807d7964c9b844491bcf824d8a2088e948d27c55cc005c07c",
+    "DifferentialGeometry/Topology/MetricSpace/EndpointReversalCoordinates.lean": "c237464fb17e69cb3cc6609d816f9dabf822bebdd2eb5591f0130368ddd2a723",
+    "DifferentialGeometry/Geometry/Comparison/AngularObstruction.lean": "a2d4adfb1d23958a820f5511f4a92dcba2c06cdb896e75bafab7c2362c70f99f",
+    "DifferentialGeometry/Geometry/Comparison/AngularDistanceEmbedding.lean": "eba44c979e056ea9f1016d6163401ee03b7f7ca216009ca889902560b3f04ebf"
+  },
+  "logs": {
+    "angular_distance_charts_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "angular_distance_charts_review.log": "e141764efb10d32feb972b6163968ea4aaefd6890c2254061e01d7cc3b9b4b6b",
+    "angular_distance_charts_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "0ad2608eaeaf6dc0c1da04828b4cd2cf897eb726d10e3a5431427ea2a68c65d1",
+  "git_head_at_check": "c31e84ead853dcb321b3d2ec1064d9cc99e2afb2",
+  "independent_agent_proof_review": true,
+  "exact_threshold_actual_hinge_negative_control_and_full_original_angular_chart_tests": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

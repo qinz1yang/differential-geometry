@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 12,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 16,
+  "combined_modules": 259,
+  "combined_jobs": 3093,
+  "combined_owned_declarations": 1220,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/ModelSeparation.lean": "99673d9fb22e047e0e616e28373d6bbf9f71de1616948399ea37885546eded24",
+    "DifferentialGeometry/Topology/MetricSpace/ModelTypeUniqueness.lean": "460af6d104dd53bca679571e45334812519104c22fe80262ff1414566ed7b1c3",
+    "DifferentialGeometry/Geometry/Comparison/OneDimensionalClassification.lean": "a1997a6d4f1d7f2dd013e3c372839470d74fd03eaf95818009ac8a98448b0744"
+  },
+  "logs": {
+    "one_dimensional_classification_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "one_dimensional_classification_review.log": "b380763ac66721a1a6dfc6c8ddabccf6593deb879cd4c546731f67345c73f57d",
+    "one_dimensional_classification_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "d6a6c99c966281583311ef328649bc8fb4895b333d2ffc0cddd7ef30174a8ccc",
+  "git_head_at_check": "6e7fdcf1cdd1cfecae12863c72e0427c502f5041",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

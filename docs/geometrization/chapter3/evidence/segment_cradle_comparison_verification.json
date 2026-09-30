@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 10,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 10,
+  "combined_modules": 162,
+  "combined_jobs": 2996,
+  "combined_owned_declarations": 893,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/SegmentExtension.lean": "8269d89a479f075765ad747a2f33a60141147c2c616d5c126e1615623682155a",
+    "DifferentialGeometry/Geometry/Comparison/SegmentGermAngle.lean": "253ae9792c5a577514c0ade60539ac3231a3a319f93d91bc71d6015d90eb5bcc",
+    "DifferentialGeometry/Geometry/Comparison/CradleComparison.lean": "8cb1590965b79de3e68740070fe5b3ebca0c8edc30a1b3143baf9018fa14dc62"
+  },
+  "logs": {
+    "segment_cradle_comparison_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "segment_cradle_comparison_review.log": "fc29d6e117f50c1f49c62df556ec2196a398b02b0bc2a7f6a668839875fa56ab",
+    "segment_cradle_comparison_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "f55cab9403240a6e2661d88634078cb8370efc0ff3bcdd47f6a5441978a03f69",
+  "git_head_at_check": "cf523e4b34503785ed9191a65274c995897132c5",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

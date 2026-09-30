@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "new_public_theorems": 6,
+  "new_owned_declarations": 8,
+  "combined_modules": 95,
+  "combined_jobs": 2883,
+  "combined_owned_declarations": 662,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/CrossAngleArithmetic.lean": "a74dbf845b6e5626b343f567d06de314aa8a6f16c999db8f9ae4125071a1b24b",
+    "DifferentialGeometry/Geometry/Comparison/BalancedAngleDifference.lean": "0f223f87bfd9e7e4f4d6bc5e2f940d6f6f26cf2378edae8e8beed91930c1b703",
+    "DifferentialGeometry/Geometry/Comparison/BalancedCrossAngles.lean": "5380043cebac2957bba6d86db3fa8d35777a95d23df3e675a206fadeaa047da4",
+    "DifferentialGeometry/Geometry/Comparison/PairedPacketExtension.lean": "ac5f528a44918a72baafd5f82dda36e976a9f5b20a93bee6c24e5d9916116e7a",
+    "DifferentialGeometry/Geometry/Comparison/PairedRankIncrease.lean": "55e50737c6f47f8a5b7884d55707f172a887b452a7d30c7682609bb611611331"
+  },
+  "logs": {
+    "paired_rank_increase_lint_0.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "paired_rank_increase_lint_1.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "paired_rank_increase_lint_3.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "paired_rank_increase_lint_2.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "paired_rank_increase_lint_4.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "paired_rank_increase_review.log": "62d7ad1620195af7cb379cc63ec954e15e690bc8448b4a9f787ce69501152c7c",
+    "paired_rank_increase_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "e41d9ed4e637e12ccf363c275cb666b3629f6978350d40132ea7b385885ff15a",
+  "git_head_at_check": "6e22d49002d364fbc1162b744a3830b3a7c259f8",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

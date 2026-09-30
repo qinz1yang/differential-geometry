@@ -1,0 +1,13 @@
+{
+  "source_sha256": "c8420beea69b88c31726a937fd479519cbdec7a6ed94cb960428814f4121ad7b",
+  "build_exit": 0,
+  "build_silent": true,
+  "axiom_exit": 0,
+  "declarations": [
+    "ScaledCutoffRegression.nonzero_block_and_far_exterior",
+    "ScaledCutoffRegression.actual_bump_derivative_bounds_exist",
+    "ScaledCutoffRegression.same_nonzero_cutoff_at_two_scales",
+    "ScaledCutoffRegression.both_product_cross_terms",
+    "ScaledCutoffRegression.original_composition_with_unbounded_translation"
+  ]
+}

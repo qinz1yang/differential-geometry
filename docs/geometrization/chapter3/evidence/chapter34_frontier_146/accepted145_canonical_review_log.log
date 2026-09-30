@@ -1,0 +1,57 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_sine_interpolating_cone_point' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.sine_weighted_cosine_comparison_of_cone_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.sphericalComparisonAngle_le_of_weighted_cosine' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.sphericalComparisonAngle_le_of_shortening_left' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.sphericalComparisonAngle_le_of_shortening_right' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointSphericalComparison_univ_of_cone_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.global_spherical_direction_comparison_of_local_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.global_spherical_direction_comparison_of_intrinsic_eight_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeSineInterpolationReview.unequal_sine_weighted_actual_real_cone_chord' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeSineInterpolationReview.antipodal_boundary_collapses_the_interpolating_radius' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeSineInterpolationReview.zero_arm_is_an_endpoint_not_an_interior_weight' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.original_plane_actual_directions_unequal_sine_interpolation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCSphericalAngleShorteningReview.original_weighted_cosine_right_angle_long_arm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCSphericalAngleShorteningReview.weighted_cosine_assumption_is_necessary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.original_plane_long_arm_both_spherical_shortenings' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_real_open_region_global_spherical_directions' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_singleton_zero_dimensional_global_spherical_directions' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.actual_plane_full_eight_ball_global_spherical_directions' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCPlaneDirectionPackingReview.actual_plane_global_guarded_configuration_outside_local_ball' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 4,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 5,
+  "combined_modules": 234,
+  "combined_jobs": 3068,
+  "combined_owned_declarations": 1155,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/NoncompactRay.lean": "ff1c2c5ea5d6c47ee0c19258f6d902c51bafafe5812367b393b2c12f97546d15",
+    "DifferentialGeometry/Geometry/Comparison/FiniteDimensionalProperness.lean": "516db7af8fa778d93feca0f142c73fe7139c8feda06a30e21cabd22af6dac70a",
+    "DifferentialGeometry/Geometry/Comparison/NoncompactRecognition.lean": "2d51cf3d2c3901788239d1e7779c154c4e33042996439cf98cbff85a707851af"
+  },
+  "logs": {
+    "noncompact_recognition_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "noncompact_recognition_review.log": "91ddb176e4a8a2b9f0882028d03a40a81943b9ffcdc7d0e0da5f7df158b79feb",
+    "noncompact_recognition_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "89a62766bb8c621d596ed96e3b21826958b897c15225f149fa9786b2a6839282",
+  "git_head_at_check": "b35a8d51c5aad4193fdc025da95a3b9b4d08fe77",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

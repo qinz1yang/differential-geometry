@@ -1,0 +1,106 @@
+{
+  "status": "scratch only, not installed or registered",
+  "upstream": "777299070a5529e96345e0033979706fd00c7e62",
+  "checks": [
+    {
+      "path": "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/EdgePoint.lean",
+      "sha256": "2912fd2660bd0e288add75f75b796a6e38624890a5362166cd554c802894ec14",
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean",
+        "-R",
+        "/tmp/gc_edge_migration_scratch",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "-o",
+        "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/EdgePoint.olean",
+        "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/EdgePoint.lean"
+      ],
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/StripChart.lean",
+      "sha256": "ffec070003320ebbbd4abd83a13f772dd19cf39d53faa26afabfcc9dc411c170",
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean",
+        "-R",
+        "/tmp/gc_edge_migration_scratch",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "-o",
+        "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/StripChart.olean",
+        "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/StripChart.lean"
+      ],
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Scaling/RescaleComposition.lean",
+      "sha256": "82bacb9a4b824e5a5a9659dc66d1cea600a1807b1fbe4cb1d4b9f16243b8ba9d",
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean",
+        "-R",
+        "/tmp/gc_edge_migration_scratch",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "-o",
+        "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Scaling/RescaleComposition.olean",
+        "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Scaling/RescaleComposition.lean"
+      ],
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/EdgeHalfPlaneModel.lean",
+      "sha256": "42fd947eb6ed3d4aea355b37d7dc20bf55a8b787c8c1fb229234a52cc96ec7d3",
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean",
+        "-R",
+        "/tmp/gc_edge_migration_scratch",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "-o",
+        "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/EdgeHalfPlaneModel.olean",
+        "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/EdgeHalfPlaneModel.lean"
+      ],
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/EdgeBorderLifts.lean",
+      "sha256": "5049c4a7225edec852501104d710812f48fafdcc4d6fecc7779adb996daf9225",
+      "command": [
+        "/Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean",
+        "-R",
+        "/tmp/gc_edge_migration_scratch",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "-o",
+        "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/EdgeBorderLifts.olean",
+        "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/EdgeBorderLifts.lean"
+      ],
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

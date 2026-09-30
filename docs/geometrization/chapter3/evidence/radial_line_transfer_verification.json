@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "new_public_theorems": 5,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 6,
+  "combined_modules": 314,
+  "combined_jobs": 3149,
+  "combined_owned_declarations": 1398,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/Approximation/RadialEndpointLines.lean": "ac48281ae0621f0b7700b7cf9896aa25809f05e288d715e32951977ac4e14b47",
+    "DifferentialGeometry/Geometry/Metric/Approximation/PointedRadialEndpointLines.lean": "269284588ed9218f92c8888616142f22db2f95d9c32655f75e5840e38c9f7563",
+    "DifferentialGeometry/Geometry/Metric/Approximation/PrefixCrossComparison.lean": "cd5f3880aeb7de6dae7667b000a005737b80c96967c45e184d4ddb5b9cc75397"
+  },
+  "logs": {
+    "radial_line_transfer_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "radial_line_transfer_review.log": "5c8fe6786f619481dcce7e9e01c3a11cf77de31b09c73dcdaeb77e7308ecb7ba",
+    "radial_line_transfer_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "55a50672b299c1e190b029c6ed3f89032eb9552042c9acab0d0343c8c2b664c0",
+  "git_head_at_check": "54fff22860b67f941389b18734ca1f55e54b0edd",
+  "independent_agent_proof_review": true,
+  "independent_agent_incomplete_source_driver": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

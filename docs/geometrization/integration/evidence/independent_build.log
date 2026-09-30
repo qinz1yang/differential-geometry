@@ -1,0 +1,230 @@
+✔ [3407/3741] Built DifferentialGeometry.Geometry.Comparison.Toponogov.ComparisonAngle (5.4s)
+✔ [3408/3741] Built DifferentialGeometry.Geometry.Metric.ConeDistance (5.4s)
+✔ [3409/3741] Built DifferentialGeometry.Analysis.ODE.AreaUpperBarrier (5.7s)
+✔ [3410/3741] Built DifferentialGeometry.Geometry.Comparison.Toponogov.MetricComparisonAngle (2.6s)
+✔ [3411/3741] Built DifferentialGeometry.Geometry.Comparison.SphericalModelAngle (2.7s)
+✔ [3412/3741] Built DifferentialGeometry.Analysis.ODE.ReciprocalTimeBarrier (2.6s)
+✔ [3413/3741] Built DifferentialGeometry.Geometry.Comparison.ModelAngle (3.1s)
+✔ [3414/3741] Built DifferentialGeometry.Geometry.Comparison.EqualRadiusStrainerMargin (3.3s)
+✔ [3415/3741] Built DifferentialGeometry.Geometry.Comparison.Toponogov.ComparisonAngleStability (3.6s)
+✔ [3416/3741] Built DifferentialGeometry.Geometry.Comparison.Toponogov.HyperbolicComparisonAngle (3.7s)
+✔ [3417/3741] Built DifferentialGeometry.Geometry.Metric.ConeDistanceTriangle (3.8s)
+✔ [3418/3741] Built DifferentialGeometry.Geometry.Metric.ConeDirectionControl (4.1s)
+✔ [3419/3741] Built DifferentialGeometry.Geometry.Comparison.SphericalFourPointComparison (2.6s)
+✔ [3420/3741] Built DifferentialGeometry.Geometry.Comparison.Toponogov.ComparisonAngleOrder (2.8s)
+✔ [3421/3741] Built DifferentialGeometry.Geometry.Comparison.Toponogov.EuclideanSector (4.0s)
+✔ [3422/3741] Built DifferentialGeometry.Topology.FundamentalGroup.AreaObstruction (3.9s)
+✖ [3423/3741] Building DifferentialGeometry.Geometry.Comparison.ModelSide (3.9s)
+trace: .> LEAN_PATH=/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Cli/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/batteries/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Qq/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/aesop/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/proofwidgets/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/importGraph/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/LeanSearchClient/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/plausible/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/.lake/build/lib/lean:/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/lib/lean /Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Comparison/ModelSide.lean -o /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Comparison/ModelSide.olean -i /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Comparison/ModelSide.ilean -c /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Comparison/ModelSide.c --setup /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Comparison/ModelSide.setup.json --json
+error: DifferentialGeometry/Geometry/Comparison/ModelSide.lean:128:59: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  modelSideNegCurvature 0 a b ?m.52 ^ 2
+in the target expression
+  arccos (comparisonCosine a b (modelSideNegCurvature 0 a b θ)) = θ
+
+case pos
+a b θ : ℝ
+ha : 0 < a
+hb : 0 < b
+hθ : θ ∈ Icc 0 π
+hκ : 0 ≤ 0
+⊢ arccos (comparisonCosine a b (modelSideNegCurvature 0 a b θ)) = θ
+✔ [3428/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.PrefixCrossComparison (4.1s)
+✔ [3429/3741] Built DifferentialGeometry.Geometry.Comparison.HyperbolicInterpolation (4.1s)
+✔ [3430/3741] Built DifferentialGeometry.Geometry.Comparison.PairedPacket (3.6s)
+✔ [3431/3741] Built DifferentialGeometry.Geometry.Comparison.ModelAngleContinuity (3.6s)
+✔ [3432/3741] Built DifferentialGeometry.Geometry.Comparison.EqualSideHalfAngle (4.4s)
+✔ [3433/3741] Built DifferentialGeometry.Geometry.Comparison.SimplexStrutShortening (4.7s)
+✔ [3434/3741] Built DifferentialGeometry.Geometry.Comparison.FourPoint (3.8s)
+✔ [3442/3741] Built DifferentialGeometry.Geometry.Comparison.TriangleExcessAngle (4.9s)
+✔ [3443/3741] Built DifferentialGeometry.Geometry.Comparison.EqualLegAngleDefect (4.9s)
+✔ [3444/3741] Built DifferentialGeometry.Geometry.Comparison.BalancedMidpoint (5.1s)
+✔ [3445/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.EqualRadiusStrainerConfiguration (3.0s)
+✔ [3446/3741] Built DifferentialGeometry.Geometry.Metric.EuclideanCone (3.2s)
+✔ [3447/3741] Built DifferentialGeometry.Geometry.Comparison.ModelAngleFiniteDifference (5.2s)
+✔ [3448/3741] Built DifferentialGeometry.Geometry.Comparison.Toponogov.LimitingRadialAngle (3.0s)
+✔ [3449/3741] Built DifferentialGeometry.Geometry.Comparison.DistanceMatrixLimit (2.6s)
+✔ [3450/3741] Built DifferentialGeometry.Geometry.Comparison.ModelAngleStability (2.7s)
+✔ [3451/3741] Built DifferentialGeometry.Geometry.Comparison.AlmostOppositeAngle (6.9s)
+✔ [3452/3741] Built DifferentialGeometry.Geometry.Comparison.PairedPacketExtension (2.8s)
+✔ [3453/3741] Built DifferentialGeometry.Geometry.Comparison.PairedPacketReindex (2.8s)
+✔ [3454/3741] Built DifferentialGeometry.Analysis.SpecialFunctions.Trigonometric.RadialModel (7.1s)
+✔ [3455/3741] Built DifferentialGeometry.Geometry.Comparison.ModelHalfAngleSine (3.2s)
+✔ [3456/3741] Built DifferentialGeometry.Geometry.Comparison.AngleExcess (3.6s)
+✔ [3457/3741] Built DifferentialGeometry.Geometry.Comparison.FourPointClosure (3.1s)
+✔ [3458/3741] Built DifferentialGeometry.Geometry.Comparison.HyperbolicSideComparison (3.4s)
+✔ [3459/3741] Built DifferentialGeometry.Geometry.Comparison.CurvatureWeakening (3.5s)
+✔ [3460/3741] Built DifferentialGeometry.Geometry.Comparison.AngleMonotonicity (3.3s)
+✔ [3461/3741] Built DifferentialGeometry.Geometry.Comparison.RankOnePacket (3.2s)
+✔ [3462/3741] Built DifferentialGeometry.Geometry.Comparison.LineDistance (3.8s)
+✔ [3463/3741] Built DifferentialGeometry.Geometry.Comparison.FactorGeometry (3.0s)
+✔ [3464/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.ComparisonLimit (3.0s)
+✔ [3465/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.QuantitativeReverseStrainer (3.4s)
+✔ [3466/3741] Built DifferentialGeometry.Geometry.Metric.EuclideanConeIsometry (3.3s)
+✔ [3467/3741] Built DifferentialGeometry.Geometry.Metric.ConeRadialParametrization (3.4s)
+✖ [3468/3741] Building DifferentialGeometry.Geometry.Comparison.ConeSecantLift (3.8s)
+trace: .> LEAN_PATH=/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Cli/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/batteries/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Qq/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/aesop/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/proofwidgets/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/importGraph/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/LeanSearchClient/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/plausible/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/.lake/build/lib/lean:/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/lib/lean /Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Comparison/ConeSecantLift.lean -o /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Comparison/ConeSecantLift.olean -i /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Comparison/ConeSecantLift.ilean -c /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Comparison/ConeSecantLift.c --setup /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Comparison/ConeSecantLift.setup.json --json
+error: DifferentialGeometry/Geometry/Comparison/ConeSecantLift.lean:94:6: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  coneDistance ((Real.cos (dist p a))⁻¹, a) ((Real.cos (dist p b))⁻¹, b) ^ 2
+in the target expression
+  Real.arccos
+      (comparisonCosine (Real.tan (dist p a)) (Real.tan (dist p b))
+        (coneDistance ((Real.cos (dist p a))⁻¹, a) ((Real.cos (dist p b))⁻¹, b))) =
+    sphericalComparisonAngle (dist p a) (dist p b) (dist a b)
+
+Y : Type u_1
+inst✝ : MetricSpace Y
+p a b : Y
+hpa : 0 < dist p a
+hpb : 0 < dist p b
+ha : dist p a < Real.pi / 2
+hb : dist p b < Real.pi / 2
+hca : 0 < Real.cos (dist p a)
+hcb : 0 < Real.cos (dist p b)
+hsa : 0 < Real.sin (dist p a)
+hsb : 0 < Real.sin (dist p b)
+hab : dist a b < Real.pi
+hsq :
+  coneDistance ((Real.cos (dist p a))⁻¹, a) ((Real.cos (dist p b))⁻¹, b) ^ 2 =
+    (Real.cos (dist p a))⁻¹ ^ 2 + (Real.cos (dist p b))⁻¹ ^ 2 -
+      2 * (Real.cos (dist p a))⁻¹ * (Real.cos (dist p b))⁻¹ * Real.cos (dist a b)
+⊢ Real.arccos
+      (comparisonCosine (Real.tan (dist p a)) (Real.tan (dist p b))
+        (coneDistance ((Real.cos (dist p a))⁻¹, a) ((Real.cos (dist p b))⁻¹, b))) =
+    sphericalComparisonAngle (dist p a) (dist p b) (dist a b)
+✔ [3470/3741] Built DifferentialGeometry.Geometry.Comparison.ConeSineInterpolation (4.0s)
+✔ [3471/3741] Built DifferentialGeometry.Geometry.Metric.ConeIsometryDilation (3.7s)
+✖ [3472/3741] Building DifferentialGeometry.Geometry.Comparison.ConeComparisonAngle (3.5s)
+trace: .> LEAN_PATH=/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Cli/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/batteries/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Qq/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/aesop/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/proofwidgets/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/importGraph/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/LeanSearchClient/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/plausible/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/.lake/build/lib/lean:/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/lib/lean /Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Comparison/ConeComparisonAngle.lean -o /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Comparison/ConeComparisonAngle.olean -i /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Comparison/ConeComparisonAngle.ilean -c /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Comparison/ConeComparisonAngle.c --setup /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Comparison/ConeComparisonAngle.setup.json --json
+error: DifferentialGeometry/Geometry/Comparison/ConeComparisonAngle.lean:22:6: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  coneDistance (↑r, a) (↑s, b) ^ 2
+in the target expression
+  Real.arccos (comparisonCosine (↑r) (↑s) (coneDistance (↑r, a) (↑s, b))) = min Real.pi (dist a b)
+
+Y : Type u_1
+inst✝ : MetricSpace Y
+r s : ℝ≥0
+hr : 0 < ↑r
+hs : 0 < ↑s
+a b : Y
+hd : coneDistance (↑r, a) (↑s, b) ^ 2 = ↑r ^ 2 + ↑s ^ 2 - 2 * ↑r * ↑s * Real.cos (min Real.pi (dist a b))
+⊢ Real.arccos (comparisonCosine (↑r) (↑s) (coneDistance (↑r, a) (↑s, b))) = min Real.pi (dist a b)
+✔ [3473/3741] Built DifferentialGeometry.Geometry.Metric.ConeArcDirections (3.6s)
+✔ [3474/3741] Built DifferentialGeometry.Geometry.Metric.EuclideanConeProper (3.5s)
+✔ [3476/3741] Built DifferentialGeometry.Geometry.Metric.ConeAntipodalLine (3.9s)
+✔ [3478/3741] Built DifferentialGeometry.Geometry.Metric.ConeAngularCovering (4.8s)
+✔ [3479/3741] Built DifferentialGeometry.Geometry.Comparison.AngleReversal (3.6s)
+✔ [3480/3741] Built DifferentialGeometry.Geometry.Metric.EuclideanConeComplete (3.6s)
+✔ [3481/3741] Built DifferentialGeometry.Geometry.Comparison.OppositeAngleExcess (3.1s)
+✔ [3482/3741] Built DifferentialGeometry.Geometry.Comparison.ModelAngleShortening (3.1s)
+✔ [3483/3741] Built DifferentialGeometry.Geometry.Comparison.CradleSequence (3.6s)
+✔ [3486/3741] Built DifferentialGeometry.Geometry.Comparison.CradleSequenceThreeFifths (3.8s)
+✔ [3489/3741] Built DifferentialGeometry.Geometry.Metric.ConeAngularMidpoint (4.7s)
+✔ [3490/3741] Built DifferentialGeometry.Geometry.Comparison.AlmostStraightTriangle (4.1s)
+✔ [3491/3741] Built DifferentialGeometry.Geometry.Comparison.AngleShortening (2.7s)
+✔ [3493/3741] Built DifferentialGeometry.Geometry.Comparison.AlignedEuclideanCoordinates (2.9s)
+✔ [3494/3741] Built DifferentialGeometry.Geometry.Comparison.LineCoordinate (2.9s)
+✔ [3495/3741] Built DifferentialGeometry.Geometry.Comparison.EuclideanFactorDimension (2.8s)
+✔ [3496/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.CeilComparisonExtraction (2.9s)
+✔ [3497/3741] Built DifferentialGeometry.Geometry.Metric.ConeHausdorffDimension (2.7s)
+✔ [3498/3741] Built DifferentialGeometry.Geometry.Comparison.FiniteRadialComparison (4.0s)
+✔ [3499/3741] Built DifferentialGeometry.Geometry.Comparison.ConeLineCoordinate (2.8s)
+✔ [3500/3741] Built DifferentialGeometry.Geometry.Comparison.SphericalAngleShortening (2.8s)
+✔ [3502/3741] Built DifferentialGeometry.Geometry.Comparison.ShorteningAngleLimit (2.6s)
+✔ [3503/3741] Built DifferentialGeometry.Geometry.Comparison.RadialAngleShortening (2.6s)
+✔ [3504/3741] Built DifferentialGeometry.Geometry.Comparison.CrossAngleArithmetic (2.0s)
+✔ [3505/3741] Built DifferentialGeometry.Geometry.Comparison.BalancedAngleDifference (3.3s)
+✔ [3506/3741] Built DifferentialGeometry.Geometry.Metric.ConeGeodesicDirections (2.9s)
+✔ [3507/3741] Built DifferentialGeometry.Geometry.Comparison.RescaleComparison (2.7s)
+✔ [3508/3741] Built DifferentialGeometry.Geometry.Comparison.GermAngle (2.8s)
+✔ [3509/3741] Built DifferentialGeometry.Geometry.Comparison.AlmostRadialPoint (3.5s)
+✔ [3510/3741] Built DifferentialGeometry.Geometry.Comparison.DistanceMatrixRadial (2.1s)
+✔ [3511/3741] Built DifferentialGeometry.Geometry.Comparison.RadialContractionEstimate (2.1s)
+✔ [3512/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.FactorDimension (2.8s)
+✔ [3513/3741] Built DifferentialGeometry.Geometry.Comparison.CalibratedRay (2.0s)
+✔ [3514/3741] Built DifferentialGeometry.Geometry.Comparison.BalancedCrossAngles (1.8s)
+✔ [3515/3741] Built DifferentialGeometry.Geometry.Comparison.LocalGermAngle (1.9s)
+✔ [3516/3741] Built DifferentialGeometry.Geometry.Comparison.CalibratedLine (1.9s)
+✔ [3517/3741] Built DifferentialGeometry.Geometry.Comparison.UniformRadialDefect (2.2s)
+✔ [3518/3741] Built DifferentialGeometry.Geometry.Comparison.PairedCorrection (2.7s)
+✔ [3519/3741] Built DifferentialGeometry.Geometry.Comparison.PairedRankIncrease (2.5s)
+✔ [3520/3741] Built DifferentialGeometry.Geometry.Comparison.CanonicalGermAngle (1.9s)
+✔ [3521/3741] Built DifferentialGeometry.Geometry.Comparison.ParallelLines (1.9s)
+✔ [3522/3741] Built DifferentialGeometry.Geometry.Comparison.RadialTransport (1.8s)
+✔ [3523/3741] Built DifferentialGeometry.Geometry.Comparison.PairedCoordinateMove (2.2s)
+✔ [3524/3741] Built DifferentialGeometry.Geometry.Comparison.SegmentRestrictionAngle (2.6s)
+✔ [3525/3741] Built DifferentialGeometry.Geometry.Comparison.MetricTransfer (2.7s)
+✔ [3526/3741] Built DifferentialGeometry.Geometry.Comparison.RankExclusionLower (2.8s)
+✔ [3527/3741] Built DifferentialGeometry.Geometry.Comparison.CanonicalLocalAngle (2.8s)
+✖ [3534/3741] Building DifferentialGeometry.Geometry.Comparison.CrossingLineCoordinates (2.8s)
+trace: .> LEAN_PATH=/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Cli/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/batteries/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Qq/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/aesop/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/proofwidgets/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/importGraph/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/LeanSearchClient/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/plausible/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/.lake/build/lib/lean:/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/lib/lean /Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Comparison/CrossingLineCoordinates.lean -o /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Comparison/CrossingLineCoordinates.olean -i /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Comparison/CrossingLineCoordinates.ilean -c /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Comparison/CrossingLineCoordinates.c --setup /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Comparison/CrossingLineCoordinates.setup.json --json
+error: DifferentialGeometry/Geometry/Comparison/CrossingLineCoordinates.lean:45:23: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  dist (γ ?s) (β ?t) ^ 2
+in the target expression
+  Real.arccos (comparisonCosine s t (dist (γ s) (β t))) = Real.arccos (lineCoordinate γ (β 1))
+
+X : Type u_1
+inst✝ : MetricSpace X
+γ β : ℝ → X
+hs : fourPointComparison 0 univ
+hγ : Isometry γ
+hβ : Isometry β
+hbase : γ 0 = β 0
+s t : ℝ
+hspos : 0 < s
+htpos : 0 < t
+⊢ Real.arccos (comparisonCosine s t (dist (γ s) (β t))) = Real.arccos (lineCoordinate γ (β 1))
+✔ [3541/3741] Built DifferentialGeometry.Geometry.Comparison.GermCurvatureIndependence (2.8s)
+✔ [3569/3741] Built DifferentialGeometry.Geometry.Comparison.PackingTransport (2.3s)
+✔ [3570/3741] Built DifferentialGeometry.Geometry.Comparison.LineTranslation (2.5s)
+✔ [3571/3741] Built DifferentialGeometry.Geometry.Comparison.PairedDistanceResidual (2.8s)
+✔ [3572/3741] Built DifferentialGeometry.Geometry.Comparison.CompactRadialTarget (1.9s)
+✔ [3573/3741] Built DifferentialGeometry.Geometry.Comparison.LocalMetricComparison (2.0s)
+✔ [3574/3741] Built DifferentialGeometry.Geometry.Comparison.RadialEuclideanPacking (2.1s)
+✔ [3575/3741] Built DifferentialGeometry.Geometry.Comparison.SegmentGermAngle (2.1s)
+✔ [3607/3741] Built DifferentialGeometry.Geometry.Comparison.LineSplitting (2.4s)
+✔ [3611/3741] Built DifferentialGeometry.Geometry.Comparison.PairedDistanceOpenness (1.8s)
+✔ [3612/3741] Built DifferentialGeometry.Geometry.Comparison.IntrinsicLocalComparison (1.7s)
+✔ [3623/3741] Built DifferentialGeometry.Geometry.Comparison.MultipleEndsSplitting (2.1s)
+✔ [3624/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.LineSplitting (2.2s)
+✔ [3625/3741] Built DifferentialGeometry.Geometry.Comparison.LineBusemann (2.2s)
+✔ [3628/3741] Built DifferentialGeometry.Geometry.Comparison.TwoConeSplitting (2.2s)
+✔ [3629/3741] Built DifferentialGeometry.Geometry.Comparison.PairedPacketLocalization (2.3s)
+✔ [3632/3741] Built DifferentialGeometry.Geometry.Comparison.RankExclusionChart (2.5s)
+✔ [3633/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.MultipleEndsBlowdown (2.2s)
+✔ [3634/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.FactorSplitting (2.3s)
+✔ [3635/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.OppositeEndpointCoordinates (2.4s)
+✔ [3636/3741] Built DifferentialGeometry.Geometry.Comparison.PairedDistanceLocalOpenness (2.3s)
+✔ [3637/3741] Built DifferentialGeometry.Geometry.Comparison.PairedChartQuality (2.1s)
+✔ [3638/3741] Built DifferentialGeometry.Geometry.Comparison.StrutVertexStability (2.3s)
+✔ [3641/3741] Built DifferentialGeometry.Geometry.Comparison.BairePairedPacket (2.3s)
+✔ [3642/3741] Built DifferentialGeometry.Geometry.Comparison.PairedChartDistortion (1.9s)
+✔ [3643/3741] Built DifferentialGeometry.Geometry.Comparison.SimplexStrutNeighborhood (1.9s)
+✔ [3648/3741] Built DifferentialGeometry.Geometry.Comparison.PairedPacketDimension (1.9s)
+✔ [3649/3741] Built DifferentialGeometry.Geometry.Comparison.OneDimensionalRank (2.0s)
+✔ [3650/3741] Built DifferentialGeometry.Geometry.Comparison.MaximalPairedRank (2.2s)
+✔ [3651/3741] Built DifferentialGeometry.Geometry.Comparison.VariablePairedRank (2.2s)
+✔ [3652/3741] Built DifferentialGeometry.Geometry.Comparison.UnitComparisonSegments (2.7s)
+✔ [3653/3741] Built DifferentialGeometry.Geometry.Comparison.OneDimensionalSegments (2.1s)
+✔ [3654/3741] Built DifferentialGeometry.Geometry.Comparison.MaximalPairedChart (2.3s)
+✔ [3655/3741] Built DifferentialGeometry.Geometry.Comparison.ScaledPairedChart (2.4s)
+✔ [3656/3741] Built DifferentialGeometry.Geometry.Comparison.OneDimensionalRecognition (1.5s)
+✔ [3659/3741] Built DifferentialGeometry.Geometry.Comparison.CenteredPairedChart (1.7s)
+✔ [3660/3741] Built DifferentialGeometry.Geometry.Comparison.FactorRecognition (1.0s)
+✔ [3661/3741] Built DifferentialGeometry.Geometry.Comparison.EndpointRecognition (1.0s)
+✔ [3662/3741] Built DifferentialGeometry.Geometry.Comparison.PairedCompactPatch (2.0s)
+✔ [3663/3741] Built DifferentialGeometry.Geometry.Comparison.NearbyPairedChart (2.1s)
+✔ [3664/3741] Built DifferentialGeometry.Geometry.Comparison.NearbyIntegerDimension (2.2s)
+✔ [3665/3741] Built DifferentialGeometry.Geometry.Comparison.LocalPolynomialPacking (2.3s)
+✔ [3666/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.FactorRecognition (1.8s)
+✔ [3667/3741] Built DifferentialGeometry.Geometry.Comparison.FactorEndpointRecognition (1.7s)
+✔ [3668/3741] Built DifferentialGeometry.Geometry.Comparison.LocalCompactness (1.8s)
+✔ [3669/3741] Built DifferentialGeometry.Geometry.Comparison.LocalRoughDimension (1.5s)
+✔ [3670/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.FactorEndpointRecognition (1.5s)
+✔ [3671/3741] Built DifferentialGeometry.Geometry.Comparison.RoughLocalCompactness (1.4s)
+✔ [3672/3741] Built DifferentialGeometry.Geometry.Comparison.FiniteDimensionalLocalCompactness (1.4s)
+Some required targets logged failures:
+- DifferentialGeometry.Geometry.Comparison.ModelSide
+- DifferentialGeometry.Geometry.Comparison.ConeSecantLift
+- DifferentialGeometry.Geometry.Comparison.ConeComparisonAngle
+- DifferentialGeometry.Geometry.Comparison.CrossingLineCoordinates
+error: build failed

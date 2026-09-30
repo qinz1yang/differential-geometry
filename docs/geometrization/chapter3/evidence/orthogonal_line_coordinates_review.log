@@ -1,0 +1,54 @@
+'_private._stdin.0.GCAC53OrientationReview.oriented_plane' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC53OrientationReview.zero_rank' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC53OrientationReview.one_reversed_axis' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC53OrientationReview.coincident_angle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC53OrientationReview.reversed_angle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'_private._stdin.0.GCAC53OrientationReview.oriented_plane_coordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_crossing_isometries_reciprocity' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_crossing_isometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.sq_dist_crossing_isometries' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngle_crossing_isometries' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.germComparisonAngle_crossing_isometries' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_crossing_isometry_eq_zero_of_right_angle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.orthogonalLineInFactor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.isometry_orthogonalLineInFactor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.orthogonalLineInFactor_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.germComparisonAngle_orthogonalLineInFactor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.lineSplitting_apply_of_lineCoordinate_eq_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'EuclideanSpace.finSuccProdIsometry_fst_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EuclideanSpace.finSuccProdIsometry_snd' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EuclideanSpace.finSuccProdIsometry_symm_single_castSucc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EuclideanSpace.finSuccProdIsometry_symm_single_last' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_oriented_euclidean_splitting' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_eq_euclidean_coordinate_of_aligned_isometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_oriented_euclidean_coordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

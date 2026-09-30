@@ -1,0 +1,25 @@
+{
+  "success": true,
+  "new_public_theorems": 13,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 16,
+  "combined_modules": 201,
+  "combined_jobs": 3035,
+  "combined_owned_declarations": 1058,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/IntrinsicBallGeometry.lean": "9338c426c6a48852dee05f81d7014a78a7b0931296cc04acc21b2b4a58799dce",
+    "DifferentialGeometry/Geometry/Comparison/IntrinsicBufferComparison.lean": "8cda8fe0d59669ebb083a1a83e29282a4b585581aaff8500dc92f312f824137d",
+    "DifferentialGeometry/Topology/MetricSpace/RadialBall.lean": "42cbb0d1eb4d2b1ee1706135f0cb47aff8d3351e1928dbaf558be07230e5bf77",
+    "DifferentialGeometry/Geometry/Comparison/IntrinsicRadialComparison.lean": "fc41ec7723f9e45534433ad4d636ef76589e58c7c2d60b476a2f457ef69dc264"
+  },
+  "logs": {
+    "intrinsic_buffer_radial_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "intrinsic_buffer_radial_review.log": "0803f23eb8109a6650437158d91972423fbd5b1117fdea87354c904f43e3168f",
+    "intrinsic_buffer_radial_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "c54061c2298fb43c470ef65eabca4977ff76a48948ba1f28144c752393f636f6",
+  "git_head_at_check": "86325850acf7b654de60d0b6b12063c66b4e3e41",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

@@ -1,0 +1,144 @@
+DifferentialGeometry.Geometry.Comparison.Toponogov.one_add_cos_comparisonAngle_double_le {κ r ℓ μ : ℝ} (hκ : 0 ≤ κ)
+  (hr : 0 < r) (hμ : 0 ≤ μ) (hμ1 : μ ≤ 1) (hrℓ : r ≤ ℓ) (hℓ : ℓ ≤ (1 + μ) * r) (hκr : κ * r ≤ 1 / 3) :
+  0 ≤
+      1 +
+        Real.cos (DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature (κ ^ 2) r ℓ (2 * r)) ∧
+    1 + Real.cos (DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature (κ ^ 2) r ℓ (2 * r)) ≤
+      6 * μ
+'DifferentialGeometry.Geometry.Comparison.Toponogov.one_add_cos_comparisonAngle_double_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+DifferentialGeometry.Geometry.Comparison.Toponogov.pi_sub_lt_comparisonAngle_double {κ r ℓ μ τ : ℝ} (hκ : 0 ≤ κ)
+  (hr : 0 < r) (hμ : 0 ≤ μ) (hμ1 : μ ≤ 1) (hrℓ : r ≤ ℓ) (hℓ : ℓ ≤ (1 + μ) * r) (hκr : κ * r ≤ 1 / 3) (hτ : 0 ≤ τ)
+  (hbudget : 6 * μ < 1 - Real.cos τ) :
+  Real.pi - τ < DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature (κ ^ 2) r ℓ (2 * r)
+'DifferentialGeometry.Geometry.Comparison.Toponogov.pi_sub_lt_comparisonAngle_double' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+Metric.exists_isometry_of_local_distortion.{u_1, u_2} {D : Type u_1} {Y : Type u_2} [MetricSpace D] [MetricSpace Y]
+  [ProperSpace Y] (p : D) {K : Set Y} (hK : IsCompact K) (g : ℕ → D → Y) (hbase : ∀ (n : ℕ), g n p ∈ K) {ε : ℕ → ℝ}
+  (hε : Filter.Tendsto ε Filter.atTop (nhds 0))
+  (hdist :
+    ∀ (S : ℝ),
+      ∀ᶠ (n : ℕ) in Filter.atTop, ∀ (s t : D), dist s p ≤ S → dist t p ≤ S → |dist (g n s) (g n t) - dist s t| ≤ ε n) :
+  ∃ F, Isometry F ∧ F p ∈ K
+'Metric.exists_isometry_of_local_distortion' depends on axioms: [propext, Classical.choice, Quot.sound]
+Metric.exists_isometric_line_of_compact_centers.{u_1} {X : Type u_1} [MetricSpace X] [ProperSpace X] {K : Set X}
+  (hK : IsCompact K) (hsegments : ∀ (R : ℝ) (hR : 0 < R), ∃ f, Isometry f ∧ f ⟨0, ⋯⟩ ∈ K) : ∃ f, Isometry f ∧ f 0 ∈ K
+'Metric.exists_isometric_line_of_compact_centers' depends on axioms: [propext, Classical.choice, Quot.sound]
+Metric.exists_isometric_line_of_unbounded_components.{u_1} {X : Type u_1} [MetricSpace X] [ProperSpace X]
+  (hsegments :
+    ∀ (x y : X),
+      ∃ f,
+        Continuous f ∧ f ⟨0, ⋯⟩ = x ∧ f ⟨1, ⋯⟩ = y ∧ ∀ (s t : ↑(Set.Icc 0 1)), dist (f s) (f t) = dist x y * dist s t)
+  {K : Set X} (hK : IsCompact K) {a b : X} (ha : ¬Bornology.IsBounded (connectedComponentIn Kᶜ a))
+  (hb : ¬Bornology.IsBounded (connectedComponentIn Kᶜ b))
+  (hab : connectedComponentIn Kᶜ a ≠ connectedComponentIn Kᶜ b) : ∃ f, Isometry f ∧ f 0 ∈ K
+'Metric.exists_isometric_line_of_unbounded_components' depends on axioms: [propext, Classical.choice, Quot.sound]
+Metric.connectedComponentIn_compl_prod_eq_of_unbounded.{u_1} {Y : Type u_1} [MetricSpace Y] [PreconnectedSpace Y]
+  (hY : ¬Bornology.IsBounded Set.univ) {K : Set (ℝ × Y)} (hK : Bornology.IsBounded K) {a b : ℝ × Y}
+  (ha : ¬Bornology.IsBounded (connectedComponentIn Kᶜ a)) (hb : ¬Bornology.IsBounded (connectedComponentIn Kᶜ b)) :
+  connectedComponentIn Kᶜ a = connectedComponentIn Kᶜ b
+'Metric.connectedComponentIn_compl_prod_eq_of_unbounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+IsometryEquiv.isBounded_factor_of_unbounded_components.{u_1, u_2} {X : Type u_1} {Y : Type u_2} [MetricSpace X]
+  [MetricSpace Y] [PreconnectedSpace Y] (e : X ≃ᵢ WithLp 2 (ℝ × Y)) {K : Set X} (hK : Bornology.IsBounded K) {a b : X}
+  (ha : ¬Bornology.IsBounded (connectedComponentIn Kᶜ a)) (hb : ¬Bornology.IsBounded (connectedComponentIn Kᶜ b))
+  (hab : connectedComponentIn Kᶜ a ≠ connectedComponentIn Kᶜ b) : Bornology.IsBounded Set.univ
+'IsometryEquiv.isBounded_factor_of_unbounded_components' depends on axioms: [propext, Classical.choice, Quot.sound]
+DifferentialGeometry.Geometry.Comparison.Toponogov.exists_isometryEquiv_real_prod_compact_of_unbounded_components.{u}
+  {X : Type u} [MetricSpace X] [ProperSpace X]
+  (hcomp : DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison 0 Set.univ)
+  (hsegments :
+    ∀ (x y : X),
+      ∃ f,
+        Continuous f ∧ f ⟨0, ⋯⟩ = x ∧ f ⟨1, ⋯⟩ = y ∧ ∀ (s t : ↑(Set.Icc 0 1)), dist (f s) (f t) = dist x y * dist s t)
+  {K : Set X} (hK : IsCompact K) {a b : X} (ha : ¬Bornology.IsBounded (connectedComponentIn Kᶜ a))
+  (hb : ¬Bornology.IsBounded (connectedComponentIn Kᶜ b))
+  (hab : connectedComponentIn Kᶜ a ≠ connectedComponentIn Kᶜ b) :
+  ∃ Y m p e,
+    CompactSpace Y ∧
+      DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison 0 Set.univ ∧
+        e.symm (WithLp.toLp 2 (0, p)) ∈ K ∧
+          (∀ (x y : Y),
+              ∃ f,
+                Continuous f ∧
+                  f ⟨0, ⋯⟩ = x ∧ f ⟨1, ⋯⟩ = y ∧ ∀ (s t : ↑(Set.Icc 0 1)), dist (f s) (f t) = dist x y * dist s t) ∧
+            dimH Set.univ ≤ dimH Set.univ
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_isometryEquiv_real_prod_compact_of_unbounded_components' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+IsometryEquiv.rescale.{u_1, u_2} {X : Type u_1} {Y : Type u_2} [mX : MetricSpace X] [mY : MetricSpace Y] (e : X ≃ᵢ Y)
+  (c : ℝ) (hc : 0 < c) : X ≃ᵢ Y
+'IsometryEquiv.rescale' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.PointedGHConverges.comap_source_isometry.{u_1, u_2, u_3} {X : ℕ → Type u_1} {Y : ℕ → Type u_2}
+  {Z : Type u_3} [(n : ℕ) → MetricSpace (X n)] [(n : ℕ) → MetricSpace (Y n)] [MetricSpace Z] {p : (n : ℕ) → X n}
+  {q : (n : ℕ) → Y n} {z : Z} (h : GC.MetricGeometry.PointedGHConverges p z) (e : (n : ℕ) → Y n ≃ᵢ X n)
+  (he : ∀ (n : ℕ), (e n) (q n) = p n) : GC.MetricGeometry.PointedGHConverges q z
+'GC.MetricGeometry.PointedGHConverges.comap_source_isometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.rescaledProductFstApprox.{u_1, u_2} {E : Type u_1} {Y : Type u_2} [NormedAddCommGroup E]
+  [NormedSpace ℝ E] [MetricSpace Y] (p : E) (q : Y) (hY : Bornology.IsBounded Set.univ) (c : ℝ) (hc : 0 < c) {R ε : ℝ}
+  (hε : 0 < ε) (hεR : ε < R) (hdiam : c * Metric.diam Set.univ < ε) :
+  GC.MetricGeometry.PointedBallApprox (WithLp.toLp 2 (p, q)) 0 R ε
+'GC.MetricGeometry.rescaledProductFstApprox' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.pointedGHConverges_rescaled_normed_product.{u_1, u_2} {E : Type u_1} {Y : Type u_2}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [MetricSpace Y] [CompleteSpace E] (p : E) (q : Y)
+  (hY : Bornology.IsBounded Set.univ) {c : ℕ → ℝ} (hc : ∀ (n : ℕ), 0 < c n)
+  (hlim : Filter.Tendsto c Filter.atTop (nhds 0)) :
+  GC.MetricGeometry.PointedGHConverges (fun x ↦ WithLp.toLp 2 (p, q)) 0
+'GC.MetricGeometry.pointedGHConverges_rescaled_normed_product' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GC.MetricGeometry.pointedGHConverges_rescaled_of_normed_product.{u_1, u_2, u_3} {X : Type u_1} {E : Type u_2}
+  {F : Type u_3} [mX : MetricSpace X] [NormedAddCommGroup E] [NormedSpace ℝ E] [MetricSpace F] [CompleteSpace E]
+  (e : X ≃ᵢ WithLp 2 (E × F)) (p : X) (hF : Bornology.IsBounded Set.univ) {c : ℕ → ℝ} (hc : ∀ (n : ℕ), 0 < c n)
+  (hlim : Filter.Tendsto c Filter.atTop (nhds 0)) : GC.MetricGeometry.PointedGHConverges (fun x ↦ p) 0
+'GC.MetricGeometry.pointedGHConverges_rescaled_of_normed_product' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GC.MetricGeometry.PointedGHConverges.exists_isometryEquiv_of_rescaled_normed_product.{u_1, u_2, u_3, u_4} {X : Type u_1}
+  {E : Type u_2} {F : Type u_3} {C : Type u_4} [mX : MetricSpace X] [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [MetricSpace F] [MetricSpace C] [ProperSpace E] [ProperSpace C] {p : X} {q : C} {c : ℕ → ℝ} (hc : ∀ (n : ℕ), 0 < c n)
+  (hlim : Filter.Tendsto c Filter.atTop (nhds 0)) (h : GC.MetricGeometry.PointedGHConverges (fun x ↦ p) q)
+  (e : X ≃ᵢ WithLp 2 (E × F)) (hF : Bornology.IsBounded Set.univ) : ∃ f, f q = 0
+'GC.MetricGeometry.PointedGHConverges.exists_isometryEquiv_of_rescaled_normed_product' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GC.MetricGeometry.PointedGHConverges.of_eventually_kleinerLott_approx.{u_1, u_2} {X : ℕ → Type u_1} {Y : Type u_2}
+  [(n : ℕ) → MetricSpace (X n)] [MetricSpace Y] [CompleteSpace Y] {p : (n : ℕ) → X n} {q : Y}
+  (h :
+    ∀ (δ : ℝ), 0 < δ → δ < 1 → ∀ᶠ (n : ℕ) in Filter.atTop, Nonempty (GC.MetricGeometry.KleinerLottApprox (p n) q δ)) :
+  GC.MetricGeometry.PointedGHConverges p q
+'GC.MetricGeometry.PointedGHConverges.of_eventually_kleinerLott_approx' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GC.MetricGeometry.PointedGHConverges.exists_isometryEquiv_real_of_unbounded_components.{u_1, u_2} {X : Type u_1}
+  {C : Type u_2} [mX : MetricSpace X] [ProperSpace X] [MetricSpace C] [ProperSpace C] {p : X} {q : C} {c : ℕ → ℝ}
+  (hc : ∀ (n : ℕ), 0 < c n) (hlim : Filter.Tendsto c Filter.atTop (nhds 0))
+  (h : GC.MetricGeometry.PointedGHConverges (fun x ↦ p) q)
+  (hcomp : DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison 0 Set.univ)
+  (hsegments :
+    ∀ (x y : X),
+      ∃ f,
+        Continuous f ∧ f ⟨0, ⋯⟩ = x ∧ f ⟨1, ⋯⟩ = y ∧ ∀ (s t : ↑(Set.Icc 0 1)), dist (f s) (f t) = dist x y * dist s t)
+  {K : Set X} (hK : IsCompact K) {a b : X} (ha : ¬Bornology.IsBounded (connectedComponentIn Kᶜ a))
+  (hb : ¬Bornology.IsBounded (connectedComponentIn Kᶜ b))
+  (hab : connectedComponentIn Kᶜ a ≠ connectedComponentIn Kᶜ b) : ∃ e, e q = 0
+'GC.MetricGeometry.PointedGHConverges.exists_isometryEquiv_real_of_unbounded_components' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GC.MetricGeometry.exists_isometryEquiv_real_of_rescaled_approximations.{u_1, u_2} {X : Type u_1} {C : Type u_2}
+  [mX : MetricSpace X] [ProperSpace X] [MetricSpace C] [ProperSpace C] (p : X) (q : C)
+  (happrox :
+    ∀ (δ : ℝ),
+      0 < δ → δ < 1 → ∃ R₀, ∀ (R : ℝ), R₀ ≤ R → ∀ (hR : 0 < R), Nonempty (GC.MetricGeometry.KleinerLottApprox p q δ))
+  (hcomp : DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison 0 Set.univ)
+  (hsegments :
+    ∀ (x y : X),
+      ∃ f,
+        Continuous f ∧ f ⟨0, ⋯⟩ = x ∧ f ⟨1, ⋯⟩ = y ∧ ∀ (s t : ↑(Set.Icc 0 1)), dist (f s) (f t) = dist x y * dist s t)
+  {K : Set X} (hK : IsCompact K) {a b : X} (ha : ¬Bornology.IsBounded (connectedComponentIn Kᶜ a))
+  (hb : ¬Bornology.IsBounded (connectedComponentIn Kᶜ b))
+  (hab : connectedComponentIn Kᶜ a ≠ connectedComponentIn Kᶜ b) : ∃ e, e q = 0
+'GC.MetricGeometry.exists_isometryEquiv_real_of_rescaled_approximations' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

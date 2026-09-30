@@ -1,0 +1,165 @@
+import DifferentialGeometry.Analysis.Calculus.Compactness.FiniteOrder
+import DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
+import DifferentialGeometry.Analysis.ODE.ReciprocalTimeBarrier
+import DifferentialGeometry.Geometry.Collapse.CompactBounds
+import DifferentialGeometry.Geometry.Collapse.CurvatureScale
+import DifferentialGeometry.Geometry.Collapse.CuspBoundary
+import DifferentialGeometry.Geometry.Collapse.GraphManifold
+import DifferentialGeometry.Geometry.Collapse.TorusDecomposition
+import DifferentialGeometry.Geometry.Collapse.UniformDerivativeBounds
+import DifferentialGeometry.Geometry.Comparison.SectionalLowerBound
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Metric
+import DifferentialGeometry.Geometry.Curvature.Metric.DerivativeNorm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspIncompressibility
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.ExteriorDiskFlow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateDecomposition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.RegularSlice
+import DifferentialGeometry.Geometry.Hyperbolic.Cusp
+import DifferentialGeometry.Geometry.Hyperbolic.ModelAtlas
+import DifferentialGeometry.Geometry.Hyperbolic.Rigidity
+import DifferentialGeometry.Geometry.Metric.Distance.Neighborhood
+import DifferentialGeometry.Geometry.Metric.Pullback.FiniteRegularity
+import DifferentialGeometry.Geometry.MinimalSurface.ExteriorDiskArea
+import DifferentialGeometry.Topology.FundamentalGroup.AreaObstruction
+import DifferentialGeometry.Topology.ThreeManifold.Geometrization.Theorem
+import DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Presentation
+import DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Refinement
+import DifferentialGeometry.Topology.ThreeManifold.TorusCut.Decomposition
+#print axioms DifferentialGeometry.CheegerGromovCompactness.exists_bilinear_form_limit_subsequence_of_bounded_derivatives
+#print axioms DifferentialGeometry.Analysis.hasLocalSmoothUpperBarrier
+#print axioms DifferentialGeometry.Analysis.not_nonnegative_of_upper_barriers_div_time
+#print axioms DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers_shift
+#print axioms DifferentialGeometry.Analysis.not_nonnegative_area_upper_barriers_pi_shift
+#print axioms DifferentialGeometry.Analysis.false_of_area_upper_barriers
+#print axioms DifferentialGeometry.Geometry.Collapse.exists_radius_bound_of_volume_lower
+#print axioms DifferentialGeometry.Geometry.Collapse.curvatureRadius
+#print axioms DifferentialGeometry.Geometry.Collapse.ballVolume
+#print axioms DifferentialGeometry.Geometry.Collapse.euclideanUnitBallVolume
+#print axioms DifferentialGeometry.Geometry.Collapse.volumeCollapsedAtCurvatureScale
+#print axioms DifferentialGeometry.Geometry.Collapse.curvatureDerivativesControlled
+#print axioms DifferentialGeometry.Geometry.Collapse.curvatureRadius_pos
+#print axioms DifferentialGeometry.Geometry.Collapse.curvatureRadius_eq_top_iff
+#print axioms DifferentialGeometry.Geometry.Collapse.curvatureDerivativesControlled_mono_threshold
+#print axioms DifferentialGeometry.Geometry.Collapse.volumeCollapsedAtCurvatureScale_of_curvatureRadius_eq_top
+#print axioms DifferentialGeometry.Geometry.Collapse.curvatureDerivativesControlled_mono_control
+#print axioms DifferentialGeometry.Geometry.Collapse.curvatureDerivativesControlled_anti_order
+#print axioms DifferentialGeometry.Geometry.Collapse.volumeCollapsedAtCurvatureScale_iff_toReal
+#print axioms DifferentialGeometry.Geometry.Collapse.cuspMetricError
+#print axioms DifferentialGeometry.Geometry.Collapse.cuspMetricErrorBound
+#print axioms DifferentialGeometry.Geometry.Collapse.CuspEmbedding
+#print axioms DifferentialGeometry.Geometry.Collapse.NearlyCuspidalBoundary
+#print axioms DifferentialGeometry.Geometry.Collapse.distanceToBoundary
+#print axioms DifferentialGeometry.Geometry.Collapse.boundaryVolumeCollapsed
+#print axioms DifferentialGeometry.Geometry.Collapse.CuspEmbedding.weaken
+#print axioms DifferentialGeometry.Geometry.Collapse.NearlyCuspidalBoundary.weaken
+#print axioms DifferentialGeometry.Geometry.Collapse.distanceToBoundary_eq_top_of_boundary_empty
+#print axioms DifferentialGeometry.Geometry.Collapse.closedCollapseHypotheses
+#print axioms DifferentialGeometry.Geometry.Collapse.boundaryCollapseHypotheses
+#print axioms DifferentialGeometry.Geometry.Collapse.staticCollapseHypotheses
+#print axioms DifferentialGeometry.Geometry.Collapse.volumeCollapsedAtCurvatureScale_mono
+#print axioms DifferentialGeometry.Geometry.Collapse.closedCollapseHypotheses_mono
+#print axioms DifferentialGeometry.Geometry.Collapse.boundaryCollapseHypotheses_mono
+#print axioms DifferentialGeometry.Geometry.Collapse.not_boundaryCollapseHypotheses_of_boundary_empty
+#print axioms DifferentialGeometry.Geometry.Collapse.staticCollapseHypotheses_exclusive
+#print axioms DifferentialGeometry.Geometry.Collapse.exists_rawGraphPresentation_of_nonnegative
+#print axioms DifferentialGeometry.Geometry.Collapse.exists_closed_graph_threshold_of_finite_scales
+#print axioms DifferentialGeometry.Geometry.Collapse.exists_closed_graph_threshold
+#print axioms DifferentialGeometry.Geometry.Collapse.exists_boundary_graph_threshold
+#print axioms DifferentialGeometry.Geometry.Collapse.exists_graph_threshold
+#print axioms DifferentialGeometry.Geometry.Collapse.exists_componentwise_graph_threshold
+#print axioms DifferentialGeometry.Geometry.Collapse.cutPieceMap
+#print axioms DifferentialGeometry.Geometry.Collapse.isInducedCutMetric
+#print axioms DifferentialGeometry.Geometry.Collapse.HyperbolicOrCollapsed
+#print axioms DifferentialGeometry.Geometry.Collapse.geometrizes_of_hyperbolicOrCollapsed
+#print axioms DifferentialGeometry.Geometry.Collapse.exists_common_curvature_derivative_bound_of_volume_tests
+#print axioms DifferentialGeometry.Geometry.Collapse.exists_common_curvature_derivative_bound
+#print axioms DifferentialGeometry.Geometry.Riemannian.gInner_sq_le_mul
+#print axioms DifferentialGeometry.Geometry.Riemannian.SectionalBoundedBelowAt.mono
+#print axioms DifferentialGeometry.Geometry.Connection.metricCovariantDerivative
+#print axioms DifferentialGeometry.Geometry.Connection.iteratedMetricCovariantDerivative
+#print axioms DifferentialGeometry.Geometry.Curvature.curvatureDerivativeNorm
+#print axioms DifferentialGeometry.Geometry.RicciFlow.cusp_slice_injective_iff
+#print axioms DifferentialGeometry.Geometry.RicciFlow.incompressible_of_shifted_area_barriers
+#print axioms GC.LongTime.postStage
+#print axioms GC.LongTime.postMetric
+#print axioms GC.LongTime.postStage_regularSlice
+#print axioms GC.LongTime.postMetric_regularSlice
+#print axioms GC.LongTime.exteriorDiskArea
+#print axioms GC.LongTime.exteriorDiskArea_nonneg
+#print axioms GC.LongTime.exteriorDiskArea_eq
+#print axioms GC.LongTime.hasExteriorDiskMinimizersAfter
+#print axioms GC.LongTime.hasCommonNeckAccuracy
+#print axioms GC.LongTime.RegularSlice.componentMetric
+#print axioms GC.LongTime.hasExteriorAreaObstructionAfter
+#print axioms GC.LongTime.hasAttainedExteriorAreaObstructionAfter
+#print axioms GC.LongTime.hasAttainedExteriorAreaObstructionAfter.toObstruction
+#print axioms GC.LongTime.hasExteriorAreaObstructionAfter_iff
+#print axioms GC.LongTime.hasLateSequenceTests
+#print axioms GC.LongTime.exists_surgery_with_late_sequence_tests
+#print axioms GC.LongTime.components_geometrize_of_late_sequence_tests
+#print axioms GC.LongTime.geometrizes_of_metric
+#print axioms GC.LongTime.RegularSlice
+#print axioms GC.LongTime.RegularSlice.history
+#print axioms GC.LongTime.RegularSlice.stage
+#print axioms GC.LongTime.RegularSlice.metric
+#print axioms GC.LongTime.RegularSlice.normalizedMetric
+#print axioms GC.LongTime.RegularSlice.curvatureOneMetric
+#print axioms GC.LongTime.RegularSlice.initial
+#print axioms GC.LongTime.hasArbitrarilyLateNonemptySlices
+#print axioms GC.LongTime.exists_regular_slice_after
+#print axioms GC.LongTime.empty_slice_or_arbitrarily_late
+#print axioms GC.LongTime.exists_common_late_slice
+#print axioms GC.LongTime.geometrizes_of_late_slice_supply
+#print axioms DifferentialGeometry.Geometry.Hyperbolic.CuspHalfSpace
+#print axioms DifferentialGeometry.Geometry.Hyperbolic.cuspDomain
+#print axioms DifferentialGeometry.Geometry.Hyperbolic.HyperbolicCusp
+#print axioms DifferentialGeometry.Geometry.Hyperbolic.cusp_constant_sectional_curvature
+#print axioms DifferentialGeometry.Geometry.Hyperbolic.has_hyperbolic_atlas_of_curvature_neg_one
+#print axioms DifferentialGeometry.Geometry.Hyperbolic.hyperbolicGeometricStructure
+#print axioms DifferentialGeometry.Geometry.Hyperbolic.hyperbolicGeometricStructure_model
+#print axioms DifferentialGeometry.Geometry.Hyperbolic.hasConstantSectionalCurvature
+#print axioms DifferentialGeometry.Geometry.Hyperbolic.mostow_prasad
+#print axioms DifferentialGeometry.exists_riemannianBallOf_subset_of_mem_nhds
+#print axioms DifferentialGeometry.Geometry.exists_pullback_metric_of_finite_diffeomorph
+#print axioms DifferentialGeometry.Geometry.exists_pullback_metric_of_diffeomorph_one_order_higher
+#print axioms DifferentialGeometry.Geometry.exists_pullback_metric_of_diffeomorph_three_orders_lower
+#print axioms DifferentialGeometry.Geometry.MinimalSurface.isExteriorSpanningDisk
+#print axioms DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea
+#print axioms DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea_nonneg
+#print axioms DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea_le
+#print axioms DifferentialGeometry.Geometry.MinimalSurface.exteriorDiskAreaOn
+#print axioms DifferentialGeometry.Geometry.MinimalSurface.exteriorDiskAreaOn_nonneg
+#print axioms DifferentialGeometry.Geometry.MinimalSurface.continuousOn_leastExteriorDiskArea_of_local_disk_comparisons
+#print axioms DifferentialGeometry.Geometry.MinimalSurface.leastExteriorDiskArea_eq_zero_of_empty
+#print axioms ContinuousMap.fundamentalGroup_map_injective_of_area_obstructions
+#print axioms GC.Endpoint.geometrization
+#print axioms GC.Endpoint.geometrization_conjecture
+#print axioms GC.Endpoint.smooth_geometrization_conjecture
+#print axioms GC.GraphManifold.SurfaceModel
+#print axioms GC.GraphManifold.SurfaceModel.Space
+#print axioms GC.GraphManifold.SurfaceModel.model
+#print axioms GC.GraphManifold.CompactSurface
+#print axioms GC.GraphManifold.CircleFibration
+#print axioms GC.GraphManifold.BoundaryTori
+#print axioms GC.GraphManifold.BoundaryTori.torusMap
+#print axioms GC.GraphManifold.BoundaryTori.image
+#print axioms GC.GraphManifold.BoundaryTori.torusMap_smooth
+#print axioms GC.GraphManifold.BoundaryTori.boundaryMap
+#print axioms GC.GraphManifold.BoundaryTori.torusMap_isEmbedding
+#print axioms GC.GraphManifold.BoundaryTori.incompressible
+#print axioms GC.GraphManifold.TorusPairing
+#print axioms GC.GraphManifold.TorusPairing.QuotientSpace
+#print axioms GC.GraphManifold.TorusPairing.quotientMap
+#print axioms GC.GraphManifold.RawGraphPresentation
+#print axioms GC.GraphManifold.isHyperbolicInteriorGeometry
+#print axioms GC.GraphManifold.HyperbolicOrGraph
+#print axioms GC.GraphManifold.exists_prime_decomposition_of_rawGraphPresentation
+#print axioms GC.GraphManifold.exists_geometric_decomposition_of_prime_rawGraphPresentation
+#print axioms GC.GraphManifold.geometrizes_of_rawGraphPresentation
+#print axioms GC.GraphManifold.exists_prime_geometric_decomposition_of_hyperbolicOrGraph
+#print axioms GC.GraphManifold.geometrizes_of_hyperbolicOrGraph
+#print axioms GC.GraphManifold.componentCarrier
+#print axioms GC.GraphManifold.TorusDecomposition
+#print axioms GC.GraphManifold.TorusDecomposition.component
+#print axioms GC.GraphManifold.TorusDecomposition.toGeometricDecomposition
+#print axioms GC.Endpoint.geometrization

@@ -1,0 +1,59 @@
+[
+  {
+    "path": "DifferentialGeometry/Geometry/Comparison/EqualLegAngleDefect.lean",
+    "sha256": "9e0f2ecab29fc4edb02938a4f36cd50c4efed69cfeae791f079ee26cca478cb8",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Comparison/EqualLegAngleDefect.olean",
+      "DifferentialGeometry/Geometry/Comparison/EqualLegAngleDefect.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "a0a9db8d40fb366350006eb6340cd2b8613dd6e96c63c0bc2aeda6915b75257e"
+  },
+  {
+    "path": "DifferentialGeometry/Topology/MetricSpace/EqualRadiusEndpoints.lean",
+    "sha256": "4454a4e86c91017dfb68d8da6ad3224374c32d61fadc6a2ffb5aaa67ad088cd9",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Topology/MetricSpace/EqualRadiusEndpoints.olean",
+      "DifferentialGeometry/Topology/MetricSpace/EqualRadiusEndpoints.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "1dc06ea703e1cdb97e19ce5906fbfdfa07750cd33f7bd51cc467f38b850cd14a"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/OppositeLineLifts.lean",
+    "sha256": "30317f611de4310c67dec0c84b024f381d0a1f4d18eb2f31355802b560cd01eb",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Approximation/OppositeLineLifts.olean",
+      "DifferentialGeometry/Geometry/Metric/Approximation/OppositeLineLifts.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "7afbfc1e519a366cfbe4ed483f94ffba1aa83f6d2a5a6e14c919601425194e58"
+  }
+]

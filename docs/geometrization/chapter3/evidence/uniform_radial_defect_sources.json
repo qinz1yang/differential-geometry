@@ -1,0 +1,39 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC31 full body3641\u20133678 and AC32 proof3690\u20133720, reread"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/DistanceMatrixLimit.lean",
+      "sha256": "df83a6224e9e00a39b5913fd4a3947bbcd5a8994687c89ab0568b63824bcf16b",
+      "locator": "accepted exists_pseudometric_subseq_tendsto_dist full proof reread and reused unchanged"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/MetricSpace/Basic.lean",
+      "sha256": "436cca315c86e33d4101560d75087e75b5ccb6c96419960c68d1aeb147eed49b",
+      "locator": "c55e6e786f49471c72fbddbec5415808896aec1e;185\u2013210, distance-preserving separation quotient"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+      "sha256": "f6103fa08081bec147a72137e61e8343e0b4f149560ee57e4dcfb678fb3c3e02",
+      "locator": "same pin;127\u2013158, primitive pseudometric construction"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/Sequences.lean",
+      "sha256": "a6a3be606e290b87bfb3b6619adcfbb64287f2474b22e804232e7ce9e4586b4c",
+      "locator": "same pin;276\u2013309 compact subsequence proof bodies"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+      "sha256": "8fcc07ae72e60998b5caa4b5f11796f4c04768fbb4fc52fb85e0ab8bdd1a366c",
+      "locator": "same pin;58\u201375 reciprocal natural sequence limit"
+    }
+  ],
+  "reused_source_checks": [
+    "finite_radial_comparison_sources.json"
+  ],
+  "errata": "Previously freshly checked BGP6.3/BBI10.8.20 and retained BBI correction records reused.",
+  "scope": "Full AC31; eta independent of metric space/domain/five points, without numerical formula."
+}

@@ -1,0 +1,12 @@
+⚠ [2730/2795] Replayed DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
+warning: DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean:18:8: declaration uses `sorry`
+✔ [3593/3599] Built DifferentialGeometry.Analysis.ParameterSelection.Acyclic (1.4s)
+✔ [3594/3599] Built DifferentialGeometry.Geometry.Metric.MarkerRecovery (2.8s)
+✔ [3595/3599] Built DifferentialGeometry.Analysis.Calculus.CompositionBounds (2.8s)
+✔ [3596/3599] Built DifferentialGeometry.Analysis.InnerProductSpace.BlockNormBounds (3.1s)
+✔ [3597/3599] Built DifferentialGeometry.Analysis.InnerProductSpace.DirectionalSaturation (3.1s)
+✔ [3598/3599] Built DifferentialGeometry.Analysis.InnerProductSpace.AdjointRankMargin (3.7s)
+✔ [3599/3599] Built DifferentialGeometry.Analysis.InnerProductSpace.ProjectedGraphRank (1.0s)
+Build completed successfully (3599 jobs).
+CHAPTER3_AUDIT_PASS 2619 declarations
+Original packed-refs restored unchanged

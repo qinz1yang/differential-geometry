@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 7,
+  "new_private_theorems": 0,
+  "new_definitions": 1,
+  "new_owned_declarations": 12,
+  "combined_modules": 245,
+  "combined_jobs": 3079,
+  "combined_owned_declarations": 1179,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/CircleDistance.lean": "34334d07f294ac074287a388dc592fa73736a1b63f0a3b869853171063508e10",
+    "DifferentialGeometry/Geometry/Comparison/DiameterCircleCoordinate.lean": "18d6aef0aa4eddd06193e4aa102ee9eb3db70428cee4e4d31c9bae36a3f5e0cf",
+    "DifferentialGeometry/Geometry/Comparison/DiameterCircleIsometry.lean": "63baca804cf498d6509c1c7943fd5b072ef533375a71f083e5bd8a237a48deec"
+  },
+  "logs": {
+    "diameter_circle_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "diameter_circle_review.log": "9ea803ebb76e10ebcba8facd47d0181e7fa8096ce62d201ecb72803e7b933e4d",
+    "diameter_circle_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "337b118af46c02ba4c0674d2a9c741fb550f5e704ce945ae470285ba54ac925c",
+  "git_head_at_check": "07d0938b067fccfd64e201067ecf72bfe77b5a67",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

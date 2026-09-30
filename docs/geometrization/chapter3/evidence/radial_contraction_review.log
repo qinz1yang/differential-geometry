@@ -1,0 +1,12 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.dist_radial_points_lower_including_zero_arms' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.radial_contraction_of_chosen_metric_segments' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_radial_contraction_of_comparison_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_radial_contraction_of_local_256_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

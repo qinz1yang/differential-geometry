@@ -1,0 +1,4 @@
+'ConeRegression.uniform_real_scale_collapse' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ConeRegression.radial_quotient_collapses_opposite_points' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ConeRegression.proper_absolute_value_image' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ConeRegression.repeated_parameters_exact_coverage' depends on axioms: [propext, Classical.choice, Quot.sound]

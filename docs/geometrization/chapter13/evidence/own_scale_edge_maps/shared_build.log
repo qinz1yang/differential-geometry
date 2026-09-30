@@ -1,0 +1,6 @@
+⚠ [2725/2741] Replayed DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
+warning: DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean:18:8: declaration uses `sorry`
+✔ [3577/3579] Built DifferentialGeometry.Geometry.Metric.Approximation.KleinerLottRescaling (1.9s)
+✔ [3578/3579] Built DifferentialGeometry.Geometry.Metric.Approximation.RealProductRescaling (1.4s)
+✔ [3579/3579] Built DifferentialGeometry.Geometry.Metric.Approximation.IntervalTargetRescaling (3.4s)
+Build completed successfully (3579 jobs).

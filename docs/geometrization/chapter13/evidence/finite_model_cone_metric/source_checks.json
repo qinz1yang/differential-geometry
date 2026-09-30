@@ -1,0 +1,78 @@
+[
+  {
+    "path": "DifferentialGeometry/Topology/MetricSpace/PseudometricLimit.lean",
+    "sha256": "313a174ef10509660382d8eb07a9dcfcb7a15f83ec1ec98934225d990dd69700",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Topology/MetricSpace/PseudometricLimit.olean",
+      "DifferentialGeometry/Topology/MetricSpace/PseudometricLimit.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "906256450b6752b7468769e38ae34c7798a52bcd52af169c632532a160b14e3e"
+  },
+  {
+    "path": "DifferentialGeometry/Topology/MetricSpace/ProperRadialImage.lean",
+    "sha256": "57d35375eaad9c68c3693573ae147d63b123dd44678d617b648f34c10deea1c3",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Topology/MetricSpace/ProperRadialImage.olean",
+      "DifferentialGeometry/Topology/MetricSpace/ProperRadialImage.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "c8f9cb0a2b6871bce0c5f1ea9da6b8f9020501444e6ccf9f2a90b2386f53b34e"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/RadialConeQuotient.lean",
+    "sha256": "7c927f754938290d8e2f93246c3e0765e9388afe6611a4a0eb72950463d54317",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/RadialConeQuotient.olean",
+      "DifferentialGeometry/Geometry/Metric/RadialConeQuotient.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "475f8fc32ef7a9852377854b841d6e571f27b3e3767d748a5447d3ef3f023540"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/CompactParameterMaps.lean",
+    "sha256": "4b021675dfe72d3afd757724e6df6288b997ab33dc4c707d4f06627359d7815b",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Approximation/CompactParameterMaps.olean",
+      "DifferentialGeometry/Geometry/Metric/Approximation/CompactParameterMaps.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "684616a80613f589e0c1354b42e4babb099f71b12fb82c35c33b78565b4c54aa"
+  }
+]

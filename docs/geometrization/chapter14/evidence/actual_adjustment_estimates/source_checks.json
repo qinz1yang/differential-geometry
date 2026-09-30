@@ -1,0 +1,78 @@
+[
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/PerturbedProjection.lean",
+    "sha256": "d3cb74f207a6fd439445a5d8d8afcf613e8f03a04598c92b0817420692b9bb0a",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/PerturbedProjection.olean",
+      "DifferentialGeometry/Analysis/Calculus/PerturbedProjection.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "1f4338a334c3a3b276ef1ed89b5fedbebda8c67f05a7b020ef5beea3809b3c9a"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/CutoffAdjustment.lean",
+    "sha256": "95b637a705a7a9987f6624a3b01b09e8720edda00b16c157e3a3106c2f4a465f",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/CutoffAdjustment.olean",
+      "DifferentialGeometry/Analysis/Calculus/CutoffAdjustment.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "c073d4fd7e8d7738cc03a162995d8a2e1c0d367c8a5809ba3e2db526537a4fc7"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/AdjustmentProjections.lean",
+    "sha256": "afa681ce3f3a61e7f657d872a780065f6920c7c6451d2d9bdc6b7471f4370528",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/AdjustmentProjections.olean",
+      "DifferentialGeometry/Analysis/Calculus/AdjustmentProjections.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "bdf8757dfa568b0a6929289d5487526a45649150266b74d0f5eeb3c4a24f89aa"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/InnerProductSpace/SubspaceRankTransfer.lean",
+    "sha256": "39877b694075ac4159af99457c0c09eacc3c15b09bfa29a91a13a15f136d32cc",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/InnerProductSpace/SubspaceRankTransfer.olean",
+      "DifferentialGeometry/Analysis/InnerProductSpace/SubspaceRankTransfer.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "144d8b9a565ea8de4a62bb9a2a8f01032e5bc199fc9ec92feecb226b7c31dba3"
+  }
+]

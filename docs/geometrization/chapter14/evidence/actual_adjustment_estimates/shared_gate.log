@@ -1,0 +1,9 @@
+⚠ [2730/2926] Replayed DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
+warning: DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean:18:8: declaration uses `sorry`
+✔ [3701/3704] Built DifferentialGeometry.Analysis.Calculus.AdjustmentProjections (1.7s)
+✔ [3702/3704] Built DifferentialGeometry.Analysis.InnerProductSpace.SubspaceRankTransfer (1.0s)
+✔ [3703/3704] Built DifferentialGeometry.Analysis.Calculus.PerturbedProjection (2.1s)
+✔ [3704/3704] Built DifferentialGeometry.Analysis.Calculus.CutoffAdjustment (2.7s)
+Build completed successfully (3704 jobs).
+CHAPTER3_AUDIT_PASS 2653 declarations
+Original packed-refs restored unchanged

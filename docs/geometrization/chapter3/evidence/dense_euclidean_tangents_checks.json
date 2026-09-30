@@ -1,0 +1,173 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/VariablePairedRank.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_VariablePairedRank.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "9eb349ae11dbaa3d24812a28fb6979e929a3198938e84f87a3b3076ec2028314"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/ScaledPairedChart.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_ScaledPairedChart.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "c72ab4c71b3e8ac7c95f3326d7c24dc83681672c9b3ce8815222708281deff38"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/ArbitraryQualityPairedPackets.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_ArbitraryQualityPairedPackets.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "48846c36b7dbc1d37d15b4bd75db304922c31305f1d0dafa9a5be7fefa155200"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/BairePairedPacket.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_BairePairedPacket.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "685348fa04f03582eff3e22e97248119e41eea66bbc8e59fcb0375d5c357943b"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/PairedPacketDirections.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_PairedPacketDirections.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "c242df6427a96425a5ae5df00499a68c7f3026929ffb45d56b07d0de1ce7eebe"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/DirectionAngleSum.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_DirectionAngleSum.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "ccb9d3a9984bd7dde036c91997515af5e59611a18b75c24dc094045a8952443b"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/CompactAngularFrame.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_CompactAngularFrame.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "67707704b603db9d3bd37009f3c3cb30b31a4da6d29fc929e62902fb41712fe1"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/EuclideanTangentFrame.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_EuclideanTangentFrame.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "f34de9d6215a07c36e5f3603c08ebe4f393fc9f716102122979ebe0cfd5840ae"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/DenseAngularFrames.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_DenseAngularFrames.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "d8f69cadf62c3e8a7f9f20203331dda5feb0d8cdaecae1fcf6361a0ef74aead9"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/DenseEuclideanTangents.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_DenseEuclideanTangents.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "8a3b55c093eb58de33780b9b3ebb101443ca5dcbc21f10e2745e0031461fb79c"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_dense_euclidean_tangents_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "282cffb7f75ba25c5b3507fb4cd032f433ebdc14",
+  "review_reports": [
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_maximal_paired_rank_of_quality",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_distance_chart_of_scaled_quality_in_open_set",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_global_rank_paired_packets_of_local_comparison_and_dimH",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_dense_isG\u03b4_all_paired_qualities",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_endpoint_representatives_of_complete_local_comparison",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.PairedComparisonPacket.exists_directions_of_complete_local_comparison",
+    "Metric.SpaceOfDirections.dist_add_dist_add_dist_le_two_pi_of_local_fourPointComparison",
+    "Metric.exists_subsequence_antipodal_orthogonal_frame",
+    "Metric.EuclideanCone.germComparisonAngle_twoRayPath",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_pointed_euclidean_tangent_of_orthogonal_frame",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_dense_isG\u03b4_orthogonal_direction_frames_of_local_comparison_and_dimH",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_dense_euclidean_tangents_of_local_comparison_and_dimH",
+    "GCRankBaireReview.decreasing_quality_ladder_real_maximal_rank",
+    "GCRankBaireReview.real_dense_isG\u03b4_with_all_pointwise_qualities",
+    "GCRankBaireReview.empty_source_rank_zero_has_full_dense_output",
+    "GCScaledPairedChartReview.real_arbitrary_scale_preserves_both_anchors_and_full_chart",
+    "GCScaledPairedChartReview.real_global_rank_one_all_open_sets_all_positive_qualities",
+    "GCScaledPairedChartReview.zero_scale_cannot_retain_positive_rank_packet",
+    "GCPlaneDirectionPackingReview.actual_plane_global_rank_two_all_open_sets_all_positive_qualities",
+    "GCPlaneDirectionPackingReview.actual_unequal_real_packet_same_original_endpoints",
+    "GCPlaneDirectionPackingReview.actual_translated_plane_original_unequal_endpoints",
+    "GCPlaneDirectionPackingReview.actual_empty_packet_without_invented_direction",
+    "GCPlaneDirectionPackingReview.completed_plane_triple_sum_from_original_local_comparison",
+    "GCPlaneDirectionPackingReview.alternating_original_plane_arrays_extract_one_exact_frame",
+    "GCDirectionSpaceReview.empty_direction_space_admits_empty_array_extraction",
+    "GCPlaneDirectionPackingReview.actual_translated_plane_frame_gives_pointed_onto_euclidean_tangent",
+    "GCDirectionSpaceReview.actual_real_original_opposite_rays_give_pointed_euclidean_tangent",
+    "GCDirectionSpaceReview.actual_singleton_empty_frame_gives_pointed_zero_dimensional_tangent",
+    "GCConeFrameReview.angular_cap_cannot_be_removed_even_for_actual_two_ray_paths",
+    "GCDirectionSpaceReview.original_real_dense_euclidean_tangents_with_exact_common_rank",
+    "GCDirectionSpaceReview.original_singleton_dense_set_is_all_and_tangents_are_zero_euclidean",
+    "GCPlaneDirectionPackingReview.original_plane_dense_euclidean_tangents_with_exact_common_rank",
+    "GCDenseEuclideanTangentsReview.original_empty_dense_euclidean_tangents_without_chosen_point"
+  ],
+  "review_driver_sha256": "084d6d58e0f0373f057f97f98573f0e5a55d93096e7feabf9838d79e57317519",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Comparison/VariablePairedRank.lean": "82c28782359f3c55fd1e8fd209154b12486edd85dafd1b9ffdbd13daa6d5eef4",
+    "DifferentialGeometry/Geometry/Comparison/ScaledPairedChart.lean": "748c60c48e7890d4b5acc85f86061e5a07609ec993e231366e8a548f72d92c7f",
+    "DifferentialGeometry/Geometry/Comparison/ArbitraryQualityPairedPackets.lean": "596dc64e2a17e1385a239515ffc2e31962fa5382031104d6ffb46e2734d087f2",
+    "DifferentialGeometry/Geometry/Comparison/BairePairedPacket.lean": "e4281296fc09097381a5c3e52ee0b161144d061c1706e6fac2c48c6b0d2e4d83",
+    "DifferentialGeometry/Geometry/Comparison/PairedPacketDirections.lean": "e253de51ef2f6b4543da7a253095858f604b09ebd76c24f446f1a0e9305fe068",
+    "DifferentialGeometry/Geometry/Comparison/DirectionAngleSum.lean": "dc3769b781fc0cd8cba1dbb74373cde209db8b1660c0f91d18809eceb02044f4",
+    "DifferentialGeometry/Geometry/Metric/CompactAngularFrame.lean": "d9950fbfa73128155644920a3c231129f176e367e2cd0d08572761c4ccc87669",
+    "DifferentialGeometry/Geometry/Comparison/EuclideanTangentFrame.lean": "184c1d8c5372a774af08ebf0664d0f8077dc999a710d074083a560582b6f9dbc",
+    "DifferentialGeometry/Geometry/Comparison/DenseAngularFrames.lean": "5da701b9eeb59ca05ef632975701e3e6d8157097a4159c347b38b309c2924fd6",
+    "DifferentialGeometry/Geometry/Comparison/DenseEuclideanTangents.lean": "93329a0e48d8cfb8a6a3b21e5fe4b241d4569c65d315465cd7a4b1373da9bc05"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "d7c6837f53bb665e620343fb1a23b205423c23adfb4033a896c737b4cf61eb28"
+}

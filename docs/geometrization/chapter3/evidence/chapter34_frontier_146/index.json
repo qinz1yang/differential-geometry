@@ -1,0 +1,294 @@
+{
+  "status": "FINAL_CONSOLIDATED_FRONTIER_WITH_ACCEPTED145_DELIVERY",
+  "scope": "Chapter3 metric and Chapter4 Alexandrov frozen blueprint207A contract frontier; no identified required migration-independent producer",
+  "accepted_baseline": {
+    "milestone": 144,
+    "commit": "9f5f8d2c624110d0bc79d3ddebfb655112d57100",
+    "manifest_sha256": "b9ea39d42c058ac4e8fa5c88df6dedc2d26bf9ea31c8daca1ddde3905a9c01a2",
+    "shared_verification_sha256": "734f1d29dca08c5b5d22b538d3bbe1a2a47d6401da2321623d75b50d4d09d4f2",
+    "milestone_verification_sha256": "ae6d483cacc67bf5439d8948c08f6eed913720db80cff16b8c3b34b1e4a429a5",
+    "modules": 509,
+    "owned_declarations": 2351,
+    "jobs": 3347,
+    "toolchain": "leanprover/lean4:v4.35.0-rc3",
+    "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e"
+  },
+  "milestone145": {
+    "status": "accepted_and_remote_verified",
+    "accepted_commit": "45111b9d91f50111658f0497be2320e750325ca6",
+    "verification_receipt": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_milestone_receipt.json",
+    "verification_sha256": "5f6cbd87451d207b696ca7b525b057ce481b1a9f31caa3f6a747ea89f1168954",
+    "observed_modules": 513,
+    "observed_owned_declarations": 2362,
+    "observed_jobs": 3351,
+    "remote_push_confirmation": {
+      "remote_name": "origin",
+      "ref": "refs/heads/codex/geometrization-shared-interfaces-435rc3",
+      "record_sha256": "c569059868430efa48463675307a29aa73d911677bb82080073b88672941c2c4"
+    },
+    "evidence": {
+      "milestone_receipt": {
+        "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_milestone_receipt.json",
+        "sha256": "5f6cbd87451d207b696ca7b525b057ce481b1a9f31caa3f6a747ea89f1168954"
+      },
+      "shared_receipt": {
+        "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_shared_receipt.json",
+        "sha256": "71a06c6bd0b7d40ffa94403fa3985d21a8e5d597b89aa95c80db02c2e2f04820"
+      },
+      "manifest": {
+        "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_manifest.json",
+        "sha256": "5c279e69b8b815dab6735fce65025d5d5bb6efde6e4b22ca183fbb30dab0cfce"
+      },
+      "build_log": {
+        "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_build_log.log",
+        "sha256": "2049d0ed404f4c3f989fcd2f4010108b57d45b0abfea325e041bada59c312d4d"
+      },
+      "axioms_log": {
+        "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_axioms_log.log",
+        "sha256": "8d8c32552ef707ee9e94df3e763e1baacbbb763e3401a13e84e7a90dd276f4ff"
+      },
+      "canonical_checks": {
+        "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_canonical_checks.json",
+        "sha256": "e86e96a56d7f8c409abd51591db630d1495df93e3ffde6b1868c4a008d361fc5"
+      },
+      "canonical_review_log": {
+        "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_canonical_review_log.log",
+        "sha256": "4182154abad598e344b7c1659201d46e6455e75fb089c60b006a8788071218a8"
+      },
+      "canonical_lint_log": {
+        "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_canonical_lint_log.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "remote_verification": {
+        "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_remote_verification.json",
+        "sha256": "c569059868430efa48463675307a29aa73d911677bb82080073b88672941c2c4"
+      }
+    },
+    "note": "Observed accepted145 delivery supplement. The accepted144 audit baseline and all peer reports remain unchanged."
+  },
+  "blueprint": {
+    "path": "GEOMETRIZATION_BLUEPRINT/master207A.tex",
+    "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+    "static_audit_status": "failed",
+    "static_exit_code": 1,
+    "static_failure": "Historical MatveevBook2ndEd.pdf path missing; not a Lean failure or a static pass."
+  },
+  "authority": {
+    "path": "parent-workspace AGENTS.md (historical source; outside GC repository)",
+    "sha256": "f309791e5507990a4ab5b7e6de8fdae27e1d02a9bb8b1e57de8767045c7aa650",
+    "rule": "Pause adapters/probes against changing unfinished PC snapshot pending completed release or explicitly stabilized interface.",
+    "snapshot_destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/project_instructions_snapshot.txt"
+  },
+  "full_chapters_complete": false,
+  "full_migrated_root_built": false,
+  "new_registered_production_theorems": 0,
+  "new_builds_by_copy_script": false,
+  "current_evidence_is_self_contained": true,
+  "provenance_note": "Original /tmp paths within immutable copied records resolve through this map. External reference archives are identified by hash, not recopied. Superseded metadata-history paths are historical only and are not current proof/evidence prerequisites.",
+  "copies": [
+    {
+      "source": "/private/tmp/gc_chapter34_frontier_final_after145/chapter34_frontier_final.md",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/chapter34_frontier.md",
+      "sha256": "581861bd18cc4d793f721459ac71c3e303b64554c60c83e51acbbeb9b6cb4e58",
+      "role": "consolidated draft report"
+    },
+    {
+      "source": "/tmp/gc146_AC_frontier_assessment.md",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/alexandrov_frontier_assessment.md",
+      "sha256": "a6e2fa4d2667b8c06a7f4d5d60b8ad0e310437903691b279aa3d498de1b11b8b",
+      "role": "final AC/ALG/ALS/ALR assessment"
+    },
+    {
+      "source": "/tmp/gc146_AC_frontier_freeze.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/alexandrov_frontier_freeze.json",
+      "sha256": "2f5fe8e0b1a3386b676de582b76604e3ec52e49435d80e1ec5005ea2d049c2e9",
+      "role": "corrected immutable AC evidence receipt"
+    },
+    {
+      "source": "/tmp/gc_MC01_24_frontier_assessment.md",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/metric_frontier_assessment.md",
+      "sha256": "80feb85c7791cce5187f3ee28ae46383db824ec5a79562489bed8d39106dea69",
+      "role": "final MC assessment"
+    },
+    {
+      "source": "/tmp/gc_MC01_24_source_hash_check.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/metric_source_hash_check.json",
+      "sha256": "4292738a831e4a0cd4e4b409ff7d3d752c3df0fc0f1ea7a7af44e66b7e322357",
+      "role": "MC accepted-source binding"
+    },
+    {
+      "source": "/tmp/gc_Chapter34_frontier_65_independent_assessment.md",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/independent_frontier_assessment.md",
+      "sha256": "cc0e4be0a102dbf3de33a84589292bec10a6658d181138ff20b6870a7ec61fac",
+      "role": "independent challenge"
+    },
+    {
+      "source": "/tmp/gc_Chapter34_frontier_65_evidence.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/independent_frontier_evidence.json",
+      "sha256": "5ec95da6aa07a859b33d7128547b9f3feed73180c5da4dbcd1a1e192c5b358bd",
+      "role": "independent exact-source and proof-read evidence"
+    },
+    {
+      "source": "/tmp/gc_Chapter34_frontier_65_freeze.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/independent_frontier_freeze.json",
+      "sha256": "9b5e24836e3c7296b574d197d6d676bfe3b991ed96373325a937cd200d47faa5",
+      "role": "independent freeze rebound after metadata correction"
+    },
+    {
+      "source": "/tmp/gc_Chapter34_frontier_root_review.md",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/root_frontier_review.md",
+      "sha256": "a4ac921f0203d032c36162e2dd97322b09d5ba3aacdc0cb50e616f3c6f71d291",
+      "role": "root bounded full review"
+    },
+    {
+      "source": "/tmp/gc146_accepted144_manifest.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted144_manifest.json",
+      "sha256": "b9ea39d42c058ac4e8fa5c88df6dedc2d26bf9ea31c8daca1ddde3905a9c01a2",
+      "role": "accepted144 manifest snapshot"
+    },
+    {
+      "source": "/tmp/gc146_accepted144_shared_verification.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted144_shared_verification.json",
+      "sha256": "734f1d29dca08c5b5d22b538d3bbe1a2a47d6401da2321623d75b50d4d09d4f2",
+      "role": "accepted144 shared-gate snapshot"
+    },
+    {
+      "source": "/tmp/gc146_accepted144_milestone_verification.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted144_milestone_verification.json",
+      "sha256": "ae6d483cacc67bf5439d8948c08f6eed913720db80cff16b8c3b34b1e4a429a5",
+      "role": "accepted144 milestone and failed-static-audit receipt"
+    },
+    {
+      "source": "/tmp/gc146_AC_ALG_receipt_binding.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/alexandrov_receipt_binding.json",
+      "sha256": "3ac617c8945945bebb1467cf972f99d7a3763753fa0f171cfee7ec73c2151480",
+      "role": "475 exact source bindings"
+    },
+    {
+      "source": "/tmp/gc146_AC_ALG_contracts.txt",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/alexandrov_contract_extract.txt",
+      "sha256": "ee7f520a8f3e16e99671a0567c3f556761d2b5dff84119abeff515189cff5e8b",
+      "role": "actual95 frozen AC/ALG statements"
+    },
+    {
+      "source": "/tmp/gc146_AC_ALG_modules.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/alexandrov_module_map.json",
+      "sha256": "c043d9d03039adf4150873345aabb337c22e1baeb7041a89e3a8075e9b028e43",
+      "role": "module-to-contract map"
+    },
+    {
+      "source": "/tmp/gc146_compact_target_net_export.lean",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/compact_target_net_export.lean",
+      "sha256": "46bddbb6e6b52bb0074f0348d20fe163e02c535be3d0b666c446abcb4d773d20",
+      "role": "temporary exact net export and literal-assumption application"
+    },
+    {
+      "source": "/tmp/gc146_compact_target_net_example.lean",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/compact_target_net_example.lean",
+      "sha256": "2251200b2eab316863c64b7fc26690e557eb9a468b411c0ec095156e0c419289",
+      "role": "temporary actual expanding-open-interval regression"
+    },
+    {
+      "source": "/tmp/gc146_compact_target_net_review.lean",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/compact_target_net_review.lean",
+      "sha256": "45514faaf1cb321c222e54fb75029aafe1d1b8da64e0263644bde663689be79b",
+      "role": "actual normal driver"
+    },
+    {
+      "source": "/tmp/gc146_compact_target_net_review.log",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/compact_target_net_review.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "empty normal log"
+    },
+    {
+      "source": "/tmp/gc146_compact_target_net_lint.lean",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/compact_target_net_lint.lean",
+      "sha256": "c179cd2075161cab92565dd7bf9da64dff781afef442b28c2c5de538087d6242",
+      "role": "actual selected-lint and axiom driver"
+    },
+    {
+      "source": "/tmp/gc146_compact_target_net_lint.log",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/compact_target_net_lint.log",
+      "sha256": "e697fe35879a2d3411a8a39d8243eb85af198c3e41a5af27a431d98b8987d080",
+      "role": "two standard axiom reports and silent lint"
+    },
+    {
+      "source": "/private/tmp/gc_chapter34_frontier_final_after145/copy_evidence.py",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/copy_evidence.py",
+      "sha256": "2852911bb65e4da39da4522c2e21f9ad25b85c087008ff02a30338e60a737221",
+      "role": "copy/verification helper; no build or production registration"
+    },
+    {
+      "source": "/tmp/gc_chapter34_project_instructions_snapshot.txt",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/project_instructions_snapshot.txt",
+      "sha256": "f309791e5507990a4ab5b7e6de8fdae27e1d02a9bb8b1e57de8767045c7aa650",
+      "role": "exact parent project instructions as inert historical text snapshot"
+    },
+    {
+      "source": "/tmp/gc_MC17_AC05_exit_challenge.md",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/metric_exit_coverage_challenge.md",
+      "sha256": "bb98ade89dc5245dfe8b75e316cfc537eb0f6354ff511ce2838cb63f8f23eb02",
+      "role": "unchanged targeted MC17/AC05 exit-and-coverage challenge"
+    },
+    {
+      "source": "/private/tmp/gc_chapter34_frontier_final_after145/accepted145_milestone_receipt.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_milestone_receipt.json",
+      "sha256": "5f6cbd87451d207b696ca7b525b057ce481b1a9f31caa3f6a747ea89f1168954",
+      "role": "actual accepted145 milestone_receipt"
+    },
+    {
+      "source": "/private/tmp/gc_chapter34_frontier_final_after145/accepted145_shared_receipt.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_shared_receipt.json",
+      "sha256": "71a06c6bd0b7d40ffa94403fa3985d21a8e5d597b89aa95c80db02c2e2f04820",
+      "role": "actual accepted145 shared_receipt"
+    },
+    {
+      "source": "/private/tmp/gc_chapter34_frontier_final_after145/accepted145_manifest.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_manifest.json",
+      "sha256": "5c279e69b8b815dab6735fce65025d5d5bb6efde6e4b22ca183fbb30dab0cfce",
+      "role": "actual accepted145 manifest"
+    },
+    {
+      "source": "/private/tmp/gc_chapter34_frontier_final_after145/accepted145_build_log.log",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_build_log.log",
+      "sha256": "2049d0ed404f4c3f989fcd2f4010108b57d45b0abfea325e041bada59c312d4d",
+      "role": "actual accepted145 build_log"
+    },
+    {
+      "source": "/private/tmp/gc_chapter34_frontier_final_after145/accepted145_axioms_log.log",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_axioms_log.log",
+      "sha256": "8d8c32552ef707ee9e94df3e763e1baacbbb763e3401a13e84e7a90dd276f4ff",
+      "role": "actual accepted145 axioms_log"
+    },
+    {
+      "source": "/private/tmp/gc_chapter34_frontier_final_after145/accepted145_canonical_checks.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_canonical_checks.json",
+      "sha256": "e86e96a56d7f8c409abd51591db630d1495df93e3ffde6b1868c4a008d361fc5",
+      "role": "actual accepted145 canonical_checks"
+    },
+    {
+      "source": "/private/tmp/gc_chapter34_frontier_final_after145/accepted145_canonical_review_log.log",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_canonical_review_log.log",
+      "sha256": "4182154abad598e344b7c1659201d46e6455e75fb089c60b006a8788071218a8",
+      "role": "actual accepted145 canonical_review_log"
+    },
+    {
+      "source": "/private/tmp/gc_chapter34_frontier_final_after145/accepted145_canonical_lint_log.log",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_canonical_lint_log.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "actual accepted145 canonical_lint_log"
+    },
+    {
+      "source": "/private/tmp/gc_chapter34_frontier_final_after145/accepted145_remote_verification.json",
+      "destination": "GC_CHAPTER3_435_RC3/docs/geometrization/chapter3/evidence/chapter34_frontier_146/accepted145_remote_verification.json",
+      "sha256": "c569059868430efa48463675307a29aa73d911677bb82080073b88672941c2c4",
+      "role": "actual accepted145 remote_verification"
+    }
+  ],
+  "post_frontier_delivery_static_audit": {
+    "status": "requires_separate_record_after_repository_delivery",
+    "receipt": null,
+    "success": null,
+    "exit_code": null
+  }
+}

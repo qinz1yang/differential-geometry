@@ -1,0 +1,13 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.cappedEndpointComparisonRadius_mem_Icc' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.endpointHingeComparison_of_lt_cappedRadius' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_uniform_cappedComparisonRadius_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.MinimizingHinge.exists_hinge_of_germs' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.endpointHingeComparison_enlarge' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

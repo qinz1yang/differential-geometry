@@ -1,0 +1,63 @@
+'Metric.coneDistance_triangle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.radius_tip' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.radius_some' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.radius_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.mk_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.mk_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.radius_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.exists_positive_of_ne_tip' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dist_some_some' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dist_tip' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.tip_dist' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dist_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.abs_radius_sub_le_dist' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.isometry_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.radius_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.mk_eq_tip_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.eq_tip_or_eq_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.lipschitzWith_radius' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dilate_tip' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dilate_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.radius_dilate' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dilate_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dilate_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dilate_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dist_dilate' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.two_mul_radius_mul_min_dist_le_pi_mul_coneDistance' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.dist_lt_of_coneDistance_lt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.cauchySeq_directions_of_coneDistance_cauchy' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.tip' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.radius' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dilate' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.completeSpace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCConeDistanceTriangleReview.three_distinct_directions_and_radii' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeDistanceTriangleReview.distances_larger_than_pi_are_capped' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeDistanceTriangleReview.zero_middle_radius' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCEuclideanConeReview.empty_base_has_exactly_the_tip' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCEuclideanConeReview.zero_radius_forgets_the_direction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCEuclideanConeReview.one_fixed_direction_is_an_actual_ray' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCEuclideanConeReview.three_actual_cone_points' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCEuclideanConeReview.unit_shell_is_not_an_angular_isometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCEuclideanConeReview.actual_dilation_and_distance_scaling' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCConeDirectionControlReview.capped_inverse_estimate_is_exact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCConeDirectionControlReview.uncapped_global_estimate_fails' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCConeDirectionControlReview.inverse_bound_at_all_positive_radii' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCEuclideanConeCompleteReview.actual_empty_cone_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCEuclideanConeCompleteReview.actual_empty_cone_is_singleton' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCEuclideanConeCompleteReview.arbitrary_directions_collapse' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCEuclideanConeCompleteReview.actual_real_cone_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCEuclideanConeCompleteReview.positive_radius_sequence_converges' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

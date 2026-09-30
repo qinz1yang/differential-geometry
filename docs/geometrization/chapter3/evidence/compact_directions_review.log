@@ -1,0 +1,43 @@
+'Metric.EuclideanCone.continuous_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.isCompact_closedBall_tip' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.exists_common_shortening_of_separated_directions' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.compactSpace_spaceOfDirections_of_uniform_scaled_nets' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_uniform_small_scale_nets_of_local_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.compact_directions_and_proper_tangent_of_local_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.compact_directions_and_proper_tangent_of_intrinsic_eight_comparison_and_dimH' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.EuclideanCone.properSpace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCEuclideanConeProperReview.empty_base_gives_proper_singleton_cone' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCEuclideanConeProperReview.compact_base_with_angles_beyond_pi_has_proper_cone' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCEuclideanConeProperReview.nonempty_compact_base_tip_boundary_balls' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_real_original_uniform_scaled_nets' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_singleton_original_uniform_scaled_nets' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_real_original_compact_directions_proper_tangent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_real_intrinsic_compact_directions_far_from_center' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_singleton_original_compact_empty_directions_proper_tangent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCDirectionSpaceReview.actual_singleton_intrinsic_compact_directions_proper_tangent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

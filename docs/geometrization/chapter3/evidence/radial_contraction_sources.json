@@ -1,0 +1,42 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "full AC03 lines2193-2230 and AC04 lines2232-2269, with implementation note2271-2277; AC02 lines2141-2190, ALG06/07 lines7536-7617 body readings reused"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/BuragoBuragoIvanovBook.pdf",
+      "sha256": "4efaa168dcc83e7e9f5663d14824f9543104beab21642ca3830a5dd1c684c971",
+      "locator": "AMS2001 printed369-371/PDF384-386 freshly text-read; full Lemma10.6.2 and proof printed370/PDF385 also visually inspected"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/bbi-errata-2024-07-06.pdf",
+      "sha256": "68338c7a8b37b8637efbad8af5f547f6cf789675df020fbc6aa04d4babdde42e",
+      "locator": "retained July6,2024 PDF13 reread; no entry for printed370"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/FiniteRadialComparison.lean",
+      "sha256": "49ced52b3c2379d353047b449b7093185f50c23b2440d606c365da4b9ab87747",
+      "locator": "full accepted body, positive-arm finite radial lower estimate"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Analysis/SpecialFunctions/Trigonometric/RadialModel.lean",
+      "sha256": "abc1212a999e2f5330a99dc7a4aa213582747a0cc8dfc0ead2d2983b99056373",
+      "locator": "full scalar cosine-law estimate; same exact coefficient tD/sinh(D)"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/LocalHopfRinow.lean",
+      "sha256": "4c89b5ba414398ad70f2bff48427b4b7fbe4f9aab1bd096c5235a503ac0708f5",
+      "locator": "accepted138-212 actual path existence and radial domain bound"
+    }
+  ],
+  "reused_source_checks": [
+    "finite_radial_comparison_sources.json",
+    "intrinsic_buffer_radial_sources.json",
+    "intrinsic_local_comparison_sources.json"
+  ],
+  "scope": "AC03 exact coefficient for actual chosen paths including zero arms, assembled from original local hypotheses with256R margin. No map continuity claimed.",
+  "source_comparison": "BBI printed370 general coefficient visibly uses -k instead of sqrt(-k); retained errata PDF13 has no370 correction. General normalization not imported. At k=-1 it agrees, and the project coefficient is independently proved by accepted hyperbolic algebra.",
+  "errata": "Retained July6,2024 sheet only; no current remote-version claim."
+}

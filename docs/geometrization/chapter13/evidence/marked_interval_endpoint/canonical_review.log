@@ -1,0 +1,30 @@
+GC.MetricGeometry.KleinerLottApprox.recenterRescaleMarkedInterval.{u_1} {X : Type u_1} [mX : MetricSpace X] {p : X}
+  {C : ℝ} {q : ↑(Set.Icc 0 C)} {ε δ c : ℝ} (f : GC.MetricGeometry.KleinerLottApprox p q ε) (a : X) (hc : 0 < c)
+  (hδ : 0 < δ) (hδone : δ < 1) (hsource : dist a p + δ⁻¹ / c ≤ ε⁻¹) (htarget : δ⁻¹ / c + ↑q + ε ≤ ε⁻¹)
+  (hbudget : 3 * c * ε + c * ↑(f.toFun a) ≤ δ) :
+  have hL := ⋯;
+  GC.MetricGeometry.KleinerLottApprox a ⟨0, ⋯⟩ δ
+'GC.MetricGeometry.KleinerLottApprox.recenterRescaleMarkedInterval' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GC.MetricGeometry.KleinerLottApprox.recenterRescaleMarkedInterval_apply.{u_1} {X : Type u_1} [mX : MetricSpace X]
+  {p : X} {C : ℝ} {q : ↑(Set.Icc 0 C)} {ε δ c : ℝ} (f : GC.MetricGeometry.KleinerLottApprox p q ε) (a : X) (hc : 0 < c)
+  (hδ : 0 < δ) (hδone : δ < 1) (hsource : dist a p + δ⁻¹ / c ≤ ε⁻¹) (htarget : δ⁻¹ / c + ↑q + ε ≤ ε⁻¹)
+  (hbudget : 3 * c * ε + c * ↑(f.toFun a) ≤ δ) (x : X) :
+  have value := c * ↑(f.toFun x);
+  have g := f.recenterRescaleMarkedInterval a hc hδ hδone hsource htarget hbudget;
+  ↑(g.toFun x) = if x = a then 0 else value
+'GC.MetricGeometry.KleinerLottApprox.recenterRescaleMarkedInterval_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GC.MetricGeometry.KleinerLottApprox.exists_strong_edge_interval_model.{u_1} {X : Type u_1} [mX : MetricSpace X] {p : X}
+  {C : ℝ} {q : ↑(Set.Icc 0 C)} {ε δ c : ℝ} (f : GC.MetricGeometry.KleinerLottApprox p q ε) (a : X) {Δ e θ : ℝ}
+  (hΔ : 1 ≤ Δ) (hC : 500 * Δ < C) (hδ : 0 < δ) (hδsmall : δ < 1 / 100) (hεs : ε ≤ δ / 1000) (hεΔ : ε ≤ 1 / (100000 * Δ))
+  (hc : 1 / 2 ≤ c ∧ c ≤ 2) (ha : dist a p ≤ 13 * Δ + 1) (hq : ↑q ≤ Δ / 2) (he : e ≤ δ / 1000) (hθ : θ ≤ δ / 1000)
+  (hh : ↑(f.toFun a) ≤ 2 * e + θ) :
+  have values := fun x ↦ c * ↑(f.toFun x);
+  have hc0 := ⋯;
+  ∃ (hD : 0 ≤ c * C), ∃ g, 200 * Δ < c * C ∧ g.toFun a = ⟨0, ⋯⟩ ∧ ∀ (x : X), x ≠ a → ↑(g.toFun x) = values x
+'GC.MetricGeometry.KleinerLottApprox.exists_strong_edge_interval_model' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

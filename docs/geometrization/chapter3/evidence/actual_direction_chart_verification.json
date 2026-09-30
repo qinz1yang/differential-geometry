@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "new_public_theorems": 14,
+  "new_definitions": 2,
+  "new_generated_declarations": 2,
+  "new_owned_declarations": 18,
+  "combined_modules": 419,
+  "combined_jobs": 3257,
+  "combined_owned_declarations": 2052,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/HingeDirections.lean": "3e3299cfd3b276da009053c8400798574931ead4af68ea7d32fa20dbb2e1626d",
+    "DifferentialGeometry/Geometry/Comparison/ConsistentEndpointDirections.lean": "8c1c197dd7eda3cd8ba4263ebe2db75e5ff3150024c8c43b4d45e8c2d4e793c6",
+    "DifferentialGeometry/Geometry/Comparison/IntrinsicGeodesicDirections.lean": "70d5ae6b28850337ed7440758e7be95e4db0d4f7514c7302efd6200ade06bdab",
+    "DifferentialGeometry/Geometry/Comparison/EuclideanTangentChart.lean": "2808bd7969047d285e0fee7e4878abb7c45c30f749775da676f75691d80ec683"
+  },
+  "logs": {
+    "actual_direction_chart_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "actual_direction_chart_review.log": "19820416b07b4c6aaf8c17f01810e72c165cbd6fd2876cbbb4946b81c938d953",
+    "actual_direction_chart_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "ab55848f1d2bee8400dd431274693475c817ef27b751291a38047b3038be0367",
+  "git_head_at_check": "427f9a983cce2d46ef81654f9b1b9c059df81966",
+  "independent_root_and_peer_proof_review": true,
+  "new_actual_original_geometry_regressions": 9,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

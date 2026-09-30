@@ -1,0 +1,50 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KapovitchLebedevaPetruninAlexandrov.pdf",
+      "sha256": "3dc0a166ec88b1c7e50aeebd9924f747ece6fb1957c7b31dcbe17a90a9e61d67",
+      "version": "Archived v1, July14 2026",
+      "locator": "Exercise6.20(c) and the real-line exception printed69/PDF71; entire semisolution138/PDF140. Reused cone formula and Exercise3.2 printed36/PDF38, semisolution129/PDF131; Proposition3.3 and full proof printed36-37/PDF38-39.",
+      "review_provenance": "Root read the actual source bodies in preceding work. The independent reviewer freshly reread6.20 and its full semisolution. Frozen records distinguish source reading, independent proof review and compiler runs."
+    }
+  ],
+  "reused_source_checks": [
+    "antipodal_directions_sources.json",
+    "cone_antipodes_sources.json",
+    "pi_directions_sources.json",
+    "tangent_blowup_sources.json",
+    "geodesic_directions_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "All actual direction pairs admit exact-speed segments OR the SAME actual tangent cone has an onto pointed real isometry, retaining literal two-pole coverage and the entire signed normalization. Original ambientOPEN and intrinsic8R EVERY-q producers.",
+  "source_conventions": "The cone uses min(pi,angular distance). The prescribed two-pole onto constructor allows pi<=distance; the dichotomy uses diameter<=pi, actual cone CBB0 and strict-pi segments. Original local comparison parameter1 is the curvature -1 convention.",
+  "proof_route": "If all-pair geodesicity fails, one failed pair has distancepi. Any third distinct point would yield the accepted through-third-point segment, contradicting failure. Literal two-pole coverage makes the SAME named signed cone line onto, yielding its pointed inverse isometry.",
+  "remaining_source_condition": "The source LinDim(A)>1 exclusion of the real-line alternative is not inferred from a Hausdorff upper bound. The actual real regression deliberately uses n2 and still obtains the line exception.",
+  "errata": "Retained applicable source/version and author-correction qualifications reused. No fresh external errata retrieval or absence-of-errata claim.",
+  "independent_peer_proof_review": true,
+  "not_claimed": [
+    "dimension equality",
+    "automatic third-direction existence from n>=2",
+    "full KLP6.20(c) under its LinDim hypothesis",
+    "CBB1 for the direction space",
+    "full spherical-suspension identification",
+    "unconditional angular geodesicity",
+    "full Chapters3-4 completion"
+  ],
+  "proof_records": [
+    {
+      "path": "/tmp/gc_DirectionDichotomy_record.md",
+      "sha256": "eb02e56b641dd2546e84be5b6a4a99b3350dc9242ea3bcdd73303bb842395787"
+    },
+    {
+      "path": "/tmp/gc_ConeDirectionDichotomy_independent_review_record.md",
+      "sha256": "38f37b1aca9a0d0c3b3b98fbba9dfe952081508f7018c6d0c9ce4c988d193ce1"
+    }
+  ],
+  "upstream_freezes": [
+    {
+      "path": "/tmp/gc_ConeAntipodalGeodesic_freeze.json",
+      "sha256": "d1b139f2a80ecdf784fdf6ac86837fa61976177353b8e8d71d441346f4e726e3"
+    }
+  ]
+}

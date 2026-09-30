@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "new_public_theorems": 7,
+  "new_instances": 1,
+  "new_generated_declarations": 1,
+  "new_owned_declarations": 9,
+  "combined_modules": 428,
+  "combined_jobs": 3266,
+  "combined_owned_declarations": 2066,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/EuclideanConeProper.lean": "dac71d1a28a8e430f5d4bcb78b781e4065dd179cc5d25d7c388d88ea70cad487",
+    "DifferentialGeometry/Geometry/Metric/DirectionPackingShortening.lean": "e80d65b873a600d4434be2376169392fc6a45c1d3c6918ea59950dbc47293ffb",
+    "DifferentialGeometry/Geometry/Metric/CompactDirections.lean": "bf7f22b9c0969494217a68e85ff1a8418f2166536d992c258d681efff57146ba",
+    "DifferentialGeometry/Geometry/Comparison/UniformSmallScaleNets.lean": "7f025849c98999a77b460975bf8702809d863bb78983cca9d181b78a65e36a2a",
+    "DifferentialGeometry/Geometry/Comparison/FiniteDimensionalDirections.lean": "2697cf76d15ed1b07698c4264a2be9d7eff52ad98af6e6516b05471ff7132873"
+  },
+  "logs": {
+    "compact_directions_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "compact_directions_review.log": "67bfb6f1c6c349f8c838b912006ec81eb2fbf95d53591d27853c0da87feb8987",
+    "compact_directions_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "ff583ae3f050851757bdeba09b613702422f078773acf81b45d495ddc886fc30",
+  "git_head_at_check": "c9361a688e9d14862ecbff4926e5cbfa3eba7a9f",
+  "independent_root_and_peer_proof_review": true,
+  "new_actual_original_geometry_regressions": 9,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

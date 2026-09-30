@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 5,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 5,
+  "combined_modules": 222,
+  "combined_jobs": 3056,
+  "combined_owned_declarations": 1130,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/Approximation/GrowingRegionGeometry.lean": "49b487a45f26d3eace599dc7ee328f6d59b304383b2f73ba180b489d97e927cc",
+    "DifferentialGeometry/Geometry/Metric/Approximation/CeilComparisonExtraction.lean": "c40d5c4207d43d87b5cd5fea82c4b069713b5ae1d9ef975e07b534cf4305ffd9",
+    "DifferentialGeometry/Geometry/Metric/Approximation/GrowingRegionExtraction.lean": "057be8b5dea6bf4428d5cba9c55c9548951ec15356fa14ad38c46fa5edebdcb4"
+  },
+  "logs": {
+    "growing_region_extraction_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "growing_region_extraction_review.log": "b58fb2e9739c959345ef790c9eaff78ee9887abc85879d156328400dc359000c",
+    "growing_region_extraction_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "090a6b11a91f61c3fc8c36fb13662c6e7cfea66823247e8bbd140cf028402343",
+  "git_head_at_check": "e895e4a31d82e4c2ab083e919f986f755d1f365c",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

@@ -1,0 +1,44 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC85 full6447\u20136503 and AC86 full6505\u20136519"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf",
+      "sha256": "7a860b4dd95b35fe33b06bf040100ec243d72c80528d927f4763391aaf79cb6e",
+      "locator": "Lemma4.20 full printed33\u201334/PDF28\u201329; same-limit closure and model compactness steps only"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/KL_corrections.pdf",
+      "sha256": "b5849571508231ce7328ef842eaa0a8a74e34804de7741dab548c406dea11e19",
+      "locator": "retained May15,2015 correction sheet PDF1; no relevant correction listed"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Order/Filter/Ultrafilter/Defs.lean",
+      "sha256": "7a63210789592792a10dfce7aa199afdbd47413b14a87597e193978134e1a2a3",
+      "locator": "Ultrafilter.of/of_le292\u2013306"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+      "sha256": "5a341c5bc999608d1baddaa695a26025ab53774e089b98efc574168efea40056",
+      "locator": "IsCompact.ultrafilter_le_nhds138\u2013145"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+      "sha256": "f6103fa08081bec147a72137e61e8343e0b4f149560ee57e4dcfb678fb3c3e02",
+      "locator": "Tendsto.congr_dist1165\u20131174"
+    }
+  ],
+  "reused_source_checks": [
+    "radial_cones_sources.json",
+    "growing_region_extraction_sources.json",
+    "moving_pointed_limit_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Full AC85\u201386; SAME actual target and all geometry retained",
+  "proof_route": "One shared ultrafilter for85; identically-zero curvature allowance for86",
+  "errata": "Retained KL sheet reused; no fresh remote retrieval claim",
+  "independent_agent_proof_review": true
+}

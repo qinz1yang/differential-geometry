@@ -1,0 +1,78 @@
+[
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/TruncatedRange.lean",
+    "sha256": "d30479378c564bbcc6a674a6db6a800f1a76165809e6f12ef7b1671c6c38eeb8",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/TruncatedRange.olean",
+      "DifferentialGeometry/Geometry/Metric/TruncatedRange.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "95f90fad739d54452abc04be03459f49384bbf9a0c6d786e536c0d2c80110afc"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/GraphCoverage.lean",
+    "sha256": "996d5563fc4d62ef413c5016b9dc97c38b8abd3b93c09424460764168ef9b8d8",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/GraphCoverage.olean",
+      "DifferentialGeometry/Analysis/Calculus/GraphCoverage.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "691026d1e0973fd8f416c4347acfb9c64fa702ec9ae70ae5ce67c846ac5832ff"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/RetainedMarkerRadii.lean",
+    "sha256": "16461aa420f131d23bc6aba5f307dba2aca6a2995d4d82cb02af91fc44c31d1e",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/RetainedMarkerRadii.olean",
+      "DifferentialGeometry/Geometry/Metric/RetainedMarkerRadii.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "a4282a2be6ba7dc825088de24877e3247074deacb0e3f17b1bff1aa2951fdd4e"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/ParameterSelection/AdjustmentBudget.lean",
+    "sha256": "f129f94df8cb4bcf80a8229470d36c16fdd090f0078f70191827deba38e66456",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/ParameterSelection/AdjustmentBudget.olean",
+      "DifferentialGeometry/Analysis/ParameterSelection/AdjustmentBudget.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "4916d7d218105e7b2305fc6163e60abe7949704fb64076e5651348306466f685"
+  }
+]

@@ -1,0 +1,61 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "definitions2832\u20132848; AC18 full proof2930\u20132946; AC33 full proof3730\u20133768"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/BuragoGromovPerelman1992.pdf",
+      "sha256": "c4c665d7e0bfb9d515e9b14ab06523fb9fd75edc89165fe3dc8173c47dea57d9",
+      "locator": "English1992, Definition6.2 full body printed20/PDF21; Lemmas6.3\u20136.4 printed20\u201321/PDF21\u201322"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+      "sha256": "a6aebc0f4ed4cb273f60fbac323fc2c47857fefed587f50f29e8996a720eec68",
+      "locator": "pin c55e6e786f49471c72fbddbec5415808896aec1e; rpow_sub263\u2013268"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean",
+      "sha256": "69a615fcda2a7b2af2317de2926378992a6e472ae5dc74f401af18e188b57761",
+      "locator": "same pin; continuity at zero205\u2013230 and Tendsto.rpow_const239\u2013251"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Basic/Real/ENatENNReal.lean",
+      "sha256": "aa56bfe41d958915c8e8e6b85f6c4fafd2782c07d6ef80a8d6e862298b796557",
+      "locator": "same pin; order-preserving ENat coercion25\u201398"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+      "sha256": "da5573e6bb7b196bd109724302c3db8eda3a3efab72c8db958ce2ddbf643cecf",
+      "locator": "ofReal monotonicity137\u2013149 and multiplication297\u2013307"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+      "sha256": "4bb08346c7d2d06c348764f7c355d6b00aa88c17ee4fd1cde999a9ad138bc3a5",
+      "locator": "density of finite nonnegative real exponents590\u2013609"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+      "sha256": "b92b683c7f4395efd7231c918e9e11a8f6f5e231cb65a0b84593b62e493bba10",
+      "locator": "convergent-filter limsup proof169\u2013196"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+      "sha256": "2399f41ce6460bd368c3bf6ad052d0c57e43472a93e02855a87c05f28b800abf",
+      "locator": "Holder/Lipschitz image-dimension proofs281\u2013300,339\u2013346; real open-set/interval dimension438\u2013476"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+      "sha256": "abdafde82be94189e4779892c3cb06e3b1afa387167f0d9292680ee66d2ed0c2",
+      "locator": "distance-map Lipschitz proofs143\u2013148"
+    }
+  ],
+  "reused_source_checks": [
+    "local_polynomial_packing_sources.json",
+    "local_compactness_sources.json"
+  ],
+  "errata": "Retained BBI errata PDF13 and previously checked source qualifications reused; no new identity claim for remote moving sources.",
+  "definition_convention": "Non-strict finite packing, ENNReal limsup along positive scales; roughDim infimum over nonnegative zero-volume exponents, empty infimum infinity. Extends naturally to arbitrary sets.",
+  "scope": "Full AC18 continuous-curve implication and AC33 common-comparison metric core including n=0; no intrinsic metric adapter or global dimension equality."
+}

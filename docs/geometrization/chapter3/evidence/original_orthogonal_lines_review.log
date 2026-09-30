@@ -1,0 +1,20 @@
+'_private._stdin.0.GCAC65FlatLongAnglesReview.translated_orthogonal_euclidean_angle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCAC65FlatLongAnglesReview.translated_orthogonal_long_cross_angle_fails' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCAC65FlatLongAnglesReview.flat_long_comparison_tends_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCAC65FlatLongAnglesReview.flat_long_cross_angle_premise_fails' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.PointedGHConverges.exists_orthogonal_calibrated_lines_of_reciprocal_local_geometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.germComparisonAngle_eq_pi_div_two_of_converging_radial_prefixes' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalOrthogonalLinesReview.real_one_axis_full_package' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GCOriginalOrthogonalLinesReview.real_no_axes_full_package' depends on axioms: [propext, Classical.choice, Quot.sound]

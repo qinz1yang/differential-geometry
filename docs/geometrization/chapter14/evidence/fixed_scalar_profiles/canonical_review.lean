@@ -1,0 +1,110 @@
+import Mathlib.Tactic.Linter
+import DifferentialGeometry.Analysis.Calculus.FlatTailDerivativeBounds
+import DifferentialGeometry.Analysis.Calculus.Cutoff.IntervalProfiles
+import DifferentialGeometry.Analysis.Calculus.Cutoff.EdgeNetworkProfiles
+import DifferentialGeometry.Analysis.Calculus.FixedJointCutoffNetwork
+
+#check DifferentialGeometry.Analysis.hasCompactSupport_fderiv_of_constant_tails
+#print axioms DifferentialGeometry.Analysis.hasCompactSupport_fderiv_of_constant_tails
+
+#check DifferentialGeometry.Analysis.exists_derivative_bounds_of_constant_tails
+#print axioms DifferentialGeometry.Analysis.exists_derivative_bounds_of_constant_tails
+
+#check DifferentialGeometry.Analysis.descendingIntervalProfile
+#print axioms DifferentialGeometry.Analysis.descendingIntervalProfile
+
+#check DifferentialGeometry.Analysis.intervalPlateauProfile
+#print axioms DifferentialGeometry.Analysis.intervalPlateauProfile
+
+#check DifferentialGeometry.Analysis.contDiff_descendingIntervalProfile
+#print axioms DifferentialGeometry.Analysis.contDiff_descendingIntervalProfile
+
+#check DifferentialGeometry.Analysis.descendingIntervalProfile_mem_Icc
+#print axioms DifferentialGeometry.Analysis.descendingIntervalProfile_mem_Icc
+
+#check DifferentialGeometry.Analysis.descendingIntervalProfile_one
+#print axioms DifferentialGeometry.Analysis.descendingIntervalProfile_one
+
+#check DifferentialGeometry.Analysis.descendingIntervalProfile_zero
+#print axioms DifferentialGeometry.Analysis.descendingIntervalProfile_zero
+
+#check DifferentialGeometry.Analysis.antitone_descendingIntervalProfile
+#print axioms DifferentialGeometry.Analysis.antitone_descendingIntervalProfile
+
+#check DifferentialGeometry.Analysis.contDiff_intervalPlateauProfile
+#print axioms DifferentialGeometry.Analysis.contDiff_intervalPlateauProfile
+
+#check DifferentialGeometry.Analysis.intervalPlateauProfile_mem_Icc
+#print axioms DifferentialGeometry.Analysis.intervalPlateauProfile_mem_Icc
+
+#check DifferentialGeometry.Analysis.intervalPlateauProfile_zero_left
+#print axioms DifferentialGeometry.Analysis.intervalPlateauProfile_zero_left
+
+#check DifferentialGeometry.Analysis.intervalPlateauProfile_zero_right
+#print axioms DifferentialGeometry.Analysis.intervalPlateauProfile_zero_right
+
+#check DifferentialGeometry.Analysis.intervalPlateauProfile_one
+#print axioms DifferentialGeometry.Analysis.intervalPlateauProfile_one
+
+#check DifferentialGeometry.Analysis.tsupport_intervalPlateauProfile_subset
+#print axioms DifferentialGeometry.Analysis.tsupport_intervalPlateauProfile_subset
+
+#check DifferentialGeometry.Analysis.edgeCoordinateProfile
+#print axioms DifferentialGeometry.Analysis.edgeCoordinateProfile
+
+#check DifferentialGeometry.Analysis.edgeHeightProfile
+#print axioms DifferentialGeometry.Analysis.edgeHeightProfile
+
+#check DifferentialGeometry.Analysis.jointHeightProfile
+#print axioms DifferentialGeometry.Analysis.jointHeightProfile
+
+#check DifferentialGeometry.Analysis.edgeSumProfile
+#print axioms DifferentialGeometry.Analysis.edgeSumProfile
+
+#check DifferentialGeometry.Analysis.edgeProfiles_contDiff
+#print axioms DifferentialGeometry.Analysis.edgeProfiles_contDiff
+
+#check DifferentialGeometry.Analysis.edgeProfiles_mem_Icc
+#print axioms DifferentialGeometry.Analysis.edgeProfiles_mem_Icc
+
+#check DifferentialGeometry.Analysis.edgeProfiles_support
+#print axioms DifferentialGeometry.Analysis.edgeProfiles_support
+
+#check DifferentialGeometry.Analysis.edgeSumProfile_zero
+#print axioms DifferentialGeometry.Analysis.edgeSumProfile_zero
+
+#check DifferentialGeometry.Analysis.edgeSumProfile_one
+#print axioms DifferentialGeometry.Analysis.edgeSumProfile_one
+
+#check DifferentialGeometry.Analysis.edgeProfiles_low_height
+#print axioms DifferentialGeometry.Analysis.edgeProfiles_low_height
+
+#check DifferentialGeometry.Analysis.edgeProfiles_plateaus
+#print axioms DifferentialGeometry.Analysis.edgeProfiles_plateaus
+
+#check DifferentialGeometry.Analysis.exists_edgeProfiles_derivative_bounds
+#print axioms DifferentialGeometry.Analysis.exists_edgeProfiles_derivative_bounds
+
+#check DifferentialGeometry.Analysis.edgeProfileDerivativeBound
+#print axioms DifferentialGeometry.Analysis.edgeProfileDerivativeBound
+
+#check DifferentialGeometry.Analysis.edgeProfileDerivativeBound_ge_one
+#print axioms DifferentialGeometry.Analysis.edgeProfileDerivativeBound_ge_one
+
+#check DifferentialGeometry.Analysis.edgeProfiles_derivative_le
+#print axioms DifferentialGeometry.Analysis.edgeProfiles_derivative_le
+
+#check DifferentialGeometry.Analysis.fixedJointCutoffNetwork
+#print axioms DifferentialGeometry.Analysis.fixedJointCutoffNetwork
+
+#check DifferentialGeometry.Analysis.contDiff_fixedJointCutoffNetwork
+#print axioms DifferentialGeometry.Analysis.contDiff_fixedJointCutoffNetwork
+
+#check DifferentialGeometry.Analysis.fixedJointCutoffNetwork_bounds
+#print axioms DifferentialGeometry.Analysis.fixedJointCutoffNetwork_bounds
+
+#check DifferentialGeometry.Analysis.fixedJointCutoffNetwork_c1_comp_sub_le
+#print axioms DifferentialGeometry.Analysis.fixedJointCutoffNetwork_c1_comp_sub_le
+
+#check DifferentialGeometry.Analysis.fixedJointCutoffNetwork_low_height
+#print axioms DifferentialGeometry.Analysis.fixedJointCutoffNetwork_low_height

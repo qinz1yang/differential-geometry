@@ -1,0 +1,13 @@
+'AnalyticRegression.scalar_rank_survives_quarter_perturbation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'AnalyticRegression.affine_composition_keeps_original_budget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnalyticRegression.decreasing_parameters_on_finite_dag' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnalyticRegression.directed_cycle_rejected' depends on axioms: [propext]
+'AnalyticRegression.incompatible_mixed_interval_rejected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnalyticRegression.original_marker_threshold' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnalyticRegression.diagonal_two_active_blocks' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnalyticRegression.exact_common_direction_forces_equality' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnalyticRegression.zero_operator_fails_positive_adjoint_margin' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

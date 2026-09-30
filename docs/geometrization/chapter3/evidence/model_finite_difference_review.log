@@ -1,0 +1,9 @@
+'Real.cosh_sub_one_le_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Real.sinh_sub_self_le_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Real.abs_cosh_sub_linear_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.abs_sub_add_cos_comparisonAngleNegCurvature_one_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.abs_dist_sub_add_cos_comparisonAngleNegCurvature_one_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

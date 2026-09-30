@@ -1,0 +1,25 @@
+{
+  "success": true,
+  "new_public_theorems": 8,
+  "new_definitions": 0,
+  "new_owned_declarations": 9,
+  "combined_modules": 144,
+  "combined_jobs": 2932,
+  "combined_owned_declarations": 810,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/ClosedBallDensity.lean": "78362167285a7a74f91ca378201519e5db90b57966f41bc02eb6b8606a2cb7ce",
+    "DifferentialGeometry/Topology/MetricSpace/EndpointCoordinate.lean": "973387985dc299b177d8e2778aecac890b898a967bb06afc4c838c8e546586b8",
+    "DifferentialGeometry/Topology/MetricSpace/EndpointModel.lean": "1365c2c8fb914a203026e3598508ae6693fd90c18666dc7fef6abeefaa878636",
+    "DifferentialGeometry/Topology/MetricSpace/HalfIntervalEndpoint.lean": "fbf4f01caaa8fc5e9143381c48b5084efaa7dcd0090a5769186fce73d495b60d",
+    "DifferentialGeometry/Geometry/Comparison/EndpointRecognition.lean": "c2f2cc6663dea7042f80a5c95e3e4a12ed2c3f28229c63b7c5b6980dc8d059e6"
+  },
+  "logs": {
+    "endpoint_recognition_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "endpoint_recognition_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758",
+    "endpoint_recognition_review.log": "3f1bbf69200f681c87143fd319837b457945916d5912cbbd7484e382fa54fb70"
+  },
+  "review_driver_sha256": "8ab9f9617c6a61d82508c1d98d4b8708a2eba60463d05ac326ef6dbbca7351d6",
+  "git_head_at_check": "9d1a016bb602e060a58074b7218bdb04a90e0094",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

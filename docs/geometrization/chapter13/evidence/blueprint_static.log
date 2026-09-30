@@ -1,0 +1,17 @@
+Executing unchanged audit with complete-file reads; audit SHA256=a71b3b706ed68f757debfad4dbbbf4f80a243ed1db2f56fa5054d23dd54e2018
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/checks/mostow_dependency_audit.py 5161 of 5161
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/checks/evidence/revision118_mostow_dependency_audit.json 239100 of 239100
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/checks/evidence/revision119_quantitative_development.json 13865 of 13865
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master120.tex 1527531 of 1527531
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master37.tex 229286 of 229286
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master51.tex 379267 of 379267
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master87.tex 846368 of 846368
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master68.tex 605844 of 605844
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master80.tex 757341 of 757341
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master11.tex 48178 of 48178
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master15.tex 61797 of 61797
+Retry incomplete input read: /Users/bennettchow/Documents/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/Petersen_second_edition_errata.pdf 368738 of 368738
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/checks/evidence/revision131_edge_transfer_sources.json 4202 of 4202
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/checks/evidence/revision134_edge_coverage_sources.json 3109 of 3109
+Retry incomplete input read: /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/checks/finite_model_cone.py 3621 of 3621
+Retry incomplete input read: /Users/bennettchow/Documents/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/revision137/MashikoNaganoOtsuka2005.pdf 112060 of 112060

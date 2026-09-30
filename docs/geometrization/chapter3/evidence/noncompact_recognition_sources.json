@@ -1,0 +1,56 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC47 full4445-4501"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/BuragoBuragoIvanovBook.pdf",
+      "sha256": "4efaa168dcc83e7e9f5663d14824f9543104beab21642ca3830a5dd1c684c971",
+      "locator": "AMS2001; printed46-53/PDF61-68; full2.5.14,2.5.17,2.5.22,2.5.28 with needed definitions/proofs"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/bbi-errata-2024-07-06.pdf",
+      "sha256": "68338c7a8b37b8637efbad8af5f547f6cf789675df020fbc6aa04d4babdde42e",
+      "locator": "July6,2024; PDF1-3 full; finite-metric/natural-parametrization and compactness-proof corrections"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/CalibratedRay.lean",
+      "sha256": "9e5f4823cdc176b25a7b057f7ba05c51c33b58d97fc1fc7bef1826bb625f8505",
+      "locator": "1-145; actual one-ultrafilter proof pattern, calibrated line hypothesis NOT imported into new theorem"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/SegmentConcatenation.lean",
+      "sha256": "3f17634f6b178070a7a8039c6924e4a6f2bbb5cbb515352e2e071228b992de88",
+      "locator": "13-35; actual arclength segment producer including zero length"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/HopfRinow.lean",
+      "sha256": "a37945aee58222bcafb106892e9f5cc2601f75480b19e44c0ef4c3efcdc8f5ea",
+      "locator": "13-89; compact-ball enlargement and full properness proof"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/VaryingLocalGeometry.lean",
+      "sha256": "d3473b27affeefb0dfb7e7c89d345e50a5c895be2432eb50f5a635186aab56ff",
+      "locator": "13-41; original-input local compactness at arbitrary kappa>=0"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+      "sha256": "5a341c5bc999608d1baddaa695a26025ab53774e089b98efc574168efea40056",
+      "locator": "138-145; ultrafilter criterion and proof"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/Homeomorph/Lemmas.lean",
+      "sha256": "7259045703d326907a76c01de6763e9bf28c4cfd05ae70b6501402fe60e7a4d1",
+      "locator": "142-145,351-355; local compactness transport and whole-space subtype homeomorphism"
+    }
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "reused_source_checks": [
+    "ray_recognition_sources.json",
+    "varying_local_covering_sources.json"
+  ],
+  "scope": "Full noncompact AC47 metric branch, including internally derived properness and actual ray production; compact circle branch remains.",
+  "errata": "Retained July6,2024 BBI errata checked as above; no current-remote byte identity or comprehensive errata clearance claimed."
+}

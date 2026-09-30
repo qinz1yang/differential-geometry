@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "new_public_theorems": 17,
+  "new_private_theorems": 0,
+  "new_definitions": 1,
+  "new_owned_declarations": 20,
+  "combined_modules": 300,
+  "combined_jobs": 3135,
+  "combined_owned_declarations": 1369,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/CrossingLineCoordinates.lean": "4eebff5a9143ccb812195195fe946f686087865fc356e3d9a37cc626ae58aa6c",
+    "DifferentialGeometry/Geometry/Comparison/OrthogonalLineFactor.lean": "82a51fc8bfca86647d659f35e7179199e846cb9790a66e8ff93488c332a09a66",
+    "DifferentialGeometry/Analysis/InnerProductSpace/EuclideanProductCoordinates.lean": "8c22d5d6a6ee20dc944455bcef60e47409eb7779a6fc35444c724aa3c08be78d",
+    "DifferentialGeometry/Geometry/Comparison/OrthogonalLineSplitting.lean": "c103ec100ede6fa5a1c1b6490fadce19f749597aa90f44f5792218a521b552cd",
+    "DifferentialGeometry/Geometry/Comparison/AlignedEuclideanCoordinates.lean": "1f55c73325aba58405fb0a49b9e2084fed6a31716a8771809730e73e35e85b44",
+    "DifferentialGeometry/Geometry/Comparison/OrthogonalLineCoordinates.lean": "7ca00760a3775551f7ab13af903b0c6ab6acb39dc0630e3b1e74245320364635"
+  },
+  "logs": {
+    "orthogonal_line_coordinates_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "orthogonal_line_coordinates_review.log": "41fe4615dbc965e8608b42ea483d8f6b3cc1e3e04cc203393438200bcf4e53f0",
+    "orthogonal_line_coordinates_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "742bd66af21939a25f9ce0acd1a761ce9b8428a3617133d771772ab39b87115d",
+  "git_head_at_check": "47d0fa087a027b7361fc46779d901401620c7afe",
+  "independent_agent_source_and_proof_review": true,
+  "independent_agent_orientation_driver": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

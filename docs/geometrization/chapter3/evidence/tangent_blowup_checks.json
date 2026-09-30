@@ -1,0 +1,97 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/TangentPairedNets.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_TangentPairedNets.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "c6ee529d126769e192bcd90979cb14058ff1281f4c03bb626704d2c735acaa31"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/IntrinsicTangentBlowup.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_IntrinsicTangentBlowup.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "5bf1e3a18eed9489b65eb5a26bd4eb44aefcbc52a9d8579c8dde9da93144ab0c"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/RescaledLocalComparison.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_RescaledLocalComparison.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "15e477f5c8f71c00972d9a8cfaadb8860524033788874613c0444c0371c994dd"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/TangentGeometry.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_TangentGeometry.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "3ee2e9adf78330c43c0bb6a29d1a9463931f080a81b6fd12078fb74a9aba9e23"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/FiniteDimensionalTangentGeometry.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_FiniteDimensionalTangentGeometry.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "c93cc2786f2d33b432ca183b1ceab7dbf43aea89fc1bb5ec85554d247032e082"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_tangent_blowup_review.lean"
+  ],
+  "review_exit_code": 0,
+  "review_reports": [
+    "Metric.eventually_pointedBallApprox_tangent_of_local_radial_control",
+    "Metric.eventually_pointedBallApprox_tangent_of_intrinsic_8_buffer",
+    "Metric.pointedGHConverges_tangent_of_intrinsic_8_buffer",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.eventually_fourPointComparison_rescale_of_local",
+    "Metric.tangent_geometry_of_intrinsic_8_buffer",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.tangent_geometry_and_blowup_of_local_comparison_and_dimH",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.tangent_geometry_and_blowup_of_intrinsic_eight_comparison_and_dimH",
+    "GCDirectionSpaceReview.actual_real_noncentral_point_full_sequence_tangent",
+    "GCDirectionSpaceReview.actual_real_arbitrary_blowup_radius",
+    "GCDirectionSpaceReview.actual_singleton_empty_directions_full_sequence_tangent",
+    "GCDirectionSpaceReview.actual_real_noncentral_tangent_nonnegative_geodesic",
+    "GCDirectionSpaceReview.actual_real_opposite_radius_two_three_segment",
+    "GCDirectionSpaceReview.actual_singleton_empty_tangent_nonnegative_geodesic",
+    "GCDirectionSpaceReview.actual_real_original_eight_tangent_outside_halfball",
+    "GCDirectionSpaceReview.actual_real_unbounded_open_region_tangent",
+    "GCDirectionSpaceReview.actual_singleton_original_eight_all_tangent_outputs",
+    "GCRescaledLocalComparisonReview.translated_real_all_nonnegative_curvatures",
+    "GCRescaledLocalComparisonReview.translated_real_curvature_zero"
+  ],
+  "review_driver_sha256": "4ef3a4fb6d21e69b1b7df17ddc49a212d5c7af637955fa4bc53f12d3dccea6a0",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Metric/TangentPairedNets.lean": "dae4801b117ff435d6dd883bd6f7a197e4e5fe609eae49fae68f320cac576870",
+    "DifferentialGeometry/Geometry/Metric/IntrinsicTangentBlowup.lean": "08c3d7f3f6a96e05984aae43ceb34b67346c15ef926a364ccadd96c628250acf",
+    "DifferentialGeometry/Geometry/Comparison/RescaledLocalComparison.lean": "6ae0121678afc0161c764c9af7b0ae0e8bc06676add97682c5a9a6344f6b16ae",
+    "DifferentialGeometry/Geometry/Metric/TangentGeometry.lean": "1531284b261ea8f22b8ea0664a3a9fc3c73476102cdec7638ae7a52571dfb804",
+    "DifferentialGeometry/Geometry/Comparison/FiniteDimensionalTangentGeometry.lean": "5219186948d540125410b6bbca366017210641e29d6c01eb47271bf0bb12bab3"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "0d4551eddf26f95099cf9908db6af97ab5873c25ccba66838b9fcec5afa37b5e"
+}

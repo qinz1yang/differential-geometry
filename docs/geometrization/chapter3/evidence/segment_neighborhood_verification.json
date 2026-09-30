@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "scope": "new segment-neighborhood leaf and three consumer examples; existing 63-module scoped gate; no migrated full root",
+  "public_theorems": 6,
+  "owned_declarations": 7,
+  "combined_modules": 63,
+  "combined_owned_declarations": 572,
+  "combined_jobs": 2841,
+  "linters": [
+    "unusedArguments",
+    "simpNF",
+    "synTaut"
+  ],
+  "declaration_kind_check": "all seven owned declarations are theorems; defLemma absent in pinned toolchain",
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/SegmentNeighborhood.lean": "36405b1c5087c608cfd16a2c88d3ec4cf3664018954eb4e53832caa6eb0cd7b2"
+  },
+  "review_driver_sha256": "918d012a976d19871b99edbec3ace0b02ee0e98678d91812a80290c369a3f056",
+  "logs": {
+    "segment_neighborhood_blueprint_audit.log": "a189693840e3d73f017ce54dab96413ccfd1606920d5695ac24d610411c57f6d",
+    "segment_neighborhood_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "segment_neighborhood_review.log": "6140e09abdb56061e8bbf5666f4f2d278eb6c96973cd6fbe583cd8a78fb55adf"
+  },
+  "blueprint_static_audit": "failed at unchanged historical archive path; not bypassed",
+  "git_head_at_check": "2fe219b40597d0d64bdf25db0807888439f690f2"
+}

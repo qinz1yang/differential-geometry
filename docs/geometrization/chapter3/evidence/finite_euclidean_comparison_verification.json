@@ -1,0 +1,52 @@
+{
+  "success": true,
+  "blueprint_static_audit": {
+    "status": "failed",
+    "success": false,
+    "latest_completed_exit_code": 1,
+    "reason": "Historical source path is missing: /Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/MatveevBook2ndEd.pdf",
+    "running_session": null,
+    "unchanged_audit_sha256": "a71b3b706ed68f757debfad4dbbbf4f80a243ed1db2f56fa5054d23dd54e2018",
+    "blueprint_revision": 207,
+    "lean_gate_independent": true,
+    "current_milestone": 143,
+    "note": "The unchanged separate static audit completed with exit 1; no static pass is claimed.",
+    "completed_session": 82024
+  },
+  "milestone": 143,
+  "new_public_theorems": 3,
+  "new_public_definitions": 0,
+  "new_instances": 0,
+  "new_private_theorems": 0,
+  "new_declared_declarations": 3,
+  "new_generated_declarations": 1,
+  "new_owned_declarations": 4,
+  "observed_previous_owned_declarations": 2304,
+  "observed_previous_modules": 499,
+  "combined_modules": 502,
+  "combined_jobs": 3340,
+  "combined_owned_declarations": 2308,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/NonnegativeSegmentLog.lean": "fd13333e271de469e4408e23c2da08956e49ba7fe3ac5c61c18d0e908be75bc2",
+    "DifferentialGeometry/Geometry/Comparison/FiniteEuclideanComparison.lean": "cf2b32848c7c9c77d74d70f82d1ada1a720bf29bd45ee8fe40ebeb13da01add3",
+    "DifferentialGeometry/Geometry/Comparison/NonnegativeFiniteComparison.lean": "4fdee4c2e40d5d3296a7107f6c3192e402f07e8d34242ef17892e8151b286b2b"
+  },
+  "logs": {
+    "finite_euclidean_comparison_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "finite_euclidean_comparison_review.log": "e3171d4b18e91f2e219fecc6d28217a95dbd6aaa6d577adceb00a2c1b67120b4",
+    "finite_euclidean_comparison_blueprint_audit.log": "2be310aa5ac57d2368512587a6bf55059337096d08ced113af53e82080b78e03",
+    "finite_euclidean_comparison_blueprint_status.json": "750ab95584e8cdd7eb43fa5a5df42d62012157d8b5526da27d106553ae64859b"
+  },
+  "checks_receipt_sha256": "2ad7afa09e1938a66c043fe1ac46e647ed9138dfc6c182fdbf6843218b4bee82",
+  "shared_gate_receipt_sha256": "a04e4644e02431f70eb219ed3ebe225666336d1c19eee729b8b320963c1390be",
+  "previous_milestone_receipt_sha256": "3cdd586cf4e806af0b4c492e601fc19ffcd697c4ef290bbbc48dbf57ba41c9da",
+  "review_driver_sha256": "8a77bb316f604a0c03e54eb1e4e237bb6d925bd65aaa8eafb97120368aaeaefc",
+  "registration_plan_sha256": "467ef057698d6b835fce685dfd2c3f09655c123dd7f18f0dbc7dbb083d82d9f2",
+  "source_receipt_sha256": "005635e915fd79ae8e3e6ab3f56c27248a585d013f23a9568b8d05f0a96c77b5",
+  "git_head_at_check": "cc6bcd7f463e65c3f44d48b05e58c49964c4f670",
+  "independent_peer_proof_review": true,
+  "new_concrete_regressions": 9,
+  "expected_review_reports": 12,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

@@ -1,0 +1,2 @@
+'GC146ExportReview.compact_comparison_target_net' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC146ExportReview.expanding_open_interval_net' depends on axioms: [propext, Classical.choice, Quot.sound]

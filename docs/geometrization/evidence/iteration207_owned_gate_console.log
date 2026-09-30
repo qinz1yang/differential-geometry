@@ -1,0 +1,11 @@
+Static gate passed: 155 Lean modules, 9 task cards.
+Running lake build DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Geometrization.Checks.AxiomAudit
+set_option maxHeartbeats in
+-- comment explaining why this is necessary
+example : ... := ...
+```
+
+Note: This linter can be disabled with `set_option linter.style.setOption false`
+info: DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/AxiomAudit.lean:161:0: Team axiom audit passed for 4311 declarations.
+Build completed successfully (20220 jobs).
+Lean build and axiom gate passed. Receipt: .lake/gc/verification.json

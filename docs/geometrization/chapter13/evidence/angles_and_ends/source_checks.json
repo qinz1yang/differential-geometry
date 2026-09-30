@@ -1,0 +1,230 @@
+[
+  {
+    "path": "DifferentialGeometry/Geometry/Comparison/AlmostOppositeAngle.lean",
+    "sha256": "e9a3a3f7a6821430f899c8203f72c936a2120702130583c5aa5b0d454f8cf0a3",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Comparison/AlmostOppositeAngle.olean",
+      "DifferentialGeometry/Geometry/Comparison/AlmostOppositeAngle.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "103f3c98b4edf15ee855923a10f121f080041f1a9afaf25826a0130f0d00b387"
+  },
+  {
+    "path": "DifferentialGeometry/Topology/MetricSpace/CompactBaseIsometry.lean",
+    "sha256": "b5c4e0fe09d1d6b32e12eca027af86f0288d226bbf22fc6bea4d8411c6ff473a",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Topology/MetricSpace/CompactBaseIsometry.olean",
+      "DifferentialGeometry/Topology/MetricSpace/CompactBaseIsometry.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "e7e79024ae4fc7ce510cd8de355284bb42ea20b854f2fdd28c016691c0c20fe9"
+  },
+  {
+    "path": "DifferentialGeometry/Topology/MetricSpace/GeodesicLine.lean",
+    "sha256": "9e844c6d2068962c35fea67777824b13dc1e45aed73497562a64917910f18fbf",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Topology/MetricSpace/GeodesicLine.olean",
+      "DifferentialGeometry/Topology/MetricSpace/GeodesicLine.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "d16f03e9ae6935a3c8aca23398874df1e1e301e9fc0416c5ebfeeb55b0027ff4"
+  },
+  {
+    "path": "DifferentialGeometry/Topology/MetricSpace/ProductEnds.lean",
+    "sha256": "1a083dc307c04895ec3be52689a239839270b9980333875e6a84478a51e7517c",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Topology/MetricSpace/ProductEnds.olean",
+      "DifferentialGeometry/Topology/MetricSpace/ProductEnds.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "7fdd14b1bcbb61f13dc0746154173a481325bc0407fbc268e5bf6940482e92f3"
+  },
+  {
+    "path": "DifferentialGeometry/Topology/MetricSpace/LpProductEnds.lean",
+    "sha256": "89dc4bb7f08429d95d6becb3706e4106e204ff39ac7b46a76fd7de363926b5d2",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Topology/MetricSpace/LpProductEnds.olean",
+      "DifferentialGeometry/Topology/MetricSpace/LpProductEnds.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "755f495b292eb7338ad75288385cc6261b4dc80b43c7dfd943b265784e23f6a2"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Comparison/MultipleEndsSplitting.lean",
+    "sha256": "977ee8b89c9e13c2ec7a5b80d4460ae3a5b018a36ad6556f54d80f710a6f4bdb",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Comparison/MultipleEndsSplitting.olean",
+      "DifferentialGeometry/Geometry/Comparison/MultipleEndsSplitting.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "892d0fe6e62ab4db1157b8ddc999243aaae3ea4f544e1c383170aff5cbc3cbf2"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Scaling/RescaleIsometry.lean",
+    "sha256": "1ecd521a229668507c151686c8b1bb7c6b04daddeeea9e5f9c166251ec55f0ef",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Scaling/RescaleIsometry.olean",
+      "DifferentialGeometry/Geometry/Metric/Scaling/RescaleIsometry.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "036e1d476f34054c15dc4839c8f591828aab068fba9e242efbffc4c4d420468e"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/ConvergenceIsometry.lean",
+    "sha256": "13f082bd4b4aef725e648f282ebdb1e388c4fe88b6d0b62b5d546cb42ce123bb",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Approximation/ConvergenceIsometry.olean",
+      "DifferentialGeometry/Geometry/Metric/Approximation/ConvergenceIsometry.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "6dbf05f3a618a84e8333e8e98935eae61719b115fbcba3535b5f618bcb4214cd"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/NormedProductBlowdown.lean",
+    "sha256": "598f0958bacea3074fc8d1fe59df996583c88ef8f03df841099b1e8b8e934bb9",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Approximation/NormedProductBlowdown.olean",
+      "DifferentialGeometry/Geometry/Metric/Approximation/NormedProductBlowdown.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "df1a8ded2048376149aef407ef7ea0f4ad304519a4eb0ac252774109080a0eae"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/ProductBlowdownRecognition.lean",
+    "sha256": "92171db22131ef30596a343df4ff473fcd0325d21af32537a79689c51b0961e8",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Approximation/ProductBlowdownRecognition.olean",
+      "DifferentialGeometry/Geometry/Metric/Approximation/ProductBlowdownRecognition.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "62e810f427a78f15a5d6d561feff9375d5a95767392e2bcb5af0835efc486226"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/KleinerLottCriterion.lean",
+    "sha256": "1034409e70431fa4ac4cff42739fe2159e09ddd896eb1186af5c6509c20d076c",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Approximation/KleinerLottCriterion.olean",
+      "DifferentialGeometry/Geometry/Metric/Approximation/KleinerLottCriterion.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "0cf817e62816856694889bdec66d31b584c9be2211d53c5337017c777cda3bf6"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/MultipleEndsBlowdown.lean",
+    "sha256": "ef90175e0c475e4983d54ee2cb5eba0516090fb822f8f728a5a13d86bef1bf5a",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Approximation/MultipleEndsBlowdown.olean",
+      "DifferentialGeometry/Geometry/Metric/Approximation/MultipleEndsBlowdown.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "f803fca06bba7a59810bd229ecaef0a98409404f52e2f38bf9b223ed02da7683"
+  }
+]

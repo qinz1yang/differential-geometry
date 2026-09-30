@@ -1,0 +1,7 @@
+'interface_application_1' depends on axioms: [propext, Classical.choice, Quot.sound]
+INTERFACE_APPLICATION interface_application_1
+'interface_application_2' depends on axioms: [propext, Classical.choice, Quot.sound]
+INTERFACE_APPLICATION interface_application_2
+'interface_application_3' depends on axioms: [propext, Classical.choice, Quot.sound]
+INTERFACE_APPLICATION interface_application_3
+AREA_CONTRACT_DEFINITIONALLY_EQUAL

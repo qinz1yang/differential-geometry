@@ -1,0 +1,20 @@
+import DifferentialGeometry.Geometry.Comparison.PairedPacketAnchors
+import DifferentialGeometry.Geometry.Comparison.FullRankPacket
+import DifferentialGeometry.Geometry.Comparison.UniformPacketPerturbation
+import DifferentialGeometry.Geometry.Comparison.UniformLiftedPacket
+import DifferentialGeometry.Geometry.Comparison.UniformImageCube
+import DifferentialGeometry.Analysis.Integration.Measure.NormalizedHausdorffMeasure
+import DifferentialGeometry.Analysis.Integration.Measure.CubeMeasureBound
+import DifferentialGeometry.Geometry.Metric.Approximation.LimitVolumeLowerBound
+import DifferentialGeometry.Analysis.Order.EventualTestBounds
+import Mathlib.Tactic.Linter
+
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Comparison.PairedPacketAnchors
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Comparison.FullRankPacket
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Comparison.UniformPacketPerturbation
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Comparison.UniformLiftedPacket
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Comparison.UniformImageCube
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.Integration.Measure.NormalizedHausdorffMeasure
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.Integration.Measure.CubeMeasureBound
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Metric.Approximation.LimitVolumeLowerBound
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.Order.EventualTestBounds

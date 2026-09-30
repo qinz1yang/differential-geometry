@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 1,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 1,
+  "combined_modules": 321,
+  "combined_jobs": 3156,
+  "combined_owned_declarations": 1406,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/Approximation/UniformLongStrainerSplitting.lean": "ee2641731b7497fb1d8cb417a952ae83eb6e8b01520d62412d7cd237917de732"
+  },
+  "logs": {
+    "uniform_long_strainer_splitting_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "uniform_long_strainer_splitting_review.log": "6969434b8d41775a4977e4b1bb7b902ec0e430a0fca32eea5e9f968ac705d828",
+    "uniform_long_strainer_splitting_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "2e5d4f4cc1d7d7bc1c5386718e43e76bfd0ea90aea1e8bfe748bb341c3fa37e7",
+  "git_head_at_check": "7542007c77d4d93bd1deda682005c150163fef83",
+  "independent_agent_proof_review": true,
+  "independent_agent_unknown_uniform_parameter_driver": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

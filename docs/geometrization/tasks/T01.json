@@ -1,0 +1,37 @@
+{
+  "id": "T01",
+  "title": "Complete endpoint statement and foundational definitions",
+  "status": "review",
+  "owner": "Codex for Bennett (current user request)",
+  "reviewer": null,
+  "branch": "codex/geometrization-team-foundation",
+  "base_commit": "18d75b36ea78e5cceca18c3cae89c0e15496bc85",
+  "proposed_responsibility": "Bennett with Ziyang and Yuan",
+  "depends_on": [],
+  "write_scope": [
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Statement.lean",
+    "DifferentialGeometry/Geometry/Thurston/Atlas.lean",
+    "DifferentialGeometry/Geometry/Thurston/Models.lean",
+    "DifferentialGeometry/Geometry/Thurston/Transport.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/StandardPrimes.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SphereExample.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/StandardCertificates.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/OrientationTransport.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Carrier.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Prime.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/TorusGluing.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/NoCuts.lean",
+    "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SmoothTorusReconstruction.lean",
+    "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/CertificateExamples.lean"
+  ],
+  "blueprint_nodes": [
+    "GA23",
+    "GA22",
+    "LP12"
+  ],
+  "interface_review": "Trace each endpoint field backward to actual producer or named missing implication, covering both branches.",
+  "acceptance": "Reviewed Lean endpoint signature and at least one real existing consumer/adapter; no placeholder endpoint axioms.",
+  "lean_contract_status": "implemented; full build and transitive axiom audit passed (139 modules, 4009 declarations); ready for team review",
+  "instructions": "Current user explicitly authorizes implementation and regular pushes of the complete statement. This implements the specification, not the conjecture proof; T09 remains a separate producer/assembly task. Shared aggregate/check imports are integration changes.",
+  "placement_record": "docs/geometrization/MODULE_PLACEMENT.json"
+}

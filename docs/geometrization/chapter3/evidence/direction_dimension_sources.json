@@ -1,0 +1,68 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KapovitchLebedevaPetruninAlexandrov.pdf",
+      "sha256": "3dc0a166ec88b1c7e50aeebd9924f747ece6fb1957c7b31dcbe17a90a9e61d67",
+      "version": "Archived v1 July14 2026",
+      "locator": "Definition1.2 printed20/PDF22; cone/tangent3.2-3.3 printed36-37/PDF38-39 and3.4 semisolution129-130/PDF131-132; full6.18 proof and Exercise6.20(b) printed69/PDF71; complete6.20 semisolution138/PDF140",
+      "review_provenance": "Actual retained source bodies were read as distinguished in the author and independent records.6.18 and6.20 were freshly reread for the generic annular proof."
+    }
+  ],
+  "reused_source_checks": [
+    "factor_dimension_sources.json",
+    "tangent_dimension_sources.json",
+    "tangent_blowup_sources.json",
+    "pi_directions_sources.json",
+    "euclidean_cone_sources.json",
+    "geodesic_directions_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Exact internal strict polynomial nets on EVERY ball of the SAME actual tangent from original ambient/intrinsic geometry; generic cone-annulus packing with coefficient3^nC; global strict nets and Hausdorff upper bound n-1 for the SAME actual completed directions, all original natural n including the separately proved empty n0 case.",
+  "source_conventions": "Original comparison parameter1 is the curvature -1 convention. Cone distances use min(pi,actual angular distance). Generic annular packing assumes diameter<=pi and n>=1, with no CBB/proper/complete/geodesic/nonempty assumption. Original intrinsic wrappers allow EVERY q in openB(p,8R).",
+  "proof_route": "Quantitative source nets transfer along the actual reciprocal-scale tangent blowup with source radiusB+1 and meshdelta/4; a one-dimensional grid at actual radii3+v0 in[2,4] then produces one-power angular covering drop via cone radius and inverse-angle inequalities. This is a separate Hausdorff upper-bound route, not KLP linear-dimension equality.",
+  "zero_dimension": "Original n0 uses actual local dimH<1 plus original paths to derive subsingleton source, empty directions and singleton tangent. No invalid empty-direction dimension-plus-one equality is asserted.",
+  "errata": "Retained source/version and applicable author-correction qualifications reused; no fresh external errata retrieval or absence-of-errata claim.",
+  "independent_peer_proof_review": true,
+  "not_claimed": [
+    "generic cone/base Hausdorff dimension equality",
+    "identification of linear and Hausdorff dimensions",
+    "automatic third direction from an upper bound",
+    "local dimension homogeneity",
+    "angular CBB1",
+    "nearby Euclidean tangent production",
+    "automatic angular obstruction",
+    "full Chapters3-4 completion"
+  ],
+  "proof_records": [
+    {
+      "path": "/tmp/gc_TangentDirectionDimension_record.md",
+      "sha256": "2f6e7e22cd711fdc295758cd135f6365840e87e1ab8bfae1a226db623db1ccc0"
+    },
+    {
+      "path": "/tmp/gc_ConeAngularCovering_record.md",
+      "sha256": "1638464d53af03835aac968e89d67243a6b35f994a766b7a0b92881c62db821e"
+    },
+    {
+      "path": "/tmp/gc_TangentPolynomialNets_independent_read.md",
+      "sha256": "19916ec6ca6949c70516436513619c762e6388c19a5354f3fc627e9b80f256ad"
+    },
+    {
+      "path": "/tmp/gc_DirectionDimension_independent_read.md",
+      "sha256": "9011f3cc5ad6bffe1068c985559d162f459559517a581f9f64c867369096cc39"
+    }
+  ],
+  "upstream_freezes": [
+    {
+      "path": "/tmp/gc_TangentPolynomialNets_freeze.json",
+      "sha256": "7ee2161f8c1fb18ea1228e96631cb5cd4028d8e8b2502bbdd78a2ce31d536ba8"
+    },
+    {
+      "path": "/tmp/gc_ConeAngularCovering_freeze.json",
+      "sha256": "baf5093d68bc8dcfdd94209a551a6e0f3c5787fbfe176592cba1df7dd5f756d2"
+    },
+    {
+      "path": "/tmp/gc_DirectionDimension_freeze.json",
+      "sha256": "e03316fe1c0a7c8365d30fd901519080c0df78a2fc2cf70a34495d11f84bdfae"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "new_public_theorems": 8,
+  "new_public_definitions": 1,
+  "new_owned_declarations": 9,
+  "combined_modules": 79,
+  "combined_jobs": 2867,
+  "combined_owned_declarations": 616,
+  "sources": {
+    "DifferentialGeometry/Analysis/NormedSpace/OpenImageDimension.lean": "bbcdf7f4965d95830ba03a12ff355327ea8a28d180f5b2f3494141f165848a3d",
+    "DifferentialGeometry/Topology/MetricSpace/DistanceCoordinates.lean": "0fbf905b4123a2e4646202b1db3b8f540de14806ab4167809a3de66c713e3215"
+  },
+  "logs": {
+    "distance_coordinates_metric_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "distance_coordinates_rank_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "distance_coordinates_review.log": "aabddd77084a0f480f4d8b274b6086910a54e965222c47074fb187a0e5c20a75",
+    "distance_coordinates_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "5d7e9a7a2cf630b90a58777e1385b6e70734a4b167e1c81ef455253ef334f2c5",
+  "git_head_at_check": "5f388b89512c3566a0a45f0bd95e9ff272025c39",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

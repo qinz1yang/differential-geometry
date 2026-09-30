@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "new_public_theorems": 13,
+  "new_definitions": 5,
+  "new_structures": 1,
+  "new_private_theorems": 4,
+  "new_generated_declarations": 42,
+  "new_owned_declarations": 65,
+  "combined_modules": 360,
+  "combined_jobs": 3195,
+  "combined_owned_declarations": 1692,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/TwoRayConeData.lean": "b375484e73cceb268cd86353a4264cb0a5b1a1a8a7d7891a43b0acb54e85e9ee",
+    "DifferentialGeometry/Geometry/Metric/TwoRayConeUnion.lean": "2193485f03a2aa2d5217d6026c5a24da86c68531e0043a57e9f2736f0cc50def",
+    "DifferentialGeometry/Geometry/Metric/TwoRayConeCompatibility.lean": "850cfa1aeb21e749c7b771f3362cb5885c7e7c0b20e477c6692236f6cccd2548"
+  },
+  "logs": {
+    "two_ray_convention_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "two_ray_convention_review.log": "e7d787b633045f73d019e2cc198b07b117a67c6f07988de1e55952d3af65575b",
+    "two_ray_convention_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "1d8a60692467f9d6e14a9c1a18234910498fdb9d8777af629d6c291d287d9879",
+  "git_head_at_check": "7b8cd5d48e7a701c639ca159fba83b9c765d20fd",
+  "independent_agent_proof_review": true,
+  "actual_halfline_opposite_rays_union_reverse_and_affine_radial_roundtrip_tests": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

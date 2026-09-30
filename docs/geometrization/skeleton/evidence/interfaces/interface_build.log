@@ -1,0 +1,342 @@
+⚠ [2470/2556] Replayed DifferentialGeometry.Bundle.Equiv
+warning: DifferentialGeometry/Bundle/Equiv.lean:293:4: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Bundle/Equiv.lean:313:4: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+⚠ [2854/2869] Replayed DifferentialGeometry.Topology.Manifold.OpenSubtype
+warning: DifferentialGeometry/Topology/Manifold/OpenSubtype.lean:123:8: `if_pos` has been deprecated: Use `ite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Topology/Manifold/OpenSubtype.lean:123:19: `if_pos` has been deprecated: Use `ite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Topology/Manifold/OpenSubtype.lean:126:8: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Topology/Manifold/OpenSubtype.lean:126:19: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+⚠ [2920/3038] Replayed DifferentialGeometry.Analysis.Calculus.AnalyticTransfer
+warning: DifferentialGeometry/Analysis/Calculus/AnalyticTransfer.lean:52:9: `Submodule.coe_norm` has been deprecated: use `norm_coe`
+⚠ [2924/3038] Replayed DifferentialGeometry.Tensor.Multilinear.Bundle.Basis
+warning: DifferentialGeometry/Tensor/Multilinear/Bundle/Basis.lean:74:51: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+⚠ [3665/3672] Built DifferentialGeometry.Analysis.TimeInterval (8.4s)
+warning: DifferentialGeometry/Analysis/TimeInterval.lean:1:0: 'Mathlib.Data.Real.Basic' has been deprecated: please replace this import by
+
+import Mathlib.Basic.Real.Basic
+✔ [3666/3672] Built DifferentialGeometry.Analysis.Time (10s)
+✔ [3667/3678] Built DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis (10s)
+✔ [3671/3687] Built DifferentialGeometry.Tensor.Product.HomEquiv (10s)
+✔ [3676/3690] Built DifferentialGeometry.Tensor.Alternating.Shuffle.Split (3.4s)
+✔ [3678/3697] Built DifferentialGeometry.Tensor.Alternating.Reindexing.Domain (4.4s)
+✔ [3680/3699] Built DifferentialGeometry.Tensor.Multilinear.Flip (6.7s)
+⚠ [3682/3699] Built DifferentialGeometry.Tensor.Product.Fiber (6.2s)
+warning: DifferentialGeometry/Tensor/Product/Fiber.lean:49:8: `topologicalAddGroup_induced` has been deprecated: Use `isTopologicalAddGroup_induced` instead
+
+Hint: Replace the deprecated name:
+  t̵i̲s̲T̲opologicalAddGroup_induced
+⚠ [3683/3699] Replayed DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
+warning: DifferentialGeometry/Tensor/RSTensor/Coordinates/CoordinateBasis.lean:59:51: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+✔ [3690/3738] Built DifferentialGeometry.Tensor.Alternating.Shuffle.Decomposition (4.4s)
+✔ [3693/3739] Built DifferentialGeometry.Tensor.Multilinear.PredualBasis (4.2s)
+✔ [3694/3740] Built DifferentialGeometry.Topology.ThreeManifold.Closed (4.6s)
+✔ [3704/3762] Built DifferentialGeometry.Topology.Manifold.PartialDiffeomorph (5.3s)
+✖ [3705/3763] Building DifferentialGeometry.Bundle.PartialMfderiv.Basic (7.2s)
+trace: .> LEAN_PATH=/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Cli/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/batteries/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Qq/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/aesop/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/proofwidgets/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/importGraph/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/LeanSearchClient/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/plausible/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/.lake/build/lib/lean:/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean /Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Bundle/PartialMfderiv/Basic.lean -o /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Bundle/PartialMfderiv/Basic.olean -i /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Bundle/PartialMfderiv/Basic.ilean -c /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/ir/DifferentialGeometry/Bundle/PartialMfderiv/Basic.c --setup /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/ir/DifferentialGeometry/Bundle/PartialMfderiv/Basic.setup.json --json
+error: DifferentialGeometry/Bundle/PartialMfderiv/Basic.lean:363:2: Type mismatch: After simplification, term
+  h_apply
+ has type
+  ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) (↑n)
+    (fun x ↦
+      (inTangentCoordinates 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun p ↦ p.1) (fun x ↦ F (x.1, x.2))
+          (fun x ↦ (mfderiv% fun t ↦ F (t, x.2)) x.1) p₀ x)
+        1)
+    p₀
+but is expected to have type
+  ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) (↑n) (fun p ↦ deriv (fun t ↦ F (t, p.2)) p.1) p₀
+error: DifferentialGeometry/Bundle/PartialMfderiv/Basic.lean:401:2: Type mismatch: After simplification, term
+  h_apply
+ has type
+  ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, G) m
+    (fun x ↦
+      (inTangentCoordinates 𝓘(ℝ, ℝ) 𝓘(ℝ, G) (fun p ↦ p.1) (fun x ↦ F (x.1, x.2))
+          (fun x ↦ (mfderiv% fun t ↦ F (t, x.2)) x.1) p0 x)
+        1)
+    p0
+but is expected to have type
+  ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, G) m (fun p ↦ deriv (fun t ↦ F (t, p.2)) p.1) p0
+✔ [3707/3763] Built DifferentialGeometry.Tensor.Alternating.Flip (11s)
+✔ [3708/3765] Built DifferentialGeometry.Geometry.Curvature.Algebraic.Form (4.8s)
+✖ [3709/3767] Building DifferentialGeometry.Geometry.Metric.MetricFiberData.Defs (7.5s)
+trace: .> LEAN_PATH=/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Cli/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/batteries/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Qq/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/aesop/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/proofwidgets/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/importGraph/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/LeanSearchClient/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/plausible/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/.lake/build/lib/lean:/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean /Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/MetricFiberData/Defs.lean -o /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/MetricFiberData/Defs.olean -i /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/MetricFiberData/Defs.ilean -c /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Metric/MetricFiberData/Defs.c --setup /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Metric/MetricFiberData/Defs.setup.json --json
+error: DifferentialGeometry/Geometry/Metric/MetricFiberData/Defs.lean:176:24: Invalid field `trace_eq_zero_iff`: The environment does not contain `And.trace_eq_zero_iff`, so it is not possible to project the field `trace_eq_zero_iff` from an expression
+  hmat
+of type
+  mat.IsHermitian ∧ ∀ (x : Fin (Module.finrank ℝ V) →₀ ℝ), 0 ≤ x.sum fun i xi ↦ x.sum fun j xj ↦ star xi * mat i j * xj
+✔ [3714/3769] Built DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Basic (8.5s)
+✖ [3716/3786] Building DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic (7.2s)
+trace: .> LEAN_PATH=/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Cli/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/batteries/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Qq/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/aesop/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/proofwidgets/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/importGraph/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/LeanSearchClient/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/plausible/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/.lake/build/lib/lean:/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean /Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Analysis/Integration/Measure/Riemannian/Basic.lean -o /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Integration/Measure/Riemannian/Basic.olean -i /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Integration/Measure/Riemannian/Basic.ilean -c /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/ir/DifferentialGeometry/Analysis/Integration/Measure/Riemannian/Basic.c --setup /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/ir/DifferentialGeometry/Analysis/Integration/Measure/Riemannian/Basic.setup.json --json
+error: DifferentialGeometry/Analysis/Integration/Measure/Riemannian/Basic.lean:94:2: Type mismatch
+  Measure.le_sum ?m.83 α
+has type
+  ?m.83 α ≤ Measure.sum ?m.83
+but is expected to have type
+  ((chartLocalMeasure g α).withDensity fun x ↦ ENNReal.ofReal ((ρ α) x)) ≤
+    Measure.sum fun α ↦ (chartLocalMeasure g α).withDensity fun x ↦ ENNReal.ofReal ((ρ α) x)
+✔ [3728/3788] Built DifferentialGeometry.Topology.Manifold.InteriorBoundary (5.7s)
+✔ [3731/3789] Built DifferentialGeometry.Tensor.Alternating.Curry (11s)
+✔ [3734/3789] Built DifferentialGeometry.Geometry.Connection.Realization.Basic (5.8s)
+✔ [3735/3792] Built DifferentialGeometry.Tensor.Coordinates.PartialDerivative (3.9s)
+✔ [3736/3792] Built DifferentialGeometry.Geometry.Coordinates.Fields.Vector (4.5s)
+✔ [3737/3797] Built DifferentialGeometry.Geometry.Coordinates.Fields.Scalar (4.1s)
+✔ [3747/3809] Built DifferentialGeometry.Analysis.Calculus.ContDiff.Support (4.3s)
+✔ [3750/3810] Built DifferentialGeometry.Tensor.Product.Defs (8.5s)
+⚠ [3751/3810] Built DifferentialGeometry.Analysis.Integration.Measure.Jacobian.Derivative (6.3s)
+warning: DifferentialGeometry/Analysis/Integration/Measure/Jacobian/Derivative.lean:194:10: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+⚠ [3781/3853] Built DifferentialGeometry.Geometry.Connection.Realization.Embedding (9.7s)
+warning: DifferentialGeometry/Geometry/Connection/Realization/Embedding.lean:90:43: This simp argument is unused:
+  ContinuousLinearEquiv.coe_mk
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [NormedSpace.fromTangentSpace]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [3782/3855] Built DifferentialGeometry.Analysis.Calculus.Cutoff.Basic (6.2s)
+✔ [3783/3855] Built DifferentialGeometry.Tensor.Product.Pretrivialization (9.8s)
+✔ [3784/3858] Built DifferentialGeometry.Geometry.Connection.Realization.ConcreteConnection (7.0s)
+✔ [3788/3859] Built DifferentialGeometry.Geometry.Connection.ChartFrame.ChartSection (8.0s)
+✔ [3789/3867] Built DifferentialGeometry.Analysis.Calculus.Cutoff.Compact (6.8s)
+✖ [3796/3891] Building DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.KroneckerQuadraticForm (5.2s)
+trace: .> LEAN_PATH=/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Cli/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/batteries/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Qq/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/aesop/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/proofwidgets/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/importGraph/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/LeanSearchClient/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/plausible/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/.lake/build/lib/lean:/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean /Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/TensorInner/Tensor0S/Coordinates/KroneckerQuadraticForm.lean -o /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/TensorInner/Tensor0S/Coordinates/KroneckerQuadraticForm.olean -i /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/TensorInner/Tensor0S/Coordinates/KroneckerQuadraticForm.ilean -c /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Metric/TensorInner/Tensor0S/Coordinates/KroneckerQuadraticForm.c --setup /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Metric/TensorInner/Tensor0S/Coordinates/KroneckerQuadraticForm.setup.json --json
+error: DifferentialGeometry/Geometry/Metric/TensorInner/Tensor0S/Coordinates/KroneckerQuadraticForm.lean:424:10: Function expected at
+  Finset.prod_le_prod fun a x ↦ abs_nonneg (?m.347 a)
+but this term has type
+  ∏ i ∈ ?m.331, 0 ≤ ∏ i ∈ ?m.331, |?m.347 i|
+
+Note: Expected a function because this term is being applied to the argument
+  (fun a _ => hQabs _ _)
+✖ [3797/3893] Building DifferentialGeometry.Geometry.Connection.ChartFrame.ChartLieBracket (6.2s)
+trace: .> LEAN_PATH=/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Cli/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/batteries/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Qq/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/aesop/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/proofwidgets/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/importGraph/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/LeanSearchClient/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/plausible/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/.lake/build/lib/lean:/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean /Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Connection/ChartFrame/ChartLieBracket.lean -o /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Connection/ChartFrame/ChartLieBracket.olean -i /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Connection/ChartFrame/ChartLieBracket.ilean -c /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Connection/ChartFrame/ChartLieBracket.c --setup /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Connection/ChartFrame/ChartLieBracket.setup.json --json
+error: DifferentialGeometry/Geometry/Connection/ChartFrame/ChartLieBracket.lean:368:44: unsolved goals
+E : Type u_1
+inst✝⁵ : NormedAddCommGroup E
+inst✝⁴ : NormedSpace ℝ E
+H : Type u_2
+inst✝³ : TopologicalSpace H
+I : ModelWithCorners ℝ E H
+M : Type u_3
+inst✝² : TopologicalSpace M
+inst✝¹ : ChartedSpace H M
+inst✝ : IsManifold I ∞ M
+x : M
+X Y : (b : M) → TangentSpace I b
+f : M → ℝ
+hf : ContMDiffAt I 𝓘(ℝ, ℝ) 2 f x
+hY : MDiffAt (T% Y) x
+φ : PartialEquiv M E := extChartAt I x
+hx_int : ↑φ x ∈ interior φ.target
+hφ : φ = extChartAt I x
+ftilde : E → ℝ := f ∘ ↑φ.symm
+hftilde : ftilde = f ∘ ↑φ.symm
+Ychart : E → E := chartESectionRepr x Y ∘ ↑φ.symm
+hYchart : Ychart = chartESectionRepr x Y ∘ ↑φ.symm
+Gtilde : E → ℝ := fun y ↦ (fderiv ℝ ftilde y) (Ychart y)
+hGtilde : Gtilde = fun y ↦ (fderiv ℝ ftilde y) (Ychart y)
+scalarAlong : M → ℝ := fun b ↦ (d% f b) (Y b)
+hsrc_extChart : x ∈ φ.source
+hsrc_chart : x ∈ (chartAt H x).source
+hxbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet
+hint_open : IsOpen[PseudoMetricSpace.toUniformSpace.toTopologicalSpace] (interior (extChartAt I x).target)
+htgt_nhds : (extChartAt I x).target ∈ 𝓝 (↑φ x)
+hrange_nhds : range ↑I ∈ 𝓝 (↑φ x)
+hLHS_eventually : scalarAlong =ᶠ[𝓝 x] Gtilde ∘ ↑φ
+⊢ ↑(NormedSpace.fromTangentSpace ((Gtilde ∘ ↑φ) x)) ∘SL
+      ↑(tangentSpaceCast 𝓘(ℝ, ℝ) ((Gtilde ∘ ↑φ) x) (scalarAlong x)) ∘SL mfderiv% (Gtilde ∘ ↑φ) x =
+    ↑(NormedSpace.fromTangentSpace ((Gtilde ∘ ↑φ) x)) ∘SL mfderiv% (Gtilde ∘ ↑φ) x
+✔ [3798/3945] Built DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel (7.0s)
+✔ [3800/3945] Built DifferentialGeometry.Tensor.Product.Bundle (10s)
+✔ [3801/3946] Built DifferentialGeometry.Tensor.RicciIdentity.ContractionProductRules (2.6s)
+⚠ [3802/3947] Built DifferentialGeometry.Tensor.RicciIdentity.SlotAlgebra (3.0s)
+warning: DifferentialGeometry/Tensor/RicciIdentity/SlotAlgebra.lean:174:8: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Tensor/RicciIdentity/SlotAlgebra.lean:174:20: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+✔ [3803/3951] Built DifferentialGeometry.Bundle.SmoothScalarGerm (4.9s)
+✔ [3804/3954] Built DifferentialGeometry.Tensor.Product.Basis (6.6s)
+✔ [3805/3954] Built DifferentialGeometry.Bundle.Dual (5.8s)
+✔ [3806/3955] Built DifferentialGeometry.Geometry.Connection.Realization.Tensor0SBridge (10s)
+✔ [3808/3956] Built DifferentialGeometry.Geometry.Connection.Subbundle (5.4s)
+✔ [3809/3959] Built DifferentialGeometry.Geometry.Connection.Realization.SmoothSections (7.0s)
+✔ [3810/3959] Built DifferentialGeometry.Geometry.Connection.Trivial (6.6s)
+✔ [3811/3959] Built DifferentialGeometry.Tensor.Multilinear.BundleCurry (16s)
+⚠ [3812/3959] Built DifferentialGeometry.Tensor.Multilinear.Bundle.TensorProduct (20s)
+warning: DifferentialGeometry/Tensor/Multilinear/Bundle/TensorProduct.lean:255:20: `TensorProduct.induction_on` has been deprecated: Use `TensorProduction.inductionOn` instead
+warning: DifferentialGeometry/Tensor/Multilinear/Bundle/TensorProduct.lean:346:20: `TensorProduct.induction_on` has been deprecated: Use `TensorProduction.inductionOn` instead
+warning: DifferentialGeometry/Tensor/Multilinear/Bundle/TensorProduct.lean:550:20: `TensorProduct.induction_on` has been deprecated: Use `TensorProduction.inductionOn` instead
+✔ [3813/3959] Built DifferentialGeometry.Bundle.Hom (33s)
+✔ [3814/3959] Built DifferentialGeometry.Geometry.Connection.Pullback (11s)
+✔ [3815/3962] Built DifferentialGeometry.Tensor.RSTensor.Algebra.Product (5.1s)
+⚠ [3816/3963] Built DifferentialGeometry.Geometry.Connection.Realization.TensorNabla (9.7s)
+warning: DifferentialGeometry/Geometry/Connection/Realization/TensorNabla.lean:175:6: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Geometry/Connection/Realization/TensorNabla.lean:188:6: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+✔ [3817/3965] Built DifferentialGeometry.Tensor.RSTensor.Coordinates.FieldComponents (5.1s)
+✔ [3818/3966] Built DifferentialGeometry.Tensor.Multilinear.Bundle.DomainPermutation (4.0s)
+✖ [3819/3966] Building DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric (8.3s)
+trace: .> LEAN_PATH=/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Cli/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/batteries/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/Qq/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/aesop/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/proofwidgets/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/importGraph/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/LeanSearchClient/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/plausible/.lake/build/lib/lean:/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/.lake/build/lib/lean:/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean /Users/bennettchow/.elan/toolchains/leanprover--lean4---v4.35.0-rc3/bin/lean /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.lean -o /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.olean -i /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.ilean -c /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.c --setup /Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/ir/DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.setup.json --json
+warning: DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.lean:260:8: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.lean:260:19: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.lean:272:6: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.lean:282:6: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.lean:295:8: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.lean:295:19: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+error: DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.lean:454:11: Function expected at
+  Finset.prod_le_prod fun x x_1 ↦ norm_nonneg (?m.410 x)
+but this term has type
+  ∏ i ∈ ?m.398, 0 ≤ ∏ i ∈ ?m.398, ‖?m.410 i‖
+
+Note: Expected a function because this term is being applied to the argument
+  ?_
+error: DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.lean:455:10: No goals to be solved
+warning: DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.lean:769:12: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.lean:773:12: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Geometry/Metric/PointwiseInner/DualMetric.lean:810:13: `if_pos` has been deprecated: Use `ite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+✔ [3820/3966] Built DifferentialGeometry.Analysis.FiniteDimensional.Coercivity (5.6s)
+✔ [3821/3967] Built DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.ConnectionDifference (7.2s)
+✔ [3823/3977] Built DifferentialGeometry.Geometry.Coordinates.Fields.Tensor (6.2s)
+⚠ [3831/4008] Built DifferentialGeometry.Geometry.Connection.HomBundle.General (12s)
+warning: DifferentialGeometry/Geometry/Connection/HomBundle/General.lean:251:6: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Geometry/Connection/HomBundle/General.lean:266:6: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+⚠ [3843/4008] Built DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate (10s)
+warning: DifferentialGeometry/Geometry/Coordinates/Frame/Coordinate.lean:333:6: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Geometry/Coordinates/Frame/Coordinate.lean:525:8: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+✔ [3845/4011] Built DifferentialGeometry.Tensor.RSTensor.Coordinates.Field (8.7s)
+✔ [3846/4011] Built DifferentialGeometry.Tensor.RSTensor.Functoriality.Pullback (5.9s)
+✔ [3847/4011] Built DifferentialGeometry.Analysis.InnerProductSpace.ProperConeIsometry (4.6s)
+✔ [3848/4016] Built DifferentialGeometry.Tensor.RSTensor.Field (6.6s)
+✔ [3849/4016] Built DifferentialGeometry.Geometry.LieDerivative.Tensor (9.9s)
+⚠ [3850/4016] Built DifferentialGeometry.Geometry.Connection.HomBundle.Basic (18s)
+warning: DifferentialGeometry/Geometry/Connection/HomBundle/Basic.lean:254:6: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵p̵o̵s̵d̲i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Geometry/Connection/HomBundle/Basic.lean:290:6: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  d̵i̵f̵_̵n̵e̵g̵d̲i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+✔ [3851/4016] Built DifferentialGeometry.Analysis.Convex.ProperConeFace (6.9s)
+✔ [3852/4016] Built DifferentialGeometry.Geometry.Curvature.Sections.Trace (5.7s)
+⚠ [3853/4016] Built DifferentialGeometry.Geometry.Connection.TensorNabla.InducedConnection (13s)
+warning: DifferentialGeometry/Geometry/Connection/TensorNabla/InducedConnection.lean:492:10: `if_pos` has been deprecated: Use `ite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Geometry/Connection/TensorNabla/InducedConnection.lean:492:21: `if_pos` has been deprecated: Use `ite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Geometry/Connection/TensorNabla/InducedConnection.lean:492:32: `if_pos` has been deprecated: Use `ite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Geometry/Connection/TensorNabla/InducedConnection.lean:495:10: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Geometry/Connection/TensorNabla/InducedConnection.lean:495:21: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Geometry/Connection/TensorNabla/InducedConnection.lean:495:32: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Geometry/Connection/TensorNabla/InducedConnection.lean:514:10: `if_pos` has been deprecated: Use `ite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Geometry/Connection/TensorNabla/InducedConnection.lean:514:21: `if_pos` has been deprecated: Use `ite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Geometry/Connection/TensorNabla/InducedConnection.lean:517:10: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Geometry/Connection/TensorNabla/InducedConnection.lean:517:21: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+warning: DifferentialGeometry/Geometry/Connection/TensorNabla/InducedConnection.lean:541:6: `if_pos` has been deprecated: Use `ite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: DifferentialGeometry/Geometry/Connection/TensorNabla/InducedConnection.lean:555:6: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲

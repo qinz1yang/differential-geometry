@@ -1,0 +1,20 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC26 full statement/proof, lines3338\u20133402; original AC24\u2013AC29 routes reread"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/reference_checks_revision66.md",
+      "sha256": "2b452e9e8c10bfc2ea1f0375da5ea7d62e80675bd77f69996c6a9f502b3617b1",
+      "locator": "Complete revision66 source comparison, exact error bound, finite hierarchy and remaining work"
+    }
+  ],
+  "reused_source_checks": [
+    "angle_reversal_midpoint_sources.json",
+    "model_finite_difference_sources.json"
+  ],
+  "errata": "Unchanged BGP/BBI/model claims; recorded author-sheet and bounded BGP checks reused",
+  "interface": "Actual Option-indexed extension, unchanged old anchors, same domain and metric; positive original rank unnecessary for this step"
+}

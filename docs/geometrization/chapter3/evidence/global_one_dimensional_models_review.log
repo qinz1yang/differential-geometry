@@ -1,0 +1,6 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_interval_or_circle_isometry_of_compact_dimH_le_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_pointed_one_dimensional_model' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

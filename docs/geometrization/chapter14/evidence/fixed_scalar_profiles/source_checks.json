@@ -1,0 +1,78 @@
+[
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/FlatTailDerivativeBounds.lean",
+    "sha256": "97552e39895ed94b5fd52d089be6ddbb76e56175666e36ce54b3c113f1c2f2fb",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/FlatTailDerivativeBounds.olean",
+      "DifferentialGeometry/Analysis/Calculus/FlatTailDerivativeBounds.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "80325e4b5a975e10fc83ce5914f4850df8ca9983286daf5987d93b61e6114ec1"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/Cutoff/IntervalProfiles.lean",
+    "sha256": "76705709b0e5b448cb75b2ca4ecf11b6e22612ce36ca43e78d9e0edd18009937",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/Cutoff/IntervalProfiles.olean",
+      "DifferentialGeometry/Analysis/Calculus/Cutoff/IntervalProfiles.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "cfd717fa7b80b1bfa09de42ff69fd4423f181e97dbe9caa95524a3064ebb8f69"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/Cutoff/EdgeNetworkProfiles.lean",
+    "sha256": "c0d1b1a757d1e3c33fca15ccb33850f4fd0b90810f3642dd5309f6e3726ca084",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/Cutoff/EdgeNetworkProfiles.olean",
+      "DifferentialGeometry/Analysis/Calculus/Cutoff/EdgeNetworkProfiles.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "9876228cb5fc0cfb43f619922a284b561ef058b9934826941984aafb06c639e0"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/FixedJointCutoffNetwork.lean",
+    "sha256": "1589968a52bce2183131740b1bec376f900638c2dd4dcf40c0b198b1ba72b6ee",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/FixedJointCutoffNetwork.olean",
+      "DifferentialGeometry/Analysis/Calculus/FixedJointCutoffNetwork.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "c4811cfbbb4e8fe8dd9c9ff3087c222855374680fa99290d0da1e45aadb5cf70"
+  }
+]

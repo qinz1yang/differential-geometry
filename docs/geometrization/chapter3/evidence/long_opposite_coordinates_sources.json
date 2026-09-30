@@ -1,0 +1,54 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC61 full5207-5262, AC54 context, AC57 full4990-5031"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/PointedEndpointLines.lean",
+      "sha256": "01832ea1b74002db048a139e7082587a0e99b5f881e6a84e3d945e32981dd371",
+      "locator": "full statement/proof: same-target finite-family extraction and actual signed prefixes"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/PrefixCoordinateConvergence.lean",
+      "sha256": "2a59184a61b85ff5add431033a9ac632b70b797a30d23b4c3d3ee8f3b68a4c20",
+      "locator": "full statement/proof: same-map actual prefix calibration consumer"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/LineSplitting.lean",
+      "sha256": "21d9854ee99cb9668214148c786cc889fef9aa2426abef6137e626d1f1029b62",
+      "locator": "full canonical onto splitting and supplied line alignment"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/LineBusemann.lean",
+      "sha256": "cae3df9801c8322cd667e9d22e74002224c1c96def9a18cd50c8bdf1b21af2e3",
+      "locator": "actual positive-ray sign and limit from canonical splitting"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/GrowingRegionGeometry.lean",
+      "sha256": "49b487a45f26d3eace599dc7ee328f6d59b304383b2f73ba180b489d97e927cc",
+      "locator": "38-end actual eventual comparison using original256R buffer"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/GrowingRegionFactorGeometry.lean",
+      "sha256": "8249d2761744c15b78c26a57d2058113f4f4621ebf1af73eb197d6ecb48ddcc1",
+      "locator": "accepted original-input geometry pattern 52-end"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/OppositeAngleExcess.lean",
+      "sha256": "2f63b1a8de7611f727ff533ed9aae88def6d9f34d57327f361b9c82d6f9ef64c",
+      "locator": "full sequential theorem: eventual-angle control and derived sigma<1 tail"
+    }
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "reused_source_checks": [
+    "angle_excess_sources.json",
+    "pointed_line_coordinates_sources.json",
+    "product_busemann_sources.json",
+    "line_splitting_sources.json"
+  ],
+  "scope": "Full AC61 actual prefix-originated individual lines and coordinates from original reciprocal local geometry; common orthogonal splitting remains separate.",
+  "independent_agent_statement_review": true,
+  "errata": "Unchanged checked inherited source and retained correction records reused; no remote freshness claim."
+}

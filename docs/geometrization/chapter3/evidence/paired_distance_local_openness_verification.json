@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "new_public_theorems": 4,
+  "new_owned_declarations": 8,
+  "combined_modules": 85,
+  "combined_jobs": 2873,
+  "combined_owned_declarations": 643,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/PairedPacketLocalization.lean": "4f2cc7f6bfd256e1ec7caa94add7990a0f0319e82b0a6e987bf61d9b5d5cbdda",
+    "DifferentialGeometry/Geometry/Comparison/PairedDistanceLocalOpenness.lean": "8be68aab2fca494d65b6947f8b37bc1f809dc72c9de102a98ba8ca2e879fef00"
+  },
+  "logs": {
+    "paired_distance_local_openness_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758",
+    "paired_distance_local_openness_review.log": "ffb2eb47518779e6ba712d006f5e1bef23bd9523d076c4b830eac89fb3530fa8",
+    "paired_distance_local_openness_openness_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "paired_distance_local_openness_localization_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "review_driver_sha256": "207043b6b182775437f90fcc7eb671970e5915c51ec7fc0475b2fbdfca911d5c",
+  "git_head_at_check": "53508aaafacc2b8642e4b412f555afbd04338b83",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

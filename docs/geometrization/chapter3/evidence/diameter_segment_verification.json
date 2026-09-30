@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 5,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 5,
+  "combined_modules": 239,
+  "combined_jobs": 3073,
+  "combined_owned_declarations": 1163,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/SegmentExteriorDistance.lean": "3858387c12eb054b66c08c31a4333c3f4b068360b06b689840cf4fda5ddabfa5",
+    "DifferentialGeometry/Geometry/Comparison/DiameterSegment.lean": "d45eefe082f5504d97fc05fcf6825ff47ae87b7a9a9bab6108bd776a76c1a957",
+    "DifferentialGeometry/Topology/MetricSpace/DiameterSegmentExistence.lean": "79d5f0c59a6cffbbe6b886af36b7bd393ac040a9db25a9c210fc01312d7a641f"
+  },
+  "logs": {
+    "diameter_segment_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "diameter_segment_review.log": "29dd9ec836aa31e013e01cb7670b3f9b7185ef48e7229204a512a85f31c5c35c",
+    "diameter_segment_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "a3b13e65720270ff8651c6b3ff16a8c5a5f485a5abeb72798a145d9c6ddf5247",
+  "git_head_at_check": "90f03d678b437b37da5c13d44f57b4c842d8d25e",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

@@ -1,0 +1,21 @@
+'_private._stdin.0.GCCalibratedOrthogonalCoordinatesReview.two_axis_calibrated_product' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.GCCalibratedOrthogonalCoordinatesReview.zero_axis_calibrated_product' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalOrientedProductReview.real_one_axis_product_full_package' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalOrientedProductReview.real_no_axes_product_full_package' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalOrientedProductReview.real_one_axis_prescribed_coordinate' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.exists_oriented_product_with_converging_distance_coordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.MetricGeometry.PointedGHConverges.exists_oriented_product_of_reciprocal_local_geometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

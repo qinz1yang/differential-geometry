@@ -1,0 +1,37 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC58 full5033-5085, AC59 full5089-5139, AC60 full5148-5205; actual signed prefixes, absolute excess and same-target finite-family line extraction"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/Normed/Group/Constructions.lean",
+      "sha256": "ab6a98350718fb2c9da8bedde4bf63cac85849ee9d3332b1955c2cb73f03cdec",
+      "locator": "319-352 actual finite-product norm and component bounds"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/Normed/Group/Continuity.lean",
+      "sha256": "b398a2f48b8c17d309d5abeaf1d847f96c15b93485ff91aa3ca1ab22d54444cd",
+      "locator": "180-190 actual norm convergence via continuity"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/OppositePrefixes.lean",
+      "sha256": "6751fb108e7571d427631c444754cc641ca08b8eb0e6913d45f64151c9ab9664",
+      "locator": "All accepted original-input actual prefix/calibration producer, reused unchanged"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/FiniteFamilyIsometry.lean",
+      "sha256": "64560b0cb8c2bc3e308c56aefb4623649310606b1310316e6746cb2e9109da38",
+      "locator": "All accepted simultaneous isometry extraction and uniform actual-map control, reused unchanged"
+    }
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "reused_source_checks": [
+    "opposite_prefixes_sources.json",
+    "finite_family_isometry_sources.json",
+    "calibrated_coordinates_sources.json"
+  ],
+  "scope": "AC59 original-endpoint finite-family lines and calibration with supplied actual growing-domain approximations; PointedGHConverges-only adapter and joined AC60 remain.",
+  "errata": "Unchanged BBI natural-parametrization/compactness records and retained corrections reused; no current-remote claim."
+}

@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "new_public_theorems": 5,
+  "new_owned_declarations": 5,
+  "combined_modules": 72,
+  "combined_jobs": 2852,
+  "combined_owned_declarations": 595,
+  "sources": {
+    "DifferentialGeometry/Analysis/SpecialFunctions/Trigonometric/HyperbolicEstimates.lean": "5e88265f60444e8e6d7906ffcc1d6323a8e167ab866305077f49e4bf57503f1d",
+    "DifferentialGeometry/Geometry/Comparison/ModelAngleFiniteDifference.lean": "f2f73331c721643586f399bf819c36c80bfbe33218fe2b0adc243ed92326783b"
+  },
+  "logs": {
+    "model_finite_difference_analytic_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model_finite_difference_model_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model_finite_difference_review.log": "310db75a9489669fcec855879f5dd1d1d75d44dcc3896ebb4614723916d01b13",
+    "model_finite_difference_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "34eddffd0fc8d8377b27a56413317dc3a06f66eda9c13699cffdde23481fe398",
+  "git_head_at_check": "46b53164abe9dd4e35ec82c99dd2b434aade9c01",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

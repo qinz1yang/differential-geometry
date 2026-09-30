@@ -1,0 +1,56 @@
+[
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/ProductResidualBound.lean",
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.ProductResidualBound",
+    "candidate": "gc_product_residual_bound.lean",
+    "source_sha256": "31984a38aecbb530100c0ee70a14a0c42de238dde4f77b766b87fe6ce2c9ff27",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/ProductResidualBound.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/ProductResidualBound.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 2.0084848403930664
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/VanishingProductResidual.lean",
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.VanishingProductResidual",
+    "candidate": "gc_vanishing_product_residual.lean",
+    "source_sha256": "984107f606524d4551c66bf5ef6f8d7056225c702317c751f4eb8f57a6b8c82c",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/VanishingProductResidual.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/VanishingProductResidual.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 2.2787768840789795
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/TestedResidualParameter.lean",
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.TestedResidualParameter",
+    "candidate": "gc_tested_residual_parameter.lean",
+    "source_sha256": "62d171b4df67f4e4e5e0677bc6bfa11ab6d179339ddaf49c87cb5295ba8009c6",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "/tmp/gc_edge_check_one.py",
+      "-R",
+      "/tmp/gc_edge_migration_scratch",
+      "-o",
+      "/tmp/gc_edge_migration_scratch/build/DifferentialGeometry/Geometry/Metric/Approximation/TestedResidualParameter.olean",
+      "/tmp/gc_edge_migration_scratch/DifferentialGeometry/Geometry/Metric/Approximation/TestedResidualParameter.lean"
+    ],
+    "exit_code": 0,
+    "silent": true,
+    "seconds": 1.9259929656982422
+  }
+]

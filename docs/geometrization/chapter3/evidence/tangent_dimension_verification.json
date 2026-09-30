@@ -1,0 +1,46 @@
+{
+  "success": true,
+  "blueprint_static_audit": {
+    "status": "pending",
+    "success": false,
+    "latest_completed_exit_code": 1,
+    "reason": "iCloud placeholders and metadata refresh during historical input reads",
+    "running_session": 82024,
+    "unchanged_audit_sha256": "a71b3b706ed68f757debfad4dbbbf4f80a243ed1db2f56fa5054d23dd54e2018",
+    "blueprint_revision": 207,
+    "lean_gate_independent": true,
+    "current_milestone": 124,
+    "note": "The separate unchanged static audit is ongoing; no pass is claimed."
+  },
+  "milestone": 124,
+  "new_public_theorems": 2,
+  "new_instances": 0,
+  "new_declared_declarations": 2,
+  "new_generated_declarations": 8,
+  "new_owned_declarations": 10,
+  "observed_previous_owned_declarations": 2103,
+  "observed_previous_modules": 439,
+  "combined_modules": 440,
+  "combined_jobs": 3278,
+  "combined_owned_declarations": 2113,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/TangentDimension.lean": "67fa1167bef5382127b1b3482274ad88663b68454f3619d28d0b9ca957ac8b16"
+  },
+  "logs": {
+    "tangent_dimension_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tangent_dimension_review.log": "2de9b0ed1cd2a2726a33105950cc8939b7b0c40aabfffa1b64aa32efdcffe484",
+    "tangent_dimension_blueprint_audit.log": "3e1674611d6555b12bda25a09541cc9840c3c8172fb061c5a8d8cc8976b7da3d"
+  },
+  "checks_receipt_sha256": "c389600f258f82bb1f67a7a0a63ae570e17ade07642c734dbf9a78aebb1b9ef1",
+  "shared_gate_receipt_sha256": "8f64fb301a64e0d55909fcfae6289db9b31c36792de1074f5777c57552cc2ca9",
+  "previous_milestone_receipt_sha256": "8ccc536107e1439d3e1fc13d7df9f8ee8df47f658d173aed1464debc7d943aec",
+  "review_driver_sha256": "ab314f7c2c0d809276f3b5373029b0cfa81fdd3a77a5df72e4f096f59eac5aa5",
+  "registration_plan_sha256": "609e3ff45ae546125304785a82f1f0d290b52b02205b76fce7ec722790ff83c1",
+  "source_receipt_sha256": "1ae86cb2273be11abac3fa7c5616328a30a38ef17f9893e1658657fc137677ef",
+  "git_head_at_check": "b326bde42f2d3c94b35b5e78012edf743603a649",
+  "independent_peer_proof_review": true,
+  "new_actual_original_geometry_regressions": 3,
+  "expected_review_reports": 5,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

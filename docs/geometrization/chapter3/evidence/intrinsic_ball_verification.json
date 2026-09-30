@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "new_public_theorems": 6,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 8,
+  "combined_modules": 192,
+  "combined_jobs": 3026,
+  "combined_owned_declarations": 1025,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/VariationIsometry.lean": "e106ed0d9e49b4065145a387bc3edab59a701a2eba3726775e725db6142ec385",
+    "DifferentialGeometry/Topology/MetricSpace/IntrinsicBall.lean": "bc67af613ffe5bd03e670cf862937aaf137e5ae11e054dc8445f7cf2bc5c065a"
+  },
+  "logs": {
+    "intrinsic_ball_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "intrinsic_ball_review.log": "f7cb0fac043eff59fc044859a5cf89e0dd27cb1bf32605fc8df764ded4c79905",
+    "intrinsic_ball_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "7abb34d6d672c09960d270f07063bd0c2691526edd1388453b70e89bc32218ce",
+  "git_head_at_check": "a691518501336f7472a0c70e9c97342adf24395a",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

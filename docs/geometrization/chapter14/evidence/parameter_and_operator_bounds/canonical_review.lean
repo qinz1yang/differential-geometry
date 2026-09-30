@@ -1,0 +1,62 @@
+import Mathlib.Tactic.Linter
+import DifferentialGeometry.Analysis.ParameterSelection.Acyclic
+import DifferentialGeometry.Geometry.Metric.MarkerRecovery
+import DifferentialGeometry.Analysis.InnerProductSpace.BlockNormBounds
+import DifferentialGeometry.Analysis.InnerProductSpace.DirectionalSaturation
+import DifferentialGeometry.Analysis.InnerProductSpace.AdjointRankMargin
+import DifferentialGeometry.Analysis.Calculus.CompositionBounds
+import DifferentialGeometry.Analysis.InnerProductSpace.ProjectedGraphRank
+
+#check WellFounded.exists_assignment
+#print axioms WellFounded.exists_assignment
+
+#check Relation.wellFounded_of_finite_acyclic
+#print axioms Relation.wellFounded_of_finite_acyclic
+
+#check Finset.exists_pos_lt_bounds
+#print axioms Finset.exists_pos_lt_bounds
+
+#check Finset.exists_gt_bounds
+#print axioms Finset.exists_gt_bounds
+
+#check GC.MetricGeometry.norm_coordinate_sub_lt_of_marker
+#print axioms GC.MetricGeometry.norm_coordinate_sub_lt_of_marker
+
+#check GC.MetricGeometry.norm_coordinate_sub_lt_of_block_dist
+#print axioms GC.MetricGeometry.norm_coordinate_sub_lt_of_block_dist
+
+#check ContinuousLinearMap.norm_le_sqrt_sum_block_bounds
+#print axioms ContinuousLinearMap.norm_le_sqrt_sum_block_bounds
+
+#check ContinuousLinearMap.norm_le_sqrt_active_blocks
+#print axioms ContinuousLinearMap.norm_le_sqrt_active_blocks
+
+#check InnerProductSpace.norm_sub_le_sqrt_of_unit_saturation
+#print axioms InnerProductSpace.norm_sub_le_sqrt_of_unit_saturation
+
+#check ContinuousLinearMap.norm_sub_le_of_common_unit_saturation
+#print axioms ContinuousLinearMap.norm_sub_le_of_common_unit_saturation
+
+#check ContinuousLinearMap.surjective_and_lower_bound_of_adjoint
+#print axioms ContinuousLinearMap.surjective_and_lower_bound_of_adjoint
+
+#check ContinuousLinearMap.adjoint_lower_bound_of_norm_sub_le
+#print axioms ContinuousLinearMap.adjoint_lower_bound_of_norm_sub_le
+
+#check ContinuousLinearMap.surjective_of_adjoint_margin
+#print axioms ContinuousLinearMap.surjective_of_adjoint_margin
+
+#check ContinuousLinearMap.norm_comp_sub_comp_le
+#print axioms ContinuousLinearMap.norm_comp_sub_comp_le
+
+#check DifferentialGeometry.Analysis.norm_fderiv_comp_sub_le
+#print axioms DifferentialGeometry.Analysis.norm_fderiv_comp_sub_le
+
+#check DifferentialGeometry.Analysis.c1_comp_sub_le_of_derivative_bounds
+#print axioms DifferentialGeometry.Analysis.c1_comp_sub_le_of_derivative_bounds
+
+#check ContinuousLinearMap.norm_le_adjoint_of_surjective_norm_le
+#print axioms ContinuousLinearMap.norm_le_adjoint_of_surjective_norm_le
+
+#check ContinuousLinearMap.projected_range_surjective_of_approximation
+#print axioms ContinuousLinearMap.projected_range_surjective_of_approximation

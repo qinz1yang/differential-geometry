@@ -1,0 +1,7 @@
+'DifferentialGeometry.Analysis.not_nonnegative_of_upper_barriers_div_time' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Analysis.false_of_area_upper_barriers' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ContinuousMap.fundamentalGroup_map_injective_of_area_obstructions' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

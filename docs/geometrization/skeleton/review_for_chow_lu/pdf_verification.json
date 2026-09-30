@@ -1,0 +1,9 @@
+{
+  "pdf": "output/pdf/geometrization_skeleton_mathematical_review.pdf",
+  "pages": 56,
+  "pdf_sha256": "0f6f0b350f327fa61539fdb2d7b209456be2bbc0c8eefeff903080d6a0254006",
+  "standalone_tex_sha256": "fccabc9c585f041526c7a583e3e2dfc29cf5877bc2dba90d851d7de7f015f6d0",
+  "outer_page_bounds_violations": [],
+  "replacement_glyphs": [],
+  "visual_inspection": "Recorded separately after raster inspection; bounds alone do not certify layout."
+}

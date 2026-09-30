@@ -1,0 +1,116 @@
+[
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/SupportDomainBuffer.lean",
+    "sha256": "36acd8d9dbe105381d16e2081028a4f19f379fb3bfedadf02c7abc0109fdc590",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/SupportDomainBuffer.olean",
+      "DifferentialGeometry/Geometry/Metric/SupportDomainBuffer.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "886884750354c9c2bfd20a59e8a3de801d2a18dd3acc58398e7ab880c600d4a2"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/ZeroSupportIsolation.lean",
+    "sha256": "91fe134a72aa12c9c0d2e51f6ca809fcf48c1bb88039c94a4206de7b1d951b36",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/ZeroSupportIsolation.olean",
+      "DifferentialGeometry/Geometry/Metric/ZeroSupportIsolation.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "dadc5fdb2395ab413961ca4b0a4e83da74b514be205147136bfaf911c8d151e1"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/SupportScalePacking.lean",
+    "sha256": "16f26b2479e67ae92ac577572e505170783c8c15afa432cf80569e572929edd8",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/SupportScalePacking.olean",
+      "DifferentialGeometry/Geometry/Metric/SupportScalePacking.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "5648956f9e08b23e55f46f3c4db8ea89a7a9874dbd03f0560ffa2c51a7506b15"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/FreezeScale.lean",
+    "sha256": "58b605d0b28aa206861e211ccc5e94d3af6a39f809f7b815d9f90dcf111d381e",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/FreezeScale.olean",
+      "DifferentialGeometry/Analysis/Calculus/FreezeScale.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "61b55e9680103abf0cb1b412931b3e8fcde5a47d5c945fc62a880e9b8e5798d8"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Calculus/NormalizedScale.lean",
+    "sha256": "eac720a9f9abe46fbd8bbc15249d580b96f4b23eec4fa66e6e6faf395243d311",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Calculus/NormalizedScale.olean",
+      "DifferentialGeometry/Analysis/Calculus/NormalizedScale.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "50ad59170406858777051b64616f94c3dffc7b7cbb98c74c9004ce8427c195db"
+  },
+  {
+    "path": "DifferentialGeometry/Analysis/Integration/Measure/FinitePacking.lean",
+    "sha256": "7aab8c071e3a0900b99c6780c20667a766b4e3a58855f4011e727f3cb6a689c2",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Analysis/Integration/Measure/FinitePacking.olean",
+      "DifferentialGeometry/Analysis/Integration/Measure/FinitePacking.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "1c3628ef19f4350e36f0c1a1c24c14c49d0f7d9b86b7964d082e326b323dc6f8"
+  }
+]

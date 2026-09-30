@@ -1,0 +1,101 @@
+[
+  {
+    "case": "standard",
+    "fixture_exit": 0,
+    "audit_exit": 0,
+    "expected_error": null,
+    "fixture_output": "",
+    "audit_output": "SKELETON_DECL {\"axioms\":[],\"dependencies\":[\"True\",\"True.intro\"],\"direct_sorry\":false,\"module\":\"GateFixture.Test\",\"name\":\"GateFixture.good\",\"theorem\":true,\"type\":\"True\"}\nSkeleton declaration audit: 1 declarations, 0 direct admissions.\n",
+    "static_rejection": null
+  },
+  {
+    "case": "unchecked-name",
+    "fixture_exit": 0,
+    "audit_exit": 1,
+    "expected_error": "Unchecked declaration",
+    "fixture_output": "",
+    "audit_output": "/var/folders/2w/t4km44yx7pl118j04kmc877w0000gn/T/gc-skeleton-negative-gmzfyvsc/Driver.lean:9:0: error: Unchecked declaration GateFixture.missing\n",
+    "static_rejection": null
+  },
+  {
+    "case": "axiom",
+    "fixture_exit": 0,
+    "audit_exit": 1,
+    "expected_error": "Unexpected axiom or unsafe declaration",
+    "fixture_output": "",
+    "audit_output": "/var/folders/2w/t4km44yx7pl118j04kmc877w0000gn/T/gc-skeleton-negative-gmzfyvsc/Driver.lean:9:0: error: Unexpected axiom or unsafe declaration GateFixture.bad\n",
+    "static_rejection": null
+  },
+  {
+    "case": "unsafe",
+    "fixture_exit": 0,
+    "audit_exit": 1,
+    "expected_error": "Unexpected axiom or unsafe declaration",
+    "fixture_output": "",
+    "audit_output": "/var/folders/2w/t4km44yx7pl118j04kmc877w0000gn/T/gc-skeleton-negative-gmzfyvsc/Driver.lean:9:0: error: Unexpected axiom or unsafe declaration GateFixture.bad\n",
+    "static_rejection": null
+  },
+  {
+    "case": "type-admission",
+    "fixture_exit": 0,
+    "audit_exit": 1,
+    "expected_error": "Admission in declaration type",
+    "fixture_output": "/var/folders/2w/t4km44yx7pl118j04kmc877w0000gn/T/gc-skeleton-negative-gmzfyvsc/GateFixture/Test.lean:1:8: warning: declaration uses `sorry`\n",
+    "audit_output": "/var/folders/2w/t4km44yx7pl118j04kmc877w0000gn/T/gc-skeleton-negative-gmzfyvsc/Driver.lean:9:0: error: Admission in declaration type GateFixture.bad\n",
+    "static_rejection": null
+  },
+  {
+    "case": "external-axiom",
+    "fixture_exit": 0,
+    "audit_exit": 1,
+    "expected_error": "Unexpected axiom ExternalSeed.seed",
+    "fixture_output": "",
+    "audit_output": "/var/folders/2w/t4km44yx7pl118j04kmc877w0000gn/T/gc-skeleton-negative-gmzfyvsc/Driver.lean:9:0: error: Unexpected axiom ExternalSeed.seed in GateFixture.bad\n",
+    "static_rejection": null
+  },
+  {
+    "case": "unregistered",
+    "fixture_exit": 0,
+    "audit_exit": 1,
+    "expected_error": "Unregistered direct admission",
+    "fixture_output": "/var/folders/2w/t4km44yx7pl118j04kmc877w0000gn/T/gc-skeleton-negative-gmzfyvsc/GateFixture/Test.lean:1:8: warning: declaration uses `sorry`\n",
+    "audit_output": "/var/folders/2w/t4km44yx7pl118j04kmc877w0000gn/T/gc-skeleton-negative-gmzfyvsc/Driver.lean:9:0: error: Unregistered direct admission GateFixture.bad\n",
+    "static_rejection": null
+  },
+  {
+    "case": "registered",
+    "fixture_exit": 0,
+    "audit_exit": 0,
+    "expected_error": null,
+    "fixture_output": "/var/folders/2w/t4km44yx7pl118j04kmc877w0000gn/T/gc-skeleton-negative-gmzfyvsc/GateFixture/Test.lean:1:8: warning: declaration uses `sorry`\n",
+    "audit_output": "SKELETON_DECL {\"axioms\":[\"sorryAx\"],\"dependencies\":[\"False\",\"sorryAx\",\"instOfNatNat\",\"Lean.Name.num\",\"Lean.Name.str\",\"Lean.Name.anonymous\",\"Nat\",\"Lean.Name\",\"OfNat.ofNat\",\"Bool.false\"],\"direct_sorry\":true,\"module\":\"GateFixture.Test\",\"name\":\"GateFixture.bad\",\"theorem\":true,\"type\":\"False\"}\nSkeleton declaration audit: 1 declarations, 1 direct admissions.\n",
+    "static_rejection": null
+  },
+  {
+    "case": "count",
+    "fixture_exit": 0,
+    "audit_exit": 1,
+    "expected_error": "Expected 1 direct admissions",
+    "fixture_output": "",
+    "audit_output": "SKELETON_DECL {\"axioms\":[],\"dependencies\":[\"True\",\"True.intro\"],\"direct_sorry\":false,\"module\":\"GateFixture.Test\",\"name\":\"GateFixture.good\",\"theorem\":true,\"type\":\"True\"}\n/var/folders/2w/t4km44yx7pl118j04kmc877w0000gn/T/gc-skeleton-negative-gmzfyvsc/Driver.lean:9:0: error: Expected 1 direct admissions; observed 0\n",
+    "static_rejection": null
+  },
+  {
+    "case": "empty",
+    "fixture_exit": 0,
+    "audit_exit": 1,
+    "expected_error": "Empty skeleton audit",
+    "fixture_output": "",
+    "audit_output": "/var/folders/2w/t4km44yx7pl118j04kmc877w0000gn/T/gc-skeleton-negative-gmzfyvsc/Driver.lean:9:0: error: Empty skeleton audit\n",
+    "static_rejection": null
+  },
+  {
+    "case": "skip-kernel",
+    "fixture_exit": 0,
+    "audit_exit": 0,
+    "expected_error": null,
+    "fixture_output": "",
+    "audit_output": "SKELETON_DECL {\"axioms\":[],\"dependencies\":[\"instOfNatNat\",\"instHAdd\",\"HAdd.hAdd\",\"Nat\",\"instAddNat\",\"OfNat.ofNat\",\"Eq\",\"rfl\"],\"direct_sorry\":false,\"module\":\"GateFixture.Test\",\"name\":\"GateFixture.normal\",\"theorem\":true,\"type\":\"Eq.{1} (HAdd.hAdd.{0, 0, 0} 1 1) 2\"}\nSKELETON_DECL {\"axioms\":[],\"dependencies\":[\"instOfNatNat\",\"instHAdd\",\"HAdd.hAdd\",\"Nat\",\"instAddNat\",\"OfNat.ofNat\",\"Eq\",\"rfl\"],\"direct_sorry\":false,\"module\":\"GateFixture.Test\",\"name\":\"GateFixture.skipped\",\"theorem\":true,\"type\":\"Eq.{1} (HAdd.hAdd.{0, 0, 0} 1 1) 2\"}\nSkeleton declaration audit: 2 declarations, 0 direct admissions.\n",
+    "static_rejection": "Forbidden set_option in /var/folders/2w/t4km44yx7pl118j04kmc877w0000gn/T/gc-skeleton-negative-gmzfyvsc/GateFixture/Test.lean: set_option debug.skipKernelTC true in"
+  }
+]

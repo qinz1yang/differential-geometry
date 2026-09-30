@@ -1,0 +1,47 @@
+[
+  {
+    "candidate": "gc_paired_packet_anchors.lean",
+    "path": "DifferentialGeometry/Geometry/Comparison/PairedPacketAnchors.lean",
+    "module": "DifferentialGeometry.Geometry.Comparison.PairedPacketAnchors"
+  },
+  {
+    "candidate": "gc_full_rank_packet.lean",
+    "path": "DifferentialGeometry/Geometry/Comparison/FullRankPacket.lean",
+    "module": "DifferentialGeometry.Geometry.Comparison.FullRankPacket"
+  },
+  {
+    "candidate": "gc_uniform_packet_perturbation.lean",
+    "path": "DifferentialGeometry/Geometry/Comparison/UniformPacketPerturbation.lean",
+    "module": "DifferentialGeometry.Geometry.Comparison.UniformPacketPerturbation"
+  },
+  {
+    "candidate": "gc_uniform_lifted_packet.lean",
+    "path": "DifferentialGeometry/Geometry/Comparison/UniformLiftedPacket.lean",
+    "module": "DifferentialGeometry.Geometry.Comparison.UniformLiftedPacket"
+  },
+  {
+    "candidate": "gc_uniform_image_cube.lean",
+    "path": "DifferentialGeometry/Geometry/Comparison/UniformImageCube.lean",
+    "module": "DifferentialGeometry.Geometry.Comparison.UniformImageCube"
+  },
+  {
+    "candidate": "gc_normalized_hausdorff_measure.lean",
+    "path": "DifferentialGeometry/Analysis/Integration/Measure/NormalizedHausdorffMeasure.lean",
+    "module": "DifferentialGeometry.Analysis.Integration.Measure.NormalizedHausdorffMeasure"
+  },
+  {
+    "candidate": "gc_cube_measure_bound.lean",
+    "path": "DifferentialGeometry/Analysis/Integration/Measure/CubeMeasureBound.lean",
+    "module": "DifferentialGeometry.Analysis.Integration.Measure.CubeMeasureBound"
+  },
+  {
+    "candidate": "gc_limit_volume_lower_bound.lean",
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/LimitVolumeLowerBound.lean",
+    "module": "DifferentialGeometry.Geometry.Metric.Approximation.LimitVolumeLowerBound"
+  },
+  {
+    "candidate": "gc_eventual_test_bounds.lean",
+    "path": "DifferentialGeometry/Analysis/Order/EventualTestBounds.lean",
+    "module": "DifferentialGeometry.Analysis.Order.EventualTestBounds"
+  }
+]

@@ -1,0 +1,100 @@
+docs/geometrization/skeleton/evidence/build.log:420: trailing whitespace.
++warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:513:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:428: trailing whitespace.
++warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:519:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1511: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean:265:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1519: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean:266:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1527: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean:267:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1535: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean:269:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1546: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean:329:4: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1765: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean:1174:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1773: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean:1175:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1781: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean:1176:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1789: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean:1178:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1898: trailing whitespace.
++warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshPathInjective.lean:76:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1906: trailing whitespace.
++warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshPathInjective.lean:79:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1915: trailing whitespace.
++warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshPathEndpoint.lean:113:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:1931: trailing whitespace.
++warning: DifferentialGeometry/External/GraphCoveringTheory/KuroshActive.lean:217:8: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2427: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:875:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2435: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:876:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2443: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:910:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2451: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:911:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2459: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:968:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2467: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:969:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2475: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:992:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2483: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:993:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2499: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1080:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2507: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1081:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2523: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1170:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2531: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1171:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2539: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1205:4: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2561: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1225:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2569: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1226:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2591: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1284:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2599: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1285:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2607: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1367:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2615: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1368:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2623: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1449:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2631: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1450:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2639: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1508:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2647: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1509:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2668: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1572:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2676: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1574:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2684: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1633:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2692: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1635:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2700: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1730:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2708: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1732:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2716: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1790:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2724: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1792:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2746: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1886:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2754: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1888:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2762: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1890:2: Try this: 
+docs/geometrization/skeleton/evidence/build.log:2770: trailing whitespace.
++warning: DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean:1892:2: Try this: 

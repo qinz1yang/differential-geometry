@@ -1,0 +1,57 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.cosh_midpoint_le_of_endpoint_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_cosh_midpoint_of_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.hyperbolicInterpolate_le_of_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_le_of_intrinsic_8_buffer_segment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_le_of_radial_isometries_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_le_of_radial_isometries_in_eight_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.radial_point_on_side_of_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_eight_buffer_midpoint_at_closed_boundary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_eight_buffer_midpoint_at_segment_center' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.complete_buffer_at_closed_boundary_is_genuinely_interior' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_eight_buffer_unequal_supplied_segments' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_eight_buffer_opposite_angles_are_pi' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_eight_buffer_keeps_endpoint_times' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_eight_buffer_coincident_radials' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_eight_buffer_coincident_angles_are_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_eight_interpolation_includes_closed_distance_threshold' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_first_side_offcenter_and_closed_boundary' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_first_side_zero_long_arm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalEightMidpointReview.original_first_side_zero_segment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

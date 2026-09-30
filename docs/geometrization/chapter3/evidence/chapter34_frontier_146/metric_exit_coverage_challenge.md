@@ -1,0 +1,41 @@
+# Targeted MC17 / AC05 exit-and-coverage challenge
+
+This read-only addendum challenges the migration boundary in `/tmp/gc_MC01_24_frontier_assessment.md`; it does not silently treat the complete smooth adapter as already proved. Snapshot: accepted144 commit `9f5f8d2c624110d0bc79d3ddebfb655112d57100`. No proof, build, registration or repository modification was performed.
+
+## Result
+
+No additional substantive independent **metric kernel** was identified. The actual first-exit producer and the buffered intrinsic-to-ambient comparison already exist. A conditional chart or image-capture assembly can be written from them, but that would not produce the currently missing smooth inputs or close the original MC17/AC05 binding. The two-domain smooth exhaustion/coverage adapter remains real work; the result is not a claim that coverage follows from chart convergence alone.
+
+## Exact original obligations
+
+Frozen master207A, SHA256 `277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b`:
+
+- AC05,2282–2319: after normalizing the tangent norm, a coordinate4a-ball has tangent norms between one-half and twice the Euclidean norm. Straight coordinate segments give the upper ambient distance bound. Curves staying inside give the lower bound; exiting curves pay at least3a/2. An ambient ball of radius below a/2 lies in the coordinate a-ball. The **stated conclusion** is existence of some positive ambient chart radius with L=2, not an exact prescribed radius a/2 and not surjectivity onto a Euclidean ball.
+- MC17,1820–1838: the actual metric implication assumes ambient distance bounds and witnessed target-ball coverage; `PointedBallApprox.ofBilipschitz` proves it.
+- MC17,1840–1863: producing those hypotheses from tensor estimates requires curve-length comparison, no-shortcuts/domain containment, and separate image coverage tied to the accepted smooth convergence/exhaustion convention. These are deliberately not asserted to follow from the tensor estimate alone.
+
+## Existing pure producers, read in full
+
+All paths below are `DifferentialGeometry/...` in accepted144.
+
+1. `Topology/FirstExit.lean`: `exists_first_exit_frontier`, `exists_first_exit_frontier_Icc_of_not_mapsTo`, and the variant beginning merely in the closed set preserve the SAME supplied continuous curve, produce an actual first boundary parameter, and retain the entire initial prefix in the original closed set. This is a purely topological statement; it assumes no manifold, differentiability, completeness, curvature, or minimizing path. It is already imported by the accepted pure `Topology/MetricSpace/GeodesicSeparator.lean`, whose proofs use it. SHA256 `96c1a262b58c0ded22e7f4771d31edd984cff5bec8d07b37ed8b94590e56cd00`.
+2. `Topology/MetricSpace/IntrinsicBall.lean:49`, `intrinsicEDist_eq_edist_on_inner_closedBall`: for an ambient metric with actual arbitrarily short continuous curves, if h>0 and d(x,o)+4h<L, then endpoints in closedBall(x,h) have their **actual** intrinsic distance in ball(o,L) equal to ambient distance. Its proof chooses an original near-short competitor of length<d(a,b)+min(epsilon,h/2), uses the endpoint variation bound to trap every point in the original outer ball, then takes the infimum. No complete-space, local-compactness, geodesic, or attained-infimum hypothesis is used. SHA256 `bc67af613ffe5bd03e670cf862937aaf137e5ae11e054dc8445f7cf2bc5c065a`.
+3. `Topology/MetricSpace/IntrinsicEDist.lean`: the distance is literally the infimum of `eVariationOn` over actual `Path` values; `intrinsicEDist_le_curve_variation` and `edist_le_intrinsicEDist` give both foundational directions. Thus an actual comparison for every admissible curve passes to the appropriate intrinsic distances by the existing infimum calculus. SHA256 `ce435443071fb5bef2d3bd503bd0b58fda547f657e04bde4da220f5a32a7d9a8`.
+4. `Topology/MetricSpace/IntrinsicVariation.lean`: a continuous supplied curve has the same variation under the induced intrinsic metric, including explicit subinterval control. Restricting a prefix does not require a new length notion. SHA256 `706f9ba47350e0636eb9cb5024ec343080da2d258999556271e4d8d5eef27ede`.
+5. The existing `CurveMidpoint` endpoint/variation bound, `eVariationOn.mono`, `HopfRinow` and `VariationParametrization` provide the endpoint cost, prefix monotonicity, properness from complete local length geometry, and exact reparameterization when needed. No missing metric Hopf–Rinow theorem is exposed by this challenge.
+
+## How these cover the proposed independent step
+
+For AC05 one can either retain the written coordinate exit argument or use an equivalent ambient-buffer route. Once the inherited chart topology and curve-length comparison are bound, choose a sufficiently small **ambient** ball inside the original coordinate a-ball. Choose an inner radius h with4h strictly less than that ambient buffer. The exact `IntrinsicBall` equality then transfers the lower coordinate curve-length bound to the ambient distance on the inner ball. The inverse chart applied to the actual straight coordinate segment supplies the other distance inequality. The chart is centered by translation. This proves the displayed existential L=2 conclusion without inventing a quantitative chart radius or adding completeness of the chart domain.
+
+If the written coordinate4a exit route is preferred, `FirstExit` already produces the original initial prefix to the coordinate boundary. The supplied lower length comparison on that prefix and the existing endpoint/variation inequality give its cost; variation monotonicity bounds the whole curve. This is the existing first-exit theorem composed with the smooth length comparison, not a missing first-exit existence proof.
+
+For MC17, the same source-buffer argument controls forward ambient distances after the actual map's length comparison has been established. A reverse ambient inequality and target coverage require corresponding target-domain control. A common possible sufficient setup is an actual homeomorphism between open domains, a source buffer with compact image, a target length metric, and an inverse length bound on that image. First exit from the compact image plus that bound rules out a target curve of insufficient length reaching its frontier. This is a mathematically valid prospective assembly, **not a presently selected or formally bound MC17 theorem**, and no unproduced closed-image, properness, inverse-length, or uniform-exhaustion premise is being smuggled into the source contract.
+
+In particular, proving a new abstract theorem conditional on those data would not show that the chosen smooth convergence maps actually have them. The correct data and regularity/curve conventions must be read from the stabilized inherited interface. Assuming ambient bilipschitzness or coverage in such a new theorem would merely repeat the existing MC17 implication. Assuming length comparison for every continuous rectifiable curve without binding it to the inherited Riemannian length convention would move, not solve, the smooth proof obligation.
+
+## Source check and limitations
+
+Freshly reread BBI5.1.12–5.1.16, printed146–147/PDF161–162, including Exercise5.1.15. The book gives the near-Euclidean tangent/distance assertions and leaves the relevant proof as an exercise; it does not provide an unrecorded generic domain-capture theorem. The frozen blueprint's explicit exit argument supplies that mathematical detail. The retained July6,2024 errata contains the printed146 line11 correction R^3 to R^2, which does not alter this boundary analysis. BBI archive SHA256 `4efaa168dcc83e7e9f5663d14824f9543104beab21642ca3830a5dd1c684c971`; reread text `1aec5dd2afafcb5dacbbb8cba2cd86b3ebdf38d180f0fd2b1cdc89309168af3f`; retained errata text `bf728530b0ad0036d4932b3b05982d82ba7413ec613618d769f3f3a72ebe25eb`.
+
+This assessment does not certify any new Riemannian declaration against the PC release, infer its absence, or expand migration probes. Accepted-repository generic code was read; no changing external PC tree was accessed. The hard boundary is the actual smooth interface and its assembly, not an assertion that no pure-metric reformulation is possible. No new independent theorem implementation is recommended from this targeted challenge.

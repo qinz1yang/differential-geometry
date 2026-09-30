@@ -1,0 +1,11 @@
+import Mathlib.Tactic.Linter
+import DifferentialGeometry.Geometry.Metric.Approximation.MarkedIntervalTargetRescaling
+
+#check GC.MetricGeometry.KleinerLottApprox.recenterRescaleMarkedInterval
+#print axioms GC.MetricGeometry.KleinerLottApprox.recenterRescaleMarkedInterval
+
+#check GC.MetricGeometry.KleinerLottApprox.recenterRescaleMarkedInterval_apply
+#print axioms GC.MetricGeometry.KleinerLottApprox.recenterRescaleMarkedInterval_apply
+
+#check GC.MetricGeometry.KleinerLottApprox.exists_strong_edge_interval_model
+#print axioms GC.MetricGeometry.KleinerLottApprox.exists_strong_edge_interval_model

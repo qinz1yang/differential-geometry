@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "new_public_theorems": 5,
+  "new_private_theorems": 1,
+  "new_definitions": 0,
+  "new_owned_declarations": 9,
+  "combined_modules": 152,
+  "combined_jobs": 2985,
+  "combined_owned_declarations": 843,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/ModelAngleStability.lean": "dc3209d10da753cfc6197b5774791ecc9b79641bcc42583fd9e276c06bfbce44",
+    "DifferentialGeometry/Geometry/Comparison/CradleSequence.lean": "205a64f61ff5a350dc3f79b38f4f7f79c077ea9e8498b60afe05c0aeafe99efa"
+  },
+  "logs": {
+    "cradle_sequence_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cradle_sequence_review.log": "a4f68fc9f33a02a8dbf89d265ab8113cacd3d6e906c42fb543da80b1ef9709e6",
+    "cradle_sequence_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "5d0a830308b06d2434d78895f83112848d0fb7913144f081b2ab50b655c0a9a8",
+  "git_head_at_check": "a1465bbc02aa6dd6293656046491860fe770336a",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

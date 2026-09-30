@@ -1,0 +1,36 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_cosh_midpoint_of_expanded_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.hyperbolicInterpolate_le_of_expanded_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_le_of_expanded_intrinsic_8_buffer_segment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_same_radial_lifts_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_le_of_nested_radial_prefixes_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_le_of_nested_radial_prefixes_intrinsic_8_buffer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalNestedRadialReview.actual_expanded_midpoint_beyond_old_two_radius_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalNestedRadialReview.original_offcenter_four_nested_parameters' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalNestedRadialReview.original_offcenter_zero_and_full_parameters' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCOriginalNestedRadialReview.original_offcenter_lifts_preserve_whole_supplied_segments' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCCircleNestedReview.original_circle_radial_prefix_really_leaves_closed_ball' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GCCircleNestedReview.original_circle_four_nested_parameters_outside_closed_ball' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

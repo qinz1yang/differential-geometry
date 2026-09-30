@@ -1,0 +1,113 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/AlexanderKapovitchPetrunin303Alexandrov.pdf",
+      "sha256": "1ba6f6f011a8333d9a20bdbf49d36d68b61bf1aababb19296ed48ecea37248ed",
+      "locator": "Full Lemma15.12 and proof printed/PDF234\u2013235; related15.10 pp233\u2013235; actual finite directions definitions15.1\u201315.4 pp225\u2013226 and6D/E pp67\u201368.",
+      "version": "Archived PDF, distinguished from pinned TeX and later author source/errata",
+      "review_provenance": "Root and independent agents read full relevant source/proof passages; exact scope and compiler/read distinction recorded in frozen author/peer records."
+    }
+  ],
+  "reused_source_checks": [
+    "local_euclidean_tangents_sources.json",
+    "angular_distance_charts_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "blueprint_locator": "Frozen master207A AC11/AC12 and remaining structural work lines2600\u20132692; label cor:alexandrov-uniform-chart-part; SHA277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b.",
+  "scope": "Automatic original-intrinsic8R all-point angular obstruction, and dense actual uniform distance charts with ONE local rank, SAME dense set/pointed tangent, exact original representatives/coordinates, and exact L(n), from complete original source curves/finite dimension/local comparison only.",
+  "source_conventions": "Parameter1 is curvature lower bound\u22121. Ordinary ambient-restricted half-ball metrics and literal ambient tangent/direction spaces are retained. All-point obstruction includes rank0 and all0\u2264\u03b8\u2264\u03c0/2; final positive-rank charts explicitly assume NontrivialX. No open image in E^n is claimed when actualm<n.",
+  "proof_route": "Generic positive-functional independence and closed-hemisphere packing give the Euclidean angular bound. Actual finite completed-direction patterns are realized by SAME original short endpoints and persisted near their center. ONE nearby point of the SAME138 dense regular set transports every strict comparison through the actual original endpoint/hinge producer; its same-rank Euclidean tangent gives all-point obstruction. The accepted actual-tangent chart then becomes automatic, retaining exact centered distance coordinates and L(n).",
+  "no_new_premises": [
+    "supplied angular obstruction",
+    "supplied pointed Euclidean tangent",
+    "source properness or local compactness",
+    "global comparison",
+    "complete open half-ball",
+    "actual source rank",
+    "direction realization package",
+    "angular CBB1",
+    "positive rank inferred from an upper bound"
+  ],
+  "errata": "Existing archived/pinned-source and July2026 author-errata qualifications retained. No fresh external errata retrieval or absence-of-errata claim.",
+  "independent_peer_proof_review": true,
+  "not_claimed": [
+    "all-point Euclidean regularity",
+    "angular CBB1 theorem",
+    "TopDim identity",
+    "global source conclusion from only one controlled region",
+    "PC migration foundation validation",
+    "completion of Chapters3\u20134"
+  ],
+  "proof_records": [
+    {
+      "path": "/tmp/gc_EuclideanAngularObstruction_root_record.md",
+      "sha256": "b07e52c94bb19368fbde513e9740046fda246344fb5be5d4b8393f5b405a2da3"
+    },
+    {
+      "path": "/tmp/gc_EuclideanAngularObstruction_half_independent_read.md",
+      "sha256": "9e835d83adffa0185b4d9c7e50ea6438a85192bbe75e6545892c51cb32677b27"
+    },
+    {
+      "path": "/tmp/gc_FiniteAnglePattern_record.md",
+      "sha256": "321c778e9c6e2204e5f80925f21f70015167a3a1ce4e0d4401c538d3d7b347de"
+    },
+    {
+      "path": "/tmp/gc_FiniteAnglePattern_source_assessment.md",
+      "sha256": "07fb8dd254fef382579870d07d447a79ea4e70c7464c32272729c69852c6df96"
+    },
+    {
+      "path": "/tmp/gc_FiniteAnglePattern_half_independent_read.md",
+      "sha256": "a13daefacdcf0d423f0abdc41313ebcfdc26f7e0c8f7f3eea96b158cde8d63a4"
+    },
+    {
+      "path": "/tmp/gc_IntrinsicAngularObstruction_record.md",
+      "sha256": "6f351d7b34c615c73900d6a0453a7527ff6a7b04e5b8e5644747c2241427c1c4"
+    },
+    {
+      "path": "/tmp/gc_IntrinsicAngularObstruction_half_independent_read.md",
+      "sha256": "dc701fcca438e632003226039df8033cd58ea187c94153e318635eeaeaa4a10b"
+    },
+    {
+      "path": "/tmp/gc_AutomaticUniformStrutCharts_source_independent_read.md",
+      "sha256": "aed844cc18fc7963c701bb39e08f5e9f81e8dc039764a3c7bd871d3aadb13c15"
+    },
+    {
+      "path": "/tmp/gc_LocalUniformStrutCharts_root_record.md",
+      "sha256": "fe4abee952285b90812862cc9455639d55aeb106eca30735a55ab15d572f2ef9"
+    },
+    {
+      "path": "/tmp/gc_LocalUniformStrutCharts_half_independent_read.md",
+      "sha256": "0f44d71b85a4962b8ae9f2308644ae4daec3907fd2951e725b3713160f46d44c"
+    },
+    {
+      "path": "/tmp/gc_AutomaticUniformStrutCharts_65_peer_read.md",
+      "sha256": "400612633e751219279844d19130334b5e95938a1d144986af40d6dd391c5431"
+    }
+  ],
+  "upstream_freezes": [
+    {
+      "path": "/tmp/gc_EuclideanAngularObstruction_root_freeze.json",
+      "sha256": "b3a4290c32ba69aebf93d4590ab39f015e577f981fbeed362baeb5c4f8f4d8b1"
+    },
+    {
+      "path": "/tmp/gc_EuclideanAngularObstruction_half_review_freeze.json",
+      "sha256": "2603ff2d3f0c13c14262d843df4610b96d39c9c358b9e2600df7a98822005f97"
+    },
+    {
+      "path": "/tmp/gc_FiniteAnglePattern_freeze.json",
+      "sha256": "a40b4856ba5693ffeb384c0ac0a23b605912318ecc76dc0d83fcc757391a5b85"
+    },
+    {
+      "path": "/tmp/gc_IntrinsicAngularObstruction_freeze.json",
+      "sha256": "14bec1850f2003f58cfdb7c9574a6a0dd38d3eeaf1e59e5089040fe527a5e332"
+    },
+    {
+      "path": "/tmp/gc_LocalUniformStrutCharts_root_freeze.json",
+      "sha256": "d054a1f7bb7ee47087b7de241281acc28083bf729a05421a95caaeabb36990fe"
+    },
+    {
+      "path": "/tmp/gc_LocalUniformStrutCharts_half_review_freeze.json",
+      "sha256": "63708431393aa075f079584cd11360ccec6e1a52acfee0d7a54ec6240d52dbd4"
+    }
+  ]
+}

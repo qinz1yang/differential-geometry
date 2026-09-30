@@ -1,0 +1,87 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KapovitchLebedevaPetruninAlexandrov.pdf",
+      "sha256": "3dc0a166ec88b1c7e50aeebd9924f747ece6fb1957c7b31dcbe17a90a9e61d67",
+      "locator": "6A definition printed61/PDF63;6.18 full statement/proof printed69/PDF71;6.19-6.20 context and full semisolution137-138/PDF139-140"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/AlexanderKapovitchPetrunin303Alexandrov.pdf",
+      "sha256": "1ba6f6f011a8333d9a20bdbf49d36d68b61bf1aababb19296ed48ecea37248ed",
+      "locator": "7.9 and preceding cone-map definition printed/PDF77;15.6 proof(C=>D) printed/PDF233"
+    }
+  ],
+  "reused_source_checks": [
+    "dense_euclidean_tangents_sources.json",
+    "global_tangent_dimension_sources.json",
+    "tangent_dimension_sources.json",
+    "euclidean_cone_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Finite original-global linear/Hausdorff dimension equality for actual tangent metric-embedding ranks, with simultaneous attained metric and pointed-cone rank maxima for nonempty sources.",
+  "source_conventions": "KLP6A permits arbitrary isometric Euclidean subspaces of an actual tangent; AKP7.9 requires cone multiplication. Generic pointed-cone isometry polarization PROVES the dilation law for the same inverse isometry. Parameter1 models curvature lower bound -1. Empty has supremum0 but no attained rank; greatest-rank theorem requires Nonempty.",
+  "remaining_source_condition": "No TopDim/infinite-dimensional theorem, no equality of arbitrary unpointed embeddings with cone maps, and no unproved tangent identification for noncomplete open subspaces. All-open Hausdorff equality is retained without claiming their intrinsic LinDim.",
+  "errata": "Retained source/author-correction distinctions from dense_euclidean_tangents remain unchanged; no fresh external errata query. PDF and extracted-text hashes are separately identified in the source assessment.",
+  "proof_records": [
+    {
+      "path": "/tmp/gc_FiniteLinearDimension_source_assessment.md",
+      "sha256": "c83012212bc29a3eaa0388c8183b9da825dcae6a3b32839118bcdc889ca3564d"
+    },
+    {
+      "path": "/tmp/gc_ConeIsometryDilation_record.md",
+      "sha256": "1bd29a345d5408306b4d70a8bc11f0b6f18a1c10124603f8d35c66676895b623"
+    },
+    {
+      "path": "/tmp/gc_ConeIsometryDilation_half_independent_read.md",
+      "sha256": "a0dcb2708891a46ff89d09dfcfc1435128eed8980a5d89fa1bc967840b9bb3f7"
+    },
+    {
+      "path": "/tmp/gc_FiniteLinearDimension_root_record.md",
+      "sha256": "5f05cc2103126e4f018a8707d6d97ba63a7c258f0847151144792b51f0a1e63d"
+    },
+    {
+      "path": "/tmp/gc_FiniteLinearDimension_source_independent_read.md",
+      "sha256": "a60872e69919e0c4603b3226f37f35b691f6a1f0d2f78b6d9353f0dbf46459ff"
+    },
+    {
+      "path": "/tmp/gc_FiniteLinearDimension_tests_record.md",
+      "sha256": "b608f43360c1333f26b407338c2f8a4a785bff3fa32aa6478b4d72365bcfe99a"
+    },
+    {
+      "path": "/tmp/gc_FiniteLinearDimension_65_independent_read.md",
+      "sha256": "02ce9e42d431b6a4878ce31b06d3cf174d159386c080b04dee16aadadf18f7c1"
+    },
+    {
+      "path": "/tmp/gc_FiniteLinearDimension_scope_repair_source_review.md",
+      "sha256": "e91cb4a3f6404b77d2c3f5d6d6325db0b2fa345c0dd4ceb1b7979399f30a3234"
+    },
+    {
+      "path": "/tmp/gc_FiniteLinearDimension_65_scope_repair_read.md",
+      "sha256": "c259f072968d5eec02f69de37af283a3566275fff386a12b18cebaee95180f60"
+    }
+  ],
+  "upstream_freezes": [
+    {
+      "path": "/tmp/gc_ConeIsometryDilation_freeze.json",
+      "sha256": "68af0da2f40cedae216d914448030053a9a80aac016d4597feb2a969c283ff37"
+    },
+    {
+      "path": "/tmp/gc_FiniteLinearDimension_root_freeze.json",
+      "sha256": "ff4fc2d49fc3d39fc210ad071305ca787f5e9858ec66d3abc5ff0a13f60e0ba5"
+    },
+    {
+      "path": "/tmp/gc_FiniteLinearDimension_tests_freeze.json",
+      "sha256": "f040736c01f896dcd071acc6047eb3cc502b752c0f3aa547f072d0daad1f83ed"
+    }
+  ],
+  "independent_peer_proof_review": true,
+  "not_claimed": [
+    "topological dimension identity",
+    "infinite-dimensional converse",
+    "every-point Euclidean tangent",
+    "linearDimension of arbitrary noncomplete open subtypes",
+    "arbitrary unpointed embeddings are cone maps",
+    "completed PC release validation",
+    "full Chapters3-4 completion"
+  ]
+}

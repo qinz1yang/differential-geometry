@@ -1,0 +1,24 @@
+'Real.neg_log_cos_le_sq_of_abs_le_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Real.sinh_add_log_le_mul_sinh' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Real.add_log_le_of_mul_sinh_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.sinh_half_sq_eq_of_equal_comparison_sides' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.cos_half_mul_sinh_le_of_comparison_angle_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.equal_side_excess_le_log_cos_of_angle_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.log_cos_excess_modulus_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.equal_side_excess_bound_of_angle_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.opposite_endpoint_excess_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.tendsto_opposite_endpoint_excess_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

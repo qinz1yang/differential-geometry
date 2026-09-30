@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "new_public_theorems": 4,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 11,
+  "combined_modules": 206,
+  "combined_jobs": 3040,
+  "combined_owned_declarations": 1074,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/RadialContractionEstimate.lean": "a40dc94ac4c728b49648d9bac1915457f1b2449368886f027c1e29f12cac646a",
+    "DifferentialGeometry/Geometry/Comparison/RadialContraction.lean": "0a828748721120239c8aa0e454cffc0b1f583bf5e1d91bbc5d16ac9d9bf85c0e"
+  },
+  "logs": {
+    "radial_contraction_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "radial_contraction_review.log": "637b044c1e777c54a23f82c13eb5e69a790bf434b3f6564d95733a6638fbbfc1",
+    "radial_contraction_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "0737eb233e37b88853beee2898bcdbd80eda6a78dbd1d7fe1c231a7f130c157a",
+  "git_head_at_check": "2b3525280039019bf784f3d8dc6f51e8adc41211",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

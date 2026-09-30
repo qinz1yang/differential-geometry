@@ -1,0 +1,3 @@
+'Metric.exists_preimage_of_local_residual_correction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.ball_subset_image_ball_of_local_residual_correction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.isOpenMap_of_local_residual_correction' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "new_public_theorems": 14,
+  "new_private_theorems": 1,
+  "new_generated_declarations": 3,
+  "new_definitions": 0,
+  "new_owned_declarations": 18,
+  "combined_modules": 390,
+  "combined_jobs": 3225,
+  "combined_owned_declarations": 1780,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/PerimeterBufferSegment.lean": "60e317287f90f5040a376c9c48304ffdb90ea0a7e68b90f9c07d0dcb64e949b8",
+    "DifferentialGeometry/Geometry/Comparison/CradleSequenceThreeFifths.lean": "5653290478cf7c8a182fff6378b9f9a430ed446b42e2228e746b8318d2baa025",
+    "DifferentialGeometry/Geometry/Comparison/CradleSideLimitThreeFifths.lean": "394d5b114be3acce3cc7e9d780fad7464be1b637d988f1e3082634ba4157d8d6",
+    "DifferentialGeometry/Geometry/Comparison/CradleIterationThreeFifths.lean": "70e4568d4a347bdb3969f72af116d7e288931496c1a6c7312782d0c14b15e8d5",
+    "DifferentialGeometry/Topology/MetricSpace/CradleStepThreeFifths.lean": "907e2cf38a37d08363d2782aff1061cd6fa27993c02fbd99e04c3b45efe90820",
+    "DifferentialGeometry/Geometry/Comparison/GeometricCradleStepThreeFifths.lean": "901068787685b355313aa4e1a356b99208594ea6d5a4805370059efd3391e30f",
+    "DifferentialGeometry/Geometry/Comparison/CradleEnlargementThreeFifths.lean": "dcd3fceec61a420ca7df29672d3f6801f9e34276331e7155af0682cca7521f05",
+    "DifferentialGeometry/Geometry/Comparison/EndpointEnlargementThreeFifths.lean": "ebf6f9f2b6ab824adc2b7f0132da530d4670c4a7c0b8ed77e7248bcfaeabc9b1",
+    "DifferentialGeometry/Geometry/Comparison/PerimeterBudgetInteriorComparison.lean": "52c967d29434808c9c428140ca7f2f121ac69c05dcd5eb1a9109bf6195cc66a9"
+  },
+  "logs": {
+    "perimeter_budget_comparison_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "perimeter_budget_comparison_review.log": "32834713e81fa3e4552c222ee929d2e8e59ae68a257f284cea55248d26e52f99",
+    "perimeter_budget_comparison_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "53a446e33f03bae9241b2504814dd3e09e7fb98b1d46db78690bc6a9f5246c81",
+  "git_head_at_check": "f73054ff629bb7da78ede315c293d9c9b22c44d4",
+  "independent_root_and_peer_proof_review": true,
+  "actual_incomplete_buffer_new_range_and_cradle_regressions": 13,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

@@ -1,0 +1,42 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC53 full4786-4833 and AC60 full5148-5205; quantitative product bound and sign"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf",
+      "sha256": "7a860b4dd95b35fe33b06bf040100ec243d72c80528d927f4763391aaf79cb6e",
+      "locator": "2014 Asterisque365; Lemma4.15 proof printed32/PDF27, positive limiting ray and negative Busemann coordinates; preceding fresh visual check reused"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Comparison/LineSplitting.lean",
+      "sha256": "21d9854ee99cb9668214148c786cc889fef9aa2426abef6137e626d1f1029b62",
+      "locator": "19-75 actual onto line splitting, exact first coordinate and supplied-axis alignment"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/L2Product.lean",
+      "sha256": "65e9a66118a89a3ac85021a7c5b2c063819bbe8b3d859eded830857fc5cce1a0",
+      "locator": "17-36 actual squared L2 distance and slice isometries"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/ProductCollapse.lean",
+      "sha256": "544f7b8fcde5b2cf7f0f271810ddb8c982649ade490584ce04f14d0c34c8cd09",
+      "locator": "23-42 actual square-root product metric"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/Algebra/Order/Field.lean",
+      "sha256": "418257260e3af1171a3836775f684d8a18d4a85bd04e71ac27bc2f3e437fc568",
+      "locator": "50-81 actual reciprocal limit at infinity"
+    }
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "reused_source_checks": [
+    "line_splitting_sources.json",
+    "geometric_product_limit_sources.json",
+    "approximate_factor_compactness_sources.json"
+  ],
+  "scope": "AC53/60 quantitative product error, actual signed Busemann limits and uniformity on fixed balls; multi-axis/source calibration production remains.",
+  "errata": "Unchanged BBI line-splitting and KL retained corrections reused; no new external or current-remote assertion."
+}

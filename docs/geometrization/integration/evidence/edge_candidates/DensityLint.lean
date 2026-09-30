@@ -1,0 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Approximation.StrongEdgeDensity
+import Mathlib.Tactic.Linter
+
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Metric.Approximation.StrongEdgeDensity

@@ -1,0 +1,29 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC13 full2713-2755, finiteness and4h local equality; unchanged targeted reading reused"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/EMetricSpace/BoundedVariation.lean",
+      "sha256": "c2af939b40f2210ec534c0a4e26cbe2a459c2abe0129be8e19c620e7abbc268b",
+      "locator": "54-95 actual partition supremum;184-228 endpoint bound/zero, reused"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/IntrinsicEDist.lean",
+      "sha256": "ce435443071fb5bef2d3bd503bd0b58fda547f657e04bde4da220f5a32a7d9a8",
+      "locator": "full accepted body: actual path infimum, lower bound, reversal/triangle and finite metric"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/PathVariation.lean",
+      "sha256": "37d5db8adcdceb141241547123ab3180dbe734f263463d33878ebbde84106d4d",
+      "locator": "full accepted body: actual reversal/concatenation"
+    }
+  ],
+  "reused_source_checks": [
+    "intrinsic_edist_sources.json"
+  ],
+  "errata": "Retained July6,2024 BBI PDF1-3 reading reused; constants admitted with zero length, no unproved finiteness or topology equality assumed. No current remote-version certification.",
+  "scope": "Actual intrinsic distance finite on open balls and equal to ambient edistance on4h-buffered closed neighborhoods; topology, complete common balls and induced length remain open."
+}

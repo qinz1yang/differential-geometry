@@ -1,0 +1,59 @@
+[
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/PaddedStripBoundary.lean",
+    "sha256": "fdd9b0aa21d22054c570890f7d09116c8245b45a50ceeeb811bf3779724b7a9d",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Approximation/PaddedStripBoundary.olean",
+      "DifferentialGeometry/Geometry/Metric/Approximation/PaddedStripBoundary.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "715bdfe2c8b77689603b243847322ac5f7bd9bc6eaed69cff4f923ed3e5b669e"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/SlimChartCutoffSupport.lean",
+    "sha256": "ed07d73adca9d09b9ecb2420ee0b32d09e75fec0e82b50ffff57bce3bc6e7ca8",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Approximation/SlimChartCutoffSupport.olean",
+      "DifferentialGeometry/Geometry/Metric/Approximation/SlimChartCutoffSupport.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "f5b6652847d9a11a0a6a5543d171bc3ae457a60ffda47aa4e5e63c42da9563f9"
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/EdgeChartCutoffSupport.lean",
+    "sha256": "ca049770e3ad990738d4178a9726c4fda654cc9d15bb462c7debd0bf53905cc0",
+    "build_exit": 0,
+    "build_silent": true,
+    "command": [
+      "python3",
+      "/tmp/gc_direct_lean.py",
+      "-DautoImplicit=false",
+      "-DmaxSynthPendingDepth=3",
+      "-Dpp.unicode.fun=true",
+      "-o",
+      "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/.lake/build/lib/lean/DifferentialGeometry/Geometry/Metric/Approximation/EdgeChartCutoffSupport.olean",
+      "DifferentialGeometry/Geometry/Metric/Approximation/EdgeChartCutoffSupport.lean"
+    ],
+    "lint_exit": 0,
+    "lint_silent": true,
+    "lint_copy_sha256": "c288e62d3287c514f26ce01d240d0b03b0730d19d79c2f57b5301584a165bd47"
+  }
+]

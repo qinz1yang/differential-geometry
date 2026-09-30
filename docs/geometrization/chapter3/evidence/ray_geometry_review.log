@@ -1,0 +1,6 @@
+'Metric.closedBall_eq_segment_image_of_isOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.closedBall_on_isometric_ray_of_isOpen_segments' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.dist_to_isometric_ray_of_not_mem_range' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.dist_eq_abs_sub_of_common_opposite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

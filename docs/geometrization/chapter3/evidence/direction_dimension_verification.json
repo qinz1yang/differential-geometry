@@ -1,0 +1,50 @@
+{
+  "success": true,
+  "blueprint_static_audit": {
+    "status": "pending",
+    "success": false,
+    "latest_completed_exit_code": 1,
+    "reason": "iCloud placeholders and metadata refresh during historical input reads",
+    "running_session": 82024,
+    "unchanged_audit_sha256": "a71b3b706ed68f757debfad4dbbbf4f80a243ed1db2f56fa5054d23dd54e2018",
+    "blueprint_revision": 207,
+    "lean_gate_independent": true,
+    "current_milestone": 128,
+    "note": "The separate unchanged static audit is ongoing; no pass is claimed."
+  },
+  "milestone": 128,
+  "new_public_theorems": 6,
+  "new_public_definitions": 0,
+  "new_instances": 0,
+  "new_declared_declarations": 6,
+  "new_generated_declarations": 8,
+  "new_owned_declarations": 14,
+  "observed_previous_owned_declarations": 2141,
+  "observed_previous_modules": 448,
+  "combined_modules": 451,
+  "combined_jobs": 3289,
+  "combined_owned_declarations": 2155,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/TangentPolynomialNets.lean": "843f7f94f7b87fb8b23d03d3ea5c874be4da18047b1cf0f43b703e36cac600a5",
+    "DifferentialGeometry/Geometry/Metric/ConeAngularCovering.lean": "2e0ca8ded341ccd71eb5149fe5bbe31e843f87a17e3802affba8f6ab246cee2d",
+    "DifferentialGeometry/Geometry/Comparison/DirectionDimension.lean": "92386e4637c093c76d1034bc26c98e35e981c41d7ece81f080320d276e805dbd"
+  },
+  "logs": {
+    "direction_dimension_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "direction_dimension_review.log": "c958a20ae8a806bc6812a5b389b9fb0f40bf6ad13a3ac557980efc7d6400ace1",
+    "direction_dimension_blueprint_audit.log": "c42368ad14653a3ab595ec7ed9de2f8d3644a743edeccf944894e7c653280548",
+    "direction_dimension_blueprint_status.json": "2f64277b967126dbdbdf8882a0c4083b6c128a41d924262dbb133fa031482b1f"
+  },
+  "checks_receipt_sha256": "9e8272171f8244dae1a7147283a8c84c9277f9f8fabd1d154a52d978adb1499f",
+  "shared_gate_receipt_sha256": "f33d6cb69c05954a6833795e9bacaaee16367e53a622ba33108937a69eeff6f8",
+  "previous_milestone_receipt_sha256": "cae5e24eef767896c7eec5388708d4ed94da295a57efd6301fbf6d158c0e3570",
+  "review_driver_sha256": "bf703aabdf48a9dea42fe7a854869ba95b3f0e0f97a1dc6c1fa996a9ef4d8932",
+  "registration_plan_sha256": "15ef41c16d4a5f8372a0634394bea75181dc2151ea7ce122eb0bccad24e2bc14",
+  "source_receipt_sha256": "c0b2c3283dbdfef61f18425561203c3189608b7388a8a5b8562427dc3c114221",
+  "git_head_at_check": "8c57086ac7d3ab5df49a4f9632b81af63c52c5e1",
+  "independent_peer_proof_review": true,
+  "new_concrete_regressions": 9,
+  "expected_review_reports": 15,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

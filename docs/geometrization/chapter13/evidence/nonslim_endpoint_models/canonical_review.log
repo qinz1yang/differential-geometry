@@ -1,0 +1,74 @@
+IsometryEquiv.ballCongr.{u_1, u_2} {X : Type u_1} {Y : Type u_2} [MetricSpace X] [MetricSpace Y] (e : X ≃ᵢ Y) (p : X)
+  (R : ℝ) : ↑(Metric.ball p R) ≃ᵢ ↑(Metric.ball (e p) R)
+'IsometryEquiv.ballCongr' depends on axioms: [propext, Classical.choice, Quot.sound]
+IsometryEquiv.ballCongr_apply.{u_1, u_2} {X : Type u_1} {Y : Type u_2} [MetricSpace X] [MetricSpace Y] (e : X ≃ᵢ Y)
+  (p : X) (R : ℝ) (x : ↑(Metric.ball p R)) : ↑((e.ballCongr p R) x) = e ↑x
+'IsometryEquiv.ballCongr_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+IsometryEquiv.ballCongrAt.{u_1, u_2} {X : Type u_1} {Y : Type u_2} [MetricSpace X] [MetricSpace Y] (e : X ≃ᵢ Y) (p : X)
+  (q : Y) (he : e p = q) (R : ℝ) : ↑(Metric.ball p R) ≃ᵢ ↑(Metric.ball q R)
+'IsometryEquiv.ballCongrAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+IsometryEquiv.ballCongrAt_apply.{u_1, u_2} {X : Type u_1} {Y : Type u_2} [MetricSpace X] [MetricSpace Y] (e : X ≃ᵢ Y)
+  (p : X) (q : Y) (he : e p = q) (R : ℝ) (x : ↑(Metric.ball p R)) : ↑((e.ballCongrAt p q he R) x) = e ↑x
+'IsometryEquiv.ballCongrAt_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+IsometryEquiv.realSubsetBall {s : Set ℝ} (a : ↑s) (R : ℝ) (h : Metric.ball (↑a) R ⊆ s) :
+  ↑(Metric.ball a R) ≃ᵢ ↑(Metric.ball 0 R)
+'IsometryEquiv.realSubsetBall' depends on axioms: [propext, Classical.choice, Quot.sound]
+IsometryEquiv.realSubsetBall_apply {s : Set ℝ} (a : ↑s) (R : ℝ) (h : Metric.ball (↑a) R ⊆ s) (x : ↑(Metric.ball a R)) :
+  ↑((IsometryEquiv.realSubsetBall a R h) x) = ↑↑x - ↑a
+'IsometryEquiv.realSubsetBall_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+IsometryEquiv.reflectIcc (L : ℝ) : ↑(Set.Icc 0 L) ≃ᵢ ↑(Set.Icc 0 L)
+'IsometryEquiv.reflectIcc' depends on axioms: [propext, Classical.choice, Quot.sound]
+IsometryEquiv.reflectIcc_apply (L : ℝ) (x : ↑(Set.Icc 0 L)) : ↑((IsometryEquiv.reflectIcc L) x) = L - ↑x
+'IsometryEquiv.reflectIcc_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+AddCircle.realBallIsometry {L R : ℝ} (hL : 0 < L) (hR : 4 * R ≤ L) : ↑(Metric.ball 0 R) ≃ᵢ ↑(Metric.ball 0 R)
+'AddCircle.realBallIsometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+AddCircle.realBallIsometry_apply {L R : ℝ} (hL : 0 < L) (hR : 4 * R ≤ L) (x : ↑(Metric.ball 0 R)) :
+  ↑((AddCircle.realBallIsometry hL hR) x) = ↑↑x
+'AddCircle.realBallIsometry_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+IsometryEquiv.l2ProductBall.{u_1, u_2, u_3} {E : Type u_1} {Y : Type u_2} {Z : Type u_3} [MetricSpace E] [MetricSpace Y]
+  [MetricSpace Z] {q : Y} {z : Z} {R : ℝ} (hR : 0 < R) (e : ↑(Metric.ball q R) ≃ᵢ ↑(Metric.ball z R))
+  (he : ↑(e ⟨q, ⋯⟩) = z) (u : E) : ↑(Metric.ball (WithLp.toLp 2 (u, q)) R) ≃ᵢ ↑(Metric.ball (WithLp.toLp 2 (u, z)) R)
+'IsometryEquiv.l2ProductBall' depends on axioms: [propext, Classical.choice, Quot.sound]
+IsometryEquiv.l2ProductBall_fst.{u_1, u_2, u_3} {E : Type u_1} {Y : Type u_2} {Z : Type u_3} [MetricSpace E]
+  [MetricSpace Y] [MetricSpace Z] {q : Y} {z : Z} {R : ℝ} (hR : 0 < R) (e : ↑(Metric.ball q R) ≃ᵢ ↑(Metric.ball z R))
+  (he : ↑(e ⟨q, ⋯⟩) = z) (u : E) (x : ↑(Metric.ball (WithLp.toLp 2 (u, q)) R)) :
+  (↑((IsometryEquiv.l2ProductBall hR e he u) x)).fst = (↑x).fst
+'IsometryEquiv.l2ProductBall_fst' depends on axioms: [propext, Classical.choice, Quot.sound]
+IsometryEquiv.l2ProductBall_snd.{u_1, u_2, u_3} {E : Type u_1} {Y : Type u_2} {Z : Type u_3} [MetricSpace E]
+  [MetricSpace Y] [MetricSpace Z] {q : Y} {z : Z} {R : ℝ} (hR : 0 < R) (e : ↑(Metric.ball q R) ≃ᵢ ↑(Metric.ball z R))
+  (he : ↑(e ⟨q, ⋯⟩) = z) (u : E) (x : ↑(Metric.ball (WithLp.toLp 2 (u, q)) R)) :
+  (↑((IsometryEquiv.l2ProductBall hR e he u) x)).snd = ↑(e ⟨(↑x).snd, ⋯⟩)
+'IsometryEquiv.l2ProductBall_snd' depends on axioms: [propext, Classical.choice, Quot.sound]
+IsometryEquiv.l2ProductBall_basepoint.{u_1, u_2, u_3} {E : Type u_1} {Y : Type u_2} {Z : Type u_3} [MetricSpace E]
+  [MetricSpace Y] [MetricSpace Z] {q : Y} {z : Z} {R : ℝ} (hR : 0 < R) (e : ↑(Metric.ball q R) ≃ᵢ ↑(Metric.ball z R))
+  (he : ↑(e ⟨q, ⋯⟩) = z) (u : E) :
+  ↑((IsometryEquiv.l2ProductBall hR e he u) ⟨WithLp.toLp 2 (u, q), ⋯⟩) = WithLp.toLp 2 (u, z)
+'IsometryEquiv.l2ProductBall_basepoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.KleinerLottApprox.mapTargetBallIsometry.{u_1, u_2, u_3} {X : Type u_1} {Y : Type u_2} {Z : Type u_3}
+  [MetricSpace X] [MetricSpace Y] [MetricSpace Z] {p : X} {q : Y} {z : Z} {ε δ R : ℝ}
+  (f : GC.MetricGeometry.KleinerLottApprox p q ε) (hR : 0 < R) (e : ↑(Metric.ball q R) ≃ᵢ ↑(Metric.ball z R))
+  (he : ↑(e ⟨q, ⋯⟩) = z) (hbudget : 3 * ε ≤ δ) (hδ : δ < 1) (hdomain : δ⁻¹ + 2 * ε ≤ ε⁻¹) (hchart : δ⁻¹ + ε < R) :
+  GC.MetricGeometry.KleinerLottApprox p z δ
+'GC.MetricGeometry.KleinerLottApprox.mapTargetBallIsometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+GC.MetricGeometry.KleinerLottApprox.mapTargetBallIsometry_apply.{u_1, u_2, u_3} {X : Type u_1} {Y : Type u_2}
+  {Z : Type u_3} [MetricSpace X] [MetricSpace Y] [MetricSpace Z] {p : X} {q : Y} {z : Z} {ε δ R : ℝ}
+  (f : GC.MetricGeometry.KleinerLottApprox p q ε) (hR : 0 < R) (e : ↑(Metric.ball q R) ≃ᵢ ↑(Metric.ball z R))
+  (he : ↑(e ⟨q, ⋯⟩) = z) (hbudget : 3 * ε ≤ δ) (hδ : δ < 1) (hdomain : δ⁻¹ + 2 * ε ≤ ε⁻¹) (hchart : δ⁻¹ + ε < R) (x : X)
+  (hx : f.toFun x ∈ Metric.ball q R) :
+  (f.mapTargetBallIsometry hR e he hbudget hδ hdomain hchart).toFun x = ↑(e ⟨f.toFun x, hx⟩)
+'GC.MetricGeometry.KleinerLottApprox.mapTargetBallIsometry_apply' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GC.MetricGeometry.exists_nearby_endpoint_of_no_plane_approximation.{u_1, u_2} {X : Type u_1} {Y : Type u_2}
+  [MetricSpace X] [MetricSpace Y] [CompleteSpace Y] {p : X} {q : Y} {ε β Δ : ℝ}
+  (f : GC.MetricGeometry.KleinerLottApprox p (WithLp.toLp 2 (0, q)) ε) (hβ : 0 < β) (hβsmall : β < 1 / 100)
+  (hΔ : 100 / β < Δ) (hε : ε < β / 100)
+  (hno : ¬Nonempty (GC.MetricGeometry.KleinerLottApprox p (WithLp.toLp 2 (0, 0)) β))
+  (hcurves :
+    ∀ (a b : Y) (η : ℝ),
+      0 < η → ∃ c, Continuous c ∧ c 0 = a ∧ c 1 = b ∧ eVariationOn c Set.univ < ENNReal.ofReal (dist a b + η))
+  (hcomp : DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison 0 Set.univ) (hdim : dimH Set.univ ≤ 1)
+  (hlarge : ∃ a b, 500 * Δ < dist a b) : (∃ L, 500 * Δ < L ∧ ∃ e, ↑(e q) < Δ / 2) ∨ ∃ e, ↑(e q) < Δ / 2
+'GC.MetricGeometry.exists_nearby_endpoint_of_no_plane_approximation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

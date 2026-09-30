@@ -1,0 +1,37 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/GlobalTangentDimension.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_GlobalTangentDimension.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "ee0823400b6eabd535ac8360aad947a5eb2c3f9f9d6c4ea6d5ed2e3d2c748f01"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_global_tangent_dimension_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "83f5a68d3ab814880f3963889c8f87cf5ce5a6a8",
+  "review_reports": [
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_global_tangent_dimH_and_directions_of_local_comparison_and_dimH",
+    "GCDirectionSpaceReview.original_real_global_integer_and_all_tangent_dimensions",
+    "GCDirectionSpaceReview.original_singleton_global_zero_and_all_actual_tangents",
+    "GCPlaneDirectionPackingReview.original_plane_all_tangents_and_all_direction_segments",
+    "GCGlobalTangentDimensionReview.original_empty_global_zero_without_chosen_point"
+  ],
+  "review_driver_sha256": "1f3d3147d357f9c24f456f40da8df25cda366d74f12fe8694d83985a89ce737c",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Comparison/GlobalTangentDimension.lean": "6c3327f449d12dcc15014ff680b26e29d17d2d61f1e5e4414fc8322c9c217d10"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "d95eaefee70b001a7879727e5f6d78ca46a61e59b9650c24ac4e42e25957325c"
+}

@@ -1,0 +1,25 @@
+{
+  "success": true,
+  "new_public_theorems": 6,
+  "new_definitions": 3,
+  "new_owned_declarations": 45,
+  "new_generated_declarations": 36,
+  "combined_modules": 343,
+  "combined_jobs": 3178,
+  "combined_owned_declarations": 1522,
+  "sources": {
+    "DifferentialGeometry/Geometry/Metric/Approximation/TargetBasepointRepair.lean": "23f77de37fbe0c39d17177bb3357ff74a32b17ae0a7875ad2fe992e128a06bd4",
+    "DifferentialGeometry/Geometry/Metric/Approximation/KleinerLottRecentering.lean": "b9e132d5d11ccfc18a506865161d30c8253b837b2eda60492839f0cf2cf17f96"
+  },
+  "logs": {
+    "target_repair_recentering_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "target_repair_recentering_review.log": "34377a7681451d7063e92f9a2a6c13980767858f7d6d71b7eddf514444b960c4",
+    "target_repair_recentering_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "0022844fba3409cb389ff83aff1551493ba3ee8a6179dc39c87bf2aa485b3e52",
+  "git_head_at_check": "fa95286885b305506bc3f6d274b187b5f0f1b6a8",
+  "independent_root_proof_review": true,
+  "exact_tolerance_nonzero_repair_remote_original_values_and_incomplete_source_tests": true,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

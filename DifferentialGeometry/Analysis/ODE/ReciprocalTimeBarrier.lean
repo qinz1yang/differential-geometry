@@ -1,0 +1,9 @@
+import DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
+
+set_option autoImplicit false
+
+namespace DifferentialGeometry.Analysis
+
+alias false_of_area_upper_barriers := not_nonnegative_area_upper_barriers_shift
+
+end DifferentialGeometry.Analysis

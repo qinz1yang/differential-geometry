@@ -1,0 +1,52 @@
+{
+  "success": true,
+  "blueprint_static_audit": {
+    "status": "pending",
+    "success": false,
+    "latest_completed_exit_code": 1,
+    "reason": "iCloud placeholders and metadata refresh during historical input reads",
+    "running_session": 82024,
+    "unchanged_audit_sha256": "a71b3b706ed68f757debfad4dbbbf4f80a243ed1db2f56fa5054d23dd54e2018",
+    "blueprint_revision": 207,
+    "lean_gate_independent": true,
+    "current_milestone": 134,
+    "note": "The separate unchanged static audit is ongoing; no pass is claimed."
+  },
+  "milestone": 134,
+  "new_public_theorems": 6,
+  "new_public_definitions": 0,
+  "new_instances": 0,
+  "new_private_theorems": 2,
+  "new_declared_declarations": 8,
+  "new_generated_declarations": 2,
+  "new_owned_declarations": 10,
+  "observed_previous_owned_declarations": 2195,
+  "observed_previous_modules": 460,
+  "combined_modules": 464,
+  "combined_jobs": 3302,
+  "combined_owned_declarations": 2205,
+  "sources": {
+    "DifferentialGeometry/Topology/MetricSpace/PositiveHausdorffCover.lean": "cef6002f9b1f357dca79094fca92191a27b25e9b57c04f5171c75bd8b4688ac6",
+    "DifferentialGeometry/Topology/MetricSpace/IntervalProductDimension.lean": "3a2c7779306aac658b9893f9eeac89b7d7d058c64bc8e934b330955d8dd53f42",
+    "DifferentialGeometry/Geometry/Metric/ConeRadialParametrization.lean": "87bc2e797a93606044e8999ef7cd7b518e6127eff85b3c4854e945528c320b36",
+    "DifferentialGeometry/Geometry/Metric/ConeHausdorffDimension.lean": "38d387c05b588ef6465971d4dc2f2ee068c610948e06c5c2b53a2fd390921f6d"
+  },
+  "logs": {
+    "cone_hausdorff_dimension_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cone_hausdorff_dimension_review.log": "aa4447b81d00aa46d1ef84f57100d92403732957cfc574aa83944f408e3c792e",
+    "cone_hausdorff_dimension_blueprint_audit.log": "10f1df038a6c5d49c9e92bcc43d88e8f78e250a34596be430a81100312f9d3d5",
+    "cone_hausdorff_dimension_blueprint_status.json": "cc9749355ad0aa0fa9e2d035483d097799cbd314df0a3e79ad28430ffd2afd99"
+  },
+  "checks_receipt_sha256": "f1d1823307adc86b909f2fa9d67412b4c77befde8bc37911e0662516c392ddf0",
+  "shared_gate_receipt_sha256": "2b2dcb602fccaed18ac69b461a2c5ddb6f45274475fdb960044a962fa765e8a8",
+  "previous_milestone_receipt_sha256": "caac7a14fff9f5778ec1d27a20b81a38642edcada3ec502cc017b4eddf1b7d29",
+  "review_driver_sha256": "65b5c26ff7c8b4c660a0a5834d2acfc1a91966063ea559bec3051d12d8ff4cdc",
+  "registration_plan_sha256": "e5b7f200554aee542c173328c6d0a4132d677736352eb6b5d64cdc9cf762bf22",
+  "source_receipt_sha256": "57b031c2cdc851f720cb889d1f79b038a08cf35ad7fa6373df249938b7a4415b",
+  "git_head_at_check": "1ac22458e7ff4c9681b6b82718f3a8a014f9d425",
+  "independent_peer_proof_review": true,
+  "new_concrete_regressions": 12,
+  "expected_review_reports": 18,
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

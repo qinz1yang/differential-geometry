@@ -1,0 +1,1925 @@
+{
+  "blueprint_revision": 207,
+  "scope": "Concrete raw graph presentation and principal closed/mixed endpoint contracts, not all graph-refinement DAG nodes.",
+  "source_policy": "Reused source checks169\u2013171 and56; exact blueprint bodies reread. No new erratum clearance or universal mathematical proof claim.",
+  "source_records": [
+    "GEOMETRIZATION_BLUEPRINT/reference_checks_revision56.md",
+    "GEOMETRIZATION_BLUEPRINT/reference_checks_revision169.md",
+    "GEOMETRIZATION_BLUEPRINT/reference_checks_revision170.md",
+    "GEOMETRIZATION_BLUEPRINT/reference_checks_revision171.md",
+    "GEOMETRIZATION_BLUEPRINT/research/graph_realization_2026-09-27/source_checks_revision171.json"
+  ],
+  "files": [
+    {
+      "path": "DifferentialGeometry/Topology/Manifold/CompactModel.lean",
+      "sha256": "64b428632e608f24425288cb811767ed8df94097d0ec7ad812dae194cf91dc0a"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SphereSummand.lean",
+      "sha256": "9e12fba2568a0e7294d341ece9ca1bcece4dd30136371ac08c500374d668da94"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Transport.lean",
+      "sha256": "c96ee77be7f3de40f4aba84a00e871ace00bf1f64b1cf07aaf4425b4d6988288"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "sha256": "7fcae3dd8550a5c2bcc1cffc8734d106c4be195b0e99a0cf5a3b37a6d8c71052"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "sha256": "467285a54770d7af5dba09b5bfc561f08fdcbf8f603791eef372cf2642534652"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/SphereSplitting.lean",
+      "sha256": "80ef936134a903e8d4831064fae4cbd969fd95c62a3717da0ad5f4230cf77a9b"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Transport.lean",
+      "sha256": "9609d911b70316a553e8e8e135688afb9af2f2cf6a57582073a5ce5458829f3e"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "sha256": "6be9cb6cac36454ddedf913ae3fe0f24f663da9a42da11e9aba59c93845c8189"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/NoCuts.lean",
+      "sha256": "d059bf79b5dab3d33761c7e6d98f722d6ce83e0f1e32c978f983cac707f27278"
+    }
+  ],
+  "declarations": [
+    {
+      "declaration": "GC.GraphManifold.SurfaceModel",
+      "kind": "abbrev",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 11,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": true,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.SurfaceModel.Space",
+      "kind": "abbrev",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 12,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.SurfaceModel.model",
+      "kind": "abbrev",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 13,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.CompactSurface",
+      "kind": "structure",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 14,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": true,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.CircleFibration",
+      "kind": "structure",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 18,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": true,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.BoundaryTori",
+      "kind": "structure",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 30,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": true,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.BoundaryTori.torusMap",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 39,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.BoundaryTori.image",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 42,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.BoundaryTori.zero_mem_source",
+      "kind": "theorem",
+      "private": true,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 45,
+      "status": "proved",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.BoundaryTori.torusMap_smooth",
+      "kind": "theorem",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 52,
+      "status": "proved",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.BoundaryTori.boundaryMap",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 57,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.BoundaryTori.torusMap_isEmbedding",
+      "kind": "theorem",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 61,
+      "status": "proved",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.BoundaryTori.incompressible",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 68,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.TorusPairing",
+      "kind": "structure",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 73,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": true,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.TorusPairing.QuotientSpace",
+      "kind": "abbrev",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 93,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.TorusPairing.quotientMap",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 99,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.RawGraphPresentation",
+      "kind": "structure",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Presentation.lean",
+      "line": 104,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "sec:graph-refinement-contracts",
+          "label_line": 8463,
+          "reading_lines": [
+            8444,
+            8588
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "lem:graph-smooth-bundle-normalization",
+          "label_line": 9316,
+          "reading_lines": [
+            9315,
+            9356
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "prop:graph-actual-elementary-presentation",
+          "label_line": 9392,
+          "reading_lines": [
+            9391,
+            9431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": true,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.Topology.componentCarrier",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "line": 11,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "renamed_from": "GC.GraphManifold.componentCarrier",
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.Topology.TorusDecomposition",
+      "kind": "structure",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "line": 18,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": true,
+      "renamed_from": "GC.GraphManifold.TorusDecomposition",
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.Topology.TorusDecomposition.component",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "line": 31,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "renamed_from": "GC.GraphManifold.TorusDecomposition.component",
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.Topology.TorusDecomposition.toGeometricDecomposition",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/Decomposition.lean",
+      "line": 35,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "renamed_from": "GC.GraphManifold.TorusDecomposition.toGeometricDecomposition",
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.isHyperbolicInteriorGeometry",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 12,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.HyperbolicOrGraph",
+      "kind": "inductive",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 18,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": true,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.exists_prime_decomposition_of_rawGraphPresentation",
+      "kind": "theorem",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 24,
+      "status": "proved",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:graph-actual-relative-good-blocks",
+          "label_line": 9468,
+          "reading_lines": [
+            9467,
+            9540
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "found:transport-relative-primes",
+          "label_line": 11896,
+          "reading_lines": [
+            11895,
+            11906
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "omissions": [
+        "Only closed-carrier chosen prime factors and graph structures are exported; no relative punctured carriers, sphere/cap ledger, protected external marking, or prescribed-factor comparison."
+      ],
+      "generated_members_covered": false,
+      "direct_sorry": false,
+      "proof_scope": "Composition of admitted prime existence and admitted graph closure on a specified oriented sphere summand. The exact original conclusion is unchanged."
+    },
+    {
+      "declaration": "GC.GraphManifold.exists_geometric_decomposition_of_prime_rawGraphPresentation",
+      "kind": "theorem",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 35,
+      "status": "admitted",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:graph-actual-relative-good-blocks",
+          "label_line": 9468,
+          "reading_lines": [
+            9467,
+            9540
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "cor:graph-terminal-seifert-list",
+          "label_line": 9543,
+          "reading_lines": [
+            9542,
+            9579
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:graph-marked-geometric-endpoint",
+          "label_line": 10379,
+          "reading_lines": [
+            10378,
+            10431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [
+        "Topology and metric realization remain one theorem obligation; separate filling and each model construction are not encoded here."
+      ],
+      "generated_members_covered": false,
+      "direct_sorry": true,
+      "primary_source_checked": false,
+      "source_locators": [
+        "Blueprint-only exact contract: master207A.tex:9468 thm:graph-actual-relative-good-blocks; reading [9467, 9540]",
+        "Blueprint-only exact contract: master207A.tex:9543 cor:graph-terminal-seifert-list; reading [9542, 9579]",
+        "Blueprint-only exact contract: master207A.tex:10379 thm:graph-marked-geometric-endpoint; reading [10378, 10431]"
+      ],
+      "source_checks": [
+        {
+          "file": "master207A.tex",
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+          "label": "thm:graph-actual-relative-good-blocks",
+          "read_lines": [
+            [
+              9467,
+              9540
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        },
+        {
+          "file": "master207A.tex",
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+          "label": "cor:graph-terminal-seifert-list",
+          "read_lines": [
+            [
+              9542,
+              9579
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        },
+        {
+          "file": "master207A.tex",
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+          "label": "thm:graph-marked-geometric-endpoint",
+          "read_lines": [
+            [
+              10378,
+              10431
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        }
+      ]
+    },
+    {
+      "declaration": "GC.GraphManifold.geometrizes_of_rawGraphPresentation",
+      "kind": "theorem",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 41,
+      "status": "proved",
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:graph-actual-relative-good-blocks",
+          "label_line": 9468,
+          "reading_lines": [
+            9467,
+            9540
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        },
+        {
+          "file": "master207A.tex",
+          "label": "thm:graph-marked-geometric-endpoint",
+          "label_line": 10379,
+          "reading_lines": [
+            10378,
+            10431
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.GraphManifold.exists_prime_geometric_decomposition_of_hyperbolicOrGraph",
+      "kind": "theorem",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 50,
+      "status": "admitted",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "found:transport-relative-primes",
+          "label_line": 11896,
+          "reading_lines": [
+            11895,
+            11906
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "found:transport-good-blocks",
+          "label_line": 11970,
+          "reading_lines": [
+            11969,
+            11979
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "omissions": [
+        "Exports the existing endpoint certificate factors/cuts/metrics/reconstruction, not a full relative protected-boundary sphere ledger or preservation map for each original auxiliary seam.",
+        "Hyperbolic interior irreducibility with collar push and descent is not supplied by the current skeleton; AT16 B:11976\u201311978 assumes it and AT18 B:12035\u201312037 disclaims proving it."
+      ],
+      "generated_members_covered": false,
+      "direct_sorry": true,
+      "primary_source_checked": false,
+      "source_locators": [
+        "Blueprint-only exact contract: master207B.tex:11896 found:transport-relative-primes; reading [11895, 11906]",
+        "Blueprint-only exact contract: master207B.tex:11970 found:transport-good-blocks; reading [11969, 11979]",
+        "Blueprint-only exact contract: master207B.tex:11990 prop:transport-essential-late-tori; reading [11989, 12010]",
+        "Blueprint-only exact contract: master207B.tex:12011 prop:transport-prime-late-factors; reading [12010, 12036]",
+        "Blueprint-only exact contract: master207B.tex:12460 cor:graph-audited-late-binding; reading [12459, 12497]"
+      ],
+      "source_checks": [
+        {
+          "file": "master207B.tex",
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31",
+          "label": "found:transport-relative-primes",
+          "read_lines": [
+            [
+              11895,
+              11906
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        },
+        {
+          "file": "master207B.tex",
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31",
+          "label": "found:transport-good-blocks",
+          "read_lines": [
+            [
+              11969,
+              11979
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        },
+        {
+          "file": "master207B.tex",
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31",
+          "label": "prop:transport-essential-late-tori",
+          "read_lines": [
+            [
+              11989,
+              12010
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        },
+        {
+          "file": "master207B.tex",
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31",
+          "label": "prop:transport-prime-late-factors",
+          "read_lines": [
+            [
+              12010,
+              12036
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        },
+        {
+          "file": "master207B.tex",
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31",
+          "label": "cor:graph-audited-late-binding",
+          "read_lines": [
+            [
+              12459,
+              12497
+            ]
+          ],
+          "scope": "Blueprint contract; no new complete primary-source proof reading claimed."
+        }
+      ]
+    },
+    {
+      "declaration": "GC.GraphManifold.geometrizes_of_hyperbolicOrGraph",
+      "kind": "theorem",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Refinement.lean",
+      "line": 58,
+      "status": "proved",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "omissions": [],
+      "generated_members_covered": false,
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Topology.ModelBoundaryKind",
+      "kind": "inductive",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/Manifold/CompactModel.lean",
+      "line": 9,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "generated_members_covered": true,
+      "source_scope": "Definitionally unchanged API factorization or proved structural adapter; blueprint source bodies retained, not a new geometric source claim.",
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Topology.ModelBoundaryKind.Space",
+      "kind": "abbrev",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/Manifold/CompactModel.lean",
+      "line": 12,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "generated_members_covered": true,
+      "source_scope": "Definitionally unchanged API factorization or proved structural adapter; blueprint source bodies retained, not a new geometric source claim.",
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Topology.ModelBoundaryKind.model",
+      "kind": "abbrev",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/Manifold/CompactModel.lean",
+      "line": 22,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "generated_members_covered": true,
+      "source_scope": "Definitionally unchanged API factorization or proved structural adapter; blueprint source bodies retained, not a new geometric source claim.",
+      "direct_sorry": false
+    },
+    {
+      "declaration": "DifferentialGeometry.Topology.CompactModelManifold",
+      "kind": "structure",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/Manifold/CompactModel.lean",
+      "line": 28,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "generated_members_covered": true,
+      "source_scope": "Definitionally unchanged API factorization or proved structural adapter; blueprint source bodies retained, not a new geometric source claim.",
+      "direct_sorry": false
+    },
+    {
+      "declaration": "GC.Endpoint.NoCuts.torusDecomposition",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/NoCuts.lean",
+      "line": 11,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-essential-late-tori",
+          "label_line": 11990,
+          "reading_lines": [
+            11989,
+            12010
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "prop:transport-prime-late-factors",
+          "label_line": 12011,
+          "reading_lines": [
+            12010,
+            12036
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "cor:graph-audited-late-binding",
+          "label_line": 12460,
+          "reading_lines": [
+            12459,
+            12497
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "generated_members_covered": true,
+      "direct_sorry": false,
+      "source_scope": "Definitionally unchanged API factorization or proved structural adapter; blueprint source bodies retained, not a new geometric source claim."
+    },
+    {
+      "declaration": "GC.Endpoint.SmoothAssembly.Incompressible.toPiece",
+      "kind": "theorem",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Transport.lean",
+      "line": 10,
+      "status": "proved",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "lem:transport-based-maps",
+          "label_line": 11779,
+          "reading_lines": [
+            11778,
+            11798
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "generated_members_covered": true,
+      "direct_sorry": false,
+      "source_scope": "Actual FundamentalGroup.map composition and left-factor cancellation. The ambient map, owning piece port, inclusion, and factorization equation are all explicit.",
+      "blueprint_nodes": [
+        "AT09"
+      ]
+    },
+    {
+      "declaration": "GC.Endpoint.GeometricDecomposition.transport",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Transport.lean",
+      "line": 21,
+      "status": "definition",
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "lem:transport-cut-naturality",
+          "label_line": 11755,
+          "reading_lines": [
+            11754,
+            11780
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        },
+        {
+          "file": "master207B.tex",
+          "label": "lem:transport-based-maps",
+          "label_line": 11779,
+          "reading_lines": [
+            11778,
+            11798
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "generated_members_covered": true,
+      "direct_sorry": false,
+      "source_scope": "Proved oriented ambient diffeomorphism transport. Retains the abstract cut carrier and its full-interior metrics, so AT26 metric pushforward is not needed.",
+      "blueprint_nodes": [
+        "AT08",
+        "AT09"
+      ]
+    },
+    {
+      "declaration": "GC.GraphManifold.BoundaryTori.transport",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Transport.lean",
+      "line": 11,
+      "status": "definition",
+      "direct_sorry": false,
+      "blueprint_nodes": [
+        "AT08"
+      ],
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "lem:transport-cut-naturality",
+          "label_line": 11755,
+          "reading_lines": [
+            11754,
+            11780
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "generated_members_covered": true,
+      "source_scope": "Proved smooth transport using the actual ambient oriented diffeomorphism, retaining the abstract cut carrier, fibration and labels. Blueprint AT08; Lean proof, no external theorem admission."
+    },
+    {
+      "declaration": "GC.GraphManifold.openImageDiffeomorph",
+      "kind": "def",
+      "private": true,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Transport.lean",
+      "line": 27,
+      "status": "definition",
+      "direct_sorry": false,
+      "blueprint_nodes": [
+        "AT08"
+      ],
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "lem:transport-cut-naturality",
+          "label_line": 11755,
+          "reading_lines": [
+            11754,
+            11780
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "generated_members_covered": true,
+      "source_scope": "Proved smooth transport using the actual ambient oriented diffeomorphism, retaining the abstract cut carrier, fibration and labels. Blueprint AT08; Lean proof, no external theorem admission."
+    },
+    {
+      "declaration": "GC.GraphManifold.RawGraphPresentation.transport",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/Transport.lean",
+      "line": 37,
+      "status": "definition",
+      "direct_sorry": false,
+      "blueprint_nodes": [
+        "AT08"
+      ],
+      "blueprint": [
+        {
+          "file": "master207B.tex",
+          "label": "lem:transport-cut-naturality",
+          "label_line": 11755,
+          "reading_lines": [
+            11754,
+            11780
+          ],
+          "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31"
+        }
+      ],
+      "generated_members_covered": true,
+      "source_scope": "Proved smooth transport using the actual ambient oriented diffeomorphism, retaining the abstract cut carrier, fibration and labels. Blueprint AT08; Lean proof, no external theorem admission."
+    },
+    {
+      "declaration": "GC.Topology.SphereSummand",
+      "kind": "structure",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SphereSummand.lean",
+      "line": 10,
+      "direct_sorry": false,
+      "status": "definition",
+      "blueprint_nodes": [
+        "RG05"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:graph-actual-relative-good-blocks",
+          "label_line": 9468,
+          "reading_lines": [
+            9467,
+            9540
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "source_locators": [
+        "Blueprint 207 A:8277\u20138387, R02/R07; A:9467\u20139540, RG05."
+      ],
+      "generated_members_covered": true,
+      "source_scope": "Actual finite connected-sum reconstruction and factor equality; proof/definition only, no new external theorem claim."
+    },
+    {
+      "declaration": "GC.Topology.SphereSummand.ofPrimeDecomposition",
+      "kind": "def",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SphereSummand.lean",
+      "line": 17,
+      "direct_sorry": false,
+      "status": "definition",
+      "blueprint_nodes": [
+        "RG05"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:graph-actual-relative-good-blocks",
+          "label_line": 9468,
+          "reading_lines": [
+            9467,
+            9540
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "source_locators": [
+        "Blueprint 207 A:8277\u20138387, R02/R07; A:9467\u20139540, RG05."
+      ],
+      "generated_members_covered": true,
+      "source_scope": "Actual finite connected-sum reconstruction and factor equality; proof/definition only, no new external theorem claim."
+    },
+    {
+      "declaration": "GC.GraphManifold.sphere_split_of_rawGraphPresentation",
+      "kind": "theorem",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/SphereSplitting.lean",
+      "line": 11,
+      "direct_sorry": true,
+      "status": "admitted",
+      "blueprint_nodes": [
+        "RG05"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:graph-actual-relative-good-blocks",
+          "label_line": 9468,
+          "reading_lines": [
+            9467,
+            9540
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "source_locators": [
+        "Blueprint 207 A:8277\u20138387, R02/R07; A:9467\u20139540, RG05.",
+        "Hatcher archived 61-page notes, Theorem 1.5, printed 5\u20138 / PDF 6\u20139; splitting definitions printed 3\u20134 / PDF 4\u20135."
+      ],
+      "generated_members_covered": true,
+      "source_checks": [
+        {
+          "file": "Hatcher3ManifoldNotes.pdf",
+          "sha256": "f3781c43b4ed981f98fab36761d5eefe92bb53cc1a7100a0146954f9af5a029b",
+          "pdf_pages": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "printed_pages": "3\u20138",
+          "locator": "Section 1.1, Theorem 1.5 and orientation paragraph",
+          "scope": "Actual text read; prime existence only. Closed oriented specialization; no graph-closure conclusion."
+        }
+      ],
+      "primary_source_checked": true,
+      "classical_dependencies": [
+        "Smooth sphere capping and sphere-diffeomorphism ball extension",
+        "Smooth triangulation and transversality",
+        "Homological finiteness and sphere-product contributions",
+        "Smooth Schoenflies; inherited reuse candidate, not re-proved here"
+      ],
+      "omissions": [
+        "Relative boundary collars and explicit cap embeddings are not exported by this closed-only specialization."
+      ]
+    },
+    {
+      "declaration": "GC.GraphManifold.rawGraphPresentation_of_sphere_summand",
+      "kind": "theorem",
+      "private": false,
+      "file": "DifferentialGeometry/Topology/ThreeManifold/GraphManifold/SphereSplitting.lean",
+      "line": 16,
+      "direct_sorry": true,
+      "status": "admitted",
+      "blueprint_nodes": [
+        "RG05"
+      ],
+      "blueprint": [
+        {
+          "file": "master207A.tex",
+          "label": "thm:graph-actual-relative-good-blocks",
+          "label_line": 9468,
+          "reading_lines": [
+            9467,
+            9540
+          ],
+          "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b"
+        }
+      ],
+      "source_locators": [
+        "Matveev2007 Definition2.4.1/Propositions2.4.2\u20132.4.3, printed84\u201385/PDF96\u201397, freshly read; Blueprint RG05 A:9467\u20139540 and R07 A:8379\u20138387."
+      ],
+      "generated_members_covered": true,
+      "source_checks": [
+        {
+          "file": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/MatveevBook2ndEd.pdf",
+          "sha256": "5771a05719ee890b8e759ac9df2a43b1afaba4be53482c11bf75eb7b31b6b94e",
+          "version": "Second edition 2007; archive identity previously checked in revision50",
+          "pdf_pages": [
+            95,
+            96,
+            97,
+            98
+          ],
+          "printed_pages": "83\u201386",
+          "locator": "Section2.4; Definition2.4.1; Propositions2.4.2\u20132.4.3 full supplied short arguments; Corollary2.4.4 supplied page",
+          "scope": "Fresh reading; source gives topological graph closure, not the full relative smooth/oriented marking adapter."
+        }
+      ],
+      "primary_source_checked": true,
+      "source_scope": "Primary topological graph closure read in Matveev2007 Proposition2.4.3; the exact smooth/oriented finite-family summand adapter remains admitted.",
+      "classical_dependencies": [
+        "Elementary circle-bundle reduction including nonorientable bases",
+        "Fiber-parallel filling and transverse filling",
+        "Termination of graph reductions",
+        "Prime-factor uniqueness for a specified summand",
+        "Smooth oriented graph-presentation transport"
+      ],
+      "omissions": [
+        "No relative boundary-preserving refinement or good-block metric supply is claimed."
+      ]
+    }
+  ],
+  "unimplemented_subinterfaces": [
+    "RG01 smooth normalization existence",
+    "RG02 Mobius alternative fibration",
+    "RG03 elementary pants/solid-torus presentation producer",
+    "RG04 primitive slope and actual attaching map filling",
+    "RG05 relative sphere/cap/port ledger",
+    "RG06 terminal Seifert type list",
+    "GM01\u2013GM05 individual metrics and period/curvature computations",
+    "AT13/AT16 strong relative retained-marking exports",
+    "AT19\u2013AT23 labelled sphere-ledger flattening",
+    "Hyperbolic irreducibility: Cartan\u2013Hadamard, Alexander, Hatcher descent and collar push, requested Task5.1; no imported adapter yet."
+  ],
+  "cross_review": {
+    "reviewer": "collapse_skeleton agent",
+    "finding": "No blocking mismatch in concrete graph definitions or principal refinement theorem signatures; protected relative sphere-ledger output explicitly omitted.",
+    "root_review": "Root independently read principal topology and finite-category declarations; approved generic torus-cut split with unchanged names/signatures."
+  }
+}

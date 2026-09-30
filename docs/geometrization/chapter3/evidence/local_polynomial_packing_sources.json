@@ -1,0 +1,17 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC33 full proof3730\u20133768; exact grid and radial constants, reread"
+    }
+  ],
+  "reused_source_checks": [
+    "local_compactness_sources.json",
+    "euclidean_packing_sources.json",
+    "packing_transport_sources.json"
+  ],
+  "additional_reading": "BGP Definition6.2 and Lemmas6.3\u20136.4 printed20\u201321/PDF21\u201322; BBI Corollary10.8.20 printed388\u2013389/PDF403\u2013404, full bodies reread.",
+  "scope": "AC33 geometric polynomial bound at every prescribed point, in explicit common comparison domain; no rough-volume consequence yet.",
+  "convention": "Actual non-strict finitePackingNumber, ENat floor bound. Same multiplicative constants, additive1 instead of2."
+}

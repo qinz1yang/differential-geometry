@@ -1,0 +1,147 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/IsometricGeodesicRepresentative.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_IsometricGeodesicRepresentative.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "573740e696515a991295758bd124f44e2318dee8cbf0aa4a79b74d6d2eabae7a"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/OpenGeodesicRepresentative.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_OpenGeodesicRepresentative.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "7bca5dc278bd693b3a15fed172f0ca531582a1505812194c9035765524891e1e"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/IsometricGeodesicDirections.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_IsometricGeodesicDirections.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "d7c84f43c4974df5537e8eaae7965553dfd1f5a7fb59e83332c7c58b63649c60"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/OpenDirections.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_OpenDirections.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "90390938db95e1be64dfdf5b8a8df190d950054b5f97fc430b8c76eb4c46ec04"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/EuclideanConeIsometry.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_EuclideanConeIsometry.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "e8d976bcc0033729943636917b74b27aa3ea56378e83eb889451cee858dd094c"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/OpenTangentCone.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_OpenTangentCone.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "de6543706d2a3b63791309ef4a0c688e710d97dcdc80275324b047f5d9f9a072"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/OpenLinearDimension.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_OpenLinearDimension.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "ac2902a71920416fe2b2a177384881cd16ae6309d8a06033dbe2837334e729ed"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_open_tangent_dimension_canonical_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "dff30c3a0d4a9a7503636aa36891c64e911a0a40",
+  "review_reports": [
+    "Metric.GeodesicRepresentative.map",
+    "Metric.GeodesicRepresentative.map_path",
+    "Metric.GeodesicRepresentative.angle_map",
+    "Metric.hasAnglesAt_of_isometry",
+    "Metric.GeodesicRepresentative.isometry_map",
+    "Metric.GeodesicRepresentative.exists_lift_shorten",
+    "Metric.GeodesicDirections.map",
+    "Metric.GeodesicDirections.map_geodesicDirection",
+    "Metric.GeodesicDirections.isometry_map",
+    "Metric.SpaceOfDirections.map",
+    "Metric.SpaceOfDirections.map_toDirection",
+    "Metric.SpaceOfDirections.isometry_map",
+    "Metric.SpaceOfDirections.map_direction",
+    "Metric.SpaceOfDirections.surjective_map_subtype_val",
+    "Metric.SpaceOfDirections.openIsometryEquiv",
+    "Metric.SpaceOfDirections.openIsometryEquiv_apply",
+    "Metric.SpaceOfDirections.openIsometryEquiv_direction",
+    "Metric.EuclideanCone.map",
+    "Metric.EuclideanCone.map_tip",
+    "Metric.EuclideanCone.map_mk",
+    "Metric.EuclideanCone.radius_map",
+    "Metric.EuclideanCone.map_dilate",
+    "Metric.EuclideanCone.isometry_map",
+    "Metric.EuclideanCone.congr",
+    "Metric.EuclideanCone.congr_apply",
+    "Metric.TangentCone.openIsometryEquiv",
+    "Metric.TangentCone.openIsometryEquiv_tip",
+    "Metric.TangentCone.openIsometryEquiv_tangentVector",
+    "Metric.TangentCone.openIsometryEquiv_dilate",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.linearDimension_open_eq_of_local_comparison_and_dimH",
+    "GCDirectionSpaceReview.actual_reflection_preserves_original_representatives",
+    "GCDirectionSpaceReview.long_original_segment_lifts_only_after_shortening",
+    "GCDirectionSpaceReview.actual_open_interval_completed_directions_onto_and_opposite",
+    "GCDirectionSpaceReview.actual_singleton_open_empty_directions_equivalence",
+    "GCPlaneDirectionPackingReview.actual_nononto_embedding_induces_nononto_isometric_direction_map",
+    "GCConeOpenTangentReview.actual_reflection_cone_preserves_cap_and_dilation",
+    "GCConeOpenTangentReview.actual_nononto_base_embedding_gives_nononto_cone_isometry",
+    "GCConeOpenTangentReview.actual_empty_base_cone_transport_retains_only_tip",
+    "GCDirectionSpaceReview.actual_incomplete_open_interval_tangent_transport",
+    "GCOpenLinearDimensionReview.original_disconnected_incomplete_open_real_linear_dimension",
+    "GCOpenLinearDimensionReview.original_singleton_open_linear_dimension_zero",
+    "GCOpenLinearDimensionReview.empty_open_set_requires_nonempty_guard",
+    "GCPlaneDirectionPackingReview.original_translated_plane_open_ball_linear_dimension_two"
+  ],
+  "review_driver_sha256": "f8f6b61f9cc3f1e6c8e5d6d60013864fa70a2073b91d5cc233e604ad17068050",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Metric/IsometricGeodesicRepresentative.lean": "fe6cd12dff7ae65ae0642c5e2149c653bea6fe1eed88b383054c6a9c3c570c80",
+    "DifferentialGeometry/Geometry/Metric/OpenGeodesicRepresentative.lean": "b267b5440b18e17fcc1322e7c9679cac3d6d14aaf4e181b04a1558404941b8b7",
+    "DifferentialGeometry/Geometry/Metric/IsometricGeodesicDirections.lean": "0b0e80da527adb171b100c7d8b7acf4c4d6cea13f456dff30e5bf5d64d408084",
+    "DifferentialGeometry/Geometry/Metric/OpenDirections.lean": "9825a5b293c49a8a314b75b0931c25b618a4d66dcd0f7942ab25a8958a9cde0a",
+    "DifferentialGeometry/Geometry/Metric/EuclideanConeIsometry.lean": "3b7a4adc17790b6d7e34513d011d75f546c46a4a18d1fe6ac765d63ef374b2b9",
+    "DifferentialGeometry/Geometry/Metric/OpenTangentCone.lean": "de06978ed07a1d166d3f7c9e3ddd9e93edae00c49286f38101214c720bef6be5",
+    "DifferentialGeometry/Geometry/Comparison/OpenLinearDimension.lean": "183d264319eeea9cb91a019606f47d96db8ab9ad45c6a29611aae94a7f8007bc"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "a34a0ee1a33bae190eb46ed39e365e0efe4788ea079311ec46c3a1a98774048b"
+}

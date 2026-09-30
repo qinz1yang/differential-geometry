@@ -1,0 +1,58 @@
+import Mathlib.Tactic.Linter
+import DifferentialGeometry.Analysis.Calculus.FirstPositiveLevel
+import DifferentialGeometry.Topology.MetricSpace.VariableRadiusCover
+import DifferentialGeometry.Geometry.Metric.Approximation.ConeRadialExtension
+import DifferentialGeometry.Geometry.Metric.Approximation.FixedTargetTransfer
+import DifferentialGeometry.Geometry.Metric.Approximation.BoundedRescaling
+import DifferentialGeometry.Geometry.Metric.Approximation.LowDimensionalModels
+
+#check Real.firstPositiveLevel
+#print axioms Real.firstPositiveLevel
+
+#check Real.firstPositiveLevel_spec
+#print axioms Real.firstPositiveLevel_spec
+
+#check Real.firstPositiveLevel_strictAntiOn
+#print axioms Real.firstPositiveLevel_strictAntiOn
+
+#check Metric.exists_finite_disjoint_ball_selection
+#print axioms Metric.exists_finite_disjoint_ball_selection
+
+#check Metric.exists_maximal_doubling_ball
+#print axioms Metric.exists_maximal_doubling_ball
+
+#check Metric.radius_le_of_maximal_doubling_ball
+#print axioms Metric.radius_le_of_maximal_doubling_ball
+
+#check Metric.exists_finite_disjoint_ball_cover_of_bounded_radii
+#print axioms Metric.exists_finite_disjoint_ball_cover_of_bounded_radii
+
+#check Metric.subset_small_balls_of_annular_exclusion
+#print axioms Metric.subset_small_balls_of_annular_exclusion
+
+#check Metric.exists_finite_disjoint_ball_cover_of_continuous_scale
+#print axioms Metric.exists_finite_disjoint_ball_cover_of_continuous_scale
+
+#check GC.MetricGeometry.KleinerLottApprox.exists_outward_point
+#print axioms GC.MetricGeometry.KleinerLottApprox.exists_outward_point
+
+#check GC.MetricGeometry.KleinerLottApprox.exists_outward_point_on_annulus
+#print axioms GC.MetricGeometry.KleinerLottApprox.exists_outward_point_on_annulus
+
+#check GC.MetricGeometry.PointedGHConverges.rescale
+#print axioms GC.MetricGeometry.PointedGHConverges.rescale
+
+#check GC.MetricGeometry.PointedGHConverges.eventually_approx_fixed_target
+#print axioms GC.MetricGeometry.PointedGHConverges.eventually_approx_fixed_target
+
+#check GC.MetricGeometry.PointedGHConverges.eventually_rescaled_approx_fixed_target
+#print axioms GC.MetricGeometry.PointedGHConverges.eventually_rescaled_approx_fixed_target
+
+#check GC.MetricGeometry.exists_uniform_bounded_rescaling
+#print axioms GC.MetricGeometry.exists_uniform_bounded_rescaling
+
+#check GC.MetricGeometry.exists_common_pointed_limit_of_nonnegative_models
+#print axioms GC.MetricGeometry.exists_common_pointed_limit_of_nonnegative_models
+
+#check GC.MetricGeometry.exists_no_higher_rank_splitting_parameter
+#print axioms GC.MetricGeometry.exists_no_higher_rank_splitting_parameter

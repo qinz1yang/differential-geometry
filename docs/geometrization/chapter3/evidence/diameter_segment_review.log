@@ -1,0 +1,7 @@
+'Metric.exists_segment_endpoint_on_curve_of_exit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.dist_to_segment_of_not_mem_range' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.dist_add_dist_eq_of_outside_diameter_segment' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.dist_eq_abs_sub_of_outside_diameter_segment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.exists_diameter_isometric_segment' depends on axioms: [propext, Classical.choice, Quot.sound]

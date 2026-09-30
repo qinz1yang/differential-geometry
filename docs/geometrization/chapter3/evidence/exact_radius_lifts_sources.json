@@ -1,0 +1,41 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC67 full5530-5593; AC49 approximation conventions4575-4601"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf",
+      "sha256": "7a860b4dd95b35fe33b06bf040100ec243d72c80528d927f4763391aaf79cb6e",
+      "locator": "Definition3.2 printed21/PDF16 visually checked, Definition4.7 printed30/PDF25, Lemma4.15(1) printed31/PDF26 statement/proof"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/KL_corrections.pdf",
+      "sha256": "b5849571508231ce7328ef842eaa0a8a74e34804de7741dab548c406dea11e19",
+      "locator": "retained May15,2015 sheet PDF1 reopened; no relevant correction among entries6.5/14.1(2)/20.2"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/KleinerLottApproximation.lean",
+      "sha256": "dfc3da99348de87c7640bfb4127b530bfb0e6dddeafa843400518c11dac65615",
+      "locator": "actual open-ball distortion, infDist coverage, 2epsilon coverage_witness and radial_error"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/L2Product.lean",
+      "sha256": "65e9a66118a89a3ac85021a7c5b2c063819bbe8b3d859eded830857fc5cce1a0",
+      "locator": "actual fixed-factor isometries and Pythagorean product metric"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Topology/MetricSpace/SegmentConcatenation.lean",
+      "sha256": "3f17634f6b178070a7a8039c6924e4a6f2bbb5cbb515352e2e071228b992de88",
+      "locator": "normalized metric segment to actual unit-speed interval isometry"
+    }
+  ],
+  "reused_source_checks": [
+    "approximate_factor_compactness_sources.json",
+    "boundary_radial_segment_sources.json"
+  ],
+  "scope": "Exact AC67 metric constants, original lift witnesses and same-map signed endpoints; factor metric only.",
+  "independent_agent_proof_review": true,
+  "errata": "Retained KL sheet reopened; no current remote freshness claim."
+}

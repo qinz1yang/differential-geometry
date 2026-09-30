@@ -1,0 +1,8 @@
+'FixedProfileRegression.corrected_inverse_affine_endpoints' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FixedProfileRegression.fixed_joint_block_depends_on_actual_edge_sum' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FixedProfileRegression.low_height_eliminates_nonsmooth_auxiliary_argument' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FixedProfileRegression.fixed_network_bounds_for_every_scale' depends on axioms: [propext, Classical.choice, Quot.sound]

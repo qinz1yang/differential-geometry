@@ -1,0 +1,1133 @@
+[
+  {
+    "path": "DifferentialGeometry/Analysis/Order/CommonProfile.lean",
+    "original_sha256": "44b7f48267f1f74e5403d5d2a11afac701221899bed35334c0bfad11673d10e1",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/Kurosh.lean",
+    "original_sha256": "cc8ed0703d37051afe28fffa916366ac0d75e147162834d0a527ee2dca6bdc2a",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshActive.lean",
+    "original_sha256": "9ca1942e012c7bea0721233737ed13f90ca8dc4491665d0dea48f4b4943352ea",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean",
+    "original_sha256": "59fe14b001c7499f7d4e78571f2ff64fd2a55ee3a28b93f6c04540de6dea5b8e",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverAction.lean",
+    "original_sha256": "b3c1c30ca328e89800dfd67a9fac3d03ad9716ffb893c9bc2da7c800092d01f3",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverConnected.lean",
+    "original_sha256": "e738cb83fd3c26ab1342c55f93d765e619e336231dd643bb63ebeba4dca3e41b",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLift.lean",
+    "original_sha256": "8dbd6874fc97d1725aa777fbf45050cfd763a5153dd294de505fb62925d78896",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLocal.lean",
+    "original_sha256": "9a8d98c455d588bb50862b1ebc0c38e9c400b6f860711336644fafdcbd8cb0f4",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverStar.lean",
+    "original_sha256": "95b8bae2cf0a530a39f0721c9ee8ed6ee556d73961d592dc492acde18723a7bd",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshFreeCorollary.lean",
+    "original_sha256": "d00e324ba10e1281c7d707f5d30cb701410271c67e8399824ebeeecb8a2f746d",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshFreeFiber.lean",
+    "original_sha256": "824db3d9a1d79ad852ac69da0298fe06466afdea23191729db37153357dd2c92",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshFreePart.lean",
+    "original_sha256": "35fa2ff9c9598842a1f65c16b7c9c95391e93ae01fc1a3be5419681365b532f4",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshKernel.lean",
+    "original_sha256": "0649b08b26b02dc38c7321ca6b69c9ff438e9b09415d42277379674089c0aca4",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshPathEndpoint.lean",
+    "original_sha256": "f88716d06ab6a7e44e9d6e64d871e7cf41e8f74513a5c6e4534ea1d81f954372",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshPathInjective.lean",
+    "original_sha256": "2d145fae71556691e70db98aa7ba46cd4f787ba449c5bbaa247d60bab3ac7732",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshPathRelation.lean",
+    "original_sha256": "1ed4a7499bb061c2184f897f9d4b0c2a803b42d9a0a2a8a43f0810756eb25e69",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshPathRelationInvariant.lean",
+    "original_sha256": "14ab37f2d84fe298002528048a37e4b6068c20c0cf823d8b845a4e8c50f9335b",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshRawPathValue.lean",
+    "original_sha256": "6d35589896363d4c41de430cc7c39f0021e26585beeeebdfbaa7a494d44b1657",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshTheorem.lean",
+    "original_sha256": "fd38e58e494e4500d93131dfca1dfdf0dcbde774ec6e74db261c59f030ecc6c4",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshTree.lean",
+    "original_sha256": "25c739101df0c949d514be7757eb831cdaf7787f8da3d5d6ed8b500622c191d2",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/Grushko.lean",
+    "original_sha256": "c49218f96d5d4c7e2fb44c8fcff0451d0ec0aff887879bae80aa79391caff3c9",
+    "set_options": [
+      "set_option autoImplicit true"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoEdge.lean",
+    "original_sha256": "2b6699bdab00117791ae1301f9017246ffbfb91975ca8b0d7caeb970d8d35412",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoFold.lean",
+    "original_sha256": "79851a39fc88d001bd0eafcfc40d15950b37429a2d1bb759fe2fa1815b320b99",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoFoldStep.lean",
+    "original_sha256": "8ed66245855f667445e9f646479d33891ed9a4ed9cf02dcb7c71a0c50d4fd764",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoFull.lean",
+    "original_sha256": "ae7d2a4a2269b49b8e45555bfa0d3da1337004045e7b159c0589a8bbc52ce5cb",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false",
+      "set_option maxHeartbeats 1000000"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoGeneral.lean",
+    "original_sha256": "4efa936723ee2c6afda05be17c0004c203bfd09f379ed02951b13c54d4afdf08",
+    "set_options": [
+      "set_option autoImplicit true"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoGraph.lean",
+    "original_sha256": "d7f8717acd5336d6b4728a051aa9777f86882d20e3b261d53ef201b09033b808",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoInvariant.lean",
+    "original_sha256": "ad8a7ca938b3f21033729c2fa570ea8265cce33b142ace12c11d038ad796c398",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoReduction.lean",
+    "original_sha256": "97e321b9376f3b43e8cb03a1167329e032fc38a78b20a9020b4d90bf77e3326b",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoReductionChain.lean",
+    "original_sha256": "1566c596cb8829cdc61e28234572085c71aaaaddf9c242631a753a51756e32e8",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false",
+      "set_option maxHeartbeats 1000000"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRemove.lean",
+    "original_sha256": "69ba43a5e02c0e8f63aa964de322b9146b835674c8b0871b38e6d23319fe528e",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoRose.lean",
+    "original_sha256": "9891b09abe7a9e88aef3917e65532b83e21192684f2f5e7561caec0ce361c12c",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnfold.lean",
+    "original_sha256": "9836205a8f986535aefdf1376316c78389b335c46d3da5dcdb0ceda4794d28f2",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GrushkoNeumannTheorem/MarshallHall/GrushkoUnsafe.lean",
+    "original_sha256": "5d5a8597ea369ebb7b6891f855b0617bc0331681ed22f18d24ea68ba8ad3de9d",
+    "set_options": [
+      "set_option autoImplicit true",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/ComponentVolumeBridge.lean",
+    "original_sha256": "30e2c89dfc230bea39bd29393e0e4798e16c588ee9600eef9e460d96567af674",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/KappaLoss.lean",
+    "original_sha256": "80dd0989e8b423c4bfc1bde5e3b0faea09ecd76c0ab80e4fb0edf8bfdeb8c5b5",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/KappaModelVolume.lean",
+    "original_sha256": "40eea2c9d0f6ad2ce7535c125de6bbaa541702f13269c51a0d6cd1bbca01975c",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/ModelBallVolume.lean",
+    "original_sha256": "2be1993357467bfa548dabc01e20ec47a0ca8e82ae441e6f1b29a57b10f5abbb",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/ReservedCanonical.lean",
+    "original_sha256": "7d62619292ae6bf3dac6176799da5ef66febd59b4a591962e925f9bc7fe93301",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/RoundCoverVolume.lean",
+    "original_sha256": "e20fa3a76d1bc5ce25053ea3cb734d45b3280e97286de61f3ce4b86406132bd4",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/RoundImageVolume.lean",
+    "original_sha256": "2a3a57c3a6d9f239771f3033dc6b83bd299693e6d8e3014bc897f8d1c2416229",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/RoundReservedWitness.lean",
+    "original_sha256": "f97b0928179e4d7283af3b857e9a4e0cb979895f66783e0bff17bdef34c821c4",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/SpatialRoundFiniteDegree.lean",
+    "original_sha256": "392dc535532adcbf08fc43a24fd913063fb54f5f3741bd688f931fca559cbbae",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/WindowedVolume.lean",
+    "original_sha256": "7dd1f1006ff003c6bacfb9096c4f39436bf392c89e3fb312818a1f948737dbaa",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/AxiomAudit.lean",
+    "original_sha256": "0bacca48ce015056664f6f404cf5302e9d94229ace814587e1d1cd0989f50e4e",
+    "set_options": [
+      "set_option maxHeartbeats 16000000",
+      "set_option maxRecDepth 100000"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/CertificateExamples.lean",
+    "original_sha256": "329cd3c9958f16aae671aedfa3dba97055e65ce8e71896e8ef2d4491ee2c6436",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ConnectedSumExamples.lean",
+    "original_sha256": "4247f085981c2e04a9a99b09759982ed41d3725c339147bca1896938d3c453a4",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/MetricAndSeamExamples.lean",
+    "original_sha256": "823c83d70a326b3157e992062a3d5b20757f1cb2d622da94fb51c40116b0793a",
+    "set_options": []
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/ObservedHistoryExamples.lean",
+    "original_sha256": "6a93b1c0f672d0f35c22278cf2ea9d1e537ab5dc1ec8a66f437aac0e3a93b692",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/RawSurgeryExamples.lean",
+    "original_sha256": "4f1f6106a2c98dbf59e471617a20d66fab25262ef09e8654adf033054ba105ea",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/SmoothHistoryExamples.lean",
+    "original_sha256": "c890720ba9fecf3bc451b7ff251ca4f75bb8a4e5b0a69118055b921e87c8ac3d",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/Checks/StandardFactorExamples.lean",
+    "original_sha256": "fb0dbe40be0fdedd9928a108a0bf0bc852ae14680e25da213be18453c57856e3",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ClassifiedHistory.lean",
+    "original_sha256": "eabcdffbb9e078fe6807e9c3c761b3571c0d16dac2d5d8df6fe635880c72aaf4",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/ObservedHistory.lean",
+    "original_sha256": "37912eaedb3148b45ebcaddc2a28d766d7d81598b1bd0028a8d66529c2b74e29",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/OrientedReconstruction.lean",
+    "original_sha256": "37777b1621fa3531a7e38fff8227c79967fb7ae7af6431cfc160603b56a39215",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/RawHistory.lean",
+    "original_sha256": "280f005cbb2a286f6a7511ec73a6b5efeeed673c8ddca432d0a954a6bb2027d5",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Geometrization/SmoothReconstruction.lean",
+    "original_sha256": "9a01c898819d127d8dae9433fa2695ffce10e3996aecbc1a1e968a57e528515d",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/ActualEventGeometry.lean",
+    "original_sha256": "88c3574481339ca751e6960f7a207b018539fcfc61ad07523cc8341c2ea11687",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/CoherentSurgeryTower.lean",
+    "original_sha256": "6de4dcec715984a176aa62ef232ec917f2686021bc85d6ab6e7635290d8435b4",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/CoherentTowerConsequences.lean",
+    "original_sha256": "443e65a0fefbcf588358072810a7c72614f59cfe1e36ddd9ea6014b96e193068",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/ConcatenationHorizon.lean",
+    "original_sha256": "75df8ba428e0ae2db83eaca0c789e96d48b29488bd9859d510fb7b0ab62e1215",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/EventTimeTranslation.lean",
+    "original_sha256": "efbc3a02af5e343f9df1416281cb5531238c4420ae39e3e258dc6b81e88a43a3",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/FiniteConcatenation.lean",
+    "original_sha256": "4bf0a015a0fefeccd6e5b3342b6b7ca0191a8dbc943bd79d7023728d3708816f",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/GeneralPrefixExtension.lean",
+    "original_sha256": "668b983b1c0ef1faddf11c43a823d9bb1f3bf801c1dc03a41260f8a7f566b8df",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/LateOrEmpty.lean",
+    "original_sha256": "ffbc3431c37a64ea0177c3af9252a81856ade618a3db171d2c7b2778fe405fc5",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/MarkedContinuation.lean",
+    "original_sha256": "f745a482126c919c7a5f9f5634fdc22044357774bd2af512ee1b63e4eccdaf3d",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/RawSurgery.lean",
+    "original_sha256": "9f5586d4865e8badd538b4767fa847ec9f23beca4c883fdf3e023a7dd5a63b75",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/SlabCompatibility.lean",
+    "original_sha256": "2c3bd309d1e9d3c22ac12e3e3bbe46348921d5f04c431b7b33fe487e2354e670",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/SurgeryEventControl.lean",
+    "original_sha256": "cb8831f347a8fa7651f2aed9fa473bc751833fe3b034d1a7dc5e8310537eddce",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/TerminalTimeTranslation.lean",
+    "original_sha256": "80ef0f74e55a3e8e26a11a0e0ee8f6cbfb8e23e706006ab1f1f41147ac7d4811",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/TowerFinitePrefixes.lean",
+    "original_sha256": "78f6fb618e3b1eef5b23fba713ee88b4f9f10a0fa8360fd4712c293553d80491",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/CompletedHistoryDegree.lean",
+    "original_sha256": "b113c77a5230c19557de2e0081b67f0cfcbd964f00e2a303f41d62f251d0a8c8",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/CutoffProfiles.lean",
+    "original_sha256": "6c4c16aef4cf45d91b2ee6272b70f658b817c6e93dd9329599759b839591d922",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/DegreeBoundCanonical.lean",
+    "original_sha256": "712d4ff9a29f033b89c170b002605350aae9b89b7c6ecac4999e675eace5039f",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/DegreeGeometricHorizon.lean",
+    "original_sha256": "08314a9ebe8e98ace2ca6e3eb536bf746db91f5f9750d2e5297a0c8cb243b813",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/FiniteGeometricHorizon.lean",
+    "original_sha256": "95e31728c49fcfb4babad9851c7ab3fc82a0b7ca3c3f4bb6d50d20aa13dc527d",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/FiniteInitialDegree.lean",
+    "original_sha256": "88b33ca4b32d38a453e454660a9388fe7fd5aeea3d8e3e9b6bacfcac7104d25a",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeneralCanonicalFromSmallScale.lean",
+    "original_sha256": "1ebd3805b25c79fc49df65ccb7671b9afa9a51a8eddddddf34178c28ed7af97a",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeneralCanonicalProduction.lean",
+    "original_sha256": "d0def05dc65fe27d7aa18c9fb99267da95dfd7b729a0285f4bd69b572f6fdd16",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeneralInitialBound.lean",
+    "original_sha256": "4c2fc59705b792011b542c9fb6a9fb1d04496f4b0036ccf2010bc118bcbb3f2c",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeometricHorizons.lean",
+    "original_sha256": "7f3b470a369d14ec2155002481a52589542f6f6c52ba416a1465ff9f3c4cbfc5",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/HistoryDegreeBound.lean",
+    "original_sha256": "cff3715b27882f0c428cacda572957353de54bc3e6066a54b978f840f117cc2c",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/HistoryFreeFactors.lean",
+    "original_sha256": "fa4f1d9681f45af5c18eb4d433ee49ada39cd3045f6eb04ce0e320af30bc9ee0",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/InitialDecomposition.lean",
+    "original_sha256": "9c859d155fd640b0dfe114f1d567b9e10ffb7c4554e353e4e34ca3aba3a2d12e",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/JointCutoffProfiles.lean",
+    "original_sha256": "f253bf015c0f60e05a321c77d65db48d8308f4142b3526ca3243ce9ad9b39ca0",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/ProfileQuantifiers.lean",
+    "original_sha256": "75889525a2797daa1e30c47f9029d7750afe2a9947fc1da1f46388b6acbfa2c3",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/ReserveContinuation.lean",
+    "original_sha256": "d786d184cc43ec304f14b09d8ba6a906322c9429e9041501d425cfb163f14b92",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/SmallScaleFromDegree.lean",
+    "original_sha256": "f44ae0dbad45f3e60c6f11a6c837c8426066770e67d5c06cbd6bd1258fb93da4",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/SmallScaleGeometricHorizon.lean",
+    "original_sha256": "3ec2db82d58d0171622de78d8a5ddd2e0e01523520d3e087457179122ac9ea3e",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/ChildCapGroups.lean",
+    "original_sha256": "a9195aae3667d70ff5ff0b2d377b181582dea8e056d661bd6f18d16ea909536a",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/CutCapFreeFactor.lean",
+    "original_sha256": "ac0fc07a7f5e85db8af0b107210720ed0bc379c2bae852ffe543feb2b6ac2cbc",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/CutCapReconstruction.lean",
+    "original_sha256": "8f19e3c24e987a34e810cbc021096e633c8883042f0746aecce6b9d78aa73a57",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/DiscardedComponentGeometry.lean",
+    "original_sha256": "95471e8437be59a13da7f508a901d4698c713006477dc7269068750b1a54b6dc",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/InitialFundamentalGroup.lean",
+    "original_sha256": "d5ba35bddba12ce178600e4717f74a4b9898f85f97fb7e79bef8c79df8739b78",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/MarkedDiscardedGeometry.lean",
+    "original_sha256": "1aea8daac5834050859d2ac4660b33630486355ddb24e427efa74858f3d18e4e",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/MarkedReconstruction.lean",
+    "original_sha256": "eafe433b92c23cd6971db445e9d4be3f7bed8c9623792148e75d5246d71a8446",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/ReconstructionSlots.lean",
+    "original_sha256": "ff04dedaf718349c0a20455483e2689cb9bd8f5d1dca371d5de74797fc51d65b",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/RetainedDiscardedLabels.lean",
+    "original_sha256": "1679d212470bafdc908e74f3477233f2e10c7e582237b6924a4caf1210a8c03a",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/TubeFreeFactors.lean",
+    "original_sha256": "0aae997d92585c9527f6a93f501364d16109ac6735b18bbefcdb3e0cf31d27be",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/PointedBallApproximation.lean",
+    "original_sha256": "c80d9e691fa0e0040f3802e67e064435780d049d97b7cdb2d056fe18d1d2a530",
+    "set_options": []
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Approximation/RealBallExamples.lean",
+    "original_sha256": "6b9cc696b5e7e9250dbfa351bd492b7ac59bca55c83afbc024537f34c058785d",
+    "set_options": []
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Scaling/EuclideanBalls.lean",
+    "original_sha256": "96fe9d10fcb01f59d748fd42ccaf436a9bc2ada09bff7ae2c03f665e85f66fe1",
+    "set_options": []
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Scaling/RiemannianBalls.lean",
+    "original_sha256": "dec3cdc3fc9a8acb334e0556d06d4763da0f610dd684f131b4dc1c0d21c38ddd",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Sphere/Quotient/AntipodalQuotient.lean",
+    "original_sha256": "23a4dceb124ce013e113c8b353b680a3bcb6b0620eae4168166538cef7ec897d",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Sphere/Quotient/SphericalMetric.lean",
+    "original_sha256": "85b1941b4a3173884fefb0a0ae02433d11ff5638ea0efc0ea58a30862ef535cf",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/Atlas.lean",
+    "original_sha256": "ab95636d07fc8cccb375727da5d2f848ba3397f9ada092bf78d12864ab1bfd31",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/ElementaryModels.lean",
+    "original_sha256": "87d0b13b6ded3562b6fe4e8f8baf342a293ffadee890e5de9b28814cbd369520",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/ModelAtlas.lean",
+    "original_sha256": "ca7a8487a5a8a23ae144a2e7a14a7cbcb00a8a92f6e7cdb997b841a0e68e9fdf",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/Models.lean",
+    "original_sha256": "818bb27ee1cea825a47269e64f517e8063f289696fda6fb3b3a2e8432eb1ffff",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/Models/CoordinateHomogeneity.lean",
+    "original_sha256": "3dffaeda870f452ed1913f3a0fedccd552620aa3a476cf06c29085e571dac877",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/Models/CoordinateMetrics.lean",
+    "original_sha256": "94365bd3bd984bb2ac05279f766a5a362fa82d29df07a7cd88850eee96d3d3d7",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false in"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/Models/HomogeneousCompleteness.lean",
+    "original_sha256": "e6f4f3bff0f5b2fda954548c43d09519ccb7f4eabf4acf74e7e64dd2ed78033a",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/NonemptyGeometricPresentation.lean",
+    "original_sha256": "d9c0ccf8cbe855b07c21d16f26cfbc1ceb84c8e7570e1d7fb5853ee623cac6ad",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/SphericalProductPiece.lean",
+    "original_sha256": "993f23b7194582c58e941d5a340d3ce9ab8ee8818b9aa5ca5b81b7e313e1158c",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/StandardFactorGeometry.lean",
+    "original_sha256": "a7155a217eee845d7cccba3c674bcd301a42cfc5835437c2616028d7dd39945c",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/Transport.lean",
+    "original_sha256": "4d3420c1ff643a9b68843928afcb5ef4949fb0712e0d6d5fee3667530cde0f38",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/Commutative.lean",
+    "original_sha256": "a6670408d5aa84063ccdcbecbbcdd973de320c209794118e313bbc5a8f6f6d74",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteCoprodSupport.lean",
+    "original_sha256": "2d464f6a55aaf65756961a1a2c98040f8c1014d4aa9b2e234e0bcd88f3d0d0f4",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteFreeFactors.lean",
+    "original_sha256": "fa518bb1997a31ef278bf8ad60d482f699dc72630447b47078f5feb8f9e1072b",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteIndecomposable.lean",
+    "original_sha256": "faef3452a5a84accb6f0461d3ac5fbc220e39e1471111b984f4ef29fd8089814",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteKurosh.lean",
+    "original_sha256": "ac31111c3dda86af199d18c29d4c834c0694323c905c97267d702690e0202894",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FiniteProductPresentation.lean",
+    "original_sha256": "12c38093f93f56c979eed6eed6a2d07b5e7a765d0de3a7a57d031a7fa519a845",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FixedFactorComparison.lean",
+    "original_sha256": "f2941ba136ec7503f5fe675de27b59e5f9281d0f9cd333e3ddcf06edec03c2d2",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/FreeFactor.lean",
+    "original_sha256": "a3daefbc2217903841a1fc426a6eb5f0ce9c03e886ddc83f0dae75962c51ac59",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/InheritedFreeFactor.lean",
+    "original_sha256": "540789094d3d51e36d5cc10b1de4f4f49f403b68f9e74533bd5ca20b8a60095e",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/KuroshFreeFactors.lean",
+    "original_sha256": "025acdae3846df21662db9bccdb5c48ad7cc88c8281969be27aaf5f8a2b5d344",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/Algebra/Group/FreeProduct/LargeFreeFactor.lean",
+    "original_sha256": "d102ad7e8c32b66ee140e0d1755323ca69180178801366e5ec1fcd86af51b418",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/CompactFundamentalGroup.lean",
+    "original_sha256": "d8cf784c06d2e09e03c4b7e5e33918ef72f757f0ae4219e9195b4561691f4d30",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/CoverConnectors.lean",
+    "original_sha256": "03d176e91703a37bacf21d07bada350749d11e0377d2a7134f0a509413cc8af6",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/CoverSubdivision.lean",
+    "original_sha256": "1e0f317ca7dccab737a30b6fa0ee6fab00e557a83a086739b9c96cf25d55ecb0",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/FiniteCoverGroups.lean",
+    "original_sha256": "706a9c8615d56d2dea8ed405dcd29a05a26e310ed58473cd2ae9124565fa1bd9",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/FundamentalGroup/FiniteGeneration/FiniteLocalCover.lean",
+    "original_sha256": "58d6b45076ea762e4a0413040029e7783ed93d426f4da3603b575baac139271a",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/FundamentalGroup/MarkedFundamentalGroup.lean",
+    "original_sha256": "2a9e4f1d543de95f7acb3c7f386e72156d5f36b5f0bf0224119fb1846c1c6b20",
+    "set_options": []
+  },
+  {
+    "path": "DifferentialGeometry/Topology/FundamentalGroup/SigmaFundamentalGroup.lean",
+    "original_sha256": "d20a522fc5d5a99c555c195b097d49a78f18551e86fc12dd727f272d119ed599",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/ConnectedSum/OrientedPresentation.lean",
+    "original_sha256": "cfb7e74f6ea4b88062743fbebf72ad0e3e4f29c6725bfc3cfa7e53c0b525bc82",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Carrier.lean",
+    "original_sha256": "8232b242792364a3c07fb9832f32a57a8be3c98790d504771df85d8b3dae12fa",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/FiniteConnectedSum.lean",
+    "original_sha256": "d0a3c2d47b1773316b8c2a497bcc2fe276d799583c312a1943078d738fc1dbdf",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/NoCuts.lean",
+    "original_sha256": "172761b26352b3817c492f6a5b66610ce28ceb7403e68bf0a4e2c28888d0f246",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/OrientationTransport.lean",
+    "original_sha256": "991820a25abc9856a9122cf8918565e577e01d80d3d38488784b067af6d6176b",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false in"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Prime.lean",
+    "original_sha256": "4762f97213aad1aafc178c5760dd8918a140126aeeab7b061322474adb3cc04a",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SmoothTorusReconstruction.lean",
+    "original_sha256": "4d75cbf7682da2723434a9661d8f269c071e99ee35b3b5186b1f362a175d94c3",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SphereExample.lean",
+    "original_sha256": "1e3a558d64ae279081ac2b2ee1e3e0b8138b0800739158d699a3c39832e8ed80",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/StandardCertificates.lean",
+    "original_sha256": "456c96639278ccebe28d34a15886d1aad5d1a449ee22703dd5028a062f8d32f3",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/StandardPrimes.lean",
+    "original_sha256": "d8c9842614dc894a878196ac8bbb887b8647412939c9759868d6ef34db0d3f48",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Statement.lean",
+    "original_sha256": "7ffb585a1ea09a93fd1bf5b760cf3e448d272350ad2ac970ceb1bcbb369a482c",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/TorusGluing.lean",
+    "original_sha256": "534611e35aec716d57509a2f1c9b15e8f750c512171cf9395b067553b55e257e",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/MarkedSeams.lean",
+    "original_sha256": "1f04f8f311b99d8ed39c31f98051f984ff98d67cf9697f55648d1b0363ec114e",
+    "set_options": []
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/SeamExamples.lean",
+    "original_sha256": "d79757cc0d6fbfcb770b72ca16842c2b7ffad6d6920608be740a55a089f161ee",
+    "set_options": []
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/TorusCut/TorusCylinder.lean",
+    "original_sha256": "161384a73f8016066ebdd48d383e0b20255257a16cf26b5b4cd2ad09dcf310f5",
+    "set_options": []
+  },
+  {
+    "path": "DifferentialGeometry/Topology/VanKampen/FreeFactors/CollarFreeFactor.lean",
+    "original_sha256": "757bc982131d213b7ec3dd4566417f417a0b4fb82bda69f0c6db9a54eb0d4a9f",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/VanKampen/FreeFactors/FiniteCollarFreeFactors.lean",
+    "original_sha256": "ed8b3f53ccbac367836f690b363b3cdcf276dcf104978d508af8c0fb0952d436",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/VanKampen/FreeFactors/OpenCoverFreeFactors.lean",
+    "original_sha256": "1cb376731a6c988b160920aa56672b2617af99d5ea7665c622acdb4d7c24472d",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/VanKampen/FreeFactors/SeparatedCollarGroups.lean",
+    "original_sha256": "54bfd4c48fc2475c358d9f7c68822dd5ee5ec322b2415e0f31866d9c5cfbb2dc",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/VanKampen/FreeFactors/StarCoverGroups.lean",
+    "original_sha256": "a3c4843ee3b35f2c83061ed9bbab6f1d95724e48a93e5a465bf8a82ebde3b4ee",
+    "set_options": [
+      "set_option autoImplicit false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/VanKampen/FreeFactors/ThinOverlapGroups.lean",
+    "original_sha256": "97ccf3b0155ac41de6770905ab0e86010c60d77bc5cfc6201e5b2f49a126c460",
+    "set_options": [
+      "set_option autoImplicit false",
+      "set_option backward.isDefEq.respectTransparency false"
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/Checks/DeclarationAudit.lean",
+    "original_sha256": "a8b17b73f06ff5f834de7a9ccc6b3e0015db76bc79c32dc291cfe8fa6bb7a8b9",
+    "set_options": [
+      "set_option maxHeartbeats 16000000",
+      "set_option maxRecDepth 100000",
+      "set_option pp.maxSteps 50000",
+      "set_option pp.universes true"
+    ]
+  }
+]

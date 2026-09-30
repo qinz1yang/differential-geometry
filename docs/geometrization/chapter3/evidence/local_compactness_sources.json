@@ -1,0 +1,31 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC32 3681\u20133720; AC33 full proof3730\u20133768; compactness consumer3769\u20133779"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/BuragoBuragoIvanovBook.pdf",
+      "sha256": "4efaa168dcc83e7e9f5663d14824f9543104beab21642ca3830a5dd1c684c971",
+      "locator": "AMS2001; Corollary10.8.20 full body printed388\u2013389/PDF403\u2013404, including finite-set almost-shortest-path qualification"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/BuragoGromovPerelman1992.pdf",
+      "sha256": "c4c665d7e0bfb9d515e9b14ab06523fb9fd75edc89165fe3dc8173c47dea57d9",
+      "locator": "English1992; Lemma6.3 printed20/PDF21; Lemma6.4 printed20\u201321/PDF21\u201322, full proofs reread"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/bbi-errata-2024-07-06.pdf",
+      "sha256": "68338c7a8b37b8637efbad8af5f547f6cf789675df020fbc6aa04d4babdde42e",
+      "locator": "retained errata PDF13 reread; no388\u2013389 correction on this page"
+    }
+  ],
+  "reused_source_checks": [
+    "euclidean_packing_sources.json",
+    "packing_transport_sources.json",
+    "paired_compact_patch_sources.json"
+  ],
+  "scope": "Prescribed-point ambient compactness in an explicit common comparison domain; not the intrinsic adapter or full AC33 rough dimension.",
+  "source_translation": "BBI compact-patch finite-set strategy instantiated with proved negative-curvature AC32 radial constant; no geodesics assumed."
+}

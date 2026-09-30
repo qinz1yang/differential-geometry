@@ -1,0 +1,30 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC87 full6521\u20136589; preceding AC81/85/86 dependencies"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/KleinerLottAsterisqueLocalCollapse.pdf",
+      "sha256": "7a860b4dd95b35fe33b06bf040100ec243d72c80528d927f4763391aaf79cb6e",
+      "locator": "Lemma4.20 full printed33\u201334/PDF28\u201329 and preceding4.19"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/chapter13_2026-09-26/KL_corrections.pdf",
+      "sha256": "b5849571508231ce7328ef842eaa0a8a74e34804de7741dab548c406dea11e19",
+      "locator": "retained May15,2015 correction sheet PDF1; no relevant correction listed"
+    }
+  ],
+  "reused_source_checks": [
+    "cone_limits_sources.json",
+    "radial_cones_sources.json",
+    "moving_pointed_limit_sources.json",
+    "uniform_splitting_compatibility_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "scope": "Full AC87, stronger minimal metric source/second model scope, original uniform tolerance and all independent universes retained",
+  "proof_route": "First-model extraction only; second model convergence to SAME marked target by reverse actual-KL stability; exact-limit ULift transfer",
+  "errata": "Retained KL sheet checked/reused; no fresh remote retrieval claim",
+  "independent_agent_proof_review": true
+}

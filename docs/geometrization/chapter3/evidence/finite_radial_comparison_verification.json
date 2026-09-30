@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "new_public_theorems": 8,
+  "new_private_theorems": 5,
+  "new_owned_declarations": 28,
+  "combined_modules": 118,
+  "combined_jobs": 2906,
+  "combined_owned_declarations": 736,
+  "sources": {
+    "DifferentialGeometry/Analysis/Convex/HyperbolicSine.lean": "f4069c1009adf3e83a020285226db215730d76e3fcb102ba751632eb3442276c",
+    "DifferentialGeometry/Geometry/Comparison/HyperbolicSideComparison.lean": "53f802736e3605b13ccd777172307935ee3cc8cdcf8b522fead927aaf1931748",
+    "DifferentialGeometry/Analysis/SpecialFunctions/Trigonometric/RadialModel.lean": "abc1212a999e2f5330a99dc7a4aa213582747a0cc8dfc0ead2d2983b99056373",
+    "DifferentialGeometry/Geometry/Comparison/FiniteRadialComparison.lean": "49ced52b3c2379d353047b449b7093185f50c23b2440d606c365da4b9ab87747"
+  },
+  "logs": {
+    "finite_radial_comparison_review.log": "2370573362263222100bbb35c481e76b82477926ddac4225f084b1ac68b5cd99",
+    "finite_radial_comparison_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758",
+    "finite_radial_comparison_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "review_driver_sha256": "f43e22e6a4fbd9767496116a03739a65d3bbcd5b5207e16662d73c748d293aa5",
+  "git_head_at_check": "e94d6846a8ecd60eeaa6444dde312ee6aaba4815",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

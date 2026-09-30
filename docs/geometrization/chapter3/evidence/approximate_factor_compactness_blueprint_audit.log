@@ -1,0 +1,35 @@
+BLUEPRINT_STATIC_OK
+autoformalization_catalog=501 external_unbound=21 atomic_packets=15 refinements=5 constraint_rows=19 semantic_rejections=27 production_ready=0; not-proof-verification
+chapter16_contracts=24 retained_sections=7 HG=18 LP=12 detailed_nodes=360 typed_stages=34 qualified_new=13; not-formalized
+tex=master207.tex lines=53807 bytes=12285
+labels=1038 citations=32
+references=96 theorems=141
+dependency_nodes=141 external_aliases=21 structural_boundaries=18 declared-graph-only
+manifest=61 hybrid_rows=10
+collapse_source_contracts=171 status=source-compared-only; H1-H4=open; PC_adapter_expansion=paused
+topic_chapters=16 appendices=5 theorem_assignments=141 migrated_blocks=69; environment_pinning=deferred-by-user
+metric_chapter_contracts=24 written-and-source-qualified; formalization=deferred
+bbi_errata=2024-07-06 source-hash-verified; review_groups=10; later-book-proof-review=open
+metric_manual_review=24 contracts; A38-A39=corrected A40=compactness-bridge-written;source-comparison-binding-open A41=clarified; rational_examples=10
+alexandrov_chapter_contracts=87 local-structure-written; AC07=compactness-and-chart-written; AC16=producer-written; AC02=comparison-source-qualified; AC37=comparison-written; AC40=dimension-written; AC41=conditional-assembly; AC43/AC46=source-qualified; AC45=factor-bound-written; AC51=product-limit-written; AC54=written-via-AC66; AC56=independent-closure; AC65=orthogonality-written; AC70=exact-scale-reverse-written; AC76=compatibility-written; AC80=basepoint-transport-written; AC81=moving-point-written; AC84=two-apex-line-written; AC85=cone-closure-written; AC87=overlapping-cones-conditional; local-comparison-and-splitting-source-qualified; not-formalized
+local_collapse_contracts=90 volume-scales-written; LC06=localized-proof-written-via-LC15; LC07-LC09=retained-comparison-volume-bindings; LC18=uniform-three-splitting-exclusion; LC20=eventual-no-three-stratum; LC21=Tits-cone-input; LC23=bounded-cone-scale-written; LC24=smooth-compactness-input-retained; LC25=outward-upper-bound-written; LC27=all-directions-angle-written; LC28=smoothing-input-retained; LC30-LC31=conditional-radial-cutoff; LC32-LC36=sublevel-and-transverse-core-written; LC37=joint-producer-conditional-on-LC56-via-LC58; LC38=conditional-soul-type; LC39-LC43=quantitative-transfer-written; LC44=direction-margin-written; PC-compact-map-consumer=scoped-checked; LC45-LC48=normal-flow-core-and-common-field-transfer-written; LC52-LC55=conditional-model-core-and-fixed-margin-written; LC56-LC58=conditional-joint-assembly-written; LC59-LC61=smooth-open-ball-comparison-and-same-model-type-written; LC62-LC64=metric-ball-selection-and-conditional-small-core-cover-written; LC65-LC66=annular-splitting-and-small-core-cover-written; LC67-LC68=buffered-normalization-and-conditional-stability; LC69-LC73=prescribed-radial-adaptedness-written-conditional; LC71=historical-input-supplied-conditionally-by-LC79; LC74-LC80=end-count-and-zero-export-written; LC81-LC90=local-fibers-boundary-and-application-interfaces; chapter13-blueprint-coverage-complete; producer-gates-open; finite-K-map-category-binding=open; cone-smoothing-qualified; not-formalized
+compatible_fibration_contracts=46 FC01-FC46=coverage-audited; qualified-producers-open; not-formalized; MC/AC/LC/FC=247
+ambient_transport_targets=31 chapter15-coverage-audited; qualified=7(including-optional-AT27); finite-history=conditional-written; not-formalized
+independent_infrastructure=8 metric_targets=9 implementation=not-started; reuse-audit-first
+graph_refinement_targets=10 G01-G09=unproved; G10=adopted-contract-only; A25=specification-closed
+relative_prime_targets=7 R01-R07=unproved; Matveev2007=source-read; Matveev2003=uninspected; inherited_Schoenflies=release-pending
+seifert_filling_targets=6 F01-F06=unproved; bundle_exercise=open; local_count_not_global_termination
+graph_rewrite_targets=5 J01-J05=unproved; A27=source-access-closed; A28=application-open
+endpoint_volume_models=8 complete=all; finite_volume=hyperbolic-required; geometric_tests=unrun
+k0_targets=18 checked_inventory_rows=17 reviewed_audits=1
+k0_modules=7 audited_declarations=35 evidence=stored-standalone-only
+m2a_workflow_gates=7 release_status=pending
+m2a_preparation_candidates=111 convention_specs=11 open_questions=10
+m2a_probe_files=333 consumers=26 PC_probes_run=0 enabled_consumers=0
+m2a_consumer_targets=21 draft_files=20 draft_declarations=35 draft_elaborations=0
+m2a_short_time_route_steps=9 route_status=source-located;release-pending
+PC_REUSE_EVIDENCE_OK {"atomic_views": 15, "current_inventory_rows": 683, "fresh_PC_inspection": false, "frozen_input_files": 31, "new_Lean_invocations": 0, "prior_inventory_rows": 683, "refinement_views": 5, "release_accepted": false, "scope": "stored-evidence-consistency; refinements inherit pending parent coverage; no Lean invocation"}
+pagination=arabic-from-chapter-1; source-checked-only
+tex_literals=code-delimiters-and-math-markers-source-checked-only
+specification_rejection_controls=3319 evidence=stored-hash-checked; mathematical_proof=no
+pdf_pages=823 build_evidence=stored-Tectonic-only; errors=0 overfull=0

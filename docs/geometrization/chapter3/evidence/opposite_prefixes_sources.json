@@ -1,0 +1,36 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC58 full5033-5085, AC59-60 5089-5205"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/BuragoBuragoIvanovBook.pdf",
+      "sha256": "4efaa168dcc83e7e9f5663d14824f9543104beab21642ca3830a5dd1c684c971",
+      "locator": "AMS2001 Proposition2.5.9 full printed46/PDF61; actual arc-length factorization and subpath lengths"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/bbi-errata-2024-07-06.pdf",
+      "sha256": "68338c7a8b37b8637efbad8af5f547f6cf789675df020fbc6aa04d4babdde42e",
+      "locator": "July6,2024 PDF1-3 full, reread; finite-metric qualification retained; no2.5.9 correction listed"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/EMetricSpace/VariationOnFromTo.lean",
+      "sha256": "d3c7af9a617a16e6d8a99fe3ef5b4b9b6b3c4c0a44b5949c30249a9bb5487f9e",
+      "locator": "34-171,351-362: actual signed variation, additivity, equal-variation fibers and continuity"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Topology/EMetricSpace/BoundedVariation.lean",
+      "sha256": "c2af939b40f2210ec534c0a4e26cbe2a459c2abe0129be8e19c620e7abbc268b",
+      "locator": "500-550 monotone composition/inter-Icc identity;986-1023 variation continuity proof"
+    }
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "reused_source_checks": [
+    "noncompact_recognition_sources.json",
+    "calibrated_coordinates_sources.json"
+  ],
+  "scope": "Full finite-metric AC58, actual natural parametrization and original short-curve prefix/calibration production; AC59 line extraction remains.",
+  "errata": "Retained July6,2024 BBI PDF1-3 reread; no current-remote clearance claim."
+}

@@ -1,0 +1,42 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC49-AC51 full4568-4735; all hypotheses and actual-coordinate conclusion retained"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+      "sha256": "6320c2e81caeea51c7a80593bea9723294e20acf2355d9a747685de6ba637b96",
+      "locator": "109-140 strict extraction from per-radius eventual availability"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/ApproximateFactorCompactness.lean",
+      "sha256": "816aec4269118e7580cb6427dba62efcc6a002070f05060024bf814e4af87498",
+      "locator": "full actual factor extraction with specified source target"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/ProductApproximation.lean",
+      "sha256": "aab2f90950add3677a5b4f16fbbb6c7c34f622b48b24f8c37f99453fe89069af",
+      "locator": "full finite product lift and exact first coordinate"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/CommonSourceControl.lean",
+      "sha256": "20c7396b4c051b112d79aba657af90cd5b1db57598df72e09b48ae4fb392f521",
+      "locator": "full finite and uniform actual-map common-source estimates"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_CHAPTER3_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/KleinerLottApproximation.lean",
+      "sha256": "dfc3da99348de87c7640bfb4127b530bfb0e6dddeafa843400518c11dac65615",
+      "locator": "full actual infimum coverage and positive-slack closed-ball conversion"
+    }
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "reused_source_checks": [
+    "approximate_factor_compactness_sources.json",
+    "approximate_product_limit_sources.json",
+    "controlled_isometry_sources.json"
+  ],
+  "scope": "Full metric AC51: actual original left-coordinate uniform control and onto product on the specified target, along one common subsequence.",
+  "errata": "Reuse unchanged KL2014 and retained May2015 corrections; no new external or current-remote claim."
+}

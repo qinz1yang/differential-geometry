@@ -1,0 +1,32 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/master207A.tex",
+      "sha256": "277359ee147d25184d4b38b20a91ee44a394fd6ea316cfc368fab74e06bef79b",
+      "locator": "AC24\u2013AC25 statements and full proofs, lines3260\u20133326; AC26\u2013AC29 full statements/proofs reread for intended consumers"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/reference_checks_revision66.md",
+      "sha256": "2b452e9e8c10bfc2ea1f0375da5ea7d62e80675bd77f69996c6a9f502b3617b1",
+      "locator": "full comparison/review record; unchanged model-cosine and BGP source checks reused"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/BooksPapers/BuragoBuragoIvanovBook.pdf",
+      "sha256": "4efaa168dcc83e7e9f5663d14824f9543104beab21642ca3830a5dd1c684c971",
+      "locator": "AMS2001, printed383\u2013384/PDF398\u2013399 Lemma10.8.14 and proof; printed387\u2013388/PDF402\u2013403 Proposition10.8.17 and Theorem10.8.18 full proofs freshly read"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GEOMETRIZATION_BLUEPRINT/references/bbi-errata-2024-07-06.pdf",
+      "sha256": "68338c7a8b37b8637efbad8af5f547f6cf789675df020fbc6aa04d4babdde42e",
+      "locator": "July6,2024 author sheet, PDF13 reread with book; printed383\u2013384 corrections and printed387 almost-midpoint direction"
+    },
+    {
+      "path": "/Users/bennettchow/Documents/LeanShared/v4.35.0-rc3-c55e6e786f49/packages/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean",
+      "sha256": "81bf2e312b013997ba412329fae6a9bf372092ee29452f29cfa0083078a334ee",
+      "locator": "pinned c55e6e786f49471c72fbddbec5415808896aec1e; lines63\u201387 Jordan sine lower bound, proof inspected"
+    }
+  ],
+  "errata": "Retained author sheet freshly reopened; earlier bounded BGP errata check reused. No fresh latest-edition claim.",
+  "source_roles": "Project exact curvature-minus-one estimates; not wholesale certification of BGP5.6/5.7 or BBI10.8.14. Both-endpoint paired quality is explicit.",
+  "remaining": "AC26 rank increase and AC27 chart assembly; no change to curvature-to-covering or migration boundary"
+}

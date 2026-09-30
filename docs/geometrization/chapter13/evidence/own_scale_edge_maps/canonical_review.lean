@@ -1,0 +1,31 @@
+import Mathlib.Tactic.Linter
+import DifferentialGeometry.Geometry.Metric.Approximation.KleinerLottRescaling
+import DifferentialGeometry.Geometry.Metric.Approximation.RealProductRescaling
+import DifferentialGeometry.Geometry.Metric.Approximation.IntervalTargetRescaling
+
+#check GC.MetricGeometry.KleinerLottApprox.recenterRescale
+#print axioms GC.MetricGeometry.KleinerLottApprox.recenterRescale
+
+#check GC.MetricGeometry.KleinerLottApprox.recenterRescale_apply
+#print axioms GC.MetricGeometry.KleinerLottApprox.recenterRescale_apply
+
+#check IsometryEquiv.realProdRescale
+#print axioms IsometryEquiv.realProdRescale
+
+#check IsometryEquiv.realProdRescale_apply
+#print axioms IsometryEquiv.realProdRescale_apply
+
+#check GC.MetricGeometry.KleinerLottApprox.recenterRescaleRealProduct
+#print axioms GC.MetricGeometry.KleinerLottApprox.recenterRescaleRealProduct
+
+#check GC.MetricGeometry.KleinerLottApprox.recenterRescaleRealProduct_apply
+#print axioms GC.MetricGeometry.KleinerLottApprox.recenterRescaleRealProduct_apply
+
+#check GC.MetricGeometry.KleinerLottApprox.recenterRescaleInterval
+#print axioms GC.MetricGeometry.KleinerLottApprox.recenterRescaleInterval
+
+#check GC.MetricGeometry.KleinerLottApprox.recenterRescaleInterval_apply
+#print axioms GC.MetricGeometry.KleinerLottApprox.recenterRescaleInterval_apply
+
+#check GC.MetricGeometry.KleinerLottApprox.exists_recenterRescaleInterval_strict
+#print axioms GC.MetricGeometry.KleinerLottApprox.exists_recenterRescaleInterval_strict

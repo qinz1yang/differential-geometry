@@ -1,0 +1,67 @@
+{
+  "sources": [
+    {
+      "path": "/Users/bennettchow/Documents/Codex/Geometrization/BooksPapers/KapovitchLebedevaPetruninAlexandrov.pdf",
+      "sha256": "3dc0a166ec88b1c7e50aeebd9924f747ece6fb1957c7b31dcbe17a90a9e61d67",
+      "version": "Archived v1, July14 2026",
+      "locator": "Complete6.18 proof and6.19 statement printed69/PDF71; complete6.19 semisolution printed137-138/PDF139-140.",
+      "review_provenance": "Root and both independent reviewers read the actual source bodies; individual frozen records distinguish readings and compiler evidence."
+    }
+  ],
+  "reused_source_checks": [
+    "common_tangent_dimension_sources.json",
+    "local_integer_dimension_sources.json"
+  ],
+  "mathlib_revision": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "mathlib_locators": [
+    "Topology/MetricSpace/Pseudo/Defs.lean:593-595 Metric.iUnion_closedBall_nat",
+    "Topology/MetricSpace/HausdorffDimension.lean:188-195 dimH_iUnion"
+  ],
+  "scope": "ONE finite integer for the actual GLOBAL source Hausdorff dimension and EVERY nonempty ambient-open set, including disconnected and unbounded sets, under original GLOBAL input hypotheses. Empty source and all natural upper bounds are included.",
+  "source_conventions": "Local comparison parameter1 means curvature lower bound-1. Complete source and global near-short endpoint curves are retained. Nonempty-open qualification is explicit; the archived displayed exercise omits it, but it is necessary with dimH(empty)=0.",
+  "proof_route": "Use original intrinsic8R local-integer results at every positive scale about one original point. A shared nonempty radius1/4 ball identifies all ranks for R>=1; natural closed-ball exhaustion gives the global equality. Intersect arbitrary nonempty open V with a sufficiently large half-ball to prove its lower bound, then use global monotonicity.",
+  "no_new_premises": [
+    "properness",
+    "second countability",
+    "separability",
+    "connectedness",
+    "global four-point comparison domain",
+    "supplied local lower dimension",
+    "common rank",
+    "tangent model",
+    "continuity of chosen radial maps"
+  ],
+  "errata": "Existing source/version and correction qualifications retained. No fresh external errata retrieval or absence-of-errata assertion.",
+  "independent_peer_proof_review": true,
+  "not_claimed": [
+    "linear/topological dimension identity",
+    "compact image for a discontinuous chosen radial map",
+    "globalization from hypotheses on only one controlled local region",
+    "Euclidean tangent production",
+    "completion of Chapters3-4"
+  ],
+  "proof_records": [
+    {
+      "path": "/tmp/gc_GlobalIntegerDimension_record.md",
+      "sha256": "03347f3361f89f23ab0b886a1819815ff5b4c6abf7dbffb2e231d017b6bf81c8"
+    },
+    {
+      "path": "/tmp/gc_GlobalIntegerDimension_independent_review_record.md",
+      "sha256": "5bc54704712fea8bef7af72f513ca6eeb54b61e12ed30c6ceb317c23d9355355"
+    },
+    {
+      "path": "/tmp/gc_GlobalIntegerDimension_source_review.md",
+      "sha256": "350dca4e51e442c3e77e6725d31594e8f02ad1ee155bc52b3b368f35fd108563"
+    }
+  ],
+  "upstream_freezes": [
+    {
+      "path": "/tmp/gc_GlobalIntegerDimension_production_freeze.json",
+      "sha256": "f098510479c6935d59e0b64516f5c71f11f4239781278f6e197a9552786bef90"
+    },
+    {
+      "path": "/tmp/gc_GlobalIntegerDimension_independent_freeze.json",
+      "sha256": "ef863b56bbd91b93f102cca3e309e0203b436851942239fc5e0a945d60250432"
+    }
+  ]
+}

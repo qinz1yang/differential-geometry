@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "new_public_theorems": 5,
+  "new_private_theorems": 0,
+  "new_definitions": 0,
+  "new_owned_declarations": 5,
+  "combined_modules": 219,
+  "combined_jobs": 3053,
+  "combined_owned_declarations": 1125,
+  "sources": {
+    "DifferentialGeometry/Geometry/Comparison/VaryingCurvatureCovering.lean": "44b8891ba3316929d5e2584ca4963d43668390f0e9fc35390415e26491aad947",
+    "DifferentialGeometry/Geometry/Comparison/VaryingLocalGeometry.lean": "d3473b27affeefb0dfb7e7c89d345e50a5c895be2432eb50f5a635186aab56ff"
+  },
+  "logs": {
+    "varying_local_covering_lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "varying_local_covering_review.log": "e2924ac338c60349ac332e7123ccf9e334f5f7e55de64ce131094c7feea475ea",
+    "varying_local_covering_blueprint_audit.log": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
+  },
+  "review_driver_sha256": "0b9bf50c32bb138bbb2e6275621488bb0c5312afdf28e8de705f946416a734ce",
+  "git_head_at_check": "43e55bc68328d5a408db31f63d235422a3c3b50d",
+  "full_migrated_root_built": false,
+  "human_approval": false
+}

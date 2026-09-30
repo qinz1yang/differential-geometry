@@ -1,0 +1,84 @@
+{
+  "success": true,
+  "source_copy_checks": [
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/ConeIsometryDilation.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_ConeIsometryDilation.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "a733538486b8b06cae6e5a0b738e4bb21ce2de9f16ab4b4fb7e8e8529814fe3b"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/TangentLinearDimension.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_TangentLinearDimension.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "a6ee0708cb98e79ab836da4951af8f575ef0293000c4855302cc29301f5795c9"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/LinearDimensionIdentity.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_LinearDimensionIdentity.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "e8c381ee4e9087cb5657584feff18bf37895f81e4f4f8f060134e62b342d068e"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/GreatestTangentRank.lean",
+      "command": [
+        "lake",
+        "env",
+        "lean",
+        "/tmp/gc_lint_GreatestTangentRank.lean"
+      ],
+      "exit_code": 0,
+      "source_copy_sha256": "022d78078e75ea32b0d8100934b7f4a64aff9dbb47734d7a3f96246346581ea5"
+    }
+  ],
+  "review_command": [
+    "lake",
+    "env",
+    "lean",
+    "/tmp/gc_finite_linear_dimension_review.lean"
+  ],
+  "review_exit_code": 0,
+  "git_head_at_check": "61dca720a3fcda0e6ff48a585ff19205417af713",
+  "review_reports": [
+    "Metric.EuclideanCone.dist_dilate_self",
+    "Metric.EuclideanCone.map_dilate_of_isometry",
+    "Metric.EuclideanCone.symm_map_smul_of_isometryEquiv",
+    "Metric.linearDimension",
+    "Metric.linearDimension_le_iff",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.linearDimension_eq_dimH_of_local_comparison_and_dimH",
+    "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_greatest_euclidean_tangent_rank_of_local_comparison_and_dimH",
+    "GCConeIsometryDilationReview.halfline_pointed_embedding_preserves_all_dilations",
+    "GCConeIsometryDilationReview.translated_isometry_needs_tip_preservation",
+    "GCDirectionSpaceReview.actual_real_tangent_isometry_is_a_cone_isomorphism",
+    "GCConeIsometryDilationReview.empty_base_zero_dimensional_pointed_embedding",
+    "GCDirectionSpaceReview.real_linear_dimension_and_both_greatest_ranks",
+    "GCDirectionSpaceReview.singleton_linear_dimension_zero_and_attained_zero_ranks",
+    "GCDirectionSpaceReview.actual_real_rank_bound_iff_has_sharp_threshold",
+    "GCPlaneDirectionPackingReview.plane_linear_dimension_and_both_greatest_ranks",
+    "GCDenseEuclideanTangentsReview.empty_linear_dimension_zero_without_attained_rank"
+  ],
+  "review_driver_sha256": "237d51457ea752d82d7cb500e071061a895b4886b48c605a832c6d85d718f938",
+  "production_sources": {
+    "DifferentialGeometry/Geometry/Metric/ConeIsometryDilation.lean": "bdea6588ce9f5b998f3848c2b20bc53c910b4d20fc9353910b6ac41f820b9859",
+    "DifferentialGeometry/Geometry/Metric/TangentLinearDimension.lean": "7e5257975b0c862fdb13b3ace4882a1d37c6e2c32094675cbbab9c11dcfb867b",
+    "DifferentialGeometry/Geometry/Comparison/LinearDimensionIdentity.lean": "847f44450a9b6f05d8217bbb824d83d003d61b6ef1e0137a4bfb6be1940ba346",
+    "DifferentialGeometry/Geometry/Comparison/GreatestTangentRank.lean": "54525c951aebc6dfe98f4bb5bc3576446134a9b4f924020533c5893a56dd1208"
+  },
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "review_log_sha256": "a97883459405b7e6183cc759f7cf2d86dc4a2117b2a7831ec6bf679ae8f178c9"
+}
