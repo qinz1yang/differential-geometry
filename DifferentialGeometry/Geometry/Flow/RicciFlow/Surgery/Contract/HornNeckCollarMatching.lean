@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornNeckSupported
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Alignment.SupportedMatching
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.SphereMatching
 
 set_option autoImplicit false

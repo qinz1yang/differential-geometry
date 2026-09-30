@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.CutCapLocalReconstructionReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapSphericalExponentReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapSummandCountInvariance
@@ -52,8 +53,7 @@ theorem sphericalSummandExponentUnique_of_orientedDiffeomorph
         List.replicate n S')).toClosedOrientedManifold
       (finiteConnectedSum (E.canonicalEnumeration C ++
         List.replicate n S)).toClosedOrientedManifold) :=
-    fun n => finiteConnectedSum_congr_of_connectedSumLaws
-      (connectedSumLaws_of_associative connectedSumAssociative_holds)
+    fun n => finiteConnectedSum_congr
       (List.rel_append (List.forall₂_same.mpr fun A _ =>
         ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩)
         (forall₂_replicate_orientedDiffeomorph hSS' n))

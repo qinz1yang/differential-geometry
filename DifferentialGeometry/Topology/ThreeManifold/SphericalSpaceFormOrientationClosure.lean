@@ -1,3 +1,4 @@
+import DifferentialGeometry.Tensor.LinearAlgebra.Orientation
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormGroup
 import DifferentialGeometry.Topology.Manifold.SphereLinearIsometry
 import DifferentialGeometry.Topology.Manifold.Quotient
@@ -12,14 +13,6 @@ open scoped Manifold ContDiff
 namespace DifferentialGeometry.Topology
 
 universe u
-
-private theorem orientation_map_trans {A F G : Type*} [AddCommGroup A] [Module ℝ A]
-    [AddCommGroup F] [Module ℝ F] [AddCommGroup G] [Module ℝ G]
-    (e : A ≃ₗ[ℝ] F) (f : F ≃ₗ[ℝ] G) (o : Orientation ℝ A (Fin 3)) :
-    Orientation.map (Fin 3) (e.trans f) o =
-      Orientation.map (Fin 3) f (Orientation.map (Fin 3) e o) := by
-  induction o using Module.Ray.ind with
-  | h v hv => rfl
 
 private abbrev W4 := EuclideanSpace ℝ (Fin 4)
 private abbrev S3 := Metric.sphere (0 : W4) 1
@@ -307,9 +300,9 @@ theorem conjOrbitDiffeomorph_preservesOrientation_opposite
           (Geometry.sphereDiffeo (n := 3) φ x) :=
     hφ x
   rw [ManifoldOrientation.opposite_orientation, Orientation.map_neg, ← hpos]
-  rw [← orientation_map_trans Lπ L ((sphereOrientation 3 (by decide)).orientation x)]
+  rw [← DifferentialGeometry.orientation_map_trans Lπ L ((sphereOrientation 3 (by decide)).orientation x)]
   rw [hlin]
-  rw [orientation_map_trans Ls Lπ' ((sphereOrientation 3 (by decide)).orientation x)]
+  rw [DifferentialGeometry.orientation_map_trans Ls Lπ' ((sphereOrientation 3 (by decide)).orientation x)]
   rw [hφx, Orientation.map_neg]
   exact (neg_neg _).trans hpos'
 

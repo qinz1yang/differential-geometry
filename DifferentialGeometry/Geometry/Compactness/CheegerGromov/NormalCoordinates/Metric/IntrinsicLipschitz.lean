@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalConjugateRadius
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.LocalJacobi
 import DifferentialGeometry.Geometry.Metric.ConvexChartDistance
 
 section

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.PositiveCurvature
+import DifferentialGeometry.Geometry.Metric.StandardCap.PositiveCurvature
 import DifferentialGeometry.Geometry.Metric.ConeChart.Coordinates
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph

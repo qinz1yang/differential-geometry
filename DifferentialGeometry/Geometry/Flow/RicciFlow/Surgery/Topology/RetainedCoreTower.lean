@@ -333,7 +333,7 @@ theorem exists_coreCompatible_extinct_tower_of_isEmpty (P : OrientedThreeStage.{
       (∀ (b : ℝ) (hb : 0 ≤ b)
         (i : Fin (T.toObservationTower.observe b hb).eventCount),
         ∀ q : ConnectedComponents ((T.toObservationTower.observe b hb).event i).discarded.Carrier,
-          DifferentialGeometry.Topology.isPoincareStandard
+          DifferentialGeometry.Topology.isStandardConnectedSum
             (((T.toObservationTower.observe b hb).event i).discarded.toClosedOrientedManifold
               |>.component q).Carrier) ∧
       towerExtinct T.toObservationTower := by
@@ -365,7 +365,7 @@ theorem hasCoreCompatibleObservationTower_of_retainedCoreTower
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b)
       (i : Fin (T.toObservationTower.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.toObservationTower.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
+        DifferentialGeometry.Topology.isStandardConnectedSum
           (((T.toObservationTower.observe b hb).event i).discarded.toClosedOrientedManifold
             |>.component q).Carrier)
     (hextinct : towerExtinct T.toObservationTower) :
@@ -383,7 +383,7 @@ theorem hasExtinctObservationTower_of_retainedCoreTower
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b)
       (i : Fin (T.toObservationTower.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.toObservationTower.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
+        DifferentialGeometry.Topology.isStandardConnectedSum
           (((T.toObservationTower.observe b hb).event i).discarded.toClosedOrientedManifold
             |>.component q).Carrier)
     (hextinct : towerExtinct T.toObservationTower) :
@@ -402,7 +402,7 @@ theorem exists_poincare_controlled_extinction_of_retainedCoreTower
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b)
       (i : Fin (T.toObservationTower.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.toObservationTower.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
+        DifferentialGeometry.Topology.isStandardConnectedSum
           (((T.toObservationTower.observe b hb).event i).discarded.toClosedOrientedManifold
             |>.component q).Carrier)
     (hextinct : towerExtinct T.toObservationTower) :

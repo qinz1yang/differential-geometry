@@ -13,7 +13,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Min
 import DifferentialGeometry.Geometry.Comparison.Variation.EndpointAccelerationSum
 import DifferentialGeometry.Geometry.Comparison.Variation.Field.PrescribedEndpoints
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.LagrangianRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.ExistenceIcc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Hamilton.TraceIntegralGeodesic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.MinimizerNonnegativitySum
 noncomputable section

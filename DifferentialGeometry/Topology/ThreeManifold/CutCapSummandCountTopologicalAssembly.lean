@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSumAbelianization
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLawInstances
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.CutCapFrontierCanonicalReduction
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
 import DifferentialGeometry.Topology.ThreeManifold.StandardFactors

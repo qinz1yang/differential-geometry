@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.GoodWindows
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.GapComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampAngleWindows
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampAreaEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.RampDeformation.AreaVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.PreparedFamily
 
 

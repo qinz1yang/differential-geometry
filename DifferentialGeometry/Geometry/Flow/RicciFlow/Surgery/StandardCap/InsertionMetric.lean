@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.PointwiseChart
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ConformalChart
+import DifferentialGeometry.Geometry.Metric.StandardCap.ConformalChart
 import DifferentialGeometry.Geometry.Metric.Gluing
 import DifferentialGeometry.Geometry.Metric.Conformal.Basic
 import DifferentialGeometry.Geometry.Metric.Construction.ConvexCombination

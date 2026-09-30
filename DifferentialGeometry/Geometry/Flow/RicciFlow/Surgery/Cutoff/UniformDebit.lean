@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Pinching.ThroughSurgery
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.UniformDebitSurgeryStepOfFineCutNeckSupplyStrong
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.UniformDebit.StrongNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.FineCutNeckSupplyStrongLeaf
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Neck.Cutoff
 

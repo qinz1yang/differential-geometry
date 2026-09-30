@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryNonc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabContinuationDeepInside
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.ForwardTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.BallVolumeComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalCapCollar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Witness.CapCollar
 
 noncomputable section
 

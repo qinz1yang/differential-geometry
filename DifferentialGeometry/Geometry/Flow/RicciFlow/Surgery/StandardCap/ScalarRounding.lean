@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ConformalEstimates
+import DifferentialGeometry.Geometry.Metric.StandardCap.ConformalEstimates
 import DifferentialGeometry.Geometry.Curvature.ConformalScalarImprovement
 import DifferentialGeometry.Geometry.Curvature.ScalarRoundCylinder
 import DifferentialGeometry.Geometry.Operator.Restriction

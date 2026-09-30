@@ -1,1 +1,0 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.OpenTensorJets

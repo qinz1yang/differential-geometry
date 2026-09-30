@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.NormalizedInsertionNaturality
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.NormalizedInsertionScaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.MetricScaling
 
 set_option autoImplicit false
 noncomputable section

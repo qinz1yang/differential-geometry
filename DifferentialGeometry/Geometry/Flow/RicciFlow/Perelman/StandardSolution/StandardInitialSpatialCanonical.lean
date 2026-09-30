@@ -4,15 +4,15 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.EndNeckPerturbation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.GrowingInitialCylinderCharts
 import DifferentialGeometry.Geometry.Neck.SpatialIsometry
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardMetricControl
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardCurvatureControl
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Estimates.Metric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Estimates.InitialCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CompleteCurvatureBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardScalarLower
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardLifetime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Curvature.ScalarLower
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Lifetime.Value
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GoodPointDerivatives
 import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Distance
+import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
 
 open private exists_compactDomain_of_cylinder_slab from
   DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckCapCompactDomains

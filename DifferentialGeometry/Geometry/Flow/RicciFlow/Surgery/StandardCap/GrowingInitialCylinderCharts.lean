@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.EndChart
+import DifferentialGeometry.Geometry.Metric.StandardCap.EndChart
 import DifferentialGeometry.Geometry.Neck.CylinderExhaustion
 import DifferentialGeometry.Geometry.Metric.RoundCylinder
 import DifferentialGeometry.Geometry.Metric.PolarCoordinates

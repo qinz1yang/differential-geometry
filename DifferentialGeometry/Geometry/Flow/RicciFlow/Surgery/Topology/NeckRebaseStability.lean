@@ -18,7 +18,7 @@ import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
 import DifferentialGeometry.Geometry.Metric.PullbackScaling
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StrongNeck
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Necks.Defs
 
 section
 noncomputable section

@@ -119,7 +119,7 @@ theorem incoming_component_integrated_width_of_rampFamilyDeformation (G : P.Inco
     rcases eq_or_lt_of_le ht.1 with rfl | hst
     · simp only [componentFactor, intervalIntegral.integral_same, Real.exp_zero,
         one_mul, mul_zero, sub_zero, le_refl]
-    · apply integrated_comparison_le_endpoints hst
+    · apply DifferentialGeometry.Analysis.ODE.integrated_comparison_le_endpoints hst
         (hrho_cont.mono (fun r hr => ⟨hs.1.trans hr.1, hr.2.trans_lt ht.2⟩))
         (hwidth_cont.mono (fun r hr => ⟨hs.1.trans hr.1, hr.2.trans_lt ht.2⟩))
       intro u hu v hv

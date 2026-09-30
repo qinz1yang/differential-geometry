@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteStaticCapInclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteGluing.Presentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapReparametrization
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BufferedMetricCutCapEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.BufferedMetricCutCapEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricRetainedCore
 
 section

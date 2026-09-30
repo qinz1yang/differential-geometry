@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCurvatureJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.AncientJets
 import DifferentialGeometry.Geometry.Coordinates.TensorComponents
 
 set_option autoImplicit false

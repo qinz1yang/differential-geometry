@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.IntrinsicInjectivityRadius
 import DifferentialGeometry.Geometry.Exponential.IntrinsicBallVolume
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.InitialReducedLength
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.InitialBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ReducedVolumeSetLower
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import Mathlib.Analysis.SpecialFunctions.Pow.Real

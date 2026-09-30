@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.Embedded
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Area.Embedded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ImmersedAreaFrontier
 
 noncomputable section

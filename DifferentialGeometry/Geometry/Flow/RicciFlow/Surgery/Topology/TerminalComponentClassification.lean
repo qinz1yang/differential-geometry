@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCanonicalCoverage
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactCanonicalClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Existence.CompactClassification
 
 noncomputable section
 open Set
@@ -53,7 +53,7 @@ theorem TerminalLimitMetric.exists_component_poincareStandard_threshold
     ∃ L : ℝ, 0 < L ∧ ∀ c : ConnectedComponents P.Carrier,
       (∀ x : G.terminalRegularOpen, ConnectedComponents.mk x.val = c →
         L < metricScalarAt g.metric x) →
-      isPoincareStandard (P.toClosedOrientedManifold.component c).Carrier := by
+      isStandardConnectedSum (P.toClosedOrientedManifold.component c).Carrier := by
   obtain ⟨eta, heta, hclass⟩ := exists_compact_canonical_poincareStandard_tolerance.{u}
   let eps := min eta (1 / 22)
   have heps : 0 < eps := lt_min heta (by norm_num)
@@ -95,7 +95,7 @@ theorem exists_component_poincareStandard_tolerance_of_spatial_neighborhoods :
               (P.componentOpen c)) x)) ⊆ interior K.carrier) →
       (∀ x : G.terminalRegularOpen, ConnectedComponents.mk x.val = c →
         R < metricScalarAt g.metric x) →
-      isPoincareStandard (P.toClosedOrientedManifold.component c).Carrier := by
+      isStandardConnectedSum (P.toClosedOrientedManifold.component c).Carrier := by
   obtain ⟨eta, heta, hclass⟩ := exists_compact_spatial_poincareStandard_tolerance.{u}
   refine ⟨eta, heta, ?_⟩
   intro eps heps P a s G g q0 q R C hq0 hqR hderiv c hspatial hterminal
@@ -123,7 +123,7 @@ theorem exists_component_poincareStandard_tolerance_of_canonical_neighborhoods :
       ∀ c : ConnectedComponents P.Carrier,
         (∀ x : G.terminalRegularOpen, ConnectedComponents.mk x.val = c →
           R < metricScalarAt g.metric x) →
-        isPoincareStandard (P.toClosedOrientedManifold.component c).Carrier := by
+        isStandardConnectedSum (P.toClosedOrientedManifold.component c).Carrier := by
   obtain ⟨eta, heta, hclass⟩ := exists_component_poincareStandard_tolerance_of_spatial_neighborhoods.{u}
   refine ⟨eta, heta, ?_⟩
   intro eps heps P a s G g C1 C2 q R hq hqR hcanonical Ctime hbound c hterminal

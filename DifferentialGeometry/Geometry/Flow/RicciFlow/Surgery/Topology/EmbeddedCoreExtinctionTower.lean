@@ -174,7 +174,7 @@ theorem hasExtinctObservationTower_of_embeddedCoreEvents
     (hcore : hasEmbeddedCoreEvents T)
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
+        DifferentialGeometry.Topology.isStandardConnectedSum
           (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier)
     (hextinct : towerExtinct T) :
     hasExtinctObservationTower M g :=
@@ -190,7 +190,7 @@ def hasEmbeddedCoreObservationTower
     hasEmbeddedCoreEvents T ∧
     (∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
+        DifferentialGeometry.Topology.isStandardConnectedSum
           (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier) ∧
     towerExtinct T
 

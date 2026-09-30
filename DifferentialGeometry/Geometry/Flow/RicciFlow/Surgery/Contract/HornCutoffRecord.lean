@@ -1,12 +1,12 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapWindows
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricModels
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteGluing.Models
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.BaseHornMetricEvent
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapScalarBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.FiniteCap.ScalarBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.TerminalCorePresentationExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteProtectedCoreEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapRecentering
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FinitePresentedStaticCap
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteMetricCutCapCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.FiniteCap.Curvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffGeometryReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreMetricEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingBackwardNeckRestriction
@@ -14,7 +14,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingBac
 import DifferentialGeometry.Geometry.Neck.OrderReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffRemainingFields
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.TerminalCutRetention
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Cutting.RetainedCore
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornMetricEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryMetricEventMetricAlignment
 

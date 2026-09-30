@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardSliceNormalized
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTimeRestriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinker.NormalizedSliceLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Ancient.TimeRestriction
 
 noncomputable section
 

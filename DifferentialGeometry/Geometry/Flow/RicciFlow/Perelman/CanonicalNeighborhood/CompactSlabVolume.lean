@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EarlySlabVolume
+import DifferentialGeometry.Geometry.Comparison.Volume.Family.Compact
 
 
 set_option autoImplicit false

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Comparison.Metric
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import DifferentialGeometry.Geometry.Metric.DistancePullback

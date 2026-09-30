@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ScalarRounding
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CompatibleEnd
+import DifferentialGeometry.Geometry.Metric.StandardCap.CompatibleEnd
 import DifferentialGeometry.Geometry.Curvature.ConformalLeastImprovement
 
 set_option autoImplicit false

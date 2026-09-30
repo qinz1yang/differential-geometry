@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareControl
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PoincareControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCorePresentation
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
 
@@ -41,7 +41,7 @@ theorem poincareStandardDiscarded_of_componentwiseConnectedSumStandardFactor
     (E : MetricCutCapEvent P Q a s)
     (h : E.discarded.toClosedOrientedManifold.componentwiseConnectedSumStandardFactor) :
     E.poincareStandardDiscarded :=
-  fun q => Topology.componentwise_isPoincareStandard_of_componentwiseConnectedSumStandardFactor
+  fun q => Topology.componentwise_isStandardConnectedSum_of_componentwiseConnectedSumStandardFactor
     E.discarded.toClosedOrientedManifold h q
 
 theorem poincareStandardDiscarded_of_componentwiseStandardFactor
@@ -107,7 +107,7 @@ theorem poincareControlled_of_componentwiseConnectedSumStandardFactor
     (h : ∀ i : Fin H.eventCount,
       (H.event i).transition.discarded.componentwiseConnectedSumStandardFactor) :
     H.poincareControlled :=
-  fun i C => DifferentialGeometry.Topology.componentwise_isPoincareStandard_of_componentwiseConnectedSumStandardFactor
+  fun i C => DifferentialGeometry.Topology.componentwise_isStandardConnectedSum_of_componentwiseConnectedSumStandardFactor
     (H.event i).transition.discarded (h i) C
 
 theorem poincareControlled_of_componentwiseStandardFactor (H : FiniteSurgeryHistory.{u})

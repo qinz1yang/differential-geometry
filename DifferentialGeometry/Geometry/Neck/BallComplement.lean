@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BackwardInjectivity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.BallImage
 import DifferentialGeometry.Topology.Manifold.BallComplement
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalConjugateRadius
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.LocalJacobi
 
 set_option autoImplicit false
 noncomputable section

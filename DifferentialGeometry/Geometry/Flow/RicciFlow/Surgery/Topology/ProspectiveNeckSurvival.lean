@@ -10,7 +10,7 @@ import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CylinderBackwardConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ShrinkingCylinder
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Backward
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceLocalChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CompactProductTraceSurvival
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CylindricalResetConvergence

@@ -19,7 +19,7 @@ import DifferentialGeometry.Analysis.Calculus.Derivative.AffineCurveFamilies
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Families
 import DifferentialGeometry.Topology.LoopSpace.SmoothingSuperposition
 import DifferentialGeometry.Topology.LoopSpace.Lipschitz
-import DifferentialGeometry.Analysis.FiniteDimensional.CompactNeighborhood
+import DifferentialGeometry.Topology.MetricSpace.CompactNeighborhood
 import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
 
 noncomputable section
@@ -1272,7 +1272,7 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
     DifferentialGeometry.Geometry.exists_riemannian_lipschitz_of_contMDiff (I := I) (M := Q)
       (F := EuclideanSpace ℝ (Fin N)) g (e.smooth.of_le (by exact_mod_cast le_top))
   obtain ⟨ρ₀, hρ₀, hρ₀K, hρ₀U⟩ :=
-    DifferentialGeometry.Analysis.exists_compact_cthickening_subset
+    IsCompact.exists_compact_cthickening_subset
       (isCompact_range e.smooth.continuous) hU heU
   obtain ⟨Cr, hCr⟩ := exists_compact_source_metric_mfderiv_bound (I := I) (Q := Q)
     (F := EuclideanSpace ℝ (Fin N)) g hU (hr.of_le (by simp)) hρ₀K hρ₀U

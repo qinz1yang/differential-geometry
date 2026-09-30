@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WeakLength
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Metric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ConformalCoordinate
+import DifferentialGeometry.Geometry.Metric.StandardCap.Metric
+import DifferentialGeometry.Geometry.Metric.StandardCap.ConformalCoordinate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Basic

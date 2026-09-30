@@ -3,7 +3,7 @@ import Mathlib.Topology.Order.LeftRight
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.Density
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIveyPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapWindows
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Window.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryParabolicBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowDiscarding
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowCommonFlow
@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.CarrierIntegrability
 import Mathlib.Topology.UniformSpace.OfCompactT2
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardActionComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Closeness.ActionComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowRadius
 

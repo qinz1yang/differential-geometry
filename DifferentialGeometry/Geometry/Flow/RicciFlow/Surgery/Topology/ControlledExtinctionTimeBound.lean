@@ -44,7 +44,7 @@ theorem hasControlledExtinctionWithin_of_observedHistory
       IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞
         (fun x : (H.event i).old => (H.event i).transition.trace.capping.coreInclusion x.1))
     (hctrl : ∀ i : Fin H.eventCount, ∀ c : ConnectedComponents (H.event i).discarded.Carrier,
-      DifferentialGeometry.Topology.isPoincareStandard
+      DifferentialGeometry.Topology.isStandardConnectedSum
         ((H.event i).discarded.toClosedOrientedManifold.component c).Carrier)
     (hempty : IsEmpty (H.stage (Fin.last H.eventCount)).Carrier)
     {B : ℝ} (hB : H.time (Fin.last H.eventCount) ≤ B) :
@@ -76,7 +76,7 @@ theorem hasControlledExtinctionWithin_of_tower_extinctBy
           ((T.observe b hb).event i).transition.trace.capping.coreInclusion x.1))
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
+        DifferentialGeometry.Topology.isStandardConnectedSum
           (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier)
     {B : ℝ} (h : T.ExtinctBy B) :
     HasControlledExtinctionWithin P.toClosedOrientedManifold g B := by
@@ -101,7 +101,7 @@ theorem hasControlledExtinctionWithin_of_tower_extinctAbove
           ((T.observe b hb).event i).transition.trace.capping.coreInclusion x.1))
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
+        DifferentialGeometry.Topology.isStandardConnectedSum
           (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier)
     {B : ℝ} (h : T.ExtinctAbove B) :
     HasControlledExtinctionWithin P.toClosedOrientedManifold g (max 1 (B + 1)) :=
@@ -121,7 +121,7 @@ theorem hasControlledExtinctionWithin_of_tower_uniformRecordsAbove
           ((T.observe b hb).event i).transition.trace.capping.coreInclusion x.1))
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
+        DifferentialGeometry.Topology.isStandardConnectedSum
           (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier)
     {c A : ℝ} (h : T.UniformRecordsAbove c A) :
     HasControlledExtinctionWithin P.toClosedOrientedManifold g

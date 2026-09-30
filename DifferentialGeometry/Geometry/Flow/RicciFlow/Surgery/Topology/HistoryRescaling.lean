@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventRescaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.Rescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
 
 noncomputable section

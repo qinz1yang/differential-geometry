@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.OpenConnection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ComponentFlow
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BackgroundBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.CurveShortening.Background.Bounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ClassWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalClass
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FaceLimit
+import DifferentialGeometry.Analysis.ODE.Comparison.Endpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SurgeryWidthEvolution
 
@@ -215,7 +215,7 @@ theorem incoming_component_integrated_width (G : P.IncomingSlab a b)
     rcases eq_or_lt_of_le ht.1 with rfl | hst
     · simp only [componentFactor, intervalIntegral.integral_same, Real.exp_zero,
         one_mul, mul_zero, sub_zero, le_refl]
-    · apply integrated_comparison_le_endpoints hst
+    · apply DifferentialGeometry.Analysis.ODE.integrated_comparison_le_endpoints hst
         (hrho_cont.mono (fun r hr => ⟨hs.1.trans hr.1, hr.2.trans_lt ht.2⟩))
         (hwidth_cont.mono (fun r hr => ⟨hs.1.trans hr.1, hr.2.trans_lt ht.2⟩))
       intro u hu v hv
@@ -400,7 +400,7 @@ theorem closed_component_smooth_width (G : P.ClosedSlab a b)
           Width.componentWidth P (G.flow.base.metric v) c hSC ≤
         Width.componentWidth P (G.flow.base.metric t) c hSC -
           2 * Real.pi * ∫ r in t..v, componentFactor P G.flow.base c t r := by
-      apply integrated_comparison_le_endpoints hv.1 (hrho.mono hsub) (hw.mono hsub)
+      apply DifferentialGeometry.Analysis.ODE.integrated_comparison_le_endpoints hv.1 (hrho.mono hsub) (hw.mono hsub)
       intro s hs r hr
       exact (hintegrated s ⟨ht.1.trans hs.1.le, hs.2.trans_le hv.2⟩
         r ⟨hr.1.le, hr.2.trans_le hv.2⟩).2.2

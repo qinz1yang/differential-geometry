@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension.Defs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ScalarPositive
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Estimates.ScalarPositivity
 
 set_option autoImplicit false
 noncomputable section

@@ -40,9 +40,9 @@ namespace ClosedOrientedManifold
 
 variable (M : ClosedOrientedManifold.{u} 3) [ConnectedSpace M.Carrier]
 
-theorem isPoincareStandard_of_component (C : ConnectedComponents M.Carrier)
-    (h : isPoincareStandard (M.component C).Carrier) : isPoincareStandard M.Carrier :=
-  isPoincareStandard_of_diffeomorph (componentDiffeomorph M C) h
+theorem isStandardConnectedSum_of_component (C : ConnectedComponents M.Carrier)
+    (h : isStandardConnectedSum (M.component C).Carrier) : isStandardConnectedSum M.Carrier :=
+  isStandardConnectedSum_of_diffeomorph (componentDiffeomorph M C) h
 
 end ClosedOrientedManifold
 

@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Operator.Restriction
 import DifferentialGeometry.Geometry.Operator.HessianComposition
 import DifferentialGeometry.Geometry.Operator.ParallelPotential
 import DifferentialGeometry.Geometry.Operator.Cylinder
-import DifferentialGeometry.Analysis.FiniteDimensional.QuadraticNormBound
+import DifferentialGeometry.Analysis.InnerProductSpace.QuadraticFormBound
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
 import DifferentialGeometry.Geometry.Metric.RoundCylinder
 

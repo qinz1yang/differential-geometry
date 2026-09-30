@@ -73,10 +73,10 @@ theorem componentwiseStandardFactor_iff :
   · intro h C
     exact ⟨D.component C, h C, ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩⟩
 
-theorem componentwiseConnectedSumStandardFactor_iff_isOrientedPoincareStandard :
+theorem componentwiseConnectedSumStandardFactor_iff_isOrientedStandardConnectedSum :
     D.componentwiseConnectedSumStandardFactor ↔
       ∀ C : ConnectedComponents D.Carrier,
-        isOrientedPoincareStandard (D.component C).toClosedOrientedManifold := by
+        isOrientedStandardConnectedSum (D.component C).toClosedOrientedManifold := by
   constructor
   · intro h C
     obtain ⟨L, hL, ⟨e⟩⟩ := h C
@@ -85,12 +85,12 @@ theorem componentwiseConnectedSumStandardFactor_iff_isOrientedPoincareStandard :
     obtain ⟨p⟩ := h C
     exact ⟨p.factors, p.standard, ⟨p.diffeomorph⟩⟩
 
-theorem componentwiseConnectedSumStandardFactor_of_componentwise_isPoincareStandard
+theorem componentwiseConnectedSumStandardFactor_of_componentwise_isStandardConnectedSum
     (hD : ∀ C : ConnectedComponents D.Carrier,
-      isPoincareStandard (D.component C).Carrier) :
+      isStandardConnectedSum (D.component C).Carrier) :
     D.componentwiseConnectedSumStandardFactor :=
-  (D.componentwiseConnectedSumStandardFactor_iff_isOrientedPoincareStandard).mpr fun C =>
-    isOrientedPoincareStandard_of_isPoincareStandard (D.component C) (hD C)
+  (D.componentwiseConnectedSumStandardFactor_iff_isOrientedStandardConnectedSum).mpr fun C =>
+    isOrientedStandardConnectedSum_of_isStandardConnectedSum (D.component C) (hD C)
 
 end ClosedOrientedManifold
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingBackwardScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Incoming.BackwardScalar
 
 set_option autoImplicit false
 noncomputable section

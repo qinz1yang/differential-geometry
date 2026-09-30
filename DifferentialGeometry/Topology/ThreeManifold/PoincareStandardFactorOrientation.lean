@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormOrientationClosure
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleOrientationClosure
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardOriented
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLawInstances
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 
 set_option autoImplicit false
 noncomputable section
@@ -27,9 +27,9 @@ theorem isStandardFactor_opposite (X : ConnectedClosedOrientedManifold.{u} 3)
     exact Diffeomorph.preservesOrientation_trans
       (Diffeomorph.preservesOrientation_opposite hf) hρ
 
-theorem isOrientedPoincareStandard_of_isPoincareStandard
-    (F : ConnectedClosedOrientedManifold.{u} 3) (hF : isPoincareStandard F.Carrier) :
-    isOrientedPoincareStandard F.toClosedOrientedManifold := by
+theorem isOrientedStandardConnectedSum_of_isStandardConnectedSum
+    (F : ConnectedClosedOrientedManifold.{u} 3) (hF : isStandardConnectedSum F.Carrier) :
+    isOrientedStandardConnectedSum F.toClosedOrientedManifold := by
   classical
   obtain ⟨P⟩ := hF
   have hlist : Nonempty (ClosedOrientedManifold.OrientedDiffeomorph

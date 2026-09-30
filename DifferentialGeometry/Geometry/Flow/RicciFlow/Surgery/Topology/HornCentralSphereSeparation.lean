@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckChainAxialArms
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornNeckEssentiality
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornEndpointRadius
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Topology.NeckSeparation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Geometry.SeparatedPoints
 import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizer
 
 set_option autoImplicit false

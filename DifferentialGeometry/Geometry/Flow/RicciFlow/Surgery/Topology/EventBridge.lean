@@ -322,7 +322,7 @@ theorem SphericalCutCapTransition.ofSmoothCutCapTransition_poincareControlled
     {P Q D N : OrientedThreeStage.{u}} (X : SmoothCutCapTransition P Q D N)
     (h : SmoothCutCapCompletion X)
     (hD : ∀ c : ConnectedComponents D.Carrier,
-      DifferentialGeometry.Topology.isPoincareStandard
+      DifferentialGeometry.Topology.isStandardConnectedSum
         (D.toClosedOrientedManifold.component c).Carrier) :
     (SphericalCutCapTransition.ofSmoothCutCapTransition X h).poincareControlled := hD
 

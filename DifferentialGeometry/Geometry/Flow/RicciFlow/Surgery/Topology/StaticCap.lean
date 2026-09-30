@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Geometry.Metric.Cylinder
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Distance
+import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
 import Mathlib.Topology.Constructions
 
 noncomputable section

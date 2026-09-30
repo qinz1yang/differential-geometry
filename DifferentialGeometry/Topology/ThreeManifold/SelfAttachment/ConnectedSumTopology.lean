@@ -30,7 +30,7 @@ theorem nonempty_orientedDiffeomorph_smoothConnectedSum_sphere_right
     e (orientedBallChart standardThreeSphere) boundaryAttachment
   have hsphere : Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
       (connectedSum M standardThreeSphere).toClosedOrientedManifold M.toClosedOrientedManifold) := by
-    obtain ⟨h⟩ := nonempty_orientedDiffeomorph_connectedSum_sphere_right_unit M
+    obtain ⟨h⟩ := connectedSum_sphere_right M
     let eLift : ClosedOrientedManifold.OrientedDiffeomorph standardThreeSphere.toClosedOrientedManifold
         standardThreeSphereLift.{u}.toClosedOrientedManifold :=
       ClosedOrientedManifold.uliftOrientedDiffeomorph standardThreeSphere.toClosedOrientedManifold

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardForwardNeck
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Necks.BackwardRescaling
 
 
 set_option autoImplicit false

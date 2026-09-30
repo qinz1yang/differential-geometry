@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ScalarRescaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.WidthComparison.Rescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRescaling
 
 noncomputable section

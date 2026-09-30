@@ -28,14 +28,13 @@ variable {scalarCurvature gradPotentialNormSq potential : Real -> M -> Real}
 theorem wFunctionalAlong_eq_of_hasFirstVariationAt_zero_on_Icc
     {a b : Real} (hab : a ≤ b)
     (hcont : ContinuousOn
-      (wFunctionalAlong mu n tau scalarCurvature gradPotentialNormSq potential)
+      (DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong mu n tau scalarCurvature gradPotentialNormSq potential)
       (Set.Icc a b))
     (hzero : ∀ s ∈ Set.Ioo a b,
-      WEntropyHasFirstVariationAt mu n tau scalarCurvature gradPotentialNormSq
-        potential s 0) :
+      HasDerivAt (DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong mu n tau scalarCurvature gradPotentialNormSq potential) 0 s) :
     ∀ s ∈ Set.Icc a b,
-      wFunctionalAlong mu n tau scalarCurvature gradPotentialNormSq potential s =
-        wFunctionalAlong mu n tau scalarCurvature gradPotentialNormSq potential a :=
+      DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong mu n tau scalarCurvature gradPotentialNormSq potential s =
+        DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong mu n tau scalarCurvature gradPotentialNormSq potential a :=
   DifferentialGeometry.eq_of_hasDerivAt_zero_on_Icc hab hcont hzero
 
 end Along
@@ -77,14 +76,14 @@ theorem wFunctionalAlong_eq_of_firstVariation_eq_zero_on_Icc
         (gradientFun (I := I) (G.metric r) (f r) x)
         (gradientFun (I := I) (G.metric r) (f r) x)
     (∀ s ∈ Set.Ioo a b,
-      wEntropyFirstVariation
+      DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyFirstVariation
         (volumeMeasureFamily (I := I) (M := M) G)
         n (fun r : Real => r) R q f s = 0) ->
     ∀ s ∈ Set.Icc a b,
-      wFunctionalAlong
+      DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong
           (volumeMeasureFamily (I := I) (M := M) G)
           n (fun r : Real => r) R q f s =
-        wFunctionalAlong
+        DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong
           (volumeMeasureFamily (I := I) (M := M) G)
           n (fun r : Real => r) R q f a := by
   classical
@@ -99,7 +98,7 @@ theorem wFunctionalAlong_eq_of_firstVariation_eq_zero_on_Icc
       (gradientFun (I := I) (G.metric r) (f r) x)
       (gradientFun (I := I) (G.metric r) (f r) x)
   let W : Real -> Real :=
-    wFunctionalAlong (volumeMeasureFamily (I := I) (M := M) G)
+    DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong (volumeMeasureFamily (I := I) (M := M) G)
       n (fun r : Real => r) R q f
   have hderiv (s : Real) (hs : s ∈ Set.Icc a b) : HasDerivAt W _ s :=
     w_rev_square (I := I) S hS T u hu hpos
@@ -138,7 +137,7 @@ theorem wEntropy_soliton_equation_on_Ioo_of_firstVariation_eq_zero
         (gradientFun (I := I) (G.metric r) (f r) x)
         (gradientFun (I := I) (G.metric r) (f r) x)
     (∀ s ∈ Set.Ioo a b,
-      wEntropyFirstVariation
+      DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyFirstVariation
         (volumeMeasureFamily (I := I) (M := M) G)
         n (fun r : Real => r) R q f s = 0) ->
     ∀ s (hs : s ∈ Set.Ioo a b) (x : M),
@@ -194,10 +193,10 @@ theorem wFunctionalAlong_eq_iff_soliton_equation_on_Ioo
         (gradientFun (I := I) (G.metric r) (f r) x)
         (gradientFun (I := I) (G.metric r) (f r) x)
     (∀ s ∈ Set.Icc a b,
-      wFunctionalAlong
+      DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong
           (volumeMeasureFamily (I := I) (M := M) G)
           n (fun r : Real => r) R q f s =
-        wFunctionalAlong
+        DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong
           (volumeMeasureFamily (I := I) (M := M) G)
           n (fun r : Real => r) R q f a) ↔
     ∀ s (hs : s ∈ Set.Ioo a b) (x : M),
@@ -227,7 +226,7 @@ theorem wFunctionalAlong_eq_iff_soliton_equation_on_Ioo
       (gradientFun (I := I) (G.metric r) (f r) x)
       (gradientFun (I := I) (G.metric r) (f r) x)
   let W : Real -> Real :=
-    wFunctionalAlong (volumeMeasureFamily (I := I) (M := M) G)
+    DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong (volumeMeasureFamily (I := I) (M := M) G)
       n (fun r : Real => r) R q f
   constructor
   · intro hconst s hs x
@@ -236,7 +235,7 @@ theorem wFunctionalAlong_eq_iff_soliton_equation_on_Ioo
       exact hconst z (Set.Ioo_subset_Icc_self hz)
     have h0 : HasDerivAt W 0 s :=
       (hasDerivAt_const s (W a)).congr_of_eventuallyEq hloc
-    have hzero : wEntropyFirstVariation
+    have hzero : DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyFirstVariation
         (volumeMeasureFamily (I := I) (M := M) G)
         n (fun r : Real => r) R q f s = 0 := h0.deriv
     exact (wEntropyFirstVariation_eq_zero_iff_soliton_equation (I := I) S hS T

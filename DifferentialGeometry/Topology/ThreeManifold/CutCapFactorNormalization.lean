@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidenceCycleRank
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
 
@@ -67,8 +68,7 @@ theorem componentConnectedSumDecomposition_iff_fixedSphericalModel
       forall₂_replicate_of_forall_mem _
         (fun F hF => nonempty_orientedDiffeomorph_of_isSphereTwoTimesCircleFactor
           (hKfac F hF) hS)
-    have hcongr := finiteConnectedSum_congr_of_connectedSumLaws
-      (connectedSumLaws_of_associative connectedSumAssociative_holds)
+    have hcongr := finiteConnectedSum_congr
       (List.rel_append hLL hKrep)
     obtain ⟨ρ⟩ := hdiff
     obtain ⟨σ⟩ := hcongr

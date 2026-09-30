@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.ScalarLaplacianRicciTerms
+import DifferentialGeometry.Geometry.Curvature.Scalar.EvolutionRate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabStartSliceBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCrossingJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.IntrinsicDerivation

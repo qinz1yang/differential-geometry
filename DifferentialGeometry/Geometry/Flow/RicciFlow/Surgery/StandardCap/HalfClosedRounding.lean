@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.HalfClosedNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CurvatureRounding
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.RoundingJets
+import DifferentialGeometry.Geometry.Metric.StandardCap.RoundingJets
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
 import DifferentialGeometry.Geometry.Metric.RoundCylinder
 

@@ -52,7 +52,7 @@ theorem hasExtinctRetainedCoreHistory_of_isEmpty_output_of_attaching_eq_refl
     (hout : (SphericalTubeSystem.ofSmoothCutCapTransition X)
       |>.outwardNormalFirstIsStandardSphereOrientation)
     (hctrl : ∀ q : ConnectedComponents D.Carrier,
-      DifferentialGeometry.Topology.isPoincareStandard
+      DifferentialGeometry.Topology.isStandardConnectedSum
         (D.toClosedOrientedManifold.component q).Carrier) :
     HasExtinctRetainedCoreHistory M g := by
   obtain ⟨s, hs, G, hL, hmet⟩ :=

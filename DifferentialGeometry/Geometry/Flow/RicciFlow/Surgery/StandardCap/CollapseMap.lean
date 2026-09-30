@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CollapseProfile
+import DifferentialGeometry.Geometry.Metric.StandardCap.CollapseProfile
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InsertionMetric
 import DifferentialGeometry.Geometry.Metric.ChartLipschitz.DistanceComparison
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond

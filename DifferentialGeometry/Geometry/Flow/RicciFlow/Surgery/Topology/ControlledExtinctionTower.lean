@@ -25,7 +25,7 @@ def hasExtinctObservationTower
           ((T.observe b hb).event i).transition.trace.capping.coreInclusion x.1)) ∧
     (∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
+        DifferentialGeometry.Topology.isStandardConnectedSum
           (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier) ∧
     towerExtinct T
 

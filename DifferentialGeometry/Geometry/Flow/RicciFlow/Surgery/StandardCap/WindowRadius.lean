@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.QuadraticBounds
 import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCapture
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Distance
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWindow
+import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.Window
 import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
 
 set_option autoImplicit false

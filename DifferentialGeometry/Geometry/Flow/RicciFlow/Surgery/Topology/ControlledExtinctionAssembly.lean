@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Extinction.ControlledExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
 import DifferentialGeometry.Topology.Manifold.CollarFamily
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
@@ -99,7 +99,7 @@ theorem exists_poincare_controlled_extinction_of_observedHistory
       IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞
         (fun x : (H.event i).old => (H.event i).transition.trace.capping.coreInclusion x.1))
     (hctrl : ∀ i : Fin H.eventCount, ∀ c : ConnectedComponents (H.event i).discarded.Carrier,
-      DifferentialGeometry.Topology.isPoincareStandard
+      DifferentialGeometry.Topology.isStandardConnectedSum
         ((H.event i).discarded.toClosedOrientedManifold.component c).Carrier)
     (hempty : IsEmpty (H.stage (Fin.last H.eventCount)).Carrier) :
     Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by

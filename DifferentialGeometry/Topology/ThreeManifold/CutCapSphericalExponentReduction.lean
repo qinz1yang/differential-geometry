@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.CutCapFrontierCanonicalReduction
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLawInstances
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 
 set_option autoImplicit false
 

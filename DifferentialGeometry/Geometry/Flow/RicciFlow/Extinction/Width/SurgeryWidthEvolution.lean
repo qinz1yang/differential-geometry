@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildSimply
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OrientationDegree
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Ancestry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Ancestry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
 import Mathlib.Topology.Instances.ENNReal.Lemmas
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens

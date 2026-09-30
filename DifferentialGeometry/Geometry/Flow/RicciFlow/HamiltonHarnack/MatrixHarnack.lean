@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ShiControl
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Evolution.ShiBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.AncientLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.SlabExhaustion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Restriction

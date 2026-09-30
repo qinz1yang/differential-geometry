@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.PositiveSystem
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CompleteTrichotomy
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorEigenvalues
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.SectionalCurvature
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureKernel
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureSurface
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ParallelKernel.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.Splitting.PositiveSurface
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorKernel
 
 set_option autoImplicit false

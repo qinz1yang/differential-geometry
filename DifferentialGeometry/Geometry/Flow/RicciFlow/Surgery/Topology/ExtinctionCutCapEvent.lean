@@ -84,7 +84,7 @@ def HasExtinctCutCapTransition (P : OrientedThreeStage.{u}) : Prop :=
   ∃ (Q D N : OrientedThreeStage.{u}) (X : SmoothCutCapTransition P Q D N),
     IsEmpty Q.Carrier ∧ X.boundaryFrameReversing ∧
       ∀ q : ConnectedComponents D.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
+        DifferentialGeometry.Topology.isStandardConnectedSum
           (D.toClosedOrientedManifold.component q).Carrier
 
 theorem hasExtinctRetainedCoreHistory_of_hasExtinctCutCapTransition
@@ -177,19 +177,19 @@ private instance sphereStagePreconnectedSpace :
     PreconnectedSpace sphereStage.toClosedOrientedManifold.Carrier :=
   inferInstanceAs (PreconnectedSpace (Metric.sphere (0 : EuclideanSpace ℝ (Fin 4)) 1))
 
-private theorem sphereStage_isPoincareStandard :
-    DifferentialGeometry.Topology.isPoincareStandard sphereStage.Carrier :=
-  DifferentialGeometry.Topology.isPoincareStandard_of_diffeomorph
+private theorem sphereStage_isStandardConnectedSum :
+    DifferentialGeometry.Topology.isStandardConnectedSum sphereStage.Carrier :=
+  DifferentialGeometry.Topology.isStandardConnectedSum_of_diffeomorph
     DifferentialGeometry.Topology.standardThreeSphereLiftDiffeomorph
-    DifferentialGeometry.Topology.isPoincareStandard_sphere
+    DifferentialGeometry.Topology.isStandardConnectedSum_sphere
 
-private theorem sphereStage_component_isPoincareStandard :
+private theorem sphereStage_component_isStandardConnectedSum :
     ∀ q : ConnectedComponents sphereStage.Carrier,
-      DifferentialGeometry.Topology.isPoincareStandard
+      DifferentialGeometry.Topology.isStandardConnectedSum
         (sphereStage.toClosedOrientedManifold.component q).Carrier :=
-  fun q => DifferentialGeometry.Topology.isPoincareStandard_of_diffeomorph
+  fun q => DifferentialGeometry.Topology.isStandardConnectedSum_of_diffeomorph
     (DifferentialGeometry.Topology.ClosedOrientedManifold.componentDiffeomorph
-      sphereStage.toClosedOrientedManifold q).symm sphereStage_isPoincareStandard
+      sphereStage.toClosedOrientedManifold q).symm sphereStage_isStandardConnectedSum
 
 theorem hasExtinctCutCapTransition_sphereThreeEmptyStage :
     HasExtinctCutCapTransition sphereThreeEmptyStage :=
@@ -198,7 +198,7 @@ theorem hasExtinctCutCapTransition_sphereThreeEmptyStage :
     @OrientedThreeStage.SmoothCutCapTransition.boundaryFrameReversing_of_isEmpty_index
       sphereThreeEmptyStage emptyStage sphereStage sphereThreeEmptyStage
       smoothCutCapTransitionInstance sphereThreeEmptyTubes_index_isEmpty,
-    sphereStage_component_isPoincareStandard⟩
+    sphereStage_component_isStandardConnectedSum⟩
 
 theorem exists_hasExtinctCutCapTransition :
     ∃ P : OrientedThreeStage.{0}, Nonempty P.Carrier ∧ HasExtinctCutCapTransition P :=

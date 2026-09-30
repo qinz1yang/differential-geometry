@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.Derivative.ClippedReciprocal
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedWindowScalarPropagation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureBounds.ClosedWindowScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodInduction
 
 set_option autoImplicit false

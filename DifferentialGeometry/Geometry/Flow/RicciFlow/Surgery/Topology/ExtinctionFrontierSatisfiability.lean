@@ -87,7 +87,7 @@ theorem HasExtinctRetainedCoreHistory.exists_extinctionEvent_discardedStandard
       Nonempty (H.coreEvent i).discarded.Carrier ∧
       (H.coreEvent i).transition.boundaryFrameReversing ∧
       Nonempty ((H.coreEvent i).discarded.toClosedOrientedManifold.component q).Carrier ∧
-      DifferentialGeometry.Topology.isPoincareStandard
+      DifferentialGeometry.Topology.isStandardConnectedSum
         ((H.coreEvent i).discarded.toClosedOrientedManifold.component q).Carrier := by
   obtain ⟨H, A, i, hsucc, hsrc, hsink, hdisc, hbfr, hctrl⟩ := h.exists_extinctionEvent M g
   obtain ⟨d⟩ := hdisc

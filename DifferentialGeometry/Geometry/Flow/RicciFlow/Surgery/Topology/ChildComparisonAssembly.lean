@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseDegreeInputs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Comparison.Metric
 
 noncomputable section
 

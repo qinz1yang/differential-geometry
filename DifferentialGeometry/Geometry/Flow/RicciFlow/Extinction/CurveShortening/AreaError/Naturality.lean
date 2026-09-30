@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaError.Density
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicReconstruction
+import DifferentialGeometry.Geometry.Flow.CurveShortening.Parametric.Retraction
 
 noncomputable section
 open Set Manifold

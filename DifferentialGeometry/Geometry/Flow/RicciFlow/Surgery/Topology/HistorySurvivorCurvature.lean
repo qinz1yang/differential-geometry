@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFootprint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRestriction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceScalarTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.ScalarTime
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalNorm
 
 noncomputable section

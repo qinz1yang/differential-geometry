@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleEndpointReducedLengthEquicontinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleLimits.ReducedLength.Equicontinuity
 import DifferentialGeometry.Geometry.Metric.ChartLipschitz.Joint
-import DifferentialGeometry.Analysis.Calculus.Derivative.LocallyLipschitz
+import DifferentialGeometry.Analysis.Calculus.Rademacher
 
 
 noncomputable section

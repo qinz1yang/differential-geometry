@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InsertionMetric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.RoundingJets
+import DifferentialGeometry.Geometry.Metric.StandardCap.RoundingJets
 import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
 

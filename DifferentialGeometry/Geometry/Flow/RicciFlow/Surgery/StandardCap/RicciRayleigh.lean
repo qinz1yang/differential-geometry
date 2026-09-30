@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.RicciRayleigh
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Scalar
+import DifferentialGeometry.Geometry.Metric.StandardCap.Scalar
 import DifferentialGeometry.Geometry.Curvature.Metric.ConstantRicci
 
 set_option autoImplicit false

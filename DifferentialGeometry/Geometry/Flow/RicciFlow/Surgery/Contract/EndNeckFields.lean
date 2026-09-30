@@ -252,17 +252,6 @@ theorem historicalNeckRecognition.mono_order {τ ε d Λ : ℝ} {k j : ℕ}
   obtain ⟨A⟩ := hrec D P c e h hh0 hhH hτ hscale
   exact ⟨A.lowerOrder hjk hlow⟩
 
-def GlobalStepInputs.monoOrder {p : CutoffParameters} {τ ε d : ℝ} {k j : ℕ}
-    {DiscardedCutOpen : Type u → Prop}
-    (G : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) (hjk : j ≤ k)
-    (hlow : 2 * ⌊d⁻¹⌋₊ + 4 ≤ j) :
-    GlobalStepInputs.{u} p τ ε d j DiscardedCutOpen where
-  endInput := G.endInput
-  neckInput := G.neckInput.mono_order hjk hlow
-  pieceInput := G.pieceInput
-  cylinderInput := G.cylinderInput
-  protectInput := G.protectInput
-
 theorem exists_precision_order_witness :
     ∃ d : ℝ, ∃ k : ℕ, 0 < d ∧ d < 1 / 4 ∧ 2 * ⌊d⁻¹⌋₊ + 4 ≤ k :=
   ⟨1 / 8, 20, by norm_num, by norm_num, by norm_num⟩

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLawInstances
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OppositeInvarianceObstruction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.LeftUnitLaw
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormTrivial
@@ -16,39 +16,39 @@ namespace DifferentialGeometry.Topology
 
 universe u
 
-structure OrientedPoincareStandardPresentation (M : ClosedOrientedManifold.{u} 3) where
+structure OrientedStandardConnectedSumPresentation (M : ClosedOrientedManifold.{u} 3) where
   factors : List (ConnectedClosedOrientedManifold.{u} 3)
   standard : ∀ F ∈ factors, isStandardFactor F
   diffeomorph : ClosedOrientedManifold.OrientedDiffeomorph M
     (finiteConnectedSum factors).toClosedOrientedManifold
 
-def isOrientedPoincareStandard (M : ClosedOrientedManifold.{u} 3) : Prop :=
-  Nonempty (OrientedPoincareStandardPresentation M)
+def isOrientedStandardConnectedSum (M : ClosedOrientedManifold.{u} 3) : Prop :=
+  Nonempty (OrientedStandardConnectedSumPresentation M)
 
-theorem isPoincareStandard_of_isOrientedPoincareStandard {M : ClosedOrientedManifold.{u} 3}
-    (h : isOrientedPoincareStandard M) : isPoincareStandard M.Carrier :=
+theorem isStandardConnectedSum_of_isOrientedStandardConnectedSum {M : ClosedOrientedManifold.{u} 3}
+    (h : isOrientedStandardConnectedSum M) : isStandardConnectedSum M.Carrier :=
   h.elim fun p => ⟨⟨p.factors, p.standard, p.diffeomorph.1⟩⟩
 
-theorem isOrientedPoincareStandard_finite_sum
+theorem isOrientedStandardConnectedSum_finite_sum
     (L : List (ConnectedClosedOrientedManifold.{u} 3))
     (hL : ∀ F ∈ L, isStandardFactor F) :
-    isOrientedPoincareStandard (finiteConnectedSum L).toClosedOrientedManifold :=
+    isOrientedStandardConnectedSum (finiteConnectedSum L).toClosedOrientedManifold :=
   ⟨⟨L, hL, ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩⟩
 
-theorem isOrientedPoincareStandard_of_orientedDiffeomorph
+theorem isOrientedStandardConnectedSum_of_orientedDiffeomorph
     {M N : ClosedOrientedManifold.{u} 3}
-    (f : ClosedOrientedManifold.OrientedDiffeomorph M N) (hN : isOrientedPoincareStandard N) :
-    isOrientedPoincareStandard M :=
+    (f : ClosedOrientedManifold.OrientedDiffeomorph M N) (hN : isOrientedStandardConnectedSum N) :
+    isOrientedStandardConnectedSum M :=
   hN.elim fun p => ⟨⟨p.factors, p.standard, f.trans p.diffeomorph⟩⟩
 
-theorem isOrientedPoincareStandard_sphere :
-    isOrientedPoincareStandard standardThreeSphereLift.{u}.toClosedOrientedManifold :=
-  isOrientedPoincareStandard_finite_sum [] (by simp)
+theorem isOrientedStandardConnectedSum_sphere :
+    isOrientedStandardConnectedSum standardThreeSphereLift.{u}.toClosedOrientedManifold :=
+  isOrientedStandardConnectedSum_finite_sum [] (by simp)
 
-theorem isOrientedPoincareStandard_of_standard_factor
+theorem isOrientedStandardConnectedSum_of_standard_factor
     (M : ConnectedClosedOrientedManifold.{u} 3) (h : isStandardFactor M) :
-    isOrientedPoincareStandard M.toClosedOrientedManifold :=
-  isOrientedPoincareStandard_finite_sum [M] (by simpa using h)
+    isOrientedStandardConnectedSum M.toClosedOrientedManifold :=
+  isOrientedStandardConnectedSum_finite_sum [M] (by simpa using h)
 
 private theorem nonemptyDiffeomorph_trans {M N P : ClosedOrientedManifold.{u} 3}
     (h₁ : Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ N.Carrier))
@@ -122,9 +122,9 @@ theorem exists_diffeomorph_finiteConnectedSum_standardThreeSphere
           simp only [finiteConnectedSum_cons_cons]
           exact nonemptyDiffeomorph_trans hstep ⟨u⟩
 
-theorem exists_diffeomorph_standardThreeSphere_of_isOrientedPoincareStandard
+theorem exists_diffeomorph_standardThreeSphere_of_isOrientedStandardConnectedSum
     {M : ClosedOrientedManifold.{u} 3} [SimplyConnectedSpace M.Carrier]
-    (h : isOrientedPoincareStandard M) :
+    (h : isOrientedStandardConnectedSum M) :
     Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
       standardThreeSphereLift.{u}.toClosedOrientedManifold.Carrier) := by
   classical
@@ -156,20 +156,20 @@ theorem exists_diffeomorph_standardThreeSphere_of_isOrientedPoincareStandard
 
 
 
-theorem isOrientedPoincareStandard_finiteConnectedSum
+theorem isOrientedStandardConnectedSum_finiteConnectedSum
     (L : List (ConnectedClosedOrientedManifold.{u} 3))
-    (hL : ∀ F ∈ L, isOrientedPoincareStandard F.toClosedOrientedManifold) :
-    isOrientedPoincareStandard (finiteConnectedSum L).toClosedOrientedManifold := by
+    (hL : ∀ F ∈ L, isOrientedStandardConnectedSum F.toClosedOrientedManifold) :
+    isOrientedStandardConnectedSum (finiteConnectedSum L).toClosedOrientedManifold := by
   revert hL
   induction L with
-  | nil => intro _; exact isOrientedPoincareStandard_sphere
+  | nil => intro _; exact isOrientedStandardConnectedSum_sphere
   | cons M L ih =>
       intro hL
       cases L with
       | nil => exact hL M (by simp)
       | cons N L =>
-          have hM : isOrientedPoincareStandard M.toClosedOrientedManifold := hL M (by simp)
-          have hT : isOrientedPoincareStandard
+          have hM : isOrientedStandardConnectedSum M.toClosedOrientedManifold := hL M (by simp)
+          have hT : isOrientedStandardConnectedSum
               (finiteConnectedSum (N :: L)).toClosedOrientedManifold :=
             ih fun F hF => hL F (by simp [hF])
           obtain ⟨PM⟩ := hM
@@ -182,8 +182,8 @@ theorem isOrientedPoincareStandard_finiteConnectedSum
             List.Forall₂.cons ⟨PM.diffeomorph⟩ (List.Forall₂.cons ⟨PT.diffeomorph⟩ List.Forall₂.nil)
           obtain ⟨c⟩ := finiteConnectedSum_congr hforall
           obtain ⟨ap⟩ := finiteConnectedSum_append PM.factors PT.factors
-          exact isOrientedPoincareStandard_of_orientedDiffeomorph (c.trans ap.symm)
-            (isOrientedPoincareStandard_finite_sum (PM.factors ++ PT.factors) fun F hF =>
+          exact isOrientedStandardConnectedSum_of_orientedDiffeomorph (c.trans ap.symm)
+            (isOrientedStandardConnectedSum_finite_sum (PM.factors ++ PT.factors) fun F hF =>
               (List.mem_append.mp hF).elim (fun hh => PM.standard F hh)
                 (fun hh => PT.standard F hh))
 

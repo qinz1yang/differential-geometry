@@ -60,15 +60,15 @@ theorem MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveOrRo
     exact admitsConstantPositiveSectionalCurvature_of_roundComponent _ R
 
 open Set in
-theorem isPoincareStandard_of_ball_cap_cover
+theorem isStandardConnectedSum_of_ball_cap_cover
     (M : ConnectedClosedOrientedManifold.{u} 3)
     {K : Set M.Carrier} (B : PartialDiffeomorph I3 I3 ThreeSpace M.Carrier ∞)
     (hB : Metric.closedBall (0 : ThreeSpace) 1 ⊆ B.source)
     (cap : CapCore K)
     (hcover : B '' Metric.closedBall (0 : ThreeSpace) 1 ∪ K = univ) :
-    isPoincareStandard M.Carrier := by
+    isStandardConnectedSum M.Carrier := by
   obtain ⟨W⟩ := nonempty_positiveComponent_of_ball_cap_cover B hB cap hcover
-  exact isPoincareStandard_of_standard_factor M
+  exact isStandardConnectedSum_of_standard_factor M
     (isStandardFactor_of_admitsConstantPositiveSectionalCurvature (M := M)
       (admitsConstantPositiveSectionalCurvature_of_positiveComponent M W))
 

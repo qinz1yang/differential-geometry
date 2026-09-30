@@ -16,9 +16,9 @@ namespace DifferentialGeometry.Topology
 
 universe u
 
-theorem exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
+theorem exists_diffeomorph_standardThreeSphere_of_isStandardConnectedSum
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-    [SimplyConnectedSpace M] (h : isPoincareStandard M) :
+    [SimplyConnectedSpace M] (h : isStandardConnectedSum M) :
     Nonempty (M ≃ₘ⟮𝓡 3, 𝓡 3⟯ standardThreeSphereLift.{u}.Carrier) := by
   classical
   obtain ⟨P⟩ := h
@@ -47,11 +47,11 @@ theorem exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
   obtain ⟨s⟩ := exists_diffeomorph_finiteConnectedSum_standardThreeSphere P.factors hL
   exact ⟨P.diffeomorph.trans s⟩
 
-theorem isPoincareStandard_connectedSum_of_standardFactor
+theorem isStandardConnectedSum_connectedSum_of_standardFactor
     (M N : ConnectedClosedOrientedManifold.{u} 3)
     (hM : isStandardFactor M) (hN : isStandardFactor N) :
-    isPoincareStandard (connectedSum M N).Carrier := by
-  have h := isPoincareStandard_finite_sum [M, N] (by
+    isStandardConnectedSum (connectedSum M N).Carrier := by
+  have h := isStandardConnectedSum_finite_sum [M, N] (by
     intro F hF
     rcases List.mem_cons.mp hF with rfl | hF
     · exact hM

@@ -1,9 +1,9 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardScalarComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardUniformExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Closeness.ScalarComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Curvature.TowerBridge
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 import DifferentialGeometry.Geometry.Curvature.OpenEmbeddingPullback
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWindow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.Window
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm

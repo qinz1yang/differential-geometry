@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Polar
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Scalar
+import DifferentialGeometry.Geometry.Metric.StandardCap.Polar
+import DifferentialGeometry.Geometry.Metric.StandardCap.Scalar
 import DifferentialGeometry.Geometry.Neck.NormalizedDatum
 import DifferentialGeometry.Geometry.Metric.CylinderAxial
 import DifferentialGeometry.Geometry.Metric.PolarCoordinates

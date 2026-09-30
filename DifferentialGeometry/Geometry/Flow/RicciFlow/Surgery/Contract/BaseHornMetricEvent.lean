@@ -1,11 +1,11 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornBaseCoordinates
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFirstScalarLevel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Coordinates.BaseScalarBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Selection.FirstScalarLevel
 import Mathlib.Data.Finset.Lattice.Fold
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornScalarLevel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Selection.ScalarLevel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornNeckCollarMatching
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornReparametrization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Reparametrization.Supported
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InwardDatumChart
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornNeckRetention
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Selection.RetainedFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffRemainingFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NormalizedNeckDatumOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteMetricEventDebit
@@ -16,10 +16,10 @@ import Mathlib.SetTheory.Cardinal.Finite
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.Floor.Semiring
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornMetricEvent
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornParameterRescaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Reparametrization.Scaling
 
 open private scalar_le_on_retainedCore_of_truncated_bound from
-  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFirstScalarLevel
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Selection.FirstScalarLevel
 
 open private exists_fin_chosen_data exists_precision_order_compatible
   precision_order_compatible_of_le from

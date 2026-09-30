@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.NormalizedInsertionNorm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.MetricApproximation
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FixedRegions
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Distance
+import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
 import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
 
 set_option autoImplicit false

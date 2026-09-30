@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalWindowCurvatureHorizon
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullbackScaling
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowMetricComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Window.MetricComparison
 
 set_option autoImplicit false
 noncomputable section

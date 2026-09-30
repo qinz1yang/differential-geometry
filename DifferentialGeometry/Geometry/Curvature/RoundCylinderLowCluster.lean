@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.RoundCylinderOperatorPerturbation
 import DifferentialGeometry.Geometry.Curvature.BivectorDifferential
 import DifferentialGeometry.Geometry.Operator.Restriction
-import DifferentialGeometry.Analysis.FiniteDimensional.QuadraticNormBound
+import DifferentialGeometry.Analysis.InnerProductSpace.QuadraticFormBound
 import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
 set_option autoImplicit false

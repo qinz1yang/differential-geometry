@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.ConnectionDifferenceBounds
 import DifferentialGeometry.Geometry.Curvature.Relowering
 import DifferentialGeometry.Geometry.Connection.DifferenceJets
 import DifferentialGeometry.Geometry.Connection.MixedDerivativeBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.DerivativeBounds
+import DifferentialGeometry.Geometry.Metric.StandardCap.DerivativeBounds
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm
 import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction

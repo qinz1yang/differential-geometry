@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BufferedMetricCutCapEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.BufferedMetricCutCapEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappingReparametrization
 import DifferentialGeometry.Geometry.Neck.ScalarRetainedCore

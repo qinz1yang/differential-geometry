@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapWindows
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingModelCoverage
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SingularEventExtinction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Extinction.SingularEvents
 
 set_option autoImplicit false
 

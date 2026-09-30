@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizer
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.CompactBall
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciPointwise
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.CompactBallRatio
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapRegularCrossing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapScalarLower
 import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizerInwardPoint
 
 

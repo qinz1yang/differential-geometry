@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildLengthComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseFundamentalClass
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Comparison.Length
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Comparison.FundamentalClass
 
 noncomputable section
 

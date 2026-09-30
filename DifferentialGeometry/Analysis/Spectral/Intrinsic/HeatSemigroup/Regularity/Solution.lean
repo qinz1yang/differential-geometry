@@ -8,7 +8,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.FixedPoint.Forcing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.TensorHsInterpolationLimit
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Projection.TimeL2EigenProjection
-import DifferentialGeometry.Analysis.ProjectedContractionFixedPoint
+import DifferentialGeometry.Analysis.FunctionalAnalysis.Contraction.Approximation
 import Mathlib.Analysis.ODE.Gronwall
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator.Basic
 import Mathlib.Topology.Algebra.InfiniteSum.Real

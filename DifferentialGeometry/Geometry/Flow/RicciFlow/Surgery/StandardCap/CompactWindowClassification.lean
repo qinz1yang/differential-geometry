@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.AmbientSpatialCap
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactCanonicalCover
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Existence.CompactCover
 import DifferentialGeometry.Geometry.Neck.CompactCapClassification
 
 noncomputable section
@@ -41,7 +41,7 @@ theorem exists_eventually_poincareStandard_of_canonical_and_cap_windows_toleranc
         (∃ W : CanonicalWitness (S n) eps C1 C2 x (time n), W.capTubeHasNeckChart eps) ∨
           ∃ (j : J) (y : standardCapWindow D), ‖y.val‖ ≤ StandardCap.transitionEnd ∧
             Phi n j y = x) →
-      ∀ᶠ n in atTop, isPoincareStandard (M n).Carrier := by
+      ∀ᶠ n in atTop, isStandardConnectedSum (M n).Carrier := by
   obtain ⟨eta, heta, hclass⟩ := exists_compact_spatial_poincareStandard_tolerance.{u}
   refine ⟨min eta (1 / 22), lt_min heta (by norm_num), ?_⟩
   intro eps heps hsmall D r hr hfit hdepth N hN J _ M T S time C1 C2 g q hq Phi

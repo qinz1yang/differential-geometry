@@ -1,10 +1,10 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventRetainedInterior
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.RetainedInterior
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OpenCoreSubmanifold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffGeometryReduction
 import DifferentialGeometry.Geometry.Curvature.EmbeddingIsometry
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteStaticCapInclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteGluing.Presentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapReparametrization
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BufferedMetricCutCapEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.BufferedMetricCutCapEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricRetainedCore
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricScalarLower
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Scalar
+import DifferentialGeometry.Geometry.Metric.StandardCap.Scalar
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.ScalarConvergence
 import Mathlib.Topology.Sequences
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap

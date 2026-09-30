@@ -36,7 +36,7 @@ theorem poincareStandardDiscarded_of_componentwiseStandardFactorOrProjectiveThre
     (h : E.discarded.toClosedOrientedManifold.componentwiseStandardFactorOrProjectiveThreeSpaceSum) :
     E.poincareStandardDiscarded :=
   fun q =>
-    DifferentialGeometry.Topology.componentwise_isPoincareStandard_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
+    DifferentialGeometry.Topology.componentwise_isStandardConnectedSum_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
       E.discarded.toClosedOrientedManifold h q
 
 end MetricCutCapEvent
@@ -73,7 +73,7 @@ theorem poincareControlled_of_componentwiseStandardFactorOrProjectiveThreeSpaceS
       (H.event i).transition.discarded.componentwiseStandardFactorOrProjectiveThreeSpaceSum) :
     H.poincareControlled :=
   fun i C =>
-    DifferentialGeometry.Topology.componentwise_isPoincareStandard_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
+    DifferentialGeometry.Topology.componentwise_isStandardConnectedSum_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
       (H.event i).transition.discarded (h i) C
 
 end FiniteSurgeryHistory

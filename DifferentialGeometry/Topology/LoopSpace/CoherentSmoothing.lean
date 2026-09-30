@@ -57,7 +57,7 @@ theorem exists_coherent_loop_smoothing (g : SmoothRiemannianMetric 𝓘(ℝ, E) 
                 (∀ k, regularLoopDist e (he.of_le (by exact_mod_cast le_top)) (R (1, k)) (Γ₁ k) < ε)) := by
   obtain ⟨n, e, r, U, he, hemb, hi, hU, heU, hr, hleft⟩ :=
     DifferentialGeometry.Geometry.exists_compact_embedding_and_retraction (E := E) (M := M)
-  obtain ⟨ρ, hρ, hρK, hρU⟩ := DifferentialGeometry.Analysis.exists_compact_cthickening_subset
+  obtain ⟨ρ, hρ, hρK, hρU⟩ := IsCompact.exists_compact_cthickening_subset
     (isCompact_range he.continuous) hU heU
   obtain ⟨C, hC⟩ := exists_smoothing_metric_lipschitz_constant g e
     (he.of_le (by exact_mod_cast le_top)) hU (hr.of_le (by exact_mod_cast le_top)) hρK hρU

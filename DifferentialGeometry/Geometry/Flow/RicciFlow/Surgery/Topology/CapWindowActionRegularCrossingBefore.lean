@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowActionRegularCrossing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SliverForwardComparison
 set_option autoImplicit false
 noncomputable section

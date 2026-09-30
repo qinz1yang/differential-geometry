@@ -1,11 +1,11 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteMetricCutCapCurvature
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteMetricEventVolume
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteVolumeDebit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.FiniteCap.Curvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.FiniteCap.Volume
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteGluing.VolumeDebit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalRetainedVolume
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NontrivialCutSelection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.NontrivialSelection
 
 open private output_curvature_of_metric_eq from
-  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteMetricCutCapCurvature
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.FiniteCap.Curvature
 
 noncomputable section
 open Set Function TopologicalSpace Manifold MeasureTheory Filter

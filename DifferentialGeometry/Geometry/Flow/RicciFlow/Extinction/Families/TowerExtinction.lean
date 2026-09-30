@@ -122,7 +122,7 @@ theorem exists_poincare_controlled_extinction_of_tower_extinct {P : OrientedThre
           ((T.observe b hb).event i).transition.trace.capping.coreInclusion x.1))
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
+        DifferentialGeometry.Topology.isStandardConnectedSum
           (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier)
     (hextinct : towerExtinct T) :
     Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
@@ -145,7 +145,7 @@ theorem exists_poincare_controlled_extinction_of_closedOriented_tower_extinct
           ((T.observe b hb).event i).transition.trace.capping.coreInclusion x.1))
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
+        DifferentialGeometry.Topology.isStandardConnectedSum
           (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier)
     (hextinct : towerExtinct T) :
     Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) :=

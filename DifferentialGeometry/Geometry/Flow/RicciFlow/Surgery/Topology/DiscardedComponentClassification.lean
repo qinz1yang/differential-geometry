@@ -19,7 +19,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRec
 
 universe u
 
-private theorem exists_isPoincareStandard_discarded_boundary_tolerance :
+private theorem exists_isStandardConnectedSum_discarded_boundary_tolerance :
     ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
       ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount) (parameters : CutoffParameters)
         (G : GeometricCutoffRecord H i parameters),
@@ -45,7 +45,7 @@ private theorem exists_isPoincareStandard_discarded_boundary_tolerance :
                 (H.event i).transition.trace.presentation
                   ((H.event i).transition.trace.capping.coreInclusion
                     ((H.event i).transition.trace.tubes.coreBoundarySphere b z)) = Sum.inr d →
-                  isPoincareStandard ((H.event i).discarded.toClosedOrientedManifold.component
+                  isStandardConnectedSum ((H.event i).discarded.toClosedOrientedManifold.component
                     (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨eta, heta, hpath⟩ := SphericalCapping.exists_cut_neck_standard_or_stopped_tolerance.{u}
   refine ⟨min eta (1 / 8646), lt_min heta (by norm_num), ?_⟩
@@ -81,7 +81,7 @@ private theorem exists_isPoincareStandard_discarded_boundary_tolerance :
       X.tubes X.capping ((H.event i).incoming.flow.base.metric t)
       (fun j => (G.neck j).center.val) neck (fun j z => (hmap j z).symm) b with hstd | hstop
   · obtain ⟨e⟩ := X.cappedDiscardedPresentationRealization (X.tubes.coreBoundarySphere b sphereMark) d hdx
-    exact isPoincareStandard_of_diffeomorph e.val.symm (hstd sphereMark)
+    exact isStandardConnectedSum_of_diffeomorph e.val.symm (hstd sphereMark)
   · obtain ⟨R, p, nk, a, κ, hR, ha, hRzero, hRone, hinter, _, _, _, hstopped⟩ := hstop
     have hdiscard := (H.event i).transition.trace.cylinder_subset_image_compl_retainedCore
       b sphereMark hbq R hR hRzero hinter
@@ -97,7 +97,7 @@ private theorem exists_isPoincareStandard_discarded_boundary_tolerance :
     obtain ⟨U, hcomparison, hmodels⟩ := hspatial (nk.map (nk.center, a)) t ht hscalar hstopped
     obtain ⟨K, hK, hfront, hdis⟩ := hcap t ht₂ eps hepscap b hb R hR
       hRzero hinter p nk a ha κ hRone U hcomparison hmodels
-    exact X.isPoincareStandard_discardedComponent_of_capCore_cutting_side hK.some b hfront hdis sphereMark d hdx
+    exact X.isStandardConnectedSum_discardedComponent_of_capCore_cutting_side hK.some b hfront hdis sphereMark d hdx
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
 
@@ -140,7 +140,7 @@ theorem exists_poincareStandardDiscarded_tolerance_of_spatial_neighborhoods :
               riemannianBallOf (((H.event i).incoming.flow.base.metric t).restrictOpen ((H.stage i.castSucc).componentOpen c)) x
                 (1000 / Real.sqrt (metricScalarAt (((H.event i).incoming.flow.base.metric t).restrictOpen ((H.stage i.castSucc).componentOpen c)) x)) ⊆ interior K.carrier) →
           SmoothCutCapCompletion (H.event i).transition → (H.event i).poincareStandardDiscarded := by
-  obtain ⟨eta₀, heta₀, hboundary⟩ := exists_isPoincareStandard_discarded_boundary_tolerance.{u}
+  obtain ⟨eta₀, heta₀, hboundary⟩ := exists_isStandardConnectedSum_discarded_boundary_tolerance.{u}
   obtain ⟨eta₁, heta₁, hcomponent⟩ :=
     OrientedThreeStage.IncomingSlab.exists_component_poincareStandard_tolerance_of_spatial_neighborhoods.{u}
   refine ⟨min eta₀ eta₁, lt_min heta₀ heta₁, ?_⟩
@@ -155,7 +155,7 @@ theorem exists_poincareStandardDiscarded_tolerance_of_spatial_neighborhoods :
       ((congrArg (H.event i).transition.presentation
         (SphericalCutCapTransition.ofSmoothCutCapTransition_coreInclusion
           (H.event i).transition hc x)).symm.trans hxd)
-  have hstd : isPoincareStandard
+  have hstd : isStandardConnectedSum
       ((H.event i).discarded.toClosedOrientedManifold.component (ConnectedComponents.mk d)).Carrier := by
     rcases X.exists_boundarySphere_mem_coreComponent_or_cutIndices_eq_empty x with
       ⟨b, sphereMark, hbq⟩ | hlocal
@@ -209,7 +209,7 @@ theorem exists_poincareStandardDiscarded_tolerance_of_spatial_neighborhoods :
           (H.event i).transition.trace.connectedComponent_subset_compl_retainedCore x hxnot
             ((X.isPreconnected_coreComponentSet _ hlocal).subset_connectedComponent hx hyC)
         exact G.scalar_gt_protected_of_not_mem_retainedCore y hycore hn)
-      exact X.isPoincareStandard_discardedComponent_of_cutIndices_eq_empty _ hlocal x hx d hxd hambient
+      exact X.isStandardConnectedSum_discardedComponent_of_cutIndices_eq_empty _ hlocal x hx d hxd hambient
   change ConnectedComponents.mk (α := (H.event i).discarded.Carrier) d = D at hd
   exact hd ▸ hstd
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.Gradient.ChartPairing
-import DifferentialGeometry.Analysis.Calculus.Derivative.LocallyLipschitz
+import DifferentialGeometry.Analysis.Calculus.Rademacher
 
 
 noncomputable section

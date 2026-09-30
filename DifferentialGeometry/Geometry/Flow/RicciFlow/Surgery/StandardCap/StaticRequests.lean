@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Distance
+import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
 import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
 import DifferentialGeometry.Geometry.Metric.DerivativeENorm
 

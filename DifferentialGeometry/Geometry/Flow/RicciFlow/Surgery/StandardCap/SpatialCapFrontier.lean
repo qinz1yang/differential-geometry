@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Neck.SpatialLevelEmbedding
 import DifferentialGeometry.Topology.SphereSeparation.StandardSphere
 import DifferentialGeometry.Topology.SphereSeparation.Transport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Distance
+import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph
 
 set_option autoImplicit false

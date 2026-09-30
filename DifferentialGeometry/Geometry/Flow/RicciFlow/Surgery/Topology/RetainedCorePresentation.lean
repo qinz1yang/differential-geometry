@@ -158,7 +158,7 @@ def hasCutCapCompletion (E : MetricCutCapEvent P Q a s) : Prop :=
 
 def poincareStandardDiscarded (E : MetricCutCapEvent P Q a s) : Prop :=
   ∀ q : ConnectedComponents E.discarded.Carrier,
-    DifferentialGeometry.Topology.isPoincareStandard
+    DifferentialGeometry.Topology.isStandardConnectedSum
       (E.discarded.toClosedOrientedManifold.component q).Carrier
 
 end MetricCutCapEvent

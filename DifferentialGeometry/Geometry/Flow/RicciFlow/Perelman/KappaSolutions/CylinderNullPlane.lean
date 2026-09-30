@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ProjectiveSpace.SphereHalfTurnFrame
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CrossModelCurvatureTransport
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.CrossModelNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RiemannianProduct
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature
 import DifferentialGeometry.Geometry.Metric.Scaling
