@@ -64,6 +64,7 @@ Each is `sorry`-free (axioms: `propext, Classical.choice, Quot.sound`).
 - [Strong parabolic maximum principles](DifferentialGeometry/Analysis/Parabolic/MaximumPrinciple/Scalar/Strong.lean#L2412) — scalar equations on fixed and moving metrics, [parallel proper cones](DifferentialGeometry/Analysis/Parabolic/MaximumPrinciple/Cone/Parallel/DualStrong.lean#L30), and [symmetric tensors](DifferentialGeometry/Analysis/Parabolic/MaximumPrinciple/Tensor/Strong.lean#L193), with a [Hopf boundary point theorem](DifferentialGeometry/Analysis/Parabolic/MaximumPrinciple/Scalar/Hopf/ManifoldBoundary.lean#L168).
 - [Li–Yau Harnack inequality](DifferentialGeometry/Analysis/Parabolic/Harnack/LiYauHarnack.lean#L792) and [Hamilton differential Harnack inequality](DifferentialGeometry/Analysis/Parabolic/Harnack/HamiltonDifferentialHarnack.lean#L1483) for positive heat solutions.
 - [Quasilinear parabolic local existence](DifferentialGeometry/Analysis/Parabolic/QuasiLinear/TensorMaximalRegularity/Existence/LocallyLipschitz.lean#L702) for locally Lipschitz Sobolev nonlinearities.
+- [Generalized Poincaré conjecture, dimension ≥ 5](DifferentialGeometry/Topology/HighDimensional/PoincareHighDim.lean) — every Hausdorff topological manifold without boundary homotopy equivalent to $S^n$, with $n ≥ 5$, is homeomorphic to $S^n$.
 
 ## Verification
 
