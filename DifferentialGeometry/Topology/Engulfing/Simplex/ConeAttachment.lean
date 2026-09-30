@@ -106,12 +106,9 @@ theorem cone_inter_inclusion {m : ℕ} (v : Fin m → E)
     exact image_mono hbase hx
 
 omit [FiniteDimensional ℝ E] in
-theorem simplexBoundary_reindex {ι κ : Type*} [Finite ι] [Nonempty ι]
-    [Finite κ] [Nonempty κ] (v : κ → E) (e : ι ≃ κ) :
+theorem simplexBoundary_reindex {ι κ : Type*} (v : κ → E) (e : ι ≃ κ) :
     simplexBoundary (v ∘ e) = simplexBoundary v := by
   classical
-  let : Fintype ι := Fintype.ofFinite ι
-  let : Fintype κ := Fintype.ofFinite κ
   have hfacet : ∀ i, simplexFacet (v ∘ e) i = simplexFacet v (e i) := by
     intro i
     unfold simplexFacet
@@ -135,11 +132,9 @@ def coneBaseIndex (m : ℕ) : Fin m ≃ {i : Fin (m + 1) // i ≠ Fin.last m} :=
     exact ⟨j, rfl⟩⟩
 
 omit [FiniteDimensional ℝ E] in
-theorem simplexBoundary_cone_base {m : ℕ} [NeZero m] (v : Fin m → E) :
+theorem simplexBoundary_cone_base {m : ℕ} (v : Fin m → E) :
     simplexBoundary (facetVertices (coneVertices v) (Fin.last m)) =
       coneInclusion '' simplexBoundary v := by
-  have : Nonempty {i : Fin (m + 1) // i ≠ Fin.last m} :=
-    ⟨coneBaseIndex m 0⟩
   rw [← simplexBoundary_reindex _ (coneBaseIndex m)]
   have hvertices : facetVertices (coneVertices v) (Fin.last m) ∘ coneBaseIndex m =
       fun i => coneInclusion (v i) := by
