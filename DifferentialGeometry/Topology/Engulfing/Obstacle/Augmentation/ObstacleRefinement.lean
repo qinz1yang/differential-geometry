@@ -67,6 +67,7 @@ def ObstacleAugmentation.refine
     exact a.intersection_fixed x (hOs.subset hx)
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 @[simp] theorem ObstacleAugmentation.refine_ambientDimension
     (a : ObstacleAugmentation K L T f d p)
     (P : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin a.ambientDimension)))
@@ -77,6 +78,7 @@ omit [DecidableEq E] in
   exact rfl
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 @[simp] theorem ObstacleAugmentation.refine_joint
     (a : ObstacleAugmentation K L T f d p)
     (P : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin a.ambientDimension)))
@@ -87,6 +89,7 @@ omit [DecidableEq E] in
   exact rfl
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 @[simp] theorem ObstacleAugmentation.refine_sourceMap_val
     (a : ObstacleAugmentation K L T f d p)
     (P : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin a.ambientDimension)))
@@ -97,6 +100,7 @@ omit [DecidableEq E] in
   exact rfl
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 @[simp] theorem ObstacleAugmentation.refine_sourceImage_space
     (a : ObstacleAugmentation K L T f d p)
     (P : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin a.ambientDimension)))
@@ -107,6 +111,7 @@ omit [DecidableEq E] in
   exact complexRestriction_space_of_refines P a.joint a.sourceImage href hspace a.sourceImage_faces
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 @[simp] theorem ObstacleAugmentation.refine_obstacleImage_space
     (a : ObstacleAugmentation K L T f d p)
     (P : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin a.ambientDimension)))
@@ -117,6 +122,7 @@ omit [DecidableEq E] in
   exact complexRestriction_space_of_refines P a.joint a.obstacleImage href hspace a.obstacleImage_faces
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 @[simp] theorem ObstacleAugmentation.refine_fixedImage_space
     (a : ObstacleAugmentation K L T f d p)
     (P : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin a.ambientDimension)))

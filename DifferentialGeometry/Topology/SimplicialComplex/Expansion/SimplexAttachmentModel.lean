@@ -11,7 +11,7 @@ variable {E F : Type*} [DecidableEq E]
   [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 
-omit [DecidableEq E] in
+omit [DecidableEq E] [NormedAddCommGroup E] [InnerProductSpace ℝ E] [NormedAddCommGroup F] [InnerProductSpace ℝ F] in
 theorem range_subtype_comp (V : Finset E) (f : E → F) :
     range (fun i : V => f i.1) = f '' (V : Set E) := by
   classical

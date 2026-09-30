@@ -34,6 +34,7 @@ theorem correctedInterpolant_image_subcomplex
     exact congrArg H he
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem ObstacleAugmentation.exists_approximation
     {K L : SimplicialComplex ℝ E}
     {T : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin n))}

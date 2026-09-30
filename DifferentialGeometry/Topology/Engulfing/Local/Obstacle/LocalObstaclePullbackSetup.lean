@@ -32,10 +32,12 @@ def correctedChart : BufferedChart M n :=
     (show S.radius + 18 * S.gap + S.error ≤ b.outerRadius by
       linarith [S.room, S.error_le, S.gap_pos, b.radii_lt])
 
+omit [FiniteDimensional ℝ E] in
 theorem correctedChart_core_subset : S.correctedChart.core ⊆ b.toBufferedChart.core :=
   b.toBufferedChart.corrected_core_subset S.approximation.correction _ _ _ _
     (by linarith [S.room, S.error_le, S.gap_pos])
 
+omit [FiniteDimensional ℝ E] in
 theorem correctedChart_obstacle_contains :
     S.correctedChart.chart '' (X ∩ S.correctedChart.core) ⊆
       S.approximation.rawObstacleComplex.space := by
@@ -53,27 +55,34 @@ def pullbackRegion : SimplicialComplex ℝ E := complexRestriction m.source S.re
 def pullbackMap : C(m.source.space, M) :=
   S.map.comp ⟨Homeomorph.setCongr m.space, (Homeomorph.setCongr m.space).continuous⟩
 
+omit [FiniteDimensional ℝ E] in
 theorem pullbackFixed_faces : (S.pullbackFixed m).faces ⊆ m.source.faces :=
   complexRestriction_faces_subset _ _
 
+omit [FiniteDimensional ℝ E] in
 theorem pullbackRegion_faces : (S.pullbackRegion m).faces ⊆ m.source.faces :=
   complexRestriction_faces_subset _ _
 
+omit [FiniteDimensional ℝ E] in
 theorem pullbackFixed_space : (S.pullbackFixed m).space = L.space :=
   (complexRestriction_space_of_refines m.source S.source S.fixed m.refines m.space
     S.fixed_faces).trans S.fixed_space
 
+omit [FiniteDimensional ℝ E] in
 theorem pullbackRegion_space : (S.pullbackRegion m).space = S.region.space :=
   complexRestriction_space_of_refines m.source S.source S.region m.refines m.space S.region_faces
 
+omit [FiniteDimensional ℝ E] in
 theorem pullbackMap_fixed (x : m.source.space) (hx : x.val ∈ L.space) :
     S.pullbackMap m x = g ⟨x.val, (m.space.trans S.space) ▸ x.property⟩ :=
   S.map_fixed ⟨x.val, m.space ▸ x.property⟩ hx
 
+omit [FiniteDimensional ℝ E] in
 theorem pullbackMap_near (x : m.source.space) :
     dist (S.pullbackMap m x) (g ⟨x.val, (m.space.trans S.space) ▸ x.property⟩) < ε :=
   S.map_near ⟨x.val, m.space ▸ x.property⟩
 
+omit [FiniteDimensional ℝ E] in
 theorem pullbackMap_injOn_fixed (hinj : InjOn g (Subtype.val ⁻¹' L.space)) :
     InjOn (S.pullbackMap m) (Subtype.val ⁻¹' (S.pullbackFixed m).space) := by
   intro x hx y hy he
@@ -82,6 +91,7 @@ theorem pullbackMap_injOn_fixed (hinj : InjOn g (Subtype.val ⁻¹' L.space)) :
   rw [S.pullbackMap_fixed m x hxL, S.pullbackMap_fixed m y hyL] at he
   exact Subtype.ext (congrArg (fun z : K.space => z.val) (hinj hxL hyL he))
 
+omit [FiniteDimensional ℝ E] in
 theorem pullbackMap_hasAdaptedPiecewiseLinearCharts (h : hasAdaptedPiecewiseLinearCharts K L g X n p) :
     hasAdaptedPiecewiseLinearCharts m.source (S.pullbackFixed m) (S.pullbackMap m) X n p := by
   let gR : C(m.source.space, M) := g.comp
@@ -93,6 +103,7 @@ theorem pullbackMap_hasAdaptedPiecewiseLinearCharts (h : hasAdaptedPiecewiseLine
   exact hR.withMap (S.pullbackMap m) (fun x hx =>
     S.pullbackMap_fixed m x ((S.pullbackFixed_space m).subset hx))
 
+omit [FiniteDimensional ℝ E] in
 theorem active_subset_region (hZ : Z ⊆ m.source.space) : Z ⊆ (S.pullbackRegion m).space := by
   intro x hx
   rw [S.pullbackRegion_space m]
@@ -100,6 +111,7 @@ theorem active_subset_region (hZ : Z ⊆ m.source.space) : Z ⊆ (S.pullbackRegi
   exact show x' ∈ Subtype.val ⁻¹' S.region.space from
     interior_subset (S.core_region (interior_subset (S.active_core x' hx)))
 
+omit [FiniteDimensional ℝ E] in
 theorem active_total_raw (hZ : Z ⊆ m.source.space) :
     S.approximation.totalRawMap '' Z ⊆ closedBall b.center (S.radius + 2 * S.gap) := by
   rintro _ ⟨x, hx, rfl⟩
@@ -108,6 +120,7 @@ theorem active_total_raw (hZ : Z ⊆ m.source.space) :
     S.approximation.totalRawMap_subtype x']
   exact S.active_raw x' hx
 
+omit [FiniteDimensional ℝ E] in
 theorem total_affine : ∀ s ∈ m.source.faces,
     ∃ A : E →ᵃ[ℝ] EuclideanSpace ℝ (Fin n),
       EqOn S.approximation.totalRawMap A (convexHull ℝ (s : Set E)) := by
@@ -117,6 +130,7 @@ theorem total_affine : ∀ s ∈ m.source.faces,
   let x' : S.source.space := ⟨x, m.space.subset (m.source.convexHull_subset_space hs hx)⟩
   exact (S.approximation.totalRawMap_subtype x').trans (hA x' hx)
 
+omit [FiniteDimensional ℝ E] in
 theorem total_injective : ∀ s ∈ m.source.faces,
     InjOn S.approximation.totalRawMap (convexHull ℝ (s : Set E)) := by
   intro s hs
@@ -128,6 +142,7 @@ theorem total_injective : ∀ s ∈ m.source.faces,
   exact (hA x' hx).symm.trans ((S.approximation.totalRawMap_subtype x').symm.trans
     (he.trans ((S.approximation.totalRawMap_subtype y').trans (hA y' hy))))
 
+omit [FiniteDimensional ℝ E] in
 theorem total_oscillation : ∀ s ∈ m.source.faces,
     ∀ x ∈ convexHull ℝ (s : Set E), ∀ y ∈ convexHull ℝ (s : Set E),
       dist (S.approximation.totalRawMap x) (S.approximation.totalRawMap y) < 5 * S.gap := by
@@ -140,6 +155,7 @@ theorem total_oscillation : ∀ s ∈ m.source.faces,
     S.approximation.totalRawMap_subtype y']
   exact (m.raw_oscillation hs x' y' hx hy).trans_le (by linarith [S.error_le])
 
+omit [FiniteDimensional ℝ E] in
 theorem pullback_fixed_coordinates (x : m.source.space)
     (hxL : x.val ∈ (S.pullbackFixed m).space) (hxD : x.val ∈ (S.pullbackRegion m).space) :
     S.pullbackMap m x ∈ S.correctedChart.chart.source ∧
@@ -156,6 +172,7 @@ theorem pullback_fixed_coordinates (x : m.source.space)
     (S.map_fixed x' hxL') (S.extension_exact x' hxD')).trans
       (S.approximation.totalRawMap_subtype x').symm
 
+omit [FiniteDimensional ℝ E] in
 theorem pullback_small_raw_coordinates (x : m.source.space)
     (hxD : x.val ∈ (S.pullbackRegion m).space)
     (hxraw : S.approximation.totalRawMap x.val ∈ ball b.center (S.radius + 15 * S.gap)) :
@@ -174,6 +191,7 @@ theorem pullback_small_raw_coordinates (x : m.source.space)
   exact (S.approximation.correctedChart_eq_rawMap_of_exact b.chart S.map
     (S.exact_core x' hxcore)).trans (S.approximation.totalRawMap_subtype x').symm
 
+omit [FiniteDimensional ℝ E] in
 theorem pullback_chart_entry (x : m.source.space)
     (hx : S.pullbackMap m x ∈ S.correctedChart.chart.symm ''
       closedBall b.center (S.radius + 18 * S.gap)) :
@@ -189,6 +207,7 @@ theorem pullback_chart_entry (x : m.source.space)
   · exact (S.approximation.correctedChart_eq_rawMap_of_exact b.chart S.map
       (S.exact_core (e x) hcore)).trans (S.approximation.totalRawMap_subtype (e x)).symm
 
+omit [FiniteDimensional ℝ E] in
 theorem pullback_fixed_affine : ∀ s ∈ (S.pullbackFixed m).faces,
     ∃ A : E →ᵃ[ℝ] EuclideanSpace ℝ (Fin n),
       ∀ x : m.source.space, x.val ∈ convexHull ℝ (s : Set E) →

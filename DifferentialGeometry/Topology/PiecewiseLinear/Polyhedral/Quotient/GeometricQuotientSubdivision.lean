@@ -74,7 +74,7 @@ def hasNondegeneratePLSubdivision (K : SimplicialComplex ℝ E) (q : K.space →
       (∀ x : K.space, x.val ∈ convexHull ℝ (s : Set E) → q x = A x.val) ∧
       InjOn A (convexHull ℝ (s : Set E)))
 
-omit [DecidableEq E] [DecidableEq F] in
+omit [DecidableEq E] [DecidableEq F] [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] in
 theorem hasNondegeneratePLSubdivision.exists_total_map
     {K : SimplicialComplex ℝ E} {q : K.space → F} (hq : hasNondegeneratePLSubdivision K q) :
     ∃ R : SimplicialComplex ℝ E, ∃ f : E → F,
@@ -103,7 +103,7 @@ theorem hasNondegeneratePLSubdivision.exists_total_map
     intro x hx y hy he
     exact hi hx hy ((hA hx).symm.trans (he.trans (hA hy)))
 
-omit [DecidableEq F] in
+omit [DecidableEq F] [FiniteDimensional ℝ F] in
 theorem exists_geometric_double_subdivision
     (P : PreAbstractSimplicialComplex ι) (v : ι → E) (hv : Function.Injective v)
     (K : SimplicialComplex ℝ E) (hfaces : K.faces = (P.map v).faces)

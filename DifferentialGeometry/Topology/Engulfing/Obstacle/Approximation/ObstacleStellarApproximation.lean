@@ -13,6 +13,7 @@ variable {E : Type*} [DecidableEq E]
   {n d p : ℕ}
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem ObstacleAugmentation.exists_stellar_approximation
     {K L : SimplicialComplex ℝ E}
     {T : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin n))}

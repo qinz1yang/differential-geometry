@@ -72,6 +72,7 @@ theorem exists_exceptional_intersection_complex {ι : Type*} [Finite ι]
     exact mem_iUnion.mpr ⟨i.1, (hJspace i) ▸ hi⟩
 
 omit [DecidableEq E] in
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] in
 theorem affineIndependent_finset_image {F : Type*} [DecidableEq F] [NormedAddCommGroup F] [NormedSpace ℝ F]
     {s : Finset E} {w : E → F} (hw : AffineIndependent ℝ (fun v : s => w v)) :
     AffineIndependent ℝ ((↑) : s.image w → F) := by
