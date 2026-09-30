@@ -1,0 +1,14 @@
+import DifferentialGeometry.Geometry.Comparison.Volume.ScaledBallComparison
+import DifferentialGeometry.Geometry.Comparison.Volume.RicciScaleMultiplicity
+import DifferentialGeometry.Analysis.InnerProductSpace.PrunedGraphRank
+import DifferentialGeometry.Analysis.Calculus.PrunedGraph
+import DifferentialGeometry.Geometry.Metric.RetainedMarkerLocality
+import DifferentialGeometry.Analysis.NormedSpace.ScaleVanishing
+import Mathlib.Tactic.Linter
+
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Comparison.Volume.ScaledBallComparison
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Comparison.Volume.RicciScaleMultiplicity
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.InnerProductSpace.PrunedGraphRank
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.Calculus.PrunedGraph
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Geometry.Metric.RetainedMarkerLocality
+#lint only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.NormedSpace.ScaleVanishing

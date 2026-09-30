@@ -1,0 +1,247 @@
+{
+  "status": "Scratch checked; not yet installed",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/Volume/ScaledBallComparison.lean",
+      "module": "DifferentialGeometry.Geometry.Comparison.Volume.ScaledBallComparison",
+      "source_sha256": "1da7ea70e7c471e05eadd6012de400d2b3036f10a6985cccef3c6cfe3d519dfd",
+      "candidate": "ScaledBallComparison.lean"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/Volume/RicciScaleMultiplicity.lean",
+      "module": "DifferentialGeometry.Geometry.Comparison.Volume.RicciScaleMultiplicity",
+      "source_sha256": "4de98eb56040daea1bb339ec5542abad7990e4312d694c72280faf6d195f8353",
+      "candidate": "RicciScaleMultiplicity.lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/PrunedGraphRank.lean",
+      "module": "DifferentialGeometry.Analysis.InnerProductSpace.PrunedGraphRank",
+      "source_sha256": "fbfacd1c13c081e6f1e5ec39042306226317e89ff9ac740d90ef3093530618cf",
+      "candidate": "PrunedGraphRank.lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/PrunedGraph.lean",
+      "module": "DifferentialGeometry.Analysis.Calculus.PrunedGraph",
+      "source_sha256": "8ce808606f80ac943eb418199088e15eaf2460e0524be97d8c3f2304f75c92e4",
+      "candidate": "PrunedGraph.lean"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/RetainedMarkerLocality.lean",
+      "module": "DifferentialGeometry.Geometry.Metric.RetainedMarkerLocality",
+      "source_sha256": "c86256a685448f25e00454697b322d4ef211189739a0b92f689d986fbe613ed3",
+      "candidate": "RetainedMarkerLocality.lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/NormedSpace/ScaleVanishing.lean",
+      "module": "DifferentialGeometry.Analysis.NormedSpace.ScaleVanishing",
+      "source_sha256": "9378d25c325d5f1eee57c301169299b1ceb5fe98d8199bd5ce5cac1ce4f5c919",
+      "candidate": "ScaleVanishing.lean"
+    }
+  ],
+  "authored_public_declarations": 7,
+  "elaborated_declarations": 8,
+  "direct_admissions": 0,
+  "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "actual_examples": 7,
+  "checks": [
+    {
+      "source": "DifferentialGeometry/Geometry/Comparison/Volume/ScaledBallComparison.lean",
+      "sha256": "1da7ea70e7c471e05eadd6012de400d2b3036f10a6985cccef3c6cfe3d519dfd",
+      "command": [
+        "python3",
+        "/tmp/gc_completed_check_one.py",
+        "-R",
+        "/tmp/gc_completed_migration_scratch",
+        "-o",
+        "/tmp/gc_completed_migration_scratch/build/DifferentialGeometry/Geometry/Comparison/Volume/ScaledBallComparison.olean",
+        "/tmp/gc_completed_migration_scratch/DifferentialGeometry/Geometry/Comparison/Volume/ScaledBallComparison.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 2.6861817836761475
+    },
+    {
+      "source": "DifferentialGeometry/Geometry/Comparison/Volume/RicciScaleMultiplicity.lean",
+      "sha256": "4de98eb56040daea1bb339ec5542abad7990e4312d694c72280faf6d195f8353",
+      "command": [
+        "python3",
+        "/tmp/gc_completed_check_one.py",
+        "-R",
+        "/tmp/gc_completed_migration_scratch",
+        "-o",
+        "/tmp/gc_completed_migration_scratch/build/DifferentialGeometry/Geometry/Comparison/Volume/RicciScaleMultiplicity.olean",
+        "/tmp/gc_completed_migration_scratch/DifferentialGeometry/Geometry/Comparison/Volume/RicciScaleMultiplicity.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 2.129573106765747
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/PrunedGraphRank.lean",
+      "sha256": "fbfacd1c13c081e6f1e5ec39042306226317e89ff9ac740d90ef3093530618cf",
+      "command": [
+        "python3",
+        "/tmp/gc_completed_check_one.py",
+        "-R",
+        "/tmp/gc_completed_migration_scratch",
+        "-o",
+        "/tmp/gc_completed_migration_scratch/build/DifferentialGeometry/Analysis/InnerProductSpace/PrunedGraphRank.olean",
+        "/tmp/gc_completed_migration_scratch/DifferentialGeometry/Analysis/InnerProductSpace/PrunedGraphRank.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 1.6304938793182373
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/Calculus/PrunedGraph.lean",
+      "sha256": "8ce808606f80ac943eb418199088e15eaf2460e0524be97d8c3f2304f75c92e4",
+      "command": [
+        "python3",
+        "/tmp/gc_completed_check_one.py",
+        "-R",
+        "/tmp/gc_completed_migration_scratch",
+        "-o",
+        "/tmp/gc_completed_migration_scratch/build/DifferentialGeometry/Analysis/Calculus/PrunedGraph.olean",
+        "/tmp/gc_completed_migration_scratch/DifferentialGeometry/Analysis/Calculus/PrunedGraph.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 1.6463119983673096
+    },
+    {
+      "source": "DifferentialGeometry/Geometry/Metric/RetainedMarkerLocality.lean",
+      "sha256": "c86256a685448f25e00454697b322d4ef211189739a0b92f689d986fbe613ed3",
+      "command": [
+        "python3",
+        "/tmp/gc_completed_check_one.py",
+        "-R",
+        "/tmp/gc_completed_migration_scratch",
+        "-o",
+        "/tmp/gc_completed_migration_scratch/build/DifferentialGeometry/Geometry/Metric/RetainedMarkerLocality.olean",
+        "/tmp/gc_completed_migration_scratch/DifferentialGeometry/Geometry/Metric/RetainedMarkerLocality.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 1.610753059387207
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/NormedSpace/ScaleVanishing.lean",
+      "sha256": "9378d25c325d5f1eee57c301169299b1ceb5fe98d8199bd5ce5cac1ce4f5c919",
+      "command": [
+        "python3",
+        "/tmp/gc_completed_check_one.py",
+        "-R",
+        "/tmp/gc_completed_migration_scratch",
+        "-o",
+        "/tmp/gc_completed_migration_scratch/build/DifferentialGeometry/Analysis/NormedSpace/ScaleVanishing.olean",
+        "/tmp/gc_completed_migration_scratch/DifferentialGeometry/Analysis/NormedSpace/ScaleVanishing.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 1.3867988586425781
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/completed_migration_candidates/VolumeApplications.lean",
+      "sha256": "85b88a41368699a11700f3d54d932edb1f2cc53828caa2dee59a51acf40c712f",
+      "command": [
+        "python3",
+        "/tmp/gc_completed_check_one.py",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/completed_migration_candidates/VolumeApplications.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 4.203090190887451
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/completed_migration_candidates/PruningApplications.lean",
+      "sha256": "ab245f3fa06243ddd42d208d98e7caa4fe3374ff140296bb8fb945b8fa001f65",
+      "command": [
+        "python3",
+        "/tmp/gc_completed_check_one.py",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/completed_migration_candidates/PruningApplications.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 2.2564799785614014
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/completed_migration_candidates/MarkerApplications.lean",
+      "sha256": "9fda84028e2d9ddfd8bd2397e75612e9a789fbe12f3c4d278e0d4a02a75facdb",
+      "command": [
+        "python3",
+        "/tmp/gc_completed_check_one.py",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/completed_migration_candidates/MarkerApplications.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 1.4016220569610596
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/completed_migration_candidates/Lint.lean",
+      "sha256": "f2e4c4f5764d39e314793b75448cd5c28144e0a4c48323c8f59c576c0841efec",
+      "command": [
+        "python3",
+        "/tmp/gc_completed_check_one.py",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/completed_migration_candidates/Lint.lean"
+      ],
+      "exit_code": 0,
+      "silent": false,
+      "seconds": 4.608722925186157
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/completed_migration_candidates/Axioms.lean",
+      "sha256": "c0f20606248a3de679e9a9d40d7a225f72070c7661ec63cc649f6b87dabd8786",
+      "command": [
+        "python3",
+        "/tmp/gc_completed_check_one.py",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/completed_migration_candidates/Axioms.lean"
+      ],
+      "exit_code": 0,
+      "silent": false,
+      "seconds": 1.7832167148590088
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/completed_migration_candidates/Audit.lean",
+      "sha256": "3f15db9822d020db0d8dc226805d94da896d23493a2d8b578b848efa42208ca2",
+      "command": [
+        "python3",
+        "/tmp/gc_completed_check_one.py",
+        "-DmaxHeartbeats=16000000",
+        "-DmaxRecDepth=100000",
+        "-Dpp.maxSteps=50000",
+        "-Dpp.universes=true",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/completed_migration_candidates/Audit.lean"
+      ],
+      "exit_code": 0,
+      "silent": false,
+      "seconds": 29.483452796936035
+    }
+  ],
+  "evidence_hashes": {
+    "Lint.lean": "f2e4c4f5764d39e314793b75448cd5c28144e0a4c48323c8f59c576c0841efec",
+    "PrunedGraphRank.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "PrunedGraph.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "Lint.log": "cc08621840bab1670acd6dd45d39db55d88334a0b677cddf84eb11a18a877227",
+    "MarkerApplications.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "PruningApplications.lean": "ab245f3fa06243ddd42d208d98e7caa4fe3374ff140296bb8fb945b8fa001f65",
+    "ScaleVanishing.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "RicciScaleMultiplicity.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "MarkerApplications.lean": "9fda84028e2d9ddfd8bd2397e75612e9a789fbe12f3c4d278e0d4a02a75facdb",
+    "Audit.log": "607b31e7b02d6341559de1100141e79778726624d45308b50af1396af5a45e0a",
+    "Audit.lean": "3f15db9822d020db0d8dc226805d94da896d23493a2d8b578b848efa42208ca2",
+    "VolumeApplications.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ScaledBallComparison.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "Axioms.log": "f11502ddff33f3974876f94b72b84375b51a1a69adf00386782c6e55fb9ff803",
+    "Axioms.lean": "c0f20606248a3de679e9a9d40d7a225f72070c7661ec63cc649f6b87dabd8786",
+    "RetainedMarkerLocality.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "VolumeApplications.lean": "85b88a41368699a11700f3d54d932edb1f2cc53828caa2dee59a51acf40c712f",
+    "PruningApplications.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "upstream_commit": "777299070a5529e96345e0033979706fd00c7e62",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e"
+}

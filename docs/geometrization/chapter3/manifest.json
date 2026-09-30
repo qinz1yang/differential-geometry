@@ -5784,6 +5784,57 @@
       ],
       "contract_notes": "../chapter13/tested_residual_and_local_bounds.md",
       "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/Volume/ScaledBallComparison.lean",
+      "blueprint_nodes": [
+        "LC86"
+      ],
+      "contract_notes": "../chapter13/ricci_scale_multiplicity.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Comparison/Volume/RicciScaleMultiplicity.lean",
+      "blueprint_nodes": [
+        "LC86"
+      ],
+      "contract_notes": "../chapter13/ricci_scale_multiplicity.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/PrunedGraphRank.lean",
+      "blueprint_nodes": [
+        "CFS27",
+        "FC06"
+      ],
+      "contract_notes": "../chapter14/pruned_graph_and_marker_locality.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/PrunedGraph.lean",
+      "blueprint_nodes": [
+        "CFS27",
+        "FC06"
+      ],
+      "contract_notes": "../chapter14/pruned_graph_and_marker_locality.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/RetainedMarkerLocality.lean",
+      "blueprint_nodes": [
+        "CFS07",
+        "CFS28"
+      ],
+      "contract_notes": "../chapter14/pruned_graph_and_marker_locality.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/NormedSpace/ScaleVanishing.lean",
+      "blueprint_nodes": [
+        "CFS30"
+      ],
+      "contract_notes": "../chapter14/pruned_graph_and_marker_locality.md",
+      "status": "proved-subclaims"
     }
   ],
   "scope": "Independent metric, Alexandrov, local-collapse and finite-regularity leaves, registered against the accepted migrated upstream; see the joint integration receipt for verification status.",
