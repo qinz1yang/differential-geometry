@@ -1,0 +1,710 @@
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_nonneg' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.cosh_sqrt_mul_modelSideNegCurvature' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_pi' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_zero_angle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_mono_angle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_mem_Icc' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_zero_sq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_comparisonAngle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_modelSide' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_comm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_zero_left' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_zero_right' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.tendsto_modelSideNegCurvature' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_crossing_isometries_reciprocity' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_crossing_isometry' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.sq_dist_crossing_isometries' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngle_crossing_isometries' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.germComparisonAngle_crossing_isometries' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_crossing_isometry_eq_zero_of_right_angle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngle_tip_mk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.dist_add_eq_pi_of_cone_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.EuclideanCone.germComparisonAngle_twoRayPath' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_pointed_euclidean_tangent_of_orthogonal_frame' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Metric.EuclideanCone.secLift' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.radius_secLift' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.secLift_self' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dist_mk_one_secLift' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Metric.EuclideanCone.dist_mk_one_secLift_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngle_secLift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.FreeProduct' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.factorInclusion' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.factorInclusion_apply' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.factorInclusion_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.conjugateSubgroup' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.mem_conjugateSubgroup_iff' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.intersectionFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.intersectionFactorInH' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.intersectionFactorInH_coe_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.DoubleCosetIndex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.doubleCosetRepresentative' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.doubleCosetRepresentative_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.doubleCosetIndex_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.wordInv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.wordInv_toList' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.wordInv_prod' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.wordInv_wordInv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.wordLastIdx' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.wordLastIdx_ne_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightTail' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightHead' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightTail_lastIdx_ne' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.RightFactorWord' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightTailCanonical' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightTail_of_lastIdx_ne' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.equivPair_head_ne_one_of_fstIdx_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.rightHead_ne_one_of_lastIdx_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.right_syllable_decomposition' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightAppend' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.wordInv_cons_rightAppend' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightAppend_prod' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightAppend_rightTail' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightAppend_rightHead' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.word_equiv_mul_rightAppend' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightTail_equiv_mul_factor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightTail_eq_of_prod_eq_mul_factor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.rightAppendCanonical' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightAppendCanonical_of_lastIdx_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.BassSerreVertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.BassSerreEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.bassSerreWord_path' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.bassSerreFactor_path' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.bassSerre_rootedConnected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.bassSerreTree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightCosetSetoid' depends on axioms: [propext]
+'GraphCoveringTheory.Kurosh.RightCoset' depends on axioms: [propext]
+'GraphCoveringTheory.Kurosh.rightCosetMk' depends on axioms: [propext]
+'GraphCoveringTheory.Kurosh.rightCosetMk_eq_iff' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightCosetMk_smul' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.rightCoset_stabilizer_iff' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.FactorCoset' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.factorCosetMk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.factorCoset_mul_factor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.RawBassSerreVertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.RawBassSerreEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreWord_path' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreFactor_path' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerre_rootedConnected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreTree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerre_factor_fixed_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerre_factor_orbit_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.KuroshFactorIndex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.kuroshFactorRepresentative' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.kuroshFactorSubgroup' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerre_central_fixed_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.kurosh_factor_subgroup_is_stabilizer' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.actionOrbitSetoid' depends on axioms: [propext]
+'GraphCoveringTheory.Kurosh.ActionOrbit' depends on axioms: [propext]
+'GraphCoveringTheory.Kurosh.actionOrbitMk' depends on axioms: [propext]
+'GraphCoveringTheory.Kurosh.actionOrbitMk_eq_iff' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.actionOrbitMk_smul' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreEdgeData' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreEdgeDataSource' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreEdgeDataTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreEdgeDataAction' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreEdgeData_source_action' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreEdgeData_target_action' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreEdgeDataOf' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreEdgeDataOf_source' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreEdgeDataOf_target' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreEdgeAction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreSymmEdgeAction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerrePathAction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.RawBassSerreOrbitVertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.RawBassSerreOrbitEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.kuroshFactorOrbitVertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.kuroshFactorOrbitVertex_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitEdgeSource' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitEdgeTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitQuiver' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitEdgeMk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitQuiverEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitEdgeSource_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitEdgeTarget_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitEdgeMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitPrefunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitPrefunctorToSymm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitSymmPrefunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitQuiver_rootedConnected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitTree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitRoot' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawOrbitAlign' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawOrbitAlign_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.wideSubquiverInclusion' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.rawTreeInclusion' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeEdgeMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeQuiver' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreePathMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeQuiverRoot' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeQuiverRoot_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreePath' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreePathMap_cons_raw' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeLiftPath' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeRepresentative' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeRepresentative_orbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeRawData' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeRawData_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeSource_orbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeTarget_orbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeSourceAlign' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeSourceAlign_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeAlignedTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeAlignedTarget_orbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeRepresentative_of_tree_edge' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeTargetAlign' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeTargetAlign_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeDirectTargetAlign' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeDirectTargetAlign_spec' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeRepresentative_of_tree_edge_neg' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeLabel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeCoherentSourceAlign' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeCoherentSourceAlign_spec' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeLabel_transport_coherent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientGraphLabelPrefunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.freeGroupoidPathHom_nil_public' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.KuroshFreePart' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.kuroshFreePartHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientTreePathHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeLoop' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientPathValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientSymmEdgeLabel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientRawPathValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientPathValue_of' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientPathValue_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientPathValue_inv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientRawPathValue_nil' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientRawPathValue_cons' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientGraphFunctor_map_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitTree_root_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawBassSerreOrbitTreeRootVertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeInclusion_mapPath_asRaw' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeInclusion_mapPath_asRaw_nil' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeInclusion_mapPath_asRaw_cons' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeRootPath' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeRootPath_nil' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreeRootPath_cons' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreePathAtRoot' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreePathAtRoot_eq_rawTreePath' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.rawTreePathAtRoot_cons' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientTreePathHom_eq_rawTreePathAtRoot' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientSymmEdgeLabel_tree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientRawPathValue_tree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientTreePathValue_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.kuroshFreePartHom_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.kuroshFreePartHom_quotientEdgeLoop' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeLoop_tree_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.quotientEdgeLoop_tree_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.kuroshFreePartHom_quotientEdgeLoop_tree_pos' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.kuroshFreePartHom_quotientEdgeLoop_tree_neg' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.KuroshComponentIndex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.KuroshComponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.treeVertexStabilizer' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.TreeKuroshComponentIndex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.TreeKuroshComponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.TreeKuroshProduct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.treeKuroshComponentHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.treeKuroshProductToH' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.treeKuroshVertexInclusion' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.treeKuroshFreeInclusion' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.treeKuroshProductToH_vertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.treeKuroshProductToH_free' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.KuroshProduct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.CoverSource' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.CoverVertexCoset' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.CoverVertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.CoverEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverEdgeLetter' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverEdgeSource' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverEdgeTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverQuiver' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverSourceMulAction_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverSource_vertexRange_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverVertexMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverVertexMap_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverEdgeMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverVertexMk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverBaseEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPositiveLiftEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverNegativeLiftEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverGraphLabelPrefunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverFreeGroupoidPathHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverFreeGroupoidPathHom_cons' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPathValueOpp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPathValue' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPathValueOpp_nil' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPathValueOpp_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPathValueOpp_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPathValue_nil' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPathValue_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPathValue_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPathFreeLoop' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverQuotientTreePathHom_root' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPathValue_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPathLift' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPathLift_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.coverPrefunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.treeKuroshVertexInclusion_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawBassSerreEdgeData_action_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawBassSerreEdgeDataOf_cast' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverEdgeMap_data' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverVertexMap_orbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawEdgeAlign' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawEdgeAlign_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_quotientEdgeRawData_cast' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_quotientEdgeRawData_orbit_of_raw' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawStar_eq_of_data_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverStarInv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverPrefunctor_star_inv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverStar_data_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverEdge_eq_of_val_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverEdge_eq_of_base_val_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverSource_coset_eq_of_edge_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverEdge_base_eq_of_map_data_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverEdge_pair_eq_of_map_data_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverStar_eq_of_pair_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverPrefunctor_star_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverPrefunctor_star_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverFreeGroupoidPathHom_eq_quotient_map' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverFreePath_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testQuotientPathLift' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitAction_source_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitAction_target_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitQuiverEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitQuiverEdge_toPos_heq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitQuiverEdge_toNeg_heq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitQuiverEdge_action_pos_heq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitQuiverEdge_action_neg_heq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitMap_action_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitMap_action_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawTreeRepresentative_smul_orbit' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_path_cast_nil' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.test_rawOrbitSymm_map_pos_cast' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitSymm_map_neg_cast' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitEdge_cast_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitSymm_toPos_cast_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitSymm_toPos_map_cast_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawOrbitSymm_toNeg_map_cast_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_path_cons_cast' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.test_hom_cast_cast_explicit' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.test_hom_cast_proof_irrel' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.test_lift_pos_edge_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_lift_neg_edge_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testQuotientPathLift_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testQuotientPathLift_value' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_homOfEq_comp_homOfEq' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.testRawOrbitFreeGroupoidFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawOrbitFreeGroupoidFunctor_obj' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawOrbitFreeGroupoidFunctor_map_of' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawOrbitFreeGroupoidFunctor_map_path' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawFreeGroupoid_end_subsingleton_at' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.test_homOfEq_id' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.testFreePathHom_cast' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.testFreePathHom_cast_loop_eq_one' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.testQuotientFreePathHom_eq_one_of_value_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testFreePathHom_eq_quotient_map' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.testOrbitFreePathHom_eq_quotient_map' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testQuotientRawPathValue_testFreePathHom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testKuroshFreePartHom_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testKuroshFreePartHom_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_coverPathValue_rawTree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRightAppendLastIdx' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testFactorCentralInjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassAllEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassEdgeCode' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassEdgeCodeOf' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassEdgeOfCode' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassEdgeCodeOf_ofCode' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassEdgeOfCode_of' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassEdgeTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassEdgeCodeTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassEdgeTarget_ofCode' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassEdgeCodeTarget_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassAllEdge_target_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassUniqueIncoming' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testWordLastIdx_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassRootOrArrow' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassHeight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassHeight_lt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassSerreFullArborescence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassHeight_root' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassHeight_edge_eq_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassSymmHeight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassHeight_symm_edge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassHeight_path_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassHeight_directed_path_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassHeight_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassToSymm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassToSymm_mapPath_length' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassSymmPath_of_length_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBass_edge_mem_geodesicTree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rightTailCanonical_factorCoset_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawCanonicalFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawCanonicalVertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassToRawVertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawCanonicalFactor_coset' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassToRawVertex_rawCanonicalVertex' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawCanonicalVertex_bassToRawVertex' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassTreeQuiver' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassTreePath' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassTreePathMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassTreePathMap_cons' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassTreePathMap_edge_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassPathHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassPathHom_nil' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassPathHom_cons' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassQuotientMap_cons' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassPathHom_eq_quotient_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassTreePathHom_edge_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassPathHom_eq_tree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassFreeGroupoid_end_subsingleton' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testFreePathHom' depends on axioms: [propext, Quot.sound]
+'GraphCoveringTheory.Kurosh.testFreeGroupoid_isConnected_of_rootedConnected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassFreeGroupoid_end_subsingleton_at' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testFunctor_map_injective_of_eq_id' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.testBass_factorCoset_append' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawCanonicalVertex_factorCosetMk' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassToRawPrefunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawToBassPrefunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassToRawFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawToBassFunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawToBassFunctor_map_of' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassToRawFunctor_map_of' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassToRawPrefunctor_map_centralFactor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testBassToRawPrefunctor_map_factorCentral' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testFunctor_map_homOfEq' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.testGroupoid_inv_homOfEq' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.testGroupoid_inv_inv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testGroupoid_inv_inv_homOfEq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_homOfEq_transport' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.test_homOfEq_transport' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.test_homOfEq_eq_of_heq' does not depend on any axioms
+'GraphCoveringTheory.Kurosh.testRawEdgeSigma' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawEdge_heq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawEdgeMap_heq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawBassRaw_obj' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawBassRawPrefunctor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawBassRawPrefunctor_eq_of' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawBassRawFunctor_eq_id' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawFreeGroupoid_end_subsingleton' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GraphCoveringTheory.Kurosh.testOrbitAllEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testTreeDataGeneratorSet' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testTreeDataGenerated' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawTreeQuiver' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testTreeDataGenerated_mem_vertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testTreeDataGenerated_mem_edge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawEdgeMap_dataOf' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testActionOrbitAlign' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testActionOrbitAlign_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawEdgeData_rep_orbit_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawEdgeOrbitAlign' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawEdgeOrbitAlign_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_rawTreeRepresentative_root' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_conjugate_mem_stabilizer' depends on axioms: [propext]
+'GraphCoveringTheory.Kurosh.test_stabilizer_conjugate_eq' depends on axioms: [propext]
+'GraphCoveringTheory.Kurosh.test_positive_step' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.test_negative_step' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testPositiveStepVertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testPositiveStepVertex_endpoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testNegativeStepVertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testNegativeStepVertex_endpoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawPathAlignmentGenerated' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.testRawPathProduct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GraphCoveringTheory.Kurosh.treeKuroshProductToH_testRawPathProduct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.GeneralFlow.exists_reservedCanonical_of_roundWindow' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.exists_roundWindow_ball_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.general_retained_core_tower' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.general_retained_core_tower_control' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.general_retained_core_tower_geometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.general_retained_core_tower_locally_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.transport_closed_slab' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.transport_closed_metric' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.finite_history_concatenation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.marked_finite_history_concatenation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.translate_retained_event' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.translated_event_transition' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.translated_event_output' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.translated_event_initial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.translated_event_singular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.translated_event_actual_geometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.ConcatenationLayer' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.concatenation_start' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.concatenation_step' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.concatenation_layers' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.general_controlled_history_extension' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.marking_of_actual_prefix' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.marked_singular_event_extension' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.marked_closed_extension' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.singular_time_gt_closed_end' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.closed_slabs_agree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.incoming_agrees_with_closed_tail' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.actual_singular_event_after_horizon' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.actual_singular_event_compatible' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.actual_singular_event_preserves_prefix' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.actual_closed_extension_compatible' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.actual_closed_extension_preserves_prefix' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.SurgeryEventControl' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.HistoryEventControl' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.event_control_transport' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.event_control_translate' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.controlled_event_geometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.history_control_append' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.history_control_extend' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.InitialFiniteFreeFactorBound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.completed_history_freeFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.stage_degree_of_freeFactor_ancestry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.uniformHistoryDegree_of_completed_freeFactorBound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.GeneralFlow.general_strong_canonical_of_completed_freeFactorBound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.GeneralFlow.general_strong_canonical_of_history_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.finite_geometric_horizon_of_history_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.initial_scalar_barrier_for_stage' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.finite_geometric_horizon_of_production' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.finite_geometric_horizon' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.initial_component_card_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.initial_freeFactorBound_of_finite_groups' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.uniformHistoryDegree_of_finite_initial_groups' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.GeneralFlow.general_strong_canonical_of_finite_initial_groups' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.GeneralFlow.general_noncollapsing_of_small_scale' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.general_strong_canonical_of_small_scale' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.general_small_scale_noncollapsing' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.general_strong_canonical' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.general_finite_geometric_horizon' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.GeometricHorizonProduction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.geometric_horizon_production_of_strong' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.geometric_horizon_production' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.StageFiniteDegreeBound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.UniformHistoryDegreeBound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.canonicalBallConsumer_of_stage_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.retained_history_freeFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.uniformHistoryDegree_of_initial_freeFactorBound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.GeneralFlow.strong_canonical_of_initial_freeFactorBound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.GeneralFlow.uniform_history_degree_of_finite_initial_groups' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.GeneralFlow.strong_canonical_of_finite_initial_groups' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.smallScaleNoncollapsingThroughSurgery_of_historyDegreeBound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.GeneralFlow.finite_geometric_horizon_of_small_scale' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.finiteConnectedSum_factor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.CutCapSumData.capComponent_freeFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.actual_capComponent_freeFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.componentFundamentalGroupEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.actual_retained_freeFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.finiteCutCapTrace_freeFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.presentationComponentEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.presentationComponentEquiv_actual' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.retained_discarded_component_ne' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.cap_component_retained_or_discarded' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.reconstructedComponentEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.reconstructed_component_coverage' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.terminal_component_coverage' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Surgery.terminal_discarded_nonempty' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.actual_group_quotient_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.orientedSphericalMetric' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.oriented_carrier_metric_inner' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.complete_spherical_metric_from_oriented_model' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.complete_spherical_metric_with_nontrivial_piOne' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.complete_spherical_metric_of_positive_space_form' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.Geometry.flatCircle_model_atlas' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.PeriodicCylinder' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.periodicCylinderMetric' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.periodicCylinder_model_atlas' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.sphereTwoTimesCircleToPeriodic' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.sphereTwoTimesCircleMetric' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.sphereTwoTimesCircle_complete_model_atlas' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.sphereTwoTimesCircle_factor_geometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.ElementaryModel' does not depend on any axioms
+'GC.Geometry.ElementaryGeometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.oriented_spherical_factor_geometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.standard_factor_complete_geometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Geometry.oriented_standard_presentation_geometry' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Endpoint.isPrime_of_simplyConnected' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Endpoint.sphericalStructure' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Endpoint.sphereLiftStructure' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Endpoint.sphereCertificate' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Endpoint.standardThreeSphereLift_geometrizes' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Endpoint.isPrime_of_freelyIndecomposable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Endpoint.isPrime_of_finite_fundamentalGroup' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Endpoint.isPrime_of_commutative_fundamentalGroup' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.Endpoint.isPrime_of_isStandardFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Riemannian.gInner_sq_le_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DifferentialGeometry.Geometry.Riemannian.SectionalBoundedBelowAt.mono' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.LongTime.hasCommonNeckAccuracy' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.LongTime.hasCommonNeckAccuracy.bounds' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.LongTime.hasSmallParabolicCurvature' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.LongTime.AnalyticSurgeryProfile' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.LongTime.hasAnalyticAdmissibility' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.LongTime.AnalyticSurgeryProfile.commonNeckAccuracy' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GC.LongTime.AnalyticSurgeryProfile.largerBallAccuracy_on_late_half_interval' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GC.LongTime.exists_surgery_with_decaying_accuracy' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

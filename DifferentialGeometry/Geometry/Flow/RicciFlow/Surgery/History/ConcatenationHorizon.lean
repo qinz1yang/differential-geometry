@@ -22,7 +22,7 @@ theorem transport_closed_metric {P P' : OrientedThreeStage.{u}} {a b a' b' : ℝ
   cases hb
   exact HEq.rfl
 
-theorem finite_history_concatenation 
+theorem finite_history_concatenation
     (H : RetainedCoreHistory.{u}) (K : RetainedCoreHistory.{u})
     (hH : HistoryEventControl H) (hK : HistoryEventControl K)
     (hs : K.stage 0 = H.stage (Fin.last H.eventCount))

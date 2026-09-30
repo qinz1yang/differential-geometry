@@ -26015,7 +26015,7 @@
       "role": "geometrization_foundation",
       "source_checkout": "GC_BASELINE_EXPORT",
       "original_sha256": "75df8ba428e0ae2db83eaca0c789e96d48b29488bd9859d510fb7b0ab62e1215",
-      "sha256": "155467ec5b1eaa73281a30ef1b0af52999dd7c8b48561065210bef027cbcdc29",
+      "sha256": "83d24559697a05f6b0a3ff84310eec5f41cd303acb2a8127de7462ec326a3b41",
       "declarations": [
         {
           "name": "GC.GeneralFlow.transport_closed_slab",
@@ -26110,7 +26110,7 @@
       "role": "geometrization_foundation",
       "source_checkout": "GC_BASELINE_EXPORT",
       "original_sha256": "4bf0a015a0fefeccd6e5b3342b6b7ca0191a8dbc943bd79d7023728d3708816f",
-      "sha256": "c11a1fcc8f72d7facb1b74f95c6cfba40b854a3858ff2a7acc844d8efce7a4bc",
+      "sha256": "fe3eb31b746e15bc145f675b04f5b216783af0e50e8c5621773e6d5d9c5e4176",
       "declarations": [
         {
           "name": "GC.GeneralFlow.ConcatenationLayer",
@@ -26288,7 +26288,7 @@
       "role": "geometrization_foundation",
       "source_checkout": "GC_BASELINE_EXPORT",
       "original_sha256": "2c3bd309d1e9d3c22ac12e3e3bbe46348921d5f04c431b7b33fe487e2354e670",
-      "sha256": "90be0926e0618ffb18f18f67550610c44a8cbe5c986d0be7b0d745cd69784ede",
+      "sha256": "6f60026bcb12cb0b7654fd8abcd4129551a2992cfcca871598b5fb6ed96f6efc",
       "declarations": [
         {
           "name": "GC.GeneralFlow.singular_time_gt_closed_end",
@@ -26353,7 +26353,7 @@
       "role": "geometrization_foundation",
       "source_checkout": "GC_BASELINE_EXPORT",
       "original_sha256": "cb8831f347a8fa7651f2aed9fa473bc751833fe3b034d1a7dc5e8310537eddce",
-      "sha256": "de0be6bce93a3271629dd74c2ebd556c785a42a35a0756f49273de5568541c0e",
+      "sha256": "0046c0d8483f96fb0465bb37863116df6403e27c2c0328785ae1ddde49c273a1",
       "declarations": [
         {
           "name": "GC.GeneralFlow.SurgeryEventControl",
@@ -33161,7 +33161,7 @@
       "role": "independent",
       "source_checkout": "GC_MIGRATED_435_RC3",
       "original_sha256": "4c098a17950b86dbd04f6aa15a3e965966eadd67b81fdb888dcda5e97d10a9a2",
-      "sha256": "4c098a17950b86dbd04f6aa15a3e965966eadd67b81fdb888dcda5e97d10a9a2",
+      "sha256": "14390829e9b86a732e3bedeb6d697903947f1800103fe3693468f2c106249f1f",
       "declarations": [
         {
           "name": "GC.MetricGeometry.KleinerLottApprox.strip_height_lt_of_rescaled_edgePoint",
@@ -33730,6 +33730,107 @@
           "direct_sorry": false
         }
       ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ProductResidualBound.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "31984a38aecbb530100c0ee70a14a0c42de238dde4f77b766b87fe6ce2c9ff27",
+      "sha256": "31984a38aecbb530100c0ee70a14a0c42de238dde4f77b766b87fe6ce2c9ff27",
+      "declarations": [
+        {
+          "name": "WithLp.snd_dist_sq_le_of_fst_dist_gap",
+          "kind": "theorem",
+          "line": 10,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.MetricGeometry.KleinerLottApprox.snd_dist_sq_le_of_coordinate_control",
+          "kind": "theorem",
+          "line": 30,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/VanishingProductResidual.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "984107f606524d4551c66bf5ef6f8d7056225c702317c751f4eb8f57a6b8c82c",
+      "sha256": "984107f606524d4551c66bf5ef6f8d7056225c702317c751f4eb8f57a6b8c82c",
+      "declarations": [
+        {
+          "name": "GC.MetricGeometry.eventually_residual_lt_of_coordinate_control",
+          "kind": "theorem",
+          "line": 15,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.MetricGeometry.PointedGHConverges.exists_subsequence_with_vanishing_tested_residual",
+          "kind": "theorem",
+          "line": 56,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/TestedResidualParameter.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "62d171b4df67f4e4e5e0677bc6bfa11ab6d179339ddaf49c87cb5295ba8009c6",
+      "sha256": "62d171b4df67f4e4e5e0677bc6bfa11ab6d179339ddaf49c87cb5295ba8009c6",
+      "declarations": [
+        {
+          "name": "GC.MetricGeometry.exists_tested_residual_parameter_of_nonnegative_models",
+          "kind": "theorem",
+          "line": 14,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/LipschitzScaleMultiplicity.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "11854655d3ec3c9b7d77e59db523c337ee89851fec6194fc42798c596f41fde9",
+      "sha256": "11854655d3ec3c9b7d77e59db523c337ee89851fec6194fc42798c596f41fde9",
+      "declarations": [
+        {
+          "name": "GC.MetricGeometry.card_le_of_lipschitz_scale_ball_overlap",
+          "kind": "theorem",
+          "line": 15,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "GC.MetricGeometry.exists_finite_scale_cover_with_multiplicity",
+          "kind": "theorem",
+          "line": 41,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/VanishingVolumeDimension.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "b7213e6e401a26e6115ec9487bcea055f9efb9ebea9dd1211ae860e2725a7ef5",
+      "sha256": "b7213e6e401a26e6115ec9487bcea055f9efb9ebea9dd1211ae860e2725a7ef5",
+      "declarations": [
+        {
+          "name": "GC.MetricGeometry.PointedGHConverges.dimH_le_two_of_vanishing_normalizedHausdorffMeasure",
+          "kind": "theorem",
+          "line": 18,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
     }
   ],
   "gate_sha256": "6a37a323d5f7cbd401e5176ee32063e407cdc9c6dbcb233147928c184c71dbd1",
@@ -33757,10 +33858,10 @@
     "GC.LongTime.late_derivative_tests_of_flow",
     "GC.LongTime.local_disk_comparisons_of_cusp_exterior"
   ],
-  "audit_sha256": "1822e86b84aab2e7fbb82445888df67035d33e5cee838d33fcc45d42691f88ed",
+  "audit_sha256": "37434940d55b347f48a5f45876fd4d1c561f696c2d3b8acc91539949322af506",
   "registry_sha256": {
     "docs/geometrization/skeleton/manifest.json": "991f5516f9483478a9da209aae88c2518cae29bf5408ff99a7f891849b0360a8",
-    "docs/geometrization/chapter3/manifest.json": "2bf33b713b6e000bf8667c7f9dbd1f2021b0c660d74a15d6ef0b2455cea4249e",
+    "docs/geometrization/chapter3/manifest.json": "5d2567b06fa9fc50d70205133ff3996a8d51437656539376aa86cf7c3e66e2b3",
     "docs/geometrization/MODULE_PLACEMENT.json": "dfebe13f228a574c8ba28286b3654cc766c14efd2cdca503fdd4ee464fc66d2c",
     "docs/geometrization/integration/historical/skeleton_67f27962/manifest.json": "c45e8acb4658d358e3e4208e843220a8f81095b01a77e445f46dcee53fea08b5",
     "docs/geometrization/integration/historical/original_options.json": "832d46987ba0f4611fc3c7adc6bd95f05e079e0031837db7e727ca2620880628",

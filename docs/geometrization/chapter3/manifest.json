@@ -5743,6 +5743,47 @@
       ],
       "contract_notes": "../chapter13/local_volume.md",
       "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/ProductResidualBound.lean",
+      "blueprint_nodes": [
+        "LPA03"
+      ],
+      "contract_notes": "../chapter13/tested_residual_and_local_bounds.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/VanishingProductResidual.lean",
+      "blueprint_nodes": [
+        "LPA03"
+      ],
+      "contract_notes": "../chapter13/tested_residual_and_local_bounds.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/TestedResidualParameter.lean",
+      "blueprint_nodes": [
+        "LPA03"
+      ],
+      "contract_notes": "../chapter13/tested_residual_and_local_bounds.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/LipschitzScaleMultiplicity.lean",
+      "blueprint_nodes": [
+        "LC86",
+        "LPA06"
+      ],
+      "contract_notes": "../chapter13/tested_residual_and_local_bounds.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Approximation/VanishingVolumeDimension.lean",
+      "blueprint_nodes": [
+        "LC07"
+      ],
+      "contract_notes": "../chapter13/tested_residual_and_local_bounds.md",
+      "status": "proved-subclaims"
     }
   ],
   "scope": "Independent metric, Alexandrov, local-collapse and finite-regularity leaves, registered against the accepted migrated upstream; see the joint integration receipt for verification status.",

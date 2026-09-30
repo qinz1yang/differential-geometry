@@ -54,7 +54,7 @@ theorem history_control_append {Q : OrientedThreeStage.{u}}
     rw [H.extendCoreEventFamily_castSucc]
     exact event_control_transport _ _ _ _ (H.coreEvent i) (hH i)
 
-theorem history_control_extend 
+theorem history_control_extend
     (H : RetainedCoreHistory.{u}) (hH : HistoryEventControl H) {T : ℝ}
     (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab

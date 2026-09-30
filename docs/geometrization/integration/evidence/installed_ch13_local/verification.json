@@ -1,0 +1,239 @@
+{
+  "success": true,
+  "scope": "Fresh direct elaboration of five installed Chapter 13 source files, five linters per module, literal public axiom prints, full generated declaration audits, and six actual applications. Imports resolved only from accepted production checkout and pinned RC3 packages; no scratch overlay.",
+  "checks": [
+    {
+      "source": "DifferentialGeometry/Geometry/Metric/Approximation/ProductResidualBound.lean",
+      "source_sha256": "31984a38aecbb530100c0ee70a14a0c42de238dde4f77b766b87fe6ce2c9ff27",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/ProductResidualBound.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_ch13_local/ProductResidualBound.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 2.3152389526367188
+    },
+    {
+      "source": "DifferentialGeometry/Geometry/Metric/Approximation/VanishingProductResidual.lean",
+      "source_sha256": "984107f606524d4551c66bf5ef6f8d7056225c702317c751f4eb8f57a6b8c82c",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/VanishingProductResidual.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_ch13_local/VanishingProductResidual.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 3.1016018390655518
+    },
+    {
+      "source": "DifferentialGeometry/Geometry/Metric/Approximation/TestedResidualParameter.lean",
+      "source_sha256": "62d171b4df67f4e4e5e0677bc6bfa11ab6d179339ddaf49c87cb5295ba8009c6",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/TestedResidualParameter.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_ch13_local/TestedResidualParameter.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 2.535701036453247
+    },
+    {
+      "source": "DifferentialGeometry/Geometry/Metric/LipschitzScaleMultiplicity.lean",
+      "source_sha256": "11854655d3ec3c9b7d77e59db523c337ee89851fec6194fc42798c596f41fde9",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Metric/LipschitzScaleMultiplicity.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_ch13_local/LipschitzScaleMultiplicity.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 1.8844280242919922
+    },
+    {
+      "source": "DifferentialGeometry/Geometry/Metric/Approximation/VanishingVolumeDimension.lean",
+      "source_sha256": "b7213e6e401a26e6115ec9487bcea055f9efb9ebea9dd1211ae860e2725a7ef5",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Metric/Approximation/VanishingVolumeDimension.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_ch13_local/VanishingVolumeDimension.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 2.2400660514831543
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/ch13_local_candidates/Applications.lean",
+      "source_sha256": "1137d8730b2c5112ac4c1e4dbdee4daff9b719c05bcb06498667237aeaa124fe",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/ch13_local_candidates/Applications.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_ch13_local/Applications.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 2.8295040130615234
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/ch13_local_candidates/MultiplicityApplications.lean",
+      "source_sha256": "869b4aebeaff0925d8656044decb7199995cf861e771a940bf6373d4a59cef0e",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/ch13_local_candidates/MultiplicityApplications.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_ch13_local/MultiplicityApplications.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 2.637742042541504
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/ch13_local_candidates/VolumeDimensionApplications.lean",
+      "source_sha256": "b1f33f538dea07d8bd33ab6b05e849e817104b6d932d61a4fcc7daf402b2c913",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/ch13_local_candidates/VolumeDimensionApplications.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_ch13_local/VolumeDimensionApplications.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 2.4079208374023438
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/ch13_local_candidates/Lint.lean",
+      "source_sha256": "d8f3bb94ec737780596ab9619bd11415c66748f930428e264e4c8f09943dca07",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/ch13_local_candidates/Lint.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_ch13_local/Lint.log",
+      "log_sha256": "a80b48ca50f2b77b6f16827a0943887f462d1bbaab659595e5d61b1b09828e95",
+      "silent": false,
+      "seconds": 4.945918321609497
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/ch13_local_candidates/Axioms.lean",
+      "source_sha256": "d475fea7ea150b26c65cd7f5e10a911584c2411d94bec381430c01b80efdc8be",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/ch13_local_candidates/Axioms.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_ch13_local/Axioms.log",
+      "log_sha256": "fd320b9832b0d779c55cf647099cf77c51a7dd8745bc9901c88132fe7fb45941",
+      "silent": false,
+      "seconds": 2.1766550540924072
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/ch13_local_candidates/Audit.lean",
+      "source_sha256": "fd7c4eddb41347023e77aee5839867510c5407eeebb4224289da5d7d60d3aaa6",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "-DmaxHeartbeats=16000000",
+        "-DmaxRecDepth=100000",
+        "-Dpp.maxSteps=50000",
+        "-Dpp.universes=true",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/ch13_local_candidates/Audit.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_ch13_local/Audit.log",
+      "log_sha256": "f74841bd57f5e8c9496d376cd025b7d8370a3a2b020f9ddbec995eff47400899",
+      "silent": false,
+      "seconds": 29.026094913482666
+    }
+  ],
+  "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "elaborated_declarations": 10,
+  "upstream_commit": "777299070a5529e96345e0033979706fd00c7e62",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e"
+}

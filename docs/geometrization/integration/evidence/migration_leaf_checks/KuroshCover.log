@@ -1,0 +1,72 @@
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:146:8: warning: Unused tactic linter: `change
+  (treeKuroshProductToH G H p).1 • rawTreeRepresentative G H a =
+    (treeKuroshProductToH G H q).1 • rawTreeRepresentative G H a` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:513:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:519:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:559:19: warning: This simp argument is unused:
+  Sum.rec
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:573:34: warning: This simp argument is unused:
+  Category.comp_id
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Groupoid.inv_eq_inv, Category.assoc, IsIso.inv_hom_id_assoc, Category.id_comp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:573:52: warning: This simp argument is unused:
+  Category.id_comp
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Groupoid.inv_eq_inv, Category.assoc, IsIso.inv_hom_id_assoc, Category.comp_id]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:598:50: warning: This simp argument is unused:
+  Groupoid.inv_comp
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Groupoid.inv_eq_inv, IsIso.inv_comp, IsIso.inv_inv, IsIso.inv_hom_id_assoc, Category.assoc,
+    Category.comp_id, Category.id_comp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:599:10: warning: This simp argument is unused:
+  Category.comp_id
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Groupoid.inv_eq_inv, IsIso.inv_comp, IsIso.inv_inv, IsIso.inv_hom_id_assoc, Category.assoc,
+    Groupoid.inv_comp, Category.id_comp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:599:28: warning: This simp argument is unused:
+  Category.id_comp
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Groupoid.inv_eq_inv, IsIso.inv_comp, IsIso.inv_inv, IsIso.inv_hom_id_assoc, Category.assoc,
+    Groupoid.inv_comp, Category.comp_id]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean:547:4: warning: `simp [coverPathValue, coverPathFreeLoop, coverFreeGroupoidPathHom,
+      coverQuotientTreePathHom_root]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+`exact (treeKuroshFreeInclusion G H).map_one`
+modifies the current goal, which was modified by the flexible tactic `simp` on line 547!

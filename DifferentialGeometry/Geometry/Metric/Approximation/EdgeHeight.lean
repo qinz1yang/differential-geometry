@@ -39,7 +39,7 @@ theorem strip_height_lt_of_rescaled_edgePoint {Δ b' s' c R S r t : ℝ}
     obtain ⟨x, hx, hxy, _⟩ := hcover y hy hnorm.le
     have hxy' : dist y (F.stripMap G x) ≤ 4 * (b + s) := by rw [dist_comm]; linarith
     exact (infDist_le_dist_of_mem (show F.stripMap G x ∈ F.stripMap G '' ball p S from
-      ⟨x, hx, rfl⟩)).trans hxy' 
+      ⟨x, hx, rfl⟩)).trans hxy'
 
 theorem strip_height_lt_of_weak_edge {Δ τ b' s' : ℝ} {Λ : NNReal} {ρ : X → ℝ}
     (F : KleinerLottApprox p (WithLp.toLp 2 ((0 : ℝ), q)) b)

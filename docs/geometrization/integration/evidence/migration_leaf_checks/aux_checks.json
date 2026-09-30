@@ -1,0 +1,10 @@
+[
+  {
+    "check": "Axioms",
+    "exit_code": 0
+  },
+  {
+    "check": "Lint",
+    "exit_code": 1
+  }
+]

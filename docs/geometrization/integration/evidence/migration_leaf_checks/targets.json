@@ -1,0 +1,4347 @@
+[
+  {
+    "path": "DifferentialGeometry/Geometry/Comparison/ModelSide.lean",
+    "role": "independent",
+    "source_checkout": "GC_CHAPTER3_435_RC3",
+    "original_sha256": "849095c5e43a3f4a19c1eae06b261199ef847cb7e1ee122a4ff413543a445996",
+    "sha256": "7e254edd543cb19618992ed4a5b91cb88627fcb89bc0126701e84c5e063c2365",
+    "declarations": [
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature",
+        "kind": "def",
+        "line": 10,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.hyperbolic_cosine_law_ge_one",
+        "kind": "theorem",
+        "line": 15,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_nonneg",
+        "kind": "theorem",
+        "line": 23,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.cosh_sqrt_mul_modelSideNegCurvature",
+        "kind": "theorem",
+        "line": 32,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_pi",
+        "kind": "theorem",
+        "line": 43,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_zero_angle",
+        "kind": "theorem",
+        "line": 55,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_mono_angle",
+        "kind": "theorem",
+        "line": 67,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_mem_Icc",
+        "kind": "theorem",
+        "line": 88,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_zero_sq",
+        "kind": "theorem",
+        "line": 97,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_comparisonAngle",
+        "kind": "theorem",
+        "line": 104,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_modelSide",
+        "kind": "theorem",
+        "line": 123,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_comm",
+        "kind": "theorem",
+        "line": 138,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_zero_left",
+        "kind": "theorem",
+        "line": 147,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.modelSideNegCurvature_zero_right",
+        "kind": "theorem",
+        "line": 158,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.tendsto_modelSideNegCurvature",
+        "kind": "theorem",
+        "line": 163,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Comparison/CrossingLineCoordinates.lean",
+    "role": "independent",
+    "source_checkout": "GC_CHAPTER3_435_RC3",
+    "original_sha256": "4eebff5a9143ccb812195195fe946f686087865fc356e3d9a37cc626ae58aa6c",
+    "sha256": "ad8489e941f41a9a6719ae1d6f5897e8fe99e4cc6b2e6fec07e5a101376fb086",
+    "declarations": [
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_crossing_isometries_reciprocity",
+        "kind": "theorem",
+        "line": 13,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_crossing_isometry",
+        "kind": "theorem",
+        "line": 23,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.sq_dist_crossing_isometries",
+        "kind": "theorem",
+        "line": 32,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngle_crossing_isometries",
+        "kind": "theorem",
+        "line": 41,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.germComparisonAngle_crossing_isometries",
+        "kind": "theorem",
+        "line": 50,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.lineCoordinate_crossing_isometry_eq_zero_of_right_angle",
+        "kind": "theorem",
+        "line": 61,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Comparison/ConeComparisonAngle.lean",
+    "role": "independent",
+    "source_checkout": "GC_CHAPTER3_435_RC3",
+    "original_sha256": "58dfe0c1f2cf5cc15b0ddd9327f83007c08cd0ca9e98fb5daa1013e71edf0883",
+    "sha256": "29277c182141cc0bcac5171f1c822fba70ffc197e5a1728395568efab80afae1",
+    "declarations": [
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngle_tip_mk",
+        "kind": "theorem",
+        "line": 15,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.dist_add_eq_pi_of_cone_comparison",
+        "kind": "theorem",
+        "line": 31,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Comparison/EuclideanTangentFrame.lean",
+    "role": "independent",
+    "source_checkout": "GC_CHAPTER3_435_RC3",
+    "original_sha256": "184c1d8c5372a774af08ebf0664d0f8077dc999a710d074083a560582b6f9dbc",
+    "sha256": "e7ecc34144ee58d0b4456ae81e47221502a0ffef5e82fd450f32bfb753d4b2f5",
+    "declarations": [
+      {
+        "name": "Metric.EuclideanCone.germComparisonAngle_twoRayPath",
+        "kind": "theorem",
+        "line": 14,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.exists_pointed_euclidean_tangent_of_orthogonal_frame",
+        "kind": "theorem",
+        "line": 41,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Comparison/ConeSecantLift.lean",
+    "role": "independent",
+    "source_checkout": "GC_CHAPTER3_435_RC3",
+    "original_sha256": "47212f0d8e421500c9656e76ae7ceee7f68b254cb75efeaf2e8b3948b42a3635",
+    "sha256": "e9aa15553573debc0138e07964632372771ad1225caf8713fcbd7c0755510c5c",
+    "declarations": [
+      {
+        "name": "Metric.EuclideanCone.secLift",
+        "kind": "def",
+        "line": 15,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "Metric.EuclideanCone.radius_secLift",
+        "kind": "theorem",
+        "line": 20,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "Metric.EuclideanCone.secLift_self",
+        "kind": "theorem",
+        "line": 24,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "Metric.EuclideanCone.dist_mk_one_secLift",
+        "kind": "theorem",
+        "line": 29,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "Metric.EuclideanCone.dist_mk_one_secLift_pos",
+        "kind": "theorem",
+        "line": 55,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngle_secLift",
+        "kind": "theorem",
+        "line": 68,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/Kurosh.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "cc8ed0703d37051afe28fffa916366ac0d75e147162834d0a527ee2dca6bdc2a",
+    "sha256": "717a62f4ee9525b30b8f0bae0ddbd3b055c55e484e8ef447e5cd4d06e8a90375",
+    "declarations": [
+      {
+        "name": "GraphCoveringTheory.Kurosh.FreeProduct",
+        "kind": "abbrev",
+        "line": 49,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.factorInclusion",
+        "kind": "def",
+        "line": 52,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.factorInclusion_apply",
+        "kind": "theorem",
+        "line": 56,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.factorInclusion_injective",
+        "kind": "theorem",
+        "line": 59,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.conjugateSubgroup",
+        "kind": "def",
+        "line": 72,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.mem_conjugateSubgroup_iff",
+        "kind": "theorem",
+        "line": 76,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.intersectionFactor",
+        "kind": "def",
+        "line": 86,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.intersectionFactorInH",
+        "kind": "def",
+        "line": 91,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.intersectionFactorInH_coe_mem",
+        "kind": "theorem",
+        "line": 95,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.DoubleCosetIndex",
+        "kind": "abbrev",
+        "line": 110,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.doubleCosetRepresentative",
+        "kind": "def",
+        "line": 115,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.doubleCosetRepresentative_mk",
+        "kind": "theorem",
+        "line": 120,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.doubleCosetIndex_eq_iff",
+        "kind": "theorem",
+        "line": 128,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.wordInv",
+        "kind": "def",
+        "line": 145,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.wordInv_toList",
+        "kind": "theorem",
+        "line": 159,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.wordInv_prod",
+        "kind": "theorem",
+        "line": 163,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.wordInv_wordInv",
+        "kind": "theorem",
+        "line": 169,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.wordLastIdx",
+        "kind": "def",
+        "line": 174,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.head_reverse_map",
+        "kind": "lemma",
+        "line": 177,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.wordLastIdx_ne_iff",
+        "kind": "theorem",
+        "line": 183,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightTail",
+        "kind": "def",
+        "line": 198,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightHead",
+        "kind": "def",
+        "line": 202,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightTail_lastIdx_ne",
+        "kind": "theorem",
+        "line": 206,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.RightFactorWord",
+        "kind": "abbrev",
+        "line": 214,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightTailCanonical",
+        "kind": "def",
+        "line": 217,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightTail_of_lastIdx_ne",
+        "kind": "theorem",
+        "line": 221,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.equivPair_head_ne_one_of_fstIdx_eq",
+        "kind": "theorem",
+        "line": 229,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightHead_ne_one_of_lastIdx_eq",
+        "kind": "theorem",
+        "line": 240,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.right_syllable_decomposition",
+        "kind": "theorem",
+        "line": 247,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightAppend",
+        "kind": "def",
+        "line": 262,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.wordInv_cons_rightAppend",
+        "kind": "theorem",
+        "line": 268,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightAppend_prod",
+        "kind": "theorem",
+        "line": 276,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.equivPair_cons_rightAppend",
+        "kind": "theorem",
+        "line": 285,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightAppend_rightTail",
+        "kind": "theorem",
+        "line": 298,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightAppend_rightHead",
+        "kind": "theorem",
+        "line": 307,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.word_equiv_mul_rightAppend",
+        "kind": "theorem",
+        "line": 316,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightTail_equiv_mul_factor",
+        "kind": "theorem",
+        "line": 326,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightTail_eq_of_prod_eq_mul_factor",
+        "kind": "theorem",
+        "line": 339,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightAppendCanonical",
+        "kind": "def",
+        "line": 349,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightAppendCanonical_of_lastIdx_eq",
+        "kind": "theorem",
+        "line": 353,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.BassSerreVertex",
+        "kind": "inductive",
+        "line": 383,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.BassSerreEdge",
+        "kind": "inductive",
+        "line": 388,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.bassSerreWord_path",
+        "kind": "theorem",
+        "line": 401,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.bassSerreFactor_path",
+        "kind": "theorem",
+        "line": 432,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.bassSerre_rootedConnected",
+        "kind": "theorem",
+        "line": 439,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.bassSerreTree",
+        "kind": "def",
+        "line": 449,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightCosetSetoid",
+        "kind": "def",
+        "line": 474,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.RightCoset",
+        "kind": "abbrev",
+        "line": 492,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightCosetMk",
+        "kind": "def",
+        "line": 495,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightCosetMk_eq_iff",
+        "kind": "theorem",
+        "line": 498,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightCosetMk_smul",
+        "kind": "theorem",
+        "line": 525,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rightCoset_stabilizer_iff",
+        "kind": "theorem",
+        "line": 530,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.FactorCoset",
+        "kind": "abbrev",
+        "line": 549,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.factorCosetMk",
+        "kind": "def",
+        "line": 552,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.factorCoset_mul_factor",
+        "kind": "theorem",
+        "line": 556,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.RawBassSerreVertex",
+        "kind": "inductive",
+        "line": 565,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.RawBassSerreEdge",
+        "kind": "inductive",
+        "line": 570,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreWord_path",
+        "kind": "theorem",
+        "line": 580,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreFactor_path",
+        "kind": "theorem",
+        "line": 626,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerre_rootedConnected",
+        "kind": "theorem",
+        "line": 640,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreTree",
+        "kind": "def",
+        "line": 651,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerre_factor_fixed_iff",
+        "kind": "theorem",
+        "line": 689,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerre_factor_orbit_iff",
+        "kind": "theorem",
+        "line": 704,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.KuroshFactorIndex",
+        "kind": "abbrev",
+        "line": 743,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.kuroshFactorRepresentative",
+        "kind": "def",
+        "line": 747,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.kuroshFactorSubgroup",
+        "kind": "def",
+        "line": 752,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerre_central_fixed_iff",
+        "kind": "theorem",
+        "line": 758,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.kurosh_factor_subgroup_is_stabilizer",
+        "kind": "theorem",
+        "line": 771,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.actionOrbitSetoid",
+        "kind": "def",
+        "line": 792,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.ActionOrbit",
+        "kind": "abbrev",
+        "line": 808,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.actionOrbitMk",
+        "kind": "def",
+        "line": 811,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.actionOrbitMk_eq_iff",
+        "kind": "theorem",
+        "line": 815,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.actionOrbitMk_smul",
+        "kind": "theorem",
+        "line": 827,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreEdgeData",
+        "kind": "def",
+        "line": 832,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreEdgeDataSource",
+        "kind": "def",
+        "line": 835,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreEdgeDataTarget",
+        "kind": "def",
+        "line": 839,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreEdgeDataAction",
+        "kind": "def",
+        "line": 843,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreEdgeData_source_action",
+        "kind": "theorem",
+        "line": 859,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreEdgeData_target_action",
+        "kind": "theorem",
+        "line": 864,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreEdgeDataOf",
+        "kind": "def",
+        "line": 890,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreEdgeDataOf_source",
+        "kind": "theorem",
+        "line": 896,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreEdgeDataOf_target",
+        "kind": "theorem",
+        "line": 901,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreEdgeAction",
+        "kind": "def",
+        "line": 906,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreSymmEdgeAction",
+        "kind": "def",
+        "line": 915,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerrePathAction",
+        "kind": "def",
+        "line": 923,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.RawBassSerreOrbitVertex",
+        "kind": "abbrev",
+        "line": 933,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.RawBassSerreOrbitEdge",
+        "kind": "abbrev",
+        "line": 937,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.kuroshFactorOrbitVertex",
+        "kind": "def",
+        "line": 942,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.kuroshFactorOrbitVertex_eq_iff",
+        "kind": "theorem",
+        "line": 949,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitEdgeSource",
+        "kind": "def",
+        "line": 1005,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitEdgeTarget",
+        "kind": "def",
+        "line": 1018,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitQuiver",
+        "kind": "def",
+        "line": 1032,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitEdgeMk",
+        "kind": "def",
+        "line": 1043,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitQuiverEdge",
+        "kind": "def",
+        "line": 1048,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitEdgeSource_mk",
+        "kind": "theorem",
+        "line": 1055,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitEdgeTarget_mk",
+        "kind": "theorem",
+        "line": 1063,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitEdgeMap",
+        "kind": "def",
+        "line": 1071,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitPrefunctor",
+        "kind": "def",
+        "line": 1080,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitPrefunctorToSymm",
+        "kind": "def",
+        "line": 1086,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitSymmPrefunctor",
+        "kind": "def",
+        "line": 1092,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitQuiver_rootedConnected",
+        "kind": "theorem",
+        "line": 1098,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitTree",
+        "kind": "def",
+        "line": 1119,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitRoot",
+        "kind": "def",
+        "line": 1136,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawOrbitAlign",
+        "kind": "def",
+        "line": 1141,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawOrbitAlign_spec",
+        "kind": "theorem",
+        "line": 1148,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.wideSubquiverInclusion",
+        "kind": "def",
+        "line": 1156,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeInclusion",
+        "kind": "def",
+        "line": 1161,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeEdgeMap",
+        "kind": "def",
+        "line": 1168,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeQuiver",
+        "kind": "def",
+        "line": 1184,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreePathMap",
+        "kind": "def",
+        "line": 1200,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeQuiverRoot",
+        "kind": "def",
+        "line": 1216,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeQuiverRoot_eq",
+        "kind": "theorem",
+        "line": 1222,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreePath",
+        "kind": "def",
+        "line": 1227,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreePathMap_cons_raw",
+        "kind": "theorem",
+        "line": 1241,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeLiftPath",
+        "kind": "def",
+        "line": 1260,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeRepresentative",
+        "kind": "def",
+        "line": 1345,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeRepresentative_orbit",
+        "kind": "theorem",
+        "line": 1353,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeRawData",
+        "kind": "def",
+        "line": 1362,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeRawData_mk",
+        "kind": "theorem",
+        "line": 1368,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeSource_orbit",
+        "kind": "theorem",
+        "line": 1376,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeTarget_orbit",
+        "kind": "theorem",
+        "line": 1389,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeSourceAlign",
+        "kind": "def",
+        "line": 1402,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeSourceAlign_spec",
+        "kind": "theorem",
+        "line": 1409,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeAlignedTarget",
+        "kind": "def",
+        "line": 1418,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeAlignedTarget_orbit",
+        "kind": "theorem",
+        "line": 1425,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeRepresentative_of_tree_edge",
+        "kind": "theorem",
+        "line": 1438,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeTargetAlign",
+        "kind": "def",
+        "line": 1462,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeTargetAlign_spec",
+        "kind": "theorem",
+        "line": 1469,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeDirectTargetAlign",
+        "kind": "def",
+        "line": 1477,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeDirectTargetAlign_spec",
+        "kind": "theorem",
+        "line": 1484,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeRepresentative_of_tree_edge_neg",
+        "kind": "theorem",
+        "line": 1493,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeLabel",
+        "kind": "def",
+        "line": 1520,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeCoherentSourceAlign",
+        "kind": "def",
+        "line": 1532,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeCoherentSourceAlign_spec",
+        "kind": "theorem",
+        "line": 1541,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeLabel_transport_coherent",
+        "kind": "theorem",
+        "line": 1553,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientGraphLabelPrefunctor",
+        "kind": "def",
+        "line": 1580,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.freeGroupoidPathHom",
+        "kind": "def",
+        "line": 1586,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.freeGroupoidPathHom_nil",
+        "kind": "theorem",
+        "line": 1600,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.freeGroupoidPathHom_nil_public",
+        "kind": "theorem",
+        "line": 1609,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.freeGroupoidPathHom_cons",
+        "kind": "theorem",
+        "line": 1617,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.freeGroupoid_isConnected_of_rootedConnected",
+        "kind": "theorem",
+        "line": 1634,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.freeGroupoidBaseObj",
+        "kind": "def",
+        "line": 1652,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.freeGroupoidCategoryQuiver",
+        "kind": "def",
+        "line": 1656,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.freeGroupoidGeneratorQuiver",
+        "kind": "def",
+        "line": 1662,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.freeGroupoidGeneratorArrow",
+        "kind": "def",
+        "line": 1667,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.freeGroupoidGeneratorArrow_up",
+        "kind": "theorem",
+        "line": 1678,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.KuroshFreePart",
+        "kind": "abbrev",
+        "line": 1719,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.kuroshFreePartHom",
+        "kind": "def",
+        "line": 1724,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientTreePathHom",
+        "kind": "def",
+        "line": 1732,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeLoop",
+        "kind": "def",
+        "line": 1746,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientPathValue",
+        "kind": "def",
+        "line": 1754,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientSymmEdgeLabel",
+        "kind": "def",
+        "line": 1761,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientRawPathValue",
+        "kind": "def",
+        "line": 1771,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientPathValue_of",
+        "kind": "theorem",
+        "line": 1781,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientPathValue_comp",
+        "kind": "theorem",
+        "line": 1792,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientPathValue_inv",
+        "kind": "theorem",
+        "line": 1804,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientRawPathValue_nil",
+        "kind": "theorem",
+        "line": 1814,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientRawPathValue_cons",
+        "kind": "theorem",
+        "line": 1824,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientGraphFunctor_map_pos",
+        "kind": "theorem",
+        "line": 1846,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitTree_root_eq",
+        "kind": "theorem",
+        "line": 1857,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawBassSerreOrbitTreeRootVertex",
+        "kind": "def",
+        "line": 1863,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeInclusion_mapPath_asRaw",
+        "kind": "def",
+        "line": 1868,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeInclusion_mapPath_asRaw_nil",
+        "kind": "theorem",
+        "line": 1884,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeInclusion_mapPath_asRaw_cons",
+        "kind": "theorem",
+        "line": 1901,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeRootPath",
+        "kind": "def",
+        "line": 1918,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeRootPath_nil",
+        "kind": "theorem",
+        "line": 1933,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreeRootPath_cons",
+        "kind": "theorem",
+        "line": 1945,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreePathAtRoot",
+        "kind": "def",
+        "line": 1961,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreePathAtRoot_eq_rawTreePath",
+        "kind": "theorem",
+        "line": 1970,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.rawTreePathAtRoot_cons",
+        "kind": "theorem",
+        "line": 1978,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientTreePathHom_eq_rawTreePathAtRoot",
+        "kind": "theorem",
+        "line": 1997,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientSymmEdgeLabel_tree",
+        "kind": "theorem",
+        "line": 2008,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientRawPathValue_tree",
+        "kind": "theorem",
+        "line": 2022,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientTreePathValue_one",
+        "kind": "theorem",
+        "line": 2035,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.kuroshFreePartHom_apply",
+        "kind": "theorem",
+        "line": 2042,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.kuroshFreePartHom_quotientEdgeLoop",
+        "kind": "theorem",
+        "line": 2048,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeLoop_tree_pos",
+        "kind": "theorem",
+        "line": 2059,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.quotientEdgeLoop_tree_neg",
+        "kind": "theorem",
+        "line": 2090,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.kuroshFreePartHom_quotientEdgeLoop_tree_pos",
+        "kind": "theorem",
+        "line": 2121,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.kuroshFreePartHom_quotientEdgeLoop_tree_neg",
+        "kind": "theorem",
+        "line": 2129,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.KuroshComponentIndex",
+        "kind": "abbrev",
+        "line": 2153,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.KuroshComponent",
+        "kind": "def",
+        "line": 2158,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.treeVertexStabilizer",
+        "kind": "abbrev",
+        "line": 2182,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.TreeKuroshComponentIndex",
+        "kind": "abbrev",
+        "line": 2187,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.TreeKuroshComponent",
+        "kind": "def",
+        "line": 2191,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.TreeKuroshProduct",
+        "kind": "abbrev",
+        "line": 2211,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.treeKuroshComponentHom",
+        "kind": "def",
+        "line": 2215,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.treeKuroshProductToH",
+        "kind": "def",
+        "line": 2236,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.treeKuroshVertexInclusion",
+        "kind": "def",
+        "line": 2241,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.treeKuroshFreeInclusion",
+        "kind": "def",
+        "line": 2263,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.treeKuroshProductToH_vertex",
+        "kind": "theorem",
+        "line": 2285,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.treeKuroshProductToH_free",
+        "kind": "theorem",
+        "line": 2299,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.KuroshProduct",
+        "kind": "abbrev",
+        "line": 2316,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCover.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "59fe14b001c7499f7d4e78571f2ff64fd2a55ee3a28b93f6c04540de6dea5b8e",
+    "sha256": "886b32968e6e326d8f34a8b84749051f11e6bd12df9baf9d549493215b989ab0",
+    "declarations": [
+      {
+        "name": "GraphCoveringTheory.Kurosh.CoverSource",
+        "kind": "abbrev",
+        "line": 30,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.CoverVertexCoset",
+        "kind": "abbrev",
+        "line": 34,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.CoverVertex",
+        "kind": "abbrev",
+        "line": 39,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.CoverEdge",
+        "kind": "abbrev",
+        "line": 43,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverEdgeLetter",
+        "kind": "def",
+        "line": 47,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverEdgeSource",
+        "kind": "def",
+        "line": 52,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverEdgeTarget",
+        "kind": "def",
+        "line": 58,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverQuiver",
+        "kind": "def",
+        "line": 65,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverSourceMulAction_mk",
+        "kind": "theorem",
+        "line": 118,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverSource_vertexRange_smul",
+        "kind": "theorem",
+        "line": 126,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverVertexMap",
+        "kind": "def",
+        "line": 136,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverVertexMap_mk",
+        "kind": "theorem",
+        "line": 170,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverEdgeMap",
+        "kind": "def",
+        "line": 178,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverVertexMk",
+        "kind": "def",
+        "line": 259,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverBaseEdge",
+        "kind": "def",
+        "line": 266,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPositiveLiftEdge",
+        "kind": "def",
+        "line": 272,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverNegativeLiftEdge",
+        "kind": "def",
+        "line": 282,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverGraphLabelPrefunctor",
+        "kind": "def",
+        "line": 303,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverFreeGroupoidPathHom",
+        "kind": "def",
+        "line": 311,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverFreeGroupoidPathHom_cons",
+        "kind": "theorem",
+        "line": 331,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPathValueOpp",
+        "kind": "def",
+        "line": 355,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPathValue",
+        "kind": "def",
+        "line": 365,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPathValueOpp_nil",
+        "kind": "theorem",
+        "line": 381,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPathValueOpp_pos",
+        "kind": "theorem",
+        "line": 390,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPathValueOpp_neg",
+        "kind": "theorem",
+        "line": 407,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPathValue_nil",
+        "kind": "theorem",
+        "line": 461,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPathValue_pos",
+        "kind": "theorem",
+        "line": 473,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPathValue_neg",
+        "kind": "theorem",
+        "line": 486,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPathFreeLoop",
+        "kind": "def",
+        "line": 498,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverQuotientTreePathHom_root",
+        "kind": "theorem",
+        "line": 509,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPathValue_formula",
+        "kind": "theorem",
+        "line": 530,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPathLift",
+        "kind": "def",
+        "line": 604,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPathLift_value",
+        "kind": "theorem",
+        "line": 630,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.coverPrefunctor",
+        "kind": "def",
+        "line": 663,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.treeKuroshVertexInclusion_injective",
+        "kind": "theorem",
+        "line": 669,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverStar.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "95b8bae2cf0a530a39f0721c9ee8ed6ee556d73961d592dc492acde18723a7bd",
+    "sha256": "23283d104285d23e8cea47de4fe98c1df4b347ffc7378ff5d4cfa1aacd3250b0",
+    "declarations": [
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawBassSerreEdgeData_action_injective",
+        "kind": "theorem",
+        "line": 23,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawBassSerreEdgeDataOf_cast",
+        "kind": "theorem",
+        "line": 33,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverEdgeMap_data",
+        "kind": "theorem",
+        "line": 43,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverVertexMap_orbit",
+        "kind": "theorem",
+        "line": 55,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawEdgeAlign",
+        "kind": "def",
+        "line": 70,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawEdgeAlign_spec",
+        "kind": "theorem",
+        "line": 77,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_quotientEdgeRawData_cast",
+        "kind": "theorem",
+        "line": 85,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_quotientEdgeRawData_orbit_of_raw",
+        "kind": "theorem",
+        "line": 97,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawStar_eq_of_data_eq",
+        "kind": "theorem",
+        "line": 117,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverStarInv",
+        "kind": "def",
+        "line": 129,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverPrefunctor_star_inv",
+        "kind": "theorem",
+        "line": 245,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverStar_data_eq",
+        "kind": "theorem",
+        "line": 259,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverEdge_eq_of_val_eq",
+        "kind": "theorem",
+        "line": 275,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverEdge_eq_of_base_val_eq",
+        "kind": "theorem",
+        "line": 292,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverSource_coset_eq_of_edge_eq",
+        "kind": "theorem",
+        "line": 317,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverEdge_base_eq_of_map_data_eq",
+        "kind": "theorem",
+        "line": 335,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverEdge_pair_eq_of_map_data_eq",
+        "kind": "theorem",
+        "line": 383,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverStar_eq_of_pair_eq",
+        "kind": "theorem",
+        "line": 466,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverPrefunctor_star_injective",
+        "kind": "theorem",
+        "line": 480,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverPrefunctor_star_bijective",
+        "kind": "theorem",
+        "line": 493,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshFreeFiber.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "824db3d9a1d79ad852ac69da0298fe06466afdea23191729db37153357dd2c92",
+    "sha256": "84acdc8ae2f6a9381bd0c8100003dfaa0994b7825fd8ba835d814e516abee2b5",
+    "declarations": [
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverFreeGroupoidPathHom_eq_quotient_map",
+        "kind": "theorem",
+        "line": 18,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverFreePath_exists",
+        "kind": "theorem",
+        "line": 35,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshFreePart.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "35fa2ff9c9598842a1f65c16b7c9c95391e93ae01fc1a3be5419681365b532f4",
+    "sha256": "9162f4cb9a7496fa114207125490937631e27d0500cf47986908652526efee0d",
+    "declarations": [
+      {
+        "name": "GraphCoveringTheory.Kurosh.testQuotientPathLift",
+        "kind": "def",
+        "line": 22,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitAction_source_eq",
+        "kind": "theorem",
+        "line": 113,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitAction_target_eq",
+        "kind": "theorem",
+        "line": 129,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitQuiverEdge",
+        "kind": "def",
+        "line": 154,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitQuiverEdge_toPos_heq",
+        "kind": "theorem",
+        "line": 161,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitQuiverEdge_toNeg_heq",
+        "kind": "theorem",
+        "line": 169,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitQuiverEdge_action_pos_heq",
+        "kind": "theorem",
+        "line": 177,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitQuiverEdge_action_neg_heq",
+        "kind": "theorem",
+        "line": 188,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitMap_action_pos",
+        "kind": "theorem",
+        "line": 199,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitMap_action_neg",
+        "kind": "theorem",
+        "line": 236,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawTreeRepresentative_smul_orbit",
+        "kind": "theorem",
+        "line": 273,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_path_cast_nil",
+        "kind": "theorem",
+        "line": 296,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitSymm_map_pos_cast",
+        "kind": "theorem",
+        "line": 304,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitSymm_map_neg_cast",
+        "kind": "theorem",
+        "line": 327,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitEdge_cast_eq",
+        "kind": "theorem",
+        "line": 350,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitSymm_toPos_cast_eq",
+        "kind": "theorem",
+        "line": 375,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitSymm_toPos_map_cast_eq",
+        "kind": "theorem",
+        "line": 400,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawOrbitSymm_toNeg_map_cast_eq",
+        "kind": "theorem",
+        "line": 428,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_path_cons_cast",
+        "kind": "theorem",
+        "line": 456,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_hom_cast_cast_explicit",
+        "kind": "theorem",
+        "line": 471,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_hom_cast_proof_irrel",
+        "kind": "theorem",
+        "line": 481,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_lift_pos_edge_map",
+        "kind": "theorem",
+        "line": 492,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_lift_neg_edge_map",
+        "kind": "theorem",
+        "line": 630,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testQuotientPathLift_map",
+        "kind": "theorem",
+        "line": 775,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testQuotientPathLift_value",
+        "kind": "theorem",
+        "line": 893,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_homOfEq_comp_homOfEq",
+        "kind": "theorem",
+        "line": 970,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawOrbitFreeGroupoidFunctor",
+        "kind": "def",
+        "line": 978,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawOrbitFreeGroupoidFunctor_obj",
+        "kind": "def",
+        "line": 985,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawOrbitFreeGroupoidFunctor_map_of",
+        "kind": "theorem",
+        "line": 1001,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawOrbitFreeGroupoidFunctor_map_path",
+        "kind": "theorem",
+        "line": 1034,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawFreeGroupoid_end_subsingleton_at",
+        "kind": "theorem",
+        "line": 1101,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_homOfEq_id",
+        "kind": "theorem",
+        "line": 1126,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testFreePathHom_cast",
+        "kind": "theorem",
+        "line": 1132,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testFreePathHom_cast_loop_eq_one",
+        "kind": "theorem",
+        "line": 1148,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testQuotientFreePathHom_eq_one_of_value_one",
+        "kind": "theorem",
+        "line": 1165,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testFreePathHom_eq_quotient_map",
+        "kind": "theorem",
+        "line": 1250,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testOrbitFreePathHom_eq_quotient_map",
+        "kind": "theorem",
+        "line": 1263,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testQuotientRawPathValue_testFreePathHom",
+        "kind": "theorem",
+        "line": 1388,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testKuroshFreePartHom_kernel",
+        "kind": "theorem",
+        "line": 1494,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testKuroshFreePartHom_injective",
+        "kind": "theorem",
+        "line": 1525,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshRawPathValue.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "6d35589896363d4c41de430cc7c39f0021e26585beeeebdfbaa7a494d44b1657",
+    "sha256": "5cafd837cef2f94753e5c483788b443ebd1e711434c0734f68e15ddd17cc87bd",
+    "declarations": [
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_coverPathValue_rawTree",
+        "kind": "theorem",
+        "line": 20,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/External/GraphCoveringTheory/KuroshTree.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "25c739101df0c949d514be7757eb831cdaf7787f8da3d5d6ed8b500622c191d2",
+    "sha256": "302b4f19a718fdbcdc98b3a7c59d4055425f35db5f95d9c48e7dd5346370ebaa",
+    "declarations": [
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRightAppendLastIdx",
+        "kind": "theorem",
+        "line": 22,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testFactorCentralInjective",
+        "kind": "theorem",
+        "line": 30,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassAllEdge",
+        "kind": "abbrev",
+        "line": 59,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassEdgeCode",
+        "kind": "abbrev",
+        "line": 63,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassEdgeCodeOf",
+        "kind": "def",
+        "line": 68,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassEdgeOfCode",
+        "kind": "def",
+        "line": 73,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassEdgeCodeOf_ofCode",
+        "kind": "theorem",
+        "line": 83,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassEdgeOfCode_of",
+        "kind": "theorem",
+        "line": 90,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassEdgeTarget",
+        "kind": "def",
+        "line": 98,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassEdgeCodeTarget",
+        "kind": "def",
+        "line": 102,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassEdgeTarget_ofCode",
+        "kind": "theorem",
+        "line": 108,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassEdgeCodeTarget_injective",
+        "kind": "theorem",
+        "line": 116,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassAllEdge_target_injective",
+        "kind": "theorem",
+        "line": 147,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassUniqueIncoming",
+        "kind": "theorem",
+        "line": 163,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testWordLastIdx_exists",
+        "kind": "theorem",
+        "line": 172,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassRootOrArrow",
+        "kind": "theorem",
+        "line": 189,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassHeight",
+        "kind": "def",
+        "line": 215,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassHeight_lt",
+        "kind": "theorem",
+        "line": 220,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassSerreFullArborescence",
+        "kind": "def",
+        "line": 229,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassHeight_root",
+        "kind": "theorem",
+        "line": 247,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassHeight_edge_eq_succ",
+        "kind": "theorem",
+        "line": 252,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassSymmHeight",
+        "kind": "def",
+        "line": 261,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassHeight_symm_edge",
+        "kind": "theorem",
+        "line": 265,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassHeight_path_le",
+        "kind": "theorem",
+        "line": 276,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassHeight_directed_path_eq",
+        "kind": "theorem",
+        "line": 291,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassHeight_zero_iff",
+        "kind": "theorem",
+        "line": 302,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassToSymm",
+        "kind": "def",
+        "line": 321,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassToSymm_mapPath_length",
+        "kind": "theorem",
+        "line": 327,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassSymmPath_of_length_eq",
+        "kind": "theorem",
+        "line": 341,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBass_edge_mem_geodesicTree",
+        "kind": "theorem",
+        "line": 402,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rightTailCanonical_factorCoset_eq",
+        "kind": "theorem",
+        "line": 470,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawCanonicalFactor",
+        "kind": "def",
+        "line": 512,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawCanonicalVertex",
+        "kind": "def",
+        "line": 517,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassToRawVertex",
+        "kind": "def",
+        "line": 523,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawCanonicalFactor_coset",
+        "kind": "theorem",
+        "line": 529,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassToRawVertex_rawCanonicalVertex",
+        "kind": "theorem",
+        "line": 555,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawCanonicalVertex_bassToRawVertex",
+        "kind": "theorem",
+        "line": 568,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassTreeQuiver",
+        "kind": "def",
+        "line": 595,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassTreePath",
+        "kind": "def",
+        "line": 609,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassTreePathMap",
+        "kind": "def",
+        "line": 621,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassTreePathMap_cons",
+        "kind": "theorem",
+        "line": 635,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassTreePathMap_edge_pos",
+        "kind": "theorem",
+        "line": 646,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassPathHom",
+        "kind": "def",
+        "line": 667,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassPathHom_nil",
+        "kind": "theorem",
+        "line": 682,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassPathHom_cons",
+        "kind": "theorem",
+        "line": 689,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassQuotientMap_cons",
+        "kind": "theorem",
+        "line": 705,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassPathHom_eq_quotient_map",
+        "kind": "theorem",
+        "line": 726,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassTreePathHom_edge_neg",
+        "kind": "theorem",
+        "line": 756,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassPathHom_eq_tree",
+        "kind": "theorem",
+        "line": 777,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassFreeGroupoid_end_subsingleton",
+        "kind": "theorem",
+        "line": 849,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testFreePathHom",
+        "kind": "def",
+        "line": 905,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testFreeGroupoid_isConnected_of_rootedConnected",
+        "kind": "theorem",
+        "line": 918,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassFreeGroupoid_end_subsingleton_at",
+        "kind": "theorem",
+        "line": 937,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testFunctor_map_injective_of_eq_id",
+        "kind": "theorem",
+        "line": 962,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBass_factorCoset_append",
+        "kind": "theorem",
+        "line": 970,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawCanonicalVertex_factorCosetMk",
+        "kind": "theorem",
+        "line": 979,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassToRawPrefunctor",
+        "kind": "def",
+        "line": 992,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawToBassPrefunctor",
+        "kind": "def",
+        "line": 1018,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassToRawFunctor",
+        "kind": "def",
+        "line": 1071,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawToBassFunctor",
+        "kind": "def",
+        "line": 1077,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawToBassFunctor_map_of",
+        "kind": "theorem",
+        "line": 1083,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassToRawFunctor_map_of",
+        "kind": "theorem",
+        "line": 1101,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassToRawPrefunctor_map_centralFactor",
+        "kind": "theorem",
+        "line": 1119,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testBassToRawPrefunctor_map_factorCentral",
+        "kind": "theorem",
+        "line": 1128,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testFunctor_map_homOfEq",
+        "kind": "theorem",
+        "line": 1143,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testGroupoid_inv_homOfEq",
+        "kind": "theorem",
+        "line": 1151,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testGroupoid_inv_inv",
+        "kind": "theorem",
+        "line": 1159,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testGroupoid_inv_inv_homOfEq",
+        "kind": "theorem",
+        "line": 1165,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_homOfEq_transport",
+        "kind": "theorem",
+        "line": 1172,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_homOfEq_transport",
+        "kind": "theorem",
+        "line": 1181,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_homOfEq_eq_of_heq",
+        "kind": "theorem",
+        "line": 1190,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawEdgeSigma",
+        "kind": "abbrev",
+        "line": 1197,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawEdge_heq",
+        "kind": "theorem",
+        "line": 1201,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawEdgeMap_heq",
+        "kind": "theorem",
+        "line": 1208,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawBassRaw_obj",
+        "kind": "theorem",
+        "line": 1218,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawBassRawPrefunctor",
+        "kind": "def",
+        "line": 1246,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawBassRawPrefunctor_eq_of",
+        "kind": "theorem",
+        "line": 1251,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawBassRawFunctor_eq_id",
+        "kind": "theorem",
+        "line": 1549,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawFreeGroupoid_end_subsingleton",
+        "kind": "theorem",
+        "line": 1588,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testOrbitAllEdge",
+        "kind": "abbrev",
+        "line": 1624,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testTreeDataGeneratorSet",
+        "kind": "def",
+        "line": 1630,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testTreeDataGenerated",
+        "kind": "def",
+        "line": 1635,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawTreeQuiver",
+        "kind": "def",
+        "line": 1639,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testTreeDataGenerated_mem_vertex",
+        "kind": "theorem",
+        "line": 1653,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testTreeDataGenerated_mem_edge",
+        "kind": "theorem",
+        "line": 1660,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawEdgeMap_dataOf",
+        "kind": "theorem",
+        "line": 1667,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testActionOrbitAlign",
+        "kind": "def",
+        "line": 1676,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testActionOrbitAlign_spec",
+        "kind": "theorem",
+        "line": 1681,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawEdgeData_rep_orbit_eq",
+        "kind": "theorem",
+        "line": 1687,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawEdgeOrbitAlign",
+        "kind": "def",
+        "line": 1700,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawEdgeOrbitAlign_spec",
+        "kind": "theorem",
+        "line": 1707,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_rawTreeRepresentative_root",
+        "kind": "theorem",
+        "line": 1716,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_conjugate_mem_stabilizer",
+        "kind": "theorem",
+        "line": 1730,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_stabilizer_conjugate_eq",
+        "kind": "theorem",
+        "line": 1738,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_positive_step",
+        "kind": "theorem",
+        "line": 1750,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.test_negative_step",
+        "kind": "theorem",
+        "line": 1857,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testPositiveStepVertex",
+        "kind": "def",
+        "line": 1991,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testPositiveStepVertex_endpoint",
+        "kind": "theorem",
+        "line": 2002,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testNegativeStepVertex",
+        "kind": "def",
+        "line": 2017,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testNegativeStepVertex_endpoint",
+        "kind": "theorem",
+        "line": 2028,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawPathAlignmentGenerated",
+        "kind": "def",
+        "line": 2043,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.testRawPathProduct",
+        "kind": "def",
+        "line": 2095,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GraphCoveringTheory.Kurosh.treeKuroshProductToH_testRawPathProduct",
+        "kind": "theorem",
+        "line": 2149,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/RoundReservedWitness.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "f97b0928179e4d7283af3b857e9a4e0cb979895f66783e0bff17bdef34c821c4",
+    "sha256": "e481e798eb21394a91c430a6d5adc4ea425fac37b0358ac0496c15c17d3da81e",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.exists_reservedCanonical_of_roundWindow",
+        "kind": "theorem",
+        "line": 20,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.exists_roundWindow_ball_bound",
+        "kind": "theorem",
+        "line": 54,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/CoherentSurgeryTower.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "6de4dcec715984a176aa62ef232ec917f2686021bc85d6ab6e7635290d8435b4",
+    "sha256": "6cb27b44109d0799f29ef991c5e177844c2eadf3508f87b721ec113a2194e9fd",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.IntegerHistory",
+        "kind": "structure",
+        "line": 9,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.integer_start",
+        "kind": "def",
+        "line": 15,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.integer_extension",
+        "kind": "theorem",
+        "line": 22,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.integer_next",
+        "kind": "def",
+        "line": 32,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.integer_next_prefix",
+        "kind": "theorem",
+        "line": 36,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.integer_chain",
+        "kind": "def",
+        "line": 40,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.general_retained_core_tower",
+        "kind": "def",
+        "line": 45,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.general_retained_core_tower_control",
+        "kind": "theorem",
+        "line": 55,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.general_retained_core_tower_geometry",
+        "kind": "theorem",
+        "line": 59,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.general_retained_core_tower_locally_finite",
+        "kind": "theorem",
+        "line": 65,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/ConcatenationHorizon.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "75df8ba428e0ae2db83eaca0c789e96d48b29488bd9859d510fb7b0ab62e1215",
+    "sha256": "155467ec5b1eaa73281a30ef1b0af52999dd7c8b48561065210bef027cbcdc29",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.transport_closed_slab",
+        "kind": "def",
+        "line": 9,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.transport_closed_metric",
+        "kind": "theorem",
+        "line": 17,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.finite_history_concatenation",
+        "kind": "theorem",
+        "line": 25,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.marked_finite_history_concatenation",
+        "kind": "theorem",
+        "line": 61,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/EventTimeTranslation.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "efbc3a02af5e343f9df1416281cb5531238c4420ae39e3e258dc6b81e88a43a3",
+    "sha256": "b4832456922817ae2f52011c2ad70a2b2c192a07cd405bff372632904bd380f2",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.transfer_old_metric",
+        "kind": "theorem",
+        "line": 12,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.translate_retained_event",
+        "kind": "def",
+        "line": 35,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.translated_event_transition",
+        "kind": "theorem",
+        "line": 56,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.translated_event_output",
+        "kind": "theorem",
+        "line": 60,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.translated_event_initial",
+        "kind": "theorem",
+        "line": 64,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.translated_event_singular",
+        "kind": "theorem",
+        "line": 70,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.translated_event_actual_geometry",
+        "kind": "theorem",
+        "line": 75,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/FiniteConcatenation.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "4bf0a015a0fefeccd6e5b3342b6b7ca0191a8dbc943bd79d7023728d3708816f",
+    "sha256": "c11a1fcc8f72d7facb1b74f95c6cfba40b854a3858ff2a7acc844d8efce7a4bc",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.ConcatenationLayer",
+        "kind": "structure",
+        "line": 9,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.concatenation_start",
+        "kind": "def",
+        "line": 23,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.concatenation_step",
+        "kind": "def",
+        "line": 38,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.concatenation_layers",
+        "kind": "theorem",
+        "line": 75,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/GeneralPrefixExtension.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "668b983b1c0ef1faddf11c43a823d9bb1f3bf801c1dc03a41260f8a7f566b8df",
+    "sha256": "f4aca8b007a36b1d2b9c02b56cf139cc89c9ce50b38636dcc09f1611e921b80a",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.general_controlled_history_extension",
+        "kind": "theorem",
+        "line": 9,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/MarkedContinuation.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "f745a482126c919c7a5f9f5634fdc22044357774bd2af512ee1b63e4eccdaf3d",
+    "sha256": "4c7cca5c390d6e17cb97472cdf4fc89954f9a3c4317b8a44077e442ecc41286c",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.marking_of_actual_prefix",
+        "kind": "theorem",
+        "line": 10,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.marked_singular_event_extension",
+        "kind": "theorem",
+        "line": 21,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.marked_closed_extension",
+        "kind": "theorem",
+        "line": 32,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/SlabCompatibility.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "2c3bd309d1e9d3c22ac12e3e3bbe46348921d5f04c431b7b33fe487e2354e670",
+    "sha256": "90be0926e0618ffb18f18f67550610c44a8cbe5c986d0be7b0d745cd69784ede",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.singular_time_gt_closed_end",
+        "kind": "theorem",
+        "line": 13,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.closed_slabs_agree",
+        "kind": "theorem",
+        "line": 36,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.incoming_agrees_with_closed_tail",
+        "kind": "theorem",
+        "line": 57,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.actual_singular_event_after_horizon",
+        "kind": "theorem",
+        "line": 65,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.actual_singular_event_compatible",
+        "kind": "theorem",
+        "line": 77,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.actual_singular_event_preserves_prefix",
+        "kind": "theorem",
+        "line": 89,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.actual_closed_extension_compatible",
+        "kind": "theorem",
+        "line": 101,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.actual_closed_extension_preserves_prefix",
+        "kind": "theorem",
+        "line": 115,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/SurgeryEventControl.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "cb8831f347a8fa7651f2aed9fa473bc751833fe3b034d1a7dc5e8310537eddce",
+    "sha256": "de0be6bce93a3271629dd74c2ebd556c785a42a35a0756f49273de5568541c0e",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.SurgeryEventControl",
+        "kind": "def",
+        "line": 10,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.HistoryEventControl",
+        "kind": "def",
+        "line": 15,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.event_control_transport",
+        "kind": "theorem",
+        "line": 18,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.event_control_translate",
+        "kind": "theorem",
+        "line": 29,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.controlled_event_geometry",
+        "kind": "theorem",
+        "line": 34,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.history_control_append",
+        "kind": "theorem",
+        "line": 39,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.history_control_extend",
+        "kind": "theorem",
+        "line": 57,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/CompletedHistoryDegree.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "b113c77a5230c19557de2e0081b67f0cfcbd964f00e2a303f41d62f251d0a8c8",
+    "sha256": "b412db57a40878bbf46fb926fe486b0d7ca495d4e6434dca2459fbfdd3e1685a",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.InitialFiniteFreeFactorBound",
+        "kind": "def",
+        "line": 10,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.completed_history_freeFactor",
+        "kind": "theorem",
+        "line": 14,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.stage_degree_of_freeFactor_ancestry",
+        "kind": "theorem",
+        "line": 32,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.uniformHistoryDegree_of_completed_freeFactorBound",
+        "kind": "theorem",
+        "line": 48,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.general_strong_canonical_of_completed_freeFactorBound",
+        "kind": "theorem",
+        "line": 59,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/DegreeGeometricHorizon.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "08314a9ebe8e98ace2ca6e3eb536bf746db91f5f9750d2e5297a0c8cb243b813",
+    "sha256": "a6e07049ae2a44f577c67b3ed8b4365e4988e60f99676eadae7a8c211e03c50c",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.general_strong_canonical_of_history_degree",
+        "kind": "theorem",
+        "line": 11,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.finite_geometric_horizon_of_history_degree",
+        "kind": "theorem",
+        "line": 19,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/FiniteGeometricHorizon.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "95e31728c49fcfb4babad9851c7ab3fc82a0b7ca3c3f4bb6d50d20aa13dc527d",
+    "sha256": "3b0dca8268b6ea63022a8a2ffae8287473bdbb782b626af00f787eb869986284",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.prefix_stage_zero_eq",
+        "kind": "theorem",
+        "line": 18,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.prefix_metric_zero_heq",
+        "kind": "theorem",
+        "line": 23,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.initial_scalar_barrier_for_stage",
+        "kind": "theorem",
+        "line": 29,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.finite_geometric_horizon_of_production",
+        "kind": "theorem",
+        "line": 40,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.finite_geometric_horizon",
+        "kind": "theorem",
+        "line": 195,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/FiniteInitialDegree.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "88b33ca4b32d38a453e454660a9388fe7fd5aeea3d8e3e9b6bacfcac7104d25a",
+    "sha256": "90f4cce8e5a5a49642c20ae7d8835fafb4686031d83bd77f0446f45e6ed3a9f2",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.initial_component_card_bound",
+        "kind": "theorem",
+        "line": 10,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.initial_freeFactorBound_of_finite_groups",
+        "kind": "theorem",
+        "line": 31,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.uniformHistoryDegree_of_finite_initial_groups",
+        "kind": "theorem",
+        "line": 40,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.general_strong_canonical_of_finite_initial_groups",
+        "kind": "theorem",
+        "line": 50,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeneralCanonicalFromSmallScale.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "1ebd3805b25c79fc49df65ccb7671b9afa9a51a8eddddddf34178c28ed7af97a",
+    "sha256": "b7c3984ae8822641b979dc5c3c1dde321321ad16a3798ae9b7d87443a97c8c2c",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.general_noncollapsing_of_small_scale",
+        "kind": "theorem",
+        "line": 15,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.general_strong_canonical_of_small_scale",
+        "kind": "theorem",
+        "line": 23,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeneralCanonicalProduction.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "d0def05dc65fe27d7aa18c9fb99267da95dfd7b729a0285f4bd69b572f6fdd16",
+    "sha256": "68c30cd3323e03d457ce821ccd1863daaf6de0b7f6c6ded5c7203e25f1cb5d6c",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.general_small_scale_noncollapsing",
+        "kind": "theorem",
+        "line": 8,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.general_strong_canonical",
+        "kind": "theorem",
+        "line": 13,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.general_finite_geometric_horizon",
+        "kind": "theorem",
+        "line": 17,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/GeometricHorizons.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "7f3b470a369d14ec2155002481a52589542f6f6c52ba416a1465ff9f3c4cbfc5",
+    "sha256": "90acfbb466ee3a70cbea98e27d6745fb9c1bd513cd4f8c9192d9999951b60b3f",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.GeometricHorizonProduction",
+        "kind": "def",
+        "line": 19,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.geometric_horizon_production_of_strong",
+        "kind": "theorem",
+        "line": 63,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.geometric_horizon_production",
+        "kind": "theorem",
+        "line": 110,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/HistoryDegreeBound.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "cff3715b27882f0c428cacda572957353de54bc3e6066a54b978f840f117cc2c",
+    "sha256": "3b340c9985676e9c1e03c9a4220e585acbe3a3b98bcbfe77fcb39635c5a486b3",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.StageFiniteDegreeBound",
+        "kind": "def",
+        "line": 14,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.UniformHistoryDegreeBound",
+        "kind": "def",
+        "line": 18,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.canonicalBallConsumer_of_stage_degree",
+        "kind": "theorem",
+        "line": 23,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/HistoryFreeFactors.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "fa4f1d9681f45af5c18eb4d433ee49ada39cd3045f6eb04ce0e320af30bc9ee0",
+    "sha256": "11992741f2681bc0884cc1ec62d4a169ff6f350eb1d73607d66dee4612c4d2b9",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.retained_history_freeFactor",
+        "kind": "theorem",
+        "line": 10,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.uniformHistoryDegree_of_initial_freeFactorBound",
+        "kind": "theorem",
+        "line": 25,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.strong_canonical_of_initial_freeFactorBound",
+        "kind": "theorem",
+        "line": 32,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.uniform_history_degree_of_finite_initial_groups",
+        "kind": "theorem",
+        "line": 38,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.GeneralFlow.strong_canonical_of_finite_initial_groups",
+        "kind": "theorem",
+        "line": 45,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/SmallScaleFromDegree.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "f44ae0dbad45f3e60c6f11a6c837c8426066770e67d5c06cbd6bd1258fb93da4",
+    "sha256": "b8f431b3888f184ce67f6a28333ad5e6c034180a6a6de4491fb2593af8d5a042",
+    "declarations": [
+      {
+        "name": "DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistory.time_lt_succ_of_activeStage_eq",
+        "kind": "theorem",
+        "line": 35,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistory.isParabolicallyRmControlledBall_of_scalar_le_of_castSucc",
+        "kind": "theorem",
+        "line": 49,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistory.isParabolicallyRmControlledBall_of_scalar_le_of_last",
+        "kind": "theorem",
+        "line": 97,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistory.ball_volume_of_spatialCanonicalWitness",
+        "kind": "theorem",
+        "line": 149,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistory.exists_spatialCanonicalWitness_of_castSucc",
+        "kind": "theorem",
+        "line": 175,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistory.exists_spatialCanonicalWitness_of_last",
+        "kind": "theorem",
+        "line": 190,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistory.exists_eventSlab_bounds_of_castSucc_lt",
+        "kind": "theorem",
+        "line": 206,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistory.noncollapsedAtRegularTimesBefore_of_slab_supply",
+        "kind": "theorem",
+        "line": 222,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.exists_cutoff_record_bounds",
+        "kind": "theorem",
+        "line": 315,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory.ball_volume_lower_bound_of_closedSlab_stage_zero",
+        "kind": "theorem",
+        "line": 376,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.exists_initial_layer_noncollapsed_of_initialIdentification",
+        "kind": "theorem",
+        "line": 406,
+        "private": true,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.smallScaleNoncollapsingThroughSurgery_of_historyDegreeBound",
+        "kind": "theorem",
+        "line": 466,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Noncollapsing/SmallScaleGeometricHorizon.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "3ec2db82d58d0171622de78d8a5ddd2e0e01523520d3e087457179122ac9ea3e",
+    "sha256": "a3f5cf1817138c499def87d7b25e84112bcf70a0aa09ff38e02e24d0e1ef472e",
+    "declarations": [
+      {
+        "name": "GC.GeneralFlow.finite_geometric_horizon_of_small_scale",
+        "kind": "theorem",
+        "line": 10,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/CutCapFreeFactor.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "ac0fc07a7f5e85db8af0b107210720ed0bc379c2bae852ffe543feb2b6ac2cbc",
+    "sha256": "e98c0c5cb24fbd584a1bf961b4b3e50b9136da1af4c96a67ae41a68c967a6728",
+    "declarations": [
+      {
+        "name": "GC.Surgery.finiteConnectedSum_factor",
+        "kind": "theorem",
+        "line": 12,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Surgery.CutCapSumData.capComponent_freeFactor",
+        "kind": "theorem",
+        "line": 23,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Surgery.actual_capComponent_freeFactor",
+        "kind": "theorem",
+        "line": 51,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Surgery.componentFundamentalGroupEquiv",
+        "kind": "def",
+        "line": 60,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Surgery.actual_retained_freeFactor",
+        "kind": "theorem",
+        "line": 67,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Surgery.finiteCutCapTrace_freeFactor",
+        "kind": "theorem",
+        "line": 93,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/RetainedDiscardedLabels.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "1679d212470bafdc908e74f3477233f2e10c7e582237b6924a4caf1210a8c03a",
+    "sha256": "006e605a7817bd2153a91cacd6b7e29d2de6c49039a9b2f3cc8e2a10afb25f9f",
+    "declarations": [
+      {
+        "name": "GC.Surgery.presentationComponentEquiv",
+        "kind": "def",
+        "line": 10,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Surgery.presentationComponentEquiv_actual",
+        "kind": "theorem",
+        "line": 23,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Surgery.retained_discarded_component_ne",
+        "kind": "theorem",
+        "line": 27,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Surgery.cap_component_retained_or_discarded",
+        "kind": "theorem",
+        "line": 40,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Surgery.reconstructedComponentEquiv",
+        "kind": "def",
+        "line": 73,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Surgery.reconstructed_component_coverage",
+        "kind": "theorem",
+        "line": 78,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Surgery.terminal_component_coverage",
+        "kind": "theorem",
+        "line": 84,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Surgery.terminal_discarded_nonempty",
+        "kind": "theorem",
+        "line": 95,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Metric/Sphere/Quotient/AntipodalQuotient.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "23a4dceb124ce013e113c8b353b680a3bcb6b0620eae4168166538cef7ec897d",
+    "sha256": "86ab0288963a9e5f62ae1b7debebec2742481a92bf3cdf81c682ac9891ae2c50",
+    "declarations": [
+      {
+        "name": "GC.Geometry.actual_group_quotient_complete",
+        "kind": "theorem",
+        "line": 11,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.orientedSphericalMetric",
+        "kind": "def",
+        "line": 16,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.oriented_carrier_metric_inner",
+        "kind": "theorem",
+        "line": 23,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.complete_spherical_metric_from_oriented_model",
+        "kind": "theorem",
+        "line": 32,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.complete_spherical_metric_with_nontrivial_piOne",
+        "kind": "theorem",
+        "line": 43,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.complete_spherical_metric_of_positive_space_form",
+        "kind": "theorem",
+        "line": 57,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/SphericalProductPiece.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "993f23b7194582c58e941d5a340d3ce9ab8ee8818b9aa5ca5b81b7e313e1158c",
+    "sha256": "bf8f9546c697bba93e7969a7dacd87bbb52e3900e853052a9d5ca54163e8430a",
+    "declarations": [
+      {
+        "name": "GC.Geometry.flatCircle_model_atlas",
+        "kind": "theorem",
+        "line": 13,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.PeriodicCylinder",
+        "kind": "abbrev",
+        "line": 30,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.periodicCylinderMetric",
+        "kind": "def",
+        "line": 31,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.periodicCylinder_model_atlas",
+        "kind": "theorem",
+        "line": 34,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.sphereTwoTimesCircleToPeriodic",
+        "kind": "def",
+        "line": 59,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.sphereTwoTimesCircleMetric",
+        "kind": "def",
+        "line": 65,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.sphereTwoTimesCircle_complete_model_atlas",
+        "kind": "theorem",
+        "line": 69,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.sphereTwoTimesCircle_factor_geometry",
+        "kind": "theorem",
+        "line": 78,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Thurston/StandardFactorGeometry.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "a7155a217eee845d7cccba3c674bcd301a42cfc5835437c2616028d7dd39945c",
+    "sha256": "9fd9fdd02c8cbcc409e3d688892de199d882c086550d079764871f5c7b87dc1c",
+    "declarations": [
+      {
+        "name": "GC.Geometry.ElementaryModel",
+        "kind": "inductive",
+        "line": 12,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.ElementaryGeometry",
+        "kind": "def",
+        "line": 21,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.oriented_spherical_factor_geometry",
+        "kind": "theorem",
+        "line": 26,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.standard_factor_complete_geometry",
+        "kind": "theorem",
+        "line": 33,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Geometry.oriented_standard_presentation_geometry",
+        "kind": "theorem",
+        "line": 43,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/SphereExample.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "1e3a558d64ae279081ac2b2ee1e3e0b8138b0800739158d699a3c39832e8ed80",
+    "sha256": "3b42f49c8a4568533970a9083ebc73ad0632e90f4feec42eacc8140294368067",
+    "declarations": [
+      {
+        "name": "GC.Endpoint.isPrime_of_simplyConnected",
+        "kind": "theorem",
+        "line": 13,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Endpoint.sphericalStructure",
+        "kind": "def",
+        "line": 24,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Endpoint.sphereLiftStructure",
+        "kind": "def",
+        "line": 34,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Endpoint.sphereCertificate",
+        "kind": "def",
+        "line": 38,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Endpoint.standardThreeSphereLift_geometrizes",
+        "kind": "theorem",
+        "line": 57,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Topology/ThreeManifold/Geometrization/StandardPrimes.lean",
+    "role": "geometrization_foundation",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "d8c9842614dc894a878196ac8bbb887b8647412939c9759868d6ef34db0d3f48",
+    "sha256": "97ee867c7d35ac706f3c84184ddf31c717036b014d7fc67aaeba84e3721744ad",
+    "declarations": [
+      {
+        "name": "GC.Endpoint.isPrime_of_freelyIndecomposable",
+        "kind": "theorem",
+        "line": 15,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Endpoint.isPrime_of_finite_fundamentalGroup",
+        "kind": "theorem",
+        "line": 37,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Endpoint.isPrime_of_commutative_fundamentalGroup",
+        "kind": "theorem",
+        "line": 41,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.Endpoint.isPrime_of_isStandardFactor",
+        "kind": "theorem",
+        "line": 46,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Comparison/SectionalLowerBound.lean",
+    "role": "skeleton",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "696b093ece23087fc30f8959c05aa31360296c5f62f219cb0f03faa374bc31fb",
+    "sha256": "f7039e766212e102af40ed9527fd09f168cd2297b9a2671078ec5b09257a3460",
+    "declarations": [
+      {
+        "name": "DifferentialGeometry.Geometry.Riemannian.gInner_sq_le_mul",
+        "kind": "theorem",
+        "line": 17,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "DifferentialGeometry.Geometry.Riemannian.SectionalBoundedBelowAt.mono",
+        "kind": "theorem",
+        "line": 23,
+        "private": false,
+        "direct_sorry": false
+      }
+    ]
+  },
+  {
+    "path": "DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/AnalyticAdmissibility.lean",
+    "role": "skeleton",
+    "source_checkout": "GC_BASELINE_EXPORT",
+    "original_sha256": "172f1d788f713fecd73767cff7598630c90bce3a1d58aeefaebcc4b887c484d1",
+    "sha256": "d87149c2299207b50f3fc263239afc67325dc72349f090de75e78ec7cf28164a",
+    "declarations": [
+      {
+        "name": "GC.LongTime.hasCommonNeckAccuracy",
+        "kind": "def",
+        "line": 16,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.LongTime.hasCommonNeckAccuracy.bounds",
+        "kind": "theorem",
+        "line": 22,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.LongTime.hasSmallParabolicCurvature",
+        "kind": "def",
+        "line": 29,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.LongTime.AnalyticSurgeryProfile",
+        "kind": "structure",
+        "line": 38,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.LongTime.hasAnalyticAdmissibility",
+        "kind": "def",
+        "line": 90,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.LongTime.AnalyticSurgeryProfile.commonNeckAccuracy",
+        "kind": "theorem",
+        "line": 94,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.LongTime.AnalyticSurgeryProfile.largerBallAccuracy_on_late_half_interval",
+        "kind": "theorem",
+        "line": 99,
+        "private": false,
+        "direct_sorry": false
+      },
+      {
+        "name": "GC.LongTime.exists_surgery_with_decaying_accuracy",
+        "kind": "theorem",
+        "line": 115,
+        "private": false,
+        "direct_sorry": true
+      }
+    ]
+  }
+]

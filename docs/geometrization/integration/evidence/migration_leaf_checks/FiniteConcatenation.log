@@ -1,0 +1,49 @@
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/FiniteConcatenation.lean:9:29: warning: remove line break in the source
+
+This part of the code
+  'ConcatenationLayer 
+   '
+should be written as
+  'ConcatenationLayer (H :'
+
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/FiniteConcatenation.lean:11:26: warning: missing space in the source
+
+This part of the code
+  '(K.eventCount+1)) where'
+should be written as
+  '(K.eventCount + 1))'
+
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/FiniteConcatenation.lean:23:24: warning: remove line break in the source
+
+This part of the code
+  'concatenation_start 
+   '
+should be written as
+  'concatenation_start (H :'
+
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/FiniteConcatenation.lean:38:23: warning: remove line break in the source
+
+This part of the code
+  'concatenation_step 
+   '
+should be written as
+  'concatenation_step {H :'
+
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`
+/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/History/FiniteConcatenation.lean:75:29: warning: remove line break in the source
+
+This part of the code
+  'concatenation_layers 
+   '
+should be written as
+  'concatenation_layers (H :'
+
+
+Note: This linter can be disabled with `set_option linter.style.whitespace false`

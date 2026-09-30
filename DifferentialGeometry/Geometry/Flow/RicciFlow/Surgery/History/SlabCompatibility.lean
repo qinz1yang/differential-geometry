@@ -98,7 +98,7 @@ theorem actual_singular_event_preserves_prefix {Q : OrientedThreeStage.{u}}
     (actual_singular_event_after_horizon H E hi hs)
     (actual_singular_event_compatible H E hi hs)
 
-theorem actual_closed_extension_compatible 
+theorem actual_closed_extension_compatible
     (H : RetainedCoreHistory.{u}) {T : ℝ} (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab
       (H.time (Fin.last H.eventCount)) T)
@@ -112,7 +112,7 @@ theorem actual_closed_extension_compatible
       ⟨htime.1,le_min (htime.2.trans hT) htime.2⟩
   · exact H.extendHorizonCompatible_of_time_eq_horizon T S hi ht
 
-theorem actual_closed_extension_preserves_prefix 
+theorem actual_closed_extension_preserves_prefix
     (H : RetainedCoreHistory.{u}) {T : ℝ} (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab
       (H.time (Fin.last H.eventCount)) T)

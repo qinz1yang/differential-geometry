@@ -6,7 +6,7 @@ namespace GC.GeneralFlow
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
-structure ConcatenationLayer 
+structure ConcatenationLayer
     (H : RetainedCoreHistory.{u}) (K : RetainedCoreHistory.{u})
     (i : Fin (K.eventCount+1)) where
   history : RetainedCoreHistory.{u}
@@ -20,7 +20,7 @@ structure ConcatenationLayer
   horizon_le : history.horizon ≤ max H.horizon
     (K.time i + H.time (Fin.last H.eventCount))
 
-def concatenation_start 
+def concatenation_start
     (H : RetainedCoreHistory.{u}) (K : RetainedCoreHistory.{u})
     (hH : HistoryEventControl H)
     (hs : K.stage 0 = H.stage (Fin.last H.eventCount))
@@ -35,7 +35,7 @@ def concatenation_start
   control := hH
   horizon_le := le_max_left _ _
 
-def concatenation_step 
+def concatenation_step
     {H : RetainedCoreHistory.{u}} {K : RetainedCoreHistory.{u}}
     (hK : HistoryEventControl K) (i : Fin K.eventCount)
     (L : ConcatenationLayer H K i.castSucc) : ConcatenationLayer H K i.succ := by
@@ -72,7 +72,7 @@ def concatenation_step
     control := history_control_append L.history L.control E hinit hE
     horizon_le := le_max_right _ _ }
 
-theorem concatenation_layers 
+theorem concatenation_layers
     (H : RetainedCoreHistory.{u}) (K : RetainedCoreHistory.{u})
     (hH : HistoryEventControl H) (hK : HistoryEventControl K)
     (hs : K.stage 0 = H.stage (Fin.last H.eventCount))
