@@ -1,0 +1,15 @@
+'Submodule.finrank_finset_sup_le_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Submodule.finrank_finset_sup_span_singleton_sup_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ContinuousLinearMap.range_id_sub_sum_smul_starProjection_orthogonal_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'ContinuousLinearMap.finrank_range_id_sub_sum_smul_starProjection_orthogonal_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Submodule.sum_smul_starProjection_orthogonal_mapsTo' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Submodule.sum_smul_starProjection_orthogonal_apply_of_mem_orthogonal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Submodule.starProjection_eigenspace_iSup_of_fixed' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Submodule.starProjection_weighted_normal_section' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Submodule.finite_affine_family_normal_reduction' depends on axioms: [propext, Classical.choice, Quot.sound]

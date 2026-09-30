@@ -18741,3 +18741,7 @@ import DifferentialGeometry.Analysis.InnerProductSpace.PrunedGraphRank
 import DifferentialGeometry.Analysis.Calculus.PrunedGraph
 import DifferentialGeometry.Geometry.Metric.RetainedMarkerLocality
 import DifferentialGeometry.Analysis.NormedSpace.ScaleVanishing
+import DifferentialGeometry.Tensor.LinearAlgebra.Dimension.FiniteSup
+import DifferentialGeometry.Analysis.InnerProductSpace.NormalProjectionSpan
+import DifferentialGeometry.Analysis.InnerProductSpace.NormalSpectralSection
+import DifferentialGeometry.Analysis.InnerProductSpace.FiniteNormalReduction

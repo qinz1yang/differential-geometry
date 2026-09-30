@@ -1,10 +1,10 @@
 {
   "success": true,
-  "started_utc": "2026-09-30T18:13:39Z",
+  "started_utc": "2026-09-30T18:36:31Z",
   "upstream_commit": "777299070a5529e96345e0033979706fd00c7e62",
   "toolchain": "leanprover/lean4:v4.35.0-rc3",
   "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e",
-  "manifest_sha256": "37dad8aa2fd1c65606aaa62bb2af96bd146cae641a8d54d62ad7733c891f7cce",
+  "manifest_sha256": "ce17649ebf58084d2f2bb4abaa92a650cd2cce45146cb335665e521068c4b310",
   "commands": [
     {
       "command": [
@@ -14,7 +14,7 @@
       ],
       "exit_code": 0,
       "log": "docs/geometrization/integration/evidence/verified_full_root.log",
-      "log_sha256": "19ff7f93ef1abb030297b41659b92fb40913a963dbf35fb2fe646f40c258b59b"
+      "log_sha256": "20feace53c54972f4e874fc581d925e5f4fe16c68cfdec682785e132e1fa954a"
     },
     {
       "command": [
@@ -29,14 +29,14 @@
       ],
       "exit_code": 0,
       "log": "docs/geometrization/integration/evidence/fresh_integration_audit.log",
-      "log_sha256": "c02f5495618908784a3ccd2933bb1e6de38ca1cb3ace66a2cff084d5ec996ca0"
+      "log_sha256": "3f7b4736839519ea164ca11674efadf4fe98b9210b35143577a33cedfa17fa2a"
     }
   ],
-  "modules": 843,
-  "declarations": 8304,
+  "modules": 847,
+  "declarations": 8315,
   "direct_admissions": 22,
   "upstream_mathematical_sources_unchanged": true,
   "endpoint_proved_without_sorry": false,
   "audit_evidence": "fresh elaboration",
-  "finished_utc": "2026-09-30T18:19:15Z"
+  "finished_utc": "2026-09-30T18:42:12Z"
 }

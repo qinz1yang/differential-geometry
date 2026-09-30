@@ -1,0 +1,76 @@
+{
+  "blueprint": {
+    "path": "docs/geometrization/blueprint/master207B.tex",
+    "sha256": "890a02e8a0da713ea19af72f50f6d44f77cdfb3ecd6abf2c199d871c497ebc31",
+    "passages": [
+      {
+        "node": "FC29",
+        "label": "lem:fibration-active-span",
+        "label_line": 1725,
+        "read_lines": [
+          1724,
+          1759
+        ]
+      },
+      {
+        "node": "CFS24",
+        "label": "lem:fibration-spectral-marker-locality",
+        "label_line": 3478,
+        "read_lines": [
+          3477,
+          3524
+        ]
+      }
+    ]
+  },
+  "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e",
+  "inspected": [
+    {
+      "path": ".lake/packages/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+      "sha256": "52f56097d56c97bb62b8ae7f2c064661b6c41a518d3dc702e0b4b704a876f7d9",
+      "line_locators": [
+        53,
+        66
+      ]
+    },
+    {
+      "path": ".lake/packages/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+      "sha256": "aed0eac3396d9d54736060e959a19f7129fe6cffc1991727577a63a6aaaf1d04",
+      "line_locators": [
+        412,
+        448
+      ]
+    },
+    {
+      "path": ".lake/packages/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+      "sha256": "8410e976caf71982c25950626032ebd2b53247b6065581aab40f030c4e0ec728",
+      "line_locators": [
+        213,
+        229
+      ]
+    },
+    {
+      "path": ".lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+      "sha256": "0cce5de0dd7a880dec11c31324107423f5f2390e8b0025b9dbfeb9bc649c4613",
+      "line_locators": [
+        157,
+        225,
+        287,
+        307,
+        545,
+        560,
+        652,
+        668
+      ]
+    },
+    {
+      "path": ".lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/Symmetric.lean",
+      "sha256": "8fc0e413fbbbe6977eab20c9491686bef218f203de79334ef476872d6b0aacc8",
+      "line_locators": [
+        87,
+        108
+      ]
+    }
+  ],
+  "source_role": "Frozen Blueprint proof plus actual pinned Mathlib declaration bodies; no direct KL scan or fresh errata claim."
+}

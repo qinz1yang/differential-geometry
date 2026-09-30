@@ -1,0 +1,179 @@
+{
+  "success": true,
+  "scope": "Fresh direct elaboration of four installed Chapter 14 source files, five linters per module, literal public axiom prints, full generated declaration audits, and six actual applications. Imports resolved only from accepted production checkout and pinned RC3 packages; no scratch overlay.",
+  "checks": [
+    {
+      "source": "DifferentialGeometry/Tensor/LinearAlgebra/Dimension/FiniteSup.lean",
+      "source_sha256": "91091ed8ee1897f9320cdbf9b9adc0e0ae59580244f96f94047cb1fffc500d67",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Tensor/LinearAlgebra/Dimension/FiniteSup.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_spectral_reduction/FiniteSup.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 1.044780969619751
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/NormalProjectionSpan.lean",
+      "source_sha256": "b167f574f3e7fe857095e2e98b46b1cf69670736c2b5771ca9ed0bdc3249d52d",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Analysis/InnerProductSpace/NormalProjectionSpan.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_spectral_reduction/NormalProjectionSpan.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 1.3648850917816162
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/NormalSpectralSection.lean",
+      "source_sha256": "03a7763e37a7cbca154748210a877fb90a36a91566c52db14f73da00055481a3",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Analysis/InnerProductSpace/NormalSpectralSection.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_spectral_reduction/NormalSpectralSection.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 1.5418221950531006
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/FiniteNormalReduction.lean",
+      "source_sha256": "d255eaba17d1f5c6e39c0ecce9706a820f17697c8f05452c032f07a8c3b1583b",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/DifferentialGeometry/Analysis/InnerProductSpace/FiniteNormalReduction.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_spectral_reduction/FiniteNormalReduction.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 1.4664311408996582
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/spectral_reduction_candidates/SpectralApplications.lean",
+      "source_sha256": "f5ee798754caace3113f404582daaa8a32ebe615b19d7ef18127f50077bf9c7f",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/spectral_reduction_candidates/SpectralApplications.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_spectral_reduction/SpectralApplications.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "silent": true,
+      "seconds": 2.0605108737945557
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/spectral_reduction_candidates/Lint.lean",
+      "source_sha256": "6ce871dcb48d786c348421db938e3a3bebf623a4231bf4a58ab3f2eae7420598",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/spectral_reduction_candidates/Lint.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_spectral_reduction/Lint.log",
+      "log_sha256": "29d14cd11639022b147f5f54b0c88474c48eb1bb2d6e9d4e2fe64d4bdfae2b73",
+      "silent": false,
+      "seconds": 2.752206802368164
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/spectral_reduction_candidates/Axioms.lean",
+      "source_sha256": "3e7c2779358fc355f8a8c4b35f31a6497c4c0742098e66fa9da11ef0dc9c66d4",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/spectral_reduction_candidates/Axioms.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_spectral_reduction/Axioms.log",
+      "log_sha256": "8245fb1059c834acb6a3f1f6655a63a3ef2579125239f4e0c19f9fb1f1acb685",
+      "silent": false,
+      "seconds": 1.2715258598327637
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/spectral_reduction_candidates/Audit.lean",
+      "source_sha256": "f516b7696a9e6163c77c7f67a89f6519bdff98e0e6c4d284c642796b5e5063c3",
+      "command": [
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
+        "/tmp/gc_direct_lean.py",
+        "-DautoImplicit=false",
+        "-DmaxSynthPendingDepth=3",
+        "-Dpp.unicode.fun=true",
+        "-Dweak.linter.mathlibStandardSet=true",
+        "-Dlinter.style.header=false",
+        "-Dlinter.style.longLine=false",
+        "-DmaxHeartbeats=16000000",
+        "-DmaxRecDepth=100000",
+        "-Dpp.maxSteps=50000",
+        "-Dpp.universes=true",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/spectral_reduction_candidates/Audit.lean"
+      ],
+      "exit_code": 0,
+      "log": "docs/geometrization/integration/evidence/installed_spectral_reduction/Audit.log",
+      "log_sha256": "87d6936ee121b629b542e59932d118b65e44efdd2ec03496c353eb63dfa2c64a",
+      "silent": false,
+      "seconds": 17.4173641204834
+    }
+  ],
+  "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "elaborated_declarations": 11,
+  "upstream_commit": "777299070a5529e96345e0033979706fd00c7e62",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e"
+}

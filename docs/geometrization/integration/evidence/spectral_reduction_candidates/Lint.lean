@@ -1,0 +1,10 @@
+import DifferentialGeometry.Tensor.LinearAlgebra.Dimension.FiniteSup
+import DifferentialGeometry.Analysis.InnerProductSpace.NormalProjectionSpan
+import DifferentialGeometry.Analysis.InnerProductSpace.NormalSpectralSection
+import DifferentialGeometry.Analysis.InnerProductSpace.FiniteNormalReduction
+import Mathlib.Tactic.Linter
+
+#lint- only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Tensor.LinearAlgebra.Dimension.FiniteSup
+#lint- only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.InnerProductSpace.NormalProjectionSpan
+#lint- only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.InnerProductSpace.NormalSpectralSection
+#lint- only unusedArguments simpNF synTaut unusedHavesSuffices explicitVarsOfIff in DifferentialGeometry.Analysis.InnerProductSpace.FiniteNormalReduction

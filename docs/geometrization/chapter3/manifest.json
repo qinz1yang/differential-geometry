@@ -5835,6 +5835,40 @@
       ],
       "contract_notes": "../chapter14/pruned_graph_and_marker_locality.md",
       "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Tensor/LinearAlgebra/Dimension/FiniteSup.lean",
+      "blueprint_nodes": [
+        "FC29"
+      ],
+      "contract_notes": "../chapter14/finite_normal_reduction.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/NormalProjectionSpan.lean",
+      "blueprint_nodes": [
+        "FC29",
+        "CFS24"
+      ],
+      "contract_notes": "../chapter14/finite_normal_reduction.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/NormalSpectralSection.lean",
+      "blueprint_nodes": [
+        "FC29",
+        "CFS24"
+      ],
+      "contract_notes": "../chapter14/finite_normal_reduction.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/FiniteNormalReduction.lean",
+      "blueprint_nodes": [
+        "FC29"
+      ],
+      "contract_notes": "../chapter14/finite_normal_reduction.md",
+      "status": "proved-subclaims"
     }
   ],
   "scope": "Independent metric, Alexandrov, local-collapse and finite-regularity leaves, registered against the accepted migrated upstream; see the joint integration receipt for verification status.",

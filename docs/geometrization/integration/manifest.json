@@ -33934,6 +33934,105 @@
           "direct_sorry": false
         }
       ]
+    },
+    {
+      "path": "DifferentialGeometry/Tensor/LinearAlgebra/Dimension/FiniteSup.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "91091ed8ee1897f9320cdbf9b9adc0e0ae59580244f96f94047cb1fffc500d67",
+      "sha256": "91091ed8ee1897f9320cdbf9b9adc0e0ae59580244f96f94047cb1fffc500d67",
+      "declarations": [
+        {
+          "name": "Submodule.finrank_finset_sup_le_sum",
+          "kind": "theorem",
+          "line": 11,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "Submodule.finrank_finset_sup_span_singleton_sup_le",
+          "kind": "theorem",
+          "line": 21,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/NormalProjectionSpan.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "b167f574f3e7fe857095e2e98b46b1cf69670736c2b5771ca9ed0bdc3249d52d",
+      "sha256": "b167f574f3e7fe857095e2e98b46b1cf69670736c2b5771ca9ed0bdc3249d52d",
+      "declarations": [
+        {
+          "name": "ContinuousLinearMap.range_id_sub_sum_smul_starProjection_orthogonal_le",
+          "kind": "theorem",
+          "line": 14,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.finrank_range_id_sub_sum_smul_starProjection_orthogonal_le",
+          "kind": "theorem",
+          "line": 30,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "Submodule.sum_smul_starProjection_orthogonal_mapsTo",
+          "kind": "theorem",
+          "line": 46,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "Submodule.sum_smul_starProjection_orthogonal_apply_of_mem_orthogonal",
+          "kind": "theorem",
+          "line": 60,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/NormalSpectralSection.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "03a7763e37a7cbca154748210a877fb90a36a91566c52db14f73da00055481a3",
+      "sha256": "03a7763e37a7cbca154748210a877fb90a36a91566c52db14f73da00055481a3",
+      "declarations": [
+        {
+          "name": "Submodule.starProjection_eigenspace_iSup_of_fixed",
+          "kind": "theorem",
+          "line": 15,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "Submodule.starProjection_weighted_normal_section",
+          "kind": "theorem",
+          "line": 28,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/FiniteNormalReduction.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "d255eaba17d1f5c6e39c0ecce9706a820f17697c8f05452c032f07a8c3b1583b",
+      "sha256": "d255eaba17d1f5c6e39c0ecce9706a820f17697c8f05452c032f07a8c3b1583b",
+      "declarations": [
+        {
+          "name": "Submodule.finite_affine_family_normal_reduction",
+          "kind": "theorem",
+          "line": 14,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
     }
   ],
   "gate_sha256": "6a37a323d5f7cbd401e5176ee32063e407cdc9c6dbcb233147928c184c71dbd1",
@@ -33961,10 +34060,10 @@
     "GC.LongTime.late_derivative_tests_of_flow",
     "GC.LongTime.local_disk_comparisons_of_cusp_exterior"
   ],
-  "audit_sha256": "39bd9c96edec0a5e5003019a101e9909669d4b98de1bd61b955ffdf7c384f4cc",
+  "audit_sha256": "d2c91ee4220904abcb4297a9c4c19fe3762e8b2bd970453b5e79554d1dfc216b",
   "registry_sha256": {
     "docs/geometrization/skeleton/manifest.json": "991f5516f9483478a9da209aae88c2518cae29bf5408ff99a7f891849b0360a8",
-    "docs/geometrization/chapter3/manifest.json": "35b00d146d3edce211d97d8248f3b53a12127e84d29d8de81b76a0a9af442d49",
+    "docs/geometrization/chapter3/manifest.json": "ae4e3861e58c42902e916c06e1c78cc6f0820969cc6f766f72a65f8ab929e19c",
     "docs/geometrization/MODULE_PLACEMENT.json": "dfebe13f228a574c8ba28286b3654cc766c14efd2cdca503fdd4ee464fc66d2c",
     "docs/geometrization/integration/historical/skeleton_67f27962/manifest.json": "c45e8acb4658d358e3e4208e843220a8f81095b01a77e445f46dcee53fea08b5",
     "docs/geometrization/integration/historical/original_options.json": "832d46987ba0f4611fc3c7adc6bd95f05e079e0031837db7e727ca2620880628",
