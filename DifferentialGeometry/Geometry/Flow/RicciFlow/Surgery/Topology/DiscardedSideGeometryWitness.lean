@@ -23,7 +23,7 @@ noncomputable instance emptyChartedSpacePEmptyULift :
 noncomputable def emptyStageULift : OrientedThreeStage.{u} where
   Carrier := PEmpty.{u + 1}
   orientation :=
-    { dimension_eq := by simp [ThreeSpace]
+    { dimension_eq := by simp
       orientation := fun x => PEmpty.elim x
       locally_constant := fun p _ _ => PEmpty.elim p }
 

@@ -96,8 +96,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 theorem hasCoreCompatibleObservationTower_of_retainedCoreTower_positiveCurvature
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
-    (T : RetainedCoreObservationTower (
-      M.toClosedOrientedManifold) g)
+    (T : RetainedCoreObservationTower (M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing)
     (h : ∀ (n : ℕ) (j : Fin (T.history n).eventCount),
       componentwisePositiveCurvatureOrSphereProduct
@@ -110,8 +109,7 @@ theorem hasCoreCompatibleObservationTower_of_retainedCoreTower_positiveCurvature
 theorem exists_poincare_controlled_extinction_of_retainedCoreTower_positiveCurvature
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
-    (T : RetainedCoreObservationTower (
-      M.toClosedOrientedManifold) g)
+    (T : RetainedCoreObservationTower (M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing)
     (h : ∀ (n : ℕ) (j : Fin (T.history n).eventCount),
       componentwisePositiveCurvatureOrSphereProduct
