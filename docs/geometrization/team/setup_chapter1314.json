@@ -1,0 +1,15 @@
+{
+  "date": "2026-09-30",
+  "scope": "chapter1314",
+  "branch": "codex/geometrization-chapter1314-migrated-435rc3",
+  "starting_commit": "7db0890ae8b8a4803caf7d81b52bf70c072591c5",
+  "setup_changes": "instructions, restart prompt, build-helper backup and truthful branch metadata only; no Lean source changes",
+  "checks": {
+    "git_diff_check": "passed",
+    "check_integration_static": "passed;214crosswalk locators",
+    "build_helper_fixture_tests": "7/7 passed",
+    "package_pins": "all9git packages verified",
+    "fresh_Lean_proof_check": "not run for this operational setup"
+  },
+  "build_helper": "Use /Users/bennettchow/Developer/gc-team-coordination/gc_build.py. The .txt copies here are recovery backups, not a second independent lock directory."
+}

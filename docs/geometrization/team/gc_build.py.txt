@@ -1,0 +1,296 @@
+#!/usr/bin/env python3
+"""Cooperative GC build admission: two small jobs OR one large job.
+
+All tasks must use this same helper. This is not a hard process/thread cap.
+Inherited locks protect a direct command if the wrapper dies; commands must
+wait for their build children rather than intentionally daemonizing them.
+"""
+import argparse
+import ctypes
+import fcntl
+import json
+import os
+from pathlib import Path
+import signal
+import subprocess
+import sys
+import tempfile
+
+STATE = Path(__file__).resolve().parent / "build-state"
+DEVELOPER = Path("/Users/bennettchow/Developer")
+BUSY = 75
+
+
+class Busy(Exception):
+    pass
+
+
+def process_table():
+    output = subprocess.check_output(
+        ["/bin/ps", "-axo", "pid=,ppid=,lstart="], text=True)
+    rows = {}
+    for line in output.splitlines():
+        fields = line.strip().split(None, 2)
+        if len(fields) == 3:
+            pid, ppid = map(int, fields[:2])
+            rows[pid] = {"pid": pid, "ppid": ppid, "start": fields[2]}
+    return rows
+
+
+def identity(pid, table):
+    row = table.get(pid)
+    return {"pid": pid, "start": row["start"]} if row else None
+
+
+def alive(who, table):
+    return bool(who and identity(who.get("pid"), table) == who)
+
+
+def atomic_json(path, value):
+    fd, temp = tempfile.mkstemp(prefix=path.name + ".", dir=str(path.parent))
+    try:
+        with os.fdopen(fd, "w") as stream:
+            json.dump(value, stream, indent=2)
+            stream.write("\n")
+        os.replace(temp, path)
+    finally:
+        if os.path.exists(temp):
+            os.unlink(temp)
+
+
+def owner_records(state, table):
+    live, stale = [], []
+    for path in sorted(state.glob("owner-*.json")):
+        try:
+            record = json.loads(path.read_text())
+            if alive(record.get("wrapper"), table) or alive(record.get("child"), table):
+                live.append(record)
+            else:
+                stale.append(path.name)
+        except (ValueError, OSError, TypeError, AttributeError):
+            stale.append(path.name)
+    return live, stale
+
+
+def mac_details(pid):
+    """Read executable and actual argv, without parsing shell command text."""
+    lib = ctypes.CDLL("/usr/lib/libproc.dylib", use_errno=True)
+    pathbuf = ctypes.create_string_buffer(4096)
+    lib.proc_pidpath.argtypes = [ctypes.c_int, ctypes.c_void_p, ctypes.c_uint32]
+    lib.proc_pidpath.restype = ctypes.c_int
+    if lib.proc_pidpath(pid, pathbuf, len(pathbuf)) <= 0:
+        return None, []
+    executable = os.fsdecode(pathbuf.value)
+    name = Path(executable).name.lower()
+    if name not in ("lean", "lake") and not name.startswith("python"):
+        return executable, []
+    libc = ctypes.CDLL(None, use_errno=True)
+    mib = (ctypes.c_int * 3)(1, 49, pid)  # CTL_KERN, KERN_PROCARGS2
+    buf = ctypes.create_string_buffer(1024 * 1024)
+    size = ctypes.c_size_t(len(buf))
+    libc.sysctl.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_uint,
+                           ctypes.c_void_p, ctypes.POINTER(ctypes.c_size_t),
+                           ctypes.c_void_p, ctypes.c_size_t]
+    if libc.sysctl(mib, 3, buf, ctypes.byref(size), None, 0) != 0:
+        return executable, []
+    data = buf.raw[:size.value]
+    argc = int.from_bytes(data[:4], sys.byteorder, signed=True)
+    end = data.find(b"\0", 4)
+    pos = end + 1
+    while pos < len(data) and data[pos] == 0:
+        pos += 1
+    argv = [os.fsdecode(x) for x in data[pos:].split(b"\0", max(argc, 0))[:argc]]
+    return executable, argv
+
+
+def process_cwd(pid):
+    try:
+        out = subprocess.check_output(
+            ["/usr/sbin/lsof", "-a", "-p", str(pid), "-d", "cwd", "-Fn"],
+            text=True, stderr=subprocess.DEVNULL, timeout=3)
+        return next((line[1:] for line in out.splitlines() if line.startswith("n")), "")
+    except (OSError, subprocess.SubprocessError):
+        return ""
+
+
+def is_build(executable, argv):
+    if not executable:
+        return False
+    name = Path(executable).name.lower()
+    args = argv[1:]
+    if name in ("lean", "lake"):
+        if any(a in ("--help", "-h", "--version", "--server", "--worker") for a in args):
+            return False
+        if name == "lean":
+            return "-v" not in args
+        # Environment commands can launch Lean indirectly; conservatively reserve
+        # their active lifetime. Pure informational commands need no reservation.
+        return not args or any(a in ("build", "env", "test", "exe", "lean") for a in args)
+    if name.startswith("python"):
+        if not args or args[0] in ("-c", "-m"):
+            return False
+        script = next((a for a in args if not a.startswith("-")), "")
+        if Path(script).name not in ("check_integration.py", "check_skeleton.py", "check_chapter3.py"):
+            return False
+        return not any(a in ("--prepare", "--static", "--help", "-h") for a in args)
+    return False
+
+
+def unwrapped_builds(table, owners, details=mac_details, cwd=process_cwd):
+    managed = set()
+    for owner in owners:
+        for key in ("wrapper", "child"):
+            who = owner.get(key)
+            if alive(who, table):
+                managed.add(who["pid"])
+    def managed_descendant(pid):
+        seen = set()
+        while pid in table and pid not in seen:
+            if pid in managed:
+                return True
+            seen.add(pid)
+            pid = table[pid]["ppid"]
+        return False
+    found = []
+    prefix = str(DEVELOPER) + os.sep
+    for pid in table:
+        if pid == os.getpid() or managed_descendant(pid):
+            continue
+        executable, argv = details(pid)
+        if not is_build(executable, argv):
+            continue
+        # An actual absolute project argument or cwd places the job in scope.
+        if any(a.startswith(prefix) for a in argv[1:]) or cwd(pid).startswith(prefix):
+            found.append({"pid": pid, "start": table[pid]["start"],
+                          "executable": executable, "kind": Path(executable).name})
+    return found
+
+
+def lock_file(path, operation):
+    fd = os.open(str(path), os.O_RDWR | os.O_CREAT, 0o600)
+    try:
+        fcntl.flock(fd, operation | fcntl.LOCK_NB)
+        return fd
+    except BlockingIOError:
+        os.close(fd)
+        raise Busy("Another GC build owns the requested capacity.")
+
+
+def acquire(state, mode):
+    fds = []
+    try:
+        fds.append(lock_file(state / "global.lock",
+                             fcntl.LOCK_EX if mode == "large" else fcntl.LOCK_SH))
+        if mode == "small":
+            for slot in range(2):
+                try:
+                    fds.append(lock_file(state / ("small-%d.lock" % slot), fcntl.LOCK_EX))
+                    break
+                except Busy:
+                    pass
+            else:
+                raise Busy("Both small GC build slots are occupied.")
+        return fds
+    except BaseException:
+        for fd in fds:
+            os.close(fd)
+        raise
+
+
+def status(state=STATE):
+    table = process_table()
+    owners, stale = owner_records(state, table)
+    return {"managed": owners, "unwrapped_builds": unwrapped_builds(table, owners),
+            "stale_records_ignored": stale,
+            "policy": "two small OR one large; cooperative, not a hard process cap"}
+
+
+def run(mode, label, command, state=STATE, detector=unwrapped_builds):
+    state.mkdir(parents=True, exist_ok=True)
+    startup = None
+    fds = []
+    child = None
+    record_path = None
+    pending_signals = []
+    previous_handlers = {}
+
+    def forward(signum, frame):
+        if child is not None and child.poll() is None:
+            try:
+                os.killpg(child.pid, signum)
+            except ProcessLookupError:
+                pass
+        else:
+            pending_signals.append(signum)
+
+    try:
+        # Serialize admission and metadata publication, not the running jobs.
+        startup = lock_file(state / "admission.lock", fcntl.LOCK_EX)
+        fds = acquire(state, mode)
+        table = process_table()
+        owners, _ = owner_records(state, table)
+        outside = detector(table, owners)
+        if outside:
+            names = ", ".join("%s PID %s" % (p["kind"], p["pid"]) for p in outside[:6])
+            raise Busy("Unwrapped Developer builds are still running: " + names + ".")
+        own = identity(os.getpid(), table)
+        if own is None:
+            raise RuntimeError("Cannot verify wrapper process identity")
+        record_path = state / ("owner-%d.json" % os.getpid())
+        record = {"wrapper": own, "child": None, "mode": mode, "label": label,
+                  "cwd": os.getcwd(), "command": command}
+        atomic_json(record_path, record)
+        env = os.environ.copy()
+        env.setdefault("LEAN_NUM_THREADS", "4")
+        for sig in (signal.SIGTERM, signal.SIGINT, signal.SIGHUP):
+            previous_handlers[sig] = signal.signal(sig, forward)
+        child = subprocess.Popen(command, env=env, pass_fds=tuple(fds), start_new_session=True)
+        record["child"] = identity(child.pid, process_table())
+        atomic_json(record_path, record)
+        os.close(startup)
+        startup = None
+        for sig in tuple(pending_signals):
+            forward(sig, None)
+        returncode = child.wait()
+        return returncode if returncode >= 0 else 128 - returncode
+    except Busy as exc:
+        print("GC build busy: %s Continue source reading or other work; retry later. "
+              "No existing job was interrupted. (exit 75)" % exc, file=sys.stderr)
+        return BUSY
+    except FileNotFoundError as exc:
+        print("GC build command unavailable: %s" % exc, file=sys.stderr)
+        return 127
+    finally:
+        for sig, handler in previous_handlers.items():
+            signal.signal(sig, handler)
+        # Keep metadata if an abnormal path left the direct child alive.
+        if record_path and (child is None or child.poll() is not None):
+            try:
+                record_path.unlink()
+            except FileNotFoundError:
+                pass
+        if startup is not None:
+            os.close(startup)
+        # Do not LOCK_UN: the child inherits these open file descriptions.
+        for fd in fds:
+            os.close(fd)
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--mode", choices=("small", "large"))
+    parser.add_argument("--label")
+    parser.add_argument("--status", action="store_true")
+    parser.add_argument("command", nargs=argparse.REMAINDER)
+    args = parser.parse_args(argv)
+    if args.status:
+        print(json.dumps(status(), indent=2))
+        return 0
+    command = args.command[1:] if args.command[:1] == ["--"] else args.command
+    if not args.mode or not args.label or not command:
+        parser.error("use --mode small|large --label LABEL -- COMMAND ARGS")
+    return run(args.mode, args.label, command)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

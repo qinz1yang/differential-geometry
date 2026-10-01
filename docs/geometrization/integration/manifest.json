@@ -3,7 +3,7 @@
   "upstream_repository": "https://github.com/qinz1yang/differential-geometry.git",
   "upstream_commit": "777299070a5529e96345e0033979706fd00c7e62",
   "development_repository": "https://github.com/qinz1yang/differential-geometry-dev.git",
-  "branch": "codex/geometrization-435rc3-integration",
+  "branch": "codex/geometrization-chapter1314-migrated-435rc3",
   "independent_checkpoint": "6eecde33cc2b5f64dd95b68faea66ddd5b3c4313",
   "skeleton_checkpoint": "67f279623c942d49be915f9583a9491095fb85f9",
   "upstream_root_sha256": "a52e665a1c0ea0562a6c1b2f3c00e8493d5c3bda0c22febabe5e5c56cc28c995",
