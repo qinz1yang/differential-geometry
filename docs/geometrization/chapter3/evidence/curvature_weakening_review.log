@@ -1,7 +1,0 @@
-'Real.convexOn_cosh_sqrt' depends on axioms: [propext, Classical.choice, Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_le_comparisonAngle' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.fourPointComparison.of_zero' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

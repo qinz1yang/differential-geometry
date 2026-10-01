@@ -1,8 +1,0 @@
-{
-  "success": false,
-  "status": "failed",
-  "error_type": "AssertionError",
-  "error": "('Check failed', '/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/verified_full_root.log')",
-  "full_root": false,
-  "finished_utc": "2026-09-30T16:58:05Z"
-}

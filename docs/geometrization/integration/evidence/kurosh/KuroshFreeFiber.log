@@ -1,7 +1,0 @@
-DifferentialGeometry/External/GraphCoveringTheory/KuroshFreeFiber.lean:31:43: warning: This simp argument is unused:
-  Prefunctor.mapPath
-
-Hint: Omit it from the simp argument list.
-  [apply] simp only [coverFreeGroupoidPathHom]
-
-Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`

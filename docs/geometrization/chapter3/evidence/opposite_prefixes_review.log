@@ -1,5 +1,0 @@
-'Metric.dist_le_abs_variationOnFromTo_sub' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.exists_lipschitz_parametrization_of_finite_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.exists_short_curve_prefix' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.opposite_prefix_distance_calibration' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.exists_opposite_calibrated_prefixes' depends on axioms: [propext, Classical.choice, Quot.sound]

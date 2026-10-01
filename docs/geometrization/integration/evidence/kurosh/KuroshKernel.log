@@ -1,9 +1,0 @@
-DifferentialGeometry/External/GraphCoveringTheory/KuroshKernel.lean:183:8: warning: `simp` already closes the goal
-
-Hint: Use `simp` instead of `simpa`:
-  [apply] simp [factorCosetMk, rightCosetMk]
-
-Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
-DifferentialGeometry/External/GraphCoveringTheory/KuroshKernel.lean:204:8: warning: Unused tactic linter: `change (x.1 : FreeProduct G) ∈ intersectionFactor H i (Quotient.out c)` does nothing
-
-Note: This linter can be disabled with `set_option linter.unusedTactic false`

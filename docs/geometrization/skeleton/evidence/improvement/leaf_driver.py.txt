@@ -1,9 +1,0 @@
-from pathlib import Path
-import subprocess,json,concurrent.futures,datetime,hashlib
-B=Path('/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_BASELINE_EXPORT');D=B/'docs/geometrization/skeleton/evidence/improvement';out=D/'leaf_builds';out.mkdir(exist_ok=True)
-r=json.loads((B/'docs/geometrization/skeleton/manifest.json').read_text());options=['-Dpp.unicode.fun=true','-DautoImplicit=false','-DmaxSynthPendingDepth=3','-Dweak.linter.mathlibStandardSet=true','-Dlinter.style.header=false','-Dlinter.style.longLine=false']
-def run(m):
- path=m['path'];mod=path[:-5].replace('/','.');x=subprocess.run(['lake','env','lean']+options+[path],cwd=B,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT);dest=out/(mod+'.log');dest.write_text(x.stdout);rec=dict(module=mod,source=path,source_sha256=hashlib.sha256((B/path).read_bytes()).hexdigest(),returncode=x.returncode,log=str(dest.relative_to(B)),log_sha256=hashlib.sha256(x.stdout.encode()).hexdigest(),silent=(x.returncode==0 and x.stdout==''),direct_admissions=[d['name'] for d in m['declarations'] if d['direct_sorry']],diagnostics=x.stdout);print(mod,x.returncode,'silent' if rec['silent'] else 'diagnostics',flush=True);return rec
-with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:results=list(ex.map(run,r['modules']))
-receipt=dict(finished_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),command='lake env lean [exact project leanOptions] <source>',fresh_direct_source_elaborations=True,all_returncode_zero=all(x['returncode']==0 for x in results),all_proof_only_modules_silent=all(x['silent'] for x in results if not x['direct_admissions']),literal_all_modules_silent=all(x['silent'] for x in results),modules=results)
-(D/'leaf_builds.json').write_text(json.dumps(receipt,indent=2)+'\n');print('LEAF_EVIDENCE',receipt['all_returncode_zero'],receipt['all_proof_only_modules_silent'],flush=True)

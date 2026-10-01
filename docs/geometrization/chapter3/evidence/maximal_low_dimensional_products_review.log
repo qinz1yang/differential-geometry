@@ -1,9 +1,0 @@
-'EuclideanSpace.finSuccProdIsometry' depends on axioms: [propext, Classical.choice, Quot.sound]
-'IsometryEquiv.exists_pointed_euclidean_of_l2_real_product' depends on axioms: [propext, Classical.choice, Quot.sound]
-'IsometryEquiv.exists_pointed_successor_splitting_of_l2_real_product' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'IsometryEquiv.exists_product_model_of_maximal_splitting' depends on axioms: [propext, Classical.choice, Quot.sound]
-'IsometryEquiv.exists_product_model_of_maximal_real_splitting' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

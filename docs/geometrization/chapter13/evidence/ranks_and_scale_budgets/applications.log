@@ -1,4 +1,0 @@
-'RankBudgetRegression.zero_rank_does_not_use_zero_error' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RankBudgetRegression.actual_rank_three' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RankBudgetRegression.real_zero_product' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RankBudgetRegression.contracted_scale_endpoint_budget' depends on axioms: [propext, Classical.choice, Quot.sound]

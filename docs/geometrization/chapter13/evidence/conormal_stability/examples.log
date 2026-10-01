@@ -1,3 +1,0 @@
-'ConormalRegression.identity_lower' depends on axioms: [propext, Classical.choice, Quot.sound]
-'ConormalRegression.identity_dual_positive' depends on axioms: [propext, Classical.choice, Quot.sound]
-'ConormalRegression.strict_budget_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,8 +1,0 @@
-'Metric.ball_eq_segment_image_of_injOn_dist' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.isOpen_segment_image_of_locally_injOn_dist' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.ball_eq_segment_image_of_isOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.ball_eq_segment_image_at_endpoint_of_isOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.exists_pointed_interval_isometry_of_isOpen_segment' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.exists_pointed_half_interval_isometry_of_isOpen_segment' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

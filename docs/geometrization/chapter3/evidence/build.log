@@ -1,5 +1,0 @@
-⚠ [2728/2751] Replayed DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
-warning: DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean:18:8: declaration uses `sorry`
-✔ [3740/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.PaddedStripBoundary (2.1s)
-✔ [3741/3741] Built DifferentialGeometry.Geometry.Metric.Approximation.EdgeChartCutoffSupport (2.4s)
-Build completed successfully (3741 jobs).

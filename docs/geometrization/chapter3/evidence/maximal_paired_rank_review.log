@@ -1,9 +1,0 @@
-'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_maximal_paired_rank' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_rank_one_packet_in_open_set' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.pairedChartQuality_eq_reciprocal' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

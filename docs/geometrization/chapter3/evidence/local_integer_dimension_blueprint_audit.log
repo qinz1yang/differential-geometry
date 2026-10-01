@@ -1,2 +1,0 @@
-BLUEPRINT_STATIC_PENDING
-The unchanged revision207 static audit is still reading historical cloud-backed inputs in session82024. The latest completed attempt exited1; no static pass is claimed. The independent Lean gate and canonical checks passed.

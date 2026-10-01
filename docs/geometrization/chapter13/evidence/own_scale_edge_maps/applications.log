@@ -1,4 +1,0 @@
-'RescalingRegression.rescale_preserves_far_point' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RescalingRegression.shifted_scaled_coverage' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RescalingRegression.product_preserves_residual' depends on axioms: [propext, Classical.choice, Quot.sound]
-'RescalingRegression.strict_endpoint_after_contraction' depends on axioms: [propext, Classical.choice, Quot.sound]

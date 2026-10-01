@@ -1,9 +1,0 @@
-/Users/bennettchow/Developer/differential-geometry-dev-geometrization/docs/geometrization/integration/evidence/higher_derivative_candidates/HigherLint.lean:6:0: warning: `#`-commands, such as '#lint', are not allowed in 'Mathlib'
-
-Note: This linter can be disabled with `set_option linter.hashCommand false`
-/Users/bennettchow/Developer/differential-geometry-dev-geometrization/docs/geometrization/integration/evidence/higher_derivative_candidates/HigherLint.lean:7:0: warning: `#`-commands, such as '#lint', are not allowed in 'Mathlib'
-
-Note: This linter can be disabled with `set_option linter.hashCommand false`
-/Users/bennettchow/Developer/differential-geometry-dev-geometrization/docs/geometrization/integration/evidence/higher_derivative_candidates/HigherLint.lean:8:0: warning: `#`-commands, such as '#lint', are not allowed in 'Mathlib'
-
-Note: This linter can be disabled with `set_option linter.hashCommand false`

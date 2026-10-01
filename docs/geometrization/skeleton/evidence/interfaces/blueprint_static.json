@@ -1,9 +1,0 @@
-{
-  "check": "python3 GEOMETRIZATION_BLUEPRINT/audit_blueprint.py",
-  "exit_code": 1,
-  "completed": false,
-  "reason": "Historical revision127 inventory retains former absolute archive path after external workspace move",
-  "log": "blueprint_static.log",
-  "inventory_rewritten": false,
-  "blueprint_changed": false
-}

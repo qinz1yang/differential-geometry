@@ -1,7 +1,0 @@
-'ScaledCutoffRegression.nonzero_block_and_far_exterior' depends on axioms: [propext, Classical.choice, Quot.sound]
-'ScaledCutoffRegression.actual_bump_derivative_bounds_exist' depends on axioms: [propext, Classical.choice, Quot.sound]
-'ScaledCutoffRegression.same_nonzero_cutoff_at_two_scales' depends on axioms: [propext, Classical.choice, Quot.sound]
-'ScaledCutoffRegression.both_product_cross_terms' depends on axioms: [propext, Classical.choice, Quot.sound]
-'ScaledCutoffRegression.original_composition_with_unbounded_translation' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

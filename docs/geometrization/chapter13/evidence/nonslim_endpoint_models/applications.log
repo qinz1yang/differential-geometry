@@ -1,8 +1,0 @@
-'LocalChartRegression.chart_keeps_tested_points' depends on axioms: [propext, Classical.choice, Quot.sound]
-'LocalChartRegression.chart_extends_outside' depends on axioms: [propext, Classical.choice, Quot.sound]
-'LocalChartRegression.chart_covers_near_test_radius' depends on axioms: [propext, Classical.choice, Quot.sound]
-'LocalChartRegression.reflection_keeps_positive_height' depends on axioms: [propext, Classical.choice, Quot.sound]
-'LocalChartRegression.circle_chart_preserves_pair_distances_at_boundary' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'LocalChartRegression.product_retains_first_coordinate' depends on axioms: [propext, Classical.choice, Quot.sound]

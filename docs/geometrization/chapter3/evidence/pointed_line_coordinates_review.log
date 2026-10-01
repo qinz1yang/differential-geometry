@@ -1,6 +1,0 @@
-'GC.MetricGeometry.PointedGHConverges.exists_calibrated_lines_of_opposite_endpoints' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'GC.MetricGeometry.eventually_distance_coordinate_error_lt_of_converging_prefixes' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

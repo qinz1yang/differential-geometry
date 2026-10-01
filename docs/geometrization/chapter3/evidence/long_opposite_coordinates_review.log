@@ -1,9 +1,0 @@
-'GC.MetricGeometry.PointedGHConverges.exists_line_coordinates_of_opposite_endpoints' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'GC.MetricGeometry.PointedGHConverges.exists_line_coordinates_of_long_opposite_angles' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'GC.MetricGeometry.PointedGHConverges.exists_line_coordinates_of_reciprocal_local_geometry' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

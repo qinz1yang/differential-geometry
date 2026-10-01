@@ -1,9 +1,0 @@
-import DifferentialGeometry.Geometry.Metric.Approximation.ProductResidualBound
-import DifferentialGeometry.Geometry.Metric.Approximation.VanishingProductResidual
-import DifferentialGeometry.Geometry.Metric.Approximation.TestedResidualParameter
-
-#print axioms WithLp.snd_dist_sq_le_of_fst_dist_gap
-#print axioms GC.MetricGeometry.KleinerLottApprox.snd_dist_sq_le_of_coordinate_control
-#print axioms GC.MetricGeometry.eventually_residual_lt_of_coordinate_control
-#print axioms GC.MetricGeometry.PointedGHConverges.exists_subsequence_with_vanishing_tested_residual
-#print axioms GC.MetricGeometry.exists_tested_residual_parameter_of_nonnegative_models

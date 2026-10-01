@@ -1,9 +1,0 @@
-{
-  "command": "python3 GEOMETRIZATION_BLUEPRINT/audit_blueprint.py",
-  "exit_code": 0,
-  "blueprint_revision": 207,
-  "scope": "Static stored-evidence consistency, not a mathematical proof or fresh Lean/PDF/Overleaf run",
-  "source_tex_changed": false,
-  "guards": 3319,
-  "stdout_sha256": "295d7d3c7deb80f1c81cd4b04023f859b5538a89babed7acedab4f59290b2758"
-}

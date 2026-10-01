@@ -1,7 +1,0 @@
-⚠ [2730/2970] Replayed DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
-warning: DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean:18:8: declaration uses `sorry`
-✔ [3581/3584] Built DifferentialGeometry.Topology.MetricSpace.ProperRadialImage (1.1s)
-✔ [3582/3584] Built DifferentialGeometry.Topology.MetricSpace.PseudometricLimit (1.4s)
-✔ [3583/3584] Built DifferentialGeometry.Geometry.Metric.RadialConeQuotient (1.3s)
-✔ [3584/3584] Built DifferentialGeometry.Geometry.Metric.Approximation.CompactParameterMaps (1.4s)
-Build completed successfully (3584 jobs).

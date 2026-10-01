@@ -1,6 +1,0 @@
-{
-  "status": "Build failed due to disk exhaustion; wrapper could not write normal result",
-  "last_job_count": "20304/27662",
-  "build_log": "full_root_build.log",
-  "recovery": "Removed 17917 generated *.setup.json files (94280960270 logical bytes) from superseded GC_BASELINE_EXPORT/.lake/build/ir; all sources, oleans and evidence preserved."
-}

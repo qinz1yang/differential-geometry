@@ -1,5 +1,0 @@
-'Metric.totallyBounded_of_roughDim_lt_top' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.exists_compact_closedBall_of_roughDim_lt_top' depends on axioms: [propext, Classical.choice, Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_compact_closedBall_of_local_rough_dimension' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

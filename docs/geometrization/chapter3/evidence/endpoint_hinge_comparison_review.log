@@ -1,9 +1,0 @@
-'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_uniform_endpointHingeComparison' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.endpointHingeComparison.modelSide_ge_dist' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.endpointHingeComparison.cradle_modelSide_le' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

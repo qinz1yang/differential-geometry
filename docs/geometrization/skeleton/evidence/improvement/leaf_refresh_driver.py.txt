@@ -1,8 +1,0 @@
-from pathlib import Path
-import subprocess,json,hashlib,datetime,concurrent.futures
-B=Path('/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_BASELINE_EXPORT');D=B/'docs/geometrization/skeleton/evidence/improvement';p=D/'leaf_builds.json';r=json.loads(p.read_text());sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();targets={'DifferentialGeometry/Geometry/Thurston/NonnegativeClassification.lean','DifferentialGeometry/Topology/Manifold/CompactModel.lean','DifferentialGeometry/Topology/ThreeManifold/Geometrization/SphereSummand.lean'}
-def run(e):
- if e['source'] not in targets:return e
- cmd=r['command_argv_template'][:-1]+[e['source']];x=subprocess.run(cmd,cwd=B,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT);(B/e['log']).write_text(x.stdout);e.update(source_sha256=sha(B/e['source']),returncode=x.returncode,log_sha256=sha(B/e['log']),silent=x.returncode==0 and x.stdout=='',diagnostics=x.stdout,refreshed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat());assert x.returncode==0,x.stdout;print(e['module'],x.returncode,'silent' if e['silent'] else 'registered sorry diagnostic',flush=True);return e
-with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:r['modules']=list(ex.map(run,r['modules']))
-r['last_refreshed_utc']=datetime.datetime.now(datetime.timezone.utc).isoformat();r['refreshed_after_EOF_cleanup']=sorted(targets);r['all_returncode_zero']=all(e['returncode']==0 for e in r['modules']);r['all_proof_only_modules_silent']=all(e['silent'] for e in r['modules'] if not e['direct_admissions']);p.write_text(json.dumps(r,indent=2)+'\n')

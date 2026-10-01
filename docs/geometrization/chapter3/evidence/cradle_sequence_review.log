@@ -1,9 +1,0 @@
-'DifferentialGeometry.Geometry.Comparison.Toponogov.comparisonAngleNegCurvature_uniform_stability_on_side_window' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.cradle_recurrence_deficit_and_arms' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.tendsto_comparisonAngleNegCurvature_pi_of_cradle_recurrence' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

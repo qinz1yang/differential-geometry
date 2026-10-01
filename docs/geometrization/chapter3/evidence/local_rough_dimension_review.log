@@ -1,6 +1,0 @@
-'Metric.roughVolume_eq_zero_of_polynomial_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.roughDim_le_of_polynomial_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.subsingleton_of_dimH_ball_lt_one' depends on axioms: [propext, Classical.choice, Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_local_roughDim_le_of_fourPointComparison' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

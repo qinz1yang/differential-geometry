@@ -1,9 +1,0 @@
-'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_open_distanceCoordinates_of_pointwise_packet' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.PairedComparisonPacket.exists_uniform_nhds' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.PairedComparisonPacket.not_mem_anchors' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

@@ -1,9 +1,0 @@
-'IsometryEquiv.exists_interval_or_ray_product_of_factor_endpoint' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'GC.MetricGeometry.PointedGHConverges.exists_interval_or_ray_product_of_factor_endpoint' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'GC.MetricGeometry.PointedGHConverges.exists_interval_or_ray_product_of_factor_half_interval_chart' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

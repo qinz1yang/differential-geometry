@@ -1,8 +1,0 @@
-DifferentialGeometry/External/GraphCoveringTheory/KuroshCoverLocal.lean:184:10: warning: `simp [coverEdgeLetter, treeKuroshProductToH_free,
-            kuroshFreePartHom_quotientEdgeLoop, mul_assoc]` is a flexible tactic modifying `⊢`. Try `simp?` and use the suggested `simp only [...]`. Alternatively, use `suffices` to explicitly state the simplified form.
-
-Note: This linter can be disabled with `set_option linter.flexible false`
-Try this:
-  [apply] simp only [mul_inv_rev, map_mul, treeKuroshProductToH_vertex, Subgroup.coe_mul, InvMemClass.coe_inv]
-`exact test_rawEdgeAlign_spec G H _`
-modifies the current goal, which was modified by the flexible tactic `simp` on line 184!

@@ -1,6 +1,0 @@
-'Metric.exists_isometric_segment_of_dist_eq_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.exists_isometric_segment_concat' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.metric_endpoint_iff_not_mem_segment_interior' depends on axioms: [propext, Classical.choice, Quot.sound]
-'Metric.exists_pointed_interval_or_half_interval_of_isOpen_segments' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

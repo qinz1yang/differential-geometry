@@ -1,8 +1,0 @@
-⚠ [2730/2816] Replayed DifferentialGeometry.Analysis.ODE.AreaUpperBarrier
-warning: DifferentialGeometry/Analysis/ODE/AreaUpperBarrier.lean:18:8: declaration uses `sorry`
-✔ [3574/3576] Built DifferentialGeometry.Geometry.Metric.Approximation.IntervalTargetExtension (1.5s)
-✔ [3575/3576] Built DifferentialGeometry.Geometry.Metric.Approximation.ProductFactorComposition (1.8s)
-✔ [3576/3576] Built DifferentialGeometry.Geometry.Metric.HalfPlanePacking (7.1s)
-Build completed successfully (3576 jobs).
-CHAPTER3_AUDIT_PASS 2441 declarations
-Original packed-refs restored unchanged

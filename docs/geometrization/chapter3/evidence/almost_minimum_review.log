@@ -1,3 +1,0 @@
-'Metric.exists_relative_almost_minimum_of_complete_closedBall' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]

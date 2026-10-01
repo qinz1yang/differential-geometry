@@ -1,7 +1,0 @@
-'LocalCollapseExamples.nonmonotone_profile_first_level' depends on axioms: [propext, Classical.choice, Quot.sound]
-'LocalCollapseExamples.closed_inner_boundary_is_needed' depends on axioms: [propext, Classical.choice, Quot.sound]
-'LocalCollapseExamples.finite_selection_on_nonclosed_interval' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'LocalCollapseExamples.empty_center_selection' depends on axioms: [propext, Classical.choice, Quot.sound]
-'LocalCollapseExamples.original_three_splitting_exclusion' depends on axioms: [propext, Classical.choice, Quot.sound]

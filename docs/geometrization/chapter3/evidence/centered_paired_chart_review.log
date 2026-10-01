@@ -1,9 +1,0 @@
-'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_centered_distance_chart_in_open_set' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.exists_distance_chart_in_open_set' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-'DifferentialGeometry.Geometry.Comparison.Toponogov.inverse_pairedChartDistortion_le_quality' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
