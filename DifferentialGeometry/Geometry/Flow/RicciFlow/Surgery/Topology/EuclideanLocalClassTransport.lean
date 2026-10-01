@@ -40,6 +40,9 @@ private theorem euclideanTangentOrientation_eq_near (o : TangentOrientationSecti
   obtain ⟨U, hU, hzU, hUsub, hconst⟩ := o.locally_constant z z hz
   refine ⟨U, hU, hzU, fun w hw => ?_⟩
   have hw' := hconst w hw
+  change (Orientation.map (Fin 3) (tangentChartEquiv ThreeSpace z w (hUsub hw))
+      (o.orientation w) =
+    Orientation.map (Fin 3) (tangentChartEquiv ThreeSpace z z hz) (o.orientation z)) at hw'
   rw [euclideanTangentChartEquiv_eq_refl z w (hUsub hw),
     euclideanTangentChartEquiv_eq_refl z z hz] at hw'
   have hw1 : Orientation.map (Fin 3) (LinearEquiv.refl ℝ (TangentSpace ThreeModel w))

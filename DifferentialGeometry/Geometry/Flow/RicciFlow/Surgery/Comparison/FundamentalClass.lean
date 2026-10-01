@@ -246,9 +246,21 @@ theorem rfs_whole_parent_map_preservesTangentOrientationAt_childCore
     (DifferentialGeometry.orientation_map_trans (A.symm.trans B) C
       ((H.stage i.castSucc).orientation.orientation x.1.1)).trans hor
   rw [hq] at hppos
-  change Orientation.map (Fin 3) _ ((H.stage i.castSucc).orientation.orientation x.1.1) =
-    (H.stage i.succ).orientation.orientation (F z.1).1
+  let p : (G.Parent c).Carrier := z.1
+  have hparent := DifferentialGeometry.Topology.ClosedOrientedManifold.componentTangentOrientation_apply
+    (H.stage i.castSucc) (G.transition.childParent c) p
+  change (Topology.ClosedOrientedManifold.componentOrientation
+      (H.stage i.castSucc) (G.transition.childParent c)).orientation p =
+      (H.stage i.castSucc).orientation.orientation x.1.1 at hparent
+  have hchild := DifferentialGeometry.Topology.ClosedOrientedManifold.componentTangentOrientation_apply
+    (H.stage i.succ) c (F z.1)
+  change (Topology.ClosedOrientedManifold.componentOrientation
+      (H.stage i.succ) c).orientation (F z.1) =
+      (H.stage i.succ).orientation.orientation (F z.1).1 at hchild
   rw [hlin]
+  rw [DifferentialGeometry.Topology.ClosedOrientedManifold.component_orientation,
+    DifferentialGeometry.Topology.ClosedOrientedManifold.component_orientation,
+    hparent, hchild]
   exact hor'.trans hppos
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord.ComparisonSupport
