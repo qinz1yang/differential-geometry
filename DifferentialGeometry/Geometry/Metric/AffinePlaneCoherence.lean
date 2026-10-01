@@ -7,31 +7,33 @@ noncomputable section
 open Set Metric
 
 namespace GC.MetricGeometry
+section
+
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℝ H]
 
-theorem norm_starProjection_sub_le_of_local_affine_hausdorffEDist
+theorem normal_offset_and_projection_gap_le_of_large_affine_hausdorffEDist
     (P Q : Submodule ℝ H) [FiniteDimensional ℝ P] [FiniteDimensional ℝ Q]
     (hdim : Module.finrank ℝ P = Module.finrank ℝ Q)
     (T : Set H) (o i : H) (hi : i ∈ T)
-    {r₀ rᵢ A δ : ℝ} (hr₀ : 0 < r₀) (hA : 1 ≤ A)
+    {r₀ rᵢ A L δ : ℝ} (hr₀ : 0 < r₀) (hA : 1 ≤ A)
     (hlower : r₀ / A ≤ rᵢ) (hupper : rᵢ ≤ A * r₀)
-    (hcenter : ‖i - o‖ ≤ r₀ / 2) (hδ : 0 < δ)
+    (hcenter : ‖i - o‖ ≤ L * r₀) (hδ : 0 < δ)
     (hδsmall : δ < 1 / (4 * (A + 1)))
+    (hinterior : δ * (L + 2) < 1)
     (hcloud₀ : hausdorffEDist (T ∩ ball o (r₀ / δ))
       ((AffineSubspace.mk' o P : Set H) ∩ ball o (r₀ / δ)) ≤ ENNReal.ofReal (δ * r₀))
     (hcloudᵢ : hausdorffEDist (T ∩ ball i (rᵢ / δ))
       ((AffineSubspace.mk' i Q : Set H) ∩ ball i (rᵢ / δ)) ≤ ENNReal.ofReal (δ * rᵢ)) :
-    ‖P.starProjection - Q.starProjection‖ ≤ 6 * (A + 1) * δ := by
+    ‖Pᗮ.starProjection (i - o)‖ ≤ δ * r₀ ∧
+      ‖Pᗮ.starProjection - Qᗮ.starProjection‖ ≤ 6 * (A + 1) * δ := by
   have hApos : 0 < A := by linarith
   have hrᵢ : 0 < rᵢ := (div_pos hr₀ hApos).trans_le hlower
   have hbudget : δ * (4 * (A + 1)) < 1 :=
     (lt_div_iff₀ (by positivity)).mp hδsmall
   have hAδ : A * δ < 1 / 4 := by nlinarith
-  have hδquarter : δ < 1 / 4 := by
-    have h := mul_le_mul_of_nonneg_left hA hδ.le
-    nlinarith
-  have htestlarge : 2 * r₀ < r₀ / δ := by
+  have htestlarge : (L + 2) * r₀ < r₀ / δ := by
     apply (lt_div_iff₀ hδ).mpr
+    have hh := mul_lt_mul_of_pos_right hinterior hr₀
     nlinarith
   have hradius : r₀ < rᵢ / δ := by
     apply (lt_div_iff₀ hδ).mpr
@@ -55,8 +57,8 @@ theorem norm_starProjection_sub_le_of_local_affine_hausdorffEDist
     simpa only [N, Submodule.starProjection_orthogonal_val] using hreal
   have hnormalᵢ : ‖N (i - o)‖ ≤ δ * r₀ := by
     apply hnormal i hi
-    have hdist : dist i o ≤ r₀ / 2 := by simpa only [dist_eq_norm] using hcenter
-    exact hdist.trans_lt ((by linarith : r₀ / 2 < 2 * r₀).trans htestlarge)
+    have hdist : dist i o ≤ L * r₀ := by simpa only [dist_eq_norm] using hcenter
+    exact hdist.trans_lt ((by nlinarith : L * r₀ < (L + 2) * r₀).trans htestlarge)
   have hunit (u : H) (hu : u ∈ Q) (hnorm : ‖u‖ = 1) :
       ‖N u‖ ≤ (2 * A + 2) * δ := by
     let y : H := i + r₀ • u
@@ -82,10 +84,10 @@ theorem norm_starProjection_sub_le_of_local_affine_hausdorffEDist
       have h := mul_le_mul_of_nonneg_left hupper (by positivity : 0 ≤ 2 * δ)
       have h' := mul_lt_mul_of_pos_right hAδ hr₀
       nlinarith
-    have hzdist : dist z o < 2 * r₀ := by
+    have hzdist : dist z o < (L + 2) * r₀ := by
       have ht := dist_triangle z y o
       have ht' := dist_triangle y i o
-      have hi0 : dist i o ≤ r₀ / 2 := by simpa only [dist_eq_norm] using hcenter
+      have hi0 : dist i o ≤ L * r₀ := by simpa only [dist_eq_norm] using hcenter
       rw [dist_comm z y] at ht
       rw [hydist] at ht'
       linarith
@@ -112,22 +114,65 @@ theorem norm_starProjection_sub_le_of_local_affine_hausdorffEDist
     have hlarge := mul_le_mul_of_nonneg_left hupper (by positivity : 0 ≤ 2 * δ)
     apply (mul_le_mul_iff_right₀ hr₀).mp
     nlinarith
-  let L : Q →L[ℝ] H := N.comp Q.subtypeL
-  have hL : ‖L‖ ≤ (2 * A + 2) * δ := by
+  let R : Q →L[ℝ] H := N.comp Q.subtypeL
+  have hR : ‖R‖ ≤ (2 * A + 2) * δ := by
     apply ContinuousLinearMap.opNorm_le_of_unit_norm (by positivity)
     intro u hu
     exact hunit u u.property hu
   have hbound (u : H) (hu : u ∈ Q) :
       ‖u - P.starProjection u‖ ≤ ((2 * A + 2) * δ) * ‖u‖ := by
-    have h := L.le_opNorm (⟨u, hu⟩ : Q)
-    have h' := h.trans (mul_le_mul_of_nonneg_right hL (norm_nonneg (⟨u, hu⟩ : Q)))
+    have h := R.le_opNorm (⟨u, hu⟩ : Q)
+    have h' := h.trans (mul_le_mul_of_nonneg_right hR (norm_nonneg (⟨u, hu⟩ : Q)))
     change ‖N u‖ ≤ ((2 * A + 2) * δ) * ‖u‖ at h'
     simpa only [N, Submodule.starProjection_orthogonal_val] using h'
   have hb : 0 ≤ (2 * A + 2) * δ := by positivity
   have hbhalf : (2 * A + 2) * δ ≤ 1 / 2 := by nlinarith
   have h := Q.norm_starProjection_sub_le_three_mul_of_one_sided_bound P hdim.symm hb hbhalf hbound
   rw [norm_sub_rev] at h
-  convert h using 1
-  ring
+  have htangent : ‖P.starProjection - Q.starProjection‖ ≤ 6 * (A + 1) * δ := by
+    convert h using 1
+    ring
+  refine ⟨hnormalᵢ,?_⟩
+  have heq : Pᗮ.starProjection - Qᗮ.starProjection = Q.starProjection - P.starProjection := by
+    rw [Submodule.starProjection_orthogonal,Submodule.starProjection_orthogonal]
+    abel
+  rw [heq,norm_sub_rev]
+  exact htangent
 
+end
+end GC.MetricGeometry
+
+namespace GC.MetricGeometry
+section
+
+variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℝ H]
+
+theorem norm_starProjection_sub_le_of_local_affine_hausdorffEDist
+    (P Q : Submodule ℝ H) [FiniteDimensional ℝ P] [FiniteDimensional ℝ Q]
+    (hdim : Module.finrank ℝ P = Module.finrank ℝ Q)
+    (T : Set H) (o i : H) (hi : i ∈ T)
+    {r₀ rᵢ A δ : ℝ} (hr₀ : 0 < r₀) (hA : 1 ≤ A)
+    (hlower : r₀ / A ≤ rᵢ) (hupper : rᵢ ≤ A * r₀)
+    (hcenter : ‖i - o‖ ≤ r₀ / 2) (hδ : 0 < δ)
+    (hδsmall : δ < 1 / (4 * (A + 1)))
+    (hcloud₀ : hausdorffEDist (T ∩ ball o (r₀ / δ))
+      ((AffineSubspace.mk' o P : Set H) ∩ ball o (r₀ / δ)) ≤ ENNReal.ofReal (δ * r₀))
+    (hcloudᵢ : hausdorffEDist (T ∩ ball i (rᵢ / δ))
+      ((AffineSubspace.mk' i Q : Set H) ∩ ball i (rᵢ / δ)) ≤ ENNReal.ofReal (δ * rᵢ)) :
+    ‖P.starProjection - Q.starProjection‖ ≤ 6 * (A + 1) * δ := by
+  have hbudget : δ * (4 * (A + 1)) < 1 :=
+    (lt_div_iff₀ (by positivity)).mp hδsmall
+  have hδA := mul_le_mul_of_nonneg_left hA hδ.le
+  have hinterior : δ * ((1 / 2 : ℝ) + 2) < 1 := by
+    nlinarith
+  have hc : ‖i - o‖ ≤ (1 / 2 : ℝ) * r₀ := by
+    nlinarith
+  have hp := (normal_offset_and_projection_gap_le_of_large_affine_hausdorffEDist
+    P Q hdim T o i hi hr₀ hA hlower hupper hc hδ hδsmall hinterior hcloud₀ hcloudᵢ).2
+  have heq : Pᗮ.starProjection - Qᗮ.starProjection = Q.starProjection - P.starProjection := by
+    rw [Submodule.starProjection_orthogonal, Submodule.starProjection_orthogonal]
+    abel
+  rwa [heq, norm_sub_rev] at hp
+
+end
 end GC.MetricGeometry

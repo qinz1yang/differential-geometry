@@ -4,9 +4,12 @@ import Mathlib.Topology.Order.Compact
 import Mathlib.Tactic.Linarith
 
 set_option autoImplicit false
+noncomputable section
 open Set
+open Set Metric
 
 namespace Metric
+section
 
 variable {X : Type*} [MetricSpace X]
 
@@ -170,4 +173,35 @@ theorem exists_finite_disjoint_ball_cover_of_continuous_scale [CompactSpace X]
   · have hZ : Z = ∅ := eq_empty_iff_forall_notMem.mpr (fun x _ => hX ⟨x⟩)
     exact ⟨∅, finite_empty, by simp, by simp, by simp [hZ]⟩
 
+end
+end Metric
+
+namespace Metric
+section
+
+theorem exists_finite_disjoint_ball_selection_all_enlargements
+    {X : Type*} [MetricSpace X] (S : Set X) (hS : TotallyBounded S)
+    (r : X → ℝ) {rmin R : ℝ} (hmin : 0 < rmin)
+    (hlower : ∀ x ∈ S, rmin ≤ r x) (hupper : ∀ x ∈ S, r x ≤ R) :
+    ∃ I : Set X, I ⊆ S ∧ I.Finite ∧ I.PairwiseDisjoint (fun i => ball i (r i)) ∧
+      (∀ x ∈ S, ∃ i ∈ I, r x ≤ 2*r i ∧ dist x i < 3*r i) ∧
+      ∀ a : ℝ, 0 ≤ a →
+        (⋃ x ∈ S, ball x (a*r x)) ⊆ ⋃ i ∈ I, ball i ((2*a+3)*r i) := by
+  obtain ⟨I,hIS,hI,hdisj,hcover⟩ :=
+    exists_finite_disjoint_ball_selection hS r hmin hlower hupper
+  refine ⟨I,hIS,hI,hdisj,?_,?_⟩
+  · intro x hx
+    obtain ⟨i,hi,_hmeet,hscale,hdist,_hball⟩ := hcover x hx
+    exact ⟨i,hi,hscale,hdist⟩
+  · intro a ha z hz
+    obtain ⟨x,hx,hzx⟩ := mem_iUnion₂.mp hz
+    obtain ⟨i,hi,_hmeet,hscale,hdist,_hball⟩ := hcover x hx
+    refine mem_iUnion₂.mpr ⟨i,hi,?_⟩
+    have htriangle := dist_triangle z x i
+    have hrscale := mul_le_mul_of_nonneg_left hscale ha
+    change dist z x < a*r x at hzx
+    change dist z i < (2*a+3)*r i
+    nlinarith
+
+end
 end Metric
