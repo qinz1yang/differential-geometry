@@ -383,12 +383,22 @@ theorem actualComponentDiffeomorph_positive (A : InitialIdentification P g H)
       LinearEquiv.ofBijective (mfderiv ThreeModel ThreeModel A.map x.1).toLinearMap hbij := by
     ext v
     exact DFunLike.congr_fun hd v
-  simp only [DifferentialGeometry.Topology.ClosedOrientedManifold.component, DifferentialGeometry.Topology.ClosedOrientedManifold.componentOrientation,
-    DifferentialGeometry.Topology.ClosedOrientedManifold.componentTangentOrientation_apply]
-  change Orientation.map (Fin 3) _ (P.orientation.orientation x.1) =
-    (H.stage 0).orientation.orientation (A.map x.1)
-  rw [he]
+  have hsrc :
+      ((P.component (A.sourceComponent c)).toClosedOrientedManifold.orientation.orientation x) =
+        P.orientation.orientation x.1 := by
+    rw [DifferentialGeometry.Topology.ClosedOrientedManifold.component_orientation]
+    exact DifferentialGeometry.Topology.ClosedOrientedManifold.componentTangentOrientation_apply
+      P (A.sourceComponent c) x
+  have htgt :
+      (((H.stage 0).component c).toClosedOrientedManifold.orientation.orientation
+        (A.actualComponentDiffeomorph c x)) =
+        (H.stage 0).orientation.orientation (A.map x.1) := by
+    rw [DifferentialGeometry.Topology.ClosedOrientedManifold.component_orientation]
+    exact DifferentialGeometry.Topology.ClosedOrientedManifold.componentTangentOrientation_apply
+      (H.stage 0) c (A.actualComponentDiffeomorph c x)
+  rw [hsrc, htgt, he]
   exact hpos
+
 
 theorem component_diffeomorph (A : InitialIdentification P g H)
     (c : ConnectedComponents (H.stage 0).Carrier) :
