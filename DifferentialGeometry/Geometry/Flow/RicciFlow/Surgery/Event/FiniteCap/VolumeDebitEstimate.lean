@@ -51,8 +51,8 @@ theorem MetricCutCapEvent.exists_compact_volume_debit_of_finiteFullPreparedMetri
       letI : CompactSpace Ret :=
         (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
       ∀ (oRet : SmoothOrientation ThreeModel Ret) {a s : ℝ}
-        (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
-          (OrientedThreeStage.ofSmoothOrientation Ret oRet) a s)
+        (E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
+          (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) a s)
         (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R)
           (fun x : M => E.incoming.terminalRegularRegion x))
         (c : ℝ) (hc : 4 ≤ c) (x₀ : ι → E.incoming.terminalRegularOpen) (order : ι → ℕ)
@@ -89,7 +89,7 @@ theorem MetricCutCapEvent.exists_compact_volume_debit_of_finiteFullPreparedMetri
           {x | ‖x‖ ≤ transitionEnd}).toReal + 1)) →
       ∃ F : Set E.incoming.terminalRegularOpen, IsCompact F ∧
         riemannianVolumeMeasure ThreeModel
-          (OrientedThreeStage.ofSmoothOrientation Ret oRet).Carrier E.outputMetric univ +
+          (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet).Carrier E.outputMetric univ +
           ENNReal.ofReal ((Nat.card E.transition.trace.tubes.Index : ℝ) * S ^ (-3 / 2 : ℝ)) ≤
         riemannianVolumeMeasure ThreeModel E.incoming.terminalRegularOpen E.terminal.metric F := by
   obtain ⟨δV, hδV, hhalf, hfactory⟩ := exists_finiteFullPreparedMetric_volume_debit A hA

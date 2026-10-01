@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
-import DifferentialGeometry.Topology.FundamentalGroup.Sphere
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Defs
+import Mathlib.Analysis.Convex.Contractible
 
 noncomputable section
 

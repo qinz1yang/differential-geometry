@@ -1,6 +1,7 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassExistenceReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassMinimalHypotheses
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
+import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
 import DifferentialGeometry.Topology.Manifold.SphereOrientation
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereTopHomology
 
@@ -107,6 +108,6 @@ theorem exists_unique_fundamentalClass_of_realizationInput_of_topHomologyInfinit
 
 theorem nonempty_tangentOrientationSection_sphereThree :
     Nonempty (TangentOrientationSection SphereThree) :=
-  ⟨TangentOrientationSection.ofManifoldOrientation (sphereOrientation 3 (by decide))⟩
+  ⟨(sphereOrientation 3 (by decide))⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

@@ -378,9 +378,9 @@ theorem exists_uniform_horn_cut_metricCutCapEvent_volume_debit_with_recenter_dat
           rotationCap b = LinearIsometryEquiv.neg ℝ) ∧
         (∀ b x, (B b x : ThreeSpace) = rotationCap b x) ∧
       ∃ E : MetricCutCapEvent D.stage
-        (OrientedThreeStage.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
-        E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
-        E.capped = OrientedThreeStage.ofSmoothOrientation Qcap oQ ∧
+        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
+        E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc ∧
+        E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Qcap oQ ∧
         HEq E.transition.trace
           ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos (fun j => (d j).precision_pos)
             (fun i => (d i).precision_lt_one) f hf hd R hnontrivial).reparametrizeCaps
@@ -397,7 +397,7 @@ theorem exists_uniform_horn_cut_metricCutCapEvent_volume_debit_with_recenter_dat
           ∀ x : Ret, L₀ ≤ metricScalarAt E.outputMetric x) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel
-            (OrientedThreeStage.ofSmoothOrientation Ret oRet).Carrier
+            (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet).Carrier
             E.outputMetric univ + ENNReal.ofReal
               ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
@@ -615,9 +615,9 @@ theorem exists_uniform_horn_cut_metricCutCapEvent_volume_debit_cap_scalar_lower 
         (aCap : (Fin (Nat.card P'.HornCutIndex) × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
         (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (aCap b y)),
       ∃ E : MetricCutCapEvent D.stage
-        (OrientedThreeStage.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
-        E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
-        E.capped = OrientedThreeStage.ofSmoothOrientation Qcap oQ ∧
+        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
+        E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc ∧
+        E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Qcap oQ ∧
         HEq E.transition.trace
           ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos (fun j => (d j).precision_pos)
             (fun i => (d i).precision_lt_one) f hf hd R hnontrivial).reparametrizeCaps
@@ -634,7 +634,7 @@ theorem exists_uniform_horn_cut_metricCutCapEvent_volume_debit_cap_scalar_lower 
           ∀ x : Ret, L₀ ≤ metricScalarAt E.outputMetric x) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel
-            (OrientedThreeStage.ofSmoothOrientation Ret oRet).Carrier
+            (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet).Carrier
             E.outputMetric univ + ENNReal.ofReal
               ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
@@ -771,9 +771,9 @@ theorem exists_uniform_horn_cut_metricCutCapEvent_volume_debit_with_neck :
         (aCap : (Fin (Nat.card P'.HornCutIndex) × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
         (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (aCap b y)),
       ∃ E : MetricCutCapEvent D.stage
-        (OrientedThreeStage.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
-        E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
-        E.capped = OrientedThreeStage.ofSmoothOrientation Qcap oQ ∧
+        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
+        E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc ∧
+        E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Qcap oQ ∧
         HEq E.transition.trace
           ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos (fun j => (d j).precision_pos)
             (fun i => (d i).precision_lt_one) f hf hd R hnontrivial).reparametrizeCaps
@@ -789,7 +789,7 @@ theorem exists_uniform_horn_cut_metricCutCapEvent_volume_debit_with_neck :
           (∀ x : E.incoming.terminalRegularOpen, L₀ ≤ metricScalarAt E.terminal.metric x) →
           ∀ x : Ret, L₀ ≤ metricScalarAt E.outputMetric x) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
-          riemannianVolumeMeasure ThreeModel (OrientedThreeStage.ofSmoothOrientation Ret
+          riemannianVolumeMeasure ThreeModel (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret
             oRet).Carrier
             E.outputMetric univ + ENNReal.ofReal
               ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
@@ -930,9 +930,9 @@ theorem exists_uniform_horn_cut_metricCutCapEvent_volume_debit :
         (aCap : (Fin (Nat.card P'.HornCutIndex) × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
         (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (aCap b y)),
       ∃ E : MetricCutCapEvent D.stage
-        (OrientedThreeStage.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
-        E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
-        E.capped = OrientedThreeStage.ofSmoothOrientation Qcap oQ ∧
+        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
+        E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc ∧
+        E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Qcap oQ ∧
         HEq E.transition.trace
           ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos (fun j => (d j).precision_pos)
             (fun i => (d i).precision_lt_one) f hf hd R hnontrivial).reparametrizeCaps
@@ -948,7 +948,7 @@ theorem exists_uniform_horn_cut_metricCutCapEvent_volume_debit :
           (∀ x : E.incoming.terminalRegularOpen, L₀ ≤ metricScalarAt E.terminal.metric x) →
           ∀ x : Ret, L₀ ≤ metricScalarAt E.outputMetric x) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
-          riemannianVolumeMeasure ThreeModel (OrientedThreeStage.ofSmoothOrientation Ret
+          riemannianVolumeMeasure ThreeModel (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret
             oRet).Carrier
             E.outputMetric univ + ENNReal.ofReal
               ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤

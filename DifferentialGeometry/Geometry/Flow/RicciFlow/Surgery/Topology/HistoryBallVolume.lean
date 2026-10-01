@@ -16,7 +16,6 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.CompactBallRatio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapScalarLower
 import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizerInwardPoint
 
-
 noncomputable section
 
 open Set Filter
@@ -204,7 +203,7 @@ private theorem exists_trace_solution_on_closed_buffer_of_time_gt
     intro x v w
     rw [localPullMetric_inner, SmoothRiemannianMetric.restrictOpen_inner, hd]
     simp only [ObservedHistory.backwardSurvivorSlabMetric,
-      OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+      DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
     rfl
 
 private theorem exists_trace_solution_on_closed_buffer_of_time_eq
@@ -271,7 +270,7 @@ private theorem exists_trace_solution_on_closed_buffer_of_time_eq
     change g (H.time i.succ) = _
     rw [hg i hf hl _ ⟨(H.time_strictMono i.castSucc_lt_succ).le, le_rfl⟩,
       ObservedHistory.backwardSurvivorSlabMetric,
-      OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+      DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
 
 private theorem exists_trace_solution_on_closed_buffer
     (H : ObservedHistory) (a t : Icc (0 : ℝ) H.horizon) (hat : a < t) :

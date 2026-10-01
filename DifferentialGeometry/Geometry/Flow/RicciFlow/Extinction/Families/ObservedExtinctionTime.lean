@@ -96,12 +96,12 @@ theorem hasControlledExtinctionWithin_of_tower_extinctionTime
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
+      (M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     (hne : ∃ B : ℝ, T.toObservationTower.ExtinctBy B) :
     HasControlledExtinctionWithin M.toClosedOrientedManifold g
       (max 1 (T.toObservationTower.extinctionTime + 1)) :=
-  letI : Nonempty (OrientedThreeStage.ofClosedOrientedManifold
+  letI : Nonempty (
       M.toClosedOrientedManifold).Carrier := M.connected.toNonempty
   hasControlledExtinctionWithin_of_tower_extinctBy T.toObservationTower
     (fun b hb i => (T.hasCutCapCompletion_toObservationTower hbfr b hb i).some)

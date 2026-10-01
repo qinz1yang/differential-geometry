@@ -17,19 +17,22 @@ open scoped Manifold ContDiff Topology BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private local instance terminalSigmaCompact : SigmaCompactSpace G.terminalRegularOpen :=
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalSigmaCompact : SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       G.terminalRegularOpen.isOpen)
-private local instance terminalC1 : IsManifold ThreeModel 1 G.terminalRegularOpen :=
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalC1 : IsManifold ThreeModel 1 G.terminalRegularOpen :=
   IsManifold.of_le (n := ∞) (by decide)
 
 section TimeJetContinuity
 
-private theorem time_derivative_field_chart_component
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.time_derivative_field_chart_component
     (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c) (hcs : c < s)
     (B : ℕ → ℝ → Tensor0SField (I := ThreeModel) (M := G.terminalRegularOpen) ∞ 2)
     (hB : ∀ q t, t ∈ Icc c s → ∀ x,
@@ -53,7 +56,7 @@ private theorem time_derivative_field_chart_component
   rw [hB q t ht]
   exact he.symm
 
-theorem TerminalLimitMetric.exists_time_derivative_fields_norm_continuous
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_time_derivative_fields_norm_continuous
     (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c) (hcs : c < s) :
     ∃ B : ℕ → ℝ → Tensor0SField (I := ThreeModel) (M := G.terminalRegularOpen) ∞ 2,
       (∀ t, B 0 t = metricTensorField (L.extendedMetric t)) ∧
@@ -99,7 +102,7 @@ theorem TerminalLimitMetric.exists_time_derivative_fields_norm_continuous
     time_derivative_field_chart_component L hac hcs B (fun q t ht x => (hB q t ht x).1)
       q hz.1.2 x slots z.2]
 
-private theorem tensor02CovDerivNormWith_zero
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.tensor02CovDerivNormWith_zero
     (g : SmoothRiemannianMetric ThreeModel G.terminalRegularOpen) (r : ℕ)
     (x : G.terminalRegularOpen) : tensor02CovDerivNormWith r 0 g g x = 0 := by
   rw [tensor02CovDerivNormWith, tensor02_cov_deriv_eq_cov_deriv_of_field,
@@ -107,7 +110,7 @@ private theorem tensor02CovDerivNormWith_zero
   simp only [ContMDiffSection.coe_zero, Pi.zero_apply, normSq0S, inner0S,
     MetricFiberData.inner, map_zero, Real.sqrt_zero]
 
-theorem TerminalLimitMetric.exists_time_derivative_fields_clipped_convergence
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_time_derivative_fields_clipped_convergence
     (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c)
     {τ Q : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (hQpos : ∀ n, 0 < Q n) {Qlim : ℝ} (hQlim : 0 < Qlim)
@@ -168,7 +171,7 @@ theorem TerminalLimitMetric.exists_time_derivative_fields_clipped_convergence
   exact lt_of_le_of_lt (le_abs_self _) hh
 
 
-theorem TerminalLimitMetric.exists_time_derivative_fields_clipped_convergence_of_strongNecks
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_time_derivative_fields_clipped_convergence_of_strongNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps : ℝ} (neck : ∀ n, Perelman.CanonicalNeighborhood.FiniteHorn.StrongNeck
@@ -235,7 +238,7 @@ end TimeJetContinuity
 
 section NeckPullback
 
-theorem TerminalLimitMetric.exists_time_fields_clipped_neck_pullback_convergence
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_time_fields_clipped_neck_pullback_convergence
     (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c)
     {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
@@ -297,7 +300,7 @@ theorem TerminalLimitMetric.exists_time_fields_clipped_neck_pullback_convergence
   exact hpull.trans_lt ((mul_le_mul_of_nonneg_left hsum hD).trans_lt hsmall)
 
 
-theorem TerminalLimitMetric.exists_time_fields_clipped_neck_pullback_convergence_of_strongNecks
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_time_fields_clipped_neck_pullback_convergence_of_strongNecks
     (L : G.TerminalLimitMetric)
     {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)

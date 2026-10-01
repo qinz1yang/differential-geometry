@@ -145,7 +145,7 @@ theorem hasExtinctRetainedCoreHistory_of_hasUniformRecordsSurgeryTower
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : HasUniformRecordsSurgeryTower
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g) :
+      (M.toClosedOrientedManifold) g) :
     HasExtinctRetainedCoreHistory M g := by
   obtain ⟨T, _c, _A, hbfr, hctrl, hrec⟩ := h
   exact RetainedCoreObservationTower.hasExtinctRetainedCoreHistory M T hbfr hctrl
@@ -165,11 +165,11 @@ theorem hasExtinctRetainedCoreHistory_of_hasMorganTianExtinctionInput
     [SimplyConnectedSpace M.Carrier]
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : HasMorganTianExtinctionInput
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g) :
+      (M.toClosedOrientedManifold) g) :
     HasExtinctRetainedCoreHistory M g :=
-  letI : ConnectedSpace (OrientedThreeStage.ofClosedOrientedManifold
+  letI : ConnectedSpace (
       M.toClosedOrientedManifold).Carrier := M.connected
-  letI : SimplyConnectedSpace (OrientedThreeStage.ofClosedOrientedManifold
+  letI : SimplyConnectedSpace (
       M.toClosedOrientedManifold).Carrier := inferInstanceAs (SimplyConnectedSpace M.Carrier)
   hasExtinctRetainedCoreHistory_of_hasUniformRecordsSurgeryTower M g
     (hasUniformRecordsSurgeryTower_of_hasMorganTianExtinctionInput h)

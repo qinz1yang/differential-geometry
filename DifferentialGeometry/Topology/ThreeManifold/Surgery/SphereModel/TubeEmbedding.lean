@@ -1,8 +1,12 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckRegularity
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.TubeSystem.SphereModel
 import DifferentialGeometry.Topology.Manifold.OpenSphereCylinder
 import DifferentialGeometry.Topology.Manifold.ParametrizationDerivative
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingFromOpen
+import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
+import DifferentialGeometry.Topology.Embedding.Diffeomorph
+import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionBoundarySource
+import Mathlib.Geometry.Manifold.Instances.Icc
 
 set_option autoImplicit false
 noncomputable section
@@ -367,14 +371,16 @@ theorem standardNeckTubeFun_isSmoothEmbedding :
   rw [hfun] at hcomp
   exact hcomp
 
-theorem standardNeckTubeIsSmoothEmbedding_holds : standardNeckTubeIsSmoothEmbedding :=
-  standardNeckTubeFun_isSmoothEmbedding
-
 theorem standardNeckTubeSystem_tube_isSmoothEmbedding :
     letI : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
     ∀ a : standardNeckTubeSystem.Index,
       IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞
         (standardNeckTubeSystem.tube a) :=
-  standardNeckTubeSystem_tube_smooth standardNeckTubeIsSmoothEmbedding_holds
+  fun _ => standardNeckTubeFun_isSmoothEmbedding
+
+theorem contMDiff_standardNeckTubeFun :
+    letI : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
+    ContMDiff ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ standardNeckTubeFun :=
+  standardNeckTubeFun_isSmoothEmbedding.contMDiff
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

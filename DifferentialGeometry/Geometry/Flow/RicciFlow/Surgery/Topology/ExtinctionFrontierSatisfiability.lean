@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctObservationNucleus
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreExtinctionLevel
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCap
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.Defs
+import DifferentialGeometry.Topology.Manifold.ClosedOriented.Empty
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Nonempty
 
 set_option autoImplicit false
 
@@ -57,7 +59,7 @@ theorem HasExtinctRetainedCoreHistory.exists_extinctionEvent
     (h : HasExtinctRetainedCoreHistory M g) :
     ∃ (H : RetainedCoreHistory.{u})
       (_ : InitialIdentification
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory)
+        (M.toClosedOrientedManifold) g H.toHistory)
       (i : Fin H.eventCount),
       i.succ = Fin.last H.eventCount ∧
       Nonempty (H.stage i.castSucc).Carrier ∧
@@ -66,7 +68,7 @@ theorem HasExtinctRetainedCoreHistory.exists_extinctionEvent
       (H.coreEvent i).transition.boundaryFrameReversing ∧
       (H.coreEvent i).toMetricCutCapEvent.poincareStandardDiscarded := by
   obtain ⟨H, A, hbfr, hctrl, hempty⟩ := h
-  have : Nonempty (OrientedThreeStage.ofClosedOrientedManifold
+  have : Nonempty (
       M.toClosedOrientedManifold).Carrier := M.connected.toNonempty
   have : Nonempty (H.toHistory.stage 0).Carrier := A.initial_nonempty
   obtain ⟨i, hsucc, hsrc, hsink, hdisc⟩ :=
@@ -79,16 +81,16 @@ theorem HasExtinctRetainedCoreHistory.exists_extinctionEvent_discardedStandard
     (h : HasExtinctRetainedCoreHistory M g) :
     ∃ (H : RetainedCoreHistory.{u})
       (_ : InitialIdentification
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory)
+        (M.toClosedOrientedManifold) g H.toHistory)
       (i : Fin H.eventCount) (q : ConnectedComponents (H.coreEvent i).discarded.Carrier),
       i.succ = Fin.last H.eventCount ∧
       Nonempty (H.stage i.castSucc).Carrier ∧
       IsEmpty (H.stage i.succ).Carrier ∧
       Nonempty (H.coreEvent i).discarded.Carrier ∧
       (H.coreEvent i).transition.boundaryFrameReversing ∧
-      Nonempty ((H.coreEvent i).discarded.toClosedOrientedManifold.component q).Carrier ∧
+      Nonempty ((H.coreEvent i).discarded.component q).Carrier ∧
       DifferentialGeometry.Topology.isStandardConnectedSum
-        ((H.coreEvent i).discarded.toClosedOrientedManifold.component q).Carrier := by
+        ((H.coreEvent i).discarded.component q).Carrier := by
   obtain ⟨H, A, i, hsucc, hsrc, hsink, hdisc, hbfr, hctrl⟩ := h.exists_extinctionEvent M g
   obtain ⟨d⟩ := hdisc
   exact ⟨H, A, i, ConnectedComponents.mk d, hsucc, hsrc, hsink, ⟨d⟩, hbfr,
@@ -156,7 +158,7 @@ theorem HasExtinctStandardSideNucleus.exists_extinctionEvent
       Nonempty (H.event i).discarded.Carrier ∧
       (H.event i).transition.boundaryFrameReversing ∧
       (H.event i).coreInclusionIsSmoothEmbedding ∧
-      (H.event i).discarded.toClosedOrientedManifold.componentwiseStandardFactor := by
+      (H.event i).discarded.componentwiseStandardFactor := by
   obtain ⟨H, A, hbfr, hcore, hside, hempty⟩ := h
   have : Nonempty (H.stage 0).Carrier := A.initial_nonempty
   obtain ⟨i, hsucc, hsrc, hsink, hdisc⟩ :=
@@ -169,7 +171,7 @@ theorem HasExtinctRetainedCoreHistoryAtTime.exists_extinctionEvent
     (h : HasExtinctRetainedCoreHistoryAtTime M g) :
     ∃ (H : RetainedCoreHistory.{u})
       (_ : InitialIdentification
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory)
+        (M.toClosedOrientedManifold) g H.toHistory)
       (t : Icc (0 : ℝ) H.horizon)
       (i : Fin (H.toHistory.restrict t).eventCount),
       i.succ = Fin.last (H.toHistory.restrict t).eventCount ∧
@@ -180,7 +182,7 @@ theorem HasExtinctRetainedCoreHistoryAtTime.exists_extinctionEvent
       (∀ j : Fin H.eventCount,
         (H.coreEvent j).toMetricCutCapEvent.poincareStandardDiscarded) := by
   obtain ⟨H, A, t, hbfr, hctrl, hext⟩ := h
-  have : Nonempty (OrientedThreeStage.ofClosedOrientedManifold
+  have : Nonempty (
       M.toClosedOrientedManifold).Carrier := M.connected.toNonempty
   have h0 : Nonempty ((H.toHistory.restrict t).stage 0).Carrier := by
     rw [ObservedHistory.restrict_stage_zero]
@@ -194,7 +196,7 @@ theorem HasExtinctRetainedCoreTower.exists_extinctionEvent
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : HasExtinctRetainedCoreTower M g) :
     ∃ (T : RetainedCoreObservationTower
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
+        (M.toClosedOrientedManifold) g)
       (n : ℕ) (_ : 0 < n) (i : Fin (T.history n).toHistory.eventCount),
       i.succ = Fin.last (T.history n).toHistory.eventCount ∧
       Nonempty ((T.history n).toHistory.stage i.castSucc).Carrier ∧
@@ -205,7 +207,7 @@ theorem HasExtinctRetainedCoreTower.exists_extinctionEvent
       (∀ (m : ℕ) (j : Fin (T.history m).eventCount),
         ((T.history m).coreEvent j).toMetricCutCapEvent.poincareStandardDiscarded) := by
   obtain ⟨T, hbfr, hctrl, n, hn, hext⟩ := h
-  have : Nonempty (OrientedThreeStage.ofClosedOrientedManifold
+  have : Nonempty (
       M.toClosedOrientedManifold).Carrier := M.connected.toNonempty
   have h0 : Nonempty ((T.history n).toHistory.stage 0).Carrier := (T.initial n).initial_nonempty
   obtain ⟨i, hsucc, hsrc, hsink, hdisc⟩ :=
@@ -251,7 +253,7 @@ theorem hasExtinctRetainedCoreHistory_of_extinctionEvent
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : 0 < s) (hQ : IsEmpty Q.Carrier)
     (E : RetainedCoreEvent
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) Q 0 s)
+      (M.toClosedOrientedManifold) Q 0 s)
     (hm : E.incoming.flow.base.metric 0 = g)
     (hbfr : E.transition.boundaryFrameReversing)
     (hctrl : E.toMetricCutCapEvent.poincareStandardDiscarded) :

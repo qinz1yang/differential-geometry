@@ -18,6 +18,8 @@ open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 universe u
 variable {P : OrientedThreeStage.{u}}
 
@@ -28,7 +30,7 @@ private local instance : IsManifold ThreeModel 2 P.Carrier :=
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem exists_riemannianClosedBall_subset_open
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_riemannianClosedBall_subset_open
     (g : P.Metric) {O : Set P.Carrier} (hO : IsOpen O) {x : P.Carrier} (hx : x ∈ O) :
     ∃ r : ℝ, 0 < r ∧ riemannianClosedBallOf g x r ⊆ O := by
   let _ : RiemannianBundle (fun y : P.Carrier => TangentSpace ThreeModel y) :=
@@ -47,7 +49,7 @@ private theorem exists_riemannianClosedBall_subset_open
   rw [edist_comm]
   exact hy.trans_lt hrε
 
-theorem IncomingSlab.exists_curvature_derivative_bounds_of_mem_terminalRegularRegion
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_curvature_derivative_bounds_of_mem_terminalRegularRegion
     {a s : ℝ} (G : P.IncomingSlab a s) {x : P.Carrier}
     (hx : x ∈ G.terminalRegularRegion) :
     ∃ (U : Set P.Carrier) (c : ℝ) (C : ℕ → ℝ),

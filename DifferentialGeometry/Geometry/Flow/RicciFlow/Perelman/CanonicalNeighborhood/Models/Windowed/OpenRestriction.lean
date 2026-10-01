@@ -161,7 +161,7 @@ theorem OrientedWitness.ofRestrictOpen
   refine ⟨hder.symm ▸ hf, ?_⟩
   unfold PreservesTangentOrientationAt at hpres ⊢
   simp only [hder, W.ofRestrictOpen_embedding_apply hU,
-    TangentOrientationSection.restrictOpen_orientation, TangentSpace] at hpres ⊢
+    DifferentialGeometry.ManifoldOrientation.restrictOpen_orientation, TangentSpace] at hpres ⊢
   convert! hpres using 1
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

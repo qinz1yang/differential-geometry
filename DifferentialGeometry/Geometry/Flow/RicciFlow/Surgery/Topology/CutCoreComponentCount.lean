@@ -1,5 +1,7 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Topology.Connected.CompactCoverCardinality
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
+import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
 
 noncomputable section
 

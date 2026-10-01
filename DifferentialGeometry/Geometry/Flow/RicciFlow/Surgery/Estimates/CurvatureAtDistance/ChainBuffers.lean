@@ -15,7 +15,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-theorem OrientedThreeStage.ClosedSlab.scalar_le_six_mul_on_ball_of_gradient_bound
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.scalar_le_six_mul_on_ball_of_gradient_bound
     {P : OrientedThreeStage.{u}} {a T : ℝ} (A : P.ClosedSlab a T)
     (C : ℝ≥0) {q Mb : ℝ} (hMb : 0 < Mb) (hqMb : q ≤ Mb)
     (hgradient : ∀ y, ∀ t ∈ Ioo a T, q < A.flow.scalar t y →

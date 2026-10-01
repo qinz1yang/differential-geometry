@@ -18,7 +18,10 @@ universe u
 
 namespace OrientedThreeStage.IncomingSlab
 
-theorem scalar_le_on_backward_cylinder_of_canonicalWitness
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_on_backward_cylinder_of_canonicalWitness
     {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
     {eps C1 C2 Q t' : ℝ} {x' : P.Carrier} (hC2 : 0 ≤ C2) (hQ : 0 < Q)
     (hx' : G.flow.scalar t' x' ≤ Q) (ht' : t' < s)
@@ -57,7 +60,7 @@ theorem scalar_le_on_backward_cylinder_of_canonicalWitness
     (by rwa [mul_comm Q 2])
   linarith
 
-theorem sqrt_rmNormSq_le_on_backward_cylinder_of_canonicalWitness
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.sqrt_rmNormSq_le_on_backward_cylinder_of_canonicalWitness
     {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
     {eps C1 C2 Q t' : ℝ} {x' : P.Carrier} {Phi : ℝ → ℝ} (hC2 : 0 ≤ C2) (hQ : 0 < Q)
     (hPhi : Perelman.AdmissiblePinchingFunction Phi)

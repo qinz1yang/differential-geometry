@@ -51,7 +51,7 @@ theorem exists_uniform_metricCutCapEvent_curvature_preserving :
       ∀ {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M]
         [IsManifold ThreeModel ∞ M] [CompactSpace M],
       ∀ (o : SmoothOrientation ThreeModel M) {t₀ t₁ : ℝ}
-        (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+        (G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
         (L : G.TerminalLimitMetric)
         {ι : Type} [Fintype ι] (precision : ι → ℝ) (hδ : ∀ i, 0 < precision i),
       (∀ i, precision i ≤ δ₀) → ∀ (x₀ : ι → G.terminalRegularOpen)
@@ -99,10 +99,10 @@ theorem exists_uniform_metricCutCapEvent_curvature_preserving :
         (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
         (∀ b, F b = LinearIsometryEquiv.refl ℝ ThreeSpace ∨ F b = LinearIsometryEquiv.neg ℝ) ∧
         (∀ b x, (B b x : ThreeSpace) = F b x) ∧
-      ∃ E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
-        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁,
-        E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
-        E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ ∧
+      ∃ E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
+        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁,
+        E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc ∧
+        E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ ∧
         HEq E.transition.trace
           ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ
             (fun i => (d₀ i).precision_lt_one) f hf hdisj R hnontrivial).reparametrizeCaps

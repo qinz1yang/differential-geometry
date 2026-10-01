@@ -213,7 +213,7 @@ private theorem nonempty_standard_tangent_orientation :
   have hdim : Module.finrank ℝ E3 = 3 := by simp
   let O₃ : DifferentialGeometry.ManifoldOrientation (𝓡 3) E3 3 :=
     cast (congrArg (fun n => DifferentialGeometry.ManifoldOrientation (𝓡 3) E3 n) hdim) O
-  exact ⟨{ orientation := O₃.orientation, locally_constant := O₃.locally_constant }⟩
+  exact ⟨O₃⟩
 
 private theorem standard_regular_window_of_model
     (S : PartialStandardSolution) {a b : ℝ}

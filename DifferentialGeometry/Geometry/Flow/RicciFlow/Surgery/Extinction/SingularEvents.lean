@@ -73,7 +73,7 @@ theorem exists_poincare_controlled_extinction_of_singular_events_of_horizon_inva
                 ENNReal.ofReal ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
               riemannianVolumeMeasure ThreeModel E.incoming.terminalRegularOpen
                 E.terminal.metric F) :
-    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
+    Nonempty (PoincareControlledExtinction P g) := by
   classical
   obtain ⟨c, hc, hscalar0⟩ := exists_initialScalarBarrier_of_compact g
   let B := max 1 (extinctionThreshold c (canonicalWidth g P.orientation) + 1)
@@ -220,7 +220,7 @@ theorem exists_poincare_controlled_extinction_of_singular_events_of_invariant
                 ENNReal.ofReal ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
               riemannianVolumeMeasure ThreeModel E.incoming.terminalRegularOpen
                 E.terminal.metric F) :
-    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
+    Nonempty (PoincareControlledExtinction P g) := by
   apply exists_poincare_controlled_extinction_of_singular_events_of_horizon_invariants P g
   intro B hB
   obtain ⟨p₀, v, hv, hstep⟩ := hproduce B hB
@@ -268,7 +268,7 @@ theorem exists_poincare_controlled_extinction_of_singular_events
                 ENNReal.ofReal ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
               riemannianVolumeMeasure ThreeModel E.incoming.terminalRegularOpen
                 E.terminal.metric F) :
-    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
+    Nonempty (PoincareControlledExtinction P g) := by
   apply exists_poincare_controlled_extinction_of_singular_events_of_invariant P g
     (fun _ => True) trivial
   intro B hB

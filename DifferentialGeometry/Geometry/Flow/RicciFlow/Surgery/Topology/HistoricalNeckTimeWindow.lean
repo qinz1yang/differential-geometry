@@ -10,10 +10,13 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.inv_scalar_le_time_length_of_strongNecks
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.inv_scalar_le_time_length_of_strongNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps : ℝ} (neck : ∀ n, StrongNeck G.flow eps x.1 (τ n)) :
@@ -30,7 +33,7 @@ theorem TerminalLimitMetric.inv_scalar_le_time_length_of_strongNecks
     ge_of_tendsto hlim (Eventually.of_forall hleft)
   linarith
 
-theorem TerminalLimitMetric.parabolicTime_mem_incoming_of_strongNecks
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.parabolicTime_mem_incoming_of_strongNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps : ℝ} (neck : ∀ n, StrongNeck G.flow eps x.1 (τ n))

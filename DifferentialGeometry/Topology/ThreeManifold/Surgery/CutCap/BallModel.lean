@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCompletion
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.CappingRealization
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph
 import DifferentialGeometry.Topology.Manifold.ClosedBall
 

@@ -1,8 +1,10 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingCompletion
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.SphericalRealization
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.CoreCapIntersection
 
 set_option autoImplicit false
+
 noncomputable section
+
 open Bundle Manifold Set
 open scoped Manifold ContDiff
 
@@ -87,24 +89,60 @@ theorem SmoothCutCapTransition.boundaryFrameReversing_of_attachingFrameReversing
     (hX : X.attachingFrameReversing) : X.boundaryFrameReversing :=
   (X.boundaryFrameReversing_iff_attachingFrameReversing h).mpr hX
 
-def FrameReversingFactor (c : ℝ) : Prop :=
-  ∀ d : ℝ, 0 < c * d ↔ d < 0
+theorem SmoothCutCapTransition.attachingFrameReversing_of_attaching_eq_refl
+    {P Q D N : OrientedThreeStage.{u}} (X : SmoothCutCapTransition P Q D N)
+    (h : ∀ b, X.attaching b = Diffeomorph.refl (𝓡 2)
+      (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) ∞) :
+    X.attachingFrameReversing := by
+  intro b z v w
+  have hz : X.attaching b z = z := by rw [h b, Diffeomorph.coe_refl]; rfl
+  have hA : mfderiv (𝓡 2) (𝓡 2) (⇑(X.attaching b)) z =
+      ContinuousLinearMap.id ℝ (TangentSpace (𝓡 2) z) := by
+    rw [h b, Diffeomorph.coe_refl]
+    exact mfderiv_id
+  rw [hA, hz]
+  simp only [ContinuousLinearMap.id_apply]
 
-theorem frameReversingFactor_iff_neg (c : ℝ) : FrameReversingFactor c ↔ c < 0 := by
-  refine ⟨fun h => ?_, fun hc d => ?_⟩
-  · have h1 := (h (-1)).mpr (by norm_num : (-1 : ℝ) < 0)
-    simpa only [mul_neg, mul_one, neg_pos] using h1
-  · rw [mul_pos_iff]
-    constructor
-    · rintro (⟨h, _⟩ | ⟨_, h⟩)
-      · exact absurd h (not_lt.mpr hc.le)
-      · exact h
-    · exact fun hd => Or.inr ⟨hc, hd⟩
+theorem SmoothCutCapTransition.boundaryFrameReversing_of_attaching_eq_refl
+    {P Q D N : OrientedThreeStage.{u}} (X : SmoothCutCapTransition P Q D N)
+    (h : ∀ b, X.attaching b = Diffeomorph.refl (𝓡 2)
+      (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) ∞)
+    (hout : (SphericalTubeSystem.ofSmoothCutCapTransition X)
+      |>.outwardNormalFirstIsStandardSphereOrientation) :
+    X.boundaryFrameReversing :=
+  (X.boundaryFrameReversing_iff_attachingFrameReversing hout).mpr
+    (X.attachingFrameReversing_of_attaching_eq_refl h)
 
-theorem frameReversingFactor_neg_one : FrameReversingFactor (-1 : ℝ) :=
-  (frameReversingFactor_iff_neg (-1)).mpr (by norm_num)
+theorem SmoothCutCapTransition.outwardNormalFirst_iff_boundaryFrameReversing_of_attaching_eq_refl
+    {P Q D N : OrientedThreeStage.{u}} (X : SmoothCutCapTransition P Q D N)
+    (h : ∀ b, X.attaching b = Diffeomorph.refl (𝓡 2)
+      (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) ∞) :
+    ((SphericalTubeSystem.ofSmoothCutCapTransition X)
+        |>.outwardNormalFirstIsStandardSphereOrientation) ↔ X.boundaryFrameReversing := by
+  refine ⟨fun hout => X.boundaryFrameReversing_of_attaching_eq_refl h hout, fun hb => ?_⟩
+  intro b z v w
+  have hb' := hb b z v w
+  simp only [Function.comp_apply] at hb'
+  rw [h b] at hb'
+  simp only [Diffeomorph.coe_refl, id_eq, Function.comp_id] at hb'
+  exact hb'
 
-theorem not_frameReversingFactor_one : ¬ FrameReversingFactor (1 : ℝ) :=
-  fun h => absurd ((frameReversingFactor_iff_neg 1).mp h) (by norm_num)
+theorem SmoothCutCapTransition.nonempty_sphericalCappingCompletion_of_attaching_eq_refl
+    {P Q D N : OrientedThreeStage.{u}} (X : SmoothCutCapTransition P Q D N)
+    (h : ∀ b, X.attaching b = Diffeomorph.refl (𝓡 2)
+      (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) ∞)
+    (hout : (SphericalTubeSystem.ofSmoothCutCapTransition X)
+      |>.outwardNormalFirstIsStandardSphereOrientation) :
+    Nonempty (SphericalCappingCompletion X) :=
+  ⟨X.toSphericalCappingCompletion (X.boundaryFrameReversing_of_attaching_eq_refl h hout)⟩
+
+theorem SmoothCutCapTransition.nonempty_smoothCutCapCompletion_of_attaching_eq_refl
+    {P Q D N : OrientedThreeStage.{u}} (X : SmoothCutCapTransition P Q D N)
+    (h : ∀ b, X.attaching b = Diffeomorph.refl (𝓡 2)
+      (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) ∞)
+    (hout : (SphericalTubeSystem.ofSmoothCutCapTransition X)
+      |>.outwardNormalFirstIsStandardSphereOrientation) :
+    Nonempty (SmoothCutCapCompletion X) :=
+  ⟨X.toSmoothCutCapCompletion (X.boundaryFrameReversing_of_attaching_eq_refl h hout)⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

@@ -39,7 +39,7 @@ private theorem nonempty_window_tangentOrientation (D : ℝ) :
     cast (congrArg (fun n =>
       DifferentialGeometry.ManifoldOrientation (𝓡 3) (EuclideanSpace ℝ (Fin 3)) n) hdim) O
   let oE : TangentOrientationSection (EuclideanSpace ℝ (Fin 3)) :=
-    { orientation := O₃.orientation, locally_constant := O₃.locally_constant }
+    O₃
   exact ⟨oE.restrictOpen (standardCapWindow D)⟩
 
 private theorem le_mul_of_half_scalar_lower {τ c₀ T RS RQ : ℝ} (hτ : 0 ≤ τ) (hc₀ : 0 < c₀)

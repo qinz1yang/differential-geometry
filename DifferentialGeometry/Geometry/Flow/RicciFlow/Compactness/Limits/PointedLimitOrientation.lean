@@ -47,8 +47,7 @@ private theorem nonempty_tangentOrientationSection_of_smoothOrientation {M : Typ
       ThreeModel o
   obtain ⟨O₃⟩ := (congrArg (fun n => Nonempty (DifferentialGeometry.ManifoldOrientation
     ThreeModel M n)) finrank_threeSpace).mp ⟨O⟩
-  exact ⟨{ orientation := O₃.orientation
-           locally_constant := O₃.locally_constant }⟩
+  exact ⟨O₃⟩
 
 theorem nonempty_tangentOrientationSection_of_pointedConvergence
     {X : PointedRiemannianSeq.{u, 0, 0} ThreeModel}

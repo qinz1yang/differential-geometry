@@ -91,7 +91,7 @@ private theorem local_length_comparison_of_local_terminal_edist_comparison
       (show EqOn (Subtype.val ∘ γT) (Subtype.val ∘ γ) (Icc a b) from hγeq)
     rw [hcongr]
     unfold DifferentialGeometry.Geometry.riemannianCurveVariation
-    simp only [OrientedThreeStage.edistOf_componentMetric]
+    simp only [DifferentialGeometry.Topology.ClosedOrientedManifold.edistOf_componentMetric]
     rfl
   exact hlength.trans (by simpa only [hincoming] using hmetric)
 

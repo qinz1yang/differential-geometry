@@ -11,16 +11,19 @@ open scoped NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ}
 
-private theorem continuousWithinAt_scalar_time (G : P.IncomingSlab a s) (y : P.Carrier)
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.continuousWithinAt_scalar_time (G : P.IncomingSlab a s) (y : P.Carrier)
     {t : ℝ} (ht : t ∈ Ico a s) :
     ContinuousWithinAt (fun v => G.flow.scalar v y) (Ico a s) t :=
   (G.equation.scalarTime (K := Ico a s) ht (fun _ h => h) y).continuousWithinAt
 
-private theorem hasDerivAt_scalar_time (G : P.IncomingSlab a s) (y : P.Carrier) {t : ℝ}
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.hasDerivAt_scalar_time (G : P.IncomingSlab a s) (y : P.Carrier) {t : ℝ}
     (ht : t ∈ Ioo a s) :
     HasDerivAt (fun v => G.flow.scalar v y)
       (derivWithin (fun v => G.flow.scalar v y) (Iic t) t) t := by
@@ -30,7 +33,7 @@ private theorem hasDerivAt_scalar_time (G : P.IncomingSlab a s) (y : P.Carrier) 
   rw [hd.derivWithin (uniqueDiffWithinAt_Iic t)]
   exact hd.hasDerivAt
 
-private theorem scalar_le_on_backward_window_of_derivativeBoundBefore
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_on_backward_window_of_derivativeBoundBefore
     (G : P.IncomingSlab a s) {Ctime : ℝ≥0} {qcan t' δ r τ : ℝ}
     (hder : G.DerivativeBoundBefore Ctime qcan t') (y : P.Carrier)
     (hr : 0 < r) (hδ1 : δ < 1) (hδC : (Ctime : ℝ) * δ < 1 / 18)
@@ -103,7 +106,7 @@ private theorem scalar_le_on_backward_window_of_derivativeBoundBefore
     exact hder y x ⟨by linarith [hx.1], by linarith [hx.2]⟩
       (lt_of_lt_of_le hq (hge' x ⟨hx.1, hx.2.le⟩))
 
-theorem exists_spatial_noncollapsing_of_parabolic_of_derivative_bound
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_spatial_noncollapsing_of_parabolic_of_derivative_bound
     {Phi : ℝ → ℝ} (hPhi : Perelman.AdmissiblePinchingFunction Phi) (Ctime : ℝ≥0) :
     ∃ c : ℝ, 0 < c ∧ c ≤ 1 ∧
       ∀ {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
@@ -224,7 +227,7 @@ theorem exists_spatial_noncollapsing_of_parabolic_of_derivative_bound
   rw [heq]
   exact hk2.trans hvol
 
-theorem exists_spatial_noncollapsing_on_window_of_parabolic_of_derivative_bound
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_spatial_noncollapsing_on_window_of_parabolic_of_derivative_bound
     {Phi : ℝ → ℝ} (hPhi : Perelman.AdmissiblePinchingFunction Phi) (Ctime : ℝ≥0) :
     ∃ c : ℝ, 0 < c ∧ c ≤ 1 ∧
       ∀ {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)

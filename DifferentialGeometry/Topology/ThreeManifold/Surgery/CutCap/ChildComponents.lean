@@ -1,9 +1,8 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappingCover
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.SmoothTransition
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Cover
+import DifferentialGeometry.Topology.Manifold.ImmersionImageNhds
 import DifferentialGeometry.Topology.VanKampen.SimplyConnectedUnion
 import Mathlib.Analysis.Convex.PathConnected
-import Mathlib.Geometry.Manifold.MFDeriv.Atlas
-import Mathlib.LinearAlgebra.Dimension.Constructions
 
 noncomputable section
 
@@ -14,220 +13,6 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-namespace OrientedThreeStage
-
-variable (P : OrientedThreeStage.{u})
-
-theorem component_isOpen (c : ConnectedComponents P.Carrier) :
-    IsOpen {x : P.Carrier | ConnectedComponents.mk x = c} := by
-  let : LocallyConnectedSpace P.Carrier :=
-    ChartedSpace.locallyConnectedSpace ThreeSpace P.Carrier
-  obtain ⟨x, rfl⟩ := ConnectedComponents.surjective_coe c
-  have hs : {y : P.Carrier | ConnectedComponents.mk y = ConnectedComponents.mk x} =
-      connectedComponent x := by
-    ext y
-    exact ConnectedComponents.coe_eq_coe'
-  rw [hs]
-  exact isOpen_connectedComponent
-
-def componentOpen (c : ConnectedComponents P.Carrier) : TopologicalSpace.Opens P.Carrier :=
-  ⟨{x | ConnectedComponents.mk x = c}, P.component_isOpen c⟩
-
-theorem component_compact (c : ConnectedComponents P.Carrier) : CompactSpace (P.componentOpen c) := by
-  apply isCompact_iff_compactSpace.mp
-  obtain ⟨x, rfl⟩ := ConnectedComponents.surjective_coe c
-  change IsCompact {y : P.Carrier | ConnectedComponents.mk y = ConnectedComponents.mk x}
-  have hs : {y : P.Carrier | ConnectedComponents.mk y = ConnectedComponents.mk x} =
-      connectedComponent x := by
-    ext y
-    exact ConnectedComponents.coe_eq_coe'
-  rw [hs]
-  exact isClosed_connectedComponent.isCompact
-
-theorem component_connected (c : ConnectedComponents P.Carrier) : ConnectedSpace (P.componentOpen c) := by
-  apply isConnected_iff_connectedSpace.mp
-  obtain ⟨x, rfl⟩ := ConnectedComponents.surjective_coe c
-  change IsConnected {y : P.Carrier | ConnectedComponents.mk y = ConnectedComponents.mk x}
-  have hs : {y : P.Carrier | ConnectedComponents.mk y = ConnectedComponents.mk x} =
-      connectedComponent x := by
-    ext y
-    exact ConnectedComponents.coe_eq_coe'
-  rw [hs]
-  exact isConnected_connectedComponent
-
-section OpenOrientation
-
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-  [IsManifold ThreeModel ∞ M]
-
-private theorem tangentChartEquiv_restrictOpen (U : TopologicalSpace.Opens M) (p x : U)
-    (hx : x ∈ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet)
-    (hxM : x.1 ∈ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p.1).baseSet) :
-    tangentChartEquiv U p x hx = tangentChartEquiv M p.1 x.1 hxM := by
-  have hu : x ∈ (chartAt ThreeSpace p).source := by
-    simpa only [TangentBundle.trivializationAt_baseSet] using hx
-  have hm : x.1 ∈ (chartAt ThreeSpace p.1).source := by
-    simpa only [TangentBundle.trivializationAt_baseSet] using hxM
-  have hf : (extChartAt ThreeModel p : U → ThreeSpace) =
-      (extChartAt ThreeModel p.1) ∘ (Subtype.val : U → M) := rfl
-  have hd : mfderiv ThreeModel ThreeModel (extChartAt ThreeModel p) x =
-      mfderiv ThreeModel ThreeModel (extChartAt ThreeModel p.1) x.1 := by
-    rw [hf, mfderiv_comp x (mdifferentiableAt_extChartAt hm)
-      (DifferentialGeometry.hasMFDerivAt_subtype_val U x).mdifferentiableAt,
-      DifferentialGeometry.mfderiv_subtype_val]
-    ext v
-    rfl
-  have hc : (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).continuousLinearMapAt ℝ x =
-      (trivializationAt ThreeSpace (TangentSpace ThreeModel) p.1).continuousLinearMapAt ℝ x.1 := by
-    rw [TangentBundle.continuousLinearMapAt_trivializationAt hu,
-      TangentBundle.continuousLinearMapAt_trivializationAt hm]
-    exact hd
-  apply LinearEquiv.ext
-  intro v
-  calc
-    tangentChartEquiv U p x hx v =
-        (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).continuousLinearMapAt ℝ x v :=
-      (Trivialization.continuousLinearMapAt_apply_of_mem ℝ
-        (trivializationAt ThreeSpace (TangentSpace ThreeModel) p) hx v).symm
-    _ = (trivializationAt ThreeSpace (TangentSpace ThreeModel) p.1).continuousLinearMapAt ℝ x.1 v :=
-      congrArg (fun A : ThreeSpace →L[ℝ] ThreeSpace => A v) hc
-    _ = tangentChartEquiv M p.1 x.1 hxM v :=
-      Trivialization.continuousLinearMapAt_apply_of_mem ℝ
-        (trivializationAt ThreeSpace (TangentSpace ThreeModel) p.1) hxM v
-
-private def restrictOrientation (o : TangentOrientationSection M)
-    (U : TopologicalSpace.Opens M) : TangentOrientationSection U where
-  orientation x := o.orientation x.1
-  locally_constant := by
-    intro p x hx
-    have hxM : x.1 ∈ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p.1).baseSet := by
-      simpa only [TangentBundle.trivializationAt_baseSet, TopologicalSpace.Opens.chartAt_eq,
-        OpenPartialHomeomorph.subtypeRestr_source, mem_preimage] using hx
-    obtain ⟨V, hVo, hxV, hVm, hV⟩ := o.locally_constant p.1 x.1 hxM
-    let W : Set U := Subtype.val ⁻¹' V
-    have hWm : W ⊆ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet := by
-      intro y hy
-      simpa only [TangentBundle.trivializationAt_baseSet, TopologicalSpace.Opens.chartAt_eq,
-        OpenPartialHomeomorph.subtypeRestr_source, mem_preimage] using hVm hy
-    refine ⟨W, hVo.preimage continuous_subtype_val, hxV, hWm, ?_⟩
-    intro y hy
-    rw [tangentChartEquiv_restrictOpen U p y (hWm hy) (hVm hy),
-      tangentChartEquiv_restrictOpen U p x hx hxM]
-    exact hV y.1 hy
-
-end OpenOrientation
-
-def componentOrientation (c : ConnectedComponents P.Carrier) :
-    TangentOrientationSection (P.componentOpen c) where
-  orientation x := P.orientation.orientation x.1
-  locally_constant := (restrictOrientation P.orientation (P.componentOpen c)).locally_constant
-
-def component (c : ConnectedComponents P.Carrier) : OrientedThreeStage.{u} where
-  Carrier := P.componentOpen c
-  topology := inferInstance
-  charts := inferInstance
-  smooth := inferInstance
-  hausdorff := inferInstance
-  compact := P.component_compact c
-  orientation := P.componentOrientation c
-
-def componentMetric (g : P.Metric) (c : ConnectedComponents P.Carrier) : (P.component c).Metric :=
-  g.restrictOpen (P.componentOpen c)
-
-end OrientedThreeStage
-
-namespace CutCoreGeometry
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-omit [IsManifold I ∞ M] in
-private theorem interior_maximal_chart {e e' : OpenPartialHomeomorph M H} {x : M}
-    (he : e ∈ IsManifold.maximalAtlas I ∞ M)
-    (he' : e' ∈ IsManifold.maximalAtlas I ∞ M)
-    (hex : x ∈ e.source) (hex' : x ∈ e'.source)
-    (hx : e.extend I x ∈ interior (e.extend I).target) :
-    e'.extend I x ∈ interior (e'.extend I).target := by
-  let φ := I.extendCoordChange e e'
-  have hφ : ContDiffOn ℝ ∞ φ φ.source := I.contDiffOn_extendCoordChange he he'
-  have hφx : φ.source ∈ 𝓝 (e.extend I x) := by
-    simp_rw [φ, ModelWithCorners.extendCoordChange, PartialEquiv.trans_source,
-      PartialEquiv.symm_source, Filter.inter_mem_iff,
-      mem_interior_iff_mem_nhds.1 hx, true_and, e'.extend_source]
-    exact e.extend_preimage_mem_nhds hex (e'.open_source.mem_nhds hex')
-  have hsurj : Function.Surjective (fderiv ℝ φ (e.extend I x)) := by
-    rw [← fderivWithin_of_mem_nhds hφx]
-    exact (I.isInvertible_fderivWithin_extendCoordChange (by simp) he he'
-      (by simp [hex, hex'])).surjective
-  have hmem : e'.extend I x ∈ interior (range I) := by
-    rw [show e'.extend I x = φ (e.extend I x) by simp [φ, hex]]
-    have hd : DifferentiableAt ℝ φ (e.extend I x) :=
-      (hφ.differentiableOn (by simp)).differentiableAt hφx
-    exact hd.mem_interior_convex_of_surjective_fderiv hφx I.convex_range I.isClosed_range
-      I.nonempty_interior (φ.mapsTo.mono_right (by simp [φ, inter_assoc])) hsurj
-  exact e'.mem_interior_extend_target (by simp [hex']) hmem
-
-variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
-  {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ E' G}
-  {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
-  [FiniteDimensional ℝ E] [FiniteDimensional ℝ E']
-
-omit [IsManifold J ∞ N] in
-private theorem immersion_image_mem_nhds {f : M → N} {x : M}
-    (hf : IsImmersionAt I J ∞ f x)
-    (hdim : Module.finrank ℝ E = Module.finrank ℝ E')
-    (hx : I.IsInteriorPoint x) {s : Set M} (hs : s ∈ 𝓝 x) :
-    f '' s ∈ 𝓝 (f x) := by
-  obtain ⟨F, hF, hFR, h⟩ := hf
-  let := hF
-  let := hFR
-  let : FiniteDimensional ℝ (E × F) := h.equiv.symm.toLinearEquiv.finiteDimensional
-  let : FiniteDimensional ℝ F := Module.Finite.of_surjective
-    (LinearMap.snd ℝ E F) (fun z => ⟨(0, z), rfl⟩)
-  have hzero : Module.finrank ℝ F = 0 := by
-    have heq := h.equiv.toLinearEquiv.finrank_eq
-    rw [Module.finrank_prod, ← hdim] at heq
-    omega
-  let : Subsingleton F := (Module.finrank_zero_iff).mp hzero
-  let : Unique F := ⟨⟨0⟩, fun z => Subsingleton.elim z 0⟩
-  let A : E ≃L[ℝ] E' := (ContinuousLinearEquiv.prodUnique ℝ E F).symm.trans h.equiv
-  have hA (z : E) : A z = h.equiv (z, 0) := rfl
-  have hxi : h.domChart.extend I x ∈ interior (h.domChart.extend I).target :=
-    interior_maximal_chart (IsManifold.subset_maximalAtlas (chart_mem_atlas H x))
-      h.domChart_mem_maximalAtlas (mem_chart_source H x) h.mem_domChart_source
-      ((I.isInteriorPoint_iff).mp hx)
-  have hxrange : h.domChart.extend I x ∈ interior (range I) :=
-    interior_mono h.domChart.extend_target_subset_range hxi
-  have himage : (h.domChart.extend I) '' (s ∩ h.domChart.source) ∈
-      𝓝 (h.domChart.extend I x) :=
-    h.domChart.extend_image_nhds_mem_nhds_of_mem_interior_range h.mem_domChart_source
-      hxrange (Filter.inter_mem hs (h.domChart.open_source.mem_nhds h.mem_domChart_source))
-  have hformula (z : M) (hz : z ∈ h.domChart.source) :
-      (h.codChart.extend J) (f z) = A ((h.domChart.extend I) z) := by
-    have hze : z ∈ (h.domChart.extend I).source := by
-      simpa only [OpenPartialHomeomorph.extend_source] using hz
-    have hnormal := h.writtenInCharts ((h.domChart.extend I).map_source hze)
-    simpa only [Function.comp_apply, OpenPartialHomeomorph.extend_source,
-      (h.domChart.extend I).left_inv hze, hA] using hnormal
-  have htarget : A '' ((h.domChart.extend I) '' (s ∩ h.domChart.source)) ∈
-      𝓝 ((h.codChart.extend J) (f x)) := by
-    rw [hformula x h.mem_domChart_source]
-    exact A.toHomeomorph.isOpenMap.image_mem_nhds himage
-  have hpre := (h.codChart.continuousAt_extend h.mem_codChart_source).preimage_mem_nhds htarget
-  filter_upwards [hpre, h.codChart.open_source.mem_nhds h.mem_codChart_source] with y hy hys
-  obtain ⟨v, ⟨z, hzs, rfl⟩, heq⟩ := hy
-  refine ⟨z, hzs.1, ?_⟩
-  have hfzOriginal : f z ∈ h.codChart.source := h.source_subset_preimage_source hzs.2
-  have hfz : f z ∈ (h.codChart.extend J).source := by
-    simpa only [OpenPartialHomeomorph.extend_source] using hfzOriginal
-  have hyc : y ∈ (h.codChart.extend J).source := by
-    simpa only [OpenPartialHomeomorph.extend_source] using hys
-  apply (h.codChart.extend J).injOn hfz hyc
-  exact (hformula z hzs.2).trans heq
-
-end CutCoreGeometry
-
 namespace SmoothCutCapTransition
 
 variable {P Q D N : OrientedThreeStage.{u}} (E : SmoothCutCapTransition P Q D N)
@@ -237,7 +22,7 @@ theorem removedBand_isOpen (a : E.trace.tubes.Index) :
   let : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
   apply isOpen_iff_mem_nhds.mpr
   rintro _ ⟨z, hz, rfl⟩
-  apply CutCoreGeometry.immersion_image_mem_nhds
+  apply DifferentialGeometry.Topology.immersion_image_mem_nhds
     ((E.tube_smooth a).isImmersion.isImmersionAt z)
   · simp [ThreeSpace, Module.finrank_prod]
   · change z ∈ ((𝓡 2).prod (𝓡∂ 1)).interior TubeDomain
@@ -454,7 +239,7 @@ theorem childCap_boundary_eq (c : ConnectedComponents Q.Carrier) (b : E.ChildCap
 
 def childCarrierOpenCover (E : SmoothCutCapTransition P Q D N) : Prop :=
   ∀ c : ConnectedComponents Q.Carrier,
-    SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
+    SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
     ∃ (U V : Set (E.ChildCarrier c)) (x₀ : E.ChildCarrier c),
       IsOpen U ∧ IsOpen V ∧ U ∪ V = univ ∧ x₀ ∈ U ∧ x₀ ∈ V ∧
       Set.range (E.childCoreInclusion c) ⊆ U ∧
@@ -464,8 +249,8 @@ def childCarrierOpenCover (E : SmoothCutCapTransition P Q D N) : Prop :=
 
 theorem child_simplyConnected_of_childCarrierOpenCover (E : SmoothCutCapTransition P Q D N)
     (h : E.childCarrierOpenCover) (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
-    SimplyConnectedSpace (Q.component c).Carrier := by
+    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
+    SimplyConnectedSpace (Q.component c).toClosedOrientedManifold.Carrier := by
   obtain ⟨U, V, x₀, hU, hV, hcov, hxU, hxV, _, _, hSU, hSV, hpc⟩ := h c inferInstance
   exact @DifferentialGeometry.Topology.VanKampen.simplyConnectedSpace_of_open_cover
     (E.ChildCarrier c) _ U V hU hV hcov x₀ ⟨hxU, hxV⟩ hSU hSV hpc

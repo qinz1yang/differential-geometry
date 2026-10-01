@@ -15,9 +15,12 @@ universe u
 
 namespace OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-def CanonicalBoundsOn (ε C1 C2 qcan τmin : ℝ) (Ctime Cgrad : ℝ≥0) (t₀ η : ℝ)
+def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.CanonicalBoundsOn (ε C1 C2 qcan τmin : ℝ) (Ctime Cgrad : ℝ≥0) (t₀ η : ℝ)
     (S : P.Carrier → ℝ → Prop) : Prop :=
   ∀ (y : P.Carrier) (t : ℝ), a < t → t₀ ≤ t → t < t₀ + η → t < s → qcan < G.flow.scalar t y →
     S y t →
@@ -28,7 +31,7 @@ def CanonicalBoundsOn (ε C1 C2 qcan τmin : ℝ) (Ctime Cgrad : ℝ≥0) (t₀ 
       Cgrad * G.flow.scalar t y * Real.sqrt (G.flow.scalar t y) *
         Real.sqrt ((G.flow.base.metric t).inner y v v)
 
-theorem canonicalBoundsOn_of_cover {ε C1 C2 qcan τmin : ℝ} {Ctime Cgrad : ℝ≥0} {t₀ η₁ η₂ η₃ : ℝ}
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.canonicalBoundsOn_of_cover {ε C1 C2 qcan τmin : ℝ} {Ctime Cgrad : ℝ≥0} {t₀ η₁ η₂ η₃ : ℝ}
     {S₁ S₂ S₃ : P.Carrier → ℝ → Prop}
     (h₁ : G.CanonicalBoundsOn ε C1 C2 qcan τmin Ctime Cgrad t₀ η₁ S₁)
     (h₂ : G.CanonicalBoundsOn ε C1 C2 qcan τmin Ctime Cgrad t₀ η₂ S₂)

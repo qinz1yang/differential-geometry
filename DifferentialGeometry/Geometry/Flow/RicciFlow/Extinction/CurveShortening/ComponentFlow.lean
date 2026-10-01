@@ -1,5 +1,7 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
+import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
 
 noncomputable section
@@ -15,17 +17,17 @@ variable {P : OrientedThreeStage.{u}} {a b : ℝ}
 
 theorem incoming_component_native_solution (G : P.IncomingSlab a b)
     (c : ConnectedComponents P.Carrier) :
-    ∃ F : SolutionOn (I := ThreeModel) (M := (P.component c).Carrier)
+    ∃ F : SolutionOn (I := ThreeModel) (M := (P.component c).toClosedOrientedManifold.Carrier)
         (RealTimeInterval.closedOpen a b G.lt),
       DifferentialGeometry.PDE.RicciFlow.IsSolutionOn F ∧
       (∀ t ∈ Ico a b, F.base.metric t = P.componentMetric (G.flow.base.metric t) c) ∧
-      (∀ t ∈ Ico a b, ∀ x : (P.component c).Carrier,
+      (∀ t ∈ Ico a b, ∀ x : (P.component c).toClosedOrientedManifold.Carrier,
         F.base.scalar t x = G.flow.base.scalar t x.1) := by
   let : CompactSpace (P.componentOpen c) := P.component_compact c
-  let : T2Space (P.componentOpen c) := (P.component c).hausdorff
-  let : IsManifold ThreeModel ∞ (P.componentOpen c) := (P.component c).smooth
+  let : T2Space (P.componentOpen c) := (P.component c).toClosedOrientedManifold.hausdorff
+  let : IsManifold ThreeModel ∞ (P.componentOpen c) := (P.component c).toClosedOrientedManifold.smooth
   let : SigmaCompactSpace (P.componentOpen c) := inferInstance
-  let F : SolutionOn (I := ThreeModel) (M := (P.component c).Carrier)
+  let F : SolutionOn (I := ThreeModel) (M := (P.component c).toClosedOrientedManifold.Carrier)
       (RealTimeInterval.closedOpen a b G.lt) :=
     CheegerGromovCompactness.solutionOnRestrictOpen (I := ThreeModel) (M := P.Carrier)
       (D := RealTimeInterval.closedOpen a b G.lt) G.flow (P.componentOpen c)

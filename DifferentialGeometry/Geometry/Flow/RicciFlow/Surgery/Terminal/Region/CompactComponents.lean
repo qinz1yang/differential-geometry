@@ -12,7 +12,7 @@ open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Contract
 universe u
 
-open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 
 theorem exists_initialTerminalRegion_with_empty_boundary_of_compact_low_components
     (D : OneStepIncoming.{u}) {ε Λ r : ℝ}

@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Incoming.ForwardScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.Reciprocal
-
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.ScalarTime
 
 set_option autoImplicit false
@@ -274,7 +273,7 @@ theorem extended_riemannNorm_le_of_earlier_scalar_bound_at_time
   · rw [(H.event k).terminal.extendedMetric_before hlt,
       DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.rmNormSq_restrictOpen]
     exact hpast t ⟨ht.1, hlt⟩ hτt
-  · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+  · rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
     apply le_of_tendsto ((H.event k).terminal.tendsto_riemannNorm y)
     have hτk : τ < H.time k.succ := hτ.2.trans_le
       (H.time_strictMono.monotone (Fin.succ_le_succ_iff.mpr hjk))

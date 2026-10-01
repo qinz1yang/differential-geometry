@@ -40,18 +40,18 @@ theorem componentwisePositiveCurvatureOrSphereProduct_of_discardedComponentsRoun
 
 theorem MetricCutCapEvent.poincareStandardDiscarded_of_discardedComponentsRoundOrSphereProduct
     {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
-    (h : DiscardedComponentsRoundOrSphereProduct E.discarded.toClosedOrientedManifold) :
+    (h : DiscardedComponentsRoundOrSphereProduct E.discarded) :
     E.poincareStandardDiscarded :=
   MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveCurvatureOrSphereProduct
     E
     (componentwisePositiveCurvatureOrSphereProduct_of_discardedComponentsRoundOrSphereProduct
-      E.discarded.toClosedOrientedManifold h)
+      E.discarded h)
 
 def RetainedCoreObservationTower.discardedSideGeometry {P : OrientedThreeStage.{u}}
     {g : P.Metric} (T : RetainedCoreObservationTower P g) : Prop :=
   ∀ (n : ℕ) (j : Fin (T.history n).eventCount),
     DiscardedComponentsRoundOrSphereProduct
-      ((T.history n).coreEvent j).toMetricCutCapEvent.discarded.toClosedOrientedManifold
+      ((T.history n).coreEvent j).toMetricCutCapEvent.discarded
 
 theorem RetainedCoreObservationTower.hasPoincareStandardDiscarded_of_discardedSideGeometry
     {P : OrientedThreeStage.{u}} {g : P.Metric} (T : RetainedCoreObservationTower P g)
@@ -93,7 +93,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 theorem exists_poincare_controlled_extinction_of_retainedCoreTower_discardedSideGeometry
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
-    (T : RetainedCoreObservationTower (OrientedThreeStage.ofClosedOrientedManifold
+    (T : RetainedCoreObservationTower (
       M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing)
     (h : T.discardedSideGeometry)

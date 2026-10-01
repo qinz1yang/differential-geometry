@@ -3,8 +3,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Ancestry.Def
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FreeLoopClass
 
-
-
 noncomputable section
 
 open Set Bundle Manifold
@@ -16,9 +14,9 @@ universe u
 
 theorem rfs_simply_connected_history (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).Carrier) :
+      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier) :
     ∀ j : Fin (H.eventCount + 1), ∀ c : ConnectedComponents (H.stage j).Carrier,
-      SimplyConnectedSpace ((H.stage j).component c).Carrier := by
+      SimplyConnectedSpace ((H.stage j).component c).toClosedOrientedManifold.Carrier := by
   intro j
   induction j using Fin.induction with
   | zero => exact h0
@@ -30,12 +28,12 @@ theorem rfs_simply_connected_history (H : ObservedHistory.{u})
 theorem rfs_finite_ancestry (H : ObservedHistory.{u}) (parameters : CutoffParameters)
     (cutoff : ∀ j : Fin H.eventCount, GeometricCutoffRecord H j parameters)
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier) :
     let chain := finiteAncestorChain H terminal
     let hSC := rfs_simply_connected_history H h0
     (∀ j : Fin (H.eventCount + 1),
-      let P := (H.stage j).component (chain.component j)
+      let P := ((H.stage j).component (chain.component j)).toClosedOrientedManifold
       letI : ConnectedSpace P.Carrier := (H.stage j).component_connected (chain.component j)
       letI : SimplyConnectedSpace P.Carrier := hSC j (chain.component j)
       ∀ q : P.Carrier,
@@ -63,7 +61,7 @@ theorem rfs_finite_ancestry (H : ObservedHistory.{u}) (parameters : CutoffParame
   let hSC := rfs_simply_connected_history H h0
   constructor
   · intro j
-    let P := (H.stage j).component (chain.component j)
+    let P := ((H.stage j).component (chain.component j)).toClosedOrientedManifold
     let : ConnectedSpace P.Carrier := (H.stage j).component_connected (chain.component j)
     let : SimplyConnectedSpace P.Carrier := hSC j (chain.component j)
     dsimp only

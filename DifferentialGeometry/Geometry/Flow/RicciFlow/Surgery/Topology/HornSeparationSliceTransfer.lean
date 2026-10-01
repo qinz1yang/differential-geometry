@@ -19,13 +19,16 @@ open scoped Manifold ContDiff ENNReal Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 universe u
 
-private local instance terminalRegularOpenSigmaCompact {P : OrientedThreeStage.{u}} {a s : ℝ}
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalRegularOpenSigmaCompact {P : OrientedThreeStage.{u}} {a s : ℝ}
     {G : P.IncomingSlab a s} : SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
@@ -33,7 +36,7 @@ private local instance terminalRegularOpenSigmaCompact {P : OrientedThreeStage.{
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.eventually_riemannianBallOf_subset_image_closedBall
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_riemannianBallOf_subset_image_closedBall
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen) {r : ℝ} (hr : 0 < r)
     (hK : IsCompact (riemannianClosedBallOf L.metric x r)) :
     ∀ᶠ t in 𝓝[<] s, riemannianBallOf (G.flow.base.metric t) (x : P.Carrier) (16 * r / 17) ⊆
@@ -59,7 +62,7 @@ theorem TerminalLimitMetric.eventually_riemannianBallOf_subset_image_closedBall
     rw [hres] at hb
     linarith
 
-theorem TerminalLimitMetric.eventually_exists_spatialNeck_of_normalizedNeck
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_exists_spatialNeck_of_normalizedNeck
     (L : G.TerminalLimitMetric) {δ : ℝ} {k : ℕ} (N : NormalizedNeck L.metric δ k)
     {alpha : ℝ} (ha : 0 < alpha) (hsmall : 2 * alpha < 1 / 11)
     (hδ : δ ≤ neckModelTolerance alpha / 2)
@@ -231,7 +234,7 @@ theorem exists_deep_horn_centralSphere_side_points :
       exact (hmap _).symm
   · exact Or.inl hcl
 
-open OrientedThreeStage.IncomingSlab in
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab in
 theorem exists_strongNeck_threshold_of_horn_point_at_slice
     {delta : ℝ} (hdelta : 0 < delta) (hdelta1 : delta < 1 / 11)
     {kappa : ℝ} (hkappa : 0 < kappa) {rho : ℝ} (hrho : 0 < rho) {Phi : ℝ → ℝ}

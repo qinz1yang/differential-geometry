@@ -94,6 +94,8 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
@@ -106,7 +108,7 @@ private local instance (A : P.ClosedSlab a b) :
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen.isOpen)
 
-theorem ClosedSlab.nonempty_scaled_spatialNeck_of_minimizing_segment (A : P.ClosedSlab a b)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.nonempty_scaled_spatialNeck_of_minimizing_segment (A : P.ClosedSlab a b)
     {eps C1 C2 alpha q Q : ℝ} (hQ : 0 < Q) (halpha : alpha < 1 / 11)
     (heps : 13000 * (13000 * eps) ≤ alpha)
     (hW : ∀ y, q < A.flow.scalar b y →

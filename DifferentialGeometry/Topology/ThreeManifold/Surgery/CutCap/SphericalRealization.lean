@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BallDiffeomorph
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.BallModel
 
 section
 
@@ -213,7 +213,7 @@ def boundaryFrameReversing (X : SmoothCutCapTransition P Q D N) : Prop :=
     (z : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1)
     (v w : TangentSpace (𝓡 2) z),
     let f : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 →
-        P.toClosedOrientedManifold.Carrier :=
+        P.Carrier :=
       (SphericalTubeSystem.ofSmoothCutCapTransition X).boundarySphere b ∘ X.attaching b
     let _ : FiniteDimensional ℝ (TangentSpace (𝓡 3) (f z)) :=
       inferInstanceAs (FiniteDimensional ℝ (EuclideanSpace ℝ (Fin 3)))
@@ -221,7 +221,7 @@ def boundaryFrameReversing (X : SmoothCutCapTransition P Q D N) : Prop :=
     let e := mfderiv (𝓡 2) (𝓡 3)
       (Subtype.val : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 →
         EuclideanSpace ℝ (Fin 3)) z
-    (0 < ((P.toClosedOrientedManifold.orientation.orientation (f z)).someBasis (by
+    (0 < ((P.orientation.orientation (f z)).someBasis (by
       change Fintype.card (Fin 3) = Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))
       simp)).det
       (Fin.cons ((SphericalTubeSystem.ofSmoothCutCapTransition X).outwardVector b
@@ -232,8 +232,8 @@ def boundaryFrameReversing (X : SmoothCutCapTransition P Q D N) : Prop :=
 
 noncomputable def toSphericalCapping (X : SmoothCutCapTransition P Q D N)
     (hboundary : X.boundaryFrameReversing) :
-    DifferentialGeometry.Topology.SphericalCapping P.toClosedOrientedManifold
-      N.toClosedOrientedManifold (SphericalTubeSystem.ofSmoothCutCapTransition X) where
+    DifferentialGeometry.Topology.SphericalCapping P
+      N (SphericalTubeSystem.ofSmoothCutCapTransition X) where
   coreCharts := X.coreCharts
   coreSmooth := X.coreSmooth
   core_induced := X.core_induced

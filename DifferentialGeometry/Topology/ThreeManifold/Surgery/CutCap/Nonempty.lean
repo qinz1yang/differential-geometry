@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapTransitionSkeleton
-import DifferentialGeometry.Topology.Manifold.SphereOrientation
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.SmoothTransition
+import DifferentialGeometry.Topology.Manifold.ClosedOriented.Empty
 
 set_option autoImplicit false
 
@@ -12,48 +12,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-private def sphereThreePoint : Sphere 3 :=
-  ⟨EuclideanSpace.single 0 1, by
-    rw [Metric.mem_sphere, dist_eq_norm, sub_zero, PiLp.norm_single]
-    norm_num⟩
-
-def sphereThreeStage : OrientedThreeStage where
-  Carrier := Sphere 3
-  orientation := TangentOrientationSection.ofManifoldOrientation
-    (DifferentialGeometry.sphereOrientation 3 (by decide))
-
-theorem sphereThreeStage_nonempty : Nonempty sphereThreeStage.Carrier := ⟨sphereThreePoint⟩
-
-def standardNeckTubeIsSmoothEmbedding : Prop :=
-  letI : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
-  IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ standardNeckTube
-
-theorem standardNeckTubeSystem_tube_smooth (h : standardNeckTubeIsSmoothEmbedding) :
-    letI : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
-    ∀ a : standardNeckTubeSystem.Index,
-      IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞
-        (standardNeckTubeSystem.tube a) := by
-  intro a
-  exact h
-
-local instance : ChartedSpace ThreeSpace PEmpty where
-  atlas := ∅
-  chartAt := fun x => PEmpty.elim x
-  mem_chart_source := fun x => PEmpty.elim x
-  chart_mem_atlas := fun x => PEmpty.elim x
-
-local instance : IsManifold ThreeModel ∞ PEmpty where
-  compatible := by
-    intro e _ he _
-    exact he.elim
-
-private def emptyTangentOrientationSection : TangentOrientationSection PEmpty where
-  orientation := fun x => PEmpty.elim x
-  locally_constant := fun p => PEmpty.elim p
-
-def emptyOrientedThreeStage : OrientedThreeStage where
-  Carrier := PEmpty
-  orientation := emptyTangentOrientationSection
+abbrev emptyOrientedThreeStage : OrientedThreeStage.{0} :=
+  DifferentialGeometry.Topology.ClosedOrientedManifold.empty 3
 
 theorem SmoothCutCapTransition.nonempty_output {P Q D N : OrientedThreeStage.{u}}
     (X : SmoothCutCapTransition P Q D N) : Nonempty N.Carrier := by

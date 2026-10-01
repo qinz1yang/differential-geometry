@@ -1,4 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapPresentation
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.PresentationOrientation
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.Defs
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Nonempty
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctEventModelConstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalTransitionBridge
 import DifferentialGeometry.Topology.Manifold.InteriorAtlas
@@ -402,13 +404,14 @@ noncomputable instance emptyChartedSpacePEmpty : ChartedSpace ThreeSpace PEmpty.
 noncomputable def emptyStage : OrientedThreeStage where
   Carrier := PEmpty.{1}
   orientation :=
-    { orientation := fun x => PEmpty.elim x
+    { dimension_eq := by simp [ThreeSpace]
+      orientation := fun x => PEmpty.elim x
       locally_constant := fun p _ _ => PEmpty.elim p }
 
 @[reducible]
 noncomputable def sphereStage : OrientedThreeStage where
   Carrier := Sphere 3
-  orientation := TangentOrientationSection.ofManifoldOrientation
+  orientation :=
     (DifferentialGeometry.sphereOrientation 3 (by decide))
 
 @[reducible]

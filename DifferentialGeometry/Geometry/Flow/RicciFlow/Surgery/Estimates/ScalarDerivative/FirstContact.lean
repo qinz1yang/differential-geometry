@@ -8,9 +8,11 @@ open Set
 open DifferentialGeometry.Geometry.Operator
 open scoped Manifold ContDiff
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
+
+open DifferentialGeometry.Topology.ClosedOrientedManifold
 universe u
 
-theorem IncomingSlab.exists_closedPrefix_first_scalar_derivative_contact
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_closedPrefix_first_scalar_derivative_contact
     {P : OrientedThreeStage.{u}} {start finish : ℝ} (G : P.IncomingSlab start finish)
     {a b C q Q : ℝ} (hstart : start < a) (hab : a ≤ b) (hfinish : b < finish)
     (hC : 0 < C) (hq : 0 < q) (hqQ : q ≤ Q)

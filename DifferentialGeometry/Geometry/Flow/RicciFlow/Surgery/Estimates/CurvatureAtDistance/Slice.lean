@@ -243,7 +243,7 @@ private theorem div_ceil_lt {ℓ r₀ : ℝ} (hr₀ : 0 < r₀) :
   push_cast
   nlinarith
 
-theorem OrientedThreeStage.ClosedSlab.exists_rebase_chain {P : OrientedThreeStage.{u}}
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.exists_rebase_chain {P : OrientedThreeStage.{u}}
     {a T : ℝ} (A : P.ClosedSlab a T) (Cgrad : ℝ≥0) {q : ℝ} (hq : 0 < q)
     (hgradient : ∀ y, ∀ t ∈ Ioo a T, q < A.flow.scalar t y →
       ∀ v : TangentSpace ThreeModel y,

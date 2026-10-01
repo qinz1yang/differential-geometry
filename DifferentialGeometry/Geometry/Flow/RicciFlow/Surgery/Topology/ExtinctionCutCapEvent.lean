@@ -27,7 +27,7 @@ theorem exists_incomingSlab_terminalLimitMetric (P : OrientedThreeStage.{u}) (g 
       Nonempty G.TerminalLimitMetric ∧ G.flow.base.metric a = g := by
   obtain ⟨b, hab, S, hinit⟩ := exists_closedSlab_of_metric P g a
   exact ⟨b, hab, S.restrictIncoming le_rfl hab le_rfl,
-    ⟨OrientedThreeStage.ClosedSlab.endpointTerminalLimitMetric P S⟩, hinit⟩
+    ⟨DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.endpointTerminalLimitMetric P S⟩, hinit⟩
 
 theorem nonempty_metricCutCapEvent_of_isEmpty_output
     {P Q D N : OrientedThreeStage.{u}} (X : SmoothCutCapTransition P Q D N) [IsEmpty Q.Carrier]
@@ -85,23 +85,23 @@ def HasExtinctCutCapTransition (P : OrientedThreeStage.{u}) : Prop :=
     IsEmpty Q.Carrier ∧ X.boundaryFrameReversing ∧
       ∀ q : ConnectedComponents D.Carrier,
         DifferentialGeometry.Topology.isStandardConnectedSum
-          (D.toClosedOrientedManifold.component q).Carrier
+          (D.component q).Carrier
 
 theorem hasExtinctRetainedCoreHistory_of_hasExtinctCutCapTransition
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : HasExtinctCutCapTransition
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold)) :
+      (M.toClosedOrientedManifold)) :
     HasExtinctRetainedCoreHistory M g := by
   obtain ⟨Q, D, N, X, hQ, hbfr, hdisc⟩ := h
   obtain ⟨b, hab, G, hL, hinit⟩ :=
     exists_incomingSlab_terminalLimitMetric
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g 0
+      (M.toClosedOrientedManifold) g 0
   let E : RetainedCoreEvent
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) Q 0 b :=
+      (M.toClosedOrientedManifold) Q 0 b :=
     @RetainedCoreEvent.ofEmptyOutput
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) Q D N 0 b X hQ
-      G hL.some (@OrientedThreeStage.metricOfIsEmpty Q hQ)
+      (M.toClosedOrientedManifold) Q D N 0 b X hQ
+      G hL.some (@DifferentialGeometry.Topology.ClosedOrientedManifold.metricOfIsEmpty Q hQ)
   have hctrl : E.toMetricCutCapEvent.poincareStandardDiscarded := hdisc
   obtain ⟨H, A, -, hbfrH, hctrlH, hempty⟩ :=
     RetainedCoreEvent.exists_extinctHistory hab hQ E hinit hbfr hctrl
@@ -165,7 +165,7 @@ theorem hasExtinctCoreEvent_iff_hasExtinctCutCapTransition (P : OrientedThreeSta
       exists_incomingSlab_terminalLimitMetric P g 0
     exact ⟨Q, s, hs, hQ,
       @RetainedCoreEvent.ofEmptyOutput P Q D N 0 s X hQ G hL.some
-        (@OrientedThreeStage.metricOfIsEmpty Q hQ),
+        (@DifferentialGeometry.Topology.ClosedOrientedManifold.metricOfIsEmpty Q hQ),
       hinit, hbfr, hdisc⟩
 
 theorem not_hasExtinctCutCapTransition_of_isEmpty (P : OrientedThreeStage.{u})
@@ -174,7 +174,7 @@ theorem not_hasExtinctCutCapTransition_of_isEmpty (P : OrientedThreeStage.{u})
   exact (isEmpty_iff.mp inferInstance) X.source_nonempty.some
 
 private instance sphereStagePreconnectedSpace :
-    PreconnectedSpace sphereStage.toClosedOrientedManifold.Carrier :=
+    PreconnectedSpace sphereStage.Carrier :=
   inferInstanceAs (PreconnectedSpace (Metric.sphere (0 : EuclideanSpace ℝ (Fin 4)) 1))
 
 private theorem sphereStage_isStandardConnectedSum :
@@ -186,16 +186,16 @@ private theorem sphereStage_isStandardConnectedSum :
 private theorem sphereStage_component_isStandardConnectedSum :
     ∀ q : ConnectedComponents sphereStage.Carrier,
       DifferentialGeometry.Topology.isStandardConnectedSum
-        (sphereStage.toClosedOrientedManifold.component q).Carrier :=
+        (sphereStage.component q).Carrier :=
   fun q => DifferentialGeometry.Topology.isStandardConnectedSum_of_diffeomorph
     (DifferentialGeometry.Topology.ClosedOrientedManifold.componentDiffeomorph
-      sphereStage.toClosedOrientedManifold q).symm sphereStage_isStandardConnectedSum
+      sphereStage q).symm sphereStage_isStandardConnectedSum
 
 theorem hasExtinctCutCapTransition_sphereThreeEmptyStage :
     HasExtinctCutCapTransition sphereThreeEmptyStage :=
   ⟨emptyStage, sphereStage, sphereThreeEmptyStage, smoothCutCapTransitionInstance,
     inferInstanceAs (IsEmpty emptyStage.Carrier),
-    @OrientedThreeStage.SmoothCutCapTransition.boundaryFrameReversing_of_isEmpty_index
+    @DifferentialGeometry.Topology.ClosedOrientedManifold.SmoothCutCapTransition.boundaryFrameReversing_of_isEmpty_index
       sphereThreeEmptyStage emptyStage sphereStage sphereThreeEmptyStage
       smoothCutCapTransitionInstance sphereThreeEmptyTubes_index_isEmpty,
     sphereStage_component_isStandardConnectedSum⟩

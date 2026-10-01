@@ -278,7 +278,7 @@ def sourceComponent (A : InitialIdentification P g H)
 
 private theorem initial_component_map_mem (A : InitialIdentification P g H)
     (c : ConnectedComponents (H.stage 0).Carrier)
-    (x : (P.component (A.sourceComponent c)).Carrier) :
+    (x : (P.component (A.sourceComponent c)).toClosedOrientedManifold.Carrier) :
     ConnectedComponents.mk (A.map x.1) = c := by
   have hinv : ∀ d : ConnectedComponents (H.stage 0).Carrier,
       A.map.continuous.connectedComponentsMap
@@ -293,7 +293,7 @@ private theorem initial_component_map_mem (A : InitialIdentification P g H)
   exact hx.trans (hinv c)
 
 private theorem initial_component_inv_mem (A : InitialIdentification P g H)
-    (c : ConnectedComponents (H.stage 0).Carrier) (y : ((H.stage 0).component c).Carrier) :
+    (c : ConnectedComponents (H.stage 0).Carrier) (y : ((H.stage 0).component c).toClosedOrientedManifold.Carrier) :
     ConnectedComponents.mk (A.map.symm y.1) = A.sourceComponent c := by
   have hy := congrArg A.map.symm.continuous.connectedComponentsMap y.property
   exact hy
@@ -301,8 +301,8 @@ private theorem initial_component_inv_mem (A : InitialIdentification P g H)
 
 def actualComponentDiffeomorph (A : InitialIdentification P g H)
     (c : ConnectedComponents (H.stage 0).Carrier) :
-    (P.component (A.sourceComponent c)).Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯
-      ((H.stage 0).component c).Carrier where
+    (P.component (A.sourceComponent c)).toClosedOrientedManifold.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯
+      ((H.stage 0).component c).toClosedOrientedManifold.Carrier where
   toFun x := ⟨A.map x.1, initial_component_map_mem A c x⟩
   invFun y := ⟨A.map.symm y.1, initial_component_inv_mem A c y⟩
   left_inv x := Subtype.ext (A.map.symm_apply_apply x.1)
@@ -320,19 +320,19 @@ def actualComponentDiffeomorph (A : InitialIdentification P g H)
 
 theorem actualComponentDiffeomorph_coe (A : InitialIdentification P g H)
     (c : ConnectedComponents (H.stage 0).Carrier)
-    (x : (P.component (A.sourceComponent c)).Carrier) :
+    (x : (P.component (A.sourceComponent c)).toClosedOrientedManifold.Carrier) :
     (A.actualComponentDiffeomorph c x).1 = A.map x.1 := rfl
 
 
 theorem actualComponentDiffeomorph_mfderiv (A : InitialIdentification P g H)
     (c : ConnectedComponents (H.stage 0).Carrier)
-    (x : (P.component (A.sourceComponent c)).Carrier) :
+    (x : (P.component (A.sourceComponent c)).toClosedOrientedManifold.Carrier) :
     mfderiv ThreeModel ThreeModel (A.actualComponentDiffeomorph c) x =
       mfderiv ThreeModel ThreeModel A.map x.1 := by
   let U := P.componentOpen (A.sourceComponent c)
   let V := (H.stage 0).componentOpen c
-  let : ChartedSpace ThreeSpace U := (P.component (A.sourceComponent c)).charts
-  let : ChartedSpace ThreeSpace V := ((H.stage 0).component c).charts
+  let : ChartedSpace ThreeSpace U := (P.component (A.sourceComponent c)).toClosedOrientedManifold.charts
+  let : ChartedSpace ThreeSpace V := ((H.stage 0).component c).toClosedOrientedManifold.charts
   let e := A.actualComponentDiffeomorph c
   have he : MDifferentiableAt ThreeModel ThreeModel (e : U → V) x :=
     e.contMDiff.contMDiffAt.mdifferentiableAt (by decide)
@@ -352,7 +352,7 @@ theorem actualComponentDiffeomorph_mfderiv (A : InitialIdentification P g H)
     (congrArg (fun w : ThreeSpace => mfderiv ThreeModel ThreeModel A.map x.1 w) huv)))
 theorem actualComponentDiffeomorph_metric (A : InitialIdentification P g H)
     (c : ConnectedComponents (H.stage 0).Carrier)
-    (x : (P.component (A.sourceComponent c)).Carrier) (v w : TangentSpace ThreeModel x) :
+    (x : (P.component (A.sourceComponent c)).toClosedOrientedManifold.Carrier) (v w : TangentSpace ThreeModel x) :
     ((H.stage 0).componentMetric (H.initialMetric 0) c).inner
       (A.actualComponentDiffeomorph c x)
       (mfderiv ThreeModel ThreeModel (A.actualComponentDiffeomorph c) x v)
@@ -366,8 +366,8 @@ theorem actualComponentDiffeomorph_metric (A : InitialIdentification P g H)
 
 theorem actualComponentDiffeomorph_positive (A : InitialIdentification P g H)
     (c : ConnectedComponents (H.stage 0).Carrier) :
-    PreservesTangentOrientation (P.component (A.sourceComponent c)).orientation
-      ((H.stage 0).component c).orientation (A.actualComponentDiffeomorph c) := by
+    PreservesTangentOrientation (P.component (A.sourceComponent c)).toClosedOrientedManifold.orientation
+      ((H.stage 0).component c).toClosedOrientedManifold.orientation (A.actualComponentDiffeomorph c) := by
   refine ⟨(A.actualComponentDiffeomorph c).contMDiff, ?_⟩
   intro x
   obtain ⟨hbij, hpos⟩ := A.positive.2 x.1
@@ -383,6 +383,8 @@ theorem actualComponentDiffeomorph_positive (A : InitialIdentification P g H)
       LinearEquiv.ofBijective (mfderiv ThreeModel ThreeModel A.map x.1).toLinearMap hbij := by
     ext v
     exact DFunLike.congr_fun hd v
+  simp only [DifferentialGeometry.Topology.ClosedOrientedManifold.component, DifferentialGeometry.Topology.ClosedOrientedManifold.componentOrientation,
+    DifferentialGeometry.Topology.ClosedOrientedManifold.componentTangentOrientation_apply]
   change Orientation.map (Fin 3) _ (P.orientation.orientation x.1) =
     (H.stage 0).orientation.orientation (A.map x.1)
   rw [he]
@@ -390,8 +392,8 @@ theorem actualComponentDiffeomorph_positive (A : InitialIdentification P g H)
 
 theorem component_diffeomorph (A : InitialIdentification P g H)
     (c : ConnectedComponents (H.stage 0).Carrier) :
-    let P₀ := P.component (A.sourceComponent c)
-    let Q₀ := (H.stage 0).component c
+    let P₀ := (P.component (A.sourceComponent c)).toClosedOrientedManifold
+    let Q₀ := ((H.stage 0).component c).toClosedOrientedManifold
     letI : ConnectedSpace P₀.Carrier := P.component_connected (A.sourceComponent c)
     letI : ConnectedSpace Q₀.Carrier := (H.stage 0).component_connected c
     ∃ e : P₀.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ Q₀.Carrier,
@@ -402,8 +404,8 @@ theorem component_diffeomorph (A : InitialIdentification P g H)
           (mfderiv ThreeModel ThreeModel e x v) (mfderiv ThreeModel ThreeModel e x w) =
         (P.componentMetric g (A.sourceComponent c)).inner x v w) ∧
       orientedDegree P₀.orientation Q₀.orientation ⟨e, e.continuous⟩ = 1 := by
-  let P₀ := P.component (A.sourceComponent c)
-  let Q₀ := (H.stage 0).component c
+  let P₀ := (P.component (A.sourceComponent c)).toClosedOrientedManifold
+  let Q₀ := ((H.stage 0).component c).toClosedOrientedManifold
   let : ConnectedSpace P₀.Carrier := P.component_connected (A.sourceComponent c)
   let : ConnectedSpace Q₀.Carrier := (H.stage 0).component_connected c
   refine ⟨A.actualComponentDiffeomorph c, A.actualComponentDiffeomorph_coe c,
@@ -412,17 +414,17 @@ theorem component_diffeomorph (A : InitialIdentification P g H)
     (A.actualComponentDiffeomorph c) (A.actualComponentDiffeomorph_positive c)
 
 theorem components_simplyConnected (A : InitialIdentification P g H)
-    (hP : ∀ c : ConnectedComponents P.Carrier, SimplyConnectedSpace (P.component c).Carrier)
+    (hP : ∀ c : ConnectedComponents P.Carrier, SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier)
     (c : ConnectedComponents (H.stage 0).Carrier) :
-    SimplyConnectedSpace ((H.stage 0).component c).Carrier := by
-  let : SimplyConnectedSpace (P.component (A.sourceComponent c)).Carrier := hP _
+    SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier := by
+  let : SimplyConnectedSpace (P.component (A.sourceComponent c)).toClosedOrientedManifold.Carrier := hP _
   exact (A.actualComponentDiffeomorph c).symm.toHomeomorph.toHomotopyEquiv.simplyConnectedSpace
 
 theorem component_classes (A : InitialIdentification P g H)
-    (hP : ∀ c : ConnectedComponents P.Carrier, SimplyConnectedSpace (P.component c).Carrier)
+    (hP : ∀ c : ConnectedComponents P.Carrier, SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier)
     (c : ConnectedComponents (H.stage 0).Carrier) :
-    let P₀ := P.component (A.sourceComponent c)
-    let Q₀ := (H.stage 0).component c
+    let P₀ := (P.component (A.sourceComponent c)).toClosedOrientedManifold
+    let Q₀ := ((H.stage 0).component c).toClosedOrientedManifold
     letI : ConnectedSpace P₀.Carrier := P.component_connected (A.sourceComponent c)
     letI : ConnectedSpace Q₀.Carrier := (H.stage 0).component_connected c
     letI : SimplyConnectedSpace P₀.Carrier := hP (A.sourceComponent c)
@@ -433,8 +435,8 @@ theorem component_classes (A : InitialIdentification P g H)
         (positiveHomotopyClass P₀.orientation p) = positiveHomotopyClass Q₀.orientation (e p)) ∧
       DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose ⟨e, e.continuous⟩)
         (positiveFreeContractibleClass P₀.orientation) = positiveFreeContractibleClass Q₀.orientation := by
-  let P₀ := P.component (A.sourceComponent c)
-  let Q₀ := (H.stage 0).component c
+  let P₀ := (P.component (A.sourceComponent c)).toClosedOrientedManifold
+  let Q₀ := ((H.stage 0).component c).toClosedOrientedManifold
   let : ConnectedSpace P₀.Carrier := P.component_connected (A.sourceComponent c)
   let : ConnectedSpace Q₀.Carrier := (H.stage 0).component_connected c
   let : SimplyConnectedSpace P₀.Carrier := hP (A.sourceComponent c)
@@ -456,10 +458,10 @@ open ObservedHistory
 variable {P : OrientedThreeStage.{u}} {g : P.Metric} (T : ObservationTower P g)
 
 theorem observe_simplyConnected
-    (hP : ∀ c : ConnectedComponents P.Carrier, SimplyConnectedSpace (P.component c).Carrier)
+    (hP : ∀ c : ConnectedComponents P.Carrier, SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier)
     (b : ℝ) (hb : 0 ≤ b) (j : Fin ((T.observe b hb).eventCount + 1))
     (c : ConnectedComponents ((T.observe b hb).stage j).Carrier) :
-    SimplyConnectedSpace (((T.observe b hb).stage j).component c).Carrier :=
+    SimplyConnectedSpace (((T.observe b hb).stage j).component c).toClosedOrientedManifold.Carrier :=
   rfs_simply_connected_history (T.observe b hb)
     ((T.observeInitial b hb).components_simplyConnected hP) j c
 
@@ -470,7 +472,7 @@ theorem observe_unique_ancestry (b : ℝ) (hb : 0 ≤ b)
   exists_unique_finiteAncestorChain (T.observe b hb) terminal
 
 theorem observe_finite_ancestry
-    (hP : ∀ c : ConnectedComponents P.Carrier, SimplyConnectedSpace (P.component c).Carrier)
+    (hP : ∀ c : ConnectedComponents P.Carrier, SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier)
     (b : ℝ) (hb : 0 ≤ b) (parameters : CutoffParameters)
     (cutoff : ∀ j : Fin (T.observe b hb).eventCount,
       GeometricCutoffRecord (T.observe b hb) j parameters)
@@ -481,7 +483,7 @@ theorem observe_finite_ancestry
     let chain := finiteAncestorChain H terminal
     let hSC := rfs_simply_connected_history H h0
     (∀ j : Fin (H.eventCount + 1),
-      let P := (H.stage j).component (chain.component j)
+      let P := ((H.stage j).component (chain.component j)).toClosedOrientedManifold
       letI : ConnectedSpace P.Carrier := (H.stage j).component_connected (chain.component j)
       letI : SimplyConnectedSpace P.Carrier := hSC j (chain.component j)
       ∀ q : P.Carrier,
@@ -509,15 +511,15 @@ theorem observe_finite_ancestry
     ((T.observeInitial b hb).components_simplyConnected hP) terminal
 
 theorem observe_initial_classes
-    (hP : ∀ c : ConnectedComponents P.Carrier, SimplyConnectedSpace (P.component c).Carrier)
+    (hP : ∀ c : ConnectedComponents P.Carrier, SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier)
     (b : ℝ) (hb : 0 ≤ b)
     (terminal : ConnectedComponents ((T.observe b hb).stage
       (Fin.last (T.observe b hb).eventCount)).Carrier) :
     let H := T.observe b hb
     let A := T.observeInitial b hb
     let c := (finiteAncestorChain H terminal).component 0
-    let P₀ := P.component (A.sourceComponent c)
-    let Q₀ := (H.stage 0).component c
+    let P₀ := (P.component (A.sourceComponent c)).toClosedOrientedManifold
+    let Q₀ := ((H.stage 0).component c).toClosedOrientedManifold
     letI : ConnectedSpace P₀.Carrier := P.component_connected (A.sourceComponent c)
     letI : ConnectedSpace Q₀.Carrier := (H.stage 0).component_connected c
     letI : SimplyConnectedSpace P₀.Carrier := hP (A.sourceComponent c)

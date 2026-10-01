@@ -37,7 +37,7 @@ private theorem terminalLimitMetric_metric_heq
     {L : G.TerminalLimitMetric} {K : H.TerminalLimitMetric}
     (hG : G = H) (h : HEq L K) : HEq L.metric K.metric := by
   subst H
-  exact heq_of_eq (congrArg OrientedThreeStage.IncomingSlab.TerminalLimitMetric.metric (eq_of_heq h))
+  exact heq_of_eq (congrArg DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.metric (eq_of_heq h))
 
 universe u
 
@@ -64,13 +64,13 @@ local notation "Disc" => finiteCapDiscarded hL hδ f hf hdisj R
 
 
 variable {t₀ t₁ : ℝ}
-  (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+  (G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
 
 local notation "U₀" => DifferentialGeometry.PDE.RicciFlow.terminalRegularRegion (M := M) (I := ThreeModel)
-  (SolutionFamily.metric (SolutionOn.base (OrientedThreeStage.IncomingSlab.flow G))) t₀ t₁
+  (SolutionFamily.metric (SolutionOn.base (DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.flow G))) t₀ t₁
 local notation "Uc" => (TopologicalSpace.Opens.mk
-  (fun x : M => OrientedThreeStage.IncomingSlab.terminalRegularRegion G x)
-  (OrientedThreeStage.IncomingSlab.terminalRegularRegion_isOpen G) : TopologicalSpace.Opens M)
+  (fun x : M => DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalRegularRegion G x)
+  (DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalRegularRegion_isOpen G) : TopologicalSpace.Opens M)
 variable (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R)
   (DifferentialGeometry.PDE.RicciFlow.terminalRegularRegion (M := M) (I := ThreeModel) G.flow.base.metric t₀ t₁))
 
@@ -99,10 +99,10 @@ theorem exists_metricCutCapEvent_boundaryFrameReversing_of_metricCutCapEventOn :
         (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
         (∀ b, A b = LinearIsometryEquiv.refl ℝ ThreeSpace ∨ A b = LinearIsometryEquiv.neg ℝ) ∧
         (∀ b x, (B b x : ThreeSpace) = A b x) ∧
-        ∃ E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
-          (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁,
-          E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
-          E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ ∧
+        ∃ E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
+          (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁,
+          E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc ∧
+          E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ ∧
           HEq E.transition.trace
             ((CutCapTopology.ofBufferedFiniteCaps hL hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps
               (fun b => (B b).toHomeomorph) (fun b => (a b).toHomeomorph) hboundary) ∧

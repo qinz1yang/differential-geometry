@@ -45,10 +45,10 @@ theorem hasControlledExtinctionWithin_of_observedHistory
         (fun x : (H.event i).old => (H.event i).transition.trace.capping.coreInclusion x.1))
     (hctrl : ∀ i : Fin H.eventCount, ∀ c : ConnectedComponents (H.event i).discarded.Carrier,
       DifferentialGeometry.Topology.isStandardConnectedSum
-        ((H.event i).discarded.toClosedOrientedManifold.component c).Carrier)
+        ((H.event i).discarded.component c).Carrier)
     (hempty : IsEmpty (H.stage (Fin.last H.eventCount)).Carrier)
     {B : ℝ} (hB : H.time (Fin.last H.eventCount) ≤ B) :
-    HasControlledExtinctionWithin P.toClosedOrientedManifold g B := by
+    HasControlledExtinctionWithin P g B := by
   have hn : 0 < H.eventCount :=
     @ObservedHistory.eventCount_pos_of_final_empty H A.initial_nonempty hempty
   refine ⟨{ history := H.toSurgeryFiniteSurgeryHistoryOfCutCapCompletion hn hc hout
@@ -77,9 +77,9 @@ theorem hasControlledExtinctionWithin_of_tower_extinctBy
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
         DifferentialGeometry.Topology.isStandardConnectedSum
-          (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier)
+          (((T.observe b hb).event i).discarded.component q).Carrier)
     {B : ℝ} (h : T.ExtinctBy B) :
-    HasControlledExtinctionWithin P.toClosedOrientedManifold g B := by
+    HasControlledExtinctionWithin P g B := by
   obtain ⟨b, hb, hbB, hempty⟩ := h
   refine hasControlledExtinctionWithin_of_observedHistory P g (T.observe b hb.le)
     (T.observeInitial b hb.le) (hc b hb.le) (hout b hb.le) (hctrl b hb.le) hempty ?_
@@ -102,9 +102,9 @@ theorem hasControlledExtinctionWithin_of_tower_extinctAbove
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
         DifferentialGeometry.Topology.isStandardConnectedSum
-          (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier)
+          (((T.observe b hb).event i).discarded.component q).Carrier)
     {B : ℝ} (h : T.ExtinctAbove B) :
-    HasControlledExtinctionWithin P.toClosedOrientedManifold g (max 1 (B + 1)) :=
+    HasControlledExtinctionWithin P g (max 1 (B + 1)) :=
   hasControlledExtinctionWithin_of_tower_extinctBy T hc hout hctrl
     (T.extinctBy_of_extinctAbove h)
 
@@ -122,9 +122,9 @@ theorem hasControlledExtinctionWithin_of_tower_uniformRecordsAbove
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
         DifferentialGeometry.Topology.isStandardConnectedSum
-          (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier)
+          (((T.observe b hb).event i).discarded.component q).Carrier)
     {c A : ℝ} (h : T.UniformRecordsAbove c A) :
-    HasControlledExtinctionWithin P.toClosedOrientedManifold g
+    HasControlledExtinctionWithin P g
       (max 1 (extinctionThreshold c A + 1)) :=
   hasControlledExtinctionWithin_of_tower_extinctBy T hc hout hctrl
     (T.extinctBy_extinctionThreshold_of_uniformRecordsAbove h)
@@ -133,11 +133,11 @@ theorem exists_poincare_controlled_extinction_of_retainedCoreTower_timeLe
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
+      (M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     {B : ℝ} (hB : T.toObservationTower.ExtinctBy B) :
     HasControlledExtinctionWithin M.toClosedOrientedManifold g B :=
-  letI : Nonempty (OrientedThreeStage.ofClosedOrientedManifold
+  letI : Nonempty (
       M.toClosedOrientedManifold).Carrier := M.connected.toNonempty
   hasControlledExtinctionWithin_of_tower_extinctBy T.toObservationTower
     (fun b hb i => (T.hasCutCapCompletion_toObservationTower hbfr b hb i).some)
@@ -149,12 +149,12 @@ theorem exists_poincare_controlled_extinction_of_retainedCoreTower_uniformRecord
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
+      (M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     {c A : ℝ} (h : T.toObservationTower.UniformRecordsAbove c A) :
     HasControlledExtinctionWithin M.toClosedOrientedManifold g
       (max 1 (extinctionThreshold c A + 1)) :=
-  letI : Nonempty (OrientedThreeStage.ofClosedOrientedManifold
+  letI : Nonempty (
       M.toClosedOrientedManifold).Carrier := M.connected.toNonempty
   hasControlledExtinctionWithin_of_tower_uniformRecordsAbove T.toObservationTower
     (fun b hb i => (T.hasCutCapCompletion_toObservationTower hbfr b hb i).some)

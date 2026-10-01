@@ -32,13 +32,13 @@ theorem MetricCutCapEvent.exists_poincare_controlled_extinction_of_isEmpty_index
     [hIndex : IsEmpty E.transition.trace.tubes.Index]
     (hmodels : ∀ C : ConnectedComponents E.discarded.Carrier,
       Nonempty (PositiveComponent
-        (M := (E.discarded.toClosedOrientedManifold.component C).Carrier) Set.univ) ∨
+        (M := (E.discarded.component C).Carrier) Set.univ) ∨
       ∃ (D' : RealTimeInterval)
         (S : SolutionOn (I := ThreeModel)
-          (M := (E.discarded.toClosedOrientedManifold.component C).Carrier) D')
-        (ε : ℝ) (x : (E.discarded.toClosedOrientedManifold.component C).Carrier) (t : ℝ),
+          (M := (E.discarded.component C).Carrier) D')
+        (ε : ℝ) (x : (E.discarded.component C).Carrier) (t : ℝ),
         Nonempty (RoundComponent S ε x t Set.univ)) :
-    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold
+    Nonempty (PoincareControlledExtinction P
       (E.incoming.flow.base.metric 0)) := by
   have hboundary : E.transition.boundaryFrameReversing := by
     intro b

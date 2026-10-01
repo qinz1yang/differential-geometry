@@ -15,7 +15,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-theorem OrientedThreeStage.IncomingSlab.exists_scalar_gt_of_singularEndpoint
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_scalar_gt_of_singularEndpoint
     {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
     (hsing : G.SingularEndpoint) {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
     (hpinch : PhiAlmostNonnegative G.flow (Ico a s) Phi)

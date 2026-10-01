@@ -127,7 +127,7 @@ theorem exists_poincare_controlled_extinction_of_retainedCoreTower_uniformRecord
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
+      (M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing)
     (hctrl : T.hasPoincareStandardDiscarded)
     {c A : ℝ} (hrec : T.toObservationTower.UniformRecordsAbove c A) :

@@ -232,7 +232,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
   have hsubU : riemannianBallOf (H.initialMetric j.succ) y r ⊆ U := by
     by_contra hns
     obtain ⟨q₀, hq₀U, d₀, hd₀, hd₀r, hdeq, hsub, hcl⟩ :=
-      OrientedThreeStage.exists_first_touch_of_not_subset (H.stage j.succ)
+      DifferentialGeometry.Topology.ClosedOrientedManifold.exists_first_touch_of_not_subset (H.stage j.succ)
         (H.initialMetric j.succ) U hyU hns
     have hRq : metricScalarAt (H.initialMetric j.succ) q₀ ≤ Kc * R :=
       closure_minimal (fun w hw => hbound d₀ hd₀r.le hsub w hw)

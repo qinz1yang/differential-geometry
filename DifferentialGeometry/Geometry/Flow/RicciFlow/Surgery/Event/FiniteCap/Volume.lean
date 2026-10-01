@@ -22,7 +22,7 @@ theorem exists_uniform_metricCutCapEvent_volume_bound :
       ∀ {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M]
         [IsManifold ThreeModel ∞ M] [CompactSpace M],
       ∀ (o : SmoothOrientation ThreeModel M) {t₀ t₁ : ℝ}
-        (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+        (G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
         (L : G.TerminalLimitMetric)
         {ι : Type} [Fintype ι] (precision : ι → ℝ) (hδ : ∀ i, 0 < precision i),
       (∀ i, precision i ≤ δ₀) → ∀ (x₀ : ι → G.terminalRegularOpen)
@@ -76,10 +76,10 @@ theorem exists_uniform_metricCutCapEvent_volume_bound :
         (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
         (∀ b, F b = LinearIsometryEquiv.refl ℝ ThreeSpace ∨ F b = LinearIsometryEquiv.neg ℝ) ∧
         (∀ b x, (B b x : ThreeSpace) = F b x) ∧
-      ∃ E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
-        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁,
-        E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
-        E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ ∧
+      ∃ E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
+        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁,
+        E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc ∧
+        E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ ∧
         HEq E.transition.trace
           ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ
             (fun i => (d₀ i).precision_lt_one) f hf hdisj R hnontrivial).reparametrizeCaps
@@ -89,7 +89,7 @@ theorem exists_uniform_metricCutCapEvent_volume_bound :
           G.terminalRegularOpen L.metric R hRet c hc x₀ (fun _ => m + 6) d₀
           hOriginal hrec d hmap hside w ∧
         E.old = E.transition.trace.retainedCore ∧ E.transition.boundaryFrameReversing ∧
-        riemannianVolumeMeasure ThreeModel (OrientedThreeStage.ofSmoothOrientation Ret oRet).Carrier E.outputMetric univ ≤
+        riemannianVolumeMeasure ThreeModel (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet).Carrier E.outputMetric univ ≤
           riemannianVolumeMeasure ThreeModel G.terminalRegularOpen L.metric
             (range (retainedCoreDomainMap f R G.terminalRegularOpen hRet)) +
           ∑' b : Bidx, ENNReal.ofReal (8 * (metricScalarAt L.metric (x₀ b.val.1)) ^ (-3 / 2 : ℝ)) *

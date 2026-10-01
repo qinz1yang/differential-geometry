@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Incidence
+import DifferentialGeometry.Topology.Manifold.ClosedBall.ThreeBall
 
 noncomputable section
 
@@ -377,3 +378,42 @@ theorem exists_core_presentation_eq_inr_component
 end DifferentialGeometry.Topology.SphericalCutCapTransition
 
 end
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+open Set Function Manifold
+open DifferentialGeometry.Topology.Handle
+open scoped Manifold ContDiff Topology
+
+attribute [local instance] closedCellChartedSpaceSucc closedCellIsManifold
+attribute [local instance] threeBallChartedSpace threeBall_isManifold
+
+universe u
+
+variable {M Q : DifferentialGeometry.Topology.ClosedOrientedManifold.{u} 3}
+
+theorem sphericalCutCap_capmap_eq (E : DifferentialGeometry.Topology.SphericalCutCapTransition M Q)
+    (b : E.tubes.Boundary) :
+    ⇑((E.capping.toTopological).cap b) =
+      ⇑(E.capping.cap b) ∘ ⇑(threeBallDiffeomorph.symm :
+        ThreeBall ≃ₘ⟮𝓡∂ 3, 𝓡∂ 3⟯
+          DifferentialGeometry.Topology.ClosedCell 3) := rfl
+
+theorem sphericalCutCap_subtype_eq (x : ThreeBall) :
+    (Subtype.val : ThreeBall → ThreeSpace) x =
+      (Subtype.val : DifferentialGeometry.Topology.ClosedCell 3 → ThreeSpace)
+        (threeBallDiffeomorph.symm x) :=
+  threeBallDiffeomorph_symm_apply_val x
+
+theorem sphericalCutCap_cap_smooth
+    (E : DifferentialGeometry.Topology.SphericalCutCapTransition M Q)
+    (b : E.tubes.Boundary) :
+    IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞ (⇑((E.capping.toTopological).cap b)) := by
+  have h := DifferentialGeometry.Topology.Manifold.isSmoothEmbedding_diffeomorph_precomp
+    (I := 𝓡∂ 3) (J := ThreeModel)
+    (M := DifferentialGeometry.Topology.ClosedCell 3) (N := E.capped.Carrier) (P := ThreeBall)
+    (E.capping.cap b) (E.capping.cap_embedding b) threeBallDiffeomorph.symm
+  rw [sphericalCutCap_capmap_eq E b]
+  exact h
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

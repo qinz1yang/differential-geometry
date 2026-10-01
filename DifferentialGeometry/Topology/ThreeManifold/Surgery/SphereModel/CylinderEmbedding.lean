@@ -1,9 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCap
-import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
-import DifferentialGeometry.Topology.Manifold.ParametrizationDerivative
-import DifferentialGeometry.Topology.Manifold.SphereDirection
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.TubeEmbedding
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition
-import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Analysis.Complex.ExponentialBounds
@@ -23,310 +19,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 private local instance : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
 
 
-private abbrev satCylModel := (𝓡 2).prod 𝓘(ℝ)
-
-private abbrev satCylSpace := Sphere 2 × ℝ
-
-private local instance : Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp⟩
-
-private local instance : Fact (Module.finrank ℝ FourSpace = 3 + 1) := ⟨by simp⟩
-
-private def satCylBase : Sphere 2 :=
-  ⟨EuclideanSpace.single (0 : Fin 3) 1, by
-    rw [Metric.mem_sphere, dist_eq_norm, sub_zero, PiLp.norm_single]
-    norm_num⟩
-
-private def satInitCoord (z : Sphere 3) : ThreeSpace :=
-  WithLp.toLp 2 fun i : Fin 3 => (z.1 : FourSpace).ofLp i.castSucc
-
-private def satLastCoord (z : Sphere 3) : ℝ := (z.1 : FourSpace).ofLp (Fin.last 3)
-
-private def satCylPoint (y : Sphere 2) (s : ℝ) : FourSpace :=
-  WithLp.toLp 2 (snocR (fun i : Fin 3 => Real.sqrt (1 - s ^ 2) * (y : ThreeSpace).ofLp i) s)
-
-private theorem satCylPoint_lastCoord (y : Sphere 2) (s : ℝ) :
-    (satCylPoint y s).ofLp (Fin.last 3) = s := by
-  rw [satCylPoint, WithLp.ofLp_toLp, snocR_last]
-
-private theorem satCylPoint_initCoord (y : Sphere 2) (s : ℝ) :
-    WithLp.toLp 2 (fun i : Fin 3 => (satCylPoint y s).ofLp i.castSucc) =
-      Real.sqrt (1 - s ^ 2) • (y : ThreeSpace) := by
-  rw [satCylPoint, WithLp.ofLp_toLp]
-  ext i
-  rw [WithLp.ofLp_toLp, snocR_castSucc, WithLp.ofLp_smul, Pi.smul_apply, smul_eq_mul]
-
-private theorem satCylPoint_eq_neckPoint (y : Sphere 2) (s : ℝ) :
-    satCylPoint y (s / 4) = neckPoint y s :=
-  rfl
-
-private theorem satCylPoint_mem_sphere (y : Sphere 2) {s : ℝ} (hs : s ^ 2 ≤ 1) :
-    satCylPoint y s ∈ Sphere 3 := by
-  rw [Metric.mem_sphere, dist_eq_norm, sub_zero]
-  have hsqrt : Real.sqrt (1 - s ^ 2) ^ 2 = 1 - s ^ 2 := Real.sq_sqrt (by linarith)
-  have hy : ‖(y : ThreeSpace)‖ = 1 := by
-    have h := y.2
-    rwa [Metric.mem_sphere, dist_eq_norm, sub_zero] at h
-  have h2 : ‖satCylPoint y s‖ ^ 2 = 1 := by
-    rw [EuclideanSpace.norm_sq_eq]
-    simp only [satCylPoint, WithLp.ofLp_toLp]
-    rw [Fin.sum_univ_castSucc]
-    have h1 : (∑ i : Fin 3,
-        ‖snocR (fun i : Fin 3 => Real.sqrt (1 - s ^ 2) * (y : ThreeSpace).ofLp i)
-          s i.castSucc‖ ^ 2)
-        = (Real.sqrt (1 - s ^ 2)) ^ 2 * ∑ i : Fin 3, ‖(y : ThreeSpace).ofLp i‖ ^ 2 := by
-      rw [Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro i _
-      rw [snocR_castSucc, norm_mul, mul_pow, Real.norm_eq_abs, sq_abs]
-    rw [h1, snocR_last, Real.norm_eq_abs, sq_abs,
-      ← EuclideanSpace.norm_sq_eq (y : ThreeSpace), hy, hsqrt]
-    ring
-  nlinarith [norm_nonneg (satCylPoint y s), h2]
-
-private theorem satLastCoord_val (z : Sphere 3) :
-    satLastCoord z = (z.1 : FourSpace).ofLp (Fin.last 3) := rfl
-
-private theorem satInitCoord_val (z : Sphere 3) :
-    satInitCoord z = WithLp.toLp 2 (fun i : Fin 3 => (z.1 : FourSpace).ofLp i.castSucc) := rfl
-
-private theorem norm_satInitCoord_sq (z : Sphere 3) :
-    ‖satInitCoord z‖ ^ 2 = 1 - satLastCoord z ^ 2 := by
-  have h1 : ‖(z.1 : FourSpace)‖ ^ 2 = ∑ i : Fin 4, ((z.1 : FourSpace).ofLp i) ^ 2 := by
-    rw [EuclideanSpace.norm_sq_eq]
-    simp [Real.norm_eq_abs, sq_abs]
-  have hz : ∑ i : Fin 4, ((z.1 : FourSpace).ofLp i) ^ 2 = 1 := by
-    have hz1 : ‖(z.1 : FourSpace)‖ = 1 := by
-      have h := z.2
-      rwa [Metric.mem_sphere, dist_eq_norm, sub_zero] at h
-    rw [← h1, hz1]
-    norm_num
-  have h2 : ‖satInitCoord z‖ ^ 2 = ∑ i : Fin 3, ((z.1 : FourSpace).ofLp i.castSucc) ^ 2 := by
-    rw [satInitCoord, EuclideanSpace.norm_sq_eq]
-    simp [Real.norm_eq_abs, sq_abs]
-  have h3 := Fin.sum_univ_castSucc (fun i : Fin 4 => ((z.1 : FourSpace).ofLp i) ^ 2)
-  rw [h3] at hz
-  rw [h2, satLastCoord_val]
-  linarith
-
-private theorem satLastCoord_sq_le_one (z : Sphere 3) : satLastCoord z ^ 2 ≤ 1 := by
-  have h := norm_satInitCoord_sq z
-  have hnn : (0 : ℝ) ≤ ‖satInitCoord z‖ ^ 2 := sq_nonneg _
-  linarith
-
-private def satBand : TopologicalSpace.Opens satCylSpace :=
-  ⟨{q : satCylSpace | q.2 ∈ Ioo (-(1 : ℝ)) 1}, isOpen_Ioo.preimage continuous_snd⟩
-
-private theorem satBand_mem_abs {q : ↥satBand} : |(q : satCylSpace).2| < 1 :=
-  abs_lt.mpr (Set.mem_Ioo.mp q.property)
-
-private def satCylMap : ↥satBand → Sphere 3 :=
-  Set.codRestrict (fun q : ↥satBand => satCylPoint (q : satCylSpace).1 (q : satCylSpace).2) _
-    (fun q => satCylPoint_mem_sphere (q : satCylSpace).1
-      (by have h := satBand_mem_abs (q := q)
-          nlinarith [abs_nonneg (q : satCylSpace).2, sq_abs (q : satCylSpace).2]))
-
-private theorem satCylMap_lastCoord (q : ↥satBand) :
-    satLastCoord (satCylMap q) = (q : satCylSpace).2 :=
-  satCylPoint_lastCoord _ _
-
-private theorem satCylMap_initCoord (q : ↥satBand) :
-    satInitCoord (satCylMap q) =
-      Real.sqrt (1 - (q : satCylSpace).2 ^ 2) • ((q : satCylSpace).1 : ThreeSpace) := by
-  rw [satInitCoord_val]
-  exact satCylPoint_initCoord _ _
-
-private theorem contMDiff_satCylSnd :
-    ContMDiff ((𝓡 2).prod 𝓘(ℝ)) 𝓘(ℝ) ∞
-      (fun q : ↥satBand => (q : satCylSpace).2) :=
-  (contMDiff_snd (I := 𝓡 2) (J := 𝓘(ℝ))).comp contMDiff_subtype_val
-
-private theorem contMDiff_satCylSqrt :
-    ContMDiff ((𝓡 2).prod 𝓘(ℝ)) 𝓘(ℝ) ∞
-      (fun q : ↥satBand => Real.sqrt (1 - (q : satCylSpace).2 ^ 2)) := by
-  intro q
-  have hpos : 0 < 1 - (q : satCylSpace).2 ^ 2 := by
-    have h := satBand_mem_abs (q := q)
-    nlinarith [abs_nonneg (q : satCylSpace).2, sq_abs (q : satCylSpace).2,
-      abs_lt.mp h |>.1, abs_lt.mp h |>.2, sq_nonneg (q : satCylSpace).2]
-  have hsq : ContMDiffAt 𝓘(ℝ) 𝓘(ℝ) ∞
-      (fun s : ℝ => Real.sqrt (1 - s ^ 2)) ((q : satCylSpace).2) :=
-    ((contDiffAt_const.sub (contDiffAt_id.pow 2)).sqrt hpos.ne').contMDiffAt
-  have hcomp : ContMDiffAt ((𝓡 2).prod 𝓘(ℝ)) 𝓘(ℝ) ∞
-      ((fun s : ℝ => Real.sqrt (1 - s ^ 2)) ∘
-        (fun q : ↥satBand => (q : satCylSpace).2)) q :=
-    ContMDiffAt.comp q hsq (contMDiff_satCylSnd.contMDiffAt)
-  exact hcomp
-
-private theorem contMDiff_satCylFstCoord (i : Fin 3) :
-    ContMDiff ((𝓡 2).prod 𝓘(ℝ)) 𝓘(ℝ) ∞
-      (fun q : ↥satBand => (((q : satCylSpace).1 : ThreeSpace).ofLp i)) :=
-  ((EuclideanSpace.proj i).contMDiff).comp <|
-    (contMDiff_coe_sphere (n := 2) (E := ThreeSpace)).comp <|
-      (contMDiff_fst (I := 𝓡 2) (J := 𝓘(ℝ))).comp contMDiff_subtype_val
-
-private def satCylCoordFun (q : ↥satBand) : Fin 4 → ℝ :=
-  snocR (fun i : Fin 3 =>
-    Real.sqrt (1 - (q : satCylSpace).2 ^ 2) * (((q : satCylSpace).1 : ThreeSpace).ofLp i))
-    ((q : satCylSpace).2)
-
-private theorem contMDiff_satCylCoordFun :
-    ContMDiff ((𝓡 2).prod 𝓘(ℝ)) 𝓘(ℝ, Fin 4 → ℝ) ∞ satCylCoordFun := by
-  rw [contMDiff_pi_space]
-  intro i
-  refine Fin.lastCases ?_ ?_ i
-  · simp only [satCylCoordFun, snocR_last]
-    exact contMDiff_satCylSnd
-  · intro j
-    simp only [satCylCoordFun, snocR_castSucc]
-    exact contMDiff_satCylSqrt.mul (contMDiff_satCylFstCoord j)
-
-private theorem contMDiff_satCylAmbient :
-    ContMDiff ((𝓡 2).prod 𝓘(ℝ)) 𝓘(ℝ, FourSpace) ∞
-      (fun q : ↥satBand => satCylPoint (q : satCylSpace).1 (q : satCylSpace).2) := by
-  have hE : ContMDiff ((𝓡 2).prod 𝓘(ℝ)) 𝓘(ℝ, FourSpace) ∞
-      (fun q : ↥satBand => (EuclideanSpace.equiv (𝕜 := ℝ) (ι := Fin 4)).symm
-        (satCylCoordFun q)) :=
-    ((EuclideanSpace.equiv (𝕜 := ℝ) (ι := Fin 4)).symm :
-      (Fin 4 → ℝ) →L[ℝ] FourSpace).contMDiff.comp contMDiff_satCylCoordFun
-  refine hE.congr ?_
-  intro q
-  simp only [EuclideanSpace.equiv, PiLp.continuousLinearEquiv_symm_apply, satCylCoordFun,
-    satCylPoint, snocR]
-
-private theorem contMDiff_satCylMap :
-    ContMDiff ((𝓡 2).prod 𝓘(ℝ)) ThreeModel ∞ satCylMap := by
-  refine (ContMDiff.codRestrict_sphere contMDiff_satCylAmbient
-    (fun q => satCylPoint_mem_sphere (q : satCylSpace).1
-      (by have h := satBand_mem_abs (q := q)
-          nlinarith [abs_nonneg (q : satCylSpace).2, sq_abs (q : satCylSpace).2]))).congr ?_
-  intro q
-  exact Subtype.ext rfl
-
-private def satBandImage : Set (Sphere 3) :=
-  {z : Sphere 3 | satLastCoord z ∈ Ioo (-(1 : ℝ)) 1}
-
-private def satCylDir (z : Sphere 3) : Sphere 2 :=
-  sphereDirection satCylBase (satInitCoord z)
-
-private def satCylInverseCore (z : Sphere 3) : satCylSpace :=
-  (satCylDir z, satLastCoord z)
-
-private def satCylInverse (z : Sphere 3) : ↥satBand :=
-  if h : satLastCoord z ∈ Ioo (-(1 : ℝ)) 1 then
-    ⟨satCylInverseCore z, h⟩
-  else ⟨(satCylBase, 0), Set.mem_Ioo.mpr ⟨by norm_num, by norm_num⟩⟩
-
-private theorem one_sub_sq_pos_of_mem_domain (q : ↥satBand) :
-    0 < 1 - (q : satCylSpace).2 ^ 2 := by
-  obtain ⟨h1, h2⟩ := abs_lt.mp (satBand_mem_abs (q := q))
-  nlinarith [sq_nonneg ((q : satCylSpace).2)]
-
-private theorem one_sub_sq_pos_of_mem_band {z : Sphere 3} (hz : z ∈ satBandImage) :
-    0 < 1 - satLastCoord z ^ 2 := by
-  obtain ⟨h1, h2⟩ := hz
-  nlinarith [sq_nonneg (satLastCoord z)]
-
-private theorem satInitCoord_ne_zero_of_mem_band {z : Sphere 3} (hz : z ∈ satBandImage) :
-    satInitCoord z ≠ 0 := by
-  intro h
-  have h2 := norm_satInitCoord_sq z
-  rw [h, norm_zero] at h2
-  have hpos := one_sub_sq_pos_of_mem_band hz
-  linarith
-
-private theorem contMDiff_satInitCoord :
-    ContMDiff ThreeModel 𝓘(ℝ, ThreeSpace) ∞ satInitCoord := by
-  have hE : ContMDiff ThreeModel 𝓘(ℝ, ThreeSpace) ∞
-      (fun z : Sphere 3 => (EuclideanSpace.equiv (𝕜 := ℝ) (ι := Fin 3)).symm
-        (fun i : Fin 3 => (z.1 : FourSpace).ofLp i.castSucc)) :=
-    ((EuclideanSpace.equiv (𝕜 := ℝ) (ι := Fin 3)).symm :
-      (Fin 3 → ℝ) →L[ℝ] ThreeSpace).contMDiff.comp <|
-      contMDiff_pi_space.mpr fun i =>
-        ((EuclideanSpace.proj i.castSucc).contMDiff).comp
-          (contMDiff_coe_sphere (n := 3) (E := FourSpace))
-  refine hE.congr ?_
-  intro z
-  simp only [EuclideanSpace.equiv, PiLp.continuousLinearEquiv_symm_apply, satInitCoord]
-
-private theorem contMDiff_satLastCoord : ContMDiff ThreeModel 𝓘(ℝ) ∞ satLastCoord :=
-  ((EuclideanSpace.proj (Fin.last 3)).contMDiff).comp
-    (contMDiff_coe_sphere (n := 3) (E := FourSpace))
-
-private theorem contMDiffOn_satCylInverseCore :
-    ContMDiffOn ThreeModel ((𝓡 2).prod 𝓘(ℝ)) ∞ satCylInverseCore satBandImage := by
-  have hdir : ContMDiffOn ThreeModel (𝓡 2) ∞ satCylDir satBandImage :=
-    (contMDiffOn_sphereDirection satCylBase).comp contMDiff_satInitCoord.contMDiffOn
-      (fun z hz => satInitCoord_ne_zero_of_mem_band hz)
-  exact hdir.prodMk contMDiff_satLastCoord.contMDiffOn
-
-private theorem satCylInverseCore_apply_of_mem_band {z : Sphere 3} (hz : z ∈ satBandImage) :
-    satCylInverse z = ⟨satCylInverseCore z, hz⟩ := dite_eq_left hz
-
-private theorem satCylDir_map (q : ↥satBand) :
-    satCylDir (satCylMap q) = (q : satCylSpace).1 := by
-  rw [satCylDir, satCylMap_initCoord]
-  exact sphereDirection_pos_smul satCylBase (q : satCylSpace).1
-    (Real.sqrt_pos.mpr (one_sub_sq_pos_of_mem_domain q))
-
-private theorem satCylInverse_map (q : ↥satBand) :
-    satCylInverse (satCylMap q) = q := by
-  have hband : satCylMap q ∈ satBandImage := by
-    change satLastCoord (satCylMap q) ∈ Ioo (-(1 : ℝ)) 1
-    rw [satCylMap_lastCoord]
-    exact q.property
-  rw [satCylInverseCore_apply_of_mem_band hband]
-  apply Subtype.ext
-  exact Prod.ext (satCylDir_map q) (satCylMap_lastCoord q)
-
-private def satCylPartialEquiv : PartialEquiv ↥satBand (Sphere 3) where
-  toFun := satCylMap
-  invFun := satCylInverse
-  source := univ
-  target := range satCylMap
-  map_source' := fun x _ => mem_range_self x
-  map_target' := fun _ _ => mem_univ _
-  left_inv' := fun x _ => satCylInverse_map x
-  right_inv' := fun z hz => by
-    obtain ⟨x, rfl⟩ := hz
-    rw [satCylInverse_map]
-
-private theorem contMDiffOn_satCylInverse :
-    ContMDiffOn ThreeModel ((𝓡 2).prod 𝓘(ℝ)) ∞ satCylInverse (range satCylMap) := by
-  have hsub : range satCylMap ⊆ satBandImage := by
-    rintro z ⟨x, rfl⟩
-    change satLastCoord (satCylMap x) ∈ Ioo (-(1 : ℝ)) 1
-    rw [satCylMap_lastCoord]
-    exact x.property
-  have hval : ContMDiffOn ThreeModel ((𝓡 2).prod 𝓘(ℝ)) ∞
-      (fun z : Sphere 3 => (satCylInverse z : satCylSpace)) (range satCylMap) :=
-    ((contMDiffOn_satCylInverseCore.mono hsub).congr fun z hz =>
-      congrArg Subtype.val (satCylInverseCore_apply_of_mem_band (hsub hz)))
-  intro z hz
-  exact (ContMDiffWithinAt.subtypeVal_comp_iff satBand satCylInverse _ z).mp (hval z hz)
-
-private theorem satCylMap_injective : Function.Injective satCylMap := by
-  intro p q hpq
-  have hlast : (p : satCylSpace).2 = (q : satCylSpace).2 := by
-    rw [← satCylMap_lastCoord p, ← satCylMap_lastCoord q, hpq]
-  have hinit : Real.sqrt (1 - (p : satCylSpace).2 ^ 2) • ((p : satCylSpace).1 : ThreeSpace) =
-      Real.sqrt (1 - (q : satCylSpace).2 ^ 2) • ((q : satCylSpace).1 : ThreeSpace) := by
-    rw [← satCylMap_initCoord p, ← satCylMap_initCoord q, hpq]
-  have hfst : ((p : satCylSpace).1 : ThreeSpace) = ((q : satCylSpace).1 : ThreeSpace) := by
-    have hpos := Real.sqrt_pos.mpr (one_sub_sq_pos_of_mem_domain p)
-    have h2 : Real.sqrt (1 - (p : satCylSpace).2 ^ 2) • ((p : satCylSpace).1 : ThreeSpace) =
-        Real.sqrt (1 - (p : satCylSpace).2 ^ 2) • ((q : satCylSpace).1 : ThreeSpace) := by
-      rw [hinit, hlast]
-    have h3 := congrArg (fun w : ThreeSpace =>
-      (Real.sqrt (1 - (p : satCylSpace).2 ^ 2))⁻¹ • w) h2
-    simpa [smul_smul, inv_mul_cancel₀ (ne_of_gt hpos)] using h3
-  exact Subtype.ext (Prod.ext (Subtype.ext hfst) hlast)
-
-private theorem isSmoothEmbedding_satCylMap :
-    IsSmoothEmbedding ((𝓡 2).prod 𝓘(ℝ)) ThreeModel ∞ satCylMap := by
-  obtain ⟨-, hinj⟩ := isEmbedding_and_injective_mfderiv_of_smooth_partialEquiv
-    satCylPartialEquiv rfl contMDiff_satCylMap contMDiffOn_satCylInverse
-  refine isSmoothEmbedding_of_injective_mfderiv contMDiff_satCylMap satCylMap_injective hinj ?_
-  simp [Module.finrank_prod]
+open private neckCylDomain neckCylMap isSmoothEmbedding_neckCylMap neckCylPoint neckCylPoint_eq_neckPoint
+  from DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.TubeEmbedding
 
 private def satRate (u : ℝ) : ℝ := (1 / 2) * Real.exp (-(8 * u * expNegInvGlue u))
 
@@ -613,7 +307,7 @@ private theorem sq_satCylPoint_param (p : Sphere 2 × ℝ) : cylinderHeight p.2 
   have h := abs_cylinderHeight_lt_one p.2
   nlinarith [abs_nonneg (cylinderHeight p.2), sq_abs (cylinderHeight p.2)]
 
-private def satBandPoint (p : Sphere 2 × ℝ) : ↥satBand :=
+private def satBandPoint (p : Sphere 2 × ℝ) : ↥neckCylDomain :=
   ⟨(p.1, cylinderHeight p.2), by
     change cylinderHeight p.2 ∈ Ioo (-(1 : ℝ)) 1
     exact (abs_lt.mp (abs_cylinderHeight_lt_one p.2))⟩
@@ -621,7 +315,7 @@ private def satBandPoint (p : Sphere 2 × ℝ) : ↥satBand :=
 private theorem isSmoothEmbedding_satBandPoint :
     IsSmoothEmbedding ((𝓡 2).prod 𝓘(ℝ)) ((𝓡 2).prod 𝓘(ℝ)) ∞ satBandPoint := by
   refine DifferentialGeometry.Topology.Manifold.isSmoothEmbedding_intoOpen
-    ((𝓡 2).prod 𝓘(ℝ)) ((𝓡 2).prod 𝓘(ℝ)) satBand satBandPoint ?_
+    ((𝓡 2).prod 𝓘(ℝ)) ((𝓡 2).prod 𝓘(ℝ)) neckCylDomain satBandPoint ?_
   have hprod : IsSmoothEmbedding ((𝓡 2).prod 𝓘(ℝ)) ((𝓡 2).prod 𝓘(ℝ)) ∞
       (Prod.map (id : Sphere 2 → Sphere 2) cylinderHeight) :=
     IsSmoothEmbedding.prodMap IsSmoothEmbedding.id isSmoothEmbedding_cylinderHeight
@@ -630,22 +324,22 @@ private theorem isSmoothEmbedding_satBandPoint :
   rfl
 
 private def cylinderExtensionMap (p : Sphere 2 × ℝ) : Sphere 3 :=
-  satCylMap (satBandPoint p)
+  neckCylMap (satBandPoint p)
 
 private theorem isSmoothEmbedding_cylinderExtensionMap :
     IsSmoothEmbedding ((𝓡 2).prod 𝓘(ℝ)) ThreeModel ∞ cylinderExtensionMap :=
   IsSmoothEmbedding.comp (I := (𝓡 2).prod 𝓘(ℝ)) (J := (𝓡 2).prod 𝓘(ℝ))
-    (J' := ThreeModel) (f := satBandPoint) (g := satCylMap)
-    isSmoothEmbedding_satCylMap isSmoothEmbedding_satBandPoint (by decide)
+    (J' := ThreeModel) (f := satBandPoint) (g := neckCylMap)
+    isSmoothEmbedding_neckCylMap isSmoothEmbedding_satBandPoint (by decide)
 
 private theorem cylinderExtensionMap_apply_tube (z : TubeDomain) :
     cylinderExtensionMap (z.1, (z.2 : ℝ)) = standardNeckTubeFun z := by
   apply Subtype.ext
-  change satCylPoint z.1 (cylinderHeight (z.2 : ℝ)) = neckPoint z.1 (z.2 : ℝ)
+  change neckCylPoint z.1 (cylinderHeight (z.2 : ℝ)) = neckPoint z.1 (z.2 : ℝ)
   rw [cylinderHeight_of_mem_Icc z.2.2]
-  exact satCylPoint_eq_neckPoint z.1 (z.2 : ℝ)
+  exact neckCylPoint_eq_neckPoint z.1 (z.2 : ℝ)
 
-theorem standardNeckCutCapInputs_cylinderEmbedding :
+theorem exists_isSmoothEmbedding_eq_standardNeckTubeFun :
     ∃ g : Sphere 2 × ℝ → Sphere 3,
       IsSmoothEmbedding ((𝓡 2).prod 𝓘(ℝ)) ThreeModel ∞ g ∧
         ∀ z : TubeDomain, g (z.1, (z.2 : ℝ)) = standardNeckTubeFun z :=

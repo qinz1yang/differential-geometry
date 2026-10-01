@@ -17,10 +17,13 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem exists_uniform_disjoint_spherical_region_of_canonical_neighborhoods :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_disjoint_spherical_region_of_canonical_neighborhoods :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, δ ≤ η →
       ∀ C1 C2 q : ℝ,
       ∀ (P : OrientedThreeStage.{u}) (a s : ℝ) (G : P.IncomingSlab a s)
@@ -157,7 +160,7 @@ theorem exists_uniform_disjoint_spherical_region_of_canonical_neighborhoods :
       have hh := hinside z (σ * t) (hscaled t ht)
       rcases hσ with rfl | rfl <;> simpa [K] using hh
 
-theorem exists_uniform_disjoint_spherical_region :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_disjoint_spherical_region :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C2 : ℝ, 1 ≤ C2 ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
         (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
@@ -203,7 +206,7 @@ theorem exists_uniform_disjoint_spherical_region :
   exact hregion δ (hδη.trans (min_le_left _ _)) C2 C2 q P a s G L
     (fun x t ht hx => hcanonical x t ⟨ht.1.le, ht.2⟩ hx.le) A y hA hqA hyA hnoncompact
 
-theorem TerminalLimitMetric.exists_disjoint_spherical_region
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_disjoint_spherical_region
     (L : G.TerminalLimitMetric) :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
@@ -241,7 +244,7 @@ theorem TerminalLimitMetric.exists_disjoint_spherical_region
   obtain ⟨q, hq, hregion⟩ := hregion P a s G
   exact ⟨C2, q, hC2, hq, hregion L⟩
 
-theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_boundary_atlas
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_disjoint_spherical_region_with_boundary_atlas
     (L : G.TerminalLimitMetric) :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
@@ -317,11 +320,14 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.exists_connected_spherical_region
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_connected_spherical_region
     (L : G.TerminalLimitMetric) :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
@@ -453,10 +459,13 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.Incom
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem exists_uniform_disjoint_spherical_region_with_low_anchors_of_le :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_disjoint_spherical_region_with_low_anchors_of_le :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C2 : ℝ, 1 ≤ C2 ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
         (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
@@ -561,7 +570,7 @@ theorem exists_uniform_disjoint_spherical_region_with_low_anchors_of_le :
     exact ⟨hl, hembed, hband, hclose, hdomain, r, σ, hr, hr1, hσ, hsrc, hside', hinside'⟩
 
 
-theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors_of_le
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors_of_le
     (L : G.TerminalLimitMetric) :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
@@ -601,7 +610,7 @@ theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors_of
   obtain ⟨q, hq, hregion⟩ := hregion P a s G
   exact ⟨C2, q, hC2, hq, hregion L⟩
 
-theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors
     (L : G.TerminalLimitMetric) :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
@@ -643,7 +652,7 @@ theorem TerminalLimitMetric.exists_disjoint_spherical_region_with_low_anchors
 
 
 
-theorem exists_uniform_disjoint_spherical_region_with_scalar_gap :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_disjoint_spherical_region_with_scalar_gap :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C2 : ℝ, 1 ≤ C2 ∧ ∀ C : ℝ, 1 ≤ C → ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
         (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧

@@ -290,6 +290,9 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
@@ -297,7 +300,7 @@ open DifferentialGeometry.Topology
 
 universe u
 
-theorem exists_component_poincareStandard_tolerance_of_spatiallyCanonical :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_component_poincareStandard_tolerance_of_spatiallyCanonical :
     ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
       ∀ (P : OrientedThreeStage.{u}) (a s : ℝ) (G : P.IncomingSlab a s)
         (g : G.TerminalLimitMetric) (C1 C2 q R : ℝ),
@@ -307,7 +310,7 @@ theorem exists_component_poincareStandard_tolerance_of_spatiallyCanonical :
       ∀ c : ConnectedComponents P.Carrier,
         (∀ x : G.terminalRegularOpen, ConnectedComponents.mk x.val = c →
           R < metricScalarAt g.metric x) →
-        isStandardConnectedSum (P.toClosedOrientedManifold.component c).Carrier := by
+        isStandardConnectedSum (P.component c).Carrier := by
   obtain ⟨eta, heta, hclass⟩ := exists_compact_component_spatial_poincareStandard_tolerance.{u}
   refine ⟨eta, heta, ?_⟩
   intro eps heps P a s G g C1 C2 q R hq hqR hcanonical Ctime hbound c hterminal
@@ -318,8 +321,8 @@ theorem exists_component_poincareStandard_tolerance_of_spatiallyCanonical :
     (P.componentOpen_isClosed c) hqR hterminal
   obtain ⟨t, ht⟩ := exists_between hd.2
   have htime : t ∈ Ioo a s := ⟨hd.1.trans_lt ht.1, ht.2⟩
-  choose W hchart using fun x : (P.toClosedOrientedManifold.component c).Carrier =>
+  choose W hchart using fun x : (P.component c).Carrier =>
     hcanonical x.val t htime (hhigh t ht x.val x.property)
-  exact hclass eps heps P.toClosedOrientedManifold (G.flow.base.metric t) c C1 C2 W hchart
+  exact hclass eps heps P (G.flow.base.metric t) c C1 C2 W hchart
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

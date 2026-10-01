@@ -291,7 +291,7 @@ theorem WindowedModelWitness.toRestrictOpen_preservesTangentOrientationAt
   refine ⟨hder.symm ▸ hf, ?_⟩
   have hc := W.toRestrictOpen_embedding_coe hU hy'.2
   unfold PreservesTangentOrientationAt at hpres ⊢
-  rw [TangentOrientationSection.restrictOpen_orientation]
+  rw [DifferentialGeometry.ManifoldOrientation.restrictOpen_orientation]
   convert hpres using 2
   rw [hc]
   apply Iff.of_eq

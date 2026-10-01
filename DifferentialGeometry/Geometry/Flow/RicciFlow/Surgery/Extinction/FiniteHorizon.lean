@@ -46,7 +46,7 @@ theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_initialScal
       (H.coreEvent i).toMetricCutCapEvent.poincareStandardDiscarded)
     {c : ℝ} (hc : 0 < c) (hscalar : InitialScalarBarrier g c)
     (hthr : extinctionThreshold c (canonicalWidth g P.orientation) < H.horizon) :
-    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
+    Nonempty (PoincareControlledExtinction P g) := by
   have hempty := H.toHistory.isExtinctAtHorizon_of_initialScalarBarrier A
     parameters records hc hscalar hthr
   exact exists_poincare_controlled_extinction_of_observedHistory P g H.toHistory A
@@ -102,7 +102,7 @@ theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_history_vol
       (K.coreEvent i).toMetricCutCapEvent.poincareStandardDiscarded)
     {c : ℝ} (hc : 0 < c) (hscalar0 : InitialScalarBarrier g c)
     (hthr : extinctionThreshold c (canonicalWidth g P.orientation) < B) :
-    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
+    Nonempty (PoincareControlledExtinction P g) := by
   have hscalar : ∀ K ∈ S, ∀ i : Fin K.eventCount,
       ∀ t ∈ Ico (K.time i.castSucc) (K.time i.succ),
       ∀ x : (K.stage i.castSucc).Carrier,
@@ -179,7 +179,7 @@ theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_volume_debi
       (K.coreEvent i).toMetricCutCapEvent.poincareStandardDiscarded)
     {c : ℝ} (hc : 0 < c) (hscalar0 : InitialScalarBarrier g c)
     (hthr : extinctionThreshold c (canonicalWidth g P.orientation) < B) :
-    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
+    Nonempty (PoincareControlledExtinction P g) := by
   exact H.exists_poincare_controlled_extinction_of_history_volume_debit A S hH hv
     hprefix hhorizon hend hdebit hproduce (fun _ _ => parameters) records hbfr hctrl
     hc hscalar0 hthr

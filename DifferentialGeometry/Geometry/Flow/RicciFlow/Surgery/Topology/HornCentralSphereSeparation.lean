@@ -233,12 +233,15 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 universe u
 
-theorem exists_strongNeck_threshold_of_locally_separating_centralSphere
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_strongNeck_threshold_of_locally_separating_centralSphere
     {delta : ℝ} (hdelta : 0 < delta) (hdelta1 : delta < 1 / 11)
     {kappa : ℝ} (hkappa : 0 < kappa) {rho : ℝ} (hrho : 0 < rho) {Phi : ℝ → ℝ}
     (hPhi : Perelman.AdmissiblePinchingFunction Phi) :

@@ -1,19 +1,18 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.TubeSystem.Empty
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.TubeSystem.SphereModel
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalTransitionBridge
+import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.TubeSystem.Boundary
+import Mathlib.Geometry.Manifold.SmoothEmbedding
 
 noncomputable section
 
-open Metric Set Bundle Manifold
+open Bundle Manifold Set
 open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-attribute [local instance] threeBallChartedSpace threeBall_isManifold
-
-structure CutCapTransitionData (P Q D N : OrientedThreeStage.{u}) where
+structure SmoothCutCapTransition (P Q D N : OrientedThreeStage.{u}) where
   trace : CutCapTopology P.Carrier Q.Carrier D.Carrier N.Carrier
   source_nonempty : Nonempty P.Carrier
   tube_smooth :
@@ -27,6 +26,10 @@ structure CutCapTransitionData (P Q D N : OrientedThreeStage.{u}) where
   core_boundary : (𝓡∂ 3).boundary trace.tubes.core =
     ⋃ b : trace.tubes.Boundary, Set.range (trace.tubes.coreBoundarySphere b)
   core_inclusion_smooth : IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞ trace.capping.coreInclusion
+  [ballCharts : ChartedSpace (EuclideanHalfSpace 3) ThreeBall]
+  [ballSmooth : IsManifold (𝓡∂ 3) ∞ ThreeBall]
+  ball_induced : IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞ (Subtype.val : ThreeBall → ThreeSpace)
+  ball_boundary : (𝓡∂ 3).boundary ThreeBall = Set.range sphereToThreeBall
   cap_smooth : ∀ b, IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞ (trace.capping.cap b)
   attaching : ∀ _b : trace.tubes.Boundary, Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2
   attaching_eq : ∀ b, (attaching b : Sphere 2 → Sphere 2) = trace.capping.attaching b
@@ -63,31 +66,12 @@ structure CutCapTransitionData (P Q D N : OrientedThreeStage.{u}) where
           | Sum.inl q => Q.orientation.orientation q
           | Sum.inr d => D.orientation.orientation d
 
-def CutCapTransitionData.toSmoothCutCapTransition {P Q D N : OrientedThreeStage.{u}}
-    (S : CutCapTransitionData P Q D N) : SmoothCutCapTransition P Q D N where
-  trace := S.trace
-  source_nonempty := S.source_nonempty
-  tube_smooth := S.tube_smooth
-  coreCharts := S.coreCharts
-  coreSmooth := S.coreSmooth
-  core_induced := S.core_induced
-  core_boundary := S.core_boundary
-  core_inclusion_smooth := S.core_inclusion_smooth
-  ballCharts := threeBallChartedSpace
-  ballSmooth := threeBall_isManifold
-  ball_induced := isSmoothEmbedding_threeBall_inclusion
-  ball_boundary := threeBall_boundary_eq_sphere
-  cap_smooth := S.cap_smooth
-  attaching := S.attaching
-  attaching_eq := S.attaching_eq
-  core_positive := S.core_positive
-  cap_positive := S.cap_positive
-  presentation := S.presentation
-  presentation_eq := S.presentation_eq
-  presentation_positive := S.presentation_positive
-
-theorem nonempty_smoothCutCapTransition_of_data {P Q D N : OrientedThreeStage.{u}}
-    (S : CutCapTransitionData P Q D N) : Nonempty (SmoothCutCapTransition P Q D N) :=
-  ⟨S.toSmoothCutCapTransition⟩
+theorem SmoothCutCapTransition.coreBoundarySphere_mem_boundary {P Q D N : OrientedThreeStage.{u}}
+    (X : SmoothCutCapTransition P Q D N) (b : X.trace.tubes.Boundary) (y : Sphere 2) :
+    letI : ChartedSpace (EuclideanHalfSpace 3) X.trace.tubes.core := X.coreCharts
+    letI : IsManifold (𝓡∂ 3) ∞ X.trace.tubes.core := X.coreSmooth
+    X.trace.tubes.coreBoundarySphere b y ∈ (𝓡∂ 3).boundary X.trace.tubes.core :=
+  @TubeSystem.coreBoundarySphere_mem_boundary _ _ X.trace.tubes X.coreCharts
+    X.core_boundary b y
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

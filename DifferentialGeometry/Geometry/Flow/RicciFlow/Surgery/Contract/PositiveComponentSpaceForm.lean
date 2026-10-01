@@ -38,16 +38,16 @@ theorem MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveOrRo
     {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
     (h : ∀ C : ConnectedComponents E.discarded.Carrier,
       Nonempty (PositiveComponent
-        (M := (E.discarded.toClosedOrientedManifold.component C).Carrier) Set.univ) ∨
+        (M := (E.discarded.component C).Carrier) Set.univ) ∨
       ∃ (D' : RealTimeInterval)
         (S : SolutionOn (I := ThreeModel)
-          (M := (E.discarded.toClosedOrientedManifold.component C).Carrier) D')
-        (ε : ℝ) (x : (E.discarded.toClosedOrientedManifold.component C).Carrier) (t : ℝ),
+          (M := (E.discarded.component C).Carrier) D')
+        (ε : ℝ) (x : (E.discarded.component C).Carrier) (t : ℝ),
         Nonempty (RoundComponent S ε x t Set.univ)) : E.poincareStandardDiscarded := by
   apply MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveCurvatureOrSphereProduct
     E
   intro C
-  refine ⟨[E.discarded.toClosedOrientedManifold.component C], ?_,
+  refine ⟨[E.discarded.component C], ?_,
     ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩⟩
   intro F hF
   rw [List.mem_singleton] at hF

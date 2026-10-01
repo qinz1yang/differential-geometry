@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ThreeBallChartDictionary
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.CapCoordinates
 import DifferentialGeometry.Topology.Manifold.StereographicChart
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionBoundarySource

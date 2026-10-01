@@ -33,11 +33,11 @@ variable {P Q : OrientedThreeStage.{u}} {a s : ℝ}
 
 theorem poincareStandardDiscarded_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
     (E : MetricCutCapEvent P Q a s)
-    (h : E.discarded.toClosedOrientedManifold.componentwiseStandardFactorOrProjectiveThreeSpaceSum) :
+    (h : E.discarded.componentwiseStandardFactorOrProjectiveThreeSpaceSum) :
     E.poincareStandardDiscarded :=
   fun q =>
     DifferentialGeometry.Topology.componentwise_isStandardConnectedSum_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
-      E.discarded.toClosedOrientedManifold h q
+      E.discarded h q
 
 end MetricCutCapEvent
 
@@ -48,7 +48,7 @@ variable {P : OrientedThreeStage.{u}} {g : P.Metric}
 theorem hasPoincareStandardDiscarded_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
     (T : RetainedCoreObservationTower P g)
     (h : ∀ (n : ℕ) (j : Fin (T.history n).eventCount),
-      ((T.history n).coreEvent j).toMetricCutCapEvent.discarded.toClosedOrientedManifold
+      ((T.history n).coreEvent j).toMetricCutCapEvent.discarded
         |>.componentwiseStandardFactorOrProjectiveThreeSpaceSum) :
     T.hasPoincareStandardDiscarded :=
   fun n j =>

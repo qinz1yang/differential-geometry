@@ -16,11 +16,14 @@ open scoped Manifold ContDiff Topology ENNReal NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.eventually_riemannianEDistOf_lt
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_riemannianEDistOf_lt
     (L : G.TerminalLimitMetric) (x y : G.terminalRegularOpen) {R : ℝ}
     (hxy : riemannianEDistOf L.metric x y < ENNReal.ofReal R) :
     ∀ᶠ t in 𝓝[<] s, riemannianEDistOf (G.flow.base.metric t)
@@ -44,7 +47,7 @@ theorem TerminalLimitMetric.eventually_riemannianEDistOf_lt
     G.terminalRegularOpen x y).trans_lt ht
 
 
-theorem TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound_on_time_window
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound_on_time_window
     {P : OrientedThreeStage.{u}} {a s c : ℝ} {G : P.IncomingSlab a s}
     (L : G.TerminalLimitMetric) {q Q : ℝ} (C : ℝ≥0)
     (hQ : 0 < Q) (hqQ : q ≤ Q) (hcs : c < s)
@@ -88,7 +91,7 @@ theorem TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound_on_time_wi
   simpa only [show (3 : ℝ) * (2 * Q) = 6 * Q by ring] using hh
 
 
-theorem TerminalLimitMetric.isCompact_small_ball_of_gradient_bound_on_time_window
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.isCompact_small_ball_of_gradient_bound_on_time_window
     {P : OrientedThreeStage.{u}} {a s c : ℝ} {G : P.IncomingSlab a s}
     (L : G.TerminalLimitMetric) {q Q : ℝ} (C : ℝ≥0)
     (hQ : 0 < Q) (hqQ : q ≤ Q) (hcs : c < s)
@@ -107,7 +110,7 @@ theorem TerminalLimitMetric.isCompact_small_ball_of_gradient_bound_on_time_windo
   · exact fun y hy => L.scalar_le_on_small_ball_of_gradient_bound_on_time_window C hQ hqQ hcs
       hgradient x hx y hy
 
-theorem TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound
     {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
     (L : G.TerminalLimitMetric) {q Q : ℝ} (C : ℝ≥0)
     (hQ : 0 < Q) (hqQ : q ≤ Q)
@@ -123,7 +126,7 @@ theorem TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound
   exact L.scalar_le_on_small_ball_of_gradient_bound_on_time_window C hQ hqQ G.lt
     (fun x t ht _ => hgradient x t ht) x hx y hy
 
-theorem TerminalLimitMetric.isCompact_small_ball_of_scalar_derivative_bounds
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.isCompact_small_ball_of_scalar_derivative_bounds
     {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
     (L : G.TerminalLimitMetric) {q Q : ℝ} (C D : ℝ≥0)
     (hQ : 0 < Q) (hqQ : q ≤ Q)
@@ -151,7 +154,7 @@ theorem TerminalLimitMetric.isCompact_small_ball_of_scalar_derivative_bounds
       continuous_const
   · exact fun y hy => L.scalar_le_on_small_ball_of_gradient_bound C hQ hqQ hgradient x hx y hy
 
-theorem TerminalLimitMetric.scalar_le_on_small_ball_of_canonical
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.scalar_le_on_small_ball_of_canonical
     {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
     (L : G.TerminalLimitMetric) {eps C1 q Q : ℝ} (C : ℝ≥0)
     (hQ : 0 < Q) (hqQ : q ≤ Q)
@@ -166,7 +169,7 @@ theorem TerminalLimitMetric.scalar_le_on_small_ball_of_canonical
     (fun z t ht hz v => (hcanonical z t ht hz).some.gradient v) x hx y hy
 
 
-theorem TerminalLimitMetric.isCompact_small_ball_of_canonical
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.isCompact_small_ball_of_canonical
     {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
     (L : G.TerminalLimitMetric) {eps C1 q Q : ℝ} (C : ℝ≥0)
     (hQ : 0 < Q) (hqQ : q ≤ Q)

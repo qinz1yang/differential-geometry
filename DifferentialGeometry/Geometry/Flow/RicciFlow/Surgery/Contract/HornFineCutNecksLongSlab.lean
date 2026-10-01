@@ -16,11 +16,14 @@ open scoped Manifold ContDiff ENNReal Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.ofReal_lt_riemannianEDistOf_of_gradientBoundBefore
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.ofReal_lt_riemannianEDistOf_of_gradientBoundBefore
     (L : G.TerminalLimitMetric) {Cgrad : ℝ≥0} {q M A : ℝ} (hqM : q ≤ M) (hM : 0 < M)
     (hA : 0 < A) (hgrad : G.GradientBoundBefore Cgrad q s) (x w : G.terminalRegularOpen)
     (hw : metricScalarAt L.metric w ≤ M) (hx7 : 7 * M ≤ metricScalarAt L.metric x)
@@ -80,7 +83,7 @@ theorem TerminalLimitMetric.ofReal_lt_riemannianEDistOf_of_gradientBoundBefore
   obtain ⟨t, ht⟩ := hev.exists
   exact ht
 
-theorem TerminalLimitMetric.exists_normalizedNeck_of_eventually_strongNeck
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_normalizedNeck_of_eventually_strongNeck
     (L : G.TerminalLimitMetric) {Ctime : ℝ≥0} {q : ℝ} (hq : 0 < q)
     (hderiv : G.DerivativeBoundBefore Ctime q s) {phi : ℝ → ℝ}
     (hphi : Perelman.AdmissiblePinchingFunction phi)

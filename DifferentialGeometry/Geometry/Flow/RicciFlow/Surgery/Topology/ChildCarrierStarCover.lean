@@ -1,4 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
+import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
 import DifferentialGeometry.Topology.VanKampen.SimplyConnectedStarCover
 
 set_option autoImplicit false
@@ -20,7 +22,7 @@ theorem child_simplyConnected_of_starCover {P Q D N : OrientedThreeStage.{u}}
     (hdisj : Pairwise fun b b' => Disjoint (V b) (V b'))
     [hUsc : SimplyConnectedSpace ↥U] [hVsc : ∀ b, SimplyConnectedSpace ↥(V b)]
     [hInt : ∀ b, SimplyConnectedSpace ↥(U ∩ V b)] :
-    SimplyConnectedSpace (Q.component c).Carrier :=
+    SimplyConnectedSpace (Q.component c).toClosedOrientedManifold.Carrier :=
   @simplyConnectedSpace_of_open_cover_of_pairwise_disjoint_of_fintype
     (E.ChildCarrier c) _ (E.ChildCapBoundary c) _ U V hU hV hcover hdisj
     hUsc hVsc hInt

@@ -78,10 +78,10 @@ theorem MetricCutCapEvent.exists_controlled_restart_of_finiteFullPreparedMetric
     ∀ [CompactSpace Ret] (oRet : SmoothOrientation (𝓡 3) Ret)
       {P : OrientedThreeStage} {a s : ℝ}
       (event : MetricCutCapEvent P
-        (OrientedThreeStage.ofSmoothOrientation Ret oRet) a s),
+        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) a s),
       event.outputMetric = finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc
         x₀ order d₀ hOriginal hrec d hmap hside w →
-      ∃ G : (OrientedThreeStage.ofSmoothOrientation Ret oRet).ClosedSlab s (s + compactCurvatureControlTime 3 (max (K 0) (2 * C 0 * Qmax))),
+      ∃ G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet).ClosedSlab s (s + compactCurvatureControlTime 3 (max (K 0) (2 * C 0 * Qmax))),
         G.flow.base.metric s = event.outputMetric ∧
         ∀ t ∈ Set.Icc s (s + compactCurvatureControlTime 3 (max (K 0) (2 * C 0 * Qmax))), ∀ q : Ret,
           Real.sqrt (normSq0S (G.flow.base.metric t) q 4 (metricRm04 (G.flow.base.metric t) q)) ≤
@@ -119,7 +119,7 @@ theorem exists_uniform_metricCutCapEvent_controlled_restart :
       ∀ {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M]
         [IsManifold ThreeModel ∞ M] [CompactSpace M],
       ∀ (o : SmoothOrientation ThreeModel M) {t₀ t₁ : ℝ}
-        (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+        (G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
         (L : G.TerminalLimitMetric)
         {ι : Type} [Fintype ι] (precision : ι → ℝ) (hδ : ∀ i, 0 < precision i),
       (∀ i, precision i ≤ δ₀) → ∀ (x₀ : ι → G.terminalRegularOpen)
@@ -163,8 +163,8 @@ theorem exists_uniform_metricCutCapEvent_controlled_restart :
         G.terminalRegularOpen L.metric R hRet c hc x₀ (fun _ => m + 6) d₀
         hOriginal hrec d hmap hside w
       ∃ (oRet : SmoothOrientation ThreeModel Ret),
-      let QRet := OrientedThreeStage.ofSmoothOrientation Ret oRet
-      ∃ E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+      let QRet := DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet
+      ∃ E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
         QRet t₀ t₁,
         E.incoming = G ∧ HEq E.terminal L ∧
         E.outputMetric = gRet ∧
