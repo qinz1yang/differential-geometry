@@ -93,7 +93,8 @@ theorem IsTube.exists_splitting_pseudoCell_components
       continuous_subtype_val.continuousAt.preimage_mem_nhds hU, n₀, fun n hn' => ?_⟩
     simp only [← preimage_inter, hn n hn']
   obtain ⟨hcell, hlp, hclos, hpairs⟩ :=
-    isOpenTopologicalCell_annularChain ht hu hv huv he hP' htw hch hsepU
+    DifferentialGeometry.Topology.PiecewiseLinear.isOpenTopologicalCell_annularChain
+      ht hu hv huv he hP' htw hch hsepU
   have hsph : IsTopologicalSphere 1 (h '' Dbd {u, v}) :=
     isTopologicalSphere_image_splitRim ht he hcard
   have hmid : ({u, v} : Finset E3).centroid ℝ id ∈ D {u, v} ∩ K.space := by
