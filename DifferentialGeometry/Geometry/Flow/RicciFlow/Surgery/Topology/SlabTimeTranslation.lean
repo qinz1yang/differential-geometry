@@ -113,12 +113,12 @@ def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.timeT
 theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.timeTranslate_metric_add {s e : ℝ}
     (G : P.IncomingSlab s e) (a t : ℝ) :
     (G.timeTranslate a).flow.base.metric (t + a) = G.flow.base.metric t := by
-  rw [timeTranslate_metric, add_sub_cancel_right]
+  rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.timeTranslate_metric, add_sub_cancel_right]
 
 theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.timeTranslate_metric_add {s e : ℝ}
     (G : P.ClosedSlab s e) (a t : ℝ) :
     (G.timeTranslate a).flow.base.metric (t + a) = G.flow.base.metric t := by
-  rw [timeTranslate_metric, add_sub_cancel_right]
+  rw [DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.timeTranslate_metric, add_sub_cancel_right]
 
 theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.timeTranslate_initial_metric {s e : ℝ}
     (G : P.IncomingSlab s e) (a : ℝ) :
@@ -145,7 +145,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     refine ⟨t - a, ⟨?_, ?_⟩, x, ?_⟩
     · linarith [ht.1]
     · linarith [ht.2]
-    · simpa only [timeTranslate_riemannNorm] using hx
+    · simpa only [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.timeTranslate_riemannNorm] using hx
   · intro h L hL d hd
     have hd' : d - a ∈ Ico s e := by
       constructor <;> linarith [hd.1, hd.2]
@@ -153,6 +153,6 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     refine ⟨t + a, ⟨?_, ?_⟩, x, ?_⟩
     · linarith [ht.1]
     · linarith [ht.2]
-    · simpa only [timeTranslate_riemannNorm, add_sub_cancel_right] using hx
+    · simpa only [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.timeTranslate_riemannNorm, add_sub_cancel_right] using hx
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage

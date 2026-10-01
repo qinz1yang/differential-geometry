@@ -383,7 +383,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 open Set Function Manifold
 open DifferentialGeometry.Topology.Handle
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 attribute [local instance] closedCellChartedSpaceSucc closedCellIsManifold
 attribute [local instance] threeBallChartedSpace threeBall_isManifold

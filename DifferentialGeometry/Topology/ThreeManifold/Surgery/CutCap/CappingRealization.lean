@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
+import DifferentialGeometry.Topology.Attachment.Basic
 
 noncomputable section
 
@@ -101,10 +102,7 @@ def SphericalCutCapTransition.ofSmoothCutCapTransition
   discarded := D
   presentation := X.presentation
   presentation_positive := fun x => by
-    convert h.presentation_positive x using 2 <;>
-      first
-        | rfl
-        | (cases X.presentation x <;> rfl)
+    exact h.presentation_positive x
   every_component_meets_core := h.every_component_meets_core
   retained_complement := h.retained_complement
   nontrivial := X.trace.nontrivial
