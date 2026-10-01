@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.StandardCap.MetricTruncationNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Extension.TerminalRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ReferenceCurvatureBounds
+import DifferentialGeometry.Geometry.Metric.StandardCap.ReferenceCurvatureBounds
 import DifferentialGeometry.Geometry.Curvature.DerivativeIsometry
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 

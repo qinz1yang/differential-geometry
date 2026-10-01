@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.ConeDistance
+import DifferentialGeometry.Topology.MetricSpace.Cone.Distance
 import DifferentialGeometry.Topology.MetricSpace.ContinuousDistance
 import Mathlib.Topology.Instances.Real.Lemmas
 

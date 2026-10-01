@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.StandardCap.MetricTruncationNorm
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ReferenceCurvatureBounds
+import DifferentialGeometry.Geometry.Metric.StandardCap.ReferenceCurvatureBounds
 import DifferentialGeometry.Geometry.Metric.StandardCap.CompactDoublePatchCurvature
 import DifferentialGeometry.Geometry.Curvature.DerivativeIsometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Compact.UniformDerivatives

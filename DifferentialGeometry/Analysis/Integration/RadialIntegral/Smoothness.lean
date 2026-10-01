@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.RadialIntegral
+import DifferentialGeometry.Analysis.Integration.RadialIntegral.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.FiniteIntegral
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 

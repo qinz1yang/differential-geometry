@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn.Convergence.MarkedInverse
 import DifferentialGeometry.Geometry.Metric.Distance.ClosedBall
-import DifferentialGeometry.Geometry.Metric.ConeDistance.Compactness
+import DifferentialGeometry.Topology.MetricSpace.Cone.Compactness
 
 noncomputable section
 open Filter Set

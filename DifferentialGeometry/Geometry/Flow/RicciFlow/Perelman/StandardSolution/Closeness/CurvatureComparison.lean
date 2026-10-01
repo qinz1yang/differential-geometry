@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ReferenceCurvatureBounds
+import DifferentialGeometry.Geometry.Metric.StandardCap.ReferenceCurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Estimates.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Lifetime.Value
 

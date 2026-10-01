@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Metric.CompactSourceEllipticity
 import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeModel
 
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ReferenceCurvatureBounds
+import DifferentialGeometry.Geometry.Metric.StandardCap.ReferenceCurvatureBounds
 
 set_option autoImplicit false
 noncomputable section

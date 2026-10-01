@@ -7,9 +7,9 @@ open Bundle MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
   RealInnerProductSpace InnerProductSpace NNReal
 
-namespace DifferentialGeometry.Analysis.Spectral
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
-open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Spectral (tensorResolventL2_isCompactOperator)
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
@@ -30,7 +30,7 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [BoundarylessManifold I M] in
-theorem mixForce_unique
+theorem nemytskii_forcing_fixed_point_unique_of_mixed_lipschitz
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
     {Nfun : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
       TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
@@ -72,7 +72,7 @@ theorem mixForce_unique
   nlinarith
 
 omit [BoundarylessManifold I M] in
-theorem deTurckStrong_unique
+theorem strong_solution_unique_of_mixed_lipschitz
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {L : ℝ≥0}
     {Nfun : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2) →
       TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)}
@@ -128,7 +128,7 @@ theorem deTurckStrong_unique
   have hfix₂ := strongNemy_fixed (I := I) (M := M) hT hcompact
     u₀ force₂ u₂ field₂ hLip htrace₂' hlink₂ heq₂ hforce₂
   have hforces : force₁ = force₂ :=
-    mixForce_unique (I := I) (M := M) g₀ a hLip hsingle hT hT1 hρ hsmall
+    nemytskii_forcing_fixed_point_unique_of_mixed_lipschitz (I := I) (M := M) g₀ a hLip hsingle hT hT1 hρ hsmall
       hball₁ hball₂ hfix₁ hfix₂
   rcases strongPair_eq_duhamel (I := I) (M := M) hT hcompact
       u₀ force₁ u₁ field₁ htrace₁' hlink₁ heq₁ with ⟨hfield₁, hu₁⟩
@@ -148,6 +148,6 @@ theorem deTurckStrong_unique
           (a : ℝ) hT u₀ force₂ := by rw [hforces]
       _ = u₂ := hu₂.symm
 
-end DifferentialGeometry.Analysis.Spectral
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 end

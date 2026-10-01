@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientRegularity
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeWeight
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.CanonicalConnection
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 
 noncomputable section
 

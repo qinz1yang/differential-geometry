@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Connected.CompactIntersection
+import DifferentialGeometry.Topology.Compactness.ConnectedIntersection
 import DifferentialGeometry.Topology.Connected.Dense
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightSublevelConnected
 

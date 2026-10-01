@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleLimits.Cutoff.WeightedFluxLimit
-import DifferentialGeometry.Analysis.Integration.Integral.WeightedFluxLimit
+import DifferentialGeometry.Analysis.Integration.Integral.WeightedUniformDecay
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleEndpointSelectedDensityIntegrable
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineCutoffMass
 import DifferentialGeometry.Analysis.Parabolic.WeakEquation.CutoffLimit

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homeomorph.EmbeddedNeighborhood
-import DifferentialGeometry.Geometry.Metric.ConeDistance
+import DifferentialGeometry.Topology.MetricSpace.Cone.Distance
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import Mathlib.Topology.Algebra.GroupWithZero
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn.SourceLimits.ConeEmbedding

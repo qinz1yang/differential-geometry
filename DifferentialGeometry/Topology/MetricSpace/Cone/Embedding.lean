@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.ConeDistance
+import DifferentialGeometry.Topology.MetricSpace.Cone.Distance
 import DifferentialGeometry.Topology.Compactness.MapLimits
 import Mathlib.Topology.Homeomorph.Defs
 

@@ -25,7 +25,6 @@ noncomputable def _root_.DifferentialGeometry.ManifoldOrientation.ofSmoothOrient
     [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
     (o : DifferentialGeometry.Topology.Manifold.SmoothOrientation ThreeModel M) :
     TangentOrientationSection M :=
-
     (cast (congrArg (fun n => DifferentialGeometry.ManifoldOrientation ThreeModel M n)
         finrank_threeSpace_eq_three)
       (Classical.choose
@@ -243,7 +242,6 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrie
       change Orientation.reindex ℝ (TangentSpace ThreeModel x) (finCongr finrank_threeSpace_eq_three)
         ((cast (congrArg (fun n => DifferentialGeometry.ManifoldOrientation ThreeModel P.Carrier n)
           finrank_threeSpace_eq_three.symm) P.orientation).orientation x) = _
-
       rw [manifoldOrientation_cast_orientation (h := finrank_threeSpace_eq_three.symm)]
       exact (Orientation.reindex ℝ (TangentSpace ThreeModel x) (finCongr finrank_threeSpace_eq_three)).apply_symm_apply
         (P.orientation.orientation x)

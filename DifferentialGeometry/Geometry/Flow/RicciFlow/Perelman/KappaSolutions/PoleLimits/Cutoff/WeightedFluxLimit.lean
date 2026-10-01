@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleEndpointRadialCutoffTimeIntegral
-import DifferentialGeometry.Analysis.Integration.Integral.WeightedFluxLimit
+import DifferentialGeometry.Analysis.Integration.Integral.WeightedUniformDecay
 
 
 noncomputable section

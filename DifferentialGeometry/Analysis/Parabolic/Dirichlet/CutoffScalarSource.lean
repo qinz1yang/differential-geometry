@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffForcing
 import DifferentialGeometry.Analysis.Integration.Lp.Pairing
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.CanonicalConnection
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DivergenceForm
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientRegularity
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartSourceIdentification

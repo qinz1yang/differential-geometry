@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.ConeDistance.Embedding
+import DifferentialGeometry.Topology.MetricSpace.Cone.Embedding
 
 set_option autoImplicit false
 noncomputable section

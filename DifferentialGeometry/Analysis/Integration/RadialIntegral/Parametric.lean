@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.RadialIntegralSmoothness
+import DifferentialGeometry.Analysis.Integration.RadialIntegral.Smoothness
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.ContMDiff.Atlas
 

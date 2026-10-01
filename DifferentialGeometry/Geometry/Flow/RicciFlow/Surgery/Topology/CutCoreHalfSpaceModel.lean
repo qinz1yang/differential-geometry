@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.TubeSystem.SphereModel
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Defs
 import DifferentialGeometry.Topology.Manifold.SmoothModelTransportSource
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CutCoreSmoothEmbedding
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CutCoreIntrinsicBoundary

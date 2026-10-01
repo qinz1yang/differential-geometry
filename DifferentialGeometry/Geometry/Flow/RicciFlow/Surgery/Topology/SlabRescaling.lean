@@ -163,7 +163,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       · exact (le_div_iff₀ hμ).mpr (by simpa only [mul_comm d μ] using ht.1)
       · exact (div_lt_div_iff_of_pos_right hμ).mpr ht.2
     have hb := hbound y hy (t / μ) ht'
-    rw [rescale_riemannNorm, mul_div_cancel₀ t hμ.ne'] at hb
+    rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.rescale_riemannNorm, mul_div_cancel₀ t hμ.ne'] at hb
     exact (le_div_iff₀ hμ).mpr (by simpa only [mul_comm μ] using hb)
   · rintro ⟨U, hU, hx, d, hd, K, hK, hbound⟩
     refine ⟨U, hU, hx, d / μ,
@@ -171,7 +171,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
         (div_lt_div_iff_of_pos_right hμ).mpr hd.2⟩,
       μ * K, mul_nonneg hμ.le hK, ?_⟩
     intro y hy t ht
-    rw [rescale_riemannNorm]
+    rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.rescale_riemannNorm]
     have ht' : μ * t ∈ Ico d b := by
       rwa [preimage_Ico_scale d b μ hμ] at ht
     exact mul_le_mul_of_nonneg_left (hbound y hy (μ * t) ht') hμ.le

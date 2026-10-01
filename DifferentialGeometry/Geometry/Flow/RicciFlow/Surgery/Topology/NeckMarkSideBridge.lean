@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecenterAux
 import DifferentialGeometry.Geometry.Neck.NormalizedDatum
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.EndNeckDatum
+import DifferentialGeometry.Geometry.Neck.Model.EndDatum
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Embedding
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
