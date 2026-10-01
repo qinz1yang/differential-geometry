@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.Annulus.EssentialPolygonComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.SubsurfaceInteriorComponent
 import DifferentialGeometry.Topology.PiecewiseLinear.SeparatingPolygonDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerSeams
@@ -55,7 +56,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_annulus_of_essential_torus_bo
     [d : DecidableEq E3] (R : Geometry.SimplicialComplex ℝ E3) [Finite R.faces]
     (hR : IsCombinatorialManifoldWithBoundary 2 R) (hconn : IsConnected R.space)
     {S : Set E3} (hS : IsCombinatorialSolidTorus S) (hRS : R.space ⊆ frontier S)
-    (h286 : Moise286) (n : ℕ) (G : Fin n → Set E3) (hn : 0 < n)
+    (n : ℕ) (G : Fin n → Set E3) (hn : 0 < n)
     (hG : ∀ i, IsPLSphere 1 (G i)) (hdis : Pairwise fun i j => Disjoint (G i) (G j))
     (hboundary : (boundaryComplex 2 R).space = ⋃ i, G i)
     (hess : ∀ i, ¬ boundsDiskIn (G i) (frontier S)) :
@@ -91,7 +92,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_annulus_of_essential_torus_bo
     exact hR.closure_connectedComponentIn_sdiff_boundaryComplex_eq K R
       hK.isCombinatorialManifoldWithBoundary hconn.isPreconnected (hRS.trans hKS.symm.subset)
       (by rw [hKb]; exact disjoint_empty _) hx
-  obtain ⟨i, j, hij, hann⟩ := h286 S hS n G hn2 hG hGS hdis hess x
+  obtain ⟨i, j, hij, hann⟩ := exists_isPLAnnulusWithEnds_component_compl_polygons S hS n G hn2 hG hGS hdis hess x
     ⟨hRS hx.1, by rw [← hboundary]; exact hx.2⟩
   exact ⟨i, j, hij, hclosure ▸ hann⟩
 

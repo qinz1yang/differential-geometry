@@ -32,9 +32,24 @@ private theorem isBounded_component_of_not_mem_unbounded_component
     · exact (hyx ((connectedComponentIn_eq hxB).subset hyB)).elim
   exact (connectedComponentIn_eq hyA) ▸ hbounded
 
-theorem moise267 : Moise267 := by
+open Classical in
+theorem exists_pair_frontier_unbounded_component_three_surfaces
+    (M : Fin 3 → Geometry.SimplicialComplex ℝ E3)
+    (hfin : ∀ i, (M i).faces.Finite)
+    (hM : ∀ i, IsCombinatorialManifoldWithBoundary 2 (M i))
+    (hconn : ∀ i, IsConnected (M i).space)
+    (hboundary : ∀ i j, (boundaryComplex 2 (M i)).space = (boundaryComplex 2 (M j)).space)
+    (hne : (boundaryComplex 2 (M 0)).space.Nonempty)
+    (hdisjoint : ∀ i j, i ≠ j →
+      Disjoint ((M i).space \ (boundaryComplex 2 (M i)).space)
+        ((M j).space \ (boundaryComplex 2 (M j)).space))
+    (x : E3) (hx : x ∉ ⋃ i, (M i).space)
+    (hunbounded : ¬ Bornology.IsBounded (connectedComponentIn (⋃ i, (M i).space)ᶜ x)) :
+    ∃ i j k : Fin 3, i ≠ j ∧ i ≠ k ∧ j ≠ k ∧
+        frontier (connectedComponentIn (⋃ i, (M i).space)ᶜ x) = (M i).space ∪ (M j).space ∧
+        ∀ y ∈ (M k).space \ (boundaryComplex 2 (M k)).space,
+          Bornology.IsBounded (connectedComponentIn ((M i).space ∪ (M j).space)ᶜ y) := by
   classical
-  intro M hfin hM hconn hboundary hne hdisjoint x hx hunbounded
   let d : DecidableEq E3 := inferInstance
   have hd : d = Classical.decEq E3 := Subsingleton.elim _ _
   let B := (boundaryComplex 2 (M 0)).space

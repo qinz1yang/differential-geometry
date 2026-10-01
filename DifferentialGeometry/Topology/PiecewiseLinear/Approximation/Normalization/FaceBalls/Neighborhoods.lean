@@ -274,7 +274,7 @@ theorem exists_controlled_face_ball_neighborhoods (hU : IsOpen U)
     rintro _ ⟨x, hx, rfl⟩ hxB
     exact (hW'G s hx).1.2 hxB
   · intro s
-    exact Moise305Tame.exists_isPLCellOn_superset_image_of_isPLBall_two hU 𝒦 hK hhU hhinj
+    exact exists_isPLCellOn_superset_image_of_isPLBall_two hU 𝒦 hK hhU hhinj
       (isPLBall_convexHull_of_affineIndependent s.1 (𝒦.complex.indep s.2.1) (by rw [s.2.2]))
       (𝒦.complex.convexHull_subset_space s.2.1) (hc s) (hWo s) (hWsrc s) (hbodyW s)
 

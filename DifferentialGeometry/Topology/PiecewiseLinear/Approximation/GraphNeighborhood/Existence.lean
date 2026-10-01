@@ -9,7 +9,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexApproximatio
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingPackage
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexPreparation
 import DifferentialGeometry.Topology.PiecewiseLinear.ControlledGraphCutFrame
-import DifferentialGeometry.Topology.PiecewiseLinear.Moise341Producer
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Embedding
 
 open Set Topology
 
@@ -38,7 +38,7 @@ variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensi
   {G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂}
 
 omit [FiniteDimensional ℝ Ea] in
-theorem section34Marker_of_dist_lt
+theorem image_simplex_subset_image_vertexBall_of_dist_lt
     (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀
       Ab₁ Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
     (hGp : ∀ w, IsPLHomeomorphInto 3 (G w) (Cp w))
@@ -50,9 +50,26 @@ theorem section34Marker_of_dist_lt
 
 end Leaves
 
-theorem controlledGraphNeighborhood (h341 : Moise341) :
-    ControlledGraphNeighborhoodStatement.{u} := by
-  intro M₁ M₂ _ _ _ _ _ _ _ _ _ U hU h hh Ea _ _ _ 𝒦 h𝒦 η H hH W hW hΓW hWU ψ hψc hψpos
+theorem exists_controlled_graph_neighborhood_approximation
+    {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁]
+    [MetricSpace M₂] [SecondCountableTopology M₂]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
+    [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
+    {U : Set M₁} (hU : IsOpen U) {h : M₁ → M₂}
+    (hh : Topology.IsEmbedding (U.domRestrict h))
+    (Ea : Type) [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea]
+    (𝒦 : LocallyFinitePLPieceIn Ea 3 M₁ U) (h𝒦 : IsCombinatorialManifold 3 𝒦.complex)
+    (η : M₁ → ℝ) (H : Finset Ea → Set M₂) (hH : Section34CarrierControl U 𝒦 h η H)
+    {W : Set M₁} (hW : IsOpen W) (hΓW : graphSkeletonSpace 𝒦 ⊆ W) (hWU : W ⊆ U)
+    (ψ : M₁ → ℝ) (hψc : ContinuousOn ψ U) (hψpos : ∀ x ∈ U, 0 < ψ x) :
+    ∃ (𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
+      (src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁)
+      (car : Section34VertexIndex 𝒦 𝒦' → Finset Ea) (f₁ : M₁ → M₂),
+      Section34CutFrame U 𝒦 𝒦' src srcBd ∧
+        Section34GraphFrame U W h ψ H 𝒦 𝒦' src car f₁ := by
+  have h341 : Moise341 := fun C hC f hcont hinj ε hε =>
+    exists_isPLHomeomorphOn_dist_lt_of_isPLBall_three C hC f hcont hinj ε hε
   obtain ⟨-, hHsub, hHlf, -, -, hHchart⟩ := id hH
   obtain ⟨𝒦', src, srcBd, car, Q, ct, Sd, hframe, hN, hNW, hcarF, hcarS, hcarfib, hQint, hQH,
       hQsmall, hQsep, -, htorus⟩ :=
@@ -223,8 +240,5 @@ theorem controlledGraphNeighborhood (h341 : Moise341) :
   · intro w
     refine union_subset ?_ ((hf₁Q w).trans (hQH w))
     exact fun y hy => hQH w (interior_subset (hQint w hy))
-
-theorem controlledGraphNeighborhoodStatement : ControlledGraphNeighborhoodStatement.{u} :=
-  controlledGraphNeighborhood moise341
 
 end DifferentialGeometry.Topology.PiecewiseLinear

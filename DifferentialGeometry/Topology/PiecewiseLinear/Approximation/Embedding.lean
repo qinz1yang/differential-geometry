@@ -1,19 +1,12 @@
-import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Integral
-import DifferentialGeometry.Topology.PiecewiseLinear.CellMapTriangulation
-import DifferentialGeometry.Topology.PiecewiseLinear.ControlledInwardPush
-import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInvariance
-import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
-import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.Termination
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.Homeomorph
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVocabulary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceEnvelopes
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactGeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceHomology
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSplitDiskIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceDisks
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTargetRecognition
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSourceFaceOrder
-import DifferentialGeometry.Topology.PiecewiseLinear.Section33TubeApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonSlide
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCompressionLeaf
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualBalls
@@ -24,143 +17,16 @@ open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-universe v
-
-section Leaves
-
-variable {C V : Set (EuclideanSpace ℝ (Fin 3))}
-  {h f₁ : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)} {ε : ℝ}
-  {K K' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
-  {src srcBd : Section34CompactLabelOf K K' → Set (EuclideanSpace ℝ (Fin 3))}
-  {H : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3))}
-  {env : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
-
-end Leaves
-
-section Descent
-
-variable {K K' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
-  {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
-  {H : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3))}
-  {tgtV tgtVBd : Section34CompactVertexIndex K K' → Set (EuclideanSpace ℝ (Fin 3))}
-  {tgtE tgtEBd : Section34CompactEdgeIndex K K' → Set (EuclideanSpace ℝ (Fin 3))}
-
-theorem exists_compactTerminalFaceBalls (hK : K.faces.Finite)
-    {fbl fblBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    (hinv : Section34CompactFaceBallInvariants K K' h H tgtV tgtEBd fbl fblBd)
-    (hcomp : ∀ (g gBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3)))
-      (s : Section34CompactSimplexIndex K 3),
-      Section34CompactFaceBallInvariants K K' h H tgtV tgtEBd g gBd →
-      Section34CompactCompression K K' tgtVBd tgtE g gBd s →
-      ∃ g' gBd' : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3)),
-        Section34CompactFaceBallInvariants K K' h H tgtV tgtEBd g' gBd' ∧
-        (∀ s', s' ≠ s → g' s' = g s' ∧ gBd' s' = gBd s') ∧
-        section34CompactFaceBallRank tgtV tgtEBd gBd' s <
-          section34CompactFaceBallRank tgtV tgtEBd gBd s)
-    (hslide : ∀ (g gBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3)))
-      (s : Section34CompactSimplexIndex K 3),
-      Section34CompactFaceBallInvariants K K' h H tgtV tgtEBd g gBd →
-      Section34CompactBigonSlide K K' tgtV tgtVBd tgtE tgtEBd gBd s →
-      ∃ g' gBd' : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3)),
-        Section34CompactFaceBallInvariants K K' h H tgtV tgtEBd g' gBd' ∧
-        (∀ s', s' ≠ s → g' s' = g s' ∧ gBd' s' = gBd s') ∧
-        section34CompactFaceBallRank tgtV tgtEBd gBd' s <
-          section34CompactFaceBallRank tgtV tgtEBd gBd s) :
-    ∃ fbl' fblBd' : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3)),
-      Section34CompactFaceBallInvariants K K' h H tgtV tgtEBd fbl' fblBd' ∧
-      (∀ s, ¬ Section34CompactCompression K K' tgtVBd tgtE fbl' fblBd' s) ∧
-      ∀ s, ¬ Section34CompactBigonSlide K K' tgtV tgtVBd tgtE tgtEBd fblBd' s := by
+theorem exists_isPLHomeomorphOn_dist_lt_on_neighborhood
+    (C V : Set (EuclideanSpace ℝ (Fin 3))) (hC : IsPLBall 3 C)
+    (hV : IsOpen V) (hCV : C ⊆ V)
+    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
+    (hh : Topology.IsEmbedding (V.domRestrict h)) (ε : ℝ) (hε : 0 < ε) :
+    ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
+      IsPLHomeomorphOn f C (f '' C) ∧ ∀ x ∈ C, dist (f x) (h x) < ε := by
   classical
-  have hfin := finite_section34CompactSimplexIndex hK 3
-  let _ : Fintype (Section34CompactSimplexIndex K 3) := Fintype.ofFinite _
-  have hdrop : ∀ (gBd gBd' : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3)))
-      (s : Section34CompactSimplexIndex K 3), (∀ s', s' ≠ s → gBd' s' = gBd s') →
-      section34CompactFaceBallRank tgtV tgtEBd gBd' s <
-        section34CompactFaceBallRank tgtV tgtEBd gBd s →
-      ∑ s', section34CompactFaceBallRank tgtV tgtEBd gBd' s' <
-        ∑ s', section34CompactFaceBallRank tgtV tgtEBd gBd s' := by
-    intro gBd gBd' s hoff hlt
-    refine Finset.sum_lt_sum (fun s' _ => ?_) ⟨s, Finset.mem_univ s, hlt⟩
-    by_cases hs : s' = s
-    · subst hs
-      exact hlt.le
-    · exact (section34CompactFaceBallRank_congr (hoff s' hs)).le
-  suffices key : ∀ n : ℕ,
-      ∀ g gBd : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3)),
-        ∑ s', section34CompactFaceBallRank tgtV tgtEBd gBd s' = n →
-        Section34CompactFaceBallInvariants K K' h H tgtV tgtEBd g gBd →
-        ∃ fbl' fblBd' : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3)),
-          Section34CompactFaceBallInvariants K K' h H tgtV tgtEBd fbl' fblBd' ∧
-          (∀ s, ¬ Section34CompactCompression K K' tgtVBd tgtE fbl' fblBd' s) ∧
-          ∀ s, ¬ Section34CompactBigonSlide K K' tgtV tgtVBd tgtE tgtEBd fblBd' s from
-    key _ fbl fblBd rfl hinv
-  intro n
-  induction n using Nat.strong_induction_on with
-  | _ n ih =>
-    intro g gBd hn hg
-    by_cases hc : ∃ s, Section34CompactCompression K K' tgtVBd tgtE g gBd s
-    · obtain ⟨s, hs⟩ := hc
-      obtain ⟨g', gBd', hinv', hoff, hlt⟩ := hcomp g gBd s hg hs
-      exact ih _ (hn ▸ hdrop gBd gBd' s (fun s' hs' => (hoff s' hs').2) hlt) g' gBd' rfl hinv'
-    · by_cases hb : ∃ s, Section34CompactBigonSlide K K' tgtV tgtVBd tgtE tgtEBd gBd s
-      · obtain ⟨s, hs⟩ := hb
-        obtain ⟨g', gBd', hinv', hoff, hlt⟩ := hslide g gBd s hg hs
-        exact ih _ (hn ▸ hdrop gBd gBd' s (fun s' hs' => (hoff s' hs').2) hlt) g' gBd' rfl
-          hinv'
-      · exact ⟨g, gBd, hg, not_exists.mp hc, not_exists.mp hb⟩
-
-end Descent
-
-section Extension
-
-variable {K K' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
-  {src srcBd : Section34CompactLabelOf K K' → Set (EuclideanSpace ℝ (Fin 3))}
-
-theorem exists_compactApproximation_of_cellDiagram (hK : K.faces.Finite)
-    (hK' : K'.faces.Finite)
-    (hsc : ∀ l, IsPLCellOn (section34BoundedDim l) (src l) (srcBd l))
-    (hsbd : ∀ l, srcBd l = ⋃ m ∈ section34Face src l \ {l}, src m)
-    (hsinter : ∀ l m, src l ∩ src m = ⋃ k ∈ section34Face src l ∩ section34Face src m, src k)
-    (hsdim : ∀ l m, src m ⊆ src l → m = l ∨ section34BoundedDim m < section34BoundedDim l)
-    {tc tcBd : Section34CompactLabelOf K K' → Set (EuclideanSpace ℝ (Fin 3))}
-    (htcell : ∀ l, IsPLCellOn (section34BoundedDim l) (tc l) (tcBd l))
-    (htbd : ∀ l, tcBd l = ⋃ m ∈ section34Face src l \ {l}, tc m)
-    (htinter : ∀ l m, tc l ∩ tc m = ⋃ k ∈ section34Face src l ∩ section34Face src m, tc k) :
-    ∃ F : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
-      IsPLHomeomorphInto 3 F (⋃ l, src l) ∧ ∀ l, F '' src l = tc l := by
-  have hfin := finite_section34CompactLabelOf hK hK'
-  choose Pp rr uu hrr huu hsceq hsbdeq using hsc
-  choose Qq ss vv hss hvv htceq htbdeq using htcell
-  refine exists_isPLHomeomorphInto_of_labelledCells section34BoundedDim (section34Face src) Pp Qq
-    rr ss uu vv src tc section34BoundedDim_le_three hrr hss huu hvv hsceq htceq
-    (fun l m hm => hsdim l m hm) ?_ ?_ hsinter htinter ?_ ?_
-  · intro l
-    rw [← hsbdeq l]
-    exact hsbd l
-  · intro l
-    rw [← htbdeq l]
-    exact htbd l
-  · intro x _
-    exact ⟨univ, Filter.univ_mem, Set.toFinite _⟩
-  · intro y _
-    exact ⟨univ, Filter.univ_mem, Set.toFinite _⟩
-
-end Extension
-
-def Moise341OnNeighborhood : Prop :=
-  ∀ (C V : Set (EuclideanSpace ℝ (Fin 3))), IsPLBall 3 C → IsOpen V → C ⊆ V →
-    ∀ h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
-      Topology.IsEmbedding (V.domRestrict h) →
-    ∀ ε : ℝ, 0 < ε →
-      ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
-        IsPLHomeomorphOn f C (f '' C) ∧ ∀ x ∈ C, dist (f x) (h x) < ε
-
-theorem moise341OnNeighborhood (h331 : Moise331OnTube) :
-    Moise341OnNeighborhood := by
-  classical
-  intro C V hC hV hCV h hh ε hε
   obtain ⟨K, K', src, srcBd, H, f₁, hcut, hcar, hgraph⟩ :=
-    exists_compactCutAndGraph h331 hC hV hCV hh hε
+    exists_compactCutAndGraph hC hV hCV hh hε
   have hgen := hgraph.carriesFundamentalGroupOnto
   obtain ⟨env, henv⟩ := exists_compactFaceEnvelopes hV hCV hh hcut hcar hgraph
   obtain ⟨fbl₀, fblBd₀, hfam₀⟩ := exists_compactFaceShellBalls hV hCV hh hcut henv
@@ -187,7 +53,7 @@ theorem moise341OnNeighborhood (h331 : Moise331OnTube) :
     · exact (hfam₁ s).2.2.trans (henvCar s t hst)
     · exact section34CompactExterior_mono (fun s => (hfam₁ s).2.2.trans subset_closure) henvExt
   obtain ⟨fbl, fblBd, hinv, hnc, hnb⟩ :=
-    exists_compactTerminalFaceBalls (tgtVBd := section34CompactVertexBallImage srcBd f₁)
+    exists_face_ball_family_without_admissible_moves (tgtVBd := section34CompactVertexBallImage srcBd f₁)
       (tgtE := section34CompactSplitDiskImage src f₁) hKfin hinv₁
       (fun _ _ s hg hop => by
         obtain ⟨g', gBd', hinv', hoff, hc, hp⟩ :=
@@ -245,7 +111,7 @@ theorem moise341OnNeighborhood (h331 : Moise331OnTube) :
     | markedPoint p => exact hPcell p
     | outerFace o => exact hOcell o
     | outerArc q => exact hQcell q
-  obtain ⟨F, hF, hFim⟩ := exists_compactApproximation_of_cellDiagram hKfin hK'fin hscell hsbd
+  obtain ⟨F, hF, hFim⟩ := exists_isPLHomeomorphInto_of_graph_cut_cells hKfin hK'fin hscell hsbd
     hsinter hsdim htcell htbd htinter
   have hCsub : C ⊆ ⋃ l, src l := by
     rw [hscover]
@@ -284,13 +150,17 @@ theorem moise341OnNeighborhood (h331 : Moise331OnTube) :
   exact ⟨F, isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hC.isPolyhedron hpl
     (hF.injOn.mono hCsub).bijOn_image, hdist⟩
 
-theorem moise341_of_onNeighborhood (h331 : Moise331OnTube) : Moise341 := by
-  intro C hC h hcont hinj ε hε
+theorem exists_isPLHomeomorphOn_dist_lt_of_isPLBall_three
+    (C : Set (EuclideanSpace ℝ (Fin 3))) (hC : IsPLBall 3 C)
+    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
+    (hcont : ContinuousOn h C) (hinj : InjOn h C) (ε : ℝ) (hε : 0 < ε) :
+    ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
+      IsPLHomeomorphOn f C (f '' C) ∧ ∀ x ∈ C, dist (f x) (h x) < ε := by
   obtain ⟨p, hp, hpC, hpdist⟩ := exists_isPLBall_subset_interior_dist_lt hC hcont (half_pos hε)
   have hpball : IsPLBall 3 (p '' C) := hC.of_isPLHomeomorphOn hp
   have hemb := isEmbedding_domRestrict_interior_of_continuousOn_injOn
     hC.isPolyhedron.isCompact hcont hinj
-  obtain ⟨g, hg, hgdist⟩ := moise341OnNeighborhood h331 (p '' C) (interior C) hpball
+  obtain ⟨g, hg, hgdist⟩ := exists_isPLHomeomorphOn_dist_lt_on_neighborhood (p '' C) (interior C) hpball
     isOpen_interior hpC h hemb (ε / 2) (half_pos hε)
   refine ⟨g ∘ p, ?_, fun x hx => ?_⟩
   · rw [image_comp]

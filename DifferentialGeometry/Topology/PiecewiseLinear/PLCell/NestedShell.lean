@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.BicollarNeighborhood
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
-import DifferentialGeometry.Topology.PiecewiseLinear.ChartTameNestedCells
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.ChartNeighborhood
 
 open Set Metric Topology
 
@@ -455,15 +455,15 @@ theorem IsTopologicalCell.exists_nested_isSphericalShell_isBicollared {Y K : Set
       (hρcc.isClosedEmbedding hρci).isEmbedding hzero hnbhd
     exact ⟨c⟩
 
-theorem Moise305Tame.exists_isPLBall_of_isTopologicalCell {Y K : Set E3}
+theorem IsTopologicalCell.exists_isPLBall_between {Y K : Set E3}
     (hY : IsTopologicalCell 3 Y) (hK : IsCompact K) (hKY : K ⊆ interior Y) :
     ∃ C, IsPLBall 3 C ∧ K ⊆ interior C ∧ C ⊆ interior Y := by
-  obtain ⟨C₁, C₂, h₁, h₂, hK₁, h₁₂, h₂Y, hshell, hbi⟩ :=
+  obtain ⟨C₁, C₂, h₁, h₂, hK₁, _, h₂Y, hshell, hbi⟩ :=
     hY.exists_nested_isSphericalShell_isBicollared hK hKY
-  obtain ⟨C, hC, hC₁, hC₂⟩ := moise305Tame C₁ C₂ h₁ h₂ h₁₂ hshell hbi
+  obtain ⟨C, hC, hC₁, hC₂⟩ := exists_isPLBall_between_nested_topological_cells C₁ C₂ h₁ h₂ hshell hbi
   exact ⟨C, hC, hK₁.trans (interior_subset.trans hC₁), hC₂.trans (interior_subset.trans h₂Y)⟩
 
-theorem Moise305Tame.exists_isPLCellOn_of_isTopologicalCell
+theorem exists_isPLCellOn_between_of_isTopologicalCell
     {M : Type*} [TopologicalSpace M] [ChartedSpace E3 M]
     {c : OpenPartialHomeomorph M E3} (hc : c ∈ (plGroupoid 3).maximalAtlas M) {Y K : Set M}
     (hYc : Y ⊆ c.source) (hY : IsTopologicalCell 3 (c '' Y)) (hK : IsCompact K)
@@ -491,7 +491,7 @@ theorem Moise305Tame.exists_isPLCellOn_of_isTopologicalCell
   have h₁₂' : c.symm '' C₁ ⊆ interior (c.symm '' C₂) :=
     (image_mono h₁₂).trans (interior_maximal (image_mono interior_subset)
       (hsymmopen isOpen_interior (interior_subset.trans h₂t)))
-  obtain ⟨C, B, hCB, hC₁, hC₂⟩ := Moise305Tame.exists_isPLCellOn_of_mem_maximalAtlas hc hC₂s
+  obtain ⟨C, B, hCB, hC₁, hC₂⟩ := exists_isPLCellOn_between_nested_cells_of_mem_maximalAtlas hc hC₂s
     (by rw [himg h₁t]; exact h₁) (by rw [himg h₂t]; exact h₂) h₁₂'
     (by rw [himg h₁t, himg h₂t]; exact hshell) (by rw [himg h₂t]; exact hbi)
   refine ⟨C, B, hCB, ?_, ?_⟩

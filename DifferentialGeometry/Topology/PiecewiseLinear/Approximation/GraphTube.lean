@@ -1,23 +1,13 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section33Approximation
+import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell.Splitting
+import DifferentialGeometry.Topology.PiecewiseLinear.NoHandleLoopTheoremDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.NotLoopTheoremDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.Section33BoundaryMatch
+import DifferentialGeometry.Topology.PiecewiseLinear.Section33Extension
+import DifferentialGeometry.Topology.PiecewiseLinear.Section33FundamentalGroupBijective
 
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
-
-open Classical in
-def Moise331OnTube : Prop :=
-  ∀ (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-    (N N' : Set (EuclideanSpace ℝ (Fin 3)))
-    (C : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3)))
-    (D Dbd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3)))
-    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)),
-    IsTube K N C D Dbd h N' → IsConnected K.space →
-    (∀ v : K.vertices, ((SimplicialComplex.edgeGraph K).neighborSet v).ncard ≠ 1) →
-    ∀ W : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3)),
-      (∀ v ∈ K.vertices, W v ∈ nhdsSet (h '' C v)) →
-      ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
-        IsPLHomeomorphOn f N (f '' N) ∧ f '' N ∈ nhdsSet (h '' K.space) ∧
-          ∀ v ∈ K.vertices, f '' C v ⊆ W v
 
 section Extension
 
@@ -29,7 +19,7 @@ variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {XK : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {AK : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
 
-theorem exists_section33Extension_image_dualCell_subset
+theorem IsHandleDecompositionOfTube.exists_isPLHomeomorphOn_image_dualCell_subset
     (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
     (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
     (h34 : HasSinglePolygonTraces K h Ec XK.space)
@@ -347,7 +337,7 @@ theorem exists_isPLHomeomorphOn_tube_image_dualCell_subset
   have hle : ∀ v ∈ K.vertices, r w₀ ≤ r v :=
     fun v hv => hmin v (ht.finite_vertices.mem_toFinset.mpr hv)
   obtain ⟨f, hf, hfN, hfC⟩ :=
-    exists_section33Extension_image_dualCell_subset hd h2 h34 h56 hg hgA hgD hδ
+    IsHandleDecompositionOfTube.exists_isPLHomeomorphOn_image_dualCell_subset hd h2 h34 h56 hg hgA hgD hδ
   refine ⟨f, hf, hfN, fun v hv => (hfC v hv).trans (union_subset ?_ ?_)⟩
   · exact (hsub v hv).trans ((Metric.thickening_mono (by linarith [(hr v hv).1]) _).trans
       (hr v hv).2)
@@ -363,32 +353,5 @@ theorem exists_isPLHomeomorphOn_tube_image_dualCell_subset
     have h1 := Metric.mem_ball.mp hy
     have h2' := dist_triangle y (h (e.centroid ℝ id)) z
     linarith [hle v hv]
-
-open Classical in
-theorem Moise331OnTube.moise331 (h331 : Moise331OnTube) : Moise331 := by
-  intro L hfin hdim hedge hconn hend U hU hLU h hh ε hε
-  obtain ⟨T, L', C, D, Dbd, hTfin, hsub, hLT, hT, hDN, hNU, hend', ht, -, hCsmall⟩ :=
-    exists_section33TubeFrame L hdim hedge hend hU hLU hh hε
-  have hconn' : IsConnected L'.space := by
-    rw [hsub.space_eq]
-    exact hconn
-  obtain ⟨f, hf, hfN, hfC⟩ := h331 L' _ _ C D Dbd h ht hconn' hend'
-    (fun v => Metric.thickening (ε / 4) (h '' C v)) fun v _ =>
-      Metric.isOpen_thickening.mem_nhdsSet.mpr (Metric.self_subset_thickening (by linarith) _)
-  refine ⟨T, L', hTfin, hsub, hLT, hT, ?_, hDN, ?_, hNU, f, hf, ?_, fun x hx => ?_⟩
-  · rw [← hsub.space_eq]
-    exact Filter.mem_of_superset ht.isNeighborhood (derivedNeighborhood_space_subset T L')
-  · rw [← hsub.space_eq]
-    exact ht.isNeighborhood
-  · rw [← hsub.space_eq]
-    exact hfN
-  · have hx' : x ∈ ⋃ v ∈ L'.vertices, C v := by
-      rw [← ht.unionEq]
-      exact hx
-    obtain ⟨v, hv, hxv⟩ := mem_iUnion₂.mp hx'
-    obtain ⟨z, ⟨y, hy, rfl⟩, hdz⟩ := Metric.mem_thickening_iff.mp (hfC v hv ⟨x, hxv, rfl⟩)
-    have h1 := hCsmall v hv y hy x hxv
-    have h2 := dist_triangle (f x) (h y) (h x)
-    linarith
 
 end DifferentialGeometry.Topology.PiecewiseLinear

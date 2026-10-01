@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homeomorph.Conjugate
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartImagePLCell
-import DifferentialGeometry.Topology.PiecewiseLinear.ChartTameNestedCells
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.ChartNeighborhood
 
 open Set Topology
 open scoped Manifold

@@ -4,14 +4,14 @@ import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
-import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.NestedApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallVocabulary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TerminalFaceBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonSlide
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionLeaf
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TraceNormalization
-import DifferentialGeometry.Topology.PiecewiseLinear.ControlledGraphNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.Existence
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Control
 
 open Set Topology
@@ -86,11 +86,11 @@ def Section34NormalFamilyStatement : Prop :=
       Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁ tgtV tgtVBd tgtE tgtEBd fbl fblBd
 
 theorem section34NormalFamily (hP0 : Section34ControlStatement.{u})
-    (h351 : ControlledGraphNeighborhoodStatement.{u}) : Section34NormalFamilyStatement.{u} := by
+    : Section34NormalFamilyStatement.{u} := by
   intro M₁ M₂ _ _ _ _ U h η _ _ _ _ _ _ hU hh hηc hηpos
   obtain ⟨N, 𝒦, H, hcm, hctrl⟩ := hP0 hU hh η hηc hηpos
   obtain ⟨𝒦', src, srcBd, cr, f₁, hcut, hgraph⟩ :=
-    h351 hU hh (EuclideanSpace ℝ (Fin N)) 𝒦 hcm η H hctrl hU
+    exists_controlled_graph_neighborhood_approximation hU hh (EuclideanSpace ℝ (Fin N)) 𝒦 hcm η H hctrl hU
       (graphSkeletonSpace_subset 𝒦) Subset.rfl η hηc hηpos
   obtain ⟨-, -, hpl, -, -,
     -, -, -, -, -,
@@ -167,6 +167,6 @@ theorem section34NormalFamily (hP0 : Section34ControlStatement.{u})
       hnb s ⟨w, e, B, B', Bb, Dj, Jd, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12⟩⟩
 
 theorem section34NormalFamilyStatement : Section34NormalFamilyStatement.{u} :=
-  section34NormalFamily section34Control controlledGraphNeighborhoodStatement
+  section34NormalFamily section34Control
 
 end DifferentialGeometry.Topology.PiecewiseLinear

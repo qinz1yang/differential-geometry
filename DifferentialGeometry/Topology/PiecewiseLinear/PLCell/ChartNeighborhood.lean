@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartPiece
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOn
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Moise304Producer
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.NestedApproximation
 
 open Set Topology
 open scoped Manifold
@@ -96,7 +96,7 @@ theorem isPLHomeomorphInto_symm_of_mem_maximalAtlas
 
 end MaximalAtlas
 
-theorem Moise305Tame.exists_isPLCellOn_of_mem_maximalAtlas
+theorem exists_isPLCellOn_between_nested_cells_of_mem_maximalAtlas
     {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
     {c : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
     (hc : c ∈ (plGroupoid 3).maximalAtlas M) {C₁ C₂ : Set M} (hC₂ : C₂ ⊆ c.source)
@@ -106,11 +106,7 @@ theorem Moise305Tame.exists_isPLCellOn_of_mem_maximalAtlas
       (frontier (c '' C₂)))
     (hbi : IsBicollared (frontier (c '' C₂))) :
     ∃ C B : Set M, IsPLCellOn 3 C B ∧ C₁ ⊆ interior C ∧ C ⊆ interior C₂ := by
-  have hint : interior C₂ ⊆ c.source := interior_subset.trans hC₂
-  have hsub : c '' C₁ ⊆ interior (c '' C₂) :=
-    (image_mono hC₁₂).trans (interior_maximal (image_mono interior_subset)
-      (c.isOpen_image_of_subset_source isOpen_interior hint))
-  obtain ⟨D, hD, hD₁, hD₂⟩ := moise305Tame _ _ hcell₁ hcell₂ hsub hshell hbi
+  obtain ⟨D, hD, hD₁, hD₂⟩ := exists_isPLBall_between_nested_topological_cells _ _ hcell₁ hcell₂ hshell hbi
   have hDt : D ⊆ c.target := by
     refine (hD₂.trans interior_subset).trans ?_
     rintro _ ⟨x, hx, rfl⟩

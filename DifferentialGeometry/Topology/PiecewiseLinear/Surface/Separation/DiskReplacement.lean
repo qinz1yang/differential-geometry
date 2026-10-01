@@ -11,9 +11,33 @@ namespace PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
-theorem moise303 : Moise303 := by
-  intro M H K C Δ D₁ D₂ Ω r r₁ r₂ hM _ _ _ _ _ _ hCM hC hsep
-    hr hΔC hr₁ hr₂ hmeet hDC hnear hΔ₁ hΔ₂ hΩ hΔΩ hΩM hΩHK
+theorem exists_separating_surface_disk_replacement
+    (M H K C Δ D₁ D₂ Ω : Set E3) (r r₁ r₂ : (Fin 3 → ℝ) → E3)
+    (hM : IsOpen M) (hCM : C ⊆ M)
+    (hsep : Separates (((↑) : M → E3) ⁻¹' C)
+      (((↑) : M → E3) ⁻¹' H) (((↑) : M → E3) ⁻¹' K))
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
+    (hmeet : D₁ ∩ D₂ = Δ) (hDC : D₁ ∪ D₂ ⊆ C) (hnear : D₁ ∪ D₂ ∈ 𝓝ˢ[C] Δ)
+    (hΔ₁ : Δ ⊆ D₁ \ r₁ '' stdSimplexBoundary 2)
+    (hΔ₂ : Δ ⊆ D₂ \ r₂ '' stdSimplexBoundary 2)
+    (hΩ : IsOpen Ω) (hΔΩ : Δ ⊆ Ω) (hΩM : Ω ⊆ M) (hΩHK : Disjoint Ω (H ∪ K)) :
+    ∃ (C' A₁ Δ₁ J₁ : Set E3) (r' : (Fin 3 → ℝ) → E3),
+      IsClosed (((↑) : M → E3) ⁻¹' C') ∧ C' ⊆ M ∧
+      Separates (((↑) : M → E3) ⁻¹' C') (((↑) : M → E3) ⁻¹' H) (((↑) : M → E3) ⁻¹' K) ∧
+      C' \ Ω = C \ Ω ∧ D₂ ⊆ C' ∧
+      IsPLAnnulusWithEnds A₁ (r '' stdSimplexBoundary 2) J₁ ∧ A₁ ⊆ D₁ ∩ Ω ∧
+      A₁ ∩ Δ = r '' stdSimplexBoundary 2 ∧
+      IsPLHomeomorphOn r' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ₁ ∧ J₁ = r' '' stdSimplexBoundary 2 ∧
+      Δ₁ ⊆ Ω ∧ Δ₁ ∩ C = J₁ ∧
+      C' = (C \ (A₁ \ (r '' stdSimplexBoundary 2 ∪ J₁))) ∪ Δ₁ := by
+  have hC : IsClosed (((↑) : M → E3) ⁻¹' C) := by
+    rcases hsep with ⟨U, V, hU, hV, _, hUV, _, _⟩
+    rw [← isOpen_compl_iff, ← hUV]
+    exact hU.union hV
+  have hΔC : Δ ⊆ C :=
+    (hΔ₁.trans sdiff_subset).trans (subset_union_left.trans hDC)
   let _ : LocallyPathConnectedSpace M := hM.locallyPathConnectedSpace
   obtain ⟨A₁, Δ₁, J₁, Q, O, J, S, r', ψ, hA, hAΩ, hAΔ, hr', hJ₁, hΔ₁Ω,
       hΔ₁C, hQ, hQΩ, hAQ, hΔ₁Q, hO, hCO, hJ, hψ, hfront, hsafe⟩ :=

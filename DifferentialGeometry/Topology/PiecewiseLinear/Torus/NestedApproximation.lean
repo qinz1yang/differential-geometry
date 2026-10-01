@@ -111,11 +111,4 @@ theorem exists_hasCylindricalDiagram_between_nested_tori
     rw [heq] at hnull
     exact (not_nullhomotopic_inclusion_of_nested_tori hS₁ hS₂ h₁₂ hshell hnull).elim
 
-theorem moise306 : Moise306 :=
-  fun _ _ _ hY => hY.exists_isPLTorus_separates
-
-theorem moise307 : Moise307 :=
-  fun _ _ hS₁ hS₂ h₁₂ hshell =>
-    exists_hasCylindricalDiagram_between_nested_tori hS₁ hS₂ h₁₂ hshell
-
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -10,9 +10,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_separating_nullTraceCount_eq_
     [d : DecidableEq E3] (X : Geometry.SimplicialComplex ℝ E3) [Finite X.faces]
     (hX : IsCombinatorialManifoldWithBoundary 2 X) (hXo : IsOrientable 2 X)
     {I H K R T O F : Set E3} (htrace : HasFiniteCollaredTrace X.space T)
-    (hT : IsPLTorus T) (h303 : Moise303) (hI : IsOpen I) (hIc : IsConnected I)
-    (hHI : H ⊆ I) (hKI : K ⊆ I) (hHK : Disjoint H K)
-    (hH : IsClosed (((↑) : I → E3) ⁻¹' H)) (hK : IsClosed (((↑) : I → E3) ⁻¹' K))
+    (hT : IsPLTorus T) (hI : IsOpen I)
     (hCI : R ∪ (T ∪ X.space) ⊆ I) (hC : IsSeparatorIn I (R ∪ (T ∪ X.space)) H K)
     (hO : IsOpen O) (hTO : T ⊆ O) (hOI : O ⊆ I) (hOHK : Disjoint O (H ∪ K))
     (hRO : Disjoint R O) (hFO : Disjoint F O)
@@ -45,8 +43,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_separating_nullTraceCount_eq_
       exact hzero (hn.symm.trans ((nullTraceCount_eq_zero_iff htrace.finiteTrace).mpr hall))
     obtain ⟨X₁, hX₁fin, hX₁, hX₁o, htrace₁, hC₁, hCI₁, hprot₁, hout₁, hseams₁,
         hdrop, hboundary₁, hBsub₁, hχ₁, G, hG, hBG⟩ :=
-      hX.exists_separating_split_reducing_nullTraceCount X hXo htrace hT h303 hI hIc
-        hHI hKI hHK hH hK hCI hC hO hTO hOI hOHK hRO hFO hboundary hnull
+      hX.exists_separating_split_reducing_nullTraceCount X hXo htrace hT hI
+        hCI hC hO hTO hOI hOHK hRO hFO hboundary hnull
     let _ : Finite X₁.faces := hX₁fin.to_subtype
     have hBout₁ : (boundaryComplex 2 X₁).space \ O = (boundaryComplex 2 X).space \ O := by
       rw [hBG]

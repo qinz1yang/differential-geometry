@@ -50,7 +50,6 @@ theorem IsCanonicalSurface.exists_window_bridge_normalization [DecidableEq E3]
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
     (havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3))
-    (h303 : Moise303) (h286 : Moise286)
     {X : ℤ → Geometry.SimplicialComplex ℝ E3}
     (hX : IsCanonicalSurface X (fun i => φ '' S i) T''
       (interior (h '' C u ∪ h '' C v)) P' (h u) (h v))
@@ -61,8 +60,9 @@ theorem IsCanonicalSurface.exists_window_bridge_normalization [DecidableEq E3]
     ∃ Y : ℤ → Geometry.SimplicialComplex ℝ E3,
       IsCanonicalBridgeNormalization X Y (fun i => φ '' S i) S'' T''
         (interior (h '' C u ∪ h '' C v)) P' (h u) (h v) rows F := by
-  obtain ⟨U, hclass⟩ := hX.exists_window_component_classification ht hu hv huv he htw
-    havoid h303 h286 hmodel rows hFO
+  obtain ⟨U, hclass⟩ := hX.exists_window_component_classification
+    (C := C) (D := D) (Dbd := Dbd) (h := h) (u := u) (v := v)
+    htw havoid hmodel rows hFO
   have hUF := hclass.disjoint_row_interiors hFO hF
   have hUw := hwitness.of_null_splits htw (towerWindowSeams rows) hclass.splits
   obtain ⟨V, hclosed, hV⟩ := hclass.exists_annular_window ht hu hv huv he htw havoid hUF

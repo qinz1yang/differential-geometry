@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section30Torus
+import DifferentialGeometry.Topology.PiecewiseLinear.Torus.NestedApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.SplitDiskCylinderCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.InnerSolidTorusToroidalShell

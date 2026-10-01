@@ -25,7 +25,6 @@ theorem IsCanonicalTower.exists_initial_bridge_window [DecidableEq E3]
         initialSurface S'' T'' P')
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}))
-    (h303 : Moise303) (h286 : Moise286)
     (rows : Finset ℤ) {F : Set E3}
     (hFO : ∀ i ∈ towerWindowSeams rows, Disjoint F (interior (φ '' S (2 * i))))
     (hF : ∀ i ∈ rows, Disjoint F
@@ -51,7 +50,7 @@ theorem IsCanonicalTower.exists_initial_bridge_window [DecidableEq E3]
     intro hxt
     exact hx.2 ((hX.boundary i).symm.subset ⟨hx.1, hxt⟩)
   obtain ⟨Y, hnorm⟩ := hX.exists_window_bridge_normalization ht hu hv huv he htw havoid
-    h303 h286 hmodel hwitness rows hFO hXF
+    hmodel hwitness rows hFO hXF
   refine ⟨X, Y, hspace, ?_, hnorm⟩
   rw [htw.initialSurface_eq_iUnion]
   simp only [towerSurface, hspace]
