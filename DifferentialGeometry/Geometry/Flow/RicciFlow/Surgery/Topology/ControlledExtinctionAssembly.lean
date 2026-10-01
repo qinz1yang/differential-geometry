@@ -1,10 +1,11 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Topology.ThreeManifold.Orientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Protection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Precision
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
+import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
@@ -13,7 +14,6 @@ import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Extinction.ControlledExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
 import DifferentialGeometry.Topology.Manifold.CollarFamily
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.VanKampen.FullGroupoid
 
 set_option autoImplicit false
@@ -26,13 +26,6 @@ open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
-
-def TangentOrientationSection.toManifoldOrientation {M : Type u} [TopologicalSpace M]
-    [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
-    (o : TangentOrientationSection M) : ManifoldOrientation ThreeModel M 3 where
-  dimension_eq := by simp
-  orientation := o.orientation
-  locally_constant := o.locally_constant
 
 theorem mfderivToContinuousLinearEquiv_toLinearEquiv_eq_ofBijective
     {M N : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
@@ -55,17 +48,17 @@ theorem preservesOrientation_of_preservesTangentOrientation
     [IsManifold ThreeModel ∞ N] (oN : TangentOrientationSection N)
     (f : M ≃ₘ⟮ThreeModel, ThreeModel⟯ N)
     (h : PreservesTangentOrientation oM oN f) :
-    f.preservesOrientation oM.toManifoldOrientation oN.toManifoldOrientation := by
+    f.preservesOrientation oM oN := by
   intro x
   obtain ⟨hf, hfx⟩ := h.2 x
   rw [mfderivToContinuousLinearEquiv_toLinearEquiv_eq_ofBijective f x hf]
   exact hfx
 
-theorem OrientedThreeStage.preservesOrientation_toClosedOrientedManifold
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.preservesOrientation_toClosedOrientedManifold
     {P Q : OrientedThreeStage.{u}} {f : P.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ Q.Carrier}
     (h : PreservesTangentOrientation P.orientation Q.orientation f) :
-    f.preservesOrientation P.toClosedOrientedManifold.orientation
-      Q.toClosedOrientedManifold.orientation := by
+    f.preservesOrientation P.orientation
+      Q.orientation := by
   intro x
   exact preservesOrientation_of_preservesTangentOrientation
     P.orientation Q.orientation f h x
@@ -75,18 +68,18 @@ def InitialIdentification.toFiniteSurgeryHistory
     (A : InitialIdentification P g H) (hn : 0 < H.eventCount)
     (bridge : (i : Fin H.eventCount) →
       DifferentialGeometry.PDE.RicciFlow.Surgery.MetricCutCapEvent
-        (H.stage i.castSucc).toClosedOrientedManifold
-        (H.stage i.succ).toClosedOrientedManifold
+        (H.stage i.castSucc)
+        (H.stage i.succ)
         (H.time i.castSucc) (H.time i.succ))
     (hbridge_initial : ∀ i : Fin H.eventCount,
       (bridge i).incoming.flow.base.metric (H.time i.castSucc) = H.initialMetric i.castSucc)
     (hbridge_output : ∀ i : Fin H.eventCount,
       (bridge i).outputMetric = H.initialMetric i.succ) :
     (H.toSurgeryFiniteSurgeryHistory hn bridge hbridge_initial hbridge_output).InitialIdentification
-      P.toClosedOrientedManifold g where
+      P g where
   diffeomorph := A.map
   orientation_preserving :=
-    OrientedThreeStage.preservesOrientation_toClosedOrientedManifold A.positive
+    DifferentialGeometry.Topology.ClosedOrientedManifold.preservesOrientation_toClosedOrientedManifold A.positive
   metric_eq := A.metric_eq
 
 theorem exists_poincare_controlled_extinction_of_observedHistory
@@ -99,9 +92,9 @@ theorem exists_poincare_controlled_extinction_of_observedHistory
         (fun x : (H.event i).old => (H.event i).transition.trace.capping.coreInclusion x.1))
     (hctrl : ∀ i : Fin H.eventCount, ∀ c : ConnectedComponents (H.event i).discarded.Carrier,
       DifferentialGeometry.Topology.isStandardConnectedSum
-        ((H.event i).discarded.toClosedOrientedManifold.component c).Carrier)
+        ((H.event i).discarded.component c).Carrier)
     (hempty : IsEmpty (H.stage (Fin.last H.eventCount)).Carrier) :
-    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
+    Nonempty (PoincareControlledExtinction P g) := by
   have hn : 0 < H.eventCount :=
     @ObservedHistory.eventCount_pos_of_final_empty H A.initial_nonempty hempty
   refine ⟨{ history := H.toSurgeryFiniteSurgeryHistoryOfCutCapCompletion hn hc hout

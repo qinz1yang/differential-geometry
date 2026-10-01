@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Topological
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCapCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCoreComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
@@ -142,7 +142,7 @@ theorem exists_isStandardConnectedSum_discardedComponent_of_capCore_frontier
     (z : E.trace.tubes.core) (hz : z.val ∈ K) (hn : z ∉ E.trace.retainedCore) :
     ∃ d : D.Carrier, E.trace.presentation (E.trace.capping.coreInclusion z) = Sum.inr d ∧
       DifferentialGeometry.Topology.isStandardConnectedSum
-        (D.toClosedOrientedManifold.component (ConnectedComponents.mk d)).Carrier := by
+        (D.component (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨d, hd⟩ : ∃ d : D.Carrier,
       E.trace.presentation (E.trace.capping.coreInclusion z) = Sum.inr d := by
     cases hp : E.trace.presentation (E.trace.capping.coreInclusion z) with
@@ -171,7 +171,7 @@ theorem exists_isStandardConnectedSum_discardedComponent_of_capCore_frontier_of_
         C2 * S.scalar t y.val < S.scalar t x) :
     ∃ d : D.Carrier, E.trace.presentation (E.trace.capping.coreInclusion z) = Sum.inr d ∧
       DifferentialGeometry.Topology.isStandardConnectedSum
-        (D.toClosedOrientedManifold.component (ConnectedComponents.mk d)).Carrier := by
+        (D.component (ConnectedComponents.mk d)).Carrier := by
   have hcomponent : connectedComponent z = (Subtype.val ⁻¹' K : Set E.trace.tubes.core) :=
     E.trace.tubes.connectedComponent_eq_preimage_of_capCore_of_boundarySphere
       cap hcore b hfront (E.tube_smooth b.1) z hz
@@ -214,7 +214,7 @@ theorem exists_isStandardConnectedSum_discardedComponent_of_spatialNeck_center_c
       K ⊆ E.trace.tubes.core ∧ ∀ z : E.trace.tubes.core, z.val ∈ K →
         ∃ d : D.Carrier, E.trace.presentation (E.trace.capping.coreInclusion z) = Sum.inr d ∧
           DifferentialGeometry.Topology.isStandardConnectedSum
-            (D.toClosedOrientedManifold.component (ConnectedComponents.mk d)).Carrier := by
+            (D.component (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨side, K, hK, hKU, hfront, hcore⟩ :=
     E.trace.tubes.exists_capCore_in_cutCore_of_spatialNeck_center_close
       cap hdepth nk a hmap hclose hanchor
@@ -263,7 +263,7 @@ theorem exists_isStandardConnectedSum_discardedComponent_of_terminal_cap_boundar
           (H.event i).transition.trace.presentation
             ((H.event i).transition.trace.capping.coreInclusion z) = Sum.inr d ∧
           DifferentialGeometry.Topology.isStandardConnectedSum
-            ((H.event i).discarded.toClosedOrientedManifold.component
+            ((H.event i).discarded.component
               (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨b, K, hK, hKU, hfront, hcore, _, hdiscard⟩ :=
     G.exists_discarded_capCore_component_of_terminal_cap_boundary_capture cap hscalar j hinside
@@ -316,7 +316,7 @@ theorem exists_late_isStandardConnectedSum_discardedComponent_of_cap
                   (H.event i).transition.trace.presentation
                     ((H.event i).transition.trace.capping.coreInclusion z) = Sum.inr y ∧
                   DifferentialGeometry.Topology.isStandardConnectedSum
-                    ((H.event i).discarded.toClosedOrientedManifold.component
+                    ((H.event i).discarded.component
                       (ConnectedComponents.mk y)).Carrier := by
   obtain ⟨d₀, hd₀, hnecks⟩ := R.exists_late_spatialNecks hsmall heps
   obtain ⟨d₁, hd₁, hgap⟩ := R.exists_late_retained_component_scalar_gap hη

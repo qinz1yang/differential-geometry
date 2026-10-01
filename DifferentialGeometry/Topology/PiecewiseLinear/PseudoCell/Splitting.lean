@@ -11,10 +11,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.InitialSurfaceSeparates
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnularChainPseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerExists
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalDescentSequence
-import DifferentialGeometry.Topology.PiecewiseLinear.Section26ThreeSurfaces
-import DifferentialGeometry.Topology.PiecewiseLinear.Section28Annuli
-import DifferentialGeometry.Topology.PiecewiseLinear.Section30Separation
-import DifferentialGeometry.Topology.PiecewiseLinear.Section30Torus
+import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Separation.ThreeSurfaces
+import DifferentialGeometry.Topology.PiecewiseLinear.Annulus.EssentialPolygonComplement
+import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Separation.DiskReplacement
+import DifferentialGeometry.Topology.PiecewiseLinear.Torus.NestedApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section31CanonicalConfiguration
 
 open Set Topology
@@ -67,7 +67,7 @@ theorem IsTube.exists_splitting_pseudoCell_components
       ⟨mem_union_left _ hBuu, singleton_subset_iff.mpr (mem_union_right _ hBvv)⟩)
   obtain ⟨hcl₁, hsep₁⟩ := separates_initialSurface ht hu hv huv he hP' htw havoid
   obtain ⟨H, B, Jlo, Jhi, M, hch, -, hMcl, hMsep, hMP, hLcl, hloc⟩ :=
-    exists_descentSequence ht hu hv huv he hP' htw havoid hcl₁ hsep₁ moise303 moise286 moise267
+    exists_descentSequence ht hu hv huv he hP' htw havoid hcl₁ hsep₁
   have hP'U : P' ∈ annularChain H B P' := by
     change P' ∈ (⋃ i, H i ∪ B i) ∪ {P'}
     exact mem_union_right _ (mem_singleton _)

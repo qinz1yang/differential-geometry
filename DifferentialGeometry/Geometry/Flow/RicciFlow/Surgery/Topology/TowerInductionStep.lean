@@ -541,7 +541,7 @@ theorem exists_retainedCoreHistory_eventCount_one_of_isEmpty_output
     ∃ H : RetainedCoreHistory.{u}, Nonempty (InitialIdentification P g H.toHistory) ∧
       H.eventCount = 1 ∧ H.horizon = s :=
   exists_retainedCoreHistory_eventCount_one P g hs
-    (RetainedCoreEvent.ofEmptyOutput X G L (OrientedThreeStage.metricOfIsEmpty Q)) hinit
+    (RetainedCoreEvent.ofEmptyOutput X G L (DifferentialGeometry.Topology.ClosedOrientedManifold.metricOfIsEmpty Q)) hinit
 
 end RetainedCoreHistory
 

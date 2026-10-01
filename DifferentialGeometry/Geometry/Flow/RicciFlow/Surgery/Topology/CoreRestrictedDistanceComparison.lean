@@ -307,7 +307,7 @@ theorem localTerminalRegionEDistComparison_of_parentComparison
   refine ⟨U, hU, hUsub, ?_⟩
   intro y hy z hz hy' hz'
   refine (hU' y hy z hz hy' hz').trans (mul_le_mul_of_nonneg_left ?_ (by positivity))
-  rw [OrientedThreeStage.edistOf_componentMetric (H.stage i.castSucc)
+  rw [DifferentialGeometry.Topology.ClosedOrientedManifold.edistOf_componentMetric (H.stage i.castSucc)
     ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c) y z]
   exact DifferentialGeometry.riemannianEDistOf_le_restrictOpen
     ((H.event i).incoming.flow.base.metric s) (H.event i).incoming.terminalRegularOpen

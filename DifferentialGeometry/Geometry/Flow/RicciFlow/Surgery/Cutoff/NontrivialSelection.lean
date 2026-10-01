@@ -7,10 +7,13 @@ open DifferentialGeometry.Geometry.Neck
 open DifferentialGeometry.Topology.ThreeManifold.Surgery
 open scoped Manifold ContDiff
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ}
 
-theorem nonempty_cut_or_discardedCore_of_singularEndpoint
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.nonempty_cut_or_discardedCore_of_singularEndpoint
     (G : P.IncomingSlab a s) (hG : G.SingularEndpoint)
     {ι : Type*} {δ : ι → ℝ} (f : ∀ i, bufferedCylinder (δ i) → P.Carrier)
     (R : Set (ConnectedComponents (cutCore f)))

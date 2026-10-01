@@ -21,18 +21,18 @@ variable {P : OrientedThreeStage.{u}} {g : P.Metric}
 theorem observedHistoryWidthValue_upperRightDiniLE_of_rampDeformation
     (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {c : ℝ} (hc : 0 < c) (hscalar : HistoryScalarLowerBound H c)
     (hinc : ∀ (i : Fin H.eventCount)
       (p : ConnectedComponents (H.stage i.castSucc).Carrier)
-      (_hSC : SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier),
+      (_hSC : SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier),
       ComponentInteriorRampDeformation (H.stage i.castSucc) (H.time i.castSucc)
         (H.time i.succ) (H.event i).incoming.lt p)
     (hclosed : ∀ (hfin : H.time (Fin.last H.eventCount) < H.horizon)
       (p : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
       (_hSC : SimplyConnectedSpace
-        ((H.stage (Fin.last H.eventCount)).component p).Carrier),
+        ((H.stage (Fin.last H.eventCount)).component p).toClosedOrientedManifold.Carrier),
       ComponentInteriorRampDeformation (H.stage (Fin.last H.eventCount))
         (H.time (Fin.last H.eventCount)) H.horizon (H.finalSlab hfin).lt p) :
     ∀ t ∈ Ico (0 : ℝ) H.horizon, t ∉ H.eventTimes →
@@ -48,7 +48,7 @@ theorem observedComparisonRecord_of_childComparison (H : ObservedHistory.{u})
     (parameters : CutoffParameters)
     (cutoff : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {c A : ℝ} (hc : 0 < c) (hHpos : 0 < H.horizon)
     (hinitial : Extinction.Width.historyWidth H h0 terminal
@@ -69,7 +69,7 @@ theorem observedComparisonRecord_of_childComparison_of_rampDeformation
     (H : ObservedHistory.{u}) (parameters : CutoffParameters)
     (cutoff : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {c A : ℝ} (hc : 0 < c) (hHpos : 0 < H.horizon)
     (hscalar : HistoryScalarLowerBound H c)
@@ -78,13 +78,13 @@ theorem observedComparisonRecord_of_childComparison_of_rampDeformation
     (hchild : ∀ i : Fin H.eventCount, ChildComparisonData (cutoff i))
     (hinc : ∀ (i : Fin H.eventCount)
       (p : ConnectedComponents (H.stage i.castSucc).Carrier)
-      (_hSC : SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier),
+      (_hSC : SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier),
       ComponentInteriorRampDeformation (H.stage i.castSucc) (H.time i.castSucc)
         (H.time i.succ) (H.event i).incoming.lt p)
     (hclosed : ∀ (hfin : H.time (Fin.last H.eventCount) < H.horizon)
       (p : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
       (_hSC : SimplyConnectedSpace
-        ((H.stage (Fin.last H.eventCount)).component p).Carrier),
+        ((H.stage (Fin.last H.eventCount)).component p).toClosedOrientedManifold.Carrier),
       ComponentInteriorRampDeformation (H.stage (Fin.last H.eventCount))
         (H.time (Fin.last H.eventCount)) H.horizon (H.finalSlab hfin).lt p) :
     Nonempty (ObservedComparisonRecord H c A) :=
@@ -102,7 +102,7 @@ theorem ObservationTower.uniformRecordsAbove_of_childComparison_of_rampDeformati
         (cutoff : ∀ i : Fin (T.observe b hb.le).eventCount,
           GeometricCutoffRecord (T.observe b hb.le) i parameters)
         (h0 : ∀ p : ConnectedComponents ((T.observe b hb.le).stage 0).Carrier,
-          SimplyConnectedSpace (((T.observe b hb.le).stage 0).component p).Carrier),
+          SimplyConnectedSpace (((T.observe b hb.le).stage 0).component p).toClosedOrientedManifold.Carrier),
         HistoryScalarLowerBound (T.observe b hb.le) c ∧
         (Extinction.Width.historyWidth (T.observe b hb.le) h0 terminal
           (Extinction.Width.historyStageTime (T.observe b hb.le) 0) ≤ A) ∧
@@ -110,7 +110,7 @@ theorem ObservationTower.uniformRecordsAbove_of_childComparison_of_rampDeformati
         (∀ (i : Fin (T.observe b hb.le).eventCount)
           (p : ConnectedComponents ((T.observe b hb.le).stage i.castSucc).Carrier)
           (_hSC : SimplyConnectedSpace
-            (((T.observe b hb.le).stage i.castSucc).component p).Carrier),
+            (((T.observe b hb.le).stage i.castSucc).component p).toClosedOrientedManifold.Carrier),
           ComponentInteriorRampDeformation ((T.observe b hb.le).stage i.castSucc)
             ((T.observe b hb.le).time i.castSucc) ((T.observe b hb.le).time i.succ)
             ((T.observe b hb.le).event i).incoming.lt p) ∧
@@ -119,7 +119,7 @@ theorem ObservationTower.uniformRecordsAbove_of_childComparison_of_rampDeformati
           (p : ConnectedComponents ((T.observe b hb.le).stage
             (Fin.last (T.observe b hb.le).eventCount)).Carrier)
           (_hSC : SimplyConnectedSpace (((T.observe b hb.le).stage
-            (Fin.last (T.observe b hb.le).eventCount)).component p).Carrier),
+            (Fin.last (T.observe b hb.le).eventCount)).component p).toClosedOrientedManifold.Carrier),
           ComponentInteriorRampDeformation ((T.observe b hb.le).stage
             (Fin.last (T.observe b hb.le).eventCount))
             ((T.observe b hb.le).time (Fin.last (T.observe b hb.le).eventCount))

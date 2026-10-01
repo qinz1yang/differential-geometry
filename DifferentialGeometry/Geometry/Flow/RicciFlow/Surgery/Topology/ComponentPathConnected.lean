@@ -1,4 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
+import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
 
 noncomputable section
 
@@ -10,10 +12,12 @@ universe u
 
 namespace OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 variable (P : OrientedThreeStage.{u})
 
-theorem component_pathConnectedSpace (c : ConnectedComponents P.Carrier) :
-    PathConnectedSpace (P.component c).Carrier := by
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.component_pathConnectedSpace (c : ConnectedComponents P.Carrier) :
+    PathConnectedSpace (P.component c).toClosedOrientedManifold.Carrier := by
   let : LocallyPathConnectedSpace P.Carrier :=
     ChartedSpace.locallyPathConnectedSpace ThreeSpace P.Carrier
   obtain ⟨x₀, rfl⟩ := ConnectedComponents.surjective_coe c

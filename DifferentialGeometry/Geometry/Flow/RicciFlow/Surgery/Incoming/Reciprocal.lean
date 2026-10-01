@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Calculus.Derivative.ClippedReciprocal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Analysis.Calculus.Derivative.LeftEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RmNormFromEigenvalues
-
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PinchingDatum
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 
@@ -13,6 +12,9 @@ open scoped Manifold ContDiff Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
@@ -21,7 +23,7 @@ open DifferentialGeometry.CheegerGromovCompactness
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem lipschitzOnWith_inv_max_scalar
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.lipschitzOnWith_inv_max_scalar
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
@@ -37,7 +39,7 @@ theorem lipschitzOnWith_inv_max_scalar
       (mem_nhdsWithin_of_mem_nhds (Ioo_mem_nhds ht.1 ht.2))
   · exact hbound x
 
-theorem mem_terminalRegularRegion_of_inv_max_scalar_gt
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.mem_terminalRegularRegion_of_inv_max_scalar_gt
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
@@ -90,7 +92,7 @@ theorem mem_terminalRegularRegion_of_inv_max_scalar_gt
   exact sqrt_rmNormSq_le_of_scalar_le hC3 hnorm hPhi hpinch (by simp [ThreeSpace])
     ⟨ht.1.le.trans hv.1, hv.2⟩ y hB (hscalar y hy v hv)
 
-theorem inv_max_scalar_le_of_not_mem_terminalRegularRegion
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.inv_max_scalar_le_of_not_mem_terminalRegularRegion
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
@@ -101,7 +103,7 @@ theorem inv_max_scalar_le_of_not_mem_terminalRegularRegion
   apply le_of_not_gt
   exact fun h => hx (G.mem_terminalRegularRegion_of_inv_max_scalar_gt hq hbound hPhi hpinch ht h)
 
-theorem exists_uniform_scalar_lower_bound_on_nonregular_region
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_scalar_lower_bound_on_nonregular_region
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
@@ -127,7 +129,7 @@ theorem exists_uniform_scalar_lower_bound_on_nonregular_region
   · exact (not_lt_of_ge (le_max_left q A) h).elim
   · exact (le_max_right q A).trans_lt h
 
-theorem exists_nhds_scalar_lower_bound_of_not_mem_terminalRegularRegion
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_nhds_scalar_lower_bound_of_not_mem_terminalRegularRegion
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
@@ -173,7 +175,7 @@ theorem exists_nhds_scalar_lower_bound_of_not_mem_terminalRegularRegion
   · exact (not_lt_of_ge (le_max_left q A) hq').elim
   · exact (le_max_right q A).trans_lt hR
 
-theorem tendsto_scalar_atTop_of_not_mem_terminalRegularRegion
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.tendsto_scalar_atTop_of_not_mem_terminalRegularRegion
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
@@ -189,7 +191,7 @@ theorem tendsto_scalar_atTop_of_not_mem_terminalRegularRegion
   filter_upwards [Ioo_mem_nhdsLT hd.2] with t ht
   exact (hnear t ht x hx).le
 
-theorem mem_terminalRegularRegion_of_frequently_scalar_le
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.mem_terminalRegularRegion_of_frequently_scalar_le
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
@@ -200,7 +202,7 @@ theorem mem_terminalRegularRegion_of_frequently_scalar_le
   have hh := (G.tendsto_scalar_atTop_of_not_mem_terminalRegularRegion hq hbound hx).eventually_gt_atTop B
   exact hscalar (hh.mono fun _ h => not_le.mpr h)
 
-theorem exists_eventually_scalar_le_of_mem_terminalRegularRegion
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_eventually_scalar_le_of_mem_terminalRegularRegion
     {x : P.Carrier} (hx : x ∈ G.terminalRegularRegion) :
     ∃ B : ℝ, ∀ᶠ t in 𝓝[<] s, G.flow.scalar t x ≤ B := by
   obtain ⟨U, _, hxU, a', ha', K, _, hcurv⟩ := hx
@@ -221,7 +223,7 @@ theorem exists_eventually_scalar_le_of_mem_terminalRegularRegion
       Nat.cast_ofNat, show (3 : ℝ) ^ 2 = 9 by norm_num] using habs
   exact (le_abs_self _).trans (hb.trans (mul_le_mul_of_nonneg_left hr (by norm_num)))
 
-theorem mem_terminalRegularRegion_iff_frequently_scalar_le
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.mem_terminalRegularRegion_iff_frequently_scalar_le
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)

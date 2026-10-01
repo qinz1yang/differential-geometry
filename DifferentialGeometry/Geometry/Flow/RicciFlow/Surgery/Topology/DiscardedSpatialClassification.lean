@@ -250,7 +250,7 @@ private theorem exists_isStandardConnectedSum_discarded_boundary_tolerance_of_sp
                 (H.event i).transition.trace.presentation
                   ((H.event i).transition.trace.capping.coreInclusion
                     ((H.event i).transition.trace.tubes.coreBoundarySphere b q)) = Sum.inr d →
-                  isStandardConnectedSum ((H.event i).discarded.toClosedOrientedManifold.component
+                  isStandardConnectedSum ((H.event i).discarded.component
                     (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨eta, heta, hpath⟩ := SphericalCapping.exists_cut_neck_standard_or_stopped_tolerance.{u}
   refine ⟨min eta (1 / 8646), lt_min heta (by norm_num), ?_⟩
@@ -283,7 +283,7 @@ private theorem exists_isStandardConnectedSum_discarded_boundary_tolerance_of_sp
     rintro ⟨z, hz⟩
     exact Sum.inr_ne_inl (hd.symm.trans hz)
   have hb : ¬ (H.event i).RetainedBoundary b := fun h => hbq (h q)
-  rcases hpath eps hepspath (H.stage i.castSucc).toClosedOrientedManifold X.capped
+  rcases hpath eps hepspath (H.stage i.castSucc) X.capped
       X.tubes X.capping ((H.event i).incoming.flow.base.metric t)
       (fun j => (G.neck j).center.val) neck (fun j z => (hmap j z).symm) b with hstd | hstop
   · obtain ⟨e⟩ := X.cappedDiscardedPresentationRealization (X.tubes.coreBoundarySphere b q) d hdx
@@ -306,7 +306,7 @@ private theorem exists_isStandardConnectedSum_discarded_boundary_tolerance_of_sp
     exact X.isStandardConnectedSum_discardedComponent_of_capCore_cutting_side hK.some b hfront hdis
       q d hdx
 
-open OrientedThreeStage.IncomingSlab
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   (exists_component_poincareStandard_tolerance_of_spatiallyCanonical) in
 theorem exists_poincareStandardDiscarded_tolerance_of_spatiallyCanonical :
     ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
@@ -343,7 +343,7 @@ theorem exists_poincareStandardDiscarded_tolerance_of_spatiallyCanonical :
         (SphericalCutCapTransition.ofSmoothCutCapTransition_coreInclusion
           (H.event i).transition hc x)).symm.trans hxd)
   have hstd : isStandardConnectedSum
-      ((H.event i).discarded.toClosedOrientedManifold.component
+      ((H.event i).discarded.component
         (ConnectedComponents.mk d)).Carrier := by
     rcases X.exists_boundarySphere_mem_coreComponent_or_cutIndices_eq_empty x with
       ⟨b, sphereMark, hbq⟩ | hlocal
@@ -355,11 +355,11 @@ theorem exists_poincareStandardDiscarded_tolerance_of_spatiallyCanonical :
         exact congrArg X.capping.coreInclusion.continuous.connectedComponentsMap hmk
       have hpres : ConnectedComponents.mk (X.presentation (X.capping.coreInclusion y)) =
           ConnectedComponents.mk (Sum.inr d :
-            (H.stage i.succ).toClosedOrientedManifold.Carrier ⊕ X.discarded.Carrier) := by
+            (H.stage i.succ).Carrier ⊕ X.discarded.Carrier) := by
         have hh := congrArg X.presentation.continuous.connectedComponentsMap hconn
         simpa only [Continuous.connectedComponentsMap_mk, hxd] using hh
       have hrange : X.presentation (X.capping.coreInclusion y) ∈
-          range (@Sum.inr (H.stage i.succ).toClosedOrientedManifold.Carrier
+          range (@Sum.inr (H.stage i.succ).Carrier
             X.discarded.Carrier) :=
         isClopen_range_inr.connectedComponent_subset (mem_range_self d)
           (ConnectedComponents.coe_eq_coe'.mp hpres)
@@ -374,7 +374,7 @@ theorem exists_poincareStandardDiscarded_tolerance_of_spatiallyCanonical :
               (H.event i).transition hc y)).symm.trans hd'.symm)
       have hstdb := hboundary eps hep H i parameters G hdelta C1 C2 q hC2 hq
         hprotected hscale hcanonical Ctime hbound Phi hPhi hpinch hc b sphereMark d' hdy
-      let r : (H.stage i.succ).toClosedOrientedManifold.Carrier ⊕ X.discarded.Carrier →
+      let r : (H.stage i.succ).Carrier ⊕ X.discarded.Carrier →
           X.discarded.Carrier := Sum.elim (fun _ => d) id
       have hr : Continuous r := continuous_const.sumElim continuous_id
       have heq : ConnectedComponents.mk d' = ConnectedComponents.mk d := by
@@ -393,7 +393,7 @@ theorem exists_poincareStandardDiscarded_tolerance_of_spatiallyCanonical :
         ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ hq hprotected hcanonical
         Ctime hbound (ConnectedComponents.mk x.val) (by
         intro y hy
-        have hyC : y.val ∈ (H.stage i.castSucc).toClosedOrientedManifold.componentSet
+        have hyC : y.val ∈ (H.stage i.castSucc).componentSet
             (ConnectedComponents.mk x.val) :=
           (ClosedOrientedManifold.mem_componentSet _ _ _).mpr hy
         have hycore := X.componentSet_subset_core_of_cutIndices_eq_empty _ hlocal hyC

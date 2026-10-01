@@ -75,7 +75,7 @@ theorem MetricCutCapEvent.scalar_le_of_finiteFullPreparedMetric
     ∀ [CompactSpace Ret] (oRet : SmoothOrientation (𝓡 3) Ret)
       {P : OrientedThreeStage} {a s : ℝ}
       (event : MetricCutCapEvent P
-        (OrientedThreeStage.ofSmoothOrientation Ret oRet) a s),
+        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) a s),
       event.outputMetric = finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc
         x₀ order d₀ hOriginal hrec d hmap hside w →
       ∀ q : Ret, metricScalarAt event.outputMetric q ≤ max K (2 * C 0 * Qmax) := by

@@ -77,7 +77,7 @@ theorem MetricCutCapEvent.curvature_jets_le_of_finiteFullPreparedMetric
     ∀ [CompactSpace Ret] (oRet : SmoothOrientation (𝓡 3) Ret)
       {P : OrientedThreeStage} {a s : ℝ}
       (event : MetricCutCapEvent P
-        (OrientedThreeStage.ofSmoothOrientation Ret oRet) a s),
+        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) a s),
       event.outputMetric = finiteFullPreparedMetric I hδ f hf hdisj hs U g R hRet c hc
         x₀ order d₀ hOriginal hrec d hmap hside w →
       ∀ (q : Ret) (j : ℕ), j ≤ m →
@@ -114,7 +114,7 @@ theorem exists_uniform_metricCutCapEvent_curvature_jet_bounds :
       ∀ {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M]
         [IsManifold ThreeModel ∞ M] [CompactSpace M],
       ∀ (o : SmoothOrientation ThreeModel M) {t₀ t₁ : ℝ}
-        (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+        (G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
         (L : G.TerminalLimitMetric)
         {ι : Type} [Fintype ι] (precision : ι → ℝ) (hδ : ∀ i, 0 < precision i),
       (∀ i, precision i ≤ δ₀) → ∀ (x₀ : ι → G.terminalRegularOpen)
@@ -158,8 +158,8 @@ theorem exists_uniform_metricCutCapEvent_curvature_jet_bounds :
         G.terminalRegularOpen L.metric R hRet c hc x₀ (fun _ => m + 6) d₀
         hOriginal hrec d hmap hside w
       ∃ (oRet : SmoothOrientation ThreeModel Ret),
-      ∃ E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
-        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁,
+      ∃ E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
+        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁,
         E.incoming = G ∧ HEq E.terminal L ∧
         E.outputMetric = gRet ∧
         E.old = E.transition.trace.retainedCore ∧ E.transition.boundaryFrameReversing ∧

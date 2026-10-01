@@ -1,8 +1,9 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Protection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Precision
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
+import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard

@@ -17,7 +17,7 @@ universe u
 
 variable {P : OrientedThreeStage.{u}} {a b : ℝ}
 
-theorem OrientedThreeStage.ClosedSlab.antitoneOn_exp_mul_volume
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.antitoneOn_exp_mul_volume
     (G : P.ClosedSlab a b) (K : ℝ)
     (hscalar : ∀ t ∈ Icc a b, ∀ x : P.Carrier,
       -K ≤ metricScalarAt (G.flow.base.metric t) x) :
@@ -47,7 +47,7 @@ theorem OrientedThreeStage.ClosedSlab.antitoneOn_exp_mul_volume
       metricScalarAt (G.flow.base.metric t) x * Real.exp (-K * t) ≤ 0
     nlinarith
 
-theorem OrientedThreeStage.ClosedSlab.exp_mul_volume_le_endpoint
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.exp_mul_volume_le_endpoint
     (G : P.ClosedSlab a b) (K : ℝ)
     (hscalar : ∀ t ∈ Icc a b, ∀ x : P.Carrier,
       -K ≤ metricScalarAt (G.flow.base.metric t) x) :

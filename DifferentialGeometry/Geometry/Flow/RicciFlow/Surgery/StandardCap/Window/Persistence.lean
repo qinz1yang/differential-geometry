@@ -462,7 +462,7 @@ private theorem incoming_raw_control_of_same_final_prefix
     rw [hmetric₀, show H.time first + q*(τ-H.time first)/q = τ by field_simp; ring,
       hlast₀ τ ⟨G₀.lt.le,le_rfl⟩, metricScalarAt_localPull, metricScalarAt_scaleMetric,
       backwardSurvivorIncomingMetric, metricScalarAt_localPull,
-      OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal,
+      DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal,
       hterminal₀, metricScalarAt_restrictOpen] at hs
     change |q⁻¹ * G.flow.scalar τ (Υ y).val| ≤ Creset at hs
     have hlo := (le_abs_self _).trans (hs.trans hCA)

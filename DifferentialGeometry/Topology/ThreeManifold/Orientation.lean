@@ -15,45 +15,16 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 variable (M : Type*) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M]
 
-def tangentChartEquiv (p x : M)
+abbrev tangentChartEquiv (p x : M)
     (hx : x ∈ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet) :
     TangentSpace ThreeModel x ≃ₗ[ℝ] ThreeSpace :=
   DifferentialGeometry.tangentChartEquiv ThreeModel M p x hx
 
-structure TangentOrientationSection where
-  orientation : (x : M) → Orientation ℝ (TangentSpace ThreeModel x) (Fin 3)
-  locally_constant : ∀ p x : M,
-    ∀ hx : x ∈ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet,
-    ∃ U : Set M, IsOpen U ∧ x ∈ U ∧
-      ∃ hU : U ⊆ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet,
-      ∀ y : M, ∀ hy : y ∈ U,
-        Orientation.map (Fin 3) (tangentChartEquiv M p y (hU hy)) (orientation y) =
-          Orientation.map (Fin 3) (tangentChartEquiv M p x hx) (orientation x)
+abbrev TangentOrientationSection :=
+  DifferentialGeometry.ManifoldOrientation ThreeModel M 3
 
 variable {M}
 
-
-def TangentOrientationSection.restrictOpen
-    (o : TangentOrientationSection M) (U : TopologicalSpace.Opens M) :
-    TangentOrientationSection U where
-  orientation x := o.orientation x.1
-  locally_constant := by
-    let O : DifferentialGeometry.ManifoldOrientation ThreeModel M 3 :=
-      { dimension_eq := by simp
-        orientation := o.orientation
-        locally_constant := o.locally_constant }
-    exact (O.restrictOpen U).locally_constant
-
-@[simp]
-theorem TangentOrientationSection.restrictOpen_orientation
-    (o : TangentOrientationSection M) (U : TopologicalSpace.Opens M) (x : U) :
-    (o.restrictOpen U).orientation x = o.orientation x.1 := rfl
-
-
-def TangentOrientationSection.inChart (o : TangentOrientationSection M) (p x : M)
-    (hx : x ∈ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet) :
-    Orientation ℝ ThreeSpace (Fin 3) :=
-  Orientation.map (Fin 3) (tangentChartEquiv M p x hx) (o.orientation x)
 
 variable {N : Type*} [TopologicalSpace N] [ChartedSpace ThreeSpace N]
     [IsManifold ThreeModel ∞ N]

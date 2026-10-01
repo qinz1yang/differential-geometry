@@ -1051,4 +1051,30 @@ theorem standardNeckCutCap_nondegenerate :
     standardNeckTubeSystem_removedBand_nonempty,
     standardNeckTubeSystem_boundarySphere_ne⟩
 
+abbrev standardNeckBoundaryFalse : standardNeckTubeSystem.Boundary := (PUnit.unit, false)
+
+abbrev standardNeckBoundaryTrue : standardNeckTubeSystem.Boundary := (PUnit.unit, true)
+
+theorem standardNeckCapping_cap_apply_false (v : ThreeBall) :
+    standardNeckCapping.cap standardNeckBoundaryFalse v = Sum.inl (standardNeckCapFun false v) := by
+  rw [show standardNeckCapping.cap standardNeckBoundaryFalse =
+      standardNeckCapSum standardNeckBoundaryFalse from rfl, standardNeckCapSum_eq_inl_of (by simp)]
+  rfl
+
+theorem standardNeckCapping_cap_apply_true (v : ThreeBall) :
+    standardNeckCapping.cap (PUnit.unit, true) v = Sum.inr (standardNeckCapFun true v) := by
+  rw [show standardNeckCapping.cap (PUnit.unit, true) =
+      standardNeckCapSum (PUnit.unit, true) from rfl, standardNeckCapSum_eq_inr_of (by simp)]
+  rfl
+
+theorem standardNeckCapping_cap_false :
+    ⇑(standardNeckCapping.cap standardNeckBoundaryFalse) =
+      (Sum.inl : Sphere 3 → Sphere 3 ⊕ Sphere 3) ∘ standardNeckCapFun false :=
+  funext standardNeckCapping_cap_apply_false
+
+theorem standardNeckCapping_cap_true :
+    ⇑(standardNeckCapping.cap (PUnit.unit, true)) =
+      (Sum.inr : Sphere 3 → Sphere 3 ⊕ Sphere 3) ∘ standardNeckCapFun true :=
+  funext standardNeckCapping_cap_apply_true
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

@@ -128,7 +128,7 @@ private theorem exists_prepared_horn_cutoff_event_with_original_neck_bounds_of_f
                   letI : CompactSpace Ret :=
                     (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hd R).1
                   ∃ oRet : SmoothOrientation ThreeModel Ret,
-                    Qout = OrientedThreeStage.ofSmoothOrientation Ret oRet ∧
+                    Qout = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet ∧
                   (∀ j, metricScalarAt D.terminal.metric (x₀ j) = Q) ∧
                   (∀ b : Bidx,
                     |metricScalarAt D.terminal.metric

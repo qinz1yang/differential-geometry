@@ -21,7 +21,6 @@ theorem IsCanonicalSurface.exists_annular_chain_sequence [DecidableEq E3]
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
     (havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3))
-    (h303 : Moise303) (h286 : Moise286)
     {Y : ℤ → Geometry.SimplicialComplex ℝ E3}
     (hY : IsCanonicalSurface Y (fun i => φ '' S i) T''
       (interior (h '' C u ∪ h '' C v)) P' (h u) (h v))
@@ -36,7 +35,7 @@ theorem IsCanonicalSurface.exists_annular_chain_sequence [DecidableEq E3]
       ∀ x ∈ interior (h '' C u ∪ h '' C v), x ≠ P' →
         ∃ U ∈ 𝓝 x, ∃ N : ℕ, ∀ n ≥ N, M n ∩ U = annularChain H B P' ∩ U := by
   obtain ⟨X, hzero, hstep⟩ := hY.exists_bridge_normalization_sequence ht hu hv huv he htw
-    havoid h303 h286 hmodel hwitness (fun n => {-(n : ℤ), (n : ℤ)})
+    havoid hmodel hwitness (fun n => {-(n : ℤ), (n : ℤ)})
   let B : ℤ → Set E3 := fun i => (X (i.natAbs + 1) i).space
   have hX (n : ℕ) := (hstep n).source
   have hstable (i : ℤ) (n : ℕ) (hn : i.natAbs + 1 ≤ n) : (X n i).space = B i :=

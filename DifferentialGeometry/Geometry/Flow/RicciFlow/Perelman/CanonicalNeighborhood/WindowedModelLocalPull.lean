@@ -109,8 +109,9 @@ private theorem isCompatibleOrientation_pullbackOrientationAt (o : TangentOrient
     rw [(Orientation.map_eq_iff_det_pos _ B hcard).2 hBdet] at hBc
     exact hBc
 
-def TangentOrientationSection.pullback (o : TangentOrientationSection M) {f : N → M}
+def _root_.DifferentialGeometry.ManifoldOrientation.pullback (o : TangentOrientationSection M) {f : N → M}
     (hf : IsLocalDiffeomorph ThreeModel ThreeModel ∞ f) : TangentOrientationSection N where
+  dimension_eq := by simp [ThreeSpace]
   orientation := pullbackOrientationAt o hf
   locally_constant := by
     obtain ⟨O, hO⟩ :=
@@ -119,7 +120,7 @@ def TangentOrientationSection.pullback (o : TangentOrientationSection M) {f : N 
     rw [← hO]
     exact O.locally_constant
 
-theorem TangentOrientationSection.preservesTangentOrientationAt_pullback
+theorem _root_.DifferentialGeometry.ManifoldOrientation.preservesTangentOrientationAt_pullback
     (o : TangentOrientationSection M) {f : N → M}
     (hf : IsLocalDiffeomorph ThreeModel ThreeModel ∞ f) (y : N) :
     ∃ hb : Function.Bijective (mfderiv ThreeModel ThreeModel f y),

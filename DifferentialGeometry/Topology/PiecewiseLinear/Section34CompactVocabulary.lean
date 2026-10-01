@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ControlledInwardPush
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
-import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.NestedApproximation
 
 open Set Topology
 

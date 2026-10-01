@@ -19,31 +19,34 @@ open scoped Manifold ContDiff Topology BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private local instance terminalSigmaCompact : SigmaCompactSpace G.terminalRegularOpen :=
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalSigmaCompact : SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       G.terminalRegularOpen.isOpen)
-private local instance terminalC1 : IsManifold ThreeModel 1 G.terminalRegularOpen :=
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalC1 : IsManifold ThreeModel 1 G.terminalRegularOpen :=
   IsManifold.of_le (n := ∞) (by decide)
-private local instance terminalC2 : IsManifold ThreeModel 2 G.terminalRegularOpen :=
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalC2 : IsManifold ThreeModel 2 G.terminalRegularOpen :=
   IsManifold.of_le (n := ∞) (by decide)
 
-def TerminalLimitMetric.extendedMetric (L : G.TerminalLimitMetric) (t : ℝ) :
+def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric (L : G.TerminalLimitMetric) (t : ℝ) :
     SmoothRiemannianMetric ThreeModel G.terminalRegularOpen :=
   if t < s then (G.flow.base.metric t).restrictOpen G.terminalRegularOpen else L.metric
 
-@[simp] theorem TerminalLimitMetric.extendedMetric_terminal (L : G.TerminalLimitMetric) :
+@[simp] theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal (L : G.TerminalLimitMetric) :
     L.extendedMetric s = L.metric := by simp [extendedMetric]
 
-theorem TerminalLimitMetric.extendedMetric_before (L : G.TerminalLimitMetric)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_before (L : G.TerminalLimitMetric)
     {t : ℝ} (ht : t < s) :
     L.extendedMetric t = (G.flow.base.metric t).restrictOpen G.terminalRegularOpen :=
   ite_eq_left ht
 
-private theorem continuousWithinAt_terminal_of_uniform
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.continuousWithinAt_terminal_of_uniform
     {Y Z : Type*} [TopologicalSpace Y] [PseudoMetricSpace Z]
     {F : ℝ → Y → Z} {W : Set Y} {b : ℝ} {y : Y}
     (hF : TendstoUniformlyOn F (F b) (𝓝[<] b) W)
@@ -64,7 +67,7 @@ private theorem continuousWithinAt_terminal_of_uniform
     ((add_lt_add (hq.1 q.2 hq.2.2) hq.2.1).trans_eq (add_halves ε))
 
 
-theorem TerminalLimitMetric.chartGram_jets_tendsto_terminal
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.chartGram_jets_tendsto_terminal
     (L : G.TerminalLimitMetric) (p x : G.terminalRegularOpen)
     (hxchart : x ∈ (chartAt ThreeSpace p).source) :
     ∃ W : Set ThreeSpace, IsOpen W ∧ extChartAt ThreeModel p x ∈ W ∧
@@ -130,7 +133,7 @@ theorem TerminalLimitMetric.chartGram_jets_tendsto_terminal
   simpa only [hzy] using h.trans_lt hsmall
 
 
-theorem TerminalLimitMetric.chartGram_jets_continuousOn_closed
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.chartGram_jets_continuousOn_closed
     (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b)
     (p : G.terminalRegularOpen) (r : ℕ)
     (i j : Fin (Module.finrank ℝ ThreeSpace)) :
@@ -183,7 +186,7 @@ theorem TerminalLimitMetric.chartGram_jets_continuousOn_closed
     rw [L.extendedMetric_before hq]
 
 
-theorem TerminalLimitMetric.extendedMetric_hasDerivAt
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_hasDerivAt
     (L : G.TerminalLimitMetric) {t : ℝ} (ht : t ∈ Ioo a s)
     (x : G.terminalRegularOpen) (v w : TangentSpace ThreeModel x) :
     HasDerivAt (fun u => (L.extendedMetric u).inner x v w)
@@ -203,7 +206,7 @@ theorem TerminalLimitMetric.extendedMetric_hasDerivAt
   filter_upwards [Iio_mem_nhds ht.2] with u hu
   rw [L.extendedMetric_before hu]
 
-theorem TerminalLimitMetric.chartGram_contDiffOn_closed
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.chartGram_contDiffOn_closed
     (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b) (hbs : b < s)
     (p : G.terminalRegularOpen) (i j : Fin (Module.finrank ℝ ThreeSpace)) :
     ContDiffOn ℝ ∞ (fun q : ℝ × ThreeSpace =>
@@ -216,7 +219,7 @@ theorem TerminalLimitMetric.chartGram_contDiffOn_closed
     (fun r i j => L.chartGram_jets_continuousOn_closed hab p r i j) hpde
   exact contDiffOn_pi.mp (contDiffOn_pi.mp hfull i) j
 
-theorem TerminalLimitMetric.extendedMetric_jointContMDiffOn
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_jointContMDiffOn
     (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b) (hbs : b < s) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
       (ThreeModel.prod 𝓘(ℝ, ThreeSpace →L[ℝ] ThreeSpace →L[ℝ] ℝ)) ∞
@@ -252,7 +255,7 @@ theorem TerminalLimitMetric.extendedMetric_jointContMDiffOn
   rw [(extChartAt ThreeModel p).left_inv (hsource hq.2)]
 
 
-theorem TerminalLimitMetric.chartGram_timeJets_contDiffOn_closed
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.chartGram_timeJets_contDiffOn_closed
     (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b) (hbs : b < s)
     (p : G.terminalRegularOpen) (i j : Fin (Module.finrank ℝ ThreeSpace)) (m : ℕ) :
     ContDiffOn ℝ ∞ (fun q : ℝ × ThreeSpace => iteratedDerivWithin m
@@ -262,7 +265,7 @@ theorem TerminalLimitMetric.chartGram_timeJets_contDiffOn_closed
     (uniqueDiffOn_Icc hbs) (isOpen_extChartAt_target p)
     (L.chartGram_contDiffOn_closed hab hbs p i j) m
 
-theorem TerminalLimitMetric.hasDerivWithinAt_chartGram_timeJet
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.hasDerivWithinAt_chartGram_timeJet
     (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b) (hbs : b < s)
     (p : G.terminalRegularOpen) (i j : Fin (Module.finrank ℝ ThreeSpace)) (m : ℕ)
     {t : ℝ} (ht : t ∈ Icc b s) {y : ThreeSpace}
@@ -276,7 +279,7 @@ theorem TerminalLimitMetric.hasDerivWithinAt_chartGram_timeJet
     (uniqueDiffOn_Icc hbs) (isOpen_extChartAt_target p)
     (L.chartGram_contDiffOn_closed hab hbs p i j) m ht hy
 
-theorem TerminalLimitMetric.chartGram_mixedJets_contDiffOn_closed
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.chartGram_mixedJets_contDiffOn_closed
     (L : G.TerminalLimitMetric) {b : ℝ} (hab : a ≤ b) (hbs : b < s)
     (p : G.terminalRegularOpen) (i j : Fin (Module.finrank ℝ ThreeSpace)) (r m : ℕ) :
     ContDiffOn ℝ ∞ (fun q : ℝ × ThreeSpace => iteratedFDeriv ℝ r
@@ -288,7 +291,7 @@ theorem TerminalLimitMetric.chartGram_mixedJets_contDiffOn_closed
       (fun u => chartGramOnE (I := ThreeModel) (L.extendedMetric u) p i j y) (Icc b s) t)
     (isOpen_extChartAt_target p) (L.chartGram_timeJets_contDiffOn_closed hab hbs p i j m) r
 
-theorem TerminalLimitMetric.metricTensor_contDiffOn_time
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.metricTensor_contDiffOn_time
     (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c) (hcb : c < s) (x : G.terminalRegularOpen) :
     ContDiffOn ℝ ∞ (fun t => metricTensorField (L.extendedMetric t) x) (Icc c s) := by
   classical
@@ -318,7 +321,7 @@ theorem TerminalLimitMetric.metricTensor_contDiffOn_time
     ContDiffOn.sum fun slots _ => (hc slots).smul_const _
   simpa only [← tensor0SBasis_repr, Module.Basis.sum_repr] using hsum
 
-private theorem metric_timeJet_eval
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.metric_timeJet_eval
     (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c) (hcb : c < s)
     (q : ℕ) {t : ℝ} (ht : t ∈ Icc c s) (x : G.terminalRegularOpen)
     (v : Fin 2 → TangentSpace ThreeModel x) :
@@ -333,7 +336,7 @@ private theorem metric_timeJet_eval
     A (fun _ => 1)) hh
   exact he
 
-private theorem exists_field_of_chart_components
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_field_of_chart_components
     (T : (x : G.terminalRegularOpen) →
       Bundle.continuousMultilinearMap ℝ 2 ThreeSpace (TangentSpace ThreeModel) x)
     (hT : ∀ p : G.terminalRegularOpen, ∀ slots : Fin 2 → Fin (Module.finrank ℝ ThreeSpace),
@@ -360,7 +363,7 @@ private theorem exists_field_of_chart_components
   exact tensor0SSpaceFiberContinuousLinearEquiv_apply_apply (I := ThreeModel) 2 x (T x)
     (fun k => chartBasisVecFiber (I := ThreeModel) p (slots k) x)
 
-private theorem exists_metric_timeJet_field
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_metric_timeJet_field
     (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c) (hcb : c < s)
     (q : ℕ) {t : ℝ} (ht : t ∈ Icc c s) :
     ∃ B : Tensor0SField (I := ThreeModel) (M := G.terminalRegularOpen) (n := ∞) 2,
@@ -403,7 +406,7 @@ private theorem exists_metric_timeJet_field
   simp only [chartGramOnE, chartGramMatrix_apply, (extChartAt ThreeModel p).left_inv hxs]
 
 
-theorem TerminalLimitMetric.exists_time_derivative_fields
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_time_derivative_fields
     (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c) (hcb : c < s) :
     ∃ B : ℕ → ℝ → Tensor0SField (I := ThreeModel) (M := G.terminalRegularOpen) (n := ∞) 2,
       (∀ t, B 0 t = metricTensorField (L.extendedMetric t)) ∧

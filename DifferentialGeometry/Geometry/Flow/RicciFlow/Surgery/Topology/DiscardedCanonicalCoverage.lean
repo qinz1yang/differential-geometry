@@ -15,10 +15,13 @@ open scoped Manifold ContDiff Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.eventually_scalar_gt_on_closed_set
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_scalar_gt_on_closed_set
     (g : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C*G.flow.scalar t x^2)
@@ -48,7 +51,7 @@ theorem TerminalLimitMetric.eventually_scalar_gt_on_closed_set
 
 private local instance : Fact (Module.finrank ℝ ThreeSpace = 3) := ⟨by simp⟩
 
-theorem TerminalLimitMetric.eventually_canonical_on_discarded_core
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_canonical_on_discarded_core
     (g : G.TerminalLimitMetric) {eps C1 C2 Q : ℝ} (hQ : 0 < Q) (hC2 : 0 ≤ C2)
     (hcanonical : ∀ x : P.Carrier, ∀ t ∈ Ico a s, Q ≤ G.flow.scalar t x →
       Nonempty (CanonicalWitness G.flow eps C1 C2 x t))
@@ -86,7 +89,7 @@ theorem TerminalLimitMetric.eventually_canonical_on_discarded_core
   have h := hhigh t ht z.val ⟨z,hz,rfl⟩
   exact ⟨h,hcanonical z.val t ⟨hd.1.trans ht.1.le,ht.2⟩ h.le⟩
 
-theorem TerminalLimitMetric.exists_canonical_threshold_discarded_core
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_canonical_threshold_discarded_core
     (g : G.TerminalLimitMetric)
     {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
     (hpinch : PhiAlmostNonnegative G.flow (Ico a s) Phi) :

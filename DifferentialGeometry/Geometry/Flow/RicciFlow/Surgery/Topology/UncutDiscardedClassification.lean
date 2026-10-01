@@ -26,7 +26,7 @@ theorem MetricCutCapEvent.exists_isStandardConnectedSum_discardedComponent_thres
               metricScalarAt E.terminal.metric y ≤ L →
               y.val ∈ Subtype.val '' E.transition.trace.retainedCore) →
             DifferentialGeometry.Topology.isStandardConnectedSum
-              (E.discarded.toClosedOrientedManifold.component (ConnectedComponents.mk d)).Carrier := by
+              (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨L, hL, hclass⟩ := E.terminal.exists_component_poincareStandard_threshold E.incoming
   refine ⟨L, hL, ?_⟩
   intro hc X C hC x hx d hxd hretain
@@ -39,7 +39,7 @@ theorem MetricCutCapEvent.exists_isStandardConnectedSum_discardedComponent_thres
     exact Sum.inr_ne_inl (hxd.symm.trans hq)
   have hstd := hclass C (by
     intro y hy
-    have hyC : y.val ∈ P.toClosedOrientedManifold.componentSet C :=
+    have hyC : y.val ∈ P.componentSet C :=
       (DifferentialGeometry.Topology.ClosedOrientedManifold.mem_componentSet _ _ _).mpr hy
     have hycore : y.val ∈ E.transition.trace.tubes.core :=
       X.componentSet_subset_core_of_cutIndices_eq_empty C hC hyC
@@ -80,7 +80,7 @@ theorem MetricCutCapEvent.exists_poincareStandardDiscarded_threshold_of_isEmpty_
   change ConnectedComponents.mk (α := E.discarded.Carrier) d = c at hd
   exact (congrArg (fun K : ConnectedComponents E.discarded.Carrier =>
     DifferentialGeometry.Topology.isStandardConnectedSum
-      (E.discarded.toClosedOrientedManifold.component K).Carrier) hd).mp hout
+      (E.discarded.component K).Carrier) hd).mp hout
 
 theorem GeometricCutoffRecord.exists_isStandardConnectedSum_discardedComponent_threshold_of_uncut
     {H : ObservedHistory.{u}} (i : Fin H.eventCount) :
@@ -95,7 +95,7 @@ theorem GeometricCutoffRecord.exists_isStandardConnectedSum_discardedComponent_t
                 ((H.event i).transition.trace.capping.coreInclusion x) = Sum.inr d →
               L ≤ ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ →
               DifferentialGeometry.Topology.isStandardConnectedSum
-                ((H.event i).discarded.toClosedOrientedManifold.component
+                ((H.event i).discarded.component
                   (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨L, hL, hstd⟩ :=
     (H.event i).exists_isStandardConnectedSum_discardedComponent_threshold_of_uncut

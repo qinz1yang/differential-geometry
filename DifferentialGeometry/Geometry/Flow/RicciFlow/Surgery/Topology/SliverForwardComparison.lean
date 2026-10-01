@@ -17,11 +17,14 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-private theorem curvature_heat_subsolution_on {D : RealTimeInterval}
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.curvature_heat_subsolution_on {D : RealTimeInterval}
     (hcar : D.carrier ⊆ Ico a s) (hreg : D.regular ⊆ Ioo a s) :
     IsHeatPotSubsolutionOn D (flowG G.flow)
       (fun t x => rmTowerCost 3 0 * Real.sqrt (nablaKRm04NormSqIntrinsic G.flow 0 t x))
@@ -52,13 +55,13 @@ private theorem curvature_heat_subsolution_on {D : RealTimeInterval}
       (I := ThreeModel) G.equation hat1 (ht1t.trans ht'.2)
     simpa using h.equation_le t ⟨ht1t, ht'.2⟩ x
 
-private theorem riemannNorm_sq_eq (t : ℝ) (x : P.Carrier) :
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.riemannNorm_sq_eq (t : ℝ) (x : P.Carrier) :
     G.riemannNorm t x ^ 2 = nablaKRm04NormSqIntrinsic G.flow 0 t x := by
   simpa only [riemannNorm, nablaKRm04NormSqIntrinsic, nablaKRm04Field_zero,
     Nat.add_zero] using Real.sq_sqrt
     (normSq0S_nonneg (G.flow.base.metric t) x 4 (G.flow.base.rm04 t x))
 
-theorem riemannNorm_le_two_mul_of_forall_riemannNorm_le {K t₀ t : ℝ} (hK : 0 < K)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.riemannNorm_le_two_mul_of_forall_riemannNorm_le {K t₀ t : ℝ} (hK : 0 < K)
     (ht₀ : a ≤ t₀) (ht₀t : t₀ ≤ t) (hts : t < s) (hη : 2592 * K * (t - t₀) ≤ 1)
     (h : ∀ x : P.Carrier, G.riemannNorm t₀ x ≤ K) (x : P.Carrier) :
     G.riemannNorm t x ≤ 2 * K := by
@@ -87,7 +90,7 @@ theorem riemannNorm_le_two_mul_of_forall_riemannNorm_le {K t₀ t : ℝ} (hK : 0
   have hn : 0 ≤ G.riemannNorm t x := Real.sqrt_nonneg _
   nlinarith
 
-theorem scalar_time_derivWithin_continuousAt {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.Carrier) :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_time_derivWithin_continuousAt {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.Carrier) :
     ContinuousAt (fun t => derivWithin (fun v => G.flow.scalar v y) (Iic t) t) t₀ := by
   have hc := (G.flow.scalar_time_derivWithin_Iic_continuousOn G.equation).continuousAt
     (((RealTimeInterval.closedOpen a s G.lt).regular_isOpen.prod isOpen_univ).mem_nhds
@@ -95,7 +98,7 @@ theorem scalar_time_derivWithin_continuousAt {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo 
         ⟨ht₀, mem_univ y⟩))
   exact ContinuousAt.comp (f := fun t : ℝ => (t, y)) hc (by fun_prop)
 
-theorem scalar_continuousAt_time {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.Carrier) :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_continuousAt_time {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.Carrier) :
     ContinuousAt (fun t => G.flow.scalar t y) t₀ := by
   have hc := (scalar_joint G.flow G.equation).continuousOn.continuousAt
     (((RealTimeInterval.closedOpen a s G.lt).regular_isOpen.prod isOpen_univ).mem_nhds
@@ -103,7 +106,7 @@ theorem scalar_continuousAt_time {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.
         ⟨ht₀, mem_univ y⟩))
   exact ContinuousAt.comp (f := fun t : ℝ => (t, y)) hc (by fun_prop)
 
-theorem scalarDifferential_continuousAt_time {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.Carrier)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalarDifferential_continuousAt_time {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.Carrier)
     (v : TangentSpace ThreeModel y) :
     ContinuousAt (fun t => Perelman.CanonicalNeighborhood.scalarDifferential G.flow t y v) t₀ := by
   have hf : ContMDiffAt (𝓘(ℝ, ℝ).prod ThreeModel) 𝓘(ℝ, ℝ) ∞
@@ -130,7 +133,7 @@ theorem scalarDifferential_continuousAt_time {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo 
     (mem_achart_source _ y) v]
   rfl
 
-theorem metric_inner_continuousAt_time {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.Carrier)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.metric_inner_continuousAt_time {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.Carrier)
     (v : TangentSpace ThreeModel y) :
     ContinuousAt (fun t => (G.flow.base.metric t).inner y v v) t₀ := by
   obtain ⟨t₁, hat₁, ht₁⟩ := exists_between ht₀.1
@@ -140,7 +143,7 @@ theorem metric_inner_continuousAt_time {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (
     (fun r hr => ⟨hat₁.trans hr.1, hr.2.trans ht₂s⟩) t₀ ⟨ht₁.le, ht₂.le⟩ y v v
   exact hd.continuousWithinAt.continuousAt (Icc_mem_nhds ht₁ ht₂)
 
-theorem abs_derivWithin_scalar_le_of_forall_Ioo {C q t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.abs_derivWithin_scalar_le_of_forall_Ioo {C q t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s)
     (y : P.Carrier)
     (h : ∀ t ∈ Ioo a t₀, q < G.flow.scalar t y →
       |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2)
@@ -158,7 +161,7 @@ theorem abs_derivWithin_scalar_le_of_forall_Ioo {C q t₀ : ℝ} (ht₀ : t₀ �
   have hle := le_of_tendsto (hf.tendsto.mono_left nhdsWithin_le_nhds) hev
   linarith
 
-theorem abs_scalarDifferential_le_of_forall_Ioo {C q t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.abs_scalarDifferential_le_of_forall_Ioo {C q t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s)
     (y : P.Carrier)
     (h : ∀ t ∈ Ioo a t₀, q < G.flow.scalar t y → ∀ v : TangentSpace ThreeModel y,
       |Perelman.CanonicalNeighborhood.scalarDifferential G.flow t y v| ≤
@@ -186,7 +189,7 @@ theorem abs_scalarDifferential_le_of_forall_Ioo {C q t₀ : ℝ} (ht₀ : t₀ �
   have hle := le_of_tendsto (hf.tendsto.mono_left nhdsWithin_le_nhds) hev
   linarith
 
-theorem abs_scalarDifferential_le_at_slice {C q t₀ : ℝ} (ht₀ : t₀ ∈ Ico a s)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.abs_scalarDifferential_le_at_slice {C q t₀ : ℝ} (ht₀ : t₀ ∈ Ico a s)
     (hbefore : ∀ t ∈ Ioo a t₀, ∀ y : P.Carrier, q < G.flow.scalar t y →
       ∀ v : TangentSpace ThreeModel y,
         |Perelman.CanonicalNeighborhood.scalarDifferential G.flow t y v| ≤
@@ -207,7 +210,7 @@ theorem abs_scalarDifferential_le_at_slice {C q t₀ : ℝ} (ht₀ : t₀ ∈ Ic
   · exact G.abs_scalarDifferential_le_of_forall_Ioo ⟨hat₀, ht₀.2⟩ y
       (fun t ht hq => hbefore t ht y hq) hy v
 
-theorem normSq_rm_le_of_forall_riemannNorm_le {K t₀ t : ℝ} (hK : 0 < K)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.normSq_rm_le_of_forall_riemannNorm_le {K t₀ t : ℝ} (hK : 0 < K)
     (ht₀ : a ≤ t₀) (ht₀t : t₀ ≤ t) (hts : t < s) (hη : 2592 * K * (t - t₀) ≤ 1)
     (h : ∀ x : P.Carrier, G.riemannNorm t₀ x ≤ K) (x : P.Carrier) :
     normSq0S (G.flow.base.metric t) x 4 (G.flow.base.rm04 t x) ≤ (2 * K) ^ 2 := by
@@ -217,7 +220,7 @@ theorem normSq_rm_le_of_forall_riemannNorm_le {K t₀ t : ℝ} (hK : 0 < K)
   rw [riemannNorm] at hd hn
   nlinarith
 
-theorem metric_inner_le_exp_one_mul_of_forall_riemannNorm_le {K t₀ t t₁ t₂ : ℝ} (hK : 0 < K)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.metric_inner_le_exp_one_mul_of_forall_riemannNorm_le {K t₀ t t₁ t₂ : ℝ} (hK : 0 < K)
     (ht₀ : a ≤ t₀) (hts : t < s) (hη : 2592 * K * (t - t₀) ≤ 1)
     (h : ∀ x : P.Carrier, G.riemannNorm t₀ x ≤ K) (h₁ : t₁ ∈ Icc t₀ t) (h₂ : t₂ ∈ Icc t₀ t)
     (x : P.Carrier) (v : TangentSpace ThreeModel x) :
@@ -236,7 +239,7 @@ theorem metric_inner_le_exp_one_mul_of_forall_riemannNorm_le {K t₀ t t₁ t₂
   exact hcmp.trans (mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr hexp)
     (metric_inner_self_nonneg (G.flow.base.metric t₂) x v))
 
-theorem riemannianBallOf_subset_of_forall_riemannNorm_le {K t₀ t t₁ t₂ : ℝ} (hK : 0 < K)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.riemannianBallOf_subset_of_forall_riemannNorm_le {K t₀ t t₁ t₂ : ℝ} (hK : 0 < K)
     (ht₀ : a ≤ t₀) (hts : t < s) (hη : 2592 * K * (t - t₀) ≤ 1)
     (h : ∀ x : P.Carrier, G.riemannNorm t₀ x ≤ K) (h₁ : t₁ ∈ Icc t₀ t) (h₂ : t₂ ∈ Icc t₀ t)
     (p : P.Carrier) (r : ℝ) :
@@ -246,7 +249,7 @@ theorem riemannianBallOf_subset_of_forall_riemannNorm_le {K t₀ t t₁ t₂ : �
     (fun q _ v => G.metric_inner_le_exp_one_mul_of_forall_riemannNorm_le hK ht₀ hts hη h
       h₂ h₁ q v)
 
-theorem scalar_le_of_forall_riemannNorm_le {K t₀ t : ℝ} (hK : 0 < K)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_of_forall_riemannNorm_le {K t₀ t : ℝ} (hK : 0 < K)
     (ht₀ : a ≤ t₀) (ht₀t : t₀ ≤ t) (hts : t < s) (hη : 2592 * K * (t - t₀) ≤ 1)
     (h : ∀ x : P.Carrier, G.riemannNorm t₀ x ≤ K) (x : P.Carrier) :
     G.flow.scalar t x ≤ 18 * K := by
@@ -259,7 +262,7 @@ theorem scalar_le_of_forall_riemannNorm_le {K t₀ t : ℝ} (hK : 0 < K)
   have hR : G.flow.scalar t x ≤ 3 ^ 2 * G.riemannNorm t x := (le_abs_self _).trans hs
   linarith
 
-theorem exists_sliver_forward_comparison {K ζ t₀ : ℝ} (hK : 0 < K) (hζ : 0 < ζ)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_sliver_forward_comparison {K ζ t₀ : ℝ} (hK : 0 < K) (hζ : 0 < ζ)
     (ht₀ : t₀ ∈ Ico a s) (h : ∀ x : P.Carrier, G.riemannNorm t₀ x ≤ K) :
     ∃ η : ℝ, 0 < η ∧ η ≤ min 1 ζ / (2592 * K) ∧ t₀ + η < s ∧
       ∀ t ∈ Icc t₀ (t₀ + η),

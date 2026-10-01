@@ -11,10 +11,13 @@ open scoped Manifold ContDiff NNReal Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem lipschitzOnWith_inv_max_scalar_at
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.lipschitzOnWith_inv_max_scalar_at
     (G : P.IncomingSlab a s) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (x : P.Carrier)
     (hbound : ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
@@ -53,7 +56,7 @@ theorem lipschitzOnWith_inv_max_scalar_at
     v ⟨hv.1, (le_max_right _ _).trans hmb.le⟩
 
 
-theorem scalar_le_two_mul_of_time_distance_le
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_two_mul_of_time_distance_le
     {q Q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (x : P.Carrier)
     (hbound : ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
@@ -82,7 +85,7 @@ theorem scalar_le_two_mul_of_time_distance_le
     (inv_le_inv₀ (by positivity : 0 < 2 * Q) hup).mp hlow
   exact (le_max_right _ _).trans hupper
 
-theorem TerminalLimitMetric.scalar_le_two_mul_of_time_sub_le
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.scalar_le_two_mul_of_time_sub_le
     (L : G.TerminalLimitMetric) {q Q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (x : G.terminalRegularOpen)
     (hbound : ∀ t ∈ Ioo a s, q < G.flow.scalar t x.val →
@@ -101,7 +104,7 @@ theorem TerminalLimitMetric.scalar_le_two_mul_of_time_sub_le
   exact G.scalar_le_two_mul_of_time_distance_le hq x.val hbound ht
     ⟨ht.1.trans hu.1, hu.2⟩ hqQ hscalar hsmall
 
-theorem monotoneOn_max_scalar_of_deriv_nonneg
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.monotoneOn_max_scalar_of_deriv_nonneg
     (G : P.IncomingSlab a s) {q : ℝ} (x : P.Carrier)
     (hderiv : ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       0 ≤ derivWithin (fun v => G.flow.scalar v x) (Iic t) t) :
@@ -116,7 +119,7 @@ theorem monotoneOn_max_scalar_of_deriv_nonneg
         (Ioo_mem_nhds ht.1 ht.2)
     exact ⟨hd, by simpa only [hd.derivWithin (uniqueDiffWithinAt_Iic t)] using hderiv t ht hq⟩
 
-theorem TerminalLimitMetric.max_scalar_le_terminal_of_deriv_nonneg
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.max_scalar_le_terminal_of_deriv_nonneg
     {G : P.IncomingSlab a s} (L : G.TerminalLimitMetric) {q : ℝ} (x : G.terminalRegularOpen)
     (hderiv : ∀ t ∈ Ioo a s, q < G.flow.scalar t x.val →
       0 ≤ derivWithin (fun v => G.flow.scalar v x.val) (Iic t) t)

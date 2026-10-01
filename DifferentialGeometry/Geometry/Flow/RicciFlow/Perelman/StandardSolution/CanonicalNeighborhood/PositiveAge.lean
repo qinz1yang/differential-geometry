@@ -29,7 +29,7 @@ private theorem nonempty_positiveAge_tangentOrientation :
   let O₃ : DifferentialGeometry.ManifoldOrientation (𝓡 3) (EuclideanSpace ℝ (Fin 3)) 3 :=
     cast (congrArg (fun n =>
       DifferentialGeometry.ManifoldOrientation (𝓡 3) (EuclideanSpace ℝ (Fin 3)) n) hdim) O
-  exact ⟨{ orientation := O₃.orientation, locally_constant := O₃.locally_constant }⟩
+  exact ⟨O₃⟩
 
 private theorem positiveAge_regular_window (S : PartialStandardSolution) {a b : ℝ}
     (h : Icc a b ⊆ S.domain) :

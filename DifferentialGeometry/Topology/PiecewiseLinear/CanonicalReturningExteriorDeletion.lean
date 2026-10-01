@@ -14,7 +14,7 @@ variable [DecidableEq E3] {X : ℤ → Geometry.SimplicialComplex ℝ E3}
 theorem IsCanonicalSurface.exists_returning_exterior_annuli_and_separator
     (hX : IsCanonicalSurface X (fun j => φ '' S j) T'' I P' a b)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (h267 : Moise267) (hI : IsOpen I)
+    (hI : IsOpen I)
     (havoid : ∀ j : ℤ, Disjoint (φ '' S j) ({a, b} : Set E3))
     (i : ℤ) (c : ConnectedComponents (X i).space) {J₀ J₁ : Set E3}
     (hC : IsPLAnnulusWithEnds (connectedComponentComplex (X i) c).space J₀ J₁)
@@ -56,7 +56,7 @@ theorem IsCanonicalSurface.exists_returning_exterior_annuli_and_separator
     · exact fun _ hx => hCT.subset ⟨hx.1, h₁T hx.2⟩
     · exact fun _ hx => ⟨(hCT.symm.subset hx).1, (hmeet.symm.subset hx).2⟩
   obtain ⟨B, x, r, s, t, hchoice, hfrontier, hx, hunbounded, -, -, -, hfront, -⟩ :=
-    hC.exists_exterior_complementary_annulus h267 hB₀ hB₁ hC₀ hC₁ hmeet
+    hC.exists_exterior_complementary_annulus hB₀ hB₁ hC₀ hC₁ hmeet
   have hB : IsPLAnnulusWithEnds B J₀ J₁ :=
     hchoice.elim (fun h => h.symm ▸ hB₀) (fun h => h.symm ▸ hB₁)
   have hBT : B ⊆ T'' (2 * k) :=

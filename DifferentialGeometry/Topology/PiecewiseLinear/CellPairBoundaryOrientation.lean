@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BallPairBoundaryOrientation
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartImagePLCell
-import DifferentialGeometry.Topology.PiecewiseLinear.ChartTameNestedCells
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.ChartNeighborhood
 
 open Set Filter
 open scoped Topology Manifold

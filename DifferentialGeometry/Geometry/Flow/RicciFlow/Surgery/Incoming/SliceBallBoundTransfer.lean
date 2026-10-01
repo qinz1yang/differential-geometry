@@ -10,11 +10,14 @@ open scoped Manifold
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem exists_mem_Ioo_scalar_metric_close {t₀ ζ d : ℝ} (ht₀ : t₀ ∈ Ioo a s) (hζ : 0 < ζ)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_mem_Ioo_scalar_metric_close {t₀ ζ d : ℝ} (ht₀ : t₀ ∈ Ioo a s) (hζ : 0 < ζ)
     (hd : 0 < d) :
     ∃ σ : ℝ, σ ∈ Ioo a t₀ ∧ t₀ - d ≤ σ ∧ ∀ x : P.Carrier,
       |G.flow.scalar σ x - G.flow.scalar t₀ x| ≤ ζ ∧
@@ -35,7 +38,7 @@ theorem exists_mem_Ioo_scalar_metric_close {t₀ ζ d : ℝ} (ht₀ : t₀ ∈ I
   obtain ⟨h1, -, h3⟩ := h (t₀ - e) hσ t₀ h₀ x
   exact ⟨h1, h3⟩
 
-theorem exists_earlier_slice_scalar_ball_transfer {t₀ t q ρ Cq Λ A θ S : ℝ} (y : P.Carrier)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_earlier_slice_scalar_ball_transfer {t₀ t q ρ Cq Λ A θ S : ℝ} (y : P.Carrier)
     (hat₀ : a < t₀) (ht₀t : t₀ ≤ t) (hts : t < s) (hq : 0 < q)
     (hqy : q ≤ Cq * G.flow.scalar t y) (hΛ : 0 < Λ) (hΛR : Λ ≤ G.flow.scalar t y)
     (hΛt : Λ ≤ G.flow.scalar t y * t₀)

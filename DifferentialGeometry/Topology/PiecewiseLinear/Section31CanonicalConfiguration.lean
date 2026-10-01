@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section30Torus
+import DifferentialGeometry.Topology.PiecewiseLinear.Torus.NestedApproximation
 import DifferentialGeometry.Topology.FundamentalGroup.Nullhomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.BallHomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalConfiguration

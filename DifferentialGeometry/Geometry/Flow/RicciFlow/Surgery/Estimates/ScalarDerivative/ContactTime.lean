@@ -53,7 +53,7 @@ theorem exists_pos_lt_scalar_derivative_failure_time_of_initialIdentification
         a < t := by
   obtain ⟨aSing, haSing, hstage⟩ := exists_pos_le_positive_stage_time_of_initialIdentification P g
   obtain ⟨τ, hτ, hseed⟩ :=
-    OrientedThreeStage.exists_uniform_initial_scalar_derivative_bounds_of_isometry P g
+    DifferentialGeometry.Topology.ClosedOrientedManifold.exists_uniform_initial_scalar_derivative_bounds_of_isometry P g
   refine ⟨min aSing τ, lt_min haSing hτ, ?_⟩
   intro C hC
   obtain ⟨q, hq, hbound⟩ := hseed C hC

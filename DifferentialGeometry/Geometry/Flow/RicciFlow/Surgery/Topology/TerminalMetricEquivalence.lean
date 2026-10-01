@@ -10,11 +10,13 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ}
 
-theorem IncomingSlab.metric_inner_bounds_on_tail
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.metric_inner_bounds_on_tail
     (G : P.IncomingSlab a s) {c K : ℝ} (hc : c ∈ Ico a s) (hK : 0 ≤ K)
     (U : Set P.Carrier)
     (hcurv : ∀ y ∈ U, ∀ t ∈ Ico c s, G.riemannNorm t y ≤ K) :
@@ -50,7 +52,7 @@ theorem IncomingSlab.metric_inner_bounds_on_tail
       (Real.exp_le_exp.mpr (neg_le_neg htime)) hnn).trans hcmp.1
   · exact hcmp.2.trans (mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr htime) hnn)
 
-theorem IncomingSlab.exists_terminalRegular_metric_bounds
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_terminalRegular_metric_bounds
     (G : P.IncomingSlab a s) {x : P.Carrier} (hx : x ∈ G.terminalRegularRegion) :
     ∃ (U : Set P.Carrier) (c K : ℝ), IsOpen U ∧ x ∈ U ∧ c ∈ Ico a s ∧ 0 ≤ K ∧
       ∀ t ∈ Ico c s, ∀ y ∈ U, ∀ v : TangentSpace ThreeModel y,

@@ -40,7 +40,7 @@ end ComparisonSupport
 
 theorem rfs_child_comparison
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier) :
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       C((G.Parent c).Carrier, (G.Child c).Carrier),
     (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧

@@ -1,7 +1,7 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Compact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
+import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTimeTranslation
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
@@ -18,9 +18,11 @@ universe u
 
 namespace OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 variable {P : OrientedThreeStage.{u}}
 
-theorem chartVector_contMDiffOn (P : OrientedThreeStage.{u}) (p : P.Carrier) (i : Fin 3) :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.chartVector_contMDiffOn (P : OrientedThreeStage.{u}) (p : P.Carrier) (i : Fin 3) :
     ContMDiffOn ThreeModel (ThreeModel.prod 𝓘(ℝ, ThreeSpace)) ∞
       (fun x : P.Carrier => TotalSpace.mk' ThreeSpace x (P.chartVector p x i))
       (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet := by
@@ -38,7 +40,7 @@ theorem chartVector_contMDiffOn (P : OrientedThreeStage.{u}) (p : P.Carrier) (i 
   rw [chartVector, Trivialization.symmL_apply _ hx]
   exact congrArg Prod.snd h
 
-theorem chartVector_metric_contMDiffOn (P : OrientedThreeStage.{u}) (g : ℝ → P.Metric)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.chartVector_metric_contMDiffOn (P : OrientedThreeStage.{u}) (g : ℝ → P.Metric)
     {K : Set ℝ}
     (hg : ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
       (ThreeModel.prod 𝓘(ℝ, ThreeSpace →L[ℝ] ThreeSpace →L[ℝ] ℝ)) ∞
@@ -72,7 +74,7 @@ theorem chartVector_metric_contMDiffOn (P : OrientedThreeStage.{u}) (g : ℝ →
   rw [Bundle.contMDiffWithinAt_totalSpace] at h
   exact h.2
 
-theorem MetricSmoothUpTo.of_contMDiffOn (P : OrientedThreeStage.{u}) (g : ℝ → P.Metric)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.of_contMDiffOn (P : OrientedThreeStage.{u}) (g : ℝ → P.Metric)
     {J K : Set ℝ} (hK : IsOpen K) (hJK : J ⊆ K)
     (hg : ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
       (ThreeModel.prod 𝓘(ℝ, ThreeSpace →L[ℝ] ThreeSpace →L[ℝ] ℝ)) ∞
@@ -91,7 +93,7 @@ theorem MetricSmoothUpTo.of_contMDiffOn (P : OrientedThreeStage.{u}) (g : ℝ �
   · intro s hs x hx i j
     rfl
 
-theorem MetricSmoothUpTo.of_contMDiffOn_Ico (P : OrientedThreeStage.{u}) (g : ℝ → P.Metric)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.of_contMDiffOn_Ico (P : OrientedThreeStage.{u}) (g : ℝ → P.Metric)
     {a b d : ℝ} (hab : a < b) (hbd : b < d)
     (hg : ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
       (ThreeModel.prod 𝓘(ℝ, ThreeSpace →L[ℝ] ThreeSpace →L[ℝ] ℝ)) ∞
@@ -188,9 +190,12 @@ end OrientedThreeStage
 
 namespace OrientedThreeStage.ClosedSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab
+
 variable {P : OrientedThreeStage.{u}}
 
-def ofClosedOpen (P : OrientedThreeStage.{u}) {a b d : ℝ} (had : a < d)
+def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.ofClosedOpen (P : OrientedThreeStage.{u}) {a b d : ℝ} (had : a < d)
     (S : SolutionOn (I := ThreeModel) (M := P.Carrier) (RealTimeInterval.closedOpen a d had))
     (hS : IsSolutionOn (I := ThreeModel) S)
     (hg : ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
@@ -210,7 +215,10 @@ end OrientedThreeStage.ClosedSlab
 
 namespace OrientedThreeStage.IncomingSlab
 
-def ofClosedOpen (P : OrientedThreeStage.{u}) {a s d : ℝ} (had : a < d)
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
+def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.ofClosedOpen (P : OrientedThreeStage.{u}) {a s d : ℝ} (had : a < d)
     (S : SolutionOn (I := ThreeModel) (M := P.Carrier) (RealTimeInterval.closedOpen a d had))
     (hS : IsSolutionOn (I := ThreeModel) S)
     (hg : ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
@@ -236,7 +244,7 @@ theorem exists_closedSlab_of_metric (P : OrientedThreeStage.{u}) (g : P.Metric) 
       (M := P.Carrier) g a
   obtain ⟨b, hab, hbd⟩ := exists_between had
   exact ⟨b, hab,
-    OrientedThreeStage.ClosedSlab.ofClosedOpen P had Q.solution Q.isSolution hjoint hab hbd,
+    DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.ofClosedOpen P had Q.solution Q.isSolution hjoint hab hbd,
     hinit⟩
 
 theorem exists_closedSlab_duration_uniform_start_time
@@ -248,7 +256,7 @@ theorem exists_closedSlab_duration_uniform_start_time
   have h : ∃ S' : P.ClosedSlab (0 + a) (δ + a),
       S'.flow.base.metric a = g := by
     refine ⟨S.timeTranslate a, ?_⟩
-    rw [OrientedThreeStage.ClosedSlab.timeTranslate_metric, sub_self]
+    rw [DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.timeTranslate_metric, sub_self]
     exact hS
   rw [zero_add, add_comm δ a] at h
   exact h
@@ -261,13 +269,13 @@ theorem exists_incomingSlab_of_metric (P : OrientedThreeStage.{u}) (g : P.Metric
       (M := P.Carrier) g a
   obtain ⟨s, has, hsd⟩ := exists_between had
   exact ⟨s, has,
-    ⟨OrientedThreeStage.IncomingSlab.ofClosedOpen P had Q.solution Q.isSolution hjoint has
+    ⟨DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.ofClosedOpen P had Q.solution Q.isSolution hjoint has
       hsd⟩⟩
 
 def threeSphereStage : OrientedThreeStage where
   Carrier := Metric.sphere (0 : EuclideanSpace ℝ (Fin 4)) 1
   orientation :=
-    TangentOrientationSection.ofManifoldOrientation (sphereOrientation 3 (by decide))
+    (sphereOrientation 3 (by decide))
 
 theorem nonempty_threeSphereStage : Nonempty threeSphereStage.Carrier := by
   change Nonempty (Metric.sphere (0 : EuclideanSpace ℝ (Fin 4)) 1)

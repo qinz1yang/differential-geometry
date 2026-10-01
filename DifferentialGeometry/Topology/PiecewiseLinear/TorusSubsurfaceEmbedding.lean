@@ -30,7 +30,7 @@ theorem HasBoundaryFixedPLEmbedding.exists_annulus_of_essential_boundary [Decida
     (hK : IsCombinatorialManifoldWithBoundary 2 K) (hconn : IsConnected K.space)
     {S : Set E3} (hS : IsCombinatorialSolidTorus S)
     (h : HasBoundaryFixedPLEmbedding 2 K (frontier S))
-    (h286 : Moise286) (n : ℕ) (G : Fin n → Set E3) (hn : 0 < n)
+    (n : ℕ) (G : Fin n → Set E3) (hn : 0 < n)
     (hG : ∀ i, IsPLSphere 1 (G i)) (hdis : Pairwise fun i j => Disjoint (G i) (G j))
     (hboundary : (boundaryComplex 2 K).space = ⋃ i, G i)
     (hess : ∀ i, ¬ boundsDiskIn (G i) (frontier S)) :
@@ -39,7 +39,7 @@ theorem HasBoundaryFixedPLEmbedding.exists_annulus_of_essential_boundary [Decida
   let _ : Finite R.faces := hRfin.to_subtype
   have hRboundary := hRb.trans hboundary
   obtain ⟨i, j, hij, hann⟩ := hR.exists_annulus_of_essential_torus_boundary R hRconn
-    hS hRS h286 n G hn hG hdis hRboundary hess
+    hS hRS n G hn hG hdis hRboundary hess
   refine ⟨i, j, hij, hann.of_isPLHomeomorphOn_eqOn hf ?_⟩
   exact hfix.mono (union_subset ((subset_iUnion G i).trans hRboundary.symm.subset)
     ((subset_iUnion G j).trans hRboundary.symm.subset))

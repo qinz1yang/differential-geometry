@@ -11,7 +11,7 @@ open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Contract
 universe u
 
-open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 
 private theorem exists_initialTerminalRegion_of_component_regions
     (D : OneStepIncoming.{u}) {ε r δ : ℝ}

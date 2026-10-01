@@ -91,6 +91,9 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 
@@ -102,7 +105,7 @@ variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
   {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold J ∞ N]
   [T2Space N] [ConnectedSpace N] [SigmaCompactSpace N]
 
-theorem scalar_derivWithin_pos_of_canonical_product_chart
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_derivWithin_pos_of_canonical_product_chart
     (W : CanonicalWitness G.flow epsc C1 C2 x t)
     (hchart : W.capTubeHasNeckChart eps) (heps : eps ≤ 1 / 1000)
     (hy : y ∈ connectedComponent x) (hscalar : C2 * G.flow.scalar t y < G.flow.scalar t x)

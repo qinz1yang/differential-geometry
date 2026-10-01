@@ -18,7 +18,9 @@ universe u
 
 namespace OrientedThreeStage
 
-theorem exists_incomingSlab_metric_eq (P : OrientedThreeStage.{u}) (g : P.Metric) (a : ℝ) :
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_incomingSlab_metric_eq (P : OrientedThreeStage.{u}) (g : P.Metric) (a : ℝ) :
     ∃ s : ℝ, a < s ∧ ∃ G : P.IncomingSlab a s, G.flow.base.metric a = g := by
   obtain ⟨d, had, Q, hinit, -, hjoint, -⟩ :=
     exists_completeBoundedCurvatureSolutionOn_from_time_of_compact (I := ThreeModel)
@@ -28,9 +30,11 @@ theorem exists_incomingSlab_metric_eq (P : OrientedThreeStage.{u}) (g : P.Metric
 
 namespace IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 variable {P : OrientedThreeStage.{u}} {a : ℝ}
 
-theorem hasDerivWithinAt_inner_Ici {s : ℝ} (G : P.IncomingSlab a s) {t : ℝ} (ht : t ∈ Ico a s)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.hasDerivWithinAt_inner_Ici {s : ℝ} (G : P.IncomingSlab a s) {t : ℝ} (ht : t ∈ Ico a s)
     (x : P.Carrier) (v w : TangentSpace ThreeModel x) :
     HasDerivWithinAt (fun r => (G.flow.base.metric r).inner x v w)
       (-2 * ricciTensor (G.flow.base.metric t) x v w) (Ici a) t := by
@@ -45,7 +49,7 @@ theorem hasDerivWithinAt_inner_Ici {s : ℝ} (G : P.IncomingSlab a s) {t : ℝ} 
   simpa only [SolutionOn.ricciAt, SolutionFamily.ricciAt,
     metricRicciAt_apply_eq_ricciTensor] using h.mono_of_mem_nhdsWithin hmem
 
-theorem metric_eq_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.metric_eq_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
     (G₂ : P.IncomingSlab a s₂) (h : G₁.flow.base.metric a = G₂.flow.base.metric a) :
     ∀ t ∈ Ico a (min s₁ s₂), G₁.flow.base.metric t = G₂.flow.base.metric t :=
   ricci_flow_forward_unique_of_joint_contMDiffOn G₁.flow.base.metric G₂.flow.base.metric
@@ -58,7 +62,7 @@ theorem metric_eq_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
     (fun _ ht => G₂.hasDerivWithinAt_inner_Ici ⟨ht.1, ht.2.trans_le (min_le_right _ _)⟩)
     h
 
-theorem scalar_eq_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_eq_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
     (G₂ : P.IncomingSlab a s₂) (h : G₁.flow.base.metric a = G₂.flow.base.metric a)
     {t : ℝ} (ht : t ∈ Ico a (min s₁ s₂)) :
     G₁.flow.scalar t = G₂.flow.scalar t := by
@@ -66,7 +70,7 @@ theorem scalar_eq_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
   unfold SolutionFamily.scalar
   rw [metric_eq_of_initial_eq G₁ G₂ h t ht]
 
-theorem riemannNorm_eq_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.riemannNorm_eq_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
     (G₂ : P.IncomingSlab a s₂) (h : G₁.flow.base.metric a = G₂.flow.base.metric a)
     {t : ℝ} (ht : t ∈ Ico a (min s₁ s₂)) :
     G₁.riemannNorm t = G₂.riemannNorm t := by
@@ -74,7 +78,7 @@ theorem riemannNorm_eq_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a 
   unfold riemannNorm SolutionFamily.rm04
   rw [metric_eq_of_initial_eq G₁ G₂ h t ht]
 
-theorem rmNormSq_eq_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.rmNormSq_eq_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
     (G₂ : P.IncomingSlab a s₂) (h : G₁.flow.base.metric a = G₂.flow.base.metric a)
     {t : ℝ} (ht : t ∈ Ico a (min s₁ s₂)) :
     FlowMetricBall.rmNormSq G₁.flow t = FlowMetricBall.rmNormSq G₂.flow t := by
@@ -82,7 +86,7 @@ theorem rmNormSq_eq_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s�
   unfold FlowMetricBall.rmNormSq SolutionFamily.rm04
   rw [metric_eq_of_initial_eq G₁ G₂ h t ht]
 
-theorem isRmControlled_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.isRmControlled_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
     (G₂ : P.IncomingSlab a s₂) (h : G₁.flow.base.metric a = G₂.flow.base.metric a)
     {τ₁ : (RealTimeInterval.closedOpen a s₁ G₁.lt).FlowTime}
     {τ₂ : (RealTimeInterval.closedOpen a s₂ G₂.lt).FlowTime} (hτ : (τ₁ : ℝ) = τ₂)
@@ -106,7 +110,7 @@ theorem isRmControlled_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a 
     have hk := hbound t ht' x hx'
     simpa only [hr, FlowMetricBall.rmNormSq, SolutionFamily.rm04, hm] using hk
 
-theorem isKappaNoncollapsed_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.isKappaNoncollapsed_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSlab a s₁)
     (G₂ : P.IncomingSlab a s₂) (h : G₁.flow.base.metric a = G₂.flow.base.metric a)
     {τ₁ : (RealTimeInterval.closedOpen a s₁ G₁.lt).FlowTime}
     {τ₂ : (RealTimeInterval.closedOpen a s₂ G₂.lt).FlowTime} (hτ : (τ₁ : ℝ) = τ₂)
@@ -125,7 +129,7 @@ theorem isKappaNoncollapsed_of_initial_eq {s₁ s₂ : ℝ} (G₁ : P.IncomingSl
 
 end IncomingSlab
 
-theorem exists_uniform_kappaNoncollapsed_initial (P : OrientedThreeStage.{u}) (g : P.Metric)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_uniform_kappaNoncollapsed_initial (P : OrientedThreeStage.{u}) (g : P.Metric)
     {ρ : ℝ} (hnc : ∀ (s : ℝ) (G : P.IncomingSlab 0 s), G.flow.base.metric 0 = g →
       Perelman.NoLocalCollapsing G.flow ρ) :
     ∃ κ > 0, ∃ η > 0, ∀ (s : ℝ) (G : P.IncomingSlab 0 s), G.flow.base.metric 0 = g →

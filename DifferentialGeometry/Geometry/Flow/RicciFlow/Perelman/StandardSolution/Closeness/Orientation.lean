@@ -299,7 +299,7 @@ private theorem nonempty_euclidean_tangentOrientation :
   let O₃ : DifferentialGeometry.ManifoldOrientation (𝓡 3) ThreeSpace 3 :=
     cast (congrArg (fun n =>
       DifferentialGeometry.ManifoldOrientation (𝓡 3) ThreeSpace n) hdim) O
-  exact ⟨{ orientation := O₃.orientation, locally_constant := O₃.locally_constant }⟩
+  exact ⟨O₃⟩
 
 private theorem isPreconnected_standardCapWindow (D : ℝ) :
     IsPreconnected (standardCapWindow D : Set ThreeSpace) := by

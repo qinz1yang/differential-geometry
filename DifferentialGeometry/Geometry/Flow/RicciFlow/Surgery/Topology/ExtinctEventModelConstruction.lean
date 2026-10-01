@@ -2,7 +2,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTerminalConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Stationary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreTower
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCap
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.Defs
+import DifferentialGeometry.Topology.Manifold.ClosedOriented.Empty
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Nonempty
 
 set_option autoImplicit false
 noncomputable section
@@ -32,9 +34,11 @@ end SmoothCutCapTransition
 
 namespace OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 variable (P : OrientedThreeStage.{u})
 
-def metricOfIsEmpty [IsEmpty P.Carrier] : P.Metric where
+def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.metricOfIsEmpty [IsEmpty P.Carrier] : P.Metric where
   inner := fun x => isEmptyElim x
   symm := fun x => isEmptyElim x
   pos := fun x => isEmptyElim x
@@ -124,7 +128,7 @@ private theorem localFrame_eq_chartVector (P : OrientedThreeStage.{u}) (p x : P.
   rw [Trivialization.symmL_apply _ hx]
   simp [Trivialization.basisAt]
 
-theorem OrientedThreeStage.MetricSmoothUpTo.of_jointSmoothOn {P : OrientedThreeStage.{u}}
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.of_jointSmoothOn {P : OrientedThreeStage.{u}}
     {g : ℝ → P.Metric} {J : Set ℝ}
     (h : ∀ t ∈ J, ∃ V : Set ℝ, IsOpen V ∧ t ∈ V ∧
       ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
@@ -175,7 +179,7 @@ theorem OrientedThreeStage.MetricSmoothUpTo.of_jointSmoothOn {P : OrientedThreeS
       (g s).inner x (P.chartVector p x i) (P.chartVector p x j)
     rw [h1, h2]
 
-theorem OrientedThreeStage.MetricSmoothUpTo.const (P : OrientedThreeStage.{u}) (g : P.Metric)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.const (P : OrientedThreeStage.{u}) (g : P.Metric)
     (J : Set ℝ) : P.MetricSmoothUpTo (fun _ => g) J := by
   intro p t _
   let e := trivializationAt ThreeSpace (TangentSpace ThreeModel) p
@@ -210,9 +214,11 @@ theorem OrientedThreeStage.MetricSmoothUpTo.const (P : OrientedThreeStage.{u}) (
 
 namespace OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 variable {P : OrientedThreeStage.{u}}
 
-def ClosedSlab.ofConst (g : P.Metric)
+def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.ofConst (g : P.Metric)
     (hric : ∀ x (v w : TangentSpace ThreeModel x),
       DifferentialGeometry.Geometry.Curvature.ricciTensor (I := ThreeModel) g x v w = 0)
     {a b : ℝ} (hab : a < b) : P.ClosedSlab a b where
@@ -222,7 +228,7 @@ def ClosedSlab.ofConst (g : P.Metric)
   equation := isSolutionOn_const_of_ricciTensor_eq_zero g hric _
   smoothUpTo := MetricSmoothUpTo.const P g (Icc a b)
 
-def IncomingSlab.ofConst (g : P.Metric)
+def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.ofConst (g : P.Metric)
     (hric : ∀ x (v w : TangentSpace ThreeModel x),
       DifferentialGeometry.Geometry.Curvature.ricciTensor (I := ThreeModel) g x v w = 0)
     {a b : ℝ} (hab : a < b) : P.IncomingSlab a b where
@@ -232,14 +238,14 @@ def IncomingSlab.ofConst (g : P.Metric)
   equation := isSolutionOn_const_of_ricciTensor_eq_zero g hric _
   smoothUpTo := MetricSmoothUpTo.const P g (Ico a b)
 
-theorem exists_incomingSlab_terminalLimitMetric_of_ricciTensor_eq_zero (g : P.Metric)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_incomingSlab_terminalLimitMetric_of_ricciTensor_eq_zero (g : P.Metric)
     (hric : ∀ x (v w : TangentSpace ThreeModel x),
       DifferentialGeometry.Geometry.Curvature.ricciTensor (I := ThreeModel) g x v w = 0)
     {a b : ℝ} (hab : a < b) :
     ∃ G : P.IncomingSlab a b, Nonempty G.TerminalLimitMetric := by
-  let G0 := OrientedThreeStage.ClosedSlab.ofConst (P := P) g hric hab
+  let G0 := DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.ofConst (P := P) g hric hab
   exact ⟨G0.restrictIncoming le_rfl G0.lt le_rfl,
-    ⟨OrientedThreeStage.ClosedSlab.endpointTerminalLimitMetric P G0⟩⟩
+    ⟨DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.endpointTerminalLimitMetric P G0⟩⟩
 
 end OrientedThreeStage
 
@@ -296,21 +302,23 @@ theorem nonempty_iff_of_isEmpty_output [IsEmpty Q.Carrier] :
     exact ⟨E.discarded, E.capped, E.transition, E.incoming, ⟨E.terminal⟩,
       SmoothCutCapTransition.retainedCore_eq_empty_of_isEmpty E.transition⟩
   · rintro ⟨D, N, X, G, hL, -⟩
-    exact ⟨ofEmptyOutput X G hL.some (OrientedThreeStage.metricOfIsEmpty Q)⟩
+    exact ⟨ofEmptyOutput X G hL.some (DifferentialGeometry.Topology.ClosedOrientedManifold.metricOfIsEmpty Q)⟩
 
 end MetricCutCapEvent
 namespace OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 variable {P : OrientedThreeStage.{u}}
 
-theorem nonempty_metricCutCapEvent_of_isEmpty_output_of_ricciTensor_eq_zero
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.nonempty_metricCutCapEvent_of_isEmpty_output_of_ricciTensor_eq_zero
     {Q D N : OrientedThreeStage.{u}} (X : SmoothCutCapTransition P Q D N) [IsEmpty Q.Carrier]
     (g : P.Metric)
     (hric : ∀ x (v w : TangentSpace ThreeModel x),
       DifferentialGeometry.Geometry.Curvature.ricciTensor (I := ThreeModel) g x v w = 0)
     {a b : ℝ} (hab : a < b) : Nonempty (MetricCutCapEvent P Q a b) := by
   obtain ⟨G, hG⟩ :=
-    OrientedThreeStage.exists_incomingSlab_terminalLimitMetric_of_ricciTensor_eq_zero
+    DifferentialGeometry.Topology.ClosedOrientedManifold.exists_incomingSlab_terminalLimitMetric_of_ricciTensor_eq_zero
       (P := P) g hric hab
   exact (MetricCutCapEvent.nonempty_iff_of_isEmpty_output (P := P) (Q := Q)
     (a := a) (s := b)).mpr
@@ -356,7 +364,7 @@ theorem nonempty_iff_of_isEmpty_output [IsEmpty Q.Carrier] :
     exact ⟨E.discarded, E.capped, E.transition, E.incoming, ⟨E.terminal⟩,
       SmoothCutCapTransition.retainedCore_eq_empty_of_isEmpty E.transition⟩
   · rintro ⟨D, N, X, G, hL, -⟩
-    exact ⟨ofEmptyOutput X G hL.some (OrientedThreeStage.metricOfIsEmpty Q)⟩
+    exact ⟨ofEmptyOutput X G hL.some (DifferentialGeometry.Topology.ClosedOrientedManifold.metricOfIsEmpty Q)⟩
 
 end RetainedCoreEvent
 

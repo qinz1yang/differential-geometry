@@ -10,11 +10,14 @@ open DifferentialGeometry.Tensor0SBundle
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-private theorem intrinsic_curvature_heat_subsolution :
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.intrinsic_curvature_heat_subsolution :
     IsHeatPotSubsolutionOn (RealTimeInterval.closedOpen a s G.lt) (flowG G.flow)
       (fun t x => rmTowerCost 3 0 * Real.sqrt (nablaKRm04NormSqIntrinsic G.flow 0 t x))
       (nablaKRm04NormSqIntrinsic G.flow 0) := by
@@ -39,7 +42,7 @@ private theorem intrinsic_curvature_heat_subsolution :
       (I := ThreeModel) G.equation hat1 (ht1t.trans ht.2)
     simpa using h.equation_le t ⟨ht1t, ht.2⟩ x
 
-private theorem intrinsic_curvature_unbounded (h : G.SingularEndpoint) :
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.intrinsic_curvature_unbounded (h : G.SingularEndpoint) :
     Rm04NormSqUnboundedOn G.flow := by
   intro K
   obtain ⟨t, ht, x, hx⟩ := h (Real.sqrt (max K 0) + 1)
@@ -52,7 +55,7 @@ private theorem intrinsic_curvature_unbounded (h : G.SingularEndpoint) :
       (normSq0S_nonneg (G.flow.base.metric t) x 4 (G.flow.base.rm04 t x))
   nlinarith [Real.sqrt_nonneg (max K 0), le_max_left K 0]
 
-theorem one_div_le_endpoint_sub_of_initial_curvature_bound
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.one_div_le_endpoint_sub_of_initial_curvature_bound
     (hsing : G.SingularEndpoint) {Q : ℝ} (hQ : 0 < Q)
     (hinit : ∀ x : P.Carrier, G.riemannNorm a x ≤ Q) :
     1 / (2592 * Q) ≤ s - a := by

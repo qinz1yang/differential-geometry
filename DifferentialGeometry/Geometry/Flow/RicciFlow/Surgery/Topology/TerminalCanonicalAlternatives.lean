@@ -12,10 +12,13 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.eventually_canonical_neck_or_cap
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_canonical_neck_or_cap
     (L : G.TerminalLimitMetric) (x y : G.terminalRegularOpen)
     (hy : y.val ∈ connectedComponent x.val) {eps C1 C2 : ℝ}
     (hscalar : C2 * metricScalarAt L.metric y < metricScalarAt L.metric x) :
@@ -30,7 +33,7 @@ theorem TerminalLimitMetric.eventually_canonical_neck_or_cap
   intro W
   exact W.alternative_eq_neck_or_cap_of_mul_scalar_lt hy ht
 
-theorem TerminalLimitMetric.eventually_canonical_neck_or_cap_of_not_isCompact
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_canonical_neck_or_cap_of_not_isCompact
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
     (hnoncompact : ¬ IsCompact (connectedComponent x)) (eps C1 C2 : ℝ) :
     ∀ᶠ t in 𝓝[<] s, ∀ W : CanonicalWitness G.flow eps C1 C2 x.val t,
@@ -56,7 +59,7 @@ theorem TerminalLimitMetric.eventually_canonical_neck_or_cap_of_not_isCompact
   | positive whole data hsec => exact (hproper whole).elim
   | round whole data => exact (hproper whole).elim
 
-theorem exists_canonical_neck_or_cap_sequence_of_eventually
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_canonical_neck_or_cap_sequence_of_eventually
     {x : P.Carrier} {eps C1 C2 q : ℝ}
     (hcanonical : ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       ∃ W : CanonicalWitness G.flow eps C1 C2 x t, W.capTubeHasNeckChart eps)
@@ -101,7 +104,7 @@ theorem exists_canonical_neck_or_cap_sequence_of_eventually
     exact ⟨fun n => τ (φ n), hτmono.comp hφ, fun n => hτdomain (φ n), hτ.comp hφ.tendsto_atTop,
       fun n => W (φ n), fun n => hW (φ n), Or.inr ⟨cap, depth, hcap⟩⟩
 
-theorem exists_uniform_canonical_neck_or_cap_sequence
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_canonical_neck_or_cap_sequence
     {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
       (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
@@ -131,7 +134,7 @@ theorem exists_uniform_canonical_neck_or_cap_sequence
   exact exists_canonical_neck_or_cap_sequence_of_eventually
     (fun t ht hx => hcanonical x.val t ⟨ht.1.le, ht.2⟩ hx.le) hhigh hbranch
 
-theorem exists_uniform_canonical_neck_or_cap_sequence_of_not_isCompact
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_canonical_neck_or_cap_sequence_of_not_isCompact
     {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
       (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
@@ -160,7 +163,7 @@ theorem exists_uniform_canonical_neck_or_cap_sequence_of_not_isCompact
   exact exists_canonical_neck_or_cap_sequence_of_eventually
     (fun t ht hx => hcanonical x.val t ⟨ht.1.le, ht.2⟩ hx.le) hhigh hbranch
 
-theorem TerminalLimitMetric.exists_canonical_neck_or_cap_sequence
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_canonical_neck_or_cap_sequence
     (L : G.TerminalLimitMetric) :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
       ∃ C1 C2 q : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ 0 < q ∧

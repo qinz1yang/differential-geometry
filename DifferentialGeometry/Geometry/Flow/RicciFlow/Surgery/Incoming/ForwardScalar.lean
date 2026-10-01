@@ -12,10 +12,13 @@ open scoped Manifold ContDiff NNReal Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem scalar_le_two_mul_initial_of_time_sub_le
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_two_mul_initial_of_time_sub_le
     {q A : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
     (x : P.Carrier)
     (hbound : ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
@@ -38,7 +41,7 @@ theorem scalar_le_two_mul_initial_of_time_sub_le
   exact (le_max_right _ _).trans
     ((inv_le_inv₀ (by positivity) (hA.trans_le (le_max_left _ _))).mp hlow)
 
-theorem TerminalLimitMetric.scalar_le_two_mul_initial_of_time_sub_le
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.scalar_le_two_mul_initial_of_time_sub_le
     (L : G.TerminalLimitMetric) {q A : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
     (x : G.terminalRegularOpen)
     (hbound : ∀ t ∈ Ioo a s, q < G.flow.scalar t x.val →
@@ -51,7 +54,7 @@ theorem TerminalLimitMetric.scalar_le_two_mul_initial_of_time_sub_le
   exact (mul_le_mul_of_nonneg_left (sub_le_sub_right ht.2.le a) (by positivity)).trans htime
 
 
-theorem curvature_bound_of_initial_scalar_bound
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.curvature_bound_of_initial_scalar_bound
     {q A a₀ : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A) (ha₀ : 0 < a₀)
     (K : Set P.Carrier)
     (hbound : ∀ x ∈ K, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
@@ -90,9 +93,12 @@ open scoped Manifold ContDiff NNReal Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
-theorem exists_uniform_curvature_bound_of_normalized_initial_scalar_bound
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_curvature_bound_of_normalized_initial_scalar_bound
     (B P : ℝ) (hB : 0 < B) (hP : 0 < P) :
     ∃ K : ℝ, 0 < K ∧
       ∀ {X : OrientedThreeStage.{u}} {a s : ℝ} (G : X.IncomingSlab a s)
@@ -151,10 +157,13 @@ open scoped Manifold ContDiff NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem exists_curvature_bound_of_initial_scalar_bound
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_curvature_bound_of_initial_scalar_bound
     {q A : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
     (K : Set P.Carrier)
     (hbound : ∀ x ∈ K, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
@@ -177,7 +186,7 @@ theorem exists_curvature_bound_of_initial_scalar_bound
     exact sqrt_rmNormSq_le_of_scalar_le hC3 (hbridge P.Carrier G.flow)
       hPhi hpinch (by simp [ThreeSpace]) ht x hA (by linarith)
 
-theorem subset_terminalRegularRegion_of_initial_scalar_bound
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.subset_terminalRegularRegion_of_initial_scalar_bound
     {q A : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
     {U : Set P.Carrier} (hU : IsOpen U)
     (hbound : ∀ x ∈ U, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
@@ -190,7 +199,7 @@ theorem subset_terminalRegularRegion_of_initial_scalar_bound
   intro x hx
   exact ⟨U, hU, hx, a, ⟨le_rfl, G.lt⟩, B, hB, hcurv⟩
 
-theorem mem_terminalRegularRegion_of_initial_scalar_bound
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.mem_terminalRegularRegion_of_initial_scalar_bound
     {q A : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
     {U : Set P.Carrier} (hU : IsOpen U)
     (hbound : ∀ y ∈ U, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
@@ -219,10 +228,13 @@ open scoped Manifold ContDiff NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem curvature_bound_of_initial_scalar_bound_of_initial_fixedHamiltonIveyRegion
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.curvature_bound_of_initial_scalar_bound_of_initial_fixedHamiltonIveyRegion
     {q A a₀ : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A) (ha₀ : 0 < a₀)
     (K : Set P.Carrier)
     (hbound : ∀ x ∈ K, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
@@ -255,10 +267,13 @@ open scoped Manifold ContDiff NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem exists_curvature_bound_of_scalar_bound_at_time
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_curvature_bound_of_scalar_bound_at_time
     {q A τ : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
     (K : Set P.Carrier)
     (hbound : ∀ x ∈ K, ∀ t ∈ Ioo τ s, q < G.flow.scalar t x →
@@ -280,7 +295,7 @@ theorem exists_curvature_bound_of_scalar_bound_at_time
           fun v hv y hy i j => heq v ⟨hv.1, hτ.1.trans hv.2.1, hv.2.2⟩ y hy i j⟩ }
   exact J.exists_curvature_bound_of_initial_scalar_bound hA hqA K hbound hscalar htime
 
-theorem subset_terminalRegularRegion_of_scalar_bound_at_time
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.subset_terminalRegularRegion_of_scalar_bound_at_time
     {q A τ : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
     {U : Set P.Carrier} (hU : IsOpen U)
     (hbound : ∀ x ∈ U, ∀ t ∈ Ioo τ s, q < G.flow.scalar t x →
@@ -302,9 +317,12 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 open scoped Manifold ContDiff NNReal Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 universe u
 
-theorem TerminalLimitMetric.riemannNorm_extendedMetric_le_of_scalar_bound_at_time
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.riemannNorm_extendedMetric_le_of_scalar_bound_at_time
     {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
     {q Q a₀ τ : ℝ} {C : ℝ≥0} (hQ : 0 < Q) (hqQ : q ≤ Q) (ha₀ : 0 < a₀)

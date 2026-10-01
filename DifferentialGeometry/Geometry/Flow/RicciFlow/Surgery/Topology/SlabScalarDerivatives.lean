@@ -13,10 +13,13 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.ClosedSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a b : ℝ} (G : P.ClosedSlab a b)
 
-theorem scalar_gradient_norm_sq_continuousOn :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.scalar_gradient_norm_sq_continuousOn :
     ContinuousOn (fun p : ℝ × P.Carrier => (G.flow.base.metric p.1).inner p.2
       (gradientFun (G.flow.base.metric p.1) (G.flow.scalar p.1) p.2)
       (gradientFun (G.flow.base.metric p.1) (G.flow.scalar p.1) p.2))
@@ -24,7 +27,7 @@ theorem scalar_gradient_norm_sq_continuousOn :
   scalar_gradient_norm_sq_continuousOn_of_joint_metric G.flow.base.metric
     G.smoothUpTo.jointContMDiffOn
 
-theorem scalar_evolution_rhs_continuousOn :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.scalar_evolution_rhs_continuousOn :
     ContinuousOn (fun p : ℝ × P.Carrier =>
       laplacianAt (flowG G.flow) p.1 (G.flow.scalar p.1) p.2 +
         2 * normSq0S (G.flow.base.metric p.1) p.2 2 (G.flow.ricci p.1 p.2))
@@ -39,10 +42,12 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.Close
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a b : ℝ}
 
-private theorem ClosedSlab.scalar_hasDerivWithinAt_Ici_of_continuous_evolution
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.scalar_hasDerivWithinAt_Ici_of_continuous_evolution
     (G : P.ClosedSlab a b)
     (hJ : ContinuousOn (fun p : ℝ × P.Carrier =>
       laplacianAt (flowG G.flow) p.1 (G.flow.scalar p.1) p.2 +
@@ -67,7 +72,7 @@ private theorem ClosedSlab.scalar_hasDerivWithinAt_Ici_of_continuous_evolution
   exact (DifferentialGeometry.Analysis.Calculus.SmoothExtension.hasDerivWithinAt_Icc_of_hasDerivAt_Ioo
     hf hj hd ⟨ht.1,ht.2.le⟩).mono_of_mem_nhdsWithin (Icc_mem_nhdsGE_of_mem ht)
 
-private theorem ClosedSlab.continuousOn_scalar_derivWithin_Ici_of_continuous_evolution
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.continuousOn_scalar_derivWithin_Ici_of_continuous_evolution
     (G : P.ClosedSlab a b)
     (hJ : ContinuousOn (fun p : ℝ × P.Carrier =>
       laplacianAt (flowG G.flow) p.1 (G.flow.scalar p.1) p.2 +
@@ -80,21 +85,21 @@ private theorem ClosedSlab.continuousOn_scalar_derivWithin_Ici_of_continuous_evo
   exact (G.scalar_hasDerivWithinAt_Ici_of_continuous_evolution hJ
     ⟨hp.1.1,hp.1.2.trans_lt hc⟩ p.2).derivWithin (uniqueDiffWithinAt_Ici p.1)
 
-theorem ClosedSlab.scalar_hasDerivWithinAt_Ici
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.scalar_hasDerivWithinAt_Ici
     (G : P.ClosedSlab a b) {t : ℝ} (ht : t ∈ Ico a b) (x : P.Carrier) :
     HasDerivWithinAt (fun r => G.flow.scalar r x)
       (laplacianAt (flowG G.flow) t (G.flow.scalar t) x +
         2 * normSq0S (G.flow.base.metric t) x 2 (G.flow.ricci t x)) (Ici t) t :=
   G.scalar_hasDerivWithinAt_Ici_of_continuous_evolution G.scalar_evolution_rhs_continuousOn ht x
 
-theorem ClosedSlab.scalar_derivWithin_Ici_eq
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.scalar_derivWithin_Ici_eq
     (G : P.ClosedSlab a b) {t : ℝ} (ht : t ∈ Ico a b) (x : P.Carrier) :
     derivWithin (fun r => G.flow.scalar r x) (Ici t) t =
       laplacianAt (flowG G.flow) t (G.flow.scalar t) x +
         2 * normSq0S (G.flow.base.metric t) x 2 (G.flow.ricci t x) :=
   (G.scalar_hasDerivWithinAt_Ici ht x).derivWithin (uniqueDiffWithinAt_Ici t)
 
-theorem ClosedSlab.scalar_derivWithin_Ici_continuousOn
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.scalar_derivWithin_Ici_continuousOn
     (G : P.ClosedSlab a b) {c : ℝ} (hc : c < b) :
     ContinuousOn (fun p : ℝ × P.Carrier =>
       derivWithin (fun t => G.flow.scalar t p.2) (Ici p.1) p.1) (Icc a c ×ˢ univ) :=
@@ -104,10 +109,13 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.ClosedSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a b : ℝ}
 
-theorem eventually_birth_scalar_derivative_bounds
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.eventually_birth_scalar_derivative_bounds
     (G : P.ClosedSlab a b) (x : P.Carrier) {C : ℝ}
     (hQ : 0 < G.flow.scalar a x)
     (hgrad : (G.flow.base.metric a).inner x

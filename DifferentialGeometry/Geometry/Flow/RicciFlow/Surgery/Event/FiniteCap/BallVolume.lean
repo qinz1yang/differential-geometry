@@ -71,10 +71,10 @@ theorem exists_uniform_metricCutCapEvent_ball_volume_lower_or_terminal_volume :
         (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
         (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y))
         {t₀ t₁ : ℝ}
-        (event : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
-          (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁),
-      event.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
-      event.capped = OrientedThreeStage.ofSmoothOrientation Qcap oQ →
+        (event : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
+          (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁),
+      event.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc →
+      event.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Qcap oQ →
       HEq event.transition.trace
         ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ (fun i => (d₀ i).precision_lt_one)
           f hf hdisj R hnontrivial).reparametrizeCaps
@@ -85,12 +85,12 @@ theorem exists_uniform_metricCutCapEvent_ball_volume_lower_or_terminal_volume :
       ∃ r₀ : ℝ, 0 < r₀ ∧ ∀ q : Ret,
         (∀ r : ℝ, 0 < r → r ≤ r₀ →
           ENNReal.ofReal ν * ENNReal.ofReal r ^ 3 ≤
-            riemannianVolumeMeasure ThreeModel (OrientedThreeStage.ofSmoothOrientation Ret oRet).Carrier
+            riemannianVolumeMeasure ThreeModel (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet).Carrier
               event.outputMetric (riemannianBallOf event.outputMetric q r)) ∨
         ∃ p : event.incoming.terminalRegularOpen, event.RegularCrossing p.val q ∧
           IsCompact (riemannianClosedBallOf event.terminal.metric p r₀) ∧
           ∀ r : ℝ, 0 < r → r ≤ r₀ →
-            riemannianVolumeMeasure ThreeModel (OrientedThreeStage.ofSmoothOrientation Ret oRet).Carrier
+            riemannianVolumeMeasure ThreeModel (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet).Carrier
               event.outputMetric (riemannianBallOf event.outputMetric q r) =
               riemannianVolumeMeasure ThreeModel event.incoming.terminalRegularOpen event.terminal.metric
                 (riemannianBallOf event.terminal.metric p r) := by

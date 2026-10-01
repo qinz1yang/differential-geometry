@@ -145,6 +145,6 @@ theorem ClosedOrientedManifold.disjoint_componentSet_of_ne (D : ClosedOrientedMa
 
 theorem MetricCutCapEvent.finite_discardedComponents {P Q : OrientedThreeStage.{u}} {a s : ℝ}
     (E : MetricCutCapEvent P Q a s) : Finite (ConnectedComponents E.discarded.Carrier) :=
-  ClosedOrientedManifold.finite_components E.discarded.toClosedOrientedManifold
+  ClosedOrientedManifold.finite_components E.discarded
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

@@ -11,11 +11,13 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 universe u v
 
 variable {P : OrientedThreeStage.{u}} {Q : OrientedThreeStage.{v}} {a s : ℝ}
 
-private theorem pullback_smoothUpTo
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.pullback_smoothUpTo
     (G : Q.IncomingSlab a s)
     (φ : P.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ Q.Carrier) :
     P.MetricSmoothUpTo
@@ -52,7 +54,7 @@ private theorem pullback_smoothUpTo
   · intro r hr x hx i j
     exact hEq r ⟨hr.1.1, hr.2.1, hr.1.2.le⟩ x hx i j
 
-def IncomingSlab.pullback
+def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.pullback
     (G : Q.IncomingSlab a s)
     (φ : P.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ Q.Carrier) :
     P.IncomingSlab a s where
@@ -61,12 +63,12 @@ def IncomingSlab.pullback
   equation := G.equation.pullback G.flow φ
   smoothUpTo := pullback_smoothUpTo G φ
 
-@[simp] theorem IncomingSlab.pullback_flow
+@[simp] theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.pullback_flow
     (G : Q.IncomingSlab a s)
     (φ : P.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ Q.Carrier) :
     (G.pullback φ).flow = G.flow.pullback φ := rfl
 
-theorem IncomingSlab.pullback_metric
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.pullback_metric
     (G : Q.IncomingSlab a s)
     (φ : P.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ Q.Carrier) (t : ℝ) :
     (G.pullback φ).flow.base.metric t =

@@ -1,8 +1,10 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonSupportRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonDefs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExteriorRegion
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
+import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Homology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticNeckChildCore
@@ -11,8 +13,6 @@ import DifferentialGeometry.Topology.VanKampen.SmoothSphereSeparation
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition
 import DifferentialGeometry.Topology.Connected.Separation.DisjointClosures
 import DifferentialGeometry.Topology.SphereSeparation.SmoothClosure.Charts
-
-
 
 noncomputable section
 

@@ -14,19 +14,22 @@ open scoped Manifold ContDiff Topology BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private local instance terminalSigmaCompact : SigmaCompactSpace G.terminalRegularOpen :=
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalSigmaCompact : SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       G.terminalRegularOpen.isOpen)
-private local instance neckSigmaCompact (δ : ℝ) : SigmaCompactSpace (neckBuffer δ) :=
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.neckSigmaCompact (δ : ℝ) : SigmaCompactSpace (neckBuffer δ) :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen NeckCylinderModel
       (neckBuffer δ).isOpen)
 
-def TerminalLimitMetric.neckMetric (L : G.TerminalLimitMetric) {δ : ℝ} {k : ℕ}
+def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.neckMetric (L : G.TerminalLimitMetric) {δ : ℝ} {k : ℕ}
     (N : NormalizedNeck L.metric δ k) (v : ℝ) :
     SmoothRiemannianMetric NeckCylinderModel (neckBuffer δ) :=
   let V := N.cylindricalChart.target
@@ -34,7 +37,7 @@ def TerminalLimitMetric.neckMetric (L : G.TerminalLimitMetric) {δ : ℝ} {k : �
   scaleMetric N.scale N.scale_pos
     (Diffeomorph.pullbackMetricCross ((L.extendedMetric (s + v / N.scale)).restrictOpen V) Φ)
 
-theorem TerminalLimitMetric.neckMetric_inner (L : G.TerminalLimitMetric) {δ : ℝ} {k : ℕ}
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.neckMetric_inner (L : G.TerminalLimitMetric) {δ : ℝ} {k : ℕ}
     (N : NormalizedNeck L.metric δ k) (v : ℝ) (z : neckBuffer δ)
     (V W : TangentSpace NeckCylinderModel z) :
     (L.neckMetric N v).inner z V W = N.scale *
@@ -47,7 +50,7 @@ theorem TerminalLimitMetric.neckMetric_inner (L : G.TerminalLimitMetric) {δ : �
   simp only [metricTensorField_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at h
   exact h
 
-@[simp] theorem TerminalLimitMetric.neckMetric_zero (L : G.TerminalLimitMetric)
+@[simp] theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.neckMetric_zero (L : G.TerminalLimitMetric)
     {δ : ℝ} {k : ℕ} (N : NormalizedNeck L.metric δ k) :
     L.neckMetric N 0 = N.normalizedMetric := by
   apply SmoothRiemannianMetric.ext_inner
@@ -55,7 +58,7 @@ theorem TerminalLimitMetric.neckMetric_inner (L : G.TerminalLimitMetric) {δ : �
   rw [L.neckMetric_inner, zero_div, add_zero, L.extendedMetric_terminal]
   exact (N.normalized_inner z V W).symm
 
-theorem TerminalLimitMetric.neckMetric_inner_before (L : G.TerminalLimitMetric)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.neckMetric_inner_before (L : G.TerminalLimitMetric)
     {δ : ℝ} {k : ℕ} (N : NormalizedNeck L.metric δ k)
     {v : ℝ} (hv : v < 0) (z : neckBuffer δ) (V W : TangentSpace NeckCylinderModel z) :
     (L.neckMetric N v).inner z V W = N.scale *
@@ -66,11 +69,11 @@ theorem TerminalLimitMetric.neckMetric_inner_before (L : G.TerminalLimitMetric)
     (by have := div_neg_of_neg_of_pos hv N.scale_pos; linarith),
     SmoothRiemannianMetric.restrictOpen_inner]
 
-private abbrev cylinderJet (δ : ℝ) (q : ℕ) (v : ℝ) :
+private abbrev _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.cylinderJet (δ : ℝ) (q : ℕ) (v : ℝ) :
     Tensor0SField (I := NeckCylinderModel) (M := neckBuffer δ) ∞ 2 :=
   shrinkingCylinderTimeJet δ q v
 
-private theorem background_eq_surgery_metric (δ v : ℝ) :
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.background_eq_surgery_metric (δ v : ℝ) :
     strongNeckBackgroundMetric δ v =
       (shrinkingCylinderMetric ⟨min v 0, (min_le_right v 0).trans_lt zero_lt_one⟩).restrictOpen
         (neckBuffer δ) := by
@@ -100,7 +103,7 @@ private theorem background_eq_surgery_metric (δ v : ℝ) :
   rfl
 
 
-theorem TerminalLimitMetric.neckMetric_timeJets
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.neckMetric_timeJets
     (L : G.TerminalLimitMetric) {δ : ℝ} {k : ℕ} (N : NormalizedNeck L.metric δ k)
     (hleft : N.scale⁻¹ ≤ s - a)
     (B : ℕ → ℝ → Tensor0SField (I := ThreeModel) (M := G.terminalRegularOpen) ∞ 2)
@@ -167,10 +170,10 @@ theorem TerminalLimitMetric.neckMetric_timeJets
     (uniqueDiffOn_Icc (by norm_num : (-1 : ℝ) < 0)) _ E hE hstart q v.2).symm
 
 
-private local instance neckC1 (δ : ℝ) : IsManifold NeckCylinderModel 1 (neckBuffer δ) :=
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.neckC1 (δ : ℝ) : IsManifold NeckCylinderModel 1 (neckBuffer δ) :=
   IsManifold.of_le (n := ∞) (by decide)
 
-theorem TerminalLimitMetric.neckMetric_jointContMDiffOn
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.neckMetric_jointContMDiffOn
     (L : G.TerminalLimitMetric) {δ : ℝ} {k : ℕ} (N : NormalizedNeck L.metric δ k)
     (hleft : N.scale⁻¹ ≤ s - a) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod NeckCylinderModel)
@@ -225,7 +228,7 @@ theorem TerminalLimitMetric.neckMetric_jointContMDiffOn
   rfl
 
 
-theorem TerminalLimitMetric.neckMetric_smooth
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.neckMetric_smooth
     (L : G.TerminalLimitMetric) {δ : ℝ} {k : ℕ} (N : NormalizedNeck L.metric δ k)
     (hleft : N.scale⁻¹ ≤ s - a) :
     ∀ p : neckBuffer δ, ∀ t ∈ Icc (-1 : ℝ) 0,

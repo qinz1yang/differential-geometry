@@ -15,7 +15,7 @@ open Surgery.Topology
 theorem rfs_actual_width_jump_of_child_comparison {H : ObservedHistory.{u}} {i : Fin H.eventCount}
     {parameters : CutoffParameters} (G : GeometricCutoffRecord H i parameters)
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier)
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier)
     (c : ConnectedComponents (H.stage i.succ).Carrier)
     (hchild : ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       C((G.Parent c).Carrier, (G.Child c).Carrier),
@@ -67,7 +67,7 @@ theorem rfs_actual_width_jump_of_child_comparison {H : ObservedHistory.{u}} {i :
 
 theorem historyWidth_atZero_continuous (P : OrientedThreeStage.{u}) (g : P.Metric)
     (h0 : ∀ c : ConnectedComponents P.Carrier,
-      SimplyConnectedSpace ((P.component c).Carrier))
+      SimplyConnectedSpace ((P.component c).toClosedOrientedManifold.Carrier))
     (terminal : ConnectedComponents P.Carrier) :
     Continuous (historyWidth (ObservedHistory.atZero P g) h0 terminal) := by
   have hsubsing : Subsingleton (Icc (0 : ℝ) 0) :=

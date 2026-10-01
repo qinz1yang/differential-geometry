@@ -69,10 +69,12 @@ abbrev stageAt (t : Icc (0 : ℝ) H.horizon) : OrientedThreeStage.{u} :=
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 open scoped Manifold ContDiff
 variable {P : OrientedThreeStage} {g : ℝ → P.Metric} {J K : Set ℝ}
 
-theorem MetricSmoothUpTo.mono (hg : P.MetricSmoothUpTo g J) (hK : K ⊆ J) :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.mono (hg : P.MetricSmoothUpTo g J) (hK : K ⊆ J) :
     P.MetricSmoothUpTo g K := by
   intro p t ht
   obtain ⟨U, hU, hp, hbase, V, hV, htv, A, hA, heq⟩ := hg p t (hK ht)
@@ -80,7 +82,7 @@ theorem MetricSmoothUpTo.mono (hg : P.MetricSmoothUpTo g J) (hK : K ⊆ J) :
   intro s hs x hx i j
   exact heq s ⟨hs.1, hK hs.2⟩ x hx i j
 
-def IncomingSlab.closedPrefix {a s : ℝ} (G : P.IncomingSlab a s)
+def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.closedPrefix {a s : ℝ} (G : P.IncomingSlab a s)
     (b : ℝ) (hab : a < b) (hbs : b < s) : P.ClosedSlab a b where
   lt := hab
   flow := G.flow.timeRestrict _
@@ -90,7 +92,7 @@ def IncomingSlab.closedPrefix {a s : ℝ} (G : P.IncomingSlab a s)
   smoothUpTo := G.smoothUpTo.mono (fun _ ht => ⟨ht.1, ht.2.trans_lt hbs⟩)
 
 
-def ClosedSlab.closedPrefix {a b : ℝ} (G : P.ClosedSlab a b)
+def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.closedPrefix {a b : ℝ} (G : P.ClosedSlab a b)
     (c : ℝ) (hac : a < c) (hcb : c ≤ b) : P.ClosedSlab a c where
   lt := hac
   flow := G.flow.timeRestrict _

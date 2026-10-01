@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCylinder
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Topological
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCoreCylinderAbsorption
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.SlabGluing

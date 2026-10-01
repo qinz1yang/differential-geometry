@@ -119,7 +119,7 @@ theorem hasControlledExtinctionWithin_of_retainedCoreTower_history_isExtinctAtHo
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
+      (M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     {n : ℕ} (hn : 0 < n) (h : (T.toObservationTower.history n).IsExtinctAtHorizon) :
     HasControlledExtinctionWithin M.toClosedOrientedManifold g (n : ℝ) :=
@@ -130,7 +130,7 @@ theorem exists_poincare_controlled_extinction_of_retainedCoreTower_extinctByLeve
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
+      (M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     {B : ℝ} (hB : T.toObservationTower.ExtinctByLevelWithin B) :
     HasControlledExtinctionWithin M.toClosedOrientedManifold g B :=
@@ -141,7 +141,7 @@ theorem hasExtinctObservationTower_of_retainedCoreTower_extinctByLevelWithin
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
+      (M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     {c A : ℝ}
     (h : T.toObservationTower.ExtinctByLevelWithin (extinctionThreshold c A)) :

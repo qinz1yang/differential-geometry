@@ -83,9 +83,11 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 universe u
 
-theorem noLocalCollapsing_incomingSlab (P : OrientedThreeStage.{u}) {a s : ℝ}
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.noLocalCollapsing_incomingSlab (P : OrientedThreeStage.{u}) {a s : ℝ}
     (G : P.IncomingSlab a s) {ρ : ℝ} (hρ : 0 < ρ) : Perelman.NoLocalCollapsing G.flow ρ := by
   let D' := RealTimeInterval.closedOpen 0 (s - a) (sub_pos.mpr G.lt)
   let S' := (G.flow.timeShift a).timeRestrict D'
@@ -120,7 +122,7 @@ theorem noLocalCollapsing_incomingSlab (P : OrientedThreeStage.{u}) {a s : ℝ}
     Integral.Measure.volumeMeasureOn_eq_metric, SolutionOn.family_metric, hm]
   rfl
 
-theorem exists_uniform_kappaNoncollapsed_initial_of_pos (P : OrientedThreeStage.{u})
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_uniform_kappaNoncollapsed_initial_of_pos (P : OrientedThreeStage.{u})
     (g : P.Metric) {ρ : ℝ} (hρ : 0 < ρ) :
     ∃ κ > 0, ∃ η > 0, ∀ (s : ℝ) (G : P.IncomingSlab 0 s), G.flow.base.metric 0 = g →
       ∀ (τ : (RealTimeInterval.closedOpen 0 s G.lt).FlowTime)

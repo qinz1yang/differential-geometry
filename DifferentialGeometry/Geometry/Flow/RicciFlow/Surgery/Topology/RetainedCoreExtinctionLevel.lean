@@ -62,7 +62,7 @@ def HasExtinctRetainedCoreHistoryAtTime
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier) : Prop :=
   ∃ (H : RetainedCoreHistory.{u})
     (_ : InitialIdentification
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory)
+      (M.toClosedOrientedManifold) g H.toHistory)
     (t : Icc (0 : ℝ) H.horizon),
     (∀ i : Fin H.eventCount, (H.coreEvent i).transition.boundaryFrameReversing) ∧
     (∀ i : Fin H.eventCount,
@@ -161,7 +161,7 @@ def HasExtinctRetainedCoreTower
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier) : Prop :=
   ∃ T : RetainedCoreObservationTower
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g,
+      (M.toClosedOrientedManifold) g,
     T.hasBoundaryFrameReversing ∧ T.hasPoincareStandardDiscarded ∧ T.HasExtinctionLevel
 
 theorem hasExtinctRetainedCoreHistory_of_hasExtinctRetainedCoreTower
@@ -186,13 +186,13 @@ theorem exists_pos_hasControlledExtinctionWithin_of_hasExtinctRetainedCoreHistor
     (h : HasExtinctRetainedCoreHistory M g) :
     ∃ B : ℝ, 0 < B ∧ HasControlledExtinctionWithin M.toClosedOrientedManifold g B := by
   obtain ⟨H, A, hbfr, hctrl, hempty⟩ := h
-  have hcarrier : Nonempty (OrientedThreeStage.ofClosedOrientedManifold
+  have hcarrier : Nonempty (
       M.toClosedOrientedManifold).Carrier := M.connected.toNonempty
   have hn : 0 < H.eventCount := H.eventCount_pos_of_final_empty A hempty
   refine ⟨H.time (Fin.last H.eventCount),
     ObservedHistory.last_time_pos (H := H.toHistory) hn, ?_⟩
   exact DifferentialGeometry.PDE.RicciFlow.Surgery.hasControlledExtinctionWithin_of_observedHistory
-    (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory A
+    (M.toClosedOrientedManifold) g H.toHistory A
     (fun i => ((H.coreEvent i).toMetricCutCapEvent_hasCutCapCompletion (hbfr i)).some)
     (fun i => (H.coreEvent i).toMetricCutCapEvent_coreInclusionIsSmoothEmbedding)
     (fun i => hctrl i) hempty le_rfl
@@ -217,10 +217,10 @@ theorem not_exists_history_zero_isExtinctAtHorizon_atTower
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier) :
     ¬ (∃ T : RetainedCoreObservationTower
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g,
+        (M.toClosedOrientedManifold) g,
       T.hasBoundaryFrameReversing ∧ T.hasPoincareStandardDiscarded ∧
         (T.history 0).toHistory.IsExtinctAtHorizon) := by
-  have hcarrier : Nonempty (OrientedThreeStage.ofClosedOrientedManifold
+  have hcarrier : Nonempty (
       M.toClosedOrientedManifold).Carrier := M.connected.toNonempty
   rintro ⟨T, _, _, h⟩
   exact T.not_history_zero_isExtinctAtHorizon h

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BallUnionMeetingDisk
-import DifferentialGeometry.Topology.PiecewiseLinear.ChartTameNestedCells
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.ChartNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CapDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVocabulary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionTools
