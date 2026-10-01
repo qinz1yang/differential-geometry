@@ -12,11 +12,11 @@ variable {φ : E3 → E3} {Pt : ℤ → E3} {Dp Dpint J A S T S'' T'' : ℤ → 
 
 theorem IsCanonicalTower.bounds_disks_of_boundsDisk
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (h314 : Moise314) (i : ℤ) {G : Set E3}
+    (i : ℤ) {G : Set E3}
     (hG : G ∈ traceCircles (T'' i) (T'' (i + 1)))
     (hnull : boundsDiskIn G (T'' i) ∨ boundsDiskIn G (T'' (i + 1))) :
     boundsDiskIn G (T'' i) ∧ boundsDiskIn G (T'' (i + 1)) := by
-  rcases htw.seam_generator_or_bounds_disks h314 i hG with hgen | hboth
+  rcases htw.seam_generator_or_bounds_disks i hG with hgen | hboth
   · have hnot : ∀ j ∈ ({i, i + 1} : Set ℤ), ¬ boundsDiskIn G (T'' j) := by
       intro j hj hbound
       obtain ⟨Δ, r, hr, hΔT, hGr⟩ := hbound
@@ -36,10 +36,10 @@ theorem IsCanonicalTower.bounds_disks_of_boundsDisk
 
 theorem IsCanonicalTower.boundsDiskIn_iff
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (h314 : Moise314) (i : ℤ) {G : Set E3}
+    (i : ℤ) {G : Set E3}
     (hG : G ∈ traceCircles (T'' i) (T'' (i + 1))) :
     boundsDiskIn G (T'' i) ↔ boundsDiskIn G (T'' (i + 1)) :=
-  ⟨fun h => (htw.bounds_disks_of_boundsDisk h314 i hG (Or.inl h)).2,
-    fun h => (htw.bounds_disks_of_boundsDisk h314 i hG (Or.inr h)).1⟩
+  ⟨fun h => (htw.bounds_disks_of_boundsDisk i hG (Or.inl h)).2,
+    fun h => (htw.bounds_disks_of_boundsDisk i hG (Or.inr h)).1⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

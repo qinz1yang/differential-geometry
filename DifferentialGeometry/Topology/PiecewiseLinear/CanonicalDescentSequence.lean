@@ -28,7 +28,7 @@ theorem exists_descentSequence (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vert
         initialSurface S'' T'' P')
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}))
-    (h303 : Moise303) (h286 : Moise286) (h267 : Moise267) (h314 : Moise314) :
+    (h303 : Moise303) (h286 : Moise286) (h267 : Moise267) :
     ∃ (H B Jlo Jhi : ℤ → Set E3) (M : ℕ → Set E3),
       IsAnnularChain H B Jlo Jhi (fun i => φ '' S i) S'' T'' P' ∧
       M 0 = initialSurface S'' T'' P' ∧
@@ -43,11 +43,11 @@ theorem exists_descentSequence (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vert
   rcases hP' with rfl
   obtain ⟨X₀, U, Y, hspace, -, hclass, hclosed, hY, -⟩ :=
     IsCanonicalTower.exists_initial_annular_window ht hu hv huv he htw havoid hcl hsep
-      h303 h286 h314 {0} (F := ∅) (fun _ _ => empty_disjoint _) (fun _ _ => empty_disjoint _)
+      h303 h286 {0} (F := ∅) (fun _ _ => empty_disjoint _) (fun _ _ => empty_disjoint _)
   have hwitness₀ : HasCanonicalBridgeWitnesses X₀ T'' := fun i =>
     htw.exists_oddPiece_component_with_essential_seams i (X₀ i) (hspace i)
   have hwitness :=
-    (hwitness₀.of_null_splits htw h314 (towerWindowSeams {0}) hclass.splits).of_closed_reduction
+    (hwitness₀.of_null_splits htw (towerWindowSeams {0}) hclass.splits).of_closed_reduction
       hclosed
   have hseed : ∃ Z : ℤ → Geometry.SimplicialComplex ℝ E3,
       IsCanonicalAnnularWindow Z (fun i => φ '' S i) S'' T''
@@ -59,7 +59,7 @@ theorem exists_descentSequence (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vert
     · obtain ⟨c, hc⟩ := hreturn
       obtain ⟨k, G₀, G₁, hk, hC, hdis, h₀, h₁, he₀, he₁⟩ := hc
       obtain ⟨Z, -, -, hZ, hd, -⟩ :=
-        hY.exists_returning_component_deletion_of_moise267 htw h314 h267 isOpen_interior
+        hY.exists_returning_component_deletion_of_moise267 htw h267 isOpen_interior
           havoid 0 c hC hdis k hk h₀ h₁ he₀ he₁ (F := ∅) (empty_disjoint _)
       exact ⟨Z, hZ,
         hwitness.of_returning_component_deletion hY.surface htw 0 c
@@ -67,7 +67,7 @@ theorem exists_descentSequence (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vert
     · exact ⟨Y, hY, hwitness⟩
   obtain ⟨Z, hZ, hZw⟩ := hseed
   obtain ⟨H, B, Jlo, Jhi, M, hchain, -, hM, hMP, hlimit, hlocal⟩ :=
-    hZ.surface.exists_annular_chain_sequence ht hu hv huv he htw havoid h303 h286 h314
+    hZ.surface.exists_annular_chain_sequence ht hu hv huv he htw havoid h303 h286
       hZ.embeddings hZw
   let M' : ℕ → Set E3 := fun n => match n with
     | 0 => initialSurface S'' T'' (h (({u, v} : Finset E3).centroid ℝ id))

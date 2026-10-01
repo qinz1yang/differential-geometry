@@ -32,7 +32,7 @@ theorem IsCanonicalAnnularWindow.exists_returning_component_deletion [d : Decida
     {X : ℤ → Geometry.SimplicialComplex ℝ E3} {rows : Finset ℤ}
     (hX : IsCanonicalAnnularWindow X (fun j => φ '' S j) S'' T'' I P' a b rows)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (h314 : Moise314) (hI : IsOpen I)
+    (hI : IsOpen I)
     (havoid : ∀ j : ℤ, Disjoint (φ '' S j) ({a, b} : Set E3))
     (i : ℤ) (c : ConnectedComponents (X i).space) {J₀ J₁ : Set E3}
     (hC : IsPLAnnulusWithEnds (connectedComponentComplex (X i) c).space J₀ J₁)
@@ -85,12 +85,12 @@ theorem IsCanonicalAnnularWindow.exists_returning_component_deletion [d : Decida
     · exact fun j => (hdel.space_subset j).trans (hX.surface.carrier j)
   have hsep : IsSeparatorIn I (towerSurface T'' (fun j => (Y j).space) P') {a} {b} := by
     rw [hsurface]
-    exact hX.surface.isSeparatorIn_after_delete_returning_component htw h314 hI havoid
+    exact hX.surface.isSeparatorIn_after_delete_returning_component htw hI havoid
       i c hC hdis k hk h₀ h₁ hess₀ hess₁ (hsurface ▸ hclosed)
   have hY : IsCanonicalSurface Y (fun j => φ '' S j) T'' I P' a b :=
     hX.surface.of_component_complement i c R hR hRo hRspace hRb hsep
   obtain ⟨B₀, B₁, hB₀, hB₁, hT, hBB, hCT⟩ :=
-    hX.surface.exists_annulus_pair_of_returning_component htw h314
+    hX.surface.exists_annulus_pair_of_returning_component htw
       i c hC hdis k hk h₀ h₁ hess₀ hess₁
   have hCM : (connectedComponentComplex (X i) c).space ⊆
       towerSurface T'' (fun j => (X j).space) P' := by

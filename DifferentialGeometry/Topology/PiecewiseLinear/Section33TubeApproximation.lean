@@ -29,7 +29,7 @@ variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {XK : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {AK : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
 
-theorem exists_section33Extension_image_dualCell_subset (h324 : Moise324)
+theorem exists_section33Extension_image_dualCell_subset
     (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
     (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
     (h34 : HasSinglePolygonTraces K h Ec XK.space)
@@ -79,7 +79,7 @@ theorem exists_section33Extension_image_dualCell_subset (h324 : Moise324)
   have hρδ : ρ < δ := by
     rw [hρdef]
     linarith [min_le_right δ₀ δ]
-  obtain ⟨F, hF⟩ := hd.exists_plDisks h324 h2 h34 hρ
+  obtain ⟨F, hF⟩ := hd.exists_plDisks h2 h34 hρ
   have hPEc : ∀ e ∈ K.faces, e.card = 2 → h (e.centroid ℝ id) ∈ Ec e := fun e he hc => by
     have hpc := hd.pseudoCell e he hc
     rw [hpc.carrierEq]
@@ -295,8 +295,7 @@ theorem exists_section33Extension_image_dualCell_subset (h324 : Moise324)
 end Extension
 
 open Classical in
-theorem exists_isPLHomeomorphOn_tube_image_dualCell_subset_of_pseudoCell_constructions
-    (h323 : Moise323) (h324 : Moise324)
+theorem exists_isPLHomeomorphOn_tube_image_dualCell_subset
     (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
     (N N' : Set (EuclideanSpace ℝ (Fin 3)))
     (C : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3)))
@@ -325,7 +324,7 @@ theorem exists_isPLHomeomorphOn_tube_image_dualCell_subset_of_pseudoCell_constru
         exact hrW.trans interior_subset⟩⟩
     · exact ⟨1, fun h' => absurd h' hv⟩
   choose r hr using hr
-  obtain ⟨Ec, Eint, Ebd, Cpp, hd, hsub⟩ := h323 K N C D Dbd h N' ht
+  obtain ⟨Ec, Eint, Ebd, Cpp, hd, hsub⟩ := ht.exists_handleDecomposition_subset
     (fun v => Metric.thickening (r v) (h '' C v)) fun v hv =>
       Metric.isOpen_thickening.mem_nhdsSet.mpr (Metric.self_subset_thickening (hr v hv).1 _)
   obtain ⟨XK₀, h2₀⟩ := exists_isPolyhedralTubeNeighborhood hd
@@ -334,7 +333,7 @@ theorem exists_isPLHomeomorphOn_tube_image_dualCell_subset_of_pseudoCell_constru
   obtain ⟨XK, AK, h2, h34, h56, h7⟩ := exists_hasNoHandleLoopTheoremDisk hd h2₂ h34₂ h56₂
   have h9 := section33_not_isLoopTheoremDisk hd h2 h34 h7
     fun _ hv₁ _ he₁ hcard _ _ hr' hΔ hbd hcenter hmiss =>
-      section33_disk_meets_graph h324 hd hend hv₁ he₁ hcard hr' hΔ hbd hcenter hmiss
+      section33_disk_meets_graph hd hend hv₁ he₁ hcard hr' hΔ hbd hcenter hmiss
   have h10 := IsTube.bijective_fundamentalGroup_map_frontier ht h2 h56.2.1 h9
   have h12 := section33_faceEulerChar_handlePiece hd h2 h34 h56 h10
   obtain ⟨g, hg, hgA, hgD⟩ := exists_section33BoundaryMatch hd hconn h2 h34 h56 h12
@@ -348,7 +347,7 @@ theorem exists_isPLHomeomorphOn_tube_image_dualCell_subset_of_pseudoCell_constru
   have hle : ∀ v ∈ K.vertices, r w₀ ≤ r v :=
     fun v hv => hmin v (ht.finite_vertices.mem_toFinset.mpr hv)
   obtain ⟨f, hf, hfN, hfC⟩ :=
-    exists_section33Extension_image_dualCell_subset h324 hd h2 h34 h56 hg hgA hgD hδ
+    exists_section33Extension_image_dualCell_subset hd h2 h34 h56 hg hgA hgD hδ
   refine ⟨f, hf, hfN, fun v hv => (hfC v hv).trans (union_subset ?_ ?_)⟩
   · exact (hsub v hv).trans ((Metric.thickening_mono (by linarith [(hr v hv).1]) _).trans
       (hr v hv).2)

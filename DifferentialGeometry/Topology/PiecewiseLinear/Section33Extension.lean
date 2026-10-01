@@ -104,7 +104,7 @@ theorem IsHandleDecompositionOfTube.exists_small_radius
     fun e he hc e' he' hc' hne => hd3 e ⟨he, hc⟩ e' ⟨he', hc'⟩ hne,
     fun v hv e he hc => hv4 v hv e ⟨he, hc⟩, h5'⟩
 
-theorem IsHandleDecompositionOfTube.exists_plDisks (h324 : Moise324)
+theorem IsHandleDecompositionOfTube.exists_plDisks
     {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C Cpp : E3 → Set E3}
     {D Dbd Ec Eint Ebd : Finset E3 → Set E3} {h : E3 → E3}
     {XK : Geometry.SimplicialComplex ℝ E3}
@@ -130,7 +130,7 @@ theorem IsHandleDecompositionOfTube.exists_plDisks (h324 : Moise324)
         rw [hpc.carrierEq] at hxE
         exact hxE.resolve_right fun hb => disjoint_left.mp (h2.rimDisjoint e he.1 he.2) hb hxX
       obtain ⟨Fe, r, hr, hrb, hsub, hsup⟩ :=
-        hpc.exists_plDisk_agreeing_off_ball h324 hDJ hDJE (hDJbd ▸ hJ) hPDJ hδ₀
+        hpc.exists_plDisk_agreeing_off_ball hDJ hDJE (hDJbd ▸ hJ) hPDJ hδ₀
       exact ⟨Fe, fun _ _ => ⟨⟨r, hr, hrb.trans hDJbd⟩, hsub, hsup⟩⟩
     · exact ⟨∅, fun h1 h2 => absurd ⟨h1, h2⟩ he⟩
   choose F hF using hex
@@ -146,7 +146,7 @@ variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {XK : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {AK : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
 
-theorem exists_section33Extension (h324 : Moise324)
+theorem exists_section33Extension
     (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
     (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
     (h34 : HasSinglePolygonTraces K h Ec XK.space)
@@ -175,7 +175,7 @@ theorem exists_section33Extension (h324 : Moise324)
     (K.convexHull_subset_space hv₀ (subset_convexHull ℝ _ (Finset.mem_singleton_self v₀))))⟩
   obtain ⟨hXint, hXc, hXfr⟩ := isConnected_interior_space_and_compl hXfin h2.isManifold h56.2.1 hint
   obtain ⟨δ₀, hδ₀, hball, hsep, hbEc, hvert, hslack⟩ := hd.exists_small_radius hKX hsmall
-  obtain ⟨F, hF⟩ := hd.exists_plDisks h324 h2 h34 hδ₀
+  obtain ⟨F, hF⟩ := hd.exists_plDisks h2 h34 hδ₀
   have hPEc : ∀ e ∈ K.faces, e.card = 2 → h (e.centroid ℝ id) ∈ Ec e := fun e he hc => by
     have hpc := hd.pseudoCell e he hc
     rw [hpc.carrierEq]

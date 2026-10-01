@@ -14,7 +14,7 @@ variable [DecidableEq E3] {X : ℤ → Geometry.SimplicialComplex ℝ E3}
 theorem IsCanonicalSurface.exists_returning_exterior_annuli_and_separator
     (hX : IsCanonicalSurface X (fun j => φ '' S j) T'' I P' a b)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (h314 : Moise314) (h267 : Moise267) (hI : IsOpen I)
+    (h267 : Moise267) (hI : IsOpen I)
     (havoid : ∀ j : ℤ, Disjoint (φ '' S j) ({a, b} : Set E3))
     (i : ℤ) (c : ConnectedComponents (X i).space) {J₀ J₁ : Set E3}
     (hC : IsPLAnnulusWithEnds (connectedComponentComplex (X i) c).space J₀ J₁)
@@ -43,7 +43,7 @@ theorem IsCanonicalSurface.exists_returning_exterior_annuli_and_separator
     (subset_iUnion (fun d => (connectedComponentComplex (X i) d).space) c).trans
       (iUnion_connectedComponentComplex_space (X i)).subset
   obtain ⟨B₀, B₁, hB₀, hB₁, hcover, hmeet, hCT⟩ :=
-    hX.exists_annulus_pair_of_returning_component htw h314 i c hC hdis k hk h₀ h₁
+    hX.exists_annulus_pair_of_returning_component htw i c hC hdis k hk h₀ h₁
       hess₀ hess₁
   have h₀T : B₀ ⊆ T'' (2 * k) := subset_union_left.trans hcover.symm.subset
   have h₁T : B₁ ⊆ T'' (2 * k) := subset_union_right.trans hcover.symm.subset

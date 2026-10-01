@@ -16,7 +16,7 @@ theorem IsCanonicalAnnularWindow.exists_returning_component_deletion_of_moise267
     {X : ℤ → Geometry.SimplicialComplex ℝ E3} {rows : Finset ℤ}
     (hX : IsCanonicalAnnularWindow X (fun j => φ '' S j) S'' T'' I P' a b rows)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (h314 : Moise314) (h267 : Moise267) (hI : IsOpen I)
+    (h267 : Moise267) (hI : IsOpen I)
     (havoid : ∀ j : ℤ, Disjoint (φ '' S j) ({a, b} : Set E3))
     (i : ℤ) (c : ConnectedComponents (X i).space) {J₀ J₁ : Set E3}
     (hC : IsPLAnnulusWithEnds (connectedComponentComplex (X i) c).space J₀ J₁)
@@ -73,7 +73,7 @@ theorem IsCanonicalAnnularWindow.exists_returning_component_deletion_of_moise267
         simpa only [hdel.unchanged j hji] using (isPolyhedron_space (X j)).isClosed
     · exact fun j => (hdel.space_subset j).trans (hX.surface.carrier j)
   obtain ⟨B₀, B₁, hB₀, hB₁, hT, hBB, hCT, hsepRaw, hexterior⟩ :=
-    hX.surface.exists_returning_exterior_annuli_and_separator htw h314 h267 hI havoid
+    hX.surface.exists_returning_exterior_annuli_and_separator htw h267 hI havoid
       i c hC hdis k hk h₀ h₁ hess₀ hess₁ (hsurface ▸ hclosed)
   have hsep : IsSeparatorIn I (towerSurface T'' (fun j => (Y j).space) P') {a} {b} :=
     hsurface.symm ▸ hsepRaw

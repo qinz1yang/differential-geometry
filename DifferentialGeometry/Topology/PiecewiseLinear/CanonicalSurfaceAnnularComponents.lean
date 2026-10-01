@@ -14,7 +14,7 @@ theorem IsCanonicalSurface.component_boundary_empty_or_annulus [d : DecidableEq 
     {X : ℤ → Geometry.SimplicialComplex ℝ E3}
     (hX : IsCanonicalSurface X (fun j => φ '' S j) T'' I P' a b)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (h286 : Moise286) (h314 : Moise314) (i : ℤ)
+    (h286 : Moise286) (i : ℤ)
     (hmodel : HasEssentialBoundaryPLEmbeddings (X i) (T'' (2 * i + 1)))
     (hzero₀ : nullTraceCount ((X (i - 1)).space ∪ (X i).space) (T'' (2 * i)) = 0)
     (hzero₁ : nullTraceCount ((X i).space ∪ (X (i + 1)).space) (T'' (2 * (i + 1))) = 0)
@@ -61,10 +61,10 @@ theorem IsCanonicalSurface.component_boundary_empty_or_annulus [d : DecidableEq 
     rcases hG with hG | hG
     · have hrow := traceCircles_subset_of_inter_subset (hX.lowerTrace i).traceCover
         (fun _ hx => ⟨hsub hx.1, hx.2⟩) hG
-      exact hX.lower_seam_not_boundsDiskIn htw h314 i hzero₀ hrow
+      exact hX.lower_seam_not_boundsDiskIn htw i hzero₀ hrow
     · have hrow := traceCircles_subset_of_inter_subset (hX.upperTrace i).traceCover
         (fun _ hx => ⟨hsub hx.1, hx.2⟩) hG
-      exact hX.upper_seam_not_boundsDiskIn htw h314 i hzero₁ hrow
+      exact hX.upper_seam_not_boundsDiskIn htw i hzero₁ hrow
   have hTdis : Disjoint (T'' (2 * i)) (T'' (2 * (i + 1))) :=
     (htw.apart (2 * i) (2 * (i + 1)) (by rw [le_abs]; omega)).mono
       (htw.boundary_subset_outer _) (htw.boundary_subset_outer _)

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell.Splitting
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRayEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.HandlePieceEulerChar
@@ -41,7 +42,7 @@ variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {D Dbd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3))}
   {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
 
-theorem exists_section33HandleFrame (h323 : Moise323) (ht : IsTube K N C D Dbd h N') {ε : ℝ}
+theorem exists_section33HandleFrame (ht : IsTube K N C D Dbd h N') {ε : ℝ}
     (hsmall : ∀ v ∈ K.vertices, ∀ x ∈ C v, ∀ y ∈ C v, dist (h x) (h y) < ε / 4) :
     ∃ (Ec Eint Ebd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3)))
       (Cpp : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3))),
@@ -85,13 +86,12 @@ theorem exists_section33HandleFrame (h323 : Moise323) (ht : IsTube K N C D Dbd h
     · exact ⟨univ, fun hv' => absurd hv' hv⟩
   choose V hV using key
   obtain ⟨Ec, Eint, Ebd, Cpp, hd, hsub⟩ :=
-    h323 K N C D Dbd h N' ht V fun v hv => (hV v hv).1
+    ht.exists_handleDecomposition_subset V fun v hv => (hV v hv).1
   exact ⟨Ec, Eint, Ebd, Cpp, hd,
     fun v hv x hx y hy => (hV v hv).2 x (hsub v hv hx) y (hsub v hv hy)⟩
 
 open Classical in
-theorem exists_derivedNeighborhood_isPLHomeomorphOn_dist_lt_of_pseudoCell_constructions
-    (h323 : Moise323) (h324 : Moise324)
+theorem exists_derivedNeighborhood_isPLHomeomorphOn_dist_lt
     (L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) (hfin : Finite L.faces)
     (hdim : ∀ s ∈ L.faces, s.card ≤ 2) (hedge : ∃ e ∈ L.faces, e.card = 2)
     (hconn : IsConnected L.space)
@@ -113,7 +113,7 @@ theorem exists_derivedNeighborhood_isPLHomeomorphOn_dist_lt_of_pseudoCell_constr
   let _ : Finite L.faces := hfin
   obtain ⟨T, L', C, D, Dbd, hTfin, hsub, hLT, hT, hDN, hNU, hend', ht, -, hCsmall⟩ :=
     exists_section33TubeFrame L hdim hedge hend hU hLU hh hε
-  obtain ⟨Ec, Eint, Ebd, Cpp, hd, hCppSmall⟩ := exists_section33HandleFrame h323 ht hCsmall
+  obtain ⟨Ec, Eint, Ebd, Cpp, hd, hCppSmall⟩ := exists_section33HandleFrame ht hCsmall
   have hconn' : IsConnected L'.space := by
     rw [hsub.space_eq]
     exact hconn
@@ -132,13 +132,13 @@ theorem exists_derivedNeighborhood_isPLHomeomorphOn_dist_lt_of_pseudoCell_constr
         (∀ e ∈ L'.faces, e.card = 2 → e ≠ e₁ → Disjoint Δ (Ec e)) →
         (Δ ∩ h '' L'.space).Nonempty :=
     fun _ hv₁ _ he₁ hcard _ _ hr hΔ hbd hcenter hmiss =>
-      section33_disk_meets_graph h324 hd hend' hv₁ he₁ hcard hr hΔ hbd hcenter hmiss
+      section33_disk_meets_graph hd hend' hv₁ he₁ hcard hr hΔ hbd hcenter hmiss
   have h9 := section33_not_isLoopTheoremDisk hd h2 h34 h7 h8
   have h10 := IsTube.bijective_fundamentalGroup_map_frontier ht h2 h56.2.1 h9
   have h12 := section33_faceEulerChar_handlePiece hd h2 h34 h56 h10
   obtain ⟨g, hg, hgA, hgD⟩ := exists_section33BoundaryMatch hd hconn' h2 h34 h56 h12
   obtain ⟨f, hf, hfN, -, hfv, hfsmall⟩ :=
-    exists_section33Extension h324 hd h2 h34 h56 hg hgA hgD hCppSmall
+    exists_section33Extension hd h2 h34 h56 hg hgA hgD hCppSmall
   refine ⟨T, L', hTfin, hsub, hLT, hT, ?_, hDN, ?_, hNU, f, hf, ?_, ?_⟩
   · rw [← hsub.space_eq]
     exact Filter.mem_of_superset ht.isNeighborhood (derivedNeighborhood_space_subset T L')

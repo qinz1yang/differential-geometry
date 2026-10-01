@@ -1,5 +1,4 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.TwoSidedSurface
-import DifferentialGeometry.Topology.PiecewiseLinear.Section32PseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.Section33Approximation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section33TubeApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Compact
@@ -7,7 +6,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34Compact
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 theorem moise331OnTube : Moise331OnTube :=
-  exists_isPLHomeomorphOn_tube_image_dualCell_subset_of_pseudoCell_constructions moise323 moise324
+  exists_isPLHomeomorphOn_tube_image_dualCell_subset
 
 theorem moise331 : Moise331 :=
   Moise331OnTube.moise331 moise331OnTube

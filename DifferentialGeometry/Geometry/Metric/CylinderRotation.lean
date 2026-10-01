@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Metric.CylinderAxial
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.OrthogonalAction
 import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 import DifferentialGeometry.Geometry.Metric.RoundCylinder

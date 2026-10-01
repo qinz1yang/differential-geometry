@@ -9,8 +9,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.EdgeCollarFamily
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralTubeNeighborhoodExists
 import DifferentialGeometry.Topology.PiecewiseLinear.InitialSurfaceSeparates
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnularChainPseudoCell
-import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPositionBallPseudoCell
-import DifferentialGeometry.Topology.PiecewiseLinear.ReducedDiskPseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerExists
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalDescentSequence
 import DifferentialGeometry.Topology.PiecewiseLinear.Section26ThreeSurfaces
@@ -25,19 +23,35 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
-section Leaves
-
-variable {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
-  {D Dbd : Finset E3 → Set E3} {h : E3 → E3} {u v : E3} {W : Set E3} {P' : E3}
-  {φ : E3 → E3} {Pt : ℤ → E3} {Dp Dpint J A S T S'' T'' H B Jlo Jhi : ℤ → Set E3}
-
-end Leaves
-
-section Assemblies
-
 open Classical in
-theorem moise322_of_moise307 (h307 : Moise307) : Moise322 := by
-  intro K N C D Dbd h N' ht u hu v hv huv he W hW hWint hWsub hWfr hWK
+theorem IsTube.exists_splitting_pseudoCell_components
+    {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
+    {D Dbd : Finset E3 → Set E3} {h : E3 → E3}
+    (ht : IsTube K N C D Dbd h N')
+    (u : E3) (hu : u ∈ K.vertices) (v : E3) (hv : v ∈ K.vertices)
+    (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces)
+    (W : Set E3) (hW : IsClosed W)
+    (hWint : h '' (D {u, v} \ Dbd {u, v}) \ {h (({u, v} : Finset E3).centroid ℝ id)} ⊆
+      interior W)
+    (hWsub : W ⊆ h '' C u ∪ h '' C v)
+    (hWfr : W ∩ frontier (h '' C u ∪ h '' C v) = h '' Dbd {u, v})
+    (hWK : W ∩ h '' K.space = {h (({u, v} : Finset E3).centroid ℝ id)}) :
+    ∃ (Ec Eint Ebd U₁ U₂ : Set E3),
+      IsPseudoCell Ec Eint Ebd (h (({u, v} : Finset _).centroid ℝ id)) ∧
+      Ebd = h '' Dbd {u, v} ∧ Ec ⊆ W ∧
+      DifferentialGeometry.Topology.Separates
+        (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' Eint)
+        (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
+        (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}) ∧
+      Ec ∩ h '' K.space = {h (({u, v} : Finset _).centroid ℝ id)} ∧
+      h u ∈ U₁ ∧ h v ∈ U₂ ∧
+      IsConnected U₁ ∧ IsConnected U₂ ∧ Disjoint U₁ U₂ ∧
+      U₁ ∪ U₂ = (h '' C u ∪ h '' C v) \ Ec ∧
+      (∀ V : Set E3, IsPreconnected V →
+        V ⊆ (h '' C u ∪ h '' C v) \ Ec → V ⊆ U₁ ∨ V ⊆ U₂) ∧
+      Ec ⊆ frontier U₁ ∧ Ec ⊆ frontier U₂ ∧
+      h '' (frontier (C u) ∩ frontier N) ⊆ frontier U₁ ∧
+      h '' (frontier (C v) ∩ frontier N) ⊆ frontier U₂ := by
   set P' : E3 := h (({u, v} : Finset E3).centroid ℝ id) with hP'
   have hcard : ({u, v} : Finset E3).card = 2 := Finset.card_pair huv
   obtain ⟨Bu, hBuc, hBucon, hBuu, hBuC, hBuD, hBuF⟩ :=
@@ -46,7 +60,7 @@ theorem moise322_of_moise307 (h307 : Moise307) : Moise322 := by
     exists_compact_connected_to_freeFace ht hv he hcard
       (Finset.mem_insert_of_mem (Finset.mem_singleton_self v))
   obtain ⟨φ, Pt, Dp, Dpint, J, A, S, T, S'', T'', htw, hZ⟩ :=
-    exists_canonicalTower ht hu hv huv he hP' hW hWint hWsub hWfr hWK h307
+    exists_canonicalTower ht hu hv huv he hP' hW hWint hWsub hWfr hWK
       (hBuc.isClosed.union hBvc.isClosed) (Disjoint.union_left hBuD hBvD)
   have havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3) := fun i =>
     (hZ i).mono_right (insert_subset_iff.mpr
@@ -54,7 +68,6 @@ theorem moise322_of_moise307 (h307 : Moise307) : Moise322 := by
   obtain ⟨hcl₁, hsep₁⟩ := separates_initialSurface ht hu hv huv he hP' htw havoid
   obtain ⟨H, B, Jlo, Jhi, M, hch, -, hMcl, hMsep, hMP, hLcl, hloc⟩ :=
     exists_descentSequence ht hu hv huv he hP' htw havoid hcl₁ hsep₁ moise303 moise286 moise267
-      moise314
   have hP'U : P' ∈ annularChain H B P' := by
     change P' ∈ (⋃ i, H i ∪ B i) ∪ {P'}
     exact mem_union_right _ (mem_singleton _)
@@ -143,16 +156,58 @@ theorem moise322_of_moise307 (h307 : Moise307) : Moise322 := by
   exact ⟨_, _, _, U₁, U₂, hE, rfl, hUW, hsepU, hEK, hU₁, hU₂, hc₁, hc₂, hd, hcover, hpre,
     hf₁, hf₂, hF₁, hF₂⟩
 
-theorem moise321_of_moise307 (h307 : Moise307) : Moise321 := by
-  intro K N C D Dbd h N' ht u hu v hv huv he W hW hWint hWsub hWfr hWK
+open Classical in
+theorem IsTube.exists_splitsDualCellsAlong
+    {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
+    {D Dbd : Finset E3 → Set E3} {h : E3 → E3} {u v : E3} {W : Set E3}
+    (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
+    (he : ({u, v} : Finset E3) ∈ K.faces) (hW : IsClosed W)
+    (hWint : h '' (D {u, v} \ Dbd {u, v}) \ {h (({u, v} : Finset E3).centroid ℝ id)} ⊆
+      interior W)
+    (hWsub : W ⊆ h '' C u ∪ h '' C v)
+    (hWfr : W ∩ frontier (h '' C u ∪ h '' C v) = h '' Dbd {u, v})
+    (hWK : W ∩ h '' K.space = {h (({u, v} : Finset E3).centroid ℝ id)}) :
+    ∃ Ec Eint Ebd : Set E3, SplitsDualCellsAlong K N C Dbd h W Ec Eint Ebd u v := by
+  obtain ⟨Ec, Eint, Ebd, U₁, U₂, hpc, hbd, hsub, hsep, hK, hU⟩ :=
+    ht.exists_splitting_pseudoCell_components u hu v hv huv he W hW hWint hWsub hWfr hWK
+  exact ⟨Ec, Eint, Ebd, hpc, hbd, hsub, hsep, hK, U₁, U₂, hU⟩
+
+open Classical in
+theorem IsTube.exists_splitting_pseudoCell
+    {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
+    {D Dbd : Finset E3 → Set E3} {h : E3 → E3}
+    (ht : IsTube K N C D Dbd h N')
+    (u : E3) (hu : u ∈ K.vertices) (v : E3) (hv : v ∈ K.vertices)
+    (huv : u ≠ v) (he : ({u, v} : Finset E3) ∈ K.faces)
+    (W : Set E3) (hW : IsClosed W)
+    (hWint : h '' (D {u, v} \ Dbd {u, v}) \ {h (({u, v} : Finset E3).centroid ℝ id)} ⊆
+      interior W)
+    (hWsub : W ⊆ h '' C u ∪ h '' C v)
+    (hWfr : W ∩ frontier (h '' C u ∪ h '' C v) = h '' Dbd {u, v})
+    (hWK : W ∩ h '' K.space = {h (({u, v} : Finset E3).centroid ℝ id)}) :
+    ∃ Ec Eint Ebd : Set E3,
+      IsPseudoCell Ec Eint Ebd (h (({u, v} : Finset _).centroid ℝ id)) ∧
+      Ebd = h '' Dbd {u, v} ∧ Ec ⊆ W ∧
+      DifferentialGeometry.Topology.Separates
+        (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' Eint)
+        (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
+        (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}) ∧
+      Ec ∩ h '' K.space = {h (({u, v} : Finset _).centroid ℝ id)} := by
   obtain ⟨Ec, Eint, Ebd, -, -, hpc, hbd, hsub, hsep, hK, -⟩ :=
-    moise322_of_moise307 h307 K N C D Dbd h N' ht u hu v hv huv he W hW hWint hWsub
+    ht.exists_splitting_pseudoCell_components u hu v hv huv he W hW hWint hWsub
       hWfr hWK
   exact ⟨Ec, Eint, Ebd, hpc, hbd, hsub, hsep, hK⟩
 
 open Classical in
-theorem moise323_of_moise307 (h307 : Moise307) : Moise323 := by
-  intro K N C D Dbd h N' ht V hV
+theorem IsTube.exists_handleDecomposition_subset
+    {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
+    {D Dbd : Finset E3 → Set E3} {h : E3 → E3}
+    (ht : IsTube K N C D Dbd h N')
+    (V : E3 → Set E3) (hV : ∀ v ∈ K.vertices, V v ∈ nhdsSet (h '' C v)) :
+    ∃ (Ec Eint Ebd : Finset E3 → Set E3)
+      (Cpp : E3 → Set E3),
+      IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp ∧
+      ∀ v ∈ K.vertices, Cpp v ⊆ V v := by
   obtain ⟨W, hW⟩ := exists_edgeCollarFamily ht V hV
   have hall : ∀ e : Finset E3, ∃ Ec Eint Ebd : Set E3, e ∈ K.faces → e.card = 2 →
       ∃ u v : E3, u ∈ K.vertices ∧ v ∈ K.vertices ∧ u ≠ v ∧ e = {u, v} ∧
@@ -172,7 +227,7 @@ theorem moise323_of_moise307 (h307 : Moise307) : Moise323 := by
       obtain ⟨hWsub, hWfr⟩ := hWpair u (Finset.mem_insert_self u {v}) v
         (Finset.mem_insert_of_mem (Finset.mem_singleton_self v)) huv
       obtain ⟨Ec, Eint, Ebd, hS⟩ :=
-        (moise322_of_moise307 h307).exists_splitsDualCellsAlong ht hu hv huv he hWcl
+        ht.exists_splitsDualCellsAlong hu hv huv he hWcl
           hWint hWsub hWfr hWK
       exact ⟨Ec, Eint, Ebd, fun _ _ => ⟨u, v, hu, hv, huv, rfl, hS⟩⟩
     · exact ⟨∅, ∅, ∅, fun he hc => absurd ⟨he, hc⟩ hedge⟩
@@ -236,25 +291,5 @@ theorem moise323_of_moise307 (h307 : Moise307) : Moise323 := by
     obtain ⟨he₁, he₂, he₃⟩ := he
     obtain ⟨-, -, -, -, hVe, -⟩ := hW e he₁ he₂
     exact (hVe v he₃).2
-
-theorem moise324 : Moise324 := by
-  intro Ec Eint Ebd P hE δ hδ
-  obtain ⟨Bl, Dc, Dcint, hBl, hBδ, hPB, hDc, hDcE, hDcδ, hPDc, hBE, hgp⟩ :=
-    exists_generalPosition_ball_pseudoCell hE hδ
-  obtain ⟨Δ, Δbd, r, hr, hΔbd, hΔδ, hΔE, DJ, DJint, hDJ, hDJE, hDJbd, hPDJ⟩ :=
-    exists_reducedDisk_of_crossesPseudoCell hE hBl hPB hDc hDcE hPDc hBE hgp
-      Metric.isOpen_ball hBδ hDcδ
-  exact ⟨Δ, Δbd, r, hr, hΔbd, hΔδ, hΔE, DJ, DJint, hDJ, hDJE, hDJbd, hPDJ⟩
-
-theorem moise322 : Moise322 :=
-  moise322_of_moise307 moise307
-
-theorem moise321 : Moise321 :=
-  moise321_of_moise307 moise307
-
-theorem moise323 : Moise323 :=
-  moise323_of_moise307 moise307
-
-end Assemblies
 
 end DifferentialGeometry.Topology.PiecewiseLinear

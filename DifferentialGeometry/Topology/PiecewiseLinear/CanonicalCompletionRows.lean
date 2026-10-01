@@ -12,7 +12,6 @@ variable [DecidableEq E3] {X : ℕ → ℤ → Geometry.SimplicialComplex ℝ E3
 
 theorem IsCanonicalTower.exists_marked_annuli_of_bridge_normalizations
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (h314 : Moise314)
     (hstep : ∀ n, IsCanonicalBridgeNormalization (X n) (X (n + 1))
       (fun i => φ '' S i) S'' T'' I P' a b {-(n : ℤ), (n : ℤ)} ∅) :
     ∃ Jlo Jhi : ℤ → Set E3, ∀ i,
@@ -34,7 +33,7 @@ theorem IsCanonicalTower.exists_marked_annuli_of_bridge_normalizations
     · exact Or.inr hi
     · exact Or.inl hi
   choose Jlo Jhi hann hdis hlo hhi hloe hhie hmeetlo hmeethi using
-    fun i => (hstep i.natAbs).exists_row_annulus htw h314 i (hmem i)
+    fun i => (hstep i.natAbs).exists_row_annulus htw i (hmem i)
   refine ⟨Jlo, Jhi, fun i => ⟨hann i, hmeetlo i, hmeethi i, hloe i, hhie i, ?_, ?_⟩⟩
   · have htrace : Jlo i ∈ traceCircles
         ((X (i.natAbs + 1) (i - 1)).space ∪ (X (i.natAbs + 1) i).space) (T'' (2 * i)) :=

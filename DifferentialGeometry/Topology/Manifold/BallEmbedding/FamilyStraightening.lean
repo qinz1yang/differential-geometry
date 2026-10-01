@@ -153,7 +153,7 @@ theorem BallEmbeddingAmbientIsotopic.trans {ι : Type u} {U : Type u}
 
 private lemma exists_ambientIsotopy_matching_finset
     {ι : Type u} {U : Type u} [TopologicalSpace U]
-    [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
+    [ChartedSpace ThreeSpace U]
     (h : ∀ (b b' : BallChart 3 (𝓡 3) U) (C : Set U), IsCompact C →
       Disjoint (b.chart '' Metric.closedBall (0 : ThreeSpace) 1) C →
       Disjoint (b'.chart '' Metric.closedBall (0 : ThreeSpace) 1) C →

@@ -14704,7 +14704,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningExteriorD
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningExteriorComponentDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalDescentSequence
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalInitialBridgeWindow
-import DifferentialGeometry.Topology.PiecewiseLinear.Section32PseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.Moise341Producer
 import DifferentialGeometry.Topology.PiecewiseLinear.ControlledGraphNeighborhood
 import DifferentialGeometry.Topology.ThreeManifold.Poincare
@@ -17864,3 +17863,9 @@ import DifferentialGeometry.Topology.Sphere.SphereHigherConnectivity
 import DifferentialGeometry.Topology.Sphere.SphereSimplyConnected
 import DifferentialGeometry.Topology.Sphere.SphereSuspension
 import DifferentialGeometry.Topology.Sphere.TwoOpenCells
+import DifferentialGeometry.Geometry.Neck.Normalized.Basic
+import DifferentialGeometry.Geometry.Neck.Normalized.Defs
+import DifferentialGeometry.Geometry.Neck.Normalized.Order
+import DifferentialGeometry.Topology.Manifold.Homeomorph.SmallPerturbation
+import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell.Splitting
+import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell.TransverseDisk
