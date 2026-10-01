@@ -15,7 +15,7 @@ namespace GC.MetricGeometry
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℝ H]
 
-private theorem neighborhood_support_packing_of_coarse_control
+theorem neighborhood_support_packing_of_coarse_control
     (I : Set H) (hI : I.Finite) (r : H → ℝ)
     (P : Submodule ℝ H) [FiniteDimensional ℝ P] (C : ℝ) (hC : 0 ≤ C) :
     let ℓ : ℝ := 1 / (100 * (C + 1))
