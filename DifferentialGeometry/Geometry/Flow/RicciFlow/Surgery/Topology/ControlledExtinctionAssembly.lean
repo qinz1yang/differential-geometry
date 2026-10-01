@@ -54,15 +54,6 @@ theorem preservesOrientation_of_preservesTangentOrientation
   rw [mfderivToContinuousLinearEquiv_toLinearEquiv_eq_ofBijective f x hf]
   exact hfx
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.preservesOrientation_toClosedOrientedManifold
-    {P Q : OrientedThreeStage.{u}} {f : P.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ Q.Carrier}
-    (h : PreservesTangentOrientation P.orientation Q.orientation f) :
-    f.preservesOrientation P.orientation
-      Q.orientation := by
-  intro x
-  exact preservesOrientation_of_preservesTangentOrientation
-    P.orientation Q.orientation f h x
-
 def InitialIdentification.toFiniteSurgeryHistory
     {P : OrientedThreeStage.{u}} {g : P.Metric} {H : ObservedHistory.{u}}
     (A : InitialIdentification P g H) (hn : 0 < H.eventCount)
@@ -79,7 +70,8 @@ def InitialIdentification.toFiniteSurgeryHistory
       P g where
   diffeomorph := A.map
   orientation_preserving :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.preservesOrientation_toClosedOrientedManifold A.positive
+    preservesOrientation_of_preservesTangentOrientation
+      P.orientation (H.stage 0).orientation A.map A.positive
   metric_eq := A.metric_eq
 
 theorem exists_poincare_controlled_extinction_of_observedHistory

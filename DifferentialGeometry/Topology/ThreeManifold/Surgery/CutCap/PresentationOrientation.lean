@@ -10,43 +10,10 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-variable {M M' : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-  [IsManifold ThreeModel ∞ M] [TopologicalSpace M'] [ChartedSpace ThreeSpace M']
-  [IsManifold ThreeModel ∞ M']
-
-abbrev sumTangentOrientationSection (o : TangentOrientationSection M)
-    (o' : TangentOrientationSection M') : TangentOrientationSection (M ⊕ M') :=
-  DifferentialGeometry.ManifoldOrientation.sum o o'
-
-@[simp] theorem sumTangentOrientationSection_inl (o : TangentOrientationSection M)
-    (o' : TangentOrientationSection M') (q : M) :
-    (sumTangentOrientationSection o o').orientation (Sum.inl q) = o.orientation q := rfl
-
-@[simp] theorem sumTangentOrientationSection_inr (o : TangentOrientationSection M)
-    (o' : TangentOrientationSection M') (d : M') :
-    (sumTangentOrientationSection o o').orientation (Sum.inr d) = o'.orientation d := rfl
-
-@[simp] theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.sum_orientation_inl (Q D : OrientedThreeStage.{u})
-    (q : Q.Carrier) :
-    (Q.sum D).orientation.orientation (Sum.inl q) = Q.orientation.orientation q := rfl
-
-@[simp] theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.sum_orientation_inr (Q D : OrientedThreeStage.{u})
-    (d : D.Carrier) :
-    (Q.sum D).orientation.orientation (Sum.inr d) = D.orientation.orientation d := rfl
-
-
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.sum_orientation_apply (Q D : OrientedThreeStage.{u})
-    (x : Q.Carrier ⊕ D.Carrier) :
-    (Q.sum D).orientation.orientation x =
-      match x with
-      | Sum.inl q => Q.orientation.orientation q
-      | Sum.inr d => D.orientation.orientation d := by
-  cases x <;> rfl
-
 theorem SmoothCutCapTransition.presentation_positive_iff_preservesTangentOrientation
     {P Q D N : OrientedThreeStage.{u}} (X : SmoothCutCapTransition P Q D N) :
     PreservesTangentOrientation N.orientation
-        (sumTangentOrientationSection Q.orientation D.orientation) X.presentation ↔
+        (DifferentialGeometry.ManifoldOrientation.sum Q.orientation D.orientation) X.presentation ↔
       ∀ x : N.Carrier,
         ∃ hf : Function.Bijective (mfderiv ThreeModel ThreeModel X.presentation x),
           Orientation.map (Fin 3)
@@ -77,7 +44,7 @@ theorem SmoothCutCapTransition.presentation_positive_iff_preservesTangentOrienta
 theorem SmoothCutCapTransition.presentation_positive_of_preservesTangentOrientation
     {P Q D N : OrientedThreeStage.{u}} (X : SmoothCutCapTransition P Q D N)
     (h : PreservesTangentOrientation N.orientation
-      (sumTangentOrientationSection Q.orientation D.orientation) X.presentation) :
+      (DifferentialGeometry.ManifoldOrientation.sum Q.orientation D.orientation) X.presentation) :
     ∀ x : N.Carrier,
       ∃ hf : Function.Bijective (mfderiv ThreeModel ThreeModel X.presentation x),
         Orientation.map (Fin 3)
@@ -101,7 +68,7 @@ theorem SmoothCutCapTransition.preservesTangentOrientation_of_presentation_posit
           | Sum.inl q => Q.orientation.orientation q
           | Sum.inr d => D.orientation.orientation d) :
     PreservesTangentOrientation N.orientation
-      (sumTangentOrientationSection Q.orientation D.orientation) X.presentation :=
+      (DifferentialGeometry.ManifoldOrientation.sum Q.orientation D.orientation) X.presentation :=
   (SmoothCutCapTransition.presentation_positive_iff_preservesTangentOrientation X).mpr h
 
 theorem presentation_positive_self_sum (Q D : OrientedThreeStage.{u})
