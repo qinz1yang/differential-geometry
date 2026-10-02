@@ -11776,6 +11776,7 @@ import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.Collar
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.TriplePunctured
 import DifferentialGeometry.Topology.Manifold.SupportedPointMotion
 import DifferentialGeometry.Topology.Manifold.BallChartSupportedIsotopy
+import DifferentialGeometry.Topology.ConnectedComplement
 import DifferentialGeometry.Topology.ClosedBallComplement
 import DifferentialGeometry.Topology.Manifold.BallChartSupportedTransport
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallPairTransport

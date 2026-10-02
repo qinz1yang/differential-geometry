@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Manifold.IsotopyOrientation
 import DifferentialGeometry.Topology.Manifold.BallEmbedding.FamilyStraightening
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallEmbeddingIsotopy
 import DifferentialGeometry.Topology.Manifold.OrientationDiffeomorphTransport
@@ -130,6 +131,10 @@ def isotopyPreservesOrientation : Prop :=
     ContMDiff (𝓘(ℝ, ℝ).prod ThreeModel) ThreeModel ∞
       (fun q : ℝ × U => (J q.1).symm q.2) →
     (J 1).preservesOrientation o o
+
+theorem isotopyPreservesOrientation_holds : isotopyPreservesOrientation.{u} := by
+  intro U _ _ _ _ _ o J hJ0 hJc _
+  exact preservesOrientation_of_jointlySmooth_isotopy o J hJ0 hJc 1
 
 private def orientedIsotopyConcat {U : Type u} [TopologicalSpace U] [ChartedSpace ThreeSpace U]
     (J J' : ℝ → Diffeomorph ThreeModel ThreeModel U U ∞) :
