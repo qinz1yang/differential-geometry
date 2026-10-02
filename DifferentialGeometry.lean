@@ -17457,6 +17457,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.Incoming
 import DifferentialGeometry.Topology.Manifold.BallEmbedding.Defs
 import DifferentialGeometry.Topology.Manifold.BallEmbedding.FamilyStraightening
 import DifferentialGeometry.Topology.Manifold.BallEmbedding.Isotopy
+import DifferentialGeometry.Topology.Manifold.BallEmbedding.RelativeIsotopy
+import DifferentialGeometry.Topology.Manifold.BallEmbedding.FamilyIsotopy
 import DifferentialGeometry.Topology.Manifold.BallEmbedding.Obstruction
 import DifferentialGeometry.Topology.Manifold.SphereIsotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverDescentConstruction
