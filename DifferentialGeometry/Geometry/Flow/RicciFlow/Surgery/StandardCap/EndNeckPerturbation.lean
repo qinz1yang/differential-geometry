@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.OpenEmbedding
-import DifferentialGeometry.Geometry.Neck.Model.EndDatum
+import DifferentialGeometry.Geometry.Metric.StandardCap.EndNeck
 import DifferentialGeometry.Geometry.Neck.ScalarNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckSpatialBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckMarkSideBridge

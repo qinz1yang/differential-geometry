@@ -101,7 +101,8 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   have hd := metric_inner_hasDerivWithinAt_on_closed_interval (L.closedSolution W hcs.le)
     (L.closedSolution_isSolutionOn W hac hcs) hcs Subset.rfl Subset.rfl ht x v w
   have hr := metricRicciAt_apply_eq_ricciTensor ((L.extendedMetric t).restrictOpen W) x v w
-  dsimp only [SolutionOn.ricciAt, SolutionFamily.ricciAt, closedSolution] at hd
+  dsimp only [SolutionOn.ricciAt, SolutionFamily.ricciAt,
+    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.closedSolution] at hd
   erw [hr] at hd
   exact hd
 

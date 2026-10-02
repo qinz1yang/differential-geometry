@@ -1,4 +1,4 @@
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.Line.Regularity
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Comparison.Distance.EndpointRate

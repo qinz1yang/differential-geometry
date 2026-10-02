@@ -1,14 +1,11 @@
-import DifferentialGeometry.Topology.Manifold.BallChartStraightening
-import DifferentialGeometry.Topology.Manifold.OrientedBallChartStraightening
+import DifferentialGeometry.Topology.Manifold.BallEmbedding.Defs
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans
 
 set_option autoImplicit false
 noncomputable section
 open Bundle Manifold Set Metric Filter Topology
 open scoped Manifold ContDiff Topology
-open DifferentialGeometry.Topology (BallChart)
-open DifferentialGeometry.Topology.Manifold
-  (exists_isotopy_eqOn_closedBall_of_partialDiffeomorphs_of_subset)
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 

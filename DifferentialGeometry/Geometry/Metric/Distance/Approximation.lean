@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Approximation.LocalLipschitz
 import DifferentialGeometry.Geometry.Metric.Distance.Lipschitz
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 
 noncomputable section
 

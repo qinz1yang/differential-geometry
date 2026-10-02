@@ -66,7 +66,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   have hmem : ∀ x : P.Carrier, x ∈ G.terminalRegularRegion := fun x => by
     rw [h]
     exact mem_univ x
-  simp only [IncomingSlab.terminalRegularRegion, Set.mem_ofPred_eq] at hmem
+  simp only [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalRegularRegion, Set.mem_ofPred_eq] at hmem
   have hmem' : ∀ x : P.Carrier, ∃ (U : Set P.Carrier) (a' K : ℝ),
       IsOpen U ∧ x ∈ U ∧ a' ∈ Ico a s ∧ 0 ≤ K ∧
         ∀ y ∈ U, ∀ t ∈ Ico a' s, G.riemannNorm t y ≤ K := by

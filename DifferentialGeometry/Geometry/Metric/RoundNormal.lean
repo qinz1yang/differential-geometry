@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.IntrinsicDeri
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.BasisPoints
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Intrinsic
 import DifferentialGeometry.Geometry.Metric.Scaling
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 
 noncomputable section
 

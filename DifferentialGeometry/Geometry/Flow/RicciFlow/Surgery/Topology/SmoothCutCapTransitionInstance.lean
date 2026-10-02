@@ -404,7 +404,7 @@ noncomputable instance emptyChartedSpacePEmpty : ChartedSpace ThreeSpace PEmpty.
 noncomputable def emptyStage : OrientedThreeStage where
   Carrier := PEmpty.{1}
   orientation :=
-    { dimension_eq := by simp [ThreeSpace]
+    { dimension_eq := by simp
       orientation := fun x => PEmpty.elim x
       locally_constant := fun p _ _ => PEmpty.elim p }
 

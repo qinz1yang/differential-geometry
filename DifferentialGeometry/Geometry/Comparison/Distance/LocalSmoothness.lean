@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInvers
 import Mathlib.Topology.VectorBundle.Riemannian
 import DifferentialGeometry.Geometry.Comparison.DistanceHessianLocal
 import DifferentialGeometry.Topology.Manifold.ZeroDimensional
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 
 noncomputable section
 open Bundle Filter Manifold Set

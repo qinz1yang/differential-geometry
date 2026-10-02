@@ -93,8 +93,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 theorem exists_poincare_controlled_extinction_of_retainedCoreTower_discardedSideGeometry
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
-    (T : RetainedCoreObservationTower (
-      M.toClosedOrientedManifold) g)
+    (T : RetainedCoreObservationTower (M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing)
     (h : T.discardedSideGeometry)
     (hextinct : towerExtinct T.toObservationTower) :

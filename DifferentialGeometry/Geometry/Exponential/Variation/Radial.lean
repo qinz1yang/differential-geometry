@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.Smoothness.Domain
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Variation
 import DifferentialGeometry.Geometry.Comparison.Variation.Field.Smoothness

@@ -24,7 +24,7 @@ theorem exists_isPLHomeomorphInto_image_eq_dist_lt_of_approximation
     DifferentialGeometry.Topology.Manifold.exists_continuousOn_pos_image_eq_of_isOpen
       (E := EuclideanSpace ℝ (Fin n)) hU hh φ hφ hpos
   obtain ⟨f, hf, hclose⟩ := happrox ε hεcont hεpos
-  exact ⟨f, hf, himage f hf.continuousOn hf.injOn (hf.isOpenMap_domRestrict hU) hclose,
+  exact ⟨f, hf, himage f hf.continuousOn hf.injOn hclose,
     fun x hx => (hclose x hx).trans_le (hεle x hx)⟩
 
 theorem exists_isPLHomeomorphInto_image_eq_dist_lt_of_isOpen_three

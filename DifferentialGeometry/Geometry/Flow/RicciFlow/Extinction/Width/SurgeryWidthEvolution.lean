@@ -187,13 +187,13 @@ theorem componentDiffeomorph_positive (P : OrientedThreeStage.{u}) [ConnectedSpa
     change mfderiv ThreeModel ThreeModel (componentDiffeomorph P c) x v = v
     rw [hd]
     rfl
-  have hm := congrArg (fun e : ThreeSpace ≃ₗ[ℝ] ThreeSpace =>
-    Orientation.map (Fin 3) e (P.orientation.orientation x.1)) he
-  have hr := congrArg (fun e : Orientation ℝ ThreeSpace (Fin 3) ≃
-      Orientation ℝ ThreeSpace (Fin 3) => e (P.orientation.orientation x.1))
-    (Orientation.map_refl (R := ℝ) (M := ThreeSpace) (Fin 3))
-  simpa only [DifferentialGeometry.Topology.ClosedOrientedManifold.component, DifferentialGeometry.Topology.ClosedOrientedManifold.componentOrientation,
-    DifferentialGeometry.Topology.ClosedOrientedManifold.componentTangentOrientation_apply] using hm.trans hr
+  have hderiv :
+      LinearEquiv.ofBijective
+          (mfderiv ThreeModel ThreeModel (componentDiffeomorph P c) x).toLinearMap hbij =
+        DifferentialGeometry.Topology.ClosedOrientedManifold.componentInclusionTangentEquiv P c x := by
+    rfl
+  rw [hderiv]
+  exact DifferentialGeometry.Topology.ClosedOrientedManifold.componentInclusion_preservesOrientation P c x
 
 private theorem le_liminf_of_eventually_le_mul {a : ℝ≥0∞} {t : ℝ}
     {v : ℝ → ℝ≥0∞} {ell : ℝ → ℝ}

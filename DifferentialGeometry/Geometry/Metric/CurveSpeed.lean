@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Distance.EndpointRate
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 import Mathlib.Topology.Connected.TotallyDisconnected
 import DifferentialGeometry.Geometry.Metric.Path.Speed
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling

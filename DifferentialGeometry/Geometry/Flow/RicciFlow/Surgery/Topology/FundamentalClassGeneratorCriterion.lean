@@ -76,20 +76,17 @@ theorem exists_unique_fundamentalClass_of_exists_of_localOrientationClass_genera
       absoluteToRelative M ({y}ᶜ) 3 z = localOrientationClass o y := by
   classical
   obtain ⟨z, hz⟩ := hexists
-  let e := localIntegralHomologyEquivInt (M := M) x
-  obtain ⟨u, hu⟩ := (isUnit_apply_iff_bijective_zsmul e (localOrientationClass o x)).mpr hlocal
-  have he : e.toLinearMap (localOrientationClass o x) = (u : ℤ) := by
-    simpa using hu.symm
+  obtain ⟨φ, _, hφone⟩ :=
+    (localOrientationClass_generator_iff_exists_surjective_functional o x).mp hlocal
   have hsurj : Function.Surjective
-      (e.toLinearMap.comp (absoluteToRelative M ({x}ᶜ) 3).hom) := by
+      (φ.comp (absoluteToRelative M ({x}ᶜ) 3).hom) := by
     intro n
-    refine ⟨(n * ((u⁻¹ : ℤˣ) : ℤ)) • z, ?_⟩
-    rw [LinearMap.comp_apply, map_zsmul, hz x, map_zsmul, he, smul_eq_mul, mul_assoc,
-      Units.inv_mul, mul_one]
+    refine ⟨n • z, ?_⟩
+    rw [LinearMap.comp_apply, map_zsmul, hz x, map_zsmul, hφone, smul_eq_mul, mul_one]
   have hinj : Function.Injective
       (absoluteToRelative M ({x}ᶜ) 3).hom := fun a b hab =>
     (bijective_of_surjective_linearMap_int_of_nonempty_linearEquiv_int hcyclic
-      (e.toLinearMap.comp (absoluteToRelative M ({x}ᶜ) 3).hom) hsurj).1
+      (φ.comp (absoluteToRelative M ({x}ᶜ) 3).hom) hsurj).1
       (by rw [LinearMap.comp_apply, LinearMap.comp_apply, hab])
   exact exists_unique_fundamentalClass_of_exists o ⟨z, hz⟩ ⟨x, hinj⟩
 

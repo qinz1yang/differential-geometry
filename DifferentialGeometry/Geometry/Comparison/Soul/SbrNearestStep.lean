@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 import Mathlib.Analysis.Convex.Function
 import Mathlib.Topology.Order.IntermediateValue
 import Mathlib.Topology.MetricSpace.Bounded

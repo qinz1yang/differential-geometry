@@ -626,7 +626,7 @@ noncomputable def wholeParentMap (d : (G.Child c).Carrier) :
     C((G.Parent c).Carrier, (G.Child c).Carrier) :=
   ⟨K.wholeParentMapFun d, K.wholeParentMapFun_continuous d⟩
 
-@[simp] theorem wholeParentMap_apply (d : (G.Child c).Carrier) (x : (G.Parent c).Carrier) :
+theorem wholeParentMap_apply (d : (G.Child c).Carrier) (x : (G.Parent c).Carrier) :
     K.wholeParentMap d x = K.wholeParentMapFun d x := rfl
 
 theorem wholeParentMap_of_mem (d : (G.Child c).Carrier) {x : (G.Parent c).Carrier}

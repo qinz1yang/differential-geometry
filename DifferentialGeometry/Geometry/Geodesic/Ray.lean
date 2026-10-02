@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.MetricSpace.Geodesic.Segment
 import DifferentialGeometry.Geometry.Geodesic.EquationGerm
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 import DifferentialGeometry.Topology.Manifold.ZeroDimensional
 
 noncomputable section

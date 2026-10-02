@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Convex.Concavity
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic

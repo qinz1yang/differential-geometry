@@ -1,4 +1,5 @@
-import DifferentialGeometry.Topology.Manifold.OrientedBallChartStraightening
+import DifferentialGeometry.Topology.ThreeManifold.Model
+import DifferentialGeometry.Topology.Manifold.OrientationDiffeomorphTransport
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Topology.Order.IntermediateValue
 
@@ -240,9 +241,5 @@ theorem preservesOrientation_of_jointlySmooth_isotopy {U : Type u} [TopologicalS
     by_contra hcon
     simp only [f, hcon, ite_false] at hpos
     norm_num at hpos
-
-theorem isotopyPreservesOrientation_holds : isotopyPreservesOrientation.{u} := by
-  intro U _ _ _ _ _ o J hJ0 hJc _
-  exact preservesOrientation_of_jointlySmooth_isotopy o J hJ0 hJc 1
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

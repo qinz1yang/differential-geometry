@@ -39,7 +39,7 @@ def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.Ter
   if t < s then (G.flow.base.metric t).restrictOpen G.terminalRegularOpen else L.metric
 
 @[simp] theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal (L : G.TerminalLimitMetric) :
-    L.extendedMetric s = L.metric := by simp [extendedMetric]
+    L.extendedMetric s = L.metric := by simp [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric]
 
 theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_before (L : G.TerminalLimitMetric)
     {t : ℝ} (ht : t < s) :

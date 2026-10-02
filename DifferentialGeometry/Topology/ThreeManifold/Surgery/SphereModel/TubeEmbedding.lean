@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.TubeSystem.SphereModel
+import DifferentialGeometry.Geometry.Boundary.ProductHalfSpace
 import DifferentialGeometry.Topology.Manifold.OpenSphereCylinder
 import DifferentialGeometry.Topology.Manifold.ParametrizationDerivative
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
@@ -6,7 +7,6 @@ import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingFromOpen
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
 import DifferentialGeometry.Topology.Embedding.Diffeomorph
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionBoundarySource
-import DifferentialGeometry.Topology.Manifold.ProductHalfSpaceBoundary
 import Mathlib.Geometry.Manifold.Instances.Icc
 
 set_option autoImplicit false
@@ -252,7 +252,7 @@ private theorem contMDiff_neckLastCoord : ContMDiff ThreeModel 𝓘(ℝ) ∞ nec
 private theorem contMDiffOn_neckCylInverseCore :
     ContMDiffOn ThreeModel ((𝓡 2).prod 𝓘(ℝ)) ∞ neckCylInverseCore neckCylBand := by
   have hdir : ContMDiffOn ThreeModel (𝓡 2) ∞ neckCylDir neckCylBand :=
-    (contMDiffOn_sphereDirection (n := 2) neckCylBase).comp contMDiff_neckInitCoord.contMDiffOn
+    (contMDiffOn_sphereDirection (E := ThreeSpace) (n := 2) neckCylBase).comp contMDiff_neckInitCoord.contMDiffOn
       (fun z hz => neckInitCoord_ne_zero_of_mem_band hz)
   exact hdir.prodMk contMDiff_neckLastCoord.contMDiffOn
 

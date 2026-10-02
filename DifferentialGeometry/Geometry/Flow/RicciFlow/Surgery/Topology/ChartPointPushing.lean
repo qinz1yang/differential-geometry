@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.Flow.Planar.ConstantOutsideCompactFlow
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly
+import DifferentialGeometry.Topology.ThreeManifold.Orientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalClassRealizationTransport
 import DifferentialGeometry.Topology.Manifold.BallChartPalaisTransport
 import DifferentialGeometry.Topology.Manifold.IsotopyOrientation

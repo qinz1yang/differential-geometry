@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmoothCutCa
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCurvatureBound
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.CapCoordinates
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.CapDerivatives
+import DifferentialGeometry.Topology.Manifold.SphereOutwardFrameDictionary
 
 set_option autoImplicit false
 

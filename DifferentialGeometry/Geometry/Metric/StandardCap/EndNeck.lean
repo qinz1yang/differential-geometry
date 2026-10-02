@@ -9,7 +9,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Function TopologicalSpace Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
-open DifferentialGeometry.Geometry.Riemannian DifferentialGeometry.Geometry.Metric DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Riemannian DifferentialGeometry.Geometry.Metric
 open DifferentialGeometry.Geometry.Neck DifferentialGeometry.Topology.Manifold
 open scoped Manifold ContDiff ENNReal
 namespace DifferentialGeometry.PDE.RicciFlow.StandardCap

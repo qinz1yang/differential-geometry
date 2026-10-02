@@ -27,33 +27,6 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-theorem mfderivToContinuousLinearEquiv_toLinearEquiv_eq_ofBijective
-    {M N : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [TopologicalSpace N] [ChartedSpace ThreeSpace N]
-    (f : M ≃ₘ⟮ThreeModel, ThreeModel⟯ N) (x : M)
-    (hf : Function.Bijective (mfderiv ThreeModel ThreeModel f x)) :
-    (f.mfderivToContinuousLinearEquiv (by simp) x).toLinearEquiv =
-      LinearEquiv.ofBijective (mfderiv ThreeModel ThreeModel f x).toLinearMap hf := by
-  ext v
-  rw [LinearEquiv.ofBijective_apply]
-  change (f.mfderivToContinuousLinearEquiv (by simp) x :
-    TangentSpace ThreeModel x → TangentSpace ThreeModel (f x)) v =
-    mfderiv ThreeModel ThreeModel f x v
-  rfl
-
-theorem preservesOrientation_of_preservesTangentOrientation
-    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] (oM : TangentOrientationSection M)
-    {N : Type u} [TopologicalSpace N] [ChartedSpace ThreeSpace N]
-    [IsManifold ThreeModel ∞ N] (oN : TangentOrientationSection N)
-    (f : M ≃ₘ⟮ThreeModel, ThreeModel⟯ N)
-    (h : PreservesTangentOrientation oM oN f) :
-    f.preservesOrientation oM oN := by
-  intro x
-  obtain ⟨hf, hfx⟩ := h.2 x
-  rw [mfderivToContinuousLinearEquiv_toLinearEquiv_eq_ofBijective f x hf]
-  exact hfx
-
 def InitialIdentification.toFiniteSurgeryHistory
     {P : OrientedThreeStage.{u}} {g : P.Metric} {H : ObservedHistory.{u}}
     (A : InitialIdentification P g H) (hn : 0 < H.eventCount)

@@ -24,7 +24,7 @@ theorem hasFDerivAt_capDen (v : E3) :
       ((2 * standardNeckCapAmbientRadius ^ 2) • innerSL ℝ v) v := by
   have h1 := ((hasStrictFDerivAt_norm_sq v).hasFDerivAt).const_mul (standardNeckCapAmbientRadius ^ 2)
   have h2 := h1.const_add (1 : ℝ)
-  simpa [two_nsmul, two_smul ℝ, smul_smul, ← add_smul, ← mul_two, mul_comm, mul_left_comm, mul_assoc] using h2
+  simpa only [two_nsmul, ← two_smul ℝ, smul_smul, mul_comm, mul_left_comm, mul_assoc] using h2
 
 theorem hasFDerivAt_capDenInv (v : E3) :
     HasFDerivAt ((fun x : ℝ => x⁻¹) ∘ standardNeckCapDenAmbient)
@@ -42,7 +42,7 @@ theorem hasFDerivAt_capNumT (v : E3) :
       ((-(2 * standardNeckCapAmbientRadius ^ 2)) • innerSL ℝ v) v := by
   have h := ((hasStrictFDerivAt_norm_sq v).hasFDerivAt).const_mul (standardNeckCapAmbientRadius ^ 2)
   have h2 := h.const_sub (1 : ℝ)
-  simpa [two_nsmul, two_smul ℝ, neg_smul, smul_smul, ← add_smul, ← mul_two, mul_comm, mul_left_comm, mul_assoc] using h2
+  simpa only [two_nsmul, ← two_smul ℝ, neg_smul, smul_smul, mul_comm, mul_left_comm, mul_assoc] using h2
 
 theorem hasFDerivAt_capSRaw (v : E3) :
     HasFDerivAt (fun w : E3 => (2 * standardNeckCapAmbientRadius) *
@@ -164,8 +164,8 @@ private theorem hasFDerivAt_standardNeckCapAmbientT :
     funext v
     rw [standardNeckCapAmbientT, standardNeckCapDenAmbient_eq, div_eq_mul_inv]
   rw [hfun]
-  apply HasFDerivAt.of_isLittleO
-  simpa [Function.comp_def] using (hasFDerivAt_capTRaw (0 : ChartE3)).isLittleO
+  convert! hasFDerivAt_capTRaw (0 : ChartE3) using 1
+  simp
 
 private theorem hasFDerivAt_standardNeckCapAmbientLast (side : Bool) :
     HasFDerivAt (𝕜 := ℝ) (standardNeckCapAmbientLast side) 0 0 := by

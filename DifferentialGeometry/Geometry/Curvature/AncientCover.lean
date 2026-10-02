@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.AncientSplitting
 import DifferentialGeometry.Geometry.Curvature.PositiveRicciCover
 import DifferentialGeometry.Geometry.Curvature.PositiveSectionalCover
 import DifferentialGeometry.Geometry.Curvature.PositiveSectionalRicci
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 
 noncomputable section
 open Manifold Topology

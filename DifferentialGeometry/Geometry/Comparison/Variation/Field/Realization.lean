@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
 import DifferentialGeometry.Geometry.Comparison.Variation.Coordinates.FixedChartIdentities
 import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 
 noncomputable section
 

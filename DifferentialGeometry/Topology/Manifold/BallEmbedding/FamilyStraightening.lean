@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.BallEmbedding.Isotopy
+import DifferentialGeometry.Topology.Manifold.BallChartAffine
 import DifferentialGeometry.Topology.Manifold.BallChartScale
 import DifferentialGeometry.Topology.Manifold.EmbeddedBallContraction
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition

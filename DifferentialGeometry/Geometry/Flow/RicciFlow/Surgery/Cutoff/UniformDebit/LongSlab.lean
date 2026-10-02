@@ -111,10 +111,13 @@ theorem uniformDebitSurgeryStepStrong_of_long_slabs
   have hderEv : H.EventSlabsDerivative Ctime qcan (Fin.last H.eventCount) :=
     fun j _ y t ht hy => hderH j y t ht hy
   have hs0 : 0 ≤ s := (H.toHistory.time_nonneg _).trans G.lt.le
-  obtain ⟨ρ, hρ, hρle, -, -, -, -, P, -, -, -, -, -, Qout, E, hOld, K', initialK, i, parameters,
-      n, δO, kO, NO, hδO, rot, hmark, side, hord, hδ1, Nrec, eO, -, hEG, hEL, hbfr, -, -, -, -,
-      -, -, hi, -, -, -, -, -, happend, hpδ', -, hpρ', hpf', hpc', hpm', hpD', hpa', -, -, -,
-      -, -, -, hrecord, hvol, -⟩ :=
+  classical
+  choose ρ hρ hρle hρantitone hρantitoneOn hρrecenter hρprotected P hcoreRadius hcoreLower
+    hcoreUpper hprotectedCore hhornBoundary Qout E hOld K' initialK i parameters n δO kO NO hδO
+    rot hmark side hord hδ1 Nrec eO hQpos hEG hEL hbfr hprefix hhorizon heventCount hlastTime
+    hlastStage hlastMetric hi hsourceStage hsourceTime htargetStage htargetTime hcoreEvent
+    happend hpδ' hprotectedRadius hpρ' hpf' hpc' hpm' hpD' hpa' hprotectedInterior
+    hretainedMeets hneckScale hneckPrecision hneckRecipe htube hrecord hvol hcapScalarLower using
     hF p₀ hpD (by rw [hpm]; exact le_max_right _ _) (by rw [hpa]; exact min_le_left _ _) H
       initial hend (min ρmax 1) hclassF s G L hsing p₀ hG hderH hderG
       (by change _ ≤ p₀.delta s * p₀.neckRadius s; rw [hpδ, hpρ])
@@ -130,6 +133,11 @@ theorem uniformDebitSurgeryStepStrong_of_long_slabs
           (hfineK H hend G L hsing (p₀.withNeckRadius ρ' hρ') hG qcan hderEv
             (fun y t ht hy => hderG y t ht hy) hgradG hpin.2 hpin.1 hspatG hncG P' hεPη Q hKQ'
             (hQθ H initial hhor s G hs hG hsing Q hQθQ)))
+  clear hρantitone hρantitoneOn hρrecenter hρprotected hcoreRadius hcoreLower hcoreUpper
+    hprotectedCore hhornBoundary hQpos hprefix hhorizon heventCount hlastTime hlastStage
+    hlastMetric hsourceStage hsourceTime htargetStage htargetTime hcoreEvent hprotectedRadius
+    hprotectedInterior hretainedMeets hneckScale hneckPrecision hneckRecipe htube
+    hcapScalarLower
   obtain ⟨Record, -, -, -, -, hwin, hstdE, -, -⟩ := hrecord
   obtain ⟨Eappend, hOldAppend, hInitial, hHEq, hK⟩ := happend
   have hEE := eq_of_heq hHEq
