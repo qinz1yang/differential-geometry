@@ -17,7 +17,7 @@ theorem exists_continuousOn_pos_image_eq_of_isOpen
     (φ : M₁ → ℝ) (hφ : ContinuousOn φ U) (hpos : ∀ x ∈ U, 0 < φ x) :
     ∃ ε : M₁ → ℝ, ContinuousOn ε U ∧ (∀ x ∈ U, 0 < ε x) ∧
       (∀ x ∈ U, ε x ≤ φ x) ∧
-      ∀ f : M₁ → M₂, ContinuousOn f U → InjOn f U → IsOpenMap (U.domRestrict f) →
+      ∀ f : M₁ → M₂, ContinuousOn f U → InjOn f U →
         (∀ x ∈ U, dist (f x) (h x) < ε x) → f '' U = h '' U := by
   let : LocallyCompactSpace M₁ := ChartedSpace.locallyCompactSpace E M₁
   let : LocallyCompactSpace U := hU.locallyCompactSpace
@@ -27,15 +27,31 @@ theorem exists_continuousOn_pos_image_eq_of_isOpen
     intro x hx y hy hxy
     exact congrArg Subtype.val (hh.injective (show (U.domRestrict h) ⟨x, hx⟩ =
       (U.domRestrict h) ⟨y, hy⟩ from hxy))
-  have himage : IsOpen (h '' U) := by
-    let H := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
-    let e : E ≃L[ℝ] H := ContinuousLinearEquiv.ofFinrankEq (by simp [H])
-    let : ChartedSpace H M₁ :=
-      DifferentialGeometry.Manifold.chartedSpaceTransHomeomorph (M := M₁) e.toHomeomorph
-    let : ChartedSpace H M₂ :=
-      DifferentialGeometry.Manifold.chartedSpaceTransHomeomorph (M := M₂) e.toHomeomorph
-    exact isOpen_image_of_continuousOn_injOn (E := H) hU hhcont hhinj
-  exact DifferentialGeometry.Topology.PiecewiseLinear.exists_continuousOn_pos_image_eq_of_dist_lt
-    hh himage (CompactExhaustion.choice U) φ hφ hpos
+  let H := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+  let e : E ≃L[ℝ] H := ContinuousLinearEquiv.ofFinrankEq (by simp [H])
+  let : ChartedSpace H M₁ :=
+    DifferentialGeometry.Manifold.chartedSpaceTransHomeomorph (M := M₁) e.toHomeomorph
+  let : ChartedSpace H M₂ :=
+    DifferentialGeometry.Manifold.chartedSpaceTransHomeomorph (M := M₂) e.toHomeomorph
+  have himage : IsOpen (h '' U) :=
+    isOpen_image_of_continuousOn_injOn (E := H) hU hhcont hhinj
+  obtain ⟨ε, hεcont, hεpos, hεle, hε⟩ :=
+    DifferentialGeometry.Topology.PiecewiseLinear.exists_continuousOn_pos_image_eq_of_dist_lt
+      hh himage (CompactExhaustion.choice U) φ hφ hpos
+  refine ⟨ε, hεcont, hεpos, hεle, ?_⟩
+  intro f hf hfinj hclose
+  have hfopen : IsOpenMap (U.domRestrict f) := by
+    intro V hV
+    have hVU : (Subtype.val : U → M₁) '' V ⊆ U := by
+      rintro _ ⟨x, _, rfl⟩
+      exact x.property
+    have hVimage : IsOpen ((Subtype.val : U → M₁) '' V) :=
+      hU.isOpenMap_subtype_val V hV
+    have hfimage : IsOpen (f '' ((Subtype.val : U → M₁) '' V)) :=
+      isOpen_image_of_continuousOn_injOn (E := H) hVimage (hf.mono hVU)
+        (Set.InjOn.mono hVU hfinj)
+    change IsOpen ((fun x : U => f x.val) '' V)
+    simpa only [Set.image_image] using hfimage
+  exact hε f hf hfinj hfopen hclose
 
 end DifferentialGeometry.Topology.Manifold

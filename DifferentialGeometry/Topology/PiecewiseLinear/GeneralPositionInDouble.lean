@@ -256,18 +256,26 @@ theorem exists_sheets_of_hasStableCrossingBlocks {f : EuclideanSpace ℝ (Fin 2)
     {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ} {BdM Q : Set M} {η : ℝ}
     (h : HasStableCrossingBlocks f S ec ℓ BdM Q η) {y : M}
     (hy : y ∈ doublePointSet f S ∩ Q) :
-    ∃ SA' SB' : Set (EuclideanSpace ℝ (Fin 2)),
-      Disjoint SA' SB' ∧ (SA' ∩ f ⁻¹' {y}).Nonempty ∧ (SB' ∩ f ⁻¹' {y}).Nonempty := by
+    ∃ (A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ) (r tlo : ℝ)
+      (SA SB : Set (EuclideanSpace ℝ (Fin 2))) (a b : ℝ × ℝ → ℝ) (La Lb : ℝ),
+      IsStableCrossingBlock f S ec ℓ BdM A r tlo SA SB a b La Lb η ∧
+        y ∈ innerChartBlock ec A r tlo ∧ SA ⊆ S ∧ SB ⊆ S ∧
+        Disjoint SA SB ∧ (SA ∩ f ⁻¹' {y}).Nonempty ∧ (SB ∩ f ⁻¹' {y}).Nonempty := by
   obtain ⟨-, m, A, r, tlo, SA, SB, a, b, La, Lb, hcov, hblk⟩ := h
   obtain ⟨i, hi⟩ := mem_iUnion.mp (hcov hy)
-  obtain ⟨hr0, -, -, -, -, -, -, hside, -, hdisj, -, -, -, -, -, -, -, -, -, -⟩ := hblk i
+  have hblock := hblk i
+  obtain ⟨hr0, -, -, -, -, -, -, hside, hpre, hdisj, -, -, -, -, -, -, -, -, -, -⟩ := id hblock
   have ht : tlo i ≤ 0 := by
     rcases hside with ⟨h1, -⟩ | ⟨h1, -, -⟩
     · rw [h1]; linarith
     · exact le_of_eq h1
-  obtain ⟨hA, hB⟩ := sheets_nonempty_of_isStableCrossingBlock (hblk i) hy.1
+  obtain ⟨hA, hB⟩ := sheets_nonempty_of_isStableCrossingBlock hblock hy.1
     (chartBlock_mono_of_half ec (A i) (le_of_lt hr0) ht hi)
-  exact ⟨SA i, SB i, hdisj, hA, hB⟩
+  have hsub : SA i ∪ SB i ⊆ S := by
+    rw [← hpre]
+    exact inter_subset_left
+  exact ⟨A i, r i, tlo i, SA i, SB i, a i, b i, La i, Lb i, hblock, hi,
+    fun _ hx => hsub (Or.inl hx), fun _ hx => hsub (Or.inr hx), hdisj, hA, hB⟩
 
 omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem isStableCrossingBlock_of_flatSheets {f : EuclideanSpace ℝ (Fin 2) → M}
@@ -526,15 +534,15 @@ theorem wallIncidence_simplexBoundary {T : Finset Ea}
       · rw [Finset.mem_singleton.mp hzv] at hcz
         exact Or.inr hcz
 
-theorem exists_wallIncidence_of_fourSimplexBoundary :
-    ∃ Q : Geometry.SimplicialComplex ℝ (Fin (3 + 2) → ℝ), Q.faces.Finite ∧
-      (∀ s ∈ Q.faces, s.card ≤ 4) ∧ (∀ s ∈ Q.faces, ∃ c ∈ wallSystemCells Q, s ⊆ c) ∧
+theorem wall_incidence_four_simplex_boundary :
+    let Q := simplexBoundary (stdVertices 3) (stdVertices_affineIndependent 3)
+    Q.faces.Finite ∧ (∀ s ∈ Q.faces, s.card ≤ 4) ∧
+      (∀ s ∈ Q.faces, ∃ c ∈ wallSystemCells Q, s ⊆ c) ∧
       (wallSystemWalls Q).Nonempty ∧
       ∀ w ∈ wallSystemWalls Q, ∃ cm ∈ wallSystemCells Q, ∃ cp ∈ wallSystemCells Q,
         cm ≠ cp ∧ w ⊆ cm ∧ w ⊆ cp ∧
           ∀ c ∈ wallSystemCells Q, w ⊆ c → c = cm ∨ c = cp :=
-  ⟨simplexBoundary (stdVertices 3) (stdVertices_affineIndependent 3),
-    wallIncidence_simplexBoundary (stdVertices_affineIndependent 3) (card_stdVertices 3)⟩
+  wallIncidence_simplexBoundary (stdVertices_affineIndependent 3) (card_stdVertices 3)
 
 omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem eqOn_wallPlane_of_eqOn_transition
@@ -766,18 +774,27 @@ theorem exists_sheets_of_hasWallProductBlocks {f : EuclideanSpace ℝ (Fin 2) �
     {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea} {η : ℝ}
     (h : HasWallProductBlocks f S ec ℓ Eb BdM C Q ρ Z η) {y : M}
     (hy : y ∈ doublePointSet f S ∩ Z) :
-    ∃ SA' SB' : Set (EuclideanSpace ℝ (Fin 2)),
-      Disjoint SA' SB' ∧ (SA' ∩ f ⁻¹' {y}).Nonempty ∧ (SB' ∩ f ⁻¹' {y}).Nonempty := by
-  obtain ⟨i, A, r, tlo, SA, SB, a, b, La, Lb, hblk, hi⟩ :=
-    exists_isStableCrossingBlock_of_hasWallProductBlocks h hy
-  obtain ⟨hr0, -, -, -, -, -, -, hside, -, hdisj, -, -, -, -, -, -, -, -, -, -⟩ := id hblk
-  have ht : tlo ≤ 0 := by
+    ∃ (i : ι) (A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ) (r tlo : ℝ)
+      (SA SB : Set (EuclideanSpace ℝ (Fin 2))) (a b : ℝ × ℝ → ℝ) (La Lb : ℝ),
+      WallProductBlock f S (ec i) (ℓ i) BdM C Q ρ A r tlo SA SB a b La Lb η ∧
+        y ∈ innerChartBlock (ec i) A r tlo ∧ chartBlock (ec i) A r tlo ⊆ Eb i ∧
+        SA ⊆ S ∧ SB ⊆ S ∧ Disjoint SA SB ∧
+        (SA ∩ f ⁻¹' {y}).Nonempty ∧ (SB ∩ f ⁻¹' {y}).Nonempty := by
+  obtain ⟨-, N, m, j, A, r, tlo, SA, SB, a, b, La, Lb, -, hZN, hcov, hE, hblk⟩ := h
+  obtain ⟨i, hi⟩ := mem_iUnion.mp (hcov ⟨hy.1, hZN hy.2⟩)
+  have hblock := hblk i
+  obtain ⟨hr0, -, -, -, -, -, -, hside, hpre, hdisj, -, -, -, -, -, -, -, -, -, -⟩ := id hblock.1
+  have ht : tlo i ≤ 0 := by
     rcases hside with ⟨h1, -⟩ | ⟨h1, -, -⟩
     · rw [h1]; linarith
     · exact le_of_eq h1
-  obtain ⟨hA, hB⟩ := sheets_nonempty_of_isStableCrossingBlock hblk hy.1
-    (chartBlock_mono_of_half (ec i) A (le_of_lt hr0) ht hi)
-  exact ⟨SA, SB, hdisj, hA, hB⟩
+  obtain ⟨hA, hB⟩ := sheets_nonempty_of_isStableCrossingBlock hblock.1 hy.1
+    (chartBlock_mono_of_half (ec (j i)) (A i) (le_of_lt hr0) ht hi)
+  have hsub : SA i ∪ SB i ⊆ S := by
+    rw [← hpre]
+    exact inter_subset_left
+  exact ⟨j i, A i, r i, tlo i, SA i, SB i, a i, b i, La i, Lb i, hblock, hi, hE i,
+    fun _ hx => hsub (Or.inl hx), fun _ hx => hsub (Or.inr hx), hdisj, hA, hB⟩
 
 theorem exists_normalCrossing_of_hasWallProductBlocks [T2Space M] (D : SingularTwoCell M)
     {BdM C Z : Set M} {ι : Type}
