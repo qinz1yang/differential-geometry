@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.ConnectedBoundedGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ComponentBallTransfer
 import DifferentialGeometry.Geometry.Metric.ConnectedComponentInjectivity
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 
 set_option autoImplicit false
 

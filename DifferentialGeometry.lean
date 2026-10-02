@@ -2773,7 +2773,6 @@ import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Spacetime
 import DifferentialGeometry.Bundle.Dual
 import DifferentialGeometry.Bundle.Equiv
 import DifferentialGeometry.Bundle.Equiv.Continuity
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Bundle.Fiberwise
 import DifferentialGeometry.Bundle.FinitePatch
 import DifferentialGeometry.Bundle.Frame
