@@ -1616,10 +1616,11 @@ private theorem exists_prepared_horn_cutoff_event_at_scale_with_canonical_window
   obtain ⟨coreBound, hcore, hmake⟩ := hproduce P hε
   refine ⟨coreBound, hcore, ?_⟩
   intro Q hQ hnominal
-  obtain ⟨Qout, E, p, N, hQpos, hG, hL, hOld, hBoundary, hpδ, hpR, hpρ, hpFixed,
-    hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hreset, F, hFN, hcanonical,
-    n, δOrig, kOrig, NOrig, hδOrig, rotation, hmark, side, horder, hδ1', e, hscale,
-    _, hrecipe, hneck⟩ := hmake Q hQ hnominal
+  classical
+  choose Qout E p N hQpos hG hL hOld hBoundary hpδ hpR hpρ hpFixed
+    hpM hpD hpAcc hpC hr hvol hcap hreset F hFN hcanonical
+    n δOrig kOrig NOrig hδOrig rotation hmark side horder hδ1' e hscale
+    _ hrecipe hneck using hmake Q hQ hnominal
   exact ⟨Qout, E, p, N, hQpos, hG, hL, hOld, hBoundary, hpδ, hpR, hpρ, hpFixed,
     hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hreset, F, hFN, hcanonical,
     n, δOrig, kOrig, NOrig, hδOrig, rotation, hmark, side, horder, hδ1', e, hscale,
@@ -1920,10 +1921,11 @@ private theorem exists_prepared_horn_cutoff_event_at_scale :
   obtain ⟨coreBound, hcoreNonneg, hproduce⟩ := hmake P hε
   refine ⟨coreBound, hcoreNonneg, ?_⟩
   intro Q hQscale hQnominal
-  obtain ⟨Qout, E, p, N, hQ, hG, hL, hOld, hBoundary, hpδ, hpR, hpρ,
-    hpFixed, hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hreset,
-    F, hF, n, δOriginal, kOriginal, NOriginal, hδOriginal, rotation, hmark,
-    side, horder, hδ1', e, hscale, hrecipe, hneck⟩ := hproduce Q hQscale hQnominal
+  classical
+  choose Qout E p N hQ hG hL hOld hBoundary hpδ hpR hpρ
+    hpFixed hpM hpD hpAcc hpC hr hvol hcap hreset
+    F hF n δOriginal kOriginal NOriginal hδOriginal rotation hmark
+    side horder hδ1' e hscale hrecipe hneck using hproduce Q hQscale hQnominal
   exact ⟨Qout, E, p, N, hQ, hG, hL, hOld, hBoundary, hpδ, hpR, hpρ,
     hpFixed, hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hreset,
     F, hF, n, δOriginal, kOriginal, NOriginal, hδOriginal, rotation, hmark,
@@ -2544,10 +2546,10 @@ private theorem exists_horn_cutoff_history_extension_with_static_caps_and_origin
   refine ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, ?_⟩
   intro P₀ g₀ H initial htime D hstage hstart hinit ε Λ P hε Q hQscale hQnominal
   obtain ⟨coreBound, hcoreNonneg, hproduce⟩ := hmake P hε
-  obtain ⟨Qout, E, p, N, hQ, hG, hL, hOld, hBoundary,
-    hpδ, hpR, hpρ, hpFixed, hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hreset,
-    geometry, hgeometry, hcanonical, n, δOrig, kOrig, NOrig, hδOrig, rotation, hmark,
-    side, horder, hδ1', e, hscale, hsource, hrecipe, hneck⟩ := hproduce Q hQscale hQnominal
+  choose Qout E p N hQ hG hL hOld hBoundary
+    hpδ hpR hpρ hpFixed hpM hpD hpAcc hpC hr hvol hcap hreset
+    geometry hgeometry hcanonical n δOrig kOrig NOrig hδOrig rotation hmark
+    side horder hδ1' e hscale hsource hrecipe hneck using hproduce Q hQscale hQnominal
   have hext := exists_history_extension_of_metricCutCapEvent
     H initial htime D hstage hstart E hOld hG hinit
   obtain ⟨K, B, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
@@ -2742,11 +2744,12 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_canon
   obtain ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
   refine ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, ?_⟩
   intro P₀ g₀ H initial htime D hstage hstart hinit ε Λ P hε Q hQscale hQnominal
-  obtain ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
-    hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal, Sfamily,
-    hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
-    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, _, hNrecord, hTube, hrecord, hvol, hcap, hrecipe⟩ :=
+  classical
+  choose Qout E hOld K B i p n δOrig kOrig NOrigH
+    hδOrig rotation hmarkH side horder hδ1' Nrecord eOriginal Sfamily
+    hQ hG hL hBoundary hprefix hhor hcount hlasttime hlaststage hlastmetric
+    hi hsrc hsrcTime hout houtTime hEvent happend hpδ hpR hpρ hpFixed hpC hpM hpD hpAcc
+    hprotected hretained hscale _ hNrecord hTube hrecord hvol hcap hrecipe using
     hproduce H initial htime D hstage hstart hinit P hε Q hQscale hQnominal
   exact ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
     hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal, Sfamily,
@@ -2923,11 +2926,12 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_stati
   obtain ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
   refine ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, ?_⟩
   intro P₀ g₀ H initial htime D hstage hstart hinit ε Λ P hε Q hQscale hQnominal
-  obtain ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
-    hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal, Sfamily,
-    hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
-    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, hNrecord, hTube, hrecord, hvol, hcap, hrecipe⟩ :=
+  classical
+  choose Qout E hOld K B i p n δOrig kOrig NOrigH
+    hδOrig rotation hmarkH side horder hδ1' Nrecord eOriginal Sfamily
+    hQ hG hL hBoundary hprefix hhor hcount hlasttime hlaststage hlastmetric
+    hi hsrc hsrcTime hout houtTime hEvent happend hpδ hpR hpρ hpFixed hpC hpM hpD hpAcc
+    hprotected hretained hscale hNrecord hTube hrecord hvol hcap hrecipe using
     hproduce H initial htime D hstage hstart hinit P hε Q hQscale hQnominal
   refine ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
     hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal, Sfamily,
@@ -3194,11 +3198,12 @@ theorem exists_horn_cutoff_history_extension_with_original_neck_bounds_and_canon
   obtain ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
   refine ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, ?_⟩
   intro P₀ g₀ H initial htime D hstage hstart hinit ε Λ P hε Q hQscale hQnominal
-  obtain ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
-    hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal, Sfamily,
-    hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
-    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, hsource, hNrecord, hTube, hrecord, hvol, hcap, hrecipe⟩ :=
+  classical
+  choose Qout E hOld K B i p n δOrig kOrig NOrigH
+    hδOrig rotation hmarkH side horder hδ1' Nrecord eOriginal Sfamily
+    hQ hG hL hBoundary hprefix hhor hcount hlasttime hlaststage hlastmetric
+    hi hsrc hsrcTime hout houtTime hEvent happend hpδ hpR hpρ hpFixed hpC hpM hpD hpAcc
+    hprotected hretained hscale hsource hNrecord hTube hrecord hvol hcap hrecipe using
     hproduce H initial htime D hstage hstart hinit P hε Q hQscale hQnominal
   refine ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
     hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
@@ -3298,11 +3303,12 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_record_window
     hfamily Dcap hDcap hDfit m accuracy haccuracy η hη
   refine ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, ?_⟩
   intro P₀ g₀ H initial htime D hstage hstart hinit ε Λ P hε Q hQscale hQnominal
-  obtain ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
-    hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
-    hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
-    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, _, hNrecord, hTube, hrecord, hvol, hcap⟩ :=
+  classical
+  choose Qout E hOld K B i p n δOrig kOrig NOrigH
+    hδOrig rotation hmarkH side horder hδ1' Nrecord eOriginal
+    hQ hG hL hBoundary hprefix hhor hcount hlasttime hlaststage hlastmetric
+    hi hsrc hsrcTime hout houtTime hEvent happend hpδ hpR hpρ hpFixed hpC hpM hpD hpAcc
+    hprotected hretained hscale _ hNrecord hTube hrecord hvol hcap using
     hproduce H initial htime D hstage hstart hinit P hε Q hQscale hQnominal
   exact ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
     hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
@@ -3397,11 +3403,12 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_original_neck
   obtain ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
   refine ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, ?_⟩
   intro P₀ g₀ H initial htime D hstage hstart hinit ε Λ P hε Q hQscale hQnominal
-  obtain ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
-    hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal, Sfamily,
-    hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
-    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, hsource, hNrecord, hTube, hrecord, hvol, hcap, hrecipe⟩ :=
+  classical
+  choose Qout E hOld K B i p n δOrig kOrig NOrigH
+    hδOrig rotation hmarkH side horder hδ1' Nrecord eOriginal Sfamily
+    hQ hG hL hBoundary hprefix hhor hcount hlasttime hlaststage hlastmetric
+    hi hsrc hsrcTime hout houtTime hEvent happend hpδ hpR hpρ hpFixed hpC hpM hpD hpAcc
+    hprotected hretained hscale hsource hNrecord hTube hrecord hvol hcap hrecipe using
     hproduce H initial htime D hstage hstart hinit P hε Q hQscale hQnominal
   refine ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
     hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
@@ -3498,11 +3505,12 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_record_neck_p
   obtain ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
   refine ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, ?_⟩
   intro P₀ g₀ H initial htime D hstage hstart hinit ε Λ P hε Q hQscale hQnominal
-  obtain ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
-    hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
-    hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
-    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, _, hNrecord, hTube, hrecord, hvol, hcap⟩ :=
+  classical
+  choose Qout E hOld K B i p n δOrig kOrig NOrigH
+    hδOrig rotation hmarkH side horder hδ1' Nrecord eOriginal
+    hQ hG hL hBoundary hprefix hhor hcount hlasttime hlaststage hlastmetric
+    hi hsrc hsrcTime hout houtTime hEvent happend hpδ hpR hpρ hpFixed hpC hpM hpD hpAcc
+    hprotected hretained hscale _ hNrecord hTube hrecord hvol hcap using
     hproduce H initial htime D hstage hstart hinit P hε Q hQscale hQnominal
   exact ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
     hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
@@ -3675,11 +3683,12 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale :
   obtain ⟨δ, ε₀, hδ, hδ1, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy
   refine ⟨δ, ε₀, hδ, hδ1, hε₀, ?_⟩
   intro P₀ g₀ H initial htime D hstage hstart hinit ε Λ P hε Q hQscale hQnominal
-  obtain ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
-    hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
-    hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
-    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, hNrecord, hTube, hrecord, hvol, hcap⟩ :=
+  classical
+  choose Qout E hOld K B i p n δOrig kOrig NOrigH
+    hδOrig rotation hmarkH side horder hδ1' Nrecord eOriginal
+    hQ hG hL hBoundary hprefix hhor hcount hlasttime hlaststage hlastmetric
+    hi hsrc hsrcTime hout houtTime hEvent happend hpδ hpR hpρ hpFixed hpC hpM hpD hpAcc
+    hprotected hretained hscale hNrecord hTube hrecord hvol hcap using
     hproduce H initial htime D hstage hstart hinit P hε Q hQscale hQnominal
   refine ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
     hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
@@ -3880,11 +3889,12 @@ theorem exists_neckRadius_horn_cutoff_history_extension_at_base_bounded_scale :
   refine ⟨δ, Λ, hδ, hδ1, hΛ, ?_⟩
   intro P₀ g₀ H initial htime D hstage hstart hinit
   obtain ⟨ρ, hρ, hρle, hmono, hmonoOn, _, hprotect, P, hradius, _⟩ := hpresentation D
-  obtain ⟨Qout, E, hOld, K, B, i, p, Q, n, δOrig, kOrig, NOrig,
-    hδOrig, rotation, hmark, side, horder, hδ1', Nrecord, eOriginal,
-    hQ, hQeq, hG, hL, hbfr, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
-    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpConstant, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, hNrecord, hTube, hrecord, hvol, hcap⟩ :=
+  classical
+  choose Qout E hOld K B i p Q n δOrig kOrig NOrig
+    hδOrig rotation hmark side horder hδ1' Nrecord eOriginal
+    hQ hQeq hG hL hbfr hprefix hhor hcount hlasttime hlaststage hlastmetric
+    hi hsrc hsrcTime hout houtTime hEvent happend hpδ hpR hpρ hpFixed hpConstant hpM hpD hpAcc
+    hprotected hretained hscale hNrecord hTube hrecord hvol hcap using
     hfactory H initial htime (D.withNeckRadius ρ hρ) hstage hstart hinit P le_rfl
   have hpRadius : p.protectedRadius = (fun _ => D.parameters.delta D.endTime * ρ D.endTime) :=
     hpR.trans (congrArg (fun r : ℝ => fun _ : ℝ => r) hradius)
@@ -4104,11 +4114,12 @@ theorem exists_neckRadius_horn_cutoff_history_extension_of_cut_necks :
   refine ⟨δ, hδ, hδ1, ?_⟩
   intro P₀ g₀ H initial htime D hstage hstart hinit
   obtain ⟨ρ, hρ, hρle, hmono, hmonoOn, _, hprotect, P, hradius, _⟩ := hpresentation D
-  obtain ⟨Qout, E, hOld, K, B, i, p, Q, n, δOrig, kOrig, NOrig,
-    hδOrig, rotation, hmark, side, horder, hδ1', Nrecord, eOriginal,
-    hQ, hG, hL, hbfr, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
-    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpConstant, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, hNrecord, hTube, hrecord, hvol, hcap, hreset⟩ :=
+  classical
+  choose Qout E hOld K B i p Q n δOrig kOrig NOrig
+    hδOrig rotation hmark side horder hδ1' Nrecord eOriginal
+    hQ hG hL hbfr hprefix hhor hcount hlasttime hlaststage hlastmetric
+    hi hsrc hsrcTime hout houtTime hEvent happend hpδ hpR hpρ hpFixed hpConstant hpM hpD hpAcc
+    hprotected hretained hscale hNrecord hTube hrecord hvol hcap hreset using
     hfactory H initial htime (D.withNeckRadius ρ hρ) hstage hstart hinit P le_rfl
   have hpRadius : p.protectedRadius = (fun _ => D.parameters.delta D.endTime * ρ D.endTime) :=
     hpR.trans (congrArg (fun r : ℝ => fun _ : ℝ => r) hradius)
