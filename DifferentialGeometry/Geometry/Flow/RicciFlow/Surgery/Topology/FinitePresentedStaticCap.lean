@@ -18,8 +18,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-private abbrev finitePresentedQuotient
-    {M : Type u} [TopologicalSpace M] {ι : Type} [Fintype ι] {precision : ι → ℝ}
+private abbrev FinitePresentedQuotient
+    {M : Type u} [TopologicalSpace M] {ι : Type} {precision : ι → ℝ}
     (hδ : ∀ i, 0 < precision i)
     (f : ∀ i : ι, bufferedCylinder (precision i) → M)
     (hf : ∀ i, _root_.Topology.IsOpenEmbedding (f i))
@@ -29,7 +29,7 @@ private abbrev finitePresentedQuotient
       (_root_.Topology.IsOpenEmbedding.toIsEmbedding (hf i))) hdisj
 
 private abbrev finitePresentedRetained
-    {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M]
+    {M : Type u} [TopologicalSpace M] [T2Space M]
     [LocallyPathConnectedSpace M] {ι : Type} [Fintype ι] {precision : ι → ℝ}
     (hδ : ∀ i, 0 < precision i)
     (f : ∀ i : ι, bufferedCylinder (precision i) → M)
@@ -40,7 +40,7 @@ private abbrev finitePresentedRetained
 
 private abbrev finitePresentedDiscarded
     {M : Type u} [TopologicalSpace M] [T2Space M]
-    [ChartedSpace ThreeSpace M] [LocallyPathConnectedSpace M]
+    [LocallyPathConnectedSpace M]
     {ι : Type} [Fintype ι] {precision : ι → ℝ}
     (hδ : ∀ i, 0 < precision i)
     (f : ∀ i : ι, bufferedCylinder (precision i) → M)
@@ -49,7 +49,7 @@ private abbrev finitePresentedDiscarded
     (R : Set (ConnectedComponents (cutCore f))) :=
   finiteCapDiscarded transitionEnd_pos hδ f hf hdisj R
 
-private abbrev finitePresentedBoundaryIndex
+private abbrev FinitePresentedBoundaryIndex
     {M : Type u} [TopologicalSpace M] {ι : Type} {precision : ι → ℝ}
     (hδ : ∀ i, 0 < precision i)
     (f : ∀ i : ι, bufferedCylinder (precision i) → M)
@@ -78,13 +78,13 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace 
   (o : SmoothOrientation ThreeModel M)
   (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
 
-local notation "Q" => finitePresentedQuotient hδ f hf hdisj
+local notation "Q" => FinitePresentedQuotient hδ f hf hdisj
 local notation "T" => finitePresentedTubeSystem hδ hδ1 f hf hdisj
 private local instance : LocallyPathConnectedSpace M :=
   originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
 local notation "Ret" => finitePresentedRetained hδ f hf hdisj R
 local notation "Disc" => finitePresentedDiscarded hδ f hf hdisj R
-local notation "Bidx" => finitePresentedBoundaryIndex hδ f hf hdisj R
+local notation "Bidx" => FinitePresentedBoundaryIndex hδ f hf hdisj R
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 
@@ -326,13 +326,13 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace 
   (o : SmoothOrientation ThreeModel M)
   (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
 
-local notation "Q" => finitePresentedQuotient hδ f hf hdisj
+local notation "Q" => FinitePresentedQuotient hδ f hf hdisj
 local notation "T" => finitePresentedTubeSystem hδ hδ1 f hf hdisj
 private local instance : LocallyPathConnectedSpace M :=
   originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
 local notation "Ret" => finitePresentedRetained hδ f hf hdisj R
 local notation "Disc" => finitePresentedDiscarded hδ f hf hdisj R
-local notation "Bidx" => finitePresentedBoundaryIndex hδ f hf hdisj R
+local notation "Bidx" => FinitePresentedBoundaryIndex hδ f hf hdisj R
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 
@@ -784,14 +784,14 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace 
   (o : SmoothOrientation ThreeModel M)
   (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
 
-local notation "Q" => finitePresentedQuotient hδ f hf hdisj
+local notation "Q" => FinitePresentedQuotient hδ f hf hdisj
 local notation "T" => finitePresentedTubeSystem hδ hδ1 f hf hdisj
 private local instance : Fact (Module.finrank ℝ ThreeSpace = 3) := ⟨finrank_threeSpace_eq_three⟩
 private local instance : LocallyPathConnectedSpace M :=
   originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
 local notation "Ret" => finitePresentedRetained hδ f hf hdisj R
 local notation "Disc" => finitePresentedDiscarded hδ f hf hdisj R
-local notation "Bidx" => finitePresentedBoundaryIndex hδ f hf hdisj R
+local notation "Bidx" => FinitePresentedBoundaryIndex hδ f hf hdisj R
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 
@@ -915,13 +915,13 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace 
   (o : SmoothOrientation ThreeModel M)
   (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
 
-local notation "Q" => finitePresentedQuotient hδ f hf hdisj
+local notation "Q" => FinitePresentedQuotient hδ f hf hdisj
 local notation "T" => finitePresentedTubeSystem hδ hδ1 f hf hdisj
 private local instance : LocallyPathConnectedSpace M :=
   originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
 local notation "Ret" => finitePresentedRetained hδ f hf hdisj R
 local notation "Disc" => finitePresentedDiscarded hδ f hf hdisj R
-local notation "Bidx" => finitePresentedBoundaryIndex hδ f hf hdisj R
+local notation "Bidx" => FinitePresentedBoundaryIndex hδ f hf hdisj R
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 
@@ -1018,13 +1018,13 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace 
   (o : SmoothOrientation ThreeModel M)
   (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
 
-local notation "Q" => finitePresentedQuotient hδ f hf hdisj
+local notation "Q" => FinitePresentedQuotient hδ f hf hdisj
 local notation "T" => finitePresentedTubeSystem hδ hδ1 f hf hdisj
 private local instance : LocallyPathConnectedSpace M :=
   originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
 local notation "Ret" => finitePresentedRetained hδ f hf hdisj R
 local notation "Disc" => finitePresentedDiscarded hδ f hf hdisj R
-local notation "Bidx" => finitePresentedBoundaryIndex hδ f hf hdisj R
+local notation "Bidx" => FinitePresentedBoundaryIndex hδ f hf hdisj R
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 
@@ -1125,14 +1125,14 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace 
   (o : SmoothOrientation ThreeModel M)
   (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
 
-local notation "Q" => finitePresentedQuotient hδ f hf hdisj
+local notation "Q" => FinitePresentedQuotient hδ f hf hdisj
 local notation "T" => finitePresentedTubeSystem hδ hδ1 f hf hdisj
 private local instance : Fact (Module.finrank ℝ ThreeSpace = 3) := ⟨finrank_threeSpace_eq_three⟩
 private local instance : LocallyPathConnectedSpace M :=
   originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
 local notation "Ret" => finitePresentedRetained hδ f hf hdisj R
 local notation "Disc" => finitePresentedDiscarded hδ f hf hdisj R
-local notation "Bidx" => finitePresentedBoundaryIndex hδ f hf hdisj R
+local notation "Bidx" => FinitePresentedBoundaryIndex hδ f hf hdisj R
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 

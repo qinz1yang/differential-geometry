@@ -1,9 +1,13 @@
+import Batteries.Tactic.OpenPrivate
 import DifferentialGeometry.Topology.SphereSeparation.OneSaddleBand
 import DifferentialGeometry.Topology.SphereSeparation.OneSaddleCutoffStraightening
 import DifferentialGeometry.Topology.ThreeManifold.Schoenflies.Saddle.TwoCriticalPoints
 import DifferentialGeometry.Topology.Morse.ScalarComposition
 import DifferentialGeometry.Topology.Morse.ConstantGerm
 import DifferentialGeometry.Topology.Morse.Naturality
+
+open private exists_cutoff_height_removal_data_of_one_saddle from
+  DifferentialGeometry.Topology.SphereSeparation.OneSaddleCutoffStraightening
 
 open Set Filter Metric Manifold
 open scoped ContDiff Manifold Topology

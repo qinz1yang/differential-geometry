@@ -2928,7 +2928,7 @@ theorem exists_height_preserving_diffeomorph_saddle_cutoff_graph_and_cap_of_one_
     ρ hmodelRect hclear ht₀pos hσsq hreferenceWall hcircleRef Vside hVside hcurveVside hside hlowerClearance hwedge
     hcurveRef v₀ hv₀ hv₀t hwide
 
-theorem exists_cutoff_height_removal_data_of_one_saddle
+private theorem exists_cutoff_height_removal_data_of_one_saddle
     {e : SphereTwo → EuclideanThree} (he : IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e)
     (hnd : ∀ x, IsCriticalPointAt (𝓡 2) (fun x => e x 2) x →
       IsNondegenerateCriticalPointAt (𝓡 2) (fun x => e x 2) x)
@@ -2969,8 +2969,9 @@ theorem exists_cutoff_height_removal_data_of_one_saddle
     Vside, hVside, hcurveVside, hVsideRect, hside, v₀, hv₀, hv₀t, hwide⟩ :=
     exists_height_preserving_diffeomorph_saddle_cutoff_graph_and_cap_of_one_saddle
       he hnd hinj hone hconn B hU hzero hβ hs hgraph hβcrit hβindex
+  have ht₀pos : 0 < t₀ := (half_pos hδ).trans hτt₀
   obtain ⟨_, _, _, _, _, _, _, _, _, _, _, δexp, hδexp, hfamily⟩ :=
-    hwide (3 * t₀ / 4) (by constructor <;> linarith)
+    hwide (3 * t₀ / 4) (by constructor <;> linarith only [ht₀pos])
   obtain ⟨_, _, _, Q, ψ, α, hα, hψd, hψhi, hQheight, hQlow, hQhi,
     hQcylinder, hQcap, hQwhole, hQcapall, hQinj, hQinjS, hQinjWhole, htrace, hfull, _⟩ :=
     hfamily (δexp / 2) ⟨half_pos hδexp, half_lt_self hδexp⟩
