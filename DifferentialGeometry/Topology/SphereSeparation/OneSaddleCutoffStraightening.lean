@@ -2928,6 +2928,56 @@ theorem exists_height_preserving_diffeomorph_saddle_cutoff_graph_and_cap_of_one_
     ρ hmodelRect hclear ht₀pos hσsq hreferenceWall hcircleRef Vside hVside hcurveVside hside hlowerClearance hwedge
     hcurveRef v₀ hv₀ hv₀t hwide
 
+theorem exists_cutoff_height_removal_data_of_one_saddle
+    {e : SphereTwo → EuclideanThree} (he : IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e)
+    (hnd : ∀ x, IsCriticalPointAt (𝓡 2) (fun x => e x 2) x →
+      IsNondegenerateCriticalPointAt (𝓡 2) (fun x => e x 2) x)
+    (hinj : InjOn (fun x => e x 2) {x | IsCriticalPointAt (𝓡 2) (fun x => e x 2) x})
+    (hone : {p | IsCriticalPointAt (𝓡 2) (fun x => e x 2) p ∧ sigNeg (chartHessianAt
+      (fun y => e ((extChartAt (𝓡 2) p).symm y) 2) (extChartAt (𝓡 2) p p)) = 1}.ncard = 1)
+    (hconn : ∀ a : ℝ, IsPreconnected {x | e x 2 < a})
+    (B : (ℝ × ℝ) ≃ₘ[ℝ] EuclideanSpace ℝ (Fin 2))
+    {β : (ℝ × ℝ) → SphereTwo} {U : Set (ℝ × ℝ)} (hU : IsOpen U) (hzero : (0, 0) ∈ U)
+    (hβ : ContMDiffOn 𝓘(ℝ, ℝ × ℝ) (𝓡 2) ∞ β U)
+    {c s : ℝ} (hs : 0 < s)
+    (hgraph : ∀ z ∈ U, EuclideanSpace.equivProdLast 2 (e (β z)) =
+      (B z, c + (1 - z.1 ^ 2) * (z.2 ^ 2 + 2 * s) / 2))
+    (hβcrit : IsCriticalPointAt (𝓡 2) (fun x => e x 2) (β (0, 0)))
+    (hβindex : sigNeg (chartHessianAt
+      (fun y => e ((extChartAt (𝓡 2) (β (0, 0))).symm y) 2)
+      (extChartAt (𝓡 2) (β (0, 0)) (β (0, 0)))) = 1) :
+    ∃ T : (Plane × ℝ) ≃ₘ[ℝ] (Plane × ℝ),
+      ∃ Q : (Plane × ℝ) ≃ₘ[ℝ] (Plane × ℝ), ∃ ψ : ℝ ≃ₘ[ℝ] ℝ,
+      ∃ Acut : (Plane × ℝ) ≃ₘ[ℝ] (Plane × ℝ),
+        (∀ t, 0 < deriv ψ t) ∧
+        ∀ x, IsCriticalPointAt (𝓡 2) (fun y => (Acut (Q (T
+          (EuclideanSpace.equivProdLast (𝕜 := ℝ) 2 (e y))))).2) x →
+          x ≠ β (0, 0) ∧
+            (fun y => (Acut (Q (T (EuclideanSpace.equivProdLast (𝕜 := ℝ) 2 (e y))))).2) =ᶠ[𝓝 x]
+              ψ ∘ (fun y => e y 2) := by
+  obtain ⟨p, hpmax, hpnd, hpnotmax, σ, hσ, h, hh, hh1, δ, hδ,
+    η, hη, Φ, hΦ, hΦi, hΦ0, hγ, hslices, hcoverage,
+    r, hr, hab, A, hA, hcap, G, hG, hGi, hCcap, hcontact,
+    t₀, hτt₀, ht₀δ, ht₀b, d, ht₀d, hdδ, εcut, hεcut, hεcutt, hεcuth,
+    θ, hθ, hθ01, hθ0, hθ1, hθzero, κ, hκin, hκout, hθformula, ν, hν, hνsub,
+    H, hH, hHi, hH₀, hHdisk, D, hD, hDlo, hDhi, hregion, hinter,
+    T, hT, hTheight, hTbase, hTarc, hwhole, V, hV, hKV, hVreg, hTmodel,
+    hrawU, Z, hZ, hZT, hZeq, ρclear, hρclear, hρZ, hρfilledZ,
+    ρ, hρ, hrectangle, hmodelRect, hclear, O, hO, g, hg, hgt,
+    Wgraph, hWgraph, hWZ, hWO, hactive, hgrapheq,
+    Ncollar, hNcollar, hboundaryCollar, hcollarProd, hlowerClearance, hwedge,
+    Vside, hVside, hcurveVside, hVsideRect, hside, v₀, hv₀, hv₀t, hwide⟩ :=
+    exists_height_preserving_diffeomorph_saddle_cutoff_graph_and_cap_of_one_saddle
+      he hnd hinj hone hconn B hU hzero hβ hs hgraph hβcrit hβindex
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, δexp, hδexp, hfamily⟩ :=
+    hwide (3 * t₀ / 4) (by constructor <;> linarith)
+  obtain ⟨_, _, _, Q, ψ, α, hα, hψd, hψhi, hQheight, hQlow, hQhi,
+    hQcylinder, hQcap, hQwhole, hQcapall, hQinj, hQinjS, hQinjWhole, htrace, hfull, _⟩ :=
+    hfamily (δexp / 2) ⟨half_pos hδexp, half_lt_self hδexp⟩
+  obtain ⟨OQ, hOQ, gQ, hgQ, WQ, hWQ, hKWQ, hWQO, hWQeq, hbottom,
+    k, hk, hkd, hbound, Acut, hAcutfst, hAcutgraph, hAcutfixed, hremoved⟩ := hfull
+  exact ⟨T, Q, ψ, Acut, hψd, hremoved⟩
+
 
 theorem exists_height_preserving_diffeomorph_saddle_cutoff_and_cap_of_one_saddle
     {e : SphereTwo → EuclideanThree} (he : IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e)
