@@ -906,7 +906,6 @@ import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.ChartLocalInfiniteOrder
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.FiniteOrder
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.InfiniteOrder
-import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.CoproductDerivative
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FiniteOrder
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FirstOrderExistence
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FirstOrderSmoothness
