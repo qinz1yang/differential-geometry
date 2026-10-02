@@ -68,10 +68,10 @@ theorem exists_metricCutCapEvent_of_compact_low_components
   obtain ⟨P, hP⟩ := exists_terminalCorePresentation_of_compact_low_components D hε
     (le_refl 1) hr rfl (fun _ x _ hx => hcompact x hx)
   obtain ⟨S, hS, hmake⟩ := hmake P le_rfl
-  obtain ⟨F, K, hK, hfix, hF, hcore, e, t, a, ν, x₀, d, hcenter, ha, hside,
-    hmap, hf, hd, hlocal, hRet, hfaces, oQ, oRet, oDisc, B, aCap, hboundary,
-    E, hdisc, hcap, htrace, htubes, hincoming, hterminal, hold, hbfr, hpinch,
-    hscalar, hvol, hrest⟩ := hmake (S + 1) (lt_add_one S) spherePoint
+  choose F K hK hfix hF hcore e t a ν x₀ d hcenter ha hside
+    hmap hf hd hlocal hRet hfaces oQ oRet oDisc B aCap hboundary
+    E hdisc hcap htrace htubes hincoming hterminal hold hbfr hpinch
+    hscalar hvol hrest using hmake (S + 1) (lt_add_one S) spherePoint
   let P' := P.reparametrizeHornsOfCompactSupport F hfix K hK hF
   have hemptyj : IsEmpty (Fin (Nat.card P'.HornCutIndex)) := by
     refine ⟨fun j => ?_⟩
