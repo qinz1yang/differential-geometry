@@ -1,6 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.BallEmbedding.Defs
 import DifferentialGeometry.Topology.Manifold.DiffeomorphFamily
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarkingSupport
 
 set_option autoImplicit false
 
