@@ -544,7 +544,7 @@ def finitePresentedStaticCaps (hD : 0 < D) :
   let hex := exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent
     hδ hδ1 f hf hdisj hs R o hnontrivial hD oQ oRet oDisc E A B a hboundary hB
     hDisc hCap htrace hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside w hOutput
-  exact ⟨hex.choose, ⟨fun b => (hex.choose_spec.2 b).choose,
+  with_reducible exact ⟨hex.choose, ⟨fun b => (hex.choose_spec.2 b).choose,
     hex.choose_spec.1, fun b => (hex.choose_spec.2 b).choose_spec⟩⟩
 
 def finitePresentedStaticCapsOfTerminal (hD : 0 < D) :
@@ -617,7 +617,7 @@ def finitePresentedStaticCapsOfTerminal (hD : 0 < D) :
   let hex := exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent_terminal
     hδ hδ1 f hf hdisj hs R o hnontrivial hD oQ oRet oDisc G L E A B a hboundary hB
     hDisc hCap htrace hG hL hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside w hOutput
-  exact ⟨hex.choose, ⟨fun b => (hex.choose_spec.2 b).choose,
+  with_reducible exact ⟨hex.choose, ⟨fun b => (hex.choose_spec.2 b).choose,
     hex.choose_spec.1, fun b => (hex.choose_spec.2 b).choose_spec⟩⟩
 
 
