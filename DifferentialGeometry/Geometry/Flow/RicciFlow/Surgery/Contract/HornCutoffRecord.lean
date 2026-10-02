@@ -3290,27 +3290,25 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_record_window
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
-  obtain ⟨fixed, c, hc, hfamily⟩ := exists_uniform_horn_cutoff_history_extension_at_scale_with_canonical_windows_precision_bound.{u}
+  obtain ⟨fixed, c, hc, hfamily⟩ :=
+    exists_horn_cutoff_history_extension_with_original_neck_bounds_and_canonical_windows.{u}
   refine ⟨fixed, c, hc, ?_⟩
   intro Dcap hDcap hDfit m accuracy haccuracy η hη
-  obtain ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
+  obtain ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, hproduce⟩ :=
+    hfamily Dcap hDcap hDfit m accuracy haccuracy η hη
   refine ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, ?_⟩
   intro P₀ g₀ H initial htime D hstage hstart hinit ε Λ P hε Q hQscale hQnominal
   obtain ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
-    hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal, Sfamily,
-    hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
-    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, hNrecord, hTube, hrecord, hvol, hcap, hrecipe⟩ :=
-    hproduce H initial htime D hstage hstart hinit P hε Q hQscale hQnominal
-  refine ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
     hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
     hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
     hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, hNrecord, hTube, ?_, hvol, hcap⟩
-  intro hB
-  obtain ⟨G, hδG, hkG, hNG, hscaleG, eB, hlabel, hN, hS, hw, hi, hwin, hcap, hcanonical⟩ := hrecord hB
-  refine ⟨G, hδG, hkG, hNG, hscaleG, hcanonical ?_⟩
-  simpa only [hpD] using hDfit
+    hprotected, hretained, hscale, _, hNrecord, hTube, hrecord, hvol, hcap⟩ :=
+    hproduce H initial htime D hstage hstart hinit P hε Q hQscale hQnominal
+  exact ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
+    hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
+    hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
+    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
+    hprotected, hretained, hscale, hNrecord, hTube, hrecord, hvol, hcap⟩
 
 theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_original_neck_bounds :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
@@ -3493,26 +3491,24 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_record_neck_p
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
-  obtain ⟨fixed, c, hc, hfamily⟩ := exists_uniform_horn_cutoff_history_extension_at_scale_with_static_precision_bound.{u}
+  obtain ⟨fixed, c, hc, hfamily⟩ :=
+    exists_uniform_horn_cutoff_history_extension_at_scale_with_original_neck_bounds.{u}
   refine ⟨fixed, c, hc, ?_⟩
   intro Dcap hDcap m accuracy haccuracy η hη
   obtain ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
   refine ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, ?_⟩
   intro P₀ g₀ H initial htime D hstage hstart hinit ε Λ P hε Q hQscale hQnominal
   obtain ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
-    hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal, Sfamily,
-    hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
-    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, hNrecord, hTube, hrecord, hvol, hcap, hrecipe⟩ :=
-    hproduce H initial htime D hstage hstart hinit P hε Q hQscale hQnominal
-  refine ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
     hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
     hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
     hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
-    hprotected, hretained, hscale, hNrecord, hTube, ?_, hvol, hcap⟩
-  intro hB
-  obtain ⟨G, hδG, hkG, hNG, hscaleG, _⟩ := hrecord hB
-  exact ⟨G, hδG, hkG, hNG, hscaleG⟩
+    hprotected, hretained, hscale, _, hNrecord, hTube, hrecord, hvol, hcap⟩ :=
+    hproduce H initial htime D hstage hstart hinit P hε Q hQscale hQnominal
+  exact ⟨Qout, E, hOld, K, B, i, p, n, δOrig, kOrig, NOrigH,
+    hδOrig, rotation, hmarkH, side, horder, hδ1', Nrecord, eOriginal,
+    hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
+    hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD, hpAcc,
+    hprotected, hretained, hscale, hNrecord, hTube, hrecord, hvol, hcap⟩
 
 theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_record_neck :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
