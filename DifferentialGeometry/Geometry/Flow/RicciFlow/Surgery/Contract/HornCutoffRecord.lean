@@ -2300,6 +2300,49 @@ private theorem exists_append_metricCutCapEvent
   exact transport_heq _ _ _ _ F
 
 
+private theorem exists_history_extension_of_metricCutCapEvent
+    {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
+    (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory)
+    (htime : H.time (Fin.last H.eventCount) = H.horizon)
+    (D : OneStepIncoming.{u})
+    (hstage : H.stage (Fin.last H.eventCount) = D.stage)
+    (hstart : H.time (Fin.last H.eventCount) = D.startTime)
+    {Qout : OrientedThreeStage.{u}}
+    (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
+    (hOld : E.old = E.transition.trace.retainedCore)
+    (hG : E.incoming = D.slab)
+    (hinit : HEq (D.slab.flow.base.metric D.startTime)
+      (H.initialMetric (Fin.last H.eventCount))) :
+    ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P₀ g₀ K.toHistory),
+      initial.IsPrefixOf B ∧ K.horizon = D.endTime ∧ K.eventCount = H.eventCount + 1 ∧
+      K.time (Fin.last K.eventCount) = D.endTime ∧ K.stage (Fin.last K.eventCount) = Qout ∧
+      HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
+      ∃ i : Fin K.eventCount, i.val = H.eventCount ∧
+        K.stage i.castSucc = D.stage ∧ K.time i.castSucc = D.startTime ∧
+        K.stage i.succ = Qout ∧ K.time i.succ = D.endTime ∧
+        HEq (K.coreEvent i) (E.toRetainedCoreEvent hOld) ∧
+        ∃ (Eappend : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Qout
+            (H.time (Fin.last H.eventCount)) D.endTime)
+          (hOldAppend : Eappend.old = Eappend.transition.trace.retainedCore)
+          (hInitial : Eappend.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+            H.initialMetric (Fin.last H.eventCount)),
+          HEq Eappend E ∧ K = H.appendEvent Eappend.incoming.lt
+            (Eappend.toRetainedCoreEvent hOldAppend) hInitial := by
+  cases D with
+  | mk stage startTime endTime hnonneg hlt slab terminal singular params =>
+    cases hstage
+    cases hstart
+    have hinitE : E.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+        H.initialMetric (Fin.last H.eventCount) := by
+      rw [hG]
+      exact eq_of_heq hinit
+    obtain ⟨K, B, hpref, hhor, hcount, htimeLast, hstageLast, hmetricLast,
+      i, hi, hsource, hsourceTime, htarget, htargetTime, hEvent, hK⟩ :=
+      exists_append_metricCutCapEvent H initial htime E hOld hinitE
+    exact ⟨K, B, hpref, hhor, hcount, htimeLast, hstageLast, hmetricLast,
+      i, hi, hsource, hsourceTime, htarget, htargetTime, hEvent,
+      E, hOld, hinitE, HEq.rfl, hK⟩
+
 private theorem original_backward_of_cut_neck_family
     {H : ObservedHistory.{u}} {i : Fin H.eventCount} {δ r : ℝ} {k n : ℕ}
     {δOriginal : Fin n → ℝ} {kOriginal : Fin n → ℕ}
@@ -2503,35 +2546,8 @@ private theorem exists_horn_cutoff_history_extension_with_static_caps_and_origin
     hpδ, hpR, hpρ, hpFixed, hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hreset,
     geometry, hgeometry, hcanonical, n, δOrig, kOrig, NOrig, hδOrig, rotation, hmark,
     side, horder, hδ1', e, hscale, hsource, hrecipe, hneck⟩ := hproduce Q hQscale hQnominal
-  have hext : ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P₀ g₀ K.toHistory),
-      initial.IsPrefixOf B ∧ K.horizon = D.endTime ∧ K.eventCount = H.eventCount + 1 ∧
-      K.time (Fin.last K.eventCount) = D.endTime ∧ K.stage (Fin.last K.eventCount) = Qout ∧
-      HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
-      ∃ i : Fin K.eventCount, i.val = H.eventCount ∧
-        K.stage i.castSucc = D.stage ∧ K.time i.castSucc = D.startTime ∧
-        K.stage i.succ = Qout ∧ K.time i.succ = D.endTime ∧
-        HEq (K.coreEvent i) (E.toRetainedCoreEvent hOld) ∧
-        ∃ (Eappend : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Qout
-            (H.time (Fin.last H.eventCount)) D.endTime)
-          (hOldAppend : Eappend.old = Eappend.transition.trace.retainedCore)
-          (hInitial : Eappend.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
-            H.initialMetric (Fin.last H.eventCount)),
-          HEq Eappend E ∧ K = H.appendEvent Eappend.incoming.lt
-            (Eappend.toRetainedCoreEvent hOldAppend) hInitial := by
-    cases D with
-    | mk stage startTime endTime hnonneg hlt slab terminal singular params =>
-      cases hstage
-      cases hstart
-      have hinitE : E.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
-          H.initialMetric (Fin.last H.eventCount) := by
-        rw [hG]
-        exact eq_of_heq hinit
-      obtain ⟨K, B, hpref, hhor, hcount, htimeLast, hstageLast, hmetricLast,
-        i, hi, hsource, hsourceTime, htarget, htargetTime, hEvent, hK⟩ :=
-        exists_append_metricCutCapEvent H initial htime E hOld hinitE
-      exact ⟨K, B, hpref, hhor, hcount, htimeLast, hstageLast, hmetricLast,
-        i, hi, hsource, hsourceTime, htarget, htargetTime, hEvent,
-        E, hOld, hinitE, HEq.rfl, hK⟩
+  have hext := exists_history_extension_of_metricCutCapEvent
+    H initial htime D hstage hstart E hOld hG hinit
   obtain ⟨K, B, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
     i, hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend⟩ := hext
   have hdelta : δ ≤ p.delta D.endTime := by rw [hpδ]
@@ -3982,35 +3998,8 @@ theorem exists_uniform_horn_cutoff_history_extension_of_cut_necks :
     hpδ, hpR, hpρ, hpFixed, hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hreset,
     geometry, hgeometry, n, δOrig, kOrig, NOrig, hδOrig, rotation, hmark,
     side, horder, hδ1', e, hscale, hneck⟩ := hmake P hε
-  have hext : ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P₀ g₀ K.toHistory),
-      initial.IsPrefixOf B ∧ K.horizon = D.endTime ∧ K.eventCount = H.eventCount + 1 ∧
-      K.time (Fin.last K.eventCount) = D.endTime ∧ K.stage (Fin.last K.eventCount) = Qout ∧
-      HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
-      ∃ i : Fin K.eventCount, i.val = H.eventCount ∧
-        K.stage i.castSucc = D.stage ∧ K.time i.castSucc = D.startTime ∧
-        K.stage i.succ = Qout ∧ K.time i.succ = D.endTime ∧
-        HEq (K.coreEvent i) (E.toRetainedCoreEvent hOld) ∧
-        ∃ (Eappend : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Qout
-            (H.time (Fin.last H.eventCount)) D.endTime)
-          (hOldAppend : Eappend.old = Eappend.transition.trace.retainedCore)
-          (hInitial : Eappend.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
-            H.initialMetric (Fin.last H.eventCount)),
-          HEq Eappend E ∧ K = H.appendEvent Eappend.incoming.lt
-            (Eappend.toRetainedCoreEvent hOldAppend) hInitial := by
-    cases D with
-    | mk stage startTime endTime hnonneg hlt slab terminal singular params =>
-      cases hstage
-      cases hstart
-      have hinitE : E.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
-          H.initialMetric (Fin.last H.eventCount) := by
-        rw [hG]
-        exact eq_of_heq hinit
-      obtain ⟨K, B, hpref, hhor, hcount, htimeLast, hstageLast, hmetricLast,
-        i, hi, hsource, hsourceTime, htarget, htargetTime, hEvent, hK⟩ :=
-        exists_append_metricCutCapEvent H initial htime E hOld hinitE
-      exact ⟨K, B, hpref, hhor, hcount, htimeLast, hstageLast, hmetricLast,
-        i, hi, hsource, hsourceTime, htarget, htargetTime, hEvent,
-        E, hOld, hinitE, HEq.rfl, hK⟩
+  have hext := exists_history_extension_of_metricCutCapEvent
+    H initial htime D hstage hstart E hOld hG hinit
   obtain ⟨K, B, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
     i, hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend⟩ := hext
   have hdelta : δ ≤ p.delta D.endTime := by rw [hpδ]
