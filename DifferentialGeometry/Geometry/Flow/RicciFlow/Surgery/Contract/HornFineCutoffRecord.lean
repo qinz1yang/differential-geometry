@@ -205,7 +205,7 @@ private theorem exists_prepared_horn_cutoff_event_with_original_neck_bounds_of_f
         ∀ x, InFixedHamiltonIveyRegion E.outputMetric z x) ∧
       (∀ z : ℝ, z ≤ 0 → (∀ x, z ≤ metricScalarAt L.metric x) →
         ∀ x, z ≤ metricScalarAt E.outputMetric x)) ⟨hpin, hfloor⟩
-  let caps :=
+  obtain ⟨eBoundary, S, hBoundaryLabel, hCaps⟩ :=
     finitePresentedStaticCapsOfStage
       (fixed := p.fixed) (D := p.modelRadius) (m := p.modelOrder) (ε := p.modelAccuracy) D.stage
       (fun j => (d j).precision_pos) (fun j => (d j).precision_lt_one)
@@ -214,13 +214,10 @@ private theorem exists_prepared_horn_cutoff_event_with_original_neck_bounds_of_f
       hboundary hB hDisc hCap htrace hG hL hRet p.recenterConstant
       p.recenterConstant_ge_four x₀ (fun _ => p.modelOrder + 6) d (fun _ => rfl)
       (fun _ => p.modelOrder + 4) hrec dCap hcapMap hcapSide w hOutput
-  let eBoundary := caps.1
-  let S := caps.2.1
-  have hBoundaryLabel := caps.2.2.1
-  have hSδ := fun b => (caps.2.2.2 b).1
-  have hSk := fun b => (caps.2.2.2 b).2.1
-  have hSN := fun b => (caps.2.2.2 b).2.2.1
-  have hSwindow := fun b => (caps.2.2.2 b).2.2.2
+  have hSδ := fun b => (hCaps b).1
+  have hSk := fun b => (hCaps b).2.1
+  have hSN := fun b => (hCaps b).2.2.1
+  have hSwindow := fun b => (hCaps b).2.2.2
   have hSscale (b) : (S b).neck.scale = metricScalarAt D.terminal.metric
       ((d (eBoundary b).val.1).offsetPoint (cuttingSign_sq (eBoundary b).val.2)) :=
     presented_static_cap_scale_of_terminal_neck_heq (S b) D.slab D.terminal hG hL
