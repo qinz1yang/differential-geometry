@@ -360,7 +360,6 @@ private theorem isSmoothEmbedding_neckTubeInclusion :
 
 theorem standardNeckTubeFun_isSmoothEmbedding :
     IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ standardNeckTubeFun := by
-  letI := DifferentialGeometry.Topology.Manifold.productHalfSpaceBoundaryModel
   have hfun : (neckCylMap ∘ neckTubeInclusion) = standardNeckTubeFun := by
     funext z
     apply Subtype.ext
