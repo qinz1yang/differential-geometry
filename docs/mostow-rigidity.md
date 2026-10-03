@@ -80,11 +80,12 @@ final headline. The active frontier is:
 
 | Owner | Exact next target |
 | --- | --- |
-| Root | Integrate reviewed distance, boundary, and geometric group theory packets. |
-| `review_hyperboloid_model` | Identify the native Riemannian distance with the arcosh metric. |
-| `review_hyperboloid_metric` | Retain the actual geodesic-line witness in the endpoint theorem. |
-| `hyperboloid_metric` | Prove exact nearest-point projection and contraction for a geodesic line. |
-| `rigidity_assessment` | Construct the canonical sphere boundary homeomorphism of each isometry. |
+| Root | Integrate reviewed geometric-group and boundary packets, then close the remaining Mostow frontier. |
+| `review_orbit_quotients` | Give the native isometry group its standard topology and compact-open embedding. |
+| `review_lorentz` | Independently audit the uniform small-displacement index theorem. |
+| `review_hyperboloid_manifold` | Independently audit the actual geodesic ideal-endpoint limits. |
+| `rigidity_assessment` | Prove faithfulness of the boundary action when the spatial rank is at least two. |
+| `review_hyperboloid_model` | Construct the same equivariant interpolation homotopy and its quotient descent. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -163,3 +164,30 @@ applicable linters, and native axiom checks. Fresh compilation takes at most
 The aggregate build passed with 26,883 jobs, zero diagnostics, and a 26-second
 root module. Exact hashes and evidence are in `mostow-symmetries.json`.
 The Mostow headline and native distance compatibility remain open.
+
+## Verified distance and boundary layer
+
+The native Riemannian extended distance is now proved equal to the original
+arcosh metric for arbitrary real inner-product model spaces. The lower bound
+uses regularized distance potentials; the upper bound uses the actual
+constructor-tied geodesic and its native unit speed. Independent consumers
+verify the explicit arcosh expression and a distance of three between two
+distinct non-origin points.
+
+Every hyperboloid isometry has a canonical homeomorphism of the unit sphere,
+with exact Lorentz normalization, positive denominator, and inverse/composition
+laws. A general Lorentz isometry has its canonical continuous linear upgrade.
+The four-point inequality holds with additive constant log 32. Explicit
+projection to an origin-axis geodesic is the unique nearest point and satisfies
+the hyperbolic Pythagorean identity and quantitative contraction bound.
+
+For arbitrary subgroups and native group generators, an infinity-aware bound
+on a quotient word ball implies the same ENat bound on the entire coset space.
+The result does not require normality or finite generation; infinite-index
+and actual nonnormal-subgroup consumers were checked.
+
+All seven changed modules passed independent review, canonical builds, all 14
+applicable linters, and native axiom checks. The six new files freshly compile
+in 0.989 to 5.2 seconds. The root build passed with 26,889 jobs and zero
+diagnostics; the existing aggregate took 30 seconds. Hashes and timings are in
+`mostow-boundary-distance.json`. The Mostow headline remains open.

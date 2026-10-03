@@ -96,8 +96,10 @@ theorem isometry_geodesicLine (x : Hyperboloid E) (v : ℝ × E)
         Real.cosh (t - s) := by linarith
   rw [hc, ← Real.cosh_abs (t - s), Real.arcosh_cosh (abs_nonneg _), Real.dist_eq, abs_sub_comm]
 
-theorem exists_isometry_through {x y : Hyperboloid E} (hxy : x ≠ y) :
-    ∃ c : ℝ → Hyperboloid E, Isometry c ∧ c 0 = x ∧ c (dist x y) = y := by
+theorem exists_geodesicLine_through {x y : Hyperboloid E} (hxy : x ≠ y) :
+    ∃ (v : ℝ × E) (hv : lorentzForm E v v = 1)
+      (ho : lorentzForm E (x.time, x.space) v = 0),
+      geodesicLine x v hv ho (dist x y) = y := by
   let q := Real.cosh (dist x y)
   let r := Real.sinh (dist x y)
   let w : ℝ × E := (y.time, y.space) - q • (x.time, x.space)
@@ -128,11 +130,16 @@ theorem exists_isometry_through {x y : Hyperboloid E} (hxy : x ≠ y) :
     field_simp [hr]
   have ho : lorentzForm E (x.time, x.space) v = 0 := by
     simp only [v, map_smul, hwo, smul_zero]
-  refine ⟨geodesicLine x v hv ho, isometry_geodesicLine x v hv ho,
-    geodesicLine_zero x v hv ho, ?_⟩
+  refine ⟨v, hv, ho, ?_⟩
   apply ext
   change q • x.space + r • (r⁻¹ • (y.space - q • x.space)) = y.space
   rw [smul_smul, mul_inv_cancel₀ hr, one_smul]
   abel
+
+theorem exists_isometry_through {x y : Hyperboloid E} (hxy : x ≠ y) :
+    ∃ c : ℝ → Hyperboloid E, Isometry c ∧ c 0 = x ∧ c (dist x y) = y := by
+  obtain ⟨v, hv, ho, hy⟩ := exists_geodesicLine_through hxy
+  exact ⟨geodesicLine x v hv ho, isometry_geodesicLine x v hv ho,
+    geodesicLine_zero x v hv ho, hy⟩
 
 end DifferentialGeometry.Hyperboloid

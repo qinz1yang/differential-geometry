@@ -10339,17 +10339,21 @@ import DifferentialGeometry.Geometry.HarmonicMap.WeakGradientGlobal
 import DifferentialGeometry.Geometry.HarmonicMap.WeakLowerSemicontinuity
 import DifferentialGeometry.Geometry.Hodge.Codifferential
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boost
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boundary
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Connection
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Defs
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Geodesic
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GromovProduct
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Interpolation
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassification
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Klein
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.LorentzIsometry
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Manifold
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Metric
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Projection
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianDistance
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianGeodesic
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianMetric
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.VectorField
@@ -10360,6 +10364,7 @@ import DifferentialGeometry.Geometry.LieGroup.Representation
 import DifferentialGeometry.Geometry.LieGroup.Representation.InvariantSet
 import DifferentialGeometry.Geometry.LieGroup.Representation.SelfAdjoint
 import DifferentialGeometry.Geometry.Lorentz.InnerProduct
+import DifferentialGeometry.Geometry.Lorentz.Isometry
 import DifferentialGeometry.Geometry.Measure.Area.AnnulusCompetitor
 import DifferentialGeometry.Geometry.Measure.Area.AttachmentArea
 import DifferentialGeometry.Geometry.Measure.Area.AttachmentInnerArea
@@ -11801,6 +11806,7 @@ import DifferentialGeometry.Topology.Algebra.Group.FinitelyGeneratedFundamentalG
 import DifferentialGeometry.Topology.Algebra.Group.FinitelyGeneratedFundamentalGroupRationalHurewicz
 import DifferentialGeometry.Topology.Algebra.Group.FreeProduct
 import DifferentialGeometry.Topology.Algebra.Group.FreeProductAssociativity
+import DifferentialGeometry.Topology.Algebra.Group.IndexBound
 import DifferentialGeometry.Topology.Algebra.Group.IndexTwo
 import DifferentialGeometry.Topology.Algebra.Group.Nilpotent
 import DifferentialGeometry.Topology.Algebra.Group.PoincareStandard
