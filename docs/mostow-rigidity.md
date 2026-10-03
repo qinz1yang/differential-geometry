@@ -91,8 +91,8 @@ final headline. The active frontier is:
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
 | `review_hyperboloid_metric` | Prove genuine uniform disk distortion for the plane homeomorphism induced by the original controlled boundary equivalence. |
-| `hyperboloid_metric` | Prove compactness of the actual projected positive-displacement set from original finite volume. |
-| `rigidity_assessment` | Prove that an actual isometry swapping distinct ideal points has an interior fixed point, then exclude swapping in a free action. |
+| `hyperboloid_metric` | Bound the actual fixed-null-ray scale by displacement, to separate parabolic and axial behavior. |
+| `rigidity_assessment` | Prove pointwise fixation of finite boundary orbits for free groups, and apply it to the actual Margulis subgroup. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -732,3 +732,27 @@ have current source-hash-matched fresh compilation evidence below 30 seconds.
 The actual disk-control proof and finite-volume thick-part compactness are
 active; cusp geometry, controlled homotopy representatives and final rigidity
 remain open.
+
+## Verified actual thick-part compactness and boundary swaps
+
+Original finite volume now gives compactness of the projected positive
+normalized deck-displacement set. The proof derives normalized finite volume
+from the original metric, obtains exact fixed-radius model ball mass at each
+projected point, applies finite ball packing, and uses native Hopf–Rinow
+compactness. Actual fiber transitivity and the quotient topology prove
+closedness. The conclusion is in the original topology; no compact core,
+properness or injectivity-radius identification is supplied as a premise.
+
+An actual hyperbolic isometry swapping two distinct ideal points has an
+interior fixed point. The fixed positive null-vector combination maps to a
+strictly interior Klein point. This argument is dimension free and a genuine
+spatial reflection verifies the swap and fixed point.
+
+Both changed modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. Fresh source builds took
+10.0 and 2.4 seconds. Required group-action dependents and the 26,953-job
+root build passed without diagnostics; the existing aggregate took 36 seconds.
+Exact evidence is in `mostow-thick-part-boundary-swap.json`. All 93 newly
+added Lean files have current source-hash-matched fresh compilation evidence
+below 30 seconds. Full cusp geometry, the controlled original homotopy
+representative, actual disk control and final Mostow rigidity remain open.

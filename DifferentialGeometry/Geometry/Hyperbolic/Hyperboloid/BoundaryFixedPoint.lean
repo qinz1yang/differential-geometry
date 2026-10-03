@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinCompactificatio
 import DifferentialGeometry.Topology.FixedPoint.Brouwer
 import Mathlib.Data.Set.Card
 import Mathlib.Dynamics.FixedPoints.Defs
+import Mathlib.Analysis.InnerProductSpace.Convex
 
 noncomputable section
 
@@ -136,5 +137,66 @@ theorem fixedPoints_boundaryHomeomorph_nonempty [FiniteDimensional ℝ E]
   have hi : Set.inclusion Metric.sphere_subset_closedBall ξ = u := rfl
   rw [hi, hu] at h
   exact h.symm
+
+theorem exists_fixedPoint_of_boundary_swap
+    (f : Hyperboloid E ≃ᵢ Hyperboloid E)
+    (ξ η : Metric.sphere (0 : E) 1) (hne : ξ ≠ η)
+    (hξη : boundaryHomeomorph f ξ = η) (hηξ : boundaryHomeomorph f η = ξ) :
+    ∃ x : Hyperboloid E, f x = x := by
+  let a := (lorentzExtension f (1, (ξ : E))).1
+  let b := (lorentzExtension f (1, (η : E))).1
+  have ha : 0 < a := lorentzExtension_sphere_time_pos f ξ
+  have hb : 0 < b := lorentzExtension_sphere_time_pos f η
+  have hab : a * b = 1 := by
+    have h := dist_boundaryHomeomorph_sq f ξ η
+    rw [hξη, hηξ, dist_comm η ξ] at h
+    have hd : dist ξ η ^ 2 ≠ 0 := pow_ne_zero 2 (dist_ne_zero.mpr hne)
+    have he := (eq_div_iff (mul_pos ha hb).ne').mp h
+    apply mul_left_cancel₀ hd
+    simpa only [mul_one] using he
+  have hlift (ζ : Metric.sphere (0 : E) 1) :
+      lorentzExtension f (1, (ζ : E)) =
+        (lorentzExtension f (1, (ζ : E))).1 •
+          (1, (boundaryHomeomorph f ζ : E)) := by
+    apply Prod.ext
+    · change (lorentzExtension f (1, (ζ : E))).1 =
+        (lorentzExtension f (1, (ζ : E))).1 * 1
+      rw [mul_one]
+    · change (lorentzExtension f (1, (ζ : E))).2 =
+        (lorentzExtension f (1, (ζ : E))).1 • (boundaryHomeomorph f ζ : E)
+      rw [boundaryHomeomorph_apply_coe, smul_smul,
+        mul_inv_cancel₀ (lorentzExtension_sphere_time_pos f ζ).ne', one_smul]
+  have hAξ : lorentzExtension f (1, (ξ : E)) = a • (1, (η : E)) := by
+    simpa only [hξη] using hlift ξ
+  have hAη : lorentzExtension f (1, (η : E)) = b • (1, (ξ : E)) := by
+    simpa only [hηξ] using hlift η
+  have hsum : 0 < 1 + a := by linarith only [ha]
+  let c : ℝ := (1 + a)⁻¹
+  have hc : 0 < c := inv_pos.mpr hsum
+  have hcoeff : c + c * a = 1 := by
+    dsimp only [c]
+    rw [← mul_one_add, inv_mul_cancel₀ hsum.ne']
+  let u : E := c • (ξ : E) + (c * a) • (η : E)
+  have hu : ‖u‖ < 1 := norm_combo_lt_of_ne
+    (norm_eq_of_mem_sphere ξ).le (norm_eq_of_mem_sphere η).le
+    (fun h => hne (Subtype.ext h)) hc (mul_pos hc ha) hcoeff
+  have hv : ((1 : ℝ), u) = c • ((1, (ξ : E)) + a • (1, (η : E))) := by
+    apply Prod.ext
+    · change 1 = c * (1 + a * 1)
+      rw [mul_one]
+      exact (inv_mul_cancel₀ hsum.ne').symm
+    · change c • (ξ : E) + (c * a) • (η : E) = c • ((ξ : E) + a • (η : E))
+      rw [smul_add, smul_smul]
+  have hAu : lorentzExtension f (1, u) = (1, u) := by
+    rw [hv, map_smul, map_add, hAξ, map_smul, hAη, smul_smul, hab, one_smul, add_comm]
+  let q : Metric.closedBall (0 : E) 1 :=
+    ⟨u, by simpa only [Metric.mem_closedBall, dist_zero_right] using hu.le⟩
+  have hq : kleinClosedBallHomeomorph f q = q := by
+    apply Subtype.ext
+    rw [kleinClosedBallHomeomorph_apply_coe]
+    change (lorentzExtension f (1, u)).1⁻¹ • (lorentzExtension f (1, u)).2 = u
+    rw [hAu]
+    simp
+  exact exists_fixedPoint_of_kleinClosedBall_fixed f q hu hq
 
 end DifferentialGeometry.Hyperboloid

@@ -17990,3 +17990,4 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryPlane
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundarySimilarity
 import DifferentialGeometry.Geometry.Measure.HyperbolicUniversalCover
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryOrbit
+import DifferentialGeometry.Geometry.Hyperbolic.ThickPart
