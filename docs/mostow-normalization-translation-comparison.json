@@ -1,0 +1,116 @@
+{
+  "base_commit": "d82cfcc4096f4f79a78eca614afb68e131302c08",
+  "layer": "Uniform fixed-triple normalization, complex translations, comparison volume and finite-index orbit transfer",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryNormalization.lean",
+      "sha256": "8b9ad999555f0032e3bfcc626cd9b8554ca830ba4f580afd11877a07983229d0",
+      "fresh_lake_build_seconds": 6.6,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "exists_origin_displacement_bound_of_boundaryMap_fixed_triple"
+      ],
+      "mathematical_review": "A uniform origin-displacement bound is chosen before every original coarse map whose actual boundary map fixes the given distinct triple.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMap",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.MorseLine",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IdealTriangle"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryTranslation.lean",
+      "sha256": "121f3684cfd9aee14094b87caba9316c7eae3919a27042ec23360522ece24baa",
+      "fresh_lake_build_seconds": 2.4,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "boundaryTranslation",
+        "boundaryTranslation_coordinates",
+        "boundaryHomeomorph_boundaryTranslation_northPole",
+        "stereographicComplex_boundaryTranslation",
+        "boundaryHomeomorph_boundaryTranslation_stereographicComplex_symm"
+      ],
+      "mathematical_review": "An explicit actual Lorentz isometry realizes complex translation in the fixed native factor-two stereographic chart, preserving the pole and exact original boundary action.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boundary",
+        "DifferentialGeometry.Geometry.Coordinates.StereographicComplex"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Measure/HyperbolicComparison.lean",
+      "sha256": "bb75cef40381edc410b7497234a3fab8ae8d017f12a40502c5e77efb7f137210",
+      "fresh_lake_build_seconds": 5.3,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "public_declarations": [
+        "riemannianVolumeMeasure_ball_hyperbolicComparison"
+      ],
+      "mathematical_review": "Exact native comparison-map ball-volume equality retains original metric, basepoint, tangent isometry and map; no volume identity is assumed.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Exponential.HyperbolicSpaceForm",
+        "DifferentialGeometry.Geometry.Measure.LocalIsometry"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Algebra/Group/FiniteOrbit.lean",
+      "sha256": "6aca7a875509cab5e469b04538b93f15dea88f523bf8821eeffe375824c68b22",
+      "fresh_lake_build_seconds": 0.842,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "MulAction.finite_orbit_of_finiteIndex"
+      ],
+      "mathematical_review": "A finite actual restricted subgroup orbit transfers to a finite full-group orbit when the subgroup has finite index, without normality.",
+      "direct_imports": [
+        "Mathlib.GroupTheory.Index"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryNormalization.lean",
+    "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryTranslation.lean",
+    "DifferentialGeometry/Geometry/Measure/HyperbolicComparison.lean",
+    "DifferentialGeometry/Topology/Algebra/Group/FiniteOrbit.lean"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "jobs": 26947,
+    "root_module_seconds": 36.0,
+    "root_compiler_cap": 1,
+    "errors": 0,
+    "warnings": 0
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}

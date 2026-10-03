@@ -90,11 +90,10 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| Root | Assemble original-map disk control from uniform fixed-triple normalization and actual similarity isometries. |
-| `review_hyperboloid_metric` | Prove the uniform actual origin-displacement bound when the original boundary map fixes three prescribed distinct points. |
-| `review_hyperboloid_interpolation` | Construct the actual hyperbolic isometry inducing complex translation in the fixed stereographic chart. |
-| `hyperboloid_metric` | Prove native comparison-map ball volume equality and transfer uniform model ball mass to original thick points. |
-| `rigidity_assessment` | Transfer finite actual orbits from finite-index subgroups using native stabilizer/index theory. |
+| `review_hyperboloid_metric` | Derive genuine uniform disk distortion for the plane homeomorphism induced by the original controlled boundary equivalence. |
+| `review_hyperboloid_interpolation` | Construct the actual hyperbolic isometry inducing complex multiplication in the fixed stereographic chart. |
+| `hyperboloid_metric` | Transfer the exact uniform model ball mass to the original normalized manifold under its actual deck displacement bound. |
+| `rigidity_assessment` | Derive finite actual boundary orbits for finite-index nilpotent subgroups and the genuine Margulis subgroup. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -671,3 +670,32 @@ The three-dimensional finite-volume Mostow theorem is still open. Uniform
 fixed-triple normalization, actual plane disk control, finite-volume cusp
 geometry, the controlled given homotopy equivalence, and boundary rigidity
 remain required.
+
+## Verified fixed-triple normalization and actual translation
+
+When the original boundary map fixes a given distinct ideal triple, its
+original coarse map now has a uniformly bounded origin displacement. The
+bound is chosen before the map, using the fixed ideal sides, complete-line
+Morse theorem, and compact intersection of their fixed-radius tubes. No
+supplied basepoint bound, compact core or coarse inverse is used.
+
+An actual three-dimensional Lorentz isometry now induces complex translation
+in the fixed stereographic chart. The coordinate, pole-fixing and forward
+and inverse chart laws retain the original isometry. Concrete nonidentity
+and factor-two tests distinguish translation by b from translation by 2b.
+Multiplication similarities remain a separate next producer.
+
+Native comparison maps preserve the exact ball volume between the hyperbolic
+model and the supplied complete simply connected curvature-minus-one metric.
+The original basepoint, metric tangent isometry and comparison map are fixed
+in the conclusion. A generic finite-index theorem also transfers finiteness
+of an actual subgroup orbit to the actual group orbit, without normality;
+a nonnormal S3 stabilizer consumer verifies this scope.
+
+All four new modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. Fresh source builds took
+6.6, 2.4, 5.3 and 0.842 seconds. The 26,947-job root build passed without
+diagnostics; the existing aggregate took 36 seconds. Exact evidence is in
+`mostow-normalization-translation-comparison.json`. All 87 newly added Lean
+files have current source-hash-matched fresh compilation evidence below
+30 seconds. The finite-volume Mostow headline remains open.

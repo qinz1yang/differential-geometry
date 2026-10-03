@@ -17981,3 +17981,7 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Nilpotent
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianIsometry
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Volume
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IdealTriangle
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryNormalization
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryTranslation
+import DifferentialGeometry.Geometry.Measure.HyperbolicComparison
+import DifferentialGeometry.Topology.Algebra.Group.FiniteOrbit
