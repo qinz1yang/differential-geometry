@@ -354,6 +354,7 @@ import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Argument
 import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Basic
 import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Transitivity
 import DifferentialGeometry.Analysis.Complex.DiskBoundaryChart
+import DifferentialGeometry.Analysis.Complex.DiskPacking
 import DifferentialGeometry.Analysis.Complex.GradientRegularity
 import DifferentialGeometry.Analysis.Complex.HolomorphicBoundaryRegularity
 import DifferentialGeometry.Analysis.Complex.HolomorphicMoments
@@ -10341,12 +10342,14 @@ import DifferentialGeometry.Geometry.Hodge.Codifferential
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.AsymptoticRays
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boost
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boundary
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryEquiv
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryFaithfulness
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMap
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryTopology
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Connection
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Defs
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Exponential
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.FixedPoint
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Geodesic
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicBoundary
@@ -10882,6 +10885,7 @@ import DifferentialGeometry.Geometry.Metric.LipschitzCurves
 import DifferentialGeometry.Geometry.Metric.LocalChartDistance
 import DifferentialGeometry.Geometry.Metric.LocalCollapse
 import DifferentialGeometry.Geometry.Metric.LocalExponential
+import DifferentialGeometry.Geometry.Metric.LocalIsometry.PathLifting
 import DifferentialGeometry.Geometry.Metric.LocalJoinJets
 import DifferentialGeometry.Geometry.Metric.LocalMetricBallContainment
 import DifferentialGeometry.Geometry.Metric.LocalProduct

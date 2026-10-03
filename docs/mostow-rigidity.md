@@ -89,11 +89,11 @@ final headline. The active frontier is:
 
 | Owner | Exact next target |
 | --- | --- |
-| Root | Replay the reviewed native exponential, lift-continuation, boundary-equivalence and disk-packing layer. |
-| `review_hyperboloid_metric` | Native origin exponential homeomorphism: proved and reviewed, awaiting canonical integration. |
-| `review_hyperboloid_model` | Complete-metric finite-time lift continuation: proved and reviewed, awaiting canonical integration. |
-| `review_orbit_quotients` | Boundary homeomorphism of the actual coarse inverse pair: proved and reviewed, awaiting integration. |
-| `review_hyperboloid_interpolation` | Disk-packing estimate: proved and reviewed; next target is actual image-strip stiffness. |
+| Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
+| `review_hyperboloid_metric` | Upgrade the native origin exponential homeomorphism to a smooth inverse using native differential nonsingularity. |
+| `review_hyperboloid_model` | Build global path lifting and the complete local-isometry covering theorem from the proved endpoint-continuation engine. |
+| `review_orbit_quotients` | Prove exact boundary equivariance for the original map and group marking. |
+| `review_hyperboloid_interpolation` | Prove almost-everywhere actual image-strip stiffness using native measure differentiation. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -337,3 +337,35 @@ and zero diagnostics. Explicit scheduling capped Root at three actual compiler
 processes; the final aggregate module took 7.3 seconds. Exact source hashes,
 regressions and timing evidence are in `mostow-cartan-boundary.json`.
 The full finite-volume Mostow theorem remains open.
+
+## Verified native exponential, continuation and analytic packing layer
+
+The actual native hyperbolic exponential is identified for every initial vector,
+including zero, and its global origin homeomorphism has the exact arsinh inverse.
+The metric-bundle instances are explicit, with declaration-local norm selection
+and outside-import instance preservation checked.
+
+A partial lift through a local Riemannian isometry extends to its finite right
+endpoint when the source metric is complete. Its proof controls actual source
+distance by target path length and uses only within-interval derivatives. A
+consumer with deliberately discontinuous outside data verifies the one-sided
+conclusion and distinguishes the limit from the supplied endpoint value.
+
+Actual continuous coarse inverse maps induce a native boundary homeomorphism,
+with the original forward and inverse maps retained. A noninjective interior
+flattening map verifies that no interior equivalence was assumed.
+
+Finite disjoint disks give a squared endpoint-oscillation bound by the area of
+the actual homeomorphic image. Image-area finiteness is proved before conversion
+to real values. The final statement has no redundant sign restriction on its
+radius-ratio parameter. This is a packing theorem, not yet absolute continuity
+or boundary rigidity.
+
+All four new modules passed independent review, canonical builds, all 14
+applicable linters and native axiom checks. Fresh builds took 11.0, 2.4, 1.6 and
+1.8 seconds. The final root build passed with 26,913 jobs and zero diagnostics;
+the existing aggregate took 36 seconds. Exact evidence is in
+`mostow-exponential-lifting-packing.json`. All 53 newly added Lean files have
+matching current-source hashes and recorded fresh builds below 30 seconds.
+The global negative space-form, finite-volume cusp/control and boundary-rigidity
+frontiers remain open; the Mostow headline is not complete.

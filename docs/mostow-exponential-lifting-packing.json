@@ -1,0 +1,128 @@
+{
+  "base_commit": "6bef341bfbed6d0d48b5beb4c9183f480918fadf",
+  "layer": "Native exponential homeomorphism, complete lift continuation, coarse boundary equivalence and disk packing",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Exponential.lean",
+      "sha256": "5605cc700adeb59f819375fc49070fb0d932930de3c034914dcbaedc36b5d01e",
+      "fresh_lake_build_seconds": 11.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "Actual native exponential and intrinsic geodesic, zero and negative time, exact global arsinh inverse, continuity and declaration-local norm instances verified.",
+      "public_declarations": [
+        "intrinsicGeodesic_origin",
+        "expMapIntrinsic_origin",
+        "expMapIntrinsicOriginHomeomorph",
+        "expMapIntrinsicOriginHomeomorph_apply",
+        "expMapIntrinsicOriginHomeomorph_symm_apply"
+      ],
+      "direct_imports": [
+        "Mathlib.Analysis.SpecialFunctions.Arsinh",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianDistance",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper",
+        "DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/LocalIsometry/PathLifting.lean",
+      "sha256": "864761b9efb199b072a4ea7661104cfe53d12aff9c5d0e7c77c6edda556553ec",
+      "fresh_lake_build_seconds": 2.4,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "Finite-endpoint lift continuation uses the exact complete source metric and target interval path length; one-sided endpoint and outside-instance regressions pass.",
+      "public_declarations": [
+        "exists_tendsto_lift_of_complete"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Metric.Completeness",
+        "DifferentialGeometry.Geometry.Metric.Path.Composition",
+        "Mathlib.Geometry.Manifold.ContMDiffMFDeriv",
+        "Mathlib.MeasureTheory.Measure.Lebesgue.Basic",
+        "Mathlib.Topology.EMetricSpace.Lipschitz",
+        "Mathlib.Topology.Order.Compact"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryEquiv.lean",
+      "sha256": "636e97d17f1ed46d109646a203b549ad4417a4fe5700bb0496f625ba835142b6",
+      "fresh_lake_build_seconds": 1.6,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "The original coarse inverse pair induces the exact forward/inverse boundary homeomorphism; a noninjective interior flattening map is a genuine consumer.",
+      "public_declarations": [
+        "boundaryHomeomorphOfCoarseInverse",
+        "boundaryHomeomorphOfCoarseInverse_toContinuousMap",
+        "boundaryHomeomorphOfCoarseInverse_symm_toContinuousMap",
+        "boundaryHomeomorphOfCoarseInverse_apply",
+        "boundaryHomeomorphOfCoarseInverse_symm_apply",
+        "boundaryHomeomorphOfCoarseInverse_symm"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMap"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Complex/DiskPacking.lean",
+      "sha256": "30e2658cd507a19ae8db1492a5567df59555bc97f6f981c158aefca007f3861d",
+      "fresh_lake_build_seconds": 1.8,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "mathematical_review": "Actual finite disk packing is bounded by finite image area; redundant sign hypothesis removed, with negative-parameter empty-family regression.",
+      "public_declarations": [
+        "sum_sq_dist_apply_le_volume_image"
+      ],
+      "direct_imports": [
+        "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "Mathlib.MeasureTheory.Measure.Basic",
+        "Mathlib.Topology.Homeomorph.Lemmas",
+        "Mathlib.Tactic.Choose"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "Geometry/Hyperbolic/Hyperboloid/Exponential",
+    "Geometry/Metric/LocalIsometry/PathLifting",
+    "Geometry/Hyperbolic/Hyperboloid/BoundaryEquiv",
+    "Analysis/Complex/DiskPacking"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=2 lake build DifferentialGeometry",
+    "jobs": 26913,
+    "root_module_seconds": 36,
+    "errors": 0,
+    "warnings": 0,
+    "max_observed_compiler_processes": 1
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}
