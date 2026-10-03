@@ -17962,3 +17962,9 @@ import DifferentialGeometry.Topology.VectorField.Spanning
 import DifferentialGeometry.Topology.VectorField.Transport
 import DifferentialGeometry.Topology.VectorField.VerticalLinearization
 import DifferentialGeometry.Geometry.Hyperbolic.UniversalCover
+import DifferentialGeometry.Geometry.Metric.Isometry.Covering
+import DifferentialGeometry.Geometry.Coordinates.StereographicComplex
+import DifferentialGeometry.Geometry.Hyperbolic.DeckRepresentation
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMetric
+import DifferentialGeometry.Geometry.Measure.LocalIsometryOn
+import DifferentialGeometry.Geometry.Hyperbolic.DeckGroup

@@ -90,11 +90,10 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| `review_hyperboloid_metric` | Construct the actual marked normalized deck-isometry homomorphism and its projection laws. |
-| `review_hyperboloid_interpolation` | Prove native boundary chord distortion and the exponential Lipschitz bound for actual hyperbolic isometries. |
-| `review_orbit_quotients` | Prove the exact native stereographic complex chart with its factor-two formulas. |
-| `equivariant_descent` | Prove discreteness of an actual covering-preserving isometry subgroup; independent review follows. |
-| `hyperboloid_metric` | Prove native Riemannian-volume transport on an injective open domain of a local isometry. |
+| `review_hyperboloid_interpolation` | Prove a uniform half-chord Hölder bound for the original boundary map with fixed coarse constants and basepoint bound. |
+| `review_orbit_quotients` | Prove native general stereographic chord formulas and transport them to the exact complex chart. |
+| `equivariant_descent` | Identify the exact normalized deck-image orbit quotient with the original manifold, retaining the projection law. |
+| `hyperboloid_metric` | Prove actual Riemannian covering open-ball images and connect local-volume transport to the original covering. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -514,3 +513,36 @@ current source-hash-matched fresh compilation evidence below 30 seconds.
 The original three-dimensional finite-volume Mostow headline remains open.
 Marked deck and quotient-volume producers, finite-volume cusp/control
 geometry, and boundary rigidity remain required.
+
+## Verified marked deck, boundary metric and local-volume layer
+
+The original based fundamental group now has its actual normalized hyperbolic
+isometry representation. It is exactly conjugation of the original deck action
+by the constructed cover isometry. The native inverse-loop convention,
+faithfulness, equivariance and original projection laws are retained. The
+actual image subgroup is proved discrete in the inherited isometry topology
+and ordinarily torsion-free. No lattice, freeness or discrete topology is
+supplied as a premise. A generic covering-preserving subgroup theorem supplies
+the reusable discreteness argument, including empty sources.
+
+The fixed north-pole stereographic chart now uses an explicit real isometry
+from its orthogonal plane to the complex numbers. Its native factor-two
+forward formula and exact inverse are proved. For original hyperbolic
+isometries, boundary chord-square distortion has the actual Lorentz time
+factors, and the boundary action is Lipschitz with constant the exponential
+of origin displacement. A nonorigin boost verifies genuine contraction.
+
+Native Riemannian volume now transports through an injective open domain of a
+local isometry. The original map may fail to be smooth or injective outside
+that domain. Positive- and negative-domain absolute-value consumers check the
+actual image equality, including orientation reversal.
+
+All seven changed modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. Fresh source builds take at
+most 5.7 seconds. Required deck-action dependents and the 26,930-job root
+build passed without diagnostics; the existing aggregate took 30 seconds.
+Exact evidence is in `mostow-marked-deck-boundary.json`. All 70 newly added
+Lean files have current source-hash-matched fresh compilation evidence below
+30 seconds. The actual quotient homeomorphism, original covering ball-volume
+identification, uniform boundary-map disk control, finite-volume cusp geometry
+and the final Mostow rigidity argument remain open.

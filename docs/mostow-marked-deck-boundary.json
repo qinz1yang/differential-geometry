@@ -1,0 +1,188 @@
+{
+  "base_commit": "443dc5a1c54249ac224373cbed83e728f9a88333",
+  "layer": "Marked deck representation and actual discrete torsion-free image, stereographic coordinates, boundary isometry metric and local volume",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Isometry/Covering.lean",
+      "sha256": "f103c0b47c4bbb2988af34b0650ebc57f121071b210a661e47a4527b3c91a274",
+      "fresh_lake_build_seconds": 3.7,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "IsometryEquiv.discreteTopology_subgroup_of_isCoveringMap"
+      ],
+      "mathematical_review": "Any actual covering-preserving isometry subgroup is discrete in its canonical topology, for preconnected pseudometric source including empty sources.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Metric.Isometry.Topology",
+        "Mathlib.Topology.Algebra.Group.Subgroup",
+        "Mathlib.Topology.Covering.Basic"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Coordinates/StereographicComplex.lean",
+      "sha256": "5df6ca9487d20aa951b7117464168b8c07e923f92d67818fe4aaba3e5bb74eb0",
+      "fresh_lake_build_seconds": 4.1,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "sphereNorthPole",
+        "northPoleOrthogonalComplex",
+        "stereographicComplex",
+        "stereographicComplex_eq_stereographic",
+        "stereographicComplex_apply",
+        "stereographicComplex_symm_coe"
+      ],
+      "mathematical_review": "Actual e0-punctured sphere to complex plane homeomorphism through the explicit orthogonal-plane isometry and native factor-two stereographic projection.",
+      "direct_imports": [
+        "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "Mathlib.Topology.OpenPartialHomeomorph.Basic"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/UniversalCover/DeckIsometryGlobal.lean",
+      "sha256": "42233f98f2bd4b19c59d2c45e29efabb24fe8709030bc59ce9ca7c188b93d63b",
+      "fresh_lake_build_seconds": 5.7,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "deckIsometryHom",
+        "deckIsometryHom_apply",
+        "deckIsometryHom_injective"
+      ],
+      "mathematical_review": "Generic actual lifted-metric deck-isometry homomorphism preserves native inverse-loop convention, with faithfulness and no curvature or completeness premises.",
+      "direct_imports": [
+        "DifferentialGeometry.Topology.Covering.UniversalDeckGroup",
+        "DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometry",
+        "DifferentialGeometry.Geometry.Metric.Pullback.Completeness"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/DeckRepresentation.lean",
+      "sha256": "6a66ed9ed0d40999977c98f951b0bf3a4b252fc8330f6de1e5248755633cb81b",
+      "fresh_lake_build_seconds": 5.2,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "normalizedUniversalCoverDeckRepresentation",
+        "normalizedUniversalCoverDeckRepresentation_apply",
+        "normalizedUniversalCoverIsometryEquiv_deckRepresentation",
+        "proj_normalizedUniversalCoverDeckRepresentation",
+        "normalizedUniversalCoverDeckRepresentation_injective"
+      ],
+      "mathematical_review": "Actual normalized based deck homomorphism is conjugated by the original cover isometry; exact equivariance/projection and faithfulness retain marking.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.UniversalCover",
+        "DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometryGlobal"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryMetric.lean",
+      "sha256": "aea0ca4d6f203ce74f73ca908b95808955fc3d03e018ab3096b8dda9b9e53e0d",
+      "fresh_lake_build_seconds": 1.4,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "dist_boundaryHomeomorph_sq",
+        "lipschitzWith_boundaryHomeomorph"
+      ],
+      "mathematical_review": "Exact chord-square distortion under the original boundary isometry and Lipschitz constant exp of actual origin displacement, with no finite-dimensionality assumption.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boundary",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper",
+        "Mathlib.Topology.MetricSpace.Lipschitz"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Measure/LocalIsometryOn.lean",
+      "sha256": "38b83d047d0bf5a701b5e674ddce685c9af4fd95ef095d88a64c39e68c02ded5",
+      "fresh_lake_build_seconds": 2.2,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "public_declarations": [
+        "riemannianVolumeMeasure_image_eq_of_injOn_local_isometry"
+      ],
+      "mathematical_review": "Native volume transport for a measurable subset of an injective open domain of the original local Riemannian isometry; no global injectivity or regularity outside the domain.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Measure.LocalIsometry"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/DeckGroup.lean",
+      "sha256": "1d90f1cda4130e6522352ad9daac0dec814c836c2b887fb597abcdfb5ccb9b6d",
+      "fresh_lake_build_seconds": 2.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "discreteTopology_range_normalizedUniversalCoverDeckRepresentation",
+        "normalizedUniversalCoverDeckRepresentation_range_isOfFinOrder_iff_eq_one"
+      ],
+      "mathematical_review": "The exact original normalized deck representation range is discrete and ordinarily torsion-free; covering and free action are derived internally.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.DeckRepresentation",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.FixedPoint",
+        "DifferentialGeometry.Geometry.Metric.Isometry.Covering"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "DifferentialGeometry/Geometry/Metric/Isometry/Covering.lean",
+    "DifferentialGeometry/Geometry/Coordinates/StereographicComplex.lean",
+    "DifferentialGeometry/Geometry/Metric/UniversalCover/DeckIsometryGlobal.lean",
+    "DifferentialGeometry/Geometry/Hyperbolic/DeckRepresentation.lean",
+    "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryMetric.lean",
+    "DifferentialGeometry/Geometry/Measure/LocalIsometryOn.lean",
+    "DifferentialGeometry/Geometry/Hyperbolic/DeckGroup.lean"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "affected_dependents": {
+    "explicit": "DifferentialGeometry.Geometry.Metric.UniversalCover.DeckProductConjugation",
+    "seconds": 1.0,
+    "other_dependents": "Lake root dependency graph"
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "log": "/Users/qzy/.cache/mostow-environment-20261002/marked-deck-boundary-root.log",
+    "root_compiler_cap": 1,
+    "jobs": 26930,
+    "root_module_seconds": 30.0,
+    "errors": 0,
+    "warnings": 0
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}
