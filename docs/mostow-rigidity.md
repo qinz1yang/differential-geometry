@@ -92,9 +92,9 @@ final headline. The active frontier is:
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
 | Root | Assemble original-map disk control after complete-line tracking and a uniform fixed-triple basepoint bound. |
 | `review_hyperboloid_metric` | Prove two-sided complete-line Morse tracking with the original positive and negative ideal limits. |
-| `equivariant_descent` | Identify actual metric segments and complete geodesic lines with their Klein chords. |
-| `hyperboloid_metric` | Prove original universal-cover small-ball volume equality from the actual deck displacement bound. |
-| `rigidity_assessment` | Prove that an isometry with no interior fixed point has a nonempty boundary fixed set of at most two points. |
+| `equivariant_descent` | Prove compactness of the intersection of fixed-radius tubes around the three sides of an actual ideal triangle. |
+| `hyperboloid_metric` | Prove native metric-tensor preservation for the actual smooth hyperboloid isometry, then uniform model ball volumes. |
+| `rigidity_assessment` | Prove that a nilpotent subgroup acting freely on hyperbolic space has an actual boundary orbit of at most two points. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -601,3 +601,31 @@ The uniform fixed-boundary-triple basepoint bound, complete-line two-sided
 tracking and the actual disk-control producer remain open. Finite-volume
 cusp geometry and the final three-dimensional Mostow rigidity theorem are
 still unproved; no headline completion is claimed by these layers.
+
+## Verified boundary fixed points, Klein chords and original-cover volume
+
+A hyperbolic isometry with no interior fixed point now has at most two fixed
+boundary points, with nonemptiness proved in finite dimension by the native
+unconditional Brouwer theorem. The cardinal bound is dimension free and uses
+extended cardinality. An actual one-dimensional boost verifies sharpness;
+no orientation restriction is present.
+
+Native metric segments have exactly their closed Klein chords. Each distinct
+ideal endpoint pair constructs an actual oriented geodesic whose Klein image
+is precisely the open chord. Equal finite endpoints, dimension zero, and
+non-antipodal ideal endpoints were checked. These are the geometric inputs
+for complete-line Morse tracking, whose separate proof is still under review.
+
+The actual original universal-cover deck displacement bound now implies
+small-ball volume equality for the original projection. The native triangle
+inequality and actual fiber transitivity derive injectivity; the exact lifted
+metric and projection derivative derive the pullback identity. Changed
+basepoint and nonpositive-radius consumers preserve the original objects.
+
+All three new modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. Fresh source builds took
+8.8, 2.2 and 4.0 seconds. The 26,938-job root build passed without diagnostics;
+the existing aggregate took 31 seconds. Exact evidence is in
+`mostow-fixedpoint-klein-volume.json`. All 78 newly added Lean files have
+current source-hash-matched fresh compilation evidence below 30 seconds.
+The full three-dimensional finite-volume Mostow theorem remains open.

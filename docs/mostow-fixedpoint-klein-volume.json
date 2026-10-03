@@ -1,0 +1,103 @@
+{
+  "base_commit": "3a419f13bd897b4487011b69a6d5a4caf5b15f9e",
+  "layer": "Actual boundary fixed points, Klein chords and original universal-cover ball volume",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryFixedPoint.lean",
+      "sha256": "2f9fb6b2ade6b40128329adb0e59be0971014c558a127e743c23a61f836ac594",
+      "fresh_lake_build_seconds": 8.8,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "fixedPoints_boundaryHomeomorph_encard_le_two",
+        "fixedPoints_boundaryHomeomorph_nonempty"
+      ],
+      "mathematical_review": "A hyperbolic isometry with no interior fixed point has at most two actual boundary fixed points in all dimensions, and a nonempty fixed set in finite dimension via native audited Brouwer.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMetric",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinCompactification",
+        "DifferentialGeometry.Topology.FixedPoint.Brouwer",
+        "Mathlib.Data.Set.Card",
+        "Mathlib.Dynamics.FixedPoints.Defs"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/KleinGeodesic.lean",
+      "sha256": "317a1339ded2334fa00b51b431246e5ccdae4dbf713735a04046d3f86be4b127",
+      "fresh_lake_build_seconds": 2.2,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "kleinHomeomorph_image_metric_segment",
+        "exists_geodesicLine_with_endpoints"
+      ],
+      "mathematical_review": "Native metric segments map exactly to closed Klein chords; distinct actual ideal endpoints produce a genuine oriented geodesic with exact open chord image, without finite dimensionality.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicSegment",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicBoundary",
+        "Mathlib.Analysis.SpecialFunctions.Artanh",
+        "Mathlib.Topology.Order.IntermediateValue"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Measure/UniversalCover.lean",
+      "sha256": "e7ded1a0b031e38dd102a05232658cc010509794cba1529d10453eff88290aeb",
+      "fresh_lake_build_seconds": 4.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "public_declarations": [
+        "riemannianVolumeMeasure_ball_eq_of_le_deck_displacement"
+      ],
+      "mathematical_review": "The original deck displacement bound implies equality of actual source and target ball volumes for the original universal-cover projection and canonical lifted metric.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Measure.CoveringBall",
+        "DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometryGlobal",
+        "DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness",
+        "DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryFixedPoint.lean",
+    "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/KleinGeodesic.lean",
+    "DifferentialGeometry/Geometry/Measure/UniversalCover.lean"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "jobs": 26938,
+    "root_module_seconds": 31.0,
+    "root_compiler_cap": 1,
+    "errors": 0,
+    "warnings": 0
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}

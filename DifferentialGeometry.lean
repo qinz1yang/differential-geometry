@@ -17973,3 +17973,6 @@ import DifferentialGeometry.Geometry.Coordinates.Stereographic
 import DifferentialGeometry.Geometry.Hyperbolic.Quotient
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMapMetric
 import DifferentialGeometry.Geometry.Measure.CoveringBall
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryFixedPoint
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinGeodesic
+import DifferentialGeometry.Geometry.Measure.UniversalCover
