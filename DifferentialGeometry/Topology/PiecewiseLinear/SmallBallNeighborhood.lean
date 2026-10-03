@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceEnvelopes
 import DifferentialGeometry.Topology.PiecewiseLinear.ConvexPolytope
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
