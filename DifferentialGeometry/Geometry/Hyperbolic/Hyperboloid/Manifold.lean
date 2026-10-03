@@ -26,6 +26,31 @@ def spaceDiffeomorph : Hyperboloid E ≃ₘ⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ E :=
 @[simp] theorem spaceDiffeomorph_toHomeomorph :
     (spaceDiffeomorph (E := E)).toHomeomorph = spaceHomeomorph := rfl
 
+theorem chartAt_eq_spaceHomeomorph (x : Hyperboloid E) :
+    chartAt E x = spaceHomeomorph.toOpenPartialHomeomorph := by
+  change spaceHomeomorph.toOpenPartialHomeomorph.trans (OpenPartialHomeomorph.refl E) = _
+  exact OpenPartialHomeomorph.trans_refl _
+
+theorem tangent_trivializationAt_symmL (x y : Hyperboloid E) :
+    (trivializationAt E (TangentSpace 𝓘(ℝ, E)) x).symmL ℝ y = (1 : E →L[ℝ] E) := by
+  rw [TangentBundle.symmL_trivializationAt_eq_core (by
+    rw [chartAt_eq_spaceHomeomorph]
+    trivial)]
+  have h : achart E x = achart E y :=
+    Subtype.ext ((chartAt_eq_spaceHomeomorph x).trans (chartAt_eq_spaceHomeomorph y).symm)
+  rw [h]
+  ext v
+  exact (tangentBundleCore 𝓘(ℝ, E) (Hyperboloid E)).coordChange_self
+    (achart E y) y (mem_achart_source E y) v
+
+theorem mfderiv_spaceDiffeomorph (x : Hyperboloid E) :
+    mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) spaceDiffeomorph x = (1 : E →L[ℝ] E) := by
+  have h : (extChartAt 𝓘(ℝ, E) x : Hyperboloid E → E) = spaceDiffeomorph := by
+    rw [extChartAt_coe, chartAt_eq_spaceHomeomorph]
+    rfl
+  rw [← h]
+  exact mfderiv_extChartAt_self
+
 variable {n : ℕ∞ω}
 
 theorem contMDiff_space : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, E) n (space : Hyperboloid E → E) :=

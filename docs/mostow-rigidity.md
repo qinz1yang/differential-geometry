@@ -80,14 +80,14 @@ final headline. The active frontier is:
 
 | Owner | Exact next target |
 | --- | --- |
-| Root | Integrate the accepted geodesic and Lorentz-restriction packets. |
-| `rigidity_assessment` | Construct the explicit Lorentz boost taking origin to the supplied point. |
-| `review_hyperboloid_model` | Construct the native smooth Riemannian metric with its spatial tangent formula. |
-| `equivariant_descent` | Prove compactness of surjective isometries with bounded basepoint image inside `C(X, X)`. |
+| Root | Integrate the accepted full Lorentz-extension classification and derivative interfaces. |
+| `review_hyperboloid_model` | Identify the native Riemannian distance with the arcosh metric. |
+| `equivariant_descent` | Prove the existing-unit inverse estimate used by Zassenhaus. |
+| `rigidity_assessment` | Supply the canonical Lorentz extension interface for boundary actions. |
 
-The marked returning-orbit extraction remains a high-risk later target: its
-limit must be the actual composite `a ∘ F ∘ b` with the induced marking,
-not an unspecified boundary-map limit.
+The interior returning-orbit extraction is proved with the actual composite
+`a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
+cusp geometry, and the rigidity argument remain open.
 
 ## Verified foundation layer
 
@@ -120,3 +120,25 @@ all 14 applicable declaration linters, native axiom closure checks, and the
 5.9, 2.1, 1.3, and 1.3 seconds. Exact hashes and evidence are in
 `mostow-hyperboloid.json`. Curvature and compatibility with the native
 Riemannian metric remain separate proof obligations.
+
+## Verified native geometry and orbit compactness
+
+The canonical native smooth metric now has its actual Levi-Civita connection
+and full native Rm04 tensor computed. Native sectional curvature is -1 on every
+linearly independent tangent plane, with concrete non-origin dimension-three
+validation. Complete metric geodesic lines, lines through distinct endpoints,
+Lorentz restrictions, explicit boosts, and Klein coordinates are proved.
+Shared chart and coordinate-field APIs support the native consumers without
+copying private proofs.
+
+For general proper metric spaces, surjective isometries whose basepoint images
+lie in a compact set form a compact family in the existing continuous-map
+topology. Equivariant returning sequences have one subsequence whose recentered
+left/right isometries converge to actual A and B, and whose original composites
+converge to exactly A composed with the original F composed with B.
+
+All changed modules pass independent review, canonical builds, 14 applicable
+linters, native axiom checks, and the 26,878-job aggregate build. The new modules
+freshly compile in at most 5.8 seconds. Exact hashes and timings are recorded in
+`mostow-native-geometry.json`. The existing aggregate module took 35 seconds.
+Native distance compatibility and Mostow rigidity are still open.

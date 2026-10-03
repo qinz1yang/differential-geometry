@@ -1,0 +1,109 @@
+{
+  "base_commit": "374673244849ddd93506adcbb3017960753f7508",
+  "layer": "Native hyperbolic geometry and isometry orbit compactness",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Manifold.lean",
+      "sha256": "513f37ec78c94a6d813dfc067608631a8cd914253d393e16fa97f22d35c7a4d4",
+      "fresh_lake_build_seconds": 1.4,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Geodesic.lean",
+      "sha256": "c39e2ebb53122a4c3d065335c5a0b8878102b9ad3baa06b5e2496d6b9e19ac4b",
+      "fresh_lake_build_seconds": 5.8,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/LorentzIsometry.lean",
+      "sha256": "94a32910b2266c9ff6d97551c4b8752b2645ae30575e48d34f61f249af227b57",
+      "fresh_lake_build_seconds": 5.8,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Boost.lean",
+      "sha256": "763c60aecfba79816def89abab79bd9d9a3f67c96badc3eec333c361e95c55bf",
+      "fresh_lake_build_seconds": 1.3,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/RiemannianMetric.lean",
+      "sha256": "2b06b291284b1908f69f64a162de1d7557b388ee3276f26afb77ecc6bbadb43f",
+      "fresh_lake_build_seconds": 2.8,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/VectorField.lean",
+      "sha256": "a5c05f1337788e05c3468e895ef09390af6e52f0fb82877a6edd26225b54d0b2",
+      "fresh_lake_build_seconds": 3.9,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Connection.lean",
+      "sha256": "9a364fa9da8151f0ac7ba8587c8e79f1cc41515a5a498b0db1157306d354bead",
+      "fresh_lake_build_seconds": 1.9,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Curvature.lean",
+      "sha256": "9b378b788a517de965db4e572282ccaf19701f9cefa377d576cecb534a0979e4",
+      "fresh_lake_build_seconds": 2.6,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Klein.lean",
+      "sha256": "2e2d7c58b6dde6c364d467808c2c03297dcb4eebfb70441ad1295aae9e367986",
+      "fresh_lake_build_seconds": 1.3,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Isometry/Compactness.lean",
+      "sha256": "1e33a7012dd6045977e8a5ff2d880e3396ae878b30776f32051fa80b0129a5e8",
+      "fresh_lake_build_seconds": 0.984,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Isometry/OrbitCompactness.lean",
+      "sha256": "676501d273e1fac1aaa8b31ad9567e844e97830ad371c8cdcab5a05594c842d4",
+      "fresh_lake_build_seconds": 1.2,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    }
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "lake build DifferentialGeometry",
+    "jobs": 26878,
+    "root_module_seconds": 35,
+    "errors": 0,
+    "warnings": 0
+  },
+  "mostow_headline": "open"
+}
