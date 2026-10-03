@@ -161,7 +161,7 @@
   },
   "provenance": {
     "equivariance_recovery_review": "/private/tmp/pc-mostow-review-boundary-equivariance-recovery/REVIEW.md",
-    "review_scratch_collision": "Owned files relocated with before/after hashes; unrelated predecessor review files unchanged."
+    "review_scratch_collision": "The recovery review was relocated to its own directory with matching source/artifact hashes. Earlier directory reuse overwrote predecessor compile.py and REVIEW.md; both were restored from exact recorded original creation text, with no claim of unavailable pre-overwrite filesystem hashes. Twelve frozen proof source, review.json, log, driver and native artifact files were unchanged. SCRIPT_RESTORATION.json and the recovery RELOCATION.json record this limited provenance."
   },
   "mostow_headline": "open"
 }

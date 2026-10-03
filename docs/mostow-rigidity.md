@@ -90,10 +90,10 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| `review_hyperboloid_metric` | Prove smooth tensor preservation for the explicit native hyperbolic comparison map into a complete curvature-minus-one manifold. |
-| `review_hyperboloid_model` | Construct actual open sheets from radial C1 lifts and native joint lifting continuity. |
-| `review_orbit_quotients` | Prove boundary-map composition and invariance under bounded distance, retaining original maps. |
-| `review_hyperboloid_interpolation` | Design the finite interval-refinement estimate leading from image-strip control to horizontal absolute continuity. |
+| `review_hyperboloid_metric` | Derive native local-diffeomorphism and model-completeness interfaces for the actual hyperbolic comparison map. |
+| `review_hyperboloid_model` | Assemble disjoint exhaustive actual sheets into the complete local-isometry covering theorem. |
+| `review_hyperboloid_interpolation` | Prove horizontal absolute continuity from the actual image-strip estimate via finite interval refinement. |
+| `hyperboloid_metric` | Audit the native finite-volume compact-thick-part engine and its actual quotient-volume inputs. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -400,3 +400,28 @@ applicable linters and native axiom checks. Fresh source builds take at most
 existing aggregate took 36 seconds. Exact evidence is recorded in
 `mostow-global-lifting-strip.json`. The global space-form, finite-volume cusp
 and boundary-rigidity steps remain open.
+
+## Verified comparison maps and actual sheets
+
+The canonical hyperbolic comparison map is the actual target exponential
+composed with the prescribed metric-tangent isometry and the actual model
+exponential inverse. It is smooth without a curvature assumption and preserves
+the metric tensor under the true curvature-minus-one identity. The target
+completeness is its native metric completeness; no unrelated ambient metric or
+target exponential injectivity is supplied.
+
+Over an actual star-convex chart, the prescribed initial point now determines
+an actual continuous open sheet. Individual C1 lifts and the native joint-lift
+continuity theorem supply the parameter dependence, and the center law retains
+the prescribed point. Disjointness and exhaustion for the covering assembly
+remain the next separate proof obligations.
+
+Boundary maps respect actual composition with internally derived distortion
+constants, and maps at bounded distance have the same boundary map. Tests use
+a continuous noninjective flattening map, including its actual composite.
+
+All three modules passed independent review, canonical builds, all 14 applicable
+linters and native axiom checks. Fresh source builds took 6.0, 4.5 and 3.0
+seconds. The root build passed with 26,917 jobs and zero diagnostics; the existing
+aggregate took 35 seconds. Exact evidence is in `mostow-comparison-sheets.json`.
+The original three-dimensional finite-volume Mostow headline remains open.

@@ -5867,6 +5867,7 @@ import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInvers
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Framed
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
+import DifferentialGeometry.Geometry.Exponential.HyperbolicComparison
 import DifferentialGeometry.Geometry.Exponential.Injectivity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.BallChart
@@ -10888,6 +10889,7 @@ import DifferentialGeometry.Geometry.Metric.LocalChartDistance
 import DifferentialGeometry.Geometry.Metric.LocalCollapse
 import DifferentialGeometry.Geometry.Metric.LocalExponential
 import DifferentialGeometry.Geometry.Metric.LocalIsometry.PathLifting
+import DifferentialGeometry.Geometry.Metric.LocalIsometry.Sheets
 import DifferentialGeometry.Geometry.Metric.LocalJoinJets
 import DifferentialGeometry.Geometry.Metric.LocalMetricBallContainment
 import DifferentialGeometry.Geometry.Metric.LocalProduct

@@ -1,0 +1,113 @@
+{
+  "base_commit": "60ad8d79619d17a94a231406f9d8a843e7f307f3",
+  "layer": "Native hyperbolic comparison, actual open sheets and boundary functoriality",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryMap.lean",
+      "sha256": "de474850af53f3dd57d2aafc4ff36e594fda7fa7d80cef8457efa9b6e9ab56cf",
+      "fresh_lake_build_seconds": 6.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "equivariant_descent",
+      "mathematical_review": "Original-map boundary composition uses internally derived distortion constants; bounded-distance maps have the same actual endpoint map.",
+      "public_declarations": [
+        "boundaryMap",
+        "tendsto_kleinHomeomorph_boundaryMap_origin_ray",
+        "tendsto_kleinHomeomorph_boundaryMap",
+        "boundaryMap_isometryEquiv",
+        "boundaryMap_smul",
+        "boundaryMap_comp_constSMul",
+        "boundaryMap_comp",
+        "boundaryMap_eq_of_dist_bounded"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.QuasiGeodesicBoundary",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinCompactification",
+        "Mathlib.Analysis.Normed.Module.Normalize",
+        "Mathlib.Topology.MetricSpace.IsometricSMul",
+        "Mathlib.Topology.UniformSpace.UniformApproximation"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/LocalIsometry/Sheets.lean",
+      "sha256": "65342b9f828b5fd68698242074ad763295185978b27b7d571b25f19270a5e479",
+      "fresh_lake_build_seconds": 4.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "Actual radial C1 lifts from one prescribed point form a jointly continuous family via the native lifting theorem and produce an open sheet over the actual star-convex chart.",
+      "public_declarations": [
+        "exists_openEmbedding_section_of_complete_of_starConvex"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Metric.LocalIsometry.PathLifting",
+        "Mathlib.Analysis.Convex.Star",
+        "Mathlib.Topology.Homotopy.Lifting"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Exponential/HyperbolicComparison.lean",
+      "sha256": "6d1cdcbe8db7ad40011ef520ed674f52628086292f82c73b1243261d52c9fc96",
+      "fresh_lake_build_seconds": 3.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "The explicit native exponential composition is smooth and preserves the metric tensor at curvature minus one; actual complete metric and metric-fiber tangent isometry are retained without target injectivity.",
+      "public_declarations": [
+        "hyperbolicComparison",
+        "hyperbolicComparison_apply",
+        "contMDiff_hyperbolicComparison",
+        "hyperbolicComparison_inner"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Exponential",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature",
+        "DifferentialGeometry.Geometry.Exponential.Cartan.Norm",
+        "DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity",
+        "DifferentialGeometry.Geometry.Metric.Polarization",
+        "DifferentialGeometry.Geometry.Metric.Completeness"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "Geometry/Hyperbolic/Hyperboloid/BoundaryMap",
+    "Geometry/Metric/LocalIsometry/Sheets",
+    "Geometry/Exponential/HyperbolicComparison"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryEquiv DifferentialGeometry",
+    "jobs": 26917,
+    "root_module_seconds": 35,
+    "errors": 0,
+    "warnings": 0,
+    "max_observed_compiler_processes": 1,
+    "necessary_boundary_consumer_seconds": 1.4
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}

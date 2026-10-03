@@ -547,4 +547,90 @@ theorem boundaryMap_comp_constSMul (f : C(Hyperboloid E, Hyperboloid F))
   intro u
   exact boundaryMap_smul f hdist φ hf γ u
 
+omit [FiniteDimensional ℝ F] in
+private theorem exists_distortion_comp {T : Type*}
+    [NormedAddCommGroup T] [InnerProductSpace ℝ T]
+    (f : C(Hyperboloid E, Hyperboloid F)) (g : C(Hyperboloid F, Hyperboloid T))
+    (hf : ∃ L C : ℝ, 1 ≤ L ∧ 0 ≤ C ∧ ∀ x y : Hyperboloid E,
+      L⁻¹ * dist x y - C ≤ dist (f x) (f y) ∧ dist (f x) (f y) ≤ L * dist x y + C)
+    (hg : ∃ L C : ℝ, 1 ≤ L ∧ 0 ≤ C ∧ ∀ x y : Hyperboloid F,
+      L⁻¹ * dist x y - C ≤ dist (g x) (g y) ∧ dist (g x) (g y) ≤ L * dist x y + C) :
+    ∃ L C : ℝ, 1 ≤ L ∧ 0 ≤ C ∧ ∀ x y : Hyperboloid E,
+      L⁻¹ * dist x y - C ≤ dist ((g.comp f) x) ((g.comp f) y) ∧
+        dist ((g.comp f) x) ((g.comp f) y) ≤ L * dist x y + C := by
+  obtain ⟨L₁, C₁, hL₁, hC₁, hd₁⟩ := hf
+  obtain ⟨L₂, C₂, hL₂, hC₂, hd₂⟩ := hg
+  have hL₂pos : 0 < L₂ := lt_of_lt_of_le zero_lt_one hL₂
+  have hinv : L₂⁻¹ ≤ L₂ := by
+    have hh := one_div_le_one_div_of_le (by norm_num : (0 : ℝ) < 1) hL₂
+    have hh' : L₂⁻¹ ≤ 1 := by simpa only [one_div, inv_one] using hh
+    exact hh'.trans hL₂
+  have herror : L₂⁻¹ * C₁ ≤ L₂ * C₁ := mul_le_mul_of_nonneg_right hinv hC₁
+  refine ⟨L₂ * L₁, L₂ * C₁ + C₂, ?_, ?_, ?_⟩
+  · nlinarith only [mul_nonneg (sub_nonneg.mpr hL₁) (sub_nonneg.mpr hL₂), hL₁, hL₂]
+  · exact add_nonneg (mul_nonneg hL₂pos.le hC₁) hC₂
+  · intro x y
+    obtain ⟨hfxyl, hfxyu⟩ := hd₁ x y
+    obtain ⟨hgxyl, hgxyu⟩ := hd₂ (f x) (f y)
+    change (L₂ * L₁)⁻¹ * dist x y - (L₂ * C₁ + C₂) ≤ dist (g (f x)) (g (f y)) ∧
+      dist (g (f x)) (g (f y)) ≤ L₂ * L₁ * dist x y + (L₂ * C₁ + C₂)
+    constructor
+    · have hm := mul_le_mul_of_nonneg_left hfxyl (inv_nonneg.mpr hL₂pos.le)
+      calc
+        _ = L₂⁻¹ * (L₁⁻¹ * dist x y) - L₂ * C₁ - C₂ := by rw [mul_inv_rev]; ring
+        _ ≤ L₂⁻¹ * (L₁⁻¹ * dist x y) - L₂⁻¹ * C₁ - C₂ := by linarith only [herror]
+        _ = L₂⁻¹ * (L₁⁻¹ * dist x y - C₁) - C₂ := by ring
+        _ ≤ dist (g (f x)) (g (f y)) := by linarith only [hm, hgxyl]
+    · have hm := mul_le_mul_of_nonneg_left hfxyu hL₂pos.le
+      nlinarith only [hm, hgxyu]
+
+theorem boundaryMap_comp {T : Type*} [NormedAddCommGroup T] [InnerProductSpace ℝ T]
+    [FiniteDimensional ℝ T]
+    (f : C(Hyperboloid E, Hyperboloid F)) (g : C(Hyperboloid F, Hyperboloid T))
+    (hf : ∃ L C : ℝ, 1 ≤ L ∧ 0 ≤ C ∧ ∀ x y : Hyperboloid E,
+      L⁻¹ * dist x y - C ≤ dist (f x) (f y) ∧ dist (f x) (f y) ≤ L * dist x y + C)
+    (hg : ∃ L C : ℝ, 1 ≤ L ∧ 0 ≤ C ∧ ∀ x y : Hyperboloid F,
+      L⁻¹ * dist x y - C ≤ dist (g x) (g y) ∧ dist (g x) (g y) ≤ L * dist x y + C) :
+    boundaryMap (g.comp f) (exists_distortion_comp f g hf hg) =
+      (boundaryMap g hg).comp (boundaryMap f hf) := by
+  apply ContinuousMap.ext
+  intro u
+  apply Subtype.ext
+  have hfu : Filter.Tendsto (fun t => (kleinHomeomorph (f (originRay u t)) : F))
+      Filter.atTop (𝓝 (boundaryMap f hf u : F)) :=
+    tendsto_kleinHomeomorph_boundaryMap f hf (tendsto_kleinHomeomorph_originRay u)
+  have hright : Filter.Tendsto (fun t => (kleinHomeomorph (g (f (originRay u t))) : T))
+      Filter.atTop (𝓝 (boundaryMap g hg (boundaryMap f hf u) : T)) :=
+    tendsto_kleinHomeomorph_boundaryMap g hg hfu
+  have hleft : Filter.Tendsto (fun t => (kleinHomeomorph ((g.comp f) (originRay u t)) : T))
+      Filter.atTop (𝓝 (boundaryMap (g.comp f) (exists_distortion_comp f g hf hg) u : T)) :=
+    tendsto_kleinHomeomorph_boundaryMap (g.comp f) (exists_distortion_comp f g hf hg)
+      (tendsto_kleinHomeomorph_originRay u)
+  exact tendsto_nhds_unique hleft hright
+
+theorem boundaryMap_eq_of_dist_bounded (f g : C(Hyperboloid E, Hyperboloid F))
+    (hf : ∃ L C : ℝ, 1 ≤ L ∧ 0 ≤ C ∧ ∀ x y : Hyperboloid E,
+      L⁻¹ * dist x y - C ≤ dist (f x) (f y) ∧ dist (f x) (f y) ≤ L * dist x y + C)
+    (hg : ∃ L C : ℝ, 1 ≤ L ∧ 0 ≤ C ∧ ∀ x y : Hyperboloid E,
+      L⁻¹ * dist x y - C ≤ dist (g x) (g y) ∧ dist (g x) (g y) ≤ L * dist x y + C)
+    (hfg : ∃ C : ℝ, ∀ x : Hyperboloid E, dist (f x) (g x) ≤ C) :
+    boundaryMap f hf = boundaryMap g hg := by
+  obtain ⟨C, hC⟩ := hfg
+  apply ContinuousMap.ext
+  intro u
+  apply Subtype.ext
+  have hfu : Filter.Tendsto (fun t => (kleinHomeomorph (f (originRay u t)) : F))
+      Filter.atTop (𝓝 (boundaryMap f hf u : F)) :=
+    tendsto_kleinHomeomorph_boundaryMap f hf (tendsto_kleinHomeomorph_originRay u)
+  have hgu : Filter.Tendsto (fun t => (kleinHomeomorph (g (originRay u t)) : F))
+      Filter.atTop (𝓝 (boundaryMap g hg u : F)) :=
+    tendsto_kleinHomeomorph_boundaryMap g hg (tendsto_kleinHomeomorph_originRay u)
+  have hclose : Filter.Tendsto (fun t => (kleinHomeomorph (g (originRay u t)) : F))
+      Filter.atTop (𝓝 (boundaryMap f hf u : F)) :=
+    tendsto_kleinHomeomorph_of_dist_bounded
+      (x := fun t => f (originRay u t)) (y := fun t => g (originRay u t))
+      (ξ := boundaryMap f hf u) (C := C)
+      (Filter.Eventually.of_forall fun t => hC (originRay u t)) hfu
+  exact tendsto_nhds_unique hclose hgu
+
 end DifferentialGeometry.Hyperboloid
