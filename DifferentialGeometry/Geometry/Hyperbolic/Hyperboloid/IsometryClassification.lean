@@ -41,7 +41,7 @@ private def spatialIsometry (g : Hyperboloid E ≃ᵢ Hyperboloid F)
     apply (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
     rw [norm_sub_sq_real, norm_sub_sq_real, hu, hv, huv]
 
-private def spatialLorentzEquiv (L : E ≃ₗᵢ[ℝ] F) :
+def spatialLorentzEquiv (L : E ≃ₗᵢ[ℝ] F) :
     (lorentzForm E).IsometryEquiv (lorentzForm F) where
   toLinearEquiv := (LinearEquiv.refl ℝ ℝ).prodCongr L.toLinearEquiv
   map_app' z w := by

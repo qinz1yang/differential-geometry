@@ -22,7 +22,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E₃ H} [I.B
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
 
 omit [SigmaCompactSpace M] [ConnectedSpace M] in
-private theorem normalized_lifted_riemannOp [Inhabited M] [LocallyPathConnectedSpace M]
+theorem normalized_lifted_riemannOp [Inhabited M] [LocallyPathConnectedSpace M]
     [SemilocallySimplyConnectedSpace M] (g : SmoothRiemannianMetric I M)
     (κ : ℝ) (hκ : κ < 0)
     (hsec : ∀ (x : M) (X Y : TangentSpace I x),

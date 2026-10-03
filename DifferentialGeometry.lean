@@ -17985,3 +17985,8 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryNormalizatio
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryTranslation
 import DifferentialGeometry.Geometry.Measure.HyperbolicComparison
 import DifferentialGeometry.Topology.Algebra.Group.FiniteOrbit
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.FiniteBoundaryOrbit
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryPlane
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundarySimilarity
+import DifferentialGeometry.Geometry.Measure.HyperbolicUniversalCover
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryOrbit

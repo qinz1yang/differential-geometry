@@ -90,10 +90,9 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| `review_hyperboloid_metric` | Derive genuine uniform disk distortion for the plane homeomorphism induced by the original controlled boundary equivalence. |
-| `review_hyperboloid_interpolation` | Construct the actual hyperbolic isometry inducing complex multiplication in the fixed stereographic chart. |
-| `hyperboloid_metric` | Transfer the exact uniform model ball mass to the original normalized manifold under its actual deck displacement bound. |
-| `rigidity_assessment` | Derive finite actual boundary orbits for finite-index nilpotent subgroups and the genuine Margulis subgroup. |
+| `review_hyperboloid_metric` | Prove genuine uniform disk distortion for the plane homeomorphism induced by the original controlled boundary equivalence. |
+| `hyperboloid_metric` | Prove compactness of the actual projected positive-displacement set from original finite volume. |
+| `rigidity_assessment` | Prove that an actual isometry swapping distinct ideal points has an interior fixed point, then exclude swapping in a free action. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -699,3 +698,37 @@ diagnostics; the existing aggregate took 36 seconds. Exact evidence is in
 `mostow-normalization-translation-comparison.json`. All 87 newly added Lean
 files have current source-hash-matched fresh compilation evidence below
 30 seconds. The finite-volume Mostow headline remains open.
+
+## Verified original plane similarities and normalized local mass
+
+The original controlled coarse-inverse pair now induces an actual complex
+plane homeomorphism through the native stereographic chart. Exact forward,
+inverse, and swapped-pair laws retain the original boundary maps. Genuine
+Lorentz isometries realize every nonzero complex multiplication with the
+correct scaling, rotation and factor-two chart normalization.
+
+The original negatively curved three-manifold's normalized downstairs balls
+now have exactly the H3 origin-ball volume whenever their actual based-cover
+deck displacement is large enough. No free basis, normalized curvature
+premise, replacement cover or volume equality is supplied. The original
+metric 4gH3 with curvature minus one quarter and a nonorigin basepoint verifies
+the scaling and producer chain for every real radius.
+
+Finite-index nilpotent subgroups produce actual finite boundary orbits with
+freeness required only on that subgroup. The original uniform Margulis
+construction supplies its actual small-displacement subgroup and finite-index
+hypothesis from the true finite quotient bound. Separately, the same supplied
+finite boundary orbit of any freely acting group has at most two points,
+without a finite-dimensionality assumption.
+
+All seven changed modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. All affected descendants of
+the two visibility-only promotions were rebuilt. Fresh source builds took
+at most 8.5 seconds; the 26,952-job root build passed without diagnostics and
+the existing aggregate took 26 seconds. Exact evidence and the disclosed
+read-only worker Git exception are recorded in
+`mostow-plane-similarity-local-volume.json`. All 92 newly added Lean files
+have current source-hash-matched fresh compilation evidence below 30 seconds.
+The actual disk-control proof and finite-volume thick-part compactness are
+active; cusp geometry, controlled homotopy representatives and final rigidity
+remain open.
