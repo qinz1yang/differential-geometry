@@ -351,6 +351,7 @@ import DifferentialGeometry.Analysis.Complex.CircleArc
 import DifferentialGeometry.Analysis.Complex.CircleRotation
 import DifferentialGeometry.Analysis.Complex.ConformalBoundary
 import DifferentialGeometry.Analysis.Complex.ConformalGradientHolder
+import DifferentialGeometry.Analysis.Complex.DirectionalRegularity
 import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Argument
 import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Basic
 import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Transitivity
@@ -5870,6 +5871,7 @@ import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Framed
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Exponential.HyperbolicComparison
+import DifferentialGeometry.Geometry.Exponential.HyperbolicSpaceForm
 import DifferentialGeometry.Geometry.Exponential.Injectivity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.BallChart
@@ -10860,6 +10862,7 @@ import DifferentialGeometry.Geometry.Metric.FiniteConstruction
 import DifferentialGeometry.Geometry.Metric.GeodesicInterpolation
 import DifferentialGeometry.Geometry.Metric.Gluing
 import DifferentialGeometry.Geometry.Metric.GluingRestriction
+import DifferentialGeometry.Geometry.Metric.GroupAction.Displacement
 import DifferentialGeometry.Geometry.Metric.HalfClosedJets
 import DifferentialGeometry.Geometry.Metric.HalfClosedNorm
 import DifferentialGeometry.Geometry.Metric.HalfSpaceExtension

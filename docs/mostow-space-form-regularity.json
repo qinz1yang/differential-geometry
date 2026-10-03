@@ -1,0 +1,102 @@
+{
+  "base_commit": "f9b79677306342030bb378ba0f5d5cd919f4ff9b",
+  "layer": "Normalized simply connected hyperbolic space form, directional regularity and quotient displacement",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Exponential/HyperbolicSpaceForm.lean",
+      "sha256": "84fe21598c52f2207fe4630a7b1ddab560c804ff12ef64f801709109a59864f0",
+      "fresh_lake_build_seconds": 5.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "The actual comparison map is a native isometry equivalence from the original hyperboloid metric to the metric-induced target for a complete simply connected curvature-minus-one manifold; no target exponential injectivity is supplied.",
+      "public_declarations": [
+        "hyperbolicComparisonIsometryEquiv",
+        "hyperbolicComparisonIsometryEquiv_apply",
+        "hyperbolicComparisonIsometryEquiv_origin"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Exponential.HyperbolicComparison",
+        "DifferentialGeometry.Geometry.Metric.LocalIsometry.Covering",
+        "DifferentialGeometry.Geometry.Metric.DistancePullback",
+        "DifferentialGeometry.Topology.Covering.SimplyConnected"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Complex/DirectionalRegularity.lean",
+      "sha256": "efe011be51ac95fe363bacc1d99e3b6d3bfd2f34b50f2ca6cb6ed478da917b9e",
+      "fresh_lake_build_seconds": 6.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_orbit_quotients",
+      "mathematical_review": "Every nonempty rectangle contains a positive-measure set where the original disk-controlled homeomorphism has a nonzero native horizontal directional derivative, using genuine vector AC and Fubini.",
+      "public_declarations": [
+        "volume_pos_lineDeriv_ne_zero_horizontal"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Analysis.Complex.AbsolutelyContinuous",
+        "Mathlib.Analysis.Calculus.LineDeriv.Measurable",
+        "Mathlib.Analysis.Calculus.Deriv.Shift",
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun",
+        "Mathlib.MeasureTheory.Measure.Lebesgue.Complex",
+        "Mathlib.MeasureTheory.Measure.Prod"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/GroupAction/Displacement.lean",
+      "sha256": "1bf2ffa514efb7740a980d77885b6cc342ce9619e571752d84ed4aa8b9856eff",
+      "fresh_lake_build_seconds": 1.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "equivariant_descent",
+      "mathematical_review": "Actual displacement lower-bound subsets descend to closed subsets of the orbit quotient by conjugation invariance and exact saturation, in full extended-metric generality.",
+      "public_declarations": [
+        "isClosed_image_setOf_forall_le_edist_smul"
+      ],
+      "direct_imports": [
+        "Mathlib.Topology.MetricSpace.IsometricSMul",
+        "Mathlib.Topology.Instances.ENNReal.Lemmas"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "Geometry/Exponential/HyperbolicSpaceForm",
+    "Analysis/Complex/DirectionalRegularity",
+    "Geometry/Metric/GroupAction/Displacement"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "jobs": 26923,
+    "root_module_seconds": 36,
+    "errors": 0,
+    "warnings": 0,
+    "root_compiler_cap": 1
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}

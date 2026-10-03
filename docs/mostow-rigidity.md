@@ -90,9 +90,10 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| `review_hyperboloid_metric` | Globalize the actual comparison map to a native isometry equivalence for a complete simply connected curvature-minus-one target. |
-| `review_hyperboloid_interpolation` | Prove positive measure of points with a nonzero horizontal directional derivative for the original disk-controlled homeomorphism. |
-| `hyperboloid_metric` | Identify the canonical thick-set/displacement interface and the actual quotient-volume producer. |
+| `review_hyperboloid_metric` | Apply normalized space-form identification to the original three-manifold's actual based universal cover. |
+| `review_hyperboloid_interpolation` | Prove native a.e. directional differentiability in each fixed direction and positive measure of the countable rational-direction good set. |
+| `review_orbit_quotients` | Identify the exact native stereographic plane-boundary interface needed for the actual disk-control producer. |
+| `hyperboloid_metric` | Next quotient-volume frontier: prove actual injective-ball volume transport from the canonical local isometry. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -451,3 +452,34 @@ applicable linters and native axiom checks. Fresh source builds take at most
 9 seconds. The final root build passed with 26,920 jobs and zero diagnostics;
 the existing aggregate took 34 seconds. Exact evidence is in
 `mostow-covering-ac-packing.json`. The finite-volume Mostow headline remains open.
+
+## Verified normalized space form and directional regularity
+
+A complete simply connected manifold with actual curvature minus one now has
+an isometry equivalence with the hyperboloid. Its forward function is exactly
+the constructed comparison map, and it sends the model origin to the prescribed
+point. The proof uses the genuine covering theorem, simple connectedness, and
+native global Riemannian-distance transport. Source and target metrics remain
+explicitly distinguished even in the concrete hyperboloid consumer.
+
+Every nonempty open rectangle has a positive-area subset where the original
+uniformly disk-controlled plane homeomorphism has a nonzero horizontal
+directional derivative. Native measurability, Fubini, vector-valued absolute
+continuity and zero-derivative constancy provide the proof. This is horizontal
+regularity; the countable rational-direction extension remains a separate target.
+
+Sets with a uniform lower displacement bound are closed after passage to the
+actual orbit quotient, including infinite radii and trivial groups. No
+exponential injectivity-radius identification is inferred from that result.
+
+All three new modules passed independent review, canonical builds, all 14
+applicable linters and native axiom checks. Fresh source builds took 5.5, 6.0
+and 1.0 seconds. The root build passed with 26,923 jobs and zero diagnostics;
+the existing aggregate took 36 seconds. Exact evidence is in
+`mostow-space-form-regularity.json`. All 63 newly added Lean files have current
+source-hash-matched fresh compilation evidence below 30 seconds.
+
+The original three-dimensional finite-volume Mostow headline remains open.
+Applying the normalized classification to its based universal cover, proving
+finite-volume cusp/control producers, and closing boundary rigidity are still
+required.
