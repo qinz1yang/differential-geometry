@@ -84,11 +84,11 @@ final headline. The active frontier is:
 
 | Owner | Exact next target |
 | --- | --- |
-| Root | Integrate reviewed ray-endpoint and finite-action results, then advance the actual Mostow consumers. |
-| `review_hyperboloid_interpolation` | Independently audit the constructed quasi-geodesic ray and unique original endpoint. |
-| `review_lorentz` | Independently audit the finite-action fixed-point construction. |
-| `equivariant_descent` | Audit metric-norm realizability before a common-real-curvature Cartan generalization. |
-| `review_hyperboloid_model` | Close the ray endpoint packet with its quantitative producer retained. |
+| Root | Integrate reviewed geometric comparison and boundary-extension results into their actual consumers. |
+| `review_orbit_quotients` | Construct the continuous boundary map of the original quasi-isometric embedding with arbitrary-filter extension law. |
+| `equivariant_descent` | Generalize local Cartan comparison to a shared real curvature, preserving positive-curvature signatures. |
+| `review_hyperboloid_metric` | Prove the actual hyperbolic geodesic-line curve satisfies the native Levi-Civita geodesic equation. |
+| `review_lorentz` | Independently audit the exact analytic diffeomorphism associated with a model isometry. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -279,3 +279,30 @@ axioms. A global negative-curvature space-form realization is still missing;
 the inspected positive-curvature local Cartan and flat global exponential
 results do not supply it. Finite-volume cusp geometry and boundary rigidity
 also remain open.
+
+## Verified ray and finite-action layer
+
+A continuous quasi-geodesic ray in a finite-dimensional hyperboloid now has
+an actual geodesic ray based at its original starting point, uniformly close
+at the exact radial parameter. One direction subsequence is selected before
+the time variable. The unique ideal endpoint theorem consumes that construction
+and preserves the original curve. Perturbed rays, non-origin basepoints,
+arbitrary behavior at negative times and the dimension-zero case were checked.
+
+Every finite group acting isometrically on the hyperboloid has a common fixed
+point. The construction normalizes its actual future-pointing orbit sum and
+uses noncommutative left reindexing. For a free action this proves ordinary
+torsion-freeness, without a stronger unique-root assumption. A conjugated
+reflection consumer produces a fixed point distinct from the origin.
+
+Both modules passed independent review, canonical builds, all 14 applicable
+linters, and native axiom checks. Fresh builds took 6.9 and 6.2 seconds. The root
+build passed with 26,906 jobs and zero diagnostics; the existing aggregate took
+36 seconds. Exact evidence is in `mostow-rays-fixed-points.json`.
+
+The native metric-bundle norm has also been checked at a genuine non-origin
+hyperbolic point: a radial tangent has metric square norm one half, while its
+Euclidean coordinate square norm is one. The compatible native construction
+preserves the fiber topology and original charts. This permits honest local
+Cartan comparison work; it does not supply the missing global space-form theorem.
+The finite-volume Mostow headline remains open.

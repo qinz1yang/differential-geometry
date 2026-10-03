@@ -10345,6 +10345,7 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryTopology
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Connection
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Defs
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.FixedPoint
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Geodesic
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicBoundary
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicSegment
@@ -10363,6 +10364,7 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Metric
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Morse
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Projection
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.QuasiGeodesicBoundary
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianDistance
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianGeodesic
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianMetric

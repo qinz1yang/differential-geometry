@@ -1,0 +1,86 @@
+{
+  "base_commit": "419b02434aee318fd508c25a119e01a40a8d4de5",
+  "layer": "Quantitative quasi-geodesic rays, unique endpoints and finite-action fixed points",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/QuasiGeodesicBoundary.lean",
+      "sha256": "1ebd4e020d722710345e7f47c2087ac8e3a3d8bbde7552591122dc0e1b13bbe3",
+      "fresh_lake_build_seconds": 6.9,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_interpolation",
+      "mathematical_review": "One common direction subsequence constructs an actual ray at original q0 and exact radial parameter; finite-dimensionality only supplies compact directions.",
+      "public_declarations": [
+        "exists_geodesicLine_close_of_quasi_geodesic",
+        "exists_unique_tendsto_kleinHomeomorph_of_quasi_geodesic"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicBoundary",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicSegment",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinConvergence",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Morse",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper",
+        "Mathlib.Analysis.Normed.Module.FiniteDimension",
+        "Mathlib.Analysis.Normed.Module.Normalize",
+        "Mathlib.Topology.Sequences"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/FixedPoint.lean",
+      "sha256": "e537a27bea70c7f7a7b8a08e8af909ee5cc45470bfa7a10a12161f88b809d14c",
+      "fresh_lake_build_seconds": 6.2,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "Actual finite orbit-sum fixed point, noncommutative reindexing, and ordinary torsion-freeness for a free action; non-origin conjugated-reflection consumer checked.",
+      "public_declarations": [
+        "fixedPoints_nonempty_of_finite",
+        "isOfFinOrder_iff_eq_one"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassification",
+        "Mathlib.Topology.MetricSpace.IsometricSMul",
+        "Mathlib.GroupTheory.GroupAction.Defs",
+        "Mathlib.Algebra.Group.Subgroup.Actions",
+        "Mathlib.GroupTheory.OrderOfElement"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "Geometry/Hyperbolic/Hyperboloid/QuasiGeodesicBoundary",
+    "Geometry/Hyperbolic/Hyperboloid/FixedPoint"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "lake build DifferentialGeometry",
+    "jobs": 26906,
+    "root_module_seconds": 36,
+    "errors": 0,
+    "warnings": 0
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}
