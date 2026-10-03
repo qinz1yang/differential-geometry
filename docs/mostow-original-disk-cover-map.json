@@ -1,0 +1,120 @@
+{
+  "base_commit": "85296cdb402d6ca7a60af8fded23ee12978d0d99",
+  "layer": "Original-map uniform disk control, given universal-cover map and real affine boundary action",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Coordinates/StereographicDisk.lean",
+      "sha256": "b433436b008800694df3ae168e7bc2081a6b02d7333b180277d3923db6f13f39",
+      "fresh_lake_build_seconds": 7.1,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "exists_stereographic_disk_inclusions_of_inverse_holder"
+      ],
+      "mathematical_review": "Uniform normalized disk radii chosen before the actual sphere/plane homeomorphisms with exact chart equation and inverse Holder control; strict inner closed-to-open inclusion is proved.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Coordinates.StereographicComplex",
+        "Mathlib.Analysis.SpecialFunctions.Pow.Real"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryDiskControl.lean",
+      "sha256": "7643429c8687a544d26490822425501f447ec2fb28d1a880dfc75a4c63bac6e6",
+      "fresh_lake_build_seconds": 2.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "exists_boundaryPlaneHomeomorph_disk_inclusions"
+      ],
+      "mathematical_review": "Actual original coarse-inverse pair induces a plane homeomorphism with uniform disk distortion at every center and positive radius; kappa depends only on common coarse constants.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Coordinates.StereographicDisk",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryPlane",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryNormalization",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMapMetric",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundarySimilarity",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryTranslation"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Covering/UniversalMap.lean",
+      "sha256": "c3af53c1fc26280b8498e8d90c39d1ad25ee9d26320c1590c3980362d1457aa2",
+      "fresh_lake_build_seconds": 1.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "public_declarations": [
+        "map",
+        "map_apply",
+        "proj_map",
+        "map_basePoint",
+        "map_smul"
+      ],
+      "mathematical_review": "The given continuous map induces the actual based path-space cover map with exact path, projection, basepoint and original fundamental-group equivariance laws, only topological assumptions.",
+      "direct_imports": [
+        "DifferentialGeometry.Topology.Covering.DeckAction"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryPlaneAffine.lean",
+      "sha256": "0536448e124e24eb65ad9509c4018ffc07e75c0c1a86344b868ce9c4d7af1760",
+      "fresh_lake_build_seconds": 1.6,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "exists_stereographicComplex_similarity"
+      ],
+      "mathematical_review": "The actual fixed-pole boundary plane map is its actual Lorentz scale times a real linear isometry plus its original value at zero; reflections retained.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryPlaneMetric",
+        "Mathlib.Analysis.Normed.Affine.MazurUlam",
+        "Mathlib.Topology.Algebra.ConstMulAction"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "DifferentialGeometry/Geometry/Coordinates/StereographicDisk.lean",
+    "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryDiskControl.lean",
+    "DifferentialGeometry/Topology/Covering/UniversalMap.lean",
+    "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryPlaneAffine.lean"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open",
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "jobs": 26959,
+    "root_module_seconds": 45.0,
+    "root_compiler_cap": 1,
+    "errors": 0,
+    "warnings": 0
+  }
+}

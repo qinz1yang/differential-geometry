@@ -17993,3 +17993,7 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryOrbit
 import DifferentialGeometry.Geometry.Hyperbolic.ThickPart
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryPlaneMetric
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Busemann
+import DifferentialGeometry.Geometry.Coordinates.StereographicDisk
+import DifferentialGeometry.Topology.Covering.UniversalMap
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryDiskControl
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryPlaneAffine

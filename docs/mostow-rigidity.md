@@ -90,9 +90,9 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| `review_hyperboloid_metric` | Prove genuine uniform disk distortion for the plane homeomorphism induced by the original controlled boundary equivalence. |
-| `hyperboloid_metric` | Bound the actual fixed-null-ray scale by displacement, to separate parabolic and axial behavior. |
-| Root | Classify the actual Margulis subgroup further using its common ideal point and displacement scaling. |
+| `review_hyperboloid_metric` | Derive native directional regularity for the same original induced boundary-plane homeomorphism. |
+| `hyperboloid_metric` | Prove the original raw horosphere-height transformation and invariance under boundary-fixed isometries with arbitrarily small displacement. |
+| Root | Classify actual thin components from Margulis boundary fixation and displacement scaling, then obtain cusp geometry and controlled representatives. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -783,3 +783,39 @@ took 32 seconds. Exact evidence is in `mostow-boundary-scales-common-fixed.json`
 All 95 newly added Lean files have current source-hash-matched fresh compilation
 evidence below 30 seconds. Full cusp geometry and three-dimensional finite-volume
 Mostow rigidity remain open.
+
+## Verified original-map disk control and canonical cover maps
+
+The original plane homeomorphism induced by a continuous controlled coarse
+inverse pair now has genuine uniform disk distortion at every center and
+positive radius. The radius-ratio constant is chosen before the original
+maps and depends only on their common coarse constants. Actual similarity
+and translation isometries normalize the original inverse map, and exact
+boundary functoriality retains its original boundary action. Undoing the
+actual affine chart changes gives both the closed-inner-to-open-source
+inclusion and the closed-source-to-closed-outer inclusion with the same
+uniform ratio. No disk-control, derivative or normalized-map conclusion is
+supplied as an input.
+
+The normalized chart estimate is a separate reusable theorem: radii precede
+the actual sphere and plane homeomorphisms, their chart equation is exact,
+and inverse Hölder control gives a strict margin for the inner inclusion.
+The actual fixed-pole isometry action also has its real affine similarity
+formula with the original Lorentz scale and original value at zero, including
+reflections.
+
+Every given continuous map now induces its actual map on the original based
+path-space universal covers. The path-class formula, original projection,
+basepoint and native induced-fundamental-group equivariance are exact. Only
+topological-space hypotheses are required; constant maps and composition
+consumers verify that no metric or equivalence conclusion is smuggled in.
+
+All four new modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. Fresh source builds took
+7.1, 2.0, 1.0 and 1.6 seconds. The 26,959-job root build passed without
+diagnostics; the existing aggregate took 45 seconds. Exact evidence is in
+`mostow-original-disk-cover-map.json`. All 99 newly added Lean files have
+current source-hash-matched fresh compilation evidence below 30 seconds.
+The full finite-volume three-dimensional Mostow theorem remains open;
+regularity, returning-zoom rigidity, cusp geometry and the controlled given
+homotopy representative still need their final producers and assembly.
