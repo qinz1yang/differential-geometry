@@ -534,7 +534,7 @@ theorem ContMDiffWithinAt.clm_bundle_id (hb : ContMDiffWithinAt J I n b s p₀) 
   let e := trivializationAt F₁ U₁ (b p₀)
   have hx : b p₀ ∈ e.baseSet := mem_baseSet_trivializationAt F₁ U₁ (b p₀)
   have heq (p : P) (hp : b p ∈ e.baseSet) :=
-    ContinuousLinearMap.inCoordinates_id (F₁ := F₁) (U₁ := U₁) hp
+    ContinuousLinearMap.inCoordinates_id (𝕜 := 𝕜) (F₁ := F₁) (U₁ := U₁) hp
   apply (contMDiffWithinAt_const (c := ContinuousLinearMap.id 𝕜 F₁)).congr_of_eventuallyEq
   · filter_upwards [hb.continuousWithinAt (e.open_baseSet.mem_nhds hx)] with p hp
     exact heq p hp
@@ -567,7 +567,7 @@ theorem MDifferentiableWithinAt.clm_bundle_id (hb : MDifferentiableWithinAt J I 
   let e := trivializationAt F₁ U₁ (b p₀)
   have hx : b p₀ ∈ e.baseSet := mem_baseSet_trivializationAt F₁ U₁ (b p₀)
   have heq (p : P) (hp : b p ∈ e.baseSet) :=
-    ContinuousLinearMap.inCoordinates_id (F₁ := F₁) (U₁ := U₁) hp
+    ContinuousLinearMap.inCoordinates_id (𝕜 := 𝕜) (F₁ := F₁) (U₁ := U₁) hp
   apply (mdifferentiableWithinAt_const (c := ContinuousLinearMap.id 𝕜 F₁)).congr_of_eventuallyEq
   · filter_upwards [hb.continuousWithinAt (e.open_baseSet.mem_nhds hx)] with p hp
     exact heq p hp
