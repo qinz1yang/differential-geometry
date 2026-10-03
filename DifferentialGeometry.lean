@@ -10350,9 +10350,12 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GromovProduct
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Homotopy
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Interpolation
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassification
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryTopology
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Klein
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinCompactification
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.LorentzIsometry
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Manifold
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Margulis
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Metric
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Projection
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper
@@ -10851,6 +10854,7 @@ import DifferentialGeometry.Geometry.Metric.InterpolationSpeed
 import DifferentialGeometry.Geometry.Metric.IntrinsicInjectivityRadius
 import DifferentialGeometry.Geometry.Metric.InverseTimeDerivative
 import DifferentialGeometry.Geometry.Metric.Isometry.Compactness
+import DifferentialGeometry.Geometry.Metric.Isometry.Margulis
 import DifferentialGeometry.Geometry.Metric.Isometry.OrbitCompactness
 import DifferentialGeometry.Geometry.Metric.Isometry.SmallDisplacement
 import DifferentialGeometry.Geometry.Metric.Isometry.Topology

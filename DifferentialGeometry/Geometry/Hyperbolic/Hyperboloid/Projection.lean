@@ -161,4 +161,54 @@ theorem cosh_dist_lineProjection_sub_one_le (e : E) (he : ‖e‖ = 1) (x y : Hy
   have hc := Real.one_le_cosh (dist (ofSpace (normalPart e x)) (ofSpace (normalPart e y)))
   nlinarith
 
+theorem dist_lineProjection_le_two_mul_exp (e : E) (he : ‖e‖ = 1) (x y : Hyperboloid E) :
+    dist (lineProjection e he x) (lineProjection e he y) ≤
+      2 * Real.exp ((dist x y - dist x (lineProjection e he x) -
+        dist y (lineProjection e he y)) / 2) := by
+  let p := dist (lineProjection e he x) (lineProjection e he y)
+  let d := dist x y
+  let a := dist x (lineProjection e he x)
+  let b := dist y (lineProjection e he y)
+  change p ≤ 2 * Real.exp ((d - a - b) / 2)
+  have hp0 : 0 ≤ p := dist_nonneg
+  have hd0 : 0 ≤ d := dist_nonneg
+  have hp : p ^ 2 / 2 ≤ Real.cosh p - 1 := by
+    have hh : 0 ≤ p / 2 := div_nonneg hp0 (by norm_num)
+    have hs := Real.self_le_sinh_iff.mpr hh
+    have hs0 := Real.sinh_nonneg_iff.mpr hh
+    have hs2 := (sq_le_sq₀ hh hs0).mpr hs
+    have hc := Real.cosh_two_mul (p / 2)
+    rw [show 2 * (p / 2) = p by ring] at hc
+    nlinarith [Real.cosh_sq_sub_sinh_sq (p / 2)]
+  have hlower (t : ℝ) : Real.exp t / 2 ≤ Real.cosh t := by
+    rw [Real.cosh_eq]
+    linarith [Real.exp_pos (-t)]
+  have hupper : Real.cosh d - 1 ≤ Real.exp d / 2 := by
+    have hn : Real.exp (-d) ≤ 1 := by
+      simpa only [Real.exp_zero] using Real.exp_le_exp.mpr (neg_nonpos.mpr hd0)
+    rw [Real.cosh_eq]
+    linarith
+  have hden : Real.exp (a + b) / 4 ≤ Real.cosh a * Real.cosh b := by
+    rw [Real.exp_add]
+    calc
+      _ = (Real.exp a / 2) * (Real.exp b / 2) := by ring
+      _ ≤ _ := mul_le_mul (hlower a) (hlower b) (by positivity) (Real.cosh_pos a).le
+  have hc := cosh_dist_lineProjection_sub_one_le e he x y
+  change Real.cosh p - 1 ≤ (Real.cosh d - 1) / (Real.cosh a * Real.cosh b) at hc
+  have hprod : (p ^ 2 / 2) * (Real.exp (a + b) / 4) ≤ Real.exp d / 2 :=
+    (mul_le_mul hp hden (by positivity) (sub_nonneg.mpr (Real.one_le_cosh p))).trans
+      (((le_div_iff₀ (mul_pos (Real.cosh_pos a) (Real.cosh_pos b))).mp hc).trans hupper)
+  have hp2 : p ^ 2 ≤ 4 * Real.exp (d - a - b) := by
+    rw [show d - a - b = d - (a + b) by ring, Real.exp_sub, ← mul_div_assoc]
+    apply (le_div_iff₀ (Real.exp_pos (a + b))).mpr
+    nlinarith [hprod]
+  have hexp : Real.exp ((d - a - b) / 2) ^ 2 = Real.exp (d - a - b) := by
+    rw [sq, ← Real.exp_add]
+    congr 1
+    ring
+  apply (sq_le_sq₀ hp0 (by positivity)).mp
+  calc
+    p ^ 2 ≤ 4 * Real.exp (d - a - b) := hp2
+    _ = (2 * Real.exp ((d - a - b) / 2)) ^ 2 := by rw [mul_pow, hexp]; norm_num
+
 end DifferentialGeometry.Hyperboloid

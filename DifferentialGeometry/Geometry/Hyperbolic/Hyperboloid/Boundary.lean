@@ -8,8 +8,8 @@ namespace DifferentialGeometry.Hyperboloid
 variable {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 
-theorem lorentzExtension_sphere_time_pos (f : Hyperboloid E ≃ᵢ Hyperboloid F)
-    (ξ : Metric.sphere (0 : E) 1) : 0 < (lorentzExtension f (1, (ξ : E))).1 := by
+theorem lorentzExtension_time_pos_of_norm_le_one (f : Hyperboloid E ≃ᵢ Hyperboloid F)
+    {u : E} (hu : ‖u‖ ≤ 1) : 0 < (lorentzExtension f (1, u)).1 := by
   let p : ℝ × E := lorentzExtension f.symm (1, 0)
   have hp0 : 0 < p.1 := lorentzExtension_origin_time_pos f.symm
   have hp : lorentzForm E p p = -1 := by
@@ -21,16 +21,22 @@ theorem lorentzExtension_sphere_time_pos (f : Hyperboloid E ≃ᵢ Hyperboloid F
     apply (sq_lt_sq₀ (norm_nonneg p.2) hp0.le).mp
     rw [lorentzForm_apply, real_inner_self_eq_norm_sq] at hp
     nlinarith only [hp]
-  have hi : inner ℝ p.2 (ξ : E) ≤ ‖p.2‖ := by
-    simpa only [norm_eq_of_mem_sphere, mul_one] using real_inner_le_norm p.2 (ξ : E)
+  have hi : inner ℝ p.2 u ≤ ‖p.2‖ := calc
+    inner ℝ p.2 u ≤ ‖p.2‖ * ‖u‖ := real_inner_le_norm p.2 u
+    _ ≤ ‖p.2‖ * 1 := mul_le_mul_of_nonneg_left hu (norm_nonneg _)
+    _ = ‖p.2‖ := mul_one _
   have hpinv : lorentzExtension f p = (1, 0) := by
     dsimp only [p]
     rw [lorentzExtension_symm]
     exact (lorentzExtension f).toLinearEquiv.apply_symm_apply (1, 0)
-  have h := (lorentzExtension f).map_app (1, (ξ : E)) p
+  have h := (lorentzExtension f).map_app (1, u) p
   rw [hpinv] at h
   simp only [lorentzForm_apply, inner_zero_left, one_mul, mul_one, zero_sub] at h
   linarith only [h, hi, hn]
+
+theorem lorentzExtension_sphere_time_pos (f : Hyperboloid E ≃ᵢ Hyperboloid F)
+    (ξ : Metric.sphere (0 : E) 1) : 0 < (lorentzExtension f (1, (ξ : E))).1 :=
+  lorentzExtension_time_pos_of_norm_le_one f (le_of_eq (norm_eq_of_mem_sphere ξ))
 
 private theorem boundary_norm (f : Hyperboloid E ≃ᵢ Hyperboloid F)
     (ξ : Metric.sphere (0 : E) 1) :

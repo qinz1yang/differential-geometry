@@ -1,0 +1,189 @@
+{
+  "base_commit": "bb8de6cdcf9810e8a0fea38799493a2c8353b2f0",
+  "layer": "Uniform hyperbolic Margulis theorem and Klein closed-ball extension",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Boundary.lean",
+      "sha256": "126564ac6ff96fb82195ee37086e572d44f76074e742d9337830de9bd6ee7193",
+      "fresh_lake_build_seconds": 5.9,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_interpolation",
+      "mathematical_review": "General norm-at-most-one positivity is primary; old sphere signature is unchanged specialization.",
+      "public_declarations": [
+        "lorentzExtension_time_pos_of_norm_le_one",
+        "lorentzExtension_sphere_time_pos",
+        "boundaryHomeomorph",
+        "boundaryHomeomorph_apply_coe",
+        "boundaryHomeomorph_symm",
+        "boundaryHomeomorph_refl",
+        "boundaryHomeomorph_trans"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassification",
+        "DifferentialGeometry.Geometry.Lorentz.Isometry"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/KleinCompactification.lean",
+      "sha256": "98d3928567a716744806e072ebcd8bce1ae3888524710931458105cfe0b4cf2a",
+      "fresh_lake_build_seconds": 1.3,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_interpolation",
+      "mathematical_review": "Exact closed-ball extension, both directions of interior/sphere diagrams and arbitrary-filter boundary convergence verified.",
+      "public_declarations": [
+        "kleinClosedBallHomeomorph",
+        "kleinClosedBallHomeomorph_apply_coe",
+        "kleinClosedBallHomeomorph_apply_kleinHomeomorph",
+        "kleinClosedBallHomeomorph_apply_sphere",
+        "kleinClosedBallHomeomorph_symm",
+        "kleinClosedBallHomeomorph_refl",
+        "kleinClosedBallHomeomorph_trans"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boundary",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Klein"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/IsometryTopology.lean",
+      "sha256": "7f28a8c9091f4b2dbc72baeb8784f0d45db1ac6e429b73ce12a400f0b8cd0693",
+      "fresh_lake_build_seconds": 1.7,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "Faithful native representation is dimension-free; standard-topology embedding uses finite dimension only for operator continuity.",
+      "public_declarations": [
+        "lorentzRepresentation",
+        "lorentzRepresentation_apply",
+        "lorentzRepresentation_inv_apply",
+        "lorentzRepresentation_trans",
+        "lorentzRepresentation_symm",
+        "lorentzRepresentation_injective",
+        "continuous_lorentzRepresentation",
+        "isEmbedding_lorentzRepresentation"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassification",
+        "DifferentialGeometry.Geometry.Lorentz.Isometry",
+        "DifferentialGeometry.Geometry.Metric.Isometry.Topology",
+        "Mathlib.Analysis.Normed.Module.FiniteDimension",
+        "Mathlib.Topology.Algebra.Group.Units"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Isometry/Margulis.lean",
+      "sha256": "3439633eac5b5a807fe3b57d1482b7d0c7819408564255f1e86ebf58591fdddb",
+      "fresh_lake_build_seconds": 1.3,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "Actual Zassenhaus neighborhood and nilpotent subgroup transported through the faithful embedding; ENat finiteness retained.",
+      "public_declarations": [
+        "margulis_lemma"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Analysis.NormedRing.Zassenhaus",
+        "DifferentialGeometry.Geometry.Metric.Isometry.SmallDisplacement",
+        "Mathlib.Analysis.Normed.Ring.Lemmas",
+        "Mathlib.Topology.Algebra.Group.Units",
+        "Mathlib.Topology.DiscreteSubset"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Projection.lean",
+      "sha256": "b84aa5948a27176fcb89f6230ac925812c30200e1b3a9f888190f9e6d3b202a9",
+      "fresh_lake_build_seconds": 1.7,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_interpolation",
+      "mathematical_review": "Exponential decay uses actual projection heights and yields the checked finite-step bound; predecessor preserved.",
+      "public_declarations": [
+        "lineProjection",
+        "lineProjection_time",
+        "lineProjection_space",
+        "cosh_dist_lineProjection",
+        "lineProjection_mem_range",
+        "cosh_dist_eq_mul_cosh_dist_lineProjection",
+        "dist_lineProjection_le",
+        "eq_lineProjection_of_dist_le",
+        "cosh_dist_lineProjection_sub_one_le",
+        "dist_lineProjection_le_two_mul_exp"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Geodesic",
+        "Mathlib.Analysis.SpecialFunctions.Arsinh"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Margulis.lean",
+      "sha256": "de35a02bc4239ab7a13fefdf06195f51530dd19b0f4f9ee3c126a7f7af7bd67f",
+      "fresh_lake_build_seconds": 1.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "One origin constant is transported by actual boost conjugacy uniformly over all subgroups and basepoints; dimensions zero, one and three checked.",
+      "public_declarations": [
+        "margulis_lemma"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryTopology",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper",
+        "DifferentialGeometry.Geometry.Metric.Isometry.Compactness",
+        "DifferentialGeometry.Geometry.Metric.Isometry.Margulis",
+        "Mathlib.Topology.Algebra.Group.Basic"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "Geometry/Hyperbolic/Hyperboloid/Boundary",
+    "Geometry/Hyperbolic/Hyperboloid/KleinCompactification",
+    "Geometry/Hyperbolic/Hyperboloid/IsometryTopology",
+    "Geometry/Metric/Isometry/Margulis",
+    "Geometry/Hyperbolic/Hyperboloid/Projection",
+    "Geometry/Hyperbolic/Hyperboloid/Margulis"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "lake build DifferentialGeometry",
+    "jobs": 26898,
+    "root_module_seconds": 35,
+    "errors": 0,
+    "warnings": 0
+  },
+  "affected_module_rebuild": {
+    "module": "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryFaithfulness",
+    "seconds": 1.5,
+    "diagnostics": 0
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}

@@ -80,11 +80,12 @@ final headline. The active frontier is:
 
 | Owner | Exact next target |
 | --- | --- |
-| Root | Integrate reviewed compactification, representation and Margulis packets. |
-| `rigidity_assessment` | Embed the actual finite-dimensional hyperbolic isometry group into operator units. |
-| `equivariant_descent` | Prove the general linear-action Margulis theorem from Zassenhaus and compact displacement. |
-| `review_hyperboloid_metric` | Prove the hyperbolic Margulis constant uniform over all basepoints via boost conjugacy. |
-| `review_orbit_quotients` | Prove exponential projection decay for the quantitative Morse argument. |
+| Root | Integrate reviewed Morse, boundary-continuity and quotient-action packets. |
+| `review_orbit_quotients` | Prove the quantitative tube bound for continuous quasi-geodesic segments. |
+| `review_hyperboloid_model` | Identify the intrinsic metric segment with the actual geodesic-line interval. |
+| `rigidity_assessment` | Prove joint continuity of the actual closed-ball and sphere actions. |
+| `review_hyperboloid_metric` | Prove properly discontinuous action of discrete isometry subgroups. |
+| `equivariant_descent` | Audit the exact native finite-volume three-dimensional Mostow headline type. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -215,3 +216,29 @@ in at most 4.2 seconds. The aggregate build passed with 26,894 jobs and zero
 diagnostics; the existing aggregate took 32 seconds. Exact hashes, declarations,
 imports and timings are in `mostow-group-boundary.json`.
 The finite-volume Mostow headline remains open.
+
+## Verified Margulis and closed-ball extension layer
+
+The actual hyperbolic Margulis theorem is proved in every finite-dimensional
+model, with the same epsilon and index bound chosen before both the discrete
+subgroup and the basepoint. Its proof uses a faithful continuous linear
+representation, the general linear-action Margulis theorem, and actual boost
+conjugation. The output is an actual nilpotent subgroup of the small-mover
+subgroup with an infinity-aware index bound. Explicit non-origin dimension-three
+and dimension-zero/one consumers pass. No orientation or torsion-free condition
+was added.
+
+Every isometry now extends to a homeomorphism of the closed Klein ball,
+with exact interior and sphere restriction laws. These laws yield convergence
+to the actual boundary image, rather than an unidentified limiting map.
+Projection to a geodesic has a proved exponential decay estimate and a checked
+finite-step specialization for the upcoming Morse argument. This estimate
+alone does not certify Morse stability.
+
+All six changed modules passed independent review, canonical builds, all 14
+applicable linters, and native axiom checks. The four new files freshly compile
+in at most 1.7 seconds; all changed files compile in at most 5.9 seconds.
+The root build passed with 26,898 jobs and zero diagnostics. The existing
+aggregate took 35 seconds and is recorded separately from the new-file gate.
+Exact hashes, declarations, dependencies and timings are in `mostow-margulis.json`.
+The Mostow headline, finite-volume cusp structure and boundary rigidity remain open.
