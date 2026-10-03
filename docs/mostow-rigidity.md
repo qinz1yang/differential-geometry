@@ -14,6 +14,10 @@ The eight-hour window starts at 2026-10-03 04:01:23 UTC and ends at
 gates close within that window, continue to the finite-volume theorem in every
 dimension at least three. Infrastructure alone does not complete the goal.
 
+At the end of the eight-hour window the three-dimensional headline was still
+open. The conditional transition to the general-dimensional Mostow theorem
+was not triggered; the active goal remains the three-dimensional theorem.
+
 The initial verified baseline is upstream commit
 `777299070a5529e96345e0033979706fd00c7e62`, Lean `v4.35.0-rc3`, and Mathlib
 `c55e6e786f49`. Both the default build and `lake build DifferentialGeometry`
@@ -80,12 +84,11 @@ final headline. The active frontier is:
 
 | Owner | Exact next target |
 | --- | --- |
-| Root | Integrate reviewed Morse, boundary-continuity and quotient-action packets. |
-| `review_orbit_quotients` | Prove the quantitative tube bound for continuous quasi-geodesic segments. |
-| `review_hyperboloid_model` | Identify the intrinsic metric segment with the actual geodesic-line interval. |
-| `rigidity_assessment` | Prove joint continuity of the actual closed-ball and sphere actions. |
-| `review_hyperboloid_metric` | Prove properly discontinuous action of discrete isometry subgroups. |
-| `equivariant_descent` | Audit the exact native finite-volume three-dimensional Mostow headline type. |
+| Root | Integrate reviewed ray-endpoint and finite-action results, then advance the actual Mostow consumers. |
+| `review_hyperboloid_interpolation` | Independently audit the constructed quasi-geodesic ray and unique original endpoint. |
+| `review_lorentz` | Independently audit the finite-action fixed-point construction. |
+| `equivariant_descent` | Audit metric-norm realizability before a common-real-curvature Cartan generalization. |
+| `review_hyperboloid_model` | Close the ray endpoint packet with its quantitative producer retained. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -242,3 +245,37 @@ The root build passed with 26,898 jobs and zero diagnostics. The existing
 aggregate took 35 seconds and is recorded separately from the new-file gate.
 Exact hashes, declarations, dependencies and timings are in `mostow-margulis.json`.
 The Mostow headline, finite-volume cusp structure and boundary rigidity remain open.
+
+## Verified Morse, convergence and covering layer
+
+The complete quantitative Morse theorem is proved for continuous hyperbolic
+quasi-geodesic segments. It bounds native Hausdorff extended distance to the
+actual endpoint-defined metric segment, with both directions, repeated endpoints
+and singleton intervals covered. Its proof uses finite equal-time chains rather
+than a curve-length assumption. The metric segment itself is identified with
+the actual geodesic-line interval.
+
+Bounded hyperbolic distance preserves the same ideal Klein endpoint for
+arbitrary filters. The Lorentz extension and the closed-ball/sphere actions are
+jointly continuous, including the native compact-open map families.
+
+Discrete isometry subgroups of proper metric spaces act properly discontinuously.
+Under ordinary torsion-freeness the actual orbit quotient is a native covering
+map. The argument uses finite stabilizers and does not substitute the stronger
+nonabelian unique-root condition. Empty spaces and compact-set degeneracies are
+covered.
+
+All eight changed modules passed independent review, canonical builds, all 14
+applicable linters, and native axiom checks. All changed files freshly compile
+in at most 5.1 seconds. The root build passed with 26,904 jobs and zero diagnostics;
+the existing aggregate took 37 seconds and remains separate from the new-file gate.
+Hashes, declarations, imports and timings are in `mostow-morse-covering.json`.
+
+The exact native three-dimensional target interface is recorded in
+`mostow-statement.md`; its type and supporting metric/volume/curvature vocabulary
+were checked, but its proof remains open. The original universal-cover metric,
+completeness, curvature transport and based deck-action chain have approved native
+axioms. A global negative-curvature space-form realization is still missing;
+the inspected positive-curvature local Cartan and flat global exponential
+results do not supply it. Finite-volume cusp geometry and boundary rigidity
+also remain open.

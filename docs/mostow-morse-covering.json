@@ -1,0 +1,234 @@
+{
+  "base_commit": "12a668a84911a08277930f4509febd3507a4c396",
+  "layer": "Quantitative Morse stability, boundary convergence, and native quotient coverings",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Isometry/Topology.lean",
+      "sha256": "2ea5d8d03fb883dc971000faebfc34e5dba006e35ae63ceba90a468d91f1c3d1",
+      "fresh_lake_build_seconds": 3.9,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "Canonical evaluation action, isometry and continuity instances; predecessor bodies preserved.",
+      "public_declarations": [
+        "instTopologicalSpace",
+        "isEmbedding_coe",
+        "instT2Space",
+        "instContinuousEvalConst",
+        "continuous_iff",
+        "instContinuousEval",
+        "continuous_trans",
+        "continuous_symm",
+        "instIsTopologicalGroup",
+        "isEmbedding_toContinuousMap",
+        "instMulAction",
+        "instIsIsometricSMul",
+        "instContinuousSMul"
+      ],
+      "direct_imports": [
+        "Mathlib.Topology.Algebra.Group.Defs",
+        "Mathlib.Topology.Algebra.MulAction",
+        "Mathlib.Topology.CompactOpen",
+        "Mathlib.Topology.MetricSpace.IsometricSMul"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Isometry/ProperDiscontinuity.lean",
+      "sha256": "036029c56b3c6025e7cad17a3de5231556c2763d26e14535dec09f4d2bad8e33",
+      "fresh_lake_build_seconds": 1.2,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "Two-set finite transporters and native covering corollary; ordinary torsion-freeness and empty spaces checked.",
+      "public_declarations": [
+        "finite_setOf_image_inter_nonempty",
+        "instProperlyDiscontinuousSMul",
+        "isCoveringMap_quotientMk_of_torsion_free"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Topology.Covering.Quotient",
+        "DifferentialGeometry.Geometry.Metric.Isometry.Compactness",
+        "Mathlib.Topology.Algebra.OpenSubgroup"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Covering/Quotient.lean",
+      "sha256": "5d2cc5e5d21d3a3b72a2ff5fc752d79a1cae823985323bec7771917989a4d3f6",
+      "fresh_lake_build_seconds": 1.1,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "Finite stabilizers imply pointwise freeness under ordinary torsion-freeness; actual native orbit quotient covering.",
+      "public_declarations": [
+        "isCoveringMap_quotientMk_of_torsion_free"
+      ],
+      "direct_imports": [
+        "Mathlib.GroupTheory.Torsion",
+        "Mathlib.Topology.Covering.Quotient"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/IsometryTopology.lean",
+      "sha256": "06e40e98314094bd042ae30a5d49b239eb58e4436b438c7259160a7ee8c1e090",
+      "fresh_lake_build_seconds": 5.1,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "Dimension-free joint Lorentz evaluation, with existing operator topology signatures preserved.",
+      "public_declarations": [
+        "lorentzRepresentation",
+        "lorentzRepresentation_apply",
+        "lorentzRepresentation_inv_apply",
+        "lorentzRepresentation_trans",
+        "lorentzRepresentation_symm",
+        "lorentzRepresentation_injective",
+        "continuous_lorentzExtension_apply",
+        "continuous_lorentzRepresentation",
+        "isEmbedding_lorentzRepresentation"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassification",
+        "DifferentialGeometry.Geometry.Lorentz.Isometry",
+        "DifferentialGeometry.Geometry.Metric.Isometry.Topology",
+        "Mathlib.Analysis.Normed.Module.FiniteDimension",
+        "Mathlib.Topology.Algebra.Group.Units"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/GeodesicSegment.lean",
+      "sha256": "02a365ea480c9530b6875c170ace9badc1ea10424d857581087380c4690782bc",
+      "fresh_lake_build_seconds": 2.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_interpolation",
+      "mathematical_review": "Actual Lorentz-produced tangent and intrinsic metric segment; degenerate and transverse-point cases checked.",
+      "public_declarations": [
+        "isometryEquiv_geodesicLine",
+        "metric_segment_eq_image_geodesicLine"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Projection",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassification",
+        "Mathlib.Analysis.Convex.StrictConvexBetween"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Morse.lean",
+      "sha256": "8b5fa2b0d634c48e3dc4d3a9bd641cec55452bfa9c6befd0d914d8c4e2e5cf22",
+      "fresh_lake_build_seconds": 2.1,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_interpolation",
+      "mathematical_review": "Complete quantitative native Hausdorff segment bound; finite-chain excursions, overshoot, both witnesses and repeated endpoints checked.",
+      "public_declarations": [
+        "dist_lineProjection_le_of_quasi_geodesic",
+        "morse_lemma"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicSegment",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Projection",
+        "Mathlib.Algebra.Order.Floor.Ring",
+        "Mathlib.Analysis.Normed.Group.Continuity",
+        "Mathlib.Topology.MetricSpace.HausdorffDistance",
+        "Mathlib.Topology.MetricSpace.Pseudo.Constructions",
+        "Mathlib.Topology.Order.Compact",
+        "Mathlib.Topology.Order.IntermediateValue"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/KleinConvergence.lean",
+      "sha256": "a9104eb827f628707d856f75387fff3744d0484013b8a122923dcca060898ef2",
+      "fresh_lake_build_seconds": 4.4,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_interpolation",
+      "mathematical_review": "Actual ideal endpoint is preserved by eventual bounded distance; arbitrary filters and negative bound at bottom filter checked.",
+      "public_declarations": [
+        "tendsto_kleinHomeomorph_of_dist_bounded"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Klein",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Metric"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryTopology.lean",
+      "sha256": "5c6846309d9f9dee1011a6756f7dada678b2ae7c3b7d8d099170886f8d4aee77",
+      "fresh_lake_build_seconds": 1.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "Joint boundary/closed-ball action and native compact-open family continuity preserve actual limiting images.",
+      "public_declarations": [
+        "continuous_kleinClosedBallHomeomorph_apply",
+        "continuous_boundaryHomeomorph_apply",
+        "continuous_kleinClosedBallHomeomorph_toContinuousMap",
+        "continuous_boundaryHomeomorph_toContinuousMap"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryTopology",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinCompactification",
+        "Mathlib.Topology.CompactOpen"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "Geometry/Metric/Isometry/Topology",
+    "Topology/Covering/Quotient",
+    "Geometry/Metric/Isometry/ProperDiscontinuity",
+    "Geometry/Hyperbolic/Hyperboloid/IsometryTopology",
+    "Geometry/Hyperbolic/Hyperboloid/GeodesicSegment",
+    "Geometry/Hyperbolic/Hyperboloid/Morse",
+    "Geometry/Hyperbolic/Hyperboloid/KleinConvergence",
+    "Geometry/Hyperbolic/Hyperboloid/BoundaryTopology"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "lake build DifferentialGeometry",
+    "jobs": 26904,
+    "root_module_seconds": 37,
+    "errors": 0,
+    "warnings": 0
+  },
+  "affected_module_rebuilds": [
+    {
+      "module": "DifferentialGeometry.Geometry.Metric.Isometry.OrbitCompactness",
+      "seconds": 1.4
+    },
+    {
+      "module": "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Margulis",
+      "seconds": 1.7
+    }
+  ],
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}

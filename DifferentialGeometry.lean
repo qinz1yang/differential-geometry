@@ -10341,11 +10341,13 @@ import DifferentialGeometry.Geometry.Hodge.Codifferential
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boost
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boundary
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryFaithfulness
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryTopology
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Connection
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Defs
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Geodesic
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicBoundary
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicSegment
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GromovProduct
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Homotopy
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Interpolation
@@ -10353,10 +10355,12 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassificati
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryTopology
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Klein
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinCompactification
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinConvergence
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.LorentzIsometry
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Manifold
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Margulis
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Metric
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Morse
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Projection
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianDistance
@@ -10856,6 +10860,7 @@ import DifferentialGeometry.Geometry.Metric.InverseTimeDerivative
 import DifferentialGeometry.Geometry.Metric.Isometry.Compactness
 import DifferentialGeometry.Geometry.Metric.Isometry.Margulis
 import DifferentialGeometry.Geometry.Metric.Isometry.OrbitCompactness
+import DifferentialGeometry.Geometry.Metric.Isometry.ProperDiscontinuity
 import DifferentialGeometry.Geometry.Metric.Isometry.SmallDisplacement
 import DifferentialGeometry.Geometry.Metric.Isometry.Topology
 import DifferentialGeometry.Geometry.Metric.JoinJets
@@ -12050,6 +12055,7 @@ import DifferentialGeometry.Topology.Covering.PLMapLift
 import DifferentialGeometry.Topology.Covering.PLNeighborhoodLift
 import DifferentialGeometry.Topology.Covering.PLTriangulation
 import DifferentialGeometry.Topology.Covering.PuncturedSpaceCylinderCover
+import DifferentialGeometry.Topology.Covering.Quotient
 import DifferentialGeometry.Topology.Covering.QuotientDeckGroup
 import DifferentialGeometry.Topology.Covering.QuotientDiffeomorph
 import DifferentialGeometry.Topology.Covering.RealDeckCircle

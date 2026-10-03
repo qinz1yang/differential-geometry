@@ -1,6 +1,7 @@
 import Mathlib.Topology.Algebra.Group.Defs
+import Mathlib.Topology.Algebra.MulAction
 import Mathlib.Topology.CompactOpen
-import Mathlib.Topology.MetricSpace.Isometry
+import Mathlib.Topology.MetricSpace.IsometricSMul
 
 namespace IsometryEquiv
 
@@ -81,5 +82,16 @@ theorem isEmbedding_toContinuousMap :
   have hc : Continuous (fun f : X ≃ᵢ Y => (f : C(X, Y))) :=
     ContinuousMap.continuous_of_continuous_uncurry _ continuous_eval
   exact Topology.IsEmbedding.of_comp hc continuous_coeFun isEmbedding_coe
+
+instance instMulAction : MulAction (X ≃ᵢ X) X where
+  smul g x := g x
+  one_smul _ := rfl
+  mul_smul _ _ _ := rfl
+
+instance instIsIsometricSMul : IsIsometricSMul (X ≃ᵢ X) X where
+  isometry_smul g := g.isometry
+
+instance instContinuousSMul : ContinuousSMul (X ≃ᵢ X) X where
+  continuous_smul := continuous_eval
 
 end IsometryEquiv
