@@ -1,0 +1,106 @@
+{
+  "base_commit": "50700364d2c9c4eb8bf79763fe8bfdee8488d46d",
+  "layer": "Actual normalized universal cover, rational directional regularity and injective quotient balls",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Analysis/Complex/DirectionalRegularity.lean",
+      "sha256": "835f742ee4c1aaa10cf14e15d86211e1ce4977bcde868012cecb8d20f9417ccd",
+      "fresh_lake_build_seconds": 7.2,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_orbit_quotients",
+      "mathematical_review": "Original disk-controlled plane homeomorphism is a.e. differentiable in every separately fixed direction; the countable rational-direction good set is measurable and has positive volume in every strict rectangle.",
+      "public_declarations": [
+        "Homeomorph.ae_lineDifferentiableAt",
+        "Homeomorph.volume_pos_rational_lineDifferentiableAt_and_lineDeriv_ne_zero"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Analysis.Complex.AbsolutelyContinuous",
+        "Mathlib.Analysis.Calculus.LineDeriv.Measurable",
+        "Mathlib.Analysis.Calculus.Deriv.Shift",
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun",
+        "Mathlib.MeasureTheory.Measure.Lebesgue.Complex",
+        "Mathlib.MeasureTheory.Measure.Prod",
+        "Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar",
+        "Mathlib.Analysis.Normed.Module.FiniteDimension"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/UniversalCover.lean",
+      "sha256": "24d9843ab85f1f226e72416d104d5a95140af63e8fb4d3e4ec4574bba756ca43",
+      "fresh_lake_build_seconds": 6.7,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "The actual original based universal cover with its actual lifted normalized metric is isometric to H3, preserving comparison and original basepoint laws.",
+      "public_declarations": [
+        "normalizedUniversalCoverIsometryEquiv",
+        "normalizedUniversalCoverIsometryEquiv_apply",
+        "normalizedUniversalCoverIsometryEquiv_origin",
+        "proj_normalizedUniversalCoverIsometryEquiv_origin"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Exponential.HyperbolicSpaceForm",
+        "DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature",
+        "DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/GroupAction/Displacement.lean",
+      "sha256": "f5db906b797709d4bbdefa3e3266b0f40890013b3d71ce154f8440bc57b575f5",
+      "fresh_lake_build_seconds": 1.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "A lower displacement bound makes the actual orbit quotient injective on the corresponding open ball, in pseudometric spaces for every real radius.",
+      "public_declarations": [
+        "MulAction.injOn_quotientMk_ball_of_le_dist_smul"
+      ],
+      "direct_imports": [
+        "Mathlib.Topology.MetricSpace.IsometricSMul",
+        "Mathlib.Topology.Instances.ENNReal.Lemmas"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "DifferentialGeometry/Analysis/Complex/DirectionalRegularity.lean",
+    "DifferentialGeometry/Geometry/Hyperbolic/UniversalCover.lean",
+    "DifferentialGeometry/Geometry/Metric/GroupAction/Displacement.lean"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "log": "/Users/qzy/.cache/mostow-environment-20261002/universal-cover-rational-root.log",
+    "errors": 0,
+    "warnings": 0,
+    "root_compiler_cap": 1,
+    "root_module_seconds": 36.0,
+    "jobs": 26924
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}

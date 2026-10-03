@@ -90,10 +90,11 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| `review_hyperboloid_metric` | Apply normalized space-form identification to the original three-manifold's actual based universal cover. |
-| `review_hyperboloid_interpolation` | Prove native a.e. directional differentiability in each fixed direction and positive measure of the countable rational-direction good set. |
-| `review_orbit_quotients` | Identify the exact native stereographic plane-boundary interface needed for the actual disk-control producer. |
-| `hyperboloid_metric` | Next quotient-volume frontier: prove actual injective-ball volume transport from the canonical local isometry. |
+| `review_hyperboloid_metric` | Construct the actual marked normalized deck-isometry homomorphism and its projection laws. |
+| `review_hyperboloid_interpolation` | Prove native boundary chord distortion and the exponential Lipschitz bound for actual hyperbolic isometries. |
+| `review_orbit_quotients` | Prove the exact native stereographic complex chart with its factor-two formulas. |
+| `equivariant_descent` | Prove discreteness of an actual covering-preserving isometry subgroup; independent review follows. |
+| `hyperboloid_metric` | Prove native Riemannian-volume transport on an injective open domain of a local isometry. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -483,3 +484,33 @@ The original three-dimensional finite-volume Mostow headline remains open.
 Applying the normalized classification to its based universal cover, proving
 finite-volume cusp/control producers, and closing boundary rigidity are still
 required.
+
+## Verified original-cover and rational-direction layer
+
+The original negatively curved three-manifold's actual based universal cover
+now has an isometry equivalence with the hyperboloid. Its metric is exactly
+the lift of the original metric scaled by minus its curvature. Exact laws
+retain the comparison map, the lifted basepoint and the original projected
+basepoint. Genuine curvature-minus-one and curvature-minus-four models at a
+non-origin point were checked.
+
+The original disk-controlled plane homeomorphism is differentiable almost
+everywhere in each separately fixed direction. Intersecting only countably
+many rational directions gives a measurable positive-area good set in every
+strict rectangle, retaining a nonzero horizontal derivative. No full derivative
+or uncountable interchange of quantifiers is asserted.
+
+A lower displacement bound also proves injectivity of the actual orbit
+projection on the corresponding open ball, without freeness or metric
+separation assumptions. This does not yet identify quotient ball volumes.
+
+All three changed modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. Fresh source builds took
+7.2, 6.7 and 1.0 seconds. The root build passed with 26,924 jobs and zero
+diagnostics; the existing aggregate took 36.0 seconds. Exact evidence is
+in `mostow-universal-cover-rational.json`. All 64 newly added Lean files have
+current source-hash-matched fresh compilation evidence below 30 seconds.
+
+The original three-dimensional finite-volume Mostow headline remains open.
+Marked deck and quotient-volume producers, finite-volume cusp/control
+geometry, and boundary rigidity remain required.

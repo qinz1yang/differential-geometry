@@ -17961,3 +17961,4 @@ import DifferentialGeometry.Topology.VectorField.RiemannianGradientLinearization
 import DifferentialGeometry.Topology.VectorField.Spanning
 import DifferentialGeometry.Topology.VectorField.Transport
 import DifferentialGeometry.Topology.VectorField.VerticalLinearization
+import DifferentialGeometry.Geometry.Hyperbolic.UniversalCover

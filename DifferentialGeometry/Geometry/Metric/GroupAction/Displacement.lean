@@ -51,3 +51,26 @@ theorem isClosed_image_setOf_forall_le_edist_smul (G : Type*) [Group G]
   exact isClosed_setOf_forall_le_edist_smul G r
 
 end MulAction
+
+namespace MulAction
+
+variable {X : Type*} [PseudoMetricSpace X]
+
+theorem injOn_quotientMk_ball_of_le_dist_smul (G : Type*) [Group G]
+    [MulAction G X] [IsIsometricSMul G X] (x : X) (r : ℝ)
+    (hx : ∀ g : G, g ≠ 1 → 2 * r ≤ dist x (g • x)) :
+    Set.InjOn (Quotient.mk (orbitRel G X)) (Metric.ball x r) := by
+  intro y hy z hz heq
+  obtain ⟨g, hg⟩ := Quotient.exact heq
+  by_cases h : g = 1
+  · simpa only [h, one_smul] using hg.symm
+  · have hbound : dist x (g • x) < 2 * r := calc
+      dist x (g • x) ≤ dist x y + dist y (g • x) := dist_triangle _ _ _
+      _ = dist x y + dist z x := by rw [← hg, dist_smul]
+      _ < 2 * r := by
+        have hy' : dist x y < r := Metric.mem_ball'.mp hy
+        have hz' : dist z x < r := hz
+        exact (add_lt_add hy' hz').trans_eq (two_mul r).symm
+    exact (not_lt_of_ge (hx g h) hbound).elim
+
+end MulAction
