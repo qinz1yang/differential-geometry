@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Isometry.Topology
 import Mathlib.Topology.MetricSpace.Bounded
 import Mathlib.Topology.MetricSpace.Equicontinuity
 import Mathlib.Topology.MetricSpace.Isometry
@@ -69,3 +70,32 @@ theorem isCompact_setOf_isometry_surjective (o : X) {K : Set X} (hK : IsCompact 
     exact (f.property.1.dist_eq x y).le
 
 end ContinuousMap
+
+namespace IsometryEquiv
+
+variable {X : Type*} [MetricSpace X] [ProperSpace X]
+
+theorem isCompact_setOf_apply_mem (o : X) {K : Set X} (hK : IsCompact K) :
+    IsCompact {f : X ≃ᵢ X | f o ∈ K} := by
+  have hemb : Topology.IsEmbedding (fun f : X ≃ᵢ X => (f : C(X, X))) :=
+    isEmbedding_toContinuousMap
+  apply hemb.isCompact_iff.mpr
+  have himage : (fun f : X ≃ᵢ X => (f : C(X, X))) '' {f | f o ∈ K} =
+      {f : C(X, X) | Isometry f ∧ Function.Surjective f ∧ f o ∈ K} := by
+    ext f
+    constructor
+    · rintro ⟨e, he, rfl⟩
+      exact ⟨e.isometry, e.surjective, he⟩
+    · rintro ⟨hi, hs, hk⟩
+      let e : X ≃ᵢ X :=
+        { toEquiv := Equiv.ofBijective f ⟨hi.injective, hs⟩
+          isometry_toFun := hi }
+      exact ⟨e, hk, rfl⟩
+  rw [himage]
+  exact ContinuousMap.isCompact_setOf_isometry_surjective o hK
+
+theorem isCompact_setOf_dist_apply_le (o : X) (r : ℝ) :
+    IsCompact {f : X ≃ᵢ X | dist (f o) o ≤ r} :=
+  isCompact_setOf_apply_mem o (isCompact_closedBall o r)
+
+end IsometryEquiv

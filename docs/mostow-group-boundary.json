@@ -1,0 +1,177 @@
+{
+  "base_commit": "8ad0441d42e582ebd88a08efa4d2adc2b9accb95",
+  "layer": "Native isometry topology, boundary faithfulness, equivariant homotopy, and uniform index bound",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Isometry/SmallDisplacement.lean",
+      "sha256": "aeee76f2744bf8f12af0ec380cb96edf277a84c8b6a2f79793335cc753815688",
+      "fresh_lake_build_seconds": 4.2,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "Uniform constants precede the subgroup; actual cosets and inverse words checked.",
+      "public_declarations": [
+        "exists_index_bound_small_displacement"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Topology.Algebra.Group.IndexBound",
+        "Mathlib.Topology.Algebra.Group.Basic",
+        "Mathlib.Topology.Compactness.Compact",
+        "Mathlib.Topology.MetricSpace.IsometricSMul"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/GeodesicBoundary.lean",
+      "sha256": "963ec51ce41b010c3bd18ff904cceccacc6d0bee1beca430a82b5df8d1d6d8af",
+      "fresh_lake_build_seconds": 3.1,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "Actual atTop/atBot limits, positive denominators, unit distinct endpoints and non-origin consumer checked.",
+      "public_declarations": [
+        "time_add_fst_pos",
+        "time_sub_fst_pos",
+        "norm_geodesicLine_forward_endpoint",
+        "norm_geodesicLine_backward_endpoint",
+        "geodesicLine_endpoints_ne",
+        "kleinHomeomorph_geodesicLine",
+        "tendsto_kleinHomeomorph_geodesicLine_atTop",
+        "tendsto_kleinHomeomorph_geodesicLine_atBot"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Geodesic",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Klein"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryFaithfulness.lean",
+      "sha256": "648fcb845ee4ecf403d0dd6d7650ac365bdfdef9a1bfc1d85d4e842141a83d4e",
+      "fresh_lake_build_seconds": 2.4,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_interpolation",
+      "mathematical_review": "Cardinal rank at least two recovers original isometries; explicit one-dimensional boost counterexample checked.",
+      "public_declarations": [
+        "boundaryHomeomorph_injective"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boundary",
+        "Mathlib.Analysis.Normed.Module.Normalize",
+        "Mathlib.LinearAlgebra.Dimension.Finite"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Isometry/Topology.lean",
+      "sha256": "6e83b885b11a7556789d6a5d9709c1ed2296ab0ef34374c2c3d975da3cdb7d56",
+      "fresh_lake_build_seconds": 0.924,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "Pointwise and compact-open topologies agree; actual infinite-distance and non-separated consumers checked.",
+      "public_declarations": [
+        "instTopologicalSpace",
+        "isEmbedding_coe",
+        "instT2Space",
+        "instContinuousEvalConst",
+        "continuous_iff",
+        "instContinuousEval",
+        "continuous_trans",
+        "continuous_symm",
+        "instIsTopologicalGroup",
+        "isEmbedding_toContinuousMap"
+      ],
+      "direct_imports": [
+        "Mathlib.Topology.Algebra.Group.Defs",
+        "Mathlib.Topology.CompactOpen",
+        "Mathlib.Topology.MetricSpace.Isometry"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Isometry/Compactness.lean",
+      "sha256": "80978204eb61805a9aa6c6c5d85ceebe3980f73aea09ffdb07c53c644218c8d5",
+      "fresh_lake_build_seconds": 1.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_interpolation",
+      "mathematical_review": "Exact image equality transfers native compactness; old Ascoli proof and scopes preserved.",
+      "public_declarations": [
+        "isCompact_setOf_isometry_surjective",
+        "isCompact_setOf_apply_mem",
+        "isCompact_setOf_dist_apply_le"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Metric.Isometry.Topology",
+        "Mathlib.Topology.MetricSpace.Bounded",
+        "Mathlib.Topology.MetricSpace.Equicontinuity",
+        "Mathlib.Topology.MetricSpace.Isometry",
+        "Mathlib.Topology.UniformSpace.Ascoli"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Homotopy.lean",
+      "sha256": "33f5399547a5ffde97b6db8bec0799b9b086437ac355c10cb60f850fe63399eb",
+      "fresh_lake_build_seconds": 1.4,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "The same interpolation homotopy descends with original maps and action correspondence; nontrivial boost checked.",
+      "public_declarations": [
+        "isometryEquiv_interpolate",
+        "interpolationHomotopy",
+        "interpolationHomotopy_apply",
+        "interpolationHomotopy_equivariant"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Interpolation",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassification",
+        "Mathlib.Topology.Homotopy.Basic",
+        "Mathlib.Topology.MetricSpace.IsometricSMul"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "Geometry/Metric/Isometry/Topology",
+    "Geometry/Metric/Isometry/Compactness",
+    "Geometry/Metric/Isometry/SmallDisplacement",
+    "Geometry/Hyperbolic/Hyperboloid/GeodesicBoundary",
+    "Geometry/Hyperbolic/Hyperboloid/BoundaryFaithfulness",
+    "Geometry/Hyperbolic/Hyperboloid/Homotopy"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "lake build DifferentialGeometry",
+    "jobs": 26894,
+    "root_module_seconds": 32,
+    "errors": 0,
+    "warnings": 0
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}

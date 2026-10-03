@@ -10340,11 +10340,14 @@ import DifferentialGeometry.Geometry.HarmonicMap.WeakLowerSemicontinuity
 import DifferentialGeometry.Geometry.Hodge.Codifferential
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boost
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boundary
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryFaithfulness
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Connection
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Defs
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Geodesic
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicBoundary
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GromovProduct
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Homotopy
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Interpolation
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassification
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Klein
@@ -10849,6 +10852,8 @@ import DifferentialGeometry.Geometry.Metric.IntrinsicInjectivityRadius
 import DifferentialGeometry.Geometry.Metric.InverseTimeDerivative
 import DifferentialGeometry.Geometry.Metric.Isometry.Compactness
 import DifferentialGeometry.Geometry.Metric.Isometry.OrbitCompactness
+import DifferentialGeometry.Geometry.Metric.Isometry.SmallDisplacement
+import DifferentialGeometry.Geometry.Metric.Isometry.Topology
 import DifferentialGeometry.Geometry.Metric.JoinJets
 import DifferentialGeometry.Geometry.Metric.LengthPerturbation
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Basic

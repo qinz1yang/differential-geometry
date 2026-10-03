@@ -80,12 +80,11 @@ final headline. The active frontier is:
 
 | Owner | Exact next target |
 | --- | --- |
-| Root | Integrate reviewed geometric-group and boundary packets, then close the remaining Mostow frontier. |
-| `review_orbit_quotients` | Give the native isometry group its standard topology and compact-open embedding. |
-| `review_lorentz` | Independently audit the uniform small-displacement index theorem. |
-| `review_hyperboloid_manifold` | Independently audit the actual geodesic ideal-endpoint limits. |
-| `rigidity_assessment` | Prove faithfulness of the boundary action when the spatial rank is at least two. |
-| `review_hyperboloid_model` | Construct the same equivariant interpolation homotopy and its quotient descent. |
+| Root | Integrate reviewed compactification, representation and Margulis packets. |
+| `rigidity_assessment` | Embed the actual finite-dimensional hyperbolic isometry group into operator units. |
+| `equivariant_descent` | Prove the general linear-action Margulis theorem from Zassenhaus and compact displacement. |
+| `review_hyperboloid_metric` | Prove the hyperbolic Margulis constant uniform over all basepoints via boost conjugacy. |
+| `review_orbit_quotients` | Prove exponential projection decay for the quantitative Morse argument. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -191,3 +190,28 @@ applicable linters, and native axiom checks. The six new files freshly compile
 in 0.989 to 5.2 seconds. The root build passed with 26,889 jobs and zero
 diagnostics; the existing aggregate took 30 seconds. Hashes and timings are in
 `mostow-boundary-distance.json`. The Mostow headline remains open.
+
+## Verified isometry-group and equivariant-homotopy layer
+
+The native isometry group now has its standard pointwise topology, continuous
+joint evaluation and group operations, and an embedding into the compact-open
+continuous-map space. This holds for pseudo-extended metric spaces, including
+infinite distances and non-separated examples. Proper metric spaces have
+compact native families of isometries with bounded basepoint displacement.
+
+Compact displacement gives a uniform finite-index bound for small movers
+modulo the subgroup generated inside a supplied identity neighborhood. The
+boundary action is faithful in spatial rank at least two; an explicit
+one-dimensional boost verifies why that rank condition cannot be dropped.
+Actual forward and backward Klein limits of every geodesic line are proved.
+
+Interpolation commutes with all hyperbolic isometries. Its actual homotopy is
+equivariant with minimal action hypotheses, and the same homotopy descends to
+the original orbit-quotient maps, retaining their original correspondence.
+
+All six changed modules passed independent review, canonical builds, all 14
+applicable linters, and native axiom checks. The five new files freshly compile
+in at most 4.2 seconds. The aggregate build passed with 26,894 jobs and zero
+diagnostics; the existing aggregate took 32 seconds. Exact hashes, declarations,
+imports and timings are in `mostow-group-boundary.json`.
+The finite-volume Mostow headline remains open.
