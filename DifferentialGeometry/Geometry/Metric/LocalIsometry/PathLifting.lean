@@ -174,3 +174,222 @@ theorem exists_tendsto_lift_of_complete
   exact hγlim.congr' (htail.mono fun t ht => (hlift ht).symm)
 
 end DifferentialGeometry.Geometry.Riemannian
+
+namespace DifferentialGeometry.Geometry.Riemannian
+
+variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+  {H G : Type*} [TopologicalSpace H] [TopologicalSpace G]
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+  {M N : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [TopologicalSpace N] [ChartedSpace G N]
+
+private theorem eqOn_lifts_of_initial [T2Space M]
+    {f : M → N} (hf : IsLocalDiffeomorph I J ∞ f)
+    {γ : ℝ → N} {η ζ : ℝ → M} {a b : ℝ} (hab : a ≤ b)
+    (hη : ContinuousOn η (Icc a b)) (hζ : ContinuousOn ζ (Icc a b))
+    (hηf : EqOn (f ∘ η) γ (Icc a b)) (hζf : EqOn (f ∘ ζ) γ (Icc a b))
+    (hini : η a = ζ a) : EqOn η ζ (Icc a b) := by
+  let : PreconnectedSpace (Icc a b) := isPreconnected_iff_preconnectedSpace.mp isPreconnected_Icc
+  have hcomp : (fun t : Icc a b => f (η t)) = fun t : Icc a b => f (ζ t) := by
+    funext t
+    exact (hηf t.property).trans (hζf t.property).symm
+  have heq : (fun t : Icc a b => η t) = fun t : Icc a b => ζ t :=
+    (T2Space.isSeparatedMap f).eq_of_comp_eq hf.isLocalHomeomorph.isLocallyInjective
+      hη.domRestrict hζ.domRestrict hcomp ⟨a, le_rfl, hab⟩ hini
+  intro t ht
+  exact congrFun heq ⟨t, ht⟩
+
+private theorem exists_lift_right_extension
+    {f : M → N} (hf : IsLocalDiffeomorph I J ∞ f)
+    {γ : ℝ → N} {a b t : ℝ} (hat : a ≤ t) (htb : t < b)
+    (hγ : ContinuousOn γ (Icc a b)) {x : M} {η : ℝ → M}
+    (hη : ContinuousOn η (Icc a t)) (hini : η a = x)
+    (hηf : EqOn (f ∘ η) γ (Icc a t)) :
+    ∃ u ∈ Ioc t b, ∃ ζ : ℝ → M,
+      ContinuousOn ζ (Icc a u) ∧ ζ a = x ∧ EqOn (f ∘ ζ) γ (Icc a u) := by
+  classical
+  obtain ⟨φ, htφ, hφeq⟩ := hf (η t)
+  have htarget : γ t ∈ φ.target := by
+    rw [← hηf ⟨hat, le_rfl⟩, Function.comp_apply, hφeq htφ]
+    exact φ.map_source htφ
+  have hpre : γ ⁻¹' φ.target ∈ 𝓝[Icc a b] t :=
+    (hγ t ⟨hat, htb.le⟩).preimage_mem_nhdsWithin (φ.open_target.mem_nhds htarget)
+  obtain ⟨U, hUopen, htU, hUsub⟩ := mem_nhdsWithin.mp hpre
+  obtain ⟨c, d, hcd, hcdU⟩ := mem_nhds_iff_exists_Ioo_subset.mp (hUopen.mem_nhds htU)
+  obtain ⟨u, htu, hu⟩ := exists_between (lt_min hcd.2 htb)
+  have hub : u ≤ b := hu.le.trans (min_le_right _ _)
+  have hmaps : MapsTo γ (Icc t u) φ.target := by
+    intro s hs
+    apply hUsub
+    exact ⟨hcdU ⟨hcd.1.trans_le hs.1, hs.2.trans_lt (hu.trans_le (min_le_left _ _))⟩,
+      hat.trans hs.1, hs.2.trans hub⟩
+  let branch := φ.symm ∘ γ
+  let ζ := (Iic t).piecewise η branch
+  have hbranch : ContinuousOn branch (Icc t u) :=
+    φ.contMDiffOn_invFun.continuousOn.comp
+      (hγ.mono (Icc_subset_Icc hat hub)) hmaps
+  have hjoin : η t = branch t := by
+    change η t = φ.symm (γ t)
+    rw [← hηf ⟨hat, le_rfl⟩, Function.comp_apply, hφeq htφ]
+    exact (φ.left_inv htφ).symm
+  have hζ : ContinuousOn ζ (Icc a u) := by
+    apply ContinuousOn.piecewise
+    · intro s hs
+      have hst : s = t := Set.mem_singleton_iff.mp (frontier_Iic_subset t hs.2)
+      simpa only [hst] using hjoin
+    · rw [closure_Iic]
+      exact hη.mono fun s hs => ⟨hs.1.1, hs.2⟩
+    · rw [compl_Iic, closure_Ioi]
+      exact hbranch.mono fun s hs => ⟨hs.2, hs.1.2⟩
+  refine ⟨u, ⟨htu, hub⟩, ζ, hζ, ?_, ?_⟩
+  · change (Iic t).piecewise η branch a = x
+    rw [(Iic t).piecewise_eq_of_mem η branch hat]
+    exact hini
+  · intro s hs
+    change f ((Iic t).piecewise η branch s) = γ s
+    by_cases hst : s ≤ t
+    · rw [(Iic t).piecewise_eq_of_mem η branch hst]
+      exact hηf ⟨hs.1, hst⟩
+    · rw [(Iic t).piecewise_eq_of_notMem η branch hst]
+      have hst' : t ≤ s := (lt_of_not_ge hst).le
+      have hsTarget := hmaps ⟨hst', hs.2⟩
+      exact (hφeq (φ.map_target hsTarget)).trans (φ.right_inv hsTarget)
+
+private theorem continuousOn_close_lift
+    {η : ℝ → M} {a b : ℝ} (hab : a ≤ b) (hη : ContinuousOn η (Ico a b))
+    {x : M} (hx : Tendsto η (𝓝[<] b) (𝓝 x)) :
+    ContinuousOn (fun t => if t < b then η t else x) (Icc a b) := by
+  intro t ht
+  by_cases htb : t < b
+  · have hmem : Ico a b ∈ 𝓝[Icc a b] t := by
+      filter_upwards [(eventually_lt_nhds htb).filter_mono nhdsWithin_le_nhds,
+        self_mem_nhdsWithin] with s hs hsab
+      exact ⟨hsab.1, hs⟩
+    have hcont := (hη t ⟨ht.1, htb⟩).mono_of_mem_nhdsWithin hmem
+    apply hcont.congr_of_eventuallyEq
+    · filter_upwards [(eventually_lt_nhds htb).filter_mono nhdsWithin_le_nhds] with s hs
+      exact ite_eq_left hs
+    · exact ite_eq_left htb
+  · have hteq : t = b := le_antisymm ht.2 (le_of_not_gt htb)
+    subst t
+    rw [← Ico_insert_right hab]
+    apply ContinuousWithinAt.insert
+    change Tendsto (fun t => if t < b then η t else x) (𝓝[Ico a b] b)
+      (𝓝 (if b < b then η b else x))
+    rw [ite_eq_right (lt_irrefl b)]
+    apply (hx.mono_left (nhdsWithin_mono b Ico_subset_Iio_self)).congr'
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    exact (ite_eq_left ht.2).symm
+
+variable [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold J ∞ N]
+  [T2Space M] [SigmaCompactSpace M] [T2Space N]
+
+attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_contMDiffOn_lift_of_complete
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    {f : M → N} (hf : IsLocalDiffeomorph I J ∞ f)
+    (hg : RiemannianMetricComplete (I := I) g)
+    (hmetric : ∀ (x : M) (v w : TangentSpace I x),
+      g.inner x v w = h.inner (f x) (mfderiv I J f x v) (mfderiv I J f x w))
+    {a b : ℝ} (hab : a ≤ b)
+    {γ : ℝ → N} (hγ : ContMDiffOn 𝓘(ℝ) J 1 γ (Icc a b))
+    (x : M) (hx : f x = γ a) :
+    ∃ η : ℝ → M, ContMDiffOn 𝓘(ℝ) I 1 η (Icc a b) ∧ η a = x ∧
+      EqOn (f ∘ η) γ (Icc a b) ∧
+      ∀ ζ : ℝ → M, ContinuousOn ζ (Icc a b) → ζ a = x →
+        EqOn (f ∘ ζ) γ (Icc a b) → EqOn ζ η (Icc a b) := by
+  classical
+  have hex : ∃ η : ℝ → M,
+      ContinuousOn η (Icc a b) ∧ η a = x ∧ EqOn (f ∘ η) γ (Icc a b) := by
+    rcases hab.eq_or_lt with rfl | hab'
+    · refine ⟨fun _ => x, continuousOn_const, rfl, ?_⟩
+      intro t ht
+      have hta : t = a := le_antisymm ht.2 ht.1
+      simpa only [Function.comp_apply, hta] using hx
+    let S : Set ℝ := {t | t ∈ Icc a b ∧ ∃ η : ℝ → M,
+      ContinuousOn η (Icc a t) ∧ η a = x ∧ EqOn (f ∘ η) γ (Icc a t)}
+    have hconstant : EqOn (f ∘ (fun _ : ℝ => x)) γ (Icc a a) := by
+      intro t ht
+      have hta : t = a := le_antisymm ht.2 ht.1
+      simpa only [Function.comp_apply, hta] using hx
+    have haS : a ∈ S := ⟨⟨le_rfl, hab⟩, fun _ => x, continuousOn_const, rfl, hconstant⟩
+    have hSne : S.Nonempty := ⟨a, haS⟩
+    have hSbdd : BddAbove S := ⟨b, fun t ht => ht.1.2⟩
+    let T := sSup S
+    have hTle : T ≤ b := csSup_le hSne (fun t ht => ht.1.2)
+    have haT : a < T := by
+      obtain ⟨u, hu, η, hη, hηa, hηf⟩ := exists_lift_right_extension hf le_rfl hab'
+        hγ.continuousOn (η := fun _ => x) continuousOn_const rfl hconstant
+      have huS : u ∈ S := ⟨⟨hu.1.le, hu.2⟩, η, hη, hηa, hηf⟩
+      exact hu.1.trans_le (le_csSup hSbdd huS)
+    let lift (t : S) : ℝ → M := Classical.choose t.property.2
+    have hlift (t : S) : ContinuousOn (lift t) (Icc a t.val) ∧
+        lift t a = x ∧ EqOn (f ∘ lift t) γ (Icc a t.val) := Classical.choose_spec t.property.2
+    have hlong : ∀ s ∈ Ico a T, ∃ t : S, s < t.val := by
+      intro s hs
+      obtain ⟨t, htS, hst⟩ := exists_lt_of_lt_csSup hSne hs.2
+      exact ⟨⟨t, htS⟩, hst⟩
+    choose pick hpick using hlong
+    let η : ℝ → M := fun s => if hs : s ∈ Ico a T then lift (pick s hs) s else x
+    have hagree (t : S) (s : ℝ) (hs : s ∈ Ico a T) (hst : s ≤ t.val) : η s = lift t s := by
+      rw [show η s = lift (pick s hs) s by simp only [η, dite_eq_left hs]]
+      have hmin : a ≤ min (pick s hs).val t.val :=
+        le_min (pick s hs).property.1.1 t.property.1.1
+      have h₁ : Icc a (min (pick s hs).val t.val) ⊆ Icc a (pick s hs).val :=
+        Icc_subset_Icc le_rfl (min_le_left _ _)
+      have h₂ : Icc a (min (pick s hs).val t.val) ⊆ Icc a t.val :=
+        Icc_subset_Icc le_rfl (min_le_right _ _)
+      exact eqOn_lifts_of_initial hf hmin ((hlift _).1.mono h₁) ((hlift t).1.mono h₂)
+        ((hlift _).2.2.mono h₁) ((hlift t).2.2.mono h₂)
+        ((hlift _).2.1.trans (hlift t).2.1.symm) ⟨hs.1, le_min (hpick s hs).le hst⟩
+    have hη : ContinuousOn η (Ico a T) := by
+      intro s hs
+      let t := pick s hs
+      have hst : s < t.val := hpick s hs
+      have hmem : Icc a t.val ∈ 𝓝[Ico a T] s := by
+        filter_upwards [(eventually_lt_nhds hst).filter_mono nhdsWithin_le_nhds,
+          self_mem_nhdsWithin] with r hr hrs
+        exact ⟨hrs.1, hr.le⟩
+      have hcont := ((hlift t).1 s ⟨hs.1, hst.le⟩).mono_of_mem_nhdsWithin hmem
+      apply hcont.congr_of_eventuallyEq
+      · filter_upwards [(eventually_lt_nhds hst).filter_mono nhdsWithin_le_nhds,
+          self_mem_nhdsWithin] with r hr hrs
+        exact hagree t r hrs hr.le
+      · exact hagree t s hs hst.le
+    have hηa : η a = x := by
+      have ha : a ∈ Ico a T := ⟨le_rfl, haT⟩
+      exact (hagree (pick a ha) a ha (hpick a ha).le).trans (hlift _).2.1
+    have hηf : EqOn (f ∘ η) γ (Ico a T) := by
+      intro s hs
+      change f (η s) = γ s
+      rw [hagree (pick s hs) s hs (hpick s hs).le]
+      exact (hlift _).2.2 ⟨hs.1, (hpick s hs).le⟩
+    obtain ⟨z, hz, hfz⟩ := exists_tendsto_lift_of_complete g h hf hg hmetric haT
+      (hγ.mono (Icc_subset_Icc le_rfl hTle)) hη hηf
+    let ηbar : ℝ → M := fun t => if t < T then η t else z
+    have hηbar : ContinuousOn ηbar (Icc a T) := continuousOn_close_lift haT.le hη hz
+    have hηbar_a : ηbar a = x := by simp only [ηbar, ite_eq_left haT, hηa]
+    have hηbar_f : EqOn (f ∘ ηbar) γ (Icc a T) := by
+      intro t ht
+      by_cases hlt : t < T
+      · simpa only [Function.comp_apply, ηbar, ite_eq_left hlt] using hηf ⟨ht.1, hlt⟩
+      · have hteq : t = T := le_antisymm ht.2 (le_of_not_gt hlt)
+        simpa only [Function.comp_apply, ηbar, hteq, ite_eq_right (lt_irrefl T)] using hfz
+    have hTS : T ∈ S := ⟨⟨haT.le, hTle⟩, ηbar, hηbar, hηbar_a, hηbar_f⟩
+    have hTeq : T = b := by
+      apply le_antisymm hTle
+      by_contra hnot
+      have hTb : T < b := lt_of_not_ge hnot
+      obtain ⟨u, hu, ζ, hζ, hζa, hζf⟩ := exists_lift_right_extension hf haT.le hTb
+        hγ.continuousOn hηbar hηbar_a hηbar_f
+      have huS : u ∈ S := ⟨⟨haT.le.trans hu.1.le, hu.2⟩, ζ, hζ, hζa, hζf⟩
+      exact (not_lt_of_ge (le_csSup hSbdd huS)) hu.1
+    simpa only [hTeq] using hTS.2
+  obtain ⟨η, hη, hηa, hηf⟩ := hex
+  refine ⟨η, contMDiffOn_lift hf hγ hη hηf, hηa, hηf, ?_⟩
+  intro ζ hζ hζa hζf
+  exact eqOn_lifts_of_initial hf hab hζ hη hζf hηf (hζa.trans hηa.symm)
+
+end DifferentialGeometry.Geometry.Riemannian

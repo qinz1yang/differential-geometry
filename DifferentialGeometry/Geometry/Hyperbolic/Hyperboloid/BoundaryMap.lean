@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.QuasiGeodesicBoundary
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinCompactification
 import Mathlib.Analysis.Normed.Module.Normalize
+import Mathlib.Topology.MetricSpace.IsometricSMul
 import Mathlib.Topology.UniformSpace.UniformApproximation
 
 noncomputable section
@@ -473,5 +474,77 @@ theorem tendsto_kleinHomeomorph_boundaryMap
   have h := tendsto_kleinHomeomorph_isometry g (tendsto_endpoint_of_origin_fixed f' hf' hf0 hx)
   simpa only [f', ContinuousMap.comp_apply, ContinuousMap.coe_apply, g.apply_symm_apply,
     ← heq, boundaryMap, ContinuousMap.coe_mk] using h
+
+@[simp]
+theorem boundaryMap_isometryEquiv (e : Hyperboloid E ≃ᵢ Hyperboloid F) :
+    boundaryMap (e : C(Hyperboloid E, Hyperboloid F))
+      (by
+        refine ⟨1, 0, by norm_num, by norm_num, ?_⟩
+        intro x y
+        simp only [ContinuousMap.coe_apply, e.dist_eq, inv_one, one_mul, sub_zero, add_zero,
+          le_refl, and_self]) =
+      (boundaryHomeomorph e : C(Metric.sphere (0 : E) 1, Metric.sphere (0 : F) 1)) := by
+  have hd : ∃ L C : ℝ, 1 ≤ L ∧ 0 ≤ C ∧ ∀ x y : Hyperboloid E,
+      L⁻¹ * dist x y - C ≤ dist (e x) (e y) ∧ dist (e x) (e y) ≤ L * dist x y + C := by
+    refine ⟨1, 0, by norm_num, by norm_num, ?_⟩
+    intro x y
+    simp only [e.dist_eq, inv_one, one_mul, sub_zero, add_zero, le_refl, and_self]
+  change boundaryMap (e : C(Hyperboloid E, Hyperboloid F)) hd = _
+  apply ContinuousMap.ext
+  intro u
+  apply Subtype.ext
+  have hleft : Filter.Tendsto
+      (fun t => (kleinHomeomorph (e (originRay u t)) : F)) Filter.atTop
+      (𝓝 (boundaryMap (e : C(Hyperboloid E, Hyperboloid F)) hd u : F)) :=
+    tendsto_kleinHomeomorph_boundaryMap (e : C(Hyperboloid E, Hyperboloid F)) hd
+      (x := originRay u) (u := u) (tendsto_kleinHomeomorph_originRay u)
+  have hright : Filter.Tendsto
+      (fun t => (kleinHomeomorph (e (originRay u t)) : F)) Filter.atTop
+      (𝓝 (boundaryHomeomorph e u : F)) :=
+    tendsto_kleinHomeomorph_isometry e (tendsto_kleinHomeomorph_originRay u)
+  exact tendsto_nhds_unique hleft hright
+
+variable {G K : Type*} [Group G] [Group K]
+  [MulAction G (Hyperboloid E)] [IsIsometricSMul G (Hyperboloid E)]
+  [MulAction K (Hyperboloid F)] [IsIsometricSMul K (Hyperboloid F)]
+
+theorem boundaryMap_smul (f : C(Hyperboloid E, Hyperboloid F))
+    (hdist : ∃ L C : ℝ, 1 ≤ L ∧ 0 ≤ C ∧ ∀ x y : Hyperboloid E,
+      L⁻¹ * dist x y - C ≤ dist (f x) (f y) ∧ dist (f x) (f y) ≤ L * dist x y + C)
+    (φ : G → K) (hf : ∀ γ x, f (γ • x) = φ γ • f x)
+    (γ : G) (u : Metric.sphere (0 : E) 1) :
+    boundaryMap f hdist (boundaryHomeomorph (IsometryEquiv.constSMul γ) u) =
+      boundaryHomeomorph (IsometryEquiv.constSMul (φ γ)) (boundaryMap f hdist u) := by
+  let a : Hyperboloid E ≃ᵢ Hyperboloid E := IsometryEquiv.constSMul γ
+  let b : Hyperboloid F ≃ᵢ Hyperboloid F := IsometryEquiv.constSMul (φ γ)
+  have ha : Filter.Tendsto (fun t => (kleinHomeomorph (a (originRay u t)) : E))
+      Filter.atTop (𝓝 (boundaryHomeomorph a u : E)) :=
+    tendsto_kleinHomeomorph_isometry a (tendsto_kleinHomeomorph_originRay u)
+  have hleft : Filter.Tendsto (fun t => (kleinHomeomorph (f (a (originRay u t))) : F))
+      Filter.atTop (𝓝 (boundaryMap f hdist (boundaryHomeomorph a u) : F)) :=
+    tendsto_kleinHomeomorph_boundaryMap f hdist ha
+  have hfu : Filter.Tendsto (fun t => (kleinHomeomorph (f (originRay u t)) : F))
+      Filter.atTop (𝓝 (boundaryMap f hdist u : F)) :=
+    tendsto_kleinHomeomorph_boundaryMap f hdist (tendsto_kleinHomeomorph_originRay u)
+  have hright : Filter.Tendsto (fun t => (kleinHomeomorph (b (f (originRay u t))) : F))
+      Filter.atTop (𝓝 (boundaryHomeomorph b (boundaryMap f hdist u) : F)) :=
+    tendsto_kleinHomeomorph_isometry b hfu
+  have heq (t : ℝ) : f (a (originRay u t)) = b (f (originRay u t)) := hf γ (originRay u t)
+  apply Subtype.ext
+  exact tendsto_nhds_unique hleft (hright.congr' (Filter.Eventually.of_forall fun t =>
+    congrArg (fun z : Hyperboloid F => (kleinHomeomorph z : F)) (heq t).symm))
+
+theorem boundaryMap_comp_constSMul (f : C(Hyperboloid E, Hyperboloid F))
+    (hdist : ∃ L C : ℝ, 1 ≤ L ∧ 0 ≤ C ∧ ∀ x y : Hyperboloid E,
+      L⁻¹ * dist x y - C ≤ dist (f x) (f y) ∧ dist (f x) (f y) ≤ L * dist x y + C)
+    (φ : G → K) (hf : ∀ γ x, f (γ • x) = φ γ • f x) (γ : G) :
+    (boundaryMap f hdist).comp
+      (boundaryHomeomorph (IsometryEquiv.constSMul γ : Hyperboloid E ≃ᵢ Hyperboloid E) :
+        C(Metric.sphere (0 : E) 1, Metric.sphere (0 : E) 1)) =
+      (boundaryHomeomorph (IsometryEquiv.constSMul (φ γ) : Hyperboloid F ≃ᵢ Hyperboloid F) :
+        C(Metric.sphere (0 : F) 1, Metric.sphere (0 : F) 1)).comp (boundaryMap f hdist) := by
+  apply ContinuousMap.ext
+  intro u
+  exact boundaryMap_smul f hdist φ hf γ u
 
 end DifferentialGeometry.Hyperboloid

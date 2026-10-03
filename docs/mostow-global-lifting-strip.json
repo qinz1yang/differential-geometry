@@ -1,0 +1,167 @@
+{
+  "base_commit": "fb14715f13f6fae6c966278ce70868356047bfc0",
+  "layer": "Smooth native exponential, global path lifting, marked boundary equivariance and image-strip control",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Exponential.lean",
+      "sha256": "1921d67af940a508569e6462120857642fa15a32731b4096e825c6e0c784cd94",
+      "fresh_lake_build_seconds": 11.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "Actual native exp differential nonsingularity from signed curvature and the native inverse theorem yields smoothness of the exact arsinh inverse.",
+      "public_declarations": [
+        "intrinsicGeodesic_origin",
+        "expMapIntrinsic_origin",
+        "expMapIntrinsicOriginHomeomorph",
+        "expMapIntrinsicOriginHomeomorph_apply",
+        "expMapIntrinsicOriginHomeomorph_symm_apply",
+        "isLocalDiffeomorph_expMapIntrinsicOriginHomeomorph",
+        "expMapIntrinsicOriginDiffeomorph",
+        "expMapIntrinsicOriginDiffeomorph_toHomeomorph",
+        "expMapIntrinsicOriginDiffeomorph_apply",
+        "expMapIntrinsicOriginDiffeomorph_symm_apply"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature",
+        "DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement",
+        "DifferentialGeometry.Geometry.Exponential.ConjugatePoint.CurvatureBound",
+        "DifferentialGeometry.Geometry.Curvature.Bounds.RiemannTensorOperator",
+        "DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Inverse",
+        "Mathlib.Analysis.SpecialFunctions.Arsinh",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianDistance",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper",
+        "DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryMap.lean",
+      "sha256": "2648747c319eba394bcd027902f6a8e74f58e48df5f856954f0e22c3f32905d0",
+      "fresh_lake_build_seconds": 2.2,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "equivariant_descent",
+      "mathematical_review": "Canonical isometry agreement and original-map boundary equivariance retain the actual arbitrary marking with no source finite-dimensionality.",
+      "public_declarations": [
+        "boundaryMap",
+        "tendsto_kleinHomeomorph_boundaryMap_origin_ray",
+        "tendsto_kleinHomeomorph_boundaryMap",
+        "boundaryMap_isometryEquiv",
+        "boundaryMap_smul",
+        "boundaryMap_comp_constSMul"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.QuasiGeodesicBoundary",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinCompactification",
+        "Mathlib.Analysis.Normed.Module.Normalize",
+        "Mathlib.Topology.MetricSpace.IsometricSMul",
+        "Mathlib.Topology.UniformSpace.UniformApproximation"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/LocalIsometry/PathLifting.lean",
+      "sha256": "d1c2b01d741a38ec00936ac703087cc23634ec1d6f4e1a0a904d6068fc9efc50",
+      "fresh_lake_build_seconds": 2.7,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "Compatible initial lifts, genuine supremum construction, endpoint continuation and local extension produce the same prescribed C1 lift with interval uniqueness.",
+      "public_declarations": [
+        "exists_tendsto_lift_of_complete",
+        "exists_contMDiffOn_lift_of_complete"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Metric.Completeness",
+        "DifferentialGeometry.Geometry.Metric.Path.Composition",
+        "Mathlib.Geometry.Manifold.ContMDiffMFDeriv",
+        "Mathlib.MeasureTheory.Measure.Lebesgue.Basic",
+        "Mathlib.Topology.EMetricSpace.Lipschitz",
+        "Mathlib.Topology.Order.Compact"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Integration/Measure/ComplexImageStrip.lean",
+      "sha256": "65f70e706f091355f96666470204483354f37a579c3679bfff55e313b9212c04",
+      "fresh_lake_build_seconds": 1.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_orbit_quotients",
+      "mathematical_review": "Actual homeomorphic image-strip mass is controlled at almost every height through its producer-tied finite marginal measure, including singular parts and all eligible radii.",
+      "public_declarations": [
+        "ae_exists_volume_image_strip_le"
+      ],
+      "direct_imports": [
+        "Mathlib.MeasureTheory.Covering.BesicovitchVectorSpace",
+        "Mathlib.MeasureTheory.Measure.Lebesgue.Complex",
+        "Mathlib.MeasureTheory.Measure.Restrict",
+        "Mathlib.Topology.Homeomorph.Lemmas"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Equivariance.lean",
+      "sha256": "885641d67c809b04b3d584e5ea1d92ce0192702cb0ee2c4ebda2c9107abdb21a",
+      "fresh_lake_build_seconds": 1.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_interpolation",
+      "mathematical_review": "Cross-model boundary faithfulness recovers actual isometries and upgrades their actual boundary-equivariant square to original interior equivariance; no realizing-isometry existence is assumed or claimed.",
+      "public_declarations": [
+        "eq_of_boundaryHomeomorph_eq",
+        "isometryEquiv_smul_of_boundary_equivariant"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryFaithfulness",
+        "Mathlib.Topology.MetricSpace.IsometricSMul"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "Geometry/Hyperbolic/Hyperboloid/Exponential",
+    "Geometry/Hyperbolic/Hyperboloid/BoundaryMap",
+    "Geometry/Metric/LocalIsometry/PathLifting",
+    "Analysis/Integration/Measure/ComplexImageStrip",
+    "Geometry/Hyperbolic/Hyperboloid/Equivariance"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryEquiv DifferentialGeometry",
+    "jobs": 26915,
+    "root_module_seconds": 36,
+    "errors": 0,
+    "warnings": 0,
+    "max_observed_compiler_processes": 1,
+    "necessary_boundary_consumer_seconds": 1.0
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "provenance": {
+    "equivariance_recovery_review": "/private/tmp/pc-mostow-review-boundary-equivariance-recovery/REVIEW.md",
+    "review_scratch_collision": "Owned files relocated with before/after hashes; unrelated predecessor review files unchanged."
+  },
+  "mostow_headline": "open"
+}

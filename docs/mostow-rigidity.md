@@ -90,10 +90,10 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| `review_hyperboloid_metric` | Upgrade the native origin exponential homeomorphism to a smooth inverse using native differential nonsingularity. |
-| `review_hyperboloid_model` | Build global path lifting and the complete local-isometry covering theorem from the proved endpoint-continuation engine. |
-| `review_orbit_quotients` | Prove exact boundary equivariance for the original map and group marking. |
-| `review_hyperboloid_interpolation` | Prove almost-everywhere actual image-strip stiffness using native measure differentiation. |
+| `review_hyperboloid_metric` | Prove smooth tensor preservation for the explicit native hyperbolic comparison map into a complete curvature-minus-one manifold. |
+| `review_hyperboloid_model` | Construct actual open sheets from radial C1 lifts and native joint lifting continuity. |
+| `review_orbit_quotients` | Prove boundary-map composition and invariance under bounded distance, retaining original maps. |
+| `review_hyperboloid_interpolation` | Design the finite interval-refinement estimate leading from image-strip control to horizontal absolute continuity. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -369,3 +369,34 @@ the existing aggregate took 36 seconds. Exact evidence is in
 matching current-source hashes and recorded fresh builds below 30 seconds.
 The global negative space-form, finite-volume cusp/control and boundary-rigidity
 frontiers remain open; the Mostow headline is not complete.
+
+## Verified global lifting, smooth inverse and strip-control layer
+
+The native origin exponential homeomorphism is now a smooth diffeomorphism with
+the same forward map and explicit inverse. The inverse smoothness proof uses
+the actual signed-curvature bound, native differential nonsingularity and the
+local inverse theorem.
+
+Complete local Riemannian isometries have global C1 lifts of prescribed C1 paths
+on a closed interval through the prescribed initial point. The proof constructs
+compatible initial lifts, uses a genuine supremum and the earlier continuation
+engine, and retains interval uniqueness. It does not assume a maximal lift or
+a covering map.
+
+The original quasi-isometric embedding's boundary map is equivariant for the
+given marking. Cross-model boundary faithfulness recovers an actual isometry
+from its boundary action and recovers interior equivariance from its boundary
+commutative square. This does not assert the missing existence of a realizing
+isometry.
+
+For every plane homeomorphism, almost every horizontal height has a finite
+constant controlling the area of its actual image strips at every eligible
+radius. The native finite marginal measure may have atoms or a singular part;
+no absolute-continuity or null-image preservation assumption was introduced.
+
+All five changed modules passed independent review, canonical builds, all 14
+applicable linters and native axiom checks. Fresh source builds take at most
+11 seconds. The root build passed with 26,915 jobs and zero diagnostics; the
+existing aggregate took 36 seconds. Exact evidence is recorded in
+`mostow-global-lifting-strip.json`. The global space-form, finite-volume cusp
+and boundary-rigidity steps remain open.

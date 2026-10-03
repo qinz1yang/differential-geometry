@@ -1,3 +1,8 @@
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
+import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.CurvatureBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.RiemannTensorOperator
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Inverse
 import Mathlib.Analysis.SpecialFunctions.Arsinh
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianDistance
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper
@@ -256,5 +261,96 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 
 @[simp] theorem expMapIntrinsicOriginHomeomorph_symm_apply (x : Hyperboloid E) :
     expMapIntrinsicOriginHomeomorph.symm x = (Real.arsinh ‖x.space‖ / ‖x.space‖) • x.space := rfl
+
+end DifferentialGeometry.Hyperboloid
+
+namespace DifferentialGeometry.Hyperboloid
+
+open Geometry.Riemannian (isMetricNorm_of_riemannianBundle)
+open Geometry.Riemannian.Exponential (expMap expDomain expDomain_eq_univ_of_completeSpace
+  expMap_eq_expMapIntrinsic contMDiffAt_expMap injective_mfderiv_expMap_of_curvature_upper_bound)
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+
+omit [NeZero (Module.finrank ℝ E)] in
+private theorem inner_riemannOp_self_nonpos (x : Hyperboloid E)
+    (v w : TangentSpace 𝓘(ℝ, E) x) :
+    riemannianMetric.inner x
+      (Geometry.Curvature.riemannOp (Geometry.Connection.LeviCivita riemannianMetric) x v w w) v ≤ 0 := by
+  have hden := Geometry.Riemannian.sectionalCurvatureDenominator_nonneg riemannianMetric x v w
+  rw [Geometry.Riemannian.sectionalCurvatureDenominator_def] at hden
+  calc
+    riemannianMetric.inner x
+        (Geometry.Curvature.riemannOp (Geometry.Connection.LeviCivita riemannianMetric) x v w w) v =
+        Geometry.Curvature.metricRm04StandardAt riemannianMetric x v w w v := by
+      rw [Geometry.Curvature.rm04_eq_inner]
+      exact riemannianMetric.symm x _ _
+    _ ≤ 0 := by
+      rw [metricRm04StandardAt_riemannianMetric, riemannianMetric.symm x w v]
+      nlinarith
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem isLocalDiffeomorph_expMapIntrinsicOriginHomeomorph :
+    IsLocalDiffeomorph 𝓘(ℝ, E) 𝓘(ℝ, E) ∞
+      (expMapIntrinsicOriginHomeomorph (E := E) : E → Hyperboloid E) := by
+  let _ : Bundle.RiemannianBundle (TangentSpace 𝓘(ℝ, E) : Hyperboloid E → Type _) :=
+    ⟨(riemannianMetric (E := E)).toContinuousRiemannianMetric.toRiemannianMetric⟩
+  let _ : IsRiemannianManifold 𝓘(ℝ, E) (Hyperboloid E) :=
+    isRiemannianManifold_riemannianMetric
+  let _ : IsContinuousRiemannianBundle E
+      (TangentSpace 𝓘(ℝ, E) : Hyperboloid E → Type _) :=
+    (isMetricNorm_of_riemannianBundle (riemannianMetric (E := E))).isContinuousRiemannianBundle
+  let hnorm := isMetricNorm_of_riemannianBundle (riemannianMetric (E := E))
+  have heq : (expMapIntrinsicOriginHomeomorph (E := E) : E → Hyperboloid E) =
+      fun u : E => expMap (I := 𝓘(ℝ, E)) riemannianMetric origin
+        (show TangentSpace 𝓘(ℝ, E) (origin : Hyperboloid E) from u) := by
+    funext u
+    rw [expMapIntrinsicOriginHomeomorph_apply, expMap_eq_expMapIntrinsic riemannianMetric hnorm]
+    rfl
+  rw [heq]
+  apply isLocalDiffeomorph_iff_isLocalDiffeomorphOn_univ.mpr
+  have hdom (u : E) : (show TangentSpace 𝓘(ℝ, E) (origin : Hyperboloid E) from u) ∈
+      expDomain (I := 𝓘(ℝ, E)) riemannianMetric origin := by
+    rw [expDomain_eq_univ_of_completeSpace riemannianMetric hnorm]
+    trivial
+  have hs : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ, E) ∞
+      (fun u : E => expMap (I := 𝓘(ℝ, E)) riemannianMetric origin
+        (show TangentSpace 𝓘(ℝ, E) (origin : Hyperboloid E) from u)) Set.univ :=
+    fun u _ => (contMDiffAt_expMap riemannianMetric origin (hdom u)).contMDiffWithinAt
+  apply hs.isLocalDiffeomorphOn_of_isInvertible_mfderiv isOpen_univ (by simp)
+  intro u _
+  have hi := injective_mfderiv_expMap_of_curvature_upper_bound
+    riemannianMetric (origin : Hyperboloid E) u (hdom u)
+    (κ := 0) (by positivity) (by
+      intro t _ v
+      simp only [zero_mul]
+      exact inner_riemannOp_self_nonpos _ v _)
+  have hsurj := LinearMap.surjective_of_injective hi
+  let D : E ≃L[ℝ] E := ContinuousLinearEquiv.ofBijective
+    (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E)
+      (fun w : E => expMap (I := 𝓘(ℝ, E)) riemannianMetric origin
+        (show TangentSpace 𝓘(ℝ, E) (origin : Hyperboloid E) from w)) u)
+    (LinearMap.ker_eq_bot.mpr hi) (LinearMap.range_eq_top.mpr hsurj)
+  exact ⟨D, rfl⟩
+
+def expMapIntrinsicOriginDiffeomorph : E ≃ₘ⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ Hyperboloid E where
+  toEquiv := expMapIntrinsicOriginHomeomorph.toEquiv
+  contMDiff_toFun := isLocalDiffeomorph_expMapIntrinsicOriginHomeomorph.contMDiff
+  contMDiff_invFun := by
+    intro x
+    exact ((expMapIntrinsicOriginHomeomorph (E := E)).isLocalDiffeomorphAt_symm_iff.mpr
+      (isLocalDiffeomorph_expMapIntrinsicOriginHomeomorph
+        (expMapIntrinsicOriginHomeomorph.symm x))).contMDiffAt
+
+@[simp] theorem expMapIntrinsicOriginDiffeomorph_toHomeomorph :
+    (expMapIntrinsicOriginDiffeomorph (E := E)).toHomeomorph = expMapIntrinsicOriginHomeomorph := rfl
+
+@[simp] theorem expMapIntrinsicOriginDiffeomorph_apply (u : E) :
+    expMapIntrinsicOriginDiffeomorph u = expMapIntrinsicOriginHomeomorph u := rfl
+
+@[simp] theorem expMapIntrinsicOriginDiffeomorph_symm_apply (x : Hyperboloid E) :
+    expMapIntrinsicOriginDiffeomorph.symm x = (Real.arsinh ‖x.space‖ / ‖x.space‖) • x.space := rfl
 
 end DifferentialGeometry.Hyperboloid

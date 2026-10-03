@@ -1176,6 +1176,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Chart.PartitionOfUnity.
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.TensorPullback
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.WeightedRestriction
 import DifferentialGeometry.Analysis.Integration.Measure.ChartIntegral
+import DifferentialGeometry.Analysis.Integration.Measure.ComplexImageStrip
 import DifferentialGeometry.Analysis.Integration.Measure.ComplexNullLines
 import DifferentialGeometry.Analysis.Integration.Measure.ComplexSlitPlane
 import DifferentialGeometry.Analysis.Integration.Measure.Conformal
@@ -10349,6 +10350,7 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryTopology
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Connection
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Defs
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Equivariance
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Exponential
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.FixedPoint
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Geodesic
