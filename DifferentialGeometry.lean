@@ -10336,12 +10336,14 @@ import DifferentialGeometry.Geometry.HarmonicMap.WeakGradientBound
 import DifferentialGeometry.Geometry.HarmonicMap.WeakGradientGlobal
 import DifferentialGeometry.Geometry.HarmonicMap.WeakLowerSemicontinuity
 import DifferentialGeometry.Geometry.Hodge.Codifferential
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Defs
 import DifferentialGeometry.Geometry.LieDerivative.Tensor
 import DifferentialGeometry.Geometry.LieGroup.Orthogonal
 import DifferentialGeometry.Geometry.LieGroup.Orthogonal.LieAlgebra
 import DifferentialGeometry.Geometry.LieGroup.Representation
 import DifferentialGeometry.Geometry.LieGroup.Representation.InvariantSet
 import DifferentialGeometry.Geometry.LieGroup.Representation.SelfAdjoint
+import DifferentialGeometry.Geometry.Lorentz.InnerProduct
 import DifferentialGeometry.Geometry.Measure.Area.AnnulusCompetitor
 import DifferentialGeometry.Geometry.Measure.Area.AttachmentArea
 import DifferentialGeometry.Geometry.Measure.Area.AttachmentInnerArea
@@ -12357,6 +12359,7 @@ import DifferentialGeometry.Topology.GraphBandChart
 import DifferentialGeometry.Topology.GraphBandComplement
 import DifferentialGeometry.Topology.GroupAction.Hom
 import DifferentialGeometry.Topology.GroupAction.Module
+import DifferentialGeometry.Topology.GroupAction.Quotient
 import DifferentialGeometry.Topology.Handle.AttachingDisk
 import DifferentialGeometry.Topology.Handle.Attachment.Basic
 import DifferentialGeometry.Topology.Handle.Attachment.Comparison
@@ -12843,6 +12846,7 @@ import DifferentialGeometry.Topology.Homotopy.Map
 import DifferentialGeometry.Topology.Homotopy.NonzeroPerturbation
 import DifferentialGeometry.Topology.Homotopy.OpenCollapse
 import DifferentialGeometry.Topology.Homotopy.OpenCollapseLocalHomeomorph
+import DifferentialGeometry.Topology.Homotopy.OrbitQuotient
 import DifferentialGeometry.Topology.Homotopy.PathModel
 import DifferentialGeometry.Topology.Homotopy.RayComplement
 import DifferentialGeometry.Topology.Homotopy.Reindex

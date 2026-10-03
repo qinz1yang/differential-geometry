@@ -1,0 +1,60 @@
+{
+  "base_commit": "777299070a5529e96345e0033979706fd00c7e62",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "layer": "Lorentz hyperboloid and equivariant quotient foundations",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Defs.lean",
+      "sha256": "6b03aa5e38dab0bcf09940775b1909340bf4de700aac149702975d7e3b2b362c",
+      "fresh_lake_build_seconds": 5.0,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Lorentz/InnerProduct.lean",
+      "sha256": "bd51630079bc10835fb1d7f96deaa69b1dd83ae5990cf32c313e776490a7e613",
+      "fresh_lake_build_seconds": 2.7,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/GroupAction/Quotient.lean",
+      "sha256": "3508ae4e5a46de5dd7c078c290dd24560be10d175b9a835869aeadc67de5c06e",
+      "fresh_lake_build_seconds": 2.0,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Homotopy/OrbitQuotient.lean",
+      "sha256": "2a63558f628dc6764d99ce26a19494f1dd9db166eb7a3182239e3f075d0650d0",
+      "fresh_lake_build_seconds": 1.9,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    }
+  ],
+  "declaration_linters": {
+    "default_enabled_count": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_declarations_in_new_modules": "subset of approved axioms",
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "main_goal_status": "open",
+  "aggregate_build": {
+    "command": "lake build DifferentialGeometry",
+    "jobs": 26864,
+    "root_module_seconds": 37,
+    "errors": 0,
+    "warnings": 0
+  }
+}
