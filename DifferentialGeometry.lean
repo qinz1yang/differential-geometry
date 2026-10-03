@@ -17896,3 +17896,4 @@ import DifferentialGeometry.Topology.Simplex.BoundaryCoordinates
 import DifferentialGeometry.Topology.SolidTorus.Embedded
 import DifferentialGeometry.Topology.Continuous.ClosedCover
 import DifferentialGeometry.Topology.Combinatorics.Finset
+import DifferentialGeometry.Analysis.ODE.Comparison.IntegratingFactor
