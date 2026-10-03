@@ -29,6 +29,8 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {b : P → M} {φ : ∀ p : P, V₁ (b p) →L[𝕜] V₂ (b p)}
   {ψ : ∀ p : P, V₂ (b p) →L[𝕜] V₃ (b p)} {s : Set P} {p₀ : P}
 
+omit [∀ x, IsTopologicalAddGroup (V₂ x)] [∀ x, ContinuousSMul 𝕜 (V₂ x)]
+  [∀ x, IsTopologicalAddGroup (V₃ x)] [∀ x, ContinuousSMul 𝕜 (V₃ x)] in
 private theorem ContinuousLinearMap.inCoordinates_comp {x₀ x : M}
     (ψ : V₂ x →L[𝕜] V₃ x) (φ : V₁ x →L[𝕜] V₂ x)
     (hx : x ∈ (trivializationAt F₂ V₂ x₀).baseSet) :
@@ -518,7 +520,8 @@ theorem MDifferentiable.clm_bundle_bilinearComp
 
 private theorem ContinuousLinearMap.inCoordinates_id {x₀ x : M}
     (hx : x ∈ (trivializationAt F₁ U₁ x₀).baseSet) :
-    inCoordinates F₁ U₁ F₁ U₁ x₀ x x₀ x (id 𝕜 (U₁ x)) = id 𝕜 F₁ := by
+    inCoordinates F₁ U₁ F₁ U₁ x₀ x x₀ x (ContinuousLinearMap.id 𝕜 (U₁ x)) =
+      ContinuousLinearMap.id 𝕜 F₁ := by
   ext v
   exact (trivializationAt F₁ U₁ x₀).continuousLinearMapAt_symmL hx v
 
