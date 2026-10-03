@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.Gluing
 import DifferentialGeometry.Topology.PiecewiseLinear.Piece.LocalFiniteness
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
