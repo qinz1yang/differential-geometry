@@ -141,8 +141,8 @@ noncomputable def chartedSpaceOfHomeomorph {H : Type u} [TopologicalSpace H]
 private theorem chartedSpaceOfHomeomorph_eq_pullback {H : Type u} [TopologicalSpace H]
     {M : Type v} [TopologicalSpace M] {M' : Type w} [TopologicalSpace M']
     (h : M' ≃ₜ M) [ChartedSpace H M] :
-    chartedSpaceOfHomeomorph h =
-      DifferentialGeometry.Manifold.Homeomorph.pullbackChartedSpace h := by
+    chartedSpaceOfHomeomorph (H := H) h =
+      DifferentialGeometry.Manifold.Homeomorph.pullbackChartedSpace (H := H) h := by
   apply ChartedSpace.ext
   · ext e
     change (∃ e₀ : OpenPartialHomeomorph M H,
