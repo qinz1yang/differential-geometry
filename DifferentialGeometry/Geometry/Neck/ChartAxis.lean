@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.Chart
 import DifferentialGeometry.Geometry.Gradient.SignedDifference
-import DifferentialGeometry.Geometry.Metric.LengthPerturbation
+import DifferentialGeometry.Geometry.Metric.Perturbation.Length
 
 noncomputable section
 open Set DifferentialGeometry

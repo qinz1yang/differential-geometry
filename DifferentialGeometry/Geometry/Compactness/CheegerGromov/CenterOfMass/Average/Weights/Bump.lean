@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.Weights.Convergence
+import DifferentialGeometry.Analysis.PartitionOfUnity.FiniteWeights.Convergence
 
 set_option autoImplicit false
 

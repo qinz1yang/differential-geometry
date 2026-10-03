@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.VolumeDistortion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Parabolic
-import DifferentialGeometry.Geometry.Comparison.LocalDistanceComparison
+import DifferentialGeometry.Geometry.Metric.Comparison.LocalDistance
 
 set_option autoImplicit false
 

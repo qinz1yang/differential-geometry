@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Basic
-import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PathLength
+import DifferentialGeometry.Geometry.Curve.Length.PathLength
 
 noncomputable section
 open Bundle Manifold Set

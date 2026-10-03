@@ -3,8 +3,8 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.SubbundleInvar
 import DifferentialGeometry.Geometry.Connection.SelfAdjointRestriction
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Associated
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.SelfAdjointRegion
-import DifferentialGeometry.Geometry.Metric.SelfAdjointAssociated
-import DifferentialGeometry.Geometry.Metric.SelfAdjointSubbundle
+import DifferentialGeometry.Geometry.Metric.VectorBundle.SelfAdjoint.Associated
+import DifferentialGeometry.Geometry.Metric.VectorBundle.SelfAdjoint.Basic
 import DifferentialGeometry.Bundle.SmoothSubbundle.VectorBundle
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint
 

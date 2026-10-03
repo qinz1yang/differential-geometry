@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Measure.Area.CoordinateSpeeds
-import DifferentialGeometry.Geometry.Metric.InterpolationSpeed
+import DifferentialGeometry.Geometry.Geodesic.Interpolation.Speed
 
 
 

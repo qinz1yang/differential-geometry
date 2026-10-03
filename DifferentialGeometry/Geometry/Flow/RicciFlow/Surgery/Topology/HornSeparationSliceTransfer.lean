@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMet
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeDiffeomorph
-import DifferentialGeometry.Geometry.Comparison.BallCapture
+import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphBallCapture
 import DifferentialGeometry.Geometry.Neck.SpatialTolerance
 
 set_option autoImplicit false

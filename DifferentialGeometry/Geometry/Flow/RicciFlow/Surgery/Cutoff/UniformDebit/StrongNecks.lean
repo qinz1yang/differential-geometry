@@ -180,6 +180,7 @@ theorem uniformDebitSurgeryStepStrong_of_strongNecks_of_fineCutNeckSupplyStrong
           (p₀.withNeckRadius ρ' hρ') hG (fun y t ht hy => hderG y t ht (hqh.trans_lt hy))
           (fun y t ht hy => hgradG y t ht (hqh.trans_lt hy)) hstrongG hncG P' hεPη Q hKQ))
   obtain ⟨Record, -, -, -, -, hwin, hstdE, -, -⟩ := hrecord
+  clear eO Nrec hord side hmark rot hδO NO kO δO n hδ1 initialK hOld P
   obtain ⟨Eappend, hOldAppend, hInitial, hHEq, hK⟩ := happend
   have hEE := eq_of_heq hHEq
   subst hEE

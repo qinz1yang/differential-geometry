@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.SelfAdjointConjugate
+import DifferentialGeometry.Geometry.Metric.VectorBundle.SelfAdjoint.Conjugate
 import DifferentialGeometry.Geometry.Connection.SelfAdjointRestriction
 import DifferentialGeometry.Geometry.Connection.HomBundle.Composition
 

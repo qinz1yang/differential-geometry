@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Metric.ScalarCurveComparison
-import DifferentialGeometry.Geometry.Metric.LipschitzCurves
+import DifferentialGeometry.Geometry.Metric.CurveSpeed.ScalarComparison
+import DifferentialGeometry.Geometry.Metric.CurveSpeed.Lipschitz
 import DifferentialGeometry.Topology.EMetricSpace.FiniteDistanceLipschitz
 import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Smoothness
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDerivative.ChartFrame
+import DifferentialGeometry.Geometry.Metric.LieDerivative.ChartFrame
 open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

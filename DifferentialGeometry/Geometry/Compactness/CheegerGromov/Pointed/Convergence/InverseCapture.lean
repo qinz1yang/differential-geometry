@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.QuadraticBounds
-import DifferentialGeometry.Geometry.Comparison.BallCapture
+import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphBallCapture
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleLinearizedOperators
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.AffineMajorant
+import DifferentialGeometry.Analysis.Sobolev.Time.Bochner.AffineMajorant
 
 noncomputable section
 

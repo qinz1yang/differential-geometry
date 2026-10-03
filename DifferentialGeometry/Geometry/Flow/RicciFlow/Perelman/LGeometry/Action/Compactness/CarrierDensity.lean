@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Sobolev.Time.Curve.Approximation
 import DifferentialGeometry.Geometry.Operator.Family.Gram.CarrierStrongConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.CarrierAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Defs
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Density
+import DifferentialGeometry.Analysis.Sobolev.Time.H1.Approximation.Density
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Construction.Sobolev
 import Mathlib.Topology.Metrizable.Basic
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderDeckProductForm
+import DifferentialGeometry.Geometry.Metric.Cylinder.Quotient.ProductIsometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Cylinders.NoDeckTranslation
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometry
 import Mathlib.Algebra.Group.Prod

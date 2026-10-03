@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
 
 set_option autoImplicit false
 

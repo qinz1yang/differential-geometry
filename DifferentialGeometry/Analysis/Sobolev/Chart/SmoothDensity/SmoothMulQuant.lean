@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMul
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.HigherOrderBound
 
 noncomputable section
 

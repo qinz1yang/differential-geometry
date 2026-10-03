@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.IntrinsicDerivative
-import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.EndpointPositivity
+import DifferentialGeometry.Geometry.Geodesic.Jacobi.EndpointPositivity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Exponential.Inverse.Radius
@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Exponential.Intrinsic.GaussLemma
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
-import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
+import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

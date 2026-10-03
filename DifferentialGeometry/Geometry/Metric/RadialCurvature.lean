@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.RadialConnection
+import DifferentialGeometry.Geometry.Metric.Radial.Connection
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
 

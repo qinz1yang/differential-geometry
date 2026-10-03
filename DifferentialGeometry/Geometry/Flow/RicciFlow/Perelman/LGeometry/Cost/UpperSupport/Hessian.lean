@@ -4,9 +4,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Alg
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
-import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
-import DifferentialGeometry.Geometry.Comparison.Variation.Curve.AffineParameter
-import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SmoothCurveGerm
+import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
+import DifferentialGeometry.Geometry.Variation.Curve.AffineParameter
+import DifferentialGeometry.Geometry.Curve.SmoothGerm
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 
 set_option autoImplicit false

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Soul.NormalFrames
-import DifferentialGeometry.Geometry.Comparison.Soul.EmbeddedSliceManifold
+import DifferentialGeometry.Geometry.Submanifold.EmbeddedSlice.Manifold
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
 
 set_option autoImplicit false

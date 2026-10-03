@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.SmoothBoundaryPlane
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Atlas
-import DifferentialGeometry.Geometry.Boundary.Manifold.Basic
+import DifferentialGeometry.Topology.Manifold.Boundary.Basic
 import DifferentialGeometry.Geometry.Boundary.Model.EuclideanHalfSpace
 import Mathlib.Geometry.Manifold.Instances.Sphere
 

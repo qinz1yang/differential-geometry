@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Multilinear
-import DifferentialGeometry.Geometry.Metric.BundleMixed
+import DifferentialGeometry.Geometry.Metric.VectorBundle.MixedTensor
 
 noncomputable section
 

@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Metric.CompactDerivative
+import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactDerivative
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
-import DifferentialGeometry.Geometry.Metric.LocalChartDistance
+import DifferentialGeometry.Geometry.Metric.ChartDistance.Local
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.ContDiff
 
 

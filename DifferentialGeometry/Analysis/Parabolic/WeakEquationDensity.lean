@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientRegularity
+import DifferentialGeometry.Analysis.Elliptic.MetricExtension.Family.Smoothness
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeWeight
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 

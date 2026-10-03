@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.HamiltonTraceContractions
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.BlockAlgebra
+import DifferentialGeometry.Tensor.BilinearForm.HamiltonBlock.Polarization
 
 set_option autoImplicit false
 

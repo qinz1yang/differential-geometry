@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.AmbientQuadraticControl
-import DifferentialGeometry.Geometry.Comparison.BallCapture
+import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphBallCapture
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
 noncomputable section

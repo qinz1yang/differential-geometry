@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Boundary.EuclideanCoverAnnulus
+import DifferentialGeometry.Topology.ThreeManifold.SphereCylinder.Annulus.EuclideanCover
 import DifferentialGeometry.Geometry.Neck.CylindricalChainSimpleConnected
-import DifferentialGeometry.Geometry.Boundary.SphericalCoverAnnulus
-import DifferentialGeometry.Geometry.Boundary.EuclideanOpenCoverAnnulus
+import DifferentialGeometry.Topology.ThreeManifold.SphereCylinder.Annulus.SphericalCover
+import DifferentialGeometry.Topology.ThreeManifold.SphereCylinder.Annulus.EuclideanOpenCover
 
 noncomputable section
 open Set Metric Topology Manifold

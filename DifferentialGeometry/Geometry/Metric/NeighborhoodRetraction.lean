@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.LocalCollapse
+import DifferentialGeometry.Topology.Manifold.Retraction.LocalCollapse
 import DifferentialGeometry.Analysis.Calculus.Retraction.FiniteCover
 import Mathlib.Geometry.Manifold.WhitneyEmbedding
 

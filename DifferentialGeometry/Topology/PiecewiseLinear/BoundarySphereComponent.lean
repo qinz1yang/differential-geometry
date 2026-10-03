@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import DifferentialGeometry.Topology.Simplex.NormedBall
 import DifferentialGeometry.Topology.PiecewiseLinear.Polyhedron
-import DifferentialGeometry.Geometry.Boundary.Manifold.Basic
+import DifferentialGeometry.Topology.Manifold.Boundary.Basic
 import DifferentialGeometry.Geometry.Boundary.Model.EuclideanHalfSpace
 import Mathlib.Geometry.Manifold.Instances.Sphere
 

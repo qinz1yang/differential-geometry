@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.CompactExhaustionCutoff
+import DifferentialGeometry.Analysis.Calculus.Cutoff.CompactExhaustion
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 noncomputable section

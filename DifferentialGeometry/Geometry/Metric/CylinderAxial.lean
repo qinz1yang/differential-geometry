@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Cylinder
-import DifferentialGeometry.Geometry.Metric.DerivativeENorm
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Extended
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 

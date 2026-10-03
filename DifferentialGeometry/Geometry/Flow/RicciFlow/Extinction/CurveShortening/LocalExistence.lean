@@ -1,7 +1,7 @@
 import Mathlib.Topology.UniformSpace.CompactConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Loops
-import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
 import Mathlib.Topology.Algebra.Group.Quotient
 import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries
 

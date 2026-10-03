@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
-import DifferentialGeometry.Geometry.Operator.Laplacian.Barrier
+import DifferentialGeometry.Analysis.Elliptic.Barrier.Laplacian
 
 set_option autoImplicit false
 

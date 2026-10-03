@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityR
 import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
 import DifferentialGeometry.Geometry.Measure.OpenSubtypeVolume
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
-import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciPointwise
+import DifferentialGeometry.Geometry.Curvature.Ricci.PointwiseLowerBound
 import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed

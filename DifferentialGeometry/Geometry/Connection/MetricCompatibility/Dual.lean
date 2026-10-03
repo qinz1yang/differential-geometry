@@ -1,5 +1,5 @@
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Metric
-import DifferentialGeometry.Geometry.Metric.BundleMusical
+import DifferentialGeometry.Geometry.Metric.VectorBundle.Musical
 import DifferentialGeometry.Geometry.Connection.Trivial
 import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
 

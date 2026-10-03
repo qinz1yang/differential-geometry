@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InsertionRoundingTie
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CurvatureRounding
+import DifferentialGeometry.Geometry.Metric.StandardCap.CurvatureRounding
 import DifferentialGeometry.Geometry.Curvature.Closure
 import DifferentialGeometry.Geometry.Curvature.OperatorNaturality
 import DifferentialGeometry.Geometry.Curvature.OpenEmbeddingPullback

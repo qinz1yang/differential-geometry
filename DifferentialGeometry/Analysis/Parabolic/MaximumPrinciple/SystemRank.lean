@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.BundleLowerKyFan
 import DifferentialGeometry.Analysis.TimeInterval
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 import DifferentialGeometry.Geometry.Metric.VectorBundle.HomNorm
-import DifferentialGeometry.Geometry.Metric.BundleContinuity
+import DifferentialGeometry.Geometry.Metric.VectorBundle.Continuity
 
 set_option autoImplicit false
 

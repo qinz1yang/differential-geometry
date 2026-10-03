@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import DifferentialGeometry.Topology.FiberBundle.Separation
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Curve
 import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
-import DifferentialGeometry.Geometry.Comparison.RadialLength
+import DifferentialGeometry.Geometry.Curve.Length.Radial
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Framed
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.Naturality.MetricLocality

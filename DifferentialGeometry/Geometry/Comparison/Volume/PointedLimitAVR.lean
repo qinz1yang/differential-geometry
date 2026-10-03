@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.AsymptoticVolumeRatio
 import DifferentialGeometry.Geometry.Comparison.Volume.CompactAVR
-import DifferentialGeometry.Geometry.Comparison.Volume.DiffeomorphVolume
-import DifferentialGeometry.Geometry.Comparison.Volume.PointedConvergence
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Naturality
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.CanonicalSource
 import DifferentialGeometry.Geometry.Comparison.Volume.VolumeNaturality
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciFromJets

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Restriction
+import DifferentialGeometry.Geometry.Metric.Restriction.Completeness
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
 

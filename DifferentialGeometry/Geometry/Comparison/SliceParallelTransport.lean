@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.ConvexTangentParallel
-import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
+import DifferentialGeometry.Geometry.Operator.Hessian.AlongGeodesic
 
 set_option autoImplicit false
 noncomputable section

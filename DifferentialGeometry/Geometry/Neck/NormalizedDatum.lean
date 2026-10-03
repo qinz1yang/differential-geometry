@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
-import DifferentialGeometry.Geometry.Metric.DerivativeENorm
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Extended
 import DifferentialGeometry.Geometry.Curvature.ScalarRoundCylinder
 import DifferentialGeometry.Geometry.Curvature.RoundCylinder
 import DifferentialGeometry.Geometry.Metric.RoundCylinder

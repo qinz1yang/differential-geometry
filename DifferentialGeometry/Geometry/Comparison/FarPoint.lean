@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.SecondDerivative.Minimum
 import DifferentialGeometry.Geometry.Metric.CurveEnergy
 import DifferentialGeometry.Geometry.Curvature.CompactPositive
 import DifferentialGeometry.Geometry.Submanifold.IsometricImmersion
-import DifferentialGeometry.Geometry.Comparison.Variation.RadialCurvatureEstimate
+import DifferentialGeometry.Geometry.Variation.RadialCurvatureEstimate
 import DifferentialGeometry.Geometry.Comparison.Variation.CurveEnergy
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 

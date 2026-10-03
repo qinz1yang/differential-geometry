@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankOneSupport
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Metric.InverseGram
 import DifferentialGeometry.Geometry.Metric.Completeness
-import DifferentialGeometry.Geometry.Metric.Restriction
+import DifferentialGeometry.Geometry.Metric.Restriction.Completeness
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 import DifferentialGeometry.Topology.FiberBundle.Separation
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricContinuity

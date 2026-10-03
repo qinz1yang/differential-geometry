@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.Cl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.BoundedDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution.DerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.EndpointEquality
-import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciLower
+import DifferentialGeometry.Geometry.Curvature.Ricci.LowerBoundFromNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import DifferentialGeometry.Geometry.Comparison.MetricDistanceTransfer
-import DifferentialGeometry.Geometry.Comparison.BallCapture
+import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphBallCapture
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.RestrictionDistance

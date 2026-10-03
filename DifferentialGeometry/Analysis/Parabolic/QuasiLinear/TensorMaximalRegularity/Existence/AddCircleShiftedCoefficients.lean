@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.BoundedConvergence
 import DifferentialGeometry.Topology.ContinuousMap.CompactRange
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleTimeCompositionContinuity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.ClassicalEquation
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.PairedSmallness
+import DifferentialGeometry.Analysis.Sobolev.Time.Bochner.PairedSmallness
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Slice
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nemytskii.Local
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication

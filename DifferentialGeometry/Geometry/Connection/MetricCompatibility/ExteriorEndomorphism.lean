@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.ExteriorEndomorphismBundle
+import DifferentialGeometry.Geometry.Metric.VectorBundle.ExteriorPower.Endomorphism
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ExteriorPower
 import DifferentialGeometry.Geometry.Connection.NormalSection
 

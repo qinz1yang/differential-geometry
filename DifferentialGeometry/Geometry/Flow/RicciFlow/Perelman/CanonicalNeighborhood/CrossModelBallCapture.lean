@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.BallCapture
+import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphBallCapture
 
 set_option autoImplicit false
 noncomputable section

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.GrowingInitialCylinderCharts
+import DifferentialGeometry.Geometry.Metric.StandardCap.CylinderCharts
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Defs
 import DifferentialGeometry.Geometry.Metric.RoundCylinder
 

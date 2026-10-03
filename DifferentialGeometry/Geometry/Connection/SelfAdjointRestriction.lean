@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.SelfAdjointSubbundle
+import DifferentialGeometry.Geometry.Metric.VectorBundle.SelfAdjoint.Basic
 import DifferentialGeometry.Geometry.Connection.SubbundleRestriction
 import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint

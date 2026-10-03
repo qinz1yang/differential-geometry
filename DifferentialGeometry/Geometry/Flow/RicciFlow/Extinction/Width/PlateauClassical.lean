@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Manifold.ClosedDiskExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Plateau
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentHarmonic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentDifferential
-import DifferentialGeometry.Geometry.Metric.UniformCharts
+import DifferentialGeometry.Geometry.Metric.Coordinates.UniformCharts
 import DifferentialGeometry.Topology.Connected.FiniteEDistance
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 import Mathlib.Topology.Connected.LocallyConnected

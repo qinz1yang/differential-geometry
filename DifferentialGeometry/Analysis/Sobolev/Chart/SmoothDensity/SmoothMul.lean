@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
 import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
-import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.CompactNeighborhood
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
 import Mathlib.Analysis.Calculus.ContDiff.Basic

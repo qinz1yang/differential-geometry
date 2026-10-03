@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
-import DifferentialGeometry.Geometry.Metric.BilinearTrace
+import DifferentialGeometry.Analysis.InnerProductSpace.BilinearTrace
 
 noncomputable section
 

@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.Smoot
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
-import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
+import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.RadialBump
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension

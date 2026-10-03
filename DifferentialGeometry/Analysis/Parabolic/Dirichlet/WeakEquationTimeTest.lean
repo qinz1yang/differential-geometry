@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakFormIntegration
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.SmoothTimeTest
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1IntegrationByParts
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Steklov
+import DifferentialGeometry.Analysis.Sobolev.Time.Steklov
 
 noncomputable section
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.BallCapture
+import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphBallCapture
 import Mathlib.Analysis.Normed.Module.Connected
 
 noncomputable section

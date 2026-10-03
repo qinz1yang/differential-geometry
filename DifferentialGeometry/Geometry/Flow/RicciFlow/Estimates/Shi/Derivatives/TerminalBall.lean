@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Comparison.IntrinsicBallImage
 import DifferentialGeometry.Geometry.Curvature.DimensionOne.Derivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalFromJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.CurvatureMetricComparison
-import DifferentialGeometry.Geometry.Comparison.LocalDistanceComparison
+import DifferentialGeometry.Geometry.Metric.Comparison.LocalDistance
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Metric.ModelChange

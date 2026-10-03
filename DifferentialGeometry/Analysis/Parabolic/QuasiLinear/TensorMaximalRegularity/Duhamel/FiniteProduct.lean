@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.StrongBackwardIdentification
 import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.PiLp
 import DifferentialGeometry.Analysis.Integration.Lp.PiLp
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.FiniteProduct
+import DifferentialGeometry.Analysis.Sobolev.Time.H1.FiniteProduct
 
 section
 

@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Interpolation.T
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.CrossScaleParabolicTraceContinuity
 import DifferentialGeometry.Analysis.ODE.LinearIntegralEquation
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.StrongBackwardIdentification
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.SmallTime
+import DifferentialGeometry.Analysis.Sobolev.Time.Bochner.SmallTime
 
 noncomputable section
 

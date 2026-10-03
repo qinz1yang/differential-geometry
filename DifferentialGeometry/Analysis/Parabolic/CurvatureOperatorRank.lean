@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionR
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionPositivity
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankRigidity
 import DifferentialGeometry.Geometry.Metric.VectorBundle.HomNorm
-import DifferentialGeometry.Geometry.Metric.BundleContinuity
+import DifferentialGeometry.Geometry.Metric.VectorBundle.Continuity
 import DifferentialGeometry.Analysis.Spectral.BundleLowerKyFan
 
 set_option autoImplicit false

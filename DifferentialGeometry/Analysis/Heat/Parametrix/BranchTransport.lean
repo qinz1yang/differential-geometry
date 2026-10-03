@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Heat.Parametrix.CoordinateCoefficient
-import DifferentialGeometry.Geometry.Comparison.Volume.BranchDensityTransport
+import DifferentialGeometry.Geometry.Exponential.Inverse.BranchDensityTransport
 
 noncomputable section
 

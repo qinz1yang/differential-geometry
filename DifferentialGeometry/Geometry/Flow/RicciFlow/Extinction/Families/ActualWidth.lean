@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.OpenConnection
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ComponentFlow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.ComponentFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.CurveShortening.Background.Bounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ClassWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalClass

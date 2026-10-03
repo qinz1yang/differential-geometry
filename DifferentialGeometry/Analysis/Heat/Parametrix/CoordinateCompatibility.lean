@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Heat.Parametrix.Coefficient
 import DifferentialGeometry.Analysis.Integration.RadialIntegral.Basic
-import DifferentialGeometry.Geometry.Comparison.Volume.NormalJacobianCompatibility
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Jacobian.Compatibility
 
 noncomputable section
 

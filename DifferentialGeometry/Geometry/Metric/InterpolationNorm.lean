@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.DerivativeENorm
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Extended
 import DifferentialGeometry.Geometry.Metric.Conformal.Basic
 import DifferentialGeometry.Geometry.Metric.Tensor.CompactBounds
 import DifferentialGeometry.Geometry.Metric.Tensor.Scaling

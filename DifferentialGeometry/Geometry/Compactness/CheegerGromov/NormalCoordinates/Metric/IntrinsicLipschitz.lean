@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.LocalJacobi
-import DifferentialGeometry.Geometry.Metric.ConvexChartDistance
+import DifferentialGeometry.Geometry.Metric.Lipschitz.ConvexChart
 
 section
 

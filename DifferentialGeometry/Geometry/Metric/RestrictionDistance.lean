@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Completeness
-import DifferentialGeometry.Geometry.Metric.LocalChartDistance
+import DifferentialGeometry.Geometry.Metric.ChartDistance.Local
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 
 set_option autoImplicit false

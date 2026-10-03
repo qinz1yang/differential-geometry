@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Defs
-import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PathLength
+import DifferentialGeometry.Geometry.Curve.Length.PathLength
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Geodesic.SyngeReturnDeterminant
-import DifferentialGeometry.Geometry.Geodesic.ParallelOrientation
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Orientation
 import DifferentialGeometry.External.CanonicalTopology.LinearAlgebra.Orientation
 
 noncomputable section

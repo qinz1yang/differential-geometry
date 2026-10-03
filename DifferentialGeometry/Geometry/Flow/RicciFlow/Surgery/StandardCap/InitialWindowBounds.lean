@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertio
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm
-import DifferentialGeometry.Geometry.Metric.CompactSourceEllipticity
+import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSourceEllipticity
 import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeModel
 

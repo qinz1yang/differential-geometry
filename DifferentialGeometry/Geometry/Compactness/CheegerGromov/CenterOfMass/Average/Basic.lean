@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Existence
+import DifferentialGeometry.Geometry.CenterOfMass.Existence
 
 open DifferentialGeometry.Geometry.Curvature
 

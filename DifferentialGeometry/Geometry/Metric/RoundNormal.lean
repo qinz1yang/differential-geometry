@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.RoundPolarAlgebra
+import DifferentialGeometry.Analysis.InnerProductSpace.RadialBilinearField.RoundPolar
 import DifferentialGeometry.Geometry.Exponential.NormalBall.Metric
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.FixedBasePartialDiffeomorph

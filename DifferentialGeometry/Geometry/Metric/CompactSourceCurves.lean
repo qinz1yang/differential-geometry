@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Metric.CompactSourceDerivative
-import DifferentialGeometry.Geometry.Metric.CurveSpeed
+import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSourceDerivative
+import DifferentialGeometry.Geometry.Metric.CurveSpeed.Distance
 import Mathlib.Analysis.Calculus.Deriv.Basic
 
 

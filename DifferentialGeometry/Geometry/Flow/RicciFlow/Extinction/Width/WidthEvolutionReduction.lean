@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.HistoryWidthJumpComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedWidthComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Extinction.WidthComparison.Deformation
 
 noncomputable section
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.ChartLipschitz
+import DifferentialGeometry.Geometry.Metric.ChartLipschitz.Basic
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
 noncomputable section

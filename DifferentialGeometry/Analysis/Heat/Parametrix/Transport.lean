@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Heat.Parametrix.Coefficient
-import DifferentialGeometry.Geometry.Comparison.Volume.NormalJacobianTransport
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Jacobian.Transport
 
 noncomputable section
 

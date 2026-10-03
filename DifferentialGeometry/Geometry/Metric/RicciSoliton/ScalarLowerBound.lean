@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
-import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
+import DifferentialGeometry.Geometry.Operator.Hessian.AlongGeodesic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciPointwise
+import DifferentialGeometry.Geometry.Curvature.Ricci.PointwiseLowerBound
 import DifferentialGeometry.Geometry.Comparison.Volume.JacobiRiccati.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialComparison
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm

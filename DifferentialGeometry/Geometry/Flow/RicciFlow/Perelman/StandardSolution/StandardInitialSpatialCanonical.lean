@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Neck.BallVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckCapCompactDomains
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.EndNeckPerturbation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.GrowingInitialCylinderCharts
+import DifferentialGeometry.Geometry.Metric.StandardCap.CylinderCharts
 import DifferentialGeometry.Geometry.Neck.SpatialIsometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Estimates.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Estimates.InitialCurvature

@@ -23,7 +23,7 @@ import DifferentialGeometry.Geometry.Measure.Area.AnnulusCompetitor
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import DifferentialGeometry.Topology.StandardModel
-import DifferentialGeometry.Geometry.Metric.ScalarCurveComparison
+import DifferentialGeometry.Geometry.Metric.CurveSpeed.ScalarComparison
 import DifferentialGeometry.Analysis.Calculus.Variation.Lipschitz
 
 noncomputable section

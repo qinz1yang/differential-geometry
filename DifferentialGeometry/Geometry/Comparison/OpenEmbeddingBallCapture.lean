@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.BallCapture
+import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphBallCapture
 import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphDistance
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphRange
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeDiffeomorph

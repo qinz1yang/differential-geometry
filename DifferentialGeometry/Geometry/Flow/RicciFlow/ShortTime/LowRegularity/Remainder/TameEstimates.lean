@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Remainder.ForcingFirstOrderBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Remainder.FirstOrderBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Solution.DenseNonlinearity
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Solution.DenseNonlinearity
 open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
     DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
     DifferentialGeometry.Analysis.Spectral.MetricRealization

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Integrability
-import DifferentialGeometry.Geometry.Operator.Gradient.ChartFamilyIdentification
+import DifferentialGeometry.Analysis.Integration.L2.Gradient.ChartIdentification
 import Mathlib.Analysis.Calculus.Deriv.Support
 import Mathlib.Topology.Algebra.Support
 

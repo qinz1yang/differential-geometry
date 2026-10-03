@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PlanarJordan.VertexFan
 import DifferentialGeometry.Topology.Homeomorph.UniformGluing
-import DifferentialGeometry.Topology.DiscreteNeighborhoods
+import DifferentialGeometry.Topology.MetricSpace.DiscreteNeighborhoods
 import DifferentialGeometry.Topology.Embedding.RealParameter
 import DifferentialGeometry.Topology.Order.DiscreteRange
 import Mathlib.Analysis.SpecificLimits.Basic

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Radial
+import DifferentialGeometry.Analysis.InnerProductSpace.RadialBilinearForm
 import Mathlib.Analysis.Normed.Module.Normalize
 
 noncomputable section

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.ODE.IndexForm.Basic
 import DifferentialGeometry.Geometry.Comparison.Laplacian.Radial
-import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.IndexForm
+import DifferentialGeometry.Geometry.Variation.IndexForm.PerpendicularCoordinates
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Minimizer
-import DifferentialGeometry.Geometry.Comparison.Variation.Field.Smoothness
+import DifferentialGeometry.Geometry.Variation.Field.Smoothness
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.SmoothAlongExpansion
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge
 import DifferentialGeometry.Geometry.Curvature.Metric.SectionalCone

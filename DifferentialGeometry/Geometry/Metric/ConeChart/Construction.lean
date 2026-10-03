@@ -4,7 +4,7 @@ import DifferentialGeometry.Bundle.Frame
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
 import DifferentialGeometry.Geometry.Metric.ConeRadialCurve
 import DifferentialGeometry.Topology.MetricSpace.Cone.Distance
-import DifferentialGeometry.Geometry.Metric.InfinitesimalDistance
+import DifferentialGeometry.Geometry.Metric.Distance.Infinitesimal
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.Diffeomorph.Preimage
 import DifferentialGeometry.Topology.Manifold.ULift

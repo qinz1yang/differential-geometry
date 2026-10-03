@@ -1463,11 +1463,16 @@ theorem exists_parameterDerivative_forcing_lift_of_principal_norm_lt_one
   let N' := tensorHsInclusion (g := g) (r := 0) (s := 0)
     (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((2 : ℕ) : ℝ))
   have hJN (v : TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1)) : J' (N v) = J v := by
-    apply TensorHs.ext
-    rfl
+    exact (tensorHsInclusion_trans_apply
+      (by norm_num : ((1 : ℕ) : ℝ) ≤ ((2 : ℕ) : ℝ))
+      (by norm_num : ((2 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1) v).symm
   have hNN (v : TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1)) : N' (N v) = v := by
-    apply TensorHs.ext
-    rfl
+    calc
+      N' (N v) = tensorHsInclusion (le_refl (((1 : ℕ) : ℝ) + 1)) v :=
+        (tensorHsInclusion_trans_apply
+          (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((2 : ℕ) : ℝ))
+          (by norm_num : ((2 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1) v).symm
+      _ = v := tensorHsInclusion_refl_apply v
   refine exists_normalized_parameterDerivative_forcing_lift g 1 hT
     (fun t => N (a₂ t)) ((Lp.memLp a₂).continuousLinearMap_comp N) C2h C2l
     (parameterDerivativeDuhamelForcing g 0 hT F)

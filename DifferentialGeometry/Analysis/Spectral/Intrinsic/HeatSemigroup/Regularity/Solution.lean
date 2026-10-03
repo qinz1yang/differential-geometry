@@ -35,7 +35,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Regularity.PointwiseDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Compactness.Modulus
+import DifferentialGeometry.Analysis.Sobolev.Time.H1.Compactness.Modulus
 
 section
 open DifferentialGeometry.Analysis.Sobolev.CSupTensor

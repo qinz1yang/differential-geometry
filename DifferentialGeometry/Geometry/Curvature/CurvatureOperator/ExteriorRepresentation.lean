@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.ExteriorEndomorphism
+import DifferentialGeometry.Analysis.InnerProductSpace.ExteriorPower.Endomorphism
 import DifferentialGeometry.Geometry.Curvature.Algebraic.Form
 
 set_option autoImplicit false

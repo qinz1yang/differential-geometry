@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.ContinuousMultiplier
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Operator.Basic
+import DifferentialGeometry.Analysis.Sobolev.Time.Operator.Basic
 
 noncomputable section
 

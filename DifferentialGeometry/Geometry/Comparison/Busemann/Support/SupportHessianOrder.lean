@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
-import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
-import DifferentialGeometry.Geometry.Comparison.Toponogov.LowerSupportConvexity
+import DifferentialGeometry.Geometry.Operator.Hessian.AlongGeodesic
+import DifferentialGeometry.Analysis.Convex.LowerSupport
 
 set_option autoImplicit false
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SphereOrthogonalFixedPoint
+import DifferentialGeometry.Geometry.Metric.Cylinder.Quotient.SphereFreeActions
 import Mathlib.Analysis.Normed.Affine.Isometry
 
 set_option autoImplicit false

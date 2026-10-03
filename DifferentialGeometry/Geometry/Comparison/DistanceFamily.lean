@@ -1,9 +1,9 @@
-import DifferentialGeometry.Geometry.Comparison.Variation.ArcLengthContinuity
+import DifferentialGeometry.Geometry.Curve.Length.Continuity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Continuity
 import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.FixedBasePartialDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Family.LocalEquivalence
-import DifferentialGeometry.Geometry.Comparison.LocalDistanceComparison
+import DifferentialGeometry.Geometry.Metric.Comparison.LocalDistance
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Topology.Compactness.Family
 import DifferentialGeometry.Topology.Order.Interval

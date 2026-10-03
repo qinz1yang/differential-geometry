@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonLocalLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseDegreeFrontierReduction
-import DifferentialGeometry.Geometry.Metric.Restriction
+import DifferentialGeometry.Geometry.Metric.Restriction.Completeness
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldEuclidean
 import Mathlib.Topology.Order.IntermediateValue
 

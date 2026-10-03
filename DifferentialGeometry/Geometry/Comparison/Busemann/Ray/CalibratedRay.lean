@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Busemann.Ray.Busemann
+import DifferentialGeometry.Topology.MetricSpace.Busemann.Line
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling

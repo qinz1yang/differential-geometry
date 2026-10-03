@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.CurveVariation
+import DifferentialGeometry.Geometry.Metric.CurveVariation.Length
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.Estimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FixedRegionMargin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.QuotientCollapse

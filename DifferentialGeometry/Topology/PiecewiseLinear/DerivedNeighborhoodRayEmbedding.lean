@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.CompactEmbeddingComplement
+import DifferentialGeometry.Topology.Embedding.CompactComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRay
 import DifferentialGeometry.Topology.PiecewiseLinear.FrontierBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell

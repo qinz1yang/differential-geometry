@@ -1,5 +1,5 @@
 import DifferentialGeometry.Bundle.Hom
-import DifferentialGeometry.Geometry.Metric.BundlePullback
+import DifferentialGeometry.Geometry.Metric.VectorBundle.Pullback.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 
 noncomputable section

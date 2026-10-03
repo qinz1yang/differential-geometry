@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaTransport
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDensity
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
-import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ImmersionTraceLift
+import DifferentialGeometry.Analysis.Calculus.Manifold.ImmersionLiftRegularity
 
 noncomputable section
 

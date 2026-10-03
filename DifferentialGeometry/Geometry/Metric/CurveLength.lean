@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.LipschitzCurveIntegration
+import DifferentialGeometry.Geometry.Metric.CurveSpeed.Integrability
 
 
 

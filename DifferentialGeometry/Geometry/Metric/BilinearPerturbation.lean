@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.DerivativeENorm
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Extended
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 

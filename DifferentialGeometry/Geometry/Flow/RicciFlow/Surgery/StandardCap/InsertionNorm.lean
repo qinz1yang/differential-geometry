@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InsertionMetric
 import DifferentialGeometry.Geometry.Metric.InterpolationNorm
-import DifferentialGeometry.Geometry.Metric.ReferenceNormComparison
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.ReferenceComparison
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross

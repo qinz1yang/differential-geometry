@@ -9,7 +9,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Integrabil
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WitnessCongruence
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Lipschitz
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.MinimizingSequence
-import DifferentialGeometry.Geometry.Metric.CompactSourceLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSource
 import DifferentialGeometry.Geometry.Metric.Pullback.Coefficients
 import Mathlib.Dynamics.Circle.RotationNumber.TranslationNumber
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Retraction
