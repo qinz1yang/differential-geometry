@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.Piece.LocalFiniteness
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import DifferentialGeometry.Topology.Simplex.NormedBall
 import DifferentialGeometry.Topology.PiecewiseLinear.IsCombinatorialManifoldOfLocallyFinitePLPieceIn
@@ -33,21 +34,6 @@ theorem LocallyFinitePLPieceIn.card_le_four (𝒦 : LocallyFinitePLPieceIn Ea 3 
       card_le_of_isPLSphere (m := 2) (SimplicialComplex.geometricLink 𝒦.complex {v})
         (hK v hv') hmem
     omega
-
-omit [FiniteDimensional ℝ Ea] in
-theorem LocallyFinitePLPieceIn.finite_faces_inter_of_isCompact
-    (𝒦 : LocallyFinitePLPieceIn Ea 3 M U) {C : Set Ea} (hC : IsCompact C)
-    (hC𝒦 : C ⊆ 𝒦.complex.space) :
-    {t : Finset Ea | t ∈ 𝒦.complex.faces ∧ (convexHull ℝ (t : Set Ea) ∩ C).Nonempty}.Finite := by
-  have hCsub : IsCompact ((Subtype.val : 𝒦.complex.space → Ea) ⁻¹' C) := by
-    rw [Subtype.isCompact_iff, image_preimage_eq_iff.mpr]
-    · exact hC
-    · intro x hx
-      exact ⟨⟨x, hC𝒦 hx⟩, rfl⟩
-  have hfin := 𝒦.locallyFinite.finite_nonempty_inter_compact hCsub
-  refine (hfin.image fun i : 𝒦.complex.faces => (i : Finset Ea)).subset ?_
-  rintro t ⟨ht, x, hxt, hxC⟩
-  exact ⟨⟨t, ht⟩, ⟨⟨x, hC𝒦 hxC⟩, hxt, hxC⟩, rfl⟩
 
 open Classical in
 theorem LocallyFinitePLPieceIn.exists_isPLBall_nhdsWithin_space_of_isPLBall_two

@@ -13,12 +13,6 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
-theorem isPolyhedron_stdSimplexBoundary_two : IsPolyhedron (stdSimplexBoundary 2) := by
-  have : Finite (simplexBoundary (stdVertices 1) (stdVertices_affineIndependent 1)).faces :=
-    (simplexBoundary_faces_finite _ _).to_subtype
-  rw [← simplexBoundary_stdVertices_space 1]
-  exact isPolyhedron_space _
-
 theorem exists_prism_of_inter_frontier_eq (XK : Geometry.SimplicialComplex ℝ E3)
     [Finite XK.faces] (hX : IsCombinatorialManifoldWithBoundary 3 XK) {V : Set E3}
     (hV : IsOpen V) {Δ : Set E3} {r : (Fin 3 → ℝ) → E3}

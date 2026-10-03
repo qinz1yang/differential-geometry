@@ -86,4 +86,10 @@ theorem image_simplexBoundary_of_isPLHomeomorphOn {F : Type*}
   rw [← hsource, image_image]
   exact htarget
 
+theorem isPolyhedron_stdSimplexBoundary_two : IsPolyhedron (stdSimplexBoundary 2) := by
+  have : Finite (simplexBoundary (stdVertices 1) (stdVertices_affineIndependent 1)).faces :=
+    (simplexBoundary_faces_finite _ _).to_subtype
+  rw [← simplexBoundary_stdVertices_space 1]
+  exact isPolyhedron_space _
+
 end DifferentialGeometry.Topology.PiecewiseLinear
