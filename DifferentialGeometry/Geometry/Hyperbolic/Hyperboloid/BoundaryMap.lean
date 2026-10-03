@@ -148,7 +148,7 @@ private theorem exists_originRay_close_of_quasi_geodesic [FiniteDimensional ℝ 
     rfl
   simpa only [heq] using hclose t ht
 
-private theorem norm_kleinHomeomorph_sub_limit_sq_le [FiniteDimensional ℝ E]
+theorem norm_kleinHomeomorph_sub_limit_sq_le [FiniteDimensional ℝ E]
     (q : ℝ → Hyperboloid E) {L C : ℝ} (hL : 1 ≤ L) (hC : 0 ≤ C)
     (hq : ContinuousOn q (Set.Ici 0)) (hq0 : q 0 = origin)
     (hquasi : ∀ s ∈ Set.Ici (0 : ℝ), ∀ t ∈ Set.Ici (0 : ℝ),

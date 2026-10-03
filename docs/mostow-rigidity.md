@@ -90,10 +90,10 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| `review_hyperboloid_interpolation` | Prove a uniform half-chord Hölder bound for the original boundary map with fixed coarse constants and basepoint bound. |
+| Root | Assemble original-map disk control after complete-line tracking and a uniform fixed-triple basepoint bound. |
 | `review_hyperboloid_metric` | Prove two-sided complete-line Morse tracking with the original positive and negative ideal limits. |
 | `equivariant_descent` | Identify actual metric segments and complete geodesic lines with their Klein chords. |
-| `hyperboloid_metric` | Prove actual covering small-ball volume equality and specialize to the original lifted metric. |
+| `hyperboloid_metric` | Prove original universal-cover small-ball volume equality from the actual deck displacement bound. |
 | `rigidity_assessment` | Prove that an isometry with no interior fixed point has a nonempty boundary fixed set of at most two points. |
 
 The interior returning-orbit extraction is proved with the actual composite
@@ -571,3 +571,33 @@ diagnostics; the existing aggregate took 35 seconds. Exact evidence is in
 `mostow-quotient-stereographic.json`. All 73 newly added Lean files have
 current source-hash-matched fresh compilation evidence below 30 seconds.
 The three-dimensional finite-volume Mostow headline remains open.
+
+## Verified uniform boundary estimate and covering small-ball volume
+
+The original continuous quasi-isometric embedding now has a uniform boundary
+half-chord Hölder estimate with exponent one over twice its coarse multiplicative
+constant. Its bound is chosen before the original map and endpoints, from the
+fixed coarse constants and actual origin displacement bound. Normalization uses
+the actual boost and boundary-map composition. Nonisometric sine perturbations
+and their nonorigin boosted versions verify that the original map is retained.
+A single existing quantitative ray-error declaration was made public without
+changing its statement or proof; that visibility change is integration only.
+
+An actual Riemannian covering injective on its source open ball now preserves
+the native volume of that ball and its corresponding target ball. All real
+radii are permitted; neither global injectivity nor completeness is assumed.
+Actual quarter-period and half-period balls for the real-to-circle covering
+verify the local injectivity, exact metric pullback and native volume equality.
+
+All three changed modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. Fresh source builds took
+6.0, 2.8 and 4.0 seconds; the affected boundary-equivalence module also passed.
+The 26,935-job root build passed without diagnostics; the existing aggregate
+took 36 seconds. Exact evidence is in `mostow-holder-covering-volume.json`.
+All 75 newly added Lean files have current source-hash-matched fresh
+compilation evidence below 30 seconds.
+
+The uniform fixed-boundary-triple basepoint bound, complete-line two-sided
+tracking and the actual disk-control producer remain open. Finite-volume
+cusp geometry and the final three-dimensional Mostow rigidity theorem are
+still unproved; no headline completion is claimed by these layers.

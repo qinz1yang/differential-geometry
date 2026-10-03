@@ -1,0 +1,103 @@
+{
+  "base_commit": "1b18e8b4147b2a21d01d3ba1e20c71cd6f3d8726",
+  "layer": "Uniform original-boundary Holder estimate and native covering small-ball volume",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryMap.lean",
+      "sha256": "cb20326c352923dcba47e4bd29130f466d7bbd703b520b91606657c24b74e999",
+      "fresh_lake_build_seconds": 6.0,
+      "status": "INTEGRATION-ONLY",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "norm_kleinHomeomorph_sub_limit_sq_le"
+      ],
+      "mathematical_review": "One private keyword removed; exact existing quantitative ray-error statement, proof body and scope unchanged.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.QuasiGeodesicBoundary",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinCompactification",
+        "Mathlib.Analysis.Normed.Module.Normalize",
+        "Mathlib.Topology.MetricSpace.IsometricSMul",
+        "Mathlib.Topology.UniformSpace.UniformApproximation"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryMapMetric.lean",
+      "sha256": "2e7b50b12c94110ba96ea9c84e6454c65763765c2b235817adc915fa0441d7fa",
+      "fresh_lake_build_seconds": 2.8,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "exists_boundaryMap_half_chord_bound"
+      ],
+      "mathematical_review": "One uniform half-chord Holder constant precedes all original maps with fixed coarse constants and actual basepoint displacement bound; actual boundaryMap retained.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMap",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMetric",
+        "Mathlib.Analysis.SpecialFunctions.Pow.Real"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Measure/CoveringBall.lean",
+      "sha256": "3737fc39a19e316e813375ebfa5e888b1876e2486a311cf15471908d89251229",
+      "fresh_lake_build_seconds": 4.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "public_declarations": [
+        "riemannianVolumeMeasure_ball_eq_of_injOn_coveringMap"
+      ],
+      "mathematical_review": "Native source/target ball volume equality for actual local-isometric covering injective on the original source ball, with all real radii and no global injectivity/completeness.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Measure.LocalIsometryOn",
+        "DifferentialGeometry.Geometry.Metric.Covering.BallImage"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryMap.lean",
+    "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryMapMetric.lean",
+    "DifferentialGeometry/Geometry/Measure/CoveringBall.lean"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "affected_dependents": {
+    "module": "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryEquiv",
+    "fresh_lake_build_seconds": 1.3,
+    "result": "silent success"
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "jobs": 26935,
+    "root_module_seconds": 36.0,
+    "root_compiler_cap": 1,
+    "errors": 0,
+    "warnings": 0
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}
