@@ -1,0 +1,134 @@
+{
+  "base_commit": "6c9d189143cac4c51ee97a2784e0f439682c1c99",
+  "layer": "Fixed-pole plane geometry, displacement scales and actual Margulis common fixed points",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryPlaneMetric.lean",
+      "sha256": "a7d8a627519d00f402d9fdc3d7c7b5b9a00b6071e5f4559fc49ac1720aab9c8a",
+      "fresh_lake_build_seconds": 6.6,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "dist_stereographicComplex_boundaryHomeomorph"
+      ],
+      "mathematical_review": "Original fixed-pole boundary action scales finite-chart Euclidean distances by its actual positive north null-vector Lorentz time factor, including reflections.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMetric",
+        "DifferentialGeometry.Geometry.Coordinates.StereographicComplex"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryMetric.lean",
+      "sha256": "0a389de1dcbcf4ebeb4d9c1a3b224bb8a57988330557690f83d95ce5f700483a",
+      "fresh_lake_build_seconds": 1.4,
+      "status": "INTEGRATION-ONLY",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "public_declarations": [
+        "exp_neg_dist_origin_le_boundary_time"
+      ],
+      "mathematical_review": "One existing private time-factor lower bound made public with unchanged signature, proof body and scope.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boundary",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper",
+        "Mathlib.Topology.MetricSpace.Lipschitz"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Busemann.lean",
+      "sha256": "3ae791971e0ea5e1dd01692a4866a4a681ec2bc443ec04cc9ca18dfbb33cbe85",
+      "fresh_lake_build_seconds": 1.3,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "public_declarations": [
+        "abs_log_lorentzExtension_time_le_dist_of_boundary_fixed"
+      ],
+      "mathematical_review": "The absolute logarithm of the actual fixed null-ray multiplier is bounded by displacement at every actual point; conjugation retains the original eigenvalue.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMetric"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryOrbit.lean",
+      "sha256": "44ad4bb644d9b9694872c1ef16945d14f1eb5aad34bbec6cf1d48c229b8ffdb6",
+      "fresh_lake_build_seconds": 1.7,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "boundaryHomeomorph_eq_self_of_finite_orbit"
+      ],
+      "mathematical_review": "A freely acting subgroup fixes the same supplied point of any finite actual boundary orbit; the dimension-free previous orbit bound is reused.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryFixedPoint",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.FixedPoint",
+        "Mathlib.Algebra.Group.Action.End",
+        "Mathlib.Basic.Finite.Prod"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/FiniteBoundaryOrbit.lean",
+      "sha256": "b1074ff69e9004ac95b7cb3f9909302ed2950a776c0aa9b74505dc9c67a54f56",
+      "fresh_lake_build_seconds": 1.6,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "exists_pos_forall_exists_boundary_fixedPoint_small_displacement"
+      ],
+      "mathematical_review": "The actual uniform Margulis small-displacement subgroup has a common ideal fixed point, with full original group freeness derived on its actual subgroup.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryOrbit",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Nilpotent",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Margulis",
+        "DifferentialGeometry.Topology.Algebra.Group.FiniteOrbit"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "Geometry/Hyperbolic/Hyperboloid/BoundaryMetric",
+    "Geometry/Hyperbolic/Hyperboloid/Busemann",
+    "Geometry/Hyperbolic/Hyperboloid/BoundaryPlaneMetric",
+    "Geometry/Hyperbolic/Hyperboloid/BoundaryOrbit",
+    "Geometry/Hyperbolic/Hyperboloid/FiniteBoundaryOrbit"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "jobs": 26955,
+    "root_module_seconds": 32.0,
+    "root_compiler_cap": 1,
+    "errors": 0,
+    "warnings": 0
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}

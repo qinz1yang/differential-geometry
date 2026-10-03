@@ -28,7 +28,7 @@ theorem dist_boundaryHomeomorph_sq (e : Hyperboloid E ≃ᵢ Hyperboloid F)
   field_simp [hξ, hη]
   nlinarith only [hform]
 
-private theorem exp_neg_dist_origin_le_boundary_time
+theorem exp_neg_dist_origin_le_boundary_time
     (e : Hyperboloid E ≃ᵢ Hyperboloid F) (ξ : Metric.sphere (0 : E) 1) :
     Real.exp (-dist (origin : Hyperboloid F) (e origin)) ≤
       (lorentzExtension e (1, (ξ : E))).1 := by

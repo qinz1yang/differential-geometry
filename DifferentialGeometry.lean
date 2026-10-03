@@ -17991,3 +17991,5 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundarySimilarity
 import DifferentialGeometry.Geometry.Measure.HyperbolicUniversalCover
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryOrbit
 import DifferentialGeometry.Geometry.Hyperbolic.ThickPart
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryPlaneMetric
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Busemann

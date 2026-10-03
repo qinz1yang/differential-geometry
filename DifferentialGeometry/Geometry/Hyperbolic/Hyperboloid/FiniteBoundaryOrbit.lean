@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryOrbit
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Nilpotent
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Margulis
 import DifferentialGeometry.Topology.Algebra.Group.FiniteOrbit
@@ -97,5 +98,45 @@ theorem exists_pos_forall_exists_finite_boundary_orbit_small_displacement :
   refine ⟨ξ, hξ.subset ?_⟩
   rintro y ⟨g, rfl⟩
   exact ⟨e g, rfl⟩
+
+theorem exists_pos_forall_exists_boundary_fixedPoint_small_displacement :
+    ∃ ε : ℝ, 0 < ε ∧
+      ∀ (Γ : Subgroup (Hyperboloid E ≃ᵢ Hyperboloid E)) [DiscreteTopology Γ],
+        (∀ γ : Γ, γ ≠ 1 → ∀ y : Hyperboloid E,
+          (γ : Hyperboloid E ≃ᵢ Hyperboloid E) y ≠ y) →
+        ∀ x : Hyperboloid E,
+          let L := Subgroup.closure
+            {g : Γ | dist ((g : Hyperboloid E ≃ᵢ Hyperboloid E) x) x < ε}
+          ∃ ξ : Metric.sphere (0 : E) 1,
+            ∀ g : L, boundaryHomeomorph
+              ((g : Γ) : Hyperboloid E ≃ᵢ Hyperboloid E) ξ = ξ := by
+  obtain ⟨ε, hε, h⟩ := exists_pos_forall_exists_finite_boundary_orbit_small_displacement (E := E)
+  refine ⟨ε, hε, ?_⟩
+  intro Γ _ hfree x
+  let L := Subgroup.closure
+    {g : Γ | dist ((g : Hyperboloid E ≃ᵢ Hyperboloid E) x) x < ε}
+  obtain ⟨ξ, hξ⟩ := h Γ hfree x
+  let K := L.map Γ.subtype
+  let e : L ≃* K := L.equivMapOfInjective Γ.subtype Γ.subtype_injective
+  let i : K →* Γ := Subgroup.inclusion (Subgroup.map_subtype_le L)
+  have hfreeK (k : K) (hk : k ≠ 1) (y : Hyperboloid E) :
+      (k : Hyperboloid E ≃ᵢ Hyperboloid E) y ≠ y := by
+    apply hfree (i k) ?_ y
+    intro hi
+    apply hk
+    apply Subgroup.inclusion_injective (Subgroup.map_subtype_le L)
+    simpa only [map_one] using hi
+  have hfiniteK : (Set.range (fun k : K => boundaryHomeomorph
+      (k : Hyperboloid E ≃ᵢ Hyperboloid E) ξ)).Finite := by
+    apply hξ.subset
+    rintro y ⟨k, rfl⟩
+    refine ⟨e.symm k, ?_⟩
+    have hcoe : ((e.symm k : Γ) : Hyperboloid E ≃ᵢ Hyperboloid E) =
+        (k : Hyperboloid E ≃ᵢ Hyperboloid E) :=
+      congrArg Subtype.val (e.apply_symm_apply k)
+    exact congrArg (fun f : Hyperboloid E ≃ᵢ Hyperboloid E => boundaryHomeomorph f ξ) hcoe
+  refine ⟨ξ, ?_⟩
+  intro g
+  exact boundaryHomeomorph_eq_self_of_finite_orbit K hfreeK ξ hfiniteK (e g)
 
 end DifferentialGeometry.Hyperboloid

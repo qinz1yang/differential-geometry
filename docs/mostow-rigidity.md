@@ -92,7 +92,7 @@ final headline. The active frontier is:
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
 | `review_hyperboloid_metric` | Prove genuine uniform disk distortion for the plane homeomorphism induced by the original controlled boundary equivalence. |
 | `hyperboloid_metric` | Bound the actual fixed-null-ray scale by displacement, to separate parabolic and axial behavior. |
-| `rigidity_assessment` | Prove pointwise fixation of finite boundary orbits for free groups, and apply it to the actual Margulis subgroup. |
+| Root | Classify the actual Margulis subgroup further using its common ideal point and displacement scaling. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -756,3 +756,30 @@ Exact evidence is in `mostow-thick-part-boundary-swap.json`. All 93 newly
 added Lean files have current source-hash-matched fresh compilation evidence
 below 30 seconds. Full cusp geometry, the controlled original homotopy
 representative, actual disk control and final Mostow rigidity remain open.
+
+## Verified boundary scales and actual common fixed points
+
+An actual hyperbolic isometry fixing the stereographic pole scales all finite
+plane-chart distances by its actual Lorentz factor at that pole. The proof
+and reflection consumer preserve the full isometry group, including spatial
+orientation reversal; no holomorphic-only classification is claimed.
+
+The logarithm of the actual fixed-null-ray scale is bounded in absolute value
+by displacement at every point. Boost conjugation proves the eigenvalue is
+unchanged, and signed boost consumers verify the direction of the logarithmic
+shift. This does not introduce a parabolic predicate or assert a cusp model.
+
+A freely acting group fixes the same point of each finite actual boundary
+orbit. Applying that result to the genuine uniform Margulis subgroup yields
+a common ideal fixed point. The earlier weaker H-free finite-orbit theorem
+is unchanged: a concrete finite reflection group with H equal to the trivial
+subgroup verifies that H-freeness alone cannot give a common fixed point.
+
+All five changed modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. Fresh final-source builds take
+at most 6.6 seconds in this batch. Required affected dependents and the
+26,955-job root build passed without diagnostics; the existing aggregate
+took 32 seconds. Exact evidence is in `mostow-boundary-scales-common-fixed.json`.
+All 95 newly added Lean files have current source-hash-matched fresh compilation
+evidence below 30 seconds. Full cusp geometry and three-dimensional finite-volume
+Mostow rigidity remain open.
