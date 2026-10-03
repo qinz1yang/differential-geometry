@@ -17968,3 +17968,6 @@ import DifferentialGeometry.Geometry.Hyperbolic.DeckRepresentation
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMetric
 import DifferentialGeometry.Geometry.Measure.LocalIsometryOn
 import DifferentialGeometry.Geometry.Hyperbolic.DeckGroup
+import DifferentialGeometry.Geometry.Metric.Covering.BallImage
+import DifferentialGeometry.Geometry.Coordinates.Stereographic
+import DifferentialGeometry.Geometry.Hyperbolic.Quotient

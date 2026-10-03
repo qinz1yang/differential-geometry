@@ -1,0 +1,118 @@
+{
+  "base_commit": "6984cd5790a6b005747aec8cd3619fde0bd179f4",
+  "layer": "Original normalized orbit quotient, covering ball images and general stereographic metric formulas",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/Covering/BallImage.lean",
+      "sha256": "4187cccdb8fddcb85476ec87dc56644a18718925e18bee403664bdfa39584790",
+      "fresh_lake_build_seconds": 9.2,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "public_declarations": [
+        "image_riemannianBallOf_of_coveringMap_localPullMetric"
+      ],
+      "mathematical_review": "An actual Riemannian covering maps every open source ball exactly onto the corresponding target ball, without global injectivity, completeness or positive radius.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Metric.Quotient",
+        "DifferentialGeometry.Geometry.Metric.DistancePullback",
+        "DifferentialGeometry.Geometry.Metric.Distance.Ball"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Coordinates/Stereographic.lean",
+      "sha256": "cc491423c76a1bb6708d70c76cd3a567abe8b03a73476fa0c091b8fad7b83a73",
+      "fresh_lake_build_seconds": 6.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "dist_stereoInvFun_sq",
+        "dist_stereoInvFun_pole_sq",
+        "dist_stereoInvFun_neg_pole_sq"
+      ],
+      "mathematical_review": "Native general stereographic chord-square identities in arbitrary real inner-product spaces, with actual unit pole and orthogonal domain.",
+      "direct_imports": [
+        "Mathlib.Geometry.Manifold.Instances.Sphere"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Coordinates/StereographicComplex.lean",
+      "sha256": "8770610bfa6ef273cca23dd4c2c4559f68fb6a26a875664c3593a746707ab3b3",
+      "fresh_lake_build_seconds": 1.6,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "dist_stereographicComplex_symm_sq",
+        "dist_stereographicComplex_symm_northPole_sq",
+        "dist_stereographicComplex_symm_neg_northPole_sq"
+      ],
+      "mathematical_review": "The original fixed complex chart inherits general chord identities through its actual plane isometry; predecessor definitions are unchanged.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Coordinates.Stereographic",
+        "Mathlib.Topology.OpenPartialHomeomorph.Basic"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Quotient.lean",
+      "sha256": "61ca6837e23db3004b36e93172ff3873a1a1adeb72c4e305a4c14cf42277dac5",
+      "fresh_lake_build_seconds": 6.6,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "normalizedUniversalCoverQuotientHomeomorph",
+        "normalizedUniversalCoverQuotientHomeomorph_apply_mk"
+      ],
+      "mathematical_review": "The actual marked representation range orbit quotient is homeomorphic to the original manifold by exactly proj composed with the original cover isometry.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.DeckRepresentation",
+        "DifferentialGeometry.Geometry.Metric.Isometry.Topology",
+        "Mathlib.Topology.Homeomorph.Lemmas"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "DifferentialGeometry/Geometry/Metric/Covering/BallImage.lean",
+    "DifferentialGeometry/Geometry/Coordinates/Stereographic.lean",
+    "DifferentialGeometry/Geometry/Coordinates/StereographicComplex.lean",
+    "DifferentialGeometry/Geometry/Hyperbolic/Quotient.lean"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "jobs": 26933,
+    "root_module_seconds": 35.0,
+    "root_compiler_cap": 1,
+    "errors": 0,
+    "warnings": 0
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}

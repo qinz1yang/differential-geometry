@@ -91,9 +91,10 @@ final headline. The active frontier is:
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
 | `review_hyperboloid_interpolation` | Prove a uniform half-chord Hölder bound for the original boundary map with fixed coarse constants and basepoint bound. |
-| `review_orbit_quotients` | Prove native general stereographic chord formulas and transport them to the exact complex chart. |
-| `equivariant_descent` | Identify the exact normalized deck-image orbit quotient with the original manifold, retaining the projection law. |
-| `hyperboloid_metric` | Prove actual Riemannian covering open-ball images and connect local-volume transport to the original covering. |
+| `review_hyperboloid_metric` | Prove two-sided complete-line Morse tracking with the original positive and negative ideal limits. |
+| `equivariant_descent` | Identify actual metric segments and complete geodesic lines with their Klein chords. |
+| `hyperboloid_metric` | Prove actual covering small-ball volume equality and specialize to the original lifted metric. |
+| `rigidity_assessment` | Prove that an isometry with no interior fixed point has a nonempty boundary fixed set of at most two points. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -546,3 +547,27 @@ Lean files have current source-hash-matched fresh compilation evidence below
 30 seconds. The actual quotient homeomorphism, original covering ball-volume
 identification, uniform boundary-map disk control, finite-volume cusp geometry
 and the final Mostow rigidity argument remain open.
+
+## Verified actual quotient, covering balls and stereographic distances
+
+The actual normalized deck-image orbit quotient is now homeomorphic to the
+original manifold. Its representative equation is exactly the original cover
+projection after the constructed hyperbolic isometry, retaining the chosen
+basepoint. Fiber transitivity and surjectivity are proved from native based
+paths and deck actions. This is a topological identification; no metric or
+volume identification is inferred from a homeomorphism alone.
+
+A native Riemannian covering maps every open source ball exactly onto the
+corresponding target ball. Completeness and global injectivity are unnecessary;
+the actual real-to-circle covering verifies this distinction. All real radii
+are included. General stereographic chord-square formulas now precede their
+complex-coordinate corollaries, with the exact native factor-two normalization
+and no finite-dimensionality or completeness assumption.
+
+All four changed modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. Fresh source builds took
+9.2, 6.5, 1.6 and 6.6 seconds. The 26,933-job root build passed without
+diagnostics; the existing aggregate took 35 seconds. Exact evidence is in
+`mostow-quotient-stereographic.json`. All 73 newly added Lean files have
+current source-hash-matched fresh compilation evidence below 30 seconds.
+The three-dimensional finite-volume Mostow headline remains open.

@@ -1,4 +1,4 @@
-import Mathlib.Geometry.Manifold.Instances.Sphere
+import DifferentialGeometry.Geometry.Coordinates.Stereographic
 import Mathlib.Topology.OpenPartialHomeomorph.Basic
 
 noncomputable section
@@ -108,5 +108,27 @@ theorem stereographicComplex_symm_coe (z : ℂ) :
   apply PiLp.ext
   intro i
   fin_cases i <;> simp [EuclideanSpace.single, smul_eq_mul, div_eq_mul_inv] <;> ring
+
+theorem dist_stereographicComplex_symm_sq (z w : ℂ) :
+    dist (stereographicComplex.symm z).val (stereographicComplex.symm w).val ^ 2 =
+      16 * dist z w ^ 2 / ((‖z‖ ^ 2 + 4) * (‖w‖ ^ 2 + 4)) := by
+  change dist (stereoInvFun norm_sphereNorthPole (northPoleOrthogonalComplex.symm z))
+    (stereoInvFun norm_sphereNorthPole (northPoleOrthogonalComplex.symm w)) ^ 2 = _
+  rw [dist_stereoInvFun_sq, northPoleOrthogonalComplex.symm.dist_map,
+    northPoleOrthogonalComplex.symm.norm_map, northPoleOrthogonalComplex.symm.norm_map]
+
+theorem dist_stereographicComplex_symm_northPole_sq (z : ℂ) :
+    dist (stereographicComplex.symm z).val sphereNorthPole ^ 2 =
+      16 / (‖z‖ ^ 2 + 4) := by
+  change dist (stereoInvFun norm_sphereNorthPole (northPoleOrthogonalComplex.symm z) : E3)
+    (sphereNorthPole : E3) ^ 2 = _
+  rw [dist_stereoInvFun_pole_sq, northPoleOrthogonalComplex.symm.norm_map]
+
+theorem dist_stereographicComplex_symm_neg_northPole_sq (z : ℂ) :
+    dist (stereographicComplex.symm z).val (-sphereNorthPole) ^ 2 =
+      4 * ‖z‖ ^ 2 / (‖z‖ ^ 2 + 4) := by
+  change dist (stereoInvFun norm_sphereNorthPole (northPoleOrthogonalComplex.symm z) : E3)
+    (-(sphereNorthPole : E3)) ^ 2 = _
+  rw [dist_stereoInvFun_neg_pole_sq, northPoleOrthogonalComplex.symm.norm_map]
 
 end DifferentialGeometry
