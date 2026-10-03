@@ -1299,6 +1299,8 @@ import DifferentialGeometry.Analysis.Normed.Matrix.CovectorBilinear
 import DifferentialGeometry.Analysis.Normed.Matrix.Entrywise
 import DifferentialGeometry.Analysis.Normed.Matrix.InverseCovector
 import DifferentialGeometry.Analysis.Normed.Matrix.WeightedInverseCovector
+import DifferentialGeometry.Analysis.NormedRing.Units
+import DifferentialGeometry.Analysis.NormedRing.Zassenhaus
 import DifferentialGeometry.Analysis.ODE.AssociatedBundle
 import DifferentialGeometry.Analysis.ODE.CurvatureReaction
 import DifferentialGeometry.Analysis.ODE.Existence.ForwardVariationalFromZero
@@ -10342,11 +10344,13 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Defs
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Geodesic
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Interpolation
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassification
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Klein
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.LorentzIsometry
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Manifold
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Metric
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianGeodesic
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianMetric
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.VectorField
 import DifferentialGeometry.Geometry.LieDerivative.Tensor
@@ -11798,6 +11802,7 @@ import DifferentialGeometry.Topology.Algebra.Group.FinitelyGeneratedFundamentalG
 import DifferentialGeometry.Topology.Algebra.Group.FreeProduct
 import DifferentialGeometry.Topology.Algebra.Group.FreeProductAssociativity
 import DifferentialGeometry.Topology.Algebra.Group.IndexTwo
+import DifferentialGeometry.Topology.Algebra.Group.Nilpotent
 import DifferentialGeometry.Topology.Algebra.Group.PoincareStandard
 import DifferentialGeometry.Topology.Algebra.Group.TwoElementFreeProduct
 import DifferentialGeometry.Topology.Algebra.Module.InfiniteCyclicCriterion

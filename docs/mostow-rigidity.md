@@ -80,10 +80,11 @@ final headline. The active frontier is:
 
 | Owner | Exact next target |
 | --- | --- |
-| Root | Integrate the accepted full Lorentz-extension classification and derivative interfaces. |
+| Root | Integrate reviewed distance, boundary, and geometric group theory packets. |
 | `review_hyperboloid_model` | Identify the native Riemannian distance with the arcosh metric. |
-| `equivariant_descent` | Prove the existing-unit inverse estimate used by Zassenhaus. |
-| `rigidity_assessment` | Supply the canonical Lorentz extension interface for boundary actions. |
+| `review_hyperboloid_metric` | Retain the actual geodesic-line witness in the endpoint theorem. |
+| `hyperboloid_metric` | Prove exact nearest-point projection and contraction for a geodesic line. |
+| `rigidity_assessment` | Construct the canonical sphere boundary homeomorphism of each isometry. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -142,3 +143,23 @@ linters, native axiom checks, and the 26,878-job aggregate build. The new module
 freshly compile in at most 5.8 seconds. Exact hashes and timings are recorded in
 `mostow-native-geometry.json`. The existing aggregate module took 35 seconds.
 Native distance compatibility and Mostow rigidity are still open.
+
+## Verified symmetry and discrete-group layer
+
+Every hyperboloid isometry now has a unique ambient Lorentz extension, with
+exact recovery, inverse, and composition laws. Hyperbolic geodesic lines are
+smooth and have speed one in the native Riemannian metric. The time coordinate
+has its intrinsic manifold derivative computed.
+
+For every seminormed ring, a uniform identity neighborhood in its unit group
+satisfies Zassenhaus: the small elements of each discrete subgroup generate a
+nilpotent subgroup. The proof uses a coefficient-eight commutator estimate and
+a general generator criterion for nilpotence, with no finite-generation or
+symmetric-generator hypothesis.
+
+All six changed modules pass independent review, canonical compilation, all 14
+applicable linters, and native axiom checks. Fresh compilation takes at most
+6.5 seconds; the affected native geometry modules also rebuilt successfully.
+The aggregate build passed with 26,883 jobs, zero diagnostics, and a 26-second
+root module. Exact hashes and evidence are in `mostow-symmetries.json`.
+The Mostow headline and native distance compatibility remain open.

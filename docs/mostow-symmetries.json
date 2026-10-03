@@ -1,0 +1,78 @@
+{
+  "base_commit": "a006800dd3cc4a552794380dde4cb8ba3d9e36bf",
+  "layer": "Hyperbolic symmetries, native geodesic speed, and Zassenhaus lemma",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Manifold.lean",
+      "sha256": "e1bdea7741f79c1ab60ccb6a529e4e30195b9a799dff4443c3b1dc200ea283ae",
+      "fresh_lake_build_seconds": 6.5,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/IsometryClassification.lean",
+      "sha256": "c614fea2343476abdf13e11c5526150842721945049ab6ffb398bb42394805e8",
+      "fresh_lake_build_seconds": 1.4,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/RiemannianGeodesic.lean",
+      "sha256": "7cdcf84cdfecf7ad4a322cf169212f1a0d528efd0dc0456b8b6288d7cafc2ad1",
+      "fresh_lake_build_seconds": 1.5,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/NormedRing/Units.lean",
+      "sha256": "677a4726a3e5aec83c8eb5c3375ffaf03b8d596408b112407525f38c7738693a",
+      "fresh_lake_build_seconds": 1.1,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Topology/Algebra/Group/Nilpotent.lean",
+      "sha256": "fb00162ce107fc410c7ba3cd0f61a3ed70f30a556d37677a4b5ed6ca621737aa",
+      "fresh_lake_build_seconds": 1.0,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/NormedRing/Zassenhaus.lean",
+      "sha256": "c648cc1e5dc81c6892950d5184ef1ac4b34a9654dcd508df410c20c3bc5a56d4",
+      "fresh_lake_build_seconds": 1.2,
+      "status": "PROVED",
+      "independent_review": "Accepted"
+    }
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "lake build DifferentialGeometry",
+    "jobs": 26883,
+    "root_module_seconds": 26,
+    "errors": 0,
+    "warnings": 0
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true
+  },
+  "mostow_headline": "open"
+}

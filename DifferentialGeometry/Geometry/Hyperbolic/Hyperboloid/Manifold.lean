@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Defs
 import DifferentialGeometry.Topology.Manifold.Homeomorph.Transport
 import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 
 noncomputable section
 
@@ -67,5 +68,44 @@ theorem contMDiff_time : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, ℝ) n (time : Hyperbo
 theorem contMDiff_time_space :
     ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, ℝ × E) n (fun x : Hyperboloid E => (x.time, x.space)) :=
   contMDiff_time.prodMk_space contMDiff_space
+
+end DifferentialGeometry.Hyperboloid
+
+namespace DifferentialGeometry.Hyperboloid
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+
+theorem mfderiv_time_apply (x : Hyperboloid E) (v : TangentSpace 𝓘(ℝ, E) x) :
+    NormedSpace.fromTangentSpace (𝕜 := ℝ) x.time
+      (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, ℝ) time x v) =
+      inner ℝ x.space
+        (NormedSpace.fromTangentSpace (𝕜 := ℝ) x.space
+          (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) spaceDiffeomorph x v)) / x.time := by
+  let f : E → ℝ := fun u => Real.sqrt (1 + ‖u‖ ^ 2)
+  have hd : HasFDerivAt (fun u : E => 1 + ‖u‖ ^ 2) (2 • innerSL ℝ x.space) x.space := by
+    simpa only [zero_add] using!
+      (hasFDerivAt_const (𝕜 := ℝ) (1 : ℝ) x.space).add
+        (hasStrictFDerivAt_norm_sq x.space).hasFDerivAt
+  have hf : HasFDerivAt f
+      ((1 / (2 * Real.sqrt (1 + ‖x.space‖ ^ 2))) • (2 • innerSL ℝ x.space)) x.space :=
+    hd.sqrt (by positivity)
+  have htime : (time : Hyperboloid E → ℝ) = f ∘ spaceDiffeomorph := by
+    funext y
+    exact y.time_eq_sqrt
+  let u : E := NormedSpace.fromTangentSpace (𝕜 := ℝ) (spaceDiffeomorph x)
+    (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) spaceDiffeomorph x v)
+  change mvfderiv 𝓘(ℝ, E) time x v = inner ℝ x.space u / x.time
+  rw [htime, mvfderiv_comp_apply (f := (spaceDiffeomorph : Hyperboloid E → E)) (g := f)
+    x hf.differentiableAt.mdifferentiableAt
+    ((spaceDiffeomorph (E := E)).contMDiff.mdifferentiableAt (by decide)), mvfderiv_eq_fderiv]
+  change fderiv ℝ f x.space u = inner ℝ x.space u / f x.space
+  rw [hf.fderiv]
+  simp only [smul_apply, two_smul, smul_eq_mul]
+  change (1 / (2 * Real.sqrt (1 + ‖x.space‖ ^ 2))) *
+    (inner ℝ x.space u + inner ℝ x.space u) =
+      inner ℝ x.space u / Real.sqrt (1 + ‖x.space‖ ^ 2)
+  rw [← x.time_eq_sqrt]
+  field_simp [x.time_pos.ne']
+  ring
 
 end DifferentialGeometry.Hyperboloid
