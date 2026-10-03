@@ -17876,3 +17876,6 @@ import DifferentialGeometry.Topology.MetricSpace.Cone.Compactness
 import DifferentialGeometry.Topology.MetricSpace.Cone.Distance
 import DifferentialGeometry.Topology.MetricSpace.Cone.Embedding
 import DifferentialGeometry.Topology.MetricSpace.Geodesic.SegmentTail
+import DifferentialGeometry.Topology.Manifold.ClosedBall.Charts
+import DifferentialGeometry.Topology.Manifold.Sphere.CellBoundary
+import DifferentialGeometry.Topology.Manifold.ProductGroupoid
