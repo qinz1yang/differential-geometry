@@ -93,7 +93,7 @@ omit [T2Space (TangentBundle I M)]
   [T2Space (TangentBundle I' M')]
   [ConnectedSpace M]
   [ConnectedSpace M'] in
-theorem cartanMap_sq
+private theorem cartanMap_inner_self_eq_of_constant_curvature
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (g' : SmoothRiemannianMetric I' M')
@@ -102,16 +102,17 @@ theorem cartanMap_sq
     {c : M} (B : DiagonalInverseBranch (I := I) g hEnorm c) (p : M)
     (p' : M') (i : E ≃L[ℝ] E)
     (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
+    (κ : ℝ)
     (hR : ∀ (x : M) (X Y Z : TangentSpace I x),
       (DifferentialGeometry.Geometry.Curvature.riemannOp
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) x)
         X Y Z =
-          g.inner x Y Z • X - g.inner x X Z • Y)
+          κ • (g.inner x Y Z • X - g.inner x X Z • Y))
     (hR' : ∀ (x : M') (X Y Z : TangentSpace I' x),
       (DifferentialGeometry.Geometry.Curvature.riemannOp
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I') g') x)
         X Y Z =
-          g'.inner x Y Z • X - g'.inner x X Z • Y)
+          κ • (g'.inner x Y Z • X - g'.inner x X Z • Y))
     {x : M} (hx : (p, x) ∈ B.dom) (Y : TangentSpace I x) :
     g'.inner (cartanMap B p g' hEnorm' p' i x)
         (mfderiv I I' (cartanMap B p g' hEnorm' p' i) x Y)
@@ -175,8 +176,8 @@ theorem cartanMap_sq
     rw [hmidU] at hchain
     exact hchain
   have htransfer :=
-    expDiff_sq_xfer (I := I) (I' := I')
-      g hEnorm g' hEnorm' p p' u w i hi hR hR'
+    expMapIntrinsic_mfderiv_inner_self_eq_of_constant_curvature (I := I) (I' := I')
+      g hEnorm g' hEnorm' p p' u w i hi κ hR hR'
   have hbase : expf u = x := by
     simpa only [expf, invf, u] using B.exp_eq hx
   have hright :
@@ -231,6 +232,72 @@ omit [T2Space (TangentBundle I M)]
   [T2Space (TangentBundle I' M')]
   [ConnectedSpace M]
   [ConnectedSpace M'] in
+theorem cartanMap_inner_eq_of_constant_curvature
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (g' : SmoothRiemannianMetric I' M')
+    (hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w)))
+    {c : M} (B : DiagonalInverseBranch (I := I) g hEnorm c) (p : M)
+    (p' : M') (i : E ≃L[ℝ] E)
+    (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
+    (κ : ℝ)
+    (hR : ∀ (x : M) (X Y Z : TangentSpace I x),
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) x)
+        X Y Z =
+          κ • (g.inner x Y Z • X - g.inner x X Z • Y))
+    (hR' : ∀ (x : M') (X Y Z : TangentSpace I' x),
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I') g') x)
+        X Y Z =
+          κ • (g'.inner x Y Z • X - g'.inner x X Z • Y))
+    {x : M} (hx : (p, x) ∈ B.dom)
+    (Y Z : TangentSpace I x) :
+    g'.inner (cartanMap B p g' hEnorm' p' i x)
+        (mfderiv I I' (cartanMap B p g' hEnorm' p' i) x Y)
+        (mfderiv I I' (cartanMap B p g' hEnorm' p' i) x Z) =
+      g.inner x Y Z := by
+  exact inner_eq_of_diag g g' x (cartanMap B p g' hEnorm' p' i x)
+    (mfderiv I I' (cartanMap B p g' hEnorm' p' i) x)
+    (cartanMap_inner_self_eq_of_constant_curvature g hEnorm g' hEnorm' B p p' i hi κ hR hR' hx) Y Z
+
+omit [T2Space (TangentBundle I M)]
+  [T2Space (TangentBundle I' M')]
+  [ConnectedSpace M]
+  [ConnectedSpace M'] in
+theorem cartanMap_sq
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (g' : SmoothRiemannianMetric I' M')
+    (hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w)))
+    {c : M} (B : DiagonalInverseBranch (I := I) g hEnorm c) (p : M)
+    (p' : M') (i : E ≃L[ℝ] E)
+    (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
+    (hR : ∀ (x : M) (X Y Z : TangentSpace I x),
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) x)
+        X Y Z =
+          g.inner x Y Z • X - g.inner x X Z • Y)
+    (hR' : ∀ (x : M') (X Y Z : TangentSpace I' x),
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I') g') x)
+        X Y Z =
+          g'.inner x Y Z • X - g'.inner x X Z • Y)
+    {x : M} (hx : (p, x) ∈ B.dom) (Y : TangentSpace I x) :
+    g'.inner (cartanMap B p g' hEnorm' p' i x)
+        (mfderiv I I' (cartanMap B p g' hEnorm' p' i) x Y)
+        (mfderiv I I' (cartanMap B p g' hEnorm' p' i) x Y) =
+      g.inner x Y Y := by
+  exact cartanMap_inner_eq_of_constant_curvature g hEnorm g' hEnorm' B p p' i hi 1
+    (by simpa only [one_smul] using hR)
+    (by simpa only [one_smul] using hR') hx Y Y
+
+omit [T2Space (TangentBundle I M)]
+  [T2Space (TangentBundle I' M')]
+  [ConnectedSpace M]
+  [ConnectedSpace M'] in
 theorem cartanMap_inner
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -256,9 +323,9 @@ theorem cartanMap_inner
         (mfderiv I I' (cartanMap B p g' hEnorm' p' i) x Y)
         (mfderiv I I' (cartanMap B p g' hEnorm' p' i) x Z) =
       g.inner x Y Z := by
-  exact inner_eq_of_diag g g' x (cartanMap B p g' hEnorm' p' i x)
-    (mfderiv I I' (cartanMap B p g' hEnorm' p' i) x)
-    (cartanMap_sq g hEnorm g' hEnorm' B p p' i hi hR hR' hx) Y Z
+  exact cartanMap_inner_eq_of_constant_curvature g hEnorm g' hEnorm' B p p' i hi 1
+    (by simpa only [one_smul] using hR)
+    (by simpa only [one_smul] using hR') hx Y Z
 
 private noncomputable def pdTrans
     {H₀ H₁ H₂ : Type*}
@@ -402,6 +469,45 @@ omit [T2Space (TangentBundle I M)]
   [T2Space (TangentBundle I' M')]
   [ConnectedSpace M]
   [ConnectedSpace M'] in
+theorem cartanPartialDiffeomorph_inner_eq_of_constant_curvature
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (g' : SmoothRiemannianMetric I' M')
+    (hEnorm' : ∀ (x : M') (w : TangentSpace I' x),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x w w)))
+    {p : M} (B : DiagonalInverseBranch (I := I) g hEnorm p)
+    {p' : M'} (B' : DiagonalInverseBranch (I := I') g' hEnorm' p')
+    (i : E ≃L[ℝ] E)
+    (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
+    (κ : ℝ)
+    (hR : ∀ (x : M) (X Y Z : TangentSpace I x),
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) x)
+        X Y Z =
+          κ • (g.inner x Y Z • X - g.inner x X Z • Y))
+    (hR' : ∀ (x : M') (X Y Z : TangentSpace I' x),
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I') g') x)
+        X Y Z =
+          κ • (g'.inner x Y Z • X - g'.inner x X Z • Y))
+    {x : M} (hx : x ∈ (cartanPartialDiffeomorph B B' i).source)
+    (Y Z : TangentSpace I x) :
+    g'.inner (cartanPartialDiffeomorph B B' i x)
+        (mfderiv I I' (cartanPartialDiffeomorph B B' i) x Y)
+        (mfderiv I I' (cartanPartialDiffeomorph B B' i) x Z) =
+      g.inner x Y Z := by
+  have hdom : (p, x) ∈ B.dom := by
+    have hx' := hx.1.1
+    change (p, x) ∈ B.dom at hx'
+    exact hx'
+  rw [cartanPartialDiffeomorph_coe B B' i]
+  exact cartanMap_inner_eq_of_constant_curvature g hEnorm g' hEnorm' B p p' i hi κ hR hR'
+    hdom Y Z
+
+omit [T2Space (TangentBundle I M)]
+  [T2Space (TangentBundle I' M')]
+  [ConnectedSpace M]
+  [ConnectedSpace M'] in
 theorem cartanPartialDiffeomorph_inner
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -428,13 +534,10 @@ theorem cartanPartialDiffeomorph_inner
         (mfderiv I I' (cartanPartialDiffeomorph B B' i) x Y)
         (mfderiv I I' (cartanPartialDiffeomorph B B' i) x Z) =
       g.inner x Y Z := by
-  have hdom : (p, x) ∈ B.dom := by
-    have hx' := hx.1.1
-    change (p, x) ∈ B.dom at hx'
-    exact hx'
-  rw [cartanPartialDiffeomorph_coe B B' i]
-  exact cartanMap_inner g hEnorm g' hEnorm' B p p' i hi hR hR'
-    hdom Y Z
+  exact cartanPartialDiffeomorph_inner_eq_of_constant_curvature
+    g hEnorm g' hEnorm' B B' i hi 1
+    (by simpa only [one_smul] using hR)
+    (by simpa only [one_smul] using hR') hx Y Z
 
 end Exponential
 end Riemannian

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianMetric
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.CorrectionContraction
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.VectorField
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
@@ -179,6 +180,51 @@ theorem leviCivita_tangentConstAt (x : Hyperboloid E) (v w : TangentSpace 𝓘(�
   rw [hw] at hY
   rw [← hY] at h
   rw [mfderiv_spaceDiffeomorph]
+  exact h
+
+omit [FiniteDimensional ℝ E] in
+open Geometry.Connection in
+private theorem chartESectionRepr_spaceVectorField (x : Hyperboloid E) (w : E) :
+    chartESectionRepr (I := 𝓘(ℝ, E)) x (spaceVectorField w) = fun _ => w := by
+  funext y
+  have hb : y ∈ (trivializationAt E (TangentSpace 𝓘(ℝ, E)) x).baseSet := by
+    rw [TangentBundle.trivializationAt_baseSet, chartAt_eq_spaceHomeomorph]
+    trivial
+  have h := (trivializationAt E (TangentSpace 𝓘(ℝ, E)) x).continuousLinearMapAt_symmL
+    (R := ℝ) hb w
+  rw [tangent_trivializationAt_symmL] at h
+  exact h
+
+open Geometry.Connection in
+theorem chartChristoffelContraction_eq (x : Hyperboloid E) (v w : E) :
+    Geometry.Riemannian.Geodesic.chartChristoffelContraction
+      (I := 𝓘(ℝ, E)) riemannianMetric x v w x.space =
+      -(riemannianMetric.inner x (spaceVectorField v x) (spaceVectorField w x)) • x.space := by
+  let _ : T2Space (Hyperboloid E) := (spaceHomeomorph (E := E)).isEmbedding.t2Space
+  have hx := self_mem_chartLeviCivitaGoodSet (I := 𝓘(ℝ, E)) x
+  have hc := LeviCivita_chart_apply (I := 𝓘(ℝ, E)) riemannianMetric x hx
+    (mdifferentiableAt_spaceVectorField x w) (spaceVectorField v x)
+  rw [chartLeviCivita_apply (I := 𝓘(ℝ, E)) riemannianMetric x
+    (spaceVectorField w) hx (spaceVectorField v x),
+    chartESectionRepr_spaceVectorField] at hc
+  rw [show ((fun _ : Hyperboloid E => w) ∘ (extChartAt 𝓘(ℝ, E) x).symm) =
+    (fun _ : E => w) from rfl, fderiv_const_apply, zero_apply, zero_add,
+    correction_eq_contr] at hc
+  have hcoord : trivToE (I := 𝓘(ℝ, E)) x x (spaceVectorField v x) = v :=
+    congrFun (chartESectionRepr_spaceVectorField x v) x
+  rw [hcoord] at hc
+  have hext : extChartAt 𝓘(ℝ, E) x x = x.space := by
+    rw [extChartAt_coe, chartAt_eq_spaceHomeomorph]
+    rfl
+  rw [hext] at hc
+  change leviCivitaConnectionOfMetric riemannianMetric (spaceVectorField w) x
+    (spaceVectorField v x) = _ at hc
+  have h := leviCivita_tangentConstAt x (spaceVectorField v x) (spaceVectorField w x)
+  rw [tangentConstAt_spaceVectorField, mfderiv_spaceDiffeomorph] at h
+  change leviCivitaConnectionOfMetric riemannianMetric (spaceVectorField w) x
+    (spaceVectorField v x) = _ at h
+  rw [hc] at h
+  simp only [trivFromE, tangent_trivializationAt_symmL] at h
   exact h
 
 end DifferentialGeometry.Hyperboloid

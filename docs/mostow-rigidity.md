@@ -45,8 +45,13 @@ not spawn other workers.
 
 Each bounded proof target has one owner and an explicit next declaration.
 Reasoning and compiler concurrency are limited separately; at most three
-compiler processes run concurrently, with at most one per owner. Existing
+compiler processes run concurrently, with at most one per worker. Existing
 builds must be polled before another build of the same target is launched.
+Root aggregate builds use an explicit `LEAN_NUM_THREADS` process budget and
+monitor actual Lean child processes. With a two-process Root build, only one
+worker may compile; a three-process Root build pauses all worker compilation.
+The compiler flag `--threads=2` alone does not constrain
+Lake's number of concurrent compiler processes.
 Searches are scoped to candidate source directories, file types, and names.
 
 One fresh independent reviewer audits each coherent packet. Accepted evidence
@@ -84,11 +89,11 @@ final headline. The active frontier is:
 
 | Owner | Exact next target |
 | --- | --- |
-| Root | Integrate reviewed geometric comparison and boundary-extension results into their actual consumers. |
-| `review_orbit_quotients` | Construct the continuous boundary map of the original quasi-isometric embedding with arbitrary-filter extension law. |
-| `equivariant_descent` | Generalize local Cartan comparison to a shared real curvature, preserving positive-curvature signatures. |
-| `review_hyperboloid_metric` | Prove the actual hyperbolic geodesic-line curve satisfies the native Levi-Civita geodesic equation. |
-| `review_lorentz` | Independently audit the exact analytic diffeomorphism associated with a model isometry. |
+| Root | Replay the reviewed native exponential, lift-continuation, boundary-equivalence and disk-packing layer. |
+| `review_hyperboloid_metric` | Native origin exponential homeomorphism: proved and reviewed, awaiting canonical integration. |
+| `review_hyperboloid_model` | Complete-metric finite-time lift continuation: proved and reviewed, awaiting canonical integration. |
+| `review_orbit_quotients` | Boundary homeomorphism of the actual coarse inverse pair: proved and reviewed, awaiting integration. |
+| `review_hyperboloid_interpolation` | Disk-packing estimate: proved and reviewed; next target is actual image-strip stiffness. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -306,3 +311,29 @@ Euclidean coordinate square norm is one. The compatible native construction
 preserves the fiber topology and original charts. This permits honest local
 Cartan comparison work; it does not supply the missing global space-form theorem.
 The finite-volume Mostow headline remains open.
+
+## Verified Cartan and original-map boundary extension layer
+
+Cartan comparison now applies to a shared arbitrary real constant curvature.
+The original positive-curvature signatures and Cartan map constructions are
+unchanged. Genuine three-dimensional Euclidean and non-origin hyperbolic
+consumers verify curvature zero and minus one with the native metric norm.
+
+Every model isometry has its analytic diffeomorphism with the same map and
+inverse. The explicit hyperbolic lines satisfy the actual native Levi-Civita
+geodesic equation. Two forward rays with the same actual ideal endpoint have
+equal-time distance bounded by their initial distance, including distinct
+horospheres.
+
+The original continuous quasi-isometric embedding now has a canonical continuous
+boundary map. Its exact ray producer and arbitrary-filter extension law are
+proved. Continuity comes from uniform visual estimates; it is not supplied as
+a hypothesis. Only the target model requires finite dimensionality.
+
+All eight changed modules passed independent review, canonical builds, all 14
+applicable linters and native axiom checks. Fresh source builds take at most
+6.8 seconds. The required broad dependent and root build passed with 26,909 jobs
+and zero diagnostics. Explicit scheduling capped Root at three actual compiler
+processes; the final aggregate module took 7.3 seconds. Exact source hashes,
+regressions and timing evidence are in `mostow-cartan-boundary.json`.
+The full finite-volume Mostow theorem remains open.

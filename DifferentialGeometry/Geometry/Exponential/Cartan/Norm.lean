@@ -56,7 +56,7 @@ variable
 
 omit [T2Space (TangentBundle I M)]
     [T2Space (TangentBundle I' M')] [ConnectedSpace M] [ConnectedSpace M'] in
-theorem expDiff_sq_xfer
+theorem expMapIntrinsic_mfderiv_inner_self_eq_of_constant_curvature
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (g' : SmoothRiemannianMetric I' M')
@@ -65,16 +65,17 @@ theorem expDiff_sq_xfer
     (p : M) (p' : M') (u w : E)
     (i : E ≃L[ℝ] E)
     (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
+    (κ : ℝ)
     (hR : ∀ (x : M) (X Y Z : TangentSpace I x),
       (DifferentialGeometry.Geometry.Curvature.riemannOp
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) x)
         X Y Z =
-          g.inner x Y Z • X - g.inner x X Z • Y)
+          κ • (g.inner x Y Z • X - g.inner x X Z • Y))
     (hR' : ∀ (x : M') (X Y Z : TangentSpace I' x),
       (DifferentialGeometry.Geometry.Curvature.riemannOp
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I') g') x)
         X Y Z =
-          g'.inner x Y Z • X - g'.inner x X Z • Y) :
+          κ • (g'.inner x Y Z • X - g'.inner x X Z • Y)) :
     g'.inner
         (expMapIntrinsic (I := I') g' hEnorm' p'
           (show TangentSpace I' p' from i u))
@@ -285,8 +286,8 @@ theorem expDiff_sq_xfer
     exact hs.trans (hi u u)
   let a0 : Fin (Module.finrank ℝ (TangentSpace I p)) →
       Fin (Module.finrank ℝ (TangentSpace I p)) → ℝ := fun a b =>
-    g.inner p u u * (if a = b then 1 else 0) -
-      g.inner p (basis b) u * g.inner p (basis a) u
+    κ * (g.inner p u u * (if a = b then 1 else 0) -
+      g.inner p (basis b) u * g.inner p (basis a) u)
   have hcoef : ∀ t ∈ Icc (0 : ℝ) 1, ∀ a b,
       g.inner (γ t) (frame a t)
           ((DifferentialGeometry.Geometry.Curvature.riemannOp
@@ -439,6 +440,55 @@ theorem expDiff_sq_xfer
   rw [hYone, hYone'] at hnormY
   dsimp only [γ, γ', expMapIntrinsic] at hnormY
   exact hnormY
+
+omit [T2Space (TangentBundle I M)]
+    [T2Space (TangentBundle I' M')] [ConnectedSpace M] [ConnectedSpace M'] in
+theorem expDiff_sq_xfer
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (g' : SmoothRiemannianMetric I' M')
+    (hEnorm' : ∀ (x : M') (v : TangentSpace I' x),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g'.inner x v v)))
+    (p : M) (p' : M') (u w : E)
+    (i : E ≃L[ℝ] E)
+    (hi : ∀ a b : E, g'.inner p' (i a) (i b) = g.inner p a b)
+    (hR : ∀ (x : M) (X Y Z : TangentSpace I x),
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g) x)
+        X Y Z =
+          g.inner x Y Z • X - g.inner x X Z • Y)
+    (hR' : ∀ (x : M') (X Y Z : TangentSpace I' x),
+      (DifferentialGeometry.Geometry.Curvature.riemannOp
+          (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I') g') x)
+        X Y Z =
+          g'.inner x Y Z • X - g'.inner x X Z • Y) :
+    g'.inner
+        (expMapIntrinsic (I := I') g' hEnorm' p'
+          (show TangentSpace I' p' from i u))
+        (mfderiv 𝓘(ℝ, E) I'
+          (fun v : E => expMapIntrinsic (I := I') g' hEnorm' p'
+            (show TangentSpace I' p' from v))
+          (i u) (i w))
+        (mfderiv 𝓘(ℝ, E) I'
+          (fun v : E => expMapIntrinsic (I := I') g' hEnorm' p'
+            (show TangentSpace I' p' from v))
+          (i u) (i w))
+      =
+    g.inner
+        (expMapIntrinsic (I := I) g hEnorm p
+          (show TangentSpace I p from u))
+        (mfderiv 𝓘(ℝ, E) I
+          (fun v : E => expMapIntrinsic (I := I) g hEnorm p
+            (show TangentSpace I p from v))
+          u w)
+        (mfderiv 𝓘(ℝ, E) I
+          (fun v : E => expMapIntrinsic (I := I) g hEnorm p
+            (show TangentSpace I p from v))
+          u w) := by
+  exact expMapIntrinsic_mfderiv_inner_self_eq_of_constant_curvature
+    g hEnorm g' hEnorm' p p' u w i hi 1
+    (by simpa only [one_smul] using hR)
+    (by simpa only [one_smul] using hR')
 
 end Exponential
 end Riemannian

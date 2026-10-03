@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Geodesic
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Connection
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianMetric
 import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 
@@ -79,5 +80,46 @@ theorem geodesicLine_unit_speed (x : Hyperboloid E) (v : ℝ × E)
     field_simp [c.time_pos.ne']
   rw [hcancel]
   exact hw
+
+theorem isGeodesic_geodesicLine [FiniteDimensional ℝ E] (x : Hyperboloid E) (v : ℝ × E)
+    (hv : lorentzForm E v v = 1) (ho : lorentzForm E (x.time, x.space) v = 0) :
+    Geometry.Riemannian.Geodesic.IsGeodesic (I := 𝓘(ℝ, E))
+      riemannianMetric (geodesicLine x v hv ho) := by
+  intro t
+  let c := geodesicLine x v hv ho
+  let u : ℝ → E := fun s => Real.sinh s • x.space + Real.cosh s • v.2
+  have hchart : Geometry.Riemannian.Geodesic.chartLocalCurve (I := 𝓘(ℝ, E)) c t =
+      fun s => Real.cosh s • x.space + Real.sinh s • v.2 := by
+    funext s
+    rw [Geometry.Riemannian.Geodesic.chartLocalCurve_def, extChartAt_coe,
+      chartAt_eq_spaceHomeomorph]
+    rfl
+  have hd (s : ℝ) : HasDerivAt
+      (Geometry.Riemannian.Geodesic.chartLocalCurve (I := 𝓘(ℝ, E)) c t) (u s) s := by
+    rw [hchart]
+    exact ((Real.hasDerivAt_cosh s).smul_const x.space).add
+      ((Real.hasDerivAt_sinh s).smul_const v.2)
+  have hderiv : deriv
+      (Geometry.Riemannian.Geodesic.chartLocalCurve (I := 𝓘(ℝ, E)) c t) = u :=
+    funext fun s => (hd s).deriv
+  refine ⟨u t, (c t).space, hd t, Filter.Eventually.of_forall (fun s => ?_), ?_, ?_⟩
+  · rw [hderiv]
+    exact hd s
+  · rw [hderiv]
+    exact ((Real.hasDerivAt_sinh t).smul_const x.space).add
+      ((Real.hasDerivAt_cosh t).smul_const v.2)
+  · have hext : extChartAt 𝓘(ℝ, E) (c t) (c t) = (c t).space := by
+      rw [extChartAt_coe, chartAt_eq_spaceHomeomorph]
+      rfl
+    rw [hext, chartChristoffelContraction_eq]
+    have hvel : spaceVectorField (u t) (c t) =
+        mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) c t
+          ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm 1) := by
+      have h := mfderiv_space_geodesicLine_apply_one x v hv ho t
+      rw [mfderiv_spaceDiffeomorph] at h
+      exact h.symm
+    rw [hvel, geodesicLine_unit_speed]
+    rw [neg_one_smul]
+    exact add_neg_cancel ((c t).space)
 
 end DifferentialGeometry.Hyperboloid

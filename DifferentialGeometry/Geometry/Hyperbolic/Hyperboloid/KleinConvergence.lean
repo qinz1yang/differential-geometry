@@ -16,7 +16,7 @@ private theorem inv_time_sq (x : Hyperboloid E) :
   field_simp [x.time_pos.ne']
   nlinarith [x.time_sq]
 
-private theorem norm_kleinHomeomorph_sub_sq_le (x y : Hyperboloid E) {C : ℝ}
+theorem norm_kleinHomeomorph_sub_sq_le (x y : Hyperboloid E) {C : ℝ}
     (hxy : dist x y ≤ C) :
     ‖(kleinHomeomorph x : E) - (kleinHomeomorph y : E)‖ ^ 2 ≤
       2 * Real.cosh C * x.time⁻¹ := by

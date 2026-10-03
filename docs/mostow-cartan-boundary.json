@@ -1,0 +1,230 @@
+{
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Exponential/Cartan/Norm.lean",
+      "sha256": "90ebd070e4cefe6d89ad3b6b3c2a333c12cd4065918ef265ad466b5dd510597a",
+      "fresh_lake_build_seconds": 4.8,
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "expMapIntrinsic_mfderiv_inner_self_eq_of_constant_curvature",
+        "expDiff_sq_xfer"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond",
+        "DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.CoordinateTransfer",
+        "DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic",
+        "DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm",
+        "DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness",
+        "DifferentialGeometry.Geometry.Exponential.Variation.Jacobi",
+        "DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic",
+        "DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion"
+      ],
+      "status": "PROVED",
+      "mathematical_review": "The same unrestricted real curvature appears in both operators; Jacobi comparison uses an absolute coefficient bound. Four original positive-curvature signatures remain exact.",
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Exponential/Cartan/Local.lean",
+      "sha256": "5dbe0933cbaf0d1502edc4452a1bd0bfa22ff527d5dd7491a1c63c2ebda6a5f4",
+      "fresh_lake_build_seconds": 6.1,
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "cartanMap",
+        "cartanMap_smooth",
+        "cartanMap_inner_eq_of_constant_curvature",
+        "cartanMap_sq",
+        "cartanMap_inner",
+        "cartanPartialDiffeomorph",
+        "cartanPartialDiffeomorph_coe",
+        "cartanPartialDiffeomorph_center_mem_source",
+        "cartanPartialDiffeomorph_inner_eq_of_constant_curvature",
+        "cartanPartialDiffeomorph_inner"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond",
+        "DifferentialGeometry.Geometry.Exponential.Inverse.Radius",
+        "DifferentialGeometry.Geometry.Exponential.Cartan.Norm",
+        "DifferentialGeometry.Geometry.Exponential.DiagonalExponential.FixedBasePartialDiffeomorph",
+        "DifferentialGeometry.Geometry.Metric.Polarization"
+      ],
+      "status": "PROVED",
+      "mathematical_review": "The general bilinear and partial-diffeomorphism comparison retains the actual Cartan constructions; positive-curvature consumers are unchanged.",
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/IsometrySmooth.lean",
+      "sha256": "bd5540dc417ff58f9ac17d156760daf7ec8fe2e245e6437ed80e0bcb55b49847",
+      "fresh_lake_build_seconds": 6.8,
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "contMDiff_isometryEquiv",
+        "isometryDiffeomorph",
+        "isometryDiffeomorph_toEquiv",
+        "isometryDiffeomorph_apply",
+        "isometryDiffeomorph_symm_apply",
+        "isometryDiffeomorph_symm",
+        "isometryDiffeomorph_refl",
+        "isometryDiffeomorph_trans"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassification",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Manifold",
+        "DifferentialGeometry.Geometry.Lorentz.Isometry"
+      ],
+      "status": "PROVED",
+      "mathematical_review": "Every actual model isometry is analytic with exact underlying map, inverse and composition laws.",
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Connection.lean",
+      "sha256": "870707f388378999f8aebf4bdab89a9d421352db2fc162af5af6ee68a2356d37",
+      "fresh_lake_build_seconds": 5.0,
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "leviCivita_tangentConstAt",
+        "chartChristoffelContraction_eq"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianMetric",
+        "DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.CorrectionContraction",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.VectorField",
+        "DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative"
+      ],
+      "status": "PROVED",
+      "mathematical_review": "The native Christoffel contraction is identified using the actual spatial tangent trivialization, without a generic flat-chart premise.",
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/RiemannianGeodesic.lean",
+      "sha256": "83d998976afdbdebf04551680c4ddd5460191a3e69bf09005ea1813e2a34e3e9",
+      "fresh_lake_build_seconds": 2.1,
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "contMDiff_geodesicLine",
+        "mfderiv_space_geodesicLine_apply_one",
+        "geodesicLine_unit_speed",
+        "isGeodesic_geodesicLine"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Geodesic",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Connection",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianMetric",
+        "Mathlib.Geometry.Manifold.MFDeriv.NormedSpace"
+      ],
+      "status": "PROVED",
+      "mathematical_review": "The actual first and second curve derivatives satisfy the native Levi-Civita geodesic equation.",
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/AsymptoticRays.lean",
+      "sha256": "dc53100e3a74a39d80ff20860b9045177c4bec94467deab10edc977bb1fcb2dc",
+      "fresh_lake_build_seconds": 2.0,
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_interpolation",
+      "public_declarations": [
+        "dist_geodesicLine_le_of_forward_endpoint_eq"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicBoundary"
+      ],
+      "status": "PROVED",
+      "mathematical_review": "Equal actual ideal endpoints imply equal-time ray distance is at most the initial distance, including shifted horospheres.",
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/KleinConvergence.lean",
+      "sha256": "4f65819b061f18c2d02eff54e5fff172396b61a380194cd2ae8bcdcfc955f561",
+      "fresh_lake_build_seconds": 1.6,
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "norm_kleinHomeomorph_sub_sq_le",
+        "tendsto_kleinHomeomorph_of_dist_bounded"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Klein",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Metric"
+      ],
+      "status": "PROVED",
+      "mathematical_review": "The unchanged squared Klein-distance estimate is promoted for its actual second consumer.",
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryMap.lean",
+      "sha256": "53cc0d590b1f5faaf3491fd25089152c4d95bfaed6216ca5514f261f9ad654ff",
+      "fresh_lake_build_seconds": 2.1,
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "boundaryMap",
+        "tendsto_kleinHomeomorph_boundaryMap_origin_ray",
+        "tendsto_kleinHomeomorph_boundaryMap"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.QuasiGeodesicBoundary",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinCompactification",
+        "Mathlib.Analysis.Normed.Module.Normalize",
+        "Mathlib.Topology.UniformSpace.UniformApproximation"
+      ],
+      "status": "PROVED",
+      "mathematical_review": "A genuine continuous quasi-isometric embedding has a canonical continuous boundary map with original-ray and arbitrary-filter compatibility; target finite dimensionality only.",
+      "remaining_packet_gates": []
+    }
+  ],
+  "base_commit": "1f895f33b55ebcb2d5b1a7698f06c4e421a75b1f",
+  "layer": "Common-curvature Cartan comparison, native hyperbolic geodesics, and original-map boundary extension",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "dependency_order": [
+    "Geometry/Exponential/Cartan/Norm",
+    "Geometry/Exponential/Cartan/Local",
+    "Geometry/Hyperbolic/Hyperboloid/IsometrySmooth",
+    "Geometry/Hyperbolic/Hyperboloid/Connection",
+    "Geometry/Hyperbolic/Hyperboloid/RiemannianGeodesic",
+    "Geometry/Hyperbolic/Hyperboloid/AsymptoticRays",
+    "Geometry/Hyperbolic/Hyperboloid/KleinConvergence",
+    "Geometry/Hyperbolic/Hyperboloid/BoundaryMap"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=3 lake build DifferentialGeometry",
+    "jobs": 26909,
+    "root_module_seconds": 7.3,
+    "errors": 0,
+    "warnings": 0,
+    "max_observed_compiler_processes": 3,
+    "process_cap_violated": false
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true
+  },
+  "canonical_regressions": {
+    "actual_hyperbolic_and_euclidean_curvature_consumers": "passed silently",
+    "eight_legacy_native_type_expressions": "unchanged",
+    "unchanged_sphere_consumer_seconds": 7.7,
+    "affected_hyperbolic_curvature_seconds": 2.4,
+    "affected_native_distance_seconds": 2.2
+  },
+  "mostow_headline": "open"
+}

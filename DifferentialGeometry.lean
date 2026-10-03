@@ -10338,9 +10338,11 @@ import DifferentialGeometry.Geometry.HarmonicMap.WeakGradientBound
 import DifferentialGeometry.Geometry.HarmonicMap.WeakGradientGlobal
 import DifferentialGeometry.Geometry.HarmonicMap.WeakLowerSemicontinuity
 import DifferentialGeometry.Geometry.Hodge.Codifferential
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.AsymptoticRays
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boost
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boundary
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryFaithfulness
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMap
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryTopology
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Connection
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature
@@ -10353,6 +10355,7 @@ import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GromovProduct
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Homotopy
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Interpolation
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryClassification
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometrySmooth
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometryTopology
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Klein
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinCompactification
