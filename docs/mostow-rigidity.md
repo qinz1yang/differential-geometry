@@ -90,11 +90,11 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| Root | Assemble original-map disk control after complete-line tracking and a uniform fixed-triple basepoint bound. |
-| `review_hyperboloid_metric` | Prove two-sided complete-line Morse tracking with the original positive and negative ideal limits. |
-| `equivariant_descent` | Prove compactness of the intersection of fixed-radius tubes around the three sides of an actual ideal triangle. |
-| `hyperboloid_metric` | Prove native metric-tensor preservation for the actual smooth hyperboloid isometry, then uniform model ball volumes. |
-| `rigidity_assessment` | Prove that a nilpotent subgroup acting freely on hyperbolic space has an actual boundary orbit of at most two points. |
+| Root | Assemble original-map disk control from uniform fixed-triple normalization and actual similarity isometries. |
+| `review_hyperboloid_metric` | Prove the uniform actual origin-displacement bound when the original boundary map fixes three prescribed distinct points. |
+| `review_hyperboloid_interpolation` | Construct the actual hyperbolic isometry inducing complex translation in the fixed stereographic chart. |
+| `hyperboloid_metric` | Prove native comparison-map ball volume equality and transfer uniform model ball mass to original thick points. |
+| `rigidity_assessment` | Transfer finite actual orbits from finite-index subgroups using native stabilizer/index theory. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -629,3 +629,45 @@ the existing aggregate took 31 seconds. Exact evidence is in
 `mostow-fixedpoint-klein-volume.json`. All 78 newly added Lean files have
 current source-hash-matched fresh compilation evidence below 30 seconds.
 The full three-dimensional finite-volume Mostow theorem remains open.
+
+## Verified complete lines, ideal triangles and native model volume
+
+The complete-line Morse theorem now chooses one bound before the original
+curve and returns its actual distinct negative and positive ideal limits.
+The constructed native geodesic has those oriented endpoints, and both
+Hausdorff directions are proved separately. Nonlinear nonorigin curves and
+reversed-time consumers verify the two-sided statement.
+
+Every native complete geodesic has exactly its open Klein chord. Intersections
+of fixed-radius tubes around the three actual sides of an ideal triangle are
+compact: an escaping sequence would force one boundary limit into all three
+endpoint pairs. No boundedness or compact-core premise is supplied.
+
+A nilpotent subgroup acting freely on a finite-dimensional nontrivial model
+has an actual boundary orbit of at most two points. The subgroup itself may
+be trivial. Actual hyperbolic isometries preserve the native Riemannian tensor,
+proved by differentiating their exact Lorentz extension. Consequently native
+model ball volumes are center independent and positive for positive radii,
+including the zero-dimensional model.
+
+All six changed modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. Final-source compilation took
+at most 5.1 seconds in this batch; the 26,943-job root build passed without
+diagnostics. The existing aggregate took 36 seconds. Exact hashes and evidence
+are in `mostow-morse-triangle-model-volume.json`. All 83 newly added Lean files
+have current source-hash-matched fresh compilation evidence below 30 seconds.
+
+Root accidentally duplicated two reviewer assignments. One nilpotent review
+directory was shared and report metadata overwritten; the sole review's
+independent linter, axiom and consumer run evidence survived and was reconciled
+in a new exclusive directory. A copied Riemannian-isometry audit driver also
+overwrote an owner diagnostic output; its replacement status is explicitly
+recorded. Mathematical source and shared caches were unchanged. The evidence
+file records original and replacement provenance without asserting unknown
+historical artifact hashes. Future reviewer directories require exclusive
+creation, and all driver output paths must remain inside their owner directory.
+
+The three-dimensional finite-volume Mostow theorem is still open. Uniform
+fixed-triple normalization, actual plane disk control, finite-volume cusp
+geometry, the controlled given homotopy equivalence, and boundary rigidity
+remain required.

@@ -1,0 +1,185 @@
+{
+  "base_commit": "c4d373e2a66b50140e63129b846a474bf9b5c972",
+  "layer": "Complete-line tracking, ideal-triangle tubes, nilpotent orbits and native model volume",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/MorseLine.lean",
+      "sha256": "f646e4d9fea0a6584bd8626af3210fb07e56b3a91e5dadbc6bac907e6d9a743a",
+      "fresh_lake_build_seconds": 2.8,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "morse_lemma_line"
+      ],
+      "mathematical_review": "Uniform complete-line Morse tracking with actual distinct endpoints and both Hausdorff directions; final build replayed after Klein API extension.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.QuasiGeodesicBoundary",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinGeodesic",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.AsymptoticRays",
+        "Mathlib.Topology.Order.IntermediateValue"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Nilpotent.lean",
+      "sha256": "8cf437fd8cd260156817346600cfd8e3e28f53505bf43a6638c502c394f7d5af",
+      "fresh_lake_build_seconds": 3.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "exists_boundary_orbit_encard_le_two_of_isNilpotent"
+      ],
+      "mathematical_review": "In a finite-dimensional nontrivial model, a nilpotent subgroup acting freely has an actual boundary orbit of at most two points; subgroup itself may be trivial.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryFixedPoint",
+        "Mathlib.Analysis.Normed.Module.Normalize",
+        "Mathlib.GroupTheory.Nilpotent"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/RiemannianIsometry.lean",
+      "sha256": "c02ea5a0a2d0c51f51882ecb284fa2a139e582e94d885806f6294821d6932ab7",
+      "fresh_lake_build_seconds": 1.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "riemannianMetric_inner_mfderiv_isometryEquiv"
+      ],
+      "mathematical_review": "Actual native mfderiv of a hyperbolic isometry preserves the Riemannian tensor in arbitrary real inner-product source and target models.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.IsometrySmooth",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianMetric"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Volume.lean",
+      "sha256": "d788dd0a5294d2ac240eca39a68cba5654b90197dcf424cda342f6e771fbfb80",
+      "fresh_lake_build_seconds": 3.3,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "riemannianVolumeMeasure_ball_eq_of_center",
+        "riemannianVolumeMeasure_ball_pos"
+      ],
+      "mathematical_review": "Actual native model Riemannian ball volume is center-independent and positive at positive radii, including dimension zero.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianIsometry",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper",
+        "DifferentialGeometry.Geometry.Measure.LocalIsometry"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/KleinGeodesic.lean",
+      "sha256": "b1a2815299da218b9c7c00befc6c7198bb4b27badb9dd71bae44fad4329a10f5",
+      "fresh_lake_build_seconds": 5.1,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "public_declarations": [
+        "kleinHomeomorph_image_range_geodesicLine"
+      ],
+      "mathematical_review": "An arbitrary native full geodesic has exactly the open Klein chord between its own two oriented endpoint expressions; accepted predecessor unchanged.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicSegment",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.GeodesicBoundary",
+        "Mathlib.Analysis.SpecialFunctions.Artanh",
+        "Mathlib.Topology.Order.IntermediateValue"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/IdealTriangle.lean",
+      "sha256": "7e568c8fff61830639321404f3f3346d70af9e2a172246f29196f40ae29b8947",
+      "fresh_lake_build_seconds": 1.6,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "isCompact_iInter_cthickening_geodesicLine_triangle"
+      ],
+      "mathematical_review": "Fixed-radius closed tubes about actual three ideal-triangle sides have compact intersection, with no supplied boundedness or core.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinGeodesic",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.KleinConvergence",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper",
+        "Mathlib.Analysis.InnerProductSpace.Convex",
+        "Mathlib.Topology.MetricSpace.Thickening",
+        "Mathlib.Topology.Sequences"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "Geometry/Hyperbolic/Hyperboloid/KleinGeodesic",
+    "Geometry/Hyperbolic/Hyperboloid/MorseLine",
+    "Geometry/Hyperbolic/Hyperboloid/IdealTriangle",
+    "Geometry/Hyperbolic/Hyperboloid/Nilpotent",
+    "Geometry/Hyperbolic/Hyperboloid/RiemannianIsometry",
+    "Geometry/Hyperbolic/Hyperboloid/Volume"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open",
+  "provenance": {
+    "root_coordination_error": "Root dispatched duplicate reviewers for Nilpotent and RiemannianIsometry. The sole accepted reviewers are review_lorentz and review_hyperboloid_manifold respectively; duplicate outputs do not add mathematical evidence.",
+    "nilpotent": {
+      "collided_directory": "/private/tmp/pc-mostow-review-nilpotent",
+      "exclusive_creation_guard_missing": true,
+      "overwrites": "Secondary reviewer overwrote driver/report/source-artifact paths; mathematical source hash stayed8cf. Uniquely named original lint/consumer/axiom logs and drivers survive.",
+      "sole_review_report": "/private/tmp/pc-mostow-review-lorentz-nilpotent-provenance-20261003/SOLE_REVIEW_RECONSTRUCTED.md",
+      "sole_review_report_sha256": "f93cdef821d6e0034cc500b9a9196addfbd7985af59f7d8de03c77688a4b303a",
+      "provenance_manifest_sha256": "8dbbf5fa9a9547ed48f2ca16fc5d5f7728dbf47b1a56f5f417283ca2a24bf4e9",
+      "sole_fresh_seconds": 1.869355,
+      "sole_lint_native_seconds": 2.17399025,
+      "sole_consumer_seconds": 1.794917541,
+      "historical_target_olean_prehash": "unknown; no claim of historical byte preservation",
+      "recovery": "Recorded-run report reconstructed in new guarded exclusive directory. Shared originals preserved without blind restore or repeat proof."
+    },
+    "riemannian_isometry": {
+      "sole_review_directory": "/private/tmp/pc-mostow-review-riemannian-isometry-c02ea5a0",
+      "exclusive_creation_guard": true,
+      "sole_review_sha256": "1cdf14f4760071e29a0ea6a66d124e5c4a16ff79c77e0a940da525a000bb3adb",
+      "owner_diagnostic_overwritten": "/private/tmp/pc-mostow-riemannian-isometry/native-audit.txt",
+      "prior_diagnostic_hash": "unknown",
+      "replacement_diagnostic_sha256": "66a740f37d7ef10ec2dfa6eb37b6f9d983e1c1d52bd32f379fc43e63f25fb987",
+      "resolution": "Reviewer corrected its IO path and repeated only the audit in its own guarded directory. Owner diagnostic file is explicitly treated as replaced by reviewer output. Mathematical source and cache unchanged."
+    },
+    "prevention": "Future reviewer scratch must be mkdtemp-owned or guarded nonexistent; all driver IO targets inspected and rewritten to owned scratch before running; one active reviewer assignment per packet."
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "jobs": 26943,
+    "root_module_seconds": 36.0,
+    "root_compiler_cap": 1,
+    "errors": 0,
+    "warnings": 0
+  }
+}

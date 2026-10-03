@@ -185,4 +185,80 @@ theorem exists_geodesicLine_with_endpoints
     have heq : (2 * a - 1 + 1) / 2 = a := by ring
     rw [heq]
 
+theorem kleinHomeomorph_image_range_geodesicLine (x : Hyperboloid E) (v : ℝ × E)
+    (hv : lorentzForm E v v = 1) (ho : lorentzForm E (x.time, x.space) v = 0) :
+    (fun z : Hyperboloid E => (kleinHomeomorph z : E)) ''
+      Set.range (geodesicLine x v hv ho) =
+        openSegment ℝ ((x.time - v.1)⁻¹ • (x.space - v.2))
+          ((x.time + v.1)⁻¹ • (x.space + v.2)) := by
+  let D : ℝ → ℝ := fun t => x.time + Real.tanh t * v.1
+  let α : ℝ → ℝ := fun t => (1 - Real.tanh t) * (x.time - v.1) / (2 * D t)
+  let β : ℝ → ℝ := fun t => (1 + Real.tanh t) * (x.time + v.1) / (2 * D t)
+  have hD (t : ℝ) : 0 < D t := klein_denominator_pos x v hv ho t
+  have hm := time_sub_fst_pos x v hv ho
+  have hp := time_add_fst_pos x v hv ho
+  have hα (t : ℝ) : 0 < α t :=
+    div_pos (mul_pos (sub_pos.mpr (Real.tanh_lt_one t)) hm) (mul_pos (by norm_num) (hD t))
+  have hβ (t : ℝ) : 0 < β t :=
+    div_pos (mul_pos (by linarith [Real.neg_one_lt_tanh t]) hp) (mul_pos (by norm_num) (hD t))
+  have hsum (t : ℝ) : α t + β t = 1 := by
+    dsimp only [α, β]
+    rw [← add_div]
+    apply (div_eq_one_iff_eq (mul_ne_zero (by norm_num) (hD t).ne')).mpr
+    dsimp only [D]
+    ring
+  have hformula (t : ℝ) :
+      (kleinHomeomorph (geodesicLine x v hv ho t) : E) =
+        α t • ((x.time - v.1)⁻¹ • (x.space - v.2)) +
+          β t • ((x.time + v.1)⁻¹ • (x.space + v.2)) := by
+    have hcoef₁ : α t * (x.time - v.1)⁻¹ + β t * (x.time + v.1)⁻¹ = (D t)⁻¹ := by
+      dsimp only [α, β]
+      field_simp [hm.ne', hp.ne', (hD t).ne']
+      ring
+    have hcoef₂ : -(α t * (x.time - v.1)⁻¹) + β t * (x.time + v.1)⁻¹ =
+        (D t)⁻¹ * Real.tanh t := by
+      dsimp only [α, β]
+      field_simp [hm.ne', hp.ne', (hD t).ne']
+      ring
+    rw [kleinHomeomorph_geodesicLine]
+    change (D t)⁻¹ • (x.space + Real.tanh t • v.2) = _
+    calc
+      _ = (D t)⁻¹ • x.space + ((D t)⁻¹ * Real.tanh t) • v.2 := by module
+      _ = (α t * (x.time - v.1)⁻¹ + β t * (x.time + v.1)⁻¹) • x.space +
+          (-(α t * (x.time - v.1)⁻¹) + β t * (x.time + v.1)⁻¹) • v.2 := by
+        rw [hcoef₁, hcoef₂]
+      _ = _ := by module
+  apply Set.Subset.antisymm
+  · rintro z ⟨_, ⟨t, rfl⟩, rfl⟩
+    exact ⟨α t, β t, hα t, hβ t, hsum t, (hformula t).symm⟩
+  · rintro z ⟨a, b, ha, hb, hab, hz⟩
+    have haeq : a = 1 - b := by linarith
+    subst a
+    let d : ℝ := (1 - b) * (x.time + v.1) + b * (x.time - v.1)
+    have hd : 0 < d := add_pos (mul_pos ha hp) (mul_pos hb hm)
+    let q : ℝ := (b * (x.time - v.1) - (1 - b) * (x.time + v.1)) / d
+    have hq : q ∈ Set.Ioo (-1) 1 := by
+      constructor
+      · apply (lt_div_iff₀ hd).mpr
+        dsimp only [d]
+        nlinarith [mul_pos hb hm]
+      · apply (div_lt_one hd).mpr
+        dsimp only [d]
+        nlinarith [mul_pos ha hp]
+    let t := Real.artanh q
+    have ht : Real.tanh t = q := Real.tanh_artanh hq
+    have hβt : β t = b := by
+      apply (div_eq_iff (mul_ne_zero (by norm_num) (hD t).ne')).mpr
+      dsimp only [D]
+      rw [ht]
+      dsimp only [q]
+      field_simp [hd.ne']
+      dsimp only [d]
+      ring
+    have hαt : α t = 1 - b := by linarith [hsum t]
+    refine ⟨geodesicLine x v hv ho t, ⟨t, rfl⟩, ?_⟩
+    dsimp only
+    rw [hformula t, hαt, hβt]
+    exact hz
+
 end DifferentialGeometry.Hyperboloid
