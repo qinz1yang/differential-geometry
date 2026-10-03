@@ -1,3 +1,5 @@
+import DifferentialGeometry.Topology.Simplex.BoundaryCoordinates
+import DifferentialGeometry.Topology.PiecewiseLinear.Sphere.SimplyConnected
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 import DifferentialGeometry.Topology.Cell.Coordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CellAttachmentKernel
@@ -1331,29 +1333,6 @@ theorem surjective_and_ker_le_fundamentalGroupMap_diskAttachmentMapForList
       rw [hmap]
       exact ⟨hstepSurj.comp hprevSurj,
         ker_comp_le_of_ker_le_of_ker_le_map F G N hprevKer hstepKer⟩
-
-def stdSimplexBoundaryHomeomorphSimplexBoundary (n : ℕ) :
-    stdSimplexBoundary n ≃ₜ DifferentialGeometry.Simplex.boundary (Fin (n + 1)) where
-  toFun x := ⟨⟨x.1, x.2.1⟩, x.2.2⟩
-  invFun x := ⟨x.1.1, x.1.2, x.2⟩
-  left_inv _x := rfl
-  right_inv _x := rfl
-  continuous_toFun :=
-    (continuous_subtype_val.subtype_mk _).subtype_mk _
-  continuous_invFun :=
-    (continuous_subtype_val.comp continuous_subtype_val).subtype_mk _
-
-open Classical in
-theorem IsPLSphere.twoSimplyConnectedSpace [FiniteDimensional ℝ E]
-    {B : Set E} (hB : IsPLSphere 2 B) : SimplyConnectedSpace B := by
-  obtain ⟨f, hf⟩ := hB
-  let e : stdSimplexBoundary 3 ≃ₜ SphereTwo :=
-    (stdSimplexBoundaryHomeomorphSimplexBoundary 3).trans
-      (DifferentialGeometry.Simplex.stdSimplexNormedBoundarySphereHomeomorph
-        (EuclideanSpace.equiv (Fin 3) ℝ).symm)
-  let _ : SimplyConnectedSpace (stdSimplexBoundary 3) :=
-    e.toHomotopyEquiv.simplyConnectedSpace
-  exact hf.homeomorph.symm.toHomotopyEquiv.simplyConnectedSpace
 
 open Classical in
 theorem eq_top_of_boundaryLoops_mem_normal [FiniteDimensional ℝ E]

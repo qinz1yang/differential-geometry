@@ -17884,3 +17884,13 @@ import DifferentialGeometry.Topology.MetricSpace.Geodesic.SegmentTail
 import DifferentialGeometry.Topology.Manifold.ClosedBall.Charts
 import DifferentialGeometry.Topology.Manifold.Sphere.CellBoundary
 import DifferentialGeometry.Topology.Manifold.ProductGroupoid
+import DifferentialGeometry.Topology.PiecewiseLinear.Manifold.BoundaryRemainder
+import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.Connected
+import DifferentialGeometry.Topology.PiecewiseLinear.Piece.ChartTransition
+import DifferentialGeometry.Topology.PiecewiseLinear.SmallBallNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.Sphere.Basic
+import DifferentialGeometry.Topology.PiecewiseLinear.Sphere.Manifold
+import DifferentialGeometry.Topology.PiecewiseLinear.Sphere.SimplyConnected
+import DifferentialGeometry.Topology.PiecewiseLinear.Subdivision.EdgePath
+import DifferentialGeometry.Topology.Simplex.BoundaryCoordinates
+import DifferentialGeometry.Topology.SolidTorus.Embedded
