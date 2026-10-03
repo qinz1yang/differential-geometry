@@ -90,10 +90,9 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| `review_hyperboloid_metric` | Derive native local-diffeomorphism and model-completeness interfaces for the actual hyperbolic comparison map. |
-| `review_hyperboloid_model` | Assemble disjoint exhaustive actual sheets into the complete local-isometry covering theorem. |
-| `review_hyperboloid_interpolation` | Prove horizontal absolute continuity from the actual image-strip estimate via finite interval refinement. |
-| `hyperboloid_metric` | Audit the native finite-volume compact-thick-part engine and its actual quotient-volume inputs. |
+| `review_hyperboloid_metric` | Globalize the actual comparison map to a native isometry equivalence for a complete simply connected curvature-minus-one target. |
+| `review_hyperboloid_interpolation` | Prove positive measure of points with a nonzero horizontal directional derivative for the original disk-controlled homeomorphism. |
+| `hyperboloid_metric` | Identify the canonical thick-set/displacement interface and the actual quotient-volume producer. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -425,3 +424,30 @@ linters and native axiom checks. Fresh source builds took 6.0, 4.5 and 3.0
 seconds. The root build passed with 26,917 jobs and zero diagnostics; the existing
 aggregate took 35 seconds. Exact evidence is in `mostow-comparison-sheets.json`.
 The original three-dimensional finite-volume Mostow headline remains open.
+
+## Verified complete coverings and horizontal absolute continuity
+
+The complete local-Riemannian-isometry theorem now produces a native covering
+map. It constructs sheets over the same actual chart, proves exhaustion using
+reversed lifted radial paths, proves disjointness by lift uniqueness, and
+handles empty fibers explicitly. No target completeness, global injectivity
+or surjectivity is assumed. The actual hyperbolic comparison is a local
+diffeomorphism and its source has native metric completeness.
+
+Uniform round-disk control of the original plane homeomorphism now implies
+complex-valued horizontal absolute continuity at almost every height. The
+finite-refinement proof bounds the square of the sum of actual endpoint
+oscillations, including reversed and zero-length intervals. Its nonlinear
+sine-shear consumer proves the actual disk-control hypothesis.
+
+A fixed-radius positive ball-measure lower bound in a finite-measure metric
+space now implies boundedness of the supplied center set. Proper-space compact
+closure remains a native consequence, not a hidden premise. The actual
+hyperbolic quotient local-volume identification remains a separate geometric
+obligation.
+
+All five changed modules passed independent review, canonical builds, all 14
+applicable linters and native axiom checks. Fresh source builds take at most
+9 seconds. The final root build passed with 26,920 jobs and zero diagnostics;
+the existing aggregate took 34 seconds. Exact evidence is in
+`mostow-covering-ac-packing.json`. The finite-volume Mostow headline remains open.

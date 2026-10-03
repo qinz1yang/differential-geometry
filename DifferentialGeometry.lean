@@ -334,6 +334,7 @@ import DifferentialGeometry.Analysis.Calculus.Variation.Comparison
 import DifferentialGeometry.Analysis.Calculus.Variation.Lipschitz
 import DifferentialGeometry.Analysis.Calculus.Variation.Periodic
 import DifferentialGeometry.Analysis.Calculus.Variation.Quadratic
+import DifferentialGeometry.Analysis.Complex.AbsolutelyContinuous
 import DifferentialGeometry.Analysis.Complex.AnalyticCoordinates
 import DifferentialGeometry.Analysis.Complex.Argument
 import DifferentialGeometry.Analysis.Complex.Beltrami.AnalyticCoordinates
@@ -1155,6 +1156,7 @@ import DifferentialGeometry.Analysis.Integration.LpNorm
 import DifferentialGeometry.Analysis.Integration.Measure.AddCircle
 import DifferentialGeometry.Analysis.Integration.Measure.Affine
 import DifferentialGeometry.Analysis.Integration.Measure.BallIntersection
+import DifferentialGeometry.Analysis.Integration.Measure.BallPacking
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.Derived
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.StandardInstances
@@ -10888,6 +10890,7 @@ import DifferentialGeometry.Geometry.Metric.LipschitzCurves
 import DifferentialGeometry.Geometry.Metric.LocalChartDistance
 import DifferentialGeometry.Geometry.Metric.LocalCollapse
 import DifferentialGeometry.Geometry.Metric.LocalExponential
+import DifferentialGeometry.Geometry.Metric.LocalIsometry.Covering
 import DifferentialGeometry.Geometry.Metric.LocalIsometry.PathLifting
 import DifferentialGeometry.Geometry.Metric.LocalIsometry.Sheets
 import DifferentialGeometry.Geometry.Metric.LocalJoinJets

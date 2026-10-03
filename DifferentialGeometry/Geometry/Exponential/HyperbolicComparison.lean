@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.ManifoldDerivative
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Exponential
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature
 import DifferentialGeometry.Geometry.Exponential.Cartan.Norm
@@ -250,5 +251,52 @@ theorem hyperbolicComparison_inner (g : SmoothRiemannianMetric I M)
       hbase (show (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) Φ u w : E) = (V : E) from hright)
   exact (congrArg (fun W : TangentSpace I (F x) => g.inner (F x) W W) hmap).trans
     (ht.trans hsource)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem isLocalDiffeomorph_hyperbolicComparison (g : SmoothRiemannianMetric I M)
+    (hg : RiemannianMetricComplete (I := I) g) (p : M)
+    (hR : ∀ (q : M) (X Y Z : TangentSpace I q),
+      Curvature.riemannOp (Connection.LeviCivita g) q X Y Z =
+        (-1 : ℝ) • (g.inner q Y Z • X - g.inner q X Z • Y)) :
+    letI : IsManifold I 1 M := IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
+    letI : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+    letI : T3Space M := inferInstance
+    letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+    letI : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+      ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+    letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+    letI : PseudoEMetricSpace M := (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+    letI : CompleteSpace M := hg.complete
+    ∀ (i : E ≃ₗᵢ[ℝ] TangentSpace I p),
+      IsLocalDiffeomorph 𝓘(ℝ, E) I ∞ (hyperbolicComparison g hg p i) := by
+  let _ : IsManifold I 1 M := IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
+  let _ : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let _ : T3Space M := inferInstance
+  let _ : Bundle.RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  let _ : IsContinuousRiemannianBundle E (TangentSpace I : M → Type _) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let _ : PseudoEMetricSpace M := (EMetricSpace.ofRiemannianMetric I M).toPseudoEMetricSpace
+  let _ : CompleteSpace M := hg.complete
+  intro i
+  let F := hyperbolicComparison g hg p i
+  apply isLocalDiffeomorph_iff_isLocalDiffeomorphOn_univ.mpr
+  apply (contMDiff_hyperbolicComparison g hg p i).contMDiffOn.isLocalDiffeomorphOn_of_isInvertible_mfderiv
+    isOpen_univ (by simp)
+  intro x _
+  have hi : Function.Injective (mfderiv 𝓘(ℝ, E) I F x) := by
+    rw [injective_iff_map_eq_zero]
+    intro v hv
+    have h := hyperbolicComparison_inner g hg p hR i x v v
+    rw [hv] at h
+    have hz : Hyperboloid.riemannianMetric.inner x v v = 0 := by
+      simpa only [map_zero, zero_apply] using h.symm
+    by_contra hne
+    exact (ne_of_gt (Hyperboloid.riemannianMetric.pos x v hne)) hz
+  have hs := LinearMap.surjective_of_injective hi
+  let D : E ≃L[ℝ] E := ContinuousLinearEquiv.ofBijective (mfderiv 𝓘(ℝ, E) I F x)
+    (LinearMap.ker_eq_bot.mpr hi) (LinearMap.range_eq_top.mpr hs)
+  exact ⟨D, rfl⟩
 
 end DifferentialGeometry.Geometry.Riemannian.Exponential

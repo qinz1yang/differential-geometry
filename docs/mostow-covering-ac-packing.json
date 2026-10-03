@@ -1,0 +1,151 @@
+{
+  "base_commit": "7c410580263e9dae97b57b1f9290c544f2919bb0",
+  "layer": "Complete local-isometry coverings, horizontal absolute continuity and finite-measure ball packing",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/RiemannianDistance.lean",
+      "sha256": "78fee33a8a57b3ae3747a545ffa5f8819eef73f55bc81e330053f2aeea5ad68e",
+      "fresh_lake_build_seconds": 9.0,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "The actual hyperbolic metric is natively complete, including dimension zero; exact induced EMetric equality transfers arcosh completeness.",
+      "public_declarations": [
+        "riemannianEDistOf_eq_edist",
+        "riemannianMetric_complete"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper",
+        "DifferentialGeometry.Geometry.Metric.Completeness",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianGeodesic",
+        "DifferentialGeometry.Geometry.Metric.SmoothLipschitz",
+        "DifferentialGeometry.Geometry.Metric.CurveSpeed"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Exponential/HyperbolicComparison.lean",
+      "sha256": "0cb0c05b25324187985f7c912407b1238c5c519dec303209c03d0abc2568d218",
+      "fresh_lake_build_seconds": 3.2,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "mathematical_review": "The original comparison map is a local diffeomorphism from its actual tensor preservation, finite-dimensional differential invertibility and native IFT.",
+      "public_declarations": [
+        "hyperbolicComparison",
+        "hyperbolicComparison_apply",
+        "contMDiff_hyperbolicComparison",
+        "hyperbolicComparison_inner",
+        "isLocalDiffeomorph_hyperbolicComparison"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.ManifoldDerivative",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Exponential",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Curvature",
+        "DifferentialGeometry.Geometry.Exponential.Cartan.Norm",
+        "DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity",
+        "DifferentialGeometry.Geometry.Metric.Polarization",
+        "DifferentialGeometry.Geometry.Metric.Completeness"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Metric/LocalIsometry/Covering.lean",
+      "sha256": "889d61e64056f95b9787ffe6fc5e7170643a68179822c8331b1cb355c8072607",
+      "fresh_lake_build_seconds": 2.1,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "mathematical_review": "Complete local Riemannian isometries are genuine native covering maps, using disjoint exhaustive actual sheets and explicit empty fibers.",
+      "public_declarations": [
+        "isCoveringMap_of_complete"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Metric.LocalIsometry.Sheets",
+        "DifferentialGeometry.Topology.Manifold.PartialDiffeomorph",
+        "Mathlib.Analysis.Normed.Module.Convex"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Complex/AbsolutelyContinuous.lean",
+      "sha256": "1298b9430d56943e5632bd8f8dd2a945c7d4cc221ee10be44b6fc8785bab13ee",
+      "fresh_lake_build_seconds": 2.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_orbit_quotients",
+      "mathematical_review": "Actual uniform disk distortion yields complex-valued horizontal absolute continuity a.e. via comparable finite refinement and a square-of-total-oscillation estimate.",
+      "public_declarations": [
+        "ae_absolutelyContinuousOnInterval_horizontal"
+      ],
+      "direct_imports": [
+        "DifferentialGeometry.Analysis.Complex.DiskPacking",
+        "DifferentialGeometry.Analysis.Integration.Measure.ComplexImageStrip",
+        "Mathlib.MeasureTheory.Function.AbsolutelyContinuous",
+        "Mathlib.Algebra.BigOperators.Group.Finset.Sigma",
+        "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
+        "Mathlib.Algebra.Order.Floor.Ring"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Integration/Measure/BallPacking.lean",
+      "sha256": "99bdafde3086bf37282ac6a19a20d448eb1832be701f0c689c4aec26f1c9d805",
+      "fresh_lake_build_seconds": 1.3,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "equivariant_descent",
+      "mathematical_review": "Finite measure plus a fixed uniform positive ball-mass lower bound implies boundedness; properness is only used by native compact-closure consumers.",
+      "public_declarations": [
+        "isBounded_of_uniform_ball_measure_lower_bound"
+      ],
+      "direct_imports": [
+        "Mathlib.Data.Set.Pairwise.Chain",
+        "Mathlib.MeasureTheory.Constructions.BorelSpace.Metric",
+        "Mathlib.MeasureTheory.Measure.Typeclasses.SFinite",
+        "Mathlib.Order.Zorn",
+        "Mathlib.Topology.MetricSpace.Cover"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "Geometry/Hyperbolic/Hyperboloid/RiemannianDistance",
+    "Geometry/Exponential/HyperbolicComparison",
+    "Geometry/Metric/LocalIsometry/Covering",
+    "Analysis/Complex/AbsolutelyContinuous",
+    "Analysis/Integration/Measure/BallPacking"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "jobs": 26920,
+    "root_module_seconds": 34,
+    "errors": 0,
+    "warnings": 0,
+    "root_compiler_cap": 1
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open"
+}

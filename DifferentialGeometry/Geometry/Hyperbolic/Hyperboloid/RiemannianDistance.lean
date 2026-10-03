@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianGeodesic
 import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
 import DifferentialGeometry.Geometry.Metric.CurveSpeed
@@ -232,5 +234,40 @@ private theorem riemannianEDistOf_le_edist (x y : Hyperboloid E) :
 theorem riemannianEDistOf_eq_edist (x y : Hyperboloid E) :
     riemannianEDistOf (I := 𝓘(ℝ, E)) riemannianMetric x y = edist x y :=
   le_antisymm (riemannianEDistOf_le_edist x y) (edist_le_riemannianEDistOf x y)
+
+end DifferentialGeometry.Hyperboloid
+
+namespace DifferentialGeometry.Hyperboloid
+
+open scoped Bundle
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianMetric_complete :
+    RiemannianMetricComplete (I := 𝓘(ℝ, E)) (riemannianMetric (E := E)) := by
+  let m₀ : EMetricSpace (Hyperboloid E) := inferInstance
+  have h₀ : @CompleteSpace (Hyperboloid E) m₀.toUniformSpace := inferInstance
+  constructor
+  let _ : IsManifold 𝓘(ℝ, E) 1 (Hyperboloid E) :=
+    IsManifold.of_le (I := 𝓘(ℝ, E)) (M := Hyperboloid E) (n := ∞) (by decide)
+  let _ : TopologicalSpace.MetrizableSpace (Hyperboloid E) :=
+    Manifold.metrizableSpace 𝓘(ℝ, E) (Hyperboloid E)
+  let _ : T3Space (Hyperboloid E) := inferInstance
+  let _ : Bundle.RiemannianBundle (TangentSpace 𝓘(ℝ, E) : Hyperboloid E → Type _) :=
+    ⟨(riemannianMetric (E := E)).toRiemannianMetric⟩
+  let _ : IsContinuousRiemannianBundle E
+      (TangentSpace 𝓘(ℝ, E) : Hyperboloid E → Type _) :=
+    ⟨⟨riemannianMetric.inner, riemannianMetric.contMDiff.continuous,
+      by intro x v w; rfl⟩⟩
+  have heq : EMetricSpace.ofRiemannianMetric 𝓘(ℝ, E) (Hyperboloid E) = m₀ := by
+    apply EMetricSpace.ext
+    ext x y
+    exact riemannianEDistOf_eq_edist x y
+  change @CompleteSpace (Hyperboloid E)
+    (EMetricSpace.ofRiemannianMetric 𝓘(ℝ, E) (Hyperboloid E)).toUniformSpace
+  rw [heq]
+  exact h₀
 
 end DifferentialGeometry.Hyperboloid
