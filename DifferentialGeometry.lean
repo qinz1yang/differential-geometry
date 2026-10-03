@@ -17894,3 +17894,5 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Sphere.SimplyConnected
 import DifferentialGeometry.Topology.PiecewiseLinear.Subdivision.EdgePath
 import DifferentialGeometry.Topology.Simplex.BoundaryCoordinates
 import DifferentialGeometry.Topology.SolidTorus.Embedded
+import DifferentialGeometry.Topology.Continuous.ClosedCover
+import DifferentialGeometry.Topology.Combinatorics.Finset

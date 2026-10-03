@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Combinatorics.Finset
 import DifferentialGeometry.Topology.PiecewiseLinear.Subdivision.EdgePath
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34IncidentEdges
 import DifferentialGeometry.Topology.PiecewiseLinear.SubdivisionEdgePath
@@ -11,23 +12,6 @@ universe u
 variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea]
   {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
   {U : Set M} {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M U}
-
-omit [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] in
-private theorem subset_pair_of_card_le_two {v : Finset Ea} (hv : v.card ≤ 2) {x : Ea}
-    (hx : x ∈ v) : ∃ y ∈ v, (v : Set Ea) ⊆ {x, y} := by
-  classical
-  by_cases h : ∃ y ∈ v, y ≠ x
-  · obtain ⟨y, hy, hyx⟩ := h
-    refine ⟨y, hy, fun z hz => ?_⟩
-    have hsub : ({x, y} : Finset Ea) ⊆ v :=
-      Finset.insert_subset hx (Finset.singleton_subset_iff.mpr hy)
-    have heq : ({x, y} : Finset Ea) = v :=
-      Finset.eq_of_subset_of_card_le hsub (by rw [Finset.card_pair hyx.symm]; exact hv)
-    rw [← heq] at hz
-    simpa using hz
-  · push Not at h
-    refine ⟨x, hx, fun z hz => ?_⟩
-    simp [h z hz]
 
 theorem exists_mem_segment_of_mem_convexHull_of_map_mem_graphSkeleton
     {t : Finset Ea} (ht : t ∈ 𝒦.complex.faces) {p : Ea}
@@ -45,7 +29,7 @@ theorem exists_mem_segment_of_mem_convexHull_of_map_mem_graphSkeleton
     rw [Finset.not_nonempty_iff_eq_empty] at hne
     rw [hne, Finset.coe_empty, convexHull_empty] at hp
     exact hp
-  obtain ⟨y, hy, hsub⟩ := subset_pair_of_card_le_two
+  obtain ⟨y, hy, hsub⟩ := Finset.exists_mem_subset_pair_of_card_le_two
     ((Finset.card_le_card Finset.inter_subset_right).trans hvcard) hx
   refine ⟨x, Finset.mem_of_mem_inter_left hx, y, Finset.mem_of_mem_inter_left hy, ?_⟩
   rw [← convexHull_pair]
@@ -111,7 +95,7 @@ theorem exists_segment_of_incident_section34EdgeIndex
     rw [Finset.not_nonempty_iff_eq_empty] at hne'
     rw [hne', Finset.coe_empty, convexHull_empty] at haconv
     exact haconv
-  obtain ⟨y, hy, hsubxy⟩ := subset_pair_of_card_le_two
+  obtain ⟨y, hy, hsubxy⟩ := Finset.exists_mem_subset_pair_of_card_le_two
     ((Finset.card_le_card Finset.inter_subset_left).trans hvcard) hx
   have hconv : convexHull ℝ ((v ∩ t : Finset Ea) : Set Ea) ⊆ segment ℝ x y := by
     rw [← convexHull_pair]

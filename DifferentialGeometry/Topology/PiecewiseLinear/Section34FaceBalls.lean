@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Combinatorics.Finset
 import DifferentialGeometry.Topology.Homeomorph.SubsetImage
 import DifferentialGeometry.Topology.PiecewiseLinear.BallUnionFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartBallGeneralPosition
@@ -14,18 +15,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 universe u
-
-theorem eq_or_eq_of_card_eq_one_of_subset_union {α : Type*} {u w w' : Finset α}
-    (hu : u.card = 1) (hw : w.card = 1) (hw' : w'.card = 1)
-    (h : (u : Set α) ⊆ (w : Set α) ∪ (w' : Set α)) : u = w ∨ u = w' := by
-  obtain ⟨p, rfl⟩ := Finset.card_eq_one.mp hu
-  obtain ⟨q, rfl⟩ := Finset.card_eq_one.mp hw
-  obtain ⟨q', rfl⟩ := Finset.card_eq_one.mp hw'
-  have hp := h (Finset.mem_coe.mpr (Finset.mem_singleton_self p))
-  simp only [Finset.coe_singleton, mem_union, mem_singleton_iff] at hp
-  rcases hp with rfl | rfl
-  · exact Or.inl rfl
-  · exact Or.inr rfl
 
 section FaceBall
 

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Continuous.ClosedCover
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTargetCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSplitDiskIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceEnvelopes
@@ -23,7 +24,7 @@ theorem exists_compactPush {Obs R Lr Bh T : Set E3} {g : E3 → E3} (hRo : IsOpe
   classical
   refine ⟨R.piecewise g id, ?_, ?_, fun y hy => piecewise_eq_of_notMem R g id hy,
     fun y hy => by rw [piecewise_eq_of_mem R g id hy]; exact hgR hy⟩
-  · refine continuousOn_of_isClosed_cover (isClosed_closure (s := R)) hRo.isClosed_compl
+  · refine DifferentialGeometry.Topology.continuousOn_of_isClosed_cover (isClosed_closure (s := R)) hRo.isClosed_compl
       (fun y _ => ?_) ?_ ?_
     · by_cases hyR : y ∈ R
       · exact Or.inl (subset_closure hyR)

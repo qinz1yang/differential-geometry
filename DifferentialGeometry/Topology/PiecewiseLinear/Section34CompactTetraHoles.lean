@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Combinatorics.Finset
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTetraClaws
 import DifferentialGeometry.Topology.PiecewiseLinear.BallUnionMeetingDisk
 
@@ -118,7 +119,7 @@ theorem exists_vertexIndex_pair_of_mem_edgeIndex
     ∃ (w w' : Section34CompactVertexIndex K K') (p' : E3), w.1 = {u} ∧ w'.1 = {p'} ∧
       p' ∈ e.1 ∧ p' ≠ u ∧ w.1 ⊆ e.1 ∧ w'.1 ⊆ e.1 := by
   classical
-  obtain ⟨p', hp', hsub⟩ := exists_subset_pair_of_card_le_two e.2.2.1.le hu
+  obtain ⟨p', hp', hsub⟩ := Finset.exists_mem_subset_pair_of_card_le_two e.2.2.1.le hu
   have hp'u : p' ≠ u := by
     intro h
     rw [h] at hsub

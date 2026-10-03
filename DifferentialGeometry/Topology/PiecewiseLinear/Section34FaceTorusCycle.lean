@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Combinatorics.Finset
 import DifferentialGeometry.Topology.PiecewiseLinear.CyclicBallUnion
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsGeneralPositionSolidTorusRelative
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBalls
