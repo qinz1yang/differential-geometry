@@ -10337,6 +10337,10 @@ import DifferentialGeometry.Geometry.HarmonicMap.WeakGradientGlobal
 import DifferentialGeometry.Geometry.HarmonicMap.WeakLowerSemicontinuity
 import DifferentialGeometry.Geometry.Hodge.Codifferential
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Defs
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Interpolation
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Manifold
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Metric
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Proper
 import DifferentialGeometry.Geometry.LieDerivative.Tensor
 import DifferentialGeometry.Geometry.LieGroup.Orthogonal
 import DifferentialGeometry.Geometry.LieGroup.Orthogonal.LieAlgebra

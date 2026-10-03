@@ -76,11 +76,18 @@ The shared dependency order is:
 6. Descent to the original manifolds, the original homotopy class, and uniqueness.
 
 The current headline remains open. Root owns canonical integration and the
-final headline. The compatible metric packet has passed independent review;
-properness is owned by `hyperboloid_metric`, normalized interpolation by
-`rigidity_assessment`, and smooth manifold structure by
-`review_hyperboloid_model`. Their packet delivery gates remain distinct from
-canonical integration.
+final headline. The active frontier is:
+
+| Owner | Exact next target |
+| --- | --- |
+| Root | Integrate the accepted geodesic and Lorentz-restriction packets. |
+| `rigidity_assessment` | Construct the explicit Lorentz boost taking origin to the supplied point. |
+| `review_hyperboloid_model` | Construct the native smooth Riemannian metric with its spatial tangent formula. |
+| `equivariant_descent` | Prove compactness of surjective isometries with bounded basepoint image inside `C(X, X)`. |
+
+The marked returning-orbit extraction remains a high-risk later target: its
+limit must be the actual composite `a ∘ F ∘ b` with the induced marking,
+not an unspecified boundary-map limit.
 
 ## Verified foundation layer
 
@@ -96,3 +103,20 @@ applicable declaration linters and native axiom checks passed. The aggregate
 build passed with 26,864 jobs and no diagnostics; the existing aggregate module
 itself took 37 seconds. Exact source hashes and verification metadata are in
 `mostow-foundations.json`.
+
+## Verified hyperboloid layer
+
+The arcosh distance is now a genuine metric with its separation and triangle
+inequality proved. Its topology definitionally agrees with the original
+ambient-induced topology. The coordinate diffeomorphism gives the analytic
+manifold structure, and the actual ambient inclusion is smooth at every order.
+Proper model spaces give proper hyperboloids and hence complete metric spaces.
+Normalized ambient Lorentz interpolation is jointly continuous and has the
+exact specified endpoints.
+
+These four modules have passed independent review, canonical compilation,
+all 14 applicable declaration linters, native axiom closure checks, and the
+26,868-job aggregate build without diagnostics. Fresh module compilation took
+5.9, 2.1, 1.3, and 1.3 seconds. Exact hashes and evidence are in
+`mostow-hyperboloid.json`. Curvature and compatibility with the native
+Riemannian metric remain separate proof obligations.

@@ -1,0 +1,59 @@
+{
+  "base_commit": "fac47d00fc38dfab822cdf49d9f8a77bb703b7be",
+  "layer": "Hyperboloid metric, smooth structure, properness, and interpolation",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Metric.lean",
+      "sha256": "4a70dadfaa233a5377b4a76d39c2658cdad229672e97281319ec8581f08d1c60",
+      "fresh_lake_build_seconds": 5.9,
+      "independent_review": "Accepted",
+      "status": "PROVED"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Manifold.lean",
+      "sha256": "dbe758ea71c53dd7d21dd7f4e9f1085e26b7a99e167c0e3e0d9597238acfa391",
+      "fresh_lake_build_seconds": 2.1,
+      "independent_review": "Accepted",
+      "status": "PROVED"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Proper.lean",
+      "sha256": "d895b2c47e58cfedeffb74ceabc917533035e49cabbb269f3b5342e802aaff3d",
+      "fresh_lake_build_seconds": 1.3,
+      "independent_review": "Accepted",
+      "status": "PROVED"
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Interpolation.lean",
+      "sha256": "0a8b768c888452eb5a391f734993ff32d7fcc77db1d82451b369413bfbda90b5",
+      "fresh_lake_build_seconds": 1.3,
+      "independent_review": "Accepted",
+      "status": "PROVED"
+    }
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_new_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "headline_status": "open",
+  "aggregate_build": {
+    "command": "lake build DifferentialGeometry",
+    "jobs": 26868,
+    "errors": 0,
+    "warnings": 0
+  }
+}
