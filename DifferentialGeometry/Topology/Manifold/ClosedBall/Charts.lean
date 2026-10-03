@@ -906,7 +906,9 @@ theorem closedCellBoundaryInteriorTransition_contDiffOn {m : ℕ} (i : Fin (m + 
       {y : EuclideanSpace ℝ (Fin (m + 1)) | 0 < 1 - y (0 : Fin (m + 1)) - ‖closedCellTail m y‖ ^ 2} := by
   have hiv := closedCellBoundaryInvValue_contDiffOn (m := m)
     (Equiv.swap i (0 : Fin (m + 1))) (closedCellSign σ)
-  simpa only [Function.comp_def, closedCellBoundaryInteriorTransition, closedCellBoundaryInvValue] using
+  unfold closedCellBoundaryInteriorTransition
+  simp only [closedCellPermute_symm_eq]
+  simpa only [Function.comp_def, closedCellBoundaryInvValue] using
     (closedCellShiftSucc_contDiff (m := m) 1).comp_contDiffOn hiv
 
 noncomputable def closedCellBoundaryBoundaryTransition {m : ℕ} (i : Fin (m + 1)) (σ : Bool)
@@ -934,7 +936,9 @@ theorem closedCellBoundaryBoundaryTransition_contDiffOn {m : ℕ} (i : Fin (m + 
   have hc0 : ContDiff ℝ (⊤ : ℕ∞) (fun y : EuclideanSpace ℝ (Fin (m + 1)) =>
       y (0 : Fin (m + 1))) := by fun_prop
   have hout := (closedCellCons_contDiff (m := m)).comp_contDiffOn (hc0.contDiffOn.prodMk htail)
-  simpa only [Function.comp_def, closedCellBoundaryBoundaryTransition, closedCellBoundaryInvValue, s] using hout
+  unfold closedCellBoundaryBoundaryTransition
+  simp only [closedCellPermute_symm_eq]
+  simpa only [Function.comp_def, closedCellBoundaryInvValue, s] using hout
 
 theorem closedCellInteriorBoundary_transition_reduce {m : ℕ} (i : Fin (m + 1)) (σ : Bool)
     {y : EuclideanSpace ℝ (Fin (m + 1))}
