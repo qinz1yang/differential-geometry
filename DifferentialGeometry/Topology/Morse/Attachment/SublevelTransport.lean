@@ -4,9 +4,9 @@ import DifferentialGeometry.Topology.Morse.RegularLevel.Isotopy
 
 namespace DifferentialGeometry.Topology.Morse
 
-open Manifold Set ManifoldCellAttachment
+open Set ManifoldCellAttachment
 open DifferentialGeometry.Analysis.ODE
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 noncomputable section
 

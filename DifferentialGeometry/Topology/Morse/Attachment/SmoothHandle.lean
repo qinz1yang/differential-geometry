@@ -2,11 +2,10 @@ import DifferentialGeometry.Topology.Morse.Attachment.ManifoldHandle
 
 namespace DifferentialGeometry.Topology.Morse
 
-open Manifold
 open DifferentialGeometry.Topology.Handle
 open DifferentialGeometry.Topology.Homotopy
 open DifferentialGeometry.Analysis.ODE
-open scoped _root_.Topology Manifold ContDiff
+open scoped _root_.Topology _root_.Manifold ContDiff
 
 noncomputable section
 

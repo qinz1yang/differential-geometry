@@ -71,7 +71,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
 open DifferentialGeometry.Topology.ClosedOrientedManifold
 
-open scoped Manifold ContDiff
+open scoped ContDiff
 variable {P : OrientedThreeStage} {g : ℝ → P.Metric} {J K : Set ℝ}
 
 theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.mono (hg : P.MetricSmoothUpTo g J) (hK : K ⊆ J) :
