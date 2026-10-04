@@ -19078,3 +19078,5 @@ import DifferentialGeometry.Geometry.Collapse.RankStrataApplications
 import DifferentialGeometry.Geometry.Collapse.SimultaneousComparisonData
 import DifferentialGeometry.Geometry.Collapse.NormalizedCenterData
 import DifferentialGeometry.Geometry.Collapse.SimultaneousProductionApplications
+import DifferentialGeometry.Geometry.Comparison.RayDensity
+import DifferentialGeometry.Geometry.Comparison.RayDensityInnerProduct
