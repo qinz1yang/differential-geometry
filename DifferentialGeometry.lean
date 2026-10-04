@@ -18853,3 +18853,4 @@ import DifferentialGeometry.Geometry.Metric.LargeCloudBufferedGraphCoverage
 import DifferentialGeometry.Topology.Manifold.BufferedNormalGraphSubmersion
 import DifferentialGeometry.Geometry.Metric.LargeCloudLocalNearestSubmersions
 import DifferentialGeometry.Topology.Manifold.NearestSubmersionGluing
+import DifferentialGeometry.Geometry.Metric.LargeCloudNearestSubmersion
