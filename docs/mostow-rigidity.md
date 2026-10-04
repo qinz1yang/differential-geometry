@@ -90,9 +90,10 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| `review_hyperboloid_metric` | Derive native directional regularity for the same original induced boundary-plane homeomorphism. |
-| `hyperboloid_metric` | Prove the original raw horosphere-height transformation and invariance under boundary-fixed isometries with arbitrarily small displacement. |
-| Root | Classify actual thin components from Margulis boundary fixation and displacement scaling, then obtain cusp geometry and controlled representatives. |
+| `rigidity_assessment` | Identify pointwise limits of actual homothety zooms from directional derivatives, then the line-image consequence. |
+| `hyperboloid_metric` | Construct exact native coordinates on actual positive-height horospheres. |
+| `review_hyperboloid_interpolation` | Prove a second ideal fixed point when a pole-fixing isometry has nonunit null scale. |
+| Root | Obtain actual returning-zoom limits, classify thin components, and construct controlled representatives of the given homotopy equivalence. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -819,3 +820,36 @@ current source-hash-matched fresh compilation evidence below 30 seconds.
 The full finite-volume three-dimensional Mostow theorem remains open;
 regularity, returning-zoom rigidity, cusp geometry and the controlled given
 homotopy representative still need their final producers and assembly.
+
+## Verified regularity of the original map and raw height laws
+
+The original induced boundary-plane homeomorphism now consumes its proved
+geometric disk control to obtain native directional regularity. No new coarse
+constants, radius-ratio hypothesis or regularity premise is required from the
+caller. One conclusion is a.e. differentiability in each separately fixed
+direction. The other is a measurable positive-area set in every strict
+rectangle with simultaneous rational-direction derivatives and a nonzero
+horizontal derivative. No uncountable interchange or Fréchet derivative is
+asserted.
+
+The actual raw horosphere-height expression has its exact cross-model
+isometry transformation law. Boundary-fixedness and arbitrarily small actual
+displacement force its original null factor to one and hence preserve that
+same height. Signed axial boosts, nonidentity translations, reflections and
+actual level/sublevel images were checked; no parabolic class was introduced.
+
+Existing canonical APIs also retain the given homotopy equivalence's marking:
+its actual cover map is equivariant under its own induced fundamental-group
+isomorphism. Root replayed the exact map equality, projection and action laws,
+identity and actual translation consumers, 14 applicable linters and native
+axioms. This is reuse evidence only, with no new public theorem or claim of
+coarse control for an arbitrary homotopy equivalence.
+
+Both new modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. Fresh builds took 7.5 and
+1.5 seconds. The 26,961-job root build passed without diagnostics; the
+existing aggregate took 36 seconds. Evidence is in
+`mostow-original-regularity-horosphere.json`. All 101 newly added Lean files
+have current source-hash-matched fresh compilation evidence below 30 seconds.
+Returning-zoom rigidity, full cusp geometry, controlled representatives and
+the final three-dimensional Mostow theorem remain open.

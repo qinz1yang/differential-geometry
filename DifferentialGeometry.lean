@@ -17997,3 +17997,5 @@ import DifferentialGeometry.Geometry.Coordinates.StereographicDisk
 import DifferentialGeometry.Topology.Covering.UniversalMap
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryDiskControl
 import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryPlaneAffine
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryRegularity
+import DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Horosphere

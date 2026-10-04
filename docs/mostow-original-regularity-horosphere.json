@@ -1,0 +1,104 @@
+{
+  "base_commit": "cbda9b20cb134638a702c1ab90805fa60f39c8d1",
+  "layer": "Actual boundary regularity, raw horosphere height and given homotopy marking replay",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryRegularity.lean",
+      "sha256": "a059030cd61f691afa0562cd9ec8fdcbfc549710f4cdcaea23d2963d70486dbe",
+      "fresh_lake_build_seconds": 7.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "ae_lineDifferentiableAt_boundaryPlaneHomeomorph",
+        "volume_pos_rational_lineDifferentiableAt_and_lineDeriv_ne_zero_boundaryPlaneHomeomorph"
+      ],
+      "mathematical_review": "The same original coarse-pair plane boundary homeomorphism is a.e. line differentiable in each fixed direction, and has a measurable positive set of simultaneous rational directions with nonzero horizontal derivative in every strict rectangle.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryDiskControl",
+        "DifferentialGeometry.Analysis.Complex.DirectionalRegularity"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Horosphere.lean",
+      "sha256": "04bf4edfaa7fa3442a8faca3ff9d91b79538a1d9ee51944b1b28c9a4bbe4bc6c",
+      "fresh_lake_build_seconds": 1.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "public_declarations": [
+        "time_sub_inner_boundaryHomeomorph",
+        "time_sub_inner_eq_of_boundary_fixed_of_small_displacement"
+      ],
+      "mathematical_review": "Actual raw horosphere height transforms by the actual Lorentz null factor; fixed boundary and arbitrarily small original displacement force actual raw height preservation.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Busemann"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryRegularity.lean",
+    "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/Horosphere.lean"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "jobs": 26961,
+    "root_module_seconds": 36.0,
+    "root_compiler_cap": 1,
+    "errors": 0,
+    "warnings": 0
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "mostow_headline": "open",
+  "given_homotopy_marking_reuse": {
+    "status": "INTEGRATION-ONLY",
+    "new_public_source": false,
+    "packet": "/private/tmp/pc-universal-marking-replay-nv5ihiwb/packet.json",
+    "packet_sha256": "bc9987baf3d0c1c45460303c0a01cd2aca3f6ac0825cc4268a948b031a0b4f7c",
+    "canonical_sources": [
+      {
+        "path": "DifferentialGeometry/Topology/Covering/UniversalMap.lean",
+        "sha256": "c3af53c1fc26280b8498e8d90c39d1ad25ee9d26320c1590c3980362d1457aa2"
+      },
+      {
+        "path": "DifferentialGeometry/Topology/FundamentalGroup/HomotopyEquiv.lean",
+        "sha256": "15b0ed5b08e2089e98fcbd35df7ab92a4076e3a17aead3951c3a69b8a99a0f00"
+      }
+    ],
+    "result": "The actual UniversalCover.map of the given HomotopyEquiv is equivariant under its existing canonical fundamental-group isomorphism, preserving basepoint and projection. Identity and actual real translation were replayed.",
+    "root_replay": "/Users/qzy/.cache/mostow-environment-20261002/given-homotopy-marking-replay.log",
+    "root_lint_native_evidence": "/Users/qzy/.cache/mostow-environment-20261002/given-homotopy-marking-native.txt",
+    "root_replay_silent_exit_zero": true,
+    "linters": 14,
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "no_coarse_or_bounded_homotopy_claim": true
+  }
+}
