@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.Geometrization.TorusGluing
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
+import DifferentialGeometry.Geometry.Hyperbolic.CuspCurvatureFields
 
 set_option autoImplicit false
 noncomputable section
@@ -27,6 +28,7 @@ theorem cusp_constant_sectional_curvature (H : HyperbolicCusp)
     metricRm04StandardAt H.metric p v w w v =
       -(1 / 4 : ℝ) * (H.metric.inner p v v * H.metric.inner p w w -
         H.metric.inner p v w ^ 2) := by
-  sorry
+  exact cusp_constant_sectional_curvature_of_fields H.torusMetric H.torus_flat H.metric
+    H.metric_formula p v w
 
 end DifferentialGeometry.Geometry.Hyperbolic
