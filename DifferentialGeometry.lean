@@ -18911,3 +18911,5 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergen
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.SectionalLimitCarrier
 import DifferentialGeometry.Geometry.Collapse.InducedVolumeComparison
 import DifferentialGeometry.Geometry.Collapse.InducedVolumeComparisonApplications
+import DifferentialGeometry.Analysis.Calculus.Compactness.FiniteOrderProof
+import DifferentialGeometry.Geometry.Metric.Pullback.FiniteRegularityProof
