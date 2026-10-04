@@ -38,7 +38,7 @@ structure CuspEmbedding (W : CompactCarrier.{u})
     Function.Injective (mfderiv halfCollarModel W.model toFun p)
   boundary_image : Set.range (fun t : Torus => toFun (t, halfZero)) = X
   boundary_preimage : ∀ {p}, p ∈ cuspDomain →
-    toFun p ∈ W.model.boundary W.Carrier ↔ p.2.val 0 = 0
+    (toFun p ∈ W.model.boundary W.Carrier ↔ p.2.val 0 = 0)
   metric_error : cuspMetricErrorBound g K δ cusp toFun
 
 structure NearlyCuspidalBoundary (W : CompactCarrier.{u})

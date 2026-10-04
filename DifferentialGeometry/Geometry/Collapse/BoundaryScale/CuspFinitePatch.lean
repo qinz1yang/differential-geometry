@@ -44,7 +44,7 @@ theorem CuspEmbedding.exists_finiteInteriorPatch {W : CompactCarrier.{u}}
   have heI : W.model.IsInteriorPoint (e.toFun p) := by
     apply (W.model.isInteriorPoint_iff_not_isBoundaryPoint (e.toFun p)).mpr
     intro hb
-    have hez := (CuspEmbedding.boundary_preimage e (p := p)).mp (fun _hdomain => hb)
+    have hez := (CuspEmbedding.boundary_preimage e (p := p) hp).mp hb
     exact hz.ne' hez
   exact DifferentialGeometry.Topology.Manifold.exists_finiteInteriorPatch (n := K + 1) (by omega)
     isOpen_cuspDomain e.contMDiffOn hp (cusp_isInteriorPoint_of_height_pos hz) heI
