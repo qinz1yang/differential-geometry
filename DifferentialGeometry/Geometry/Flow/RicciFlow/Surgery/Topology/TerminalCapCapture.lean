@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Metric.LocalMetricBallContainment
+import DifferentialGeometry.Geometry.Metric.Comparison.LocalBallContainment
 import DifferentialGeometry.Geometry.Metric.Distance.Boundary
-import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
+import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingModelCoverage

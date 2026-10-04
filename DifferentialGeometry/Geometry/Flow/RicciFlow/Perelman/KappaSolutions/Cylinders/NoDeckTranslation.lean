@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderTranslationSlab
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.CrossModelNorm
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalCoverCurvatureNorm
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceProductCurvature
+import DifferentialGeometry.Geometry.Metric.UniversalCover.CurvatureNorm
+import DifferentialGeometry.Geometry.Metric.Product.CurvatureNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceEntropyBasic
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling

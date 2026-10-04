@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
 import DifferentialGeometry.Geometry.Metric.DistancePullback
-import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
+import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
 
 set_option autoImplicit false
 

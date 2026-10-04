@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.EndomorphismInsertion.Bounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.L2Jet.Bound
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 
 open DifferentialGeometry.TensorMetric
   (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
@@ -112,18 +113,6 @@ theorem connectionDifferenceDeTurckVectorFieldInsert_eq_cometricRaise (g₀ g₁
     (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_ref x w)]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
-lemma norm_iteratedCovGrad_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
-    (W : SmoothCcTensor g₀ 0 (s + 2)) (i : ℕ) :
-    ‖iteratedCovGrad (I := I) g₀ 1 (s + 1) i
-        (cometricRaiseSlot0Field (I := I) (M := M) g₀ s W)‖ =
-      ‖iteratedCovGrad (I := I) g₀ 0 (s + 2) i W‖ := by
-  refine raisedKoszul_norm_eq_of_sq_eq (norm_nonneg _) (norm_nonneg _) ?_
-  rw [SmoothCcTensor.norm_def, SmoothCcTensor.norm_def,
-    tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs,
-    tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs]
-  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  exact riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ s W i x
 
 private theorem wAlphaB_jetL2_perOrder
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)

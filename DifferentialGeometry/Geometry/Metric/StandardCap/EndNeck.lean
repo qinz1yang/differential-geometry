@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Metric.StandardCap.Polar
 import DifferentialGeometry.Geometry.Metric.StandardCap.Scalar
 import DifferentialGeometry.Geometry.Neck.NormalizedDatum
-import DifferentialGeometry.Geometry.Metric.CylinderAxial
-import DifferentialGeometry.Geometry.Metric.PolarCoordinates
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.AxialIsometry
+import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

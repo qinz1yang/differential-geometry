@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Un
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Noncollapsing.InitialVolume
 import DifferentialGeometry.Geometry.Measure.MetricComparison
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
-import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Metric.Distance.Continuity
 
 set_option autoImplicit false
 

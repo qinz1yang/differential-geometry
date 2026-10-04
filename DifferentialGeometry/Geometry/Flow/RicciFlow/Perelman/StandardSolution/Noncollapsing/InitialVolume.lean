@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Exponential.IntrinsicBallVolume
 import DifferentialGeometry.Geometry.Metric.StandardCap.Injectivity
 import DifferentialGeometry.Geometry.Metric.StandardCap.DerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Existence
-import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Metric.Distance.Continuity
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 set_option autoImplicit false

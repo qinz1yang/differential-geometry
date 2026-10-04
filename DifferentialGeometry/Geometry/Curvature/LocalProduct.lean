@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.LocalProduct
+import DifferentialGeometry.Geometry.Metric.Product.Local
 import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 import DifferentialGeometry.Geometry.Curvature.Product

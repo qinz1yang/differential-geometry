@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.StandardCap.Metric
-import DifferentialGeometry.Geometry.Metric.RadialTranslation
+import DifferentialGeometry.Geometry.Metric.Radial.Translation
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 
 set_option autoImplicit false

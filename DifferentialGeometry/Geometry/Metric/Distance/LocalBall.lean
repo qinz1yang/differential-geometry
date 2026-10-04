@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
-import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Metric.Distance.Continuity
 
 set_option autoImplicit false
 noncomputable section

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Estimates.Metric
-import DifferentialGeometry.Geometry.Metric.TerminalFamily
+import DifferentialGeometry.Geometry.Metric.Family.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.ClosedRegularity
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 

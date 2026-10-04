@@ -1264,6 +1264,7 @@ theorem riemannCurvatureCoefficientField_sub
   rw [operatorFieldComposition_sub_right, operatorFieldComposition_sub_right]
   module
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_riemannCurvatureCoefficientField_covariantJetNormSq_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -1330,6 +1331,7 @@ private theorem covariantJetNormSq_connectionDifferenceQuadraticCurvatureTerm_de
     (by rw [covariantJetNormSq_domDomCongrSection]; exact hY) (by rw [covariantJetNormSq_domDomCongrSection]; exact hY)
     (by rw [covariantJetNormSq_domDomCongrSection]; exact hY) (by rw [covariantJetNormSq_domDomCongrSection]; exact hY)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_connectionDifferenceQuadraticCurvatureTerm_covariantJetNormSq_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -1416,6 +1418,7 @@ theorem connectionDifferenceQuadraticComposedTensor_sub
   rw [domDomCongrSection_sub, operatorFieldComposition_sub_right, operatorFieldComposition_sub_left]
   module
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_connectionDifferenceQuadraticCurvatureTerm_covariantJetNormSq_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :

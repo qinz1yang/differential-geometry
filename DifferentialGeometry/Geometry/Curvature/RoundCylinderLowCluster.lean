@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.RoundCylinderOperatorPerturbation
 import DifferentialGeometry.Geometry.Curvature.BivectorDifferential
 import DifferentialGeometry.Geometry.Operator.Restriction
 import DifferentialGeometry.Analysis.InnerProductSpace.QuadraticFormBound
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

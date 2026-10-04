@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalFromJets
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
-import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Metric.Distance.Continuity
 import Mathlib.Tactic.FieldSimp
 
 set_option autoImplicit false

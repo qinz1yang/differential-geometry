@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Manifold.ConnectedComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalBarrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapSlabCapture
 import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphDistance
-import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
+import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
 
 noncomputable section
 

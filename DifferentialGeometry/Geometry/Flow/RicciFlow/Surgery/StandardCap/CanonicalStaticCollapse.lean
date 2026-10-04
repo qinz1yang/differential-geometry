@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalRetainedMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalCapChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticCollapseLength
-import DifferentialGeometry.Geometry.Metric.RestrictionDistance
+import DifferentialGeometry.Geometry.Metric.Restriction.Distance
 
 set_option autoImplicit false
 noncomputable section

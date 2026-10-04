@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Windowed.OpenRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Windowed.TimeRestriction
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans
 
 set_option autoImplicit false

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.MetricVolume
 import DifferentialGeometry.Geometry.Neck.InsertionOrientation
-import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
+import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
 
 set_option autoImplicit false
 noncomputable section

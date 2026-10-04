@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Manifold.Embedding.CompactRetraction
 import DifferentialGeometry.Topology.LoopSpace.Embedding
 import DifferentialGeometry.Topology.LoopSpace.InverseLipschitz
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothTraceLift
-import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
 import DifferentialGeometry.Analysis.Calculus.Periodic.Affine
 import DifferentialGeometry.Topology.LoopSpace.Regular
 import DifferentialGeometry.Topology.Manifold.AddCircle.ParameterDerivative

@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Defs
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceMorse
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceIsometry
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge
-import DifferentialGeometry.Geometry.Metric.ModelChange
+import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
 
 set_option autoImplicit false

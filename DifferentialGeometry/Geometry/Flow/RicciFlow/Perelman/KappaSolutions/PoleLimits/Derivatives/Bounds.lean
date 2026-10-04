@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleLimits.ReducedLength.Equicontinuity
 import DifferentialGeometry.Analysis.Calculus.Derivative.CompactSpatialBound
-import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Local
 
 
 noncomputable section

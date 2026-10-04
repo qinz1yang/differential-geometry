@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalWitnessProductChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalWitnessTransport
-import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
+import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.DomainMetric
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.InverseCapture
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.LifetimeInterval
 import DifferentialGeometry.Geometry.Metric.StandardCap.Metric
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 
 set_option autoImplicit false

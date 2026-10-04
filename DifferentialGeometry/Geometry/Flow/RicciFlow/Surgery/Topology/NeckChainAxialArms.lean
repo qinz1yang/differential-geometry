@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TransverseCrossingPath
 import DifferentialGeometry.Geometry.Comparison.Toponogov.ComparisonAngle
 import DifferentialGeometry.Geometry.Geodesic.MinimizingArm
-import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
+import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
 
 noncomputable section
 

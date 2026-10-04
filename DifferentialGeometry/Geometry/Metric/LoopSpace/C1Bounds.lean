@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.LoopSpace.C1.Topology
 import DifferentialGeometry.Topology.Circle.Lipschitz
-import DifferentialGeometry.Geometry.Metric.CompactSourceCurves
+import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSourceCurves
 import Mathlib.Analysis.Calculus.MeanValue
 
 

@@ -20,7 +20,7 @@ import DifferentialGeometry.Geometry.Metric.CurveVariation.WeakDerivative
 import DifferentialGeometry.Topology.Manifold.LocalCompactness
 import DifferentialGeometry.Geometry.Measure.Area.SpanningComponent
 import DifferentialGeometry.Geometry.Measure.Area.AnnulusCompetitor
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import DifferentialGeometry.Topology.StandardModel
 import DifferentialGeometry.Geometry.Metric.CurveSpeed.ScalarComparison

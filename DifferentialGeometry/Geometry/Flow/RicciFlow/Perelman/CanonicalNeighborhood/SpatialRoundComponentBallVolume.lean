@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.LocalBallRatio
 import DifferentialGeometry.Geometry.Curvature.Ricci.PointwiseLowerBound
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
-import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
+import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 
 set_option autoImplicit false

@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Connection.DifferenceJets
 import DifferentialGeometry.Geometry.Connection.MixedDerivativeBounds
 import DifferentialGeometry.Geometry.Metric.StandardCap.DerivativeBounds
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm
-import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
+import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 

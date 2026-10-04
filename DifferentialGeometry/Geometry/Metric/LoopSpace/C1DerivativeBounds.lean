@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.LoopSpace.C1Bounds
-import DifferentialGeometry.Geometry.Metric.CurveLength
+import DifferentialGeometry.Geometry.Metric.CurveLength.Basic
 
 
 

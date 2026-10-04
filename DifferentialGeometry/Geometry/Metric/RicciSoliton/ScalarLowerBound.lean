@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.RadialComparison
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import DifferentialGeometry.Geometry.Operator.Pullback
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Identities

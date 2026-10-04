@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Witness.RadialReserve
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBall
-import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
+import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
 
 set_option autoImplicit false
 noncomputable section

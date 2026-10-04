@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorPositiv
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionPositivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorSectionEvolution
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KyFanSupport
-import DifferentialGeometry.Geometry.Metric.BundlePullbackSmooth
+import DifferentialGeometry.Geometry.Metric.VectorBundle.Pullback.Smooth
 import DifferentialGeometry.Geometry.Connection.ModelNorm
 
 noncomputable section

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.Window
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricDerivatives
-import DifferentialGeometry.Geometry.Metric.EmbeddingComposition
+import DifferentialGeometry.Geometry.Metric.Pullback.EmbeddingComposition
 import DifferentialGeometry.Geometry.Curvature.EmbeddingSectional
 
 set_option autoImplicit false

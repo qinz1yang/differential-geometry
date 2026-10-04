@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.BundleHom
-import DifferentialGeometry.Geometry.Metric.BundlePullbackSmooth
+import DifferentialGeometry.Geometry.Metric.VectorBundle.Pullback.Smooth
 import DifferentialGeometry.Bundle.Hom.Regularity
 import DifferentialGeometry.Tensor.Multilinear.BundleCurry
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber

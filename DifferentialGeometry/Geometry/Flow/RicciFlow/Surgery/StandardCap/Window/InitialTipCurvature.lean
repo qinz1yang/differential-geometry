@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Window.InitialSpatialCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.Restriction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.RicciRayleigh
+import DifferentialGeometry.Geometry.Metric.StandardCap.RicciRayleigh
 import DifferentialGeometry.Geometry.Curvature.RicciUniformPerturbation
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullbackCurvature

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Local
 import DifferentialGeometry.Geometry.Metric.ChartDistance.Local
 import DifferentialGeometry.Analysis.Calculus.LipschitzConvolution
 import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactDerivative

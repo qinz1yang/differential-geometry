@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Te
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.LocalPropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
-import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Metric.Distance.Continuity
 import Batteries.Tactic.OpenPrivate
 
 noncomputable section

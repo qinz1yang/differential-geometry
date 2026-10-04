@@ -67,9 +67,10 @@ theorem uniformDebitSurgeryStepStrong_of_strongNecks_of_fineCutNeckSupplyStrong
   obtain ⟨εs, hεs, -, hstrong⟩ := hstrong ε₁ hε₁ hε₁'
   obtain ⟨fixed, c, hc, εP, εF, hεP, hεPη, hεF, hεF11, hF⟩ :=
     exists_horn_cutoff_record_of_fineCutNecks_of_le P₀ g₀ eta heta
+  have hc0 : 0 < c := (zero_lt_four : (0 : ℝ) < 4).trans_le hc
   intro B εbar hB hεbar
   obtain ⟨phi, δA, ρA, εA, hphi, hδA, hρA, hεA, hpinch⟩ := hpinch B hB
-  refine ⟨c, by linarith, ?_⟩
+  refine ⟨c, hc0, ?_⟩
   intro Ctime
   obtain ⟨ε, hε, hεbarε, hεεF, hεcone', hεs'⟩ :
       ∃ ε : ℝ, 0 < ε ∧ ε ≤ εbar ∧ ε ≤ εF ∧ ε ≤ εcone ∧ ε ≤ εs :=
@@ -100,7 +101,6 @@ theorem uniformDebitSurgeryStepStrong_of_strongNecks_of_fineCutNeckSupplyStrong
     ⟨min (min εold εcap) (min εh εA), lt_min (lt_min hεold hεcap) (lt_min hεh hεA),
       (min_le_left _ _).trans (min_le_left _ _), (min_le_left _ _).trans (min_le_right _ _),
       (min_le_right _ _).trans (min_le_left _ _), (min_le_right _ _).trans (min_le_right _ _)⟩
-  have hc0 : 0 < c := by linarith
   obtain ⟨δb, hδb, hδbold, hδbmax, hδbh, hδbA, hδbc⟩ :
       ∃ δb : ℝ, 0 < δb ∧ δb ≤ δold ∧ δb ≤ δmax ∧ δb ≤ δh ∧ δb ≤ δA ∧ δb ≤ (2 * c)⁻¹ :=
     ⟨min (min δold δmax) (min δh (min δA (2 * c)⁻¹)),

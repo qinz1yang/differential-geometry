@@ -2,8 +2,8 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Cont
 import DifferentialGeometry.Geometry.Comparison.MetricDistanceTransfer
 import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphBallCapture
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
-import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
-import DifferentialGeometry.Geometry.Metric.RestrictionDistance
+import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Metric.Restriction.Distance
 
 noncomputable section
 open Set Filter Bundle

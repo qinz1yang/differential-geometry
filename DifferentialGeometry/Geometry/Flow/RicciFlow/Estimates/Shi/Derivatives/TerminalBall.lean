@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.CurvatureMetricCom
 import DifferentialGeometry.Geometry.Metric.Comparison.LocalDistance
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
-import DifferentialGeometry.Geometry.Metric.ModelChange
+import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pullback
 
 noncomputable section

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.PositiveStability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InsertionNorm
 import DifferentialGeometry.Geometry.Metric.StandardCap.PositiveCurvature
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

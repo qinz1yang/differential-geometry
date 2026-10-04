@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.RestrictedRoundCylinder
 import DifferentialGeometry.Geometry.Curvature.ScalarPerturbation
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 noncomputable section
 open scoped Manifold ContDiff

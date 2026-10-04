@@ -20,7 +20,7 @@ import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Families
 import DifferentialGeometry.Analysis.Calculus.Periodic.LoopSuperposition
 import DifferentialGeometry.Topology.Circle.Lipschitz
 import DifferentialGeometry.Topology.MetricSpace.CompactNeighborhood
-import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
 
 noncomputable section
 

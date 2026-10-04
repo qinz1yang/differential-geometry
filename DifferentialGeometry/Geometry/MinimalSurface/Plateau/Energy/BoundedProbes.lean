@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.MetricTarget.WeakCompactness
 import DifferentialGeometry.Geometry.Measure.Energy.ScalarComposition
-import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
 import Mathlib.MeasureTheory.Measure.Lebesgue.Complex
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 

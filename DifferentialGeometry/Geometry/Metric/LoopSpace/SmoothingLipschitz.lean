@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.LoopSpace.PeriodicDescent
 import DifferentialGeometry.Topology.Circle.Lipschitz
-import DifferentialGeometry.Geometry.Metric.CompactSourceCurves
-import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSourceCurves
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
 
 
 

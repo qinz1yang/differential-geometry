@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Metric.Construction.TensorOpenExtension
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Locality
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.TensorError
-import DifferentialGeometry.Geometry.Metric.PullbackScaling
+import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeDiffeomorph
 

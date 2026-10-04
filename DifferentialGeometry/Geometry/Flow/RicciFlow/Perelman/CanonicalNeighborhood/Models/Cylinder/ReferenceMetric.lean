@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Cylinder
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
 import DifferentialGeometry.Geometry.Curvature.Product
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling

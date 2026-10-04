@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.ModelChange
+import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricFirstOrder
 import DifferentialGeometry.Geometry.Connection.Convergence.ReferenceBounds

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.RoundCylinderOrientation
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
-import DifferentialGeometry.Geometry.Metric.PolarCoordinates
+import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
 
 set_option autoImplicit false
 noncomputable section

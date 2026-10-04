@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.RadialCurvature
+import DifferentialGeometry.Geometry.Metric.Radial.Curvature
 
 set_option autoImplicit false
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.StandardCap.Metric
-import DifferentialGeometry.Geometry.Metric.PolarCoordinates
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 noncomputable section
 

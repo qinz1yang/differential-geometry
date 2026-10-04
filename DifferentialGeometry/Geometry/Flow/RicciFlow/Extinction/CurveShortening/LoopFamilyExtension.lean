@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Manifold.IntervalExtension
 import DifferentialGeometry.Topology.Manifold.AddCircle.Descent
 import DifferentialGeometry.Topology.LoopSpace.ImmersionStability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyVelocityExtension
+import DifferentialGeometry.Topology.LoopSpace.SmoothFamily.Velocity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ImmersedPersistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Loops
 

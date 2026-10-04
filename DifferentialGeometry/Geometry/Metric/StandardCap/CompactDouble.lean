@@ -2,8 +2,8 @@ import DifferentialGeometry.Topology.Manifold.StereographicCover
 import DifferentialGeometry.Topology.Manifold.StereographicChart
 import DifferentialGeometry.Topology.Manifold.RadialExponential
 import DifferentialGeometry.Geometry.Metric.StandardCap.Metric
-import DifferentialGeometry.Geometry.Metric.RadialTranslation
-import DifferentialGeometry.Geometry.Metric.Gluing
+import DifferentialGeometry.Geometry.Metric.Radial.Translation
+import DifferentialGeometry.Geometry.Metric.Construction.Gluing.Binary
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import Mathlib.Analysis.Normed.Module.Ball.Pointwise
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.OfMetricDerivNorm
+import DifferentialGeometry.Geometry.Metric.Approximation.OfMetricDerivNorm
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.CompactExtension
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.PartialDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Pairwise

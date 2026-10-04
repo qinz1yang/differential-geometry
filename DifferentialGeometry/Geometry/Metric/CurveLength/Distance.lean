@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.CurveLength
+import DifferentialGeometry.Geometry.Metric.CurveLength.Basic
 import DifferentialGeometry.Geometry.Metric.CurveSpeed.ScalarComparison
 import DifferentialGeometry.Analysis.Calculus.Variation.Lipschitz
 import DifferentialGeometry.Topology.Connected.FiniteEDistance

@@ -8,7 +8,7 @@ import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm
 import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSourceEllipticity
-import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
+import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeModel
 
 import DifferentialGeometry.Geometry.Metric.StandardCap.ReferenceCurvatureBounds

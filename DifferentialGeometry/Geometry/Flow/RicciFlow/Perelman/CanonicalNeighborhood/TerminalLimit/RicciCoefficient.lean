@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalLimit.MetricCoefficient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedWitnessTransport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MetricRicciDifference
+import DifferentialGeometry.Geometry.Metric.Convergence.RicciDifference
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 
 set_option autoImplicit false

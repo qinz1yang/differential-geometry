@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Comparison.SurvivorLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventRetainedMaps
-import DifferentialGeometry.Geometry.Metric.RestrictionDistance
+import DifferentialGeometry.Geometry.Metric.Restriction.Distance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCapDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalRegionConvexity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseDegreeInputs

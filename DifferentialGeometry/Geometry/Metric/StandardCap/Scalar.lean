@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.StandardCap.Curvature
 import DifferentialGeometry.Geometry.Curvature.ScalarSectional
-import DifferentialGeometry.Geometry.Metric.RadialFrame
+import DifferentialGeometry.Geometry.Metric.Radial.Frame
 
 set_option autoImplicit false
 noncomputable section

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Extension.HalfClosed.Norm
 import DifferentialGeometry.Geometry.Metric.StandardCap.CurvatureRounding
 import DifferentialGeometry.Geometry.Metric.StandardCap.RoundingJets
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

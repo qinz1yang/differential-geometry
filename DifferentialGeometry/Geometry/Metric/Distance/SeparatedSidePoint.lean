@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.DistanceHessianLocal
-import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Metric.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.ChartDistance.Local
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 

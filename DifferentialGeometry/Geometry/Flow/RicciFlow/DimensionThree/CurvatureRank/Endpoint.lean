@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorPositiv
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionRegularity
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionPositivity
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.SystemSource
-import DifferentialGeometry.Geometry.Metric.BundlePullbackSmooth
+import DifferentialGeometry.Geometry.Metric.VectorBundle.Pullback.Smooth
 import DifferentialGeometry.Geometry.Connection.ModelNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank.Continuity
 

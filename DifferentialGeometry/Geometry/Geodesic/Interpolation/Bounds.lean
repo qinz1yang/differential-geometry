@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Geodesic.Interpolation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Short.AmbientBounds
-import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
 
 
 

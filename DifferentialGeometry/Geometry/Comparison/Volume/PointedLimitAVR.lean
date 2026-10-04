@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Cont
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciFromJets
 import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
 import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
-import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Metric.Distance.Continuity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
 import Mathlib.Geometry.Manifold.Instances.Icc

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.RiemannianPointPicking
+import DifferentialGeometry.Geometry.Metric.PointPicking.Basic
 
 noncomputable section
 open Filter Set

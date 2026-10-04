@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
 import DifferentialGeometry.Geometry.Metric.StandardCap.Polar
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
-import DifferentialGeometry.Geometry.Metric.PolarCoordinates
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
 
 set_option autoImplicit false
 noncomputable section

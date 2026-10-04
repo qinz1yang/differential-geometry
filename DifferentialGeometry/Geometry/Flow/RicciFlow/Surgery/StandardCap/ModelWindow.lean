@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertio
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FixedRegions
 import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
-import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
+import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
 
 set_option autoImplicit false
 noncomputable section

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
 import DifferentialGeometry.Geometry.Metric.CurveSpeed.Lipschitz
 import Mathlib.Analysis.Calculus.FDeriv.Measurable
 

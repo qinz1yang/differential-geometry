@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.LoopSpace.C1.Nearby
-import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
 
 
 

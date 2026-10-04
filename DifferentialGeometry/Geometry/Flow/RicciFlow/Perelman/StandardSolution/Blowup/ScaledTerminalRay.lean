@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.CurveScaling
+import DifferentialGeometry.Geometry.Metric.CurveSpeed.Scaling
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.SegmentScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Blowup.TerminalRay
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Blowup.ParabolicConvergence

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Splitting.UniversalCoverProduct
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RiemannianProduct
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalCoverCurvatureNorm
+import DifferentialGeometry.Geometry.Metric.Product.Curvature
+import DifferentialGeometry.Geometry.Metric.UniversalCover.CurvatureNorm
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.CrossModelNorm
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceProductCurvature
+import DifferentialGeometry.Geometry.Metric.Product.CurvatureNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surface.AncientScalarPositivity
 
 set_option autoImplicit false

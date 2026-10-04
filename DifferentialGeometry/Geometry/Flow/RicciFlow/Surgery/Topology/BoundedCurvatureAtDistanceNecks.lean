@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Neck.SpatialMinimizer
 import DifferentialGeometry.Geometry.Neck.SpatialFixedRecentering
 import DifferentialGeometry.Geometry.Neck.SpatialTolerance
 import DifferentialGeometry.Geometry.Neck.PointedEndpoint
-import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
+import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedPinchingLimit

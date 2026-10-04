@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Exponential.GaussLemma.Framed
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.Naturality.MetricLocality
 import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open

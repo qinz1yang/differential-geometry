@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowRa
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.CurvatureMetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.ForwardTransfer
 import DifferentialGeometry.Geometry.Metric.DistancePullback
-import DifferentialGeometry.Geometry.Metric.RestrictionDistance
+import DifferentialGeometry.Geometry.Metric.Restriction.Distance
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalNorm
 
 set_option autoImplicit false

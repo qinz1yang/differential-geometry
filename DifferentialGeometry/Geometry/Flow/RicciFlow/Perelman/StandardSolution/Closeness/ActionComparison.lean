@@ -4,9 +4,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Es
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Action.LowerBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ParabolicScaling
-import DifferentialGeometry.Geometry.Metric.PullbackScaling
+import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
-import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
+import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Estimates.ReferenceMetric
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.Scalar
 

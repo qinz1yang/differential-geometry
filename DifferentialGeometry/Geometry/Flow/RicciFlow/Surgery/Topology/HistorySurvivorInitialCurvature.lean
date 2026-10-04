@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
-import DifferentialGeometry.Geometry.Metric.PullbackScaling
+import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.ForwardScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorChartFlow

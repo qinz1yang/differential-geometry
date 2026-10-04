@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertio
 import DifferentialGeometry.Geometry.Neck.InsertionChart
 import DifferentialGeometry.Geometry.Neck.ScalarControl
 import DifferentialGeometry.Geometry.Curvature.OperatorScaling
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

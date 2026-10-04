@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorRank
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Smoothness
 import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
-import DifferentialGeometry.Geometry.Metric.BundlePullbackSmooth
+import DifferentialGeometry.Geometry.Metric.VectorBundle.Pullback.Smooth
 import DifferentialGeometry.Geometry.Connection.ModelNorm
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorParallel

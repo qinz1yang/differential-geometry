@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Splitting.NegativeTimeExtension
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RiemannianProduct
+import DifferentialGeometry.Geometry.Metric.Product.Curvature
 import DifferentialGeometry.Geometry.Curvature.PositiveSectional
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature
 import Mathlib.Geometry.Manifold.Instances.Real

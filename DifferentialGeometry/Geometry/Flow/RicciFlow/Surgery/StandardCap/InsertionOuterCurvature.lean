@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Curvature.OperatorNaturality
 import DifferentialGeometry.Geometry.Curvature.OpenEmbeddingPullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

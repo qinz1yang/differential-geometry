@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentCarrierBandStep
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.CarrierBandStep
 import DifferentialGeometry.Topology.PiecewiseLinear.Homeomorph.SupportedComposition
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34RetainedTraceNonempty
 
@@ -53,7 +53,7 @@ theorem exists_section34_singleton_carrier_family_of_current_trace
   by_cases hlt : 1 < Nat.card I
   · obtain ⟨J, Φ, K₁, hdec, hK₁, hK₁S, hfix₁, hΦ, hArim₁, hBrim₁, hout₁,
         hkeep₁, -, htrace₁⟩ :=
-      exists_section34_current_carrier_band_step hprep hpack e I hlt Ψ hK hKS hfix hΨ
+      exists_trace_cancellation_of_carrier_band hprep hpack e I hlt Ψ hK hKS hfix hΨ
         hBrim hout hkeep hcarry htrace
     obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, hSnCc, -⟩ := id hprep
     obtain ⟨-, -, -, htube, -⟩ := id hpack

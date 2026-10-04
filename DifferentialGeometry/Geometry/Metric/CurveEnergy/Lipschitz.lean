@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.EMetricSpace.FiniteDistanceLipschitz
 import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
 import Mathlib.Topology.MetricSpace.HausdorffDistance
-import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
 
 section
 

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Cyli
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckSpatialBridge
 import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
 import DifferentialGeometry.Geometry.Neck.ScalarNormalization
-import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
+import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
 import DifferentialGeometry.Geometry.Metric.Convergence.Scaling
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding

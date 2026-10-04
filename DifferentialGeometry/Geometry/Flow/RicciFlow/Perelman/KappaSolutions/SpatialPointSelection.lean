@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import DifferentialGeometry.Topology.FiberBundle.Separation
 import Mathlib.Topology.Order.Compact
 import Mathlib.Analysis.SpecificLimits.Basic

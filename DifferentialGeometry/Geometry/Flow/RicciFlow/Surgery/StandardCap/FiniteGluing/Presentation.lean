@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BufferedCut
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.Presentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullPreparedGluing
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
-import DifferentialGeometry.Geometry.Metric.EmbeddingComposition
+import DifferentialGeometry.Geometry.Metric.Pullback.EmbeddingComposition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricBoundaryCollar
 
 set_option autoImplicit false

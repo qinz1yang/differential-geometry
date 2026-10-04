@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBall
-import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
+import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
 import DifferentialGeometry.Geometry.Neck.ProductCapExclusion
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.DomainMetric
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.InverseCapture

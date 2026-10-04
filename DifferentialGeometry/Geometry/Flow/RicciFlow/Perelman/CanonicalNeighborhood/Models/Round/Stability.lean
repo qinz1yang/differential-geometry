@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Parameter
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
-import DifferentialGeometry.Geometry.Metric.PullbackScaling
+import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StaticMetricApproximation
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.OfMetricDerivNorm
+import DifferentialGeometry.Geometry.Metric.Approximation.OfMetricDerivNorm
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
 

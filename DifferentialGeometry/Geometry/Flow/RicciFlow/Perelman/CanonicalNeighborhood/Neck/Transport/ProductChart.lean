@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalWitnessProductChart
-import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCapture
-import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
+import DifferentialGeometry.Geometry.Metric.Comparison.OpenEmbeddingBallCapture
+import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Embedding
-import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
+import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
 
 set_option autoImplicit false
 noncomputable section

@@ -24,13 +24,6 @@ structure SmoothImmersion where
   immersed : ∀ x : ℝ,
     mfderiv 𝓘(ℝ, ℝ) I (fun y : ℝ => map (y : AddCircle (1 : ℝ))) x (1 : ℝ) ≠ 0
 
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
-theorem CurveMap.smooth_slice (c : CurveMap M) {J : Set ℝ}
-    (hc : c.SmoothOn (I := I) J) {t : ℝ} (ht : t ∈ J) :
-    ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun x => c.lift x t) := by
-  have hp : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ × ℝ) ∞ (fun x : ℝ => (x, t)) :=
-    (contDiff_id.prodMk contDiff_const).contMDiff
-  exact contMDiffOn_univ.mp (hc.comp hp.contMDiffOn (fun _ _ => ⟨mem_univ _, ht⟩))
 
 def SmoothImmersion.slice (c : CurveMap M) {J : Set ℝ}
     (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)

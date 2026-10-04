@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.RoundSphere
 import DifferentialGeometry.Geometry.Curvature.RoundCylinder
 import DifferentialGeometry.Geometry.Curvature.ScalarSectional
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 

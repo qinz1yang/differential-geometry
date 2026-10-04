@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.FiniteRetainedInterior
-import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
+import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
 
 set_option autoImplicit false
 noncomputable section

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Cylinder.Restriction
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 import DifferentialGeometry.Geometry.Metric.Perturbation.Length
 
 noncomputable section

@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Metric.Restriction.Ball
 import DifferentialGeometry.Geometry.Measure.OpenSubtypeVolume
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Restriction
-import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Metric.Distance.Continuity
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 
 set_option autoImplicit false

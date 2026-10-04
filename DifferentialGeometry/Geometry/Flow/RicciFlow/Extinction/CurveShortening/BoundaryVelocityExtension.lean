@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BoundaryIsotopy
+import DifferentialGeometry.Topology.LoopSpace.Isotopy.CompactAmbient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauFrontierReduction
 
 noncomputable section

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Defs
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCylinderClassification
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverGaussian
-import DifferentialGeometry.Geometry.Metric.PullbackScaling
+import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
 import DifferentialGeometry.Topology.Covering.SmoothLift
 import DifferentialGeometry.Topology.Covering.UniversalCover.LocalDiffeomorph
 import DifferentialGeometry.Topology.Covering.CylindricalModel

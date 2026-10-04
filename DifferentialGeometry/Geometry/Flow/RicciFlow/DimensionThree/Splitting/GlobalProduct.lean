@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.LocalProduct
+import DifferentialGeometry.Geometry.Metric.Product.Local
 import DifferentialGeometry.Geometry.Connection.GlobalParallelLineFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.Splitting.GlobalParallelLine
 

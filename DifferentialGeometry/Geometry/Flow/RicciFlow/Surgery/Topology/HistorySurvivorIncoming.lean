@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySlices
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.ClosedWindow
-import DifferentialGeometry.Geometry.Metric.PullbackScaling
+import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
 import DifferentialGeometry.Topology.Manifold.OpenCoverLocalDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFlow

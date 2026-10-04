@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorRank
-import DifferentialGeometry.Geometry.Metric.BundlePullbackSmooth
+import DifferentialGeometry.Geometry.Metric.VectorBundle.Pullback.Smooth
 import DifferentialGeometry.Geometry.Connection.ModelNorm
 
 noncomputable section

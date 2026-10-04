@@ -21,7 +21,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Prospective
 import DifferentialGeometry.Geometry.Metric.Convergence.Restriction
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
 import DifferentialGeometry.Geometry.Metric.PullbackCompleteness
-import DifferentialGeometry.Geometry.Metric.PullbackScaling
+import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
 import DifferentialGeometry.Geometry.Neck.NormalizedFootprint
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding

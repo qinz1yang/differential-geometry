@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureContinuity
 import DifferentialGeometry.Geometry.Metric.Family.DistanceContinuity
 import DifferentialGeometry.Analysis.Integration.Measure.Family.CompactSetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.ChartGramContinuity
-import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
+import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
 import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PositiveSectionalLowerBound
 

@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Window.I
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowFlowDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.EqualDimensionImmersion
 import DifferentialGeometry.Geometry.Metric.DistancePullback
-import DifferentialGeometry.Geometry.Metric.PullbackScaling
+import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 
 noncomputable section

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Neck.ScalarControl
 import DifferentialGeometry.Geometry.Neck.PointwiseMetric
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

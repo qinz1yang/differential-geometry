@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticWindowVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowRadius
-import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCompactness
+import DifferentialGeometry.Geometry.Metric.Comparison.OpenEmbeddingBallCompactness
 
 set_option autoImplicit false
 noncomputable section

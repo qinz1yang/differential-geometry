@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Cyli
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Ancient.Curvature.PositiveOrNullPlane
 import DifferentialGeometry.Topology.ProjectiveSpace.AntipodalCylinderOrientation
 import DifferentialGeometry.Topology.Covering.TwoPointDeckHomeomorphs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderNullPlane
+import DifferentialGeometry.Geometry.Metric.Cylinder.Round.NullPlane
 
 set_option autoImplicit false
 

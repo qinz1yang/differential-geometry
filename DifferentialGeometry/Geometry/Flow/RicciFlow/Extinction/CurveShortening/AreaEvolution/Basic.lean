@@ -3,12 +3,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegula
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalExistence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyVelocityExtension
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionChartReading
+import DifferentialGeometry.Topology.LoopSpace.SmoothFamily.Velocity
+import DifferentialGeometry.Topology.LoopSpace.SmoothFamily.ManifoldVelocity
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import DifferentialGeometry.Topology.LoopSpace.Isotopy.CompactAmbient
 
 noncomputable section
 

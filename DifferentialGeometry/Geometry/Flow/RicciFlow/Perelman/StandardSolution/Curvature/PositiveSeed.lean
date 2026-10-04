@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.RicciRayleigh
+import DifferentialGeometry.Geometry.Metric.StandardCap.RicciRayleigh
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Curvature.Rayleigh
 
 set_option autoImplicit false

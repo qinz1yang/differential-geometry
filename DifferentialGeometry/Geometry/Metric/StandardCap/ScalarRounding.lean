@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Operator.Restriction
 import DifferentialGeometry.Geometry.Operator.Cylinder
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Extended
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

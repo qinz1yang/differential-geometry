@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Metric.ChartLipschitz.DistanceComparison
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
 import Mathlib.Topology.MetricSpace.Lipschitz
-import DifferentialGeometry.Geometry.Metric.PolarCoordinates
+import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
 
 set_option autoImplicit false
 noncomputable section

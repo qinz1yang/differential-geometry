@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Curvature.LocalPullbackRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ShrinkingCylinder
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
-import DifferentialGeometry.Geometry.Metric.CylinderRotation
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.Rotation
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

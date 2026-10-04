@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Operator.ParallelPotential
 import DifferentialGeometry.Geometry.Operator.Cylinder
 import DifferentialGeometry.Analysis.InnerProductSpace.QuadraticFormBound
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 open DifferentialGeometry.SmoothRiemannianMetric
   (metric_inner_cauchy_schwarz_sq)

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
+import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
 import DifferentialGeometry.Geometry.InjectivityRadius.Intrinsic
 import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
 

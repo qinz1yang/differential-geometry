@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.RadialField
+import DifferentialGeometry.Analysis.InnerProductSpace.RadialBilinearField.Basic
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.Calculus.Deriv.Inv
 import Mathlib.Analysis.Calculus.Deriv.Add

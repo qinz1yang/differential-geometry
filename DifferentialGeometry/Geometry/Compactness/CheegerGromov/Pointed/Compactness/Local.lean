@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.DistancePullback
-import DifferentialGeometry.Geometry.Metric.RestrictionDistance
+import DifferentialGeometry.Geometry.Metric.Restriction.Distance
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Metric.DirectLimit.Distance
 import DifferentialGeometry.Geometry.Metric.Approximation.Pullback
@@ -32,7 +32,7 @@ attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianM
   PointedRiemannianManifold.sigmaCompact PointedRiemannianManifold.t2TangentBundle
 
 open private riemannianEDistOf_restrictOpen_le_pathELength from
-  DifferentialGeometry.Geometry.Metric.RestrictionDistance
+  DifferentialGeometry.Geometry.Metric.Restriction.Distance
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

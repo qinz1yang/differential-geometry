@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
+import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Extended
 import DifferentialGeometry.Geometry.Curvature.ScalarRoundCylinder
 import DifferentialGeometry.Geometry.Curvature.RoundCylinder
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

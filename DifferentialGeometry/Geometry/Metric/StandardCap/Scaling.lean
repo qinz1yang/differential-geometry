@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.StandardCap.Polar
 import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
 import DifferentialGeometry.Geometry.Metric.StandardCap.Scalar
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
-import DifferentialGeometry.Geometry.Metric.PolarCoordinates
+import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
 
 set_option autoImplicit false
 

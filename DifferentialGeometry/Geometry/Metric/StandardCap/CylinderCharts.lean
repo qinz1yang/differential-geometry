@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.StandardCap.EndChart
 import DifferentialGeometry.Geometry.Neck.CylinderExhaustion
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
-import DifferentialGeometry.Geometry.Metric.PolarCoordinates
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
 
 set_option autoImplicit false
 noncomputable section

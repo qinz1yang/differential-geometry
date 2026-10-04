@@ -9,18 +9,19 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem image_cylinder_region_of_circle_reparametrization
     {A B E : Type*} {F : A × ℝ → E} {f : B × ℝ → E} {η : ℝ → A} {v : ℝ → B}
     {ν : (Fin 3 → ℝ) → (Fin 3 → ℝ)}
-    (hν : BijOn ν (stdSimplexBoundary 2) (stdSimplexBoundary 2)) {T : Set ℝ}
+    (hνmap : MapsTo ν (stdSimplexBoundary 2) (stdSimplexBoundary 2))
+    (hνsurj : SurjOn ν (stdSimplexBoundary 2) (stdSimplexBoundary 2)) {T : Set ℝ}
     (hformula : ∀ r ∈ T, ∀ s ∈ Icc (0 : ℝ) 1, ∀ q ∈ Icc (0 : ℝ) 1,
       ν (stdTriangleLoop s) = stdTriangleLoop q → F (η r, s) = f (v r, q)) :
     F '' ((η '' T) ×ˢ Icc (0 : ℝ) 1) = f '' ((v '' T) ×ˢ Icc (0 : ℝ) 1) := by
   apply Subset.antisymm
   · rintro y ⟨⟨p, s⟩, ⟨⟨r, hr, rfl⟩, hs⟩, rfl⟩
-    have hz := hν.mapsTo (stdTriangleLoop_image.subset (mem_image_of_mem stdTriangleLoop hs))
+    have hz := hνmap (stdTriangleLoop_image.subset (mem_image_of_mem stdTriangleLoop hs))
     obtain ⟨q, hq, heq⟩ := stdTriangleLoop_image.symm.subset hz
     exact ⟨(v r, q), ⟨mem_image_of_mem v hr, hq⟩, (hformula r hr s hs q hq heq.symm).symm⟩
   · rintro y ⟨⟨p, q⟩, ⟨⟨r, hr, rfl⟩, hq⟩, rfl⟩
     obtain ⟨z, hz, hzq⟩ :=
-      hν.surjOn (stdTriangleLoop_image.subset (mem_image_of_mem stdTriangleLoop hq))
+      hνsurj (stdTriangleLoop_image.subset (mem_image_of_mem stdTriangleLoop hq))
     obtain ⟨s, hs, rfl⟩ := stdTriangleLoop_image.symm.subset hz
     exact ⟨(η r, s), ⟨mem_image_of_mem η hr, hs⟩, hformula r hr s hs q hq hzq⟩
 

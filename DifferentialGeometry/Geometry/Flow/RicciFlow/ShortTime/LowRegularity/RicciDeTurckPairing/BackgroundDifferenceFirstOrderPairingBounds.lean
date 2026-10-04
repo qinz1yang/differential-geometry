@@ -2447,6 +2447,7 @@ private theorem lieCorrectionZeroKappa_self_covariantJetNormSq_one_le
   rw [kappa_self (I := I) (M := M) g gm P htie]
   exact covariantJetNormSq_one_lieCorrectionZeroKappa_self_le (I := I) (M := M) g P
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem exists_lieCorrectionZeroPbLow_covariantJetNormSq_two_bound
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :

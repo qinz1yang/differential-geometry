@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Neck.ScaleComparison
 import DifferentialGeometry.Geometry.Neck.SpatialNormalization
 import DifferentialGeometry.Geometry.Neck.SpatialChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckLocalTransport
-import DifferentialGeometry.Geometry.Metric.PullbackScaling
+import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Neck.Transport.SourceBounds
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion

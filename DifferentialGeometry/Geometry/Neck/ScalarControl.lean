@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.NormalizedDatum
 import DifferentialGeometry.Geometry.Curvature.OpenEmbeddingPullback
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

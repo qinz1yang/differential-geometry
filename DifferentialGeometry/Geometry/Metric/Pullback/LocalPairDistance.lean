@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.DistancePullback
-import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
-import DifferentialGeometry.Geometry.Metric.RestrictionDistance
+import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
+import DifferentialGeometry.Geometry.Metric.Restriction.Distance
 
 noncomputable section
 

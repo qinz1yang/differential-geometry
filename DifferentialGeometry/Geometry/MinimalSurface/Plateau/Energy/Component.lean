@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.OpenTarget
-import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
+import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
 
 noncomputable section
 

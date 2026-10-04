@@ -2,8 +2,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSca
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.LocalPropagation
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.DistanceUpper
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalCapture
-import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
-import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
+import DifferentialGeometry.Geometry.Metric.Distance.Continuity
 
 noncomputable section
 

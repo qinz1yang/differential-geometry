@@ -1,7 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.AtlasNorm.Atlas
-import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.TransitionDiffeo
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.Transition
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.CompChainRuleK
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.SobolevComposition
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
 
 

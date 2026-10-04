@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.AncientJ
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.CurvatureMetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalFromJets
 import DifferentialGeometry.Geometry.Curvature.ScalarGradientNorm
-import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
 
 
 set_option autoImplicit false

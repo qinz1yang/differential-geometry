@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
-import DifferentialGeometry.Geometry.Metric.RiemannianPointPicking
+import DifferentialGeometry.Geometry.Metric.PointPicking.Basic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 

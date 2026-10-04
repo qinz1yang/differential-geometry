@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.CurvatureMonomialJetBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.SmoothCoreIdentification
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.EndomorphismInsertion.TopOrderSeparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.Remainder
@@ -582,7 +583,7 @@ private noncomputable def monoExtC2
     (g : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 4))
     (S : SmoothCcTensor g 0 2) : SmoothCcTensor g 4 6 :=
   rsDomDomCongrSection (I := I) (M := M) g 4 6
-    (RicciDeTurckLowOrder.monoPerm σ)
+    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ)
     (slotExtendIter (I := I) (M := M) g 0 2 4 S)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -2088,8 +2089,9 @@ private theorem curvMono_h2_lip
           (ccTensorUnitValueSection (I := I) (M := M) g R)
           (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g R) σ =
         Q₁ + Q₂ := by
-    rw [RicciDeTurckLowOrder.curvMono_eq (I := I) (M := M) g gT S σ,
-      RicciDeTurckLowOrder.curvMono_eq (I := I) (M := M) g gU R σ]
+    dsimp only [curvatureDecompositionMonomialCoeffField]
+    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialCoeffField_eq_pairTrace (I := I) (M := M) g gT S σ,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialCoeffField_eq_pairTrace (I := I) (M := M) g gU R σ]
     change
       ccOperatorFieldComp (I := I) (M := M) g 4 6 2 (P gT) (X S) -
           ccOperatorFieldComp (I := I) (M := M) g 4 6 2 (P gU) (X R) =

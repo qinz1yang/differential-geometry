@@ -10,7 +10,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Co
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Curvature.ScalarLower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Lifetime.Value
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GoodPointDerivatives
-import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
+import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.SmoothExtension
 import DifferentialGeometry.Geometry.Metric.Euclidean.Construction
-import DifferentialGeometry.Geometry.Metric.RadialField
-import DifferentialGeometry.Geometry.Metric.RoundNormal
+import DifferentialGeometry.Analysis.InnerProductSpace.RadialBilinearField.Basic
+import DifferentialGeometry.Geometry.Metric.Sphere.Round.NormalCoordinates
 import DifferentialGeometry.Geometry.Metric.StandardCap.Profile
 
 noncomputable section

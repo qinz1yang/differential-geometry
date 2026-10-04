@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.LocalMetricBallContainment
+import DifferentialGeometry.Geometry.Metric.Comparison.LocalBallContainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.FixedSetMetricVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Defs
 

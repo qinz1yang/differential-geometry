@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.DistancePullback
 import DifferentialGeometry.Geometry.Curvature.EmbeddingCurvatureJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteGluing.Models
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticWindowVolume
-import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCapture
+import DifferentialGeometry.Geometry.Metric.Comparison.OpenEmbeddingBallCapture
 
 set_option autoImplicit false
 noncomputable section

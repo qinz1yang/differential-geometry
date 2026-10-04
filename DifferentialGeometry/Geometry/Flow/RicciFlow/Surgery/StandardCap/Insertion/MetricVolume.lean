@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InsertionVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.QuotientCollapse
 import DifferentialGeometry.Geometry.Measure.PullbackOpen
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

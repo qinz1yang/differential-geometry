@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Continuity
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic

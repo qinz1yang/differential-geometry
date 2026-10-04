@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactSlabVolume
+import DifferentialGeometry.Geometry.Metric.Family.CompactVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.ScalarCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
 

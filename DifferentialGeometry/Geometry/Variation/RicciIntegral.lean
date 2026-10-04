@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Bas
 import DifferentialGeometry.Geometry.Variation.IndexForm.PerpendicularCoordinates
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Minimizer
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import DifferentialGeometry.Analysis.Sobolev.Time.H1.Approximation.Density
 import DifferentialGeometry.Analysis.Sobolev.Time.H1.Approximation.Trapezoid
 import DifferentialGeometry.Analysis.Sobolev.Time.H1.Regularity.C1Representative

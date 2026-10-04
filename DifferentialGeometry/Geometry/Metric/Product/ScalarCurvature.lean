@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceProductCurvature
+import DifferentialGeometry.Geometry.Metric.Product.CurvatureNorm
 
 set_option autoImplicit false
 

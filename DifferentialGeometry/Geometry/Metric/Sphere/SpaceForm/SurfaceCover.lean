@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Topology.Covering.Basic

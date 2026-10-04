@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RoundMetricPinching
+import DifferentialGeometry.Geometry.Metric.Convergence.RicciPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RoundPinchingTransport
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.CompactGlobalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinker.SliceSequence

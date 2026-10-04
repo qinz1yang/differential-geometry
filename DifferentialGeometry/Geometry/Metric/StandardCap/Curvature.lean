@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.RadialCurvature
+import DifferentialGeometry.Geometry.Metric.Radial.Curvature
 import DifferentialGeometry.Geometry.Curvature.Nonnegative
 import DifferentialGeometry.Geometry.Metric.StandardCap.TipCurvature
 import DifferentialGeometry.Geometry.Metric.StandardCap.ProfileEstimates

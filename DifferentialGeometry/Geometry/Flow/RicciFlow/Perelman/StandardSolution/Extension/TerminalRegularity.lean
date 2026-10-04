@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.TimeJet.ClosedJetEvolution
-import DifferentialGeometry.Geometry.Metric.TerminalFamily
+import DifferentialGeometry.Geometry.Metric.Family.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Estimates.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Existence.Initial
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Pi

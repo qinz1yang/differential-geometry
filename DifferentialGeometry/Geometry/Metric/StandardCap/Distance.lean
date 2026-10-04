@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.StandardCap.Metric
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import Mathlib.Topology.MetricSpace.ProperSpace
 
 set_option autoImplicit false

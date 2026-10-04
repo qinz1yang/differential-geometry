@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.Po
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TimeJetFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.ClosedIntervalDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
-import DifferentialGeometry.Geometry.Metric.ModelChange
+import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.TensorTimeJets
 
 

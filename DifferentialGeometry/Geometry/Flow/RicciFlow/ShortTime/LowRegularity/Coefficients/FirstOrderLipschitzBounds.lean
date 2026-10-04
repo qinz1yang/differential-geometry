@@ -719,6 +719,7 @@ private theorem jet_sub
           ‖iteratedCovGrad (I := I) g r s q V‖ ^ 2) := by
       simp only [mul_add, Finset.sum_add_distrib, Finset.mul_sum]
 
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem app_h2_mul
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ) :
@@ -1664,6 +1665,7 @@ private theorem full_slot_h2
       simp only [K]
       ring
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem raiseLast_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -1740,6 +1742,7 @@ private theorem raiseLast_h1
         covariantJetNormSq (I := I) (M := M) g 1 S := by
       rw [dom_h1 (I := I) (M := M)]
 
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem kappa_pair_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :

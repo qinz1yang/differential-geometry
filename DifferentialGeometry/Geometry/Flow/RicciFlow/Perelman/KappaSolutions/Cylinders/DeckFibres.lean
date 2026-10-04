@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderDeckRepresentation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderFreeGroupClassification
+import DifferentialGeometry.Geometry.Metric.Cylinder.Quotient.FreeActions
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Splitting.RoundSurfaceFactor
 
 set_option autoImplicit false
