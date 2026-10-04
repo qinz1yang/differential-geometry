@@ -12,7 +12,7 @@ Let `h` be the metric induced on the piece `W = D.component i` by `g`
 injective local isometry (T2), so every pointwise curvature quantity of `h` at an interior point
 equals the corresponding quantity of `g` at the image point:
 
-* `curvatureDerivativeNorm_cutPieceMap_of_mem_interior` / `curvatureDerivativeNorm_cutPieceMap`
+* `curvatureDerivativeNorm_cutPieceMap_of_mem_interior` / `curvatureDerivativeNorm_cutPieceMap_of_mem_ball`
   (plan T4, on the ball `B_h(p, r)` with `r ≤ d_h(p, ∂W)`): `|∇^k Rm_h|(q) = |∇^k Rm_g|(Φ q)`;
 * `metricRm04StandardAt_cutPieceMap_of_mem_interior` and
   `sectionalBoundedBelowAt_cutPieceMap_iff_of_mem_interior`: the curvature tensor and the
@@ -27,7 +27,7 @@ admissible sets are downward closed,
 * consequences: equal curvature scales as soon as one of them is below the boundary distance
   (`curvatureRadius_cutPieceMap_eq_of_lt`, `…_of_lt'`), the same strict radius tests
   (`ofReal_lt_curvatureRadius_cutPieceMap_iff`), equal ball volumes
-  (`ballVolume_cutPieceMap`), and the same volume-collapse test at the curvature scale
+  (`ballVolume_cutPieceMap_of_le`), and the same volume-collapse test at the curvature scale
   (`volumeCollapsedAtCurvatureScale_cutPieceMap_iff`).
 
 Proof of the pointwise identities. With `ι : W° → W` the open inclusion and
@@ -153,7 +153,7 @@ theorem curvatureDerivativeNorm_cutPieceMap_of_mem_interior
 
 /-- T4 (plan statement). On the intrinsic ball of radius at most the boundary distance, the
 norms of the covariant derivatives of the curvature of `h` and of `g` agree. -/
-theorem curvatureDerivativeNorm_cutPieceMap (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
+theorem curvatureDerivativeNorm_cutPieceMap_of_mem_ball (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (D : TorusDecomposition M) (i : Fin D.components.count)
     (h : SmoothRiemannianMetric (D.component i).model (D.component i).Carrier)
     (hind : isInducedCutMetric g D i h) (k : ℕ) {p : (D.component i).Carrier} {r : ℝ}
@@ -322,7 +322,7 @@ theorem ofReal_lt_curvatureRadius_cutPieceMap_iff (g : SmoothRiemannianMetric (�
     exact (lt_min_iff.mp h1).1
 
 /-- Below the boundary distance, the intrinsic and the ambient ball have the same volume. -/
-theorem ballVolume_cutPieceMap (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
+theorem ballVolume_cutPieceMap_of_le (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (D : TorusDecomposition M) (i : Fin D.components.count)
     (h : SmoothRiemannianMetric (D.component i).model (D.component i).Carrier)
     (hind : isInducedCutMetric g D i h) {p : (D.component i).Carrier} {r : ℝ}
@@ -344,7 +344,7 @@ theorem volumeCollapsedAtCurvatureScale_cutPieceMap_iff
   unfold volumeCollapsedAtCurvatureScale
   rw [hR]
   refine forall₂_congr fun r _ => forall_congr' fun hr => ?_
-  rw [ballVolume_cutPieceMap g D i h hind (hr ▸ hlt).le]
+  rw [ballVolume_cutPieceMap_of_le g D i h hind (hr ▸ hlt).le]
 
 end CutPiece
 

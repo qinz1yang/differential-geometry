@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Collapse.LatePieceGeometry
+import DifferentialGeometry.Geometry.Collapse.CutMetricTransport
 import DifferentialGeometry.Geometry.Collapse.CuspBoundary
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
@@ -183,17 +184,6 @@ theorem val_mem_carrier_interior (D : TorusDecomposition M) (i : Fin D.component
   have hxi : D.carrier.model.IsInteriorPoint x := hx
   exact D.carrier.model.isInteriorPoint_iff_isInteriorPoint_val.mp hxi
 
-/-- The cut-piece map is smooth (also at the boundary of the piece). -/
-theorem contMDiff_cutPieceMap (D : TorusDecomposition M) (i : Fin D.components.count) :
-    ContMDiff (D.component i).model (𝓡 3) ∞ (cutPieceMap D i) := by
-  let := D.reconstructionAtlas.charts
-  let := D.reconstructionAtlas.smooth
-  have hq : ContMDiff D.carrier.model (𝓡 3) ∞ D.boundary.quotientMap :=
-    D.reconstructionAtlas.quotient_smooth
-  have hv : ContMDiff D.carrier.model D.carrier.model ∞
-      (Subtype.val : D.components.piece i → D.carrier.Carrier) := contMDiff_subtype_val
-  exact D.reconstruction.val.contMDiff.comp (hq.comp hv)
-
 /-- The cut-piece map restricted to the interior `W°` of the piece. -/
 def cutPieceInteriorMap (D : TorusDecomposition M) (i : Fin D.components.count) :
     (D.component i).interior → M.Carrier :=
@@ -257,13 +247,6 @@ theorem injective_cutPieceInteriorMap (D : TorusDecomposition M) (i : Fin D.comp
   have h3 : (x.val : D.components.piece i).val = (y.val : D.components.piece i).val :=
     congrArg (fun z : D.carrier.interior => z.val) h2
   exact Subtype.ext (Subtype.ext h3)
-
-/-- T2. The cut-piece map is injective on the interior of the piece. -/
-theorem injOn_cutPieceMap_interior (D : TorusDecomposition M) (i : Fin D.components.count) :
-    Set.InjOn (cutPieceMap D i) ((D.component i).interior : Set (D.component i).Carrier) := by
-  intro x hx y hy hxy
-  have := injective_cutPieceInteriorMap D i (a₁ := ⟨x, hx⟩) (a₂ := ⟨y, hy⟩) hxy
-  exact congrArg Subtype.val this
 
 /-- T2. At every interior point of the piece the cut-piece map is a local diffeomorphism. -/
 theorem isLocalDiffeomorphAt_cutPieceMap (D : TorusDecomposition M)

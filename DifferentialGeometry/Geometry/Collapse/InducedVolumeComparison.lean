@@ -189,7 +189,7 @@ theorem sectionalBoundedBelowAt_of_ofReal_le_curvatureRadius (g : SmoothRiemanni
     {p : M} {r : ℝ} (hr : 0 < r) (hR : ENNReal.ofReal r ≤ curvatureRadius g p) :
     ∀ q ∈ riemannianBallOf g p r, SectionalBoundedBelowAt g q (-(r ^ 2)⁻¹) := by
   rcases hR.lt_or_eq with hlt | heq
-  · exact sectionalBoundedBelowAt_of_lt_curvatureRadius g hr hlt
+  · exact fun q hq => sectionalBoundedBelowAt_of_lt_curvatureRadius g hlt hq
   · have hfin : curvatureRadius g p ≠ ⊤ := heq ▸ ENNReal.ofReal_ne_top
     have hreal : (curvatureRadius g p).toReal = r := by
       rw [← heq, ENNReal.toReal_ofReal hr.le]

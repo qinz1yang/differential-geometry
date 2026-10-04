@@ -64,8 +64,8 @@ theorem cutPiece_ball_tests (L : LateCutFamily F K slices) (j : ℕ)
             (cutPieceMap (L.decomposition j C) i q) :=
   ⟨image_cutPieceMap_riemannianBallOf _ _ i _ (L.induced j C i) hd.le,
     ofReal_lt_curvatureRadius_cutPieceMap_iff _ _ (L.induced j C i) hd,
-    ballVolume_cutPieceMap _ _ i _ (L.induced j C i) hd.le,
-    fun k _ hq => curvatureDerivativeNorm_cutPieceMap _ _ i _ (L.induced j C i) k hd.le hq⟩
+    ballVolume_cutPieceMap_of_le _ _ i _ (L.induced j C i) hd.le,
+    fun k _ hq => curvatureDerivativeNorm_cutPieceMap_of_mem_ball _ _ i _ (L.induced j C i) k hd.le hq⟩
 
 /-- Ambient derivative bounds on the ambient ball give the same bounds on the intrinsic ball of a
 late piece, below the boundary distance. -/
@@ -81,7 +81,7 @@ theorem cutPiece_curvatureDerivativeNorm_le_of_ambient (L : LateCutFamily F K sl
       curvatureDerivativeNorm ((slices j).componentMetric C) k y ≤ B) :
     ∀ q ∈ riemannianBallOf (L.metric j C i) p r, curvatureDerivativeNorm (L.metric j C i) k q ≤ B := by
   intro q hq
-  rw [curvatureDerivativeNorm_cutPieceMap _ _ i _ (L.induced j C i) k hd hq]
+  rw [curvatureDerivativeNorm_cutPieceMap_of_mem_ball _ _ i _ (L.induced j C i) k hd hq]
   apply hamb
   rw [← image_cutPieceMap_riemannianBallOf _ _ i _ (L.induced j C i) hd]
   exact mem_image_of_mem _ hq

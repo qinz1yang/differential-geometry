@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Collapse.CurvatureScale
+import DifferentialGeometry.Geometry.Collapse.CurvatureRadiusBounds
+import DifferentialGeometry.Geometry.Collapse.CurvatureRadiusScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NoncollapseLocalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.LocalAllOrdersScaled
 
@@ -74,19 +76,6 @@ theorem exists_admissible_gt_of_ofReal_lt_curvatureRadius (g : SmoothRiemannianM
 
 /-! ### T1: the sectional bound below the curvature scale -/
 
-omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
-/-- T1 (strict). Below the curvature scale, the ball of radius `r` has sectional curvature
-at least `-r⁻²`. -/
-theorem sectionalBoundedBelowAt_of_lt_curvatureRadius (g : SmoothRiemannianMetric I M)
-    {p : M} {r : ℝ} (hr : 0 < r) (hR : ENNReal.ofReal r < curvatureRadius g p) :
-    ∀ q ∈ riemannianBallOf g p r, SectionalBoundedBelowAt g q (-(r ^ 2)⁻¹) := by
-  obtain ⟨s, hrs, hs, hP⟩ := exists_admissible_gt_of_ofReal_lt_curvatureRadius g hR
-  intro q hq
-  refine (hP q (riemannianBallOf_mono g p hrs.le hq)).mono ?_
-  have hpow : r ^ 2 ≤ s ^ 2 := pow_le_pow_left₀ hr.le hrs.le 2
-  have hinv : (s ^ 2)⁻¹ ≤ (r ^ 2)⁻¹ := inv_anti₀ (by positivity) hpow
-  linarith
-
 omit [SigmaCompactSpace M] in
 /-- T1 (attained). When the curvature scale is finite, the defining bound holds on the ball of
 radius exactly `R_p`, with constant `-R_p⁻²`. The proof passes to the closed limit `r ↑ R_p`
@@ -117,7 +106,7 @@ theorem sectionalBoundedBelowAt_of_curvatureRadius_ne_top (g : SmoothRiemannianM
       change riemannianEDistOf (I := I) g p q < ENNReal.ofReal r
       rw [← ENNReal.ofReal_toReal hd]
       exact (ENNReal.ofReal_lt_ofReal_iff hrpos).mpr hr.1
-    exact sectionalBoundedBelowAt_of_lt_curvatureRadius g hrpos hlt q hqr v w
+    exact sectionalBoundedBelowAt_of_lt_curvatureRadius g hlt hqr v w
   have hcont : ContinuousAt
       (fun r : ℝ => -(r ^ 2)⁻¹ * (g.inner q v v * g.inner q w w - g.inner q v w ^ 2))
       (curvatureRadius g p).toReal := by
@@ -273,29 +262,6 @@ theorem curvatureRadius_scaleMetric_le (c : ℝ) (hc : 0 < c) (g : SmoothRiemann
       = ENNReal.ofReal (Real.sqrt c) * ENNReal.ofReal r := ENNReal.ofReal_mul hsc.le
     _ ≤ ENNReal.ofReal (Real.sqrt c) * curvatureRadius g p :=
         mul_le_mul' le_rfl (ofReal_le_curvatureRadius g hr hPg)
-
-omit [SigmaCompactSpace M] in
-/-- T4. The curvature scale of `c g` is `√c` times that of `g`. -/
-theorem curvatureRadius_scaleMetric (c : ℝ) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
-    (p : M) :
-    curvatureRadius (scaleMetric c hc g) p = ENNReal.ofReal (Real.sqrt c) * curvatureRadius g p := by
-  refine le_antisymm (curvatureRadius_scaleMetric_le c hc g p) ?_
-  have hinv : 0 < c⁻¹ := inv_pos.mpr hc
-  have hg : scaleMetric c⁻¹ hinv (scaleMetric c hc g) = g :=
-    SmoothRiemannianMetric.ext_inner fun x v w => by
-      simp only [scaleMetric_inner]
-      rw [← mul_assoc, inv_mul_cancel₀ hc.ne', one_mul]
-  have h := curvatureRadius_scaleMetric_le c⁻¹ hinv (scaleMetric c hc g) p
-  rw [hg] at h
-  calc ENNReal.ofReal (Real.sqrt c) * curvatureRadius g p
-      ≤ ENNReal.ofReal (Real.sqrt c) *
-          (ENNReal.ofReal (Real.sqrt c⁻¹) * curvatureRadius (scaleMetric c hc g) p) :=
-        mul_le_mul' le_rfl h
-    _ = ENNReal.ofReal (Real.sqrt c * Real.sqrt c⁻¹) * curvatureRadius (scaleMetric c hc g) p := by
-        rw [← mul_assoc, ← ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
-    _ = curvatureRadius (scaleMetric c hc g) p := by
-        rw [← Real.sqrt_mul hc.le, mul_inv_cancel₀ hc.ne', Real.sqrt_one, ENNReal.ofReal_one,
-          one_mul]
 
 /-! ### T5: the real form under finite scales -/
 

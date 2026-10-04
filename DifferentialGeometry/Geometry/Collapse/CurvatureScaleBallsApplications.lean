@@ -33,7 +33,7 @@ theorem compactCarrier_curvatureScale_floor (W : GC.Endpoint.CompactCarrier.{u})
   refine ⟨ρ, hρ, fun p => ⟨curvatureRadius_pos g p, hfloor p, ?_⟩⟩
   have hlt : ENNReal.ofReal (ρ / 2) < curvatureRadius g p :=
     lt_of_lt_of_le ((ENNReal.ofReal_lt_ofReal_iff hρ).mpr (half_lt_self hρ)) (hfloor p)
-  exact sectionalBoundedBelowAt_of_lt_curvatureRadius g (half_pos hρ) hlt
+  exact fun q hq => sectionalBoundedBelowAt_of_lt_curvatureRadius g hlt hq
 
 /-- T3 + T4 on a compact carrier: the rescaled metric `c g` has curvature-scale floor `√c ρ`,
 where `ρ` is a floor for `g`. -/
@@ -43,7 +43,7 @@ theorem compactCarrier_scaleMetric_curvatureScale_floor (W : GC.Endpoint.Compact
       ENNReal.ofReal (Real.sqrt c * ρ) ≤ curvatureRadius (scaleMetric c hc g) p := by
   obtain ⟨ρ, hρ, hfloor⟩ := exists_pos_le_curvatureRadius g
   refine ⟨ρ, hρ, fun c hc p => ?_⟩
-  rw [curvatureRadius_scaleMetric c hc g p, ENNReal.ofReal_mul (Real.sqrt_nonneg c)]
+  rw [curvatureRadius_scaleMetric g c hc p, ENNReal.ofReal_mul (Real.sqrt_nonneg c)]
   exact mul_le_mul' le_rfl (hfloor p)
 
 /-- On a connected carrier, unless the metric has nonnegative sectional curvature, every curvature

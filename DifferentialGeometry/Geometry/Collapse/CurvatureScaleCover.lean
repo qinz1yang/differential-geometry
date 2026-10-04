@@ -113,13 +113,13 @@ omit [CompleteSpace E] in
 /-- T2. Below the curvature scale, the `g`-ball of radius `a` has Ricci curvature at least
 `(n - 1)(-a⁻²)` (A1 T1 traced over an orthonormal complement). -/
 theorem ricciBoundedBelowOn_of_lt_curvatureRadius [I.Boundaryless] [T2Space M]
-    (g : SmoothRiemannianMetric I M) {p : M} {a : ℝ} (ha : 0 < a)
+    (g : SmoothRiemannianMetric I M) {p : M} {a : ℝ}
     (hR : ENNReal.ofReal a < curvatureRadius g p) :
     ricciBoundedBelowOn (I := I) g (riemannianBallOf g p a)
       (((Module.finrank ℝ E - 1 : ℕ) : ℝ) * (-(a ^ 2)⁻¹)) := by
   intro x hx v
   exact ricci_lower_of_sectionalBoundedBelowAt g x
-    (sectionalBoundedBelowAt_of_lt_curvatureRadius g ha hR x hx) v
+    (sectionalBoundedBelowAt_of_lt_curvatureRadius g hR hx) v
 
 /-- T2 at the curvature scale. If `D c < 1`, then on the `g`-ball of radius `D ρ p`, where
 `ρ p = c R_p`, the Ricci curvature is at least `(n - 1)(-(D⁻¹ / ρ p)²)`: the Ricci hypothesis of
@@ -133,7 +133,6 @@ theorem ricciBoundedBelowOn_curvatureScale [I.Boundaryless] [T2Space M]
         (-((D⁻¹ / (c * (curvatureRadius g p).toReal)) ^ 2))) := by
   have hR := toReal_curvatureRadius_pos g hfin
   set R := (curvatureRadius g p).toReal with hRdef
-  have ha : 0 < D * (c * R) := by positivity
   have hlt : D * (c * R) < R := by
     have h : D * (c * R) = (D * c) * R := by ring
     rw [h]
@@ -144,7 +143,7 @@ theorem ricciBoundedBelowOn_curvatureScale [I.Boundaryless] [T2Space M]
   have hκ : (D⁻¹ / (c * R)) ^ 2 = ((D * (c * R)) ^ 2)⁻¹ := by
     field_simp
   rw [hκ]
-  exact ricciBoundedBelowOn_of_lt_curvatureRadius g ha hRlt
+  exact ricciBoundedBelowOn_of_lt_curvatureRadius g hRlt
 
 /-! ### T3: LC63 at the curvature scale -/
 

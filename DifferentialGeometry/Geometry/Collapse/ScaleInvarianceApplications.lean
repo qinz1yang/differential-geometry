@@ -82,7 +82,7 @@ theorem compactCarrier_normalized_curvatureScale (W : GC.Endpoint.CompactCarrier
           rw [← ENNReal.ofReal_mul (inv_nonneg.mpr hρ.le), inv_mul_cancel₀ hρ.ne',
             ENNReal.ofReal_one]
       _ ≤ ENNReal.ofReal ρ⁻¹ * curvatureRadius g p := mul_le_mul' le_rfl (hfloor p)
-  · rw [curvatureDerivativeNorm_scaleMetric, hsqrt, div_eq_mul_inv, mul_inv, inv_inv, inv_pow,
+  · rw [curvatureDerivativeNorm_scaleMetric_div, hsqrt, div_eq_mul_inv, mul_inv, inv_inv, inv_pow,
       inv_inv, pow_add]
     ring
 

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Metric.DerivativeNorm
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Scaling
+import DifferentialGeometry.Geometry.Curvature.Metric.DerivativeNormCompatibility
 
 /-!
 # Bridge between the two curvature-derivative norms
@@ -17,8 +18,9 @@ Both are iterates of the total covariant derivative of the Levi-Civita connectio
 the *tensor fields* (heterogeneously, across `4 + k = k + 4`), not notation:
 
 * `curvCovDeriv_heq_iteratedCurvatureTensor`: the two towers agree as sections;
-* T1 `curvatureDerivativeNorm_eq_curvDerivNorm`: the two norms agree pointwise;
-* T2 `curvatureDerivativeNorm_scaleMetric`: `|∇^k Rm|_{c g} = |∇^k Rm|_g / (c · (√c)^k)`, transported
+* T1 `curvatureDerivativeNorm_eq_curvDerivNorm` (ported, `DerivativeNormCompatibility.lean`): the
+  two norms agree pointwise;
+* T2 `curvatureDerivativeNorm_scaleMetric_div`: `|∇^k Rm|_{c g} = |∇^k Rm|_g / (c · (√c)^k)`, transported
   from `curvDerivNorm_scaleMetric` (`…/Derivatives/Scaling.lean`).
 -/
 
@@ -86,16 +88,9 @@ theorem curvatureDerivativeNorm_sq_eq_curvDerivNormSq (g : SmoothRiemannianMetri
     (curvCovDeriv_heq_iteratedCurvatureTensor g k).symm
 
 omit [SigmaCompactSpace M] in
-/-- **T1.** The Collapse-side curvature-derivative norm is the compactness-side one. -/
-theorem curvatureDerivativeNorm_eq_curvDerivNorm (g : SmoothRiemannianMetric I M) (k : ℕ) (x : M) :
-    curvatureDerivativeNorm g k x = CheegerGromovCompactness.curvDerivNorm k g x := by
-  rw [CheegerGromovCompactness.curvDerivNorm, ← curvatureDerivativeNorm_sq_eq_curvDerivNormSq,
-    Real.sqrt_sq (curvatureDerivativeNorm_nonneg g k x)]
-
-omit [SigmaCompactSpace M] in
 /-- **T2.** Scaling of the Collapse-side curvature-derivative norm:
 `|∇^k Rm|_{c g} = |∇^k Rm|_g / (c · (√c)^k)`. -/
-theorem curvatureDerivativeNorm_scaleMetric (g : SmoothRiemannianMetric I M) (c : ℝ) (hc : 0 < c)
+theorem curvatureDerivativeNorm_scaleMetric_div (g : SmoothRiemannianMetric I M) (c : ℝ) (hc : 0 < c)
     (k : ℕ) (x : M) :
     curvatureDerivativeNorm (scaleMetric c hc g) k x =
       curvatureDerivativeNorm g k x / (c * Real.sqrt c ^ k) := by

@@ -8,7 +8,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling
 For a metric `g` and `c > 0`, the rescaled metric `c g` has distances `√c d_g`
 (`riemannianBallOf_scaleMetric`), volume `(√c)^n vol_g` (`volume_scale_apply`), curvature scale
 `√c R_p` (`curvatureRadius_scaleMetric`, A1 T4) and derivative norms `|∇^k Rm|_g / (c (√c)^k)`
-(`curvatureDerivativeNorm_scaleMetric`, A4 T2). Consequently, in dimension three:
+(`curvatureDerivativeNorm_scaleMetric_div`, A4 T2). Consequently, in dimension three:
 
 * T3 `ballVolume_scaleMetric`: `vol_{c g} B_{c g}(p, √c r) = (√c)^3 vol_g B_g(p, r)`;
 * T3 `volumeCollapsedAtCurvatureScale_scaleMetric_iff`: the collapsing predicate at the curvature
@@ -116,7 +116,7 @@ theorem curvatureDerivativeNorm_scaleMetric_le_iff (c : ℝ) (hc : 0 < c)
   have hrhs : B * ((Real.sqrt c * t) ^ (k + 2))⁻¹ = B * (t ^ (k + 2))⁻¹ / (c * Real.sqrt c ^ k) := by
     rw [mul_pow, pow_add, Real.sq_sqrt hc.le]
     field_simp
-  rw [curvatureDerivativeNorm_scaleMetric, hrhs]
+  rw [curvatureDerivativeNorm_scaleMetric_div, hrhs]
   exact div_le_div_iff_of_pos_right hpos
 
 /-- Reparametrising positive radii by a positive factor. -/
