@@ -19080,3 +19080,9 @@ import DifferentialGeometry.Geometry.Collapse.NormalizedCenterData
 import DifferentialGeometry.Geometry.Collapse.SimultaneousProductionApplications
 import DifferentialGeometry.Geometry.Comparison.RayDensity
 import DifferentialGeometry.Geometry.Comparison.RayDensityInnerProduct
+import DifferentialGeometry.Geometry.Connection.WarpedProduct
+import DifferentialGeometry.Geometry.Metric.WarpedProduct.Exponential
+import DifferentialGeometry.Geometry.Curvature.WarpedProduct.Vertical
+import DifferentialGeometry.Geometry.Curvature.WarpedProduct.Mixed
+import DifferentialGeometry.Geometry.Curvature.WarpedProduct.Exponential
+import DifferentialGeometry.Geometry.Hyperbolic.CuspCurvatureFields
