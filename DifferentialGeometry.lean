@@ -19059,3 +19059,11 @@ import DifferentialGeometry.Geometry.Collapse.SublevelCore.DistanceBallIsotopy
 import DifferentialGeometry.Geometry.Collapse.SublevelCore.DiskCoreFlow
 import DifferentialGeometry.Geometry.Comparison.RayChord
 import DifferentialGeometry.Geometry.Comparison.RayChordInnerProduct
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.FiniteOrder
+import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.UniformConvergence
+import DifferentialGeometry.Geometry.Curvature.Algebraic.Polarization
+import DifferentialGeometry.Geometry.Metric.Approximation.FiniteMetric.Smoothing
+import DifferentialGeometry.Geometry.Metric.Approximation.FiniteMetric.SmoothingConvergence
+import DifferentialGeometry.Geometry.Metric.Approximation.FiniteMetric.Curvature
+import DifferentialGeometry.Geometry.Metric.Approximation.NonnegativeSectional
+import DifferentialGeometry.Geometry.Metric.Approximation.NonnegativeSectionalCarrier
