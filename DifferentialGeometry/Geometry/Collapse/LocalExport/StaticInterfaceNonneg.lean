@@ -8,7 +8,7 @@ Blueprint row LC90 (`prop:collapse-static-flow-interface`, master207A) takes as 
 separate nonnegative-component data". `LocalExport/StaticInterfaceBoundary.lean`
 (`HyperbolicOrCollapsed.nonempty_hyperbolicOrGraph`) takes the nonnegative branch as an explicit
 input in raw-graph form, because the tree's raw recognitions
-`rawGraphPresentation_of_{sphericalSpaceForm,sphericalProduct,flat}` still carry `sorry`. The closed
+`rawGraphPresentation_of_{sphericalSpaceForm,sphericalProduct,flat}` are still admitted. The closed
 nonnegative classification is now unconditional
 (`closed_nonnegative_sectional_classification_unconditional`, PORT567b). This module uses it to
 discharge input (4) with no assumption: a closed nonnegatively curved piece is sent to its own
