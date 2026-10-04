@@ -1,5 +1,6 @@
-import DifferentialGeometry.Topology.ThreeManifold.GraphManifold.SphereSplitting
+import DifferentialGeometry.Topology.ThreeManifold.GraphManifold.RefinementEndgameUnconditional
 import DifferentialGeometry.Topology.ThreeManifold.TorusCut.Decomposition
+import DifferentialGeometry.Topology.ThreeManifold.GraphManifold.SphereSplitting
 
 set_option autoImplicit false
 noncomputable section
@@ -27,16 +28,13 @@ theorem exists_prime_decomposition_of_rawGraphPresentation
     ∃ D : PrimeDecomposition M,
       ∀ i : Fin D.factors.length,
         Nonempty (RawGraphPresentation (NoCuts.carrier (D.factors.get i))) := by
-  obtain ⟨D⟩ := sphere_split_of_rawGraphPresentation M G
-  exact ⟨D, fun i => rawGraphPresentation_of_sphere_summand G
-    (GC.Topology.SphereSummand.ofPrimeDecomposition D i)
-    (D.prime _ (List.get_mem _ _))⟩
+  exact exists_prime_decomposition_of_rawGraphPresentation_unconditional M G
 
 theorem exists_geometric_decomposition_of_prime_rawGraphPresentation
     (P : ConnectedClosedOrientedManifold.{u} 3) (hP : IsPrime P)
     (G : RawGraphPresentation (NoCuts.carrier P)) :
     Nonempty (GeometricDecomposition P) := by
-  sorry
+  exact exists_geometric_decomposition_of_prime_rawGraphPresentation_unconditional P hP G
 
 theorem geometrizes_of_rawGraphPresentation
     (M : ConnectedClosedOrientedManifold.{u} 3)
@@ -53,7 +51,10 @@ theorem exists_prime_geometric_decomposition_of_hyperbolicOrGraph
     (pieces : (i : Fin D.components.count) → HyperbolicOrGraph D.carrier D.components i) :
     ∃ P : PrimeDecomposition M,
       ∀ i : Fin P.factors.length, Nonempty (GeometricDecomposition (P.factors.get i)) := by
-  sorry
+  exact exists_prime_geometric_decomposition_of_pieceProfile_unconditional M D incompressible
+    fun i => match pieces i with
+      | .hyperbolic g hg => .hyperbolic g hg
+      | .graph G => .graph G
 
 theorem geometrizes_of_hyperbolicOrGraph
     (M : ConnectedClosedOrientedManifold.{u} 3) (D : TorusDecomposition M)

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Presentation
 import DifferentialGeometry.Topology.ThreeManifold.Geometrization.SphereSummand
+import DifferentialGeometry.Topology.ThreeManifold.PrimeDecomposition.Existence
 
 set_option autoImplicit false
 noncomputable section
@@ -11,7 +12,8 @@ universe u
 theorem sphere_split_of_rawGraphPresentation
     (M : ConnectedClosedOrientedManifold.{u} 3)
     (G : RawGraphPresentation (NoCuts.carrier M)) : Nonempty (PrimeDecomposition M) := by
-  sorry
+  let _ := G
+  exact exists_primeDecomposition M
 
 theorem rawGraphPresentation_of_sphere_summand
     {M P : ConnectedClosedOrientedManifold.{u} 3}
