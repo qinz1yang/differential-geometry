@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
+import DifferentialGeometry.Geometry.Metric.Pullback.FiniteRegularityProof
 
 set_option autoImplicit false
 noncomputable section
@@ -21,7 +22,7 @@ theorem exists_pullback_metric_of_finite_diffeomorph
         E (TangentSpace I : M → Type _),
       ∀ (x : M) (v w : TangentSpace I x),
         h.inner x v w = g.inner (f x) (mfderiv I J f x v) (mfderiv I J f x w) := by
-  sorry
+  exact exists_pullback_metric_of_finite_diffeomorph_proved K s r hrK hrs g f
 
 theorem exists_pullback_metric_of_diffeomorph_one_order_higher
     (K : ℕ)
