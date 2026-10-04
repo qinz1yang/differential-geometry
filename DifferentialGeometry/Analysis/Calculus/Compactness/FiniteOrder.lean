@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Basic
+import DifferentialGeometry.Analysis.Calculus.Compactness.FiniteOrderProof
 
 set_option autoImplicit false
 noncomputable section
@@ -25,6 +26,7 @@ theorem exists_bilinear_form_limit_subsequence_of_bounded_derivatives
       (∀ x ∈ U, ∀ v w, gLimit x v w = gLimit x w v) ∧
       (∀ x ∈ U, ∀ v,
         lower * ‖v‖ ^ 2 ≤ gLimit x v v ∧ gLimit x v v ≤ upper * ‖v‖ ^ 2) := by
-  sorry
+  exact exists_bilinear_form_limit_subsequence_of_bounded_derivatives_proved K hK hU g hg hjets
+    lower upper hlower hsymm helliptic
 
 end DifferentialGeometry.CheegerGromovCompactness
