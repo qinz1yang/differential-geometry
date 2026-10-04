@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Collapse.LocalVolumeRescaledCorollaries
 import DifferentialGeometry.Geometry.Collapse.RescaledLimits.PointedLimit
 import DifferentialGeometry.Geometry.Metric.Approximation.LimitVolumeLowerBound
 import DifferentialGeometry.Geometry.Metric.Approximation.RiemannianHausdorffVolume
@@ -131,35 +132,8 @@ theorem eventually_rescaled_ballVolume_lower_of_dimH_gt_two (hdim : Module.finra
     (hdimY : 2 < dimH (univ : Set Y)) :
     ∃ v : ℝ, 0 < v ∧ ∀ᶠ i in atTop, ENNReal.ofReal v ≤
       ballVolume (scaleMetric ((ρ i)⁻¹ ^ 2) (pow_pos (inv_pos.mpr (hρ i)) 2) (g i)) (p i) 2 := by
-  let m' : ∀ i, MetricSpace (X i) := fun i => (mX i).rescale (ρ i)⁻¹ (inv_pos.mpr (hρ i))
-  have : ∀ i, CompleteSpace (X i) := fun i =>
-    ((mX i).rescale_completeSpace_iff (ρ i)⁻¹ (inv_pos.mpr (hρ i))).mpr inferInstance
-  let : ∀ i, MeasurableSpace (X i) := fun i => borel (X i)
-  have : ∀ i, BorelSpace (X i) := fun i => ⟨rfl⟩
-  have hκ : ∀ i, 0 ≤ (L i ^ 2)⁻¹ := fun i => inv_nonneg.mpr (sq_nonneg _)
-  have hκzero : Tendsto (fun i => (L i ^ 2)⁻¹) atTop (𝓝 0) :=
-    tendsto_inv_atTop_zero.comp ((tendsto_pow_atTop two_ne_zero).comp hL)
-  have hcompY : fourPointComparison 0 (univ : Set Y) :=
-    hconv.fourPointComparison_zero_of_eventual_comparison hκ hκzero fun R _ =>
-      eventually_fourPointComparison_rescaled_ball_buffer (mX := mX) g hmetric p hρ hL hsec
-        R
-  have hdimle : dimH (univ : Set Y) ≤ 3 := by
-    have h := hconv.dimH_le_of_ceil_covering (Module.finrank ℝ E)
-      (fun R => 4 * (2 : ℝ) ^ 2 * Real.sqrt (Module.finrank ℝ E) * Real.sinh (2 * R))
-      (fun R hR => by positivity)
-      (fun R hR η hη _ =>
-        eventually_rescaled_ceil_nets (mX := mX) g hmetric p hρ hL hsec R hR η hη)
-    rwa [hdim, Nat.cast_ofNat] at h
-  obtain ⟨v, hv, hev⟩ := hconv.eventually_normalizedHausdorffMeasure_ball_lower_bound
-    (exists_arbitrarily_short_rescaled_curve (mX := mX) g hmetric hρ)
-    (fun R _ =>
-      eventually_fourPointComparison_rescaled_ball (mX := mX) g hmetric p hρ hL hsec R)
-    hcompY hdimY hdimle
-  refine ⟨v, hv, ?_⟩
-  filter_upwards [hev] with i hi
-  exact hi.trans_eq
-    (normalizedHausdorffMeasure_rescale_ball_eq_ballVolume (m := mX i) (g i) (hmetric i) hdim
-      (hρ i) (p i) 2)
+  exact eventually_rescaled_ballVolume_lower_of_localVolume_producer
+    (mZ := mX) hdim g hmetric p hρ hL hsec hconv hdimY
 
 end Sequence
 
