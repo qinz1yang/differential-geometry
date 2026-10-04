@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Collapse.SublevelCore.DirectionMargin
 import DifferentialGeometry.Geometry.Collapse.SublevelCore.CompactTransfer
 import DifferentialGeometry.Geometry.Metric.Comparison.BufferedEmbedding
 import DifferentialGeometry.Analysis.InnerProductSpace.BilinearConormalStability
+import DifferentialGeometry.Geometry.Collapse.SublevelCore.RadialGraphIsotopy
 
 /-!
 # Consumers of the first half of family F5 (LC32–LC46)
@@ -16,6 +17,8 @@ import DifferentialGeometry.Analysis.InnerProductSpace.BilinearConormalStability
 * `buffered_embedding_of_complete` (LC39 with completeness of the source instead of compactness
   of the closed ball, PC setting on `N`).
 * `radialSublevel_band_package` (LC32 + LC33 for the same radial function).
+* `radialSublevels_isotopic` (LC33 + LC35): for the LC30 radial function all sublevels
+  `A_ρ`, `ρ ∈ [1/5, 2]`, are smoothly ambient isotopic, through the gradient-product flow.
 * `compact_alternative_sublevel_type` (LC43 + LC38, compact alternative): under the LC43
   hypotheses every radial sublevel `A_ρ`, `ρ ≥ 1/5`, is the whole manifold and the model
   embedding is a diffeomorphism.
@@ -120,6 +123,43 @@ theorem radialSublevel_band_package (g : SmoothRiemannianMetric I M)
   refine ⟨?_, htrack x hx s t hs hst ht⟩
   have h := hval x (by rw [hx]; norm_num) t ⟨hs.trans hst, ht⟩
   rwa [hx] at h
+
+/-- LC33 + LC35: all radial sublevels `A_ρ`, `ρ ∈ [1/5, 2]`, of an LC30 radial function are
+smoothly ambient isotopic, by isotopies supported in one compact subset of `η⁻¹(1/8, 3)`. -/
+theorem radialSublevels_isotopic (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g) {p : M} {η : M → ℝ} {ε : ℝ≥0} {e : ℝ}
+    (hε1 : (ε : ℝ) < 1) (he : e < 1 / 40) (hclose : ∀ x, |η x - dist p x| < e)
+    (hlip : LipschitzWith ε (fun x => η x - dist p x))
+    {W : Set M} (hW : IsOpen W) (hCW : ∀ x, 1 / 10 ≤ dist p x → dist p x ≤ 10 → x ∈ W)
+    (hηW : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ η W)
+    (hgrad : ∀ x, 1 / 10 ≤ dist p x → dist p x ≤ 10 →
+      (1 - (ε : ℝ)) ^ 2 ≤
+        g.inner x (gradientFun (I := I) g η x) (gradientFun (I := I) g η x))
+    {ρ ρ' : ℝ} (hρ : ρ ∈ Icc (1 / 5 : ℝ) 2) (hρ' : ρ' ∈ Icc (1 / 5 : ℝ) 2) :
+    ∃ G : ℝ → Diffeomorph I I M M ∞,
+      G 0 = Diffeomorph.refl I M ∞ ∧
+      ContMDiff (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => G q.1 q.2) ∧
+      (∃ T : Set M, IsCompact T ∧ T ⊆ η ⁻¹' Ioo (1 / 8) 3 ∧
+        ∀ t x, x ∉ T → G t x = x ∧ (G t).symm x = x) ∧
+      G 1 '' {x | η x ≤ ρ'} = {x | η x ≤ ρ} := by
+  have hη : Continuous η :=
+    (hlip.continuous.add (continuous_const.dist continuous_id)).congr
+      (fun x => sub_add_cancel (η x) (dist p x))
+  have : ProperSpace M :=
+    ⟨fun x r => DifferentialGeometry.Geometry.Topology.soul_isCompact_closedBall
+      (I := I) g hEnorm x r⟩
+  have hK : IsCompact (η ⁻¹' Icc (1 / 8 : ℝ) 3) :=
+    isCompact_preimage_of_abs_sub_dist_lt hη hclose isCompact_Icc
+  have hKann := radialBand_subset_annulus hclose he
+  obtain ⟨Φ, hΦ0, hΦc, -, hΦadd, hval, -⟩ :=
+    radialBand_gradient_product g hEnorm hε1 he hclose hlip hW hCW hηW hgrad
+  obtain ⟨G, hG0, hGc, -, hT, himg⟩ := exists_band_sublevel_isotopy_of_contMDiffOn hη hW hηW
+    (by norm_num : (1 / 8 : ℝ) < 3) (⟨by norm_num, by norm_num⟩ : (1 : ℝ) ∈ Icc (1 / 8 : ℝ) 3)
+    (⟨by linarith [hρ.1], by linarith [hρ.2]⟩ : ρ ∈ Ioo (1 / 8 : ℝ) 3)
+    (⟨by linarith [hρ'.1], by linarith [hρ'.2]⟩ : ρ' ∈ Ioo (1 / 8 : ℝ) 3) hK
+    (fun x hx => hCW x (hKann hx).1.le (hKann hx).2.le) Φ hΦc hΦadd
+    (fun x => by rw [hΦ0]; rfl) hval
+  exact ⟨G, hG0, hGc, hT, himg⟩
 
 end PC
 
