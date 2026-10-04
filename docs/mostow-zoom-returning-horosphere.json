@@ -1,0 +1,186 @@
+{
+  "base_commit": "9f3dfec7aeac544d8928cbe45e1d140d856468d5",
+  "layer": "Exact homothety limits, original returning boundary convergence and horosphere geometry",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/LineDeriv.lean",
+      "sha256": "944f0cdd8b6f6584c0036eeefe1d78ef2070e5ecf692b8f2e63fb9ac302736bd",
+      "fresh_lake_build_seconds": 1.4,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "HasLineDerivAt.tendsto_homothety_atTop",
+        "Continuous.homothety_limit_eq_add_smul"
+      ],
+      "mathematical_review": "Actual pointwise homothety limits from directional derivatives, then identification on all directions for a continuous same-sequence limit from a dense actual differentiability set; no additivity or limit-existence claim.",
+      "direct_imports": [
+        "Mathlib.Analysis.Calculus.LineDeriv.Basic",
+        "Mathlib.Topology.Algebra.Order.Field",
+        "Mathlib.Topology.Separation.Hausdorff"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/HorosphereCoordinates.lean",
+      "sha256": "69dc6fc7ba9e3422bffad18b2d7fa551c8fd01d948084050aba08b530910cbcc",
+      "fresh_lake_build_seconds": 2.9,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "public_declarations": [
+        "northPoleHorosphereHomeomorph",
+        "northPoleHorosphereHomeomorph_apply",
+        "northPoleHorosphereHomeomorph_symm_coordinates"
+      ],
+      "mathematical_review": "Actual positive raw-height level set has the explicit factor-two complex coordinate homeomorphism and exact inverse ambient coordinates.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Defs",
+        "DifferentialGeometry.Geometry.Coordinates.StereographicComplex"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/HorosphereMetric.lean",
+      "sha256": "deaa0bc8c5bf21e93f20ae23d1a9f3290a5b385cb562b981fd8f970fab3b8b73",
+      "fresh_lake_build_seconds": 1.9,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_model",
+      "public_declarations": [
+        "contMDiff_northPoleHorosphereHomeomorph_symm",
+        "riemannianMetric_inner_northPoleHorosphereHomeomorph_symm"
+      ],
+      "mathematical_review": "Actual horosphere parametrization is smooth at every order and its native tensor pullback has factor h squared over four; no ambient-distance isometry claim.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.HorosphereCoordinates",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.RiemannianMetric"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryTransitivity.lean",
+      "sha256": "2a3f1c48e62e1e55ca8711ef054abc7c506a228759b311bc00505037e845b00c",
+      "fresh_lake_build_seconds": 1.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "exists_isometryEquiv_origin_fixed_boundary_eq"
+      ],
+      "mathematical_review": "Native reflection produces an actual origin-fixing hyperbolic isometry sending the given ideal point to another, without dimension or completeness assumptions.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.Boundary",
+        "Mathlib.Analysis.InnerProductSpace.Projection.Reflection"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryPlaneFixedPoint.lean",
+      "sha256": "02b52282c6aeadfd2291742c51dece9e7e561b89ecb01d850768dfcaabc8c154",
+      "fresh_lake_build_seconds": 1.6,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_lorentz",
+      "public_declarations": [
+        "exists_boundary_fixedPoint_ne_of_lorentzExtension_time_ne_one",
+        "exists_fixedPoint_ne_northPole_of_lorentzExtension_time_ne_one"
+      ],
+      "mathematical_review": "Actual nonunit null scaling at an arbitrary fixed ideal point implies another distinct ideal fixed point; original north theorem is a corollary of the general primary.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryPlaneAffine",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryTransitivity",
+        "Mathlib.Topology.MetricSpace.Contracting"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Hyperbolic/Hyperboloid/BoundaryReturning.lean",
+      "sha256": "ce0daa8543211a02cace5c4f0216f2e40307cba44fcb90ea520394eb58155d36",
+      "fresh_lake_build_seconds": 1.7,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "tendsto_boundaryMap_isometry_orbit_conjugate"
+      ],
+      "mathematical_review": "The exact corrected isometry convergences imply native compact-open convergence of the original boundary conjugates with the same original map, subsequence and limiting isometries.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryMap",
+        "DifferentialGeometry.Geometry.Hyperbolic.Hyperboloid.BoundaryTopology"
+      ],
+      "remaining_packet_gates": []
+    },
+    {
+      "path": "DifferentialGeometry/Geometry/Coordinates/StereographicConvergence.lean",
+      "sha256": "3c7744317c59246378e1e89fc29a8f66bd97ecf10d4fd85936b26e1eb939be93",
+      "fresh_lake_build_seconds": 1.5,
+      "status": "PROVED",
+      "independent_review": "Accepted",
+      "independent_reviewer": "review_hyperboloid_manifold",
+      "public_declarations": [
+        "tendsto_stereographicComplex_conjugate_of_fixed_northPole"
+      ],
+      "mathematical_review": "Native sphere-map convergence with actual pole fixation derives limit pole fixation and compact-open convergence of the exact same stereographic plane conjugates, without changing the filter.",
+      "direct_imports": [
+        "DifferentialGeometry.Geometry.Coordinates.StereographicComplex",
+        "Mathlib.Topology.CompactOpen"
+      ],
+      "remaining_packet_gates": []
+    }
+  ],
+  "dependency_order": [
+    "Geometry/Hyperbolic/Hyperboloid/HorosphereCoordinates",
+    "Geometry/Hyperbolic/Hyperboloid/HorosphereMetric",
+    "Geometry/Hyperbolic/Hyperboloid/BoundaryTransitivity",
+    "Geometry/Hyperbolic/Hyperboloid/BoundaryPlaneFixedPoint",
+    "Geometry/Hyperbolic/Hyperboloid/BoundaryReturning",
+    "Geometry/Coordinates/StereographicConvergence",
+    "Analysis/Calculus/LineDeriv"
+  ],
+  "declaration_linters": {
+    "enabled_defaults": 14,
+    "excluded": [
+      "docBlame",
+      "docBlameThm"
+    ],
+    "result": "passed"
+  },
+  "native_axioms": {
+    "all_changed_module_declarations_checked": true,
+    "approved": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sorryAx": false
+  },
+  "performance_gate": {
+    "fresh_source_seconds_limit": 30,
+    "all_new_modules_pass": true,
+    "existing_aggregate_recorded_separately": true
+  },
+  "review_repairs": [
+    {
+      "module": "Analysis/Calculus/LineDeriv",
+      "finding": "The new limit-identification theorem did not need a normed domain.",
+      "repair": "Replaced domain norm assumptions with AddCommGroup, Module, TopologicalSpace, ContinuousAdd and ContinuousConstSMul. Accepted initial homothety statement/body preserved exactly.",
+      "regression": "Continuous homogeneous nonadditive max-function and actual rational-direction boundary good-point consumers passed; the conclusion is affine along each line through one center, not globally additive."
+    },
+    {
+      "module": "Geometry/Hyperbolic/Hyperboloid/BoundaryPlaneFixedPoint",
+      "repair": "Moved the unchanged original north proof to a private engine; the arbitrary-point theorem is public primary, and the unchanged north signature is a corollary.",
+      "regression": "Original scale preserved under actual origin-fixing conjugation, with actual south and transverse orientation-reversing consumers."
+    }
+  ],
+  "mostow_headline": "open",
+  "aggregate_build": {
+    "command": "LEAN_NUM_THREADS=1 lake build DifferentialGeometry",
+    "jobs": 26968,
+    "root_module_seconds": 36.0,
+    "root_compiler_cap": 1,
+    "errors": 0,
+    "warnings": 0
+  }
+}

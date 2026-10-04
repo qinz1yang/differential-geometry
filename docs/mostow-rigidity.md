@@ -90,10 +90,10 @@ final headline. The active frontier is:
 | Owner | Exact next target |
 | --- | --- |
 | Root | Integrate dependency-closed layers and close the actual three-dimensional finite-volume headline. |
-| `rigidity_assessment` | Identify pointwise limits of actual homothety zooms from directional derivatives, then the line-image consequence. |
-| `hyperboloid_metric` | Construct exact native coordinates on actual positive-height horospheres. |
-| `review_hyperboloid_interpolation` | Prove a second ideal fixed point when a pole-fixing isometry has nonunit null scale. |
-| Root | Obtain actual returning-zoom limits, classify thin components, and construct controlled representatives of the given homotopy equivalence. |
+| `review_hyperboloid_metric` | Bound the actual unnormalized zoom conjugates at the origin using the same original boundary derivative. |
+| `review_orbit_quotients` | Produce compact actual orbit representatives from compact returns in the native quotient. |
+| `rigidity_assessment` | Audit the exact final rigidity step from nonadditive radial limits to the original isometric boundary map. |
+| Root | Assemble actual returning zooms, classify thin components and obtain cusp geometry and controlled representatives. |
 
 The interior returning-orbit extraction is proved with the actual composite
 `a ∘ F ∘ b` and one shared subsequence. Boundary convergence, finite-volume
@@ -853,3 +853,42 @@ existing aggregate took 36 seconds. Evidence is in
 have current source-hash-matched fresh compilation evidence below 30 seconds.
 Returning-zoom rigidity, full cusp geometry, controlled representatives and
 the final three-dimensional Mostow theorem remain open.
+
+## Verified zoom identification, boundary convergence and horosphere metric
+
+Directional derivatives now give the exact original pointwise homothety
+limit for every real line parameter. A continuous limit of the same original
+zoom sequence is identified along every line through the chosen point from
+density of the actual differentiable directions. The domain only needs a
+topological real-module structure. A continuous homogeneous but nonadditive
+counterexample verifies that this does not assert Fréchet linearity or global
+additivity, and no returning-limit existence is assumed proved by this result.
+
+The exact corrected-isometry limits from the existing returning extractor
+now transport to convergence of the original boundary conjugates, retaining
+the same original map, subsequence and limiting isometries. Native sphere
+compact-open convergence with pole fixation also transports to compact-open
+convergence of the same stereographic plane maps. Nonidentity hyperbolic
+boundary and genuinely varying plane-sequence consumers were checked.
+
+Actual positive-height horospheres have explicit complex coordinate
+homeomorphisms and smooth parametrizations. The native Riemannian tensor
+pullback is exactly height squared over four times the real complex inner
+product. Tangent injectivity and nonorigin mixed terms were checked; this
+is distinct from ambient-distance isometry.
+
+Native reflections also produce origin-fixing hyperbolic isometries sending
+any supplied ideal point to another. With that normalization, a nonunit
+null scale at an arbitrary fixed ideal point gives a second distinct ideal
+fixed point. The general theorem is primary and the original north-pole
+signature is retained as its corollary; spatial orientation reversal is
+included.
+
+All seven new modules passed independent review, canonical builds, all
+14 applicable linters and native axiom checks. Final-source builds take at
+most 2.9 seconds in this batch. The 26,968-job root build passed without
+diagnostics; the existing aggregate took 36 seconds. Evidence is in
+`mostow-zoom-returning-horosphere.json`. All 108 newly added Lean files have
+current source-hash-matched fresh compilation evidence below 30 seconds.
+The actual finite-volume recurrence, full thin/cusp classification, controlled
+given homotopy representative and final Mostow rigidity remain open.
