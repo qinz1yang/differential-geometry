@@ -3,16 +3,12 @@ name: Lean Build CI
 on:
   push:
     branches: [ "main" ]
-  pull_request:
   workflow_dispatch:
 
 jobs:
   audit:
     name: Audit Project
-    runs-on: 
-      - self-hosted
-      - macOS
-      - ARM64
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
