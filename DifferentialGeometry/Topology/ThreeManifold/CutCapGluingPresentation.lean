@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.CutCapNoTubeReduction
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.CutAndUncutComponents
 
 noncomputable section
 

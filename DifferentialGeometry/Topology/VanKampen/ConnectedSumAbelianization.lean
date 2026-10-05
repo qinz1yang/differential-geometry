@@ -1,7 +1,7 @@
 import Mathlib.GroupTheory.Abelianization.Defs
 import Mathlib.GroupTheory.Coprod.Basic
 import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSumFreeProduct
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
 
 set_option autoImplicit false
 

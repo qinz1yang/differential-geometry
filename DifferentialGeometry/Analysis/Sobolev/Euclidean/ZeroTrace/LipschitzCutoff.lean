@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.LipschitzWitness
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.Approximation
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuant
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.FirstOrderBound
 import Mathlib.MeasureTheory.Measure.Lebesgue.Complex
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 

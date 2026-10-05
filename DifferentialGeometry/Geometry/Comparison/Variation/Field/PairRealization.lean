@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Variation.Field.Realization
+import DifferentialGeometry.Geometry.Variation.Field.Realization
 
 noncomputable section
 

@@ -1,12 +1,12 @@
 import DifferentialGeometry.Topology.ThreeManifold.ProjectiveCapSphereFilling
 import DifferentialGeometry.Topology.ClosedBallComplement
-import DifferentialGeometry.Topology.SphereSeparation.SideClosureDisjoint
+import DifferentialGeometry.Topology.Connected.Separation.DisjointClosures
 import DifferentialGeometry.Topology.ThreeManifold.AntipodalPresentation
 import DifferentialGeometry.Topology.ThreeManifold.TwoBallCover
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 import DifferentialGeometry.Topology.LocallyFinite.Frontier
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.CapFilling
-import DifferentialGeometry.Topology.Manifold.SpherePolarCoordinates
+import DifferentialGeometry.Topology.Manifold.Sphere.PolarCoordinates
 
 set_option autoImplicit false
 noncomputable section

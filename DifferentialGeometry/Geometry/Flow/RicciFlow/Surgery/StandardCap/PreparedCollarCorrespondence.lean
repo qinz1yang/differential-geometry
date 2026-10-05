@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.RecenteredStaticPreparation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.RecenteringEstimates
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.PositiveCuttingCoordinates
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CutCoreCollar
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.PreparedCapWidth

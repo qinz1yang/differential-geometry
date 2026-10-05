@@ -4,7 +4,6 @@ import Mathlib.Order.Interval.Finset.Nat
 
 namespace DifferentialGeometry.Topology.Engulfing
 
-set_option linter.unusedSectionVars false
 
 open Set Metric _root_.Topology
 

@@ -1,9 +1,10 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
 import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
-import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.CompactNeighborhood
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
+import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 
 
@@ -105,7 +106,7 @@ private lemma contDiffOn_smoothExtensionScalar_formula
   have hscalar : ContDiffOn ℝ ∞
       (fun y : E => f ((extChartAt I α).symm y))
       (extChartAt I α).target :=
-    DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_contDiffOn
+    DifferentialGeometry.Tensor.Coordinates.scalarOnE_contDiffOn
       (I := I) α hf
   have htoEuc_symm_smooth : ContDiff ℝ ∞ ((toEuclidean (E := E)).symm) :=
     ContinuousLinearEquiv.contDiff _

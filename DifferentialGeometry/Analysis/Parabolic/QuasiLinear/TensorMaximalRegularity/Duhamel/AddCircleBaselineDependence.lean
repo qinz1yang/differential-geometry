@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleLinearizedBaseline
-import DifferentialGeometry.Analysis.FunctionalAnalysis.PiLpOperators
+import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.PiLp
 
 noncomputable section
 

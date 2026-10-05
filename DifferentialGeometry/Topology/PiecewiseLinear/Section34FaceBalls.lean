@@ -1,14 +1,10 @@
-/-
-Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: DifferentialGeometry contributors
--/
+import DifferentialGeometry.Topology.Combinatorics.Finset
 import DifferentialGeometry.Topology.Homeomorph.SubsetImage
 import DifferentialGeometry.Topology.PiecewiseLinear.BallUnionFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartBallGeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartImagePLCell
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ExteriorComponent
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallNeighborhoods
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.FaceBalls.Neighborhoods
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceTorusHomology
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundaryImage
@@ -19,18 +15,6 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 universe u
-
-theorem eq_or_eq_of_card_eq_one_of_subset_union {α : Type*} {u w w' : Finset α}
-    (hu : u.card = 1) (hw : w.card = 1) (hw' : w'.card = 1)
-    (h : (u : Set α) ⊆ (w : Set α) ∪ (w' : Set α)) : u = w ∨ u = w' := by
-  obtain ⟨p, rfl⟩ := Finset.card_eq_one.mp hu
-  obtain ⟨q, rfl⟩ := Finset.card_eq_one.mp hw
-  obtain ⟨q', rfl⟩ := Finset.card_eq_one.mp hw'
-  have hp := h (Finset.mem_coe.mpr (Finset.mem_singleton_self p))
-  simp only [Finset.coe_singleton, mem_union, mem_singleton_iff] at hp
-  rcases hp with rfl | rfl
-  · exact Or.inl rfl
-  · exact Or.inr rfl
 
 section FaceBall
 
@@ -633,7 +617,7 @@ theorem exists_section34FaceBalls (hU : IsOpen U)
     id hcut
   choose C' hC'c hC'1 hRC' hC'dis using exists_section34FaceTorusAuxiliary hh hcut hgraph
   obtain ⟨Wn, -, -, hWo, -, -, hWH, hWV, hWW, hWS, hWbad, hcell⟩ :=
-    exists_section34FaceBallNeighborhoods hU hh hcut hctrl hgraph
+    exists_controlled_face_ball_neighborhoods hU hh hcut hctrl hgraph
       (fun s => C' s \ interior (section34FaceTorus (section34VertexBallImage src f₁) s))
       (fun s => (hC'c s).isClosed.sdiff isOpen_interior) hC'dis
   choose C Cb hC hbodyC hCW using hcell

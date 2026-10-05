@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.RetainedOutput
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CoreCompatibleExtinctionTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EmptyHistory
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingRestriction
@@ -11,15 +12,6 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-namespace SmoothCutCapTransition
-
-variable {P Q D N : OrientedThreeStage.{u}}
-
-def retainedCoreOpens (X : SmoothCutCapTransition P Q D N) :
-    TopologicalSpace.Opens X.trace.tubes.core :=
-  ⟨X.trace.retainedCore, X.trace.retainedCore_isOpen⟩
-
-end SmoothCutCapTransition
 
 private theorem isManifold_opens {M : Type u} [TopologicalSpace M]
     [ChartedSpace (EuclideanHalfSpace 3) M] [IsManifold (𝓡∂ 3) ∞ M]
@@ -238,6 +230,25 @@ abbrev atZero (P : OrientedThreeStage.{u}) (g : P.Metric) : RetainedCoreHistory.
   finalSlab := fun h => False.elim ((lt_irrefl (0 : ℝ)) h)
   final_initial := fun h => False.elim ((lt_irrefl (0 : ℝ)) h)
 
+def ofClosedSlab {P : OrientedThreeStage.{u}} (g : P.Metric) {T : ℝ} (hT : 0 < T)
+    (S : P.ClosedSlab 0 T) (hS : S.flow.base.metric 0 = g) : RetainedCoreHistory.{u} where
+  horizon := T
+  horizon_nonneg := hT.le
+  eventCount := 0
+  time := fun _ => 0
+  time_strictMono := by
+    intro i j hij
+    omega
+  time_zero := rfl
+  time_le_horizon := by simpa using hT.le
+  stage := fun _ => P
+  initialMetric := fun _ => g
+  coreEvent i := Fin.elim0 i
+  event_initial i := Fin.elim0 i
+  event_output i := Fin.elim0 i
+  finalSlab := fun _ => S
+  final_initial := fun _ => hS
+
 def emptyExtension (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
     (B : ℝ) (hB : H.horizon ≤ B) : RetainedCoreHistory.{u} where
@@ -333,8 +344,8 @@ theorem exists_coreCompatible_extinct_tower_of_isEmpty (P : OrientedThreeStage.{
       (∀ (b : ℝ) (hb : 0 ≤ b)
         (i : Fin (T.toObservationTower.observe b hb).eventCount),
         ∀ q : ConnectedComponents ((T.toObservationTower.observe b hb).event i).discarded.Carrier,
-          DifferentialGeometry.Topology.isPoincareStandard
-            (((T.toObservationTower.observe b hb).event i).discarded.toClosedOrientedManifold
+          DifferentialGeometry.Topology.isStandardConnectedSum
+            (((T.toObservationTower.observe b hb).event i).discarded
               |>.component q).Carrier) ∧
       towerExtinct T.toObservationTower := by
   refine ⟨empty P g, ?_, (empty P g).hasCoreCompatibleEvents_toObservationTower, ?_,
@@ -358,15 +369,15 @@ theorem hasCoreCompatibleObservationTower_of_retainedCoreTower
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
+      (M.toClosedOrientedManifold) g)
     (hc : ∀ (b : ℝ) (hb : 0 ≤ b)
       (i : Fin (T.toObservationTower.observe b hb).eventCount),
       Nonempty (SmoothCutCapCompletion ((T.toObservationTower.observe b hb).event i).transition))
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b)
       (i : Fin (T.toObservationTower.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.toObservationTower.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
-          (((T.toObservationTower.observe b hb).event i).discarded.toClosedOrientedManifold
+        DifferentialGeometry.Topology.isStandardConnectedSum
+          (((T.toObservationTower.observe b hb).event i).discarded
             |>.component q).Carrier)
     (hextinct : towerExtinct T.toObservationTower) :
     hasCoreCompatibleObservationTower M g :=
@@ -376,15 +387,15 @@ theorem hasExtinctObservationTower_of_retainedCoreTower
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
+      (M.toClosedOrientedManifold) g)
     (hc : ∀ (b : ℝ) (hb : 0 ≤ b)
       (i : Fin (T.toObservationTower.observe b hb).eventCount),
       Nonempty (SmoothCutCapCompletion ((T.toObservationTower.observe b hb).event i).transition))
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b)
       (i : Fin (T.toObservationTower.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.toObservationTower.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
-          (((T.toObservationTower.observe b hb).event i).discarded.toClosedOrientedManifold
+        DifferentialGeometry.Topology.isStandardConnectedSum
+          (((T.toObservationTower.observe b hb).event i).discarded
             |>.component q).Carrier)
     (hextinct : towerExtinct T.toObservationTower) :
     hasExtinctObservationTower M g :=
@@ -395,15 +406,15 @@ theorem exists_poincare_controlled_extinction_of_retainedCoreTower
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
+      (M.toClosedOrientedManifold) g)
     (hc : ∀ (b : ℝ) (hb : 0 ≤ b)
       (i : Fin (T.toObservationTower.observe b hb).eventCount),
       Nonempty (SmoothCutCapCompletion ((T.toObservationTower.observe b hb).event i).transition))
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b)
       (i : Fin (T.toObservationTower.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.toObservationTower.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isPoincareStandard
-          (((T.toObservationTower.observe b hb).event i).discarded.toClosedOrientedManifold
+        DifferentialGeometry.Topology.isStandardConnectedSum
+          (((T.toObservationTower.observe b hb).event i).discarded
             |>.component q).Carrier)
     (hextinct : towerExtinct T.toObservationTower) :
     Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) :=

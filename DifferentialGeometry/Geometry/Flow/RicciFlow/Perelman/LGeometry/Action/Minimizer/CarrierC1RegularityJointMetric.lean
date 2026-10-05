@@ -2,8 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Mi
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.WithinSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Construction.Sobolev
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Regularity.CarrierC1
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Construction.StrictRefinement
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.CarrierC1RegularityAbsolutelyContinuous
+import DifferentialGeometry.Analysis.Sobolev.Time.Curve.StrictRefinement
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.WithinSmoothnessScalar
 set_option autoImplicit false
 

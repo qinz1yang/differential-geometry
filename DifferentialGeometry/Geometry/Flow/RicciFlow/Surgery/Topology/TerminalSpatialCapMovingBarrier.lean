@@ -7,6 +7,9 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
@@ -15,7 +18,7 @@ open DifferentialGeometry.Topology
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.eventually_moving_scalar_range_on_spatial_domains
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_moving_scalar_range_on_spatial_domains
     (L : G.TerminalLimitMetric) {B : Set G.terminalRegularOpen} (hB : IsCompact B)
     {rmin rmax : ℝ} (hrmin : 0 < rmin)
     (hBscalar : ∀ y ∈ B, rmin ≤ metricScalarAt L.metric y ∧ metricScalarAt L.metric y ≤ rmax)
@@ -48,7 +51,7 @@ theorem TerminalLimitMetric.eventually_moving_scalar_range_on_spatial_domains
     exact hmul.trans hs.1
   · exact hs.2.trans (mul_le_mul_of_nonneg_left hxhi hC2.le)
 
-theorem TerminalLimitMetric.eventually_moving_spatial_cap_neck_compact_capture
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_moving_spatial_cap_neck_compact_capture
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {B : Set G.terminalRegularOpen} (hB : IsCompact B) {rmax : ℝ}
     (hBscalar : ∀ y ∈ B, metricScalarAt L.metric y ≤ rmax)
@@ -123,7 +126,7 @@ theorem TerminalLimitMetric.eventually_moving_spatial_cap_neck_compact_capture
     have hs := ((neck n).scalar_bounds_on_image_window hy).2
     exact hs.trans (mul_le_mul_of_nonneg_left (hdom (v n) (hvW n)) (by positivity))
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_moving_spatial_caps
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_moving_spatial_caps
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {B : Set G.terminalRegularOpen} (hB : IsCompact B) {rmin rmax : ℝ} (hrmin : 0 < rmin)
     (hBscalar : ∀ y ∈ B, rmin ≤ metricScalarAt L.metric y ∧ metricScalarAt L.metric y ≤ rmax)
@@ -212,7 +215,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_moving_spatial_caps
       hv (n - n₀ + n₀), N, hNv, hNmark, hNmap⟩
   exact heq ▸ hresult
 
-theorem TerminalLimitMetric.eventually_moving_scalar_bounds_on_spatial_domains
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_moving_scalar_bounds_on_spatial_domains
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {B : Set G.terminalRegularOpen} (hB : IsCompact B) {rmin : ℝ} (hrmin : 0 < rmin)
     (hBscalar : ∀ y ∈ B, rmin ≤ metricScalarAt L.metric y)
@@ -267,7 +270,7 @@ theorem TerminalLimitMetric.eventually_moving_scalar_bounds_on_spatial_domains
   · have hm := mul_lt_mul_of_pos_left hxc.2 hC2pos
     nlinarith [hs.2, hyc.1, hx, hC2]
 
-theorem TerminalLimitMetric.eventually_moving_spatial_cap_midpoint_region
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_moving_spatial_cap_midpoint_region
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {B : Set G.terminalRegularOpen} (hB : IsCompact B) {rmin rmax : ℝ} (hrmin : 0 < rmin)
     (hBscalar : ∀ y ∈ B, rmin ≤ metricScalarAt L.metric y ∧ metricScalarAt L.metric y ≤ rmax)
@@ -363,7 +366,7 @@ theorem TerminalLimitMetric.eventually_moving_spatial_cap_midpoint_region
       nlinarith
     · nlinarith [hNscale.2]
 
-theorem TerminalLimitMetric.eventually_moving_spatial_cap_spherical_barrier
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_moving_spatial_cap_spherical_barrier
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {B : Set G.terminalRegularOpen} (hB : IsCompact B)
     (hBpos : ∀ y ∈ B, 0 < metricScalarAt L.metric y)

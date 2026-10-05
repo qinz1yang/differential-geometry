@@ -1,1 +1,0 @@
-import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.LocalJacobi

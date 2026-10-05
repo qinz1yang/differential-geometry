@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Family.Cartesian
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardSolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Defs
 
 set_option autoImplicit false
 noncomputable section

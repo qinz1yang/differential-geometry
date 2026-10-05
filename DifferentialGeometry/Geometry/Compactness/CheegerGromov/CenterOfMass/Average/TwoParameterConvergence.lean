@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.Convergence
+import DifferentialGeometry.Geometry.CenterOfMass.Average.Convergence
 
 
 open DifferentialGeometry.Geometry.Curvature

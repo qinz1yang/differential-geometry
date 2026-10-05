@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Manifold.ImmersionCriterion
 import DifferentialGeometry.Topology.Connected.OpenPartition
 import DifferentialGeometry.Topology.Embedding.LocalSeparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckCapCompactDomains
-import DifferentialGeometry.Topology.SphereSeparation.HalfSpaceClosure
+import DifferentialGeometry.Topology.SphereSeparation.SmoothClosure.Charts
 
 section
 set_option autoImplicit false

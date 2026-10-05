@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Busemann.Basic
-import DifferentialGeometry.Geometry.Comparison.Variation.NoConjugatePoints.MinimizingSegment
+import DifferentialGeometry.Geometry.Variation.NoConjugatePoints.MinimizingSegment
 
 set_option autoImplicit false
 

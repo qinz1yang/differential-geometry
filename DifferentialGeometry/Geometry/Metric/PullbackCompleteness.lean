@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 
 set_option autoImplicit false
 

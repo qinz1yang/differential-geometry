@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.RayDistance
+import DifferentialGeometry.Topology.MetricSpace.Geodesic.RayComparison
 import DifferentialGeometry.Geometry.Comparison.Toponogov.ComparisonAngle
 
 set_option autoImplicit false

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.FiniteAlignment
 import DifferentialGeometry.Geometry.Boundary.EmbeddingFrontier
-import DifferentialGeometry.Topology.Connected.FiniteCollarOrder
+import DifferentialGeometry.Topology.Connected.FiniteSeparatorOrder
 
 noncomputable section
 open Set Topology

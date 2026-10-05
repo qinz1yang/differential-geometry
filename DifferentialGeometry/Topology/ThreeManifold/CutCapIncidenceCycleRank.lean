@@ -1,6 +1,7 @@
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.AssociativeFlattening
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedLaws
-import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Incidence
 import DifferentialGeometry.Topology.ThreeManifold.CutCapStandardReconstruction
 
 noncomputable section
@@ -11,14 +12,6 @@ open scoped Manifold ContDiff
 namespace DifferentialGeometry.Topology
 
 universe u
-
-theorem finiteConnectedSum_perm {L L' : List (ConnectedClosedOrientedManifold.{u} 3)}
-    (hp : L.Perm L') :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (finiteConnectedSum L).toClosedOrientedManifold
-      (finiteConnectedSum L').toClosedOrientedManifold) :=
-  finiteConnectedSum_perm_of_connectedSumLaws
-    (connectedSumLaws_of_associative connectedSumAssociative_holds) hp
 
 namespace SphericalCutCapTransition
 

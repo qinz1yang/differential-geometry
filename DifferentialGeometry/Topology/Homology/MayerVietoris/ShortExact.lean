@@ -81,6 +81,7 @@ lemma isPushout_X (n : ℕ) :
     IsPushout ((ι₁ A B R).f n) ((ι₂ A B R).f n) ((j₁ A B R).f n) ((j₂ A B R).f n) :=
   ((isPushout_sset A B).map ((evaluation _ _).obj (op ⦋n⦌))).map (sigmaConst.obj R)
 
+@[reassoc (attr := simp)]
 lemma ι₁_j₁ : ι₁ A B R ≫ j₁ A B R = ι₂ A B R ≫ j₂ A B R := by
   simp only [ι₁, j₁, ι₂, j₂, ← Functor.map_comp]
   rfl
@@ -106,10 +107,10 @@ instance : Mono (j₂ A B R) :=
   inferInstanceAs (Mono (SSet.chainComplexMap
     (SSetPair.of (SSet.Subcomplex.homOfLE (le_sup_right : B ≤ A ⊔ B))).hom R))
 
-@[reassoc (attr := simp)]
+@[reassoc]
 lemma lift_desc :
     biprod.lift (ι₁ A B R) (-(ι₂ A B R)) ≫ biprod.desc (j₁ A B R) (j₂ A B R) = 0 := by
-  simp [ι₁_j₁]
+  simp
 
 def mvShortComplex : ShortComplex (ChainComplex (ModuleCat.{u} ℤ) ℕ) :=
   ShortComplex.mk (biprod.lift (ι₁ A B R) (-(ι₂ A B R)))

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.CircleMetric
+import DifferentialGeometry.Topology.Circle.Metric
 import Mathlib.Topology.MetricSpace.Antilipschitz
 
 noncomputable section

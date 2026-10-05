@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapCore
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalRegion
 import DifferentialGeometry.Geometry.Neck.SpatialRestriction
+
 noncomputable section
 open Set Manifold
 open DifferentialGeometry.Geometry.Curvature
@@ -9,9 +10,12 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
-theorem exists_uniform_disjoint_spherical_region_with_exterior_alternatives_of_canonical_neighborhoods :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_disjoint_spherical_region_with_exterior_alternatives_of_canonical_neighborhoods :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, δ ≤ η →
       ∀ C1 C2 q : ℝ, 0 < q →
       ∀ (P : OrientedThreeStage.{u}) (a s : ℝ) (G : P.IncomingSlab a s)
@@ -100,7 +104,7 @@ theorem exists_uniform_disjoint_spherical_region_with_exterior_alternatives_of_c
       (lt_div_iff₀ hCpos).mpr (by nlinarith)
     exact ⟨hAx.trans (hband w hw).1, hband w hw⟩
 
-theorem exists_uniform_disjoint_spherical_region_with_exterior_alternatives :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_disjoint_spherical_region_with_exterior_alternatives :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C C2 : ℝ, 1 ≤ C ∧ 1 ≤ C2 ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
         (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
@@ -159,7 +163,7 @@ theorem exists_uniform_disjoint_spherical_region_with_exterior_alternatives :
   exact hmain δ (hδη.trans (min_le_left _ _)) C2 C2 q hq P a s G L
     (fun x t ht hx => hcanonical x t ⟨ht.1.le, ht.2⟩ hx.le)
 
-theorem exists_uniform_disjoint_spherical_region_on_component_with_exterior_alternatives_of_canonical_neighborhoods :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_disjoint_spherical_region_on_component_with_exterior_alternatives_of_canonical_neighborhoods :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, δ ≤ η →
       ∀ C1 C2 q : ℝ, 0 < q →
       ∀ (P : OrientedThreeStage.{u}) (a s : ℝ) (G : P.IncomingSlab a s)
@@ -310,7 +314,7 @@ theorem exists_uniform_disjoint_spherical_region_on_component_with_exterior_alte
           simpa only [DifferentialGeometry.CheegerGromovCompactness.metricScalarAt_restrictOpen] using
             hscalar w.val hw
 
-theorem exists_uniform_disjoint_spherical_region_on_component_with_exterior_alternatives :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_disjoint_spherical_region_on_component_with_exterior_alternatives :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C C2 : ℝ, 1 ≤ C ∧ 1 ≤ C2 ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
         (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧

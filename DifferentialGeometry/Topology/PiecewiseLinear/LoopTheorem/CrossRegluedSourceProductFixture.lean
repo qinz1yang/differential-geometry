@@ -1,12 +1,7 @@
-/-
-Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: DifferentialGeometry contributors
--/
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductCut
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductSide
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Models.Product.HalfSpace
 import
-  DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductTubeReading
+  DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Models.Product.SourceCoordinates
 
 open Set Topology
 open DifferentialGeometry.Topology.Homotopy

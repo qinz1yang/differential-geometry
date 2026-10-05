@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Curve
-import DifferentialGeometry.Geometry.Metric.CurveUnitReparametrization
+import DifferentialGeometry.Geometry.Metric.CurveSpeed.Reparametrization
 
 
 

@@ -5,7 +5,7 @@ import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Pullback
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OrientationComposition
 import DifferentialGeometry.Topology.Manifold.ClosedOrientedPullback
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.RetainedChart
-import DifferentialGeometry.Topology.Manifold.OrientedBallChartMap
+import DifferentialGeometry.Topology.Manifold.OrientedBallChart.Map
 
 set_option autoImplicit false
 noncomputable section

@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Metric.Pullback.Local
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CylindricalLocalChart
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingRibbonAnnuli
+import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.LocalCharts
+import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.RibbonAnnuli
 
 open Set
 

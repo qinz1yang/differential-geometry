@@ -1,9 +1,9 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.InverseCurves
+import DifferentialGeometry.Geometry.Metric.Approximation.InverseCurves
 import DifferentialGeometry.Topology.DirectLimit.PartialDiffeomorph
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
-import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Monotonicity
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Local
+import DifferentialGeometry.Geometry.Metric.Approximation.Monotonicity
 
 section
 

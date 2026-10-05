@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientAtlas
+import DifferentialGeometry.Topology.Handle.CollaredGluing.Atlas
 
 open Set Function Topology
 open scoped Manifold ContDiff

@@ -1,6 +1,6 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Moise352Producer
+import DifferentialGeometry.Topology.ThreeManifold.SmoothStructure
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Extinction.Existence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionReconstruction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Extinction.Reconstruction
 import DifferentialGeometry.Geometry.Metric.Construction.Existence
 import DifferentialGeometry.Topology.Manifold.Orientation
 

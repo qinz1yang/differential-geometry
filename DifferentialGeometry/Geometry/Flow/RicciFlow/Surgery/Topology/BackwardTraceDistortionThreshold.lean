@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceDistortionTerminal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.TerminalDistortion
 
 set_option autoImplicit false
 

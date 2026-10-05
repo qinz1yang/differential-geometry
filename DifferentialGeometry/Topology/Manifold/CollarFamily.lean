@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.VanKampen.BoundaryCollarOrientation
+import DifferentialGeometry.Topology.Collar.TwoSided.Orientation
 
 set_option autoImplicit false
 

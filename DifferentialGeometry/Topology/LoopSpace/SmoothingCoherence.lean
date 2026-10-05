@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.RegularSmoothing
+import DifferentialGeometry.Topology.LoopSpace.C1.Smoothing
 
 
 

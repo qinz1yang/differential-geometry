@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Multilinear
-import DifferentialGeometry.Geometry.Metric.BundleMixed
+import DifferentialGeometry.Geometry.Metric.VectorBundle.MixedTensor
 
 noncomputable section
 
@@ -41,14 +41,14 @@ theorem IsMetricCompatible.mixed_mvfderiv_inner {cov : CovariantDerivative I F V
     mvfderiv (I := I) (fun y =>
       (mixedRiemannianMetric (F := F) (V := V) r s).inner y (A y) (C y)) x X =
       (mixedRiemannianMetric (F := F) (V := V) r s).inner x
-        (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
+        (_root_.CovariantDerivative.hom
           I M (ContinuousMultilinearMap ℝ (fun _ : Fin r => F) ℝ)
           (Bundle.continuousMultilinearMap ℝ r F V)
           (ContinuousMultilinearMap ℝ (fun _ : Fin s => F) ℝ)
           (Bundle.continuousMultilinearMap ℝ s F V)
           (cov.multilinear r) (cov.multilinear s) A x X) (C x) +
       (mixedRiemannianMetric (F := F) (V := V) r s).inner x (A x)
-        (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
+        (_root_.CovariantDerivative.hom
           I M (ContinuousMultilinearMap ℝ (fun _ : Fin r => F) ℝ)
           (Bundle.continuousMultilinearMap ℝ r F V)
           (ContinuousMultilinearMap ℝ (fun _ : Fin s => F) ℝ)

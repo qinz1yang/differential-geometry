@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Busemann.Support.HorosphereHessianZero
 import DifferentialGeometry.Geometry.Comparison.Busemann.Ray.BusemannLine
-import DifferentialGeometry.Geometry.Comparison.Busemann.Support.ApproximateSupportConvexity
+import DifferentialGeometry.Analysis.Convex.ApproximateLowerSupport
 
 set_option autoImplicit false
 

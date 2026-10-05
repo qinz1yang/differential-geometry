@@ -1,8 +1,3 @@
-/-
-Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: DifferentialGeometry contributors
--/
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangulationExistence
 import DifferentialGeometry.Topology.PiecewiseLinear.StarComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkEuclidean
@@ -260,7 +255,7 @@ theorem PLPieceIn.isCombinatorialManifold_zero {X : Type u} [TopologicalSpace X]
   rw [mem_singleton_iff] at hw'
   exact hvw (T.bijOn.injOn (hsub hvmem) (hsub hwmem) hw'.symm)
 
-theorem exists_pLTriangulation_isCombinatorialManifold [CompactSpace X] [T2Space X] [Nonempty X]
+theorem exists_plTriangulation_isCombinatorialManifold [CompactSpace X] [T2Space X] [Nonempty X]
     [HasGroupoid X (plGroupoid n)] :
     ∃ T : PLTriangulation n X, IsCombinatorialManifold n T.complex := by
   obtain ⟨T⟩ := exists_pLPiece_univ (n := n) (X := X)
@@ -271,11 +266,5 @@ theorem exists_pLTriangulation_isCombinatorialManifold [CompactSpace X] [T2Space
     exact ⟨(⟨T.ambientDim, T.piece.subdivide K' hK' hfin'⟩ : PLPiece (m + 1) X
         univ).toPLTriangulation,
       hcomb⟩
-
-theorem plManifoldTriangulation (n : ℕ) : PLManifoldTriangulation n := by
-  intro X _ _ _ _ _ C hG
-  let _ := C
-  have : HasGroupoid X (plGroupoid n) := hG
-  exact exists_pLTriangulation_isCombinatorialManifold
 
 end DifferentialGeometry.Topology.PiecewiseLinear

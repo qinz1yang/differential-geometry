@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
-import DifferentialGeometry.Geometry.Metric.LocalChartDistance
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Local
+import DifferentialGeometry.Geometry.Metric.ChartDistance.Local
 import DifferentialGeometry.Analysis.Calculus.LipschitzConvolution
-import DifferentialGeometry.Geometry.Metric.CompactDerivative
+import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactDerivative
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Geometry.Manifold.Metrizable
 

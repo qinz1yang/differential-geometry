@@ -3,7 +3,7 @@ import Mathlib.LinearAlgebra.Matrix.Rank
 import Mathlib.LinearAlgebra.CrossProduct
 import Mathlib.Analysis.Matrix.Normed
 import Mathlib.Analysis.Normed.Module.Normalize
-import DifferentialGeometry.Topology.SphereSeparation.GlobalNormal
+import DifferentialGeometry.Topology.SphereSeparation.Normal.Tangent
 
 open Function Set Matrix
 open scoped ContDiff Manifold Topology Matrix.Norms.Elementwise

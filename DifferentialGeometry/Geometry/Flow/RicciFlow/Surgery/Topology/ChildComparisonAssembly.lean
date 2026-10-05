@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseDegreeInputs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Comparison.Metric
 
 noncomputable section
 
@@ -114,7 +114,7 @@ theorem rfs_child_comparison_of_nonempty_data
 
 theorem nonempty_comparisonSupport_of_simplyConnected
     [∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier] :
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier] :
     Nonempty ((c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c) :=
   ⟨fun c => Classical.choice (G.rfs_comparison_support c)⟩
 

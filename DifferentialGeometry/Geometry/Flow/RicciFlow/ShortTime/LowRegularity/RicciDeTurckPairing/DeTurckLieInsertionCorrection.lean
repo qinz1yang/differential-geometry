@@ -30,8 +30,6 @@ open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators
   (lieCorrectionZeroInsertionFib lieCorrectionZeroInsertionFib_toModel lieCorrectionZeroNEndo)
 open DifferentialGeometry.Geometry.Connection
   (slotInsertEndoCc slotInsertEndoCc_add)
-open DifferentialGeometry.Geometry.Curvature
-  (slotInsertEndoFib slotInsertEndoFib_apply_eval)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
@@ -203,8 +201,8 @@ private theorem deTurckLieInsertionCorrection_eq_pair
   have hX :
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         X.toSection x) D =
-      slotInsertEndoFib (I := I) (M := M) 2 0 x (Λ x) D := rfl
-  rw [hX, slotInsertEndoFib_apply_eval]
+      slotInsertEndomorphism (I := I) (M := M) 2 0 x (Λ x) D := rfl
+  rw [hX, slotInsertEndomorphism_apply_eval]
   have hY :
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         Y.toSection x) D =
@@ -229,11 +227,11 @@ private theorem deTurckLieInsertionCorrection_eq_pair
         (Tensor0SSpace.ofModel
           (ContinuousMultilinearMap.domDomCongr
             (Equiv.swap (0 : Fin 2) 1) (Tensor0SSpace.toModel D))) =
-      slotInsertEndoFib (I := I) (M := M) 2 0 x (Λ x)
+      slotInsertEndomorphism (I := I) (M := M) 2 0 x (Λ x)
         (Tensor0SSpace.ofModel
           (ContinuousMultilinearMap.domDomCongr
             (Equiv.swap (0 : Fin 2) 1) (Tensor0SSpace.toModel D))) := rfl
-  rw [hX', slotInsertEndoFib_apply_eval,
+  rw [hX', slotInsertEndomorphism_apply_eval,
     Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
   have harg :

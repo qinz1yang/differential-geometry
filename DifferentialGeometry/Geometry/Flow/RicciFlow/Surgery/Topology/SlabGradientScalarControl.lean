@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.Derivative.ClippedReciprocal
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedWindowScalarPropagation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureBounds.ClosedWindowScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodInduction
 
 set_option autoImplicit false
@@ -136,9 +136,12 @@ universe u
 
 namespace OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem scalar_le_four_mul_max_of_gradient_bound_at_time
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_four_mul_max_of_gradient_bound_at_time
     {Cgrad : ℝ≥0} {qcan t r : ℝ} {x y : P.Carrier}
     (hgrad : ∀ w, qcan < G.flow.scalar t w → ∀ v : TangentSpace I3 w,
       |scalarDifferential G.flow t w v| ≤
@@ -151,7 +154,7 @@ theorem scalar_le_four_mul_max_of_gradient_bound_at_time
   have : IsManifold I3 1 P.Carrier := IsManifold.of_le (n := ∞) (by decide)
   exact scalar_le_four_mul_max_of_gradient_bound G.flow hgrad hx hr hy
 
-theorem scalar_le_four_mul_max_of_gradientBoundBefore
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_four_mul_max_of_gradientBoundBefore
     {Cgrad : ℝ≥0} {qcan t₀ t r : ℝ} {x y : P.Carrier}
     (hG : G.GradientBoundBefore Cgrad qcan t₀) (ht : t ∈ Ioo a t₀)
     (hx : 0 < G.flow.scalar t x)
@@ -160,7 +163,7 @@ theorem scalar_le_four_mul_max_of_gradientBoundBefore
     G.flow.scalar t y ≤ 4 * max (G.flow.scalar t x) qcan :=
   G.scalar_le_four_mul_max_of_gradient_bound_at_time (fun w hw => hG w t ht hw) hx hr hy
 
-theorem scalar_le_four_mul_max_of_gradientBoundOn
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_four_mul_max_of_gradientBoundOn
     {Cgrad : ℝ≥0} {qcan t₀ η t r : ℝ} {x y : P.Carrier}
     (hG : G.GradientBoundOn Cgrad qcan t₀ η) (hat : a < t) (ht₀ : t₀ ≤ t)
     (htη : t < t₀ + η) (hts : t < s)
@@ -171,7 +174,7 @@ theorem scalar_le_four_mul_max_of_gradientBoundOn
   G.scalar_le_four_mul_max_of_gradient_bound_at_time
     (fun w hw => hG w t hat ht₀ htη hts hw) hx hr hy
 
-private theorem scalar_le_two_mul_of_derivativeBoundBefore_at
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_two_mul_of_derivativeBoundBefore_at
     {Ctime : ℝ≥0} {qcan K t v : ℝ} (y : P.Carrier)
     (hG : G.DerivativeBoundBefore Ctime qcan t) (hts : t < s)
     (hav : a ≤ v) (hvt : v ≤ t) (hK : 0 < K) (hqcan : qcan ≤ K)
@@ -203,7 +206,7 @@ private theorem scalar_le_two_mul_of_derivativeBoundBefore_at
   exact (le_max_right K _).trans
     ((inv_le_inv₀ (by positivity : 0 < 2 * K) (hK.trans_le (le_max_left K _))).mp hinv)
 
-theorem scalar_le_eight_mul_max_of_gradient_bound_of_derivativeBoundBefore
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_eight_mul_max_of_gradient_bound_of_derivativeBoundBefore
     {Cgrad Ctime : ℝ≥0} {qcan t r v : ℝ} {x y : P.Carrier}
     (hgrad : ∀ w, qcan < G.flow.scalar t w → ∀ e : TangentSpace I3 w,
       |scalarDifferential G.flow t w e| ≤
@@ -223,7 +226,7 @@ theorem scalar_le_eight_mul_max_of_gradient_bound_of_derivativeBoundBefore
     (by linarith [le_max_right (G.flow.scalar t x) qcan]) hspace (by nlinarith)
   linarith
 
-theorem scalar_le_eight_mul_max_of_gradientBoundBefore_of_derivativeBoundBefore
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_eight_mul_max_of_gradientBoundBefore_of_derivativeBoundBefore
     {Cgrad Ctime : ℝ≥0} {qcan t₀ t r v : ℝ} {x y : P.Carrier}
     (hG : G.GradientBoundBefore Cgrad qcan t₀) (hD : G.DerivativeBoundBefore Ctime qcan t₀)
     (ht : t ∈ Ioo a t₀) (hts : t < s)

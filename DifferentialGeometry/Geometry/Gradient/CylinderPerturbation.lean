@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.Cylinder
-import DifferentialGeometry.Geometry.Metric.RestrictedCylinderAxis
+import DifferentialGeometry.Geometry.Metric.Cylinder.Restriction
 import DifferentialGeometry.Geometry.Metric.SharpPerturbation
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
-import DifferentialGeometry.Geometry.Metric.LengthPerturbation
+import DifferentialGeometry.Geometry.Metric.Perturbation.Length
 
 noncomputable section
 open scoped Manifold ContDiff

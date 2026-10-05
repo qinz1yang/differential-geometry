@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.Variation.Radial
 import DifferentialGeometry.Geometry.Exponential.MinimizingDomain.Length
-import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.NegativeDirection
-import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PathLength
+import DifferentialGeometry.Geometry.Variation.SecondVariation.NegativeDirection
+import DifferentialGeometry.Geometry.Curve.Length.PathLength
 
 set_option autoImplicit false
 

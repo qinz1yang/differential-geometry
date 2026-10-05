@@ -2,9 +2,9 @@ import DifferentialGeometry.Geometry.Neck.ScaleComparison
 import DifferentialGeometry.Geometry.Neck.SpatialNormalization
 import DifferentialGeometry.Geometry.Neck.SpatialChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckLocalTransport
-import DifferentialGeometry.Geometry.Metric.PullbackScaling
+import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalCapture
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StrongNeckSourceBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Neck.Transport.SourceBounds
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.ReferenceChange
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm
@@ -137,24 +137,27 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private local instance terminalSigmaCompact : SigmaCompactSpace G.terminalRegularOpen :=
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalSigmaCompact : SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       G.terminalRegularOpen.isOpen)
 
-private local instance terminalOpenSigmaCompact
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalOpenSigmaCompact
     (V : TopologicalSpace.Opens G.terminalRegularOpen) : SigmaCompactSpace V :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel V.isOpen)
 
-private local instance pullbackCompleteSpace {E : Type*} [NormedAddCommGroup E]
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.pullbackCompleteSpace {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] [FiniteDimensional ℝ E] : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-theorem TerminalLimitMetric.eventually_moving_scalar_normalized_pullback_difference
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_moving_scalar_normalized_pullback_difference
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ}
     (hτ : Tendsto τ atTop (𝓝[<] s))
     {K : Set G.terminalRegularOpen} (hK : IsCompact K)
@@ -247,7 +250,7 @@ theorem TerminalLimitMetric.eventually_moving_scalar_normalized_pullback_differe
     (scaleMetric (Q' n) (hQ' n) gTerm) gRef x
   linarith
 
-theorem TerminalLimitMetric.eventually_scalar_normalized_pullback_difference
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_scalar_normalized_pullback_difference
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ}
     (hτ : Tendsto τ atTop (𝓝[<] s))
     {K : Set G.terminalRegularOpen} (hK : IsCompact K)
@@ -283,12 +286,12 @@ theorem TerminalLimitMetric.eventually_scalar_normalized_pullback_difference
   exact L.eventually_moving_scalar_normalized_pullback_difference hτ hK hQ
     (fun _ => hQlim) (half_pos hQlim) hrange hdifference V Φ T hT U hU hTU himage gRef p
 
-private local instance neckSigmaCompact (δ : ℝ) : SigmaCompactSpace (neckBuffer δ) :=
+private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.neckSigmaCompact (δ : ℝ) : SigmaCompactSpace (neckBuffer δ) :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen NeckCylinderModel
       (neckBuffer δ).isOpen)
 
-private theorem scalar_difference_tendsto_zero
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_difference_tendsto_zero
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {K : Set G.terminalRegularOpen} (hK : IsCompact K)
     (x : ℕ → G.terminalRegularOpen) (hx : ∀ᶠ n in atTop, x n ∈ K) :
@@ -300,7 +303,7 @@ private theorem scalar_difference_tendsto_zero
   rw [Real.dist_eq, sub_zero, abs_sub_comm]
   exact hc (x n) hn
 
-private theorem center_mem_compact
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.center_mem_compact
     {τ : ℕ → ℝ} (x : ℕ → G.terminalRegularOpen)
     {eps δ : ℝ} (hδ : 0 < δ)
     (neck : ∀ n, Perelman.CanonicalNeighborhood.FiniteHorn.SpatialNeck (G.flow.base.metric (τ n)) eps (x n).val)
@@ -320,7 +323,7 @@ private theorem center_mem_compact
   exact he ▸ hy
 
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_moving_spatialNecks
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_moving_spatialNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : ℕ → G.terminalRegularOpen) (hx : ∀ n, 0 < metricScalarAt L.metric (x n))
     {eps δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hepsδ : eps < δ)
@@ -425,7 +428,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_moving_spatialNecks
       closeness := hterminal }
   exact ⟨N, rfl, rfl, hmap n⟩
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_moving_strongNecks
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_moving_strongNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : ℕ → G.terminalRegularOpen) (hx : ∀ n, 0 < metricScalarAt L.metric (x n))
     {eps δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hepsδ : eps < δ)
@@ -445,7 +448,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_moving_strongNecks
   exact L.eventually_normalizedNeck_of_moving_spatialNecks hτ x hx hδ hδ1 hepsδ hfit k hk
     (fun n => (neck n).toSpatialNeck) hregular hK hcapture hqmin hrange
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_spatialNecks
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_spatialNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hepsδ : eps < δ)
@@ -470,7 +473,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_spatialNecks
     (fun _ => x) (fun _ => hx) hδ hδ1 hepsδ hfit k hk neck hregular hK hcapture
     (half_pos hx) hrange
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_strongNecks
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_strongNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hepsδ : eps < δ)
@@ -487,7 +490,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_strongNecks
   exact L.eventually_normalizedNeck_of_spatialNecks hτ x hx hδ hδ1 hepsδ hfit k hk
     (fun n => (neck n).toSpatialNeck) hregular hK hcapture
 
-private theorem TerminalLimitMetric.eventually_normalizedNeck_of_spatialNecks_of_scalar_control_of_pinching
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_spatialNecks_of_scalar_control_of_pinching
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
@@ -554,7 +557,7 @@ private theorem TerminalLimitMetric.eventually_normalizedNeck_of_spatialNecks_of
       exact (hc z).trans (congrArg (fun i => (neck i).map z.1) heq)
   exact hresult'
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_spatialNecks_of_scalar_control
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_spatialNecks_of_scalar_control
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
@@ -573,7 +576,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_spatialNecks_of_scalar_
   exact L.eventually_normalizedNeck_of_spatialNecks_of_scalar_control_of_pinching
     hτ hq hbound hPhi hpinch x hx hδ hδ1 hepsδ hfit k hk neck
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_strongNecks_of_scalar_control
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_strongNecks_of_scalar_control
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
@@ -591,7 +594,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_strongNecks_of_scalar_c
   exact L.eventually_normalizedNeck_of_spatialNecks_of_scalar_control_of_pinching hτ hq hbound hPhi hpinch x hx hδ hδ1 hepsδ hfit k hk
     (fun n => (neck n).toSpatialNeck)
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_canonical_neighborhoods
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_canonical_neighborhoods
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {q epsCanonical C1 C2 : ℝ} (hq : 0 < q)
     (hcanonical : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
@@ -616,7 +619,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_canonical_neighborhoods
   exact L.eventually_normalizedNeck_of_strongNecks_of_scalar_control hτ hq hbound
     hPhi hpinch x hx hδ hδ1 hepsδ hfit k hk neck
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_moving_spatialNecks_of_scalar_control
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_moving_spatialNecks_of_scalar_control
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →

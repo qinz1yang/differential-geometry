@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.ProductOrientationCongruence
 import DifferentialGeometry.Topology.Manifold.StereographicAntipodal
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardFactorOrientation
+import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 
 set_option autoImplicit false
 noncomputable section
@@ -10,7 +10,11 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.Topology
 
-theorem sphereTwoTimesCircleOrientationClosure_holds : sphereTwoTimesCircleOrientationClosure := by
+theorem exists_orientationReversing_diffeomorph_sphereTwoTimesCircle :
+    ∃ ρ : Diffeomorph ((𝓡 2).prod (𝓡 1)) ((𝓡 2).prod (𝓡 1))
+        SphereTwoTimesCircle SphereTwoTimesCircle ∞,
+      ρ.preservesOrientation sphereTwoTimesCircleOrientation.opposite
+        sphereTwoTimesCircleOrientation := by
   let A := Manifold.sphereAntipodalDiffeomorph (E := EuclideanSpace ℝ (Fin 3)) (n := 2)
   let B := Diffeomorph.refl (𝓡 1) (Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1) ∞
   have hA : A.preservesOrientation (sphereOrientation 2 (by decide)).opposite

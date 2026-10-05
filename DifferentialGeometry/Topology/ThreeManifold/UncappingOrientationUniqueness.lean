@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.OrientedUncapping
-import DifferentialGeometry.Topology.ThreeManifold.UncappingQuotientLocallyConstant
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Uncapping.QuotientLocallyConstant
 
 noncomputable section
 

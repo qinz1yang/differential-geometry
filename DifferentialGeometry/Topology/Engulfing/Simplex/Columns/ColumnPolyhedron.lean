@@ -8,7 +8,6 @@ open scoped Pointwise
 
 noncomputable section
 
-set_option linter.unusedSectionVars false
 
 variable {ι E : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
   [DecidableEq E] [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -17,6 +16,7 @@ variable {ι E : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
 namespace SimplexSplit
 
 omit [DecidableEq E] in
+omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem prismPoint_add_height (s : SimplexSplit ι) (v : ι → E)
     (z : s.horizontal) (t a : ℝ) :
     s.prismPoint v z (t + a) = s.prismPoint v z t + a • simplexPoint v s.direction := by

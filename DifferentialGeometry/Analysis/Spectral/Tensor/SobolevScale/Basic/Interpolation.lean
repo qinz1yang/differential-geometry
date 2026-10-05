@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Basic.FractionalPower
 import Mathlib.Analysis.MeanInequalities
-import DifferentialGeometry.Analysis.FunctionalAnalysis.PiLpMap
+import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.PiLp
 
 noncomputable section
 

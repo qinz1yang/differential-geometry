@@ -112,7 +112,7 @@ theorem tangent_orientation_transition_positive (hdim : Module.finrank ℝ E = n
     0 < (fderiv ℝ (extChartAt 𝓘(ℝ, E) d ∘ (extChartAt 𝓘(ℝ, E) c).symm)
       (extChartAt 𝓘(ℝ, E) c x)).det := by
   rw [← tangent_orientation_transition_derivative c d x hx]
-  exact DifferentialGeometry.VectorBundle.map_orientation_eq_iff hdim o _
+  exact o.map_eq_iff_det_pos _ (by simpa using hdim.symm)
 
 omit [FiniteDimensional ℝ E] in
 theorem tangent_orientation_transition_negative (hdim : Module.finrank ℝ E = n) (c d x : M)

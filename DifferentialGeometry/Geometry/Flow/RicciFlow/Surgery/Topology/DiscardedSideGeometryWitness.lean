@@ -23,7 +23,8 @@ noncomputable instance emptyChartedSpacePEmptyULift :
 noncomputable def emptyStageULift : OrientedThreeStage.{u} where
   Carrier := PEmpty.{u + 1}
   orientation :=
-    { orientation := fun x => PEmpty.elim x
+    { dimension_eq := by simp
+      orientation := fun x => PEmpty.elim x
       locally_constant := fun p _ _ => PEmpty.elim p }
 
 @[simp] theorem emptyStageULift_carrier :
@@ -176,21 +177,21 @@ theorem discardedComponentsRoundOrSphereProduct_of_isEmpty
   exact fun C => (hEmpty.false C).elim
 
 noncomputable def sphereStageConnected : ConnectedClosedOrientedManifold.{0} 3 where
-  toClosedOrientedManifold := sphereStage.toClosedOrientedManifold
+  toClosedOrientedManifold := sphereStage
   connected := isConnected_iff_connectedSpace.mp (by
     simpa using (isConnected_sphere (E := EuclideanSpace ℝ (Fin 4))
       (Module.one_lt_rank_of_one_lt_finrank (by simp)) 0 (r := 1) (by norm_num) :
         IsConnected (Sphere 3)))
 
 theorem discardedComponentsRoundOrSphereProduct_sphereStage :
-    DiscardedComponentsRoundOrSphereProduct sphereStage.toClosedOrientedManifold := by
+    DiscardedComponentsRoundOrSphereProduct sphereStage := by
   intro C
   exact Or.inl (admitsConstantPositiveSectionalCurvature_of_diffeomorph_sphereThree
-    (sphereStage.toClosedOrientedManifold.component C)
+    (sphereStage.component C)
     (sphereStageConnected.componentOrientedDiffeomorph C).1)
 
 theorem nonempty_connectedComponents_sphereStage :
-    Nonempty (ConnectedComponents sphereStage.toClosedOrientedManifold.Carrier) :=
+    Nonempty (ConnectedComponents sphereStage.Carrier) :=
   ⟨ConnectedComponents.mk (⟨EuclideanSpace.single 0 1, by simp⟩ : Sphere 3)⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

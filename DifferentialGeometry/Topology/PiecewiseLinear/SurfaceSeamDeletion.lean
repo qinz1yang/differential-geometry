@@ -1,8 +1,4 @@
-/-
-Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: DifferentialGeometry contributors
--/
+import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Separation.DiskReplacement
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerSeams
 
 open Set Topology
@@ -86,11 +82,10 @@ private theorem annulus_ends {A G J : Set E3} (hA : IsPLAnnulusWithEnds A G J) :
   have : (1 : ℝ) = 0 := hb.2.symm.trans ((congrArg Prod.snd hab).trans ha.2)
   exact one_ne_zero this
 
-theorem exists_disk_split_reducing_seams_with_annulus (h303 : Moise303)
+theorem exists_disk_split_reducing_seams_with_annulus
     (I H K R T L Δ D₁ D₂ Ω F : Set E3) (r r₁ r₂ : (Fin 3 → ℝ) → E3)
-    (hI : IsOpen I) (hIc : IsConnected I) (hHI : H ⊆ I) (hKI : K ⊆ I)
-    (hHK : Disjoint H K) (hH : IsClosed (((↑) : I → E3) ⁻¹' H))
-    (hK : IsClosed (((↑) : I → E3) ⁻¹' K)) (hCI : (R ∪ (T ∪ L)) ⊆ I)
+    (hI : IsOpen I)
+    (hCI : (R ∪ (T ∪ L)) ⊆ I)
     (hC : IsSeparatorIn I ((R ∪ (T ∪ L))) H K)
     (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ) (hΔT : Δ ⊆ T)
     (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
@@ -116,8 +111,8 @@ theorem exists_disk_split_reducing_seams_with_annulus (h303 : Moise303)
   let G := r '' stdSimplexBoundary 2
   obtain ⟨C', A, Δ', J, r', hC'cl, hC'I, hsep', hout, -, hA, hAΩ, hAΔ,
       hr', hJ, hΔ'Ω, hΔ'C, hC'eq⟩ :=
-    h303 I H K ((R ∪ (T ∪ L))) Δ D₁ D₂ Ω r r₁ r₂ hI hIc hHI hKI hHK hH hK hCI hC.1 hC.2
-      hr (hΔT.trans (subset_union_left.trans subset_union_right)) hr₁ hr₂ hpair hsub hnear
+    exists_separating_surface_disk_replacement I H K (R ∪ (T ∪ L)) Δ D₁ D₂ Ω r r₁ r₂
+      hI hCI hC.2 hr hr₁ hr₂ hpair hsub hnear
       hΔ₁ hΔ₂ hΩ hΔΩ hΩI hΩHK
   let L' := (L \ (A \ J)) ∪ Δ'
   obtain ⟨hGA, hJA, hGJ⟩ := annulus_ends hA
@@ -189,11 +184,10 @@ theorem exists_disk_split_reducing_seams_with_annulus (h303 : Moise303)
   rw [hC']
   exact subset_union_left.trans subset_union_right
 
-theorem exists_disk_split_reducing_seams (h303 : Moise303)
+theorem exists_disk_split_reducing_seams
     (I H K R T L Δ D₁ D₂ Ω F : Set E3) (r r₁ r₂ : (Fin 3 → ℝ) → E3)
-    (hI : IsOpen I) (hIc : IsConnected I) (hHI : H ⊆ I) (hKI : K ⊆ I)
-    (hHK : Disjoint H K) (hH : IsClosed (((↑) : I → E3) ⁻¹' H))
-    (hK : IsClosed (((↑) : I → E3) ⁻¹' K)) (hCI : (R ∪ (T ∪ L)) ⊆ I)
+    (hI : IsOpen I)
+    (hCI : (R ∪ (T ∪ L)) ⊆ I)
     (hC : IsSeparatorIn I ((R ∪ (T ∪ L))) H K)
     (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ) (hΔT : Δ ⊆ T)
     (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
@@ -211,8 +205,9 @@ theorem exists_disk_split_reducing_seams (h303 : Moise303)
       traceCircles L' T = traceCircles L T \ {r '' stdSimplexBoundary 2} ∧
       nullTraceCount L' T < nullTraceCount L T ∧ L' \ Ω = L \ Ω := by
   obtain ⟨C', L', hsep, hprot, heq, hT, hseams, hcount, hout, -⟩ :=
-    exists_disk_split_reducing_seams_with_annulus h303 I H K R T L Δ D₁ D₂ Ω F r r₁ r₂
-      hI hIc hHI hKI hHK hH hK hCI hC hr hΔT hr₁ hr₂ hpair hD₁T hsub hnear hΔ₁ hΔ₂
+    exists_disk_split_reducing_seams_with_annulus I H K R T L Δ D₁ D₂ Ω F r r₁ r₂
+      hI hCI hC hr hΔT hr₁ hr₂ hpair hD₁T hsub hnear hΔ₁ hΔ₂
       hΩ hΔΩ hΩI hΩHK hR hF hfin hcover hG
   exact ⟨C', L', hsep, hprot, heq, hT, hseams, hcount, hout⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear

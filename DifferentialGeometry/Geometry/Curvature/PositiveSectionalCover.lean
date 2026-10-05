@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Soul.Euclidean
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Analysis.Convex.Contractible
 import Mathlib.Geometry.Manifold.LocalDiffeomorph

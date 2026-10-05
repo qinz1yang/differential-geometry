@@ -269,6 +269,9 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Metric DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman
@@ -277,7 +280,7 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHor
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_incoming_spatialNecks
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_incoming_spatialNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hepsδ : eps < δ)
@@ -348,7 +351,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_incoming_spatialNecks
   · intro z
     exact (hc z).trans (congrArg (fun i => (neck i).map z.1) heq)
 
-theorem TerminalLimitMetric.eventually_spatialNeck_of_incoming_spatialNecks
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_spatialNeck_of_incoming_spatialNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 11) (hepsδ : eps < δ)
@@ -378,6 +381,9 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.Incom
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
@@ -386,7 +392,7 @@ open DifferentialGeometry.Topology
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.eventually_spatial_neck_or_cap
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_spatial_neck_or_cap
     (L : G.TerminalLimitMetric) (x y : G.terminalRegularOpen)
     (hy : y.val ∈ connectedComponent x.val) {eps C1 C2 : ℝ}
     (hscalar : C2 * metricScalarAt L.metric y < metricScalarAt L.metric x) :
@@ -401,7 +407,7 @@ theorem TerminalLimitMetric.eventually_spatial_neck_or_cap
   intro W
   exact W.alternative_eq_neck_or_cap_of_mul_scalar_lt hy ht
 
-theorem TerminalLimitMetric.eventually_spatial_neck_or_cap_of_not_isCompact
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_spatial_neck_or_cap_of_not_isCompact
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
     (hnoncompact : ¬ IsCompact (connectedComponent x)) (eps C1 C2 : ℝ) :
     ∀ᶠ t in 𝓝[<] s, ∀ W : SpatialCanonicalWitness (G.flow.base.metric t) eps C1 C2 x.val,
@@ -427,7 +433,7 @@ theorem TerminalLimitMetric.eventually_spatial_neck_or_cap_of_not_isCompact
   | positive whole data hsec => exact (hproper whole).elim
   | round whole data => exact (hproper whole).elim
 
-theorem exists_spatial_neck_or_cap_sequence_of_eventually
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_spatial_neck_or_cap_sequence_of_eventually
     {x : P.Carrier} {eps C1 C2 q : ℝ}
     (hcanonical : ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       ∃ W : SpatialCanonicalWitness (G.flow.base.metric t) eps C1 C2 x,
@@ -476,7 +482,7 @@ theorem exists_spatial_neck_or_cap_sequence_of_eventually
     exact ⟨fun n => τ (φ n), hτmono.comp hφ, fun n => hτdomain (φ n), hτ.comp hφ.tendsto_atTop,
       fun n => W (φ n), fun n => hW (φ n), Or.inr ⟨cap, depth, hcap⟩⟩
 
-theorem TerminalLimitMetric.eventually_spatial_cap_neck_compact_capture
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_spatial_cap_neck_compact_capture
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) {epsCanonical eps C1 C2 : ℝ}
     (W : ∀ n, SpatialCanonicalWitness (G.flow.base.metric (τ n)) epsCanonical C1 C2 x.val)
@@ -551,7 +557,7 @@ theorem TerminalLimitMetric.eventually_spatial_cap_neck_compact_capture
     have hs := ((neck n).scalar_bounds_on_image_window hy).2
     exact hs.trans (mul_le_mul_of_nonneg_left (hdom (v n) (hvW n)) (by positivity))
 
-theorem TerminalLimitMetric.eventually_scalar_range_on_spatial_domains
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_scalar_range_on_spatial_domains
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
     (hx : 0 < metricScalarAt L.metric x) {C1 C2 eps : ℝ} :
     ∀ᶠ t in 𝓝[<] s, ∀ W : SpatialCanonicalWitness (G.flow.base.metric t) eps C1 C2 x.val,
@@ -572,7 +578,7 @@ theorem TerminalLimitMetric.eventually_scalar_range_on_spatial_domains
     exact hmul.trans hs.1
   · exact hs.2.trans (mul_le_mul_of_nonneg_left hthi.le hC2.le)
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_spatial_caps
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_spatial_caps
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {epsCanonical eps δ C1 C2 : ℝ}
@@ -658,7 +664,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_spatial_caps
       hv (n - n₀ + n₀), N, hNv, hNmark, hNmap⟩
   exact heq ▸ hresult
 
-theorem TerminalLimitMetric.eventually_scalar_bounds_on_spatial_domains
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_scalar_bounds_on_spatial_domains
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps C1 C2 : ℝ}
@@ -709,6 +715,9 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.Incom
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.Topology
@@ -716,7 +725,7 @@ open DifferentialGeometry.Topology
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.exists_cap_midpoint_region_of_normalizedNeck_of_spatialCap
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_cap_midpoint_region_of_normalizedNeck_of_spatialCap
     (L : G.TerminalLimitMetric) {g : SmoothRiemannianMetric I3 P.Carrier} {eps : ℝ}
     {x : G.terminalRegularOpen} {U : Set P.Carrier}
     (cap : SpatialLocalCap g eps x.val U) (hU : U ⊆ G.terminalRegularRegion)
@@ -826,7 +835,7 @@ theorem TerminalLimitMetric.exists_cap_midpoint_region_of_normalizedNeck_of_spat
     rw [cap.mem_truncated_core_on_tube (by norm_num : (1 / 2 : ℝ) ∈ Ioo 0 1) q.1 hs]
     constructor <;> intro h <;> linarith
 
-theorem TerminalLimitMetric.eventually_spatial_cap_midpoint_region
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_spatial_cap_midpoint_region
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {epsCanonical eps δ C1 C2 : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 20000)
@@ -916,7 +925,7 @@ theorem TerminalLimitMetric.eventually_spatial_cap_midpoint_region
       nlinarith
     · nlinarith [hNscale.2]
 
-theorem TerminalLimitMetric.exists_neck_spherical_barrier_of_incoming_spatialNecks
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_neck_spherical_barrier_of_incoming_spatialNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) {eps δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 8646)
     (hepsδ : eps < δ) (hfit : δ⁻¹ + 1 ≤ eps⁻¹)
@@ -953,7 +962,7 @@ theorem TerminalLimitMetric.exists_neck_spherical_barrier_of_incoming_spatialNec
   obtain ⟨K, hK⟩ := nk.exists_short_spherical_barrier hδsmall A C2 hA hC2 hscale
   exact ⟨n, nk, K, hmap, hK⟩
 
-theorem TerminalLimitMetric.eventually_spatial_cap_spherical_barrier
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_spatial_cap_spherical_barrier
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {epsCanonical eps δ C1 C2 : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 20000)
@@ -1022,6 +1031,9 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.Incom
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
@@ -1031,7 +1043,7 @@ open DifferentialGeometry.Geometry.Riemannian
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.eventually_spatial_neck_slab_subset_spatial_cap_core
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_spatial_neck_slab_subset_spatial_cap_core
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {p x : G.terminalRegularOpen} {eps epsc : ℝ}
     (nk : SpatialNeck L.metric eps p) (heps : eps ≤ 1 / 8646)
@@ -1154,7 +1166,7 @@ theorem TerminalLimitMetric.eventually_spatial_neck_slab_subset_spatial_cap_core
   apply (div_lt_div_iff₀ hroot (Real.sqrt_pos.mpr hRn)).mpr
   nlinarith
 
-theorem TerminalLimitMetric.eventually_spatial_cap_core
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_spatial_cap_core
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {epsCanonical eps C1 C2 : ℝ}
@@ -1191,7 +1203,7 @@ theorem TerminalLimitMetric.eventually_spatial_cap_core
   · intro y hy
     exact hbn y (hcoreU hy)
 
-theorem TerminalLimitMetric.spatial_neck_or_cap_core_of_spatial_sequence
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.spatial_neck_or_cap_core_of_spatial_sequence
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hxpos : 0 < metricScalarAt L.metric x)
     {eps δ C1 C2 : ℝ} (hδsmall : δ ≤ 1 / 8646)

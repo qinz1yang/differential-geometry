@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Basic
 import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 
 set_option autoImplicit false
 

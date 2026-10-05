@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.LocallyFinite.Frontier
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.Images
 import Mathlib.Topology.Constructions.SumProd
 import Mathlib.Topology.Order.DenselyOrdered
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
 
 set_option autoImplicit false
 noncomputable section

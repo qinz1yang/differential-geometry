@@ -9,7 +9,6 @@ open scoped ContinuousMap
 
 noncomputable section
 
-set_option linter.unusedSectionVars false
 
 variable {E M : Type*} [DecidableEq E]
   [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
@@ -82,6 +81,7 @@ def innerGeometry
     shared_avoids := hshared
   }
 
+omit [FiniteDimensional ℝ E] in
 @[simp] theorem innerGeometry_chart
     (havoid : ∀ x : K.space, x.val ∈ Z → x.val ∈ L.space → g x ∉ X) :
     (S.innerGeometry m Y hYK hYspace havoid).chart = S.correctedChart := rfl

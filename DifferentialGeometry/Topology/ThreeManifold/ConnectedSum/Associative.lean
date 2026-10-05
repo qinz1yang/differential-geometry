@@ -54,7 +54,10 @@ def ConnectedSumFlatteningIso : Prop :=
         ).toConnectedClosedOrientedManifold.toClosedOrientedManifold)
 
 theorem connectedSumAssociative_of_flatteningIso (h : ConnectedSumFlatteningIso.{u}) :
-    connectedSumAssociative.{u} := by
+    ∀ X Y Z : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        (connectedSum (connectedSum X Y) Z).toClosedOrientedManifold
+        (connectedSum X (connectedSum Y Z)).toClosedOrientedManifold) := by
   intro X Y Z
   obtain ⟨dY', δ, h1, h2⟩ := exists_disjointOrientedBallChart_closedBall (orientedBallChart Y)
   let A := (smoothConnectedSum X Y (orientedBallChart X) δ boundaryAttachment

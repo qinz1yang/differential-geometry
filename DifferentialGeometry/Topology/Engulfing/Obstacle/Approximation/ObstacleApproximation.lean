@@ -6,7 +6,6 @@ open Set _root_.Geometry _root_.Topology
 
 noncomputable section
 
-set_option linter.unusedSectionVars false
 
 variable {E : Type*} [DecidableEq E]
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -35,6 +34,7 @@ theorem correctedInterpolant_image_subcomplex
     exact congrArg H he
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem ObstacleAugmentation.exists_approximation
     {K L : SimplicialComplex ℝ E}
     {T : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin n))}

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldEuclidean
-import DifferentialGeometry.Geometry.Metric.InfinitesimalDistance
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Geometry.Metric.Distance.Infinitesimal
+import DifferentialGeometry.Topology.FiberBundle.Separation
 
 
 

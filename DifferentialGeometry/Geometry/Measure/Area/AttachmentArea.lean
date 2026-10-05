@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Measure.Area.AttachmentInnerArea
 import DifferentialGeometry.Geometry.Measure.Area.AttachmentSectorArea
-import DifferentialGeometry.Topology.LoopSpace.AnnulusDecomposition
+import DifferentialGeometry.Analysis.Complex.Annulus.MeasureDecomposition
 
 
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.PeriodicExtension
+import DifferentialGeometry.Topology.Circle.PeriodicExtension
 import DifferentialGeometry.Topology.Homeomorph.AffinePeriodic
 
 section

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Measure.Area.RegionCongruence
 import DifferentialGeometry.Geometry.Measure.Area.Reparametrization
-import DifferentialGeometry.Topology.LoopSpace.AttachAnnulus
+import DifferentialGeometry.Analysis.Complex.Annulus.Attachment
 
 
 

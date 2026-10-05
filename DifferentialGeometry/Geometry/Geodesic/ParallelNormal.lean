@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.EndpointInterpolation
-import DifferentialGeometry.Geometry.Comparison.Variation.Curve.ArcLength
+import DifferentialGeometry.Geometry.Curve.Length.Basic
 
 noncomputable section
 open Bundle Manifold Set

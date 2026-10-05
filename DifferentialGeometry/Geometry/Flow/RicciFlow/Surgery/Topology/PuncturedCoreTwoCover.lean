@@ -192,7 +192,7 @@ variable {P Q D N : OrientedThreeStage.{u}} (E : SmoothCutCapTransition P Q D N)
 
 def PuncturedCoreCutChainProducer : Prop :=
   ∀ c : ConnectedComponents Q.Carrier,
-    SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
+    SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
       ∃ d : E.trace.tubes.PuncturedCoreCutChain (E.childCoreComponent c),
         SimplyConnectedSpace ↥(d.W 0)
 

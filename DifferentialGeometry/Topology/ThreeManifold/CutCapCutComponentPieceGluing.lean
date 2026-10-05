@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCappedPresentationRealization
-import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentGluingReduction
-import DifferentialGeometry.Topology.ThreeManifold.CutCapCutSphericalGraphSumRealization
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.SingleTube
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.CappedFactorDecomposition
 
 noncomputable section
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.ConvexTangentCone
-import DifferentialGeometry.Geometry.Comparison.Soul.SliceTangent
+import DifferentialGeometry.Geometry.Submanifold.EmbeddedSlice.Tangent
 
 set_option autoImplicit false
 noncomputable section

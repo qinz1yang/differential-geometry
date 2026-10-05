@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.PuncturedCapIncidence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Topological
 
 noncomputable section
 open Set Metric

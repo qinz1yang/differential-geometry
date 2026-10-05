@@ -1,10 +1,5 @@
-/-
-Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: DifferentialGeometry contributors
--/
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DoublePointCover
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.DoubleLocus.Cover
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalSystem.EmbeddedDisk
 
 open Set Topology
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldLipschitz
-import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
 import Mathlib.Geometry.Manifold.BumpFunction
 
 

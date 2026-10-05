@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.CompChainRuleK
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.SobolevComposition
 
 noncomputable section
 

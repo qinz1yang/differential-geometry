@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Metric.CurveEnergy
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 
 noncomputable section
 

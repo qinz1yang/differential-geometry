@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.Lipschitz
+import DifferentialGeometry.Topology.Circle.Lipschitz
 import Mathlib.Topology.Instances.AddCircle.Defs
 import Mathlib.Analysis.Calculus.Deriv.Comp
 import Mathlib.Analysis.Calculus.Deriv.Shift

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.CommonScaleHornNecks
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Selection.CommonScale
 
 set_option autoImplicit false
 noncomputable section

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Variation.Field.ChartConstruction
+import DifferentialGeometry.Geometry.Variation.Field.ChartConstruction
 
 noncomputable section
 

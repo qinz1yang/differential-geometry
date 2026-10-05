@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.LoopEmbedding
+import DifferentialGeometry.Topology.LoopSpace.Embedding
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothTraceLift
 import DifferentialGeometry.Topology.Manifold.AddCircle.ParameterDerivative
 import DifferentialGeometry.Topology.Manifold.Quotient

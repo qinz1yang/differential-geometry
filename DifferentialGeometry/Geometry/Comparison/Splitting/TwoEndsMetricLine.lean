@@ -1,9 +1,9 @@
 import DifferentialGeometry.Topology.Ends.FiniteEnds
 import DifferentialGeometry.Topology.Ends.ProperMaps
 import DifferentialGeometry.Topology.Ends.EscapingComponent
-import DifferentialGeometry.Geometry.Comparison.Splitting.MetricLineLimit
+import DifferentialGeometry.Topology.MetricSpace.GeodesicLine.Limit
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.FiberBundle.Separation
 import Mathlib.Topology.Connected.TotallyDisconnected
 
 set_option autoImplicit false

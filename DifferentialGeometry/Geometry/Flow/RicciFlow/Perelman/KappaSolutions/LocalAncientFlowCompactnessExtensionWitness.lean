@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalAncientFlowCompactnessReduction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalAncientFlowCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Ancient.Local
 
 set_option autoImplicit false
 

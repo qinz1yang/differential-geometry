@@ -10,7 +10,6 @@ open scoped BigOperators
 
 noncomputable section
 
-set_option linter.unusedSectionVars false
 
 variable {E : Type*} [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E]
 

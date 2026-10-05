@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Toponogov.LowerSupportConvexity
+import DifferentialGeometry.Analysis.Convex.LowerSupport
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 open Set Filter

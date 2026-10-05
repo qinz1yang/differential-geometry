@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Connection.MetricTrace.Connection
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.Components
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.Variation.Formula
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Curvature

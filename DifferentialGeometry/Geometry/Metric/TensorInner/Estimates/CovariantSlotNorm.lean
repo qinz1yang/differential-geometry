@@ -17,7 +17,7 @@ theorem normSq0S_covGradBundleEquiv_smulRight
     (α : TangentSpace I x →L[ℝ] ℝ)
     (T : TensorRSSpace r s I x) (D : Tensor0SSpace r I x) :
     normSq0S (I := I) g x (s + 1)
-      ((covGradBundleEquiv (I := I) r s x
+      ((covariantSlotBundleEquiv (I := I) r s x
         (α.smulRight T))
         D) =
       normSq0S (I := I) g x 1 (dualToCotangent (I := I) α.toLinearMap) *
@@ -26,16 +26,16 @@ theorem normSq0S_covGradBundleEquiv_smulRight
   let A := dualToCotangent (I := I) α.toLinearMap
   let e : Fin (1 + s) ≃ Fin (s + 1) := finCongr (Nat.add_comm 1 s)
   have heq :
-      (covGradBundleEquiv (I := I) r s x
+      (covariantSlotBundleEquiv (I := I) r s x
         (α.smulRight T)) D =
       (Tensor0SSpace.product A (T D)).domDomCongr e := by
     apply tensor0SSpace_ext
     intro v
     change Tensor0SSpace.eval
-      ((covGradBundleEquiv (I := I) r s x
+      ((covariantSlotBundleEquiv (I := I) r s x
         (α.smulRight T))
         D) v = _
-    rw [covGradBundleEquiv_apply_eval, ContinuousLinearMap.smulRight_apply,
+    rw [covariantSlotBundleEquiv_apply_eval, ContinuousLinearMap.smulRight_apply,
       TensorRSSpace.smul_apply]
     change α (v 0) * (T D) (Matrix.vecTail v) = _
     rw [Tensor0SSpace.domDomCongr_apply, Tensor0SSpace.product_apply]

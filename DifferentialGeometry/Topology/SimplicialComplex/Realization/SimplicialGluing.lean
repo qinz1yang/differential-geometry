@@ -6,7 +6,6 @@ import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 namespace DifferentialGeometry.Topology.Engulfing
 
-set_option linter.unusedSectionVars false
 
 open Set _root_.Topology _root_.Geometry
 

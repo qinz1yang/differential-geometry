@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabE
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarDerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabUniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabPullback
-import DifferentialGeometry.Geometry.Operator.Gradient.PullbackAt
+import DifferentialGeometry.Geometry.Operator.GradientPullback
 
 noncomputable section
 
@@ -15,9 +15,11 @@ open scoped Manifold ContDiff BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 universe u
 
-private theorem ClosedSlab.exists_curvature_derivative_bound
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.exists_curvature_derivative_bound
     {P : OrientedThreeStage.{u}} {a b : ℝ} (S : P.ClosedSlab a b) (N : ℕ) :
     ∃ B : ℝ, 0 ≤ B ∧ ∀ k ≤ N, ∀ t ∈ Icc a b, ∀ x : P.Carrier,
       curvDerivNormSq k (S.flow.base.metric t) x ≤ B := by
@@ -38,7 +40,7 @@ private theorem ClosedSlab.exists_curvature_derivative_bound
   exact (hbound k t ht x).trans
     (Finset.single_le_sum (fun j _ => hB j) (Finset.mem_range.mpr (by omega)))
 
-private theorem scalar_gradient_norm_sq_le_of_curvature_jet
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.scalar_gradient_norm_sq_le_of_curvature_jet
     {P : OrientedThreeStage.{u}} {D : RealTimeInterval}
     (S : SolutionOn (I := ThreeModel) (M := P.Carrier) D)
     {t B : ℝ} (x : P.Carrier)
@@ -59,7 +61,7 @@ private theorem scalar_gradient_norm_sq_le_of_curvature_jet
     (gradientFun (S.base.metric t) (S.scalar t) x)
     (gradientFun (S.base.metric t) (S.scalar t) x))]
 
-private theorem exists_pos_scalar_derivative_threshold {A B C : ℝ} (hC : 0 < C) :
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_pos_scalar_derivative_threshold {A B C : ℝ} (hC : 0 < C) :
     ∃ q : ℝ, 0 < q ∧ A < C ^ 2 * q ^ 3 ∧ B < C * q ^ 2 := by
   let q : ℝ := max 1 (max (A / C ^ 2) (B / C)) + 1
   have hq1 : 1 ≤ q := by dsimp [q]; linarith [le_max_left 1 (max (A / C ^ 2) (B / C))]
@@ -81,7 +83,7 @@ private theorem exists_pos_scalar_derivative_threshold {A B C : ℝ} (hC : 0 < C
 
 
 
-theorem exists_uniform_initial_scalar_derivative_bounds
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_uniform_initial_scalar_derivative_bounds
     (P : OrientedThreeStage.{u}) (g : P.Metric) :
     ∃ τ : ℝ, 0 < τ ∧ ∀ C : ℝ, 0 < C → ∃ q : ℝ, 0 < q ∧
       ∀ {finish : ℝ} (G : P.IncomingSlab 0 finish), G.flow.base.metric 0 = g →
@@ -133,9 +135,11 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 universe u v
 
-theorem exists_uniform_initial_scalar_derivative_bounds_of_isometry
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_uniform_initial_scalar_derivative_bounds_of_isometry
     (P : OrientedThreeStage.{u}) (g : P.Metric) :
     ∃ τ : ℝ, 0 < τ ∧ ∀ C : ℝ, 0 < C → ∃ q : ℝ, 0 < q ∧
       ∀ {Q : OrientedThreeStage.{v}} {finish : ℝ} (G : Q.IncomingSlab 0 finish)
@@ -172,10 +176,10 @@ theorem exists_uniform_initial_scalar_derivative_bounds_of_isometry
         (gradientFun (G.flow.base.metric t) (G.flow.scalar t) (φ y))
         (gradientFun (G.flow.base.metric t) (G.flow.scalar t) (φ y)) := by
     rw [hscalarFun]
-    exact normGradSqFun_comp_of_pullback_inner (F.flow.base.metric t) (G.flow.base.metric t)
-      (φ.contMDiff.mdifferentiable (by simp) y)
+    exact normGradSqFun_eq_of_pullback_inner (F.flow.base.metric t) (G.flow.base.metric t)
+      φ y (φ.contMDiff.mdifferentiable (by simp) y)
       (fun v w => Diffeomorph.pullbackMetricCross_inner (G.flow.base.metric t) φ y v w)
-      (φ.mfderivToContinuousLinearEquiv (by simp) y).surjective
+      (φ.mfderivToContinuousLinearEquiv (by simp) y).surjective (G.flow.scalar t)
       ((metricScalar_smooth (G.flow.base.metric t)).mdifferentiableAt (by simp))
   have htimeFun : (fun r => F.flow.scalar r y) = fun r => G.flow.scalar r (φ y) :=
     funext (fun r => hscalar r y)
@@ -186,9 +190,11 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+
 universe u v
 
-theorem exists_uniform_initial_scalar_bound_of_isometry
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_uniform_initial_scalar_bound_of_isometry
     (P : OrientedThreeStage.{u}) (g : P.Metric) :
     ∃ τ Qbound : ℝ, 0 < τ ∧ 0 < Qbound ∧
       ∀ {Q : OrientedThreeStage.{v}} {finish : ℝ} (G : Q.IncomingSlab 0 finish)
@@ -253,9 +259,9 @@ theorem exists_uniform_initial_scalar_and_derivative_bounds_of_initialIdentifica
   obtain ⟨aSing, haSing, hsingTime⟩ :=
     exists_pos_le_singular_incoming_time_of_initialIdentification P g
   obtain ⟨τderiv, hτderiv, hderiv⟩ :=
-    OrientedThreeStage.exists_uniform_initial_scalar_derivative_bounds_of_isometry P g
+    DifferentialGeometry.Topology.ClosedOrientedManifold.exists_uniform_initial_scalar_derivative_bounds_of_isometry P g
   obtain ⟨τscalar, Qbound, hτscalar, hQbound, hscalar⟩ :=
-    OrientedThreeStage.exists_uniform_initial_scalar_bound_of_isometry P g
+    DifferentialGeometry.Topology.ClosedOrientedManifold.exists_uniform_initial_scalar_bound_of_isometry P g
   refine ⟨min aSing (min τderiv τscalar), lt_min haSing (lt_min hτderiv hτscalar), ?_⟩
   intro C hC
   obtain ⟨qderiv, hqderiv, hderivBound⟩ := hderiv C hC

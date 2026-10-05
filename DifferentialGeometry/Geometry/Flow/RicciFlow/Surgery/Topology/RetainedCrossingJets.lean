@@ -33,11 +33,14 @@ end DifferentialGeometry.CheegerGromovCompactness
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.tendsto_curvDerivNormSq (L : G.TerminalLimitMetric) (k : ℕ)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.tendsto_curvDerivNormSq (L : G.TerminalLimitMetric) (k : ℕ)
     (x : G.terminalRegularOpen) :
     Tendsto (fun t => curvDerivNormSq k (G.flow.base.metric t) x.val) (𝓝[<] s)
       (𝓝 (curvDerivNormSq k L.metric x)) := by
@@ -63,7 +66,7 @@ theorem TerminalLimitMetric.tendsto_curvDerivNormSq (L : G.TerminalLimitMetric) 
   filter_upwards [self_mem_nhdsWithin] with t (ht : t < s)
   rw [L.extendedMetric_before ht, curvDerivNormSq_restrictOpen]
 
-theorem TerminalLimitMetric.tendsto_scalar (L : G.TerminalLimitMetric)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.tendsto_scalar (L : G.TerminalLimitMetric)
     (x : G.terminalRegularOpen) :
     Tendsto (fun t => G.flow.scalar t x.val) (𝓝[<] s) (𝓝 (metricScalarAt L.metric x)) := by
   rw [Metric.tendsto_nhds]
@@ -72,7 +75,7 @@ theorem TerminalLimitMetric.tendsto_scalar (L : G.TerminalLimitMetric)
   rw [Real.dist_eq]
   exact ht x rfl
 
-theorem TerminalLimitMetric.curvDerivNormSq_le_of_eventually (L : G.TerminalLimitMetric)
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.curvDerivNormSq_le_of_eventually (L : G.TerminalLimitMetric)
     {K q : ℝ} {k : ℕ} (x : G.terminalRegularOpen) (hx : q < metricScalarAt L.metric x)
     (hold : ∀ᶠ t in 𝓝[<] s, q < G.flow.scalar t x.val →
       curvDerivNormSq k (G.flow.base.metric t) x.val ≤ K * G.flow.scalar t x.val ^ (k + 2)) :

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.SeparatingChainCoverage
 import DifferentialGeometry.Geometry.Neck.CollarRegularData
-import DifferentialGeometry.Topology.Ehresmann.SphereTube
+import DifferentialGeometry.Topology.ThreeManifold.SphericalAnnulus.Tube
 
 noncomputable section
 open Set Filter Topology

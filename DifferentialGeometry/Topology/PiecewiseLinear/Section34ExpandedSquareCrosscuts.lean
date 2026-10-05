@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34SquareShellCrosscutTools
+import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Crosscut.ExteriorArcs
 
 open Set
 

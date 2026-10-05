@@ -1,11 +1,6 @@
-/-
-Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: DifferentialGeometry contributors
--/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualRecognition
-import DifferentialGeometry.Topology.RegularClosed
+import DifferentialGeometry.Topology.Connected.RegularClosed
 
 open Set Topology
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Quotient.MetricConvergence
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PairwiseApproximation.CapturedSets
+import DifferentialGeometry.Geometry.Metric.Approximation.CapturedSets
 
 set_option autoImplicit false
 noncomputable section

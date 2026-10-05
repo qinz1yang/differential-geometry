@@ -12,11 +12,14 @@ open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem terminalRegularOpen_eq :
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalRegularOpen_eq :
     G.terminalRegularOpen =
       DifferentialGeometry.PDE.RicciFlow.terminalRegularRegion G.flow.base.metric a s := by
   apply TopologicalSpace.Opens.ext
@@ -33,7 +36,7 @@ theorem terminalRegularOpen_eq :
     simpa only [riemannNorm, SolutionFamily.rm04, Geometry.Curvature.metricRm04_apply] using
       hbound y hy τ hτ
 
-theorem terminalMetricConverges_of_tendsto
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalMetricConverges_of_tendsto
     (g : SmoothRiemannianMetric ThreeModel G.terminalRegularOpen)
     (h : ∀ K : Set G.terminalRegularOpen, IsCompact K → ∀ j : ℕ,
       Tendsto (fun t => metricDerivENormSupOn K j
@@ -65,11 +68,14 @@ open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-private def terminalLimitMetricOfOpenEq {U : TopologicalSpace.Opens P.Carrier}
+private def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalLimitMetricOfOpenEq {U : TopologicalSpace.Opens P.Carrier}
     (hU : G.terminalRegularOpen = U) (g : SmoothRiemannianMetric ThreeModel U)
     (h : ∀ K : Set U, IsCompact K → ∀ j : ℕ,
       Tendsto (fun t => metricDerivENormSupOn K j
@@ -78,7 +84,7 @@ private def terminalLimitMetricOfOpenEq {U : TopologicalSpace.Opens P.Carrier}
   subst U
   exact ⟨g, G.terminalMetricConverges_of_tendsto g h⟩
 
-private theorem terminalLimitMetricOfOpenEq_metric_heq {U : TopologicalSpace.Opens P.Carrier}
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalLimitMetricOfOpenEq_metric_heq {U : TopologicalSpace.Opens P.Carrier}
     (hU : G.terminalRegularOpen = U) (g : SmoothRiemannianMetric ThreeModel U)
     (h : ∀ K : Set U, IsCompact K → ∀ j : ℕ,
       Tendsto (fun t => metricDerivENormSupOn K j
@@ -87,14 +93,14 @@ private theorem terminalLimitMetricOfOpenEq_metric_heq {U : TopologicalSpace.Ope
   subst U
   rfl
 
-def terminalLimitMetricOfIsTerminalLimitMetric
+def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalLimitMetricOfIsTerminalLimitMetric
     (gBar : SmoothRiemannianMetric ThreeModel
       (DifferentialGeometry.PDE.RicciFlow.terminalRegularRegion G.flow.base.metric a s))
     (hBar : DifferentialGeometry.PDE.RicciFlow.IsTerminalLimitMetric G.flow.base.metric a s gBar) :
     G.TerminalLimitMetric :=
   terminalLimitMetricOfOpenEq G G.terminalRegularOpen_eq gBar hBar
 
-theorem terminalLimitMetricOfIsTerminalLimitMetric_metric_heq
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalLimitMetricOfIsTerminalLimitMetric_metric_heq
     (gBar : SmoothRiemannianMetric ThreeModel
       (DifferentialGeometry.PDE.RicciFlow.terminalRegularRegion G.flow.base.metric a s))
     (hBar : DifferentialGeometry.PDE.RicciFlow.IsTerminalLimitMetric G.flow.base.metric a s gBar) :

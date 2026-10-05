@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.Derivative.AntitoneOffFinite
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Jacobian.EndpointContinuity
 
 set_option autoImplicit false
@@ -54,7 +55,8 @@ theorem historyReducedJacobianAlong_le
     obtain ⟨d, -, hd⟩ := exists_hasDerivAt_historyReducedJacobianAlong hfloor hv₂ Z₂ hZ₂ hv₂k hx hxv
       hxF
     exact hd.continuousAt
-  refine le_of_hasDerivAt_nonpos_off_finite hS _ a b hab le_rfl
+  refine DifferentialGeometry.Analysis.le_of_hasDerivAt_nonpos_off_finite
+    (hS.subset inter_subset_left) hab
     (fun x hx hxS => exists_hasDerivAt_historyReducedJacobianAlong hfloor hv₂ Z₂ hZ₂ hv₂k
       (ha.trans hx.1) (hx.2.trans_le hb) fun h => hxS ((hmemS x (ha.trans hx.1)).2 h))
     (fun x hx hxS => exists_tendsto_seam_historyReducedJacobianAlong hfloor hv₂ Z₂ hZ₂ hv₂k
@@ -62,7 +64,8 @@ theorem historyReducedJacobianAlong_le
   · exact (hcont a ha (hlt.trans_le hb) haF).continuousWithinAt
   · rcases eq_or_lt_of_le hb with h | h
     · rw [h]
-      exact continuousWithinAt_historyReducedJacobianAlong hfloor hv₂ Z₂ hZ₂ hv₂k
+      exact (continuousWithinAt_historyReducedJacobianAlong hfloor hv₂ Z₂ hZ₂ hv₂k).mono
+        Icc_subset_Iic_self
     · exact (hcont b (ha.trans_le hab) h hbF).continuousWithinAt
 
 theorem historyReducedJacobian_antitoneOn

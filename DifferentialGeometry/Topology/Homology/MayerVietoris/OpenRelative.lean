@@ -213,13 +213,9 @@ lemma relMVδ_relMVLift (hP : IsOpen P) (hQ : IsOpen Q) (k : ℕ) :
     Category.assoc, relativeHomologyInfIso_hom_relMVLift, quotMVδ_quotMVLift_assoc, zero_comp, comp_zero]
 
 variable (P Q) in
-@[reassoc (attr := simp)]
+@[reassoc]
 lemma relMVLift_relMVDesc (k : ℕ) : relMVLift R P Q k ≫ relMVDesc R P Q k = 0 := by
-  rw [biprod.lift_desc, Preadditive.neg_comp, ← relativeHomologyMap_comp R (𝟙 X) (𝟙 X) _ _
-    (id_comp_mapsTo (Set.inter_subset_left.trans Set.subset_union_left)),
-    ← relativeHomologyMap_comp R (𝟙 X) (𝟙 X) _ _
-    (id_comp_mapsTo (Set.inter_subset_right.trans Set.subset_union_right)),
-    add_neg_cancel]
+  simp
 
 @[reassoc (attr := simp)]
 lemma relMVDesc_relMVδ (hP : IsOpen P) (hQ : IsOpen Q) (k : ℕ) :

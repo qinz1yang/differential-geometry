@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.CompactSourceCurves
+import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSourceCurves
 
 
 

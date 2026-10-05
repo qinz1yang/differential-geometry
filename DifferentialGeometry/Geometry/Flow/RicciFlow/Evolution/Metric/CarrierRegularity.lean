@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Smoothness
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalJointSpatialJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.JointSpatialJets
 
 set_option autoImplicit false
 

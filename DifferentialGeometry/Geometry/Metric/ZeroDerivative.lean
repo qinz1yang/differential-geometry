@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
+import DifferentialGeometry.Geometry.Metric.Lipschitz.ConvexSource
 
 
 

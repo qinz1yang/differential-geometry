@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homotopy.CubeInterior
-import DifferentialGeometry.Topology.Homotopy.CollapseMaps
-import DifferentialGeometry.Topology.Homotopy.BasedMappingSpace
+import DifferentialGeometry.Topology.MappingSpace.Collapse
+import DifferentialGeometry.Topology.MappingSpace.Based
 import Mathlib.Topology.Compactification.OnePoint.Sphere
 
 

@@ -11,10 +11,13 @@ open scoped Manifold ContDiff Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.eventually_scalar_range_on_canonical_domains
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_scalar_range_on_canonical_domains
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
     (hx : 0 < metricScalarAt L.metric x) {C1 C2 eps : ℝ} :
     ∀ᶠ t in 𝓝[<] s, ∀ W : CanonicalWitness G.flow eps C1 C2 x.val t,
@@ -36,7 +39,7 @@ theorem TerminalLimitMetric.eventually_scalar_range_on_canonical_domains
   · exact hs.2.trans (mul_le_mul_of_nonneg_left hthi.le hC2.le)
 
 
-theorem TerminalLimitMetric.eventually_cap_neck_compact_capture
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_cap_neck_compact_capture
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen)
     {epsCanonical eps C1 C2 : ℝ}
@@ -79,7 +82,7 @@ theorem TerminalLimitMetric.eventually_cap_neck_compact_capture
   exact union_subset (hcapture (τ n) hn (W n)).1
     ((hcapture (τ n) hn (W n)).2 (v n) (hvW n) (neck n))
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_canonical_caps
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_canonical_caps
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {epsCanonical eps δ C1 C2 : ℝ}
@@ -163,7 +166,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_canonical_caps
       hv (n - n₀ + n₀), N, hNv, hNmark, hNmap⟩
   exact heq ▸ hresult
 
-theorem TerminalLimitMetric.eventually_normalizedNeck_of_moving_spatialNecks_of_scalar_comparison
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_moving_spatialNecks_of_scalar_comparison
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →

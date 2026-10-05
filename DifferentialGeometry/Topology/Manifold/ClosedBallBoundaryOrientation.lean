@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.HypersurfaceOrientation
-import DifferentialGeometry.Topology.Manifold.ClosedBallOrientation
-import DifferentialGeometry.Geometry.Metric.PolarCoordinates
+import DifferentialGeometry.Topology.Manifold.ClosedBall.Orientation
+import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
 
 set_option autoImplicit false
 noncomputable section

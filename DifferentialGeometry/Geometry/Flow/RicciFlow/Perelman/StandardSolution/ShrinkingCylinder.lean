@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Curvature.RoundCylinder
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 import Mathlib.Topology.Sequences
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
-import DifferentialGeometry.Geometry.Metric.RoundCylinder
+import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
 
 set_option autoImplicit false
 noncomputable section

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ClosedCover
+import DifferentialGeometry.Topology.ContinuousMap.ClosedCover
 import Mathlib.Topology.UnitInterval
 
 open Set

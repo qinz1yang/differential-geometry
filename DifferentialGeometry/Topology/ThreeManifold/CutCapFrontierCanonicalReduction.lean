@@ -1,4 +1,5 @@
-import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumFrontier
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.GraphDecomposition
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGluingPresentation
 
 noncomputable section
@@ -173,8 +174,7 @@ theorem cutCapSummandCountDetermined_of_sphericalGraphSumRealization_of_spherica
     E.cutCapSummandCountDetermined := by
   refine E.cutCapSummandCountDetermined_iff_cutCapSummandCanonicalCount.mpr ?_
   intro C K hKfac hdiff
-  obtain ⟨σ⟩ := finiteConnectedSum_congr_of_connectedSumLaws
-    (connectedSumLaws_of_associative connectedSumAssociative_holds)
+  obtain ⟨σ⟩ := finiteConnectedSum_congr
     (List.rel_append (List.forall₂_same.mpr fun A _ =>
       ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩)
       (forall₂_replicate_of_forall_mem_of_isSphereTwoTimesCircleFactor hS hKfac))

@@ -1,6 +1,6 @@
 import Mathlib.Basic.ENNReal.Real
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.InitialMetricDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.InitialDerivative
 
 set_option autoImplicit false
 noncomputable section

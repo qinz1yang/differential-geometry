@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialJetTimeContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.SpatialContinuity
 
 
 set_option autoImplicit false

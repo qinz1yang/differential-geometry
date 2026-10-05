@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Splitting.AffineZeroLevelMetric
-import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness.Basic
 
 set_option autoImplicit false
 

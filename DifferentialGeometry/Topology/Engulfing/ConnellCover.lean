@@ -7,7 +7,6 @@ namespace DifferentialGeometry.Topology.Engulfing
 
 open Set Metric _root_.Geometry _root_.Topology
 
-set_option linter.unusedSectionVars false
 
 variable {E : Type*} [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E]
@@ -19,6 +18,7 @@ def faceNeighborhood (K : SimplicialComplex ℝ E) (A : Set E) : Set E :=
   ⋃ s ∈ facesMeeting K A, convexHull ℝ (s : Set E)
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem isCompact_faceNeighborhood (K : SimplicialComplex ℝ E) (hK : K.faces.Finite)
     (A : Set E) : IsCompact (faceNeighborhood K A) := by
   classical
@@ -26,6 +26,7 @@ theorem isCompact_faceNeighborhood (K : SimplicialComplex ℝ E) (hK : K.faces.F
     (fun s _ => s.finite_toSet.isCompact_convexHull ℝ)
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem convexHull_subset_faceNeighborhood (K : SimplicialComplex ℝ E) (A : Set E)
     {s : Finset E} (hs : s ∈ facesMeeting K A) :
     convexHull ℝ (s : Set E) ⊆ faceNeighborhood K A := by
@@ -33,6 +34,7 @@ theorem convexHull_subset_faceNeighborhood (K : SimplicialComplex ℝ E) (A : Se
   exact fun _ hx => mem_iUnion₂.mpr ⟨s, hs, hx⟩
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem subset_faceNeighborhood (K : SimplicialComplex ℝ E) (A : Set E) :
     A ∩ K.space ⊆ faceNeighborhood K A := by
   classical
@@ -44,6 +46,7 @@ def chartProtectedCore {M : Type*} (K : SimplicialComplex ℝ E) (j : E → M) (
   B ∪ j '' faceNeighborhood K (j ⁻¹' B)
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem isCompact_chartProtectedCore {M : Type*} [TopologicalSpace M]
     (K : SimplicialComplex ℝ E) (hK : K.faces.Finite) {j : E → M} (hj : Continuous j)
     {B : Set M} (hB : IsCompact B) : IsCompact (chartProtectedCore K j B) := by
@@ -51,6 +54,7 @@ theorem isCompact_chartProtectedCore {M : Type*} [TopologicalSpace M]
   exact hB.union ((isCompact_faceNeighborhood K hK _).image hj)
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem chartProtectedCore_subset {M : Type*} (K : SimplicialComplex ℝ E) (j : E → M)
     {B U : Set M} (hBU : B ⊆ U)
     (hfaces : ∀ s ∈ facesMeeting K (j ⁻¹' B), j '' convexHull ℝ (s : Set E) ⊆ U) :
@@ -62,6 +66,7 @@ theorem chartProtectedCore_subset {M : Type*} (K : SimplicialComplex ℝ E) (j :
     exact hfaces s hs ⟨y, hys, rfl⟩
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem chartProtectedCore_contains_face {M : Type*} (K : SimplicialComplex ℝ E)
     (j : E → M) {B : Set M} {x : M} (hx : x ∈ B) (hxK : x ∈ j '' K.space) :
     ∃ s ∈ K.faces, x ∈ j '' convexHull ℝ (s : Set E) ∧
@@ -74,6 +79,7 @@ theorem chartProtectedCore_contains_face {M : Type*} (K : SimplicialComplex ℝ 
     ⟨hs, y, hys, hx⟩)).trans subset_union_right
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem convexHull_filter_subset_vertexRestriction (K : SimplicialComplex ℝ E)
     (S : Set E) [DecidablePred (fun x => x ∈ S)] {s : Finset E} (hs : s ∈ K.faces) :
     convexHull ℝ ((s.filter (fun x => x ∈ S) : Finset E) : Set E) ⊆
@@ -87,6 +93,7 @@ theorem convexHull_filter_subset_vertexRestriction (K : SimplicialComplex ℝ E)
     simp [hempty]
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem facesMeeting_control_refines {K L : SimplicialComplex ℝ E}
     (href : simplicialRefines L K) {A U : Set E}
     (hcontrol : ∀ s ∈ facesMeeting K A, convexHull ℝ (s : Set E) ⊆ U) :
@@ -175,6 +182,7 @@ noncomputable def connellWeights (K : SimplicialComplex ℝ E) (C : Set E) (v : 
   exact if v ∈ frontier K.space ∨ v ∈ C then 1 else 0
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem connellWeights_nonneg (K : SimplicialComplex ℝ E) (C : Set E) (v : E) :
     0 ≤ connellWeights K C v := by
   classical
@@ -182,12 +190,14 @@ theorem connellWeights_nonneg (K : SimplicialComplex ℝ E) (C : Set E) (v : E) 
   split_ifs <;> norm_num
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem connellWeights_boundary (K : SimplicialComplex ℝ E) (C : Set E) {v : E}
     (hv : v ∈ frontier K.space) : connellWeights K C v = 1 := by
   classical
   simp [connellWeights, hv]
 
 omit [DecidableEq E] in
+omit [FiniteDimensional ℝ E] in
 theorem connellWeights_filters (K : SimplicialComplex ℝ E) (C : Set E)
     [DecidablePred (fun v => v ∈ C)]
     {s : Finset E} (hinside : convexHull ℝ (s : Set E) ⊆ interior K.space) :

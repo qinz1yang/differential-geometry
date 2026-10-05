@@ -4,7 +4,6 @@ import Mathlib.Basic.Real.Basic
 
 namespace DifferentialGeometry.Topology.Engulfing
 
-set_option linter.unusedSectionVars false
 
 open Set
 open scoped BigOperators

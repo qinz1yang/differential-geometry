@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessPullbackTimeTower
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ComparisonTimeJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.MetricComparison
 
 
 set_option autoImplicit false

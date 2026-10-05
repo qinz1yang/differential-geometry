@@ -10,11 +10,14 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
+open DifferentialGeometry.Topology.ClosedOrientedManifold
+open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ}
 
-private theorem hasDerivWithinAt_inner (G : P.IncomingSlab a s)
+private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.hasDerivWithinAt_inner (G : P.IncomingSlab a s)
     {t : ℝ} (ht : t ∈ Ico a s) (x : P.Carrier) (v w : TangentSpace ThreeModel x) :
     HasDerivWithinAt (fun r => (G.flow.base.metric r).inner x v w)
       (-2 * ricciTensor (G.flow.base.metric t) x v w) (Ici a) t := by
@@ -25,7 +28,7 @@ private theorem hasDerivWithinAt_inner (G : P.IncomingSlab a s)
       metricRicciAt_apply_eq_ricciTensor, SolutionOn.family_metric] using
       (metricDerivAt G.flow G.equation ⟨t, hat, ht.2⟩ x v w).hasDerivWithinAt (s := Ici a)
 
-theorem metric_eq_on_Ico_of_initial {b : ℝ}
+theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.metric_eq_on_Ico_of_initial {b : ℝ}
     (G : P.IncomingSlab a s) (F : P.IncomingSlab a b)
     (hinit : G.flow.base.metric a = F.flow.base.metric a) :
     ∀ t ∈ Ico a (min s b), G.flow.base.metric t = F.flow.base.metric t := by

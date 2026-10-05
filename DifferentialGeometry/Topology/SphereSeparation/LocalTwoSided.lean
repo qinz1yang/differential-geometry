@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.SphereSeparation.Incidence
-import DifferentialGeometry.Topology.SphereSeparation.LocalNormalForm
+import DifferentialGeometry.Topology.Connected.Separation.Local
+import DifferentialGeometry.Topology.SphereSeparation.Normal.Charts
 
 set_option autoImplicit false
 
