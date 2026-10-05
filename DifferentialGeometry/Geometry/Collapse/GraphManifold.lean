@@ -68,28 +68,6 @@ theorem staticCollapseHypotheses_exclusive (W : CompactCarrier.{u})
   rintro ⟨hclosed, hboundary⟩
   exact not_boundaryCollapseHypotheses_of_boundary_empty W g K A w₀ hclosed.1 hboundary
 
-/-- **Closed finite-scale threshold, interface V3** (user decision 2026-10-04,
-`docs/geometrization/chapter14/decision-nonnegative-branch-20261004.md`; change log
-`docs/geometrization/chapter14/design-fc39-fc42-assembly-v3-changes-20261004.md`). OPEN statement
-change: the conclusion is a raw graph presentation OR a spherical, `S² × ℝ` or Euclidean geometric
-structure on `W` (closed by `closedCollapseHypotheses`). It replaces the Raw-only
-`exists_closed_graph_threshold_of_finite_scales`; the three recognitions
-`rawGraphPresentation_of_{sphericalSpaceForm, sphericalProduct, flat}` are not on its consumer path.
-The full closed and static thresholds (`exists_closed_graph_threshold_disj`,
-`exists_graph_threshold_disj`) are in `Geometry/Collapse/GraphThresholdDisj.lean`. -/
-theorem exists_closed_graph_threshold_of_finite_scales_disj (K : ℕ)
-    (hK : staticDerivativeOrder ≤ K)
-    (A : ℝ → ℝ) (hA : ∀ w, 0 < w → w < euclideanThreeUnitBallVolume → 0 < A w) :
-    ∃ w₀ : ℝ, 0 < w₀ ∧ w₀ < euclideanThreeUnitBallVolume ∧
-      ∀ (W : CompactCarrier.{u}) [ConnectedSpace W.Carrier]
-        (g : SmoothRiemannianMetric W.model W.Carrier),
-        (∀ p, curvatureRadius g p ≠ ⊤) →
-        closedCollapseHypotheses W g K A w₀ →
-          Nonempty (RawGraphPresentation W) ∨
-            ∃ G : GC.Geometry.GeometricStructure W.model W.Carrier,
-              G.model = .spherical ∨ G.model = .sphericalProduct ∨ G.model = .euclidean := by
-  sorry
-
 end DifferentialGeometry.Geometry.Collapse
 
 namespace GC.GraphManifold
@@ -121,6 +99,19 @@ end GC.GraphManifold
 
 namespace DifferentialGeometry.Geometry.Collapse
 universe u
+
+theorem exists_closed_graph_threshold_of_finite_scales_disj (K : ℕ)
+    (hK : staticDerivativeOrder ≤ K)
+    (A : ℝ → ℝ) (hA : ∀ w, 0 < w → w < euclideanThreeUnitBallVolume → 0 < A w) :
+    ∃ w₀ : ℝ, 0 < w₀ ∧ w₀ < euclideanThreeUnitBallVolume ∧
+      ∀ (W : CompactCarrier.{u}) [ConnectedSpace W.Carrier]
+        (g : SmoothRiemannianMetric W.model W.Carrier),
+        (∀ p, curvatureRadius g p ≠ ⊤) →
+        closedCollapseHypotheses W g K A w₀ →
+          Nonempty (RawGraphPresentation W) ∨
+            ∃ G : GC.Geometry.GeometricStructure W.model W.Carrier,
+              G.model = .spherical ∨ G.model = .sphericalProduct ∨ G.model = .euclidean := by
+  sorry
 
 theorem exists_boundary_graph_threshold (K : ℕ) (hK : staticDerivativeOrder ≤ K)
     (A : ℝ → ℝ) (hA : ∀ w, 0 < w → w < euclideanThreeUnitBallVolume → 0 < A w) :
