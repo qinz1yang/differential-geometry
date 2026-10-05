@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Thurston.NonnegativeClassification
-import DifferentialGeometry.Geometry.Thurston.GraphPresentation
 import DifferentialGeometry.Topology.Connected.FinitePartitions
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import DifferentialGeometry.Geometry.Collapse.CuspBoundary
@@ -69,39 +68,27 @@ theorem staticCollapseHypotheses_exclusive (W : CompactCarrier.{u})
   rintro ⟨hclosed, hboundary⟩
   exact not_boundaryCollapseHypotheses_of_boundary_empty W g K A w₀ hclosed.1 hboundary
 
-theorem exists_rawGraphPresentation_of_nonnegative
-    (W : CompactCarrier.{u}) [ConnectedSpace W.Carrier]
-    (g : SmoothRiemannianMetric W.model W.Carrier)
-    (hboundary : W.model.boundary W.Carrier = ∅)
-    (hsec : DifferentialGeometry.Geometry.Riemannian.SectionalBoundedBelow g 0) :
-    Nonempty (RawGraphPresentation W) := by
-  obtain ⟨G, hG⟩ := GC.Geometry.closed_nonnegative_sectional_classification W g hboundary hsec
-  rcases hG with hG | hG | hG
-  · exact rawGraphPresentation_of_sphericalSpaceForm W hboundary G hG
-  · exact rawGraphPresentation_of_sphericalProduct W hboundary G hG
-  · exact rawGraphPresentation_of_flat W hboundary G hG
-
-theorem exists_closed_graph_threshold_of_finite_scales (K : ℕ) (hK : staticDerivativeOrder ≤ K)
+/-- **Closed finite-scale threshold, interface V3** (user decision 2026-10-04,
+`docs/geometrization/chapter14/decision-nonnegative-branch-20261004.md`; change log
+`docs/geometrization/chapter14/design-fc39-fc42-assembly-v3-changes-20261004.md`). OPEN statement
+change: the conclusion is a raw graph presentation OR a spherical, `S² × ℝ` or Euclidean geometric
+structure on `W` (closed by `closedCollapseHypotheses`). It replaces the Raw-only
+`exists_closed_graph_threshold_of_finite_scales`; the three recognitions
+`rawGraphPresentation_of_{sphericalSpaceForm, sphericalProduct, flat}` are not on its consumer path.
+The full closed and static thresholds (`exists_closed_graph_threshold_disj`,
+`exists_graph_threshold_disj`) are in `Geometry/Collapse/GraphThresholdDisj.lean`. -/
+theorem exists_closed_graph_threshold_of_finite_scales_disj (K : ℕ)
+    (hK : staticDerivativeOrder ≤ K)
     (A : ℝ → ℝ) (hA : ∀ w, 0 < w → w < euclideanThreeUnitBallVolume → 0 < A w) :
     ∃ w₀ : ℝ, 0 < w₀ ∧ w₀ < euclideanThreeUnitBallVolume ∧
       ∀ (W : CompactCarrier.{u}) [ConnectedSpace W.Carrier]
         (g : SmoothRiemannianMetric W.model W.Carrier),
         (∀ p, curvatureRadius g p ≠ ⊤) →
-        closedCollapseHypotheses W g K A w₀ → Nonempty (RawGraphPresentation W) := by
+        closedCollapseHypotheses W g K A w₀ →
+          Nonempty (RawGraphPresentation W) ∨
+            ∃ G : GC.Geometry.GeometricStructure W.model W.Carrier,
+              G.model = .spherical ∨ G.model = .sphericalProduct ∨ G.model = .euclidean := by
   sorry
-
-theorem exists_closed_graph_threshold (K : ℕ) (hK : staticDerivativeOrder ≤ K)
-    (A : ℝ → ℝ) (hA : ∀ w, 0 < w → w < euclideanThreeUnitBallVolume → 0 < A w) :
-    ∃ w₀ : ℝ, 0 < w₀ ∧ w₀ < euclideanThreeUnitBallVolume ∧
-      ∀ (W : CompactCarrier.{u}) [ConnectedSpace W.Carrier]
-        (g : SmoothRiemannianMetric W.model W.Carrier),
-        closedCollapseHypotheses W g K A w₀ → Nonempty (RawGraphPresentation W) := by
-  obtain ⟨w₀, hw₀, hwupper, hfinite⟩ := exists_closed_graph_threshold_of_finite_scales K hK A hA
-  refine ⟨w₀, hw₀, hwupper, ?_⟩
-  intro W hconn g h
-  by_cases hsec : DifferentialGeometry.Geometry.Riemannian.SectionalBoundedBelow g 0
-  · exact exists_rawGraphPresentation_of_nonnegative W g h.1 hsec
-  · exact hfinite W g (fun p hp => hsec ((curvatureRadius_eq_top_iff p).mp hp)) h
 
 end DifferentialGeometry.Geometry.Collapse
 
@@ -146,22 +133,5 @@ theorem exists_boundary_graph_threshold (K : ℕ) (hK : staticDerivativeOrder �
           ∃ e : Fin B.count ≃ Fin G.externalCount,
             ∀ i, Set.range (G.external.torusMap (e i)) = B.component i := by
   sorry
-
-theorem exists_graph_threshold (K : ℕ) (hK : staticDerivativeOrder ≤ K)
-    (A : ℝ → ℝ) (hA : ∀ w, 0 < w → w < euclideanThreeUnitBallVolume → 0 < A w) :
-    ∃ w₀ : ℝ, 0 < w₀ ∧ w₀ < euclideanThreeUnitBallVolume ∧
-      ∀ (W : CompactCarrier.{u}) [ConnectedSpace W.Carrier]
-        (g : SmoothRiemannianMetric W.model W.Carrier),
-        staticCollapseHypotheses W g K A w₀ → Nonempty (RawGraphPresentation W) := by
-  obtain ⟨wc, hwc, hcupper, hc⟩ := exists_closed_graph_threshold K hK A hA
-  obtain ⟨wb, hwb, hbupper, hb⟩ := exists_boundary_graph_threshold K hK A hA
-  refine ⟨min wc wb, lt_min hwc hwb, (min_le_left wc wb).trans_lt hcupper, ?_⟩
-  intro W hconn g h
-  rcases h with h | h
-  · exact hc W g (closedCollapseHypotheses_mono g K A (min_le_left wc wb) h)
-  · obtain ⟨⟨B⟩, hvol, hder⟩ :=
-      boundaryCollapseHypotheses_mono g K A (min_le_right wc wb) h
-    obtain ⟨G, _, _⟩ := hb W g B hvol hder
-    exact ⟨G⟩
 
 end DifferentialGeometry.Geometry.Collapse

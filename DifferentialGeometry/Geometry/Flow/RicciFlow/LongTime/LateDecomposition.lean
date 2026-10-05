@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.RegularSlice
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspIncompressibility
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.ExteriorDiskFlow
 import DifferentialGeometry.Geometry.Collapse.LatePieceGeometry
+import DifferentialGeometry.Geometry.Collapse.GraphThresholdDisj
 
 set_option autoImplicit false
 noncomputable section
@@ -165,12 +166,12 @@ theorem components_geometrize_of_late_sequence_tests
         ¬ ComponentsGeometrize s.stage.toClosedOrientedManifold := fun j => h (j : ℝ)
   choose slices htimes hnonempty hbad using bad
   obtain ⟨A, hA, tests⟩ := hregions slices htimes hnonempty
-  obtain ⟨w₀, hw₀, hwupper, collapse⟩ := exists_graph_threshold K hK A hA
+  obtain ⟨w₀, hw₀, hwupper, collapse⟩ := exists_graph_threshold_disj K hK A hA
   obtain ⟨N, hN⟩ := tests w₀ hw₀ hwupper
   apply hbad N
   intro C
   obtain ⟨D, ⟨pieces⟩, area⟩ := hN N le_rfl C
-  apply geometrizes_of_hyperbolicOrCollapsed _ ((slices N).componentMetric C)
+  apply geometrizes_of_hyperbolicOrCollapsed_disj _ ((slices N).componentMetric C)
     D K A w₀ collapse _ pieces
   exact hasExteriorAreaObstructionAfter_iff.mp area.toObstruction
 
