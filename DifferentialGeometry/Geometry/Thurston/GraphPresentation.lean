@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Collapse.CurvatureScale
 import DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Presentation
+import DifferentialGeometry.Geometry.Thurston.SphericalProductRawRecognition
 
 set_option autoImplicit false
 noncomputable section
@@ -20,7 +21,7 @@ theorem rawGraphPresentation_of_sphericalProduct
     (hboundary : W.model.boundary W.Carrier = ∅)
     (G : GC.Geometry.GeometricStructure W.model W.Carrier)
     (hG : G.model = .sphericalProduct) : Nonempty (RawGraphPresentation W) := by
-  sorry
+  exact rawGraphPresentation_of_sphericalProduct_proved W hboundary G hG
 
 theorem rawGraphPresentation_of_flat
     (W : CompactCarrier.{u}) [ConnectedSpace W.Carrier]
