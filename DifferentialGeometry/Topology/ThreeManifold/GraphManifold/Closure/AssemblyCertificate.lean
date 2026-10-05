@@ -12,6 +12,12 @@ D5, D14). The parts (vertices, edges, circle region, face kinds) live in
 linter: in the fields `rim_source`, `rim_vertex`, `rim_handle`, `rim_region` the point `p` is an
 implicit binder (`∀ h b {p}, …`); the statements are otherwise identical.
 
+VERSION 4 (defect D-CERT-1, review 39 §9.2): the V2 field `face_disjoint` (pairwise disjoint
+ambient face images) contradicted `face_sphereSeam` + `sphereSeam_face` (the two sides of a sphere
+seam are two distinct faces with the same nonempty image), so it forced `sphereSeamCount = 0`, and
+likewise every torus seam to have the circle region on one side. Faces are now pairwise disjoint
+EXCEPT the two opposite sides `(c, b)`, `(c, !b)` of one seam, whose images coincide.
+
 Besides the two definitions:
 * the closed wrapper: the projections `ClosedDecompositionCertificate.tori` / `.cert`, the
   constructor `DecompositionCertificate.toClosed`, and `ClosedDecompositionCertificate.boundary_eq_empty`
@@ -127,8 +133,12 @@ structure DecompositionCertificate (W : CompactCarrier.{u}) {n : ℕ} (E : Bound
     (face f ≃ₜ Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) ⊕ (face f ≃ₜ Circle × Circle)
   face_exhausted : ∀ k, (⋃ (f : Fin faceCount) (_ : faceOwner f = k), face f) =
     (vertex k).boundaryImage
-  face_disjoint : Pairwise fun f f' => Disjoint (face f) (face f')
   faceKind : Fin faceCount → FaceKind n torusSeamCount sphereSeamCount
+  -- V4 (D-CERT-1): disjoint unless the two faces are the opposite sides of one seam
+  face_disjoint : ∀ f f', f ≠ f' →
+    (∀ c b, ¬ (faceKind f = .sphereSeam c b ∧ faceKind f' = .sphereSeam c (!b))) →
+    (∀ c b, ¬ (faceKind f = .torusSeam c b ∧ faceKind f' = .torusSeam c (!b))) →
+    Disjoint (face f) (face f')
   face_external : ∀ f i, faceKind f = .external i →
     face f = range (E.torusMap i) ∧ externalOwner i = faceOwner f
   external_face : ∀ i, ∃ f, faceKind f = .external i
