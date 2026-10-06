@@ -24914,3 +24914,19 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWAssemb
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspBoundaryBD.Transported
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspBoundaryBD.BoundaryIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspBoundaryBD.BoundaryAssembly
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.DiskConformalLengthIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.Ims05RadiusHC2IM6
+import DifferentialGeometry.Analysis.Calculus.ParamVariationGE
+import DifferentialGeometry.Geometry.Curvature.IndexFormAlgebraGE
+import DifferentialGeometry.Geometry.Curvature.IndexFormPointwiseGE
+import DifferentialGeometry.Geometry.Curvature.WeightedLengthSliceGE
+import DifferentialGeometry.Geometry.Curvature.WeightedLengthVariationGE
+import DifferentialGeometry.Geometry.Curvature.ConformalIndexFormGE
+import DifferentialGeometry.Geometry.Curvature.ConformalGeodesicStabilityMinGE
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWAssemblyWA2
+import DifferentialGeometry.Geometry.MinimalSurface.Variation.ParamNormalSecondDensityWS
+import DifferentialGeometry.Geometry.MinimalSurface.Variation.ParamStabilityRegularWS
+import DifferentialGeometry.Geometry.MinimalSurface.Variation.ParamStabilityMorreyWS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RegularStabilityHC_WS
