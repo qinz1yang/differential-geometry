@@ -24999,3 +24999,17 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspBoundaryBD.Boun
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspBoundaryBD.FinalAssemblyTopWA
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspBoundaryBD.VelocityTopWA
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspBoundaryBD.VelocityPostTopWA
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #8
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ims05StabilityIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.ConnectionError
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.ConnectionErrorBall
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.EigenfunctionComplexNorm_EG
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.EigenfunctionComplexNormConsumer_EG
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.SliceBandPost_TG
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.MorreyBarrierHbConfDV
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWAssemblyWA6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.CurvatureBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.CurvatureBoundTop
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.TransportedBandSignIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.PlanarStabilityFormIM6
