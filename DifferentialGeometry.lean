@@ -24399,6 +24399,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.BoundaryCornerRayContinua
 import DifferentialGeometry.Geometry.Comparison.Volume.BoundaryCornerRayContinuationConsumerOX124
 
 -- chapter 15 CP1 modules (merged from gc/liao/ch15-cp1-20261006 @ 5140090fa; root registration 2026-10-06)
+-- NOT registered (tracked, imported on demand only): CuspP1.P2AdapterImported{Defs,Lemmas,Top} — the 3 user-authorised sorry mirrors of proved IMS03 lemmas (registry docs/geometrization/chapter15/p2-adapter-sorries.md); no registered module imports them, so the root build and the endpoint closure stay free of them.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.CarrierInteriorMain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.CarrierInteriorPush
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.CompactPatchDatum
@@ -24467,9 +24468,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.MeridianTopA
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.MeridianTopAssemblyV5
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.MeridianTopAssemblyV6
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.MeridianTopBasic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterImportedDefs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterImportedLemmas
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterImportedTop
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterOwnDisk
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterOwnGeodesic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterOwnLoop
