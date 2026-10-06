@@ -29,24 +29,24 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   {HN : Type*} [TopologicalSpace HN] {J : ModelWithCorners ℝ EN HN}
   {N : Type*} [TopologicalSpace N] [ChartedSpace HN N]
 
-/-- smooth scalar multiple of a smooth tangent-bundle map is smooth. -/
-theorem contMDiff_smul_tangent_S15 (V : N → TangentBundle I M) (a : N → ℝ)
-    (hV : ContMDiff J I.tangent ∞ V) (ha : ContMDiff J 𝓘(ℝ, ℝ) ∞ a) :
-    ContMDiff J I.tangent ∞ (fun p : N => (⟨(V p).proj, a p • (V p).snd⟩ : TangentBundle I M)) := by
-  have hbase : ContMDiff J I ∞ (fun p : N => (V p).proj) :=
-    (contMDiff_proj (TangentSpace I)).comp hV
-  intro p₀
+/-- smooth scalar multiple of a tangent-bundle map is smooth at a point. -/
+theorem contMDiffAt_smul_tangent_S15 (V : N → TangentBundle I M) (a : N → ℝ) {p₀ : N}
+    (hV : ContMDiffAt J I.tangent ∞ V p₀) (ha : ContMDiffAt J 𝓘(ℝ, ℝ) ∞ a p₀) :
+    ContMDiffAt J I.tangent ∞
+      (fun p : N => (⟨(V p).proj, a p • (V p).snd⟩ : TangentBundle I M)) p₀ := by
+  have hbase : ContMDiffAt J I ∞ (fun p : N => (V p).proj) p₀ :=
+    (contMDiff_proj (TangentSpace I)).contMDiffAt.comp p₀ hV
   rw [contMDiffAt_totalSpace]
-  have hV₀ := (contMDiffAt_totalSpace (f := V)).1 (hV p₀)
-  refine ⟨hbase p₀, ?_⟩
-  have hsmul := (ha p₀).smul hV₀.2
+  have hV₀ := (contMDiffAt_totalSpace (f := V)).1 hV
+  refine ⟨hbase, ?_⟩
+  have hsmul := ha.smul hV₀.2
   refine hsmul.congr_of_eventuallyEq ?_
   have hmem : (V p₀).proj ∈
       (trivializationAt E (TangentSpace I) (V p₀).proj).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' (V p₀).proj
   have hb : ∀ᶠ p in 𝓝 p₀, (V p).proj ∈
       (trivializationAt E (TangentSpace I) (V p₀).proj).baseSet :=
-    (hbase p₀).continuousAt.preimage_mem_nhds
+    hbase.continuousAt.preimage_mem_nhds
       ((trivializationAt E (TangentSpace I) (V p₀).proj).open_baseSet.mem_nhds hmem)
   filter_upwards [hb] with p hp
   change ((trivializationAt E (TangentSpace I) (V p₀).proj)
@@ -58,6 +58,12 @@ theorem contMDiff_smul_tangent_S15 (V : N → TangentBundle I M) (a : N → ℝ)
       (trivializationAt E (TangentSpace I) (V p₀).proj).apply_eq_prod_continuousLinearEquivAt
         ℝ (V p).proj hp]
   exact map_smul _ _ _
+
+/-- smooth scalar multiple of a smooth tangent-bundle map is smooth. -/
+theorem contMDiff_smul_tangent_S15 (V : N → TangentBundle I M) (a : N → ℝ)
+    (hV : ContMDiff J I.tangent ∞ V) (ha : ContMDiff J 𝓘(ℝ, ℝ) ∞ a) :
+    ContMDiff J I.tangent ∞ (fun p : N => (⟨(V p).proj, a p • (V p).snd⟩ : TangentBundle I M)) :=
+  fun p₀ => contMDiffAt_smul_tangent_S15 V a (hV p₀) (ha p₀)
 
 section Complete
 variable [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
