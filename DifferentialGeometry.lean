@@ -25040,3 +25040,19 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.HconfCutSphe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.WindowDataFluxST2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.WindowDataFluxST2Consumer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWAssemblyWA8
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #11
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.HgammaScalarIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.HbarWFinal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWAssemblyWA9
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.ConformalCoefficientIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckWideBandNK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckWideBandConsumerNK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.NeckBandShiftNK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.NeckBandShiftConsumerNK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.NeckBandPostNK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.NeckBandPostConsumerNK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.CollarScalarNegHN
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.CollarScalarNegTopHN
+import DifferentialGeometry.Geometry.Curvature.ConformalScalarPlaneWS2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.PlanarKStabilityHC_WS2
