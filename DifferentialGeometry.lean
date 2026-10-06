@@ -24400,6 +24400,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.BoundaryCornerRayContinua
 
 -- chapter 15 CP1 modules (merged from gc/liao/ch15-cp1-20261006 @ 5140090fa; root registration 2026-10-06)
 -- NOT registered (tracked, imported on demand only): CuspP1.P2AdapterImported{Defs,Lemmas,Top} — the 3 user-authorised sorry mirrors of proved IMS03 lemmas (registry docs/geometrization/chapter15/p2-adapter-sorries.md); no registered module imports them, so the root build and the endpoint closure stay free of them.
+-- NOT registered either: CuspP1.P2AdapterImportedMorreyHC (S-HCOMP G3, commit 2002c16834) — imports the sorry-mirror P2AdapterImportedTop, so it belongs to the same unregistered P2AdapterImported* family (same user-authorised exception); its sorry-free siblings P2AdapterCompetitorHC / P2AdapterCompetitorHCOpen (G1 / G2) ARE registered.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.CarrierInteriorMain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.CarrierInteriorPush
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.CompactPatchDatum
@@ -24564,3 +24565,5 @@ import DifferentialGeometry.Topology.ThreeManifold.TorusCut.Compression
 import DifferentialGeometry.Topology.ThreeManifold.TorusCut.CompressionTransport
 import DifferentialGeometry.Topology.ThreeManifold.TorusCut.Taming
 import DifferentialGeometry.Topology.ThreeManifold.TriangulationOrientable
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterCompetitorHC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterCompetitorHCOpen
