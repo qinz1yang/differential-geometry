@@ -67,7 +67,8 @@ structure ActualUnscathedParabolicLimit_S13 {P : OrientedThreeStage.{u}} {g : P.
            t2TangentBundle := inferInstance
            basepoint := basepoint
            metric := metric s } : PointedRiemannianManifold.{u, 0, 0} (I := ThreeModel)) id,
-      Nonempty (MetricConvergenceData Φ)
+      ∃ C : MetricConvergenceData Φ,
+        ∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData Φ k
 
 /-- Feasibility: the empty-time-interval datum exists for every `F` (flat `ℝ³`, `ULift`ed, as
 limit manifold; nothing is converging).  It is the "empty family" case only: a nonempty-interval

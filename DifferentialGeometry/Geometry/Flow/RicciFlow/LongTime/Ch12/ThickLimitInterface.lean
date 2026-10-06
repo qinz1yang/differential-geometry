@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.RegularSlice
 import DifferentialGeometry.Geometry.Hyperbolic.FiniteVolumeModel
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Defs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ModelChange
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
 
 /-!
 # CH12-S13 / IF2: interface layer for LTF01, LTF03, LTF05
@@ -103,12 +104,15 @@ def modelPointed_S13 (M : FiniteVolumeHyperbolicModel.{u}) :
   metric := M.metric
 
 /-- Pointed smooth convergence: exhausting pointed partial diffeomorphisms and `C^p`-convergence
-of the pullback metrics on compacta for every `p`. -/
+of the pullback metrics on compacta for every `p`.  The convergence is *canonical*
+(`C.domain k = canonicalSourceData Φ k`, reference metric = limit metric); with a free reference
+metric `MetricConvergenceData` carries no information (CH12-S17, finding F1 of CH12-O5). -/
 def PointedSmoothConverges_S13 {P : OrientedThreeStage.{u}} {g : P.Metric}
     {F : GC.Interface.RawSurgery P g} (S : LatePointSequence_S13 F)
     (M : FiniteVolumeHyperbolicModel.{u}) : Prop :=
   ∃ Φ : PointedRiemannianConvergenceMaps S.pointedSeq (modelPointed_S13 M) id,
-    Nonempty (MetricConvergenceData Φ)
+    ∃ C : MetricConvergenceData Φ,
+      ∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData Φ k
 
 def IsActualWThickLimit_S13 {P : OrientedThreeStage.{u}} {g : P.Metric}
     (F : GC.Interface.RawSurgery P g) (w : ℝ) (M : FiniteVolumeHyperbolicModel.{u}) : Prop :=
@@ -119,7 +123,8 @@ def PointedModelsConverge_S13 (models : ℕ → FiniteVolumeHyperbolicModel.{u})
   ∃ Φ : PointedRiemannianConvergenceMaps
       (⟨fun j => modelPointed_S13 (models j)⟩ : PointedRiemannianSeq.{u, 0, 0} (I := ThreeModel))
       (modelPointed_S13 M) id,
-    Nonempty (MetricConvergenceData Φ)
+    ∃ C : MetricConvergenceData Φ,
+      ∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData Φ k
 
 /-- Negative-scalar branch: eventually every nonempty regular slice has a point of negative scalar
 curvature (`R_min(t) < 0`). -/
