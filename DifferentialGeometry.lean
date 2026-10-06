@@ -25166,3 +25166,13 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.FoldCompetitorSeamR4
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.FoldCompetitorSeamHC_R4C
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ConvexContainerR6A
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.ConvexContainerHC_R6A
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #16
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.OpenTargetAdaptersADP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.ConvexContainerCarrierHC_ADP
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.BoundaryArcADP
+import DifferentialGeometry.Topology.PiecewiseLinear.CollisionPairsLiftADP
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.PreparedSheetComplexFIX
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.PreparedSheetComplexTriangleFIX
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.PreparedSheetComplexBipyramidFIX
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.PreparedSheetComplexFlatFIX
