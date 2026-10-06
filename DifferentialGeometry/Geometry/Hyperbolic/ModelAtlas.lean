@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Hyperbolic.Rigidity
+import DifferentialGeometry.Geometry.Hyperbolic.ModelAtlasBridge
+import DifferentialGeometry.Geometry.Thurston.ConstantCurvatureAtlas
 import DifferentialGeometry.Geometry.Thurston.Transport
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling
 
@@ -15,6 +17,9 @@ variable {M : Type*} [TopologicalSpace M]
   [IsManifold (𝓡 3) ∞ M] [T2Space M] [SigmaCompactSpace M]
 
 omit [T2Space M] [SigmaCompactSpace M] in
+/-- no longer used by `hyperbolicGeometricStructure` (2026-10-06); superseded by
+`GC.Geometry.hasThurstonAtlas_hyperbolic_of_hasConstantSectionalCurvature` under completeness;
+kept per user decision. -/
 theorem has_hyperbolic_atlas_of_curvature_neg_one
     (g : SmoothRiemannianMetric (𝓡 3) M)
     (hcurvature : hasConstantSectionalCurvature g (-1)) :
@@ -31,7 +36,9 @@ def hyperbolicGeometricStructure
   metric := scaleMetric (1 / 4 : ℝ) (by norm_num) g
   complete := hcomplete.scaleMetric _ (by norm_num)
   atlas := by
-    apply has_hyperbolic_atlas_of_curvature_neg_one
+    apply GC.Geometry.hasThurstonAtlas_hyperbolic_of_hasConstantSectionalCurvature _
+      (hcomplete.scaleMetric _ (by norm_num))
+    apply hasConstantSectionalCurvature.toGC
     intro p v w hvw
     rw [Geometry.Riemannian.sectionalCurvature_scaleMetric, hcurvature p v w hvw]
     norm_num
