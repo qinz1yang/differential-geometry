@@ -25030,3 +25030,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.Bou
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.HbdryBlockTop
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.HbarWTop
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.HtLeftPacketTightIM6
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #10
+import DifferentialGeometry.Geometry.MinimalSurface.Variation.UnitNormalLinearWS2
+import DifferentialGeometry.Geometry.MinimalSurface.Variation.UnitNormalLocalWS2
+import DifferentialGeometry.Geometry.MinimalSurface.Variation.UnitNormalWS2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.PlanarStabilityHC_WS2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.HconfCutSphereIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.WindowDataFluxST2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.WindowDataFluxST2Consumer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWAssemblyWA8
