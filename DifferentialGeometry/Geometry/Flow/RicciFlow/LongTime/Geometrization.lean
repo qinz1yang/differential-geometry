@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateDecomposition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWLateSequenceWA2
 
 set_option autoImplicit false
 noncomputable section
@@ -9,7 +10,7 @@ universe u
 
 theorem geometrization (M : ConnectedClosedOrientedManifold.{u} 3) : Geometrizes M := by
   obtain ⟨g⟩ := Geometry.nonempty_smoothRiemannianMetric_of_compact (𝓡 3) (M := M.Carrier)
-  exact GC.LongTime.geometrizes_of_metric M g
+  exact GC.LongTime.CuspP1.geometrizes_of_metric_routeW_WA M g
 
 theorem geometrization_conjecture : GeometrizationConjecture.{u} := geometrization
 

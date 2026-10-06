@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Collapse.GraphThresholdDisjEND0
 import DifferentialGeometry.Geometry.Collapse.ThresholdDisjunctiveApplications
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateDecomposition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWLateSequenceWA2
 
 /-!
 # The geometrization endpoint at universe 0 without the two threshold admissions
@@ -42,7 +43,7 @@ theorem geometrizes_of_metric_END0
     (M : ConnectedClosedOrientedManifold.{0} 3)
     (g : (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold).Metric) :
     Geometrizes M := by
-  obtain ⟨δ, F, _, _, _, _, tests⟩ := exists_surgery_with_late_sequence_tests
+  obtain ⟨δ, F, _, _, _, _, tests⟩ := CuspP1.exists_surgery_with_late_sequence_tests_routeW_WA
     (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g lateDerivativeOrder
     le_rfl
   exact geometrizes_of_late_slice_supply M F
