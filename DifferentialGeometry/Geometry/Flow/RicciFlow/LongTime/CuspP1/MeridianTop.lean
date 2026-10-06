@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.MeridianTopB
 Review CP1-Q, Q3 / D-CP1Q-3.  Same fields as `PrescribedCuspMeridian` except `spans` is replaced by
 `fills`: for every `t ≥ exterior.start` the prescribed transported loop bounds a *continuous* disk
 inside `exterior.region t` (exact trace, range in the region).  The bridge
-`toPrescribedCuspMeridian_CPQ` takes producer 2's output (a regular exterior spanning disk for each
+`toPrescribedCuspMeridian_CPQ` takes the same-start strong-disk upgrade contract (a regular exterior spanning disk for each
 such `t`) as an explicit hypothesis; non-emptiness of the area comparison class is thus a real
 producer-2 step (no `sInf ∅` convention is used).
 -/
@@ -67,7 +67,7 @@ def prescribedCuspMeridian_toTop_CPQ (M : PrescribedCuspMeridian cores) :
     obtain ⟨u, hu⟩ := M.spans t ht
     exact ⟨u, hu.1, hu.2.2.2.1⟩
 
-/-- Bridge.  `hP2` is exactly producer 2's output for the prescribed curve: whenever the
+/-- Bridge.  `hP2` is the same-start strong-disk upgrade contract for the prescribed curve: whenever the
 transported curve has a continuous filling in `exterior.region t`, there is a regular exterior
 spanning disk (`isExteriorSpanningDisk`).  The filling hypothesis is supplied by `M.fills`, so
 non-emptiness comes from the topology, not from an infimum convention. -/
