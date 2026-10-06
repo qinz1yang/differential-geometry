@@ -249,4 +249,23 @@ theorem eventSlab_derivative_of_P2_O2 (Hp : GC.LongTime.AnalyticSurgeryProfile F
     inv_anti₀ (by positivity) hsq
   exact (hinv.trans hq).trans_lt hqy
 
+/-! ## P5 (CH12-O3, user decision): late cut records with large cap windows -/
+
+/-- **P5** (hypothesis shape, CH12-O3).  For every window radius `D`, accuracy `ζ > 0` and order
+`m`, after some time `T` every event of every history of the tower carries a cutoff record whose
+parameters agree with the profile's (`delta`, `neckRadius`, `fixed`) but whose canonical cap windows
+have radius `≥ D`, accuracy `≤ ζ` and order `≥ m`.  Only events after `T` are required: early
+surgeries need not admit large windows.  (Supply: chapter 11; geometrically the cap window radius
+of a late cutoff is `~ δ⁻¹ → ∞`.)  Used by the surgery-tolerant local KL70.2 kernel
+(`MicroGlueLateRecords.lean`), whose window radius `Rrad` depends on `κ = κ(w)`. -/
+def P5_O3 (Hp : GC.LongTime.AnalyticSurgeryProfile F δ) : Prop :=
+  ∀ (D ζ : ℝ) (m : ℕ), 0 < ζ → ∃ T : ℝ, ∀ n, ∃ p : CutoffParameters,
+    p.delta = Hp.parameters.delta ∧ p.neckRadius = Hp.parameters.neckRadius ∧
+    p.fixed = Hp.parameters.fixed ∧
+    D ≤ p.modelRadius ∧ p.modelAccuracy ≤ ζ ∧ m ≤ p.modelOrder ∧
+    ∃ records : ∀ i : Fin (F.tower.history n).eventCount,
+        T ≤ (F.tower.history n).time i.succ →
+        GeometricCutoffRecord (F.tower.history n).toHistory i p,
+      ∀ i hi b, ((records i hi).static b).hasCanonicalWindow
+
 end GC.LongTime.Ch12
