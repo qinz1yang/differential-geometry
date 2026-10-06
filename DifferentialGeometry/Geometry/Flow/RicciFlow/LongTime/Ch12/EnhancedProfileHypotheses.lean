@@ -268,4 +268,38 @@ def P5_O3 (Hp : GC.LongTime.AnalyticSurgeryProfile F δ) : Prop :=
         GeometricCutoffRecord (F.tower.history n).toHistory i p,
       ∀ i hi b, ((records i hi).static b).hasCanonicalWindow
 
+/-! ## P6 (CH12-S23, user decision): KL84.1(b) at late slices -/
+
+section P6
+open DifferentialGeometry.Geometry.Collapse DifferentialGeometry.Geometry.Riemannian
+
+/-- **P6** (hypothesis shape, CH12-S23): Kleiner–Lott Prop. 84.1(b) at late regular slices, for each
+fixed enlargement factor `A`.  Hypotheses (1)–(3) of KL84.1 at `(p, s.time, r)`: the solution is
+unscathed with `|Rm| ≤ 1/(3r²)` on the backward parabolic ball (`hasSmallParabolicCurvature`,
+`2r² < t`), and `vol B(p, r) ≥ A⁻¹ r³`.  Conclusion (b): every `y ∈ B(p, A r)` with
+`R(y) ≥ K₁ r⁻²` has a canonical neighbourhood (a neck-chart witness, as in the profile field
+`canonical`).  `K₁`, `T` depend only on `A` (and the profile), not on the slice, point or `r`.
+Parts (a), (c) of KL84.1 are not included (part (c) is the profile field
+`larger_ball_scalar_control`, the only part with the restriction `r ≤ r̄(A) √t`; (b) has none).
+The smallness `δ < δ_A` of KL84.1 is absorbed in `T` (`largerBallAccuracy_on_late_half_interval`).
+(Supply: chapter 11 / A12, blueprint `master207A.tex` l.31279 "KL84.1 estimates for each fixed
+spatial enlargement factor at all sufficiently late times"; l.17089–17106.) -/
+def P6_S23 (Hp : GC.LongTime.AnalyticSurgeryProfile F δ) : Prop :=
+  ∀ A : ℝ, 0 < A → ∃ K₁ T : ℝ, 0 < K₁ ∧ 0 < T ∧
+    ∀ s : GC.LongTime.RegularSlice F.observation, T ≤ s.time →
+    ∀ (p : (s.history.stageAt ⟨s.time, s.positive.le, le_rfl⟩).Carrier) (r : ℝ),
+      2 * r ^ 2 < s.time →
+      GC.LongTime.hasSmallParabolicCurvature s.history ⟨s.time, s.positive.le, le_rfl⟩ p r →
+      ENNReal.ofReal (A⁻¹ * r ^ 3) ≤ ballVolume (s.history.stageMetric
+        (s.history.activeStage ⟨s.time, s.positive.le, le_rfl⟩) s.time) p r →
+      ∀ y ∈ riemannianBallOf (s.history.stageMetric
+        (s.history.activeStage ⟨s.time, s.positive.le, le_rfl⟩) s.time) p (A * r),
+        K₁ * (r ^ 2)⁻¹ ≤ metricScalarAt (s.history.stageMetric
+          (s.history.activeStage ⟨s.time, s.positive.le, le_rfl⟩) s.time) y →
+        ∃ W : SpatialCanonicalWitness (s.history.stageMetric
+          (s.history.activeStage ⟨s.time, s.positive.le, le_rfl⟩) s.time)
+          Hp.epsilon Hp.C1 Hp.C2 y, W.capTubeHasNeckChart Hp.epsilon
+
+end P6
+
 end GC.LongTime.Ch12
