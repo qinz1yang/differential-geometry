@@ -24567,3 +24567,13 @@ import DifferentialGeometry.Topology.ThreeManifold.TorusCut.Taming
 import DifferentialGeometry.Topology.ThreeManifold.TriangulationOrientable
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterCompetitorHC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterCompetitorHCOpen
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #1
+import DifferentialGeometry.Analysis.ODE.AreaUpperBarrierDV
+import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskAreaTwoParameterDV
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspBoundaryBD.MetricComparison
+import DifferentialGeometry.Geometry.Curvature.NegTraceRicci_GB
+import DifferentialGeometry.Geometry.Curvature.NegTraceRicciConsumerG1_GB
+import DifferentialGeometry.Geometry.Curvature.GaussBonnetMorrey_GB
+import DifferentialGeometry.Geometry.Curvature.GaussBonnetMorreyConsumerG2_GB
+import DifferentialGeometry.Geometry.MinimalSurface.ExteriorDiskAreaTransportK8
