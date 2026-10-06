@@ -25013,3 +25013,20 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.Cur
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.CurvatureBoundTop
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.TransportedBandSignIM6
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.PlanarStabilityFormIM6
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #9
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.SurgeryTpwTopWA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.SurgeryTpwTopConsumerWA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.DiskDistScaleIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.ConfinedOfIms05IM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.SurgerySepEventSG2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.SurgerySepWindowSG2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.SurgerySepConsumerSG2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.Ims05HC2ReadyIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.TransportedNonnegIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.HtLeftPacketIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.FluxIntegral
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.BoundaryFluxTop
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.HbdryBlockTop
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspCurvatureCV.HbarWTop
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.HtLeftPacketTightIM6
