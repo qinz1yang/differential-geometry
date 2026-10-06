@@ -25056,3 +25056,17 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.CollarScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.CollarScalarNegTopHN
 import DifferentialGeometry.Geometry.Curvature.ConformalScalarPlaneWS2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.PlanarKStabilityHC_WS2
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #12
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.NeckBandSigmaNK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.NeckBandSigmaConsumerNK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.PlanarKStabilityAmbientWS2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RetainedConfinementWA2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RetainedBandDataWA2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.SurgeryTpwTopRangeWA2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.HtLeftPacketLeavesWA2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWAssemblyWA10
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.Ims05HC2ClosedIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.Ims05HC2ClosedConsumerIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWFinalWA2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWLateSequenceWA2
