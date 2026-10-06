@@ -25156,3 +25156,13 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Restriction.RegularV
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ForwardPhaseSeamChart
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Restriction.ForwardPhaseSeamChartConsumer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.PortB2G3Consumer_B2
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #15
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.NoTransverseTransportR15T
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.NoTransverseTransportHC_R15T
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.FoldCompetitorR4B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.FoldCompetitorHC_R4B
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.FoldCompetitorSeamR4C
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.FoldCompetitorSeamHC_R4C
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ConvexContainerR6A
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.ConvexContainerHC_R6A
