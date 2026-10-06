@@ -20,9 +20,11 @@ threshold (A02, A01 of the X132 ledger). Here the chain is restated at universe 
 * `geometrizes_of_metric_END0` and `geometrization_zero_END0` repeat the five lines of
   `geometrizes_of_metric` and the three lines of `geometrization` at universe 0.
 
-The admissions A08-A14 of the late-time flow (surgery, late cut family, exterior-disk producers)
-are untouched: they are reached through `exists_surgery_with_late_sequence_tests` exactly as in
-`geometrization`. The universe-`u` statement is not claimed for `u > 0`.
+This endpoint uses the Route W late-sequence consumer
+(`CuspP1.exists_surgery_with_late_sequence_tests_routeW_WA`, re-point of 2026-10-06). The recorded
+reachable late-time direct admissions are A09, A12 and A13; the old A08/A10/A11/A14 skeleton
+declarations remain present but are not used by this endpoint. The universe-`u` statement is not
+claimed for `u > 0`.
 -/
 
 set_option autoImplicit false
