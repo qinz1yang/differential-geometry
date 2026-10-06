@@ -24956,3 +24956,26 @@ import DifferentialGeometry.Geometry.Geodesic.ConformalPlane.MinimizingPathSecon
 import DifferentialGeometry.Geometry.Geodesic.ConformalPlane.MinimizingPathSecondVariationConsumerGM
 import DifferentialGeometry.Geometry.Curvature.StabilityGaussWS
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.ScalarStabilityHC_WS
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.WindowComparisonWA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWAssemblyWA3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.HtLeftCriterionIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.HtLeftEventIM6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspBoundaryBD.BallPerturbation
+import DifferentialGeometry.Geometry.Geodesic.ConformalPlane.StabilityRadiusSphereGM
+import DifferentialGeometry.Geometry.Geodesic.ConformalPlane.StabilityRadiusSphereConsumerGM
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWAssemblyWA4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.SurgeryMetricAbstractSG
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.SurgeryMetricWindowSG
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.SurgeryMetricTpwSG
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.SurgeryTightSG
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.SurgeryTpwSG
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.SurgeryTpwConsumerSG
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.EigenRegularity_EG
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.EigenStrongMin_EG
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.RayleighEL_EG
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.RayleighAbs_EG
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.RayleighStab_EG
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.EigenfunctionPositive_EG
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.EigenfunctionPositiveConsumer_EG
