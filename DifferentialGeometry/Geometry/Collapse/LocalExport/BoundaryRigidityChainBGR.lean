@@ -15,8 +15,7 @@ Blueprint `master207B.tex`, BCG04 (B:9132); frozen target E1 of
 * `BoundaryGaf02Chain.chain_steps_BGR`: `‖g_j − F_∂‖ < c_{j−1}ρ` (tube membership at every stage)
   and `ρ > 20r_∂ ⟹ J_b g_j = 0`.
 * **`BoundaryGaf02Chain.bcg04_kernel_BGR`**: E1's three clauses on any slot with the stage-core
-  inclusion; **`BoundaryGaf02Chain.bcg04_actualSlots_BGR`**: on every chain over BAUG-D's ACTUAL
-  slot `actualSlots_BAUGD S` (A0a `actualSlots_stageCore_BAUGD`); `bcg04_BI_BGR`: BCG06's (BI)
+  inclusion; `bcg04_BI_BGR`: BCG06's (BI)
   premise at
   `C.E` with `ε_∂ = 20c₃r_∂`; `markerPair_eq_chainBoundary_BGR` (review 72 D72-5: physical units).
 -/
@@ -441,36 +440,6 @@ theorem bcg04_BI_BGR
   (C.bcg04_kernel_BGR hcore hc he hs hrd hprem hΛ hΔ hΛΔ).2.1 3 i p
 
 end BoundaryGaf02Chain
-
-/-- **BCG04 (BI) on every chain over the ACTUAL slot** `actualSlots_BAUGD S` (A0a discharges the
-stage-core inclusion): target E1 with the approved register clause, the augmented data's three plane
-specs as the fields of `BoundaryAugmentedDataP`. -/
-theorem BoundaryGaf02Chain.bcg04_actualSlots_BGR
-    {S : BoundarySupply K A β βd εN Λ w Δ σs σc μ b s b' s' ε γc βc Lmax τ γ δ εr e T V vs ζ Λz θ
-      W g δn n B oM} {D : BoundaryAugmentedData S (actualSlots_BAUGD S)} {Kj : ℕ}
-    {Ξ Sg eg c cw : Fin 3 → ℝ} {bcut bder κ : ℝ}
-    (C : BoundaryGaf02Chain D Kj Ξ Sg eg c cw bcut bder κ) {Γc Γe Γs ec ee es : ℝ}
-    (hc : BoundaryEnhancedPlaneSpec D.circle Γc (Sg 0) ec)
-    (he : BoundaryEnhancedPlaneSpec D.edge Γe (Sg 1) ee)
-    (hs : BoundaryEnhancedPlaneSpec D.slim Γs (Sg 2) es) {rd : ℝ} (hrd : 0 < rd)
-    (hprem : 1000 * δn ^ 2 < w / (2 * (1 + 2 * Λ⁻¹) ^ 3) * min (1 / 2) (rd / 4) ^ 2)
-    (hΛ : 0 ≤ Λ) (hΔ : 1 ≤ Δ) (hΛΔ : 1000000 * Δ * Λ < 1 / 100000) :
-    (∀ (k : Fin 4) (i : Fin S.packet.cusp.count) (p : W.Carrier), 20 * rd < S.rho p →
-      augmentedBoundaryCoord_BC7C i (C.stage k p) = (0, 0) ∧
-        S.packet.toBoundaryCollarPacket.block i p = (0, 0)) ∧
-    (∀ (k : Fin 4) (i : Fin S.packet.cusp.count) (p : W.Carrier),
-      |(augmentedBoundaryCoord_BC7C i (C.stage k p)).1 -
-          (S.packet.toBoundaryCollarPacket.block i p).1| < 20 * c 2 * rd ∧
-      |(augmentedBoundaryCoord_BC7C i (C.stage k p)).2 -
-          (S.packet.toBoundaryCollarPacket.block i p).2| < 20 * c 2 * rd) ∧
-    ∀ (i : Fin S.packet.cusp.count) (p : W.Carrier),
-      ∀ z ∈ segment ℝ (S.boundaryOriginalMap p) (C.E p),
-      |(augmentedBoundaryCoord_BC7C i z).1 - (S.packet.toBoundaryCollarPacket.block i p).1| <
-          20 * c 2 * rd ∧
-      |(augmentedBoundaryCoord_BC7C i z).2 - (S.packet.toBoundaryCollarPacket.block i p).2| <
-          20 * c 2 * rd :=
-  C.bcg04_kernel_BGR (fun st => (actualSlots_stageCore_BAUGD S st).superset) hc he hs hrd hprem
-    hΛ hΔ hΛΔ
 
 end DifferentialGeometry.Geometry.Collapse
 

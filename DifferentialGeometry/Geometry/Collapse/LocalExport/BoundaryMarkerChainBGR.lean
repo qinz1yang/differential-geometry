@@ -10,9 +10,7 @@ Blueprint `master207B.tex`, BCG05 (B:9202) and BCG04 (B:9132); frozen targets E3
 * `BoundaryStageSlot_BIF.stage_marker_BGR`: one stage keeps `v_b = 1` (every window contributor).
 * **`BoundaryGaf02Chain.bcg05_kernel_BGR`**: E3 — on `Safe_b`, `v_b(g_j p) = 1` for `j = 0, …, 3`,
 on any
-  slot with the stage-core inclusion; **`BoundaryGaf02Chain.bcg05_actualSlots_BGR`** on every chain
-  over
-  `actualSlots_BAUGD S`; `bcg05_BFM_BGR`: BCG06's (BFM) premise at `C.E`.
+  slot with the stage-core inclusion; `bcg05_BFM_BGR`: BCG06's (BFM) premise at `C.E`.
 * **`BoundaryGaf02Chain.bcg04_block_norm_BGR`**: E1's whole-block exit `‖J_b(g_j − F_∂)‖ < 20c₃r_∂`
   (D69-8; the scalar estimates of `bcg04_kernel_BGR` are its coordinates).
 -/
@@ -258,25 +256,6 @@ theorem bcg04_block_norm_BGR
     exact lt_of_le_of_lt hn hd
 
 end BoundaryGaf02Chain
-
-/-- **BCG05 (BFM) on every chain over the ACTUAL slot** `actualSlots_BAUGD S` (A0a discharges the
-stage-core inclusion): target E3 with the approved register clause and `θ < 1/100`. -/
-theorem BoundaryGaf02Chain.bcg05_actualSlots_BGR
-    {S : BoundarySupply K A β βd εN Λ w Δ σs σc μ b s b' s' ε γc βc Lmax τ γ δ εr e T V vs ζ Λz θ
-      W g δn n B oM} {D : BoundaryAugmentedData S (actualSlots_BAUGD S)} {Kj : ℕ}
-    {Ξ Sg eg c cw : Fin 3 → ℝ} {bcut bder κ : ℝ}
-    (C : BoundaryGaf02Chain D Kj Ξ Sg eg c cw bcut bder κ) {Γc Γe Γs ec ee es : ℝ}
-    (hc : BoundaryEnhancedPlaneSpec D.circle Γc (Sg 0) ec)
-    (he : BoundaryEnhancedPlaneSpec D.edge Γe (Sg 1) ee)
-    (hs : BoundaryEnhancedPlaneSpec D.slim Γs (Sg 2) es) (hθ : θ < 1 / 100) {rd : ℝ}
-    (hrd : 0 < rd) (hrd4 : rd < 1 / 10000)
-    (hprem : 1000 * δn ^ 2 < w / (2 * (1 + 2 * Λ⁻¹) ^ 3) * min (1 / 2) (rd / 4) ^ 2)
-    (hΛ : 0 ≤ Λ) (hΔ : 1 ≤ Δ) (hΛΔ : 1000000 * Δ * Λ < 1 / 100000) :
-    ∀ (k : Fin 4) (i : Fin S.packet.cusp.count),
-      ∀ p ∈ S.packet.toBoundaryCollarPacket.safeBand_BAUGA i,
-        (augmentedBoundaryCoord_BC7C i (C.stage k p)).2 = 1 :=
-  C.bcg05_kernel_BGR (fun st => (actualSlots_stageCore_BAUGD S st).superset) hc he hs hθ hrd hrd4
-    hprem hΛ hΔ hΛΔ
 
 end DifferentialGeometry.Geometry.Collapse
 
