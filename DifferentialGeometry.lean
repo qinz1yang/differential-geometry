@@ -26309,3 +26309,21 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingWindowAnchorBound_P6L
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.TracedRegionLocalLimitDepthSchedule_P6L
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingWindowAnchorBoundConsumer_P6L
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #40
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventCapNoShortcut
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.EventWindowEndpointPair
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.NonnegativeEventWindowEndpointPair
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.PhysicalWeightedLocalizedBarrierPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.PhysicalWeightedLocalizedBarrier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingWindowAnchorBound2_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.TracedRegionTimeZeroScalarBound_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingDepthExtension_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.DistinctPoleBirthWeightedMinimumPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.DistinctPoleBirthWeightedMinimum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.PhysicalWeightedSupportBranchesPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.PhysicalWeightedSupportBranches
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.EventWeightedContinuationPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.EventWeightedContinuation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteOutputDistanceScalarPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteOutputDistanceScalar
