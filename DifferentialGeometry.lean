@@ -27645,3 +27645,21 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.Const
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.TimeDerivativeThresholdC12X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSplicePostAC12X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.RSupplyLowerC12X
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #55
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.ClosedBirthConstantsAccuracyCXCA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.RecordHypFarC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.DeepTranslateC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.DeepTransportC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.DeepTransportHistoryC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.RSupplyNoGoC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.RSupplyNumericC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongUniformClassDeepC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSpliceFarC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSpliceGlueC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaSeedWindowCXCW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.Pre841SeedWindowCXCW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.Pre841E2ESeedWindowCXCW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaSeedWindowEndToEndCXCW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LeftBadLocalizationCXST
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LeftBadSequenceCXST
