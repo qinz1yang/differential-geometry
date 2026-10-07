@@ -2436,6 +2436,7 @@ example :
         HistoryEventControl K ∧ K.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records ∧
         (∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
           ((records i).static b).hasLinkedCanonicalWindow_C12X) ∧
+        RecordHypFar_C12X (5 / 4) K records ∧
         K.NoncollapsedBefore κ ε B ∧
         ∀ i : Fin K.eventCount,
           ∃ F : Set (K.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧
@@ -2465,6 +2466,7 @@ example :
         HistoryEventControl K ∧ K.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records ∧
         (∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
           ((records i).static b).hasLinkedCanonicalWindow_C12X) ∧
+        RecordHypFar_C12X (5 / 4) K records ∧
         K.NoncollapsedBefore κ ε B ∧
         ∀ i : Fin K.eventCount,
           ∃ F : Set (K.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧
@@ -3613,7 +3615,8 @@ example :
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
           (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
-          (∀ b, (Record.static b).witness.HasRadialCoordinates)) ∧
+          (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
+          Record.DeepNecks_C12X (5 / 4)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
@@ -3730,7 +3733,8 @@ example :
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
           (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
-          (∀ b, (Record.static b).witness.HasRadialCoordinates)) ∧
+          (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
+          Record.DeepNecks_C12X (5 / 4)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
@@ -3872,6 +3876,7 @@ example :
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
           (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
+          Record.DeepNecks_C12X (5 / 4) ∧
           E.poincareStandardDiscarded ∧ (K.toHistory.event i).poincareStandardDiscarded ∧
           (p₀.fixed = fixed → p₀.recenterConstant = recenterConstant →
             p₀.modelOrder = m → p₀.modelAccuracy = accuracy → ηrecord ≤ δold →
@@ -4022,6 +4027,7 @@ example :
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
           (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
+          Record.DeepNecks_C12X (5 / 4) ∧
           E.poincareStandardDiscarded ∧ (K.toHistory.event i).poincareStandardDiscarded ∧
           (p₀.fixed = fixed → p₀.recenterConstant = recenterConstant →
             p₀.modelOrder = m → p₀.modelAccuracy = accuracy → ηrecord ≤ δold →

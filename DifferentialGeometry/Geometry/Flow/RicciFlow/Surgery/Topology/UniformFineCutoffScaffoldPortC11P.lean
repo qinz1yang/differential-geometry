@@ -170,7 +170,8 @@ theorem exists_uniform_horn_cutoff_record_with_volume_debit_of_fineCutNecks_with
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
           (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
-          (∀ b, (Record.static b).witness.HasRadialCoordinates)) ∧
+          (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
+          Record.DeepNecks_C12X (5 / 4)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
@@ -383,7 +384,8 @@ theorem exists_uniform_horn_cutoff_record_with_volume_debit_of_fineCutNecks_with
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
           (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
-          (∀ b, (Record.static b).witness.HasRadialCoordinates)) ∧
+          (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
+          Record.DeepNecks_C12X (5 / 4)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
@@ -612,6 +614,7 @@ theorem exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le_with_radial_coor
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
           (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
+          Record.DeepNecks_C12X (5 / 4) ∧
           E.poincareStandardDiscarded ∧ (K.toHistory.event i).poincareStandardDiscarded ∧
           (p₀.fixed = fixed → p₀.recenterConstant = recenterConstant →
             p₀.modelOrder = m → p₀.modelAccuracy = accuracy → ηrecord ≤ δold →
@@ -698,8 +701,8 @@ theorem exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le_with_radial_coor
       (stepParameters.withNeckRadius ρ hρ) hinit hderiv hfinal P
       ((min_le_left _ _).trans (min_le_left _ _)) hεcut
       (min_le_left _ _) (min_le_right _ _) (hfine ρ hρ P hfineP) le_rfl hfloor
-  obtain ⟨Record, hRecordDelta, hRecordOrder, hRecordNeck, hRecordScale, hRecordWindows, hRecordCoordinates⟩ :=
-    hrecord
+  obtain ⟨Record, hRecordDelta, hRecordOrder, hRecordNeck, hRecordScale, hRecordWindows,
+    hRecordCoordinates, hRecordDeep⟩ := hrecord
   have hcanE : E.incoming.SpatiallyCanonicalBefore εbar C1 C2 qcan D.endTime := by
     rw [hG]
     exact hcanonical
@@ -715,8 +718,8 @@ theorem exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le_with_radial_coor
     hQpos, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
     hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC,
     hpM, hpDnew, hpAcc, hprotectedNew, hretained, hNscale, hsource, hNrecord, hTube,
-    ⟨Record, hRecordDelta, hRecordOrder, hRecordNeck, hRecordScale, hRecordWindows, hRecordCoordinates,
-      hstdE, hstdK, ?_⟩, hvol, hcap, hDistance⟩
+    ⟨Record, hRecordDelta, hRecordOrder, hRecordNeck, hRecordScale, hRecordWindows,
+      hRecordCoordinates, hRecordDeep, hstdE, hstdK, ?_⟩, hvol, hcap, hDistance⟩
   intro hfixed hrecenter hmodelOrder hmodelAccuracy hηold hρold
   obtain ⟨Eappend, hOldAppend, hInitial, _, hK⟩ := happend
   apply RetainedCoreHistory.hasCanonicalCutoffRecords_of_appendEvent_eq H K Eappend hOldAppend
@@ -862,6 +865,7 @@ theorem exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le_with_radial_coor
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
           (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
+          Record.DeepNecks_C12X (5 / 4) ∧
           E.poincareStandardDiscarded ∧ (K.toHistory.event i).poincareStandardDiscarded ∧
           (p₀.fixed = fixed → p₀.recenterConstant = recenterConstant →
             p₀.modelOrder = m → p₀.modelAccuracy = accuracy → ηrecord ≤ δold →
@@ -1427,7 +1431,7 @@ theorem exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le :
     radialProjectionh110
   refine ⟨radialProjectionfield111, radialProjectionfield112, radialProjectionfield113,
     radialProjectionfield114, radialProjectionfield115, ?_⟩
-  exact radialProjectionh116.2
+  exact radialProjectionh116.2.2
 
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

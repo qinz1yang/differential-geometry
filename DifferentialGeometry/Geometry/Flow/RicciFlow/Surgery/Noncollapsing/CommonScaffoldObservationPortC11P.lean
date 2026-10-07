@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinkedWindo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapRadialCoordinates
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventDistanceScalarPresentation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.DeepRecordC12X
 
 /-!
 # S-CH11-FIX11 port of astra `CommonScaffoldObservation`（`PortC11P`）
@@ -70,6 +71,7 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
         HistoryEventControl K ∧ K.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records ∧
         (∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
           ((records i).static b).hasLinkedCanonicalWindow_C12X) ∧
+        RecordHypFar_C12X (5 / 4) K records ∧
         K.NoncollapsedBefore κ ε B ∧
         ∀ i : Fin K.eventCount,
           ∃ F : Set (K.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧
@@ -146,6 +148,7 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
         H.horizon < B → H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound old →
         (∀ i b, ((old i).static b).witness.HasRadialCoordinates ∧
           ((old i).static b).hasLinkedCanonicalWindow_C12X) →
+        RecordHypFar_C12X (5 / 4) H old →
         ∀ (s : ℝ) (G : (H.stage (Fin.last H.eventCount)).IncomingSlab
           (H.time (Fin.last H.eventCount)) s), s ≤ B →
           G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -172,6 +175,7 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
               p₀ δbound ρbound records ∧
             (∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
           ((records i).static b).hasLinkedCanonicalWindow_C12X) ∧
+            RecordHypFar_C12X (5 / 4) (H.appendEvent E.incoming.lt E hinit) records ∧
             (∀ i : Fin H.eventCount,
               HEq (records i.castSucc).nominalRadius (old i).nominalRadius ∧
               HEq (records i.castSucc).delta (old i).delta ∧
@@ -191,7 +195,7 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
                 ENNReal.ofReal ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
               riemannianVolumeMeasure ThreeModel E.incoming.terminalRegularOpen
                 E.terminal.metric F := by
-    intro H A p old hhor hold hcoordinatesOld s G hs hinit hsing
+    intro H A p old hhor hold hcoordinatesOld hdeepOld s G hs hinit hsing
     let J := H.prefixAt (Fin.last H.eventCount)
     let initial : InitialIdentification P g J.toHistory := A.ofStageZero rfl HEq.rfl
     have hJhor : J.horizon < B := H.time_le_horizon.trans_lt hhor
@@ -220,7 +224,7 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
         (G.gradientBoundBefore_of_threshold_le (le_max_right _ _) hgradG)
         (fun y t ht hR hτ => hcanG y t ht ((le_max_right _ _).trans_lt hR) hτ)
         (G.spatiallyCanonicalBefore_of_threshold_le (le_max_right _ _) hspatG) hncG
-    obtain ⟨new, hwinNew, hcoordinatesNew, hδnew, hρnew⟩ := hrecord
+    obtain ⟨new, hwinNew, hcoordinatesNew, hdeepNew, hδnew, hρnew⟩ := hrecord
     have hsingE : E.incoming.SingularEndpoint := hEG.symm ▸ hsing
     have hfuture : H.horizon < s := actual_singular_event_after_horizon H E hinitE hsingE
     obtain ⟨A', hA⟩ := marked_singular_event_extension H A E hinitE hsingE
@@ -279,8 +283,11 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
     have hcoordinates : ∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
         ((records i).static b).hasLinkedCanonicalWindow_C12X :=
       fun i b => ⟨hradial i b, hlinked i b⟩
+    have hdeep : RecordHypFar_C12X (5 / 4) (H.appendEvent E.incoming.lt E hinitE) records :=
+      RecordHypFar_C12X.appendEvent_family_C12X H E.incoming.lt E hinitE old new records hOld
+        hNewNominal hNewDelta hNewOrder hNewNeck hdeepOld.1 hdeepNew hradial
     exact ⟨Q, E, hinitE, A', q, new, records, hEG, hfuture, hA, ⟨hqf, hqD, hqm, hqε, hqc⟩,
-      hδnew, hρnew, (fun b => (hwinNew b).hasCanonicalWindow), hfamily, hcoordinates,
+      hδnew, hρnew, (fun b => (hwinNew b).hasCanonicalWindow), hfamily, hcoordinates, hdeep,
       hOld, hNewNominal, hNewDelta, hNewOrder,
       hNewNeck, hNewStatic,
       hDistance (hqε.trans_le haccHalf) (hDClosed.trans hqD.symm.le), hbfr, hctrl, hdebit⟩
@@ -298,6 +305,7 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
       HistoryEventControl K ∧ K.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records ∧
       (∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
           ((records i).static b).hasLinkedCanonicalWindow_C12X) ∧
+      RecordHypFar_C12X (5 / 4) K records ∧
       ∀ i : Fin K.eventCount,
         ∃ F : Set (K.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧
           riemannianVolumeMeasure ThreeModel (K.stage i.succ).Carrier
@@ -308,7 +316,8 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
   have hzero : H₀ ∈ S := by
     refine ⟨hB.le, A₀, InitialIdentification.IsPrefixOf.refl A₀, p₀,
       (fun i => Fin.elim0 i), (fun i => Fin.elim0 i), (fun i => Fin.elim0 i), ?_,
-      (fun i => Fin.elim0 i), (fun i => Fin.elim0 i)⟩
+      (fun i => Fin.elim0 i), ⟨fun i => Fin.elim0 i, fun i => Fin.elim0 i⟩,
+      (fun i => Fin.elim0 i)⟩
     exact ⟨rfl, rfl, rfl, rfl, rfl,
       fun i => Fin.elim0 i, fun i => Fin.elim0 i, fun i => Fin.elim0 i⟩
   have hprefix : ∀ K ∈ S, H₀.toHistory.IsPrefixOf K.toHistory := by
@@ -320,7 +329,7 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
         (H₀.initialMetric 0) univ).toReal / v)
   have hcount : ∀ K ∈ S, K.eventCount ≤ ⌈budget⌉₊ := by
     intro K hK
-    obtain ⟨hKB, A, hA, p, records, _, _, _, _, hdebit⟩ := hK
+    obtain ⟨hKB, A, hA, p, records, _, _, _, _, _, hdebit⟩ := hK
     obtain ⟨hfixedK, hlowerK⟩ := A.fixedHamiltonIveyRegion_and_scalar_lower_bound hfixed hlower
     have hb := K.toHistory.eventCount_le_card_initial_add_volume_bound_of_fixedHamiltonIveyRegion
       records ha hfixedK hlowerK hv hKB hdebit
@@ -338,10 +347,10 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
             K.initialMetric (Fin.last K.eventCount)),
           E.incoming = G ∧ K.appendEvent E.incoming.lt E hi ∈ S := by
     intro K hK hKB s G hs hG hsing
-    obtain ⟨_, A, hA, p, records, hDistanceOld, hcontrol, hclass, hcoordinates, hdebit⟩ := hK
+    obtain ⟨_, A, hA, p, records, hDistanceOld, hcontrol, hclass, hcoordinates, hdeep, hdebit⟩ := hK
     obtain ⟨Q, E, hi, A', q, _, records', hEG, _, hAA', _, _, _, _, hclass', hcoordinates',
-      _, _, _, _, _, _, hDistanceE, hbfr, hdiscard, hdebitE⟩ :=
-      step K A p records hKB hclass hcoordinates s G hs hG hsing
+      hdeep', _, _, _, _, _, _, hDistanceE, hbfr, hdiscard, hdebitE⟩ :=
+      step K A p records hKB hclass hcoordinates hdeep s G hs hG hsing
     have hDistanceAppend : ∀ i : Fin (K.appendEvent E.incoming.lt E hi).eventCount,
         MetricCutCapEvent.HasUniformDistanceScalar
           ((K.appendEvent E.incoming.lt E hi).toHistory.event i) Cdist := by
@@ -363,17 +372,19 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
           (K.toHistory.event i)).symm.hasUniformDistanceScalar (hDistanceOld i)
     have hcontrolE : SurgeryEventControl E := ⟨hEG.symm ▸ hsing, hbfr, hdiscard⟩
     refine ⟨Q, E, hi, hEG, hs, A', hA.trans hAA', p.spliceAfter q K.horizon, records',
-      hDistanceAppend, history_control_append K hcontrol E hi hcontrolE, hclass', hcoordinates', ?_⟩
+      hDistanceAppend, history_control_append K hcontrol E hi hcontrolE, hclass', hcoordinates',
+      hdeep', ?_⟩
     exact K.appendEvent_compact_volume_debit E.incoming.lt E hi v hdebit hdebitE
   obtain ⟨J, hJ, heq | hclosed⟩ :=
     H₀.exists_closedSlab_extension_of_eventCount_bounded S hzero hprefix
       (fun K hK => hK.1) hcount hproduce
-  · obtain ⟨hJB, A, hA, p, records, hDistance, hcontrol, hclass, hcoordinates, hdebit⟩ := hJ
+  · obtain ⟨hJB, A, hA, p, records, hDistance, hcontrol, hclass, hcoordinates, hdeep, hdebit⟩ := hJ
     have hncJ := hnoncollapse J A p records hJB hclass
     rw [heq] at hncJ
-    exact ⟨J, A, p, records, heq, hA, hDistance, hcontrol, hclass, hcoordinates, hncJ, hdebit⟩
+    exact ⟨J, A, p, records, heq, hA, hDistance, hcontrol, hclass, hcoordinates, hdeep, hncJ,
+      hdebit⟩
   · obtain ⟨hJB, G, hG, _⟩ := hclosed
-    obtain ⟨_, A, hA, p, records, hDistance, hcontrol, hclass, hcoordinates, hdebit⟩ := hJ
+    obtain ⟨_, A, hA, p, records, hDistance, hcontrol, hclass, hcoordinates, hdeep, hdebit⟩ := hJ
     obtain ⟨A', hAA'⟩ := marked_closed_extension J A hJB G hG
     let K := J.extendHorizon B hJB G hG
     let records' : ∀ i : Fin K.eventCount, GeometricCutoffRecord K.toHistory i p :=
@@ -383,6 +394,7 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
       exact ⟨h1, h2, h3, h4, h5, h6, h7, h8⟩
     exact ⟨K, A', p, records', rfl, hA.trans hAA', hDistance,
       history_control_extend J hcontrol hJB G hG, hclass', hcoordinates,
+      RecordHypFar_C12X.extendHorizon_C12X B hJB G hG hdeep,
       hnoncollapse K A' p records' le_rfl hclass', hdebit⟩
 
 /-- Forget the distance certificate from the same producer result. -/
@@ -404,6 +416,7 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
         HistoryEventControl K ∧ K.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records ∧
         (∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
           ((records i).static b).hasLinkedCanonicalWindow_C12X) ∧
+        RecordHypFar_C12X (5 / 4) K records ∧
         K.NoncollapsedBefore κ ε B ∧
         ∀ i : Fin K.eventCount,
           ∃ F : Set (K.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧
@@ -505,7 +518,7 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
     radialProjectionfield33, radialProjectionh34⟩ := radialProjectionh29
   refine ⟨radialProjectionfield30, radialProjectionfield31, radialProjectionfield32,
     radialProjectionfield33, ?_⟩
-  exact radialProjectionh34.2
+  exact radialProjectionh34.2.2
 
 /-- The requested-quality observation interface, obtained from the same common
 scaffold callback with its already selected noncollapse radius and coefficient. -/

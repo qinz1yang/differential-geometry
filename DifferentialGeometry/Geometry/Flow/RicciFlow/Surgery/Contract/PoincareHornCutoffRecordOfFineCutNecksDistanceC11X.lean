@@ -2,6 +2,7 @@ import Batteries.Tactic.OpenPrivate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareHornCutoffRecordOfFineCutNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFineCutoffRecordDistanceC11X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinkedCanonicalWindowC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.DeepCutoffProducerC12X
 
 /-!
 # PoincareHornCutoffRecordOfFineCutNecksDistanceC11X
@@ -19,8 +20,7 @@ distance 相关 4 处得到）。`FiniteOutputDistanceScalar` 已由 S-CH11-FIX7
 下游 `UniformFineCutoffScaffold` 用 `open private … from` 取它。
 -/
 
-open private exists_uniform_selected_neck_retained_append_backward
-  nonempty_incomingBackwardNeck_record_of_selected_restrictions from
+open private nonempty_incomingBackwardNeck_record_of_selected_restrictions from
   DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PreparedHistoryCutoff
 
 open private incoming_terminal_and_poincareStandardDiscarded_of_retainedEvent_heq
@@ -185,7 +185,8 @@ private theorem exists_horn_cutoff_record_at_scale_of_prepared_history_of_fineCu
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
           (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
-          (∀ b, (Record.static b).witness.HasRadialCoordinates)) ∧
+          (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
+          Record.DeepNecks_C12X (5 / 4)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
@@ -199,8 +200,8 @@ private theorem exists_horn_cutoff_record_at_scale_of_prepared_history_of_fineCu
   refine ⟨Cdist, hCdist, fixed, c, hc, εcoarse, hεcoarse, ?_⟩
   intro Dtrace r tol a₀ Ctime ha₀ htol htolsmall hr hfit
   obtain ⟨εold, δold, hεold, hδold, hthreshold⟩ :=
-    exists_uniform_selected_neck_retained_append_backward Dtrace r tol a₀ Ctime ha₀ htol htolsmall
-      hr hfit
+    exists_uniform_selected_neck_retained_append_backwardDeep_C12X Dtrace r tol a₀ Ctime ha₀ htol
+      htolsmall hr hfit (θ := 5 / 4) (by norm_num) (by norm_num)
   refine ⟨εold, δold, hεold, hδold, ?_⟩
   intro Dcap hDcap hDfit m accuracy haccuracy ηrecord hηrecord a ha phi hphi
   obtain ⟨δ, εfactory, hδ, hδ1, hδη, hεfactory, hmake⟩ :=
@@ -233,8 +234,9 @@ private theorem exists_horn_cutoff_record_at_scale_of_prepared_history_of_fineCu
     hprotected, hretained, hscale, hsource, hNrecord, hTube, hrecord, hvol, hcapNew, hDistance⟩ :=
     hmake H initial htime D rfl rfl (heq_of_eq hinit) P hε hεc hεcε hεfactory' hfine Q hQscale
       hQnominal hQc
-  have hB : ∀ j, Nonempty (IncomingBackwardNeck K.toHistory i
-      (((NOriginal j).monoDelta (hδOriginal j) hδ1').lowerOrder (horderN j)) (Real.sqrt Q⁻¹)) := by
+  have hBdeep : ∀ j, Nonempty (IncomingBackwardNeckDeep_C12X K.toHistory i
+      (((NOriginal j).monoDelta (hδOriginal j) hδ1').lowerOrder (horderN j)) (Real.sqrt Q⁻¹)
+      (5 / 4)) := by
     obtain ⟨Eappend, hOldAppend, hInitial, hEappend, hK⟩ := happend
     have hEqE : Eappend = E := eq_of_heq hEappend
     subst Eappend
@@ -264,17 +266,23 @@ private theorem exists_horn_cutoff_record_at_scale_of_prepared_history_of_fineCu
     have hsc : (((NOriginal j).monoDelta (hδOriginal j) hδ1').lowerOrder (horderN j)).scale = Q :=
       hscale j
     simpa only [hsc] using hb
+  have hB := fun j => (hBdeep j).map IncomingBackwardNeckDeep_C12X.toIncomingBackwardNeck
   have hBrecord := nonempty_incomingBackwardNeck_record_of_selected_restrictions
     NOriginal hδOriginal hδ1' horderN rotation hmarkN side Nrecord eOriginal hNrecord hB
   obtain ⟨Record, hRecordDelta, hRecordOrder, hRecordNeck, hRecordScale, hRecordWindows, hRecordCoordinates⟩ :=
     hrecord hBrecord
+  have hRecordDeep : Record.DeepNecks_C12X (5 / 4) :=
+    GeometricCutoffRecord.deepNecks_of_selected_restrictions_C12X NOriginal hδOriginal hδ1' horderN
+      rotation hmarkN side Nrecord eOriginal hNrecord hBdeep Record hRecordDelta hRecordOrder
+      hRecordNeck hRecordScale
   exact ⟨Qout, E, hOld, K, initialK, i, parameters, n, δOriginal, kOriginal, NOriginal,
     hδOriginal, rotation, hmarkN, side, horderN, hδ1', Nrecord, eOriginal,
     hQ, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,
     hi, hsrc, hsrcTime, hout, houtTime, hEvent, happend, hpδ, hpR, hpρ, hpFixed, hpC, hpM, hpD,
     hpAcc,
     hprotected, hretained, hscale, hsource, hNrecord, hTube,
-    ⟨Record, hRecordDelta, hRecordOrder, hRecordNeck, hRecordScale, hRecordWindows, hRecordCoordinates⟩, hvol, hcapNew, hDistance⟩
+    ⟨Record, hRecordDelta, hRecordOrder, hRecordNeck, hRecordScale, hRecordWindows,
+      hRecordCoordinates, hRecordDeep⟩, hvol, hcapNew, hDistance⟩
 
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

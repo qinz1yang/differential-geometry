@@ -99,6 +99,7 @@ theorem exists_uniform_scaffold_surgery_step_with_radial_coordinates_with_distan
               (Fin.last H.eventCount) q,
             (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
             (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
+            Record.DeepNecks_C12X (5 / 4) ∧
             q.delta s ≤ δbound ∧ q.neckRadius s ≤ ρbound) ∧
           (q.modelAccuracy ≤ 1 / 2 → standardCapL + 1 ≤ q.modelRadius →
             E.toMetricCutCapEvent.HasUniformDistanceScalar Cdist) ∧
@@ -230,7 +231,7 @@ theorem exists_uniform_scaffold_surgery_step_with_radial_coordinates_with_distan
           (fun j y t ht hy => hgradH j y t ht (hqh.trans_lt hy)) hstrongEv hncH G L hsing
           (p₀.withNeckRadius ρ' hρ') hG (fun y t ht hy => hderG y t ht (hqh.trans_lt hy))
           (fun y t ht hy => hgradG y t ht (hqh.trans_lt hy)) hstrongG hncG P' hεPη Q hKQ))
-  obtain ⟨Record, -, -, -, -, hwin, hcoordinates, hstdE, -, -⟩ := hrecord
+  obtain ⟨Record, -, -, -, -, hwin, hcoordinates, hdeep, hstdE, -, -⟩ := hrecord
   obtain ⟨Eappend, hOldAppend, hInitial, hHEq, hK⟩ := happend
   have hEE := eq_of_heq hHEq
   subst hEE
@@ -240,7 +241,7 @@ theorem exists_uniform_scaffold_surgery_step_with_radial_coordinates_with_distan
   refine ⟨Qout, Eappend.toRetainedCoreEvent hOldAppend, hInitial, parameters, hEG, ?_,
     hpf'.trans hpf.symm, hpD'.trans hpD.symm, hpm'.trans hpm.symm, hpa'.trans hpa.symm,
     hpc'.trans hpc.symm,
-    ⟨Record, hwin, hcoordinates, (congrFun hpδ' s).le.trans hδη,
+    ⟨Record, hwin, hcoordinates, hdeep, (congrFun hpδ' s).le.trans hδη,
       (congrFun hpρ' s).le.trans ((hρle s hs0).trans (congrFun hpρ s).le)⟩,
     ?_, hbfr, hstdE, ?_⟩
   · exact H.hasCanonicalCutoffRecords_appendEvent _ (Eappend.toRetainedCoreEvent hOldAppend)
@@ -317,6 +318,7 @@ theorem exists_uniform_scaffold_surgery_step_with_radial_coordinates :
               (Fin.last H.eventCount) q,
             (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
             (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
+            Record.DeepNecks_C12X (5 / 4) ∧
             q.delta s ≤ δbound ∧ q.neckRadius s ≤ ρbound) ∧
           E.transition.boundaryFrameReversing ∧
           E.toMetricCutCapEvent.poincareStandardDiscarded ∧

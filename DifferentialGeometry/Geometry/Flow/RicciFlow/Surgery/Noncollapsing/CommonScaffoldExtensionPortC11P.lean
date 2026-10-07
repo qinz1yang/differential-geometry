@@ -138,7 +138,7 @@ theorem exists_common_scaffold_extension_with_raw_prefix_with_distance_scalars :
   intro δcut ρcut εcut Dcut mcut hδcut hρcut hεcut hDcut
   obtain ⟨p₀, δbound, ρbound, v, hfixedK, hrcK, haccK, hDK, hmK,
     hδK, hρK, hrec, hδbound, hρbound, hv, K, IK, pF, fine,
-    hKB, hIK, hDistanceK, hcontrolK, hfamilyK, hradK, hncK, hdebitK⟩ :=
+    hKB, hIK, hDistanceK, hcontrolK, hfamilyK, hradK, -, hncK, hdebitK⟩ :=
     make δcut ρcut (min pH.modelAccuracy εcut)
       (max pH.modelRadius Dcut) (max pH.modelOrder mcut)
       hδcut hρcut (lt_min pH.modelAccuracy_pos hεcut)
