@@ -27687,3 +27687,31 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedArithmet
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedGeodesicCXSP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedGeodesicConsumerCXSP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedHistoryCXSP
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #58
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KdataRescaleP6X3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaSeedWinBlockC11SW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopPBaseC11GT3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopLinkedC11GT3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HscalUContractP6M5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SelectionRetainedP6R2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedComponentCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedNeckCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedHistoryConsumerCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RestWindowConsumerCXRE
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HUshortP6M5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopV3C11GT3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NormalizeFullP6X3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaSeedWinSelectC11SW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaBlockBandBridgeC11SW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.Pre841E2EFreshC11SW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RoomDistSigmaP6R2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ClosedRetainedP6R2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6BufferedTransferP6ST2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6StageTransferP6ST2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HclosNormalizeP6X3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LocalizedTransferP6ST2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistQResidualP6R2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NotKResidualP6R2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ClosedResidualP6R2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaFreshObligationC11SW
