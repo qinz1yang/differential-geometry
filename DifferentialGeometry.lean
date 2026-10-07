@@ -26217,3 +26217,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialSurgery
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialSurgeryDecayPortC11P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialSurgeryDecay
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #34
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceCone5_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12Enhanced
