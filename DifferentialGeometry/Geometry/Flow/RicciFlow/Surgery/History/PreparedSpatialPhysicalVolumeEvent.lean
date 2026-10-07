@@ -92,6 +92,9 @@ theorem exists_surgery_with_same_flow_volume_or_reserve_and_positive_event_resta
         let req := request Aact E rTerm qDeriv ρ
         0 < req.1 ∧ req.1 ≤ 1 / 2 ∧ 0 < req.2.1 ∧ (StandardCap.transitionEnd + 10) < req.2.1 ∧
           4 ≤ req.2.2.1 ∧ 0 < req.2.2.2) ∧
+      (∀ (Aact E rTerm qDeriv ρ : ℝ), 0 ≤ E → 0 < rTerm → 0 < qDeriv → 0 < ρ →
+        let req := request Aact E rTerm qDeriv ρ
+        req.1 ≤ (E + 1)⁻¹ ∧ E ≤ req.2.1 ∧ E ≤ (req.2.2.1 : ℝ)) ∧
       (∀ (Aact Ebound rTerm qDeriv ρ : ℝ),
     0 ≤ Ebound → 0 < rTerm → 0 < qDeriv → 0 < ρ →
   let req := request Aact Ebound rTerm qDeriv ρ
@@ -805,11 +808,11 @@ theorem exists_surgery_with_same_flow_volume_or_reserve_and_positive_event_resta
     κLarge, hκLarge, hcMargin, hMarginMax, hMarginSpatial, hκAll, ?_⟩
   obtain ⟨pBase, base, hBaseHistory, hBaseInitial, hBaseShift, hBaseOffset,
       hBaseRadius, hBaseConstant, hBaseFit, hBaseQuality, hBaseDistance,
-      request, hRequest, hWindowScale, hWindow, hSupport, hChain⟩ :=
+      request, hRequest, hCof, hWindowScale, hWindow, hSupport, hChain⟩ :=
     makeAtMargin cMargin hcMargin hMarginMax
   refine ⟨pBase, base, hBaseHistory, hBaseInitial, hBaseShift, hBaseOffset,
     hBaseRadius, hBaseConstant, hBaseFit, hBaseQuality, hBaseDistance,
-    request, hRequest, hWindowScale, hWindow, hSupport, ?_⟩
+    request, hRequest, hCof, hWindowScale, hWindow, hSupport, ?_⟩
   obtain ⟨S, future, rNext, hFutureQuality, hStateQuality, hZero, hAllFit,
       hDistance, hState, hQuarter, hRequested, W, F, q, κ, records, hSaved, _hBirthStage⟩ :=
     hChain
@@ -1688,7 +1691,7 @@ theorem exists_surgery_with_same_flow_volume_or_reserve_and_positive_event_resta
   obtain ⟨hcMargin, hMarginMax, hMarginSpatial, hκAll,
       pBase, base, hBaseHistory, hBaseInitial, hBaseShift, hBaseOffset,
       hBaseRadius, hBaseConstant, hBaseFit, hBaseQuality, hBaseDistance,
-      request, hRequest, _hWindowScale, hWindow, hSupport, hChain⟩ := hSelected
+      request, hRequest, _hCof, _hWindowScale, hWindow, hSupport, hChain⟩ := hSelected
   refine ⟨hcMargin, hMarginMax, hMarginSpatial, hκAll,
     pBase, base, hBaseHistory, hBaseInitial, hBaseShift, hBaseOffset,
     hBaseRadius, hBaseConstant, hBaseFit, hBaseQuality, hBaseDistance,

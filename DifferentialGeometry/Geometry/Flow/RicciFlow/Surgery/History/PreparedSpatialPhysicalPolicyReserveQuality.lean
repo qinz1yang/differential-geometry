@@ -10,6 +10,12 @@ definition / proof idea altered；不加 `set_option`）。patched-at-path：下
 （原路径文本 = 本文件）：
 * 6 个陈述里裸名 `volume`（`IntervalIntegrable … volume`）在本树 unknown identifier
   （autoImplicit false；同 `PreparedSpatialPhysicalPolicy`）→ `MeasureTheory.volume`（折行）。
+* S-CH11-HCOF（statement 级新增，非 elaboration 修补）：private
+  `prepared_spatial_closed_physical_request_chains_with_window_scale_bound` 的 `request` 换成共尾
+  request `preparedSpatialCofinalRequest request₀`（`E → ∞` 时 `εcut → 0`、`Dcut → ∞`、`mcut → ∞`），
+  ∃ 陈述在 `hRequest` 后多带一个共尾子句 `hCof`；`hWindowScale / hWindow / hSupport` 对更严的
+  request 单调（`req.2.1 ≤ Dbig → req.2.2.1 ≤ m → ζ ≤ req.1` 都在前件），逐个提升；
+  public `…_at_closed_poles` 只改 obtain 模式（`_hCof`）。
 -/
 
 set_option autoImplicit false
@@ -24,6 +30,16 @@ open scoped Manifold ContDiff NNReal ENNReal Topology BigOperators
 
 namespace GC.GeneralFlow
 universe u
+
+/-- S-CH11-HCOF：共尾 request。`request` 换成 `(min ε (E + 1)⁻¹, max D E, max m ⌈E⌉₊, δ)`，
+于是 `E → ∞` 时 `εcut → 0`、`Dcut → ∞`、`mcut → ∞`（`δ` 分量不变）；四个子句对更严的 request 单调。 -/
+def preparedSpatialCofinalRequest
+    (request : ℝ → ℝ → ℝ → ℝ → ℝ → ℝ × ℝ × ℕ × ℝ) : ℝ → ℝ → ℝ → ℝ → ℝ → ℝ × ℝ × ℕ × ℝ :=
+  fun Aact E rTerm qDeriv ρ =>
+    (min (request Aact E rTerm qDeriv ρ).1 (E + 1)⁻¹,
+      max (request Aact E rTerm qDeriv ρ).2.1 E,
+      max (request Aact E rTerm qDeriv ρ).2.2.1 ⌈E⌉₊,
+      (request Aact E rTerm qDeriv ρ).2.2.2)
 
 /-- One closed-pole physical request and one genuine chain retain the same class quality and callbacks. -/
 private theorem prepared_spatial_closed_physical_request_chains_with_window_scale_bound
@@ -48,6 +64,9 @@ private theorem prepared_spatial_closed_physical_request_chains_with_window_scal
         let req := request Aact E rTerm qDeriv ρ
         0 < req.1 ∧ req.1 ≤ 1 / 2 ∧ 0 < req.2.1 ∧ (StandardCap.transitionEnd + 10) < req.2.1 ∧
           4 ≤ req.2.2.1 ∧ 0 < req.2.2.2) ∧
+      (∀ (Aact E rTerm qDeriv ρ : ℝ), 0 ≤ E → 0 < rTerm → 0 < qDeriv → 0 < ρ →
+        let req := request Aact E rTerm qDeriv ρ
+        req.1 ≤ (E + 1)⁻¹ ∧ E ≤ req.2.1 ∧ E ≤ (req.2.2.1 : ℝ)) ∧
       (∀ (Aact Ebound rTerm qDeriv ρ : ℝ),
     0 ≤ Ebound → 0 < rTerm → 0 < qDeriv → 0 < ρ →
   let req := request Aact Ebound rTerm qDeriv ρ
@@ -280,23 +299,54 @@ private theorem prepared_spatial_closed_physical_request_chains_with_window_scal
     hRadiusConstant, hFit, hBaseQuality, hDistance, makeChain⟩ := makeBase cMax hcMax
   have hc : 0 < pBase.recenterConstant := by
     linarith [pBase.recenterConstant_ge_four]
-  obtain ⟨request, hrequest, hWindowScale, hcapExclusion, hsupport⟩ :=
+  obtain ⟨request₀, hrequest₀, hWindowScale₀, hcapExclusion₀, hsupport₀⟩ :=
     ObservedHistory.exists_distinct_pole_half_clock_support_with_event_local_cap_exclusion_requests_at_closed_poles_with_window_scale_bound.{u}
       a₀ pBase.recenterConstant (StandardCap.transitionEnd + 10) constants.Ctime
       ha₀ hc (by linarith)
   refine ⟨pBase, base, hHistory, hInitial, hShift, hOffset, hRadius,
-    hRadiusConstant, hFit, hBaseQuality, hDistance, request,
-    hrequest, hWindowScale, hcapExclusion, hsupport, ?_⟩
-  apply makeChain (fun n _ _ rNext => preparedSpatialPhysicalQualityRequest request n rNext)
-  intro n _ _ rNext hrNext
-  obtain ⟨hε, _, hD, _, _, hδ⟩ :=
-    hrequest
-      (preparedSpatialPhysicalActionFactor (12 * (3 : ℝ) ^ n) *
-        Real.sqrt (2 * (3 : ℝ) ^ n))
-      (Real.sqrt ((3 : ℝ) ^ n)) (rNext / 100) ((rNext ^ 2)⁻¹) 1
-      (Real.sqrt_nonneg _) (by positivity) (by positivity) (by norm_num)
-  simpa only [preparedSpatialPhysicalQualityRequest, ite_eq_left hrNext] using
-    (And.intro hε (And.intro hD hδ))
+    hRadiusConstant, hFit, hBaseQuality, hDistance, preparedSpatialCofinalRequest request₀,
+    ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro Aact E rTerm qDeriv ρ hE hr hq hρ
+    obtain ⟨h1, h2, h3, h4, h5, h6⟩ := hrequest₀ Aact E rTerm qDeriv ρ hE hr hq hρ
+    exact ⟨lt_min h1 (inv_pos.2 (by linarith)), (min_le_left _ _).trans h2,
+      lt_max_of_lt_left h3, lt_max_of_lt_left h4, h5.trans (le_max_left _ _), h6⟩
+  · intro Aact E rTerm qDeriv ρ hE hr hq hρ
+    exact ⟨min_le_right _ _, le_max_right _ _,
+      (Nat.le_ceil E).trans (Nat.cast_le.2 (le_max_right _ _))⟩
+  · intro Aact E rTerm qDeriv ρ hE hr hq hρ _req P' Q' a s event fixed Dbig ζ m hD hm hζ b raw hcan
+    exact hWindowScale₀ Aact E rTerm qDeriv ρ hE hr hq hρ event
+      (le_trans (le_max_left _ _) hD) (le_trans (le_max_left _ _) hm)
+      (hζ.trans (min_le_left _ _)) raw hcan
+  · intro Aact E rTerm qDeriv ρ hE hr hq hρ _req H parameters records hI hS t first hle v hv0 hvE
+      hdom pole hball gamma hg1 hg2 hg3 hg4 hsum i hf hl hstart hrc hδ hnr hrec hdrv b Dbig ζ m S
+      hD hm hζ hcan hscale
+    exact hcapExclusion₀ Aact E rTerm qDeriv ρ hE hr hq hρ H parameters records hI hS t first hle v
+      hv0 hvE hdom pole hball gamma hg1 hg2 hg3 hg4 hsum i hf hl hstart hrc hδ hnr hrec hdrv b Dbig
+      ζ m S (le_trans (le_max_left _ _) hD) (le_trans (le_max_left _ _) hm)
+      (hζ.trans (min_le_left _ _)) hcan hscale
+  · intro H parameters records hrecenter hfixed hscalar t p x r A hr hA hT hseed
+      aSeed hSeedTime hSeedClock seedTrace _C _D a has hat v hv hhalf hclock hmem first last hle O
+      nodeA nodeE nodeR nodeQ nodeRho hnodes hDr
+    refine hsupport₀ H parameters records hrecenter hfixed hscalar t p x r A hr hA hT hseed
+      aSeed hSeedTime hSeedClock seedTrace a has hat v hv hhalf hclock hmem
+      nodeA nodeE nodeR nodeQ nodeRho (fun i hf hl => ?_) hDr
+    obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, hb⟩ := hnodes i hf hl
+    refine ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, fun b => ?_⟩
+    obtain ⟨Dbig, ζ, m, S, hD, hm, hζ, hrest⟩ := hb b
+    exact ⟨Dbig, ζ, m, S, le_trans (le_max_left _ _) hD, le_trans (le_max_left _ _) hm,
+      hζ.trans (min_le_left _ _), hrest⟩
+  · apply makeChain (fun n _ _ rNext =>
+      preparedSpatialPhysicalQualityRequest (preparedSpatialCofinalRequest request₀) n rNext)
+    intro n _ _ rNext hrNext
+    obtain ⟨hε, _, hD, _, _, hδ⟩ :=
+      hrequest₀
+        (preparedSpatialPhysicalActionFactor (12 * (3 : ℝ) ^ n) *
+          Real.sqrt (2 * (3 : ℝ) ^ n))
+        (Real.sqrt ((3 : ℝ) ^ n)) (rNext / 100) ((rNext ^ 2)⁻¹) 1
+        (Real.sqrt_nonneg _) (by positivity) (by positivity) (by norm_num)
+    simpa only [preparedSpatialPhysicalQualityRequest, preparedSpatialCofinalRequest,
+      ite_eq_left hrNext] using
+      (And.intro (lt_min hε (inv_pos.2 (by positivity))) (And.intro (lt_max_of_lt_left hD) hδ))
 
 theorem exists_prepared_spatial_physical_request_chains_with_cap_exclusion_and_reserve_quality_at_closed_poles
     (Dstar εReserve : ℝ) (hDstar : 0 < Dstar) (hεReserve : 0 < εReserve) :
@@ -538,7 +588,7 @@ theorem exists_prepared_spatial_physical_request_chains_with_cap_exclusion_and_r
   intro cMax hcMax
   obtain ⟨pBase, base, hHistory, hInitial, hShift, hOffset, hRadius,
       hRadiusConstant, hFit, hBaseQuality, hDistance, request,
-      hrequest, _hWindowScale, hcapExclusion, hsupport, hChain⟩ := makeBase cMax hcMax
+      hrequest, _hCof, _hWindowScale, hcapExclusion, hsupport, hChain⟩ := makeBase cMax hcMax
   exact ⟨pBase, base, hHistory, hInitial, hShift, hOffset, hRadius,
     hRadiusConstant, hFit, hBaseQuality, hDistance, request,
     hrequest, hcapExclusion, hsupport, hChain⟩

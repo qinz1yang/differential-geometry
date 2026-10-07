@@ -87,6 +87,9 @@ private theorem closed_pole_volume_or_reserve_with_saved_window_scale_bound
         let req := request Aact E rTerm qDeriv ρ
         0 < req.1 ∧ req.1 ≤ 1 / 2 ∧ 0 < req.2.1 ∧ (StandardCap.transitionEnd + 10) < req.2.1 ∧
           4 ≤ req.2.2.1 ∧ 0 < req.2.2.2) ∧
+      (∀ (Aact E rTerm qDeriv ρ : ℝ), 0 ≤ E → 0 < rTerm → 0 < qDeriv → 0 < ρ →
+        let req := request Aact E rTerm qDeriv ρ
+        req.1 ≤ (E + 1)⁻¹ ∧ E ≤ req.2.1 ∧ E ≤ (req.2.2.1 : ℝ)) ∧
       (∀ (Aact Ebound rTerm qDeriv ρ : ℝ),
     0 ≤ Ebound → 0 < rTerm → 0 < qDeriv → 0 < ρ →
   let req := request Aact Ebound rTerm qDeriv ρ
@@ -674,13 +677,13 @@ private theorem closed_pole_volume_or_reserve_with_saved_window_scale_bound
   intro cMargin hcMargin hMargin
   obtain ⟨pBase, base, hHistory, hInitial, hShift, hOffset, hRadius,
     hRadiusConstant, hBaseFit, hBaseQuality, hBaseDistance,
-    request, hRequest, hWindowScale, hWindow, hSupport, hChain⟩ := makeBase cMargin hcMargin
+    request, hRequest, hCof, hWindowScale, hWindow, hSupport, hChain⟩ := makeBase cMargin hcMargin
   obtain ⟨S, future, rNext, hFutureQuality, hStateQuality, hZero, hAllFit,
     hDistance, hState, hQuarter, hRequested, hW⟩ := hChain
   obtain ⟨W⟩ := hW
   refine ⟨pBase, base, hHistory, hInitial, hShift, hOffset, hRadius,
     hRadiusConstant, hBaseFit, hBaseQuality, hBaseDistance, request,
-    hRequest, hWindowScale, hWindow, hSupport, S, future, rNext, hFutureQuality,
+    hRequest, hCof, hWindowScale, hWindow, hSupport, S, future, rNext, hFutureQuality,
     hStateQuality, hZero, hAllFit, hDistance, hState, hQuarter, hRequested, W, ?_⟩
   obtain ⟨F, q, κ, records, hOld, hBirthStage⟩ :=
     S.exists_surgery_with_closed_start_physical_requests_and_birth_pole_stage hDistance
@@ -1383,7 +1386,7 @@ theorem exists_surgery_with_physical_requests_and_test_volume_or_reserve_at_clos
   intro cMargin hcMargin hMargin
   obtain ⟨pBase, base, hHistory, hInitial, hShift, hOffset, hRadius,
       hRadiusConstant, hBaseFit, hBaseQuality, hBaseDistance,
-      request, hRequest, _hWindowScale, hWindow, hSupport, hChain⟩ :=
+      request, hRequest, _hCof, _hWindowScale, hWindow, hSupport, hChain⟩ :=
     makeAtMargin cMargin hcMargin hMargin
   exact ⟨pBase, base, hHistory, hInitial, hShift, hOffset, hRadius,
     hRadiusConstant, hBaseFit, hBaseQuality, hBaseDistance,
