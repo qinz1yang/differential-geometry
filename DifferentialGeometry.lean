@@ -25874,3 +25874,22 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.VaryingMetricCompact
 
 -- chapter 8 (gc/liao/ch8-20261006): root registration #23
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.VaryingMetricCompactnessR7CPower
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #24
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.F4.OutputF4D
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.F4.CollisionCoverF4D
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.F4.ArcIntersectionF4D
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.F4.BlockedThickeningF4C0
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.F4.SlabTwoSidedF4C0
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CollisionNodalF4AMetric
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CollisionNodalF4AChart
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CollisionNodalF4AHeight
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CollisionNodalF4ATransv
+import DifferentialGeometry.Analysis.Elliptic.Planar.AnalyticNodalSmoothF4A
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CollisionNodalF4ABallify
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CollisionNodalF4ACross
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CollisionNodalF4ATang
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CollisionNodalF4AModel
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CollisionNodalF4A
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CollisionNodalF4ATrim
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CollisionNodalF4AContact
