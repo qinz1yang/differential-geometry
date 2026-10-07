@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWLateSequenceWA2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.WR.A09OfEnhancedC11M
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.WR.A13OfEnhancedC11M
 
 /-!
 # A12′ re-point 的 core（O-CH11-REPOINT G1a；rev1 = O-CH11-REPOINT2，2026-10-07）
@@ -42,9 +44,11 @@ theorem hasLateSequenceTests_of_thick_thin_and_obstruction_of_enhanced_C11R
     hasLateSequenceTests F K := by
   have hadm : hasAnalyticAdmissibility F δ := hasAnalyticAdmissibility_of_full_C11F henh
   intro slices htimes hnonempty
-  obtain ⟨L⟩ := exists_late_cut_family F K hK δ hadm hdec slices htimes hnonempty
+  obtain ⟨L⟩ := exists_late_cut_family_of_enhanced_C11M F K hK δ henh hdec slices htimes
+    hnonempty
   obtain ⟨A, hA, htests⟩ := L.exists_late_tests_of_derivative_bounds
-    (late_derivative_tests_of_flow F K hK δ henh hdec slices htimes hnonempty L)
+    (late_derivative_tests_of_flow_of_enhanced_C11M F K hK δ henh hdec slices htimes
+      hnonempty L)
   refine ⟨A, hA, ?_⟩
   intro w hw hc
   obtain ⟨N, hn⟩ := htests w hw hc
