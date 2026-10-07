@@ -27590,3 +27590,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.GoodCoef
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SelectionCoeffP6M3
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ClosureLateCgP6M3
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LateSupplyAntiP6M3
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #52
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSurviveMetricC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.HUVSlabGoodCg_P6LS3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HUVCondCgP6S3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HUVGlobalCgP6S3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSurviveBC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.HsmallAssemblySeedScaleC11V5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.WindowGlueSeedScaleC11V5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSpliceC12X
