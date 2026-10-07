@@ -25871,3 +25871,6 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.VaryingMetricCompact
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.VaryingMetricCompactnessR7CBoundaryDecay
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.VaryingMetricCompactnessR7CLift
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.VaryingMetricCompactnessR7CBoundaryEventual
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #23
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.VaryingMetricCompactnessR7CPower
