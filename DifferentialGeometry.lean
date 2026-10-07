@@ -27484,3 +27484,34 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.Stron
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaFineBarrierCoreC11Q5
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaFineScaleC11Q5
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaFineEndToEndC11Q5
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #49
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaPre841ThreeFineCapC11KD
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongNativeLayerC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongNativeLayerChainC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.ClosedBirthConstantsStrongC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingWindowAnchorBound2_P6L2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.TracedRegionTimeZeroScalarBound_P6L2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingDepthExtension2_P6L2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WitnessConditionalP6M2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Dist.PrefixTracedC11G3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Dist.HdistCondC11G3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongUniformCoreC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Dist.EarlierSeedC11G3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Dist.HdistCondAnySeedC11G3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaEventStepC11Q4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaEventInductionC11Q4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongChainRestrictInvC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongChainMainC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongUniformCrossingC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaEventContactC11Q4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaFineRealizationC11Q5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaRegionalCenterC11Q4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopC11GT
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Dist.HgeomAnySeedC11G3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.SliceDichotomy_P6L2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.SliceDichotomyBranches_P6L2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceDichotomyP6M2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SelectionP6X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SelectedCloseP6X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongUniformClassC12X
