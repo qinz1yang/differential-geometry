@@ -61,7 +61,7 @@ structure ClosedBirthPreparedClass (pBase : CutoffParameters) (C : ClosedBirthCo
     ∀ y : (V.stage 0).Carrier, metricScalarAt (V.initialMetric 0) y < Qzero
   extension : PreparedGeometricObservationExtension P g B epsilonClass kappaClass
     parameters deltaBound radiusBound
-  control : ∀ (V : RetainedCoreHistory.{u}) (IV : InitialIdentification P g V.toHistory)
+  control : ∀ (V : RetainedCoreHistory.{u}) (_IV : InitialIdentification P g V.toHistory)
     (pV : CutoffParameters)
     (records : ∀ i : Fin V.eventCount, GeometricCutoffRecord V.toHistory i pV),
     V.horizon ≤ B → V.IsCanonicalCutoffRecordFamily parameters deltaBound radiusBound records →
@@ -94,6 +94,7 @@ structure PreparedSpatialState (pBase : CutoffParameters) (C : ClosedBirthConsta
   modelRadius_bound : StandardCap.transitionEnd < parameters.modelRadius + 1
   eventControl : HistoryEventControl history
   windows : ∀ i b, ((records i).static b).hasCanonicalWindow
+  linked : ∀ i b, ((records i).static b).hasLinkedCanonicalWindow_C12X
   kappa : ℝ
   kappa_pos : 0 < kappa
   noncollapsed : history.NoncollapsedBefore kappa C.epsilon history.horizon

@@ -581,7 +581,7 @@ theorem exists_horn_cutoff_history_extension_with_canonical_windows_of_fineCutNe
     hNrecord, hTube, ?_, hvol, hcap⟩
   intro hB
   obtain ⟨G, hδG, hkG, hNG, hscaleG, -, -, -, -, -, -, -, -, hcanon, hcoordinatesG⟩ := hrecord hB
-  refine ⟨G, hδG, hkG, hNG, ?_, hcanon (hcanonical (by simpa only [hpD] using hDfit)),
+  refine ⟨G, hδG, hkG, hNG, ?_, hcanon.1 (hcanonical (by simpa only [hpD] using hDfit)),
     hcoordinatesG hcoordinates⟩
   intro j
   exact (hscaleG j).trans (by rw [Real.sq_sqrt (inv_nonneg.mpr hQ.le), inv_inv])

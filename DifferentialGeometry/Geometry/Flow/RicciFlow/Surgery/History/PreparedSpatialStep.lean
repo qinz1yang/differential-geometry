@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialStepRetention
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordDelayedRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedOverlapClosedSeam
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinkedWindowTransportC11SL
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffAccuracyGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialDistanceData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.AffineEventDistanceScalar
@@ -286,7 +287,24 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
           have h : H.horizon = E := L.horizon_eq
           rw [h]
           exact hdOld) hdeltaFine
+    have hlinkCoarseH : ∀ i b, (((native i).restrictModelWindow
+        (fun b => (hwin i b).hasCanonicalWindow) L.parameters.modelRadius_pos hDH hmH
+          haccH).static b).hasLinkedCanonicalWindow_C12X :=
+      fun i b => GeometricCutoffRecord.hasLinkedCanonicalWindow_restrictModelWindow_C11SL
+        (native i) (fun b => (hwin i b).hasCanonicalWindow) (hwin i)
+        L.parameters.modelRadius_pos hDH hmH haccH L.modelRadius_bound b
+    have hlinkJoined : ∀ j b, ((joinedH j).static b).hasLinkedCanonicalWindow_C12X :=
+      joined_static_linked_C11SL (pH := L.parameters) (pC := pCH) (q := q0) IoldH AJ
+        ⟨rfl, rfl, rfl, rfl⟩
+        ⟨L.static_eq.1.trans hfixedFine.symm, rfl, rfl, rfl⟩ L.records
+        (fun i => (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+          L.parameters.modelRadius_pos hDH hmH haccH)
+        joinedH (fun i => (hOldH i).2.2.2.2) (fun i => (hTailH i).2.2.2.2) L.linked
+        hlinkCoarseH
     obtain ⟨recordsDelta, hrecordsDelta, hwindowsDelta⟩ := accuracyRecords joinedH hwinJ
+    have hlinkDelta : ∀ i b, ((recordsDelta i).static b).hasLinkedCanonicalWindow_C12X :=
+      fun i => linked_of_record_static_heq_C11SL (joinedH i) (recordsDelta i) rfl rfl rfl rfl
+        (hrecordsDelta i).2.2.2.2.2 (hlinkJoined i)
     let pFinal := ({ qDelta with
       neckRadius := L.parameters.neckRadius,
       neckRadius_pos := L.parameters.neckRadius_pos }).spliceAfter
@@ -302,6 +320,10 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
         (L.horizon_eq.trans_le hEactivation) hradiusFine
     obtain ⟨recordsFinal, hrecordsFinal, hwindowsFinal⟩ :=
       radiusRecords recordsDelta hwindowsDelta
+    have hlinkedFinal : ∀ i b, ((recordsFinal i).static b).hasLinkedCanonicalWindow_C12X :=
+      fun i => linked_of_record_static_heq_C11SL (recordsDelta i) (recordsFinal i)
+        hFinalFixed hFinalModelRadius hFinalModelOrder hFinalModelAccuracy
+        (hrecordsFinal i).2.2.2.2.2 (hlinkDelta i)
     have hPast : ∀ t : ℝ, t ≤ E →
         pFinal.delta t = L.parameters.delta t ∧
         pFinal.neckRadius t = L.parameters.neckRadius t ∧
@@ -403,7 +425,8 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
     let pReserve := pF.withModelWindow pNew.modelRadius pNew.modelOrder pNew.modelAccuracy
       pNew.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccNew)
     let reserved : ∀ i : Fin N.eventCount, GeometricCutoffRecord N.toHistory i pReserve :=
-      fun i => (native i).restrictModelWindow (hwin i) pNew.modelRadius_pos hDNew hmNew haccNew
+      fun i => (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+          pNew.modelRadius_pos hDNew hmNew haccNew
     let R : PreparedSpatialState pBase C P g B Bnext := {
       history := J
       initial := IJ
@@ -414,6 +437,7 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
       modelRadius_bound := L.modelRadius_bound
       eventControl := hcontrolJ
       windows := hwindowsFinal
+      linked := hlinkedFinal
       kappa := κJ
       kappa_pos := hκJ
       noncollapsed := hncJ
@@ -467,7 +491,8 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
     refine ⟨{
       fineParameters := pF
       fineRecords := native
-      fineWindows := hwin
+      fineWindows := fun i b => (hwin i b).hasCanonicalWindow
+      fineLinked := hwin
       fine_fixed := hfixedFine
       fine_recenter := hrcFine
       fine_accuracy := haccFine

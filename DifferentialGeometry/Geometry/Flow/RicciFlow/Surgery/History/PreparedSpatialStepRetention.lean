@@ -22,6 +22,7 @@ structure PreparedSpatialStepRetention
   fineRecords : ∀ i : Fin R.native.eventCount,
     GeometricCutoffRecord R.native.toHistory i fineParameters
   fineWindows : ∀ i b, ((fineRecords i).static b).hasCanonicalWindow
+  fineLinked : ∀ i b, ((fineRecords i).static b).hasLinkedCanonicalWindow_C12X
   fine_fixed : fineParameters.fixed = pBase.fixed
   fine_recenter : fineParameters.recenterConstant = pBase.recenterConstant
   fine_accuracy : fineParameters.modelAccuracy ≤ εcut

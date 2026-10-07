@@ -64,6 +64,9 @@ def observation (n : ℕ) : ScaffoldState pBase P g C.epsilon n where
   control := history_control_restrict (S.state (n + 1)).eventControl (S.observationTime n)
   windows := (S.state (n + 1)).history.canonicalWindows_restrictRecords
     (S.observationTime n) (S.state (n + 1)).records (S.state (n + 1)).windows
+  linked := fun i b => (S.state (n + 1)).linked
+    (Fin.castLE (Nat.le_of_lt_succ ((S.state (n + 1)).history.toHistory.activeStage
+      (S.observationTime n)).isLt) i) b
   kappa := (S.state (n + 1)).kappa
   kappa_pos := (S.state (n + 1)).kappa_pos
   noncollapsed := (S.state (n + 1)).history.noncollapsedBefore_restrict

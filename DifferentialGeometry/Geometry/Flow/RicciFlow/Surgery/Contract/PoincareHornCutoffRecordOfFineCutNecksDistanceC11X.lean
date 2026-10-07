@@ -1,6 +1,7 @@
 import Batteries.Tactic.OpenPrivate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareHornCutoffRecordOfFineCutNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFineCutoffRecordDistanceC11X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinkedCanonicalWindowC12X
 
 /-!
 # PoincareHornCutoffRecordOfFineCutNecksDistanceC11X
@@ -183,7 +184,7 @@ private theorem exists_horn_cutoff_record_at_scale_of_prepared_history_of_fineCu
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal

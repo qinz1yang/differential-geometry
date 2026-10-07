@@ -2,6 +2,8 @@ import Batteries.Tactic.OpenPrivate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFineCutoffRecord
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornCutoffRecordC11X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteOutputDistanceScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteMetricEventDebitC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinkedCanonicalWindowC12X
 
 /-!
 # HornFineCutoffRecordDistanceC11X
@@ -112,7 +114,7 @@ private theorem exists_prepared_horn_cutoff_event_with_original_neck_bounds_of_f
         ∃ F : PreparedCutoffEventGeometry E p δ (Real.sqrt Q⁻¹)
           (max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)), PreparedCutoffEventGeometry.neck F = N ∧
           (transitionEnd < p.modelRadius + 1 →
-            ∀ b, (PreparedCutoffEventGeometry.static F b).hasCanonicalWindow) ∧
+            ∀ b, (PreparedCutoffEventGeometry.static F b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (PreparedCutoffEventGeometry.static F b).witness.HasRadialCoordinates) ∧
           ∃ (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
             (NOriginal : ∀ j, NormalizedNeck E.terminal.metric (δOriginal j) (kOriginal j))
@@ -203,8 +205,10 @@ private theorem exists_prepared_horn_cutoff_event_with_original_neck_bounds_of_f
   classical
   obtain ⟨Cdist, hCdist, distanceFactory⟩ :=
     exists_uniform_finite_output_distance_scalar.{u}
-  obtain ⟨c, hc, C, hC, A, hA, hsmall, hfactory⟩ :=
-    exists_uniform_metricCutCapEvent_volume_debit_with_recenter_data.{u}
+  obtain ⟨c, δrec, hc, hδrec, hrecAll⟩ := exists_fixed_offset_recentering.{0, 0, u}
+  obtain ⟨C, hC, A, hA, hsmall, hfactory⟩ :=
+    exists_uniform_metricCutCapEvent_volume_debit_with_recenter_data_C12X.{u} c δrec hc hδrec
+      hrecAll
   obtain ⟨eta, heta, hchoose⟩ := exists_finite_first_hit_oriented_horn_neck_data_of_fineCutNecks.{u}
   choose δcap hδcap hcapHalf hcapScalar using
     exists_metricCutCapEvent_capRegion_scalar_lower A hA
@@ -212,7 +216,7 @@ private theorem exists_prepared_horn_cutoff_event_with_original_neck_bounds_of_f
   have hKreset : 3 ≤ Kreset := le_max_left _ _
   refine ⟨Cdist, hCdist, c, hc, A, hA, Kreset, ⟨hKreset, hsmall.2⟩, eta, heta, ?_⟩
   intro Dcap hDcap m accuracy haccuracy η hη
-  obtain ⟨δ₀, hδ₀, hquarter₀, hmake⟩ := hfactory Dcap hDcap m accuracy haccuracy δcap hδcap
+  obtain ⟨δ₀, hδ₀, hquarter₀, hδ₀rec, hmake⟩ := hfactory Dcap hDcap m accuracy haccuracy δcap hδcap
   let δ := min δ₀ η
   have hδ : 0 < δ := lt_min hδ₀ hη
   have hδη : δ ≤ η := min_le_right _ _
@@ -390,14 +394,28 @@ private theorem exists_prepared_horn_cutoff_event_with_original_neck_bounds_of_f
           ((congrArg (finiteFullWitnessMap ThreeModel finrank_threeSpace_eq_three transitionEnd_pos
             (fun j => (d j).precision_pos) f hf hd hlocal R c hc (eBoundary b)) hu.2).trans
               hcapEq.symm)⟩
-  have hcanonical : transitionEnd < p.modelRadius + 1 → ∀ b, (S b).hasCanonicalWindow := by
+  have hlinked : transitionEnd < p.modelRadius + 1 →
+      ∀ b, (S b).hasLinkedCanonicalWindow_C12X := by
     intro hfit
-    exact hasCanonicalWindow_of_finite_metric_stage
+    have hδrec' : δ ≤ δrec := (min_le_left _ _).trans hδ₀rec
+    choose dH hdH _ using fun j => normalizedDatum.exists_highOrder_of_heq_lowerOrder_C12X
+      (hdata j).1 _ (horder j) (d j) (hdatum j)
+    choose hfitR dR hRmap hRside _ using fun j (s : Bool) =>
+      hrecAll ThreeSpace ThreeSpace ThreeModel D.slab.terminalRegularOpen D.terminal.metric
+        (x₀ j) δ (kOrig j) (dH j) (by have := horder j; omega) hδrec' (cuttingSign s)
+        (cuttingSign_sq s)
+    choose dU wU hwU using fun b : {b // cuttingSphereComponent (fun j => (d j).precision_pos)
+        f hf hd b ∈ R} =>
+      exists_linked_upgrade_C12X (d b.val.1) (dH b.val.1) (hdH b.val.1) (cuttingSign_sq b.val.2)
+        (hrec b) (dCap b) (hcapMap b) (hcapSide b) (by have := horder b.val.1; omega)
+        (dR b.val.1 b.val.2) (hRmap b.val.1 b.val.2) (hRside b.val.1 b.val.2) hDcap (w b)
+    exact hasLinkedCanonicalWindow_of_finite_metric_stage_C12X
       (fixed := p.fixed) (D := p.modelRadius) (m := p.modelOrder) (ε := p.modelAccuracy)
       D.stage (fun j => (d j).precision_pos) f hf hd hlocal R oRet
       D.slab D.terminal E hG hL hRet c hc x₀ (fun _ => p.modelOrder + 6) d (fun _ => rfl)
-      (fun _ => p.modelOrder + 4) hrec dCap hcapMap hcapSide w hOutput
-      eBoundary S hSscale hSwindow (hmarkWindow hfit)
+      (fun _ => p.modelOrder + 4) hrec dCap hcapMap hcapSide w (fun b => kOrig b.val.1) dU wU hwU
+      (fun b => two_floor_inv_mul_le_C12X (by linarith) hδ ((le_max_right _ _).trans (hk b.val.1)))
+      hOutput eBoundary S (fun b => (hSδ b).ge) hSscale hSwindow (hmarkWindow hfit)
   obtain ⟨eEvent, geometry, hgeometry, hStatic⟩ :=
     exists_preparedCutoffEventGeometry_of_static_family_stage D.stage
       (fun j => (d j).precision_pos) (fun j => (d j).precision_lt_one)
@@ -436,7 +454,7 @@ private theorem exists_prepared_horn_cutoff_event_with_original_neck_bounds_of_f
         E.HasUniformDistanceScalar Cdist)
       (distanceFactory D.stage (fun j => (d j).precision_pos) f hf hd hlocal R
         p.recenterConstant p.recenterConstant_ge_four oRet E S hOld hScoordinates
-        (hcanonical hfit) haccuracy hmodel)
+        (fun b => (hlinked hfit b).hasCanonicalWindow) haccuracy hmodel)
     exact htransport
       (fun b => (d b.val.1).offsetPoint (cuttingSign_sq b.val.2))
       (fun _ => p.modelOrder + 4) dCap w eBoundary hOldRange hSwindow
@@ -446,7 +464,7 @@ private theorem exists_prepared_horn_cutoff_event_with_original_neck_bounds_of_f
     exact (hNEscale j).trans (hdata j).2.1
   refine ⟨_, E, p, PreparedCutoffEventGeometry.neck geometry, hQ, hG, hL, hOld, hBoundary,
     rfl, ?_, rfl, rfl, rfl, rfl, rfl, rfl, hr, hvol, hDistance, hbound, hreset, geometry, rfl,
-    (fun hfit b => by rw [hStatic]; exact hcanonical hfit b),
+    (fun hfit b => by rw [hStatic]; exact hlinked hfit b),
     (fun b => by rw [hStatic]; exact hScoordinates b),
     _, δOrig, kOrig, NOrigE, hδOrig, rotation, hmarkE, side, hk, hδ1, eEvent, hEscale,
     (fun j => ⟨(hdata j).2.2.1, (hdata j).2.2.2⟩), ?_, ?_⟩
@@ -553,7 +571,7 @@ theorem exists_horn_cutoff_history_extension_with_canonical_windows_of_fineCutNe
             G.delta = (fun _ => δ) ∧
             G.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
             HEq G.neck Nrecord ∧ (∀ j, (G.neck j).scale = Q) ∧
-            (∀ b, (G.static b).hasCanonicalWindow) ∧
+            (∀ b, (G.static b).hasLinkedCanonicalWindow_C12X) ∧
             (∀ b, (G.static b).witness.HasRadialCoordinates)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
@@ -634,7 +652,7 @@ theorem exists_horn_cutoff_history_extension_with_canonical_windows_of_fineCutNe
     hNrecord, hTube, ?_, hvol, hcap, hDistanceK⟩
   intro hB
   obtain ⟨G, hδG, hkG, hNG, hscaleG, -, -, -, -, -, -, -, -, hcanon, hcoordinatesG⟩ := hrecord hB
-  refine ⟨G, hδG, hkG, hNG, ?_, hcanon (hcanonical (by simpa only [hpD] using hDfit)),
+  refine ⟨G, hδG, hkG, hNG, ?_, hcanon.2 (hcanonical (by simpa only [hpD] using hDfit)),
     hcoordinatesG hcoordinates⟩
   intro j
   exact (hscaleG j).trans (by rw [Real.sq_sqrt (inv_nonneg.mpr hQ.le), inv_inv])

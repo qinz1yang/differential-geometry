@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.NoncollapsedGeometricObservation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.UniformScaffoldSurgeryStep
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinkedWindowTransportC11SL
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapRadialCoordinates
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventDistanceScalarPresentation
@@ -67,7 +68,8 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
         K.horizon = B ∧ (InitialIdentification.atZero P g).IsPrefixOf A ∧
         (∀ i : Fin K.eventCount, (K.toHistory.event i).HasUniformDistanceScalar Cdist) ∧
         HistoryEventControl K ∧ K.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records ∧
-        (∀ i b, ((records i).static b).witness.HasRadialCoordinates) ∧
+        (∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
+          ((records i).static b).hasLinkedCanonicalWindow_C12X) ∧
         K.NoncollapsedBefore κ ε B ∧
         ∀ i : Fin K.eventCount,
           ∃ F : Set (K.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧
@@ -142,7 +144,8 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
         (A : InitialIdentification P g H.toHistory) (p : CutoffParameters)
         (old : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p),
         H.horizon < B → H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound old →
-        (∀ i b, ((old i).static b).witness.HasRadialCoordinates) →
+        (∀ i b, ((old i).static b).witness.HasRadialCoordinates ∧
+          ((old i).static b).hasLinkedCanonicalWindow_C12X) →
         ∀ (s : ℝ) (G : (H.stage (Fin.last H.eventCount)).IncomingSlab
           (H.time (Fin.last H.eventCount)) s), s ≤ B →
           G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -167,7 +170,8 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
             (∀ b, (new.static b).hasCanonicalWindow) ∧
             (H.appendEvent E.incoming.lt E hinit).IsCanonicalCutoffRecordFamily
               p₀ δbound ρbound records ∧
-            (∀ i b, ((records i).static b).witness.HasRadialCoordinates) ∧
+            (∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
+          ((records i).static b).hasLinkedCanonicalWindow_C12X) ∧
             (∀ i : Fin H.eventCount,
               HEq (records i.castSucc).nominalRadius (old i).nominalRadius ∧
               HEq (records i.castSucc).delta (old i).delta ∧
@@ -222,8 +226,9 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
     obtain ⟨A', hA⟩ := marked_singular_event_extension H A E hinitE hsingE
     obtain ⟨records, hfamily, hOld, hNewNominal, hNewDelta, hNewOrder, hNewNeck, hNewStatic⟩ :=
       H.exists_isCanonicalCutoffRecordFamily_appendEvent_spliceAfter E.incoming.lt E hinitE
-        hfuture old hold new ⟨hqf, hqD, hqm, hqε, hqc⟩ hwinNew hδnew hρnew
-    have hcoordinates : ∀ i b, ((records i).static b).witness.HasRadialCoordinates := by
+        hfuture old hold new ⟨hqf, hqD, hqm, hqε, hqc⟩
+        (fun b => (hwinNew b).hasCanonicalWindow) hδnew hρnew
+    have hradial : ∀ i b, ((records i).static b).witness.HasRadialCoordinates := by
       intro i
       cases i using Fin.lastCases with
       | last =>
@@ -246,9 +251,37 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
           (H.appendEvent_time_castSucc E.incoming.lt E hinitE i.castSucc)
           (H.appendEvent_time_castSucc E.incoming.lt E hinitE i.succ) hE
           rfl rfl rfl rfl (old i).static (records i.castSucc).static
-          (hOld i).2.2.2.2 (hcoordinatesOld i)
+          (hOld i).2.2.2.2 (fun b => (hcoordinatesOld i b).1)
+    have hlinked : ∀ i b, ((records i).static b).hasLinkedCanonicalWindow_C12X := by
+      intro i
+      cases i using Fin.lastCases with
+      | last =>
+        exact MetricCutCapEvent.PresentedStaticCap.hasLinkedCanonicalWindow_of_family_heq_C11SL
+          rfl rfl rfl rfl HEq.rfl
+          (hold.1.trans hqf.symm) (hold.2.1.trans hqD.symm)
+          (hold.2.2.1.trans hqm.symm) (hold.2.2.2.1.trans hqε.symm)
+          new.static (records (Fin.last H.eventCount)).static hNewStatic hwinNew
+      | cast i =>
+        have hE : HEq ((H.appendEvent E.incoming.lt E hinitE).toHistory.event i.castSucc)
+            (H.toHistory.event i) := by
+          change HEq ((H.extendCoreEventFamily E i.castSucc).toMetricCutCapEvent)
+            (H.toHistory.event i)
+          exact (heq_of_eq (H.extendCoreEventFamily_toMetricCutCapEvent E i.castSucc)).trans
+            (H.toHistory.appendEvent_event_castSucc_heq
+              E.incoming.lt E.toMetricCutCapEvent hinitE i)
+        exact MetricCutCapEvent.PresentedStaticCap.hasLinkedCanonicalWindow_of_family_heq_C11SL
+          (H.appendEvent_stage_castSucc E.incoming.lt E hinitE i.castSucc)
+          (H.appendEvent_stage_castSucc E.incoming.lt E hinitE i.succ)
+          (H.appendEvent_time_castSucc E.incoming.lt E hinitE i.castSucc)
+          (H.appendEvent_time_castSucc E.incoming.lt E hinitE i.succ) hE
+          rfl rfl rfl rfl (old i).static (records i.castSucc).static
+          (hOld i).2.2.2.2 (fun b => (hcoordinatesOld i b).2)
+    have hcoordinates : ∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
+        ((records i).static b).hasLinkedCanonicalWindow_C12X :=
+      fun i b => ⟨hradial i b, hlinked i b⟩
     exact ⟨Q, E, hinitE, A', q, new, records, hEG, hfuture, hA, ⟨hqf, hqD, hqm, hqε, hqc⟩,
-      hδnew, hρnew, hwinNew, hfamily, hcoordinates, hOld, hNewNominal, hNewDelta, hNewOrder,
+      hδnew, hρnew, (fun b => (hwinNew b).hasCanonicalWindow), hfamily, hcoordinates,
+      hOld, hNewNominal, hNewDelta, hNewOrder,
       hNewNeck, hNewStatic,
       hDistance (hqε.trans_le haccHalf) (hDClosed.trans hqD.symm.le), hbfr, hctrl, hdebit⟩
   obtain ⟨a, ha, hfixed, hlower⟩ :=
@@ -263,7 +296,8 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
       (records : ∀ i : Fin K.eventCount, GeometricCutoffRecord K.toHistory i p),
       (∀ i : Fin K.eventCount, (K.toHistory.event i).HasUniformDistanceScalar Cdist) ∧
       HistoryEventControl K ∧ K.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records ∧
-      (∀ i b, ((records i).static b).witness.HasRadialCoordinates) ∧
+      (∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
+          ((records i).static b).hasLinkedCanonicalWindow_C12X) ∧
       ∀ i : Fin K.eventCount,
         ∃ F : Set (K.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧
           riemannianVolumeMeasure ThreeModel (K.stage i.succ).Carrier
@@ -368,7 +402,8 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
         (records : ∀ i : Fin K.eventCount, GeometricCutoffRecord K.toHistory i p),
         K.horizon = B ∧ (InitialIdentification.atZero P g).IsPrefixOf A ∧
         HistoryEventControl K ∧ K.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records ∧
-        (∀ i b, ((records i).static b).witness.HasRadialCoordinates) ∧
+        (∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
+          ((records i).static b).hasLinkedCanonicalWindow_C12X) ∧
         K.NoncollapsedBefore κ ε B ∧
         ∀ i : Fin K.eventCount,
           ∃ F : Set (K.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧

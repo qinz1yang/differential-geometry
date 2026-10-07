@@ -169,7 +169,7 @@ theorem exists_uniform_horn_cutoff_record_with_volume_debit_of_fineCutNecks_with
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
@@ -382,7 +382,7 @@ theorem exists_uniform_horn_cutoff_record_with_volume_debit_of_fineCutNecks_with
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
@@ -610,7 +610,7 @@ theorem exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le_with_radial_coor
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
           E.poincareStandardDiscarded ∧ (K.toHistory.event i).poincareStandardDiscarded ∧
           (p₀.fixed = fixed → p₀.recenterConstant = recenterConstant →
@@ -722,7 +722,7 @@ theorem exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le_with_radial_coor
   apply RetainedCoreHistory.hasCanonicalCutoffRecords_of_appendEvent_eq H K Eappend hOldAppend
     hInitial hK i hi hInv Record (hpFixed.trans hfixed.symm) (hpDnew.trans hpD.symm)
     (hpM.trans hmodelOrder.symm) (hpAcc.trans hmodelAccuracy.symm)
-    (hpC.trans hrecenter.symm) hRecordWindows
+    (hpC.trans hrecenter.symm) (fun b => (hRecordWindows b).hasCanonicalWindow)
   · rw [hpδ]
     exact hδrecord.trans hηold
   · rw [hpρ]
@@ -860,7 +860,7 @@ theorem exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le_with_radial_coor
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
           E.poincareStandardDiscarded ∧ (K.toHistory.event i).poincareStandardDiscarded ∧
           (p₀.fixed = fixed → p₀.recenterConstant = recenterConstant →
@@ -1083,7 +1083,7 @@ theorem exists_uniform_horn_cutoff_record_with_volume_debit_of_fineCutNecks :
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow)) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
@@ -1308,7 +1308,7 @@ theorem exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le :
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           E.poincareStandardDiscarded ∧ (K.toHistory.event i).poincareStandardDiscarded ∧
           (p₀.fixed = fixed → p₀.recenterConstant = recenterConstant →
             p₀.modelOrder = m → p₀.modelAccuracy = accuracy → ηrecord ≤ δold →

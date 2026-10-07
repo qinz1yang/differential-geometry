@@ -211,7 +211,7 @@ private theorem exists_ready_two_overlap_geometric_extension_with_native_certifi
         (K.initialMetric (Fin.last K.eventCount)) L.toHistory)
       (pF : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
-      (hwin : ∀ i b, ((native i).static b).hasCanonicalWindow)
+      (hwin : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
       (hDK : pK.modelRadius ≤ pF.modelRadius)
       (hmK : pK.modelOrder ≤ pF.modelOrder)
       (haccK : pF.modelAccuracy ≤ pK.modelAccuracy)
@@ -226,17 +226,20 @@ private theorem exists_ready_two_overlap_geometric_extension_with_native_certifi
       let pCK := pF.withModelWindow pK.modelRadius pK.modelOrder pK.modelAccuracy
         pK.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccK)
       let coarseK := fun i : Fin L.eventCount =>
-        (native i).restrictModelWindow (hwin i) pK.modelRadius_pos hDK hmK haccK
+        (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            pK.modelRadius_pos hDK hmK haccK
       let qK := pK.spliceAfter (translate_cutoff_parameters pCK a) K.horizon
       let pCH := pF.withModelWindow pH.modelRadius pH.modelOrder pH.modelAccuracy
         pH.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccH)
       let coarseH := fun i : Fin L.eventCount =>
-        (native i).restrictModelWindow (hwin i) pH.modelRadius_pos hDH hmH haccH
+        (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            pH.modelRadius_pos hDH hmH haccH
       let qH := pH.spliceAfter (translate_cutoff_parameters pCH b) H.horizon
       let pReserve := pF.withModelWindow pNew.modelRadius pNew.modelOrder pNew.modelAccuracy
         pNew.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccNew)
       let reserved : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pReserve :=
-        fun i => (native i).restrictModelWindow (hwin i) pNew.modelRadius_pos hDNew hmNew haccNew
+        fun i => (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            pNew.modelRadius_pos hDNew hmNew haccNew
       ∃ (Kplus : RetainedCoreHistory.{u}) (IKplus : InitialIdentification PK gK Kplus.toHistory)
         (AK : AffineEventPrefix L Kplus a K.eventCount (Fin.last L.eventCount))
         (IoldK : RawInitialPrefix K Kplus)
@@ -349,12 +352,14 @@ private theorem exists_ready_two_overlap_geometric_extension_with_native_certifi
   let pCH := pF.withModelWindow pH.modelRadius pH.modelOrder pH.modelAccuracy
     pH.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccH)
   let coarseH := fun i : Fin L.eventCount =>
-    (native i).restrictModelWindow (hwin i) pH.modelRadius_pos hDH hmH haccH
+    (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+        pH.modelRadius_pos hDH hmH haccH
   let qH := pH.spliceAfter (translate_cutoff_parameters pCH b) H.horizon
   let pReserve := pF.withModelWindow pNew.modelRadius pNew.modelOrder pNew.modelAccuracy
     pNew.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccNew)
   let reserved := fun i : Fin L.eventCount =>
-    (native i).restrictModelWindow (hwin i) pNew.modelRadius_pos hDNew hmNew haccNew
+    (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+        pNew.modelRadius_pos hDNew hmNew haccNew
   have hfixedFine : pF.fixed = fixed := hfixedF.trans (hclassK.1.trans hfixedOld)
   have hrcFine : pF.recenterConstant = recenter :=
     hrcF.trans (hclassK.2.2.2.2.1.trans hrcOld)
@@ -362,7 +367,8 @@ private theorem exists_ready_two_overlap_geometric_extension_with_native_certifi
     refine ⟨hfixedFine.trans hfixedNew.symm, rfl, rfl, rfl,
       hrcFine.trans hrcNew.symm, ?_, ?_, ?_⟩
     · intro i z
-      exact (native i).hasCanonicalWindow_restrictModelWindow (hwin i)
+      exact (native i).hasCanonicalWindow_restrictModelWindow
+          (fun b => (hwin i b).hasCanonicalWindow)
         pNew.modelRadius_pos hDNew hmNew haccNew hcapNew z
     · intro i
       exact (hfamily.2.2.2.2.2.2.1 i).trans (hδ.trans (min_le_left _ _))
@@ -392,7 +398,7 @@ private theorem exists_ready_two_overlap_geometric_extension_with_native_certifi
     ⟨hfixedFine.trans hfixedH.symm, rfl, rfl, rfl, hrcFine.trans hrcH.symm⟩
   have hwinCoarseH : ∀ i z, ((coarseH i).static z).hasCanonicalWindow := by
     intro i z
-    exact (native i).hasCanonicalWindow_restrictModelWindow (hwin i)
+    exact (native i).hasCanonicalWindow_restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
       pH.modelRadius_pos hDH hmH haccH hcapH z
   obtain ⟨J, AJ, IoldH, hnH, joinedH, hpH, hJhor, hcontrolJ,
     hfinalJ, hpastH, hwinJ, hOldH, hTailH⟩ :=
@@ -470,7 +476,7 @@ private theorem exists_ready_two_overlap_geometric_extension
         (K.initialMetric (Fin.last K.eventCount)) L.toHistory)
       (pF : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
-      (hwin : ∀ i b, ((native i).static b).hasCanonicalWindow)
+      (hwin : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
       (hDK : pK.modelRadius ≤ pF.modelRadius)
       (hmK : pK.modelOrder ≤ pF.modelOrder)
       (haccK : pF.modelAccuracy ≤ pK.modelAccuracy)
@@ -485,17 +491,20 @@ private theorem exists_ready_two_overlap_geometric_extension
       let pCK := pF.withModelWindow pK.modelRadius pK.modelOrder pK.modelAccuracy
         pK.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccK)
       let coarseK := fun i : Fin L.eventCount =>
-        (native i).restrictModelWindow (hwin i) pK.modelRadius_pos hDK hmK haccK
+        (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            pK.modelRadius_pos hDK hmK haccK
       let qK := pK.spliceAfter (translate_cutoff_parameters pCK a) K.horizon
       let pCH := pF.withModelWindow pH.modelRadius pH.modelOrder pH.modelAccuracy
         pH.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccH)
       let coarseH := fun i : Fin L.eventCount =>
-        (native i).restrictModelWindow (hwin i) pH.modelRadius_pos hDH hmH haccH
+        (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            pH.modelRadius_pos hDH hmH haccH
       let qH := pH.spliceAfter (translate_cutoff_parameters pCH b) H.horizon
       let pReserve := pF.withModelWindow pNew.modelRadius pNew.modelOrder pNew.modelAccuracy
         pNew.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccNew)
       let reserved : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pReserve :=
-        fun i => (native i).restrictModelWindow (hwin i) pNew.modelRadius_pos hDNew hmNew haccNew
+        fun i => (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            pNew.modelRadius_pos hDNew hmNew haccNew
       ∃ (Kplus : RetainedCoreHistory.{u}) (IKplus : InitialIdentification PK gK Kplus.toHistory)
         (AK : AffineEventPrefix L Kplus a K.eventCount (Fin.last L.eventCount))
         (IoldK : RawInitialPrefix K Kplus)
@@ -639,7 +648,7 @@ private theorem exists_ready_two_overlap_geometric_extension_with_distance_scala
         (K.initialMetric (Fin.last K.eventCount)) L.toHistory)
       (pF : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
-      (hwin : ∀ i b, ((native i).static b).hasCanonicalWindow)
+      (hwin : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
       (hDK : pK.modelRadius ≤ pF.modelRadius)
       (hmK : pK.modelOrder ≤ pF.modelOrder)
       (haccK : pF.modelAccuracy ≤ pK.modelAccuracy)
@@ -654,17 +663,20 @@ private theorem exists_ready_two_overlap_geometric_extension_with_distance_scala
       let pCK := pF.withModelWindow pK.modelRadius pK.modelOrder pK.modelAccuracy
         pK.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccK)
       let coarseK := fun i : Fin L.eventCount =>
-        (native i).restrictModelWindow (hwin i) pK.modelRadius_pos hDK hmK haccK
+        (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            pK.modelRadius_pos hDK hmK haccK
       let qK := pK.spliceAfter (translate_cutoff_parameters pCK a) K.horizon
       let pCH := pF.withModelWindow pH.modelRadius pH.modelOrder pH.modelAccuracy
         pH.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccH)
       let coarseH := fun i : Fin L.eventCount =>
-        (native i).restrictModelWindow (hwin i) pH.modelRadius_pos hDH hmH haccH
+        (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            pH.modelRadius_pos hDH hmH haccH
       let qH := pH.spliceAfter (translate_cutoff_parameters pCH b) H.horizon
       let pReserve := pF.withModelWindow pNew.modelRadius pNew.modelOrder pNew.modelAccuracy
         pNew.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccNew)
       let reserved : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pReserve :=
-        fun i => (native i).restrictModelWindow (hwin i) pNew.modelRadius_pos hDNew hmNew haccNew
+        fun i => (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            pNew.modelRadius_pos hDNew hmNew haccNew
       ∃ (Kplus : RetainedCoreHistory.{u}) (IKplus : InitialIdentification PK gK Kplus.toHistory)
         (AK : AffineEventPrefix L Kplus a K.eventCount (Fin.last L.eventCount))
         (IoldK : RawInitialPrefix K Kplus)
@@ -838,7 +850,7 @@ theorem exists_prepared_two_overlap_extension
         (K.initialMetric (Fin.last K.eventCount)) L.toHistory)
       (pF : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
-      (hwin : ∀ i b, ((native i).static b).hasCanonicalWindow)
+      (hwin : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
       (hDK : pK.modelRadius ≤ pF.modelRadius)
       (hmK : pK.modelOrder ≤ pF.modelOrder)
       (haccK : pF.modelAccuracy ≤ pK.modelAccuracy)
@@ -853,17 +865,20 @@ theorem exists_prepared_two_overlap_extension
       let pCK := pF.withModelWindow pK.modelRadius pK.modelOrder pK.modelAccuracy
         pK.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccK)
       let coarseK := fun i : Fin L.eventCount =>
-        (native i).restrictModelWindow (hwin i) pK.modelRadius_pos hDK hmK haccK
+        (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            pK.modelRadius_pos hDK hmK haccK
       let qK := pK.spliceAfter (translate_cutoff_parameters pCK a) K.horizon
       let pCH := pF.withModelWindow pH.modelRadius pH.modelOrder pH.modelAccuracy
         pH.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccH)
       let coarseH := fun i : Fin L.eventCount =>
-        (native i).restrictModelWindow (hwin i) pH.modelRadius_pos hDH hmH haccH
+        (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            pH.modelRadius_pos hDH hmH haccH
       let qH := pH.spliceAfter (translate_cutoff_parameters pCH b) H.horizon
       let pReserve := pF.withModelWindow pNew.modelRadius pNew.modelOrder pNew.modelAccuracy
         pNew.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccNew)
       let reserved : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pReserve :=
-        fun i => (native i).restrictModelWindow (hwin i) pNew.modelRadius_pos hDNew hmNew haccNew
+        fun i => (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            pNew.modelRadius_pos hDNew hmNew haccNew
       ∃ (Kplus : RetainedCoreHistory.{u}) (IKplus : InitialIdentification PK gK Kplus.toHistory)
         (AK : AffineEventPrefix L Kplus a K.eventCount (Fin.last L.eventCount))
         (IoldK : RawInitialPrefix K Kplus)

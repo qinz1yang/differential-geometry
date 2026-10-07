@@ -40,7 +40,7 @@ theorem exists_prepared_extension_with_two_estimate_packets :
     ∀ (δcut ρcut εcut Dcut : ℝ) (mcut : ℕ),
       0 < δcut → 0 < ρcut → 0 < εcut → 0 < Dcut →
     ∃ (K : RetainedCoreHistory.{u})
-      (IK : InitialIdentification (H.stage (Fin.last H.eventCount))
+      (_IK : InitialIdentification (H.stage (Fin.last H.eventCount))
         (H.initialMetric (Fin.last H.eventCount)) K.toHistory)
       (pB pF : CutoffParameters) (δbound ρbound : ℝ)
       (native : ∀ i : Fin K.eventCount, GeometricCutoffRecord K.toHistory i pF)
@@ -177,7 +177,7 @@ theorem exists_prepared_extension_with_reserved_later_class :
         (H.stage (Fin.last H.eventCount)) (H.initialMetric (Fin.last H.eventCount))
         (Bfuture - H.time (Fin.last H.eventCount)) εClass κClass pNew δNew ρNew ∧
       (∀ (L : RetainedCoreHistory.{u})
-        (IL : InitialIdentification (H.stage (Fin.last H.eventCount))
+        (_IL : InitialIdentification (H.stage (Fin.last H.eventCount))
           (H.initialMetric (Fin.last H.eventCount)) L.toHistory)
         (pL : CutoffParameters)
         (records : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pL),
@@ -185,7 +185,7 @@ theorem exists_prepared_extension_with_reserved_later_class :
         L.IsCanonicalCutoffRecordFamily pNew δNew ρNew records →
         L.NoncollapsedBefore κNew ε L.horizon) ∧
       (∀ (L : RetainedCoreHistory.{u})
-        (IL : InitialIdentification (H.stage (Fin.last H.eventCount))
+        (_IL : InitialIdentification (H.stage (Fin.last H.eventCount))
           (H.initialMetric (Fin.last H.eventCount)) L.toHistory)
         (pL : CutoffParameters)
         (records : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pL),
@@ -195,7 +195,7 @@ theorem exists_prepared_extension_with_reserved_later_class :
     ∀ (δcut ρcut εcut Dcut : ℝ) (mcut : ℕ),
       0 < δcut → 0 < ρcut → 0 < εcut → 0 < Dcut →
     ∃ (L : RetainedCoreHistory.{u})
-      (IL : InitialIdentification (H.stage (Fin.last H.eventCount))
+      (_IL : InitialIdentification (H.stage (Fin.last H.eventCount))
         (H.initialMetric (Fin.last H.eventCount)) L.toHistory)
       (pF pReserve : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
@@ -231,14 +231,15 @@ theorem exists_prepared_extension_with_reserved_later_class :
         HEq (records (A.eventIndex i)).delta (native i).delta ∧
         HEq (records (A.eventIndex i)).order (native i).order ∧
         HEq (records (A.eventIndex i)).neck (native i).neck) ∧
-      ∃ (hwinNew : ∀ i b, ((native i).static b).hasCanonicalWindow)
+      ∃ (hwinNew : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
         (hDNew : pNew.modelRadius ≤ pF.modelRadius)
         (hmNew : pNew.modelOrder ≤ pF.modelOrder)
         (haccNew : pF.modelAccuracy ≤ pNew.modelAccuracy),
         pReserve = pF.withModelWindow pNew.modelRadius pNew.modelOrder pNew.modelAccuracy
           pNew.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccNew) ∧
         ∀ i : Fin L.eventCount, HEq (reserved i)
-          ((native i).restrictModelWindow (hwinNew i) pNew.modelRadius_pos
+          ((native i).restrictModelWindow (fun b => (hwinNew i b).hasCanonicalWindow)
+              pNew.modelRadius_pos
             hDNew hmNew haccNew) := by
   obtain ⟨fixed, recenter, hrecenter, prepareClass⟩ :=
     exists_common_prepared_geometric_observation_extension_before_quality.{u}
@@ -319,13 +320,14 @@ theorem exists_prepared_extension_with_reserved_later_class :
   let pReserve := pF.withModelWindow pNew.modelRadius pNew.modelOrder pNew.modelAccuracy
     pNew.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccNew)
   let reserved := fun i : Fin L.eventCount => (native i).restrictModelWindow
-    (hwin i) pNew.modelRadius_pos hDNew hmNew haccNew
+    (fun b => (hwin i b).hasCanonicalWindow) pNew.modelRadius_pos hDNew hmNew haccNew
   have hclassNew : L.IsCanonicalCutoffRecordFamily pNew δNew ρNew reserved := by
     refine ⟨hfixedF.trans (hold.1.trans (hfixedOld.trans hfixedNew.symm)),
       rfl, rfl, rfl,
       hrcF.trans (hold.2.2.2.2.1.trans (hrcOld.trans hrcNew.symm)), ?_, ?_, ?_⟩
     · intro i b
-      exact (native i).hasCanonicalWindow_restrictModelWindow (hwin i)
+      exact (native i).hasCanonicalWindow_restrictModelWindow
+          (fun b => (hwin i b).hasCanonicalWindow)
         pNew.modelRadius_pos hDNew hmNew haccNew hcapNew b
     · intro i
       exact (hfamily.2.2.2.2.2.2.1 i).trans (hδ.trans (min_le_left _ _))

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.RecenteredStaticPreparation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticCollarAdmitsC11PB
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticWitnessVolume
 
 /-!
@@ -58,7 +59,7 @@ theorem exists_uniform_recentered_static_preparation_C12X (c δrec : ℝ) (hc : 
               d'.map = d.recenteringMap hσ hfit ∧ d'.retainedSide = true ∧
               |metricScalarAt g (d.offsetPoint hσ) / metricScalarAt g x₀ - 1| ≤ c * δ) :
     ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
-      ∃ (A : ℝ) (hA : 0 < A), 2 * A < 1 / 2 ∧
+      ∃ (A : ℝ) (hA : 0 < A), (2 * A < 1 / 2 ∧ StaticCollarAdmits.{u, v, w} A hA) ∧
       ∀ (D : ℝ), 0 < D → ∀ (m : ℕ) (ε : ℝ), 0 < ε →
       ∃ δ₀ : ℝ, 0 < δ₀ ∧ δ₀ < 1 / 4 ∧ δ₀ ≤ δrec ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₀ →
       ∀ {E : Type u} {H : Type v} {M : Type w}
@@ -76,7 +77,14 @@ theorem exists_uniform_recentered_static_preparation_C12X (c δrec : ℝ) (hc : 
               StaticInsertionAdditionalProperties C out := by
   obtain ⟨C, hC, A, hA, hsmall, hmod⟩ := exists_staticInsertion_with_additional_properties.{u, v, w}
   have hcpos : 0 < c := lt_of_lt_of_le (by norm_num) hc
-  refine ⟨C, hC, A, hA, hsmall, ?_⟩
+  have hcollar : StaticCollarAdmits.{u, v, w} A hA := by
+    intro D hD m ε hε
+    obtain ⟨δ₀, hδ₀, hhalf, hb⟩ := hmod D hD m ε hε
+    refine ⟨δ₀, hδ₀, hhalf, ?_⟩
+    intro δ hδ hle E H M _ _ _ _ _ I _ _ _ _ _ g x₀ d
+    obtain ⟨w, -⟩ := hb δ hδ hle g x₀ d
+    exact ⟨w⟩
+  refine ⟨C, hC, A, hA, ⟨hsmall, hcollar⟩, ?_⟩
   intro D hD m ε hε
   obtain ⟨δi, hδi, _, hinsert⟩ := hmod D hD m ε hε
   let δ₀ := min δrec (min (δi / c) (1 / 8))
@@ -110,7 +118,7 @@ theorem exists_uniform_recentered_static_family_volume_bound_C12X (c δrec : ℝ
               d'.map = d.recenteringMap hσ hfit ∧ d'.retainedSide = true ∧
               |metricScalarAt g (d.offsetPoint hσ) / metricScalarAt g x₀ - 1| ≤ c * δ) :
     ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
-      ∃ (A : ℝ) (hA : 0 < A), 2 * A < 1 / 2 ∧
+      ∃ (A : ℝ) (hA : 0 < A), (2 * A < 1 / 2 ∧ StaticCollarAdmits.{u, v, w} A hA) ∧
       ∀ (D : ℝ), 0 < D → ∀ (m : ℕ) (ε : ℝ), 0 < ε →
       ∃ δ₀ : ℝ, 0 < δ₀ ∧ δ₀ < 1 / 4 ∧ δ₀ ≤ δrec ∧
       ∀ {E : Type u} {H : Type v} {M : Type w}

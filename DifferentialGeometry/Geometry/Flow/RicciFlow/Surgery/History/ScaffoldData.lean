@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.RawSurgery.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapWindows
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinkedCanonicalWindowC12X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryNoncollapse.Basic
 
 set_option autoImplicit false
@@ -27,6 +28,7 @@ structure ScaffoldState (p₀ : CutoffParameters)
     parameters.recenterConstant = p₀.recenterConstant
   control : HistoryEventControl history
   windows : ∀ i b, ((records i).static b).hasCanonicalWindow
+  linked : ∀ i b, ((records i).static b).hasLinkedCanonicalWindow_C12X
   kappa : ℝ
   kappa_pos : 0 < kappa
   noncollapsed : history.NoncollapsedBefore kappa ε history.horizon

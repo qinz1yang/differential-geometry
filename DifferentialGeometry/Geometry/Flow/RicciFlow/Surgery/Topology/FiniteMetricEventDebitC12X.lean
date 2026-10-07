@@ -53,7 +53,7 @@ theorem exists_uniform_metricCutCapEvent_volume_bound_C12X (c δrec : ℝ) (hc :
               d'.map = d.recenteringMap hσ hfit ∧ d'.retainedSide = true ∧
               |metricScalarAt g (d.offsetPoint hσ) / metricScalarAt g x₀ - 1| ≤ c * δ) :
     ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
-      ∃ (A : ℝ) (hA : 0 < A), 2 * A < 1 / 2 ∧
+      ∃ (A : ℝ) (hA : 0 < A), (2 * A < 1 / 2 ∧ StaticCollarAdmits.{0, 0, u} A hA) ∧
       ∀ (D : ℝ), 0 < D → ∀ (m : ℕ) (ε : ℝ), 0 < ε →
       ∀ δcap : ℝ, 0 < δcap → ∃ δ₀ : ℝ, 0 < δ₀ ∧ δ₀ < 1 / 4 ∧ δ₀ ≤ δrec ∧
       ∀ {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M]
@@ -205,7 +205,7 @@ private theorem exists_uniform_oriented_metricCutCapEvent_volume_debit_with_cap_
               d'.map = d.recenteringMap hσ hfit ∧ d'.retainedSide = true ∧
               |metricScalarAt g (d.offsetPoint hσ) / metricScalarAt g x₀ - 1| ≤ c * δ) :
     ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
-      ∃ (A : ℝ) (hA : 0 < A), 2 * A < 1 / 2 ∧
+      ∃ (A : ℝ) (hA : 0 < A), (2 * A < 1 / 2 ∧ StaticCollarAdmits.{0, 0, u} A hA) ∧
       ∀ (D : ℝ), 0 < D → ∀ (m : ℕ) (ε : ℝ), 0 < ε →
       ∀ δcap : ℝ, 0 < δcap → ∃ δ₀ : ℝ, 0 < δ₀ ∧ δ₀ < 1 / 4 ∧ δ₀ ≤ δrec ∧
       ∀ {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M]
@@ -402,7 +402,7 @@ theorem exists_uniform_metricCutCapEvent_volume_debit_with_recenter_data_C12X
               d'.map = d.recenteringMap hσ hfit ∧ d'.retainedSide = true ∧
               |metricScalarAt g (d.offsetPoint hσ) / metricScalarAt g x₀ - 1| ≤ c * δ) :
     ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
-      ∃ (A : ℝ) (hA : 0 < A), 2 * A < 1 / 2 ∧
+      ∃ (A : ℝ) (hA : 0 < A), (2 * A < 1 / 2 ∧ StaticCollarAdmits.{0, 0, u} A hA) ∧
       ∀ (D : ℝ), 0 < D → ∀ (m : ℕ) (ε : ℝ), 0 < ε →
       ∀ δcap : ℝ, 0 < δcap → ∃ δ₀ : ℝ, 0 < δ₀ ∧ δ₀ < 1 / 4 ∧ δ₀ ≤ δrec ∧
       ∀ {P : OrientedThreeStage.{u}} {t₀ t₁ : ℝ}

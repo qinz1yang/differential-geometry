@@ -64,7 +64,7 @@ def PreparedGeometricObservationExtensionWithNative
             ENNReal.ofReal ((Nat.card (K.coreEvent i).transition.trace.tubes.Index : ℝ) * v) ≤
           riemannianVolumeMeasure ThreeModel (K.coreEvent i).incoming.terminalRegularOpen
             (K.coreEvent i).terminal.metric F) ∧
-      ∃ (hwin : ∀ i b, ((fine i).static b).hasCanonicalWindow)
+      ∃ (hwin : ∀ i b, ((fine i).static b).hasLinkedCanonicalWindow_C12X)
         (hD : p.modelRadius ≤ pF.modelRadius)
         (hm : p.modelOrder ≤ pF.modelOrder)
         (hacc : pF.modelAccuracy ≤ p.modelAccuracy),
@@ -72,7 +72,8 @@ def PreparedGeometricObservationExtensionWithNative
         let pC := pF.withModelWindow p.modelRadius p.modelOrder p.modelAccuracy
           p.modelRadius_pos (pF.modelAccuracy_pos.trans_le hacc)
         let coarse : ∀ i : Fin K.eventCount, GeometricCutoffRecord K.toHistory i pC :=
-          fun i => (fine i).restrictModelWindow (hwin i) p.modelRadius_pos hD hm hacc
+          fun i => (fine i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+              p.modelRadius_pos hD hm hacc
         let q := p.spliceAfter (translate_cutoff_parameters pC c) H.horizon
         ∃ (J : RetainedCoreHistory.{u})
           (A : AffineEventPrefix K J c H.eventCount (Fin.last K.eventCount))

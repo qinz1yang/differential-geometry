@@ -566,7 +566,7 @@ example :
             ENNReal.ofReal ((Nat.card (K.coreEvent i).transition.trace.tubes.Index : ℝ) * v) ≤
           riemannianVolumeMeasure ThreeModel (K.coreEvent i).incoming.terminalRegularOpen
             (K.coreEvent i).terminal.metric F) ∧
-      ∃ (hwin : ∀ i b, ((fine i).static b).hasCanonicalWindow)
+      ∃ (hwin : ∀ i b, ((fine i).static b).hasLinkedCanonicalWindow_C12X)
         (hD : p.modelRadius ≤ pF.modelRadius)
         (hm : p.modelOrder ≤ pF.modelOrder)
         (hacc : pF.modelAccuracy ≤ p.modelAccuracy),
@@ -574,7 +574,8 @@ example :
         let pC := pF.withModelWindow p.modelRadius p.modelOrder p.modelAccuracy
           p.modelRadius_pos (pF.modelAccuracy_pos.trans_le hacc)
         let coarse : ∀ i : Fin K.eventCount, GeometricCutoffRecord K.toHistory i pC :=
-          fun i => (fine i).restrictModelWindow (hwin i) p.modelRadius_pos hD hm hacc
+          fun i => (fine i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+              p.modelRadius_pos hD hm hacc
         let q := p.spliceAfter (translate_cutoff_parameters pC c) H.horizon
         ∃ (J : RetainedCoreHistory.{u})
           (A : AffineEventPrefix K J c H.eventCount (Fin.last K.eventCount))
@@ -2433,7 +2434,8 @@ example :
         K.horizon = B ∧ (InitialIdentification.atZero P g).IsPrefixOf A ∧
         (∀ i : Fin K.eventCount, (K.toHistory.event i).HasUniformDistanceScalar Cdist) ∧
         HistoryEventControl K ∧ K.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records ∧
-        (∀ i b, ((records i).static b).witness.HasRadialCoordinates) ∧
+        (∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
+          ((records i).static b).hasLinkedCanonicalWindow_C12X) ∧
         K.NoncollapsedBefore κ ε B ∧
         ∀ i : Fin K.eventCount,
           ∃ F : Set (K.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧
@@ -2461,7 +2463,8 @@ example :
         (records : ∀ i : Fin K.eventCount, GeometricCutoffRecord K.toHistory i p),
         K.horizon = B ∧ (InitialIdentification.atZero P g).IsPrefixOf A ∧
         HistoryEventControl K ∧ K.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records ∧
-        (∀ i b, ((records i).static b).witness.HasRadialCoordinates) ∧
+        (∀ i b, ((records i).static b).witness.HasRadialCoordinates ∧
+          ((records i).static b).hasLinkedCanonicalWindow_C12X) ∧
         K.NoncollapsedBefore κ ε B ∧
         ∀ i : Fin K.eventCount,
           ∃ F : Set (K.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧
@@ -3609,7 +3612,7 @@ example :
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
@@ -3726,7 +3729,7 @@ example :
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
@@ -3867,7 +3870,7 @@ example :
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
           E.poincareStandardDiscarded ∧ (K.toHistory.event i).poincareStandardDiscarded ∧
           (p₀.fixed = fixed → p₀.recenterConstant = recenterConstant →
@@ -4017,7 +4020,7 @@ example :
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
           E.poincareStandardDiscarded ∧ (K.toHistory.event i).poincareStandardDiscarded ∧
           (p₀.fixed = fixed → p₀.recenterConstant = recenterConstant →
@@ -4136,7 +4139,7 @@ example :
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow)) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X)) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
@@ -4275,7 +4278,7 @@ example :
           Record.delta = (fun _ => δ) ∧
           Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
           HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
-          (∀ b, (Record.static b).hasCanonicalWindow) ∧
+          (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
           E.poincareStandardDiscarded ∧ (K.toHistory.event i).poincareStandardDiscarded ∧
           (p₀.fixed = fixed → p₀.recenterConstant = recenterConstant →
             p₀.modelOrder = m → p₀.modelAccuracy = accuracy → ηrecord ≤ δold →

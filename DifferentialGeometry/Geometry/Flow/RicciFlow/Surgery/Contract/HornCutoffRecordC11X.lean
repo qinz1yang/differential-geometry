@@ -1,6 +1,7 @@
 import Batteries.Tactic.OpenPrivate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornCutoffRecord
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FinitePresentedStaticCapC11X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinkedCanonicalWindowC12X
 
 /-!
 # HornCutoffRecordC11X（S-CH11-EXT1，extension of 已跟踪 `Contract/HornCutoffRecord`）
@@ -70,7 +71,10 @@ private theorem PreparedCutoffEventGeometry.exists_of_retainedEvent_heq_C11X
             (((PreparedCutoffEventGeometry.static F) (eB b)).inclusion (((PreparedCutoffEventGeometry.static F) (eB b)).witness.window z))) ∧
           (∀ b z, HEq (((PreparedCutoffEventGeometry.static F') b).inclusion (((PreparedCutoffEventGeometry.static F') b).witness.cap z))
             (((PreparedCutoffEventGeometry.static F) (eB b)).inclusion (((PreparedCutoffEventGeometry.static F) (eB b)).witness.cap z))) ∧
-          ((∀ b, ((PreparedCutoffEventGeometry.static F) b).hasCanonicalWindow) → ∀ b, ((PreparedCutoffEventGeometry.static F') b).hasCanonicalWindow) ∧
+          (((∀ b, ((PreparedCutoffEventGeometry.static F) b).hasCanonicalWindow) →
+            ∀ b, ((PreparedCutoffEventGeometry.static F') b).hasCanonicalWindow) ∧
+            ((∀ b, ((PreparedCutoffEventGeometry.static F) b).hasLinkedCanonicalWindow_C12X) →
+            ∀ b, ((PreparedCutoffEventGeometry.static F') b).hasLinkedCanonicalWindow_C12X)) ∧
           ((∀ b, ((PreparedCutoffEventGeometry.static F) b).witness.HasRadialCoordinates) →
             ∀ b, ((PreparedCutoffEventGeometry.static F') b).witness.HasRadialCoordinates) := by
   cases hP
@@ -81,7 +85,7 @@ private theorem PreparedCutoffEventGeometry.exists_of_retainedEvent_heq_C11X
   exact ⟨(PreparedCutoffEventGeometry.toRetained F), Equiv.refl _, (fun _ => HEq.rfl), Equiv.refl _,
     (fun _ => HEq.rfl), (fun _ => HEq.rfl), (fun _ => rfl), (fun _ => HEq.rfl),
     (fun _ => HEq.rfl), (fun _ _ => HEq.rfl), (fun _ _ => HEq.rfl),
-    (fun h => h), fun h => h⟩
+    ⟨fun h => h, fun h => h⟩, fun h => h⟩
 
 
 end
@@ -249,7 +253,10 @@ private theorem exists_record_from_original_backward_with_static_and_radial_coor
               (((PreparedCutoffEventGeometry.static F) (eB b)).inclusion (((PreparedCutoffEventGeometry.static F) (eB b)).witness.window z))) ∧
             (∀ b z, HEq ((G.static b).inclusion ((G.static b).witness.cap z))
               (((PreparedCutoffEventGeometry.static F) (eB b)).inclusion (((PreparedCutoffEventGeometry.static F) (eB b)).witness.cap z))) ∧
-            ((∀ b, ((PreparedCutoffEventGeometry.static F) b).hasCanonicalWindow) → ∀ b, (G.static b).hasCanonicalWindow) ∧
+            (((∀ b, ((PreparedCutoffEventGeometry.static F) b).hasCanonicalWindow) →
+              ∀ b, (G.static b).hasCanonicalWindow) ∧
+              ((∀ b, ((PreparedCutoffEventGeometry.static F) b).hasLinkedCanonicalWindow_C12X) →
+              ∀ b, (G.static b).hasLinkedCanonicalWindow_C12X)) ∧
             ((∀ b, ((PreparedCutoffEventGeometry.static F) b).witness.HasRadialCoordinates) →
               ∀ b, (G.static b).witness.HasRadialCoordinates)) := by
   obtain ⟨NH, NHhigh, hNH, hNHpoint, hNHscale, hmarkH, hhighDef,

@@ -53,7 +53,7 @@ example : type_of% @PreparedCutoffEventGeometry.exists_of_retainedEvent_heq.{u} 
   intro P Q P' Q' a s a' s' E p δ r k F E' hP hQ ha hs hE
   obtain ⟨F', e, hneck, eB, h1, h2, h3, h4, h5, h6, h7, h8, -⟩ :=
     PreparedCutoffEventGeometry.exists_of_retainedEvent_heq_C11X F E' hP hQ ha hs hE
-  exact ⟨F', e, hneck, eB, h1, h2, h3, h4, h5, h6, h7, h8⟩
+  exact ⟨F', e, hneck, eB, h1, h2, h3, h4, h5, h6, h7, h8.1⟩
 
 example : type_of% @finitePresentedStaticCapsOfStage.{u} := by
   intro P ι _ precision hδ hδ1 f hf hdisj hs R hnontrivial t₀ t₁ fixed D ε m hD Q Ret Disc Bidx

@@ -97,7 +97,7 @@ theorem exists_uniform_scaffold_surgery_step_with_radial_coordinates_with_distan
           q.recenterConstant = p₀.recenterConstant ∧
           (∃ Record : GeometricCutoffRecord (H.appendEvent E.incoming.lt E hinit).toHistory
               (Fin.last H.eventCount) q,
-            (∀ b, (Record.static b).hasCanonicalWindow) ∧
+            (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
             (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
             q.delta s ≤ δbound ∧ q.neckRadius s ≤ ρbound) ∧
           (q.modelAccuracy ≤ 1 / 2 → standardCapL + 1 ≤ q.modelRadius →
@@ -245,7 +245,8 @@ theorem exists_uniform_scaffold_surgery_step_with_radial_coordinates_with_distan
     ?_, hbfr, hstdE, ?_⟩
   · exact H.hasCanonicalCutoffRecords_appendEvent _ (Eappend.toRetainedCoreEvent hOldAppend)
       hInitial hclass Record (hpf'.trans hpf.symm) (hpD'.trans hpD.symm) (hpm'.trans hpm.symm)
-      (hpa'.trans hpa.symm) (hpc'.trans hpc.symm) hwin ((congrFun hpδ' s).le.trans hδη)
+      (hpa'.trans hpa.symm) (hpc'.trans hpc.symm) (fun b => (hwin b).hasCanonicalWindow)
+      ((congrFun hpδ' s).le.trans hδη)
       ((congrFun hpρ' s).le.trans ((hρle s hs0).trans (congrFun hpρ s).le))
   · intro hacc hD
     exact distanceScalar_toRetainedCoreEvent Eappend hOldAppend (hDistance hacc hD).1
@@ -314,7 +315,7 @@ theorem exists_uniform_scaffold_surgery_step_with_radial_coordinates :
           q.recenterConstant = p₀.recenterConstant ∧
           (∃ Record : GeometricCutoffRecord (H.appendEvent E.incoming.lt E hinit).toHistory
               (Fin.last H.eventCount) q,
-            (∀ b, (Record.static b).hasCanonicalWindow) ∧
+            (∀ b, (Record.static b).hasLinkedCanonicalWindow_C12X) ∧
             (∀ b, (Record.static b).witness.HasRadialCoordinates) ∧
             q.delta s ≤ δbound ∧ q.neckRadius s ≤ ρbound) ∧
           E.transition.boundaryFrameReversing ∧
