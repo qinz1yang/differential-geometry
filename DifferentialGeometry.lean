@@ -27819,3 +27819,19 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KdataDiagona
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ClosedSlabLocalizeP6ST4
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AlphaSecondScaleC11AL
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SepTailDiagP6KD2
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #60
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HbdLateP6HB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HbdAssembleP6HB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestPlusAssembleP6HB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeSeedGoodCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalScalarGapVolumeCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeSeedVolumeCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FirstExitFinalP6M6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HscalUFinalP6M6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HscalUFinalAlignP6M6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopV6FwdC11GT6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AlphaHalfMarginC11AL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HcenHistoryP6ST4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaFinalP6M6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaFinalAlignP6M6
