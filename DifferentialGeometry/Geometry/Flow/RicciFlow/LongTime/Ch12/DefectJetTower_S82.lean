@@ -50,7 +50,7 @@ theorem defectJet_eq_field_S82 {D : RealTimeInterval} (S : SolutionOn (I := I) (
   simp only [defectJet_S57, defectJetField_S82, this]
   rfl
 
-theorem metricCovDeriv_succ_apply_S82 [IsManifold I 1 M] [IsManifold I 2 M]
+theorem metricCovDeriv_succ_apply_S82 [IsManifold I 2 M]
     (g h : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
     metricCovDeriv (I := I) g h (j + 1) x =
       totalNabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (j + 2)
