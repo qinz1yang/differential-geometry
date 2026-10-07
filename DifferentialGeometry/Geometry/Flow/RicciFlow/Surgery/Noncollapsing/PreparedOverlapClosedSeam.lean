@@ -111,7 +111,8 @@ private theorem exists_prepared_two_overlap_extension_with_closed_seam_with_nati
       (δNew ρNew εNew κNewClass κNew qNew qsNew QzeroNew QbirthNew QallNew r κJ : ℝ),
       Dstar ≤ pNew.modelRadius ∧ pNew.modelAccuracy ≤ εReserve ∧
       2 ≤ pNew.modelOrder ∧ 32 * QallNew * ρNew ^ 2 ≤ 1 ∧
-      (∃ C1h C2h qh : ℝ, 1 ≤ C1h ∧ 1 ≤ C2h ∧ qsNew ≤ qh ∧
+      (∃ C1h C2h qh : ℝ, 1 ≤ C1h ∧ 1 ≤ C2h ∧ C1h ≤ strongC1_C11SC.{u} ε C1 ∧
+        C2h ≤ strongC2_C11SC.{u} ε C2 Cgrad ∧ qsNew ≤ qh ∧
         ∀ (V : RetainedCoreHistory.{u})
           (_IV : InitialIdentification (K.stage (Fin.last K.eventCount))
             (K.initialMetric (Fin.last K.eventCount)) V.toHistory)

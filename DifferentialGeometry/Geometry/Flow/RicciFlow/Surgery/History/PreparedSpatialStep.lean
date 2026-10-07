@@ -181,7 +181,7 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
       L.prepared.recenter_eq L.nativeEventControl hExtension L.prepared.control
       L.prepared.zero_bound L.prepared.Qall_eq c L.offset L.affine L.horizon_affine
       L.native_lt_capacity (Bnext - c) L.radius (sub_lt_sub_right hBBnext c) L.radius_pos
-  obtain ⟨C1h, C2h, qh, hC1h, hC2h, hqh, hStrongV⟩ := hStrongNew
+  obtain ⟨C1h, C2h, qh, hC1h, hC2h, hC1hb, hC2hb, hqh, hStrongV⟩ := hStrongNew
   let nextClass : ClosedBirthPreparedClass pBase C (K.stage (Fin.last K.eventCount))
       (K.initialMetric (Fin.last K.eventCount)) (Bnext - b) := {
     parameters := pNew
@@ -225,6 +225,8 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
     qStrong := qh
     C1strong_ge_one := hC1h
     C2strong_ge_one := hC2h
+    C1strong_le := hC1hb
+    C2strong_le := hC2hb
     qs_le_qStrong := hqh
     strongControl := by
       intro V IV pV records hVB hclass
@@ -535,6 +537,8 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
       C2S := max L.C2S L.prepared.C2strong
       C1S_ge_one := le_max_of_le_left L.C1S_ge_one
       C2S_ge_one := le_max_of_le_left L.C2S_ge_one
+      C1S_le := max_le L.C1S_le L.prepared.C1strong_le
+      C2S_le := max_le L.C2S_le L.prepared.C2strong_le
       strong_threshold_le := hqStrongr
       strong := hstrong }
     have hSuccessor : PreparedSpatialSuccessor L R activation eta d := by

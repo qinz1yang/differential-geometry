@@ -62,7 +62,7 @@ theorem exists_blockSteps_byPointCollar_C11GT3 (Dstar : ℝ) (hDstar : 0 < Dstar
     hfixed, hrc, hδb, hρb, hεClass, hεClass11, hκClass, hκ,
     hqcan, hqs, hqsC, hQbirth, hQall, hQallPos,
     hcap, hrec, extension, control⟩ := prepareInitial 1 one_pos
-  obtain ⟨C1h, C2h, qh, hC1h, hC2h, hqh, hStrongV⟩ := hStrong
+  obtain ⟨C1h, C2h, qh, hC1h, hC2h, hC1hb, hC2hb, hqh, hStrongV⟩ := hStrong
   let prepared : ClosedBirthPreparedClass pBase C P g 1 := {
     parameters := pBase
     deltaBound := δb
@@ -101,6 +101,8 @@ theorem exists_blockSteps_byPointCollar_C11GT3 (Dstar : ℝ) (hDstar : 0 < Dstar
     qStrong := qh
     C1strong_ge_one := hC1h
     C2strong_ge_one := hC2h
+    C1strong_le := hC1hb
+    C2strong_le := hC2hb
     qs_le_qStrong := hqh
     strongControl := hStrongV }
   have hprep : PreparedDistanceClassProvider.{u} pBase.fixed pBase.recenterConstant Cdist := by

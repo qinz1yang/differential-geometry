@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedObservationEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialScalarUpperBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedDistanceData
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongNativeLayerRadialC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongCeilingC11SC
 
 /-!
 # S-CH11-FIX12 patched-at-path `PreparedClosedBirthClass`
@@ -34,7 +34,9 @@ universe u
 /-- Prepare one exact class from the common scaffold and the paid combined
 analytic provider. The original-metric zero-time bound precedes the horizon,
 birth threshold, class quality, actual histories and fine requests. The class
-retains its own extension callback and the combined physical control callback. -/
+retains its own extension callback and the combined physical control callback.
+The strong constants are the uniform closed terms `strongC1_C11SC ε C1` /
+`strongC2_C11SC ε C2 Cgrad` (O-CH11-S16CEIL), exported as upper bounds. -/
 private theorem exists_prepared_closed_birth_class_before_quality_with_native_certificate_with_reserve_quality
     (Dstar εReserve : ℝ) (hDstar : 0 < Dstar) (hεReserve : 0 < εReserve)
     (certificate : RetainedCoreHistory.{u} → Prop)
@@ -71,7 +73,8 @@ private theorem exists_prepared_closed_birth_class_before_quality_with_native_ce
     ∃ (p₀ : CutoffParameters) (δb ρb εClass κClass κ qcan qs Qbirth Qall : ℝ),
       Dstar ≤ p₀.modelRadius ∧ p₀.modelAccuracy ≤ εReserve ∧
       2 ≤ p₀.modelOrder ∧ 32 * Qall * ρb ^ 2 ≤ 1 ∧
-      (∃ C1h C2h qh : ℝ, 1 ≤ C1h ∧ 1 ≤ C2h ∧ qs ≤ qh ∧
+      (∃ C1h C2h qh : ℝ, 1 ≤ C1h ∧ 1 ≤ C2h ∧ C1h ≤ strongC1_C11SC.{u} ε C1 ∧
+        C2h ≤ strongC2_C11SC.{u} ε C2 Cgrad ∧ qs ≤ qh ∧
         ∀ (V : RetainedCoreHistory.{u}) (_IV : InitialIdentification P g V.toHistory)
           (pV : CutoffParameters)
           (records : ∀ i : Fin V.eventCount, GeometricCutoffRecord V.toHistory i pV),
@@ -111,9 +114,7 @@ private theorem exists_prepared_closed_birth_class_before_quality_with_native_ce
   obtain ⟨qcan, qs, Qbirth, δAnal, ρAnal, εAnal, DAnal, mAnal,
     hqcan, hqs, hqsC, hQbirth, hδAnal, hρAnal, hεAnal, _hDAnal, control⟩ :=
     analytic P g B κ hB hκ
-  obtain ⟨Ccore, Cu, -, -, hU⟩ :=
-    native_strongFull_uniform_of_classFull_radial_C12X.{u} (θ := 5 / 4) (by norm_num) ε hε
-      hstr.2.2.2.2.2
+  have hU := native_strongFull_uniform_radial_spec_C11SC.{u} hε hstr.2.2.2.2.2
   obtain ⟨qh, δS, ρS, εS, DS, mS, hqh, hδS, hρS, hεS, hDS, hX⟩ :=
     hU P g B hB C1 C2 C1s C2s qcan qs τmin Ctime Cgrad κ hstr.1 hstr.2.1 hstr.2.2.1
       hstr.2.2.2.1 hqcan hqs hstr.2.2.2.2.1 hκ
@@ -159,8 +160,9 @@ private theorem exists_prepared_closed_birth_class_before_quality_with_native_ce
     nlinarith only [hprodSq]
   refine ⟨p₀, δb, ρb, εClass, κClass, κ, qcan, qs, Qbirth, max Qbirth Qzero,
     hReserveRadius, hReserveAccuracy, hReserveOrder, hReserveScale,
-    ⟨max C1 (max Ccore Cu), max C2 (max (max Ccore Cu) (Cgrad : ℝ)), qh,
-      le_max_of_le_left hstr.1, le_max_of_le_left hstr.2.1, hqh, ?_⟩,
+    ⟨strongC1_C11SC.{u} ε C1, strongC2_C11SC.{u} ε C2 Cgrad, qh,
+      one_le_strongC1_C11SC hstr.1 ε, one_le_strongC2_C11SC hstr.2.1 ε Cgrad, le_rfl, le_rfl,
+      hqh, ?_⟩,
     hfixed, hrc, hδb, hρb, hεClass, hεClass11, hκClass, hκ,
     hqcan, hqs, hqsC, hQbirth, rfl, hQzero.trans_le (le_max_right _ _),
     hcap, hrec, extension, ?_⟩
@@ -432,7 +434,8 @@ theorem exists_prepared_closed_birth_class_before_quality_with_distance_scalars_
     ∃ (p₀ : CutoffParameters) (δb ρb εClass κClass κ qcan qs Qbirth Qall : ℝ),
       Dstar ≤ p₀.modelRadius ∧ p₀.modelAccuracy ≤ εReserve ∧
       2 ≤ p₀.modelOrder ∧ 32 * Qall * ρb ^ 2 ≤ 1 ∧
-      (∃ C1h C2h qh : ℝ, 1 ≤ C1h ∧ 1 ≤ C2h ∧ qs ≤ qh ∧
+      (∃ C1h C2h qh : ℝ, 1 ≤ C1h ∧ 1 ≤ C2h ∧ C1h ≤ strongC1_C11SC.{u} ε C1 ∧
+        C2h ≤ strongC2_C11SC.{u} ε C2 Cgrad ∧ qs ≤ qh ∧
         ∀ (V : RetainedCoreHistory.{u}) (_IV : InitialIdentification P g V.toHistory)
           (pV : CutoffParameters)
           (records : ∀ i : Fin V.eventCount, GeometricCutoffRecord V.toHistory i pV),

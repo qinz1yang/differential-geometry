@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ConeAccurac
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedObservationData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongNeckFullCanonicalC12X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongNeckFullLeafDefsC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongCeilingC11SC
 
 /-!
 O-CH11-FIX3B port（astra `History/PreparedSpatialState` 的 elaboration 修补；陈述/定义逐字不变）：
@@ -81,6 +82,10 @@ structure ClosedBirthPreparedClass (pBase : CutoffParameters) (C : ClosedBirthCo
   (C1strong C2strong qStrong : ℝ)
   C1strong_ge_one : 1 ≤ C1strong
   C2strong_ge_one : 1 ≤ C2strong
+  /-- S16 shared bound (O-CH11-S16CEIL)：class 的 strong 常数不超过 uniform engine 常数
+  `strongC1_C11SC C.epsilon C.C1`（只依赖 `C`，在 `P/g/B/κ` 之前固定的闭项）。 -/
+  C1strong_le : C1strong ≤ strongC1_C11SC.{u} C.epsilon C.C1
+  C2strong_le : C2strong ≤ strongC2_C11SC.{u} C.epsilon C.C2 C.Cgrad
   qs_le_qStrong : qs ≤ qStrong
   strongControl : ∀ (V : RetainedCoreHistory.{u}) (_IV : InitialIdentification P g V.toHistory)
     (pV : CutoffParameters)
@@ -153,6 +158,9 @@ structure PreparedSpatialState (pBase : CutoffParameters) (C : ClosedBirthConsta
   (C1S C2S : ℝ)
   C1S_ge_one : 1 ≤ C1S
   C2S_ge_one : 1 ≤ C2S
+  /-- S16 shared bound (O-CH11-S16CEIL)：沿 recursion 保持的同一上界（Base `1`，Step `max`）。 -/
+  C1S_le : C1S ≤ strongC1_C11SC.{u} C.epsilon C.C1
+  C2S_le : C2S ≤ strongC2_C11SC.{u} C.epsilon C.C2 C.Cgrad
   strong_threshold_le : prepared.qStrong ≤ (radius ^ 2)⁻¹
   strong : ∀ t : Icc (0 : ℝ) history.toHistory.horizon, (t : ℝ) < E →
     history.time (history.toHistory.activeStage t) < (t : ℝ) →

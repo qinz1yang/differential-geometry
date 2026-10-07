@@ -138,6 +138,8 @@ theorem exists_prepared_spatial_base_with_small_test_margin
     C2S := 1
     C1S_ge_one := le_rfl
     C2S_ge_one := le_rfl
+    C1S_le := one_le_strongC1_C11SC C.C1_ge_one _
+    C2S_le := one_le_strongC2_C11SC C.C2_ge_one _ _
     strong_threshold_le := by
       rw [hqStrong]
       exact (le_max_right _ _).trans hthreshold
