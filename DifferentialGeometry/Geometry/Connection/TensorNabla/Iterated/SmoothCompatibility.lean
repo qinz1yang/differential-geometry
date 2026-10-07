@@ -19,6 +19,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+/-- Raw covariant iteration agrees with bundled iteration on a smooth tensor. -/
 theorem iteratedMetricCovariantDerivative_eq_iterCov
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (A : Tensor0SField (I := I) (M := M) (n := ∞) s) (k : ℕ) (x : M) :
@@ -50,6 +51,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+/-- The metric difference norm uses the same covariant iteration as the raw
+tensor norm, including the conversion between the two slot arities. -/
 theorem metricDerivNorm_eq_iteratedMetricCovariantDerivative
     (g h G : SmoothRiemannianMetric I M) (k : ℕ) (x : M) :
     metricDerivNorm k g h G x =
@@ -70,6 +73,8 @@ theorem metricDerivNorm_eq_iteratedMetricCovariantDerivative
   rw [iteratedMetricCovariantDerivative_eq_iterCov]
   rfl
 
+/-- The same identity for the raw tensor obtained by currying the difference
+of the original metric inner products. -/
 theorem metricDerivNorm_eq_iterated_inner_difference
     (g h G : SmoothRiemannianMetric I M) (k : ℕ) (x : M) :
     metricDerivNorm k g h G x =

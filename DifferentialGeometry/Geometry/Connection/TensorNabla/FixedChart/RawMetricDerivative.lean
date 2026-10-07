@@ -87,6 +87,9 @@ private theorem tensor0SModelInChart_contDiffWithinAt_of_contMDiffAt
     ((fun p : M => (e ⟨p, A p⟩).2) ∘ (extChartAt I x₀).symm) (Set.range I) y
   exact hcomp.contDiffWithinAt
 
+/-- In any fixed chart, the actual metric covariant derivative of a raw tensor
+with `C¹` regularity at the evaluation point has the usual coordinate formula.
+The within derivative preserves the model's boundary convention. -/
 theorem tensor0SModelInChart_metricCovariantDerivative [T2Space M]
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (A : (p : M) → Tensor0SSpace s I p) (x₀ : M)

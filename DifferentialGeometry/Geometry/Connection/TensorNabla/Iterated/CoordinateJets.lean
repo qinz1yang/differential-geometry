@@ -46,6 +46,9 @@ private theorem tensor0SModelInChart_metricCovariantDerivative_eventuallyEq
   rw [tensor0SModelInChart_metricCovariantDerivative g s A x hy hAy,
     fderivWithin_of_mem_nhds hIy]
 
+/-- One actual covariant derivative preserves the remaining coordinate jets:
+jets through order `n + 1` of finite-regularity raw tensors determine all
+coordinate jets through order `n` of their covariant derivatives. -/
 theorem iteratedFDeriv_metricCovariantDerivative_eq_of_coordinate_jets
     (g : SmoothRiemannianMetric I M) (n s : ℕ)
     (A B : (p : M) → Tensor0SSpace s I p) (x : M)
@@ -99,6 +102,9 @@ theorem iteratedFDeriv_metricCovariantDerivative_eq_of_coordinate_jets
         hA hB hΦ hjets k hk
     _ = _ := (hBgerm.iteratedFDeriv ℝ k).self_of_nhds.symm
 
+/-- Finite coordinate jets of raw tensors determine their actual iterated
+covariant derivatives through that same finite order, under one fixed smooth
+metric. The coordinate interior condition is local to the selected point. -/
 theorem iteratedMetricCovariantDerivative_eq_of_coordinate_jets
     (g : SmoothRiemannianMetric I M) (N s : ℕ)
     (A B : (p : M) → Tensor0SSpace s I p) (x : M)

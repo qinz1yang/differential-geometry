@@ -224,6 +224,9 @@ private theorem pullbackError_model_jets_eq
       hfc hhc hΦ' hjets k hk).trans (hAh.iteratedFDeriv ℝ k).self_of_nhds.symm)
 
 omit [FiniteDimensional ℝ F] in
+/-- Equal finite jets of two actual maps give equal covariant derivatives of
+their raw pullback errors, with the same reference metric. The maps need only
+`C^(n+1)` regularity at the specified interior point and common interior image. -/
 theorem iteratedMetricCovariantDerivative_pullbackError_eq_of_map_jets
     (g : SmoothRiemannianMetric J N) (G : SmoothRiemannianMetric I M)
     {f h : M → N} {p : M} {n : ℕ}
@@ -249,6 +252,9 @@ theorem iteratedMetricCovariantDerivative_pullbackError_eq_of_map_jets
     (pullbackError_model_jets_eq g G hp hfp heq hf hh hjets) k hk
 
 omit [FiniteDimensional ℝ F] in
+/-- A smooth metric realizing a finite-map pullback germ has exactly the
+original raw error norms through the realized order. The original map is not
+assumed infinitely smooth, and all norms use the original reference metric. -/
 theorem metricDerivNorm_eq_raw_pullbackError_of_map_jets
     (g : SmoothRiemannianMetric J N) (G q : SmoothRiemannianMetric I M)
     {f h : M → N} {p : M} {n : ℕ}

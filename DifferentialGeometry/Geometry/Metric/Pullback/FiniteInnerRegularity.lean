@@ -58,6 +58,8 @@ private theorem localPullInner_inCoordinates
   rw [localPullInner_apply, hD, hD]
 
 omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] in
+/-- A map of class `C^(n+1)` gives a raw pullback bilinear field of class `C^n`
+at the same point. No immersion or infinitely smooth map is assumed. -/
 theorem contMDiffAt_localPullInner_of_contMDiffAt
     (g : SmoothRiemannianMetric J N) {f : M → N} {x : M} {n : ℕ}
     (hf : ContMDiffAt I J (n + 1) f x) :
@@ -140,6 +142,9 @@ private theorem contMDiffAt_tensor02_of_bilinear {n : ℕ} {x : M}
   exact tensor02_trivialization_eq (A y) hy
 
 omit [FiniteDimensional ℝ F] in
+/-- The actual raw pullback error against a smooth reference metric has the
+finite regularity supplied by the original map. This is the tensor used in
+the finite cusp metric-error hypothesis. -/
 theorem contMDiffAt_localPullMetricError_of_contMDiffAt
     (g : SmoothRiemannianMetric J N) (G : SmoothRiemannianMetric I M)
     {f : M → N} {x : M} {n : ℕ} (hf : ContMDiffAt I J (n + 1) f x) :

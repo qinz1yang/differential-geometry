@@ -17,6 +17,8 @@ variable {E F : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
+/-- A finite Taylor polynomial with invertible first derivative gives a smooth
+partial diffeomorphism in prescribed neighborhoods, with the original finite jet. -/
 theorem exists_partialDiffeomorph_finiteTaylorPolynomial
     {f : E → F} {x : E} {r : ℕ}
     (hf : ContDiffAt ℝ r f x) (hr : 1 ≤ r)
@@ -51,6 +53,9 @@ variable {E F : Type*}
   {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F H'}
   [IsManifold I ∞ M] [IsManifold J ∞ N]
 
+/-- At interior points, an invertible finite jet is realized by a smooth local
+diffeomorphism. Both coordinate charts are fixed at the original point and image;
+the original map is only assumed to have the stated finite regularity. -/
 theorem exists_partialDiffeomorph_eq_finiteJet
     {f : M → N} {p : M} {r : ℕ}
     (hf : ContMDiffAt I J r f p) (hr : 1 ≤ r)

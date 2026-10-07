@@ -13,6 +13,9 @@ variable {𝕜 E F G : Type*} [NontriviallyNormedField 𝕜]
   [NormedAddCommGroup F] [NormedSpace 𝕜 F]
   [NormedAddCommGroup G] [NormedSpace 𝕜 G]
 
+/-- Finite jets of a composite agree when the positive-order inner jets and
+all outer jets agree. The outer jets are evaluated at the actual images,
+which need not be equal. -/
 theorem iteratedFDeriv_comp_eq_of_eq_jets
     {n : ℕ} {f₁ f₂ : E → F} {g₁ g₂ : F → G} {x : E}
     (hf₁ : ContDiffAt 𝕜 n f₁ x) (hf₂ : ContDiffAt 𝕜 n f₂ x)
@@ -37,6 +40,8 @@ theorem iteratedFDeriv_comp_eq_of_eq_jets
   funext i
   exact hinner (c.partSize i) (c.partSize_pos i) ((c.partSize_le i).trans hk)
 
+/-- Postcomposition with the same finite-regularity map preserves equality of
+finite jets. The common image point is recovered from the zero jet. -/
 theorem iteratedFDeriv_comp_right_eq_of_eq_jets
     {n : ℕ} {f h : E → F} {B : F → G} {x : E}
     (hf : ContDiffAt 𝕜 n f x) (hh : ContDiffAt 𝕜 n h x)
@@ -50,6 +55,9 @@ theorem iteratedFDeriv_comp_right_eq_of_eq_jets
   exact iteratedFDeriv_comp_eq_of_eq_jets hf hh hB (hx ▸ hB)
     (fun j _ hj => hjets j hj) (fun _ _ => congrArg _ hx) k hk
 
+/-- A finite-regularity expression in a point, a map value, and its first
+derivative has equal jets through order `n` for maps with equal jets through
+order `n + 1`. All regularity is local at the stated point. -/
 theorem iteratedFDeriv_comp_value_fderiv_eq_of_eq_jets
     {n : ℕ} {f h : E → F} {x : E} {Φ : E × F × (E →L[𝕜] F) → G}
     (hf : ContDiffAt 𝕜 (n + 1) f x) (hh : ContDiffAt 𝕜 (n + 1) h x)

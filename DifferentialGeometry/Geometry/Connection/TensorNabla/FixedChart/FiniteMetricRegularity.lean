@@ -19,6 +19,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+/-- Finite regularity of a raw tensor section is equivalent to finite regularity
+of its full coefficients in the preferred chart, within the model range. -/
 theorem contMDiffAt_tensor0S_iff_contDiffWithinAt_model
     (n s : ℕ) (A : (p : M) → Tensor0SSpace s I p) (x : M) :
     ContMDiffAt I (I.prod 𝓘(ℝ, Tensor0SModel s ℝ E)) n
@@ -34,6 +36,8 @@ theorem contMDiffAt_tensor0S_iff_contDiffWithinAt_model
     contMDiffWithinAt_iff_contDiffWithinAt]
   rfl
 
+/-- The complete connection coefficient, including its direction argument, is
+smooth in a fixed chart wherever the inverse chart is defined. -/
 theorem connectionEndomorphismInChartL_contDiffWithinAt
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
@@ -89,6 +93,8 @@ theorem connectionEndomorphismInChartL_contDiffWithinAt
   filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem hy] with z hz
   exact heq z hz
 
+/-- The algebraic total covariant derivative preserves the regularity of its
+derivative, connection, and tensor arguments. -/
 theorem contDiffWithinAt_totalCovDerivTensor0SModelAt
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (s : ℕ) {n : WithTop ℕ∞} {S : Set F} {x : F}
@@ -114,6 +120,8 @@ theorem contDiffWithinAt_totalCovDerivTensor0SModelAt
   simpa only [Function.comp_def, ContinuousLinearEquiv.symm_apply_apply] using
     c.symm.contDiff.comp_contDiffWithinAt hcurried
 
+/-- One actual metric covariant derivative loses exactly one finite derivative
+of a raw tensor section. The statement also applies at boundary points. -/
 theorem contMDiffAt_metricCovariantDerivative [T2Space M]
     (g : SmoothRiemannianMetric I M) (n s : ℕ)
     (A : (p : M) → Tensor0SSpace s I p) (x : M)
@@ -160,6 +168,8 @@ theorem contMDiffAt_metricCovariantDerivative [T2Space M]
       (mem_extChartAt_target (I := I) x)
     simpa only [extChartAt_to_inv] using hAone
 
+/-- Through finite order `N`, each actual covariant derivative retains the
+remaining `N - k` derivatives of the original raw tensor section. -/
 theorem contMDiffAt_iteratedMetricCovariantDerivative [T2Space M]
     (g : SmoothRiemannianMetric I M) (N s : ℕ)
     (A : (p : M) → Tensor0SSpace s I p) (x : M)
