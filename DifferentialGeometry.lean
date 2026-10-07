@@ -27411,3 +27411,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.MGLAd
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.WR.EnhancedBridgeC11M
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.WR.A09OfEnhancedC11M
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.WR.A13OfEnhancedC11M
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #45
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.MGLThickC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.TimeDerivativeC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.UniformRegularEndpointBlock
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.A12FullConsumerC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Dist.EndpointRadiusC11G2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.MGLVolumeC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ControlledBallP6M2
