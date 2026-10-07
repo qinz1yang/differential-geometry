@@ -12,8 +12,9 @@ set_option autoImplicit false
 `exists_surgery_with_decaying_accuracy_of_supplies_C11S` 的结论与 A12
 （`GC.LongTime.exists_surgery_with_decaying_accuracy`）**逐字相同**（见下方 `type_of%` 的 `example`）。
 
-Consumers：A09 `exists_late_cut_family` 与 A13 `late_derivative_tests_of_flow` 的 `hadm / hdec`
-前提形（两个 `example`）；sorry-free 的 `commonNeckAccuracy_of_supplies_C11S`；以及
+Consumers：A09 `exists_late_cut_family` 的 `hadm / hdec` 前提形（`example`；A13 自 REPOINT2
+起吃 enhanced profile，其 example 已删，见 `A12EnhancedC11E`）；sorry-free 的
+`commonNeckAccuracy_of_supplies_C11S`；以及
 `hrc_of_decay_C11S`——ch12 残余 binder `hrc`（LOGKEEPER 记录的 ch11 候选供给）其实只由
 `accuracy_eq` + decay 推出，对**任意** profile 成立。
 -/
@@ -143,17 +144,8 @@ example {P : OrientedThreeStage.{u}} {g : P.Metric} (h : SurgerySupplies_C11S P 
   obtain ⟨δ, F, -, hdec, hadm⟩ := exists_surgery_with_decaying_accuracy_of_supplies_C11S P g h
   exact ⟨F, fun slices ht hn => exists_late_cut_family F K hK δ hadm hdec slices ht hn⟩
 
-/-- Consumer（A13 前提形）：同一 `δ, F` 喂 `late_derivative_tests_of_flow`。 -/
-example {P : OrientedThreeStage.{u}} {g : P.Metric} (h : SurgerySupplies_C11S P g)
-    (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
-    ∃ F : GC.Interface.RawSurgery P g,
-      ∀ slices : ℕ → RegularSlice F.observation,
-        (∀ j : ℕ, (j : ℝ) < (slices j).time) →
-        (∀ j : ℕ, Nonempty (slices j).stage.Carrier) →
-        ∀ L : LateCutFamily F K slices, L.hasEventualDerivativeBounds := by
-  obtain ⟨δ, F, -, hdec, hadm⟩ := exists_surgery_with_decaying_accuracy_of_supplies_C11S P g h
-  exact ⟨F, fun slices ht hn L =>
-    late_derivative_tests_of_flow F K hK δ hadm hdec slices ht hn L⟩
+-- (REPOINT2) example removed: `late_derivative_tests_of_flow` now takes
+-- `hasEnhancedAdmissibility_C11E`; the supply bundle only yields the analytic profile
 
 /-- Consumer（sorry-free）：供给 ⇒ 晚期 decay 的共同 neck accuracy。 -/
 theorem commonNeckAccuracy_of_supplies_C11S (P : OrientedThreeStage.{u}) (g : P.Metric)

@@ -161,29 +161,7 @@ example {P : OrientedThreeStage.{u}} {g : P.Metric}
     records ε C1 C2 hconst hκ hκanti hδanti hρanti hcan hwin hnc hδlim hrecent hP6
   exact ⟨F', fun slices ht hn => exists_late_cut_family F' K hK δ hadm hdec slices ht hn⟩
 
-/-- Consumer（A13 前提形）：同一 `δ, F` 喂 `late_derivative_tests_of_flow`。 -/
-example {P : OrientedThreeStage.{u}} {g : P.Metric}
-    (F : GC.Interface.RawSurgery P g) (q : CutoffParameters) (κ : ℝ → ℝ)
-    (records : CutoffRecords_C11S F q) (ε C1 C2 : ℝ)
-    (hconst : CanonicalConstantsSupply_C11S ε C1 C2)
-    (hκ : ∀ t : ℝ, 0 < κ t) (hκanti : Antitone κ)
-    (hδanti : AntitoneOn q.delta (Ici 0)) (hρanti : AntitoneOn q.neckRadius (Ici 0))
-    (hcan : HistoryCanonicalSupply_C11S F q.neckRadius ε C1 C2)
-    (hwin : ∀ n i b, ((records n i).static b).hasCanonicalWindow)
-    (hnc : ∀ (n : ℕ) (t : ℝ), t ∈ Icc (0 : ℝ) (n : ℝ) →
-      (F.tower.history n).NoncollapsedBefore (κ t) ε t)
-    (hδlim : Tendsto q.delta atTop (𝓝 0))
-    (hrecent : RecentCutoffSupply_C11S records)
-    (hP6 : LargerBallScalarLargeSupply_C11S F q.delta (diagonalAccuracy_C11S q.delta))
-    (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
-    ∃ F : GC.Interface.RawSurgery P g,
-      ∀ slices : ℕ → RegularSlice F.observation,
-        (∀ j : ℕ, (j : ℝ) < (slices j).time) →
-        (∀ j : ℕ, Nonempty (slices j).stage.Carrier) →
-        ∀ L : LateCutFamily F K slices, L.hasEventualDerivativeBounds := by
-  obtain ⟨δ, F', -, hdec, hadm⟩ := exists_surgery_with_decaying_accuracy_of_P6_data_C11A F q κ
-    records ε C1 C2 hconst hκ hκanti hδanti hρanti hcan hwin hnc hδlim hrecent hP6
-  exact ⟨F', fun slices ht hn L =>
-    late_derivative_tests_of_flow F' K hK δ hadm hdec slices ht hn L⟩
+-- (REPOINT2) example removed: `late_derivative_tests_of_flow` now takes
+-- `hasEnhancedAdmissibility_C11E`; P6 data only yields the analytic profile
 
 end GC.LongTime.Ch11

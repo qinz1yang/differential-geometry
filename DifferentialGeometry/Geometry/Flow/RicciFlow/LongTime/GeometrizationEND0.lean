@@ -1,7 +1,8 @@
 import DifferentialGeometry.Geometry.Collapse.GraphThresholdDisjEND0
 import DifferentialGeometry.Geometry.Collapse.ThresholdDisjunctiveApplications
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateDecomposition
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWLateSequenceWA2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.RouteWLateSequenceC11R
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12Enhanced
 
 /-!
 # The geometrization endpoint at universe 0 without the two threshold admissions
@@ -20,11 +21,12 @@ threshold (A02, A01 of the X132 ledger). Here the chain is restated at universe 
 * `geometrizes_of_metric_END0` and `geometrization_zero_END0` repeat the five lines of
   `geometrizes_of_metric` and the three lines of `geometrization` at universe 0.
 
-This endpoint uses the Route W late-sequence consumer
-(`CuspP1.exists_surgery_with_late_sequence_tests_routeW_WA`, re-point of 2026-10-06). The recorded
-reachable late-time direct admissions are A09, A12 and A13; the old A08/A10/A11/A14 skeleton
-declarations remain present but are not used by this endpoint. The universe-`u` statement is not
-claimed for `u > 0`.
+This endpoint uses the A12' late-sequence consumer
+(`Ch11.exists_surgery_with_late_sequence_tests_C11R` fed with
+`exists_surgery_with_decaying_accuracy_enhanced`, re-point of 2026-10-07 on top of the Route W
+re-point of 2026-10-06). The recorded reachable late-time direct admissions are A09, A12' and A13;
+the old A08/A10/A11/A14 skeleton declarations and A12 remain present but are not used by this
+endpoint. The universe-`u` statement is not claimed for `u > 0`.
 -/
 
 set_option autoImplicit false
@@ -45,7 +47,8 @@ theorem geometrizes_of_metric_END0
     (M : ConnectedClosedOrientedManifold.{0} 3)
     (g : (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold).Metric) :
     Geometrizes M := by
-  obtain ⟨δ, F, _, _, _, _, tests⟩ := CuspP1.exists_surgery_with_late_sequence_tests_routeW_WA
+  obtain ⟨δ, F, _, _, _, _, tests⟩ := Ch11.exists_surgery_with_late_sequence_tests_C11R
+    exists_surgery_with_decaying_accuracy_enhanced
     (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g lateDerivativeOrder
     le_rfl
   exact geometrizes_of_late_slice_supply M F

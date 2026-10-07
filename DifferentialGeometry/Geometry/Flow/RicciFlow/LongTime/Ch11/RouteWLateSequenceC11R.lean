@@ -11,8 +11,9 @@ Route W 的四层 consumer（`CuspP1/RouteWLateSequenceWA2.lean`）的 `_C11R` �
 以显式参数 `hA12' : A12EnhancedStatement_C11E` 接收它；端点把 admission 传进来即可（一行）。
 
 * L1 `hasLateSequenceTests_of_thick_thin_and_obstruction_C11R`：binder `hadm` 换成 enhanced profile
-  `henh : hasEnhancedAdmissibility_C11E F δ`，A09 / A13 / Route W G_final 的 `hadm` 在调用处由投影
-  `hasAnalyticAdmissibility_of_enhanced_C11E` 直接提取（`RouteWLateSequenceCoreC11R` 的 core 实例化）；
+  `henh : hasEnhancedAdmissibility_C11E F δ`；A09 / Route W G_final 的 `hadm` 在调用处由投影
+  `hasAnalyticAdmissibility_of_enhanced_C11E` 提取，A13 直接吃 `henh`（rev1 = REPOINT2，tracked A13
+  改吃 enhanced profile 之后；`RouteWLateSequenceCoreC11R` 的 core）；
 * L2 `exists_admissible_surgery_with_late_sequence_tests_C11R`、L3
   `exists_surgery_with_late_sequence_tests_C11R`（`GeometrizationEND0` 的 re-point 点）、L4
   `geometrizes_of_metric_C11R`（`Geometrization` 的 re-point 点）：喂入 `hA12'` 后类型与
@@ -37,15 +38,14 @@ namespace GC.LongTime.Ch11
 
 universe u
 
-/-- L1：A09 / A13 / G_final 的前提由 enhanced profile 直接提取。 -/
+/-- L1：A09 / G_final 的前提由 enhanced profile 投影提取，A13 直接吃 enhanced profile。 -/
 theorem hasLateSequenceTests_of_thick_thin_and_obstruction_C11R
     {P : OrientedThreeStage.{u}} {g : P.Metric}
     (F : GC.Interface.RawSurgery P g) (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ)
     (henh : hasEnhancedAdmissibility_C11E F δ)
     (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) :
     hasLateSequenceTests F K :=
-  hasLateSequenceTests_of_thick_thin_and_obstruction_of_enhanced_C11R
-    (fun _ _ h => hasAnalyticAdmissibility_of_enhanced_C11E h) F K hK δ henh hdec
+  hasLateSequenceTests_of_thick_thin_and_obstruction_of_enhanced_C11R F K hK δ henh hdec
 
 /-- L2 的 enhanced 结论版：A12′ 的 surgery 连同 enhanced profile 与 late sequence tests。 -/
 theorem exists_enhanced_surgery_with_late_sequence_tests_C11R
@@ -55,9 +55,7 @@ theorem exists_enhanced_surgery_with_late_sequence_tests_C11R
       AntitoneOn δ (Ici 0) ∧
       (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
       hasEnhancedAdmissibility_C11E F δ ∧ hasLateSequenceTests F K :=
-  exists_enhanced_surgery_with_late_sequence_tests_of_enhanced_C11R P g
-    (fun _ _ h => hasAnalyticAdmissibility_of_enhanced_C11E h)
-    (hA12' P g) K hK
+  exists_enhanced_surgery_with_late_sequence_tests_of_enhanced_C11R P g (hA12' P g) K hK
 
 /-- L2：`exists_admissible_surgery_with_late_sequence_tests` 的 A12′ 版（A12 → A12′）。 -/
 theorem exists_admissible_surgery_with_late_sequence_tests_C11R

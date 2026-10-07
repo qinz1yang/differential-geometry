@@ -109,7 +109,7 @@ theorem hasAttainedExteriorAreaObstructionAfter_of_morrey_chain_top_RB
 theorem hasLateSequenceTests_of_thick_thin_and_morrey_chain_RB
     {P : OrientedThreeStage.{u}} {g : P.Metric}
     (F : GC.Interface.RawSurgery P g) (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ)
-    (hadm : hasAnalyticAdmissibility F δ)
+    (henh : Ch11.hasEnhancedAdmissibility_C11E F δ)
     (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε)
     (hmorrey : ∀ {slices : ℕ → RegularSlice F.observation} (L : LateCutFamily F K slices),
       PrescribedCuspMeridianTop_CPQ L.cores →
@@ -118,10 +118,11 @@ theorem hasLateSequenceTests_of_thick_thin_and_morrey_chain_RB
         (∀ t ∈ Ici T, hasLocalSmoothUpperBarrier A (Ici T) t
           (3 * A t / (4 * (t + c)) - Real.pi))) :
     hasLateSequenceTests F K := by
+  have hadm : hasAnalyticAdmissibility F δ := Ch11.hasAnalyticAdmissibility_of_enhanced_C11E henh
   intro slices htimes hnonempty
   obtain ⟨L⟩ := exists_late_cut_family F K hK δ hadm hdec slices htimes hnonempty
   obtain ⟨A, hA, htests⟩ := L.exists_late_tests_of_derivative_bounds
-    (late_derivative_tests_of_flow F K hK δ hadm hdec slices htimes hnonempty L)
+    (late_derivative_tests_of_flow F K hK δ henh hdec slices htimes hnonempty L)
   refine ⟨A, hA, ?_⟩
   intro w hw hc
   obtain ⟨N, hn⟩ := htests w hw hc

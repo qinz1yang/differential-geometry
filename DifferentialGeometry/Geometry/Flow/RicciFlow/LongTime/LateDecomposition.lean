@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspIncompressibili
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.ExteriorDiskFlow
 import DifferentialGeometry.Geometry.Collapse.LatePieceGeometry
 import DifferentialGeometry.Geometry.Collapse.GraphThresholdDisjUL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12Enhanced
 
 set_option autoImplicit false
 noncomputable section
@@ -116,13 +117,14 @@ theorem hasExteriorAreaObstructionAfter_of_producers
 theorem hasLateSequenceTests_of_thick_thin_and_obstruction
     {P : OrientedThreeStage.{u}} {g : P.Metric}
     (F : GC.Interface.RawSurgery P g) (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ)
-    (hadm : hasAnalyticAdmissibility F δ)
+    (henh : Ch11.hasEnhancedAdmissibility_C11E F δ)
     (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) :
     hasLateSequenceTests F K := by
+  have hadm : hasAnalyticAdmissibility F δ := Ch11.hasAnalyticAdmissibility_of_enhanced_C11E henh
   intro slices htimes hnonempty
   obtain ⟨L⟩ := exists_late_cut_family F K hK δ hadm hdec slices htimes hnonempty
   obtain ⟨A, hA, htests⟩ := L.exists_late_tests_of_derivative_bounds
-    (late_derivative_tests_of_flow F K hK δ hadm hdec slices htimes hnonempty L)
+    (late_derivative_tests_of_flow F K hK δ henh hdec slices htimes hnonempty L)
   refine ⟨A, hA, ?_⟩
   intro w hw hc
   obtain ⟨N, hn⟩ := htests w hw hc
@@ -137,8 +139,8 @@ theorem exists_admissible_surgery_with_late_sequence_tests
       AntitoneOn δ (Ici 0) ∧
       (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
       hasAnalyticAdmissibility F δ ∧ hasLateSequenceTests F K := by
-  obtain ⟨δ, F, ha, hd, hprofile⟩ := exists_surgery_with_decaying_accuracy P g
-  exact ⟨δ, F, ha, hd, hprofile,
+  obtain ⟨δ, F, ha, hd, hprofile⟩ := exists_surgery_with_decaying_accuracy_enhanced P g
+  exact ⟨δ, F, ha, hd, Ch11.hasAnalyticAdmissibility_of_enhanced_C11E hprofile,
     hasLateSequenceTests_of_thick_thin_and_obstruction F K hK δ hprofile hd⟩
 
 theorem exists_surgery_with_late_sequence_tests

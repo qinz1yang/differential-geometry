@@ -155,8 +155,9 @@ example {P : OrientedThreeStage.{u}} {g : P.Metric} (F : GC.Interface.RawSurgery
   exact hS32 ⟨E.toAnalyticSurgeryProfile⟩ hdec E.toAnalyticSurgeryProfile E.linked_windows E.Ctime
     E.time_derivative E.collar_window E.epsilon_cone E.larger_ball_canonical (hrest E)
 
-/-- consumer（A09 与现行 A13 前提形）：A12′ 给出的 `δ, F` 经投影直接喂 tracked 的
-`exists_late_cut_family` 与 `late_derivative_tests_of_flow`（它们仍吃原 `hasAnalyticAdmissibility`）。 -/
+/-- consumer（A09 与现行 A13 前提形，REPOINT2 后）：A12′ 给出的 `δ, F` 经投影喂 tracked 的
+`exists_late_cut_family`（仍吃 `hasAnalyticAdmissibility`），enhanced profile 直接喂
+`late_derivative_tests_of_flow`（REPOINT2 起吃 `hasEnhancedAdmissibility_C11E`）。 -/
 example {P : OrientedThreeStage.{u}} {g : P.Metric} (h : A12EnhancedConclusion_C11E P g)
     (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
     ∃ F : GC.Interface.RawSurgery P g,
@@ -168,7 +169,12 @@ example {P : OrientedThreeStage.{u}} {g : P.Metric} (h : A12EnhancedConclusion_C
   have hadm := hasAnalyticAdmissibility_of_enhanced_C11E hE
   refine ⟨F, fun slices ht hn => ?_⟩
   obtain ⟨L⟩ := exists_late_cut_family F K hK δ hadm hdec slices ht hn
-  exact ⟨L, late_derivative_tests_of_flow F K hK δ hadm hdec slices ht hn L⟩
+  exact ⟨L, late_derivative_tests_of_flow F K hK δ hE hdec slices ht hn L⟩
+
+/-- 型对齐（REPOINT2）：tracked A13 改签名后正是 `A13EnhancedStatement_C11E`。 -/
+example : A13EnhancedStatement_C11E.{u} :=
+  fun F K hK δ hE hdec slices ht hn L =>
+    late_derivative_tests_of_flow F K hK δ hE hdec slices ht hn L
 
 /-- 接法（全称）：A12′ + 改签名后的 A13 ⇒ 每个 `P g` 有 flow，其每个晚期 cut family 有导数界
 （`LateDecomposition.lean:134` 改吃 A12′ 后的形状；A09 仍走投影）。 -/

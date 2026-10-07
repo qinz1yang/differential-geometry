@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Parameters
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.AnalyticAdmissibility
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.EnhancedProfileDefsC11E
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.PersistentHyperbolicCores
 import DifferentialGeometry.Geometry.Hyperbolic.Truncation
 import DifferentialGeometry.Geometry.Collapse.LatePieceGeometry
@@ -157,7 +158,7 @@ theorem exists_late_cut_family {P : OrientedThreeStage.{u}} {g : P.Metric}
 
 theorem late_derivative_tests_of_flow {P : OrientedThreeStage.{u}} {g : P.Metric}
     (F : GC.Interface.RawSurgery P g) (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ)
-    (hadm : hasAnalyticAdmissibility F δ)
+    (hadm : Ch11.hasEnhancedAdmissibility_C11E F δ)
     (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε)
     (slices : ℕ → RegularSlice F.observation)
     (htimes : ∀ j : ℕ, (j : ℝ) < (slices j).time)
