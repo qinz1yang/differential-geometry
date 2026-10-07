@@ -27846,3 +27846,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RerunFinal8P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RerunHbd8P6R8
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaWireConstsP6M6
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaWireConstsAlignP6M6
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #62
+import DifferentialGeometry.Geometry.Comparison.Volume.BallChainVolumeCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CompactBallChainCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6InnerBallVolumeCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedGuardRegimeCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ClosedSlabVolumeCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ClosedSlabVolumeSequenceCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedVolumeBaseCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PreparedCanonicalCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RoundTransferP6SF
