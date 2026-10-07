@@ -502,7 +502,8 @@ example :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧
     ∃ (fixed : StaticCapScaffold) (recenter : ℝ), 4 ≤ recenter ∧
       PreparedDistanceClassProvider fixed recenter Cdist :=
-  @_root_.GC.GeneralFlow.exists_common_prepared_geometric_observation_extension_before_quality_with_distance_scalars
+  (@_root_.GC.GeneralFlow.exists_common_prepared_geometric_observation_extension_before_quality_with_distance_scalars).imp fun Cdist h =>
+    ⟨h.1, h.2.imp fun fixed h => h.imp fun r h => ⟨h.1.1, h.2⟩⟩
 #guard_msgs (drop warning) in
 example :
     ∃ (fixed : StaticCapScaffold) (recenter : ℝ), 4 ≤ recenter ∧
@@ -2441,7 +2442,8 @@ example :
               ENNReal.ofReal ((Nat.card (K.coreEvent i).transition.trace.tubes.Index : ℝ) * v) ≤
             riemannianVolumeMeasure ThreeModel (K.coreEvent i).incoming.terminalRegularOpen
               (K.coreEvent i).terminal.metric F :=
-  @_root_.GC.GeneralFlow.exists_common_scaffold_noncollapsed_geometric_observation_before_quality_with_radial_coordinates_with_distance_scalars
+  (@_root_.GC.GeneralFlow.exists_common_scaffold_noncollapsed_geometric_observation_before_quality_with_radial_coordinates_with_distance_scalars).imp fun Cdist h =>
+    ⟨h.1, h.2.imp fun fixed h => h.imp fun r h => ⟨h.1.1, h.2⟩⟩
 #guard_msgs (drop warning) in
 example :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
@@ -3617,7 +3619,8 @@ example :
         (parameters.modelAccuracy ≤ 1 / 2 → standardCapL + 1 ≤ parameters.modelRadius →
           E.HasUniformDistanceScalar Cdist ∧
           (K.toHistory.event i).HasUniformDistanceScalar Cdist) :=
-  @_root_.DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.exists_uniform_horn_cutoff_record_with_volume_debit_of_fineCutNecks_with_radial_coordinates_with_distance_scalars
+  (@_root_.DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.exists_uniform_horn_cutoff_record_with_volume_debit_of_fineCutNecks_with_radial_coordinates_with_distance_scalars).imp fun Cdist h =>
+    ⟨h.1, h.2.imp fun fixed h => h.imp fun r h => ⟨h.1.1, h.2⟩⟩
 #guard_msgs (drop warning) in
 example :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
@@ -3880,7 +3883,8 @@ example :
         (parameters.modelAccuracy ≤ 1 / 2 → standardCapL + 1 ≤ parameters.modelRadius →
           E.HasUniformDistanceScalar Cdist ∧
           (K.toHistory.event i).HasUniformDistanceScalar Cdist) :=
-  @_root_.DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le_with_radial_coordinates_with_distance_scalars
+  (@_root_.DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le_with_radial_coordinates_with_distance_scalars).imp fun Cdist h =>
+    ⟨h.1, h.2.imp fun fixed h => h.imp fun r h => ⟨h.1.1, h.2⟩⟩
 open OneStepIncoming in
 #guard_msgs (drop warning) in
 example :

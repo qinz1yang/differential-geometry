@@ -33,7 +33,10 @@ pinching, strong-neck and fine-cut suppliers then construct the finite-horizon
 step with parameters carrying that same pair and the same-event volume debit. -/
 theorem exists_uniform_scaffold_surgery_step_with_radial_coordinates_with_distance_scalars :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧
-  ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+  ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
+  (4 ≤ recenterConstant ∧ ∃ (A : ℝ) (hA : 0 < A),
+    fixed = StaticCapScaffold.ofCollarLength A hA ∧
+    DifferentialGeometry.PDE.RicciFlow.StandardCap.StaticCollarAdmits.{0, 0, u} A hA) ∧
   ∀ (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric),
   ∀ (B εbar : ℝ), 0 < B → 0 < εbar →
   ∀ Ctime : ℝ≥0,
@@ -191,7 +194,7 @@ theorem exists_uniform_scaffold_surgery_step_with_radial_coordinates_with_distan
        modelAccuracy := acc
        modelAccuracy_pos := hacc
        recenterConstant := c
-       recenterConstant_ge_four := hc }, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+       recenterConstant_ge_four := hc.1 }, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
   refine ⟨p₀, δb, ρb, v, hpf, hpc, hpa ▸ hacccap, hpD ▸ hDbigcap, hpm ▸ hmcap, hδb, hδbmax, hρb, hρbmax,
     hpc.le, hv, ?_⟩
   intro H initial hend hhor hclass hderH hgradH hcanH hspatH hHI hncH s G hs hG hsing hderG
@@ -326,7 +329,7 @@ theorem exists_uniform_scaffold_surgery_step_with_radial_coordinates :
   obtain ⟨fixed, recenterConstant, distanceProjectionh1⟩ := distanceProjectionSource
   refine ⟨fixed, recenterConstant, ?_⟩
   obtain ⟨distanceProjectionfield2, distanceProjectionh3⟩ := distanceProjectionh1
-  refine ⟨distanceProjectionfield2, ?_⟩
+  refine ⟨distanceProjectionfield2.1, ?_⟩
   intro P₀ g₀ B εbar distanceProjectionx4 distanceProjectionx5 Ctime
   have distanceProjectionh6 := @distanceProjectionh3 P₀ g₀ B εbar distanceProjectionx4
     distanceProjectionx5 Ctime

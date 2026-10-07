@@ -42,7 +42,9 @@ theorem exists_prepared_spatial_initial_state_with_distance_scalars_with_reserve
     (Dstar εReserve : ℝ) (hDstar : 0 < Dstar) (hεReserve : 0 < εReserve) :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧
     ∃ (fixed : StaticCapScaffold) (recenter : ℝ) (C : ClosedBirthConstants),
-      4 ≤ recenter ∧
+      (4 ≤ recenter ∧ ∃ (A : ℝ) (hA : 0 < A),
+        fixed = StaticCapScaffold.ofCollarLength A hA ∧
+        StandardCap.StaticCollarAdmits.{0, 0, u} A hA) ∧
       PreparedDistanceClassProvider.{u} fixed recenter Cdist ∧
       (∀ (P : OrientedThreeStage.{u}) (g : P.Metric) (B κ : ℝ), 0 < B → 0 < κ →
       ∃ (qcan qs Qbirth δmax ρmax εcap Dcap : ℝ) (mcap : ℕ),
@@ -219,7 +221,7 @@ theorem exists_prepared_spatial_initial_state_with_distance_scalars :
   obtain ⟨Cdist, hCdist, fixed, recenter, C, hrecenter, prepareClass, analytic, initial⟩ :=
     exists_prepared_spatial_initial_state_with_distance_scalars_with_reserve_quality.{u}
       1 1 one_pos one_pos
-  refine ⟨Cdist, hCdist, fixed, recenter, C, hrecenter, prepareClass, analytic, ?_⟩
+  refine ⟨Cdist, hCdist, fixed, recenter, C, hrecenter.1, prepareClass, analytic, ?_⟩
   intro P g
   obtain ⟨pBase, prepared, S, _, _, hS⟩ := initial P g
   exact ⟨pBase, prepared, S, hS⟩

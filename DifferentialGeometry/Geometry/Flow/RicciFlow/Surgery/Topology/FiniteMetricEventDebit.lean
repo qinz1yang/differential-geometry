@@ -47,7 +47,7 @@ private theorem volume_add_real_card_debit_le
 
 private theorem exists_uniform_oriented_metricCutCapEvent_volume_debit_with_cap_precision :
     ∃ (c : ℝ) (hc : 4 ≤ c), ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
-      ∃ (A : ℝ) (hA : 0 < A), 2 * A < 1 / 2 ∧
+      ∃ (A : ℝ) (hA : 0 < A), (2 * A < 1 / 2 ∧ StaticCollarAdmits.{0, 0, u} A hA) ∧
       ∀ (D : ℝ), 0 < D → ∀ (m : ℕ) (ε : ℝ), 0 < ε →
       ∀ δcap : ℝ, 0 < δcap → ∃ δ₀ : ℝ, 0 < δ₀ ∧ δ₀ < 1 / 4 ∧
       ∀ {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M]
@@ -230,7 +230,7 @@ private theorem exists_uniform_oriented_metricCutCapEvent_volume_debit_with_cap_
 
 theorem exists_uniform_metricCutCapEvent_volume_debit_with_recenter_data :
     ∃ (c : ℝ) (hc : 4 ≤ c), ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
-      ∃ (A : ℝ) (hA : 0 < A), 2 * A < 1 / 2 ∧
+      ∃ (A : ℝ) (hA : 0 < A), (2 * A < 1 / 2 ∧ StaticCollarAdmits.{0, 0, u} A hA) ∧
       ∀ (D : ℝ), 0 < D → ∀ (m : ℕ) (ε : ℝ), 0 < ε →
       ∀ δcap : ℝ, 0 < δcap → ∃ δ₀ : ℝ, 0 < δ₀ ∧ δ₀ < 1 / 4 ∧
       ∀ {P : OrientedThreeStage.{u}} {t₀ t₁ : ℝ}
@@ -423,7 +423,7 @@ theorem exists_uniform_metricCutCapEvent_volume_debit_with_cap_precision :
   classical
   choose c hc C hC A hA hsmall hfactory using
     exists_uniform_metricCutCapEvent_volume_debit_with_recenter_data.{u}
-  refine ⟨c, hc, C, hC, A, hA, hsmall, ?_⟩
+  refine ⟨c, hc, C, hC, A, hA, hsmall.1, ?_⟩
   intro D hD m ε hε δcap hδcap
   choose δ₀ hδ₀ hquarter hmake using hfactory D hD m ε hε δcap hδcap
   refine ⟨δ₀, hδ₀, hquarter, ?_⟩

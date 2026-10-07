@@ -102,7 +102,10 @@ matching histories through that horizon, in addition to the same before-quality
 extension and all its actual native witnesses. -/
 theorem exists_common_prepared_geometric_observation_extension_before_quality_with_distance_scalars :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧
-    ∃ (fixed : StaticCapScaffold) (recenter : ℝ), 4 ≤ recenter ∧
+    ∃ (fixed : StaticCapScaffold) (recenter : ℝ),
+    (4 ≤ recenter ∧ ∃ (A : ℝ) (hA : 0 < A),
+      fixed = StaticCapScaffold.ofCollarLength A hA ∧
+      StandardCap.StaticCollarAdmits.{0, 0, u} A hA) ∧
       PreparedDistanceClassProvider.{u} fixed recenter Cdist := by
   classical
   obtain ⟨Cdist, hCdist, fixed, recenter, hrec, extend⟩ :=
@@ -139,7 +142,7 @@ theorem exists_common_prepared_geometric_observation_extension_before_quality_wi
     modelAccuracy := min εN (min εcapRequest (1 / 2))
     modelAccuracy_pos := lt_min hεN (lt_min hεcapRequest (by norm_num))
     recenterConstant := recenter
-    recenterConstant_ge_four := hrec }
+    recenterConstant_ge_four := hrec.1 }
   have hmodel : standardCapL + 1 ≤ p₀.modelRadius :=
     (le_max_right DN (standardCapL + 1)).trans (le_max_right _ _)
   have hcap : StandardCap.transitionEnd < p₀.modelRadius + 1 := by
@@ -234,7 +237,7 @@ theorem exists_common_prepared_geometric_observation_extension_before_quality :
   obtain ⟨fixed, recenter, nativeProjectionh1⟩ := nativeResult
   refine ⟨fixed, recenter, ?_⟩
   obtain ⟨nativeProjectionfield2, nativeProjectionh3⟩ := nativeProjectionh1
-  refine ⟨nativeProjectionfield2, ?_⟩
+  refine ⟨nativeProjectionfield2.1, ?_⟩
   intro P g B nativeProjectionx4
   have nativeProjectionh5 := @nativeProjectionh3 P g B nativeProjectionx4
   obtain ⟨ε, κ, nativeProjectionh6⟩ := nativeProjectionh5

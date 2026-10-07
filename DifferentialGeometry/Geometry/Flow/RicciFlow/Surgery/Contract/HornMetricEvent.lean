@@ -429,7 +429,7 @@ theorem exists_uniform_horn_cut_metricCutCapEvent_volume_debit_with_recenter_dat
   apply And.intro hC
   apply Exists.intro A
   apply Exists.intro hA
-  apply And.intro hsmall
+  apply And.intro hsmall.1
   intro Dcap hDcap m accuracy haccuracy
   have choice := hfactory Dcap hDcap m accuracy haccuracy δcap hδcap
   let δ : ℝ := Classical.choose choice

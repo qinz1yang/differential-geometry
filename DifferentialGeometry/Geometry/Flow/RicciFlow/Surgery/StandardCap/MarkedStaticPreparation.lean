@@ -34,7 +34,7 @@ theorem exists_uniform_marked_recentered_static_preparation :
             ∃ out : CanonicalStaticInsertionWitness d A hA D m ε,
               StaticInsertionAdditionalProperties C out := by
   obtain ⟨c, hc, C, hC, A, hA, hsmall, hfactory⟩ := exists_uniform_recentered_static_preparation.{0, 0, u}
-  refine ⟨c, hc, C, hC, A, hA, hsmall, ?_⟩
+  refine ⟨c, hc, C, hC, A, hA, hsmall.1, ?_⟩
   intro D hD m ε hε
   obtain ⟨δ₁, hδ₁, hquarter, hprep⟩ := hfactory D hD m ε hε
   refine ⟨min δ₁ (1 / 8646), lt_min hδ₁ (by norm_num), (min_le_left _ _).trans_lt hquarter, ?_⟩

@@ -42,7 +42,10 @@ The positive local and joined coefficients precede the requested quality.
 The raw initial prefix is the one from the same final concatenation. -/
 theorem exists_common_scaffold_extension_with_raw_prefix_with_distance_scalars :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧
-    ∃ (fixed : StaticCapScaffold) (recenter : ℝ), 4 ≤ recenter ∧
+    ∃ (fixed : StaticCapScaffold) (recenter : ℝ),
+    (4 ≤ recenter ∧ ∃ (A : ℝ) (hA : 0 < A),
+      fixed = StaticCapScaffold.ofCollarLength A hA ∧
+      DifferentialGeometry.PDE.RicciFlow.StandardCap.StaticCollarAdmits.{0, 0, u} A hA) ∧
     ∀ (P : OrientedThreeStage.{u}) (g : P.Metric)
       (H : RetainedCoreHistory.{u}) (IH : InitialIdentification P g H.toHistory)
       (pH : CutoffParameters)
@@ -265,7 +268,7 @@ theorem exists_common_scaffold_extension_with_raw_prefix :
   obtain ⟨fixed, recenter, nativeProjectionh1⟩ := nativeResult
   refine ⟨fixed, recenter, ?_⟩
   obtain ⟨nativeProjectionfield2, nativeProjectionh3⟩ := nativeProjectionh1
-  refine ⟨nativeProjectionfield2, ?_⟩
+  refine ⟨nativeProjectionfield2.1, ?_⟩
   intro P g H IH pH old nativeProjectionx4 nativeProjectionx5 nativeProjectionx6 nativeProjectionx7
     nativeProjectionx8 εH κH nativeProjectionx9 nativeProjectionx10 nativeProjectionx11 T
     nativeProjectionx12

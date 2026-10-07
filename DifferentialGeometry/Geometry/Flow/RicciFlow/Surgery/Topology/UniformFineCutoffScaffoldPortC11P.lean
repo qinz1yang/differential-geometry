@@ -63,7 +63,10 @@ initial curvature, pinching and singular-time choices remain inside the
 metric-dependent callback; the selected record and volume debit are retained. -/
 theorem exists_uniform_horn_cutoff_record_with_volume_debit_of_fineCutNecks_with_radial_coordinates_with_distance_scalars :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧
-    ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
+    (4 ≤ recenterConstant ∧ ∃ (A : ℝ) (hA : 0 < A),
+      fixed = StaticCapScaffold.ofCollarLength A hA ∧
+      StandardCap.StaticCollarAdmits.{0, 0, u} A hA) ∧
     ∃ εcoarse : ℝ, 0 < εcoarse ∧
     ∀ (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric),
     ∀ (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0), Dtrace + 1 ≤ Dbig → 0 < tol → tol ≤ 1 / 1000 →
@@ -391,7 +394,7 @@ theorem exists_uniform_horn_cutoff_record_with_volume_debit_of_fineCutNecks_with
   obtain ⟨fixed, recenterConstant, distanceProjectionh1⟩ := distanceProjectionSource
   refine ⟨fixed, recenterConstant, ?_⟩
   obtain ⟨distanceProjectionfield2, distanceProjectionh3⟩ := distanceProjectionh1
-  refine ⟨distanceProjectionfield2, ?_⟩
+  refine ⟨distanceProjectionfield2.1, ?_⟩
   obtain ⟨εcoarse, distanceProjectionh4⟩ := distanceProjectionh3
   refine ⟨εcoarse, ?_⟩
   obtain ⟨distanceProjectionfield5, distanceProjectionh6⟩ := distanceProjectionh4
@@ -475,7 +478,10 @@ accuracy. This replays the actual radius selection and fine-neck construction;
 all returned record data and the canonical-family callback are unchanged. -/
 theorem exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le_with_radial_coordinates_with_distance_scalars :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧
-    ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
+    (4 ≤ recenterConstant ∧ ∃ (A : ℝ) (hA : 0 < A),
+      fixed = StaticCapScaffold.ofCollarLength A hA ∧
+      StandardCap.StaticCollarAdmits.{0, 0, u} A hA) ∧
     ∀ (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) (η : ℝ), 0 < η →
     ∃ εP εbar : ℝ, 0 < εP ∧ εP ≤ η ∧ 0 < εbar ∧ εbar < 1 / 11 ∧
     ∀ (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0), Dtrace + 1 ≤ Dbig → 0 < tol → tol ≤ 1 / 1000 →
@@ -872,7 +878,7 @@ theorem exists_uniform_horn_cutoff_record_of_fineCutNecks_of_le_with_radial_coor
   obtain ⟨fixed, recenterConstant, distanceProjectionh1⟩ := distanceProjectionSource
   refine ⟨fixed, recenterConstant, ?_⟩
   obtain ⟨distanceProjectionfield2, distanceProjectionh3⟩ := distanceProjectionh1
-  refine ⟨distanceProjectionfield2, ?_⟩
+  refine ⟨distanceProjectionfield2.1, ?_⟩
   intro P₀ g₀ η distanceProjectionx4
   have distanceProjectionh5 := @distanceProjectionh3 P₀ g₀ η distanceProjectionx4
   obtain ⟨εP, εbar, distanceProjectionh6⟩ := distanceProjectionh5

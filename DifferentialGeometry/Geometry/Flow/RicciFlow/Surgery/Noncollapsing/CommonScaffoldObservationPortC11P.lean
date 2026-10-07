@@ -48,7 +48,10 @@ noncollapse radius and coefficient are chosen before the requested quality
 packet. The actual constructed history and selected records retain all bounds. -/
 theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality_with_radial_coordinates_with_distance_scalars :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧
-    ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
+    (4 ≤ recenterConstant ∧ ∃ (A : ℝ) (hA : 0 < A),
+      fixed = StaticCapScaffold.ofCollarLength A hA ∧
+      DifferentialGeometry.PDE.RicciFlow.StandardCap.StaticCollarAdmits.{0, 0, u} A hA) ∧
     ∀ (P : OrientedThreeStage.{u}) (g : P.Metric) (B : ℝ), 0 < B →
     ∃ ε κ : ℝ, 0 < ε ∧ ε < 1 / 11 ∧ 0 < κ ∧
     ∀ (δcut ρcut εcut Dcut : ℝ) (mcut : ℕ),
@@ -379,7 +382,7 @@ theorem exists_common_scaffold_noncollapsed_geometric_observation_before_quality
   obtain ⟨fixed, recenterConstant, distanceProjectionh1⟩ := distanceProjectionSource
   refine ⟨fixed, recenterConstant, ?_⟩
   obtain ⟨distanceProjectionfield2, distanceProjectionh3⟩ := distanceProjectionh1
-  refine ⟨distanceProjectionfield2, ?_⟩
+  refine ⟨distanceProjectionfield2.1, ?_⟩
   intro P g B distanceProjectionx4
   have distanceProjectionh5 := @distanceProjectionh3 P g B distanceProjectionx4
   obtain ⟨ε, κ, distanceProjectionh6⟩ := distanceProjectionh5

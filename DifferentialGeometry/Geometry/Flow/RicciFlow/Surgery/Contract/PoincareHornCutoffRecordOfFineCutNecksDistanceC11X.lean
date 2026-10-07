@@ -44,7 +44,10 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingS
 
 private theorem exists_horn_cutoff_record_at_scale_of_prepared_history_of_fineCutNecks_with_distance_scalars :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧
-    ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
+    (4 ≤ recenterConstant ∧ ∃ (A : ℝ) (hA : 0 < A),
+      fixed = StaticCapScaffold.ofCollarLength A hA ∧
+      StandardCap.StaticCollarAdmits.{0, 0, u} A hA) ∧
     ∃ εcoarse : ℝ, 0 < εcoarse ∧
     ∀ (Dtrace r tol a₀ : ℝ) (Ctime : ℝ≥0), 0 < a₀ → 0 < tol → tol ≤ 1 / 1000 →
       StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace →

@@ -16,7 +16,7 @@ private instance : Fact (Module.finrank ℝ ThreeSpace = 3) := ⟨by simp⟩
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 theorem exists_uniform_metricCutCapEvent_volume_bound :
     ∃ (c : ℝ) (hc : 4 ≤ c), ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
-      ∃ (A : ℝ) (hA : 0 < A), 2 * A < 1 / 2 ∧
+      ∃ (A : ℝ) (hA : 0 < A), (2 * A < 1 / 2 ∧ StaticCollarAdmits.{0, 0, u} A hA) ∧
       ∀ (D : ℝ), 0 < D → ∀ (m : ℕ) (ε : ℝ), 0 < ε →
       ∀ δcap : ℝ, 0 < δcap → ∃ δ₀ : ℝ, 0 < δ₀ ∧ δ₀ < 1 / 4 ∧
       ∀ {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M]

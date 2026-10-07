@@ -33,7 +33,7 @@ private local instance {B : ℝ} {hB : 0 < B} : BorelSpace (InsertionQuotient hB
 
 theorem exists_uniform_recentered_static_family_volume_bound :
     ∃ c : ℝ, 4 ≤ c ∧ ∃ C : ℕ → ℝ, (∀ j, 0 < C j) ∧
-      ∃ (A : ℝ) (hA : 0 < A), 2 * A < 1 / 2 ∧
+      ∃ (A : ℝ) (hA : 0 < A), (2 * A < 1 / 2 ∧ StaticCollarAdmits.{u, v, w} A hA) ∧
       ∀ (D : ℝ), 0 < D → ∀ (m : ℕ) (ε : ℝ), 0 < ε →
       ∃ δ₀ : ℝ, 0 < δ₀ ∧ δ₀ < 1 / 4 ∧
       ∀ {E : Type u} {H : Type v} {M : Type w}

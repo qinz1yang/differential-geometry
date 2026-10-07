@@ -39,7 +39,10 @@ theorem exists_closedBirthConstants_strong_C12X
     (Dstar εReserve : ℝ) (hDstar : 0 < Dstar) (hεReserve : 0 < εReserve) :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧
     ∃ (fixed : StaticCapScaffold) (recenter : ℝ) (C : ClosedBirthConstants),
-      C.epsilon ≤ εStrong_C12X.{u} ∧ 4 ≤ recenter ∧
+      C.epsilon ≤ εStrong_C12X.{u} ∧
+      (4 ≤ recenter ∧ ∃ (A : ℝ) (hA : 0 < A),
+        fixed = StaticCapScaffold.ofCollarLength A hA ∧
+        StandardCap.StaticCollarAdmits.{0, 0, u} A hA) ∧
       PreparedDistanceClassProvider.{u} fixed recenter Cdist ∧
       (∀ (P : OrientedThreeStage.{u}) (g : P.Metric) (B κ : ℝ), 0 < B → 0 < κ →
       ∃ (qcan qs Qbirth δmax ρmax εcap Dcap : ℝ) (mcap : ℕ),

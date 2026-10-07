@@ -78,7 +78,8 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ}
 
 private theorem exists_prepared_horn_cutoff_event_with_original_neck_bounds_of_fineCutNecks_with_distance_scalars :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧
-    ∃ (c : ℝ) (_ : 4 ≤ c) (A : ℝ) (hA : 0 < A) (Kreset : ℝ), 3 ≤ Kreset ∧
+    ∃ (c : ℝ) (_ : 4 ≤ c) (A : ℝ) (hA : 0 < A) (Kreset : ℝ),
+      (3 ≤ Kreset ∧ StaticCollarAdmits.{0, 0, u} A hA) ∧
       ∃ εcoarse : ℝ, 0 < εcoarse ∧
       ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
       ∀ η : ℝ, 0 < η →
@@ -209,7 +210,7 @@ private theorem exists_prepared_horn_cutoff_event_with_original_neck_bounds_of_f
     exists_metricCutCapEvent_capRegion_scalar_lower A hA
   let Kreset := max 3 (2 * C 0)
   have hKreset : 3 ≤ Kreset := le_max_left _ _
-  refine ⟨Cdist, hCdist, c, hc, A, hA, Kreset, hKreset, eta, heta, ?_⟩
+  refine ⟨Cdist, hCdist, c, hc, A, hA, Kreset, ⟨hKreset, hsmall.2⟩, eta, heta, ?_⟩
   intro Dcap hDcap m accuracy haccuracy η hη
   obtain ⟨δ₀, hδ₀, hquarter₀, hmake⟩ := hfactory Dcap hDcap m accuracy haccuracy δcap hδcap
   let δ := min δ₀ η
@@ -475,7 +476,9 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ}
 theorem exists_horn_cutoff_history_extension_with_canonical_windows_of_fineCutNecks_with_radial_coordinates_with_distance_scalars :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
-      4 ≤ recenterConstant ∧ ∃ εcoarse : ℝ, 0 < εcoarse ∧
+      (4 ≤ recenterConstant ∧ ∃ (A : ℝ) (hA : 0 < A),
+        fixed = StaticCapScaffold.ofCollarLength A hA ∧ StaticCollarAdmits.{0, 0, u} A hA) ∧
+      ∃ εcoarse : ℝ, 0 < εcoarse ∧
     ∀ Dcap : ℝ, 0 < Dcap → transitionEnd < Dcap + 1 → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∀ η : ℝ, 0 < η →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ η ∧ 0 < ε₀ ∧
@@ -563,7 +566,8 @@ theorem exists_horn_cutoff_history_extension_with_canonical_windows_of_fineCutNe
   classical
   obtain ⟨Cdist, hCdist, c, hc, A, hA, Kreset, hKreset, εcoarse, hεcoarse, hfamily⟩ :=
     exists_prepared_horn_cutoff_event_with_original_neck_bounds_of_fineCutNecks_with_distance_scalars.{u}
-  refine ⟨Cdist, hCdist, StaticCapScaffold.ofCollarLength A hA, c, hc, εcoarse, hεcoarse, ?_⟩
+  refine ⟨Cdist, hCdist, StaticCapScaffold.ofCollarLength A hA, c,
+    ⟨hc, A, hA, rfl, hKreset.2⟩, εcoarse, hεcoarse, ?_⟩
   intro Dcap hDcap hDfit m accuracy haccuracy η hη
   obtain ⟨δ, hδ, hδ1, hδη, ε₀, hε₀, hmake⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
   refine ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, ?_⟩
