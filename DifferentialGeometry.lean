@@ -27835,3 +27835,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AlphaHalfMar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HcenHistoryP6ST4
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaFinalP6M6
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaFinalAlignP6M6
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #61
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6JointProducersP6CK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6JointFinalP6CK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AlphaSubseqConstC11AL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RerunPrefixDecP6R8
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RerunEvent8P6R8
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RerunFinal8P6R8
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RerunHbd8P6R8
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaWireConstsP6M6
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaWireConstsAlignP6M6
