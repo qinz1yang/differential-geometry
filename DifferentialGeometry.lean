@@ -27405,3 +27405,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch12.ZTAssembly_S96
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch12.TransferIsotopyAudit_CX3
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.CloseTransition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch12.ThickLimitAudit_CX6
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #44
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.MGLAdmission
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.WR.EnhancedBridgeC11M
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.WR.A09OfEnhancedC11M
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.WR.A13OfEnhancedC11M
