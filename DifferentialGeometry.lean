@@ -27663,3 +27663,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.Pre84
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaSeedWindowEndToEndCXCW
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LeftBadLocalizationCXST
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LeftBadSequenceCXST
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #56
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.DeepRecordC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.DeepCutoffProducerC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSplicePostBC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSplicePostCC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSpliceFinalC12X
