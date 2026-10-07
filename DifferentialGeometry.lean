@@ -27420,3 +27420,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.A12Fu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Dist.EndpointRadiusC11G2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.MGLVolumeC12X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ControlledBallP6M2
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #46
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.PBaseC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.FrontierCollarFullC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.MGLProofC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.CompatibleCapsC12X
