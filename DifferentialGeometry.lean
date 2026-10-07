@@ -26271,3 +26271,27 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.RegularObservationNoncollapse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordDelayedRadiusPortC11P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordDelayedRadius
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #38
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.BoundedHistoryEventsPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.BoundedHistoryEvents
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedNativeCertificateDataPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedNativeCertificateData
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowActionRecentNodePortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowActionRecentNode
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaDiagonalP6D2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.AdapterAge_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.AdapterGood_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.AdapterTrunc_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceSliceTerminal_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Pre841DefsC11K
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Pre841AlignC11K
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Pre841ConsumerC11K
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.P6ClosureConsumer_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedDistanceDataPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedDistanceData
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialDistanceData
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialDistanceBase
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialDistanceChain
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.GeometricObservationExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaDiagonalAlignP6D2
