@@ -53,12 +53,13 @@ theorem exists_blockSteps_byPoint_C11W6 (Dstar : ℝ) (hDstar : 0 < Dstar) (cMax
     exists_prepared_closed_birth_class_before_quality_with_distance_scalars_with_reserve_quality
       Dstar εReserve hDstar hεReserve Cdist fixed recenter prepareClass
       C.epsilon C.C1 C.C2 C.C1s C.C2s C.Cs C.tauMin C.Cbirth C.Ctime C.Cgrad C.epsilon_pos
-      analytic P g
+      ⟨C.C1_ge_one, C.C2_ge_one, C.C1s_ge_one, C.C2s_ge_one, C.tauMin_pos, hεs⟩ analytic P g
   obtain ⟨pBase, δb, ρb, εClass, κClass, κ, qcan, qs, Qbirth, Qall,
-    hDReserve, hεReserveBound, hmReserve, hscaleReserve,
+    hDReserve, hεReserveBound, hmReserve, hscaleReserve, hStrong,
     hfixed, hrc, hδb, hρb, hεClass, hεClass11, hκClass, hκ,
     hqcan, hqs, hqsC, hQbirth, hQall, hQallPos,
     hcap, hrec, extension, control⟩ := prepareInitial 1 one_pos
+  obtain ⟨C1h, C2h, qh, hC1h, hC2h, hqh, hStrongV⟩ := hStrong
   let prepared : ClosedBirthPreparedClass pBase C P g 1 := {
     parameters := pBase
     deltaBound := δb
@@ -90,7 +91,15 @@ theorem exists_blockSteps_byPoint_C11W6 (Dstar : ℝ) (hDstar : 0 < Dstar) (cMax
     recenter_bound := hrec
     zero_bound := zeroBound
     extension := extension.forget
-    control := control }
+    control := control
+    epsilon_strong := hεs
+    C1strong := C1h
+    C2strong := C2h
+    qStrong := qh
+    C1strong_ge_one := hC1h
+    C2strong_ge_one := hC2h
+    qs_le_qStrong := hqh
+    strongControl := hStrongV }
   have hprep : PreparedDistanceClassProvider.{u} pBase.fixed pBase.recenterConstant Cdist := by
     rw [hfixed, hrc]
     exact prepareClass

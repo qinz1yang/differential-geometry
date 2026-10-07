@@ -46,6 +46,7 @@ private theorem exists_prepared_two_overlap_extension_with_closed_birth_with_nat
     (fixed : StaticCapScaffold) (recenter : ℝ)
     (prepareClass : PreparedClassProviderWithNative certificate fixed recenter)
     (ε C1 C2 C1s C2s Cs τmin Cbirth : ℝ) (Ctime Cgrad : ℝ≥0) (hε : 0 < ε)
+    (hstr : 1 ≤ C1 ∧ 1 ≤ C2 ∧ 1 ≤ C1s ∧ 1 ≤ C2s ∧ 0 < τmin ∧ ε ≤ εStrong_C12X.{u})
     (analytic :
       ∀ (P : OrientedThreeStage.{u}) (g : P.Metric) (B κ : ℝ), 0 < B → 0 < κ →
       ∃ (qcan qs Qbirth δmax ρmax εcap Dcap : ℝ) (mcap : ℕ),
@@ -107,6 +108,19 @@ private theorem exists_prepared_two_overlap_extension_with_closed_birth_with_nat
       (δNew ρNew εNew κNewClass κNew qNew qsNew QzeroNew QbirthNew QallNew r κJ : ℝ),
       Dstar ≤ pNew.modelRadius ∧ pNew.modelAccuracy ≤ εReserve ∧
       2 ≤ pNew.modelOrder ∧ 32 * QallNew * ρNew ^ 2 ≤ 1 ∧
+      (∃ C1h C2h qh : ℝ, 1 ≤ C1h ∧ 1 ≤ C2h ∧ qsNew ≤ qh ∧
+        ∀ (V : RetainedCoreHistory.{u})
+          (_IV : InitialIdentification (K.stage (Fin.last K.eventCount))
+            (K.initialMetric (Fin.last K.eventCount)) V.toHistory)
+          (pV : CutoffParameters)
+          (records : ∀ i : Fin V.eventCount, GeometricCutoffRecord V.toHistory i pV),
+          V.horizon ≤ Bfuture - K.time (Fin.last K.eventCount) →
+          V.IsCanonicalCutoffRecordFamily pNew δNew ρNew records →
+          V.EventSlabsStronglyCanonicalFull_C12X ε ε C1h C2h qh (Fin.last V.eventCount) ∧
+          ∀ hfinal : V.time (Fin.last V.eventCount) < V.horizon,
+            V.StronglyCanonicalBeforeFull_C12X (Fin.last V.eventCount)
+              ((V.finalSlab hfinal).restrictIncoming le_rfl hfinal le_rfl) ε ε C1h C2h qh
+              V.horizon) ∧
       pNew.fixed = fixed ∧ pNew.recenterConstant = recenter ∧
       0 < δNew ∧ 0 < ρNew ∧ 0 < εNew ∧ εNew < 1 / 11 ∧
       0 < κNewClass ∧ 0 < κNew ∧ 0 < qNew ∧ qNew ≤ qsNew ∧ qsNew ≤ Cs * qNew ∧
@@ -271,10 +285,10 @@ private theorem exists_prepared_two_overlap_extension_with_closed_birth_with_nat
   obtain ⟨QzeroNew, hQzeroNew, zeroNew, prepareNew⟩ :=
     exists_prepared_closed_birth_class_before_quality_with_native_certificate_with_reserve_quality
       Dstar εReserve hDstar hεReserve certificate fixed recenter prepareClass
-      ε C1 C2 C1s C2s Cs τmin Cbirth Ctime Cgrad hε analytic
+      ε C1 C2 C1s C2s Cs τmin Cbirth Ctime Cgrad hε hstr analytic
       (K.stage (Fin.last K.eventCount)) (K.initialMetric (Fin.last K.eventCount))
   obtain ⟨pNew, δNew, ρNew, εNew, κNewClass, κNew, qNew, qsNew, QbirthNew, QallNew,
-    hDReserve, hAccuracyReserve, hOrderReserve, hRadiusReserve,
+    hDReserve, hAccuracyReserve, hOrderReserve, hRadiusReserve, hStrongNew,
     hfixedNew, hrcNew, hδNew, hρNew, hεNew, hεNew11, hκNewClass, hκNew,
     hqNew, hqsNew, hqsNewC, hQbirthNew, hQallNew, hQallNewPos,
     hcapNew, hrecNew, newExtension, newControl⟩ :=
@@ -291,7 +305,7 @@ private theorem exists_prepared_two_overlap_extension_with_closed_birth_with_nat
     (fun V IV pV records hVB hclass => (newControl V IV pV records hVB hclass).1)
   refine ⟨pNew, δNew, ρNew, εNew, κNewClass, κNew, qNew, qsNew,
     QzeroNew, QbirthNew, QallNew, r, κJ,
-    hDReserve, hAccuracyReserve, hOrderReserve, hRadiusReserve, hfixedNew, hrcNew,
+    hDReserve, hAccuracyReserve, hOrderReserve, hRadiusReserve, hStrongNew, hfixedNew, hrcNew,
     hδNew, hρNew, hεNew, hεNew11, hκNewClass, hκNew, hqNew, hqsNew, hqsNewC,
     hQzeroNew, hQbirthNew, hQallNew, hQallNewPos, hr, hrR, hQallr, hκJ,
     hcapNew, hrecNew, zeroNew, newExtension, newControl, ?_⟩
@@ -329,6 +343,7 @@ private theorem exists_prepared_two_overlap_extension_with_closed_birth_with_nat
     (fixed : StaticCapScaffold) (recenter : ℝ)
     (prepareClass : PreparedClassProviderWithNative certificate fixed recenter)
     (ε C1 C2 C1s C2s Cs τmin Cbirth : ℝ) (Ctime Cgrad : ℝ≥0) (hε : 0 < ε)
+    (hstr : 1 ≤ C1 ∧ 1 ≤ C2 ∧ 1 ≤ C1s ∧ 1 ≤ C2s ∧ 0 < τmin ∧ ε ≤ εStrong_C12X.{u})
     (analytic :
       ∀ (P : OrientedThreeStage.{u}) (g : P.Metric) (B κ : ℝ), 0 < B → 0 < κ →
       ∃ (qcan qs Qbirth δmax ρmax εcap Dcap : ℝ) (mcap : ℕ),
@@ -548,11 +563,11 @@ private theorem exists_prepared_two_overlap_extension_with_closed_birth_with_nat
                 t) ε (max C1s Cbirth) (max C2s (max Cbirth (Cgrad : ℝ))) x,
               W.capTubeHasNeckChart ε := by
   obtain ⟨pNew, δNew, ρNew, εNew, κNewClass, κNew, qNew, qsNew,
-    QzeroNew, QbirthNew, QallNew, r, κJ, _, _, _, _, hOld⟩ :=
+    QzeroNew, QbirthNew, QallNew, r, κJ, _, _, _, _, _, hOld⟩ :=
     exists_prepared_two_overlap_extension_with_closed_birth_with_native_certificate_with_reserve_quality
       1 1 one_pos one_pos
       certificate fixed recenter prepareClass
-      ε C1 C2 C1s C2s Cs τmin Cbirth Ctime Cgrad hε analytic
+      ε C1 C2 C1s C2s Cs τmin Cbirth Ctime Cgrad hε hstr analytic
       P g H IH pH recordsH hfixedH hrcH hcapH hcontrolH hwinH κH hκH hncH
       PK gK K IK pOld δOld ρOld B εOld κClass κOld qOld qsOld QbirthOld hQbirthOld
       pK recordsK hclassK hfixedOld hrcOld hcontrolK oldExtension oldControl
@@ -582,6 +597,7 @@ theorem exists_prepared_two_overlap_extension_with_closed_birth
           L.NoncollapsedBefore κ ε L.horizon) ∧
         PreparedGeometricObservationExtension P g B ε κ p₀ δb ρb)
     (ε C1 C2 C1s C2s Cs τmin Cbirth : ℝ) (Ctime Cgrad : ℝ≥0) (hε : 0 < ε)
+    (hstr : 1 ≤ C1 ∧ 1 ≤ C2 ∧ 1 ≤ C1s ∧ 1 ≤ C2s ∧ 0 < τmin ∧ ε ≤ εStrong_C12X.{u})
     (analytic :
       ∀ (P : OrientedThreeStage.{u}) (g : P.Metric) (B κ : ℝ), 0 < B → 0 < κ →
       ∃ (qcan qs Qbirth δmax ρmax εcap Dcap : ℝ) (mcap : ℕ),
@@ -803,8 +819,8 @@ theorem exists_prepared_two_overlap_extension_with_closed_birth
   have nativeResult :=
     @exists_prepared_two_overlap_extension_with_closed_birth_with_native_certificate.{u} (fun _ =>
     True) fixed recenter (PreparedClassProviderWithNative.of_weak prepareClass) ε C1 C2 C1s C2s Cs
-    τmin Cbirth Ctime Cgrad hε analytic P g H IH pH recordsH hfixedH hrcH hcapH hcontrolH hwinH κH
-    hκH hncH PK gK K IK pOld δOld ρOld B εOld κClass κOld qOld qsOld QbirthOld hQbirthOld pK
+    τmin Cbirth Ctime Cgrad hε hstr analytic P g H IH pH recordsH hfixedH hrcH hcapH hcontrolH hwinH
+    κH hκH hncH PK gK K IK pOld δOld ρOld B εOld κClass κOld qOld qsOld QbirthOld hQbirthOld pK
     recordsK hclassK hfixedOld hrcOld hcontrolK oldExtension.withTrue oldControl c offset Aold hHhor
     hKB Bfuture R hBfuture hR
   obtain ⟨pNew, δNew, ρNew, εNew, κNewClass, κNew, qNew, qsNew, QzeroNew, QbirthNew, QallNew, r, κJ,
@@ -854,6 +870,7 @@ theorem exists_prepared_two_overlap_extension_with_closed_birth_with_distance_sc
     (fixed : StaticCapScaffold) (recenter : ℝ)
     (prepareClass : PreparedDistanceClassProvider.{u} fixed recenter Cdist)
     (ε C1 C2 C1s C2s Cs τmin Cbirth : ℝ) (Ctime Cgrad : ℝ≥0) (hε : 0 < ε)
+    (hstr : 1 ≤ C1 ∧ 1 ≤ C2 ∧ 1 ≤ C1s ∧ 1 ≤ C2s ∧ 0 < τmin ∧ ε ≤ εStrong_C12X.{u})
     (analytic :
       ∀ (P : OrientedThreeStage.{u}) (g : P.Metric) (B κ : ℝ), 0 < B → 0 < κ →
       ∃ (qcan qs Qbirth δmax ρmax εcap Dcap : ℝ) (mcap : ℕ),
@@ -1075,7 +1092,7 @@ theorem exists_prepared_two_overlap_extension_with_closed_birth_with_distance_sc
               W.capTubeHasNeckChart ε := by
   exact @exists_prepared_two_overlap_extension_with_closed_birth_with_native_certificate.{u} (fun K
     => ∀ i : Fin K.eventCount, (K.toHistory.event i).HasUniformDistanceScalar Cdist) fixed recenter
-    prepareClass.toNative ε C1 C2 C1s C2s Cs τmin Cbirth Ctime Cgrad hε analytic P g H IH pH
+    prepareClass.toNative ε C1 C2 C1s C2s Cs τmin Cbirth Ctime Cgrad hε hstr analytic P g H IH pH
     recordsH hfixedH hrcH hcapH hcontrolH hwinH κH hκH hncH PK gK K IK pOld δOld ρOld B εOld κClass
     κOld qOld qsOld QbirthOld hQbirthOld pK recordsK hclassK hfixedOld hrcOld hcontrolK
     oldExtension.toNative oldControl c offset Aold hHhor hKB Bfuture R hBfuture hR

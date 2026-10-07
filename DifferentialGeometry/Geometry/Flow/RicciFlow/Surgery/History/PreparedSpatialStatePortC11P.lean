@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ConeAccuracy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedObservationData
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongNeckFullCanonicalC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongNeckFullLeafDefsC12X
 
 /-!
 O-CH11-FIX3B port（astra `History/PreparedSpatialState` 的 elaboration 修补；陈述/定义逐字不变）：
@@ -75,6 +77,21 @@ structure ClosedBirthPreparedClass (pBase : CutoffParameters) (C : ClosedBirthCo
         ∃ W : SpatialCanonicalWitness (V.initialMetric (V.toHistory.activeStage t))
           C.epsilon C.Cbirth (max C.Cbirth (C.Cgrad : ℝ)) y,
           W.capTubeHasNeckChart C.epsilon
+  epsilon_strong : C.epsilon ≤ εStrong_C12X.{u}
+  (C1strong C2strong qStrong : ℝ)
+  C1strong_ge_one : 1 ≤ C1strong
+  C2strong_ge_one : 1 ≤ C2strong
+  qs_le_qStrong : qs ≤ qStrong
+  strongControl : ∀ (V : RetainedCoreHistory.{u}) (_IV : InitialIdentification P g V.toHistory)
+    (pV : CutoffParameters)
+    (records : ∀ i : Fin V.eventCount, GeometricCutoffRecord V.toHistory i pV),
+    V.horizon ≤ B → V.IsCanonicalCutoffRecordFamily parameters deltaBound radiusBound records →
+    V.EventSlabsStronglyCanonicalFull_C12X C.epsilon C.epsilon C1strong C2strong qStrong
+      (Fin.last V.eventCount) ∧
+    ∀ hfinal : V.time (Fin.last V.eventCount) < V.horizon,
+      V.StronglyCanonicalBeforeFull_C12X (Fin.last V.eventCount)
+        ((V.finalSlab hfinal).restrictIncoming le_rfl hfinal le_rfl)
+        C.epsilon C.epsilon C1strong C2strong qStrong V.horizon
 
 /-- Full marked history and the precise prepared native tail used for its next
 extension. The radius and class precede the next fine accuracy request. Physical
@@ -131,6 +148,27 @@ structure PreparedSpatialState (pBase : CutoffParameters) (C : ClosedBirthConsta
         (history.toHistory.stageMetric (history.toHistory.activeStage t) t)
         C.epsilon (max C.C1s C.Cbirth) (max C.C2s (max C.Cbirth (C.Cgrad : ℝ))) x,
         W.capTubeHasNeckChart C.epsilon
+  (C1S C2S : ℝ)
+  C1S_ge_one : 1 ≤ C1S
+  C2S_ge_one : 1 ≤ C2S
+  strong_threshold_le : prepared.qStrong ≤ (radius ^ 2)⁻¹
+  strong : ∀ t : Icc (0 : ℝ) history.toHistory.horizon, (t : ℝ) < E →
+    history.time (history.toHistory.activeStage t) < (t : ℝ) →
+    ∀ x : (history.toHistory.stageAt t).Carrier,
+      (parameters.neckRadius t ^ 2)⁻¹ < metricScalarAt
+        (history.toHistory.stageMetric (history.toHistory.activeStage t) t) x →
+      ∃ W : SpatialCanonicalWitness
+          (history.toHistory.stageMetric (history.toHistory.activeStage t) t)
+          C.epsilon C1S C2S x,
+        W.capTubeHasNeckChart C.epsilon ∧
+        ∀ nk, W.alternative = SpatialCanonicalAlternative.neck nk →
+          ∃ (s' : ℝ) (G : (history.stage (history.toHistory.activeStage t)).IncomingSlab
+              (history.time (history.toHistory.activeStage t)) s'),
+            (∀ τ ∈ Icc (history.time (history.toHistory.activeStage t)) (t : ℝ),
+              G.flow.base.metric τ = history.toHistory.stageMetric
+                (history.toHistory.activeStage t) τ) ∧
+            history.toHistory.HistoryStrongNeckFull_C12X (history.toHistory.activeStage t) G
+              C.epsilon x t
 
 /-- Exact full-history compatibility, with the quantitative budgets chosen for
 this extension. Native reserved records are retained separately in the state. -/

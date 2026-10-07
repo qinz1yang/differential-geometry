@@ -127,12 +127,14 @@ theorem exists_closedBirthConstants_strong_C12X
     exists_prepared_closed_birth_class_before_quality_with_distance_scalars_with_reserve_quality
       Dstar εReserve hDstar hεReserve
       Cdist fixed recenter prepareClass
-      ε C1 C2 C1s C2s Cs τmin Cbirth Ctime Cgrad hε analytic P g
+      ε C1 C2 C1s C2s Cs τmin Cbirth Ctime Cgrad hε
+      ⟨hC1, hC2, hC1s, hC2s, hτmin, hstrong⟩ analytic P g
   obtain ⟨pBase, δb, ρb, εClass, κClass, κ, qcan, qs, Qbirth, Qall,
-    hDReserve, hεReserveBound, hmReserve, hscaleReserve,
+    hDReserve, hεReserveBound, hmReserve, hscaleReserve, hStrong,
     hfixed, hrc, hδb, hρb, hεClass, hεClass11, hκClass, hκ,
     hqcan, hqs, hqsC, hQbirth, hQall, hQallPos,
     hcap, hrec, extension, control⟩ := prepareInitial 1 one_pos
+  obtain ⟨C1h, C2h, qh, hC1h, hC2h, hqh, hStrongV⟩ := hStrong
   let prepared : ClosedBirthPreparedClass pBase C P g 1 := {
     parameters := pBase
     deltaBound := δb
@@ -164,7 +166,15 @@ theorem exists_closedBirthConstants_strong_C12X
     recenter_bound := hrec
     zero_bound := zeroBound
     extension := extension.forget
-    control := control }
+    control := control
+    epsilon_strong := hstrong
+    C1strong := C1h
+    C2strong := C2h
+    qStrong := qh
+    C1strong_ge_one := hC1h
+    C2strong_ge_one := hC2h
+    qs_le_qStrong := hqh
+    strongControl := hStrongV }
   have hquality : prepared.HasReserveQuality Dstar εReserve :=
     ⟨hDReserve, hεReserveBound, hmReserve, hscaleReserve⟩
   have hprepared : prepared.HasDistanceExtension Cdist := extension

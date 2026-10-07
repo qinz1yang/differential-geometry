@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinkedWindo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffAccuracyGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialDistanceData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.AffineEventDistanceScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongStepC11SG
 
 /-!
 # S-CH11-FIX11 patched-at-path `PreparedSpatialStep`
@@ -148,16 +149,26 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
     rw [L.affine.stageIndex_last] at h
     exact h
   have hcapacity : (Bnext - c) - a = Bnext - b := by rw [hba]; ring
+  have hcE : c ≤ E := by
+    have h1 := L.horizon_affine
+    have h2 := K.horizon_nonneg
+    have h3 := L.horizon_eq
+    change H.horizon = K.horizon + c at h1
+    linarith
+  have hstr : 1 ≤ C.C1 ∧ 1 ≤ C.C2 ∧ 1 ≤ C.C1s ∧ 1 ≤ C.C2s ∧ 0 < C.tauMin ∧
+      C.epsilon ≤ εStrong_C12X.{u} :=
+    ⟨C.C1_ge_one, C.C2_ge_one, C.C1s_ge_one, C.C2s_ge_one, C.tauMin_pos,
+      L.prepared.epsilon_strong⟩
   obtain ⟨pNew, δNew, ρNew, εNew, κNewClass, κNew, qNew, qsNew,
     QzeroNew, QbirthNew, QallNew, rSupply, κJ,
-    hDReserve, hAccuracyReserve, hOrderReserve, hRadiusReserve, hfixedNew, hrcNew,
+    hDReserve, hAccuracyReserve, hOrderReserve, hRadiusReserve, hStrongNew, hfixedNew, hrcNew,
     hδNew, hρNew, hεNew, hεNew11, hκNewClass, hκNew, hqNew, hqsNew, hqsNewC,
-    hQzeroNew, hQbirthNew, hQallNew, hQallNewPos, hrSupply, hrSupplyOld, hQallSupply, hκJ,
+    hQzeroNew, hQbirthNew, hQallNew, hQallNewPos, hrSupply, hrSupplyOld, _hQallSupply, hκJ,
     hcapNew, hrecNew, zeroNew, newExtension, newControl, make⟩ :=
     exists_prepared_two_overlap_extension_with_closed_seam_with_native_certificate_with_reserve_quality
       Dstar εReserve hDstar hεReserve certificate pBase.fixed pBase.recenterConstant
       prepareClass C.epsilon C.C1 C.C2 C.C1s C.C2s C.Cs C.tauMin C.Cbirth
-      C.Ctime C.Cgrad C.epsilon_pos analytic
+      C.Ctime C.Cgrad C.epsilon_pos hstr analytic
       P g H L.initial L.parameters L.records L.static_eq.1 L.static_eq.2.2.2.2
       L.modelRadius_bound L.eventControl L.windows L.kappa L.kappa_pos L.noncollapsed
       L.nativeStage L.nativeMetric K L.nativeInitial L.prepared.parameters
@@ -168,6 +179,7 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
       L.prepared.recenter_eq L.nativeEventControl hExtension L.prepared.control
       L.prepared.zero_bound L.prepared.Qall_eq c L.offset L.affine L.horizon_affine
       L.native_lt_capacity (Bnext - c) L.radius (sub_lt_sub_right hBBnext c) L.radius_pos
+  obtain ⟨C1h, C2h, qh, hC1h, hC2h, hqh, hStrongV⟩ := hStrongNew
   let nextClass : ClosedBirthPreparedClass pBase C (K.stage (Fin.last K.eventCount))
       (K.initialMetric (Fin.last K.eventCount)) (Bnext - b) := {
     parameters := pNew
@@ -204,7 +216,17 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
       exact newExtension.forget
     control := by
       intro V IV pV records hVB hclass
-      exact newControl V IV pV records (hVB.trans_eq hcapacity.symm) hclass }
+      exact newControl V IV pV records (hVB.trans_eq hcapacity.symm) hclass
+    epsilon_strong := L.prepared.epsilon_strong
+    C1strong := C1h
+    C2strong := C2h
+    qStrong := qh
+    C1strong_ge_one := hC1h
+    C2strong_ge_one := hC2h
+    qs_le_qStrong := hqh
+    strongControl := by
+      intro V IV pV records hVB hclass
+      exact hStrongV V IV pV records (hVB.trans_eq hcapacity.symm) hclass }
   have hReserve : nextClass.HasReserveQuality Dstar εReserve :=
     ⟨hDReserve, hAccuracyReserve, hOrderReserve, hRadiusReserve⟩
   have hNextExtension : PreparedGeometricObservationExtensionWithNative certificate
@@ -214,18 +236,17 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
     dsimp only [nextClass]
     rw [← hcapacity]
     exact newExtension
-  let rNext : ℝ := min rSupply (100 * cMax / Real.sqrt nextClass.Qall)
   have hsqrt : 0 < Real.sqrt nextClass.Qall := Real.sqrt_pos.2 nextClass.Qall_pos
-  have hrNext : 0 < rNext := lt_min hrSupply (div_pos (by positivity) hsqrt)
-  have hrSupplyBound : rNext ≤ rSupply := min_le_left _ _
+  obtain ⟨rNext, hrNext, hrNextR, hqrNext⟩ := exists_canonical_radius_below
+    (R := min rSupply (100 * cMax / Real.sqrt nextClass.Qall))
+    (lt_min hrSupply (div_pos (by positivity) hsqrt))
+    (lt_max_of_lt_left nextClass.Qall_pos : 0 < max nextClass.Qall nextClass.qStrong)
+  have hrSupplyBound : rNext ≤ rSupply := hrNextR.trans (min_le_left _ _)
   have hrNextOld : rNext ≤ L.radius := hrSupplyBound.trans hrSupplyOld
-  have hQallr : nextClass.Qall ≤ (rNext ^ 2)⁻¹ := by
-    apply hQallSupply.trans
-    have hsquare : rNext ^ 2 ≤ rSupply ^ 2 := by
-      simpa only [pow_two] using mul_self_le_mul_self hrNext.le hrSupplyBound
-    simpa only [one_div] using one_div_le_one_div_of_le (sq_pos_of_pos hrNext) hsquare
+  have hQallr : nextClass.Qall ≤ (rNext ^ 2)⁻¹ := (le_max_left _ _).trans hqrNext
+  have hqStrongr : nextClass.qStrong ≤ (rNext ^ 2)⁻¹ := (le_max_right _ _).trans hqrNext
   have hFit : rNext * Real.sqrt nextClass.Qall ≤ 100 * cMax :=
-    (le_div_iff₀ hsqrt).mp (min_le_right _ _)
+    (le_div_iff₀ hsqrt).mp (hrNextR.trans (min_le_right _ _))
   refine ⟨nextClass, rNext, hReserve, hNextExtension, hrNext, hrNextOld, hQallr, hFit, ?_⟩
   intro εcut Dcut mcut hεcut hDcut
   have makeState : ∀ d : ℝ, 0 < d → d < 1 → d ≤ L.parameters.delta E →
@@ -427,6 +448,22 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
     let reserved : ∀ i : Fin N.eventCount, GeometricCutoffRecord N.toHistory i pReserve :=
       fun i => (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
           pNew.modelRadius_pos hDNew hmNew haccNew
+    have hKstr := L.prepared.strongControl Kplus IKplus _ joinedK hKplusB.le hclassKplus
+    have hJhorK : J.horizon = Kplus.horizon + c := by
+      rw [hJhor, hKhor]
+      change N.horizon + b = N.horizon + a + c
+      rw [hba]
+      ring
+    have hstrong := step_strong_C11SG (H := H) (J := J) (Kp := Kplus) (c := c) (E := E) (B := B)
+      (r := L.radius) (qS := L.prepared.qStrong) (ε := C.epsilon) (C1 := L.C1S) (C2 := L.C2S)
+      (C1c := L.prepared.C1strong) (C2c := L.prepared.C2strong)
+      (C1' := max L.C1S L.prepared.C1strong) (C2' := max L.C2S L.prepared.C2strong)
+      L.parameters.neckRadius pFinal.neckRadius L.horizon_eq hJB' hIJ.1
+      (affineEventPrefix_join_C12X L.affine IoldH AJ IoldK AK hba) hJhorK
+      (finalMetric_join_C11SG hba hfinalJ hfinalKplus) hcE (fun t ht => (hPast t ht).2.1)
+      (fun t ht => pFinal.neckRadius_pos t ht) hRadiusBound L.strong_threshold_le
+      (le_max_left _ _) (le_max_left _ _) (le_max_right _ _) (le_max_right _ _)
+      (fun t ht hreg x hx => L.strong t ht hreg x hx) hKstr.1 hKstr.2
     let R : PreparedSpatialState pBase C P g B Bnext := {
       history := J
       initial := IJ
@@ -465,7 +502,13 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
         intro s hs t ht hst
         rw [congrFun hFinalDelta t, congrFun hFinalDelta s]
         exact hdeltaAnti hs ht hst
-      canonical := hcanonical }
+      canonical := hcanonical
+      C1S := max L.C1S L.prepared.C1strong
+      C2S := max L.C2S L.prepared.C2strong
+      C1S_ge_one := le_max_of_le_left L.C1S_ge_one
+      C2S_ge_one := le_max_of_le_left L.C2S_ge_one
+      strong_threshold_le := hqStrongr
+      strong := hstrong }
     have hSuccessor : PreparedSpatialSuccessor L R activation eta d := by
       refine {
         initial_prefix := hIJ

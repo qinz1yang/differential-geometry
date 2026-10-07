@@ -87,15 +87,17 @@ theorem exists_prepared_spatial_initial_state_with_distance_scalars_with_reserve
   obtain ⟨Cdist, hCdist, fixed, recenter, hrecenter, prepareClass⟩ :=
     exists_common_prepared_geometric_observation_extension_before_quality_with_distance_scalars.{u}
   obtain ⟨εbar, hεbar, uniform⟩ := exists_uniform_closed_birth_observation_estimate_packet.{u}
-  let ε : ℝ := min (min (εbar / 2) (1 / 200)) coneAccuracy
+  let ε : ℝ := min (min (min (εbar / 2) (1 / 200)) coneAccuracy) εStrong_C12X.{u}
   have hε : 0 < ε :=
-    lt_min (lt_min (by positivity) (by norm_num)) coneAccuracy_pos
+    lt_min (lt_min (lt_min (by positivity) (by norm_num)) coneAccuracy_pos) εStrong_C12X_pos
   have hε100 : ε < 1 / 100 :=
-    ((min_le_left _ _).trans (min_le_right _ _)).trans_lt (by norm_num)
+    ((min_le_left _ _).trans ((min_le_left _ _).trans (min_le_right _ _))).trans_lt
+      (by norm_num)
   have hε11 : ε < 1 / 11 := hε100.trans (by norm_num)
   have hεbar' : ε ≤ εbar :=
-    ((min_le_left _ _).trans (min_le_left _ _)).trans (by linarith)
-  have hεcone : ε ≤ coneAccuracy := min_le_right _ _
+    ((min_le_left _ _).trans ((min_le_left _ _).trans (min_le_left _ _))).trans (by linarith)
+  have hεcone : ε ≤ coneAccuracy := (min_le_left _ _).trans (min_le_right _ _)
+  have hεstrong : ε ≤ εStrong_C12X.{u} := min_le_right _ _
   obtain ⟨C1, C2, C1s, C2s, Cs, τmin, Cbirth, Ctime, Cgrad,
     hC1, hC2, hC1s, hC2s, hCs, hτmin, hCbirth, analytic⟩ :=
     uniform ε hε hε11 hεbar'
@@ -126,12 +128,14 @@ theorem exists_prepared_spatial_initial_state_with_distance_scalars_with_reserve
     exists_prepared_closed_birth_class_before_quality_with_distance_scalars_with_reserve_quality
       Dstar εReserve hDstar hεReserve
       Cdist fixed recenter prepareClass
-      ε C1 C2 C1s C2s Cs τmin Cbirth Ctime Cgrad hε analytic P g
+      ε C1 C2 C1s C2s Cs τmin Cbirth Ctime Cgrad hε
+      ⟨hC1, hC2, hC1s, hC2s, hτmin, hεstrong⟩ analytic P g
   obtain ⟨pBase, δb, ρb, εClass, κClass, κ, qcan, qs, Qbirth, Qall,
-    hDReserve, hεReserveBound, hmReserve, hscaleReserve,
+    hDReserve, hεReserveBound, hmReserve, hscaleReserve, hStrong,
     hfixed, hrc, hδb, hρb, hεClass, hεClass11, hκClass, hκ,
     hqcan, hqs, hqsC, hQbirth, hQall, hQallPos,
     hcap, hrec, extension, control⟩ := prepareInitial 1 one_pos
+  obtain ⟨C1h, C2h, qh, hC1h, hC2h, hqh, hStrongV⟩ := hStrong
   let prepared : ClosedBirthPreparedClass pBase C P g 1 := {
     parameters := pBase
     deltaBound := δb
@@ -163,7 +167,15 @@ theorem exists_prepared_spatial_initial_state_with_distance_scalars_with_reserve
     recenter_bound := hrec
     zero_bound := zeroBound
     extension := extension.forget
-    control := control }
+    control := control
+    epsilon_strong := hεstrong
+    C1strong := C1h
+    C2strong := C2h
+    qStrong := qh
+    C1strong_ge_one := hC1h
+    C2strong_ge_one := hC2h
+    qs_le_qStrong := hqh
+    strongControl := hStrongV }
   have hquality : prepared.HasReserveQuality Dstar εReserve :=
     ⟨hDReserve, hεReserveBound, hmReserve, hscaleReserve⟩
   have hprepared : prepared.HasDistanceExtension Cdist := extension

@@ -43,23 +43,26 @@ theorem exists_prepared_spatial_base_with_small_test_margin
   have htransport : ∀ {b b' : ℝ} (h : b = b')
       (K : ClosedBirthPreparedClass pBase C P g b),
       let K' : ClosedBirthPreparedClass pBase C P g b' := h ▸ K
-      K'.parameters = K.parameters ∧ K'.Qall = K.Qall ∧ HEq K' K := by
+      K'.parameters = K.parameters ∧ K'.Qall = K.Qall ∧ HEq K' K ∧
+        K'.qStrong = K.qStrong := by
     intro b b' h K
     cases h
-    exact ⟨rfl, rfl, HEq.rfl⟩
+    exact ⟨rfl, rfl, HEq.rfl, rfl⟩
   let prepared₀ : ClosedBirthPreparedClass pBase C P g ((1 : ℝ) - 0) :=
     (sub_zero (1 : ℝ)).symm ▸ prepared
   have hsame := htransport (sub_zero (1 : ℝ)).symm prepared
   have hparameters : prepared₀.parameters = prepared.parameters := hsame.1
   have hQ : prepared₀.Qall = prepared.Qall := hsame.2.1
-  have hprepared : HEq prepared₀ prepared := hsame.2.2
+  have hprepared : HEq prepared₀ prepared := hsame.2.2.1
+  have hqStrong : prepared₀.qStrong = prepared.qStrong := hsame.2.2.2
   have hroot : 0 < Real.sqrt prepared.Qall := Real.sqrt_pos.mpr prepared.Qall_pos
   have hmargin : 0 < 100 * cMax / Real.sqrt prepared.Qall :=
     div_pos (mul_pos (by norm_num) hcMax) hroot
   obtain ⟨r, hr, hrceiling, hthreshold⟩ :=
     exists_canonical_radius_below
       (R := min 1 (100 * cMax / Real.sqrt prepared.Qall))
-      (lt_min one_pos hmargin) prepared.Qall_pos
+      (lt_min one_pos hmargin) (lt_max_of_lt_left prepared.Qall_pos : 0 < max prepared.Qall
+        prepared.qStrong)
   have hrone : r ≤ 1 := hrceiling.trans (min_le_left _ _)
   have hfit : r * Real.sqrt prepared.Qall ≤ 100 * cMax :=
     (le_div_iff₀ hroot).mp (hrceiling.trans (min_le_right _ _))
@@ -123,11 +126,21 @@ theorem exists_prepared_spatial_base_with_small_test_margin
       rw [add_zero]
     radius := r
     radius_pos := hr
-    threshold_le := by rw [hQ]; exact hthreshold
+    threshold_le := by rw [hQ]; exact (le_max_left _ _).trans hthreshold
     radius_antitone := fun _ _ _ _ _ => le_rfl
     radius_after := fun _ _ => rfl
     delta_antitone := fun _ _ _ _ _ => le_rfl
     canonical := by
+      intro t ht
+      exact False.elim ((not_lt_of_ge t.2.1) ht)
+    C1S := 1
+    C2S := 1
+    C1S_ge_one := le_rfl
+    C2S_ge_one := le_rfl
+    strong_threshold_le := by
+      rw [hqStrong]
+      exact (le_max_right _ _).trans hthreshold
+    strong := by
       intro t ht
       exact False.elim ((not_lt_of_ge t.2.1) ht) }
   have hfitS : S.radius * Real.sqrt S.prepared.Qall ≤ 100 * cMax := by

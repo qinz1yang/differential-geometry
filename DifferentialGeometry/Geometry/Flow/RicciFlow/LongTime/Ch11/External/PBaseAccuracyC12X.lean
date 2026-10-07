@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.PBaseC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.ClosedBirthConstantsStrongC12X
 
 set_option autoImplicit false
 
@@ -64,21 +65,22 @@ theorem exists_prepared_spatial_chains_from_initial_pBase_acc_C12X
     have hte := DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd_pos
     unfold capWindowRadius_C11E
     positivity
-  obtain ⟨Cdist, hCdist, fixed, recenter, C, -, prepareClass, analytic, -⟩ :=
-    exists_prepared_spatial_initial_state_with_distance_scalars_with_reserve_quality.{u}
-      (capWindowRadius_C11E + 1) 1 hD one_pos
+  obtain ⟨Cdist, hCdist, fixed, recenter, C, hεs, -, prepareClass, analytic, -⟩ :=
+    exists_closedBirthConstants_strong_C12X.{u} (capWindowRadius_C11E + 1) 1 hD one_pos
   refine ⟨fixed, C, fun P g => ?_⟩
   have hεRes : 0 < min εProf_C11E.{u} (εR C P g) := lt_min εProf_pos_C11E (hεR C P g)
   obtain ⟨Qzero, hQzero, zeroBound, prepareInitial⟩ :=
     exists_prepared_closed_birth_class_before_quality_with_distance_scalars_with_reserve_quality
       (capWindowRadius_C11E + 1) (min εProf_C11E.{u} (εR C P g)) hD hεRes Cdist fixed recenter
       prepareClass C.epsilon C.C1 C.C2 C.C1s C.C2s C.Cs C.tauMin C.Cbirth C.Ctime C.Cgrad
-      C.epsilon_pos analytic P g
+      C.epsilon_pos ⟨C.C1_ge_one, C.C2_ge_one, C.C1s_ge_one, C.C2s_ge_one, C.tauMin_pos, hεs⟩
+      analytic P g
   obtain ⟨pBase, δb, ρb, εClass, κClass, κ, qcan, qs, Qbirth, Qall,
-    hDReserve, hεReserveBound, hmReserve, hscaleReserve,
+    hDReserve, hεReserveBound, hmReserve, hscaleReserve, hStrong,
     hfixed, hrc, hδb, hρb, hεClass, hεClass11, hκClass, hκ,
     hqcan, hqs, hqsC, hQbirth, hQall, hQallPos,
     hcap, hrec, extension, control⟩ := prepareInitial 1 one_pos
+  obtain ⟨C1h, C2h, qh, hC1h, hC2h, hqh, hStrongV⟩ := hStrong
   let prepared : ClosedBirthPreparedClass pBase C P g 1 := {
     parameters := pBase
     deltaBound := δb
@@ -110,7 +112,15 @@ theorem exists_prepared_spatial_chains_from_initial_pBase_acc_C12X
     recenter_bound := hrec
     zero_bound := zeroBound
     extension := extension.forget
-    control := control }
+    control := control
+    epsilon_strong := hεs
+    C1strong := C1h
+    C2strong := C2h
+    qStrong := qh
+    C1strong_ge_one := hC1h
+    C2strong_ge_one := hC2h
+    qs_le_qStrong := hqh
+    strongControl := hStrongV }
   have hprepared : prepared.HasDistanceExtension Cdist := extension
   have hprep : PreparedDistanceClassProvider.{u} pBase.fixed pBase.recenterConstant Cdist := by
     rw [hfixed, hrc]
