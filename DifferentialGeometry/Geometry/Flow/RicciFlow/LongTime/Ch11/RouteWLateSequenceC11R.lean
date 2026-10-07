@@ -19,8 +19,11 @@ Route W 的四层 consumer（`CuspP1/RouteWLateSequenceWA2.lean`）的 `_C11R` �
   `geometrizes_of_metric_C11R`（`Geometrization` 的 re-point 点）：喂入 `hA12'` 后类型与
   `LateDecomposition` 原件逐字相同（文件末 `rfl`）。
 
-直接 admission（walker）：本文件全部 = {A09, A13}，原 A12 不可达；端点喂入 A12′ admission 后为
-{A09, A13, A12′}。端点改法见 `docs/geometrization/chapter8/REPOINT-A12enh-20261006.md`。
+直接 admission（walker）：本文件无直接 admission（A09 / A13 经 `WR/{A09,A13}OfEnhancedC11M` 由 ch12
+终端证出：REPOINT3 M4 `a1a0c029e9` 已把 core 的调用点改指 wrapper）；端点喂入 A12′ admission 后，
+端点直接 admission = {A12′}（MGL 在 INT 套用 ch12 的真证明块 `exists_thick_ball_volume_lower_C12X`
+之后为 0 外部项；套用前另有 MGL）。端点改法见 `docs/geometrization/chapter8/REPOINT-A12enh-20261006.md`，
+接线见 `docs/geometrization/chapter8/out/ENDPOINT-AFTER-CH12-20261007.md`。
 -/
 
 set_option autoImplicit false
