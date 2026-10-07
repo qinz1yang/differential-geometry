@@ -26340,3 +26340,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ClosureP6D2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.EarlierGoodTraceLocal_P6N
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.IncomingEventWeightedMinimumPortC11P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.IncomingEventWeightedMinimum
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #42
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.EnhancedSuppliesFromAstraC11P2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.BGAdapterC11V
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.WindowGlueC11V
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialReserveTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialUniformPinchingPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialUniformPinching
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Outer.BlockStepDefsC11W
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Outer.BlockStepConsumerC11W
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Outer.TimeDerivativeMaintenanceC11W3
