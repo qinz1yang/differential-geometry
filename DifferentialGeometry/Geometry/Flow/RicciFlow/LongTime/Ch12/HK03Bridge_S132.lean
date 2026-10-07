@@ -36,7 +36,7 @@ section Regular
 
 variable {P : OrientedThreeStage.{u}} {g : P.Metric}
 
-theorem mem_eventTimes_history_iff_S132 (T : ObservationTower P g) (n : ℕ) {u : ℝ} (hu0 : 0 < u)
+theorem mem_eventTimes_history_iff_S132 {T : ObservationTower P g} (n : ℕ) {u : ℝ} (hu0 : 0 < u)
     (hun : u ≤ (n : ℝ)) : u ∈ T.eventTimes ↔ u ∈ (T.history n).eventTimes := by
   have h1 := T.eventTimes_inter u hu0.le
   have h2 := (T.observe_eq_atIndex n u hu0.le hun).eventTimes_eq
@@ -112,7 +112,7 @@ theorem hK03_bridge_S132 {δ : ℝ → ℝ} (Hp : AnalyticSurgeryProfile F δ)
   have hact : actS_S70 (F.tower.history n).toHistory s' = (F.tower.history n).toHistory.activeStage τ :=
     actS_eq_activeStage_S93 (F.tower.history n).toHistory τ
   have hnot : s' ∉ F.observation.eventTimes := by
-    rw [mem_eventTimes_history_iff_S132 F.observation n hs' hsn]
+    rw [mem_eventTimes_history_iff_S132 (T := F.observation) n hs' hsn]
     refine (regular_iff_not_mem_eventTimes_S74 (H := (F.tower.history n).toHistory) (t := τ) hs').mp ?_
     rw [← hact]
     exact hreg

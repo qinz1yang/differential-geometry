@@ -29,7 +29,7 @@ universe u v
 
 theorem mfderiv_val_lift_S117 (K : ObservedHistory.{u}) (j0 last : Fin (K.eventCount + 1))
     (hle : j0 ≤ last) {X : Type v} [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X]
-    [IsManifold (𝓡 3) ∞ X] (φ : X → K.backwardSurvivorDomain j0 last hle) {B : Set X} (hB : IsOpen B)
+    (φ : X → K.backwardSurvivorDomain j0 last hle) {B : Set X} (hB : IsOpen B)
     (hφ : ContMDiffOn (𝓡 3) (𝓡 3) ∞ φ B) {p : X} (hp : p ∈ B) (w : TangentSpace (𝓡 3) p) :
     mfderiv (𝓡 3) (𝓡 3) (fun q => (φ q).val) p w = mfderiv (𝓡 3) (𝓡 3) φ p w := by
   have hφd : MDifferentiableAt (𝓡 3) (𝓡 3) φ p :=
