@@ -27615,3 +27615,33 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopBudge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopAdapterC11GT2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopLinkedC11GT2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopV2C11GT2
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #54
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CloseLateCgP6S3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CloseLateHICgP6S3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaBudgetLevelC11Q7
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowFarRegionC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSpliceCylC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSpliceShiftC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSpliceFrameC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSpliceAffineC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSpliceTwoFrameC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.HclosFirstExit_P6L4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HclosGFirstExitP6M4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HclosGConsumerP6M4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaNodeLookaheadC11Q7
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaBlockRadiusC11ND
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaBlockDataBridgeC11ND
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaNrDoublingC11ND
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaDoublingEndToEndC11ND
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SelectedLateHIP6X2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NormalizeHIP6X2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NormalizeHICloseP6X2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PinchRescaleP6X2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6StageStabP6ST
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.DeepProducerAppendC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.DeepProducerUniformC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.ConstantsTableC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.TimeDerivativeThresholdC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSplicePostAC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.RSupplyLowerC12X
