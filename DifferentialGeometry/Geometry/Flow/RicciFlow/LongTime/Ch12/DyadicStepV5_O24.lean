@@ -30,7 +30,7 @@ theorem hstep_of_window_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
         riemannianBallOf H'.metric H'.basepoint (2 * R') ⊆ U →
         ContMDiffOn (𝓡 3) (𝓡 3) ∞ f U →
         IsSmoothEmbedding (𝓡 3) (𝓡 3) ∞ (fun x : U => f x) →
-        (∀ j : ℕ, j ≤ k' + 2 → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (2 * R'),
+        (∀ j : ℕ, j ≤ k' + 3 → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (2 * R'),
           ckErr_S45 H' (postMetric F.observation t) t⁻¹ f j p < δ') →
         ∃ fs : (s : ℝ) → s ∈ Icc t (2 * t) → H'.Carrier → (postStage F.observation s).Carrier,
           (∀ p ∈ riemannianBallOf H'.metric H'.basepoint (R'), fs t ⟨le_rfl, by linarith⟩ p = f p) ∧
@@ -40,7 +40,7 @@ theorem hstep_of_window_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
             (∀ j : ℕ, j ≤ k' → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (R'),
               ckErr_S45 H' (postMetric F.observation s) s⁻¹ (fs s hs) j p < ε') ∧
             ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-              (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ t) (_ : s < b)
+              (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ t) (_ : a ≤ s) (_ : s < b)
               (_ : b ≤ (F.tower.history n).horizon)
               (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
                 first ≤ (F.tower.history n).toHistory.activeStage r ∧
@@ -152,7 +152,7 @@ theorem hstep_of_window_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
             (∀ k' : ℕ, k' ≤ k → ∀ p ∈ riemannianBallOf H.metric H.basepoint (4 * R),
               ckErr_S45 H (postMetric F.observation s) s⁻¹ (f s hs) k' p < ε) ∧
           ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-            (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ t) (_ : s < b)
+            (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ t) (_ : a ≤ s) (_ : s < b)
             (_ : b ≤ (F.tower.history n).horizon)
             (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
               first ≤ (F.tower.history n).toHistory.activeStage r ∧
@@ -176,7 +176,7 @@ theorem hstep_of_window_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
   refine ⟨β, hβ, hinit, fun ε R k hε hR => ?_⟩
   obtain ⟨ε', R', k', hε', hR', hεε, hRR, hkk, Te, hTe⟩ := hend ε R k hε hR
   obtain ⟨δ, Tw, hδ, hw⟩ := dyadic_window_lift_O24 F H hLTF04 R' ε' k' hR' hε'
-  have hM : 0 < max (4 * R') ((k' : ℝ) + 2) := lt_of_lt_of_le (by positivity) (le_max_left _ _)
+  have hM : 0 < max (4 * R') ((k' : ℝ) + 3) := lt_of_lt_of_le (by positivity) (le_max_left _ _)
   obtain ⟨Tb, hTb⟩ := exists_beta_threshold_O24 β hβ hβ0 hδ hM
   refine ⟨max Te (max Tw Tb), fun t t₂ ht hT ht₂ g₁ hg₁ => ?_⟩
   have hTe' : Te ≤ t := (le_max_left _ _).trans hT
@@ -193,8 +193,8 @@ theorem hstep_of_window_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
   refine ⟨f, E, g₂, hg₂, fun h0 p hp => hf0 h0 p (hsub hp), hE1, hE2, hE3, hE4, hE5, hEj, hE6,
     fun s hs => ⟨(hf s hs).1.mono hsub, (hf s hs).2.1.mono hsub, fun j hj p hp =>
       ((hf s hs).2.2.1 j (hj.trans hkk) p (hsub hp)).trans_le hεε, ?_⟩, hE7⟩
-  obtain ⟨n, first, last, ordered, a', b', has, hat, hsb, hb, stages, φ, hφ, hheq⟩ := (hf s hs).2.2.2
-  exact ⟨n, first, last, ordered, a', b', has, hat, hsb, hb, stages, φ, hφ.mono hsub,
+  obtain ⟨n, first, last, ordered, a', b', hat, has, hsb, hb, stages, φ, hφ, hheq⟩ := (hf s hs).2.2.2
+  exact ⟨n, first, last, ordered, a', b', hat, has, hsb, hb, stages, φ, hφ.mono hsub,
     fun r hr hrs p hp => hheq r hr hrs p (hsub hp)⟩
 
 end GC.LongTime.Ch12

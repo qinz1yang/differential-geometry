@@ -29,7 +29,7 @@ theorem dyadic_window_lift_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
         riemannianBallOf H'.metric H'.basepoint (2 * R') ⊆ U →
         ContMDiffOn (𝓡 3) (𝓡 3) ∞ f U →
         IsSmoothEmbedding (𝓡 3) (𝓡 3) ∞ (fun x : U => f x) →
-        (∀ j : ℕ, j ≤ k' + 2 → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (2 * R'),
+        (∀ j : ℕ, j ≤ k' + 3 → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (2 * R'),
           ckErr_S45 H' (postMetric F.observation t) t⁻¹ f j p < δ') →
         ∃ fs : (s : ℝ) → s ∈ Icc t (2 * t) → H'.Carrier → (postStage F.observation s).Carrier,
           (∀ p ∈ riemannianBallOf H'.metric H'.basepoint (R'), fs t ⟨le_rfl, by linarith⟩ p = f p) ∧
@@ -39,7 +39,7 @@ theorem dyadic_window_lift_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
             (∀ j : ℕ, j ≤ k' → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (R'),
               ckErr_S45 H' (postMetric F.observation s) s⁻¹ (fs s hs) j p < ε') ∧
             ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-              (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ t) (_ : s < b)
+              (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ t) (_ : a ≤ s) (_ : s < b)
               (_ : b ≤ (F.tower.history n).horizon)
               (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
                 first ≤ (F.tower.history n).toHistory.activeStage r ∧
@@ -54,7 +54,7 @@ theorem dyadic_window_lift_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
                     ((F.tower.history n).toHistory.activeStage r) (stages r hr).1 (stages r hr).2
                     (φ p)) (fs r hrs p)) (R ε : ℝ) (k : ℕ) (hR : 0 < R) (hε : 0 < ε) :
     ∃ δ Tw : ℝ, 0 < δ ∧ ∀ (t t₂ : ℝ), 0 < t → Tw ≤ t → t₂ = 2 * t →
-      ∀ b : ℝ, b ≤ δ → 4 * R ≤ b⁻¹ → (k : ℝ) + 2 ≤ b⁻¹ →
+      ∀ b : ℝ, b ≤ δ → 4 * R ≤ b⁻¹ → (k : ℝ) + 3 ≤ b⁻¹ →
       ∀ g₁ : H.Carrier → (postStage F.observation t).Carrier,
       (∃ U : TopologicalSpace.Opens H.Carrier,
         riemannianBallOf H.metric H.basepoint (2 * b⁻¹) ⊆ U ∧
@@ -70,7 +70,7 @@ theorem dyadic_window_lift_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
           (∀ k' : ℕ, k' ≤ k → ∀ p ∈ riemannianBallOf H.metric H.basepoint (4 * R),
             ckErr_S45 H (postMetric F.observation s) s⁻¹ (f s hs) k' p < ε) ∧
   ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-    (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ t) (_ : s < b)
+    (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ t) (_ : a ≤ s) (_ : s < b)
     (_ : b ≤ (F.tower.history n).horizon)
     (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
       first ≤ (F.tower.history n).toHistory.activeStage r ∧
@@ -91,8 +91,8 @@ theorem dyadic_window_lift_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
   have hball : riemannianBallOf H.metric H.basepoint (2 * (4 * R)) ⊆
       riemannianBallOf H.metric H.basepoint (2 * b⁻¹) :=
     riemannianBallOf_mono _ _ (by linarith)
-  have hord : ∀ j : ℕ, j ≤ k + 2 → j ≤ ⌈b⁻¹⌉₊ := fun j hj => by
-    have h1 : ((k + 2 : ℕ) : ℝ) ≤ (⌈b⁻¹⌉₊ : ℝ) := by
+  have hord : ∀ j : ℕ, j ≤ k + 3 → j ≤ ⌈b⁻¹⌉₊ := fun j hj => by
+    have h1 : ((k + 3 : ℕ) : ℝ) ≤ (⌈b⁻¹⌉₊ : ℝ) := by
       push_cast
       exact hkb.trans (Nat.le_ceil _)
     exact hj.trans (Nat.cast_le.1 h1)

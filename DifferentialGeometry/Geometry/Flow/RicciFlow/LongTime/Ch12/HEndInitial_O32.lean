@@ -77,7 +77,7 @@ theorem hEnd_v5_of_S_O32 {P : OrientedThreeStage.{u}} {g : P.Metric}
           (∀ μ, ContMDiff (𝓡 3) (𝓡 3) ∞ (fun p => E (μ, p)) ∧
             Function.Bijective (fun p => E (μ, p))) ∧
           (∀ p, E (0, p) = p) ∧
-          (∀ μ p, p ∉ riemannianBallOf H.metric H.basepoint (R) → E (μ, p) = p) ∧
+          (∀ μ p, p ∉ riemannianBallOf H.metric H.basepoint (4 * R) → E (μ, p) = p) ∧
           (∀ μ ∈ Icc (0 : ℝ) 1, ∀ p : H.Carrier,
             let v := mfderiv 𝓘(ℝ, ℝ) (𝓡 3) (fun r => E (r, p)) μ
               ((NormedSpace.fromTangentSpace (𝕜 := ℝ) μ).symm (1 : ℝ));
@@ -129,7 +129,7 @@ theorem hEnd_v5_of_S_O32 {P : OrientedThreeStage.{u}} {g : P.Metric}
           (∀ μ, ContMDiff (𝓡 3) (𝓡 3) ∞ (fun p => E (μ, p)) ∧
             Function.Bijective (fun p => E (μ, p))) ∧
           (∀ p, E (0, p) = p) ∧
-          (∀ μ p, p ∉ riemannianBallOf H.metric H.basepoint (R) → E (μ, p) = p) ∧
+          (∀ μ p, p ∉ riemannianBallOf H.metric H.basepoint (4 * R) → E (μ, p) = p) ∧
           (∀ μ ∈ Icc (0 : ℝ) 1, ∀ p : H.Carrier,
             let v := mfderiv 𝓘(ℝ, ℝ) (𝓡 3) (fun r => E (r, p)) μ
               ((NormedSpace.fromTangentSpace (𝕜 := ℝ) μ).symm (1 : ℝ));

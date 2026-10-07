@@ -25,7 +25,7 @@ theorem patch_core_S61 {P : OrientedThreeStage.{u}} {g : P.Metric} (F : GC.Inter
     (hE : ∀ j, ContMDiff (𝓘(ℝ, ℝ).prod (𝓡 3)) (𝓡 3) ∞ (E j))
     (hbij : ∀ j μ, Function.Bijective (fun p => E j (μ, p)))
     (hE0 : ∀ j p, E j (0, p) = p)
-    (hsupp : ∀ j μ p, p ∉ riemannianBallOf H.metric H.basepoint (ρ j) → E j (μ, p) = p)
+    (hsupp : ∀ j μ p, p ∉ riemannianBallOf H.metric H.basepoint (4 * ρ j) → E j (μ, p) = p)
     (hispeed : ∀ j, ∀ μ ∈ Icc (0 : ℝ) 1, ∀ p : H.Carrier,
       let v := mfderiv 𝓘(ℝ, ℝ) (𝓡 3) (fun r => E j (r, p)) μ (timeVector_CX5 μ);
       H.metric.inner (E j (μ, p)) v v ≤ η j ^ 2)

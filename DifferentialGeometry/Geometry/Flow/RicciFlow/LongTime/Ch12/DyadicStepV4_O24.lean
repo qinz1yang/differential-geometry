@@ -46,7 +46,7 @@ theorem hstep_of_window_v4_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
         riemannianBallOf H'.metric H'.basepoint (2 * R') ⊆ U →
         ContMDiffOn (𝓡 3) (𝓡 3) ∞ f U →
         IsSmoothEmbedding (𝓡 3) (𝓡 3) ∞ (fun x : U => f x) →
-        (∀ j : ℕ, j ≤ k' + 2 → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (2 * R'),
+        (∀ j : ℕ, j ≤ k' + 3 → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (2 * R'),
           ckErr_O19 H' (postMetric F.observation t) t⁻¹ f j p < δ') →
         ∃ fs : (s : ℝ) → s ∈ Icc t (2 * t) → H'.Carrier → (postStage F.observation s).Carrier,
           (∀ p ∈ riemannianBallOf H'.metric H'.basepoint (R'), fs t ⟨le_rfl, by linarith⟩ p = f p) ∧
@@ -56,7 +56,7 @@ theorem hstep_of_window_v4_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
             (∀ j : ℕ, j ≤ k' → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (R'),
               ckErr_O19 H' (postMetric F.observation s) s⁻¹ (fs s hs) j p < ε') ∧
             ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-              (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ t) (_ : s < b)
+              (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ t) (_ : a ≤ s) (_ : s < b)
               (_ : b ≤ (F.tower.history n).horizon)
               (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
                 first ≤ (F.tower.history n).toHistory.activeStage r ∧
@@ -185,7 +185,7 @@ theorem hstep_of_window_v4_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
   refine ⟨β, hβ, hinit, fun ε R k hε hR => ?_⟩
   obtain ⟨ε', R', k', hε', hR', hεε, hRR, hkk, Te, hTe⟩ := hend ε R k hε hR
   obtain ⟨δ, Tw, hδ, hw⟩ := dyadic_window_O20 F H hLTF04 R' ε' k' hR' hε'
-  have hM : 0 < max (4 * R') ((k' : ℝ) + 2) := lt_of_lt_of_le (by positivity) (le_max_left _ _)
+  have hM : 0 < max (4 * R') ((k' : ℝ) + 3) := lt_of_lt_of_le (by positivity) (le_max_left _ _)
   obtain ⟨Tb, hTb⟩ := exists_beta_threshold_O24 β hβ hβ0 hδ hM
   refine ⟨max Te (max Tw Tb), fun t t₂ ht hT ht₂ g₁ hg₁ => ?_⟩
   have hTe' : Te ≤ t := (le_max_left _ _).trans hT

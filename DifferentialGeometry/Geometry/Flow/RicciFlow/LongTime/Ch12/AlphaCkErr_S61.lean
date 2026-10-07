@@ -26,7 +26,7 @@ theorem exists_alpha_ckErr_S61 {P : OrientedThreeStage.{u}} {g : P.Metric}
     (hηt : Tendsto η atTop (𝓝 0)) (hρ : Tendsto ρ atTop atTop) (hν : Tendsto ν atTop atTop)
     (hEb : ∀ j μ, ContMDiff (𝓡 3) (𝓡 3) ∞ (fun p => E j (μ, p)) ∧
       Function.Bijective (fun p => E j (μ, p)))
-    (hsupp : ∀ j μ p, p ∉ riemannianBallOf H.metric H.basepoint (ρ j) → E j (μ, p) = p)
+    (hsupp : ∀ j μ p, p ∉ riemannianBallOf H.metric H.basepoint (4 * ρ j) → E j (μ, p) = p)
     (hEclose : ∀ j, ∀ μ ∈ Icc (0 : ℝ) 1, ∀ k : ℕ, k ≤ ν j →
       ∀ p ∈ riemannianBallOf H.metric H.basepoint (4 * ρ j),
         ckErr_S45 H H.metric 1 (fun x => E j (μ, x)) k p ≤ η j)

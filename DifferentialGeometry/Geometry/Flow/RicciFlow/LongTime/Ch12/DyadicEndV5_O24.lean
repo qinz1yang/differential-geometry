@@ -29,7 +29,7 @@ theorem hpi03_discrete_from_end_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metri
         riemannianBallOf H'.metric H'.basepoint (2 * R') ⊆ U →
         ContMDiffOn (𝓡 3) (𝓡 3) ∞ f U →
         IsSmoothEmbedding (𝓡 3) (𝓡 3) ∞ (fun x : U => f x) →
-        (∀ j : ℕ, j ≤ k' + 2 → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (2 * R'),
+        (∀ j : ℕ, j ≤ k' + 3 → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (2 * R'),
           ckErr_S45 H' (postMetric F.observation t) t⁻¹ f j p < δ') →
         ∃ fs : (s : ℝ) → s ∈ Icc t (2 * t) → H'.Carrier → (postStage F.observation s).Carrier,
           (∀ p ∈ riemannianBallOf H'.metric H'.basepoint (R'), fs t ⟨le_rfl, by linarith⟩ p = f p) ∧
@@ -39,7 +39,7 @@ theorem hpi03_discrete_from_end_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metri
             (∀ j : ℕ, j ≤ k' → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (R'),
               ckErr_S45 H' (postMetric F.observation s) s⁻¹ (fs s hs) j p < ε') ∧
             ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-              (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ t) (_ : s < b)
+              (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ t) (_ : a ≤ s) (_ : s < b)
               (_ : b ≤ (F.tower.history n).horizon)
               (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
                 first ≤ (F.tower.history n).toHistory.activeStage r ∧
@@ -151,7 +151,7 @@ theorem hpi03_discrete_from_end_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metri
             ckErr_S45 H (postMetric F.observation t) t⁻¹ (f j t ht) k p < η j) ∧
         (∀ j (s : ℝ), s ∈ Icc (2 ^ j * T) (2 ^ (j + 1) * T) →
         ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-          (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ 2 ^ j * T) (_ : s < b)
+          (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ 2 ^ j * T) (_ : a ≤ s) (_ : s < b)
           (_ : b ≤ (F.tower.history n).horizon)
           (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
             first ≤ (F.tower.history n).toHistory.activeStage r ∧
@@ -185,7 +185,7 @@ theorem hpi03_discrete_of_end_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
         riemannianBallOf H'.metric H'.basepoint (2 * R') ⊆ U →
         ContMDiffOn (𝓡 3) (𝓡 3) ∞ f U →
         IsSmoothEmbedding (𝓡 3) (𝓡 3) ∞ (fun x : U => f x) →
-        (∀ j : ℕ, j ≤ k' + 2 → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (2 * R'),
+        (∀ j : ℕ, j ≤ k' + 3 → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (2 * R'),
           ckErr_S45 H' (postMetric F.observation t) t⁻¹ f j p < δ') →
         ∃ fs : (s : ℝ) → s ∈ Icc t (2 * t) → H'.Carrier → (postStage F.observation s).Carrier,
           (∀ p ∈ riemannianBallOf H'.metric H'.basepoint (R'), fs t ⟨le_rfl, by linarith⟩ p = f p) ∧
@@ -195,7 +195,7 @@ theorem hpi03_discrete_of_end_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
             (∀ j : ℕ, j ≤ k' → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (R'),
               ckErr_S45 H' (postMetric F.observation s) s⁻¹ (fs s hs) j p < ε') ∧
             ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-              (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ t) (_ : s < b)
+              (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ t) (_ : a ≤ s) (_ : s < b)
               (_ : b ≤ (F.tower.history n).horizon)
               (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
                 first ≤ (F.tower.history n).toHistory.activeStage r ∧
@@ -290,7 +290,7 @@ theorem hpi03_discrete_of_end_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
             ckErr_S45 H (postMetric F.observation t) t⁻¹ (f j t ht) k p < η j) ∧
         (∀ j (s : ℝ), s ∈ Icc (2 ^ j * T) (2 ^ (j + 1) * T) →
         ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-          (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ 2 ^ j * T) (_ : s < b)
+          (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ 2 ^ j * T) (_ : a ≤ s) (_ : s < b)
           (_ : b ≤ (F.tower.history n).horizon)
           (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
             first ≤ (F.tower.history n).toHistory.activeStage r ∧

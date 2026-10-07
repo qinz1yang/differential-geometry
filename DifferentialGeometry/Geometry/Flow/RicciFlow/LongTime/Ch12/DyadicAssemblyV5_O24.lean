@@ -72,7 +72,7 @@ theorem hpi03_discrete_from_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
             (∀ k' : ℕ, k' ≤ k → ∀ p ∈ riemannianBallOf H.metric H.basepoint (4 * R),
               ckErr_S45 H (postMetric F.observation s) s⁻¹ (f s hs) k' p < ε) ∧
           ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-            (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ t) (_ : s < b)
+            (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ t) (_ : a ≤ s) (_ : s < b)
             (_ : b ≤ (F.tower.history n).horizon)
             (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
               first ≤ (F.tower.history n).toHistory.activeStage r ∧
@@ -138,7 +138,7 @@ theorem hpi03_discrete_from_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
             ckErr_S45 H (postMetric F.observation t) t⁻¹ (f j t ht) k p < η j) ∧
         (∀ j (s : ℝ), s ∈ Icc (2 ^ j * T) (2 ^ (j + 1) * T) →
         ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-          (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ 2 ^ j * T) (_ : s < b)
+          (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ 2 ^ j * T) (_ : a ≤ s) (_ : s < b)
           (_ : b ≤ (F.tower.history n).horizon)
           (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
             first ≤ (F.tower.history n).toHistory.activeStage r ∧
@@ -285,7 +285,7 @@ theorem hpi03_discrete_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
             (∀ k' : ℕ, k' ≤ k → ∀ p ∈ riemannianBallOf H.metric H.basepoint (4 * R),
               ckErr_S45 H (postMetric F.observation s) s⁻¹ (f s hs) k' p < ε) ∧
           ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-            (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ t) (_ : s < b)
+            (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ t) (_ : a ≤ s) (_ : s < b)
             (_ : b ≤ (F.tower.history n).horizon)
             (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
               first ≤ (F.tower.history n).toHistory.activeStage r ∧
@@ -334,7 +334,7 @@ theorem hpi03_discrete_v5_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
             ckErr_S45 H (postMetric F.observation t) t⁻¹ (f j t ht) k p < η j) ∧
         (∀ j (s : ℝ), s ∈ Icc (2 ^ j * T) (2 ^ (j + 1) * T) →
         ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-          (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ 2 ^ j * T) (_ : s < b)
+          (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ 2 ^ j * T) (_ : a ≤ s) (_ : s < b)
           (_ : b ≤ (F.tower.history n).horizon)
           (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
             first ≤ (F.tower.history n).toHistory.activeStage r ∧
