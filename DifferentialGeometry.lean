@@ -26066,3 +26066,27 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12OfP6ObsC11A
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12OfP6ObsConsumerC11A
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.NoncollapseRestrictC11RO
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.AffineOverlapC11RD
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #29
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceNecks_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.LocalPropagation_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.TerminalScalarBall_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCutoffRecordSplicing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.GeometricObservationStepPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.GeometricObservationStep
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabGradientScalarControlC11XPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabGradientScalarControlC11X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.RouteWLateSequenceCoreC11R
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.RouteWLateSequenceC11R
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LimitKappaP6B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LocalAncientLimitP6B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LimitNoncollapseP6B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaBridgeP6B
+import DifferentialGeometry.Analysis.Calculus.UpperSupport.WithTopPortC11P
+import DifferentialGeometry.Analysis.Calculus.UpperSupport.WithTop
+import DifferentialGeometry.Geometry.Connection.Hessian.FiniteScalarTracePortC11P
+import DifferentialGeometry.Geometry.Connection.Hessian.FiniteScalarTrace
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapAnnulusCoordinatesPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapAnnulusCoordinates
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventDistanceScalarTransportPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventDistanceScalarTransport
