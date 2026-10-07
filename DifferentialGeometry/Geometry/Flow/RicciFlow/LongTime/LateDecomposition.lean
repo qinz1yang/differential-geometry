@@ -117,10 +117,10 @@ theorem hasExteriorAreaObstructionAfter_of_producers
 theorem hasLateSequenceTests_of_thick_thin_and_obstruction
     {P : OrientedThreeStage.{u}} {g : P.Metric}
     (F : GC.Interface.RawSurgery P g) (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ)
-    (henh : Ch11.hasEnhancedAdmissibility_C11E F δ)
+    (henh : Ch11.hasEnhancedAdmissibilityFull_C11F F δ)
     (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) :
     hasLateSequenceTests F K := by
-  have hadm : hasAnalyticAdmissibility F δ := Ch11.hasAnalyticAdmissibility_of_enhanced_C11E henh
+  have hadm : hasAnalyticAdmissibility F δ := Ch11.hasAnalyticAdmissibility_of_full_C11F henh
   intro slices htimes hnonempty
   obtain ⟨L⟩ := exists_late_cut_family F K hK δ hadm hdec slices htimes hnonempty
   obtain ⟨A, hA, htests⟩ := L.exists_late_tests_of_derivative_bounds
@@ -140,7 +140,7 @@ theorem exists_admissible_surgery_with_late_sequence_tests
       (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
       hasAnalyticAdmissibility F δ ∧ hasLateSequenceTests F K := by
   obtain ⟨δ, F, ha, hd, hprofile⟩ := exists_surgery_with_decaying_accuracy_enhanced P g
-  exact ⟨δ, F, ha, hd, Ch11.hasAnalyticAdmissibility_of_enhanced_C11E hprofile,
+  exact ⟨δ, F, ha, hd, Ch11.hasAnalyticAdmissibility_of_full_C11F hprofile,
     hasLateSequenceTests_of_thick_thin_and_obstruction F K hK δ hprofile hd⟩
 
 theorem exists_surgery_with_late_sequence_tests

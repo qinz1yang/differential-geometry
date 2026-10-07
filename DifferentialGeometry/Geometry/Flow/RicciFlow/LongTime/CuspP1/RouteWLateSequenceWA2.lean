@@ -15,7 +15,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12Enhanced
   A12′ `exists_surgery_with_decaying_accuracy_enhanced`；REPOINT2 前为 A12）。
 
 REPOINT2（2026-10-07）：L1 的 binder 改为 enhanced profile `henh`，A09 / G_final 经投影
-`Ch11.hasAnalyticAdmissibility_of_enhanced_C11E`，A13 直接吃 `henh`；L2 调 A12′。
+`Ch11.hasAnalyticAdmissibility_of_full_C11F`，A13 直接吃 `henh`；L2 调 A12′。
 
 为什么不直接改 `LateDecomposition.lean`：`hasAttainedExteriorAreaObstructionAfter` 定义在该文件里，Route W
 链（`ObstructionOfIncompressible_RB` 起）import 它，所以 `LateDecomposition` 不能反向 import Route W
@@ -43,10 +43,10 @@ universe u
 theorem hasLateSequenceTests_of_thick_thin_and_obstruction_routeW_WA
     {P : OrientedThreeStage.{u}} {g : P.Metric}
     (F : GC.Interface.RawSurgery P g) (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ)
-    (henh : Ch11.hasEnhancedAdmissibility_C11E F δ)
+    (henh : Ch11.hasEnhancedAdmissibilityFull_C11F F δ)
     (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) :
     hasLateSequenceTests F K := by
-  have hadm : hasAnalyticAdmissibility F δ := Ch11.hasAnalyticAdmissibility_of_enhanced_C11E henh
+  have hadm : hasAnalyticAdmissibility F δ := Ch11.hasAnalyticAdmissibility_of_full_C11F henh
   intro slices htimes hnonempty
   obtain ⟨L⟩ := exists_late_cut_family F K hK δ hadm hdec slices htimes hnonempty
   obtain ⟨A, hA, htests⟩ := L.exists_late_tests_of_derivative_bounds
@@ -68,7 +68,7 @@ theorem exists_admissible_surgery_with_late_sequence_tests_routeW_WA
       (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
       hasAnalyticAdmissibility F δ ∧ hasLateSequenceTests F K := by
   obtain ⟨δ, F, ha, hd, hprofile⟩ := exists_surgery_with_decaying_accuracy_enhanced P g
-  exact ⟨δ, F, ha, hd, Ch11.hasAnalyticAdmissibility_of_enhanced_C11E hprofile,
+  exact ⟨δ, F, ha, hd, Ch11.hasAnalyticAdmissibility_of_full_C11F hprofile,
     hasLateSequenceTests_of_thick_thin_and_obstruction_routeW_WA F K hK δ hprofile hd⟩
 
 /-- `exists_surgery_with_late_sequence_tests` 的 Route W 版（`GeometrizationEND0` 的 re-point 点）。 -/

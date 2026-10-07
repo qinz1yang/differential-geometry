@@ -16,7 +16,8 @@ set_option autoImplicit false
 * `a13ProfileBinders_of_enhanced_C11E`：ch12 A13 wiring（`A13Wiring_S32.lean:47–57`）的
   profile 级 binder `hadm Hp hP1 Ctime hP2 hP3 hP4 hP6` 逐个由 enhanced admissibility 给出；
   `ch12SupplyBinders_of_enhanced_C11E`：hone / K-core 链要的 hStrong v2、Compat、hprof、`hscale`、`hrc`。
-* `A13EnhancedStatement_C11E`：tracked A13 `late_derivative_tests_of_flow` 改吃 enhanced 后的陈述；
+* `A13EnhancedStatement_C11E`：tracked A13 `late_derivative_tests_of_flow` 改吃 enhanced 后的陈述
+  （M2-pre 起 binder 是 v2 `hasEnhancedAdmissibilityFull_C11F`，`Ch11/EnhancedProfileFullC11F.lean`）；
   `example`：S32 形 wiring + ch12 内部残余（hG2、hMicro）⇒ 它。
 -/
 
@@ -128,10 +129,11 @@ end Binders
 
 /-! ## A13 改吃 A12′ -/
 
-/-- tracked A13（`LT/LateCutGeometry.lean:158`）改签名后的陈述：`hadm` 换成 enhanced admissibility。 -/
+/-- tracked A13（`LT/LateCutGeometry.lean:158`）改签名后的陈述：`hadm` 换成 enhanced admissibility
+（M2-pre：v2 `hasEnhancedAdmissibilityFull_C11F`）。 -/
 def A13EnhancedStatement_C11E.{v} : Prop :=
   ∀ {P : OrientedThreeStage.{v}} {g : P.Metric} (F : GC.Interface.RawSurgery P g) (K : ℕ),
-    lateDerivativeOrder ≤ K → ∀ (δ : ℝ → ℝ), hasEnhancedAdmissibility_C11E F δ →
+    lateDerivativeOrder ≤ K → ∀ (δ : ℝ → ℝ), hasEnhancedAdmissibilityFull_C11F F δ →
     (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) →
     ∀ (slices : ℕ → RegularSlice F.observation),
       (∀ j : ℕ, (j : ℝ) < (slices j).time) →
@@ -157,8 +159,8 @@ example {P : OrientedThreeStage.{u}} {g : P.Metric} (F : GC.Interface.RawSurgery
 
 /-- consumer（A09 与现行 A13 前提形，REPOINT2 后）：A12′ 给出的 `δ, F` 经投影喂 tracked 的
 `exists_late_cut_family`（仍吃 `hasAnalyticAdmissibility`），enhanced profile 直接喂
-`late_derivative_tests_of_flow`（REPOINT2 起吃 `hasEnhancedAdmissibility_C11E`）。 -/
-example {P : OrientedThreeStage.{u}} {g : P.Metric} (h : A12EnhancedConclusion_C11E P g)
+`late_derivative_tests_of_flow`（REPOINT2 起吃 enhanced；M2-pre 起吃 v2，A12′ 亦为 v2）。 -/
+example {P : OrientedThreeStage.{u}} {g : P.Metric} (h : A12EnhancedFullConclusion_C11F P g)
     (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
     ∃ F : GC.Interface.RawSurgery P g,
       ∀ slices : ℕ → RegularSlice F.observation,
@@ -166,7 +168,7 @@ example {P : OrientedThreeStage.{u}} {g : P.Metric} (h : A12EnhancedConclusion_C
         (∀ j : ℕ, Nonempty (slices j).stage.Carrier) →
         ∃ L : LateCutFamily F K slices, L.hasEventualDerivativeBounds := by
   obtain ⟨δ, F, -, hdec, hE⟩ := h
-  have hadm := hasAnalyticAdmissibility_of_enhanced_C11E hE
+  have hadm := hasAnalyticAdmissibility_of_full_C11F hE
   refine ⟨F, fun slices ht hn => ?_⟩
   obtain ⟨L⟩ := exists_late_cut_family F K hK δ hadm hdec slices ht hn
   exact ⟨L, late_derivative_tests_of_flow F K hK δ hE hdec slices ht hn L⟩
@@ -178,7 +180,7 @@ example : A13EnhancedStatement_C11E.{u} :=
 
 /-- 接法（全称）：A12′ + 改签名后的 A13 ⇒ 每个 `P g` 有 flow，其每个晚期 cut family 有导数界
 （`LateDecomposition.lean:134` 改吃 A12′ 后的形状；A09 仍走投影）。 -/
-example (hA12 : A12EnhancedStatement_C11E.{u}) (hA13 : A13EnhancedStatement_C11E.{u})
+example (hA12 : A12EnhancedFullStatement_C11F.{u}) (hA13 : A13EnhancedStatement_C11E.{u})
     (P : OrientedThreeStage.{u}) (g : P.Metric) (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
     ∃ F : GC.Interface.RawSurgery P g,
       ∀ slices : ℕ → RegularSlice F.observation,
@@ -187,7 +189,7 @@ example (hA12 : A12EnhancedStatement_C11E.{u}) (hA13 : A13EnhancedStatement_C11E
         ∃ L : LateCutFamily F K slices, L.hasEventualDerivativeBounds := by
   obtain ⟨δ, F, -, hdec, hE⟩ := hA12 P g
   refine ⟨F, fun slices ht hn => ?_⟩
-  obtain ⟨L⟩ := exists_late_cut_family F K hK δ (hasAnalyticAdmissibility_of_enhanced_C11E hE)
+  obtain ⟨L⟩ := exists_late_cut_family F K hK δ (hasAnalyticAdmissibility_of_full_C11F hE)
     hdec slices ht hn
   exact ⟨L, hA13 F K hK δ hE hdec slices ht hn L⟩
 

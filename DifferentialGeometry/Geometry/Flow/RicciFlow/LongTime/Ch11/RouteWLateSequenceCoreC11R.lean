@@ -6,11 +6,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWLateSe
 Route W consumer 链（`CuspP1/RouteWLateSequenceWA2.lean`）的 L1/L2，证明体逐字复制，只做两处替换：
 
 * A12 `exists_surgery_with_decaying_accuracy` 换成 A12′ 形的参数 `hA12'`（结论里是 enhanced
-  admissibility `Ch11.hasEnhancedAdmissibility_C11E F δ`）；
+  admissibility `Ch11.hasEnhancedAdmissibilityFull_C11F F δ`）；
 * L1 的 binder 是 enhanced profile `henh`：A09 `exists_late_cut_family` 与 Route W G_final 的
-  `hadm` 由投影 `hasAnalyticAdmissibility_of_enhanced_C11E` 提取，A13 `late_derivative_tests_of_flow`
+  `hadm` 由投影 `hasAnalyticAdmissibility_of_full_C11F` 提取，A13 `late_derivative_tests_of_flow`
   直接吃 `henh`（rev1：REPOINT2 把 tracked A13 改成吃 enhanced profile；原版本对任意 enhanced
-  谓词与投影的参数化因此特化为 `hasEnhancedAdmissibility_C11E`）。
+  谓词与投影的参数化因此特化为 `hasEnhancedAdmissibility_C11E`；M2-pre（O-CH11-MERGE）再换成 v2
+  `hasEnhancedAdmissibilityFull_C11F`，tracked A13 与 A12′ 同步）。
 
 另含 R-END1 的 END-RFL：`RouteWLateSequenceWA2.lean` 四层中间两层与 `LateDecomposition` 原件类型逐字
 相同的 `rfl` 回归 `example`。见 `docs/geometrization/chapter8/REPOINT-A12enh-20261006.md`。
@@ -36,10 +37,10 @@ universe u
 theorem hasLateSequenceTests_of_thick_thin_and_obstruction_of_enhanced_C11R
     {P : OrientedThreeStage.{u}} {g : P.Metric}
     (F : GC.Interface.RawSurgery P g) (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ)
-    (henh : hasEnhancedAdmissibility_C11E F δ)
+    (henh : hasEnhancedAdmissibilityFull_C11F F δ)
     (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) :
     hasLateSequenceTests F K := by
-  have hadm : hasAnalyticAdmissibility F δ := hasAnalyticAdmissibility_of_enhanced_C11E henh
+  have hadm : hasAnalyticAdmissibility F δ := hasAnalyticAdmissibility_of_full_C11F henh
   intro slices htimes hnonempty
   obtain ⟨L⟩ := exists_late_cut_family F K hK δ hadm hdec slices htimes hnonempty
   obtain ⟨A, hA, htests⟩ := L.exists_late_tests_of_derivative_bounds
@@ -60,12 +61,12 @@ theorem exists_enhanced_surgery_with_late_sequence_tests_of_enhanced_C11R
     (hA12' : ∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
       AntitoneOn δ (Ici 0) ∧
       (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
-      hasEnhancedAdmissibility_C11E F δ)
+      hasEnhancedAdmissibilityFull_C11F F δ)
     (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
     ∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
       AntitoneOn δ (Ici 0) ∧
       (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
-      hasEnhancedAdmissibility_C11E F δ ∧ hasLateSequenceTests F K := by
+      hasEnhancedAdmissibilityFull_C11F F δ ∧ hasLateSequenceTests F K := by
   obtain ⟨δ, F, ha, hd, hprofile⟩ := hA12'
   exact ⟨δ, F, ha, hd, hprofile,
     hasLateSequenceTests_of_thick_thin_and_obstruction_of_enhanced_C11R F K hK δ hprofile hd⟩
@@ -77,7 +78,7 @@ theorem exists_admissible_surgery_with_late_sequence_tests_of_enhanced_C11R
     (hA12' : ∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
       AntitoneOn δ (Ici 0) ∧
       (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
-      hasEnhancedAdmissibility_C11E F δ)
+      hasEnhancedAdmissibilityFull_C11F F δ)
     (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
     ∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
       AntitoneOn δ (Ici 0) ∧
@@ -85,7 +86,7 @@ theorem exists_admissible_surgery_with_late_sequence_tests_of_enhanced_C11R
       hasAnalyticAdmissibility F δ ∧ hasLateSequenceTests F K := by
   obtain ⟨δ, F, ha, hd, hprofile, ht⟩ :=
     exists_enhanced_surgery_with_late_sequence_tests_of_enhanced_C11R P g hA12' K hK
-  exact ⟨δ, F, ha, hd, hasAnalyticAdmissibility_of_enhanced_C11E hprofile, ht⟩
+  exact ⟨δ, F, ha, hd, hasAnalyticAdmissibility_of_full_C11F hprofile, ht⟩
 
 /-- consumer（rev1）：A12′ admission 喂入 core L2，复现 `LateDecomposition` 原件
 `exists_admissible_surgery_with_late_sequence_tests` 的类型。 -/

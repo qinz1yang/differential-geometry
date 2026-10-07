@@ -6,13 +6,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12EnhancedC11
 
 Route W 的四层 consumer（`CuspP1/RouteWLateSequenceWA2.lean`）的 `_C11R` 副本，只把 A12
 `exists_surgery_with_decaying_accuracy` 换成 A12′，其余逐字。A12′ 按 O-CH11-PROF G2 是 `Prop`
-`A12EnhancedStatement_C11E`（车道文件不得含占位证明；admission
+`A12EnhancedFullStatement_C11F`（车道文件不得含占位证明；admission
 `exists_surgery_with_decaying_accuracy_enhanced` 由 INT 在用户 GO 后落入 tracked 文件），所以 L2–L4
-以显式参数 `hA12' : A12EnhancedStatement_C11E` 接收它；端点把 admission 传进来即可（一行）。
+以显式参数 `hA12' : A12EnhancedFullStatement_C11F` 接收它；端点把 admission 传进来即可（一行）。
 
 * L1 `hasLateSequenceTests_of_thick_thin_and_obstruction_C11R`：binder `hadm` 换成 enhanced profile
-  `henh : hasEnhancedAdmissibility_C11E F δ`；A09 / Route W G_final 的 `hadm` 在调用处由投影
-  `hasAnalyticAdmissibility_of_enhanced_C11E` 提取，A13 直接吃 `henh`（rev1 = REPOINT2，tracked A13
+  `henh : hasEnhancedAdmissibilityFull_C11F F δ`；A09 / Route W G_final 的 `hadm` 在调用处由投影
+  `hasAnalyticAdmissibility_of_full_C11F` 提取，A13 直接吃 `henh`（rev1 = REPOINT2，tracked A13
   改吃 enhanced profile 之后；`RouteWLateSequenceCoreC11R` 的 core）；
 * L2 `exists_admissible_surgery_with_late_sequence_tests_C11R`、L3
   `exists_surgery_with_late_sequence_tests_C11R`（`GeometrizationEND0` 的 re-point 点）、L4
@@ -42,36 +42,36 @@ universe u
 theorem hasLateSequenceTests_of_thick_thin_and_obstruction_C11R
     {P : OrientedThreeStage.{u}} {g : P.Metric}
     (F : GC.Interface.RawSurgery P g) (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ)
-    (henh : hasEnhancedAdmissibility_C11E F δ)
+    (henh : hasEnhancedAdmissibilityFull_C11F F δ)
     (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) :
     hasLateSequenceTests F K :=
   hasLateSequenceTests_of_thick_thin_and_obstruction_of_enhanced_C11R F K hK δ henh hdec
 
 /-- L2 的 enhanced 结论版：A12′ 的 surgery 连同 enhanced profile 与 late sequence tests。 -/
 theorem exists_enhanced_surgery_with_late_sequence_tests_C11R
-    (hA12' : A12EnhancedStatement_C11E.{u})
+    (hA12' : A12EnhancedFullStatement_C11F.{u})
     (P : OrientedThreeStage.{u}) (g : P.Metric) (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
     ∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
       AntitoneOn δ (Ici 0) ∧
       (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
-      hasEnhancedAdmissibility_C11E F δ ∧ hasLateSequenceTests F K :=
+      hasEnhancedAdmissibilityFull_C11F F δ ∧ hasLateSequenceTests F K :=
   exists_enhanced_surgery_with_late_sequence_tests_of_enhanced_C11R P g (hA12' P g) K hK
 
 /-- L2：`exists_admissible_surgery_with_late_sequence_tests` 的 A12′ 版（A12 → A12′）。 -/
 theorem exists_admissible_surgery_with_late_sequence_tests_C11R
-    (hA12' : A12EnhancedStatement_C11E.{u})
+    (hA12' : A12EnhancedFullStatement_C11F.{u})
     (P : OrientedThreeStage.{u}) (g : P.Metric) (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
     ∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
       AntitoneOn δ (Ici 0) ∧
       (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
       hasAnalyticAdmissibility F δ ∧ hasLateSequenceTests F K := by
   obtain ⟨δ, F, ha, hd, hprofile⟩ := hA12' P g
-  exact ⟨δ, F, ha, hd, hasAnalyticAdmissibility_of_enhanced_C11E hprofile,
+  exact ⟨δ, F, ha, hd, hasAnalyticAdmissibility_of_full_C11F hprofile,
     hasLateSequenceTests_of_thick_thin_and_obstruction_C11R F K hK δ hprofile hd⟩
 
 /-- L3：`exists_surgery_with_late_sequence_tests` 的 A12′ 版（`GeometrizationEND0` 的 re-point 点）。 -/
 theorem exists_surgery_with_late_sequence_tests_C11R
-    (hA12' : A12EnhancedStatement_C11E.{u})
+    (hA12' : A12EnhancedFullStatement_C11F.{u})
     (P : OrientedThreeStage.{u}) (g : P.Metric) (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
     ∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
       (∀ t : ℝ, 0 ≤ t → 0 < δ t ∧ δ t < 1) ∧
@@ -84,7 +84,7 @@ theorem exists_surgery_with_late_sequence_tests_C11R
 
 /-- L4：`geometrizes_of_metric` 的 A12′ 版（`Geometrization.lean` 的 re-point 点）。 -/
 theorem geometrizes_of_metric_C11R
-    (hA12' : A12EnhancedStatement_C11E.{u})
+    (hA12' : A12EnhancedFullStatement_C11F.{u})
     (M : ConnectedClosedOrientedManifold.{u} 3)
     (g : (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold).Metric) :
     Geometrizes M := by
@@ -97,20 +97,20 @@ theorem geometrizes_of_metric_C11R
 
 /-! ### 型对齐：喂入 A12′ 后 L2–L4 与 `LateDecomposition` 原件类型逐字相同 -/
 
-example (hA12' : A12EnhancedStatement_C11E.{u}) :
+example (hA12' : A12EnhancedFullStatement_C11F.{u}) :
     type_of% (exists_admissible_surgery_with_late_sequence_tests_C11R hA12') =
       type_of% @exists_admissible_surgery_with_late_sequence_tests.{u} := rfl
 
-example (hA12' : A12EnhancedStatement_C11E.{u}) :
+example (hA12' : A12EnhancedFullStatement_C11F.{u}) :
     type_of% (exists_surgery_with_late_sequence_tests_C11R hA12') =
       type_of% @exists_surgery_with_late_sequence_tests.{u} := rfl
 
-example (hA12' : A12EnhancedStatement_C11E.{u}) :
+example (hA12' : A12EnhancedFullStatement_C11F.{u}) :
     type_of% (geometrizes_of_metric_C11R hA12') = type_of% @geometrizes_of_metric.{u} := rfl
 
 /-- consumer：re-point 后 `GC.Endpoint.geometrization` 的证明体（`Geometrization.lean` 改一行的
 dry run；A12′ admission 以 `hA12'` 代入）。 -/
-example (hA12' : A12EnhancedStatement_C11E.{u}) (M : ConnectedClosedOrientedManifold.{u} 3) :
+example (hA12' : A12EnhancedFullStatement_C11F.{u}) (M : ConnectedClosedOrientedManifold.{u} 3) :
     Geometrizes M := by
   obtain ⟨g⟩ := Geometry.nonempty_smoothRiemannianMetric_of_compact (𝓡 3) (M := M.Carrier)
   exact GC.LongTime.Ch11.geometrizes_of_metric_C11R hA12' M g
