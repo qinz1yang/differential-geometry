@@ -9,8 +9,9 @@ For a survivor pull-in `Sv : SpliceSurvivor_C12X D k hik` (`StrongWindowSurviveC
 survivor package `P` with start `Sv.first` (`StrongWindowCommonC12X`):
 
 * `metric_pre`: on the whole deep window `v ∈ [-θ, 0]` the parabolically rescaled package metric
-  pulled back by `Ψ` is the deep backward-neck metric, `Ψ^*((r²)⁻¹ · gflow (t_i + r² v)) = D.metric v`
-  on `U` (per slab by `deep_metric_on_slab`, at `v = 0` by the normalized terminal neck);
+  pulled back by `Ψ` is the deep backward-neck metric,
+  `Ψ^*((r²)⁻¹ · gflow (t_i + r² v)) = D.metric v` on `U` (per slab by `deep_metric_on_slab`, at
+  `v = 0` by the normalized terminal neck);
 * `metric_surgery`: at the surgery time the same pullback is the output initial metric pulled back
   through the output-stage survivor image `π_{i.succ} ∘ Ψ` (the other side of the surgery);
 * `gflow_eq_restrict_C12X`: two packages with nested starts agree after the later start (domain
