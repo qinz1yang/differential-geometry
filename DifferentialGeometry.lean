@@ -26206,3 +26206,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffAccur
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryNoncollapsingPresentation.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryNoncollapsePrefix.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SupplyFourOfClosedBirthC11A
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #33
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceTracedSecondLevel2_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordHistoryRestriction.BasicPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordHistoryRestriction.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialChain
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialDecay
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialRecentCutoff
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialSurgery
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialSurgeryDecayPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialSurgeryDecay
