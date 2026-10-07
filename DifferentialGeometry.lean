@@ -27469,3 +27469,18 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Dist.EndpointU
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Dist.PrefixUniformC11G2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TracedBallSurvivalP6E
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaFineCapContractsC11Q5
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #48
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.PBaseAccuracyC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KDataSupplyP6D
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KDataSuppliedP6D
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HscalCrossEventP6E
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaDataSupplyC11KD
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaPre841ThreeC11KD
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.LinkedWindowsC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.PBaseWindowC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.HcofWireC11HC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongChainRestrictC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaFineBarrierCoreC11Q5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaFineScaleC11Q5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaFineEndToEndC11Q5
