@@ -26057,3 +26057,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SuppliesOfAstr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12OfP6C11A
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.NativeCanonicalReceiverC11RD
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.AccuracyDecayC11RA
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #28
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.RadiusAntitoneC11RA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.LargerBallAccuracyC11RA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.PrescribedAccuracyJoinC11RA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12OfP6ObsC11A
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12OfP6ObsConsumerC11A
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.NoncollapseRestrictC11RO
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.AffineOverlapC11RD
