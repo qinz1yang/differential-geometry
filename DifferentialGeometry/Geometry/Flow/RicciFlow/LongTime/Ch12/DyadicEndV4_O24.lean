@@ -39,15 +39,15 @@ theorem hpi03_discrete_of_end_v4_O24 {P : OrientedThreeStage.{u}} {g : P.Metric}
             (∀ j : ℕ, j ≤ k' → ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (R'),
               ckErr_O19 H' (postMetric F.observation s) s⁻¹ (fs s hs) j p < ε') ∧
             ∃ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
-              (ordered : first ≤ last) (a b : ℝ) (_ : a < s) (_ : s < b)
+              (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ s) (_ : a ≤ t) (_ : s < b)
               (_ : b ≤ (F.tower.history n).horizon)
-              (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ioo a b →
+              (stages : ∀ r : Icc (0 : ℝ) (F.tower.history n).horizon, (r : ℝ) ∈ Ico a b →
                 first ≤ (F.tower.history n).toHistory.activeStage r ∧
                   (F.tower.history n).toHistory.activeStage r ≤ last)
               (φ : H'.Carrier →
                 (F.tower.history n).toHistory.backwardSurvivorDomain first last ordered),
               ContMDiffOn (𝓡 3) (𝓡 3) ∞ φ (riemannianBallOf H'.metric H'.basepoint (R')) ∧
-              ∀ (r : Icc (0 : ℝ) (F.tower.history n).horizon) (hr : (r : ℝ) ∈ Ioo a b)
+              ∀ (r : Icc (0 : ℝ) (F.tower.history n).horizon) (hr : (r : ℝ) ∈ Ico a b)
                 (hrs : (r : ℝ) ∈ Icc t (2 * t)),
                 ∀ p ∈ riemannianBallOf H'.metric H'.basepoint (R'),
                   HEq ((F.tower.history n).toHistory.backwardSurvivorMap first last ordered
