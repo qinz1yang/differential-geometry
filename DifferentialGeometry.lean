@@ -26295,3 +26295,17 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialDistanceChain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.GeometricObservationExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaDiagonalAlignP6D2
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #39
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.WeightedCollarActionPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.WeightedCollarAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.NativeObservationDerivativeBoundsPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.NativeObservationDerivativeBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.NoncollapsedGeometricObservationPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.NoncollapsedGeometricObservation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BackwardTraceScalarControlTimeWindow_P6N
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BackwardTraceChainCaptureTimeWindow_P6N
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceSliceTimeWindow_P6N
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingWindowAnchorBound_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.TracedRegionLocalLimitDepthSchedule_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingWindowAnchorBoundConsumer_P6L
