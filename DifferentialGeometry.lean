@@ -25962,3 +25962,31 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalDis
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionRecenter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.PortB1ConsumerC11P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.PortB1SkelAlignC11P
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #26
+import DifferentialGeometry.Geometry.Hyperbolic.HG06CovariantChainHGA1
+import DifferentialGeometry.Geometry.Hyperbolic.HG06CovariantChainConsumerHGA1
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.DensityComparisonC11X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientLimitSurvivorCanonicalWitnessC11X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingAncientLimitSpatialC11X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceAfterEventC11X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowActionC11X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Ext2G1ConsumerC11X
+import DifferentialGeometry.Analysis.Order.CommonProfileDecay
+import DifferentialGeometry.Analysis.Order.CommonProfileComparison
+import DifferentialGeometry.Analysis.Order.CommonProfileFamily
+import DifferentialGeometry.Geometry.Collapse.CurvatureRadiusNormBound
+import DifferentialGeometry.Geometry.Collapse.CurvatureScaleNearbyVolume
+import DifferentialGeometry.Geometry.Collapse.TestedBallVolumeSeed
+import DifferentialGeometry.Geometry.Collapse.VolumeTriggerBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.FixedTerminalOpenBuffer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.LocalDistanceContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarTimeComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.TerminalBallProtection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CountableClosedStripGluing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.MatchedRawScale
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.QuantitativeStageWindowProtection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecentCutoffRadius
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.UnimpB3G1ConsumerC11P3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6StatementP6A
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PinchingP6A
