@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.EnhancedSuppliesFromAstraC11P2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialProviders
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialRecursion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.ClosedBirthConstantsStrongC12X
 
 set_option autoImplicit false
 
@@ -104,8 +105,8 @@ theorem exists_prepared_spatial_chains_from_initial_pBase_C12X :
     have hte := DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd_pos
     unfold capWindowRadius_C11E
     positivity
-  obtain ⟨Cdist, hCdist, fixed, recenter, C, _, prepareClass, analytic, makeBase⟩ :=
-    exists_prepared_spatial_initial_state_with_distance_scalars_with_reserve_quality.{u}
+  obtain ⟨Cdist, hCdist, fixed, recenter, C, -, _, prepareClass, analytic, makeBase⟩ :=
+    exists_closedBirthConstants_strong_C12X.{u}
       (capWindowRadius_C11E + 1) εProf_C11E.{u} hD εProf_pos_C11E.{u}
   refine ⟨fixed, C, ?_⟩
   intro P g
