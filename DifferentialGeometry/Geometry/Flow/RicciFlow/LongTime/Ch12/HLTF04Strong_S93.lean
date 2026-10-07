@@ -193,7 +193,7 @@ theorem hLTF04Ico_strong_S93 {P : OrientedThreeStage.{u}} {g : P.Metric} {F : GC
           riemannianBallOf H.metric H.basepoint (2 * R) ⊆ U →
           ContMDiffOn (𝓡 3) (𝓡 3) ∞ f U →
           IsSmoothEmbedding (𝓡 3) (𝓡 3) ∞ (fun x : U => f x) →
-          (∀ j : ℕ, j ≤ k + 2 → ∀ p ∈ riemannianBallOf H.metric H.basepoint (2 * R),
+          (∀ j : ℕ, j ≤ k + 3 → ∀ p ∈ riemannianBallOf H.metric H.basepoint (2 * R),
             ckErr_S45 H (postMetric F.observation t) t⁻¹ f j p < δ') →
           ∀ (n : ℕ) (first last : Fin ((F.tower.history n).eventCount + 1))
             (ordered : first ≤ last) (a b : ℝ) (_ : a ≤ t) (_ : 2 * t < b)
@@ -233,7 +233,7 @@ theorem hLTF04Ico_strong_S93 {P : OrientedThreeStage.{u}} {g : P.Metric} {F : GC
         riemannianBallOf H.metric H.basepoint (2 * R) ⊆ U →
         ContMDiffOn (𝓡 3) (𝓡 3) ∞ f U →
         IsSmoothEmbedding (𝓡 3) (𝓡 3) ∞ (fun x : U => f x) →
-        (∀ j : ℕ, j ≤ k + 2 → ∀ p ∈ riemannianBallOf H.metric H.basepoint (2 * R),
+        (∀ j : ℕ, j ≤ k + 3 → ∀ p ∈ riemannianBallOf H.metric H.basepoint (2 * R),
           ckErr_S45 H (postMetric F.observation t) t⁻¹ f j p < δ') →
         ∃ fs : (s : ℝ) → s ∈ Icc t (2 * t) → H.Carrier → (postStage F.observation s).Carrier,
           (∀ p ∈ riemannianBallOf H.metric H.basepoint R, fs t ⟨le_rfl, by linarith⟩ p = f p) ∧
@@ -267,9 +267,9 @@ theorem hLTF04Ico_strong_S93 {P : OrientedThreeStage.{u}} {g : P.Metric} {F : GC
   have herrA : ∀ j : ℕ, j ≤ 2 → ∀ p ∈ riemannianBallOf H.metric H.basepoint (2 * R),
       ckErr_S45 H (postMetric F.observation t) t⁻¹ f j p < δA :=
     fun j hj p hp => lt_of_lt_of_le (herr0 j (by omega) p hp) (min_le_left _ _)
-  have herrB : ∀ j : ℕ, j ≤ k + 2 → ∀ p ∈ riemannianBallOf H.metric H.basepoint (2 * R),
+  have herrB : ∀ j : ℕ, j ≤ k + 3 → ∀ p ∈ riemannianBallOf H.metric H.basepoint (2 * R),
       ckErr_S45 H (postMetric F.observation t) t⁻¹ f j p < δB :=
-    fun j hj p hp => lt_of_lt_of_le (herr0 j hj p hp) (min_le_right _ _)
+    fun j hj p hp => lt_of_lt_of_le (herr0 j (by omega) p hp) (min_le_right _ _)
   obtain ⟨n, first, last, ordered, a, b, hat, htb, hbh, stages, φ, hφ, hIC, h0⟩ :=
     hA t ht0 htA U f hU hsm hemb herrA (2 * t) ⟨by linarith, le_rfl⟩
   have hk := hB t ht0 htB U f hU hsm hemb herrB n first last ordered a b hat htb hbh stages φ hφ hIC h0
