@@ -202,7 +202,7 @@ theorem collarNegativePlane_S16 (K : ℕ) : CollarNegativePlane.{u} K := by
       have hy' : e.toFun (y, halfZero) = b.val := hy
       rw [hy', hq1]
       exact (ENNReal.ofReal_lt_ofReal_iff (by norm_num)).mpr (by norm_num)
-    have hcapture := e.riemannianBallOf_subset_image_height_lt hδ1
+    have hcapture := e.riemannianBallOf_subset_image_height_lt_of_lt_one hδ1
       (p := (y, halfZero)) (H := 2) (r := 3 / 2)
       (by change (0 : ℝ) < 2; norm_num) (by norm_num [cuspDepth])
       (by change (3 / 2 : ℝ) ≤ (2 - 0) / Real.sqrt ((1 - (1 / 10000 : ℝ))⁻¹)

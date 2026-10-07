@@ -17,7 +17,7 @@ variable {W : CompactCarrier.{u}}
 
 /-- The actual cusp immersion has invertible derivative because both tangent
 spaces have dimension three. No metric-error smallness is needed. -/
-theorem CuspEmbedding.isInvertible_mfderiv
+theorem CuspEmbedding.isInvertible_mfderiv_at
     (e : CuspEmbedding W g K δ X) (p : CuspHalfSpace) (hp : p ∈ cuspDomain) :
     (mfderiv halfCollarModel W.model e.toFun p).IsInvertible := by
   let A := mfderiv halfCollarModel W.model e.toFun p
@@ -41,14 +41,14 @@ def CuspEmbedding.toPartialDiffeomorph
       (show (fun z : cuspDomain => e.toFun z) ⟨p, hp⟩ =
         (fun z : cuspDomain => e.toFun z) ⟨q, hq⟩ from hpq))
   have hopen : _root_.Topology.IsOpenEmbedding (cuspDomain.domRestrict e.toFun) :=
-    ⟨e.isEmbedding, by simpa only [range_domRestrict] using e.isOpen_image⟩
+    ⟨e.isEmbedding, by simpa only [range_domRestrict] using e.isOpen_image_openness⟩
   have hdomain : IsOpen cuspDomain :=
     isOpen_lt (by fun_prop) continuous_const
   let d := OpenPartialHomeomorph.ofContinuousOpenRestrict
     (hinj.toPartialEquiv e.toFun cuspDomain) e.contMDiffOn.continuousOn
     hopen.isOpenMap hdomain
   exact DifferentialGeometry.Topology.OpenPartialHomeomorph.toPartialDiffeomorphOfIsInvertibleMFDeriv
-    (K + 1) (by omega) d e.contMDiffOn (fun p hp => e.isInvertible_mfderiv p hp)
+    (K + 1) (by omega) d e.contMDiffOn (fun p hp => e.isInvertible_mfderiv_at p hp)
 
 @[simp] theorem CuspEmbedding.toPartialDiffeomorph_source
     (e : CuspEmbedding W g K δ X) : e.toPartialDiffeomorph.source = cuspDomain := rfl

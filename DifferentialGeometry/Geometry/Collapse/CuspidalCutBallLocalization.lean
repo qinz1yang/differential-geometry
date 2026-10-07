@@ -172,7 +172,7 @@ theorem exists_collar_localization_of_distanceToBoundary_le
     nlinarith
   have hcapture : riemannianBallOf g (e.toFun (y, halfZero)) 24 ⊆
       e.toFun '' {x : CuspHalfSpace | x.2.val 0 < 25} := by
-    exact e.riemannianBallOf_subset_image_height_lt hδ1
+    exact e.riemannianBallOf_subset_image_height_lt_of_lt_one hδ1
       (p := (y, halfZero)) (H := 25) (r := 24)
       (by change (0 : ℝ) < 25; norm_num) (by norm_num [cuspDepth])
       (by change (24 : ℝ) ≤ (25 - 0) / Real.sqrt ((1 - δ)⁻¹)

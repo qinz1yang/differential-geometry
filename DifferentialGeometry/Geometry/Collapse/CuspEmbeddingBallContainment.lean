@@ -52,7 +52,7 @@ private theorem metricPathELength_congr_path
     ⟨g.toRiemannianMetric⟩
   exact Manifold.pathELength_congr heq
 
-theorem CuspEmbedding.riemannianBallOf_subset_image_height_lt
+theorem CuspEmbedding.riemannianBallOf_subset_image_height_lt_of_lt_one
     {W : CompactCarrier.{u}}
     {g : SmoothRiemannianMetric W.model W.Carrier}
     {K : ℕ} {δ : ℝ} {X : Set W.Carrier}

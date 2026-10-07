@@ -122,8 +122,12 @@ private theorem isOpen_image_cusp_of_boundary_preimage
       refine ⟨c.symm z, hz.2.1, ?_⟩
       exact d.injOn hz.2.2 hqd hzq
 
-/-- The given cusp collar has open image in the original compact carrier. -/
-theorem CuspEmbedding.isOpen_image
+/-- The given cusp collar has open image in the original compact carrier.
+
+Renamed from `CuspEmbedding.isOpen_image` (CH12-S47): that name is already taken by the general
+statement `CuspEmbedding.isOpen_image` in `BoundaryScale/CuspBoundaryOpenness.lean` (open
+subsets of the collar have open image), and the two modules must be importable together. -/
+theorem CuspEmbedding.isOpen_image_openness
     {W : CompactCarrier.{u}}
     {g : SmoothRiemannianMetric W.model W.Carrier}
     {K : ℕ} {δ : ℝ} {X : Set W.Carrier}

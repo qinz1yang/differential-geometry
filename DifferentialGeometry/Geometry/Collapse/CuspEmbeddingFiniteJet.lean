@@ -50,7 +50,7 @@ theorem CuspEmbedding.exists_partialDiffeomorph_eq_finiteJet
     isOpen_lt (by fun_prop) continuous_const
   exact DifferentialGeometry.Manifold.exists_partialDiffeomorph_eq_finiteJet
     (e.contMDiffOn.contMDiffAt (hdomain.mem_nhds hp)) (by show 1 ≤ K + 1; omega)
-    (e.isInvertible_mfderiv p hp) hpint hfpint hdomain hp
-    e.isOpen_image ⟨p, hp, rfl⟩
+    (e.isInvertible_mfderiv_at p hp) hpint hfpint hdomain hp
+    e.isOpen_image_openness ⟨p, hp, rfl⟩
 
 end DifferentialGeometry.Geometry.Collapse
