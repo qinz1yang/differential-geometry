@@ -26254,3 +26254,20 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialStepDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.AffineJoinNoncollapsePortC11P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.AffineJoinNoncollapse
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #37
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.AffineEventDistanceScalarPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.AffineEventDistanceScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.RawPrefixFineRecordsPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.RawPrefixFineRecords
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordCanonicalRadiusPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordCanonicalRadius
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialBasePortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialBase
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialLargerBallAccuracyPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialLargerBallAccuracy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialQueryReserve
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialReservePhysicalInputs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.RegularObservationNoncollapse
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordDelayedRadiusPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordDelayedRadius
