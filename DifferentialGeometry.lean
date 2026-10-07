@@ -26327,3 +26327,16 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.Eve
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.EventWeightedContinuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteOutputDistanceScalarPortC11P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteOutputDistanceScalar
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #41
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BackwardTraceChainCaptureLateRecords_P6N
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceSliceLateRecords_P6N
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialOwnThresholdDerivatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaBridgeMarginP6B2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TracedDepthP6D2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.SmoothCollarGeometryPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.SmoothCollarGeometry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ClosureP6D2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.EarlierGoodTraceLocal_P6N
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.IncomingEventWeightedMinimumPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.IncomingEventWeightedMinimum
