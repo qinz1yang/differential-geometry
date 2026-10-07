@@ -65,6 +65,7 @@ def PreparedGeometricObservationExtensionWithNative
           riemannianVolumeMeasure ThreeModel (K.coreEvent i).incoming.terminalRegularOpen
             (K.coreEvent i).terminal.metric F) ∧
       ∃ (hwin : ∀ i b, ((fine i).static b).hasLinkedCanonicalWindow_C12X)
+        (_hrecK : RecordHypFar_C12X (5 / 4) K fine)
         (hD : p.modelRadius ≤ pF.modelRadius)
         (hm : p.modelOrder ≤ pF.modelOrder)
         (hacc : pF.modelAccuracy ≤ p.modelAccuracy),

@@ -212,6 +212,7 @@ private theorem exists_ready_two_overlap_geometric_extension_with_native_certifi
       (pF : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
       (hwin : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
+      (_hrecK : RecordHypFar_C12X (5 / 4) L native)
       (hDK : pK.modelRadius ≤ pF.modelRadius)
       (hmK : pK.modelOrder ≤ pF.modelOrder)
       (haccK : pF.modelAccuracy ≤ pK.modelAccuracy)
@@ -329,7 +330,7 @@ private theorem exists_ready_two_overlap_geometric_extension_with_native_certifi
   obtain ⟨L, IL, pB, pF, δbound, ρbound, v, native,
     hLB, hIL, hcertificateL, hcontrolL, hncLlocal, hfixedF, hrcF, hacc, hrad, hord,
     hδbound, hδ, hρbound, hρ, hrecF, hv, hfamily, hdebit,
-    hwin, hDK, hmK, haccK, joinK⟩ :=
+    hwin, hrecK, hDK, hmK, haccK, joinK⟩ :=
     make (min δNew δcut) (min ρNew (min r ρcut))
       (min pH.modelAccuracy (min pNew.modelAccuracy εcut))
       (max pH.modelRadius (max pNew.modelRadius Dcut))
@@ -408,7 +409,7 @@ private theorem exists_ready_two_overlap_geometric_extension_with_native_certifi
   obtain ⟨IJ, hIJ⟩ := marking_of_actual_prefix IH hpH
   have hncJ := joinNC H L J IL b H.eventCount AJ (fun i => (hcontrolL i).1)
     hpH H.time_le_horizon hJhor hfinalJ hncH hncL
-  refine ⟨L, IL, pF, native, hwin, hDK, hmK, haccK, hDH, hmH, haccH,
+  refine ⟨L, IL, pF, native, hwin, hrecK, hDK, hmK, haccK, hDH, hmH, haccH,
     hDNew, hmNew, haccNew, Kplus, IKplus, AK, IoldK, joinedK,
     J, IJ, AJ, IoldH, joinedH, hKhor, hJhor, hIL,
     hLB, hKplusB, hJhor.trans hsum, hIKplus, hIJ, hcertificateL, hcontrolL, hcontrolKplus, hcontrolJ,
@@ -477,6 +478,7 @@ private theorem exists_ready_two_overlap_geometric_extension
       (pF : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
       (hwin : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
+      (_hrecK : RecordHypFar_C12X (5 / 4) L native)
       (hDK : pK.modelRadius ≤ pF.modelRadius)
       (hmK : pK.modelOrder ≤ pF.modelOrder)
       (haccK : pF.modelAccuracy ≤ pK.modelAccuracy)
@@ -583,9 +585,9 @@ private theorem exists_ready_two_overlap_geometric_extension
     nativeProjectionx7
   have nativeProjectionh8 := @nativeProjectionh3 δcut ρcut εcut Dcut mcut nativeProjectionx4
     nativeProjectionx5 nativeProjectionx6 nativeProjectionx7
-  obtain ⟨L, IL, pF, native, hwin, hDK, hmK, haccK, hDH, hmH, haccH, hDNew, hmNew, haccNew,
+  obtain ⟨L, IL, pF, native, hwin, hrecK, hDK, hmK, haccK, hDH, hmH, haccH, hDNew, hmNew, haccNew,
     nativeProjectionh9⟩ := nativeProjectionh8
-  refine ⟨L, IL, pF, native, hwin, hDK, hmK, haccK, hDH, hmH, haccH, hDNew, hmNew, haccNew, ?_⟩
+  refine ⟨L, IL, pF, native, hwin, hrecK, hDK, hmK, haccK, hDH, hmH, haccH, hDNew, hmNew, haccNew, ?_⟩
   dsimp only at nativeProjectionh9 ⊢
   obtain ⟨Kplus, IKplus, AK, IoldK, joinedK, J, IJ, AJ, IoldH, joinedH, hKhor, hJhor,
     nativeProjectionh10⟩ := nativeProjectionh9
@@ -649,6 +651,7 @@ private theorem exists_ready_two_overlap_geometric_extension_with_distance_scala
       (pF : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
       (hwin : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
+      (_hrecK : RecordHypFar_C12X (5 / 4) L native)
       (hDK : pK.modelRadius ≤ pF.modelRadius)
       (hmK : pK.modelOrder ≤ pF.modelOrder)
       (haccK : pF.modelAccuracy ≤ pK.modelAccuracy)
@@ -851,6 +854,7 @@ theorem exists_prepared_two_overlap_extension
       (pF : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
       (hwin : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
+      (_hrecK : RecordHypFar_C12X (5 / 4) L native)
       (hDK : pK.modelRadius ≤ pF.modelRadius)
       (hmK : pK.modelOrder ≤ pF.modelOrder)
       (haccK : pF.modelAccuracy ≤ pK.modelAccuracy)
@@ -1005,7 +1009,7 @@ theorem exists_prepared_two_overlap_extension
     hfixedNew, hrcNew, hδNew, hρNew, hκNew, hqNew, hqsNew, hqsNewC, hr, hrR, hqsr,
     hεNew, hεNew11, hκNewClass, hκJ, extendNew, newControl, ?_⟩
   intro δcut ρcut εcut Dcut mcut hδcut hρcut hεcut hDcut
-  obtain ⟨L, IL, pF, native, hwin, hDK, hmK, haccK, hDH, hmH, haccH,
+  obtain ⟨L, IL, pF, native, hwin, hrecK, hDK, hmK, haccK, hDH, hmH, haccH,
     hDNew, hmNew, haccNew, Kplus, IKplus, AK, IoldK, joinedK,
     J, IJ, AJ, IoldH, joinedH, hKhor, hJhor, hIL, hLB, hKplusB, hJB,
     hIKplus, hIJ, hcontrolL, hcontrolKplus, hcontrolJ, hclassNew, hclassKplus,
@@ -1016,7 +1020,7 @@ theorem exists_prepared_two_overlap_extension
     hLB.trans_le (sub_le_sub_right hBfuture.le a)
   have hestL := (newControl L IL _ _ hLFuture hclassNew).2
   have hestKplus := (oldControl Kplus IKplus _ joinedK hKplusB.le hclassKplus).2
-  refine ⟨L, IL, pF, native, hwin, hDK, hmK, haccK, hDH, hmH, haccH,
+  refine ⟨L, IL, pF, native, hwin, hrecK, hDK, hmK, haccK, hDH, hmH, haccH,
     hDNew, hmNew, haccNew, Kplus, IKplus, AK, IoldK, joinedK,
     J, IJ, AJ, IoldH, joinedH, hKhor, hJhor, hIL, hLB, hKplusB, hJB,
     hIKplus, hIJ, hcontrolL, hcontrolKplus, hcontrolJ, hclassNew, hclassKplus,

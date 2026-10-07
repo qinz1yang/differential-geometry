@@ -184,13 +184,13 @@ theorem exists_common_prepared_geometric_observation_extension_before_quality_wi
   obtain ⟨K, IK, pB, pF, δbound, ρbound, v, native,
     hKB, hIK, hDistanceK, hcontrolK, hncK, hfixedF, hrcF, hacc, hrad, hord,
     hδbound, hδ, hρbound, hρ, hrecF, hv, hfamily, hdebit,
-    hwin, hD, hm, haccOld, join⟩ :=
+    hwin, hrecK, hD, hm, haccOld, join⟩ :=
     make (min δb δcut) (min ρb ρcut) εcut Dcut mcut
       (lt_min hδb hδcut) (lt_min hρb hρcut) hεcut hDcut
   refine ⟨K, IK, pB, pF, δbound, ρbound, v, native,
     hKB, hIK, hDistanceK, hcontrolK, hncK, hfixedF.trans hfixed.symm, hrcF.trans hrc.symm, hacc, hrad, hord,
     hδbound, hδ.trans (min_le_right _ _), hρbound, hρ.trans (min_le_right _ _),
-    hrecF, hv, hfamily, hdebit, hwin, hD, hm, haccOld, ?_⟩
+    hrecF, hv, hfamily, hdebit, hwin, hrecK, hD, hm, haccOld, ?_⟩
   let c := H.time (Fin.last H.eventCount)
   let pC := pF.withModelWindow p.modelRadius p.modelOrder p.modelAccuracy
     p.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccOld)
@@ -306,6 +306,7 @@ theorem exists_prepared_geometric_observation_extension_before_quality
           riemannianVolumeMeasure ThreeModel (K.coreEvent i).incoming.terminalRegularOpen
             (K.coreEvent i).terminal.metric F) ∧
       ∃ (hwin : ∀ i b, ((fine i).static b).hasLinkedCanonicalWindow_C12X)
+        (_hrecK : RecordHypFar_C12X (5 / 4) K fine)
         (hD : p.modelRadius ≤ pF.modelRadius)
         (hm : p.modelOrder ≤ pF.modelOrder)
         (hacc : pF.modelAccuracy ≤ p.modelAccuracy),
@@ -418,7 +419,7 @@ theorem exists_geometric_observation_extension_with_fine_quality
   obtain ⟨K, IK, pB, pF, δbound, ρbound, v, native,
     hKB, _, hcontrolK, hncK, hfixedF, hrcF, hacc, hrad, hord,
     hδbound, hδ, hρbound, hρ, hrecF, hv, hfamily, hdebit,
-    hwin, hD, hm, haccOld, join⟩ :=
+    hwin, hrecK, hD, hm, haccOld, join⟩ :=
     make δcut ρcut εcut Dcut mcut hδcut hρcut hεcut hDcut
   let c := H.time (Fin.last H.eventCount)
   let pC := pF.withModelWindow p.modelRadius p.modelOrder p.modelAccuracy

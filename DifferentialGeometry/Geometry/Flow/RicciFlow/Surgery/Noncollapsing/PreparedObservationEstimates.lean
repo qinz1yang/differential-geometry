@@ -113,7 +113,7 @@ theorem exists_prepared_extension_with_two_estimate_packets :
   obtain ⟨K, IK, pB, pF, δbound, ρbound, v, native,
     hKB, _, hcontrolK, hncK, hfixedF, hrcF, hacc, hrad, hord,
     hδbound, hδ, hρbound, hρboundLe, hrecF, hv, hfamily, hdebit,
-    hwin, hD, hm, haccPrefix, join⟩ :=
+    hwin, hrecK, hD, hm, haccPrefix, join⟩ :=
     make (min δTail δcut) (min ρTail (min ρ ρcut))
       (min εTail εcut) (max DTail Dcut) (max mTail mcut)
       (lt_min hδTail hδcut) (lt_min hρTail (lt_min hρ hρcut))
@@ -232,6 +232,7 @@ theorem exists_prepared_extension_with_reserved_later_class :
         HEq (records (A.eventIndex i)).order (native i).order ∧
         HEq (records (A.eventIndex i)).neck (native i).neck) ∧
       ∃ (hwinNew : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
+        (_hrecKNew : RecordHypFar_C12X (5 / 4) L native)
         (hDNew : pNew.modelRadius ≤ pF.modelRadius)
         (hmNew : pNew.modelOrder ≤ pF.modelOrder)
         (haccNew : pF.modelAccuracy ≤ pNew.modelAccuracy),
@@ -309,7 +310,7 @@ theorem exists_prepared_extension_with_reserved_later_class :
   obtain ⟨L, IL, pB, pF, δbound, ρbound, v, native,
     hLB, _, hcontrolL, hncL, hfixedF, hrcF, hacc, hrad, hord,
     hδbound, hδ, hρbound, hρboundLe, hrecF, hv, hfamily, hdebit,
-    hwin, hD, hm, haccPrefix, join⟩ :=
+    hwin, hrecK, hD, hm, haccPrefix, join⟩ :=
     make (min δNew δcut) (min ρNew (min ρ ρcut))
       (min pNew.modelAccuracy εcut) (max pNew.modelRadius Dcut) (max pNew.modelOrder mcut)
       (lt_min hδNew hδcut) (lt_min hρNew (lt_min hρ hρcut))
@@ -358,6 +359,6 @@ theorem exists_prepared_extension_with_reserved_later_class :
       (hfamily.2.2.2.2.2.2.2 i).trans (hρboundLe.trans (min_le_right _ _))⟩
   · intro i
     exact ⟨(hTail i).1, (hTail i).2.1, (hTail i).2.2.1, (hTail i).2.2.2.1⟩
-  · exact ⟨hwin, hDNew, hmNew, haccNew, rfl, fun _ => HEq.rfl⟩
+  · exact ⟨hwin, hrecK, hDNew, hmNew, haccNew, rfl, fun _ => HEq.rfl⟩
 
 end GC.GeneralFlow

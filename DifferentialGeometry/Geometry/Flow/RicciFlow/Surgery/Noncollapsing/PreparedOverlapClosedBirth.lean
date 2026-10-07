@@ -116,6 +116,7 @@ private theorem exists_prepared_two_overlap_extension_with_closed_birth_with_nat
           (records : ∀ i : Fin V.eventCount, GeometricCutoffRecord V.toHistory i pV),
           V.horizon ≤ Bfuture - K.time (Fin.last K.eventCount) →
           V.IsCanonicalCutoffRecordFamily pNew δNew ρNew records →
+          RecordHypFar_C12X (5 / 4) V records →
           V.EventSlabsStronglyCanonicalFull_C12X ε ε C1h C2h qh (Fin.last V.eventCount) ∧
           ∀ hfinal : V.time (Fin.last V.eventCount) < V.horizon,
             V.StronglyCanonicalBeforeFull_C12X (Fin.last V.eventCount)
@@ -160,6 +161,7 @@ private theorem exists_prepared_two_overlap_extension_with_closed_birth_with_nat
       (pF : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
       (hwin : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
+      (_hrecK : RecordHypFar_C12X (5 / 4) L native)
       (hDK : pK.modelRadius ≤ pF.modelRadius)
       (hmK : pK.modelOrder ≤ pF.modelOrder)
       (haccK : pF.modelAccuracy ≤ pK.modelAccuracy)
@@ -310,7 +312,7 @@ private theorem exists_prepared_two_overlap_extension_with_closed_birth_with_nat
     hQzeroNew, hQbirthNew, hQallNew, hQallNewPos, hr, hrR, hQallr, hκJ,
     hcapNew, hrecNew, zeroNew, newExtension, newControl, ?_⟩
   intro δcut ρcut εcut Dcut mcut hδcut hρcut hεcut hDcut
-  obtain ⟨L, IL, pF, native, hwin, hDK, hmK, haccK, hDH, hmH, haccH,
+  obtain ⟨L, IL, pF, native, hwin, hrecK, hDK, hmK, haccK, hDH, hmH, haccH,
     hDNew, hmNew, haccNew, Kplus, IKplus, AK, IoldK, joinedK,
     J, IJ, AJ, IoldH, joinedH, hKhor, hJhor, hIL, hLB, hKplusB, hJB,
     hIKplus, hIJ, hcertificateL, hcontrolL, hcontrolKplus, hcontrolJ, hclassNew, hclassKplus,
@@ -325,7 +327,7 @@ private theorem exists_prepared_two_overlap_extension_with_closed_birth_with_nat
     oldControl Kplus IKplus _ joinedK hKplusB.le hclassKplus
   have hqsBirthOld : qsOld ≤ QbirthOld :=
     (le_max_right qOld qsOld).trans ((le_max_right 1 (max qOld qsOld)).trans hQbirthOld)
-  refine ⟨L, IL, pF, native, hwin, hDK, hmK, haccK, hDH, hmH, haccH,
+  refine ⟨L, IL, pF, native, hwin, hrecK, hDK, hmK, haccK, hDH, hmH, haccH,
     hDNew, hmNew, haccNew, Kplus, IKplus, AK, IoldK, joinedK,
     J, IJ, AJ, IoldH, joinedH, hKhor, hJhor, hIL, hLB, hKplusB, hJB,
     hIKplus, hIJ, hcertificateL, hcontrolL, hcontrolKplus, hcontrolJ, hclassNew, hclassKplus,
@@ -442,6 +444,7 @@ private theorem exists_prepared_two_overlap_extension_with_closed_birth_with_nat
       (pF : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
       (hwin : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
+      (_hrecK : RecordHypFar_C12X (5 / 4) L native)
       (hDK : pK.modelRadius ≤ pF.modelRadius)
       (hmK : pK.modelOrder ≤ pF.modelOrder)
       (haccK : pF.modelAccuracy ≤ pK.modelAccuracy)
@@ -696,6 +699,7 @@ theorem exists_prepared_two_overlap_extension_with_closed_birth
       (pF : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
       (hwin : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
+      (_hrecK : RecordHypFar_C12X (5 / 4) L native)
       (hDK : pK.modelRadius ≤ pF.modelRadius)
       (hmK : pK.modelOrder ≤ pF.modelOrder)
       (haccK : pF.modelAccuracy ≤ pK.modelAccuracy)
@@ -850,9 +854,9 @@ theorem exists_prepared_two_overlap_extension_with_closed_birth
       nativeProjectionx30
     have nativeProjectionh31 := @nativeProjectionh26 δcut ρcut εcut Dcut mcut nativeProjectionx27
       nativeProjectionx28 nativeProjectionx29 nativeProjectionx30
-    obtain ⟨L, IL, pF, native, hwin, hDK, hmK, haccK, hDH, hmH, haccH, hDNew, hmNew, haccNew,
+    obtain ⟨L, IL, pF, native, hwin, hrecK, hDK, hmK, haccK, hDH, hmH, haccH, hDNew, hmNew, haccNew,
       nativeProjectionh32⟩ := nativeProjectionh31
-    refine ⟨L, IL, pF, native, hwin, hDK, hmK, haccK, hDH, hmH, haccH, hDNew, hmNew, haccNew, ?_⟩
+    refine ⟨L, IL, pF, native, hwin, hrecK, hDK, hmK, haccK, hDH, hmH, haccH, hDNew, hmNew, haccNew, ?_⟩
     dsimp only at nativeProjectionh32 ⊢
     obtain ⟨Kplus, IKplus, AK, IoldK, joinedK, J, IJ, AJ, IoldH, joinedH, hKhor, hJhor,
       nativeProjectionh33⟩ := nativeProjectionh32
@@ -969,6 +973,7 @@ theorem exists_prepared_two_overlap_extension_with_closed_birth_with_distance_sc
       (pF : CutoffParameters)
       (native : ∀ i : Fin L.eventCount, GeometricCutoffRecord L.toHistory i pF)
       (hwin : ∀ i b, ((native i).static b).hasLinkedCanonicalWindow_C12X)
+      (_hrecK : RecordHypFar_C12X (5 / 4) L native)
       (hDK : pK.modelRadius ≤ pF.modelRadius)
       (hmK : pK.modelOrder ≤ pF.modelOrder)
       (haccK : pF.modelAccuracy ≤ pK.modelAccuracy)

@@ -112,6 +112,7 @@ theorem exists_prepared_spatial_base_with_small_test_margin
     offset := 0
     prepared := prepared₀
     nativeClass := hclass
+    nativeRecordHyp := ⟨fun i => Fin.elim0 i, fun i => Fin.elim0 i⟩
     nativeEventControl := fun i => Fin.elim0 i
     affine := {
       count_eq := rfl

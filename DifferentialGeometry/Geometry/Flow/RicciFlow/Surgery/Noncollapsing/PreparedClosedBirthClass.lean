@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedObservationEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialScalarUpperBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedDistanceData
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongNativeLayerC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongNativeLayerRadialC12X
 
 /-!
 # S-CH11-FIX12 patched-at-path `PreparedClosedBirthClass`
@@ -76,6 +76,7 @@ private theorem exists_prepared_closed_birth_class_before_quality_with_native_ce
           (pV : CutoffParameters)
           (records : ∀ i : Fin V.eventCount, GeometricCutoffRecord V.toHistory i pV),
           V.horizon ≤ B → V.IsCanonicalCutoffRecordFamily p₀ δb ρb records →
+          RecordHypFar_C12X (5 / 4) V records →
           V.EventSlabsStronglyCanonicalFull_C12X ε ε C1h C2h qh (Fin.last V.eventCount) ∧
           ∀ hfinal : V.time (Fin.last V.eventCount) < V.horizon,
             V.StronglyCanonicalBeforeFull_C12X (Fin.last V.eventCount)
@@ -110,9 +111,12 @@ private theorem exists_prepared_closed_birth_class_before_quality_with_native_ce
   obtain ⟨qcan, qs, Qbirth, δAnal, ρAnal, εAnal, DAnal, mAnal,
     hqcan, hqs, hqsC, hQbirth, hδAnal, hρAnal, hεAnal, _hDAnal, control⟩ :=
     analytic P g B κ hB hκ
-  obtain ⟨C1h, C2h, qh, δS, ρS, εS, DS, mS, hC1h, hC2h, hqh, hδS, hρS, hεS, hDS, hX⟩ :=
-    native_strongFull_of_classFull_C12X P g B ε hB hε hstr.2.2.2.2.2 C1 C2 C1s C2s qcan qs τmin
-      Ctime Cgrad κ hstr.1 hstr.2.1 hstr.2.2.1 hstr.2.2.2.1 hqcan hqs hstr.2.2.2.2.1 hκ
+  obtain ⟨Ccore, Cu, -, -, hU⟩ :=
+    native_strongFull_uniform_of_classFull_radial_C12X.{u} (θ := 5 / 4) (by norm_num) ε hε
+      hstr.2.2.2.2.2
+  obtain ⟨qh, δS, ρS, εS, DS, mS, hqh, hδS, hρS, hεS, hDS, hX⟩ :=
+    hU P g B hB C1 C2 C1s C2s qcan qs τmin Ctime Cgrad κ hstr.1 hstr.2.1 hstr.2.2.1
+      hstr.2.2.2.1 hqcan hqs hstr.2.2.2.2.1 hκ
   have hQallPos : 0 < max Qbirth Qzero := hQzero.trans_le (le_max_right _ _)
   have hRoot : 0 < Real.sqrt (64 * max Qbirth Qzero) :=
     Real.sqrt_pos.2 (mul_pos (by norm_num) hQallPos)
@@ -155,13 +159,14 @@ private theorem exists_prepared_closed_birth_class_before_quality_with_native_ce
     nlinarith only [hprodSq]
   refine ⟨p₀, δb, ρb, εClass, κClass, κ, qcan, qs, Qbirth, max Qbirth Qzero,
     hReserveRadius, hReserveAccuracy, hReserveOrder, hReserveScale,
-    ⟨C1h, C2h, qh, hC1h, hC2h, hqh, ?_⟩,
+    ⟨max C1 (max Ccore Cu), max C2 (max (max Ccore Cu) (Cgrad : ℝ)), qh,
+      le_max_of_le_left hstr.1, le_max_of_le_left hstr.2.1, hqh, ?_⟩,
     hfixed, hrc, hδb, hρb, hεClass, hεClass11, hκClass, hκ,
     hqcan, hqs, hqsC, hQbirth, rfl, hQzero.trans_le (le_max_right _ _),
     hcap, hrec, extension, ?_⟩
-  · intro V IV pV records hVB hclass
+  · intro V IV pV records hVB hclass hrecHyp
     have hnc := enlarge V V.horizon (classNC V IV pV records hVB hclass)
-    exact hX p₀ δb ρb haccS hradS hordS hδSB hρSB hrec V IV pV records hVB hclass hnc
+    exact hX p₀ δb ρb haccS hradS hordS hδSB hρSB hrec V IV pV records hVB hclass hrecHyp hnc
       (control p₀ δb ρb hacc hrad hord hδAnalB hρAnalBound hrec
         V IV pV records hVB hclass hnc).1
   · intro V IV pV records hVB hclass
@@ -432,6 +437,7 @@ theorem exists_prepared_closed_birth_class_before_quality_with_distance_scalars_
           (pV : CutoffParameters)
           (records : ∀ i : Fin V.eventCount, GeometricCutoffRecord V.toHistory i pV),
           V.horizon ≤ B → V.IsCanonicalCutoffRecordFamily p₀ δb ρb records →
+          RecordHypFar_C12X (5 / 4) V records →
           V.EventSlabsStronglyCanonicalFull_C12X ε ε C1h C2h qh (Fin.last V.eventCount) ∧
           ∀ hfinal : V.time (Fin.last V.eventCount) < V.horizon,
             V.StronglyCanonicalBeforeFull_C12X (Fin.last V.eventCount)

@@ -82,6 +82,7 @@ theorem exists_common_scaffold_extension_with_raw_prefix_with_distance_scalars :
           riemannianVolumeMeasure ThreeModel (K.coreEvent i).incoming.terminalRegularOpen
             (K.coreEvent i).terminal.metric F) ∧
       ∃ (hwin : ∀ i b, ((fine i).static b).hasLinkedCanonicalWindow_C12X)
+        (_hrecK : RecordHypFar_C12X (5 / 4) K fine)
         (hD : pH.modelRadius ≤ pF.modelRadius)
         (hm : pH.modelOrder ≤ pF.modelOrder)
         (hacc : pF.modelAccuracy ≤ pH.modelAccuracy),
@@ -138,7 +139,7 @@ theorem exists_common_scaffold_extension_with_raw_prefix_with_distance_scalars :
   intro δcut ρcut εcut Dcut mcut hδcut hρcut hεcut hDcut
   obtain ⟨p₀, δbound, ρbound, v, hfixedK, hrcK, haccK, hDK, hmK,
     hδK, hρK, hrec, hδbound, hρbound, hv, K, IK, pF, fine,
-    hKB, hIK, hDistanceK, hcontrolK, hfamilyK, hradK, -, hncK, hdebitK⟩ :=
+    hKB, hIK, hDistanceK, hcontrolK, hfamilyK, hradK, hrecK, hncK, hdebitK⟩ :=
     make δcut ρcut (min pH.modelAccuracy εcut)
       (max pH.modelRadius Dcut) (max pH.modelOrder mcut)
       hδcut hρcut (lt_min pH.modelAccuracy_pos hεcut)
@@ -152,7 +153,7 @@ theorem exists_common_scaffold_extension_with_raw_prefix_with_distance_scalars :
   have hwinK := hfamilyK.2.2.2.2.2.1
   refine ⟨K, IK, p₀, pF, δbound, ρbound, v, fine, hKB, hIK, hDistanceK, hcontrolK, hncK,
     hpfK, hpcK, haccPair.2, hDPair.2, hmPair.2, hδbound, hδK, hρbound, hρK,
-    hrec, hv, hfamilyK, hdebitK, (fun i b => (hradK i b).2), hDPair.1, hmPair.1, haccPair.1, ?_⟩
+    hrec, hv, hfamilyK, hdebitK, (fun i b => (hradK i b).2), hrecK, hDPair.1, hmPair.1, haccPair.1, ?_⟩
   let pC := pF.withModelWindow pH.modelRadius pH.modelOrder pH.modelAccuracy
     pH.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccPair.1)
   let coarse : ∀ i : Fin K.eventCount, GeometricCutoffRecord K.toHistory i pC :=
@@ -225,6 +226,7 @@ theorem exists_common_scaffold_extension_with_raw_prefix :
           riemannianVolumeMeasure ThreeModel (K.coreEvent i).incoming.terminalRegularOpen
             (K.coreEvent i).terminal.metric F) ∧
       ∃ (hwin : ∀ i b, ((fine i).static b).hasLinkedCanonicalWindow_C12X)
+        (_hrecK : RecordHypFar_C12X (5 / 4) K fine)
         (hD : pH.modelRadius ≤ pF.modelRadius)
         (hm : pH.modelOrder ≤ pF.modelOrder)
         (hacc : pF.modelAccuracy ≤ pH.modelAccuracy),
@@ -333,6 +335,7 @@ theorem exists_common_scaffold_extension :
           riemannianVolumeMeasure ThreeModel (K.coreEvent i).incoming.terminalRegularOpen
             (K.coreEvent i).terminal.metric F) ∧
       ∃ (hwin : ∀ i b, ((fine i).static b).hasLinkedCanonicalWindow_C12X)
+        (_hrecK : RecordHypFar_C12X (5 / 4) K fine)
         (hD : pH.modelRadius ≤ pF.modelRadius)
         (hm : pH.modelOrder ≤ pF.modelOrder)
         (hacc : pF.modelAccuracy ≤ pH.modelAccuracy),
@@ -382,11 +385,11 @@ theorem exists_common_scaffold_extension :
   intro δcut ρcut εcut Dcut mcut hδcut hρcut hεcut hDcut
   obtain ⟨K, IK, p₀, pF, δbound, ρbound, v, fine, hKB, hIK, hcontrolK, hncK,
     hpfK, hpcK, hacc, hD, hm, hδbound, hδ, hρbound, hρ, hrec, hv, hfamily, hdebit,
-    hwin, hDold, hmold, haccold, hjoined⟩ :=
+    hwin, hrecK, hDold, hmold, haccold, hjoined⟩ :=
     make δcut ρcut εcut Dcut mcut hδcut hρcut hεcut hDcut
   refine ⟨K, IK, p₀, pF, δbound, ρbound, v, fine, hKB, hIK, hcontrolK, hncK,
     hpfK, hpcK, hacc, hD, hm, hδbound, hδ, hρbound, hρ, hrec, hv, hfamily, hdebit,
-    hwin, hDold, hmold, haccold, ?_⟩
+    hwin, hrecK, hDold, hmold, haccold, ?_⟩
   obtain ⟨J, A, _, hn, records, hp, IJ, hresult⟩ := hjoined
   exact ⟨J, A, hn, records, hp, IJ, hresult⟩
 

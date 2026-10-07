@@ -86,6 +86,7 @@ structure ClosedBirthPreparedClass (pBase : CutoffParameters) (C : ClosedBirthCo
     (pV : CutoffParameters)
     (records : ∀ i : Fin V.eventCount, GeometricCutoffRecord V.toHistory i pV),
     V.horizon ≤ B → V.IsCanonicalCutoffRecordFamily parameters deltaBound radiusBound records →
+    RecordHypFar_C12X (5 / 4) V records →
     V.EventSlabsStronglyCanonicalFull_C12X C.epsilon C.epsilon C1strong C2strong qStrong
       (Fin.last V.eventCount) ∧
     ∀ hfinal : V.time (Fin.last V.eventCount) < V.horizon,
@@ -127,6 +128,7 @@ structure PreparedSpatialState (pBase : CutoffParameters) (C : ClosedBirthConsta
   prepared : ClosedBirthPreparedClass pBase C nativeStage nativeMetric (B - shift)
   nativeClass : native.IsCanonicalCutoffRecordFamily prepared.parameters
     prepared.deltaBound prepared.radiusBound nativeRecords
+  nativeRecordHyp : RecordHypFar_C12X (5 / 4) native nativeRecords
   nativeEventControl : HistoryEventControl native
   affine : AffineEventPrefix native history shift offset (Fin.last native.eventCount)
   horizon_affine : history.horizon = native.horizon + shift

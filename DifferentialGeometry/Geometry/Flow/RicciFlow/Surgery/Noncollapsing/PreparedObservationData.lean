@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.CutoffRecordConcatenation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinkedCanonicalWindowC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.RecordHypFarC12X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordModelRestriction.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryNoncollapse.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingSlabDerivativeBounds
@@ -58,6 +59,7 @@ def PreparedGeometricObservationExtension
           riemannianVolumeMeasure ThreeModel (K.coreEvent i).incoming.terminalRegularOpen
             (K.coreEvent i).terminal.metric F) ∧
       ∃ (hwin : ∀ i b, ((fine i).static b).hasLinkedCanonicalWindow_C12X)
+        (_hrecK : RecordHypFar_C12X (5 / 4) K fine)
         (hD : p.modelRadius ≤ pF.modelRadius)
         (hm : p.modelOrder ≤ pF.modelOrder)
         (hacc : pF.modelAccuracy ≤ p.modelAccuracy),

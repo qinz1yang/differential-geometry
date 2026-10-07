@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordDelayedRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedOverlapClosedSeam
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinkedWindowTransportC11SL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.DeepJoinC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.RadialWindowTransportC12X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffAccuracyGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialDistanceData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.AffineEventDistanceScalar
@@ -262,7 +264,7 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
         PreparedSpatialSuccessor L R activation eta d ∧
         Nonempty (PreparedSpatialStepRetention L R d eta εcut Dcut mcut) := by
     intro d hd hdone hdOld
-    obtain ⟨N, IN, pF, native, hwin, hDK, hmK, haccK, hDH, hmH, haccH,
+    obtain ⟨N, IN, pF, native, hwin, hrecK, hDK, hmK, haccK, hDH, hmH, haccH,
       hDNew, hmNew, haccNew, Kplus, IKplus, AK, IoldK, joinedK,
       J, IJ, AJ, IoldH, joinedH, hKhor, hJhor, hIN, hNB, hKplusB, hJB,
       hIKplus, hIJ, hCertificateN, hcontrolN, hcontrolKplus, hcontrolJ, hclassNew, hclassKplus,
@@ -448,7 +450,30 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
     let reserved : ∀ i : Fin N.eventCount, GeometricCutoffRecord N.toHistory i pReserve :=
       fun i => (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
           pNew.modelRadius_pos hDNew hmNew haccNew
+    have hrecKplus : RecordHypFar_C12X (5 / 4) Kplus joinedK := by
+      refine ⟨?_, ?_⟩
+      · exact deepNecks_join_C12X AK (L.native.toHistory.time_nonneg _) IoldK IoldK.count_le
+          L.nativeRecords native joinedK
+          (fun i => ⟨(hOldK i).1, (hOldK i).2.1, (hOldK i).2.2.1, (hOldK i).2.2.2.1⟩)
+          (fun i => ⟨(hTailK i).1, (hTailK i).2.1, (hTailK i).2.2.1, (hTailK i).2.2.2.1⟩)
+          (fun i => L.nativeRecordHyp.1 i) (fun i => hrecK.1 i)
+      · let pCK5 := pF.withModelWindow L.nativeParameters.modelRadius
+          L.nativeParameters.modelOrder L.nativeParameters.modelAccuracy
+          L.nativeParameters.modelRadius_pos (pF.modelAccuracy_pos.trans_le haccK)
+        exact GC.GeneralFlow.joined_static_radial_C12X (pH := L.nativeParameters) (pC := pCK5)
+          (q := L.nativeParameters.spliceAfter
+            (translate_cutoff_parameters pCK5 (K.time (Fin.last K.eventCount))) K.horizon)
+          IoldK AK ⟨rfl, rfl, rfl, rfl⟩
+          ⟨L.nativeClass.1.trans (L.prepared.fixed_eq.trans hfixedFine.symm), rfl, rfl, rfl⟩
+          L.nativeRecords
+          (fun i => (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+            L.nativeParameters.modelRadius_pos hDK hmK haccK)
+          joinedK (fun i => (hOldK i).2.2.2.2) (fun i => (hTailK i).2.2.2.2)
+          L.nativeRecordHyp.2
+          (radialWindows_restrictModelWindow_C12X native (fun i b => (hwin i b).hasCanonicalWindow)
+            L.nativeParameters.modelRadius_pos hDK hmK haccK hrecK.2)
     have hKstr := L.prepared.strongControl Kplus IKplus _ joinedK hKplusB.le hclassKplus
+      hrecKplus
     have hJhorK : J.horizon = Kplus.horizon + c := by
       rw [hJhor, hKhor]
       change N.horizon + b = N.horizon + a + c
@@ -488,6 +513,9 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
       offset := H.eventCount
       prepared := nextClass
       nativeClass := hclassNew
+      nativeRecordHyp := ⟨fun i => hrecK.1 i,
+        radialWindows_restrictModelWindow_C12X native (fun i b => (hwin i b).hasCanonicalWindow)
+          pNew.modelRadius_pos hDNew hmNew haccNew hrecK.2⟩
       nativeEventControl := hcontrolN
       affine := AJ
       horizon_affine := hJhor
