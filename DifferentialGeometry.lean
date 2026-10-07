@@ -27515,3 +27515,25 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceDichoto
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SelectionP6X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SelectedCloseP6X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongUniformClassC12X
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #50
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongUniformSuppliesC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaEndToEndC11Q4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AncientWitnessDecoupledP6P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongUniformClassYoungC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaConsumerC11Q4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceAnchorOpen_P6L2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6BcadSliceP6M2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LateCoreP6X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongChainAffineC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingWindowAnchorBoundBlockC_P6L2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingWindowAnchorBound2C_P6L2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingDepthExtension2C_P6L2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GoodConstantsP6P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CapWindowStdCompLate_P6LL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CapWindowAgeBoundLate_P6LL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.TracedOrCapLate_P6LL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingTracedLate_P6LL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.CrossingDepthLate_P6LL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.LateKernelsG1_P6LL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RerunDecoupledP6P
