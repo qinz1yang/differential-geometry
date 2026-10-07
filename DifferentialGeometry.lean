@@ -27670,3 +27670,20 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.DeepC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSplicePostBC12X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSplicePostCC12X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSpliceFinalC12X
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #57
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinkedWindowTransportC11SL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.LinkedWindowsWireC11SL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongNativeLayerDeepC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongNativeLayerRadialC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.RadialWindowTransportC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.DeepJoinC12X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaRegionalSeedWindowCXSK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.Pre841RegionalCXSK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.Pre841E2ERegionalCXSK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.Pre841SameKappaConsumerCXSK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LastCrossingCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedArithmeticCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedGeodesicCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedGeodesicConsumerCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedHistoryCXSP
