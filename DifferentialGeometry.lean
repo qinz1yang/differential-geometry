@@ -27600,3 +27600,18 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.Stron
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.HsmallAssemblySeedScaleC11V5
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.WindowGlueSeedScaleC11V5
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongWindowSpliceC12X
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #53
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Kappa.KappaK3WrapC11Q7
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.SliceDichotomyLateCg_P6LS3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceLateCgP6S3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6BcadLateCgP6S3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.FirstExitUSC_P6L4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.FirstExitDistanceP6M4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.HsmallScaleSeedC11V5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.Pre841SeedScaleC11V5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.Pre841E2ESeedScaleC11V5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopBudgetC11GT2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopAdapterC11GT2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopLinkedC11GT2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopV2C11GT2
