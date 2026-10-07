@@ -25656,3 +25656,18 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Restriction.TwoDiskG
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Restriction.ForwardPhaseScalarContinuationConsumer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.PortC11G1Consumer_C11
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.PortC11G2R5Chain_C11
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #20
+import DifferentialGeometry.Geometry.Measure.Area.PiecewiseLipschitzAREA
+import DifferentialGeometry.Geometry.Measure.Area.PiecewiseAreaAREA
+import DifferentialGeometry.Geometry.Measure.Area.PiecewiseAffineCellsAREA
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.PiecewiseAreaConsumerAREA
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.RelRegularNbhdR10
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.R11StepAlignR11PL
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CollisionEdgeSidesR10
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.FlatLensCollapseR10
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.R11InterfaceR10
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.PreparedSheetComplexNodalFIX2
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.PreparedSheetComplexNotionFIX2
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.PreparedSheetComplexLocal2FIX2
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.PreparedSheetComplexConsFIX2
