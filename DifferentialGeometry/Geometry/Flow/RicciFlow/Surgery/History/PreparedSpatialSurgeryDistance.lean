@@ -151,7 +151,7 @@ theorem exists_prepared_surgery_with_spatial_control_decay_and_distance_scalars 
         ∀ i : Fin (F.tower.history n).eventCount,
           (F.tower.history n).time i.succ ∈ Icc (t / 2) t →
           ∀ h, (records n i).nominalRadius h ≤ η * q.neckRadius t := by
-  obtain ⟨Cdist, hCdist, C, makeBase⟩ :=
+  obtain ⟨Cdist, hCdist, C, -, makeBase⟩ :=
     exists_prepared_spatial_chains_from_initial_with_distance_scalars.{u}
   refine ⟨Cdist, hCdist, C, ?_⟩
   intro P g

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialProviders
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialRecursion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.ClosedBirthConstantsStrongC12X
 
 /-!
 # S-CH11-FIX11 port of astra `PreparedSpatialExistence`（`PortC11P`）
@@ -28,6 +29,7 @@ uniform constants precede all data. One original prepared base is retained for
 any positive online accuracy budget evaluated on the chosen future class/radius. -/
 theorem exists_prepared_spatial_chains_from_initial_with_distance_scalars :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧ ∃ C : ClosedBirthConstants,
+    C.epsilon ≤ DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.εStrong_C12X.{u} ∧
     ∀ (P : OrientedThreeStage.{u}) (g : P.Metric),
     ∃ (pBase : CutoffParameters) (base : PreparedSpatialState pBase C P g 0 1),
       base.history = RetainedCoreHistory.atZero P g ∧ base.radius ≤ 1 ∧
@@ -48,11 +50,11 @@ theorem exists_prepared_spatial_chains_from_initial_with_distance_scalars :
             (S.state n).history.time (Fin.last (S.state n).history.eventCount))) (r : ℝ),
         0 < r ∧ (S.state (n + 1)).radius = r ∧
         HEq (S.state (n + 1)).prepared future ∧ S.accuracy n ≤ budget n (S.state n) future r := by
-  obtain ⟨Cdist, hCdist, fixed, recenter, C, _, prepareClass, analytic, makeBase⟩ :=
-    exists_prepared_spatial_initial_state_with_distance_scalars.{u}
-  refine ⟨Cdist, hCdist, C, ?_⟩
+  obtain ⟨Cdist, hCdist, fixed, recenter, C, hεs, _, prepareClass, analytic, makeBase⟩ :=
+    exists_closedBirthConstants_strong_C12X.{u} 1 1 one_pos one_pos
+  refine ⟨Cdist, hCdist, C, hεs, ?_⟩
   intro P g
-  obtain ⟨pBase, prepared, base, hfixed, hrc, _, _, hDistance, hS⟩ := makeBase P g
+  obtain ⟨pBase, prepared, base, _, _, hfixed, hrc, _, _, hDistance, hS⟩ := makeBase P g
   rcases hS with ⟨hbase, _, _, _, _, _, _, _, _, _, hrbase, _, _⟩
   refine ⟨pBase, base, hbase, hrbase, hDistance, ?_⟩
   intro budget hbudget
@@ -84,7 +86,7 @@ theorem exists_prepared_spatial_chains_from_initial :
         HEq (S.state (n + 1)).prepared future ∧ S.accuracy n ≤ budget n (S.state n) future r := by
   obtain ⟨_, _, distanceResult⟩ :=
     exists_prepared_spatial_chains_from_initial_with_distance_scalars.{u}
-  obtain ⟨C, distanceProjectionh1⟩ := distanceResult
+  obtain ⟨C, -, distanceProjectionh1⟩ := distanceResult
   refine ⟨C, ?_⟩
   intro P g
   have distanceProjectionh2 := @distanceProjectionh1 P g

@@ -56,7 +56,7 @@ theorem exists_blockTower_of_astra_C11W5 (Dstar εReserve : ℝ) (hDstar : 0 < D
       X₀.radius ≤ 1 ∧
       ∃ T : BlockTower_C11W pBase C P g Cdist cMax Dstar εReserve,
         T.block 0 = X₀ ∧ T.toChain.state 0 = X₀ := by
-  obtain ⟨Cdist, hCdist, C, hC⟩ :=
+  obtain ⟨Cdist, hCdist, C, -, hC⟩ :=
     exists_blockSteps_of_astra_C11W5.{u} Dstar εReserve hDstar hεReserve cMax hcMax
   refine ⟨Cdist, hCdist, C, fun P g => ?_⟩
   obtain ⟨pBase, prepared, hbase, hdist, hres, hstep⟩ := hC P g
@@ -81,7 +81,7 @@ theorem a12_of_astra_blockSteps_C11W5 (P : OrientedThreeStage.{u}) (g : P.Metric
           LargerBallScalarLargeSupply_C11S F (chainDiagonal_C11A T.toChain).delta
             (diagonalAccuracy_C11S (chainDiagonal_C11A T.toChain).delta)) :
     type_of% (exists_surgery_with_decaying_accuracy P g) := by
-  obtain ⟨Cdist, -, C, hC⟩ :=
+  obtain ⟨Cdist, -, C, -, hC⟩ :=
     exists_blockSteps_of_astra_C11W5.{u} Dstar εReserve hDstar hεReserve cMax hcMax
   obtain ⟨pBase, prepared, hbase, hdist, hres, hstep⟩ := hC P g
   obtain ⟨X₀, hX₀, hhist, hrad⟩ :=

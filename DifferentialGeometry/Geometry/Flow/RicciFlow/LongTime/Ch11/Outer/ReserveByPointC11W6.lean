@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Outer.A12OfAstraBlockStepsC11W5
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.SmallVol.HICompareC11V3
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.EnhancedProfileDefsC11E
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.ClosedBirthConstantsStrongC12X
 
 set_option autoImplicit false
 
@@ -39,15 +40,15 @@ universe u
 theorem exists_blockSteps_byPoint_C11W6 (Dstar : ℝ) (hDstar : 0 < Dstar) (cMax : ℝ)
     (hcMax : 0 < cMax) :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧ ∃ C : ClosedBirthConstants,
+    C.epsilon ≤ DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.εStrong_C12X.{u} ∧
     ∀ (P : OrientedThreeStage.{u}) (g : P.Metric) (εReserve : ℝ), 0 < εReserve →
     ∃ (pBase : CutoffParameters) (prepared : ClosedBirthPreparedClass pBase C P g 1),
       prepared.parameters = pBase ∧ prepared.HasDistanceExtension Cdist ∧
       prepared.HasReserveQuality Dstar εReserve ∧
       ∀ j : ℕ, BlockStep_C11W pBase C P g Cdist cMax Dstar εReserve j := by
-  obtain ⟨Cdist, hCdist, fixed, recenter, C, -, prepareClass, analytic, -⟩ :=
-    exists_prepared_spatial_initial_state_with_distance_scalars_with_reserve_quality.{u}
-      Dstar 1 hDstar one_pos
-  refine ⟨Cdist, hCdist, C, fun P g εReserve hεReserve => ?_⟩
+  obtain ⟨Cdist, hCdist, fixed, recenter, C, hεs, -, prepareClass, analytic, -⟩ :=
+    exists_closedBirthConstants_strong_C12X.{u} Dstar 1 hDstar one_pos
+  refine ⟨Cdist, hCdist, C, hεs, fun P g εReserve hεReserve => ?_⟩
   obtain ⟨Qzero, hQzero, zeroBound, prepareInitial⟩ :=
     exists_prepared_closed_birth_class_before_quality_with_distance_scalars_with_reserve_quality
       Dstar εReserve hDstar hεReserve Cdist fixed recenter prepareClass
@@ -122,7 +123,7 @@ theorem a12_of_astra_byPoint_C11W6 (P : OrientedThreeStage.{u}) (g : P.Metric)
           LargerBallScalarLargeSupply_C11S F (chainDiagonal_C11A T.toChain).delta
             (diagonalAccuracy_C11S (chainDiagonal_C11A T.toChain).delta)) :
     type_of% (exists_surgery_with_decaying_accuracy P g) := by
-  obtain ⟨Cdist, -, C, hmake⟩ := exists_blockSteps_byPoint_C11W6.{u} Dstar hDstar cMax hcMax
+  obtain ⟨Cdist, -, C, -, hmake⟩ := exists_blockSteps_byPoint_C11W6.{u} Dstar hDstar cMax hcMax
   obtain ⟨pBase, prepared, hbase, hdist, hres, hstep⟩ := hmake P g (εReq C) (hεReq C)
   obtain ⟨hacc, hrad, hord⟩ := pBase_bounds_of_reserve_C11W6 hbase hres
   obtain ⟨X₀, hX₀, hhist, hrad₀⟩ :=
@@ -150,7 +151,7 @@ example (P : OrientedThreeStage.{u}) (g : P.Metric) (Dstar : ℝ) (hDstar : 0 < 
   have hε₀ : ∀ C, 0 < ε₀ C := fun C =>
     (Classical.choose_spec (localKappaWindow_zero_of_narrowTuple_records_C11V3.{u} Dstar hD
       C.epsilon (max C.C1s C.Cbirth) (max C.C2s (max C.Cbirth (C.Cgrad : ℝ))) N hN)).1
-  obtain ⟨Cdist, -, C, hmake⟩ := exists_blockSteps_byPoint_C11W6.{u} Dstar hDstar cMax hcMax
+  obtain ⟨Cdist, -, C, -, hmake⟩ := exists_blockSteps_byPoint_C11W6.{u} Dstar hDstar cMax hcMax
   obtain ⟨pBase, prepared, hbase, -, hres, hstep⟩ :=
     hmake P g (min εProf_C11E.{u} (ε₀ C)) (lt_min εProf_pos_C11E (hε₀ C))
   obtain ⟨hacc, hrad, hord⟩ := pBase_bounds_of_reserve_C11W6 hbase hres

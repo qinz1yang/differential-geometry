@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Outer.TimeDerivativeMaintenanceC11W3
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialStep
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialProviders
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.ClosedBirthConstantsStrongC12X
 
 set_option autoImplicit false
 
@@ -191,15 +192,15 @@ reserve quality），并且对该 `pBase` **每一块**的 `BlockStep_C11W` 成�
 theorem exists_blockSteps_of_astra_C11W5 (Dstar εReserve : ℝ) (hDstar : 0 < Dstar)
     (hεReserve : 0 < εReserve) (cMax : ℝ) (hcMax : 0 < cMax) :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧ ∃ C : ClosedBirthConstants,
+    C.epsilon ≤ DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.εStrong_C12X.{u} ∧
     ∀ (P : OrientedThreeStage.{u}) (g : P.Metric),
     ∃ (pBase : CutoffParameters) (prepared : ClosedBirthPreparedClass pBase C P g 1),
       prepared.parameters = pBase ∧ prepared.HasDistanceExtension Cdist ∧
       prepared.HasReserveQuality Dstar εReserve ∧
       ∀ j : ℕ, BlockStep_C11W pBase C P g Cdist cMax Dstar εReserve j := by
-  obtain ⟨Cdist, hCdist, fixed, recenter, C, -, prepareClass, analytic, initial⟩ :=
-    exists_prepared_spatial_initial_state_with_distance_scalars_with_reserve_quality.{u}
-      Dstar εReserve hDstar hεReserve
-  refine ⟨Cdist, hCdist, C, fun P g => ?_⟩
+  obtain ⟨Cdist, hCdist, fixed, recenter, C, hεs, -, prepareClass, analytic, initial⟩ :=
+    exists_closedBirthConstants_strong_C12X.{u} Dstar εReserve hDstar hεReserve
+  refine ⟨Cdist, hCdist, C, hεs, fun P g => ?_⟩
   obtain ⟨pBase, prepared, -, hres, -, hfixed, hrc, hbase, hdist, -⟩ := initial P g
   have hprep : PreparedDistanceClassProvider.{u} pBase.fixed pBase.recenterConstant Cdist := by
     rw [hfixed, hrc]

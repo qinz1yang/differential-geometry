@@ -287,7 +287,7 @@ private theorem prepared_spatial_closed_physical_request_chains_with_window_scal
         (policy n (S.state n) (future n) (r n)).1
         (policy n (S.state n) (future n) (r n)).2.1
         (policy n (S.state n) (future n) (r n)).2.2.1) := by
-  obtain ⟨Cdist, hCdist, constants, makeInitial⟩ :=
+  obtain ⟨Cdist, hCdist, constants, -, makeInitial⟩ :=
     exists_prepared_spatial_quality_chains_from_initial_with_small_test_margin_with_reserve_quality.{u}
       Dstar εReserve hDstar hεReserve
   refine ⟨Cdist, hCdist, constants, ?_⟩

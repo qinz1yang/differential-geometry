@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialRecursion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIveyPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialReserveQualityData
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.ClosedBirthConstantsStrongC12X
 
 set_option autoImplicit false
 noncomputable section
@@ -20,6 +21,7 @@ open private reserve_quality_of_same_prepared_class from
 theorem exists_prepared_spatial_quality_chains_from_initial_with_small_test_margin_with_reserve_quality
     (Dstar εReserve : ℝ) (hDstar : 0 < Dstar) (hεReserve : 0 < εReserve) :
     ∃ Cdist : ℝ≥0, 1 ≤ Cdist ∧ ∃ C : ClosedBirthConstants,
+    C.epsilon ≤ DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.εStrong_C12X.{u} ∧
     ∀ (P : OrientedThreeStage.{u}) (g : P.Metric),
     ∃ a₀ : ℝ, 0 < a₀ ∧
       (∀ (H : ObservedHistory.{u}) (_ : InitialIdentification P g H),
@@ -73,10 +75,9 @@ theorem exists_prepared_spatial_quality_chains_from_initial_with_small_test_marg
         (request n (S.state n) (future n) (r n)).1
         (request n (S.state n) (future n) (r n)).2.1
         (request n (S.state n) (future n) (r n)).2.2.1) := by
-  obtain ⟨Cdist, hCdist, fixed, recenter, C, _, prepareClass, analytic, makeBase⟩ :=
-    exists_prepared_spatial_initial_state_with_distance_scalars_with_reserve_quality.{u}
-      Dstar εReserve hDstar hεReserve
-  refine ⟨Cdist, hCdist, C, ?_⟩
+  obtain ⟨Cdist, hCdist, fixed, recenter, C, hεs, _, prepareClass, analytic, makeBase⟩ :=
+    exists_closedBirthConstants_strong_C12X.{u} Dstar εReserve hDstar hεReserve
+  refine ⟨Cdist, hCdist, C, hεs, ?_⟩
   intro P g
   obtain ⟨a₀, ha₀, initialControl⟩ :=
     exists_pos_fixedHamiltonIveyRegion_for_identified_histories P g
@@ -154,7 +155,7 @@ theorem exists_prepared_spatial_quality_chains_from_initial_with_small_test_marg
         (request n (S.state n) (future n) (r n)).1
         (request n (S.state n) (future n) (r n)).2.1
         (request n (S.state n) (future n) (r n)).2.2.1) := by
-  obtain ⟨Cdist, hCdist, C, makeInitial⟩ :=
+  obtain ⟨Cdist, hCdist, C, -, makeInitial⟩ :=
     exists_prepared_spatial_quality_chains_from_initial_with_small_test_margin_with_reserve_quality.{u}
       1 1 one_pos one_pos
   refine ⟨Cdist, hCdist, C, ?_⟩
