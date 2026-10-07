@@ -1,0 +1,23 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWindow
+import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapWindows
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventCapCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapHistory
+
+/-!
+# S-CH11-SHIM shim for `Surgery.Topology.EventCanonicalWindowData` (not a copy of the astra file)
+
+Jui-Hui's chapter-11 branch (`gc/juihuichung/chapter11-astra-20261005`) split this
+module out of the fat W8 module(s) below.  In this tree the host module(s) still
+contain every public declaration of the astra file with the same signature, so this
+shim only re-exports them: the import lines are those of the astra file verbatim,
+plus an import of the host.  Modules copied verbatim from astra that import this
+path then compile unchanged, without duplicate declarations.
+No `set_option` and no new public declaration here.
+
+Host module(s) (prefix `DifferentialGeometry.Geometry.Flow.RicciFlow.` omitted):
+  `Surgery.Topology.CanonicalCapWindows`
+  `Surgery.Topology.EventCapCapture`
+  `Surgery.Topology.PresentedStaticCapHistory`
+-/
