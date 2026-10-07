@@ -26173,3 +26173,31 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareHor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.ExtContractG2ConsumerC11X
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.PortAuditC11C
 import DifferentialGeometry.Topology.ThreeManifold.Geometrization.Checks.DeclarationAuditC11C
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #31
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceCone4_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceTracedLimit_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AncientWitnessP6D
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceSliceRebase_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BackwardTraceScalarControl_P6L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.CutoffRecordConcatenation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordModelRestriction.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.PreparedObservationData
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FiniteJointBranchJetsPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FiniteJointBranchJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.FiniteAdaptedJointVariationPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.FiniteAdaptedJointVariation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.ClockTransferPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.ClockTransfer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.DistinctPoleWeightedMinimumPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.DistinctPoleWeightedMinimum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.JointCostSemicontinuityPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.JointCostSemicontinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.PhysicalWeightedSemicontinuityPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.PhysicalWeightedSemicontinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.PhysicalWeightedStageAttainmentPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.PhysicalWeightedStageAttainment
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialStatePortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.PreparedSpatialState
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffAccuracyGluingPortC11P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffAccuracyGluing
