@@ -28413,3 +28413,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeCoreEx
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeRayNeckChainC11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeRayNeckChainV2C11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaCrossTRpcP6KA
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #109
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeNJSlotV3C11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeHSpineV3C11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeSepStaticC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeSepScaleC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CeilOfOuterSupplyP6HC2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HscaleSepSlotP6HC2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HscaleSepSlotV6P6HC2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NonCWPP6NC
