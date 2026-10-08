@@ -28326,3 +28326,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12TopCollarP6HPC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12SlotsV6aP6HPC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyCollarV3P6HPC
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #101
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HIPropagationResidueP6HP2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HpinchSlotP6HP2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HpinchGateLateP6HP2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HpinchFreshLateP6HP2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireFinalEdistP6GWF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireFinalSeedP6GWF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireFinalScalP6GWF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireFinalWireP6GWF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireFilterP6GW
