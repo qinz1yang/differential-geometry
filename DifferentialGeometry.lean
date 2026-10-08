@@ -28087,3 +28087,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10DepthExte
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10DepthConsumerCXJP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyP6HPB
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyTopP6HPB
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #85
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorFourthFinalHgoodP6AN4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorFourthBcadP6AN4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblySeedVolP6HPB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapContractsNoJ10P6JK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapContractsNoJ10CompatP6JK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapContractsNoJ10CondP6JK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapContractsNoJ10CommP6JK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapContractsNoJ10CondCompatP6JK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ShallowBcadCP6BC
