@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResD0CH2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HinitRecTSlotP6HI
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResDTV11
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyV7LocFinASM
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLADriverBridgeGateMTR
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLADriverBridgeGateTJ
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLargeWinGateMTR
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12TopV8FnActualHcap_C2_HPC
 
@@ -25,7 +25,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12TopV8FnAc
   `HgwResJF8E_DT_J6W_CH2_MJF` 形（逐字）；
 - `_hresJ` / `_hresJ8` binder 类型 = MJ2 顶层的 `HgwResE8_Th_MJ` / `HgwResJ8H8_Th_MJ` 形（逐字）；
   旧⇒新（J 槽）`hresJ_new_of_old_ASM`（自 MJ2 并入）；
-- `_hTRs` binder 类型 = MTRS 顶层的 J10 槽（`J10Blk_JT … centerScalar_R4J`）形（逐字）；
+- `_hTRs` binder：环境 = MTRS 顶层逐字，结论槽 = TRSJ10 的 `R4HnotC_TJ F ε C1 C2 Ctime`
+  （桥 `hTRs_of_res_gate_TJ`，`P6DistLADriverBridgeGateTJ`；R4 帧 J10 槽前提改由 T0K 供给 + J10 链
+  producer 提供，残余为 `R4HnotC_TJ`）；
 - 引擎换 `hP6bTwoLevelTimeCollar_of_slots_v7_loc_v11fin_hcap_hcol_ASM`
   （`P6HP6bAssemblyV7LocFinASM`）。结论 `A12EnhancedFullConclusion_C11F P g` 逐字，binder 数 5，无新 binder。
 生成器 `build-logs/scratch/O-CH11-ASM/gen/gen_top.py`；
@@ -187,7 +189,7 @@ theorem a12EnhancedFull_v11fin_ASM
       (∀ t : ℝ, 0 ≤ t → q.delta t = (chainDiagonal_C11A T.toChain).delta t ∧
         q.neckRadius t = (chainDiagonal_C11A T.toChain).neckRadius t) →
       pB.modelAccuracy ≤
-        (min (min (εSel_W9S.{u} Γ Γf) (Classical.choose hTRs_of_res_gate_MTR.{u}))
+        (min (min (εSel_W9S.{u} Γ Γf) (Classical.choose hTRs_of_res_gate_TJ.{u}))
         (min GC.LongTime.Ch11.εProf_C11E.{u} (GC.LongTime.Ch11.epsilon0_C11FR Γf.epsilon
           (GC.LongTime.Ch11.chainC1_C11KD Γf) (GC.LongTime.Ch11.chainC2_C11KD Γf) P))) →
        capWindowRadius_C11E + 1 ≤ pB.modelRadius →
@@ -212,76 +214,15 @@ theorem a12EnhancedFull_v11fin_ASM
         ∀ t : ℝ, T ≤ t → ∀ n : ℕ, ∀ e : Fin (F.tower.history n).eventCount,
           (F.tower.history n).time e.succ ∈ Icc (t / 2) t →
           ∀ h, (records n e).nominalRadius h ≤ η * pF.neckRadius t) →
-      (
-      ∀ (ind : ℕ → ℕ) (c : ℕ → ℝ) (hc : ∀ k, 0 < c k),
-        let Kh : ℕ → ObservedHistory.{u} := fun k =>
-          ((F.tower.history (ind k)).rescale_P6N (c k) (hc k)).toHistory
-        ∀ (Tn : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (pT : ∀ k, ((Kh k).stageAt (Tn k)).Carrier),
-          (∀ k : ℕ, (k : ℝ) + 1 ≤ c k * (Tn k : ℝ)) →
-        ∀ (aSeed : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (haT : ∀ k, aSeed k ≤ Tn k),
-          (∀ k, (aSeed k : ℝ) = (Tn k : ℝ) - 1 ^ (2 : ℕ)) → (∀ k, 1 ≤ (aSeed k : ℝ)) →
-          (∀ k, GC.LongTime.hasSmallParabolicCurvature (Kh k) (Tn k) (pT k) 1) →
-        ∀ (seedTrace : ∀ k, BackwardPointTrace (Kh k) ((Kh k).activeStage (aSeed k))
-            ((Kh k).activeStage (Tn k)) ((Kh k).activeStage_mono (haT k)) (pT k))
-          (σ : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (y : ∀ k, ((Kh k).stageAt (σ k)).Carrier)
-          (R : ℕ → ℝ) (hsT : ∀ k, σ k ≤ Tn k) (has : ∀ k, aSeed k ≤ σ k) (L : ℕ → ℝ),
-          (∀ k, R k =
-            metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k)) (y k)) →
-          (∀ k, 0 < R k) → (∀ k : ℕ, (k : ℝ) + 1 ≤ R k) →
-          Tendsto L atTop atTop →
-          (∀ k, ¬ (Kh k).HasSpatialCanonicalTimeControl ε C1 C2 Ctime (σ k) (y k)) →
-          (∀ k, ∀ (v : Icc (0 : ℝ) (Kh k).horizon) (hav : aSeed k ≤ v) (hvs : v ≤ σ k),
-            (σ k : ℝ) - L k ^ (2 : ℕ) / R k ≤ (v : ℝ) →
-            ∀ z : ((Kh k).stageAt v).Carrier,
-              riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage v) v)
-                  ((seedTrace k).point ((Kh k).activeStage v) ((Kh k).activeStage_mono hav)
-                    ((Kh k).activeStage_mono (hvs.trans (hsT k)))) z ≤
-                riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
-                    ((seedTrace k).point ((Kh k).activeStage (σ k))
-                      ((Kh k).activeStage_mono (has k)) ((Kh k).activeStage_mono (hsT k))) (y k) +
-                  ENNReal.ofReal (L k / Real.sqrt (R k)) →
-              4 * R k ≤ metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage v) v) z →
-              (Kh k).HasSpatialCanonicalTimeControl ε C1 C2 Ctime v z) →
-          (∀ T : ℝ, 0 < T → ∀ᶠ k in atTop, (aSeed k : ℝ) ≤ σ k - T / R k) →
-          (∀ T : ℝ, 0 < T → ∀ᶠ k in atTop, (Tn k : ℝ) - 1 ^ (2 : ℕ) / 2 ≤ (σ k : ℝ) - T / R k) →
-          Tendsto (fun k => R k * ((σ k : ℝ) - ((Tn k : ℝ) - 1 ^ (2 : ℕ) / 2))) atTop atTop →
-          Tendsto (fun k => 1 / 200 * Real.sqrt (R k)) atTop atTop →
-        ∀ i : ∀ k, Fin (Kh k).eventCount, (∀ k, (σ k : ℝ) = (Kh k).time (i k).succ) →
-        ∀ (pm : ∀ k, ((Kh k).stage (i k).castSucc).Carrier)
-          (t : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (y' : ∀ k, ((Kh k).stageAt (t k)).Carrier)
-          (hat : ∀ k, aSeed k ≤ t k) (hts : ∀ k, t k ≤ σ k),
-          (∀ k, HEq (y' k) (pm k)) →
-          (∀ k, ∃ wp : ((Kh k).stage (i k).succ).Carrier, HEq (y k) wp ∧
-            ((Kh k).event (i k)).RegularCrossing (pm k) wp) →
-          (∀ k, (Kh k).time (i k).castSucc < (t k : ℝ) ∧ (t k : ℝ) < (Kh k).time (i k).succ) →
-          (∀ k, (σ k : ℝ) - t k ≤ 1 / R k) →
-          (∀ k, metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage (t k)) (t k)) (y' k) <
-            2 * R k) →
-          (∀ k, R k / 2 <
-            metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage (t k)) (t k)) (y' k)) →
-          (∀ k, ∀ (v : Icc (0 : ℝ) (Kh k).horizon) (hav : aSeed k ≤ v) (hvt : v ≤ t k),
-            (t k : ℝ) - (L k - 2) ^ 2 / R k ≤ (v : ℝ) →
-            ∀ z : ((Kh k).stageAt v).Carrier,
-              riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage v) v)
-                  ((seedTrace k).point ((Kh k).activeStage v) ((Kh k).activeStage_mono hav)
-                    ((Kh k).activeStage_mono (hvt.trans ((hts k).trans (hsT k))))) z ≤
-                riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage (t k)) (t k))
-                    ((seedTrace k).point ((Kh k).activeStage (t k))
-                      ((Kh k).activeStage_mono (hat k))
-                      ((Kh k).activeStage_mono ((hts k).trans (hsT k)))) (y' k) +
-                  ENNReal.ofReal ((L k - 2) / Real.sqrt (R k)) →
-              4 * R k ≤ metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage v) v) z →
-              (Kh k).HasSpatialCanonicalTimeControl ε C1 C2 Ctime v z) →
-      J10Blk_JT (fun k => (F.tower.history (ind k)).rescale_P6N (c k) (hc k)) t y'
-        (centerScalar_R4J (fun k => (F.tower.history (ind k)).rescale_P6N (c k) (hc k)) t y'))),
+      R4HnotC_TJ F ε C1 C2 Ctime),
     GC.LongTime.Ch11.A12EnhancedFullConclusion_C11F P g := by
   intro hresJ hresJ8 hresJF hresJF8 hTRs
   obtain ⟨ε₁, hε₁, hDL⟩ := hdistLA_win_of_TRs_gate_MTR.{u}
-  have hε₀G := (Classical.choose_spec hTRs_of_res_gate_MTR.{u}).1
-  have hGate := (Classical.choose_spec hTRs_of_res_gate_MTR.{u}).2
+  have hε₀G := (Classical.choose_spec hTRs_of_res_gate_TJ.{u}).1
+  have hGate := (Classical.choose_spec hTRs_of_res_gate_TJ.{u}).2
   let e' : ClosedBirthConstants → ClosedBirthConstants → ℝ := fun Γ Γf =>
     min (min (min (εSel_W9S.{u} Γ Γf)
-      (Classical.choose hTRs_of_res_gate_MTR.{u})) ε₁)
+      (Classical.choose hTRs_of_res_gate_TJ.{u})) ε₁)
       (min GC.LongTime.Ch11.εProf_C11E.{u}
       (GC.LongTime.Ch11.epsilon0_C11FR Γf.epsilon (GC.LongTime.Ch11.chainC1_C11KD Γf)
         (GC.LongTime.Ch11.chainC2_C11KD Γf) P))
