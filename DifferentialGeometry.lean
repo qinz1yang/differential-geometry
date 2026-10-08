@@ -28445,3 +28445,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDTow
 -- chapter 8 (gc/liao/ch8-20261006): root registration #112
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeRayNeckChainV3C11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeHSpineCCCEC11SP
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #113
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10DepthKappaCRouteC12A
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10DepthKappaCConsumerC12A
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6EventClosedWindowIdentC12A
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6EventClosedWindowConsumerC12A
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.PreparedClosedBirthOrderC12P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HpbaseRequestC12P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NRRequestC12P
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NRPrimeTowerC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CCPrimeOfXC11SP
