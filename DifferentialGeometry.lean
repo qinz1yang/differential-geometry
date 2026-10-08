@@ -28381,3 +28381,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LocalDtRicca
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeBornShiScaledC11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeBornJetsC11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeBornGramEventC11SP
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #106
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeBornJetsV2C11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeLinkedRecordsC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelPrefixHctrlP6JK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelFinalFrameP6JK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelFinalRingsP6JK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelAssembleP6JK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelAssembleExpP6JK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelAssembleDecP6JK2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelSlotsConsumerP6JK2
