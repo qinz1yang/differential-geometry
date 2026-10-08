@@ -1,0 +1,421 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDNoProtCP6SB2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDSupplyP6SB3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SupplyRescaleP6HN
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CwsUniformP6SN
+
+/-!
+# G9″：切片 BCBD 主定理无 `hprotC`，先验供给槽对齐 HNOT 前缀形（O-CH11-SLICE-BCBD3 G3，后缀 `_P6SB3`）
+
+SLICE-BCBD2 G9（`sliceBCBD_kernel_fresh_sep_noProtC_P6SB2`）的先验供给槽 `hslabK`（全 `Fin.last`、阈值取 `t_n`）不可由
+`TimeDerivativeSupply_C11E` 满足（`ρ` 反单调，`t_n` 之后的 slab 不被覆盖）；本文件换成前缀形 `hpre1 / hpre2`（G1 / G8″）：
+* `ObservedHistory.sliceBCBD_kernel_fresh_theta_ev_noProtC_aligned_P6SB3`（G5″）；
+* **`ObservedHistory.sliceBCBD_kernel_fresh_sep_noProtC_aligned_P6SB3`**（G9″，验收终点形）；
+* `hpre_of_supply_tower_P6SB3`：tower 帧 `K n = rescale` 时 `hpre1 / hpre2` ⇐ HNOT G5
+`prefixDt_rescale_seq_P6HN`
+  （`ρs n s := ρ(c n·s)/√(c n)`，`ρs⁻² = c·ρ(c·s)⁻²`）。
+(SEP-ρ⁺) 槽 = HNOT 统一陈述逐字（`Q = max(n+1, ρ̃⁻²)`，`ρ̃ := ρs`）。生成器 `gen/gen3.py`。
+-/
+
+set_option autoImplicit false
+
+noncomputable section
+
+open Set Filter Function
+open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+open DifferentialGeometry.Integral.Measure
+open scoped Manifold NNReal Topology ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+/-- **前缀 Dt 槽 ⇐ HNOT G5（tower 帧，`_P6SB3`，PROVED ⇐ 先验供给 + `ρ` 反单调）**：`K n =
+(F.tower.history (ind n)).rescale_P6N (c n)`，`ρs n s := ρ (c n * s) / √(c n)`（`ρ :=
+q.neckRadius`）⇒ G9″ 的
+`hpre1 / hpre2`（阈值 `max (n+1) (ρs n (t n))⁻²`）。证明：HNOT G5 `prefixDt_rescale_seq_P6HN`（阈值
+`c n·(ρ(c n·t n)²)⁻¹ = (ρs n (t n)²)⁻¹`）+ 阈值单调。 -/
+theorem hpre_of_supply_tower_P6SB3 {P : OrientedThreeStage.{u}} {g : P.Metric}
+    {F : GC.Interface.RawSurgery P g} {q : CutoffParameters} {Ctime : ℝ≥0}
+    (hTD : GC.LongTime.Ch11.TimeDerivativeSupply_C11E F q.neckRadius Ctime)
+    (hanti : AntitoneOn q.neckRadius (Ici 0)) (ind : ℕ → ℕ) {c : ℕ → ℝ} (hc : ∀ n, 0 < c n)
+    {j : ∀ n, Fin (F.tower.history (ind n)).eventCount} {t : ℕ → ℝ}
+    (hjt : ∀ n, ((F.tower.history (ind n)).rescale_P6N (c n) (hc n)).time (j n).castSucc < t n)
+    (htj : ∀ n, t n < ((F.tower.history (ind n)).rescale_P6N (c n) (hc n)).time (j n).succ) :
+    let ρs : ℕ → ℝ → ℝ := fun n s => q.neckRadius (c n * s) / Real.sqrt (c n)
+    (∀ n, ((F.tower.history (ind n)).rescale_P6N (c n) (hc n)).EventSlabsDerivative Ctime
+        (max ((n : ℝ) + 1) (ρs n (t n) ^ 2)⁻¹) (j n).castSucc) ∧
+    (∀ n, (((F.tower.history (ind n)).rescale_P6N (c n) (hc n)).toHistory.event
+        (j n)).incoming.DerivativeBoundBefore Ctime (max ((n : ℝ) + 1) (ρs n (t n) ^ 2)⁻¹)
+        (t n)) := by
+  intro ρs
+  obtain ⟨h1, h2⟩ := prefixDt_rescale_seq_P6HN hTD hanti ind hc hjt htj
+  have heq : ∀ n, (ρs n (t n) ^ 2)⁻¹ = c n * (q.neckRadius (c n * t n) ^ 2)⁻¹ := fun n => by
+    change ((q.neckRadius (c n * t n) / Real.sqrt (c n)) ^ 2)⁻¹ = _
+    rw [div_pow, Real.sq_sqrt (hc n).le, inv_div, div_eq_mul_inv]
+  have hle : ∀ n, c n * (q.neckRadius (c n * t n) ^ 2)⁻¹ ≤ max ((n : ℝ) + 1) (ρs n (t n) ^ 2)⁻¹ :=
+    fun n => (heq n) ▸ le_max_right _ _
+  refine ⟨fun n e he => ?_, fun n => ?_⟩
+  · exact derivativeBoundBefore_mono_qcan_P6SN _ (hle n) (h1 n e he)
+  · exact derivativeBoundBefore_mono_qcan_P6SN _ (hle n) (h2 n)
+
+namespace ObservedHistory
+
+/-- **G5″（`_P6SB3`，PROVISIONAL[同 SLICE-BCBD2 G5′，先验供给改前缀形 `hpre1 / hpre2`]）**：SLICE-BCBD2 G5′ 逐字，
+`hslabK`（全 `Fin.last`，不可由供给满足）换成前缀形（HNOT G5 结论形）；`hslabs` ⇐ G8″。 -/
+theorem sliceBCBD_kernel_fresh_theta_ev_noProtC_aligned_P6SB3
+    {ε C1' C2' : ℝ} {Ctime' : ℝ≥0} (hεcone : ε ≤ coneAccuracy) (hC20 : 0 ≤ C2')
+    {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi) {θ₀ : ℝ} (hθ₀ : 0 < θ₀)
+    {K : ℕ → RetainedCoreHistory.{u}} {j : ∀ n, Fin (K n).eventCount} {t : ℕ → ℝ}
+    (hjt : ∀ n, (K n).time (j n).castSucc < t n) (htj : ∀ n, t n < (K n).time (j n).succ)
+    {T₀ : ℕ → ℝ} {p : ℕ → CutoffParameters}
+    {recordsK : ∀ n (i : Fin (K n).eventCount), T₀ n ≤ (K n).time i.succ →
+      GeometricCutoffRecord (K n).toHistory i (p n)}
+    {yG : ∀ n, ((K n).stage (j n).castSucc).Carrier}
+    (hcanK : ∀ n i hi b, ((recordsK n i hi).static b).hasCanonicalWindow)
+    (hacc : ∀ n : ℕ, (p n).modelAccuracy ≤ 1 / ((n : ℝ) + 1))
+    (hrad : ∀ n : ℕ, (n : ℝ) + 1 ≤ (p n).modelRadius)
+    (hord : ∀ n : ℕ, n + 2 ≤ (p n).modelOrder)
+    (hpinchK0 : ∀ n (i : Fin (K n).eventCount), Perelman.PhiAlmostNonnegative
+      ((K n).toHistory.event i).incoming.flow
+      (Ico ((K n).time i.castSucc) ((K n).time i.succ) ∩ Ici (T₀ n)) phi)
+    (hnotK : ∀ᶠ n in atTop, ¬ ∃ (i : Fin (K n).eventCount) (hi : T₀ n ≤ (K n).time i.succ)
+      (hl : i.succ ≤ (j n).castSucc)
+      (A : BackwardPointTrace (K n).toHistory i.succ (j n).castSucc hl (yG n))
+      (b : ((K n).toHistory.event i).RetainedBoundaryIndex)
+      (x : standardCapWindow (p n).modelRadius),
+      A.point i.succ le_rfl hl = ((recordsK n i hi).static b).window x ∧
+        ‖x.val‖ < ((n : ℝ) + 1) + 1 ∧
+        t n - (K n).time i.succ ≤
+          θ₀ * (((recordsK n i hi).static b).neck.scale)⁻¹)
+    (Kh : ℕ → ObservedHistory.{u}) (hKh : Kh = fun n => (K n).toHistory)
+    (σ : ∀ n, Icc (0 : ℝ) (Kh n).horizon) (hσ : ∀ n, (σ n : ℝ) = t n)
+    (y : ∀ n, ((Kh n).stageAt (σ n)).Carrier) (hyG : ∀ n, HEq (y n) (yG n))
+    (R : ℕ → ℝ) (hRpos : ∀ n, 0 < R n)
+    (hRn : ∀ n, R n = ((K n).toHistory.event (j n)).incoming.flow.scalar (t n) (yG n))
+    (hRlt : ∀ n : ℕ, (n : ℝ) + 1 < R n)
+    (hT₀ : ∀ B : ℝ, ∀ᶠ n in atTop, T₀ n ≤ (σ n : ℝ) - B / R n)
+    (Tn aSeed : ∀ n, Icc (0 : ℝ) (Kh n).horizon) (haT : ∀ n, aSeed n ≤ Tn n)
+    (hsT : ∀ n, σ n ≤ Tn n) (has : ∀ n, aSeed n ≤ σ n)
+    (pT : ∀ n, ((Kh n).stageAt (Tn n)).Carrier)
+    (seedTrace : ∀ n, BackwardPointTrace (Kh n) ((Kh n).activeStage (aSeed n))
+      ((Kh n).activeStage (Tn n)) ((Kh n).activeStage_mono (haT n)) (pT n))
+    (L : ℕ → ℝ) (hL : Tendsto L atTop atTop) {Cg : ℝ} (hCg : 2 ≤ Cg)
+    (hgood : ∀ n, ∀ (v : Icc (0 : ℝ) (Kh n).horizon) (hav : aSeed n ≤ v) (hvs : v ≤ σ n),
+      (σ n : ℝ) - L n ^ 2 / R n ≤ (v : ℝ) →
+      ∀ z : ((Kh n).stageAt v).Carrier,
+        riemannianEDistOf ((Kh n).stageMetric ((Kh n).activeStage v) v)
+            ((seedTrace n).point ((Kh n).activeStage v) ((Kh n).activeStage_mono hav)
+              ((Kh n).activeStage_mono (hvs.trans (hsT n)))) z ≤
+          riemannianEDistOf ((Kh n).stageMetric ((Kh n).activeStage (σ n)) (σ n))
+              ((seedTrace n).point ((Kh n).activeStage (σ n)) ((Kh n).activeStage_mono (has n))
+                ((Kh n).activeStage_mono (hsT n))) (y n) +
+            ENNReal.ofReal (L n / Real.sqrt (R n)) →
+        Cg * R n ≤ metricScalarAt ((Kh n).stageMetric ((Kh n).activeStage v) v) z →
+        (Kh n).HasSpatialCanonicalTimeControl ε C1' C2' Ctime' v z)
+    (hwin : ∀ T : ℝ, 0 < T → ∀ᶠ n in atTop, (aSeed n : ℝ) ≤ σ n - T / R n)
+    (hdistW : ∀ D T : ℝ, 0 < D → 0 < T → ∀ᶠ n in atTop,
+      ∀ x ∈ riemannianBallOf ((Kh n).stageMetric ((Kh n).activeStage (σ n)) (σ n)) (y n)
+          (D / Real.sqrt (R n)),
+      ∀ (v : Icc (0 : ℝ) (Kh n).horizon) (hav : aSeed n ≤ v) (hvs : v ≤ σ n),
+        (σ n : ℝ) - T / R n ≤ v →
+        (Kh n).activeStage v = (Kh n).activeStage (σ n) →
+      ∀ tr : BackwardPointTrace (Kh n) ((Kh n).activeStage v) ((Kh n).activeStage (σ n))
+          ((Kh n).activeStage_mono hvs) x,
+        riemannianEDistOf ((Kh n).stageMetric ((Kh n).activeStage v) v)
+            ((seedTrace n).point ((Kh n).activeStage v) ((Kh n).activeStage_mono hav)
+              ((Kh n).activeStage_mono (hvs.trans (hsT n))))
+            (tr.point ((Kh n).activeStage v) le_rfl ((Kh n).activeStage_mono hvs)) ≤
+          riemannianEDistOf ((Kh n).stageMetric ((Kh n).activeStage (σ n)) (σ n))
+              ((seedTrace n).point ((Kh n).activeStage (σ n)) ((Kh n).activeStage_mono (has n))
+                ((Kh n).activeStage_mono (hsT n))) (y n) +
+            ENNReal.ofReal (L n / Real.sqrt (R n)))
+    {r : ℝ} (hr : 0 < r)
+    (hsmall : ∀ n, GC.LongTime.hasSmallParabolicCurvature (Kh n) (Tn n) (pT n) r)
+    (hclock : ∀ n, (aSeed n : ℝ) = (Tn n : ℝ) - r ^ 2)
+    (a₀ : ℕ → ℝ) (ha₀ : ∀ n, 0 ≤ a₀ n)
+    (hpin : ∀ n (s : Icc (0 : ℝ) (Kh n).horizon)
+      (x : ((Kh n).stageAt s).Carrier),
+      InFixedHamiltonIveyRegion ((Kh n).stageMetric ((Kh n).activeStage s) s)
+        (a₀ n + s) x)
+    (hRa : ∀ n, 1 ≤ R n * aSeed n)
+    (T₀X : ℕ → ℝ) (hT₀X : ∀ n, T₀X n ≤ aSeed n)
+    (hOldX : ∀ n (e : Fin (Kh n).eventCount), T₀X n ≤ (Kh n).time e.succ →
+      ((Kh n).event e).old = ((Kh n).event e).transition.trace.retainedCore)
+    (hdσ : ∀ n, riemannianEDistOf ((Kh n).stageMetric
+        ((Kh n).activeStage (σ n)) (σ n))
+        ((seedTrace n).point ((Kh n).activeStage (σ n))
+          ((Kh n).activeStage_mono (has n))
+          ((Kh n).activeStage_mono (hsT n))) (y n) ≠ ⊤)
+    {nr : ℝ → ℝ} {Aκ κ Tκ : ℝ} (hκ : 0 < κ)
+    (hWK : ∀ n, KappaSeedWindowFwd_C11PK nr Aκ κ Tκ (Kh n))
+    (hTκ : ∀ n, Tκ ≤ (Tn n : ℝ)) (htimeS : ∀ n, 2 * r ^ 2 < (Tn n : ℝ))
+    (hvolS : ∀ n, ENNReal.ofReal (Aκ⁻¹ * r ^ 3) ≤ Geometry.Collapse.ballVolume
+      ((Kh n).stageMetric ((Kh n).activeStage (Tn n)) (Tn n)) (pT n) r)
+    (hnrS : ∀ n (w : ℝ), (Tn n : ℝ) - r ^ 2 / 2 ≤ w → w ≤ (Tn n : ℝ) → nr w ≤ r)
+    (hwinF : ∀ T : ℝ, 0 < T → ∀ᶠ n in atTop, (Tn n : ℝ) - r ^ 2 / 2 ≤ (σ n : ℝ) - T / R n)
+    (hgate : ∀ᶠ n in atTop,
+      riemannianEDistOf ((Kh n).stageMetric ((Kh n).activeStage (σ n)) (σ n))
+          ((seedTrace n).point ((Kh n).activeStage (σ n)) ((Kh n).activeStage_mono (has n))
+            ((Kh n).activeStage_mono (hsT n))) (y n) +
+        ENNReal.ofReal ((L n + 1) / Real.sqrt (R n)) ≤ ENNReal.ofReal (Aκ * r))
+    (ρs : ℕ → ℝ → ℝ)
+    (hsepρ : ∀ B : ℝ, 0 < B → ∀ᶠ n in atTop,
+      ∀ (i : Fin (K n).eventCount) (hi : T₀ n ≤ (K n).time i.succ)
+        (b : ((K n).toHistory.event i).RetainedBoundaryIndex),
+        i.succ ≤ (j n).castSucc →
+        (t n - B / R n ≤ (K n).time i.succ ∨
+          t n - (K n).time i.succ ≤ θ₀ * (((recordsK n i hi).static b).neck.scale)⁻¹) →
+        ((n : ℝ) + 1) * max ((n : ℝ) + 1) (ρs n (t n) ^ 2)⁻¹ ≤
+          ((recordsK n i hi).static b).neck.scale)
+    (hpre1 : ∀ n, (K n).EventSlabsDerivative Ctime' (max ((n : ℝ) + 1) (ρs n (t n) ^ 2)⁻¹)
+      (j n).castSucc)
+    (hpre2 : ∀ n, ((K n).toHistory.event (j n)).incoming.DerivativeBoundBefore Ctime'
+      (max ((n : ℝ) + 1) (ρs n (t n) ^ 2)⁻¹) (t n)) :
+    ∀ A : ℝ, 0 < A → ∃ Q : ℝ, 2 ≤ Q ∧ ∀ᶠ n in atTop,
+      ∀ z ∈ riemannianBallOf (((K n).toHistory.event (j n)).incoming.flow.base.metric (t n))
+          (yG n)
+          (A / Real.sqrt (((K n).toHistory.event (j n)).incoming.flow.scalar (t n) (yG n))),
+        ((K n).toHistory.event (j n)).incoming.flow.scalar (t n) z ≤
+          Q * ((K n).toHistory.event (j n)).incoming.flow.scalar (t n) (yG n) := by
+  subst hKh
+  have hR1 : ∀ n, 1 ≤ R n := fun n => by
+    have h1 := hRlt n
+    have h0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    linarith
+  have hnat : Tendsto (fun n : ℕ => (n : ℝ) + 1) atTop atTop :=
+    tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop
+  have hRlim : Tendsto R atTop atTop := tendsto_atTop_mono (fun n => (hRlt n).le) hnat
+  have hRlimG : Tendsto (fun n => ((K n).toHistory.event (j n)).incoming.flow.scalar (t n) (yG n))
+      atTop atTop := hRlim.congr fun n => hRn n
+  have hRt := tendsto_scalar_mul_time_of_window_P6LS hσ hRn hRpos hwin
+  obtain ⟨-, -, Dp, -, -, hD, -, -, -, hDn⟩ := exists_params_P6D (fun _ => (0 : ℝ))
+  have hpar : ∀ n : ℕ, (p n).modelAccuracy ≤ 1 / ((n : ℝ) + 1) ∧ (n : ℝ) + 1 ≤ Dp n ∧
+      Dp n ≤ (p n).modelRadius ∧ n + 2 ≤ (p n).modelOrder ∧
+      (1 : ℝ) / ((n : ℝ) + 1) ≤ 1 / ((n : ℝ) + 1) :=
+    fun n => ⟨hacc n, hDn n, by rw [hD n]; exact hrad n, hord n, le_rfl⟩
+  have hnot' : ∀ᶠ n in atTop, ¬ ∃ (i : Fin ((K n).prefixAt (j n).castSucc).eventCount)
+      (hi : T₀ n ≤ ((K n).prefixAt (j n).castSucc).time i.succ)
+      (hl : i.succ ≤ Fin.last ((K n).prefixAt (j n).castSucc).eventCount)
+      (A : BackwardPointTrace ((K n).prefixAt (j n).castSucc).toHistory i.succ
+        (Fin.last ((K n).prefixAt (j n).castSucc).eventCount) hl (yG n))
+      (b : (((K n).prefixAt (j n).castSucc).toHistory.event i).RetainedBoundaryIndex)
+      (x : standardCapWindow (p n).modelRadius),
+      A.point i.succ le_rfl hl =
+          (((K n).prefixLateRecords_P6N (j n).castSucc (recordsK n) i hi).static b).window x ∧
+        ‖x.val‖ < Dp n + 1 ∧
+        t n - ((K n).prefixAt (j n).castSucc).time i.succ ≤ θ₀ *
+          ((((K n).prefixLateRecords_P6N (j n).castSucc (recordsK n) i hi).static b).neck.scale
+            )⁻¹ :=
+    hnotK.mono fun n hn => by
+      rw [hD n]
+      exact (K n).not_capWindowPoint_prefix_of_late_P6N (j n).castSucc (recordsK n) (yG n) hn
+  have hT₀' : ∀ B : ℝ, ∀ᶠ n in atTop, T₀ n ≤
+      t n - B / ((K n).toHistory.event (j n)).incoming.flow.scalar (t n) (yG n) :=
+    fun B => (hT₀ B).mono fun n hn => by
+      rw [← hRn n, ← hσ n]
+      exact hn
+  have hpinch : ∀ n, (∀ i : Fin ((K n).prefixAt (j n).castSucc).eventCount,
+        Perelman.PhiAlmostNonnegative
+          (((K n).prefixAt (j n).castSucc).toHistory.event i).incoming.flow
+          (Ico (((K n).prefixAt (j n).castSucc).time i.castSucc)
+            (((K n).prefixAt (j n).castSucc).time i.succ) ∩ Ici (T₀ n)) phi) ∧
+      Perelman.PhiAlmostNonnegative ((K n).toHistory.event (j n)).incoming.flow
+        (Ico ((K n).time (j n).castSucc) ((K n).time (j n).succ) ∩ Ici (T₀ n)) phi :=
+    fun n => ⟨fun i => hpinchK0 n (Fin.castLE (Nat.le_of_lt_succ (j n).castSucc.isLt) i),
+      hpinchK0 n (j n)⟩
+  have hcan := fun n => (K n).prefixLateRecords_hcan_P6N (j n).castSucc (recordsK n) (hcanK n)
+  have hslabs := hslabs_of_sepRho_prefixDt_P6SB3 hC20 (by linarith) hjt htj σ hσ y yG hyG R hRpos
+    hR1 hRn Tn aSeed haT hsT has pT seedTrace L hL hgood hr hsmall hclock a₀ ha₀ hpin hRa T₀X hT₀X
+    hOldX hdσ hwin recordsK hcanK hacc hrad hord hT₀ ρs hsepρ hpre1 hpre2
+  obtain ⟨hρ, hnc⟩ := hnc_window_of_fresh_P6SB hjt htj σ hσ y yG hyG R hRpos hRlim hRn hκ hr hWK
+    Tn aSeed haT hsT has pT seedTrace L hL hTκ htimeS hsmall hvolS hnrS hclock hwinF hgate hdistW
+  have hW := hW_of_selection_Cg_P6M3 hjt htj σ hσ y yG hyG R hRpos hRn Tn aSeed haT hsT has pT
+    seedTrace L hL hgood
+  have hgrad := hgrad_of_selection_sameSlab_Cg_P6CD hC20 hjt htj σ hσ y yG hyG R hRpos hRn Tn
+    aSeed haT hsT has pT seedTrace L hL hgood hwin hdistW
+  have hder := hderSel_of_selection_sameSlab_Cg_P6JG3 hjt htj σ hσ y yG hyG R hRpos hRn Tn
+    aSeed haT hsT has pT seedTrace L hL hgood hwin hdistW
+  have hR0 : ∀ n, 0 < ((K n).toHistory.event (j n)).incoming.flow.scalar (t n) (yG n) :=
+    fun n => (hRn n) ▸ hRpos n
+  have hCg0 : ∀ n, 0 < Cg * R n := fun n => mul_pos (by linarith) (hRpos n)
+  have hqC : ∀ n, Cg * R n ≤
+      Cg * ((K n).toHistory.event (j n)).incoming.flow.scalar (t n) (yG n) := fun n => by
+    rw [hRn n]
+  exact RetainedCoreHistory.hanchor0_lateW_local_star_theta_ev_P6SB (θcap := fun _ => θ₀)
+    (H := fun n => (K n).prefixAt (j n).castSucc)
+    (G := fun n => ((K n).toHistory.event (j n)).incoming)
+    (s := fun n => (K n).time (j n).succ) (y := yG) (ρ := fun _ => r / 200) hεcone hκ hphi hθ₀
+    (fun n => (K n).prefixAt_time_last _) (fun n => (K n).event_initial (j n)) hcan hpar
+    (fun _ => le_rfl) hpinch hjt htj hnot' hT₀' hRt hRlimG hR0 (Cq := Cg)
+    (fun n => Cg * R n) hCg0 hqC
+    hslabs hder hW hgrad hnc hρ
+
+/-- **G9″：切片 BCBD 主定理无 `hprotC`，先验供给 = 前缀形（`_P6SB3`，PROVISIONAL[hgood、CXJD 族（无 `hprotC`）、
+`hdistW`、FRESH、kernel 帧、`hsepT / hsep4`、(SEP-ρ⁺)、前缀 Dt `hpre1 / hpre2`]）**：SLICE-BCBD2 G9 主定理逐字（结论 =
+验收终点形），先验供给槽换前缀形；tower 帧 `K n = rescale` 时 `hpre1 / hpre2` 由 HNOT G5 `prefixDt_rescale_seq_P6HN` 付
+（本文件 `hpre_of_supply_tower_P6SB3`）。 -/
+theorem sliceBCBD_kernel_fresh_sep_noProtC_aligned_P6SB3
+    {ε C1' C2' : ℝ} {Ctime' : ℝ≥0} (hεcone : ε ≤ coneAccuracy) (hC20 : 0 ≤ C2')
+    {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi) {θ₀ : ℝ} (hθ₀ : 0 < θ₀)
+    {K : ℕ → RetainedCoreHistory.{u}} {j : ∀ n, Fin (K n).eventCount} {t : ℕ → ℝ}
+    (hjt : ∀ n, (K n).time (j n).castSucc < t n) (htj : ∀ n, t n < (K n).time (j n).succ)
+    {T₀ : ℕ → ℝ} {p : ℕ → CutoffParameters}
+    {recordsK : ∀ n (i : Fin (K n).eventCount), T₀ n ≤ (K n).time i.succ →
+      GeometricCutoffRecord (K n).toHistory i (p n)}
+    {yG : ∀ n, ((K n).stage (j n).castSucc).Carrier}
+    (hcanK : ∀ n i hi b, ((recordsK n i hi).static b).hasCanonicalWindow)
+    (hacc : ∀ n : ℕ, (p n).modelAccuracy ≤ 1 / ((n : ℝ) + 1))
+    (hrad2 : ∀ n : ℕ, ((n : ℝ) + 1) + 1 ≤ (p n).modelRadius)
+    (hord : ∀ n : ℕ, n + 2 ≤ (p n).modelOrder)
+    (hpinchK0 : ∀ n (i : Fin (K n).eventCount), Perelman.PhiAlmostNonnegative
+      ((K n).toHistory.event i).incoming.flow
+      (Ico ((K n).time i.castSucc) ((K n).time i.succ) ∩ Ici (T₀ n)) phi)
+    (Kh : ℕ → ObservedHistory.{u}) (hKh : Kh = fun n => (K n).toHistory)
+    (σ : ∀ n, Icc (0 : ℝ) (Kh n).horizon) (hσ : ∀ n, (σ n : ℝ) = t n)
+    (y : ∀ n, ((Kh n).stageAt (σ n)).Carrier) (hyG : ∀ n, HEq (y n) (yG n))
+    (R : ℕ → ℝ) (hRpos : ∀ n, 0 < R n)
+    (hRn : ∀ n, R n = ((K n).toHistory.event (j n)).incoming.flow.scalar (t n) (yG n))
+    (hRlt : ∀ n : ℕ, (n : ℝ) + 1 < R n)
+    (hT₀ : ∀ B : ℝ, ∀ᶠ n in atTop, T₀ n ≤ (σ n : ℝ) - B / R n)
+    (Tn aSeed : ∀ n, Icc (0 : ℝ) (Kh n).horizon) (haT : ∀ n, aSeed n ≤ Tn n)
+    (hsT : ∀ n, σ n ≤ Tn n) (has : ∀ n, aSeed n ≤ σ n)
+    (pT : ∀ n, ((Kh n).stageAt (Tn n)).Carrier)
+    (seedTrace : ∀ n, BackwardPointTrace (Kh n) ((Kh n).activeStage (aSeed n))
+      ((Kh n).activeStage (Tn n)) ((Kh n).activeStage_mono (haT n)) (pT n))
+    (L : ℕ → ℝ) (hL : Tendsto L atTop atTop) {Cg : ℝ} (hCg : 2 ≤ Cg)
+    (hgood : ∀ n, ∀ (v : Icc (0 : ℝ) (Kh n).horizon) (hav : aSeed n ≤ v) (hvs : v ≤ σ n),
+      (σ n : ℝ) - L n ^ 2 / R n ≤ (v : ℝ) →
+      ∀ z : ((Kh n).stageAt v).Carrier,
+        riemannianEDistOf ((Kh n).stageMetric ((Kh n).activeStage v) v)
+            ((seedTrace n).point ((Kh n).activeStage v) ((Kh n).activeStage_mono hav)
+              ((Kh n).activeStage_mono (hvs.trans (hsT n)))) z ≤
+          riemannianEDistOf ((Kh n).stageMetric ((Kh n).activeStage (σ n)) (σ n))
+              ((seedTrace n).point ((Kh n).activeStage (σ n)) ((Kh n).activeStage_mono (has n))
+                ((Kh n).activeStage_mono (hsT n))) (y n) +
+            ENNReal.ofReal (L n / Real.sqrt (R n)) →
+        Cg * R n ≤ metricScalarAt ((Kh n).stageMetric ((Kh n).activeStage v) v) z →
+        (Kh n).HasSpatialCanonicalTimeControl ε C1' C2' Ctime' v z)
+    (hwin : ∀ T : ℝ, 0 < T → ∀ᶠ n in atTop, (aSeed n : ℝ) ≤ σ n - T / R n)
+    (hdistW : ∀ D T : ℝ, 0 < D → 0 < T → ∀ᶠ n in atTop,
+      ∀ x ∈ riemannianBallOf ((Kh n).stageMetric ((Kh n).activeStage (σ n)) (σ n)) (y n)
+          (D / Real.sqrt (R n)),
+      ∀ (v : Icc (0 : ℝ) (Kh n).horizon) (hav : aSeed n ≤ v) (hvs : v ≤ σ n),
+        (σ n : ℝ) - T / R n ≤ v →
+        (Kh n).activeStage v = (Kh n).activeStage (σ n) →
+      ∀ tr : BackwardPointTrace (Kh n) ((Kh n).activeStage v) ((Kh n).activeStage (σ n))
+          ((Kh n).activeStage_mono hvs) x,
+        riemannianEDistOf ((Kh n).stageMetric ((Kh n).activeStage v) v)
+            ((seedTrace n).point ((Kh n).activeStage v) ((Kh n).activeStage_mono hav)
+              ((Kh n).activeStage_mono (hvs.trans (hsT n))))
+            (tr.point ((Kh n).activeStage v) le_rfl ((Kh n).activeStage_mono hvs)) ≤
+          riemannianEDistOf ((Kh n).stageMetric ((Kh n).activeStage (σ n)) (σ n))
+              ((seedTrace n).point ((Kh n).activeStage (σ n)) ((Kh n).activeStage_mono (has n))
+                ((Kh n).activeStage_mono (hsT n))) (y n) +
+            ENNReal.ofReal (L n / Real.sqrt (R n)))
+    {r : ℝ} (hr : 0 < r)
+    (hsmall : ∀ n, GC.LongTime.hasSmallParabolicCurvature (Kh n) (Tn n) (pT n) r)
+    (hclock : ∀ n, (aSeed n : ℝ) = (Tn n : ℝ) - r ^ 2)
+    (a₀ : ℕ → ℝ) (ha₀ : ∀ n, 0 ≤ a₀ n)
+    (hpin : ∀ n (s : Icc (0 : ℝ) (Kh n).horizon)
+      (x : ((Kh n).stageAt s).Carrier),
+      InFixedHamiltonIveyRegion ((Kh n).stageMetric ((Kh n).activeStage s) s)
+        (a₀ n + s) x)
+    (hRa : ∀ n, 1 ≤ R n * aSeed n)
+    (T₀X : ℕ → ℝ) (hT₀X : ∀ n, T₀X n ≤ aSeed n)
+    (hOldX : ∀ n (e : Fin (Kh n).eventCount), T₀X n ≤ (Kh n).time e.succ →
+      ((Kh n).event e).old = ((Kh n).event e).transition.trace.retainedCore)
+    (hdσ : ∀ n, riemannianEDistOf ((Kh n).stageMetric
+        ((Kh n).activeStage (σ n)) (σ n))
+        ((seedTrace n).point ((Kh n).activeStage (σ n))
+          ((Kh n).activeStage_mono (has n))
+          ((Kh n).activeStage_mono (hsT n))) (y n) ≠ ⊤)
+    {nr : ℝ → ℝ} {Aκ κ Tκ : ℝ} (hκ : 0 < κ)
+    (hWK : ∀ n, KappaSeedWindowFwd_C11PK nr Aκ κ Tκ (Kh n))
+    (hTκ : ∀ n, Tκ ≤ (Tn n : ℝ)) (htimeS : ∀ n, 2 * r ^ 2 < (Tn n : ℝ))
+    (hvolS : ∀ n, ENNReal.ofReal (Aκ⁻¹ * r ^ 3) ≤ Geometry.Collapse.ballVolume
+      ((Kh n).stageMetric ((Kh n).activeStage (Tn n)) (Tn n)) (pT n) r)
+    (hnrS : ∀ n (w : ℝ), (Tn n : ℝ) - r ^ 2 / 2 ≤ w → w ≤ (Tn n : ℝ) → nr w ≤ r)
+    (hwinF : ∀ T : ℝ, 0 < T → ∀ᶠ n in atTop, (Tn n : ℝ) - r ^ 2 / 2 ≤ (σ n : ℝ) - T / R n)
+    (hgate : ∀ᶠ n in atTop,
+      riemannianEDistOf ((Kh n).stageMetric ((Kh n).activeStage (σ n)) (σ n))
+          ((seedTrace n).point ((Kh n).activeStage (σ n)) ((Kh n).activeStage_mono (has n))
+            ((Kh n).activeStage_mono (hsT n))) (y n) +
+        ENNReal.ofReal ((L n + 1) / Real.sqrt (R n)) ≤ ENNReal.ofReal (Aκ * r))
+    (hsepT : ∀ n (i : Fin (K n).eventCount) (hi : T₀ n ≤ (K n).time i.succ)
+      (b : ((K n).toHistory.event i).RetainedBoundaryIndex), i.succ ≤ (j n).castSucc →
+      t n - (K n).time i.succ ≤ θ₀ * (((recordsK n i hi).static b).neck.scale)⁻¹ →
+      θ₀ * R n ≤ 1 / (2 * max (Ctime' : ℝ) 1) / max (max 1 Cg) 1 *
+        ((recordsK n i hi).static b).neck.scale)
+    (hsep4 : ∀ n (i : Fin (K n).eventCount) (hi : T₀ n ≤ (K n).time i.succ)
+      (b : ((K n).toHistory.event i).RetainedBoundaryIndex), i.succ ≤ (j n).castSucc →
+      t n - (K n).time i.succ ≤ θ₀ * (((recordsK n i hi).static b).neck.scale)⁻¹ →
+      2 * (2 * (max (max 1 Cg) 1 * R n)) < ((recordsK n i hi).static b).neck.scale)
+    (ρs : ℕ → ℝ → ℝ)
+    (hsepρ : ∀ B : ℝ, 0 < B → ∀ᶠ n in atTop,
+      ∀ (i : Fin (K n).eventCount) (hi : T₀ n ≤ (K n).time i.succ)
+        (b : ((K n).toHistory.event i).RetainedBoundaryIndex),
+        i.succ ≤ (j n).castSucc →
+        (t n - B / R n ≤ (K n).time i.succ ∨
+          t n - (K n).time i.succ ≤ θ₀ * (((recordsK n i hi).static b).neck.scale)⁻¹) →
+        ((n : ℝ) + 1) * max ((n : ℝ) + 1) (ρs n (t n) ^ 2)⁻¹ ≤
+          ((recordsK n i hi).static b).neck.scale)
+    (hpre1 : ∀ n, (K n).EventSlabsDerivative Ctime' (max ((n : ℝ) + 1) (ρs n (t n) ^ 2)⁻¹)
+      (j n).castSucc)
+    (hpre2 : ∀ n, ((K n).toHistory.event (j n)).incoming.DerivativeBoundBefore Ctime'
+      (max ((n : ℝ) + 1) (ρs n (t n) ^ 2)⁻¹) (t n)) :
+    ∀ A : ℝ, 0 < A → ∃ Q : ℝ, 2 ≤ Q ∧ ∀ᶠ n in atTop,
+      ∀ z ∈ riemannianBallOf (((K n).toHistory.event (j n)).incoming.flow.base.metric (t n))
+          (yG n)
+          (A / Real.sqrt (((K n).toHistory.event (j n)).incoming.flow.scalar (t n) (yG n))),
+        ((K n).toHistory.event (j n)).incoming.flow.scalar (t n) z ≤
+          Q * ((K n).toHistory.event (j n)).incoming.flow.scalar (t n) (yG n) := by
+  subst hKh
+  have hR1 : ∀ n, 1 ≤ R n := fun n => by
+    have h1 := hRlt n
+    have h0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    linarith
+  obtain ⟨ε₀, hε₀, hlow⟩ := exists_capWindow_scalar_lower_C11G.{u}
+  have hceil := ObservedHistory.capCeiling_of_firstExit_sep_P6SB2 hC20 hjt htj σ hσ y yG hyG R hRpos
+    hR1 hRn Tn aSeed haT hsT has pT seedTrace L hL hgood hr hsmall hclock a₀ ha₀ hpin hRa T₀X hT₀X
+    hOldX hdσ hwin recordsK hsepT hθ₀ hRlt hcanK hacc hrad2 hord hsep4
+  have haccE : ∀ᶠ n in atTop, (p n).modelAccuracy ≤ ε₀ := by
+    have h0 : Tendsto (fun n : ℕ => 1 / ((n : ℝ) + 1)) atTop (𝓝 0) :=
+      tendsto_one_div_add_atTop_nhds_zero_nat
+    filter_upwards [h0.eventually (ge_mem_nhds hε₀)] with n hn
+    exact (hacc n).trans hn
+  have hnotKev : ∀ᶠ n in atTop, ¬ ∃ (i : Fin (K n).eventCount) (hi : T₀ n ≤ (K n).time i.succ)
+      (hl : i.succ ≤ (j n).castSucc)
+      (A : BackwardPointTrace (K n).toHistory i.succ (j n).castSucc hl (yG n))
+      (b : ((K n).toHistory.event i).RetainedBoundaryIndex)
+      (x : standardCapWindow (p n).modelRadius),
+      A.point i.succ le_rfl hl = ((recordsK n i hi).static b).window x ∧
+        ‖x.val‖ < ((n : ℝ) + 1) + 1 ∧
+        t n - (K n).time i.succ ≤ θ₀ * (((recordsK n i hi).static b).neck.scale)⁻¹ := by
+    filter_upwards [hceil, haccE] with n hc ha
+    rintro ⟨i, hi, hl, A, b, x, h1, h2, h3⟩
+    have hx : ‖x.val‖ < (p n).modelRadius := lt_of_lt_of_le h2 (hrad2 n)
+    have hS := hlow ((K n).toHistory.event i) ha (le_trans (by omega) (hord n))
+      ((recordsK n i hi).static b) (hcanK n i hi b) x hx
+    rw [← h1] at hS
+    have hC := hc i hi hl A b h3
+    have hP := hsep4 n i hi b hl h3
+    linarith
+  exact sliceBCBD_kernel_fresh_theta_ev_noProtC_aligned_P6SB3 (hεcone := hεcone) (hC20 := hC20)
+    (hphi := hphi) (hθ₀ := hθ₀) (hjt := hjt) (htj := htj) (hcanK := hcanK) (hacc := hacc)
+    (hrad := fun n => le_trans (by linarith) (hrad2 n)) (hord := hord) (hpinchK0 := hpinchK0)
+    (hnotK := hnotKev) (Kh := fun n => (K n).toHistory) (hKh := rfl) (σ := σ) (hσ := hσ) (y := y)
+    (hyG := hyG) (R := R) (hRpos := hRpos) (hRn := hRn) (hRlt := hRlt) (hT₀ := hT₀) (Tn := Tn)
+    (aSeed := aSeed) (haT := haT) (hsT := hsT) (has := has) (pT := pT) (seedTrace := seedTrace)
+    (L := L) (hL := hL) (hCg := hCg) (hgood := hgood) (hwin := hwin) (hdistW := hdistW) (hr := hr)
+    (hsmall := hsmall) (hclock := hclock) (a₀ := a₀) (ha₀ := ha₀) (hpin := hpin) (hRa := hRa)
+    (T₀X := T₀X) (hT₀X := hT₀X) (hOldX := hOldX) (hdσ := hdσ) (hκ := hκ) (hWK := hWK)
+    (hTκ := hTκ) (htimeS := htimeS) (hvolS := hvolS) (hnrS := hnrS) (hwinF := hwinF)
+    (hgate := hgate) (ρs := ρs) (hsepρ := hsepρ) (hpre1 := hpre1)
+    (hpre2 := hpre2)
+
+end ObservedHistory
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
