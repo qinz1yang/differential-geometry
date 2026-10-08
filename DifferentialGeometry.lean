@@ -28433,3 +28433,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeSepRad
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeSepC11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeNRSepC11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NonCWPConsumerP6NC
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #111
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LargeCapNonResurgeryPBC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDNotKP6SB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDNotKEvP6SB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDCeilP6SB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDSepP6SB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDTowerP6SB
