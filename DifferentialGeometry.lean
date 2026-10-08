@@ -28551,3 +28551,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelTruncD
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelTruncFinalP6KT
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelSlabKTSupplyP6KT
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DepthR4NotTRP6DP4E2
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #123
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KdataRescaleTP6KT2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6JointTruncP6KT2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CoarseChainTruncP6KT2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CwsUniformTruncP6KT2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6JointDTruncP6KT2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6P5LDiagTruncP6KT2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceDichotomyFinalLocalP6SD
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceLateCgFinalLocalP6SD
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6XtowerOfSepRhoP6XS
