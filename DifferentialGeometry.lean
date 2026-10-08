@@ -28277,3 +28277,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeNzeroF
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelsNoJ10P6JG3
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HsepXParamCompatP6JG3
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bSlotsNoJ10P6JG3
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #95
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HSpineNzeroC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HSpineA12SlotsV5C11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SLTLocalP6SL
