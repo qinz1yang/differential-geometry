@@ -28649,3 +28649,30 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgapJ16Unifo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgapWireResP6HGW
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HnotFinalCwwP6HN
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HnotP5LSeqP6HN
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #130
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HstayAnchorSlotsP6HS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HstayEnvFullSlotsP6HS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HstayFullAssemblyV7SelW9SP6HS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HstayFullTopW9SP6HS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HstayGuardedAssemblyV7LocP6HS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HstayGuardedEnvSlotsP6HS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HstayGuardedFootP6HS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HstayPrevThreeCaseP6HS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KRouteGuardedA6K
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelBRowsA6K
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelCttV11
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelRowsGuardedA6K
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SelectorCompatW9S
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SepRhoPlusRecentP6SF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDGuardAlignedA2B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDGuardKernelA2B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDGuardR4A2B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDGuardSupplyA2B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDGuardTowerA2B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceFinalD1P6HK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceGuardedCoreP6HK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceGuardedFinalCoreP6HK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceGuardedFinalLocalP6HK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceGuardedLocalP6HK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6StayCapCeilFinalP6HK
