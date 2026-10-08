@@ -28110,3 +28110,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HcenCompatP6
 -- chapter 8 (gc/liao/ch8-20261006): root registration #88
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HdistQCWireP6HQ
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWGuardedC11KX
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #89
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HSpineTwoLevelTimeC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HSpineA12SlotsC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FreshRescaleP6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FreshRescaleConsumersP6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistortionLocalP6DL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistortionConsumersP6DL
