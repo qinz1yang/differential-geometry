@@ -28011,3 +28011,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10FirstExit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10FirstExitHstopCXJD
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10CrossSlabCeilingCXJD
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10CrossSlabProtCXJD
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #72
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10CoreP6JC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10CoreSurviveP6JC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ShallowPointPickC11PT
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PickedCenterProducerC11PT
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SmallDeltaRecordsP6HD
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CapBirthP6J7
