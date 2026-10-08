@@ -28106,3 +28106,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SurgeryParam
 
 -- chapter 8 (gc/liao/ch8-20261006): root registration #87
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HcenCompatP6HC
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #88
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HdistQCWireP6HQ
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWGuardedC11KX
