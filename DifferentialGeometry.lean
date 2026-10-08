@@ -28288,3 +28288,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireP6G
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireChainP6GW
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CollarShortCurveC11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SurgeryNoShortcutDisjC11SP
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #97
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SLTLocalWBP6SL
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireFinalP6GW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LargeCapCrossingC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LargeCapNonResurgeryC11SP
