@@ -28711,3 +28711,18 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceTruncBa
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceTruncFinalP6SD
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceTruncUVCP6SD
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TracedBallSurvivalHIJ16
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #132
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12SlotsV10LocActualCTP6FC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12SlotsV10S14SelCTP6FC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalLocCP6FC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapContractsLocCP6FC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapProducersFinalLocCP6FC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyV7LocS14CXWCTP6FC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyV7LocSelCTP6FC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HPB3TruncCTP6FC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HclosGFCDextJ16
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgapJ16WireFinalCJ16
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestGateLocCP6FC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestLocCP6FC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelBodyCTP6FC
