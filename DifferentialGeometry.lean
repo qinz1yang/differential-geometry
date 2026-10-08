@@ -28142,3 +28142,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWGuardedLe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WindowSeedBaseC11WB
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SpineInterfacesC11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SpineInterfacesFlowC11SP
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #91
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PickedCenterSelP6PS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PickedCenterSelConsumerP6PS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FreshRescalePickSelP6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWGuardedTPC11KX
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWGuardedTL2C11KX
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyV2P6HPB2
