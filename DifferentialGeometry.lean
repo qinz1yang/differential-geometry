@@ -28050,3 +28050,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorThirdK
 
 -- chapter 8 (gc/liao/ch8-20261006): root registration #79
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10USCTopCXUT
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #80
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestStageSeedVolP6F4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestSlotsSeedVolP6F4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseBadTopSeedVolP6F4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TerminalBCDSeedVolP6F4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestNoHtubeSeedVolP6F4
