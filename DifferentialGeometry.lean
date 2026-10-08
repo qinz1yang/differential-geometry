@@ -28029,3 +28029,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestNoHtube
 
 -- chapter 8 (gc/liao/ch8-20261006): root registration #74
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WindowScaleP6HS
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #75
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10FirstExitTraceTopCXJF2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10HRicCTopCXJF2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10TopCeilingCXJF2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10ExtendAtCeilingCXJF2
