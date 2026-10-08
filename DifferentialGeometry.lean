@@ -27857,3 +27857,24 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ClosedSlabVo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedVolumeBaseCXSP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PreparedCanonicalCXSP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RoundTransferP6SF
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #63
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HbdLateP6HB2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestPlusAssembleP6HB2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CeilingDomC11CL2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LateKdataNomDiagCXKN
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6OuterCompatCXOU
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RerunJointKernelP6R8B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RerunJointEvent8P6R8B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6JointFinalContractP6R8B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RerunJointFinal8P6R8B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.CapCollarPushCXCC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.CapNeckLevelsCXCC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.CapCollarExtendCXCC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.NeckRmBoundCXCC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CapMarginCXCC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FineMarginImproveCXCC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapWireJP6WR
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CanonicalEscapeCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistWFinalP6DW2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistWFinalAlignP6DW2
