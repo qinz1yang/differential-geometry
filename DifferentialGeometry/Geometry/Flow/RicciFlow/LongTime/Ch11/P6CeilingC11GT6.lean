@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.External.StrongCeilingStarC11SC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AncientWitnessDecoupledP6P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CapWindowWitnessP6CW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HcenCollarP6HE
 
 set_option autoImplicit false
 
@@ -15,11 +16,18 @@ closed-term 路线（设计 `design-C11-gaptop6-20261007.md` §1）：
   自动支配旧 ceiling `max Γ.C1s Γ.Cbirth` 与 S16 shared ceiling（v4）。
 * closed term `p6CoarseC_C11GT6 η`（`ancientWitness_decoupled_P6P` 的 `C(ηout)`）、
   `p6CapCs_C11GT6 η`（HCAPW `exists_capWitness_of_standardClose_P6CW` 的 `Cs(ηout) = max Cw Cgrad`，
-  lead 14:1x 补充）、`p6FineEta_C11GT6 η := neckModelTolerance (η/2)`（STAB2 的 fine 精度上限）；
-* 标准附加项 `p6X1std_C11GT6 / p6X2std_C11GT6`：
-  `max (Cco ε) (max (2 · max (Cco ηfine) 9) (Ccap ε))` /
-  `max (Cco ε) (max (1000 · Cco ηfine) (Ccap ε))`
-  （`9` = STAB4 margin 创造 `exists_hasMargins_of_neck_P6ST4` 的 `max C1 9`）；
+  lead 14:1x 补充）；
+* 坏点精度（ceiling v2，R-C11-10 D-15′，O-CH11-CEIL3）`p6FineEta_C11GT6 η :=
+  min (η/2) (min (neckModelTolerance (η/2) / 13000) (backgroundJetSmallness ThreeSpace ⌈η⁻¹⌉₊))`：
+  `13000 · η₁ ≤ ηN := neckModelTolerance (η/2)`（CX-CAPCORE 精度方向）、
+  `η₁ ≤ backgroundJetSmallness ThreeSpace ⌈η⁻¹⌉₊`（round transfer）、`η₁ ≤ η/2`；
+* fine 常数 `p6FineC_C11GT6 η := max (Cco η₁) (max (Ccap η₁) (Ccol η))`（`η₁ := p6FineEta η`；
+  `Ccol` = HCENP collar 常数 `capCollarCs_P6HE`，取 Good 精度 `η`）；
+* 标准附加项 `p6X1std_C11GT6 / p6X2std_C11GT6`（`c := p6FineC ε`）：
+  `max (Cco ε) (max (2 · (max c 9 + √c)) (Ccap ε))` /
+  `max (Cco ε) (max (1200000 · c) (Ccap ε))`
+  （`9` = STAB4 margin 创造 `exists_hasMargins_of_neck_P6ST4` 的 `max C1 9`；`√c` 与 `1200` =
+  CX-CAPCORE 的常数放大 `C1 ↦ max C1 9 + √C2`、`C2 ↦ 1200 · C2`，再复合 STAB2 的 `2C1`、`1000C2`）；
 * 支配引理 + `p6CapCs` 的 spec（HCAPW 结论在 closed term 处）+ consumer（HCAPW / STAB2 在 `C1P6` 处）。
 -/
 
@@ -83,15 +91,27 @@ theorem p6CapCs_spec_C11GT6 {ε : ℝ} (hε : 0 < ε) (hε' : ε < 1 / 11) :
   exact Classical.choose_spec
     (MetricCutCapEvent.PresentedStaticCap.exists_capWitness_of_standardClose_P6CW.{u} hε hε')
 
-/-- STAB2 的 fine 精度：`ηfine := neckModelTolerance (η/2)`（`BufferedTransferData_P6ST2.ηfine_le`
-取等号）。 -/
-def p6FineEta_C11GT6 (η : ℝ) : ℝ := neckModelTolerance (η / 2)
+/-- **坏点精度** `η₁`（ceiling v2，R-C11-10 D-15′）：
+`min (η/2) (min (ηN / 13000) (backgroundJetSmallness ThreeSpace ⌈η⁻¹⌉₊))`，其中
+`ηN := neckModelTolerance (η/2)` 是 STAB2 margin 层精度 `ηfine`（`BufferedTransferData_P6ST2.ηfine_le`
+取等号）；`13000 · η₁ ≤ ηN` 是 CX-CAPCORE `hη` 的精度方向，`η₁ ≤ bJS` 是 round transfer 的前提。 -/
+def p6FineEta_C11GT6 (η : ℝ) : ℝ :=
+  min (η / 2) (min (neckModelTolerance (η / 2) / 13000)
+    (backgroundJetSmallness ThreeSpace ⌈η⁻¹⌉₊))
 
 theorem p6FineEta_pos_C11GT6 {η : ℝ} (hη : 0 < η) : 0 < p6FineEta_C11GT6 η :=
-  neckModelTolerance_pos (by linarith)
+  lt_min (by linarith) (lt_min (div_pos (neckModelTolerance_pos (by linarith)) (by norm_num))
+    (backgroundJetSmallness_pos _ _))
 
 theorem p6FineEta_le_C11GT6 (η : ℝ) : p6FineEta_C11GT6 η ≤ η / 2 :=
-  neckModelTolerance_le _
+  min_le_left _ _
+
+/-- **fine 常数** `c(η) := max (Cco η₁) (max (Ccap η₁) (Ccol η))`（`η₁ := p6FineEta η`；`Ccol` =
+HCENP collar 常数 `capCollarCs_P6HE`，取 Good 精度 `η`，付 `hcenE_of_noShortcut_P6HE` 的
+`hCs1 / hCs2`）。坏点常数 `C1₁ = C2₁ := Cco η₁ ≤ c`；`Ccap η₁` 预埋 CEIL2 watch W1。 -/
+def p6FineC_C11GT6 (η : ℝ) : ℝ :=
+  max (p6CoarseC_C11GT6.{u} (p6FineEta_C11GT6 η))
+    (max (p6CapCs_C11GT6.{u} (p6FineEta_C11GT6 η)) (capCollarCs_P6HE.{u} η))
 
 /-! ## 2. ceiling -/
 
@@ -103,16 +123,19 @@ def C1P6_C11GT6 (X : ClosedBirthConstants → ℝ) (Γ : ClosedBirthConstants) :
 def C2P6_C11GT6 (X : ClosedBirthConstants → ℝ) (Γ : ClosedBirthConstants) : ℝ :=
   max (C2ceil_C11SC.{u} Γ) (X Γ)
 
-/-- 标准附加项（`C1` 侧）：coarse `C(ε)`、fine recovery `2 · max C(ηfine) 9`、hcapW `Cs(ε)`。 -/
+/-- 标准附加项（`C1` 侧）：coarse `C(ε)`、fine recovery + CX-CAPCORE 放大 `2 · (max c 9 + √c)`
+（`c := p6FineC ε`）、hcapW `Cs(ε)`。 -/
 def p6X1std_C11GT6 (Γ : ClosedBirthConstants) : ℝ :=
   max (p6CoarseC_C11GT6.{u} Γ.epsilon)
-    (max (2 * max (p6CoarseC_C11GT6.{u} (p6FineEta_C11GT6 Γ.epsilon)) 9)
+    (max (2 * (max (p6FineC_C11GT6.{u} Γ.epsilon) 9 +
+        Real.sqrt (p6FineC_C11GT6.{u} Γ.epsilon)))
       (p6CapCs_C11GT6.{u} Γ.epsilon))
 
-/-- 标准附加项（`C2` 侧）：coarse `C(ε)`、fine recovery `1000 · C(ηfine)`、hcapW `Cs(ε)`。 -/
+/-- 标准附加项（`C2` 侧）：coarse `C(ε)`、fine recovery + CX-CAPCORE 放大 `1200000 · c`
+（`c := p6FineC ε`；`1000 · 1200`）、hcapW `Cs(ε)`。 -/
 def p6X2std_C11GT6 (Γ : ClosedBirthConstants) : ℝ :=
   max (p6CoarseC_C11GT6.{u} Γ.epsilon)
-    (max (1000 * p6CoarseC_C11GT6.{u} (p6FineEta_C11GT6 Γ.epsilon))
+    (max (1200000 * p6FineC_C11GT6.{u} Γ.epsilon)
       (p6CapCs_C11GT6.{u} Γ.epsilon))
 
 theorem C1ceil_le_C1P6_C11GT6 (X : ClosedBirthConstants → ℝ) (Γ : ClosedBirthConstants) :
@@ -157,19 +180,33 @@ theorem coarse_le_C2P6std_C11GT6 (Γ : ClosedBirthConstants) :
     p6CoarseC_C11GT6.{u} Γ.epsilon ≤ C2P6_C11GT6.{u} p6X2std_C11GT6.{u} Γ :=
   le_trans (le_max_left _ _ : _ ≤ p6X2std_C11GT6.{u} Γ) (X_le_C2P6_C11GT6 p6X2std_C11GT6.{u} Γ)
 
-/-- 标准 ceiling 支配 fine recovery + transfer 损失（STAB2 `2C1 ≤ C1out`，`C1 = max C(ηfine) 9`）。 -/
+/-- 标准 ceiling 支配 fine recovery + transfer 损失（STAB2 `2C1 ≤ C1out`，`C1 = max C(η₁) 9`；
+v2：经 `Cco η₁ ≤ c` 与 `0 ≤ √c` 由 X1 的 `2 · (max c 9 + √c)` 项支配）。 -/
 theorem two_mul_fine_le_C1P6std_C11GT6 (Γ : ClosedBirthConstants) :
     2 * max (p6CoarseC_C11GT6.{u} (p6FineEta_C11GT6 Γ.epsilon)) 9 ≤
-      C1P6_C11GT6.{u} p6X1std_C11GT6.{u} Γ :=
-  le_trans (((le_max_left _ _).trans (le_max_right _ _)) : _ ≤ p6X1std_C11GT6.{u} Γ)
-    (X_le_C1P6_C11GT6 p6X1std_C11GT6.{u} Γ)
+      C1P6_C11GT6.{u} p6X1std_C11GT6.{u} Γ := by
+  have hc : p6CoarseC_C11GT6.{u} (p6FineEta_C11GT6 Γ.epsilon) ≤
+      p6FineC_C11GT6.{u} Γ.epsilon := le_max_left _ _
+  have hm : max (p6CoarseC_C11GT6.{u} (p6FineEta_C11GT6 Γ.epsilon)) 9 ≤
+      max (p6FineC_C11GT6.{u} Γ.epsilon) 9 := max_le_max hc le_rfl
+  have hs := Real.sqrt_nonneg (p6FineC_C11GT6.{u} Γ.epsilon)
+  have hX : 2 * (max (p6FineC_C11GT6.{u} Γ.epsilon) 9 +
+      Real.sqrt (p6FineC_C11GT6.{u} Γ.epsilon)) ≤ p6X1std_C11GT6.{u} Γ :=
+    (le_max_left _ _).trans (le_max_right _ _)
+  have hC := X_le_C1P6_C11GT6 p6X1std_C11GT6.{u} Γ
+  linarith
 
-/-- STAB2 `1000C2 ≤ C2out`，`C2 = C(ηfine)`。 -/
+/-- STAB2 `1000C2 ≤ C2out`，`C2 = C(η₁)`（v2：`1000 · Cco η₁ ≤ 1200000 · c`，`1 ≤ Cco η₁ ≤ c`）。 -/
 theorem thousand_mul_fine_le_C2P6std_C11GT6 (Γ : ClosedBirthConstants) :
     1000 * p6CoarseC_C11GT6.{u} (p6FineEta_C11GT6 Γ.epsilon) ≤
-      C2P6_C11GT6.{u} p6X2std_C11GT6.{u} Γ :=
-  le_trans (((le_max_left _ _).trans (le_max_right _ _)) : _ ≤ p6X2std_C11GT6.{u} Γ)
-    (X_le_C2P6_C11GT6 p6X2std_C11GT6.{u} Γ)
+      C2P6_C11GT6.{u} p6X2std_C11GT6.{u} Γ := by
+  have h1 := one_le_p6CoarseC_C11GT6.{u} (p6FineEta_C11GT6 Γ.epsilon)
+  have hc : p6CoarseC_C11GT6.{u} (p6FineEta_C11GT6 Γ.epsilon) ≤
+      p6FineC_C11GT6.{u} Γ.epsilon := le_max_left _ _
+  have hX : 1200000 * p6FineC_C11GT6.{u} Γ.epsilon ≤ p6X2std_C11GT6.{u} Γ :=
+    (le_max_left _ _).trans (le_max_right _ _)
+  have hC := X_le_C2P6_C11GT6 p6X2std_C11GT6.{u} Γ
+  linarith
 
 /-- 标准 ceiling 支配 hcapW 常数 `Cs(ε)`（HCAPW D-11：`Cs ≤ C1out`）。 -/
 theorem capCs_le_C1P6std_C11GT6 (Γ : ClosedBirthConstants) :
