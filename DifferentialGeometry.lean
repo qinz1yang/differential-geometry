@@ -28216,3 +28216,37 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TracedWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TracedWindowJetsCXSP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TriangularMappedJetsCXSP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TwoLevelTimeWindowCXSP
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #93
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWGuardedTTCC11KX
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWGuardedConeC11KX
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KRouteBridgeP6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KRouteNoJ10FullP6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CoarseChainAFullP6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCondKRouteFullP6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HctrlNoJ10P6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KRoutePrefixFullP6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RerunPrefixDecFullP6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorDepthFinalNoJ10P6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorDepthNoJ10P6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorFifthP6AN5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorFifthFinalP6AN5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardConeEndC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardFlowC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardFlowCmpC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardSecondFlowC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RegimeGlueC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RegimeGlueG60C11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeForwardC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeRegularC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeExcludeC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeResetShiC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeRecordScaleC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeRatioSplitC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeClosedGramC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeResetTracedC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardExcludeC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardExcludeWireC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardFlowAssembleC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardRegimeFalseC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SurgeryNoShortcutBufferC11SP
