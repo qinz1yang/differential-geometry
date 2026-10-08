@@ -28250,3 +28250,30 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardExclude
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardFlowAssembleC11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardRegimeFalseC11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SurgeryNoShortcutBufferC11SP
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #94
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeSurgeryDistC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeBddChainC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeBddFalseC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HSpineTwoLevelTimeGlueC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HSpineA12SlotsGlueC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HSpineFinalC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HSpineA12SlotsFinalC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HSpineNativeOnlyC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HSpineA12SlotsV4C11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HIPropagationP6HP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HIPropagationAnchorP6HP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HIPropagationConsP6HP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWGuardedTCC11KX
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWGuardedCone3C11KX
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SeedShiftP6JA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CapBirthSupplyP6JS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CapBirthSupplyWireP6JS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CapBirthSupplyWire6P6JS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CapPushC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyV2CollarP6HPB2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeOnlyNzeroC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeNzeroFlowC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelsNoJ10P6JG3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HsepXParamCompatP6JG3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bSlotsNoJ10P6JG3
