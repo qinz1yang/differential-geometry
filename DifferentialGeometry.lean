@@ -28118,3 +28118,27 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FreshRescale
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FreshRescaleConsumersP6JA
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistortionLocalP6DL
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistortionConsumersP6DL
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #90
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapProducersFinalNoJ10P6JB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapProducersCondNoJ10P6JB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapProducersNoJ10P6JB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CoarseChainNoJ10P6JB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCondNoJ10P6JB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalNoJ10P6JB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6JointNoJ10P6JB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RerunEvent8NoJ10P6JB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6JointTimeSwitchNoJ10P6JB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestNoJ10P6JB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestTimeSwitchNoJ10P6JB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ShallowT1FinalKernelP6TF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ShallowT1FinalCoreP6TF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ShallowT1FinalP6TF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ShallowT1FinalBcadP6TF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6BCDBootstrapP6BB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6BCDBootstrapTowerP6BB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6BCDBootstrapBallP6BB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWGuardedLeafC11KX
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WindowSeedBaseC11WB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SpineInterfacesC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SpineInterfacesFlowC11SP
