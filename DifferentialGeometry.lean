@@ -28604,3 +28604,21 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HSpineTwoLev
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeHSpineRecentCXW
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12TopV8FnSupP6XS
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12SlotsV10LocRecentCXW
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #128
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ProfileClausesC12H
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HaccuracyTowerC12C
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.LateLinkedActualQC12L
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaWindowAprioriP6HK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgapAdaptKappaP6HA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgapAdaptKappaWireP6HA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgapAdaptBudgetP6HA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDAdaptA2B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SliceBCBDF7HUA2B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HstayGuardedKernelP6HS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HstayGuardedGateP6HS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HstayGuardedSlotsP6HS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HscaleSepActualS14CXW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyV7LocS14CXW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12TopV8FnActualS14CXW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12SlotsV10LocActualS14CXW
