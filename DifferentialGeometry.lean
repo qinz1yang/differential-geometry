@@ -29109,3 +29109,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResEngMJ
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyV7LocDTFullHcolCH2_HPC_MJ3
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12V11mHcolCH2_HPC_MJ3
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ThWitnessMJ
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #139
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6R4FrameSupplyTJ
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TRsJ10SupplyTJ
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLADriverBridgeGateTJ
