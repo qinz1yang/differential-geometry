@@ -28486,3 +28486,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HpbaseV8P6HV
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12TopV8P6HV8
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HpbaseV8BridgeP6HV8
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DepthStep1P6DP
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #117
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CapWindowDtP6HN
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HnotLocalP6HN
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HscaleKSepRhoP6HN
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SepRhoDiagP6HN
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HbcadCCondP6DP3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DepthPreP6DP4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DepthDriverP6DP4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DepthClosGP6DP4
