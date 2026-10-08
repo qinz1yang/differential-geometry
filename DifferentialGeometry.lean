@@ -27878,3 +27878,18 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapWireJP6WR
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CanonicalEscapeCXSP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistWFinalP6DW2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistWFinalAlignP6DW2
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #64
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HcenCollarP6HE
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HcenProducerP6HE
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ReserveAccuracyCXOU2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CoarseChainACXOU2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CoarseChainBCXOU2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CoarseChainCCXOU2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CoarseChainDCXOU2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CoarseChainE1CXOU2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CoarseJointCXOU2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6OuterCoarseCXOU2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestJointPrefixP6HP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestJointPrefixAssembleP6HP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestJointPrefixTopP6HP
