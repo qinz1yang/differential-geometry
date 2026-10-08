@@ -28026,3 +28026,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10HRicCGenC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10FinalSlabCeilingCXJF
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10CoverCXJF
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestNoHtubeP6HR
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #74
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WindowScaleP6HS
