@@ -28337,3 +28337,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireFin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireFinalScalP6GWF
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireFinalWireP6GWF
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireFilterP6GW
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #102
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeTubeTraceC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WBAdaptP6WA2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WBAdaptLocalP6WA2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WBAdaptStarP6WA2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WBAdaptStayP6WA2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistortionLargeP6DL2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLASlotP6DL2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeRayNeckC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeRayNeckSegC11SP
