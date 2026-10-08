@@ -28019,3 +28019,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ShallowPoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PickedCenterProducerC11PT
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SmallDeltaRecordsP6HD
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CapBirthP6J7
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #73
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10FirstExitTraceGenCXJF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10HRicCGenCXJF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10FinalSlabCeilingCXJF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10CoverCXJF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestNoHtubeP6HR
