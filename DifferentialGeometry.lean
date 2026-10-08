@@ -27926,3 +27926,36 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HlocHProduce
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HlocHD15P6LH
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ScaleSepP6SS
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorP6AN
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #66
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopV7C11G7
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistCFinalP6DC2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistCFinalJointP6DC2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ShallowContractC11SH
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ShallowWireC11SW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWShortWindowC11KS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWShallowConsumerC11KS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TerminalBCDKernelP6BT
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TerminalBCDP6BT
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CutTubeObstructionCXHB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CutTubeConsumerCXHB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10SlabLocalCXJB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10SlabLocalConsumerCXJB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HbdLateP6HB4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestJointPrefixP6HP3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestJointPrefixAssembleP6HP3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestJointPrefixTopP6HP3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestPlusAssembleP6HB4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LateTimeCoreDefP6TC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LateTimeCoreP6TC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6JointTimeP6TC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LateTimeCoreCxspP6TC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FootSecondP6F2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FootSecondConsumerP6F2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.TracedTerminalCompactnessWindow_C11KS2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceConeWindow_C11KS2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceTracedLimit2Window_C11KS2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceTracedConeWindow_C11KS2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceTracedPositiveWindow_C11KS2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceSliceTerminalWindow_C11KS2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWFixedWindowC11KS2
