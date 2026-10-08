@@ -28359,3 +28359,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SLTLocalStay
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SLTLocalStarAnchorP6SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeBornPatchC11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeBornFlowC11SP
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #104
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaFootprintP6KA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaDriverCondP6KA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6StayTRpcP6KA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistortionTRpcP6KA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaTRpcP6KA
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FirstFailureP6FF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FirstFailureWireP6FF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FirstFailureLadderP6FF
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TracedRegionBootP6TB
