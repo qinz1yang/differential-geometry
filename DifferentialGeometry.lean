@@ -28587,3 +28587,20 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SupplyCeilTn
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SepWindowLateCXW
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6YoungCapBirthLateP6EV
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SepSeqOfRecentCXW
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #127
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LargeCapNonResurgeryPBFnP6XS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NRPrimeRecentFnCXW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeWindowRadialSupFnP6XS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeJetsV2RadialSupFnP6XS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeNJSlotV3RadialSupFnP6XS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeTimeEscapeSupFnP6XS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeScalarAnchorSupFnP6XS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeRayNeckChainSupFnP6XS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeFlowRaySupFnP6XS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeOnlyNzeroSupFnP6XS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeExcludeSupFnP6XS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HSpineTwoLevelTimeSupFnP6XS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeHSpineRecentCXW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12TopV8FnSupP6XS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12SlotsV10LocRecentCXW
