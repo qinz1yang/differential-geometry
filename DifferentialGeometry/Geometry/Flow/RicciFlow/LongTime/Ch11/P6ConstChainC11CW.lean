@@ -303,14 +303,13 @@ theorem chain18_threshold_C11CW {R x : ℝ} (hR : 0 ≤ R) (h : 8 * R ≤ x) : 4
 
 /-- **CHAIN 表第 19 行**：ceiling 的 X1 / X2 fine 项。`2 · C1f ≤ X1std Γ`、`1000 · C2f ≤ X2std Γ`
 （`2 · (max c 9 + √c) ≤ X1`、`1200000 · c ≤ X2`）。消费者 = 第 5 行（经 `X_le_C1P6 / X_le_C2P6`）；
-GT6 `p6X1std / p6X2std` 的 B 项。 -/
+GT6 `p6X1std / p6X2std` 的 B 项（D-15″ 后 B 项的常数为 `p6BadC_C11G2 Γ ≥ c`，经 GT6 单调引理支配）。 -/
 theorem chain19_ceilingTerms_C11CW (Γ : ClosedBirthConstants) :
     2 * p6C1f_C11CW.{u} Γ ≤ p6X1std_C11GT6.{u} Γ ∧
       1000 * p6C2f_C11CW.{u} Γ ≤ p6X2std_C11GT6.{u} Γ := by
-  refine ⟨(le_max_left _ _).trans (le_max_right _ _), ?_⟩
+  refine ⟨two_mul_fine_le_p6X1std_C11G7.{u} Γ, ?_⟩
   change 1000 * (1200 * p6FineC_C11GT6.{u} Γ.epsilon) ≤ p6X2std_C11GT6.{u} Γ
-  have : 1200000 * p6FineC_C11GT6.{u} Γ.epsilon ≤ p6X2std_C11GT6.{u} Γ :=
-    (le_max_left _ _).trans (le_max_right _ _)
+  have := mul1200k_fine_le_p6X2std_C11G7.{u} Γ
   linarith
 
 /-- **CHAIN 表第 20 行**：W1 预埋。`Ccap η₁ ≤ c ≤ C1, C2`（故 `Ccap η₁ ≤ C1₁ = C2₁ := c` 与

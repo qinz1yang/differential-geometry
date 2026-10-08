@@ -31,7 +31,9 @@ ceiling `C1P6 X1 Γ = max (C1ceil Γ) (X1 Γ)` 的 max 结构给出支配。本�
 `min (ε/2) (min (neckModelTolerance (ε/2) / 13000) (backgroundJetSmallness ThreeSpace ⌈ε⁻¹⌉₊))`
 （坏点精度 `η₁ := ηf`，不再等于 margin 层精度 `ηN := neckModelTolerance (ε/2)`），fine 常数
 `c := p6FineC_C11GT6 ε = max (Cco η₁) (max (Ccap η₁) (Ccol ε))`，X1 / X2 的中项为
-`2 · (max c 9 + √c)` / `1200000 · c`。§1–§4 的 17 条陈述与证明不变（只经 GT6 引理）；§5 新增
+`2 · (max c 9 + √c)` / `1200000 · c`（ceiling v3 / D-15″：中项的 `c` 换成 `p6BadC_C11G2 Γ ≥ c`，
+§5 陈述不变，结构项证明改经 GT6 单调引理 `two_mul_fine_le_p6X1std_C11G7` /
+`mul1200k_fine_le_p6X2std_C11G7`）。§1–§4 的 17 条陈述与证明不变（只经 GT6 引理）；§5 新增
 精度侧（`13000 · η₁ ≤ ηN`、`η₁ ≤ bJS`、`η₁ < ηN`）、`c` 的分量、`2 · C1f ≤ C1P6`、`1000 · C2f ≤ C2P6`
 （`C1f := max c 9 + √c`、`C2f := 1200 · c`，CX-CAPCORE 放大量）、`√c ≤ C1P6`、`Ccap η₁ ≤ C1P6 / C2P6`、
 `Ccol ε ≤ C1P6 / C2P6`（HCENP `hcenE_of_noShortcut_P6HE` 的 `hCs1 / hCs2`）。
@@ -266,8 +268,7 @@ theorem capCollar_le_fineC_C11CL3 (ε : ℝ) :
 theorem two_mul_fineCX_le_C1P6_C11CL3 (Γ : ClosedBirthConstants) :
     2 * (max (p6FineC_C11GT6.{u} Γ.epsilon) 9 + Real.sqrt (p6FineC_C11GT6.{u} Γ.epsilon)) ≤
       C1P6_C11GT6.{u} p6X1std_C11GT6.{u} Γ :=
-  le_trans (((le_max_left _ _).trans (le_max_right _ _)) : _ ≤ p6X1std_C11GT6.{u} Γ)
-    (X_le_C1P6_C11GT6 p6X1std_C11GT6.{u} Γ)
+  le_trans (two_mul_fine_le_p6X1std_C11G7.{u} Γ) (X_le_C1P6_C11GT6 p6X1std_C11GT6.{u} Γ)
 
 /-- `C1f ≤ C1P6`（Good 层 `C1 := C1P6` 直接收 `C1f`-witness）。 -/
 theorem fineCX_le_C1P6_C11CL3 (Γ : ClosedBirthConstants) :
@@ -307,8 +308,7 @@ theorem capCollar_le_C1P6_C11CL3 (Γ : ClosedBirthConstants) :
 /-- `1200000 · c ≤ C2P6`（X2 中项）。 -/
 theorem mul1200k_fineC_le_C2P6_C11CL3 (Γ : ClosedBirthConstants) :
     1200000 * p6FineC_C11GT6.{u} Γ.epsilon ≤ C2P6_C11GT6.{u} p6X2std_C11GT6.{u} Γ :=
-  le_trans (((le_max_left _ _).trans (le_max_right _ _)) : _ ≤ p6X2std_C11GT6.{u} Γ)
-    (X_le_C2P6_C11GT6 p6X2std_C11GT6.{u} Γ)
+  le_trans (mul1200k_fine_le_p6X2std_C11G7.{u} Γ) (X_le_C2P6_C11GT6 p6X2std_C11GT6.{u} Γ)
 
 /-- `1000 · C2f ≤ C2P6`，`C2f := 1200 · c`（CX-CAPCORE 放大 `C2 ↦ 1200 · C2`）。消费者：STAB2
 `spatialWitness_of_bufferedTransfer_P6ST2` 的 `h2 : 1000 * C2 ≤ C2out`（fine 常数取 `C2f`）。 -/

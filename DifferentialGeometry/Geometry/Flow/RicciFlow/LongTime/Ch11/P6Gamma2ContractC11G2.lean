@@ -129,11 +129,8 @@ theorem FineOf_C11G2.epsilon_le {Γf Γ : ClosedBirthConstants} (h : FineOf_C11G
 
 /-! ## 3. 坏点常数（`hcan₁`、htrans、`hdomF` 的共同常数）与 ceiling 的可满足性 -/
 
-/-- **坏点常数** `c(Γ) := max (p6FineC ε) (max (C1ceil Γ) (C2ceil Γ))`（`C1₁ = C2₁ := c(Γ)`）：比 D-15′ /
-CXHT G3 的 `p6FineC ε` 多 `C1ceil Γ`、`C2ceil Γ` 两项，以容纳 `Γf` tower 的 S5 常数
-（`FineOf` 下 `oldC Γf ≤ C1ceil Γf ≤ C1ceil Γ`）。 -/
-def p6BadC_C11G2 (Γ : ClosedBirthConstants) : ℝ :=
-  max (p6FineC_C11GT6.{u} Γ.epsilon) (max (C1ceil_C11SC.{u} Γ) (C2ceil_C11SC.{u} Γ))
+-- 坏点常数 `p6BadC_C11G2 Γ := max (p6FineC ε) (max (C1ceil Γ) (C2ceil Γ))` 的定义已上移到
+-- `P6CeilingC11GT6`（D-15″ ceiling v3，O-CH11-GAPTOP7 G1：X1 / X2 的 fine 项），名字与定义体不变。
 
 theorem fineC_le_p6BadC_C11G2 (Γ : ClosedBirthConstants) :
     p6FineC_C11GT6.{u} Γ.epsilon ≤ p6BadC_C11G2.{u} Γ :=
