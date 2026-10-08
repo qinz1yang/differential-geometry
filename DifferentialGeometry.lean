@@ -28370,3 +28370,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FirstFailure
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FirstFailureWireP6FF
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FirstFailureLadderP6FF
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TracedRegionBootP6TB
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #105
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6Foot3DerivSlotP6F5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6Foot3GradSlotP6F5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6Foot3MarginRecordsP6F5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6Foot3SlotsConsumerP6F5
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ParamCompatTwoP6SS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LocalDtRiccatiP6LD
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeBornShiScaledC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeBornJetsC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeBornGramEventC11SP
