@@ -28991,3 +28991,26 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResJ10CgJ
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResJ10DJ2JP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResHIDJV11
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6VacuityWitnessVAC
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #136
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TRsConj1CeilHTP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6R4DriverGateHTP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLADriverBridgeGateHTP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLargeWinGateHTP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12V11mHTP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResEngineSupplyHNS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10TailJT
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResJ10DJ3JT
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResJ10DJ4T0X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResEngineSupplyT0K
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResJ10CgDJ3JT
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResJ10CgDJ4T0X
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResJ10HnrJT
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10TailR4J
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvSlotsR4J
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6StayFixTR4K
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaR4FrameR4K
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6R4BcadCProducerR4B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6R4DriverGateKapR4K
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6R4DriverGateR4B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6VacuityDrvWitnessV2D
