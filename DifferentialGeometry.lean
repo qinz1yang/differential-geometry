@@ -28392,3 +28392,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelAssemb
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelAssembleExpP6JK2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelAssembleDecP6JK2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KernelSlotsConsumerP6JK2
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #107
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeTimeEscapeC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeNJSlotC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeScalarAnchorC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeFlowProduceC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeHSpineConsumerC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeJetsV2C11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeNJSlotV2C11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeHSpineV2C11SP
