@@ -30,8 +30,10 @@ binder（塔层）：
   terminal kernel 的结论本身（循环）。
 * `hdeep`（只在 G1b / G1）：`hstopE` 限 `1 < 2·Ctime·Q_b·T`（`Q_b` 随 `r`）。CXJD `hstep` 是
   ODE ceiling 的本质限制（只用 `|∂ₜR| ≤ Ctime·R²` 时 backward blow-up 时间 `~ 1/(Ctime·Q_b·R)`）。
-  **repair target**（owner = FOOT4 G3 窗口适配）：
-  P6LS3 终端核 `∃ Bw` 可取 `6·Ctime·Q_b·Bw ≤ 1`；成立则 FOOT3 消费端（`T = 3·Bw`）只用 G1-short。
+  **repair target**：**SUPERSEDED（见 J10WIRE2 勘误：格点整球 anchor）**。旧句「（owner = FOOT4 G3
+  窗口适配）P6LS3 终端核 `∃ Bw` 可取 `6·Ctime·Q_b·Bw ≤ 1`；成立则 FOOT3 消费端（`T = 3·Bw`）只用
+  G1-short」作废；现 repair target = 格点 `s_j = t − j·β/R_k` 上的独立曲率 anchor（`hballT` 在格点时刻
+  成立）+ `hderivL_short_tower_P6JW2` 逐段 + FOOT4 `window_cover_P6F4`，owner = BCD 时间 bootstrap。
 非循环：只用前缀里的 `hgood`、`haS`、`hL`、`hRdef`、`hRr`、`hTc`、`hclock`、`hone`、`hsm`；不含 HU / hclosG /
 hscalU / CanonicalLateCore / hspine / `hderivKC` / 全局 `EventSlabsDerivative`；无 `qcap < R`、无
 `isTracedRegion` 前提。

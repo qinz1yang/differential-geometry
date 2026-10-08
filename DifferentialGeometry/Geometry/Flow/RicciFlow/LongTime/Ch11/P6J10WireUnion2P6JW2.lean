@@ -31,8 +31,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10WireWindo
   `(Kh k, qp.rescale_P6N c_k, T₀ k, aSeed k, R k)`；owner = selection / P6GEO records）。
 * `hballT`（链 2）：`B_t(p′, r/√R_k)` 上 `R ≤ Cball(r)·R_k`，`t ↑ σ`。内部付 = BCDT kernel 结论（循环）；
   repair target = 端点球控制的非循环来源（PICKBALL / ANCHOR4 局域 scalar 控制）。
-* `hdeep`（链 2，只在 ∀ T 逐字形）：`1 < 2·Ctime·Q_b·T` 的深窗口 `hstopE`；repair target = FOOT4 G3：P6LS3
-  终端核 `∃ Bw` 可取 `6·Ctime·Q_b·Bw ≤ 1`（则 `hlocBCD` 只用 G1-short，`hdeep` 退役）。同一限制见
+* `hdeep`（链 2，只在 ∀ T 逐字形）：`1 < 2·Ctime·Q_b·T` 的深窗口 `hstopE`；repair target
+  **SUPERSEDED（见 J10WIRE2 勘误：格点整球 anchor）**——旧句「FOOT4 G3：P6LS3 终端核 `∃ Bw` 可取
+  `6·Ctime·Q_b·Bw ≤ 1`（则 `hlocBCD` 只用 G1-short，`hdeep` 退役）」作废；现 repair target = 格点
+  `s_j = t − j·β/R_k` 上的独立曲率 anchor（`hballT` 在格点时刻成立）+ `hderivL_short_tower_P6JW2`
+  逐段 + FOOT4 `window_cover_P6F4`，owner = BCD 时间 bootstrap。同一限制见
   CX-J10EXT BLOCKED 块（hextend 任意 `Tstar`）。
 **(A) J10CORE hsurvive 核（链 1，B5 / cap 输入，非 J10）**：`hphi recordsF hHI hend hGi hcan hδF hqcan hpar
 hscale hbirthA hθcap hpinch hslab hat hts hderG hnot hT₀ hRt Hs ts ys R hHs hts′ hys hRn hRlim`。
