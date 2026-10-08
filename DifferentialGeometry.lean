@@ -27996,3 +27996,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HtransESmall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10CeilingODECXJT0
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10PreTraceCXJT0
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10PreTraceCeilingCXJT0
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #69
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TerminalBCDLocalKernelP6F3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TerminalBCDLocalP6F3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10PreTraceP6JT
