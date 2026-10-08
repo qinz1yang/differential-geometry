@@ -28074,3 +28074,16 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorFourth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorFourthFinalP6AN4
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaFreshP6F4
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WindowCoverP6F4
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #84
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestStageGateP6F4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestSlotsGateP6F4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseBadTopGateP6F4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TerminalBCDGateP6F4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestNoHtubeGateP6F4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10DepthHstopCXJP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10DepthScalCXJP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10DepthExtendCXJP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10DepthConsumerCXJP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyP6HPB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyTopP6HPB
