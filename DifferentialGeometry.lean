@@ -27959,3 +27959,23 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceTracedPositiveWindow_C11KS2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.Local.BoundedCurvatureAtDistanceSliceTerminalWindow_C11KS2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KSWFixedWindowC11KS2
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #67
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CoarseChainDTimeC11G7B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CoarseJointTimeC11G7B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6OuterTwoLevelC11G7B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6OuterTwoLevelTimeC11G7B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12StrongCoarsenC11G7B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12GapTopV7TwoC11G7B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6BadInstC11G7B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestBadTopC11G7B
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseChainAP6FK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseChainBP6FK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseChainCP6FK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseP6FK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseCondChainAP6FK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseCondChainBP6FK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseCondChainCP6FK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseCondChainDP6FK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseCondP6FK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseBadTopP6FK
