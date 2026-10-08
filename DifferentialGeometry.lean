@@ -28456,3 +28456,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HpbaseReques
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NRRequestC12P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NRPrimeTowerC11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CCPrimeOfXC11SP
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #114
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PreparedRecordsV3C12R
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6RecordsV3ConsumerC12R
