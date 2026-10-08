@@ -28744,7 +28744,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestGateLoc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestGateLocKCCTV11
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestGateLocKCKFPHCT
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestGateLocKCKFPV11
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestGateLocKFP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestLocKC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestLocKFP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestSlotsGateHCT
@@ -28845,8 +28844,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HcenCompatCH
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgapAdaptKappaCHN
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgapAdaptWireCHN
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgapQsProducersCHN
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgapWireResCHN
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResCondHF
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResD0CHN
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResDTV11
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResDrvHI
@@ -28863,7 +28860,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResJFJ6R
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResJFQUniDF
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HnotPrefixHNF
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HnotPrefixProdHNF
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestGateLocCHN
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestGateLocKCKFPCHN
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestGateLocKCKFPHCTCHN
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestLocCHN
@@ -28882,7 +28878,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NRPrimeSupFn
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeHSpineRecentCHN
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeHSpineSepRhoP6XS
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NonCWPCHN
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6OuterTruncCHN
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6R4DriverGateHCT
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6R4KernelSeqHCT
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6R4NotTRGateHCT
@@ -28916,8 +28911,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6VacuityWitne
 -- chapter 8 (gc/liao/ch8-20261006): root registration #136
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6TRsConj1CeilHTP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6R4DriverGateHTP
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLADriverBridgeGateHTP
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLargeWinGateHTP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResEngineSupplyHNS
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10TailJT
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResJ10DJ3JT
@@ -28976,7 +28969,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLADriverBridgeGateHcolCH2_HPC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaR4FrameRcMTR
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6R4DriverGateMTR
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLADriverBridgeGateMTR
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLargeWinGateMTR
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResJFJ6R_C2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResJFJ6W
@@ -28993,12 +28985,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6Foot3DerivSl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6Foot3GradSlotCH2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapJF8CwwCH2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapJFCwwCH2
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J11FHgapJ6RCH2
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapProdFinalJ6RCH2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResJ8DriverDTDC_C2
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6OuterTruncCH2
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestGateLocCH2
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgapWireResCH2
 
 -- chapter 8 (gc/liao/ch8-20261006): root registration #138
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HnrTupleMJ
