@@ -28297,3 +28297,20 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LargeCapNonR
 
 -- chapter 8 (gc/liao/ch8-20261006): root registration #98
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CapWindowDisjC11SP
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #99
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LargeCapCrossingRecordC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeConeFlowC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeFlowRayC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeFlowNC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireKSWP6GW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireT1P6GW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bSwitchCoarseP6HPB3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bSwitchHrestP6HPB3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bSwitchTopP6HPB3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyV3P6HPB3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWirePickSelP6GW
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeJetsC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6NativeJetsAliveC11SP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SLTLocalLeafP6SL2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SLTLocalProdP6SP
