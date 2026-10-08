@@ -99,6 +99,7 @@ theorem exists_prepared_spatial_base_with_small_test_margin
     eventControl := fun i => Fin.elim0 i
     windows := fun i => Fin.elim0 i
     linked := fun i => Fin.elim0 i
+    radial := fun i => Fin.elim0 i
     kappa := 1
     kappa_pos := one_pos
     noncollapsed := H.noncollapsedBefore_zero 1 C.epsilon

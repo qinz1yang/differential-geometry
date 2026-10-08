@@ -118,6 +118,7 @@ structure PreparedSpatialState (pBase : CutoffParameters) (C : ClosedBirthConsta
   eventControl : HistoryEventControl history
   windows : ∀ i b, ((records i).static b).hasCanonicalWindow
   linked : ∀ i b, ((records i).static b).hasLinkedCanonicalWindow_C12X
+  radial : RadialWindows_C12X history records
   kappa : ℝ
   kappa_pos : 0 < kappa
   noncollapsed : history.NoncollapsedBefore kappa C.epsilon history.horizon

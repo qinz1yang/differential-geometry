@@ -326,7 +326,19 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
           L.parameters.modelRadius_pos hDH hmH haccH)
         joinedH (fun i => (hOldH i).2.2.2.2) (fun i => (hTailH i).2.2.2.2) L.linked
         hlinkCoarseH
+    have hradJoined : RadialWindows_C12X J joinedH :=
+      joined_static_radial_C12X (pH := L.parameters) (pC := pCH) (q := q0) IoldH AJ
+        ⟨rfl, rfl, rfl, rfl⟩
+        ⟨L.static_eq.1.trans hfixedFine.symm, rfl, rfl, rfl⟩ L.records
+        (fun i => (native i).restrictModelWindow (fun b => (hwin i b).hasCanonicalWindow)
+          L.parameters.modelRadius_pos hDH hmH haccH)
+        joinedH (fun i => (hOldH i).2.2.2.2) (fun i => (hTailH i).2.2.2.2) L.radial
+        (radialWindows_restrictModelWindow_C12X native (fun i b => (hwin i b).hasCanonicalWindow)
+          L.parameters.modelRadius_pos hDH hmH haccH hrecK.2)
     obtain ⟨recordsDelta, hrecordsDelta, hwindowsDelta⟩ := accuracyRecords joinedH hwinJ
+    have hradDelta : RadialWindows_C12X J recordsDelta :=
+      fun i => radial_of_record_static_heq_C12X (joinedH i) (recordsDelta i) rfl rfl rfl rfl
+        (hrecordsDelta i).2.2.2.2.2 (hradJoined i)
     have hlinkDelta : ∀ i b, ((recordsDelta i).static b).hasLinkedCanonicalWindow_C12X :=
       fun i => linked_of_record_static_heq_C11SL (joinedH i) (recordsDelta i) rfl rfl rfl rfl
         (hrecordsDelta i).2.2.2.2.2 (hlinkJoined i)
@@ -349,6 +361,10 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
       fun i => linked_of_record_static_heq_C11SL (recordsDelta i) (recordsFinal i)
         hFinalFixed hFinalModelRadius hFinalModelOrder hFinalModelAccuracy
         (hrecordsFinal i).2.2.2.2.2 (hlinkDelta i)
+    have hradFinal : RadialWindows_C12X J recordsFinal :=
+      fun i => radial_of_record_static_heq_C12X (recordsDelta i) (recordsFinal i)
+        hFinalFixed hFinalModelRadius hFinalModelOrder hFinalModelAccuracy
+        (hrecordsFinal i).2.2.2.2.2 (hradDelta i)
     have hPast : ∀ t : ℝ, t ≤ E →
         pFinal.delta t = L.parameters.delta t ∧
         pFinal.neckRadius t = L.parameters.neckRadius t ∧
@@ -502,6 +518,7 @@ private theorem exists_prepared_spatial_step_with_quality_and_native_certificate
       eventControl := hcontrolJ
       windows := hwindowsFinal
       linked := hlinkedFinal
+      radial := hradFinal
       kappa := κJ
       kappa_pos := hκJ
       noncollapsed := hncJ
