@@ -27979,3 +27979,20 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseC
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseCondChainDP6FK
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseCondP6FK
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6FinalCoarseBadTopP6FK
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #68
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10SepC11JS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PickedBallC11PB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PickedBallFixedC11PB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PickedBallSeedC11PB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PickedBallKappaC11PB
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PickedBallSeedClosureC11SC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PickedBallKappaC11PK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorSecondP6AN2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorSecondKSW2P6AN2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WholeCompNeckCXHB2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WholeCompTubeEventCXHB2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HtransESmallDeltaCXHB2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10CeilingODECXJT0
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10PreTraceCXJT0
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10PreTraceCeilingCXJT0
