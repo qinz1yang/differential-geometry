@@ -28573,3 +28573,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapProducers
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J6LocSepP6KT2c
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HPB3TruncP6KT
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12SlotsV9P6HV9
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #125
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DepthDriverAnyPosLocalP6DP4C2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HarnackLimitP6HK
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestGateLocP6KT3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyV7LocP6KT3
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12SlotsV9LocP6KT3
