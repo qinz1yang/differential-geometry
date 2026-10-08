@@ -28068,3 +28068,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10WireTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10WireWindowNeckP6JW2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10WireUnion2P6JW2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6PickedBallSeedClosureLocalC11SC2
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #83
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorFourthP6AN4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorFourthFinalP6AN4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6KappaFreshP6F4
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6WindowCoverP6F4
