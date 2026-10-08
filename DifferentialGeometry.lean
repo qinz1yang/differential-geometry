@@ -28035,3 +28035,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10FirstExit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10HRicCTopCXJF2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10TopCeilingCXJF2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10ExtendAtCeilingCXJF2
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #76
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorThirdP6AN3
