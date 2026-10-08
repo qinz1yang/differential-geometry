@@ -28098,3 +28098,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapContracts
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapContractsNoJ10CommP6JK
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapContractsNoJ10CondCompatP6JK
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6ShallowBcadCP6BC
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #86
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SurgeryParamCompatP6PC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SurgeryParamCompatWireP6PC
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SurgeryParamCompatAccP6PC
