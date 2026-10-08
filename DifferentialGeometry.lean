@@ -28047,3 +28047,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10WireUnion
 
 -- chapter 8 (gc/liao/ch8-20261006): root registration #78
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6AnchorThirdKappaP6AN3
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #79
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10USCTopCXUT
