@@ -28294,3 +28294,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6SLTLocalWBP6
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardWireFinalP6GW
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LargeCapCrossingC11SP
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6LargeCapNonResurgeryC11SP
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #98
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6CapWindowDisjC11SP
