@@ -112,12 +112,17 @@ theorem a12_v11fin0_apply_FS (P : OrientedThreeStage.{u}) (g : P.Metric) :
     type_of% (a12EnhancedFull_v11fin0_FS P g) :=
   a12EnhancedFull_v11fin0_FS P g
 
-/-- **2 ⇐ 0（PROVED）**：0-binder 候选 D ⇒ 2-binder（F 侧 conj2；`a12EnhancedFull_v11fin2_FS`）。 -/
+/-- **2 ⇐ 0（PROVED，schema 蕴涵）**：0-binder 候选 D ⇒ `a12EnhancedFull_v11fin2_FS`（FS-2）。
+目标是 FS-2（F 侧 conj2 仍为 binder），**不是候选 C**（`a12EnhancedFull_v11fin2_ASM`）。
+这只是 schema 蕴涵（忽略输入、返回 `D P g`）：不证明旧 `∀ records` 强槽，
+也不把 bypass 变成强槽 producer。 -/
 theorem fin2_of_fin0_FS (P : OrientedThreeStage.{u}) (g : P.Metric) :
     type_of% (a12EnhancedFull_v11fin0_FS P g) → type_of% (a12EnhancedFull_v11fin2_FS P g) :=
   fun h _ _ => h
 
-/-- **5 ⇐ 0（PROVED）**：0-binder 候选 D ⇒ 5-binder 终形（`a12EnhancedFull_v11fin_ASM`；五个 binder 都不被使用）。 -/
+/-- **5 ⇐ 0（PROVED，schema 蕴涵）**：0-binder 候选 D ⇒ 5-binder 终形（`a12EnhancedFull_v11fin_ASM`；
+五个 binder 都不被使用）。目标是 5-binder 终形。这只是 schema 蕴涵（忽略输入、返回 `D P g`）：
+不证明旧 `∀ records` 强槽，也不把 bypass 变成强槽 producer。 -/
 theorem fin_of_fin0_FS (P : OrientedThreeStage.{u}) (g : P.Metric) :
     type_of% (a12EnhancedFull_v11fin0_FS P g) → type_of% (a12EnhancedFull_v11fin_ASM P g) :=
   fun h _ _ _ _ _ => h
