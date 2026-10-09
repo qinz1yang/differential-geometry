@@ -215,7 +215,6 @@ theorem exists_late_cut_family_assembly_S24 {P : OrientedThreeStage.{u}} {g : P.
 
 end GC.LongTime.Ch12
 
-#check @GC.LongTime.exists_late_cut_family
 #check @GC.LongTime.Ch12.exists_late_cut_family_assembly_S24
 #print axioms GC.LongTime.Ch12.exists_late_cut_family_assembly_S24
 #print axioms GC.LongTime.Ch12.exists_decomposition_S24

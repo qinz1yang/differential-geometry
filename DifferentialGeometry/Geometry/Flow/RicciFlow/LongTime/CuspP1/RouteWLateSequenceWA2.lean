@@ -101,9 +101,9 @@ theorem geometrizes_of_metric_routeW_WA
 
 /-- 型对齐：Route W 版与 `LateDecomposition` 原件陈述逐字相同。 -/
 example : type_of% @hasLateSequenceTests_of_thick_thin_and_obstruction_routeW_WA.{u} =
-    type_of% @hasLateSequenceTests_of_thick_thin_and_obstruction.{u} := rfl
+    LateSequenceTestsFromEnhancedStatement.{u} := rfl
 
-example : type_of% @geometrizes_of_metric_routeW_WA.{u} = type_of% @geometrizes_of_metric.{u} :=
+example : type_of% @geometrizes_of_metric_routeW_WA.{u} = GeometrizationFromMetricStatement.{u} :=
   rfl
 
 end GC.LongTime.CuspP1

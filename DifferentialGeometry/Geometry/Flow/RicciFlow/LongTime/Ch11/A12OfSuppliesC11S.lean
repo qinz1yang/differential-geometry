@@ -112,9 +112,12 @@ theorem exists_surgery_with_decaying_accuracy_of_supplies_C11S
   exact exists_surgery_with_decaying_accuracy_of_data_C11S F q records eps C1 C2 κ α hδ hrad
     hwin hconst hcan hnc hacc hLB hrcs
 
-/-- 逐字对齐检查：总装定理的类型就是 A12 的类型（`type_of%` 取 A12 的陈述）。 -/
+/-- 逐字对齐检查：总装定理的类型就是 A12 的类型（显式保留原 A12 的陈述）。 -/
 example (P : OrientedThreeStage.{u}) (g : P.Metric) (h : SurgerySupplies_C11S P g) :
-    type_of% (exists_surgery_with_decaying_accuracy P g) :=
+    (∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
+      AntitoneOn δ (Set.Ici 0) ∧
+      (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
+      hasAnalyticAdmissibility F δ) :=
   exists_surgery_with_decaying_accuracy_of_supplies_C11S P g h
 
 /-- profile 的投影是定义等式（ch12 / O-CH11-PROF 对接用）。 -/
@@ -133,16 +136,7 @@ example {P : OrientedThreeStage.{u}} {g : P.Metric}
     Hp.parameters = q ∧ Hp.epsilon = eps ∧ Hp.kappa = κ ∧ Hp.largerBallAccuracy = α :=
   ⟨rfl, rfl, rfl, rfl⟩
 
-/-- Consumer（A09 前提形）：供给给出的 `δ, F` 直接喂 `exists_late_cut_family`。 -/
-example {P : OrientedThreeStage.{u}} {g : P.Metric} (h : SurgerySupplies_C11S P g)
-    (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
-    ∃ F : GC.Interface.RawSurgery P g,
-      ∀ slices : ℕ → RegularSlice F.observation,
-        (∀ j : ℕ, (j : ℝ) < (slices j).time) →
-        (∀ j : ℕ, Nonempty (slices j).stage.Carrier) →
-        Nonempty (LateCutFamily F K slices) := by
-  obtain ⟨δ, F, -, hdec, hadm⟩ := exists_surgery_with_decaying_accuracy_of_supplies_C11S P g h
-  exact ⟨F, fun slices ht hn => exists_late_cut_family F K hK δ hadm hdec slices ht hn⟩
+/- The legacy admission-consuming example was retired; proved enhanced consumers live downstream. -/
 
 -- (REPOINT2) example removed: `late_derivative_tests_of_flow` now takes
 -- `hasEnhancedAdmissibility_C11E`; the supply bundle only yields the analytic profile

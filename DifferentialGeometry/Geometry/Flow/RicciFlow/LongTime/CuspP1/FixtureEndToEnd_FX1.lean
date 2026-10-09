@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RouteWFinalWA2
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.RestartBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.MeridianTopAssemblyV6
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspExteriorProducers
@@ -68,18 +69,7 @@ example {P : OrientedThreeStage.{u}} {g : P.Metric} {F : GC.Interface.RawSurgery
     {slices : ℕ → RegularSlice F.observation} (L : LateCutFamily F K slices) :
     PersistentHyperbolicCores F (K + 4) := L.cores
 
-/-- (2) Feed the restarted meridian to P2, P3, P4 (type check only). -/
-example
-    {P : OrientedThreeStage.{u}} {g : P.Metric} {F : GC.Interface.RawSurgery P g}
-    (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ) (hadm : hasAnalyticAdmissibility F δ)
-    (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε)
-    {slices : ℕ → RegularSlice F.observation} (L : LateCutFamily F K slices)
-    (M : PrescribedCuspMeridian L.cores) : True := by
-  have _p2 := exists_attained_leastExteriorDiskArea K hK δ hadm hdec M
-  have _p3 := local_disk_comparisons_of_cusp_exterior K hK δ hadm hdec M
-  obtain ⟨H⟩ := hadm
-  have _p4 := exists_local_upper_barrier_of_exteriorDiskArea K hK δ H hdec M
-  trivial
+/- The obsolete anonymous example calling the deleted P2/P3/P4 admissions was retired. -/
 
 /-- (3) Region equality is usable for `t ≥ T₀`. -/
 example {P : OrientedThreeStage.{u}} {g : P.Metric} {F : GC.Interface.RawSurgery P g} {K : ℕ}
@@ -109,36 +99,15 @@ theorem region_old_eq_compl_FX1 {P : OrientedThreeStage.{u}} {g : P.Metric}
   unfold PersistentCuspExterior.region
   rw [dif_pos ht]
 
-/-- (4) Producer 1 replaced by `via_restart_CPRS` + `hP2After`; producers 2-4 and the assembly
-of `hasExteriorAreaObstructionAfter_of_producers` unchanged. -/
+/-- (4) The restart-fixture conclusion follows from the proved Route W obstruction
+without a separate eventual-disk existence hypothesis. -/
 theorem hasExteriorAreaObstructionAfter_of_producers_restart_FX1
     {P : OrientedThreeStage.{u}} {g : P.Metric} {F : GC.Interface.RawSurgery P g}
     (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ) (hadm : hasAnalyticAdmissibility F δ)
     (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε)
     {slices : ℕ → RegularSlice F.observation} (L : LateCutFamily F K slices)
-    (hP2After : ∀ M : PrescribedCuspMeridianTop_CPQ L.cores, ∃ T₀ : ℝ, ∃ h₀ : M.exterior.start ≤ T₀,
-      ∀ t : ℝ, ∀ ht : T₀ ≤ t, ∃ u : C(closedDisk, (postStage F.observation t).Carrier),
-        isExteriorSpanningDisk (M.exterior.region t) (M.transported t (h₀.trans ht)) u)
     (j : ℕ) (hj : L.first ≤ j) (C : ConnectedComponents (slices j).stage.Carrier) :
-    hasAttainedExteriorAreaObstructionAfter F (L.decomposition j C) := by
-  intro s x hcomp
-  obtain ⟨M⟩ := exists_primitive_meridian_of_compressible_seam_via_restart_CPRS K hK δ hadm hdec
-    L j hj C s x hcomp hP2After
-  obtain ⟨H⟩ := hadm
-  obtain ⟨Tm, hm, hmin⟩ := exists_attained_leastExteriorDiskArea K hK δ ⟨H⟩ hdec M
-  obtain ⟨Tc, hc, hcomparison⟩ := local_disk_comparisons_of_cusp_exterior K hK δ ⟨H⟩ hdec M
-  obtain ⟨Tb, hb, hbarrier⟩ := exists_local_upper_barrier_of_exteriorDiskArea K hK δ H hdec M
-  let T := max Tm (max Tc Tb)
-  have hTm : Tm ≤ T := le_max_left _ _
-  have hTc : Tc ≤ T := le_trans (le_max_left _ _) (le_max_right _ _)
-  have hTb : Tb ≤ T := le_trans (le_max_right _ _) (le_max_right _ _)
-  have hstart : M.exterior.start ≤ T := hm.trans hTm
-  let γ := M.loopAfter T hstart
-  have hmin' : hasExteriorDiskMinimizersAfter F.observation M.exterior.region T γ := (hmin T hTm).1
-  refine ⟨T, H.scalarShift, M.exterior.region, γ,
-    (L.cores.start_pos.le.trans M.exterior.after_cores).trans hstart, H.scalarShift_pos, hmin', ?_, ?_⟩
-  · exact continuousOn_exteriorDiskArea_of_local_comparisons _ _ _ _ hmin'
-      (hcomparison T hTc hmin')
-  · exact hbarrier T hTb hmin'
+    hasAttainedExteriorAreaObstructionAfter F (L.decomposition j C) :=
+  hasAttainedExteriorAreaObstructionAfter_of_routeW_final_WA K hK δ hadm hdec L j hj C
 
 end GC.LongTime.CuspP1

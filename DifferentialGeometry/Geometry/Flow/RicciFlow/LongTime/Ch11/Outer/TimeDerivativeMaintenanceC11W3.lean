@@ -207,7 +207,10 @@ example (P : OrientedThreeStage.{u}) (g : P.Metric)
       ∀ F : GC.Interface.RawSurgery P g, F.tower = T.toChain.tower →
         LargerBallScalarLargeSupply_C11S F (chainDiagonal_C11A T.toChain).delta
           (diagonalAccuracy_C11S (chainDiagonal_C11A T.toChain).delta)) :
-    type_of% (exists_surgery_with_decaying_accuracy P g) :=
+    (∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
+      AntitoneOn δ (Set.Ici 0) ∧
+      (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
+      hasAnalyticAdmissibility F δ) :=
   a12_of_preparedBase_C11W P g pBase C Cdist cMax Dstar εReserve hcMax prepared hbase hprepared
     hres (fun j => blockStep_of_astraStepShape_C11W3 j (hshape j)) hS8
 

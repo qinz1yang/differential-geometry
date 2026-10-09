@@ -133,7 +133,10 @@ theorem a12_of_astra_byPoint_C11W6 (P : OrientedThreeStage.{u}) (g : P.Metric)
         ∀ F : GC.Interface.RawSurgery P g, F.tower = T.toChain.tower →
           LargerBallScalarLargeSupply_C11S F (chainDiagonal_C11A T.toChain).delta
             (diagonalAccuracy_C11S (chainDiagonal_C11A T.toChain).delta)) :
-    type_of% (exists_surgery_with_decaying_accuracy P g) := by
+    (∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
+      AntitoneOn δ (Set.Ici 0) ∧
+      (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
+      hasAnalyticAdmissibility F δ) := by
   obtain ⟨Cdist, -, C, -, hmake⟩ := exists_blockSteps_byPoint_C11W6.{u} Dstar hDstar cMax hcMax
   obtain ⟨pBase, prepared, hbase, hdist, hres, hstep⟩ := hmake P g (εReq C) (hεReq C)
   obtain ⟨hacc, hrad, hord⟩ := pBase_bounds_of_reserve_C11W6 hbase hres

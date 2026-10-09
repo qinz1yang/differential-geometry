@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12EnhancedC11E
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.WR.EnhancedBridgeC11M
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch12.A13Final_S153
 
@@ -10,7 +11,7 @@ set_option autoImplicit false
 （`LT/LateCutGeometry.lean:159`，M2-pre 起 `hadm : hasEnhancedAdmissibilityFull_C11F F δ`）**同陈述**
 （文件末 `type_of%` 的 `rfl`），证明 = ch12 终端 `A13_of_supplies_S153`，16 项 ch11 供给由 v2 profile 的字段经
 `WR/EnhancedBridgeC11M.lean` 逐项给出（按名字传参）。tracked A13 不能原地去 sorry：终端闭包 import
-`LateCutGeometry`（成环），故端点调用点改调本定理，tracked A13 留作死 admission（同 A12 / Route W 先例）。
+`LateCutGeometry`（成环），故端点调用点改调本定理，原 admission 已删除，独立陈述 `A13EnhancedStatement_C11E` 保留类型回归检查。
 -/
 
 noncomputable section
@@ -48,6 +49,6 @@ theorem late_derivative_tests_of_flow_of_enhanced_C11M {P : OrientedThreeStage.{
 
 /-- 型对齐：wrapper 与 tracked A13 陈述逐字相同。 -/
 example : type_of% @late_derivative_tests_of_flow_of_enhanced_C11M.{u} =
-    type_of% @late_derivative_tests_of_flow.{u} := rfl
+    A13EnhancedStatement_C11E.{u} := rfl
 
 end GC.LongTime.Ch11

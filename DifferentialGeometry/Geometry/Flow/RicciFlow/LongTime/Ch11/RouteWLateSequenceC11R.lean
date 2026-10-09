@@ -102,14 +102,14 @@ theorem geometrizes_of_metric_C11R
 
 example (hA12' : A12EnhancedFullStatement_C11F.{u}) :
     type_of% (exists_admissible_surgery_with_late_sequence_tests_C11R hA12') =
-      type_of% @exists_admissible_surgery_with_late_sequence_tests.{u} := rfl
+      AdmissibleLateSequenceExistenceStatement.{u} := rfl
 
 example (hA12' : A12EnhancedFullStatement_C11F.{u}) :
     type_of% (exists_surgery_with_late_sequence_tests_C11R hA12') =
-      type_of% @exists_surgery_with_late_sequence_tests.{u} := rfl
+      SurgeryLateSequenceExistenceStatement.{u} := rfl
 
 example (hA12' : A12EnhancedFullStatement_C11F.{u}) :
-    type_of% (geometrizes_of_metric_C11R hA12') = type_of% @geometrizes_of_metric.{u} := rfl
+    type_of% (geometrizes_of_metric_C11R hA12') = GeometrizationFromMetricStatement.{u} := rfl
 
 /-- consumer：re-point 后 `GC.Endpoint.geometrization` 的证明体（`Geometrization.lean` 改一行的
 dry run；A12′ admission 以 `hA12'` 代入）。 -/

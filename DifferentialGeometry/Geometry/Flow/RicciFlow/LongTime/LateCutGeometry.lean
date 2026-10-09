@@ -146,24 +146,6 @@ theorem LateCutFamily.exists_late_tests_of_derivative_bounds
   exact ⟨fun i => (pieces i).toHyperbolicOrCollapsed ((slices j).componentMetric C) A
     (L.induced j C i) (fun hi => hbound j C i hi w hw)⟩
 
-theorem exists_late_cut_family {P : OrientedThreeStage.{u}} {g : P.Metric}
-    (F : GC.Interface.RawSurgery P g) (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ)
-    (hadm : hasAnalyticAdmissibility F δ)
-    (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε)
-    (slices : ℕ → RegularSlice F.observation)
-    (htimes : ∀ j : ℕ, (j : ℝ) < (slices j).time)
-    (hnonempty : ∀ j : ℕ, Nonempty (slices j).stage.Carrier) :
-    Nonempty (LateCutFamily F K slices) := by
-  sorry
 
-theorem late_derivative_tests_of_flow {P : OrientedThreeStage.{u}} {g : P.Metric}
-    (F : GC.Interface.RawSurgery P g) (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ)
-    (hadm : Ch11.hasEnhancedAdmissibilityFull_C11F F δ)
-    (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε)
-    (slices : ℕ → RegularSlice F.observation)
-    (htimes : ∀ j : ℕ, (j : ℝ) < (slices j).time)
-    (hnonempty : ∀ j : ℕ, Nonempty (slices j).stage.Carrier)
-    (L : LateCutFamily F K slices) : L.hasEventualDerivativeBounds := by
-  sorry
 
 end GC.LongTime

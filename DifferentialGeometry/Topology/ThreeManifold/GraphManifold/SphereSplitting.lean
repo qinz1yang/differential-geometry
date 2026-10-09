@@ -15,11 +15,5 @@ theorem sphere_split_of_rawGraphPresentation
   let _ := G
   exact exists_primeDecomposition M
 
-theorem rawGraphPresentation_of_sphere_summand
-    {M P : ConnectedClosedOrientedManifold.{u} 3}
-    (G : RawGraphPresentation (NoCuts.carrier M))
-    (S : GC.Topology.SphereSummand M P) (hP : IsPrime P) :
-    Nonempty (RawGraphPresentation (NoCuts.carrier P)) := by
-  sorry
 
 end GC.GraphManifold

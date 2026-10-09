@@ -94,16 +94,16 @@ theorem exists_admissible_surgery_with_late_sequence_tests_of_enhanced_C11R
 
 /-- consumer（rev1）：A12′ admission 喂入 core L2，复现 `LateDecomposition` 原件
 `exists_admissible_surgery_with_late_sequence_tests` 的类型。 -/
-example : type_of% @exists_admissible_surgery_with_late_sequence_tests.{u} :=
+example : AdmissibleLateSequenceExistenceStatement.{u} :=
   fun P g K hK => exists_admissible_surgery_with_late_sequence_tests_of_enhanced_C11R P g
     (exists_surgery_with_decaying_accuracy_enhanced P g) K hK
 
 /-! ### END-RFL（R-END1）：`RouteWLateSequenceWA2.lean` 中间两层与原件类型逐字相同 -/
 
 example : type_of% @CuspP1.exists_admissible_surgery_with_late_sequence_tests_routeW_WA.{u} =
-    type_of% @exists_admissible_surgery_with_late_sequence_tests.{u} := rfl
+    AdmissibleLateSequenceExistenceStatement.{u} := rfl
 
 example : type_of% @CuspP1.exists_surgery_with_late_sequence_tests_routeW_WA.{u} =
-    type_of% @exists_surgery_with_late_sequence_tests.{u} := rfl
+    SurgeryLateSequenceExistenceStatement.{u} := rfl
 
 end GC.LongTime.Ch11

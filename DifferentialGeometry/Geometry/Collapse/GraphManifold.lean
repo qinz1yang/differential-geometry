@@ -100,29 +100,6 @@ end GC.GraphManifold
 namespace DifferentialGeometry.Geometry.Collapse
 universe u
 
-theorem exists_closed_graph_threshold_of_finite_scales_disj (K : ℕ)
-    (hK : staticDerivativeOrder ≤ K)
-    (A : ℝ → ℝ) (hA : ∀ w, 0 < w → w < euclideanThreeUnitBallVolume → 0 < A w) :
-    ∃ w₀ : ℝ, 0 < w₀ ∧ w₀ < euclideanThreeUnitBallVolume ∧
-      ∀ (W : CompactCarrier.{u}) [ConnectedSpace W.Carrier]
-        (g : SmoothRiemannianMetric W.model W.Carrier),
-        (∀ p, curvatureRadius g p ≠ ⊤) →
-        closedCollapseHypotheses W g K A w₀ →
-          Nonempty (RawGraphPresentation W) ∨
-            ∃ G : GC.Geometry.GeometricStructure W.model W.Carrier,
-              G.model = .spherical ∨ G.model = .sphericalProduct ∨ G.model = .euclidean := by
-  sorry
 
-theorem exists_boundary_graph_threshold (K : ℕ) (hK : staticDerivativeOrder ≤ K)
-    (A : ℝ → ℝ) (hA : ∀ w, 0 < w → w < euclideanThreeUnitBallVolume → 0 < A w) :
-    ∃ w₀ : ℝ, 0 < w₀ ∧ w₀ < euclideanThreeUnitBallVolume ∧
-      ∀ (W : CompactCarrier.{u}) [ConnectedSpace W.Carrier]
-        (g : SmoothRiemannianMetric W.model W.Carrier)
-        (B : NearlyCuspidalBoundary W g K w₀),
-        boundaryVolumeCollapsed W g w₀ → curvatureDerivativesControlled g K A w₀ →
-        ∃ G : RawGraphPresentation W,
-          ∃ e : Fin B.count ≃ Fin G.externalCount,
-            ∀ i, Set.range (G.external.torusMap (e i)) = B.component i := by
-  sorry
 
 end DifferentialGeometry.Geometry.Collapse

@@ -16,15 +16,6 @@ variable {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
   [IsManifold (𝓡 3) ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-omit [T2Space M] [SigmaCompactSpace M] in
-/-- no longer used by `hyperbolicGeometricStructure` (2026-10-06); superseded by
-`GC.Geometry.hasThurstonAtlas_hyperbolic_of_hasConstantSectionalCurvature` under completeness;
-kept per user decision. -/
-theorem has_hyperbolic_atlas_of_curvature_neg_one
-    (g : SmoothRiemannianMetric (𝓡 3) M)
-    (hcurvature : hasConstantSectionalCurvature g (-1)) :
-    GC.Geometry.HasThurstonAtlas g .hyperbolic := by
-  sorry
 
 def hyperbolicGeometricStructure
     (g : SmoothRiemannianMetric (𝓡 3) M)

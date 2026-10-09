@@ -21,22 +21,5 @@ def hasConstantSectionalCurvature (g : SmoothRiemannianMetric (𝓡 3) M) (K : �
   ∀ (p : M) (v w : TangentSpace (𝓡 3) p),
     LinearIndependent ℝ ![v, w] → Geometry.Riemannian.sectionalCurvature g p v w = K
 
-theorem mostow_prasad
-    (g : SmoothRiemannianMetric (𝓡 3) M)
-    (h : SmoothRiemannianMetric (𝓡 3) N)
-    (K : ℝ) (hK : K < 0)
-    (hgcurvature : hasConstantSectionalCurvature g K)
-    (hhcurvature : hasConstantSectionalCurvature h K)
-    (hgcomplete : RiemannianMetricComplete g)
-    (hhcomplete : RiemannianMetricComplete h)
-    (hgvolume : Integral.Measure.riemannianVolumeMeasure (𝓡 3) M g Set.univ < ⊤)
-    (hhvolume : Integral.Measure.riemannianVolumeMeasure (𝓡 3) N h Set.univ < ⊤)
-    (u : ContinuousMap.HomotopyEquiv M N) :
-    ∃! f : M ≃ₘ⟮𝓡 3, 𝓡 3⟯ N,
-      (∀ (p : M) (v w : TangentSpace (𝓡 3) p),
-        h.inner (f p) (mfderiv (𝓡 3) (𝓡 3) f p v)
-          (mfderiv (𝓡 3) (𝓡 3) f p w) = g.inner p v w) ∧
-      (⟨f, f.continuous⟩ : C(M, N)).Homotopic u.toFun := by
-  sorry
 
 end DifferentialGeometry.Geometry.Hyperbolic

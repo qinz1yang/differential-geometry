@@ -18674,6 +18674,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.ExteriorDiskFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Geometrization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateCutGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateDecomposition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.LateDecompositionProved
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Parameters
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.PersistentHyperbolicCores
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.RegularSlice

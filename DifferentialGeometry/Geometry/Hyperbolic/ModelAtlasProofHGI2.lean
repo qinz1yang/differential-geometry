@@ -12,19 +12,18 @@ import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling
 /-!
 # `ModelAtlas` proved: twin of the W8 skeleton `Hyperbolic/ModelAtlas.lean` (S-HG-INTAKE-2, `_HGI2`)
 
-The tracked `Hyperbolic/ModelAtlas.lean` states `has_hyperbolic_atlas_of_curvature_neg_one`
-but leaves its body unproved (skeleton).  This file is the donor file
+The former `Hyperbolic/ModelAtlas.lean` declaration `has_hyperbolic_atlas_of_curvature_neg_one`
+has been removed. This file is the donor file
 `Geometry/Hyperbolic/ModelAtlas.lean` of the branch `codex/della-mostow-smooth-adapter-20261004`
 (467465bc6c), byte for byte, with two kinds of edits:
 
-* one extra `import` (the tracked skeleton, for the `rfl` example at the end);
+* one extra `import` of the canonical model-atlas module;
 * the three declarations the tracked file also declares carry the suffix `_HGI2`:
   `has_hyperbolic_atlas_of_curvature_neg_one_HGI2`, `hyperbolicGeometricStructure_HGI2`,
   `hyperbolicGeometricStructure_HGI2_model`.
 
-The other donor declarations (`has_hyperbolic_atlas_scaleMetric`, …) keep their names.  The twin
-has exactly the statement of the skeleton theorem.  Retiring the skeleton (replace the unproved
-body by this proof) is left to INT.
+The other donor declarations (`has_hyperbolic_atlas_scaleMetric`, …) keep their names.  The explicit original contract below checks the proved local atlas without referring to the
+removed declaration.
 -/
 
 set_option autoImplicit false
@@ -396,8 +395,15 @@ namespace DifferentialGeometry.Geometry.Hyperbolic
 
 universe u
 
-/-- the twin has exactly the statement of the skeleton -/
-example : type_of% @has_hyperbolic_atlas_of_curvature_neg_one.{u} =
-    type_of% @has_hyperbolic_atlas_of_curvature_neg_one_HGI2.{u} := rfl
+open scoped _root_.Manifold _root_.ContDiff
+
+/-- The proved local atlas satisfies the original contract without completeness or separation
+assumptions on the ambient manifold. -/
+example {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [IsManifold (𝓡 3) ∞ M]
+    (g : SmoothRiemannianMetric (𝓡 3) M)
+    (hcurvature : hasConstantSectionalCurvature g (-1)) :
+    GC.Geometry.HasThurstonAtlas g .hyperbolic :=
+  has_hyperbolic_atlas_of_curvature_neg_one_HGI2 g hcurvature
 
 end DifferentialGeometry.Geometry.Hyperbolic

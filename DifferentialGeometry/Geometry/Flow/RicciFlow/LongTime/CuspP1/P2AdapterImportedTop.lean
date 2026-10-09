@@ -1,10 +1,12 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterImportedLemmas
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterReal1_HC2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterReal2_HC2
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterReal3_HC2
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ComponentDisk
 import DifferentialGeometry.Topology.Manifold.BoundaryExtrema
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.P2AdapterOwnDisk
 
 /-!
-# P2A-24 (Top versions, NO sorry in any proof here; axioms include `sorryAx` via the mirrors)
+# P2A-24: Top versions backed by the proved HC2 inputs
 
 Top (`PrescribedCuspMeridianTop_CPQ`) versions of IMS03's M-version profile/Morrey chain
 (`CuspProfileConfinement.lean:25,153`, `CuspProfileDisk.lean:21` @ 981d9a8cd), with the two uses of
@@ -16,7 +18,7 @@ Top (`PrescribedCuspMeridianTop_CPQ`) versions of IMS03's M-version profile/Morr
   delivered yet, hence an explicit parameter; discharger: lane P2A-13), plus `hloop`
   (the transported loop is a smooth embedded loop of the Euclidean-model chart; discharger: P2A-13
   or a later lane; for `PrescribedCuspMeridian` it came from `spans`).
-This file may not be imported by anything outside `CuspP1/P2AdapterImported*.lean`.
+The three former mirror calls now use the existing proved HC2 theorems with the same contracts.
 -/
 
 set_option autoImplicit false
@@ -70,7 +72,7 @@ theorem PrescribedCuspMeridianTop_CPQ.transported_subset_frontier_eventually_P2A
       ∀ (t : ℝ) (ht : T₀ ≤ t),
         Set.range (M.transported t (h₀.trans ht)) ⊆ frontier (M.exterior.region t) := by
   obtain ⟨a, ha, T₀, h₀, htmin, htime, hprofiles⟩ :=
-    PersistentCuspExterior.exists_eventual_convex_profiles_P2A cores M.exterior tmin
+    PersistentCuspExterior.exists_eventual_convex_profiles_P2A_HC2 cores M.exterior tmin
   refine ⟨T₀, h₀, htmin, htime, fun t ht => ?_⟩
   obtain ⟨ρ, hρ, hregion, _, hzero, hpos⟩ := hprofiles t ht
   rintro _ ⟨θ, rfl⟩
@@ -156,7 +158,7 @@ theorem PrescribedCuspMeridianTop_CPQ.profile_disk_confinement_P2A
     rw [hγpoint θ]
     exact hmem
   obtain ⟨hweak, hstrict, hgerms⟩ :=
-    IsMorreyDisk.profile_confinement_P2A ((postMetric F.observation t).restrictOpen U)
+    IsMorreyDisk.profile_confinement_P2A_HC2 ((postMetric F.observation t).restrictOpen U)
       a ha ρU hρU hρUa hbaseU hcontactU hqProfile hγ hboundary
   have hstrictRegion : {x : (postStage F.observation t).Carrier | ρ x < 0} ⊆
       interior (M.exterior.region t) := by
@@ -237,7 +239,7 @@ theorem PrescribedCuspMeridianTop_CPQ.exists_eventual_profile_disk_confinement_P
                 barrier_P2A a (ρ (y : (postStage F.observation t).Carrier)) =
                   ρ (y : (postStage F.observation t).Carrier) := by
   obtain ⟨a, ha, T₀, h₀, htmin, htime, hprofiles⟩ :=
-    PersistentCuspExterior.exists_eventual_convex_profiles_P2A cores M.exterior tmin
+    PersistentCuspExterior.exists_eventual_convex_profiles_P2A_HC2 cores M.exterior tmin
   refine ⟨a, ha, T₀, h₀, htmin, htime, ?_⟩
   intro T h t ht
   obtain ⟨ρ, hρ, hregion, hcompact, hzero, hpositive⟩ := hprofiles t (h.trans ht)
@@ -346,7 +348,7 @@ theorem PrescribedCuspMeridianTop_CPQ.exists_eventual_confined_morrey_disk_P2A
   have hγ : IsSmoothEmbeddedLoop (E := EuclideanSpace ℝ (Fin 3)) γU :=
     (isSmoothEmbeddedLoop_open_inclusion_iff U γU).mp (hγeq.symm ▸ hloop t hts)
   obtain ⟨hcomplete, hregular⟩ :=
-    canonicalPositiveDomainMetric_complete_homogeneous_P2A (postMetric F.observation t) hδ U hU
+    canonicalPositiveDomainMetric_complete_homogeneous_P2A_HC2 (postMetric F.observation t) hδ U hU
       hcompact (by simp)
   have hfinite := hcomp t hts U (canonicalPositiveDomainMetric_P2A (postMetric F.observation t) hδ U hU)
     γU hγeq hγ hWU

@@ -1190,10 +1190,7 @@ run_cmd do
   -- (`a12EnhancedFull_v11fin0_FS`), so no declaration in `owned` is a direct admission any more.
   let expectedDirect : List Name := []
   let downstream : List Name := []
-  let knownAdmissions : List Name := [`GC.LongTime.exists_late_cut_family,
-    `GC.LongTime.exists_surgery_with_decaying_accuracy,
-    `GC.LongTime.exists_surgery_with_decaying_accuracy_enhanced,
-    `GC.LongTime.late_derivative_tests_of_flow]
+  let knownAdmissions : List Name := []
   let allowed : List Name := [``propext, ``Classical.choice, ``Quot.sound]
   let mut count : Nat := 0
   let mut direct : Nat := 0
@@ -1211,7 +1208,7 @@ run_cmd do
       let axs ← collectAxioms name
       memo := memo.insert name (axs.contains ``sorryAx)
       for ax in axs do
-        unless allowed.contains ax || ax == ``sorryAx do
+        unless allowed.contains ax do
           throwError "Unexpected axioms {ax} in {name}"
       let isDirect := info.getUsedConstantsAsSet.contains ``sorryAx
       if isDirect then
@@ -1264,6 +1261,6 @@ run_cmd do
   unless direct == expectedDirect.length do
     throwError "Expected {expectedDirect.length} direct admissions; observed {direct}"
   let msg : String := s!"ch11 declaration audit C3: {owned.length} modules, {count} declarations, "
-    ++ s!"{authored.length} authored theorems present, {direct} direct admission (A12 enhanced), "
+    ++ s!"{authored.length} authored theorems present, {direct} direct admissions, "
     ++ s!"{viaPath} sorryAx-downstream declarations."
   logInfo msg

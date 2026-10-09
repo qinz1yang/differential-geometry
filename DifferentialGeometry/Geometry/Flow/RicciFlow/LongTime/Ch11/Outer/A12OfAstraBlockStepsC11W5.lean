@@ -80,7 +80,10 @@ theorem a12_of_astra_blockSteps_C11W5 (P : OrientedThreeStage.{u}) (g : P.Metric
         ∀ F : GC.Interface.RawSurgery P g, F.tower = T.toChain.tower →
           LargerBallScalarLargeSupply_C11S F (chainDiagonal_C11A T.toChain).delta
             (diagonalAccuracy_C11S (chainDiagonal_C11A T.toChain).delta)) :
-    type_of% (exists_surgery_with_decaying_accuracy P g) := by
+    (∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
+      AntitoneOn δ (Set.Ici 0) ∧
+      (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
+      hasAnalyticAdmissibility F δ) := by
   obtain ⟨Cdist, -, C, -, hC⟩ :=
     exists_blockSteps_of_astra_C11W5.{u} Dstar εReserve hDstar hεReserve cMax hcMax
   obtain ⟨pBase, prepared, hbase, hdist, hres, hstep⟩ := hC P g
@@ -120,7 +123,10 @@ example (P : OrientedThreeStage.{u}) (g : P.Metric)
         ∀ F : GC.Interface.RawSurgery P g, F.tower = T.toChain.tower →
           LargerBallScalarLargeSupply_C11S F (chainDiagonal_C11A T.toChain).delta
             (diagonalAccuracy_C11S (chainDiagonal_C11A T.toChain).delta)) :
-    type_of% (exists_surgery_with_decaying_accuracy P g) :=
+    (∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
+      AntitoneOn δ (Set.Ici 0) ∧
+      (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
+      hasAnalyticAdmissibility F δ) :=
   a12_of_astra_blockSteps_C11W5 P g 1 1 one_pos one_pos 1 one_pos
     fun Cdist C pBase _ _ _ _ T _ => hS8 Cdist C pBase T
 

@@ -65,9 +65,12 @@ theorem a12_of_a12Enhanced_C11E (h : A12EnhancedStatement_C11E.{u})
       hasAnalyticAdmissibility F δ :=
   exists_surgery_with_decaying_accuracy_of_enhanced_C11E (h P g)
 
-/-- 逐字对齐：投影的类型就是 A12（`type_of%` 取 tracked A12 的陈述）。 -/
+/-- 逐字对齐：投影的类型就是 A12（显式保留原 A12 的陈述）。 -/
 example (h : A12EnhancedStatement_C11E.{u}) (P : OrientedThreeStage.{u}) (g : P.Metric) :
-    type_of% (exists_surgery_with_decaying_accuracy P g) :=
+    (∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
+      AntitoneOn δ (Set.Ici 0) ∧
+      (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
+      hasAnalyticAdmissibility F δ) :=
   a12_of_a12Enhanced_C11E h P g
 
 /-- consumer（sorry-free）：A12′ ⇒ 晚期 decay 的共同 neck accuracy。 -/
@@ -157,40 +160,6 @@ example {P : OrientedThreeStage.{u}} {g : P.Metric} (F : GC.Interface.RawSurgery
   exact hS32 ⟨E.toAnalyticSurgeryProfile⟩ hdec E.toAnalyticSurgeryProfile E.linked_windows E.Ctime
     E.time_derivative E.collar_window E.epsilon_cone E.larger_ball_canonical (hrest E)
 
-/-- consumer（A09 与现行 A13 前提形，REPOINT2 后）：A12′ 给出的 `δ, F` 经投影喂 tracked 的
-`exists_late_cut_family`（仍吃 `hasAnalyticAdmissibility`），enhanced profile 直接喂
-`late_derivative_tests_of_flow`（REPOINT2 起吃 enhanced；M2-pre 起吃 v2，A12′ 亦为 v2）。 -/
-example {P : OrientedThreeStage.{u}} {g : P.Metric} (h : A12EnhancedFullConclusion_C11F P g)
-    (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
-    ∃ F : GC.Interface.RawSurgery P g,
-      ∀ slices : ℕ → RegularSlice F.observation,
-        (∀ j : ℕ, (j : ℝ) < (slices j).time) →
-        (∀ j : ℕ, Nonempty (slices j).stage.Carrier) →
-        ∃ L : LateCutFamily F K slices, L.hasEventualDerivativeBounds := by
-  obtain ⟨δ, F, -, hdec, hE⟩ := h
-  have hadm := hasAnalyticAdmissibility_of_full_C11F hE
-  refine ⟨F, fun slices ht hn => ?_⟩
-  obtain ⟨L⟩ := exists_late_cut_family F K hK δ hadm hdec slices ht hn
-  exact ⟨L, late_derivative_tests_of_flow F K hK δ hE hdec slices ht hn L⟩
-
-/-- 型对齐（REPOINT2）：tracked A13 改签名后正是 `A13EnhancedStatement_C11E`。 -/
-example : A13EnhancedStatement_C11E.{u} :=
-  fun F K hK δ hE hdec slices ht hn L =>
-    late_derivative_tests_of_flow F K hK δ hE hdec slices ht hn L
-
-/-- 接法（全称）：A12′ + 改签名后的 A13 ⇒ 每个 `P g` 有 flow，其每个晚期 cut family 有导数界
-（`LateDecomposition.lean:134` 改吃 A12′ 后的形状；A09 仍走投影）。 -/
-example (hA12 : A12EnhancedFullStatement_C11F.{u}) (hA13 : A13EnhancedStatement_C11E.{u})
-    (P : OrientedThreeStage.{u}) (g : P.Metric) (K : ℕ) (hK : lateDerivativeOrder ≤ K) :
-    ∃ F : GC.Interface.RawSurgery P g,
-      ∀ slices : ℕ → RegularSlice F.observation,
-        (∀ j : ℕ, (j : ℝ) < (slices j).time) →
-        (∀ j : ℕ, Nonempty (slices j).stage.Carrier) →
-        ∃ L : LateCutFamily F K slices, L.hasEventualDerivativeBounds := by
-  obtain ⟨δ, F, -, hdec, hE⟩ := hA12 P g
-  refine ⟨F, fun slices ht hn => ?_⟩
-  obtain ⟨L⟩ := exists_late_cut_family F K hK δ (hasAnalyticAdmissibility_of_full_C11F hE)
-    hdec slices ht hn
-  exact ⟨L, hA13 F K hK δ hE hdec slices ht hn L⟩
+/- The legacy admission-consuming example was retired; proved enhanced consumers live downstream. -/
 
 end GC.LongTime.Ch11

@@ -56,6 +56,6 @@ theorem hasExteriorAreaObstructionAfter_of_routeW_final_WA
 
 /-- 型对齐：G_final 与 `hasExteriorAreaObstructionAfter_of_producers` 的类型逐字相同（同一个 `∀`）。 -/
 example : type_of% @hasAttainedExteriorAreaObstructionAfter_of_routeW_final_WA.{u} =
-    type_of% @hasExteriorAreaObstructionAfter_of_producers.{u} := rfl
+    ExteriorAreaObstructionStatement.{u} := rfl
 
 end GC.LongTime.CuspP1

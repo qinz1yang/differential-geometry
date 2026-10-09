@@ -94,8 +94,7 @@ example {P : OrientedThreeStage.{u}} {g : P.Metric} (F : GC.Interface.RawSurgery
     (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε)
     (slices : ℕ → RegularSlice F.observation) (htimes : ∀ j : ℕ, (j : ℝ) < (slices j).time)
     (hnonempty : ∀ j : ℕ, Nonempty (slices j).stage.Carrier) :
-    type_of% (exists_late_cut_family F K hK δ (hasAnalyticAdmissibility_of_full_C11F hadm) hdec
-      slices htimes hnonempty) :=
+    Nonempty (LateCutFamily F K slices) :=
   exists_late_cut_family_of_enhanced_C11M F K hK δ hadm hdec slices htimes hnonempty
 
 end GC.LongTime.Ch11

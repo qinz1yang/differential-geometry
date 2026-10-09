@@ -32,10 +32,18 @@ example (K : ℕ) (hK : staticDerivativeOrder ≤ K) (A : ℝ → ℝ)
   have _ := hA
   exact a02_closed_univ_UL.{u} K hK A
 
-/-- The theorem has the type of `exists_closed_graph_threshold_of_finite_scales_disj.{u}`. -/
+/-- The proof satisfies the explicit original closed threshold contract at universe `u`. -/
 example (K : ℕ) (hK : staticDerivativeOrder ≤ K) (A : ℝ → ℝ)
-    (hA : ∀ w, 0 < w → w < euclideanThreeUnitBallVolume → 0 < A w) :=
-  (a02_closed_univ_UL.{u} K hK A :
-    type_of% (exists_closed_graph_threshold_of_finite_scales_disj.{u} K hK A hA))
+    (hA : ∀ w, 0 < w → w < euclideanThreeUnitBallVolume → 0 < A w) := by
+  have _ := hA
+  exact (a02_closed_univ_UL.{u} K hK A :
+    ∃ w₀ : ℝ, 0 < w₀ ∧ w₀ < euclideanThreeUnitBallVolume ∧
+      ∀ (W : CompactCarrier.{u}) [ConnectedSpace W.Carrier]
+        (g : SmoothRiemannianMetric W.model W.Carrier),
+        (∀ p, curvatureRadius g p ≠ ⊤) →
+        closedCollapseHypotheses W g K A w₀ →
+          Nonempty (RawGraphPresentation W) ∨
+            ∃ G : GC.Geometry.GeometricStructure W.model W.Carrier,
+              G.model = .spherical ∨ G.model = .sphericalProduct ∨ G.model = .euclidean)
 
 end DifferentialGeometry.Geometry.Collapse

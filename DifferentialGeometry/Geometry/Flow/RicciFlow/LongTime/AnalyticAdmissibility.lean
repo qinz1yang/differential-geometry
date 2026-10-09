@@ -112,11 +112,5 @@ theorem AnalyticSurgeryProfile.largerBallAccuracy_on_late_half_interval
     (by linarith : s ≤ 2 * s)
   exact (p.diagonal_smallness s hspos).trans_le (hrad.trans htime)
 
-theorem exists_surgery_with_decaying_accuracy (P : OrientedThreeStage.{u}) (g : P.Metric) :
-    ∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
-      AntitoneOn δ (Ici 0) ∧
-      (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
-      hasAnalyticAdmissibility F δ := by
-  sorry
 
 end GC.LongTime

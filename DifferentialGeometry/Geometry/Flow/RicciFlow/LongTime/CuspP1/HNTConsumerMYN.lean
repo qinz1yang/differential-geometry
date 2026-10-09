@@ -3,13 +3,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.A08OfHNT_MYN
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.CuspP1.A11OfHNT_MYN
 
 /-!
-# S-MY-NT G3 consumer：wrapper 的结论与 A08 / A11 skeleton 的陈述 `type_of%` 对齐
+# HNT consumer contracts
 
-本文件 import `CuspExteriorProducers`（A08、A11 的 skeleton admission 所在），所以**不登记**；
-两个 wrapper（`A08OfHNT_MYN`、`A11OfHNT_MYN`）本身不 import 它，仍然不经 skeleton。
-下面两个 `example` 把 wrapper 的"`hNT` → 结论"形状与 skeleton 声明在**同一组实参**下的类型
-（`type_of%`）逐字对齐：结论完全一致，wrapper 只多一个前提 `hNT`（A08 另外不带 `hK δ hadm hdec`，
-它们在 `_HC2` 路线里没有被用到）。
+The conditional HNT wrappers are checked against the explicit original A08/A11 conclusions.
+The removed admission declarations are not required to state or check these contracts.
 -/
 
 set_option autoImplicit false
@@ -24,13 +21,17 @@ namespace GC.LongTime.CuspP1
 
 universe u
 
-/-- A08：`hNT → (A08 的结论)`，结论用 skeleton 的 `type_of%` 给出（`hNT` 由 `_` 推断）。 -/
+/-- A08：`hNT → (A08 的结论)`，结论显式写出（`hNT` 由 `_` 推断）。 -/
 example {P : OrientedThreeStage.{u}} {g : P.Metric} {F : GC.Interface.RawSurgery P g}
     (K : ℕ) (hK : lateDerivativeOrder ≤ K) (δ : ℝ → ℝ) (hadm : hasAnalyticAdmissibility F δ)
     (hdec : ∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε)
     {cores : PersistentHyperbolicCores F (K + 4)} (M : PrescribedCuspMeridian cores) :=
   (exists_attained_leastExteriorDiskArea_of_hNT_MYN (F := F) M :
-    _ → type_of% (exists_attained_leastExteriorDiskArea K hK δ hadm hdec M))
+    _ → (∃ T₀ : ℝ, ∃ h₀ : M.exterior.start ≤ T₀, ∀ T : ℝ, ∀ h : T₀ ≤ T,
+      hasExteriorDiskMinimizersAfter F.observation M.exterior.region T
+        (M.loopAfter T (h₀.trans h)) ∧
+      ∀ t ∈ Ici T, 0 < exteriorDiskArea F.observation M.exterior.region T
+        (M.loopAfter T (h₀.trans h)) t))
 
 /-- A11：`hNT → (A11 的结论)`，前提与 A11 逐字相同。 -/
 example {P : OrientedThreeStage.{u}} {g : P.Metric} {F : GC.Interface.RawSurgery P g}
@@ -43,7 +44,6 @@ example {P : OrientedThreeStage.{u}} {g : P.Metric} {F : GC.Interface.RawSurgery
       ((L.decomposition j C).reconstructionAtlas.torusInPrime
         (L.decomposition j C).reconstruction s) x)) :=
   (exists_primitive_meridian_of_compressible_seam_of_hNT_MYN K hK δ hadm hdec L j hj C s x hcomp :
-    _ → type_of% (exists_primitive_meridian_of_compressible_seam K hK δ hadm hdec L j hj C s x
-      hcomp))
+    _ → Nonempty (PrescribedCuspMeridian L.cores))
 
 end GC.LongTime.CuspP1

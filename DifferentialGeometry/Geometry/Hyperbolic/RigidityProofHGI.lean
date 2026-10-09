@@ -11,11 +11,11 @@ import Mathlib.Topology.Homotopy.Equiv
 # `mostow_prasad` proved: twin of the W8 skeleton theorem (S-HG-INTAKE, suffix `_HGI`)
 
 `mostow_prasad_HGI` has the statement of `DifferentialGeometry.Geometry.Hyperbolic.mostow_prasad`
-(`Rigidity.lean`, still an unproved skeleton in this tree) and the proof of the donor branch
+(formerly the retained declaration in `Rigidity.lean`) and the proof of the donor branch
 `codex/della-mostow-smooth-adapter-20261004` (`Geometry/Hyperbolic/Rigidity.lean`, byte-for-byte
 modulo: the `hasConstantSectionalCurvature` definition is imported from `Rigidity` instead of
 re-declared, and the private helper and the theorem carry the suffix `_HGI`).
-Retiring the skeleton (replace its unproved body by `mostow_prasad_HGI`) is left to INT.
+The retained declaration has been removed; the explicit original contract below checks this adapter.
 -/
 
 set_option autoImplicit false
@@ -109,7 +109,28 @@ theorem mostow_prasad_HGI
 
 universe u v
 
-/-- the twin has exactly the statement of the skeleton -/
-example : type_of% @mostow_prasad.{u, v} = type_of% @mostow_prasad_HGI.{u, v} := rfl
+/-- The proved adapter satisfies the original smooth Mostow–Prasad contract explicitly. -/
+example {M : Type u} {N : Type v}
+    [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    [IsManifold (𝓡 3) ∞ M] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
+    [TopologicalSpace N] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) N]
+    [IsManifold (𝓡 3) ∞ N] [T2Space N] [SigmaCompactSpace N] [ConnectedSpace N]
+    (g : SmoothRiemannianMetric (𝓡 3) M)
+    (h : SmoothRiemannianMetric (𝓡 3) N)
+    (K : ℝ) (hK : K < 0)
+    (hgcurvature : hasConstantSectionalCurvature g K)
+    (hhcurvature : hasConstantSectionalCurvature h K)
+    (hgcomplete : RiemannianMetricComplete g)
+    (hhcomplete : RiemannianMetricComplete h)
+    (hgvolume : Integral.Measure.riemannianVolumeMeasure (𝓡 3) M g Set.univ < ⊤)
+    (hhvolume : Integral.Measure.riemannianVolumeMeasure (𝓡 3) N h Set.univ < ⊤)
+    (u : ContinuousMap.HomotopyEquiv M N) :
+    ∃! f : M ≃ₘ⟮𝓡 3, 𝓡 3⟯ N,
+      (∀ (p : M) (v w : TangentSpace (𝓡 3) p),
+        h.inner (f p) (mfderiv (𝓡 3) (𝓡 3) f p v)
+          (mfderiv (𝓡 3) (𝓡 3) f p w) = g.inner p v w) ∧
+      (⟨f, f.continuous⟩ : C(M, N)).Homotopic u.toFun :=
+  mostow_prasad_HGI g h K hK hgcurvature hhcurvature hgcomplete hhcomplete
+    hgvolume hhvolume u
 
 end DifferentialGeometry.Geometry.Hyperbolic

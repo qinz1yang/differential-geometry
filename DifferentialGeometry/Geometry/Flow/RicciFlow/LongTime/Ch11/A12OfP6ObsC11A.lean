@@ -206,7 +206,10 @@ example {P : OrientedThreeStage.{u}} {g : P.Metric}
     (hlev : ∀ n : ℕ, 0 < κ n ∧ (F.tower.history n).NoncollapsedBefore (κ n) ε n)
     (hP6 : LargerBallScalarLargeSupply_C11S F (CutoffParameters.diagonal p).delta
       (diagonalAccuracy_C11S (CutoffParameters.diagonal p).delta)) :
-    type_of% (exists_surgery_with_decaying_accuracy P g) :=
+    (∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
+      AntitoneOn δ (Set.Ici 0) ∧
+      (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
+      hasAnalyticAdmissibility F δ) :=
   exists_surgery_with_decaying_accuracy_of_P6_obs_C11A F p old ε C1 C2 κ hconst hstatic hcompat
     hδanti hρanti hδsmall hscale hwin hobs hlev hP6
 

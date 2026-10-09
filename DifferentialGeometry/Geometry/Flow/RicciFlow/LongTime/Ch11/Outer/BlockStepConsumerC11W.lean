@@ -85,7 +85,10 @@ theorem a12_of_blockSteps_C11W (P : OrientedThreeStage.{u}) (g : P.Metric)
       ∀ F : GC.Interface.RawSurgery P g, F.tower = T.toChain.tower →
         LargerBallScalarLargeSupply_C11S F (chainDiagonal_C11A T.toChain).delta
           (diagonalAccuracy_C11S (chainDiagonal_C11A T.toChain).delta)) :
-    type_of% (exists_surgery_with_decaying_accuracy P g) := by
+    (∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
+      AntitoneOn δ (Set.Ici 0) ∧
+      (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
+      hasAnalyticAdmissibility F δ) := by
   obtain ⟨T, hT, -⟩ := exists_chain_of_blockSteps_C11W hstep X₀ hX₀ hhist hrad
   exact exists_surgery_with_decaying_accuracy_of_someChain_C11A P g
     ⟨pBase, C, T.toChain, hS8 T hT⟩
@@ -104,7 +107,10 @@ theorem a12_of_preparedBase_C11W (P : OrientedThreeStage.{u}) (g : P.Metric)
       ∀ F : GC.Interface.RawSurgery P g, F.tower = T.toChain.tower →
         LargerBallScalarLargeSupply_C11S F (chainDiagonal_C11A T.toChain).delta
           (diagonalAccuracy_C11S (chainDiagonal_C11A T.toChain).delta)) :
-    type_of% (exists_surgery_with_decaying_accuracy P g) := by
+    (∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
+      AntitoneOn δ (Set.Ici 0) ∧
+      (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
+      hasAnalyticAdmissibility F δ) := by
   obtain ⟨X₀, hX₀, hhist, hrad⟩ :=
     exists_inv_base_C11W Cdist cMax Dstar εReserve hcMax prepared hbase hprepared hres
   exact a12_of_blockSteps_C11W P g pBase C Cdist cMax Dstar εReserve X₀ hX₀ hhist hrad hstep
@@ -145,7 +151,10 @@ example (P : OrientedThreeStage.{u}) (g : P.Metric)
       ∀ F : GC.Interface.RawSurgery P g, F.tower = S.tower →
         LargerBallScalarLargeSupply_C11S F (chainDiagonal_C11A S).delta
           (diagonalAccuracy_C11S (chainDiagonal_C11A S).delta)) :
-    type_of% (exists_surgery_with_decaying_accuracy P g) :=
+    (∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
+      AntitoneOn δ (Set.Ici 0) ∧
+      (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
+      hasAnalyticAdmissibility F δ) :=
   a12_of_blockSteps_C11W P g pBase C Cdist cMax Dstar εReserve X₀ hX₀ hhist hrad hstep
     fun T _ => hS8 T.toChain
 

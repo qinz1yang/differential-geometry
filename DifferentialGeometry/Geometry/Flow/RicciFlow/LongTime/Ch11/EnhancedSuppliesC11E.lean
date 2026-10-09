@@ -141,7 +141,10 @@ theorem enhancedSurgerySupplies_iff_C11E {P : OrientedThreeStage.{u}} {g : P.Met
 
 /-- consumer：enhanced bundle ⇒ A12（经 A12′ 投影，与 SKEL 的路径给出同一结论）。 -/
 example (P : OrientedThreeStage.{u}) (g : P.Metric) (h : EnhancedSurgerySupplies_C11E P g) :
-    type_of% (exists_surgery_with_decaying_accuracy P g) :=
+    (∃ (δ : ℝ → ℝ) (F : GC.Interface.RawSurgery P g),
+      AntitoneOn δ (Set.Ici 0) ∧
+      (∀ ε : ℝ, 0 < ε → ∃ B : ℝ, ∀ t : ℝ, B < t → δ t < ε) ∧
+      hasAnalyticAdmissibility F δ) :=
   exists_surgery_with_decaying_accuracy_of_enhanced_C11E
     (exists_surgery_with_decaying_accuracy_enhanced_of_supplies_C11E P g h)
 
