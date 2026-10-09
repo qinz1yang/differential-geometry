@@ -153,8 +153,10 @@ theorem a12_v11fin2_apply_ASM (P : OrientedThreeStage.{u}) (g : P.Metric) :
   a12EnhancedFull_v11fin2_ASM P g
 
 /-- **5 ⇐ 2（PROVED）**：2-binder 候选 C ⇒ 5-binder 终形（`a12EnhancedFull_v11fin_ASM`；其 `_hresJ` /
-`_hresJ8` / `_hTRs` 不被使用）。反向不可得：5-binder 的 `_hresJ` / `_hresJ8` 是 `∀ records` 的强槽，候选 C 是 bypass
-（引擎在 SCRS⁺ 实际 records 上证出消费结论），不是该槽的 producer。 -/
+`_hresJ8` / `_hTRs` 不被使用）。反向（5 ⇒ 2）在**不调用新证明的抽象 schema 比较**下不可得：
+5-binder 的 `_hresJ` / `_hresJ8` 是 `∀ records` 的强槽，候选 C 是 bypass（引擎在 SCRS⁺ 实际 records 上
+证出消费结论），不是该槽的 producer。树内已声明 C 后，反向类型蕴涵平凡存在
+（`fun _ => a12EnhancedFull_v11fin2_ASM P g`）；正反向类型箭头均不代替逐槽 producer。 -/
 theorem fin_of_fin2_ASM (P : OrientedThreeStage.{u}) (g : P.Metric) :
     type_of% (a12EnhancedFull_v11fin2_ASM P g) → type_of% (a12EnhancedFull_v11fin_ASM P g) :=
   fun h _ _ h3 h4 _ => h h3 h4

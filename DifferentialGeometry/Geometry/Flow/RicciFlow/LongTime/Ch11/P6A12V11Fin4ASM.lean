@@ -218,9 +218,11 @@ theorem a12_v11fin4_apply_ASM (P : OrientedThreeStage.{u}) (g : P.Metric) :
   a12EnhancedFull_v11fin4_ASM P g
 
 /-- **5 ⇐ 4（PROVED）**：4-binder 候选 A′ ⇒ 5-binder 终形（`a12EnhancedFull_v11fin_ASM`，其 `_hTRs`
-= `R4HnotC_TJ` 形在此不被使用）。反向（5 ⇒ 4）不可得：需由 TH 桥供出 `R4HnotC_TJ` 形的 `_hTRs`，
-而该形缺 `recordsF`（TRSHNOT G0），不能由引擎数据证出；4-binder 定理的证明＝5-binder 证明体把 TJ 桥换成
-TH 桥、删去 `_hTRs` 的 intro / 末参 / 末分支（生成器 `gen_fin4.py`）。 -/
+= `R4HnotC_TJ` 形在此不被使用）。反向（5 ⇒ 4）在**不调用新证明的抽象 schema 比较**下不可得：
+需由 TH 桥供出 `R4HnotC_TJ` 形的 `_hTRs`，而该形缺 `recordsF`（TRSHNOT G0），不能由引擎数据证出。
+树内已声明 A′ 后，反向类型蕴涵平凡存在（`fun _ => a12EnhancedFull_v11fin4_ASM P g`）；
+正反向类型箭头均不代替逐槽 producer。4-binder 定理的证明＝5-binder 证明体把 TJ 桥换成 TH 桥、
+删去 `_hTRs` 的 intro / 末参 / 末分支（生成器 `gen_fin4.py`）。 -/
 theorem fin_of_fin4_ASM (P : OrientedThreeStage.{u}) (g : P.Metric) :
     type_of% (a12EnhancedFull_v11fin4_ASM P g) → type_of% (a12EnhancedFull_v11fin_ASM P g) :=
   fun h h1 h2 h3 h4 _ => h h1 h2 h3 h4
