@@ -10,10 +10,10 @@ Use DifferentialGeometry as an upstream dependency and build on its geometric-an
 [[require]]
 name = "DifferentialGeometry"
 git = "https://github.com/qinz1yang/differential-geometry.git"
-rev = "v0.1.3"
+rev = "v0.1.5"
 ```
 
-Release `v0.1.3` is pinned to Lean and Mathlib `v4.33.1`.
+Release `v0.1.5` is pinned to Lean and Mathlib `v4.35.0-rc3`.
 The current development branch uses Lean and Mathlib `v4.35.0-rc3`.
 
 Import the full library with
@@ -36,6 +36,8 @@ Each is `sorry`-free (axioms: `propext, Classical.choice, Quot.sound`).
 
 > These three are the standard axioms of Lean's core library — propositional extensionality, the axiom of choice, and quotient soundness — on which all of classical mathematics in Mathlib rests. `#print axioms` lists everything a theorem transitively assumes: a `sorry` would surface as `sorryAx`, and any ad-hoc axiom would be named. An output of exactly these three therefore certifies that the proof is fully kernel-checked, with no `sorry` and no assumptions beyond the classical foundations.
 
+- [Geometrization conjecture](DifferentialGeometry/Geometry/Flow/RicciFlow/LongTime/Geometrization.lean#L49) — every closed, connected, oriented smooth three-manifold is a finite connected sum of prime manifolds, each of which can be cut along finitely many pairwise disjoint smooth incompressible tori into pieces whose interiors carry complete metrics locally isometric to one of the eight Thurston geometries; the hyperbolic interiors have finite volume.
+- [Mostow–Prasad rigidity](DifferentialGeometry/Geometry/Hyperbolic/MostowRigidity.lean#L259) — every homotopy equivalence between complete, connected, finite-volume Riemannian three-manifolds with the same constant negative sectional curvature is homotopic to a unique isometry.
 - [Poincaré conjecture](DifferentialGeometry/Topology/ThreeManifold/Poincare.lean#L27) — every compact, Hausdorff, simply connected topological three-manifold without boundary is homeomorphic to the unit sphere $S^3 \subset \mathbb{R}^4$. The final statement uses only Lean/Mathlib concepts. The [smooth version](DifferentialGeometry/Topology/ThreeManifold/Poincare.lean#L15) gives a diffeomorphism for smooth three-manifolds.
 - [Finite-time extinction with surgery, simply connected case](DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Extinction/Existence.lean#L15) — every simply connected closed oriented smooth three-manifold, with any initial smooth Riemannian metric, admits a controlled finite surgery history ending in the empty manifold at a positive finite time. The [extinction structure](DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/ControlledExtinction.lean#L14) records the initial metric identification and the empty terminal stage.
 - [Moise's theorem: compatible smooth structures in dimension three](DifferentialGeometry/Topology/PiecewiseLinear/Moise352Producer.lean#L33) — every compact Hausdorff topological three-manifold admits a smooth atlas compatible with its given topology. The development supplies [PL approximation](DifferentialGeometry/Topology/PiecewiseLinear/Moise352Producer.lean#L27) and [compact PL smoothing](DifferentialGeometry/Topology/PiecewiseLinear/Moise352Producer.lean#L30), providing the bridge from smooth to topological Poincaré.
