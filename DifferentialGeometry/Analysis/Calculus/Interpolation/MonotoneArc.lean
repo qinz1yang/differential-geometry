@@ -3,7 +3,7 @@ import Mathlib.Algebra.AddConstMap.Basic
 import Mathlib.Topology.Instances.AddCircle.Real
 import Mathlib.Topology.MetricSpace.Lipschitz
 import Mathlib.Topology.Order.OrderClosed
-import DifferentialGeometry.Topology.Circle.PeriodicExtension
+import DifferentialGeometry.Topology.LoopSpace.PeriodicExtension
 
 noncomputable section
 

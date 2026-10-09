@@ -31,12 +31,9 @@ private theorem inner_sub_le_metricDerivNorm
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalLimitMetric_unique (g h : G.TerminalLimitMetric) : g.metric = h.metric := by
+theorem terminalLimitMetric_unique (g h : G.TerminalLimitMetric) : g.metric = h.metric := by
   let : SecondCountableTopology P.Carrier :=
     ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace P.Carrier
   let : LocallyCompactSpace G.terminalRegularOpen :=

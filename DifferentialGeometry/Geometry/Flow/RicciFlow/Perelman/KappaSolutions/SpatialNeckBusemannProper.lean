@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckBusemannOutward
-import DifferentialGeometry.Geometry.Comparison.Busemann.Level.Data
+import DifferentialGeometry.Geometry.Comparison.Soul.SbrBusemannData
 
 set_option autoImplicit false
 

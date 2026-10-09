@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.TensorTimeJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NormalizedNeckDatum
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ShrinkingCylinderIsometries
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Metric.Family.CoefficientExtension
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph

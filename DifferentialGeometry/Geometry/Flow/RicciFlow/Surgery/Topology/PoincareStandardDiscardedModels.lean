@@ -33,11 +33,11 @@ variable {P Q : OrientedThreeStage.{u}} {a s : ℝ}
 
 theorem poincareStandardDiscarded_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
     (E : MetricCutCapEvent P Q a s)
-    (h : E.discarded.componentwiseStandardFactorOrProjectiveThreeSpaceSum) :
+    (h : E.discarded.toClosedOrientedManifold.componentwiseStandardFactorOrProjectiveThreeSpaceSum) :
     E.poincareStandardDiscarded :=
   fun q =>
-    DifferentialGeometry.Topology.componentwise_isStandardConnectedSum_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
-      E.discarded h q
+    DifferentialGeometry.Topology.componentwise_isPoincareStandard_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
+      E.discarded.toClosedOrientedManifold h q
 
 end MetricCutCapEvent
 
@@ -48,7 +48,7 @@ variable {P : OrientedThreeStage.{u}} {g : P.Metric}
 theorem hasPoincareStandardDiscarded_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
     (T : RetainedCoreObservationTower P g)
     (h : ∀ (n : ℕ) (j : Fin (T.history n).eventCount),
-      ((T.history n).coreEvent j).toMetricCutCapEvent.discarded
+      ((T.history n).coreEvent j).toMetricCutCapEvent.discarded.toClosedOrientedManifold
         |>.componentwiseStandardFactorOrProjectiveThreeSpaceSum) :
     T.hasPoincareStandardDiscarded :=
   fun n j =>
@@ -73,7 +73,7 @@ theorem poincareControlled_of_componentwiseStandardFactorOrProjectiveThreeSpaceS
       (H.event i).transition.discarded.componentwiseStandardFactorOrProjectiveThreeSpaceSum) :
     H.poincareControlled :=
   fun i C =>
-    DifferentialGeometry.Topology.componentwise_isStandardConnectedSum_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
+    DifferentialGeometry.Topology.componentwise_isPoincareStandard_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
       (H.event i).transition.discarded (h i) C
 
 end FiniteSurgeryHistory

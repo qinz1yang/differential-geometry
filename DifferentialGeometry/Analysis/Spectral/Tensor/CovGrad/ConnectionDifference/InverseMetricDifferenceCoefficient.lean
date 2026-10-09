@@ -81,7 +81,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem covGrad_inverseMetricDifferenceSlotCoefficient_toSection_eq
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (covGrad (I := I) (M := M) g₀ 2 2 (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x =
-      covariantSlotBundleEquiv (I := I) (M := M) 2 2 x
+      covGradBundleEquiv (I := I) (M := M) 2 2 x
         (tensorRSCovariantDerivative I M 2 2 (LeviCivita (I := I) g₀)
           (fun y : M => (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁).toSection y) x) :=
   covGrad_toSection_apply (I := I) (M := M) g₀ 2 2 (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁) x

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HornChainBackwardTraces
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Estimates.CurvatureAtDistance.BackwardTraces
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceBackwardTraces
 
 set_option autoImplicit false
 

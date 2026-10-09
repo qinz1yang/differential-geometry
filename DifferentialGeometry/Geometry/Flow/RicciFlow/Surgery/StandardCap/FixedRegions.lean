@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.Metric
-import DifferentialGeometry.Geometry.Metric.StandardCap.PositiveCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.NormalizedInsertion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.PositiveCurvature
 
 set_option autoImplicit false
 noncomputable section

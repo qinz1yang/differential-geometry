@@ -74,7 +74,7 @@ theorem gallim_w_lt
          (G.metric s).inner x
            (gradientFun (I := I) (G.metric s) (f s) x)
            (gradientFun (I := I) (G.metric s) (f s) x)
-       DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (volumeMeasureFamily (I := I) (M := M) G q)
+       wFunctional (volumeMeasureFamily (I := I) (M := M) G q)
          n (a + q) (R q) (Q q) (f q)) ≤
       (let n := Module.finrank Real E
        let G := reverseFamily (I := I) (M := M)
@@ -89,7 +89,7 @@ theorem gallim_w_lt
          (G.metric s).inner x
            (gradientFun (I := I) (G.metric s) (f s) x)
            (gradientFun (I := I) (G.metric s) (f s) x)
-       DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (volumeMeasureFamily (I := I) (M := M) G 0)
+       wFunctional (volumeMeasureFamily (I := I) (M := M) G 0)
          n a (R 0) (Q 0) (f 0)) := by
   classical
   let n := Module.finrank Real E
@@ -105,7 +105,7 @@ theorem gallim_w_lt
       (gradientFun (I := I) (G.metric s) (f s) x)
       (gradientFun (I := I) (G.metric s) (f s) x)
   let W : Real → Real := fun s =>
-    DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (volumeMeasureFamily (I := I) (M := M) G s)
+    wFunctional (volumeMeasureFamily (I := I) (M := M) G s)
       n (a + s) (R s) (Q s) (f s)
   obtain ⟨tauC, htauC, _htauC_tau, hcontC⟩ :=
     gallim_w_cont (I := I) (M := M) hS hτ hlim ha hpos
@@ -161,7 +161,7 @@ theorem gallim_w_lt
       (gradientFun (I := I) (GShift.metric r) (fShift r) x)
       (gradientFun (I := I) (GShift.metric r) (fShift r) x)
   let WShift : Real → Real :=
-    DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong
+    wFunctionalAlong
       (volumeMeasureFamily (I := I) (M := M) GShift)
       n (fun r : Real => r) RShift QShift fShift
   have hWShift (q : Real) : WShift (a + q) = W q := by
@@ -191,7 +191,7 @@ theorem gallim_w_lt
           (GShift.metric (a + q)) =
         riemannianVolumeMeasure (I := I) (M := M) (G.metric q)
       rw [hmetric]
-    dsimp only [WShift, DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong]
+    dsimp only [WShift, wFunctionalAlong]
     rw [hmu, hRq, hQq, hfq]
   have hanti : AntitoneOn W (Set.Ioo (0 : Real) tau) := by
     intro r hr s hs hrs

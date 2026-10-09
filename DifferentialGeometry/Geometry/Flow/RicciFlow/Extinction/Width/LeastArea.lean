@@ -24,18 +24,18 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {Q : Type*} [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
 
 
-def competitorAreas (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q) : Set ℝ :=
+def competitorAreas (g : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q) : Set ℝ :=
   Set.range (fun u : DiskCompetitor g γ => diskArea g u.1.map)
 
 theorem competitorAreas_bddBelow (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) : BddBelow (competitorAreas g γ) := by
+    (γ : ContinuousFreeLoop Q) : BddBelow (competitorAreas g γ) := by
   refine ⟨0, ?_⟩
   rintro _ ⟨u, rfl⟩
   exact diskArea_nonneg g u.1.map
 
 theorem competitorAreas_eq_empty_of_not_isContractibleLoop
-    (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q)
-    (hγ : ¬ ContinuousMap.Nullhomotopic γ) : competitorAreas g γ = ∅ := by
+    (g : SmoothRiemannianMetric I Q) (γ : Surgery.Topology.ContinuousFreeLoop Q)
+    (hγ : ¬ Surgery.Topology.IsContractibleLoop γ) : competitorAreas g γ = ∅ := by
   apply Set.eq_empty_iff_forall_notMem.mpr
   rintro _ ⟨u, rfl⟩
   apply hγ
@@ -51,17 +51,17 @@ variable [finiteDimensionalE : FiniteDimensional ℝ E] [boundarylessI : I.Bound
   [t2Q : T2Space Q] [compactQ : CompactSpace Q]
 
 theorem competitorAreas_nonempty (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hctr : ContinuousMap.Nullhomotopic γ) (hlip : IsLipschitzLoop g γ) :
+    (γ : ContinuousFreeLoop Q) (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ) :
     (competitorAreas g γ).Nonempty := by
   obtain ⟨u⟩ := rfs_disk_competitor_exists g γ hctr hlip
   exact ⟨diskArea g u.1.map, u, rfl⟩
 
-def leastArea (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q)
-    (_hctr : ContinuousMap.Nullhomotopic γ) (_hlip : IsLipschitzLoop g γ) : ℝ :=
+def leastArea (g : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q)
+    (_hctr : IsContractibleLoop γ) (_hlip : IsLipschitzLoop g γ) : ℝ :=
   sInf (competitorAreas g γ)
 
 theorem leastArea_nonneg (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hctr : ContinuousMap.Nullhomotopic γ) (hlip : IsLipschitzLoop g γ) :
+    (γ : ContinuousFreeLoop Q) (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ) :
     0 ≤ leastArea g γ hctr hlip := by
   apply le_csInf (competitorAreas_nonempty g γ hctr hlip)
   rintro _ ⟨u, rfl⟩
@@ -69,13 +69,13 @@ theorem leastArea_nonneg (g : SmoothRiemannianMetric I Q)
 
 omit finiteDimensionalE boundarylessI t2Q compactQ in
 theorem leastArea_le_competitor (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hctr : ContinuousMap.Nullhomotopic γ) (hlip : IsLipschitzLoop g γ)
+    (γ : ContinuousFreeLoop Q) (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ)
     (u : DiskCompetitor g γ) : leastArea g γ hctr hlip ≤ diskArea g u.1.map :=
   csInf_le (competitorAreas_bddBelow g γ) ⟨u, rfl⟩
 
 
 theorem exists_competitor_area_lt (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hctr : ContinuousMap.Nullhomotopic γ) (hlip : IsLipschitzLoop g γ)
+    (γ : ContinuousFreeLoop Q) (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ)
     {ε : ℝ} (hε : 0 < ε) :
     ∃ u : DiskCompetitor g γ, diskArea g u.1.map < leastArea g γ hctr hlip + ε := by
   obtain ⟨a, ⟨u, rfl⟩, hu⟩ := exists_lt_of_csInf_lt
@@ -85,10 +85,10 @@ theorem exists_competitor_area_lt (g : SmoothRiemannianMetric I Q)
   exact ⟨u, hu⟩
 
 theorem leastArea_const (g : SmoothRiemannianMetric I Q) (q : Q) :
-    leastArea g (DifferentialGeometry.Topology.FreeLoop.constants q) (ContinuousMap.nullhomotopic_of_constant q)
+    leastArea g (constantLoops q) (isContractibleLoop_constant q)
       (isLipschitzLoop_constant g q) = 0 := by
   apply le_antisymm
-  · exact (leastArea_le_competitor g (DifferentialGeometry.Topology.FreeLoop.constants q) (ContinuousMap.nullhomotopic_of_constant q)
+  · exact (leastArea_le_competitor g (constantLoops q) (isContractibleLoop_constant q)
       (isLipschitzLoop_constant g q) (constantDiskCompetitor g q)).trans_eq (diskArea_const g q)
   · exact leastArea_nonneg _ _ _ _
 
@@ -102,8 +102,8 @@ theorem regularLeastArea_nonneg (g : SmoothRiemannianMetric I Q)
   leastArea_nonneg _ _ _ _
 
 theorem leastArea_le_add_of_disk_attachment (g : SmoothRiemannianMetric I Q)
-    (γ₀ γ₁ : DifferentialGeometry.Topology.freeLoop Q)
-    (hctr₀ : ContinuousMap.Nullhomotopic γ₀) (hctr₁ : ContinuousMap.Nullhomotopic γ₁)
+    (γ₀ γ₁ : ContinuousFreeLoop Q)
+    (hctr₀ : IsContractibleLoop γ₀) (hctr₁ : IsContractibleLoop γ₁)
     (hlip₀ : IsLipschitzLoop g γ₀) (hlip₁ : IsLipschitzLoop g γ₁)
     (A : LipschitzAnnulus g)
     (hattach : ∀ u : DiskCompetitor g γ₀, ∃ v : DiskCompetitor g γ₁,
@@ -224,22 +224,22 @@ private theorem mem_spanningDiskCompetitors_iff (g : SmoothRiemannianMetric 𝓘
 end Pullback
 
 abbrev standardModelLoop (c : Geometry.Topology.StandardModelCopy I Q E)
-    (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q)
-    (hctr : ContinuousMap.Nullhomotopic γ) (hlip : IsLipschitzLoop g γ) :
+    (g : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q)
+    (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ) :
     Geometry.lipschitzContractibleLoop (Diffeomorph.pullbackMetricCross g c.equiv.symm) :=
-  ⟨⟨DifferentialGeometry.Topology.FreeLoop.postcompose (⟨c.equiv, c.equiv.continuous⟩ : C(Q, c.Q)) γ,
-      hctr.comp_right (⟨c.equiv, c.equiv.continuous⟩ : C(Q, c.Q))⟩, by
+  ⟨⟨Surgery.Topology.loopPostcompose (⟨c.equiv, c.equiv.continuous⟩ : C(Q, c.Q)) γ,
+      hctr.postcompose (⟨c.equiv, c.equiv.continuous⟩ : C(Q, c.Q))⟩, by
     obtain ⟨L, hL⟩ := hlip
     refine ⟨L, fun x y => ?_⟩
     rw [Geometry.Metric.edistOf_pullbackMetricCross]
-    simpa only [DifferentialGeometry.Topology.FreeLoop.postcompose_apply, ContinuousMap.coe_mk,
+    simpa only [Surgery.Topology.loopPostcompose_apply, ContinuousMap.coe_mk,
       Diffeomorph.symm_apply_apply] using hL x y⟩
 
 omit boundarylessI compactQ in
 private theorem leastArea_eq_leastSpanningArea_standardModelCopy
     (c : Geometry.Topology.StandardModelCopy I Q E)
-    (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q)
-    (hctr : ContinuousMap.Nullhomotopic γ) (hlip : IsLipschitzLoop g γ) :
+    (g : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q)
+    (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ) :
     leastArea g γ hctr hlip =
       Geometry.leastSpanningArea (Diffeomorph.pullbackMetricCross g c.equiv.symm)
         (standardModelLoop c g γ hctr hlip) := by
@@ -295,8 +295,8 @@ variable [connectedQ : ConnectedSpace Q]
 
 theorem leastArea_nearby_upper_bound (g : SmoothRiemannianMetric I Q) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 < C ∧
-      ∀ (γ₀ γ₁ : DifferentialGeometry.Topology.freeLoop Q)
-        (hctr₀ : ContinuousMap.Nullhomotopic γ₀) (hctr₁ : ContinuousMap.Nullhomotopic γ₁)
+      ∀ (γ₀ γ₁ : ContinuousFreeLoop Q)
+        (hctr₀ : IsContractibleLoop γ₀) (hctr₁ : IsContractibleLoop γ₁)
         (hlip₀ : IsLipschitzLoop g γ₀) (hlip₁ : IsLipschitzLoop g γ₁),
         loopUniformDistance g γ₀ γ₁ < ρ →
         leastArea g γ₁ hctr₁ hlip₁ ≤ leastArea g γ₀ hctr₀ hlip₀ +
@@ -310,8 +310,8 @@ theorem leastArea_nearby_upper_bound (g : SmoothRiemannianMetric I Q) :
 
 theorem leastArea_nearby_abs_bound (g : SmoothRiemannianMetric I Q) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 < C ∧
-      ∀ (γ₀ γ₁ : DifferentialGeometry.Topology.freeLoop Q)
-        (hctr₀ : ContinuousMap.Nullhomotopic γ₀) (hctr₁ : ContinuousMap.Nullhomotopic γ₁)
+      ∀ (γ₀ γ₁ : ContinuousFreeLoop Q)
+        (hctr₀ : IsContractibleLoop γ₀) (hctr₁ : IsContractibleLoop γ₁)
         (hlip₀ : IsLipschitzLoop g γ₀) (hlip₁ : IsLipschitzLoop g γ₁),
         loopUniformDistance g γ₀ γ₁ < ρ →
         |leastArea g γ₀ hctr₀ hlip₀ - leastArea g γ₁ hctr₁ hlip₁| ≤
@@ -341,9 +341,9 @@ theorem riemannianCurveLength_pullbackMetricCross
     {Q : Type*} [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
     {A : Type*} [TopologicalSpace A] [ChartedSpace E A] [IsManifold 𝓘(ℝ, E) ∞ A] [T2Space A]
     (g : SmoothRiemannianMetric I Q) (Ψ : A ≃ₘ⟮𝓘(ℝ, E), I⟯ Q) (γ : ℝ → A) (a b : ℝ) :
-    DifferentialGeometry.Geometry.riemannianCurveVariation (Diffeomorph.pullbackMetricCross g Ψ) γ a b =
-      DifferentialGeometry.Geometry.riemannianCurveVariation g (fun t => Ψ (γ t)) a b := by
-  unfold DifferentialGeometry.Geometry.riemannianCurveVariation
+    Surgery.Topology.riemannianCurveLength (Diffeomorph.pullbackMetricCross g Ψ) γ a b =
+      Surgery.Topology.riemannianCurveLength g (fun t => Ψ (γ t)) a b := by
+  unfold Surgery.Topology.riemannianCurveLength
   refine congrArg sSup (congrArg Set.range (funext fun p => ?_))
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [DifferentialGeometry.riemannianEDistOf_pullbackMetricCross]
@@ -352,7 +352,7 @@ theorem loopLength_eq_riemannianCurveLength_real
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {Q : Type*} [TopologicalSpace Q] [ChartedSpace E Q] [IsManifold 𝓘(ℝ, E) ∞ Q]
     [T2Space Q] [CompactSpace Q]
-    (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q) (γ : DifferentialGeometry.Topology.freeLoop Q)
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q) (γ : ContinuousFreeLoop Q)
     (hlip : IsLipschitzLoop g γ) :
     loopLength g γ = Geometry.riemannianCurveLength g (loopLift γ) 0 1 := by
   have hb : ∀ x y : ℝ, riemannianEDistOf g (loopLift γ x) (loopLift γ y) ≤
@@ -371,7 +371,7 @@ theorem loopLength_pullbackMetricCross
     [I.Boundaryless] [T2Space Q] [CompactSpace Q]
     {A : Type*} [TopologicalSpace A] [ChartedSpace E A] [IsManifold 𝓘(ℝ, E) ∞ A]
     [T2Space A] [CompactSpace A]
-    (g : SmoothRiemannianMetric I Q) (Ψ : A ≃ₘ⟮𝓘(ℝ, E), I⟯ Q) (γ : DifferentialGeometry.Topology.freeLoop A)
+    (g : SmoothRiemannianMetric I Q) (Ψ : A ≃ₘ⟮𝓘(ℝ, E), I⟯ Q) (γ : ContinuousFreeLoop A)
     (hlip : IsLipschitzLoop (Diffeomorph.pullbackMetricCross g Ψ) γ)
     (hlip' : IsLipschitzLoop g ((⟨Ψ, Ψ.continuous⟩ : C(A, Q)).comp γ)) :
     loopLength (Diffeomorph.pullbackMetricCross g Ψ) γ =
@@ -451,7 +451,7 @@ theorem short_loop_disk_bridge
     [I.Boundaryless] [T2Space Q] [CompactSpace Q] [ConnectedSpace Q]
     (g : SmoothRiemannianMetric I Q) :
     ∃ σ K : ℝ, 0 < σ ∧ 0 ≤ K ∧
-      ∀ (γ : DifferentialGeometry.Topology.freeLoop Q), IsLipschitzLoop g γ → loopLength g γ < σ →
+      ∀ (γ : ContinuousFreeLoop Q), IsLipschitzLoop g γ → loopLength g γ < σ →
         ∃ u : DiskCompetitor g γ, diskArea g u.1.map ≤ K * loopLength g γ ^ 2 := by
   classical
   let c : Geometry.Topology.StandardModelCopy I Q E :=
@@ -466,7 +466,7 @@ theorem short_loop_disk_bridge
   refine ⟨(σ₀ : ℝ), (K₀ : ℝ), hσ₀, K₀.coe_nonneg, ?_⟩
   intro γ hlip hshort
   let Φc : C(Q, c.Q) := ⟨c.equiv, c.equiv.continuous⟩
-  let γ' : DifferentialGeometry.Topology.freeLoop c.Q := Φc.comp γ
+  let γ' : ContinuousFreeLoop c.Q := Φc.comp γ
   have hΨγ : ∀ θ, Ψ (γ' θ) = γ θ := by
     intro θ
     simp only [γ', Φc, ContinuousMap.comp_apply, ContinuousMap.coe_mk, Ψ]
@@ -524,16 +524,16 @@ theorem isWeaklyMonotoneCircleMap_id :
   ⟨id, continuous_id, monotone_id, fun _ => rfl, fun _ => rfl⟩
 
 
-abbrev WeakDiskCompetitor (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q) :=
+abbrev WeakDiskCompetitor (g : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q) :=
   {u : LipschitzDisk g // ∃ ψ : C(Surgery.Topology.Circle, Surgery.Topology.Circle),
     IsWeaklyMonotoneCircleMap ψ ∧ ∀ θ, u.map (diskBoundary θ) = γ (ψ θ)}
 
 include finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
 theorem rfs_weak_boundary_trace (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (ψ : C(Surgery.Topology.Circle, Surgery.Topology.Circle))
+    (γ : ContinuousFreeLoop Q) (ψ : C(Surgery.Topology.Circle, Surgery.Topology.Circle))
     (hψ : IsWeaklyMonotoneCircleMap ψ)
-    (hctr : ContinuousMap.Nullhomotopic γ) (hlip : IsLipschitzLoop g γ)
-    (hctr' : ContinuousMap.Nullhomotopic (γ.comp ψ)) (hlip' : IsLipschitzLoop g (γ.comp ψ)) :
+    (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ)
+    (hctr' : IsContractibleLoop (γ.comp ψ)) (hlip' : IsLipschitzLoop g (γ.comp ψ)) :
     leastArea g (γ.comp ψ) hctr' hlip' = leastArea g γ hctr hlip := by
   classical
   let c : Geometry.Topology.StandardModelCopy I Q E :=
@@ -552,7 +552,7 @@ theorem rfs_weak_boundary_trace (g : SmoothRiemannianMetric I Q)
     (standardModelLoop c g (γ.comp ψ) hctr' hlip') ψ hc hm hp hlift rfl
 
 theorem leastArea_eq_weak_boundary_infimum (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hctr : ContinuousMap.Nullhomotopic γ) (hlip : IsLipschitzLoop g γ) :
+    (γ : ContinuousFreeLoop Q) (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ) :
     leastArea g γ hctr hlip =
       sInf (Set.range (fun u : WeakDiskCompetitor g γ => diskArea g u.1.map)) := by
   let S := Set.range (fun u : WeakDiskCompetitor g γ => diskArea g u.1.map)
@@ -568,7 +568,7 @@ theorem leastArea_eq_weak_boundary_infimum (g : SmoothRiemannianMetric I Q)
   · apply le_csInf hS
     rintro _ ⟨u, rfl⟩
     obtain ⟨ψ, hψ, hu⟩ := u.2
-    have hctr' : ContinuousMap.Nullhomotopic (γ.comp ψ) := by
+    have hctr' : IsContractibleLoop (γ.comp ψ) := by
       obtain ⟨q, hq⟩ := hctr
       exact ⟨q, hq.comp (ContinuousMap.Homotopic.refl ψ)⟩
     have hlip' := u.1.isLipschitz_trace g (γ.comp ψ) hu
@@ -580,9 +580,9 @@ theorem leastArea_eq_weak_boundary_infimum (g : SmoothRiemannianMetric I Q)
 
 include finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
 theorem leastArea_circle_homeomorph (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (ψ : Surgery.Topology.Circle ≃ₜ Surgery.Topology.Circle)
-    (hctr : ContinuousMap.Nullhomotopic γ) (hlip : IsLipschitzLoop g γ)
-    (hctr' : ContinuousMap.Nullhomotopic (γ.comp ⟨ψ, ψ.continuous⟩))
+    (γ : ContinuousFreeLoop Q) (ψ : Surgery.Topology.Circle ≃ₜ Surgery.Topology.Circle)
+    (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ)
+    (hctr' : IsContractibleLoop (γ.comp ⟨ψ, ψ.continuous⟩))
     (hlip' : IsLipschitzLoop g (γ.comp ⟨ψ, ψ.continuous⟩)) :
     leastArea g (γ.comp ⟨ψ, ψ.continuous⟩) hctr' hlip' = leastArea g γ hctr hlip := by
   classical
@@ -606,7 +606,7 @@ theorem leastArea_metric_comparison (g h : SmoothRiemannianMetric I Q)
     {a b : ℝ} (ha : 0 < a) (hab : a ≤ b)
     (hmetric : ∀ q (v : TangentSpace I q),
       a ^ 2 * g.inner q v v ≤ h.inner q v v ∧ h.inner q v v ≤ b ^ 2 * g.inner q v v)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hctr : ContinuousMap.Nullhomotopic γ)
+    (γ : ContinuousFreeLoop Q) (hctr : IsContractibleLoop γ)
     (hlipg : IsLipschitzLoop g γ) (hliph : IsLipschitzLoop h γ) :
     a ^ 2 * leastArea g γ hctr hlipg ≤ leastArea h γ hctr hliph ∧
       leastArea h γ hctr hliph ≤ b ^ 2 * leastArea g γ hctr hlipg := by
@@ -648,7 +648,7 @@ theorem regularLeastArea_metric_comparison (g h : SmoothRiemannianMetric I Q)
 
 omit connectedQ in
 theorem leastArea_scale (g : SmoothRiemannianMetric I Q) {c : ℝ} (hc : 0 < c)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hctr : ContinuousMap.Nullhomotopic γ) (hlip : IsLipschitzLoop g γ) :
+    (γ : ContinuousFreeLoop Q) (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ) :
     leastArea (scaleMetric c hc g) γ hctr
       ((isLipschitzLoop_metric_iff g (scaleMetric c hc g) γ).mp hlip) =
       c * leastArea g γ hctr hlip := by
@@ -665,7 +665,7 @@ theorem leastArea_scale (g : SmoothRiemannianMetric I Q) {c : ℝ} (hc : 0 < c)
 include finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
 theorem rfs_short_loop_fillings (g : SmoothRiemannianMetric I Q) :
     ∃ σ K₀ : ℝ, 0 < σ ∧ 0 ≤ K₀ ∧
-      (∀ (γ : DifferentialGeometry.Topology.freeLoop Q), IsLipschitzLoop g γ → loopLength g γ < σ →
+      (∀ (γ : ContinuousFreeLoop Q), IsLipschitzLoop g γ → loopLength g γ < σ →
         ∃ u : DiskCompetitor g γ, diskArea g u.1.map ≤ K₀ * loopLength g γ ^ 2) ∧
       (∀ (K : Type uK) [TopologicalSpace K] [CompactSpace K]
         (Γ : RegularFamily (I := I) (Q := Q) K),
@@ -678,8 +678,8 @@ theorem rfs_short_loop_fillings (g : SmoothRiemannianMetric I Q) :
           (∀ k, loopLength g (Γ k).1.toContinuousLoop < σ) →
           ∃ q : Q, ContinuousMap.Homotopic (contractibleRegularLoopInclusion.comp Γ)
             (ContinuousMap.const (Sphere 2)
-              (⟨DifferentialGeometry.Topology.FreeLoop.constants q, ContinuousMap.nullhomotopic_of_constant q⟩ :
-                DifferentialGeometry.Topology.contractibleLoop Q))) := by
+              (⟨constantLoops q, isContractibleLoop_constant q⟩ :
+                ContractibleContinuousLoop Q))) := by
   obtain ⟨σ₁, K₀, hσ₁, hK₀, hfill⟩ := short_loop_disk_bridge g
   obtain ⟨σ₂, hσ₂, hcontract⟩ :=
     exists_short_regularFamily_contracting_radius (I := I) (Q := Q) g
@@ -696,7 +696,7 @@ theorem rfs_short_loop_fillings (g : SmoothRiemannianMetric I Q) :
 
 theorem short_loop_disk (g : SmoothRiemannianMetric I Q) :
     ∃ σ : ℝ, 0 < σ ∧ ∃ K : ℝ, 0 ≤ K ∧
-      ∀ (γ : DifferentialGeometry.Topology.freeLoop Q), IsLipschitzLoop g γ → loopLength g γ < σ →
+      ∀ (γ : ContinuousFreeLoop Q), IsLipschitzLoop g γ → loopLength g γ < σ →
         ∃ u : DiskCompetitor g γ, diskArea g u.1.map ≤ K * loopLength g γ ^ 2 := by
   obtain ⟨σ, K, hσ, hK, hfill⟩ := short_loop_disk_bridge g
   exact ⟨σ, hσ, K, hK, hfill⟩

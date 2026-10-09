@@ -25,7 +25,7 @@ theorem intrinsicReducedVolume_eq_normalizedShrinkerMass
   apply lintegral_congr
   intro q
   apply congrArg ENNReal.ofReal
-  rw [DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity, ← Real.exp_log (prefactor_pos (Module.finrank ℝ E) htau),
+  rw [perelmanDensity, ← Real.exp_log (prefactor_pos (Module.finrank ℝ E) htau),
     log_prefactor (Module.finrank ℝ E) htau, ← Real.exp_add,
     Real.log_mul (show 4 * Real.pi ≠ 0 by positivity) htau.ne']
   congr 1
@@ -36,7 +36,7 @@ theorem intrinsicReducedVolume_eq_lintegral_perelmanDensity_scaled
     (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (p : M)
     {c tau : ℝ} (hc : 0 < c) (htau : 0 < tau) :
     intrinsicReducedVolume S T p (c * tau) =
-      ∫⁻ x, ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) tau
+      ∫⁻ x, ENNReal.ofReal (perelmanDensity (Module.finrank ℝ E) tau
         (fun y => redLength S T p y (c * tau)) x)
         ∂riemannianVolumeMeasure (I := I) (M := M)
           (scaleMetric c⁻¹ (inv_pos.mpr hc) (S.base.metric (T - c * tau))) := by

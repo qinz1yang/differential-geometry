@@ -41,7 +41,7 @@ theorem gradientRicciSoliton_and_hamiltonNormalized_time_sub_of_hamilton_jacobi
         metricCompatible := fun r =>
           leviCivitaConnectionOfMetric_isMetricCompatible (I := I) (co.gInf (a - r)) }
     IsHeatPotOn D G (fun r x => -metricScalarAt (co.gInf (a - r)) x)
-      (fun r => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) r (f r)) →
+      (fun r => perelmanDensity (Module.finrank ℝ E) r (f r)) →
     (∀ r, r ∈ D.regular → 0 < r → ∀ x : P.M,
       2 * deriv (fun q => f q x) r +
         (co.gInf (a - r)).inner x

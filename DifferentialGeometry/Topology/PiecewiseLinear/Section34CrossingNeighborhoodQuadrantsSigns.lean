@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34MarkedCellSides
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.LocalCharts
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CylindricalLocalChart
 
 open Set Topology
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergSource
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSmoothMul
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.Restriction
+import DifferentialGeometry.Analysis.Sobolev.Tools.RestrictedDiffQuotLp
 
 noncomputable section
 

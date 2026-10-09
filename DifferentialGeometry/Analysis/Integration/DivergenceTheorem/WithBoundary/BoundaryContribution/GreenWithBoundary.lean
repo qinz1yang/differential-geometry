@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.ChartDecomposition
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.Stokes
 import DifferentialGeometry.Geometry.Operator.WithBoundary.Laplacian
 import DifferentialGeometry.Geometry.Operator.WithBoundary.Gradient
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.IntegrationByParts
@@ -66,7 +66,7 @@ theorem integral_divergence_with_boundary_eq_boundaryFaceSum
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       boundaryFaceSum (I := I) g X := by
   rw [boundaryFaceSum_def]
-  exact integral_divergence_eq_sum_chartWeightedDivergenceIntegral (I := I) g X
+  exact stokes_compact (I := I) g X
 
 omit hI in
 private lemma inner_grad_grad_continuous_of_interior_support

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.Parabolic
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Curvature.ScalarLower
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardScalarLower
 import Mathlib.Algebra.Order.Group.Pointwise.Interval
 
 set_option autoImplicit false

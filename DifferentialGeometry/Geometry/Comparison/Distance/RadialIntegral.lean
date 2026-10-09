@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Integration.WeightedIntegrationByParts
 import DifferentialGeometry.Geometry.Comparison.Distance.Distribution
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentBallIntegral
 import DifferentialGeometry.Geometry.Comparison.Volume.SegmentRadialDensity
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.MinimizingDomain.Ray
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.Ray
 
 set_option autoImplicit false
 

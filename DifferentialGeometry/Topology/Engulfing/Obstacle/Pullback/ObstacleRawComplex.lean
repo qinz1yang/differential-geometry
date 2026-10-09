@@ -6,6 +6,7 @@ open Set _root_.Geometry _root_.Topology
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E : Type*} [DecidableEq E]
   [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
@@ -24,19 +25,16 @@ def rawAmbient : EuclideanSpace ℝ (Fin a.augmentation.ambientDimension) →
     interpolateVertices a.augmentation.joint a.augmentation.joint_finite a.vertices ⟨x, hx⟩
   else 0
 
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem rawAmbient_subtype (x : a.augmentation.joint.space) :
     a.rawAmbient x.val =
       interpolateVertices a.augmentation.joint a.augmentation.joint_finite a.vertices x := by
   simp only [rawAmbient, dite_eq_left x.property]
-omit [FiniteDimensional ℝ E] in
 theorem rawAmbient_vertex {x : EuclideanSpace ℝ (Fin a.augmentation.ambientDimension)}
     (hx : x ∈ a.augmentation.joint.vertices) : a.rawAmbient x = a.vertices x := by
   rw [show a.rawAmbient x = interpolateVertices a.augmentation.joint a.augmentation.joint_finite
       a.vertices ⟨x, a.augmentation.joint.vertices_subset_space hx⟩ from
         a.rawAmbient_subtype ⟨x, a.augmentation.joint.vertices_subset_space hx⟩]
   exact interpolateVertices_vertex _ _ _ _ hx
-omit [FiniteDimensional ℝ E] in
 theorem rawAmbient_affine : ∀ s ∈ a.augmentation.joint.faces,
     ∃ A : EuclideanSpace ℝ (Fin a.augmentation.ambientDimension) →ᵃ[ℝ]
       EuclideanSpace ℝ (Fin n), EqOn a.rawAmbient A
@@ -47,13 +45,11 @@ theorem rawAmbient_affine : ∀ s ∈ a.augmentation.joint.faces,
   refine ⟨A, fun x hx => ?_⟩
   exact (a.rawAmbient_subtype ⟨x, a.augmentation.joint.convexHull_subset_space hs hx⟩).trans
     (hA _ hx)
-omit [FiniteDimensional ℝ E] in
 theorem rawAmbient_fixed (x : a.augmentation.joint.space)
     (hx : x.val ∈ a.augmentation.fixedImage.space) :
     a.correction (a.rawAmbient x.val) = a.augmentation.oldMap x := by
   rw [a.rawAmbient_subtype]
   exact a.fixed_exact x hx
-omit [FiniteDimensional ℝ E] in
 theorem rawAmbient_injOn_fixed : InjOn a.rawAmbient a.augmentation.fixedImage.space := by
   intro x hx y hy he
   have hxJ : x ∈ a.augmentation.joint.space := by
@@ -66,10 +62,8 @@ theorem rawAmbient_injOn_fixed : InjOn a.rawAmbient a.augmentation.fixedImage.sp
     (a.rawAmbient_fixed ⟨x, hxJ⟩ hx).symm.trans
       ((congrArg a.correction he).trans (a.rawAmbient_fixed ⟨y, hyJ⟩ hy))
   exact congrArg Subtype.val (a.augmentation.fixed_injective hx hy hxy)
-omit [FiniteDimensional ℝ E] in
 theorem rawAmbient_injOn_obstacle : InjOn a.rawAmbient a.augmentation.obstacleImage.space :=
   a.rawAmbient_injOn_fixed.mono a.augmentation.obstacle_fixed
-omit [FiniteDimensional ℝ E] in
 theorem rawAmbient_affine_obstacle : ∀ s ∈ a.augmentation.obstacleImage.faces,
     ∃ A : EuclideanSpace ℝ (Fin a.augmentation.ambientDimension) →ᵃ[ℝ]
       EuclideanSpace ℝ (Fin n), EqOn a.rawAmbient A
@@ -79,17 +73,14 @@ theorem rawAmbient_affine_obstacle : ∀ s ∈ a.augmentation.obstacleImage.face
 def rawObstacleComplex : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin n)) :=
   injectiveImageComplex a.augmentation.obstacleImage a.rawAmbient
     a.rawAmbient_affine_obstacle a.rawAmbient_injOn_obstacle
-omit [FiniteDimensional ℝ E] in
 theorem rawObstacleComplex_finite_faces : a.rawObstacleComplex.faces.Finite :=
   injectiveImageComplex_finite_faces a.augmentation.obstacleImage
     (a.augmentation.joint_finite.subset a.augmentation.obstacleImage_faces)
     a.rawAmbient a.rawAmbient_affine_obstacle a.rawAmbient_injOn_obstacle
-omit [FiniteDimensional ℝ E] in
 theorem rawObstacleComplex_face_card_le :
     ∀ s ∈ a.rawObstacleComplex.faces, s.card ≤ p + 1 := by
   rintro _ ⟨t, ht, rfl⟩
   exact Finset.card_image_le.trans (a.augmentation.obstacleImage_dimension t ht)
-omit [FiniteDimensional ℝ E] in
 theorem rawAmbient_obstacleMap (y : T.space) :
     a.rawAmbient (a.augmentation.obstacleMap y).val = a.correction.symm y.val := by
   have hyO : (a.augmentation.obstacleMap y).val ∈ a.augmentation.obstacleImage.space :=
@@ -97,7 +88,6 @@ theorem rawAmbient_obstacleMap (y : T.space) :
   have h := a.rawAmbient_fixed (a.augmentation.obstacleMap y) (a.augmentation.obstacle_fixed hyO)
   rw [a.augmentation.oldMap_obstacle] at h
   exact (a.correction.symm_apply_apply _).symm.trans (congrArg a.correction.symm h)
-omit [FiniteDimensional ℝ E] in
 theorem rawObstacleComplex_space : a.rawObstacleComplex.space = a.correction.symm '' T.space := by
   rw [rawObstacleComplex, injectiveImageComplex_space, a.augmentation.obstacleImage_space]
   apply Subset.antisymm
@@ -105,7 +95,6 @@ theorem rawObstacleComplex_space : a.rawObstacleComplex.space = a.correction.sym
     exact ⟨y.val, y.property, (a.rawAmbient_obstacleMap y).symm⟩
   · rintro _ ⟨y, hy, rfl⟩
     exact ⟨(a.augmentation.obstacleMap ⟨y, hy⟩).val, mem_range_self _, a.rawAmbient_obstacleMap _⟩
-omit [FiniteDimensional ℝ E] in
 theorem rawObstacleComplex_faces :
     a.rawObstacleComplex.faces = {s | ∃ t ∈ a.augmentation.obstacleImage.faces,
       t.image a.vertices = s} := by

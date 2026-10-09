@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
-import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Naturality
+import DifferentialGeometry.Geometry.Comparison.Volume.DiffeomorphVolume
 
 set_option autoImplicit false
 

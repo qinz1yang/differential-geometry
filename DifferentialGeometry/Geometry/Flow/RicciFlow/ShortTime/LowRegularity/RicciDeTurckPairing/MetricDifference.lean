@@ -28,7 +28,6 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem exists_covariantJetNormSq_three_operatorFieldComposition_fixed_left_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ)
@@ -76,7 +75,6 @@ private theorem exists_covariantJetNormSq_three_operatorFieldComposition_fixed_l
       simp only [C]
       ring
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem exists_covariantJetNormSq_three_operatorFieldComposition_fixed_right_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ)

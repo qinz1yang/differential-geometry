@@ -1,6 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.SummandLipschitz
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Bounds.PointwiseLipschitz
-import DifferentialGeometry.Geometry.Curvature.Coordinates.Ricci.Perturbation
 open DifferentialGeometry.Geometry.Operator
 
 namespace DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
@@ -18,6 +17,128 @@ variable
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
       [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
+omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartRicci_abs_le
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (i k : Fin (Module.finrank ℝ E)) (y : E)
+    {CΓ CdΓ : ℝ} (hCΓ : 0 ≤ CΓ)
+    (hΓ : ∀ a b c : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) g α a b c y| ≤ CΓ)
+    (hdΓ : ∀ m a b c : Fin (Module.finrank ℝ E),
+      |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g α a b c) y| ≤ CdΓ) :
+    |chartRicciTensor (I := I) g α i k y| ≤
+      (Module.finrank ℝ E : ℝ) *
+        (2 * CdΓ + 2 * (Module.finrank ℝ E : ℝ) * CΓ ^ 2) := by
+  classical
+  have hprod : ∀ a b c d e f : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) g α a b c y *
+          chartChristoffel (I := I) g α d e f y| ≤ CΓ ^ 2 := by
+    intro a b c d e f
+    rw [abs_mul]
+    calc
+      |chartChristoffel (I := I) g α a b c y| *
+          |chartChristoffel (I := I) g α d e f y|
+          ≤ CΓ * CΓ := mul_le_mul (hΓ a b c) (hΓ d e f) (abs_nonneg _) hCΓ
+      _ = CΓ ^ 2 := by ring
+  have hRiem : ∀ j l : Fin (Module.finrank ℝ E),
+      |chartRiemannTensor (I := I) g α i j k l y| ≤
+        2 * CdΓ + 2 * (Module.finrank ℝ E : ℝ) * CΓ ^ 2 := by
+    intro j l
+    rw [chartRiemannTensor_def]
+    have hderiv :
+        |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l) y -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l) y| ≤
+          2 * CdΓ := by
+      rw [sub_eq_add_neg]
+      calc
+        |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l) y +
+            -DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l) y|
+            ≤ |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
+                  (chartChristoffel (I := I) g α i k l) y| +
+                |-DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
+                  (chartChristoffel (I := I) g α i j l) y| := abs_add_le _ _
+        _ = |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
+                  (chartChristoffel (I := I) g α i k l) y| +
+                |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
+                  (chartChristoffel (I := I) g α i j l) y| := by rw [abs_neg]
+        _ ≤ CdΓ + CdΓ := add_le_add (hdΓ j i k l) (hdΓ k i j l)
+        _ = 2 * CdΓ := by ring
+    have hquad :
+        |∑ m : Fin (Module.finrank ℝ E),
+          (chartChristoffel (I := I) g α j m l y *
+              chartChristoffel (I := I) g α i k m y -
+            chartChristoffel (I := I) g α k m l y *
+              chartChristoffel (I := I) g α i j m y)| ≤
+          2 * (Module.finrank ℝ E : ℝ) * CΓ ^ 2 := by
+      calc
+        |∑ m : Fin (Module.finrank ℝ E),
+          (chartChristoffel (I := I) g α j m l y *
+              chartChristoffel (I := I) g α i k m y -
+            chartChristoffel (I := I) g α k m l y *
+              chartChristoffel (I := I) g α i j m y)|
+            ≤ ∑ m : Fin (Module.finrank ℝ E),
+                |chartChristoffel (I := I) g α j m l y *
+                    chartChristoffel (I := I) g α i k m y -
+                  chartChristoffel (I := I) g α k m l y *
+                    chartChristoffel (I := I) g α i j m y| :=
+              Finset.abs_sum_le_sum_abs _ _
+        _ ≤ ∑ _m : Fin (Module.finrank ℝ E), (2 * CΓ ^ 2) := by
+          refine Finset.sum_le_sum fun m _ => ?_
+          rw [sub_eq_add_neg]
+          calc
+            |chartChristoffel (I := I) g α j m l y *
+                  chartChristoffel (I := I) g α i k m y +
+                -(chartChristoffel (I := I) g α k m l y *
+                  chartChristoffel (I := I) g α i j m y)|
+                ≤ |chartChristoffel (I := I) g α j m l y *
+                    chartChristoffel (I := I) g α i k m y| +
+                  |-(chartChristoffel (I := I) g α k m l y *
+                    chartChristoffel (I := I) g α i j m y)| := abs_add_le _ _
+            _ = |chartChristoffel (I := I) g α j m l y *
+                    chartChristoffel (I := I) g α i k m y| +
+                  |chartChristoffel (I := I) g α k m l y *
+                    chartChristoffel (I := I) g α i j m y| := by rw [abs_neg]
+            _ ≤ CΓ ^ 2 + CΓ ^ 2 := add_le_add
+                  (hprod j m l i k m) (hprod k m l i j m)
+            _ = 2 * CΓ ^ 2 := by ring
+        _ = 2 * (Module.finrank ℝ E : ℝ) * CΓ ^ 2 := by
+          simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+            nsmul_eq_mul]
+          ring
+    calc
+      |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g α i k l) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g α i j l) y +
+          ∑ m : Fin (Module.finrank ℝ E),
+            (chartChristoffel (I := I) g α j m l y *
+                chartChristoffel (I := I) g α i k m y -
+              chartChristoffel (I := I) g α k m l y *
+                chartChristoffel (I := I) g α i j m y)|
+          ≤ |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j
+                (chartChristoffel (I := I) g α i k l) y -
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
+                (chartChristoffel (I := I) g α i j l) y| +
+            |∑ m : Fin (Module.finrank ℝ E),
+              (chartChristoffel (I := I) g α j m l y *
+                  chartChristoffel (I := I) g α i k m y -
+                chartChristoffel (I := I) g α k m l y *
+                  chartChristoffel (I := I) g α i j m y)| := abs_add_le _ _
+      _ ≤ 2 * CdΓ + 2 * (Module.finrank ℝ E : ℝ) * CΓ ^ 2 :=
+        add_le_add hderiv hquad
+  rw [chartRicciTensor_def]
+  calc
+    |∑ j : Fin (Module.finrank ℝ E),
+        chartRiemannTensor (I := I) g α i j k j y|
+        ≤ ∑ j : Fin (Module.finrank ℝ E),
+          |chartRiemannTensor (I := I) g α i j k j y| :=
+            Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _j : Fin (Module.finrank ℝ E),
+        (2 * CdΓ + 2 * (Module.finrank ℝ E : ℝ) * CΓ ^ 2) := by
+          exact Finset.sum_le_sum fun j _ => hRiem j j
+    _ = (Module.finrank ℝ E : ℝ) *
+        (2 * CdΓ + 2 * (Module.finrank ℝ E : ℝ) * CΓ ^ 2) := by
+          simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+            nsmul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in

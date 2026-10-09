@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalClassRealizationLocality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurgeryContinuationTowerProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TowerInductionStep
 
@@ -11,6 +12,99 @@ open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
+
+private structure StageIdentification (P : OrientedThreeStage.{u}) (g : P.Metric)
+    (X : OrientedThreeStage.{u}) (m : X.Metric) where
+  map : P.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ X.Carrier
+  positive : PreservesTangentOrientation P.orientation X.orientation map
+  metric_eq : ∀ x : P.Carrier, ∀ v w : TangentSpace ThreeModel x,
+    m.inner (map x) (mfderiv ThreeModel ThreeModel map x v)
+        (mfderiv ThreeModel ThreeModel map x w) = g.inner x v w
+
+namespace StageIdentification
+
+variable {P : OrientedThreeStage.{u}} {g : P.Metric}
+
+private def ofInitial {K : ObservedHistory.{u}} (A : InitialIdentification P g K) :
+    StageIdentification P g (K.stage 0) (K.initialMetric 0) where
+  map := A.map
+  positive := A.positive
+  metric_eq := A.metric_eq
+
+private def toInitial {K : ObservedHistory.{u}}
+    (B : StageIdentification P g (K.stage 0) (K.initialMetric 0)) :
+    InitialIdentification P g K where
+  map := B.map
+  positive := B.positive
+  metric_eq := B.metric_eq
+
+private def cast {X X' : OrientedThreeStage.{u}} {m : X.Metric} {m' : X'.Metric}
+    (A : StageIdentification P g X m) (hX : X' = X) (hm : HEq m' m) :
+    StageIdentification P g X' m' :=
+  let hp : (⟨X', m'⟩ : Sigma fun Y : OrientedThreeStage.{u} => Y.Metric) = ⟨X, m⟩ := by
+    cases hX
+    exact Sigma.ext rfl hm
+  Eq.ndrec (motive := fun p : Sigma fun Y : OrientedThreeStage.{u} => Y.Metric =>
+    StageIdentification P g p.1 p.2) A hp.symm
+
+private theorem cast_map_heq {X X' : OrientedThreeStage.{u}} {m : X.Metric} {m' : X'.Metric}
+    (A : StageIdentification P g X m) (hX : X' = X) (hm : HEq m' m) :
+    HEq (cast A hX hm).map A.map := by
+  cases hX
+  cases hm
+  exact HEq.rfl
+
+end StageIdentification
+
+def InitialIdentification.ofStageZero {P : OrientedThreeStage.{u}} {g : P.Metric}
+    {H K : ObservedHistory.{u}} (A : InitialIdentification P g H)
+    (hstage : K.stage 0 = H.stage 0) (hmetric : HEq (K.initialMetric 0) (H.initialMetric 0)) :
+    InitialIdentification P g K :=
+  (StageIdentification.cast (StageIdentification.ofInitial A) hstage hmetric).toInitial
+
+theorem InitialIdentification.map_of_stageZero_heq {P : OrientedThreeStage.{u}} {g : P.Metric}
+    {H K : ObservedHistory.{u}} (A : InitialIdentification P g H)
+    (hstage : K.stage 0 = H.stage 0) (hmetric : HEq (K.initialMetric 0) (H.initialMetric 0)) :
+    HEq (InitialIdentification.ofStageZero A hstage hmetric).map A.map :=
+  StageIdentification.cast_map_heq (StageIdentification.ofInitial A) hstage hmetric
+
+def InitialIdentification.atZero (P : OrientedThreeStage.{u}) (g : P.Metric) :
+    InitialIdentification P g (RetainedCoreHistory.atZero P g).toHistory where
+  map := Diffeomorph.refl ThreeModel P.Carrier ∞
+  positive := preservesTangentOrientation_refl P.orientation
+  metric_eq := by
+    intro x v w
+    change g.inner x
+      (mfderiv ThreeModel ThreeModel (id : P.Carrier → P.Carrier) x v)
+      (mfderiv ThreeModel ThreeModel (id : P.Carrier → P.Carrier) x w) =
+        g.inner x v w
+    rw [mfderiv_id]
+    rfl
+
+namespace ObservedHistory
+
+private theorem stageMetric_last_of_lt' (H : ObservedHistory.{u})
+    (h : H.time (Fin.last H.eventCount) < H.horizon) (τ : ℝ) :
+    H.stageMetric (Fin.last H.eventCount) τ = (H.finalSlab h).flow.base.metric τ := by
+  rw [ObservedHistory.stageMetric, Fin.lastCases_last, dite_eq_left h]
+
+private theorem stageMetric_last_of_le' (H : ObservedHistory.{u})
+    (h : H.horizon ≤ H.time (Fin.last H.eventCount)) (τ : ℝ) :
+    H.stageMetric (Fin.last H.eventCount) τ = H.initialMetric (Fin.last H.eventCount) := by
+  rw [ObservedHistory.stageMetric, Fin.lastCases_last, dite_eq_right (not_lt.mpr h)]
+
+private theorem mem_stageDomain_last' (H : ObservedHistory.{u}) (τ : ℝ) :
+    τ ∈ H.stageDomain (Fin.last H.eventCount) ↔
+      τ ∈ Icc (H.time (Fin.last H.eventCount)) H.horizon := by
+  rw [ObservedHistory.stageDomain, Fin.lastCases_last]
+
+private theorem restrict_time_last' (K : ObservedHistory.{u}) (b : Icc (0 : ℝ) K.horizon)
+    (hb : K.activeStage b = Fin.last K.eventCount) :
+    (K.restrict b).time (Fin.last (K.restrict b).eventCount) = K.time (Fin.last K.eventCount) := by
+  have h := ObservedHistory.restrict_time_apply K b (Fin.last ((K.activeStage b).val))
+  exact h.trans (congrArg K.time (Fin.ext (by simp [hb])))
+
+end ObservedHistory
 
 namespace RetainedCoreHistory
 
@@ -31,6 +125,112 @@ private theorem appendEvent_toHistory_initialMetric_zero_heq (H : RetainedCoreHi
       H.initialMetric (Fin.last H.eventCount)) :
     HEq ((H.appendEvent hs E hinit).toHistory.initialMetric 0) (H.toHistory.initialMetric 0) :=
   appendEvent_initialMetric_castSucc_heq H hs E hinit 0
+
+private theorem extendHorizon_restrict_samePresentation_of_time_eq_horizon
+    (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
+    (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
+    (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
+      H.initialMetric (Fin.last H.eventCount))
+    (htime : H.time (Fin.last H.eventCount) = H.horizon)
+    (b : Icc (0 : ℝ) (H.extendHorizon T hT S hS).toHistory.horizon) (hb : b.1 = H.horizon) :
+    (((H.extendHorizon T hT S hS).toHistory).restrict b).SamePresentation H.toHistory := by
+  let E := (H.extendHorizon T hT S hS).toHistory
+  have ha : E.activeStage b = Fin.last H.eventCount := by
+    refine E.activeStage_eq_of_maximal b _ ?_ (fun _ _ => Fin.le_last _)
+    rw [hb]
+    exact H.time_le_horizon
+  have hc : (E.restrict b).eventCount = H.eventCount := congrArg Fin.val ha
+  refine {
+    horizon_eq := ?_
+    count_eq := hc
+    time_eq := fun _ => rfl
+    stage_eq := fun _ => rfl
+    initialMetric_heq := fun _ => HEq.rfl
+    event_eq := fun _ => MetricCutCapEvent.SamePresentation.refl _
+    metric_heq := ?_ }
+  · rw [ObservedHistory.restrict_horizon, hb]
+  intro j t ht
+  refine (E.restrict_stageMetric b j t ht).trans ?_
+  rcases Fin.eq_castSucc_or_eq_last j with ⟨i, rfl⟩ | rfl
+  · change HEq
+      (E.stageMetric ((Fin.castLE (Nat.le_of_lt_succ (E.activeStage b).isLt) i).castSucc) t)
+      (H.toHistory.stageMetric ((Fin.cast hc i).castSucc) t)
+    exact (heq_of_eq (ObservedHistory.stageMetric_castSucc_apply (H := E)
+        (Fin.castLE (Nat.le_of_lt_succ (E.activeStage b).isLt) i) t)).trans
+      (heq_of_eq (ObservedHistory.stageMetric_castSucc_apply (H := H.toHistory)
+        (Fin.cast hc i) t)).symm
+  · have hidxE : Fin.castLE (Nat.add_le_add_right (Nat.le_of_lt_succ (E.activeStage b).isLt) 1)
+        (Fin.last (E.restrict b).eventCount) =
+        (Fin.last H.eventCount : Fin (E.eventCount + 1)) := by
+      refine Fin.ext ?_
+      have h1 : (Fin.castLE (Nat.add_le_add_right (Nat.le_of_lt_succ (E.activeStage b).isLt) 1)
+          (Fin.last (E.restrict b).eventCount)).val = (E.restrict b).eventCount := rfl
+      have h2 : ((Fin.last H.eventCount : Fin (E.eventCount + 1))).val = H.eventCount := rfl
+      rw [h1, h2, hc]
+    have hidxH : Fin.cast (congrArg (· + 1) hc) (Fin.last (E.restrict b).eventCount)
+        = Fin.last H.eventCount := by
+      refine Fin.ext ?_
+      have h1 : (Fin.cast (congrArg (· + 1) hc)
+          (Fin.last (E.restrict b).eventCount)).val = (E.restrict b).eventCount := rfl
+      have h2 : (Fin.last H.eventCount).val = H.eventCount := rfl
+      rw [h1, h2, hc]
+    rw [hidxE, hidxH]
+    have hrestrict_time : (E.restrict b).time (Fin.last (E.restrict b).eventCount) =
+        H.toHistory.horizon := by
+      rw [ObservedHistory.restrict_time_last' E b ha]
+      show E.time (Fin.last E.eventCount) = H.toHistory.horizon
+      rw [show E.time (Fin.last E.eventCount) = H.time (Fin.last H.eventCount) from rfl, htime]
+    have ht_eq : t = H.toHistory.horizon := by
+      have h1 := ht
+      rw [ObservedHistory.mem_stageDomain_last'] at h1
+      rw [ObservedHistory.restrict_horizon, hb, hrestrict_time] at h1
+      exact le_antisymm h1.2 h1.1
+    subst ht_eq
+    by_cases hlt : H.toHistory.horizon < T
+    · have hcond : E.time (Fin.last E.eventCount) < E.horizon := by
+        rw [show E.time (Fin.last E.eventCount) = H.time (Fin.last H.eventCount) from rfl, htime,
+          show E.horizon = T from rfl]
+        exact hlt
+      have hL : E.stageMetric (Fin.last H.eventCount) (H.toHistory.horizon) =
+          (E.finalSlab hcond).flow.base.metric (H.toHistory.horizon) :=
+        ObservedHistory.stageMetric_last_of_lt' E hcond (H.toHistory.horizon)
+      have hR : H.toHistory.stageMetric (Fin.last H.eventCount) (H.toHistory.horizon) =
+          H.toHistory.initialMetric (Fin.last H.eventCount) :=
+        ObservedHistory.stageMetric_last_of_le' H.toHistory (le_of_eq htime.symm)
+          (H.toHistory.horizon)
+      rw [hL, hR]
+      have hmid : (E.finalSlab hcond).flow.base.metric H.toHistory.horizon =
+          S.flow.base.metric (H.time (Fin.last H.eventCount)) := by
+        rw [show H.toHistory.horizon = H.time (Fin.last H.eventCount) from htime.symm]
+        rfl
+      exact heq_of_eq (hmid.trans hS)
+    · have hTeq : T = H.toHistory.horizon := le_antisymm (not_lt.mp hlt) hT
+      have hcond : ¬ E.time (Fin.last E.eventCount) < E.horizon := by
+        rw [show E.time (Fin.last E.eventCount) = H.time (Fin.last H.eventCount) from rfl, htime,
+          show E.horizon = T from rfl, hTeq]
+        exact lt_irrefl _
+      have hL : E.stageMetric (Fin.last H.eventCount) (H.toHistory.horizon) =
+          E.initialMetric (Fin.last H.eventCount) :=
+        ObservedHistory.stageMetric_last_of_le' E (not_lt.mp hcond) (H.toHistory.horizon)
+      have hR : H.toHistory.stageMetric (Fin.last H.eventCount) (H.toHistory.horizon) =
+          H.toHistory.initialMetric (Fin.last H.eventCount) :=
+        ObservedHistory.stageMetric_last_of_le' H.toHistory (le_of_eq htime.symm)
+          (H.toHistory.horizon)
+      rw [hL, hR]
+      rfl
+
+theorem extendHorizon_isPrefixOf_of_time_eq_horizon (H : RetainedCoreHistory.{u}) (T : ℝ)
+    (hT : H.horizon ≤ T)
+    (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
+    (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
+      H.initialMetric (Fin.last H.eventCount))
+    (htime : H.time (Fin.last H.eventCount) = H.horizon) :
+    H.toHistory.IsPrefixOf (H.extendHorizon T hT S hS).toHistory :=
+  ⟨hT.trans (le_of_eq (show (H.extendHorizon T hT S hS).toHistory.horizon = T from rfl).symm),
+    extendHorizon_restrict_samePresentation_of_time_eq_horizon H T hT S hS htime
+      ⟨H.horizon, H.horizon_nonneg,
+        hT.trans (le_of_eq
+          (show (H.extendHorizon T hT S hS).toHistory.horizon = T from rfl).symm)⟩ rfl⟩
 
 end RetainedCoreHistory
 

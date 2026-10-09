@@ -1,0 +1,188 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GuardScalarEscapeCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6StageLimitPinchingCXSP
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6StageRayNecksCXSP
+
+/-!
+# CX-SPINE：原 guard 坏序列的实际非负曲率 necked missing ray
+
+GuardScalarEscape 先从原 small seed、同 A-volume 与坏点生产原 stage 的 metric limit。
+原序列自己的 r/sqrt(t)→0 经实际 records 的 pinching consumer 支付极限曲率算子非负。
+StageEscapeRay 再连接该次 RadiusEscape 的新点 z；旧坏点 x 的尾段不冒充这条新 ray。
+StageRayNecks 从 TimeCore 的同一 canonical witness 实际生产并传递末端 necks。
+
+索引依次为原序列、shift phi、escape ind、compactness f、ray psi；后两层继续使用
+同一实际 Q。Awork=4*A+4 只通过已证 volume 单调性使用，既不消费也不扩大 hw(A)。
+本定理无 maps、ray、neck、HI、Good、导数或体积的中间供给 binder；体积输入仅是
+原 P6(c) 坏序列已有的 seed volume。输出有限缺端 ray、scalar blowup 与固定精度 necks。
+-/
+
+set_option autoImplicit false
+noncomputable section
+
+open Set Filter DifferentialGeometry DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Collapse
+open DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+open GC.GeneralFlow
+open scoped Manifold ContDiff Topology ENNReal NNReal
+
+namespace GC.LongTime.Ch11
+
+universe u
+
+attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
+  PointedRiemannianManifold.sigmaCompact PointedRiemannianManifold.t2TangentBundle
+
+/-- 从原坏序列直接生产原归一化极限中的非负曲率、有限缺端 ray 与末端 spatial necks。 -/
+theorem exists_guard_necked_missing_ray_CXSP
+    (P : OrientedThreeStage.{u}) (g : P.Metric) :
+    ∃ ε₀ : ℝ, 0 < ε₀ ∧
+      ∀ {pBase : CutoffParameters} {Γf : ClosedBirthConstants}
+        {ε C1 C2 : ℝ} {Ctime : ℝ≥0}
+        (S : PreparedSpatialChain pBase Γf P g) (F : GC.Interface.RawSurgery P g)
+        (q : CutoffParameters), F.tower = S.tower →
+        (∀ t : ℝ, 0 ≤ t → q.delta t = (chainDiagonal_C11A S).delta t ∧
+          q.neckRadius t = (chainDiagonal_C11A S).neckRadius t) →
+        pBase.modelAccuracy ≤ ε₀ → capWindowRadius_C11E + 1 ≤ pBase.modelRadius →
+        2 ≤ pBase.modelOrder → CanonicalLateTimeCore_P6X F ε C1 C2 Ctime →
+        ε ≤ coneAccuracy →
+      ∀ A : ℝ, 0 < A → ∃ Hbase : ℝ, 4 ≤ Hbase ∧
+      ∀ idx : ℕ → ℕ,
+      let H : ℕ → ObservedHistory.{u} := fun i => (F.tower.history (idx i)).toHistory
+      ∀ (t : ∀ i, Icc (0 : ℝ) (H i).horizon)
+        (p x : ∀ i, ((H i).stageAt (t i)).Carrier) (r : ℕ → ℝ),
+        (∀ i, 2 * r i ^ 2 < (t i : ℝ)) →
+        (∀ i, hasSmallParabolicCurvature (H i) (t i) (p i) (r i)) →
+        (∀ i, ENNReal.ofReal (A⁻¹ * r i ^ 3) ≤
+          ballVolume ((H i).stageMetric ((H i).activeStage (t i)) (t i)) (p i) (r i)) →
+        (∀ i, x i ∈ riemannianBallOf
+          ((H i).stageMetric ((H i).activeStage (t i)) (t i)) (p i) (A * r i)) →
+        Tendsto (fun i => (t i : ℝ)) atTop atTop →
+        Tendsto (fun i => metricScalarAt
+          ((H i).stageMetric ((H i).activeStage (t i)) (t i)) (x i) * r i ^ 2) atTop atTop →
+        (∀ i, q.neckRadius (t i) ≤ r i) →
+        Tendsto (fun i => r i / Real.sqrt (t i : ℝ)) atTop (𝓝 0) →
+      ∃ (rho : ℝ) (hrho : 0 < rho), rho + 2 ≤ A * Real.sqrt Hbase + 3 ∧
+        ∃ Pl : PointedRiemannianManifold.{u, 0, 0} ThreeModel,
+        let _ : EMetricSpace Pl.M := Pl.emetricSpace
+        ∃ ray : C(Ico (0 : ℝ) rho, Pl.M),
+          metricScalarAt Pl.metric Pl.basepoint = 1 ∧
+          (∀ z : Pl.M, metricAlgebraicCurvatureTensorAt Pl.metric z ∈
+            algebraicCurvatureOperatorNonnegativeCone) ∧
+          (∀ y : Pl.M, riemannianEDistOf Pl.metric Pl.basepoint y < ENNReal.ofReal rho) ∧
+          (∀ R : ℝ, 0 ≤ R → R < rho →
+            IsCompact (riemannianClosedBallOf Pl.metric Pl.basepoint R)) ∧
+          Isometry ray ∧ ray ⟨0, le_rfl, hrho⟩ = Pl.basepoint ∧
+          Tendsto ray (comap (Subtype.val : Ico (0 : ℝ) rho → ℝ) (𝓝 rho))
+            (cocompact Pl.M) ∧
+          (∀ y : Pl.M, ¬ Tendsto ray
+            (comap (Subtype.val : Ico (0 : ℝ) rho → ℝ) (𝓝 rho)) (𝓝 y)) ∧
+          Tendsto (fun v => metricScalarAt Pl.metric (ray v))
+            (comap (Subtype.val : Ico (0 : ℝ) rho → ℝ) (𝓝 rho)) atTop ∧
+          ∀ᶠ v : Ico (0 : ℝ) rho in
+              comap (Subtype.val : Ico (0 : ℝ) rho → ℝ) (𝓝 rho),
+            Nonempty (SpatialNeck Pl.metric (1 / 4000000) (ray v)) := by
+  obtain ⟨ε₀, hε₀, hguardEscape⟩ := exists_guard_scalar_escape_CXSP P g
+  refine ⟨ε₀, hε₀, ?_⟩
+  intro pBase Γf ε C1 C2 Ctime S F q hTower hdiag hacc hrad hord hb hε A hA
+  obtain ⟨Hbase, hHbase, hproduce⟩ :=
+    hguardEscape S F q hTower hdiag hacc hrad hord hb A hA
+  have hHb : 0 < Hbase := by linarith only [hHbase]
+  refine ⟨Hbase, hHbase, ?_⟩
+  intro idx H t p x r htime hsmall hvol hx htlim hbad hguard hratio
+  obtain ⟨N, hrest⟩ := hproduce idx t p x r htime hsmall hvol hx htlim hbad hguard
+  let φ : ℕ → ℕ := fun i => i + N
+  obtain ⟨hφ, anchor, Q, hQ, hscale, hanchorR, hanchorDist, _hOldSegments,
+    _hOldDistance, _hOldBlow, rho, hrho, hrhoBound, ind, hind, z,
+    f, hf, rad, hrad, hradlim, Pl, maps, M, hbaseR, hcanonical,
+    hradial, hcompact, htarget, hmetric, hfinite, hdist, hhigh⟩ := hrest
+  let stage := fun i => (H (φ (ind i))).stageAt (t (φ (ind i)))
+  let metric := fun i => (H (φ (ind i))).stageMetric
+    ((H (φ (ind i))).activeStage (t (φ (ind i)))) (t (φ (ind i)))
+  let idx' : ℕ → ℕ := fun i => idx (φ (ind i))
+  let t' : ∀ i, Icc (0 : ℝ) (F.tower.history (idx' i)).horizon :=
+    fun i => t (φ (ind i))
+  let p' : ∀ i, (stage i).Carrier := fun i => p (φ (ind i))
+  let anchor' : ∀ i, (stage i).Carrier := fun i => anchor (ind i)
+  let r' : ℕ → ℝ := fun i => r (φ (ind i))
+  let Q' : ℕ → ℝ := fun i => Q (ind i)
+  have hQ' (i : ℕ) : 0 < Q' i := hQ (ind i)
+  let U := fun i => connectedComponentOpen (I := ThreeModel) (anchor' i)
+  let hp := fun i => (mem_connectedComponent : anchor' i ∈ U i)
+  let X : PointedRiemannianSeq.{u, 0, 0} ThreeModel :=
+    { obj := fun i =>
+        { M := (stage i).Carrier
+          basepoint := anchor' i
+          metric := scaleMetric (Q' i) (hQ' i) (metric i) } }
+  let maps0 := maps.liftTargetOpen (S := X) U hp
+  have hscaleDiv (i : ℕ) : Q' i = Hbase / r' i ^ 2 := by
+    simpa only [div_eq_mul_inv] using hscale (ind i)
+  have hscaleMul (i : ℕ) : Q' i * r' i ^ 2 = Hbase :=
+    (eq_div_iff (pow_ne_zero 2 (hsmall (φ (ind i))).1.ne')).mp (hscaleDiv i)
+  have htime' (i : ℕ) : 2 * r' i ^ 2 < (t' i : ℝ) := htime (φ (ind i))
+  have hsmall' (i : ℕ) : hasSmallParabolicCurvature
+      (F.tower.history (idx' i)).toHistory (t' i) (p' i) (r' i) := hsmall (φ (ind i))
+  have ht' (i : ℕ) : 0 < (t' i : ℝ) :=
+    (mul_nonneg (by norm_num) (sq_nonneg (r' i))).trans_lt (htime' i)
+  have hmono : StrictMono (fun i => φ (ind i)) := hφ.comp hind
+  have htlim' : Tendsto (fun i => (t' i : ℝ)) atTop atTop := htlim.comp hmono.tendsto_atTop
+  have hratio' : Tendsto (fun i => r' i / Real.sqrt (t' i : ℝ)) atTop (𝓝 0) :=
+    hratio.comp hmono.tendsto_atTop
+  have hnonnegative := curvatureOperator_nonnegative_of_prepared_stage_limit_CXSP
+    S F hTower Hbase hHb idx' t' anchor' r' Q' ht' (fun i => (hsmall' i).1)
+    hQ' hscaleDiv hratio' f hf Pl maps0 M hcanonical
+  let Awork : ℝ := 4 * A + 4
+  have hAwork : 0 < Awork := by dsimp only [Awork]; positivity
+  have hAAwork : A ≤ Awork := by dsimp only [Awork]; linarith only [hA]
+  have hvol' (i : ℕ) : ENNReal.ofReal (Awork⁻¹ * r' i ^ 3) ≤
+      ballVolume (metric i) (p' i) (r' i) :=
+    seed_volume_of_parameter_le_CXSP (hsmall' i) hA hAAwork (hvol (φ (ind i)))
+  have hsqrt : 2 ≤ Real.sqrt Hbase := by
+    nlinarith only [Real.sq_sqrt hHb.le, Real.sqrt_nonneg Hbase, hHbase]
+  have hrhoDiv : (rho + 1) / Real.sqrt Hbase ≤ A + 1 := by
+    apply (div_le_iff₀ (Real.sqrt_pos.mpr hHb)).mpr
+    nlinarith only [hrhoBound, hsqrt]
+  have hfit : A + (rho + 1) / Real.sqrt Hbase < Awork := by
+    dsimp only [Awork]
+    linarith only [hrhoDiv, hA]
+  have hlower (eta : ℝ) (heta : 0 < eta) : ∀ᶠ n in atTop, ∀ y ∈ maps0.source n,
+      ∀ v : TangentSpace ThreeModel y,
+        (1 - eta) * Pl.metric.inner y v v ≤
+          (scaleMetric (Q' (f n)) (hQ' (f n)) (metric (f n))).inner (maps0.map n y)
+            (mfderiv ThreeModel ThreeModel (maps0.map n) y v)
+            (mfderiv ThreeModel ThreeModel (maps0.map n) y v) := by
+    filter_upwards [hmetric eta heta] with n hn y hy v
+    exact (hn y hy v).1
+  let _ : EMetricSpace Pl.M := Pl.emetricSpace
+  obtain ⟨ell, γ, _hellEq, helllim, hends, hmin, hsegment,
+    ψ, ray, hψ, hray, hrayBase, hconv, _hstay, hscalar, hrayEscape, hmissing, hblow⟩ :=
+    exists_stage_escape_scalar_ray_CXSP hb Awork hAwork idx' t' p' anchor' r'
+      htime' hsmall' hvol' htlim' Hbase hHb Q' hQ' hscaleMul A hA.le
+      (fun i => hanchorDist (ind i)) rho hrho hfit f hf Pl maps0 M hcanonical
+      rad (fun n => (hrad n).1) hradlim htarget hlower hcompact hradial
+      (fun n => z (f n)) hfinite hdist hhigh
+  let maps1 := maps0.compSubseq ψ hψ
+  have hcanonical1 (n : ℕ) : (M.compSubseq ψ hψ).domain n =
+      CanonicalMetricCompactness.canonicalSourceData maps1 n := by
+    change (M.domain (ψ n)).compSubseq ψ hψ n = _
+    rw [hcanonical (ψ n)]
+    rfl
+  have hhighSegment : Tendsto (fun n =>
+      metricScalarAt (metric (f n)) (γ n (ell n)) / Q' (f n)) atTop atTop := by
+    convert hhigh using 1
+    funext n
+    rw [(hends n).2.1]
+  have hnecks := eventually_stage_ray_necks_of_timeCore_CXSP hb hε
+    Awork hAwork idx' t' p' anchor' r' htime' hsmall' hvol' htlim'
+    Hbase hHb Q' hQ' hscaleMul (fun i => hanchorR (ind i)) rho hrho
+    (f ∘ ψ) (hf.comp hψ) Pl maps1 (M.compSubseq ψ hψ) hcanonical1 hcompact
+    (ell ∘ ψ) (fun n => γ (ψ n)) (helllim.comp hψ.tendsto_atTop)
+    (fun n => (hends (ψ n)).1) (fun n => hmin (ψ n))
+    (hψ.tendsto_atTop.eventually hsegment) (hhighSegment.comp hψ.tendsto_atTop) ray
+    (fun v => (hconv {v} isCompact_singleton).tendsto_at (mem_singleton v)) hscalar hblow
+  exact ⟨rho, hrho, hrhoBound, Pl, ray, hbaseR, hnonnegative, hradial, hcompact,
+    hray, hrayBase, hrayEscape, hmissing, hblow, hnecks.2⟩
+
+end GC.LongTime.Ch11

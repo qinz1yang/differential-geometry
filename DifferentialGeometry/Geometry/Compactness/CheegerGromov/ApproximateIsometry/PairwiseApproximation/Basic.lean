@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Approximation.Congruence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Congruence
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Proper

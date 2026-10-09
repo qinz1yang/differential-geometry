@@ -140,7 +140,7 @@ theorem lowerTime_small {C K τ : ℝ}
       rw [div_lt_iff₀ hden]
       nlinarith
 
-theorem norm_lowerError_lt_quarter
+theorem b10Error_quarter
     (E : Y →L[ℝ] V) (H : V →L[ℝ] U)
     (D₁₀ : U →L[ℝ] J₁₀) (C₁₀ : J₁₀ →L[ℝ] Y)
     {C K τ : ℝ} (hC : 0 ≤ C) (hK : 0 ≤ K)
@@ -150,6 +150,18 @@ theorem norm_lowerError_lt_quarter
     ‖lowerError E H D₁₀ C₁₀‖ < (1 : ℝ) / 4 := by
   exact (lowerError_le E H D₁₀ C₁₀ hC hC₁₀ hD₁₀).trans_lt
     (lowerTime_small hC hK hτ)
+
+theorem fixedReassemble_dt
+    (R : U →L[ℝ] X) {u : ℝ → U} {u' : U} {t : ℝ}
+    (hu : HasDerivAt u u' t) :
+    HasDerivAt (fun s => R (u s)) (R u') t :=
+  R.hasFDerivAt.comp_hasDerivAt t hu
+
+theorem fixedExtract_dt
+    (E : X →L[ℝ] U) {u : ℝ → X} {u' : X} {t : ℝ}
+    (hu : HasDerivAt u u' t) :
+    HasDerivAt (fun s => E (u s)) (E u') t :=
+  E.hasFDerivAt.comp_hasDerivAt t hu
 
 def chartProjection (E : X →L[ℝ] U) (R : U →L[ℝ] X) : U →L[ℝ] U :=
   E.comp R

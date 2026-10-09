@@ -1,6 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallPairBoundaryOrientation
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartImagePLCell
-import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.ChartNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.ChartTameNestedCells
 
 open Set Filter
 open scoped Topology Manifold

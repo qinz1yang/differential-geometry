@@ -8,16 +8,13 @@ open scoped Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_normalizedNeck_of_frequently_spatialNeck
+theorem TerminalLimitMetric.exists_normalizedNeck_of_frequently_spatialNeck
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
     (hx : 0 < metricScalarAt L.metric x) {εc eps : ℝ} (hεc : 0 < εc) (hεc1 : εc < 1)
     (hfit : εc⁻¹ + 1 ≤ eps⁻¹)

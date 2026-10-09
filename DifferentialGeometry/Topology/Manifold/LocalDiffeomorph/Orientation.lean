@@ -1,9 +1,9 @@
 import DifferentialGeometry.Topology.Manifold.DiffeomorphOrientationDichotomy
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleOrientationClosure
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Composition
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Comparison
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationComposition
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationComparison
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationCompatible
 
 set_option autoImplicit false
@@ -71,13 +71,13 @@ theorem localDiffeomorph_orientation_comp
     change mfderiv (𝓡 n) (𝓡 n) (r ∘ f) x v = mfderiv (𝓡 n) (𝓡 n) r (f x)
       (mfderiv (𝓡 n) (𝓡 n) f x v)
     exact mfderiv_comp_apply x (r.mdifferentiable (by simp) _) (hf.mdifferentiable (by simp) _) v
-  rw [he, DifferentialGeometry.orientation_map_trans, hfo]
+  rw [he, ← DifferentialGeometry.VectorBundle.map_orientation_trans_between, hfo]
   exact hr (f x)
 
 theorem exists_orientationReversing_sphereTwoTimesCircleLift :
     ∃ r : sphereTwoTimesCircleLift.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ sphereTwoTimesCircleLift.Carrier,
       r.preservesOrientation sphereTwoTimesCircleLift.orientation.opposite sphereTwoTimesCircleLift.orientation := by
-  obtain ⟨r, hr⟩ := exists_orientationReversing_diffeomorph_sphereTwoTimesCircle
+  obtain ⟨r, hr⟩ := sphereTwoTimesCircleOrientationClosure_holds
   let E := sphereTwoTimesCircleModelCopy.equiv
   have hE := Diffeomorph.preservesOrientation_symm sphereTwoTimesCircleLift_preservesOrientation
   refine ⟨(E.symm.trans r).trans E, ?_⟩

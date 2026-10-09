@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Incoming.Reciprocal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingReciprocal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 
@@ -12,13 +12,10 @@ open scoped Manifold ContDiff Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_compact_subset_terminalRegularRegion_containing_scalar_sublevels
+theorem exists_compact_subset_terminalRegularRegion_containing_scalar_sublevels
     (G : P.IncomingSlab a s) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
@@ -60,7 +57,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   have hhigh := hscalar y t ⟨(hmax (some y) hsome).trans_lt ht.1, ht.2⟩ x hxy
   exact (not_lt_of_ge hx) hhigh
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.isCompact_scalar_sublevel_of_time_derivative_bound
+theorem TerminalLimitMetric.isCompact_scalar_sublevel_of_time_derivative_bound
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
@@ -91,7 +88,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   obtain ⟨t, ht, hscalar⟩ := (hlate.and hclose).exists
   exact hcapture t ht x.val hscalar.le
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_compact_containing_canonical_domains
+theorem TerminalLimitMetric.exists_compact_containing_canonical_domains
     (L : G.TerminalLimitMetric) {q eps C1 C2 : ℝ} {Ctime : ℝ≥0} (hq : 0 < q)
     (hcanonical : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       Nonempty (CanonicalWitness G.flow eps C1 C2 x t))

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedWitnessTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GoodPointDerivatives
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 
 set_option autoImplicit false
 noncomputable section

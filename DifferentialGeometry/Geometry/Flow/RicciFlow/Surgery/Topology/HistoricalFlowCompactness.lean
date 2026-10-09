@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNeckInjectivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.LocalMetricExtraction
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 
 noncomputable section
 open Set Bundle Manifold Filter

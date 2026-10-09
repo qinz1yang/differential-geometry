@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.SphereSeparation.BicollarCertificates
-import DifferentialGeometry.Topology.SphereSeparation.SmoothSeparation
+import DifferentialGeometry.Topology.SphereSeparation.SeparationAssembly
 
 set_option autoImplicit false
 

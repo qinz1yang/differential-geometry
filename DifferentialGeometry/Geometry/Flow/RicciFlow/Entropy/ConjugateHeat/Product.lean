@@ -25,7 +25,7 @@ theorem potential_grad_at
     (hpos : 0 < u x) (htau : 0 < tau) :
     gradientFun g (perelmanPotential n tau u) x =
       (-(u x)⁻¹) • gradientFun g u x := by
-  let p := DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau
+  let p := perelmanDensityPrefactor n tau
   have hp : 0 < p := prefactor_pos n htau
   have hphi : HasDerivAt (fun z : ℝ => -Real.log (z / p))
       (-(u x)⁻¹) (u x) := by

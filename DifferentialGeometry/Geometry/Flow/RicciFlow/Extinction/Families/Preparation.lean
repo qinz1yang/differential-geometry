@@ -5,8 +5,8 @@ import DifferentialGeometry.Geometry.Geodesic.Chart.Regularity
 import DifferentialGeometry.Geometry.Metric.ShortGeodesic
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveLength
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
-import DifferentialGeometry.Geometry.Metric.Distance.EndpointRate
-import DifferentialGeometry.Topology.EMetricSpace.CompactDiagonal
+import DifferentialGeometry.Geometry.Comparison.Distance.EndpointRate
+import DifferentialGeometry.Topology.Compactness.DiagonalNeighborhood
 import DifferentialGeometry.Topology.Manifold.ZeroDimensional
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas

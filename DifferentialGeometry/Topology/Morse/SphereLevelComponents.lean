@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Morse.ExtremumChart
 import DifferentialGeometry.Topology.Morse.RegularLevel.NoCriticalValues
-import DifferentialGeometry.Topology.LevelSet.QuadraticSublevel
+import DifferentialGeometry.Topology.Morse.QuadraticSublevel
 import DifferentialGeometry.Topology.Handle.SphereComplement
 
 open Set Metric Manifold

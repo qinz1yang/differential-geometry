@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.MetricDifference
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Convergence
 import DifferentialGeometry.Geometry.Curvature.OperatorNaturality
 
+
 open Bundle Manifold Filter Set
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Connection
@@ -11,13 +12,10 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.tendsto_inner (L : G.TerminalLimitMetric)
+theorem TerminalLimitMetric.tendsto_inner (L : G.TerminalLimitMetric)
     (x : G.terminalRegularOpen) (v w : TangentSpace ThreeModel x) :
     Tendsto (fun t => ((G.flow.base.metric t).restrictOpen G.terminalRegularOpen).inner x v w)
       (𝓝[<] s) (𝓝 (L.metric.inner x v w)) := by
@@ -39,7 +37,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   rw [Real.dist_eq]
   exact hdiff.trans_lt (by simpa only [mul_assoc, A] using hmul.trans_lt hh)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.tendsto_metricRm04StandardAt (L : G.TerminalLimitMetric)
+theorem TerminalLimitMetric.tendsto_metricRm04StandardAt (L : G.TerminalLimitMetric)
     (x : G.terminalRegularOpen) (v w u z : TangentSpace ThreeModel x) :
     Tendsto (fun t => metricRm04StandardAt
       ((G.flow.base.metric t).restrictOpen G.terminalRegularOpen) x v w u z)
@@ -85,13 +83,10 @@ open DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.tendsto_leastCurvatureOperatorEigenvalueAt
+theorem TerminalLimitMetric.tendsto_leastCurvatureOperatorEigenvalueAt
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen) :
     Tendsto (fun t => leastCurvatureOperatorEigenvalueAt (G.flow.base.metric t) x.1
       (metricAlgebraicCurvatureTensorAt (G.flow.base.metric t) x.1)) (𝓝[<] s)

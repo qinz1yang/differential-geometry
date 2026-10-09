@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorus.Longitudes
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34LongitudeClass
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34AnnulusGenerators
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitAnnulus
 

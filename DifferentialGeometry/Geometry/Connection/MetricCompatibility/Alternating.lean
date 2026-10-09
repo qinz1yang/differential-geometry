@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Alternating
+import DifferentialGeometry.Geometry.Metric.BundleAlternating
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Multilinear
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Alternating
 

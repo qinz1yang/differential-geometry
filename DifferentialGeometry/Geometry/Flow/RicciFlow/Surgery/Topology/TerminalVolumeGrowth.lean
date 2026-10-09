@@ -11,9 +11,6 @@ open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
@@ -27,7 +24,7 @@ private local instance : SigmaCompactSpace G.terminalRegularOpen :=
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       G.terminalRegularOpen.isOpen)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.volume_le_exp_mul_initial {K : ℝ}
+theorem volume_le_exp_mul_initial {K : ℝ}
     (hscalar : ∀ t ∈ Ico a s, ∀ x : P.Carrier,
       -K ≤ metricScalarAt (G.flow.base.metric t) x) {t : ℝ} (ht : t ∈ Ico a s) :
     riemannianVolumeMeasure ThreeModel P.Carrier (G.flow.base.metric t) univ ≤
@@ -58,7 +55,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   · simpa only [ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.exp_pos _).le] using hmul
   · exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top (measure_ne_top _ _)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.volume_compact_le_exp_mul_initial
+theorem TerminalLimitMetric.volume_compact_le_exp_mul_initial
     (L : G.TerminalLimitMetric) {K : ℝ}
     (hscalar : ∀ t ∈ Ico a s, ∀ x : P.Carrier,
       -K ≤ metricScalarAt (G.flow.base.metric t) x)

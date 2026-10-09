@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.CutCap.RetainedInterior
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteOldMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteCapPositiveTensor
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.FiniteRetainedPositiveMap
 

@@ -92,7 +92,7 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
             (slotExtend (I := I) (M := M) g₀ (s + 1) (s + 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ s Λ)))
           (Equiv.swap (0 : Fin (s + 1 + 1)) 1)).toSection x) D) m
-  rw [slotInsertEndoCc_toSection, slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval]
   rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply, rsDomDomCongrSection_toSection,
     toModel_rsDomDomCongr_apply, ContinuousMultilinearMap.domDomCongr_apply, slotExtend_toSection]
   rw [show (fun k : Fin (s + 1 + 1) => m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) k)) =
@@ -103,7 +103,7 @@ private lemma slotInsertEndoCc_succ_eq_reindex_slotExtend
     · simp only [Fin.cons_zero, Equiv.swap_apply_left]
     · simp only [Fin.cons_succ]]
   rw [slotExtendFib_apply_eval]
-  rw [slotInsertEndoCc_toSection, slotInsertEndomorphism_apply_eval, tensor0S_curry_toModel_apply,
+  rw [slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval, tensor0S_curry_toModel_apply,
     Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
   have hswap_succ0 : (Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ (0 : Fin (s + 1))) = 0 := by
     rw [show (Fin.succ (0 : Fin (s + 1)) : Fin (s + 1 + 1)) = 1 from rfl, Equiv.swap_apply_right]

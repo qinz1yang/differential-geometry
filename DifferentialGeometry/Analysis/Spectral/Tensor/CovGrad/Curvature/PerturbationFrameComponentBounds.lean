@@ -583,18 +583,18 @@ private lemma slotEndo_fiberComponent_slotk_eq
     (k : Fin 2) (K J : Fin 2 → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 k x Λ)) n e K J =
+          TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 k x Λ)) n e K J =
       g₀.inner x (e (K k)) (Λ (e (J k))) *
         ∏ i ∈ Finset.univ.erase k, (if K i = J i then (1 : ℝ) else 0) := by
   classical
   have hcomp : fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
       (show TensorRSSpace 2 2 I x from
-        TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 k x Λ)) n e K J =
+        TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 k x Λ)) n e K J =
       Tensor0SSpace.eval
-        ((slotInsertEndomorphism (I := I) (M := M) 2 k x Λ) (coframeS (I := I) (M := M) g₀ x 2 e K))
+        ((slotInsertEndoFib (I := I) (M := M) 2 k x Λ) (coframeS (I := I) (M := M) g₀ x 2 e K))
         (fun i => e (J i)) := by
     unfold fiberNormSqComponent coframeS; rfl
-  rw [hcomp, slotInsertEndomorphism_apply_natural]
+  rw [hcomp, slotInsertEndoFib_apply_natural]
   rw [Tensor0SSpace.eval_eq, coframeS_apply]
   rw [← Finset.prod_erase_mul Finset.univ
     (fun i : Fin 2 => g₀.inner x (e (K i))
@@ -623,10 +623,10 @@ private lemma ricciCovariantTerm_fiberComponent_eq
   have hsplit : (show TensorRSSpace 2 2 I x from
         TensorRSSpace.ofCLM (ricciOrderZeroCurvCoeffFib (I := I) g₁ x)) =
       (show TensorRSSpace 2 2 I x from
-        TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x
+        TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x
           (ricEndoRaisedFib (I := I) g₁ x))) +
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 1 x
+          TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 1 x
             (ricEndoRaisedFib (I := I) g₁ x))) := by
     rfl
   rw [hsplit, fiberNormSqComponent_add,

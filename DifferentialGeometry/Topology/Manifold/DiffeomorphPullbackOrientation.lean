@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.Orientation
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Composition
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationComposition
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 set_option autoImplicit false

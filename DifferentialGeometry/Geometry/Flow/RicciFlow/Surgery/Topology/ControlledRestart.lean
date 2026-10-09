@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabProducer
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Compact.UniformCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CompactUniformExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIveyCurvatureBound
 
 set_option autoImplicit false
@@ -25,7 +25,7 @@ private theorem exists_closedSlab_control_time_zero (P : OrientedThreeStage.{u})
   have hτ' : compactCurvatureControlTime 3 K < τ := by simpa only [finrank_euclideanSpace_fin] using hτ
   have hjoint := metricCLMSection_jointContMDiffOn_of_chartGram_on
     F.S.family.metric (Ico 0 τ) F.joint
-  let G := DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.ofClosedOpen P F.time_pos F.S F.isSolution hjoint hT hτ'
+  let G := OrientedThreeStage.ClosedSlab.ofClosedOpen P F.time_pos F.S F.isSolution hjoint hT hτ'
   refine ⟨G, F.start, ?_⟩
   have hsub : Icc 0 (compactCurvatureControlTime 3 K) ⊆ (RealTimeInterval.closedOpen 0 τ F.time_pos).carrier :=
     fun t ht => ⟨ht.1, ht.2.trans_lt hτ'⟩
@@ -53,10 +53,10 @@ theorem exists_closedSlab_of_curvature_bound (P : OrientedThreeStage.{u})
         Real.sqrt (normSq0S (H.flow.base.metric t) x 4 (metricRm04 (H.flow.base.metric t) x)) ≤
           Real.sqrt (2 * K ^ 2 + 1) := by
     refine ⟨G.timeTranslate a, ?_, ?_⟩
-    · rw [DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.timeTranslate_metric, sub_self]
+    · rw [OrientedThreeStage.ClosedSlab.timeTranslate_metric, sub_self]
       exact hG
     · intro t ht x
-      rw [DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.timeTranslate_metric]
+      rw [OrientedThreeStage.ClosedSlab.timeTranslate_metric]
       exact hbound (t - a) ⟨sub_nonneg.mpr ht.1, by linarith [ht.2]⟩ x
   rw [zero_add, add_comm (compactCurvatureControlTime 3 K) a] at h
   exact h
@@ -146,7 +146,7 @@ theorem MetricCutCapEvent.exists_closedSlab_restart_of_normalized_scalar_bound_o
     div_pos (compactCurvatureControlTime_pos 3 K) hQ
   have hjoint := metricCLMSection_jointContMDiffOn_of_chartGram_on
     F.S.family.metric (Ico 0 T) F.joint
-  let G := DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.ofClosedOpen R F.time_pos F.S F.isSolution
+  let G := OrientedThreeStage.ClosedSlab.ofClosedOpen R F.time_pos F.S F.isSolution
     hjoint htime hT
   have hstart : G.flow.base.metric 0 = E.outputMetric := F.start
   have h : ∃ H : R.ClosedSlab (0 + s) (compactCurvatureControlTime 3 K / Q + s),
@@ -155,10 +155,10 @@ theorem MetricCutCapEvent.exists_closedSlab_restart_of_normalized_scalar_bound_o
         Real.sqrt (normSq0S (H.flow.base.metric t) x 4 (metricRm04 (H.flow.base.metric t) x)) ≤
           Real.sqrt (2 * K ^ 2 + 1) * Q := by
     refine ⟨G.timeTranslate s, ?_, ?_⟩
-    · rw [DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.timeTranslate_metric, sub_self]
+    · rw [OrientedThreeStage.ClosedSlab.timeTranslate_metric, sub_self]
       exact hstart
     · intro t ht x
-      rw [DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.timeTranslate_metric]
+      rw [OrientedThreeStage.ClosedSlab.timeTranslate_metric]
       exact hbound (t - s) ⟨sub_nonneg.mpr ht.1, by linarith [ht.2]⟩ x
   rw [zero_add, add_comm (compactCurvatureControlTime 3 K / Q) s] at h
   exact h

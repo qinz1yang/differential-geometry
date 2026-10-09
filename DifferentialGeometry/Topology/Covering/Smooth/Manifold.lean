@@ -9,8 +9,8 @@ import Mathlib.Topology.Compactness.LocallyCompact
 import Mathlib.Topology.ShrinkingLemma
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
-import DifferentialGeometry.Topology.Covering.UniversalCover.CoveringMap
-import DifferentialGeometry.Topology.FundamentalGroup.Countability
+import DifferentialGeometry.Topology.Covering.CoveringMap
+import DifferentialGeometry.Topology.Covering.FundamentalGroup.Countability
 
 open Set Function Filter
 open scoped Topology ContDiff Manifold

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothExtension
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothTraceLift
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Conformality
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.SmoothHarmonicMap
-import DifferentialGeometry.Topology.Circle.WeaklyMonotone.Defs
+import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone
 import DifferentialGeometry.Analysis.Calculus.Periodic.Derivative
 
 noncomputable section

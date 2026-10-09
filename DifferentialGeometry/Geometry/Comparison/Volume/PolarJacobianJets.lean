@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.TwoJet
+import DifferentialGeometry.Geometry.Comparison.Volume.PolarTwoJet
 import DifferentialGeometry.Analysis.Integration.Measure.Jacobian.Derivative
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import Mathlib.Analysis.Calculus.IteratedDeriv.FaaDiBruno

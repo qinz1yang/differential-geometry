@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Measure.Area.GeodesicStrip
-import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSource
+import DifferentialGeometry.Geometry.Metric.CompactSourceLipschitz
 
 
 

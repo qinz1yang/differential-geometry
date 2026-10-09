@@ -1,9 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInteriorDensity
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34RefinedResidualCells
-import DifferentialGeometry.Topology.PiecewiseLinear.RegularNeighborhood.Restriction
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CutExhaustion
 import DifferentialGeometry.Topology.PlanarJordan.CompactRegion
 
 open Set Topology

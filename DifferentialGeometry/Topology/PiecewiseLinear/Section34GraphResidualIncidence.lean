@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphResidualCover
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.SplittingDisks.Basic
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCutIncidence
 
 open Set
 
@@ -32,20 +37,20 @@ theorem section34GraphResidualCell_inter_vertex_eq_empty_of_not_incident
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     {t : Finset Ea} (ht : t ∈ 𝒦.complex.faces) (w : Section34VertexIndex 𝒦 𝒦')
     (hnot : ¬ Section34Incident w.1 t) :
-    section34GraphResidualCell 𝒦 𝒦' t ∩ graphVertexCell 𝒦 𝒦' w = ∅ := by
+    section34GraphResidualCell 𝒦 𝒦' t ∩ section34GraphVertexCell 𝒦 𝒦' w = ∅ := by
   apply eq_empty_iff_forall_notMem.mpr
   rintro x ⟨hxR, hxC⟩
-  exact hnot ((graphVertexCell_inter_simplexBody_nonempty_iff hsub hmap w ht).mp
+  exact hnot ((section34GraphVertexCell_inter_simplexBody_nonempty_iff hsub hmap w ht).mp
     ⟨x, hxC, section34GraphResidualCell_subset_simplexBody ht hxR⟩)
 
 theorem section34GraphResidualCell_inter_split_eq_empty_of_not_incident
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     {t : Finset Ea} (ht : t ∈ 𝒦.complex.faces) (e : Section34EdgeIndex 𝒦 𝒦')
     (hnot : ¬ Section34Incident e.1 t) :
-    section34GraphResidualCell 𝒦 𝒦' t ∩ graphSplittingDisk 𝒦 𝒦' e = ∅ := by
+    section34GraphResidualCell 𝒦 𝒦' t ∩ section34GraphSplitCell 𝒦 𝒦' e = ∅ := by
   apply eq_empty_iff_forall_notMem.mpr
   rintro x ⟨hxR, hxC⟩
-  exact hnot ((graphSplittingDisk_inter_simplexBody_nonempty_iff hsub hmap e ht).mp
+  exact hnot ((section34GraphSplitCell_inter_simplexBody_nonempty_iff hsub hmap e ht).mp
     ⟨x, hxC, section34GraphResidualCell_subset_simplexBody ht hxR⟩)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

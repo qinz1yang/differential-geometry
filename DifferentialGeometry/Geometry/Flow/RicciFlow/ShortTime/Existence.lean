@@ -14,7 +14,7 @@ import DifferentialGeometry.Geometry.Metric.LieDerivative.Naturality
 import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.DerivativeDecomposition
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.ConjugatingDiffeoFamily
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.InteriorEquation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.FlatInteriorRicciFlowPde
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.RicciFlowPdeAtZero
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.Properties
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density

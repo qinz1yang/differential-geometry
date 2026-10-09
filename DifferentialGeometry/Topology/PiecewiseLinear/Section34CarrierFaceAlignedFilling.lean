@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.MarkedFibers
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CarrierAlignedCylinder
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceAlignedBandFilling
 
 open Set
@@ -50,7 +50,7 @@ theorem Section34SolidBandFilling.toFaceAlignedBandFilling_of_carrying_rims
     · exact hcarry₀
     · exact hcarry₁
   obtain ⟨g', a, hg', hends', hinj, hfiber⟩ :=
-    hu.exists_cylinder_with_marked_fibers_of_carrying_rims B R hB hR hgB hendsB hRP hS
+    hu.exists_aligned_cylinder_of_carrying_rims B R hB hR hgB hendsB hRP hS
       (hT.trans hTS) L hL hLC hpair hcarry
   have hBd : (boundaryComplex 2 B).space =
       frontier (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) := by

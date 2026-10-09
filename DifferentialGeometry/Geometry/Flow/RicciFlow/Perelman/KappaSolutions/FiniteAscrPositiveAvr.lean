@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticScalarDecay
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticVolumeRatio
-import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NonnegativeCurvatureScalarNorm
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 
 set_option autoImplicit false
@@ -207,7 +207,7 @@ theorem finite_ascr_positive_avr
       change metricScalarAt (I := I) g y * d ^ 2 ≤ A + 1 at htailY
       have hscalar : 0 ≤ metricScalarAt (I := I) g y :=
         metricScalarAt_nonnegative_of_curvatureOperator_nonnegative g y (hoperator y)
-      have hnorm := DifferentialGeometry.Geometry.Curvature.sqrt_metricRm_normSq_le_finrank_sq_mul_scalar g y (hoperator y)
+      have hnorm := sqrt_metricRm_normSq_le_finrank_sq_mul_scalar g y (hoperator y)
       change Real.sqrt (normSq0S (I := I) g y 4 (metricRm04At (I := I) g y)) ≤
         C * metricScalarAt (I := I) g y at hnorm
       have hDsq : D ^ 2 ≤ 4 * d ^ 2 := by

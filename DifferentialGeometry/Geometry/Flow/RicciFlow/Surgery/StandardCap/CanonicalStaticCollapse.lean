@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalRetainedMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalCapChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticCollapseLength
-import DifferentialGeometry.Geometry.Metric.Restriction.Distance
+import DifferentialGeometry.Geometry.Metric.RestrictionDistance
 
 set_option autoImplicit false
 noncomputable section
@@ -65,8 +65,8 @@ theorem collapse_radial (x : neckCentralDomain δ)
 
 theorem collapse_length (γ : ℝ → neckCentralDomain δ) (a b : ℝ)
     (hγ : ContinuousOn γ (Icc a b)) :
-    DifferentialGeometry.Geometry.riemannianCurveVariation w.data.outMetric (w.collapse ∘ γ) a b ≤
-      DifferentialGeometry.Geometry.riemannianCurveVariation g (fun t => d.oriented.map (γ t).1) a b := by
+    riemannianCurveLength w.data.outMetric (w.collapse ∘ γ) a b ≤
+      riemannianCurveLength g (fun t => d.oriented.map (γ t).1) a b := by
   exact w.collapse_length_of_toNormalizedNeck γ a b hγ
 
 theorem collapse_locallyLipschitz (x : neckCentralDomain δ) :

@@ -6,8 +6,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionNeckAlternativesCompact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionAncientLimitDerivativeCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionMaximalDepth
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Estimates.CurvatureAtDistance.Anchor
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.SurvivorScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceAnchor
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorTraceScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalPointedFlowLimitNoncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.OpenClosedGluing
 

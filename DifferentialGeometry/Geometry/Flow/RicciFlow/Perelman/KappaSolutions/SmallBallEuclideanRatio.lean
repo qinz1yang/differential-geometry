@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticVolumeRatio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SmoothSmallBallBounds
-import DifferentialGeometry.Geometry.Comparison.Volume.Ratio.Continuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SmoothBallVolumeContinuity
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 
 set_option autoImplicit false

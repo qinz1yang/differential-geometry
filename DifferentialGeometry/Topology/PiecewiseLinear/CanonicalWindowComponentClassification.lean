@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceAnnularComponents
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceNullNormalization
 
@@ -45,9 +50,13 @@ variable {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set
 
 open Classical in
 theorem IsCanonicalSurface.exists_window_component_classification [DecidableEq E3]
+    (ht : IsTube K N C D Dbd h N')
+    (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
+    (he : ({u, v} : Finset E3) ∈ K.faces)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
     (havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3))
+    (h303 : Moise303) (h286 : Moise286) (h314 : Moise314)
     {X : ℤ → Geometry.SimplicialComplex ℝ E3}
     (hX : IsCanonicalSurface X (fun i => φ '' S i) T''
       (interior (h '' C u ∪ h '' C v)) P' (h u) (h v))
@@ -58,10 +67,9 @@ theorem IsCanonicalSurface.exists_window_component_classification [DecidableEq E
       IsCanonicalWindowClassification X Y (fun i => φ '' S i) S'' T''
         (interior (h '' C u ∪ h '' C v)) P' (h u) (h v) rows F := by
   obtain ⟨Y, hY, hzero, hpath, hout, hfix⟩ :=
-    IsCanonicalSurface.exists_window_null_normalization
-      (C := C) (D := D) (Dbd := Dbd) (h := h) (u := u) (v := v)
-      htw havoid hX (towerWindowSeams rows) hFO
-  have hmodels := htw.subsurface_embeddings_of_null_splits (towerWindowSeams rows)
+    IsCanonicalSurface.exists_window_null_normalization ht hu hv huv he htw havoid h303
+      hX (towerWindowSeams rows) hFO
+  have hmodels := htw.subsurface_embeddings_of_null_splits h314 (towerWindowSeams rows)
     hmodel hpath
   have hzeroAt (i : ℤ) (hi : i ∈ towerWindowSeams rows) :
       nullTraceCount ((Y (i - 1)).space ∪ (Y i).space) (T'' (2 * i)) = 0 := by
@@ -93,18 +101,21 @@ theorem IsCanonicalSurface.exists_window_component_classification [DecidableEq E
       generators := ?_
       components := ?_ }⟩
   · intro i hi
-    exact hY.seam_generators_of_nullTraceCount_eq_zero htw i (hzeroAt i hi)
+    exact hY.seam_generators_of_nullTraceCount_eq_zero htw h314 i (hzeroAt i hi)
   · intro i hi c
     have hi₀ : i ∈ towerWindowSeams rows := Finset.mem_union_left _ hi
     have hi₁ : i + 1 ∈ towerWindowSeams rows :=
       Finset.mem_union_right _ (Finset.mem_image.mpr ⟨i, hi, rfl⟩)
     have hright : nullTraceCount ((Y i).space ∪ (Y (i + 1)).space) (T'' (2 * (i + 1))) = 0 := by
       simpa only [add_sub_cancel_right] using hzeroAt (i + 1) hi₁
-    exact hY.component_boundary_empty_or_annulus htw i (hmodels i)
+    exact hY.component_boundary_empty_or_annulus htw h286 h314 i (hmodels i)
       (hzeroAt i hi₀) hright c
 
 open Classical in
 theorem IsCanonicalTower.exists_initial_window_component_classification [DecidableEq E3]
+    (ht : IsTube K N C D Dbd h N')
+    (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
+    (he : ({u, v} : Finset E3) ∈ K.faces)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
     (havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3))
@@ -114,6 +125,7 @@ theorem IsCanonicalTower.exists_initial_window_component_classification [Decidab
         initialSurface S'' T'' P')
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}))
+    (h303 : Moise303) (h286 : Moise286) (h314 : Moise314)
     (rows : Finset ℤ) {F : Set E3}
     (hFO : ∀ i ∈ towerWindowSeams rows, Disjoint F (interior (φ '' S (2 * i)))) :
     ∃ X Y : ℤ → Geometry.SimplicialComplex ℝ E3,
@@ -128,8 +140,7 @@ theorem IsCanonicalTower.exists_initial_window_component_classification [Decidab
     rw [hspace i]
     exact sdiff_subset
   obtain ⟨Y, hclass⟩ := IsCanonicalSurface.exists_window_component_classification
-    (C := C) (D := D) (Dbd := Dbd) (h := h) (u := u) (v := v)
-    htw havoid hX hmodel rows hFO
+    ht hu hv huv he htw havoid h303 h286 h314 hX hmodel rows hFO
   refine ⟨X, Y, hspace, ?_, hclass⟩
   rw [htw.initialSurface_eq_iUnion]
   simp only [towerSurface, hspace]

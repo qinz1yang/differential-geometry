@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.PolynomialField
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.TerminalMixedDerivatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MixedCurvatureTerminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.MixedJetPolynomials
 
 

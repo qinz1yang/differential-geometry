@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
-import DifferentialGeometry.Geometry.Geodesic.Jacobi.Coordinates
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Coordinates
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
 import DifferentialGeometry.Geometry.Metric.Construction.CompactPerturbationCompleteness
 import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Rigidity

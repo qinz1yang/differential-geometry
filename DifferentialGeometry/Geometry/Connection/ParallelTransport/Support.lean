@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.VectorBundle
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.InvariantSet
-import DifferentialGeometry.Geometry.Connection.ParallelSet.Distance
+import DifferentialGeometry.Geometry.Metric.BundleSetDistance
 import DifferentialGeometry.Analysis.Convex.NormalCone
 import DifferentialGeometry.Geometry.Connection.AlongCurveRegularity
 import DifferentialGeometry.Analysis.Calculus.LocalExtrema

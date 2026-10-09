@@ -7,6 +7,7 @@ namespace DifferentialGeometry.Topology.Engulfing
 open Set Metric _root_.Geometry _root_.Topology
 open scoped ContinuousMap
 
+set_option linter.unusedSectionVars false
 
 variable {E M : Type*} [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E]
     [MetricSpace M]

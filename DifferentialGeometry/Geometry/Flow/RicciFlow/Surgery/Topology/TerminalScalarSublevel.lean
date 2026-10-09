@@ -11,13 +11,10 @@ open scoped Manifold ContDiff Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_scalar_time_derivative_bound (G : P.IncomingSlab a s) :
+private theorem exists_scalar_time_derivative_bound (G : P.IncomingSlab a s) :
     ∃ q : ℝ, 0 < q ∧ ∃ C : ℝ≥0,
       ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
         |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2 := by
@@ -28,7 +25,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   exact (hc x t ⟨ht.1.le, ht.2⟩ hx.le).some.time_derivative
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.isCompact_scalar_sublevel
+theorem TerminalLimitMetric.isCompact_scalar_sublevel
     (L : G.TerminalLimitMetric) (A : ℝ) :
     IsCompact {x : G.terminalRegularOpen | metricScalarAt L.metric x ≤ A} := by
   obtain ⟨q, hq, C, hbound⟩ := exists_scalar_time_derivative_bound G
@@ -37,7 +34,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       G.lt G.flow G.equation (by simp [ThreeSpace])
   exact L.isCompact_scalar_sublevel_of_time_derivative_bound hq hbound hPhi hpinch A
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_scalar_gt_on_connectedComponent_of_not_isCompact_of_time_derivative_bound
+theorem TerminalLimitMetric.exists_scalar_gt_on_connectedComponent_of_not_isCompact_of_time_derivative_bound
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
@@ -51,14 +48,14 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact hnoncompact ((L.isCompact_scalar_sublevel_of_time_derivative_bound hq hbound hPhi hpinch A).of_isClosed_subset
     isClosed_connectedComponent h)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_scalar_gt_on_connectedComponent_of_not_isCompact
+theorem TerminalLimitMetric.exists_scalar_gt_on_connectedComponent_of_not_isCompact
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
     (hnoncompact : ¬ IsCompact (connectedComponent x)) (A : ℝ) :
     ∃ y ∈ connectedComponent x, A < metricScalarAt L.metric y := by
   obtain ⟨q, hq, C, hbound⟩ := exists_scalar_time_derivative_bound G
   exact L.exists_scalar_gt_on_connectedComponent_of_not_isCompact_of_time_derivative_bound hq hbound x hnoncompact A
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.finite_components_meeting_scalar_sublevel_of_time_derivative_bound
+theorem TerminalLimitMetric.finite_components_meeting_scalar_sublevel_of_time_derivative_bound
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
@@ -86,7 +83,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       exact ⟨x, hx, hxc⟩
   exact heq ▸ hcompact.finite ⟨inferInstance⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.finite_components_meeting_scalar_sublevel
+theorem TerminalLimitMetric.finite_components_meeting_scalar_sublevel
     (L : G.TerminalLimitMetric) (A : ℝ) :
     {c : ConnectedComponents G.terminalRegularOpen |
       ∃ x : G.terminalRegularOpen, ConnectedComponents.mk x = c ∧

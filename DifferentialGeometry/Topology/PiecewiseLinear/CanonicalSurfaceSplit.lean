@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceReplacement
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceNullRank
 import DifferentialGeometry.Topology.PiecewiseLinear.SeparatingSurfacePairSplit
@@ -49,9 +54,12 @@ variable {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set
 
 open Classical in
 theorem IsCanonicalSurface.exists_null_seam_split [d : DecidableEq E3]
+    (ht : IsTube K N C D Dbd h N')
+    (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
+    (he : ({u, v} : Finset E3) ∈ K.faces)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
-    (havoid : ∀ k : ℤ, Disjoint (φ '' S k) ({h u, h v} : Set E3))
+    (havoid : ∀ k : ℤ, Disjoint (φ '' S k) ({h u, h v} : Set E3)) (h303 : Moise303)
     {X : ℤ → Geometry.SimplicialComplex ℝ E3}
     (hX : IsCanonicalSurface X (fun j => φ '' S j) T''
       (interior (h '' C u ∪ h '' C v)) P' (h u) (h v))
@@ -76,13 +84,28 @@ theorem IsCanonicalSurface.exists_null_seam_split [d : DecidableEq E3]
     intro x hxO hxV
     exact disjoint_left.mp (havoid (2 * i)) (interior_subset hxO)
       (by simpa only [mem_union, mem_insert_iff, mem_singleton_iff] using hxV)
+  have huI : h u ∈ interior (h '' C u ∪ h '' C v) :=
+    interior_mono subset_union_left (ht.mem_interior_image_dualCell hu)
+  have hvI : h v ∈ interior (h '' C u ∪ h '' C v) :=
+    interior_mono subset_union_right (ht.mem_interior_image_dualCell hv)
+  have huv' : h u ≠ h v := fun heq => huv (ht.injOn
+    (ht.dualCell_subset hu (interior_subset (ht.mem_interior_dualCell hu)))
+    (ht.dualCell_subset hv (interior_subset (ht.mem_interior_dualCell hv))) heq)
   obtain ⟨Q₀, Q₁, hQ₀fin, hQ₁fin, G, hG, hQ₀, hQ₀o, hQ₁, hQ₁o,
       htrace₀, htrace₁, hdis, hsep, hCI, hprot, hout₀, hout₁, -, -, hmeet₀, hmeet₁,
       hb₀, hb₁, hcount, -, Δ, r, f, hr, hrG, hΔT, hmeet, hfix₀, hfix₁, hcaps⟩ :=
     exists_separating_surface_pair_split (X (i - 1)) (X i)
       (hX.manifold _) (hX.orientable _) (hX.manifold _) (hX.orientable _)
       hleft (hX.lowerTrace i) (hX.piecesDisjoint (by omega))
-      (htw.boundary_isPLTorus (2 * i)) isOpen_interior
+      (htw.boundary_isPLTorus (2 * i)) h303 isOpen_interior
+      (ht.isConnected_interior_image_pair hu hv huv (by
+        exact (congrArg (fun d : DecidableEq E3 =>
+          @insert E3 (Finset E3) (@Finset.instInsert E3 d) u {v} ∈ K.faces)
+            (Subsingleton.elim _ _)).mp he))
+      (singleton_subset_iff.mpr huI) (singleton_subset_iff.mpr hvI)
+      (by simpa only [disjoint_singleton_left, mem_singleton_iff] using huv')
+      (isClosed_singleton.preimage continuous_subtype_val)
+      (isClosed_singleton.preimage continuous_subtype_val)
       (by rw [← towerSurface_eq_remainder]; exact hX.subsetInterior)
       (by rw [← towerSurface_eq_remainder]; exact hX.separator)
       isOpen_interior (htw.boundary_subset_interior_outer _)

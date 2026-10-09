@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Product
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Classification.Cylinder.Metric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkingCylinderMetric
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartSection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Metric
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.InnerBridge

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Distance.MetricLocality
 import DifferentialGeometry.Geometry.Comparison.Volume.VolumeNaturality
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
 noncomputable section
 

@@ -266,7 +266,7 @@ private theorem hessFun_comp_of_contMDiffOn
           g.inner x (gradientFun (I := I) g f x) v *
           g.inner x (gradientFun (I := I) g f x) w := by
   obtain ⟨F, hF, hFf⟩ :=
-    DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU hx hf
+    DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
   have hcomp : (fun y ↦ phi (F y)) =ᶠ[nhds x] fun y ↦ phi (f y) :=
     hFf.fun_comp phi
   have hvalue : F x = f x := hFf.eq_of_nhds

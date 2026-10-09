@@ -30,7 +30,7 @@ theorem trace_rawBundleEndomorphismConnLap_of_isMetricCompatible
       rawBundleConnLap g (CovariantDerivative.trivial I M ℝ)
         (fun y => LinearMap.trace ℝ (V y) (A y).toLinearMap) x := by
   let _ : cov.ContMDiffCovariantDerivative ∞ := hsmooth
-  let D := _root_.CovariantDerivative.hom I M F V F V cov cov
+  let D := homBundleCovariantDerivativeGen I M F V F V cov cov
   let φ : ∀ y, (V y →L[ℝ] V y) →ₗ[ℝ] ℝ := fun y =>
     { toFun := fun B => LinearMap.trace ℝ (V y) B.toLinearMap
       map_add' := by intro B C; simp

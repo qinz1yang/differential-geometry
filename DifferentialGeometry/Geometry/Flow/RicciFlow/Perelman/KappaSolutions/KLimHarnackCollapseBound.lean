@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Estimates.LocalCurvatureDerivatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalDerivativeLocalCurvatureBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SeedVolume
 
 set_option autoImplicit false

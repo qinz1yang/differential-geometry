@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.IsPLHomeomorphIntoMonoOfIsPLCellOn
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Crossing.FiniteFamily
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingReindex
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingTraceNonempty
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ProtectedBoundaryPreservation
 

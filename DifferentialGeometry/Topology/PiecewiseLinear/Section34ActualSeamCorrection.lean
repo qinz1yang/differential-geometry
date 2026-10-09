@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PairedSeamCorrection
-import DifferentialGeometry.Topology.PiecewiseLinear.Collar.CrossingCoordinates
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34FillingCornerBicollar
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FillingFaceAnnuli
 
 open Set Topology

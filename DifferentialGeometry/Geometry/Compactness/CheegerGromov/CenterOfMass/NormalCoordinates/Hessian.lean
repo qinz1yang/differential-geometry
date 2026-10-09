@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Norm
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.BranchScale
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.LocalGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoothness
-import DifferentialGeometry.Geometry.CenterOfMass.NormalCoordinates.ChartEquation
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.ChartEquation
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

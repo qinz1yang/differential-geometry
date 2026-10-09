@@ -7,6 +7,7 @@ open scoped ContinuousMap
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E M : Type*} [DecidableEq E] [NormedAddCommGroup E]
   [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MetricSpace M]
@@ -16,7 +17,6 @@ def transportSourceMap {K P : SimplicialComplex ℝ E} (hspace : P.space = K.spa
   f.comp ⟨(Homeomorph.setCongr hspace).symm, (Homeomorph.setCongr hspace).symm.continuous⟩
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem transportSourceMap_setCongr {K P : SimplicialComplex ℝ E}
     (hspace : P.space = K.space) (f : C(P.space, M)) (x : P.space) :
     transportSourceMap hspace f (Homeomorph.setCongr hspace x) = f x := by
@@ -25,7 +25,6 @@ omit [FiniteDimensional ℝ E] in
     Homeomorph.symm_apply_apply]
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem transportSourceMap_image {K P : SimplicialComplex ℝ E}
     (hspace : P.space = K.space) (f : C(P.space, M)) (A : Set E) :
     transportSourceMap hspace f '' (Subtype.val ⁻¹' A) = f '' (Subtype.val ⁻¹' A) := by
@@ -38,7 +37,6 @@ theorem transportSourceMap_image {K P : SimplicialComplex ℝ E}
     exact ⟨Homeomorph.setCongr hspace x, hx, transportSourceMap_setCongr hspace f x⟩
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem exists_map_on_equal_space_of_target_subset
     (K L P J : SimplicialComplex ℝ E) (hspace : P.space = K.space)
     (hJspace : J.space = L.space) (g : C(K.space, M)) (f : C(P.space, M))
@@ -66,7 +64,6 @@ theorem exists_map_on_equal_space_of_target_subset
     exact (union_subset_union_right X (image_mono (preimage_mono hAB))).trans hcover
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem exists_skeletal_map_on_original_source
     (K L P J : SimplicialComplex ℝ E) (href : simplicialRefines P K)
     (hspace : P.space = K.space) (hJspace : J.space = L.space)

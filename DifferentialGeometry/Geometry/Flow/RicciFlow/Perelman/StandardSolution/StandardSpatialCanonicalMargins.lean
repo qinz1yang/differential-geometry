@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CanonicalNeighborhood.Slices
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardSliceSpatialCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalWitnessMargins
 
 open private distance_lower_of_radial distance_upper_of_radial radial_neck_image_eq from
-  DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CanonicalNeighborhood.Slices
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardSliceSpatialCanonical
 
 set_option autoImplicit false
 

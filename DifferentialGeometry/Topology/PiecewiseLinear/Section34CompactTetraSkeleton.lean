@@ -1,4 +1,8 @@
-import DifferentialGeometry.Topology.Combinatorics.Finset
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactIncidentEdges
 import DifferentialGeometry.Topology.PiecewiseLinear.SubdivisionEdgePath
 
@@ -9,6 +13,22 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 variable {K K' : Geometry.SimplicialComplex ℝ E3}
+
+theorem exists_subset_pair_of_card_le_two {v : Finset E3} (hv : v.card ≤ 2) {x : E3}
+    (hx : x ∈ v) : ∃ y ∈ v, (v : Set E3) ⊆ {x, y} := by
+  classical
+  by_cases h : ∃ y ∈ v, y ≠ x
+  · obtain ⟨y, hy, hyx⟩ := h
+    refine ⟨y, hy, fun z hz => ?_⟩
+    have hsub : ({x, y} : Finset E3) ⊆ v :=
+      Finset.insert_subset hx (Finset.singleton_subset_iff.mpr hy)
+    have heq : ({x, y} : Finset E3) = v :=
+      Finset.eq_of_subset_of_card_le hsub (by rw [Finset.card_pair hyx.symm]; exact hv)
+    rw [← heq] at hz
+    simpa using hz
+  · push Not at h
+    refine ⟨x, hx, fun z hz => ?_⟩
+    simp [h z hz]
 
 theorem exists_mem_segment_of_mem_convexHull_graphSkeleton {t : Finset E3} (ht : t ∈ K.faces)
     {p : E3} (hpt : p ∈ convexHull ℝ (t : Set E3)) (hpg : p ∈ section34CompactGraphSkeleton K) :
@@ -22,7 +42,7 @@ theorem exists_mem_segment_of_mem_convexHull_graphSkeleton {t : Finset E3} (ht :
     rw [Finset.not_nonempty_iff_eq_empty] at hne
     rw [hne, Finset.coe_empty, convexHull_empty] at hp
     exact hp
-  obtain ⟨y, hy, hsub⟩ := Finset.exists_mem_subset_pair_of_card_le_two
+  obtain ⟨y, hy, hsub⟩ := exists_subset_pair_of_card_le_two
     ((Finset.card_le_card Finset.inter_subset_right).trans hucard) hx
   refine ⟨x, Finset.mem_of_mem_inter_left hx, y, Finset.mem_of_mem_inter_left hy, ?_⟩
   rw [← convexHull_pair]
@@ -84,7 +104,7 @@ theorem exists_segment_of_incident_section34CompactEdgeIndex (hsub : IsSubdivisi
     rw [Finset.not_nonempty_iff_eq_empty] at hne'
     rw [hne', Finset.coe_empty, convexHull_empty] at haconv
     exact haconv
-  obtain ⟨y, hy, hsubxy⟩ := Finset.exists_mem_subset_pair_of_card_le_two
+  obtain ⟨y, hy, hsubxy⟩ := exists_subset_pair_of_card_le_two
     ((Finset.card_le_card Finset.inter_subset_left).trans hucard) hx
   have hconv : convexHull ℝ ((u ∩ t : Finset E3) : Set E3) ⊆ segment ℝ x y := by
     rw [← convexHull_pair]

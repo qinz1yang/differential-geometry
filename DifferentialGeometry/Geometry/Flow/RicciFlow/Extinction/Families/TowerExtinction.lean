@@ -122,10 +122,10 @@ theorem exists_poincare_controlled_extinction_of_tower_extinct {P : OrientedThre
           ((T.observe b hb).event i).transition.trace.capping.coreInclusion x.1))
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isStandardConnectedSum
-          (((T.observe b hb).event i).discarded.component q).Carrier)
+        DifferentialGeometry.Topology.isPoincareStandard
+          (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier)
     (hextinct : towerExtinct T) :
-    Nonempty (PoincareControlledExtinction P g) := by
+    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
   obtain ⟨b, hb, hempty⟩ := hextinct
   exact exists_poincare_controlled_extinction_of_observedHistory P g (T.observe b hb)
     (T.observeInitial b hb) (hc b hb) (hout b hb) (hctrl b hb) hempty
@@ -134,7 +134,7 @@ theorem exists_poincare_controlled_extinction_of_closedOriented_tower_extinct
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     [Nonempty M.Carrier] (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : ObservationTower
-      (M.toClosedOrientedManifold) g)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
     (hc : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       SmoothCutCapCompletion ((T.observe b hb).event i).transition)
     (hout : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
@@ -145,12 +145,12 @@ theorem exists_poincare_controlled_extinction_of_closedOriented_tower_extinct
           ((T.observe b hb).event i).transition.trace.capping.coreInclusion x.1))
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isStandardConnectedSum
-          (((T.observe b hb).event i).discarded.component q).Carrier)
+        DifferentialGeometry.Topology.isPoincareStandard
+          (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier)
     (hextinct : towerExtinct T) :
     Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) :=
   @exists_poincare_controlled_extinction_of_tower_extinct
-    (M.toClosedOrientedManifold) g T
+    (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g T
     ‹Nonempty M.Carrier› hc hout hctrl hextinct
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

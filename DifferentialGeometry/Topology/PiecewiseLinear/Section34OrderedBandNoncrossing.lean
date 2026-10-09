@@ -1,6 +1,6 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.AnnularOrder
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34MatchingBandNoncrossing
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34OrderedBandAlternation
-import DifferentialGeometry.Topology.PiecewiseLinear.Annulus.BoundaryExtension
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34LateralBandReversal
 
 open Set Topology
 
@@ -77,7 +77,7 @@ theorem section34_ordered_matching_band_not_interleaved
   have hcell := (hCp (ends e).1).image (hGp (ends e).1)
   have hF := hcell.isAnnulusOn_inter_of_disk_caps (hcap i).1 (hcap j).2.1
     (hcap i).2.2.1 (hcap i).2.2.2 (hcap j).2.2.1 (hcap j).2.2.2 (hdis i j hij)
-  exact trace_pairs_not_interleaved_of_matching_annuli hprep hpack e hσ hiess hjess
+  exact section34_annular_not_interleaved_of_matching_bands hprep hpack e hσ hiess hjess
     hu hg hgP hgT hg₀ hg₁ hgempty hf hfi hfB hf₀ hf₁ hfempty hF (hbandA i j hij)
     (fun r => subset_inter_of_ordered_caps_iff hleft hright i j r) hbands hcross
 

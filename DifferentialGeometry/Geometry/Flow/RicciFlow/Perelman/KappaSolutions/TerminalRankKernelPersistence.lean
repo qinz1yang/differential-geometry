@@ -2,8 +2,8 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.NullSectionalRankRigidity
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankRigidity
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.SurfaceProductRank
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank.Ancient.Rank
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ParallelKernel.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientCurvatureRank
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureKernel
 
 set_option autoImplicit false
 

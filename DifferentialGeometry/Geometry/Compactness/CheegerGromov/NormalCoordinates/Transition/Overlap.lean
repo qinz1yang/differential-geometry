@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Framed
-import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Smoothness
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Smoothness
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

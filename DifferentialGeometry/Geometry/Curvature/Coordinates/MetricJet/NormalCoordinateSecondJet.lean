@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.PolarJacobianJets
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.LaunchTwoJet
+import DifferentialGeometry.Geometry.Comparison.Volume.IntrinsicLaunchTwoJet
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 
 noncomputable section

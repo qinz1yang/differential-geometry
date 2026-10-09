@@ -84,17 +84,17 @@ theorem normalizedShrinkerMass_eq_const_mul_lintegral
 theorem normalizedShrinkerMass_scaleMetric_inv_eq_lintegral_perelmanDensity
     (g : SmoothRiemannianMetric I M) {tau : ℝ} (htau : 0 < tau) (f : M → ℝ) :
     normalizedShrinkerMass (scaleMetric tau⁻¹ (inv_pos.mpr htau) g) f =
-      ∫⁻ x, ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) tau f x)
+      ∫⁻ x, ENNReal.ofReal (perelmanDensity (Module.finrank ℝ E) tau f x)
         ∂riemannianVolumeMeasure (I := I) (M := M) g := by
   calc
-    _ = ∫⁻ x, ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) 1 f x)
+    _ = ∫⁻ x, ENNReal.ofReal (perelmanDensity (Module.finrank ℝ E) 1 f x)
         ∂riemannianVolumeMeasure (I := I) (M := M) (scaleMetric tau⁻¹ (inv_pos.mpr htau) g) := by
       rw [normalizedShrinkerMass_eq_const_mul_lintegral,
         ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
       apply lintegral_congr
       intro x
       rw [← ENNReal.ofReal_mul (Real.rpow_nonneg (by positivity : (0 : ℝ) ≤ 4 * Real.pi) _)]
-      simp only [DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity, DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor, mul_one]
+      simp only [perelmanDensity, perelmanDensityPrefactor, mul_one]
       rfl
     _ = _ := by
       simpa only [inv_mul_cancel₀ htau.ne', setLIntegral_univ] using
@@ -103,7 +103,7 @@ theorem normalizedShrinkerMass_scaleMetric_inv_eq_lintegral_perelmanDensity
 theorem normalizedShrinkerMass_eq_lintegral_perelmanDensity_one
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
     normalizedShrinkerMass g f = ∫⁻ x,
-      ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) 1 f x)
+      ENNReal.ofReal (perelmanDensity (Module.finrank ℝ E) 1 f x)
       ∂riemannianVolumeMeasure (I := I) (M := M) g := by
   have hg : scaleMetric 1 zero_lt_one g = g := by
     apply SmoothRiemannianMetric.ext_inner

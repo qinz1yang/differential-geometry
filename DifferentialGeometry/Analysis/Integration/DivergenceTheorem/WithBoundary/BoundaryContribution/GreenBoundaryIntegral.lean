@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Boundary.Normal.Outward
 import DifferentialGeometry.Geometry.Boundary.SurfaceMeasure
 import DifferentialGeometry.Geometry.Boundary.Model.EuclideanHalfSpace
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.POUReduction
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.ChartDecomposition
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.Stokes
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Basic

@@ -4,8 +4,8 @@ import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.CoordinateFormula
 import DifferentialGeometry.Geometry.Operator.Hessian.TraceFormula
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 
 set_option autoImplicit false
 

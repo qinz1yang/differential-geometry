@@ -116,7 +116,7 @@ theorem abstract_succ_covDeriv_unfold_at
         curriedSection I M W x
           ((LeviCivita (I := I) g).toFun Y x (Vfield x)) := by
   classical
-  have hHom := _root_.CovariantDerivative.homFun_apply
+  have hHom := HomConnection.homBundleCovariantDerivativeFun_apply_eq
     (I := I) (M := M) (E_U := E) (U := TangentSpace I) (F := Tensor0SModel 2 ℝ E)
     (V := fun z : M => Tensor0SSpace 2 I z)
     (cov_U := LeviCivita (I := I) g)
@@ -126,7 +126,7 @@ theorem abstract_succ_covDeriv_unfold_at
   have hsucc : tensor0SCurry (I := I) (M := M) 2 x
       ((Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g)).toFun
         W x (Vfield x)) =
-      _root_.CovariantDerivative.homFun (I := I) (M := M) (E_U := E) (U := TangentSpace I)
+      HomConnection.homBundleCovariantDerivativeFun (I := I) (M := M) (E_U := E) (U := TangentSpace I)
         (F := Tensor0SModel 2 ℝ E)
         (V := fun z : M => Tensor0SSpace 2 I z)
         (cov_U := LeviCivita (I := I) g)

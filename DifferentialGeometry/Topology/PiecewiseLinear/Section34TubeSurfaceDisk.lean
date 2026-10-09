@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SurfaceCutDescent
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34DiskMotionPullback
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Torus.EssentialCircle
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34TorusInessentialDisk
 
 open Set
 

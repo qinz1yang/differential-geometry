@@ -111,7 +111,7 @@ private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiema
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ (s + 1)
             (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁))).toSection x) Z) =
         cometricDoubleTraceFib (I := I) g₀ s x
-          (slotInsertEndomorphism (I := I) (M := M) (s + 2) 0 x
+          (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
             (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z) from by
       rw [operatorFieldComposition_toSection]
       rfl]
@@ -120,10 +120,10 @@ private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiema
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
       (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel
-        (slotInsertEndomorphism (I := I) (M := M) (s + 2) 0 x
+        (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z)) mm]
     refine Finset.sum_congr rfl fun a _ => ?_
-    rw [slotInsertEndomorphism_apply_eval]
+    rw [slotInsertEndoFib_apply_eval]
     rw [Fin.update_cons_zero]
     rfl
   rw [hRHS]

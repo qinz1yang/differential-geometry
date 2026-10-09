@@ -114,7 +114,7 @@ private theorem hessian_diagonal_continuous_at_on (g : SmoothRiemannianMetric I 
     {f : M → ℝ} {U : Set M} (hU : IsOpen U) (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U)
     (X : ContMDiffSection I E ∞ (TangentSpace I : M → Type _)) {x : M} (hx : x ∈ U) :
     ContinuousAt (fun y => hessFun (I := I) g f y (X y) (X y)) x := by
-  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU hx hf
+  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
   have hc := (tensor0SField_eval_smooth_slots_contMDiffAt (I := I)
     (leviHessSec (I := I) g F hF) (fun _ : Fin 2 => X) x).continuousAt
   apply hc.congr
@@ -130,7 +130,7 @@ private theorem hessian_diagonal_bound_on (g : SmoothRiemannianMetric I M)
     {x : M} (hx : x ∈ U) (v : TangentSpace I x) :
     |hessFun (I := I) g f x v v| ≤
       Real.sqrt (chartHessFrobeniusSq (I := I) g f x) * g.inner x v v := by
-  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU hx hf
+  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
   have hb := abs_apply_le_norm0S (I := I) g x 2 (leviHessSec (I := I) g F hF x)
     (vec2 (I := I) v v)
   rw [levi_hessian_apply g hF, hessSec_normSq (I := I) g hF x,

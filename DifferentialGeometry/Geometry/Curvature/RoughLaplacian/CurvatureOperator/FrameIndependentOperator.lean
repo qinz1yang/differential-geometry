@@ -45,7 +45,7 @@ private noncomputable def pureRSlot0BilinAt
     tensorRSRiemannianNormedAddCommGroup 0 m y
   LinearMap.toContinuousLinearMap
     { toFun := fun X => (riemannOp (tensorCov (I := I) g 0 m) y X v).comp
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 m y).symm (W y))
+        ((covGradBundleEquiv (I := I) (M := M) 0 m y).symm (W y))
       map_add' := fun X X' => by
         ext Y
         simp only [ContinuousLinearMap.comp_apply, add_apply,
@@ -63,7 +63,7 @@ private lemma pureRSlot0BilinAt_apply
     (W : Π b : M, TensorRSSpace 0 (m + 1) I b) (y : M) (v X Y : TangentSpace I y) :
     pureRSlot0BilinAt (I := I) (M := M) g m W y v X Y =
       riemannOp (tensorCov (I := I) g 0 m) y X v
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 m y).symm (W y) Y) := rfl
+        ((covGradBundleEquiv (I := I) (M := M) 0 m y).symm (W y) Y) := rfl
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -74,7 +74,7 @@ private lemma pureRSlot0BilinAt_frame_summand
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (i : Fin (Module.finrank ℝ E)) (y : M) (v : TangentSpace I y) :
     riemannOp (tensorCov (I := I) g 0 m) y (B i y) v
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 m y).symm (W.toSection y) (B i y)) =
+        ((covGradBundleEquiv (I := I) (M := M) 0 m y).symm (W.toSection y) (B i y)) =
       pureRSlot0BilinAt (I := I) (M := M) g m (fun b : M => W.toSection b) y v (B i y) (B i y) :=
         rfl
 
@@ -165,7 +165,7 @@ private theorem pureRFrozenDirCLM_frame_independent
         ∑ i : Fin (Module.finrank ℝ E),
           (show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace m I y from
             riemannOp (tensorCov (I := I) g 0 m) y (F i y) v
-              ((covariantSlotBundleEquiv (I := I) (M := M) 0 m y).symm (W.toSection y) (F i y))) D := by
+              ((covGradBundleEquiv (I := I) (M := M) 0 m y).symm (W.toSection y) (F i y))) D := by
       rw [pureRFrozenDirCLM_apply, sum_apply]
     rw [hsum_apply, ← Tensor0SSpace.toModelL_apply, map_sum, sum_apply]
     refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -189,7 +189,7 @@ private lemma pureRGenuineEndoFib_eq_frozen_on_neighborhood
     pureRGenuineEndoFib (I := I) (M := M) g m W y =
       pureRFrozenEndoFib (I := I) (M := M) g m (smoothOrthoFrame (I := I) g x₀) W y := by
   rw [pureRGenuineEndoFib, pureRFrozenEndoFib, pureRFrozenEndoFib]
-  refine congrArg (covariantSlotBundleEquiv (I := I) (M := M) 0 m y) ?_
+  refine congrArg (covGradBundleEquiv (I := I) (M := M) 0 m y) ?_
   exact pureRFrozenDirCLM_frame_independent (I := I) (M := M) g m W y
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g y i j)
     (fun i j => smoothOrthoFrame_orthonormal (I := I) g x₀ hy i j)
@@ -272,10 +272,10 @@ private lemma pureRGenuineEndoFib_linear
   classical
   rw [pureRGenuineEndoFib, pureRGenuineEndoFib, pureRGenuineEndoFib]
   rw [pureRFrozenEndoFib, pureRFrozenEndoFib, pureRFrozenEndoFib]
-  rw [← map_smul (covariantSlotBundleEquiv (I := I) (M := M) 0 m x) c₁,
-    ← map_smul (covariantSlotBundleEquiv (I := I) (M := M) 0 m x) c₂,
-    ← map_add (covariantSlotBundleEquiv (I := I) (M := M) 0 m x)]
-  refine congrArg (covariantSlotBundleEquiv (I := I) (M := M) 0 m x) ?_
+  rw [← map_smul (covGradBundleEquiv (I := I) (M := M) 0 m x) c₁,
+    ← map_smul (covGradBundleEquiv (I := I) (M := M) 0 m x) c₂,
+    ← map_add (covGradBundleEquiv (I := I) (M := M) 0 m x)]
+  refine congrArg (covGradBundleEquiv (I := I) (M := M) 0 m x) ?_
   refine ContinuousLinearMap.ext (fun v => ?_)
   rw [add_apply, smul_apply,
     smul_apply,
@@ -301,7 +301,7 @@ private lemma pureRGenuineEndoFib_local
       pureRGenuineEndoFib (I := I) (M := M) g m W₂ x := by
   classical
   rw [pureRGenuineEndoFib, pureRGenuineEndoFib, pureRFrozenEndoFib, pureRFrozenEndoFib]
-  refine congrArg (covariantSlotBundleEquiv (I := I) (M := M) 0 m x) ?_
+  refine congrArg (covGradBundleEquiv (I := I) (M := M) 0 m x) ?_
   refine ContinuousLinearMap.ext (fun v => ?_)
   rw [pureRFrozenDirCLM_apply, pureRFrozenDirCLM_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)

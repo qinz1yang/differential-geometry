@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactnessFrontierReduction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Splitting.ProductNullPlane
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientSplittingNullPlane
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardSliceShrinkerReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ForwardFlatness
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorEigenvalues
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
 
 set_option autoImplicit false
 

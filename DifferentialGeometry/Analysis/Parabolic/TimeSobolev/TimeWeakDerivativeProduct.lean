@@ -1,6 +1,6 @@
 import Mathlib.Analysis.Distribution.AEEqOfIntegralContDiff
 import DifferentialGeometry.Analysis.Integration.Lp.ProductL2
-import DifferentialGeometry.Analysis.Sobolev.Time.WeakDerivative.FundamentalTheorem
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.WeakDerivative.FundamentalTheorem
 import DifferentialGeometry.Analysis.Integration.Lp.Curry
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeProduct
 

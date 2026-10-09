@@ -6,7 +6,7 @@ import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.MinimizingSequence
-import DifferentialGeometry.Topology.Homeomorph.Radial.Disk
+import DifferentialGeometry.Topology.LoopSpace.RadialHomeomorphism
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.RadialVariation
 import DifferentialGeometry.Analysis.Calculus.Variation.Quadratic
 

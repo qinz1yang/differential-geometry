@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Slice
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Defs
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Chart.MetricEnergy.KineticEnergy
+import DifferentialGeometry.Geometry.Operator.Family.Gram.KineticEnergy
 
 set_option autoImplicit false
 

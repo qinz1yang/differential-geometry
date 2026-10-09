@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Neck.Normalized.Basic
 import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Neck.Recentering
@@ -25,6 +24,53 @@ private local instance (O : TopologicalSpace.Opens NeckCylinder) : SigmaCompactS
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen NeckCylinderModel O.isOpen)
 
+theorem roundCylinderMetric_eq_geometry :
+    roundCylinderMetric = (Geometry.Metric.roundCylinderMetric (E := ThreeSpace) (n := 2)) := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x V W
+  have hkey : ∀ (V : TangentSpace NeckCylinderModel x),
+      mfderiv NeckCylinderModel ThreeModel
+          (fun p : NeckCylinder => (p.1.1 : ThreeSpace)) x V
+        = dIncl (E := ThreeSpace) (n := 2) x.1 V.1 := by
+    intro V
+    have hcomp : (fun p : NeckCylinder => (p.1.1 : ThreeSpace)) =
+        ((↑) : Sphere 2 → ThreeSpace) ∘ Prod.fst := by
+      rw [← Function.comp_def]
+    rw [hcomp]
+    rw [mfderiv_comp x
+      ((contMDiff_coe_sphere (E := ThreeSpace) (n := 2) (m := ∞)).contMDiffAt.mdifferentiableAt
+        (by simp))
+      (mdifferentiableAt_fst (x := x))]
+    rw [mfderiv_fst]
+    rfl
+  have hsnd : ∀ (V : TangentSpace NeckCylinderModel x),
+      mfderiv NeckCylinderModel 𝓘(ℝ, ℝ) Prod.snd x V = V.2 := by
+    intro V
+    rw [mfderiv_snd]
+    rfl
+  have h := (Classical.choose_spec
+    (exists_unique_shrinkingCylinderMetric (⟨0, by norm_num⟩ : Iio (1 : ℝ)))).1 x V W
+  rw [roundCylinderMetric, shrinkingCylinderMetric]
+  rw [h, shrinkingCylinderInner, hkey V, hkey W, hsnd V, hsnd W]
+  rw [Geometry.Metric.roundCylinderMetric_inner]
+  norm_num
+  rfl
+
+theorem isCompact_neckClosedTest (δ : ℝ) : IsCompact (neckClosedTest δ) := by
+  rw [Topology.IsEmbedding.isCompact_iff
+    (Topology.IsEmbedding.subtypeVal (p := fun q => q ∈ neckBuffer δ))]
+  have himg : (Subtype.val '' neckClosedTest δ : Set NeckCylinder) =
+      (Set.univ : Set (Sphere 2)) ×ˢ Icc (-δ⁻¹) δ⁻¹ := by
+    ext q
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      exact ⟨Set.mem_univ _, hy⟩
+    · rintro ⟨-, hq⟩
+      refine ⟨⟨q, ?_⟩, hq, rfl⟩
+      change -δ⁻¹ - 1 < q.2 ∧ q.2 < δ⁻¹ + 1
+      constructor <;> linarith [hq.1, hq.2]
+  rw [himg]
+  exact isCompact_univ.prod isCompact_Icc
 
 section SupTransport
 

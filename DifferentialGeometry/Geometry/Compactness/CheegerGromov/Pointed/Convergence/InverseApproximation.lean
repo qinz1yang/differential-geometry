@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Approximation.Inverse
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Inverse
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 

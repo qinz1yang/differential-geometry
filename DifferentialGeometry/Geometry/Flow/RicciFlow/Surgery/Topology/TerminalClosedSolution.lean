@@ -10,9 +10,6 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
@@ -31,7 +28,7 @@ private local instance (W : TopologicalSpace.Opens G.terminalRegularOpen) : IsMa
   IsManifold.of_le (n := ∞) (by decide)
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_restrictOpen_jointContMDiffOn
+theorem TerminalLimitMetric.extendedMetric_restrictOpen_jointContMDiffOn
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c : ℝ} (hac : a ≤ c) (hcs : c < s) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
@@ -49,7 +46,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   intro t _ x v w
   simp only [SmoothRiemannianMetric.restrictOpen_inner, mfderiv_subtype_val_apply]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_restrictOpen_hasDerivAt
+theorem TerminalLimitMetric.extendedMetric_restrictOpen_hasDerivAt
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {t : ℝ} (ht : t ∈ Ioo a s) (x : W) (v w : TangentSpace ThreeModel x) :
     HasDerivAt (fun u => ((L.extendedMetric u).restrictOpen W).inner x v w)
@@ -58,31 +55,31 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   rw [Geometry.Curvature.ricciTensor_restrictOpen]
   simpa only [SmoothRiemannianMetric.restrictOpen_inner, mfderiv_subtype_val_apply] using hd
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.closedSolution
+def TerminalLimitMetric.closedSolution
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c : ℝ} (hcs : c ≤ s) : SolutionOn (I := ThreeModel) (M := W)
       (RealTimeInterval.closed c s hcs) where
   base := { metric := fun t => (L.extendedMetric t).restrictOpen W }
 
-@[simp] theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.closedSolution_metric
+@[simp] theorem TerminalLimitMetric.closedSolution_metric
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c : ℝ} (hcs : c ≤ s) (t : ℝ) :
     (L.closedSolution W hcs).base.metric t = (L.extendedMetric t).restrictOpen W := rfl
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.closedSolution_before
+theorem TerminalLimitMetric.closedSolution_before
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c : ℝ} (hcs : c ≤ s) {t : ℝ} (ht : t < s) :
     (L.closedSolution W hcs).base.metric t =
       ((G.flow.base.metric t).restrictOpen G.terminalRegularOpen).restrictOpen W := by
   rw [L.closedSolution_metric, L.extendedMetric_before ht]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.closedSolution_terminal
+theorem TerminalLimitMetric.closedSolution_terminal
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c : ℝ} (hcs : c ≤ s) :
     (L.closedSolution W hcs).base.metric s = L.metric.restrictOpen W := by
   rw [L.closedSolution_metric, L.extendedMetric_terminal]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.closedSolution_isSolutionOn
+theorem TerminalLimitMetric.closedSolution_isSolutionOn
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c : ℝ} (hac : a ≤ c) (hcs : c < s) : IsSolutionOn (L.closedSolution W hcs.le) := by
   apply isSolutionOn_of_joint_metric (RealTimeInterval.closed c s hcs.le)
@@ -92,7 +89,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact (L.extendedMetric_restrictOpen_hasDerivAt W
     ⟨hac.trans_lt ht.1, ht.2⟩ x v w).hasDerivWithinAt
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_restrictOpen_hasDerivWithinAt
+theorem TerminalLimitMetric.extendedMetric_restrictOpen_hasDerivWithinAt
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c t : ℝ} (hac : a ≤ c) (hcs : c < s) (ht : t ∈ Icc c s)
     (x : W) (v w : TangentSpace ThreeModel x) :
@@ -101,8 +98,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   have hd := metric_inner_hasDerivWithinAt_on_closed_interval (L.closedSolution W hcs.le)
     (L.closedSolution_isSolutionOn W hac hcs) hcs Subset.rfl Subset.rfl ht x v w
   have hr := metricRicciAt_apply_eq_ricciTensor ((L.extendedMetric t).restrictOpen W) x v w
-  dsimp only [SolutionOn.ricciAt, SolutionFamily.ricciAt,
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.closedSolution] at hd
+  dsimp only [SolutionOn.ricciAt, SolutionFamily.ricciAt, closedSolution] at hd
   erw [hr] at hd
   exact hd
 
@@ -120,13 +116,10 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.closedSolution_chartGram_spatial_fderiv_continuousOn
+theorem TerminalLimitMetric.closedSolution_chartGram_spatial_fderiv_continuousOn
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c : ℝ} (hac : a ≤ c) (hcs : c < s) (p : W) :
     ContinuousOn (fun z : ℝ × ThreeSpace => fderiv ℝ
@@ -135,7 +128,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact (L.closedSolution W hcs.le).chartGram_spatial_fderiv_continuousOn_of_joint_metric
     (Icc c s) (L.extendedMetric_restrictOpen_jointContMDiffOn W hac hcs) p
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.closedSolution_scalarOnE_spatial_fderiv_continuousOn
+theorem TerminalLimitMetric.closedSolution_scalarOnE_spatial_fderiv_continuousOn
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c : ℝ} (hac : a ≤ c) (hcs : c < s) (p : W) :
     ContinuousOn (fun z : ℝ × ThreeSpace => fderiv ℝ

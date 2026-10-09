@@ -1,5 +1,10 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.OuterTori
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.CutCells.Decomposition
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ControlledGraphNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCutFrame
 
 open Set Topology
 
@@ -61,13 +66,13 @@ theorem exists_section34CutFrame [T2Space M₁] [SecondCountableTopology M₁]
   let _ : HasGroupoid M₂ (plGroupoid 3) := inferInstance
   obtain ⟨𝒦', car, Q, ct, Sd, hsub, hmap, hman, hcell, hN, hNW, hlf, hmarker, hcar,
     hsupport, hfinite, hQint, hQH, hdiam, hmeet, hincident, htorus⟩ :=
-    exists_controlled_graph_neighborhood_with_outer_tori hU hh 𝒦 h𝒦 hH
+    exists_section34_controlled_graph_neighborhood_with_outer_tori hU hh 𝒦 h𝒦 hH
       (hW.inter hU) (fun x hx => ⟨hΓW hx, hWU (hΓW hx)⟩) ψ hψc hψpos
-  let src := graphCutCell 𝒦 𝒦'
+  let src := section34GraphCutFamily 𝒦 𝒦'
   let srcBd := fun l => ⋃ m ∈ section34Face src l \ {l}, src m
   have hcut : Section34CutFrame U 𝒦 𝒦' src srcBd :=
-    graphCutCell_isCutCellDecomposition hU h𝒦 hsub hmap hman
-  have hNeq : section34CutNeighborhood src = ⋃ w, graphVertexCell 𝒦 𝒦' w := rfl
+    section34GraphCutFamily_isCutFrame hU h𝒦 hsub hmap hman
+  have hNeq : section34CutNeighborhood src = ⋃ w, section34GraphVertexCell 𝒦 𝒦' w := rfl
   exact ⟨𝒦', src, srcBd, car, Q, ct, Sd, hcut, hNeq.symm ▸ hN,
     hNeq.symm ▸ hNW.trans inter_subset_left, hcar, hsupport, hfinite, hQint, hQH, hdiam,
     fun w s => (hmeet w s).mp, fun w s hws => (hincident w s hws).trans interior_subset,

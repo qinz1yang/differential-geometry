@@ -25,7 +25,7 @@ theorem exists_oriented_spherical_model_of_diffeomorph
     refine ⟨G,Diffeomorph.refl (𝓡 3) G.manifold.Carrier ∞,f,?_,Or.inl ⟨rfl,HEq.rfl⟩,?_⟩
     · rfl
     · exact Or.inl ⟨G,⟨f⟩⟩
-  · obtain ⟨H,⟨τ,hτ⟩⟩ := SphericalSpaceFormGroup.exists_orientedDiffeomorph_opposite G
+  · obtain ⟨H,⟨τ,hτ⟩⟩ := sphericalSpaceFormOrientationClosure_holds G
     let f : ClosedOrientedManifold.OrientedDiffeomorph M.toClosedOrientedManifold H.manifold.toClosedOrientedManifold :=
       ⟨e.trans τ,Diffeomorph.preservesOrientation_trans h hτ⟩
     exact ⟨H,τ,f,rfl,Or.inr hτ,Or.inl ⟨H,⟨f⟩⟩⟩

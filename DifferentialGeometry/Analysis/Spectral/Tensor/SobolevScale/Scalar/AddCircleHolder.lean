@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Time.H1.Compactness.Basic
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Compactness.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.AddCircle
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.ScalarContinuous

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.PointwiseChart
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
 set_option autoImplicit false
 noncomputable section

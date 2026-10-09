@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ProjectiveSpace.CylinderProjectiveSlice
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactEmbedding
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CompactEmbedding
 
 set_option autoImplicit false
 

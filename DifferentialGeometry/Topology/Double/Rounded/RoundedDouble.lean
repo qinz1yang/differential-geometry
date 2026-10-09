@@ -4,13 +4,14 @@ import Mathlib.Topology.Order.Compact
 
 namespace DifferentialGeometry.Topology
 
+set_option linter.unusedSectionVars false
 
 open Set _root_.Topology unitInterval
 open scoped ContinuousMap
 
 namespace RoundedDouble
 
-variable {X : Type*}
+variable {X : Type*} [TopologicalSpace X]
 
 def base (g : X → ℝ) : Set X := {x | g x ≤ 0}
 
@@ -37,7 +38,7 @@ theorem scale_mem_filling {g : X → ℝ} (p : filling g) (s : I) :
   rw [mul_pow]
   nlinarith
 
-def homotopyEquivBase [TopologicalSpace X] (g : X → ℝ) : filling g ≃ₕ base g where
+def homotopyEquivBase (g : X → ℝ) : filling g ≃ₕ base g where
   toFun := ⟨fun p => ⟨p.1.1, fst_mem_base p.2⟩, by fun_prop⟩
   invFun := ⟨fun x => ⟨(x.1, 0), by simpa only [filling, mem_ofPred, zero_pow (by decide : 2 ≠ 0),
     add_zero] using (show g x ≤ 0 from x.2)⟩, by fun_prop⟩
@@ -67,12 +68,12 @@ noncomputable def lower (g : X → ℝ) (x : base g) : boundary g :=
     rw [neg_sq, Real.sq_sqrt (neg_nonneg.mpr x.2)]
     ring⟩
 
-theorem continuous_upper [TopologicalSpace X] {g : X → ℝ} (hg : Continuous g) : Continuous (upper g) := by
+theorem continuous_upper {g : X → ℝ} (hg : Continuous g) : Continuous (upper g) := by
   unfold upper
   exact (continuous_subtype_val.prodMk
     (Real.continuous_sqrt.comp (hg.comp continuous_subtype_val).neg)).subtype_mk _
 
-theorem continuous_lower [TopologicalSpace X] {g : X → ℝ} (hg : Continuous g) : Continuous (lower g) := by
+theorem continuous_lower {g : X → ℝ} (hg : Continuous g) : Continuous (lower g) := by
   unfold lower
   exact (continuous_subtype_val.prodMk
     (Real.continuous_sqrt.comp (hg.comp continuous_subtype_val).neg).neg).subtype_mk _
@@ -143,7 +144,7 @@ theorem upper_eq_lower_iff {g : X → ℝ} (x y : base g) :
     apply Subtype.ext
     simp [upper, lower, hx]
 
-theorem isClosedEmbedding_upper [TopologicalSpace X] {g : X → ℝ} (hg : Continuous g) :
+theorem isClosedEmbedding_upper {g : X → ℝ} (hg : Continuous g) :
     IsClosedEmbedding (upper g) := by
   let r : boundary g → base g := fun p =>
     ⟨p.1.1, fst_mem_base (boundary_subset_filling g p.2)⟩
@@ -153,7 +154,7 @@ theorem isClosedEmbedding_upper [TopologicalSpace X] {g : X → ℝ} (hg : Conti
   rw [heq]
   exact isClosed_le continuous_const continuous_subtype_val.snd
 
-theorem isClosedEmbedding_lower [TopologicalSpace X] {g : X → ℝ} (hg : Continuous g) :
+theorem isClosedEmbedding_lower {g : X → ℝ} (hg : Continuous g) :
     IsClosedEmbedding (lower g) := by
   let r : boundary g → base g := fun p =>
     ⟨p.1.1, fst_mem_base (boundary_subset_filling g p.2)⟩
@@ -163,7 +164,7 @@ theorem isClosedEmbedding_lower [TopologicalSpace X] {g : X → ℝ} (hg : Conti
   rw [heq]
   exact isClosed_le continuous_subtype_val.snd continuous_const
 
-theorem isCompact_filling [TopologicalSpace X] [CompactSpace X] {g : X → ℝ} (hg : Continuous g) :
+theorem isCompact_filling [CompactSpace X] {g : X → ℝ} (hg : Continuous g) :
     IsCompact (filling g) := by
   obtain ⟨b, hb⟩ := (isCompact_univ.image hg).bddBelow
   have hbound (x : X) : b ≤ g x := hb ⟨x, mem_univ _, rfl⟩
@@ -179,7 +180,7 @@ theorem isCompact_filling [TopologicalSpace X] [CompactSpace X] {g : X → ℝ} 
   · nlinarith [hbound p.1, neg_le_abs b, abs_nonneg b,
       sq_nonneg (p.2 - (|b| + 1)), sq_nonneg (|b|)]
 
-theorem isCompact_boundary [TopologicalSpace X] [CompactSpace X] {g : X → ℝ} (hg : Continuous g) :
+theorem isCompact_boundary [CompactSpace X] {g : X → ℝ} (hg : Continuous g) :
     IsCompact (boundary g) := by
   have hclosed : IsClosed (boundary g) :=
     isClosed_eq ((hg.comp continuous_fst).add (continuous_snd.pow 2)) continuous_const

@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Manifold.ConnectedComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalBarrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapSlabCapture
 import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphDistance
-import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
+import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
 
 noncomputable section
 
@@ -17,13 +17,10 @@ open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_spatial_neck_slab_subset_cap_core
+theorem TerminalLimitMetric.eventually_spatial_neck_slab_subset_cap_core
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {p x : G.terminalRegularOpen} {eps epsc : ℝ}
     (nk : SpatialNeck L.metric eps p) (heps : eps ≤ 1 / 8646)
@@ -146,7 +143,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   apply (div_lt_div_iff₀ hroot (Real.sqrt_pos.mpr hRn)).mpr
   nlinarith
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_canonical_cap_core
+theorem TerminalLimitMetric.eventually_canonical_cap_core
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {epsCanonical eps C1 C2 : ℝ}
@@ -182,7 +179,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   · intro y hy
     exact hbn y (hcoreU hy)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.spatial_neck_or_cap_core_of_canonical_sequence
+private theorem spatial_neck_or_cap_core_of_canonical_sequence
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hxpos : 0 < metricScalarAt L.metric x)
     {eps δ C1 C2 : ℝ} (hδsmall : δ ≤ 1 / 8646)
@@ -237,7 +234,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
       intro w hw
       exact hinside ⟨w, hw, rfl⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_spatial_neck_or_cap_core
+theorem exists_uniform_spatial_neck_or_cap_core
     {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ ≤ 1 / 8646) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
       (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
@@ -287,7 +284,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     have hlowy := (div_lt_iff₀ (by positivity : 0 < 2 * C)).mp (hband y hyK).1
     nlinarith
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.spatial_neck_or_cap_core_of_canonical_neighborhoods_of_not_isCompact
+theorem TerminalLimitMetric.spatial_neck_or_cap_core_of_canonical_neighborhoods_of_not_isCompact
     (L : G.TerminalLimitMetric) {δ q C1 C2 : ℝ}
     (hδsmall : δ ≤ 1 / 8646) (hq : 0 < q)
     (p x : G.terminalRegularOpen)
@@ -321,7 +318,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact spatial_neck_or_cap_core_of_canonical_sequence L hτ x (hq.trans hqx)
     hδsmall hepsδ hfit W hW halt nk z hlevel hxmap
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_spatial_neck_or_cap_core_of_not_isCompact
+theorem exists_uniform_spatial_neck_or_cap_core_of_not_isCompact
     {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ ≤ 1 / 8646) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
       (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
@@ -351,7 +348,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     hqx hnoncompact nk z level hlevel hxmap
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_spatial_neck_or_cap_core_on_component
+theorem exists_uniform_spatial_neck_or_cap_core_on_component
     {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ ≤ 1 / 8646) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
       (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
@@ -415,7 +412,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       simpa only [DifferentialGeometry.CheegerGromovCompactness.metricScalarAt_restrictOpen] using hscalar w.val hw
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_spatial_neck_or_cap_core_on_noncompact_component
+theorem exists_uniform_spatial_neck_or_cap_core_on_noncompact_component
     {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ ≤ 1 / 8646) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
       (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Connected.EmbeddedRange
+import DifferentialGeometry.Topology.Connected.EndpointStripRange
 import DifferentialGeometry.Topology.GraphBandChart
 
 noncomputable section

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.Spatial
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Cylinder.BallCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderBallCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBoundary
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Diameter

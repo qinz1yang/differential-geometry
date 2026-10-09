@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryPara
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Exponential.MinimizingDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.ReducedVolume.Density
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.ParabolicBallRange
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.VolumeDistortion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.VolumeDistortion
 import DifferentialGeometry.Geometry.Measure.LocalIsometry
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.WindowSolutionMap

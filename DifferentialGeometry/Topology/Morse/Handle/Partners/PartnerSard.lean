@@ -1187,7 +1187,7 @@ theorem exists_small_eps_partner (hf : MorseStrip I f a b) (D : GradientLikeStri
   · rw [hE2 x hx]; linarith
   · rw [hLL]; exact hM
 
-theorem isCancellingPair_of_ambient [DecidableEq M]
+theorem isCancellingPair_of_ambient [SigmaCompactSpace M] [DecidableEq M]
     (hf : MorseStrip I f a b) (D : GradientLikeStrip I f a b crit)
     (hcrit : ∀ x, x ∈ crit ↔ f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x)
     {p q : M} (hp : p ∈ crit) (hq : q ∈ crit) (hkp : (D.chart p hp).k = 1)

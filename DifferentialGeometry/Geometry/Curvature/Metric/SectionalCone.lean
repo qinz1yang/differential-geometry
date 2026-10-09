@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.Cones.SectionalNonnegative
+import DifferentialGeometry.Analysis.Convex.Tensor04SectionalNonnegativeCone
 import DifferentialGeometry.Geometry.Curvature.Algebraic.SectionalCone
 import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Euclidean
+import DifferentialGeometry.Geometry.Measure.EuclideanChart
 import DifferentialGeometry.Geometry.Metric.ChartLipschitz.DistanceComparison
 import DifferentialGeometry.Analysis.Calculus.Derivative.AlmostEverywhereLipschitz
 import DifferentialGeometry.Topology.LocalLipschitzVariation

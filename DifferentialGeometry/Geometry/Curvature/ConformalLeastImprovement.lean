@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.ConformalOperatorIncrement
 import DifferentialGeometry.Analysis.Spectral.FiniteDimensional.ScaledLowSpectralCluster
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
 set_option autoImplicit false
 noncomputable section

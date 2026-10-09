@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.Flow.Planar.ConstantOutsideCompactFlow
-import DifferentialGeometry.Topology.ThreeManifold.Orientation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalClassRealizationTransport
 import DifferentialGeometry.Topology.Manifold.BallChartPalaisTransport
 import DifferentialGeometry.Topology.Manifold.IsotopyOrientation
@@ -157,7 +157,7 @@ theorem preservesTangentOrientation_of_preservesManifoldOrientation
     {N : Type u} [TopologicalSpace N] [ChartedSpace ThreeSpace N] [IsManifold ThreeModel ∞ N]
     (oM : TangentOrientationSection M) (oN : TangentOrientationSection N)
     (f : M ≃ₘ⟮ThreeModel, ThreeModel⟯ N)
-    (h : f.preservesOrientation oM oN) :
+    (h : f.preservesOrientation oM.toManifoldOrientation oN.toManifoldOrientation) :
     PreservesTangentOrientation oM oN f := by
   refine ⟨f.contMDiff, fun x => ?_⟩
   have hbij : Function.Bijective (mfderiv ThreeModel ThreeModel (⇑f) x) := by
@@ -179,7 +179,7 @@ theorem localClassTransport_of_preconnectedSpace [T2Space M] [PreconnectedSpace 
   exact ⟨J 1, hJx, homotopic_id_of_isotopy_from_refl hJ0 hJc,
     localOrientationClass_natural_diffeomorph o o (J 1)
       (preservesTangentOrientation_of_preservesManifoldOrientation o o (J 1)
-        (preservesOrientation_of_jointlySmooth_isotopy o J hJ0 hJc 1)) x⟩
+        (preservesOrientation_of_jointlySmooth_isotopy o.toManifoldOrientation J hJ0 hJc 1)) x⟩
 
 theorem localClassRealizationLocallyConstant_of_preconnectedSpace [T2Space M]
     [PreconnectedSpace M] (o : TangentOrientationSection M) :

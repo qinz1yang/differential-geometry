@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.Basic
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
 import DifferentialGeometry.Topology.DirectLimit.PartialDiffeomorph
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
 open DifferentialGeometry.Geometry.Curvature
 

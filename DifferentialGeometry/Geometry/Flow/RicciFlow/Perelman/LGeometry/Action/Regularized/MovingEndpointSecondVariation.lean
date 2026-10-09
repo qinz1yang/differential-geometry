@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Variation.VelocityPairDerivative
+import DifferentialGeometry.Geometry.Comparison.Variation.VelocityPairDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.SecondVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Integrability
 

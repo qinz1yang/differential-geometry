@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
 
 noncomputable section
 
@@ -12,14 +12,14 @@ theorem isStandardFactor_sphereTwoTimesCircleLift :
   isStandardFactor_of_isSphereTwoTimesCircleFactor
     isSphereTwoTimesCircleFactor_sphereTwoTimesCircleLift
 
-theorem isStandardConnectedSum_sphereTwoTimesCircleLift :
-    isStandardConnectedSum sphereTwoTimesCircleLift.Carrier :=
-  isStandardConnectedSum_of_standard_factor sphereTwoTimesCircleLift
+theorem isPoincareStandard_sphereTwoTimesCircleLift :
+    isPoincareStandard sphereTwoTimesCircleLift.Carrier :=
+  isPoincareStandard_of_standard_factor sphereTwoTimesCircleLift
     isStandardFactor_sphereTwoTimesCircleLift
 
-theorem isStandardConnectedSum_finiteConnectedSum_sphereTwoTimesCircleLift :
-    isStandardConnectedSum (finiteConnectedSum [sphereTwoTimesCircleLift]).Carrier := by
-  refine isStandardConnectedSum_finite_sum [sphereTwoTimesCircleLift] ?_
+theorem isPoincareStandard_finiteConnectedSum_sphereTwoTimesCircleLift :
+    isPoincareStandard (finiteConnectedSum [sphereTwoTimesCircleLift]).Carrier := by
+  refine isPoincareStandard_finite_sum [sphereTwoTimesCircleLift] ?_
   intro F hF
   rw [List.mem_singleton] at hF
   subst hF

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryStrongNeckUniform
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureBounds.InverseSqrtScalarDistance
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Incoming.Reciprocal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.InverseSqrtScalarDistance
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingReciprocal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartTailHornBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarSublevel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
@@ -70,14 +70,11 @@ end DifferentialGeometry.Geometry.Metric
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_forall_scalar_bounds_of_scalar_mem_Ioc
+theorem TerminalLimitMetric.eventually_forall_scalar_bounds_of_scalar_mem_Ioc
     (L : G.TerminalLimitMetric) {Ctime : ℝ≥0} {q m Mx : ℝ} (hq : 0 < q)
     (hder : G.DerivativeBoundBefore Ctime q s) (hqm : 2 * q < m) (hmM : m ≤ Mx) :
     ∀ᶠ τ in 𝓝[<] s, ∀ w : P.Carrier, m < G.flow.scalar τ w → G.flow.scalar τ w ≤ Mx →

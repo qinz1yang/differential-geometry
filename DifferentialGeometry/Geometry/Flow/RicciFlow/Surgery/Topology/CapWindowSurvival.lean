@@ -1,13 +1,13 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFirstLossIncoming
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.ScaleProtection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventCutScaleProtection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorInitialCurvature
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Window.InitialTipCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialTipCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowFlowDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.EqualDimensionImmersion
 import DifferentialGeometry.Geometry.Metric.DistancePullback
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 
 noncomputable section

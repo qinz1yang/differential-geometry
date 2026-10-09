@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.Boundary.Basic
+import DifferentialGeometry.Geometry.Boundary.Manifold.Basic
 
 namespace DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 

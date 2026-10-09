@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Limi
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical.ReferenceChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Convergence.TimeWindows
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SameManifoldSlabWindowLink
 
 set_option autoImplicit false
 

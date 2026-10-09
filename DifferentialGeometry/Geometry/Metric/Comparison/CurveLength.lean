@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curve.Length.PathLength
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PathLength
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 
 noncomputable section

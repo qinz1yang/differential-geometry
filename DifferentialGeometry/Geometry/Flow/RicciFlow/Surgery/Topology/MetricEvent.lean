@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
+import DifferentialGeometry.Topology.ThreeManifold.CutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Basic

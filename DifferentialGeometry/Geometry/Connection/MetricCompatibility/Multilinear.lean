@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Multilinear
+import DifferentialGeometry.Geometry.Metric.BundleMultilinear
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Multilinear
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Hom
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Trivial

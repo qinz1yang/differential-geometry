@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Compactness.FixedKappaRankOne
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Splitting.SurfaceFactorBoundedness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimFixedKappaCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RankOneTerminalBounded
 
 
 set_option autoImplicit false

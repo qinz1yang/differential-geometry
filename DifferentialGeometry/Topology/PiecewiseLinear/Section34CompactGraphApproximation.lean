@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodSurgery
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphTube
+import DifferentialGeometry.Topology.PiecewiseLinear.Section33TubeApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVocabulary
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSpanningTrees
 import DifferentialGeometry.Topology.SimplicialComplex.ConnectedSpace
@@ -148,7 +153,7 @@ theorem ncard_neighborSet_restrict_section34CompactGraphSkeleton_ne_one
   omega
 
 open Classical in
-theorem exists_compactGraphApproximation {C V : Set E3}
+theorem exists_compactGraphApproximation (h331 : Moise331OnTube) {C V : Set E3}
     {h : E3 → E3} (hC : IsPLBall 3 C) (hV : IsOpen V) (hCV : C ⊆ V)
     (hh : Topology.IsEmbedding (V.domRestrict h)) {δ : ℝ} (hδ : 0 < δ) :
     ∃ M : Geometry.SimplicialComplex ℝ E3, M.faces.Finite ∧
@@ -220,7 +225,7 @@ theorem exists_compactGraphApproximation {C V : Set E3}
       ((SimplicialComplex.edgeGraph L).neighborSet v).ncard ≠ 1 :=
     ncard_neighborSet_restrict_section34CompactGraphSkeleton_ne_one hKm
   obtain ⟨f₁, hf₁, hf₁N, hf₁W⟩ :=
-    exists_isPLHomeomorphOn_tube_image_dualCell_subset L _ _ _ _ _ h htube hconn hend W fun v hv => hW v (hvertLK ▸ hv)
+    h331 L _ _ _ _ _ h htube hconn hend W fun v hv => hW v (hvertLK ▸ hv)
   have hNK : (⋃ v ∈ K.vertices, (graphDualCell M L v).space) = N := by
     rw [hNdef, hvertLK]
   rw [hNK]

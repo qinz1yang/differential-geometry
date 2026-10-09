@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 
 set_option autoImplicit false
 

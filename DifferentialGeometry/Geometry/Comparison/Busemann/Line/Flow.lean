@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.ODE.Flow.Complete
 import DifferentialGeometry.Geometry.Comparison.Busemann.Line.Parallel
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.ParallelField
-import DifferentialGeometry.Geometry.Metric.LieDerivative.ParallelFlow
+import DifferentialGeometry.Geometry.Metric.ParallelFlow
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.Line.Speed
 
 set_option autoImplicit false

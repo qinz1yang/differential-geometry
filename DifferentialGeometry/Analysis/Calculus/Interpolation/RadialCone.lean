@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homeomorph.Radial.Extension
+import DifferentialGeometry.Topology.LoopSpace.RadialExtension
 import Mathlib.Analysis.Calculus.FDeriv.Prod
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Basic

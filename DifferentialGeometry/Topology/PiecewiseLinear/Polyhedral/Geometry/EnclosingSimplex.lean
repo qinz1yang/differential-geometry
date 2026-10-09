@@ -3,6 +3,7 @@ import Mathlib.Analysis.Normed.Affine.Convex
 
 namespace DifferentialGeometry.Topology.Engulfing
 
+set_option linter.unusedSectionVars false
 
 open Set Metric _root_.Geometry
 open scoped _root_.Topology Pointwise

@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.ThreeManifold.SphericalBoundaryProjectiveHo
 import DifferentialGeometry.Topology.ThreeManifold.NestedBallRecapping
 import DifferentialGeometry.Topology.ThreeManifold.CapCoreBallReplacement
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ProjectivePresentation
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.CoreComponentTopology
+import DifferentialGeometry.Topology.ThreeManifold.CoreComponentGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCoreComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
 
@@ -80,11 +80,11 @@ theorem coreComponent_union_caps_inter_cap_of_finite_ball_complement :
     exact (C.boundary_eq outer _).trans (congrArg C.coreInclusion
       (congrArg (T.coreBoundarySphere outer) ((C.attaching outer).apply_symm_apply q)))
 
-theorem isStandardConnectedSum_component_of_finite_ball_complement :
-    isStandardConnectedSum (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
+theorem isPoincareStandard_component_of_finite_ball_complement :
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
   obtain ⟨hcap,_⟩ :=
     C.nonempty_capCore_union_caps_of_finite_ball_complement cap s B hB hinside hdis hsphere x hcomponent
-  exact C.isStandardConnectedSum_component_of_capCore_union_cap hcap.some outer _
+  exact C.isPoincareStandard_component_of_capCore_union_cap hcap.some outer _
     (C.image_coreComponent_union_caps_eq_componentSet_of_finite_ball_complement
       cap.isCompact_carrier.isClosed outer hfront s B hB hinside hdis hsphere x hcomponent)
 
@@ -96,7 +96,7 @@ universe u
 
 variable {M Q : ClosedOrientedManifold.{u} 3} (E : SphericalCutCapTransition M Q)
 
-theorem isStandardConnectedSum_discardedComponent_of_finite_ball_complement
+theorem isPoincareStandard_discardedComponent_of_finite_ball_complement
     {Ω : Set M.Carrier} (cap : CapCore Ω) (outer : E.tubes.Boundary)
     (hfront : frontier Ω = range (E.tubes.boundarySphere outer))
     (s : Finset E.tubes.Boundary)
@@ -110,11 +110,11 @@ theorem isStandardConnectedSum_discardedComponent_of_finite_ball_complement
     (hcomponent : Ω \ ⋃ b ∈ s, B b '' ball (0 : ThreeSpace) 1 =
       (Subtype.val : E.tubes.core → M.Carrier) '' connectedComponent x)
     (d : E.discarded.Carrier) (hd : E.presentation (E.capping.coreInclusion x) = Sum.inr d) :
-    isStandardConnectedSum (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
-  have hstd := E.capping.isStandardConnectedSum_component_of_finite_ball_complement
+    isPoincareStandard (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
+  have hstd := E.capping.isPoincareStandard_component_of_finite_ball_complement
     cap outer hfront s B hB hinside hdis hsphere x hcomponent
   obtain ⟨e⟩ := E.cappedDiscardedPresentationRealization x d hd
-  exact isStandardConnectedSum_of_diffeomorph e.val.symm hstd
+  exact isPoincareStandard_of_diffeomorph e.val.symm hstd
 
 end DifferentialGeometry.Topology.SphericalCutCapTransition
 
@@ -126,7 +126,7 @@ universe u
 variable {M N : ClosedOrientedManifold.{u} 3} {T : SphericalTubeSystem M}
   (C : SphericalCapping M N T)
 
-theorem isStandardConnectedSum_component_of_ball_spherical_frontier
+theorem isPoincareStandard_component_of_ball_spherical_frontier
     (x : T.core) (A : PartialDiffeomorph I3 I3 ThreeSpace M.Carrier ∞)
     (hA : closedBall (0 : ThreeSpace) 1 ⊆ A.source)
     (outer : T.Boundary) (houter : A '' sphere (0 : ThreeSpace) 1 = range (T.boundarySphere outer))
@@ -139,7 +139,7 @@ theorem isStandardConnectedSum_component_of_ball_spherical_frontier
     (hinside : ∀ b ∈ s, range (T.boundarySphere b) ⊆ A '' ball (0 : ThreeSpace) 1)
     (hfront : frontier ((Subtype.val : T.core → M.Carrier) '' connectedComponent x) =
       range (T.boundarySphere outer) ∪ ⋃ b ∈ s, range (T.boundarySphere b)) :
-    isStandardConnectedSum (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
   classical
   let I := {b : T.Boundary // b ∈ s}
   have hsmooth (b : I) : IsSmoothEmbedding I2 I3 ∞ (T.boundarySphere b.val) :=
@@ -176,7 +176,7 @@ theorem isStandardConnectedSum_component_of_ball_spherical_frontier
     · intro hy
       obtain ⟨b,hb⟩ := mem_iUnion.mp hy
       exact mem_iUnion₂.mpr ⟨b.val,b.property,(hB'eq b.val b.property).symm ▸ hb⟩
-  apply C.isStandardConnectedSum_component_of_finite_ball_complement
+  apply C.isPoincareStandard_component_of_finite_ball_complement
     (CapCore.ball A hA rfl) outer hAf s B'
     (fun b hb => hB'eq b hb ▸ hB ⟨b,hb⟩)
   · intro b hb
@@ -203,7 +203,7 @@ universe u
 variable {M N : ClosedOrientedManifold.{u} 3} {T : SphericalTubeSystem M}
   (C : SphericalCapping M N T)
 
-theorem isStandardConnectedSum_component_of_ball_containing_coreComponent
+theorem isPoincareStandard_component_of_ball_containing_coreComponent
     (x : T.core) (A : PartialDiffeomorph (𝓡 3) (𝓡 3) ThreeSpace M.Carrier ∞)
     (hA : closedBall (0 : ThreeSpace) 1 ⊆ A.source)
     (outer : T.Boundary)
@@ -211,7 +211,7 @@ theorem isStandardConnectedSum_component_of_ball_containing_coreComponent
     (houter_mem : ∃ q : Sphere 2, T.coreBoundarySphere outer q ∈ connectedComponent x)
     (hcontained : (Subtype.val : T.core → M.Carrier) '' connectedComponent x ⊆
       A '' closedBall (0 : ThreeSpace) 1) :
-    isStandardConnectedSum (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
   classical
   let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
     (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
@@ -262,7 +262,7 @@ theorem isStandardConnectedSum_component_of_ball_containing_coreComponent
       · exact mem_iUnion.mpr ⟨⟨outer,houter_mem⟩,hy⟩
       · obtain ⟨b,hb,hy⟩ := mem_iUnion₂.mp hy
         exact mem_iUnion.mpr ⟨⟨b,(Finset.mem_filter.mp hb).2.2⟩,hy⟩
-  exact C.isStandardConnectedSum_component_of_ball_spherical_frontier x A hA outer houter s
+  exact C.isPoincareStandard_component_of_ball_spherical_frontier x A hA outer houter s
     hregular hconnected hcontained hinside' hfront'
 
 end DifferentialGeometry.Topology.SphericalCapping
@@ -277,20 +277,20 @@ universe u
 variable {M N : ClosedOrientedManifold.{u} 3} {T : SphericalTubeSystem M}
   (C : SphericalCapping M N T)
 
-theorem isStandardConnectedSum_component_of_ball_cutting_side
+theorem isPoincareStandard_component_of_ball_cutting_side
     (A : PartialDiffeomorph (𝓡 3) (𝓡 3) ThreeSpace M.Carrier ∞)
     (hA : closedBall (0 : ThreeSpace) 1 ⊆ A.source)
     (b : T.Boundary) (hfront : A '' sphere (0 : ThreeSpace) 1 = range (T.boundarySphere b))
     (hdis : Disjoint (A '' closedBall (0 : ThreeSpace) 1) (T.removedBand b.1))
     (q : Sphere 2) :
-    isStandardConnectedSum
+    isPoincareStandard
       (N.component (ConnectedComponents.mk (C.coreInclusion (T.coreBoundarySphere b q)))).Carrier := by
   have hAf : frontier (A '' closedBall (0 : ThreeSpace) 1) = range (T.boundarySphere b) := by
     rw [← A.image_frontier_of_isCompact (isCompact_closedBall _ _) hA,
       frontier_closedBall _ one_ne_zero,hfront]
   have hq : T.boundarySphere b q ∈ A '' closedBall (0 : ThreeSpace) 1 :=
     image_mono sphere_subset_closedBall (hfront.symm ▸ mem_range_self q)
-  apply C.isStandardConnectedSum_component_of_ball_containing_coreComponent
+  apply C.isPoincareStandard_component_of_ball_containing_coreComponent
     (T.coreBoundarySphere b q) A hA b hfront ⟨q,mem_connectedComponent⟩
   rintro y ⟨z,hz,rfl⟩
   exact T.toTopological.connectedComponent_subset_preimage_of_capCore_of_boundarySphere
@@ -303,7 +303,7 @@ namespace DifferentialGeometry.Topology.SphericalCutCapTransition
 universe u
 variable {M Q : ClosedOrientedManifold.{u} 3} (E : SphericalCutCapTransition M Q)
 
-theorem isStandardConnectedSum_discardedComponent_of_ball_cutting_side
+theorem isPoincareStandard_discardedComponent_of_ball_cutting_side
     (A : PartialDiffeomorph (𝓡 3) (𝓡 3) ThreeSpace M.Carrier ∞)
     (hA : closedBall (0 : ThreeSpace) 1 ⊆ A.source)
     (b : E.tubes.Boundary)
@@ -311,10 +311,10 @@ theorem isStandardConnectedSum_discardedComponent_of_ball_cutting_side
     (hdis : Disjoint (A '' closedBall (0 : ThreeSpace) 1) (E.tubes.removedBand b.1))
     (q : Sphere 2) (d : E.discarded.Carrier)
     (hd : E.presentation (E.capping.coreInclusion (E.tubes.coreBoundarySphere b q)) = Sum.inr d) :
-    isStandardConnectedSum (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
-  have hstd := E.capping.isStandardConnectedSum_component_of_ball_cutting_side A hA b hfront hdis q
+    isPoincareStandard (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
+  have hstd := E.capping.isPoincareStandard_component_of_ball_cutting_side A hA b hfront hdis q
   obtain ⟨e⟩ := E.cappedDiscardedPresentationRealization (E.tubes.coreBoundarySphere b q) d hd
-  exact isStandardConnectedSum_of_diffeomorph e.val.symm hstd
+  exact isPoincareStandard_of_diffeomorph e.val.symm hstd
 
 end DifferentialGeometry.Topology.SphericalCutCapTransition
 
@@ -540,7 +540,7 @@ universe u
 variable {M N : ClosedOrientedManifold.{u} 3} {T : SphericalTubeSystem M}
   (C : SphericalCapping M N T)
 
-theorem isStandardConnectedSum_component_of_projective_spherical_frontier
+theorem isPoincareStandard_component_of_projective_spherical_frontier
     {Z : Type u} [TopologicalSpace Z] [ChartedSpace ThreeSpace Z]
     [IsManifold I3 ∞ Z] [T2Space Z] [CompactSpace Z]
     (pr : ProjectivePresentation Z)
@@ -558,7 +558,7 @@ theorem isStandardConnectedSum_component_of_projective_spherical_frontier
     (hinside : ∀ b ∈ s, range (T.boundarySphere b) ⊆ interior (F '' (A '' ball (0 : ThreeSpace) 1)ᶜ))
     (hfront : frontier ((Subtype.val : T.core → M.Carrier) '' connectedComponent x) =
       range (T.boundarySphere outer) ∪ ⋃ b ∈ s, range (T.boundarySphere b)) :
-    isStandardConnectedSum (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
   classical
   let I := {b : T.Boundary // b ∈ s}
   let W := (Subtype.val : T.core → M.Carrier) '' connectedComponent x
@@ -612,7 +612,7 @@ theorem isStandardConnectedSum_component_of_projective_spherical_frontier
     change (⋃ i : {b : T.Boundary // b ∈ s}, G i.val '' closedBall (0 : ThreeSpace) 1) = _
     rw [iUnion_subtype]
     simp only [hGc]
-  apply C.isStandardConnectedSum_component_of_capCore_union_cap (heq ▸ hcap) outer _
+  apply C.isPoincareStandard_component_of_capCore_union_cap (heq ▸ hcap) outer _
   exact image_coreComponent_union_caps_eq_componentSet_of_frontier C x outer s hfront
 
 end DifferentialGeometry.Topology.SphericalCapping
@@ -627,7 +627,7 @@ universe u
 variable {M N : ClosedOrientedManifold.{u} 3} {T : SphericalTubeSystem M}
   (C : SphericalCapping M N T)
 
-theorem isStandardConnectedSum_component_of_projective_containing_coreComponent
+theorem isPoincareStandard_component_of_projective_containing_coreComponent
     {Z : Type u} [TopologicalSpace Z] [ChartedSpace ThreeSpace Z]
     [IsManifold I3 ∞ Z] [T2Space Z] [CompactSpace Z]
     (pr : ProjectivePresentation Z)
@@ -641,7 +641,7 @@ theorem isStandardConnectedSum_component_of_projective_containing_coreComponent
     (houter_mem : ∃ q : Sphere 2, T.coreBoundarySphere outer q ∈ connectedComponent x)
     (hcontained : (Subtype.val : T.core → M.Carrier) '' connectedComponent x ⊆
       F '' (A '' ball (0 : ThreeSpace) 1)ᶜ) :
-    isStandardConnectedSum (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
   classical
   let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
     (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
@@ -690,7 +690,7 @@ theorem isStandardConnectedSum_component_of_projective_containing_coreComponent
       · exact mem_iUnion.mpr ⟨⟨outer,houter_mem⟩,hy⟩
       · obtain ⟨b,hb,hy⟩ := mem_iUnion₂.mp hy
         exact mem_iUnion.mpr ⟨⟨b,(Finset.mem_filter.mp hb).2.2⟩,hy⟩
-  exact C.isStandardConnectedSum_component_of_projective_spherical_frontier pr A F hA hF x outer houter s
+  exact C.isPoincareStandard_component_of_projective_spherical_frontier pr A F hA hF x outer houter s
     hregular hconnected hcontained hinside' hfront'
 
 
@@ -706,7 +706,7 @@ universe u
 variable {M N : ClosedOrientedManifold.{u} 3} {T : SphericalTubeSystem M}
   (C : SphericalCapping M N T)
 
-theorem isStandardConnectedSum_component_of_projective_cutting_side
+theorem isPoincareStandard_component_of_projective_cutting_side
     {Z : Type u} [TopologicalSpace Z] [ChartedSpace ThreeSpace Z]
     [IsManifold I3 ∞ Z] [T2Space Z] [CompactSpace Z]
     (pr : ProjectivePresentation Z)
@@ -718,7 +718,7 @@ theorem isStandardConnectedSum_component_of_projective_cutting_side
     (hfront : F '' (A '' sphere (0 : ThreeSpace) 1) = range (T.boundarySphere b))
     (hdis : Disjoint (F '' (A '' ball (0 : ThreeSpace) 1)ᶜ) (T.removedBand b.1))
     (q : Sphere 2) :
-    isStandardConnectedSum
+    isPoincareStandard
       (N.component (ConnectedComponents.mk (C.coreInclusion (T.coreBoundarySphere b q)))).Carrier := by
   let cap : CapCore (F '' (A '' ball (0 : ThreeSpace) 1)ᶜ) :=
     CapCore.projective Z pr A hA F hF rfl
@@ -731,7 +731,7 @@ theorem isStandardConnectedSum_component_of_projective_cutting_side
     (DifferentialGeometry.Topology.Manifold.image_sphere_eq_frontier_of_ball_complement A F hA1 hΩc hF).symm.trans hfront
   have hq : T.boundarySphere b q ∈ F '' (A '' ball (0 : ThreeSpace) 1)ᶜ :=
     cap.isCompact_carrier.isClosed.frontier_subset (hAf.symm ▸ mem_range_self q)
-  apply C.isStandardConnectedSum_component_of_projective_containing_coreComponent
+  apply C.isPoincareStandard_component_of_projective_containing_coreComponent
     pr A F hA hF (T.coreBoundarySphere b q) b hfront ⟨q,mem_connectedComponent⟩
   rintro y ⟨z,hz,rfl⟩
   exact T.toTopological.connectedComponent_subset_preimage_of_capCore_of_boundarySphere
@@ -744,7 +744,7 @@ namespace DifferentialGeometry.Topology.SphericalCutCapTransition
 universe u
 variable {M Q : ClosedOrientedManifold.{u} 3} (E : SphericalCutCapTransition M Q)
 
-theorem isStandardConnectedSum_discardedComponent_of_projective_cutting_side
+theorem isPoincareStandard_discardedComponent_of_projective_cutting_side
     {Z : Type u} [TopologicalSpace Z] [ChartedSpace ThreeSpace Z]
     [IsManifold I3 ∞ Z] [T2Space Z] [CompactSpace Z]
     (pr : ProjectivePresentation Z)
@@ -757,10 +757,10 @@ theorem isStandardConnectedSum_discardedComponent_of_projective_cutting_side
     (hdis : Disjoint (F '' (A '' ball (0 : ThreeSpace) 1)ᶜ) (E.tubes.removedBand b.1))
     (q : Sphere 2) (d : E.discarded.Carrier)
     (hd : E.presentation (E.capping.coreInclusion (E.tubes.coreBoundarySphere b q)) = Sum.inr d) :
-    isStandardConnectedSum (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
-  have hstd := E.capping.isStandardConnectedSum_component_of_projective_cutting_side pr A F hA hF b hfront hdis q
+    isPoincareStandard (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
+  have hstd := E.capping.isPoincareStandard_component_of_projective_cutting_side pr A F hA hF b hfront hdis q
   obtain ⟨e⟩ := E.cappedDiscardedPresentationRealization (E.tubes.coreBoundarySphere b q) d hd
-  exact isStandardConnectedSum_of_diffeomorph e.val.symm hstd
+  exact isPoincareStandard_of_diffeomorph e.val.symm hstd
 
 end DifferentialGeometry.Topology.SphericalCutCapTransition
 
@@ -774,11 +774,11 @@ universe u
 variable {M N : ClosedOrientedManifold.{u} 3} {T : SphericalTubeSystem M}
   (C : SphericalCapping M N T)
 
-theorem isStandardConnectedSum_component_of_capCore_cutting_side
+theorem isPoincareStandard_component_of_capCore_cutting_side
     {K : Set M.Carrier} (cap : CapCore K) (b : T.Boundary)
     (hfront : frontier K = range (T.boundarySphere b))
     (hdis : Disjoint K (T.removedBand b.1)) (q : Sphere 2) :
-    isStandardConnectedSum
+    isPoincareStandard
       (N.component (ConnectedComponents.mk (C.coreInclusion (T.coreBoundarySphere b q)))).Carrier := by
   cases cap with
   | ball A hA hK =>
@@ -786,7 +786,7 @@ theorem isStandardConnectedSum_component_of_capCore_cutting_side
       have h := A.image_frontier_of_isCompact (isCompact_closedBall (0 : ThreeSpace) 1) hA
       rw [frontier_closedBall _ one_ne_zero,hK,hfront] at h
       exact h
-    exact C.isStandardConnectedSum_component_of_ball_cutting_side A hA b hAf (hK.symm ▸ hdis) q
+    exact C.isPoincareStandard_component_of_ball_cutting_side A hA b hAf (hK.symm ▸ hdis) q
   | projective Z pr A hA F hF hK =>
     have hA1 : closedBall (0 : ThreeSpace) 1 ⊆ A.source :=
       (closedBall_subset_closedBall (by norm_num)).trans hA
@@ -796,7 +796,7 @@ theorem isStandardConnectedSum_component_of_capCore_cutting_side
     have hAf : F '' (A '' sphere (0 : ThreeSpace) 1) = range (T.boundarySphere b) :=
       (DifferentialGeometry.Topology.Manifold.image_sphere_eq_frontier_of_ball_complement
         A F hA1 hΩ hF).trans ((congrArg frontier hK).trans hfront)
-    exact C.isStandardConnectedSum_component_of_projective_cutting_side pr A F hA hF b hAf
+    exact C.isPoincareStandard_component_of_projective_cutting_side pr A F hA hF b hAf
       (hK.symm ▸ hdis) q
 
 end DifferentialGeometry.Topology.SphericalCapping
@@ -806,16 +806,16 @@ namespace DifferentialGeometry.Topology.SphericalCutCapTransition
 universe u
 variable {M Q : ClosedOrientedManifold.{u} 3} (E : SphericalCutCapTransition M Q)
 
-theorem isStandardConnectedSum_discardedComponent_of_capCore_cutting_side
+theorem isPoincareStandard_discardedComponent_of_capCore_cutting_side
     {K : Set M.Carrier} (cap : CapCore K) (b : E.tubes.Boundary)
     (hfront : frontier K = range (E.tubes.boundarySphere b))
     (hdis : Disjoint K (E.tubes.removedBand b.1))
     (q : Sphere 2) (d : E.discarded.Carrier)
     (hd : E.presentation (E.capping.coreInclusion (E.tubes.coreBoundarySphere b q)) = Sum.inr d) :
-    isStandardConnectedSum (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
-  have hstd := E.capping.isStandardConnectedSum_component_of_capCore_cutting_side cap b hfront hdis q
+    isPoincareStandard (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
+  have hstd := E.capping.isPoincareStandard_component_of_capCore_cutting_side cap b hfront hdis q
   obtain ⟨e⟩ := E.cappedDiscardedPresentationRealization (E.tubes.coreBoundarySphere b q) d hd
-  exact isStandardConnectedSum_of_diffeomorph e.val.symm hstd
+  exact isPoincareStandard_of_diffeomorph e.val.symm hstd
 
 end DifferentialGeometry.Topology.SphericalCutCapTransition
 

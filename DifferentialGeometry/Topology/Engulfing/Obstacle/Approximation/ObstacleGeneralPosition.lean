@@ -40,7 +40,6 @@ structure RelativeGeneralPositionApproximation
     ‖interpolateVertices augmentation.joint augmentation.joint_finite vertices x -
       interpolateVertices augmentation.joint augmentation.joint_finite vertices y‖ < 5 * ε
 
-omit [FiniteDimensional ℝ E] in
 theorem ObstacleAugmentation.exists_relativeGeneralPositionApproximation
     {K L : SimplicialComplex ℝ E} {T : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin n))}
     {f : C(K.space, EuclideanSpace ℝ (Fin n))}

@@ -1,0 +1,258 @@
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Defs
+import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.NormEquivalence
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.L2Operator.UnboundedOperator
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.Space
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator.Basic
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator.Equation
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactResolvent
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
+open DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.Analysis.Spectral
+
+open Bundle
+open scoped Manifold ContDiff
+open MeasureTheory
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian
+
+private theorem apply_eq_apply_add_of_eq
+    {X Y : Type*} [Add X] [Add Y]
+    (F : X → Y) {x y z : X} {w : Y}
+    (hxyz : x = y + z) (hadd : F (y + z) = F y + F z)
+    (hz : F z = w) :
+    F x = F y + w := by
+  rw [hxyz, hadd, hz]
+
+noncomputable def timeH1blockTransport
+    {X Y : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] {Tt : ℝ}
+    (Li : X →L[ℝ] Y) (Ld : timeL2 X Tt →L[ℝ] timeL2 Y Tt)
+    (hInitial : ∀ x, ‖Li x‖ ≤ ‖x‖) (hDeriv : ∀ v, ‖Ld v‖ ≤ ‖v‖) :
+    timeH1 X Tt →L[ℝ] timeH1 Y Tt :=
+  LinearMap.mkContinuous
+    { toFun := fun u => timeH1.mk (Li u.initial) (Ld u.deriv)
+      map_add' := fun u u' => by
+        refine timeH1.ext ?_ ?_
+        · simp only [timeH1.initial_mk, timeH1.initial_add, map_add]
+        · simp only [timeH1.deriv_mk, timeH1.deriv_add, map_add]
+      map_smul' := fun c u => by
+        refine timeH1.ext ?_ ?_
+        · simp only [timeH1.initial_mk, timeH1.initial_smul, map_smul, RingHom.id_apply]
+        · simp only [timeH1.deriv_mk, timeH1.deriv_smul, map_smul, RingHom.id_apply] }
+    1
+    (fun u => by
+      have hsq : ‖(timeH1.mk (Li u.initial) (Ld u.deriv) : timeH1 Y Tt)‖ ^ 2 ≤
+          (1 * ‖u‖) ^ 2 := by
+        rw [timeH1.norm_sq_eq, timeH1.initial_mk, timeH1.deriv_mk, one_mul,
+          timeH1.norm_sq_eq]
+        nlinarith [norm_nonneg u.initial, norm_nonneg u.deriv, norm_nonneg (Li u.initial),
+          norm_nonneg (Ld u.deriv), hInitial u.initial, hDeriv u.deriv]
+      have h := Real.sqrt_le_sqrt hsq
+      rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (by positivity)] at h)
+
+@[simp] theorem timeH1blockTransport_initial
+    {X Y : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
+    [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [hComplete : CompleteSpace Y] {Tt : ℝ}
+    (Li : X →L[ℝ] Y) (Ld : timeL2 X Tt →L[ℝ] timeL2 Y Tt)
+    (hInitial : ∀ x, ‖Li x‖ ≤ ‖x‖) (hDeriv : ∀ v, ‖Ld v‖ ≤ ‖v‖) (u : timeH1 X Tt) :
+    (timeH1blockTransport Li Ld hInitial hDeriv u).initial = Li u.initial := by
+  let _ := hComplete
+  rfl
+
+@[simp] theorem timeH1blockTransport_deriv
+    {X Y : Type*} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
+    [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [hComplete : CompleteSpace Y] {Tt : ℝ}
+    (Li : X →L[ℝ] Y) (Ld : timeL2 X Tt →L[ℝ] timeL2 Y Tt)
+    (hInitial : ∀ x, ‖Li x‖ ≤ ‖x‖) (hDeriv : ∀ v, ‖Ld v‖ ≤ ‖v‖) (u : timeH1 X Tt) :
+    (timeH1blockTransport Li Ld hInitial hDeriv u).deriv = Ld u.deriv := by
+  let _ := hComplete
+  rfl
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+
+theorem connection_laplacian_l2_maximal_regularity
+    (g : SmoothRiemannianMetric I M) (r s : ℕ) {T : ℝ}
+    (_hT : 0 < T) :
+    ∃ SolutionOp : timeL2 (TensorL2 r s g) T →L[ℝ]
+        timeH1 (TensorL2 r s g) T,
+      ‖SolutionOp‖ ≤ 2 ∧
+      (∀ f : timeL2 (TensorL2 r s g) T,
+        (SolutionOp f).initial = (0 : TensorL2 r s g)) ∧
+      ∃ SolutionField : timeL2 (TensorL2 r s g) T →L[ℝ]
+          timeL2 (TensorHs (I := I) (M := M) g r s 2) T,
+        ‖SolutionField‖ ≤ 1 + T ∧
+        ∃ LapField : timeL2 (TensorHs (I := I) (M := M) g r s 2) T →L[ℝ]
+            timeL2 (TensorL2 r s g) T,
+          ∀ f : timeL2 (TensorL2 r s g) T,
+            (SolutionOp f).deriv = LapField (SolutionField f) + f := by
+  have h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g r s
+  let ψ := tensorHsZeroEquivL2 (I := I) (M := M) h_compact
+  let Φ : timeL2 (TensorHs (I := I) (M := M) g r s 0) T →L[ℝ] timeL2 (TensorL2 r s g) T :=
+    (ψ.toLinearIsometry.toContinuousLinearMap).compLpL 2 (timeMeasure T)
+  have hΦ : Φ = (ψ.toLinearIsometry.toContinuousLinearMap).compLpL 2 (timeMeasure T) := rfl
+  let Φsymm : timeL2 (TensorL2 r s g) T →L[ℝ] timeL2 (TensorHs (I := I) (M := M) g r s 0) T :=
+    (ψ.symm.toLinearIsometry.toContinuousLinearMap).compLpL 2 (timeMeasure T)
+  have hΦsymm : Φsymm =
+      (ψ.symm.toLinearIsometry.toContinuousLinearMap).compLpL 2 (timeMeasure T) := rfl
+  have hΦ_apply : ∀ w, ‖Φ w‖ ≤ ‖w‖ := by
+    intro w
+    refine le_trans (Φ.le_opNorm w) ?_
+    have hle : ‖Φ‖ ≤ 1 := by
+      rw [hΦ]
+      refine le_trans (ContinuousLinearMap.norm_compLpL_le _) ?_
+      refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one (fun x => ?_)
+      rw [one_mul]; exact (ψ.norm_map x).le
+    calc ‖Φ‖ * ‖w‖ ≤ 1 * ‖w‖ := mul_le_mul_of_nonneg_right hle (norm_nonneg w)
+      _ = ‖w‖ := one_mul _
+  have hΦsymm_apply : ∀ f, ‖Φsymm f‖ ≤ ‖f‖ := by
+    intro f
+    refine le_trans (Φsymm.le_opNorm f) ?_
+    have hle : ‖Φsymm‖ ≤ 1 := by
+      rw [hΦsymm]
+      refine le_trans (ContinuousLinearMap.norm_compLpL_le _) ?_
+      refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one (fun x => ?_)
+      rw [one_mul]; exact (ψ.symm.norm_map x).le
+    calc ‖Φsymm‖ * ‖f‖ ≤ 1 * ‖f‖ := mul_le_mul_of_nonneg_right hle (norm_nonneg f)
+      _ = ‖f‖ := one_mul _
+  have hΦΦsymm : ∀ f, Φ (Φsymm f) = f := by
+    intro f
+    refine Lp.ext ?_
+    have h1 := (ψ.toLinearIsometry.toContinuousLinearMap).coeFn_compLpL
+      (p := 2) (μ := timeMeasure T) (Φsymm f)
+    have h2 := (ψ.symm.toLinearIsometry.toContinuousLinearMap).coeFn_compLpL
+      (p := 2) (μ := timeMeasure T) f
+    have h1' : (Φ (Φsymm f) : ℝ → TensorL2 r s g) =ᵐ[timeMeasure T]
+        fun t => ψ ((Φsymm f) t) := by rw [hΦ]; exact h1
+    have h2' : (Φsymm f : ℝ → TensorHs (I := I) (M := M) g r s 0) =ᵐ[timeMeasure T]
+        fun t => ψ.symm (f t) := by rw [hΦsymm]; exact h2
+    filter_upwards [h1', h2'] with t ht1 ht2
+    rw [ht1, ht2, ψ.apply_symm_apply]
+  let c22 : timeL2 (TensorHs (I := I) (M := M) g r s (0 + 2)) T ≃ₗᵢ[ℝ]
+      timeL2 (TensorHs (I := I) (M := M) g r s 2) T :=
+    (by rw [show (0:ℝ) + 2 = 2 from by norm_num];
+        exact LinearIsometryEquiv.refl ℝ _ :
+      timeL2 (TensorHs (I := I) (M := M) g r s (0 + 2)) T ≃ₗᵢ[ℝ]
+        timeL2 (TensorHs (I := I) (M := M) g r s 2) T)
+  let Aop : timeL2 (TensorHs (I := I) (M := M) g r s 0) T →L[ℝ]
+      timeH1 (TensorHs (I := I) (M := M) g r s 0) T :=
+    LinearMap.mkContinuous
+      { toFun := fun w => maximalRegularityOp (I := I) (M := M) 0 _hT w
+        map_add' := fun w w' =>
+          maximalRegularityOp_add (I := I) (M := M) (h_compact := h_compact)
+            (a := 0) _hT w w'
+        map_smul' := fun c w => by
+          simpa using maximalRegularityOp_smul (I := I) (M := M)
+            (h_compact := h_compact) (a := 0) _hT c w }
+      2 (fun w => maximalRegularityOp_norm_le (I := I) (M := M)
+        (h_compact := h_compact) (a := 0) _hT w)
+  have hAop_apply : ∀ w, Aop w = maximalRegularityOp (I := I) (M := M) 0 _hT w :=
+    fun w => rfl
+  let H1t := timeH1blockTransport (Tt := T)
+    (ψ.toLinearIsometry.toContinuousLinearMap) Φ
+    (fun x => (ψ.norm_map x).le) hΦ_apply
+  have hH1t_initial : ∀ u, (H1t u).initial = ψ u.initial := fun u => rfl
+  have hH1t_deriv : ∀ u, (H1t u).deriv = Φ u.deriv := fun u => rfl
+  refine ⟨H1t ∘L Aop ∘L Φsymm, ?_, ?_, ?_⟩
+  · refine ContinuousLinearMap.opNorm_le_bound _ (by norm_num) (fun f => ?_)
+    have e1 : (H1t ∘L Aop ∘L Φsymm) f = H1t (Aop (Φsymm f)) := rfl
+    rw [e1]
+    have hinit0 : (Aop (Φsymm f)).initial = 0 := by
+      rw [hAop_apply]
+      change (timeH1.mk (0 : TensorHs (I := I) (M := M) g r s 0) _).initial = 0
+      rw [timeH1.initial_mk]
+    have hnorm_eq : ‖H1t (Aop (Φsymm f))‖ = ‖Φ (Aop (Φsymm f)).deriv‖ := by
+      rw [← Real.sqrt_sq (norm_nonneg (H1t (Aop (Φsymm f)))), timeH1.norm_sq_eq,
+        hH1t_initial, hH1t_deriv, hinit0, map_zero, norm_zero,
+        zero_pow (two_ne_zero), zero_add, Real.sqrt_sq (norm_nonneg _)]
+    rw [hnorm_eq]
+    calc ‖Φ (Aop (Φsymm f)).deriv‖ ≤ ‖(Aop (Φsymm f)).deriv‖ := hΦ_apply _
+      _ ≤ ‖Aop (Φsymm f)‖ := timeH1.norm_deriv_le _
+      _ ≤ 2 * ‖Φsymm f‖ := by
+          rw [hAop_apply]
+          exact maximalRegularityOp_norm_le (I := I) (M := M) (h_compact := h_compact)
+            (a := 0) _hT _
+      _ ≤ 2 * ‖f‖ := mul_le_mul_of_nonneg_left (hΦsymm_apply f) (by norm_num)
+  · intro f
+    have e1 : (H1t ∘L Aop ∘L Φsymm) f = H1t (Aop (Φsymm f)) := rfl
+    rw [e1, hH1t_initial, hAop_apply]
+    change ψ (timeH1.mk (0 : TensorHs (I := I) (M := M) g r s 0) _).initial = 0
+    rw [timeH1.initial_mk, map_zero]
+  · have hcoeff : ∀ (u : timeL2 (TensorHs (I := I) (M := M) g r s 0) T)
+        (i : TensorEigenIdx (I := I) (M := M) g r s),
+        timeModeCoeff (I := I) (M := M)
+            (maximalRegularitySolutionField (I := I) (M := M) 0 _hT.le u) i =
+          solutionModeCoeff (I := I) (M := M) (a := 0) _hT.le u i := fun u i =>
+      maximalRegularitySolutionField_timeModeCoeff (I := I) (M := M)
+        (h_compact := h_compact) (a := 0) _hT.le u i
+    have hSolutionBound : ∀ f : timeL2 (TensorL2 r s g) T,
+        ‖maximalRegularitySolutionField (I := I) (M := M) 0 _hT.le (Φsymm f)‖ ≤ (1 + T) * ‖f‖ :=
+      fun f => le_trans (maximalRegularityOp_norm_Ha2_le (I := I) (M := M)
+        (h_compact := h_compact) _hT (Φsymm f))
+        (mul_le_mul_of_nonneg_left (hΦsymm_apply f) (by linarith [_hT.le]))
+    let SolutionField : timeL2 (TensorL2 r s g) T →L[ℝ]
+        timeL2 (TensorHs (I := I) (M := M) g r s 2) T :=
+      (c22.toLinearIsometry.toContinuousLinearMap) ∘L
+        (LinearMap.mkContinuous
+          { toFun := fun f => maximalRegularitySolutionField (I := I) (M := M) 0 _hT.le (Φsymm f)
+            map_add' := fun f f' => by
+              rw [ContinuousLinearMap.map_add]
+              refine timeModeCoeff_injective (I := I) (M := M) h_compact (fun i => ?_)
+              rw [hcoeff (Φsymm f + Φsymm f') i,
+                timeModeCoeff_add (I := I) (M := M),
+                hcoeff (Φsymm f) i, hcoeff (Φsymm f') i,
+                solutionModeCoeff, solutionModeCoeff, solutionModeCoeff,
+                timeModeCoeff_add (I := I) (M := M), ContinuousLinearMap.map_add]
+            map_smul' := fun c f => by
+              rw [ContinuousLinearMap.map_smul, RingHom.id_apply]
+              refine timeModeCoeff_injective (I := I) (M := M) h_compact (fun i => ?_)
+              rw [hcoeff (c • Φsymm f) i,
+                timeModeCoeff_smul (I := I) (M := M),
+                hcoeff (Φsymm f) i,
+                solutionModeCoeff, solutionModeCoeff, timeModeCoeff_smul (I := I) (M := M),
+                ContinuousLinearMap.map_smul] }
+          (1 + T) hSolutionBound)
+    have hSolutionField_apply : ∀ f, SolutionField f =
+        c22 (maximalRegularitySolutionField (I := I) (M := M) 0 _hT.le (Φsymm f)) := fun f => rfl
+    refine ⟨SolutionField, ?_, ?_⟩
+    · refine ContinuousLinearMap.opNorm_le_bound _ (by linarith [_hT.le]) (fun f => ?_)
+      rw [hSolutionField_apply, c22.norm_map]
+      exact hSolutionBound f
+    · let LapField : timeL2 (TensorHs (I := I) (M := M) g r s 2) T →L[ℝ]
+          timeL2 (TensorL2 r s g) T :=
+        Φ ∘L (timeScaleLaplacian (I := I) (M := M) 0) ∘L
+          (c22.symm.toLinearIsometry.toContinuousLinearMap)
+      have hLapField : LapField = Φ ∘L (timeScaleLaplacian (I := I) (M := M) 0) ∘L
+          (c22.symm.toLinearIsometry.toContinuousLinearMap) := rfl
+      refine ⟨LapField, fun f => ?_⟩
+      have hderiv : ((H1t ∘L Aop ∘L Φsymm) f).deriv
+          = Φ (maximalRegularityDerivField (I := I) (M := M) 0 _hT.le (Φsymm f)) := by
+        change (H1t (Aop (Φsymm f))).deriv = _
+        rw [hH1t_deriv, hAop_apply]
+        rfl
+      rw [hderiv]
+      have hLap : LapField (SolutionField f)
+          = Φ (timeScaleLaplacian (I := I) (M := M) 0
+              (maximalRegularitySolutionField (I := I) (M := M) 0 _hT.le (Φsymm f))) := by
+        rw [hLapField]
+        change Φ (timeScaleLaplacian (I := I) (M := M) 0 (c22.symm (SolutionField f))) = _
+        rw [hSolutionField_apply, c22.symm_apply_apply]
+      rw [hLap]
+      have hsolves := maximalRegularityOp_solves (I := I) (M := M)
+        (h_compact := h_compact) (a := 0) _hT (Φsymm f)
+      rw [maximalRegularityOp_timeDeriv (I := I) (M := M) (a := 0) _hT (Φsymm f)] at hsolves
+      exact apply_eq_apply_add_of_eq Φ hsolves
+        (ContinuousLinearMap.map_add Φ _ _) (hΦΦsymm f)
+
+end DifferentialGeometry.Analysis.Spectral

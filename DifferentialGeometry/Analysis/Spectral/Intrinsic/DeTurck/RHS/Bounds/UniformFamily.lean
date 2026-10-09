@@ -341,7 +341,7 @@ theorem chartRHS_pou_bnd
       (hDG m) (hΓdiff (l := l)) hMbG (hdΓdiff m (l := l))
   have hRic :
       |chartRicciTensor (I := I) (gSeq k) α i j (extChartAt I α b)| ≤ RicB := by
-    simpa [RicB, n] using DifferentialGeometry.Geometry.Curvature.chartRicci_abs_le
+    simpa [RicB, n] using DeTurckCoefficients.chartRicci_abs_le
       (I := I) (M := M) (gSeq k) α i j (extChartAt I α b) hCΓ hΓG hdΓG
   have hLie :
       |chartLieDeTurckComp (I := I) (gSeq k) gBase α i j (extChartAt I α b)| ≤ LieB := by

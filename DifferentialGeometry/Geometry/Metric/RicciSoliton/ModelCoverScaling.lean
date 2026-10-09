@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCover
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Geometry.Metric.Pullback.Product
 
 set_option autoImplicit false

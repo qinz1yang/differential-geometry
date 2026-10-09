@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.InitialConvergence
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Diagonal
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 
 set_option autoImplicit false
 noncomputable section

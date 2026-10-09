@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.SecondDifference
-import DifferentialGeometry.Analysis.Integration.Convolution.Derivatives
+import DifferentialGeometry.Analysis.Integration.Convolution.Derivative
 import Mathlib.Analysis.Calculus.Deriv.Support
 import Mathlib.MeasureTheory.Measure.Haar.Unique
 
@@ -115,8 +115,8 @@ theorem MeasureTheory.Integrable.tendsto_integral_mul_directional_second_differe
     hpsisupp.contDiff_convolution_left (ContinuousLinearMap.mul Real Real)
       hpsi hgint.locallyIntegrable
   have hFderiv : ∀ x, fderiv Real F x v = G x := fun x ↦
-    MeasureTheory.fderiv_convolution_left_apply (ContinuousLinearMap.mul Real Real)
-      hsupp (hphi.of_le (by norm_num)) hgint.locallyIntegrable x v
+    hsupp.fderiv_convolution_left_apply (hphi.of_le (by norm_num))
+      hgint.locallyIntegrable x v
   let A : Real → Real := fun t ↦ F (t • v)
   have hA : ContDiff Real 2 A := hF.comp (contDiff_id.smul_const v)
   have hAderiv : deriv A = fun t ↦ G (t • v) := by
@@ -131,8 +131,8 @@ theorem MeasureTheory.Integrable.tendsto_integral_mul_directional_second_differe
     have hgd : HasFDerivAt G (fderiv Real G ((0 : Real) • v)) ((0 : Real) • v) :=
       (hG.differentiable one_ne_zero).differentiableAt.hasFDerivAt
     have hraw := (hgd.comp_hasDerivAt 0 ((hasDerivAt_id (0 : Real)).smul_const v)).deriv
-    have hGderiv := MeasureTheory.fderiv_convolution_left_apply (ContinuousLinearMap.mul Real Real)
-      hpsisupp hpsi hgint.locallyIntegrable (0 : E) v
+    have hGderiv := hpsisupp.fderiv_convolution_left_apply hpsi
+      hgint.locallyIntegrable (0 : E) v
     simp only [Function.comp_def, id_eq, one_smul, zero_smul] at hraw
     rw [hGderiv] at hraw
     simpa only [MeasureTheory.convolution_def, ContinuousLinearMap.mul_apply',

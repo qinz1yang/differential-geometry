@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Neck.Transport.PullbackError
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PartialErrorTower
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 
 set_option autoImplicit false

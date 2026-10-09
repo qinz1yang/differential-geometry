@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelLocalPull
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointSelection.Countersequence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SelectedCountersequenceAdapter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTimeExtension
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullbackScaling
 
@@ -98,8 +98,8 @@ theorem localPullMetric_scaleMetric_backwardSurvivorIncomingMetric (L : G.Termin
         (H.isLocalDiffeomorph_backwardSurvivorIncomingDomain_val_val first last hle G hΞ)) := by
   have hext : L.extendedMetric v = (g v).restrictOpen G.terminalRegularOpen := by
     rcases hv.lt_or_eq with h | rfl
-    · rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_before _ h, hG]
-    · rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal, hL]
+    · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_before _ h, hG]
+    · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal, hL]
   rw [localPullMetric_scaleMetric]
   congr 1
   have hval := isLocalDiffeomorph_subtype_val (I := ThreeModel) G.terminalRegularOpen
@@ -114,9 +114,6 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 open DifferentialGeometry.Topology DifferentialGeometry.Geometry.Curvature
@@ -126,7 +123,7 @@ variable {P : OrientedThreeStage.{u}} {a s : ℝ} (Gk : P.IncomingSlab a s)
   {N : Type} [TopologicalSpace N] [ChartedSpace ThreeSpace N] [IsManifold ThreeModel ∞ N]
   [T2Space N] [Nonempty N]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.orientedWitness_of_scaled_localPull_window {T' : ℝ} {hT' : 0 ≤ T'}
+theorem orientedWitness_of_scaled_localPull_window {T' : ℝ} {hT' : 0 ≤ T'}
     (S : SolutionOn (I := ThreeModel) (M := N) (RealTimeInterval.closed 0 T' hT'))
     {Φ : N → P.Carrier} (hΦ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Φ) (hinj : Injective Φ)
     {q b t : ℝ} (hq : 0 < q) (hba : b ≤ a) (hat : a < t) (hts : t < s) (hT : q * (t - b) ≤ T')

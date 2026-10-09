@@ -120,7 +120,7 @@ theorem contMDiffOn_cutoffHeatParametrixResidual_joint
       (fun z : ℝ × M => deriv (fun t => B.cutoffHeatParametrix χ N t z.2) z.1)
       (Ioi 0 ×ˢ univ) := by
     intro z hz
-    exact (DifferentialGeometry.contMDiffAt_partial_deriv_fst (h.contMDiffAt (hD.mem_nhds hz))
+    exact (DifferentialGeometry.timeDeriv_smoothAt (h.contMDiffAt (hD.mem_nhds hz))
       (show ∞ + 1 ≤ (∞ : WithTop ℕ∞) by simp)).contMDiffWithinAt
   have hl := contMDiffOn_laplacian_leviCivita_prod_of_isOpen
     (IP := 𝓘(ℝ, ℝ)) (f := B.cutoffHeatParametrix χ N) g hD h

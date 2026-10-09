@@ -137,7 +137,7 @@ theorem backwardSurvivorSlabMetric_terminal
   apply SmoothRiemannianMetric.ext_inner
   intro x v w
   rw [H.backwardSurvivorSlabMetric_inner,
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+    OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
   exact (H.backwardSurvivorMap_metric_crossing first last hle i hf hl x v w).symm
 
 def backwardSurvivorClosedSlab
@@ -461,7 +461,7 @@ theorem backwardSurvivorTerminalFaceMetric_terminal :
         (H.backwardSurvivorTerminalFaceMap first i hle)
         (H.backwardSurvivorTerminalFaceMap_isLocalDiffeomorph first i hle) := by
   rw [backwardSurvivorTerminalFaceMetric,
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+    OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
 
 def backwardSurvivorTerminalFaceClosedSlab :
     SolutionOn (I := ThreeModel) (M := H.backwardSurvivorTerminalFace first i hle)

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.DenseExtension
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSeparability
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.CompactIntegral
-import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletDriftPotential
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.DriftSubPotential
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2
 
 noncomputable section

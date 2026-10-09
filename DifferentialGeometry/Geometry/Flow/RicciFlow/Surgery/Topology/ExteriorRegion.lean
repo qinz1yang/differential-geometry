@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Connected.CoverBySides
 import DifferentialGeometry.Topology.SphereSeparation.NormalChartHalves
 import DifferentialGeometry.Topology.Manifold.InteriorImage
 import DifferentialGeometry.Topology.VanKampen.SmoothSphereSeparation
-import DifferentialGeometry.Topology.SphereSeparation.SmoothClosure.Charts
+import DifferentialGeometry.Topology.SphereSeparation.HalfSpaceClosure
 
 noncomputable section
 

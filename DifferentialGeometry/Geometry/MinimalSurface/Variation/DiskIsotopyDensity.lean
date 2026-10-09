@@ -6,7 +6,7 @@ import DifferentialGeometry.Topology.Order.Interval
 import DifferentialGeometry.Bundle.TangentChart
 import DifferentialGeometry.Bundle.PartialMfderiv.Parameter
 import DifferentialGeometry.Geometry.Connection.SourceSectionPairing
-import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import DifferentialGeometry.Geometry.Metric.FamilySourceDerivative
 import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskMetricVariation

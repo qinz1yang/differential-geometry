@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
-import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
-import DifferentialGeometry.Geometry.Variation.Curve.SpeedDerivative
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.CurvatureCommutation
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SpeedDerivative
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.CurvatureCommutation
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
 
 noncomputable section

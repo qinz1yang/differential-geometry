@@ -1,4 +1,3 @@
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.AddCircleClassicalRegularity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleShiftedCoefficients
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.InitialState
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.CoefficientBounds
@@ -195,8 +194,27 @@ private theorem parameterDerivativeH0Pi_normalized_contraction
       ‖Z.comp (A₂ t)‖ ≤ C₂) ∧
     (C₂ : ℝ) * (1 + T) + Real.sqrt (1 + T) *
       (eLpNorm (fun t => Z.comp (A₁ t)) 2 (timeMeasure T)).toReal < 1 := by
-  exact AddCircle.parameter_derivative_h0_normalized_contraction
-    (ι := Fin n) g₀ a₂ C₂ (q := 1)
+  intro H Z A₂ A₁ hA₁ hC hsmall
+  have hZ : ‖Z‖ ≤ 1 :=
+    ContinuousLinearMap.norm_piLpMap_le _ zero_le_one
+      (fun _ => tensorHsInclusion_opNorm_le_one _)
+  have hpoint {X : Type} [NormedAddCommGroup X] [NormedSpace ℝ X]
+      (L : X →L[ℝ] CircleHsPi g₀ (Fin n) 0) : ‖Z.comp L‖ ≤ ‖L‖ :=
+    (ContinuousLinearMap.opNorm_comp_le Z L).trans
+      (by simpa only [one_mul] using mul_le_mul_of_nonneg_right hZ (norm_nonneg L))
+  have hn : (eLpNorm (fun t => Z.comp (A₁ t)) 2 (timeMeasure T)).toReal ≤
+      (eLpNorm A₁ 2 (timeMeasure T)).toReal :=
+    ENNReal.toReal_mono hA₁.eLpNorm_lt_top.ne
+      (eLpNorm_mono
+        (((ContinuousLinearMap.compL ℝ _ _ _) Z).continuous.comp_aestronglyMeasurable
+          hA₁.aestronglyMeasurable)
+        (fun t => hpoint (A₁ t)))
+  refine ⟨?_, ?_⟩
+  · filter_upwards [hC] with t ht
+    exact (hpoint _).trans ht
+  · rw [Lp.norm_toLp] at hsmall
+    exact lt_of_le_of_lt
+      (add_le_add le_rfl (mul_le_mul_of_nonneg_left hn (Real.sqrt_nonneg (1 + T)))) hsmall
 
 private abbrev parameterPrincipalHigh
     (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) {T : ℝ}
@@ -1127,30 +1145,27 @@ private theorem ambient_fourth_order_lift_of_parameterDerivative_lift
     {T : ℝ} (hT : 0 < T) (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
     (hlift : parameterDerivativeForcingFieldLift g₀ hT gforce) :
     ambientSobolevFourthOrderLift g₀ hT gforce := by
-  rcases hlift with ⟨FH, hFH, _⟩
-  obtain ⟨V, _, hV, _, _, _⟩ :=
-    exists_representatives_of_parameterDerivative_forcing_lift g₀ hT gforce FH hFH
-  let S := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+  rcases hlift with ⟨FH, _, hfield⟩
+  let U := maximalRegularityDuhamelVectorField (g := g₀) (r := 0) (s := 0)
+    (a := ((1 : ℕ) : ℝ)) hT 0 gforce
+  let V := heatDuhamelVectorField (g := g₀) (r := 0) (s := 0)
+    (a := ((1 : ℕ) : ℝ)) hT 0 FH
+  let Dh : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi g₀ (Fin n) (((0 : ℕ) : ℝ) + 2) := parameterDerivativeHighField g₀
+  let J₂ := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
     tensorHsInclusion (g := g₀) (r := 0) (s := 0)
-      (by norm_num : ((2 : ℕ) : ℝ) + 2 ≤ ((1 : ℕ) : ℝ) + 3))
-  let K := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
-    tensorHsInclusion (g := g₀) (r := 0) (s := 0)
-      (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ) + 2))
-  refine ⟨S.compLpL 2 (timeMeasure T) V, ?_⟩
-  apply Lp.ext
-  filter_upwards [K.coeFn_compLpL (S.compLpL 2 (timeMeasure T) V),
-    S.coeFn_compLpL V,
-    (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
-      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
-        (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((1 : ℕ) : ℝ) + 3))).coeFn_compLpL V]
-      with t hK hS hproj
-  rw [hV] at hproj
-  rw [hK, hS]
-  apply PiLp.ext
+      (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ ((1 : ℕ) : ℝ) + 2))
+  change Dh.compLpL 2 (timeMeasure T) U = J₂.compLpL 2 (timeMeasure T) V at hfield
+  apply AddCircle.exists_timeL2_tensorHsInclusion_eq_of_parameterDerivative_lift
+    g₀ 1 (σ := ((0 : ℕ) : ℝ) + 2) (by norm_num) U V
+  filter_upwards [Dh.coeFn_compLpL U, J₂.coeFn_compLpL V] with t hDh hJ
   intro i
-  have hi := congrArg (fun z => z i) hproj.symm
-  simpa only [K, S, ContinuousLinearMap.piLpMap_apply,
-    ← tensorHsInclusion_trans_apply] using hi
+  have ht : Dh (U t) = J₂ (V t) := by
+    rw [← hDh, ← hJ]
+    exact congrArg (fun z : timeL2 (CircleHsPi g₀ (Fin n) (((0 : ℕ) : ℝ) + 2)) T => z t) hfield
+  have hi := congrArg (fun z => z i) ht
+  simpa only [Dh, J₂, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.piLpMap_apply, AddCircle.parameterDerivativeHsPi_apply] using hi
 
 private def ambientSobolevSolutionWithFourthOrderLift : Prop :=
   let C := ambientCoefficients c₀ g ht he hr hEU hleft β hG
@@ -1190,10 +1205,29 @@ private theorem ambient_spatial_contDiff_two_of_parameterDerivative_forcing_lift
       ContinuousOn (fun p : ℝ × ℝ => deriv (deriv (f p.1)) p.2) (Icc 0 T ×ˢ univ) := by
   intro P u S f
   obtain ⟨FH, hFH, _⟩ := hlift
-  have h := contDiff_and_continuousOn_iteratedDeriv_of_parameterDerivative_forcing_lift
-    g₀ 0 hT f₀ gforce FH hFH
-  simpa only [f, P, u, S, circleHsPiInclusion, iteratedDeriv_succ, iteratedDeriv_zero,
-    Nat.cast_zero, zero_add, Nat.cast_ofNat] using h
+  obtain ⟨w, hw, hwlo, _⟩ :=
+    exists_continuousOn_representative_of_parameterDerivative_forcing_lift g₀ 0 hT gforce FH hFH
+  have h := AddCircle.contDiff_and_continuousOn_iteratedDeriv_scalarH1PiToContinuous
+    g₀ 2 (fun t => P f₀ + S (u.toFun t))
+    (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by norm_num : ((2 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)) (f₀ + w t))
+    ((ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by norm_num : ((2 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2))).continuous.comp_continuousOn
+      (continuousOn_const.add hw)) (fun t ht => by
+      apply PiLp.ext
+      intro i
+      simp only [ContinuousLinearMap.piLpMap_apply, PiLp.add_apply,
+        ← tensorHsInclusion_trans_apply, map_add]
+      change _ = (P f₀) i + (S (u.toFun t)) i
+      congr 1
+      have hwi := congrArg (fun z => z i) (hwlo t ht)
+      have hwi' := congrArg (tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ))) hwi
+      simpa only [S, circleHsPiInclusion, ContinuousLinearMap.piLpMap_apply,
+        ← tensorHsInclusion_trans_apply] using hwi')
+  simpa only [f, iteratedDeriv_succ, iteratedDeriv_zero, Nat.cast_ofNat] using h
 
 private theorem ambient_sobolev_solution_exists_with_contDiff_two :
     let C := ambientCoefficients c₀ g ht he hr hEU hleft β hG
@@ -1394,14 +1428,22 @@ private theorem scalarVectorTimeCoefficients_hasDerivWithinAt_of_parameterDeriva
   have hRHS : ContinuousOn (fun t => m (alpha t) (Q (f₀ + W t)) + reaction t) (Icc 0 T) :=
     scalarVectorTimeCoefficients_rhs_continuousOn g₀ _ _ _ _ C f₀ J W hW hJW
   refine ⟨hRHS, ?_⟩
-  have hweak : ∀ᵐ t ∂timeMeasure T,
-      L (field t) + gforce t = m (alpha t) (Q (f₀ + field t)) + reaction t := by
-    filter_upwards [heq, ae_restrict_mem measurableSet_Icc] with t htEq htmem
-    rw [hwW t htmem] at htEq
-    exact htEq
-  rw [hu]
-  exact hasDerivWithinAt_maximalRegularityDuhamelVectorMap_of_continuousOn_rhs
-    g₀ hT gforce f₀ W alpha reaction hWfield hRHS hweak
+  have hder : u.deriv = L.compLpL 2 (timeMeasure T) field + gforce := by
+    rw [hu]
+    exact maximalRegularityDuhamelVectorMap_timeDeriv_eq hT
+      (tensorResolventL2_isCompactOperator
+        (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) g₀ 0 0) 0 gforce
+  have hrep : u.deriv =ᵐ[timeMeasure T]
+      (fun t => m (alpha t) (Q (f₀ + W t)) + reaction t) := by
+    rw [hder]
+    filter_upwards [Lp.coeFn_add (L.compLpL 2 (timeMeasure T) field) gforce,
+      L.coeFn_compLpL field, heq, hWfield, ae_restrict_mem measurableSet_Icc]
+      with t hadd hL htEq htW htmem
+    rw [hadd, Pi.add_apply, hL, htEq, ← htW]
+    change m _ (Q (f₀ + W t)) + _ = m _ (Q (f₀ + W t)) + _
+    rw [hwW t htmem]
+  intro t htt
+  exact u.hasDerivWithinAt_toFun_of_continuousOn hRHS hrep htt
 
 private theorem ambientCoefficients_eval_of_sobolev_representative
     {ρ T : ℝ} (hTρ : T ≤ ρ)
@@ -2346,8 +2388,41 @@ private theorem exists_pos_parameterPrincipal_norm_le {n : ℕ}
     ∃ ε : ℝ, 0 < ε ∧ ∀ a : TensorHs g₀ 0 0 ((1 : ℕ) : ℝ), ‖a - q‖ ≤ ε →
       ‖AddCircle.parameterPrincipalOperatorHsPi (ι := Fin n) g₀ a‖ ≤ (1 / 4 : ℝ) ∧
       ‖AddCircle.parameterPrincipalOperatorH0Pi (ι := Fin n) g₀ a‖ ≤ (1 / 4 : ℝ) := by
-  exact AddCircle.exists_pos_parameter_principal_operator_norm_le
-    (ι := Fin n) g₀ (1 / 4) (by norm_num)
+  intro q
+  let m := scalarHsMul g₀ 1 (by norm_num)
+  let c := (scalarH1ToContinuous g₀).comp (tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+    (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+  let Z := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+    (by norm_num : (0 : ℝ) ≤ ((0 : ℕ) : ℝ))
+  let M := scalarH0ContinuousMul g₀
+  let Ch := ‖m‖ * ‖AddCircle.parameterSecondDerivativeHs g₀ 1‖
+  let Cl := ‖M‖ * ‖c‖ * ‖Z.comp (AddCircle.parameterSecondDerivativeHs g₀ 0)‖
+  have hCh : 0 ≤ Ch := by positivity
+  have hCl : 0 ≤ Cl := by positivity
+  let ε := (1 / 4 : ℝ) / (Ch + Cl + 1)
+  have hε : 0 < ε := by positivity
+  have hεeq : ε * (Ch + Cl + 1) = 1 / 4 := by
+    exact div_mul_cancel₀ _ (by positivity)
+  have hChε : Ch * ε ≤ 1 / 4 := by
+    nlinarith [mul_nonneg hCl hε.le]
+  have hClε : Cl * ε ≤ 1 / 4 := by
+    nlinarith [mul_nonneg hCh hε.le]
+  refine ⟨ε, hε, ?_⟩
+  intro a ht
+  constructor
+  · calc
+      _ ≤ ‖m‖ * ‖a - q‖ * ‖AddCircle.parameterSecondDerivativeHs g₀ 1‖ :=
+        AddCircle.norm_parameterPrincipalOperatorHsPi_le g₀ a
+      _ ≤ ‖m‖ * ε * ‖AddCircle.parameterSecondDerivativeHs g₀ 1‖ := by gcongr
+      _ = Ch * ε := by dsimp only [Ch]; ring
+      _ ≤ 1 / 4 := hChε
+  · calc
+      _ ≤ ‖M‖ * (‖c‖ * ‖a - q‖) *
+          ‖Z.comp (AddCircle.parameterSecondDerivativeHs g₀ 0)‖ :=
+        AddCircle.norm_parameterPrincipalOperatorH0Pi_le g₀ a
+      _ ≤ ‖M‖ * (‖c‖ * ε) * ‖Z.comp (AddCircle.parameterSecondDerivativeHs g₀ 0)‖ := by gcongr
+      _ = Cl * ε := by dsimp only [Cl]; ring
+      _ ≤ 1 / 4 := hClε
 
 private theorem exists_pos_parameterDrift_norm_lt {n : ℕ}
     (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
@@ -2362,8 +2437,66 @@ private theorem exists_pos_parameterDrift_norm_lt {n : ℕ}
       Real.sqrt (1 + T) * (eLpNorm
         (fun t => AddCircle.parameterDriftOperatorH0Pi (ι := Fin n) g₀ (a₂ t))
         2 (timeMeasure T)).toReal < 1 / 4 := by
-  exact AddCircle.exists_pos_parameter_drift_operator_norm_lt
-    (ι := Fin n) g₀ A (1 / 4) (by norm_num) hR
+  let D := AddCircle.parameterDerivativeHs g₀ 1
+  let m := scalarHsMul g₀ 1 (by norm_num)
+  let d := ccTensorToHs g₀ 0 ((1 : ℕ) : ℝ)
+    (scalarCc g₀ (AddCircle.laplacianDriftCoefficient g₀))
+  let c := (scalarH1ToContinuous g₀).comp (tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+    (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+  let Z := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+    (by norm_num : (0 : ℝ) ≤ ((0 : ℕ) : ℝ))
+  let D₀ := Z.comp (AddCircle.parameterDerivativeHs g₀ 0)
+  let M := scalarH0ContinuousMul g₀
+  let Kh := ‖m‖ * ‖D‖ ^ 2
+  let Kl := ‖M‖ * ‖c‖ * ‖D‖ * ‖D₀‖
+  let Bh := ‖m‖ * ‖d‖ * ‖D‖
+  let Bl := ‖M‖ * ‖c‖ * ‖d‖ * ‖D₀‖
+  let K := max Kh Kl
+  let B := max Bh Bl
+  have hKh : 0 ≤ Kh := by positivity
+  have hKl : 0 ≤ Kl := by positivity
+  have hBh : 0 ≤ Bh := by positivity
+  have hBl : 0 ≤ Bl := by positivity
+  obtain ⟨δ, hδ, hδR, hδ1, hsmall⟩ := exists_pos_contraction_radius
+    0 (4 * K * A) (4 * B) le_rfl (by positivity) (by positivity) hR
+  refine ⟨δ, hδ, hδR, hδ1, ?_⟩
+  intro ρ T hT hTρ hρδ a₂ hnorm
+  have hρ : 0 ≤ ρ := hT.le.trans hTρ
+  have hcommon : Real.sqrt (1 + T) *
+      (K * A * (Real.sqrt T + (1 + T) * ρ / 4) + Real.sqrt T * B) < 1 / 4 := by
+    have hs := hsmall hT.le hTρ hρδ
+    simp only [zero_mul, zero_add] at hs
+    nlinarith
+  let hh := AddCircle.memLp_parameterDriftOperatorHsPi (ι := Fin n) g₀ (Lp.memLp a₂)
+  let hl := AddCircle.memLp_parameterDriftOperatorH0Pi (ι := Fin n) g₀ (Lp.memLp a₂)
+  have hnh : ‖hh.toLp (fun t => AddCircle.parameterDriftOperatorHsPi (ι := Fin n) g₀ (a₂ t))‖ ≤
+      K * A * (Real.sqrt T + (1 + T) * ρ / 4) + Real.sqrt T * B := by
+    calc
+      _ ≤ Kh * ‖a₂‖ + Real.sqrt T * Bh := AddCircle.norm_toLp_parameterDriftOperatorHsPi_le g₀ a₂
+      _ ≤ Kh * (A * (Real.sqrt T + (1 + T) * ρ / 4)) + Real.sqrt T * Bh :=
+        add_le_add (mul_le_mul_of_nonneg_left hnorm hKh) le_rfl
+      _ ≤ K * (A * (Real.sqrt T + (1 + T) * ρ / 4)) + Real.sqrt T * B :=
+        add_le_add
+          (mul_le_mul_of_nonneg_right (le_max_left _ _) (by positivity))
+          (mul_le_mul_of_nonneg_left (le_max_left _ _) (Real.sqrt_nonneg T))
+      _ = _ := by ring
+  have hnl : ‖hl.toLp (fun t => AddCircle.parameterDriftOperatorH0Pi (ι := Fin n) g₀ (a₂ t))‖ ≤
+      K * A * (Real.sqrt T + (1 + T) * ρ / 4) + Real.sqrt T * B := by
+    calc
+      _ ≤ Kl * ‖a₂‖ + Real.sqrt T * Bl := AddCircle.norm_toLp_parameterDriftOperatorH0Pi_le g₀ a₂
+      _ ≤ Kl * (A * (Real.sqrt T + (1 + T) * ρ / 4)) + Real.sqrt T * Bl :=
+        add_le_add (mul_le_mul_of_nonneg_left hnorm hKl) le_rfl
+      _ ≤ K * (A * (Real.sqrt T + (1 + T) * ρ / 4)) + Real.sqrt T * B :=
+        add_le_add
+          (mul_le_mul_of_nonneg_right (le_max_right _ _) (by positivity))
+          (mul_le_mul_of_nonneg_left (le_max_right _ _) (Real.sqrt_nonneg T))
+      _ = _ := by ring
+  have hhbound := lt_of_le_of_lt
+    (mul_le_mul_of_nonneg_left hnh (Real.sqrt_nonneg (1 + T))) hcommon
+  have hlbound := lt_of_le_of_lt
+    (mul_le_mul_of_nonneg_left hnl (Real.sqrt_nonneg (1 + T))) hcommon
+  exact ⟨by simpa only [Lp.norm_toLp] using hhbound,
+    by simpa only [Lp.norm_toLp] using hlbound⟩
 
 private theorem exists_pos_parameterDerivative_contraction_margin {n : ℕ}
     (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
@@ -2379,8 +2512,38 @@ private theorem exists_pos_parameterDerivative_contraction_margin {n : ℕ}
         ‖a₂‖ ≤ A * (Real.sqrt T + (1 + T) * ρ / 4) →
         parameterDerivativeOperatorBoundsWithMargin (n := n) g₀ a₂ (3 / 4) := by
   intro H q
-  exact AddCircle.exists_pos_parameter_derivative_contraction_margin
-    (ι := Fin n) g₀ (3 / 4) (by norm_num) (by norm_num)
+  obtain ⟨ε, hε, hp⟩ := exists_pos_parameterPrincipal_norm_le (n := n) g₀
+  refine ⟨ε, hε, ?_⟩
+  intro A R hR
+  obtain ⟨δ, hδ, hδR, hδ1, hd⟩ := exists_pos_parameterDrift_norm_lt (n := n) g₀ A hR
+  refine ⟨δ, hδ, hδR, hδ1, ?_⟩
+  intro ρ T hT hTρ hρδ a₂ hclose hnorm
+  have hT1 : T ≤ 1 := hTρ.trans (hρδ.trans hδ1)
+  obtain ⟨hdh, hdl⟩ := hd hT hTρ hρδ a₂ hnorm
+  have hph : ∀ᵐ t ∂timeMeasure T,
+      ‖AddCircle.parameterPrincipalOperatorHsPi (ι := Fin n) g₀ (H (a₂ t))‖ ≤ (1 / 4 : ℝ) := by
+    filter_upwards [hclose] with t ht
+    exact (hp _ ht).1
+  have hpl : ∀ᵐ t ∂timeMeasure T,
+      ‖AddCircle.parameterPrincipalOperatorH0Pi (ι := Fin n) g₀ (H (a₂ t))‖ ≤ (1 / 4 : ℝ) := by
+    filter_upwards [hclose] with t ht
+    exact (hp _ ht).2
+  have hquarter : (1 / 4 : ℝ) * (1 + T) ≤ 1 / 2 := by
+    calc
+      (1 / 4 : ℝ) * (1 + T) ≤ (1 / 4 : ℝ) * (1 + 1) :=
+        mul_le_mul_of_nonneg_left (add_le_add le_rfl hT1) (by norm_num)
+      _ = 1 / 2 := by norm_num
+  have hmargin : (1 / 4 : ℝ) * (1 + T) + Real.sqrt (1 + T) *
+      (eLpNorm (parameterDriftHigh (n := n) g₀ a₂) 2 (timeMeasure T)).toReal ≤ 3 / 4 := by
+    exact (add_lt_add_of_le_of_lt hquarter hdh).le.trans_eq (by norm_num)
+  have hsmalll : (1 / 4 : ℝ) * (1 + T) + Real.sqrt (1 + T) *
+      ‖(AddCircle.memLp_parameterDriftOperatorH0Pi (ι := Fin n) g₀ (Lp.memLp a₂)).toLp
+        (fun t => AddCircle.parameterDriftOperatorH0Pi (ι := Fin n) g₀ (a₂ t))‖ < 1 := by
+    rw [Lp.norm_toLp]
+    exact (add_lt_add_of_le_of_lt hquarter hdl).trans (by norm_num)
+  obtain ⟨hpl', hsmalll'⟩ := parameterDerivativeH0Pi_normalized_contraction g₀ a₂
+    (1 / 4) hpl hsmalll
+  exact ⟨1 / 4, 1 / 4, hph, hpl', hmargin, hsmalll'⟩
 
 private theorem exists_pos_parameterDerivative_contraction_threshold {n : ℕ}
     (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
@@ -2591,8 +2754,26 @@ private theorem exists_pos_parameterDerivative_translated_margin_radius
       ‖a₂‖ ≤ A * (Real.sqrt T + (1 + T) * ρ / 4) →
       parameterDerivativeOperatorBoundsWithMargin (n := n) g₀ a₂ (3 / 4) := by
   intro H q
-  exact AddCircle.exists_pos_parameter_derivative_translated_margin_radius
-    (ι := Fin n) g₀ (3 / 4) (by norm_num) (by norm_num) A Cα hR hr Jn hJn
+  obtain ⟨ε, hε, hεcontract⟩ := exists_pos_parameterDerivative_contraction_margin (n := n) g₀
+  let r₀ := min (R / 2) (min (r / (2 * (1 + Jn))) (ε / (2 * (1 + (Cα : ℝ)))))
+  have hr₀ : 0 < r₀ := by dsimp only [r₀]; positivity
+  have hrR : r₀ ≤ R / 2 := min_le_left _ _
+  have hrJ : 2 * Jn * r₀ ≤ r := by
+    have hp : r₀ ≤ r / (2 * (1 + Jn)) := (min_le_right _ _).trans (min_le_left _ _)
+    have he := (le_div_iff₀ (by positivity : 0 < 2 * (1 + Jn))).mp hp
+    nlinarith
+  have hrα : (Cα : ℝ) * (2 * r₀) ≤ ε := by
+    have hp : r₀ ≤ ε / (2 * (1 + (Cα : ℝ))) := (min_le_right _ _).trans (min_le_right _ _)
+    have he := (le_div_iff₀ (by positivity : 0 < 2 * (1 + (Cα : ℝ)))).mp hp
+    nlinarith [Cα.coe_nonneg]
+  obtain ⟨δ, hδ, hδr, hδ1, hcontract⟩ := hεcontract A r₀ hr₀
+  refine ⟨δ, hδ, hδr.trans hrR, hδ1, ?_, ?_⟩
+  · exact (mul_le_mul_of_nonneg_left hδr (by positivity)).trans hrJ
+  · intro ρ T hT hTρ hρδ a₂ hclose hnorm
+    apply hcontract hT hTρ hρδ a₂ ?_ hnorm
+    filter_upwards [hclose] with t ht
+    exact ht.trans ((mul_le_mul_of_nonneg_left
+      (mul_le_mul_of_nonneg_left hδr (by norm_num : (0 : ℝ) ≤ 2)) Cα.coe_nonneg).trans hrα)
 
 private theorem translated_state_norm_bounds
     {X Y Z : Type*} [SeminormedAddCommGroup X] [NormedSpace ℝ X]

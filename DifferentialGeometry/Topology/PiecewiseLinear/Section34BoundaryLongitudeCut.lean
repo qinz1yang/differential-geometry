@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.Seam
-import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorus.LongitudeCut
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34MeridianSeam
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ProperLongitudeArc
 
 open Set
 

@@ -29,10 +29,10 @@ omit hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_generic_curves (B : RicciBackground (I := I) (M := M) D a b)
     (hdim : Module.finrank ℝ E = 3) {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b)) :
-    ∃ approximants : ℕ → ℝ → DifferentialGeometry.Topology.freeLoop M,
+    ∃ approximants : ℕ → ℝ → ContinuousFreeLoop M,
       (∀ j, (curveOfLoopFamily (approximants j)).SmoothOn (I := I) (Icc a b) ∧
         (curveOfLoopFamily (approximants j)).ImmersedOn (I := I) (Icc a b) ∧
         ∃ exceptional : Finset ℝ, ∀ t ∈ Icc a b,
@@ -48,8 +48,8 @@ theorem rfs_csf_generic_curves (B : RicciBackground (I := I) (M := M) D a b)
       (∀ ε > 0, ∃ j₀ : ℕ, ∀ j ≥ j₀, ∀ t ∈ Icc a b,
         |(curveOfLoopFamily (approximants j)).areaError B.family.metric (Icc a b) t -
           (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t| < ε) ∧
-      ((∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
-        (∀ j t, t ∈ Icc a b → ContinuousMap.Nullhomotopic (approximants j t)) ∧
+      ((∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+        (∀ j t, t ∈ Icc a b → IsContractibleLoop (approximants j t)) ∧
         ∀ ε > 0, ∃ j₀ : ℕ, ∀ j ≥ j₀, ∀ t ∈ Icc a b,
           |loopFamilyLeastArea B.family.metric (approximants j) t -
             loopFamilyLeastArea B.family.metric γ t| < ε) := by

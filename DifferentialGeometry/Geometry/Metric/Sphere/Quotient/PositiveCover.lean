@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.KillingHopf
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.BasisPoints
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature

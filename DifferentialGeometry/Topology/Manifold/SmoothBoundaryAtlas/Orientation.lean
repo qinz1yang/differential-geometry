@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.Tangent
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationCompatible
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Composition
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationComposition
 import DifferentialGeometry.Topology.Manifold.DiffeomorphPullbackOrientation
 
 noncomputable section

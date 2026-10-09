@@ -7,7 +7,6 @@ import DifferentialGeometry.Analysis.Calculus.UpperSupport.Propagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.C1Attainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.IndexEstimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.SpatialMinimum
-
 set_option autoImplicit false
 
 noncomputable section
@@ -707,14 +706,11 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_constant_incoming_action_le
+private theorem TerminalLimitMetric.exists_constant_incoming_action_le
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
     {T k : ℝ} (hk : 0 ≤ k) (hTk : T - k ^ 2 = s) :
     ∃ d > k, ∃ C : ℝ, ∀ w ∈ Icc k d,

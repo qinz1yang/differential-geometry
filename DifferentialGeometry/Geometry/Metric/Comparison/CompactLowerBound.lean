@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
-import DifferentialGeometry.Analysis.FiniteDimensional.Coercivity
+import DifferentialGeometry.Analysis.FunctionalAnalysis.BilinearCoercivity
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
 

@@ -20,83 +20,80 @@ universe u
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.CanonicalBefore (ε C1 C2 qcan τmin t₀ : ℝ) : Prop :=
+def CanonicalBefore (ε C1 C2 qcan τmin t₀ : ℝ) : Prop :=
   ∀ (y : P.Carrier) (t : ℝ), t ∈ Ioo a t₀ → qcan < G.flow.scalar t y →
     τmin ≤ G.flow.scalar t y * (t - a) →
     ∃ W : CanonicalWitness G.flow ε C1 C2 y t, W.capTubeHasNeckChart ε
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.DerivativeBoundBefore (Ctime : ℝ≥0) (qcan t₀ : ℝ) : Prop :=
+def DerivativeBoundBefore (Ctime : ℝ≥0) (qcan t₀ : ℝ) : Prop :=
   ∀ (y : P.Carrier) (t : ℝ), t ∈ Ioo a t₀ → qcan < G.flow.scalar t y →
     |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ Ctime * G.flow.scalar t y ^ 2
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.GradientBoundBefore (Cgrad : ℝ≥0) (qcan t₀ : ℝ) : Prop :=
+def GradientBoundBefore (Cgrad : ℝ≥0) (qcan t₀ : ℝ) : Prop :=
   ∀ (y : P.Carrier) (t : ℝ), t ∈ Ioo a t₀ → qcan < G.flow.scalar t y →
     ∀ v : TangentSpace I3 y, |Perelman.CanonicalNeighborhood.scalarDifferential G.flow t y v| ≤
       Cgrad * G.flow.scalar t y * Real.sqrt (G.flow.scalar t y) *
         Real.sqrt ((G.flow.base.metric t).inner y v v)
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.SpatiallyCanonicalBefore (ε C1 C2 qcan t₀ : ℝ) : Prop :=
+def SpatiallyCanonicalBefore (ε C1 C2 qcan t₀ : ℝ) : Prop :=
   ∀ (y : P.Carrier) (t : ℝ), t ∈ Ioo a t₀ → qcan < G.flow.scalar t y →
     ∃ W : SpatialCanonicalWitness (G.flow.base.metric t) ε C1 C2 y, W.capTubeHasNeckChart ε
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.CanonicalOn (ε C1 C2 qcan τmin t₀ η : ℝ) : Prop :=
+def CanonicalOn (ε C1 C2 qcan τmin t₀ η : ℝ) : Prop :=
   ∀ (y : P.Carrier) (t : ℝ), a < t → t₀ ≤ t → t < t₀ + η → t < s → qcan < G.flow.scalar t y →
     τmin ≤ G.flow.scalar t y * (t - a) →
     ∃ W : CanonicalWitness G.flow ε C1 C2 y t, W.capTubeHasNeckChart ε
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.DerivativeBoundOn (Ctime : ℝ≥0) (qcan t₀ η : ℝ) : Prop :=
+def DerivativeBoundOn (Ctime : ℝ≥0) (qcan t₀ η : ℝ) : Prop :=
   ∀ (y : P.Carrier) (t : ℝ), a < t → t₀ ≤ t → t < t₀ + η → t < s → qcan < G.flow.scalar t y →
     |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ Ctime * G.flow.scalar t y ^ 2
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.GradientBoundOn (Cgrad : ℝ≥0) (qcan t₀ η : ℝ) : Prop :=
+def GradientBoundOn (Cgrad : ℝ≥0) (qcan t₀ η : ℝ) : Prop :=
   ∀ (y : P.Carrier) (t : ℝ), a < t → t₀ ≤ t → t < t₀ + η → t < s → qcan < G.flow.scalar t y →
     ∀ v : TangentSpace I3 y, |Perelman.CanonicalNeighborhood.scalarDifferential G.flow t y v| ≤
       Cgrad * G.flow.scalar t y * Real.sqrt (G.flow.scalar t y) *
         Real.sqrt ((G.flow.base.metric t).inner y v v)
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.SpatiallyCanonicalOn (ε C1 C2 qcan t₀ η : ℝ) : Prop :=
+def SpatiallyCanonicalOn (ε C1 C2 qcan t₀ η : ℝ) : Prop :=
   ∀ (y : P.Carrier) (t : ℝ), a < t → t₀ ≤ t → t < t₀ + η → t < s → qcan < G.flow.scalar t y →
     ∃ W : SpatialCanonicalWitness (G.flow.base.metric t) ε C1 C2 y, W.capTubeHasNeckChart ε
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.canonicalBefore_mono {ε C1 C2 qcan τmin t₀ t₁ : ℝ} (h : t₀ ≤ t₁)
+theorem canonicalBefore_mono {ε C1 C2 qcan τmin t₀ t₁ : ℝ} (h : t₀ ≤ t₁)
     (hG : G.CanonicalBefore ε C1 C2 qcan τmin t₁) : G.CanonicalBefore ε C1 C2 qcan τmin t₀ :=
   fun y t ht hR hτ => hG y t ⟨ht.1, ht.2.trans_le h⟩ hR hτ
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.derivativeBoundBefore_mono {Ctime : ℝ≥0} {qcan t₀ t₁ : ℝ} (h : t₀ ≤ t₁)
+theorem derivativeBoundBefore_mono {Ctime : ℝ≥0} {qcan t₀ t₁ : ℝ} (h : t₀ ≤ t₁)
     (hG : G.DerivativeBoundBefore Ctime qcan t₁) : G.DerivativeBoundBefore Ctime qcan t₀ :=
   fun y t ht hR => hG y t ⟨ht.1, ht.2.trans_le h⟩ hR
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.gradientBoundBefore_mono {Cgrad : ℝ≥0} {qcan t₀ t₁ : ℝ} (h : t₀ ≤ t₁)
+theorem gradientBoundBefore_mono {Cgrad : ℝ≥0} {qcan t₀ t₁ : ℝ} (h : t₀ ≤ t₁)
     (hG : G.GradientBoundBefore Cgrad qcan t₁) : G.GradientBoundBefore Cgrad qcan t₀ :=
   fun y t ht hR => hG y t ⟨ht.1, ht.2.trans_le h⟩ hR
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.spatiallyCanonicalBefore_mono {ε C1 C2 qcan t₀ t₁ : ℝ} (h : t₀ ≤ t₁)
+theorem spatiallyCanonicalBefore_mono {ε C1 C2 qcan t₀ t₁ : ℝ} (h : t₀ ≤ t₁)
     (hG : G.SpatiallyCanonicalBefore ε C1 C2 qcan t₁) :
     G.SpatiallyCanonicalBefore ε C1 C2 qcan t₀ :=
   fun y t ht hR => hG y t ⟨ht.1, ht.2.trans_le h⟩ hR
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.canonicalBefore_start (ε C1 C2 qcan τmin : ℝ) :
+theorem canonicalBefore_start (ε C1 C2 qcan τmin : ℝ) :
     G.CanonicalBefore ε C1 C2 qcan τmin a :=
   fun _ _ ht _ _ => absurd ht.1 (not_lt.mpr ht.2.le)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.derivativeBoundBefore_start (Ctime : ℝ≥0) (qcan : ℝ) :
+theorem derivativeBoundBefore_start (Ctime : ℝ≥0) (qcan : ℝ) :
     G.DerivativeBoundBefore Ctime qcan a :=
   fun _ _ ht _ => absurd ht.1 (not_lt.mpr ht.2.le)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.gradientBoundBefore_start (Cgrad : ℝ≥0) (qcan : ℝ) :
+theorem gradientBoundBefore_start (Cgrad : ℝ≥0) (qcan : ℝ) :
     G.GradientBoundBefore Cgrad qcan a :=
   fun _ _ ht _ => absurd ht.1 (not_lt.mpr ht.2.le)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.spatiallyCanonicalBefore_start (ε C1 C2 qcan : ℝ) :
+theorem spatiallyCanonicalBefore_start (ε C1 C2 qcan : ℝ) :
     G.SpatiallyCanonicalBefore ε C1 C2 qcan a :=
   fun _ _ ht _ => absurd ht.1 (not_lt.mpr ht.2.le)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.canonicalBefore_end_of_continuation {ε C1 C2 qcan τmin : ℝ} {Ctime Cgrad : ℝ≥0}
+theorem canonicalBefore_end_of_continuation {ε C1 C2 qcan τmin : ℝ} {Ctime Cgrad : ℝ≥0}
     (N : ℝ → Prop)
     (hN : ∀ t₀ ∈ Ioo a s, G.CanonicalBefore ε C1 C2 qcan τmin t₀ →
       G.DerivativeBoundBefore Ctime qcan t₀ → G.GradientBoundBefore Cgrad qcan t₀ → N t₀)

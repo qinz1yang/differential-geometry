@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34AnnularCollarExtension
-import DifferentialGeometry.Topology.PiecewiseLinear.Collar.Complement
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34AnnularCollarExtensionComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInteriorDensity
 
 open Set Topology

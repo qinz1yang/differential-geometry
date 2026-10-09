@@ -63,7 +63,7 @@ private theorem exists_local_metric_time_lipschitz_on_regular_interval
     apply ContinuousWithinAt.sqrt
     apply tendsto_finsetSum
     intro slots _
-    exact ((DifferentialGeometry.contMDiffAt_partial_deriv_fst (m := 0)
+    exact ((DifferentialGeometry.timeDeriv_smoothAt (m := 0)
       (hF slots (hreg hz.1) z.2) (by simp)).continuousAt.continuousWithinAt).pow 2
   obtain ⟨B, hB⟩ := (isCompact_Icc.prod hK).exists_bound_of_continuousOn hd
   have hBnonneg : 0 ≤ max B 0 := le_max_right _ _

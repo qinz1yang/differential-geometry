@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CompleteGlobal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Curvature.TowerBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.AncientJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCurvatureJets
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactConvexSource
-import DifferentialGeometry.Topology.Circle.Lipschitz
+import DifferentialGeometry.Geometry.Metric.CompactConvexSourceLipschitz
+import DifferentialGeometry.Topology.LoopSpace.Lipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SweptAreaEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.MetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SlopeEstimateReduction
@@ -385,7 +385,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 omit [IsManifold I ∞ M] in
 theorem loopFamily_homotopic_of_smoothOn
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {a b s t : ℝ}
+    (γ : ℝ → Surgery.Topology.ContinuousFreeLoop M) {a b s t : ℝ}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hs : s ∈ Icc a b) (ht : t ∈ Icc s b) : (γ s).Homotopic (γ t) := by
   refine ⟨{
@@ -399,8 +399,8 @@ theorem loopFamily_homotopic_of_smoothOn
     simp
 
 theorem loopFamilyLeastArea_eq_zero_of_not_isContractibleLoop
-    (g : ℝ → SmoothRiemannianMetric I M) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
-    (t : ℝ) (hγ : ¬ ContinuousMap.Nullhomotopic (γ t)) :
+    (g : ℝ → SmoothRiemannianMetric I M) (γ : ℝ → Surgery.Topology.ContinuousFreeLoop M)
+    (t : ℝ) (hγ : ¬ Surgery.Topology.IsContractibleLoop (γ t)) :
     loopFamilyLeastArea g γ t = 0 := by
   rw [loopFamilyLeastArea, Width.competitorAreas_eq_empty_of_not_isContractibleLoop _ _ hγ,
     Real.sInf_empty]
@@ -410,14 +410,14 @@ variable [FiniteDimensional ℝ E] [T2Space M] [CompactSpace M]
 
 theorem loopFamilyLeastArea_le_add_annulusArea
     (g : SmoothRiemannianMetric I M)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {s t : ℝ}
+    (γ : ℝ → Surgery.Topology.ContinuousFreeLoop M) {s t : ℝ}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hs : s ∈ Icc a b) (ht : t ∈ Icc s b) :
     loopFamilyLeastArea (fun _ => g) γ t ≤ loopFamilyLeastArea (fun _ => g) γ s +
       Width.annulusArea g ((curveOfLoopFamily γ).sweptAnnulus g hγ hs ht).map := by
-  by_cases hctr : ContinuousMap.Nullhomotopic (γ s)
+  by_cases hctr : Surgery.Topology.IsContractibleLoop (γ s)
   · have htt : t ∈ Icc a b := ⟨hs.1.trans ht.1, ht.2⟩
-    have hctr' : ContinuousMap.Nullhomotopic (γ t) := by
+    have hctr' : Surgery.Topology.IsContractibleLoop (γ t) := by
       obtain ⟨q, hq⟩ := hctr
       exact ⟨q, (loopFamily_homotopic_of_smoothOn γ hγ hs ht).symm.trans hq⟩
     let A := (curveOfLoopFamily γ).sweptAnnulus g hγ hs ht
@@ -430,7 +430,7 @@ theorem loopFamilyLeastArea_le_add_annulusArea
       simp [A, CurveMap.sweptAnnulus, curveOfLoopFamily]
     · intro θ
       simp [A, CurveMap.sweptAnnulus, curveOfLoopFamily]
-  · have hctr' : ¬ ContinuousMap.Nullhomotopic (γ t) := by
+  · have hctr' : ¬ Surgery.Topology.IsContractibleLoop (γ t) := by
       rintro ⟨q, hq⟩
       exact hctr ⟨q, (loopFamily_homotopic_of_smoothOn γ hγ hs ht).trans hq⟩
     rw [loopFamilyLeastArea_eq_zero_of_not_isContractibleLoop _ γ s hctr,
@@ -450,7 +450,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 theorem loopFamilyLeastArea_le_exp_mul_add_integral_sweptDensity
     (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {s t : ℝ}
+    (γ : ℝ → Surgery.Topology.ContinuousFreeLoop M) {s t : ℝ}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hs : s ∈ Icc a b) (ht : t ∈ Icc s b) :
     loopFamilyLeastArea B.family.metric γ t ≤ Real.exp (2 * B.B₀ * (t - s)) *
@@ -460,7 +460,7 @@ theorem loopFamilyLeastArea_le_exp_mul_add_integral_sweptDensity
   have htt : t ∈ Icc a b := ⟨hs.1.trans ht.1, ht.2⟩
   have hmetric : loopFamilyLeastArea (fun _ => B.family.metric t) γ s ≤
       Real.exp (2 * B.B₀ * (t - s)) * loopFamilyLeastArea B.family.metric γ s := by
-    by_cases hctr : ContinuousMap.Nullhomotopic (γ s)
+    by_cases hctr : Surgery.Topology.IsContractibleLoop (γ s)
     · exact B.leastArea_le_exp_mul_leastArea_of_le hs htt ht.1 (γ s) hctr
         ((regularLoopSlice γ hγ s hs).isLipschitz (B.family.metric s))
         ((regularLoopSlice γ hγ s hs).isLipschitz (B.family.metric t))

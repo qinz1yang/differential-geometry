@@ -163,7 +163,7 @@ theorem exists_strip_nullhomotopy (hf : MorseStrip I f a b) (D : GradientLikeStr
     rw [hF]
     exact hPid _ (hlev 0)
 
-theorem exists_level_nullhomotopy (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
+theorem exists_level_nullhomotopy [SigmaCompactSpace M] (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
     (D : GradientLikeStrip I f a b crit)
     (hcrit : ∀ x, x ∈ crit ↔ f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x)
     (hW : SimplyConnectedSpace (f ⁻¹' Icc a b)) {c : ℝ} (hc : c ∈ Ioo a b)

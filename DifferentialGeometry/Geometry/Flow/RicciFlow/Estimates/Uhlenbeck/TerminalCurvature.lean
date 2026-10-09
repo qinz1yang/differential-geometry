@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.KernelEndpoint
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.AncientJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCurvatureJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.FrameExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorHeatReaction
 

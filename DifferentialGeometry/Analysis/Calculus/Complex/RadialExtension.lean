@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homeomorph.Radial.Disk
+import DifferentialGeometry.Topology.LoopSpace.RadialHomeomorphism
 import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.LinearAlgebra.Complex.Determinant
@@ -93,13 +93,13 @@ theorem hasFDerivAt_radialExtension_geometricCircleHomeomorph
 
 theorem det_radialStretchLinearMap (a : ℝ) :
     (radialStretchLinearMap a).toLinearMap.det = a := by
-  rw [LinearMap.det_complex]
+  rw [DifferentialGeometry.Geometry.complex_linearMap_det]
   simp [radialStretchLinearMap_apply]
 
 private theorem complex_smul_det (c : ℂ) (A : ℂ →L[ℝ] ℂ) :
     (c • A).toLinearMap.det = Complex.normSq c * A.toLinearMap.det := by
-  rw [LinearMap.det_complex,
-    LinearMap.det_complex]
+  rw [DifferentialGeometry.Geometry.complex_linearMap_det,
+    DifferentialGeometry.Geometry.complex_linearMap_det]
   simp only [ContinuousLinearMap.coe_coe, _root_.smul_apply, smul_eq_mul,
     Complex.mul_re, Complex.mul_im, Complex.normSq_apply]
   ring

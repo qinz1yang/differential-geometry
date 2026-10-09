@@ -22,7 +22,6 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [T2Space M] [SigmaCompactSpace M]
 
-omit [NeZero (Module.finrank ℝ E)] in
 theorem operatorFieldApplication_h2_h2_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (r c : ℕ) :

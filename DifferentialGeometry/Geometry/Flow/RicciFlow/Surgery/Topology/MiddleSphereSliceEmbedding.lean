@@ -176,7 +176,7 @@ variable {P Q D N : OrientedThreeStage.{u}} (E : SmoothCutCapTransition P Q D N)
 
 def middleSphereCuttingSeparation : Prop :=
   ∀ c : ConnectedComponents Q.Carrier,
-    SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+    SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
       SimplyConnectedSpace ↥(E.trace.tubes.puncturedCoreComponent (E.childCoreComponent c))
 
 theorem childCoreSimplyConnectedOfParent_of_middleSphereCuttingSeparation

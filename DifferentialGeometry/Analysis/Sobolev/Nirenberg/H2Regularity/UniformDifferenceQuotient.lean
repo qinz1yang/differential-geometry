@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.MasterInequality.MasterInequalityNonSmooth
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.WeakRegularity
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.WeakDerivativeBound
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.WeakDerivativeBound
 
 noncomputable section
 

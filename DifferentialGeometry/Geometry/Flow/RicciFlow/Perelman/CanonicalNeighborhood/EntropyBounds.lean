@@ -1,13 +1,13 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.Local
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
-import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.LocalVolume
-import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalCGTInjectivity
+import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
 import DifferentialGeometry.Geometry.Measure.OpenSubtypeVolume
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
-import DifferentialGeometry.Geometry.Curvature.Ricci.PointwiseLowerBound
+import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciPointwise
 import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.ScalarControl
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ScalarNoncollapse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Parabolic
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import Mathlib.Data.EReal.Basic
@@ -219,7 +219,7 @@ theorem entropyValue_eq_wFunctional [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {tau : ℝ} (htau : 0 < tau) (w : EntropyTest g)
     (hw : ContMDiff I 𝓘(ℝ, ℝ) ∞ w.value) (hwpos : ∀ x, 0 < w.value x) :
     entropyValue g tau w =
-      DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional
+      DifferentialGeometry.PDE.RicciFlow.Entropy.wFunctional
         (riemannianVolumeMeasure I M g) (Module.finrank ℝ E) tau
         (fun x => metricScalarAt (I := I) (M := M) g x)
         (fun x => g.inner x
@@ -271,7 +271,7 @@ theorem entropyValue_eq_wFunctional [I.Boundaryless]
         (DifferentialGeometry.Geometry.Operator.gradFun g v x) +
       tau * R x * (v x * v x) - (v x * v x) * Real.log (v x * v x)
   let c : ℝ := Real.log
-    (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau) - (n : ℝ)
+    (DifferentialGeometry.PDE.RicciFlow.Entropy.perelmanDensityPrefactor n tau) - (n : ℝ)
   have henergy : Continuous (fun x => g.inner x
       (DifferentialGeometry.Geometry.Operator.gradFun g v x)
       (DifferentialGeometry.Geometry.Operator.gradFun g v x)) := by
@@ -694,7 +694,7 @@ theorem mu_compact_scale_lower [I.Boundaryless]
   have hvpos : ∀ x : M, 0 < v x := hwpos
   have hmass : (∫ x, v x ^ 2 ∂(riemannianVolumeMeasure I M g)) = 1 := by
     simpa only [v] using w.normalized
-  have hWlb : B ≤ DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional
+  have hWlb : B ≤ DifferentialGeometry.PDE.RicciFlow.Entropy.wFunctional
       (riemannianVolumeMeasure I M g) 3 tau R
       (fun x => g.inner x
         (DifferentialGeometry.Geometry.Operator.gradientFun g
@@ -738,7 +738,7 @@ theorem mu_compact_scale_lower [I.Boundaryless]
         (DifferentialGeometry.Geometry.Operator.gradFun g v x) +
       tau * R x * (v x * v x) - (v x * v x) * Real.log (v x * v x)
   let c : ℝ := Real.log
-    (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor 3 tau) - (3 : ℕ)
+    (DifferentialGeometry.PDE.RicciFlow.Entropy.perelmanDensityPrefactor 3 tau) - (3 : ℕ)
   have henergy : Continuous (fun x => g.inner x
       (DifferentialGeometry.Geometry.Operator.gradFun g v x)
       (DifferentialGeometry.Geometry.Operator.gradFun g v x)) := by

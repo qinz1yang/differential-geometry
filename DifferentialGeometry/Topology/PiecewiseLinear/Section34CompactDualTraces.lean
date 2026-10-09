@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallPairTwoSimplices
 import DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellSubgraph
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.Subcomplex
-import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhood.EdgeTrace
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualSubcomplex
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactEdgeTraces
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualRecognition
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexSubcomplex
 
@@ -91,7 +96,7 @@ theorem exists_subcomplex_compactDualFaceArc
       _ = _ := graphDualCell_inter_derivedNeighborhoodCell_eq_upperLink S H hvS hsS hH
   refine ⟨G, hGM, htrace.symm, ?_⟩
   rw [← graphDualCell_inter_derivedNeighborhoodCell_eq_upperLink S H hvS hsS hH]
-  exact isPLBall_graphDualCell_inter_triangle_cell S H hsS hvs s.2.2 hmax hH
+  exact isPLBall_graphDualCell_inter_triangleCell S H hsS hvs s.2.2 hmax hH
 
 open Classical in
 theorem exists_subcomplex_compactDualEdgeArc
@@ -149,7 +154,7 @@ theorem exists_subcomplex_compactDualEdgeArc
         exact ⟨fun h => ⟨⟨h.1, hRS h.2⟩, h.2⟩, fun h => ⟨h.1.1, h.2⟩⟩
       _ = (splittingDisk S e.1 heS).space ∩ R := by
         rw [splittingDisk_space_inter_subcomplex M S hSM heS]
-      _ = _ := splittingDisk_inter_tetra_residual_eq_upperLink S heS htS e.2.2.1 t.2.2 hmax
+      _ = _ := splittingDisk_inter_tetraResidual_eq_upperLink S heS htS e.2.2.1 t.2.2 hmax
   refine ⟨G, hGM, htrace.symm, ?_⟩
   have hSman := hSball.isCombinatorialManifoldWithBoundary
   have hB : boundaryComplex 3 S = @boundaryComplex E3 _ _ (Classical.decEq E3) 3 S :=

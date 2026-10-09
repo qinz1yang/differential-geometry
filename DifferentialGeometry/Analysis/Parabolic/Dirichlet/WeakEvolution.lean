@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakLimit
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FixedMassTrace
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
-import DifferentialGeometry.Analysis.Sobolev.Time.WeakDerivative.FundamentalTheorem
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.WeakDerivative.FundamentalTheorem
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
 
 noncomputable section

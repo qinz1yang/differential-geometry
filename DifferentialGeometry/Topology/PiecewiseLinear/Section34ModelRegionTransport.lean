@@ -1,5 +1,4 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ModelMotionTransport
-import DifferentialGeometry.Topology.PiecewiseLinear.Homeomorph.Boundary
 
 open Set Topology
 

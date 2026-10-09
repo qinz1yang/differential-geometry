@@ -1,6 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Neck.Historical
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Neck.CoOrientedChainReflection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckFields
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CoOrientedNeckChainReflection
 
 set_option autoImplicit false
 

@@ -16,8 +16,8 @@ private theorem critical_postcomp_iff {f : M → ℝ}
     (hf : ContMDiff (𝓡 n) 𝓘(ℝ, ℝ) ∞ f) {ρ : ℝ → ℝ}
     (hρ : ContDiff ℝ ∞ ρ) {x : M} (hρ' : deriv ρ (f x) ≠ 0) :
     DifferentialGeometry.Topology.Morse.IsCriticalPointAt (𝓡 n) (ρ ∘ f) x ↔ DifferentialGeometry.Topology.Morse.IsCriticalPointAt (𝓡 n) f x := by
-  rw [← isCriticalPointAt_morseModelI_iff (f := ρ ∘ f),
-    ← isCriticalPointAt_morseModelI_iff (f := f)]
+  rw [← isCriticalPointAt_morseModelI_iff (hρ.contMDiff.comp hf),
+    ← isCriticalPointAt_morseModelI_iff hf]
   exact MonotoneShift.isCriticalPointAt_comp_iff (contMDiff_morseModelI_iff.mpr hf) hρ hρ'
 
 theorem exists_punctured_sublevel_strip (hn : 1 ≤ n) {G : M → ℝ}

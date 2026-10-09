@@ -3,6 +3,7 @@ import Mathlib.LinearAlgebra.Finsupp.LinearCombination
 
 namespace DifferentialGeometry.Topology.Engulfing
 
+set_option linter.unusedSectionVars false
 
 open Set _root_.Geometry
 open scoped BigOperators
@@ -14,7 +15,7 @@ noncomputable def weightMass : (E →₀ ℝ) →ₗ[ℝ] ℝ :=
 
 noncomputable def weightPoint : (E →₀ ℝ) →ₗ[ℝ] E := Finsupp.linearCombination ℝ id
 
-omit [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E] in
+omit [DecidableEq E] in
 theorem weightMass_eq_sum {w : E →₀ ℝ} {s : Finset E} (hs : w.support ⊆ s) :
     weightMass w = ∑ x ∈ s, w x := by
   classical
@@ -143,7 +144,7 @@ theorem affineIndependent_of_weights_eq_zero {s : Finset E}
 noncomputable def expandEdgeWeights (a b p : E) (α β : ℝ) (w : E →₀ ℝ) : E →₀ ℝ :=
   w - Finsupp.single p (w p) + Finsupp.single a (α * w p) + Finsupp.single b (β * w p)
 
-omit [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E] in
+omit [DecidableEq E] in
 theorem expandEdgeWeights_mass (a b p : E) {α β : ℝ} (hab : α + β = 1)
     (w : E →₀ ℝ) : weightMass (expandEdgeWeights a b p α β w) = weightMass w := by
   classical
@@ -165,13 +166,12 @@ theorem expandEdgeWeights_point {a b p : E} {α β : ℝ} (hp : p = α • a + �
   rw [hh]
   abel
 
-omit [NormedAddCommGroup E] [NormedSpace ℝ E] in
 theorem expandEdgeWeights_apply (a b p : E) (α β : ℝ) (w : E →₀ ℝ) (v : E) :
     expandEdgeWeights a b p α β w v = w v - (if p = v then w p else 0) +
       (if a = v then α * w p else 0) + (if b = v then β * w p else 0) := by
   simp [expandEdgeWeights, Finsupp.single_apply]
 
-omit [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E] in
+omit [DecidableEq E] in
 theorem expandEdgeWeights_nonneg {a b p : E} {α β : ℝ}
     (hpa : p ≠ a) (hpb : p ≠ b) (ha : 0 ≤ α) (hb : 0 ≤ β)
     {w : E →₀ ℝ} (hw : ∀ v, 0 ≤ w v) :
@@ -186,7 +186,7 @@ theorem expandEdgeWeights_nonneg {a b p : E} {α β : ℝ}
     exact add_nonneg (add_nonneg (hw v) (ite_nonneg (mul_nonneg ha (hw p)) le_rfl))
       (ite_nonneg (mul_nonneg hb (hw p)) le_rfl)
 
-omit [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E] in
+omit [DecidableEq E] in
 theorem expandEdgeWeights_eq_of_apply_eq {a b p : E} {α β : ℝ} {w z : E →₀ ℝ}
     (hp : w p = z p) (h : expandEdgeWeights a b p α β w = expandEdgeWeights a b p α β z) :
     w = z := by
@@ -195,7 +195,7 @@ theorem expandEdgeWeights_eq_of_apply_eq {a b p : E} {α β : ℝ} {w z : E →�
   rw [hp] at h
   exact sub_left_injective (add_right_cancel (add_right_cancel h))
 
-omit [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E] in
+omit [DecidableEq E] in
 theorem expandEdgeWeights_inj {a b p : E} {α β : ℝ}
     (hab : a ≠ b) (hpa : p ≠ a) (hpb : p ≠ b) (ha : 0 < α) (hb : 0 < β)
     {w z : E →₀ ℝ} (hw : ∀ v, 0 ≤ w v) (hz : ∀ v, 0 ≤ z v)
@@ -214,7 +214,7 @@ theorem expandEdgeWeights_inj {a b p : E} {α β : ℝ}
     · nlinarith
   exact expandEdgeWeights_eq_of_apply_eq hp h
 
-omit [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E] in
+omit [DecidableEq E] in
 theorem expandEdgeWeights_eq_zero {a b p : E} {α β : ℝ}
     (hab : a ≠ b) (hpa : p ≠ a) (hpb : p ≠ b) (ha : α ≠ 0) (hb : β ≠ 0)
     {w : E →₀ ℝ} (hwend : w a = 0 ∨ w b = 0)

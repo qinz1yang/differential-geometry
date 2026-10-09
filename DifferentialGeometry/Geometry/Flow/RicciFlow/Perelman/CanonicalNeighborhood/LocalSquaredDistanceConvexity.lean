@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Comparison.Toponogov.MinimizingLensSupport
-import DifferentialGeometry.Analysis.Convex.LowerSupport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.LocalSharpDistanceSupport
+import DifferentialGeometry.Geometry.Comparison.Toponogov.LowerSupportConvexity
 import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 
@@ -233,7 +233,7 @@ theorem convexOn_sq_sub_sq_of_sectional_nonnegative_on_minimizing_lenses
       exact hpx (riemannianEDist_eq_zero_imp_eq (I := I) p (gamma x) hzero)
     have hr : 0 < r := ENNReal.toReal_pos hdist_ne hfin
     obtain ⟨rho, U, hU, hxU, hrho, hvalue, hupper, hhess⟩ :=
-      DifferentialGeometry.Geometry.Riemannian.calabiDist_sharp_hess_support_on_minimizing_lens (I := I) g hEnorm (hsec x hxD) hpx hfin s hs hs_half
+      calabiDist_sharp_hess_support_on_minimizing_lens (I := I) g hEnorm (hsec x hxD) hpx hfin s hs hs_half
     let w : ℝ → ℝ := fun t => rho (gamma t)
     have hw : ContDiffAt ℝ 2 w x := by
       have h := ((hrho (gamma x) hxU).contMDiffAt (hU.mem_nhds hxU)).comp

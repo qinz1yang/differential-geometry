@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Restriction.Completeness
+import DifferentialGeometry.Geometry.Metric.Restriction
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTimeExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabSpatialJets
@@ -16,12 +16,10 @@ open DifferentialGeometry.CheegerGromovCompactness
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 universe u
 variable (P : OrientedThreeStage.{u})
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.metricCovDeriv_frame_eq (g gRef : P.Metric) (a : ℕ)
+private theorem metricCovDeriv_frame_eq (g gRef : P.Metric) (a : ℕ)
     (frame : Fin 3 → (x : P.Carrier) → TangentSpace ThreeModel x)
     {U : Set P.Carrier} (hframe : IsLocalFrameOn ThreeModel ThreeSpace 1 frame U)
     (hU : IsOpen U) {x : P.Carrier} (hx : x ∈ U) (n : Fin (a + 2) → Fin 3) :
@@ -33,7 +31,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.metr
     Tensor0SField.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply]
   exact (iterCovComp_eq_iterCov gRef (metricTensorField g) frame hframe hU a hx _).symm
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.metricDerivNorm_continuousOn
+theorem MetricSmoothUpTo.metricDerivNorm_continuousOn
     {g : ℝ → P.Metric} {J : Set ℝ} (hg : P.MetricSmoothUpTo g J)
     (gInf gRef : P.Metric) (a : ℕ) :
     ContinuousOn (fun q : ℝ × P.Carrier => metricDerivNorm a (g q.1) gInf gRef q.2)
@@ -89,7 +87,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmooth
     exact ⟨⟨hz.1.1, hz.2.1⟩, hz.1.2⟩
   exact (hlocal q ⟨⟨hqV, hq.1⟩, hqU⟩).mono_of_mem_nhdsWithin hn
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.terminal_convergence {g : ℝ → P.Metric} {u v : ℝ}
+theorem MetricSmoothUpTo.terminal_convergence {g : ℝ → P.Metric} {u v : ℝ}
     (hg : P.MetricSmoothUpTo g (Icc u v)) (huv : u < v)
     {K : Set P.Carrier} (hK : IsCompact K) (a : ℕ) {ε : ℝ} (hε : 0 < ε) :
     ∃ d ∈ Ico u v, ∀ t ∈ Ioo d v, ∀ x ∈ K,
@@ -114,7 +112,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmooth
     simpa only [nhdsWithin_Ico_eq_nhdsLT huv] using h
   exact (mem_nhdsLT_iff_exists_mem_Ico_Ioo_subset huv).mp hleft
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.terminalRegularRegion_eq_univ {u v : ℝ} (G : P.ClosedSlab u v) :
+theorem ClosedSlab.terminalRegularRegion_eq_univ {u v : ℝ} (G : P.ClosedSlab u v) :
     (G.restrictIncoming le_rfl G.lt le_rfl).terminalRegularRegion = univ := by
   obtain ⟨K, hK, hbound⟩ := G.curvature_bound P
   apply eq_univ_of_forall
@@ -123,7 +121,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.t
   intro y _ t ht
   exact hbound t ⟨ht.1, ht.2.le⟩ y
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.endpoint_terminalMetricConverges {u v : ℝ} (G : P.ClosedSlab u v) :
+theorem ClosedSlab.endpoint_terminalMetricConverges {u v : ℝ} (G : P.ClosedSlab u v) :
     (G.restrictIncoming le_rfl G.lt le_rfl).TerminalMetricConverges
       ((G.flow.base.metric v).restrictOpen
         (G.restrictIncoming le_rfl G.lt le_rfl).terminalRegularOpen) := by
@@ -139,7 +137,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.e
   rw [metricDerivNorm_restrictOpen]
   exact hbound t ht x.1 ⟨x, hx, rfl⟩
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.endpointTerminalLimitMetric {u v : ℝ} (G : P.ClosedSlab u v) :
+def ClosedSlab.endpointTerminalLimitMetric {u v : ℝ} (G : P.ClosedSlab u v) :
     (G.restrictIncoming le_rfl G.lt le_rfl).TerminalLimitMetric where
   metric := (G.flow.base.metric v).restrictOpen
     (G.restrictIncoming le_rfl G.lt le_rfl).terminalRegularOpen
@@ -149,12 +147,10 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 universe u
 variable {P : OrientedThreeStage.{u}}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.endpointTerminalLimitMetric_extendedMetric_of_le
+theorem ClosedSlab.endpointTerminalLimitMetric_extendedMetric_of_le
     {a b : ℝ} (S : P.ClosedSlab a b) {v : ℝ} (hv : v ≤ b) :
     (S.endpointTerminalLimitMetric P).extendedMetric v =
       (S.flow.base.metric v).restrictOpen
@@ -179,12 +175,10 @@ open Set
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.riemannianEDistOf_endpointTerminalLimitMetric
+theorem ClosedSlab.riemannianEDistOf_endpointTerminalLimitMetric
     (A : P.ClosedSlab a s)
     (x y : (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen) :
     riemannianEDistOf (A.endpointTerminalLimitMetric P).metric x y =
@@ -196,7 +190,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.r
       rw [A.terminalRegularRegion_eq_univ P]
       exact isClosed_univ) x y
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.mem_scaled_endpoint_closedBall_iff
+theorem ClosedSlab.mem_scaled_endpoint_closedBall_iff
     (A : P.ClosedSlab a s) (Q : ℝ) (hQ : 0 < Q)
     (x y : (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen) (R : ℝ) :
     y ∈ riemannianClosedBallOf (scaleMetric Q hQ (A.endpointTerminalLimitMetric P).metric) x R ↔

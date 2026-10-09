@@ -21,7 +21,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   [T2Space Q'] [T2Space Q]
 
 theorem plateauDiskDensity_of_diffeomorph (g : SmoothRiemannianMetric I Q)
-    (Φ : Q ≃ₘ⟮I, I'⟯ Q') (γ : DifferentialGeometry.Topology.freeLoop Q)
+    (Φ : Q ≃ₘ⟮I, I'⟯ Q') (γ : ContinuousFreeLoop Q)
     (h : PlateauDiskDensity (I := I') (Q := Q')
       (Diffeomorph.pullbackMetricCross g Φ.symm)
       ((⟨fun q => Φ q, Φ.continuous⟩ : C(Q, Q')).comp γ)) :
@@ -57,7 +57,7 @@ theorem plateauDiskDensity_of_diffeomorph (g : SmoothRiemannianMetric I Q)
 
 theorem plateauDiskDensity_of_standardModelCopy
     (c : Geometry.Topology.StandardModelCopy I Q E) (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q)
+    (γ : ContinuousFreeLoop Q)
     (h : PlateauDiskDensity (I := 𝓘(ℝ, E)) (Q := c.Q)
       (Diffeomorph.pullbackMetricCross g c.equiv.symm)
       ((⟨fun q => c.equiv q, c.equiv.continuous⟩ : C(Q, c.Q)).comp γ)) :

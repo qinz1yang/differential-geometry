@@ -6,6 +6,7 @@ import Mathlib.Data.Fintype.Powerset
 
 namespace DifferentialGeometry.Topology.Engulfing
 
+set_option linter.unusedSectionVars false
 
 open Set
 open scoped BigOperators

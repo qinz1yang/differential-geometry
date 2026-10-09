@@ -16,9 +16,9 @@ namespace DifferentialGeometry.Topology
 
 universe u
 
-theorem exists_diffeomorph_standardThreeSphere_of_isStandardConnectedSum
+theorem exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-    [SimplyConnectedSpace M] (h : isStandardConnectedSum M) :
+    [SimplyConnectedSpace M] (h : isPoincareStandard M) :
     Nonempty (M ≃ₘ⟮𝓡 3, 𝓡 3⟯ standardThreeSphereLift.{u}.Carrier) := by
   classical
   obtain ⟨P⟩ := h
@@ -47,11 +47,16 @@ theorem exists_diffeomorph_standardThreeSphere_of_isStandardConnectedSum
   obtain ⟨s⟩ := exists_diffeomorph_finiteConnectedSum_standardThreeSphere P.factors hL
   exact ⟨P.diffeomorph.trans s⟩
 
-theorem isStandardConnectedSum_connectedSum_of_standardFactor
+def poincareStandardConnectedSumClosed : Prop :=
+  ∀ M N : ConnectedClosedOrientedManifold.{u} 3,
+    isPoincareStandard M.Carrier → isPoincareStandard N.Carrier →
+      isPoincareStandard (connectedSum M N).Carrier
+
+theorem isPoincareStandard_connectedSum_of_standardFactor
     (M N : ConnectedClosedOrientedManifold.{u} 3)
     (hM : isStandardFactor M) (hN : isStandardFactor N) :
-    isStandardConnectedSum (connectedSum M N).Carrier := by
-  have h := isStandardConnectedSum_finite_sum [M, N] (by
+    isPoincareStandard (connectedSum M N).Carrier := by
+  have h := isPoincareStandard_finite_sum [M, N] (by
     intro F hF
     rcases List.mem_cons.mp hF with rfl | hF
     · exact hM
@@ -59,5 +64,38 @@ theorem isStandardConnectedSum_connectedSum_of_standardFactor
     · exact hN
     exact absurd hF (by simp))
   exact h
+
+theorem poincareStandardSumClosed_of_connectedSumClosed
+    (h : poincareStandardConnectedSumClosed.{u}) :
+    poincareStandardSumClosed.{u} := by
+  intro L hL
+  induction L with
+  | nil => exact isPoincareStandard_sphere
+  | cons M L ih =>
+    cases L with
+    | nil => exact hL M (by simp)
+    | cons N L =>
+      have hM : isPoincareStandard M.Carrier := hL M (by simp)
+      have hT : isPoincareStandard (finiteConnectedSum (N :: L)).Carrier :=
+        ih fun F hF => hL F (by simp [hF])
+      exact h M (finiteConnectedSum (N :: L)) hM hT
+
+theorem connectedSumClosed_of_poincareStandardSumClosed
+    (h : poincareStandardSumClosed.{u}) :
+    poincareStandardConnectedSumClosed.{u} := by
+  intro M N hM hN
+  have h2 := h [M, N] (by
+    intro F hF
+    rcases List.mem_cons.mp hF with rfl | hF
+    · exact hM
+    rcases List.mem_cons.mp hF with rfl | hF
+    · exact hN
+    exact absurd hF (by simp))
+  exact h2
+
+theorem poincareStandardSumClosed_iff_connectedSumClosed :
+    poincareStandardSumClosed.{u} ↔ poincareStandardConnectedSumClosed.{u} :=
+  ⟨connectedSumClosed_of_poincareStandardSumClosed,
+    poincareStandardSumClosed_of_connectedSumClosed⟩
 
 end DifferentialGeometry.Topology

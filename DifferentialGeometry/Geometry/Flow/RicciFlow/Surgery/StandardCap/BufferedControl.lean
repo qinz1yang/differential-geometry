@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteHistory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRestriction
-import DifferentialGeometry.Geometry.Metric.StandardCap.Metric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Metric
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.TensorNorm
 
 set_option autoImplicit false

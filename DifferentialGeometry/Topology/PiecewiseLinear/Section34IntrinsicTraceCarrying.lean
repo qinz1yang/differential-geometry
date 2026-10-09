@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ModelTorusTraceCarrying
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicTraceCircles
 
@@ -92,7 +97,7 @@ theorem exists_positive_finite_section34Trace_circles
       fblBd s ∩ frontier
         (section34FaceTorus (section34VertexBallImage src f₁) s) = ⋃ i, J i := by
   obtain ⟨P, u, hP, hu, hUP, hfront⟩ :=
-    exists_PL_solid_torus_model_of_faceTorus hcut hgraph s
+    exists_section34FaceTorus_intrinsic_model hcut hgraph s
   obtain ⟨r, J, hr, -, -, -, hJ, hdis, hN, hT, -⟩ :=
     exists_positive_finite_section34Trace_model_circles hcut hgraph.2.2.1 hinv
       s hP hu hUP hfront

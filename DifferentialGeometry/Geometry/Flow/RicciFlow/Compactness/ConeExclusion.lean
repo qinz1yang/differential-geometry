@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Geometry.Comparison.Toponogov.PuncturedConeConvergence
 import DifferentialGeometry.Geometry.Metric.ConeChart.Construction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.ConeExclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeTerminalExclusion
 
 noncomputable section
 open Set Filter

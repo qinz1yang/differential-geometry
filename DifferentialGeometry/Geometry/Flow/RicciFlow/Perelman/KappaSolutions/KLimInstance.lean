@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLim
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimHarnackCollapseBoundReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimTerminalDerivativeBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Stationary
-import DifferentialGeometry.Topology.LoopSpace.Continuous
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldEuclidean
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Euclidean

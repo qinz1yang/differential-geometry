@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapPersistence
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.SmoothTransition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCapInstance
 
 set_option autoImplicit false
 

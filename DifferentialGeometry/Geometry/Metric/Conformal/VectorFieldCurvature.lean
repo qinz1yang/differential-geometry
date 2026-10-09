@@ -38,7 +38,7 @@ private theorem hessian_derivative_skew_of_covariantDerivative_eq_zero
       riemannOp (LeviCivita g) x (V x) (W x) (LeviCivita g X x (Z x)) -
         LeviCivita g X x (riemannOp (LeviCivita g) x (V x) (W x) (Z x)) := by
   let cov := LeviCivita g
-  let D := _root_.CovariantDerivative.hom
+  let D := HomConnectionGen.homBundleCovariantDerivativeGen
     I M E (TangentSpace I) E (TangentSpace I) cov cov
   have hcov : ContMDiffCovariantDerivative cov ∞ := inferInstance
   let A : Cₛ^∞⟮I; E →L[Real] E,
@@ -53,9 +53,9 @@ private theorem hessian_derivative_skew_of_covariantDerivative_eq_zero
       (fun y : M => TangentSpace I y →L[Real] TangentSpace I y)⟯ :=
     ⟨covApply D V A, contMDiffOn_univ.mp
       (covApply_contMDiffOn (cov := D) V.contMDiff (by simpa using A.contMDiff))⟩
-  have hleft := _root_.CovariantDerivative.hom_apply
+  have hleft := HomConnectionGen.homBundleCovariantDerivativeGen_apply
     I M E (TangentSpace I) E (TangentSpace I) cov cov BW Z x (V x)
-  have hright := _root_.CovariantDerivative.hom_apply
+  have hright := HomConnectionGen.homBundleCovariantDerivativeGen_apply
     I M E (TangentSpace I) E (TangentSpace I) cov cov BV Z x (W x)
   change D BW x (V x) (Z x) = cov (fun y => BW y (Z y)) x (V x) -
     BW x (cov Z x (V x)) at hleft
@@ -284,7 +284,7 @@ private theorem hessian_conformal_derivative_inner
   have hA := contMDiffOn_univ.mp
     (hcov.contMDiff.contMDiff (by simpa using X.contMDiff.contMDiffOn))
   have hHom : CovariantDerivative.ContMDiffCovariantDerivative
-      (_root_.CovariantDerivative.hom
+      (HomConnectionGen.homBundleCovariantDerivativeGen
         I M E (TangentSpace I) E (TangentSpace I) (LeviCivita g) (LeviCivita g)) ∞ :=
     inferInstance
   have hH := contMDiffOn_univ.mp

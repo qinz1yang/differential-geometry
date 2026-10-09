@@ -894,9 +894,9 @@ theorem lieCorrectionZeroInsDiff_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (slotInsertEndoCc (I := I) (M := M) g₀ 1
           (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg)).toSection x) D
-      = slotInsertEndomorphism (I := I) (M := M) 2 0 x
+      = slotInsertEndoFib (I := I) (M := M) 2 0 x
           (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg x) D from rfl]
-  rw [slotInsertEndomorphism_apply_eval (I := I) (M := M) 2 0 x
+  rw [slotInsertEndoFib_apply_eval (I := I) (M := M) 2 0 x
     (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg x) D m]
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
@@ -935,12 +935,12 @@ theorem lieCorrectionZeroInsDiff_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M
         (Tensor0SSpace.ofModel
           (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
             (Tensor0SSpace.toModel D)))
-      = slotInsertEndomorphism (I := I) (M := M) 2 0 x
+      = slotInsertEndoFib (I := I) (M := M) 2 0 x
           (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg x)
           (Tensor0SSpace.ofModel
             (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
               (Tensor0SSpace.toModel D))) from rfl]
-  rw [slotInsertEndomorphism_apply_eval (I := I) (M := M) 2 0 x
+  rw [slotInsertEndoFib_apply_eval (I := I) (M := M) 2 0 x
     (endoDiffSection (I := I) (M := M) g₀ g₁ g_bg x)
     (Tensor0SSpace.ofModel
       (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)

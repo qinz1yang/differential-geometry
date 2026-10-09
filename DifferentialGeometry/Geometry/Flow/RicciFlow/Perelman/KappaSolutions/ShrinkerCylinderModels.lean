@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Shri
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeomorph
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Classification.Cylinder.ModelEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderModelEvolution
 
 section
 set_option autoImplicit false

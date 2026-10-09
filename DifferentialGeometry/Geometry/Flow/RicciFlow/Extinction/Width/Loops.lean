@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.Continuous
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Topology.ContinuousMap.Compact
@@ -17,10 +17,10 @@ import DifferentialGeometry.Topology.LoopSpace.Regular
 import DifferentialGeometry.Topology.Homotopy.Map
 import DifferentialGeometry.Analysis.Calculus.Derivative.AffineCurveFamilies
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Families
-import DifferentialGeometry.Analysis.Calculus.Periodic.LoopSuperposition
-import DifferentialGeometry.Topology.Circle.Lipschitz
-import DifferentialGeometry.Topology.MetricSpace.CompactNeighborhood
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
+import DifferentialGeometry.Topology.LoopSpace.SmoothingSuperposition
+import DifferentialGeometry.Topology.LoopSpace.Lipschitz
+import DifferentialGeometry.Analysis.FiniteDimensional.CompactNeighborhood
+import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
 
 noncomputable section
 
@@ -39,7 +39,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
 structure RegularLoop where
-  toContinuousLoop : DifferentialGeometry.Topology.freeLoop Q
+  toContinuousLoop : ContinuousFreeLoop Q
   contMDiff_lift : ContMDiff 𝓘(ℝ, ℝ) I 1
     (fun t : ℝ => toContinuousLoop (t : Surgery.Topology.Circle))
 
@@ -49,10 +49,10 @@ instance : CoeFun (RegularLoop I Q) (fun _ => Surgery.Topology.Circle → Q) :=
   ⟨fun γ => γ.toContinuousLoop⟩
 
 
-def loopLift (γ : DifferentialGeometry.Topology.freeLoop Q) (t : ℝ) : Q := γ (t : Surgery.Topology.Circle)
+def loopLift (γ : ContinuousFreeLoop Q) (t : ℝ) : Q := γ (t : Surgery.Topology.Circle)
 
 
-def loopVelocity (γ : DifferentialGeometry.Topology.freeLoop Q) (t : ℝ) : TangentSpace I (loopLift γ t) :=
+def loopVelocity (γ : ContinuousFreeLoop Q) (t : ℝ) : TangentSpace I (loopLift γ t) :=
   mfderiv 𝓘(ℝ, ℝ) I (loopLift γ) t (1 : ℝ)
 
 
@@ -81,16 +81,16 @@ theorem RegularLoop.continuous_value_jet :
   continuous_induced_dom
 
 
-def regularLoopInclusion : C(RegularLoop I Q, DifferentialGeometry.Topology.freeLoop Q) :=
+def regularLoopInclusion : C(RegularLoop I Q, ContinuousFreeLoop Q) :=
   ⟨RegularLoop.toContinuousLoop, continuous_fst.comp RegularLoop.continuous_value_jet⟩
 
 
 abbrev ContractibleRegularLoop :=
-  {γ : RegularLoop I Q // ContinuousMap.Nullhomotopic γ.toContinuousLoop}
+  {γ : RegularLoop I Q // IsContractibleLoop γ.toContinuousLoop}
 
 
 def contractibleRegularLoopInclusion :
-    C(ContractibleRegularLoop (I := I) (Q := Q), DifferentialGeometry.Topology.contractibleLoop Q) :=
+    C(ContractibleRegularLoop (I := I) (Q := Q), ContractibleContinuousLoop Q) :=
   ⟨fun γ => ⟨γ.1.toContinuousLoop, γ.2⟩,
     (regularLoopInclusion.continuous.comp continuous_subtype_val).subtype_mk _⟩
 
@@ -101,22 +101,22 @@ abbrev RegularFamily (K : Type*) [TopologicalSpace K] :=
 
 abbrev RegularRepresentative (ξ : FreeContractibleSphereClass Q) :=
   {Γ : RegularFamily (I := I) (Q := Q) (Sphere 2) //
-    DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ) = ξ}
+    FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ) = ξ}
 
 
 def constantRegularLoop (q : Q) : RegularLoop I Q :=
-  ⟨DifferentialGeometry.Topology.FreeLoop.constants q, contMDiff_const⟩
+  ⟨constantLoops q, contMDiff_const⟩
 
 
 def constantContractibleRegularLoop (q : Q) :
     ContractibleRegularLoop (I := I) (Q := Q) :=
-  ⟨constantRegularLoop q, ContinuousMap.nullhomotopic_of_constant q⟩
+  ⟨constantRegularLoop q, isContractibleLoop_constant q⟩
 
 
 def regularGenLoopInclusion (q : Q)
     (u : GenLoop (Fin 2) (ContractibleRegularLoop (I := I) (Q := Q))
       (constantContractibleRegularLoop q)) :
-    GenLoop (Fin 2) (DifferentialGeometry.Topology.contractibleLoop Q)
+    GenLoop (Fin 2) (ContractibleContinuousLoop Q)
       (contractibleRegularLoopInclusion (constantContractibleRegularLoop (I := I) q)) :=
   ⟨contractibleRegularLoopInclusion.comp u.1,
     fun p hp => congrArg contractibleRegularLoopInclusion (u.2 p hp)⟩
@@ -303,17 +303,17 @@ def HasContinuousSmoothJets {K : Type*} [TopologicalSpace K] {N : ℕ}
     iteratedDeriv r (e.map ∘ loopLift (Γ p.1).toContinuousLoop) p.2)
 
 
-def IsLipschitzLoop (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q) : Prop :=
+def IsLipschitzLoop (g : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q) : Prop :=
   ∃ L : ℝ≥0, ∀ x y : Surgery.Topology.Circle,
     riemannianEDistOf g (γ x) (γ y) ≤ (L : ℝ≥0∞) * edist x y
 
 
-def loopLength (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q) : ℝ :=
+def loopLength (g : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q) : ℝ :=
   ∫ t in Icc (0 : ℝ) 1,
     Real.sqrt (g.inner (loopLift γ t)
       (loopVelocity (I := I) γ t) (loopVelocity (I := I) γ t))
 
-theorem loopLength_nonneg (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q) :
+theorem loopLength_nonneg (g : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q) :
     0 ≤ loopLength g γ := by
   exact integral_nonneg fun _ => Real.sqrt_nonneg _
 
@@ -357,7 +357,7 @@ theorem regularFamily_uniform_speed {K : Type*} [TopologicalSpace K] [CompactSpa
   exact (hV ⟨(k, t), rfl⟩).trans (le_max_right _ _)
 
 theorem isLipschitzLoop_constant (g : SmoothRiemannianMetric I Q) (q : Q) :
-    IsLipschitzLoop g (DifferentialGeometry.Topology.FreeLoop.constants q) := by
+    IsLipschitzLoop g (constantLoops q) := by
   refine ⟨0, fun x y => ?_⟩
   change riemannianEDistOf g q q ≤ _
   rw [riemannianEDistOf_self]
@@ -562,6 +562,7 @@ theorem continuous_regularLoop_iff {K : Type*} [TopologicalSpace K] {N : ℕ}
     · intro k t
       have hp : Function.Periodic (fun t : ℝ =>
           e.map ((Γ k).toContinuousLoop (t : Surgery.Topology.Circle))) 1 := fun s => by
+        simp only [Surgery.Topology.Circle]
         exact congrArg (fun z => e.map ((Γ k).toContinuousLoop z))
           (AddCircle.coe_add_period (1 : ℝ) s)
       simpa only [iteratedDeriv_one] using
@@ -600,7 +601,7 @@ theorem exists_regular_affine_homotopy {K : Type*} [TopologicalSpace K] {N : ℕ
     (hU : IsOpen U) (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) I 1 r U)
     (hleft : ∀ q, r (e.map q) = q) (Γ : K → RegularLoop I Q)
     (hΓ : Continuous Γ)
-    (B : C(K, DifferentialGeometry.Topology.freeLoop (EuclideanSpace ℝ (Fin N))))
+    (B : C(K, ContinuousFreeLoop (EuclideanSpace ℝ (Fin N))))
     (hB : ∀ k, ContDiff ℝ 1 (fun t : ℝ => B k (t : Surgery.Topology.Circle)))
     (hdB : Continuous (fun p : K × ℝ =>
       deriv (fun t : ℝ => B p.1 (t : Surgery.Topology.Circle)) p.2))
@@ -625,7 +626,7 @@ theorem exists_regular_affine_homotopy {K : Type*} [TopologicalSpace K] {N : ℕ
     ((continuous_subtype_val.comp (continuous_fst.comp continuous_fst)).smul
       ((B.uncurry.continuous.comp hproj).sub (hcA.comp hproj)))
   have hvU (p : (unitInterval × K) × Surgery.Topology.Circle) : v p ∈ U := hregion p.1.1 p.1.2 p.2
-  let J : C(unitInterval × K, DifferentialGeometry.Topology.freeLoop Q) :=
+  let J : C(unitInterval × K, ContinuousFreeLoop Q) :=
     (⟨r ∘ v, hr.continuousOn.comp_continuous hc hvU⟩ :
       C((unitInterval × K) × Surgery.Topology.Circle, Q)).curry
   have hv₁ (p : unitInterval × K) :
@@ -697,7 +698,7 @@ theorem exists_regular_nearby_homotopy_radius {N : ℕ}
     (isCompact_range e.smooth.continuous).exists_cthickening_subset_open hU heU
   refine ⟨η, hη, fun K _ Γ Δ hΓ hΔ hclose => ?_⟩
   obtain ⟨hcB, hdB⟩ := (continuous_regularLoop_iff e Δ).mp hΔ
-  let B : C(K, DifferentialGeometry.Topology.freeLoop (EuclideanSpace ℝ (Fin N))) :=
+  let B : C(K, ContinuousFreeLoop (EuclideanSpace ℝ (Fin N))) :=
     ⟨fun k => (⟨e.map, e.smooth.continuous⟩ :
         C(Q, EuclideanSpace ℝ (Fin N))).comp (Δ k).toContinuousLoop,
       (DifferentialGeometry.Topology.FreeLoop.continuous_family_iff _).mpr hcB⟩
@@ -736,16 +737,16 @@ theorem exists_regular_nearby_homotopy_radius {N : ℕ}
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ Q] [CompactSpace Q]
   [Nonempty Q] [T2Space Q] in
-private theorem isContractibleLoop_of_joined {γ δ : DifferentialGeometry.Topology.freeLoop Q}
-    (h : Joined γ δ) (hγ : ContinuousMap.Nullhomotopic γ) : ContinuousMap.Nullhomotopic δ := by
+private theorem isContractibleLoop_of_joined {γ δ : ContinuousFreeLoop Q}
+    (h : Joined γ δ) (hγ : IsContractibleLoop γ) : IsContractibleLoop δ := by
   obtain ⟨q, hq⟩ := hγ
   exact ⟨q, ((DifferentialGeometry.Topology.homotopic_iff_joined γ δ).mpr h).symm.trans hq⟩
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [CompactSpace Q] [T2Space Q] [Nonempty Q] in
 theorem regular_homotopy_contractible {K : Type*} [TopologicalSpace K]
     (R : unitInterval × K → RegularLoop I Q) (hc : Continuous R)
-    (hn : ∀ k, ContinuousMap.Nullhomotopic ((R (0, k)).toContinuousLoop)) :
-    ∀ p, ContinuousMap.Nullhomotopic ((R p).toContinuousLoop) := by
+    (hn : ∀ k, IsContractibleLoop ((R (0, k)).toContinuousLoop)) :
+    ∀ p, IsContractibleLoop ((R p).toContinuousLoop) := by
   have hcont : Continuous (fun p : unitInterval × K => (R p).toContinuousLoop) :=
     regularLoopInclusion.continuous.comp hc
   rintro ⟨τ, k⟩
@@ -767,7 +768,7 @@ theorem exists_regular_contractible_nearby_homotopy_radius {K : Type*} [Topologi
   refine ⟨ε, hε, fun Γ Δ hclose => ?_⟩
   obtain ⟨R, hc, hz, ho, hf⟩ := hR K (fun k => (Γ k).1) (fun k => (Δ k).1)
     (continuous_subtype_val.comp Γ.continuous) (continuous_subtype_val.comp Δ.continuous) hclose
-  have hn : ∀ p, ContinuousMap.Nullhomotopic ((R p).toContinuousLoop) :=
+  have hn : ∀ p, IsContractibleLoop ((R p).toContinuousLoop) :=
     regular_homotopy_contractible (I := I) (Q := Q) R hc (fun k => by rw [hz]; exact (Γ k).2)
   have hcn : Continuous (fun p => (⟨R p, hn p⟩ : ContractibleRegularLoop (I := I) (Q := Q))) :=
     hc.subtype_mk _
@@ -777,9 +778,9 @@ theorem exists_regular_contractible_nearby_homotopy_radius {K : Type*} [Topologi
 
 omit [CompactSpace Q] [Nonempty Q] [T2Space Q] in
 private theorem familyHomotopy_contractible {K : Type*} [TopologicalSpace K]
-    {Γ S : C(K, DifferentialGeometry.Topology.freeLoop Q)} (H : Γ.Homotopy S)
-    {k : K} (hk : ContinuousMap.Nullhomotopic (Γ k)) (t : unitInterval) :
-    ContinuousMap.Nullhomotopic (H (t, k)) := by
+    {Γ S : C(K, ContinuousFreeLoop Q)} (H : Γ.Homotopy S)
+    {k : K} (hk : IsContractibleLoop (Γ k)) (t : unitInterval) :
+    IsContractibleLoop (H (t, k)) := by
   have hp : Joined (0 : unitInterval) t :=
     ⟨⟨⟨fun s => s * t, continuous_id.mul continuous_const⟩, zero_mul t, one_mul t⟩⟩
   have hj : Joined (H (0, k)) (H (t, k)) := hp.map
@@ -793,10 +794,10 @@ theorem exists_uniform_retracted_loop_homotopy {K : Type*} [TopologicalSpace K]
     {r : EuclideanSpace ℝ (Fin N) → Q} {U : Set (EuclideanSpace ℝ (Fin N))}
     (hU : IsOpen U) (heU : range e.map ⊆ U)
     (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) I ∞ r U)
-    (hleft : ∀ q, r (e.map q) = q) (Γ : C(K, DifferentialGeometry.Topology.freeLoop Q))
+    (hleft : ∀ q, r (e.map q) = q) (Γ : C(K, ContinuousFreeLoop Q))
     {ε : ℝ} (hε : 0 < ε) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ φ : ContDiffBump (0 : ℝ), φ.rOut < δ →
-      ∃ (S : C(K, DifferentialGeometry.Topology.freeLoop Q)) (H : Γ.Homotopy S),
+      ∃ (S : C(K, ContinuousFreeLoop Q)) (H : Γ.Homotopy S),
         (∀ k, ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun t : ℝ => S k (t : Surgery.Topology.Circle))) ∧
         (∀ (d : ℕ) (a : Q → EuclideanSpace ℝ (Fin d)),
           ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin d)) ∞ a →
@@ -805,7 +806,7 @@ theorem exists_uniform_retracted_loop_homotopy {K : Type*} [TopologicalSpace K]
         (∀ t k θ, dist (e.map (H (t, k) θ)) (e.map (Γ k θ)) < ε) ∧
         (∀ k q, Γ k = .const Surgery.Topology.Circle q →
           ∀ t, H (t, k) = .const Surgery.Topology.Circle q) ∧
-        (∀ k, ContinuousMap.Nullhomotopic (Γ k) → ∀ t, ContinuousMap.Nullhomotopic (H (t, k))) ∧
+        (∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (H (t, k))) ∧
         (∀ k θ, S k θ = r (DifferentialGeometry.Topology.averagedLoop φ
           ((⟨e.map, e.smooth.continuous⟩ :
           C(Q, EuclideanSpace ℝ (Fin N))).comp (Γ k)) θ)) ∧
@@ -815,12 +816,12 @@ theorem exists_uniform_retracted_loop_homotopy {K : Type*} [TopologicalSpace K]
   obtain ⟨a, ha, har⟩ := exists_uniform_retraction_dist e.smooth.continuous hU heU hr.continuousOn
     hleft hε
   let ec : C(Q, EuclideanSpace ℝ (Fin N)) := ⟨e.map, e.smooth.continuous⟩
-  let A : C(K, DifferentialGeometry.Topology.freeLoop (EuclideanSpace ℝ (Fin N))) :=
+  let A : C(K, ContinuousFreeLoop (EuclideanSpace ℝ (Fin N))) :=
     (DifferentialGeometry.Topology.FreeLoop.postcompose ec).comp Γ
   obtain ⟨δ, hδ, hδA⟩ :=
     DifferentialGeometry.Topology.smoothPeriodic_uniform_approximation A.uncurry.continuous ha
   refine ⟨δ, hδ, fun φ hφ => ?_⟩
-  let B : C(K, DifferentialGeometry.Topology.freeLoop (EuclideanSpace ℝ (Fin N))) :=
+  let B : C(K, ContinuousFreeLoop (EuclideanSpace ℝ (Fin N))) :=
     ⟨fun k => DifferentialGeometry.Topology.averagedLoop φ (A k),
       DifferentialGeometry.Topology.averagedLoop_continuous_family φ A.continuous⟩
   have hclose (k : K) (θ : Surgery.Topology.Circle) : dist (B k θ) (e.map (Γ k θ)) < a := by
@@ -845,9 +846,9 @@ theorem exists_uniform_retracted_loop_homotopy {K : Type*} [TopologicalSpace K]
   have hvU (p : (unitInterval × K) × Surgery.Topology.Circle) : v p ∈ U :=
     (har (Γ p.1.2 p.2) (v p) (hvclose p)).1
   have hcH : Continuous (r ∘ v) := hr.continuousOn.comp_continuous hcv hvU
-  let J : C(unitInterval × K, DifferentialGeometry.Topology.freeLoop Q) :=
+  let J : C(unitInterval × K, ContinuousFreeLoop Q) :=
     (⟨r ∘ v, hcH⟩ : C((unitInterval × K) × Surgery.Topology.Circle, Q)).curry
-  let S : C(K, DifferentialGeometry.Topology.freeLoop Q) :=
+  let S : C(K, ContinuousFreeLoop Q) :=
     J.comp ⟨fun k => (1, k), continuous_const.prodMk continuous_id⟩
   have hJ0 (k : K) : J (0, k) = Γ k := by
     ext θ
@@ -900,9 +901,9 @@ omit [T2Space Q] in
 theorem exists_uniform_smooth_loop_homotopy {K : Type*} [TopologicalSpace K]
     [CompactSpace K] {N : ℕ}
     (e : SmoothLoopEmbedding (I := I) (Q := Q) N)
-    (Γ : C(K, DifferentialGeometry.Topology.freeLoop Q)) {ε : ℝ} (hε : 0 < ε) :
+    (Γ : C(K, ContinuousFreeLoop Q)) {ε : ℝ} (hε : 0 < ε) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ φ : ContDiffBump (0 : ℝ), φ.rOut < δ →
-      ∃ (S : C(K, DifferentialGeometry.Topology.freeLoop Q)) (H : Γ.Homotopy S),
+      ∃ (S : C(K, ContinuousFreeLoop Q)) (H : Γ.Homotopy S),
         (∀ k, ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun t : ℝ => S k (t : Surgery.Topology.Circle))) ∧
         (∀ (d : ℕ) (a : Q → EuclideanSpace ℝ (Fin d)),
           ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin d)) ∞ a →
@@ -911,7 +912,7 @@ theorem exists_uniform_smooth_loop_homotopy {K : Type*} [TopologicalSpace K]
         (∀ t k θ, dist (e.map (H (t, k) θ)) (e.map (Γ k θ)) < ε) ∧
         (∀ k q, Γ k = .const Surgery.Topology.Circle q →
           ∀ t, H (t, k) = .const Surgery.Topology.Circle q) ∧
-        (∀ k, ContinuousMap.Nullhomotopic (Γ k) → ∀ t, ContinuousMap.Nullhomotopic (H (t, k))) := by
+        (∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (H (t, k))) := by
   obtain ⟨r, U, hU, heU, hr, hleft⟩ :=
     DifferentialGeometry.Geometry.exists_smooth_neighborhood_retraction e.smooth
     e.isClosedEmbedding.isEmbedding e.injective_mfderiv
@@ -923,15 +924,15 @@ theorem exists_uniform_smooth_loop_homotopy {K : Type*} [TopologicalSpace K]
 omit [T2Space Q] in
 theorem exists_smooth_regular_family {K : Type*} [TopologicalSpace K] [CompactSpace K] {N : ℕ}
     (e : SmoothLoopEmbedding (I := I) (Q := Q) N)
-    (Γ : C(K, DifferentialGeometry.Topology.freeLoop Q)) {ε : ℝ} (hε : 0 < ε) :
-    ∃ (S : C(K, DifferentialGeometry.Topology.freeLoop Q))
+    (Γ : C(K, ContinuousFreeLoop Q)) {ε : ℝ} (hε : 0 < ε) :
+    ∃ (S : C(K, ContinuousFreeLoop Q))
       (hs : ∀ k, ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun t : ℝ => S k (t : Surgery.Topology.Circle)))
       (H : Γ.Homotopy S),
       Continuous (fun k => (⟨S k, (hs k).of_le (by simp)⟩ : RegularLoop I Q)) ∧
       (∀ t k θ, dist (e.map (H (t, k) θ)) (e.map (Γ k θ)) < ε) ∧
       (∀ k q, Γ k = .const Surgery.Topology.Circle q →
         ∀ t, H (t, k) = .const Surgery.Topology.Circle q) ∧
-      (∀ k, ContinuousMap.Nullhomotopic (Γ k) → ∀ t, ContinuousMap.Nullhomotopic (H (t, k))) := by
+      (∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (H (t, k))) := by
   obtain ⟨δ, hδ, hδS⟩ := exists_uniform_smooth_loop_homotopy (K := K) e Γ hε
   let φ : ContDiffBump (0 : ℝ) := ⟨δ / 4, δ / 2, by positivity, by linarith⟩
   obtain ⟨S, H, hs, hj, hclose, hconst, hnull⟩ := hδS φ (by dsimp [φ]; linarith)
@@ -953,18 +954,18 @@ omit [T2Space Q] in
 theorem exists_regular_contractible_representative {K : Type*} [TopologicalSpace K]
     [CompactSpace K] {N : ℕ}
     (e : SmoothLoopEmbedding (I := I) (Q := Q) N)
-    (Γ : C(K, DifferentialGeometry.Topology.contractibleLoop Q)) :
+    (Γ : C(K, ContractibleContinuousLoop Q)) :
     ∃ (S : C(K, ContractibleRegularLoop (I := I) (Q := Q)))
       (H : Γ.Homotopy (contractibleRegularLoopInclusion.comp S)),
       (∀ k, ContMDiff 𝓘(ℝ, ℝ) I ∞
         (fun t : ℝ => (S k).1.toContinuousLoop (t : Surgery.Topology.Circle))) ∧
-      (∀ k q, Γ k = (⟨DifferentialGeometry.Topology.FreeLoop.constants q, ContinuousMap.nullhomotopic_of_constant q⟩ :
-          DifferentialGeometry.Topology.contractibleLoop Q) →
-        ∀ t, H (t, k) = ⟨DifferentialGeometry.Topology.FreeLoop.constants q, ContinuousMap.nullhomotopic_of_constant q⟩) := by
+      (∀ k q, Γ k = (⟨constantLoops q, isContractibleLoop_constant q⟩ :
+          ContractibleContinuousLoop Q) →
+        ∀ t, H (t, k) = ⟨constantLoops q, isContractibleLoop_constant q⟩) := by
   obtain ⟨S₀, hs, H₀, hcont, hclose, hconst, hnull⟩ :=
     exists_smooth_regular_family (K := K) e
       (DifferentialGeometry.Topology.ContractibleLoop.inclusion.comp Γ) zero_lt_one
-  have hSn (k : K) : ContinuousMap.Nullhomotopic (S₀ k) := by
+  have hSn (k : K) : IsContractibleLoop (S₀ k) := by
     simpa only [H₀.apply_one] using hnull k (Γ k).2 1
   let Sfun : K → ContractibleRegularLoop (I := I) (Q := Q) :=
     fun k => ⟨⟨S₀ k, (hs k).of_le (by simp)⟩, hSn k⟩
@@ -991,11 +992,11 @@ theorem regular_contractible_homotopicRel_of_continuous {K : Type*} [Topological
       Γ.HomotopicRel Δ A := by
   intro Γ Δ A hA ⟨Hc⟩
   obtain ⟨ε, hε, hnear⟩ := exists_regular_contractible_nearby_homotopy_radius (K := K) e
-  let Ψ : C(unitInterval × K, DifferentialGeometry.Topology.freeLoop Q) :=
+  let Ψ : C(unitInterval × K, ContinuousFreeLoop Q) :=
     ⟨fun p => (Hc p).1, continuous_subtype_val.comp Hc.continuous⟩
   obtain ⟨S₀, hs, F, hcont, hclose, hconst, hnull⟩ :=
     exists_smooth_regular_family e Ψ hε
-  have hSn (p : unitInterval × K) : ContinuousMap.Nullhomotopic (S₀ p) := by
+  have hSn (p : unitInterval × K) : IsContractibleLoop (S₀ p) := by
     simpa only [F.apply_one] using hnull p (Hc p).2 1
   let Sfun : unitInterval × K → ContractibleRegularLoop (I := I) (Q := Q) :=
     fun p => ⟨⟨S₀ p, (hs p).of_le (by simp)⟩, hSn p⟩
@@ -1039,7 +1040,7 @@ theorem regular_contractible_homotopicRel_of_continuous {K : Type*} [Topological
   have hΓΔ (k : K) (hk : k ∈ A) : Γ k = Δ k := by
     apply Subtype.ext
     apply RegularLoop.toContinuousLoop_injective
-    exact congrArg (fun γ : DifferentialGeometry.Topology.contractibleLoop Q => γ.1) (Hc.fst_eq_snd hk)
+    exact congrArg (fun γ : ContractibleContinuousLoop Q => γ.1) (Hc.fst_eq_snd hk)
   let Jz : Γ.HomotopyRel Szero A :=
     ⟨Jzero, fun t k hk => hJzero k (hfix 0 k hk).symm t⟩
   let Jo : Δ.HomotopyRel Sone A :=
@@ -1182,15 +1183,15 @@ private theorem exists_regularized_loop_family {K : Type*} [TopologicalSpace K] 
     {r : EuclideanSpace ℝ (Fin N) → Q} {U : Set (EuclideanSpace ℝ (Fin N))}
     (hU : IsOpen U) (heU : range e.map ⊆ U)
     (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) I ∞ r U)
-    (hleft : ∀ q, r (e.map q) = q) (Γ : C(K, DifferentialGeometry.Topology.freeLoop Q))
+    (hleft : ∀ q, r (e.map q) = q) (Γ : C(K, ContinuousFreeLoop Q))
     {ε : ℝ} (hε : 0 < ε) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ φ : ContDiffBump (0 : ℝ), φ.rOut < δ →
       ∃ (S : C(K, RegularLoop I Q))
         (H : ContinuousMap.Homotopy Γ (regularLoopInclusion.comp S)),
         HasContinuousSmoothJets e S ∧
-        (∀ k q, Γ k = DifferentialGeometry.Topology.FreeLoop.constants q →
-          (S k).toContinuousLoop = DifferentialGeometry.Topology.FreeLoop.constants q ∧ ∀ t, H (t, k) = DifferentialGeometry.Topology.FreeLoop.constants q) ∧
-        (∀ k, ContinuousMap.Nullhomotopic (Γ k) → ∀ t, ContinuousMap.Nullhomotopic (H (t, k))) ∧
+        (∀ k q, Γ k = constantLoops q →
+          (S k).toContinuousLoop = constantLoops q ∧ ∀ t, H (t, k) = constantLoops q) ∧
+        (∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (H (t, k))) ∧
         (∀ k θ, (S k).toContinuousLoop θ = r (DifferentialGeometry.Topology.averagedLoop φ
           ((⟨e.map, e.smooth.continuous⟩ : C(Q, EuclideanSpace ℝ (Fin N))).comp (Γ k)) θ)) ∧
         (∀ k θ, dist (e.map ((S k).toContinuousLoop θ)) (e.map (Γ k θ)) < ε) := by
@@ -1240,22 +1241,22 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
     (e : SmoothLoopEmbedding (I := I) (Q := Q) N) :
     ∃ Cq : ℝ≥0, 0 < Cq ∧
       ∀ (K : Type uK) [TopologicalSpace K] [CompactSpace K]
-        (Γ : C(K, DifferentialGeometry.Topology.freeLoop Q)),
+        (Γ : C(K, ContinuousFreeLoop Q)),
         ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∃ S : ℝ → C(K, RegularLoop I Q),
           (∀ ε ∈ Ioo (0 : ℝ) ε₀, HasContinuousSmoothJets e (S ε)) ∧
           Filter.Tendsto (fun ε => regularLoopInclusion.comp (S ε))
             (𝓝[>] (0 : ℝ)) (𝓝 Γ) ∧
           (∀ ε ∈ Ioo (0 : ℝ) ε₀,
             ∃ F : ContinuousMap.Homotopy Γ (regularLoopInclusion.comp (S ε)),
-              (∀ k q, Γ k = DifferentialGeometry.Topology.FreeLoop.constants q →
-                (S ε k).toContinuousLoop = DifferentialGeometry.Topology.FreeLoop.constants q ∧
-                ∀ t, F (t, k) = DifferentialGeometry.Topology.FreeLoop.constants q) ∧
-              ∀ k, ContinuousMap.Nullhomotopic (Γ k) → ∀ t, ContinuousMap.Nullhomotopic (F (t, k))) ∧
+              (∀ k q, Γ k = constantLoops q →
+                (S ε k).toContinuousLoop = constantLoops q ∧
+                ∀ t, F (t, k) = constantLoops q) ∧
+              ∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (F (t, k))) ∧
           (∀ Γ₁ : C(K, RegularLoop I Q), regularLoopInclusion.comp Γ₁ = Γ →
             Filter.Tendsto S (𝓝[>] (0 : ℝ)) (𝓝 Γ₁) ∧
             ∀ ε ∈ Ioo (0 : ℝ) ε₀, ∃ F : ContinuousMap.Homotopy Γ₁ (S ε),
-              ∀ k q, (Γ₁ k).toContinuousLoop = DifferentialGeometry.Topology.FreeLoop.constants q →
-                ∀ t, (F (t, k)).toContinuousLoop = DifferentialGeometry.Topology.FreeLoop.constants q) ∧
+              ∀ k q, (Γ₁ k).toContinuousLoop = constantLoops q →
+                ∀ t, (F (t, k)).toContinuousLoop = constantLoops q) ∧
           (∀ V : ℝ≥0,
             (∀ k x y, riemannianEDistOf g (Γ k x) (Γ k y) ≤
               (V : ℝ≥0∞) * edist x y) →
@@ -1271,14 +1272,14 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
     DifferentialGeometry.Geometry.exists_riemannian_lipschitz_of_contMDiff (I := I) (M := Q)
       (F := EuclideanSpace ℝ (Fin N)) g (e.smooth.of_le (by exact_mod_cast le_top))
   obtain ⟨ρ₀, hρ₀, hρ₀K, hρ₀U⟩ :=
-    IsCompact.exists_compact_cthickening_subset
+    DifferentialGeometry.Analysis.exists_compact_cthickening_subset
       (isCompact_range e.smooth.continuous) hU heU
   obtain ⟨Cr, hCr⟩ := exists_compact_source_metric_mfderiv_bound (I := I) (Q := Q)
     (F := EuclideanSpace ℝ (Fin N)) g hU (hr.of_le (by simp)) hρ₀K hρ₀U
   refine ⟨Cr * Ce + 1, by positivity, ?_⟩
   intro K _ _ Γ
   let ec : C(Q, EuclideanSpace ℝ (Fin N)) := ⟨e.map, e.smooth.continuous⟩
-  let A : C(K, DifferentialGeometry.Topology.freeLoop (EuclideanSpace ℝ (Fin N))) :=
+  let A : C(K, ContinuousFreeLoop (EuclideanSpace ℝ (Fin N))) :=
     (DifferentialGeometry.Topology.FreeLoop.postcompose ec).comp Γ
   obtain ⟨δc, hδc, hδcA⟩ :=
     DifferentialGeometry.Topology.smoothPeriodic_uniform_approximation A.uncurry.continuous
@@ -1289,9 +1290,9 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
         ∃ (S : C(K, RegularLoop I Q))
           (H : ContinuousMap.Homotopy Γ (regularLoopInclusion.comp S)),
           HasContinuousSmoothJets e S ∧
-          (∀ k q, Γ k = DifferentialGeometry.Topology.FreeLoop.constants q →
-            (S k).toContinuousLoop = DifferentialGeometry.Topology.FreeLoop.constants q ∧ ∀ t, H (t, k) = DifferentialGeometry.Topology.FreeLoop.constants q) ∧
-          (∀ k, ContinuousMap.Nullhomotopic (Γ k) → ∀ t, ContinuousMap.Nullhomotopic (H (t, k))) ∧
+          (∀ k q, Γ k = constantLoops q →
+            (S k).toContinuousLoop = constantLoops q ∧ ∀ t, H (t, k) = constantLoops q) ∧
+          (∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (H (t, k))) ∧
           (∀ k θ, (S k).toContinuousLoop θ = r (DifferentialGeometry.Topology.averagedLoop φ
             (ec.comp (Γ k)) θ)) ∧
           (∀ k θ, dist (e.map ((S k).toContinuousLoop θ)) (e.map (Γ k θ)) < p) :=
@@ -1312,9 +1313,9 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
       (∃ (S : C(K, RegularLoop I Q))
         (H : ContinuousMap.Homotopy Γ (regularLoopInclusion.comp S)),
         HasContinuousSmoothJets e S ∧
-        (∀ k q, Γ k = DifferentialGeometry.Topology.FreeLoop.constants q →
-          (S k).toContinuousLoop = DifferentialGeometry.Topology.FreeLoop.constants q ∧ ∀ t, H (t, k) = DifferentialGeometry.Topology.FreeLoop.constants q) ∧
-        (∀ k, ContinuousMap.Nullhomotopic (Γ k) → ∀ t, ContinuousMap.Nullhomotopic (H (t, k))) ∧
+        (∀ k q, Γ k = constantLoops q →
+          (S k).toContinuousLoop = constantLoops q ∧ ∀ t, H (t, k) = constantLoops q) ∧
+        (∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (H (t, k))) ∧
         (∀ k θ, (S k).toContinuousLoop θ = r (DifferentialGeometry.Topology.averagedLoop φ
           (ec.comp (Γ k)) θ)) ∧
         (∀ k θ, dist (e.map ((S k).toContinuousLoop θ)) (e.map (Γ k θ)) < pfun ε)) := by
@@ -1365,9 +1366,9 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
   have hstep : ∀ ε : ℝ, ∃ S : C(K, RegularLoop I Q), 0 < ε →
       ∃ H : ContinuousMap.Homotopy Γ (regularLoopInclusion.comp S),
         HasContinuousSmoothJets e S ∧
-        (∀ k q, Γ k = DifferentialGeometry.Topology.FreeLoop.constants q →
-          (S k).toContinuousLoop = DifferentialGeometry.Topology.FreeLoop.constants q ∧ ∀ t, H (t, k) = DifferentialGeometry.Topology.FreeLoop.constants q) ∧
-        (∀ k, ContinuousMap.Nullhomotopic (Γ k) → ∀ t, ContinuousMap.Nullhomotopic (H (t, k))) ∧
+        (∀ k q, Γ k = constantLoops q →
+          (S k).toContinuousLoop = constantLoops q ∧ ∀ t, H (t, k) = constantLoops q) ∧
+        (∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (H (t, k))) ∧
         (∀ k θ, (S k).toContinuousLoop θ = r (DifferentialGeometry.Topology.averagedLoop (φb ε)
           (ec.comp (Γ k)) θ)) ∧
         (∀ k θ, dist (e.map ((S k).toContinuousLoop θ)) (e.map (Γ k θ)) < pfun ε) := by
@@ -1379,14 +1380,14 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
       exact ⟨Classical.choose (hspec ε (hpfun ε hε) (φb ε) hlt),
         fun _ => Classical.choose_spec (hspec ε (hpfun ε hε) (φb ε) hlt)⟩
     · exact ⟨ContinuousMap.const K
-          ⟨DifferentialGeometry.Topology.FreeLoop.constants (Classical.choice (inferInstance : Nonempty Q)), contMDiff_const⟩,
+          ⟨constantLoops (Classical.choice (inferInstance : Nonempty Q)), contMDiff_const⟩,
         fun h => absurd h hε⟩
   let S : ℝ → C(K, RegularLoop I Q) := fun ε => Classical.choose (hstep ε)
   have hS : ∀ ε (hε : 0 < ε), ∃ H : ContinuousMap.Homotopy Γ (regularLoopInclusion.comp (S ε)),
       HasContinuousSmoothJets e (S ε) ∧
-      (∀ k q, Γ k = DifferentialGeometry.Topology.FreeLoop.constants q →
-        (S ε k).toContinuousLoop = DifferentialGeometry.Topology.FreeLoop.constants q ∧ ∀ t, H (t, k) = DifferentialGeometry.Topology.FreeLoop.constants q) ∧
-      (∀ k, ContinuousMap.Nullhomotopic (Γ k) → ∀ t, ContinuousMap.Nullhomotopic (H (t, k))) ∧
+      (∀ k q, Γ k = constantLoops q →
+        (S ε k).toContinuousLoop = constantLoops q ∧ ∀ t, H (t, k) = constantLoops q) ∧
+      (∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (H (t, k))) ∧
       (∀ k θ, (S ε k).toContinuousLoop θ = r (DifferentialGeometry.Topology.averagedLoop (φb ε)
         (ec.comp (Γ k)) θ)) ∧
       (∀ k θ, dist (e.map ((S ε k).toContinuousLoop θ)) (e.map (Γ k θ)) < pfun ε) :=
@@ -1397,9 +1398,9 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
     exact hA
   have hShom : ∀ ε (hε : 0 < ε),
       ∃ H : ContinuousMap.Homotopy Γ (regularLoopInclusion.comp (S ε)),
-        (∀ k q, Γ k = DifferentialGeometry.Topology.FreeLoop.constants q →
-          (S ε k).toContinuousLoop = DifferentialGeometry.Topology.FreeLoop.constants q ∧ ∀ t, H (t, k) = DifferentialGeometry.Topology.FreeLoop.constants q) ∧
-        (∀ k, ContinuousMap.Nullhomotopic (Γ k) → ∀ t, ContinuousMap.Nullhomotopic (H (t, k))) := by
+        (∀ k q, Γ k = constantLoops q →
+          (S ε k).toContinuousLoop = constantLoops q ∧ ∀ t, H (t, k) = constantLoops q) ∧
+        (∀ k, IsContractibleLoop (Γ k) → ∀ t, IsContractibleLoop (H (t, k))) := by
     intro ε hε
     obtain ⟨H, -, hB, hC, -, -⟩ := hS ε hε
     exact ⟨H, hB, hC⟩
@@ -1417,12 +1418,12 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
   refine ⟨1, one_pos, S, ?_, ?_, ?_, ?_, ?_⟩
   · intro ε hε
     exact hSjets ε hε.1
-  · have hemb : IsEmbedding (fun γ : DifferentialGeometry.Topology.freeLoop Q => ec.comp γ) :=
+  · have hemb : IsEmbedding (fun γ : ContinuousFreeLoop Q => ec.comp γ) :=
       ContinuousMap.isEmbedding_postcomp ec e.isClosedEmbedding.isEmbedding
-    have hembK : IsEmbedding ((⟨fun γ : DifferentialGeometry.Topology.freeLoop Q => ec.comp γ,
-        ContinuousMap.continuous_postcomp ec⟩ : C(DifferentialGeometry.Topology.freeLoop Q,
-          DifferentialGeometry.Topology.freeLoop (EuclideanSpace ℝ (Fin N)))).comp :
-        C(K, DifferentialGeometry.Topology.freeLoop Q) → C(K, DifferentialGeometry.Topology.freeLoop (EuclideanSpace ℝ (Fin N)))) :=
+    have hembK : IsEmbedding ((⟨fun γ : ContinuousFreeLoop Q => ec.comp γ,
+        ContinuousMap.continuous_postcomp ec⟩ : C(ContinuousFreeLoop Q,
+          ContinuousFreeLoop (EuclideanSpace ℝ (Fin N)))).comp :
+        C(K, ContinuousFreeLoop Q) → C(K, ContinuousFreeLoop (EuclideanSpace ℝ (Fin N)))) :=
       ContinuousMap.isEmbedding_postcomp _ hemb
     rw [hembK.1.nhds_eq_comap Γ, Filter.tendsto_comap_iff]
     rw [ContinuousMap.tendsto_iff_tendstoUniformly, EMetric.tendstoUniformly_iff]
@@ -1444,7 +1445,7 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
   · intro Γ₁ hΓ₁
     have hΓk : ∀ k, Γ k = (Γ₁ k).toContinuousLoop := by
       intro k
-      have h := congrArg (fun f : C(K, DifferentialGeometry.Topology.freeLoop Q) => f k) hΓ₁
+      have h := congrArg (fun f : C(K, ContinuousFreeLoop Q) => f k) hΓ₁
       simpa only [ContinuousMap.comp_apply, regularLoopInclusion, ContinuousMap.coe_mk] using h.symm
     constructor
     · have hembJ : IsEmbedding (embeddingFirstJet (I := I) (Q := Q) e) :=
@@ -1559,12 +1560,12 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
         Γ₁.continuous (S ε).continuous hclose'
       refine ⟨⟨⟨R, hRc⟩, fun k => hR0 k, fun k => hR1 k⟩, ?_⟩
       intro k q hk t
-      have hk' : Γ k = DifferentialGeometry.Topology.FreeLoop.constants q := by rw [hΓk k]; exact hk
+      have hk' : Γ k = constantLoops q := by rw [hΓk k]; exact hk
       obtain ⟨H, hB, -⟩ := hShom ε hε.1
-      have hSconst : (S ε k).toContinuousLoop = DifferentialGeometry.Topology.FreeLoop.constants q := (hB k q hk').1
+      have hSconst : (S ε k).toContinuousLoop = constantLoops q := (hB k q hk').1
       have heq : Γ₁ k = S ε k :=
         RegularLoop.toContinuousLoop_injective (by rw [hk, hSconst])
-      change (R (t, k)).toContinuousLoop = DifferentialGeometry.Topology.FreeLoop.constants q
+      change (R (t, k)).toContinuousLoop = constantLoops q
       rw [hRconst k heq t]
       exact hk
   · intro V hV ε hε k x y
@@ -1657,7 +1658,7 @@ theorem rfs_loop_smoothing (g : SmoothRiemannianMetric I Q) {N : ℕ}
 
 theorem rfs_regular_class_correspondence :
     Function.Bijective
-      (DifferentialGeometry.Topology.FreeHomotopyClass.map (X := Sphere 2)
+      (FreeHomotopyClass.map (X := Sphere 2)
         (contractibleRegularLoopInclusion (I := I) (Q := Q))) := by
   obtain ⟨N, ⟨e⟩⟩ := smoothLoopEmbedding_exists (I := I) (Q := Q)
   constructor
@@ -1672,14 +1673,14 @@ theorem rfs_regular_class_correspondence :
         have hr := regular_contractible_homotopicRel_of_continuous (K := Sphere 2) e Γ Δ ∅
           (fun k hk => (Set.notMem_empty k hk).elim)
           (ContinuousMap.homotopicRel_empty.mpr hc)
-        exact (DifferentialGeometry.Topology.FreeHomotopyClass.mk_eq_mk_iff _ _).mpr
+        exact (FreeHomotopyClass.mk_eq_mk_iff _ _).mpr
           (ContinuousMap.homotopicRel_empty.mp hr)
   · intro ξ
     obtain ⟨Γ, rfl⟩ := Quotient.exists_rep ξ
     obtain ⟨S, H, _, _⟩ := exists_regular_contractible_representative (K := Sphere 2) e Γ
-    refine ⟨DifferentialGeometry.Topology.FreeHomotopyClass.mk S, ?_⟩
-    rw [DifferentialGeometry.Topology.FreeHomotopyClass.map_mk]
-    exact (DifferentialGeometry.Topology.FreeHomotopyClass.mk_eq_mk_iff _ _).mpr ⟨H.symm⟩
+    refine ⟨FreeHomotopyClass.mk S, ?_⟩
+    rw [FreeHomotopyClass.map_mk]
+    exact (FreeHomotopyClass.mk_eq_mk_iff _ _).mpr ⟨H.symm⟩
 
 
 theorem regularRepresentative_nonempty (ξ : FreeContractibleSphereClass Q) :
@@ -1691,13 +1692,13 @@ theorem regularRepresentative_nonempty (ξ : FreeContractibleSphereClass Q) :
 theorem regular_based_pi2_correspondence (q : Q) :
     ∃ e : HomotopyGroup (Fin 2) (ContractibleRegularLoop (I := I) (Q := Q))
         (constantContractibleRegularLoop q) ≃*
-      HomotopyGroup (Fin 2) (DifferentialGeometry.Topology.contractibleLoop Q)
+      HomotopyGroup (Fin 2) (ContractibleContinuousLoop Q)
         (contractibleRegularLoopInclusion (constantContractibleRegularLoop (I := I) q)),
       ∀ u : GenLoop (Fin 2) (ContractibleRegularLoop (I := I) (Q := Q))
           (constantContractibleRegularLoop q),
         e (Quotient.mk _ u) = Quotient.mk _ (regularGenLoopInclusion q u) := by
   obtain ⟨N, ⟨e⟩⟩ := smoothLoopEmbedding_exists (I := I) (Q := Q)
-  let inc : C(ContractibleRegularLoop (I := I) (Q := Q), DifferentialGeometry.Topology.contractibleLoop Q) :=
+  let inc : C(ContractibleRegularLoop (I := I) (Q := Q), ContractibleContinuousLoop Q) :=
     contractibleRegularLoopInclusion
   have hbij : Function.Bijective
       (DifferentialGeometry.Topology.homotopyGroupMap (N := Fin 2) inc

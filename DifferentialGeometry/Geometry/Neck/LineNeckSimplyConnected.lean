@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.ProductCapExclusion
 import DifferentialGeometry.Geometry.Comparison.Splitting.IntrinsicLine
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 import DifferentialGeometry.Geometry.Metric.Product
@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Metric.Euclidean
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 
 set_option autoImplicit false
 noncomputable section

@@ -20,7 +20,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   [hBoundary : I.Boundaryless] [hSigma : SigmaCompactSpace Q]
 
 def PlateauDiskDensityAreaUpperApproximation (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) : Prop :=
+    (γ : ContinuousFreeLoop Q) : Prop :=
   ∀ v : DiskCompetitor g γ, ∀ epsilon : ℝ, 0 < epsilon →
     ∃ w : SmoothDisk (I := I) (Q := Q),
       (∀ theta, w.map (diskBoundary theta) = γ theta) ∧
@@ -58,7 +58,7 @@ theorem diskArea_le_of_minimizingSmoothDisk_of_plateauDiskDensityAreaUpperApprox
 omit [FiniteDimensional ℝ E] hT2 hCompact hBoundary hSigma in
 theorem plateauDiskDensityAreaUpperApproximation_of_constant
     (g : SmoothRiemannianMetric I Q) (q : Q) :
-    PlateauDiskDensityAreaUpperApproximation (I := I) (Q := Q) g (DifferentialGeometry.Topology.FreeLoop.constants q) := by
+    PlateauDiskDensityAreaUpperApproximation (I := I) (Q := Q) g (constantLoops q) := by
   intro v epsilon hepsilon
   refine ⟨SmoothDisk.const (I := I) (Q := Q) q, ?_, ?_⟩
   · intro theta
@@ -77,7 +77,7 @@ theorem rfs_plateau_upper_comparison_of_plateauDiskDensityAreaUpperApproximation
       (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma t₀ (sigma.map theta))
     (hconformal : u.IsConformal (W.family.metric t₀))
@@ -132,7 +132,7 @@ theorem rfs_plateau_upper_comparison_of_plateauDiskDensityAreaUpperApproximation
       (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma t₀ (sigma.map theta))
     (hconformal : u.IsConformal (W.family.metric t₀))

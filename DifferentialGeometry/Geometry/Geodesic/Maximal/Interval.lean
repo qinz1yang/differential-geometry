@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Local.Existence
 import DifferentialGeometry.Geometry.Geodesic.Flow.Uniqueness
-import DifferentialGeometry.Geometry.Curve.Length.PathLength
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PathLength
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.FourSpokeSectorFrontier
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.CellularPseudoisotopy
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CellularDiskPseudoIsotopy
 
 open Set
 
@@ -211,7 +211,7 @@ theorem exists_PL_four_spoke_disk_pseudoisotopy
     | inl i => simpa only [ε, Sum.elim_inl, hγ1] using huv i
     | inr i => simpa only [ε, Sum.elim_inr, hδ1] using huv (i + 1)
   obtain ⟨Φ, hΦ, hΦ0, hΦ1, -, hΦA, hΦends⟩ :=
-    exists_pl_cellular_disk_pseudoisotopy hr
+    exists_PL_cellular_disk_pseudoisotopy hr
       (fun i j hij => (hr i).image_stdSimplexBoundary_eq_frontier.symm ▸ hSinter i j hij)
       hε hAinter edges hboundary hincident
       (fun i => by simpa only [huS] using hu.restrict (hS i).1.isPolyhedron (hsub i))

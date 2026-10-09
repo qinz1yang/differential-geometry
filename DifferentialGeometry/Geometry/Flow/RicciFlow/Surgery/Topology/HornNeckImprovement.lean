@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.UniformKappaCanonicalThreshold
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Windowed.Arms.CylinderLimit
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Windowed.Limits.Neck
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedArmCylinderLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedNeckLimit
 
 set_option autoImplicit false
 
@@ -14,15 +14,12 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.hornCurvatureOperatorLowerBoundAt_mono {M : Type u} [TopologicalSpace M]
+private theorem hornCurvatureOperatorLowerBoundAt_mono {M : Type u} [TopologicalSpace M]
     [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
     (g : SmoothRiemannianMetric I3 M) (x : M)
     (A : algebraicCurvatureTensorSubmodule (I := I3) (M := M) x) {K K' : ℝ}
@@ -37,7 +34,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   have h3 := mul_le_mul_of_nonneg_right hK h2
   linarith
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.hornRescalePinchingFunction_antitone {Phi : ℝ → ℝ}
+private theorem hornRescalePinchingFunction_antitone {Phi : ℝ → ℝ}
     (hPhi : Perelman.AdmissiblePinchingFunction Phi) {A₀ A : ℝ} (hA₀ : 0 < A₀)
     (hA : A₀ ≤ A) (v : ℝ) :
     Perelman.rescalePinchingFunction A Phi v ≤ Perelman.rescalePinchingFunction A₀ Phi v := by
@@ -58,7 +55,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
     rw [e1, e2]
     exact mul_le_mul_of_nonneg_left hq hv.le
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_orientedWitness_of_parabolically_noncollapsed
+theorem exists_uniform_orientedWitness_of_parabolically_noncollapsed
     {delta : ℝ} (hd : 0 < delta) (hd1 : delta < 1) {kappa : ℝ} (hkappa : 0 < kappa)
     {rho : ℝ} (hrho : 0 < rho) {Phi : ℝ → ℝ} (hPhi : Perelman.AdmissiblePinchingFunction Phi) :
     ∃ Q₀ theta : ℝ, 0 < Q₀ ∧ 0 < theta ∧
@@ -249,7 +246,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   rw [htime] at hwG
   exact hwG
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_strongNeck_threshold_of_minimizing_arms
+theorem exists_strongNeck_threshold_of_minimizing_arms
     {delta : ℝ} (hdelta : 0 < delta) (hdelta1 : delta < 1 / 11) {angle : ℝ} (hangle : 0 < angle)
     {kappa : ℝ} (hkappa : 0 < kappa) {rho : ℝ} (hrho : 0 < rho) {Phi : ℝ → ℝ}
     (hPhi : Perelman.AdmissiblePinchingFunction Phi) :

@@ -1,10 +1,10 @@
-import DifferentialGeometry.Geometry.Metric.StandardCap.CollapseProfile
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CollapseProfile
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InsertionMetric
 import DifferentialGeometry.Geometry.Metric.ChartLipschitz.DistanceComparison
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
 import Mathlib.Topology.MetricSpace.Lipschitz
-import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
+import DifferentialGeometry.Geometry.Metric.PolarCoordinates
 
 set_option autoImplicit false
 noncomputable section

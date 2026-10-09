@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Product
-import DifferentialGeometry.Geometry.Flow.RicciFlow.CurveShortening.Background.Bounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BackgroundBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Trace
 import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling

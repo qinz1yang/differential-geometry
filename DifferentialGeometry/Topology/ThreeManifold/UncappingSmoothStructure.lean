@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Uncapping.LocalDiffeomorphism
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Uncapping.Cover
+import DifferentialGeometry.Topology.ThreeManifold.SmoothUncapping
+import DifferentialGeometry.Topology.ThreeManifold.UncappingCover
 import DifferentialGeometry.Topology.Handle.Manifold
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Coordinates
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict

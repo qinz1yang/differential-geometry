@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Lift
 import DifferentialGeometry.Geometry.Exponential.PathLifting
 import DifferentialGeometry.Geometry.Exponential.RadialPath
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 
 noncomputable section
 

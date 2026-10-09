@@ -29,18 +29,6 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
   {b : P → M} {φ : ∀ p : P, V₁ (b p) →L[𝕜] V₂ (b p)}
   {ψ : ∀ p : P, V₂ (b p) →L[𝕜] V₃ (b p)} {s : Set P} {p₀ : P}
 
-omit [∀ x, IsTopologicalAddGroup (V₂ x)] [∀ x, ContinuousSMul 𝕜 (V₂ x)]
-  [∀ x, IsTopologicalAddGroup (V₃ x)] [∀ x, ContinuousSMul 𝕜 (V₃ x)] in
-private theorem ContinuousLinearMap.inCoordinates_comp {x₀ x : M}
-    (ψ : V₂ x →L[𝕜] V₃ x) (φ : V₁ x →L[𝕜] V₂ x)
-    (hx : x ∈ (trivializationAt F₂ V₂ x₀).baseSet) :
-    inCoordinates F₁ V₁ F₃ V₃ x₀ x x₀ x (ψ.comp φ) =
-      (inCoordinates F₂ V₂ F₃ V₃ x₀ x x₀ x ψ).comp
-        (inCoordinates F₁ V₁ F₂ V₂ x₀ x x₀ x φ) := by
-  ext v
-  simp only [inCoordinates, comp_apply]
-  rw [Trivialization.symmL_continuousLinearMapAt _ hx]
-
 theorem ContMDiffWithinAt.clm_bundle_comp
     (hψ : ContMDiffWithinAt J (I.prod 𝓘(𝕜, F₂ →L[𝕜] F₃)) n
       (fun p => (⟨b p, ψ p⟩ : TotalSpace (F₂ →L[𝕜] F₃)
@@ -56,9 +44,17 @@ theorem ContMDiffWithinAt.clm_bundle_comp
   have h := hψ.2.clm_comp hφ.2
   let e := trivializationAt F₂ V₂ (b p₀)
   have hx : b p₀ ∈ e.baseSet := mem_baseSet_trivializationAt F₂ V₂ (b p₀)
-  have heq (p : P) (hp : b p ∈ e.baseSet) :=
-    ContinuousLinearMap.inCoordinates_comp (F₁ := F₁) (F₂ := F₂) (F₃ := F₃)
-      (V₁ := V₁) (V₂ := V₂) (V₃ := V₃) (ψ p) (φ p) hp
+  have heq : ∀ p, b p ∈ e.baseSet →
+      ContinuousLinearMap.inCoordinates F₁ V₁ F₃ V₃
+          (b p₀) (b p) (b p₀) (b p) ((ψ p).comp (φ p)) =
+        (ContinuousLinearMap.inCoordinates F₂ V₂ F₃ V₃
+          (b p₀) (b p) (b p₀) (b p) (ψ p)).comp
+          (ContinuousLinearMap.inCoordinates F₁ V₁ F₂ V₂
+            (b p₀) (b p) (b p₀) (b p) (φ p)) := by
+    intro p hp
+    ext v
+    simp only [ContinuousLinearMap.inCoordinates, ContinuousLinearMap.comp_apply]
+    rw [Trivialization.symmL_continuousLinearMapAt _ hp]
   apply h.congr_of_eventuallyEq
   · have hbase : ∀ᶠ p in 𝓝[s] p₀, b p ∈ e.baseSet :=
       hφ.1.continuousWithinAt (e.open_baseSet.mem_nhds hx)
@@ -158,9 +154,17 @@ theorem MDifferentiableWithinAt.clm_bundle_comp
   have h := hψ.2.clm_comp hφ.2
   let e := trivializationAt F₂ V₂ (b p₀)
   have hx : b p₀ ∈ e.baseSet := mem_baseSet_trivializationAt F₂ V₂ (b p₀)
-  have heq (p : P) (hp : b p ∈ e.baseSet) :=
-    ContinuousLinearMap.inCoordinates_comp (F₁ := F₁) (F₂ := F₂) (F₃ := F₃)
-      (V₁ := V₁) (V₂ := V₂) (V₃ := V₃) (ψ p) (φ p) hp
+  have heq : ∀ p, b p ∈ e.baseSet →
+      ContinuousLinearMap.inCoordinates F₁ V₁ F₃ V₃
+          (b p₀) (b p) (b p₀) (b p) ((ψ p).comp (φ p)) =
+        (ContinuousLinearMap.inCoordinates F₂ V₂ F₃ V₃
+          (b p₀) (b p) (b p₀) (b p) (ψ p)).comp
+          (ContinuousLinearMap.inCoordinates F₁ V₁ F₂ V₂
+            (b p₀) (b p) (b p₀) (b p) (φ p)) := by
+    intro p hp
+    ext v
+    simp only [ContinuousLinearMap.inCoordinates, ContinuousLinearMap.comp_apply]
+    rw [Trivialization.symmL_continuousLinearMapAt _ hp]
   apply h.congr_of_eventuallyEq
   · have hbase : ∀ᶠ p in 𝓝[s] p₀, b p ∈ e.baseSet :=
       hφ.1.continuousWithinAt (e.open_baseSet.mem_nhds hx)
@@ -243,7 +247,7 @@ theorem ContMDiffWithinAt.clm_bundle_flip
     (ContinuousLinearMap.flipₗᵢ 𝕜 F₁ F₂ F₃).toContinuousLinearEquiv.toContinuousLinearMap
   have hL := ContinuousLinearMap.contDiff (𝕜 := 𝕜)
     (E := F₁ →L[𝕜] F₂ →L[𝕜] F₃) (F := F₂ →L[𝕜] F₁ →L[𝕜] F₃) (n := n) L
-  have h := hL.comp_contMDiffWithinAt hφ.2
+  have h := hL.contDiffAt.contMDiffAt.comp_contMDiffWithinAt p₀ hφ.2
   let U := (trivializationAt F₁ U₁ (b p₀)).baseSet ∩
     (trivializationAt F₂ U₂ (b p₀)).baseSet ∩
     (trivializationAt F₃ U₃ (b p₀)).baseSet
@@ -299,7 +303,9 @@ theorem MDifferentiableWithinAt.clm_bundle_flip
   refine ⟨hφ.1, ?_⟩
   let L : (F₁ →L[𝕜] F₂ →L[𝕜] F₃) →L[𝕜] (F₂ →L[𝕜] F₁ →L[𝕜] F₃) :=
     (ContinuousLinearMap.flipₗᵢ 𝕜 F₁ F₂ F₃).toContinuousLinearEquiv.toContinuousLinearMap
-  have h := L.differentiable.comp_mdifferentiableWithinAt hφ.2
+  have hL := ContinuousLinearMap.contDiff (𝕜 := 𝕜)
+    (E := F₁ →L[𝕜] F₂ →L[𝕜] F₃) (F := F₂ →L[𝕜] F₁ →L[𝕜] F₃) (n := 1) L
+  have h := (hL.contDiffAt.contMDiffAt.mdifferentiableAt (by simp)).comp_mdifferentiableWithinAt p₀ hφ.2
   let U := (trivializationAt F₁ U₁ (b p₀)).baseSet ∩
     (trivializationAt F₂ U₂ (b p₀)).baseSet ∩
     (trivializationAt F₃ U₃ (b p₀)).baseSet
@@ -518,13 +524,6 @@ theorem MDifferentiable.clm_bundle_bilinearComp
           (fun x => U₄ x →L[𝕜] U₅ x →L[𝕜] U₃ x))) :=
   fun p => (hφ p).clm_bundle_bilinearComp (hA p) (hC p)
 
-private theorem ContinuousLinearMap.inCoordinates_id {x₀ x : M}
-    (hx : x ∈ (trivializationAt F₁ U₁ x₀).baseSet) :
-    inCoordinates F₁ U₁ F₁ U₁ x₀ x x₀ x (ContinuousLinearMap.id 𝕜 (U₁ x)) =
-      ContinuousLinearMap.id 𝕜 F₁ := by
-  ext v
-  exact (trivializationAt F₁ U₁ x₀).continuousLinearMapAt_symmL hx v
-
 theorem ContMDiffWithinAt.clm_bundle_id (hb : ContMDiffWithinAt J I n b s p₀) :
     ContMDiffWithinAt J (I.prod 𝓘(𝕜, F₁ →L[𝕜] F₁)) n
       (fun p => (⟨b p, ContinuousLinearMap.id 𝕜 (U₁ (b p))⟩ :
@@ -533,8 +532,11 @@ theorem ContMDiffWithinAt.clm_bundle_id (hb : ContMDiffWithinAt J I n b s p₀) 
   refine ⟨hb, ?_⟩
   let e := trivializationAt F₁ U₁ (b p₀)
   have hx : b p₀ ∈ e.baseSet := mem_baseSet_trivializationAt F₁ U₁ (b p₀)
-  have heq (p : P) (hp : b p ∈ e.baseSet) :=
-    ContinuousLinearMap.inCoordinates_id (𝕜 := 𝕜) (F₁ := F₁) (U₁ := U₁) hp
+  have heq (p : P) (hp : b p ∈ e.baseSet) :
+      ContinuousLinearMap.inCoordinates F₁ U₁ F₁ U₁ (b p₀) (b p) (b p₀) (b p)
+        (ContinuousLinearMap.id 𝕜 (U₁ (b p))) = ContinuousLinearMap.id 𝕜 F₁ := by
+    ext v
+    exact e.continuousLinearMapAt_symmL hp v
   apply (contMDiffWithinAt_const (c := ContinuousLinearMap.id 𝕜 F₁)).congr_of_eventuallyEq
   · filter_upwards [hb.continuousWithinAt (e.open_baseSet.mem_nhds hx)] with p hp
     exact heq p hp
@@ -566,8 +568,11 @@ theorem MDifferentiableWithinAt.clm_bundle_id (hb : MDifferentiableWithinAt J I 
   refine ⟨hb, ?_⟩
   let e := trivializationAt F₁ U₁ (b p₀)
   have hx : b p₀ ∈ e.baseSet := mem_baseSet_trivializationAt F₁ U₁ (b p₀)
-  have heq (p : P) (hp : b p ∈ e.baseSet) :=
-    ContinuousLinearMap.inCoordinates_id (𝕜 := 𝕜) (F₁ := F₁) (U₁ := U₁) hp
+  have heq (p : P) (hp : b p ∈ e.baseSet) :
+      ContinuousLinearMap.inCoordinates F₁ U₁ F₁ U₁ (b p₀) (b p) (b p₀) (b p)
+        (ContinuousLinearMap.id 𝕜 (U₁ (b p))) = ContinuousLinearMap.id 𝕜 F₁ := by
+    ext v
+    exact e.continuousLinearMapAt_symmL hp v
   apply (mdifferentiableWithinAt_const (c := ContinuousLinearMap.id 𝕜 F₁)).congr_of_eventuallyEq
   · filter_upwards [hb.continuousWithinAt (e.open_baseSet.mem_nhds hx)] with p hp
     exact heq p hp

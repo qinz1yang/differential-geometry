@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.SmallTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.SmallVolumeComplete
 import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
 import Mathlib.MeasureTheory.Measure.OpenPos
 

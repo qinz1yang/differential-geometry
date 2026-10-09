@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import DifferentialGeometry.Topology.Simplex.NormedBall
 import DifferentialGeometry.Topology.PiecewiseLinear.Polyhedron
-import DifferentialGeometry.Topology.Manifold.Boundary.Basic
+import DifferentialGeometry.Geometry.Boundary.Manifold.Basic
 import DifferentialGeometry.Geometry.Boundary.Model.EuclideanHalfSpace
 import Mathlib.Geometry.Manifold.Instances.Sphere
 

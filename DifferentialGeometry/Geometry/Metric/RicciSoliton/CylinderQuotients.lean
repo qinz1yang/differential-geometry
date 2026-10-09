@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Metric.Pullback.Product
 import DifferentialGeometry.Geometry.Metric.Sphere.FreeOrthogonalAction
 import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.Representation
 import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.OrthogonalAction
-import DifferentialGeometry.Topology.GroupAction.ProperlyDiscontinuous
+import DifferentialGeometry.Topology.ProperlyDiscontinuousAction
 import DifferentialGeometry.Topology.ProjectiveSpace.CylinderQuotient
 import DifferentialGeometry.Topology.ProjectiveSpace.PuncturedThree
 

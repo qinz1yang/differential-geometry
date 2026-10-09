@@ -473,6 +473,7 @@ theorem exists_cutoff_shrunk [SigmaCompactSpace M] (hf : MorseStrip I f a b)
     have hy' : morseNorm n y ≤ (D.chart p hp).r₀ / 2 := hy
     change morseNorm n y ≤ (D.chart p hp).r₀
     linarith [(D.chart p hp).hr₀]
+set_option linter.unusedVariables false in
 theorem exists_move [SigmaCompactSpace M] (hf : MorseStrip I f a b)
     (hcrit : ∀ x, x ∈ crit ↔ f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x)
     (D : GradientLikeStrip I f a b crit) {ε r' : ℝ} (hε : 0 < ε) (hr'ε : r' ^ 2 < ε)

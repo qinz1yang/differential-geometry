@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Variation.Flow
-import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Flow
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Cartan
 
 noncomputable section

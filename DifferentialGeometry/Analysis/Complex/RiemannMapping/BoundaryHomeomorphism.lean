@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.SmoothNullImage
 import DifferentialGeometry.Geometry.Measure.Area.EuclideanDisk
 import DifferentialGeometry.Analysis.Complex.RiemannMapping.BoundaryModulus
 import DifferentialGeometry.Topology.Homeomorph.ExtensionFibers
-import DifferentialGeometry.Topology.Circle.ConnectedSubsets
+import DifferentialGeometry.Topology.Connected.CircleCaps
 import Mathlib.Topology.OpenPartialHomeomorph.Composition
 
 section

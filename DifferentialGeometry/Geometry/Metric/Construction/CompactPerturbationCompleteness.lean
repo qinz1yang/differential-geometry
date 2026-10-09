@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Construction.BumpExtension
 import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.Euclidean
 
 set_option autoImplicit false

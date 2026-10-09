@@ -35,48 +35,6 @@ theorem IsAnnulusOn.exists_open_isolation_of_isClosed
     exact (hOW hx.1).2 (Or.inl (Or.inl (subset_closure ⟨hx.2, hxA⟩)))
   · exact disjoint_left.mpr fun x hx hxB => (hOW hx).2 (Or.inl (Or.inr hxB))
 
-theorem IsCylindricalDiagram.isAnnulusOn_pair_of_base_arcs
-    {E F M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [NormedAddCommGroup F] [NormedSpace ℝ F]
-    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
-    [TopologicalSpace M] [T2Space M]
-    {Q A B : Set E} {R : Set F} {g : E × ℝ → F}
-    (hg : IsCylindricalDiagram g Q R)
-    (hends : ∀ x ∈ Q, g (x, 0) = g (x, 1))
-    {δ ε : ℝ → E}
-    (hδ : IsPLHomeomorphOn δ (Icc 0 1) A)
-    (hε : IsPLHomeomorphOn ε (Icc 0 1) B)
-    (hεzero : ε 0 = δ 0) (hεone : ε 1 = δ 1)
-    (hAQ : A ⊆ Q) (hBQ : B ⊆ Q) (hAB : A ∩ B = {δ 0, δ 1})
-    {u : F → M}
-    (huc : ContinuousOn u (g '' ((A ∪ B) ×ˢ Icc (0 : ℝ) 1)))
-    (hui : InjOn u (g '' ((A ∪ B) ×ˢ Icc (0 : ℝ) 1))) :
-    IsAnnulusOn ((u ∘ g) '' (A ×ˢ Icc (0 : ℝ) 1))
-      ((u ∘ g) '' ({δ 0} ×ˢ Icc (0 : ℝ) 1))
-      ((u ∘ g) '' ({δ 1} ×ˢ Icc (0 : ℝ) 1)) ∧
-    IsAnnulusOn ((u ∘ g) '' (B ×ˢ Icc (0 : ℝ) 1))
-      ((u ∘ g) '' ({δ 0} ×ˢ Icc (0 : ℝ) 1))
-      ((u ∘ g) '' ({δ 1} ×ˢ Icc (0 : ℝ) 1)) ∧
-    ((u ∘ g) '' (B ×ˢ Icc (0 : ℝ) 1)) ∩
-      ((u ∘ g) '' (A ×ˢ Icc (0 : ℝ) 1)) =
-      ((u ∘ g) '' ({δ 0} ×ˢ Icc (0 : ℝ) 1)) ∪
-        ((u ∘ g) '' ({δ 1} ×ˢ Icc (0 : ℝ) 1)) := by
-  have hsub {C : Set E} (hC : C ⊆ A ∪ B) :
-      g '' (C ×ˢ Icc (0 : ℝ) 1) ⊆ g '' ((A ∪ B) ×ˢ Icc (0 : ℝ) 1) :=
-    image_mono (prod_mono_left hC)
-  have hA := (hg.isAnnulusOn_base_arc hends hδ hAQ).image_of_continuousOn_injOn
-    (huc.mono (hsub subset_union_left)) (hui.mono (hsub subset_union_left))
-  have hB := (hg.isAnnulusOn_base_arc hends hε hBQ).image_of_continuousOn_injOn
-    (huc.mono (hsub subset_union_right)) (hui.mono (hsub subset_union_right))
-  simp only [← image_comp] at hA hB
-  rw [hεzero, hεone] at hB
-  refine ⟨hA, hB, ?_⟩
-  rw [image_comp, image_comp,
-    ← hui.image_inter (hsub subset_union_right) (hsub subset_union_left),
-    hg.inter_images_base_regions hends hBQ hAQ, inter_comm B A, hAB,
-    ← singleton_union, union_prod, image_union, image_union]
-  simp only [← image_comp]
-
 theorem Section34FaceAlignedBandFilling.face_annuli_and_intersection
     {M : Type*} [TopologicalSpace M] [T2Space M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
@@ -90,13 +48,21 @@ theorem Section34FaceAlignedBandFilling.face_annuli_and_intersection
     (hcover ▸ subset_union_left).trans isPLBall_unit_square.isPolyhedron.isClosed.frontier_subset
   have hA₁ : A₁ ⊆ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1 :=
     (hcover ▸ subset_union_right).trans isPLBall_unit_square.isPolyhedron.isClosed.frontier_subset
-  have hmodel : g '' ((A₀ ∪ A₁) ×ˢ Icc (0 : ℝ) 1) ⊆ P :=
-    ((image_mono (prod_mono_left (union_subset hA₀ hA₁))).trans hg.image_eq.subset).trans hRP
-  have hpair := hg.isAnnulusOn_pair_of_base_arcs hends hδ₀ hδ₁
-    (hδ₁₀.trans hδ₀₀.symm) (hδ₁₁.trans hδ₀₁.symm) hA₀ hA₁
-    (by simpa only [hδ₀₀, hδ₀₁] using hinter)
-    (hu.continuousOn.mono hmodel) (hu.injOn.mono hmodel)
-  simpa only [hδ₀₀, hδ₀₁, hzero, hone, hface₀, hface₁] using hpair
+  have hsub {A : Set (ℝ × ℝ)} (hA : A ⊆ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) :
+      g '' (A ×ˢ Icc (0 : ℝ) 1) ⊆ P :=
+    ((image_mono (prod_mono_left hA)).trans hg.image_eq.subset).trans hRP
+  have hF := (hg.isAnnulusOn_base_arc hends hδ₀ hA₀).image_of_continuousOn_injOn
+    (hu.continuousOn.mono (hsub hA₀)) (hu.injOn.mono (hsub hA₀))
+  have hD := (hg.isAnnulusOn_base_arc hends hδ₁ hA₁).image_of_continuousOn_injOn
+    (hu.continuousOn.mono (hsub hA₁)) (hu.injOn.mono (hsub hA₁))
+  simp only [← image_comp, hface₀, hδ₀₀, hδ₀₁, hzero, hone] at hF
+  simp only [← image_comp, hface₁, hδ₁₀, hδ₁₁, hzero, hone] at hD
+  refine ⟨hF, hD, ?_⟩
+  rw [← hface₁, ← hface₀, image_comp, image_comp,
+    ← hu.injOn.image_inter (hsub hA₁) (hsub hA₀),
+    hg.inter_images_base_regions hends hA₁ hA₀, inter_comm A₁ A₀, hinter,
+    ← singleton_union, union_prod, image_union, image_union]
+  simp only [← image_comp, hzero, hone]
 
 universe u
 

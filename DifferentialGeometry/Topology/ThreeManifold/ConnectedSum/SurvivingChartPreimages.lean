@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.GraphGluing.PairedBall.Merge
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallMerge
 
 section
 

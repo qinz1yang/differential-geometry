@@ -27,6 +27,12 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M]
 
+omit [SigmaCompactSpace M] [T2Space M] in
+theorem leviCivitaConnectionOfMetric_isLeviCivita_smoothFile
+    (g : SmoothRiemannianMetric I M) :
+    IsLeviCivita (I := I) (leviCivitaConnectionOfMetric (I := I) g) g :=
+  leviCivitaConnectionOfMetric_isLeviCivita (I := I) g
+
 private def localMetricCoeff
     {ι : Type*}
     (e : Trivialization E (TotalSpace.proj : TotalSpace E (TangentSpace I : M → Type _) → M))

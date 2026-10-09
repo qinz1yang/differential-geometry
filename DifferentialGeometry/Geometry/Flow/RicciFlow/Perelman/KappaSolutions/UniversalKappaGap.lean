@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NoncompactPointedLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalKappaConstant
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Round.Normalization
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Estimates.ScalarPositivity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NormalizedRoundRigidity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ScalarPositive
 
 
 set_option autoImplicit false

@@ -1,19 +1,23 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Integral
 import DifferentialGeometry.Topology.PiecewiseLinear.IsPLHomeomorphIntoMonoOfIsPLCellOn
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
-import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.NestedApproximation
+import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallVocabulary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TerminalFaceBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonSlide
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionLeaf
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TraceNormalization
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.Existence
+import DifferentialGeometry.Topology.PiecewiseLinear.ControlledGraphNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Control
-import DifferentialGeometry.Topology.PiecewiseLinear.IsCombinatorialManifoldOfLocallyFinitePLPieceIn
 
 open Set Topology
 
@@ -86,28 +90,12 @@ def Section34NormalFamilyStatement : Prop :=
       (fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂),
       Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁ tgtV tgtVBd tgtE tgtEBd fbl fblBd
 
-private theorem exists_normalized_face_ball_family_of_combinatorial_manifold
-    {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea]
-    {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁]
-    [MetricSpace M₂] [SecondCountableTopology M₂]
-    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
-    [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
-    {U : Set M₁} (hU : IsOpen U) {h : M₁ → M₂}
-    (hh : Topology.IsEmbedding (U.domRestrict h))
-    (η : M₁ → ℝ) (hηc : ContinuousOn η U) (hηpos : ∀ x ∈ U, 0 < η x)
-    (𝒦 : LocallyFinitePLPieceIn Ea 3 M₁ U) (hcm : IsCombinatorialManifold 3 𝒦.complex)
-    (H : Finset Ea → Set M₂)
-    (hctrl : Section34CarrierControl U 𝒦 h η H) :
-    ∃ (𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
-      (src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁)
-      (cr : Section34VertexIndex 𝒦 𝒦' → Finset Ea) (f₁ : M₁ → M₂)
-      (tgtV tgtVBd : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-      (tgtE tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
-      (fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂),
-      Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁
-        tgtV tgtVBd tgtE tgtEBd fbl fblBd := by
+theorem section34NormalFamily (hP0 : Section34ControlStatement.{u})
+    (h351 : ControlledGraphNeighborhoodStatement.{u}) : Section34NormalFamilyStatement.{u} := by
+  intro M₁ M₂ _ _ _ _ U h η _ _ _ _ _ _ hU hh hηc hηpos
+  obtain ⟨N, 𝒦, H, hcm, hctrl⟩ := hP0 hU hh η hηc hηpos
   obtain ⟨𝒦', src, srcBd, cr, f₁, hcut, hgraph⟩ :=
-    exists_controlled_graph_neighborhood_approximation hU hh Ea 𝒦 hcm η H hctrl hU
+    h351 hU hh (EuclideanSpace ℝ (Fin N)) 𝒦 hcm η H hctrl hU
       (graphSkeletonSpace_subset 𝒦) Subset.rfl η hηc hηpos
   obtain ⟨-, -, hpl, -, -,
     -, -, -, -, -,
@@ -175,7 +163,7 @@ private theorem exists_normalized_face_ball_family_of_combinatorial_manifold
   have htetraH : ∀ t : Section34SimplexIndex 𝒦 4,
       h '' src (Section34Label.tetraBall t) ⊆ H t.1 := fun t =>
     (image_mono (hsupT t)).trans ((hsup t.1 t.2.1).trans interior_subset)
-  exact ⟨𝒦', src, srcBd, cr, f₁, section34VertexBallImage src f₁,
+  exact ⟨N, 𝒦, 𝒦', src, srcBd, H, cr, f₁, section34VertexBallImage src f₁,
     section34VertexBallImage srcBd f₁, section34SplitDiskImage src f₁,
     section34SplitDiskImage srcBd f₁, fbl, fblBd, hcut, hctrl, hgraph, hext, htrace,
     fun _ => rfl, fun _ => rfl, hVcell, hEcell, hEV, hVV, htetraH, hfblcell, hfblV, hfblfbl,
@@ -183,38 +171,7 @@ private theorem exists_normalized_face_ball_family_of_combinatorial_manifold
     fun s w e B B' Bb Dj Jd h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11 h12 =>
       hnb s ⟨w, e, B, B', Bb, Dj, Jd, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12⟩⟩
 
-theorem exists_normalized_face_ball_family_of_control
-    {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensional ℝ Ea]
-    {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁]
-    [MetricSpace M₂] [SecondCountableTopology M₂]
-    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
-    [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
-    {U : Set M₁} (hU : IsOpen U) {h : M₁ → M₂}
-    (hh : Topology.IsEmbedding (U.domRestrict h))
-    (η : M₁ → ℝ) (hηc : ContinuousOn η U) (hηpos : ∀ x ∈ U, 0 < η x)
-    (𝒦 : LocallyFinitePLPieceIn Ea 3 M₁ U) (H : Finset Ea → Set M₂)
-    (hctrl : Section34CarrierControl U 𝒦 h η H) :
-    ∃ (𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
-      (src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁)
-      (cr : Section34VertexIndex 𝒦 𝒦' → Finset Ea) (f₁ : M₁ → M₂)
-      (tgtV tgtVBd : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-      (tgtE tgtEBd : Section34EdgeIndex 𝒦 𝒦' → Set M₂)
-      (fbl fblBd : Section34SimplexIndex 𝒦 3 → Set M₂),
-      Section34NormalPlus U h η 𝒦 𝒦' src srcBd H cr f₁
-        tgtV tgtVBd tgtE tgtEBd fbl fblBd := by
-  exact exists_normalized_face_ball_family_of_combinatorial_manifold hU hh η hηc hηpos 𝒦
-    (isCombinatorialManifold_of_locallyFinitePLPieceIn hU 𝒦) H hctrl
-
-theorem section34NormalFamily (hP0 : Section34ControlStatement.{u})
-    : Section34NormalFamilyStatement.{u} := by
-  intro M₁ M₂ _ _ _ _ U h η _ _ _ _ _ _ hU hh hηc hηpos
-  obtain ⟨N, 𝒦, H, hcm, hctrl⟩ := hP0 hU hh η hηc hηpos
-  obtain ⟨𝒦', src, srcBd, cr, f₁, tgtV, tgtVBd, tgtE, tgtEBd, fbl, fblBd, hnormal⟩ :=
-    exists_normalized_face_ball_family_of_combinatorial_manifold hU hh η hηc hηpos 𝒦 hcm H hctrl
-  exact ⟨N, 𝒦, 𝒦', src, srcBd, H, cr, f₁, tgtV, tgtVBd, tgtE, tgtEBd,
-    fbl, fblBd, hnormal⟩
-
 theorem section34NormalFamilyStatement : Section34NormalFamilyStatement.{u} :=
-  section34NormalFamily section34Control
+  section34NormalFamily section34Control controlledGraphNeighborhoodStatement
 
 end DifferentialGeometry.Topology.PiecewiseLinear

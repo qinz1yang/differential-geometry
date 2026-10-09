@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Null
+import DifferentialGeometry.Geometry.Measure.ChartNull
 import DifferentialGeometry.Analysis.Integration.Measure.Differentiation.Rademacher
 
 set_option autoImplicit false

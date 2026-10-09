@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lipschitz.CutoffEnergy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Cutoff.Energy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Estimate
 import DifferentialGeometry.Analysis.Integration.LpNorm
 import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog
@@ -225,7 +225,7 @@ theorem exists_l2_normalized_cutoff_with_energy_bound
     exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top
       (ENNReal.rpow_ne_top_of_nonneg (by positivity) (measure_ne_top μ U))
   obtain ⟨φ, hφ, hφsupport, hφlower, hφgrad⟩ :=
-    DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.exists_smooth_cutoff_eLpNorm_gradient_le (I := I) (M := M) g a hr
+    exists_cutoff_energy (I := I) (M := M) g a hr
   have hφpos : 0 < eLpNorm φ 2 μ := by
     exact hmass_pos.trans_le hφlower
   let gp : M → ℝ := fun x => Real.sqrt (g.inner x

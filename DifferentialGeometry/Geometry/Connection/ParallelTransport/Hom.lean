@@ -34,7 +34,7 @@ theorem derivAlongWithin_clm_section_apply_of_parallel
     {J : Set ℝ} {t : ℝ}
     (hA : MDifferentiableAt I (I.prod 𝓘(ℝ, F₁ →L[ℝ] F₂))
       (fun x => TotalSpace.mk' (F₁ →L[ℝ] F₂) x (A x)) (γ t))
-    (hparallel : _root_.CovariantDerivative.hom
+    (hparallel : DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
       I M F₁ V₁ F₂ V₂ cov₁ cov₂ A (γ t) = 0)
     (hγ : MDifferentiableWithinAt 𝓘(ℝ, ℝ) I γ J t)
     (hZ : MDifferentiableWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F₁))
@@ -50,7 +50,7 @@ theorem IsPiecewiseParallelOn.map
     (A : ∀ x, V₁ x →L[ℝ] V₂ x)
     (hA : MDifferentiable I (I.prod 𝓘(ℝ, F₁ →L[ℝ] F₂))
       (fun x => TotalSpace.mk' (F₁ →L[ℝ] F₂) x (A x)))
-    (hparallel : _root_.CovariantDerivative.hom
+    (hparallel : DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
       I M F₁ V₁ F₂ V₂ cov₁ cov₂ A = 0)
     {γ : ℝ → M} {Z : ∀ t, V₁ (γ t)} {a b : ℝ}
     (hZ : cov₁.IsPiecewiseParallelOn γ Z a b) :
@@ -71,7 +71,7 @@ theorem isPiecewiseParallelOn_map_continuousLinearEquiv_iff
     (A : ∀ x, V₁ x ≃L[ℝ] V₂ x)
     (hA : ContMDiff I (I.prod 𝓘(ℝ, F₁ →L[ℝ] F₂)) 1
       (fun x => TotalSpace.mk' (F₁ →L[ℝ] F₂) x (A x).toContinuousLinearMap))
-    (hparallel : _root_.CovariantDerivative.hom
+    (hparallel : DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
       I M F₁ V₁ F₂ V₂ cov₁ cov₂ (fun x => (A x).toContinuousLinearMap) = 0)
     {γ : ℝ → M} {Z : ∀ t, V₁ (γ t)} {a b : ℝ} :
     cov₂.IsPiecewiseParallelOn γ (fun t => A (γ t) (Z t)) a b ↔
@@ -115,7 +115,7 @@ theorem IsParallelSet.preimage
     (A : ∀ x, V₁ x →L[ℝ] V₂ x)
     (hA : MDifferentiable I (I.prod 𝓘(ℝ, F₁ →L[ℝ] F₂))
       (fun x => TotalSpace.mk' (F₁ →L[ℝ] F₂) x (A x)))
-    (hparallel : _root_.CovariantDerivative.hom
+    (hparallel : DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
       I M F₁ V₁ F₂ V₂ cov₁ cov₂ A = 0) :
     cov₁.IsParallelSet
       ((fun p : TotalSpace F₁ V₁ => TotalSpace.mk' F₂ p.1 (A p.1 p.2)) ⁻¹' K) := by
@@ -128,7 +128,7 @@ theorem isParallelSet_preimage_continuousLinearEquiv_iff
     (A : ∀ x, V₁ x ≃L[ℝ] V₂ x)
     (hA : ContMDiff I (I.prod 𝓘(ℝ, F₁ →L[ℝ] F₂)) 1
       (fun x => TotalSpace.mk' (F₁ →L[ℝ] F₂) x (A x).toContinuousLinearMap))
-    (hparallel : _root_.CovariantDerivative.hom
+    (hparallel : DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
       I M F₁ V₁ F₂ V₂ cov₁ cov₂ (fun x => (A x).toContinuousLinearMap) = 0)
     {K : Set (TotalSpace F₂ V₂)} :
     cov₁.IsParallelSet
@@ -153,7 +153,7 @@ theorem clm_apply_piecewise_parallel_transport
     (A : ∀ x, V₁ x →L[ℝ] V₂ x)
     (hA : MDifferentiable I (I.prod 𝓘(ℝ, F₁ →L[ℝ] F₂))
       (fun x => TotalSpace.mk' (F₁ →L[ℝ] F₂) x (A x)))
-    (hparallel : _root_.CovariantDerivative.hom
+    (hparallel : DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
       I M F₁ V₁ F₂ V₂ cov₁ cov₂ A = 0)
     {γ : ℝ → M} {a b t₀ : ℝ} (ht₀ : t₀ ∈ Icc a b)
     (P : ∀ t, V₁ (γ t₀) ≃L[ℝ] V₁ (γ t))
@@ -174,7 +174,7 @@ theorem IsParallelSet.image
     (A : ∀ x, V₁ x →L[ℝ] V₂ x)
     (hA : MDifferentiable I (I.prod 𝓘(ℝ, F₁ →L[ℝ] F₂))
       (fun x => TotalSpace.mk' (F₁ →L[ℝ] F₂) x (A x)))
-    (hparallel : _root_.CovariantDerivative.hom
+    (hparallel : DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
       I M F₁ V₁ F₂ V₂ cov₁ cov₂ A = 0) :
     cov₂.IsParallelSet
       ((fun p : TotalSpace F₁ V₁ => TotalSpace.mk' F₂ p.1 (A p.1 p.2)) '' K) := by
@@ -218,7 +218,7 @@ theorem exists_linearIsometryEquiv_conj_of_parallel_endomorphism
       (fun s => (⟨γ s, A s⟩ : TotalSpace (F →L[ℝ] F)
         (fun x => V x →L[ℝ] V x))) (Icc a b))
     (hApar : ∀ s ∈ Icc a b,
-      (_root_.CovariantDerivative.hom
+      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
         I M F V F V cov cov).derivAlongWithin γ A (Icc a b) s = 0) :
     ∃ e : V (γ t₀) ≃ₗᵢ[ℝ] V (γ t),
       e.toContinuousLinearEquiv.conj (A t₀) = A t := by

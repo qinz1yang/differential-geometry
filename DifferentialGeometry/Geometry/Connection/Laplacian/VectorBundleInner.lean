@@ -221,7 +221,7 @@ theorem mvfderiv_inner_endomorphism_apply_of_cov_eq_zero
     (hv : cov v x = 0) :
     mvfderiv I (fun y ↦ inner Real (A y (v y)) (v y)) x X =
       inner Real
-        ((_root_.CovariantDerivative.hom
+        ((HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov (fun y ↦ A y) x X) (v x))
         (v x) := by
   let Av : Cₛ^∞⟮I; F, V⟯ :=
@@ -229,10 +229,10 @@ theorem mvfderiv_inner_endomorphism_apply_of_cov_eq_zero
       ContMDiff.clm_bundle_apply (b := id) A.contMDiff v.contMDiff⟩
   have hinner := hcov.mvfderiv_inner_eq (x := x)
     (fun _ : M ↦ X) Av.mdifferentiableAt v.mdifferentiableAt
-  have happly := _root_.CovariantDerivative.hom_apply
+  have happly := HomConnectionGen.homBundleCovariantDerivativeGen_apply
     I M F V F V cov cov A v x X
   have happly' :
-      (_root_.CovariantDerivative.hom
+      (HomConnectionGen.homBundleCovariantDerivativeGen
         I M F V F V cov cov A x X) (v x) =
         cov Av x X - A x (cov v x X) := happly
   change

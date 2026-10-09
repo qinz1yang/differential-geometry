@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
-import DifferentialGeometry.Geometry.Flow.RicciFlow.CurveShortening.Background.Bounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BackgroundBounds
 
 section
 
@@ -20,7 +20,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 omit [T2Space M] in
 theorem loopFamilyLeastArea_postcomposeDiffeomorph
     (g : ℝ → SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (t : ℝ) :
+    (γ : ℝ → Surgery.Topology.ContinuousFreeLoop M) (t : ℝ) :
     loopFamilyLeastArea (fun s => Diffeomorph.pullbackMetricCross (g s) Φ.symm)
       (fun s => (⟨Φ, Φ.continuous⟩ : C(M, A)).comp (γ s)) t =
       loopFamilyLeastArea g γ t := by

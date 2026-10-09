@@ -1,6 +1,6 @@
 import DifferentialGeometry.Bundle.TangentChart
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Continuity
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase

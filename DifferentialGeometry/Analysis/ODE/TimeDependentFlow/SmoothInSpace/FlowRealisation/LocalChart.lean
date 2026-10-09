@@ -267,7 +267,7 @@ theorem exists_chartPicard_and_cocycle_realisation
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hX : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)))
-    (hXauto : autonomizedFieldJointC1 (I := I) X)
+    (hXauto : AutonomizedFieldJointC1 (I := I) X)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (t : ℝ) (x : M) {T₀ : ℝ} {W : Set M}
     (hx_source : x ∈ (chartAt H (Φ_fam t x)).source)
     (hT₀ : 0 < T₀) (hW : IsOpen W) (hxW : x ∈ W)
@@ -362,7 +362,7 @@ theorem rawVariationalIdentityFlat_of_jointSmoothField
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hX : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)))
-    (hXauto : autonomizedFieldJointC1 (I := I) X)
+    (hXauto : AutonomizedFieldJointC1 (I := I) X)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (t : ℝ) (x : M) (v : TangentSpace I x) {T₀ : ℝ} {W : Set M}
     (hx_source : x ∈ (chartAt H (Φ_fam t x)).source)
     (hT₀ : 0 < T₀) (hW : IsOpen W) (hxW : x ∈ W)

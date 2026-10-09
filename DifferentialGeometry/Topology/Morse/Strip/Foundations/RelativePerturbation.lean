@@ -10,6 +10,7 @@ namespace DifferentialGeometry.Topology
 open scoped Manifold ContDiff _root_.Topology
 open Set Filter
 
+set_option linter.unusedSectionVars false
 
 noncomputable section
 
@@ -313,7 +314,7 @@ theorem exists_mem_notMem_of_null {N : Set (Fin n → ℝ)} (hN : MeasureTheory.
     MeasureTheory.measure_mono_null hsub hN
   exact (Metric.measure_ball_pos MeasureTheory.volume (0 : Fin n → ℝ) hε).ne' h1
 
-theorem uniform_close_of_compact {W : Type*} [NormedAddCommGroup W]
+theorem uniform_close_of_compact {W : Type*} [NormedAddCommGroup W] [NormedSpace ℝ W]
     [ProperSpace W] {Δ : W → ℝ} (hΔ : Continuous Δ) {K : Set W} (hK : IsCompact K) {η : ℝ}
     (hη : 0 < η) :
     ∃ δ > 0, ∀ B ∈ K, ∀ B', ‖B' - B‖ < δ → |Δ B' - Δ B| < η := by
@@ -576,11 +577,9 @@ variable {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*} [TopologicalSpac
 def chartRep (I : ModelWithCorners ℝ (Fin n → ℝ) H) (g : M → ℝ) (q : M) : (Fin n → ℝ) → ℝ :=
   fun y => g ((extChartAt I q).symm y)
 
-omit [I.Boundaryless] [IsManifold I ∞ M] in
 theorem hessianAt_eq (g : M → ℝ) (p : M) :
     hessianAt I g p = DifferentialGeometry.Topology.Morse.chartHessianAt (chartRep I g p) (extChartAt I p p) := rfl
 
-omit [I.Boundaryless] in
 theorem contDiffOn_chartRep {g : M → ℝ} (hg : ContMDiff I 𝓘(ℝ, ℝ) ∞ g) (q : M) :
     ContDiffOn ℝ ∞ (chartRep I g q) (extChartAt I q).target := by
   have := hg.comp_contMDiffOn (contMDiffOn_extChartAt_symm (I := I) (n := ∞) q)
@@ -645,13 +644,11 @@ theorem contDiffAt_transition {p q x : M} (hxp : x ∈ (extChartAt I p).source)
     exact contMDiffAt_extChartAt' hxq'
   exact h2.comp _ h1
 
-omit [IsManifold I ∞ M] in
 theorem isOpen_transition_domain (p q : M) :
     IsOpen ((extChartAt I p).target ∩ (extChartAt I p).symm ⁻¹' (extChartAt I q).source) :=
   (continuousOn_extChartAt_symm p).isOpen_inter_preimage (isOpen_extChartAt_target p)
     (isOpen_extChartAt_source q)
 
-omit [I.Boundaryless] [IsManifold I ∞ M] in
 theorem mem_transition_domain {p q x : M} (hxp : x ∈ (extChartAt I p).source)
     (hxq : x ∈ (extChartAt I q).source) :
     extChartAt I p x ∈
@@ -660,7 +657,6 @@ theorem mem_transition_domain {p q x : M} (hxp : x ∈ (extChartAt I p).source)
   simp only [mem_preimage, (extChartAt I p).left_inv hxp]
   exact hxq
 
-omit [IsManifold I ∞ M] in
 theorem transition_eventuallyEq_id {p q x : M} (hxp : x ∈ (extChartAt I p).source)
     (hxq : x ∈ (extChartAt I q).source) :
     ((extChartAt I p ∘ (extChartAt I q).symm) ∘ (extChartAt I q ∘ (extChartAt I p).symm))
@@ -670,7 +666,6 @@ theorem transition_eventuallyEq_id {p q x : M} (hxp : x ∈ (extChartAt I p).sou
   simp only [Function.comp_apply, id]
   rw [(extChartAt I q).left_inv hy.2, (extChartAt I p).right_inv hy.1]
 
-omit [IsManifold I ∞ M] in
 theorem chartRep_eventuallyEq (g : M → ℝ) {p q x : M} (hxp : x ∈ (extChartAt I p).source)
     (hxq : x ∈ (extChartAt I q).source) :
     chartRep I g p =ᶠ[𝓝 (extChartAt I p x)]
@@ -736,7 +731,6 @@ variable [T2Space M]
 def bumpPert {c : M} (b : SmoothBumpFunction I c) (L : Fin n → ℝ) : M → ℝ :=
   fun x => b x * innerCLM L (extChartAt I c x)
 
-omit [I.Boundaryless] in
 theorem contMDiff_bumpPert {c : M} (b : SmoothBumpFunction I c) (L : Fin n → ℝ) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (bumpPert b L) := by
   have hφ : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun x => innerCLM L (extChartAt I c x))
@@ -744,7 +738,6 @@ theorem contMDiff_bumpPert {c : M} (b : SmoothBumpFunction I c) (L : Fin n → �
     (innerCLM L).contMDiff.comp_contMDiffOn contMDiffOn_extChartAt
   exact b.contMDiff_smul hφ
 
-omit [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] in
 theorem abs_bumpPert_le {c : M} (b : SmoothBumpFunction I c) (L : Fin n → ℝ) (x : M) :
     |bumpPert b L x| ≤ ‖innerCLM L‖ * (‖extChartAt I c c‖ + b.rOut) := by
   have hR : 0 ≤ ‖extChartAt I c c‖ + b.rOut := add_nonneg (norm_nonneg _) b.rOut_pos.le
@@ -769,7 +762,6 @@ theorem abs_bumpPert_le {c : M} (b : SmoothBumpFunction I c) (L : Fin n → ℝ)
     simp only [bumpPert, this, zero_mul, abs_zero]
     positivity
 
-omit [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] in
 theorem chartRep_sub_bumpPert {c : M} (b : SmoothBumpFunction I c) (L : Fin n → ℝ) (g : M → ℝ)
     (q : M) :
     chartRep I (fun x => g x - bumpPert b L x) q = fun y => chartRep I g q y -
@@ -777,7 +769,6 @@ theorem chartRep_sub_bumpPert {c : M} (b : SmoothBumpFunction I c) (L : Fin n �
   funext y
   simp only [chartRep, bumpPert, map_smul, smul_eq_mul]
 
-omit [I.Boundaryless] in
 theorem contDiffOn_bumpVec {c : M} (b : SmoothBumpFunction I c) (q : M) :
     ContDiffOn ℝ ∞ (fun y => b ((extChartAt I q).symm y) •
       extChartAt I c ((extChartAt I q).symm y)) (extChartAt I q).target := by
@@ -887,7 +878,7 @@ open MorseExistence
 theorem exists_morseStrip_proof {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*}
     [TopologicalSpace M]
     [ChartedSpace H M] (I : ModelWithCorners ℝ (Fin n → ℝ) H) [I.Boundaryless]
-    [IsManifold I ∞ M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {a b : ℝ} (hab : a < b)
     (hcompact : IsCompact (f ⁻¹' Icc a b))
     (hreg : ∀ x, f x = a ∨ f x = b → ¬ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x) :

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.SourceSectionPairing
-import DifferentialGeometry.Topology.Manifold.MFDeriv.SourceCoordinates
+import DifferentialGeometry.Geometry.Metric.SourcePartialCoordinates
 import DifferentialGeometry.Geometry.Comparison.Variation.Coordinates.FixedChartIdentities
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.CorrectionAtBasepoint
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric

@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCells
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.CarrierRefinement
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34SubdivisionCarriers
 
 open Set
 
@@ -67,7 +72,7 @@ theorem image_graphDualCell_subset_section34CarrierSupport
     have hvs := subset_of_mem_dualCell_of_mem_convexHull 𝒦'.complex hv hs hxdual hxs
     exact mem_iUnion₂.mpr ⟨v, by simp, mem_iUnion₂.mpr
       ⟨s, ⟨hs, Finset.singleton_subset_iff.mp hvs⟩, x, hxs, rfl⟩⟩
-  · apply simplexCarrierSupport_subset_of_subdivision hsub hmap ht
+  · apply section34CarrierSupport_subset_of_subdivision hsub hmap ht
     simpa using hvt
 
 end DifferentialGeometry.Topology.PiecewiseLinear

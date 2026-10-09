@@ -37,12 +37,9 @@ private theorem endpoint_derivatives_of_continuous
 
 namespace OrientedThreeStage.ClosedSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab
-
 variable {P : OrientedThreeStage.{u}} {u v : ℝ} (G : P.ClosedSlab u v)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.ricciAt_continuousOn (x : P.Carrier) (X Y : TangentSpace ThreeModel x) :
+theorem ricciAt_continuousOn (x : P.Carrier) (X Y : TangentSpace ThreeModel x) :
     ContinuousOn (fun t => G.flow.ricciAt t x (vec2 X Y)) (Icc u v) := by
   have heval := tensor0SFamilyContinuousOnSet.eval_continuous
     (I := ThreeModel) (M := P.Carrier) (s := 2) G.equation.ricciCont
@@ -52,7 +49,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.r
   rw [continuousOn_iff_continuous_domRestrict]
   exact heval
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.endpoint_derivatives (x : P.Carrier) (X Y : TangentSpace ThreeModel x) :
+theorem endpoint_derivatives (x : P.Carrier) (X Y : TangentSpace ThreeModel x) :
     HasDerivWithinAt (fun t => (G.flow.base.metric t).inner x X Y)
       (-2 * G.flow.ricciAt u x (vec2 X Y)) (Ici u) u ∧
     HasDerivWithinAt (fun t => (G.flow.base.metric t).inner x X Y)
@@ -63,7 +60,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.e
   intro t ht
   exact G.equation.equation ⟨t, ht⟩ x X Y
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.restrictClosed {a b : ℝ} (hua : u ≤ a) (hab : a < b) (hbv : b ≤ v) :
+def restrictClosed {a b : ℝ} (hua : u ≤ a) (hab : a < b) (hbv : b ≤ v) :
     P.ClosedSlab a b where
   lt := hab
   flow := G.flow.timeRestrict _
@@ -72,7 +69,7 @@ def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.restr
     (fun _ ht => ⟨hua.trans_lt ht.1, ht.2.trans_le hbv⟩)
   smoothUpTo := G.smoothUpTo.mono (fun _ ht => ⟨hua.trans ht.1, ht.2.trans hbv⟩)
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.restrictIncoming {a b : ℝ} (hua : u ≤ a) (hab : a < b) (hbv : b ≤ v) :
+def restrictIncoming {a b : ℝ} (hua : u ≤ a) (hab : a < b) (hbv : b ≤ v) :
     P.IncomingSlab a b where
   lt := hab
   flow := G.flow.timeRestrict _

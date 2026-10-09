@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.LipschitzComposition
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Local
+import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
 
 noncomputable section

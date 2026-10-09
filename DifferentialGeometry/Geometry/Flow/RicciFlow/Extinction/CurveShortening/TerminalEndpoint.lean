@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SpatialDerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SpeedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SpeedContinuity
-import DifferentialGeometry.Geometry.Flow.CurveShortening.Continuation.ContinuousLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.TerminalLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolutionLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.WindowGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ContinuationFrontier

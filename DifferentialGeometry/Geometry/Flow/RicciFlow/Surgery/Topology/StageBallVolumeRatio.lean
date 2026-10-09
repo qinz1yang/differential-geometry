@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.LocalBallRatio
-import DifferentialGeometry.Geometry.Curvature.Ricci.PointwiseLowerBound
+import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciPointwise
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 
 set_option autoImplicit false

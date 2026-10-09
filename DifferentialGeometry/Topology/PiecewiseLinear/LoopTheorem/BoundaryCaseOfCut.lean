@@ -1,6 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCandidatesOfCut
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromSource
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Resolution.Cell
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamResolvedCell
 import Mathlib.Topology.Subpath
 
 open Set Topology

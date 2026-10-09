@@ -37,7 +37,7 @@ theorem cutoff_hamilton_ivey_inequality_of_compact_support
       letI : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
       HasDerivWithinAt (fun s => A s x)
         (rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t) (fun y => A t y) x +
-          _root_.CovariantDerivative.hom I M F V F V (cov t) (cov t)
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V (cov t) (cov t)
             (fun y => A t y) x (X t x) +
           (curvatureOperatorReactionEndomorphism3 (A t x).toLinearMap).toContinuousLinearMap)
         (Icc 0 t) t)
@@ -246,7 +246,7 @@ theorem hamilton_ivey_inequality_of_compactly_supported_cutoff
       letI : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
       HasDerivWithinAt (fun s => A s x)
         (rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t) (fun y => A t y) x +
-          _root_.CovariantDerivative.hom I M F V F V (cov t) (cov t)
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V (cov t) (cov t)
             (fun y => A t y) x (X t x) +
           (curvatureOperatorReactionEndomorphism3 (A t x).toLinearMap).toContinuousLinearMap)
         (Icc 0 t) t)

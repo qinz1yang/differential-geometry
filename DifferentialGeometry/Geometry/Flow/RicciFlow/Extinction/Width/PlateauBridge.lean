@@ -254,7 +254,7 @@ theorem circleMapOfLift {ψ : ℝ → ℝ} (hψ : Continuous ψ)
     Function.Periodic.lift_coe hper t⟩
 
 theorem isSignedWeaklyMonotoneTrace_iff_diskWeakJordanTrace (u : C(Disk, Q))
-    (γ : DifferentialGeometry.Topology.freeLoop Q) :
+    (γ : ContinuousFreeLoop Q) :
     IsSignedWeaklyMonotoneTrace u γ ↔ Geometry.DiskWeakJordanTrace γ u := by
   constructor
   · rintro ⟨φ, hφ, hm, ht⟩
@@ -285,7 +285,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {Q : Type*} [TopologicalSpace Q] [ChartedSpace E Q] [IsManifold 𝓘(ℝ, E) ∞ Q]
 
 omit [IsManifold 𝓘(ℝ, E) ∞ Q] in
-theorem isSmoothEmbeddedLoop_iff (γ : DifferentialGeometry.Topology.freeLoop Q) :
+theorem isSmoothEmbeddedLoop_iff (γ : ContinuousFreeLoop Q) :
     Geometry.IsSmoothEmbeddedLoop (E := E) γ ↔
       ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (loopLift γ) ∧ Topology.IsEmbedding γ ∧
         ∀ t : ℝ, loopVelocity (I := 𝓘(ℝ, E)) γ t ≠ 0 :=
@@ -309,13 +309,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 omit [FiniteDimensional ℝ E] in
 theorem mem_spanningDiskCompetitors_of_diskCompetitor
-    (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q) (γ : DifferentialGeometry.Topology.freeLoop Q)
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q) (γ : ContinuousFreeLoop Q)
     (v : DiskCompetitor g γ) : v.1.map ∈ Geometry.spanningDiskCompetitors g γ :=
   (mem_spanningDiskCompetitors_iff g γ v.1.map).mpr ⟨v.2, v.1.isLipschitz⟩
 
 omit [FiniteDimensional ℝ E] in
 theorem diskArea_eq_riemannianDiskArea_of_diskCompetitor
-    (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q) (γ : DifferentialGeometry.Topology.freeLoop Q)
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q) (γ : ContinuousFreeLoop Q)
     (v : DiskCompetitor g γ) :
     diskArea g v.1.map = Geometry.riemannianDiskArea g v.1.map :=
   diskArea_eq_riemannianDiskArea g v.1.map
@@ -394,7 +394,7 @@ def InteriorSmoothDisk.compDiffeomorph (Φ : M₁ ≃ₘ⟮I₁, I₂⟯ M₂)
 
 omit [IsManifold I₁ ∞ M₁] [IsManifold I₂ ∞ M₂] in
 theorem IsSignedWeaklyMonotoneTrace.comp_diffeomorph (Φ : M₁ ≃ₘ⟮I₁, I₂⟯ M₂)
-    {u : Disk → M₁} {γ : DifferentialGeometry.Topology.freeLoop M₁} (h : IsSignedWeaklyMonotoneTrace u γ) :
+    {u : Disk → M₁} {γ : ContinuousFreeLoop M₁} (h : IsSignedWeaklyMonotoneTrace u γ) :
     IsSignedWeaklyMonotoneTrace (fun z => Φ (u z))
       ((⟨Φ, Φ.continuous⟩ : C(M₁, M₂)).comp γ) := by
   obtain ⟨φ, hφ, hm, ht⟩ := h

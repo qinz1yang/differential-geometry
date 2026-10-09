@@ -198,7 +198,7 @@ lemma covGrad_covDeriv_innerSlot_secondOrder_eq_abstract
     (hB : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% B)) (x : M) :
     tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+          covGradBundleEquiv (I := I) (M := M) 0 s x
             ((tensorCov (I := I) g 0 s).toFun
               (fun y : M => tensorSecondCovDeriv (I := I) g 0 s B B
                 (fun z : M => S.toSection z) y) x))
@@ -482,7 +482,7 @@ theorem covGrad_covDeriv_leadingSlot_secondOrder_commutation
           (unitZeroSec (I := I) (M := M) x)) (w x) -
       tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+          covGradBundleEquiv (I := I) (M := M) 0 s x
             ((tensorCov (I := I) g 0 s).toFun
               (fun y : M => tensorSecondCovDeriv (I := I) g 0 s B B
                 (fun z : M => S.toSection z) y) x))

@@ -49,7 +49,7 @@ theorem parabolicOperatorWithDrift_inner_endomorphism_apply_of_normal_eigenvecto
         ((derivWithin (fun q ↦ A q x) (Icc 0 T) t -
             rawBundleEndomorphismConnLap (I := I) (G.metric t) cov
               (fun y ↦ A t y) x -
-            _root_.CovariantDerivative.hom
+            HomConnectionGen.homBundleCovariantDerivativeGen
               I M F V F V cov cov (fun y ↦ A t y) x (X t x)) (v x))
         (v x) := by
   let q : C^∞⟮I, M; Real⟯ :=
@@ -78,7 +78,7 @@ theorem parabolicOperatorWithDrift_inner_endomorphism_apply_of_normal_eigenvecto
       driftTerm (I := I) G t (X t)
           (fun y ↦ inner Real (A t y (v y)) (v y)) x =
         inner Real
-          ((_root_.CovariantDerivative.hom
+          ((HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V cov cov (fun y ↦ A t y) x (X t x)) (v x))
           (v x) := by
     unfold driftTerm gradientAt
@@ -115,7 +115,7 @@ theorem derivWithin_sub_heatOperatorWithDrift_inner_endomorphism_apply_of_normal
         ((deriv (fun q ↦ A q x) t -
             rawBundleEndomorphismConnLap (I := I) (G.metric t) cov
               (fun y ↦ A t y) x -
-            _root_.CovariantDerivative.hom
+            HomConnectionGen.homBundleCovariantDerivativeGen
               I M F V F V cov cov (fun y ↦ A t y) x (X t x)) (v x))
         (v x) := by
   have h := parabolicOperatorWithDrift_inner_endomorphism_apply_of_normal_eigenvector
@@ -147,7 +147,7 @@ theorem parabolicOperatorWithDrift_sum_inner_endomorphism_apply_of_normal_eigenf
         ((deriv (fun q ↦ A q x) t -
             rawBundleEndomorphismConnLap (I := I) (G.metric t) cov
               (fun y ↦ A t y) x -
-            _root_.CovariantDerivative.hom
+            HomConnectionGen.homBundleCovariantDerivativeGen
               I M F V F V cov cov (fun y ↦ A t y) x (X t x)) (v i x))
         (v i x) := by
   let u : Fin k → Real → M → Real :=

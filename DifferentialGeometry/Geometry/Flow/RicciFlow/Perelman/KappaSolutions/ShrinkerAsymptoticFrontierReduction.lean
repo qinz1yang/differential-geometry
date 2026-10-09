@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.NullSectionalRankRigidity
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankReduction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinker.TerminalSemicontinuity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Splitting.RankKernel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinkerFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalRankKernelFrontier
 import Mathlib.Analysis.Matrix.Order
 
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Completeness.PseudoEMetric
-import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Topology.Connected.FiniteEDistance
 import Mathlib.Topology.UniformSpace.UniformEmbedding
 import DifferentialGeometry.Topology.Compactness.Connected

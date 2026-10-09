@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
-import DifferentialGeometry.Bundle.TangentCoordChange.MatrixEntries
+import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.ChartJacobianMatrixEntrySmoothness
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import Mathlib.Analysis.Normed.Operator.NormedSpace
 import Mathlib.Analysis.Normed.Operator.Bilinear
@@ -52,7 +52,7 @@ theorem chartJinv_wrapped_continuousAt
           (trivializationAt E (TangentSpace I) α).symmL ℝ b
             : E →L[ℝ] E))
       b₀ :=
-  (Bundle.Tangent.contMDiffAt_continuousLinearMapAt_self_comp_symmL (I := I) (M := M) α hb₀).continuousAt
+  (contMDiffAt_tangentTrivialization_coordChangeL_alpha_to_b0 (I := I) (M := M) α hb₀).continuousAt
 
 omit [Module.Finite ℝ E] in
 theorem chartJ_wrapped_continuousAt
@@ -63,7 +63,7 @@ theorem chartJ_wrapped_continuousAt
           (trivializationAt E (TangentSpace I) b₀).symmL ℝ b
             : E →L[ℝ] E))
       b₀ :=
-  (Bundle.Tangent.contMDiffAt_continuousLinearMapAt_comp_symmL_self (I := I) (M := M) α hb₀).continuousAt
+  (contMDiffAt_tangentTrivialization_coordChangeL_b0_to_alpha (I := I) (M := M) α hb₀).continuousAt
 
 omit [Module.Finite ℝ E] in
 theorem chartJinv_wrapped_centre_eq

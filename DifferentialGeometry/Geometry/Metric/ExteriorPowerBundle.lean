@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.InnerProductSpace.ExteriorPower.Smoothness
+import DifferentialGeometry.Geometry.Metric.ExteriorPowerSmooth
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
 import Mathlib.Topology.VectorBundle.FiniteDimensional
 

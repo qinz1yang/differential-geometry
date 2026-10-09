@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.MetricExtension.Family.FixedDensityBounds
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FixedDensityCoefficientBounds
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalNirenbergCoercivity
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergEstimate
 

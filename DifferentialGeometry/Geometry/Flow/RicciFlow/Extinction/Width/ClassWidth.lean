@@ -149,8 +149,8 @@ theorem exists_representative_maximum_lt (g : SmoothRiemannianMetric I Q)
 
 
 def nullFamilyClass (q : Q) : FreeContractibleSphereClass Q :=
-  DifferentialGeometry.Topology.FreeHomotopyClass.mk (ContinuousMap.const (Sphere 2)
-    (⟨DifferentialGeometry.Topology.FreeLoop.constants q, ContinuousMap.nullhomotopic_of_constant q⟩ : DifferentialGeometry.Topology.contractibleLoop Q))
+  FreeHomotopyClass.mk (ContinuousMap.const (Sphere 2)
+    (⟨constantLoops q, isContractibleLoop_constant q⟩ : ContractibleContinuousLoop Q))
 
 def constantRegularRepresentative (q : Q) : RegularRepresentative (I := I) (nullFamilyClass q) :=
   ⟨ContinuousMap.const (Sphere 2) (constantContractibleRegularLoop q), rfl⟩
@@ -188,10 +188,10 @@ theorem rfs_width_finiteness (g : SmoothRiemannianMetric I Q)
   obtain ⟨ε₀, hε₀, S, hjets, _, hhom, hregular, _⟩ :=
     hsmooth (Sphere 2) (regularLoopInclusion.comp Γr)
   have hctrS (ε : ℝ) (hε : ε ∈ Ioo (0 : ℝ) ε₀) (k : Sphere 2) :
-      ContinuousMap.Nullhomotopic (S ε k).toContinuousLoop := by
+      IsContractibleLoop (S ε k).toContinuousLoop := by
     obtain ⟨F, _, hF⟩ := hhom ε hε
     have h := hF k (Γ.1 k).2 1
-    exact Eq.mp (congrArg ContinuousMap.Nullhomotopic (F.apply_one k)) h
+    exact Eq.mp (congrArg IsContractibleLoop (F.apply_one k)) h
   let T : ℝ → RegularFamily (I := I) (Q := Q) (Sphere 2) := fun ε =>
     if hε : ε ∈ Ioo (0 : ℝ) ε₀ then
       ⟨fun k => ⟨S ε k, hctrS ε hε k⟩, (S ε).continuous.subtype_mk _⟩
@@ -225,8 +225,8 @@ theorem rfs_width_finiteness (g : SmoothRiemannianMetric I Q)
       change F (1, k) = (T ε k).1.toContinuousLoop
       simpa only [T, dite_eq_left hε, ContinuousMap.coe_mk] using
         (show F (1, k) = (S ε k).toContinuousLoop from F.apply_one k)
-  have hclass : DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (T ε)) = ξ :=
-    ((DifferentialGeometry.Topology.FreeHomotopyClass.mk_eq_mk_iff _ _).mpr hhomT).symm.trans Γ.2
+  have hclass : FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (T ε)) = ξ :=
+    ((FreeHomotopyClass.mk_eq_mk_iff _ _).mpr hhomT).symm.trans Γ.2
   refine ⟨⟨T ε, hclass⟩, hboundε, ?_⟩
   simpa only [HasContinuousSmoothLoopJets, HasContinuousSmoothJets, T, dite_eq_left hε,
     ContinuousMap.coe_mk] using hjets ε hε
@@ -336,7 +336,7 @@ theorem leastArea_relative_metric_bound (g h : SmoothRiemannianMetric I Q)
     {δ : ℝ} (hδ : 0 ≤ δ) (hδone : δ < 1)
     (hmetric : ∀ q (v : TangentSpace I q),
       |h.inner q v v - g.inner q v v| ≤ δ * g.inner q v v)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hctr : ContinuousMap.Nullhomotopic γ)
+    (γ : ContinuousFreeLoop Q) (hctr : IsContractibleLoop γ)
     (hlipg : IsLipschitzLoop g γ) (hliph : IsLipschitzLoop h γ) :
     |leastArea h γ hctr hliph - leastArea g γ hctr hlipg| ≤
       δ * leastArea g γ hctr hlipg := by
@@ -385,8 +385,8 @@ theorem continuousOn_leastArea_metricFamily
     (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
     (g : ℝ → SmoothRiemannianMetric I Q)
     (hg : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn D g)
-    (g₀ : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q)
-    (hctr : ContinuousMap.Nullhomotopic γ) (hlip : IsLipschitzLoop g₀ γ) :
+    (g₀ : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q)
+    (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g₀ γ) :
     ContinuousOn (fun t => leastArea (g t) γ hctr
       ((isLipschitzLoop_metric_iff g₀ (g t) γ).mp hlip)) D.carrier := by
   let hLip (t : ℝ) := (isLipschitzLoop_metric_iff g₀ (g t) γ).mp hlip

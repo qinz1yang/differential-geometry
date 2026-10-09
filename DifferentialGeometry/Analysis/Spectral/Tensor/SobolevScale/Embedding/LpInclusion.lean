@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Inclusion
-import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.PiLp
+import DifferentialGeometry.Analysis.FunctionalAnalysis.PiLpMap
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 
 noncomputable section

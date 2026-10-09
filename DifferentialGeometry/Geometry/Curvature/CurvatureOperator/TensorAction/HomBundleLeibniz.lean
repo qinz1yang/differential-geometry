@@ -46,7 +46,7 @@ omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] [∀ (x : M), IsTopo
     pairedSection (M := M) (U := U) (V := V) τ Y b = τ b (Y b) := rfl
 
 local notation "covHom" =>
-  _root_.CovariantDerivative.hom I M E_U U F V
+  homBundleCovariantDerivative I M E_U U F V
 
 omit [BoundarylessManifold I M] in
 omit [CompleteSpace E] [SigmaCompactSpace M] [CompleteSpace E_U] [FiniteDimensional ℝ F]
@@ -75,7 +75,7 @@ lemma covApply_cov_V_pairedSection_eq
       (fun y => TotalSpace.mk' E_U (E := U) y (Y y)) b :=
     Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hkey :=
-    _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt I M E_U U F V cov_U cov_V
+    homBundleCovariantDerivative_apply_of_mdifferentiableAt I M E_U U F V cov_U cov_V
       (fun y : M => τ y) hτ hZ hY
   simp only [Pi.add_apply, pairedSection, covApply_apply]
   rw [hkey]
@@ -105,7 +105,7 @@ lemma cov_V_toFun_pairedSection_apply
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (X y)) x :=
     (hX_smooth x).mdifferentiableAt (by simp)
   have hkey :=
-    _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt I M E_U U F V cov_U cov_V
+    homBundleCovariantDerivative_apply_of_mdifferentiableAt I M E_U U F V cov_U cov_V
       σ hσ hX_at hY
   rw [hXx] at hkey
   rw [show cov_V.toFun (pairedSection (M := M) (U := U) (V := V) σ Y) x v =

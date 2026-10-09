@@ -8,6 +8,8 @@ open Set _root_.Geometry _root_.Topology
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
+set_option linter.style.haveILetI false
 
 variable {E F : Type*} [DecidableEq E] [DecidableEq F]
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -28,12 +30,10 @@ def ambientVertexSubcomplex (K D : SimplicialComplex ℝ E) :
     intro t hts ht
     exact D.down_closed hs (Finset.image_subset_image hts) (Finset.image_nonempty.mpr ht)
 
-omit [FiniteDimensional ℝ E] in
 theorem ambientVertexSubcomplex_le (K D : SimplicialComplex ℝ E)
     (hDK : D.faces ⊆ K.faces) : ambientVertexSubcomplex K D ≤ abstractVertexComplex K :=
   fun _ hs => hDK hs
 
-omit [FiniteDimensional ℝ E] in
 theorem ambientVertexSubcomplex_map (K D : SimplicialComplex ℝ E)
     (hDK : D.faces ⊆ K.faces) :
     ((ambientVertexSubcomplex K D).map Subtype.val).faces = D.faces := by
@@ -71,11 +71,11 @@ theorem vertexEvaluation_mem_ambientVertexSubcomplex_iff
   · intro h
     exact himage.subset (mem_image_of_mem _ h)
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem isCompact_geometric_realization_of_finite (K : SimplicialComplex ℝ E) (hK : K.faces.Finite) :
     IsCompact K.space := by
   classical
-  let : Fintype K.vertices := (finite_vertices_of_finite_faces K hK).fintype
+  letI : Fintype K.vertices := (finite_vertices_of_finite_faces K hK).fintype
   rw [← vertexEvaluation_image_space (abstractVertexComplex K) Subtype.val K
     (abstractVertexComplex_map K).symm]
   exact (isCompact_standardRealization_space _).image
@@ -141,8 +141,8 @@ theorem exists_geometric_polyhedral_quotient_full
     intro s hs
     obtain ⟨t, ht, hst⟩ := href s hs
     exact (hinj t ht).mono hst
-  let : Fintype L.vertices := (finite_vertices_of_finite_faces L hL).fintype
-  let : Fintype T.vertices := (finite_vertices_of_finite_faces T hTf).fintype
+  letI : Fintype L.vertices := (finite_vertices_of_finite_faces L hL).fintype
+  letI : Fintype T.vertices := (finite_vertices_of_finite_faces T hTf).fintype
   let P := abstractVertexComplex L
   let A := ambientVertexSubcomplex L J
   let v := geometricSimplicialVertexMap L T f hmap
@@ -210,7 +210,7 @@ theorem exists_geometric_polyhedral_quotient_full
     rw [H.symm_apply_apply]
     exact congrArg (fun z => e z.val) (realizedPolyhedralQuotientMap_subdivision P A v x)
   have hcompact : IsCompact K.space := isCompact_geometric_realization_of_finite K hK
-  let : CompactSpace K.space := isCompact_iff_compactSpace.mp hcompact
+  letI : CompactSpace K.space := isCompact_iff_compactSpace.mp hcompact
   refine ⟨n, Q, q, hQ, hdim, IsQuotientMap.of_surjective_continuous hqs q.continuous, ?_, ?_, ?_⟩
   · intro x y
     change HQ (q₀ (H.symm x)) = HQ (q₀ (H.symm y)) ↔ _
@@ -376,7 +376,7 @@ theorem exists_descended_map_of_subspace_fibers
     rw [show G ∘ q = F from funext hfactor]
     exact F.continuous
   have hQS : IsCompact (q '' S) := hS.image q.continuous
-  let : CompactSpace (q '' S) := isCompact_iff_compactSpace.mp hQS
+  letI : CompactSpace (q '' S) := isCompact_iff_compactSpace.mp hQS
   refine ⟨⟨G, hGc⟩, hfactor, Continuous.isClosedEmbedding
     (hGc.comp continuous_subtype_val) ?_⟩
   intro z w hzw
@@ -430,7 +430,7 @@ theorem exists_geometric_polyhedral_quotient_with_descent
   classical
   obtain ⟨n, Q, q, hQ, hdim, hq, hrel⟩ :=
     exists_geometric_polyhedral_quotient K D hK hDK f hf hinj hd
-  let : CompactSpace K.space := isCompact_iff_compactSpace.mp
+  letI : CompactSpace K.space := isCompact_iff_compactSpace.mp
     (isCompact_geometric_realization_of_finite K hK)
   have hS : IsCompact {x : K.space | x.val ∈ D.space} :=
     ((isCompact_geometric_realization_of_finite D (hK.subset hDK)).isClosed.preimage
@@ -467,7 +467,7 @@ theorem exists_geometric_polyhedral_quotient_full_with_descent
   classical
   obtain ⟨n, Q, q, hQ, hdim, hq, hrel, himages, hPL⟩ :=
     exists_geometric_polyhedral_quotient_full K D hK hDK f hf hinj hd
-  let : CompactSpace K.space := isCompact_iff_compactSpace.mp
+  letI : CompactSpace K.space := isCompact_iff_compactSpace.mp
     (isCompact_geometric_realization_of_finite K hK)
   have hS : IsCompact {x : K.space | x.val ∈ D.space} :=
     ((isCompact_geometric_realization_of_finite D (hK.subset hDK)).isClosed.preimage

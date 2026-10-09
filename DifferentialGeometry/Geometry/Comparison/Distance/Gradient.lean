@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.Interior
-import DifferentialGeometry.Geometry.Variation.NoConjugatePoints.MinimizingSegment
+import DifferentialGeometry.Geometry.Comparison.Variation.NoConjugatePoints.MinimizingSegment
 import DifferentialGeometry.Geometry.Exponential.Inverse.Radius
 import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
 import Mathlib.Analysis.Calculus.LocalExtr.Basic

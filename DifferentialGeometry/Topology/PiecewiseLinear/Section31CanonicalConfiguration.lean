@@ -1,9 +1,13 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Torus.NestedApproximation
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.FundamentalGroup.Nullhomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.BallHomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalConfiguration
 import DifferentialGeometry.Topology.PiecewiseLinear.IsSpineRevolutionOfOfMemCellInterior
-import DifferentialGeometry.Topology.SolidTorus.FundamentalGroup
+import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
 import DifferentialGeometry.Topology.PiecewiseLinear.RevolutionOfCellInteriorSubsetInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusGeneralPosition
@@ -298,16 +302,8 @@ end Inhabitants
 
 section Assemblies
 
-theorem IsCanonicalConfiguration.inter_outer_solidTori_eq_empty
-    {P : Fin 4 → EuclideanSpace ℝ (Fin 3)}
-    {D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    {J : Fin 4 → Set (EuclideanSpace ℝ (Fin 3))}
-    {A S T : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    {N : Set (EuclideanSpace ℝ (Fin 3))}
-    {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
-    {S'' T'' : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    (hc : IsCanonicalConfiguration P D Dint J A S T N h S'' T'') :
-    S'' 0 ∩ S'' 2 = ∅ := by
+theorem moise313 : Moise313 := by
+  intro P D Dint J A S T N h S'' T'' hc
   have hinj : InjOn h N := Set.injOn_iff_injective.mpr hc.isEmbedding.injective
   have hSN : ∀ j, S j ⊆ N := fun j => by
     rw [hc.unionEq]
@@ -323,19 +319,8 @@ theorem IsCanonicalConfiguration.inter_outer_solidTori_eq_empty
           ((hc.innerSubset 2).trans interior_subset)
     _ = ∅ := himg
 
-theorem IsCanonicalConfiguration.surjective_fundamentalGroup_map_circle
-    {P : Fin 4 → EuclideanSpace ℝ (Fin 3)}
-    {D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    {J : Fin 4 → Set (EuclideanSpace ℝ (Fin 3))}
-    {A S T : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    {N : Set (EuclideanSpace ℝ (Fin 3))}
-    {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
-    {S'' T'' : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    (hc : IsCanonicalConfiguration P D Dint J A S T N h S'' T'') (j : Fin 3) (k : Fin 4)
-    (hk : k = j.castSucc ∨ k = j.succ)
-    (hsub : h '' J k ⊆ S'' j) (x : h '' J k) :
-    Function.Surjective (FundamentalGroup.map
-      (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(h '' J k, S'' j)) x) := by
+theorem moise312 : Moise312 := by
+  intro P D Dint J A S T N h S'' T'' hc j k hk hsub x
   have hSN : S j ⊆ N := by
     rw [hc.unionEq]
     exact subset_iUnion S j
@@ -354,17 +339,8 @@ theorem IsCanonicalConfiguration.surjective_fundamentalGroup_map_circle
     (hc.isPolyhedralSolidTorus j).1 hT (hc.innerSubset j)
     (isSpine_image_of_isEmbedding hemb hspine) hsub x).2
 
-theorem exists_isCanonicalConfiguration
-    {P : Fin 4 → EuclideanSpace ℝ (Fin 3)}
-    {D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    {J : Fin 4 → Set (EuclideanSpace ℝ (Fin 3))}
-    {A S T : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    {N : Set (EuclideanSpace ℝ (Fin 3))}
-    {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
-    (hc : IsRevolvedTorusChain P D Dint J A S T) (hN : N = ⋃ j, S j)
-    (hh : Topology.IsEmbedding (N.domRestrict h)) :
-    ∃ S'' T'' : Fin 3 → Set (EuclideanSpace ℝ (Fin 3)),
-      IsCanonicalConfiguration P D Dint J A S T N h S'' T'' := by
+theorem moise311 (h307 : Moise307) : Moise311 := by
+  intro P D Dint J A S T N h hc hN hh
   have hSN : ∀ j, S j ⊆ N := fun j => by
     rw [hN]
     exact subset_iUnion S j
@@ -376,7 +352,7 @@ theorem exists_isCanonicalConfiguration
     intro j
     obtain ⟨S₁, hS₁, hAS₁, hS₁S, hshell⟩ :=
       exists_innerSolidTorus_toroidalShell_of_annulusImage hc hN hh j
-    obtain ⟨S', hcyl, hS₁S', hS'S⟩ := exists_hasCylindricalDiagram_between_nested_tori hS₁ (hT j) hS₁S hshell
+    obtain ⟨S', hcyl, hS₁S', hS'S⟩ := h307 S₁ (h '' S j) hS₁ (hT j) hS₁S hshell
     exact ⟨S', isCombinatorialSolidTorus_of_hasCylindricalDiagram hcyl,
       hAS₁.trans (interior_subset.trans hS₁S'), hS'S⟩
   choose S' hS' using hstep
@@ -392,7 +368,7 @@ theorem exists_isCanonicalConfiguration
       crossing := hcross
       polygons := hpoly }⟩
 
-theorem exists_isCanonicalConfiguration_standard :
+theorem exists_isCanonicalConfiguration_standard (h307 : Moise307) :
     ∃ S'' T'' : Fin 3 → Set (EuclideanSpace ℝ (Fin 3)),
       IsCanonicalConfiguration standardChainPoint standardChainCell standardChainCellInterior
         (fun j => revolutionOf {standardChainPoint j})
@@ -401,7 +377,7 @@ theorem exists_isCanonicalConfiguration_standard :
         (fun j => revolutionOf (standardChainCell j))
         (fun j => frontier (revolutionOf (standardChainCell j)))
         (⋃ j, revolutionOf (standardChainCell j)) id S'' T'' :=
-  exists_isCanonicalConfiguration (h := id) isRevolvedTorusChain_standard rfl IsEmbedding.subtypeVal
+  moise311 h307 _ _ _ _ _ _ _ _ id isRevolvedTorusChain_standard rfl IsEmbedding.subtypeVal
 
 theorem polygon_dichotomy_of_carrier {Sa Sb U K Z G : Set (EuclideanSpace ℝ (Fin 3))}
     (hSa : IsCombinatorialSolidTorus Sa) (hSb : IsCombinatorialSolidTorus Sb)
@@ -447,7 +423,7 @@ theorem polygon_dichotomy_of_carrier {Sa Sb U K Z G : Set (EuclideanSpace ℝ (F
     exact exists_isPLCell_frontier_of_polygon_nullhomotopic hSb hGb hr hGΔ hΔZ hZ hZb hZgen
       fun _ x g => (htransfer x).2.mp (hnull x) g
 
-theorem IsCanonicalConfiguration.polygon_dichotomy_pair {P : Fin 4 → EuclideanSpace ℝ (Fin 3)}
+theorem moise314_pair {P : Fin 4 → EuclideanSpace ℝ (Fin 3)}
     {D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))} {J : Fin 4 → Set (EuclideanSpace ℝ (Fin 3))}
     {A S T : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))} {N : Set (EuclideanSpace ℝ (Fin 3))}
     {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
@@ -571,24 +547,8 @@ theorem IsCanonicalConfiguration.polygon_dichotomy_pair {P : Fin 4 → Euclidean
     hSaU hSbU hUa hUb hK (hKsub.trans inter_subset_left) (hKsub.trans inter_subset_right) hKgen
     ⟨y, hy⟩ hZa hZb (hgen b m hmb) hG hGa hGb
 
-theorem IsCanonicalConfiguration.polygon_dichotomy
-    {P : Fin 4 → EuclideanSpace ℝ (Fin 3)}
-    {D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    {J : Fin 4 → Set (EuclideanSpace ℝ (Fin 3))}
-    {A S T : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    {N : Set (EuclideanSpace ℝ (Fin 3))}
-    {h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
-    {S'' T'' : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))}
-    (hc : IsCanonicalConfiguration P D Dint J A S T N h S'' T'')
-    (j : Fin 2) (G : Set (EuclideanSpace ℝ (Fin 3))) (hG : IsPLSphere 1 G)
-    (hGsub : G ⊆ T'' j.castSucc ∩ T'' j.succ) :
-    (∀ k : Fin 3, (k = j.castSucc ∨ k = j.succ) → ∀ hsub : G ⊆ S'' k, ∀ x : G,
-        Function.Surjective (FundamentalGroup.map
-          (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(G, S'' k)) x)) ∨
-      ∀ k : Fin 3, (k = j.castSucc ∨ k = j.succ) →
-        ∃ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-          IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' k ∧
-            G = r '' stdSimplexBoundary 2 := by
+theorem moise314 : Moise314 := by
+  intro P D Dint J A S T N h S'' T'' hc j G hG hGsub
   have hP1 : P 1 ∈ D 0 :=
     hc.base.chain.interiorSubset 0 (hc.base.chain.segmentSubset 0 (right_mem_segment ℝ _ _))
   have hP2 : P 2 ∈ D 2 :=
@@ -607,7 +567,7 @@ theorem IsCanonicalConfiguration.polygon_dichotomy
     have hunion : ∃ Eint : Set (EuclideanSpace ℝ (Fin 3)),
         IsTopologicalCellWithInterior 2 (D 0 ∪ D 1) Eint ∧ P 1 ∈ Eint :=
       ⟨Eint, hE, hE0 (hc.base.chain.segmentSubset 0 (right_mem_segment ℝ _ _))⟩
-    rcases IsCanonicalConfiguration.polygon_dichotomy_pair hc 0 1 1 2 (Or.inr rfl) (Or.inl rfl) (Or.inr rfl) hP2not hunion hG
+    rcases moise314_pair hc 0 1 1 2 (Or.inr rfl) (Or.inl rfl) (Or.inr rfl) hP2not hunion hG
       (hGsub.trans inter_subset_left) (hGsub.trans inter_subset_right) with ⟨h1, h2⟩ | ⟨h1, h2⟩
     · left
       intro k hk
@@ -625,7 +585,7 @@ theorem IsCanonicalConfiguration.polygon_dichotomy
         IsTopologicalCellWithInterior 2 (D 2 ∪ D 1) Eint ∧ P 2 ∈ Eint := by
       rw [union_comm]
       exact ⟨Eint, hE, hE1 (hc.base.chain.segmentSubset 1 (right_mem_segment ℝ _ _))⟩
-    rcases IsCanonicalConfiguration.polygon_dichotomy_pair hc 2 1 2 1 (Or.inl rfl) (Or.inr rfl) (Or.inl rfl) hP1not hunion hG
+    rcases moise314_pair hc 2 1 2 1 (Or.inl rfl) (Or.inr rfl) (Or.inl rfl) hP1not hunion hG
       (hGsub.trans inter_subset_right) (hGsub.trans inter_subset_left) with ⟨h1, h2⟩ | ⟨h1, h2⟩
     · left
       intro k hk

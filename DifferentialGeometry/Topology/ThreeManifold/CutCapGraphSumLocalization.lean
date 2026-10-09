@@ -1,4 +1,3 @@
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.CutCapFrontierCanonicalReduction
 
 noncomputable section
@@ -33,7 +32,8 @@ private theorem exists_orientedDiffeomorph_finiteConnectedSum_replicate
     Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
       (finiteConnectedSum (L ++ K)).toClosedOrientedManifold
       (finiteConnectedSum (L ++ List.replicate K.length S)).toClosedOrientedManifold) :=
-  finiteConnectedSum_congr
+  finiteConnectedSum_congr_of_connectedSumLaws
+    (connectedSumLaws_of_associative connectedSumAssociative_holds)
     (List.rel_append (List.forall₂_same.mpr fun _ _ =>
       ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩)
       (forall₂_replicate_of_forall_mem_isSphereTwoTimesCircleFactor hS hKfac))

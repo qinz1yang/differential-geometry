@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.Scalar
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 
 set_option autoImplicit false
 

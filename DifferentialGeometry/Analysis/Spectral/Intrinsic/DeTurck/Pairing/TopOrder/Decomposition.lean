@@ -510,7 +510,7 @@ theorem secondSlotInsertionCoefficient_apply (g : SmoothRiemannianMetric I M)
   rw [secondSlotInsertionCoefficient, domDomCongrSection_unitModel,
     ContinuousMultilinearMap.domDomCongr_apply]
   rw [unitModel, operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
-    slotInsertEndoCc_toSection, slotInsertEndomorphism_apply_eval]
+    slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval]
   rw [show Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace 2 I x from
         (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) j) S).toSection x)

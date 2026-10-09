@@ -7,12 +7,12 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.HigherForcingFamilies
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.ForcingFamilies
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.CoefficientFamilies
-import DifferentialGeometry.Geometry.Flow.CurveShortening.Sobolev.SpatialJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.SpatialJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.Reconstruction
-import DifferentialGeometry.Geometry.Flow.CurveShortening.Parametric.Retraction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicReconstruction
 import DifferentialGeometry.Analysis.Calculus.TimeJet.FirstJetComposition
 import DifferentialGeometry.Analysis.Calculus.TimeJet.MixedJets
-import DifferentialGeometry.Geometry.Flow.CurveShortening.Gauge.ParametricEquation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicGaugeLocalExistence
 import DifferentialGeometry.Analysis.ODE.Uniqueness
 import DifferentialGeometry.Analysis.Calculus.TimeJet.SpatialDerivatives
 import Mathlib.Topology.UniformSpace.UniformApproximation
@@ -858,7 +858,7 @@ open private
 DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.CoefficientFamilies
 open private
   reference_joint_total_sobolev_representatives from
-DifferentialGeometry.Geometry.Flow.CurveShortening.Sobolev.SpatialJets
+DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.SpatialJets
 open private
   referenceCirclePrincipalNormBounds from
 DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.ParameterSolutions

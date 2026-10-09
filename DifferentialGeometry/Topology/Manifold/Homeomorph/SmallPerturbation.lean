@@ -1,7 +1,6 @@
 import DifferentialGeometry.Topology.Homeomorph.SmallPerturbation
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import DifferentialGeometry.Topology.Manifold.ModelTransport
-
 open Set Topology
 
 namespace DifferentialGeometry.Topology.Manifold

@@ -2,6 +2,7 @@ import DifferentialGeometry.Topology.Morse.Handle.Middle.Homology.MiddleHandleHo
 import Mathlib.LinearAlgebra.Matrix.DotProduct
 
 set_option autoImplicit false
+set_option linter.unusedSectionVars false
 
 open Set Filter
 open DifferentialGeometry.Topology.Morse.CellAttachment (morseNorm morseNormalForm negPart posPart
@@ -20,7 +21,6 @@ section PushOff
 
 variable {I : ModelWithCorners ℝ (Fin n → ℝ) H} [IsManifold I ∞ M] [T2Space M] [I.Boundaryless]
 
-omit [I.Boundaryless] in
 theorem exists_pushOff_chart {m : ℕ} {F : (Fin m → ℝ) → M} (hF : ContinuousOn F (Icc 0 1))
     {A : Set (Fin m → ℝ)} (hA : IsClosed A) {ι : Type*} (s : Finset ι) (d : ι → ℕ)
     (G : ∀ i, (Fin (d i) → ℝ) → M) (Ω K : ∀ i, Set (Fin (d i) → ℝ))
@@ -3341,7 +3341,6 @@ theorem flowChart_spec {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {
   rw [hbd, Fin.sum_univ_def]
   rfl
 
-omit [I.Boundaryless] in
 theorem exists_injOn_nhds_of_immersion {m : ℕ} {Φ : (Fin m → ℝ) → M} {W K : Set (Fin m → ℝ)}
     (hW : IsOpen W) (hΦ : ContMDiffOn 𝓘(ℝ, Fin m → ℝ) I 1 Φ W) (hK : IsCompact K) (hKW : K ⊆ W)
     (himm : ∀ y ∈ K, Function.Injective (mfderiv 𝓘(ℝ, Fin m → ℝ) I Φ y)) (hinj : InjOn Φ K) :

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Geometry.Variation.Curve.SpeedDerivative
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SpeedDerivative
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.HeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Estimate.QuadraticForm

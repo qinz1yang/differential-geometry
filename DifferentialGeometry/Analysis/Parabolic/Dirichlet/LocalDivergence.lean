@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationLocal
-import DifferentialGeometry.Analysis.Elliptic.MetricExtension.Family.DifferenceQuotientBounds
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientBounds
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DivergenceForm
 
 noncomputable section

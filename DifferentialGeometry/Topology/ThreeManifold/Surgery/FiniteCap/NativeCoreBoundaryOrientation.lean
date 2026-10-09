@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.NativeCuttingSpheres
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.FiniteCapQuotient
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Open
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Comparison
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationOpen
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationComparison
 
 set_option autoImplicit false
 noncomputable section

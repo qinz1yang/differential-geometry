@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.WarpedProduct.Defs
+import DifferentialGeometry.Geometry.Metric.WarpedProduct
 import DifferentialGeometry.Geometry.Metric.Construction.CompactPerturbationCompleteness
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
 import DifferentialGeometry.Analysis.Calculus.RoundCylindricalProfile

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialRoundComponentBallVolume
 import DifferentialGeometry.Geometry.Neck.BallVolume
 import DifferentialGeometry.Geometry.Comparison.RadialHessianLowerBound
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
 set_option autoImplicit false
 noncomputable section

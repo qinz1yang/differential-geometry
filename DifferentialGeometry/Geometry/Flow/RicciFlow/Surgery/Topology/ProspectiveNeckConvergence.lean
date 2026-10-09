@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Neck.NormalizedFootprint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CylinderBackwardConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckTimeJetConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNeckIncomingAdapter
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NormalizedConvergence

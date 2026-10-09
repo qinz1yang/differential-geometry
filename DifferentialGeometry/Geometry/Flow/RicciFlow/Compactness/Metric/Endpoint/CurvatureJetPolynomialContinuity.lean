@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.TimeCoefficientContinuity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.AncientJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCurvatureJets
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 
 set_option autoImplicit false

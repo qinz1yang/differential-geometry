@@ -1,12 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalRegionConvexity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonFrontierReduction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Comparison.Metric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonLocalLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseDegreeFrontierReduction
-import DifferentialGeometry.Geometry.Metric.CurveVariation.Comparison
-import DifferentialGeometry.Geometry.Metric.CurveVariation.Distance
-import DifferentialGeometry.Geometry.Metric.CurveVariation.WeakDerivative
-import DifferentialGeometry.Topology.Manifold.LocalCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WeakLength
 
 set_option autoImplicit false
 noncomputable section
@@ -123,12 +120,12 @@ def LocalRegionLengthComparison (G : GeometricCutoffRecord H i parameters)
       ∀ (a b : ℝ) (γ : ℝ → ↥(regionOfComponent G c)),
         a ≤ b → ContinuousOn γ (Icc a b) →
         (∀ t ∈ Icc a b, (⟨(γ t).1, (γ t).2.1⟩ : (G.Parent c).Carrier) ∈ U) →
-        DifferentialGeometry.Geometry.riemannianCurveVariation (((H.event i).incoming.flow.base.metric s).restrictOpen
+        riemannianCurveLength (((H.event i).incoming.flow.base.metric s).restrictOpen
           (regionOfComponent G c)) γ a b ≠ ⊤ →
-        DifferentialGeometry.Geometry.riemannianCurveVariation ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
+        riemannianCurveLength ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
           (fun t => (Kc c).canonicalWholeParentMap ⟨(γ t).1, (γ t).2.1⟩) a b ≤
         ENNReal.ofReal (ell s) *
-          DifferentialGeometry.Geometry.riemannianCurveVariation (((H.event i).incoming.flow.base.metric s).restrictOpen
+          riemannianCurveLength (((H.event i).incoming.flow.base.metric s).restrictOpen
             (regionOfComponent G c)) γ a b
 
 theorem localRegionLengthComparison_of_regionEDistComparison
@@ -196,9 +193,9 @@ theorem rfs_child_comparison_metric_of_regionLengthComparison
     ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (G.Child c).Carrier
   have hlocFull : ∀ z : ↥W, ∃ U ∈ 𝓝 z, ∀ (a b : ℝ) (γ : ℝ → ↥W),
       a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
-      DifferentialGeometry.Geometry.riemannianCurveVariation gs γ a b ≠ ⊤ →
-      DifferentialGeometry.Geometry.riemannianCurveVariation hc (F ∘ γ) a b ≤
-        (NNReal.mk (ell s) hL : ℝ≥0∞) * DifferentialGeometry.Geometry.riemannianCurveVariation gs γ a b := by
+      riemannianCurveLength gs γ a b ≠ ⊤ →
+      riemannianCurveLength hc (F ∘ γ) a b ≤
+        (NNReal.mk (ell s) hL : ℝ≥0∞) * riemannianCurveLength gs γ a b := by
     intro z
     by_cases hz : (⟨z.1, z.2.1⟩ : (G.Parent c).Carrier) ∈ (Kc c).support.region
     · obtain ⟨U, hU, hUsub, hU'⟩ := hloc c s hs ⟨z.1, z.2.1⟩ hz
@@ -219,15 +216,11 @@ theorem rfs_child_comparison_metric_of_regionLengthComparison
         (γ := F ∘ γ) (a := a) (b := b) (q := F z) hconst'
       rw [hzero]
       exact bot_le
-  let : RegularSpace ↥W :=
-    DifferentialGeometry.Topology.Manifold.regularSpace_of_chartedSpace ThreeModel
-  let : RegularSpace (G.Child c).Carrier :=
-    DifferentialGeometry.Topology.Manifold.regularSpace_of_chartedSpace ThreeModel
   by_cases hfin : riemannianEDistOf gs x y = ⊤
   · rw [hfin, ENNReal.mul_top (ne_of_gt (ENNReal.ofReal_pos.mpr
       (lt_of_lt_of_le zero_lt_one (hell s hs))))]
     exact le_top
-  · have h := DifferentialGeometry.Geometry.riemannianEDistOf_comp_le_of_local_riemannianCurveVariation_of_ne_top gs hc F (NNReal.mk (ell s) hL)
+  · have h := rfs_local_to_global_length_of_ne_top gs hc F (NNReal.mk (ell s) hL)
       hlocFull hfin
     rwa [ENNReal.ofReal_eq_coe_nnreal hL]
 
@@ -307,7 +300,7 @@ theorem localTerminalRegionEDistComparison_of_parentComparison
   refine ⟨U, hU, hUsub, ?_⟩
   intro y hy z hz hy' hz'
   refine (hU' y hy z hz hy' hz').trans (mul_le_mul_of_nonneg_left ?_ (by positivity))
-  rw [DifferentialGeometry.Topology.ClosedOrientedManifold.edistOf_componentMetric (H.stage i.castSucc)
+  rw [OrientedThreeStage.edistOf_componentMetric (H.stage i.castSucc)
     ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c) y z]
   exact DifferentialGeometry.riemannianEDistOf_le_restrictOpen
     ((H.event i).incoming.flow.base.metric s) (H.event i).incoming.terminalRegularOpen

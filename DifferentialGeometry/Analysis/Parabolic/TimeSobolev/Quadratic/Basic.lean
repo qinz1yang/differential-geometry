@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Time.Operator.Basic
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Operator.Basic
 import Mathlib.Analysis.InnerProductSpace.Positive
 import Mathlib.Analysis.LocallyConvex.WeakSpace
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic

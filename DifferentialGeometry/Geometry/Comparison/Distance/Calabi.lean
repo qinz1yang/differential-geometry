@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
-import DifferentialGeometry.Geometry.Variation.NoConjugatePoints.MinimizingSegment
+import DifferentialGeometry.Geometry.Comparison.Variation.NoConjugatePoints.MinimizingSegment
 import DifferentialGeometry.Geometry.Comparison.Laplacian.Radial
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Intrinsic
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.IntrinsicLocal

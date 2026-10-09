@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactDerivative
+import DifferentialGeometry.Geometry.Metric.CompactDerivative
 import DifferentialGeometry.Geometry.Metric.Family.UniformEquivalence
 
 noncomputable section

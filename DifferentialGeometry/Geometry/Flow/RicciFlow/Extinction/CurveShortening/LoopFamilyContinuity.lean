@@ -22,7 +22,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] hBoundary 
   hNonempty [SigmaCompactSpace M] in
 theorem continuousOn_deriv_embeddedLoopFamily {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {J : Set ℝ} (hJ : UniqueDiffOn ℝ J)
+    (γ : ℝ → ContinuousFreeLoop M) {J : Set ℝ} (hJ : UniqueDiffOn ℝ J)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) J) :
     ContinuousOn
       (fun p : ℝ × ℝ => deriv (fun s : ℝ => e.map (γ p.2 (s : Surgery.Topology.Circle))) p.1)
@@ -57,9 +57,9 @@ theorem continuousOn_deriv_embeddedLoopFamily {N : ℕ}
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem exists_continuousOn_contractibleRegularLoop_family
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {a b : ℝ}
+    (γ : ℝ → ContinuousFreeLoop M) {a b : ℝ}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) :
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t)) :
     ∃ Γ : ℝ → Width.ContractibleRegularLoop (I := I) (Q := M),
       ContinuousOn Γ (Icc a b) ∧ ∀ t ∈ Icc a b, (Γ t).1.toContinuousLoop = γ t := by
   classical
@@ -105,9 +105,9 @@ theorem exists_continuousOn_contractibleRegularLoop_family
 omit [SigmaCompactSpace M] in
 theorem continuousOn_loopFamilyLeastArea_of_contractible
     (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) :
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t)) :
     ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) := by
   obtain ⟨Γ, hΓ, hagree⟩ := exists_continuousOn_contractibleRegularLoop_family γ hγ hctr
   exact continuousOn_loopFamilyLeastArea_of_continuousRegularFamily B γ Γ hΓ hagree
@@ -115,10 +115,10 @@ theorem continuousOn_loopFamilyLeastArea_of_contractible
 omit [SigmaCompactSpace M] in
 theorem rfs_csf_immersed_area_of_slope
     (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hslope : ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
       (loopFamilyLeastArea B.family.metric γ (t + h) -
           loopFamilyLeastArea B.family.metric γ t) / h ≤
@@ -141,10 +141,10 @@ theorem rfs_csf_immersed_area_of_slope
 omit [SigmaCompactSpace M] in
 theorem rfs_csf_immersed_area_of_minimalDiskAreaVariation
     (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hvar : MinimalDiskAreaVariation (I := I) (M := M) B γ) :
     ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
       (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,

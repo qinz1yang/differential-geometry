@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.LoopSpace.DiskAutomorphism
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ConformalReparametrization
 import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Basic
-import DifferentialGeometry.Topology.Circle.WeaklyMonotone.Composition
+import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone.Composition
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Boundary.Orientation
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.MinimizingSequence
 

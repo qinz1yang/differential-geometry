@@ -64,7 +64,7 @@ theorem RicciBackground.leastArea_le_exp_mul_leastArea
     {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b)
     {s t : ℝ} (hs : s ∈ Icc a b) (ht : t ∈ Icc a b)
-    (γ : DifferentialGeometry.Topology.freeLoop M) (hctr : ContinuousMap.Nullhomotopic γ)
+    (γ : ContinuousFreeLoop M) (hctr : IsContractibleLoop γ)
     (hlip_s : Width.IsLipschitzLoop (B.family.metric s) γ)
     (hlip_t : Width.IsLipschitzLoop (B.family.metric t) γ) :
     Width.leastArea (B.family.metric t) γ hctr hlip_t ≤
@@ -117,7 +117,7 @@ theorem RicciBackground.leastArea_le_exp_mul_leastArea_of_le
     {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b)
     {s t : ℝ} (hs : s ∈ Icc a b) (ht : t ∈ Icc a b) (hst : s ≤ t)
-    (γ : DifferentialGeometry.Topology.freeLoop M) (hctr : ContinuousMap.Nullhomotopic γ)
+    (γ : ContinuousFreeLoop M) (hctr : IsContractibleLoop γ)
     (hlip_s : Width.IsLipschitzLoop (B.family.metric s) γ)
     (hlip_t : Width.IsLipschitzLoop (B.family.metric t) γ) :
     Width.leastArea (B.family.metric t) γ hctr hlip_t ≤

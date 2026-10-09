@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalClosedWindowReduction
 
 open Set Topology
@@ -126,6 +131,7 @@ theorem IsCanonicalTower.exists_initial_annular_window [DecidableEq E3]
         initialSurface S'' T'' P')
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}))
+    (h303 : Moise303) (h286 : Moise286) (h314 : Moise314)
     (rows : Finset ℤ) {F : Set E3}
     (hFO : ∀ i ∈ towerWindowSeams rows, Disjoint F (interior (φ '' S (2 * i))))
     (hF : ∀ i ∈ rows, Disjoint F
@@ -141,9 +147,8 @@ theorem IsCanonicalTower.exists_initial_annular_window [DecidableEq E3]
         (interior (h '' C u ∪ h '' C v)) P' (h u) (h v) rows ∧
       towerSurface T'' (fun i => (Y i).space) P' ∩ F = initialSurface S'' T'' P' ∩ F := by
   obtain ⟨X₀, X, hspace, hinit, hclass⟩ :=
-    IsCanonicalTower.exists_initial_window_component_classification
-      (C := C) (D := D) (Dbd := Dbd) (h := h) (u := u) (v := v)
-      htw havoid hcl hsep rows hFO
+    IsCanonicalTower.exists_initial_window_component_classification ht hu hv huv he htw havoid
+      hcl hsep h303 h286 h314 rows hFO
   have hF₀ : ∀ i ∈ rows, Disjoint F ((X₀ i).space \ (boundaryComplex 2 (X₀ i)).space) := by
     intro i hi
     apply (hF i hi).mono_right

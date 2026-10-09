@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.Interior
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.Measure
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.FrameBound
 import DifferentialGeometry.Analysis.Integration.Measure.Lebesgue.RatioMonotonicity
-import DifferentialGeometry.Geometry.Variation.NoConjugatePoints.MinimalGeodesic
+import DifferentialGeometry.Geometry.Comparison.Variation.NoConjugatePoints.MinimalGeodesic
 import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Gradient

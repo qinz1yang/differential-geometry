@@ -1,6 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.EndpointChartCurvature
-import DifferentialGeometry.Geometry.Metric.Family.ConnectionRegularity
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.ParametricComponents
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.EndpointConnection
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram

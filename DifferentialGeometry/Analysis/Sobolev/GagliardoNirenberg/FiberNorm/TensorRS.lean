@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Tens
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
 import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.CovariantTensor.Mixed
-import DifferentialGeometry.Analysis.Convex.LogConvexSequence
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.DiscreteLogConvexity
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.HolderIntegrability
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.CovariantDerivativeFrameSum
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.KatoSecondDerivative
@@ -280,8 +280,7 @@ theorem gn_rs_bound
   have hc_lc : ∀ i, i + 1 < k → (c (i + 1)) ^ 2 ≤ K * c i * c (i + 2) := by
     intro i hik; rw [hc_def]; exact hlc u Λ₀ hΛ₀ hsup i hik
   have hpow : (c j) ^ k ≤ K ^ (k ^ 3) * (c 0) ^ (k - j) * (c k) ^ j :=
-    DifferentialGeometry.Analysis.Convex.discrete_log_convex_power_interpolation
-      c hc_nn K hK1 j k hc_lc hj0 hjk
+    discrete_log_convex_power_interpolation c hc_nn K hK1 j k hc_lc hj0 hjk
   have hc0_eq : c 0 = Λ₀ * V := by
     simp only [hc_def, lpFiberJetLadder_rs, ite_eq_left rfl]
     rw [hV]

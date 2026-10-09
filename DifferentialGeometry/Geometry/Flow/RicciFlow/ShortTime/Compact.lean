@@ -2,8 +2,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Stationary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.NoncompactRicciFlat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Data.UniformBounds
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
-import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 

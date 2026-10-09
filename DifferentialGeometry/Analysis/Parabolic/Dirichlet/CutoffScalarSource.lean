@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffForcing
 import DifferentialGeometry.Analysis.Integration.Lp.Pairing
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.CanonicalConnection
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DivergenceForm
-import DifferentialGeometry.Analysis.Elliptic.MetricExtension.Family.Smoothness
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientRegularity
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartSourceIdentification
 
 noncomputable section

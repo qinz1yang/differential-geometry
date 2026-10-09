@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.DiniComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.WidthComparison.Threshold
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ScalarThreshold
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Topology.Instances.EReal.Lemmas
 

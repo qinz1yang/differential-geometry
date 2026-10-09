@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Curvature.RicciUniformPerturbation
 import DifferentialGeometry.Geometry.Operator.JetComparison
 import DifferentialGeometry.Geometry.Curvature.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
 set_option autoImplicit false
 noncomputable section

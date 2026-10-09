@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.VectorField.Product
 import DifferentialGeometry.Geometry.Metric.Product
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Evaluation
+import DifferentialGeometry.Geometry.Metric.Evaluation
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Bundle.Section

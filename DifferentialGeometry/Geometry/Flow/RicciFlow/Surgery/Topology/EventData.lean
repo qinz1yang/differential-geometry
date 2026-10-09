@@ -1,15 +1,8 @@
-import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.SmoothTransition
-import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
-import DifferentialGeometry.Topology.ThreeManifold.Orientation
-import DifferentialGeometry.Topology.LoopSpace.Continuous
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
-import DifferentialGeometry.Geometry.Metric.CurveVariation.Comparison
-import DifferentialGeometry.Geometry.Metric.CurveVariation.Distance
-import DifferentialGeometry.Geometry.Metric.CurveVariation.WeakDerivative
-import DifferentialGeometry.Topology.Manifold.LocalCompactness
-import DifferentialGeometry.Geometry.Metric.StandardCap.Metric
-import DifferentialGeometry.Geometry.Metric.StandardCap.ConformalCoordinate
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WeakLength
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Metric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ConformalCoordinate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Basic
@@ -165,18 +158,46 @@ theorem standardCapRadiusOfZ_eq_conformalRadius (z : ℝ) :
     rw [Function.rightInverse_invFun standardCapConformalCoordinate_bijective.surjective, hr]
   exact congrArg Subtype.val he
 
+structure OrientedThreeStage where
+  Carrier : Type u
+  [topology : TopologicalSpace Carrier]
+  [charts : ChartedSpace ThreeSpace Carrier]
+  [smooth : IsManifold ThreeModel ∞ Carrier]
+  [hausdorff : T2Space Carrier]
+  [compact : CompactSpace Carrier]
+  orientation : TangentOrientationSection Carrier
+
+attribute [instance] OrientedThreeStage.topology OrientedThreeStage.charts
+  OrientedThreeStage.smooth OrientedThreeStage.hausdorff OrientedThreeStage.compact
+
 namespace OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
 
+abbrev Metric (P : OrientedThreeStage.{u}) := SmoothRiemannianMetric ThreeModel P.Carrier
 
-structure _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab (P : OrientedThreeStage.{u}) (a s : ℝ) where
+def chartVector (P : OrientedThreeStage.{u}) (p x : P.Carrier) (i : Fin 3) :
+    TangentSpace ThreeModel x :=
+  (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).symmL ℝ x
+    (EuclideanSpace.single i (1 : ℝ))
+
+def MetricSmoothUpTo (P : OrientedThreeStage.{u}) (g : ℝ → P.Metric) (J : Set ℝ) : Prop :=
+  ∀ p : P.Carrier, ∀ t ∈ J,
+    ∃ U : Set P.Carrier, IsOpen U ∧ p ∈ U ∧
+      U ⊆ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet ∧
+      ∃ V : Set ℝ, IsOpen V ∧ t ∈ V ∧
+      ∃ A : ℝ × P.Carrier → Matrix (Fin 3) (Fin 3) ℝ,
+        (∀ i j : Fin 3, ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
+          𝓘(ℝ, ℝ) ∞ (fun z => A z i j) (V ×ˢ U)) ∧
+        ∀ s ∈ V ∩ J, ∀ x ∈ U, ∀ i j : Fin 3,
+          A (s, x) i j = (g s).inner x (P.chartVector p x i) (P.chartVector p x j)
+
+structure IncomingSlab (P : OrientedThreeStage.{u}) (a s : ℝ) where
   lt : a < s
   flow : SolutionOn (I := ThreeModel) (M := P.Carrier) (RealTimeInterval.closedOpen a s lt)
   equation : DifferentialGeometry.PDE.RicciFlow.IsSolutionOn flow
   smoothUpTo : P.MetricSmoothUpTo flow.base.metric (Ico a s)
 
-structure _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab (P : OrientedThreeStage.{u}) (a b : ℝ) where
+structure ClosedSlab (P : OrientedThreeStage.{u}) (a b : ℝ) where
   lt : a < b
   flow : SolutionOn (I := ThreeModel) (M := P.Carrier) (RealTimeInterval.closed a b lt.le)
   equation : DifferentialGeometry.PDE.RicciFlow.IsSolutionOn flow
@@ -184,21 +205,19 @@ structure _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab
 
 namespace IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.riemannNorm (t : ℝ) (x : P.Carrier) : ℝ :=
+def riemannNorm (t : ℝ) (x : P.Carrier) : ℝ :=
   Real.sqrt (normSq0S (G.flow.base.metric t) x 4 (G.flow.base.rm04 t x))
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalRegularRegion : Set P.Carrier :=
+def terminalRegularRegion : Set P.Carrier :=
   {x | ∃ U : Set P.Carrier, IsOpen U ∧ x ∈ U ∧
     ∃ a' ∈ Ico a s, ∃ K : ℝ, 0 ≤ K ∧
       ∀ y ∈ U, ∀ t ∈ Ico a' s, G.riemannNorm t y ≤ K}
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalRegularRegion_isOpen : IsOpen G.terminalRegularRegion := by
+theorem terminalRegularRegion_isOpen : IsOpen G.terminalRegularRegion := by
   rw [isOpen_iff_mem_nhds]
   rintro x ⟨U, hU, hxU, a', ha', K, hK, hbound⟩
   apply Filter.mem_of_superset (hU.mem_nhds hxU)
@@ -206,10 +225,10 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact ⟨U, hU, hy, a', ha', K, hK, hbound⟩
 
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalRegularOpen : TopologicalSpace.Opens P.Carrier :=
+def terminalRegularOpen : TopologicalSpace.Opens P.Carrier :=
   ⟨G.terminalRegularRegion, G.terminalRegularRegion_isOpen⟩
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalMetricConverges
+def TerminalMetricConverges
     (gbar : SmoothRiemannianMetric ThreeModel G.terminalRegularOpen) : Prop :=
   letI : SecondCountableTopology P.Carrier :=
     ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace P.Carrier
@@ -220,16 +239,70 @@ def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.Ter
       DifferentialGeometry.CheegerGromovCompactness.metricDerivNorm j
         ((G.flow.base.metric t).restrictOpen G.terminalRegularOpen) gbar gbar x < ε
 
-structure _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric where
+structure TerminalLimitMetric where
   metric : SmoothRiemannianMetric ThreeModel G.terminalRegularOpen
   converges : G.TerminalMetricConverges metric
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.SingularEndpoint : Prop :=
+def SingularEndpoint : Prop :=
   ∀ L : ℝ, 0 < L → ∀ d ∈ Ico a s, ∃ t ∈ Ioo d s,
     ∃ x : P.Carrier, L < G.riemannNorm t x
 
 end IncomingSlab
 end OrientedThreeStage
+
+structure SmoothCutCapTransition (P Q D N : OrientedThreeStage.{u}) where
+  trace : CutCapTopology P.Carrier Q.Carrier D.Carrier N.Carrier
+  source_nonempty : Nonempty P.Carrier
+  tube_smooth :
+    letI : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
+    ∀ a : trace.tubes.Index,
+      IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (trace.tubes.tube a)
+  [coreCharts : ChartedSpace (EuclideanHalfSpace 3) trace.tubes.core]
+  [coreSmooth : IsManifold (𝓡∂ 3) ∞ trace.tubes.core]
+  core_induced : IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞
+    (Subtype.val : trace.tubes.core → P.Carrier)
+  core_boundary : (𝓡∂ 3).boundary trace.tubes.core =
+    ⋃ b : trace.tubes.Boundary, Set.range (trace.tubes.coreBoundarySphere b)
+  core_inclusion_smooth : IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞ trace.capping.coreInclusion
+  [ballCharts : ChartedSpace (EuclideanHalfSpace 3) ThreeBall]
+  [ballSmooth : IsManifold (𝓡∂ 3) ∞ ThreeBall]
+  ball_induced : IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞ (Subtype.val : ThreeBall → ThreeSpace)
+  ball_boundary : (𝓡∂ 3).boundary ThreeBall = Set.range sphereToThreeBall
+  cap_smooth : ∀ b, IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞ (trace.capping.cap b)
+  attaching : ∀ _b : trace.tubes.Boundary, Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2
+  attaching_eq : ∀ b, (attaching b : Sphere 2 → Sphere 2) = trace.capping.attaching b
+  core_positive : ∀ x : trace.tubes.core, (𝓡∂ 3).IsInteriorPoint x →
+    ∃ hi : Function.Bijective (mfderiv (𝓡∂ 3) ThreeModel
+        (Subtype.val : trace.tubes.core → P.Carrier) x),
+    ∃ hj : Function.Bijective (mfderiv (𝓡∂ 3) ThreeModel trace.capping.coreInclusion x),
+      Orientation.map (Fin 3)
+        ((LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) ThreeModel
+          (Subtype.val : trace.tubes.core → P.Carrier) x).toLinearMap hi).symm.trans
+          (LinearEquiv.ofBijective
+            (mfderiv (𝓡∂ 3) ThreeModel trace.capping.coreInclusion x).toLinearMap hj))
+        (P.orientation.orientation x.1) =
+          N.orientation.orientation (trace.capping.coreInclusion x)
+  cap_positive : ∀ b, ∀ x : ThreeBall, (𝓡∂ 3).IsInteriorPoint x →
+    ∃ hi : Function.Bijective (mfderiv (𝓡∂ 3) ThreeModel
+        (Subtype.val : ThreeBall → ThreeSpace) x),
+    ∃ hj : Function.Bijective (mfderiv (𝓡∂ 3) ThreeModel (trace.capping.cap b) x),
+      Orientation.map (Fin 3)
+        ((LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) ThreeModel
+          (Subtype.val : ThreeBall → ThreeSpace) x).toLinearMap hi).symm.trans
+          (LinearEquiv.ofBijective
+            (mfderiv (𝓡∂ 3) ThreeModel (trace.capping.cap b) x).toLinearMap hj))
+        ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation) =
+          (if b.2 then (1 : ℝˣ) else -1) • N.orientation.orientation (trace.capping.cap b x)
+  presentation : N.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ (Q.Carrier ⊕ D.Carrier)
+  presentation_eq : (presentation : N.Carrier → Q.Carrier ⊕ D.Carrier) = trace.presentation
+  presentation_positive : ∀ x : N.Carrier,
+    ∃ hf : Function.Bijective (mfderiv ThreeModel ThreeModel presentation x),
+      Orientation.map (Fin 3)
+        (LinearEquiv.ofBijective (mfderiv ThreeModel ThreeModel presentation x).toLinearMap hf)
+        (N.orientation.orientation x) =
+          match presentation x with
+          | Sum.inl q => Q.orientation.orientation q
+          | Sum.inr d => D.orientation.orientation d
 
 structure MetricCutCapEvent (P Q : OrientedThreeStage.{u}) (a s : ℝ) where
   discarded : OrientedThreeStage.{u}

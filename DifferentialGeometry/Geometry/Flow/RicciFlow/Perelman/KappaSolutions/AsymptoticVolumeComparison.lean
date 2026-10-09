@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticVolumeRatio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalVolumeOrder
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
 set_option autoImplicit false
 

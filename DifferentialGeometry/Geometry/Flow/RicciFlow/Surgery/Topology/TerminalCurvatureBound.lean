@@ -44,23 +44,21 @@ universe u
 
 namespace OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 variable {P : OrientedThreeStage.{u}}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.mem_terminalRegularRegion {u v : ℝ} (G : P.ClosedSlab u v)
+theorem ClosedSlab.mem_terminalRegularRegion {u v : ℝ} (G : P.ClosedSlab u v)
     (x : P.Carrier) :
     x ∈ (G.restrictIncoming le_rfl G.lt le_rfl).terminalRegularRegion := by
   rw [G.terminalRegularRegion_eq_univ P]
   exact Set.mem_univ x
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.mapsTo_retainedCore {u v : ℝ} {Q D N : OrientedThreeStage.{u}}
+theorem ClosedSlab.mapsTo_retainedCore {u v : ℝ} {Q D N : OrientedThreeStage.{u}}
     (X : SmoothCutCapTransition P Q D N) (G : P.ClosedSlab u v) :
     MapsTo (Subtype.val : X.trace.tubes.core → P.Carrier) X.trace.retainedCore
       (G.restrictIncoming le_rfl G.lt le_rfl).terminalRegularRegion :=
   fun _ _ => G.mem_terminalRegularRegion _
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalRegularRegion_ne_univ_of_singularEndpoint {a s : ℝ}
+theorem IncomingSlab.terminalRegularRegion_ne_univ_of_singularEndpoint {a s : ℝ}
     (G : P.IncomingSlab a s) (h : G.SingularEndpoint) :
     G.terminalRegularRegion ≠ Set.univ := by
   classical
@@ -115,7 +113,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact absurd (hbound₀ y t ⟨ht.1.le, ht.2⟩)
     (not_le.mpr (lt_trans (lt_add_one K₀) hyt))
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.not_isCompact_connectedComponent_of_singularEndpoint
+theorem IncomingSlab.not_isCompact_connectedComponent_of_singularEndpoint
     {a s : ℝ} (G : P.IncomingSlab a s) [PreconnectedSpace P.Carrier]
     (hsingular : G.SingularEndpoint) (x : G.terminalRegularOpen) :
     ¬ IsCompact (connectedComponent x) := by
@@ -133,7 +131,7 @@ theorem GeometricCutoffRecord.terminalRegularRegion_ne_univ
     {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
     (R : GeometricCutoffRecord H i parameters) :
     (H.event i).incoming.terminalRegularRegion ≠ Set.univ :=
-  DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalRegularRegion_ne_univ_of_singularEndpoint _
+  OrientedThreeStage.IncomingSlab.terminalRegularRegion_ne_univ_of_singularEndpoint _
     R.singular
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

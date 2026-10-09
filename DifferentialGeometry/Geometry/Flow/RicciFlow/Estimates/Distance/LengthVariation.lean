@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Variation.Curve.SpeedDerivative
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SpeedDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 
 set_option autoImplicit false

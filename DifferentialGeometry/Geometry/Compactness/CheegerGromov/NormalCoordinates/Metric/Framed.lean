@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.CompactBounds
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.IntrinsicGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Basic
-import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Smoothness
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Smoothness
 
 
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FiniteCollaredTrace
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSeamDiskPair
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCapReplacement
@@ -11,7 +16,9 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem HasFiniteCollaredTrace.exists_split_reducing_nullTraceCount_with_cap
     {I H K R T L O F : Set E3} (h : HasFiniteCollaredTrace L T) (hT : IsPLTorus T)
-    (hI : IsOpen I)
+    (h303 : Moise303) (hI : IsOpen I) (hIc : IsConnected I)
+    (hHI : H ⊆ I) (hKI : K ⊆ I) (hHK : Disjoint H K)
+    (hH : IsClosed (((↑) : I → E3) ⁻¹' H)) (hK : IsClosed (((↑) : I → E3) ⁻¹' K))
     (hCI : R ∪ (T ∪ L) ⊆ I) (hC : IsSeparatorIn I (R ∪ (T ∪ L)) H K)
     (hO : IsOpen O) (hTO : T ⊆ O) (hOI : O ⊆ I) (hOHK : Disjoint O (H ∪ K))
     (hRO : Disjoint R O) (hFO : Disjoint F O)
@@ -44,8 +51,8 @@ theorem HasFiniteCollaredTrace.exists_split_reducing_nullTraceCount_with_cap
     · exact hUD ⟨hxU.1, hxTL⟩
   obtain ⟨C', L', hsep, hprot, heq, -, hseams, hcount, hout,
       A, B, J, hAnn, hA, hAΔ, hB, hBΩ, hBC, hL'eq, htrace', s, hs, hsJ⟩ :=
-    exists_disk_split_reducing_seams_with_annulus I H K R T L Δ D₁ D₂ Ω F r r₁ r₂
-      hI hCI hC hr hΔT hr₁ hr₂ hpair hD₁T
+    exists_disk_split_reducing_seams_with_annulus h303 I H K R T L Δ D₁ D₂ Ω F r r₁ r₂
+      hI hIc hHI hKI hHK hH hK hCI hC hr hΔT hr₁ hr₂ hpair hD₁T
       (hsub.trans (inter_subset_left.trans subset_union_right)) hnear' hΔ₁ hΔ₂
       hΩ hΔΩ (hΩO.trans hOI) (hOHK.mono_left hΩO) hRΩ (hFO.mono_right hΩO)
       h.finiteTrace h.traceCover hGr
@@ -123,7 +130,9 @@ theorem HasFiniteCollaredTrace.exists_split_reducing_nullTraceCount_with_cap
 
 theorem HasFiniteCollaredTrace.exists_split_reducing_nullTraceCount
     {I H K R T L O F : Set E3} (h : HasFiniteCollaredTrace L T) (hT : IsPLTorus T)
-    (hI : IsOpen I)
+    (h303 : Moise303) (hI : IsOpen I) (hIc : IsConnected I)
+    (hHI : H ⊆ I) (hKI : K ⊆ I) (hHK : Disjoint H K)
+    (hH : IsClosed (((↑) : I → E3) ⁻¹' H)) (hK : IsClosed (((↑) : I → E3) ⁻¹' K))
     (hCI : R ∪ (T ∪ L) ⊆ I) (hC : IsSeparatorIn I (R ∪ (T ∪ L)) H K)
     (hO : IsOpen O) (hTO : T ⊆ O) (hOI : O ⊆ I) (hOHK : Disjoint O (H ∪ K))
     (hRO : Disjoint R O) (hFO : Disjoint F O)
@@ -134,7 +143,7 @@ theorem HasFiniteCollaredTrace.exists_split_reducing_nullTraceCount
       L' \ O = L \ O ∧ traceCircles L' T ⊆ traceCircles L T ∧
       nullTraceCount L' T < nullTraceCount L T := by
   obtain ⟨L', hstate, hsep, hsub, hprot, hout, htrace, hcount, -⟩ :=
-    h.exists_split_reducing_nullTraceCount_with_cap hT hI hCI hC
+    h.exists_split_reducing_nullTraceCount_with_cap hT h303 hI hIc hHI hKI hHK hH hK hCI hC
       hO hTO hOI hOHK hRO hFO hnull
   exact ⟨L', hstate, hsep, hsub, hprot, hout, htrace, hcount⟩
 

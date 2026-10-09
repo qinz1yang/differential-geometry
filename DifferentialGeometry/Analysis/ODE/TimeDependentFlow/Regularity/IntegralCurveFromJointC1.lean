@@ -1,6 +1,7 @@
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Autonomization
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow
 import Mathlib.Geometry.Manifold.IntegralCurve.ExistUnique
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
+import Mathlib.Geometry.Manifold.Diffeomorph
 
 
 namespace DifferentialGeometry.Analysis.ODE
@@ -14,7 +15,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [BoundarylessManifold I M] [T2Space M]
 
-def autonomizedFieldJointC1 (X : ℝ → ∀ x : M, TangentSpace I x) : Prop :=
+def AutonomizedFieldJointC1 (X : ℝ → ∀ x : M, TangentSpace I x) : Prop :=
   ∀ p : ℝ × M,
     ContMDiffAt (𝓘(ℝ, ℝ).prod I) ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ × E)) 1
       (fun p : ℝ × M =>
@@ -24,10 +25,10 @@ def autonomizedFieldJointC1 (X : ℝ → ∀ x : M, TangentSpace I x) : Prop :=
 omit [FiniteDimensional ℝ E] [T2Space M] in
 theorem exists_local_integral_curve_of_jointC1 [CompleteSpace E]
     (X : ℝ → ∀ x : M, TangentSpace I x)
-    (hX : autonomizedFieldJointC1 (I := I) X) (x : M) :
+    (hX : AutonomizedFieldJointC1 (I := I) X) (x : M) :
     ∃ (ε : ℝ) (_ : 0 < ε) (γ : ℝ → M), γ 0 = x ∧
       ∀ t ∈ Ioo (-ε) ε,
-        HasMFDerivAt 𝓘(ℝ, ℝ) I γ t
+        HasMFDerivWithinAt 𝓘(ℝ, ℝ) I γ (Ici 0) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t))) :=
   exists_local_integral_curve_of_contMDiff_autonomizedField X hX x
 
@@ -71,7 +72,7 @@ theorem autonomizedLift_isMIntegralCurveOn
 omit [FiniteDimensional ℝ E] in
 theorem integral_curves_eqOn_of_jointC1
     (X : ℝ → ∀ x : M, TangentSpace I x)
-    (hX : autonomizedFieldJointC1 (I := I) X)
+    (hX : AutonomizedFieldJointC1 (I := I) X)
     (Φ Φ' : ℝ → M → M) (x x' : M) {a b t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
     (hflow : ∀ t ∈ Ioo a b,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u : ℝ => Φ u x) (Ioo a b) t
@@ -104,24 +105,46 @@ theorem integral_curves_eqOn_of_jointC1
 omit [FiniteDimensional ℝ E] in
 theorem exists_unique_local_integral_curve_of_jointC1 [CompleteSpace E]
     (X : ℝ → ∀ x : M, TangentSpace I x)
-    (hX : autonomizedFieldJointC1 (I := I) X) (x : M) :
+    (hX : AutonomizedFieldJointC1 (I := I) X) (x : M) :
     ∃ (ε : ℝ) (_ : 0 < ε) (γ : ℝ → M), γ 0 = x ∧
       (∀ t ∈ Ioo (-ε) ε,
-        HasMFDerivAt 𝓘(ℝ, ℝ) I γ t
+        HasMFDerivWithinAt 𝓘(ℝ, ℝ) I γ (Ici 0) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t)))) ∧
       (∀ (γ' : ℝ → M), γ' 0 = x →
         (∀ t ∈ Ioo (-ε) ε,
           HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u : ℝ => γ' u) (Ioo (-ε) ε) t
             ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ' t)))) →
+        (∀ t ∈ Ioo (-ε) ε,
+          HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u : ℝ => γ u) (Ioo (-ε) ε) t
+            ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t)))) →
         ∀ t ∈ Ioo (-ε) ε, γ t = γ' t) := by
   obtain ⟨ε, hε, γ, hγ0, hγflow⟩ :=
     exists_local_integral_curve_of_contMDiff_autonomizedField X hX x
   refine ⟨ε, hε, γ, hγ0, hγflow, ?_⟩
-  intro γ' hγ'0 hγ'two t ht
+  intro γ' hγ'0 hγ'two hγtwo t ht
   have h0mem : (0 : ℝ) ∈ Ioo (-ε) ε := by constructor <;> simp [hε]
   have hstart : γ 0 = γ' 0 := by rw [hγ0, hγ'0]
   exact integral_curves_eqOn_of_jointC1 (a := -ε) (b := ε) (t₀ := 0)
     X hX (fun u : ℝ => fun _ : M => γ u) (fun u : ℝ => fun _ : M => γ' u) x x
-    h0mem (fun u hu => (hγflow u hu).hasMFDerivWithinAt) hγ'two hstart t ht
+    h0mem hγtwo hγ'two hstart t ht
+
+variable [CompactSpace M] [SigmaCompactSpace M]
+
+omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [BoundarylessManifold I M] [T2Space M]
+    [CompactSpace M] [SigmaCompactSpace M] in
+theorem exists_diffeomorphism_family_of_integral_curves
+    (X : ℝ → ∀ x : M, TangentSpace I x)
+    (T : ℝ) (Φ : ℝ → M → M)
+    (hdiffeo : ∀ t, 0 < t → t < T → ∃ d : M ≃ₘ⟮I, I⟯ M, ∀ x : M, d x = Φ t x)
+    (hflow : ∀ t, 0 < t → t < T → ∀ x : M,
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => Φ s x) (Ici 0) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (Φ t x)))) :
+    ∃ (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M)),
+      Φ_fam 0 = Diffeomorph.refl I M ∞ ∧
+      (∀ t : ℝ, 0 < t → t < T → ∀ x : M, Φ_fam t x = Φ t x) ∧
+      (∀ s : ℝ, 0 < s → s < T → ∀ x : M,
+        HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u : ℝ => Φ_fam u x) (Ici 0) s
+          ((1 : ℝ →L[ℝ] ℝ).smulRight (X s (Φ_fam s x)))) :=
+  time_dependent_vf_manifold_integral_flow_family X T Φ hdiffeo hflow
 
 end DifferentialGeometry.Analysis.ODE

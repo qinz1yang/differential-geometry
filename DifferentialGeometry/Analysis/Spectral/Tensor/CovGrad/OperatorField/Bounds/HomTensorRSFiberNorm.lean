@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.SingleSlotFiberNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.TensorRSContRiemannianBundle
-import DifferentialGeometry.Geometry.Metric.VectorBundle.HomNorm
+import DifferentialGeometry.Bundle.HomNorm
 import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.Order.Compact
 

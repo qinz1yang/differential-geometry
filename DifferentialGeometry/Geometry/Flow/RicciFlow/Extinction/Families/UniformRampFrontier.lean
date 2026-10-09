@@ -43,9 +43,9 @@ theorem rfs_ramp_uniform_bounds_of_input
     ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
       c.IsSolutionOn B.family.metric lambda (Icc a b) →
       c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
-      ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop Q,
+      ∀ γ : ℝ → ContinuousFreeLoop Q,
         (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
-        (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+        (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
         c.length B.family.metric lambda a ≤ L₀ →
         c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
         loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
@@ -94,8 +94,8 @@ theorem rfs_prepared_family_flow_of_input
         projected ⟨a, le_rfl, B.lt.le⟩ = prepared ∧
         (∀ t : Icc a b, HasContinuousSmoothLoopJets e (projected t)) ∧
         ∀ t : Icc a b,
-          DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
-            DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared) :=
+          FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared) :=
   rfs_prepared_family_flow_of_frontier B e prepared hsmooth lambda hlambda hlambda_one
     (h.1 lambda hlambda hlambda_one prepared hsmooth)
     (h.2 lambda hlambda hlambda_one prepared hsmooth)
@@ -121,9 +121,9 @@ theorem rfs_uniform_ramp_alternative_of_input
       ∀ lambda : ℝ, 0 < lambda → lambda ≤ lambda₀ → ∀ c : ProductCurve Q,
         c.IsSolutionOn B.family.metric lambda (Icc a b) →
         c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
-        ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop Q,
+        ∀ γ : ℝ → ContinuousFreeLoop Q,
           (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
-          (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+          (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
           c.length B.family.metric lambda a ≤ L₀ →
           c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
           loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
@@ -161,8 +161,8 @@ theorem rfs_family_deformation_of_input
           (∀ t : Icc a b, ∀ p z,
             ((deformed t) p).1 z = (solutions p).projection z t) ∧
           (∀ t : Icc a b, HasContinuousSmoothLoopJets e (deformed t) ∧
-            DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
-              DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
+              FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
           (∀ p, |regularLeastArea (B.family.metric a) ((deformed ⟨a, le_rfl, B.lt.le⟩) p) -
             regularLeastArea (B.family.metric a) (Γ p)| < epsilon) ∧
           ∀ p,

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Measure.Product
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.TotalArea
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling
 
 noncomputable section

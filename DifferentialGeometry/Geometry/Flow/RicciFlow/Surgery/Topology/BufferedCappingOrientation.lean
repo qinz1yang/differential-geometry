@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalTr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BufferedFiniteCappingSmooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WorldBridges
 import DifferentialGeometry.Topology.Manifold.OrientationTransport
-import DifferentialGeometry.Topology.Manifold.ClosedBall.Orientation
+import DifferentialGeometry.Topology.Manifold.ClosedBallOrientation
 import DifferentialGeometry.Topology.Manifold.BallChartAffine
 import DifferentialGeometry.Topology.Manifold.SmoothModelTransportSource
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CutCoreOrientation
@@ -113,7 +113,7 @@ theorem cap_positive_of_preserving_orientation
                 (j ∘ threeBallScaleDiffeomorph hL ∘ B) x).toLinearMap hk))
             ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation) =
               (if b then (1 : ℝˣ) else -1) •
-                (DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation oN).orientation
+                (TangentOrientationSection.ofSmoothOrientation oN).orientation
                   (j (threeBallScaleDiffeomorph hL (B x))) := by
   let := closedBallChartedSpace hL
   let := closedBall_isManifold hL
@@ -179,7 +179,7 @@ theorem cap_positive_of_preserving_orientation
       DifferentialGeometry.orientation_map_trans A.toLinearEquiv C]
     erw [DifferentialGeometry.Topology.OrientationAssembly.orientation_map_smulOfNeZero_tangent
       (M := ThreeSpace) (0 : ThreeSpace) L hL, hA, orientation_map_bool_smul, hraw]
-  rw [DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation_apply]
+  rw [TangentOrientationSection.ofSmoothOrientation_apply]
   exact hfinal
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
@@ -241,8 +241,8 @@ theorem Capping.ofBufferedFiniteCaps_core_positive_of_preserving_orientation
               (mfderiv (𝓡∂ 3) ThreeModel (Subtype.val : (T).core → M) x).toLinearMap hi).symm.trans
               (LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) ThreeModel
                 (Capping.ofBufferedFiniteCaps hL hδ hδ1 f hf hdisj).coreInclusion x).toLinearMap hj))
-            ((DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation o).orientation x.val) =
-              (DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation oQ).orientation
+            ((TangentOrientationSection.ofSmoothOrientation o).orientation x.val) =
+              (TangentOrientationSection.ofSmoothOrientation oQ).orientation
                 ((Capping.ofBufferedFiniteCaps hL hδ hδ1 f hf hdisj).coreInclusion x) := by
   let : ChartedSpace EuclideanHalfSpaceProdModel (cutCore f) :=
     cutCoreBoundaryChartedSpace ThreeModel finrank_threeSpace_eq_three hδ f hf hdisj
@@ -330,10 +330,10 @@ theorem Capping.ofBufferedFiniteCaps_core_positive_of_preserving_orientation
   change Orientation.map (Fin 3)
     ((LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) ThreeModel a x).toLinearMap hba).symm.trans
       (LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) ThreeModel b x).toLinearMap hbb))
-    ((DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation o).orientation x.val) =
-      (DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation oQ).orientation (b x)
-  rw [hea, heb, DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation_apply,
-    DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation_apply]
+    ((TangentOrientationSection.ofSmoothOrientation o).orientation x.val) =
+      (TangentOrientationSection.ofSmoothOrientation oQ).orientation (b x)
+  rw [hea, heb, TangentOrientationSection.ofSmoothOrientation_apply,
+    TangentOrientationSection.ofSmoothOrientation_apply]
   exact DifferentialGeometry.orientation_map_inverse_trans_of_tangentOrientationEquiv
     finrank_threeSpace_eq_three A.toLinearEquiv B.toLinearEquiv ocNew hA hB
 

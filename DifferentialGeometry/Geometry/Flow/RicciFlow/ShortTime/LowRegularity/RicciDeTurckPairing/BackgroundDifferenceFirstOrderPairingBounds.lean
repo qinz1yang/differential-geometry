@@ -1830,8 +1830,8 @@ private theorem deTurckLieInsertionCorrection_eq_endomorphismInsertionPair
   have hX :
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         X.toSection x) D =
-      slotInsertEndomorphism (I := I) (M := M) 2 0 x (Λ x) D := rfl
-  rw [hX, slotInsertEndomorphism_apply_eval]
+      slotInsertEndoFib (I := I) (M := M) 2 0 x (Λ x) D := rfl
+  rw [hX, slotInsertEndoFib_apply_eval]
   have hY :
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         Y.toSection x) D =
@@ -1856,11 +1856,11 @@ private theorem deTurckLieInsertionCorrection_eq_endomorphismInsertionPair
         (Tensor0SSpace.ofModel
           (ContinuousMultilinearMap.domDomCongr
             (Equiv.swap (0 : Fin 2) 1) (Tensor0SSpace.toModel D))) =
-      slotInsertEndomorphism (I := I) (M := M) 2 0 x (Λ x)
+      slotInsertEndoFib (I := I) (M := M) 2 0 x (Λ x)
         (Tensor0SSpace.ofModel
           (ContinuousMultilinearMap.domDomCongr
             (Equiv.swap (0 : Fin 2) 1) (Tensor0SSpace.toModel D))) := rfl
-  rw [hX', slotInsertEndomorphism_apply_eval,
+  rw [hX', slotInsertEndoFib_apply_eval,
     Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
   have harg :
@@ -2447,7 +2447,6 @@ private theorem lieCorrectionZeroKappa_self_covariantJetNormSq_one_le
   rw [kappa_self (I := I) (M := M) g gm P htie]
   exact covariantJetNormSq_one_lieCorrectionZeroKappa_self_le (I := I) (M := M) g P
 
-omit [NeZero (Module.finrank ℝ E)] in
 private theorem exists_lieCorrectionZeroPbLow_covariantJetNormSq_two_bound
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :

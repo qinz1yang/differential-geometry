@@ -70,7 +70,7 @@ private theorem laplacian_smooth_at_on (g : SmoothRiemannianMetric I M)
     (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U) {x : M} (hx : x ∈ U) :
     ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (laplacian (I := I) (LeviCivita (I := I) g) g f) x := by
-  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU hx hf
+  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
   exact (Δ_g_contMDiff (I := I) g ⟨F, hF⟩).contMDiffAt.congr_of_eventuallyEq
     (laplacian_germ g hU hf hF hx hFf).symm
 
@@ -78,7 +78,7 @@ private theorem hessian_norm_continuous_at_on (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} {U : Set M} (hU : IsOpen U)
     (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U) {x : M} (hx : x ∈ U) :
     ContinuousAt (fun y => chartHessFrobeniusSq (I := I) g f y) x := by
-  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU hx hf
+  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
   apply (DifferentialGeometry.Analysis.Laplacian.chartHessFrobeniusSq_continuous
     (I := I) g hF).continuousAt.congr
   filter_upwards [hFf.eventuallyEq_nhds] with y hy
@@ -88,7 +88,7 @@ private theorem hessian_norm_nonneg_on (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} {U : Set M} (hU : IsOpen U)
     (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U) {x : M} (hx : x ∈ U) :
     0 ≤ chartHessFrobeniusSq (I := I) g f x := by
-  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU hx hf
+  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
   rw [← hessian_norm_germ g hFf]
   exact chartHessFrobeniusSq_nonneg (I := I) g hF x
 
@@ -101,7 +101,7 @@ theorem bochner_eikonal_on (g : SmoothRiemannianMetric I M)
       ricciTensor (I := I) g x (gradientFun (I := I) g f x) (gradientFun (I := I) g f x) +
       g.inner x (gradientFun (I := I) g f x)
         (gradientFun (I := I) g (laplacian (I := I) (LeviCivita (I := I) g) g f) x) = 0 := by
-  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU hx hf
+  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
   have hnorm : normGradSqFun (I := I) g F =ᶠ[𝓝 x] fun _ : M => (1 : ℝ) := by
     filter_upwards [hU.mem_nhds hx, hFf.eventuallyEq_nhds] with y hy heq
     change g.inner y (gradientFun (I := I) g F y) (gradientFun (I := I) g F y) = 1

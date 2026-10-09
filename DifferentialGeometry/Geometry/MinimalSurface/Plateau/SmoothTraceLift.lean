@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.Manifold.ImmersionLiftRegularity
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ImmersionTraceLift
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDiskTrace
 
 

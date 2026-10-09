@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonClassDegreeData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonLocalLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWitnessDistance
-import DifferentialGeometry.Geometry.Metric.Restriction.Completeness
+import DifferentialGeometry.Geometry.Metric.Restriction
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldEuclidean
 
 set_option autoImplicit false

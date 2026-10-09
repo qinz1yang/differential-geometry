@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.SphereSeparation.TwoSidedSeparation
 import DifferentialGeometry.Topology.Manifold.RegularLevel.Components
 import DifferentialGeometry.Topology.Morse.RegularSublevelBoundary
 import DifferentialGeometry.Topology.Handle.SphereDisk
-import DifferentialGeometry.Topology.ThreeManifold.Schoenflies.Height.HeightLevel
+import DifferentialGeometry.Topology.SphereSeparation.HeightLevel
 
 open Set
 

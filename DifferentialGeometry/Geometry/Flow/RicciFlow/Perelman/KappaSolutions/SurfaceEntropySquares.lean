@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.ScalarEntropy.PoissonPairing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceEntropyPoissonPairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceRicciAlgebra
 import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.CoordinateFormula
 import DifferentialGeometry.Geometry.Coordinates.Frame.Chart

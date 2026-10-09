@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Submanifold.EmbeddedSlice.InducedMetric
+import DifferentialGeometry.Geometry.Comparison.Soul.InducedSliceMetric
 import DifferentialGeometry.Geometry.Comparison.Soul.EmbeddedSliceEmbedding
 import DifferentialGeometry.Geometry.Submanifold.IsometricImmersion
 

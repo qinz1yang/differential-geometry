@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleForcing
-import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.PiLp
+import DifferentialGeometry.Analysis.FunctionalAnalysis.PiLpOperators
 import Mathlib.MeasureTheory.Function.LpSpace.Indicator
 import Mathlib.MeasureTheory.Function.Holder
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm

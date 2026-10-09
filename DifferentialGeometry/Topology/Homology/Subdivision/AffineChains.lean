@@ -39,7 +39,7 @@ def affineSimplex {m n : ℕ} (v : Fin (m + 1) → Δ n) : C(Δ m, Δ n) :=
 @[simp] lemma affineSimplex_apply {m n : ℕ} (v : Fin (m + 1) → Δ n) (t : Δ m) :
     affineSimplex v t = StdSimplex.affineMapMk v t := rfl
 
-lemma affineSimplex_single_apply {m n : ℕ} (v : Fin (m + 1) → Δ n) (i : Fin (m + 1)) :
+@[simp] lemma affineSimplex_single_apply {m n : ℕ} (v : Fin (m + 1) → Δ n) (i : Fin (m + 1)) :
     affineSimplex v (.single i) = v i := by simp
 
 lemma affineSimplex_single {n : ℕ} :

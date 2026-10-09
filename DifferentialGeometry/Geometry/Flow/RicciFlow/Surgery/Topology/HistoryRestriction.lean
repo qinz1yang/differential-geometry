@@ -69,12 +69,10 @@ abbrev stageAt (t : Icc (0 : ℝ) H.horizon) : OrientedThreeStage.{u} :=
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
-open scoped ContDiff
+open scoped Manifold ContDiff
 variable {P : OrientedThreeStage} {g : ℝ → P.Metric} {J K : Set ℝ}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.mono (hg : P.MetricSmoothUpTo g J) (hK : K ⊆ J) :
+theorem MetricSmoothUpTo.mono (hg : P.MetricSmoothUpTo g J) (hK : K ⊆ J) :
     P.MetricSmoothUpTo g K := by
   intro p t ht
   obtain ⟨U, hU, hp, hbase, V, hV, htv, A, hA, heq⟩ := hg p t (hK ht)
@@ -82,7 +80,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmooth
   intro s hs x hx i j
   exact heq s ⟨hs.1, hK hs.2⟩ x hx i j
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.closedPrefix {a s : ℝ} (G : P.IncomingSlab a s)
+def IncomingSlab.closedPrefix {a s : ℝ} (G : P.IncomingSlab a s)
     (b : ℝ) (hab : a < b) (hbs : b < s) : P.ClosedSlab a b where
   lt := hab
   flow := G.flow.timeRestrict _
@@ -92,7 +90,7 @@ def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.clo
   smoothUpTo := G.smoothUpTo.mono (fun _ ht => ⟨ht.1, ht.2.trans_lt hbs⟩)
 
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.closedPrefix {a b : ℝ} (G : P.ClosedSlab a b)
+def ClosedSlab.closedPrefix {a b : ℝ} (G : P.ClosedSlab a b)
     (c : ℝ) (hac : a < c) (hcb : c ≤ b) : P.ClosedSlab a c where
   lt := hac
   flow := G.flow.timeRestrict _
@@ -320,20 +318,3 @@ def restrict (A : InitialIdentification P g H) (t : Icc (0 : ℝ) H.horizon) :
     (A.restrict t).map = A.map := rfl
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.InitialIdentification
-
-namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-
-universe u
-
-theorem stageMetric_eq_closedPrefixAt {H : ObservedHistory.{u}} (t : Icc (0 : ℝ) H.horizon)
-    (h : H.time (H.activeStage t) < t.1) :
-    H.stageMetric (H.activeStage t) = (H.closedPrefixAt t h).flow.base.metric := by
-  funext τ
-  exact (H.closedPrefixAt_metric t h τ).symm
-
-theorem stageMetric_castSucc_eq_flow {H : ObservedHistory.{u}} (i : Fin H.eventCount) :
-    H.stageMetric i.castSucc = (H.event i).incoming.flow.base.metric := by
-  funext t
-  simp only [ObservedHistory.stageMetric, Fin.lastCases_castSucc]
-
-end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

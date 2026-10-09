@@ -23,9 +23,9 @@ theorem exists_discardedCap_model_collar_of_projective_cap_cover
     (component : ConnectedComponents D.Carrier)
     (b : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace Z ∞)
     (F : PartialDiffeomorph ThreeModel ThreeModel Z
-      (D.component component).Carrier ∞)
+      (D.toClosedOrientedManifold.component component).Carrier ∞)
     (B : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace
-      (D.component component).Carrier ∞)
+      (D.toClosedOrientedManifold.component component).Carrier ∞)
     (hb : closedBall (0 : ThreeSpace) 1 ⊆ b.source)
     (hF : (b '' ball (0 : ThreeSpace) 1)ᶜ ⊆ F.source)
     (hB : closedBall (0 : ThreeSpace) 1 ⊆ B.source)
@@ -39,7 +39,7 @@ theorem exists_discardedCap_model_collar_of_projective_cap_cover
     (hcap : ∀ q (hq : q.2.val ≤ 0),
       c.toFun q = E.trace.discardedCap boundary hdiscarded (capSide ⟨q,hq⟩)) :
     let : ChartedSpace (EuclideanHalfSpace 3) ThreeBall := E.ballCharts
-    (∃ (e : (D.component component).Carrier ≃ₘ⟮ThreeModel,ThreeModel⟯ S3)
+    (∃ (e : (D.toClosedOrientedManifold.component component).Carrier ≃ₘ⟮ThreeModel,ThreeModel⟯ S3)
       (a : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace S3 ∞)
       (fCap : C(ThreeBall,S3)) (profile : C(Sphere 2 × symmetricOpenInterval c.radius,S3)),
       a.source = univ ∧ IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞ fCap ∧
@@ -51,10 +51,10 @@ theorem exists_discardedCap_model_collar_of_projective_cap_cover
       ContMDiff ((𝓡 2).prod 𝓘(ℝ)) ThreeModel ∞ profile ∧
       (∀ q, (e.symm (profile q)).val = c.toFun q) ∧
       (∀ q (hq : q.2.val ≤ 0), profile q = fCap (capSide ⟨q,hq⟩)) ∧
-      ∃ U : Set (D.component component).Carrier,
+      ∃ U : Set (D.toClosedOrientedManifold.component component).Carrier,
         IsOpen U ∧ B '' closedBall (0 : ThreeSpace) 1 ⊆ U ∧
           U ⊆ (B.symm.trans a).source ∧ EqOn e (B.symm.trans a) U) ∨
-    ∃ (e : (D.component component).Carrier ≃ₘ⟮ThreeModel,ThreeModel⟯ Z)
+    ∃ (e : (D.toClosedOrientedManifold.component component).Carrier ≃ₘ⟮ThreeModel,ThreeModel⟯ Z)
       (G : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace Z ∞)
       (R : ThreeSpace ≃ₘ[ℝ] ThreeSpace)
       (fCap : C(ThreeBall,Z)) (profile : C(Sphere 2 × symmetricOpenInterval c.radius,Z)),

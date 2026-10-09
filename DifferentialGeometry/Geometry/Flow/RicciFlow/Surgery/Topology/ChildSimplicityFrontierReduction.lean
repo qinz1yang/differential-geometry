@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RfsTopologyFrontier
-import DifferentialGeometry.Topology.Homotopy.Retraction
+import DifferentialGeometry.Topology.VanKampen.HomotopyRetract
 import DifferentialGeometry.Topology.VanKampen.SimplyConnectedUnion
 
 set_option autoImplicit false
@@ -291,7 +291,7 @@ theorem childCore_simplyConnected_iff_childCarrier_of_isEmpty_childCapBoundary
 theorem childCoreSimplyConnectedOfParent_of_childCollaredStarCover_of_childCarrier
     (hcover : E.childCollaredStarCoverProducer)
     (hchild : ∀ c : ConnectedComponents Q.Carrier,
-      SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+      SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
         SimplyConnectedSpace (E.ChildCarrier c)) :
     E.childCoreSimplyConnectedOfParent :=
   fun c hpar => E.childCore_simplyConnected_of_childCarrierSimplyConnected c
@@ -300,7 +300,7 @@ theorem childCoreSimplyConnectedOfParent_of_childCollaredStarCover_of_childCarri
 theorem componentwisePuncturedCoreOfParent_of_childCollaredStarCoverProducer
     (hcover : E.childCollaredStarCoverProducer)
     (hchild : ∀ c : ConnectedComponents Q.Carrier,
-      SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+      SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
         SimplyConnectedSpace (E.ChildCarrier c)) :
     E.ComponentwisePuncturedCoreOfParent :=
   (E.componentwisePuncturedCoreOfParent_iff_childCoreSimplyConnectedOfParent).mpr
@@ -310,7 +310,7 @@ theorem childSimplicityFrontier_iff_childCollaredStarCoverProducer_and_childCarr
     ChildSimplicityFrontier E ↔
       E.childCollaredStarCoverProducer ∧
         ∀ c : ConnectedComponents Q.Carrier,
-          SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+          SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
             SimplyConnectedSpace (E.ChildCarrier c) :=
   ⟨fun h => ⟨h.1, fun c _ => E.child_simplyConnected_of_childSimplicityFrontier h c⟩,
     fun h => ⟨h.1,

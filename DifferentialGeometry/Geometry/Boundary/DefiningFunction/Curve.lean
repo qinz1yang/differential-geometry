@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Boundary.DefiningFunction.Basic
-import DifferentialGeometry.Geometry.Curve.SmoothGerm
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SmoothCurveGerm
 import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import Mathlib.Analysis.Calculus.DerivativeTest
 import Mathlib.Geometry.Manifold.Instances.Icc

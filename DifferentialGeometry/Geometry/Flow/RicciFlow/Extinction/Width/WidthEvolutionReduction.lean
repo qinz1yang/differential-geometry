@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.HistoryWidthJumpComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Extinction.WidthComparison.Deformation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedWidthComparison
 
 noncomputable section
 
@@ -15,7 +15,7 @@ universe u
 
 def HistoryWidthEventJumpFrontier (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier) : Prop :=
   ∀ i : Fin H.eventCount,
     ENNReal.ofReal (historyWidth H h0 terminal (historyStageTime H i.succ)) ≤
@@ -26,7 +26,7 @@ def HistoryWidthEventJumpFrontier (H : ObservedHistory.{u})
 def HistoryWidthIncrementFrontier (H : ObservedHistory.{u}) : Prop :=
   (∀ (i : Fin H.eventCount)
       (p : ConnectedComponents (H.stage i.castSucc).Carrier)
-      (hSC : SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier),
+      (hSC : SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier),
       ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ), ∀ ε > 0, ∃ δ > 0,
         ∀ h ∈ Ioo (0 : ℝ) δ, t + h < H.time i.succ →
           (componentWidth (H.stage i.castSucc)
@@ -40,7 +40,7 @@ def HistoryWidthIncrementFrontier (H : ObservedHistory.{u}) : Prop :=
   (∀ (hfin : H.time (Fin.last H.eventCount) < H.horizon)
       (p : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
       (hSC : SimplyConnectedSpace
-        ((H.stage (Fin.last H.eventCount)).component p).toClosedOrientedManifold.Carrier),
+        ((H.stage (Fin.last H.eventCount)).component p).Carrier),
       ∀ t ∈ Ico (H.time (Fin.last H.eventCount)) H.horizon, ∀ ε > 0, ∃ δ > 0,
         ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ H.horizon →
           (componentWidth (H.stage (Fin.last H.eventCount))
@@ -54,7 +54,7 @@ def HistoryWidthIncrementFrontier (H : ObservedHistory.{u}) : Prop :=
 
 def HistoryWidthDiniFrontier (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (c : ℝ) : Prop :=
   ∀ t ∈ Ico (0 : ℝ) H.horizon, t ∉ H.eventTimes →
@@ -65,7 +65,7 @@ theorem historyWidthEventJumpFrontier_of_childComparison (H : ObservedHistory.{u
     (parameters : CutoffParameters)
     (cutoff : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (hchild : ∀ i : Fin H.eventCount, ChildComparisonData (cutoff i)) :
     HistoryWidthEventJumpFrontier H h0 terminal :=
@@ -74,13 +74,13 @@ theorem historyWidthEventJumpFrontier_of_childComparison (H : ObservedHistory.{u
 theorem historyWidthIncrementFrontier_of_rampDeformation (H : ObservedHistory.{u})
     (hinc : ∀ (i : Fin H.eventCount)
       (p : ConnectedComponents (H.stage i.castSucc).Carrier)
-      (_hSC : SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier),
+      (_hSC : SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier),
       ComponentInteriorRampDeformation (H.stage i.castSucc) (H.time i.castSucc)
         (H.time i.succ) (H.event i).incoming.lt p)
     (hclosed : ∀ (hfin : H.time (Fin.last H.eventCount) < H.horizon)
       (p : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
       (_hSC : SimplyConnectedSpace
-        ((H.stage (Fin.last H.eventCount)).component p).toClosedOrientedManifold.Carrier),
+        ((H.stage (Fin.last H.eventCount)).component p).Carrier),
       ComponentInteriorRampDeformation (H.stage (Fin.last H.eventCount))
         (H.time (Fin.last H.eventCount)) H.horizon (H.finalSlab hfin).lt p) :
     HistoryWidthIncrementFrontier H :=
@@ -91,7 +91,7 @@ theorem historyWidthIncrementFrontier_of_rampDeformation (H : ObservedHistory.{u
 
 theorem historyWidthDiniFrontier_of_incrementFrontier (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {c : ℝ} (hc : 0 < c) (hscalar : HistoryScalarLowerBound H c)
     (hincrement : HistoryWidthIncrementFrontier H) :
@@ -101,7 +101,7 @@ theorem historyWidthDiniFrontier_of_incrementFrontier (H : ObservedHistory.{u})
 
 theorem observedComparisonRecord_of_historyWidthFrontiers (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {c A : ℝ} (hc : 0 < c) (hHpos : 0 < H.horizon)
     (hinitial : historyWidth H h0 terminal (historyStageTime H 0) ≤ A)
@@ -115,7 +115,7 @@ theorem observedComparisonRecord_of_historyWidthFrontiers (H : ObservedHistory.{
 
 theorem scalarComparisonHypotheses_of_historyWidthFrontiers (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {c : ℝ} (hc : 0 < c) (hHpos : 0 < H.horizon)
     (hjump : HistoryWidthEventJumpFrontier H h0 terminal)
@@ -126,7 +126,7 @@ theorem scalarComparisonHypotheses_of_historyWidthFrontiers (H : ObservedHistory
 
 theorem scalarWeightedWidth_antitoneOn_of_historyWidthFrontiers (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {c : ℝ} (hc : 0 < c) (hHpos : 0 < H.horizon)
     (hjump : HistoryWidthEventJumpFrontier H h0 terminal)
@@ -140,7 +140,7 @@ theorem observedComparisonRecord_of_childComparison_of_incrementFrontier
     (H : ObservedHistory.{u}) (parameters : CutoffParameters)
     (cutoff : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {c A : ℝ} (hc : 0 < c) (hHpos : 0 < H.horizon)
     (hscalar : HistoryScalarLowerBound H c)
@@ -155,14 +155,14 @@ theorem observedComparisonRecord_of_childComparison_of_incrementFrontier
 theorem historyWidthEventJumpFrontier_of_eventCount_eq_zero (H : ObservedHistory.{u})
     (hcount : H.eventCount = 0)
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier) :
     HistoryWidthEventJumpFrontier H h0 terminal :=
   fun i => Fin.elim0 (hcount ▸ i)
 
 theorem historyWidthEventJumpFrontier_atZero (P : OrientedThreeStage.{u}) (g : P.Metric)
     (h0 : ∀ c : ConnectedComponents ((ObservedHistory.atZero P g).stage 0).Carrier,
-      SimplyConnectedSpace (((ObservedHistory.atZero P g).stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace (((ObservedHistory.atZero P g).stage 0).component c).Carrier)
     (terminal : ConnectedComponents ((ObservedHistory.atZero P g).stage
       (Fin.last (ObservedHistory.atZero P g).eventCount)).Carrier) :
     HistoryWidthEventJumpFrontier (ObservedHistory.atZero P g) h0 terminal :=
@@ -176,7 +176,7 @@ theorem historyWidthIncrementFrontier_atZero (P : OrientedThreeStage.{u}) (g : P
 
 theorem historyWidthDiniFrontier_atZero (P : OrientedThreeStage.{u}) (g : P.Metric)
     (h0 : ∀ c : ConnectedComponents ((ObservedHistory.atZero P g).stage 0).Carrier,
-      SimplyConnectedSpace (((ObservedHistory.atZero P g).stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace (((ObservedHistory.atZero P g).stage 0).component c).Carrier)
     (terminal : ConnectedComponents ((ObservedHistory.atZero P g).stage
       (Fin.last (ObservedHistory.atZero P g).eventCount)).Carrier) (c : ℝ) :
     HistoryWidthDiniFrontier (ObservedHistory.atZero P g) h0 terminal c := by

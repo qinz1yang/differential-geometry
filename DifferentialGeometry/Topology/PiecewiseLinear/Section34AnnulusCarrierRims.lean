@@ -122,7 +122,7 @@ theorem section34_second_rims_carry_outer_tube
       Bb₁ Sp Tp cnt Pg G) (e : Section34EdgeIndex 𝒦 𝒦') :
     CarriesFundamentalGroupOnto (G (ends e).2 '' Bb₀ e) (Sp e) ∧
       CarriesFundamentalGroupOnto (G (ends e).2 '' Bb₁ e) (Sp e) := by
-  obtain ⟨k, hk, hcarry, -⟩ := exists_piercing_circle_carrying_generators hprep hpack e
+  obtain ⟨k, hk, hcarry, -⟩ := exists_section34_piercing_circle_carrying_generators hprep hpack e
   have hann := (section34_piercing_annuli hprep hpack e).2
   obtain ⟨-, -, -, -, -, -, -, -, hBbS, -, -, -, -, -, -, -, -, hPg, -⟩ := hpack
   obtain ⟨P, hP⟩ := (hPg e k hk).1

@@ -19,7 +19,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Lo
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
 import DifferentialGeometry.Analysis.Calculus.Manifold.AbsolutelyContinuous
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.CarrierC1RegularityJointMetric
-
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.PrefixMinimalityAbsolutelyContinuous
 noncomputable section
 
 open Set Filter Manifold MeasureTheory
@@ -29,13 +29,10 @@ open scoped Manifold ContDiff Topology Interval
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.closedSolution_lagrangian_ae_eq_of_projection
+private theorem closedSolution_lagrangian_ae_eq_of_projection
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c T u d : ℝ} (hcs : c ≤ s) (hu : 0 ≤ u) (hTu : T - u ^ 2 = s)
     (η : ℝ → W) (γ : ℝ → P.Carrier)
@@ -88,13 +85,10 @@ open scoped Manifold ContDiff Topology Interval
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe uIncomingC1
 variable {P : OrientedThreeStage.{uIncomingC1}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_contMDiffOn_one_terminal_collar_of_action_minimal
+private theorem TerminalLimitMetric.exists_contMDiffOn_one_terminal_collar_of_action_minimal
     (L : G.TerminalLimitMetric) {T u v : ℝ} {α : ℝ → P.Carrier}
     (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s) (ha : a ≤ T - v ^ 2)
     (hα : Manifold.absolutelyContinuousOnInterval ThreeModel α u v)
@@ -172,13 +166,10 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.Incom
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe uIncomingClosedC1
 variable {P : OrientedThreeStage.{uIncomingClosedC1}} {a s : ℝ}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.contMDiffOn_one_of_action_minimal
+theorem contMDiffOn_one_of_action_minimal
     (G : P.IncomingSlab a s) {T u v : ℝ} {alpha : ℝ → P.Carrier}
     (huv : u < v)
     (hclock : ∀ r ∈ Icc u v, T - r ^ 2 ∈ Ico a s)
@@ -222,13 +213,10 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.Incom
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe uIncomingFullC1
 variable {P : OrientedThreeStage.{uIncomingFullC1}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.contMDiffOn_one_of_action_minimal
+theorem TerminalLimitMetric.contMDiffOn_one_of_action_minimal
     (L : G.TerminalLimitMetric) {T u v : ℝ} {alpha : ℝ → P.Carrier}
     (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s) (ha : a ≤ T - v ^ 2)
     (halpha : Manifold.absolutelyContinuousOnInterval ThreeModel alpha u v)

@@ -15,16 +15,13 @@ open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 open Perelman.CanonicalNeighborhood
 
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.componentTimeShift_rescaledMetric (c : ConnectedComponents P.Carrier)
+theorem componentTimeShift_rescaledMetric (c : ConnectedComponents P.Carrier)
     (t Q : ℝ) (hQ : 0 < Q) (v : ℝ) :
     rescaledMetric (G.componentTimeShift c) t Q hQ v =
       (rescaledMetric G.flow (t + a) Q hQ v).restrictOpen (P.componentOpen c) := by

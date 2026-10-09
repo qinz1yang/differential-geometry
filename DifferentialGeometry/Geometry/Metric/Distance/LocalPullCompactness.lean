@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeDiffeomorph
 import DifferentialGeometry.Geometry.Metric.DistancePullback
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
 noncomputable section
 

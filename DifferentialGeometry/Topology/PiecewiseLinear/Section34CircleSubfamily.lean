@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.CurveInclusion
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Deletion
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchDeletion
 
 open Set
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.CurveLength.Reparametrization
+import DifferentialGeometry.Geometry.Metric.CurveLengthReparametrization
 import DifferentialGeometry.Geometry.Metric.LoopDistance
 import DifferentialGeometry.Topology.LoopSpace.AffineLift
 

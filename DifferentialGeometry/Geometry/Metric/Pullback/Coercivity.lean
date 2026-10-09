@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactDerivative
+import DifferentialGeometry.Geometry.Metric.CompactDerivative
 import DifferentialGeometry.Geometry.Metric.Pullback.Coefficients
 
 noncomputable section

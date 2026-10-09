@@ -179,7 +179,7 @@ theorem lowerHemisphere_eq_upperHemisphere_iff (m : ℕ) (x y : Disk (m + 1)) :
     rw [(diskHeight_eq_zero_iff x).mpr h]
     simp
 
-theorem twisted_sphere_homeomorph {m : ℕ} {X : Type*} [TopologicalSpace X]
+theorem twisted_sphere_homeomorph {m : ℕ} {X : Type*} [TopologicalSpace X] [T2Space X]
     {e₀ e₁ : Disk (m + 1) → X} (h₀ : IsClosedEmbedding e₀) (h₁ : IsClosedEmbedding e₁)
     (hcover : range e₀ ∪ range e₁ = univ)
     (hinter : range e₀ ∩ range e₁ = e₀ '' diskSphere (m + 1))

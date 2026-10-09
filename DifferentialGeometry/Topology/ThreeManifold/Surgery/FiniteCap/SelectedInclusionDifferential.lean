@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CutCoreOrientation
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Open
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationOpen
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeDifferential
 
 set_option autoImplicit false

@@ -1,4 +1,3 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.CurvatureMonomialJetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Coefficients.AlgebraicThirdOrderBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Application.MixedTensorThirdOrderBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Coefficients.DeviationThirdOrderBounds
@@ -1349,20 +1348,20 @@ theorem lie_second_order_expansion_h3_uniform
       ‖iteratedCovGrad (I := I) g 4 2 j (V i)‖ ^ 2) ≤ Km * N ^ 2 := by
     let W : SmoothCcTensor g 4 6 :=
       monoExt (I := I) (M := M) g 0 2 4
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation (lieDecompositionQ i)) T
+        (RicciDeTurckLowOrder.monoPerm (lieDecompositionQ i)) T
     have hWpt : ∀ y : M,
         riemannianFiberNormSq (I := I) (M := M) g 4 6 y
           (W.toSection y) ≤ (Real.sqrt n4 * (C2 * x)) ^ 2 := by
       intro y
       refine (mono_ext_pointwise (I := I) (M := M) g 0 2 4
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation (lieDecompositionQ i)) T y).trans ?_
+        (RicciDeTurckLowOrder.monoPerm (lieDecompositionQ i)) T y).trans ?_
       rw [mul_pow, Real.sq_sqrt hn4]
       exact mul_le_mul_of_nonneg_left (hTpt y) hn4
     have hWjet : (∑ j ∈ Finset.range 4,
         ‖iteratedCovGrad (I := I) g 4 6 j W‖ ^ 2) ≤
         n4 * (C3 * N) ^ 2 := by
       refine (monoExtJet (I := I) (M := M) g 0 2 4 3
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation (lieDecompositionQ i)) T).trans ?_
+        (RicciDeTurckLowOrder.monoPerm (lieDecompositionQ i)) T).trans ?_
       exact mul_le_mul_of_nonneg_left hTjet hn4
     have happRaw := happ g hEq
       (cometricDoublePairTraceCoefficient (I := I) (M := M) g gm) W Cp
@@ -1370,8 +1369,7 @@ theorem lie_second_order_expansion_h3_uniform
       (mul_nonneg (Real.sqrt_nonneg _) (mul_nonneg hC2 hx))
       hpairPt hWpt
     dsimp only [V]
-    dsimp only [curvatureDecompositionMonomialCoeffField]
-    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialCoeffField_eq_pairTrace]
+    rw [RicciDeTurckLowOrder.curvMono_eq]
     change (∑ j ∈ Finset.range 4,
       ‖iteratedCovGrad (I := I) g 4 2 j
         (ccOperatorFieldComp (I := I) (M := M) g 4 6 2
@@ -1627,19 +1625,19 @@ theorem ricciConnectionDifferenceDerivativeTransposedCoefficient_h3_of_metricWei
   let V : Equiv.Perm (Fin 4) → SmoothCcTensor g 4 2 := fun e =>
     RicciDeTurckLowOrder.ricciConnectionDifferenceDerivativeTransposedMonomial (I := I) (M := M) g gm T e
   let Z : Equiv.Perm (Fin 4) → SmoothCcTensor g 4 6 := fun e =>
-    monoExt (I := I) (M := M) g 0 2 4 (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation e) W
+    monoExt (I := I) (M := M) g 0 2 4 (RicciDeTurckLowOrder.monoPerm e) W
   have hZpt (e : Equiv.Perm (Fin 4)) : ∀ y : M,
       riemannianFiberNormSq (I := I) (M := M) g 4 6 y ((Z e).toSection y) ≤
         (Real.sqrt n4 * (Real.sqrt Fq * (C2 * x))) ^ 2 := by
     intro y
     refine (mono_ext_pointwise (I := I) (M := M) g 0 2 4
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation e) W y).trans ?_
+      (RicciDeTurckLowOrder.monoPerm e) W y).trans ?_
     rw [hn4eq, mul_pow, Real.sq_sqrt hn4]
     exact mul_le_mul_of_nonneg_left (by simpa only [W] using hWpt y) hn4
   have hZjet (e : Equiv.Perm (Fin 4)) : (∑ j ∈ Finset.range 4,
       ‖iteratedCovGrad (I := I) g 4 6 j (Z e)‖ ^ 2) ≤ n4 * (Kw * N ^ 2) := by
     refine (monoExtJet (I := I) (M := M) g 0 2 4 3
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation e) W).trans ?_
+      (RicciDeTurckLowOrder.monoPerm e) W).trans ?_
     rw [hn4eq]
     exact mul_le_mul_of_nonneg_left (by simpa only [W] using hWjet) hn4
   have hVeq (e : Equiv.Perm (Fin 4)) :
@@ -1647,8 +1645,7 @@ theorem ricciConnectionDifferenceDerivativeTransposedCoefficient_h3_of_metricWei
         (cometricDoublePairTraceCoefficient (I := I) (M := M) g g) (Z e) := by
     dsimp only [V, Z, W, RicciDeTurckLowOrder.ricciConnectionDifferenceDerivativeTransposedMonomial,
       RicciDeTurckLowOrder.ricciConnectionDifferenceDerivativeMetricWeight]
-    dsimp only [curvatureDecompositionMonomialCoeffField]
-    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialCoeffField_eq_pairTrace]
+    rw [RicciDeTurckLowOrder.curvMono_eq]
     rfl
   have hVpt (e : Equiv.Perm (Fin 4)) : ∀ y : M,
       riemannianFiberNormSq (I := I) (M := M) g 4 2 y ((V e).toSection y) ≤

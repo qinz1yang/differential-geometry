@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Measure.Area.LeastArea
 import DifferentialGeometry.Geometry.Measure.Area.Reparametrization
-import DifferentialGeometry.Topology.Homeomorph.Radial.Disk
+import DifferentialGeometry.Topology.LoopSpace.RadialHomeomorphism
 
 
 

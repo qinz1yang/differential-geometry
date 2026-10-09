@@ -21,7 +21,7 @@ theorem contMDiffAt_deriv_snd {G : M × ℝ → F} {p : M × ℝ} {m n : ℕ∞�
   have hs : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, F) n
       (fun q : ℝ × M => G (q.2, q.1)) (p.2, p.1) :=
     hG.comp (p.2, p.1) (contMDiffAt_snd.prodMk contMDiffAt_fst)
-  have hd := DifferentialGeometry.contMDiffAt_partial_deriv_fst hs hmn
+  have hd := DifferentialGeometry.timeDeriv_smoothAt hs hmn
   exact hd.comp p (contMDiffAt_snd.prodMk contMDiffAt_fst)
 
 theorem contMDiffAt_iteratedDeriv_snd_of_add_le {G : M × ℝ → F} {p : M × ℝ}

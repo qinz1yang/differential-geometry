@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.Identities
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Evaluation
+import DifferentialGeometry.Geometry.Metric.Evaluation
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 

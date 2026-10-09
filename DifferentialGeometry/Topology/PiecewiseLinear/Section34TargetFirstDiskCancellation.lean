@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TargetDiskCancellation
-import DifferentialGeometry.Topology.PiecewiseLinear.Homeomorph.SupportedInverse
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34SupportedMotionInverse
 
 open Set Topology
 

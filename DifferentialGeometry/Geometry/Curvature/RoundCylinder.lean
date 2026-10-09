@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.SurfaceProductRank
 import DifferentialGeometry.Geometry.Curvature.Cylinder
 import DifferentialGeometry.Geometry.Curvature.RoundSphere
 import DifferentialGeometry.Geometry.Curvature.ScalarTrace
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricci
 
 noncomputable section

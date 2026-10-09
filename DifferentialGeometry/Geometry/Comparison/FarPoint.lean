@@ -1,8 +1,8 @@
-import DifferentialGeometry.Analysis.Calculus.SecondDerivative.Minimum
+import DifferentialGeometry.Analysis.Calculus.SecondDerivative
 import DifferentialGeometry.Geometry.Metric.CurveEnergy
 import DifferentialGeometry.Geometry.Curvature.CompactPositive
 import DifferentialGeometry.Geometry.Submanifold.IsometricImmersion
-import DifferentialGeometry.Geometry.Variation.RadialCurvatureEstimate
+import DifferentialGeometry.Geometry.Comparison.Variation.RadialCurvatureEstimate
 import DifferentialGeometry.Geometry.Comparison.Variation.CurveEnergy
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 
@@ -248,8 +248,7 @@ theorem farPoint_noLocalMin_of_geodesicAt
   have henergyDifferentiable : Differentiable ℝ energy :=
     variationHalfEnergy_differentiable (I := I) g V.variation L V.smooth
   have hsecondNonneg : 0 ≤ deriv (deriv energy) 0 :=
-    DifferentialGeometry.Analysis.second_deriv_nonneg_of_isLocalMin henergyMin
-      henergyDifferentiable.continuous.continuousAt
+    second_derivative_nonneg_of_isLocalMin henergyMin henergyDifferentiable
   have hfirst := firstVariation_curveEnergy_geodesic_fixedInitial
     (I := I) (M := M) g (fun t : ℝ ↦ V.variation 0 t)
       V.variation L V.smooth hLpos V.centralGeodesic

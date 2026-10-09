@@ -9,13 +9,10 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_connected_compact_neighborhood_scalar_sublevel_component
+theorem TerminalLimitMetric.exists_connected_compact_neighborhood_scalar_sublevel_component
     (L : G.TerminalLimitMetric) (A : ℝ) (c : ConnectedComponents G.terminalRegularOpen)
     (hc : ∃ x : G.terminalRegularOpen, ConnectedComponents.mk x = c ∧
       metricScalarAt L.metric x ≤ A) :

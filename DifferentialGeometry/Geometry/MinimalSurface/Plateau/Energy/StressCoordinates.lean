@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Gradient.Complex
 import DifferentialGeometry.Tensor.LinearAlgebra.PlanarBilinear
 import DifferentialGeometry.Analysis.Integration.Integral.WeightedDerivativePairing
 import DifferentialGeometry.Geometry.Metric.Pullback.Continuity
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
+import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
 import Mathlib.Analysis.Calculus.Rademacher
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.WeakPullback
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WitnessCongruence

@@ -53,7 +53,7 @@ theorem multilinear_tensorOfDualLinearForms
         (fun y => ContinuousMultilinearMap.tensorOfDualLinearForms ℝ (V y) k (fun i => α i y)) x X =
       ∑ i, ContinuousMultilinearMap.tensorOfDualLinearForms ℝ (V x) k
         (Function.update (fun j => α j x) i
-          (_root_.CovariantDerivative.hom
+          (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V ℝ (Bundle.Trivial M ℝ) cov (trivial I M ℝ) (α i) x X)) := by
   classical
   apply ContinuousMultilinearMap.ext
@@ -67,11 +67,11 @@ theorem multilinear_tensorOfDualLinearForms
   obtain ⟨Z, hZ⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
     (n := (⊤ : ℕ∞)) x X
   have hdual (i : Fin k) :
-      _root_.CovariantDerivative.hom
+      DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
         I M F V ℝ (Bundle.Trivial M ℝ) cov (trivial I M ℝ) (α i) x X (Y i x) =
         mvfderiv (I := I) (fun y => α i y (Y i y)) x X - α i x (cov (Y i) x X) := by
     rw [← hZ]
-    exact _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+    exact DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
       I M F V ℝ (Bundle.Trivial M ℝ) cov (trivial I M ℝ) (α i)
       (hα i) Z.mdifferentiableAt (Y i).mdifferentiableAt
   have hscalar (i : Fin k) : MDifferentiableAt I 𝓘(ℝ, ℝ)
@@ -96,10 +96,10 @@ theorem multilinear_tensorOfDualLinearForms
       simp
     · simp [hji]
   have hright : (fun j => Function.update (fun j => α j x) i
-      (_root_.CovariantDerivative.hom
+      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
         I M F V ℝ (Bundle.Trivial M ℝ) cov (trivial I M ℝ) (α i) x X) j (Y j x)) =
       Function.update (fun j => α j x (Y j x)) i
-        (_root_.CovariantDerivative.hom
+        (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V ℝ (Bundle.Trivial M ℝ) cov (trivial I M ℝ) (α i) x X (Y i x)) := by
     funext j
     by_cases hji : j = i
@@ -120,16 +120,16 @@ theorem dualMultilinearFiberwiseEquiv_covariantDerivative
         (Bundle.dual ℝ (Bundle.continuousMultilinearMap ℝ k F V)))) x)
     (X : TangentSpace I x) :
     Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv (F := F) (E := V) k x
-      (_root_.CovariantDerivative.hom
+      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
         I M (ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ)
         (Bundle.continuousMultilinearMap ℝ k F V) ℝ (Bundle.Trivial M ℝ)
         (cov.multilinear k) (trivial I M ℝ) φ x X) =
-      (_root_.CovariantDerivative.hom
+      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
         I M F V ℝ (Bundle.Trivial M ℝ) cov (trivial I M ℝ)).multilinear k
           (fun y => Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv
             (F := F) (E := V) k y (φ y)) x X := by
   classical
-  let D := _root_.CovariantDerivative.hom
+  let D := DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
     I M F V ℝ (Bundle.Trivial M ℝ) cov (trivial I M ℝ)
   let T := Bundle.continuousMultilinearMap ℝ k F V
   let G := ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ
@@ -149,7 +149,7 @@ theorem dualMultilinearFiberwiseEquiv_covariantDerivative
   have hα : (fun i => A i x) = α := funext hA
   rw [← hα]
   rw [Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv_apply]
-  change _root_.CovariantDerivative.hom
+  change DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
     I M G T ℝ (Bundle.Trivial M ℝ) (cov.multilinear k) (trivial I M ℝ) φ x X
       (ContinuousMultilinearMap.tensorOfDualLinearForms ℝ (V x) k (fun i => A i x)) =
     D.multilinear k Ψ x X (fun i => A i x)
@@ -158,7 +158,7 @@ theorem dualMultilinearFiberwiseEquiv_covariantDerivative
     (n := (⊤ : ℕ∞)) x X
   have htensor := MDifferentiableAt.tensorOfDualLinearForms_bundle k
     (fun i y => A i y) (fun i => (A i).mdifferentiableAt (x := x))
-  have hdual := _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+  have hdual := DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
     I M G T ℝ (Bundle.Trivial M ℝ) (cov.multilinear k) (trivial I M ℝ) φ hφ
     (Z.mdifferentiableAt (x := x)) htensor
   rw [hZ] at hdual
@@ -183,9 +183,9 @@ theorem dualMultilinearFiberwiseEquiv_symm_covariantDerivative
         (Bundle.continuousMultilinearMap ℝ k (F →L[ℝ] ℝ) (Bundle.dual ℝ V)))) x)
     (X : TangentSpace I x) :
     (Bundle.continuousMultilinearMap.dualMultilinearFiberwiseEquiv (F := F) (E := V) k x).symm
-      ((_root_.CovariantDerivative.hom
+      ((DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
         I M F V ℝ (Bundle.Trivial M ℝ) cov (trivial I M ℝ)).multilinear k Ψ x X) =
-      _root_.CovariantDerivative.hom
+      DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
         I M (ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ)
         (Bundle.continuousMultilinearMap ℝ k F V) ℝ (Bundle.Trivial M ℝ)
         (cov.multilinear k) (trivial I M ℝ)
@@ -224,7 +224,7 @@ theorem hom_multilinear_apply_tensorOfDualLinearForms
     (hY : ∀ i, MDifferentiableAt I (I.prod 𝓘(ℝ, F))
       (fun y => (⟨y, Y i y⟩ : TotalSpace F V)) x)
     (X : TangentSpace I x) :
-    _root_.CovariantDerivative.hom
+    DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
       I M (ContinuousMultilinearMap ℝ (fun _ : Fin r => F) ℝ)
       (Bundle.continuousMultilinearMap ℝ r F V)
       (ContinuousMultilinearMap ℝ (fun _ : Fin s => F) ℝ)
@@ -239,7 +239,7 @@ theorem hom_multilinear_apply_tensorOfDualLinearForms
         (fun i => α i x)) (Function.update (fun i => Y i x) j (cov (Y j) x X)) -
       ∑ i, A x (ContinuousMultilinearMap.tensorOfDualLinearForms ℝ (V x) r
         (Function.update (fun j => α j x) i
-          (_root_.CovariantDerivative.hom
+          (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V ℝ (Bundle.Trivial M ℝ) cov (trivial I M ℝ) (α i) x X)))
         (fun j => Y j x) := by
   classical
@@ -247,7 +247,7 @@ theorem hom_multilinear_apply_tensorOfDualLinearForms
   obtain ⟨Z, hZ⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
     (n := (⊤ : ℕ∞)) x X
   have h :=
-    _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+    DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
     I M (ContinuousMultilinearMap ℝ (fun _ : Fin r => F) ℝ)
     (Bundle.continuousMultilinearMap ℝ r F V)
     (ContinuousMultilinearMap ℝ (fun _ : Fin s => F) ℝ)

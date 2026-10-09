@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MultipleMinimizersNull
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LocalLipschitzComplete
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CutMultiNull
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CostChartLipComplete
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FamilyContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.ReducedVolume.Density
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.MinimizingMass

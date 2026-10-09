@@ -6,6 +6,7 @@ namespace DifferentialGeometry.Topology.Engulfing
 
 open Set _root_.Geometry
 
+set_option linter.unusedSectionVars false
 
 variable {E : Type*} [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E]
 

@@ -120,42 +120,42 @@ lemma toModel_unitValue_ccTensor02Symm_abs_le (g₀ : SmoothRiemannianMetric I M
   rw [hval]
   exact hδ y v w
 
-def curvatureActionMonomialPairTracePermutation (σ : Equiv.Perm (Fin 4)) : Equiv.Perm (Fin 6) :=
+private def curvatureDecompositionSlotPerm (σ : Equiv.Perm (Fin 4)) : Equiv.Perm (Fin 6) :=
   ((finSumFinEquiv (m := 4) (n := 2)).permCongr
     (Equiv.sumCongr σ (Equiv.refl (Fin 2)))).trans termPairTraceSlotPerm6
 
 private lemma curvatureDecompositionSlotPerm_castAdd (σ : Equiv.Perm (Fin 4)) (j : Fin 4) :
-    curvatureActionMonomialPairTracePermutation σ (Fin.castAdd 2 j) = (![1, 3, 4, 5] : Fin 4 → Fin 6) (σ j) := by
+    curvatureDecompositionSlotPerm σ (Fin.castAdd 2 j) = (![1, 3, 4, 5] : Fin 4 → Fin 6) (σ j) := by
   have hpad : (finSumFinEquiv (m := 4) (n := 2)).permCongr
       (Equiv.sumCongr σ (Equiv.refl (Fin 2))) (Fin.castAdd 2 j) =
       Fin.castAdd 2 (σ j) := by
     rw [Equiv.permCongr_apply, finSumFinEquiv_symm_apply_castAdd]
     rfl
-  rw [curvatureActionMonomialPairTracePermutation, Equiv.trans_apply, hpad]
+  rw [curvatureDecompositionSlotPerm, Equiv.trans_apply, hpad]
   exact (by decide : ∀ k : Fin 4,
     termPairTraceSlotPerm6 (Fin.castAdd 2 k) = (![1, 3, 4, 5] : Fin 4 → Fin 6) k) (σ j)
 
 private lemma curvatureDecompositionSlotPerm_natAdd (σ : Equiv.Perm (Fin 4)) (k : Fin 2) :
-    curvatureActionMonomialPairTracePermutation σ (Fin.natAdd 4 k) = (![0, 2] : Fin 2 → Fin 6) k := by
+    curvatureDecompositionSlotPerm σ (Fin.natAdd 4 k) = (![0, 2] : Fin 2 → Fin 6) k := by
   have hpad : (finSumFinEquiv (m := 4) (n := 2)).permCongr
       (Equiv.sumCongr σ (Equiv.refl (Fin 2))) (Fin.natAdd 4 k) =
       Fin.natAdd 4 k := by
     rw [Equiv.permCongr_apply, finSumFinEquiv_symm_apply_natAdd]
     rfl
-  rw [curvatureActionMonomialPairTracePermutation, Equiv.trans_apply, hpad]
+  rw [curvatureDecompositionSlotPerm, Equiv.trans_apply, hpad]
   exact (by decide : ∀ k' : Fin 2,
     termPairTraceSlotPerm6 (Fin.natAdd 4 k') = (![0, 2] : Fin 2 → Fin 6) k') k
 
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-theorem curvatureActionMonomialCoeffField_eq_pairTrace (g₀ g₁ : SmoothRiemannianMetric I M)
+private theorem curvatureDecompositionMonomialCoeffField_eq_pairTrace (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (σ : Equiv.Perm (Fin 4)) :
     curvatureActionMonomialCoeffField (I := I) (M := M) g₀ g₁
         (ccTensorUnitValueSection (I := I) (M := M) g₀ S)
         (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀ S) σ =
       ccOperatorFieldComp (I := I) (M := M) g₀ 4 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
           (slotExtendIter (I := I) (M := M) g₀ 0 2 4 S)) := by
   classical
   apply SmoothCcTensor.ext
@@ -168,7 +168,7 @@ theorem curvatureActionMonomialCoeffField_eq_pairTrace (g₀ g₁ : SmoothRieman
   intro v
   set Y : Tensor0SSpace 6 I x :=
     (show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 6 I x from
-      (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+      (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
         (slotExtendIter (I := I) (M := M) g₀ 0 2 4 S)).toSection x) G with hY_def
   have hYval : ∀ w : Fin 6 → E,
       Tensor0SSpace.toModel Y w =
@@ -178,17 +178,17 @@ theorem curvatureActionMonomialCoeffField_eq_pairTrace (g₀ g₁ : SmoothRieman
     intro w
     rw [hY_def]
     rw [show ((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 6 I x from
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
           (slotExtendIter (I := I) (M := M) g₀ 0 2 4 S)).toSection x) G) =
         ((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRSDomDomCongr (curvatureActionMonomialPairTracePermutation σ)
+          tensorRSDomDomCongr (curvatureDecompositionSlotPerm σ)
             ((slotExtendIter (I := I) (M := M) g₀ 0 2 4 S).toSection x)) G) from by
       rw [rsDomDomCongrSection_toSection]]
-    rw [toModel_rsDomDomCongr_apply (I := I) (M := M) (curvatureActionMonomialPairTracePermutation σ)
+    rw [toModel_rsDomDomCongr_apply (I := I) (M := M) (curvatureDecompositionSlotPerm σ)
       ((slotExtendIter (I := I) (M := M) g₀ 0 2 4 S).toSection x) G]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
     rw [slotExtendIter_four_toModel (I := I) (M := M) g₀ S x G
-      (fun i => w (curvatureActionMonomialPairTracePermutation σ i))]
+      (fun i => w (curvatureDecompositionSlotPerm σ i))]
     refine congrArg₂ (· * ·) ?_ ?_
     · refine congrArg _ ?_
       funext j
@@ -232,7 +232,7 @@ theorem curvatureActionMonomialCoeffField_eq_pairTrace (g₀ g₁ : SmoothRieman
   have hRHS : Tensor0SSpace.toModel
       ((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 4 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
             (slotExtendIter (I := I) (M := M) g₀ 0 2 4 S))).toSection x) G) v =
       ∑ b : Fin (Module.finrank ℝ E), ∑ a : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel Y
@@ -246,7 +246,7 @@ theorem curvatureActionMonomialCoeffField_eq_pairTrace (g₀ g₁ : SmoothRieman
                   (smoothOrthoFrame (I := I) g₁ x b x)) v)))) := by
     rw [show ((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 2 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 4 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
             (slotExtendIter (I := I) (M := M) g₀ 0 2 4 S))).toSection x) G) =
         cometricDoubleTraceFib (I := I) g₁ 2 x
           (cometricDoubleTraceFib (I := I) g₁ 4 x Y) from by
@@ -384,7 +384,7 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
   have hWtower : ∀ l : ℕ,
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 (6 + l) x
         ((iteratedCovGrad (I := I) g₀ 4 6 l
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
             (slotExtendIter (I := I) (M := M) g₀ 0 2 4
               (ccTensor02Symm (I := I) (M := M) g₀ S)))).toSection x) ≤
       (fr * (fr * (fr * (fr * CS l)))) *
@@ -392,7 +392,7 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
     intro l
     have hperm : riemannianFiberNormSq (I := I) (M := M) g₀ 4 (6 + l) x
         ((iteratedCovGrad (I := I) g₀ 4 6 l
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
             (slotExtendIter (I := I) (M := M) g₀ 0 2 4
               (ccTensor02Symm (I := I) (M := M) g₀ S)))).toSection x) =
         riemannianFiberNormSq (I := I) (M := M) g₀ 4 (6 + l) x
@@ -400,9 +400,9 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
             (slotExtendIter (I := I) (M := M) g₀ 0 2 4
               (ccTensor02Symm (I := I) (M := M) g₀ S))).toSection x) :=
       riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr (I := I) (M := M) g₀ 4 6
-        (curvatureActionMonomialPairTracePermutation σ)
+        (curvatureDecompositionSlotPerm σ)
         (slotExtendIter (I := I) (M := M) g₀ 0 2 4 (ccTensor02Symm (I := I) (M := M) g₀ S))
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
           (slotExtendIter (I := I) (M := M) g₀ 0 2 4 (ccTensor02Symm (I := I) (M := M) g₀ S)))
         (fun y d => by
           rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply]) l x
@@ -521,17 +521,17 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
         ((iteratedCovGrad (I := I) g₀ 4 2 i
           (ccOperatorFieldComp (I := I) (M := M) g₀ 4 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
               (slotExtendIter (I := I) (M := M) g₀ 0 2 4
                 (ccTensor02Symm (I := I) (M := M) g₀ S))))).toSection x) := by
-    rw [curvatureActionMonomialCoeffField_eq_pairTrace (I := I) (M := M) g₀ g₁
+    rw [curvatureDecompositionMonomialCoeffField_eq_pairTrace (I := I) (M := M) g₀ g₁
       (ccTensor02Symm (I := I) (M := M) g₀ S) σ]
   rw [hlift]
   refine le_trans
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (I := I) (M := M) g₀ i 4 6 2
     (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
-    (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+    (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
       (slotExtendIter (I := I) (M := M) g₀ 0 2 4
         (ccTensor02Symm (I := I) (M := M) g₀ S))) x) ?_
   have hcell : ∀ i' ∈ Finset.range (i + 1),
@@ -541,7 +541,7 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
         ∑ l ∈ Finset.range (i + 1 - i'),
           riemannianFiberNormSq (I := I) (M := M) g₀ 4 (6 + l) x
             ((iteratedCovGrad (I := I) g₀ 4 6 l
-              (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+              (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
                 (slotExtendIter (I := I) (M := M) g₀ 0 2 4
                   (ccTensor02Symm (I := I) (M := M) g₀ S)))).toSection x) ≤
       (CP i' * ∑ l ∈ Finset.range (i + 1 - i'),
@@ -559,7 +559,7 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
     have hA2 : (∑ l ∈ Finset.range (i + 1 - i'),
         riemannianFiberNormSq (I := I) (M := M) g₀ 4 (6 + l) x
           ((iteratedCovGrad (I := I) g₀ 4 6 l
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
               (slotExtendIter (I := I) (M := M) g₀ 0 2 4
                 (ccTensor02Symm (I := I) (M := M) g₀ S)))).toSection x)) ≤
         ∑ l ∈ Finset.range (i + 1 - i'),
@@ -569,7 +569,7 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
     have hsum_nn : (0 : ℝ) ≤ ∑ l ∈ Finset.range (i + 1 - i'),
         riemannianFiberNormSq (I := I) (M := M) g₀ 4 (6 + l) x
           ((iteratedCovGrad (I := I) g₀ 4 6 l
-            (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureActionMonomialPairTracePermutation σ)
+            (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
               (slotExtendIter (I := I) (M := M) g₀ 0 2 4
                 (ccTensor02Symm (I := I) (M := M) g₀ S)))).toSection x) :=
       Finset.sum_nonneg fun l _ =>

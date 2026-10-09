@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Schoenflies.Height.SourceCylinder
+import DifferentialGeometry.Topology.SphereSeparation.SourceHeightCylinder
 import DifferentialGeometry.Topology.Handle.SphereDiskSides
 
 open Set Metric Manifold TopologicalSpace

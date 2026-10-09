@@ -7,6 +7,7 @@ open Set Metric _root_.Geometry _root_.Topology
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E : Type*} [DecidableEq E]
   [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
@@ -18,20 +19,17 @@ variable {E : Type*} [DecidableEq E]
 namespace RelativeGeneralPositionApproximation
 
 variable (a : RelativeGeneralPositionApproximation K L T f d p η)
-omit [FiniteDimensional ℝ E] in
 theorem correctedChart_eq_rawMap_of_exact
     (e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n)))
     (G : K.space → M) {x : K.space} (hx : e (G x) = a.approximation x) :
     correctedAffineChart e a.correction (G x) = a.rawMap x := by
   exact congrArg a.correction.symm hx
-omit [FiniteDimensional ℝ E] in
 theorem correctedChart_eq_rawMap_on
     (e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n)))
     (G : K.space → M) {B : Set K.space}
     (hB : ∀ x ∈ B, e (G x) = a.approximation x) :
     EqOn (fun x => correctedAffineChart e a.correction (G x)) a.rawMap B :=
   fun _ hx => a.correctedChart_eq_rawMap_of_exact e G (hB _ hx)
-omit [FiniteDimensional ℝ E] in
 theorem correctedChart_eq_rawMap_of_relative
     (e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n)))
     (g G : K.space → M) {x : K.space} (hxL : x.val ∈ L.space)
@@ -39,7 +37,6 @@ theorem correctedChart_eq_rawMap_of_relative
     correctedAffineChart e a.correction (G x) = a.rawMap x := by
   apply a.correctedChart_eq_rawMap_of_exact e G
   rw [hfix, a.relative x hxL, hlocal]
-omit [FiniteDimensional ℝ E] in
 theorem original_dist_rawMap_lt (x : K.space) : dist (f x) (a.rawMap x) < 2 * η := by
   have hnear : dist (f x) (a.approximation x) < η := by
     simpa only [dist_eq_norm, norm_sub_rev] using a.near x
@@ -49,7 +46,6 @@ theorem original_dist_rawMap_lt (x : K.space) : dist (f x) (a.rawMap x) < 2 * η
     simpa only [a.correction.apply_symm_apply, dist_eq_norm] using h
   have htri := dist_triangle (f x) (a.approximation x) (a.rawMap x)
   linarith
-omit [FiniteDimensional ℝ E] in
 theorem originalChart_mem_ball_of_rawMap_mem_closedBall
     (e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n)))
     (g : K.space → M) (c : EuclideanSpace ℝ (Fin n)) {r : ℝ} {x : K.space}
@@ -61,14 +57,12 @@ theorem originalChart_mem_ball_of_rawMap_mem_closedBall
   have htri := dist_triangle (e (g x)) (a.rawMap x) c
   apply mem_ball.mpr
   linarith
-omit [FiniteDimensional ℝ E] in
 theorem originalChart_mem_ball_of_rawMap_mem_ball
     (e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n)))
     (g : K.space → M) (c : EuclideanSpace ℝ (Fin n)) {r : ℝ} {x : K.space}
     (hlocal : f x = e (g x)) (hx : a.rawMap x ∈ ball c r) :
     e (g x) ∈ ball c (r + 2 * η) :=
   a.originalChart_mem_ball_of_rawMap_mem_closedBall e g c hlocal (ball_subset_closedBall hx)
-omit [FiniteDimensional ℝ E] in
 theorem original_mem_chart_closedBall_of_rawMap_mem_ball
     (e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n)))
     (g : K.space → M) (c : EuclideanSpace ℝ (Fin n)) {r R : ℝ} {x : K.space}
@@ -78,7 +72,6 @@ theorem original_mem_chart_closedBall_of_rawMap_mem_ball
   refine ⟨e (g x), ?_, e.left_inv hsource⟩
   exact closedBall_subset_closedBall hrR
     (ball_subset_closedBall (a.originalChart_mem_ball_of_rawMap_mem_ball e g c hlocal hx))
-omit [FiniteDimensional ℝ E] in
 theorem face_subset_core_of_raw_image
     (e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n)))
     (g : K.space → M) (c : EuclideanSpace ℝ (Fin n)) {r R : ℝ}
@@ -91,7 +84,6 @@ theorem face_subset_core_of_raw_image
   intro x hx
   exact hcore x (a.original_mem_chart_closedBall_of_rawMap_mem_ball e g c
     (hsource x hx) (hlocal x hx) (hsmall (mem_image_of_mem _ hx)) hrR)
-omit [FiniteDimensional ℝ E] in
 theorem originalChart_mem_ball_of_fixed_corrected
     (e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n)))
     (g G : K.space → M) (c : EuclideanSpace ℝ (Fin n)) {r : ℝ} {x : K.space}
@@ -105,7 +97,6 @@ theorem originalChart_mem_ball_of_fixed_corrected
   have htri := dist_triangle (e (g x)) (a.correction.symm (e (g x))) c
   apply mem_ball.mpr
   linarith
-omit [FiniteDimensional ℝ E] in
 theorem fixed_mem_chart_closedBall_of_corrected
     (e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n)))
     (g G : K.space → M) (c : EuclideanSpace ℝ (Fin n)) {r R : ℝ} {x : K.space}
@@ -115,7 +106,6 @@ theorem fixed_mem_chart_closedBall_of_corrected
   refine ⟨e (g x), ?_, e.left_inv (hfix ▸ hsource)⟩
   exact closedBall_subset_closedBall hrR
     (ball_subset_closedBall (a.originalChart_mem_ball_of_fixed_corrected e g G c hfix hx))
-omit [FiniteDimensional ℝ E] in
 theorem fixed_core_mem_interior
     (e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n)))
     (g G : K.space → M) (c : EuclideanSpace ℝ (Fin n)) {r R : ℝ}

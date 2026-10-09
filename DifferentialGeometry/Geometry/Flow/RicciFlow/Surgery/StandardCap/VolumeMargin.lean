@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.Volume
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticWitnessVolume
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 
 noncomputable section

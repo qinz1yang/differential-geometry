@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SeamCorrectionComposition
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SeamCorrectionPlacement
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.LocalCharts
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CylindricalLocalChart
 
 open Set Topology
 

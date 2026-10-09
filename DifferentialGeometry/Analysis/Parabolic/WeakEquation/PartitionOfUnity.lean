@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.PartitionOfUnity.Derivative
+import DifferentialGeometry.Topology.PartitionOfUnity.Derivative
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 

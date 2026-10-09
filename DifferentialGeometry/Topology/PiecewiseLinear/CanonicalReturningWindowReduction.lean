@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningComponentDeletion
 
 open Set Topology
@@ -45,7 +50,7 @@ theorem IsCanonicalAnnularWindow.exists_window_returning_reduction [d : Decidabl
     {X : ℤ → Geometry.SimplicialComplex ℝ E3} {rows : Finset ℤ}
     (hX : IsCanonicalAnnularWindow X (fun j => φ '' S j) S'' T'' I P' a b rows)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (hI : IsOpen I)
+    (h314 : Moise314) (hI : IsOpen I)
     (havoid : ∀ j : ℤ, Disjoint (φ '' S j) ({a, b} : Set E3))
     {F : Set E3}
     (hF : ∀ i ∈ rows, Disjoint F ((X i).space \ (boundaryComplex 2 (X i)).space)) :
@@ -88,7 +93,7 @@ theorem IsCanonicalAnnularWindow.exists_window_returning_reduction [d : Decidabl
         exact hxJ (hCb.subset ((boundaryComplex_space_connectedComponentComplex
           2 (X i) c).symm.subset ⟨hxB, hxC⟩))
       obtain ⟨X₁, B₀, B₁, hX₁, hstep, hdel⟩ :=
-        hX.exists_returning_component_deletion htw hI havoid i c hC hdis k hk
+        hX.exists_returning_component_deletion htw h314 hI havoid i c hC hdis k hk
           h₀ h₁ hess₀ hess₁ ((hF i hi).mono_right hsub)
       have hboundary (j : ℤ) : (boundaryComplex 2 (X₁ j)).space ⊆
           (boundaryComplex 2 (X j)).space := by

@@ -80,7 +80,7 @@ theorem classical_plateau_morrey
     (hsmooth : ContMDiff 𝓘(ℝ, ℝ) I ∞ (Width.loopLift gamma.toContinuousLoop))
     (hemb : Topology.IsEmbedding (gamma : Surgery.Topology.Circle → Q))
     (himm : ∀ t, Width.loopVelocity (I := I) gamma.toContinuousLoop t ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic gamma.toContinuousLoop) :
+    (hctr : Surgery.Topology.IsContractibleLoop gamma.toContinuousLoop) :
     ∃ u : InteriorSmoothDisk (I := I) (Q := Q),
       u.IsConformal g ∧ u.IsHarmonic g ∧
       Width.IsSignedWeaklyMonotoneTrace u.map gamma.toContinuousLoop ∧

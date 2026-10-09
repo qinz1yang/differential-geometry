@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Exponential.InjectivityRadius.Intrinsic
+import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Intrinsic
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Ball
 import DifferentialGeometry.Geometry.Comparison.Volume.Ball.Basic
-import DifferentialGeometry.Geometry.Curvature.Ricci.LowerBoundOn
+import DifferentialGeometry.Geometry.Comparison.Volume.LocalRicci
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.FrameBound
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.Measure
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Fiber.Iteration

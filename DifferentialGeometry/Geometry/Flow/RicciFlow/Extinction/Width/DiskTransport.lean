@@ -15,7 +15,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem exists_spanning_disk_of_postcomposeDiffeomorph
     (g : SmoothRiemannianMetric I Q) (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A)
-    (gamma : DifferentialGeometry.Topology.freeLoop Q) (v : LipschitzDisk g)
+    (gamma : ContinuousFreeLoop Q) (v : LipschitzDisk g)
     (htrace : ∀ theta, v.map (diskBoundary theta) = gamma theta) :
     ∃ w : DiskCompetitor (Diffeomorph.pullbackMetricCross g Φ.symm)
         ((⟨Φ, Φ.continuous⟩ : C(Q, A)).comp gamma),

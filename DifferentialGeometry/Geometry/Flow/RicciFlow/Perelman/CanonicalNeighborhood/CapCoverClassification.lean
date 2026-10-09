@@ -82,34 +82,34 @@ universe u
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
 
-theorem isStandardConnectedSum_of_positiveComponent
-    (W : PositiveComponent (univ : Set M)) : isStandardConnectedSum M := by
+theorem isPoincareStandard_of_positiveComponent
+    (W : PositiveComponent (univ : Set M)) : isPoincareStandard M := by
   cases W with
   | sphere F hs ht =>
     let e := Perelman.KappaSolutions.globalDiffeomorphOfUniv F hs ht
-    exact isStandardConnectedSum_of_diffeomorph
-      (e.symm.trans standardThreeSphereLiftDiffeomorph) isStandardConnectedSum_sphere
+    exact isPoincareStandard_of_diffeomorph
+      (e.symm.trans standardThreeSphereLiftDiffeomorph) isPoincareStandard_sphere
   | projective Z pr F hs ht =>
     let e := Perelman.KappaSolutions.globalDiffeomorphOfUniv F hs ht
-    exact isStandardConnectedSum_of_diffeomorph e.symm
-      (isStandardConnectedSum_of_antipodal_presentation
+    exact isPoincareStandard_of_diffeomorph e.symm
+      (isPoincareStandard_of_antipodal_presentation
         pr.quotient pr.isLocalDiffeomorph pr.onto pr.fibers)
 
 variable [IsManifold I3 ∞ M] [T2Space M]
 
-private theorem isStandardConnectedSum_of_ball_cap_cover_generic
+private theorem isPoincareStandard_of_ball_cap_cover_generic
     {K : Set M} (B : PartialDiffeomorph I3 I3 ThreeSpace M ∞)
     (hB : Metric.closedBall (0 : ThreeSpace) 1 ⊆ B.source)
     (cap : CapCore K)
     (hcover : B '' Metric.closedBall (0 : ThreeSpace) 1 ∪ K = univ) :
-    isStandardConnectedSum M := by
+    isPoincareStandard M := by
   obtain ⟨W⟩ := nonempty_positiveComponent_of_ball_cap_cover B hB cap hcover
-  exact isStandardConnectedSum_of_positiveComponent W
+  exact isPoincareStandard_of_positiveComponent W
 
-theorem isStandardConnectedSum_of_capCore_cover
+theorem isPoincareStandard_of_capCore_cover
     {K L : Set M} (capK : CapCore K) (capL : CapCore L)
     (hinter : L ∩ K = frontier K)
-    (hcover : K ∪ L = univ) : isStandardConnectedSum M := by
+    (hcover : K ∪ L = univ) : isPoincareStandard M := by
   have hfrontier : frontier L = frontier K := by
     have hL : L = (interior K)ᶜ := by
       ext x
@@ -127,16 +127,16 @@ theorem isStandardConnectedSum_of_capCore_cover
       capK.isCompact_carrier.isClosed.frontier_eq]
   cases capK with
   | ball B hB hK =>
-    exact isStandardConnectedSum_of_ball_cap_cover_generic B hB capL (hK.symm ▸ hcover)
+    exact isPoincareStandard_of_ball_cap_cover_generic B hB capL (hK.symm ▸ hcover)
   | projective Z₀ pr₀ b₀ hb₀ F₀ hF₀ hK =>
     cases capL with
     | ball B hB hL =>
       have cap : CapCore K := CapCore.projective Z₀ pr₀ b₀ hb₀ F₀ hF₀ hK
-      apply isStandardConnectedSum_of_ball_cap_cover_generic B hB cap
+      apply isPoincareStandard_of_ball_cap_cover_generic B hB cap
       rw [hL, union_comm]
       exact hcover
     | projective Z₁ pr₁ b₁ hb₁ F₁ hF₁ hL =>
-      apply isStandardConnectedSum_of_projective_ball_complement_cover
+      apply isPoincareStandard_of_projective_ball_complement_cover
         pr₀.quotient pr₁.quotient pr₀.isLocalDiffeomorph pr₁.isLocalDiffeomorph
         pr₀.onto pr₁.onto pr₀.fibers pr₁.fibers b₀ b₁ hb₀ hb₁ F₀ F₁ hF₀ hF₁
       · rwa [hK, hL]

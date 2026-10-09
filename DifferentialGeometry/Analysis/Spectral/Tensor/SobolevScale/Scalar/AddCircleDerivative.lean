@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ScalarEvaluation
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Application.IteratedCovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.Application
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothInclusion
-import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.PiLp
+import DifferentialGeometry.Analysis.FunctionalAnalysis.PiLpMap
 
 section
 

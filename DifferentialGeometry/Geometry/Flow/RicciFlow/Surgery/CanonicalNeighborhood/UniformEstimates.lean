@@ -193,7 +193,7 @@ theorem exists_poincare_controlled_extinction_of_uniformDebitSurgeryStepStrong
     (P₀ : OrientedThreeStage.{u}) [SimplyConnectedSpace P₀.Carrier] (g₀ : P₀.Metric)
     (hstep : UniformDebitSurgeryStepStrong P₀ g₀)
     (hcn : CanonicalNeighborhoodsThroughSurgeryStrong P₀ g₀) :
-    Nonempty (PoincareControlledExtinction P₀ g₀) := by
+    Nonempty (PoincareControlledExtinction P₀.toClosedOrientedManifold g₀) := by
   apply exists_poincare_controlled_extinction_of_singular_events_of_horizon_invariants P₀ g₀
   obtain ⟨εbar, hεbar, hcn⟩ := hcn
   intro B hB

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34InteriorCrossingCirclePages
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Crossing.Bicollar
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34LocalBicollarSides
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34InteriorCrossingChartsSurface
 
 open Set Topology

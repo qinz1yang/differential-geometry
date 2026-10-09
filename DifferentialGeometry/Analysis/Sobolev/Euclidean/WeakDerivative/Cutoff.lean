@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.LocalBound
+import DifferentialGeometry.Analysis.Sobolev.Tools.DiffQuotLocal
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Basic
 import DifferentialGeometry.Analysis.Integration.Lp.Cutoff
 

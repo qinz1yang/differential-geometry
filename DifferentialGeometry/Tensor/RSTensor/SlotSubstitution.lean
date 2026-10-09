@@ -6,7 +6,9 @@ noncomputable section
 
 open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators
-namespace DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Tensor0SBundle
+
+namespace DifferentialGeometry.Geometry.Connection
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -36,7 +38,7 @@ lemma tangentSlotCLM_other (n : ℕ) {b : M}
   unfold tangentSlotCLM
   simp [h]
 
-noncomputable def tangentCompCLM (n : ℕ) (b : M)
+noncomputable def tangentCompCLMLE (n : ℕ) (b : M)
     (Φ : Fin n → (TangentSpace I b →L[ℝ] TangentSpace I b)) :
     ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ →L[ℝ]
       ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ :=
@@ -50,7 +52,7 @@ noncomputable def tensorSlotSubstCLM (n : ℕ) (b : M)
   ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b).symm
       : ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ →L[ℝ]
           Tensor0SSpace n I b).comp
-    ((tangentCompCLM (I := I) (M := M) n b Φ).comp
+    ((tangentCompCLMLE (I := I) (M := M) n b Φ).comp
       ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b)
           : Tensor0SSpace n I b →L[ℝ]
             ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ))
@@ -62,12 +64,12 @@ lemma tensorSlotSubstCLM_apply (n : ℕ) (b : M)
     Tensor0SSpace.eval (tensorSlotSubstCLM (I := I) n b Φ τ) m =
       Tensor0SSpace.eval τ (fun i => Φ i (m i)) := by
   classical
-  unfold tensorSlotSubstCLM tangentCompCLM
+  unfold tensorSlotSubstCLM tangentCompCLMLE
   rfl
 
-end DifferentialGeometry.Tensor0SBundle
+end DifferentialGeometry.Geometry.Connection
 
-namespace DifferentialGeometry.Tensor0SBundle
+namespace DifferentialGeometry.Geometry.Curvature
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NeZero (Module.finrank ℝ E)]
@@ -77,47 +79,47 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M]
 
 
-def slotInsertEndomorphism (s : ℕ) (k : Fin s) (x : M)
+def slotInsertEndoFib (s : ℕ) (k : Fin s) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) :
     Tensor0SSpace s I x →L[ℝ] Tensor0SSpace s I x :=
-  tensorSlotSubstCLM (I := I) (M := M) s x
-    (tangentSlotCLM (I := I) s k Λ)
+  Connection.tensorSlotSubstCLM (I := I) (M := M) s x
+    (Connection.tangentSlotCLM (I := I) s k Λ)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
-lemma slotInsertEndomorphism_apply_natural (s : ℕ) (k : Fin s) (x : M)
+lemma slotInsertEndoFib_apply_natural (s : ℕ) (k : Fin s) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (A : Tensor0SSpace s I x)
     (m : Fin s → TangentSpace I x) :
-    Tensor0SSpace.eval (slotInsertEndomorphism (I := I) (M := M) s k x Λ A) m =
+    Tensor0SSpace.eval (slotInsertEndoFib (I := I) (M := M) s k x Λ A) m =
       Tensor0SSpace.eval A (Function.update m k (Λ (m k))) := by
-  unfold slotInsertEndomorphism
-  rw [tensorSlotSubstCLM_apply]
+  unfold slotInsertEndoFib
+  rw [Connection.tensorSlotSubstCLM_apply]
   congr 1
   funext i
   by_cases h : i = k
   · subst i
-    rw [tangentSlotCLM_self, Function.update_self]
-  · rw [tangentSlotCLM_other (I := I) s k Λ h,
+    rw [Connection.tangentSlotCLM_self, Function.update_self]
+  · rw [Connection.tangentSlotCLM_other (I := I) s k Λ h,
       ContinuousLinearMap.id_apply, Function.update_of_ne h]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
-@[simp] lemma slotInsertEndomorphism_apply (s : ℕ) (k : Fin s) (x : M)
+@[simp] lemma slotInsertEndoFib_apply (s : ℕ) (k : Fin s) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (A : Tensor0SSpace s I x) :
-    slotInsertEndomorphism (I := I) (M := M) s k x Λ A =
+    slotInsertEndoFib (I := I) (M := M) s k x Λ A =
       Tensor0SSpace.ofModel
         ((Tensor0SSpace.toModel A).compContinuousLinearMap
           (fun i : Fin s => if i = k then tangentLinearMapToModel Λ
             else ContinuousLinearMap.id ℝ E)) := by
   apply tensor0SSpace_ext (𝕜 := ℝ) s x
   intro v
-  change Tensor0SSpace.eval (slotInsertEndomorphism (I := I) (M := M) s k x Λ A) v =
+  change Tensor0SSpace.eval (slotInsertEndoFib (I := I) (M := M) s k x Λ A) v =
     Tensor0SSpace.eval
       (Tensor0SSpace.ofModel
         ((Tensor0SSpace.toModel A).compContinuousLinearMap
           (fun i : Fin s => if i = k then tangentLinearMapToModel Λ
             else ContinuousLinearMap.id ℝ E))) v
-  rw [slotInsertEndomorphism_apply_natural, Tensor0SSpace.eval_ofModel,
+  rw [slotInsertEndoFib_apply_natural, Tensor0SSpace.eval_ofModel,
     ContinuousMultilinearMap.compContinuousLinearMap_apply,
     Tensor0SSpace.toModel_apply_model_vector, Tensor0SSpace.eval_eq]
   congr 1
@@ -131,13 +133,13 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
-lemma slotInsertEndomorphism_apply_eval (s : ℕ) (k : Fin s) (x : M)
+lemma slotInsertEndoFib_apply_eval (s : ℕ) (k : Fin s) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (A : Tensor0SSpace s I x)
     (m : Fin s → E) :
-    Tensor0SSpace.toModel (slotInsertEndomorphism (I := I) (M := M) s k x Λ A) m =
+    Tensor0SSpace.toModel (slotInsertEndoFib (I := I) (M := M) s k x Λ A) m =
       Tensor0SSpace.toModel A
         (Function.update m k (tangentLinearMapToModel Λ (m k))) := by
-  rw [slotInsertEndomorphism_apply, Tensor0SSpace.toModel_ofModel]
+  rw [slotInsertEndoFib_apply, Tensor0SSpace.toModel_ofModel]
   have hfam : (fun i : Fin s =>
       (if i = k then tangentLinearMapToModel Λ else ContinuousLinearMap.id ℝ E) (m i)) =
       Function.update m k (tangentLinearMapToModel Λ (m k)) := by
@@ -151,43 +153,43 @@ lemma slotInsertEndomorphism_apply_eval (s : ℕ) (k : Fin s) (x : M)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
-lemma slotInsertEndomorphism_add_left (s : ℕ) (k : Fin s) (x : M)
+lemma slotInsertEndoFib_add_left (s : ℕ) (k : Fin s) (x : M)
     (Λ₁ Λ₂ : TangentSpace I x →L[ℝ] TangentSpace I x) :
-    slotInsertEndomorphism (I := I) (M := M) s k x (Λ₁ + Λ₂) =
-      slotInsertEndomorphism (I := I) (M := M) s k x Λ₁ +
-        slotInsertEndomorphism (I := I) (M := M) s k x Λ₂ := by
+    slotInsertEndoFib (I := I) (M := M) s k x (Λ₁ + Λ₂) =
+      slotInsertEndoFib (I := I) (M := M) s k x Λ₁ +
+        slotInsertEndoFib (I := I) (M := M) s k x Λ₂ := by
   apply ContinuousLinearMap.ext
   intro A
   rw [add_apply]
   apply tensor0SSpace_ext (𝕜 := ℝ) s x
   intro v
-  change Tensor0SSpace.eval (slotInsertEndomorphism (I := I) (M := M) s k x (Λ₁ + Λ₂) A) v =
+  change Tensor0SSpace.eval (slotInsertEndoFib (I := I) (M := M) s k x (Λ₁ + Λ₂) A) v =
     Tensor0SSpace.eval
-      (slotInsertEndomorphism (I := I) (M := M) s k x Λ₁ A +
-        slotInsertEndomorphism (I := I) (M := M) s k x Λ₂ A) v
-  rw [slotInsertEndomorphism_apply_natural, Tensor0SSpace.eval_add,
-    slotInsertEndomorphism_apply_natural, slotInsertEndomorphism_apply_natural, add_apply]
+      (slotInsertEndoFib (I := I) (M := M) s k x Λ₁ A +
+        slotInsertEndoFib (I := I) (M := M) s k x Λ₂ A) v
+  rw [slotInsertEndoFib_apply_natural, Tensor0SSpace.eval_add,
+    slotInsertEndoFib_apply_natural, slotInsertEndoFib_apply_natural, add_apply]
   exact ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x) A).map_update_add
     v k (Λ₁ (v k)) (Λ₂ (v k))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
-lemma slotInsertEndomorphism_smul_left (s : ℕ) (k : Fin s) (x : M) (c : ℝ)
+lemma slotInsertEndoFib_smul_left (s : ℕ) (k : Fin s) (x : M) (c : ℝ)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) :
-    slotInsertEndomorphism (I := I) (M := M) s k x (c • Λ) =
-      c • slotInsertEndomorphism (I := I) (M := M) s k x Λ := by
+    slotInsertEndoFib (I := I) (M := M) s k x (c • Λ) =
+      c • slotInsertEndoFib (I := I) (M := M) s k x Λ := by
   apply ContinuousLinearMap.ext
   intro A
   rw [smul_apply]
   apply tensor0SSpace_ext (𝕜 := ℝ) s x
   intro v
-  change Tensor0SSpace.eval (slotInsertEndomorphism (I := I) (M := M) s k x (c • Λ) A) v =
-    Tensor0SSpace.eval (c • slotInsertEndomorphism (I := I) (M := M) s k x Λ A) v
-  rw [slotInsertEndomorphism_apply_natural, Tensor0SSpace.eval_smul,
-    slotInsertEndomorphism_apply_natural, smul_apply]
+  change Tensor0SSpace.eval (slotInsertEndoFib (I := I) (M := M) s k x (c • Λ) A) v =
+    Tensor0SSpace.eval (c • slotInsertEndoFib (I := I) (M := M) s k x Λ A) v
+  rw [slotInsertEndoFib_apply_natural, Tensor0SSpace.eval_smul,
+    slotInsertEndoFib_apply_natural, smul_apply]
   exact ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x) A).map_update_smul
     v k c (Λ (v k))
 
-end DifferentialGeometry.Tensor0SBundle
+end DifferentialGeometry.Geometry.Curvature
 
 end

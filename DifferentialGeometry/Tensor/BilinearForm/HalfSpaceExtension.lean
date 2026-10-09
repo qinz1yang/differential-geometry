@@ -8,7 +8,7 @@ noncomputable section
 open Set Bundle DifferentialGeometry
 open scoped Manifold ContDiff Topology
 
-namespace DifferentialGeometry.BilinearForm
+namespace DifferentialGeometry.Geometry.Tensor
 
 variable {E H S : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -110,4 +110,4 @@ theorem exists_contMDiffOn_bilinear_extension_across_cylinder_boundary
     rw [heqy]
     exact e.symm_apply_apply_mk hy.1.1.1.2 (b y)
 
-end DifferentialGeometry.BilinearForm
+end DifferentialGeometry.Geometry.Tensor

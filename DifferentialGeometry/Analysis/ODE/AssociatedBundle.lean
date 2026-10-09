@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.ODE.InvariantSet.Naturality
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Associated
+import DifferentialGeometry.Geometry.Metric.Associated
 
 open Set
 

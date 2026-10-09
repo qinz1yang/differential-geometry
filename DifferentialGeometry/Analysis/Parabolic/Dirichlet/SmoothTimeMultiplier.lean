@@ -109,7 +109,7 @@ private theorem smoothFamily_deriv_contMDiffOn
     ContMDiffOn (𝓘(ℝ, ℝ).prod I_hs) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M => deriv (fun t => ρ t p.2) p.1) (J ×ˢ univ) := by
   intro p hp
-  exact (DifferentialGeometry.contMDiffAt_partial_deriv_fst
+  exact (DifferentialGeometry.timeDeriv_smoothAt
     (hρ.contMDiffAt ((hJ.prod isOpen_univ).mem_nhds hp)) (by simp)).contMDiffWithinAt
 
 private def smoothFamilyTimeDeriv

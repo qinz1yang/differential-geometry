@@ -1,8 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCarrierCollaredStarCover
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
-import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.SmoothTransition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCapInstance
 import Mathlib.Topology.Homotopy.Equiv
 
 noncomputable section
@@ -35,7 +33,7 @@ theorem simplyConnectedSpace_componentCarrier_of_connected {X : Type u} [Topolog
 
 theorem sphereThreeStage_componentCarrier_simplyConnected
     (c : ConnectedComponents sphereThreeStage.Carrier) :
-    SimplyConnectedSpace (sphereThreeStage.component c).toClosedOrientedManifold.Carrier := by
+    SimplyConnectedSpace (sphereThreeStage.component c).Carrier := by
   have hconn : ConnectedSpace (Sphere 3) := isConnected_iff_connectedSpace.mp
     (isConnected_sphere (E := EuclideanSpace ℝ (Fin 4))
       (by rw [← Module.finrank_eq_rank]; norm_num) 0 (by norm_num))
@@ -60,9 +58,9 @@ theorem exists_child_simplyConnected_witness (h : StandardNeckCutCapInputs) :
     ∃ E : SmoothCutCapTransition sphereThreeStage sphereThreeStage sphereThreeStage
         (sphereThreeStage.sum sphereThreeStage),
       (∀ c : ConnectedComponents sphereThreeStage.Carrier,
-        SimplyConnectedSpace (sphereThreeStage.component (E.childParent c)).toClosedOrientedManifold.Carrier) ∧
+        SimplyConnectedSpace (sphereThreeStage.component (E.childParent c)).Carrier) ∧
       (∀ c : ConnectedComponents sphereThreeStage.Carrier,
-        SimplyConnectedSpace (sphereThreeStage.component c).toClosedOrientedManifold.Carrier) := by
+        SimplyConnectedSpace (sphereThreeStage.component c).Carrier) := by
   obtain ⟨E⟩ := nonempty_smoothCutCapTransition_of_standardNeckInputs h
   exact ⟨E, fun c => sphereThreeStage_componentCarrier_simplyConnected _,
     fun c => sphereThreeStage_componentCarrier_simplyConnected _⟩

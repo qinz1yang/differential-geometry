@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 include hBoundary hT2 hCompact hNonempty
 
 def LoopFamilyDiskAreaVariation (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) : Prop :=
+    (γ : ℝ → ContinuousFreeLoop M) : Prop :=
   ∀ t ∈ Ico a b, ∃ (u : Width.DiskCompetitor (B.family.metric t) (γ t))
       (φ : ℝ → M → M),
     Width.diskArea (B.family.metric t) u.1.map = loopFamilyLeastArea B.family.metric γ t ∧
@@ -44,7 +44,7 @@ def LoopFamilyDiskAreaVariation (B : RicciBackground (I := I) (M := M) D a b)
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_embedded_area_of_loopFamilyDiskAreaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hvar : LoopFamilyDiskAreaVariation (I := I) (M := M) B γ) :
     ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
       (loopFamilyLeastArea B.family.metric γ (t + h) -
@@ -104,7 +104,7 @@ theorem rfs_csf_embedded_area_of_loopFamilyDiskAreaVariation
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem loopFamilyDiskAreaVariation_of_minimalDiskAreaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (h : MinimalDiskAreaVariation (I := I) (M := M) B γ) :
     LoopFamilyDiskAreaVariation (I := I) (M := M) B γ := by
   intro t ht
@@ -123,10 +123,10 @@ theorem loopFamilyDiskAreaVariation_of_minimalDiskAreaVariation
 
 omit [SigmaCompactSpace M] in
 theorem rfs_csf_immersed_area_of_loopFamilyDiskAreaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hvar : LoopFamilyDiskAreaVariation (I := I) (M := M) B γ) :
     ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
       (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
@@ -144,9 +144,9 @@ theorem rfs_csf_immersed_area_of_loopFamilyDiskAreaVariation
 
 omit hNonempty [SigmaCompactSpace M] in
 theorem not_loopFamilyDiskAreaVariation_of_static_family
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hstatic : ∀ t, B.family.metric t = B.family.metric a)
     (hfixed : ∀ t, γ t = γ a)
     (hErr : (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) a = 0)

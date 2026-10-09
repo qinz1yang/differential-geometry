@@ -302,7 +302,7 @@ private theorem exists_smooth_dirichlet_time_test
   let ψ : ℝ × M → ℝ := fun p => deriv (fun s => φ (s, p.2)) p.1
   have hψ : ContMDiff (𝓘(ℝ).prod I_hs) 𝓘(ℝ) ∞ ψ := by
     intro p
-    exact contMDiffAt_partial_deriv_fst (hφ p) (by simp)
+    exact timeDeriv_smoothAt (hφ p) (by simp)
   have hψK (t : ℝ) : tsupport (fun x => ψ (t, x)) ⊆ K := by
     apply closure_minimal ?_ hK.isClosed
     intro x hx

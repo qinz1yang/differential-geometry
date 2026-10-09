@@ -74,12 +74,15 @@ theorem w_rev_hasDerivAt
         2 * (G.metric s).inner x
           (gradientFun (I := I) (G.metric s) ft x)
           (gradientFun (I := I) (G.metric s) (f s) x)
-    HasDerivAt (DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong (volumeMeasureFamily (I := I) (M := M) G) n (fun r : Real => r) R q f) (∫ x,
+    WEntropyHasFirstVariationAt
+      (volumeMeasureFamily (I := I) (M := M) G) n (fun r : Real => r)
+      R q f s
+      (∫ x,
         wEntropyWeightedIntegralVariationIntegrand n s 1
           (f s) ft (fun y => 2 * R s y)
-          (DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n s (R s) (q s) (f s))
+          (wEntropyBracket n s (R s) (q s) (f s))
           (wEntropyBracketVariation s 1 (R s) Rt (q s) qt ft) x
-        ∂(volumeMeasureFamily (I := I) (M := M) G s)) s := by
+        ∂(volumeMeasureFamily (I := I) (M := M) G s)) := by
   dsimp only
   let G := reverseFamily (I := I) (M := M) (flowG (I := I) S) T
   have huScalar : DifferentialGeometry.Analysis.Parabolic.IsHeatPotOn Dr G
@@ -152,7 +155,7 @@ theorem w_rev_hasDerivAt
       (Set.prod_mono (fun _ hr => hr.1.1) Set.Subset.rfl)
   have hdens :
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
-        (fun p : Real × M => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n p.1 (f p.1) p.2)
+        (fun p : Real × M => perelmanDensity n p.1 (f p.1) p.2)
         (U ×ˢ Set.univ) := by
     refine huU.congr ?_
     intro p hp
@@ -169,15 +172,15 @@ theorem w_rev_hasDerivAt
   have hbracket :
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n p.1 (R p.1) (q p.1) (f p.1) p.2)
+          wEntropyBracket n p.1 (R p.1) (q p.1) (f p.1) p.2)
         (U ×ˢ Set.univ) := by
     with_unfolding_all
       exact ((htau.mul (hR.add hq)).add hf).sub hn
   have hintegrand :
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun p : Real × M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n p.1 (f p.1) p.2 *
-            DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n p.1 (R p.1) (q p.1) (f p.1) p.2)
+          perelmanDensity n p.1 (f p.1) p.2 *
+            wEntropyBracket n p.1 (R p.1) (q p.1) (f p.1) p.2)
         (U ×ˢ Set.univ) :=
     hdens.mul hbracket
   have hft (x : M) :
@@ -201,41 +204,41 @@ theorem w_rev_hasDerivAt
       revTrace_eq (I := I) (M := M) (S := S) hS T s hTs x
   have hbaseEq :
       (fun r : Real =>
-        DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (volumeMeasureFamily (I := I) (M := M) G r) n r
+        wFunctional (volumeMeasureFamily (I := I) (M := M) G r) n r
           (R r) (q r) (f r)) =ᶠ[nhds s]
         (fun r : Real =>
-          ∫ x, DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n r (f r) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n r (R r) (q r) (f r) x
+          ∫ x, perelmanDensity n r (f r) x *
+            wEntropyBracket n r (R r) (q r) (f r) x
           ∂(volumeMeasureFamily (I := I) (M := M) G r)) := by
     filter_upwards [hUo.mem_nhds hsU] with r hr
-    have hdensity : DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n r (f r) = u r := by
+    have hdensity : perelmanDensity n r (f r) = u r := by
       simpa only [f] using
         density_potential n (u r) hr.1.2 (hpos r hr.1)
-    have hcont : Continuous (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n r (f r)) := by
+    have hcont : Continuous (perelmanDensity n r (f r)) := by
       rw [hdensity]
       exact (huScalar.sliceSmooth r (Dr.regular_subset hr.1.1)).continuous
     have hmeas : AEMeasurable
-        (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n r (f r) x))
+        (fun x : M => ENNReal.ofReal (perelmanDensity n r (f r) x))
         (volumeMeasureFamily (I := I) (M := M) G r) :=
       (ENNReal.continuous_ofReal.comp hcont).aemeasurable
-    exact DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional_eq_integral_density_mul
+    exact wFunctional_base
       (volumeMeasureFamily (I := I) (M := M) G r) n r
       (R r) (q r) (f r) hr.1.2.le hmeas
   have hvar := first_var_joint (I := I) (M := M)
     (g_fam := G.metric)
-    (f := fun r x => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n r (f r) x *
-      DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n r (R r) (q r) (f r) x)
+    (f := fun r x => perelmanDensity n r (f r) x *
+      wEntropyBracket n r (R r) (q r) (f r) x)
     hUo hsU hgram hintegrand
   have hbase :
       HasDerivAt
         (fun r : Real =>
-          ∫ x, DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n r (f r) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n r (R r) (q r) (f r) x
+          ∫ x, perelmanDensity n r (f r) x *
+            wEntropyBracket n r (R r) (q r) (f r) x
           ∂(volumeMeasureFamily (I := I) (M := M) G r))
         (∫ x,
           wEntropyWeightedIntegralVariationIntegrand n s 1
             (f s) ft (fun y => 2 * R s y)
-            (DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n s (R s) (q s) (f s))
+            (wEntropyBracket n s (R s) (q s) (f s))
             (wEntropyBracketVariation s 1 (R s) Rt (q s) qt ft) x
           ∂(volumeMeasureFamily (I := I) (M := M) G s)) s := by
     refine hvar.congr_deriv ?_
@@ -253,14 +256,14 @@ theorem w_rev_hasDerivAt
     have hderiv := (hdensDeriv.mul hbracketDeriv).deriv
     change
       deriv
-          ((fun r : Real => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n r (f r) x) *
-            fun r : Real => DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n r (R r) (q r) (f r) x) s +
+          ((fun r : Real => perelmanDensity n r (f r) x) *
+            fun r : Real => wEntropyBracket n r (R r) (q r) (f r) x) s +
           (1 / 2) * traceTimeDerivMetricAt (I := I) G s x *
-            (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n s (f s) x *
-              DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n s (R s) (q s) (f s) x) =
+            (perelmanDensity n s (f s) x *
+              wEntropyBracket n s (R s) (q s) (f s) x) =
         wEntropyWeightedIntegralVariationIntegrand n s 1
           (f s) ft (fun y => 2 * R s y)
-          (DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n s (R s) (q s) (f s))
+          (wEntropyBracket n s (R s) (q s) (f s))
           (wEntropyBracketVariation s 1 (R s) Rt (q s) qt ft) x
     rw [hderiv, htrace x]
     unfold wEntropyWeightedIntegralVariationIntegrand
@@ -311,9 +314,12 @@ theorem w_rev_square
             (metricCov_smooth (I := I) (M := M) (G.metric s))
             (f s) hf x -
           (1 / (2 * s)) • metricTensor0S (I := I) (G.metric s) x)
-    HasDerivAt (DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong (volumeMeasureFamily (I := I) (M := M) G) n (fun r : Real => r) R q f) (-2 * s *
-        ∫ x, DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n s (f s) x * Sq x
-          ∂(volumeMeasureFamily (I := I) (M := M) G s)) s := by
+    WEntropyHasFirstVariationAt
+      (volumeMeasureFamily (I := I) (M := M) G)
+      n (fun r : Real => r) R q f s
+      (-2 * s *
+        ∫ x, perelmanDensity n s (f s) x * Sq x
+          ∂(volumeMeasureFamily (I := I) (M := M) G s)) := by
   classical
   dsimp only
   let n := Module.finrank Real E
@@ -346,11 +352,14 @@ theorem w_rev_square
         (gradientFun (I := I) (G.metric s) (f s) x)
   let μ := volumeMeasureFamily (I := I) (M := M) G s
   have hraw :
-      HasDerivAt (DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong (volumeMeasureFamily (I := I) (M := M) G) n (fun r : Real => r) R q f) (∫ x,
+      WEntropyHasFirstVariationAt
+        (volumeMeasureFamily (I := I) (M := M) G)
+        n (fun r : Real => r) R q f s
+        (∫ x,
           wEntropyWeightedIntegralVariationIntegrand n s 1
             (f s) ft (fun y => 2 * R s y)
-            (DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n s (R s) (q s) (f s))
-            (wEntropyBracketVariation s 1 (R s) Rt (q s) qt ft) x ∂μ) s := by
+            (wEntropyBracket n s (R s) (q s) (f s))
+            (wEntropyBracketVariation s 1 (R s) Rt (q s) qt ft) x ∂μ) := by
     simpa only [G, f, R, q, ft, Rt, qt, μ] using
       w_rev_hasDerivAt (I := I) S hS T n u hu hpos hs hspos hTs
   let g := G.metric s
@@ -381,7 +390,7 @@ theorem w_rev_square
         hessianSec (I := I) (metricCov (I := I) (M := M) g)
           (metricCov_smooth (I := I) (M := M) g) (f s) hf x -
         (1 / (2 * s)) • metricTensor0S (I := I) g x)
-  let μw := DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure μ (f s)
+  let μw := expNegPotentialWeightedMeasure μ (f s)
   have hconn : G.connection s = LeviCivita (I := I) g := by
     rfl
   have hR : ContMDiff I 𝓘(Real, Real) ∞ (R s) := by
@@ -431,17 +440,17 @@ theorem w_rev_square
     rw [hREq, hqEq, hRtEq, hqtEq, hftEq]
   have hmeas :
       AEMeasurable
-        (fun x => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (f s) x)) μ :=
+        (fun x => ENNReal.ofReal (expNegPotentialDensity (f s) x)) μ :=
     (ENNReal.continuous_ofReal.comp
       (expNegPotentialDensity_contMDiff (I := I) hf).continuous).aemeasurable
   have hperel (a : M -> Real) :
-      (∫ x, DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n s (f s) x * a x ∂μ) =
-        DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n s * ∫ x, a x ∂μw := by
-    rw [DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure_integral_eq_base μ (f s) a hmeas]
+      (∫ x, perelmanDensity n s (f s) x * a x ∂μ) =
+        perelmanDensityPrefactor n s * ∫ x, a x ∂μw := by
+    rw [expNegPotentialWeightedMeasure_integral_eq_base μ (f s) a hmeas]
     rw [← integral_const_mul]
     apply integral_congr_ae
     filter_upwards with x
-    simp only [DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity, DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity]
+    simp only [perelmanDensity, expNegPotentialDensity]
     ring
   have hsquare :
       (∫ x, A0 x ∂μw) = -2 * s * ∫ x, Sq x ∂μw := by
@@ -453,21 +462,21 @@ theorem w_rev_square
     (∫ x,
         wEntropyWeightedIntegralVariationIntegrand n s 1
           (f s) ft (fun y => 2 * R s y)
-          (DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n s (R s) (q s) (f s))
+          (wEntropyBracket n s (R s) (q s) (f s))
           (wEntropyBracketVariation s 1 (R s) Rt (q s) qt ft) x ∂μ) =
-        ∫ x, DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n s (f s) x * A0 x ∂μ := by
+        ∫ x, perelmanDensity n s (f s) x * A0 x ∂μ := by
       apply integral_congr_ae
       filter_upwards with x
       rw [← hA x]
       simp only [wEntropyWeightedIntegralVariationIntegrand,
         wEntropyWeightedMeasureVariationFactor, wEntropyBracketVariation,
-        DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket]
+        wEntropyBracket]
       ring
-    _ = DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n s * ∫ x, A0 x ∂μw := hperel A0
-    _ = DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n s *
+    _ = perelmanDensityPrefactor n s * ∫ x, A0 x ∂μw := hperel A0
+    _ = perelmanDensityPrefactor n s *
           (-2 * s * ∫ x, Sq x ∂μw) := by rw [hsquare]
     _ = -2 * s *
-          ∫ x, DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n s (f s) x * Sq x ∂μ := by
+          ∫ x, perelmanDensity n s (f s) x * Sq x ∂μ := by
       rw [hperel Sq]
       ring
 
@@ -493,19 +502,19 @@ theorem w_rev_deriv_nonpos
       (G.metric r).inner x
         (gradientFun (I := I) (G.metric r) (f r) x)
         (gradientFun (I := I) (G.metric r) (f r) x)
-    DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyFirstVariation
+    wEntropyFirstVariation
       (volumeMeasureFamily (I := I) (M := M) G)
       n (fun r : Real => r) R q f s ≤ 0 := by
   classical
   dsimp only
-  rw [DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyFirstVariation_eq_of_hasFirstVariationAt
+  rw [wEntropyFirstVariation_eq_of_hasFirstVariationAt
     (w_rev_square (I := I) S hS T u hu hpos hs hspos hTs)]
   refine mul_nonpos_of_nonpos_of_nonneg
     (mul_nonpos_of_nonpos_of_nonneg (by norm_num) hspos.le) ?_
   exact integral_nonneg fun x =>
     mul_nonneg
       (by
-        unfold DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor
+        unfold perelmanDensity perelmanDensityPrefactor
         exact mul_nonneg
           (Real.rpow_nonneg
             (mul_nonneg
@@ -563,7 +572,7 @@ theorem gallim_w_cont
             (G.metric s).inner x
               (gradientFun (I := I) (G.metric s) (f s) x)
               (gradientFun (I := I) (G.metric s) (f s) x)
-          DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (volumeMeasureFamily (I := I) (M := M) G q)
+          wFunctional (volumeMeasureFamily (I := I) (M := M) G q)
             n (a + q) (R q) (Q q) (f q))
         (Set.Icc (0 : Real) tau') := by
   classical
@@ -585,7 +594,7 @@ theorem gallim_w_cont
       (gradientFun (I := I) (G.metric s) (f s) x)
   let Qbase : Real → M → Real := fun s x => (u s x ^ 2)⁻¹ * dU s x
   let Wpath : Real → Real := fun s =>
-    DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (volumeMeasureFamily (I := I) (M := M) G s)
+    wFunctional (volumeMeasureFamily (I := I) (M := M) G s)
       n (a + s) (R s) (Q s) (f s)
   obtain ⟨tauG, htauG, _htauG_tau, hgrad⟩ :=
     galerkinLim_grad_cont (I := I) (M := M) hS hτ hlim
@@ -653,8 +662,8 @@ theorem gallim_w_cont
   have hscale_pos (p : Real × M) (hp : p ∈ K) : 0 < a + p.1 :=
     add_pos_of_pos_of_nonneg ha hp.1.1
   have hpref : ContinuousOn
-      (fun p : Real × M => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n (a + p.1)) K := by
-    unfold DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor
+      (fun p : Real × M => perelmanDensityPrefactor n (a + p.1)) K := by
+    unfold perelmanDensityPrefactor
     exact ((continuousOn_const.mul continuousOn_const).mul hscale).rpow_const
       (fun p hp => Or.inl (mul_ne_zero (mul_ne_zero (by norm_num) Real.pi_ne_zero)
         (hscale_pos p hp).ne'))
@@ -670,9 +679,9 @@ theorem gallim_w_cont
   have hn : ContinuousOn (fun _ : Real × M => (n : Real)) K :=
     continuousOn_const
   let baseInt : Real → M → Real := fun s x =>
-    u s x * DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n (a + s) (R s) (Qbase s) (f s) x
+    u s x * wEntropyBracket n (a + s) (R s) (Qbase s) (f s) x
   have hbaseInt : ContinuousOn (fun p : Real × M => baseInt p.1 p.2) K := by
-    dsimp only [baseInt, DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket]
+    dsimp only [baseInt, wEntropyBracket]
     exact hu.mul (((hscale.mul (hR.add hQbase)).add hf).sub hn)
   have hWbase (s : Real) (hs : s ∈ Set.Icc (0 : Real) tau') :
       Wpath s = ∫ x, baseInt s x
@@ -685,18 +694,18 @@ theorem gallim_w_cont
     have hspos : 0 < a + s := add_pos_of_pos_of_nonneg ha hs.1
     have hdensity := density_potential n (u s) hspos (hpos s hsTau)
     have humeas : AEMeasurable
-        (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (a + s) (f s) x))
+        (fun x : M => ENNReal.ofReal (perelmanDensity n (a + s) (f s) x))
         (volumeMeasureFamily (I := I) (M := M) G s) := by
-      rw [show DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (a + s) (f s) = u s by
+      rw [show perelmanDensity n (a + s) (f s) = u s by
         simpa only [f] using hdensity]
       exact (ENNReal.continuous_ofReal.comp husmooth.continuous).aemeasurable
-    rw [show Wpath s = DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional
+    rw [show Wpath s = wFunctional
       (volumeMeasureFamily (I := I) (M := M) G s) n (a + s)
         (R s) (Q s) (f s) by rfl]
-    rw [DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional_eq_integral_density_mul _ _ _ _ _ _ hspos.le humeas]
+    rw [wFunctional_base _ _ _ _ _ _ hspos.le humeas]
     apply integral_congr_ae
     filter_upwards with x
-    rw [show DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (a + s) (f s) x = u s x by
+    rw [show perelmanDensity n (a + s) (f s) x = u s x by
       simpa only [f] using congrFun hdensity x]
     have hQeq : Q s = Qbase s := by
       funext y
@@ -738,7 +747,7 @@ theorem w_rev_antitone
         (gradientFun (I := I) (G.metric r) (f r) x)
         (gradientFun (I := I) (G.metric r) (f r) x)
     AntitoneOn
-      (DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong
+      (wFunctionalAlong
         (volumeMeasureFamily (I := I) (M := M) G)
         n (fun r : Real => r) R q f)
       (Set.Icc a b) := by
@@ -753,7 +762,7 @@ theorem w_rev_antitone
       (gradientFun (I := I) (G.metric r) (f r) x)
       (gradientFun (I := I) (G.metric r) (f r) x)
   let W : Real -> Real :=
-    DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong
+    wFunctionalAlong
       (volumeMeasureFamily (I := I) (M := M) G)
       n (fun r : Real => r) R q f
   change AntitoneOn W (Set.Icc a b)
@@ -776,7 +785,7 @@ theorem w_rev_antitone
   intro r hr
   have hrI : r ∈ Set.Icc a b := interior_subset hr
   change
-    DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyFirstVariation
+    wEntropyFirstVariation
       (volumeMeasureFamily (I := I) (M := M) G)
       n (fun z : Real => z) R q f r ≤ 0
   exact w_rev_deriv_nonpos (I := I) S hS T u hu hpos
@@ -816,7 +825,7 @@ theorem gallim_w_le
            (G.metric s).inner x
              (gradientFun (I := I) (G.metric s) (f s) x)
              (gradientFun (I := I) (G.metric s) (f s) x)
-         DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (volumeMeasureFamily (I := I) (M := M) G q)
+         wFunctional (volumeMeasureFamily (I := I) (M := M) G q)
            n (a + q) (R q) (Q q) (f q)) ≤
         (let n := Module.finrank Real E
          let G := reverseFamily (I := I) (M := M)
@@ -831,7 +840,7 @@ theorem gallim_w_le
            (G.metric s).inner x
              (gradientFun (I := I) (G.metric s) (f s) x)
              (gradientFun (I := I) (G.metric s) (f s) x)
-         DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (volumeMeasureFamily (I := I) (M := M) G 0)
+         wFunctional (volumeMeasureFamily (I := I) (M := M) G 0)
            n a (R 0) (Q 0) (f 0)) := by
   classical
   let n := Module.finrank Real E
@@ -847,7 +856,7 @@ theorem gallim_w_le
       (gradientFun (I := I) (G.metric s) (f s) x)
       (gradientFun (I := I) (G.metric s) (f s) x)
   let W : Real → Real := fun s =>
-    DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (volumeMeasureFamily (I := I) (M := M) G s)
+    wFunctional (volumeMeasureFamily (I := I) (M := M) G s)
       n (a + s) (R s) (Q s) (f s)
   obtain ⟨tauC, htauC, _htauC_tau, hcontC⟩ :=
     gallim_w_cont (I := I) (M := M) hS hτ hlim ha hpos
@@ -933,7 +942,7 @@ theorem gallim_w_le
       (gradientFun (I := I) (GShift.metric r) (fShift r) x)
       (gradientFun (I := I) (GShift.metric r) (fShift r) x)
   let WShift : Real → Real :=
-    DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong
+    wFunctionalAlong
       (volumeMeasureFamily (I := I) (M := M) GShift)
       n (fun r : Real => r) RShift QShift fShift
   have hWShift (q : Real) : WShift (a + q) = W q := by
@@ -962,7 +971,7 @@ theorem gallim_w_le
       change riemannianVolumeMeasure (I := I) (M := M) (GShift.metric (a + q)) =
         riemannianVolumeMeasure (I := I) (M := M) (G.metric q)
       rw [hmetric]
-    dsimp only [WShift, DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong]
+    dsimp only [WShift, wFunctionalAlong]
     rw [hmu, hRq, hQq, hfq]
   have hanti : AntitoneOn W (Set.Ioc (0 : Real) tau') := by
     intro r hr s hs hrs

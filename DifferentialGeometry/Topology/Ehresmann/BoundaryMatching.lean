@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Ehresmann.BoundaryEndpointTransport
 import DifferentialGeometry.Topology.Ehresmann.Interval
-import DifferentialGeometry.Topology.Diffeomorph.IsotopyTrack
+import DifferentialGeometry.Topology.Ehresmann.SphereBoundary
 import DifferentialGeometry.Topology.Homotopy.Cylinder
 
 noncomputable section

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Mollification.Local
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Local
 
 noncomputable section
 

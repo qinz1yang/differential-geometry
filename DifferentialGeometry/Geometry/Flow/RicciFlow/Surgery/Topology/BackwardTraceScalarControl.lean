@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.Derivative.ClippedReciprocal
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.ScalarTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceScalarTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodInduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabEndpoints
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySlices
@@ -51,19 +51,16 @@ private theorem lipschitzOnWith_inv_max_scalar_Icc {P : OrientedThreeStage.{u}}
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.lipschitzOnWith_inv_max_scalar_of_derivativeBoundBefore (G : P.IncomingSlab a s)
+theorem lipschitzOnWith_inv_max_scalar_of_derivativeBoundBefore (G : P.IncomingSlab a s)
     {Ctime : ℝ≥0} {qcan q t : ℝ} (hq : 0 < q) (hqcan : qcan ≤ q) (hts : t < s)
     (hG : G.DerivativeBoundBefore Ctime qcan t) (y : P.Carrier) :
     LipschitzOnWith Ctime (fun v => (max q (G.flow.scalar v y))⁻¹) (Icc a t) :=
   lipschitzOnWith_inv_max_scalar_Icc G.equation hq (fun _ hv => ⟨hv.1, hv.2.trans_lt hts⟩) y
     (fun v hv hR => hG y v hv (hqcan.trans_lt hR))
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_two_mul_of_derivativeBoundBefore (G : P.IncomingSlab a s)
+theorem scalar_le_two_mul_of_derivativeBoundBefore (G : P.IncomingSlab a s)
     {Ctime : ℝ≥0} {qcan M t u v : ℝ} (y : P.Carrier)
     (hG : G.DerivativeBoundBefore Ctime qcan t) (hts : t < s)
     (hau : a ≤ u) (huv : u ≤ v) (hvt : v ≤ t)

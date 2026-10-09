@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CoverBallVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CrossVolumeNaturality
-import DifferentialGeometry.Geometry.Metric.Product.Curvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RiemannianProduct
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
 import DifferentialGeometry.Topology.Covering.DeckAction
 import Mathlib.Algebra.Ring.Periodic

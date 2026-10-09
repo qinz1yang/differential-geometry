@@ -36,8 +36,8 @@ theorem map_secondCovDeriv_hom_conjugate
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (x : M) (X : TangentSpace I x) :
     let D := pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov
-    let DE := _root_.CovariantDerivative.hom I M F₁ V₁ F₁ V₁ D D
-    let CE := _root_.CovariantDerivative.hom I M F₂ V₂ F₂ V₂ cov cov
+    let DE := homBundleCovariantDerivativeGen I M F₁ V₁ F₁ V₁ D D
+    let CE := homBundleCovariantDerivativeGen I M F₂ V₂ F₂ V₂ cov cov
     let B := fun y => (φ y).symm.toContinuousLinearMap.comp
       ((A y).comp (φ y).toContinuousLinearMap)
     (φ x).toContinuousLinearMap.comp
@@ -47,8 +47,8 @@ theorem map_secondCovDeriv_hom_conjugate
   dsimp only
   let D := pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv)
     hφ.clm_bundle_map cov
-  let DE := _root_.CovariantDerivative.hom I M F₁ V₁ F₁ V₁ D D
-  let CE := _root_.CovariantDerivative.hom I M F₂ V₂ F₂ V₂ cov cov
+  let DE := homBundleCovariantDerivativeGen I M F₁ V₁ F₁ V₁ D D
+  let CE := homBundleCovariantDerivativeGen I M F₂ V₂ F₂ V₂ cov cov
   let B := fun y => (φ y).symm.toContinuousLinearMap.comp
     ((A y).comp (φ y).toContinuousLinearMap)
   have hfirst (T : Cₛ^∞⟮I; F₂ →L[ℝ] F₂, (fun y => V₂ y →L[ℝ] V₂ y)⟯)
@@ -93,7 +93,7 @@ theorem map_rawBundleConnLap_hom_conjugate
     (x : M) :
     (φ x).toContinuousLinearMap.comp
       (rawBundleConnLap g
-        (_root_.CovariantDerivative.hom I M F₁ V₁ F₁ V₁
+        (homBundleCovariantDerivativeGen I M F₁ V₁ F₁ V₁
           (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv)
             hφ.clm_bundle_map cov)
           (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv)
@@ -101,7 +101,7 @@ theorem map_rawBundleConnLap_hom_conjugate
         (fun y => (φ y).symm.toContinuousLinearMap.comp
           ((A y).comp (φ y).toContinuousLinearMap)) x) =
       (rawBundleConnLap g
-        (_root_.CovariantDerivative.hom I M F₂ V₂ F₂ V₂ cov cov) (fun y => A y) x).comp
+        (homBundleCovariantDerivativeGen I M F₂ V₂ F₂ V₂ cov cov) (fun y => A y) x).comp
           (φ x).toContinuousLinearMap := by
   ext w
   simp only [ContinuousLinearMap.comp_apply, rawBundleConnLap_def, _root_.sum_apply,

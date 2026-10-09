@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergen
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizer
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.Distance.SeparatedSidePoint
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
 

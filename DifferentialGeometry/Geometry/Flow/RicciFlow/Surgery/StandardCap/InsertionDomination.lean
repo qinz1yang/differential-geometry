@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InsertionMetric
-import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
 set_option autoImplicit false
 noncomputable section

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalLimit.CompactTimeComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Classification.WindowedCanonicalNeighborhood
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactTimeComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelCanonicalWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.FlowOfMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.ClosedWindow

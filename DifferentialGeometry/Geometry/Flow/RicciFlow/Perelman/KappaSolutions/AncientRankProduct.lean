@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Splitting.SurfaceProductExtension
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.Splitting.AncientProduct
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientProductExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientProduct
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.UniversalCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardSliceShrinkerReduction
 

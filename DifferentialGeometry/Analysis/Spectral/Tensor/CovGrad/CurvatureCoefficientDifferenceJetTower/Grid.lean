@@ -138,9 +138,9 @@ lemma curvCoeffSlot_zero_backgroundDifference_eq
   rw [ricciOrderZeroCurvCoeffFibSlot_toModel, ricciOrderZeroCurvCoeffFibSlot_toModel]
   rw [show ((slotInsertEndoCc (I := I) (M := M) g₀ 1
         (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)).toSection x) D =
-      slotInsertEndomorphism (I := I) (M := M) 2 0 x
+      slotInsertEndoFib (I := I) (M := M) 2 0 x
         (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁ x) D from rfl]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [ricEndoBackgroundDifferenceField_apply (I := I) (M := M) g₀ g₁ x]
   rw [tangentLinearMapToModel_sub_apply (I := I) x,
     ContinuousMultilinearMap.map_update_sub]
@@ -191,7 +191,7 @@ lemma curvCoeffSlot_one_backgroundDifference_eq
   rw [reindexCoefficientInputSlotsFiber_apply]
   rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply,
     ContinuousMultilinearMap.domDomCongr_apply, slotInsertEndoCc_toSection,
-    slotInsertEndomorphism_apply_eval, Tensor0SSpace.toModel_ofModel,
+    slotInsertEndoFib_apply_eval, Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
   rw [show (fun i : Fin 2 =>
         Function.update (fun i : Fin 2 => m ((Equiv.swap (0 : Fin 2) 1) i)) 0
@@ -1163,28 +1163,28 @@ theorem slotInsertEndoCc_zero_ricEndoBackgroundDifference_telescope
     add_apply, sub_apply]
   rw [show ((slotInsertEndoCc (I := I) (M := M) g₀ 0
         (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)).toSection x) A =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁ x) A from rfl]
   rw [show ((slotInsertEndoCc (I := I) (M := M) g₀ 0
         (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁)).toSection x) A =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x) A from rfl]
   rw [show ((slotInsertEndoCc (I := I) (M := M) g₀ 0
         (ricEndoRaisedField (I := I) (M := M) g₀)).toSection x) A =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (ricEndoRaisedFib (I := I) g₀ x) A from rfl]
   rw [show ((ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 1
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁))
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection x) A =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x)
-        (slotInsertEndomorphism (I := I) (M := M) 1 0 x
+        (slotInsertEndoFib (I := I) (M := M) 1 0 x
           (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) A) from rfl]
-  rw [slotInsertEndomorphism_apply_eval, slotInsertEndomorphism_apply_eval,
-    slotInsertEndomorphism_apply_eval, slotInsertEndomorphism_apply_eval,
-    slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval,
+    slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval,
+    slotInsertEndoFib_apply_eval]
   rw [Function.update_self, Function.update_idem]
   rw [ricEndoBackgroundDifferenceField_apply (I := I) (M := M) g₀ g₁ x]
   rw [tangentLinearMapToModel_sub_apply (I := I) x,

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Distance
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 
 set_option autoImplicit false

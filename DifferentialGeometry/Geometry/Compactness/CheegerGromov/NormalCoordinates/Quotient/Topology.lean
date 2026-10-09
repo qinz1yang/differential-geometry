@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Attachment.TransitionGluing
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Transition.LimitDomains
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Transition.LimitIdentities
-import DifferentialGeometry.Geometry.Metric.Convergence.EventuallyDistanceClassification
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Transition.CenterClassification
 
 section
 

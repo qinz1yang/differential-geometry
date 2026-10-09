@@ -367,7 +367,7 @@ private lemma covGradBundleEquiv_secondCovDeriv_eq_covGrad_secondCovDerivCc
     (hV : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => (⟨b, V b⟩ : TotalSpace E (TangentSpace I))))
     (x : M) :
-    covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+    covGradBundleEquiv (I := I) (M := M) 0 s x
         ((tensorCov (I := I) g 0 s).toFun
           (fun y : M => tensorSecondCovDeriv (I := I) g 0 s V V
             (fun z : M => S.toSection z) y) x) =

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedChartTransport
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 
 set_option autoImplicit false
 noncomputable section

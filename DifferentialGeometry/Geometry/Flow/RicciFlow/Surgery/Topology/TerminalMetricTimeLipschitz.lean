@@ -10,15 +10,13 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ}
 
 private local instance : IsManifold ThreeModel 1 P.Carrier := IsManifold.of_le (n := ∞) (by decide)
 private local instance : IsManifold ThreeModel 2 P.Carrier := IsManifold.of_le (n := ∞) (by decide)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_terminalRegular_metric_time_lipschitz
+theorem IncomingSlab.exists_terminalRegular_metric_time_lipschitz
     (G : P.IncomingSlab a s) {x : P.Carrier} (hx : x ∈ G.terminalRegularRegion) (N : ℕ) :
     ∃ (V : Set P.Carrier) (c L : ℝ), IsOpen V ∧ x ∈ V ∧ c ∈ Ioo a s ∧ 0 ≤ L ∧
       ∀ q ≤ N, ∀ t ∈ Ico c s, ∀ u ∈ Ico c s, ∀ y ∈ V,
@@ -75,7 +73,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (mul_le_mul_of_nonneg_right
       (Finset.single_le_sum (fun r _ => hL r) (Finset.mem_range.mpr (by omega))) (abs_nonneg _))
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_metric_time_lipschitz_on_compact_regularRegion
+theorem IncomingSlab.exists_metric_time_lipschitz_on_compact_regularRegion
     (G : P.IncomingSlab a s) {K : Set P.Carrier} (hK : IsCompact K)
     (hKreg : K ⊆ G.terminalRegularRegion) (N : ℕ) :
     ∃ c ∈ Ioo a s, ∃ L : ℝ, 0 ≤ L ∧

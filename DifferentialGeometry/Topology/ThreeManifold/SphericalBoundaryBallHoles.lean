@@ -1,8 +1,8 @@
 import DifferentialGeometry.Topology.ThreeManifold.SphereInsideBall
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Boundary
-import DifferentialGeometry.Topology.Connected.Separation.DisjointClosures
+import DifferentialGeometry.Topology.SphereSeparation.SideClosureDisjoint
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.CapFilling
-import DifferentialGeometry.Topology.Manifold.Sphere.PolarCoordinates
+import DifferentialGeometry.Topology.Manifold.SpherePolarCoordinates
 
 noncomputable section
 open Set Metric Manifold

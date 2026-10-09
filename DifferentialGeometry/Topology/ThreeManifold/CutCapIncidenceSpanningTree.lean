@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGluing
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.GraphDecomposition
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.CutAndUncutComponents
+import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumFrontier
+import DifferentialGeometry.Topology.ThreeManifold.CutCapNoTubeReduction
 import Mathlib.Combinatorics.SimpleGraph.Acyclic
 
 set_option autoImplicit false

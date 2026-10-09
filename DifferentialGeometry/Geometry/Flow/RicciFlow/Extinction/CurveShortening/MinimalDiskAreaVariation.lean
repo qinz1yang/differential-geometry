@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 include hBoundary hT2 hCompact hNonempty
 
 def MinimalDiskAreaVariation (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) : Prop :=
+    (γ : ℝ → ContinuousFreeLoop M) : Prop :=
   ∀ t ∈ Ico a b, ∃ (u : Width.DiskCompetitor (B.family.metric t) (γ t))
       (φ : ℝ → M → M),
     Width.diskArea (B.family.metric t) u.1.map = loopFamilyLeastArea B.family.metric γ t ∧
@@ -43,7 +43,7 @@ def MinimalDiskAreaVariation (B : RicciBackground (I := I) (M := M) D a b)
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_embedded_area_of_minimalDiskAreaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hvar : MinimalDiskAreaVariation (I := I) (M := M) B γ) :
     ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
       (loopFamilyLeastArea B.family.metric γ (t + h) -
@@ -105,7 +105,7 @@ theorem rfs_csf_embedded_area_of_minimalDiskAreaVariation
 
 omit hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_immersed_area_of_continuousOn_leastArea_of_minimalDiskAreaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hA : ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b))

@@ -8,6 +8,7 @@ open Set _root_.Geometry
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E F : Type*} [DecidableEq E] [DecidableEq F]
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -37,6 +38,7 @@ theorem geometricSimplicialVertexMap_face
   exact hmap (s.image Subtype.val) hs
 
 theorem geometricSimplicialVertexMap_image_complex
+    [FiniteDimensional ℝ E]
     (L : SimplicialComplex ℝ E) (T : SimplicialComplex ℝ F)
     (f : E → F) (hmap : ∀ s ∈ L.faces, s.image f ∈ T.faces)
     (honto : ∀ t ∈ T.faces, ∃ s ∈ L.faces, s.image f = t) :
@@ -72,6 +74,7 @@ theorem geometricSimplicialVertexMap_injOn_face
   exact congrArg Subtype.val hxy
 
 theorem geometricSimplicialVertexMap_evaluation
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
     (L : SimplicialComplex ℝ E) (T : SimplicialComplex ℝ F)
     [Fintype L.vertices] [Fintype T.vertices]
     (f : E → F) (hmap : ∀ s ∈ L.faces, s.image f ∈ T.faces)
@@ -98,7 +101,7 @@ theorem geometricSimplicialVertexMap_evaluation
   · exact convexHull_subset_affineSpan _ hxs
 
 theorem geometricSimplicialVertexMap_fiber_iff
-    [FiniteDimensional ℝ F]
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
     (L : SimplicialComplex ℝ E) (T : SimplicialComplex ℝ F)
     [Fintype L.vertices] [Finite T.vertices]
     (f : E → F) (hmap : ∀ s ∈ L.faces, s.image f ∈ T.faces)
@@ -125,7 +128,7 @@ theorem geometricSimplicialVertexMap_fiber_iff
     Subtype.val_injective T (abstractVertexComplex_map T).symm (hmem hx) (hmem hy) h,
     congrArg (vertexEvaluation Subtype.val)⟩
 
-theorem exists_compatible_abstract_simplicial_refinement [FiniteDimensional ℝ F]
+theorem exists_compatible_abstract_simplicial_refinement [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
     (K : SimplicialComplex ℝ E) (hK : K.faces.Finite) (f : E → F)
     (hf : ∀ s ∈ K.faces, ∃ A : E →ᵃ[ℝ] F, EqOn f A (convexHull ℝ (s : Set E)))
     (hinj : ∀ s ∈ K.faces, InjOn f (convexHull ℝ (s : Set E)))

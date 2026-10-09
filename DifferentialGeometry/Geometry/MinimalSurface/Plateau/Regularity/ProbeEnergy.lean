@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.ProbeLower
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ScalarProbes
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.MinimizingSequence
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.IntrinsicEnergyDecay
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
+import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.BoundedProbes
 
 section

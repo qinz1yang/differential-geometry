@@ -4,7 +4,7 @@ import Mathlib.Analysis.Convex.Basic
 import Mathlib.LinearAlgebra.Orientation
 import Mathlib.Basic.Real.Basic
 import Mathlib.Topology.Instances.Matrix
-import DifferentialGeometry.Tensor.LinearAlgebra.Orientation.Classes
+import DifferentialGeometry.Bundle.Orientation.Classes
 
 noncomputable section
 

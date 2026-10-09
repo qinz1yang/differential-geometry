@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Smoo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Range
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Curvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.CurvatureMetricComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.CarrierJoin
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CarrierJoinCost
 
 noncomputable section
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Comparison.SupportNeck
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SupportRegionNeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegion
 import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas
 

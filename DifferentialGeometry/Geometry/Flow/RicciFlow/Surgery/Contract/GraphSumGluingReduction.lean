@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ExtinctionContractReduction
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.GraphDecomposition
+import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumFrontier
 
 set_option autoImplicit false
 

@@ -30,7 +30,7 @@ theorem integral_sq_weighted_roughLap0SField_le_of_hasCompactSupport
     (S : Tensor0SField (𝕜 := ℝ) (I := I) (M := M) (n := ∞) s)
     {η : ℝ} (hη : 0 < η) :
     let A := metricNabla0S (I := I) g S
-    let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+    let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 s x
       ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
         (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
       (unitZeroSec (I := I) (M := M) x)
@@ -42,7 +42,7 @@ theorem integral_sq_weighted_roughLap0SField_le_of_hasCompactSupport
   classical
   dsimp only
   let A := metricNabla0S (I := I) g S
-  let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+  let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 s x
       ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
         (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
       (unitZeroSec (I := I) (M := M) x)

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.MinimalSurface.Plateau.AreaApproximation.Sequential
-import DifferentialGeometry.Geometry.MinimalSurface.Plateau.AreaApproximation.Comparison
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SpanningDiskAreaDensity
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDensityFrontier
 
 noncomputable section
 

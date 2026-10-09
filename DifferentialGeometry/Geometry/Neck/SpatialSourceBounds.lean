@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.SpatialNormalization
 import DifferentialGeometry.Geometry.Neck.ScaleComparison
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 
 set_option autoImplicit false
 

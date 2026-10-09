@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.OpenCover.Induction
+import DifferentialGeometry.Topology.OpenCoverInduction
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.CapCover
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.CapDirectedUnion
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.CapHomeomorph

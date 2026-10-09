@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.AncientJets
-import DifferentialGeometry.Geometry.Coordinates.TensorComponents
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCurvatureJets
+import DifferentialGeometry.Tensor.Coordinates.Field
 
 set_option autoImplicit false
 noncomputable section

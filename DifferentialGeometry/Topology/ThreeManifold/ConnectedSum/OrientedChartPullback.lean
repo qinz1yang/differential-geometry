@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamTransition
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChartTransport
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SumLaws
 open Set Metric Manifold Filter
 open scoped ContDiff Manifold Topology
 

@@ -1,8 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
-import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Topology.Manifold.InteriorImage
-import DifferentialGeometry.Topology.Homotopy.Retraction
+import DifferentialGeometry.Topology.VanKampen.HomotopyRetract
 import Mathlib.Geometry.Manifold.SmoothEmbedding
 import Mathlib.Topology.Homotopy.Equiv
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
-import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
+import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
 
 set_option autoImplicit false
 noncomputable section

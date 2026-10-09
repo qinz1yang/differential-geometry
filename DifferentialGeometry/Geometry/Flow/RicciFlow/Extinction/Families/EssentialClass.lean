@@ -14,32 +14,32 @@ open Surgery.Topology Width
 variable {Q : Type*} [TopologicalSpace Q]
 
 
-def constantContractibleLoops : C(Q, DifferentialGeometry.Topology.contractibleLoop Q) :=
-  ⟨fun q => ⟨DifferentialGeometry.Topology.FreeLoop.constants q, ContinuousMap.nullhomotopic_of_constant q⟩,
-    DifferentialGeometry.Topology.FreeLoop.constants.continuous.subtype_mk _⟩
+def constantContractibleLoops : C(Q, ContractibleContinuousLoop Q) :=
+  ⟨fun q => ⟨constantLoops q, isContractibleLoop_constant q⟩,
+    constantLoops.continuous.subtype_mk _⟩
 
 def IsEssentialFamilyClass (ξ : FreeContractibleSphereClass Q) : Prop :=
-  ∀ f : C(Sphere 2, Q), DifferentialGeometry.Topology.FreeHomotopyClass.mk (constantContractibleLoops.comp f) ≠ ξ
+  ∀ f : C(Sphere 2, Q), FreeHomotopyClass.mk (constantContractibleLoops.comp f) ≠ ξ
 
 theorem not_isEssentialFamilyClass_constant (f : C(Sphere 2, Q)) :
-    ¬ IsEssentialFamilyClass (DifferentialGeometry.Topology.FreeHomotopyClass.mk (constantContractibleLoops.comp f)) := by
+    ¬ IsEssentialFamilyClass (FreeHomotopyClass.mk (constantContractibleLoops.comp f)) := by
   intro h
   exact h f rfl
 
 theorem isEssentialFamilyClass_of_pi2_zero
     (hpi2 : ∀ q : Q, Subsingleton (HomotopyGroup (Fin 2) Q q))
     (ξ : FreeContractibleSphereClass Q)
-    (hnonnull : ∀ q : Q, ξ ≠ DifferentialGeometry.Topology.FreeHomotopyClass.mk
+    (hnonnull : ∀ q : Q, ξ ≠ FreeHomotopyClass.mk
       (ContinuousMap.const (Sphere 2)
-        (⟨DifferentialGeometry.Topology.FreeLoop.constants q, ContinuousMap.nullhomotopic_of_constant q⟩ : DifferentialGeometry.Topology.contractibleLoop Q))) :
+        (⟨constantLoops q, isContractibleLoop_constant q⟩ : ContractibleContinuousLoop Q))) :
     IsEssentialFamilyClass ξ := by
   intro f hf
   obtain ⟨q, hq⟩ := sphereFamily_homotopic_const_of_pi2_subsingleton hpi2 f
   have hconst : ContinuousMap.Homotopic (constantContractibleLoops.comp f)
       (ContinuousMap.const (Sphere 2)
-        (⟨DifferentialGeometry.Topology.FreeLoop.constants q, ContinuousMap.nullhomotopic_of_constant q⟩ : DifferentialGeometry.Topology.contractibleLoop Q)) := by
+        (⟨constantLoops q, isContractibleLoop_constant q⟩ : ContractibleContinuousLoop Q)) := by
     exact (ContinuousMap.Homotopic.refl constantContractibleLoops).comp hq
-  exact hnonnull q (hf.symm.trans ((DifferentialGeometry.Topology.FreeHomotopyClass.mk_eq_mk_iff _ _).mpr hconst))
+  exact hnonnull q (hf.symm.trans ((FreeHomotopyClass.mk_eq_mk_iff _ _).mpr hconst))
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E]
@@ -70,7 +70,7 @@ theorem rfs_essential_short_family (g : SmoothRiemannianMetric I Q) :
     obtain ⟨F, hzero, hone⟩ := hcontract (Sphere 2) Γ.1 hshort
     let i : C(ContractibleRegularLoop (I := I) (Q := Q), RegularLoop I Q) :=
       ⟨Subtype.val, continuous_subtype_val⟩
-    let f : C(Sphere 2, Q) := DifferentialGeometry.Topology.FreeLoop.evaluation.comp (regularLoopInclusion.comp (i.comp Γ.1))
+    let f : C(Sphere 2, Q) := loopEvaluation.comp (regularLoopInclusion.comp (i.comp Γ.1))
     have hhom : ContinuousMap.Homotopic (contractibleRegularLoopInclusion.comp Γ.1)
         (constantContractibleLoops.comp f) := by
       refine ⟨{
@@ -83,7 +83,7 @@ theorem rfs_essential_short_family (g : SmoothRiemannianMetric I Q) :
       · intro k
         have h := congrArg contractibleRegularLoopInclusion (hone k)
         convert! h using 1
-    exact hξ f (((DifferentialGeometry.Topology.FreeHomotopyClass.mk_eq_mk_iff _ _).mpr hhom).symm.trans Γ.2)
+    exact hξ f (((FreeHomotopyClass.mk_eq_mk_iff _ _).mpr hhom).symm.trans Γ.2)
   · intro γ ell hell hellsigma hshort
     obtain ⟨u, hu⟩ := hfill γ.1.toContinuousLoop (γ.1.isLipschitz g)
       (hshort.trans_le hellsigma)

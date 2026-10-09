@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleAgmon
-import DifferentialGeometry.Analysis.Sobolev.Time.H1.Regularity.Holder
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Regularity.Holder
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.ContinuousRepresentative
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 

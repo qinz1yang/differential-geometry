@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionExistenceReduction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreTower
 
 set_option autoImplicit false
 
@@ -40,6 +39,29 @@ theorem eventCount_observe_eq_zero {P : OrientedThreeStage.{u}} {g : P.Metric}
   omega
 
 end ObservationTower
+
+namespace RetainedCoreHistory
+
+def ofClosedSlab {P : OrientedThreeStage.{u}} (g : P.Metric) {T : ℝ} (hT : 0 < T)
+    (S : P.ClosedSlab 0 T) (hS : S.flow.base.metric 0 = g) : RetainedCoreHistory.{u} where
+  horizon := T
+  horizon_nonneg := hT.le
+  eventCount := 0
+  time := fun _ => 0
+  time_strictMono := by
+    intro i j hij
+    omega
+  time_zero := rfl
+  time_le_horizon := by simpa using hT.le
+  stage := fun _ => P
+  initialMetric := fun _ => g
+  coreEvent i := Fin.elim0 i
+  event_initial i := Fin.elim0 i
+  event_output i := Fin.elim0 i
+  finalSlab := fun _ => S
+  final_initial := fun _ => hS
+
+end RetainedCoreHistory
 
 namespace RetainedCoreObservationTower
 

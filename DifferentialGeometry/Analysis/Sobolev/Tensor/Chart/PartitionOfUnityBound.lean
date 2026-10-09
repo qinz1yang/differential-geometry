@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.RawNorm
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.SobolevComposition
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.CompChainRuleK
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.ChartFormLowerOrder
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothFChartResidual.BilinearBoundChartPushedPartialDeriv
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension

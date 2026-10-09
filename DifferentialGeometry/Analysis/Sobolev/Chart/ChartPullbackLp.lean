@@ -1,5 +1,4 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.ChartPullbackSmooth
-import DifferentialGeometry.Analysis.Integration.Measure.LocalRestriction
 
 
 noncomputable section

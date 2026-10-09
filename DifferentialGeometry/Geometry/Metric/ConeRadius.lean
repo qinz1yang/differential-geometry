@@ -1,9 +1,9 @@
-import DifferentialGeometry.Geometry.Metric.Distance.LocalSmoothness
+import DifferentialGeometry.Geometry.Comparison.Distance.LocalSmoothness
 import DifferentialGeometry.Geometry.Comparison.Distance.Eikonal
 import Mathlib.Topology.OpenPartialHomeomorph.Continuity
 import Mathlib.Topology.Order.Real
-import DifferentialGeometry.Geometry.Metric.Distance.LocalSegmentSmoothness
-import DifferentialGeometry.Topology.MetricSpace.Cone.Distance
+import DifferentialGeometry.Geometry.Comparison.Distance.LocalSegmentSmoothness
+import DifferentialGeometry.Geometry.Metric.ConeDistance
 import DifferentialGeometry.Geometry.Metric.Distance.Differential
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.MetricSegmentRegularity

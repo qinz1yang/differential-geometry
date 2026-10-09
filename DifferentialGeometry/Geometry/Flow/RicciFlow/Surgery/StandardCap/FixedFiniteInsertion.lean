@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.Recentering
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.PrescribedApproximation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FixedStaticInsertion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticRequestTransport
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.FiniteCapNeckManifold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricConclusions

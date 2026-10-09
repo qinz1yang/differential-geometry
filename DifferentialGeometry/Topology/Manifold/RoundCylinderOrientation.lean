@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationPullback
-import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
+import DifferentialGeometry.Geometry.Metric.PolarCoordinates
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
 set_option autoImplicit false

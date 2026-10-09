@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Exponential.Smoothness.Domain
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
-import DifferentialGeometry.Geometry.Geodesic.Jacobi.Variation
-import DifferentialGeometry.Geometry.Variation.Field.Smoothness
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Variation
+import DifferentialGeometry.Geometry.Comparison.Variation.Field.Smoothness
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import Mathlib.LinearAlgebra.LinearIndependent.Basic
 

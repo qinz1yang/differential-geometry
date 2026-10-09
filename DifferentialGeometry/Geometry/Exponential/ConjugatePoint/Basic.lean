@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
-import DifferentialGeometry.Geometry.Geodesic.Jacobi.Reparametrization
+import DifferentialGeometry.Geometry.Comparison.Variation.JacobiReparam
 
 open DifferentialGeometry.Geometry.Curvature
 

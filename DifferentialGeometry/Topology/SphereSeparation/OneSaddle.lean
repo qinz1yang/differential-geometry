@@ -1,13 +1,9 @@
-import Batteries.Tactic.OpenPrivate
 import DifferentialGeometry.Topology.SphereSeparation.OneSaddleBand
 import DifferentialGeometry.Topology.SphereSeparation.OneSaddleCutoffStraightening
-import DifferentialGeometry.Topology.ThreeManifold.Schoenflies.Saddle.TwoCriticalPoints
+import DifferentialGeometry.Topology.SphereSeparation.TwoCriticalPoints
 import DifferentialGeometry.Topology.Morse.ScalarComposition
 import DifferentialGeometry.Topology.Morse.ConstantGerm
 import DifferentialGeometry.Topology.Morse.Naturality
-
-open private exists_cutoff_height_removal_data_of_one_saddle from
-  DifferentialGeometry.Topology.SphereSeparation.OneSaddleCutoffStraightening
 
 open Set Filter Metric Manifold
 open scoped ContDiff Manifold Topology
@@ -74,9 +70,28 @@ private theorem exists_diffeomorph_image_sphere_of_one_saddle_graph
       (fun y => e ((extChartAt (𝓡 2) (β (0, 0))).symm y) 2)
       (extChartAt (𝓡 2) (β (0, 0)) (β (0, 0)))) = 1) :
     ∃ D : EuclideanThree ≃ₘ[ℝ] EuclideanThree, D '' sphere 0 1 = range e := by
-  obtain ⟨T, Q, ψ, Acut, hψd, hremoved⟩ :=
-    exists_cutoff_height_removal_data_of_one_saddle
+  obtain ⟨p, hpmax, hpnd, hpnotmax, σ, hσ, h, hh, hh1, δ, hδ,
+    η, hη, Φ, hΦ, hΦi, hΦ0, hγ, hslices, hcoverage,
+    r, hr, hab, A, hA, hcap, G, hG, hGi, hCcap, hcontact,
+    t₀, hτt₀, ht₀δ, ht₀b, d, ht₀d, hdδ, εcut, hεcut, hεcutt, hεcuth,
+    θ, hθ, hθ01, hθ0, hθ1, hθzero, κ, hκin, hκout, hθformula, ν, hν, hνsub,
+    H, hH, hHi, hH₀, hHdisk, D, hD, hDlo, hDhi, hregion, hinter,
+    T, hT, hTheight, hTbase, hTarc, hwhole, V, hV, hKV, hVreg, hTmodel,
+    hrawU, Z, hZ, hZT, hZeq, ρclear, hρclear, hρZ, hρfilledZ,
+    ρ, hρ, hrectangle, hmodelRect, hclear, O, hO, g, hg, hgt,
+    Wgraph, hWgraph, hWZ, hWO, hactive, hgrapheq,
+    Ncollar, hNcollar, hboundaryCollar, hcollarProd, hlowerClearance, hwedge,
+    Vside, hVside, hcurveVside, hVsideRect, hside, v₀, hv₀, hv₀t, hwide⟩ :=
+    exists_height_preserving_diffeomorph_saddle_cutoff_graph_and_cap_of_one_saddle
       he hnd hinj hone hconn B hU hzero hβ hs hgraph hβcrit hβindex
+  have ht₀pos : 0 < t₀ := (half_pos hδ).trans hτt₀
+  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, δexp, hδexp, hfamily⟩ :=
+    hwide (3 * t₀ / 4) (by constructor <;> linarith)
+  obtain ⟨_, _, _, Q, ψ, α, hα, hψd, hψhi, hQheight, hQlow, hQhi,
+    hQcylinder, hQcap, hQwhole, hQcapall, hQinj, hQinjS, hQinjWhole, htrace, hfull, _⟩ :=
+    hfamily (δexp / 2) ⟨half_pos hδexp, half_lt_self hδexp⟩
+  obtain ⟨OQ, hOQ, gQ, hgQ, WQ, hWQ, hKWQ, hWQO, hWQeq, hbottom,
+    k, hk, hkd, hbound, Acut, hAcutfst, hAcutgraph, hAcutfixed, hremoved⟩ := hfull
   let L := EuclideanSpace.equivProdLast (𝕜 := ℝ) 2
   let Ω : EuclideanThree ≃ₘ[ℝ] EuclideanThree :=
     (((L.toDiffeomorph.trans T).trans Q).trans Acut).trans L.symm.toDiffeomorph

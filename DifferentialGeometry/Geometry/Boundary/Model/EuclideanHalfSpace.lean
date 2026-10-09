@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Boundary.Model.Basic
 import DifferentialGeometry.Geometry.Boundary.Orientation
-import DifferentialGeometry.Tensor.BilinearForm.Determinant
+import DifferentialGeometry.Tensor.BilinearForm
 import Mathlib.Geometry.Manifold.Instances.Real
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 import Mathlib.Geometry.Manifold.MFDeriv.Basic

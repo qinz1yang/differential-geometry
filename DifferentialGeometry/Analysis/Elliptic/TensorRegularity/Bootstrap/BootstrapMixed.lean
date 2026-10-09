@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.Bootstrap.BootstrapStep
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.HigherOrderBound
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

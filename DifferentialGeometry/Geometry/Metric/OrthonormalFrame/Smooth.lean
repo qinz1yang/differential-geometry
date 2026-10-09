@@ -1,5 +1,5 @@
 import DifferentialGeometry.Bundle.Equiv
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Continuity
+import DifferentialGeometry.Geometry.Metric.BundleContinuity
 import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Principal
 import DifferentialGeometry.Geometry.LieGroup.Orthogonal
 import DifferentialGeometry.Topology.Manifold.Atlas

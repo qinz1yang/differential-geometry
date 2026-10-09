@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Analysis.Calculus.Inverse.MovingImplicit
-import DifferentialGeometry.Analysis.FiniteDimensional.Coercivity
+import DifferentialGeometry.Analysis.FunctionalAnalysis.BilinearCoercivity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Inverse.Radius
 

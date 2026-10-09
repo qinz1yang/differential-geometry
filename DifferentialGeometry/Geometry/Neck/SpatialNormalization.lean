@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Neck.Spatial
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedWitnessTransport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Cylinder.ReferenceMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderReferenceModel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecenterAux
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens

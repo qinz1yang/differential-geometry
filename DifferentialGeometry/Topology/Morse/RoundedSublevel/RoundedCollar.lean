@@ -20,7 +20,7 @@ theorem exists_equatorial_collar {g : M → ℝ} (hg : ContMDiff (𝓡 n) 𝓘(�
   have hg' := contMDiff_morseModelI_iff.mpr hg
   have h := exists_regular_level_collar hg' (c := 0) (by
     intro x hx
-    rw [isCriticalPointAt_morseModelI_iff (f := g)]
+    rw [isCriticalPointAt_morseModelI_iff hg]
     exact hreg x hx)
   obtain ⟨δ, hδ, Φ, hΦ, hΦ0⟩ := h
   let A : Icc (-δ) δ ≃ₜ Icc (0 - δ) (0 + δ) :=

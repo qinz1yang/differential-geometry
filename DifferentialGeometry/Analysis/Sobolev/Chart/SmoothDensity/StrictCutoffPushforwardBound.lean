@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartBoundStrictMemWkpHigherOrder
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.StrictCutoff
-import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.CompactNeighborhood
+import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 

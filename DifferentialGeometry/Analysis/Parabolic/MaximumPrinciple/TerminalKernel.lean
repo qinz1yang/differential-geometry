@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
 import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.SubbundleInvariance
 import Mathlib.Analysis.Calculus.Deriv.Slope
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint
 
 set_option autoImplicit false
 
@@ -61,12 +60,12 @@ private theorem local_kernel_covariantDerivatives_mem_of_nonpos
     (hB : 0 ≤ inner ℝ (B (w x)) (w x))
     (hL : inner ℝ
       ((rawBundleEndomorphismConnLap (I := I) g cov (fun y => A y) x +
-        _root_.CovariantDerivative.hom
+        HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov (fun y => A y) x Z + B) (w x)) (w x) ≤ 0) :
     (∀ Y : TangentSpace I x, cov (fun y => w y) x Y ∈ (A x).ker) ∧
       inner ℝ (B (w x)) (w x) = 0 := by
   have hdrift :=
-    _root_.CovariantDerivative.inner_hom_apply_of_eventually_mem_ker
+    HomConnectionGen.inner_homBundleCovariantDerivativeGen_apply_of_eventually_mem_ker
       cov A hA w hU hxU hw Z
   have hlap := inner_rawBundleEndomorphismConnLap_apply_of_eventually_mem_ker
     g cov hcov A hA w hU hxU hw
@@ -115,7 +114,7 @@ theorem local_kernel_section_covariantDerivative_mem_and_reaction_inner_eq_zero_
     (hB : 0 ≤ inner ℝ (B (w x)) (w x))
     (hevolution : HasDerivWithinAt (fun t => A t x)
       (rawBundleEndomorphismConnLap (I := I) g cov (fun y => A b y) x +
-        _root_.CovariantDerivative.hom
+        HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov (fun y => A b y) x Z + B) (Iic b) b) :
     (∀ Y : TangentSpace I x, cov (fun y => w y) x Y ∈ (A b x).ker) ∧
       inner ℝ (B (w x)) (w x) = 0 := by
@@ -133,7 +132,7 @@ theorem kernel_isCovariantlyInvariant_at_right_endpoint
     (hB : ∀ x v, A b x v = 0 → 0 ≤ inner ℝ (B x v) v)
     (hevolution : ∀ x, HasDerivWithinAt (fun t => A t x)
       (rawBundleEndomorphismConnLap (I := I) g cov (fun y => A b y) x +
-        _root_.CovariantDerivative.hom
+        HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov (fun y => A b y) x (Z x) + B x) (Iic b) b) :
     IsCovariantlyInvariantSubmoduleFamily cov (fun x => (A b x).ker) := by
   intro w U hU hw x hx Y
@@ -156,7 +155,7 @@ theorem exists_parallel_kernel_at_right_endpoint_of_constant_rank
     (hB : ∀ x v, A b x v = 0 → 0 ≤ inner ℝ (B x v) v)
     (hevolution : ∀ x, HasDerivWithinAt (fun t => A t x)
       (rawBundleEndomorphismConnLap (I := I) g cov (fun y => A b y) x +
-        _root_.CovariantDerivative.hom
+        HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov (fun y => A b y) x (Z x) + B x) (Iic b) b)
     (k : ℕ) (hker : ∀ x, Module.finrank ℝ (A b x).ker = k) :
     ∃ K : ContMDiffVectorSubbundle (I := I) (F := F) (V := V) (n := ∞),

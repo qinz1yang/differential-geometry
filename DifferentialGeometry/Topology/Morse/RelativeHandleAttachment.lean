@@ -2,10 +2,10 @@ import DifferentialGeometry.Topology.Morse.Attachment.ManifoldHandle
 
 namespace DifferentialGeometry.Topology.Morse
 
-open Set
+open Manifold Set
 open DifferentialGeometry.Topology.Handle
 open ManifoldCellAttachment CellAttachment
-open scoped _root_.Topology ContDiff
+open scoped _root_.Topology Manifold ContDiff
 
 noncomputable section
 

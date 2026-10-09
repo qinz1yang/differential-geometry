@@ -73,7 +73,7 @@ theorem cutoff_negative_minimum_eigenvalue_reaction_inequality_at_spacetime_max
     (hPDE : letI : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
       HasDerivWithinAt (fun s => A s x)
         (rawBundleEndomorphismConnLap (I := I) (G.metric t) cov (fun y => A t y) x +
-          _root_.CovariantDerivative.hom I M F V F V cov cov
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
             (fun y => A t y) x (X t x) +
           (curvatureOperatorReactionEndomorphism3 (A t x).toLinearMap).toContinuousLinearMap)
         (Icc 0 t) t)
@@ -104,11 +104,11 @@ theorem cutoff_negative_minimum_eigenvalue_reaction_inequality_at_spacetime_max
   rw [hder] at hineq
   have hres :
       rawBundleEndomorphismConnLap (I := I) (G.metric t) cov (fun y => A t y) x +
-          _root_.CovariantDerivative.hom I M F V F V cov cov
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
             (fun y => A t y) x (X t x) +
           (curvatureOperatorReactionEndomorphism3 (A t x).toLinearMap).toContinuousLinearMap -
         rawBundleEndomorphismConnLap (I := I) (G.metric t) cov (fun y => A t y) x -
-        _root_.CovariantDerivative.hom I M F V F V cov cov
+        HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
           (fun y => A t y) x (X t x) =
       (curvatureOperatorReactionEndomorphism3 (A t x).toLinearMap).toContinuousLinearMap := by
     abel
@@ -137,7 +137,7 @@ theorem hamilton_ivey_scalar_reaction_ge_at_logarithmic_boundary
     (hPDE : letI : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
       HasDerivWithinAt (fun s => A s x)
         (rawBundleEndomorphismConnLap (I := I) (G.metric t) cov (fun y => A t y) x +
-          _root_.CovariantDerivative.hom I M F V F V cov cov
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
             (fun y => A t y) x (X t x) +
           (curvatureOperatorReactionEndomorphism3 (A t x).toLinearMap).toContinuousLinearMap)
         (Icc 0 T) t)
@@ -159,7 +159,7 @@ theorem hamilton_ivey_scalar_reaction_ge_at_logarithmic_boundary
   have hder := hPDE.derivWithin ((uniqueDiffOn_Icc hT).uniqueDiffWithinAt ht)
   have hres : derivWithin (fun s => A s x) (Icc 0 T) t -
       rawBundleEndomorphismConnLap (I := I) (G.metric t) cov (fun y => A t y) x -
-      _root_.CovariantDerivative.hom I M F V F V cov cov
+      HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
         (fun y => A t y) x (X t x) = Q := by
     rw [hder]
     change _ + _ + Q - _ - _ = Q
@@ -208,7 +208,7 @@ theorem cutoff_hamilton_ivey_bound_at_time_and_space_min
     (hPDE : letI : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
       HasDerivWithinAt (fun s => A s x)
         (rawBundleEndomorphismConnLap (I := I) (G.metric t) cov (fun y => A t y) x +
-          _root_.CovariantDerivative.hom I M F V F V cov cov
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
             (fun y => A t y) x (X t x) +
           (curvatureOperatorReactionEndomorphism3 (A t x).toLinearMap).toContinuousLinearMap)
         (Icc 0 t) t)

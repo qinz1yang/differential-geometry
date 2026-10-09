@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.Boundary.Model.Inverse
+import DifferentialGeometry.Geometry.Boundary.ModelInverse
 import Mathlib.Geometry.Manifold.ContMDiff.Atlas
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 

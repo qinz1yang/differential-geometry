@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorReaction
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Pullback.Basic
+import DifferentialGeometry.Geometry.Metric.BundlePullback
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorConjugation
 
 set_option autoImplicit false

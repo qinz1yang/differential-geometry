@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.Sphere.PolarCoordinates
+import DifferentialGeometry.Topology.Manifold.SpherePolarCoordinates
 import DifferentialGeometry.Topology.Diffeomorph.FiberwiseAffine
 import Mathlib.Tactic.Linarith
 

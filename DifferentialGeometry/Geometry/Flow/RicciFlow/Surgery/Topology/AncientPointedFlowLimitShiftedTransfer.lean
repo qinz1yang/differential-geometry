@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPointedFlowLimitTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical.ReferenceChange
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.OpenEmbedding
-import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
+import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
 import DifferentialGeometry.Topology.Sequences.ExceptionalSetApproximation
 

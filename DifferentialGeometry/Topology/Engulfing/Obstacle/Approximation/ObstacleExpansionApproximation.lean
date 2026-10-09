@@ -13,7 +13,6 @@ variable {E : Type*} [DecidableEq E]
   {T : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin n))}
   {f : C(K.space, EuclideanSpace ℝ (Fin n))}
 
-omit [FiniteDimensional ℝ E] in
 theorem ObstacleAugmentation.exists_compatible_generalPosition
     (a : ObstacleAugmentation K L T f d p) (ha : a.preservesSourceExpansions)
     {ε : ℝ} (hε : 0 < ε) :

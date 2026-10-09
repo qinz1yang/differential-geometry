@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Measure.Area.GeodesicStripArea
-import DifferentialGeometry.Topology.Circle.CylinderLipschitz
+import DifferentialGeometry.Topology.LoopSpace.CylinderLipschitz
 
 
 

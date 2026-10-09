@@ -51,12 +51,12 @@ theorem interiorSmoothDiskConst_isConformal (g : SmoothRiemannianMetric I Q) (q 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] in
 theorem interiorSmoothDiskConst_isSignedWeaklyMonotoneTrace (q : Q) :
     IsSignedWeaklyMonotoneTrace (⇑(interiorSmoothDiskConst (I := I) (Q := Q) q).map)
-      (DifferentialGeometry.Topology.FreeLoop.constants q) :=
+      (constantLoops q) :=
   ⟨id, continuous_id, Or.inl ⟨monotone_id, fun _ => rfl⟩, fun _ => rfl⟩
 
 omit [FiniteDimensional ℝ E] in
 theorem diskArea_le_of_lipschitzDisk_of_constantLoops (g : SmoothRiemannianMetric I Q) (q : Q)
-    (w : LipschitzDisk g) (hw : ∀ theta, w.map (diskBoundary theta) = DifferentialGeometry.Topology.FreeLoop.constants q theta) :
+    (w : LipschitzDisk g) (hw : ∀ theta, w.map (diskBoundary theta) = constantLoops q theta) :
     diskArea g (fun _ : Disk => q) ≤ diskArea g w.map :=
   diskArea_const_le_diskCompetitor g q ⟨w, hw⟩
 
@@ -64,7 +64,7 @@ theorem diskArea_le_of_smoothDisk_of_constantLoops
     [boundarylessI : I.Boundaryless] [t2Q : T2Space Q] [compactQ : CompactSpace Q]
     (g : SmoothRiemannianMetric I Q) (q : Q)
     (w : SmoothDisk (I := I) (Q := Q))
-    (hw : ∀ theta, w.map (diskBoundary theta) = DifferentialGeometry.Topology.FreeLoop.constants q theta) :
+    (hw : ∀ theta, w.map (diskBoundary theta) = constantLoops q theta) :
     diskArea g (fun _ : Disk => q) ≤ diskArea g w.map := by
   obtain ⟨v, hv⟩ := SmoothDisk.exists_lipschitz g w
   rw [← hv]
@@ -74,9 +74,9 @@ theorem diskArea_le_of_smoothDisk_of_constantLoops
 
 omit [FiniteDimensional ℝ E] in
 def regularLoopConst (q : Q) : RegularLoop I Q where
-  toContinuousLoop := DifferentialGeometry.Topology.FreeLoop.constants q
+  toContinuousLoop := constantLoops q
   contMDiff_lift := by
-    have h : (fun t : ℝ => DifferentialGeometry.Topology.FreeLoop.constants q (t : Surgery.Topology.Circle)) = fun _ : ℝ => q := by
+    have h : (fun t : ℝ => constantLoops q (t : Surgery.Topology.Circle)) = fun _ : ℝ => q := by
       funext t
       rfl
     rw [h]
@@ -84,7 +84,7 @@ def regularLoopConst (q : Q) : RegularLoop I Q where
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] in
 theorem regularLoopConst_toContinuousLoop (q : Q) :
-    (regularLoopConst (I := I) (Q := Q) q).toContinuousLoop = DifferentialGeometry.Topology.FreeLoop.constants q := rfl
+    (regularLoopConst (I := I) (Q := Q) q).toContinuousLoop = constantLoops q := rfl
 
 theorem hasConformalMinimizingInteriorDisk_constLoops_of_analytic
     [boundarylessI : I.Boundaryless] [t2Q : T2Space Q] [compactQ : CompactSpace Q]

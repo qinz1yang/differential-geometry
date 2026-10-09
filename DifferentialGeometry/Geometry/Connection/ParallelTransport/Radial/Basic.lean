@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Endpoint
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.LocalODE
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs

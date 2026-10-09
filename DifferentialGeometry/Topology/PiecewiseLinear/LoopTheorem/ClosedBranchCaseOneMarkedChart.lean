@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTransport
-import DifferentialGeometry.Topology.PiecewiseLinear.Crossing.TwoSidedDouble
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.InteriorTwoSided
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedronLocalConnectedness
 
 open Set Topology

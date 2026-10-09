@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.MetricFields
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedWindowMetricFields
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PartialTensorPullback
 
 

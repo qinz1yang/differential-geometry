@@ -1,5 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Orientation
-import DifferentialGeometry.Topology.LoopSpace.Continuous
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinearOrientation
 import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Analysis.Normed.Module.Convex

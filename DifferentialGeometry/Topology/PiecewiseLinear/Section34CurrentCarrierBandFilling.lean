@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.EmptyBands
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentEmptyBands
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentBoundaryCrossings
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34OuterFaceAlignedFilling
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CarrierCancellationDescent
@@ -124,7 +124,7 @@ theorem exists_section34_current_carrier_band_filling
     htrace.trans (r.symm.surjective.iUnion_comp (fun i : I => Pg e i.1.val)).symm
   obtain ⟨i, j, hij, P, Q', u, v, f, g, -, hu, -, hf, hfP, hFA, hf₀, hf₁, hFempty,
       -, hv, -, hg, hgQ, hDB, hg₀, hg₁, hDempty⟩ :=
-    exists_simultaneous_empty_bands_of_transverse_vertex_balls hprep hpack e hcellA hcellB'
+    exists_section34_current_simultaneous_empty_bands hprep hpack e hcellA hcellB'
       hannA hannB' hAaB (image_mono hBaB) hAT hBT hlt Γ
       (fun k => (hPg e (r.symm k).1.val (r.symm k).1.isLt).1)
       (fun k => hJA (r.symm k).1) (fun k => hJB' (r.symm k))

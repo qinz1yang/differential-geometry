@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.ProjectiveSpace.RoundMetric
+import DifferentialGeometry.Geometry.Metric.ProjectiveSpace
 import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 import DifferentialGeometry.Geometry.Curvature.Metric.Conditions

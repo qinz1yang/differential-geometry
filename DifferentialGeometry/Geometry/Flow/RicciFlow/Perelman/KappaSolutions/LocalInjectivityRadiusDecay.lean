@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.LocalVolume
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalCGTInjectivity
 import DifferentialGeometry.Geometry.Comparison.Volume.BishopGromovNonpositiveLocal
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.InjectivityRadiusDecay.Existence

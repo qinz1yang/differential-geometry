@@ -40,7 +40,7 @@ theorem nonempty_parabolicUpperSupportAt_lowerKyFanSum_of_evolution
     (hAt : DifferentiableAt ℝ (fun q => A q x) t)
     (hevolution : deriv (fun q => A q x) t =
       rawBundleEndomorphismConnLap (G.metric t) cov (fun y => A t y) x +
-        _root_.CovariantDerivative.hom
+        HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov (fun y => A t y) x (X t x) + reaction) :
     let _ : ∀ y, FiniteDimensional ℝ (V y) :=
       fun y => VectorBundle.finiteDimensional ℝ F V y
@@ -102,7 +102,7 @@ theorem nonempty_parabolicUpperSupportAt_lowerKyFanSum_of_evolution
       (fun i => by rw [hvx i]; exact heigen i) hvNormal hunit
     have hresidual : deriv (fun q => A q x) t -
         rawBundleEndomorphismConnLap (G.metric t) cov (fun y => A t y) x -
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V cov cov (fun y => A t y) x (X t x) = reaction := by
       rw [hevolution]
       abel

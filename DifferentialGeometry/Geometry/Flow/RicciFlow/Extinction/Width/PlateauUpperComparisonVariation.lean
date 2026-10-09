@@ -306,7 +306,7 @@ theorem rfs_plateau_upper_comparison_of_minimizingDiskCompetitor
       (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma t₀ (sigma.map theta))
     (hconformal : u.IsConformal (W.family.metric t₀))

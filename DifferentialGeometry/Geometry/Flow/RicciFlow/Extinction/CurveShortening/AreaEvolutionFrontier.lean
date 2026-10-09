@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.MinimalDiskAreaVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyContinuity
-import DifferentialGeometry.Topology.LoopSpace.Isotopy.CompactAmbient
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BoundaryIsotopy
 
 noncomputable section
 
@@ -21,7 +21,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {D : RealTimeInterval} {a b : ℝ}
 
 def LoopFamilyLeastAreaSlopeBound (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) : Prop :=
+    (γ : ℝ → ContinuousFreeLoop M) : Prop :=
   ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
     (loopFamilyLeastArea B.family.metric γ (t + h) -
         loopFamilyLeastArea B.family.metric γ t) / h ≤
@@ -30,17 +30,17 @@ def LoopFamilyLeastAreaSlopeBound (B : RicciBackground (I := I) (M := M) D a b)
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem loopFamilyLeastAreaSlopeBound_of_minimalDiskAreaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hvar : MinimalDiskAreaVariation (I := I) (M := M) B γ) :
     LoopFamilyLeastAreaSlopeBound (I := I) (M := M) B γ :=
   rfs_csf_embedded_area_of_minimalDiskAreaVariation (I := I) (M := M) B γ hvar
 
 omit [SigmaCompactSpace M] in
 theorem rfs_csf_immersed_area_of_loopFamilyLeastAreaSlopeBound
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hbound : LoopFamilyLeastAreaSlopeBound (I := I) (M := M) B γ) :
     ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
       (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
@@ -58,10 +58,10 @@ theorem rfs_csf_immersed_area_of_loopFamilyLeastAreaSlopeBound
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem loopFamilyLeastAreaSlopeBound_of_rfs_csf_immersed_area
     (h : ∀ (B : RicciBackground (I := I) (M := M) D a b) (_ : Module.finrank ℝ E = 3)
-        (γ : ℝ → DifferentialGeometry.Topology.freeLoop M),
+        (γ : ℝ → ContinuousFreeLoop M),
       (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) →
       (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b) →
-      (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+      (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
       ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
         (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
           areaIntegratingFactor B.family s t * loopFamilyLeastArea B.family.metric γ t ≤
@@ -74,20 +74,20 @@ theorem loopFamilyLeastAreaSlopeBound_of_rfs_csf_immersed_area
             -2 * Real.pi - scalarMinimum B.family t * loopFamilyLeastArea B.family.metric γ t / 2 +
               (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε)) :
     ∀ (B : RicciBackground (I := I) (M := M) D a b) (_ : Module.finrank ℝ E = 3)
-      (γ : ℝ → DifferentialGeometry.Topology.freeLoop M),
+      (γ : ℝ → ContinuousFreeLoop M),
       (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) →
       (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b) →
-      (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+      (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
       LoopFamilyLeastAreaSlopeBound (I := I) (M := M) B γ :=
   fun B hdim γ hγ hi hctr => (h B hdim γ hγ hi hctr).2.2
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_embedded_area_of_rfs_csf_immersed_area
     (h : ∀ (B : RicciBackground (I := I) (M := M) D a b) (_ : Module.finrank ℝ E = 3)
-        (γ : ℝ → DifferentialGeometry.Topology.freeLoop M),
+        (γ : ℝ → ContinuousFreeLoop M),
       (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) →
       (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b) →
-      (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+      (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
       ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
         (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
           areaIntegratingFactor B.family s t * loopFamilyLeastArea B.family.metric γ t ≤
@@ -100,10 +100,10 @@ theorem rfs_csf_embedded_area_of_rfs_csf_immersed_area
             -2 * Real.pi - scalarMinimum B.family t * loopFamilyLeastArea B.family.metric γ t / 2 +
               (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε)) :
     ∀ (B : RicciBackground (I := I) (M := M) D a b) (_ : Module.finrank ℝ E = 3)
-      (γ : ℝ → DifferentialGeometry.Topology.freeLoop M),
+      (γ : ℝ → ContinuousFreeLoop M),
       (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) →
       (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b) →
-      (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+      (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
       (∀ t ∈ Icc a b, Topology.IsEmbedding (γ t)) →
       ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
         (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
@@ -120,12 +120,12 @@ theorem rfs_csf_embedded_area_of_rfs_csf_immersed_area
 
 omit [CompleteSpace E] hNonempty in
 theorem rfs_csf_boundary_isotopy_of_velocityExtension_exists
-    (hvel : ∀ (a' b' : ℝ) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M),
+    (hvel : ∀ (a' b' : ℝ) (γ : ℝ → ContinuousFreeLoop M),
       (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a' b') →
       (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a' b') →
       (∀ t ∈ Icc a' b', Topology.IsEmbedding (γ t)) →
       LoopFamilyVelocityExtension (I := I) a' b' γ)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t))
@@ -154,7 +154,7 @@ theorem not_exists_tendsto_div_of_eventually_eq_zero_of_neg_bound {A : ℝ → �
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem not_minimalDiskAreaVariation_of_eventually_diskArea_eq
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     {t : ℝ} (ht : t ∈ Ico a b)
     (hth : -2 * Real.pi - scalarMinimum B.family t *
         loopFamilyLeastArea B.family.metric γ t / 2 +

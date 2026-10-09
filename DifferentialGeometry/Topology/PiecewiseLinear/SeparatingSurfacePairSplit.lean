@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CollaredTraceSplit
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfacePairCapping
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceTraceMonotonicity
@@ -14,7 +19,9 @@ theorem exists_separating_surface_pair_split [d : DecidableEq E3]
     (hX₁ : IsCombinatorialManifoldWithBoundary 2 X₁) (hX₁o : IsOrientable 2 X₁)
     {I H K R T O F : Set E3} (htrace₀ : HasFiniteCollaredTrace X₀.space T)
     (htrace₁ : HasFiniteCollaredTrace X₁.space T) (hdis : Disjoint X₀.space X₁.space)
-    (hT : IsPLTorus T) (hI : IsOpen I)
+    (hT : IsPLTorus T) (h303 : Moise303) (hI : IsOpen I) (hIc : IsConnected I)
+    (hHI : H ⊆ I) (hKI : K ⊆ I) (hHK : Disjoint H K)
+    (hH : IsClosed (((↑) : I → E3) ⁻¹' H)) (hK : IsClosed (((↑) : I → E3) ⁻¹' K))
     (hCI : R ∪ (T ∪ (X₀.space ∪ X₁.space)) ⊆ I)
     (hC : IsSeparatorIn I (R ∪ (T ∪ (X₀.space ∪ X₁.space))) H K)
     (hO : IsOpen O) (hTO : T ⊆ O) (hOI : O ⊆ I) (hOHK : Disjoint O (H ∪ K))
@@ -59,7 +66,7 @@ theorem exists_separating_surface_pair_split [d : DecidableEq E3]
   have hwhole := htrace₀.union_of_disjoint htrace₁ hdis
   obtain ⟨L', hstate, hsep, hsubI, hprot, hout, -, hcount,
       Δ, r, f, hr, hΔT, hmeet, hG, hf, hfix, hnewTrace⟩ :=
-    hwhole.exists_split_reducing_nullTraceCount_with_cap hT hI
+    hwhole.exists_split_reducing_nullTraceCount_with_cap hT h303 hI hIc hHI hKI hHK hH hK
       hCI hC hO hTO hOI hOHK hRO hFO hnull
   obtain ⟨Q₀, Q₁, hQ₀fin, hQ₁fin, hQ₀, hQ₀o, hQ₁, hQ₁o, hstate₀, hstate₁,
       hQdis, hcover, hout₀, hout₁, hmeet₀, hmeet₁, hQ₀b, hQ₁b, hcaps⟩ :=

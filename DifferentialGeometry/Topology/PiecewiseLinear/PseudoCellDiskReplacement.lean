@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskMeetsGraph
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralDiskRecognition
 
@@ -7,7 +12,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
-theorem IsPseudoCell.exists_plDisk_agreeing_off_ball
+theorem IsPseudoCell.exists_plDisk_agreeing_off_ball (h324 : Moise324)
     {Ec Eint Ebd : Set E3} {P : E3} (hpc : IsPseudoCell Ec Eint Ebd P) {DJ DJint : Set E3}
     (hDJ : IsTopologicalCellWithInterior 2 DJ DJint) (hDJE : DJ ⊆ Eint)
     (hJ : IsPLSphere 1 (DJ \ DJint)) (hPDJ : P ∈ DJint) {δ₀ : ℝ} (hδ₀ : 0 < δ₀) :
@@ -21,7 +26,7 @@ theorem IsPseudoCell.exists_plDisk_agreeing_off_ball
   have hJE : DJ \ DJint ⊆ Eint := sdiff_subset.trans hDJE
   obtain ⟨δ, Δ₁, r₁, DJ₁, DJint₁, -, -, hδle, hr₁, hΔ₁ball, hΔ₁E, hDJ₁, hDJ₁E, hDJ₁J, hPDJ₁,
     hDJ₁sub, hDJ₁ball, -, -, -, -⟩ :=
-    hpc.exists_replacementDisk hDJ hDJEc hJ hJE hPDJ hδ₀
+    hpc.exists_replacementDisk h324 hDJ hDJEc hJ hJE hPDJ hδ₀
   have hΔ₁b : Δ₁ ⊆ Metric.ball P δ₀ := hΔ₁ball.trans (Metric.ball_subset_ball hδle)
   have hDJint : DJint ⊆ DJ := hDJ.subset
   have hDJ₁int : DJint₁ ⊆ DJ₁ := hDJ₁.subset

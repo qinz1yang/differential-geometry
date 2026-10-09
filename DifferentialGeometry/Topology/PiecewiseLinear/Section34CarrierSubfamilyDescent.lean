@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CarrierCancellationDescent
-import DifferentialGeometry.Topology.PiecewiseLinear.Homeomorph.SupportedComposition
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentMotionComposition
 
 open Set Topology
 
@@ -93,7 +93,7 @@ theorem IsPLHomeomorphInto.exists_carrier_subfamily_without_annular_disks
     have hZ₂ := disjoint_union_right.mpr
       ⟨disjoint_union_right.mpr ⟨hArim₂, hBrim₂⟩, hout₂⟩
     obtain ⟨-, -, hK, hKT, hfix, hPL, -, -, hkeep, hnear, htrace'⟩ :=
-      supported_trace_motion_comp ψ₁ ψ₂ hK₁ hK₂ hK₁T hK₂T
+      supported_second_trace_motion_comp ψ₁ ψ₂ hK₁ hK₂ hK₁T hK₂T
         (interior_mono (image_mono hLP)) hfix₁ hfix₂ hψ₁ hψ₂ hZ₁ hZ₂
         I I₂ hkeep₁ hkeep₂ htrace₂
     refine ⟨Subtype.val '' I₂, ⟨⟨k, hkI⟩, hk₂, rfl⟩, ?_, ?_,

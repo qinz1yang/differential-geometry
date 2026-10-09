@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Manifold.ClosedDiskExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Plateau
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentHarmonic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentDifferential
-import DifferentialGeometry.Geometry.Metric.Coordinates.UniformCharts
+import DifferentialGeometry.Geometry.Metric.UniformCharts
 import DifferentialGeometry.Topology.Connected.FiniteEDistance
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 import Mathlib.Topology.Connected.LocallyConnected
@@ -250,7 +250,7 @@ theorem compact_homogeneous_regularity
 omit [CompleteSpace E] in
 theorem finite_lipschitz_spanning_disk [I.Boundaryless] [T2Space Q] [CompactSpace Q]
     (g : SmoothRiemannianMetric I Q) (gamma : Width.RegularLoop I Q)
-    (hctr : ContinuousMap.Nullhomotopic gamma.toContinuousLoop) :
+    (hctr : Surgery.Topology.IsContractibleLoop gamma.toContinuousLoop) :
     ∃ v : Width.LipschitzDisk g,
       (∀ theta, v.map (Width.diskBoundary theta) = gamma theta) ∧
       IntegrableOn (Width.diskJacobian g v.map) (Metric.closedBall (0 : ℂ) 1) := by
@@ -419,7 +419,7 @@ private theorem image_in_component {A Q : Type*} [TopologicalSpace A]
 
 private theorem component_topology {Q : Type*} [TopologicalSpace Q]
     [LocallyConnectedSpace Q] [CompactSpace Q]
-    (gamma : DifferentialGeometry.Topology.freeLoop Q) (hctr : ContinuousMap.Nullhomotopic gamma) :
+    (gamma : ContinuousFreeLoop Q) (hctr : IsContractibleLoop gamma) :
     ∃ U : TopologicalSpace.Opens Q,
       (U : Set Q) = connectedComponent (gamma (0 : Surgery.Topology.Circle)) ∧
       IsClosed (U : Set Q) ∧ IsCompact (U : Set Q) ∧ IsConnected (U : Set Q) ∧
@@ -427,7 +427,7 @@ private theorem component_topology {Q : Type*} [TopologicalSpace Q]
         ((∀ theta, u (diskBoundary theta) = gamma theta) ∨
           IsSignedWeaklyMonotoneTrace u gamma) → ∀ z, u z ∈ U) ∧
       ∃ gamma0 : C(Surgery.Topology.Circle, U),
-        (∀ theta, (gamma0 theta : Q) = gamma theta) ∧ ContinuousMap.Nullhomotopic gamma0 := by
+        (∀ theta, (gamma0 theta : Q) = gamma theta) ∧ IsContractibleLoop gamma0 := by
   let U : TopologicalSpace.Opens Q :=
     ⟨connectedComponent (gamma (0 : Surgery.Topology.Circle)), isOpen_connectedComponent⟩
   have hgamma : ∀ theta, gamma theta ∈ U := image_in_component gamma 0
@@ -483,7 +483,7 @@ omit [IsManifold I ∞ Q] [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem plateau_component_topology
     [I.Boundaryless] [CompactSpace Q]
     (gamma : Width.RegularLoop I Q)
-    (hctr : ContinuousMap.Nullhomotopic gamma.toContinuousLoop) :
+    (hctr : Surgery.Topology.IsContractibleLoop gamma.toContinuousLoop) :
     ∃ U : TopologicalSpace.Opens Q,
       (U : Set Q) = connectedComponent (gamma (0 : Surgery.Topology.Circle)) ∧
       IsClosed (U : Set Q) ∧ IsCompact (U : Set Q) ∧ IsConnected (U : Set Q) ∧
@@ -493,7 +493,7 @@ theorem plateau_component_topology
         ∀ z, u z ∈ U) ∧
       ∃ gamma0 : C(Surgery.Topology.Circle, U),
         (∀ theta, (gamma0 theta : Q) = gamma theta) ∧
-        ContinuousMap.Nullhomotopic gamma0 := by
+        Surgery.Topology.IsContractibleLoop gamma0 := by
   let : LocallyConnectedSpace H := I.toHomeomorph.locallyConnectedSpace
   let : LocallyConnectedSpace Q := ChartedSpace.locallyConnectedSpace H Q
   exact ComponentTopology.component_topology gamma.toContinuousLoop hctr

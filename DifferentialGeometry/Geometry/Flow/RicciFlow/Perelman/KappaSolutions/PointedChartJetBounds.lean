@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Compactness.Convergence.CovariantBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedUniformCovariantBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 
 

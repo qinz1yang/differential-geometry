@@ -153,7 +153,7 @@ theorem hasConformalMinimizingInteriorDisk_constLoops
   refine hasConformalMinimizingInteriorDisk_of_isMorreyDisk g (regularLoopConst q)
     (ContinuousMap.const Disk q) ?_
   rw [regularLoopConst_toContinuousLoop]
-  simp only [DifferentialGeometry.Topology.FreeLoop.constants]
+  simp only [constantLoops]
   exact Geometry.isMorreyDisk_const g q
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width

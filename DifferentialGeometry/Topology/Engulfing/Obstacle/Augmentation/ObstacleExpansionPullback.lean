@@ -12,7 +12,6 @@ variable {E : Type*} [DecidableEq E]
   {T : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin n))}
   {f : C(K.space, EuclideanSpace ℝ (Fin n))}
 
-omit [FiniteDimensional ℝ E] in
 theorem ObstacleAugmentation.exists_source_subdivision_preserving_expansions
     (a : ObstacleAugmentation K L T f d p) (ha : a.preservesSourceExpansions) :
     ∃ r : EuclideanSpace ℝ (Fin a.ambientDimension) → E,

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.TensorComponents
+import DifferentialGeometry.Tensor.Coordinates.Field
 import DifferentialGeometry.Geometry.Connection.ChartBridge.TensorDerivative
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.JetOperators
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.MapConvergence

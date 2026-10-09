@@ -49,7 +49,13 @@ theorem exists_spatial_regularizedCost_minimizer
     H.regularizedCost_eq_regularizedC1Cost first last hle T B u v hupper hscalar p q
   have hq₀C1 : H.regularizedC1Cost first last hle T u v p q₀ ≠ ⊤ := by
     rwa [hcost q₀] at hq₀
-  have hcont := H.lowerSemicontinuous_regularizedC1Cost first last hle hupper hscalar p
+  have hne : (H.regularizedC1ActionValues first last hle T u v p q₀).Nonempty := by
+    by_contra hn
+    exact hq₀C1 (H.regularizedC1Cost_eq_top_of_no_competitor first last hle T u v p q₀
+      (Set.not_nonempty_iff_eq_empty.mp hn))
+  obtain ⟨value, hvalue⟩ := hne
+  have hcont := H.lowerSemicontinuous_regularizedC1Cost_past_endpoint first last hle
+    hvalue.1 hvalue.2.1 hupper hvalue.2.2.2.1 hscalar p
   obtain ⟨q, _, hq⟩ := LowerSemicontinuousOn.exists_isMinOn
     (show (univ : Set (H.stage first).Carrier).Nonempty from ⟨q₀, mem_univ q₀⟩)
     isCompact_univ (hcont.lowerSemicontinuousOn univ)

@@ -2,7 +2,7 @@ import Mathlib.Analysis.Calculus.Gradient.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import DifferentialGeometry.Topology.Morse.Defs
 import DifferentialGeometry.Topology.VectorField.VerticalLinearization
-import DifferentialGeometry.Geometry.Metric.LinearAlgebra.QuadraticForm.SignatureDeterminant
+import DifferentialGeometry.Tensor.QuadraticForm.SignatureDeterminant
 
 set_option autoImplicit false
 noncomputable section

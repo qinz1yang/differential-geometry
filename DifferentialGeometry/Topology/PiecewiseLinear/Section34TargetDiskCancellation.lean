@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Compression.Transport
-import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.BoundaryCharts
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ModelDiskFilling
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ModelBoundaryDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ModelTraceTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PseudoCellCancellation
 
@@ -41,7 +41,7 @@ theorem IsPLHomeomorphInto.exists_relative_second_disk_cancellation {M : Type*}
     rw [hleft (interior_subset hy)]
     exact hy
   obtain ⟨hAs, hCs, hFs, hFC, hcap⟩ :=
-    hu.invFunOn_disk_filling_contacts hA hAP hC hCP hD hF hmeet htrace
+    hu.invFunOn_disk_filling_data hA hAP hC hCP hD hF hmeet htrace
   obtain ⟨E, Eint, Ebd, p, hpc, hE₂, -, hDE, hEg⟩ :=
     hu.exists_pseudo_cell_boundary_chart hB hD hDB hDP
   have hR : IsCompact R := hA.isCompact.of_isClosed_subset hrest

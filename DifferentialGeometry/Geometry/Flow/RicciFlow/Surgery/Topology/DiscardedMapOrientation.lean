@@ -97,8 +97,8 @@ theorem discardedDesc_preservesTangentOrientationAt_core :
       (D.orientation.orientation (j x)) = oY.orientation (f (j x))
   rw [heq]
   have hor := congrArg (Orientation.map (Fin 3) L) hsource'.symm
-  have hm := (DifferentialGeometry.orientation_map_trans (A.symm.trans J) L
-    (P.orientation.orientation x.val.val)).symm
+  have hm := DifferentialGeometry.VectorBundle.map_orientation_trans_between (A.symm.trans J) L
+    (P.orientation.orientation x.val.val)
   have hres := hor.trans (hm.trans ((congrArg (fun B : ThreeSpace ≃ₗ[ℝ] ThreeSpace =>
     Orientation.map (Fin 3) B (P.orientation.orientation x.val.val)) hlin).trans htarget'))
   have hvalue : f (j x) = fCore x := E.trace.discardedDesc_core fCore fCap hboundary x
@@ -177,8 +177,8 @@ theorem discardedDesc_preservesTangentOrientationAt_cap (b : {b : E.trace.tubes.
       (D.orientation.orientation (j x)) = oY.orientation (f (j x))
   rw [heq]
   have hor := congrArg (Orientation.map (Fin 3) L) hsource'.symm
-  have hm := (DifferentialGeometry.orientation_map_trans (A.symm.trans J) L
-    ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation)).symm
+  have hm := DifferentialGeometry.VectorBundle.map_orientation_trans_between (A.symm.trans J) L
+    ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation)
   have hres := hor.trans (hm.trans ((congrArg (fun B : ThreeSpace ≃ₗ[ℝ] ThreeSpace =>
     Orientation.map (Fin 3) B ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation)) hlin).trans htarget'))
   have hvalue : f (j x) = fCap b x := E.trace.discardedDesc_cap fCore fCap hboundary b x

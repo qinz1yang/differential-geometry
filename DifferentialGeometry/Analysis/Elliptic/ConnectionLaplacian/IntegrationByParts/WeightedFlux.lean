@@ -34,7 +34,7 @@ theorem integral_sq_weighted_covDiv0SField_le_of_hasCompactSupport
     {d : M → ℝ} (hd : Continuous d) {C_U ε : ℝ} (hε : 0 < ε)
     (hU : ∀ x ∈ tsupport (χ : M → ℝ), normSq0S (I := I) g x (s + 1) (U x) ≤ C_U * d x) :
     let A := metricNabla0S (I := I) g S
-    let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+    let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 s x
       ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
         (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
       (unitZeroSec (I := I) (M := M) x)
@@ -47,7 +47,7 @@ theorem integral_sq_weighted_covDiv0SField_le_of_hasCompactSupport
   classical
   dsimp only
   let A := metricNabla0S (I := I) g S
-  let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+  let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 s x
       ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
         (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
       (unitZeroSec (I := I) (M := M) x)

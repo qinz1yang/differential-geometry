@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Neck.NormalizedDatum
-import DifferentialGeometry.Geometry.Metric.Cylinder.AxialIsometry
+import DifferentialGeometry.Geometry.Metric.CylinderAxial
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
 set_option autoImplicit false
 noncomputable section

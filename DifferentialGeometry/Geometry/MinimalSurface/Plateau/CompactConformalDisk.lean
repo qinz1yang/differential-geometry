@@ -1,12 +1,12 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Existence.Compact
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Regularity.BoundarySmoothness
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ComponentDisk
-import DifferentialGeometry.Geometry.Metric.LoopSpace.Lipschitz
-import DifferentialGeometry.Geometry.Metric.HomogeneousRegularity.Compact
+import DifferentialGeometry.Geometry.Metric.LoopLipschitz
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CompactHomogeneousRegularity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MetricCompleteness
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SelectedConformalDisk
 import DifferentialGeometry.Geometry.Measure.Area.SpanningComponent
-import DifferentialGeometry.Geometry.Metric.LoopSpace.C1DerivativeBounds
+import DifferentialGeometry.Topology.LoopSpace.RegularDerivativeBounds
 
 
 

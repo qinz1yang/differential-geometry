@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Morse.Handle.Middle.Homology.MiddleHomology
 
 set_option autoImplicit false
+set_option linter.unusedSectionVars false
 
 open Set Filter
 open DifferentialGeometry.Topology.Morse.CellAttachment (morseNorm morseNormalForm negPart posPart

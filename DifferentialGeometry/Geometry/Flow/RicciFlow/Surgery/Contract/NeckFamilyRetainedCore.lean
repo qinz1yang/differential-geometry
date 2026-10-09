@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NeckFamilySeparation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Cutting.RetainedCore
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.TerminalCutRetention
 import DifferentialGeometry.Topology.Manifold.ImmersionRange
 
 set_option autoImplicit false

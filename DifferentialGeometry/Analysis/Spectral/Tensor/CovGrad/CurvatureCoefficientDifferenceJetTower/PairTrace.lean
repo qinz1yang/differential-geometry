@@ -1228,7 +1228,7 @@ lemma slotInsertEndoCc_add_endo_c (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
-  rw [slotInsertEndomorphism_add_left, add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -1367,14 +1367,14 @@ lemma operatorFieldComposition_slotInsert_id_eq (g₀ : SmoothRiemannianMetric I
       (slotInsertEndoCc (I := I) (M := M) g₀ s
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀))).toSection x) D =
       ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace c I x from Φ.toSection x)
-        (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+        (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ x) D)) from by
     rw [operatorFieldComposition_toSection]
     rfl]
   refine congrArg _ ?_
   apply Tensor0SSpace.toModel_injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [show tangentLinearMapToModel
       (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ x) (m 0) = m 0 from by
     rw [tangentLinearMapToModel_apply, metricComparisonEndomorphismField_apply,
@@ -1556,7 +1556,7 @@ lemma pureDoubleTraceField_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetr
           (slotInsertEndoCc (I := I) (M := M) g₀ (s + 1)
             (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁))).toSection x) Z) =
         cometricDoubleTraceFib (I := I) g₀ s x
-          (slotInsertEndomorphism (I := I) (M := M) (s + 2) 0 x
+          (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
             (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z) from by
       rw [operatorFieldComposition_toSection]
       rfl]
@@ -1565,10 +1565,10 @@ lemma pureDoubleTraceField_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetr
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
       (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel
-        (slotInsertEndomorphism (I := I) (M := M) (s + 2) 0 x
+        (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z)) mm]
     refine Finset.sum_congr rfl fun a _ => ?_
-    rw [slotInsertEndomorphism_apply_eval]
+    rw [slotInsertEndoFib_apply_eval]
     rw [tangentLinearMapToModel_apply]
     rw [Fin.update_cons_zero]
     rfl

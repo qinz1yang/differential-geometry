@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ArcLengthBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ArcLengthTensorBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.CurveShortening.Background.RicciDerivatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RicciDerivativeBounds
 import DifferentialGeometry.Analysis.ODE.ScalarParameterDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParameterDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution

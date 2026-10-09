@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionBackwardStep
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.Distortion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceDistortion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowDerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapScalar
 
@@ -20,7 +20,7 @@ open private ObservedHistory.activeStage_eq_of_time_mem
   ObservedHistory.backwardSurvivorInitialMetric_inner_le_exp
   BackwardPointTrace.apply_point_eq_of_stage_eq
   RetainedCoreHistory.exists_window_point_of_edist_le from
-  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.Distortion
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceDistortion
 
 namespace RetainedCoreHistory
 

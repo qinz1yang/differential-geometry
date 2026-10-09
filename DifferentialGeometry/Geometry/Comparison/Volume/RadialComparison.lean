@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Curvature.Ricci.LowerBoundOn
-import DifferentialGeometry.Analysis.ODE.Comparison.ModelRiccati
+import DifferentialGeometry.Geometry.Comparison.Volume.LocalRicci
+import DifferentialGeometry.Geometry.Comparison.Volume.ModelRiccati
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.IntrinsicLocal
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Pole
 

@@ -75,7 +75,7 @@ theorem flat_raw_variational_identity
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hX : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)))
-    (hXauto : autonomizedFieldJointC1 (I := I) X)
+    (hXauto : AutonomizedFieldJointC1 (I := I) X)
     (hΦfam_ode : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M,
       ∃ T₀ : ℝ, 0 < T₀ ∧ ∃ W : Set M, IsOpen W ∧ x ∈ W ∧
         ∀ y ∈ W, ∀ s ∈ Set.Ioo (t - T₀) (t + T₀),

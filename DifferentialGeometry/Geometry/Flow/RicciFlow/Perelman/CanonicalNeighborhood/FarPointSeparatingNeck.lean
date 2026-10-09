@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension.SpatialNeck
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FarSpatialNeck
 import DifferentialGeometry.Geometry.Neck.SeparatingSphere
 import DifferentialGeometry.Geometry.Neck.SpatialDiameter
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.AssemblyReduction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientationPrelude
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Composition
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationComposition
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationCompatible
 
 set_option autoImplicit false

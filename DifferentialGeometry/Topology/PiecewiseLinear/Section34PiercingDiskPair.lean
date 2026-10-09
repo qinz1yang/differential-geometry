@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.EssentialEquivalence
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingEssentialEquivalence
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellPullback
 
 open Set Topology
@@ -71,7 +71,7 @@ theorem exists_section34_matching_disk_pair
         (F' D' : Set (EuclideanSpace ℝ (Fin 3))),
         IsPLBall 3 P ∧ IsPLHomeomorphInto 3 u P ∧ F' ∪ D' ⊆ P ∧
         u '' F' = F ∧ u '' D' = D ∧ IsPLSphere 2 (F' ∪ D') := by
-  obtain ⟨F, hF, hFA⟩ := (piercing_disk_annuli_iff hprep hpack e hi).mpr
+  obtain ⟨F, hF, hFA⟩ := (section34_piercing_disk_annuli_iff hprep hpack e hi).mpr
     ⟨D, hD, hDT.trans inter_subset_left⟩
   obtain ⟨-, hCc, -, -, -, -, -, -, -, -, -, htor, hSnCc, -, hAa, -⟩ := hprep
   obtain ⟨hG, -, -, htube, -⟩ := hpack

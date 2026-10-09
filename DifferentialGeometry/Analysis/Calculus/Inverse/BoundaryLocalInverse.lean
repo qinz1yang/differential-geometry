@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.Inverse.LocalInverse
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.HalfSpaceExtension
-import DifferentialGeometry.Topology.Manifold.Boundary.Model.CollarCoordinates
+import DifferentialGeometry.Geometry.Boundary.ModelCollarCoordinates
 
 noncomputable section
 open Set Filter Topology

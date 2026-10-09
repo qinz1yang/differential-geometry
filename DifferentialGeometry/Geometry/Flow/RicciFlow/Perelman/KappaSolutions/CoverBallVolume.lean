@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
-import DifferentialGeometry.Topology.Covering.UniversalCover.LocalDiffeomorph
+import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
 import DifferentialGeometry.Topology.Covering.SmoothLift
 import DifferentialGeometry.Topology.Manifold.InjectiveLocalDiffeomorph
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Basic

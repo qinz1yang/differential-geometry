@@ -227,7 +227,7 @@ theorem gradientFun_sum {κ : Type*}
         intro i hi
         exact hf i (Finset.mem_insert_of_mem hi)
       have htail : MDifferentiableAt I 𝓘(Real, Real) (∑ i ∈ s, f i) x :=
-        MDifferentiableAt.sum (t := s) (f := f) hfs
+        mdifferentiableAt_finset_sum s f hfs
       rw [Finset.sum_insert ha, Finset.sum_insert ha]
       calc
         gradientFun (I := I) g (f a + ∑ i ∈ s, f i) x

@@ -78,7 +78,7 @@ theorem coframe_homBundleCovariantDerivative
     (hA : ContMDiffAt I (I.prod 𝓘(ℝ, F →L[ℝ] F)) 1
       (fun y => TotalSpace.mk' (F →L[ℝ] F) y (A y)) x) (X : TangentSpace I x) :
     (q x).toContinuousLinearEquiv.toContinuousLinearMap.comp
-      ((_root_.CovariantDerivative.hom I M F V F V
+      ((DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V
         cov cov A x X).comp (q x).symm.toContinuousLinearEquiv.toContinuousLinearMap) =
       mvfderiv I (fun y => (q y).toContinuousLinearEquiv.toContinuousLinearMap.comp
         ((A y).comp (q y).symm.toContinuousLinearEquiv.toContinuousLinearMap)) x X -
@@ -99,7 +99,7 @@ theorem coframe_homBundleCovariantDerivative
   intro w
   obtain ⟨Y, hY⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
     (V := TangentSpace I) (n := (⊤ : ℕ∞)) x X
-  have hh := _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+  have hh := DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
     I M F V F V cov cov A (hA.mdifferentiableAt (by simp)) Y.mdifferentiableAt
       ((hq w).mdifferentiableAt (by simp))
   rw [hY] at hh
@@ -111,7 +111,7 @@ theorem coframe_homBundleCovariantDerivative
     (hB.mvfderiv_clm_apply (mdifferentiableAt_const (c := w)))
   simp only [mvfderiv_const, ContinuousLinearMap.comp_zero, zero_add,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply] at hd
-  change q x ((_root_.CovariantDerivative.hom I M F V F V
+  change q x ((DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V
     cov cov A x X) ((q x).symm w)) =
       mvfderiv I B x X w - cov.coframeConnectionForm q x X (B x w) +
         B x (cov.coframeConnectionForm q x X w)

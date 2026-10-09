@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.CanonicalSource
-import DifferentialGeometry.Geometry.Curvature.Ricci.LowerBoundOn
+import DifferentialGeometry.Geometry.Comparison.Volume.PointedConvergence
+import DifferentialGeometry.Geometry.Comparison.Volume.LocalRicci
 import DifferentialGeometry.Geometry.Curvature.RicciNonnegativeConvergence
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciFromJets
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllPoints

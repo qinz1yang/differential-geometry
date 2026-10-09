@@ -16,6 +16,7 @@ theorem product_of_middle_indices (I : ModelWithCorners ℝ (Fin n → ℝ) H) [
     {f : M → ℝ} {a b : ℝ} (hf : MorseStrip I f a b)
     (hidx : ∀ x, f x ∈ Ioo a b → DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x →
       2 ≤ morseIndex I f x ∧ morseIndex I f x + 2 ≤ n)
+    (hW : SimplyConnectedSpace (f ⁻¹' Icc a b))
     (hV₀ : SimplyConnectedSpace (f ⁻¹' {a})) (hV₁ : SimplyConnectedSpace (f ⁻¹' {b}))
     (hH : relHomologyVanishes (f ⁻¹' Icc a b) (Subtype.val ⁻¹' (f ⁻¹' {a}))) :
     ∃ Φ : M ≃ₘ⟮I, I⟯ M, Φ '' (f ⁻¹' Iic a) = f ⁻¹' Iic b ∧ Φ '' (f ⁻¹' {a}) = f ⁻¹' {b} := by
@@ -23,6 +24,7 @@ theorem product_of_middle_indices (I : ModelWithCorners ℝ (Fin n → ℝ) H) [
       MorseStrip I f a b →
       (∀ x, f x ∈ Ioo a b → DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x →
         2 ≤ morseIndex I f x ∧ morseIndex I f x + 2 ≤ n) →
+      SimplyConnectedSpace (f ⁻¹' Icc a b) →
       SimplyConnectedSpace (f ⁻¹' {a}) → SimplyConnectedSpace (f ⁻¹' {b}) →
       relHomologyVanishes (f ⁻¹' Icc a b) (Subtype.val ⁻¹' (f ⁻¹' {a})) →
       ∃ Φ : M ≃ₘ⟮I, I⟯ M, Φ '' (f ⁻¹' Iic a) = f ⁻¹' Iic b ∧
@@ -30,7 +32,7 @@ theorem product_of_middle_indices (I : ModelWithCorners ℝ (Fin n → ℝ) H) [
     intro N
     induction N using Nat.strong_induction_on with
     | _ N ih =>
-    intro f hN hf hidx hV₀ hV₁ hH
+    intro f hN hf hidx hW hV₀ hV₁ hH
     have hfin : {x | f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x}.Finite :=
       hf.finite_critical.subset fun x hx => ⟨Ioo_subset_Icc_self hx.1, hx.2⟩
     by_cases hemp : {x | f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x} = ∅
@@ -46,7 +48,7 @@ theorem product_of_middle_indices (I : ModelWithCorners ℝ (Fin n → ℝ) H) [
       exact hmem
     · obtain ⟨p₀, hp₀⟩ := Set.nonempty_iff_ne_empty.mpr hemp
       obtain ⟨g, hmod, hg, hcrit, p, hpf, hpc, hpg⟩ :=
-        exists_middle_cancel_step I h6 hf hidx hV₀ hV₁ hH hp₀
+        exists_middle_cancel_step I h6 hf hidx hW hV₀ hV₁ hH hp₀
       have hsub : {x | g x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I g x} ⊆
           {x | f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x} := by
         intro x hx
@@ -67,6 +69,9 @@ theorem product_of_middle_indices (I : ModelWithCorners ℝ (Fin n → ℝ) H) [
         have hx1 : x ∈ g ⁻¹' Ioo a b := hx
         rw [hmod.preimage_Ioo] at hx1
         exact hidx x hx1 hcf
+      have hW' : SimplyConnectedSpace (g ⁻¹' Icc a b) := by
+        rw [hmod.preimage_Icc]
+        exact hW
       have hV₀' : SimplyConnectedSpace (g ⁻¹' {a}) := by
         rw [hmod.preimage_singleton_left]
         exact hV₀
@@ -76,10 +81,10 @@ theorem product_of_middle_indices (I : ModelWithCorners ℝ (Fin n → ℝ) H) [
       have hH' : relHomologyVanishes (g ⁻¹' Icc a b) (Subtype.val ⁻¹' (g ⁻¹' {a})) := by
         rw [hmod.preimage_singleton_left, hmod.preimage_Icc]
         exact hH
-      obtain ⟨Φ, hΦ₁, hΦ₂⟩ := ih _ hlt g rfl hg hidx' hV₀' hV₁' hH'
+      obtain ⟨Φ, hΦ₁, hΦ₂⟩ := ih _ hlt g rfl hg hidx' hW' hV₀' hV₁' hH'
       refine ⟨Φ, ?_, ?_⟩
       · rwa [hmod.preimage_Iic_left, hmod.preimage_Iic_right] at hΦ₁
       · rwa [hmod.preimage_singleton_left, hmod.preimage_singleton_right] at hΦ₂
-  exact key _ f rfl hf hidx hV₀ hV₁ hH
+  exact key _ f rfl hf hidx hW hV₀ hV₁ hH
 
 end DifferentialGeometry.Topology

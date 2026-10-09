@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Integration.RadialIntegral.Smoothness
-import DifferentialGeometry.Analysis.Integration.RadialIntegral.Parametric
+import DifferentialGeometry.Analysis.Integration.RadialIntegralSmoothness
+import DifferentialGeometry.Analysis.Integration.RadialIntegralParameter
 import DifferentialGeometry.Geometry.Operator.LaplacianRegularity
 
 noncomputable section

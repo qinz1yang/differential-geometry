@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Measure.Area.LocalReparametrization
 import DifferentialGeometry.Geometry.Measure.Area.CylinderArea
-import DifferentialGeometry.Analysis.Complex.Annulus.Sectors
-import DifferentialGeometry.Analysis.Complex.Annulus.Attachment
+import DifferentialGeometry.Topology.LoopSpace.AnnulusSectors
+import DifferentialGeometry.Topology.LoopSpace.AttachAnnulus
 
 
 

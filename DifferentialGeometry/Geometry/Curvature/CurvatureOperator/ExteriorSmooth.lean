@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorRepresentation
-import DifferentialGeometry.Geometry.Metric.VectorBundle.ExteriorPower.EndomorphismRegularity
-import DifferentialGeometry.Geometry.Metric.VectorBundle.SelfAdjoint.Basic
+import DifferentialGeometry.Geometry.Metric.ExteriorEndomorphismRegularity
+import DifferentialGeometry.Geometry.Metric.SelfAdjointSubbundle
 import DifferentialGeometry.Bundle.SmoothSubbundle.VectorBundle
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Spacetime
 

@@ -69,7 +69,7 @@ theorem exists_not_slope_bound_data :
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem not_area_conclusion_of_static_family
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hstatic : ∀ t, B.family.metric t = B.family.metric a)
     (hfixed : ∀ t, γ t = γ a)
     (hErr : (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) a = 0)
@@ -89,9 +89,9 @@ theorem not_area_conclusion_of_static_family
 
 omit hNonempty [SigmaCompactSpace M] in
 theorem not_rfs_csf_embedded_area_of_static_family
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hstatic : ∀ t, B.family.metric t = B.family.metric a)
     (hfixed : ∀ t, γ t = γ a)
     (hErr : (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) a = 0)

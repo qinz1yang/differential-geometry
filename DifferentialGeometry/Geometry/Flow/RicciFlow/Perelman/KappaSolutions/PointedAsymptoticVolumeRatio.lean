@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Loca
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.OpenRestrictionVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.VolumeNaturality
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import Mathlib.Analysis.SpecificLimits.Basic
 
 set_option autoImplicit false

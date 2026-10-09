@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Convergence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Continuity
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 
 section
 

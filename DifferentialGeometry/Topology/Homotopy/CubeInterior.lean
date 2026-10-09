@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Compactification.OpenCollapse
+import DifferentialGeometry.Topology.Homotopy.OpenCollapse
 import Mathlib.Topology.Homotopy.HomotopyGroup
 import Mathlib.Analysis.SpecialFunctions.Sigmoid
 import Mathlib.Topology.Order.Monotone

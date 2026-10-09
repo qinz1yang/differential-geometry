@@ -97,7 +97,7 @@ theorem simplyConnectedSpace_compl_chartDisks {n : ℕ} (hn : 3 ≤ n) {M : Type
 
 theorem relHomologyVanishes_compl_chartDisks {n : ℕ} (hn : 3 ≤ n) {M : Type*}
     [TopologicalSpace M] [T2Space M] [CompactSpace M]
-    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M] [IsManifold (𝓡 n) ∞ M]
     (e : M ≃ₕ sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1)
     {e₀ e₁ : Disk n → M} (h₀ : isChartDisk e₀) (h₁ : isChartDisk e₁)
     (hdisj : Disjoint (range e₀) (range e₁)) :
@@ -107,7 +107,7 @@ theorem relHomologyVanishes_compl_chartDisks {n : ℕ} (hn : 3 ≤ n) {M : Type*
 
 theorem hcobordism_input_of_homotopy_sphere {n : ℕ} (hn : 3 ≤ n) {M : Type*}
     [TopologicalSpace M] [T2Space M] [CompactSpace M]
-    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M] [IsManifold (𝓡 n) ∞ M]
     (e : M ≃ₕ sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1)
     {e₀ e₁ : Disk n → M} (h₀ : isChartDisk e₀) (h₁ : isChartDisk e₁)
     (hdisj : Disjoint (range e₀) (range e₁)) :

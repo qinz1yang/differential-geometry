@@ -707,7 +707,7 @@ theorem contDiffOn_rightChart_trans_seamChart (g : OpenPartialHomeomorph N csMod
     exact (reflectMapInv_reflectMap a z).symm
 
 
-
+/-- The chart family of the connected-sum atlas, as a bundled function. -/
 def csChartFamily : CSIndex (M := M) (N := N) →
     OpenPartialHomeomorph (ConnectedSumQuotient c d a) csModel :=
   fun k => csChart c d a k

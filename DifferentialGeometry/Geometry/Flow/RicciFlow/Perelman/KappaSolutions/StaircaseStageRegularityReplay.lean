@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.HigherRegularity
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.NormalChartTransitions
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NormalChartTransitionLimits
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseChartReplayBlock
 
 set_option autoImplicit false

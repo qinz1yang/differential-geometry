@@ -1,7 +1,7 @@
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.LinearAlgebra.Orientation
-import DifferentialGeometry.External.CanonicalTopology.LinearAlgebra.Orientation
+import DifferentialGeometry.Bundle.Orientation.Map
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
 import DifferentialGeometry.Topology.Manifold.Paths
 import DifferentialGeometry.Bundle.Orientation.Section
@@ -199,6 +199,15 @@ end ManifoldOrientation
 
 end RestrictOpen
 
+private theorem orientation_map_trans
+    {A F G : Type*} [AddCommGroup A] [Module ℝ A]
+    [AddCommGroup F] [Module ℝ F] [AddCommGroup G] [Module ℝ G]
+    {n : ℕ} (e : A ≃ₗ[ℝ] F) (f : F ≃ₗ[ℝ] G) (o : Orientation ℝ A (Fin n)) :
+    Orientation.map (Fin n) (e.trans f) o =
+      Orientation.map (Fin n) f (Orientation.map (Fin n) e o) := by
+  induction o using Module.Ray.ind with
+  | h v hv => rfl
+
 end DifferentialGeometry
 
 namespace Diffeomorph
@@ -362,10 +371,10 @@ theorem exists_manifoldOrientation_of_compatibleOrientation
     obtain ⟨hyU, hyS, hyneg⟩ := hU'sub hy
     have hyT : y ∈ t.baseSet := hU hyU
     have hmapy : Orientation.map (Fin n) (S.linearEquivAt ℝ y hyS) (o y) = -q := by
-      rw [htrans y hyT hyS, DifferentialGeometry.orientation_map_trans,
+      rw [htrans y hyT hyS, ← DifferentialGeometry.VectorBundle.map_orientation_trans_between,
         hqL y hyU, (Orientation.map_eq_neg_iff_det_neg q (C y).toLinearEquiv hcard).2 hyneg]
     have hmapx : Orientation.map (Fin n) (S.linearEquivAt ℝ x hxS) (o x) = -q := by
-      rw [htrans x hxT hxS, DifferentialGeometry.orientation_map_trans,
+      rw [htrans x hxT hxS, ← DifferentialGeometry.VectorBundle.map_orientation_trans_between,
         hqL x (mem_of_mem_nhds hUx),
         (Orientation.map_eq_neg_iff_det_neg q (C x).toLinearEquiv hcard).2 hneg]
     simp only [tangentChartEquiv]
@@ -380,10 +389,10 @@ theorem exists_manifoldOrientation_of_compatibleOrientation
     obtain ⟨hyU, hyS, hypos⟩ := hU'sub hy
     have hyT : y ∈ t.baseSet := hU hyU
     have hmapy : Orientation.map (Fin n) (S.linearEquivAt ℝ y hyS) (o y) = q := by
-      rw [htrans y hyT hyS, DifferentialGeometry.orientation_map_trans,
+      rw [htrans y hyT hyS, ← DifferentialGeometry.VectorBundle.map_orientation_trans_between,
         hqL y hyU, (Orientation.map_eq_iff_det_pos q (C y).toLinearEquiv hcard).2 hypos]
     have hmapx : Orientation.map (Fin n) (S.linearEquivAt ℝ x hxS) (o x) = q := by
-      rw [htrans x hxT hxS, DifferentialGeometry.orientation_map_trans,
+      rw [htrans x hxT hxS, ← DifferentialGeometry.VectorBundle.map_orientation_trans_between,
         hqL x (mem_of_mem_nhds hUx),
         (Orientation.map_eq_iff_det_pos q (C x).toLinearEquiv hcard).2 hpos]
     simp only [tangentChartEquiv]

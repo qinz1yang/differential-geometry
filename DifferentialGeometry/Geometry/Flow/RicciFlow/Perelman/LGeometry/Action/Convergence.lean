@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.KineticCo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.ScalarConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Chart.MetricEnergy.KineticEnergy
+import DifferentialGeometry.Geometry.Operator.Family.Gram.KineticEnergy
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Defs
 import Mathlib.MeasureTheory.Integral.DominatedConvergence

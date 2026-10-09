@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Variation.EndpointAccelerationGerm
+import DifferentialGeometry.Geometry.Comparison.Variation.EndpointAccelerationGerm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.MovingEndpointSecondVariation
 
 open Filter Set

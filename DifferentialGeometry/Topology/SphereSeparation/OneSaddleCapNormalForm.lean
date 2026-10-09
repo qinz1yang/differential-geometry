@@ -1,8 +1,8 @@
 import DifferentialGeometry.Topology.SphereSeparation.OneSaddleIncidence
-import DifferentialGeometry.Topology.ThreeManifold.Schoenflies.Height.HeightCapChart
+import DifferentialGeometry.Topology.SphereSeparation.HeightCapChart
 import DifferentialGeometry.Topology.Embedding.GraphChartNeighborhood
 import DifferentialGeometry.Topology.Embedding.LinearEquiv
-import DifferentialGeometry.Topology.PlanarJordan.Saddle.CapSides
+import DifferentialGeometry.Topology.PlanarJordan.SaddleCapSides
 import DifferentialGeometry.Topology.PlanarJordan.InnermostDisk
 
 open Set Metric Manifold

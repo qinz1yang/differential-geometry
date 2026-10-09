@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34MarkedCellPageImages
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Crossing.MarkedCells.Reflection
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34MarkedCellReflection
 
 open Set Topology
 
@@ -13,26 +13,26 @@ private theorem exists_cell_sign_for_opposite_pairs
     (hodd : (G '' section34MarkedRibbon 1 = P 1 ∧
         G '' section34MarkedRibbon 3 = P 3) ∨
       (G '' section34MarkedRibbon 1 = P 3 ∧ G '' section34MarkedRibbon 3 = P 1)) :
-    ∃ a b : Bool, ∀ i, G '' section34MarkedRibbon (crossingSpokeReflection a b i) = P i := by
+    ∃ a b : Bool, ∀ i, G '' section34MarkedRibbon (section34SpokeSignPerm a b i) = P i := by
   rcases heven with he | he <;> rcases hodd with ho | ho
   · refine ⟨false, false, ?_⟩
     intro i
-    fin_cases i <;> simp only [crossingSpokeReflection, Bool.false_eq_true,
+    fin_cases i <;> simp only [section34SpokeSignPerm, Bool.false_eq_true,
       ↓reduceIte, Equiv.trans_apply, Equiv.refl_apply] <;>
       first | exact he.1 | exact he.2 | exact ho.1 | exact ho.2
   · refine ⟨false, true, ?_⟩
     intro i
-    fin_cases i <;> simp only [crossingSpokeReflection, Bool.false_eq_true,
+    fin_cases i <;> simp only [section34SpokeSignPerm, Bool.false_eq_true,
       ↓reduceIte, Equiv.trans_apply, Equiv.refl_apply, Equiv.swap_apply_def] <;>
       norm_num [Fin.ext_iff] <;> first | exact he.1 | exact he.2 | exact ho.1 | exact ho.2
   · refine ⟨true, false, ?_⟩
     intro i
-    fin_cases i <;> simp only [crossingSpokeReflection, Bool.false_eq_true,
+    fin_cases i <;> simp only [section34SpokeSignPerm, Bool.false_eq_true,
       ↓reduceIte, Equiv.trans_apply, Equiv.refl_apply, Equiv.swap_apply_def] <;>
       norm_num [Fin.ext_iff] <;> first | exact he.1 | exact he.2 | exact ho.1 | exact ho.2
   · refine ⟨true, true, ?_⟩
     intro i
-    fin_cases i <;> simp only [crossingSpokeReflection, ↓reduceIte,
+    fin_cases i <;> simp only [section34SpokeSignPerm, ↓reduceIte,
       Equiv.trans_apply, Equiv.swap_apply_def] <;>
       norm_num [Fin.ext_iff] <;> first | exact he.1 | exact he.2 | exact ho.1 | exact ho.2
 
@@ -80,16 +80,16 @@ theorem exists_marked_cell_side_alignment
   let P : Fin 4 → Set E := ![(C ∩ S₀) ∩ Y, (C ∩ S₁) ∩ X,
     (C ∩ S₀) \ interior Y, (C ∩ S₁) \ interior X]
   obtain ⟨a, b, hab⟩ := exists_cell_sign_for_opposite_pairs (P := P) heven hodd
-  let H := G ∘ crossingCylinderReflection a b
+  let H := G ∘ section34CellSign a b
   have himage (i : Fin 4) : H '' section34MarkedRibbon i = P i := by
-    rw [show H = G ∘ crossingCylinderReflection a b from rfl, image_comp,
-      crossingCylinderReflection_image_ribbon, hab]
-  refine ⟨H, (isPLHomeomorphOn_crossingCylinderReflection a b).trans hG, ?_, ?_,
+    rw [show H = G ∘ section34CellSign a b from rfl, image_comp,
+      section34_cell_sign_ribbon_image, hab]
+  refine ⟨H, (isPLHomeomorphOn_section34_cell_sign a b).trans hG, ?_, ?_,
     himage 0, himage 2, himage 1, himage 3⟩
   · intro t
-    exact congrArg G (crossingCylinderReflection_image_axis a b t)
+    exact congrArg G (section34_cell_sign_axis a b t)
   · intro T
-    rw [show H = G ∘ crossingCylinderReflection a b from rfl, image_comp,
-      crossingCylinderReflection_image_cap]
+    rw [show H = G ∘ section34CellSign a b from rfl, image_comp,
+      section34_cell_sign_face_image]
 
 end DifferentialGeometry.Topology.PiecewiseLinear

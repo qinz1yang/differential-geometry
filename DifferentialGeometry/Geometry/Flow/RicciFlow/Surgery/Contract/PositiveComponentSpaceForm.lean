@@ -38,16 +38,16 @@ theorem MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveOrRo
     {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
     (h : ∀ C : ConnectedComponents E.discarded.Carrier,
       Nonempty (PositiveComponent
-        (M := (E.discarded.component C).Carrier) Set.univ) ∨
+        (M := (E.discarded.toClosedOrientedManifold.component C).Carrier) Set.univ) ∨
       ∃ (D' : RealTimeInterval)
         (S : SolutionOn (I := ThreeModel)
-          (M := (E.discarded.component C).Carrier) D')
-        (ε : ℝ) (x : (E.discarded.component C).Carrier) (t : ℝ),
+          (M := (E.discarded.toClosedOrientedManifold.component C).Carrier) D')
+        (ε : ℝ) (x : (E.discarded.toClosedOrientedManifold.component C).Carrier) (t : ℝ),
         Nonempty (RoundComponent S ε x t Set.univ)) : E.poincareStandardDiscarded := by
   apply MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveCurvatureOrSphereProduct
     E
   intro C
-  refine ⟨[E.discarded.component C], ?_,
+  refine ⟨[E.discarded.toClosedOrientedManifold.component C], ?_,
     ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩⟩
   intro F hF
   rw [List.mem_singleton] at hF
@@ -60,15 +60,15 @@ theorem MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveOrRo
     exact admitsConstantPositiveSectionalCurvature_of_roundComponent _ R
 
 open Set in
-theorem isStandardConnectedSum_of_ball_cap_cover
+theorem isPoincareStandard_of_ball_cap_cover
     (M : ConnectedClosedOrientedManifold.{u} 3)
     {K : Set M.Carrier} (B : PartialDiffeomorph I3 I3 ThreeSpace M.Carrier ∞)
     (hB : Metric.closedBall (0 : ThreeSpace) 1 ⊆ B.source)
     (cap : CapCore K)
     (hcover : B '' Metric.closedBall (0 : ThreeSpace) 1 ∪ K = univ) :
-    isStandardConnectedSum M.Carrier := by
+    isPoincareStandard M.Carrier := by
   obtain ⟨W⟩ := nonempty_positiveComponent_of_ball_cap_cover B hB cap hcover
-  exact isStandardConnectedSum_of_standard_factor M
+  exact isPoincareStandard_of_standard_factor M
     (isStandardFactor_of_admitsConstantPositiveSectionalCurvature (M := M)
       (admitsConstantPositiveSectionalCurvature_of_positiveComponent M W))
 

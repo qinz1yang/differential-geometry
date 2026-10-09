@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.GramConvergence
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Convergence
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.GramOperator
-import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Chart
+import DifferentialGeometry.Geometry.Measure.Chart.GramOperator
+import DifferentialGeometry.Geometry.Measure.Chart.Parametrization
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Basic
 
 noncomputable section

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankScaling
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankNaturality
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorRank
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Complete
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Solution
 

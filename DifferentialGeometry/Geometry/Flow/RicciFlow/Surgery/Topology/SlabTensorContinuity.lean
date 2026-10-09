@@ -9,12 +9,10 @@ open DifferentialGeometry.Geometry.Curvature
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 universe u
 variable (P : OrientedThreeStage.{u})
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.normSq_continuous_in_frame {Q : Type*} [TopologicalSpace Q] {r : ℕ}
+theorem normSq_continuous_in_frame {Q : Type*} [TopologicalSpace Q] {r : ℕ}
     (p : P.Carrier) (b : Module.Basis (Fin 3) ℝ ThreeSpace)
     (x : Q → P.Carrier) (g : Q → P.Metric)
     (A : (q : Q) → Tensor0SSpace r ThreeModel (x q))
@@ -57,7 +55,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.normSq_conti
   rw [heq]
   exact hF
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.tensorFamily_frame_continuousOn {r : ℕ} {J : Set ℝ}
+theorem tensorFamily_frame_continuousOn {r : ℕ} {J : Set ℝ}
     {A : (t : ℝ) → (x : P.Carrier) → Tensor0SSpace r ThreeModel x}
     (hA : tensor0SFamilyContinuousOnSet r J A) (p : P.Carrier)
     (b : Module.Basis (Fin 3) ℝ ThreeSpace) (n : Fin r → Fin 3) :
@@ -74,7 +72,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.tensorFamily
   exact ((e.isLocalFrameOn_localFrame_baseSet ThreeModel ∞ b).contMDiffOn (n k)).continuousOn
     |>.comp_continuous (continuous_snd.comp continuous_subtype_val) (fun q : Q => q.2.2)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.tensorFamily_normSq_continuousOn {r : ℕ} {J : Set ℝ} {g : ℝ → P.Metric}
+theorem tensorFamily_normSq_continuousOn {r : ℕ} {J : Set ℝ} {g : ℝ → P.Metric}
     {A : (t : ℝ) → (x : P.Carrier) → Tensor0SSpace r ThreeModel x}
     (hg : tensor0SFamilyContinuousOnSet 2 J (fun t x => metricTensorField (g t) x))
     (hA : tensor0SFamilyContinuousOnSet r J A) :
@@ -106,14 +104,14 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.tensorFamily
     exact ⟨hz.2.1, hz.1.2⟩
   exact (hlocal q ⟨hq.1, hx⟩).mono_of_mem_nhdsWithin hn
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.riemannNorm_continuousOn {u v : ℝ} (G : P.ClosedSlab u v) :
+theorem ClosedSlab.riemannNorm_continuousOn {u v : ℝ} (G : P.ClosedSlab u v) :
     ContinuousOn (fun q : ℝ × P.Carrier =>
       Real.sqrt (normSq0S (G.flow.base.metric q.1) q.2 4 (G.flow.base.rm04 q.1 q.2)))
       (Icc u v ×ˢ univ) :=
   (P.tensorFamily_normSq_continuousOn G.equation.smoothMetric.metricTensor_cont
     G.equation.rm04Cont).sqrt
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.curvature_bound {u v : ℝ} (G : P.ClosedSlab u v) :
+theorem ClosedSlab.curvature_bound {u v : ℝ} (G : P.ClosedSlab u v) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ t ∈ Icc u v, ∀ x : P.Carrier,
       Real.sqrt (normSq0S (G.flow.base.metric t) x 4 (G.flow.base.rm04 t x)) ≤ K := by
   have hcompact : IsCompact (Icc u v ×ˢ (univ : Set P.Carrier)) :=

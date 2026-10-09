@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildSimply
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OrientationDegree
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Ancestry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Ancestry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
 import Mathlib.Topology.Instances.ENNReal.Lemmas
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
@@ -141,7 +141,7 @@ theorem canonicalWidth_eq_of_isometry
 
 def componentDiffeomorph (P : OrientedThreeStage.{u}) [ConnectedSpace P.Carrier]
     (c : ConnectedComponents P.Carrier) :
-    (P.component c).toClosedOrientedManifold.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ P.Carrier where
+    (P.component c).Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ P.Carrier where
   toFun := Subtype.val
   invFun x := ⟨x, Subsingleton.elim _ _⟩
   left_inv x := Subtype.ext rfl
@@ -155,7 +155,7 @@ def componentDiffeomorph (P : OrientedThreeStage.{u}) [ConnectedSpace P.Carrier]
 
 theorem componentDiffeomorph_metric (P : OrientedThreeStage.{u}) [ConnectedSpace P.Carrier]
     (g : P.Metric) (c : ConnectedComponents P.Carrier)
-    (x : (P.component c).toClosedOrientedManifold.Carrier) (v w : TangentSpace ThreeModel x) :
+    (x : (P.component c).Carrier) (v w : TangentSpace ThreeModel x) :
     g.inner (componentDiffeomorph P c x)
       (mfderiv ThreeModel ThreeModel (componentDiffeomorph P c) x v)
       (mfderiv ThreeModel ThreeModel (componentDiffeomorph P c) x w) =
@@ -168,7 +168,7 @@ theorem componentDiffeomorph_metric (P : OrientedThreeStage.{u}) [ConnectedSpace
 
 theorem componentDiffeomorph_positive (P : OrientedThreeStage.{u}) [ConnectedSpace P.Carrier]
     (c : ConnectedComponents P.Carrier) :
-    PreservesTangentOrientation (P.component c).toClosedOrientedManifold.orientation P.orientation
+    PreservesTangentOrientation (P.component c).orientation P.orientation
       (componentDiffeomorph P c) := by
   refine ⟨(componentDiffeomorph P c).contMDiff, ?_⟩
   intro x
@@ -187,13 +187,12 @@ theorem componentDiffeomorph_positive (P : OrientedThreeStage.{u}) [ConnectedSpa
     change mfderiv ThreeModel ThreeModel (componentDiffeomorph P c) x v = v
     rw [hd]
     rfl
-  have hderiv :
-      LinearEquiv.ofBijective
-          (mfderiv ThreeModel ThreeModel (componentDiffeomorph P c) x).toLinearMap hbij =
-        DifferentialGeometry.Topology.ClosedOrientedManifold.componentInclusionTangentEquiv P c x := by
-    rfl
-  rw [hderiv]
-  exact DifferentialGeometry.Topology.ClosedOrientedManifold.componentInclusion_preservesOrientation P c x
+  have hm := congrArg (fun e : ThreeSpace ≃ₗ[ℝ] ThreeSpace =>
+    Orientation.map (Fin 3) e (P.orientation.orientation x.1)) he
+  have hr := congrArg (fun e : Orientation ℝ ThreeSpace (Fin 3) ≃
+      Orientation ℝ ThreeSpace (Fin 3) => e (P.orientation.orientation x.1))
+    (Orientation.map_refl (R := ℝ) (M := ThreeSpace) (Fin 3))
+  exact hm.trans hr
 
 private theorem le_liminf_of_eventually_le_mul {a : ℝ≥0∞} {t : ℝ}
     {v : ℝ → ℝ≥0∞} {ell : ℝ → ℝ}
@@ -225,14 +224,14 @@ theorem rfs_comparison_width_transition
     (oM : TangentOrientationSection M) (oN : TangentOrientationSection N)
     (hcomposition : ∀ (g : SmoothRiemannianMetric ThreeModel M)
       (h : SmoothRiemannianMetric ThreeModel N) (f : C(M, N)) (L : ℝ≥0),
-      DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose f)
+      FreeHomotopyClass.map (contractibleLoopPostcompose f)
         (positiveFreeContractibleClass oM) = positiveFreeContractibleClass oN →
       (∀ x y, riemannianEDistOf h (f x) (f y) ≤
         (L : ℝ≥0∞) * riemannianEDistOf g x y) →
       canonicalWidth h oN ≤ (L : ℝ) ^ 2 * canonicalWidth g oM)
     (g : ℝ → SmoothRiemannianMetric ThreeModel M)
     (h : SmoothRiemannianMetric ThreeModel N) (f : C(M, N))
-    (hclass : DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose f)
+    (hclass : FreeHomotopyClass.map (contractibleLoopPostcompose f)
       (positiveFreeContractibleClass oM) = positiveFreeContractibleClass oN)
     {t : ℝ} (ell : ℝ → ℝ) (hell : Tendsto ell (𝓝[<] t) (𝓝 1))
     (hlip : ∀ᶠ s in 𝓝[<] t, 0 ≤ ell s ∧
@@ -262,25 +261,25 @@ end FixedCarriers
 
 def componentWidth (P : OrientedThreeStage.{u}) (g : P.Metric)
     (c : ConnectedComponents P.Carrier)
-    (hSC : SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier) : ℝ :=
+    (hSC : SimplyConnectedSpace (P.component c).Carrier) : ℝ :=
   let := P.component_connected c
   let := hSC
-  canonicalWidth (P.componentMetric g c) (P.component c).toClosedOrientedManifold.orientation
+  canonicalWidth (P.componentMetric g c) (P.component c).orientation
 
 theorem componentWidth_nonneg (P : OrientedThreeStage.{u}) (g : P.Metric)
     (c : ConnectedComponents P.Carrier)
-    (hSC : SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier) :
+    (hSC : SimplyConnectedSpace (P.component c).Carrier) :
     0 ≤ componentWidth P g c hSC := by
   let := P.component_connected c
   let := hSC
-  exact canonicalWidth_nonneg (P.componentMetric g c) (P.component c).toClosedOrientedManifold.orientation
+  exact canonicalWidth_nonneg (P.componentMetric g c) (P.component c).orientation
 
 theorem continuousOn_componentWidth_metricFamily (P : OrientedThreeStage.{u})
     (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
     (g : ℝ → P.Metric)
     (hg : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn D g)
     (c : ConnectedComponents P.Carrier)
-    (hSC : SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier) :
+    (hSC : SimplyConnectedSpace (P.component c).Carrier) :
     ContinuousOn (fun t => componentWidth P (g t) c hSC) D.carrier := by
   let := P.component_connected c
   let := hSC
@@ -308,12 +307,12 @@ theorem continuousOn_componentWidth_metricFamily (P : OrientedThreeStage.{u})
   rw [Real.dist_eq]
   exact (classWidth_relative_metric_bound (P.componentMetric (g t₀) c)
     (P.componentMetric (g t) c) hδ.le hδone hrestrict
-    (positiveFreeContractibleClass (P.component c).toClosedOrientedManifold.orientation)).trans_lt hδA
+    (positiveFreeContractibleClass (P.component c).orientation)).trans_lt hδA
 
 theorem rfs_actual_width_jump {H : ObservedHistory.{u}} {i : Fin H.eventCount}
     {parameters : CutoffParameters} (G : GeometricCutoffRecord H i parameters)
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier)
     (c : ConnectedComponents (H.stage i.succ).Carrier) :
     letI := hSC (G.transition.childParent c)
     ENNReal.ofReal (componentWidth (H.stage i.succ) (H.event i).outputMetric c
@@ -333,7 +332,7 @@ theorem rfs_actual_width_jump {H : ObservedHistory.{u}} {i : Fin H.eventCount}
     simpa only [one_smul] using hdegree c
   have hcomp : ∀ (g : (G.Parent c).Metric) (h : (G.Child c).Metric)
       (f : C((G.Parent c).Carrier, (G.Child c).Carrier)) (L : ℝ≥0),
-      DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose f)
+      FreeHomotopyClass.map (contractibleLoopPostcompose f)
           (positiveFreeContractibleClass (G.Parent c).orientation) =
         positiveFreeContractibleClass (G.Child c).orientation →
       (∀ x y, riemannianEDistOf h (f x) (f y) ≤
@@ -385,7 +384,7 @@ def historyStageMetric (H : ObservedHistory.{u}) (j : Fin (H.eventCount + 1)) :
 
 def historyWidth (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (t : Icc (0 : ℝ) H.horizon) : ℝ :=
   let j := historyStageAt H t
@@ -395,7 +394,7 @@ def historyWidth (H : ObservedHistory.{u})
 
 theorem historyWidth_nonneg (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (t : Icc (0 : ℝ) H.horizon) : 0 ≤ historyWidth H h0 terminal t := by
   exact componentWidth_nonneg _ _ _ _
@@ -501,7 +500,7 @@ theorem historyStageMetric_initial (H : ObservedHistory.{u})
 
 theorem historyWidth_stageTime (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (j : Fin (H.eventCount + 1)) :
     historyWidth H h0 terminal (historyStageTime H j) =
@@ -520,7 +519,7 @@ theorem historyWidth_stageTime (H : ObservedHistory.{u})
 
 theorem historyWidth_incoming (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (i : Fin H.eventCount) (t : Icc (0 : ℝ) H.horizon)
     (ht : t.1 ∈ Ico (H.time i.castSucc) (H.time i.succ)) :
@@ -617,7 +616,7 @@ theorem historyStageAt_eventually_eq_right (H : ObservedHistory.{u})
 
 theorem continuousOn_historyStageComponentWidth (H : ObservedHistory.{u})
     (j : Fin (H.eventCount + 1)) (c : ConnectedComponents (H.stage j).Carrier)
-    (hSC : SimplyConnectedSpace ((H.stage j).component c).toClosedOrientedManifold.Carrier) :
+    (hSC : SimplyConnectedSpace ((H.stage j).component c).Carrier) :
     ContinuousOn (fun t => componentWidth (H.stage j) (historyStageMetric H j t) c hSC)
       (historyStageDomain H j) := by
   cases j using Fin.lastCases with
@@ -636,7 +635,7 @@ theorem continuousOn_historyStageComponentWidth (H : ObservedHistory.{u})
 
 private theorem historyWidth_tendsto_of_stage_eventually_constant (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (t : Icc (0 : ℝ) H.horizon) (F : Filter (Icc (0 : ℝ) H.horizon))
     (hF : F ≤ 𝓝 t)
@@ -672,7 +671,7 @@ theorem historyWidth_initial_eq_of_isometry
     (g₀ : SmoothRiemannianMetric ThreeModel M) (o : TangentOrientationSection M)
     (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (e : M ≃ₜ (H.stage 0).Carrier)
     (he : ∀ x y, riemannianEDistOf (H.initialMetric 0) (e x) (e y) =
       riemannianEDistOf g₀ x y)
@@ -692,21 +691,21 @@ theorem historyWidth_initial_eq_of_isometry
     riemannianEDist_eq_of_diffeomorph_metric_pullback _ _ d
       (componentDiffeomorph_metric (H.stage 0) (H.initialMetric 0) c)
   have hpositive : integralHomologyMap 3
-      (d : C(((H.stage 0).component c).toClosedOrientedManifold.Carrier, (H.stage 0).Carrier))
-      (fundamentalClass ((H.stage 0).component c).toClosedOrientedManifold.orientation) =
+      (d : C(((H.stage 0).component c).Carrier, (H.stage 0).Carrier))
+      (fundamentalClass ((H.stage 0).component c).orientation) =
         fundamentalClass (H.stage 0).orientation :=
-    fundamentalClass_natural_diffeomorph ((H.stage 0).component c).toClosedOrientedManifold.orientation
+    fundamentalClass_natural_diffeomorph ((H.stage 0).component c).orientation
       (H.stage 0).orientation d (componentDiffeomorph_positive (H.stage 0) c)
   have hw := canonicalWidth_eq_of_isometry _ _ _ _ d.toHomeomorph hd hpositive
   rw [historyWidth_stageTime]
   change canonicalWidth ((H.stage 0).componentMetric (H.initialMetric 0) c)
-    ((H.stage 0).component c).toClosedOrientedManifold.orientation = canonicalWidth g₀ o
+    ((H.stage 0).component c).orientation = canonicalWidth g₀ o
   exact hw.symm.trans (canonicalWidth_eq_of_isometry g₀ (H.initialMetric 0)
     o (H.stage 0).orientation e he horient)
 
 theorem historyWidth_continuousAt_of_not_event (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (t : Icc (0 : ℝ) H.horizon)
     (ht : ∀ i : Fin H.eventCount, t.1 ≠ H.time i.succ) :
@@ -716,7 +715,7 @@ theorem historyWidth_continuousAt_of_not_event (H : ObservedHistory.{u})
 
 theorem historyWidth_rightContinuousAt_event (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (i : Fin H.eventCount) (_hi : H.time i.succ < H.horizon) :
     ContinuousWithinAt (historyWidth H h0 terminal)
@@ -728,7 +727,7 @@ theorem historyWidth_event_jump (H : ObservedHistory.{u})
     (parameters : CutoffParameters)
     (cutoff : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (i : Fin H.eventCount) :
     ENNReal.ofReal (historyWidth H h0 terminal (historyStageTime H i.succ)) ≤
@@ -779,7 +778,7 @@ theorem rfs_initial_width_data_of_homeomorph
           canonicalWidth (scaleMetric lam hlam g₀) o ≤ lam * A) ∧
       ∀ (H : ObservedHistory.{u})
         (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-          SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+          SimplyConnectedSpace ((H.stage 0).component c).Carrier)
         (e : M ≃ₜ (H.stage 0).Carrier),
         (∀ x y, riemannianEDistOf (H.initialMetric 0) (e x) (e y) =
           riemannianEDistOf g₀ x y) →
@@ -834,7 +833,7 @@ theorem initialIdentification_components_simplyConnected
     [SimplyConnectedSpace P.Carrier] (g : P.Metric)
     (H : ObservedHistory.{u}) (d : InitialIdentification P g H)
     (c : ConnectedComponents (H.stage 0).Carrier) :
-    SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier := by
+    SimplyConnectedSpace ((H.stage 0).component c).Carrier := by
   let : ConnectedSpace (H.stage 0).Carrier :=
     d.map.toHomeomorph.connectedSpace_iff.mp inferInstance
   let : SimplyConnectedSpace (H.stage 0).Carrier :=

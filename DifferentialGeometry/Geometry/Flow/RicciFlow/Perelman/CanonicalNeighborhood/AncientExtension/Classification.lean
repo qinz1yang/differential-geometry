@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ParabolicNoncollapseLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.ParabolicOfSpatialAncient
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalLimit.RicciCoefficient
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Trace.TerminalScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SlabRicciCoefficientLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TerminalScalar
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Nonnegative
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciUpper
 

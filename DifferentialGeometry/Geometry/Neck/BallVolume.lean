@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckSpatialBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBall
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Cylinder.BallCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderBallCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.VolumeTransport
 import DifferentialGeometry.Geometry.Measure.RoundCylinderBallVolume
 import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphDistance

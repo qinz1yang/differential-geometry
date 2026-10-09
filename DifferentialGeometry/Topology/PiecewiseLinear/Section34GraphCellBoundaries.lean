@@ -1,4 +1,9 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.SplittingDisks.Basic
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCutIncidence
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TargetRecognitionOfTiling
 
 open Set Function Topology
@@ -37,46 +42,46 @@ theorem exists_section34GraphSplitCell_boundary_endpoints
     (hK : IsCombinatorialManifold 3 𝒦'.complex) (e : Section34EdgeIndex 𝒦 𝒦') :
     ∃ w w' : Section34VertexIndex 𝒦 𝒦', w ≠ w' ∧
       (e.1 : Set Ea) = (w.1 : Set Ea) ∪ (w'.1 : Set Ea) ∧
-      graphSplittingDisk 𝒦 𝒦' e =
-        graphVertexCell 𝒦 𝒦' w ∩ graphVertexCell 𝒦 𝒦' w' ∧
-      graphSplittingDisk 𝒦 𝒦' e ⊆
-        graphVertexCellBoundary 𝒦 𝒦' w ∩ graphVertexCellBoundary 𝒦 𝒦' w' := by
-  obtain ⟨w, w', hne, hunion, hinter⟩ := exists_graphSplittingDisk_endpoints hsub hmap e
+      section34GraphSplitCell 𝒦 𝒦' e =
+        section34GraphVertexCell 𝒦 𝒦' w ∩ section34GraphVertexCell 𝒦 𝒦' w' ∧
+      section34GraphSplitCell 𝒦 𝒦' e ⊆
+        section34GraphVertexBoundary 𝒦 𝒦' w ∩ section34GraphVertexBoundary 𝒦 𝒦' w' := by
+  obtain ⟨w, w', hne, hunion, hinter⟩ := exists_section34GraphSplitCell_endpoints hsub hmap e
   refine ⟨w, w', hne, hunion, hinter, ?_⟩
   rw [hinter]
-  apply (isPLCellOn_graphVertexCell hsub hmap
+  apply (isPLCellOn_section34GraphVertexCell hsub hmap
     hK.isCombinatorialManifoldWithBoundary w).inter_subset_boundaries_of_dim_lt
-      (isPLCellOn_graphVertexCell hsub hmap hK.isCombinatorialManifoldWithBoundary w')
-      (hinter ▸ isPLCellOn_graphSplittingDisk hK e) (by omega)
+      (isPLCellOn_section34GraphVertexCell hsub hmap hK.isCombinatorialManifoldWithBoundary w')
+      (hinter ▸ isPLCellOn_section34GraphSplitCell hK e) (by omega)
 
 theorem section34GraphSplitCell_subset_vertex_boundary
     [FiniteDimensional ℝ Ea] [T2Space M]
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (hK : IsCombinatorialManifold 3 𝒦'.complex)
     (w : Section34VertexIndex 𝒦 𝒦') (e : Section34EdgeIndex 𝒦 𝒦') (hwe : w.1 ⊆ e.1) :
-    graphSplittingDisk 𝒦 𝒦' e ⊆ graphVertexCellBoundary 𝒦 𝒦' w := by
+    section34GraphSplitCell 𝒦 𝒦' e ⊆ section34GraphVertexBoundary 𝒦 𝒦' w := by
   classical
   obtain ⟨v, z, -, hunion, -, hbd⟩ :=
     exists_section34GraphSplitCell_boundary_endpoints hsub hmap hK e
   have hc : w.1.centroid ℝ id ∈ (v.1 : Set Ea) ∪ (z.1 : Set Ea) := by
     rw [← hunion]
     apply hwe
-    rw [subdivisionGraphVertex_eq_singleton_centroid w]
+    rw [section34VertexIndex_eq_singleton_centroid w]
     simp only [Finset.centroid_singleton, id_eq, Finset.mem_singleton]
   have hcases : w = v ∨ w = z := by
     rcases hc with hc | hc
     · left
       apply Subtype.ext
-      rw [subdivisionGraphVertex_eq_singleton_centroid w,
-        subdivisionGraphVertex_eq_singleton_centroid v]
-      rw [subdivisionGraphVertex_eq_singleton_centroid v, Finset.coe_singleton,
+      rw [section34VertexIndex_eq_singleton_centroid w,
+        section34VertexIndex_eq_singleton_centroid v]
+      rw [section34VertexIndex_eq_singleton_centroid v, Finset.coe_singleton,
         mem_singleton_iff] at hc
       exact congrArg (fun p => ({p} : Finset Ea)) hc
     · right
       apply Subtype.ext
-      rw [subdivisionGraphVertex_eq_singleton_centroid w,
-        subdivisionGraphVertex_eq_singleton_centroid z]
-      rw [subdivisionGraphVertex_eq_singleton_centroid z, Finset.coe_singleton,
+      rw [section34VertexIndex_eq_singleton_centroid w,
+        section34VertexIndex_eq_singleton_centroid z]
+      rw [section34VertexIndex_eq_singleton_centroid z, Finset.coe_singleton,
         mem_singleton_iff] at hc
       exact congrArg (fun p => ({p} : Finset Ea)) hc
   rcases hcases with rfl | rfl
@@ -86,11 +91,11 @@ theorem section34GraphSplitCell_subset_vertex_boundary
 theorem exists_section34GraphSplitCell_of_vertex_inter_nonempty
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (w z : Section34VertexIndex 𝒦 𝒦') (hwz : w ≠ z)
-    (hne : (graphVertexCell 𝒦 𝒦' w ∩ graphVertexCell 𝒦 𝒦' z).Nonempty) :
+    (hne : (section34GraphVertexCell 𝒦 𝒦' w ∩ section34GraphVertexCell 𝒦 𝒦' z).Nonempty) :
     ∃ e : Section34EdgeIndex 𝒦 𝒦',
       (e.1 : Set Ea) = (w.1 : Set Ea) ∪ (z.1 : Set Ea) ∧
-      graphSplittingDisk 𝒦 𝒦' e =
-        graphVertexCell 𝒦 𝒦' w ∩ graphVertexCell 𝒦 𝒦' z := by
+      section34GraphSplitCell 𝒦 𝒦' e =
+        section34GraphVertexCell 𝒦 𝒦' w ∩ section34GraphVertexCell 𝒦 𝒦' z := by
   classical
   let L := restrict 𝒦'.complex (𝒦'.map ⁻¹' graphSkeletonSpace 𝒦)
   let v := w.1.centroid ℝ id
@@ -99,11 +104,11 @@ theorem exists_section34GraphSplitCell_of_vertex_inter_nonempty
     intro h
     apply hwz
     apply Subtype.ext
-    rw [subdivisionGraphVertex_eq_singleton_centroid w,
-      subdivisionGraphVertex_eq_singleton_centroid z]
+    rw [section34VertexIndex_eq_singleton_centroid w,
+      section34VertexIndex_eq_singleton_centroid z]
     exact congrArg (fun p => ({p} : Finset Ea)) h
-  have hv : {v} ∈ L.faces := singleton_centroid_mem_restrict_graphSkeletonSpace w
-  have hu : {u} ∈ L.faces := singleton_centroid_mem_restrict_graphSkeletonSpace z
+  have hv : {v} ∈ L.faces := singleton_centroid_mem_section34GraphCore w
+  have hu : {u} ∈ L.faces := singleton_centroid_mem_section34GraphCore z
   have hcore := isSubdivision_restrict_preimage_graphSkeletonSpace hsub hmap
   have hcard : ∀ s ∈ L.faces, s.card ≤ 2 := fun s hs => hcore.card_le
     (fun t ht => ((mem_restrict_preimage_graphSkeletonSpace_iff 𝒦).mp ht).2) hs
@@ -116,8 +121,8 @@ theorem exists_section34GraphSplitCell_of_vertex_inter_nonempty
       rintro _ ⟨x, hx, rfl⟩
       exact heL.2 hx⟩
   refine ⟨e, ?_, ?_⟩
-  · rw [subdivisionGraphVertex_eq_singleton_centroid w,
-      subdivisionGraphVertex_eq_singleton_centroid z]
+  · rw [section34VertexIndex_eq_singleton_centroid w,
+      section34VertexIndex_eq_singleton_centroid z]
     simp only [e, v, u, Finset.coe_pair, Finset.coe_singleton, singleton_union]
   · exact (𝒦'.image_graphDualCell_inter L (restrict_faces_subset _ _) hcard hvu heL).symm
 
@@ -126,20 +131,20 @@ theorem pairwise_disjoint_interior_section34GraphVertexCell
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (hK : IsCombinatorialManifold 3 𝒦'.complex) :
     Pairwise (Disjoint on fun w : Section34VertexIndex 𝒦 𝒦' =>
-      interior (graphVertexCell 𝒦 𝒦' w)) := by
+      interior (section34GraphVertexCell 𝒦 𝒦' w)) := by
   intro w z hwz
-  change Disjoint (interior (graphVertexCell 𝒦 𝒦' w))
-    (interior (graphVertexCell 𝒦 𝒦' z))
+  change Disjoint (interior (section34GraphVertexCell 𝒦 𝒦' w))
+    (interior (section34GraphVertexCell 𝒦 𝒦' z))
   rw [Set.disjoint_left]
   intro x hxw hxz
   obtain ⟨e, -, heq⟩ := exists_section34GraphSplitCell_of_vertex_inter_nonempty hsub hmap w z
     hwz ⟨x, interior_subset hxw, interior_subset hxz⟩
-  have hcell := isPLCellOn_graphVertexCell hsub hmap
+  have hcell := isPLCellOn_section34GraphVertexCell hsub hmap
     hK.isCombinatorialManifoldWithBoundary
   have hbd := (hcell w).inter_subset_boundaries_of_dim_lt (hcell z)
-    (heq ▸ isPLCellOn_graphSplittingDisk hK e) (by omega)
+    (heq ▸ isPLCellOn_section34GraphSplitCell hK e) (by omega)
       ⟨interior_subset hxw, interior_subset hxz⟩
-  have hx : x ∈ graphVertexCell 𝒦 𝒦' w \ graphVertexCellBoundary 𝒦 𝒦' w :=
+  have hx : x ∈ section34GraphVertexCell 𝒦 𝒦' w \ section34GraphVertexBoundary 𝒦 𝒦' w :=
     (hcell w).sdiff_boundary_eq_interior.symm ▸ hxw
   exact hx.2 hbd.1
 

@@ -96,15 +96,12 @@ private theorem exists_ambient_spherical_region {P : OrientedThreeStage.{u}}
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_smoothSphericalRegion_terminal_component
+theorem TerminalLimitMetric.exists_smoothSphericalRegion_terminal_component
     (L : G.TerminalLimitMetric) :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
@@ -220,12 +217,9 @@ theorem exists_smoothSphericalRegion_of_isOpen_isCompact_isConnected
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_smoothSphericalRegion_of_isCompact_connectedComponent
+theorem exists_smoothSphericalRegion_of_isCompact_connectedComponent
     (y : G.terminalRegularOpen) (hcompact : IsCompact (connectedComponent y)) :
     ∃ S : SmoothSphericalRegion P,
       S.region = Subtype.val '' connectedComponent y ∧ IsEmpty S.Boundary ∧

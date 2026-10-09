@@ -8,12 +8,10 @@ open scoped Manifold ContDiff Topology BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 universe u
 variable {P : OrientedThreeStage.{u}}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.inner_chartVector_sum (g : P.Metric) (p y : P.Carrier) (v w : ThreeSpace) :
+private theorem inner_chartVector_sum (g : P.Metric) (p y : P.Carrier) (v w : ThreeSpace) :
     g.inner y ((trivializationAt ThreeSpace (TangentSpace ThreeModel) p).symmL ℝ y v)
       ((trivializationAt ThreeSpace (TangentSpace ThreeModel) p).symmL ℝ y w) =
       ∑ i : Fin 3, ∑ j : Fin 3, v i * w j *
@@ -46,7 +44,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.inne
   rw [map_smul, smul_eq_mul]
   ring
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.inCoordinates_metric_eq_chartVector_sum
+private theorem inCoordinates_metric_eq_chartVector_sum
     (g : P.Metric) (p : P.Carrier) {y : P.Carrier}
     (hy : y ∈ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet)
     (v w : ThreeSpace) :
@@ -66,7 +64,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.inCo
   rw [← Trivialization.symmL_apply (R := ℝ) _ hy v, ← Trivialization.symmL_apply (R := ℝ) _ hy w]
   exact inner_chartVector_sum g p y v w
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.jointContMDiffOn {g : ℝ → P.Metric} {J : Set ℝ}
+theorem MetricSmoothUpTo.jointContMDiffOn {g : ℝ → P.Metric} {J : Set ℝ}
     (hg : P.MetricSmoothUpTo g J) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
       (ThreeModel.prod 𝓘(ℝ, ThreeSpace →L[ℝ] ThreeSpace →L[ℝ] ℝ)) ∞
@@ -109,7 +107,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmooth
     intro j _
     rw [heq q.1 ⟨htV, hq.1⟩ q.2 hxU i j]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.restrictOpen_jointContMDiffOn
+theorem MetricSmoothUpTo.restrictOpen_jointContMDiffOn
     {g : ℝ → P.Metric} {J : Set ℝ} (hg : P.MetricSmoothUpTo g J)
     (U : TopologicalSpace.Opens P.Carrier) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)

@@ -10,6 +10,7 @@ import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Topology.TietzeExtension
 
 set_option autoImplicit false
+set_option linter.unusedSectionVars false
 
 open Set Filter
 open DifferentialGeometry.Topology.Morse.CellAttachment (morseNorm morseNormalForm negPart posPart
@@ -4038,9 +4039,8 @@ section WhitneyGeneric
 variable {I : ModelWithCorners ℝ (Fin n → ℝ) H} [IsManifold I ∞ M] [T2Space M] [I.Boundaryless]
   {f : M → ℝ}
 
-omit [T2Space M] [I.Boundaryless] in
 theorem eventually_locallyInjective_of_immersion {m : ℕ} {P : Type*} [NormedAddCommGroup P]
-    [NormedSpace ℝ P] {W : Set (Fin m → ℝ)} (hW : IsOpen W)
+    [NormedSpace ℝ P] [FiniteDimensional ℝ P] {W : Set (Fin m → ℝ)} (hW : IsOpen W)
     {Hf : (Fin m → ℝ) → P → M}
     (hH : ContMDiffOn 𝓘(ℝ, (Fin m → ℝ) × P) I ∞ (fun q : (Fin m → ℝ) × P => Hf q.1 q.2)
       (W ×ˢ univ))
@@ -4171,9 +4171,8 @@ theorem eventually_locallyInjective_of_immersion {m : ℕ} {P : Type*} [NormedAd
       exact hmv
     exact (sub_eq_zero.mp this).symm
 
-omit [I.Boundaryless] in
 theorem eventually_isInjImmersionOn {m : ℕ} {P : Type*} [NormedAddCommGroup P]
-    [NormedSpace ℝ P] {W : Set (Fin m → ℝ)} (hW : IsOpen W)
+    [NormedSpace ℝ P] [FiniteDimensional ℝ P] {W : Set (Fin m → ℝ)} (hW : IsOpen W)
     {Hf : (Fin m → ℝ) → P → M}
     (hH : ContMDiffOn 𝓘(ℝ, (Fin m → ℝ) × P) I ∞ (fun q : (Fin m → ℝ) × P => Hf q.1 q.2)
       (W ×ˢ univ))
@@ -4228,7 +4227,6 @@ theorem eventually_isInjImmersionOn {m : ℕ} {P : Type*} [NormedAddCommGroup P]
   intro y hy y' hy' heq
   exact (hw (y, y') ⟨hy, hy'⟩).2 heq
 
-omit [IsManifold I ∞ M] [T2Space M] [I.Boundaryless] in
 theorem exists_whitney_perturbation_family (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {c : ℝ}
     {W : Set (Fin 2 → ℝ)} (hW : IsOpen W) {h : (Fin 2 → ℝ) → M}
     (hsm : ContMDiffOn 𝓘(ℝ, Fin 2 → ℝ) I ∞ h W) (hlev : ∀ y ∈ W, f (h y) = c)
@@ -4417,7 +4415,6 @@ theorem exists_whitney_perturbation_family (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ 
     · simp only [Hf, hyN, ↓reduceIte]
       exact ⟨hyt, by rw [hβN y hyN, zero_smul, add_zero]⟩
 
-omit [I.Boundaryless] in
 theorem exists_whitney_cell_step (h6 : 6 ≤ n) (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {c : ℝ}
     {W : Set (Fin 2 → ℝ)} (hW : IsOpen W) {h : (Fin 2 → ℝ) → M}
     (hsm : ContMDiffOn 𝓘(ℝ, Fin 2 → ℝ) I ∞ h W) (hlev : ∀ y ∈ W, f (h y) = c)
@@ -4542,7 +4539,6 @@ theorem exists_whitney_cell_step (h6 : 6 ≤ n) (hf : ContMDiff I 𝓘(ℝ, ℝ)
     apply hwB3 y hyA i u ⟨hu, show g i u ∈ ψ.target from hgu ▸ hmem⟩
     rw [← hφ, hgu]
 
-omit [I.Boundaryless] in
 theorem exists_whitney_cells (h6 : 6 ≤ n) (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {c : ℝ}
     {T : Set M} (hTc : IsClosed T) {d : ℕ} (hT : IndexOnePartner.isThin I d T) (hd : d + 3 < n)
     {W : Set (Fin 2 → ℝ)} (hW : IsOpen W) {m : ℕ} (C N : Fin m → Set (Fin 2 → ℝ))
@@ -11526,7 +11522,6 @@ private theorem sign_blockMat_mul_kernel_complement {ℓ k : ℕ} (hℓn : ℓ �
   rw [Matrix.det_reindex_self, Matrix.det_fromBlocks_zero₁₂, Matrix.det_mul] at h1
   rw [← sign_mul, mul_comm, h1, sign_mul, sign_pos hGm, mul_one]
 
-omit [IsManifold I ∞ M] [T2Space M] [I.Boundaryless] in
 private theorem mfderiv_comp_eq_zero_of_constant_path (ψ : (Fin 2 → ℝ) → M) : ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (G : M → F) (C : F)
     (y : Fin 2 → ℝ) (γ : ℝ → Fin 2 → ℝ) (u : Fin 2 → ℝ),
     MDifferentiableAt I 𝓘(ℝ, F) G (ψ y) → MDifferentiableAt 𝓘(ℝ, Fin 2 → ℝ) I ψ y →
@@ -11549,7 +11544,6 @@ private theorem mfderiv_comp_eq_zero_of_constant_path (ψ : (Fin 2 → ℝ) → 
         (((1 : ℝ →L[ℝ] ℝ).smulRight u) 1)) := by rw [h6]
     _ = 0 := h5
 
-omit [T2Space M] [I.Boundaryless] in
 private theorem continuousOn_mfderiv_apply_tangent_family : ∀ {r : ℕ} (G : M → EuclideanSpace ℝ (Fin r)) (O : Set M), IsOpen O →
     ContMDiffOn I 𝓘(ℝ, EuclideanSpace ℝ (Fin r)) ∞ G O → ∀ {d : ℕ} (S : Set (Fin d → ℝ))
     (φ : (Fin d → ℝ) → M) (v : (Fin d → ℝ) → Fin n → ℝ), MapsTo φ S O →

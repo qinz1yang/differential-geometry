@@ -1,12 +1,12 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.TimeSliceConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
-import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
+import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCrossConvergence
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivative.EventualTerminalBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.ClosedInterval
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.QuadraticForm
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence

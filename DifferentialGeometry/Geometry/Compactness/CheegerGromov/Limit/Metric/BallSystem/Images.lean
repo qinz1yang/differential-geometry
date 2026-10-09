@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Approximation.BallImage
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.BallImage
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Basic
 
 open DifferentialGeometry.Geometry.Curvature

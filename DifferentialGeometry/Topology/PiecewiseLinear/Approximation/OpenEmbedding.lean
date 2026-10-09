@@ -1,6 +1,5 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.Approximation
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.Existence
-
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34Endpoint
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34TerminalCh5Port
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.End
 import Mathlib.Topology.Order.Monotone
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorAction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.EventReducedDensity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventReducedDensity
 import Mathlib.MeasureTheory.Constructions.BorelSpace.WithTop
 
 noncomputable section

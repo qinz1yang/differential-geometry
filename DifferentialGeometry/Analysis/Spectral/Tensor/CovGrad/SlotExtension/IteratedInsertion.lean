@@ -52,7 +52,7 @@ theorem slotExtIter_apply (g : SmoothRiemannianMetric I M) (s w : ℕ)
         Tensor0SSpace ((s + 1) + w) I x from
       (slotExtendIter (I := I) (M := M) g (s + 1) (s + 1) w
         (endoSlotZeroCcTensor (I := I) (M := M) g s Λ)).toSection x) A =
-      slotInsertEndomorphism (I := I) (M := M) ((s + 1) + w) ⟨w, by omega⟩ x (Λ x) A := by
+      slotInsertEndoFib (I := I) (M := M) ((s + 1) + w) ⟨w, by omega⟩ x (Λ x) A := by
   induction w with
   | zero =>
       rfl
@@ -63,7 +63,7 @@ theorem slotExtIter_apply (g : SmoothRiemannianMetric I M) (s w : ℕ)
             (slotExtendIter (I := I) (M := M) g (s + 1) (s + 1) w
               (endoSlotZeroCcTensor (I := I) (M := M) g s Λ)).toSection x) A = _
       change _ =
-        (slotInsertEndomorphism (I := I) (M := M) (((s + 1) + w) + 1)
+        (slotInsertEndoFib (I := I) (M := M) (((s + 1) + w) + 1)
           (⟨w, by omega⟩ : Fin ((s + 1) + w)).succ x (Λ x)) A
       rw [slotInsertEndoFib_succ (I := I) (M := M) ((s + 1) + w)
         ⟨w, by omega⟩ x (Λ x)]
@@ -84,7 +84,7 @@ theorem app_slotExt_apply (g : SmoothRiemannianMetric I M) (s w : ℕ)
     (ccOperatorFieldComp (I := I) (M := M) g 0 ((s + 1) + w) ((s + 1) + w)
       (slotExtendIter (I := I) (M := M) g (s + 1) (s + 1) w
         (endoSlotZeroCcTensor (I := I) (M := M) g s Λ)) W).toSection x d =
-      slotInsertEndomorphism (I := I) (M := M) ((s + 1) + w) ⟨w, by omega⟩ x (Λ x)
+      slotInsertEndoFib (I := I) (M := M) ((s + 1) + w) ⟨w, by omega⟩ x (Λ x)
         (W.toSection x d) := by
   rw [operatorFieldComposition_toSection, ContinuousLinearMap.comp_apply]
   exact slotExtIter_apply (I := I) (M := M) g s w Λ x (W.toSection x d)

@@ -1,4 +1,3 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Sphere.Basic
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcDecomposition
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereCellComplement
 import Mathlib.Topology.Perfect
@@ -99,6 +98,11 @@ theorem IsPLSphere.exists_finite_disjoint_arc_partition {S U : Set E}
     ((hAU A hA).trans hUS.subset)]
   exact inter_closure_sdiff_of_finite_closed_partition hCfin hCdis
     (fun B hB => (hC B hB).1.isClosed) hcover hA
+
+theorem IsPLSphere.preperfect_one {S : Set E} (hS : IsPLSphere 1 S) : Preperfect S := by
+  obtain ⟨A, hA, -, hAS⟩ := hS.exists_isPLBall_one_superset_of_ssubset isClosed_empty
+    (empty_ssubset.mpr hS.isConnected.nonempty)
+  exact hS.isConnected.isPreconnected.preperfect_of_nontrivial (hA.nontrivial.mono hAS)
 
 theorem IsPLSphere.exists_finite_crosscut_partition_of_relative_boundary {S U W : Set E}
     (hS : IsPLSphere 1 S) (hU : IsPolyhedron U) (hproper : U ⊂ S)

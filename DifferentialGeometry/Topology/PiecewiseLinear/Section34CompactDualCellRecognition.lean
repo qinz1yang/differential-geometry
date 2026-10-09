@@ -1,8 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnIntrinsicInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualTraces
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.OuterCells
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.PatchCells
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactOuterRecognition
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPatchRecognition
 
 open Set
 
@@ -30,9 +35,9 @@ theorem isPLCellOn_compactDualCutCell
   | markedPoint p => exact isPLCellOn_compactDualMarkedPoint M K hKM p
   | outerFace o =>
     exact isPLCellOn_compactDualCutCell_of_isPLBall M K hKM (.outerFace o)
-      (isPLBall_compactDualCutCell_outer_face M K hM hK hKM hint o)
+      (isPLBall_compactDualCutCell_outerFace M K hM hK hKM hint o)
   | outerArc q =>
     exact isPLCellOn_compactDualCutCell_of_isPLBall M K hKM (.outerArc q)
-      (isPLBall_compactDualCutCell_outer_arc M K hM hK hKM hint q)
+      (isPLBall_compactDualCutCell_outerArc M K hM hK hKM hint q)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

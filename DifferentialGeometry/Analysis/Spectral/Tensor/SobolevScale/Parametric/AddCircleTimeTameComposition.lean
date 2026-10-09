@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Lp.PiLp
-import DifferentialGeometry.Analysis.Sobolev.Time.Bochner.AffineMajorant
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.AffineMajorant
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleTimeComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleTameComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleFirstJet

@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.Cov
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Curve.Reparametrization
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.TwoParameterFields
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.TwoParameterFields
 import Mathlib.MeasureTheory.Function.Jacobian
 
 noncomputable section

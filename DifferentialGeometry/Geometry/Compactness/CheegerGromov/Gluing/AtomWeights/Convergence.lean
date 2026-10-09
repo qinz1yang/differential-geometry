@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Metric.Approximation.Existence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Existence
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.QuadraticEvaluation
-import DifferentialGeometry.Analysis.PartitionOfUnity.FiniteWeights.Convergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.Weights.Convergence
 import DifferentialGeometry.Analysis.Calculus.Compactness.BilinearForm
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Basic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Indexing

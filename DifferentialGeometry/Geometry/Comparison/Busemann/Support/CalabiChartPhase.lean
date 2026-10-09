@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.Convex.CalabiPhase
+import DifferentialGeometry.Geometry.Comparison.Busemann.Support.CalabiPhase
 import DifferentialGeometry.Geometry.Comparison.Busemann.Support.CalabiExponential
-import DifferentialGeometry.Analysis.Calculus.SmoothExtension.CompactManifold
+import DifferentialGeometry.Geometry.Comparison.Busemann.Support.CompactSmoothExtension
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 set_option autoImplicit false

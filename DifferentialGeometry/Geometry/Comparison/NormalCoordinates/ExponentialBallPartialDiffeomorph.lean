@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.InjectivityRadius.Basic
+import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import Mathlib.Geometry.Manifold.LocalDiffeomorph

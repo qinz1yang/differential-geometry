@@ -47,7 +47,7 @@ omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] in
     (h : DiskSmoothExtension I u U) : (smoothDiskOfDiskSmoothExtension h).map = u := rfl
 
 def HasDiskSmoothExtensionDensity (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) : Prop :=
+    (γ : Surgery.Topology.ContinuousFreeLoop Q) : Prop :=
   ∀ v : DiskCompetitor g γ,
     ∃ (vj : ℕ → C(Disk, Q)) (Uj : ℕ → ℂ → Q),
       (∀ j, DiskSmoothExtension I (vj j) (Uj j) ∧
@@ -56,7 +56,7 @@ def HasDiskSmoothExtensionDensity (g : SmoothRiemannianMetric I Q)
 
 omit [FiniteDimensional ℝ E] in
 theorem plateauDiskDensity_of_hasDiskSmoothExtensionDensity (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q)
+    (γ : Surgery.Topology.ContinuousFreeLoop Q)
     (h : HasDiskSmoothExtensionDensity (I := I) (Q := Q) g γ) :
     PlateauDiskDensity (I := I) (Q := Q) g γ := by
   intro v
@@ -76,7 +76,7 @@ theorem smooth_exact_disk_density_of_plateauDiskDensity
 
 omit [FiniteDimensional ℝ E] in
 theorem exists_smoothDisk_sequence_of_smoothDisk (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (w : SmoothDisk (I := I) (Q := Q))
+    (γ : Surgery.Topology.ContinuousFreeLoop Q) (w : SmoothDisk (I := I) (Q := Q))
     (htrace : ∀ θ, w.map (diskBoundary θ) = γ θ) :
     ∃ w' : ℕ → SmoothDisk (I := I) (Q := Q),
       (∀ j θ, (w' j).map (diskBoundary θ) = γ θ) ∧
@@ -85,7 +85,7 @@ theorem exists_smoothDisk_sequence_of_smoothDisk (g : SmoothRiemannianMetric I Q
 
 theorem hasDiskSmoothExtensionDensity_of_smoothDisk_competitors [I.Boundaryless] [T2Space Q]
     [CompactSpace Q] [Nonempty Q] (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (w : SmoothDisk (I := I) (Q := Q))
+    (γ : Surgery.Topology.ContinuousFreeLoop Q) (w : SmoothDisk (I := I) (Q := Q))
     (htrace : ∀ θ, w.map (diskBoundary θ) = γ θ) :
     ∃ vj : ℕ → C(Disk, Q), ∃ Uj : ℕ → ℂ → Q,
       (∀ j, DiskSmoothExtension I (vj j) (Uj j) ∧

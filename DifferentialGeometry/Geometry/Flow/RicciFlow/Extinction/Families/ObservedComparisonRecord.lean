@@ -211,7 +211,7 @@ theorem horizonExtend_eventJump_ereal {H : ℝ} (hH : 0 ≤ H) {f : Icc (0 : ℝ
 theorem historyWidth_eventJump_ereal (H : ObservedHistory.{u}) (parameters : CutoffParameters)
     (cutoff : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (i : Fin H.eventCount) :
     ((horizonExtend H.horizon H.horizon_nonneg (Extinction.Width.historyWidth H h0 terminal)
@@ -232,13 +232,13 @@ theorem historyWidth_eventJump_ereal (H : ObservedHistory.{u}) (parameters : Cut
 
 def observedHistoryWidthValue (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier) : ℝ → ℝ :=
   horizonExtend H.horizon H.horizon_nonneg (Extinction.Width.historyWidth H h0 terminal)
 
 theorem observedHistoryWidthValue_apply (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {t : ℝ} (ht : t ∈ Icc (0 : ℝ) H.horizon) :
     observedHistoryWidthValue H h0 terminal t =
@@ -247,7 +247,7 @@ theorem observedHistoryWidthValue_apply (H : ObservedHistory.{u})
 
 theorem observedHistoryWidthValue_initial (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier) :
     observedHistoryWidthValue H h0 terminal 0 =
       Extinction.Width.historyWidth H h0 terminal (Extinction.Width.historyStageTime H 0) := by
@@ -258,7 +258,7 @@ theorem observedHistoryWidthValue_initial (H : ObservedHistory.{u})
 
 theorem observedHistoryWidthValue_not_event_continuousAt (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (t : Icc (0 : ℝ) H.horizon) (ht : t.1 ∉ H.eventTimes) :
     ContinuousAt (Extinction.Width.historyWidth H h0 terminal) t :=
@@ -267,7 +267,7 @@ theorem observedHistoryWidthValue_not_event_continuousAt (H : ObservedHistory.{u
 
 theorem observedHistoryWidthValue_nonneg (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (t : ℝ) : 0 ≤ observedHistoryWidthValue H h0 terminal t :=
   horizonExtend_nonneg H.horizon_nonneg _
@@ -275,7 +275,7 @@ theorem observedHistoryWidthValue_nonneg (H : ObservedHistory.{u})
 
 theorem observedComparisonRecord_of_historyWidth (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {c A : ℝ} (hc : 0 < c) (hHpos : 0 < H.horizon)
     (hinitial : Extinction.Width.historyWidth H h0 terminal

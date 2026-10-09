@@ -5,12 +5,11 @@ import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.ULift
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 import DifferentialGeometry.Geometry.Metric.PullbackCompleteness
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Ancient.Pullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientPullback
 import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
-import DifferentialGeometry.Topology.ThreeManifold.Orientation
-import DifferentialGeometry.Topology.LoopSpace.Continuous
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationCompatible
-import DifferentialGeometry.External.CanonicalTopology.LinearAlgebra.Orientation
+import DifferentialGeometry.Bundle.Orientation.Map
 
 set_option autoImplicit false
 
@@ -73,8 +72,8 @@ private theorem isCompatibleOrientation_pullbackOrientationAt (o : TangentOrient
         Trivialization.continuousLinearMapAt_apply_of_mem (R := ℝ) (e := T) (hUMT hfy)]
       rfl
     · unfold pullbackOrientationAt
-      rw [← DifferentialGeometry.orientation_map_trans,
-        ← DifferentialGeometry.orientation_map_trans]
+      rw [DifferentialGeometry.VectorBundle.map_orientation_trans_between,
+        DifferentialGeometry.VectorBundle.map_orientation_trans_between]
       have hMf : (((e y).symm.trans L).trans (L.symm.trans ((e y).trans Mf))) = Mf := by
         apply LinearEquiv.ext
         intro v
@@ -109,9 +108,8 @@ private theorem isCompatibleOrientation_pullbackOrientationAt (o : TangentOrient
     rw [(Orientation.map_eq_iff_det_pos _ B hcard).2 hBdet] at hBc
     exact hBc
 
-def _root_.DifferentialGeometry.ManifoldOrientation.pullback (o : TangentOrientationSection M) {f : N → M}
+def TangentOrientationSection.pullback (o : TangentOrientationSection M) {f : N → M}
     (hf : IsLocalDiffeomorph ThreeModel ThreeModel ∞ f) : TangentOrientationSection N where
-  dimension_eq := by simp [ThreeSpace]
   orientation := pullbackOrientationAt o hf
   locally_constant := by
     obtain ⟨O, hO⟩ :=
@@ -120,7 +118,7 @@ def _root_.DifferentialGeometry.ManifoldOrientation.pullback (o : TangentOrienta
     rw [← hO]
     exact O.locally_constant
 
-theorem _root_.DifferentialGeometry.ManifoldOrientation.preservesTangentOrientationAt_pullback
+theorem TangentOrientationSection.preservesTangentOrientationAt_pullback
     (o : TangentOrientationSection M) {f : N → M}
     (hf : IsLocalDiffeomorph ThreeModel ThreeModel ∞ f) (y : N) :
     ∃ hb : Function.Bijective (mfderiv ThreeModel ThreeModel f y),
@@ -133,7 +131,7 @@ theorem _root_.DifferentialGeometry.ManifoldOrientation.preservesTangentOrientat
   rw [he]
   change Orientation.map (Fin 3) e.toLinearEquiv
     (Orientation.map (Fin 3) e.toLinearEquiv.symm (o.orientation (f y))) = o.orientation (f y)
-  rw [← DifferentialGeometry.orientation_map_trans, LinearEquiv.symm_trans_self,
+  rw [DifferentialGeometry.VectorBundle.map_orientation_trans_between, LinearEquiv.symm_trans_self,
     Orientation.map_refl]
   rfl
 
@@ -270,7 +268,7 @@ private theorem preservesTangentOrientationAt_comp {A B C : Type*} [TopologicalS
     intro v
     simp only [LinearEquiv.ofBijective_apply, LinearEquiv.trans_apply,
       ContinuousLinearMap.coe_coe, hcomp, ContinuousLinearMap.comp_apply]
-  rw [he, DifferentialGeometry.orientation_map_trans, hpf, hpg]
+  rw [he, ← DifferentialGeometry.VectorBundle.map_orientation_trans_between, hpf, hpg]
   rfl
 
 end Comparison

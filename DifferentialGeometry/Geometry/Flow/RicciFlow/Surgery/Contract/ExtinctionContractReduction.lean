@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereDiffeomorphismIsotopyConnected
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedLawsAssembly
 import DifferentialGeometry.Topology.ThreeManifold.CutCapDecompositionAssembly
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Incidence
+import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormOrientationClosure
 
 set_option autoImplicit false
@@ -34,7 +34,7 @@ theorem connectedSum_standardThreeSphere_right_orientedDiffeomorph
       (DifferentialGeometry.Topology.connectedSum N
         DifferentialGeometry.Topology.standardThreeSphereLift.{u}).toClosedOrientedManifold
       N.toClosedOrientedManifold) :=
-  DifferentialGeometry.Topology.connectedSum_sphere_right N
+  DifferentialGeometry.Topology.connectedSumLaws_holds.1 N
 
 theorem finiteConnectedSum_orientedDiffeomorph_of_forall₂
     (L K : List (DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3))
@@ -45,6 +45,7 @@ theorem finiteConnectedSum_orientedDiffeomorph_of_forall₂
     Nonempty (DifferentialGeometry.Topology.ClosedOrientedManifold.OrientedDiffeomorph
       (DifferentialGeometry.Topology.finiteConnectedSum L).toClosedOrientedManifold
       (DifferentialGeometry.Topology.finiteConnectedSum K).toClosedOrientedManifold) :=
-  DifferentialGeometry.Topology.finiteConnectedSum_congr h
+  DifferentialGeometry.Topology.finiteConnectedSum_congr_of_connectedSumLaws
+    DifferentialGeometry.Topology.connectedSumLaws_holds h
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

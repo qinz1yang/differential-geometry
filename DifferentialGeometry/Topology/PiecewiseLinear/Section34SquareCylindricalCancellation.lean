@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.BigonCancellation
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CylindricalBigonCancellation
 import DifferentialGeometry.Topology.PiecewiseLinear.FourSpokeSquareWitness
 
 open Set Topology
@@ -71,7 +71,7 @@ theorem exists_strict_square_cylindrical_cancellation_of_two_crossing_crosscuts
     rw [← image_inter ℓ.injective, htrace, image_pair]
     rfl
   let e' := fun i => (e i).transHomeomorph ℓ.toHomeomorph
-  apply exists_cylindrical_cancellation_card_lt_of_two_crossing_crosscuts
+  apply exists_strict_cylindrical_cancellation_of_two_crossing_crosscuts
     (hN.of_isPLHomeomorphOn hℓN) (hγ.trans hℓJ) (image_mono hJN) hJends'
     (hδ.trans hℓL) (image_mono hLN) hLends' t h₀ h₀₁ h₁ htrace' e' ε hε
     (fun i => hsource i) (fun i => congrArg ℓ (hcenter i))

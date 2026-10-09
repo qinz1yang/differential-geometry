@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.ClopenDecomposition
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Open
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Composition
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationOpen
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationComposition
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 set_option autoImplicit false

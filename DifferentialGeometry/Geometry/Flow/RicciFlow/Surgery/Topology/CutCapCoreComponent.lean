@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Connected.BoundaryCollarComponent
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapRegionStructure
 import DifferentialGeometry.Geometry.Neck.Spatial
 import Mathlib.Topology.OpenPartialHomeomorph.Composition

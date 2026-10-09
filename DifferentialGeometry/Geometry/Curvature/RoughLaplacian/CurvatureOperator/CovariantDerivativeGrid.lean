@@ -43,7 +43,7 @@ private lemma pureRFrozenSlot0_covGrad_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M)
     (i : Fin (Module.finrank ℝ E)) :
-    (covariantSlotBundleEquiv (I := I) (M := M) 0 s x).symm
+    (covGradBundleEquiv (I := I) (M := M) 0 s x).symm
         ((covGrad (I := I) (M := M) g 0 s S).toSection x) (B i x) =
       covApply (tensorCov (I := I) g 0 s) (B i) (fun y : M => S.toSection y) x := by
   rw [covGrad_toSection_apply (I := I) (M := M) g 0 s S x,
@@ -63,7 +63,7 @@ private lemma pureRFrozenDiffOp0_eq_fixedFramePureRSection
   change pureRFrozenEndoFib (I := I) (M := M) g s B (covGrad (I := I) (M := M) g 0 s S) x =
     (fixedFramePureRSection (I := I) (M := M) g s S B hB).toSection x
   rw [fixedFramePureRSection_toSection, pureRFrozenEndoFib, genuineCurvPureRFibFixedFrame]
-  refine congrArg (covariantSlotBundleEquiv (I := I) (M := M) 0 s x) ?_
+  refine congrArg (covGradBundleEquiv (I := I) (M := M) 0 s x) ?_
   refine ContinuousLinearMap.ext (fun v => ?_)
   rw [pureRFrozenDirCLM_apply, pureRDirCLMFixedFrame, sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)

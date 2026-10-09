@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedVolumeNormalization
 import Mathlib.Topology.Order.MonotoneConvergence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinker.SliceSequence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardSliceSequence
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling
 
 open Filter Set

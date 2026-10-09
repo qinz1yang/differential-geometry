@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.LinearTimeDependentInclusion
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.HeatEvolutionRestart
-import DifferentialGeometry.Analysis.Sobolev.Time.Bochner.LocalSmallness
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.LocalSmallness
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Slice
 import DifferentialGeometry.Topology.Order.IntervalContinuation
-import DifferentialGeometry.Analysis.Sobolev.Time.Bochner.FiniteCover
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.FiniteCover
 import Mathlib.Topology.UnitInterval
 
 noncomputable section

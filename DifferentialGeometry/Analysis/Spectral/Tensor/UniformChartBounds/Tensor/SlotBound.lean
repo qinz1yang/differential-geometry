@@ -487,7 +487,7 @@ private lemma tensorSlotSubstCLM_apply_norm_le (n : ℕ) (b : M)
     change ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b).symm
           : ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ →L[ℝ]
               Tensor0SSpace n I b).comp
-        ((tangentCompCLM (I := I) (M := M) n b Φ).comp
+        ((tangentCompCLMLE (I := I) (M := M) n b Φ).comp
           ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b)
             : Tensor0SSpace n I b →L[ℝ]
               ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ)) x =

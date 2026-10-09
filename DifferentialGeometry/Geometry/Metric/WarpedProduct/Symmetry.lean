@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Product.VerticalCoefficient
-import DifferentialGeometry.Geometry.Metric.WarpedProduct.Defs
+import DifferentialGeometry.Geometry.Metric.WarpedProduct
 import DifferentialGeometry.Geometry.Metric.ProductSlice
 import DifferentialGeometry.Geometry.Metric.Euclidean
 import DifferentialGeometry.Topology.Manifold.EuclideanBoundaryCoordinates

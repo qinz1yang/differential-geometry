@@ -153,7 +153,7 @@ theorem cc_flux_slot (q h : SmoothRiemannianMetric I M)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
           A.toSection x) z)) w =
     cotangentToDual (I := I)
-      (slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      (slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonDifferenceEndomorphism (I := I) q h x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
           A.toSection x) z)) w
@@ -520,7 +520,7 @@ theorem cc_principal_pair
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
             A.toSection x) z)) w =
       cotangentToDual (I := I)
-        (slotInsertEndomorphism (I := I) (M := M) 1 0 x
+        (slotInsertEndoFib (I := I) (M := M) 1 0 x
           (metricComparisonDifferenceEndomorphism (I := I) q h x)
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
             A.toSection x) z)) w

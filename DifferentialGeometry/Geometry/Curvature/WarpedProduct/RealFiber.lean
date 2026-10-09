@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.WarpedProduct.Defs
+import DifferentialGeometry.Geometry.Metric.WarpedProduct
 import DifferentialGeometry.Geometry.Metric.Euclidean
 import DifferentialGeometry.Geometry.Connection.Product
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge

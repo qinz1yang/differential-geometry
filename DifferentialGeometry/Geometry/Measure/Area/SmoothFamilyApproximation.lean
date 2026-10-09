@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Measure.Area.RegularLeastArea
 import DifferentialGeometry.Geometry.Metric.LoopLengthReparametrization
-import DifferentialGeometry.Geometry.Metric.LoopSpace.CoherentSmoothing
-import DifferentialGeometry.Topology.LoopSpace.C1.Representatives
+import DifferentialGeometry.Topology.LoopSpace.CoherentSmoothing
+import DifferentialGeometry.Topology.LoopSpace.RegularRepresentatives
 
 
 

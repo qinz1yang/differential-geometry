@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSeparability
-import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletCometricDifference
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CometricDifference
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.SmallC0
 

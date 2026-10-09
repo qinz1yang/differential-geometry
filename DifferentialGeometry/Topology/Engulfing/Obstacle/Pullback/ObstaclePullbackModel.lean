@@ -51,7 +51,6 @@ structure ObstaclePullbackModel (a : RelativeGeneralPositionApproximation K L T 
   expansions : ∀ A C, C ⊆ K.space → FiniteSimplexExpansionIn K A C →
     FiniteSimplexExpansionIn source A C
 
-omit [FiniteDimensional ℝ E] in
 theorem RelativeGeneralPositionApproximation.exists_pullbackModel
     (a : RelativeGeneralPositionApproximation K L T f d p ε) (hdn : d ≤ n) :
     Nonempty (ObstaclePullbackModel a) := by

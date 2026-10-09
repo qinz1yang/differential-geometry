@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricJetBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Compactness
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import Mathlib.Topology.Order.IsLUB
 
 noncomputable section
@@ -13,23 +13,21 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ}
 
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.terminalSigmaCompact (G : P.IncomingSlab a s) :
+private local instance terminalSigmaCompact (G : P.IncomingSlab a s) :
     SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       G.terminalRegularOpen.isOpen)
 
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.terminalC1 (G : P.IncomingSlab a s) :
+private local instance terminalC1 (G : P.IncomingSlab a s) :
     IsManifold ThreeModel 1 G.terminalRegularOpen := IsManifold.of_le (n := ∞) (by decide)
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.terminalC2 (G : P.IncomingSlab a s) :
+private local instance terminalC2 (G : P.IncomingSlab a s) :
     IsManifold ThreeModel 2 G.terminalRegularOpen := IsManifold.of_le (n := ∞) (by decide)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminal_metric_sequence_bounds
+theorem IncomingSlab.terminal_metric_sequence_bounds
     (G : P.IncomingSlab a s) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s)) :
     (∀ q : ℕ, ∀ K : Set G.terminalRegularOpen, IsCompact K →
       ∃ C : ℝ, ∀ n : ℕ, ∀ x ∈ K,
@@ -68,7 +66,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     exact (heq (τ n) hn).2 x (subset_closure hxV) v |>.1
   exact ⟨hbdd, hlow⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_smooth_positive_metric_prelimit
+theorem IncomingSlab.exists_smooth_positive_metric_prelimit
     (G : P.IncomingSlab a s) (hne : Nonempty G.terminalRegularOpen)
     {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s)) :
     ∃ (φ : ℕ → ℕ), StrictMono φ ∧

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Estimates.UniformScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseDegreeFrontierReduction
-import DifferentialGeometry.Geometry.Metric.Restriction.Completeness
+import DifferentialGeometry.Geometry.Metric.Restriction
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldEuclidean
 import Mathlib.Topology.Order.IntermediateValue
 

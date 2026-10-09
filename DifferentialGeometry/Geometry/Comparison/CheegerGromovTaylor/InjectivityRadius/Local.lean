@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.LocalVolume
-import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
+import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
 import DifferentialGeometry.Geometry.Measure.OpenSubtypeVolume
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
-import DifferentialGeometry.Geometry.Curvature.Ricci.PointwiseLowerBound
+import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciPointwise
 import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
 import DifferentialGeometry.Geometry.Comparison.Volume.LocalDoubling
 import DifferentialGeometry.Geometry.Metric.Distance.Ball

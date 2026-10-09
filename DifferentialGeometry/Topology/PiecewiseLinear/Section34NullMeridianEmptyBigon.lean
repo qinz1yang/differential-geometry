@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34EmptyReturningBigon
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34NullMeridianReturningArc
-import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorus.SeamRotation
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34RotatedMeridianSides
 
 open Set Topology
 

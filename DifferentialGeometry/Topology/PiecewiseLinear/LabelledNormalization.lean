@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Basic.Countable.Defs
 import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Data.Nat.Pairing

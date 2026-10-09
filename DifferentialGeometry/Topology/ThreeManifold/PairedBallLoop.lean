@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.GraphGluing.PairedBall.Defs
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallGluing
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.FactorBallImage
 import DifferentialGeometry.Topology.Homeomorph.Sigma
 import DifferentialGeometry.Topology.Homeomorph.QuotientDescent

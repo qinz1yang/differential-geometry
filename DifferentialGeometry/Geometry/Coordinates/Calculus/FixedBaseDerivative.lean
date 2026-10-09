@@ -889,7 +889,7 @@ theorem fixedBaseOnRegularitySmooth
         ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
           (modelWithCornersSelf Real Real) 1
           (fun p : Real × M => deriv (fun s => F s p.2) p.1) (t, x) :=
-      contMDiffAt_partial_deriv_fst (hSmooth t ht x hx)
+      timeDeriv_smoothAt (hSmooth t ht x hx)
         (by norm_num : (1 : WithTop ℕ∞) + 1 ≤ 2)
     have hslice :
         ContMDiffAt I ((modelWithCornersSelf Real Real).prod I) 1

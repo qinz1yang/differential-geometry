@@ -124,7 +124,7 @@ def RicciHessianWeightedDensityVariationInFrame
       weightedDivergenceTerm x i j +
         density x * shiftedHessianTerm x i j +
           ricciHessian x i j * density x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+            expWeightedMeasureVariationFactor potentialVariation
               metricVariationTrace x
 
 def densityWeightedDivergenceInFrame
@@ -142,7 +142,7 @@ theorem ricciHessianWeightedDensity_of_divergence
         densityWeightedDivergenceInFrame density weightedDivergenceTerm x i j +
           density x * shiftedHessianTerm x i j +
             ricciHessian x i j * density x *
-              DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+              expWeightedMeasureVariationFactor potentialVariation
                 metricVariationTrace x)
       (densityWeightedDivergenceInFrame density weightedDivergenceTerm)
       shiftedHessianTerm ricciHessian potentialVariation metricVariationTrace
@@ -197,7 +197,7 @@ def fFunctionalPreIntegrationByPartsIntegrand
     -metricVariationRicciHess x +
       weightedDivergenceTrace x + shiftedTrace x +
         (scalarCurvature x + lapPotential x) *
-          DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+          expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x
 
 def fFunctionalIntegrationByPartsRemainder
@@ -207,7 +207,7 @@ def fFunctionalIntegrationByPartsRemainder
   fun x =>
     weightedDivergenceTrace x +
       (shiftedTrace x -
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+        expWeightedMeasureVariationFactor potentialVariation
           metricVariationTrace x *
           (lapPotential x - gradPotentialNormSq x))
 
@@ -226,7 +226,7 @@ theorem fFunctionalPreIntegrationByPartsIntegrand_eq_firstVariationIntegrand_add
           shiftedTrace x := by
   funext x
   unfold fFunctionalPreIntegrationByPartsIntegrand fFunctionalFirstVariationIntegrand
-    fFunctionalIntegrationByPartsRemainder DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor
+    fFunctionalIntegrationByPartsRemainder expWeightedMeasureVariationFactor
   ring
 
 theorem expWeightedIntegralVariationIntegrand_eq_preIntegrationByParts
@@ -241,22 +241,22 @@ theorem expWeightedIntegralVariationIntegrand_eq_preIntegrationByParts
           -metricVariationRicciHess x +
             weightedDivergenceTrace x + shiftedTrace x +
             (lapPotential x - gradPotentialNormSq x) *
-              DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+              expWeightedMeasureVariationFactor potentialVariation
                 metricVariationTrace x) :
     ∀ x : M,
-      DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand potential potentialVariation
+      expWeightedIntegralVariationIntegrand potential potentialVariation
           metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket scalarCurvature gradPotentialNormSq)
+          (fFunctionalBracket scalarCurvature gradPotentialNormSq)
           (fFunctionalBracketVariation scalarCurvatureVariation
             gradPotentialNormSqVariation) x =
-      DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity potential x *
+      expNegPotentialDensity potential x *
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x := by
   intro x
-  unfold DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand fFunctionalPreIntegrationByPartsIntegrand
-    DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket
+  unfold expWeightedIntegralVariationIntegrand fFunctionalPreIntegrationByPartsIntegrand
+    fFunctionalBracket
   rw [hvariation x]
-  unfold DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor
+  unfold expWeightedMeasureVariationFactor
   ring
 
 theorem expWeightedClosedVariationIntegrand_eq_preIntegrationByParts
@@ -270,16 +270,16 @@ theorem expWeightedClosedVariationIntegrand_eq_preIntegrationByParts
           -metricVariationRicciHess x +
             weightedDivergenceTrace x + shiftedTrace x) :
     ∀ x : M,
-      DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand potential potentialVariation
+      expWeightedIntegralVariationIntegrand potential potentialVariation
           metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket scalarCurvature lapPotential)
+          (fFunctionalClosedBracket scalarCurvature lapPotential)
           closedBracketVariation x =
-      DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity potential x *
+      expNegPotentialDensity potential x *
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x := by
   intro x
-  unfold DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand fFunctionalPreIntegrationByPartsIntegrand
-    DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket
+  unfold expWeightedIntegralVariationIntegrand fFunctionalPreIntegrationByPartsIntegrand
+    fFunctionalClosedBracket
   rw [hvariation x]
 
 theorem fFunctionalIntegrationByPartsRemainder_integral_eq_zero [MeasurableSpace M]
@@ -291,7 +291,7 @@ theorem fFunctionalIntegrationByPartsRemainder_integral_eq_zero [MeasurableSpace
     (hcorr_int :
       Integrable
         (fun x : M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+          expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x *
             (lapPotential x - gradPotentialNormSq x))
         weightedMeasure)
@@ -300,7 +300,7 @@ theorem fFunctionalIntegrationByPartsRemainder_integral_eq_zero [MeasurableSpace
     (hshift :
       ∫ x, shiftedTrace x ∂weightedMeasure =
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+          expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x *
             (lapPotential x - gradPotentialNormSq x)
           ∂weightedMeasure) :
@@ -310,7 +310,7 @@ theorem fFunctionalIntegrationByPartsRemainder_integral_eq_zero [MeasurableSpace
         shiftedTrace x
       ∂weightedMeasure = 0 := by
   let correction : M -> Real := fun x =>
-    DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+    expWeightedMeasureVariationFactor potentialVariation
       metricVariationTrace x *
       (lapPotential x - gradPotentialNormSq x)
   have hcorr_int' : Integrable correction weightedMeasure := by
@@ -426,7 +426,7 @@ theorem fFunctionalFirstVariationFormula_of_integration_by_parts [MeasurableSpac
     (hcorr_int :
       Integrable
         (fun x : M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+          expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x *
             (lapPotential x - gradPotentialNormSq x))
         weightedMeasure)
@@ -435,7 +435,7 @@ theorem fFunctionalFirstVariationFormula_of_integration_by_parts [MeasurableSpac
     (hshift :
       ∫ x, shiftedTrace x ∂weightedMeasure =
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+          expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x *
             (lapPotential x - gradPotentialNormSq x)
           ∂weightedMeasure) :

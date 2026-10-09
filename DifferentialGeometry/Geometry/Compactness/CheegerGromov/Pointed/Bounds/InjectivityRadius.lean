@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.InjectivityRadius.Intrinsic
+import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Intrinsic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
 
 open DifferentialGeometry.Geometry.Curvature

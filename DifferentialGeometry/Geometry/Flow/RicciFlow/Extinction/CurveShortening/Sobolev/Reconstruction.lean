@@ -5,11 +5,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.S
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.Uniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.ParameterSolutions
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.CoefficientFamilies
-import DifferentialGeometry.Geometry.Flow.CurveShortening.Sobolev.SpatialJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.SpatialJets
 import DifferentialGeometry.Analysis.Calculus.TimeJet.SpatialJetEvolution
 import DifferentialGeometry.Analysis.Calculus.TimeJet.MixedJets
 import DifferentialGeometry.Geometry.Metric.Family.Retraction
-import DifferentialGeometry.Geometry.Flow.CurveShortening.Parametric.Retraction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicReconstruction
 import DifferentialGeometry.Geometry.Metric.Family.TimeShift
 
 noncomputable section
@@ -660,7 +660,7 @@ open private
   DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion.reference_sobolev_spatial_jets
   reference_joint_total_sobolev_representatives
   DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion.reference_joint_total_sobolev_representatives from
-  DifferentialGeometry.Geometry.Flow.CurveShortening.Sobolev.SpatialJets
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.SpatialJets
 
 
 private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩

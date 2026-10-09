@@ -131,7 +131,7 @@ theorem prependCovGradSlot_toSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) (x : M) :
     (prependCovGradSlot (I := I) (M := M) g r s ζ S).toSection x =
-      covariantSlotBundleEquiv (I := I) (M := M) r s x
+      covGradBundleEquiv (I := I) (M := M) r s x
         ((mvfderiv (I := I) (ζ : M → ℝ) x).smulRight (S.toSection x)) := by
   rw [prependCovGradSlot_toSection]
   rw [show ((covGrad (I := I) (M := M) g r s
@@ -143,7 +143,7 @@ theorem prependCovGradSlot_toSection_apply
         (scalarSmul (I := I) (M := M) g r (s + 1) ζ
           (covGrad (I := I) (M := M) g r s S)).toSection x from rfl]
   rw [covGrad_toSection_apply, scalarSmul_toSection_apply, covGrad_toSection_apply]
-  rw [← map_smul (covariantSlotBundleEquiv (I := I) (M := M) r s x), ← map_sub]
+  rw [← map_smul (covGradBundleEquiv (I := I) (M := M) r s x), ← map_sub]
   rw [← prependGradCLM_eq_sub (I := I) (M := M) g r s ζ S x]
   rw [prependGradCLM]
 
@@ -162,7 +162,7 @@ theorem prependCovGradSlot_toSection_apply_eval
               S.toSection x) D)
         (Matrix.vecTail v) := by
   rw [prependCovGradSlot_toSection_apply]
-  rw [covariantSlotBundleEquiv_apply_toModel (I := I) (M := M) r s x
+  rw [covGradBundleEquiv_apply_toModel (I := I) (M := M) r s x
     ((mvfderiv (I := I) (ζ : M → ℝ) x).smulRight (S.toSection x)) D v]
   rw [ContinuousLinearMap.smulRight_apply]
 

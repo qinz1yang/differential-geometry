@@ -36,9 +36,7 @@ theorem localTerminalDistanceControl_const (K : G.ComparisonSupport c)
     ((H.event i).incoming.terminalRegularRegion_isOpen.preimage continuous_subtype_val).mem_nhds
       (K.support_terminal x hx), fun _ hy => hy, ?_⟩
   intro y _ z _ hy hz
-  change riemannianEDistOf (H.event i).outputMetric q.1 q.1 ≤ _
-  simp only [riemannianEDistOf_self]
-  exact bot_le
+  simp [ContinuousMap.const_apply, riemannianEDistOf_self]
 
 theorem localTerminalDistanceControl_of_localTerminalEDistComparison
     (Kc : (c' : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c')

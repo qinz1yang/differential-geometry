@@ -11,7 +11,7 @@ open DifferentialGeometry.Integral.Measure
 open scoped ContDiff
 
 private theorem prefactor_mul_sqrt_pow (n : ℕ) {c tau : ℝ} (hc : 0 < c) (htau : 0 < tau) :
-    DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n (c * tau) * Real.sqrt c ^ n = DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau := by
+    perelmanDensityPrefactor n (c * tau) * Real.sqrt c ^ n = perelmanDensityPrefactor n tau := by
   have heq : 4 * Real.pi * (c * tau) = c * (4 * Real.pi * tau) := by ring
   have hp : c ^ (-(n : ℝ) / 2) = (Real.sqrt c ^ n)⁻¹ := by
     rw [neg_div, Real.rpow_neg hc.le, Real.rpow_div_two_eq_sqrt _ hc.le, Real.rpow_natCast]
@@ -33,9 +33,9 @@ private local instance : BorelSpace M := ⟨rfl⟩
 theorem setLIntegral_perelmanDensity_scaleMetric
     (g : SmoothRiemannianMetric I M) {c tau : ℝ} (hc : 0 < c) (htau : 0 < tau)
     (f : M → ℝ) (A : Set M) :
-    ∫⁻ x in A, ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) (c * tau) f x)
+    ∫⁻ x in A, ENNReal.ofReal (perelmanDensity (Module.finrank ℝ E) (c * tau) f x)
       ∂riemannianVolumeMeasure (I := I) (M := M) (scaleMetric c hc g) =
-    ∫⁻ x in A, ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) tau f x)
+    ∫⁻ x in A, ENNReal.ofReal (perelmanDensity (Module.finrank ℝ E) tau f x)
       ∂riemannianVolumeMeasure (I := I) (M := M) g := by
   rw [volume_scaleMetric, Measure.restrict_smul, lintegral_smul_measure, smul_eq_mul,
     ← lintegral_const_mul' _ _ (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)]
@@ -44,7 +44,7 @@ theorem setLIntegral_perelmanDensity_scaleMetric
   rw [← ENNReal.ofReal_pow (Real.sqrt_nonneg c),
     ← ENNReal.ofReal_mul (pow_nonneg (Real.sqrt_nonneg c) _)]
   congr 1
-  dsimp only [DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity]
+  dsimp only [perelmanDensity]
   rw [← mul_assoc, mul_comm (Real.sqrt c ^ Module.finrank ℝ E), prefactor_mul_sqrt_pow _ hc htau]
 
 end DifferentialGeometry.PDE.RicciFlow.Entropy

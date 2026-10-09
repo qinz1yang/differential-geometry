@@ -14,7 +14,7 @@ import DifferentialGeometry.Topology.Order.InfimumAddition
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Algebra.BigOperators.WithTop
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.CarrierC1RegularityJointMetric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalActionCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalActionRegularity
 set_option autoImplicit false
 section

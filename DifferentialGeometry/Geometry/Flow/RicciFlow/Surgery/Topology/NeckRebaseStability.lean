@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.TimeJets
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.WithinTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckTimeJetConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
-import DifferentialGeometry.Geometry.Metric.Cylinder.AxialIsometry
+import DifferentialGeometry.Geometry.Metric.CylinderAxial
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ShrinkingCylinderIsometries
@@ -17,8 +17,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Necks.Defs
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StrongNeck
 
 section
 noncomputable section

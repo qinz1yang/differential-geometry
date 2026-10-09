@@ -1,4 +1,3 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.CurvatureMonomialJetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.Remainder
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.CompositionJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
@@ -214,7 +213,6 @@ private theorem covariantJetNormSq_le_of_pointwise_iteratedCovGrad_le
     norm_sq_le_of_riemannianFiberNormSq_le (I := I) (M := M) g (iteratedCovGrad (I := I) g a b i X)
       (iteratedCovGrad (I := I) g a' b' i Y) (h i)
 
-omit [BoundarylessManifold I M] in
 theorem HasMoserTameBounds.operatorFieldComposition
     (g : SmoothRiemannianMetric I M) (p r c : ℕ) :
     ∃ C : ℕ → ℝ, (∀ n, 0 ≤ C n) ∧
@@ -502,7 +500,7 @@ private theorem sharpFlatEndomorphism_slot_zero
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (slotInsertEndoCc (I := I) (M := M) g 0
           (metricComparisonEndomorphismField (I := I) (M := M) g g₁)).toSection x) om =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g g₁ x) om from rfl]
   rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g g₁ x) om w]
@@ -669,7 +667,7 @@ private lemma slotInsertEndomorphism_add (g : SmoothRiemannianMetric I M) (s : �
   rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
-  rw [slotInsertEndomorphism_add_left, add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 theorem HasMoserTameBounds.inverseMetricDifferenceSlot
     (g : SmoothRiemannianMetric I M)
@@ -842,11 +840,10 @@ theorem HasMoserTameBounds.curvatureDecompositionMonomialCoefficient
       (HasMoserTameBounds.slotExtend (I := I) (M := M)
         (HasMoserTameBounds.slotExtend (I := I) (M := M)
           (HasMoserTameBounds.slotExtend (I := I) (M := M) hY)))
-  dsimp only [curvatureDecompositionMonomialCoeffField]
-  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialCoeffField_eq_pairTrace (I := I) (M := M) g g Y σ]
+  rw [curvMono_eq (I := I) (M := M) g g Y σ]
   exact happ T AL (fun n => fr * (fr * (fr * (fr * A n)))) SL
     (sfr * (sfr * (sfr * (sfr * S)))) _ _ (hL T)
-    (HasMoserTameBounds.permuteCovariantSlots (I := I) (M := M) (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) hslots)
+    (HasMoserTameBounds.permuteCovariantSlots (I := I) (M := M) (monoPerm σ) hslots)
 
 theorem HasMoserTameBounds.ricciConnectionDifferenceDerivativeTransposedCoefficient
     (g : SmoothRiemannianMetric I M)
@@ -1051,11 +1048,10 @@ theorem HasMoserTameBounds.movingMetricCurvatureDecompositionMonomialCoefficient
       (HasMoserTameBounds.slotExtend (I := I) (M := M)
         (HasMoserTameBounds.slotExtend (I := I) (M := M)
           (HasMoserTameBounds.slotExtend (I := I) (M := M) hY)))
-  dsimp only [curvatureDecompositionMonomialCoeffField]
-  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialCoeffField_eq_pairTrace (I := I) (M := M) g g₁ Y σ]
+  rw [curvMono_eq (I := I) (M := M) g g₁ Y σ]
   exact happ T AL (fun n => fr * (fr * (fr * (fr * A n)))) SL
     (sfr * (sfr * (sfr * (sfr * S)))) _ _ (hL T g₁ P hpert)
-    (HasMoserTameBounds.permuteCovariantSlots (I := I) (M := M) (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) hslots)
+    (HasMoserTameBounds.permuteCovariantSlots (I := I) (M := M) (monoPerm σ) hslots)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in

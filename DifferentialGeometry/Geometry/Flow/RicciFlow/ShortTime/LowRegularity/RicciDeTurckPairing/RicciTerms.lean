@@ -610,7 +610,6 @@ private theorem covariantJetNormSq_permCoeff_three_le_ricciQuadraticConnectionJe
   unfold ricciQuadraticConnectionJetCap
   rcases hρ with rfl | rfl <;> linarith
 
-omit [NeZero (Module.finrank ℝ E)] in
 private theorem exists_ricciQuadraticConnectionBlock_covariantJetNormSq_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -642,7 +641,6 @@ private theorem exists_ricciQuadraticConnectionBlock_covariantJetNormSq_bound
       (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
         (permCoeff (I := I) (M := M) g pm)))).trans_eq (by ring)
 
-omit [NeZero (Module.finrank ℝ E)] in
 private theorem exists_ricciQuadraticConnectionBlock_covariantJetNormSq_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -1612,7 +1610,6 @@ private theorem exists_kernelContractionMonomialField_covariantJetNormSq_bound
       simp only [K, P]
       ring
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem exists_ccInputSlotSymm_covariantJetNormSq_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :

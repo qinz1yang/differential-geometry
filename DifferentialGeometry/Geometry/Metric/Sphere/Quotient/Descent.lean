@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.OrthogonalAction
 import DifferentialGeometry.Geometry.Metric.Construction.SmoothMetricFromCoefficients
 import DifferentialGeometry.Geometry.Metric.Construction.BumpExtension
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Local
 import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
 

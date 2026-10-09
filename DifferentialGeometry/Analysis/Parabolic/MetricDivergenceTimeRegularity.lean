@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceSecondTimeDerivative
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeSecondWeakDerivative
-import DifferentialGeometry.Analysis.Sobolev.Time.WeakPartialRegularity
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.WeakPartialRegularity
 
 noncomputable section
 

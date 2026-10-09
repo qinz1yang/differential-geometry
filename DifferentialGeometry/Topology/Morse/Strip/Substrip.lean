@@ -34,7 +34,7 @@ theorem ModifiedWithin.eventuallyEq_of_notMem_Icc (h : ModifiedWithin f a' b' g)
   filter_upwards [hopen.mem_nhds hx] with y hy
   exact h.eqOn fun hy' => hy (Ioo_subset_Icc_self hy')
 
-theorem ModifiedWithin.morseStrip_of_substrip (hf : MorseStrip I f a b)
+theorem ModifiedWithin.morseStrip_of_substrip [IsManifold I ∞ M] (hf : MorseStrip I f a b)
     (ha : a ≤ a') (hb : b' ≤ b) (hreg : ∀ x, f x = a' ∨ f x = b' → ¬ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x)
     (hmod : ModifiedWithin f a' b' g) (hg : MorseStrip I g a' b') :
     MorseStrip I g a b ∧

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnularChainOpenCellCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleFourPoints
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.RibbonAnnuli
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingRibbonAnnuli
 import DifferentialGeometry.Topology.PiecewiseLinear.PLAnnulusReversal
 
 open Set

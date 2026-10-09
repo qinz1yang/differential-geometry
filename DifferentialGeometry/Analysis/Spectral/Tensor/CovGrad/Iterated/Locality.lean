@@ -40,7 +40,7 @@ theorem covGrad_toSection_apply_congr_of_eventuallyEq
     (covGrad (I := I) (M := M) g r s G₁).toSection x =
       (covGrad (I := I) (M := M) g r s G₂).toSection x := by
   rw [covGrad_toSection_apply, covGrad_toSection_apply]
-  refine congrArg (covariantSlotBundleEquiv (I := I) (M := M) r s x) ?_
+  refine congrArg (covGradBundleEquiv (I := I) (M := M) r s x) ?_
   exact tensorRSCovariantDerivative_congr_of_eventuallyEq (I := I) g r s
     (σ := fun y : M => G₁.toSection y) (σ' := fun y : M => G₂.toSection y) (x := x)
     hagree

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Measure.Area.LeastAreaAnnulus
 import DifferentialGeometry.Geometry.Measure.Area.LeastAreaComponent
-import DifferentialGeometry.Geometry.Metric.LoopSpace.C1DerivativeBounds
-import DifferentialGeometry.Topology.LoopSpace.C1.Contractible
+import DifferentialGeometry.Topology.LoopSpace.RegularDerivativeBounds
+import DifferentialGeometry.Topology.LoopSpace.RegularContractible
 
 
 

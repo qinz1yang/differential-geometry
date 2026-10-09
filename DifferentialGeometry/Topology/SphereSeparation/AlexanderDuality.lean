@@ -2,7 +2,7 @@ import Mathlib.Algebra.Homology.HomologicalComplex
 import Mathlib.LinearAlgebra.BilinearMap
 import Mathlib.Tactic.FinCases
 import Mathlib.Topology.Compactification.OnePoint.Sphere
-import DifferentialGeometry.Topology.SphereSeparation.SeparationFromHomology
+import DifferentialGeometry.Topology.SphereSeparation.JordanBrouwer
 import DifferentialGeometry.Topology.SphereSeparation.StandardSphere
 
 set_option autoImplicit false

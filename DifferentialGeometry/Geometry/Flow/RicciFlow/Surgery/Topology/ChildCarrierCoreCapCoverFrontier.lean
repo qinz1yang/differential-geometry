@@ -84,7 +84,7 @@ theorem childCap_comp_sphereToThreeBall (c : ConnectedComponents Q.Carrier)
 
 def childCoreCapCoverProducer : Prop :=
   ∀ c : ConnectedComponents Q.Carrier,
-    SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier → Nonempty (E.ChildCarrierCoreCapCover c)
+    SimplyConnectedSpace (P.component (E.childParent c)).Carrier → Nonempty (E.ChildCarrierCoreCapCover c)
 
 theorem simplyConnectedSpace_childCarrier_of_cover_univ_V (c : ConnectedComponents Q.Carrier)
     (d : E.ChildCarrierCoreCapCover c) (hV : d.V = univ) :

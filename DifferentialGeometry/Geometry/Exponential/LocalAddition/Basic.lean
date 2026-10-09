@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Topology.Manifold.ConnectedComponent
 
 open DifferentialGeometry.Geometry.Curvature

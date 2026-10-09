@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Bounds.NeckAlternativeScalarWindow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowScalarBoundNeckAlternatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalFlowLimitWindowTransfer
-import DifferentialGeometry.Geometry.Metric.Comparison.OpenEmbeddingBallCapture
+import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPointedFlowLimitWindowNeckAlternatives
 
 set_option autoImplicit false

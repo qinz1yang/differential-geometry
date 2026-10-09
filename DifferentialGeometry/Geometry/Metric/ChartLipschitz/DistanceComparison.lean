@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Metric.ChartDistance.Comparison
-import DifferentialGeometry.Geometry.Metric.Coordinates.EuclideanFrame
+import DifferentialGeometry.Geometry.Metric.ChartDistanceComparison
+import DifferentialGeometry.Geometry.Metric.EuclideanChart
 import Mathlib.Topology.EMetricSpace.Lipschitz
 
 set_option autoImplicit false

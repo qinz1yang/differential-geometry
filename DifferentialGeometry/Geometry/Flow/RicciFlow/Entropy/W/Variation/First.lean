@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Entropy.Perelman.W.Functional
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Functional
 import DifferentialGeometry.Analysis.Integration.Measure.Family.VolumeVariation
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 open DifferentialGeometry.Geometry.Curvature
@@ -20,9 +20,9 @@ theorem perelmanDensityPrefactor_hasDerivAt {n : Nat}
     (htau : tauPath s0 = tau) (htau_pos : 0 < tau)
     (htau_deriv : HasDerivAt tauPath tauVariation s0) :
     HasDerivAt
-      (fun s : Real => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n (tauPath s))
+      (fun s : Real => perelmanDensityPrefactor n (tauPath s))
       (-((n : Real) / (2 * tau)) * tauVariation *
-        DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau)
+        perelmanDensityPrefactor n tau)
       s0 := by
   have hbase :
       HasDerivAt (fun s : Real => 4 * Real.pi * tauPath s)
@@ -42,7 +42,7 @@ theorem perelmanDensityPrefactor_hasDerivAt {n : Nat}
   refine (hderiv.congr_of_eventuallyEq ?_).congr_deriv ?_
   · filter_upwards with s
     exact (Real.rpow_eq_pow _ _)
-  · unfold DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor
+  · unfold perelmanDensityPrefactor
     rw [Real.rpow_eq_pow, htau]
     have hbase_tau_ne : 4 * Real.pi * tau ≠ 0 := by positivity
     rw [Real.rpow_sub_one hbase_tau_ne]
@@ -60,10 +60,10 @@ theorem perelmanDensity_hasDerivAt {n : Nat}
           (potentialVariation x) s0)
     (x : M) :
     HasDerivAt
-      (fun s : Real => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s) (potentialPath s) x)
+      (fun s : Real => perelmanDensity n (tauPath s) (potentialPath s) x)
       ((-((n : Real) / (2 * tau)) * tauVariation -
           potentialVariation x) *
-        DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau (potentialPath s0) x)
+        perelmanDensity n tau (potentialPath s0) x)
       s0 := by
   have hpref :=
     perelmanDensityPrefactor_hasDerivAt
@@ -79,7 +79,7 @@ theorem perelmanDensity_hasDerivAt {n : Nat}
   refine (hmul.congr_of_eventuallyEq ?_).congr_deriv ?_
   · filter_upwards with s
     rfl
-  · unfold DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity
+  · unfold perelmanDensity
     rw [htau]
     ring_nf
 
@@ -116,7 +116,7 @@ theorem wEntropyBracket_hasDerivAt {n : Nat}
     (x : M) :
     HasDerivAt
       (fun s : Real =>
-        DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
+        wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
           (gradPotentialNormSqPath s) (potentialPath s) x)
       (wEntropyBracketVariation tau tauVariation (scalarCurvaturePath s0)
         scalarCurvatureVariation (gradPotentialNormSqPath s0)
@@ -144,7 +144,7 @@ def wEntropyWeightedIntegralVariationIntegrand (n : Nat)
       M -> Real) :
     M -> Real :=
   fun x =>
-    DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau potential x *
+    perelmanDensity n tau potential x *
       (phiVariation x +
         phi x *
           wEntropyWeightedMeasureVariationFactor n tau tauVariation
@@ -188,12 +188,12 @@ theorem weightedMeasureIntegral_hasDerivAt_at
     (hintegrand_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x)
+          perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x)
         s0) :
     HasDerivAt
       (fun s : Real =>
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x
+          perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x
           ∂(volumeMeasureFamily (I := I) (M := M) G s))
       (∫ x,
         wEntropyWeightedIntegralVariationIntegrand n tau tauVariation
@@ -205,7 +205,7 @@ theorem weightedMeasureIntegral_hasDerivAt_at
     volume_variation_formula_at
       (I := I) (M := M) G
       (f := fun s : Real => fun x : M =>
-        DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x)
+        perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x)
       (t₀ := s0) hmetric_regularity hintegrand_regularity
   refine hvol.congr_deriv ?_
   apply integral_congr_ae
@@ -220,11 +220,11 @@ theorem weightedMeasureIntegral_hasDerivAt_at
   have hprod :
       HasDerivAt
         (fun s : Real =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x)
+          perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x)
         (((-((n : Real) / (2 * tau)) * tauVariation -
             potentialVariation x) *
-          DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau (potentialPath s0) x) * phiPath s0 x +
-          DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s0) (potentialPath s0) x *
+          perelmanDensity n tau (potentialPath s0) x) * phiPath s0 x +
+          perelmanDensity n (tauPath s0) (potentialPath s0) x *
             phiVariation x)
         s0 :=
     hdens.mul (hphi_deriv x)
@@ -232,10 +232,10 @@ theorem weightedMeasureIntegral_hasDerivAt_at
   change
     deriv
         (fun s : Real =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x)
+          perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x)
         s0 +
       1 / 2 * traceTimeDerivMetricAt (I := I) G s0 x *
-        (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s0) (potentialPath s0) x * phiPath s0 x) =
+        (perelmanDensity n (tauPath s0) (potentialPath s0) x * phiPath s0 x) =
     wEntropyWeightedIntegralVariationIntegrand n tau tauVariation
       (potentialPath s0) potentialVariation metricVariationTrace
       (phiPath s0) phiVariation x
@@ -277,21 +277,21 @@ theorem wEntropyBaseIntegral_hasDerivAt_at
     (hintegrand_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s) (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
+          perelmanDensity n (tauPath s) (potentialPath s) x *
+            wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) (potentialPath s) x)
         s0) :
     HasDerivAt
       (fun s : Real =>
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s) (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
+          perelmanDensity n (tauPath s) (potentialPath s) x *
+            wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) (potentialPath s) x
           ∂(volumeMeasureFamily (I := I) (M := M) G s))
       (∫ x,
         wEntropyWeightedIntegralVariationIntegrand n tau tauVariation
           (potentialPath s0) potentialVariation metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n tau (scalarCurvaturePath s0)
+          (wEntropyBracket n tau (scalarCurvaturePath s0)
             (gradPotentialNormSqPath s0) (potentialPath s0))
           (wEntropyBracketVariation tau tauVariation (scalarCurvaturePath s0)
             scalarCurvatureVariation (gradPotentialNormSqPath s0)
@@ -303,7 +303,7 @@ theorem wEntropyBaseIntegral_hasDerivAt_at
       (I := I) (M := M) G
       (n := n) (tauPath := tauPath) (potentialPath := potentialPath)
       (phiPath := fun s : Real => fun x : M =>
-        DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
+        wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
           (gradPotentialNormSqPath s) (potentialPath s) x)
       (s0 := s0) (tau := tau) (tauVariation := tauVariation)
       (potentialVariation := potentialVariation)
@@ -334,26 +334,27 @@ theorem WEntropyHasFirstVariationAt_of_baseIntegral_hasDerivAt
     {s0 firstVariation : Real}
     (hbase_eq :
       (fun s : Real =>
-        DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (muPath s) n (tauPath s) (scalarCurvaturePath s)
+        wFunctional (muPath s) n (tauPath s) (scalarCurvaturePath s)
           (gradPotentialNormSqPath s) (potentialPath s))
         =ᶠ[nhds s0]
       fun s : Real =>
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s) (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
+          perelmanDensity n (tauPath s) (potentialPath s) x *
+            wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) (potentialPath s) x
           ∂(muPath s))
     (hbase :
       HasDerivAt
         (fun s : Real =>
           ∫ x,
-            DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s) (potentialPath s) x *
-              DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
+            perelmanDensity n (tauPath s) (potentialPath s) x *
+              wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
                 (gradPotentialNormSqPath s) (potentialPath s) x
             ∂(muPath s))
         firstVariation s0) :
-    HasDerivAt (DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong muPath n tauPath scalarCurvaturePath gradPotentialNormSqPath potentialPath) firstVariation s0 := by
-  unfold DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong
+    WEntropyHasFirstVariationAt muPath n tauPath scalarCurvaturePath
+      gradPotentialNormSqPath potentialPath s0 firstVariation := by
+  unfold WEntropyHasFirstVariationAt wFunctionalAlong
   exact hbase.congr_of_eventuallyEq hbase_eq
 
 theorem WEntropyHasFirstVariationAt_of_volumeVariation
@@ -368,14 +369,14 @@ theorem WEntropyHasFirstVariationAt_of_volumeVariation
       metricVariationTrace : M -> Real}
     (hbase_eq :
       (fun s : Real =>
-        DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (volumeMeasureFamily (I := I) (M := M) G s) n
+        wFunctional (volumeMeasureFamily (I := I) (M := M) G s) n
           (tauPath s) (scalarCurvaturePath s)
           (gradPotentialNormSqPath s) (potentialPath s))
         =ᶠ[nhds s0]
       fun s : Real =>
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s) (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
+          perelmanDensity n (tauPath s) (potentialPath s) x *
+            wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) (potentialPath s) x
           ∂(volumeMeasureFamily (I := I) (M := M) G s))
     (htau : tauPath s0 = tau) (htau_pos : 0 < tau)
@@ -401,19 +402,22 @@ theorem WEntropyHasFirstVariationAt_of_volumeVariation
     (hintegrand_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (tauPath s) (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
+          perelmanDensity n (tauPath s) (potentialPath s) x *
+            wEntropyBracket n (tauPath s) (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) (potentialPath s) x)
         s0) :
-    HasDerivAt (DifferentialGeometry.Analysis.Entropy.Perelman.wFunctionalAlong (volumeMeasureFamily (I := I) (M := M) G) n tauPath scalarCurvaturePath gradPotentialNormSqPath potentialPath) (∫ x,
+    WEntropyHasFirstVariationAt
+      (volumeMeasureFamily (I := I) (M := M) G)
+      n tauPath scalarCurvaturePath gradPotentialNormSqPath potentialPath s0
+      (∫ x,
         wEntropyWeightedIntegralVariationIntegrand n tau tauVariation
           (potentialPath s0) potentialVariation metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyBracket n tau (scalarCurvaturePath s0)
+          (wEntropyBracket n tau (scalarCurvaturePath s0)
             (gradPotentialNormSqPath s0) (potentialPath s0))
           (wEntropyBracketVariation tau tauVariation (scalarCurvaturePath s0)
             scalarCurvatureVariation (gradPotentialNormSqPath s0)
             gradPotentialNormSqVariation potentialVariation) x
-        ∂(volumeMeasureFamily (I := I) (M := M) G s0)) s0 := by
+        ∂(volumeMeasureFamily (I := I) (M := M) G s0)) := by
   exact WEntropyHasFirstVariationAt_of_baseIntegral_hasDerivAt
     (M := M)
     (muPath := volumeMeasureFamily (I := I) (M := M) G)

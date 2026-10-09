@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.ClosedIntervalNormBound
 import DifferentialGeometry.Geometry.Neck.NormalizedFootprint
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.ScalarTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceScalarTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.QuadraticForm
 
 noncomputable section
@@ -61,7 +61,7 @@ private theorem abs_extendedMetric_derivWithin_le_riemannNorm
     ((H.event j).terminal.closedSolution_isSolutionOn W le_rfl (H.event j).incoming.lt)
     (H.event j).incoming.lt Subset.rfl Subset.rfl
     ht z v
-  simp only [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.closedSolution_metric,
+  simp only [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.closedSolution_metric,
     SolutionFamily.rm04, metricRm04_apply] at hh
   rw [rmNormSq_restrictOpen] at hh
   have hd : (Module.finrank ℝ ThreeSpace : ℝ) = 3 := by simp [ThreeSpace]
@@ -186,7 +186,7 @@ theorem NormalizedNeck.exists_compact_footprint_historical_curvature_bound
         rw [(H.event j).terminal.extendedMetric_before hts,
           DifferentialGeometry.CheegerGromovCompactness.metricScalarAt_restrictOpen, rmNormSq_restrictOpen, hy]
         exact ⟨hstage, hrm⟩
-      · rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+      · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
         exact ⟨A.terminal_scalar_le_two_mul_of_time_sub_le x hq hqQ hA (hsc x hx)
           j hf hl y hy htime,
           A.riemannNorm_terminal_le_of_terminal_scalar_le x hq hqQ hA

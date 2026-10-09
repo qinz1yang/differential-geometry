@@ -39,7 +39,7 @@ theorem coframe_homBundleCovariantDerivative_selfAdjointConjugation
         ((A y).comp (q y).symm.toContinuousLinearEquiv.toContinuousLinearMap))
     (X : TangentSpace I x) :
     (q x).toContinuousLinearEquiv.toContinuousLinearMap.comp
-      ((_root_.CovariantDerivative.hom I M F V F V
+      ((DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V
         cov cov A x X).comp (q x).symm.toContinuousLinearEquiv.toContinuousLinearMap) =
       ((mvfderiv I B x X - mvfderiv 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))
         (fun g : F ≃ₗᵢ[ℝ] F => ContRepresentation.selfAdjointConjugation g) 1

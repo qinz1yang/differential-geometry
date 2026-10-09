@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Variation.IntervalNormBounds
+import DifferentialGeometry.Geometry.Comparison.Variation.IntervalNormBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ClosedIntervalExtension
 
 

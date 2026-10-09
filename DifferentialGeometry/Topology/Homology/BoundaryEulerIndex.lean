@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.VectorField.BoundaryEulerFromIndex
 import DifferentialGeometry.Topology.VectorField.PrescribedOutwardBoundary
-import DifferentialGeometry.Topology.VectorField.Collar.BoundaryCollarPullback
+import DifferentialGeometry.Topology.VectorField.BoundaryCollarPullback
 
 set_option autoImplicit false
 noncomputable section

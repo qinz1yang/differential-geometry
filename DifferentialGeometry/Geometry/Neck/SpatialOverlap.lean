@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Neck.SpatialOscillation
 import DifferentialGeometry.Geometry.Neck.OverlapBand
 import DifferentialGeometry.Geometry.Neck.SpatialChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckImageRadius
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Cylinder.BallCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderBallCapture
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 
 noncomputable section

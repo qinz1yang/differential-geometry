@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.IntrinsicMetricBounds
-import DifferentialGeometry.Analysis.Integration.Measure.Parametric.LowerBound
-import DifferentialGeometry.Geometry.Exponential.InjectivityRadius.Intrinsic
+import DifferentialGeometry.Geometry.Measure.ParametricLower
+import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Intrinsic
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.BallChart
 import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls

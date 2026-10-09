@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Family
 import DifferentialGeometry.Topology.Manifold.SmoothInterval
 import DifferentialGeometry.Analysis.ODE.Uniqueness
-import DifferentialGeometry.Geometry.Variation.ExponentialTail
+import DifferentialGeometry.Geometry.Comparison.Variation.ExponentialTail
 
 section
 

@@ -332,7 +332,7 @@ private lemma tensor0S_curry_covGradBundleEquiv_unit_apply
     (v : TangentSpace I x) :
     tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ)
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x)) v =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Φ v)
         (unitZeroSec (I := I) (M := M) x) := by
@@ -344,16 +344,16 @@ private lemma tensor0S_curry_covGradBundleEquiv_unit_apply
     Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) u
   have hcurry := TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-      covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ)
+      covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
       (unitZeroSec (I := I) (M := M) x))
     (tangentSpaceModelContinuousLinearEquiv (I := I) x v) u
   rw [ContinuousLinearEquiv.symm_apply_apply] at hcurry
   rw [hcurry]
   change Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-        covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ)
+        covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
         (unitZeroSec (I := I) (M := M) x)) vu = _
-  rw [covariantSlotBundleEquiv_apply_toModel (I := I) (M := M) 0 s x Φ
+  rw [covGradBundleEquiv_apply_toModel (I := I) (M := M) 0 s x Φ
     (unitZeroSec (I := I) (M := M) x) vu]
   have hzero :
       (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
@@ -368,7 +368,7 @@ private lemma tensor0S_curry_covGradBundleEquiv_unit_apply
 noncomputable def genuineCurvPureRFib
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M) :
     TensorRSSpace 0 (s + 1) I x :=
-  covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+  covGradBundleEquiv (I := I) (M := M) 0 s x
     (genuineCurvatureOnlyDirectionalCLM (I := I) (M := M) g s S x)
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -482,7 +482,7 @@ noncomputable def genuineCurvPureRFibFixedFrame
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b) (x : M) :
     TensorRSSpace 0 (s + 1) I x :=
-  covariantSlotBundleEquiv (I := I) (M := M) 0 s x (pureRDirCLMFixedFrame (I := I) (M := M) g s S B x)
+  covGradBundleEquiv (I := I) (M := M) 0 s x (pureRDirCLMFixedFrame (I := I) (M := M) g s S B x)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -504,16 +504,16 @@ private theorem genuineCurvPureRFibFixedFrame_contMDiff
   classical
   have hcomp :
       ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 (s + 1) ℝ E)) ∞
-        ((covariantSlotBundleSmoothEquiv (I := I) (M := M) 0 s).toDiffeomorph ∘
+        ((covGradBundleSmoothEquiv (I := I) (M := M) 0 s).toDiffeomorph ∘
           (fun x : M => TotalSpace.mk' (E →L[ℝ] TensorRSModel 0 s ℝ E)
             (E := fun y : M => TangentSpace I y →L[ℝ] TensorRSSpace 0 s I y) x
             (pureRDirCLMFixedFrame (I := I) (M := M) g s S B x))) :=
-    (covariantSlotBundleSmoothEquiv (I := I) (M := M) 0 s).toDiffeomorph.contMDiff.comp
+    (covGradBundleSmoothEquiv (I := I) (M := M) 0 s).toDiffeomorph.contMDiff.comp
       (pureRDirCLMFixedFrame_homSection_contMDiff (I := I) (M := M) g s S hB)
   refine hcomp.congr ?_
   intro x
   rw [Function.comp_apply]
-  exact covariantSlotBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) 0 s x
+  exact covGradBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) 0 s x
     (pureRDirCLMFixedFrame (I := I) (M := M) g s S B x)
 
 private noncomputable def pureRValuedBilinAt

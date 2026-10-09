@@ -1,4 +1,9 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.TwoSidedSurface
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.ExtendedLoopTheoremStatement
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceEssentialDisk
 
@@ -9,7 +14,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 open Classical in
-theorem injective_fundamentalGroup_map_of_no_compressing_disk
+theorem injective_fundamentalGroup_map_of_moise264Orientable (h264 : Moise264Orientable)
     (hdim : Module.finrank ℝ E = 3)
     {L : Geometry.SimplicialComplex ℝ E} [Finite L.faces] (hL : IsCombinatorialManifold 2 L)
     (hLc : IsConnected L.space) {S : Set E} (hLS : L.space = S) {U : Set E} (hU : IsOpen U)
@@ -42,7 +47,7 @@ theorem injective_fundamentalGroup_map_of_no_compressing_disk
     rw [Subtype.range_coe]
     exact Filter.mem_of_superset (isOpen_interior.mem_nhdsSet.mpr hLN) interior_subset
   obtain ⟨Δ, r, hr, hΔ, hmeet, hb, hnon⟩ :=
-    exists_compressing_disk_of_twoSided_surface N₀ inferInstance hN₀ hor L inferInstance hL hLint htwo x g hne (hnull _)
+    h264 N₀ inferInstance hN₀ hor L inferInstance hL hLint htwo x g hne (hnull _)
   exact hnon (hno Δ r hr (hΔ.trans (sdiff_subset.trans hN₀U)) hmeet hb)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

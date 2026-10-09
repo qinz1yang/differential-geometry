@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Coordinates.EuclideanFrame
+import DifferentialGeometry.Geometry.Metric.EuclideanChart
 import DifferentialGeometry.Analysis.Calculus.LipschitzApproximation
 import DifferentialGeometry.Geometry.Metric.ChartLipschitz.DistanceComparison
 

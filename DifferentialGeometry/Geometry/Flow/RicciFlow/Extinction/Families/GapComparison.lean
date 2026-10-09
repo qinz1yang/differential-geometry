@@ -218,6 +218,19 @@ private theorem upperDini_of_increment_bound {f : ℝ → ℝ} {a b x Cup : ℝ}
     simpa only [add_sub_cancel_left] using hbound
   linarith
 
+private theorem rho_int {rho : ℝ → ℝ} {a b s t : ℝ}
+    (hc : ContinuousOn rho (Icc a b)) (hs : s ∈ Icc a b) (ht : t ∈ Icc a b) :
+    IntervalIntegrable rho volume s t :=
+  (hc.mono (uIcc_subset_Icc hs ht)).intervalIntegrable
+
+private theorem primitive_deriv {rho : ℝ → ℝ} {a b s t : ℝ}
+    (hc : ContinuousOn rho (Icc a b)) (hs : s ∈ Icc a b) (ht : t ∈ Icc a b) :
+    HasDerivWithinAt (fun v => ∫ w in s..v, rho w) (rho t) (Icc a b) t := by
+  let : Fact (t ∈ Icc a b) := ⟨ht⟩
+  have hm : StronglyMeasurableAtFilter rho (𝓝[Icc a b] t) volume :=
+    ⟨Icc a b, self_mem_nhdsWithin, hc.aestronglyMeasurable measurableSet_Icc⟩
+  exact intervalIntegral.integral_hasDerivWithinAt_right (rho_int hc hs ht) hm (hc t ht)
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -265,21 +278,18 @@ theorem rfs_width_gap_comparison (B : RicciBackground (I := I) (M := Q) D a b)
   have hb : b ∈ Icc a b := ⟨B.lt.le, le_rfl⟩
   have hFc : ContinuousOn F (Icc a b) := areaIntegratingFactor_continuousOn B ha
   have hFp : ∀ t, 0 < F t := areaIntegratingFactor_pos B.family a
-  have hFform : F = DifferentialGeometry.Analysis.integratingFactor rho a := by
+  have hFform : F = fun t => Real.exp (∫ x in a..t, rho x) := by
     funext t
-    exact areaIntegratingFactor_eq_integratingFactor B.family a t
+    dsimp [F, areaIntegratingFactor, rho, halfScalarMinimum]
+    rw [intervalIntegral.integral_div]
+    congr 1
+    ring
   have hFd : ∀ t ∈ Icc a b, HasDerivWithinAt F (rho t * F t) (Icc a b) t := by
     intro t ht
     rw [hFform]
-    exact DifferentialGeometry.Analysis.hasDerivWithinAt_integratingFactor hc ha ht
-  have hPd : ∀ t ∈ Icc a b, HasDerivWithinAt P (F t) (Icc a b) t := by
-    intro t ht
-    let : Fact (t ∈ Icc a b) := ⟨ht⟩
-    have hi : IntervalIntegrable F volume a t :=
-      (hFc.mono (uIcc_subset_Icc ha ht)).intervalIntegrable
-    have hm : StronglyMeasurableAtFilter F (𝓝[Icc a b] t) volume :=
-      ⟨Icc a b, self_mem_nhdsWithin, hFc.aestronglyMeasurable measurableSet_Icc⟩
-    exact intervalIntegral.integral_hasDerivWithinAt_right hi hm (hFc t ht)
+    simpa only [mul_comm] using (primitive_deriv hc ha ht).exp
+  have hPd : ∀ t ∈ Icc a b, HasDerivWithinAt P (F t) (Icc a b) t :=
+    fun t ht => primitive_deriv hFc ha ht
   have hPc : ContinuousOn P (Icc a b) := fun t ht => (hPd t ht).continuousWithinAt
   have hJc : ContinuousOn J (Icc a b) :=
     (hFc.mul hcontinuous).add (continuousOn_const.mul hPc)

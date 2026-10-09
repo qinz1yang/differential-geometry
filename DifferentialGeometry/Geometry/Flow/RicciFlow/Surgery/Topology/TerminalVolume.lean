@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricCompactComparison
-import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphBallCapture
+import DifferentialGeometry.Geometry.Comparison.BallCapture
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeDiffeomorph
 import DifferentialGeometry.Geometry.Measure.OpenSubtypeVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
@@ -18,9 +18,6 @@ open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
@@ -34,7 +31,7 @@ private local instance : SigmaCompactSpace G.terminalRegularOpen :=
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       G.terminalRegularOpen.isOpen)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.tendsto_riemannianVolumeMeasure_compact
+theorem TerminalLimitMetric.tendsto_riemannianVolumeMeasure_compact
     (L : G.TerminalLimitMetric) {K : Set G.terminalRegularOpen} (hK : IsCompact K) :
     Tendsto (fun t => riemannianVolumeMeasure (I := ThreeModel) (M := G.terminalRegularOpen)
       ((G.flow.base.metric t).restrictOpen G.terminalRegularOpen) K)
@@ -69,7 +66,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (Eventually.of_forall fun _ => tendsto_const_nhds)
   simpa only [lintegral_const, one_mul, Measure.restrict_apply_univ] using hconv
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.volume_compact_le_of_eventually_volume_le
+theorem TerminalLimitMetric.volume_compact_le_of_eventually_volume_le
     (L : G.TerminalLimitMetric) {K : Set G.terminalRegularOpen} (hK : IsCompact K)
     {V : ℝ≥0∞}
     (hV : ∀ᶠ t in 𝓝[<] s,
@@ -95,9 +92,6 @@ open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 private local instance : MeasurableSpace P.Carrier := borel P.Carrier
@@ -108,7 +102,7 @@ private local instance : SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_ball_subset_compact_terminal_ball
+private theorem TerminalLimitMetric.eventually_ball_subset_compact_terminal_ball
     (L : G.TerminalLimitMetric) (p : G.terminalRegularOpen) {ρ R : ℝ}
     (hρ : 0 < ρ) (hρR : ρ < R)
     (hcompact : IsCompact (riemannianClosedBallOf L.metric p R)) :
@@ -145,7 +139,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   rw [hradius] at hcapture
   exact hcapture
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.le_volume_compact_of_eventually_ball_volume_ge
+private theorem TerminalLimitMetric.le_volume_compact_of_eventually_ball_volume_ge
     (L : G.TerminalLimitMetric) (p : G.terminalRegularOpen) {ρ R : ℝ}
     (hρ : 0 < ρ) (hρR : ρ < R)
     (hcompact : IsCompact (riemannianClosedBallOf L.metric p R))
@@ -168,7 +162,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   rw [hpre] at heq
   exact heq.symm
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.volume_ball_ge_of_eventually_volume_ball_ge
+theorem TerminalLimitMetric.volume_ball_ge_of_eventually_volume_ball_ge
     (L : G.TerminalLimitMetric) (p : G.terminalRegularOpen) {r κ : ℝ} (hr : 0 < r)
     (hcompact : IsCompact (riemannianClosedBallOf L.metric p r))
     (hvolume : ∀ ρ : ℝ, 0 < ρ → ρ < r → ∀ᶠ t in 𝓝[<] s,
@@ -213,9 +207,6 @@ open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 private local instance (P : OrientedThreeStage.{u}) : MeasurableSpace P.Carrier := borel P.Carrier
@@ -231,7 +222,7 @@ private local instance {P : OrientedThreeStage.{u}} {t₀ s : ℝ}
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       G.terminalRegularOpen.isOpen)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.normalized_volume_ball_ge_of_eventually_volume_ball_ge
+theorem TerminalLimitMetric.normalized_volume_ball_ge_of_eventually_volume_ball_ge
     {P : OrientedThreeStage.{u}} {t₀ s : ℝ} {G : P.IncomingSlab t₀ s}
     (L : G.TerminalLimitMetric) (x y : G.terminalRegularOpen)
     {Q r a R κ : ℝ} (hQ : 0 < Q) (hr : 0 ≤ r) (ha : 0 < a)
@@ -266,7 +257,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   rw [hradius, hdim] at hscaled
   simpa only [ENNReal.ofReal_mul' (pow_nonneg ha.le 3), ENNReal.ofReal_pow ha.le] using hscaled
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.normalized_inner_ball_volume_lower_bound_of_eventually_volume_ball_ge
+theorem normalized_inner_ball_volume_lower_bound_of_eventually_volume_ball_ge
     (P : ℕ → OrientedThreeStage.{u}) (t₀ s : ℕ → ℝ)
     (G : ∀ n, (P n).IncomingSlab (t₀ n) (s n))
     (L : ∀ n, (G n).TerminalLimitMetric) (x : ∀ n, (G n).terminalRegularOpen)

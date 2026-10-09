@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Finite
 import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 import DifferentialGeometry.Topology.Manifold.Components
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
+import DifferentialGeometry.Topology.ThreeManifold.CutCap
 
 noncomputable section
 
@@ -11,69 +11,69 @@ namespace DifferentialGeometry.Topology
 
 universe u
 
-structure StandardConnectedSumPresentation (M : Type u) [TopologicalSpace M]
+structure PoincareStandardPresentation (M : Type u) [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] where
   factors : List (ConnectedClosedOrientedManifold.{u} 3)
   standard : ∀ F ∈ factors, isStandardFactor F
   diffeomorph : M ≃ₘ⟮𝓡 3, 𝓡 3⟯ (finiteConnectedSum factors).Carrier
 
-def isStandardConnectedSum (M : Type u) [TopologicalSpace M]
+def isPoincareStandard (M : Type u) [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] : Prop :=
-  Nonempty (StandardConnectedSumPresentation M)
+  Nonempty (PoincareStandardPresentation M)
 
-theorem isStandardConnectedSum_connectedSpace {M : Type u} [TopologicalSpace M]
-    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] (h : isStandardConnectedSum M) :
+theorem isPoincareStandard_connectedSpace {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] (h : isPoincareStandard M) :
     ConnectedSpace M := by
   obtain ⟨p⟩ := h
   exact p.diffeomorph.toHomeomorph.connectedSpace_iff.mpr inferInstance
 
-theorem isStandardConnectedSum_compactSpace {M : Type u} [TopologicalSpace M]
-    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] (h : isStandardConnectedSum M) :
+theorem isPoincareStandard_compactSpace {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] (h : isPoincareStandard M) :
     CompactSpace M := by
   obtain ⟨p⟩ := h
   exact p.diffeomorph.symm.toHomeomorph.compactSpace
 
-theorem not_isStandardConnectedSum_of_isEmpty (M : Type u) [TopologicalSpace M]
-    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [IsEmpty M] : ¬isStandardConnectedSum M := by
+theorem not_isPoincareStandard_of_isEmpty (M : Type u) [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [IsEmpty M] : ¬isPoincareStandard M := by
   intro h
-  let := isStandardConnectedSum_connectedSpace h
+  let := isPoincareStandard_connectedSpace h
   exact isEmptyElim (Classical.choice (inferInstance : Nonempty M))
 
-theorem isStandardConnectedSum_of_diffeomorph
+theorem isPoincareStandard_of_diffeomorph
     {M N : Type u} [TopologicalSpace M] [TopologicalSpace N]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) N]
-    (f : M ≃ₘ⟮𝓡 3, 𝓡 3⟯ N) (hN : isStandardConnectedSum N) :
-    isStandardConnectedSum M := by
+    (f : M ≃ₘ⟮𝓡 3, 𝓡 3⟯ N) (hN : isPoincareStandard N) :
+    isPoincareStandard M := by
   obtain ⟨p⟩ := hN
   exact ⟨⟨p.factors, p.standard, f.trans p.diffeomorph⟩⟩
 
-theorem isStandardConnectedSum_iff_of_diffeomorph
+theorem isPoincareStandard_iff_of_diffeomorph
     {M N : Type u} [TopologicalSpace M] [TopologicalSpace N]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) N]
     (f : M ≃ₘ⟮𝓡 3, 𝓡 3⟯ N) :
-    isStandardConnectedSum M ↔ isStandardConnectedSum N :=
-  ⟨isStandardConnectedSum_of_diffeomorph f.symm, isStandardConnectedSum_of_diffeomorph f⟩
+    isPoincareStandard M ↔ isPoincareStandard N :=
+  ⟨isPoincareStandard_of_diffeomorph f.symm, isPoincareStandard_of_diffeomorph f⟩
 
-theorem isStandardConnectedSum_finite_sum
+theorem isPoincareStandard_finite_sum
     (L : List (ConnectedClosedOrientedManifold.{u} 3))
-    (hL : ∀ F ∈ L, isStandardFactor F) : isStandardConnectedSum (finiteConnectedSum L).Carrier :=
+    (hL : ∀ F ∈ L, isStandardFactor F) : isPoincareStandard (finiteConnectedSum L).Carrier :=
   ⟨⟨L, hL, Diffeomorph.refl _ _ ∞⟩⟩
 
-theorem isStandardConnectedSum_sphere : isStandardConnectedSum standardThreeSphereLift.{u}.Carrier := by
-  exact isStandardConnectedSum_finite_sum [] (by simp)
+theorem isPoincareStandard_sphere : isPoincareStandard standardThreeSphereLift.{u}.Carrier := by
+  exact isPoincareStandard_finite_sum [] (by simp)
 
-theorem isStandardConnectedSum_of_standard_factor (M : ConnectedClosedOrientedManifold.{u} 3)
-    (h : isStandardFactor M) : isStandardConnectedSum M.Carrier := by
-  exact isStandardConnectedSum_finite_sum [M] (by simpa using h)
+theorem isPoincareStandard_of_standard_factor (M : ConnectedClosedOrientedManifold.{u} 3)
+    (h : isStandardFactor M) : isPoincareStandard M.Carrier := by
+  exact isPoincareStandard_finite_sum [M] (by simpa using h)
 
-@[simp] theorem isStandardConnectedSum_opposite_iff (M : ConnectedClosedOrientedManifold.{u} 3) :
-    isStandardConnectedSum M.opposite.Carrier ↔ isStandardConnectedSum M.Carrier := Iff.rfl
+@[simp] theorem isPoincareStandard_opposite_iff (M : ConnectedClosedOrientedManifold.{u} 3) :
+    isPoincareStandard M.opposite.Carrier ↔ isPoincareStandard M.Carrier := Iff.rfl
 
 def componentIsPoincareStandard (M : ClosedOrientedManifold.{u} 3)
     (C : ConnectedComponents M.Carrier) : Prop :=
-  isStandardConnectedSum (M.component C).Carrier
+  isPoincareStandard (M.component C).Carrier
 
 def SphericalCutCapTransition.poincareControlled {M Q : ClosedOrientedManifold.{u} 3}
     (E : SphericalCutCapTransition M Q) : Prop :=
@@ -83,7 +83,7 @@ theorem SphericalCutCapTransition.poincareControlled_iff
     {M Q : ClosedOrientedManifold.{u} 3} (E : SphericalCutCapTransition M Q) :
     E.poincareControlled ↔
       ∀ C : ConnectedComponents E.discarded.Carrier,
-        isStandardConnectedSum (E.discarded.component C).Carrier := Iff.rfl
+        isPoincareStandard (E.discarded.component C).Carrier := Iff.rfl
 
 def FiniteCutCapTrace.poincareControlled (T : FiniteCutCapTrace.{u}) : Prop :=
   T.controlledBy componentIsPoincareStandard
@@ -94,6 +94,6 @@ theorem FiniteCutCapTrace.poincareControlled_iff (T : FiniteCutCapTrace.{u}) :
 theorem FiniteCutCapTrace.discarded_poincareStandard (T : FiniteCutCapTrace.{u})
     (h : T.poincareControlled) (i : Fin T.eventCount)
     (C : ConnectedComponents (T.transition i).discarded.Carrier) :
-    isStandardConnectedSum ((T.transition i).discarded.component C).Carrier := h i C
+    isPoincareStandard ((T.transition i).discarded.component C).Carrier := h i C
 
 end DifferentialGeometry.Topology

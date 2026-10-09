@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
-import DifferentialGeometry.Analysis.Integration.Measure.Packing
+import DifferentialGeometry.Geometry.Comparison.Volume.Packing
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.BallMultiplicityBound

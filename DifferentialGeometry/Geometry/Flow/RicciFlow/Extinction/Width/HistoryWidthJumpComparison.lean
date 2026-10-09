@@ -32,7 +32,7 @@ theorem rfs_child_comparison_data
     {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
     (G : GeometricCutoffRecord H i parameters)
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier) :
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier) :
     ChildComparisonData G :=
   G.rfs_child_comparison hSC
 
@@ -40,7 +40,7 @@ theorem historyWidth_event_jump_of_childComparison (H : ObservedHistory.{u})
     (parameters : CutoffParameters)
     (cutoff : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (i : Fin H.eventCount)
     (hchild : ChildComparisonData (cutoff i)) :

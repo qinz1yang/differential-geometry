@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import DifferentialGeometry.Geometry.Curvature.RoundCylinderPerturbation
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 
 noncomputable section
 open scoped Manifold ContDiff

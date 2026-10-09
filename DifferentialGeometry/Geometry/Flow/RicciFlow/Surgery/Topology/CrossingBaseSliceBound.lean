@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Estimates.CurvatureAtDistance.TimeComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Estimates.CurvatureAtDistance.AfterEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceSliver
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceAfterEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialWindowScalarBound
 
 set_option autoImplicit false

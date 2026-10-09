@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.Hessian.Restriction
 import DifferentialGeometry.Geometry.Connection.Laplacian.SubbundleRestriction
 import DifferentialGeometry.Geometry.Connection.SelfAdjointRestriction
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint
 
 set_option autoImplicit false
 
@@ -32,15 +31,15 @@ theorem selfAdjoint_hessian_subtypeVal
     ∀ (A : Cₛ^∞⟮I; Fin S.rank → ℝ, fun x => S.fiber x⟯)
       (x : M) (X Y : TangentSpace I x),
       ((cov.selfAdjoint hcov).hessian base A x X Y : V x →L[ℝ] V x) =
-        (_root_.CovariantDerivative.hom
+        (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov).hessian base (fun y => (A y : V y →L[ℝ] V y)) x X Y := by
   let S := Bundle.selfAdjointSubbundle (I := I) (F := F) (V := V) (n := ∞)
   let _ := S.totalSpaceTopology
   let _ := S.fiberBundle
   let _ := S.vector_bundle
-  exact (_root_.CovariantDerivative.hom I M F V F V cov cov)
+  exact (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov)
     |>.restrict_hessian_subtypeVal S
-      (_root_.CovariantDerivative.hom_isCovariantlyInvariant_selfAdjoint
+      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_isCovariantlyInvariant_selfAdjoint
         cov hcov) base
 
 end CovariantDerivative
@@ -61,7 +60,7 @@ theorem rawBundleConnLap_selfAdjoint_subtypeVal
   let _ := S.totalSpaceTopology
   let _ := S.fiberBundle
   exact rawBundleConnLap_restrict_subtypeVal g
-    (_root_.CovariantDerivative.hom I M F V F V cov cov) S
-    (_root_.CovariantDerivative.hom_isCovariantlyInvariant_selfAdjoint cov hcov)
+    (HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov) S
+    (HomConnectionGen.homBundleCovariantDerivativeGen_isCovariantlyInvariant_selfAdjoint cov hcov)
 
 end DifferentialGeometry.Geometry.Connection

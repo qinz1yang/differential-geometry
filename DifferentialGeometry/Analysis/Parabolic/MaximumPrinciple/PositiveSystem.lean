@@ -58,7 +58,7 @@ theorem kernel_rigidity_of_constant_range_rank
       deriv (fun s ↦ A s x) t =
         rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           reaction t x (A t x)) :
     let k := Module.finrank ℝ F - q
@@ -246,7 +246,7 @@ theorem kernel_time_constant_of_constant_range_rank
       deriv (fun s ↦ A s x) t =
         rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           reaction t x (A t x))
     {x : M} {s t : ℝ} (hs : s ∈ Ioo a b) (ht : t ∈ Ioo a b) :

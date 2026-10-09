@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Round.SphereExample
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundCanonicalWitness
 import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.Descent
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceForm
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Round.Classification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundModelClassification
 
 set_option autoImplicit false
 

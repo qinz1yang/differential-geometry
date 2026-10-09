@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.Cones.PositiveSemidefinite
+import DifferentialGeometry.Analysis.Convex.Tensor02PositiveSemidefiniteCone
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Endpoint
 import Mathlib.LinearAlgebra.Dimension.Finrank
 

@@ -1376,9 +1376,9 @@ lemma lieCorrectionZero_sharpFlat_eq_slotInsert_fullRaised (g₀ g₁ : SmoothRi
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁)).toSection x) om) =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) om from rfl]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [lieCorrectionZero_toModel_om_single (I := I) (M := M)]
   rw [lieCorrectionZero_toModel_om_single (I := I) (M := M) x om
     (Function.update m 0
@@ -1436,7 +1436,7 @@ lemma lieCorrectionZero_slotInsert_add (g₀ : SmoothRiemannianMetric I M) (s : 
   rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
-  rw [slotInsertEndomorphism_add_left, add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 theorem lieCorrectionZero_sharpFlat_bounds (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -2110,7 +2110,7 @@ lemma lieCorrectionZeroPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianM
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ (s + 1)
             (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁))).toSection x) Z) =
         cometricDoubleTraceFib (I := I) g₀ s x
-          (slotInsertEndomorphism (I := I) (M := M) (s + 2) 0 x
+          (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
             (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z) from by
       rw [operatorFieldComposition_toSection]
       rfl]
@@ -2119,10 +2119,10 @@ lemma lieCorrectionZeroPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianM
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
       (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel
-        (slotInsertEndomorphism (I := I) (M := M) (s + 2) 0 x
+        (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z)) mm]
     refine Finset.sum_congr rfl fun a _ => ?_
-    rw [slotInsertEndomorphism_apply_eval]
+    rw [slotInsertEndoFib_apply_eval]
     rw [Fin.update_cons_zero]
     rfl
   rw [hRHS]
@@ -3183,7 +3183,7 @@ lemma lieCorrectionZero_cdV_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x
     (om : Tensor0SSpace 1 I x) :
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
       (lieCorrectionZeroCdVField (I := I) (M := M) g₀ g₁ gB).toSection x) om =
-    slotInsertEndomorphism (I := I) (M := M) 1 0 x
+    slotInsertEndoFib (I := I) (M := M) 1 0 x
       (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ gB : Π b : M, TangentSpace I b) x)) om := by
   set V : TangentSpace I x :=
@@ -3212,7 +3212,7 @@ lemma lieCorrectionZero_cdV_fiber (g₀ g₁ gB : SmoothRiemannianMetric I M) (x
   beta_reduce
   rw [lieCorrectionZero_interior_product_toModel_eval (I := I) (M := M) 1 x V
     (connectionDifferenceFib (I := I) g₁ g₀ x om) w]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   have hLHS : Tensor0SSpace.toModel (connectionDifferenceFib (I := I) g₁ g₀ x om)
       (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x V) w) =
       om (fun _ : Fin 1 => PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x V
@@ -4221,9 +4221,9 @@ lemma lieCorrectionZero_insert_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I 
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)).toSection x) D) =
-        slotInsertEndomorphism (I := I) (M := M) 2 0 x
+        slotInsertEndoFib (I := I) (M := M) 2 0 x
           (lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x) D from rfl]
-    rw [slotInsertEndomorphism_apply_eval]
+    rw [slotInsertEndoFib_apply_eval]
   have hterm2 : Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
@@ -4273,12 +4273,12 @@ lemma lieCorrectionZero_insert_fiber (g₀ g₁ g_bg : SmoothRiemannianMetric I 
         (Tensor0SSpace.ofModel
           (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
             (Tensor0SSpace.toModel D)))) =
-        slotInsertEndomorphism (I := I) (M := M) 2 0 x
+        slotInsertEndoFib (I := I) (M := M) 2 0 x
           (lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x)
           (Tensor0SSpace.ofModel
             (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
               (Tensor0SSpace.toModel D))) from rfl]
-    rw [slotInsertEndomorphism_apply_eval (I := I) (M := M) 2 0 x
+    rw [slotInsertEndoFib_apply_eval (I := I) (M := M) 2 0 x
       (lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x)
       (Tensor0SSpace.ofModel
         (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
@@ -4599,18 +4599,18 @@ lemma lieCorrectionZero_NEndoIns_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric
   have hWfib : ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
       (DifferentialGeometry.PDE.RicciFlow.deTurckVectorFieldCovariantDerivativeEndomorphismInsert
         (I := I) (M := M) g₀ g₁ g₀).toSection x) om) =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) om := rfl
+      slotInsertEndoFib (I := I) (M := M) 1 0 x (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) om := rfl
   rw [hWfib]
   have hLHS : ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
         (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg)).toSection x) om) =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x) om := rfl
   rw [hLHS]
   rw [Tensor0SSpace.toModel_sub, Tensor0SSpace.toModel_sub,
     sub_apply, sub_apply]
-  rw [slotInsertEndomorphism_apply_eval, slotInsertEndomorphism_apply_eval,
-    slotInsertEndomorphism_apply_eval, slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval,
+    slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval]
   rw [lieCorrectionZero_toModel_om_single (I := I) (M := M) x om _,
     lieCorrectionZero_toModel_om_single (I := I) (M := M) x om _,
     lieCorrectionZero_toModel_om_single (I := I) (M := M) x om _,

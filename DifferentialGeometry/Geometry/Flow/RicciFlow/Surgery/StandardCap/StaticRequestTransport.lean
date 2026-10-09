@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticRequests
-import DifferentialGeometry.Geometry.Metric.Pullback.EmbeddingComposition
+import DifferentialGeometry.Geometry.Metric.EmbeddingComposition
 
 set_option autoImplicit false
 noncomputable section

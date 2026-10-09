@@ -61,7 +61,7 @@ theorem chartRicci_joint
     rw [← contMDiffAt_iff_contDiffAt, modelWithCornersSelf_prod,
       ← chartedSpaceSelf_prod] at hmetric
     exact hmetric
-  have hderivM := DifferentialGeometry.contMDiffAt_partial_deriv_fst
+  have hderivM := DifferentialGeometry.timeDeriv_smoothAt
     (m := ∞) (n := ∞) hmetricM
     (by simp)
   have hderiv : ContDiffAt Real ∞

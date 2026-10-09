@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothFChartResidual.Li
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplFromDomainPow
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothApproxSeq.H1ComplTendsto
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.StrictCutoffPushforwardBound
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.HigherOrderBound
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Iterated
 open DifferentialGeometry.Geometry.Curvature
 

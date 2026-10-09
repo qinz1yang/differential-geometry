@@ -101,7 +101,7 @@ theorem section34_essential_trace_generates_solid_filling
         (⟨inclusion hCT', continuous_inclusion hCT'⟩ : C(C, Tp e)) x)) ∧
       ∀ hCS : C ⊆ Sp e, ∀ x : C, Function.Bijective (FundamentalGroup.map
         (⟨inclusion hCS, continuous_inclusion hCS⟩ : C(C, Sp e)) x) := by
-  have hgen := piercing_generators_of_essential_second hprep hpack e hi hess
+  have hgen := section34_piercing_generators_of_essential_second hprep hpack e hi hess
   obtain ⟨hS, hT⟩ := section34_tubes_are_topological_solid_tori hprep hpack e
   have hCS := hCT.trans
     ((section34_inner_tube_subset_interior_outer hprep hpack e).trans interior_subset)

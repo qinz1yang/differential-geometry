@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
-import DifferentialGeometry.Geometry.Curvature.RicciRestriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
 
 noncomputable section
 open scoped Manifold ContDiff

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Estimates.CurvatureAtDistance.FinalSlab
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionDepthStep
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegion
 

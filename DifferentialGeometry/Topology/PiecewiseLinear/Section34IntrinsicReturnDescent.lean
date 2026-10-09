@@ -1,4 +1,9 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.ModelOperations
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34OperationImages
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TraceRimFiniteness
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereReturnDiskDescent
 
@@ -89,7 +94,7 @@ theorem exists_section34BigonSlide_of_model_return_disk_crosscuts
   have hRcell : IsPLCellOn 1 R {β 0, β 1} := by
     rw [← hδ0, ← hδ1]
     exact isPLCellOn_one_of_isPLHomeomorphOn_Icc hδ
-  refine ⟨t, bigon_slide_of_model_disk hu t w e
+  refine ⟨t, exists_section34BigonSlide_of_pl_model hu t w e
     (isPLCellOn_one_of_isPLHomeomorphOn_Icc hβ) (hBD.trans hDP) hBF
     (fun x hx => (hD₀loc (hDD₀ (hBD hx))).1) (hendsR.trans hRγ) hBE
     hRcell (hRD.trans hDP) hRγ hBR hDcell hDP (hDD₀.trans hD₀loc) rfl hclean⟩

@@ -1,4 +1,3 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.RetainedOutput
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CoreInclusionRestriction
 import Mathlib.Geometry.Manifold.Instances.Real
 
@@ -21,6 +20,22 @@ theorem not_boundaryless_euclideanHalfSpace (n : ℕ) [NeZero n] : ¬ (𝓡∂ n
   rw [PiLp.single_apply] at hmem
   norm_num at hmem
 
+namespace CutCapTopology
+
+variable {M Q D N : Type*} [TopologicalSpace M] [TopologicalSpace Q]
+    [TopologicalSpace D] [TopologicalSpace N]
+
+theorem retainedCore_isOpen (E : CutCapTopology M Q D N) : IsOpen E.retainedCore := by
+  have hset : E.retainedCore =
+      E.capping.coreInclusion ⁻¹' (E.presentation ⁻¹' Set.range (Sum.inl : Q → Q ⊕ D)) := by
+    ext x
+    simp only [CutCapTopology.retainedCore, Set.mem_ofPred_eq, Set.mem_preimage, Set.mem_range]
+    constructor <;> rintro ⟨q, hq⟩ <;> exact ⟨q, hq.symm⟩
+  rw [hset]
+  exact (isOpen_range_inl.preimage E.presentation.continuous).preimage
+    E.capping.coreInclusion.continuous
+
+end CutCapTopology
 
 def IsOpenCoreSubmanifold {P Q D N : OrientedThreeStage.{u}}
     (X : SmoothCutCapTransition P Q D N) (old : Type u) [oldTop : TopologicalSpace old]

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.SphereSeparation.FlatCapAbsorption
-import DifferentialGeometry.Topology.ThreeManifold.Schoenflies.Cap.FlatCapReconstruction
+import DifferentialGeometry.Topology.SphereSeparation.FlatCapReconstruction
 
 open Set Metric Manifold
 open scoped ContDiff Manifold

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceSplit
 
 open Set Topology
@@ -25,9 +30,12 @@ variable {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set
 
 open Classical in
 theorem IsCanonicalSurface.exists_window_null_normalization [DecidableEq E3]
+    (ht : IsTube K N C D Dbd h N')
+    (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
+    (he : ({u, v} : Finset E3) ∈ K.faces)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
-    (havoid : ∀ k : ℤ, Disjoint (φ '' S k) ({h u, h v} : Set E3))
+    (havoid : ∀ k : ℤ, Disjoint (φ '' S k) ({h u, h v} : Set E3)) (h303 : Moise303)
     {X : ℤ → Geometry.SimplicialComplex ℝ E3}
     (hX : IsCanonicalSurface X (fun j => φ '' S j) T''
       (interior (h '' C u ∪ h '' C v)) P' (h u) (h v))
@@ -54,9 +62,8 @@ theorem IsCanonicalSurface.exists_window_null_normalization [DecidableEq E3]
     · have hpos : 0 < windowNullRank X T'' window := hn ▸ Nat.pos_of_ne_zero hz
       obtain ⟨i, hi, G, hG, hbound⟩ := (hX.windowNullRank_pos_iff window).mp hpos
       obtain ⟨X₁, hX₁, hstep, hprot⟩ :=
-        IsCanonicalSurface.exists_null_seam_split
-          (C := C) (D := D) (Dbd := Dbd) (h := h) (u := u) (v := v)
-          htw havoid hX i (hFO i hi) ⟨G, hG, hbound⟩
+        IsCanonicalSurface.exists_null_seam_split ht hu hv huv he htw havoid h303 hX i
+          (hFO i hi) ⟨G, hG, hbound⟩
       have hlt : windowNullRank X₁ T'' window < n :=
         hn ▸ IsCanonicalNullSplit.windowNullRank_lt htw hstep hi
       obtain ⟨Y, hY, hzero, hpath, hout, hfix⟩ :=

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness
-import DifferentialGeometry.Topology.Covering.UniversalCover.LocalDiffeomorph
+import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
 import DifferentialGeometry.Topology.Covering.SimplyConnected
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
 

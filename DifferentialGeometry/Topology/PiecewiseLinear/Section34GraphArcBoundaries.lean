@@ -1,8 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphFaceArcs
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphArcSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnDimensionOrder
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphPatches
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.ResidualCells.Order
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphResidualSeparation
 
 open Set
 
@@ -54,10 +59,10 @@ theorem isPLCellOn_section34GraphFaceArc_with_marked_boundary
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (s : Section34SimplexIndex 𝒦 3) (w : Section34VertexIndex 𝒦 𝒦')
     (hws : Section34Incident w.1 s.1) :
-    IsPLCellOn 1 (graphVertexCell 𝒦 𝒦' w ∩
+    IsPLCellOn 1 (section34GraphVertexCell 𝒦 𝒦' w ∩
       section34GraphResidualCell 𝒦 𝒦' s.1)
       (⋃ (e : Section34EdgeIndex 𝒦 𝒦') (_ : Section34Incident e.1 s.1) (_ : w.1 ⊆ e.1),
-        graphSplittingDisk 𝒦 𝒦' e ∩ section34GraphResidualCell 𝒦 𝒦' s.1) := by
+        section34GraphSplitCell 𝒦 𝒦' e ∩ section34GraphResidualCell 𝒦 𝒦' s.1) := by
   classical
   let S₀ := simplexComplex s.1 (𝒦.complex.indep s.2.1)
   let B₀ := simplexBoundary s.1 (𝒦.complex.indep s.2.1)
@@ -98,9 +103,9 @@ theorem isPLCellOn_section34GraphFaceArc_with_marked_boundary
         (restrict_faces_subset _ _) (restrict_faces_subset _ _)).trans hcore)
   let v := w.1.centroid ℝ id
   have hvS : {v} ∈ S.faces := by
-    rw [show ({v} : Finset Ea) = w.1 from (subdivisionGraphVertex_eq_singleton_centroid w).symm]
+    rw [show ({v} : Finset Ea) = w.1 from (section34VertexIndex_eq_singleton_centroid w).symm]
     exact ⟨w.2.1, convexHull_min hws (convex_convexHull ℝ (s.1 : Set Ea))⟩
-  have hvL : {v} ∈ L.faces := singleton_centroid_mem_restrict_graphSkeletonSpace w
+  have hvL : {v} ∈ L.faces := singleton_centroid_mem_section34GraphCore w
   have hvB : {v} ∈ (boundaryComplex 2 S).faces := by
     rw [← hLS]
     exact ⟨hvL, hSspace.symm ▸ hvS.2⟩
@@ -140,7 +145,7 @@ theorem isPLCellOn_section34GraphFaceArc_with_marked_boundary
   have hmark (e : Section34EdgeIndex 𝒦 𝒦') (heS : e.1 ∈ S.faces) :
       𝒦'.map '' ((splittingDisk S e.1 heS).space ∩
         closure (S.space \ (derivedNeighborhood S (boundaryComplex 2 S)).space)) =
-      graphSplittingDisk 𝒦 𝒦' e ∩ section34GraphResidualCell 𝒦 𝒦' s.1 := by
+      section34GraphSplitCell 𝒦 𝒦' e ∩ section34GraphResidualCell 𝒦 𝒦' s.1 := by
     rw [← image_closure_sdiff_derivedNeighborhood_eq_section34GraphResidualCell
       hsub hmap s.2.1]
     change _ = 𝒦'.map '' (splittingDisk 𝒦'.complex e.1 e.2.1).space ∩ 𝒦'.map '' C
@@ -151,7 +156,7 @@ theorem isPLCellOn_section34GraphFaceArc_with_marked_boundary
     exact congrArg (fun A => (splittingDisk S e.1 heS).space ∩ A) hres.symm
   have hbd : {𝒦'.map (γ 0), 𝒦'.map (γ 1)} =
       ⋃ (e : Section34EdgeIndex 𝒦 𝒦') (_ : Section34Incident e.1 s.1) (_ : w.1 ⊆ e.1),
-        graphSplittingDisk 𝒦 𝒦' e ∩ section34GraphResidualCell 𝒦 𝒦' s.1 := by
+        section34GraphSplitCell 𝒦 𝒦' e ∩ section34GraphResidualCell 𝒦 𝒦' s.1 := by
     rw [← image_pair, hpoints, image_iUnion]
     apply Subset.antisymm
     · intro x hx
@@ -167,7 +172,7 @@ theorem isPLCellOn_section34GraphFaceArc_with_marked_boundary
       have hes : Section34Incident e.1 s.1 := fun y hy =>
         hdS.2 (subset_convexHull ℝ _ hy)
       have hwe : w.1 ⊆ e.1 := by
-        rw [subdivisionGraphVertex_eq_singleton_centroid w]
+        rw [section34VertexIndex_eq_singleton_centroid w]
         exact Finset.singleton_subset_iff.mpr d.2.2.2
       exact mem_iUnion₂.mpr ⟨e, hes, mem_iUnion.mpr ⟨hwe, (hmark e hdS).subset hxd⟩⟩
     · intro x hx
@@ -178,23 +183,23 @@ theorem isPLCellOn_section34GraphFaceArc_with_marked_boundary
       have heL : e.1 ∈ L.faces := ⟨e.2.1, fun y hy => e.2.2.2 (mem_image_of_mem _ hy)⟩
       have heB : e.1 ∈ (boundaryComplex 2 S).faces := hLS ▸
         (show e.1 ∈ (restrict L S.space).faces from ⟨heL, hSspace.symm ▸ heS.2⟩)
-      have hve : v ∈ e.1 := hwe (by rw [subdivisionGraphVertex_eq_singleton_centroid w]; simp [v])
+      have hve : v ∈ e.1 := hwe (by rw [section34VertexIndex_eq_singleton_centroid w]; simp [v])
       exact mem_iUnion.mpr ⟨⟨e.1, heB, e.2.2.1, hve⟩, (hmark e heS).symm.subset hxe⟩
   exact hbd ▸ hcell
 
 theorem isPLCellOn_section34GraphFaceArc_proper_faces
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (hK : IsCombinatorialManifold 3 𝒦'.complex) (a : Section34ArcIndex 𝒦 𝒦') :
-    IsPLCellOn 1 (graphCutCell 𝒦 𝒦' (.faceArc a))
-      (⋃ m ∈ section34Face (graphCutCell 𝒦 𝒦') (.faceArc a) \ {.faceArc a},
-        graphCutCell 𝒦 𝒦' m) := by
+    IsPLCellOn 1 (section34GraphCutFamily 𝒦 𝒦' (.faceArc a))
+      (⋃ m ∈ section34Face (section34GraphCutFamily 𝒦 𝒦') (.faceArc a) \ {.faceArc a},
+        section34GraphCutFamily 𝒦 𝒦' m) := by
   classical
   have hA := isPLCellOn_section34GraphFaceArc_with_marked_boundary hsub hmap a.1.1 a.1.2 a.2
   suffices (⋃ (e : Section34EdgeIndex 𝒦 𝒦') (_ : Section34Incident e.1 a.1.1.1)
-      (_ : a.1.2.1 ⊆ e.1), graphSplittingDisk 𝒦 𝒦' e ∩
+      (_ : a.1.2.1 ⊆ e.1), section34GraphSplitCell 𝒦 𝒦' e ∩
         section34GraphResidualCell 𝒦 𝒦' a.1.1.1) =
-      ⋃ m ∈ section34Face (graphCutCell 𝒦 𝒦') (.faceArc a) \ {.faceArc a},
-        graphCutCell 𝒦 𝒦' m by
+      ⋃ m ∈ section34Face (section34GraphCutFamily 𝒦 𝒦') (.faceArc a) \ {.faceArc a},
+        section34GraphCutFamily 𝒦 𝒦' m by
     rw [← this]
     exact hA
   apply Subset.antisymm
@@ -203,21 +208,21 @@ theorem isPLCellOn_section34GraphFaceArc_proper_faces
     obtain ⟨hwe, hxe⟩ := mem_iUnion.mp hx
     let p : Section34MarkIndex 𝒦 𝒦' := ⟨(a.1.1, e), hes⟩
     refine mem_iUnion₂.mpr ⟨.markedPoint p, ⟨?_, by simp⟩, hxe⟩
-    exact fun y hy => ⟨graphSplittingDisk_subset_vertex_of_subset hsub hmap
+    exact fun y hy => ⟨section34GraphSplitCell_subset_vertex_of_subset hsub hmap
       a.1.2 e hwe hy.1, hy.2⟩
   · refine iUnion₂_subset fun l hl => ?_
-    have hLA : graphCutCell 𝒦 𝒦' l ⊆
-        graphCutCell 𝒦 𝒦' (.faceArc a) := hl.1
+    have hLA : section34GraphCutFamily 𝒦 𝒦' l ⊆
+        section34GraphCutFamily 𝒦 𝒦' (.faceArc a) := hl.1
     have hne : l ≠ .faceArc a := hl.2
     cases l with
     | vertexBall w =>
-        have hd := (isPLCellOn_graphVertexCell hsub hmap
+        have hd := (isPLCellOn_section34GraphVertexCell hsub hmap
           hK.isCombinatorialManifoldWithBoundary w).dim_le_of_subset hA hLA
         omega
     | tetraBall t =>
-        cases graphCutCell_eq_of_tetrahedron_subset hsub hmap t (.faceArc a) hLA
+        cases section34GraphCutFamily_subset_strict_on_tetrahedra hsub hmap t (.faceArc a) hLA
     | splitDisk e =>
-        have hd := (isPLCellOn_graphSplittingDisk hK e).dim_le_of_subset hA hLA
+        have hd := (isPLCellOn_section34GraphSplitCell hK e).dim_le_of_subset hA hLA
         omega
     | faceDisk s =>
         obtain ⟨B, hB⟩ := exists_isPLCellOn_section34GraphResidualTriangle hsub hmap s
@@ -248,7 +253,7 @@ theorem isPLCellOn_section34GraphFaceArc_proper_faces
           by_contra hs
           exact disjoint_left.mp (pairwiseDisjoint_section34GraphResidualTriangle hsub hmap hs)
             hx.2 hxA.2
-        have hwe := vertex_subset_edge_of_graphVertexCell_inter_splitCell_nonempty
+        have hwe := vertex_subset_edge_of_section34GraphVertexCell_inter_splitCell_nonempty
           hsub hmap a.1.2 p.1.2 ⟨x, hxA.1, hx.1⟩
         have hes : Section34Incident p.1.2.1 a.1.1.1 := hs ▸ p.2
         exact mem_iUnion₂.mpr ⟨p.1.2, hes, mem_iUnion.mpr ⟨hwe, hx.1, hxA.2⟩⟩

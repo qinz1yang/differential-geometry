@@ -1,11 +1,10 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardWindowShiftConvergence
-import DifferentialGeometry.Topology.ThreeManifold.Orientation
-import DifferentialGeometry.Topology.LoopSpace.Continuous
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 
 set_option autoImplicit false
 

@@ -10,14 +10,11 @@ open scoped Manifold NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_sliver_data {Ctime Cgrad : ℝ≥0} {q t₀ ζ : ℝ} (hCt : 0 < Ctime) (hCg : 0 < Cgrad)
+theorem exists_sliver_data {Ctime Cgrad : ℝ≥0} {q t₀ ζ : ℝ} (hCt : 0 < Ctime) (hCg : 0 < Cgrad)
     (hq : 0 < q) (hζ : 0 < ζ) (ht₀ : t₀ ∈ Ioo a s)
     (hder : G.DerivativeBoundBefore Ctime q t₀) (hgrad : G.GradientBoundBefore Cgrad q t₀) :
     ∃ η : ℝ, 0 < η ∧ t₀ + η < s ∧

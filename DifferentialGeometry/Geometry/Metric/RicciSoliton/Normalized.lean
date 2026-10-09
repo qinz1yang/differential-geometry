@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.PotentialCompleteness
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Operations
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.Product.Completeness
 import DifferentialGeometry.Geometry.Operator.NormGradSqScaling
 import DifferentialGeometry.Geometry.Operator.Product

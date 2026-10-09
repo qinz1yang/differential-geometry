@@ -1632,7 +1632,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 noncomputable def ricciOrderZeroCurvCoeffFibSlot (g₁ : SmoothRiemannianMetric I M)
     (k : Fin 2) (x : M) :
     Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
-  slotInsertEndomorphism (I := I) (M := M) 2 k x (ricEndoRaisedFib (I := I) g₁ x)
+  slotInsertEndoFib (I := I) (M := M) 2 k x (ricEndoRaisedFib (I := I) g₁ x)
 
 noncomputable def ricciOrderZeroCurvCoeffFib (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
@@ -1651,7 +1651,7 @@ omit [SigmaCompactSpace M] in
         (Function.update v k
           (tangentLinearMapToModel (ricEndoRaisedFib (I := I) g₁ x) (v k))) := by
   rw [ricciOrderZeroCurvCoeffFibSlot]
-  exact slotInsertEndomorphism_apply_eval (I := I) (M := M) 2 k x
+  exact slotInsertEndoFib_apply_eval (I := I) (M := M) 2 k x
     (ricEndoRaisedFib (I := I) g₁ x) D v
 
 

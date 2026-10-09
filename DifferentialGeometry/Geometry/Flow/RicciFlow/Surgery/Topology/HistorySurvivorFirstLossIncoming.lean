@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.ScalarTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceScalarTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFirstLoss
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.ForwardScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceForwardScalar
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Incoming.Reciprocal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingReciprocal
 
 noncomputable section
 open Set Filter Manifold

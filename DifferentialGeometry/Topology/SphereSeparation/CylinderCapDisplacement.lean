@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.SphereSeparation.CylinderCapMorse
 import DifferentialGeometry.Topology.SphereSeparation.CylinderCapTransport
 import DifferentialGeometry.Topology.SphereSeparation.CylinderCapMorseTransport
-import DifferentialGeometry.Topology.ThreeManifold.Schoenflies.Height.LevelComponents
+import DifferentialGeometry.Topology.SphereSeparation.LevelComponents
 
 open Set Metric Manifold
 open scoped ContDiff Manifold Topology

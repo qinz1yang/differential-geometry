@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CompactRelativeApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceMap
@@ -314,6 +319,28 @@ end Stage
 
 end LocallyFinitePieceTower
 
+section Obligation
+
+def Moise352StageInjection (n : ℕ) : Prop :=
+  ∀ {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁]
+    [MetricSpace M₂] [SecondCountableTopology M₂]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₁]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₂]
+    [HasGroupoid M₁ (plGroupoid n)] [HasGroupoid M₂ (plGroupoid n)]
+    {K : Set M₁} (T : LocallyFinitePieceTower n M₁ K),
+    (∀ i, IsCombinatorialManifoldWithBoundary n (T.piece i).piece.complex) →
+    ∀ {h : M₁ → M₂}, Topology.IsEmbedding (K.domRestrict h) →
+      (∀ (f : M₁ → M₂), IsPLOn n n f (T.coreSpace 0) → ∀ {ε : ℝ}, 0 < ε →
+          (∀ x ∈ T.coreSpace 0, dist (f x) (h x) < ε) →
+          ∃ f' : M₁ → M₂, IsPLOn n n f' (T.coreSpace 0) ∧ InjOn f' (T.coreSpace 0) ∧
+            ∀ x ∈ T.coreSpace 0, dist (f' x) (h x) < ε) ∧
+        ∀ (i : ℕ) (g f : M₁ → M₂), IsPLHomeomorphInto n g (T.coreSpace i) →
+          IsPLOn n n f (T.coreSpace (i + 1)) → EqOn f g (T.coreSpace i) →
+          ∀ {ε : ℝ}, 0 < ε → (∀ x ∈ T.coreSpace (i + 1), dist (f x) (h x) < ε) →
+            ∃ f' : M₁ → M₂, IsPLOn n n f' (T.coreSpace (i + 1)) ∧
+              InjOn f' (T.coreSpace (i + 1)) ∧ EqOn f' g (T.coreSpace i) ∧
+                ∀ x ∈ T.coreSpace (i + 1), dist (f' x) (h x) < ε
+
 namespace LocallyFinitePieceTower
 
 section Witness
@@ -335,6 +362,49 @@ theorem exists_isPLOn_injOn_eqOn_dist_lt_of_eqOn_of_subset
 
 end Witness
 
+section Reduction
+
+variable {n : ℕ} {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁]
+  [SecondCountableTopology M₁] [MetricSpace M₂] [SecondCountableTopology M₂]
+  [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₁] [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₂]
+  [HasGroupoid M₁ (plGroupoid n)] [HasGroupoid M₂ (plGroupoid n)]
+
+theorem exists_isPLOn_injOn_dist_lt_coreSpace_zero
+    (H : Moise352StageInjection.{u} n) {K : Set M₁} (T : LocallyFinitePieceTower n M₁ K)
+    (hT : ∀ i, IsCombinatorialManifoldWithBoundary n (T.piece i).piece.complex)
+    {h : M₁ → M₂} (hh : Topology.IsEmbedding (K.domRestrict h)) {φ : M₁ → ℝ}
+    (hφ : ∃ c : ℝ, 0 < c ∧ ∀ x ∈ T.coreSpace 0, c ≤ φ x) :
+    ∃ f : M₁ → M₂, IsPLOn n n f (T.coreSpace 0) ∧ InjOn f (T.coreSpace 0) ∧
+      ∀ x ∈ T.coreSpace 0, dist (f x) (h x) < φ x := by
+  obtain ⟨c, hc, hcle⟩ := hφ
+  have hcont : ContinuousOn h (T.coreSpace 0) :=
+    (continuousOn_iff_continuous_domRestrict.mpr hh.continuous).mono
+      (T.core_space_subset_union 0)
+  obtain ⟨f, hf, hfd⟩ := T.exists_isPLOn_dist_lt_coreSpace 0 hcont hc
+  obtain ⟨f', hf', hinj', hd'⟩ := (H T hT hh).1 f hf hc hfd
+  exact ⟨f', hf', hinj', fun x hx => lt_of_lt_of_le (hd' x hx) (hcle x hx)⟩
+
+theorem exists_pos_forall_exists_isPLOn_injOn_eqOn_dist_lt_coreSpace_succ
+    (H : Moise352StageInjection.{u} n) {K : Set M₁} (T : LocallyFinitePieceTower n M₁ K)
+    (hT : ∀ i, IsCombinatorialManifoldWithBoundary n (T.piece i).piece.complex)
+    {h : M₁ → M₂} (hh : Topology.IsEmbedding (K.domRestrict h)) (i : ℕ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ η > 0, ∀ g : M₁ → M₂, IsPLHomeomorphInto n g (T.coreSpace i) →
+      (∀ x ∈ T.coreSpace i, dist (g x) (h x) < η) →
+        ∃ f : M₁ → M₂, IsPLOn n n f (T.coreSpace (i + 1)) ∧ InjOn f (T.coreSpace (i + 1)) ∧
+          EqOn f g (T.coreSpace i) ∧ ∀ x ∈ T.coreSpace (i + 1), dist (f x) (h x) < ε := by
+  have hcont : ContinuousOn h (T.coreSpace (i + 1)) :=
+    (continuousOn_iff_continuous_domRestrict.mpr hh.continuous).mono
+      (T.core_space_subset_union (i + 1))
+  obtain ⟨η, hη, hηprop⟩ :=
+    T.exists_pos_forall_exists_isPLOn_eqOn_dist_lt_coreSpace_succ i hcont hε
+  refine ⟨η, hη, fun g hg hgd => ?_⟩
+  obtain ⟨f, hf, hfeq, hfd⟩ := hηprop g hg.isPLOn hgd
+  exact (H T hT hh).2 i g f hg hf hfeq hε hfd
+
+end Reduction
+
 end LocallyFinitePieceTower
+
+end Obligation
 
 end DifferentialGeometry.Topology.PiecewiseLinear

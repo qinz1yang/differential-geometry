@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.TwoParameterFields
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.TwoParameterFields
 
 
 

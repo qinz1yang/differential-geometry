@@ -3,6 +3,8 @@ import DifferentialGeometry.Topology.Handle.Manifold
 
 namespace DifferentialGeometry.Topology.Handle
 
+open scoped Manifold
+
 noncomputable section
 
 universe u v w u'

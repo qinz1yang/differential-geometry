@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Integration.Measure.LocalRestriction
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

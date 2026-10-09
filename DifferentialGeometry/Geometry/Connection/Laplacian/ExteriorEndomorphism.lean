@@ -32,7 +32,7 @@ theorem IsMetricCompatible.multilinear_hessian_endomorphismTensor
     letI := Bundle.ExteriorPower.vector_bundle F V k
     letI := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F V k
     let c := cov.exteriorPower k
-    let D := _root_.CovariantDerivative.hom I M (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
+    let D := homBundleCovariantDerivativeGen I M (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
       (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x)) c c
     ∀ (R : ∀ x, (⋀[ℝ]^k (V x)) →L[ℝ] ⋀[ℝ]^k (V x)),
     ContMDiff I (I.prod 𝓘(ℝ, (⋀[ℝ]^k F) →L[ℝ] ⋀[ℝ]^k F)) 2
@@ -49,7 +49,7 @@ theorem IsMetricCompatible.multilinear_hessian_endomorphismTensor
   let := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F V k
   let c := cov.exteriorPower k
   let hc : ContMDiffCovariantDerivative c ∞ := cov.exteriorPower_contMDiff k
-  let D := _root_.CovariantDerivative.hom I M (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
+  let D := homBundleCovariantDerivativeGen I M (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
     (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x)) c c
   let hD : ContMDiffCovariantDerivative D ∞ := inferInstance
   intro R hR x X Y
@@ -91,7 +91,7 @@ theorem IsMetricCompatible.rawBundleConnLap_multilinear_endomorphismTensor
     letI := Bundle.ExteriorPower.vector_bundle F V k
     letI := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F V k
     let c := cov.exteriorPower k
-    let D := _root_.CovariantDerivative.hom I M (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
+    let D := homBundleCovariantDerivativeGen I M (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
       (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x)) c c
     ∀ (R : ∀ x, (⋀[ℝ]^k (V x)) →L[ℝ] ⋀[ℝ]^k (V x)),
     ContMDiff I (I.prod 𝓘(ℝ, (⋀[ℝ]^k F) →L[ℝ] ⋀[ℝ]^k F)) 2
@@ -108,7 +108,7 @@ theorem IsMetricCompatible.rawBundleConnLap_multilinear_endomorphismTensor
   let := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F V k
   let c := cov.exteriorPower k
   let hc : ContMDiffCovariantDerivative c ∞ := cov.exteriorPower_contMDiff k
-  let D := _root_.CovariantDerivative.hom I M (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
+  let D := homBundleCovariantDerivativeGen I M (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
     (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x)) c c
   let hD : ContMDiffCovariantDerivative D ∞ := inferInstance
   intro R hR x

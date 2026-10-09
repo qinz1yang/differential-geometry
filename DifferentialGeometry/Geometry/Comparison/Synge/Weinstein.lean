@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Geodesic.SyngeReturnDeterminant
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.Orientation
-import DifferentialGeometry.External.CanonicalTopology.LinearAlgebra.Orientation
+import DifferentialGeometry.Geometry.Geodesic.ParallelOrientation
+import DifferentialGeometry.Bundle.Orientation.Map
 
 noncomputable section
 open Bundle Manifold
@@ -52,7 +52,7 @@ theorem synge_weinstein_fixed_point {n : ℕ} (hdim : Module.finrank ℝ E = n) 
   · have hD : Orientation.map (Fin n) D (o (γ 0)) = o (γ L) :=
       (hsign (γ 0)).trans hbase
     have hA : Orientation.map (Fin n) A (o (γ 0)) = o (γ 0) :=
-      (DifferentialGeometry.orientation_map_trans D P.symm (o (γ 0))).trans
+      (map_orientation_trans_between D P.symm (o (γ 0))).symm.trans
         ((congrArg (Orientation.map (Fin n) P.symm) hD).trans hPi)
     have hpos := ((o (γ 0)).map_eq_iff_det_pos A (by
       rw [Fintype.card_fin]
@@ -63,7 +63,7 @@ theorem synge_weinstein_fixed_point {n : ℕ} (hdim : Module.finrank ℝ E = n) 
   · have hD : Orientation.map (Fin n) D (o (γ 0)) = -o (γ L) :=
       (hsign (γ 0)).trans (congrArg (fun q : Orientation ℝ E (Fin n) => -q) hbase)
     have hA : Orientation.map (Fin n) A (o (γ 0)) = -o (γ 0) := by
-      exact (DifferentialGeometry.orientation_map_trans D P.symm (o (γ 0))).trans
+      exact (map_orientation_trans_between D P.symm (o (γ 0))).symm.trans
         ((congrArg (Orientation.map (Fin n) P.symm) hD).trans
           ((Orientation.map_neg _ _).trans (congrArg (fun q => -q) hPi)))
     have hneg := ((o (γ 0)).map_eq_neg_iff_det_neg A (by

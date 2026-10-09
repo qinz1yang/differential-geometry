@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.OrderReduction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.QuotientCollapse
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.QuotientCollapse
 
 set_option autoImplicit false
 noncomputable section

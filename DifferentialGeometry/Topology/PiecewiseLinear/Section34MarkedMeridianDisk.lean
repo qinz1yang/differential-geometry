@@ -134,7 +134,7 @@ theorem exists_section34_marked_filling_meridian_disk
       hF hu hC hRP hRT hfront
   have hgen : CarriesFundamentalGroupOnto ((u ∘ f) '' (J ×ˢ {p 0})) (Sp e) := by
     rw [← hPg₀]
-    exact (piercing_generators_of_essential_second hprep hpack e hi hiess).1
+    exact (section34_piercing_generators_of_essential_second hprep hpack e hi hiess).1
   have hRS := hRT.trans
     ((section34_inner_tube_subset_interior_outer hprep hpack e).trans interior_subset)
   obtain ⟨B, hBfin, hBspace⟩ := hV.isPolyhedron.exists_simplicialComplex

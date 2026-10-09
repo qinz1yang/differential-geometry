@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonComposition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EscapeReindexingReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornStructureReduction
-import DifferentialGeometry.Geometry.Metric.StandardCap.CurvatureOperator
-import DifferentialGeometry.Geometry.Metric.StandardCap.Scalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CurvatureOperator
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Scalar
 
 set_option autoImplicit false
 noncomputable section

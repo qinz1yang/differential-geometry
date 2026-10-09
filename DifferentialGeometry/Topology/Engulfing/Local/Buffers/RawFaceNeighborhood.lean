@@ -22,7 +22,7 @@ theorem image_simplicialNeighborhood_subset_ball
   apply mem_ball.mpr
   exact (dist_triangle (a x) (a y) c).trans_lt (by linarith)
 
-omit [FiniteDimensional ℝ E] [NormedSpace ℝ F] in
+omit [NormedSpace ℝ F] in
 theorem chart_preimage_subset_simplicialNeighborhood
     (K : SimplicialComplex ℝ E) (a : E → F) (c : F) (r : ℝ) :
     K.space ∩ a ⁻¹' ball c r ⊆ (simplicialNeighborhood K (a ⁻¹' ball c r)).space := by

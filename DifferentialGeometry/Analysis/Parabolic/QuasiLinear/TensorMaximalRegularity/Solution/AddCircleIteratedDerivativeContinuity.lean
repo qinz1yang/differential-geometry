@@ -973,8 +973,16 @@ private theorem tendsto_duhamel_successor_field
       maximalRegularityDuhamelVectorField hT 0 (F x)) →
     Tendsto V l (𝓝 (V x₀)) := by
   intro R hV
-  have hU := tendsto_duhamel_zero (ι := ι) (P := X) (l := l)
-    g hT (F x₀) F hF
+  let S := maximalRegularityVectorFieldL
+    (ι := ι) (g := g) (r := 0) (s := 0) (m : ℝ) hT.le
+  have hS : Tendsto (fun x => S (F x)) l (𝓝 (S (F x₀))) :=
+    (S.continuous.tendsto (F x₀)).comp hF
+  have heq (f : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T) :
+      S f = maximalRegularityDuhamelVectorField hT 0 f :=
+    maximalRegularityVectorFieldL_eq_duhamel hT f
+  have hU : Tendsto (fun x => maximalRegularityDuhamelVectorField hT 0 (F x)) l
+      (𝓝 (maximalRegularityDuhamelVectorField hT 0 (F x₀))) := by
+    simpa only [heq] using hS
   have hprojection : Tendsto (fun x => R.compLpL 2 (timeMeasure T) (V x)) l
       (𝓝 (R.compLpL 2 (timeMeasure T) (V x₀))) := by
     simpa only [hV] using hU
@@ -1133,8 +1141,8 @@ private theorem compLpL_piLp_tensorHsInclusion_trans
   rw [ha, hb, hc]
   apply PiLp.ext
   intro i
-  simpa only [A, B, C, ContinuousLinearMap.piLpMap_apply] using
-    tensorHsInclusion_trans_apply (g := g) (r := 0) (s := 0) hab hbc (F t i)
+  apply TensorHs.ext
+  rfl
 
 private theorem compLpL_tensorHsInclusion_nat_one
     {ι : Type*} [Fintype ι]
@@ -1339,7 +1347,22 @@ private theorem firstDerivative_forcing_lift_normalized
         (by norm_num : ((0 : ℕ) : ℝ) ≤ (1 : ℝ)))).compLpL 2 (timeMeasure T)
           (firstDerivativeForcingNormalization g FH) := by
   rw [iteratedParameterDerivativeDuhamelForcing_one, hlift]
-  exact compLpL_tensorHsInclusion_nat_one (ι := ι) g T FH
+  let A := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ)))
+  let B := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ (1 : ℝ)))
+  let C := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0) (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+  change A.compLpL 2 (timeMeasure T) FH =
+    B.compLpL 2 (timeMeasure T) (C.compLpL 2 (timeMeasure T) FH)
+  apply Lp.ext
+  filter_upwards [A.coeFn_compLpL FH, B.coeFn_compLpL (C.compLpL 2 (timeMeasure T) FH),
+    C.coeFn_compLpL FH] with t hA hB hC
+  have hpoint : A (FH t) = B (C (FH t)) := by
+    apply PiLp.ext
+    intro i
+    simp only [A, B, C, ContinuousLinearMap.piLpMap_apply, ← tensorHsInclusion_trans_apply]
+  exact hA.trans (hpoint.trans (hB.trans (congrArg B hC)).symm)
 
 theorem exists_representatives_of_parameterDerivative_forcing_lift
     (F FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T)
@@ -1403,8 +1426,16 @@ theorem tendsto_duhamel_representatives_of_parameterDerivative_forcing_lift
   have hlift' := fun x => firstDerivative_forcing_lift_normalized g hT (F x) (FH x) (hlift x)
   have hFH' : Tendsto FH' l (𝓝 FH₀') :=
     ((firstDerivativeForcingNormalization g).continuous.tendsto FH₀).comp hFH
-  have hD := tendsto_duhamel_zero (ι := ι) (P := X) (l := l)
-    g hT F₀ F hF
+  let SD := maximalRegularityVectorFieldL (ι := ι) (g := g) (r := 0) (s := 0)
+    ((1 : ℕ) : ℝ) hT.le
+  have hSD : Tendsto (fun x => SD (F x)) l (𝓝 (SD F₀)) :=
+    (SD.continuous.tendsto F₀).comp hF
+  have hSD_eq (z : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T) :
+      SD z = maximalRegularityDuhamelVectorField hT 0 z :=
+    maximalRegularityVectorFieldL_eq_duhamel hT z
+  have hD : Tendsto (fun x => maximalRegularityDuhamelVectorField hT 0 (F x)) l
+      (𝓝 (maximalRegularityDuhamelVectorField hT 0 F₀)) := by
+    simpa only [hSD_eq] using hSD
   constructor
   · apply tendsto_timeL2_duhamel_lifts_of_tendsto_forcing
       g 1 hT F₀ F FH₀' FH' V₀ V hlift₀' hlift' hV₀ hV

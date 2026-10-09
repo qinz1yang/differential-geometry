@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic
 import DifferentialGeometry.Geometry.Exponential.Cartan.Norm
-import DifferentialGeometry.Geometry.Metric.LinearAlgebra.Polarization
+import DifferentialGeometry.Geometry.Metric.Polarization
 import DifferentialGeometry.Geometry.Metric.Sphere.Polar.RadialLog
 import Mathlib.Analysis.Normed.Module.Connected
 

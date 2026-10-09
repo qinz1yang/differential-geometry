@@ -246,7 +246,7 @@ theorem totalCurvature_add_length_le_of_curvature_zero
 
 def curveShorteningLeastAreaIntegratedBound
     (B : RicciBackground (I := I) (M := M) D a b) : Prop :=
-  ∀ (γ : ℝ → DifferentialGeometry.Topology.freeLoop M),
+  ∀ (γ : ℝ → ContinuousFreeLoop M),
     (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) →
     ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) →
     ∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
@@ -304,7 +304,7 @@ theorem exists_right_slope_bound_data (k : ℝ) (hk : 0 ≤ k) :
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
   [CompactSpace M] [Nonempty M] [I.Boundaryless] in
 theorem loopFamilyLeastArea_eq_zero_of_subsingleton [Subsingleton M]
-    (g : ℝ → SmoothRiemannianMetric I M) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (t : ℝ) :
+    (g : ℝ → SmoothRiemannianMetric I M) (γ : ℝ → ContinuousFreeLoop M) (t : ℝ) :
     loopFamilyLeastArea g γ t = 0 := by
   have hmem : Width.diskArea (g t) (fun _ : Width.Disk => γ t 0) ∈
       Width.competitorAreas (g t) (γ t) := by
@@ -323,7 +323,7 @@ theorem loopFamilyLeastArea_eq_zero_of_subsingleton [Subsingleton M]
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
   [CompactSpace M] [Nonempty M] [I.Boundaryless] in
 theorem sweptDensity_eq_zero_of_subsingleton [Subsingleton M]
-    (g : ℝ → SmoothRiemannianMetric I M) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (g : ℝ → SmoothRiemannianMetric I M) (γ : ℝ → ContinuousFreeLoop M)
     (J : Set ℝ) (t : ℝ) :
     (curveOfLoopFamily γ).sweptDensity g J t = 0 := by
   have hvel : ∀ x, (curveOfLoopFamily γ).velocity (I := I) J x t = 0 := by

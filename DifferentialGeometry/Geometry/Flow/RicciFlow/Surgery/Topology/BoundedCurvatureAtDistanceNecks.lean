@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Neck.SpatialMinimizer
 import DifferentialGeometry.Geometry.Neck.SpatialFixedRecentering
 import DifferentialGeometry.Geometry.Neck.SpatialTolerance
 import DifferentialGeometry.Geometry.Neck.PointedEndpoint
-import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
+import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedPinchingLimit
@@ -94,8 +94,6 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
@@ -108,7 +106,7 @@ private local instance (A : P.ClosedSlab a b) :
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen.isOpen)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.nonempty_scaled_spatialNeck_of_minimizing_segment (A : P.ClosedSlab a b)
+theorem ClosedSlab.nonempty_scaled_spatialNeck_of_minimizing_segment (A : P.ClosedSlab a b)
     {eps C1 C2 alpha q Q : ℝ} (hQ : 0 < Q) (halpha : alpha < 1 / 11)
     (heps : 13000 * (13000 * eps) ≤ alpha)
     (hW : ∀ y, q < A.flow.scalar b y →

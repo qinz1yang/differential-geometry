@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Window.BallCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricWindowCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialWindowBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CompleteInitialCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledRestart
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Restart.WindowPullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricWindowFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullbackCurvature
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Curvature.TowerBridge

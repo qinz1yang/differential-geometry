@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ScalarRigidity
-import DifferentialGeometry.Geometry.Operator.Hessian.AlongGeodesic
+import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.GeodesicSpeedBound
-import DifferentialGeometry.Geometry.Variation.SecondVariation.CurveEnergy
+import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Existence
 import DifferentialGeometry.Geometry.Exponential.Inverse.Branch
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic

@@ -1,12 +1,12 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Data.InitialContinuity
-import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
+import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.DensityBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.ClosedInterval
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.BoundedDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution.DerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.EndpointEquality
-import DifferentialGeometry.Geometry.Curvature.Ricci.LowerBoundFromNorm
+import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciLower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair

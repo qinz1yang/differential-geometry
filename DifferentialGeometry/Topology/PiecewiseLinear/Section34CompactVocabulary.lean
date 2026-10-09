@@ -1,10 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Integral
 import DifferentialGeometry.Topology.PiecewiseLinear.CellMapTriangulation
 import DifferentialGeometry.Topology.PiecewiseLinear.ControlledInwardPush
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
-import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.NestedApproximation
+import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
 
 open Set Topology
 

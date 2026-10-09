@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Classification.WindowedBuffered
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedBufferedCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComponentModelTransport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Existence.HighCurvature
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Classification.WindowedPullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalPullbackReduction
 
 noncomputable section
 
@@ -38,21 +38,17 @@ theorem OrientedWitness.ofComponentTimeShift
   refine ⟨hder.symm ▸ hf, ?_⟩
   unfold PreservesTangentOrientationAt at hpres ⊢
   simp only [hder, W.ofComponentTimeShift_embedding_apply,
-    DifferentialGeometry.Topology.ClosedOrientedManifold.componentOrientation,
-    DifferentialGeometry.Topology.ClosedOrientedManifold.componentTangentOrientation_apply, TangentSpace] at hpres ⊢
+    OrientedThreeStage.componentOrientation, TangentSpace] at hpres ⊢
   convert! hpres using 1
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_component_high_curvature_models (c : ConnectedComponents P.Carrier) :
+theorem exists_component_high_curvature_models (c : ConnectedComponents P.Carrier) :
     ∃ kappa : ℝ, 0 < kappa ∧ ∀ eps : ℝ, 0 < eps → eps < 1 →
       ∃ Q : ℝ, 0 < Q ∧ ∀ (x : P.componentOpen c) (t : ℝ), t ∈ Ico a s →
         Q ≤ G.flow.scalar t x.val →
@@ -70,7 +66,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   apply hmodel x (t - a) (by constructor <;> linarith [ht.1, ht.2])
   simpa only [G.componentTimeShift_scalar, sub_add_cancel] using hscalar
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_all_point_high_curvature_model_coverage :
+theorem exists_all_point_high_curvature_model_coverage :
     ∃ kappa : ConnectedComponents P.Carrier → ℝ, (∀ c, 0 < kappa c) ∧
       ∀ eps : ℝ, 0 < eps → eps < 1 → ∃ Q : ℝ, 0 < Q ∧
         ∀ (x : P.Carrier) (t : ℝ), t ∈ Ico a s → Q ≤ G.flow.scalar t x →
@@ -102,7 +98,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     W.ofComponentTimeShift
   simpa only [sub_add_cancel] using hW
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_high_curvature_models :
+theorem exists_uniform_high_curvature_models :
     ∃ kappa : ℝ, 0 < kappa ∧ ∀ eps : ℝ, 0 < eps → eps < 1 →
       ∃ Q : ℝ, 0 < Q ∧ ∀ (x : P.Carrier) (t : ℝ), t ∈ Ico a s →
         Q ≤ G.flow.scalar t x → OrientedWitness G.flow P.orientation eps kappa x t := by
@@ -131,7 +127,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   refine ⟨Q, hQ, fun x t ht hx => ?_⟩
   exact (hm x t ht hx).mono_kappa hμ (hμle _)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_canonical_constants_with_cap_neck_charts
+theorem exists_uniform_canonical_constants_with_cap_neck_charts
     {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
       (G : P.IncomingSlab a s), ∃ Q : ℝ, 0 < Q ∧
@@ -157,7 +153,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     hB.mono_eps B.tolerance_lt.le hsmall⟩
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_all_point_canonical_neighborhoods_with_cap_neck_charts :
+theorem exists_all_point_canonical_neighborhoods_with_cap_neck_charts :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
       ∃ C1 C2 Q : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ 0 < Q ∧
         ∀ (x : P.Carrier) (t : ℝ), t ∈ Ico a s → Q ≤ G.flow.scalar t x →
@@ -170,7 +166,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   obtain ⟨Q, hQ, hK⟩ := hcanonical P a s G
   exact ⟨C, C, Q, hC, hC, hQ, hK⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_all_point_canonical_neighborhoods :
+theorem exists_all_point_canonical_neighborhoods :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
       ∃ C1 C2 Q : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ 0 < Q ∧
         ∀ (x : P.Carrier) (t : ℝ), t ∈ Ico a s → Q ≤ G.flow.scalar t x →
@@ -183,9 +179,9 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 
 section
 
-attribute [local instance] DifferentialGeometry.Topology.ClosedOrientedManifold.component_compact
+attribute [local instance] OrientedThreeStage.component_compact
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_component_canonical_neighborhoods_with_cap_neck_charts
+theorem exists_component_canonical_neighborhoods_with_cap_neck_charts
     {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11) :
     ∃ C Q : ℝ, 1 ≤ C ∧ 0 < Q ∧
       ∀ (c : ConnectedComponents P.Carrier) (x : P.componentOpen c) (t : ℝ),

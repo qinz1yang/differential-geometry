@@ -113,7 +113,7 @@ theorem positiveSphereAttachment_core_preserves_orientation
       heq, mfderiv_comp_apply x (hraw.mdifferentiable (by simp) _) (hφ.mdifferentiable (by simp) _) v]
     rw [positiveCoreToImage_mfderiv]
     rfl
-  erw [← DifferentialGeometry.orientation_map_trans, hder]
+  erw [DifferentialGeometry.VectorBundle.map_orientation_trans_between, hder]
   have h := hor (φ x)
   rw [show G (f x) = r (φ x) from congrFun heq x]
   exact h

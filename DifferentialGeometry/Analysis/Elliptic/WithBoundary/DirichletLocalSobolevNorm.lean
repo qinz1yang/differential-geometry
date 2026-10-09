@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalSobolev
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.HigherOrderBound
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 
 noncomputable section
 

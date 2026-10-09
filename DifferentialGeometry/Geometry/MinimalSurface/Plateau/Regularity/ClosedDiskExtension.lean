@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.EmbeddedSeque
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.BoundaryApproach
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.BoundaryConvergence
 import DifferentialGeometry.Analysis.Integration.Measure.ContinuousRepresentative
-import DifferentialGeometry.Analysis.Complex.Annulus.PolarCoordinates
+import DifferentialGeometry.Topology.LoopSpace.PolarAnnulus
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 import Mathlib.Topology.ContinuousMap.Compact
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorChartMetric
 import DifferentialGeometry.Geometry.Curvature.EmbeddingIsometry
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 
 set_option autoImplicit false

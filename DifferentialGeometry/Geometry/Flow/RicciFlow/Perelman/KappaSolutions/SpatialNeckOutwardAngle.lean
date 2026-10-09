@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckOrderedSides
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckBandBounds
-import DifferentialGeometry.Geometry.Exponential.UnitSpeedGeodesic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompleteMetricUnitArm
 import DifferentialGeometry.Geometry.Comparison.Toponogov.ComparisonTriangleLimit
 
 set_option autoImplicit false

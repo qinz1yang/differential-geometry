@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.Skeleton
-import DifferentialGeometry.Topology.ContinuousMap.ClosedCover
+import DifferentialGeometry.Topology.ClosedCover
 import Mathlib.Topology.UnitInterval
 
 noncomputable section

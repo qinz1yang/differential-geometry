@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BackwardExtension.AncientLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalScalarAncientLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.ParabolicOfSpatialAncient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.FlowOfMetric
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.CurvatureOperator

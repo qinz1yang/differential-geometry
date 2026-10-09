@@ -7,6 +7,7 @@ open Set _root_.Geometry _root_.Topology
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E F M : Type*} [DecidableEq E] [DecidableEq F]
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.LinearMap.Kernel
+import DifferentialGeometry.Bundle.SmoothSubbundle.KernelMotion
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionAlgebra
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorKernel
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Endomorphism

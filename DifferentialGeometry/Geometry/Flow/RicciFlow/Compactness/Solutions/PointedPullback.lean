@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 

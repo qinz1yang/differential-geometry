@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Chart.MetricEnergy.Sobolev
-import DifferentialGeometry.Geometry.Metric.ChartLipschitz.Basic
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Sobolev
+import DifferentialGeometry.Geometry.Metric.ChartLipschitz
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.Scalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Defs

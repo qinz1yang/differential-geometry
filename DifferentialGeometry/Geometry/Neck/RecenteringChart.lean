@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.NormalizedDatum
-import DifferentialGeometry.Geometry.Metric.Cylinder.AxialIsometry
+import DifferentialGeometry.Geometry.Metric.CylinderAxial
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget

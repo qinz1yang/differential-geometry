@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteCapWitnessMetric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.RetainedOpenMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticOpenRetained
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.FiniteCapPositiveOverlap
 
 set_option autoImplicit false

@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualCells
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.Cores
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCoreComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexSubcomplex
 
 open Set

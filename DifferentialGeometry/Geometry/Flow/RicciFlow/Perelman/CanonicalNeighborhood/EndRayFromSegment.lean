@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDefs
-import DifferentialGeometry.Topology.MetricSpace.Geodesic.Segment
+import DifferentialGeometry.Geometry.Metric.Segment
 
 set_option autoImplicit false
 open Filter Set

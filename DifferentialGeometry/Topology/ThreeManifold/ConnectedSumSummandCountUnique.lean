@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Algebra.Module.RankInvariant
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLawInstances
 import DifferentialGeometry.Topology.ThreeManifold.CutCapSphericalExponentReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapSummandCountInvariance
 import DifferentialGeometry.Topology.VanKampen.ConnectedSumAbelianization

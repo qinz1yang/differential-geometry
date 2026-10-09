@@ -24,9 +24,9 @@ theorem exists_contractible_regular_family_of_pathConnected
     ∃ projected : C(T, RegularFamily (I := I) (Q := Q) P),
       (∀ t p, (projected t p).1 = R (t, p)) ∧
       projected t₀ = initial ∧
-      ∀ t, DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
-        DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp initial) := by
-  have hctr : ∀ t p, ContinuousMap.Nullhomotopic (R (t, p)).toContinuousLoop := by
+      ∀ t, FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
+        FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp initial) := by
+  have hctr : ∀ t p, IsContractibleLoop (R (t, p)).toContinuousLoop := by
     intro t p
     have hj := (PathConnectedSpace.joined t₀ t).map
       (regularLoopInclusion.continuous.comp
@@ -34,7 +34,7 @@ theorem exists_contractible_regular_family_of_pathConnected
     have hhom := (DifferentialGeometry.Topology.homotopic_iff_joined _ _).mpr hj
     obtain ⟨q, hq⟩ := (initial p).2
     refine ⟨q, hhom.symm.trans ?_⟩
-    change ContinuousMap.Homotopic (R (t₀, p)).toContinuousLoop (DifferentialGeometry.Topology.FreeLoop.constants q)
+    change ContinuousMap.Homotopic (R (t₀, p)).toContinuousLoop (constantLoops q)
     rw [hinit]
     exact hq
   let lifted : C(T × P, ContractibleRegularLoop (I := I) (Q := Q)) :=
@@ -45,7 +45,7 @@ theorem exists_contractible_regular_family_of_pathConnected
     intro p
     exact Subtype.ext (hinit p)
   refine ⟨projected, fun _ _ => rfl, hat, fun t => ?_⟩
-  apply (DifferentialGeometry.Topology.FreeHomotopyClass.mk_eq_mk_iff _ _).mpr
+  apply (FreeHomotopyClass.mk_eq_mk_iff _ _).mpr
   let path : Path t t₀ := PathConnectedSpace.somePath t t₀
   have hh : ContinuousMap.Homotopic (projected t) initial := by
     refine ⟨⟨⟨fun q => lifted (path q.1, q.2),
@@ -298,8 +298,8 @@ theorem exists_projected_regular_family
       (∀ t p z, (projected t p).1 z = (c p).projection z t) ∧
       projected ⟨a, le_rfl, hab.le⟩ = initial ∧
       (∀ t, Width.HasContinuousSmoothLoopJets e (projected t)) ∧
-      ∀ t, DifferentialGeometry.Topology.FreeHomotopyClass.mk (Width.contractibleRegularLoopInclusion.comp (projected t)) =
-        DifferentialGeometry.Topology.FreeHomotopyClass.mk (Width.contractibleRegularLoopInclusion.comp initial) := by
+      ∀ t, FreeHomotopyClass.mk (Width.contractibleRegularLoopInclusion.comp (projected t)) =
+        FreeHomotopyClass.mk (Width.contractibleRegularLoopInclusion.comp initial) := by
   have hproj := continuous_projection_of_smoothProductCylinder e (uniqueDiffOn_Icc hab) hc hs
   obtain ⟨F, hF, hsF, hjF⟩ := exists_regular_family_of_smoothCylinder e hab
     (fun p => (c p).projection) hproj (fun p => (hs p).1)

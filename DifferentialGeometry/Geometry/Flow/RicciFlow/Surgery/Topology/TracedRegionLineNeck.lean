@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionAncientKappaLimit
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Compactness.NeckDetection.Line
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedLineNeck
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.SeparatingSegments
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckWitnessConversion
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling

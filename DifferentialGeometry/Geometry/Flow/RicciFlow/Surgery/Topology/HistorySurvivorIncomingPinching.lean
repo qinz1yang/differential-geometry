@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalPinching
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Pullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PinchingPullback
 import DifferentialGeometry.Geometry.Curvature.OperatorScaling
 
 set_option autoImplicit false

@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank.Ancient.Rank
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ParallelKernel.Endpoint
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Splitting.NegativeTimeExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientCurvatureRank
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ClosedKernel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientSplittingNegativeTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalCurvatureTrichotomy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceProductEuclidean
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ScalarPositivity

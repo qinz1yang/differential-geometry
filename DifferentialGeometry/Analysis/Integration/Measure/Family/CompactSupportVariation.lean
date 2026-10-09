@@ -58,7 +58,7 @@ theorem hasDerivAt_integral_riemannianMeasureFamily_of_compact_support
       hF.contMDiffAt ((hJ.prod isOpen_univ).mem_nhds hp)
     have hdAt : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) 0
         (fun q : ℝ × M => deriv (fun s => F s q.2) q.1) p :=
-      DifferentialGeometry.contMDiffAt_partial_deriv_fst hat (by simp)
+      DifferentialGeometry.timeDeriv_smoothAt hat (by simp)
     exact hdAt.continuousAt.continuousWithinAt
   have hd := DifferentialGeometry.Analysis.hasDerivAt_integral_of_compact_support
     (μ := riemannianVolumeMeasure (I := I) (M := M) (g t)) hJ hK

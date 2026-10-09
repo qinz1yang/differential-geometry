@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
+import DifferentialGeometry.Topology.ThreeManifold.CutCap
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormTrivial
 
@@ -24,12 +24,12 @@ def ClosedOrientedManifold.componentwiseConnectedSumStandardFactor
       Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
         (D.component C).toClosedOrientedManifold (finiteConnectedSum L).toClosedOrientedManifold)
 
-theorem componentwise_isStandardConnectedSum_of_componentwiseConnectedSumStandardFactor
+theorem componentwise_isPoincareStandard_of_componentwiseConnectedSumStandardFactor
     (D : ClosedOrientedManifold.{u} 3) (h : D.componentwiseConnectedSumStandardFactor) :
-    ∀ C : ConnectedComponents D.Carrier, isStandardConnectedSum (D.component C).Carrier := by
+    ∀ C : ConnectedComponents D.Carrier, isPoincareStandard (D.component C).Carrier := by
   intro C
   obtain ⟨L, hL, ⟨ρ⟩⟩ := h C
-  exact isStandardConnectedSum_of_diffeomorph ρ.1 (isStandardConnectedSum_finite_sum L hL)
+  exact isPoincareStandard_of_diffeomorph ρ.1 (isPoincareStandard_finite_sum L hL)
 
 theorem componentwiseConnectedSumStandardFactor_of_componentwiseStandardFactor
     (D : ClosedOrientedManifold.{u} 3) (h : D.componentwiseStandardFactor) :
@@ -38,10 +38,10 @@ theorem componentwiseConnectedSumStandardFactor_of_componentwiseStandardFactor
   obtain ⟨N, hN, ⟨ρ⟩⟩ := h C
   exact ⟨[N], by simpa using hN, ⟨ρ⟩⟩
 
-theorem componentwise_isStandardConnectedSum_of_componentwiseStandardFactor
+theorem componentwise_isPoincareStandard_of_componentwiseStandardFactor
     (D : ClosedOrientedManifold.{u} 3) (h : D.componentwiseStandardFactor) :
-    ∀ C : ConnectedComponents D.Carrier, isStandardConnectedSum (D.component C).Carrier :=
-  componentwise_isStandardConnectedSum_of_componentwiseConnectedSumStandardFactor D
+    ∀ C : ConnectedComponents D.Carrier, isPoincareStandard (D.component C).Carrier :=
+  componentwise_isPoincareStandard_of_componentwiseConnectedSumStandardFactor D
     (componentwiseConnectedSumStandardFactor_of_componentwiseStandardFactor D h)
 
 theorem componentwiseStandardFactor_of_isEmpty (D : ClosedOrientedManifold.{u} 3)
@@ -153,7 +153,7 @@ theorem retainedLocus_eq_univ_of_isEmpty_index (E : SphericalCutCapTransition M 
 theorem poincareControlled_of_componentwiseConnectedSumStandardFactor
     (E : SphericalCutCapTransition M Q) (h : E.discarded.componentwiseConnectedSumStandardFactor) :
     E.poincareControlled :=
-  componentwise_isStandardConnectedSum_of_componentwiseConnectedSumStandardFactor E.discarded h
+  componentwise_isPoincareStandard_of_componentwiseConnectedSumStandardFactor E.discarded h
 
 theorem poincareControlled_of_componentwiseStandardFactor (E : SphericalCutCapTransition M Q)
     (h : E.discarded.componentwiseStandardFactor) : E.poincareControlled :=

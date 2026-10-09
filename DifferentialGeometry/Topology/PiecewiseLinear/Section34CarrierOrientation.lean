@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.LocalDegree.ChartParity
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.ConnectedCarriers
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ConnectedCarriers
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexIncidentEdge
 
 open Set Topology
@@ -55,10 +60,10 @@ theorem section34_vertex_chart_transfer_eq
     (hQc : Q w ⊆ c.source) (hQc' : Q w ⊆ c'.source)
     {x y : M₂} (hx : x ∈ h '' src (.vertexBall w)) (hy : y ∈ Dv w) :
     chartOrientationParity c c' x
-        (hQc (image_vertexBall_subset_carrier hprep w hx))
-        (hQc' (image_vertexBall_subset_carrier hprep w hx)) =
+        (hQc (section34_image_vertexBall_subset_Q hprep w hx))
+        (hQc' (section34_image_vertexBall_subset_Q hprep w hx)) =
       chartOrientationParity c c' y (hQc (hDvQ w hy)) (hQc' (hDvQ w hy)) := by
-  obtain ⟨hA, hAQ⟩ := isConnected_vertex_carrier_union
+  obtain ⟨hA, hAQ⟩ := section34_vertex_carrier_connected
     hU hh hframe hprep hsep hDvsub hDv hDvQ hQlf hDnbhd w
   exact chartOrientationParity_eq_of_isPreconnected c c' hA.isPreconnected
     (hAQ.trans hQc) (hAQ.trans hQc') (Or.inl hx) (Or.inr hy)

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Estimate.QuadraticForm
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.Family.Comparison
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BoundaryDerivLimit
 

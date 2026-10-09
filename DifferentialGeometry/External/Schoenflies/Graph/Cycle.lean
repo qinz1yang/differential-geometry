@@ -64,7 +64,7 @@ subgraph can answer differently. `Graph.IsWalk.anti` from `Walk.lean` is the eng
   edge lies on a cycle if and only if deleting it does not disconnect its endpoints", both
   directions, with the finiteness the proof does not use dropped. The two halves are
   `Graph.LiesOnCycle.deleteEdges_reaches` and `Graph.LiesOnCycle.of_deleteEdges_reaches`.
-* `Graph.IsBridge`, `Graph.isBridge_iff_not_reaches` — the bridges of
+* `Graph.IsCycleBridge`, `Graph.isBridge_iff_not_reaches` — the bridges of
   `lem:subdivision-ear-preserve` ("a 2-connected graph has no bridge. Indeed, if `uv` were a
   bridge, the two components of `G - uv` …"), stated as the separation of the two ends.
 * `Graph.IsAcyclic`, `Graph.Connected.deleteEdges_singleton` — the acyclicity underneath
@@ -284,7 +284,7 @@ theorem IsAcyclic.mem_of_isLink_of_mem_walkVertices (hac : G.IsAcyclic) (hP : G.
 
 /-! ### Bridges -/
 
-/-- `G.IsBridge e` : an edge of `G` that lies on no cycle. Equivalently — and this is the
+/-- `G.IsCycleBridge e` : an edge of `G` that lies on no cycle. Equivalently — and this is the
 form every use wants — an edge whose deletion separates its two ends
 (`Graph.isBridge_iff_not_reaches`). -/
 def IsCycleBridge (G : Graph α β) (e : β) : Prop := e ∈ E(G) ∧ ¬ G.LiesOnCycle e

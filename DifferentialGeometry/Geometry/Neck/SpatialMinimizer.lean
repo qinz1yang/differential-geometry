@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Neck.SpatialFixedRecentering
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBall
 import DifferentialGeometry.Topology.MetricSpace.GeodesicSeparator
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
 noncomputable section
 

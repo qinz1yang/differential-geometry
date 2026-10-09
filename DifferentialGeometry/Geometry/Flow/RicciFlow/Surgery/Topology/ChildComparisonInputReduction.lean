@@ -89,7 +89,7 @@ theorem not_nonempty_childCarrierCollaredStarCover_of_capRange_eq_univ
 
 theorem not_nonempty_childCarrierCollaredStarCover_of_middleSphereCuttingSeparation
     (hmiddle : E.middleSphereCuttingSeparation) (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier]
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier]
     {b₁ b₂ : E.ChildCapBoundary c} (hne : b₁ ≠ b₂)
     (huniv : (⋃ b : E.ChildCapBoundary c, Set.range (E.childCap c b)) = Set.univ) :
     ¬ Nonempty (E.ChildCarrierCollaredStarCover c) :=
@@ -177,7 +177,7 @@ theorem rfs_child_comparison_of_reducedInputs
 
 theorem rfs_child_comparison_of_canonicalReducedInputs
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier)
     (a : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       IntegralHomology (G.Parent c).Carrier 3)
     (b : (c : ConnectedComponents (H.stage i.succ).Carrier) →
@@ -228,7 +228,7 @@ theorem rfs_child_comparison_of_canonicalReducedInputs
 
 theorem rfs_child_comparison_of_canonicalTerminalInputs
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier)
     (a : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       IntegralHomology (G.Parent c).Carrier 3)
     (b : (c : ConnectedComponents (H.stage i.succ).Carrier) →
@@ -272,7 +272,7 @@ theorem rfs_child_comparison_of_canonicalTerminalInputs
 
 theorem rfs_child_comparison_of_canonicalUniformConvergence
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier)
     (a : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       IntegralHomology (G.Parent c).Carrier 3)
     (b : (c : ConnectedComponents (H.stage i.succ).Carrier) →
@@ -370,7 +370,7 @@ theorem rfs_child_comparison_of_localEDistComparison_and_class_generator
 
 theorem rfs_child_comparison_of_canonicalLocalEDistComparison_and_class_generator
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier)
     (a : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       IntegralHomology (G.Parent c).Carrier 3)
     (b : (c : ConnectedComponents (H.stage i.succ).Carrier) →

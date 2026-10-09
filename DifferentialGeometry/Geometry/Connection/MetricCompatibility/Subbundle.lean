@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Subbundle.Riemannian
+import DifferentialGeometry.Geometry.Metric.Subbundle
 import DifferentialGeometry.Geometry.Connection.SubbundleRestriction
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Metric
 import DifferentialGeometry.Bundle.Section

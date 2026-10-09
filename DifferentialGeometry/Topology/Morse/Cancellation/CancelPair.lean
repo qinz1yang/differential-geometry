@@ -17,7 +17,7 @@ namespace GradientLikeStrip
 
 variable [IsManifold I ∞ M] [T2Space M] [I.Boundaryless] {D : GradientLikeStrip I f a b crit}
 
-theorem exists_cancel_pair_index_zero [DecidableEq M]
+theorem exists_cancel_pair_index_zero [SigmaCompactSpace M] [DecidableEq M]
     {a' b' : ℝ} (hf : MorseStrip I f a' b') {p q : M}
     (D : GradientLikeStrip I f a' b' {p, q})
     (hcrit : ∀ x, x ∈ ({p, q} : Finset M) ↔ f x ∈ Ioo a' b' ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x)
@@ -30,7 +30,7 @@ theorem exists_cancel_pair_index_zero [DecidableEq M]
       ∀ x, g x ∈ Ioo a' b' → ¬ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I g x := by
   exact IndexZeroCancellingPair.main ⟨hf, D, hcrit, hp, hq, ε, hε, hgood, hcst, hlt, hlev⟩
 
-theorem exists_cancel_pair_strip [DecidableEq M]
+theorem exists_cancel_pair_strip [SigmaCompactSpace M] [DecidableEq M]
     (hf : MorseStrip I f a b) {a' b' : ℝ} (ha : a ≤ a') (hb : b' ≤ b)
     (hreg : ∀ x, f x = a' ∨ f x = b' → ¬ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x)
     (hf' : MorseStrip I f a' b') {p q : M}

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.LoopSpace.ManifoldComponent
-import DifferentialGeometry.Geometry.Metric.Restriction.Completeness
+import DifferentialGeometry.Geometry.Metric.Restriction
 import DifferentialGeometry.Geometry.Measure.Area.OpenTarget
 import DifferentialGeometry.Geometry.Measure.Area.SpanningCompetitors
 

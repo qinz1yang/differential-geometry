@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllOrders
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Metric.Construction.BumpExtension
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.Bounds

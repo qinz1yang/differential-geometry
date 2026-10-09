@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Windowed.OpenRestriction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Windowed.TimeRestriction
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelRestriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedWitnessRestriction
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans
 
 set_option autoImplicit false
@@ -291,7 +291,7 @@ theorem WindowedModelWitness.toRestrictOpen_preservesTangentOrientationAt
   refine ⟨hder.symm ▸ hf, ?_⟩
   have hc := W.toRestrictOpen_embedding_coe hU hy'.2
   unfold PreservesTangentOrientationAt at hpres ⊢
-  rw [DifferentialGeometry.ManifoldOrientation.restrictOpen_orientation]
+  rw [TangentOrientationSection.restrictOpen_orientation]
   convert hpres using 2
   rw [hc]
   apply Iff.of_eq

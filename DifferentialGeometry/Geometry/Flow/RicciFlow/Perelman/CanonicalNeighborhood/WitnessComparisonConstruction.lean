@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessNormalizedTimeJets
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Windowed.Domain.CaptureReserve
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Compactness.Convergence.IntrinsicTimeJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessCaptureReserve
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedIntrinsicTimeJets
 
 
 set_option autoImplicit false

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Trace.TerminalScalar
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.ScalarUpperComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TerminalScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ScalarBoundAdditiveDistance
 import Mathlib.Analysis.Calculus.MeanValue
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 

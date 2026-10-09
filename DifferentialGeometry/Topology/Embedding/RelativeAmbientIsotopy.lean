@@ -487,7 +487,7 @@ theorem exists_contDiff_compact_ambient_isotopy_halfspace_parametric_eqOn_integr
     exact hep.comp (hpair.prodMk contMDiff_snd.snd)
   have hv' : ContMDiff (𝓘(ℝ).prod (𝓘(ℝ, P).prod (𝓡∂ (d + 1)))) 𝓘(ℝ, V) ∞
       (fun q : ℝ × (P × M) => deriv (fun r => e ((r, q.2.1), q.2.2)) q.1) :=
-    fun q => DifferentialGeometry.contMDiffAt_partial_deriv_fst (he' q) (by simp)
+    fun q => DifferentialGeometry.timeDeriv_smoothAt (he' q) (by simp)
   have hv : ContMDiff (𝓘(ℝ, ℝ × P).prod (𝓡∂ (d + 1))) 𝓘(ℝ, V) ∞ v := by
     have hr : ContMDiff (𝓘(ℝ, ℝ × P).prod (𝓡∂ (d + 1))) 𝓘(ℝ) ∞
         (fun q : (ℝ × P) × M => q.1.1) := contDiff_fst.contMDiff.comp contMDiff_fst

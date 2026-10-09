@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TransverseCrossingPath
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckArmNoReturn
 import DifferentialGeometry.Geometry.Comparison.RadialHessianLowerBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Windowed.Bounds.SourceSectional
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedSourceSectionalBounds
 import Mathlib.Analysis.SpecificLimits.Basic
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Geometry.Comparison.Toponogov.MetricArmComparison

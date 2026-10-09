@@ -58,7 +58,8 @@ private theorem not_cooriented_projective_embedding
     cast (congrArg
       (fun n => DifferentialGeometry.ManifoldOrientation ThreeModel ThreeSpace n) hdim) om
   let o : TangentOrientationSection ThreeSpace :=
-    om3
+    { orientation := om3.orientation
+      locally_constant := om3.locally_constant }
   apply not_antipodal_product_localDiffeomorphAt_zero o q hq
   intro p
   apply congrArg F

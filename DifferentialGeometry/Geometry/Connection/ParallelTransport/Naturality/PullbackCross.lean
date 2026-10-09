@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Extension.LinearTangent
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.CorrectionContraction
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross

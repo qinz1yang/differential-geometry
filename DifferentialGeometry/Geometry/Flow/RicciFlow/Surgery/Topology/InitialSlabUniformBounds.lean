@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodInduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabJointSmoothness
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.InitialCompact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CompactCurvatureControl
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 
@@ -18,9 +18,7 @@ universe u
 
 namespace OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_uniform_initial_curvature_bound (P : OrientedThreeStage.{u}) (g : P.Metric) :
+theorem exists_uniform_initial_curvature_bound (P : OrientedThreeStage.{u}) (g : P.Metric) :
     ∃ η K : ℝ, 0 < η ∧ ∀ (s : ℝ) (G : P.IncomingSlab 0 s), G.flow.base.metric 0 = g →
       ∀ t, 0 ≤ t → t < s → t ≤ η → ∀ x : P.Carrier,
         G.flow.scalar t x ≤ K ∧ G.riemannNorm t x ≤ K := by
@@ -60,23 +58,21 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_unifo
 
 namespace IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.canonicalOn_of_scalar_le {ε C1 C2 qcan τmin t₀ η : ℝ}
+theorem canonicalOn_of_scalar_le {ε C1 C2 qcan τmin t₀ η : ℝ}
     (h : ∀ t, a < t → t₀ ≤ t → t < t₀ + η → t < s → ∀ y, G.flow.scalar t y ≤ qcan) :
     G.CanonicalOn ε C1 C2 qcan τmin t₀ η :=
   fun y t hat ht₀ htη hts hR _ => absurd hR (not_lt.mpr (h t hat ht₀ htη hts y))
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.derivativeBoundOn_of_scalar_le {Ctime : ℝ≥0} {qcan t₀ η : ℝ}
+theorem derivativeBoundOn_of_scalar_le {Ctime : ℝ≥0} {qcan t₀ η : ℝ}
     (h : ∀ t, a < t → t₀ ≤ t → t < t₀ + η → t < s → ∀ y, G.flow.scalar t y ≤ qcan) :
     G.DerivativeBoundOn Ctime qcan t₀ η :=
   fun y t hat ht₀ htη hts hR => absurd hR (not_lt.mpr (h t hat ht₀ htη hts y))
 
 end IncomingSlab
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_uniform_initial_canonicalOn_derivativeBoundOn (P : OrientedThreeStage.{u})
+theorem exists_uniform_initial_canonicalOn_derivativeBoundOn (P : OrientedThreeStage.{u})
     (g : P.Metric) :
     ∃ η K : ℝ, 0 < η ∧ ∀ qcan : ℝ, K ≤ qcan → ∀ (s : ℝ) (G : P.IncomingSlab 0 s),
       G.flow.base.metric 0 = g →

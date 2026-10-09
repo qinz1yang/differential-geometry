@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleLimits.Density.HeatEquation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleLimits.HamiltonJacobi.IntrinsicEquation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleEndpointDensityHeat
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleEndpointHamiltonJacobi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineRicciSoliton
 import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.PotentialCongruence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.ExponentialDensity
@@ -169,7 +169,7 @@ theorem poleEndpoint_redLength_limit_gradientRicciSoliton_and_hamiltonNormalized
     ell hconvPointwise hell
   have hconjugate : IsHeatPotOn Dsol G
       (fun r x => -metricScalarAt (co.gInf (1 - r)) x)
-      (fun r => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) r (fun x => ell (x, r))) := by
+      (fun r => perelmanDensity (Module.finrank ℝ E) r (fun x => ell (x, r))) := by
     apply hu.congr
     intro r hr x
     have hrpos : 0 < r := zero_lt_one.trans (show 1 < r from hr)

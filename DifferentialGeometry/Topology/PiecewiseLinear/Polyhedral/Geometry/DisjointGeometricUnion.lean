@@ -9,6 +9,7 @@ open scoped ContinuousMap
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E F : Type*} [DecidableEq E] [DecidableEq F]
   [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -143,19 +144,11 @@ def geometricUnionRightProjection : (E × F × ℝ) →ᵃ[ℝ] F :=
   ((LinearMap.fst ℝ F ℝ).comp (LinearMap.snd ℝ E (F × ℝ))).toAffineMap
 
 omit [DecidableEq E] [DecidableEq F] in
-@[simp] theorem geometricUnionLeftProjection_apply (x : E × F × ℝ) :
-    geometricUnionLeftProjection x = x.1 := rfl
-
-omit [DecidableEq E] [DecidableEq F] in
-@[simp] theorem geometricUnionRightProjection_apply (x : E × F × ℝ) :
-    geometricUnionRightProjection x = x.2.1 := rfl
-
-omit [DecidableEq E] [DecidableEq F] in
-theorem geometricUnionLeftProjection_left (x : E) :
+@[simp] theorem geometricUnionLeftProjection_left (x : E) :
     geometricUnionLeftProjection (geometricUnionLeft (F := F) x) = x := rfl
 
 omit [DecidableEq E] [DecidableEq F] in
-theorem geometricUnionRightProjection_right (x : F) :
+@[simp] theorem geometricUnionRightProjection_right (x : F) :
     geometricUnionRightProjection (geometricUnionRight (E := E) x) = x := rfl
 
 theorem geometricUnionLeft_face_sections (K : SimplicialComplex ℝ E)
@@ -249,17 +242,14 @@ def geometricDisjointUnionHomeomorph (K : SimplicialComplex ℝ E) (T : Simplici
   exact (show Continuous e from (geometricDisjointUnionInl K T).continuous.sumElim
     (geometricDisjointUnionInr K T).continuous).homeoOfEquivCompactToT2
 
-omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] in
 @[simp] theorem geometricDisjointUnionHomeomorph_inl (K : SimplicialComplex ℝ E)
     (T : SimplicialComplex ℝ F) (hK : K.faces.Finite) (hT : T.faces.Finite) (x : K.space) :
     geometricDisjointUnionHomeomorph K T hK hT (Sum.inl x) = geometricDisjointUnionInl K T x := rfl
 
-omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] in
 @[simp] theorem geometricDisjointUnionHomeomorph_inr (K : SimplicialComplex ℝ E)
     (T : SimplicialComplex ℝ F) (hK : K.faces.Finite) (hT : T.faces.Finite) (x : T.space) :
     geometricDisjointUnionHomeomorph K T hK hT (Sum.inr x) = geometricDisjointUnionInr K T x := rfl
 
-omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] in
 theorem geometricDisjointUnionInl_isClosedEmbedding (K : SimplicialComplex ℝ E)
     (T : SimplicialComplex ℝ F) (hK : K.faces.Finite) :
     IsClosedEmbedding (geometricDisjointUnionInl K T) := by
@@ -267,7 +257,6 @@ theorem geometricDisjointUnionInl_isClosedEmbedding (K : SimplicialComplex ℝ E
   exact (geometricDisjointUnionInl K T).continuous.isClosedEmbedding
     (geometricDisjointUnionInl_injective K T)
 
-omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] in
 theorem geometricDisjointUnionInr_isClosedEmbedding (K : SimplicialComplex ℝ E)
     (T : SimplicialComplex ℝ F) (hT : T.faces.Finite) :
     IsClosedEmbedding (geometricDisjointUnionInr K T) := by
@@ -275,7 +264,6 @@ theorem geometricDisjointUnionInr_isClosedEmbedding (K : SimplicialComplex ℝ E
   exact (geometricDisjointUnionInr K T).continuous.isClosedEmbedding
     (geometricDisjointUnionInr_injective K T)
 
-omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] in
 theorem exists_continuousMap_geometricDisjointUnion {M : Type*} [TopologicalSpace M]
     (K : SimplicialComplex ℝ E) (T : SimplicialComplex ℝ F)
     (hK : K.faces.Finite) (hT : T.faces.Finite) (f : C(K.space, M)) (g : C(T.space, M)) :

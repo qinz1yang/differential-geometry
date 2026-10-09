@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.WidthComparison.Threshold
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Extinction.ObservationTower.LevelBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ScalarThreshold
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExtinctionLevel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerWidthExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CoreCompatibleExtinctionTower
@@ -40,9 +40,9 @@ theorem hasExtinctObservationNucleusOfCutCapCompletion_of_hasExtinctRetainedCore
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : HasExtinctRetainedCoreHistory M g) :
     HasExtinctObservationNucleusOfCutCapCompletion
-      (M.toClosedOrientedManifold) g :=
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g :=
   hasExtinctObservationNucleusOfCutCapCompletion_of_nucleus
-    (M.toClosedOrientedManifold) g
+    (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g
     (hasExtinctObservationNucleus_of_hasExtinctRetainedCoreHistory M g h)
 
 theorem hasExtinctObservationNucleusOfCutCapCompletion_of_hasExtinctRetainedCoreHistoryAtTime
@@ -50,7 +50,7 @@ theorem hasExtinctObservationNucleusOfCutCapCompletion_of_hasExtinctRetainedCore
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : HasExtinctRetainedCoreHistoryAtTime M g) :
     HasExtinctObservationNucleusOfCutCapCompletion
-      (M.toClosedOrientedManifold) g :=
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g :=
   hasExtinctObservationNucleusOfCutCapCompletion_of_hasExtinctRetainedCoreHistory M g
     (hasExtinctRetainedCoreHistory_of_hasExtinctRetainedCoreHistoryAtTime M g h)
 
@@ -59,7 +59,7 @@ theorem hasExtinctObservationNucleusOfCutCapCompletion_of_hasExtinctRetainedCore
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : HasExtinctRetainedCoreTower M g) :
     HasExtinctObservationNucleusOfCutCapCompletion
-      (M.toClosedOrientedManifold) g :=
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g :=
   hasExtinctObservationNucleusOfCutCapCompletion_of_hasExtinctRetainedCoreHistory M g
     (hasExtinctRetainedCoreHistory_of_hasExtinctRetainedCoreTower M g h)
 
@@ -68,7 +68,7 @@ theorem hasExtinctObservationNucleusOfCutCapCompletion_of_hasExtinctObservationT
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : DifferentialGeometry.PDE.RicciFlow.Surgery.hasExtinctObservationTower M g) :
     HasExtinctObservationNucleusOfCutCapCompletion
-      (M.toClosedOrientedManifold) g := by
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g := by
   obtain ⟨T, hc, hout, hctrl, hextinct⟩ := h
   obtain ⟨b, hb, hempty⟩ := hextinct
   exact ⟨T.observe b hb, T.observeInitial b hb, fun i => hc b hb i,
@@ -79,7 +79,7 @@ theorem hasExtinctObservationNucleusOfCutCapCompletion_of_hasCoreCompatibleObser
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : DifferentialGeometry.PDE.RicciFlow.Surgery.hasCoreCompatibleObservationTower M g) :
     HasExtinctObservationNucleusOfCutCapCompletion
-      (M.toClosedOrientedManifold) g :=
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g :=
   hasExtinctObservationNucleusOfCutCapCompletion_of_hasExtinctObservationTower M g
     (DifferentialGeometry.PDE.RicciFlow.Surgery.hasExtinctObservationTower_of_coreCompatible
       M g h)
@@ -89,7 +89,7 @@ theorem hasExtinctObservationNucleusOfCutCapCompletion_of_hasEmbeddedCoreObserva
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : hasEmbeddedCoreObservationTower M g) :
     HasExtinctObservationNucleusOfCutCapCompletion
-      (M.toClosedOrientedManifold) g :=
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g :=
   hasExtinctObservationNucleusOfCutCapCompletion_of_hasExtinctObservationTower M g
     (hasExtinctObservationTower_of_embeddedCore M g h)
 
@@ -152,7 +152,7 @@ theorem exists_retainedCoreTower_extinctByLevelWithin_iff_hasExtinctRetainedCore
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier) :
     (∃ T : RetainedCoreObservationTower
-        (M.toClosedOrientedManifold) g,
+        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g,
       T.hasBoundaryFrameReversing ∧ T.hasPoincareStandardDiscarded ∧
         ∃ B : ℝ, T.toObservationTower.ExtinctByLevelWithin B) ↔
       HasExtinctRetainedCoreTower M g := by
@@ -168,7 +168,7 @@ theorem exists_retainedCoreTower_uniformRecordsAbove_iff_hasExtinctRetainedCoreT
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier) :
     (∃ T : RetainedCoreObservationTower
-        (M.toClosedOrientedManifold) g,
+        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g,
       T.hasBoundaryFrameReversing ∧ T.hasPoincareStandardDiscarded ∧
         ∃ c A : ℝ, T.toObservationTower.UniformRecordsAbove c A) ↔
       HasExtinctRetainedCoreTower M g := by

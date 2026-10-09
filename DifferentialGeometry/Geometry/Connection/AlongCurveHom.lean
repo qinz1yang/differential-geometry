@@ -149,7 +149,7 @@ private theorem connectionForm_hom_apply
     [MemTrivializationAtlas e₁] [MemTrivializationAtlas e₂]
     {x : M} (hx₁ : x ∈ e₁.baseSet) (hx₂ : x ∈ e₂.baseSet)
     (X : TangentSpace I x) (A : F₁ →L[ℝ] F₂) (v : F₁) :
-    (_root_.CovariantDerivative.hom
+    (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
       I M F₁ V₁ F₂ V₂ cov₁ cov₂).connectionForm
         (e₁.continuousLinearMap (RingHom.id ℝ) e₂) x X A v =
       cov₂.connectionForm e₂ x X (A v) - A (cov₁.connectionForm e₁ x X v) := by
@@ -189,10 +189,10 @@ private theorem connectionForm_hom_apply
     (hτ.clm_bundle_apply hY) hAY Filter.univ_mem hEq
   rw [connectionForm_apply _ _ hx]
   change e.continuousLinearMapAt ℝ x
-    (_root_.CovariantDerivative.hom
+    (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
       I M F₁ V₁ F₂ V₂ cov₁ cov₂ τ x X) v = _
   rw [hom_trivialization_coord_apply e₁ e₂ hx₁ hx₂, ← hW,
-    _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+    DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
       I M F₁ V₁ F₂ V₂ cov₁ cov₂ τ hτ W.mdifferentiableAt hY,
     hcovEq, hW, map_sub]
   rw [connectionForm_apply cov₂ e₂ hx₂, connectionForm_apply cov₁ e₁ hx₁]
@@ -214,7 +214,7 @@ theorem derivAlongWithin_clm_apply
     (hZ : MDifferentiableWithinAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, F₁))
       (fun s => (⟨γ s, Z s⟩ : TotalSpace F₁ V₁)) J t) :
     cov₂.derivAlongWithin γ (fun s => A s (Z s)) J t =
-      ((_root_.CovariantDerivative.hom
+      ((DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
         I M F₁ V₁ F₂ V₂ cov₁ cov₂).derivAlongWithin γ A J t) (Z t) +
           A t (cov₁.derivAlongWithin γ Z J t) := by
   let e₁ := trivializationAt F₁ V₁ (γ t)
@@ -223,7 +223,7 @@ theorem derivAlongWithin_clm_apply
   have he₁ : γ t ∈ e₁.baseSet := FiberBundle.mem_baseSet_trivializationAt F₁ V₁ (γ t)
   have he₂ : γ t ∈ e₂.baseSet := FiberBundle.mem_baseSet_trivializationAt F₂ V₂ (γ t)
   have he : γ t ∈ e.baseSet := ⟨he₁, he₂⟩
-  let cov := _root_.CovariantDerivative.hom
+  let cov := DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
     I M F₁ V₁ F₂ V₂ cov₁ cov₂
   have hAc := (mdifferentiableWithinAt_hom_bundle _).mp hA
   have hZc := (mdifferentiableWithinAt_totalSpace I _).mp hZ

@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Manifold.SphereDiffeomorphDegree
 import DifferentialGeometry.Topology.Manifold.StereographicAntipodal
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BoundaryAttachmentIsotopy
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamOrientation
-import DifferentialGeometry.Topology.Manifold.SphereIsotopy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruction
 
 set_option autoImplicit false
 
@@ -152,3 +152,40 @@ theorem boundaryAttachmentIsotopic_holds (a a' : BoundaryAttachment) :
     DifferentialGeometry.Topology.Manifold.smaleMunkresSphereIsotopy_holds a a'
 
 end DifferentialGeometry.Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+theorem sphereDiffeomorphismIsotopyConnected_of_smaleMunkres
+    (h : DifferentialGeometry.Topology.SmaleMunkresSphereIsotopy) :
+    sphereDiffeomorphismIsotopyConnected := by
+  intro f hf
+  obtain ⟨J, hJ, -, hJ0, hJ1⟩ := h f hf
+  have hcont : Continuous fun p : Set.Icc (0 : ℝ) 1 × Sphere 2 => J (p.1 : ℝ) p.2 :=
+    hJ.continuous.comp ((continuous_subtype_val.comp continuous_fst).prodMk continuous_snd)
+  refine ⟨⟨fun p => J (p.1 : ℝ) p.2, hcont⟩, ?_, ?_, ?_⟩
+  · intro y
+    change J (0 : ℝ) y = f y
+    rw [hJ0]
+  · intro y
+    change J (1 : ℝ) y = y
+    rw [hJ1]
+    rfl
+  · intro t
+    exact ⟨J (t.1 : ℝ), fun y => rfl⟩
+
+theorem sphereDiffeomorphismIsotopyConnected_of_degree_one
+    (h : ∀ f : Diffeomorph (𝓡 2) (𝓡 2)
+        (sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) (sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) ∞,
+      f.preservesOrientation (DifferentialGeometry.sphereOrientation 2 (by norm_num))
+        (DifferentialGeometry.sphereOrientation 2 (by norm_num)) →
+      DifferentialGeometry.Topology.Manifold.sphereDiffeomorphDegree f = 1) :
+    sphereDiffeomorphismIsotopyConnected :=
+  sphereDiffeomorphismIsotopyConnected_of_smaleMunkres
+    (DifferentialGeometry.Topology.Manifold.smaleMunkresSphereIsotopy_of_degree_one h)
+
+theorem sphereDiffeomorphismIsotopyConnected_holds :
+    sphereDiffeomorphismIsotopyConnected :=
+  sphereDiffeomorphismIsotopyConnected_of_smaleMunkres
+    DifferentialGeometry.Topology.Manifold.smaleMunkresSphereIsotopy_holds
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
-import DifferentialGeometry.Geometry.Operator.Hessian.AlongGeodesic
+import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.Hessian
-import DifferentialGeometry.Geometry.CenterOfMass.StrictDistance.Defs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.Defs
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedSurfaceCap
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Tube.DerivedCells
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeDerivedCells
 
 open Set
 

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Mi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Congruence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Construction.Sobolev
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Regularity.Interior
-import DifferentialGeometry.Analysis.Sobolev.Time.Curve.StrictRefinement
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Construction.StrictRefinement
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
 
 set_option autoImplicit false
@@ -57,7 +57,7 @@ theorem lMinCurve_regularity
         lRegularizedAccel S T s (gamma s) (lVelocity (I := I) gamma s) := by
   classical
   obtain ⟨k, s, _q, p', u', hs, _hq, hs0, hslast, _hseg, _hp,
-      hsrc', hrep'⟩ := DifferentialGeometry.Analysis.Parabolic.TimeSobolev.exists_strict_chartH1_partition (I := I) t htmono p u gamma hsrc hrep
+      hsrc', hrep'⟩ := exists_strict_chart_partition (I := I) t htmono p u gamma hsrc hrep
   have hs0a : s 0 = a := hs0.trans ht0
   have hslastb : s (Fin.last k) = b := hslast.trans htlast
   have hk : 0 < k := by
@@ -127,7 +127,7 @@ theorem lMinCurve_regularizedGeodesicOn_of_spatial_derivatives
     IsLRegularizedGeodesicOn S T gamma (Ioo a b) := by
   classical
   obtain ⟨k, s, _q, p', u', hs, _hq, hs0, hslast, _hseg, _hp,
-      hsrc', hrep'⟩ := DifferentialGeometry.Analysis.Parabolic.TimeSobolev.exists_strict_chartH1_partition (I := I) t htmono p u gamma hsrc hrep
+      hsrc', hrep'⟩ := exists_strict_chart_partition (I := I) t htmono p u gamma hsrc hrep
   have hs0a : s 0 = a := hs0.trans ht0
   have hslastb : s (Fin.last k) = b := hslast.trans htlast
   intro r hr

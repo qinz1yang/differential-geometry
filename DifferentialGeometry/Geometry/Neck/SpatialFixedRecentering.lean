@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBall
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Neck.SpatialRecentering
 import DifferentialGeometry.Geometry.Neck.SpatialChart
 import DifferentialGeometry.Geometry.Neck.SpatialTolerance

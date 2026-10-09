@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Uncapping.InteriorOrientation
+import DifferentialGeometry.Topology.ThreeManifold.UncappingInteriorOrientation
 import DifferentialGeometry.Topology.ThreeManifold.UncappingSmoothStructure
 import DifferentialGeometry.Topology.Manifold.OrientationDiffeomorphTransport
 import DifferentialGeometry.Tensor.LinearAlgebra.Orientation

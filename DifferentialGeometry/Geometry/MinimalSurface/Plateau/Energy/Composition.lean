@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Lipschitz
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
+import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldRademacher
 
 section

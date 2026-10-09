@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.OrthonormalFrame
 import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Principal
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Continuity
+import DifferentialGeometry.Geometry.Metric.BundleContinuity
 
 noncomputable section
 

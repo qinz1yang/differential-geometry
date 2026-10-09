@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.SphereSeparation.NormalFieldSeparation
-import DifferentialGeometry.Topology.SphereSeparation.Normal.RadialExtension
+import DifferentialGeometry.Topology.SphereSeparation.GlobalBicollarAssembly
+import DifferentialGeometry.Topology.SphereSeparation.RadialExtensionDerivative
 import DifferentialGeometry.Topology.SphereSeparation.SphereH1
 
 set_option autoImplicit false

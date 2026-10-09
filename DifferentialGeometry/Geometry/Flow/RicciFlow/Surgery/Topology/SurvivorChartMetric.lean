@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.SurvivorMap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventSurvivorMap
 import DifferentialGeometry.Topology.Manifold.InteriorImage
 import DifferentialGeometry.Topology.Manifold.ImmersionRange
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion

@@ -431,7 +431,7 @@ theorem differentiatedTensorRicciIdentityComponents_of_orthonormalBasis
       (f := fun y : M => ∑ r : Fin q, F r y) (basis e)
       (by
         rw [hsumfun]
-        exact MDifferentiableAt.sum (I := I) (t := (Finset.univ : Finset (Fin q))) (f := F)
+        exact mdiffAt_finset_sum (I := I) (Finset.univ : Finset (Fin q)) F
           (fun r _ => hFdiff r))
     rw [hneg, hsumfun]
     rw [mvfderiv_finset_sum_at (I := I) (Finset.univ : Finset (Fin q))
@@ -3904,7 +3904,7 @@ private theorem ricciCompInCoordinateFrame_contMDiffAt
         deriv (fun s : Real =>
           metricCompInFrame (I := I) S frame s p.2 i j) p.1)
       ((t : Real), x) := by
-    exact DifferentialGeometry.contMDiffAt_partial_deriv_fst hmetric (by simp)
+    exact DifferentialGeometry.timeDeriv_smoothAt hmetric (by simp)
   have hsmooth : ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
       (modelWithCornersSelf Real Real) ∞
       (fun p : Real × M => (-1 / 2 : Real) *

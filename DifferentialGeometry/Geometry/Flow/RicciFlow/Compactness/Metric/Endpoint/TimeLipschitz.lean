@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.CompactBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.MetricTimeLipschitz
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalMetricTimeControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.CovariantContinuity
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.ReferenceChange
 

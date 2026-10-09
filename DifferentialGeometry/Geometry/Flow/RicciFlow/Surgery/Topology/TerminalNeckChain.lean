@@ -37,15 +37,12 @@ private theorem exists_interval_between_levels
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_neck_chain_along_minimizer
+theorem TerminalLimitMetric.exists_neck_chain_along_minimizer
     (L : G.TerminalLimitMetric) {eps δ α q C1 C2 A B ell : ℝ}
     (hδ : 0 < δ) (hα : α ≤ 1 / 20000) (hreserve : 13000 * δ ≤ α)
     (hepsδ : eps < δ) (hfit : δ⁻¹ + 1 ≤ eps⁻¹) (hq : 0 < q) (hC2 : 1 ≤ C2)
@@ -126,7 +123,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     congrArg Subtype.val hp0, congrArg Subtype.val hpn, hinj, hmeet, hdisj⟩
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_eventually_neck_chains_along_scalar_escape
+theorem exists_eventually_neck_chains_along_scalar_escape
     (P : ℕ → OrientedThreeStage.{u}) (a s : ℕ → ℝ)
     (G : ∀ i, (P i).IncomingSlab (a i) (s i))
     (L : ∀ i, (G i).TerminalLimitMetric) (gamma : ∀ i, ℝ → (G i).terminalRegularOpen)

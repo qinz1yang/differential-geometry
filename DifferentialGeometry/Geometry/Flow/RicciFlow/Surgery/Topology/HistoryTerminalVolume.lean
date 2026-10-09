@@ -202,7 +202,7 @@ theorem RetainedCoreHistory.isParabolicallyRmControlledBall_extendHorizon_of_inc
       (metricRm04At (H.coreEvent jH).toMetricCutCapEvent.terminal.metric y) ≤ 1
     exact hb
 
-open private DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_ball_subset_compact_terminal_ball from
+open private OrientedThreeStage.IncomingSlab.TerminalLimitMetric.eventually_ball_subset_compact_terminal_ball from
   DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalVolume
 
 private theorem RetainedCoreHistory.eventually_incomingFootprint_ball_subset_and_curvature_bound
@@ -242,7 +242,7 @@ private theorem RetainedCoreHistory.eventually_incomingFootprint_ball_subset_and
     have hsq : ρ ^ 2 < r ^ 2 := by nlinarith
     linarith
   filter_upwards [Ioo_mem_nhdsLT hs, Ioo_mem_nhdsLT htime,
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_ball_subset_compact_terminal_ball
+    OrientedThreeStage.IncomingSlab.TerminalLimitMetric.eventually_ball_subset_compact_terminal_ball
       L p hρ hρR hcompactR] with t ht htroom htball
   have hroom' : H.time first ≤ t - ρ ^ 2 := by linarith [htroom.1]
   refine ⟨ht.1, ht.2, hroom', ?_, ?_⟩

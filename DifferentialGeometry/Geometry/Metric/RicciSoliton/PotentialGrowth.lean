@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Operator.Hessian.AlongGeodesic
+import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Geometry.Variation.RicciIntegral
+import DifferentialGeometry.Geometry.Comparison.Variation.RicciIntegral
 import DifferentialGeometry.Geometry.Operator.Gradient.LipschitzBound
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification

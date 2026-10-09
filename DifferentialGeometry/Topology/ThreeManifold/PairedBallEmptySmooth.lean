@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallAllSeam
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.GraphGluing.PairedBall.Empty
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallEmpty
 import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.Interior
 import DifferentialGeometry.Topology.Manifold.Diffeomorph.Sigma
 

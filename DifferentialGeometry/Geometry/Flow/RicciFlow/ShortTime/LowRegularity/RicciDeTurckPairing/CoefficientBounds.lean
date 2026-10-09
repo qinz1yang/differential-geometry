@@ -31,7 +31,7 @@ open DifferentialGeometry.Analysis.Spectral
    toModel_rsDomDomCongr_apply)
 open DifferentialGeometry.Geometry.Connection
   (slotInsertEndoCc slotInsertEndoCc_add slotInsertEndoCc_smul unitZeroSec)
-open DifferentialGeometry.Tensor0SBundle (slotInsertEndomorphism_apply_eval)
+open DifferentialGeometry.Geometry.Curvature (slotInsertEndoFib_apply_eval)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -876,7 +876,7 @@ private lemma termSlotFib_toModel_apply (s : ℕ) (x : M)
     (D : Tensor0SSpace (s + 1) I x) (v : Fin (s + 1 + 1) → E) :
     Tensor0SSpace.toModel (termSlotFib (I := I) (M := M) s x Term D) v =
       Tensor0SSpace.toModel
-        (DifferentialGeometry.Tensor0SBundle.slotInsertEndomorphism
+        (DifferentialGeometry.Geometry.Curvature.slotInsertEndoFib
           (I := I) (M := M) (s + 1) 0 x
           (Term ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) D)
         (Matrix.vecTail v) := by
@@ -907,7 +907,7 @@ theorem deTurckLieCovariantDerivativeSecondOrderCoefficient_eq_permuted_connecti
     Tensor0SSpace.toModel
       ((rsDomDomCongr ricciQuadraticPermutationSwapBlocks
         ((connectionDifferenceContravariantInsertionField (I := I) g gm).toSection x)) D) v
-  rw [termSlotFib_toModel_apply, slotInsertEndomorphism_apply_eval]
+  rw [termSlotFib_toModel_apply, slotInsertEndoFib_apply_eval]
   rw [toModel_rsDomDomCongr_apply,
     ContinuousMultilinearMap.domDomCongr_apply]
   rw [connectionDifferenceContravariantInsertionField_toSection, connContr21_insert]
@@ -1974,7 +1974,8 @@ open DifferentialGeometry.Analysis.Spectral
     ccTensor02Symm_eq_self)
 open DifferentialGeometry.Geometry.Connection (slotInsertEndoCc)
 open DifferentialGeometry.Geometry.Curvature
-  (connectionDifferenceFib_apply_eval connectionDifferenceSection connectionDifferenceSection_self connectionDifferenceSection_toSection)
+  (connectionDifferenceFib_apply_eval connectionDifferenceSection connectionDifferenceSection_self connectionDifferenceSection_toSection
+    slotInsertEndoFib)
 
 private lemma mul_le_one_add_mul_sum
     (R D N : ℝ) (hR : 0 ≤ R) (hD : 0 ≤ D) (hN : 0 ≤ N) :
@@ -3557,7 +3558,70 @@ theorem exists_connectionDifferenceContravariantInsertionField_covariantJetNormS
       mul_le_mul_of_nonneg_left hs (by norm_num)
     _ = (B R * (1 + A)) ^ 2 := by simp only [B]; ring
 
+theorem iteratedCovGrad_slotInsertEndoCc_normSq_le
+    (g : SmoothRiemannianMetric I M) (s i : ℕ)
+    (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
+      (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
+    ‖iteratedCovGrad (I := I) g (s + 1) (s + 1) i
+        (slotInsertEndoCc (I := I) (M := M) g s Λ)‖ ^ 2 ≤
+      (Module.finrank ℝ E : ℝ) ^ s *
+        ‖iteratedCovGrad (I := I) g 1 1 i
+          (slotInsertEndoCc (I := I) (M := M) g 0 Λ)‖ ^ 2 := by
+  let F : M → ℝ := fun x => (Module.finrank ℝ E : ℝ) ^ s *
+    riemannianFiberNormSq (I := I) (M := M) g 1 (1 + i) x
+      ((iteratedCovGrad (I := I) g 1 1 i
+        (slotInsertEndoCc (I := I) (M := M) g 0 Λ)).toSection x)
+  have hF : MeasureTheory.Integrable F
+      (riemannianVolumeMeasure (I := I) (M := M) g) := by
+    dsimp only [F]
+    exact (integrable_riemannianFiberNormSq_toSection
+      (I := I) (M := M) g 1 (1 + i)
+      (iteratedCovGrad (I := I) g 1 1 i
+        (slotInsertEndoCc (I := I) (M := M) g 0 Λ))).const_mul _
+  have hsq := normSq_le_integral_of_pointwise_fiberNormSq_le_rs
+    (I := I) (M := M) g (s + 1) ((s + 1) + i)
+    (iteratedCovGrad (I := I) g (s + 1) (s + 1) i
+      (slotInsertEndoCc (I := I) (M := M) g s Λ))
+    F hF (fun x =>
+      riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo
+        (I := I) (M := M) g s Λ i x)
+  have hint :
+      (∫ x, riemannianFiberNormSq (I := I) (M := M) g 1 (1 + i) x
+          ((iteratedCovGrad (I := I) g 1 1 i
+            (slotInsertEndoCc (I := I) (M := M) g 0 Λ)).toSection x)
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
+        ‖iteratedCovGrad (I := I) g 1 1 i
+          (slotInsertEndoCc (I := I) (M := M) g 0 Λ)‖ ^ 2 := by
+    rw [SmoothCcTensor.norm_def,
+      tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs]
+  dsimp only [F] at hsq
+  rw [MeasureTheory.integral_const_mul, hint] at hsq
+  exact hsq
 
+theorem covariantJetNormSq_slotInsertEndoCc_le
+    (g : SmoothRiemannianMetric I M) (s m : ℕ)
+    (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
+      (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
+    covariantJetNormSq (I := I) (M := M) g m
+        (slotInsertEndoCc (I := I) (M := M) g s Λ) ≤
+      (Module.finrank ℝ E : ℝ) ^ s *
+        covariantJetNormSq (I := I) (M := M) g m
+          (slotInsertEndoCc (I := I) (M := M) g 0 Λ) := by
+  unfold covariantJetNormSq
+  calc
+    ∑ i ∈ Finset.range (m + 1),
+        ‖iteratedCovGrad (I := I) g (s + 1) (s + 1) i
+          (slotInsertEndoCc (I := I) (M := M) g s Λ)‖ ^ 2 ≤
+      ∑ i ∈ Finset.range (m + 1), (Module.finrank ℝ E : ℝ) ^ s *
+        ‖iteratedCovGrad (I := I) g 1 1 i
+          (slotInsertEndoCc (I := I) (M := M) g 0 Λ)‖ ^ 2 :=
+      Finset.sum_le_sum fun i _ =>
+        iteratedCovGrad_slotInsertEndoCc_normSq_le (I := I) (M := M) g s i Λ
+    _ = (Module.finrank ℝ E : ℝ) ^ s *
+        ∑ i ∈ Finset.range (m + 1),
+          ‖iteratedCovGrad (I := I) g 1 1 i
+            (slotInsertEndoCc (I := I) (M := M) g 0 Λ)‖ ^ 2 := by
+      rw [Finset.mul_sum]
 
 theorem covariantJetNormSq_slotInsertEndoCc_symmRaiseEndo_le
     (g : SmoothRiemannianMetric I M) (s m : ℕ)
@@ -3625,7 +3689,7 @@ theorem sharpFlatEndoCc_eq_slotInsertEndoCc_zero
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (slotInsertEndoCc (I := I) (M := M) g 0
           (metricComparisonEndomorphismField (I := I) (M := M) g gm)).toSection x) om =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g gm x) om from rfl]
   rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g gm x) om w]
@@ -4317,6 +4381,18 @@ theorem exists_ricciConnectionDifferenceDerivativeCoefficient_covariantJetNormSq
       simpa only [mul_pow] using
         congrArg (fun x : ℝ => x * (1 + A) ^ 2) hBR.symm
 
+omit [NeZero (Module.finrank ℝ E)] in
+theorem covariantJetNormSq_cometricRaiseSlot0Field
+    (g : SmoothRiemannianMetric I M) (s m : ℕ)
+    (W : SmoothCcTensor g 0 (s + 2)) :
+    covariantJetNormSq (I := I) (M := M) g m
+        (cometricRaiseSlot0Field (I := I) (M := M) g s W) =
+      covariantJetNormSq (I := I) (M := M) g m W := by
+  unfold covariantJetNormSq
+  apply Finset.sum_congr rfl
+  intro q _
+  rw [norm_iteratedCovGrad_cometricRaiseSlot0Field_eq
+    (I := I) (M := M) g s W q]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -5011,7 +5087,6 @@ theorem exists_metricComparisonSlotInsertion_covariantJetNormSq_two_bound
     simpa only [B] using Real.sq_sqrt (hL R)]
   exact mul_le_mul_of_nonneg_left (add_le_add le_rfl hpert) (by norm_num)
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem exists_operatorFieldComposition_covariantJetNormSq_two_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ) :
@@ -5040,7 +5115,6 @@ theorem exists_operatorFieldComposition_covariantJetNormSq_two_bound
           (mul_nonneg hK (sq_nonneg X))
     _ = (C * X * Y) ^ 2 := by rw [← hCsq]; ring
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem exists_operatorFieldComposition_difference_covariantJetNormSq_two_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ) :
@@ -5106,7 +5180,6 @@ theorem connectionDifferenceMetricLoweringCoefficient_eq
           (RicciDeTurckLowOrder.connectionDifferenceLowOrderOperator (I := I) (M := M) g gm)) := by
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem exists_connectionDifferenceMetricLoweringCoefficient_product_covariantJetNormSq_two_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -6028,6 +6101,27 @@ theorem exists_connectionDifferenceQuadraticCurvatureDerivativeCoefficient_covar
     _ = (B R * (1 + A)) ^ 2 := by ring
     _ ≤ (B R * (1 + A)) ^ 2 := le_rfl
 
+theorem covariantJetNormSq_slotExtendIter_two_le
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (F : SmoothCcTensor g r s) :
+    covariantJetNormSq (I := I) (M := M) g 2
+        (slotExtendIter (I := I) (M := M) g r s 2 F) ≤
+      (Module.finrank ℝ E : ℝ) ^ 2 *
+        covariantJetNormSq (I := I) (M := M) g 2 F := by
+  let fr : ℝ := Module.finrank ℝ E
+  have hfr : 0 ≤ fr := Nat.cast_nonneg _
+  simp only [slotExtendIter, Nat.add_zero]
+  calc
+    covariantJetNormSq (I := I) (M := M) g 2
+        (slotExtend (I := I) (M := M) g (r + 1) (s + 1)
+          (slotExtend (I := I) (M := M) g r s F)) ≤
+      fr * covariantJetNormSq (I := I) (M := M) g 2
+        (slotExtend (I := I) (M := M) g r s F) :=
+      covariantJetNormSq_slotExtend_le (I := I) (M := M) g (r + 1) (s + 1) _
+    _ ≤ fr * (fr * covariantJetNormSq (I := I) (M := M) g 2 F) :=
+      mul_le_mul_of_nonneg_left
+        (covariantJetNormSq_slotExtend_le (I := I) (M := M) g r s F) hfr
+    _ = fr ^ 2 * covariantJetNormSq (I := I) (M := M) g 2 F := by ring
 
 theorem exists_lieCorrectionQuadraticFirstDerivativeIntermediateCoefficient_covariantJetNormSq_two_bound
     (hDim : Module.finrank ℝ E = 3)
@@ -7182,7 +7276,6 @@ noncomputable def ricciQuadraticKernelDerivativeBlock
     (ccOperatorFieldComp (I := I) (M := M) g 3 3 4
       (connectionDifferenceContravariantInsertionField (I := I) g gm) Z)
 
-omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_ricciQuadraticKernelDerivativeBlock_pairing_secondOrder_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :

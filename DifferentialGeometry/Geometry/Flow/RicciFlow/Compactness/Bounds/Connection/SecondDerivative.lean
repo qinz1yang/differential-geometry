@@ -1358,7 +1358,7 @@ private theorem covStep2_diffStep_split
               (covDerivConnectionDifference (I := I) g₂ g₁
                 (fun z => W z) (fun z => V z) (fun z => Vslots a z) y))) from by
         funext y; simp only [Finset.sum_apply]]
-    exact MDifferentiableAt.sum (I := I) (t := Finset.univ) (fun a _ => hT1 a)
+    exact mdiffAt_finset_sum (I := I) Finset.univ _ (fun a _ => hT1 a)
   have hf2 : MDifferentiableAt I 𝓘(ℝ, ℝ)
       (fun y : M => ∑ a : Fin s, covStep (I := I) g₂ s S y
         (Fin.cons (W y) (Function.update (fun b : Fin s => Vslots b y) a
@@ -1367,7 +1367,7 @@ private theorem covStep2_diffStep_split
               (leviCivitaConnectionOfMetric (I := I) g₂) y
               (Vslots a y)) (V y))))) x := by
     rw [hsum2]
-    exact MDifferentiableAt.sum (I := I) (t := Finset.univ) (fun a _ => hT2 a)
+    exact mdiffAt_finset_sum (I := I) Finset.univ _ (fun a _ => hT2 a)
   have e1 : mvfderiv (I := I)
         (fun y : M => -∑ a : Fin s, (S y) (Function.update (fun b : Fin s => Vslots b y) a
           (covDerivConnectionDifference (I := I) g₂ g₁
@@ -1387,7 +1387,7 @@ private theorem covStep2_diffStep_split
       simp only [Finset.sum_apply]
     rw [hneg,
       mvfderiv_neg_at (I := I) (U x)
-        (MDifferentiableAt.sum (I := I) (t := Finset.univ) (fun a _ => hT1 a)),
+        (mdiffAt_finset_sum (I := I) Finset.univ _ (fun a _ => hT1 a)),
       mvfderiv_finset_sum_at (I := I) Finset.univ _ (U x) (fun a _ => hT1 a)]
   have e2 : mvfderiv (I := I)
         (fun y : M => ∑ a : Fin s, covStep (I := I) g₂ s S y

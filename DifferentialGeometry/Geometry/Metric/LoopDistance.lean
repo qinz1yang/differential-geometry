@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSource
+import DifferentialGeometry.Geometry.Metric.CompactSourceLipschitz
 import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.Basic
 import Mathlib.Topology.ContinuousMap.Compact
 

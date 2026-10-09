@@ -12,14 +12,11 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_forall_abs_sub_lt_of_continuousOn {f : ℝ × P.Carrier → ℝ}
+private theorem exists_forall_abs_sub_lt_of_continuousOn {f : ℝ × P.Carrier → ℝ}
     (hf : ContinuousOn f (Ico a s ×ˢ univ)) {t₀ ζ : ℝ} (ht₀ : t₀ ∈ Ico a s) (hζ : 0 < ζ) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ t ∈ Ico a s, |t - t₀| < δ → ∀ x : P.Carrier,
       |f (t, x) - f (t₀, x)| < ζ := by
@@ -49,7 +46,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   refine ⟨δ, hδ, fun t ht htd x => ?_⟩
   exact hball (y := ⟨t, ht⟩) (by rw [Subtype.dist_eq, Real.dist_eq]; exact htd) x (mem_univ x)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_forall_Icc_scalar_riemannNorm_metric_close {t₀ ζ : ℝ} (ht₀ : t₀ ∈ Ico a s)
+theorem exists_forall_Icc_scalar_riemannNorm_metric_close {t₀ ζ : ℝ} (ht₀ : t₀ ∈ Ico a s)
     (hζ : 0 < ζ) :
     ∃ δ : ℝ, 0 < δ ∧ t₀ + δ < s ∧
       ∀ t ∈ Icc (max a (t₀ - δ)) (t₀ + δ), ∀ t' ∈ Icc (max a (t₀ - δ)) (t₀ + δ),

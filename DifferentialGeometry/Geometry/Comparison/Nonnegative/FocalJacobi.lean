@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Nonnegative.BoundaryShift
 import DifferentialGeometry.Geometry.Comparison.Nonnegative.FocalRiccati
-import DifferentialGeometry.Geometry.Variation.IndexForm.PerpendicularCoordinates
+import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.IndexForm
 import DifferentialGeometry.Geometry.Curvature.Metric.SectionalCone
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm

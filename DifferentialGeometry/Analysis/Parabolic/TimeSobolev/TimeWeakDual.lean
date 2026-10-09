@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Time.WeakDerivative.FundamentalTheorem
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.WeakDerivative.FundamentalTheorem
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.DenseDual
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication
 

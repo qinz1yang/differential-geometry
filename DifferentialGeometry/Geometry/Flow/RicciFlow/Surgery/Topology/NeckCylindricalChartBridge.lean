@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckMarkSideBridge
 import DifferentialGeometry.Geometry.Neck.Chart
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
-import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
+import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
 
 noncomputable section
 

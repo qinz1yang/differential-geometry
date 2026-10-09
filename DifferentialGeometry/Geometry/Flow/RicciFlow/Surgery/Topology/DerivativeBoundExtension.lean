@@ -13,14 +13,11 @@ open scoped Manifold ContDiff Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_forall_Ico_of_eventually {Q : ℝ → P.Carrier → Prop} {t₀ : ℝ}
+private theorem exists_forall_Ico_of_eventually {Q : ℝ → P.Carrier → Prop} {t₀ : ℝ}
     (hts : t₀ < s) (hQ : ∀ y, ∀ᶠ z in 𝓝[Ici t₀ ×ˢ univ] (t₀, y), Q z.1 z.2) :
     ∃ η : ℝ, 0 < η ∧ t₀ + η < s ∧ ∀ t ∈ Ico t₀ (t₀ + η), ∀ y, Q t y := by
   have hQ' : ∀ y ∈ (univ : Set P.Carrier),
@@ -38,7 +35,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
     linarith [ht.2, min_le_left (ε / 2) ((s - t₀) / 2)]
   exact hball hdist y (mem_univ y) ht.1
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.derivWithin_Ici_scalar_eq_Iic {t : ℝ} (ht : t ∈ Ioo a s) (x : P.Carrier) :
+theorem derivWithin_Ici_scalar_eq_Iic {t : ℝ} (ht : t ∈ Ioo a s) (x : P.Carrier) :
     derivWithin (fun v => G.flow.scalar v x) (Ici t) t =
       derivWithin (fun v => G.flow.scalar v x) (Iic t) t := by
   have hd := (G.equation.scalarTime
@@ -47,14 +44,14 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     ((RealTimeInterval.closedOpen a s G.lt).regular_mem_nhds ht)
   rw [hd.derivWithin (uniqueDiffWithinAt_Ici t), hd.derivWithin (uniqueDiffWithinAt_Iic t)]
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_continuousWithinAt_Ici {t₀ : ℝ} (ht₀ : t₀ ∈ Ico a s) (y : P.Carrier) :
+private theorem scalar_continuousWithinAt_Ici {t₀ : ℝ} (ht₀ : t₀ ∈ Ico a s) (y : P.Carrier) :
     ContinuousWithinAt (fun z : ℝ × P.Carrier => G.flow.scalar z.1 z.2) (Ici t₀ ×ˢ univ)
       (t₀, y) := by
   refine (G.equation.scalarCont (t₀, y) ⟨ht₀, mem_univ y⟩).mono_of_mem_nhdsWithin ?_
   refine mem_nhdsWithin.mpr ⟨Iio s ×ˢ univ, isOpen_Iio.prod isOpen_univ,
     ⟨ht₀.2, mem_univ y⟩, fun z hz => ⟨⟨ht₀.1.trans hz.2.1, hz.1.1⟩, mem_univ _⟩⟩
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.derivWithin_Ici_continuousAt {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.Carrier) :
+private theorem derivWithin_Ici_continuousAt {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.Carrier) :
     ContinuousAt (fun z : ℝ × P.Carrier =>
       derivWithin (fun v => G.flow.scalar v z.2) (Ici z.1) z.1) (t₀, y) := by
   have hc := (G.flow.scalar_time_derivWithin_Iic_continuousOn G.equation).continuousAt
@@ -66,7 +63,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
     (show (t₀, y) ∈ Ioo a s ×ˢ (univ : Set P.Carrier) from ⟨ht₀, mem_univ y⟩)] with z hz
   exact (G.derivWithin_Ici_scalar_eq_Iic hz.1 z.2).symm
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_derivativeBoundBefore_extend_of_slice {C : ℝ≥0} {q t₀ : ℝ} (hC : 0 < C)
+theorem exists_derivativeBoundBefore_extend_of_slice {C : ℝ≥0} {q t₀ : ℝ} (hC : 0 < C)
     (hq : 0 < q) (ht₀ : t₀ ∈ Ico a s)
     (hreg : t₀ = a → ∀ y : P.Carrier, ContinuousWithinAt (fun z : ℝ × P.Carrier =>
       derivWithin (fun v => G.flow.scalar v z.2) (Ici z.1) z.1) (Ici a ×ˢ univ) (a, y))
@@ -120,13 +117,13 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   · rw [← G.derivWithin_Ici_scalar_eq_Iic ⟨ht.1, hts⟩ y]
     exact hgood t ⟨htt, ht.2⟩ y hR
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_derivativeBoundBefore_extend {C : ℝ≥0} {q t₀ : ℝ} (hC : 0 < C) (hq : 0 < q)
+theorem exists_derivativeBoundBefore_extend {C : ℝ≥0} {q t₀ : ℝ} (hC : 0 < C) (hq : 0 < q)
     (ht₀ : t₀ ∈ Ioo a s) (h : G.DerivativeBoundBefore C q t₀) :
     ∃ η : ℝ, 0 < η ∧ t₀ + η < s ∧ G.DerivativeBoundBefore (2 * C) (2 * q) (t₀ + η) :=
   G.exists_derivativeBoundBefore_extend_of_slice hC hq ⟨ht₀.1.le, ht₀.2⟩
     (fun h' => absurd h' ht₀.1.ne') (fun h' => absurd h' ht₀.1.ne') h
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalarDifferential_eq_inner_gradientFun (t : ℝ) (x : P.Carrier)
+theorem scalarDifferential_eq_inner_gradientFun (t : ℝ) (x : P.Carrier)
     (v : TangentSpace ThreeModel x) :
     Perelman.CanonicalNeighborhood.scalarDifferential G.flow t x v =
       (G.flow.base.metric t).inner x
@@ -134,7 +131,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   rw [inner_gradientFun]
   rfl
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.inner_gradientFun_scalar_le_sq_of_abs_scalarDifferential_le {t K : ℝ} (x : P.Carrier)
+theorem inner_gradientFun_scalar_le_sq_of_abs_scalarDifferential_le {t K : ℝ} (x : P.Carrier)
     (hK : 0 ≤ K)
     (h : ∀ v : TangentSpace ThreeModel x,
       |Perelman.CanonicalNeighborhood.scalarDifferential G.flow t x v| ≤
@@ -153,7 +150,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     nlinarith
   nlinarith
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.abs_scalarDifferential_le_of_inner_gradientFun_le_sq {t K : ℝ} (x : P.Carrier)
+theorem abs_scalarDifferential_le_of_inner_gradientFun_le_sq {t K : ℝ} (x : P.Carrier)
     (hK : 0 ≤ K)
     (h : (G.flow.base.metric t).inner x
       (gradientFun (G.flow.base.metric t) (G.flow.scalar t) x)
@@ -167,7 +164,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   calc Real.sqrt _ ≤ Real.sqrt (K ^ 2) := Real.sqrt_le_sqrt h
     _ = K := Real.sqrt_sq hK
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.gradient_normSq_continuousAt {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.Carrier) :
+private theorem gradient_normSq_continuousAt {t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a s) (y : P.Carrier) :
     ContinuousAt (fun z : ℝ × P.Carrier => (G.flow.base.metric z.1).inner z.2
       (gradientFun (G.flow.base.metric z.1) (G.flow.scalar z.1) z.2)
       (gradientFun (G.flow.base.metric z.1) (G.flow.scalar z.1) z.2)) (t₀, y) :=
@@ -176,7 +173,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
       (show (t₀, y) ∈ (RealTimeInterval.closedOpen a s G.lt).regular ×ˢ univ from
         ⟨ht₀, mem_univ y⟩))
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_gradientBoundBefore_extend_of_slice {C : ℝ≥0} {q t₀ : ℝ} (hC : 0 < C)
+theorem exists_gradientBoundBefore_extend_of_slice {C : ℝ≥0} {q t₀ : ℝ} (hC : 0 < C)
     (hq : 0 < q) (ht₀ : t₀ ∈ Ico a s)
     (hreg : t₀ = a → ∀ y : P.Carrier, ContinuousWithinAt (fun z : ℝ × P.Carrier =>
       (G.flow.base.metric z.1).inner z.2
@@ -245,13 +242,13 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   · exact G.abs_scalarDifferential_le_of_inner_gradientFun_le_sq y (by positivity)
       (hgood t ⟨htt, ht.2⟩ y hR) v
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_gradientBoundBefore_extend {C : ℝ≥0} {q t₀ : ℝ} (hC : 0 < C) (hq : 0 < q)
+theorem exists_gradientBoundBefore_extend {C : ℝ≥0} {q t₀ : ℝ} (hC : 0 < C) (hq : 0 < q)
     (ht₀ : t₀ ∈ Ioo a s) (h : G.GradientBoundBefore C q t₀) :
     ∃ η : ℝ, 0 < η ∧ t₀ + η < s ∧ G.GradientBoundBefore (2 * C) (2 * q) (t₀ + η) :=
   G.exists_gradientBoundBefore_extend_of_slice hC hq ⟨ht₀.1.le, ht₀.2⟩
     (fun h' => absurd h' ht₀.1.ne') (fun h' => absurd h' ht₀.1.ne') h
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_derivative_gradientBoundBefore_extend {Ctime Cgrad : ℝ≥0} {q t₀ : ℝ}
+theorem exists_derivative_gradientBoundBefore_extend {Ctime Cgrad : ℝ≥0} {q t₀ : ℝ}
     (hCt : 0 < Ctime) (hCg : 0 < Cgrad) (hq : 0 < q) (ht₀ : t₀ ∈ Ioo a s)
     (hder : G.DerivativeBoundBefore Ctime q t₀) (hgrad : G.GradientBoundBefore Cgrad q t₀) :
     ∃ η : ℝ, 0 < η ∧ t₀ + η < s ∧ ∀ t, t < t₀ + η →

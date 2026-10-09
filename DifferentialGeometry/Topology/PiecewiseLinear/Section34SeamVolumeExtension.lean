@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCylinder
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CollaredFillingCylinder
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.RibbonAnnuli
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingRibbonAnnuli
 
 open Set
 

@@ -38,7 +38,7 @@ theorem injective_homotopyEquiv_of_discrete {X Y : Type*} [TopologicalSpace X]
   simp only [ContinuousMap.comp_apply, ContinuousMap.id_apply] at ha hb
   rw [← ha, ← hb, hab]
 
-theorem compactSpace_of_homotopyEquiv_sphere_zero {M : Type u} [TopologicalSpace M]
+theorem compactSpace_of_homotopyEquiv_sphere_zero {M : Type u} [TopologicalSpace M] [T2Space M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 0)) M]
     (e : M ≃ₕ sphere (0 : EuclideanSpace ℝ (Fin 1)) 1) : CompactSpace M := by
   have : DiscreteTopology M := discreteTopology_of_chartedSpace_zero

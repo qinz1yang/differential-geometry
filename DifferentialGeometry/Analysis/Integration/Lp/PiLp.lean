@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.PiLp
+import DifferentialGeometry.Analysis.FunctionalAnalysis.PiLpMap
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Complete

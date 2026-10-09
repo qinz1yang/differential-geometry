@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.ProjectiveSpace.CylinderQuotientSmoothModel
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotients
 import DifferentialGeometry.Topology.ProjectiveSpace.PuncturedThreeManifold
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
-import DifferentialGeometry.Geometry.Metric.ProjectiveSpace.RoundMetric
+import DifferentialGeometry.Geometry.Metric.ProjectiveSpace
 
 set_option autoImplicit false
 noncomputable section

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph
-import DifferentialGeometry.Topology.SphereSeparation.SmoothClosure.Charts
+import DifferentialGeometry.Topology.SphereSeparation.HalfSpaceClosure
 import DifferentialGeometry.Topology.ProjectiveSpace.CylinderQuotientSmoothModels
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorph
 import Mathlib.Topology.Order.IntermediateValue

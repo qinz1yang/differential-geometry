@@ -19,7 +19,7 @@ variable {D : RealTimeInterval} {a b : ℝ}
 
 
 def curveShorteningLeastAreaSlope (B : RicciBackground (I := I) (M := M) D a b) : Prop :=
-  ∀ (γ : ℝ → DifferentialGeometry.Topology.freeLoop M),
+  ∀ (γ : ℝ → ContinuousFreeLoop M),
     (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) →
     ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) →
     ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →

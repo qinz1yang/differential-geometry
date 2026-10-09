@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Alternating
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint
 
 noncomputable section
 
@@ -28,7 +27,7 @@ theorem IsMetricCompatible.alternating_endomorphism_self_adjoint
     let _ : FiniteDimensional ℝ (F [⋀^Fin k]→L[ℝ] ℝ) :=
       (ContinuousAlternatingMap.elementaryCovectorBasis (k := k)
         (Module.finBasis ℝ F)).finiteDimensional_of_finite
-    let D := _root_.CovariantDerivative.hom I M
+    let D := DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M
       (F [⋀^Fin k]→L[ℝ] ℝ)
       (Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial M ℝ))
       (F [⋀^Fin k]→L[ℝ] ℝ)
@@ -58,7 +57,7 @@ theorem IsMetricCompatible.alternating_endomorphism_self_adjoint
   have hcov' : (CovariantDerivative.alternating cov k).IsMetricCompatible := hcov.alternating k
   have hA' : ∀ y, (A y : (V y [⋀^Fin k]→L[ℝ] ℝ) →ₗ[ℝ]
       V y [⋀^Fin k]→L[ℝ] ℝ).IsSymmetric := hA
-  exact _root_.CovariantDerivative.hom_isSymmetric
+  exact DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_isSymmetric
     (CovariantDerivative.alternating cov k) hcov' A hA' x X a b
 
 private instance alternatingModelFiniteDimensional (k : ℕ) :
@@ -76,7 +75,7 @@ theorem IsMetricCompatible.alternating_endomorphism_hessian_self_adjoint
       (alternatingRiemannianMetric (F := F) V k).inner y (A y a) b =
         (alternatingRiemannianMetric (F := F) V k).inner y a (A y b))
     (X Y : TangentSpace I x) (a b : V x [⋀^Fin k]→L[ℝ] ℝ) :
-    let D := _root_.CovariantDerivative.hom I M
+    let D := DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M
       (F [⋀^Fin k]→L[ℝ] ℝ)
       (Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial M ℝ))
       (F [⋀^Fin k]→L[ℝ] ℝ)

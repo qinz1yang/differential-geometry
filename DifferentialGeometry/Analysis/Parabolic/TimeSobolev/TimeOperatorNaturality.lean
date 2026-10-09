@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Time.Operator.Basic
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Operator.Basic
 
 namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 

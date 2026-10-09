@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Complex.RiemannMapping.BoundaryModulus
-import DifferentialGeometry.Topology.Homeomorph.Radial.Disk
+import DifferentialGeometry.Topology.LoopSpace.RadialHomeomorphism
 
 section
 

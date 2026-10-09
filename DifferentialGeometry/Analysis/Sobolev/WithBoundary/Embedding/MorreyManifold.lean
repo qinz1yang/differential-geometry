@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.Witnesses
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Embedding.EvenReflectionExtension
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.HigherOrderBound
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 
 
 noncomputable section

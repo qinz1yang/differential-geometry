@@ -7,6 +7,7 @@ open Set _root_.Geometry _root_.Topology
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E : Type*} [DecidableEq E]
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -20,7 +21,6 @@ def ObstacleAugmentation.sourceHomeomorph (a : ObstacleAugmentation K L T f d p)
     (Homeomorph.setCongr a.sourceImage_space.symm)
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem ObstacleAugmentation.sourceHomeomorph_apply
     (a : ObstacleAugmentation K L T f d p) (x : K.space) :
     (a.sourceHomeomorph x).val = (a.sourceMap x).val := by
@@ -28,7 +28,6 @@ omit [FiniteDimensional ℝ E] in
   exact rfl
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem ObstacleAugmentation.sourceHomeomorph_affine_inverse
     (a : ObstacleAugmentation K L T f d p) :
     hasAffineInverseFaceParents K a.sourceImage a.sourceHomeomorph := by
@@ -43,7 +42,6 @@ theorem ObstacleAugmentation.sourceHomeomorph_affine_inverse
     rw [← he, a.sourceHomeomorph.symm_apply_apply]
   exact ⟨(congrArg Subtype.val hei).trans hzB, hzB ▸ hzt⟩
 
-omit [FiniteDimensional ℝ E] in
 theorem ObstacleAugmentation.exists_source_subdivision
     (a : ObstacleAugmentation K L T f d p) (N : ℕ) :
     ∃ r : EuclideanSpace ℝ (Fin a.ambientDimension) → E,

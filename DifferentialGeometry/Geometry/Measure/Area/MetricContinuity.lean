@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Measure.Area.LeastAreaMetric
 import DifferentialGeometry.Geometry.Measure.Area.LeastAreaContinuity
-import DifferentialGeometry.Geometry.Metric.Family.LocalComparison
+import DifferentialGeometry.Geometry.Metric.FamilyComparison
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 
 

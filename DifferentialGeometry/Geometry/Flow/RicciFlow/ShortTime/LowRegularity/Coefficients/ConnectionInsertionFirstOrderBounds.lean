@@ -242,7 +242,6 @@ theorem connSec_h1
     simp only [B, Real.sq_sqrt (hQ R hR)]]
   exact hle
 
-omit [NeZero (Module.finrank ℝ E)] in
 theorem kappaDiff_h2
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M) :

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallPairTwoSimplices
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedIntervalLink
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTriangleBoundary
@@ -118,7 +123,7 @@ theorem boundaryComplex_triangle_vertex_trace_eq_pair [FiniteDimensional ℝ E]
   have hAeq : (graphDualCell K L v).space ∩ D.space = A.space :=
     graphDualCell_inter_derivedNeighborhoodCell_eq_upperLink K L hv hs hL
   have hA : IsPLBall 1 A.space := hAeq ▸
-    isPLBall_graphDualCell_inter_triangle_cell K L hs hvs hcard hmax hL
+    isPLBall_graphDualCell_inter_triangleCell K L hs hvs hcard hmax hL
   have htraceR (a : E) (ha : a ∈ s) :
       (graphDualCell K L a).space ∩ D.space ⊆ R.space := by
     change _ ⊆ (boundaryComplex 2 (derivedNeighborhoodCell K s)).space
@@ -132,7 +137,7 @@ theorem boundaryComplex_triangle_vertex_trace_eq_pair [FiniteDimensional ℝ E]
         (boundaryComplex 1 A).space := by
     let Q := (graphDualCell K L a).space ∩ D.space
     have hQ : IsPLBall 1 Q :=
-      isPLBall_graphDualCell_inter_triangle_cell K L hs ha hcard hmax hL
+      isPLBall_graphDualCell_inter_triangleCell K L hs ha hcard hmax hL
     have hI : A.space ∩ Q =
         {({({v, a} : Finset E).centroid ℝ id, s.centroid ℝ id} : Finset E).centroid ℝ id} := by
       rw [← hAeq]

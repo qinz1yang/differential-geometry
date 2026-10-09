@@ -1,5 +1,5 @@
-import DifferentialGeometry.Tensor.BilinearForm.ConformalPair
-import DifferentialGeometry.Analysis.FiniteDimensional.Coercivity
+import DifferentialGeometry.Analysis.InnerProductSpace.ConformalPair
+import DifferentialGeometry.Analysis.FunctionalAnalysis.BilinearCoercivity
 import DifferentialGeometry.Geometry.Metric.Pullback.Coefficients
 
 noncomputable section

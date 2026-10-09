@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.Spatial
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StaticRescalingComparison
-import DifferentialGeometry.Geometry.Metric.Cylinder.AxialIsometry
+import DifferentialGeometry.Geometry.Metric.CylinderAxial
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorPullback
 
 set_option autoImplicit false

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Data.Unif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
-import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
+import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Metric.Family.TensorNorm
 

@@ -24,7 +24,7 @@ theorem homBundleCovariantDerivativeGen_subtypeL_restrict
     letI := S.fiberBundle
     letI := S.vector_bundle
     let _ := S.contMDiffVectorBundle
-    _root_.CovariantDerivative.hom I M (Fin S.rank → ℝ)
+    DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M (Fin S.rank → ℝ)
       (fun x => S.fiber x) F V (cov.restrict S hS) cov
       (fun x => (S.fiber x).subtypeL) = 0 := by
   let _ := S.totalSpaceTopology
@@ -38,7 +38,7 @@ theorem homBundleCovariantDerivativeGen_subtypeL_restrict
   intro u
   obtain ⟨σ, hσ⟩ := ContMDiffSection.exists_eq_at (I := I)
     (F := Fin S.rank → ℝ) (V := fun x => S.fiber x) (n := (⊤ : ℕ∞)) x u
-  have h := _root_.CovariantDerivative.hom_apply
+  have h := DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply
     I M (Fin S.rank → ℝ) (fun x => S.fiber x) F V
     (cov.restrict S hS) cov
     (⟨fun y => (S.fiber y).subtypeL,
@@ -52,7 +52,7 @@ theorem homBundleCovariantDerivativeGen_subtypeL_restrict
     cov (fun y => (S.fiber y).subtypeL (σ y)) x v at hr
   change _ = 0
   have h' :
-      ((_root_.CovariantDerivative.hom I M (Fin S.rank → ℝ)
+      ((DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M (Fin S.rank → ℝ)
           (fun x => S.fiber x) F V (cov.restrict S hS) cov
           (fun y => (S.fiber y).subtypeL) x v) u) =
         cov (fun y => (S.fiber y).subtypeL (σ y)) x v -

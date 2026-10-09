@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.InitialData
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 import DifferentialGeometry.Analysis.FiniteDimensional.Rank
 import DifferentialGeometry.Topology.ConnectedCompactNeighborhood
-import DifferentialGeometry.Topology.Order.LevelSetPartition
+import DifferentialGeometry.Topology.MonotoneStratification
 import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.Order.Lattice.Nat
 import Mathlib.Tactic.Linarith
@@ -464,7 +464,7 @@ theorem lowerKyFanSum_pos_on_annulus
       deriv (fun a ↦ A a y) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun z ↦ A q z) y +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
           reaction q y (A q y)) :
     ∀ y ∈ {y : M | r ≤ rho y ∧ rho y < R},
@@ -578,7 +578,7 @@ theorem exists_lowerKyFanSum_positive_propagation_neighborhood
       deriv (fun r ↦ A r y) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun z ↦ A q z) y +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
           reaction q y (A q y)) :
     ∃ U : Set M, IsOpen U ∧ a ∈ U ∧ IsCompact (closure U) ∧ closure U ⊆ Omega ∧
@@ -658,7 +658,7 @@ theorem lowerKyFanSum_pos_on_preconnected_open_set
       deriv (fun r ↦ A r y) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun z ↦ A q z) y +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
           reaction q y (A q y))
     {x : M} (hx : x ∈ Omega) (hxpos : 0 < (hAsymm t x).lowerKyFanSum k) :
@@ -713,7 +713,7 @@ theorem lowerKyFanSum_pos_at_of_local_dirichlet_solution_exists
       deriv (fun r ↦ A r z) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z)) :
     0 < (hAsymm t y).lowerKyFanSum k := by
@@ -797,7 +797,7 @@ theorem finrank_range_le_at_of_local_dirichlet_solution_exists
       deriv (fun r ↦ A r z) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z)) :
     Module.finrank ℝ (A s x).range ≤ Module.finrank ℝ (A t y).range := by
@@ -863,7 +863,7 @@ theorem finrank_range_le_of_local_dirichlet_solution_exists
       deriv (fun r ↦ A r z) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z))
     {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
@@ -910,7 +910,7 @@ theorem finrank_range_le_of_local_dirichlet_solution_exists
       deriv (fun r ↦ A r z) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z) := by
     intro q hq z hz
@@ -965,7 +965,7 @@ theorem finrank_range_spatially_constant_and_locally_constant_of_local_dirichlet
       deriv (fun r ↦ A r z) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z)) :
     (∀ t ∈ Ioc 0 T, ∀ x y,
@@ -1043,7 +1043,7 @@ theorem exists_pos_le_lowerKyFanSum_on_time_interval
       deriv (fun r ↦ A r z) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z))
     {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
@@ -1220,7 +1220,7 @@ theorem lowerKyFanSum_pos_at_later_time_of_interior_evolution
       deriv (fun r ↦ A r z) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z))
     {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
@@ -1303,7 +1303,7 @@ theorem finrank_range_le_at_later_time_of_interior_evolution
       deriv (fun r ↦ A r z) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z))
     {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
@@ -1372,7 +1372,7 @@ theorem lowerKyFanSum_pos_at_later_time_of_metricFamilySmoothOn
       deriv (fun r ↦ A r z) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z))
     {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
@@ -1433,7 +1433,7 @@ theorem finrank_range_le_at_later_time_of_metricFamilySmoothOn
       deriv (fun r ↦ A r z) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z))
     {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
@@ -1501,7 +1501,7 @@ theorem finrank_range_spatially_constant_and_locally_constant_of_metricFamilySmo
       deriv (fun r ↦ A r z) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z)) :
     (∀ t ∈ Ioc 0 T, ∀ x y,

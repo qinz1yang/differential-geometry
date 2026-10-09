@@ -1,5 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Cover
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappingCover
 
 set_option autoImplicit false
 

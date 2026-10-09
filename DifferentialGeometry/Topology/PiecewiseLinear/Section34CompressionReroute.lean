@@ -1,4 +1,8 @@
-import DifferentialGeometry.Topology.Continuous.ClosedCover
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Homeomorph.SubsetImage
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
@@ -7,6 +11,33 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
+
+theorem continuousOn_of_isClosed_cover {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    {f : X → Y} {S A B : Set X} (hA : IsClosed A) (hB : IsClosed B) (hS : S ⊆ A ∪ B)
+    (hfA : ContinuousOn f (S ∩ A)) (hfB : ContinuousOn f (S ∩ B)) : ContinuousOn f S := by
+  intro x hx
+  have hwA : ContinuousWithinAt f (S ∩ A) x := by
+    by_cases hxA : x ∈ A
+    · exact hfA x ⟨hx, hxA⟩
+    · exact continuousWithinAt_of_notMem_closure fun h =>
+        hxA (closure_minimal inter_subset_right hA h)
+  have hwB : ContinuousWithinAt f (S ∩ B) x := by
+    by_cases hxB : x ∈ B
+    · exact hfB x ⟨hx, hxB⟩
+    · exact continuousWithinAt_of_notMem_closure fun h =>
+        hxB (closure_minimal inter_subset_right hB h)
+  have hSeq : S = S ∩ A ∪ S ∩ B := by
+    ext y
+    constructor
+    · intro hy
+      rcases hS hy with h | h
+      · exact Or.inl ⟨hy, h⟩
+      · exact Or.inr ⟨hy, h⟩
+    · rintro (h | h)
+      · exact h.1
+      · exact h.1
+  rw [hSeq]
+  exact hwA.union hwB
 
 variable {M : Type*} [TopologicalSpace M] [T2Space M]
 
@@ -28,7 +59,7 @@ theorem exists_reroute_collapse {c : OpenPartialHomeomorph M E3} {Hs Obs Mk : Se
   have hpObs : p ∉ Obs := fun h => Set.disjoint_left.mp hObsH h hp
   have hpH : p ∈ Hs := hHs.frontier_subset hp
   refine ⟨r, ?_, ?_, fun z hz => ?_, fun y hy => ?_, fun y _ hy => ?_⟩
-  · refine DifferentialGeometry.Topology.continuousOn_of_isClosed_cover hPkc (isOpen_interior (s := Pk)).isClosed_compl
+  · refine continuousOn_of_isClosed_cover hPkc (isOpen_interior (s := Pk)).isClosed_compl
       (fun y hy => ?_) ?_ ?_
     · by_cases hyP : y ∈ interior Pk
       · exact Or.inl (interior_subset hyP)
@@ -85,7 +116,7 @@ theorem exists_reroute_push {c : OpenPartialHomeomorph M E3} {Hs Obs Mk : Set M}
     hRobs.resolve_left fun h => hy.2 (h hyR)
   refine ⟨r, ?_, ?_, fun z hz => ?_, fun y hy => ?_, fun y _ hy => ?_,
     fun y _ hy => hrin y hy⟩
-  · refine DifferentialGeometry.Topology.continuousOn_of_isClosed_cover hSRc hSRo.isClosed_compl (fun y hy => ?_) ?_ ?_
+  · refine continuousOn_of_isClosed_cover hSRc hSRo.isClosed_compl (fun y hy => ?_) ?_ ?_
     · by_cases hyR : y ∈ SR
       · exact Or.inl (image_mono subset_closure hyR)
       · exact Or.inr hyR

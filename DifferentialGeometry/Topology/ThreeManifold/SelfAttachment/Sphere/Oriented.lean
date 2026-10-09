@@ -94,7 +94,7 @@ theorem exists_sphereSelfAttachment_oriented_diffeomorph :
       rw [he]
       exact mfderiv_comp_apply x (F.mdifferentiable (by simp) _) (hc.mdifferentiable (by simp) _) v
     rw [heq] at h
-    erw [DifferentialGeometry.orientation_map_trans] at h
+    erw [← DifferentialGeometry.VectorBundle.map_orientation_trans_between] at h
     exact h
   refine ⟨r, O, hcore, F, hF, fun _ => rfl, ?_⟩
   intro c havoid

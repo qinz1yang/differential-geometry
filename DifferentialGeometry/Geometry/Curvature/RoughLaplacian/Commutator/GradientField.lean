@@ -308,7 +308,7 @@ theorem curry_covDeriv_succ_eq_covDeriv_curriedSection_sub_connCorrection
         Tensor0SNabla.curriedSection I M W x
           ((LeviCivita (I := I) g).toFun Y x (Vfield x)) := by
   classical
-  have hHom := _root_.CovariantDerivative.homFun_apply
+  have hHom := HomConnection.homBundleCovariantDerivativeFun_apply_eq
     (I := I) (M := M) (E_U := E) (U := TangentSpace I) (F := Tensor0SModel s ℝ E)
     (V := fun z : M => Tensor0SSpace s I z)
     (cov_U := LeviCivita (I := I) g)
@@ -318,7 +318,7 @@ theorem curry_covDeriv_succ_eq_covDeriv_curriedSection_sub_connCorrection
   have hsucc : tensor0SCurry (I := I) (M := M) s x
       ((Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g)).toFun
         W x (Vfield x)) =
-      _root_.CovariantDerivative.homFun (I := I) (M := M) (E_U := E) (U := TangentSpace I)
+      HomConnection.homBundleCovariantDerivativeFun (I := I) (M := M) (E_U := E) (U := TangentSpace I)
         (F := Tensor0SModel s ℝ E)
         (V := fun z : M => Tensor0SSpace s I z)
         (cov_U := LeviCivita (I := I) g)

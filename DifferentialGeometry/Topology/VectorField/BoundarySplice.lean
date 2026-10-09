@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.VectorField.Index.Comparison
-import DifferentialGeometry.Topology.VectorField.Index.ZeroGerm
+import DifferentialGeometry.Topology.VectorField.IndexComparison
+import DifferentialGeometry.Topology.VectorField.IndexSumZeroGerm
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Topology.Maps.Proper.Basic
 

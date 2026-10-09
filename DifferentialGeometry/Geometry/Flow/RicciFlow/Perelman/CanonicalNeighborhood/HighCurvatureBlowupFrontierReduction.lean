@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelFrontier
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Compactness.SelectedScalarNormalization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedScalarConvergence
 
 set_option autoImplicit false
 

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Exponential.Inverse.Radius
 import DifferentialGeometry.Geometry.Exponential.Cartan.Norm
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.FixedBasePartialDiffeomorph
-import DifferentialGeometry.Geometry.Metric.LinearAlgebra.Polarization
+import DifferentialGeometry.Geometry.Metric.Polarization
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

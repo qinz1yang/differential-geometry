@@ -80,7 +80,7 @@ theorem kernel_rigidity_on_open_interval
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           reaction t x (A t x)) t) :
     let k := Module.finrank ℝ F - q
@@ -152,7 +152,7 @@ theorem kernel_rigidity_on_open_interval
       deriv (fun s ↦ A s x) t =
         rawBundleEndomorphismConnLap (I := I) (g t) (cov' t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov' t) (cov' t) (fun y ↦ A t y) x (X t x) +
           reaction' t x (A t x) := by
     intro t ht x
@@ -211,7 +211,7 @@ theorem exists_smooth_parallel_kernel_on_open_interval
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           reaction t x (A t x)) t) :
     ∀ t ∈ J, ∃ K : ContMDiffVectorSubbundle (I := I) (F := F) (V := V) (n := ∞),
@@ -269,7 +269,7 @@ theorem kernel_time_constant_on_open_interval
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           reaction t x (A t x)) t)
     {x : M} {s t : ℝ} (hs : s ∈ J) (ht : t ∈ J) :
@@ -309,7 +309,7 @@ theorem kernel_time_constant_on_open_interval
       deriv (fun s ↦ A s x) t =
         rawBundleEndomorphismConnLap (I := I) (g t) (cov' t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov' t) (cov' t) (fun y ↦ A t y) x (X t x) +
           reaction' t x (A t x) := by
     intro t ht x
@@ -417,7 +417,7 @@ theorem reaction_kernel_annihilation_of_isPositive_on_open_interval
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           reaction t x (A t x)) t) :
     ∀ t ∈ J, ∀ x v, A t x v = 0 → reaction t x (A t x) v = 0 := by
@@ -462,7 +462,7 @@ theorem reaction_kernel_annihilation_of_commuting_on_open_interval
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           reaction t x (A t x)) t) :
     ∀ t ∈ J, ∀ x v, A t x v = 0 → reaction t x (A t x) v = 0 := by

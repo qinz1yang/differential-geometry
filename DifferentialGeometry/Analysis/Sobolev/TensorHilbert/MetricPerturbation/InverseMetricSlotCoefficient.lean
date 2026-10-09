@@ -352,7 +352,7 @@ theorem riemannianFiberNormSq_covGrad_inverseMetricDifferenceSlotCoefficient_le
     have hΦ :
         tensorRSCovariantDerivative I M 2 2 (LeviCivita (I := I) g₀)
             (fun y : M => (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1 Λ).toSection y) x v =
-          slotInsertEndomorphism (I := I) (M := M) 2 0 x
+          slotInsertEndoFib (I := I) (M := M) 2 0 x
             ((endoCovariantDerivative (I := I) (M := M) g₀) Λ x v) := by
       simpa [tensorCovDerivAt_def] using
         (tensorCovDerivAt_slotInsertEndoCc_eq (I := I) (M := M) g₀ 1 Λ x
@@ -522,7 +522,7 @@ theorem covGrad_inverseMetricDifferenceSlotCoefficient_toSection_eval
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
           (covGrad (I := I) (M := M) g₀ 2 2 (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x) D) v =
       Tensor0SSpace.toModel
-        ((slotInsertEndomorphism (I := I) (M := M) 2 0 x
+        ((slotInsertEndoFib (I := I) (M := M) 2 0 x
             ((endoCovariantDerivative (I := I) (M := M) g₀)
               (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) x (v 0))) D)
         (Matrix.vecTail v) := by

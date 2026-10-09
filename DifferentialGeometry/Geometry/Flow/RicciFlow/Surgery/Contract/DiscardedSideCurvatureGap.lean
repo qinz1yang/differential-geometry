@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.DiscardedSideGeometry
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormCovering
 import DifferentialGeometry.Topology.Manifold.Components
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
+import DifferentialGeometry.Topology.ThreeManifold.CutCap
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardComponentwise
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscardedModels
 
@@ -145,6 +145,6 @@ theorem ClosedOrientedManifold.disjoint_componentSet_of_ne (D : ClosedOrientedMa
 
 theorem MetricCutCapEvent.finite_discardedComponents {P Q : OrientedThreeStage.{u}} {a s : ℝ}
     (E : MetricCutCapEvent P Q a s) : Finite (ConnectedComponents E.discarded.Carrier) :=
-  ClosedOrientedManifold.finite_components E.discarded
+  ClosedOrientedManifold.finite_components E.discarded.toClosedOrientedManifold
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

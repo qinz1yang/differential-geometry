@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.CompleteDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarGradientSlab
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Minimizer.Limits
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.MinVector
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LowerBound
 
 

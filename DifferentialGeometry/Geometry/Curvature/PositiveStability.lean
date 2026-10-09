@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.RiemannPerturbation
 import DifferentialGeometry.Geometry.Curvature.Riemann.SectionalCurvature
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import DifferentialGeometry.Geometry.Metric.Euclidean.Construction
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Extended
+import DifferentialGeometry.Geometry.Metric.DerivativeENorm
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.Normed.Module.Normalize

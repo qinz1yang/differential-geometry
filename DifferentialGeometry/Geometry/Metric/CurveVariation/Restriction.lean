@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.CurveVariation.Comparison
-import DifferentialGeometry.Geometry.Metric.Restriction.Distance
+import DifferentialGeometry.Geometry.Metric.RestrictionDistance
 import DifferentialGeometry.Topology.LocalLipschitzVariation
 
 noncomputable section

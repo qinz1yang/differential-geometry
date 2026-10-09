@@ -1,4 +1,8 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section31CanonicalConfiguration
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsGeneralPositionSolidTorusRelative
 
@@ -145,7 +149,7 @@ theorem IsCanonicalTower.finite_labelled_seams
 
 theorem IsCanonicalTower.seam_generator_or_bounds_disks
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (i : ℤ) {G : Set E3}
+    (h314 : Moise314) (i : ℤ) {G : Set E3}
     (hG : G ∈ traceCircles (T'' i) (T'' (i + 1))) :
     (∀ k ∈ ({i, i + 1} : Set ℤ), ∀ hsub : G ⊆ S'' k, ∀ x : G,
       Function.Surjective (FundamentalGroup.map
@@ -153,7 +157,7 @@ theorem IsCanonicalTower.seam_generator_or_bounds_disks
       (boundsDiskIn G (T'' i) ∧ boundsDiskIn G (T'' (i + 1))) := by
   have hpoly := traceCircles_isPLSphere hG
   have hsub : G ⊆ T'' i ∩ T'' (i + 1) := traceCircles_subset hG
-  have hd := (htw.config i).polygon_dichotomy (0 : Fin 2) G hpoly (by simpa using hsub)
+  have hd := h314 _ _ _ _ _ _ _ _ _ _ _ (htw.config i) 0 G hpoly (by simpa using hsub)
   rcases hd with hgen | hdisk
   · left
     intro k hk hGS x

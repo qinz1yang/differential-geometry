@@ -1,5 +1,4 @@
-import DifferentialGeometry.Geometry.Neck.Normalized.Defs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.ShrinkingCylinderIsometries
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ShrinkingCylinderGauge
 import DifferentialGeometry.Geometry.Neck.BufferedRotation
 import DifferentialGeometry.Geometry.Neck.Orientation
 

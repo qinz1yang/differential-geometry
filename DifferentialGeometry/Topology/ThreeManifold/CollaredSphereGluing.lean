@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependence
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependenceAttachment
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLawInstances
 import DifferentialGeometry.Topology.ThreeManifold.CutCapSummandCountAbelianizationRank
 import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSumFreeProduct
 

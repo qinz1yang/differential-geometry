@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.Embedding.CompactNeighborhood
-import DifferentialGeometry.Topology.Circle.WeaklyMonotone.Closure
+import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone.Closure
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MorreyDisk
 import DifferentialGeometry.Topology.LoopSpace.HomeomorphismLift
 import Mathlib.Topology.ContinuousMap.Compact

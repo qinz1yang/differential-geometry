@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.ParabolicScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.MixedJetPolynomials
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.TerminalMixedDerivatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MixedCurvatureTerminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.DerivativeNorm
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 

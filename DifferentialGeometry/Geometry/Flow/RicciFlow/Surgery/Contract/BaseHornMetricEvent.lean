@@ -1,11 +1,11 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Coordinates.BaseScalarBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Selection.FirstScalarLevel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornBaseCoordinates
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFirstScalarLevel
 import Mathlib.Data.Finset.Lattice.Fold
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Selection.ScalarLevel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornScalarLevel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornNeckCollarMatching
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Reparametrization.Supported
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornReparametrization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InwardDatumChart
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Selection.RetainedFamily
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornNeckRetention
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffRemainingFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NormalizedNeckDatumOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteMetricEventDebit
@@ -16,10 +16,10 @@ import Mathlib.SetTheory.Cardinal.Finite
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.Floor.Semiring
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornMetricEvent
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Reparametrization.Scaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornParameterRescaling
 
 open private scalar_le_on_retainedCore_of_truncated_bound from
-  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Selection.FirstScalarLevel
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFirstScalarLevel
 
 open private exists_fin_chosen_data exists_precision_order_compatible
   precision_order_compatible_of_le from
@@ -879,9 +879,9 @@ theorem exists_horn_cut_metricCutCapEvent_of_base_scalar_bound :
         (aCap : (Fin (Nat.card P'.HornCutIndex) × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
         (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (aCap b y)),
       ∃ E : MetricCutCapEvent D.stage
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
-        E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc ∧
-        E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Qcap oQ ∧
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
+        E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
+        E.capped = OrientedThreeStage.ofSmoothOrientation Qcap oQ ∧
         HEq E.transition.trace
           ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos (fun j => (d j).precision_pos)
             (fun i => (d i).precision_lt_one) f hf hd R hnontrivial).reparametrizeCaps
@@ -898,7 +898,7 @@ theorem exists_horn_cut_metricCutCapEvent_of_base_scalar_bound :
           ∀ x : Ret, L₀ ≤ metricScalarAt E.outputMetric x) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel
-            (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet).Carrier
+            (OrientedThreeStage.ofSmoothOrientation Ret oRet).Carrier
             E.outputMetric univ + ENNReal.ofReal
               ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
@@ -1108,9 +1108,9 @@ theorem exists_horn_cut_metricCutCapEvent_at_base_bounded_scale :
         (aCap : (Fin (Nat.card P'.HornCutIndex) × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
         (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (aCap b y)),
       ∃ E : MetricCutCapEvent D.stage
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
-        E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc ∧
-        E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Qcap oQ ∧
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) D.startTime D.endTime,
+        E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
+        E.capped = OrientedThreeStage.ofSmoothOrientation Qcap oQ ∧
         HEq E.transition.trace
           ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos (fun j => (d j).precision_pos)
             (fun i => (d i).precision_lt_one) f hf hd R hnontrivial).reparametrizeCaps
@@ -1127,7 +1127,7 @@ theorem exists_horn_cut_metricCutCapEvent_at_base_bounded_scale :
           ∀ x : Ret, L₀ ≤ metricScalarAt E.outputMetric x) ∧
         (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
           riemannianVolumeMeasure ThreeModel
-            (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet).Carrier
+            (OrientedThreeStage.ofSmoothOrientation Ret oRet).Carrier
             E.outputMetric univ + ENNReal.ofReal
               ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧

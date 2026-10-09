@@ -16,6 +16,7 @@ theorem exists_middle_cancel_step (I : ModelWithCorners ℝ (Fin n → ℝ) H) [
     {f : M → ℝ} {a b : ℝ} (hf : MorseStrip I f a b)
     (hidx : ∀ x, f x ∈ Ioo a b → DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x →
       2 ≤ morseIndex I f x ∧ morseIndex I f x + 2 ≤ n)
+    (hW : SimplyConnectedSpace (f ⁻¹' Icc a b))
     (hV₀ : SimplyConnectedSpace (f ⁻¹' {a})) (hV₁ : SimplyConnectedSpace (f ⁻¹' {b}))
     (hH : relHomologyVanishes (f ⁻¹' Icc a b) (Subtype.val ⁻¹' (f ⁻¹' {a})))
     {p₀ : M} (hp₀ : f p₀ ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f p₀) :
@@ -23,6 +24,6 @@ theorem exists_middle_cancel_step (I : ModelWithCorners ℝ (Fin n → ℝ) H) [
       (∀ x, g x ∈ Ioo a b → DifferentialGeometry.Topology.Morse.IsCriticalPointAt I g x →
         DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x ∧ morseIndex I g x = morseIndex I f x) ∧
       ∃ p, f p ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f p ∧ ¬ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I g p := by
-  exact middle_target I h6 hf hidx hV₀ hV₁ hH hp₀
+  exact middle_target I h6 hf hidx hW hV₀ hV₁ hH hp₀
 
 end DifferentialGeometry.Topology

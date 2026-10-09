@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Collar.TwoSided.Orientation
+import DifferentialGeometry.Topology.VanKampen.BoundaryCollarOrientation
 import DifferentialGeometry.Topology.VanKampen.BoundaryCollarRestriction
 import DifferentialGeometry.Topology.Compactness.FiniteSeparation
 

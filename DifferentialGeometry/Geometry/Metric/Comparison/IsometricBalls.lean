@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphBallCapture
+import DifferentialGeometry.Geometry.Comparison.BallCapture
 import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphDistance
 
 noncomputable section

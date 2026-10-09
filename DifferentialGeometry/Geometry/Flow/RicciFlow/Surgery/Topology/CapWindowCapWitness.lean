@@ -2,10 +2,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowCo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowStandardComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodContinuationLeaves
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalPullScalarGradient
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CanonicalNeighborhood.WindowCap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardWindowCapWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryStrongNeck
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Closeness.BallPlacement
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Closeness.ActionComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardWindowBallPlacement
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardActionComparison
 
 set_option autoImplicit false
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.LinearAlgebra.Orientation.Classes
+import DifferentialGeometry.Bundle.Orientation.Classes
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Topology.LocallyConstant.Basic
 import Mathlib.Basic.Real.Sign
@@ -54,7 +54,7 @@ theorem continuous_orientation_transport (hdim : Module.finrank ℝ V = n)
   · have hp : ∀ᶠ w in 𝓝 z, 0 < (A w.1 : V →L[ℝ] V).det :=
       hdet.continuousAt.eventually_const_lt hpos
     apply continuous_snd.continuousAt.congr_of_eventuallyEq
-    exact hp.mono (fun w hw => ((w.2).map_eq_iff_det_pos (A w.1).toLinearEquiv (by simpa using hdim.symm)).mpr hw)
+    exact hp.mono (fun w hw => (map_orientation_eq_iff hdim w.2 (A w.1).toLinearEquiv).mpr hw)
 
 
 theorem continuousOn_orientation_transport (hdim : Module.finrank ℝ V = n)

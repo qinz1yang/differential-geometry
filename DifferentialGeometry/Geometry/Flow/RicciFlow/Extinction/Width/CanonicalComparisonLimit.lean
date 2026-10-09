@@ -29,29 +29,29 @@ private theorem positiveHomotopyClass_eq_of_integralHomologyMap (oM : TangentOri
 private theorem positiveFreeLoopClass_natural_of_integralHomologyMap
     (oM : TangentOrientationSection M) (oN : TangentOrientationSection N) (f : C(M, N))
     (hf : integralHomologyMap 3 f (fundamentalClass oM) = fundamentalClass oN) :
-    DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.FreeLoop.postcompose f) (positiveFreeLoopClass oM) =
+    FreeHomotopyClass.map (loopPostcompose f) (positiveFreeLoopClass oM) =
       positiveFreeLoopClass oN := by
   let q₀ : M := Classical.choice (inferInstance : Nonempty M)
-  have hstep : basedHomotopyMap (DifferentialGeometry.Topology.FreeLoop.postcompose f) (DifferentialGeometry.Topology.FreeLoop.constants q₀)
+  have hstep : basedHomotopyMap (loopPostcompose f) (constantLoops q₀)
       (positiveBasedLoopClass oM q₀) = positiveBasedLoopClass oN (f q₀) := by
     unfold positiveBasedLoopClass
     rw [freeLoopAdjunction_natural f (positiveHomotopyClass oM q₀),
       positiveHomotopyClass_eq_of_integralHomologyMap oM oN f q₀ hf]
   rw [positiveFreeLoopClass_eq oM q₀, positiveFreeLoopClass_eq oN (f q₀),
-    forgetBasedSphere_natural f (DifferentialGeometry.Topology.FreeLoop.constants q₀)
+    forgetBasedSphere_natural f (constantLoops q₀)
       (positiveBasedLoopClass oM q₀), hstep]
-  rfl
+  simp only [loopPostcompose_constantLoops]
 
 theorem positiveFreeContractibleClass_natural_of_integralHomologyMap
     (oM : TangentOrientationSection M) (oN : TangentOrientationSection N) (f : C(M, N))
     (hf : integralHomologyMap 3 f (fundamentalClass oM) = fundamentalClass oN) :
-    DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose f) (positiveFreeContractibleClass oM) =
+    FreeHomotopyClass.map (contractibleLoopPostcompose f) (positiveFreeContractibleClass oM) =
       positiveFreeContractibleClass oN := by
   unfold positiveFreeContractibleClass
-  rw [← DifferentialGeometry.Topology.FreeHomotopyClass.map_comp]
-  have hcomp : (DifferentialGeometry.Topology.ContractibleLoop.postcompose f).comp (toContractibleLoops (M := M)) =
-      (toContractibleLoops (M := N)).comp (DifferentialGeometry.Topology.FreeLoop.postcompose f) := rfl
-  rw [hcomp, DifferentialGeometry.Topology.FreeHomotopyClass.map_comp,
+  rw [← FreeHomotopyClass.map_comp]
+  have hcomp : (contractibleLoopPostcompose f).comp (toContractibleLoops (M := M)) =
+      (toContractibleLoops (M := N)).comp (loopPostcompose f) := rfl
+  rw [hcomp, FreeHomotopyClass.map_comp,
     positiveFreeLoopClass_natural_of_integralHomologyMap oM oN f hf]
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

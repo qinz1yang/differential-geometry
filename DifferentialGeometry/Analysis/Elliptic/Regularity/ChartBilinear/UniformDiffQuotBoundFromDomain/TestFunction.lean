@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.ChartBilinearVariationalIdentity
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.SubstitutionNonSmooth
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.WeakDerivativeBound
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.WeakDerivativeBound
 
 noncomputable section
 

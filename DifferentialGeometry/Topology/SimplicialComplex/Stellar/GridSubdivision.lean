@@ -5,6 +5,7 @@ namespace DifferentialGeometry.Topology.Engulfing
 
 open Set Metric _root_.Geometry Module
 
+set_option linter.unusedSectionVars false
 
 variable {E : Type*} [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E]
@@ -12,7 +13,7 @@ variable {E : Type*} [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E]
 noncomputable def coordinateGridCut {ι : Type*} (b : Basis ι ℝ E) (z : ι × ℝ) :
     E →ᵃ[ℝ] ℝ := (b.coord z.1).toAffineMap - AffineMap.const ℝ E z.2
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 @[simp] theorem coordinateGridCut_apply {ι : Type*} (b : Basis ι ℝ E) (z : ι × ℝ) (x : E) :
     coordinateGridCut b z x = b.coord z.1 x - z.2 := by
   classical
@@ -31,7 +32,7 @@ theorem isOpen_affineCutSeparates (f : E →ᵃ[ℝ] ℝ) :
     ((isOpen_lt (hf.comp continuous_snd) continuous_const).inter
       (isOpen_lt continuous_const (hf.comp continuous_fst)))
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem exists_coordinateGridCut_separates {ι : Type*} (b : Basis ι ℝ E)
     {x y : E} (hxy : x ≠ y) : ∃ z : ι × ℝ, affineCutSeparates (coordinateGridCut b z) x y := by
   classical
@@ -77,7 +78,7 @@ theorem exists_finite_separating_coordinate_grid {ι : Type*} (b : Basis ι ℝ 
   obtain ⟨hzI, hzxy⟩ := mem_iUnion.mp hz
   exact ⟨z, hzI, hzxy⟩
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem respectsAffineHyperplane.not_separates {K : SimplicialComplex ℝ E}
     {f : E →ᵃ[ℝ] ℝ} (h : respectsAffineHyperplane K f) {s : Finset E} (hs : s ∈ K.faces)
     {x y : E} (hx : x ∈ convexHull ℝ (s : Set E)) (hy : y ∈ convexHull ℝ (s : Set E)) :
@@ -92,7 +93,7 @@ theorem respectsAffineHyperplane.not_separates {K : SimplicialComplex ℝ E}
     have hyge : 0 ≤ f y := hge hy
     exact hsep.elim (fun h => h.1.not_ge hxge) (fun h => h.1.not_ge hyge)
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem mesh_le_of_respects_separating_grid {ι : Type*} (b : Basis ι ℝ E)
     {S : Set E} {ε : ℝ} (hε : 0 ≤ ε) (I : Finset (ι × ℝ))
     (hI : ∀ x ∈ S, ∀ y ∈ S, ε ≤ dist x y →
@@ -136,7 +137,6 @@ inductive EdgeStellarRefinement (K : SimplicialComplex ℝ E) : SimplicialComple
   | step {L : SimplicialComplex ℝ E} (h : EdgeStellarRefinement K L)
       (d : EdgeSubdivisionPoint L) : EdgeStellarRefinement K d.subdivision
 
-omit [FiniteDimensional ℝ E] in
 theorem EdgeStellarRefinement.preserves {K L : SimplicialComplex ℝ E}
     (h : EdgeStellarRefinement K L) (P : SimplicialComplex ℝ E → Prop)
     (hstable : ∀ K (d : EdgeSubdivisionPoint K), P K → P d.subdivision) (hK : P K) : P L := by

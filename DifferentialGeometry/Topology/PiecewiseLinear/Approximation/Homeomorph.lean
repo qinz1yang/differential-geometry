@@ -1,6 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.OpenEmbedding
 import DifferentialGeometry.Topology.Manifold.Homeomorph.SmallPerturbation
-
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear

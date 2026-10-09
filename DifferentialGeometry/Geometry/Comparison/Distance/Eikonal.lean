@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Busemann.Ray.BusemannDifferentiability
-import DifferentialGeometry.Geometry.Metric.Distance.LocalSmoothness
+import DifferentialGeometry.Geometry.Comparison.Distance.LocalSmoothness
 
 
 noncomputable section

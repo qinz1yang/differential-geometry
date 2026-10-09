@@ -39,7 +39,7 @@ theorem SmoothDisk.contMDiff_trace (u : SmoothDisk (I := I) (Q := Q)) :
 
 omit [FiniteDimensional ℝ E] in
 theorem contMDiff_loopLift_of_plateauDiskDensity
-    (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q)
+    (g : SmoothRiemannianMetric I Q) (γ : Surgery.Topology.ContinuousFreeLoop Q)
     (v : DiskCompetitor g γ) (h : PlateauDiskDensity (I := I) (Q := Q) g γ) :
     ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ) := by
   obtain ⟨w, hw, _⟩ := h v
@@ -59,7 +59,7 @@ theorem DiskSmoothExtension.contMDiff_trace {u : C(Disk, Q)} {U : ℂ → Q}
 
 omit [FiniteDimensional ℝ E] in
 theorem not_hasDiskSmoothExtensionDensity_of_not_contMDiff
-    (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q)
+    (g : SmoothRiemannianMetric I Q) (γ : Surgery.Topology.ContinuousFreeLoop Q)
     (v : DiskCompetitor g γ) (hγ : ¬ ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ)) :
     ¬ HasDiskSmoothExtensionDensity (I := I) (Q := Q) g γ := by
   intro h
@@ -69,28 +69,28 @@ theorem not_hasDiskSmoothExtensionDensity_of_not_contMDiff
 
 omit [FiniteDimensional ℝ E] in
 theorem not_plateauDiskDensity_of_not_contMDiff
-    (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q)
+    (g : SmoothRiemannianMetric I Q) (γ : Surgery.Topology.ContinuousFreeLoop Q)
     (v : DiskCompetitor g γ) (hγ : ¬ ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ)) :
     ¬ PlateauDiskDensity (I := I) (Q := Q) g γ :=
   fun h => hγ (contMDiff_loopLift_of_plateauDiskDensity g γ v h)
 
 omit [FiniteDimensional ℝ E] in
 def HasSmoothLoopDiskSmoothExtensionDensity (g : SmoothRiemannianMetric I Q) : Prop :=
-  ∀ γ : DifferentialGeometry.Topology.freeLoop Q, ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ) →
+  ∀ γ : Surgery.Topology.ContinuousFreeLoop Q, ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ) →
     HasDiskSmoothExtensionDensity (I := I) (Q := Q) g γ
 
 omit [FiniteDimensional ℝ E] in
 theorem plateauDiskDensity_of_hasSmoothLoopDiskSmoothExtensionDensity
     (g : SmoothRiemannianMetric I Q)
     (h : HasSmoothLoopDiskSmoothExtensionDensity (I := I) (Q := Q) g)
-    {γ : DifferentialGeometry.Topology.freeLoop Q}
+    {γ : Surgery.Topology.ContinuousFreeLoop Q}
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ)) :
     PlateauDiskDensity (I := I) (Q := Q) g γ :=
   plateauDiskDensity_of_hasDiskSmoothExtensionDensity (I := I) (Q := Q) g γ (h γ hγ)
 
 omit [FiniteDimensional ℝ E] in
 theorem hasDiskSmoothExtensionDensity_of_subsingleton [Subsingleton Q] [Nonempty Q]
-    (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q) :
+    (g : SmoothRiemannianMetric I Q) (γ : Surgery.Topology.ContinuousFreeLoop Q) :
     HasDiskSmoothExtensionDensity (I := I) (Q := Q) g γ := by
   intro v
   let q : Q := Classical.arbitrary Q
@@ -229,7 +229,7 @@ private theorem not_differentiableAt_chordCurveNorm :
   have hsum : (2 : ℝ) * Real.pi = -(2 * Real.pi) := h1.symm.trans h2
   linarith [Real.pi_pos]
 
-def chordLengthLoop : DifferentialGeometry.Topology.freeLoop ℝ :=
+def chordLengthLoop : Surgery.Topology.ContinuousFreeLoop ℝ :=
   ⟨fun θ : Surgery.Topology.Circle => ‖(AddCircle.toCircle θ : ℂ) - 1‖,
     continuous_norm.comp
       ((continuous_subtype_val.comp AddCircle.continuous_toCircle).sub continuous_const)⟩

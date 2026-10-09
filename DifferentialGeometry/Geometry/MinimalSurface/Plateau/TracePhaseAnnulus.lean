@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldDensity
-import DifferentialGeometry.Topology.Circle.Lipschitz
+import DifferentialGeometry.Topology.LoopSpace.Lipschitz
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ConformalDisk
 import DifferentialGeometry.Geometry.Measure.Area.CylinderArea
 import DifferentialGeometry.Geometry.Measure.Area.AttachmentArea

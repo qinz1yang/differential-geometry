@@ -19,7 +19,7 @@ theorem hasExtinctObservationTower_of_retainedCoreTower_scalarLowerBound
     [SimplyConnectedSpace M.Carrier]
     {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
     (T : RetainedCoreObservationTower
-      (M.toClosedOrientedManifold) g)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     (parameters : ℝ → CutoffParameters)
     (cutoff : ∀ (b : ℝ) (hb : 0 < b),
@@ -30,10 +30,10 @@ theorem hasExtinctObservationTower_of_retainedCoreTower_scalarLowerBound
       HistoryScalarLowerBound (T.toObservationTower.observe b hb.le) c) :
     hasExtinctObservationTower M g :=
   letI : ConnectedSpace
-      (M.toClosedOrientedManifold).Carrier :=
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold).Carrier :=
     M.connected
   letI : SimplyConnectedSpace
-      (M.toClosedOrientedManifold).Carrier :=
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold).Carrier :=
     inferInstanceAs (SimplyConnectedSpace M.Carrier)
   (T.toObservationTower.uniformRecordsAbove_of_scalarLowerBound parameters cutoff hc hscalar).elim
     fun _ h =>
@@ -44,7 +44,7 @@ theorem exists_poincare_controlled_extinction_of_retainedCoreTower_scalarLowerBo
     [SimplyConnectedSpace M.Carrier]
     {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
     (T : RetainedCoreObservationTower
-      (M.toClosedOrientedManifold) g)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     (parameters : ℝ → CutoffParameters)
     (cutoff : ∀ (b : ℝ) (hb : 0 < b),

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ModelTorusTraceCarrying
 import DifferentialGeometry.Topology.PiecewiseLinear.PLModelIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CapDeletion
@@ -39,7 +44,7 @@ theorem exists_section34_vertex_disk_of_disjoint_face_trace_model
         Disjoint D (section34SplitDiskImage src f₁ e) := by
   classical
   have hf₁ := hgraph.2.2.1
-  obtain ⟨P, u, hP, hu, hUP, hfront⟩ := exists_PL_solid_torus_model_of_faceTorus hcut hgraph t
+  obtain ⟨P, u, hP, hu, hUP, hfront⟩ := exists_section34FaceTorus_intrinsic_model hcut hgraph t
   let T := section34FaceTorus (section34VertexBallImage src f₁) t
   let g := Function.invFunOn u P
   have hleft : LeftInvOn g u P := hu.injOn.leftInvOn_invFunOn
@@ -148,7 +153,7 @@ theorem exists_section34_vertex_disk_of_disjoint_face_trace
     ∃ D : Set M₂, IsPLCellOn 2 D J ∧ D ⊆ section34VertexBallImage srcBd f₁ w ∧
       ∀ e : Section34EdgeIndex 𝒦 𝒦', Section34Incident e.1 t.1 →
         Disjoint D (section34SplitDiskImage src f₁ e) := by
-  obtain ⟨P, u, hP, hu, hUP, -⟩ := exists_PL_solid_torus_model_of_faceTorus hcut hgraph t
+  obtain ⟨P, u, hP, hu, hUP, -⟩ := exists_section34FaceTorus_intrinsic_model hcut hgraph t
   have hJT : J ⊆ u '' P := by
     rw [hUP]
     exact fun x hx => mem_iUnion₂.mpr ⟨⟨(t, w), hwt⟩, rfl, hJV hx⟩

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceAlignedBandFilling
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.FillingCrossingNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentFillingCrossingNeighborhood
 
 open Set Topology
 
@@ -86,7 +86,7 @@ theorem exists_section34_current_paired_filling_seam_neighborhoods
     fin_cases k
     · exact fun x hx => hfix x (Or.inl hx)
     · exact fun x hx => hfix x (Or.inr hx)
-  have hex (k : Fin 2) := exists_filling_seam_neighborhood_of_fixed_vertex_ball_germs hprep hpack e
+  have hex (k : Fin 2) := exists_section34_current_filling_seam_neighborhood hprep hpack e
     (hindex k) hP hu hmodel Ψ (hfix' k) hcellB hRint hclosedR hregR hconnR
     hfront hcontactA hcontactB (hfaces k) (hN k).1 (hN k).2.1
   choose C f a b hcf using hex

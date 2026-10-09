@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Operator.Hessian.AlongGeodesic
+import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.BoundedGeometry
-import DifferentialGeometry.Geometry.CenterOfMass.StrictDistance.Defs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.Defs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.BoundedGeometryReplay
 
 set_option autoImplicit false

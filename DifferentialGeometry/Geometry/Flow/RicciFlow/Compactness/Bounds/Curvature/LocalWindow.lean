@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Ancient.CurvatureJets
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Ancient.LowDimension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalCurvatureJetBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalAncientFlowCompactnessLowDimension
 
 set_option autoImplicit false
 

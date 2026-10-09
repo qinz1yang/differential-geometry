@@ -1,7 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleShiftedCoefficients
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.CoefficientPrecomposition
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleCoefficientPrecomposition
-import DifferentialGeometry.Geometry.Flow.CurveShortening.Sobolev.CurveRepresentation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.CurveRepresentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.InitialState
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.ReferenceSolutions
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.SpatialRegularity
@@ -78,7 +76,7 @@ open private
 open private
   scalarH1PiToContinuous_fixedAmbientSobolev
   DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion.scalarH1PiToContinuous_fixedAmbientSobolev from
-  DifferentialGeometry.Geometry.Flow.CurveShortening.Sobolev.CurveRepresentation
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.CurveRepresentation
 
 noncomputable section
 
@@ -610,28 +608,39 @@ private theorem precomposed_symmetric_reference_coefficient_bounds
   let ρ := R / (1 + ‖J‖)
   have hden : 0 < 1 + ‖J‖ := by positivity
   have hρ : 0 < ρ := div_pos hR hden
-  have hρmul : (1 + ‖J‖) * ρ = R := by
+  have hρeq : (1 + ‖J‖) * ρ = R := by
     dsimp only [ρ]
-    field_simp [ne_of_gt hden]
+    field_simp
   have hρR : ρ ≤ R := by nlinarith [norm_nonneg J]
   have hJρ : ‖J‖ * ρ ≤ R := by nlinarith
-  refine ⟨ρ, hρ, hJρ, rfl, hρR, ?_⟩
-  intro alpha
-  have hbounds := coefficient_bounds_precomp J hJρ (Set.Icc (-ρ) ρ) a alpha q Ca ha
-    (fun p t ht z => hclose p t ⟨(neg_le_neg hρR).trans ht.1, ht.2.trans hρR⟩ z)
-    (fun p t _ z => extendClosedBall_apply hρ.le _ t z.val z.property)
-  refine ⟨?_, ?_, hbounds.2.2, ?_⟩
-  · intro p t ht z hz w hw
+  refine ⟨ρ, hρ, hJρ, rfl, hρR, ?_, ?_, ?_, ?_⟩
+  · intro p t _ z hz w hw
+    dsimp only
     have hz' : z ∈ Metric.closedBall (0 : X) ρ := by
       simpa only [Metric.mem_closedBall, dist_zero_right] using hz
     have hw' : w ∈ Metric.closedBall (0 : X) ρ := by
       simpa only [Metric.mem_closedBall, dist_zero_right] using hw
-    simpa only [NNReal.coe_mul, coe_nnnorm, dist_eq_norm] using
-      (hbounds.1 p t ht).dist_le_mul z hz' w hw'
-  · intro p t ht z hz
+    rw [extendClosedBall_apply hρ.le _ t z hz', extendClosedBall_apply hρ.le _ t w hw']
+    exact ((ha p).norm_sub_time_precomp_closedBall J hJρ t ⟨z, hz'⟩ ⟨w, hw'⟩).trans
+      (by simpa only [mul_assoc] using
+        mul_le_mul_of_nonneg_left (J.le_opNorm (z - w)) Ca.coe_nonneg)
+  · intro p t htt z hz
+    dsimp only
+    have hz' : z ∈ Metric.closedBall (0 : X) ρ := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hz
+    rw [extendClosedBall_apply hρ.le _ t z hz']
     calc
-      _ ≤ (Ca : ℝ) * (2 * R) := hbounds.2.1 p t ht z hz
-      _ = (2 * (Ca : ℝ) * (1 + ‖J‖)) * ρ := by rw [← hρmul]; ring
+      _ ≤ (Ca : ℝ) * (2 * R) := hclose p t ⟨(neg_le_neg hρR).trans htt.1, htt.2.trans hρR⟩ _
+      _ = (2 * (Ca : ℝ) * (1 + ‖J‖)) * ρ := by rw [← hρeq]; ring
+  · intro p
+    have hc : Continuous (fun z : Set.Icc (-ρ) ρ × Metric.closedBall (0 : X) ρ =>
+        a p z.1 (J.closedBallMap hJρ z.2)) :=
+      ((ha p).prod_precomp_closedBall J hJρ).continuous.comp
+        ((continuous_subtype_val.comp continuous_fst).prodMk continuous_snd)
+    apply hc.congr
+    intro z
+    exact (extendClosedBall_apply hρ.le
+      (fun t v => a p t (J.closedBallMap hJρ v)) z.1 z.2.val z.2.property).symm
   · intro p t z
     exact extendClosedBall_apply hρ.le _ t z.val z.property
 
@@ -725,28 +734,79 @@ private theorem precomposed_translated_uniform_time_lipschitz
                   := 0) ((1 : ℕ) : ℝ))).compLpL
                   2 (timeMeasure T) field + gforce f ∧
             ‖gforce f‖ ≤ ρ / 4 := by
-  let ρ := R / (1 + ‖J‖)
-  have hden : 0 < 1 + ‖J‖ := by positivity
-  have hρ : 0 < ρ := div_pos hR hden
-  have hρmul : (1 + ‖J‖) * ρ = R := by
-    dsimp only [ρ]
-    field_simp [ne_of_gt hden]
-  have hρR : ρ ≤ R := by nlinarith [norm_nonneg J]
-  have hJρ : ‖J‖ * ρ ≤ R := by nlinarith
-  refine ⟨ρ, hρ, hJρ, rfl, hρR, ?_⟩
+  obtain ⟨ρ, hρ, hJρ, hρeq, hρR, halip, haclose', hacont, _⟩ :=
+    precomposed_symmetric_reference_coefficient_bounds
+      (P := Metric.closedBall f₀ δ) (X := CircleHsPi g ι (((1 : ℕ) : ℝ) + 1))
+      (V := V) (A := A) J hR a q Ca ha haclose
+  obtain ⟨ρb, hρb, hJρb, hρbeq, _, hblip, hbclose', hbcont, _⟩ :=
+    precomposed_symmetric_reference_coefficient_bounds
+      (P := Metric.closedBall f₀ δ) (X := CircleHsPi g ι (((1 : ℕ) : ℝ) + 1))
+      (V := V) (A := CircleHsPi g ι ((1 : ℕ) : ℝ)) J hR b b₀ Cb hb hbclose
+  have hρbρ : ρb = ρ := hρbeq.trans hρeq.symm
+  clear hρbeq
+  subst ρb
+  refine ⟨ρ, hρ, hJρ, hρeq, hρR, ?_⟩
   intro alpha reaction K Params N
-  have hfamily := exists_uniform_time_precomposed_translated_vector_lipschitz
-    (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) (ι := ι)
-    g 0 0 ((1 : ℕ) : ℝ) m Q D d q b₀ f₀ J hδ hR rfl
-    a b alpha reaction P Ca Cb ha hb haclose hbclose
-    (fun f t _ z => extendClosedBall_apply hρ.le _ t z.val z.property)
-    (fun f t _ z => extendClosedBall_apply hρ.le _ t z.val z.property)
-    haparam hbparam hCa
-  obtain ⟨T₀, _, hT₀, hT₀ρ, hsol⟩ := hfamily
-  refine ⟨T₀, hT₀, hT₀ρ, ?_⟩
+  have hsmall := scaled_coefficient_radius_bounds ‖m‖₊ ‖Q‖₊ ‖J‖₊ Ca hR hCa
+  simp only [coe_nnnorm] at hsmall
+  rw [← hρeq] at hsmall
+  have halip' : ∀ f t, t ∈ Set.Icc (-ρ) ρ →
+      LipschitzOnWith (Ca * ‖J‖₊) (alpha f t) (Metric.closedBall 0 ρ) := by
+    intro f t ht
+    apply LipschitzOnWith.of_dist_le_mul
+    intro z hz w hw
+    simpa only [NNReal.coe_mul, coe_nnnorm, dist_eq_norm] using
+      halip f t ht z (by simpa only [Metric.mem_closedBall, dist_zero_right] using hz)
+        w (by simpa only [Metric.mem_closedBall, dist_zero_right] using hw)
+  have hblip' : ∀ f t, t ∈ Set.Icc (-ρ) ρ →
+      LipschitzOnWith (Cb * ‖J‖₊) (reaction f t) (Metric.closedBall 0 ρ) := by
+    intro f t ht
+    apply LipschitzOnWith.of_dist_le_mul
+    intro z hz w hw
+    simpa only [NNReal.coe_mul, coe_nnnorm, dist_eq_norm] using
+      hblip f t ht z (by simpa only [Metric.mem_closedBall, dist_zero_right] using hz)
+        w (by simpa only [Metric.mem_closedBall, dist_zero_right] using hw)
+  have haparam' : ∀ f k t, t ∈ Set.Icc (-ρ) ρ →
+      ∀ t', t' ∈ Set.Icc (-ρ) ρ → ∀ z, ‖z‖ ≤ ρ →
+      ‖alpha f t z - alpha k t' z‖ ≤
+        (Ca : ℝ) * max |t - t'| ‖P (f.val - k.val)‖ := by
+    intro f k t _ t' _ z hz
+    have hz' : z ∈ Metric.closedBall (0 : CircleHsPi g ι (((1 : ℕ) : ℝ) + 1)) ρ := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hz
+    change ‖extendClosedBall hρ.le _ t z - extendClosedBall hρ.le _ t' z‖ ≤ _
+    rw [extendClosedBall_apply hρ.le _ t z hz', extendClosedBall_apply hρ.le _ t' z hz']
+    exact haparam f k t t' _
+  have hbparam' : ∀ f k t, t ∈ Set.Icc (-ρ) ρ →
+      ∀ t', t' ∈ Set.Icc (-ρ) ρ → ∀ z, ‖z‖ ≤ ρ →
+      ‖reaction f t z - reaction k t' z‖ ≤
+        (Cb : ℝ) * max |t - t'| ‖P (f.val - k.val)‖ := by
+    intro f k t _ t' _ z hz
+    have hz' : z ∈ Metric.closedBall (0 : CircleHsPi g ι (((1 : ℕ) : ℝ) + 1)) ρ := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hz
+    change ‖extendClosedBall hρ.le _ t z - extendClosedBall hρ.le _ t' z‖ ≤ _
+    rw [extendClosedBall_apply hρ.le _ t z hz', extendClosedBall_apply hρ.le _ t' z hz']
+    exact hbparam f k t t' _
+  obtain ⟨T₀, hT₀eq, hT₀, hsol⟩ :=
+    exists_uniform_time_translated_vector_lipschitz (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) g 0 0
+      ((1 : ℕ) : ℝ) m Q D d q b₀ f₀ hδ hρ hρ
+      alpha reaction P (2 * Ca * (1 + ‖J‖₊)) (Ca * ‖J‖₊) (Cb * ‖J‖₊)
+      (2 * Cb * (1 + ‖J‖₊)) Ca Cb halip'
+      (by simpa only [NNReal.coe_mul, NNReal.coe_add, NNReal.coe_ofNat, NNReal.coe_one,
+        coe_nnnorm] using haclose') hblip'
+      (fun f t ht => by
+        simpa only [NNReal.coe_mul, NNReal.coe_add, NNReal.coe_ofNat, NNReal.coe_one,
+          coe_nnnorm] using hbclose' f t ht 0 (by simpa using hρ.le))
+      (by simpa only [NNReal.coe_mul, NNReal.coe_add, NNReal.coe_ofNat, NNReal.coe_one,
+        coe_nnnorm] using hsmall.2.2.2.1)
+      (by simpa only [NNReal.coe_mul, coe_nnnorm] using hsmall.2.2.2.2) hacont hbcont haparam'
+        hbparam'
+  refine ⟨T₀, hT₀, ?_, ?_⟩
+  · rw [hT₀eq]
+    exact min_le_left _ _
   intro T hT hTT₀
   obtain ⟨u, gforce, hFLip, huLip, hfacts⟩ := hsol hT hTT₀
-  exact ⟨_, u, gforce, hFLip, huLip, hfacts⟩
+  refine ⟨_, u, gforce, hFLip, huLip, ?_⟩
+  exact hfacts
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
 
@@ -813,77 +873,97 @@ private theorem precomposed_circle_translated_lipschitz_solutions
           ∀ p, referenceCircleSolutionFacts g₀ p.2.val
             (fun t z => alpha p.2 ((p.1 : ℝ) + t) z)
             (fun t z => reaction p.2 ((p.1 : ℝ) + t) z) ρ hT (u p) (gforce p) := by
-  let ρ := R / (1 + ‖J‖)
-  have hden : 0 < 1 + ‖J‖ := by positivity
-  have hρ : 0 < ρ := div_pos hR hden
-  have hρmul : (1 + ‖J‖) * ρ = R := by
-    dsimp only [ρ]
-    field_simp [ne_of_gt hden]
-  have hρR : ρ ≤ R := by nlinarith [norm_nonneg J]
-  have hJρ : ‖J‖ * ρ ≤ R := by nlinarith
-  let alpha := fun f => extendClosedBall hρ.le
-    (fun t z => a f t (J.closedBallMap hJρ z))
-  let reaction := fun f => extendClosedBall hρ.le
-    (fun t z => b f t (J.closedBallMap hJρ z))
-  let Params := Set.Icc (-ρ / 4) (ρ / 4) × Metric.closedBall f₀ δ
+  let C := tensorHsCongrL g₀ 0 0 (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))
+  let Cpi := circleHsPiCongr g₀ (Fin n) (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))
+  let m : TensorHs g₀ 0 0 ((1 : ℕ) : ℝ) →L[ℝ]
+      CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ) →L[ℝ]
+        CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ) := coordinateMultiplication (ι := Fin n) (scalarHsMul
+          g₀ 1 (by norm_num))
+  let q := ccTensorToHs g₀ 0 1 (scalarCc g₀ (AddCircle.laplacianPrincipalCoefficient g₀))
+  let d : CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ) →L[ℝ]
+      CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ) := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      appHs g₀ 0 0 1 (scalarCc g₀ (AddCircle.laplacianDriftCoefficient g₀)))
+  let Q := AddCircle.parameterSecondDerivativeHsPi (ι := Fin n) g₀ 1
+  let D₁ := AddCircle.parameterDerivativeHsPi (ι := Fin n) g₀ 1
   let fref : Metric.closedBall f₀ δ := ⟨f₀, Metric.mem_closedBall_self hδ⟩
   let zref : Metric.closedBall (0 : V) R := ⟨0, Metric.mem_closedBall_self hR.le⟩
+  change a fref 0 zref = q at hbaseline
   have haclose' : ∀ f t, t ∈ Set.Icc (-R) R → ∀ z,
-      ‖a f t z - ccTensorToHs g₀ 0 1
-        (scalarCc g₀ (AddCircle.laplacianPrincipalCoefficient g₀))‖ ≤ (Ca : ℝ) * (2 * R) := by
-    intro f t ht z
+      ‖a f t z - q‖ ≤ (Ca : ℝ) * (2 * R) := by
+    intro f t htt z
     rw [← hbaseline]
-    exact haclose f t ht z
-  have hm : (ContinuousLinearMap.piLpMapL 2).comp
-      (ContinuousLinearMap.pi (fun _ : Fin n => scalarHsMul g₀ 1 (by norm_num))) =
-      coordinateMultiplication (ι := Fin n) (scalarHsMul g₀ 1 (by norm_num)) := by
-    ext x v i
-    rfl
-  have hCa' : let m := (ContinuousLinearMap.piLpMapL 2).comp (ContinuousLinearMap.pi (fun _ : Fin n => scalarHsMul g₀ 1 (by norm_num)));
-      let Q := AddCircle.parameterSecondDerivativeHsPi (ι := Fin n) g₀ 1;
-      (Ca : ℝ) * R ≤ 1 / (32 * (‖m‖ * ‖Q‖ + 1)) := by
-    dsimp only
-    rw [hm]
-    exact hCa
-  have hfamily := DifferentialGeometry.Analysis.Parabolic.QuasiLinear.exists_uniform_time_precomposed_circle_translated_solutions_lipschitz
-    (ι := Fin n) g₀ 1 (by norm_num)
-    (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))
-    f₀ J hδ hR rfl (b fref 0 zref) a b alpha reaction P Ca Cb halip hblip
-    haclose' hbclose
-    (fun f t _ z => extendClosedBall_apply hρ.le _ t z.val z.property)
-    (fun f t _ z => extendClosedBall_apply hρ.le _ t z.val z.property)
-    haparam hbparam hCa'
-  refine Exists.elim hfamily ?_
-  intro T₀ hfacts
-  have hT₀ := hfacts.2.1
-  have hT₀ρ := hfacts.2.2.1
-  refine Exists.intro ρ ?_
-  refine Exists.intro hρ ?_
-  refine Exists.intro hJρ ?_
-  refine And.intro rfl ?_
-  refine And.intro hρR ?_
-  refine Exists.intro T₀ ?_
-  refine And.intro hT₀ ?_
-  refine And.intro hT₀ρ ?_
+    exact haclose f t htt z
+  let a' := fun f t z => C (a f t z)
+  let b' := fun f t z => Cpi (b f t z)
+  have halip' : ∀ f, LipschitzWith Ca
+      (fun z : ℝ × Metric.closedBall
+        (0 : V) R => a' f z.1 z.2) := by
+    intro f
+    apply LipschitzWith.of_dist_le_mul
+    intro z w
+    simpa only [a', dist_eq_norm, ← map_sub, C, tensorHsCongrL_apply, norm_tensorHsCongr]
+      using (halip f).dist_le_mul z w
+  have hblip' : ∀ f, LipschitzWith Cb
+      (fun z : ℝ × Metric.closedBall
+        (0 : V) R => b' f z.1 z.2) := by
+    intro f
+    apply LipschitzWith.of_dist_le_mul
+    intro z w
+    simpa only [b', dist_eq_norm, ← map_sub, Cpi.norm_map]
+      using (hblip f).dist_le_mul z w
+  have haclose'' : ∀ f t, t ∈ Set.Icc (-R) R → ∀ z,
+      ‖a' f t z - C q‖ ≤ (Ca : ℝ) * (2 * R) := by
+    intro f t htt z
+    simpa only [a', ← map_sub, C, tensorHsCongrL_apply, norm_tensorHsCongr] using haclose' f t htt z
+  have hbclose' : ∀ f t, t ∈ Set.Icc (-R) R → ∀ z,
+      ‖b' f t z - Cpi (b fref 0 zref)‖ ≤ (Cb : ℝ) * (2 * R) := by
+    intro f t htt z
+    simpa only [b', ← map_sub, Cpi.norm_map] using hbclose f t htt z
+  have haparam' : ∀ f k t s z, ‖a' f t z - a' k s z‖ ≤
+      (Ca : ℝ) * max |t - s| ‖P (f.val - k.val)‖ := by
+    intro f k t s z
+    simpa only [a', ← map_sub, C, tensorHsCongrL_apply, norm_tensorHsCongr]
+      using haparam f k t s z
+  have hbparam' : ∀ f k t s z, ‖b' f t z - b' k s z‖ ≤
+      (Cb : ℝ) * max |t - s| ‖P (f.val - k.val)‖ := by
+    intro f k t s z
+    simpa only [b', ← map_sub, Cpi.norm_map] using hbparam f k t s z
+  obtain ⟨ρ, hρ, hJρ, hρeq, hρR, T₀, hT₀, hT₀ρ, hsol⟩ :=
+    precomposed_translated_uniform_time_lipschitz g₀ m Q D₁ d P J (C q) (Cpi (b fref 0 zref)) f₀
+      hδ hR a' b' Ca Cb halip' hblip' haclose'' hbclose' haparam' hbparam' hCa
+  let alpha := fun f => extendClosedBall hρ.le (fun t z => a f t (J.closedBallMap hJρ z))
+  let reaction := fun f => extendClosedBall hρ.le (fun t z => b f t (J.closedBallMap hJρ z))
+  have halpha : (fun f => extendClosedBall hρ.le (fun t z => a' f t (J.closedBallMap hJρ z))) =
+      fun f t z => C (alpha f t z) := by
+    funext f t z
+    simp only [a', alpha, extendClosedBall]
+    split_ifs <;> rfl
+  have hreaction : (fun f => extendClosedBall hρ.le (fun t z => b' f t (J.closedBallMap hJρ z))) =
+      fun f t z => Cpi (reaction f t z) := by
+    funext f t z
+    simp only [b', reaction, extendClosedBall]
+    split_ifs <;> rfl
+  refine ⟨ρ, hρ, hJρ, hρeq, hρR, T₀, hT₀, hT₀ρ, ?_⟩
   intro T hT hTT₀
-  refine Exists.elim (hfacts.2.2.2 hT hTT₀) ?_
-  intro u hgforce
-  refine Exists.elim hgforce ?_
-  intro gforce hsolution
-  refine Exists.intro _ (Exists.intro u (Exists.intro gforce
-    (And.intro hsolution.1 (And.intro hsolution.2.1 ?_))))
+  obtain ⟨Lip, u, gforce, hFLip, huLip, hfacts⟩ := hsol hT hTT₀
+  refine ⟨Lip, u, gforce, hFLip, huLip, ?_⟩
   intro p
-  have hufacts := hsolution.2.2 (p : Params)
+  obtain ⟨hu, hstate, hforce, hreal, htrace, hderiv, hnorm⟩ := hfacts p
   unfold referenceCircleSolutionFacts
-  refine And.intro hufacts.1 ?_
-  refine And.intro hufacts.2.1 ?_
-  refine And.intro hufacts.2.2.2.1 ?_
-  refine And.intro hufacts.2.2.2.2.1 ?_
-  refine And.intro hufacts.2.2.2.2.2.1 ?_
-  refine And.intro hufacts.2.2.2.2.2.2.1 ?_
-  have hpde := hufacts.2.2.2.2.2.2.2
-  rw [← hm]
-  exact hpde
+  refine ⟨hu, hstate, hreal, htrace, hderiv, hnorm, ?_⟩
+  apply circle_shifted_equation_ae g₀ p.2.val
+    (fun t z => C (alpha p.2 ((p.1 : ℝ) + t) z))
+    (fun t z => Cpi (reaction p.2 ((p.1 : ℝ) + t) z)) hρ.le
+    (maximalRegularityDuhamelVectorField
+      (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) (ι := Fin n)
+      (g := g₀) (r := 0) (s := 0) (a := ((1 : ℕ) : ℝ)) hT 0 (gforce p)) (gforce p) hstate
+  have hq : C q = ccTensorToHs g₀ 0 ((1 : ℕ) : ℝ)
+      (scalarCc g₀ (AddCircle.laplacianPrincipalCoefficient g₀)) := by
+    exact
+      tensorHsCongrL_ccTensorToHs
+      g₀ _ _
+  rw [halpha, hreaction, hq] at hforce
+  exact hforce
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
 

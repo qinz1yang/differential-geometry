@@ -48,10 +48,10 @@ private lemma chooseCcThrough_eq (g : SmoothRiemannianMetric I M) (r a : ℕ) (x
 
 noncomputable def curryLastTwoTensorSlots (r t : ℕ) (x : M) (T : TensorRSSpace r (t + 2) I x) :
     TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TensorRSSpace r t I x :=
-  (((covariantSlotBundleEquiv (I := I) (M := M) r t x).symm :
+  (((covGradBundleEquiv (I := I) (M := M) r t x).symm :
       TensorRSSpace r (t + 1) I x ≃L[ℝ] (TangentSpace I x →L[ℝ] TensorRSSpace r t I x))
         : TensorRSSpace r (t + 1) I x →L[ℝ] (TangentSpace I x →L[ℝ] TensorRSSpace r t I x)).comp
-    ((covariantSlotBundleEquiv (I := I) (M := M) r (t + 1) x).symm T)
+    ((covGradBundleEquiv (I := I) (M := M) r (t + 1) x).symm T)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -64,14 +64,14 @@ lemma twoSlotPeel_eval (r t : ℕ) (x : M) (T : TensorRSSpace r (t + 2) I x)
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (t + 2) I x from T) D)
         (Fin.cons u (Fin.cons w m)) := by
   have h1 : curryLastTwoTensorSlots (I := I) (M := M) r t x T u w =
-      (covariantSlotBundleEquiv (I := I) (M := M) r t x).symm
-        ((covariantSlotBundleEquiv (I := I) (M := M) r (t + 1) x).symm T u) w := by
+      (covGradBundleEquiv (I := I) (M := M) r t x).symm
+        ((covGradBundleEquiv (I := I) (M := M) r (t + 1) x).symm T u) w := by
     rw [curryLastTwoTensorSlots, ContinuousLinearMap.comp_apply]
     rfl
   rw [h1]
-  rw [covariantSlotBundleEquiv_symm_apply_eval (I := I) (M := M) r t x
-    ((covariantSlotBundleEquiv (I := I) (M := M) r (t + 1) x).symm T u) w D m]
-  exact covariantSlotBundleEquiv_symm_apply_eval (I := I) (M := M) r (t + 1) x T u D (Fin.cons w m)
+  rw [covGradBundleEquiv_symm_apply_eval (I := I) (M := M) r t x
+    ((covGradBundleEquiv (I := I) (M := M) r (t + 1) x).symm T u) w D m]
+  exact covGradBundleEquiv_symm_apply_eval (I := I) (M := M) r (t + 1) x T u D (Fin.cons w m)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -80,7 +80,7 @@ lemma twoSlotPeel_add (r t : ℕ) (x : M) (T T' : TensorRSSpace r (t + 2) I x) :
       curryLastTwoTensorSlots (I := I) (M := M) r t x T + curryLastTwoTensorSlots (I := I) (M := M)
         r t x T' := by
   rw [curryLastTwoTensorSlots, curryLastTwoTensorSlots, curryLastTwoTensorSlots,
-    map_add ((covariantSlotBundleEquiv (I := I) (M := M) r (t + 1) x).symm) T T',
+    map_add ((covGradBundleEquiv (I := I) (M := M) r (t + 1) x).symm) T T',
     ContinuousLinearMap.comp_add]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -89,7 +89,7 @@ lemma twoSlotPeel_smul (r t : ℕ) (x : M) (c : ℝ) (T : TensorRSSpace r (t + 2
     curryLastTwoTensorSlots (I := I) (M := M) r t x (c • T) =
       c • curryLastTwoTensorSlots (I := I) (M := M) r t x T := by
   rw [curryLastTwoTensorSlots, curryLastTwoTensorSlots,
-    map_smul ((covariantSlotBundleEquiv (I := I) (M := M) r (t + 1) x).symm) c T,
+    map_smul ((covGradBundleEquiv (I := I) (M := M) r (t + 1) x).symm) c T,
     ContinuousLinearMap.comp_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -183,7 +183,7 @@ private lemma tangentBilinFlip_smul {r t : ℕ} {x : M} (c : ℝ)
 noncomputable def swapTwoCurryFib (r t : ℕ) (x : M)
     (T : TensorRSSpace r (t + 2) I x) :
     TangentSpace I x →L[ℝ] TensorRSSpace r (t + 1) I x :=
-  (((covariantSlotBundleEquiv (I := I) (M := M) r t x) :
+  (((covGradBundleEquiv (I := I) (M := M) r t x) :
       (TangentSpace I x →L[ℝ] TensorRSSpace r t I x) ≃L[ℝ] TensorRSSpace r (t + 1) I x) :
         (TangentSpace I x →L[ℝ] TensorRSSpace r t I x) →L[ℝ]
           TensorRSSpace r (t + 1) I x).comp
@@ -195,7 +195,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 lemma swapTwoCurryFib_apply (r t : ℕ) (x : M)
     (T : TensorRSSpace r (t + 2) I x) (v : TangentSpace I x) :
     swapTwoCurryFib (I := I) (M := M) r t x T v =
-      covariantSlotBundleEquiv (I := I) (M := M) r t x
+      covGradBundleEquiv (I := I) (M := M) r t x
         (tangentBilinFlip (I := I) (M := M)
           (curryLastTwoTensorSlots (I := I) (M := M) r t x T) v) := rfl
 
@@ -206,23 +206,23 @@ noncomputable def swapTwoFib (r t : ℕ) (x : M) :
   haveI : T2Space (TensorRSSpace r (t + 2) I x) := tensorRSSpaceT2 (I := I) (M := M)
   LinearMap.toContinuousLinearMap
     { toFun := fun T =>
-        covariantSlotBundleEquiv (I := I) (M := M) r (t + 1) x
+        covGradBundleEquiv (I := I) (M := M) r (t + 1) x
           (swapTwoCurryFib (I := I) (M := M) r t x T)
       map_add' := fun T T' => by
         rw [swapTwoCurryFib, swapTwoCurryFib, swapTwoCurryFib,
           twoSlotPeel_add, tangentBilinFlip_add, ContinuousLinearMap.comp_add,
-          map_add (covariantSlotBundleEquiv (I := I) (M := M) r (t + 1) x)]
+          map_add (covGradBundleEquiv (I := I) (M := M) r (t + 1) x)]
       map_smul' := fun c T => by
         rw [swapTwoCurryFib, swapTwoCurryFib,
           twoSlotPeel_smul, tangentBilinFlip_smul, ContinuousLinearMap.comp_smul,
-          map_smul (covariantSlotBundleEquiv (I := I) (M := M) r (t + 1) x)]
+          map_smul (covGradBundleEquiv (I := I) (M := M) r (t + 1) x)]
         rfl }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma swapTwoFib_apply (r t : ℕ) (x : M) (T : TensorRSSpace r (t + 2) I x) :
     swapTwoFib (I := I) (M := M) r t x T =
-      covariantSlotBundleEquiv (I := I) (M := M) r (t + 1) x
+      covGradBundleEquiv (I := I) (M := M) r (t + 1) x
         (swapTwoCurryFib (I := I) (M := M) r t x T) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -236,15 +236,15 @@ lemma swapTwoFib_eval (r t : ℕ) (x : M) (T : TensorRSSpace r (t + 2) I x)
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (t + 2) I x from T) D)
         (Fin.cons b (Fin.cons a m)) := by
   rw [swapTwoFib_apply]
-  rw [covariantSlotBundleEquiv_apply_eval (I := I) (M := M) r (t + 1) x _ D
+  rw [covGradBundleEquiv_apply_eval (I := I) (M := M) r (t + 1) x _ D
     (Fin.cons a (Fin.cons b m))]
   simp only [Fin.cons_zero]
   rw [vecTail_cons a (Fin.cons b m)]
   rw [show swapTwoCurryFib (I := I) (M := M) r t x T a =
-    covariantSlotBundleEquiv (I := I) (M := M) r t x
+    covGradBundleEquiv (I := I) (M := M) r t x
       (tangentBilinFlip (I := I) (M := M) (curryLastTwoTensorSlots (I := I) (M := M) r t x T) a)
     from rfl]
-  rw [covariantSlotBundleEquiv_apply_eval (I := I) (M := M) r t x _ D (Fin.cons b m)]
+  rw [covGradBundleEquiv_apply_eval (I := I) (M := M) r t x _ D (Fin.cons b m)]
   simp only [Fin.cons_zero]
   rw [vecTail_cons b m]
   rw [tangentBilinFlip_apply]

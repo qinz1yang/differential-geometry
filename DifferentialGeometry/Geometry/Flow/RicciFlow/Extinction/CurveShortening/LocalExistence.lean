@@ -1,7 +1,7 @@
 import Mathlib.Topology.UniformSpace.CompactConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Loops
-import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import Mathlib.Topology.Algebra.Group.Quotient
 import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries
 
@@ -9,6 +9,7 @@ noncomputable section
 open Bundle Manifold Set Filter
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology (ContinuousFreeLoop)
 
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
@@ -24,6 +25,13 @@ structure SmoothImmersion where
   immersed : ∀ x : ℝ,
     mfderiv 𝓘(ℝ, ℝ) I (fun y : ℝ => map (y : AddCircle (1 : ℝ))) x (1 : ℝ) ≠ 0
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+theorem CurveMap.smooth_slice (c : CurveMap M) {J : Set ℝ}
+    (hc : c.SmoothOn (I := I) J) {t : ℝ} (ht : t ∈ J) :
+    ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun x => c.lift x t) := by
+  have hp : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ × ℝ) ∞ (fun x : ℝ => (x, t)) :=
+    (contDiff_id.prodMk contDiff_const).contMDiff
+  exact contMDiffOn_univ.mp (hc.comp hp.contMDiffOn (fun _ _ => ⟨mem_univ _, ht⟩))
 
 def SmoothImmersion.slice (c : CurveMap M) {J : Set ℝ}
     (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
@@ -250,7 +258,7 @@ theorem cylinderJetTopology_le {N : ℕ} (s u : ℝ)
   iInf_le (cylinderJetFamily s u) ⟨N, e⟩
 
 def continuousFreeLoopOfImmersion (d : SmoothImmersion (I := I) (M := M)) :
-    DifferentialGeometry.Topology.freeLoop M :=
+    ContinuousFreeLoop M :=
   ⟨d.map, ⟨fun s hs => by
     have hq : Topology.IsCoinducing (fun x : ℝ => (x : AddCircle (1 : ℝ))) :=
       (QuotientAddGroup.isQuotientMap_mk (AddSubgroup.zmultiples (1 : ℝ))).isCoinducing

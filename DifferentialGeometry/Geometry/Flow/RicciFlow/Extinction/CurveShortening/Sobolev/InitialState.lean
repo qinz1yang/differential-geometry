@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleShiftedCoefficients
-import DifferentialGeometry.Geometry.Flow.CurveShortening.Parametric.Naturality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParametricEquationNaturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.TimeTranslation
 import DifferentialGeometry.Geometry.Metric.Family.TimeShift
-import DifferentialGeometry.Geometry.Flow.CurveShortening.Parametric.Retraction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicReconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ChartEquation
 import DifferentialGeometry.Geometry.Metric.Retraction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.PullbackMetric

@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GoodPointDerivatives
 import DifferentialGeometry.Topology.Manifold.StereographicChart
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
 import Mathlib.Geometry.Manifold.Instances.Sphere

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Ricci.PointwiseLowerBound
+import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciPointwise
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Estimate.QuadraticForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Defs
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerMassClassification
-import DifferentialGeometry.Geometry.Metric.Product.Curvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RiemannianProduct
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderDiagonalQuotientVolume
-import DifferentialGeometry.Geometry.Metric.ProjectiveSpace.RoundMetric
+import DifferentialGeometry.Geometry.Metric.ProjectiveSpace
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.TotalArea
 import DifferentialGeometry.Topology.ProjectiveSpace.Manifold
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling

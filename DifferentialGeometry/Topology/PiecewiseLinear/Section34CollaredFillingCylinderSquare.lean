@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CollaredFillingCylinder
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Crossing.PolygonalModel
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ThreeCrossingModel
 
 open Set
 

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Reparametrization
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow
 import DifferentialGeometry.Bundle.TangentSpace
-import DifferentialGeometry.Geometry.Variation.Field.ChartConstruction
+import DifferentialGeometry.Geometry.Comparison.Variation.Field.ChartConstruction
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator

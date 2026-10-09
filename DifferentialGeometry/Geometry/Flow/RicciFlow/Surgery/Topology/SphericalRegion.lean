@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.VanKampen.SmoothSphereSeparation
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition
-import DifferentialGeometry.Topology.Connected.Separation.DisjointClosures
-import DifferentialGeometry.Topology.SphereSeparation.SmoothClosure.Charts
+import DifferentialGeometry.Topology.SphereSeparation.SideClosureDisjoint
+import DifferentialGeometry.Topology.SphereSeparation.HalfSpaceClosure
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 
 

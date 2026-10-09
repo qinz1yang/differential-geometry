@@ -25,8 +25,8 @@ def ClassWidthDeformationFrontier (B : RicciBackground (I := I) (M := Q) D a b)
     ∀ ell : ℝ, 0 < ell →
       ∃ deformed : C(Icc a b, RegularFamily (I := I) (Q := Q) (Sphere 2)),
         (∀ t : Icc a b, HasContinuousSmoothLoopJets e (deformed t) ∧
-          DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
-            DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
+          FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
         ∀ p : Sphere 2,
           loopLength (B.family.metric b)
             (((deformed ⟨b, B.lt.le, le_rfl⟩) p).1.toContinuousLoop) < ell ∨

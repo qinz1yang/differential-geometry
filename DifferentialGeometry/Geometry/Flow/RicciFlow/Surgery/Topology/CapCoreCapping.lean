@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Uncapping.LocalDiffeomorphism
+import DifferentialGeometry.Topology.ThreeManifold.SmoothUncapping
 import DifferentialGeometry.Topology.Manifold.ClosedBall.Extension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCoverClassification
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph
@@ -42,11 +42,11 @@ theorem nonempty_capCore_image_coreInclusion
   exact cap.image_of_partialDiffeomorph F (hK.trans hFs)
 
 
-theorem isStandardConnectedSum_component_of_capCore_union_cap
+theorem isPoincareStandard_component_of_capCore_union_cap
     {K : Set N.Carrier} (cap : CapCore K) (b : T.Boundary)
     (c : ConnectedComponents N.Carrier)
     (hcover : K ∪ range (C.cap b) = N.componentSet c) :
-    isStandardConnectedSum (N.component c).Carrier := by
+    isPoincareStandard (N.component c).Carrier := by
   let U := N.componentOpen c
   have hKU : K ⊆ U := by
     intro x hx
@@ -86,17 +86,17 @@ theorem isStandardConnectedSum_component_of_capCore_union_cap
     · exact Or.inr hy
     · exact Or.inl ⟨x, Subtype.ext hx⟩
   obtain ⟨W⟩ := nonempty_positiveComponent_of_ball_cap_cover B hB capU hcov
-  exact isStandardConnectedSum_of_positiveComponent W
+  exact isPoincareStandard_of_positiveComponent W
 
 
-theorem isStandardConnectedSum_component_of_capCore_and_cap_cover
+theorem isPoincareStandard_component_of_capCore_and_cap_cover
     {K : Set M.Carrier} (cap : CapCore K) (hK : K ⊆ T.core)
     (b : T.Boundary) (c : ConnectedComponents N.Carrier)
     (hcover : (C.coreInclusion '' (Subtype.val ⁻¹' K : Set T.core)) ∪
       range (C.cap b) = N.componentSet c) :
-    isStandardConnectedSum (N.component c).Carrier := by
+    isPoincareStandard (N.component c).Carrier := by
   obtain ⟨capA⟩ := C.nonempty_capCore_image_coreInclusion cap hK
-  exact C.isStandardConnectedSum_component_of_capCore_union_cap capA b c hcover
+  exact C.isPoincareStandard_component_of_capCore_union_cap capA b c hcover
 
 
 theorem exists_cap_partialDiffeomorph (b : T.Boundary) :

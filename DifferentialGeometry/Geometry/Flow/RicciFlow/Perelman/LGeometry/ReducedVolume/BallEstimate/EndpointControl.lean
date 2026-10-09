@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Estimate.QuadraticForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.UniformEquivalence
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
 import DifferentialGeometry.Topology.FirstExit
 

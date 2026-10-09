@@ -1,6 +1,5 @@
 import Mathlib.Topology.Separation.Hausdorff
 import Mathlib.Topology.Connected.Basic
-import Mathlib.Topology.Instances.Real.Lemmas
 
 open Set
 
@@ -109,65 +108,3 @@ theorem Continuous.isPreconnected_le_of_isPreconnected_lt {X α : Type*}
     IsPreconnected {x | f x ≤ c} := by
   exact Continuous.isPreconnected_ge_of_isPreconnected_gt (α := OrderDual α)
     (f := f) (b := b) (c := c) hf hcb hb (fun t ht => hc t ⟨ht.2, ht.1⟩)
-
-open Topology
-
-namespace DifferentialGeometry.Topology
-
-variable {X ι : Type*} [TopologicalSpace X] [T2Space X]
-
-theorem isPreconnected_iInter_of_directed_isCompact [Nonempty ι] (C : ι → Set X)
-    (hdir : Directed (· ⊇ ·) C) (hcompact : ∀ i, IsCompact (C i))
-    (hconn : ∀ i, IsPreconnected (C i)) : IsPreconnected (⋂ i, C i) := by
-  obtain ⟨i₀⟩ := ‹Nonempty ι›
-  exact (hcompact i₀).isPreconnected_iInter_of_directed
-    (fun i => (hcompact i).isClosed) hdir hconn
-
-theorem isPreconnected_inter_le_of_isCompact_of_forall_inter_lt
-    {S : Set X} (hS : IsCompact S) {f : X → ℝ} (hf : ContinuousOn f S) (r : ℝ)
-    (hconn : ∀ t, r < t → IsPreconnected (S ∩ {x | f x < t})) :
-    IsPreconnected (S ∩ {x | f x ≤ r}) := by
-  let C := fun t : Ioi r => closure (S ∩ {x | f x < t})
-  have hnonempty : Nonempty (Ioi r) := ⟨⟨r + 1, by change r < r + 1; linarith⟩⟩
-  let _ := hnonempty
-  have hsub (t : Ioi r) : C t ⊆ S ∩ {x | f x ≤ t} :=
-    closure_minimal (fun _ hx => ⟨hx.1, le_of_lt (show f _ < t from hx.2)⟩)
-      (hf.preimage_isClosed_of_isClosed hS.isClosed isClosed_Iic)
-  have heq : (⋂ t, C t) = S ∩ {x | f x ≤ r} := by
-    apply Subset.antisymm
-    · intro x hx
-      refine ⟨(hsub ⟨r + 1, by change r < r + 1; linarith⟩ (mem_iInter.mp hx _)).1, ?_⟩
-      change f x ≤ r
-      apply le_of_forall_gt_imp_ge_of_dense
-      intro t ht
-      exact (hsub ⟨t, ht⟩ (mem_iInter.mp hx _)).2
-    · intro x hx
-      exact mem_iInter.mpr fun t => subset_closure
-        ⟨hx.1, lt_of_le_of_lt (show f x ≤ r from hx.2) t.2⟩
-  rw [← heq]
-  apply isPreconnected_iInter_of_directed_isCompact C
-  · intro s t
-    refine ⟨⟨min s t, (show r < min (s : ℝ) (t : ℝ) from lt_min (show r < s from s.2) (show r < t
-        from t.2))⟩, ?_, ?_⟩
-    · exact closure_mono (fun _ hx => ⟨hx.1, lt_of_lt_of_le (show f _ < min s t from hx.2)
-        (min_le_left _ _)⟩)
-    · exact closure_mono (fun _ hx => ⟨hx.1, lt_of_lt_of_le (show f _ < min s t from hx.2)
-        (min_le_right _ _)⟩)
-  · intro t
-    exact hS.of_isClosed_subset isClosed_closure ((hsub t).trans inter_subset_left)
-  · intro t
-    exact (hconn t t.2).closure
-
-theorem isPreconnected_inter_ge_of_isCompact_of_forall_inter_gt
-    {S : Set X} (hS : IsCompact S) {f : X → ℝ} (hf : ContinuousOn f S) (r : ℝ)
-    (hconn : ∀ t, t < r → IsPreconnected (S ∩ {x | t < f x})) :
-    IsPreconnected (S ∩ {x | r ≤ f x}) := by
-  have h := isPreconnected_inter_le_of_isCompact_of_forall_inter_lt hS hf.neg (-r) (by
-    intro t ht
-    have ht' : -t < r := by linarith
-    change IsPreconnected (S ∩ {x | -f x < t})
-    simpa only [neg_lt] using hconn (-t) ht')
-  change IsPreconnected (S ∩ {x | -f x ≤ -r}) at h
-  simpa only [neg_le_neg_iff] using h
-
-end DifferentialGeometry.Topology

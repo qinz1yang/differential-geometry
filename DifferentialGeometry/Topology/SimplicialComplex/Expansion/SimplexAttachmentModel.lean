@@ -6,12 +6,13 @@ open Set _root_.Geometry
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E F : Type*} [DecidableEq E]
   [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 
-omit [DecidableEq E] [NormedAddCommGroup E] [InnerProductSpace ℝ E] [NormedAddCommGroup F] [InnerProductSpace ℝ F] in
+omit [DecidableEq E] in
 theorem range_subtype_comp (V : Finset E) (f : E → F) :
     range (fun i : V => f i.1) = f '' (V : Set E) := by
   classical

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.BoundedGeometry
 import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 import DifferentialGeometry.Topology.Exhaustion
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

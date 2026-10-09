@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CylinderReferenceCopy
-import DifferentialGeometry.Geometry.Metric.StandardCap.CylinderCharts
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.GrowingInitialCylinderCharts
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Atlas
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Basic

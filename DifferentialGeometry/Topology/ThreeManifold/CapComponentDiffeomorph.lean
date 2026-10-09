@@ -1,9 +1,9 @@
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallAllSeam
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.ComponentQuotient
+import DifferentialGeometry.Topology.ThreeManifold.CapComponentQuotient
 import DifferentialGeometry.Topology.ThreeManifold.UncappingSmoothStructure
 import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.Interior
 import DifferentialGeometry.Topology.Manifold.Diffeomorph.Sigma
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Uncapping.ProjectionInterior
+import DifferentialGeometry.Topology.ThreeManifold.UncappingProjectionInterior
 
 noncomputable section
 open Set Metric Function

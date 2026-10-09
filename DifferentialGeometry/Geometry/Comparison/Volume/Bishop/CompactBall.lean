@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Count
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Exponential
 import DifferentialGeometry.Geometry.Exponential.Radial

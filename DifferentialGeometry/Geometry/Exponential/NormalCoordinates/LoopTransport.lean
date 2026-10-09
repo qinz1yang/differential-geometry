@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.PathLifting
 import DifferentialGeometry.Geometry.Exponential.RadialPath
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import Mathlib.Topology.Homotopy.Lifting
 
 noncomputable section

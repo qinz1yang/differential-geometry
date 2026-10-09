@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Metric.Comparison.LocalBallContainment
+import DifferentialGeometry.Geometry.Metric.LocalMetricBallContainment
 import DifferentialGeometry.Geometry.Metric.Distance.Boundary
-import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
+import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingModelCoverage
@@ -17,13 +17,10 @@ open scoped Manifold ContDiff Topology ENNReal NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_compact_containing_spatial_neck_windows_of_pinching
+private theorem TerminalLimitMetric.exists_compact_containing_spatial_neck_windows_of_pinching
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
       |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2)
@@ -78,7 +75,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
     exact hs.trans (mul_le_mul_of_nonneg_left
       ((hU v hv).trans (mul_le_mul_of_nonneg_left hR hC2)) (by positivity))
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_compact_containing_spatial_neck_windows
+theorem TerminalLimitMetric.exists_compact_containing_spatial_neck_windows
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
       |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2)
@@ -95,7 +92,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       G.lt G.flow G.equation (by simp [ThreeSpace])
   exact L.exists_compact_containing_spatial_neck_windows_of_pinching hq hbound hPhi hpinch x heps hC2
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_compact_containing_canonical_domains_and_neck_windows
+theorem TerminalLimitMetric.exists_compact_containing_canonical_domains_and_neck_windows
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
       |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2)
@@ -115,7 +112,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   have h := hcapture t ht W.domain.carrier (fun y hy => (W.scalar_bounds y hy).2)
   exact ⟨h.1, fun v hv nk => h.2 v hv nk.toSpatialNeck⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_compact_containing_cap_neck_windows
+theorem TerminalLimitMetric.exists_compact_containing_cap_neck_windows
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
       |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2)
@@ -147,7 +144,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact ⟨v, nk, hmap, hv, union_subset (hcapture t ht W).1
     ((hcapture t ht W).2 v hvW nk)⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_uniform_scalar_comparison_on_cap_neck_windows
+theorem TerminalLimitMetric.exists_uniform_scalar_comparison_on_cap_neck_windows
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
       |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2)
@@ -184,7 +181,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   have hzy : z = y := Subtype.ext he
   exact hclose (⟨(le_max_right _ _).trans_lt ht.1, ht.2⟩) y (hzy ▸ hz)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_canonical_cap_neck_scalar_comparison
+theorem TerminalLimitMetric.exists_canonical_cap_neck_scalar_comparison
     (L : G.TerminalLimitMetric) :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
       ∃ C1 C2 q : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ 0 < q ∧
@@ -252,7 +249,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       G.flow.scalar t y.val ≤ (1 + 4323 * eps) * G.flow.scalar t v at hs
     constructor <;> linarith [hs.1, hs.2, he.1, he.2]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_ball_subset_cap_core_of_compact_capture
+theorem TerminalLimitMetric.eventually_ball_subset_cap_core_of_compact_capture
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps : ℝ} {U : ℕ → Set P.Carrier}
@@ -324,7 +321,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact hy
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_ball_subset_canonical_cap_core
+theorem TerminalLimitMetric.eventually_ball_subset_canonical_cap_core
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps C1 C2 : ℝ}

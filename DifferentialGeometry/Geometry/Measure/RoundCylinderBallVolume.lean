@@ -3,12 +3,12 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.CompactBall
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Metric.Euclidean
 import DifferentialGeometry.Geometry.Curvature.RoundCylinder
-import DifferentialGeometry.Geometry.Metric.Cylinder.Rotation
+import DifferentialGeometry.Geometry.Metric.CylinderRotation
 import DifferentialGeometry.Geometry.Metric.Pullback.Completeness
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Analysis.Integration.Measure.Pullback
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
 noncomputable section
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.GraphGluing.PairedBall.PuncturedAtlas
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallPuncturedAtlas
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.DirectSmooth
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Pullback
 import DifferentialGeometry.Topology.Manifold.Sigma

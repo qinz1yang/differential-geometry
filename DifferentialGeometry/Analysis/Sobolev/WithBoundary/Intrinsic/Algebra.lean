@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Embedding.MorreyManifold
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.FirstOrderBound
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuant
 
 
 noncomputable section

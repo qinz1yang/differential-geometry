@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.UnitLaw
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Composition
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Comparison
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationComposition
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationComparison
 
 set_option autoImplicit false
 

@@ -84,7 +84,7 @@ theorem flow_slice_smooth [CompleteSpace E] [I.Boundaryless]
       (fun q : ℝ × M =>
         (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)) := by
     exact hv.comp contMDiff_snd
-  have hXauto : autonomizedFieldJointC1 (I := I) X :=
+  have hXauto : AutonomizedFieldJointC1 (I := I) X :=
     autonomizedFieldJointC1_of_contMDiff X hX
   intro target htarget x hx
   let K : Set M := F x '' Icc a b

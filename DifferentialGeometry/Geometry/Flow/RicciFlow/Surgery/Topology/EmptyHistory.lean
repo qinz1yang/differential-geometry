@@ -10,13 +10,11 @@ universe u
 
 namespace OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.metric_eq_of_isEmpty (P : OrientedThreeStage.{u}) [IsEmpty P.Carrier]
+theorem metric_eq_of_isEmpty (P : OrientedThreeStage.{u}) [IsEmpty P.Carrier]
     (g h : P.Metric) : g = h :=
   SmoothRiemannianMetric.ext_inner fun x => isEmptyElim x
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.emptyClosedSlab (P : OrientedThreeStage.{u}) [IsEmpty P.Carrier]
+def emptyClosedSlab (P : OrientedThreeStage.{u}) [IsEmpty P.Carrier]
     (g : P.Metric) {a b : ℝ} (hab : a < b) : P.ClosedSlab a b where
   lt := hab
   flow := ⟨⟨fun _ => g⟩⟩

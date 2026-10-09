@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPointedFlowLimitCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckScalarBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalWitness
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Trace.TerminalScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TerminalScalar
 import DifferentialGeometry.Geometry.Curvature.ScalarControlsRm
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Nonnegative
 

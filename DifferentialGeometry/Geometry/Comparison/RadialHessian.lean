@@ -338,7 +338,7 @@ private theorem branchHess_symm
   obtain ⟨U, hUopen, hqU, hrU⟩ :=
     branchRadius_open (I := I) B hsrc hv
   obtain ⟨rSmooth, hrSmooth, hr_eq⟩ :=
-    DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hUopen hqU hrU
+    DifferentialGeometry.exists_smooth_germ (I := I) hUopen hqU hrU
   have hcongr := hessFun_congr (I := I) g hr_eq
   have hsymm := hessFun_symm_of_boundaryless (I := I) g hrSmooth q Y Z
   change hessFun (I := I) g (branchRadius (I := I) g B) q Y Z =

@@ -30,7 +30,7 @@ theorem areaIntegratingFactor_eq_exp_integral_div (G : SolutionFamily (I := I) (
   ring
 
 def LoopFamilyWindowComparison (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) : Prop :=
+    (γ : ℝ → ContinuousFreeLoop M) : Prop :=
   ∀ s ∈ Icc a b, ∀ u ∈ Icc s b,
     areaIntegratingFactor B.family s u * loopFamilyLeastArea B.family.metric γ u ≤
       loopFamilyLeastArea B.family.metric γ s +
@@ -39,10 +39,10 @@ def LoopFamilyWindowComparison (B : RicciBackground (I := I) (M := M) D a b)
 
 omit [SigmaCompactSpace M] in
 theorem rfs_csf_immersed_area_of_window (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hwindow : LoopFamilyWindowComparison (I := I) (M := M) B γ) :
     ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
       (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
@@ -69,10 +69,10 @@ theorem rfs_csf_immersed_area_of_window (B : RicciBackground (I := I) (M := M) D
 
 omit [SigmaCompactSpace M] in
 theorem rfs_csf_immersed_area_iff_window (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) :
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t)) :
     (ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
         LoopFamilyWindowComparison (I := I) (M := M) B γ ∧
         LoopFamilyLeastAreaSlopeBound (I := I) (M := M) B γ) ↔
@@ -91,10 +91,10 @@ theorem rfs_csf_immersed_area_iff_window (B : RicciBackground (I := I) (M := M) 
 
 omit [SigmaCompactSpace M] in
 theorem rfs_csf_embedded_area_of_window (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hwindow : LoopFamilyWindowComparison (I := I) (M := M) B γ) :
     ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
       (loopFamilyLeastArea B.family.metric γ (t + h) -
@@ -105,7 +105,7 @@ theorem rfs_csf_embedded_area_of_window (B : RicciBackground (I := I) (M := M) D
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_embedded_area_of_immersed_area_conclusion
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (h : ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
       (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
         areaIntegratingFactor B.family s t * loopFamilyLeastArea B.family.metric γ t ≤
@@ -126,10 +126,10 @@ theorem rfs_csf_embedded_area_of_immersed_area_conclusion
 
 omit [SigmaCompactSpace M] in
 theorem two_pi_add_half_scalarMinimum_mul_le_areaError_of_localMin
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hwindow : LoopFamilyWindowComparison (I := I) (M := M) B γ)
     {t : ℝ} (ht : t ∈ Ioo a b)
     (hmin : ∀ s ∈ Ioo a b,
@@ -155,7 +155,7 @@ theorem two_pi_add_half_scalarMinimum_mul_le_areaError_of_localMin
 
 omit hNonempty [SigmaCompactSpace M] in
 theorem loopFamilyLeastArea_integral_decay_of_window_comparison
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hwindow : LoopFamilyWindowComparison (I := I) (M := M) B γ)
@@ -207,10 +207,10 @@ theorem loopFamilyLeastArea_integral_decay_of_window_comparison
 
 omit hNonempty [SigmaCompactSpace M] in
 theorem loopFamilyLeastArea_le_of_window_comparison_of_scalarMinimum_nonneg
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hwindow : LoopFamilyWindowComparison (I := I) (M := M) B γ)
     (hforce : ∀ v ∈ Icc a b,
       -2 * Real.pi + (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v ≤ 0)
@@ -235,7 +235,7 @@ theorem loopFamilyLeastArea_le_of_window_comparison_of_scalarMinimum_nonneg
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] hBoundary hT2 hCompact
   hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_boundary_isotopy_of_constantLoopFamily_identity
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (hconst : ∀ t t' : ℝ, γ t = γ t') (t₀ : ℝ) :
+    (γ : ℝ → ContinuousFreeLoop M) (hconst : ∀ t t' : ℝ, γ t = γ t') (t₀ : ℝ) :
     ∃ ε > 0, ∃ Φ : ℝ → Diffeomorph I I M M ∞,
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) I ∞ (fun p : M × ℝ => Φ p.2 p.1)
         (univ ×ˢ (Icc a b ∩ Ioo (t₀ - ε) (t₀ + ε))) ∧
@@ -248,14 +248,14 @@ theorem rfs_csf_boundary_isotopy_of_constantLoopFamily_identity
   · intro p
     rfl
   · intro t _ z
-    exact congrArg (fun f : DifferentialGeometry.Topology.freeLoop M => f z) (hconst t₀ t)
+    exact congrArg (fun f : ContinuousFreeLoop M => f z) (hconst t₀ t)
 
 omit [SigmaCompactSpace M] in
 theorem not_loopFamilyWindowComparison_of_static_family
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hstatic : ∀ t, B.family.metric t = B.family.metric a)
     (hfixed : ∀ t, γ t = γ a)
     (hErr : (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) a = 0)

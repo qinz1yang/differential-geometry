@@ -1,13 +1,13 @@
 import Mathlib.MeasureTheory.Integral.Lebesgue.Map
 import DifferentialGeometry.Geometry.Metric.Distance.LocalPullCompactness
-import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
+import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
 import DifferentialGeometry.Geometry.Measure.OpenSubtypeVolume
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 
 import DifferentialGeometry.Geometry.Metric.DistancePullback
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
 noncomputable section
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Manifold.ModelChangeRoundtrip
-import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
+import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.ModelChange
 
 

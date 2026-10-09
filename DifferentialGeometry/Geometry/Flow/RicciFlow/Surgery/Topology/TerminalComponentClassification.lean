@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCanonicalCoverage
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Existence.CompactClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactCanonicalClassification
 
 noncomputable section
 open Set
@@ -11,15 +11,12 @@ open scoped Manifold ContDiff NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-attribute [local instance] DifferentialGeometry.Topology.ClosedOrientedManifold.component_compact
+attribute [local instance] OrientedThreeStage.component_compact
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_late_component_canonical_neighborhoods_with_cap_neck_charts
+theorem TerminalLimitMetric.exists_late_component_canonical_neighborhoods_with_cap_neck_charts
     (g : G.TerminalLimitMetric) {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11) :
     ∃ C L : ℝ, 1 ≤ C ∧ 0 < L ∧
       ∀ c : ConnectedComponents P.Carrier,
@@ -51,12 +48,12 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     hcanonical c x t ⟨hd.1.trans ht.1.le, ht.2⟩ (hhigh t ht x.val x.property).le
   exact ⟨W, hchart⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_component_poincareStandard_threshold
+theorem TerminalLimitMetric.exists_component_poincareStandard_threshold
     (g : G.TerminalLimitMetric) :
     ∃ L : ℝ, 0 < L ∧ ∀ c : ConnectedComponents P.Carrier,
       (∀ x : G.terminalRegularOpen, ConnectedComponents.mk x.val = c →
         L < metricScalarAt g.metric x) →
-      isStandardConnectedSum (P.component c).Carrier := by
+      isPoincareStandard (P.toClosedOrientedManifold.component c).Carrier := by
   obtain ⟨eta, heta, hclass⟩ := exists_compact_canonical_poincareStandard_tolerance.{u}
   let eps := min eta (1 / 22)
   have heps : 0 < eps := lt_min heta (by norm_num)
@@ -68,11 +65,11 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   obtain ⟨d, hd, hW⟩ := hlate c hterminal
   obtain ⟨t, ht⟩ := exists_between hd.2
   obtain ⟨W, hchart⟩ := hW t ht
-  exact hclass eps (min_le_left _ _) (P.component c)
+  exact hclass eps (min_le_left _ _) (P.toClosedOrientedManifold.component c)
     (G.componentTimeShift c) C C (t - a) W hchart
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_component_poincareStandard_tolerance_of_spatial_neighborhoods :
+theorem exists_component_poincareStandard_tolerance_of_spatial_neighborhoods :
     ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
       ∀ (P : OrientedThreeStage.{u}) (a s : ℝ) (G : P.IncomingSlab a s)
         (g : G.TerminalLimitMetric) (q0 q R : ℝ) (C : ℝ≥0),
@@ -81,13 +78,13 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
         |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2) →
       ∀ c : ConnectedComponents P.Carrier,
       (∀ (t : ℝ), t ∈ Ioo a s →
-        ∀ x : (P.component c).Carrier, q < G.flow.scalar t x.val →
+        ∀ x : (P.toClosedOrientedManifold.component c).Carrier, q < G.flow.scalar t x.val →
         ¬ Nonempty (SpatialNeck ((G.flow.base.metric t).restrictOpen (P.componentOpen c)) eps x) →
-        Nonempty (PositiveComponent (M := (P.component c).Carrier) univ) ∨
+        Nonempty (PositiveComponent (M := (P.toClosedOrientedManifold.component c).Carrier) univ) ∨
         admitsConstantPositiveSectionalCurvature (I := ThreeModel)
-          (M := (P.component c).Carrier) ∨
-        ∃ (K : CompactDomain (P.component c).Carrier)
-          (v : (P.component c).Carrier)
+          (M := (P.toClosedOrientedManifold.component c).Carrier) ∨
+        ∃ (K : CompactDomain (P.toClosedOrientedManifold.component c).Carrier)
+          (v : (P.toClosedOrientedManifold.component c).Carrier)
           (nk : SpatialNeck ((G.flow.base.metric t).restrictOpen (P.componentOpen c)) eps v)
           (level : ℝ),
           0 < metricScalarAt ((G.flow.base.metric t).restrictOpen (P.componentOpen c)) x ∧
@@ -98,7 +95,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
               (P.componentOpen c)) x)) ⊆ interior K.carrier) →
       (∀ x : G.terminalRegularOpen, ConnectedComponents.mk x.val = c →
         R < metricScalarAt g.metric x) →
-      isStandardConnectedSum (P.component c).Carrier := by
+      isPoincareStandard (P.toClosedOrientedManifold.component c).Carrier := by
   obtain ⟨eta, heta, hclass⟩ := exists_compact_spatial_poincareStandard_tolerance.{u}
   refine ⟨eta, heta, ?_⟩
   intro eps heps P a s G g q0 q R C hq0 hqR hderiv c hspatial hterminal
@@ -109,12 +106,12 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (P.componentOpen_isClosed c) hqR hterminal
   obtain ⟨t, ht⟩ := exists_between hd.2
   have htime : t ∈ Ioo a s := ⟨hd.1.trans_lt ht.1, ht.2⟩
-  exact hclass eps heps (P.component c)
+  exact hclass eps heps (P.toClosedOrientedManifold.component c)
     ((G.flow.base.metric t).restrictOpen (P.componentOpen c))
     (fun x hx => hspatial t htime x (hhigh t ht x.val x.property) hx)
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_component_poincareStandard_tolerance_of_canonical_neighborhoods :
+theorem exists_component_poincareStandard_tolerance_of_canonical_neighborhoods :
     ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
       ∀ (P : OrientedThreeStage.{u}) (a s : ℝ) (G : P.IncomingSlab a s)
         (g : G.TerminalLimitMetric) (C1 C2 q R : ℝ),
@@ -126,7 +123,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       ∀ c : ConnectedComponents P.Carrier,
         (∀ x : G.terminalRegularOpen, ConnectedComponents.mk x.val = c →
           R < metricScalarAt g.metric x) →
-        isStandardConnectedSum (P.component c).Carrier := by
+        isPoincareStandard (P.toClosedOrientedManifold.component c).Carrier := by
   obtain ⟨eta, heta, hclass⟩ := exists_component_poincareStandard_tolerance_of_spatial_neighborhoods.{u}
   refine ⟨eta, heta, ?_⟩
   intro eps heps P a s G g C1 C2 q R hq hqR hcanonical Ctime hbound c hterminal
@@ -134,7 +131,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   intro t ht x hqx hx
   let U := P.componentOpen c
   let xU : U := ⟨x.val, x.property⟩
-  let _ : CompactSpace U := (P.component c).compact
+  let _ : CompactSpace U := (P.toClosedOrientedManifold.component c).compact
   let _ : SigmaCompactSpace U := inferInstance
   have hU : (U : Set P.Carrier) = connectedComponent (xU : P.Carrier) := by
     ext y
@@ -151,7 +148,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   · obtain ⟨z, hr⟩ := hr
     exact Or.inr (Or.inl
       (admitsConstantPositiveSectionalCurvature_of_roundComponent
-        (P.component c) hr.some))
+        (P.toClosedOrientedManifold.component c) hr.some))
   · exact Or.inr (Or.inr hc)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedVolumeNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Monotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ReducedVolumeMonotonicity
-import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NonnegativeCurvatureScalarNorm
 import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
 import Mathlib.MeasureTheory.Group.Integral
 
@@ -70,7 +70,7 @@ private theorem exists_rmNormSq_le_of_isAncientKappaSolution
     intro n c a b
     simpa only [SolutionFamily.rm04, metricRm04StandardAt_apply, metricRm04_apply] using
       hF.nonnegativeCurvatureOperator t htc z n c a b
-  have hsqrt := DifferentialGeometry.Geometry.Curvature.sqrt_metricRm_normSq_le_finrank_sq_mul_scalar (I := I) (F.S.base.metric t) z hop
+  have hsqrt := sqrt_metricRm_normSq_le_finrank_sq_mul_scalar (I := I) (F.S.base.metric t) z hop
   have hscalar : metricScalarAt (I := I) (F.S.base.metric t) z ≤ C := (hC t htc z).2
   have hn2 : 0 ≤ (Module.finrank ℝ E : ℝ) ^ 2 := sq_nonneg _
   have hs := hsqrt.trans (mul_le_mul_of_nonneg_left hscalar hn2)

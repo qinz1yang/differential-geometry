@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.Taylor
 import Mathlib.Analysis.Calculus.Deriv.Prod
-import DifferentialGeometry.Analysis.Integration.RadialIntegral.Smoothness
+import DifferentialGeometry.Analysis.Integration.RadialIntegralSmoothness
 
 noncomputable section
 

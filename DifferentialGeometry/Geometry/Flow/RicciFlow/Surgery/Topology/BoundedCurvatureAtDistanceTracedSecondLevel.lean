@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Estimates.CurvatureAtDistance.ChainBuffers
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceChainBuffers
 
 set_option autoImplicit false
 
@@ -23,7 +23,7 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingS
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.scaled_endpoint_scalar_eq {P : OrientedThreeStage.{u}}
+theorem OrientedThreeStage.ClosedSlab.scaled_endpoint_scalar_eq {P : OrientedThreeStage.{u}}
     {a s Q : ℝ} (A : P.ClosedSlab a s) (hQ : 0 < Q)
     (y : (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen) :
     metricScalarAt (scaleMetric Q hQ (A.endpointTerminalLimitMetric P).metric) y =
@@ -32,7 +32,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.s
     metricScalarAt_restrictOpen _ _ _
   rw [metricScalarAt_scaleMetric, h]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.scaled_endpoint_edist_eq {P : OrientedThreeStage.{u}}
+theorem OrientedThreeStage.ClosedSlab.scaled_endpoint_edist_eq {P : OrientedThreeStage.{u}}
     {a s Q : ℝ} (A : P.ClosedSlab a s) (hQ : 0 < Q)
     (y z : (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen) :
     riemannianEDistOf (scaleMetric Q hQ (A.endpointTerminalLimitMetric P).metric) y z =

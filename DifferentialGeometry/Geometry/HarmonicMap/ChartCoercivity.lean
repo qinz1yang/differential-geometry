@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Pullback.Chart
-import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSourceEllipticity
+import DifferentialGeometry.Geometry.Metric.CompactSourceEllipticity
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
 import DifferentialGeometry.Analysis.Convex.CoordinateBox
 import Mathlib.Analysis.Calculus.ContDiff.RCLike

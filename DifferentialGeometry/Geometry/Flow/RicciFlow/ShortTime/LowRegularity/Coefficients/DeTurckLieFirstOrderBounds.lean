@@ -703,7 +703,7 @@ private theorem sharp_eq_insert
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁)).toSection x) om =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g₀ g₁ x) om from rfl]
   rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g₀ g₁ x) om w]
@@ -779,7 +779,7 @@ private theorem insert_add
   rw [show ((A + B) x) = A x + B x from by
     rw [ContMDiffSection.coe_add]
     rfl]
-  rw [slotInsertEndomorphism_add_left, add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CollaredTraceSplit
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCappingInvariants
 
@@ -11,7 +16,9 @@ theorem IsCombinatorialManifoldWithBoundary.exists_separating_split_reducing_nul
     [d : DecidableEq E3] (X : Geometry.SimplicialComplex ℝ E3) [Finite X.faces]
     (hX : IsCombinatorialManifoldWithBoundary 2 X) (hXo : IsOrientable 2 X)
     {I H K R T O F : Set E3} (htrace : HasFiniteCollaredTrace X.space T)
-    (hT : IsPLTorus T) (hI : IsOpen I)
+    (hT : IsPLTorus T) (h303 : Moise303) (hI : IsOpen I) (hIc : IsConnected I)
+    (hHI : H ⊆ I) (hKI : K ⊆ I) (hHK : Disjoint H K)
+    (hH : IsClosed (((↑) : I → E3) ⁻¹' H)) (hK : IsClosed (((↑) : I → E3) ⁻¹' K))
     (hCI : R ∪ (T ∪ X.space) ⊆ I) (hC : IsSeparatorIn I (R ∪ (T ∪ X.space)) H K)
     (hO : IsOpen O) (hTO : T ⊆ O) (hOI : O ⊆ I) (hOHK : Disjoint O (H ∪ K))
     (hRO : Disjoint R O) (hFO : Disjoint F O)
@@ -35,7 +42,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_separating_split_reducing_nul
   let _ : DecidableEq E3 := fun a b => Classical.propDecidable (a = b)
   obtain ⟨L', hstate, hsep, hsubI, hprot, hout, hseams, hcount,
       Δ, r, f, hr, -, hmeet, hG, hf, hfix, -⟩ :=
-    htrace.exists_split_reducing_nullTraceCount_with_cap hT hI
+    htrace.exists_split_reducing_nullTraceCount_with_cap hT h303 hI hIc hHI hKI hHK hH hK
       hCI hC hO hTO hOI hOHK hRO hFO hnull
   obtain ⟨Q, hQfin, hQ, hQo, hQspace, hQb, hQχ⟩ :=
     hX.exists_surface_of_isPLHomeomorphOn_union_disk X hXo hr hmeet

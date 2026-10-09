@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CyclicBallMeridians
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.FaceCycles
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceCycle
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceSeams
 
 open Set Topology

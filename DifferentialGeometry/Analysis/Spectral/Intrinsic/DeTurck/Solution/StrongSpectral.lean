@@ -208,7 +208,7 @@ theorem smooth_paths_eq_of_strong_spectral_solutions
     (d₂ : StrongSpectralSolution (I := I) (M := M) (T := T) g₀ a Nfun hLip Phi₂)
     (hball₁ : ‖d₁.force‖ ≤ ρ) (hball₂ : ‖d₂.force‖ ≤ ρ) :
     ∀ t ∈ Icc (0 : ℝ) T, Phi₁ t = Phi₂ t := by
-  have huniq := strong_solution_unique_of_mixed_lipschitz (I := I) (M := M) g₀ a hLip hsingle
+  have huniq := deTurckStrong_unique (I := I) (M := M) g₀ a hLip hsingle
     hT hT1 hρ hsmall d₁.force d₂.force d₁.lowRegularity d₂.lowRegularity
       d₁.highRegularity d₂.highRegularity
     d₁.trace_zero d₂.trace_zero d₁.scale_link d₂.scale_link

@@ -5,8 +5,8 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.NirenbergEnergy
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.NirenbergEstimate
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationLocal
 import DifferentialGeometry.Analysis.Parabolic.Energy.TimeCutoff
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.CutoffLp
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.ProductMeasureLocalWeakLimit
+import DifferentialGeometry.Analysis.Sobolev.Tools.CutoffDiffQuotLp
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientProductWeakLimitLocal
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartDensityCutoff
 
 noncomputable section

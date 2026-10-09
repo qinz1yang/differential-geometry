@@ -1751,7 +1751,6 @@ theorem deTurck_lie_term_two_coefficient_sobolev_two_bound
       rw [← hH2sq]
       ring
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem app_h2_mul_lip
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ) :
@@ -1875,7 +1874,6 @@ private theorem lipOmega_tel
     operatorFieldComposition_sub_right, operatorFieldComposition_sub_left]
   module
 
-omit [NeZero (Module.finrank ℝ E)] in
 private theorem omega_pair
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -7974,7 +7972,6 @@ private theorem aaPK_ge3 (g : SmoothRiemannianMetric I M)
   unfold aaPK
   rcases hρ with rfl | rfl <;> linarith
 
-omit [NeZero (Module.finrank ℝ E)] in
 private theorem aaBlk_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :

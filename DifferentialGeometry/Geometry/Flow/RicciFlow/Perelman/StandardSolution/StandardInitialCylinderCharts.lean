@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Metric.StandardCap.CylinderCharts
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Defs
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.GrowingInitialCylinderCharts
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardSolution
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
 set_option autoImplicit false
 noncomputable section

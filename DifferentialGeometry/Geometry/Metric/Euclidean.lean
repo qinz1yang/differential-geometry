@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 
 set_option autoImplicit false

@@ -93,7 +93,7 @@ theorem covGrad_rawConnLap_toSection_eq_frame_sum_covariantTensor
     (covGrad (I := I) (M := M) g 0 s
         (rawTensorConnLapSmooth (I := I) g 0 s S)).toSection x =
       ∑ i : Fin (Module.finrank ℝ E),
-        covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+        covGradBundleEquiv (I := I) (M := M) 0 s x
           ((tensorCov (I := I) g 0 s).toFun
             (fun y : M => tensorSecondCovDeriv (I := I) g 0 s
               (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
@@ -117,7 +117,7 @@ theorem pointwiseTensorCurv_toSection_eq_frame_sum
         (tensorSecondCovDeriv (I := I) g 0 (s + 1)
             (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
             (fun y : M => (covGrad (I := I) (M := M) g 0 s S).toSection y) x -
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+          covGradBundleEquiv (I := I) (M := M) 0 s x
             ((tensorCov (I := I) g 0 s).toFun
               (fun y : M => tensorSecondCovDeriv (I := I) g 0 s
                 (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)

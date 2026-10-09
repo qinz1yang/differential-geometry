@@ -1,14 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Protection
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Precision
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
-import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
-import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
-import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscarded
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormCovering
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardComponentwise
@@ -53,7 +43,7 @@ theorem componentwiseConnectedSumStandardFactor_of_componentwisePositiveCurvatur
 
 theorem MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveCurvatureOrSphereProduct
     {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
-    (h : componentwisePositiveCurvatureOrSphereProduct E.discarded) :
+    (h : componentwisePositiveCurvatureOrSphereProduct E.discarded.toClosedOrientedManifold) :
     E.poincareStandardDiscarded :=
   MetricCutCapEvent.poincareStandardDiscarded_of_componentwiseConnectedSumStandardFactor E
     (componentwiseConnectedSumStandardFactor_of_componentwisePositiveCurvatureOrSphereProduct h)
@@ -64,7 +54,7 @@ theorem hasPoincareStandardDiscarded_of_componentwisePositiveCurvatureOrSpherePr
     {P : OrientedThreeStage.{u}} {g : P.Metric} (T : RetainedCoreObservationTower P g)
     (h : ∀ (n : ℕ) (j : Fin (T.history n).eventCount),
       componentwisePositiveCurvatureOrSphereProduct
-        ((T.history n).coreEvent j).toMetricCutCapEvent.discarded) :
+        ((T.history n).coreEvent j).toMetricCutCapEvent.discarded.toClosedOrientedManifold) :
     T.hasPoincareStandardDiscarded :=
   hasPoincareStandardDiscarded_of_componentwiseConnectedSumStandardFactor T
     fun n j =>
@@ -96,11 +86,12 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 theorem hasCoreCompatibleObservationTower_of_retainedCoreTower_positiveCurvature
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
-    (T : RetainedCoreObservationTower (M.toClosedOrientedManifold) g)
+    (T : RetainedCoreObservationTower (OrientedThreeStage.ofClosedOrientedManifold
+      M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing)
     (h : ∀ (n : ℕ) (j : Fin (T.history n).eventCount),
       componentwisePositiveCurvatureOrSphereProduct
-        ((T.history n).coreEvent j).toMetricCutCapEvent.discarded)
+        ((T.history n).coreEvent j).toMetricCutCapEvent.discarded.toClosedOrientedManifold)
     (hextinct : towerExtinct T.toObservationTower) :
     hasCoreCompatibleObservationTower M g :=
   hasCoreCompatibleObservationTower_of_retainedCoreTower_cutCap M g T hbfr
@@ -109,11 +100,12 @@ theorem hasCoreCompatibleObservationTower_of_retainedCoreTower_positiveCurvature
 theorem exists_poincare_controlled_extinction_of_retainedCoreTower_positiveCurvature
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
-    (T : RetainedCoreObservationTower (M.toClosedOrientedManifold) g)
+    (T : RetainedCoreObservationTower (OrientedThreeStage.ofClosedOrientedManifold
+      M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing)
     (h : ∀ (n : ℕ) (j : Fin (T.history n).eventCount),
       componentwisePositiveCurvatureOrSphereProduct
-        ((T.history n).coreEvent j).toMetricCutCapEvent.discarded)
+        ((T.history n).coreEvent j).toMetricCutCapEvent.discarded.toClosedOrientedManifold)
     (hextinct : towerExtinct T.toObservationTower) :
     Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) :=
   exists_poincare_controlled_extinction_of_retainedCoreTower_cutCap M g T hbfr

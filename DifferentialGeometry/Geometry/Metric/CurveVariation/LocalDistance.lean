@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.CurveVariation.Basic
-import DifferentialGeometry.Geometry.Metric.ChartDistance.Local
+import DifferentialGeometry.Geometry.Metric.LocalChartDistance
 
 set_option autoImplicit false
 

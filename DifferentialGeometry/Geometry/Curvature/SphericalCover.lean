@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.PositiveCover
 import DifferentialGeometry.Geometry.Curvature.Metric.Conditions
 import DifferentialGeometry.Topology.ThreeManifold.Closed
-import DifferentialGeometry.Topology.Covering.UniversalCover.LocalDiffeomorph
+import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
 import DifferentialGeometry.Topology.Covering.FiniteFundamentalGroup
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere

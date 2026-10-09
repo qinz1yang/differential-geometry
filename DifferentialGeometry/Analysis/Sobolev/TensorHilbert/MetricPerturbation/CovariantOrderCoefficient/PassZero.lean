@@ -243,12 +243,12 @@ theorem toModel_operatorFieldComposition_termSlotEndoPassZeroCc_eval (g : Smooth
       bilinearSlotInsertCLM (I := I) (M := M) 1 x (Term x)
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om) from rfl]
   rw [termSlotFib_apply_eval]
-  have hslot := slotInsertEndomorphism_apply_eval (I := I) (M := M) (1 + 1) 0 x
+  have hslot := slotInsertEndoFib_apply_eval (I := I) (M := M) (1 + 1) 0 x
     ((Term x) (vt ((finRotate 3) 0)))
     ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om)
     (Matrix.vecTail fun k => vt ((finRotate 3) k))
   change Tensor0SSpace.eval
-      (slotInsertEndomorphism (I := I) (M := M) (1 + 1) 0 x
+      (slotInsertEndoFib (I := I) (M := M) (1 + 1) 0 x
         ((Term x) (vt ((finRotate 3) 0)))
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x) om))
       (Matrix.vecTail fun k => vt ((finRotate 3) k)) =

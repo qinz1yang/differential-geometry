@@ -1,11 +1,11 @@
 import DifferentialGeometry.Topology.MetricSpace.BallPasting
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.MinimizingSequence
-import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSourceDerivative
-import DifferentialGeometry.Geometry.Metric.Lipschitz.ConvexSource
+import DifferentialGeometry.Geometry.Metric.CompactSourceDerivative
+import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
 import DifferentialGeometry.Geometry.Metric.Pullback.Coefficients
 import Mathlib.Topology.MetricSpace.Thickening
-import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSourceNeighborhood
-import DifferentialGeometry.Geometry.Metric.LoopSpace.Neighborhood
+import DifferentialGeometry.Geometry.Metric.CompactSourceNeighborhood
+import DifferentialGeometry.Geometry.Metric.LoopNeighborhood
 import DifferentialGeometry.Geometry.Metric.CurveEnergy.Lipschitz
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Replacement.BoundaryCapRange
 

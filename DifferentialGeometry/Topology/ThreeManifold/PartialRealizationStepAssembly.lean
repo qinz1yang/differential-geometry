@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.PartialRealizationAnalytic
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteCongruence
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardComponentwise
 
 noncomputable section
@@ -274,7 +274,7 @@ theorem orientedDiffeomorph_connectedSum_finiteConnectedSum_merge
         (finiteConnectedSum (L' ++ List.replicate b' Z))).toClosedOrientedManifold
       (finiteConnectedSum ((L ++ L') ++ List.replicate (b + b') Z)).toClosedOrientedManifold) :=
   (finiteConnectedSum_append (L ++ List.replicate b Z) (L' ++ List.replicate b' Z)).elim
-    fun e => (finiteConnectedSum_perm
+    fun e => (finiteConnectedSum_perm_orientedDiffeomorph
       (perm_append_comm_blocks L L' Z b b')).elim fun f => ⟨e.symm.trans f⟩
 
 namespace MarkedManifoldGraph

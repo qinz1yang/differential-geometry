@@ -51,7 +51,7 @@ theorem cuttingCollar_orientation_ratio {L : ℝ} (hL : 0 < L)
             (radialCollarOrientationMap L (cuttingCollarWidth (δ b.1)))
             (radialCollarOrientationMap_mfderiv_bijective hL (cuttingCollarWidth_pos (hδ b.1))) q).symm.toLinearEquiv.trans K.toLinearEquiv)
           (Orientation.reindex ℝ E3 (finCongr (by simp)) oE) =
-            (DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation o).orientation
+            (DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TangentOrientationSection.ofSmoothOrientation o).orientation
               (f b.1 (cuttingCollarCylinderMap (hδ b.1) b.2 q)) := by
   let := halfClosedIntervalChartedSpace (cuttingCollarWidth_pos (hδ b.1))
   let := halfClosedInterval_isManifold (cuttingCollarWidth_pos (hδ b.1))
@@ -87,7 +87,7 @@ theorem cuttingCollar_orientation_ratio {L : ℝ} (hL : 0 < L)
         exact tangentOrientationEquiv_symm C.symm.toLinearEquiv _
       rw [hC]
       exact cutCoreSmoothOrientation_pushforward (𝓡 3) (by simp) hδ f hf hdisj hs o _
-    rw [DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation_apply]
+    rw [DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TangentOrientationSection.ofSmoothOrientation_apply]
     exact DifferentialGeometry.orientation_map_inverse_trans_of_tangentOrientationEquiv
       (by simp) R.toLinearEquiv K.toLinearEquiv oc hR hK
 
@@ -252,7 +252,7 @@ theorem buffered_boundary_orientation_signed {L : ℝ} (hL : 0 < L)
         (cuttingCollarSmoothOrientation (𝓡 3) (by simp) hδ f hf hdisj hs b o).val q) →
     ∀ (z : S2) (v w : E2),
       let β := (T).boundarySphere b ∘ a
-      let oo := (DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation o).orientation (β z)
+      let oo := (TangentOrientationSection.ofSmoothOrientation o).orientation (β z)
       0 < (oo.someBasis (by change Fintype.card (Fin 3) = Module.finrank ℝ E3; simp)).det
         ![mfderiv IR (𝓡 3) (originalTubularMap (hδ b.1) (hδ1 b.1) (f b.1))
             (a z, TubeSystem.boundaryLevel b.2)
@@ -286,7 +286,7 @@ theorem buffered_boundary_orientation_signed {L : ℝ} (hL : 0 < L)
   have hh := basisDet_boundary_pos_iff_signed_of_radial_frame A.toLinearEquiv R.toLinearEquiv K.toLinearEquiv
     (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis
     (Orientation.reindex ℝ E3 (finCongr (by simp)) oE)
-    ((DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation o).orientation
+    ((TangentOrientationSection.ofSmoothOrientation o).orientation
       (f b.1 (cuttingCollarCylinderMap (hδ b.1) b.2 q))) (by simp)
     (if b.2 then (1 : ℝˣ) else -1) hL.ne' hratio hA z.val
     (mvfderiv (I := (𝓡 2)) (Subtype.val : S2 → E3) z v)
@@ -304,7 +304,7 @@ theorem buffered_boundary_orientation_signed {L : ℝ} (hL : 0 < L)
       (a z, cuttingSign b.2 + cuttingSign b.2 * 0)
     congr 1
     cases b.2 <;> norm_num [TubeSystem.boundaryLevel, cuttingSign]
-  change 0 < (((DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation o).orientation (β z)).someBasis _).det _ ↔ _
+  change 0 < (((TangentOrientationSection.ofSmoothOrientation o).orientation (β z)).someBasis _).det _ ↔ _
   rw [hp]
   erw [hout, htv, htw]
   have hKa (x : E2 × E1) : K.toLinearEquiv x = mfderiv IR (𝓡 3)

@@ -215,5 +215,21 @@ theorem componentConnectedSumDecomposition_iff_localReconstruction_of_incidenceG
 
 end SphericalCutCapTransition
 
+namespace FiniteCutCapTrace
+
+variable (T : FiniteCutCapTrace.{u})
+
+theorem componentwise_isPoincareStandard_of_incidenceGluing
+    (hconn : ∀ i : Fin T.eventCount, ∀ C : ConnectedComponents (T.stage i.castSucc).Carrier,
+      ((T.transition i).cutIncidenceGraph C).Connected)
+    (hsum : ∀ i : Fin T.eventCount, (T.transition i).componentConnectedSumDecomposition)
+    (hctrl : T.poincareControlled) (hext : T.extinct) (hsumClosed : poincareStandardSumClosed.{u}) :
+    ∀ i : Fin (T.eventCount + 1), ∀ C : ConnectedComponents (T.stage i).Carrier,
+      isPoincareStandard ((T.stage i).component C).Carrier :=
+  T.componentwise_isPoincareStandard
+    (fun i => (T.transition i).localReconstruction_of_incidenceGluing (hconn i) (hsum i))
+    hctrl hext hsumClosed
+
+end FiniteCutCapTrace
 
 end DifferentialGeometry.Topology

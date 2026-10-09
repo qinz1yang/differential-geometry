@@ -1,6 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodResidualRestriction
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualCellInteriors
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.PatchCells
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPatchRecognition
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCellSeparation
 
 open Set Topology

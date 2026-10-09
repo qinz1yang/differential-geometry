@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.BilinearForm.ConformalPair
+import DifferentialGeometry.Analysis.InnerProductSpace.ConformalPair
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 import Mathlib.Analysis.Calculus.Deriv.Comp
 import Mathlib.Analysis.Calculus.FDeriv.Mul

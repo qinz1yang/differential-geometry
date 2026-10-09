@@ -125,7 +125,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
         (cov_s := tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
         T b (X b)]
     rw [tensor0S_curry_symm_apply_cons (I := I) (M := M) 0
-        (Φ := _root_.CovariantDerivative.homFun I M E (TangentSpace I)
+        (Φ := HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
           (Tensor0SModel 0 ℝ E)
           (fun x : M => Tensor0SSpace 0 I x)
           (LeviCivita (I := I) g)
@@ -149,7 +149,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
             (E := fun x : M => TangentSpace I x) y
             (chartParallelExtend (I := I) α b v y)) b :=
       chartParallelExtend_mdifferentiableAt (I := I) α hb v
-    have hPsi := _root_.CovariantDerivative.homFun_apply
+    have hPsi := HomConnection.homBundleCovariantDerivativeFun_apply_eq
       (I := I) (M := M) (E_U := E) (U := TangentSpace I) (F := Tensor0SModel 0 ℝ E)
       (V := fun x : M => Tensor0SSpace 0 I x)
       (cov_U := LeviCivita (I := I) g)
@@ -160,7 +160,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
       hX_at hY_at
     rw [hYb_eq] at hPsi
     have hPsi_explicit :
-        (_root_.CovariantDerivative.homFun I M E (TangentSpace I)
+        (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel 0 ℝ E)
             (fun x : M => Tensor0SSpace 0 I x)
             (LeviCivita (I := I) g)
@@ -285,7 +285,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
           (LeviCivita (I := I) g))
         T b (X b)]
     rw [tensor0S_curry_symm_apply_cons (I := I) (M := M) (s + 1)
-        (Φ := _root_.CovariantDerivative.homFun I M E (TangentSpace I)
+        (Φ := HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
           (Tensor0SModel (s + 1) ℝ E)
           (fun x : M => Tensor0SSpace (s + 1) I x)
           (LeviCivita (I := I) g)
@@ -311,7 +311,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
             (E := fun x : M => TangentSpace I x) y
             (chartParallelExtend (I := I) α b v y)) b :=
       chartParallelExtend_mdifferentiableAt (I := I) α hb v
-    have hPsi := _root_.CovariantDerivative.homFun_apply
+    have hPsi := HomConnection.homBundleCovariantDerivativeFun_apply_eq
       (I := I) (M := M) (E_U := E) (U := TangentSpace I) (F := Tensor0SModel (s + 1) ℝ E)
       (V := fun x : M => Tensor0SSpace (s + 1) I x)
       (cov_U := LeviCivita (I := I) g)
@@ -323,7 +323,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
       hX_at hY_at
     rw [hYb_eq] at hPsi
     have hPsi_explicit :
-        (_root_.CovariantDerivative.homFun I M E (TangentSpace I)
+        (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel (s + 1) ℝ E)
             (fun x : M => Tensor0SSpace (s + 1) I x)
             (LeviCivita (I := I) g)

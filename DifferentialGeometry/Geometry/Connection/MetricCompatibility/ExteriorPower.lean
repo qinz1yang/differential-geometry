@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.ExteriorPower
-import DifferentialGeometry.Geometry.Metric.VectorBundle.ExteriorPower.Musical
+import DifferentialGeometry.Geometry.Metric.ExteriorPowerMusicalBundle
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Alternating
 
 noncomputable section

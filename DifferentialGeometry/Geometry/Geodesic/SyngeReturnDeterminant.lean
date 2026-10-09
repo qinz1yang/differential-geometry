@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Geodesic.EndpointTangent
 import DifferentialGeometry.Geometry.Geodesic.NormalReturnMap
-import DifferentialGeometry.Geometry.Variation.PositiveExponential
+import DifferentialGeometry.Geometry.Comparison.Variation.PositiveExponential
 
 noncomputable section
 open Bundle Manifold Set Filter

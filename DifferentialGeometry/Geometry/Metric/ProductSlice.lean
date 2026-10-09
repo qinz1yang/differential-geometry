@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Geometry.Metric.Construction.Existence
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Basic

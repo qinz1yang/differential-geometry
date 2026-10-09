@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.SphericalRealization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingCompletion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BufferedBoundaryOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BufferedCutCapPresentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BufferedFiniteCappingSmooth
@@ -59,10 +59,10 @@ theorem exists_smoothCutCapTransition_boundaryFrameReversing_of_buffered_finite_
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
       (∀ b, A b = LinearIsometryEquiv.refl ℝ ThreeSpace ∨ A b = LinearIsometryEquiv.neg ℝ) ∧
       (∀ b x, (B b x : ThreeSpace) = A b x) ∧
-      ∃ X : SmoothCutCapTransition (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ),
+      ∃ X : SmoothCutCapTransition (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet)
+        (OrientedThreeStage.ofSmoothOrientation Disc oDisc)
+        (OrientedThreeStage.ofSmoothOrientation Q oQ),
         X.trace = (CutCapTopology.ofBufferedFiniteCaps hL hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps
           (fun b => (B b).toHomeomorph) (fun b => (a b).toHomeomorph) hboundary ∧
           X.boundaryFrameReversing := by
@@ -86,10 +86,10 @@ theorem exists_smoothCutCapTransition_boundaryFrameReversing_of_buffered_finite_
       (Orientation.reindex ℝ ThreeSpace (finCongr finrank_threeSpace_eq_three) (oE b)) b.2
   let E := (CutCapTopology.ofBufferedFiniteCaps hL hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps
     (fun b => (B b).toHomeomorph) (fun b => (a b).toHomeomorph) hboundary
-  let P := DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o
-  let Qs := DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet
-  let Ds := DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc
-  let Ns := DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ
+  let P := OrientedThreeStage.ofSmoothOrientation M o
+  let Qs := OrientedThreeStage.ofSmoothOrientation Ret oRet
+  let Ds := OrientedThreeStage.ofSmoothOrientation Disc oDisc
+  let Ns := OrientedThreeStage.ofSmoothOrientation Q oQ
   let := bufferedCutCoreChartedSpace hδ hδ1 f hf hdisj
   let : IsManifold (𝓡∂ 3) ∞ (T).core := bufferedCutCore_isManifold hδ hδ1 f hf hdisj hs
   let X : SmoothCutCapTransition P Qs Ds Ns :=
@@ -140,17 +140,17 @@ theorem exists_smoothCutCapTransition_boundaryFrameReversing_of_buffered_finite_
           cases hfx : F x with
           | inl q =>
             change Orientation.reindex ℝ ThreeSpace (finCongr finrank_threeSpace_eq_three)
-                (oSum.val (Sum.inl q)) = (DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation oRet).orientation q
+                (oSum.val (Sum.inl q)) = (TangentOrientationSection.ofSmoothOrientation oRet).orientation q
             rw [hsuml]
-            exact (DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation_apply oRet q).symm
+            exact (TangentOrientationSection.ofSmoothOrientation_apply oRet q).symm
           | inr d =>
             change Orientation.reindex ℝ ThreeSpace (finCongr finrank_threeSpace_eq_three)
-                (oSum.val (Sum.inr d)) = (DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation oDisc).orientation d
+                (oSum.val (Sum.inr d)) = (TangentOrientationSection.ofSmoothOrientation oDisc).orientation d
             rw [hsumr]
-            exact (DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation_apply oDisc d).symm
+            exact (TangentOrientationSection.ofSmoothOrientation_apply oDisc d).symm
         refine ⟨(F.mfderivToContinuousLinearEquiv (by simp) x).bijective, ?_⟩
-        change Orientation.map (Fin 3) J ((DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation oQ).orientation x) = _
-        rw [DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation_apply]
+        change Orientation.map (Fin 3) J ((TangentOrientationSection.ofSmoothOrientation oQ).orientation x) = _
+        rw [TangentOrientationSection.ofSmoothOrientation_apply]
         apply hh.trans
         convert htarget using 2
         cases F x <;> rfl }

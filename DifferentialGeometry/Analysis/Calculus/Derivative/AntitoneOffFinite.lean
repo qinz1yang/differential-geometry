@@ -5,18 +5,20 @@ set_option autoImplicit false
 open Set Filter
 open scoped Topology
 
-namespace DifferentialGeometry.Analysis
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
-private theorem le_of_hasDerivAt_nonpos_Icc {f : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b)
+private theorem le_of_deriv_nonpos_Icc {f : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b)
     (hd : ∀ x ∈ Ioo a b, ∃ d ≤ 0, HasDerivAt f d x)
-    (ha : ContinuousWithinAt f (Icc a b) a) (hb : ContinuousWithinAt f (Icc a b) b) :
+    (ha : ContinuousWithinAt f (Ici a) a) (hb : ContinuousWithinAt f (Iic b) b) :
     f b ≤ f a := by
+  rcases eq_or_lt_of_le hab with rfl | hlt
+  · exact le_rfl
   have hcont : ContinuousOn f (Icc a b) := by
     intro x hx
     rcases eq_or_lt_of_le hx.1 with rfl | hxa
-    · exact ha
+    · exact ha.mono Icc_subset_Ici_self
     rcases eq_or_lt_of_le hx.2 with rfl | hxb
-    · exact hb
+    · exact hb.mono Icc_subset_Iic_self
     obtain ⟨d, -, hdx⟩ := hd x ⟨hxa, hxb⟩
     exact hdx.continuousAt.continuousWithinAt
   have hanti := antitoneOn_of_deriv_nonpos (convex_Icc a b) hcont (fun x hx => by
@@ -29,25 +31,25 @@ private theorem le_of_hasDerivAt_nonpos_Icc {f : ℝ → ℝ} {a b : ℝ} (hab :
     exact hd0)
   exact hanti (left_mem_Icc.2 hab) (right_mem_Icc.2 hab) hab
 
-private theorem le_of_hasDerivAt_nonpos_off_finite_of_ncard_le {f : ℝ → ℝ} {S : Set ℝ} (hS : S.Finite) :
+theorem le_of_hasDerivAt_nonpos_off_finite {f : ℝ → ℝ} {S : Set ℝ} (hS : S.Finite) :
     ∀ (N : ℕ) (a b : ℝ), a ≤ b → (S ∩ Ioo a b).ncard ≤ N →
       (∀ x ∈ Ioo a b, x ∉ S → ∃ d ≤ 0, HasDerivAt f d x) →
       (∀ x ∈ Ioo a b, x ∈ S → ∃ L, Tendsto f (𝓝[<] x) (𝓝 L) ∧ Tendsto f (𝓝[>] x) (𝓝 L)) →
-      ContinuousWithinAt f (Icc a b) a → ContinuousWithinAt f (Icc a b) b → f b ≤ f a := by
+      ContinuousWithinAt f (Ici a) a → ContinuousWithinAt f (Iic b) b → f b ≤ f a := by
   intro N
   induction N with
   | zero =>
     intro a b hab hN hd _ ha hb
     have hempty : S ∩ Ioo a b = ∅ :=
       (Set.ncard_eq_zero (hS.subset inter_subset_left)).1 (Nat.le_zero.1 hN)
-    refine le_of_hasDerivAt_nonpos_Icc hab (fun x hx => hd x hx fun hxS => ?_) ha hb
+    refine le_of_deriv_nonpos_Icc hab (fun x hx => hd x hx fun hxS => ?_) ha hb
     exact (Set.eq_empty_iff_forall_notMem.1 hempty x) ⟨hxS, hx⟩
   | succ N ih =>
     intro a b hab hN hd hlim ha hb
     by_cases hne : (S ∩ Ioo a b).Nonempty
     swap
     · rw [Set.not_nonempty_iff_eq_empty] at hne
-      refine le_of_hasDerivAt_nonpos_Icc hab (fun x hx => hd x hx fun hxS => ?_) ha hb
+      refine le_of_deriv_nonpos_Icc hab (fun x hx => hd x hx fun hxS => ?_) ha hb
       exact (Set.eq_empty_iff_forall_notMem.1 hne x) ⟨hxS, hx⟩
     obtain ⟨s, hsS, hs⟩ := hne
     obtain ⟨L, hL₁, hL₂⟩ := hlim s hs hsS
@@ -70,8 +72,7 @@ private theorem le_of_hasDerivAt_nonpos_off_finite_of_ncard_le {f : ℝ → ℝ}
       exact ih a x hx.1.le (hcard a x (Ioo_subset_Ioo le_rfl (hx.2.trans hs.2).le)
         (fun h => (lt_irrefl s) (h.2.trans hx.2)))
         (fun y hy hyS => hd y ⟨hy.1, hy.2.trans (hx.2.trans hs.2)⟩ hyS)
-        (fun y hy hyS => hlim y ⟨hy.1, hy.2.trans (hx.2.trans hs.2)⟩ hyS)
-        (ha.mono (Icc_subset_Icc le_rfl (hx.2.trans hs.2).le))
+        (fun y hy hyS => hlim y ⟨hy.1, hy.2.trans (hx.2.trans hs.2)⟩ hyS) ha
         hdx.continuousAt.continuousWithinAt
     have hright : f b ≤ L := by
       refine ge_of_tendsto hL₂ ?_
@@ -83,26 +84,7 @@ private theorem le_of_hasDerivAt_nonpos_off_finite_of_ncard_le {f : ℝ → ℝ}
         (fun h => (lt_irrefl s) (hy.1.trans h.1)))
         (fun z hz hzS => hd z ⟨(hs.1.trans hy.1).trans hz.1, hz.2⟩ hzS)
         (fun z hz hzS => hlim z ⟨(hs.1.trans hy.1).trans hz.1, hz.2⟩ hzS)
-        hdy.continuousAt.continuousWithinAt
-        (hb.mono (Icc_subset_Icc (hs.1.trans hy.1).le le_rfl))
+        hdy.continuousAt.continuousWithinAt hb
     linarith
 
-theorem le_of_hasDerivAt_nonpos_off_finite {f : ℝ → ℝ} {S : Set ℝ} {a b : ℝ}
-    (hS : (S ∩ Ioo a b).Finite) (hab : a ≤ b)
-    (hd : ∀ x ∈ Ioo a b, x ∉ S → ∃ d ≤ 0, HasDerivAt f d x)
-    (hlim : ∀ x ∈ Ioo a b, x ∈ S →
-      ∃ L, Tendsto f (𝓝[<] x) (𝓝 L) ∧ Tendsto f (𝓝[>] x) (𝓝 L))
-    (ha : ContinuousWithinAt f (Icc a b) a)
-    (hb : ContinuousWithinAt f (Icc a b) b) : f b ≤ f a := by
-  apply le_of_hasDerivAt_nonpos_off_finite_of_ncard_le hS
-    ((S ∩ Ioo a b) ∩ Ioo a b).ncard a b hab le_rfl
-  · intro x hx hxs
-    apply hd x hx
-    intro hxS
-    exact hxs ⟨hxS, hx⟩
-  · intro x hx hxs
-    exact hlim x hx hxs.1
-  · exact ha
-  · exact hb
-
-end DifferentialGeometry.Analysis
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory

@@ -17,7 +17,7 @@ abbrev ComponentInteriorRampDeformation (P : OrientedThreeStage.{u}) (a b : ℝ)
     (c : ConnectedComponents P.Carrier) : Prop :=
   letI := P.component_connected c
   ∀ (u : ℝ) (_hu : u ∈ Ioo a b) (v : ℝ) (_hv : v ∈ Ioo u b)
-    (B : RicciBackground (I := ThreeModel) (M := (P.component c).toClosedOrientedManifold.Carrier)
+    (B : RicciBackground (I := ThreeModel) (M := (P.component c).Carrier)
       (RealTimeInterval.closedOpen a b hab) u v),
     ∀ (s t : ℝ) (hst : s < t), u ≤ s → t ≤ v → RampFamilyDeformation s t hst B.family
 
@@ -26,12 +26,12 @@ theorem componentInteriorRampDeformation_of_family_deformation {P : OrientedThre
     ComponentInteriorRampDeformation P a b hab c := by
   intro u _hu v _hv B s t hst hs ht
   exact @rfs_rampFamilyDeformation_of_family_deformation _ _ _ _ _ _ _ _ _
-    (inferInstance : TopologicalSpace (P.component c).toClosedOrientedManifold.Carrier)
-    (inferInstance : ChartedSpace ThreeSpace (P.component c).toClosedOrientedManifold.Carrier)
-    (inferInstance : IsManifold ThreeModel ∞ (P.component c).toClosedOrientedManifold.Carrier)
-    (inferInstance : SigmaCompactSpace (P.component c).toClosedOrientedManifold.Carrier)
-    (inferInstance : T2Space (P.component c).toClosedOrientedManifold.Carrier)
-    (inferInstance : CompactSpace (P.component c).toClosedOrientedManifold.Carrier)
+    (inferInstance : TopologicalSpace (P.component c).Carrier)
+    (inferInstance : ChartedSpace ThreeSpace (P.component c).Carrier)
+    (inferInstance : IsManifold ThreeModel ∞ (P.component c).Carrier)
+    (inferInstance : SigmaCompactSpace (P.component c).Carrier)
+    (inferInstance : T2Space (P.component c).Carrier)
+    (inferInstance : CompactSpace (P.component c).Carrier)
     (P.component_connected c)
     (inferInstance : ModelWithCorners.Boundaryless ThreeModel)
     _ _ _ B (by simp [ThreeSpace]) s t hst hs ht
@@ -40,7 +40,7 @@ variable {P : OrientedThreeStage.{u}} {a b : ℝ}
 
 theorem incoming_component_integrated_width_of_rampFamilyDeformation (G : P.IncomingSlab a b)
     (c : ConnectedComponents P.Carrier)
-    (hSC : SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier)
+    (hSC : SimplyConnectedSpace (P.component c).Carrier)
     (hdata : ComponentInteriorRampDeformation P a b G.lt c) :
     ∀ s ∈ Ico a b, ∀ t ∈ Ico s b,
       0 ≤ Width.componentWidth P (G.flow.base.metric t) c hSC ∧
@@ -57,13 +57,13 @@ theorem incoming_component_integrated_width_of_rampFamilyDeformation (G : P.Inco
   have hrho (r : ℝ) (hr : r ∈ Ico a b) :
       halfScalarMinimum F.base r = componentHalfScalar P G.flow.base c r := by
     change sInf (range (F.base.scalar r)) / 2 =
-      sInf (range (fun x : (P.component c).toClosedOrientedManifold.Carrier => G.flow.base.scalar r x.1)) / 2
+      sInf (range (fun x : (P.component c).Carrier => G.flow.base.scalar r x.1)) / 2
     rw [show F.base.scalar r =
-      (fun x : (P.component c).toClosedOrientedManifold.Carrier => G.flow.base.scalar r x.1) from
+      (fun x : (P.component c).Carrier => G.flow.base.scalar r x.1) from
         funext (hscalar r hr)]
   have hwidth (r : ℝ) (hr : r ∈ Ico a b) :
       Width.classWidth (F.base.metric r)
-          (positiveFreeContractibleClass (P.component c).toClosedOrientedManifold.orientation) =
+          (positiveFreeContractibleClass (P.component c).orientation) =
         Width.componentWidth P (G.flow.base.metric r) c hSC := by
     rw [hmetric r hr]
     rfl
@@ -89,14 +89,14 @@ theorem incoming_component_integrated_width_of_rampFamilyDeformation (G : P.Inco
           2 * Real.pi * ∫ r in s..t, componentFactor P G.flow.base c s r := by
     obtain ⟨B, hB⟩ := hbackground s hs t ht
     have hess : IsEssentialFamilyClass
-        (positiveFreeContractibleClass (P.component c).toClosedOrientedManifold.orientation) :=
+        (positiveFreeContractibleClass (P.component c).orientation) :=
       isEssentialFamilyClass_of_pi2_zero
         (fun q => (rfs_homotopy_groups q).1)
-        (positiveFreeContractibleClass (P.component c).toClosedOrientedManifold.orientation)
-        (fun q => positiveFreeContractibleClass_nontrivial (P.component c).toClosedOrientedManifold.orientation q)
+        (positiveFreeContractibleClass (P.component c).orientation)
+        (fun q => positiveFreeContractibleClass_nontrivial (P.component c).orientation q)
     have h := (rfs_integrated_class_width_of_rampFamilyDeformation B
       (fun p q hpq hp hq => hdata s hs t ht B p q hpq hp hq)
-      (positiveFreeContractibleClass (P.component c).toClosedOrientedManifold.orientation) hess
+      (positiveFreeContractibleClass (P.component c).orientation) hess
       s ⟨le_rfl, ht.1.le⟩ t ⟨ht.1.le, le_rfl⟩).2.2
     rw [hB] at h
     have hs' : s ∈ Ico a b := ⟨hs.1.le, hs.2⟩
@@ -119,7 +119,7 @@ theorem incoming_component_integrated_width_of_rampFamilyDeformation (G : P.Inco
     rcases eq_or_lt_of_le ht.1 with rfl | hst
     · simp only [componentFactor, intervalIntegral.integral_same, Real.exp_zero,
         one_mul, mul_zero, sub_zero, le_refl]
-    · apply DifferentialGeometry.Analysis.ODE.integrated_comparison_le_endpoints hst
+    · apply integrated_comparison_le_endpoints hst
         (hrho_cont.mono (fun r hr => ⟨hs.1.trans hr.1, hr.2.trans_lt ht.2⟩))
         (hwidth_cont.mono (fun r hr => ⟨hs.1.trans hr.1, hr.2.trans_lt ht.2⟩))
       intro u hu v hv
@@ -172,7 +172,7 @@ private theorem componentAffine_hasDerivWithinAt
 
 theorem incoming_component_incrementBound_of_rampFamilyDeformation (G : P.IncomingSlab a b)
     (c : ConnectedComponents P.Carrier)
-    (hSC : SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier)
+    (hSC : SimplyConnectedSpace (P.component c).Carrier)
     (hdata : ComponentInteriorRampDeformation P a b G.lt c) :
     ∀ t ∈ Ico a b, ∀ epsilon > 0, ∃ delta > 0,
       ∀ h ∈ Ioo (0 : ℝ) delta, t + h < b →
@@ -250,7 +250,7 @@ private def closedSlabIncoming (G : P.ClosedSlab a b) : P.IncomingSlab a b where
 
 theorem closed_component_incrementBound_of_rampFamilyDeformation (G : P.ClosedSlab a b)
     (c : ConnectedComponents P.Carrier)
-    (hSC : SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier)
+    (hSC : SimplyConnectedSpace (P.component c).Carrier)
     (hdata : ComponentInteriorRampDeformation P a b G.lt c) :
     ∀ t ∈ Ico a b, ∀ epsilon > 0, ∃ delta > 0,
       ∀ h ∈ Ioo (0 : ℝ) delta, t + h ≤ b →

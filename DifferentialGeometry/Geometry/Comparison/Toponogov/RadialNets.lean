@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.MetricSpace.Cone.Distance
+import DifferentialGeometry.Geometry.Metric.ConeDistance
 import DifferentialGeometry.Geometry.Comparison.Toponogov.RadialDistance
 import DifferentialGeometry.Geometry.Comparison.Toponogov.AngleKernelCompactness
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.CollarAbsorption
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.Smooth
-import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
+import DifferentialGeometry.Geometry.Metric.PolarCoordinates
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.ConnectedSumLocalMaps
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Orientation

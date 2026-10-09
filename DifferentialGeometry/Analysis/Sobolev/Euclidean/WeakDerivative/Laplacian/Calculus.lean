@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Divergence.Local
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Laplacian
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.LocalBound
+import DifferentialGeometry.Analysis.Sobolev.Tools.DiffQuotLocal
 import DifferentialGeometry.Analysis.Integration.Lp.Cutoff
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.DirectionalJets
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative

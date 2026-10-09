@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.SphereSeparation.SchoenfliesSides
 import DifferentialGeometry.Topology.SphereSeparation.OuterBoundary
 import DifferentialGeometry.Topology.VanKampen.SphereBoundaryInjection
 import DifferentialGeometry.Topology.Connected.DomainEquality
-import DifferentialGeometry.Topology.Manifold.NestedBallShell.Interior
+import DifferentialGeometry.Geometry.Boundary.NestedBallInterior
 
 noncomputable section
 open Set Metric Topology Manifold

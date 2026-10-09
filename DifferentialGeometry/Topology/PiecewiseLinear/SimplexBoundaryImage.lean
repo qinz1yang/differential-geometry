@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryOfBall
 
 open Set
@@ -85,11 +90,5 @@ theorem image_simplexBoundary_of_isPLHomeomorphOn {F : Type*}
   have htarget := image_stdSimplexBoundary_of_isPLHomeomorphOn_convexHull hT hTcard (hg.trans hf)
   rw [← hsource, image_image]
   exact htarget
-
-theorem isPolyhedron_stdSimplexBoundary_two : IsPolyhedron (stdSimplexBoundary 2) := by
-  have : Finite (simplexBoundary (stdVertices 1) (stdVertices_affineIndependent 1)).faces :=
-    (simplexBoundary_faces_finite _ _).to_subtype
-  rw [← simplexBoundary_stdVertices_space 1]
-  exact isPolyhedron_space _
 
 end DifferentialGeometry.Topology.PiecewiseLinear

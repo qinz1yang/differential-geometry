@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.SmoothGerm
+import DifferentialGeometry.Bundle.SmoothScalarGerm
 import DifferentialGeometry.Geometry.Comparison.Variation.Coordinates.FixedChartIdentities
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisBracket
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
@@ -124,7 +124,7 @@ theorem exists_frame_exp
   have hc : forall i, exists f : Real -> Real,
       ContMDiff 𝓘(Real, Real) 𝓘(Real, Real) ∞ f /\
         f =ᶠ[𝓝 t] cLocal i :=
-    fun i => exists_contMDiff_eventuallyEq_of_contMDiffOn (I := 𝓘(Real, Real))
+    fun i => exists_smooth_germ (I := 𝓘(Real, Real))
       hUopen htU (hcLocalOn i)
   choose c hcsm hceq using hc
   have hgammaCont : ContinuousAt gamma t := hgamma.continuous.continuousAt

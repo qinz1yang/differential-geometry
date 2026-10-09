@@ -178,7 +178,7 @@ theorem hasCoreCompatibleObservationTower_of_retainedCoreTower_uniformRecordsAbo
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (M.toClosedOrientedManifold) g)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     {c A : ℝ} (hrec : T.toObservationTower.UniformRecordsAbove c A) :
     hasCoreCompatibleObservationTower M g :=
@@ -189,7 +189,7 @@ theorem hasExtinctObservationTower_of_retainedCoreTower_uniformRecordsAbove
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (M.toClosedOrientedManifold) g)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     {c A : ℝ} (hrec : T.toObservationTower.UniformRecordsAbove c A) :
     hasExtinctObservationTower M g :=
@@ -200,7 +200,7 @@ theorem hasExtinctObservationTower_of_retainedCoreTower_uniformScalarComparisons
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (M.toClosedOrientedManifold) g)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     {c A : ℝ} (h : T.toObservationTower.UniformScalarComparisonsAbove c A) :
     hasExtinctObservationTower M g :=
@@ -211,7 +211,7 @@ theorem hasExtinctObservationTower_of_retainedCoreTower_uniformSlopeBoundsAbove
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (M.toClosedOrientedManifold) g)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     {c A : ℝ} (hc : 0 < c) (h : T.toObservationTower.UniformSlopeBoundsAbove c A) :
     hasExtinctObservationTower M g :=
@@ -222,7 +222,7 @@ theorem hasExtinctObservationTower_of_retainedCoreTower_isEmpty_above_threshold
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : RetainedCoreObservationTower
-      (M.toClosedOrientedManifold) g)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     {c A : ℝ} (h : ∀ (b : ℝ) (hb : 0 < b), extinctionThreshold c A < b →
       (T.toObservationTower.observe b hb.le).IsExtinctAtHorizon) :

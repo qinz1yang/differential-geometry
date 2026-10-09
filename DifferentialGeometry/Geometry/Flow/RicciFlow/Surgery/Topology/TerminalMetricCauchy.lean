@@ -10,23 +10,21 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ}
 
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.terminalSigmaCompact (G : P.IncomingSlab a s) :
+private local instance terminalSigmaCompact (G : P.IncomingSlab a s) :
     SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       G.terminalRegularOpen.isOpen)
 
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.terminalC1 (G : P.IncomingSlab a s) :
+private local instance terminalC1 (G : P.IncomingSlab a s) :
     IsManifold ThreeModel 1 G.terminalRegularOpen := IsManifold.of_le (n := ∞) (by decide)
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.terminalC2 (G : P.IncomingSlab a s) :
+private local instance terminalC2 (G : P.IncomingSlab a s) :
     IsManifold ThreeModel 2 G.terminalRegularOpen := IsManifold.of_le (n := ∞) (by decide)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_metric_time_lipschitz_on_terminalRegularOpen
+theorem IncomingSlab.exists_metric_time_lipschitz_on_terminalRegularOpen
     (G : P.IncomingSlab a s) {K : Set G.terminalRegularOpen} (hK : IsCompact K) (N : ℕ) :
     ∃ c ∈ Ioo a s, ∃ L : ℝ, 0 ≤ L ∧
       ∀ q ≤ N, ∀ t ∈ Ico c s, ∀ u ∈ Ico c s, ∀ y ∈ K,
@@ -40,7 +38,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   rw [metricDerivNorm_restrictOpen]
   exact hb q hq t ht u hu y ⟨y, hy, rfl⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.metric_sequence_cauchy_on_compacts
+theorem IncomingSlab.metric_sequence_cauchy_on_compacts
     (G : P.IncomingSlab a s) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {K : Set G.terminalRegularOpen} (hK : IsCompact K) (N : ℕ) :
     ∀ ε : ℝ, 0 < ε → ∃ n₀ : ℕ, ∀ m, n₀ ≤ m → ∀ n, n₀ ≤ n →
@@ -65,7 +63,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact (hlip q hq (τ m) (hn₂ m ((le_max_right _ _).trans hm))
     (τ n) (hn₂ n ((le_max_right _ _).trans hn)) x hx).trans_lt hprod
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.metric_sequence_inner_cauchy
+theorem IncomingSlab.metric_sequence_inner_cauchy
     (G : P.IncomingSlab a s) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (v w : TangentSpace ThreeModel x) :
     CauchySeq (fun n => ((G.flow.base.metric (τ n)).restrictOpen

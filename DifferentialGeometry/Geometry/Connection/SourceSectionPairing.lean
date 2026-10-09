@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.SectionAlongRegularity
-import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.CorrectionAtBasepoint
 
 

@@ -1,5 +1,4 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Bundle.Tensoriality
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Defs
 import DifferentialGeometry.Tensor.Alternating.Composition
@@ -41,6 +40,25 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners K E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M]
 
+section LinearMap
+
+variable {F A : Type*} [NormedAddCommGroup F] [NormedSpace K F]
+variable {V : M -> Type*} [TopologicalSpace (Bundle.TotalSpace F V)]
+  [∀ x, AddCommGroup (V x)] [∀ x, Module K (V x)]
+  [∀ x, TopologicalSpace (V x)] [FiberBundle F V]
+variable [AddCommGroup A] [Module K A]
+
+omit [FiniteDimensional K E] [IsManifold I 1 M] in
+theorem tensorialAt_apply_linearMap {x : M} (L : V x →ₗ[K] A) :
+    TensorialAt I F (fun σ : (p : M) -> V p => L (σ x)) x := by
+  refine ⟨?_, ?_⟩
+  · intro f σ _ _
+    exact (congrArg L (show (f • σ) x = f x • σ x from rfl)).trans
+      (L.map_smul (f x) (σ x))
+  · intro σ τ _ _
+    simpa only [Pi.add_apply] using L.map_add (σ x) (τ x)
+
+end LinearMap
 
 namespace Tensor0SSpace
 
@@ -76,7 +94,7 @@ theorem tensorialAt_applyInput {r s : ℕ} {x : M}
     (T : TensorRSSpace r s I x) :
     TensorialAt I (Tensor0SModel r K E)
       (fun A : (p : M) -> Tensor0SSpace r I p => T (A x)) x := by
-  exact LinearMap.tensorialAt_apply (I := I) (F := Tensor0SModel r K E)
+  exact tensorialAt_apply_linearMap (I := I) (F := Tensor0SModel r K E)
     (V := fun p : M => Tensor0SSpace r I p) (x := x)
     (A := Tensor0SSpace s I x)
     (T : Tensor0SSpace r I x →ₗ[K] Tensor0SSpace s I x)
@@ -110,7 +128,7 @@ theorem tensorialAt_applyInput_evalOutput {r s : ℕ} {x : M}
           c • (T A) (fun j => slots j x)
         rw [map_smul]
         rfl }
-  exact LinearMap.tensorialAt_apply (I := I) (F := Tensor0SModel r K E)
+  exact tensorialAt_apply_linearMap (I := I) (F := Tensor0SModel r K E)
     (V := fun p : M => Tensor0SSpace r I p) (x := x) L
 
 end TensorRSSpace

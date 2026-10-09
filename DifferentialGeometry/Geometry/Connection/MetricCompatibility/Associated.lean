@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.Associated
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Associated
+import DifferentialGeometry.Geometry.Metric.Associated
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Metric
 
 noncomputable section

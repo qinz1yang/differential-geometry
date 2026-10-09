@@ -13,15 +13,13 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ}
 
 private local instance : IsManifold ThreeModel 1 P.Carrier := IsManifold.of_le (n := ∞) (by decide)
 private local instance : IsManifold ThreeModel 2 P.Carrier := IsManifold.of_le (n := ∞) (by decide)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.metric_jet_bounds_of_curvature_derivative_tail
+theorem IncomingSlab.metric_jet_bounds_of_curvature_derivative_tail
     (G : P.IncomingSlab a s) {c : ℝ} (hac : a < c)
     {K U : Set P.Carrier} (hK : IsCompact K) (hU : IsOpen U) (hKU : K ⊆ U)
     (gRef : P.Metric) {B : ℝ} (hB : 1 ≤ B)
@@ -83,7 +81,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact (hbounds r hr t ht x hx).trans
     (Finset.single_le_sum (fun q _ => hC q) (Finset.mem_range.mpr (by omega)))
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_terminalRegular_fixed_reference_metric_jets
+theorem IncomingSlab.exists_terminalRegular_fixed_reference_metric_jets
     (G : P.IncomingSlab a s) {x : P.Carrier} (hx : x ∈ G.terminalRegularRegion) :
     ∃ (V : Set P.Carrier) (c B : ℝ) (A C : ℕ → ℝ),
       IsOpen V ∧ x ∈ V ∧ IsCompact (closure V) ∧ closure V ⊆ G.terminalRegularRegion ∧
@@ -140,7 +138,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   · intro N r hr t ht y hy
     exact hCb N r hr t ht y (hclK hy)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.eventually_metric_jets_on_compact_regularRegion
+theorem IncomingSlab.eventually_metric_jets_on_compact_regularRegion
     (G : P.IncomingSlab a s) {K : Set P.Carrier} (hK : IsCompact K)
     (hKreg : K ⊆ G.terminalRegularRegion) (N : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ t in 𝓝[<] s, ∀ r ≤ N, ∀ y ∈ K,

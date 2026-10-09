@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Geodesic.Minimizing.TriangleEquality
 import DifferentialGeometry.Geometry.Metric.Distance.LocalCompletion
 import DifferentialGeometry.Geometry.Geodesic.Naturality.MetricLocality
 import DifferentialGeometry.Geometry.Geodesic.EquationGerm
-import DifferentialGeometry.Geometry.Metric.Distance.EndpointRate
+import DifferentialGeometry.Geometry.Comparison.Distance.EndpointRate
 
 set_option autoImplicit false
 noncomputable section

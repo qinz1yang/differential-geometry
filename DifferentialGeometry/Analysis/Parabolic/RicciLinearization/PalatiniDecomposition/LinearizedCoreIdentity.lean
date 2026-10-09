@@ -827,7 +827,7 @@ private lemma lrOmegaHat_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
   rw [unitModel]
   rw [show (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm).toSection x
         (unitTensor (I := I) (M := M) x) =
-      slotInsertEndomorphism (I := I) (M := M) 3 0 x
+      slotInsertEndoFib (I := I) (M := M) 3 0 x
         (metricComparisonEndomorphismField (I := I) (M := M) gm g₀ x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (domDomCongrSection (I := I) g₀ (finRotate 3)
@@ -835,7 +835,7 @@ private lemma lrOmegaHat_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
           (unitTensor (I := I) (M := M) x)) from by
     rw [connectionDifferenceMetricLoweredTensor, operatorFieldComposition_toSection]
     rfl]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (domDomCongrSection (I := I) g₀ (finRotate 3)
@@ -962,7 +962,7 @@ private lemma lrQB_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
       (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm).toSection x)
       (unitTensor (I := I) (M := M) x)) m]
   rw [← Tensor0SSpace.toModel_apply_tangent]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [lrTermSlotTuple (I := I) (M := M) g₀ gm x m]
   rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
@@ -1000,7 +1000,7 @@ private lemma lrQA_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
         (connectionDifferenceMetricLoweredTensor (I := I) (M := M) g₀ gm)).toSection x)
       (unitTensor (I := I) (M := M) x)) m]
   rw [← Tensor0SSpace.toModel_apply_tangent]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [lrTermSlotTuple (I := I) (M := M) g₀ gm x m]
   rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from

@@ -1,8 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CollapseDomination
-import DifferentialGeometry.Geometry.Metric.CurveVariation.Comparison
-import DifferentialGeometry.Geometry.Metric.CurveVariation.Distance
-import DifferentialGeometry.Geometry.Metric.CurveVariation.WeakDerivative
-import DifferentialGeometry.Topology.Manifold.LocalCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WeakLength
 
 set_option autoImplicit false
 noncomputable section
@@ -23,13 +20,13 @@ theorem collapseMap_riemannianCurveLength_le_of_cylinder_lower {A B η : ℝ}
       η * (roundCylinderMetric (E := E3) (n := 2)).inner q.val v v ≤ g.inner q v v)
     (γ : ℝ → DifferentialGeometry.Geometry.Neck.openCylinder B) (a b : ℝ)
     (hγ : ContinuousOn γ (Icc a b)) :
-    DifferentialGeometry.Geometry.riemannianCurveVariation
+    DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.riemannianCurveLength
         (insertedMetric hA hAB hη g) (collapseMap hA hAB ∘ γ) a b ≤
-      DifferentialGeometry.Geometry.riemannianCurveVariation g γ a b := by
+      DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.riemannianCurveLength g γ a b := by
   have h := collapseMap_eVariationOn_le_of_cylinder_lower hA hAB hη g hlower γ a b hγ
-  rw [DifferentialGeometry.Geometry.riemannianCurveVariation_eq_eVariationOn
+  rw [DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.riemannianCurveLength_eq_eVariationOn
       (insertedMetric hA hAB hη g) (collapseMap hA hAB ∘ γ) a b,
-    DifferentialGeometry.Geometry.riemannianCurveVariation_eq_eVariationOn
+    DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.riemannianCurveLength_eq_eVariationOn
       g γ a b]
   exact h
 
@@ -49,17 +46,17 @@ theorem collapseMap_riemannianEDistOf_le_of_cylinder_lower {A B η : ℝ}
       ∃ U ∈ 𝓝 x, ∀ (a b : ℝ)
         (γ : ℝ → DifferentialGeometry.Geometry.Neck.openCylinder B),
         a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
-        DifferentialGeometry.Geometry.riemannianCurveVariation g γ a b ≠ ⊤ →
-        DifferentialGeometry.Geometry.riemannianCurveVariation
+        DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.riemannianCurveLength g γ a b ≠ ⊤ →
+        DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.riemannianCurveLength
             (insertedMetric hA hAB hη g) (⇑F ∘ γ) a b ≤
-          1 * DifferentialGeometry.Geometry.riemannianCurveVariation
+          1 * DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.riemannianCurveLength
             g γ a b := by
     intro x
     exact ⟨univ, Filter.univ_mem, fun a b γ _ hγ _ _ => by
       rw [one_mul]
       simpa only [← hF] using
         collapseMap_riemannianCurveLength_le_of_cylinder_lower hA hAB hη g hlower γ a b hγ⟩
-  have hmain := DifferentialGeometry.Geometry.riemannianEDistOf_comp_le_of_local_riemannianCurveVariation_of_ne_zero
+  have hmain := DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.rfs_local_to_global_length_of_ne_zero
     g (insertedMetric hA hAB hη g) F 1 (by norm_num) hloc
   intro x y
   simpa [hF, one_mul] using hmain x y

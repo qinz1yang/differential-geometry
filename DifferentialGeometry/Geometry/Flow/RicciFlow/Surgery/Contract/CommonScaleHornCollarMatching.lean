@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornNeckCollarMatching
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Selection.ScalarLevel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornScalarLevel
 
 set_option autoImplicit false
 noncomputable section

@@ -1,6 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34BoundedLabelUnion
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualArcBoundary
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.OuterBoundary
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualOuterBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualPatchBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualSplitBoundary
 
@@ -53,9 +58,9 @@ theorem compactDualCutBoundary_eq_iUnion_step
       using compactDualCutBoundary_markedPoint_eq_empty M K hKM p
   | outerFace o =>
     simpa only [Section34CompactCutStep, iUnion_false, iUnion_empty, empty_union, union_empty]
-      using compactDualCutBoundary_outer_face_eq_union M K hM hK hKM hint o
+      using compactDualCutBoundary_outerFace_eq_union M K hM hK hKM hint o
   | outerArc q =>
     simpa only [Section34CompactCutStep, iUnion_false, iUnion_empty, empty_union, union_empty]
-      using compactDualCutBoundary_outer_arc_eq_union M K hM hK hKM hint q
+      using compactDualCutBoundary_outerArc_eq_union M K hM hK hKM hint q
 
 end DifferentialGeometry.Topology.PiecewiseLinear

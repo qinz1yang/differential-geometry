@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinkerBlowdown
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinkerNormalization
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedGeometry.Volume.TerminalSemicontinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedVolumeTerminalSemicontinuity
 
 set_option autoImplicit false
 

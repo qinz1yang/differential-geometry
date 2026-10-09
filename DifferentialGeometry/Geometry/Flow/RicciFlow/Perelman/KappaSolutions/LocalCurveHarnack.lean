@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShortCurveRicciEnergy
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.HarnackLimit.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.HarnackLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
 import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 

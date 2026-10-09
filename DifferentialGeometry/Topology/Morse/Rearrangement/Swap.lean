@@ -20,7 +20,7 @@ variable {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*} [TopologicalSpac
 
 namespace Swap
 
-theorem exists_regular_substrip (hf : MorseStrip I f a b)
+theorem exists_regular_substrip [T2Space M] (hf : MorseStrip I f a b)
     (hinj : InjOn f {x | f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x}) {p q : M}
     (hp : f p ∈ Ioo a b) (hq : f q ∈ Ioo a b) (hcp : DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f p)
     (hcq : DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f q)
@@ -276,11 +276,11 @@ def invSet (f : M → ℝ) (a b : ℝ) : Set (M × M) :=
   {pq | (f pq.1 ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f pq.1) ∧ (f pq.2 ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f pq.2) ∧
     f pq.1 < f pq.2 ∧ morseIndex I f pq.2 < morseIndex I f pq.1}
 
-theorem invSet_finite (hf : MorseStrip I f a b) : (invSet I f a b).Finite :=
+theorem invSet_finite [T2Space M] (hf : MorseStrip I f a b) : (invSet I f a b).Finite :=
   (hf.finite_critical.prod hf.finite_critical).subset fun _ hpq =>
     ⟨⟨Ioo_subset_Icc_self hpq.1.1, hpq.1.2⟩, ⟨Ioo_subset_Icc_self hpq.2.1.1, hpq.2.1.2⟩⟩
 
-theorem exists_adjacent_inversion (hf : MorseStrip I f a b)
+theorem exists_adjacent_inversion [T2Space M] (hf : MorseStrip I f a b)
     (hne : (invSet I f a b).Nonempty) :
     ∃ p q : M, f p ∈ Ioo a b ∧ f q ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f p ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f q ∧
       f p < f q ∧ morseIndex I f q < morseIndex I f p ∧

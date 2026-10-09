@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.Defs
-import DifferentialGeometry.Topology.ThreeManifold.SphereMappingTorus.SmoothStructure
+import DifferentialGeometry.Topology.ThreeManifold.SphereMappingTorusSmooth
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 
 set_option autoImplicit false

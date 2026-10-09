@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.VectorBundle.OrthonormalFrame
+import DifferentialGeometry.Bundle.OrthonormalFrame
 import DifferentialGeometry.Bundle.Hom.Pointwise
 import Mathlib.Topology.VectorBundle.FiniteDimensional
 

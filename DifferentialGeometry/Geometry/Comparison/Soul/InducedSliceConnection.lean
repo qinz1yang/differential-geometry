@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Submanifold.EmbeddedSlice.InducedMetric
+import DifferentialGeometry.Geometry.Comparison.Soul.InducedSliceMetric
 import DifferentialGeometry.Geometry.Comparison.Soul.SoulSubmanifold
-import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.CorrectionContraction
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Torsion

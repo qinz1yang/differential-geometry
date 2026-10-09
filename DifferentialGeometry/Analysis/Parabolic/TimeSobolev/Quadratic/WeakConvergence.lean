@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Time.Operator.WeakConvergence
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Operator.WeakConvergence
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.Basic
 import Mathlib.Analysis.Normed.Operator.BanachSteinhaus
 import Mathlib.Topology.Algebra.Order.LiminfLimsup

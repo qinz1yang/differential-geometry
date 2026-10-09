@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ConformalEnergy
-import DifferentialGeometry.Topology.Circle.WeaklyMonotone.Defs
+import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone
 import DifferentialGeometry.Geometry.Measure.Area.SpanningCompetitors
 import DifferentialGeometry.Analysis.Integration.Measure.UniformIntegrability
 

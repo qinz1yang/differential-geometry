@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.InitialRampBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Ramps
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Matching
-import DifferentialGeometry.Geometry.Flow.CurveShortening.Product.FamilyExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductFamilyExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductLiftInvariants
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.InitialRampLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Projection
@@ -9,8 +9,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCylinderTopology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampPersistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampContinuation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.CurveShortening.Ramp.AngleComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.CurveShortening.Ramp.CurvatureBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampAngleComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampCurvatureBound
 
 section
 

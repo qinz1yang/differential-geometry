@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Ancestry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Ancestry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodInduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SurgeryWidthEvolution
 
@@ -10,14 +10,14 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.simplyConnectedSpace_connectedComponent (P : OrientedThreeStage.{u})
-    (x : P.Carrier) [SimplyConnectedSpace (P.component (ConnectedComponents.mk x)).toClosedOrientedManifold.Carrier] :
+theorem OrientedThreeStage.simplyConnectedSpace_connectedComponent (P : OrientedThreeStage.{u})
+    (x : P.Carrier) [SimplyConnectedSpace (P.component (ConnectedComponents.mk x)).Carrier] :
     SimplyConnectedSpace (connectedComponent x) := by
   have hs : ((P.componentOpen (ConnectedComponents.mk x) : Set P.Carrier)) =
       connectedComponent x := by
     ext y
     exact ConnectedComponents.coe_eq_coe'
-  let e : (P.component (ConnectedComponents.mk x)).toClosedOrientedManifold.Carrier ≃ₜ connectedComponent x :=
+  let e : (P.component (ConnectedComponents.mk x)).Carrier ≃ₜ connectedComponent x :=
     Homeomorph.setCongr hs
   exact e.symm.toHomotopyEquiv.simplyConnectedSpace
 

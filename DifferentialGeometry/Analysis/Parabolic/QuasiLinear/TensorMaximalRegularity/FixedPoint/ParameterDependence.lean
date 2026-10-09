@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.FixedPoint.Stability
-import DifferentialGeometry.Analysis.Sobolev.Time.Bochner.AffineMajorant
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.AffineMajorant
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.FixedPoint.TimeDependentForcing
 
 open MeasureTheory Filter Set

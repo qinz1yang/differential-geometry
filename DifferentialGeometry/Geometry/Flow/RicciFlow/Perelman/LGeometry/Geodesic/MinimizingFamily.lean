@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Variation.Curve.AffineParameter
-import DifferentialGeometry.Geometry.Curve.SmoothGerm
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.AffineParameter
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SmoothCurveGerm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Algebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.JacobiCrossTerm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension

@@ -28,12 +28,12 @@ private theorem isEmbedding_of_continuous_injective_of_compact {X Y : Type*}
   (Topology.IsClosedEmbedding.of_continuous_injective_isClosedMap hf hinj
     fun _ hs => (hs.isCompact.image hf).isClosed).toIsEmbedding
 
-def LoopFamilyEmbeddedOffFinset (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (J : Set ℝ) : Prop :=
+def LoopFamilyEmbeddedOffFinset (γ : ℝ → ContinuousFreeLoop M) (J : Set ℝ) : Prop :=
   ∃ exceptional : Finset ℝ, ∀ t ∈ J, t ∉ exceptional → Topology.IsEmbedding (γ t)
 
 namespace LoopFamilyEmbeddedOffFinset
 
-variable {γ : ℝ → DifferentialGeometry.Topology.freeLoop M} {J J' : Set ℝ}
+variable {γ : ℝ → ContinuousFreeLoop M} {J J' : Set ℝ}
 
 theorem mono (h : J' ⊆ J) (hγ : LoopFamilyEmbeddedOffFinset γ J) :
     LoopFamilyEmbeddedOffFinset γ J' :=
@@ -48,7 +48,7 @@ end LoopFamilyEmbeddedOffFinset
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
 theorem loopFamilyEmbeddedOffFinset_iff_injective [T2Space M]
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (J : Set ℝ) :
+    (γ : ℝ → ContinuousFreeLoop M) (J : Set ℝ) :
     LoopFamilyEmbeddedOffFinset γ J ↔ ∃ exceptional : Finset ℝ,
       ∀ t ∈ J, t ∉ exceptional → Function.Injective (γ t) := by
   constructor
@@ -58,7 +58,7 @@ theorem loopFamilyEmbeddedOffFinset_iff_injective [T2Space M]
     exact ⟨exceptional, fun t ht hne =>
       isEmbedding_of_continuous_injective_of_compact (γ t).continuous (hinj t ht hne)⟩
 
-theorem loopFamily_spacetimeMap_injOn_of_embeddedOffFinset (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+theorem loopFamily_spacetimeMap_injOn_of_embeddedOffFinset (γ : ℝ → ContinuousFreeLoop M)
     {J : Set ℝ} (hemb : LoopFamilyEmbeddedOffFinset γ J) :
     ∃ exceptional : Finset ℝ,
       Set.InjOn (fun p : ℝ × Surgery.Topology.Circle => (p.1, γ p.1 p.2))
@@ -78,11 +78,11 @@ omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_generic_curves_of_slicewiseEmbedding
     (B : RicciBackground (I := I) (M := M) D a b) {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t)) :
-    ∃ approximants : ℕ → ℝ → DifferentialGeometry.Topology.freeLoop M,
+    ∃ approximants : ℕ → ℝ → ContinuousFreeLoop M,
       (∀ j, (curveOfLoopFamily (approximants j)).SmoothOn (I := I) (Icc a b) ∧
         (curveOfLoopFamily (approximants j)).ImmersedOn (I := I) (Icc a b) ∧
         ∃ exceptional : Finset ℝ, ∀ t ∈ Icc a b,
@@ -98,8 +98,8 @@ theorem rfs_csf_generic_curves_of_slicewiseEmbedding
       (∀ ε > 0, ∃ j₀ : ℕ, ∀ j ≥ j₀, ∀ t ∈ Icc a b,
         |(curveOfLoopFamily (approximants j)).areaError B.family.metric (Icc a b) t -
           (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t| < ε) ∧
-      ((∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
-        (∀ j t, t ∈ Icc a b → ContinuousMap.Nullhomotopic (approximants j t)) ∧
+      ((∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+        (∀ j t, t ∈ Icc a b → IsContractibleLoop (approximants j t)) ∧
         ∀ ε > 0, ∃ j₀ : ℕ, ∀ j ≥ j₀, ∀ t ∈ Icc a b,
           |loopFamilyLeastArea B.family.metric (approximants j) t -
             loopFamilyLeastArea B.family.metric γ t| < ε) := by
@@ -144,11 +144,11 @@ variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 theorem exists_generic_loopFamily_approximation_of_smoothOn_univ
     (hdim : Module.finrank ℝ E = 3) {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {a b : ℝ} (hab : a < b)
+    (γ : ℝ → ContinuousFreeLoop M) {a b : ℝ} (hab : a < b)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) univ)
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (n : ℕ) {ε : ℝ} (hε : 0 < ε) :
-    ∃ Γ : ℝ → DifferentialGeometry.Topology.freeLoop M,
+    ∃ Γ : ℝ → ContinuousFreeLoop M,
       (curveOfLoopFamily Γ).SmoothOn (I := I) univ ∧
       (curveOfLoopFamily Γ).ImmersedOn (I := I) (Icc a b) ∧
       (∃ exceptional : Finset ℝ, ∀ t ∈ Icc a b, t ∉ exceptional → Topology.IsEmbedding (Γ t)) ∧
@@ -163,7 +163,7 @@ theorem exists_generic_loopFamily_approximation_of_smoothOn_univ
     DifferentialGeometry.Topology.exists_generic_loop_family_approximation_of_contMDiff
       hdim e.map e.smooth e.isClosedEmbedding.isEmbedding e.injective_mfderiv
       (fun p => γ p.1 p.2) hab (contMDiff_uncurry_of_smoothOn_univ γ hγ) hi n hε
-  let Γ : ℝ → DifferentialGeometry.Topology.freeLoop M := fun t =>
+  let Γ : ℝ → ContinuousFreeLoop M := fun t =>
     ⟨fun z => β (t, z), hβ.continuous.comp (continuous_const.prodMk continuous_id)⟩
   exact ⟨Γ, smoothOn_curveOfLoopFamily_of_contMDiff Γ hβ univ, hβi, hβemb, hβjets⟩
 
@@ -171,11 +171,11 @@ theorem exists_generic_loopFamily_approximation
     (hdim : Module.finrank ℝ E = 3) {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
     (R : Width.SmoothTubularRetraction e)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {a b : ℝ} (hab : a < b)
+    (γ : ℝ → ContinuousFreeLoop M) {a b : ℝ} (hab : a < b)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (n : ℕ) {ε : ℝ} (hε : 0 < ε) :
-    ∃ Γ : ℝ → DifferentialGeometry.Topology.freeLoop M,
+    ∃ Γ : ℝ → ContinuousFreeLoop M,
       (curveOfLoopFamily Γ).SmoothOn (I := I) univ ∧
       (curveOfLoopFamily Γ).ImmersedOn (I := I) (Icc a b) ∧
       (∃ exceptional : Finset ℝ, ∀ t ∈ Icc a b, t ∉ exceptional → Topology.IsEmbedding (Γ t)) ∧
@@ -229,10 +229,10 @@ theorem exists_generic_loopFamily_approximation_sequence
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
     {D : RealTimeInterval} (g : ℝ → SmoothRiemannianMetric I M)
     (hg : MetricFamilySmoothOn D g) {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.regular)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b)) :
-    ∃ approximants : ℕ → ℝ → DifferentialGeometry.Topology.freeLoop M,
+    ∃ approximants : ℕ → ℝ → ContinuousFreeLoop M,
       (∀ j, (curveOfLoopFamily (approximants j)).SmoothOn (I := I) (Icc a b) ∧
         (curveOfLoopFamily (approximants j)).ImmersedOn (I := I) (Icc a b) ∧
         ∃ exceptional : Finset ℝ, ∀ t ∈ Icc a b,
@@ -248,8 +248,8 @@ theorem exists_generic_loopFamily_approximation_sequence
       (∀ ε > 0, ∃ j₀ : ℕ, ∀ j ≥ j₀, ∀ t ∈ Icc a b,
         |(curveOfLoopFamily (approximants j)).areaError g (Icc a b) t -
           (curveOfLoopFamily γ).areaError g (Icc a b) t| < ε) ∧
-      ((∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
-        (∀ j t, t ∈ Icc a b → ContinuousMap.Nullhomotopic (approximants j t)) ∧
+      ((∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+        (∀ j t, t ∈ Icc a b → IsContractibleLoop (approximants j t)) ∧
         ∀ ε > 0, ∃ j₀ : ℕ, ∀ j ≥ j₀, ∀ t ∈ Icc a b,
           |loopFamilyLeastArea g (approximants j) t - loopFamilyLeastArea g γ t| < ε) := by
   let _ : Nonempty M := ⟨γ a 0⟩
@@ -305,7 +305,7 @@ theorem exists_generic_loopFamily_approximation_sequence
     refine ⟨j₀, fun j hj t ht => ?_⟩
     simpa only [Real.dist_eq, abs_sub_comm] using hj₀ j hj t ht
   · intro hγctr
-    have happctr : ∀ j t, t ∈ Icc a b → ContinuousMap.Nullhomotopic (app j t) := fun j =>
+    have happctr : ∀ j t, t ∈ Icc a b → IsContractibleLoop (app j t) := fun j =>
       hctr γ (app j) (Icc a b) hγctr (fun p hp =>
         (hbound j 0 (by norm_num) p hp).trans_le (min_le_left _ _))
     refine ⟨happctr, ?_⟩

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Toponogov.CompleteHinge
 import DifferentialGeometry.Geometry.Comparison.Toponogov.MinimizingRay
 import DifferentialGeometry.Geometry.Comparison.RadialHessianLowerBound
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import Mathlib.Topology.Connected.TotallyDisconnected
 
 set_option autoImplicit false

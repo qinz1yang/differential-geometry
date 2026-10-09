@@ -399,8 +399,8 @@ private theorem tensor0S_commutator_expansion_from_realizes
           simp
         rw [hfun]
         exact
-          MDifferentiableAt.sum (I := I) (t := Finset.univ)
-            (f := fun q : Fin s => fun p : M =>
+          mdiffAt_finset_sum (I := I) Finset.univ
+            (fun q : Fin s => fun p : M =>
               alphaSec p (fun a : Fin s => VYq q a p))
             (by intro q hq; exact hCY_mdiff q)
     have hCX_sum_mdiff :
@@ -417,8 +417,8 @@ private theorem tensor0S_commutator_expansion_from_realizes
           simp
         rw [hfun]
         exact
-          MDifferentiableAt.sum (I := I) (t := Finset.univ)
-            (f := fun q : Fin s => fun p : M =>
+          mdiffAt_finset_sum (I := I) Finset.univ
+            (fun q : Fin s => fun p : M =>
               alphaSec p (fun a : Fin s => VXq q a p))
             (by intro q hq; exact hCX_mdiff q)
     have hFY_fun :

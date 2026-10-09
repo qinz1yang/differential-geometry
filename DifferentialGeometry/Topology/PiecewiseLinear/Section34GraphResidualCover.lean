@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteManifoldFaces
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.VertexCells
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ControlledVertexCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34RefinedResidualDisks
 
 open Set Topology
@@ -15,7 +20,7 @@ variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea]
 noncomputable def section34GraphResidualCell (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M U)
     (t : Finset Ea) : Set M :=
   closure (simplexBody 𝒦 t \ ⋃ w : Section34VertexIndex 𝒦 𝒦',
-    graphVertexCell 𝒦 𝒦' w)
+    section34GraphVertexCell 𝒦 𝒦' w)
 
 variable [T2Space M] {𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M U}
 
@@ -62,11 +67,11 @@ theorem locallyFinite_section34GraphResidualCell
 theorem eq_iUnion_section34GraphVertexCell_union_residuals [FiniteDimensional ℝ Ea]
     (𝒦 𝒦' : LocallyFinitePLPieceIn Ea 3 M U)
     (hK : IsCombinatorialManifoldWithBoundary 3 𝒦.complex) :
-    U = (⋃ w : Section34VertexIndex 𝒦 𝒦', graphVertexCell 𝒦 𝒦' w) ∪
+    U = (⋃ w : Section34VertexIndex 𝒦 𝒦', section34GraphVertexCell 𝒦 𝒦' w) ∪
       ⋃ t : Section34SimplexIndex 𝒦 4, section34GraphResidualCell 𝒦 𝒦' t.1 := by
   apply Subset.antisymm
   · intro x hx
-    by_cases hxN : x ∈ ⋃ w : Section34VertexIndex 𝒦 𝒦', graphVertexCell 𝒦 𝒦' w
+    by_cases hxN : x ∈ ⋃ w : Section34VertexIndex 𝒦 𝒦', section34GraphVertexCell 𝒦 𝒦' w
     · exact Or.inl hxN
     · obtain ⟨p, hp, rfl⟩ := 𝒦.bijOn.surjOn hx
       obtain ⟨s, hs, hps⟩ := 𝒦.complex.mem_space_iff.mp hp
@@ -75,7 +80,7 @@ theorem eq_iUnion_section34GraphVertexCell_union_residuals [FiniteDimensional �
       exact ⟨p, convexHull_mono (Finset.coe_subset.mpr hst) hps, rfl⟩
   · refine union_subset (iUnion_subset fun w => ?_)
       (iUnion_subset fun t => section34GraphResidualCell_subset t.2.1)
-    exact (graphVertexCell_subset_simplexCarrierSupport w).trans
+    exact (section34GraphVertexCell_subset_carrierSupport w).trans
       ((locallyFinite_section34CarrierSupport 𝒦').1 w.1)
 
 open Classical in
@@ -108,7 +113,7 @@ theorem image_closure_sdiff_derivedNeighborhood_eq_section34GraphResidualCell
       have hxy' : 𝒦'.map x = y := by simpa only [hmap] using hxy
       exact ⟨x, ⟨hxP, fun hxN => hyN ⟨x, hxN, hxy'⟩⟩, hxy'⟩
   change 𝒦'.map '' closure (P \ N) = _
-  rw [himage, hdiff, section34GraphResidualCell, iUnion_graphVertexCell]
+  rw [himage, hdiff, section34GraphResidualCell, iUnion_section34GraphVertexCell]
 
 theorem exists_isPLCellOn_section34GraphResidualTriangle [FiniteDimensional ℝ Ea]
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)

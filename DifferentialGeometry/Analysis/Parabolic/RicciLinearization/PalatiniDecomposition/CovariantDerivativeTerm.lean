@@ -129,7 +129,7 @@ private lemma palatiniTermSlotFib_apply_toModel {s : ℕ} {x : M}
     Tensor0SSpace.toModel
         (bilinearSlotInsertCLM (I := I) (M := M) s x Term D) m =
       Tensor0SSpace.toModel
-        (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+        (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
           (Term ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))) D)
         (Matrix.vecTail m) := by
   rw [palatiniToModel_eq_eval, termSlotFib_apply_eval]
@@ -427,7 +427,7 @@ private lemma palatiniPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMe
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ (s + 1)
             (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁))).toSection x) Z) =
         cometricDoubleTraceFib (I := I) g₀ s x
-          (slotInsertEndomorphism (I := I) (M := M) (s + 2) 0 x
+          (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
             (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z) from by
       rw [operatorFieldComposition_toSection]
       rfl]
@@ -436,10 +436,10 @@ private lemma palatiniPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMe
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
       (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel
-        (slotInsertEndomorphism (I := I) (M := M) (s + 2) 0 x
+        (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z)) mm]
     refine Finset.sum_congr rfl fun a _ => ?_
-    rw [slotInsertEndomorphism_apply_eval]
+    rw [slotInsertEndoFib_apply_eval]
     rw [Fin.update_cons_zero]
     rfl
   rw [hRHS]
@@ -642,7 +642,7 @@ private lemma palatiniSlotInsertEndoCc_add (g₀ : SmoothRiemannianMetric I M) (
   rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
-  rw [slotInsertEndomorphism_add_left, add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomorphism metricComparisonEndomorphism_apply
   metricComparisonEndomorphism_eq_diff_add_id inverseMetricSharpFib_g0FlatCLM g0FlatCLM) in
@@ -728,11 +728,11 @@ private lemma palatiniCovGrad_slotInsert_fullRaised_id_zero (g₀ : SmoothRieman
     rw [← hY]
     exact palatiniEndoCovDeriv_fullRaised_id_zero (I := I) (M := M) g₀ Y x
       (m 0)]
-  rw [show slotInsertEndomorphism (I := I) (M := M) (0 + 1) 0 x
+  rw [show slotInsertEndoFib (I := I) (M := M) (0 + 1) 0 x
         (0 : TangentSpace I x →L[ℝ] TangentSpace I x) = 0 from by
     rw [show (0 : TangentSpace I x →L[ℝ] TangentSpace I x) =
         (0 : ℝ) • (0 : TangentSpace I x →L[ℝ] TangentSpace I x) from (zero_smul ℝ _).symm,
-      slotInsertEndomorphism_smul_left, zero_smul]]
+      slotInsertEndoFib_smul_left, zero_smul]]
   simp [SmoothCcTensor.toSection_zero]
 
 omit [SigmaCompactSpace M] in
@@ -850,7 +850,7 @@ lemma palatiniSlotInsertZero_fullRaisedRev_eq_omRecover
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
           (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀)).toSection x) om =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀ x) om from rfl]
   rw [palatiniCotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀ x) om w]
@@ -954,7 +954,7 @@ private lemma palatiniOmRecover_eq_idEndo_add_raise
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀)).toSection x) om =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ x) om from rfl]
   rw [palatiniCotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ x) om w]
@@ -1313,7 +1313,7 @@ lemma connectionDifferenceSection_eq_bilinearSlotInsertionCoefficient_zero (g₀
       from rfl]
   rw [palatiniTermSlotFib_apply_toModel (I := I) (M := M)
     (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁ x) om v]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [show (Function.update (Matrix.vecTail v) 0
         (tangentLinearMapToModel
           (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁ x
@@ -1369,7 +1369,7 @@ private lemma palatiniTermSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRie
           (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Term).toSection x) D) =
         bilinearSlotInsertCLM (I := I) (M := M) 1 x (Term x) D from rfl]
     rw [termSlotFib_apply_eval (I := I) (M := M) 1 x (Term x) D w]
-    rw [slotInsertEndomorphism_apply_natural]
+    rw [slotInsertEndoFib_apply_natural]
   have e1 : Tensor0SSpace.eval
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
         (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 3
@@ -1454,7 +1454,7 @@ private lemma palatiniTermSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRie
     rw [termSlotFib_apply_eval (I := I) (M := M) 0 x (Term x)
       (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0)))
       (Matrix.vecTail (fun i => w ((finRotate 3).symm i)))]
-    rw [slotInsertEndomorphism_apply_natural]
+    rw [slotInsertEndoFib_apply_natural]
     congr 1
     funext k
     refine Fin.cases ?_ (fun j => j.elim0) k
@@ -1535,7 +1535,7 @@ private lemma palatiniTermSlotEndoCc_two_eq_reindex_slotExtend (g₀ : SmoothRie
           (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 2 Term).toSection x) D) =
         bilinearSlotInsertCLM (I := I) (M := M) 2 x (Term x) D from rfl]
     rw [termSlotFib_apply_eval (I := I) (M := M) 2 x (Term x) D w]
-    rw [slotInsertEndomorphism_apply_natural]
+    rw [slotInsertEndoFib_apply_natural]
   have e1 : Tensor0SSpace.eval
       ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 4 I x from
         (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 4
@@ -1622,7 +1622,7 @@ private lemma palatiniTermSlotEndoCc_two_eq_reindex_slotExtend (g₀ : SmoothRie
     rw [termSlotFib_apply_eval (I := I) (M := M) 1 x (Term x)
       (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D' (w (bilinearSlotInsertionCoefficientReindexPermFour 0)))
       (Matrix.vecTail (fun i => w (bilinearSlotInsertionCoefficientReindexPermFour i)))]
-    rw [slotInsertEndomorphism_apply_natural]
+    rw [slotInsertEndoFib_apply_natural]
     rfl
   have e5 : Tensor0SSpace.eval
       (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D' (w (bilinearSlotInsertionCoefficientReindexPermFour 0)))
@@ -2077,7 +2077,7 @@ private lemma palatiniQuadLowCc_unitModel_apply (g₀ gTerm gOut : SmoothRiemann
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ gOut).toSection x)
       (unitTensor (I := I) (M := M) x)) m]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ gOut).toSection x)
@@ -2394,14 +2394,14 @@ private lemma palatiniXdHalf_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianM
   rw [unitModel]
   rw [show (deTurckTermCoeffDiffHalfCc (I := I) (M := M) g₀ g₁ g_bg).toSection x
         (unitTensor (I := I) (M := M) x) =
-      slotInsertEndomorphism (I := I) (M := M) 4 0 x
+      slotInsertEndoFib (I := I) (M := M) 4 0 x
         (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀ x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from
           (deTurckLieConnectionDifferenceDerivativeCovKernelDiffLoweredCc (I := I) (M := M) g₀ g₁ g_bg).toSection x)
           (unitTensor (I := I) (M := M) x)) from by
     rw [deTurckTermCoeffDiffHalfCc, operatorFieldComposition_toSection]
     rfl]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from
           (deTurckLieConnectionDifferenceDerivativeCovKernelDiffLoweredCc (I := I) (M := M) g₀ g₁ g_bg).toSection x)

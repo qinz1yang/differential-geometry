@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.Toponogov.LimitingRadialAngleKer
 import DifferentialGeometry.Geometry.Comparison.Toponogov.Completion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckPacking
 import DifferentialGeometry.Topology.Compactness.ConvergentSeparators
-import DifferentialGeometry.Topology.Embedding.Dense
+import DifferentialGeometry.Topology.DenseEmbedding
 import DifferentialGeometry.Topology.MetricSpace.TotallyBounded
 
 set_option autoImplicit false

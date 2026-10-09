@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingOrderedBands
-import DifferentialGeometry.Topology.PiecewiseLinear.Annulus.BoundaryExtension
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34LateralBandReversal
 
 open Set
 

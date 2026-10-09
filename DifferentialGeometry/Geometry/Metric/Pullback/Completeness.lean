@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 

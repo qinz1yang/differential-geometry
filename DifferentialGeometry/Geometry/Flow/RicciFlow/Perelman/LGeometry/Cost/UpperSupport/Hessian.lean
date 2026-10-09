@@ -4,9 +4,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Alg
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
-import DifferentialGeometry.Geometry.Variation.Curve.AffineParameter
-import DifferentialGeometry.Geometry.Curve.SmoothGerm
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.AffineParameter
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SmoothCurveGerm
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 
 set_option autoImplicit false
@@ -384,7 +384,7 @@ private theorem covDerivAlong_gradient_lRegularizedAction_endpointBranch
   have hcovGrad := covDerivAlong_congr_of_eventuallyEq
     (I := I) g eta hgradEv
   obtain ⟨f₀, hf₀, hf₀eq⟩ :=
-    DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hUopen hyU hsmooth
+    DifferentialGeometry.exists_smooth_germ (I := I) hUopen hyU hsmooth
   have hgradEq :
       (T% fun q ↦ gradientFun (I := I) g f₀ q) =ᶠ[nhds y]
         (T% fun q ↦ gradientFun (I := I) g branch q) := by

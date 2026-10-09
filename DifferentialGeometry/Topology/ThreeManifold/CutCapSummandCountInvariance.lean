@@ -1,9 +1,8 @@
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGluingPresentation
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.GraphDecomposition
+import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumFrontier
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidenceCycleRank
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedLaws
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
 
 noncomputable section
 
@@ -19,9 +18,10 @@ theorem finiteConnectedSum_append_standardThreeSphereLift_orientedDiffeomorph
     Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
       (finiteConnectedSum (L ++ [standardThreeSphereLift.{u}])).toClosedOrientedManifold
       (finiteConnectedSum L).toClosedOrientedManifold) := by
-  obtain ⟨e⟩ := finiteConnectedSum_append L
+  obtain ⟨e⟩ := finiteConnectedSum_append_of_connectedSumLaws
+    (connectedSumLaws_of_associative connectedSumAssociative_holds) L
     [standardThreeSphereLift.{u}]
-  obtain ⟨e'⟩ := connectedSum_sphere_right.{u} (finiteConnectedSum L)
+  obtain ⟨e'⟩ := (sphereUnitLaws_holds.{u}).2 (finiteConnectedSum L)
   exact ⟨e.trans e'⟩
 
 theorem not_forall_length_eq_of_orientedDiffeomorph_finiteConnectedSum :

@@ -205,7 +205,7 @@ variable {X : Type*} [TopologicalSpace X]
 
 @[simp]
 theorem intervalStretchIsotopy_zero :
-    intervalStretchIsotopy a b c d ha hb hc hd hab hbd hac hcd 0 =
+    intervalStretchIsotopy a b c d ha hb hc hd hab hbd hac hcd ⟨0, by norm_num⟩ =
       Homeomorph.refl (X × ℝ) := by
   ext p : 1
   apply Prod.ext
@@ -216,7 +216,7 @@ theorem intervalStretchIsotopy_zero :
 
 @[simp]
 theorem intervalStretchIsotopy_one :
-    intervalStretchIsotopy a b c d ha hb hc hd hab hbd hac hcd 1 =
+    intervalStretchIsotopy a b c d ha hb hc hd hab hbd hac hcd ⟨1, by norm_num⟩ =
       intervalStretchHomeomorph a b c d ha hb hc hd hab hbd hac hcd := by
   ext p : 1
   apply Prod.ext

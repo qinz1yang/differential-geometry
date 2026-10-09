@@ -7,17 +7,16 @@ open scoped ContinuousMap
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {M : Type*} [MetricSpace M]
 
 def preservesCoreValues {Z : Type*} (C : Set M) (f g : Z → M) : Prop :=
   (∀ x, g x ∈ C ↔ f x ∈ C) ∧ ∀ x, f x ∈ C → g x = f x
 
-omit [MetricSpace M] in
 theorem preservesCoreValues.refl {Z : Type*} (C : Set M) (f : Z → M) :
     preservesCoreValues C f f := ⟨fun _ => Iff.rfl, fun _ _ => rfl⟩
 
-omit [MetricSpace M] in
 theorem preservesCoreValues.trans {Z : Type*} {C : Set M} {f g h : Z → M}
     (hfg : preservesCoreValues C f g) (hgh : preservesCoreValues C g h) :
     preservesCoreValues C f h :=

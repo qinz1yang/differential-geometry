@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
 import DifferentialGeometry.Analysis.Spectral.LowerKyFan
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint
 
 noncomputable section
 
@@ -31,7 +30,7 @@ theorem kernel_isCovariantlyInvariant_of_laplacian_add_drift_nonpos_on_kernel
     (hA : ∀ x, (A x).IsPositive) (Z : ∀ x, TangentSpace I x)
     (hlap : ∀ x v, A x v = 0 →
       inner ℝ ((rawBundleEndomorphismConnLap g cov (fun y => A y) x +
-        _root_.CovariantDerivative.hom
+        HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov (fun y => A y) x (Z x)) v) v ≤ 0) :
     IsCovariantlyInvariantSubmoduleFamily cov (fun x => (A x).ker) := by
   let _ : ∀ x, FiniteDimensional ℝ (V x) :=
@@ -43,7 +42,7 @@ theorem kernel_isCovariantlyInvariant_of_laplacian_add_drift_nonpos_on_kernel
     g cov hcov A (fun y => (hA y).toLinearMap.isSymmetric) w hU hx hwzero
   have hnonpos := hlap x (w x) (hwzero x hx)
   have hdrift :=
-    _root_.CovariantDerivative.inner_hom_apply_of_eventually_mem_ker
+    HomConnectionGen.inner_homBundleCovariantDerivativeGen_apply_of_eventually_mem_ker
       cov A (fun y => (hA y).toLinearMap.isSymmetric) w hU hx hwzero (Z x)
   simp only [add_apply, inner_add_left, hidentity, hdrift, add_zero] at hnonpos
   let e : Fin (Module.finrank ℝ E) → TangentSpace I x :=

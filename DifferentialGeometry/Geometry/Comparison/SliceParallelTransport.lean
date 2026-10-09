@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.ConvexTangentParallel
-import DifferentialGeometry.Geometry.Operator.Hessian.AlongGeodesic
+import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
 
 set_option autoImplicit false
 noncomputable section
@@ -881,7 +881,7 @@ theorem hasSliceDefiningFamilies_of_totallyConvex
     intro i
     exact (μ i).contMDiff.comp_contMDiffOn c.contMDiffOn
   have hgerm : ∀ i : Fin m, ∃ Fi : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ Fi ∧ Fi =ᶠ[𝓝 x] f i :=
-    fun i => DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) c.open_source hxc (hfOn i)
+    fun i => DifferentialGeometry.exists_smooth_germ (I := I) c.open_source hxc (hfOn i)
   choose F hFsm hFeq using hgerm
   have hVex : ∀ i : Fin m, ∃ V : Set M, IsOpen V ∧ x ∈ V ∧ ∀ z ∈ V, F i z = f i z := by
     intro i

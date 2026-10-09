@@ -165,7 +165,7 @@ private lemma curry_covGradBundleEquiv_unit
     (v : TangentSpace I x) :
     tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ)
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x)) v =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Φ v)
         (unitZeroSec (I := I) (M := M) x) := by
@@ -175,20 +175,20 @@ private lemma curry_covGradBundleEquiv_unit
   rw [show Tensor0SSpace.toModel
       (tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ)
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x)) v) m =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ)
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x))
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m) by
     simpa only [ContinuousLinearEquiv.symm_apply_apply] using
       TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ)
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x))
         (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m]
-  rw [covariantSlotBundleEquiv_apply_toModel (I := I) (M := M) 0 s x Φ
+  rw [covGradBundleEquiv_apply_toModel (I := I) (M := M) 0 s x Φ
     (unitZeroSec (I := I) (M := M) x)
     (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m)]
   simp only [Fin.cons_zero, Matrix.vecTail, ContinuousLinearEquiv.symm_apply_apply]
@@ -208,7 +208,7 @@ lemma riemannianFiberNormSq_slot0Curry_covGradBundleEquiv_eq
     (a : Fin n) :
     riemannianFiberNormSq (I := I) (M := M) g 0 s x
         (slot0Curry (I := I) (M := M) g x s e K₀
-          (covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ) a) =
+          (covGradBundleEquiv (I := I) (M := M) 0 s x Φ) a) =
       riemannianFiberNormSq (I := I) (M := M) g 0 s x (Φ (e a)) := by
   classical
   rw [riemannianFiberNormSq_eq_sum_componentS_sq (I := I) (M := M) g x s e hreprS _ K₀,
@@ -219,7 +219,7 @@ lemma riemannianFiberNormSq_slot0Curry_covGradBundleEquiv_eq
   change Tensor0SSpace.eval
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
         slot0Curry (I := I) (M := M) g x s e K₀
-          (covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ) a)
+          (covGradBundleEquiv (I := I) (M := M) 0 s x Φ) a)
         (coframeS (I := I) (M := M) g x 0 e K₀))
       (fun k => e (J k)) =
     Tensor0SSpace.eval
@@ -251,11 +251,11 @@ lemma riemannianFiberNormSq_covGradBundleEquiv_eq_sum_frame
         ∑ K : Fin 0 → Fin n, ∑ J : Fin (s + 1) → Fin n,
           fiberNormSqSummand (I := I) (M := M) g x 0 (s + 1) S n e K J) :
     riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
-        (covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ) =
+        (covGradBundleEquiv (I := I) (M := M) 0 s x Φ) =
       ∑ a : Fin n, riemannianFiberNormSq (I := I) (M := M) g 0 s x (Φ (e a)) := by
   classical
   rw [riemannianFiberNormSq_succ_eq_sum_slot0Curry_of_frame (I := I) (M := M) g s x e K₀
-    hreprS hreprSucc (covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ)]
+    hreprS hreprSucc (covGradBundleEquiv (I := I) (M := M) 0 s x Φ)]
   refine Finset.sum_congr rfl (fun a _ => ?_)
   exact riemannianFiberNormSq_slot0Curry_covGradBundleEquiv_eq (I := I) (M := M) g s x Φ e K₀
     hreprS a
@@ -268,7 +268,7 @@ lemma riemannianFiberNormSq_covGradBundleEquiv_le_card_mul
     (hbound : ∀ v : TangentSpace I x, g.inner x v v = 1 →
       riemannianFiberNormSq (I := I) (M := M) g 0 s x (Φ v) ≤ b) :
     riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x
-        (covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ) ≤
+        (covGradBundleEquiv (I := I) (M := M) 0 s x Φ) ≤
       (Module.finrank ℝ E : ℝ) * b := by
   classical
   let cd : InnerProductSpace.Core ℝ (TangentSpace I x) := g.toRiemannianMetric.toCore x
@@ -328,7 +328,7 @@ lemma riemannianFiberNormSq_covGradBundleEquiv_symm_reading_eq_slot0Curry
           fiberNormSqSummand (I := I) (M := M) g x 0 s S n e K J)
     (a : Fin n) :
     riemannianFiberNormSq (I := I) (M := M) g 0 s x
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 s x).symm T (e a)) =
+        ((covGradBundleEquiv (I := I) (M := M) 0 s x).symm T (e a)) =
       riemannianFiberNormSq (I := I) (M := M) g 0 s x
         (slot0Curry (I := I) (M := M) g x s e K₀ T a) := by
   classical
@@ -339,7 +339,7 @@ lemma riemannianFiberNormSq_covGradBundleEquiv_symm_reading_eq_slot0Curry
   unfold fiberNormSqComponent
   change Tensor0SSpace.eval
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-        (covariantSlotBundleEquiv (I := I) (M := M) 0 s x).symm T (e a))
+        (covGradBundleEquiv (I := I) (M := M) 0 s x).symm T (e a))
         (coframeS (I := I) (M := M) g x 0 e K₀))
       (fun k => e (J k)) =
     Tensor0SSpace.eval
@@ -356,7 +356,7 @@ lemma riemannianFiberNormSq_covGradBundleEquiv_symm_reading_eq_slot0Curry
     simp
   rw [hscalar, one_smul, coframeS_zero_eq_unitZeroSec (I := I) (M := M)]
   have h := curry_covGradBundleEquiv_unit (I := I) (M := M) s x
-    ((covariantSlotBundleEquiv (I := I) (M := M) 0 s x).symm T) (e a)
+    ((covGradBundleEquiv (I := I) (M := M) 0 s x).symm T) (e a)
   rw [ContinuousLinearEquiv.apply_symm_apply] at h
   exact congrArg (fun Q : Tensor0SSpace s I x =>
     Tensor0SSpace.eval Q (fun k => e (J k))) h.symm
@@ -371,7 +371,7 @@ lemma riemannianFiberNormSq_covGradBundleEquiv_symm_reading_le
       g.inner x (B i x) (B j x) = if i = j then (1 : ℝ) else 0)
     (i : Fin (Module.finrank ℝ E)) :
     riemannianFiberNormSq (I := I) (M := M) g 0 s x
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 s x).symm T (B i x)) ≤
+        ((covGradBundleEquiv (I := I) (M := M) 0 s x).symm T (B i x)) ≤
       riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x T := by
   classical
   set eC : Fin (Module.finrank ℝ E) → TangentSpace I x := fun j => B j x with heC_def

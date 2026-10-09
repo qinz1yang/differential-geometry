@@ -72,7 +72,7 @@ theorem finrank_range_le_at_later_time_of_contMDiffOn
       HasDerivAt (fun r ↦ A r z)
         (rawBundleEndomorphismConnLap (I := I) (g q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom I M F V F V
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V
             (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z)) q)
     {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t < T) (x y : M) :
@@ -129,7 +129,7 @@ theorem finrank_range_le_at_later_time_of_contMDiffOn
         HasDerivAt (fun r => A (r + a) v)
           (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov (q + a))
               (fun w => A (q + a) w) v +
-            _root_.CovariantDerivative.hom I M F V F V
+            HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V
               (cov (q + a)) (cov (q + a)) (fun w => A (q + a) w) v (X (q + a) v) +
             reaction (q + a) v (A (q + a) v)) q := by
       intro q hq v
@@ -210,7 +210,7 @@ theorem finrank_range_spatially_constant_and_locally_constant_of_contMDiffOn
       HasDerivAt (fun r ↦ A r z)
         (rawBundleEndomorphismConnLap (I := I) (g q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom I M F V F V
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V
             (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z)) q)
  :
@@ -289,7 +289,7 @@ theorem rank_finite_interval_partition_of_contMDiffOn
       HasDerivAt (fun r ↦ A r z)
         (rawBundleEndomorphismConnLap (I := I) (g q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom I M F V F V
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V
             (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z)) q)
     {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (hb : b < T) :
@@ -363,7 +363,7 @@ theorem finrank_range_le_at_later_time_of_contMDiffOn_on_Icc
       HasDerivAt (fun r ↦ A r z)
         (rawBundleEndomorphismConnLap (I := I) (g q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom I M F V F V
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V
             (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z)) q)
     {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T) (x y : M) :
@@ -455,7 +455,7 @@ theorem finrank_range_le_at_later_time_of_contMDiffOn_on_Icc
       HasDerivAt (fun r => A' r z)
         (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov' q)
             (fun w => A' q w) z +
-          _root_.CovariantDerivative.hom I M F V F V
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V
             (cov' q) (cov' q) (fun w => A' q w) z (X q z) +
           reaction' q z (A' q z)) q := by
     intro q hq z
@@ -523,7 +523,7 @@ theorem finrank_range_spatially_constant_and_locally_constant_of_contMDiffOn_on_
       HasDerivAt (fun r ↦ A r z)
         (rawBundleEndomorphismConnLap (I := I) (g q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom I M F V F V
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V
             (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z)) q)
  :
@@ -594,7 +594,7 @@ theorem rank_finite_interval_partition_of_contMDiffOn_on_Icc
       HasDerivAt (fun r ↦ A r z)
         (rawBundleEndomorphismConnLap (I := I) (g q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom I M F V F V
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V
             (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z)) q)
     {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (hb : b ≤ T) :

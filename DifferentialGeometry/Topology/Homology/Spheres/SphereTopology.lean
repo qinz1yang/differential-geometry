@@ -280,10 +280,10 @@ theorem pathConnectedSpace_of_one_le {n : ℕ} (hn : 1 ≤ n) : PathConnectedSpa
 lemma eq_northPole_or_eq_southPole_zero (x : unitSphere 0) : x = northPole 0 ∨ x = southPole 0 :=
   eq_northPole_or_eq_southPole x (fun j => j.elim0)
 
-lemma northPole_zero_apply : (northPole 0).1 0 = 1 := by
+@[simp] lemma northPole_zero_apply : (northPole 0).1 0 = 1 := by
   simp [Fin.last_zero]
 
-lemma southPole_zero_apply : (southPole 0).1 0 = -1 := by
+@[simp] lemma southPole_zero_apply : (southPole 0).1 0 = -1 := by
   simp [Fin.last_zero]
 
 def sphere0Equiv : unitSphere 0 ≃ Fin 2 where

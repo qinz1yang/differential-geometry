@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.RecenteringEstimates
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.RecenteredStaticPreparation
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.PositiveCuttingCoordinates
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CutCoreCollar
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.PreparedCapWidth
@@ -64,7 +64,7 @@ theorem exists_uniform_prepared_collar_correspondence :
                   ∃ qnew : openCylinder (c * δ)⁻¹, qnew.val = q.val ∧
                     d'.oriented.controlledMap qnew = d.map qorig := by
   obtain ⟨c, hc, C, hC, A, hA, hsmall, hmod⟩ := exists_uniform_recentered_static_preparation.{u, v, w}
-  refine ⟨c, hc, C, hC, A, hA, hsmall, ?_⟩
+  refine ⟨c, hc, C, hC, A, hA, hsmall.1, ?_⟩
   intro D hD m ε hε
   obtain ⟨δ₀, hδ₀, hquarter, hprep⟩ := hmod D hD m ε hε
   refine ⟨δ₀, hδ₀, hquarter, ?_⟩

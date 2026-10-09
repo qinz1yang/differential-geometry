@@ -16,7 +16,7 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
 
 noncomputable def canonicalComparisonSupport
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier)
     (c : ConnectedComponents (H.stage i.succ).Carrier) : G.ComparisonSupport c :=
   letI : SimplyConnectedSpace (G.Parent c).Carrier := hSC (G.transition.childParent c)
   Classical.choice (G.rfs_comparison_support c)
@@ -25,7 +25,7 @@ namespace ComparisonSupport
 
 theorem rfs_collapse_degree_of_canonicalComparisonSupport
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier)
     (c : ConnectedComponents (H.stage i.succ).Carrier)
     (a : IntegralHomology (G.Parent c).Carrier 3) (b : IntegralHomology (G.Child c).Carrier 3)
     {k : ℤ}
@@ -52,7 +52,7 @@ theorem rfs_collapse_degree_of_canonicalComparisonSupport
 
 theorem canonicalComparisonSupport_map_eq
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier)
     (c : ConnectedComponents (H.stage i.succ).Carrier)
     (a : IntegralHomology (G.Parent c).Carrier 3) (b : IntegralHomology (G.Child c).Carrier 3)
     {k : ℤ}

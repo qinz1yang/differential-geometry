@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphPatchTraces
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphResidualCover
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphFaceArcs
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.CutCells.Intersections
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCutIntersections
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnDimensionOrder
 
 open Set
@@ -17,7 +22,7 @@ theorem exists_isPLCellOn_section34GraphVertexCell_inter_residualTetrahedron
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (t : Section34SimplexIndex 𝒦 4) (w : Section34VertexIndex 𝒦 𝒦')
     (hwt : Section34Incident w.1 t.1) :
-    ∃ B, IsPLCellOn 2 (graphVertexCell 𝒦 𝒦' w ∩
+    ∃ B, IsPLCellOn 2 (section34GraphVertexCell 𝒦 𝒦' w ∩
       section34GraphResidualCell 𝒦 𝒦' t.1) B := by
   classical
   let S₀ := simplexComplex t.1 (𝒦.complex.indep t.2.1)
@@ -79,10 +84,10 @@ theorem exists_isPLCellOn_section34GraphVertexCell_inter_residualTetrahedron
       hf.1
   let v := w.1.centroid ℝ id
   have hvS : {v} ∈ S.faces := by
-    rw [show ({v} : Finset Ea) = w.1 from (subdivisionGraphVertex_eq_singleton_centroid w).symm]
+    rw [show ({v} : Finset Ea) = w.1 from (section34VertexIndex_eq_singleton_centroid w).symm]
     exact ⟨w.2.1, convexHull_min hwt (convex_convexHull ℝ (t.1 : Set Ea))⟩
   have hvG : {v} ∈ G.faces :=
-    ⟨singleton_centroid_mem_restrict_graphSkeletonSpace w, hSspace.symm ▸ hvS.2⟩
+    ⟨singleton_centroid_mem_section34GraphCore w, hSspace.symm ▸ hvS.2⟩
   have hball := hS.isCombinatorialManifoldWithBoundary.isPLBall_graphDualCell_inter_residual
     S G hGB hcard hvG
   have hres : closure (convexHull ℝ (t.1 : Set Ea) \
@@ -123,17 +128,17 @@ open Classical in
 theorem section34GraphCutFamily_subset_strict_on_patches
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (p : Section34PatchIndex 𝒦 𝒦') (l : Section34CutLabelOf 𝒦 𝒦')
-    (h : graphCutCell 𝒦 𝒦' (.patch p) ⊆ graphCutCell 𝒦 𝒦' l) :
+    (h : section34GraphCutFamily 𝒦 𝒦' (.patch p) ⊆ section34GraphCutFamily 𝒦 𝒦' l) :
     (.patch p : Section34CutLabelOf 𝒦 𝒦') = l ∨ 2 < section34Dim l := by
   classical
-  let P := graphCutCell 𝒦 𝒦' (.patch p)
-  let C := graphVertexCell 𝒦 𝒦'
+  let P := section34GraphCutFamily 𝒦 𝒦' (.patch p)
+  let C := section34GraphVertexCell 𝒦 𝒦'
   let R := section34GraphResidualCell 𝒦 𝒦'
-  let E := graphSplittingDisk 𝒦 𝒦'
+  let E := section34GraphSplitCell 𝒦 𝒦'
   obtain ⟨Bd, hP⟩ := exists_isPLCellOn_section34GraphVertexCell_inter_residualTetrahedron
     hsub hmap p.1.1 p.1.2 p.2
   have hcell : IsPLCellOn 2 P Bd := by
-    simpa only [P, graphCutCell, inter_comm] using hP
+    simpa only [P, section34GraphCutFamily, inter_comm] using hP
   have hPC : P ⊆ C p.1.2 := inter_subset_right
   have hPR : P ⊆ R p.1.1.1 := inter_subset_left
   have hPE : ∀ e, ¬ P ⊆ E e := by
@@ -169,7 +174,7 @@ theorem section34GraphCutFamily_subset_strict_on_patches
     obtain ⟨e, -, he⟩ := exists_section34GraphSplitCell_of_vertex_inter_nonempty
       hsub hmap p.1.2 w hne ⟨x, hPC hx, hPw hx⟩
     apply hPE e
-    change P ⊆ graphSplittingDisk 𝒦 𝒦' e
+    change P ⊆ section34GraphSplitCell 𝒦 𝒦' e
     rw [he]
     exact subset_inter hPC hPw
   have hPT : ∀ t : Section34SimplexIndex 𝒦 4, P ⊆ R t.1 → p.1.1 = t := by

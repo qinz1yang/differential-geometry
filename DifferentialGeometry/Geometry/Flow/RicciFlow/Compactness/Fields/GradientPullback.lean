@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Operator.GradientPullback
+import DifferentialGeometry.Geometry.Operator.Gradient.PullbackAt
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PointedPullbackExtensions
 
 
@@ -35,10 +35,10 @@ theorem normGradSqFun_gSeqExt_of_chi_eq_one
     normGradSqFun (gSeqExt Phi R bf hsrc htgt k t) (f ∘ Phi.map k) x =
       normGradSqFun ((X.term (phi k)).S.base.metric t) f (Phi.map k x) := by
   have hPhi := (Phi.partialDiffeomorph k).isLocalDiffeomorphAt I I ∞ hx
-  apply normGradSqFun_eq_of_pullback_inner
+  apply normGradSqFun_comp_of_pullback_inner
     (gSeqExt Phi R bf hsrc htgt k t) ((X.term (phi k)).S.base.metric t)
-    (Phi.map k) x (hPhi.mdifferentiableAt (by simp)) _
-    (hPhi.mfderivToContinuousLinearEquiv (by simp)).surjective f hf
+    (hPhi.mdifferentiableAt (by simp)) _
+    (hPhi.mfderivToContinuousLinearEquiv (by simp)).surjective hf
   intro v w
   have heq := gSeqExt_inner_of_mem Phi R bf hsrc htgt k t x hx v w
   rw [hchi, one_smul, sub_self, zero_smul, add_zero] at heq

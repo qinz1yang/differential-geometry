@@ -1,4 +1,3 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.Connected
 import DifferentialGeometry.Topology.PiecewiseLinear.NonseparatingPolygonCarrier
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.IsAnnulusOnCompact
@@ -42,6 +41,16 @@ theorem IsTopologicalSolidTorus.image_of_continuousOn_injOn {X Y : Type*}
   have hScompact : IsCompact S := isCompact_iff_compactSpace.mpr ψ.symm.compactSpace
   obtain ⟨φ, -⟩ := exists_homeomorph_image_of_compact hScompact hf hinj
   exact ⟨φ.symm.trans ψ⟩
+
+theorem IsPLCellOn.simplyConnectedSpace {M : Type*} [TopologicalSpace M] [T2Space M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {d : ℕ} {D B : Set M}
+    (hD : IsPLCellOn d D B) : SimplyConnectedSpace D := by
+  obtain ⟨P, r, u, hr, hu, rfl, -⟩ := hD
+  have hP : IsPLBall d P := ⟨r, hr⟩
+  let _ := hP.simplyConnectedSpace
+  obtain ⟨φ, -⟩ := exists_homeomorph_image_of_compact hP.isPolyhedron.isCompact
+    hu.continuousOn hu.injOn
+  exact φ.symm.toHomotopyEquiv.simplyConnectedSpace
 
 theorem IsTopologicalSolidTorus.not_carriesFundamentalGroupOnto_of_subset_isPLCellOn
     {M : Type*} [TopologicalSpace M] [T2Space M]

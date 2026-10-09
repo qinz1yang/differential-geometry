@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BranchSlideConjugation
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Carrier
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCarrier
 
 open Set Topology
 open scoped Manifold

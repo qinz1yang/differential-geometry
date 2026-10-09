@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.AncientCover
 import DifferentialGeometry.Geometry.Neck.CylindricalChainAnnulus
-import DifferentialGeometry.Topology.ThreeManifold.SphericalAnnulus.BoundaryMatching
+import DifferentialGeometry.Topology.Ehresmann.SphereAnnulus
 import DifferentialGeometry.Topology.Manifold.LocallyPathConnected
 
 noncomputable section

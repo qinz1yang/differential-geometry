@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionWindowLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ScaledPointedLimitLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionWindowProductNeck
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.Splitting.ParallelLineProduct
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Neck.Transport.SpatialLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.LineProductSplitting
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedSpatialNeckLimit
 import DifferentialGeometry.Geometry.Neck.LineNeckSimplyConnected
 import DifferentialGeometry.Geometry.Curvature.RicciNonnegativeConvergence
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge

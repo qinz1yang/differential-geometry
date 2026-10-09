@@ -1,6 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.EndomorphismInsertion.Bounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.L2Jet.Bound
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 
 open DifferentialGeometry.TensorMetric
   (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
@@ -62,8 +61,8 @@ lemma slotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   have hRHS : (show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (slotInsertEndoCc (I := I) (M := M) g₀ s Λ -
           slotInsertEndoCc (I := I) (M := M) g₀ s Λ').toSection x) D =
-      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Λ x) D -
-        slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Λ' x) D := by
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Λ x) D -
+        slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Λ' x) D := by
     rw [show ((slotInsertEndoCc (I := I) (M := M) g₀ s Λ -
           slotInsertEndoCc (I := I) (M := M) g₀ s Λ').toSection x) =
         (slotInsertEndoCc (I := I) (M := M) g₀ s Λ).toSection x -
@@ -72,7 +71,7 @@ lemma slotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   rw [hRHS]
   have hLHS : (show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (slotInsertEndoCc (I := I) (M := M) g₀ s (Λ - Λ')).toSection x) D =
-      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x ((Λ - Λ') x) D := rfl
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x ((Λ - Λ') x) D := rfl
   rw [hLHS, show ((Λ - Λ') x) = Λ x - Λ' x from rfl,
     slotInsertEndoFib_sub_left (I := I) (M := M) (s + 1) 0 x (Λ x) (Λ' x)]
   rw [sub_apply]
@@ -96,7 +95,7 @@ theorem connectionDifferenceDeTurckVectorFieldInsert_eq_cometricRaise (g₀ g₁
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_ref)).toSection x) om =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_ref x) om from rfl]
   rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_ref x) om w]
@@ -113,6 +112,18 @@ theorem connectionDifferenceDeTurckVectorFieldInsert_eq_cometricRaise (g₀ g₁
     (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_ref x w)]
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
+lemma norm_iteratedCovGrad_cometricRaiseSlot0Field_eq (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
+    (W : SmoothCcTensor g₀ 0 (s + 2)) (i : ℕ) :
+    ‖iteratedCovGrad (I := I) g₀ 1 (s + 1) i
+        (cometricRaiseSlot0Field (I := I) (M := M) g₀ s W)‖ =
+      ‖iteratedCovGrad (I := I) g₀ 0 (s + 2) i W‖ := by
+  refine raisedKoszul_norm_eq_of_sq_eq (norm_nonneg _) (norm_nonneg _) ?_
+  rw [SmoothCcTensor.norm_def, SmoothCcTensor.norm_def,
+    tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs,
+    tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  exact riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ s W i x
 
 private theorem wAlphaB_jetL2_perOrder
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)

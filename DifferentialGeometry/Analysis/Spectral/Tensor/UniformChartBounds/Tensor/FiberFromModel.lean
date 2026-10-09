@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.TensorRSContRiemannianBundle
-import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.Transition
+import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleTransition
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.VectorBundle.Riemannian

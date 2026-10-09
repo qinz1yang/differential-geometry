@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingDiskComponents
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.SeparatingCircle
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingSeparator
 
 open Set Topology
 
@@ -116,7 +116,7 @@ theorem exists_section34_piercing_circle_essential_in_first_annulus
       (Subtype.val ⁻¹' (G (ends e).1 '' Ab₀ e))
       (Subtype.val ⁻¹' (G (ends e).1 '' Ab₁ e)) ∧
       ¬ ∃ D : Set M₂, IsPLCellOn 2 D (Pg e i) ∧ D ⊆ G (ends e).1 '' Aa e := by
-  obtain ⟨i, hi, hsep⟩ := exists_piercing_circle_separating_first_ends hprep hpack e
+  obtain ⟨i, hi, hsep⟩ := exists_section34_piercing_circle_separating_first_ends hprep hpack e
   have hann := (section34_piercing_annuli hprep hpack e).1
   have hends {D : Set M₂} (hD : IsPLCellOn 2 D (Pg e i)) (hDT : D ⊆ Tp e) :=
     section34_piercing_ends_not_in_inner_cell hprep hpack e hD hDT

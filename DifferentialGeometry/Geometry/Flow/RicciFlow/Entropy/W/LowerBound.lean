@@ -39,7 +39,7 @@ theorem w_fixed_lower
         (∀ x : M, 0 < v x) ->
         (∫ x, v x ^ 2 ∂(riemannianVolumeMeasure I M g)) = 1 ->
         B ≤
-          DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (riemannianVolumeMeasure I M g) 3 tau
+          wFunctional (riemannianVolumeMeasure I M g) 3 tau
             (fun x => metricScalarAt (I := I) (M := M) g x)
             (fun x =>
               g.inner x
@@ -129,7 +129,7 @@ theorem w_fixed_lower
   have hLog' := hLog htau hv hpos hmass
   change Ent ≤ 2 * tau * A - ((3 : Real) / 2) * Real.log tau + L at hLog'
   have hW :
-      DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional μ 3 tau R
+      wFunctional μ 3 tau R
           (fun x =>
             g.inner x
               (gradientFun (I := I) g
@@ -138,7 +138,7 @@ theorem w_fixed_lower
                 (perelmanPotential 3 tau (fun y => v y * v y)) x))
           (perelmanPotential 3 tau (fun y => v y * v y)) =
         4 * tau * A + tau * S - Ent +
-          (Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor 3 tau) - 3) := by
+          (Real.log (perelmanDensityPrefactor 3 tau) - 3) := by
     rw [w_square_form μ g 3 htau0 R hv hpos]
     calc
       (∫ x,
@@ -147,18 +147,18 @@ theorem w_fixed_lower
               (gradientFun (I := I) g v x) +
             tau * R x * (v x * v x) -
             (v x * v x) * Real.log (v x * v x) +
-            (Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor 3 tau) - (3 : Real)) *
+            (Real.log (perelmanDensityPrefactor 3 tau) - (3 : Real)) *
               (v x * v x) ∂μ) =
           ∫ x,
             (4 * tau) * energy x + tau * (R x * v x ^ 2) - entropy x +
-              (Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor 3 tau) - 3) * v x ^ 2 ∂μ := by
+              (Real.log (perelmanDensityPrefactor 3 tau) - 3) * v x ^ 2 ∂μ := by
         apply integral_congr_ae
         filter_upwards with x
         simp only [energy, entropy, gradient_eq_gradFun, pow_two]
         ring
       _ = 4 * tau * A + tau * S - Ent +
-          (Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor 3 tau) - 3) := by
-        let c := Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor 3 tau) - 3
+          (Real.log (perelmanDensityPrefactor 3 tau) - 3) := by
+        let c := Real.log (perelmanDensityPrefactor 3 tau) - 3
         have hdir : Integrable (fun x => (4 * tau) * energy x) μ :=
           henergy_int.const_mul _
         have hscal : Integrable (fun x => tau * (R x * v x ^ 2)) μ :=
@@ -181,7 +181,7 @@ theorem w_fixed_lower
                 ∫ x, entropy x ∂μ) + ∫ x, c * v x ^ 2 ∂μ := by
             rw [integral_add hdir hscal]
           _ = 4 * tau * A + tau * S - Ent +
-              (Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor 3 tau) - 3) := by
+              (Real.log (perelmanDensityPrefactor 3 tau) - 3) := by
             dsimp only [A, S, Ent, c]
             rw [integral_const_mul, integral_const_mul, integral_const_mul, hmass']
             ring
@@ -192,7 +192,7 @@ theorem w_fixed_lower
     Real.log_mul hbase htau0.ne'] at hpref
   norm_num at hpref
   change -tauMax * K0 - L - ((3 : Real) / 2) * Real.log (4 * Real.pi) - 3 ≤
-    DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional μ 3 tau R
+    wFunctional μ 3 tau R
       (fun x =>
         g.inner x
           (gradientFun (I := I) g
@@ -216,7 +216,7 @@ theorem w_density_lower
         (∀ x : M, 0 < u x) ->
         (∫ x, u x ∂(riemannianVolumeMeasure I M g)) = 1 ->
         B ≤
-          DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional (riemannianVolumeMeasure I M g) 3 tau
+          wFunctional (riemannianVolumeMeasure I M g) 3 tau
             (fun x => metricScalarAt (I := I) (M := M) g x)
             (fun x =>
               g.inner x

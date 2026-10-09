@@ -75,8 +75,8 @@ theorem child_simplyConnected_of_frontiers
     (hcover : E.childCoreCapCoverProducer)
     (hpc : E.ComponentwisePuncturedCoreSimpleConnected)
     (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
-    SimplyConnectedSpace (Q.component c).toClosedOrientedManifold.Carrier :=
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
+    SimplyConnectedSpace (Q.component c).Carrier :=
   E.child_simplyConnected_of_childCarrierCoreCapCover
     (fun c' h' => Classical.choice (hcover c' h')) (fun c' => hpc c') c
 
@@ -84,8 +84,8 @@ theorem child_simplyConnected_of_frontiers_apply
     (hcover : E.childCoreCapCoverProducer)
     (hpc : E.ComponentwisePuncturedCoreSimpleConnected)
     (c : ConnectedComponents Q.Carrier)
-    (h : SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier) :
-    SimplyConnectedSpace (Q.component c).toClosedOrientedManifold.Carrier :=
+    (h : SimplyConnectedSpace (P.component (E.childParent c)).Carrier) :
+    SimplyConnectedSpace (Q.component c).Carrier :=
   @SmoothCutCapTransition.child_simplyConnected_of_frontiers P Q D N E hcover hpc c h
 
 end SmoothCutCapTransition

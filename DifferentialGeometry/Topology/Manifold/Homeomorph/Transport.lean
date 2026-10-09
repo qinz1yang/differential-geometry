@@ -1,8 +1,6 @@
 import Mathlib.Geometry.Manifold.Diffeomorph
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
-section
-
 open Set Function Manifold Topology
 open scoped ContDiff
 set_option autoImplicit false
@@ -106,98 +104,3 @@ theorem pullbackDiffeomorph_symm_apply (h : X ≃ₜ M) (x : M) :
     (pullbackDiffeomorph (I := I) (n := n) h).symm x = h.symm x := rfl
 
 end DifferentialGeometry.Manifold.Homeomorph
-
-end
-
-end
-
-open scoped Manifold Topology
-
-namespace DifferentialGeometry.Topology.Handle
-
-noncomputable section
-
-universe u v w
-
-@[reducible]
-noncomputable def chartedSpaceOfHomeomorph {H : Type u} [TopologicalSpace H]
-    {M : Type v} [TopologicalSpace M] {M' : Type w} [TopologicalSpace M']
-    (h : M' ≃ₜ M) [ChartedSpace H M] : ChartedSpace H M' where
-  atlas := {e : OpenPartialHomeomorph M' H | ∃ e₀ : OpenPartialHomeomorph M H,
-    e₀ ∈ ChartedSpace.atlas (H := H) (M := M) ∧ e = h.toOpenPartialHomeomorph ≫ₕ e₀}
-  chartAt := fun x : M' => h.toOpenPartialHomeomorph ≫ₕ (chartAt (H := H) (M := M) (h x))
-  mem_chart_source := by
-    intro x
-    have hx : h x ∈ (chartAt (H := H) (M := M) (h x)).source :=
-      mem_chart_source (H := H) (M := M) (h x)
-    dsimp
-    constructor
-    · trivial
-    · exact hx
-  chart_mem_atlas := by
-    intro x
-    exact ⟨(chartAt (H := H) (M := M) (h x)), chart_mem_atlas (H := H) (M := M) (h x), rfl⟩
-
-private theorem chartedSpaceOfHomeomorph_eq_pullback {H : Type u} [TopologicalSpace H]
-    {M : Type v} [TopologicalSpace M] {M' : Type w} [TopologicalSpace M']
-    (h : M' ≃ₜ M) [ChartedSpace H M] :
-    chartedSpaceOfHomeomorph (H := H) h =
-      DifferentialGeometry.Manifold.Homeomorph.pullbackChartedSpace (H := H) h := by
-  apply ChartedSpace.ext
-  · ext e
-    change (∃ e₀ : OpenPartialHomeomorph M H,
-      e₀ ∈ ChartedSpace.atlas (H := H) (M := M) ∧ e = h.toOpenPartialHomeomorph ≫ₕ e₀) ↔
-      ∃ e₀ : OpenPartialHomeomorph M H,
-        e₀ ∈ ChartedSpace.atlas (H := H) (M := M) ∧ h.toOpenPartialHomeomorph ≫ₕ e₀ = e
-    exact ⟨fun ⟨e₀, he₀, he⟩ => ⟨e₀, he₀, he.symm⟩,
-      fun ⟨e₀, he₀, he⟩ => ⟨e₀, he₀, he.symm⟩⟩
-  · rfl
-
-theorem isManifoldOfHomeomorph {𝕜 : Type*} [NontriviallyNormedField 𝕜]
-    {E H : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [TopologicalSpace H]
-    (I : ModelWithCorners 𝕜 E H) {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    {n : WithTop ℕ∞} {M' : Type*} [TopologicalSpace M'] (h : M' ≃ₜ M)
-    [IsManifold I n M] :
-    @IsManifold 𝕜 _ E _ _ H _ I n M' _ (chartedSpaceOfHomeomorph h) := by
-  rw [chartedSpaceOfHomeomorph_eq_pullback]
-  exact DifferentialGeometry.Manifold.Homeomorph.instIsManifoldPullback (I := I) (n := n) h
-
-theorem contMDiff_homeomorph_of_chartedSpaceOfHomeomorph {𝕜 : Type*} [NontriviallyNormedField 𝕜]
-    {E H : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [TopologicalSpace H]
-    {X : Type*} [TopologicalSpace X] [ChartedSpace H X] {X' : Type*} [TopologicalSpace X']
-    (h : X' ≃ₜ X) (I : ModelWithCorners 𝕜 E H) (n : WithTop ℕ∞) [IsManifold I n X] :
-    @ContMDiff 𝕜 _ E _ _ H _ I X' _ (chartedSpaceOfHomeomorph h) E _ _ H _ I X _ _ n h := by
-  rw [chartedSpaceOfHomeomorph_eq_pullback]
-  exact DifferentialGeometry.Manifold.Homeomorph.contMDiff_pullback (I := I) (n := n) h
-
-theorem contMDiff_homeomorph_symm_of_chartedSpaceOfHomeomorph {𝕜 : Type*}
-    [NontriviallyNormedField 𝕜]
-    {E H : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [TopologicalSpace H]
-    {X : Type*} [TopologicalSpace X] [ChartedSpace H X] {X' : Type*} [TopologicalSpace X']
-    (h : X' ≃ₜ X) (I : ModelWithCorners 𝕜 E H) (n : WithTop ℕ∞) [IsManifold I n X] :
-    @ContMDiff 𝕜 _ E _ _ H _ I X _ _ E _ _ H _ I X' _ (chartedSpaceOfHomeomorph h) n h.symm := by
-  rw [chartedSpaceOfHomeomorph_eq_pullback]
-  exact DifferentialGeometry.Manifold.Homeomorph.contMDiff_symm_pullback (I := I) (n := n) h
-
-theorem contMDiff_of_contMDiff_comp_homeo {𝕜 : Type*} [NontriviallyNormedField 𝕜]
-    {E H : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [TopologicalSpace H]
-    {X : Type*} [TopologicalSpace X] [ChartedSpace H X] {X' : Type*} [TopologicalSpace X']
-    {E' H' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E'] [TopologicalSpace H']
-    {I' : ModelWithCorners 𝕜 E' H'} {M : Type*} [TopologicalSpace M] [ChartedSpace H' M]
-    (h : X' ≃ₜ X) (I : ModelWithCorners 𝕜 E H) (n : WithTop ℕ∞) [IsManifold I n X]
-    (f : M → X') (hf : ContMDiff I' I n (fun m : M => h (f m))) :
-    @ContMDiff 𝕜 _ E' _ _ H' _ I' M _ _ E _ _ H _ I X' _ (chartedSpaceOfHomeomorph h) n f := by
-  classical
-  let : ChartedSpace H X' := chartedSpaceOfHomeomorph h
-  let : IsManifold I n X' := isManifoldOfHomeomorph I h
-  have hsymm : ContMDiff I I n (h.symm) :=
-    contMDiff_homeomorph_symm_of_chartedSpaceOfHomeomorph (𝕜 := 𝕜) h I n
-  have hfun : f = fun m : M => h.symm (h (f m)) := by
-    funext m
-    exact (h.left_inv (f m)).symm
-  rw [hfun]
-  exact hsymm.comp hf
-
-end
-
-end DifferentialGeometry.Topology.Handle

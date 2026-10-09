@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalNeckMixedJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessNormalizedTimeJets
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Necks.CylinderTimeDerivatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderTimeErrorJets
 
 noncomputable section
 
@@ -14,22 +14,19 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalSigmaCompact : SigmaCompactSpace G.terminalRegularOpen :=
+private local instance terminalSigmaCompact : SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       G.terminalRegularOpen.isOpen)
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.neckSigmaCompact (δ : ℝ) : SigmaCompactSpace (neckBuffer δ) :=
+private local instance neckSigmaCompact (δ : ℝ) : SigmaCompactSpace (neckBuffer δ) :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen NeckCylinderModel
       (neckBuffer δ).isOpen)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.cylinderReference_inner_eq_background
+private theorem cylinderReference_inner_eq_background
     (C : CylinderReference) (δ v : ℝ) (hv : v ≤ 0) (z : neckBuffer δ)
     (w : Fin 2 → TangentSpace SpatialNeckCylinderModel (show spatialNeckBuffer δ from z)) :
     (C.metric v).inner z.1 (w 0) (w 1) =
@@ -44,7 +41,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   rw [hbg]
   convert (hC.trans hS.symm).trans hrestrict.symm using 1
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.normalizedNeck_map_mfderiv_eq
+private theorem normalizedNeck_map_mfderiv_eq
     (L : G.TerminalLimitMetric) {t eps δ : ℝ} {k : ℕ}
     {x : G.terminalRegularOpen} (nk : StrongNeck G.flow eps x.1 t)
     (N : NormalizedNeck L.metric δ k) (hfit : δ⁻¹ + 1 ≤ eps⁻¹)
@@ -64,7 +61,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   rw [DifferentialGeometry.mfderiv_subtype_val_apply] at hcomp
   exact hd.trans hcomp
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.strongNeck_comparison_timeJet_eq
+theorem TerminalLimitMetric.strongNeck_comparison_timeJet_eq
     (L : G.TerminalLimitMetric)
     (B : ℕ → ℝ → Tensor0SField (I := ThreeModel) (M := G.terminalRegularOpen) ∞ 2)
     (hzero : ∀ t, B 0 t = metricTensorField (L.extendedMetric t))
@@ -246,13 +243,10 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.strongNeckBackground_zero_eq_round (δ : ℝ) :
+private theorem strongNeckBackground_zero_eq_round (δ : ℝ) :
     strongNeckBackgroundMetric δ 0 = roundCylinderMetric.restrictOpen (neckBuffer δ) := by
   apply SmoothRiemannianMetric.ext_inner
   intro x V W
@@ -269,11 +263,11 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   simpa only [sub_zero, mul_one] using congrArg (fun t => 2 * t + V.2 * W.2) hr
 
 
-private abbrev _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.cylinderJet (δ : ℝ) (q : ℕ) (v : ℝ) :
+private abbrev cylinderJet (δ : ℝ) (q : ℕ) (v : ℝ) :
     Tensor0SField (I := NeckCylinderModel) (M := neckBuffer δ) ∞ 2 :=
   shrinkingCylinderTimeJet δ q v
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.strongNeck_timeJet_error_eq_restrict
+theorem TerminalLimitMetric.strongNeck_timeJet_error_eq_restrict
     (L : G.TerminalLimitMetric)
     (B : ℕ → ℝ → Tensor0SField (I := ThreeModel) (M := G.terminalRegularOpen) ∞ 2)
     (hzero : ∀ t, B 0 t = metricTensorField (L.extendedMetric t))
@@ -295,7 +289,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   rw [N.tensorPullback_apply]
   exact (L.strongNeck_comparison_timeJet_eq B hzero hderiv nk N hfit hmap q hv z w).symm
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.strongNeck_timeJet_error_bound
+theorem TerminalLimitMetric.strongNeck_timeJet_error_bound
     (L : G.TerminalLimitMetric)
     (B : ℕ → ℝ → Tensor0SField (I := ThreeModel) (M := G.terminalRegularOpen) ∞ 2)
     (hzero : ∀ t, B 0 t = metricTensorField (L.extendedMetric t))
@@ -332,7 +326,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     ⟨mem_univ _, by have := z.2.1; linarith, z.2.2.trans_le hfit⟩
 
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.abs_clip_sub_le {u v : ℝ} (hv : v ∈ Icc (-1 : ℝ) 0) :
+private theorem abs_clip_sub_le {u v : ℝ} (hv : v ∈ Icc (-1 : ℝ) 0) :
     |max (-1) (min u 0) - v| ≤ |u - v| := by
   by_cases hl : u ≤ -1
   · rw [min_eq_left (by linarith), max_eq_left hl,
@@ -346,7 +340,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
       linarith
     · rw [min_eq_left (le_of_not_ge hu), max_eq_right (le_of_not_ge hl)]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_historical_neck_error_bound
+theorem TerminalLimitMetric.exists_historical_neck_error_bound
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps δ : ℝ} (hδ : δ < 1 / 4) (k : ℕ) (hk : k ≤ ⌈eps⁻¹⌉₊)

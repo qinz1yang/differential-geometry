@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FinitePreparedMetricOverlap
-import DifferentialGeometry.Geometry.Metric.Construction.Gluing.Family
+import DifferentialGeometry.Geometry.Metric.FamilyGluing
 
 set_option autoImplicit false
 noncomputable section

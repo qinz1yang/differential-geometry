@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Area.Embedded
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution.Embedded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ImmersedAreaFrontier
 
 noncomputable section
@@ -26,10 +26,10 @@ include hBoundary hT2 hCompact hNonempty
 
 
 theorem rfs_csf_immersed_area (B : RicciBackground (I := I) (M := M) D a b)
-    (hdim : Module.finrank ℝ E = 3) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (hdim : Module.finrank ℝ E = 3) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) :
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t)) :
     ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
       (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
         areaIntegratingFactor B.family s t * loopFamilyLeastArea B.family.metric γ t ≤

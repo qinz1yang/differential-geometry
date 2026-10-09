@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.VectorField.FinitePerturbation
-import DifferentialGeometry.Topology.VectorField.Index.BoundaryHomotopy
+import DifferentialGeometry.Topology.VectorField.ChartIndexHomotopy
 
 set_option autoImplicit false
 noncomputable section

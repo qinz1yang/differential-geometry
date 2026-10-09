@@ -175,7 +175,7 @@ theorem exists_good_gradientLike [SigmaCompactSpace M] (hf : MorseStrip I f a b)
     rw [(hD'1 x hx).1]
     exact hbotED _ (hEarms x hx (by rw [← (hD'1 x hx).2.1]; exact hk) y hy)
 
-theorem exists_ascending_rightPt (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
+theorem exists_ascending_rightPt [SigmaCompactSpace M] (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
     (D : GradientLikeStrip I f a b crit)
     (hcrit : ∀ x, x ∈ crit ↔ f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x) {p : M} (hp : p ∈ crit)
     (hkp : (D.chart p hp).k = 1) {ε c₂ : ℝ} (hε : 0 < ε)
@@ -477,7 +477,7 @@ theorem exists_arc_of_rightPt (hf : MorseStrip I f a b) (D : GradientLikeStrip I
     rw [GradientLikeStrip.leftThick_self_level]
     exact hmem
 
-theorem exists_arc (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
+theorem exists_arc [SigmaCompactSpace M] (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
     (D : GradientLikeStrip I f a b crit)
     (hcrit : ∀ x, x ∈ crit ↔ f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x) {p : M} (hp : p ∈ crit)
     (hkp : (D.chart p hp).k = 1) {ε c₂ : ℝ} (hε : 0 < ε)
@@ -497,7 +497,7 @@ theorem exists_arc (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
     exists_ascending_rightPt h5 hf D hcrit hp hkp hε hεp hpc hc₂ hcU hdn
   exact exists_arc_of_rightPt hf D hcrit hp hkp hε hεp hpc hc₂ harms hy₀ hasc
 
-theorem exists_loop_through_arc (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
+theorem exists_loop_through_arc [SigmaCompactSpace M] (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
     (D : GradientLikeStrip I f a b crit)
     (hcrit : ∀ x, x ∈ crit ↔ f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x) {c₂ : ℝ} (hc : c₂ ∈ Ioo a b)
     (hcU : ∀ x hx, ∀ y ∈ D.closedSmallBall x hx, f y ≠ c₂)
@@ -755,7 +755,7 @@ theorem meetsRightOnce_of_arc (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     rw [harc t (Ioo_subset_Icc_self ht), hinv _ ((hy _ hs).le.trans hrmR)]
     rfl
 
-theorem exists_level_arc_loop (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
+theorem exists_level_arc_loop [SigmaCompactSpace M] (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
     (D : GradientLikeStrip I f a b crit)
     (hcrit : ∀ x, x ∈ crit ↔ f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x) {p : M} (hp : p ∈ crit)
     (hkp : (D.chart p hp).k = 1) {ε c₂ : ℝ} (hε : 0 < ε)
@@ -880,7 +880,7 @@ theorem exists_level_arc_loop (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
     rw [hbot_iff, hχ]
     exact hybot s hs hs0
 
-theorem exists_loop_of_level_arc (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
+theorem exists_loop_of_level_arc [SigmaCompactSpace M] (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
     (D : GradientLikeStrip I f a b crit)
     (hcrit : ∀ x, x ∈ crit ↔ f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x) {p : M} (hp : p ∈ crit)
     {ε c₂ : ℝ} (hε : 0 < ε)
@@ -1242,7 +1242,7 @@ theorem exists_loop_of_level_arc (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
   refine ⟨D₂, fun x hx => ⟨(hch₂ x hx).1, (hch₂ x hx).2.1, (hch₂ x hx).2.2.1,
     (hch₂ x hx).2.2.2.1, (hch₂ x hx).2.2.2.2.1⟩, hrm₂, fun θ => h' θ 0, hloop, hfree, hmeet⟩
 
-theorem exists_level_loop (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
+theorem exists_level_loop [SigmaCompactSpace M] (h5 : 5 ≤ n) (hf : MorseStrip I f a b)
     (D : GradientLikeStrip I f a b crit)
     (hcrit : ∀ x, x ∈ crit ↔ f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x) {p : M} (hp : p ∈ crit)
     (hkp : (D.chart p hp).k = 1) {ε c₂ : ℝ} (hε : 0 < ε)

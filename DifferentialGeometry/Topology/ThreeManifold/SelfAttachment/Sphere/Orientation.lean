@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.Sphere.Interior
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Comparison
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationComparison
 
 set_option autoImplicit false
 noncomputable section

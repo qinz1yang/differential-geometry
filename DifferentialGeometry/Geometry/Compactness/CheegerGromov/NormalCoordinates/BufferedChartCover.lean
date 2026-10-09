@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.BallChartMetric
-import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.LocalJacobi
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalConjugateRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalInjectivityRadiusDecay
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.CenteredJetBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.FiniteBallCover

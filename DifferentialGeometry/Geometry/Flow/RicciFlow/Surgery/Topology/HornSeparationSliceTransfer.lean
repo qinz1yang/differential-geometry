@@ -2,12 +2,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HornCentral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckLocalTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StaticMetricApproximation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StaticRescalingComparison
-import DifferentialGeometry.Geometry.Metric.Approximation.OfMetricDerivNorm
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.OfMetricDerivNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricCompactComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeDiffeomorph
-import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphBallCapture
+import DifferentialGeometry.Geometry.Comparison.BallCapture
 import DifferentialGeometry.Geometry.Neck.SpatialTolerance
 
 set_option autoImplicit false
@@ -19,16 +19,13 @@ open scoped Manifold ContDiff ENNReal Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 universe u
 
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalRegularOpenSigmaCompact {P : OrientedThreeStage.{u}} {a s : ℝ}
+private local instance terminalRegularOpenSigmaCompact {P : OrientedThreeStage.{u}} {a s : ℝ}
     {G : P.IncomingSlab a s} : SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
@@ -36,7 +33,7 @@ private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifo
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_riemannianBallOf_subset_image_closedBall
+theorem TerminalLimitMetric.eventually_riemannianBallOf_subset_image_closedBall
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen) {r : ℝ} (hr : 0 < r)
     (hK : IsCompact (riemannianClosedBallOf L.metric x r)) :
     ∀ᶠ t in 𝓝[<] s, riemannianBallOf (G.flow.base.metric t) (x : P.Carrier) (16 * r / 17) ⊆
@@ -62,7 +59,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     rw [hres] at hb
     linarith
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_exists_spatialNeck_of_normalizedNeck
+theorem TerminalLimitMetric.eventually_exists_spatialNeck_of_normalizedNeck
     (L : G.TerminalLimitMetric) {δ : ℝ} {k : ℕ} (N : NormalizedNeck L.metric δ k)
     {alpha : ℝ} (ha : 0 < alpha) (hsmall : 2 * alpha < 1 / 11)
     (hδ : δ ≤ neckModelTolerance alpha / 2)
@@ -234,7 +231,7 @@ theorem exists_deep_horn_centralSphere_side_points :
       exact (hmap _).symm
   · exact Or.inl hcl
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab in
+open OrientedThreeStage.IncomingSlab in
 theorem exists_strongNeck_threshold_of_horn_point_at_slice
     {delta : ℝ} (hdelta : 0 < delta) (hdelta1 : delta < 1 / 11)
     {kappa : ℝ} (hkappa : 0 < kappa) {rho : ℝ} (hrho : 0 < rho) {Phi : ℝ → ℝ}

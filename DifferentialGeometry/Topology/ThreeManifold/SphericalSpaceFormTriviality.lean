@@ -24,10 +24,10 @@ theorem subsingleton_fundamentalGroup_of_standard_factor
 
 theorem exists_diffeomorph_standardThreeSphere_of_spherical_factor_presentation
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-    (hstd : isStandardConnectedSum M) [SimplyConnectedSpace M] :
+    (hstd : isPoincareStandard M) [SimplyConnectedSpace M] :
     Nonempty (M ≃ₘ⟮𝓡 3, 𝓡 3⟯ standardThreeSphereLift.{u}.Carrier) := by
   obtain ⟨P⟩ := hstd
-  have hMconn : ConnectedSpace M := isStandardConnectedSum_connectedSpace ⟨P⟩
+  have hMconn : ConnectedSpace M := isPoincareStandard_connectedSpace ⟨P⟩
   let p : M := Classical.choice inferInstance
   let x : (i : Fin P.factors.length) → (P.factors.get i).Carrier :=
     fun i => Classical.choice (inferInstance : Nonempty (P.factors.get i).Carrier)

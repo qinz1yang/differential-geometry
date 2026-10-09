@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Compactness.SublevelComponents
 import DifferentialGeometry.Topology.Morse.ExtremumChart
-import DifferentialGeometry.Topology.LevelSet.QuadraticComponent
+import DifferentialGeometry.Topology.Morse.QuadraticComponent
 import DifferentialGeometry.Topology.Morse.RegularLevel.Components
 
 open Set Metric

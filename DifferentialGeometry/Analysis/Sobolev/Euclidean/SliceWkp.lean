@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.Lp.Product
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.WeakPartial
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.HigherOrderBound
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 
 noncomputable section
 

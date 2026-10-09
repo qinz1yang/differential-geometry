@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.ODE.IndexForm.Basic
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AffineReparam
 import DifferentialGeometry.Geometry.Comparison.Laplacian.Radial
-import DifferentialGeometry.Geometry.Variation.Field.Smoothness
-import DifferentialGeometry.Geometry.Variation.RicciIntegral
+import DifferentialGeometry.Geometry.Comparison.Variation.Field.Smoothness
+import DifferentialGeometry.Geometry.Comparison.Variation.RicciIntegral
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

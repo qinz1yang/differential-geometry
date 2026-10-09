@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckEscapingContradiction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckCoreSize
-import DifferentialGeometry.Topology.MetricSpace.SeparatedSubsequence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MetricSeparatedSubsequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialPointSelection
 import DifferentialGeometry.Geometry.Comparison.Soul.SoulRetraction
 import DifferentialGeometry.Geometry.Comparison.Splitting.TwoEndsScalarBound
@@ -85,7 +85,7 @@ theorem not_tendsto_scalar_spatialNeck_centers_of_nonnegative
   have htail : Tendsto (fun n => dist (centers 0) (centers (i0 + n))) atTop atTop :=
     hrad.comp hshift
   obtain ⟨phi, hphi, hballs⟩ :=
-    Metric.exists_pairwise_disjoint_closedBall_subsequence_of_tendsto_dist_atTop (centers 0) htail 1 (by norm_num)
+    exists_disjoint_closedBall_subsequence (centers 0) htail 1 (by norm_num)
   let psi : ℕ → ℕ := fun n => i0 + phi n
   have hpsi : StrictMono psi := fun i j hij => Nat.add_lt_add_left (hphi hij) i0
   have hcores (n : ℕ) : (W (psi n)).core ⊆ Metric.closedBall (centers (psi n)) 1 :=

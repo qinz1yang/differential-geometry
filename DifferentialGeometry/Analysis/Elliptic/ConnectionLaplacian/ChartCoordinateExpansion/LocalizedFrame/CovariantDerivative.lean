@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ChartFrame.Localized.Coordinates
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.LocalizedFrame.Coordinates
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorRS.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs

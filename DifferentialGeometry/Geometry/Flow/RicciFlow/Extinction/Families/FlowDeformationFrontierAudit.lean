@@ -59,8 +59,8 @@ def PreparedFamilyFlowConclusion (B : RicciBackground (I := I) (M := Q) D a b) {
           projected ⟨a, le_rfl, B.lt.le⟩ = prepared ∧
           (∀ t : Icc a b, HasContinuousSmoothLoopJets e (projected t)) ∧
           ∀ t : Icc a b,
-            DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
-              DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared)
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
+              FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared)
 
 omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
 theorem preparedFamilyFlowInput_of_conclusion_and_unique
@@ -167,8 +167,8 @@ theorem rfs_prepared_family_flow_of_projected_frontier
         projected ⟨a, le_rfl, B.lt.le⟩ = prepared ∧
         (∀ t : Icc a b, HasContinuousSmoothLoopJets e (projected t)) ∧
         ∀ t : Icc a b,
-          DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
-            DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared) :=
+          FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared) :=
   rfs_prepared_family_flow_of_frontier B e prepared hsmooth lambda hlambda hlambda_one
     (rfs_rampFamilyFlowSolutions_of_ramp_frontiers B e prepared hsmooth lambda hlambda hlambda_one
       (hcontinuous lambda hlambda hlambda_one prepared hsmooth)
@@ -238,8 +238,8 @@ theorem rfs_family_deformation_of_projected_frontier
           (∀ t : Icc a b, ∀ p z,
             ((deformed t) p).1 z = (solutions p).projection z t) ∧
           (∀ t : Icc a b, HasContinuousSmoothLoopJets e (deformed t) ∧
-            DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
-              DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
+              FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
           (∀ p, |regularLeastArea (B.family.metric a) ((deformed ⟨a, le_rfl, B.lt.le⟩) p) -
             regularLeastArea (B.family.metric a) (Γ p)| < epsilon) ∧
           ∀ p,

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ProjectiveSpace.CylinderProjectiveSlice
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CompactEmbedding
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CompactEmbedding
 import DifferentialGeometry.Topology.ProjectiveSpace.SmoothNonembedding
 import DifferentialGeometry.Topology.Manifold.ImmersionCriterion
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.Solutions.SmoothSequence
 import DifferentialGeometry.Analysis.Sobolev.Solutions.WeakSolution
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Mollification
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Mollification.WeakDerivative
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.WeakDerivative
 
 noncomputable section
 

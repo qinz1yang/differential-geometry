@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorSectionEvolution
 import DifferentialGeometry.Analysis.Spectral.CurvatureOperatorSpectrum
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorTracePullback
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Pullback.Smooth
+import DifferentialGeometry.Geometry.Metric.BundlePullbackSmooth
 import DifferentialGeometry.Geometry.Connection.ModelNorm
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HamiltonIvey
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarLowerBound

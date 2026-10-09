@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Extended
+import DifferentialGeometry.Geometry.Metric.DerivativeENorm
 
 set_option autoImplicit false
 noncomputable section

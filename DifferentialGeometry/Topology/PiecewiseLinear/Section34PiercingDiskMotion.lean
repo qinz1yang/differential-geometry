@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TargetDiskCancellation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ContactSupport
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.DiskRimAvoidance
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingDiskRims
 
 open Set Topology
 
@@ -43,7 +43,7 @@ theorem exists_section34_piercing_disk_cancellation_motion
     exists_section34_filling_with_exact_first_trace hprep hpack e hi hD hDT htrace
   obtain ⟨I, hne, hcard, hsubtrace, -, hclosed⟩ :=
     exists_section34_strict_trace_subfamily_after_disk hprep hpack e hi hF hFA
-  have hFrim := piercing_disk_disjoint_first_rims hprep hpack e hi hF hFA
+  have hFrim := section34_piercing_disk_disjoint_first_rims hprep hpack e hi hF hFA
   have hArimclosed : IsClosed (G (ends e).1 '' (Ab₀ e ∪ Ab₁ e)) := by
     rw [image_union]
     have hends := (section34_piercing_annuli hprep hpack e).1.ends_isCompact

@@ -1,10 +1,10 @@
-import DifferentialGeometry.Geometry.Metric.CurveSpeed.ScalarComparison
-import DifferentialGeometry.Geometry.Metric.CurveSpeed.Lipschitz
+import DifferentialGeometry.Geometry.Metric.ScalarCurveComparison
+import DifferentialGeometry.Geometry.Metric.LipschitzCurves
 import DifferentialGeometry.Topology.EMetricSpace.FiniteDistanceLipschitz
 import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
 import Mathlib.Topology.MetricSpace.HausdorffDistance
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
+import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
 
 section
 

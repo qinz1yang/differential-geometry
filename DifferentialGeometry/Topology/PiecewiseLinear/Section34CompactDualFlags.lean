@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CellFaceOrderOfInteriors
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualCellRecognition
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualFlagBoundary
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.CellInteriors
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualInteriorSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualSource
 
 open Set

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Construction.Gluing.Charts
+import DifferentialGeometry.Geometry.Metric.ChartGluing
 
 set_option autoImplicit false
 noncomputable section

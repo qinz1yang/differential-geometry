@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homeomorph.Radial.Extension
+import DifferentialGeometry.Topology.LoopSpace.RadialExtension
 import DifferentialGeometry.Tensor.LinearAlgebra.PlanarBilinear
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Normed.Lp.MeasurableSpace

@@ -1,9 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
-import DifferentialGeometry.Topology.ThreeManifold.Orientation
-import DifferentialGeometry.Topology.LoopSpace.Continuous
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Exhaustion
+import DifferentialGeometry.Topology.Manifold.OrientationExhaustion
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationCompatible
 
 set_option autoImplicit false
@@ -47,7 +46,8 @@ private theorem nonempty_tangentOrientationSection_of_smoothOrientation {M : Typ
       ThreeModel o
   obtain ⟨O₃⟩ := (congrArg (fun n => Nonempty (DifferentialGeometry.ManifoldOrientation
     ThreeModel M n)) finrank_threeSpace).mp ⟨O⟩
-  exact ⟨O₃⟩
+  exact ⟨{ orientation := O₃.orientation
+           locally_constant := O₃.locally_constant }⟩
 
 theorem nonempty_tangentOrientationSection_of_pointedConvergence
     {X : PointedRiemannianSeq.{u, 0, 0} ThreeModel}

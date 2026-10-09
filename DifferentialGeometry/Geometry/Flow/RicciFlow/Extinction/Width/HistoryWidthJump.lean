@@ -15,7 +15,7 @@ open Surgery.Topology
 theorem rfs_actual_width_jump_of_child_comparison {H : ObservedHistory.{u}} {i : Fin H.eventCount}
     {parameters : CutoffParameters} (G : GeometricCutoffRecord H i parameters)
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier)
     (c : ConnectedComponents (H.stage i.succ).Carrier)
     (hchild : ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       C((G.Parent c).Carrier, (G.Child c).Carrier),
@@ -47,7 +47,7 @@ theorem rfs_actual_width_jump_of_child_comparison {H : ObservedHistory.{u}} {i :
     simpa only [one_smul] using hdegree c
   have hcomp : ∀ (g : (G.Parent c).Metric) (h : (G.Child c).Metric)
       (f : C((G.Parent c).Carrier, (G.Child c).Carrier)) (L : ℝ≥0),
-      DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose f)
+      FreeHomotopyClass.map (contractibleLoopPostcompose f)
           (positiveFreeContractibleClass (G.Parent c).orientation) =
         positiveFreeContractibleClass (G.Child c).orientation →
       (∀ x y, riemannianEDistOf h (f x) (f y) ≤
@@ -67,7 +67,7 @@ theorem rfs_actual_width_jump_of_child_comparison {H : ObservedHistory.{u}} {i :
 
 theorem historyWidth_atZero_continuous (P : OrientedThreeStage.{u}) (g : P.Metric)
     (h0 : ∀ c : ConnectedComponents P.Carrier,
-      SimplyConnectedSpace ((P.component c).toClosedOrientedManifold.Carrier))
+      SimplyConnectedSpace ((P.component c).Carrier))
     (terminal : ConnectedComponents P.Carrier) :
     Continuous (historyWidth (ObservedHistory.atZero P g) h0 terminal) := by
   have hsubsing : Subsingleton (Icc (0 : ℝ) 0) :=

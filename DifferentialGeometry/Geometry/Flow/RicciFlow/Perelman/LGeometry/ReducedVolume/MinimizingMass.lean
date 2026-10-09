@@ -1,11 +1,11 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MultipleMinimizersNull
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LocalLipschitzComplete
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CutMultiNull
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CostChartLipComplete
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.SourceTailControl
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Minimizer.Uniqueness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.MinUnique
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime.InjectivityExhaustion
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.LocalDiffeomorphism
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.InjGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ReducedVolumeComplete
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.ReducedMonotonicity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.RedJacobian
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureBounds
 

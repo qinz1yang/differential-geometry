@@ -69,7 +69,7 @@ theorem rfs_whole_parent_map_localTerminalLengthControl_of_localTerminalDistance
   obtain ⟨U, hU, hterm, hdist⟩ := hlip x hx
   refine ⟨U, hU, hterm, hdist, ?_⟩
   intro γ hparent a b hab hγ hγU hlen
-  unfold DifferentialGeometry.Geometry.riemannianCurveVariation
+  unfold riemannianCurveLength
   refine iSup_le fun p => ?_
   refine le_trans (Finset.sum_le_sum fun k _ => ?_) (le_iSup (fun q : ℕ ×
     {u : ℕ → ℝ // Monotone u ∧ ∀ j, u j ∈ Icc a b} =>

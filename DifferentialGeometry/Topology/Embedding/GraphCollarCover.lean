@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Connected.ClosedTripleCover
+import DifferentialGeometry.Topology.Connected.SeparatingCollarStrip
 import DifferentialGeometry.Topology.GraphBandChart
 
 noncomputable section

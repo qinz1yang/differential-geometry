@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Metric.InverseGram
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelBounds
 import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Components
@@ -6,7 +5,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Components
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
-import DifferentialGeometry.Geometry.Curvature.Coordinates.Ricci.Perturbation
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Ricci.AffineDifference
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.Ricci
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentity
 import DifferentialGeometry.Geometry.Curvature.Coordinates.ScalarTrace

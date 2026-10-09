@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
-import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import Mathlib.Analysis.Convex.Function
 import Mathlib.Topology.UnitInterval

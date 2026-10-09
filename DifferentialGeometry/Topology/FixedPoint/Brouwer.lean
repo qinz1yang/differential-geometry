@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.Brouwer
 import DifferentialGeometry.Topology.FixedPoint.NoRetraction
 import DifferentialGeometry.External.ClassificationOfSurfaces.Topology.InvarianceOfDomain

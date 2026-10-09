@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.ScalarCutCore
-import DifferentialGeometry.Topology.Connected.RelativeInterior
+import DifferentialGeometry.Topology.RelativeOpenInterior
 import DifferentialGeometry.Topology.Connected.CoverBySides
 import DifferentialGeometry.Topology.Manifold.LocallyPathConnected
 

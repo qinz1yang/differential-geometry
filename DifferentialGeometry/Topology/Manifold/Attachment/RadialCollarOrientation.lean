@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Comparison
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationComparison
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationPullback
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingFromOpen

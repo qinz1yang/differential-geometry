@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckCylindricalChartBridge
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorPullback
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.OpenTensorJets
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 
 noncomputable section
 

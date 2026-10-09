@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Sh
 import DifferentialGeometry.Geometry.Neck.NormalizedDatum
 import DifferentialGeometry.Topology.StandardModel
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
 set_option autoImplicit false
 noncomputable section

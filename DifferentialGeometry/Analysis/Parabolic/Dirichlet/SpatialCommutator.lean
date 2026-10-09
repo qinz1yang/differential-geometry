@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationProduct
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.InteriorRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.TimeRegularity
-import DifferentialGeometry.Analysis.Elliptic.MetricExtension.Family.DerivativeBounds
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientDerivativeBounds
 
 noncomputable section
 

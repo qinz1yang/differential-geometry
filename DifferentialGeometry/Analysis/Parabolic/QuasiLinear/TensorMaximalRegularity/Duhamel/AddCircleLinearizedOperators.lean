@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.PiLp
+import DifferentialGeometry.Analysis.FunctionalAnalysis.PiLpOperators
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleMultiplicationInclusion
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleLinearizedForcing
 

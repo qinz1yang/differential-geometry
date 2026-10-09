@@ -1,12 +1,12 @@
 import DifferentialGeometry.Geometry.Neck.PointwiseChart
-import DifferentialGeometry.Geometry.Metric.StandardCap.ConformalChart
-import DifferentialGeometry.Geometry.Metric.Construction.Gluing.Binary
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ConformalChart
+import DifferentialGeometry.Geometry.Metric.Gluing
 import DifferentialGeometry.Geometry.Metric.Conformal.Basic
 import DifferentialGeometry.Geometry.Metric.Construction.ConvexCombination
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
 set_option autoImplicit false
 noncomputable section

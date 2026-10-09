@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.Curry
 import DifferentialGeometry.Analysis.Sobolev.Chart.CutoffPullbackLp
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSeparability
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakChartPullback
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.FirstOrderBound
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuant
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.WeakPartial
 
 noncomputable section

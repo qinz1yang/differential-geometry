@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCarrierCollaredStarCover
-import DifferentialGeometry.Topology.ContinuousMap.ClosedCover
+import DifferentialGeometry.Topology.ClosedCover
 import DifferentialGeometry.Topology.ClosedBall.RadialShell
 
 noncomputable section

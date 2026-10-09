@@ -9,6 +9,7 @@ open scoped ContinuousMap
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E M : Type*} [DecidableEq E] [NormedAddCommGroup E]
   [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MetricSpace M]
@@ -19,7 +20,6 @@ def facesInAssignedCharts (K : SimplicialComplex ℝ E) {n : ℕ}
     x.1 ∈ convexHull ℝ (s.1 : Set E) → f x ∈ (b s).core
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem facesInAssignedCharts.exists_tolerance (K : SimplicialComplex ℝ E)
     (hK : K.faces.Finite) {n : ℕ} (b : K.faces → BufferedChart M n)
     (f : C(K.space, M)) (hf : facesInAssignedCharts K b f) :
@@ -126,7 +126,6 @@ def assignedChartSimplexStep (K L : SimplicialComplex ℝ E) (f : C(K.space, M))
           (convexHull ℝ (V : Set E) ∩ (skeleton K q).space))) ⊆ G '' (H '' U) ∧
         IsCompact (closure {x | G x ≠ x})
 
-omit [FiniteDimensional ℝ E] in
 theorem assignedChartSimplexStep.preserves_assigned_charts
     (K L : SimplicialComplex ℝ E) (hK : K.faces.Finite) (f : C(K.space, M))
     {n : ℕ} (b : K.faces → BufferedChart M n) (X U : Set M)

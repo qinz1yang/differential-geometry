@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.SpatialDerivative
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.ThirdWeakDerivative
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakTimeDerivativeBound
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialSource
-import DifferentialGeometry.Analysis.Elliptic.MetricExtension.Family.DerivativeBounds
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientDerivativeBounds
 
 noncomputable section
 

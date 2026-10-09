@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.Distortion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceDistortion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodContinuationLeaves
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFirstLoss
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessClosedBallJets
@@ -21,7 +21,7 @@ private local instance : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_first_touch_of_not_subset (P : OrientedThreeStage.{u})
+theorem OrientedThreeStage.exists_first_touch_of_not_subset (P : OrientedThreeStage.{u})
     (g : P.Metric) (U : Opens P.Carrier) {y : P.Carrier} (hy : y ∈ U) {r : ℝ}
     (hnot : ¬ riemannianBallOf g y r ⊆ U) :
     ∃ q : P.Carrier, q ∉ U ∧ ∃ d : ℝ, 0 < d ∧ d < r ∧

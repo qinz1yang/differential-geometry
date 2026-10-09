@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
 import DifferentialGeometry.Geometry.Exponential.Radial
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Geodesic.Flow.VelocityLift
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Uniqueness
 

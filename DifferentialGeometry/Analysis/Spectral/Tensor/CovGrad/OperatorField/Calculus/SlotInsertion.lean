@@ -28,13 +28,13 @@ variable [CompleteSpace E]
 def endoCovariantDerivative (g : SmoothRiemannianMetric I M) :
     CovariantDerivative I (E →L[ℝ] E)
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x) :=
-  _root_.CovariantDerivative.hom I M
+  HomConnection.homBundleCovariantDerivative I M
     E (fun x : M => TangentSpace I x) E (fun x : M => TangentSpace I x)
     (LeviCivita (I := I) g) (LeviCivita (I := I) g)
 
 instance endoCovariantDerivative_contMDiff (g : SmoothRiemannianMetric I M) :
     (endoCovariantDerivative (I := I) (M := M) g).ContMDiffCovariantDerivative ∞ :=
-  _root_.CovariantDerivative.hom_contMDiff I M
+  HomConnection.homBundleCovariantDerivative_contMDiff I M
     E (fun x : M => TangentSpace I x) E (fun x : M => TangentSpace I x)
     (LeviCivita (I := I) g) (LeviCivita (I := I) g)
 
@@ -47,7 +47,7 @@ theorem endoCovariantDerivative_apply (g : SmoothRiemannianMetric I M)
     ((endoCovariantDerivative (I := I) (M := M) g) Λ x v) (Y x) =
       (LeviCivita (I := I) g) (fun y => (Λ y) (Y y)) x v -
         (Λ x) ((LeviCivita (I := I) g) (fun y => Y y) x v) :=
-  _root_.CovariantDerivative.hom_apply I M
+  HomConnection.homBundleCovariantDerivative_apply I M
     E (fun x : M => TangentSpace I x) E (fun x : M => TangentSpace I x)
     (LeviCivita (I := I) g) (LeviCivita (I := I) g) Λ Y x v
 
@@ -68,7 +68,7 @@ def endoSlotZeroCcTensor (g : SmoothRiemannianMetric I M) (s : ℕ)
     SmoothCcTensor g (s + 1) (s + 1) where
   toSection :=
     { toFun := fun x : M =>
-        TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Λ x))
+        TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Λ x))
       contMDiff_toFun :=
         slotInsertEndoFib_contMDiff (I := I) (M := M) g (s + 1) 0 (fun x : M => Λ x) Λ.contMDiff }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
@@ -87,7 +87,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     (x : M) :
     (show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g s Λ).toSection x) =
-      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Λ x) := rfl
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Λ x) := rfl
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
@@ -95,28 +95,28 @@ omit [FiniteDimensional ℝ E] in
 lemma slotInsertFib_comp (s : ℕ) (x : M)
     (A B : TangentSpace I x →L[ℝ] TangentSpace I x) :
     ContinuousLinearMap.comp
-        (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x A)
-        (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x B) =
-      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+        (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x A)
+        (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x B) =
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (ContinuousLinearMap.comp B A) := by
   apply ContinuousLinearMap.ext
   intro D
   apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (s + 1) x).injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   change Tensor0SSpace.eval
-      ((slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x A)
-        ((slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x B) D)) m =
+      ((slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x A)
+        ((slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x B) D)) m =
     Tensor0SSpace.eval
-      ((slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (B.comp A)) D) m
-  rw [slotInsertEndomorphism_apply_natural,
-    slotInsertEndomorphism_apply_natural, slotInsertEndomorphism_apply_natural,
+      ((slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (B.comp A)) D) m
+  rw [slotInsertEndoFib_apply_natural,
+    slotInsertEndoFib_apply_natural, slotInsertEndoFib_apply_natural,
     ContinuousLinearMap.comp_apply, Function.update_self, Function.update_idem]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] in
 omit [FiniteDimensional ℝ E] in
 lemma slotInsertFib_id (s : ℕ) (x : M) :
-    slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+    slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (ContinuousLinearMap.id ℝ (TangentSpace I x)) =
       ContinuousLinearMap.id ℝ (Tensor0SSpace (s + 1) I x) := by
   apply ContinuousLinearMap.ext
@@ -124,10 +124,10 @@ lemma slotInsertFib_id (s : ℕ) (x : M) :
   apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (s + 1) x).injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   change Tensor0SSpace.eval
-      ((slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+      ((slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (ContinuousLinearMap.id ℝ (TangentSpace I x))) A) m =
     Tensor0SSpace.eval ((ContinuousLinearMap.id ℝ (Tensor0SSpace (s + 1) I x)) A) m
-  rw [slotInsertEndomorphism_apply_natural, ContinuousLinearMap.id_apply,
+  rw [slotInsertEndoFib_apply_natural, ContinuousLinearMap.id_apply,
     ContinuousLinearMap.id_apply, Function.update_eq_self]
 
 omit [CompleteSpace E] in
@@ -154,7 +154,7 @@ lemma slotInsertEndoCc_add (g : SmoothRiemannianMetric I M) (s : ℕ)
   rw [show ((A + B) x) = A x + B x from by
     rw [ContMDiffSection.coe_add]
     rfl]
-  rw [slotInsertEndomorphism_add_left, add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
@@ -177,7 +177,7 @@ lemma slotInsertEndoCc_smul (g : SmoothRiemannianMetric I M) (s : ℕ) (a : ℝ)
   rw [show ((a • A) x) = a • A x from by
     rw [ContMDiffSection.coe_smul]
     rfl]
-  rw [slotInsertEndomorphism_smul_left, smul_apply]
+  rw [slotInsertEndoFib_smul_left, smul_apply]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -186,7 +186,7 @@ omit [FiniteDimensional ℝ E] in
 lemma curry_slotInsertEndoFib_zero (s : ℕ) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (A : Tensor0SSpace (s + 1) I x) :
     tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
-        (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x Λ A) =
+        (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x Λ A) =
       ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) A).comp Λ := by
   apply ContinuousLinearMap.ext
   intro v0
@@ -194,10 +194,10 @@ lemma curry_slotInsertEndoFib_zero (s : ℕ) (x : M)
   refine ContinuousMultilinearMap.ext (fun vt => ?_)
   change Tensor0SSpace.eval
       (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
-        (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x Λ A) v0) vt =
+        (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x Λ A) v0) vt =
     Tensor0SSpace.eval
       (((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x A).comp Λ) v0) vt
-  rw [tensor0S_curry_apply_eval, slotInsertEndomorphism_apply_natural,
+  rw [tensor0S_curry_apply_eval, slotInsertEndoFib_apply_natural,
     ContinuousLinearMap.comp_apply, tensor0S_curry_apply_eval]
   congr 1
   rw [Fin.cons_zero, Fin.update_cons_zero]
@@ -301,7 +301,7 @@ theorem tensorCovDerivAt_slotInsertEndoCc_eq (g : SmoothRiemannianMetric I M) (s
     (show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1)
           (endoSlotZeroCcTensor (I := I) (M := M) g s Λ) x v) =
-      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         ((endoCovariantDerivative (I := I) (M := M) g) Λ x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)) := by
   apply ContinuousLinearMap.ext
@@ -313,11 +313,11 @@ theorem tensorCovDerivAt_slotInsertEndoCc_eq (g : SmoothRiemannianMetric I M) (s
         tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1)
           (endoSlotZeroCcTensor (I := I) (M := M) g s Λ) x v) D) m =
     Tensor0SSpace.eval
-      ((slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+      ((slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         ((endoCovariantDerivative (I := I) (M := M) g) Λ x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v))) D) m
   rw [show m = Fin.cons (m 0) (Matrix.vecTail m) from (Fin.cons_self_tail m).symm]
-  rw [slotInsertEndomorphism_apply_natural]
+  rw [slotInsertEndoFib_apply_natural]
   rw [← tensor0S_curry_apply_eval (I := I) (M := M) (n := s)
     (T := (show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
       tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1)
@@ -337,7 +337,7 @@ theorem covGrad_slotInsertEndoCc_toSection_eq (g : SmoothRiemannianMetric I M) (
           (covGrad (I := I) (M := M) g (s + 1) (s + 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g s Λ)).toSection x) D) v =
       Tensor0SSpace.toModel
-        ((slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+        ((slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
             ((endoCovariantDerivative (I := I) (M := M) g) Λ x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))) D)
         (Matrix.vecTail v) := by
@@ -401,13 +401,13 @@ lemma cotangent_slot_apply (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (om : Tensor0SSpace 1 I x)
     (w : TangentSpace I x) :
     cotangentToDual (I := I)
-        (slotInsertEndomorphism (I := I) (M := M) 1 0 x Λ om) w =
+        (slotInsertEndoFib (I := I) (M := M) 1 0 x Λ om) w =
       cotangentToDual (I := I) om (Λ w) := by
   rw [cotangentToDual_apply, cotangentToDual_apply]
   change Tensor0SSpace.eval
-      (slotInsertEndomorphism (I := I) (M := M) 1 0 x Λ om) (fun _ : Fin 1 => w) =
+      (slotInsertEndoFib (I := I) (M := M) 1 0 x Λ om) (fun _ : Fin 1 => w) =
     Tensor0SSpace.eval om (fun _ : Fin 1 => Λ w)
-  rw [slotInsertEndomorphism_apply_natural]
+  rw [slotInsertEndoFib_apply_natural]
   rw [show Function.update (fun _ : Fin 1 => w) 0
         (Λ ((fun _ : Fin 1 => w) 0)) =
       (fun _ : Fin 1 => Λ w) from by

@@ -1,9 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.FundamentalGroup.Circle
 import DifferentialGeometry.Topology.Homology.LiftedSphere
 import DifferentialGeometry.Topology.Homotopy.ConvexProduct
 import DifferentialGeometry.Topology.PiecewiseLinear.FirstHomologyCarrying
 import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorus
-import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusFundamentalGroup
 import Mathlib.RingTheory.Noetherian.Orzech
 
 open Set
@@ -38,6 +42,15 @@ noncomputable def IsTopologicalSolidTorus.integralSingularHomologyOneEquivInt
   let e : T ≃ₕ liftedHomotopySphere.{u} 0 :=
     (solidTorusCircleHomotopyEquiv hT).trans Homeomorph.ulift.symm.toHomotopyEquiv
   (integralSingularHomologyHomotopyEquiv 1 e).trans (integralLiftedSphereTopEquiv 0)
+
+private noncomputable def IsTopologicalSolidTorus.fundamentalGroupEquivInt
+    {Y : Type u} [TopologicalSpace Y] {T : Set Y} (hT : IsTopologicalSolidTorus T) (x : T) :
+    FundamentalGroup T x ≃* Multiplicative ℤ :=
+  let e : T ≃ₕ Circle :=
+    (solidTorusCircleHomotopyEquiv hT).trans circleSphereHomeomorph.symm.toHomotopyEquiv
+  (fundamentalGroupMulEquivOfHomotopyEquiv e x (e x) rfl).trans
+    ((FundamentalGroup.fundamentalGroupMulEquivOfPathConnected (e x) (1 : Circle)).trans
+      fundamentalGroupCircleEquivInt)
 
 theorem IsTopologicalSolidTorus.hurewiczOne_bijective
     {Y : Type u} [TopologicalSpace Y] {T : Set Y} (hT : IsTopologicalSolidTorus T) (x : T) :

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCapInterior
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
-import DifferentialGeometry.External.CanonicalTopology.LinearAlgebra.Orientation
+import DifferentialGeometry.Bundle.Orientation.Map
 
 noncomputable section
 open Set Manifold
@@ -107,8 +107,8 @@ theorem discardedCoreInclusion_positive :
     ((LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) ThreeModel a x).toLinearMap hi).symm.trans J) _ = _
   rw [hA, hJ]
   change Orientation.map (Fin 3) ((A.symm.trans B).trans C) _ = _
-  exact (DifferentialGeometry.orientation_map_trans (A.symm.trans B) C
-    (P.orientation.orientation x.val.val)).trans
+  exact (DifferentialGeometry.VectorBundle.map_orientation_trans_between (A.symm.trans B) C
+    (P.orientation.orientation x.val.val)).symm.trans
     ((congrArg (Orientation.map (Fin 3) C) hcore').trans hpres')
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.SmoothCutCapTransition

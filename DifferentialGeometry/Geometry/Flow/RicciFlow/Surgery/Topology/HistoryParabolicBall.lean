@@ -552,7 +552,7 @@ theorem closedPrefixAt_endpointTerminalLimitMetric_extendedMetric
     ((H.closedPrefixAt t ht).endpointTerminalLimitMetric (H.stageAt t)).extendedMetric v =
       (H.stageMetric (H.activeStage t) v).restrictOpen
         ((H.closedPrefixAt t ht).restrictIncoming le_rfl (H.closedPrefixAt t ht).lt le_rfl).terminalRegularOpen := by
-  rw [DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.endpointTerminalLimitMetric_extendedMetric_of_le _ hv,
+  rw [OrientedThreeStage.ClosedSlab.endpointTerminalLimitMetric_extendedMetric_of_le _ hv,
     H.closedPrefixAt_metric]
 
 theorem isParabolicallyRmControlledBall_of_closedPrefixAt_incomingFootprint

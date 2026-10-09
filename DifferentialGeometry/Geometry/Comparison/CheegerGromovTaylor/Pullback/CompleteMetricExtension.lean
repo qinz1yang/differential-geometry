@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Geodesic.Jacobi.EndpointPositivity
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.EndpointPositivity
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.CurvatureBound
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Curve

@@ -21,7 +21,7 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
 
 theorem homBundleCovariantDerivativeGen_id
     (cov : CovariantDerivative I F V) :
-    _root_.CovariantDerivative.hom I M F V F V cov cov
+    homBundleCovariantDerivativeGen I M F V F V cov cov
       (fun y => ContinuousLinearMap.id ℝ (V y)) = 0 := by
   funext x
   ext v w
@@ -29,8 +29,8 @@ theorem homBundleCovariantDerivativeGen_id
     (I := I) (F := F) (V := V) (n := (⊤ : ℕ∞)) x w
   let Id : Cₛ^∞⟮I; F →L[ℝ] F, (fun y => V y →L[ℝ] V y)⟯ :=
     ⟨fun y => ContinuousLinearMap.id ℝ (V y), contMDiff_id.clm_bundle_id⟩
-  have hh := _root_.CovariantDerivative.hom_apply I M F V F V cov cov Id Y x v
-  change _root_.CovariantDerivative.hom I M F V F V cov cov
+  have hh := homBundleCovariantDerivativeGen_apply I M F V F V cov cov Id Y x v
+  change homBundleCovariantDerivativeGen I M F V F V cov cov
     (fun y => ContinuousLinearMap.id ℝ (V y)) x v (Y x) = cov Y x v - cov Y x v at hh
   simpa only [hY, sub_self, Pi.zero_apply, zero_apply] using hh
 
@@ -57,7 +57,7 @@ theorem mvfderiv_trace_of_isMetricCompatible
     (v : TangentSpace I x) :
     mvfderiv I (fun y => LinearMap.trace ℝ (V y) (A y).toLinearMap) x v =
       LinearMap.trace ℝ (V x)
-        (_root_.CovariantDerivative.hom I M F V F V cov cov A x v).toLinearMap := by
+        (homBundleCovariantDerivativeGen I M F V F V cov cov A x v).toLinearMap := by
   let _ : ∀ y, FiniteDimensional ℝ (V y) := fun y => VectorBundle.finiteDimensional ℝ F V y
   have hId : MDifferentiableAt I (I.prod 𝓘(ℝ, F →L[ℝ] F))
       (fun y => (⟨y, ContinuousLinearMap.id ℝ (V y)⟩ : TotalSpace (F →L[ℝ] F)

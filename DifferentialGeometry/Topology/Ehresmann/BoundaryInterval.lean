@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.Ehresmann.IntervalCompletion.Atlas
-import DifferentialGeometry.Topology.Ehresmann.IntervalCompletion.Proper
+import DifferentialGeometry.Topology.Ehresmann.CompletionAtlas
+import DifferentialGeometry.Topology.Ehresmann.CompletionProper
 import DifferentialGeometry.Topology.Ehresmann.SmoothIntervalFlow
 import DifferentialGeometry.Geometry.Boundary.FullRankFactorization
 import DifferentialGeometry.Geometry.Boundary.SmoothFactorization

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Busemann.Level.GlobalMap
+import DifferentialGeometry.Geometry.Comparison.Soul.SbrBusemannGlobal
 import Mathlib.Topology.MetricSpace.Bounded
 
 set_option autoImplicit false

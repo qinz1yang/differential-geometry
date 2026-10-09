@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Diagonal
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs
-import DifferentialGeometry.Geometry.Metric.Approximation.Monotonicity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Monotonicity
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 
 set_option autoImplicit false

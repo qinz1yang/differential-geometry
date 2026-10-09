@@ -111,8 +111,8 @@ theorem homBundleCovariantDerivativeGen_alternating_pullback_eq
       (fun y => ((φ y).continuousAlternatingMapCongrLeft (ι := Fin k) (F := ℝ)).toLinearEquiv)
       (ContMDiff.alternating_bundle_congrLeft φ hφ k).clm_bundle_map
       (CovariantDerivative.alternating cov k)
-    _root_.CovariantDerivative.hom I M _ _ _ _ D D A x X =
-      _root_.CovariantDerivative.hom I M _ _ _ _ P P A x X := by
+    homBundleCovariantDerivativeGen I M _ _ _ _ D D A x X =
+      homBundleCovariantDerivativeGen I M _ _ _ _ P P A x X := by
   dsimp only
   ext a
   obtain ⟨Y, hY⟩ := ContMDiffSection.exists_eq_at
@@ -122,9 +122,9 @@ theorem homBundleCovariantDerivativeGen_alternating_pullback_eq
   obtain ⟨Z, hZ⟩ := ContMDiffSection.exists_eq_at
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x X
   rw [← hY, ← hZ]
-  rw [_root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+  rw [homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
       I M _ _ _ _ _ _ A hA Z.mdifferentiableAt Y.mdifferentiableAt,
-    _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+    homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
       I M _ _ _ _ _ _ A hA Z.mdifferentiableAt Y.mdifferentiableAt,
     CovariantDerivative.alternating_pullback_eq_pullback_congrLeft φ hφ cov k
       (hA.clm_bundle_apply Y.mdifferentiableAt) (Z x),
@@ -140,7 +140,7 @@ theorem homBundleCovariantDerivativeGen_alternating_congrLeft
     let D := CovariantDerivative.alternating
       (CovariantDerivative.pullbackFiberwiseLinearEquiv
         (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov) k
-    _root_.CovariantDerivative.hom I M _ _ _ _ D (CovariantDerivative.alternating cov k)
+    homBundleCovariantDerivativeGen I M _ _ _ _ D (CovariantDerivative.alternating cov k)
       (fun y => ((φ y).continuousAlternatingMapCongrLeft (ι := Fin k) (F := ℝ)).toContinuousLinearMap) = 0 := by
   dsimp only
   funext x
@@ -156,7 +156,7 @@ theorem homBundleCovariantDerivativeGen_alternating_congrLeft
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x X
   have hQ := ContMDiff.alternating_bundle_congrLeft φ hφ k
   rw [← hY, ← hZ]
-  rw [_root_.CovariantDerivative.hom_apply_of_mdifferentiableAt I M _ _ _ _ _ _ _
+  rw [homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt I M _ _ _ _ _ _ _
     ((hQ x).mdifferentiableAt (by simp)) Z.mdifferentiableAt Y.mdifferentiableAt]
   change CovariantDerivative.alternating cov k
       (fun y => (φ y).continuousAlternatingMapCongrLeft (ι := Fin k) (Y y)) x (Z x) -
@@ -187,10 +187,10 @@ theorem map_homBundleCovariantDerivativeGen_alternating_conjugate
         (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov) k
     let C := CovariantDerivative.alternating cov k
     (Q x).toContinuousLinearMap.comp
-        (_root_.CovariantDerivative.hom I M _ _ _ _ D D
+        (homBundleCovariantDerivativeGen I M _ _ _ _ D D
           (fun y => (Q y).symm.toContinuousLinearMap.comp
             ((A y).comp (Q y).toContinuousLinearMap)) x X) =
-      (_root_.CovariantDerivative.hom I M _ _ _ _ C C A x X).comp
+      (homBundleCovariantDerivativeGen I M _ _ _ _ C C A x X).comp
         (Q x).toContinuousLinearMap := by
   let Q := fun y => (φ y).continuousAlternatingMapCongrLeft (ι := Fin k) (F := ℝ)
   let _ : CompleteSpace (F₁ [⋀^Fin k]→L[ℝ] ℝ) := FiniteDimensional.complete ℝ _
@@ -233,8 +233,8 @@ theorem map_secondCovDeriv_hom_alternating_conjugate
     let D := alternating
       (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov) k
     let C := alternating cov k
-    let DE := _root_.CovariantDerivative.hom I M _ _ _ _ D D
-    let CE := _root_.CovariantDerivative.hom I M _ _ _ _ C C
+    let DE := homBundleCovariantDerivativeGen I M _ _ _ _ D D
+    let CE := homBundleCovariantDerivativeGen I M _ _ _ _ C C
     let B := fun y => (Q y).symm.toContinuousLinearMap.comp
       ((A y).comp (Q y).toContinuousLinearMap)
     (Q x).toContinuousLinearMap.comp
@@ -245,8 +245,8 @@ theorem map_secondCovDeriv_hom_alternating_conjugate
   let D := alternating
     (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov) k
   let C := alternating cov k
-  let DE := _root_.CovariantDerivative.hom I M _ _ _ _ D D
-  let CE := _root_.CovariantDerivative.hom I M _ _ _ _ C C
+  let DE := homBundleCovariantDerivativeGen I M _ _ _ _ D D
+  let CE := homBundleCovariantDerivativeGen I M _ _ _ _ C C
   let B := fun y => (Q y).symm.toContinuousLinearMap.comp
     ((A y).comp (Q y).toContinuousLinearMap)
   let T : ContMDiffSection I
@@ -301,10 +301,10 @@ theorem map_rawBundleConnLap_hom_alternating_conjugate
       (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov) k
     let C := alternating cov k
     (Q x).toContinuousLinearMap.comp
-        (rawBundleConnLap g (_root_.CovariantDerivative.hom I M _ _ _ _ D D)
+        (rawBundleConnLap g (homBundleCovariantDerivativeGen I M _ _ _ _ D D)
           (fun y => (Q y).symm.toContinuousLinearMap.comp
             ((A y).comp (Q y).toContinuousLinearMap)) x) =
-      (rawBundleConnLap g (_root_.CovariantDerivative.hom I M _ _ _ _ C C)
+      (rawBundleConnLap g (homBundleCovariantDerivativeGen I M _ _ _ _ C C)
         (fun y => A y) x).comp (Q x).toContinuousLinearMap := by
   dsimp only
   apply ContinuousLinearMap.ext

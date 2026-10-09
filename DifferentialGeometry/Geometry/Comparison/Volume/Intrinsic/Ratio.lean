@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Intrinsic
-import DifferentialGeometry.Geometry.Metric.LinearAlgebra.OrthogonalBasis
-import DifferentialGeometry.Geometry.Variation.NoConjugatePoints.MinimizingSegment
+import DifferentialGeometry.Geometry.Metric.OrthogonalComplement
+import DifferentialGeometry.Geometry.Comparison.Variation.NoConjugatePoints.MinimizingSegment
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

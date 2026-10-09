@@ -1,4 +1,8 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Piece.LocalFiniteness
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Topology.NatEmbedding
 import Mathlib.Topology.Order.AtTopBotIxx
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcCellBoundaryExample
@@ -31,6 +35,23 @@ theorem PLPiece.isLocallyFinitePolyhedralGraph {K : Set X} (P : PLPiece n X K)
     (hP : ∀ s, s ∈ P.piece.complex.faces → s.card ≤ 2) :
     IsLocallyFinitePolyhedralGraph (n := n) K :=
   ⟨LocallyFinitePieceTower.ofPiece P, fun _ => hP⟩
+
+structure LocallyFinitePLPieceIn (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (n : ℕ) (X : Type u) [TopologicalSpace X]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) X] (Y : Set X) where
+  complex : Geometry.SimplicialComplex ℝ E
+  locallyFinite : LocallyFinite (fun s : complex.faces =>
+    (Subtype.val : complex.space → E) ⁻¹'
+      convexHull ℝ ((s : Finset E) : Set E))
+  map : E → X
+  bijOn : BijOn map complex.space Y
+  continuousOn : ContinuousOn map complex.space
+  isEmbedding : IsEmbedding (fun x : complex.space => map x)
+  isPiecewiseAffineOn_chart : ∀ e ∈ atlas (EuclideanSpace ℝ (Fin n)) X,
+    IsPiecewiseAffineOn (e ∘ map) (complex.space ∩ map ⁻¹' e.source)
+  isPiecewiseAffineOn_chart_symm : ∀ e ∈ atlas (EuclideanSpace ℝ (Fin n)) X,
+    IsPiecewiseAffineOn (Function.invFunOn map complex.space ∘ e.symm)
+      (e.target ∩ e.symm ⁻¹' Y)
 
 open Classical in
 def PLPieceIn.toLocallyFinite {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

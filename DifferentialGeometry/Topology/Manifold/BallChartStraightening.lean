@@ -1,5 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.BallEmbedding.FamilyStraightening
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallEmbeddingIsotopy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.BallEmbeddingFamilyStraightening
 import DifferentialGeometry.Topology.Manifold.BallChartPalaisTransport
 
 set_option autoImplicit false

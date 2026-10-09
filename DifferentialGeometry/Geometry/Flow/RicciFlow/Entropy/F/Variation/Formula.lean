@@ -42,7 +42,7 @@ theorem first_variation_integral_eq_pre_integration_by_parts
     (hpotential0 : potentialPath s0 = potential)
     (hmeas :
       AEMeasurable
-        (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity potential x))
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
         (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)))
     (hvariation :
       ∀ x : M,
@@ -51,12 +51,12 @@ theorem first_variation_integral_eq_pre_integration_by_parts
           -metricVariationRicciHess x +
             weightedDivergenceTrace x + shiftedTrace x +
             (lapPotential x - gradPotentialNormSq x) *
-              DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+              expWeightedMeasureVariationFactor potentialVariation
                 metricVariationTrace x) :
     (∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand
+        expWeightedIntegralVariationIntegrand
           (potentialPath s0) potentialVariation metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s0)
+          (fFunctionalBracket (scalarCurvaturePath s0)
             (gradPotentialNormSqPath s0))
           (fFunctionalBracketVariation scalarCurvatureVariation
             gradPotentialNormSqVariation) x
@@ -65,21 +65,21 @@ theorem first_variation_integral_eq_pre_integration_by_parts
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
             potential) := by
   calc
     (∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand
+        expWeightedIntegralVariationIntegrand
           (potentialPath s0) potentialVariation metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s0)
+          (fFunctionalBracket (scalarCurvaturePath s0)
             (gradPotentialNormSqPath s0))
           (fFunctionalBracketVariation scalarCurvatureVariation
             gradPotentialNormSqVariation) x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0))
         =
       ∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity potential x *
+        expNegPotentialDensity potential x *
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
             potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
@@ -95,10 +95,10 @@ theorem first_variation_integral_eq_pre_integration_by_parts
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
             potential) := by
-      exact (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure_integral_eq_base
+      exact (expNegPotentialWeightedMeasure_integral_eq_base
         (mu := riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
         (potential := potential)
         (integrand :=
@@ -116,7 +116,7 @@ theorem closed_integral_eq_pre_integration_by_parts
       weightedDivergenceTrace shiftedTrace closedBracketVariation : M -> Real}
     (hmeas :
       AEMeasurable
-        (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity potential x))
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
         (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)))
     (hvariation :
       ∀ x : M,
@@ -124,28 +124,28 @@ theorem closed_integral_eq_pre_integration_by_parts
           -metricVariationRicciHess x +
             weightedDivergenceTrace x + shiftedTrace x) :
     (∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand potential potentialVariation
+        expWeightedIntegralVariationIntegrand potential potentialVariation
           metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket scalarCurvature lapPotential)
+          (fFunctionalClosedBracket scalarCurvature lapPotential)
           closedBracketVariation x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
             potential) := by
   calc
     (∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand potential potentialVariation
+        expWeightedIntegralVariationIntegrand potential potentialVariation
           metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket scalarCurvature lapPotential)
+          (fFunctionalClosedBracket scalarCurvature lapPotential)
           closedBracketVariation x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0))
         =
       ∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity potential x *
+        expNegPotentialDensity potential x *
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
             potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
@@ -161,10 +161,10 @@ theorem closed_integral_eq_pre_integration_by_parts
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
             potential) := by
-      exact (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure_integral_eq_base
+      exact (expNegPotentialWeightedMeasure_integral_eq_base
         (mu := riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
         (potential := potential)
         (integrand :=
@@ -185,21 +185,21 @@ theorem first_variation_eq_pre_integration_by_parts_of_closed_bracket
       gradPotentialNormSqVariation closedBracketVariation : M -> Real}
     (hmeas :
       AEMeasurable
-        (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity potential x))
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
         (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)))
     (hclosed_compare :
       (∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand
+        expWeightedIntegralVariationIntegrand
           (potentialPath s0) potentialVariation metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s0)
+          (fFunctionalBracket (scalarCurvaturePath s0)
             (gradPotentialNormSqPath s0))
           (fFunctionalBracketVariation scalarCurvatureVariation
             gradPotentialNormSqVariation) x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand potential potentialVariation
+        expWeightedIntegralVariationIntegrand potential potentialVariation
           metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket scalarCurvature lapPotential)
+          (fFunctionalClosedBracket scalarCurvature lapPotential)
           closedBracketVariation x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0))
     (hclosed_variation :
@@ -208,9 +208,9 @@ theorem first_variation_eq_pre_integration_by_parts_of_closed_bracket
           -metricVariationRicciHess x +
             weightedDivergenceTrace x + shiftedTrace x) :
     (∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand
+        expWeightedIntegralVariationIntegrand
           (potentialPath s0) potentialVariation metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s0)
+          (fFunctionalBracket (scalarCurvaturePath s0)
             (gradPotentialNormSqPath s0))
           (fFunctionalBracketVariation scalarCurvatureVariation
             gradPotentialNormSqVariation) x
@@ -219,7 +219,7 @@ theorem first_variation_eq_pre_integration_by_parts_of_closed_bracket
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
             potential) := by
   rw [hclosed_compare]
@@ -234,66 +234,66 @@ theorem bracketClosed_eventually
       ∀ᶠ s in nhds s0,
         AEMeasurable
           (fun x : M =>
-            ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x))
+            ENNReal.ofReal (expNegPotentialDensity (potentialPath s) x))
           (muPath s))
     (hibp :
       ∀ᶠ s in nhds s0,
         (∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s)
+          fFunctionalBracket (scalarCurvaturePath s)
             (gradPotentialNormSqPath s) x
-          ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure (muPath s)
+          ∂(expNegPotentialWeightedMeasure (muPath s)
               (potentialPath s))) =
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s)
+          fFunctionalClosedBracket (scalarCurvaturePath s)
             (lapPotentialPath s) x
-          ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure (muPath s)
+          ∂(expNegPotentialWeightedMeasure (muPath s)
               (potentialPath s))) :
     (fun s : Real =>
       ∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-          DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s)
+        expNegPotentialDensity (potentialPath s) x *
+          fFunctionalBracket (scalarCurvaturePath s)
             (gradPotentialNormSqPath s) x
         ∂(muPath s)) =ᶠ[nhds s0]
       fun s : Real =>
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s)
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalClosedBracket (scalarCurvaturePath s)
               (lapPotentialPath s) x
           ∂(muPath s) := by
   filter_upwards [hmeas, hibp] with s hmeas_s hibp_s
   calc
     (∫ x,
-      DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-        DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s)
+      expNegPotentialDensity (potentialPath s) x *
+        fFunctionalBracket (scalarCurvaturePath s)
           (gradPotentialNormSqPath s) x
       ∂(muPath s))
         =
       ∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s)
+        fFunctionalBracket (scalarCurvaturePath s)
           (gradPotentialNormSqPath s) x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure (muPath s)
+        ∂(expNegPotentialWeightedMeasure (muPath s)
             (potentialPath s)) := by
-        exact (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure_integral_eq_base
+        exact (expNegPotentialWeightedMeasure_integral_eq_base
           (mu := muPath s) (potential := potentialPath s)
           (integrand :=
-            DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s)
+            fFunctionalBracket (scalarCurvaturePath s)
               (gradPotentialNormSqPath s)) hmeas_s).symm
     _ =
       ∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s)
+        fFunctionalClosedBracket (scalarCurvaturePath s)
           (lapPotentialPath s) x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure (muPath s)
+        ∂(expNegPotentialWeightedMeasure (muPath s)
             (potentialPath s)) := hibp_s
     _ =
       ∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-          DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s)
+        expNegPotentialDensity (potentialPath s) x *
+          fFunctionalClosedBracket (scalarCurvaturePath s)
             (lapPotentialPath s) x
         ∂(muPath s) := by
-        exact DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure_integral_eq_base
+        exact expNegPotentialWeightedMeasure_integral_eq_base
           (mu := muPath s) (potential := potentialPath s)
           (integrand :=
-            DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s)
+            fFunctionalClosedBracket (scalarCurvaturePath s)
               (lapPotentialPath s)) hmeas_s
 
 theorem closedCompare
@@ -309,14 +309,14 @@ theorem closedCompare
     (hbase_eq :
       (fun s : Real =>
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s)
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalBracket (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) x
           ∂(volumeMeasureFamily (I := I) (M := M) G s)) =ᶠ[nhds s0]
         fun s : Real =>
           ∫ x,
-            DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-              DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s)
+            expNegPotentialDensity (potentialPath s) x *
+              fFunctionalClosedBracket (scalarCurvaturePath s)
                 (lapPotentialPath s) x
             ∂(volumeMeasureFamily (I := I) (M := M) G s))
     (hscalar_deriv :
@@ -344,33 +344,33 @@ theorem closedCompare
     (horig_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s)
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalBracket (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) x)
         s0)
     (hclosed_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s)
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalClosedBracket (scalarCurvaturePath s)
               (lapPotentialPath s) x)
         s0)
     (hpotential0 : potentialPath s0 = potential)
     (hscalar0 : scalarCurvaturePath s0 = scalarCurvature)
     (hlap0 : lapPotentialPath s0 = lapPotential) :
     (∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand
+        expWeightedIntegralVariationIntegrand
           (potentialPath s0) potentialVariation metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s0)
+          (fFunctionalBracket (scalarCurvaturePath s0)
             (gradPotentialNormSqPath s0))
           (fFunctionalBracketVariation scalarCurvatureVariation
             gradPotentialNormSqVariation) x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0)) =
       ∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand potential potentialVariation
+        expWeightedIntegralVariationIntegrand potential potentialVariation
           metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket scalarCurvature lapPotential)
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracketVariation scalarCurvatureVariation
+          (fFunctionalClosedBracket scalarCurvature lapPotential)
+          (fFunctionalClosedBracketVariation scalarCurvatureVariation
             lapPotentialVariation) x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0) := by
   have horig :=
@@ -384,16 +384,16 @@ theorem closedCompare
       HasDerivAt
         (fun s : Real =>
           ∫ x,
-            DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-              DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s)
+            expNegPotentialDensity (potentialPath s) x *
+              fFunctionalBracket (scalarCurvaturePath s)
                 (gradPotentialNormSqPath s) x
             ∂(volumeMeasureFamily (I := I) (M := M) G s))
         (∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand
+          expWeightedIntegralVariationIntegrand
             (potentialPath s0) potentialVariation metricVariationTrace
-            (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s0)
+            (fFunctionalClosedBracket (scalarCurvaturePath s0)
               (lapPotentialPath s0))
-            (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracketVariation scalarCurvatureVariation
+            (fFunctionalClosedBracketVariation scalarCurvatureVariation
               lapPotentialVariation) x
           ∂(volumeMeasureFamily (I := I) (M := M) G s0))
         s0 :=
@@ -401,28 +401,28 @@ theorem closedCompare
   have hderiv_eq := horig.unique hclosed_orig
   calc
     (∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand
+        expWeightedIntegralVariationIntegrand
           (potentialPath s0) potentialVariation metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s0)
+          (fFunctionalBracket (scalarCurvaturePath s0)
             (gradPotentialNormSqPath s0))
           (fFunctionalBracketVariation scalarCurvatureVariation
             gradPotentialNormSqVariation) x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0))
         =
       ∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand
+        expWeightedIntegralVariationIntegrand
           (potentialPath s0) potentialVariation metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s0)
+          (fFunctionalClosedBracket (scalarCurvaturePath s0)
             (lapPotentialPath s0))
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracketVariation scalarCurvatureVariation
+          (fFunctionalClosedBracketVariation scalarCurvatureVariation
             lapPotentialVariation) x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0) := hderiv_eq
     _ =
       ∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand potential potentialVariation
+        expWeightedIntegralVariationIntegrand potential potentialVariation
           metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket scalarCurvature lapPotential)
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracketVariation scalarCurvatureVariation
+          (fFunctionalClosedBracket scalarCurvature lapPotential)
+          (fFunctionalClosedBracketVariation scalarCurvatureVariation
             lapPotentialVariation) x
         ∂(volumeMeasureFamily (I := I) (M := M) G s0) := by
         simp [hpotential0, hscalar0, hlap0]
@@ -439,19 +439,19 @@ theorem first_variation_eq_pre_integration_by_parts_of_weighted_divergence
       lapPotentialVariation gradPotentialNormSqVariation : M -> Real}
     (hmeas :
       AEMeasurable
-        (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity potential x))
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
         (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)))
     (hbase_eq :
       (fun s : Real =>
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s)
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalBracket (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) x
           ∂(volumeMeasureFamily (I := I) (M := M) G s)) =ᶠ[nhds s0]
         fun s : Real =>
           ∫ x,
-            DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-              DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s)
+            expNegPotentialDensity (potentialPath s) x *
+              fFunctionalClosedBracket (scalarCurvaturePath s)
                 (lapPotentialPath s) x
             ∂(volumeMeasureFamily (I := I) (M := M) G s))
     (hscalar_deriv :
@@ -479,15 +479,15 @@ theorem first_variation_eq_pre_integration_by_parts_of_weighted_divergence
     (horig_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s)
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalBracket (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) x)
         s0)
     (hclosed_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s)
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalClosedBracket (scalarCurvaturePath s)
               (lapPotentialPath s) x)
         s0)
     (hpotential0 : potentialPath s0 = potential)
@@ -495,14 +495,14 @@ theorem first_variation_eq_pre_integration_by_parts_of_weighted_divergence
     (hlap0 : lapPotentialPath s0 = lapPotential)
     (hclosed_variation :
       ∀ x : M,
-        DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracketVariation scalarCurvatureVariation
+        fFunctionalClosedBracketVariation scalarCurvatureVariation
             lapPotentialVariation x =
           -metricVariationRicciHess x +
             weightedDivergenceTrace x + shiftedTrace x) :
     (∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand
+        expWeightedIntegralVariationIntegrand
           (potentialPath s0) potentialVariation metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s0)
+          (fFunctionalBracket (scalarCurvaturePath s0)
             (gradPotentialNormSqPath s0))
           (fFunctionalBracketVariation scalarCurvatureVariation
             gradPotentialNormSqVariation) x
@@ -511,7 +511,7 @@ theorem first_variation_eq_pre_integration_by_parts_of_weighted_divergence
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
             potential) := by
   apply first_variation_eq_pre_integration_by_parts_of_closed_bracket (I := I) (M := M) G hmeas
@@ -532,26 +532,26 @@ theorem first_variation_eq_pre_integration_by_parts
       lapPotentialVariation gradPotentialNormSqVariation : M -> Real}
     (hmeas0 :
       AEMeasurable
-        (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity potential x))
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
         (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0)))
     (hmeas_near :
       ∀ᶠ s in nhds s0,
         AEMeasurable
           (fun x : M =>
-            ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x))
+            ENNReal.ofReal (expNegPotentialDensity (potentialPath s) x))
           (volumeMeasureFamily (I := I) (M := M) G s))
     (hibp_near :
       ∀ᶠ s in nhds s0,
         (∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s)
+          fFunctionalBracket (scalarCurvaturePath s)
             (gradPotentialNormSqPath s) x
-          ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+          ∂(expNegPotentialWeightedMeasure
               (volumeMeasureFamily (I := I) (M := M) G s)
               (potentialPath s))) =
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s)
+          fFunctionalClosedBracket (scalarCurvaturePath s)
             (lapPotentialPath s) x
-          ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+          ∂(expNegPotentialWeightedMeasure
               (volumeMeasureFamily (I := I) (M := M) G s)
               (potentialPath s)))
     (hscalar_deriv :
@@ -579,15 +579,15 @@ theorem first_variation_eq_pre_integration_by_parts
     (horig_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s)
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalBracket (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) x)
         s0)
     (hclosed_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity (potentialPath s) x *
-            DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracket (scalarCurvaturePath s)
+          expNegPotentialDensity (potentialPath s) x *
+            fFunctionalClosedBracket (scalarCurvaturePath s)
               (lapPotentialPath s) x)
         s0)
     (hpotential0 : potentialPath s0 = potential)
@@ -595,14 +595,14 @@ theorem first_variation_eq_pre_integration_by_parts
     (hlap0 : lapPotentialPath s0 = lapPotential)
     (hclosed_variation :
       ∀ x : M,
-        DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalClosedBracketVariation scalarCurvatureVariation
+        fFunctionalClosedBracketVariation scalarCurvatureVariation
             lapPotentialVariation x =
           -metricVariationRicciHess x +
             weightedDivergenceTrace x + shiftedTrace x) :
     (∫ x,
-        DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedIntegralVariationIntegrand
+        expWeightedIntegralVariationIntegrand
           (potentialPath s0) potentialVariation metricVariationTrace
-          (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalBracket (scalarCurvaturePath s0)
+          (fFunctionalBracket (scalarCurvaturePath s0)
             (gradPotentialNormSqPath s0))
           (fFunctionalBracketVariation scalarCurvatureVariation
             gradPotentialNormSqVariation) x
@@ -611,7 +611,7 @@ theorem first_variation_eq_pre_integration_by_parts
         fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
           potentialVariation metricVariationTrace
           metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) (G.metric s0))
             potential) := by
   apply first_variation_eq_pre_integration_by_parts_of_weighted_divergence (I := I) (M := M) G hmeas0
@@ -649,7 +649,7 @@ theorem fFunctionalFirstVariationFormula_of_trace_vector
     (traceVec : Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯)
     (hmeas :
       AEMeasurable
-        (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity potential x))
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity potential x))
         (riemannianVolumeMeasure (I := I) (M := M) g))
     (hfirst :
       firstVariation =
@@ -657,30 +657,30 @@ theorem fFunctionalFirstVariationFormula_of_trace_vector
           fFunctionalPreIntegrationByPartsIntegrand scalarCurvature lapPotential
             potentialVariation metricVariationTrace
             metricVariationRicciHess weightedDivergenceTrace shiftedTrace x
-          ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+          ∂(expNegPotentialWeightedMeasure
               (riemannianVolumeMeasure (I := I) (M := M) g) potential))
     (hfinal_int :
       Integrable
         (fFunctionalFirstVariationIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess)
-        (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        (expNegPotentialWeightedMeasure
           (riemannianVolumeMeasure (I := I) (M := M) g) potential))
     (hdiv_int :
       Integrable weightedDivergenceTrace
-        (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        (expNegPotentialWeightedMeasure
           (riemannianVolumeMeasure (I := I) (M := M) g) potential))
     (hshift_int :
       Integrable shiftedTrace
-        (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        (expNegPotentialWeightedMeasure
           (riemannianVolumeMeasure (I := I) (M := M) g) potential))
     (hcorr_int :
       Integrable
         (fun x : M =>
-          DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+          expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x *
             (lapPotential x - gradPotentialNormSq x))
-        (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        (expNegPotentialWeightedMeasure
           (riemannianVolumeMeasure (I := I) (M := M) g) potential))
     (hdivTrace :
       ∀ x : M,
@@ -719,22 +719,22 @@ theorem fFunctionalFirstVariationFormula_of_trace_vector
       ∀ x : M,
         q x = potentialVariation x - metricVariationTrace x / 2) :
     FFunctionalFirstVariationFormula
-      (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+      (expNegPotentialWeightedMeasure
         (riemannianVolumeMeasure (I := I) (M := M) g) potential)
       firstVariation scalarCurvature lapPotential gradPotentialNormSq
       potentialVariation metricVariationTrace metricVariationRicciHess := by
   have hdiv_zero :
       ∫ x, weightedDivergenceTrace x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) g) potential) = 0 :=
     weightedDivZero_of_connTrace (I := I) g hpotential traceVec hmeas
       hdivTrace hactionTrace hweighted
   have hshift_eq :
       ∫ x, shiftedTrace x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) g) potential) =
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+          expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x *
             (DifferentialGeometry.Geometry.Operator.ΔG
                 (I := I) g ⟨_, hpotential⟩ x -
@@ -745,25 +745,25 @@ theorem fFunctionalFirstVariationFormula_of_trace_vector
                 ((DifferentialGeometry.Geometry.Operator.gradG
                   (I := I) g ⟨_, hpotential⟩ :
                   Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x))
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) g) potential) :=
     shiftIntEq (I := I) g hpotential hq hmeas hshift hqeq
   have hshift_final :
       ∫ x, shiftedTrace x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) g) potential) =
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+          expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x *
             (lapPotential x - gradPotentialNormSq x)
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) g) potential) := by
     calc
       ∫ x, shiftedTrace x
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) g) potential) =
         ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+          expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x *
             (DifferentialGeometry.Geometry.Operator.ΔG
                 (I := I) g ⟨_, hpotential⟩ x -
@@ -774,13 +774,13 @@ theorem fFunctionalFirstVariationFormula_of_trace_vector
                 ((DifferentialGeometry.Geometry.Operator.gradG
                   (I := I) g ⟨_, hpotential⟩ :
                   Cₛ^∞⟮I; E, (TangentSpace I : M -> Type _)⟯) x))
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) g) potential) := hshift_eq
       _ = ∫ x,
-          DifferentialGeometry.Analysis.Entropy.Perelman.expWeightedMeasureVariationFactor potentialVariation
+          expWeightedMeasureVariationFactor potentialVariation
             metricVariationTrace x *
             (lapPotential x - gradPotentialNormSq x)
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) g) potential) := by
         apply integral_congr_ae
         refine Filter.Eventually.of_forall ?_
@@ -788,7 +788,7 @@ theorem fFunctionalFirstVariationFormula_of_trace_vector
         simp [hlap x, hgradSq x]
   exact fFunctionalFirstVariationFormula_of_integration_by_parts
     (weightedMeasure :=
-      DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+      expNegPotentialWeightedMeasure
         (riemannianVolumeMeasure (I := I) (M := M) g) potential)
     hfirst hfinal_int hdiv_int hshift_int hcorr_int hdiv_zero hshift_final
 

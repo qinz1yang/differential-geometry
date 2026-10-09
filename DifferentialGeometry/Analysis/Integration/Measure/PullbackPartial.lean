@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Measure.OpenSubtypeVolume
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 
 set_option autoImplicit false
 noncomputable section

@@ -12,14 +12,11 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHor
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_bad_point_with_good_above_double {Good : P.Carrier → ℝ → Prop} {q T η : ℝ}
+theorem exists_bad_point_with_good_above_double {Good : P.Carrier → ℝ → Prop} {q T η : ℝ}
     (hq : 0 ≤ q) (hT : a ≤ T)
     (hbad : ∃ (x : P.Carrier) (t : ℝ), T ≤ t ∧ t < T + η ∧ t < s ∧ q < G.flow.scalar t x ∧
       ¬ Good x t) :
@@ -53,7 +50,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   have hyle := le_csSup hbdd hyB
   linarith
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_bad_point_scaled_elapsed_lt_with_good_above_double
+theorem exists_bad_point_scaled_elapsed_lt_with_good_above_double
     {Good : P.Carrier → ℝ → Prop} {q T β η : ℝ} (hq : 0 ≤ q) (hT : a ≤ T) (hTs : T < s)
     (hβ : 0 < β) (hη : 0 < η)
     (hbad : ∀ η' : ℝ, 0 < η' → ∃ (x : P.Carrier) (t : ℝ), T ≤ t ∧ t < T + η' ∧ t < s ∧
@@ -81,7 +78,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     _ < max K 1 * (β / max K 1) := mul_lt_mul_of_pos_left (by linarith) hK'
     _ = β := mul_div_cancel₀ β hK'.ne'
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_noncanonical_point_scaled_elapsed_lt {ε C1 C2 q T β η : ℝ} (hq : 0 ≤ q)
+theorem exists_noncanonical_point_scaled_elapsed_lt {ε C1 C2 q T β η : ℝ} (hq : 0 ≤ q)
     (hT : a ≤ T) (hTs : T < s) (hβ : 0 < β) (hη : 0 < η)
     (hbad : ∀ η' : ℝ, 0 < η' → ∃ (x : P.Carrier) (t : ℝ), T ≤ t ∧ t < T + η' ∧ t < s ∧
       q < G.flow.scalar t x ∧ ¬ ∃ W : CanonicalWitness G.flow ε C1 C2 x t,
@@ -96,7 +93,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (Good := fun x t => ∃ W : CanonicalWitness G.flow ε C1 C2 x t, W.capTubeHasNeckChart ε)
     hq hT hTs hβ hη hbad
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_aged_noncanonical_point_scaled_elapsed_lt {ε C1 C2 q τmin T β η : ℝ}
+theorem exists_aged_noncanonical_point_scaled_elapsed_lt {ε C1 C2 q τmin T β η : ℝ}
     (hq : 0 ≤ q) (hT : a ≤ T) (hTs : T < s) (hβ : 0 < β) (hη : 0 < η)
     (hbad : ∀ η' : ℝ, 0 < η' → ∃ (x : P.Carrier) (t : ℝ), T ≤ t ∧ t < T + η' ∧ t < s ∧
       q < G.flow.scalar t x ∧ τmin ≤ G.flow.scalar t x * (t - a) ∧
@@ -120,7 +117,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     exact hbad' fun h' => absurd h' h
   exact ⟨x', t', hTt', ht', hs', hq', hage, fun h => hbad' fun _ => h, hβ', habove⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_canonicalOn_of_parabolically_noncollapsed {eps : ℝ} (heps : 0 < eps)
+theorem exists_uniform_canonicalOn_of_parabolically_noncollapsed {eps : ℝ} (heps : 0 < eps)
     (hsmall : eps < 1 / 11) :
     ∃ C : ℝ, 1 ≤ C ∧
       ∀ kappa : ℝ, 0 < kappa → ∀ rho : ℝ, 0 < rho → ∀ Phi : ℝ → ℝ,
@@ -147,7 +144,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (fun v hv z => hpinch v ⟨hw.trans hv.1, hv.2.trans_lt hts⟩ z)
     (fun τ B _ h2 h3 h4 => hnc τ B (h2.trans_lt htη) h3 h4)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_canonicalOn_of_parabolically_noncollapsed_of_le_age {eps : ℝ}
+theorem exists_uniform_canonicalOn_of_parabolically_noncollapsed_of_le_age {eps : ℝ}
     (heps : 0 < eps) (hsmall : eps < 1 / 11) :
     ∃ C : ℝ, 1 ≤ C ∧
       ∀ kappa : ℝ, 0 < kappa → ∀ rho : ℝ, 0 < rho → ∀ Phi : ℝ → ℝ,

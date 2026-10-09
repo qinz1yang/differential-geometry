@@ -53,7 +53,7 @@ private theorem weighted_int [CompactSpace M]
     (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f)
     (hq : Continuous q) :
     Integrable q
-      (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+      (expNegPotentialWeightedMeasure
         (riemannianVolumeMeasure (I := I) (M := M) g) f) := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
   have hFiniteMeasure : IsFiniteMeasure μ :=
@@ -61,19 +61,19 @@ private theorem weighted_int [CompactSpace M]
   let _ := hFiniteMeasure
   have hmeas :
       AEMeasurable
-        (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity f x)) μ :=
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity f x)) μ :=
     (ENNReal.continuous_ofReal.comp
       (expNegPotentialDensity_contMDiff (I := I) hf).continuous).aemeasurable
   have hfinite :
-      ∀ᵐ x ∂μ, ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity f x) < (⊤ : ENNReal) :=
+      ∀ᵐ x ∂μ, ENNReal.ofReal (expNegPotentialDensity f x) < (⊤ : ENNReal) :=
     Filter.Eventually.of_forall fun _ => ENNReal.ofReal_lt_top
-  rw [DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure]
+  rw [expNegPotentialWeightedMeasure]
   apply (integrable_withDensity_iff_integrable_smul₀' hmeas hfinite).2
   have hbase : Integrable
-      (fun x : M => DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity f x * q x) μ := by
+      (fun x : M => expNegPotentialDensity f x * q x) μ := by
     exact ((expNegPotentialDensity_contMDiff (I := I) hf).continuous.mul hq)
       |>.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-  simpa only [DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity,
+  simpa only [expNegPotentialDensity,
     ENNReal.toReal_ofReal (Real.exp_nonneg _), smul_eq_mul] using hbase
 
 private theorem int7_zero
@@ -239,11 +239,11 @@ theorem weighted_hess_split [I.Boundaryless] [CompactSpace M]
             (ΔG (I := I) g ⟨_, hf⟩ x -
               g.inner x (gradG (I := I) g ⟨_, hf⟩ x)
                 (gradG (I := I) g ⟨_, hf⟩ x)))
-      ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+      ∂(expNegPotentialWeightedMeasure
           (riemannianVolumeMeasure (I := I) (M := M) g) f) = 0 := by
   have hmeas :
       AEMeasurable
-        (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity f x))
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity f x))
         (riemannianVolumeMeasure (I := I) (M := M) g) :=
     (ENNReal.continuous_ofReal.comp
       (expNegPotentialDensity_contMDiff (I := I) hf).continuous).aemeasurable
@@ -272,7 +272,7 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
             (ΔG (I := I) g ⟨_, hf⟩ x -
               g.inner x (gradG (I := I) g ⟨_, hf⟩ x)
                 (gradG (I := I) g ⟨_, hf⟩ x)))
-      ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+      ∂(expNegPotentialWeightedMeasure
           (riemannianVolumeMeasure (I := I) (M := M) g) f) = 0 := by
   classical
   by_cases hdim : Module.finrank Real E = 0
@@ -371,11 +371,11 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
       exact (Δ_g_contMDiff (I := I) g ⟨_, hL⟩).sub hcross
     have hA2 : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) A2 := by
       exact (Δ_g_contMDiff (I := I) g ⟨_, hL⟩).add (hL.mul hz)
-    let μw := DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+    let μw := expNegPotentialWeightedMeasure
       (riemannianVolumeMeasure (I := I) (M := M) g) f
     have hmeas :
         AEMeasurable
-          (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity f x))
+          (fun x : M => ENNReal.ofReal (expNegPotentialDensity f x))
           (riemannianVolumeMeasure (I := I) (M := M) g) :=
       (ENNReal.continuous_ofReal.comp
         (expNegPotentialDensity_contMDiff (I := I) hf).continuous).aemeasurable
@@ -545,7 +545,7 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
         (R x + q x + s * (Rt x + qt x) + ft x +
           (s * (R x + q x) + f x - (n : Real)) *
             (-((n : Real) / (2 * s)) - ft x + R x))
-      ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+      ∂(expNegPotentialWeightedMeasure
           (riemannianVolumeMeasure (I := I) (M := M) g) f)) =
       -2 * s *
         ∫ x,
@@ -554,7 +554,7 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
               hessianSec (I := I) (metricCov (I := I) (M := M) g)
                 (metricCov_smooth (I := I) (M := M) g) f hf x -
               (1 / (2 * s)) • metricTensor0S (I := I) g x)
-        ∂(DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+        ∂(expNegPotentialWeightedMeasure
             (riemannianVolumeMeasure (I := I) (M := M) g) f) := by
   classical
   dsimp only
@@ -577,7 +577,7 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
           (gradientFun (I := I) g f x)) +
       2 * g.inner x (gradientFun (I := I) g ft x)
         (gradientFun (I := I) g f x)
-  let μw := DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialWeightedMeasure
+  let μw := expNegPotentialWeightedMeasure
     (riemannianVolumeMeasure (I := I) (M := M) g) f
   have hR : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) R := by
     simpa only [R] using metricScalar_smooth (I := I) (M := M) g
@@ -710,7 +710,7 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
     exact (hz.add hR).sub contMDiff_const
   have hmeas :
       AEMeasurable
-        (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.expNegPotentialDensity f x))
+        (fun x : M => ENNReal.ofReal (expNegPotentialDensity f x))
         (riemannianVolumeMeasure (I := I) (M := M) g) :=
     (ENNReal.continuous_ofReal.comp
       (expNegPotentialDensity_contMDiff (I := I) hf).continuous).aemeasurable

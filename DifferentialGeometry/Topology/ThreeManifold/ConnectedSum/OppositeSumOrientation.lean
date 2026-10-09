@@ -182,10 +182,7 @@ theorem reflectDiffeomorph_preservesOrientation :
     (IL x) hpoint
 
 
-theorem connectedSum_opposite (X Y : ConnectedClosedOrientedManifold.{u} 3) :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (connectedSum X Y).opposite.toClosedOrientedManifold
-      (connectedSum X.opposite Y.opposite).toClosedOrientedManifold) := by
+theorem connectedSumOpposite_holds : connectedSumOpposite.{u} := fun X Y => by
   have e₀ : ClosedOrientedManifold.OrientedDiffeomorph
       (connectedSum X Y).opposite.toClosedOrientedManifold
       (smoothConnectedSum X.opposite Y.opposite (orientedReflectChart X) (orientedReflectChart Y)

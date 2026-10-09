@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.DistancePullback
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import Mathlib.Topology.MetricSpace.Isometry
 
 set_option autoImplicit false

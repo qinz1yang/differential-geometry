@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Segment.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Length
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Local
+import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
 
 noncomputable section
 

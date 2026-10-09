@@ -890,7 +890,7 @@ theorem rfs_csf_projected_ramp (B : RicciBackground (I := I) (M := M) D a b)
 omit [SigmaCompactSpace M] hCompact hNonempty hBoundary in
 theorem rfs_csf_swept_annulus (B : RicciBackground (I := I) (M := M) D a b)
     (hslope : curveShorteningLeastAreaSlope (I := I) (M := M) B)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hcont : ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b))
     (s t : ℝ) (hs : s ∈ Icc a b) (ht : t ∈ Icc s b) :

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.FarPoint
 import DifferentialGeometry.Geometry.Submanifold.IsometricImmersion
 import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.Pointwise
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import Mathlib.Topology.Order.Compact
 
 set_option autoImplicit false

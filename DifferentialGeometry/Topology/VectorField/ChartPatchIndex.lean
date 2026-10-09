@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.VectorField.ChartPatch
 import DifferentialGeometry.Topology.VectorField.ContinuousIsolatedZeroGerm
-import DifferentialGeometry.Topology.VectorField.Index.InteriorTransport
+import DifferentialGeometry.Topology.VectorField.InteriorIndexTransport
 
 set_option autoImplicit false
 noncomputable section

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Backward.SurfaceHeat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceMetricEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surface.EntropyVariation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceEntropyDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 
 noncomputable section

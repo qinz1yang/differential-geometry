@@ -157,9 +157,9 @@ theorem isCompatibleOrientation_diffeomorph_map
       Orientation.map (Fin n) (Cfun y) q
     calc Orientation.map (Fin n) D (Orientation.map (Fin n) B (Orientation.map (Fin n) A q))
         = Orientation.map (Fin n) (B.trans D) (Orientation.map (Fin n) A q) :=
-          (DifferentialGeometry.orientation_map_trans B D _).symm
+          DifferentialGeometry.VectorBundle.map_orientation_trans_between B D _
       _ = Orientation.map (Fin n) (A.trans (B.trans D)) q :=
-          (DifferentialGeometry.orientation_map_trans A (B.trans D) q).symm
+          DifferentialGeometry.VectorBundle.map_orientation_trans_between A (B.trans D) q
       _ = Orientation.map (Fin n) (Cfun y) q := by
           rw [hCfun_apply y hb (hUsub hu)]
           simp only [ContinuousLinearEquiv.trans_toLinearEquiv,

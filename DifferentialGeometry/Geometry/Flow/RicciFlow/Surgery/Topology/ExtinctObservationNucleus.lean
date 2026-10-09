@@ -63,7 +63,7 @@ def HasExtinctStandardSideNucleus (P : OrientedThreeStage.{u}) (g : P.Metric) : 
     (∀ i : Fin H.eventCount, (H.event i).transition.boundaryFrameReversing) ∧
     (∀ i : Fin H.eventCount, (H.event i).coreInclusionIsSmoothEmbedding) ∧
     (∀ i : Fin H.eventCount,
-      (H.event i).discarded.componentwiseStandardFactor) ∧
+      (H.event i).discarded.toClosedOrientedManifold.componentwiseStandardFactor) ∧
     IsEmpty (H.stage (Fin.last H.eventCount)).Carrier
 
 def HasExtinctObservationNucleusOfCutCapCompletion
@@ -84,7 +84,7 @@ theorem hasExtinctObservationNucleusOfCutCapCompletion_of_nucleus (P : OrientedT
 theorem exists_poincare_controlled_extinction_of_hasExtinctObservationNucleusOfCutCapCompletion
     (P : OrientedThreeStage.{u}) (g : P.Metric) [Nonempty P.Carrier]
     (h : HasExtinctObservationNucleusOfCutCapCompletion P g) :
-    Nonempty (PoincareControlledExtinction P g) := by
+    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
   obtain ⟨H, A, hc, hcore, hctrl, hempty⟩ := h
   exact exists_poincare_controlled_extinction_of_observedHistory P g H A
     (fun i => (hc i).some) (fun i => hcore i) hctrl hempty
@@ -107,7 +107,7 @@ theorem hasExtinctObservationNucleus_of_hasExtinctRetainedCoreHistory
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : HasExtinctRetainedCoreHistory M g) :
     HasExtinctObservationNucleus
-      (M.toClosedOrientedManifold) g := by
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g := by
   obtain ⟨H, A, hbfr, hctrl, hempty⟩ := h
   exact ⟨H.toHistory, A, hbfr,
     fun i => (H.coreEvent i).toMetricCutCapEvent_coreInclusionIsSmoothEmbedding, hctrl, hempty⟩
@@ -132,7 +132,7 @@ theorem hasExtinctStandardSideNucleus_implies (P : OrientedThreeStage.{u}) (g : 
 theorem exists_poincare_controlled_extinction_of_hasExtinctObservationNucleus
     (P : OrientedThreeStage.{u}) (g : P.Metric) [Nonempty P.Carrier]
     (h : HasExtinctObservationNucleus P g) :
-    Nonempty (PoincareControlledExtinction P g) := by
+    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
   obtain ⟨H, A, hbfr, hcore, hctrl, hempty⟩ := h
   exact exists_poincare_controlled_extinction_of_observedHistory P g H A
     (fun i => ((H.event i).hasCutCapCompletion_of_boundaryFrameReversing (hbfr i)).some)

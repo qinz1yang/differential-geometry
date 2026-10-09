@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Neck.Normalized.Defs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingFromOpen
 

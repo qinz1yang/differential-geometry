@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Synge.Weinstein
 import DifferentialGeometry.Geometry.Curvature.OrientationCover
-import DifferentialGeometry.Topology.Manifold.OrientationCover.Compatible
-import DifferentialGeometry.Topology.Manifold.OrientationCover.Components
+import DifferentialGeometry.Topology.Manifold.OrientationCoverOriented
+import DifferentialGeometry.Topology.Manifold.OrientationCoverComponents
 
 noncomputable section
 open Bundle Manifold

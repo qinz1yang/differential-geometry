@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ParallelKernel.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureKernel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Complete
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Solution
 

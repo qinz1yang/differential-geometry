@@ -7,9 +7,9 @@ import DifferentialGeometry.Topology.SphereSeparation.SaddleCutoffRegion
 import DifferentialGeometry.Topology.SphereSeparation.HeightCapGraphNeighborhood
 import DifferentialGeometry.Topology.Diffeomorph.QuadraticCapProjection
 import DifferentialGeometry.Topology.SphereSeparation.OneSaddleClosingArcFamily
-import DifferentialGeometry.Topology.ThreeManifold.Schoenflies.Height.HeightCapChart
+import DifferentialGeometry.Topology.SphereSeparation.HeightCapChart
 import DifferentialGeometry.Topology.Diffeomorph.FiberwiseReparametrization
-import DifferentialGeometry.Topology.PlanarJordan.Saddle.CutoffIsotopy
+import DifferentialGeometry.Topology.PlanarJordan.SaddleCutoffIsotopy
 import DifferentialGeometry.Topology.Morse.NormalForm.SaddleGraphNeighborhood
 import DifferentialGeometry.Topology.Morse.NormalForm.SaddleCutoffGraph
 import DifferentialGeometry.Topology.Morse.NormalForm.SaddleCutoffProjection
@@ -865,14 +865,13 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
             B.symm (γ (t, u)) ∈ Icc (-h) h ×ˢ Icc (-R) R →
               B.symm (γ (t, u)) = saddleBandLevelCurve s t σ (-h) ∨
                 B.symm (γ (t, u)) = saddleBandLevelCurve s t σ h) := by
-  classical
-  choose p hpmax hpnd hpnotmax σ hσ h hh hh1 δ hδ
-      r hr hab A hA hnormal hcap Ψ hΨ hΨi hΨa
-      G hGformula hG hGi hCcap hcontact hcapgerm
-      γ₀ η hγ₀ hη hηeq hγ₀0 hγ₀1 hγrange hηrange
-      Φ hΦ hΦi hΦ0 T hT hδT hTsh ρ hρ N hN hηN hheight hNcircle
-      hsourcefamily hplanefamily hslices hendpoints hcoverage hambient
-      hcompact V hV hVe htraceV hcontactRect hmodelRect hrectangle hrectangleLevel using
+  obtain ⟨p, hpmax, hpnd, hpnotmax, σ, hσ, h, hh, hh1, δ, hδ,
+      r, hr, hab, A, hA, hnormal, hcap, Ψ, hΨ, hΨi, hΨa,
+      G, hGformula, hG, hGi, hCcap, hcontact, hcapgerm,
+      γ₀, η, hγ₀, hη, hηeq, hγ₀0, hγ₀1, hγrange, hηrange,
+      Φ, hΦ, hΦi, hΦ0, T, hT, hδT, hTsh, ρ, hρ, N, hN, hηN, hheight, hNcircle,
+      hsourcefamily, hplanefamily, hslices, hendpoints, hcoverage, hambient,
+      hcompact, V, hV, hVe, htraceV, hcontactRect, hmodelRect, hrectangle, hrectangleLevel⟩ :=
     exists_closing_arc_family_and_height_cap_inter_rectangle_of_one_saddle he hnd hinj hone hconn
       B hU hzero hβ hs hgraph hβcrit hβindex
   obtain ⟨ε, hε, hεhalf, hendpoint⟩ := hendpoints
@@ -880,7 +879,7 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
   have hW : IsOpen W := (isOpen_lt continuous_subtype_val continuous_const).union
     (isOpen_lt continuous_const continuous_subtype_val)
   have hW0 : (0 : unitInterval) ∈ W := Or.inl (by simpa using hε)
-  have hW1 : (1 : unitInterval) ∈ W := Or.inr (by change 1 - ε < 1; linarith only [hε])
+  have hW1 : (1 : unitInterval) ∈ W := Or.inr (by change 1 - ε < 1; linarith)
   have hσsq : σ ^ 2 = 1 := by
     rcases hσ with hσ | hσ
     · rw [hσ]; norm_num
@@ -904,7 +903,7 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
         (G (c + s + t₀) '' closedBall 0 r)ᶜ := by
     have ht₀pos : 0 < t₀ := (half_pos hδ).trans ht₀.1
     have ht₀δ : t₀ ≤ δ := (ht₀.2.trans_le (min_le_left _ _)).le
-    have ht₀I : t₀ ∈ Icc (-δ) δ := ⟨by linarith only [hδ, ht₀pos], ht₀δ⟩
+    have ht₀I : t₀ ∈ Icc (-δ) δ := ⟨by linarith, ht₀δ⟩
     have ht₀cap : t₀ ∈ Icc (δ / 2) (e p 2 - r ^ 2 / 2 - (c + s)) :=
       ⟨ht₀.1.le, (ht₀.2.trans_le (min_le_right _ _)).le⟩
     have hcircle : G (c + s + t₀) '' sphere 0 r =
@@ -928,31 +927,31 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
       rintro _ ⟨_, ⟨u, hu, rfl⟩, rfl⟩
       have hnegσ : (-σ) ^ 2 = 1 := by simpa only [neg_sq] using hσsq
       have hzu := hrectangle (hmodelRect t₀ ht₀I (-σ) hnegσ u hu)
-      have huone : u ∈ Ioo (-1 : ℝ) 1 := ⟨by linarith only [hu.1, hh1], by linarith only [hu.2, hh1]⟩
+      have huone : u ∈ Ioo (-1 : ℝ) 1 := ⟨by linarith [hu.1], by linarith [hu.2]⟩
       have hpoint := hgraph _ hzu
       rw [saddleBandLevelCurve_height hs.le ht₀pos hnegσ huone c] at hpoint
       exact ⟨β (saddleBandLevelCurve s t₀ (-σ) u), congrArg Prod.snd hpoint,
         congrArg Prod.fst hpoint⟩
     exact PlanarJordan.exists_cthickening_saddle_band_sublevel_disjoint_image_closedBall
       B.toHomeomorph (G (c + s + t₀)).toHomeomorph hs.le ht₀pos hσsq hh1 hcircle
-      hclosing (hcontact (c + s + t₀) ⟨by linarith only [ht₀cap.1], by linarith only [ht₀cap.2]⟩)
+      hclosing (hcontact (c + s + t₀) ⟨by linarith [ht₀cap.1], by linarith [ht₀cap.2]⟩)
       hopposite (by
         rintro _ ⟨u, hu, rfl⟩
         exact hmodelRect t₀ ht₀I (-σ) (by simpa only [neg_sq] using hσsq) u hu) ha
   have hgap : δ / 2 < min δ (e p 2 - r ^ 2 / 2 - (c + s)) :=
-    lt_min (half_lt_self hδ) (by linarith only [hab])
+    lt_min (half_lt_self hδ) (by linarith)
   obtain ⟨t₀, hτt₀, ht₀⟩ := exists_between hgap
   have ht₀pos : 0 < t₀ := (half_pos hδ).trans hτt₀
   have ht₀δ : t₀ < δ := ht₀.trans_le (min_le_left _ _)
   have ht₀b : c + s + t₀ < e p 2 - r ^ 2 / 2 := by
-    linarith only [ht₀.trans_le (min_le_right _ _)]
+    linarith [ht₀.trans_le (min_le_right _ _)]
   let d₀ := (t₀ + δ) / 2
-  have ht₀d₀ : t₀ < d₀ := by dsimp [d₀]; linarith only [ht₀δ]
-  have hd₀δ : d₀ < δ := by dsimp [d₀]; linarith only [ht₀δ]
+  have ht₀d₀ : t₀ < d₀ := by dsimp [d₀]; linarith
+  have hd₀δ : d₀ < δ := by dsimp [d₀]; linarith
   have hd₀pos : 0 < d₀ := ht₀pos.trans ht₀d₀
   have hJ : Icc (-d₀) d₀ ⊆ Ioo (-δ) δ := by
     intro t ht
-    constructor <;> linarith only [ht.1, ht.2, hd₀δ]
+    constructor <;> linarith [ht.1, ht.2]
   obtain ⟨εcut, hεcut, hεcutd, hεcutt, hεcuth, θ, hθ, hθ01, hθ0, hθ1, hθzero,
       κ, hκin, hκout, hθformula, Ξ, hΞ, hΞi, hΞ0, hΞheight, hΞbase, hΞarc,
       ⟨Vcut, hVcut, hKcut, hΞcut, hVregular⟩, S, hS, hΞS⟩ :=
@@ -968,8 +967,8 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
       (hz : |z.1| ≤ h) (hgraphz : (1 - z.1 ^ 2) * (z.2 ^ 2 + 2 * s) / 2 = s + t) : z ∈ U := by
     apply hrectangle
     exact mem_rectangle_of_saddle_band_height_le (abs_lt.mp (hz.trans_lt hh1))
-      (by rw [hgraphz]; linarith only [ht.2])
-      (hmodelRect d₀ ⟨by linarith only [hδ, hd₀pos], hd₀δ.le⟩ 1 (by norm_num) z.1 (abs_le.mp hz))
+      (by rw [hgraphz]; linarith [ht.2])
+      (hmodelRect d₀ ⟨by linarith, hd₀δ.le⟩ 1 (by norm_num) z.1 (abs_le.mp hz))
   obtain ⟨P, hP, hPi, hPformula, hPiformula, hP₀⟩ :=
     exists_inverse_fiber_family (Ξ 1) (hΞheight 1) (hΞbase 1)
   have hParc (t : ℝ) (ht : t ∈ Icc (-d₀) d₀) (u : unitInterval) :
@@ -986,22 +985,22 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
         (connectedComponentIn {x | c + s + t₀ ≤ e x 2} p ∩ {x | e x 2 = c + s + t₀})) =
       (fun x => (L (e x)).1) ''
         (connectedComponentIn {x | c + s + t ≤ e x 2} p ∩ {x | e x 2 = c + s + t}) := by
-    have htpos : 0 < t := by linarith only [ht.1, hε₀t, ht₀pos]
-    have htJ : t ∈ Icc (-d₀) d₀ := by constructor <;> linarith only [ht.2, hε₀d, ht₀d₀, htpos]
+    have htpos : 0 < t := by linarith [ht.1]
+    have htJ : t ∈ Icc (-d₀) d₀ := by constructor <;> linarith [ht.1, ht.2]
     have htδ : t ≤ δ := htJ.2.trans hd₀δ.le
     apply PlanarJordan.image_circle_eq_of_closing_arc_and_saddle_band_time_change
       (P t).toEquiv B hs.le ht₀pos.le htpos hσsq hh1
       (hcoverage t ⟨htpos, htδ⟩) (hcoverage t₀ ⟨ht₀pos, ht₀δ.le⟩)
       (θ := fun u => θ (t, u))
-      (fun u _ => hθ1 t u (Or.inl (by linarith only [ht.1, hε₀t, ht₀pos])))
+      (fun u _ => hθ1 t u (Or.inl (by linarith [ht.1])))
       (hParc t htJ)
     intro z hz hgraphz
     change (P t).symm (B z) = _
     rw [hPiformula]
     have hzV : (t, z) ∈ Vcut := by
       apply hKcut
-      refine ⟨⟨by linarith only [htpos, hεcut], htJ.2⟩, hz, hgraphz.ge, ?_⟩
-      simp only [hgraphz, hθ1 t z.1 (Or.inl (by linarith only [ht.1, hε₀t, ht₀pos])), sub_self, zero_mul,
+      refine ⟨⟨by linarith, htJ.2⟩, hz, hgraphz.ge, ?_⟩
+      simp only [hgraphz, hθ1 t z.1 (Or.inl (by linarith [ht.1])), sub_self, zero_mul,
         add_zero, le_refl]
     have hmodel := congrArg Prod.snd (hΞcut 1 ⟨by norm_num, le_rfl⟩ (t, z) hzV)
     simpa only [one_mul] using hmodel
@@ -1023,14 +1022,12 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
   have hcircle (t : ℝ) (ht : t ∈ Ioo (c + s + t₀ - djoin) (c + s + t₀ + djoin)) :
       Q t '' (G (c + s + t₀) '' sphere 0 r) = G t '' sphere 0 r := by
     have htime : t - (c + s) ∈ Icc (t₀ - ε₀) (t₀ + ε₀) := by
-      constructor <;> linarith only [ht.1, ht.2, hdjoinε]
+      constructor <;> linarith [ht.1, ht.2]
     have href : t₀ ∈ Icc (δ / 2) (e p 2 - r ^ 2 / 2 - (c + s)) :=
-      ⟨hτt₀.le, by linarith only [ht₀b]⟩
+      ⟨hτt₀.le, by linarith⟩
     have htarget : t - (c + s) ∈ Icc (δ / 2) (e p 2 - r ^ 2 / 2 - (c + s)) := by
-      constructor
-      · linarith only [ht.1, hdjoinl, hτt₀]
-      · linarith only [ht.2, hdjoinr, ht₀,
-          min_le_right δ (e p 2 - r ^ 2 / 2 - (c + s))]
+      constructor <;> linarith [ht.1, ht.2,
+        min_le_right δ (e p 2 - r ^ 2 / 2 - (c + s))]
     have hh := hPC (t - (c + s)) htime
     dsimp only at hCcap
     rw [hCcap t₀ href, hCcap (t - (c + s)) htarget,
@@ -1041,16 +1038,14 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
       D, hD, _, hDlo, hDhi, hregion, hinter, hDlower⟩ :=
     exists_diffeomorph_heightCapRegion_lower_family_of_image_sphere_eq
       (L ∘ e) G Q hG hGi hQ hQi A hA
-      (by linarith only [hdjoinl, hτt₀] : c + s + δ / 2 ≤ c + s + t₀ - djoin)
-      (by linarith only [hdjoinr, ht₀, min_le_right δ (e p 2 - r ^ 2 / 2 - (c + s))] :
+      (by linarith : c + s + δ / 2 ≤ c + s + t₀ - djoin)
+      (by linarith [min_le_right δ (e p 2 - r ^ 2 / 2 - (c + s))] :
         c + s + t₀ + djoin < e p 2 - r ^ 2 / 2)
       hdjoin rfl hr hrR hrR₀.le hrτcap.le hδcap hmodel hnormal' hcontact hQ₀ hcircle
   have hεsub : Ioo (t₀ - εjoin) (t₀ + εjoin) ⊆
       Ioo (δ / 2) (min δ (e p 2 - r ^ 2 / 2 - (c + s))) := by
     intro t ht
-    constructor
-    · linarith only [ht.1, hεjoinle, hdjoinl, hτt₀]
-    · linarith only [ht.2, hεjoinle, hdjoinr, ht₀]
+    constructor <;> linarith [ht.1, ht.2]
   have hHdisk (t : ℝ) (ht : c + s + t₀ - εjoin < t) :
       H t '' closedBall 0 r = G t '' closedBall 0 r := by
     rw [hHhi t ht, hFdisk]
@@ -1071,21 +1066,21 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
         (G (c + s + t₀) '' sphere 0 r) ×ˢ Icc (c + s + t₀) (e p 2 - r ^ 2 / 2) := by
     apply hTwhole (L ∘ e) (closedBall 0 r) (sphere 0 r)
     intro t ht
-    have htime : c + s + t₀ - εjoin < t := by linarith only [ht.1, hεjoin]
+    have htime : c + s + t₀ - εjoin < t := by linarith [ht.1]
     rw [hHdisk t htime, hHsphere t htime]
-    exact hcontact t ⟨by linarith only [ht.1, hτt₀], ht.2⟩
+    exact hcontact t ⟨by linarith [ht.1], ht.2⟩
   let d := min d₀ (t₀ + εjoin / 2)
-  have ht₀d : t₀ < d := lt_min ht₀d₀ (by linarith only [hεjoin])
+  have ht₀d : t₀ < d := lt_min ht₀d₀ (by linarith)
   have hdd₀ : d ≤ d₀ := min_le_left _ _
   have hdδ : d < δ := hdd₀.trans_lt hd₀δ
-  have hdjoin : d < t₀ + εjoin := (min_le_right _ _).trans_lt (by linarith only [hεjoin])
+  have hdjoin : d < t₀ + εjoin := (min_le_right _ _).trans_lt (by linarith)
   have hdsub : Icc (-d) d ⊆ Icc (-d₀) d₀ := by
     intro t ht
-    constructor <;> linarith only [ht.1, ht.2, hdd₀]
+    constructor <;> linarith [ht.1, ht.2]
   have hTlower (t : ℝ) (ht : t < t₀ + εjoin) (y : Plane) :
       T (y, c + s + t) = ((Ξ 1 (t, y)).2, c + s + t) := by
     have htrack := hTtrack (c + s + t) ((G (c + s + t₀)).symm ((P t).symm y))
-    rw [hHlo (c + s + t) (by linarith only [ht])] at htrack
+    rw [hHlo (c + s + t) (by linarith)] at htrack
     change T (P (c + s + t - (c + s))
       (G (c + s + t₀) ((G (c + s + t₀)).symm ((P t).symm y))), c + s + t) =
       (G (c + s + t₀) ((G (c + s + t₀)).symm ((P t).symm y)), c + s + t) at htrack
@@ -1112,7 +1107,7 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
     by_cases ht : q.1 ≤ t₀
     · exact le_add_of_nonneg_right
         (mul_nonneg (sub_nonneg.mpr (hθ01 _).2) (sub_nonneg.mpr ht))
-    · rw [hθ1 q.1 q.2.1 (Or.inl (by linarith only [ht₀pos, lt_of_not_ge ht]))]
+    · rw [hθ1 q.1 q.2.1 (Or.inl (by linarith))]
       simp
   have hKV : {q : ℝ × (ℝ × ℝ) | q.1 ∈ Icc (-εcut) d ∧ |q.2.1| ≤ h ∧
       (1 - q.2.1 ^ 2) * (q.2.2 ^ 2 + 2 * s) / 2 = s + q.1} ⊆ V :=
@@ -1140,7 +1135,7 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
         (sub_nonneg.mpr ht₀d.le)
       nlinarith only [hfirst, hsecond, hq.2.2.2]
     exact mem_rectangle_of_saddle_band_height_le (abs_lt.mp (hq.2.1.trans_lt hh1))
-      henergy (hmodelRect d ⟨by linarith only [hδ, ht₀pos, ht₀d], hdδ.le⟩ 1 (by norm_num) q.2.1
+      henergy (hmodelRect d ⟨by linarith, hdδ.le⟩ 1 (by norm_num) q.2.1
         (abs_le.mp hq.2.1))
   have henergyContinuous : Continuous (fun q : ℝ × (ℝ × ℝ) =>
       (1 - q.2.1 ^ 2) * (q.2.2 ^ 2 + 2 * s) / 2) := by fun_prop
@@ -1201,9 +1196,9 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
       (B.symm (B q.2)).2 ∈ Ioo (-(2 * ρ)) (2 * ρ) ∧
         c + s + q.1 - (c + s) ∈ Ioo (-(2 * δ)) (2 * δ)
     rw [B.symm_apply_apply, add_sub_cancel_left]
-    exact ⟨⟨by linarith only [hrect.1.1, hh], by linarith only [hrect.1.2, hh]⟩,
-      ⟨by linarith only [hrect.2.1, hρ], by linarith only [hrect.2.2, hρ]⟩,
-      ⟨by linarith only [hq.1.1, hεcutd, hd₀δ, hδ], by linarith only [hq.1.2, hdδ, hδ]⟩⟩
+    exact ⟨⟨by linarith [hrect.1.1], by linarith [hrect.1.2]⟩,
+      ⟨by linarith [hrect.2.1], by linarith [hrect.2.2]⟩,
+      ⟨by linarith [hq.1.1], by linarith [hq.1.2]⟩⟩
   have hTmodelPhys (y : Plane × ℝ) (hy : y ∈ Vphys) :
       T y = (B (saddleBandCurve (B.symm y.1)
         (θ (y.2 - (c + s), (B.symm y.1).1) * (t₀ - (y.2 - (c + s))))), y.2) := by
@@ -1226,13 +1221,13 @@ private theorem exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap
     (cthickening_subset_of_subset _ (image_mono (image_mono hrawFilled))).trans hρfilledZ
   obtain ⟨O, hO, g, hg, hgt, Wgraph, hWgraph, hWZ, hWO, hgraphcover, hgrapheq⟩ :=
     exists_isOpen_inter_eq_graph_of_saddle_band_cutoff B.toHomeomorph κ.contDiff
-      ht₀pos (show -εcut < t₀ / 2 by linarith only [hεcut, ht₀pos]) hθformula hZ hZeq
+      ht₀pos (show -εcut < t₀ / 2 by linarith) hθformula hZ hZeq
   have hactive : T '' ((fun q : ℝ × (ℝ × ℝ) => (B q.2, c + s + q.1)) ''
       {q | q.1 ∈ Ioo (-εcut) (t₀ / 2) ∧ |q.2.1| < h / 2 ∧
         (1 - q.2.1 ^ 2) * (q.2.2 ^ 2 + 2 * s) / 2 = s + q.1}) ⊆ Wgraph := by
     rintro y ⟨_, ⟨q, hq, rfl⟩, rfl⟩
     have hqK : q ∈ K :=
-      ⟨⟨hq.1.1.le, by linarith only [hq.1.2, ht₀pos, ht₀d]⟩, by linarith only [hq.2.1, hh], hq.2.2⟩
+      ⟨⟨hq.1.1.le, by linarith [hq.1.2]⟩, by linarith [hq.2.1], hq.2.2⟩
     have hqZ : T (B q.2, c + s + q.1) ∈ Z :=
       hρZ (self_subset_cthickening _ ⟨_, ⟨q, hqK, rfl⟩, rfl⟩)
     have hsourceq : L (e (β q.2)) = (B q.2, c + s + q.1) := by
@@ -2808,17 +2803,16 @@ theorem exists_height_preserving_diffeomorph_saddle_cutoff_graph_and_cap_of_one_
                       (fun y => (Q (y, c + s + (-ε / 2))).1) ''
                         (G (c + s + t₀) '' sphere 0 r \ B ''
                           (saddleBandLevelCurve s t₀ σ '' Ioo (-(5 * h / 8)) (5 * h / 8)))) := by
-  classical
-  choose p hpmax hpnd hpnotmax σ hσ h hh hh1 δ hδ
-      η hη Φ hΦ hΦi hΦ0 hγ hslices hcoverage
-      r hr hab A hA hcap G hG hGi hCcap hcontact
-      t₀ hτt₀ ht₀δ ht₀b d ht₀d hdδ εcut hεcut hεcutt hεcuth
-      θ hθ hθ01 hθ0 hθ1 hθzero κ hκin hκout hθformula ν hν hνsub
-      H hH hHi hH₀ hHdisk D hD hDlo hDhi hregion hinter
-      T hT hTheight hTbase hTarc hwhole V hV hKV hVreg hTmodel
-      hrawU Z hZ hZT hZeq ρclear hρclear hρZ hρfilledZ
-      ρ hρ hrectangle hmodelRect hclear O hO g hg hgt
-      Wgraph hWgraph hWZ hWO hactive hgrapheq hcontactRect using
+  obtain ⟨p, hpmax, hpnd, hpnotmax, σ, hσ, h, hh, hh1, δ, hδ,
+      η, hη, Φ, hΦ, hΦi, hΦ0, hγ, hslices, hcoverage,
+      r, hr, hab, A, hA, hcap, G, hG, hGi, hCcap, hcontact,
+      t₀, hτt₀, ht₀δ, ht₀b, d, ht₀d, hdδ, εcut, hεcut, hεcutt, hεcuth,
+      θ, hθ, hθ01, hθ0, hθ1, hθzero, κ, hκin, hκout, hθformula, ν, hν, hνsub,
+      H, hH, hHi, hH₀, hHdisk, D, hD, hDlo, hDhi, hregion, hinter,
+      T, hT, hTheight, hTbase, hTarc, hwhole, V, hV, hKV, hVreg, hTmodel,
+      hrawU, Z, hZ, hZT, hZeq, ρclear, hρclear, hρZ, hρfilledZ,
+      ρ, hρ, hrectangle, hmodelRect, hclear, O, hO, g, hg, hgt,
+      Wgraph, hWgraph, hWZ, hWO, hactive, hgrapheq, hcontactRect⟩ :=
     exists_height_preserving_diffeomorph_saddle_cutoff_model_and_cap_of_one_saddle he hnd hinj hone hconn
       B hU hzero hβ hs hgraph hβcrit hβindex
   let L := EuclideanSpace.equivProdLast (𝕜 := ℝ) 2
@@ -2934,58 +2928,6 @@ theorem exists_height_preserving_diffeomorph_saddle_cutoff_graph_and_cap_of_one_
     ρ hmodelRect hclear ht₀pos hσsq hreferenceWall hcircleRef Vside hVside hcurveVside hside hlowerClearance hwedge
     hcurveRef v₀ hv₀ hv₀t hwide
 
-private theorem exists_cutoff_height_removal_data_of_one_saddle
-    {e : SphereTwo → EuclideanThree} (he : IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e)
-    (hnd : ∀ x, IsCriticalPointAt (𝓡 2) (fun x => e x 2) x →
-      IsNondegenerateCriticalPointAt (𝓡 2) (fun x => e x 2) x)
-    (hinj : InjOn (fun x => e x 2) {x | IsCriticalPointAt (𝓡 2) (fun x => e x 2) x})
-    (hone : {p | IsCriticalPointAt (𝓡 2) (fun x => e x 2) p ∧ sigNeg (chartHessianAt
-      (fun y => e ((extChartAt (𝓡 2) p).symm y) 2) (extChartAt (𝓡 2) p p)) = 1}.ncard = 1)
-    (hconn : ∀ a : ℝ, IsPreconnected {x | e x 2 < a})
-    (B : (ℝ × ℝ) ≃ₘ[ℝ] EuclideanSpace ℝ (Fin 2))
-    {β : (ℝ × ℝ) → SphereTwo} {U : Set (ℝ × ℝ)} (hU : IsOpen U) (hzero : (0, 0) ∈ U)
-    (hβ : ContMDiffOn 𝓘(ℝ, ℝ × ℝ) (𝓡 2) ∞ β U)
-    {c s : ℝ} (hs : 0 < s)
-    (hgraph : ∀ z ∈ U, EuclideanSpace.equivProdLast 2 (e (β z)) =
-      (B z, c + (1 - z.1 ^ 2) * (z.2 ^ 2 + 2 * s) / 2))
-    (hβcrit : IsCriticalPointAt (𝓡 2) (fun x => e x 2) (β (0, 0)))
-    (hβindex : sigNeg (chartHessianAt
-      (fun y => e ((extChartAt (𝓡 2) (β (0, 0))).symm y) 2)
-      (extChartAt (𝓡 2) (β (0, 0)) (β (0, 0)))) = 1) :
-    ∃ T : (Plane × ℝ) ≃ₘ[ℝ] (Plane × ℝ),
-      ∃ Q : (Plane × ℝ) ≃ₘ[ℝ] (Plane × ℝ), ∃ ψ : ℝ ≃ₘ[ℝ] ℝ,
-      ∃ Acut : (Plane × ℝ) ≃ₘ[ℝ] (Plane × ℝ),
-        (∀ t, 0 < deriv ψ t) ∧
-        ∀ x, IsCriticalPointAt (𝓡 2) (fun y => (Acut (Q (T
-          (EuclideanSpace.equivProdLast (𝕜 := ℝ) 2 (e y))))).2) x →
-          x ≠ β (0, 0) ∧
-            (fun y => (Acut (Q (T (EuclideanSpace.equivProdLast (𝕜 := ℝ) 2 (e y))))).2) =ᶠ[𝓝 x]
-              ψ ∘ (fun y => e y 2) := by
-  classical
-  choose p hpmax hpnd hpnotmax σ hσ h hh hh1 δ hδ
-    η hη Φ hΦ hΦi hΦ0 hγ hslices hcoverage
-    r hr hab A hA hcap G hG hGi hCcap hcontact
-    t₀ hτt₀ ht₀δ ht₀b d ht₀d hdδ εcut hεcut hεcutt hεcuth
-    θ hθ hθ01 hθ0 hθ1 hθzero κ hκin hκout hθformula ν hν hνsub
-    H hH hHi hH₀ hHdisk D hD hDlo hDhi hregion hinter
-    T hT hTheight hTbase hTarc hwhole V hV hKV hVreg hTmodel
-    hrawU Z hZ hZT hZeq ρclear hρclear hρZ hρfilledZ
-    ρ hρ hrectangle hmodelRect hclear O hO g hg hgt
-    Wgraph hWgraph hWZ hWO hactive hgrapheq
-    Ncollar hNcollar hboundaryCollar hcollarProd hlowerClearance hwedge
-    Vside hVside hcurveVside hVsideRect hside v₀ hv₀ hv₀t hwide using
-    exists_height_preserving_diffeomorph_saddle_cutoff_graph_and_cap_of_one_saddle
-      he hnd hinj hone hconn B hU hzero hβ hs hgraph hβcrit hβindex
-  have ht₀pos : 0 < t₀ := (half_pos hδ).trans hτt₀
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, δexp, hδexp, hfamily⟩ :=
-    hwide (3 * t₀ / 4) (by constructor <;> linarith only [ht₀pos])
-  obtain ⟨_, _, _, Q, ψ, α, hα, hψd, hψhi, hQheight, hQlow, hQhi,
-    hQcylinder, hQcap, hQwhole, hQcapall, hQinj, hQinjS, hQinjWhole, htrace, hfull, _⟩ :=
-    hfamily (δexp / 2) ⟨half_pos hδexp, half_lt_self hδexp⟩
-  obtain ⟨OQ, hOQ, gQ, hgQ, WQ, hWQ, hKWQ, hWQO, hWQeq, hbottom,
-    k, hk, hkd, hbound, Acut, hAcutfst, hAcutgraph, hAcutfixed, hremoved⟩ := hfull
-  exact ⟨T, Q, ψ, Acut, hψd, hremoved⟩
-
 
 theorem exists_height_preserving_diffeomorph_saddle_cutoff_and_cap_of_one_saddle
     {e : SphereTwo → EuclideanThree} (he : IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e)
@@ -3093,15 +3035,14 @@ theorem exists_height_preserving_diffeomorph_saddle_cutoff_and_cap_of_one_saddle
               θ (q.2 - (c + s), (B.symm q.1).1) * (t₀ - (q.2 - (c + s)))} ∧
         ∃ ρ > 0, cthickening ρ
           (T '' ((fun q : ℝ × (ℝ × ℝ) => (B q.2, c + s + q.1)) '' K)) ⊆ Z := by
-  classical
-  choose p hpmax hpnd hpnotmax σ hσ h hh hh1 δ hδ
-      η hη Φ hΦ hΦi hΦ0 hγ hslices hcoverage
-      r hr hab A hA hcap G hG hGi hCcap hcontact
-      t₀ hτt₀ ht₀δ ht₀b d ht₀d hdδ ε hε hεt hεh
-      θ hθ hθ01 hθ0 hθ1 hθzero _ _ _ _ ν hν hνsub
-      H hH hHi hH₀ hHdisk D hD hDlo hDhi hregion hinter
-      T hT hTheight hTbase hTarc hwhole V hV hKV hVreg hTmodel
-      hrawU Z hZ hZT hZeq ρ hρ hρZ _ _ using
+  obtain ⟨p, hpmax, hpnd, hpnotmax, σ, hσ, h, hh, hh1, δ, hδ,
+      η, hη, Φ, hΦ, hΦi, hΦ0, hγ, hslices, hcoverage,
+      r, hr, hab, A, hA, hcap, G, hG, hGi, hCcap, hcontact,
+      t₀, hτt₀, ht₀δ, ht₀b, d, ht₀d, hdδ, ε, hε, hεt, hεh,
+      θ, hθ, hθ01, hθ0, hθ1, hθzero, _, _, _, _, ν, hν, hνsub,
+      H, hH, hHi, hH₀, hHdisk, D, hD, hDlo, hDhi, hregion, hinter,
+      T, hT, hTheight, hTbase, hTarc, hwhole, V, hV, hKV, hVreg, hTmodel,
+      hrawU, Z, hZ, hZT, hZeq, ρ, hρ, hρZ, _, _⟩ :=
     exists_height_preserving_diffeomorph_saddle_cutoff_graph_and_cap_of_one_saddle
       he hnd hinj hone hconn B hU hzero hβ hs hgraph hβcrit hβindex
   exact ⟨p, hpmax, hpnd, hpnotmax, σ, hσ, h, hh, hh1, δ, hδ,

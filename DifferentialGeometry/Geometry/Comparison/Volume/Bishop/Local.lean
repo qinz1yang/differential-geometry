@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Ball
 import DifferentialGeometry.Geometry.Comparison.Volume.Ball.Basic
 import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
-import DifferentialGeometry.Geometry.Exponential.InjectivityRadius.Basic
+import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Basic
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

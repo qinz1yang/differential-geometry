@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Neck.ProductCapExclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowSurvival
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorInitialCurvature
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Window.InitialSpatialCap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalInitialSpatialCap
 
 noncomputable section
 open Set Function Bundle Manifold DifferentialGeometry

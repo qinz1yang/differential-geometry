@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.PositiveSectional
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature
-import DifferentialGeometry.Topology.Covering.UniversalCover.LocalDiffeomorph
+import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
 import DifferentialGeometry.Geometry.Metric.Basic
 

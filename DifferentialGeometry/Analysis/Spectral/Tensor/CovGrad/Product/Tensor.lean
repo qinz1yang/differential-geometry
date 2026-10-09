@@ -387,7 +387,7 @@ private lemma toModel_tensor0SChartFiberFromModel_self (s : ℕ) (x : M)
     (m : Tensor0SModel s ℝ E) :
     Tensor0SSpace.toModel (tensor0SChartFiberFromModel (I := I) s x x m) = m := by
   classical
-  have h := DifferentialGeometry.Tensor.tensor0S_trivAt_symmL_apply_eq_self_of_chartAt_eq
+  have h := DifferentialGeometry.Tensor.tensor0S_trivAt_symmL_eq_one_on_locality
     (I := I) s x (b := x) rfl (mem_chart_source H x) m
   apply ContinuousMultilinearMap.ext
   intro v
@@ -411,7 +411,7 @@ private lemma factor_chartPullback_self (g : SmoothRiemannianMetric I M) {p : �
   apply ContinuousMultilinearMap.ext
   intro v
   have h :=
-    DifferentialGeometry.Tensor.multilinear_trivAt_continuousLinearMapAt_apply_eq_self_of_chartAt_eq
+    DifferentialGeometry.Tensor.multilinear_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
     (I := I) p x (b := x) rfl (mem_chart_source H x)
     (show Bundle.continuousMultilinearMap ℝ p E (TangentSpace I) x from factorUnitEval (I := I) g S
       x)

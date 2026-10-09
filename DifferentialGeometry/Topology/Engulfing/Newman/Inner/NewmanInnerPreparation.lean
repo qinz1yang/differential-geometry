@@ -9,6 +9,7 @@ open scoped ContinuousMap
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E M : Type*} [DecidableEq E] [NormedAddCommGroup E]
   [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MetricSpace M] {n p : ℕ}
@@ -40,7 +41,6 @@ structure NewmanInnerGeometry (K L : SimplicialComplex ℝ E) (F : C(K.space, M)
       (chart.chart.symm ⁻¹' X)
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem exists_newmanInnerModel_of_static_data
     (K L H D Y : SimplicialComplex ℝ E) (hK : K.faces.Finite)
     (hLK : L.faces ⊆ K.faces) (hHK : H.faces ⊆ K.faces)
@@ -185,7 +185,6 @@ theorem exists_newmanInnerModel_of_static_data
       (preimage_mono (image_mono hYraw)).trans hpre⟩
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem exists_newmanInnerModel_of_gap
     (K L H D Y : SimplicialComplex ℝ E) (hK : K.faces.Finite)
     (hLK : L.faces ⊆ K.faces) (hHK : H.faces ⊆ K.faces)

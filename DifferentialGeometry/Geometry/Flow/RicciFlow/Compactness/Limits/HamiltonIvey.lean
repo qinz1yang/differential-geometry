@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Curvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Parabolic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.MaximumPrinciple
-import DifferentialGeometry.Analysis.Asymptotics.LogarithmicBarrier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.RescaledLimit
 
 set_option autoImplicit false
 
@@ -255,7 +255,7 @@ theorem curvatureOperator_nonnegative_of_parabolic_closed_flow
       (A := metricAlgebraicCurvatureTensorAt (I := I) (L.S.family.metric t) x)
       (L.S.family.metric t) (by change Module.finrank Real E = 3; exact hdim)).mp
   change 0 ≤ leastLimit
-  exact DifferentialGeometry.Analysis.Asymptotics.nonnegative_of_rescaled_logarithmic_lower_bound_upper_limit
+  exact nonnegative_of_hamilton_ivey_rescaled_upper_limit
     (L.S.scalar t x / 2) leastLimit ageLimit scalarSeq leastSeq
       (fun k => scale (subseq k)) ageSeq hscalar hleast hscale hage hageLimit hbound
 

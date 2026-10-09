@@ -1,6 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
-import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import Mathlib.Topology.Connected.Clopen
 
 noncomputable section

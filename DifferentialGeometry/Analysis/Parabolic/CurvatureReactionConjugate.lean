@@ -58,7 +58,7 @@ private theorem selfAdjoint_reaction_heat_conjugate_iff
     (D : CovariantDerivative I F₁ V₁) (hD : D.IsMetricCompatible)
     (C : CovariantDerivative I F₂ V₂) (hC : C.IsMetricCompatible)
     [ContMDiffCovariantDerivative D ∞] [ContMDiffCovariantDerivative C ∞]
-    (hparallel : _root_.CovariantDerivative.hom I M F₁ V₁ F₂ V₂ D C
+    (hparallel : homBundleCovariantDerivativeGen I M F₁ V₁ F₂ V₂ D C
       (fun x => (φ x).toContinuousLinearEquiv.toContinuousLinearMap) = 0)
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) :
     letI : ∀ x, FiniteDimensional ℝ (V₁ x) := fun x => VectorBundle.finiteDimensional ℝ F₁ V₁ x
@@ -122,7 +122,7 @@ theorem selfAdjoint_reaction_heat_eqOn_conjugate_iff
     (D : CovariantDerivative I F₁ V₁) (hD : D.IsMetricCompatible)
     (C : CovariantDerivative I F₂ V₂) (hC : C.IsMetricCompatible)
     [ContMDiffCovariantDerivative D ∞] [ContMDiffCovariantDerivative C ∞]
-    (hparallel : _root_.CovariantDerivative.hom I M F₁ V₁ F₂ V₂ D C
+    (hparallel : homBundleCovariantDerivativeGen I M F₁ V₁ F₂ V₂ D C
       (fun x => (φ x).toContinuousLinearEquiv.toContinuousLinearMap) = 0)
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) :
     letI : ∀ x, FiniteDimensional ℝ (V₁ x) := fun x => VectorBundle.finiteDimensional ℝ F₁ V₁ x
@@ -187,7 +187,7 @@ theorem hasDerivWithinAt_selfAdjoint_reaction_heat_conjugate_iff
     (D : CovariantDerivative I F₁ V₁) (hD : D.IsMetricCompatible)
     (C : CovariantDerivative I F₂ V₂) (hC : C.IsMetricCompatible)
     [ContMDiffCovariantDerivative D ∞] [ContMDiffCovariantDerivative C ∞]
-    (hparallel : _root_.CovariantDerivative.hom I M F₁ V₁ F₂ V₂ D C
+    (hparallel : homBundleCovariantDerivativeGen I M F₁ V₁ F₂ V₂ D C
       (fun x => (φ x).toContinuousLinearEquiv.toContinuousLinearMap) = 0)
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) :
     letI : ∀ x, FiniteDimensional ℝ (V₁ x) := fun x => VectorBundle.finiteDimensional ℝ F₁ V₁ x

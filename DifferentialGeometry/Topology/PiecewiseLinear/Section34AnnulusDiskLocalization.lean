@@ -1,4 +1,3 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Sphere.Manifold
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.BallUnionFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
@@ -137,6 +136,16 @@ theorem IsAnnulusOn.subset_of_isPreconnected_of_disjoint_boundary_within {M : Ty
   have hsub := (hA.preimage_subtype hAS).subset_of_isPreconnected_of_disjoint_boundary
     hD' hDA' hb
   exact fun x hx => hsub (show (⟨x, hDS hx⟩ : S) ∈ Subtype.val ⁻¹' D from hx)
+
+theorem IsPLSphere.nonempty_chartedSpace_two {E : Type*} [NormedAddCommGroup E]
+    [NormedSpace ℝ E] [FiniteDimensional ℝ E] {S : Set E} (hS : IsPLSphere 2 S) :
+    Nonempty (ChartedSpace (EuclideanSpace ℝ (Fin 2)) S) := by
+  obtain ⟨K, hKfin, hKspace⟩ := hS.isPolyhedron.exists_simplicialComplex
+  let _ : Finite K.faces := hKfin.to_subtype
+  have hK : IsCombinatorialManifold 2 K :=
+    IsPLSphere.isCombinatorialManifold (hKspace.symm ▸ hS)
+  let _ : ChartedSpace (EuclideanSpace ℝ (Fin 2)) K.space := combinatorialChartedSpace K hK
+  exact ⟨(Homeomorph.setCongr hKspace).chartedSpace⟩
 
 theorem IsPLSphere.subset_annulus_of_isPreconnected_of_disjoint_boundary {E : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]

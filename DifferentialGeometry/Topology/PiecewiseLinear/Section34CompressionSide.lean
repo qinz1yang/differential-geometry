@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.BallMarkedExtension
@@ -6,7 +11,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PLSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalDiskComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionPocket
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingQuadrant
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Compression.WedgeDisplacement
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34WedgeLift
 
 open Set Topology
 
@@ -64,7 +69,7 @@ theorem exists_compressionSide {P V D E E' F O : Set E3} {q : (Fin 3 → ℝ) �
   have hVT : frontier V ⊆ frontier P ∪ frontier V ∪ F := fun x hx => Or.inl (Or.inr hx)
   obtain ⟨Epl, β, prism, b, μ, σ, c, q', hEpl, hβ, hPrc, hPri, hPrO, -, hbm, hbc, hbi, hbβ,
     hσ, hc, hc1, -, hfree, hμc, hμ01, hμ0, hq', hq'J⟩ :=
-    exists_wedge_displacement hq hρ hρ0 hAD hO hDAO hε hchart hint hPT hVT
+    exists_wedgeLift hq hρ hρ0 hAD hO hDAO hε hchart hint hPT hVT
   set C := ρ '' (J ×ˢ {(1 / 2 : ℝ)}) with hCdef
   set Ah := ρ '' (J ×ˢ Icc (0 : ℝ) (1 / 2)) with hAhdef
   set L := (fun x => prism (b x, σ * (c * μ x))) '' Epl with hLdef

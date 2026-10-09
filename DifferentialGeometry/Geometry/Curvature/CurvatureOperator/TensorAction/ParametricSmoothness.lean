@@ -165,7 +165,7 @@ theorem slotInsertEndo0Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace (d + 1) I z) p.1
-        (slotInsertEndomorphism (I := I) (M := M) (d + 1) 0 p.1 (Λ p) (A p)))
+        (slotInsertEndoFib (I := I) (M := M) (d + 1) 0 p.1 (Λ p) (A p)))
       ((Set.univ : Set M) ×ˢ S) := by
   have hcurry := curriedField_jointContMDiffOn (I := I) (M := M) (d := d) (S := S) A hA
   have hcomp : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
@@ -213,21 +213,21 @@ theorem slotInsertEndo1Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel (d + 2) ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (d + 2) ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace (d + 2) I z) p.1
-        (slotInsertEndomorphism (I := I) (M := M) (d + 2) 1 p.1 (Λ p) (A p)))
+        (slotInsertEndoFib (I := I) (M := M) (d + 2) 1 p.1 (Λ p) (A p)))
       ((Set.univ : Set M) ×ˢ S) := by
   have hcurry := curriedField_jointContMDiffOn (I := I) (M := M) (d := d + 1) (S := S) A hA
   have hcomp : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SBundle.Tensor0SSpace (d + 1) I z) p.1
-        ((slotInsertEndomorphism (I := I) (M := M) (d + 1) 0 p.1 (Λ p)).comp
+        ((slotInsertEndoFib (I := I) (M := M) (d + 1) 0 p.1 (Λ p)).comp
           (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p))))
       ((Set.univ : Set M) ×ˢ S) := by
     apply contMDiffOn_clm_section_of_apply (I := I) (M := M)
       (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
       (F₂ := Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)
       (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace (d + 1) I x)
-      (φ := fun p : M × ℝ => (slotInsertEndomorphism (I := I) (M := M) (d + 1) 0 p.1 (Λ p)).comp
+      (φ := fun p : M × ℝ => (slotInsertEndoFib (I := I) (M := M) (d + 1) 0 p.1 (Λ p)).comp
         (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p)))
       (S := S)
     intro Z
@@ -249,7 +249,7 @@ theorem slotInsertEndo1Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     refine happ.congr (fun p _ => ?_)
     rfl
   have huncurry := uncurriedField_jointContMDiffOn (I := I) (M := M) (d := d + 1) (S := S)
-    (fun p : M × ℝ => (slotInsertEndomorphism (I := I) (M := M) (d + 1) 0 p.1 (Λ p)).comp
+    (fun p : M × ℝ => (slotInsertEndoFib (I := I) (M := M) (d + 1) 0 p.1 (Λ p)).comp
       (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p))) hcomp
   refine huncurry.congr (fun p _ => ?_)
   congr 1

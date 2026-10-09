@@ -14,7 +14,7 @@ def hasExtinctObservationTower
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier) : Prop :=
   ∃ T : ObservationTower
-      (M.toClosedOrientedManifold) g,
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g,
     (∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       Nonempty (SmoothCutCapCompletion ((T.observe b hb).event i).transition)) ∧
     (∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
@@ -25,8 +25,8 @@ def hasExtinctObservationTower
           ((T.observe b hb).event i).transition.trace.capping.coreInclusion x.1)) ∧
     (∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isStandardConnectedSum
-          (((T.observe b hb).event i).discarded.component q).Carrier) ∧
+        DifferentialGeometry.Topology.isPoincareStandard
+          (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier) ∧
     towerExtinct T
 
 theorem exists_poincare_controlled_extinction_of_extinctObservationTower

@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
+import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
 import DifferentialGeometry.Geometry.Measure.OpenSubtypeVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Defs
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
 set_option autoImplicit false
 

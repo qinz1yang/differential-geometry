@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPointedFlowLimitShiftedTransfer
-import DifferentialGeometry.Geometry.Metric.Comparison.OpenEmbeddingBallCapture
+import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCapture
 
 set_option autoImplicit false
 

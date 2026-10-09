@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import Mathlib.Topology.EMetricSpace.Lipschitz
 

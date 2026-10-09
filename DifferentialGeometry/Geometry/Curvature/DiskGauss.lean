@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskBochner
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ConformalSecondPartial
-import DifferentialGeometry.Geometry.Metric.LinearAlgebra.OrthogonalPlane
+import DifferentialGeometry.Geometry.Metric.OrthogonalPlaneNormal
 import DifferentialGeometry.Geometry.Curvature.SectionalContraction
 
 

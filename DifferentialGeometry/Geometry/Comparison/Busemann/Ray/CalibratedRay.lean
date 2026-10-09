@@ -1,10 +1,10 @@
-import DifferentialGeometry.Topology.MetricSpace.Busemann.Line
+import DifferentialGeometry.Geometry.Comparison.Busemann.Ray.Busemann
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import Mathlib.Topology.Sequences
 import Mathlib.Order.Filter.AtTopBot.Archimedean
 import Mathlib.Tactic.Choose

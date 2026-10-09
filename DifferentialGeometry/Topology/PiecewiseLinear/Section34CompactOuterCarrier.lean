@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodResidualRestriction
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.SplitDiskInteriors
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualSplitSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualVertexBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnEndpoints
 
@@ -87,19 +92,19 @@ theorem compactDualCutBoundary_outerArc_eq_splitBoundary_inter_frontier
         (congrArg Geometry.SimplicialComplex.space
           (boundaryComplex_splittingDisk_one_eq_upperLink B hB heB q.1.2.2.1)).symm
   have hcell := isPLCellOn_compactDualCutCell_of_isPLBall M K hKM (.outerArc q)
-    (isPLBall_compactDualCutCell_outer_arc M K hM hK hKM hint q)
+    (isPLBall_compactDualCutCell_outerArc M K hM hK hKM hint q)
   obtain ⟨a, b, hab, habd⟩ := hcell.exists_boundary_eq_pair
   obtain ⟨c, d, hcd, hcdB⟩ := isPLSphere_zero_iff.mp
     (isPLSphere_boundaryComplex_space_of_isPLBall D hD)
   have hsub : compactDualCutBoundary M K hKM (.outerArc q) ⊆
       compactDualCutBoundary M K hKM (.splitDisk q.1) ∩ frontier K.space := by
-    rw [compactDualCutBoundary_outer_arc_eq_inter M K hM hK hKM hint q]
+    rw [compactDualCutBoundary_outerArc_eq_inter M K hM hK hKM hint q]
     rintro x ⟨hxO, hxK⟩
     have havoid : compactDualCutCell M K hKM (.outerArc q) ⊆ (interior K.space)ᶜ := by
       apply closure_minimal
       · exact fun _ hx hxi => hx.2 (interior_subset hxi)
       · exact isOpen_interior.isClosed_compl
-    exact ⟨compact_dual_outer_arc_subset_split_boundary M K hKM q hxO,
+    exact ⟨compactDualOuterArc_subset_splitBoundary M K hKM q hxO,
       subset_closure hxK, havoid hxO⟩
   have hfinite :
       (compactDualCutBoundary M K hKM (.splitDisk q.1) ∩ frontier K.space).Finite := by
@@ -136,7 +141,7 @@ theorem compactDualOuterArc_eq_splitBoundary_inter_complement
       (Subsingleton.elim _ _)
   apply Subset.antisymm
   · intro x hx
-    refine ⟨compact_dual_outer_arc_subset_split_boundary M K hKM q hx, ?_⟩
+    refine ⟨compactDualOuterArc_subset_splitBoundary M K hKM q hx, ?_⟩
     apply closure_mono (t := M.space \ K.space) ?_ hx
     rintro y ⟨hy, hyK⟩
     exact ⟨hDsub (boundaryComplex_space_subset 2 _ (hDTransport ▸ hy)), hyK⟩
@@ -150,7 +155,7 @@ theorem compactDualOuterArc_eq_splitBoundary_inter_complement
           M K hM hK hKM hint q]
         exact ⟨hxD, hxB⟩
       exact (isPLCellOn_compactDualCutCell_of_isPLBall M K hKM (.outerArc q)
-        (isPLBall_compactDualCutCell_outer_arc M K hM hK hKM hint q)).boundary_subset hxo
+        (isPLBall_compactDualCutCell_outerArc M K hM hK hKM hint q)).boundary_subset hxo
     · apply subset_closure
       rw [compactDualCutBoundary_splitDisk M K hKM q.1] at hxD
       exact ⟨hxD, hxK⟩

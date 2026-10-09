@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryStrongNeckTrace
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.Concatenation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceConcat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionBackwardStep
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegion
 

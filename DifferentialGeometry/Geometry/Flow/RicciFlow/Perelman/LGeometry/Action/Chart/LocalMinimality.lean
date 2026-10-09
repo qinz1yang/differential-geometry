@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.RegularizedC1Attainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.Defs
-import DifferentialGeometry.Analysis.Sobolev.Time.Curve.SegmentReplacement
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Construction.SegmentReplacement
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Nonlinear.Action
 
 set_option autoImplicit false
@@ -285,7 +285,7 @@ theorem lChartAction_isLocalMinOn_of_lRegularizedAction_minimizer
         dsimp only [eps]
         exact mul_div_cancel₀ d hc.ne'
   obtain ⟨gammaV, hgammaV, hVa0, hVab, hsrcV, hrepV⟩ :=
-    DifferentialGeometry.Analysis.Parabolic.TimeSobolev.exists_continuous_curve_of_chartH1_segment_replacement (I := I) t htmono p gamma hgamma u hsrc hrep i hpos v
+    exists_continuous_curve_of_chartH1_segment_replacement (I := I) t htmono p gamma hgamma u hsrc hrep i hpos v
       hvends (by simpa only [L] using hvtar)
   have hVa : gammaV a = gamma a := by
     rw [← ht0]

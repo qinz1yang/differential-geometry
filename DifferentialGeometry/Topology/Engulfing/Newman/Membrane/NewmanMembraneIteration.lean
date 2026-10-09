@@ -9,12 +9,12 @@ open scoped ContinuousMap
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E M : Type*} [DecidableEq E] [NormedAddCommGroup E]
   [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MetricSpace M]
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem simplicialRefines.old_face_subset_skeleton {P K : SimplicialComplex ℝ E}
     (href : simplicialRefines P K) (hspace : P.space = K.space)
     {t : Finset E} (ht : t ∈ K.faces) {q : ℕ} (htcard : t.card ≤ q + 1) :
@@ -31,7 +31,6 @@ theorem simplicialRefines.old_face_subset_skeleton {P K : SimplicialComplex ℝ 
   exact (skeleton P q).convexHull_subset_space ⟨hu.1, hcard.trans htcard⟩ hxu
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem simplicialRefines.old_skeleton_subset {P K : SimplicialComplex ℝ E}
     (href : simplicialRefines P K) (hspace : P.space = K.space) (q : ℕ) :
     (skeleton K q).space ⊆ (skeleton P q).space := by

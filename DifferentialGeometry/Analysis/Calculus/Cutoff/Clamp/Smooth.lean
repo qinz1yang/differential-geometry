@@ -3,9 +3,6 @@ import Mathlib.Analysis.Calculus.BumpFunction.Basic
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-import Mathlib.Analysis.SpecialFunctions.SmoothTransition
-
-section
 
 set_option autoImplicit false
 
@@ -429,92 +426,3 @@ namespace DifferentialGeometry.Analysis
 alias exists_smooth_bounded_eventuallyEq_id := DifferentialGeometry.exists_smooth_bounded_eventuallyEq_id
 
 end DifferentialGeometry.Analysis
-
-end
-
-section
-
-
-noncomputable section
-
-open Set Filter
-open scoped ContDiff Topology
-
-namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-variable {a b : ℝ}
-
-def smoothTimeWedge (u : ℝ) : ℝ := u + (1 - u) * Real.smoothTransition u
-
-theorem contDiff_smoothTimeWedge : ContDiff ℝ ∞ smoothTimeWedge :=
-  contDiff_id.add ((contDiff_const.sub contDiff_id).mul Real.smoothTransition.contDiff)
-
-theorem smoothTimeWedge_eq_self_of_nonpos {u : ℝ} (hu : u ≤ 0) : smoothTimeWedge u = u := by
-  rw [smoothTimeWedge, Real.smoothTransition.zero_of_nonpos hu]
-  ring
-
-theorem smoothTimeWedge_eq_one_of_one_le {u : ℝ} (hu : 1 ≤ u) : smoothTimeWedge u = 1 := by
-  rw [smoothTimeWedge, Real.smoothTransition.one_of_one_le hu]
-  ring
-
-def loopTimeFold (a b α β : ℝ) (t : ℝ) : ℝ :=
-  t - (t - α) * Real.smoothTransition ((a - t) / (a - α))
-    + (β - t) * Real.smoothTransition ((t - b) / (β - b))
-
-theorem contDiff_loopTimeFold (a b α β : ℝ) : ContDiff ℝ ∞ (loopTimeFold a b α β) := by
-  unfold loopTimeFold
-  fun_prop
-
-theorem loopTimeFold_eq_self {a b α β t : ℝ} (hα : α < a) (hβ : b < β)
-    (ht : t ∈ Icc a b) : loopTimeFold a b α β t = t := by
-  have h1 : (a - t) / (a - α) ≤ 0 :=
-    div_nonpos_of_nonpos_of_nonneg (by linarith [ht.1]) (by linarith)
-  have h2 : (t - b) / (β - b) ≤ 0 :=
-    div_nonpos_of_nonpos_of_nonneg (by linarith [ht.2]) (by linarith)
-  rw [loopTimeFold, Real.smoothTransition.zero_of_nonpos h1,
-    Real.smoothTransition.zero_of_nonpos h2]
-  ring
-
-theorem loopTimeFold_mem_Icc {a b α β t : ℝ} (hα : α < a) (hab : a ≤ b) (hβ : b < β) :
-    loopTimeFold a b α β t ∈ Icc α β := by
-  have ha : 0 < a - α := by linarith
-  have hb : 0 < β - b := by linarith
-  have hT1nn := Real.smoothTransition.nonneg ((a - t) / (a - α))
-  have hT1le := Real.smoothTransition.le_one ((a - t) / (a - α))
-  have hT2nn := Real.smoothTransition.nonneg ((t - b) / (β - b))
-  have hT2le := Real.smoothTransition.le_one ((t - b) / (β - b))
-  rcases le_total t α with ht | ht
-  · have h2 : (t - b) / (β - b) ≤ 0 :=
-      div_nonpos_of_nonpos_of_nonneg (by linarith) hb.le
-    have h1 : 1 ≤ (a - t) / (a - α) := (le_div_iff₀ ha).mpr (by linarith)
-    rw [loopTimeFold, Real.smoothTransition.zero_of_nonpos h2,
-      Real.smoothTransition.one_of_one_le h1]
-    exact ⟨by linarith, by linarith⟩
-  · rcases le_total t a with hta | hta
-    · have h2 : (t - b) / (β - b) ≤ 0 :=
-        div_nonpos_of_nonpos_of_nonneg (by linarith) hb.le
-      rw [loopTimeFold, Real.smoothTransition.zero_of_nonpos h2]
-      exact ⟨by nlinarith, by nlinarith⟩
-    · rcases le_total t b with htb | htb
-      · have h1 : (a - t) / (a - α) ≤ 0 :=
-          div_nonpos_of_nonpos_of_nonneg (by linarith) ha.le
-        have h2 : (t - b) / (β - b) ≤ 0 :=
-          div_nonpos_of_nonpos_of_nonneg (by linarith) hb.le
-        rw [loopTimeFold, Real.smoothTransition.zero_of_nonpos h1,
-          Real.smoothTransition.zero_of_nonpos h2]
-        exact ⟨by linarith, by linarith⟩
-      · have h1 : (a - t) / (a - α) ≤ 0 :=
-          div_nonpos_of_nonpos_of_nonneg (by linarith) ha.le
-        rw [loopTimeFold, Real.smoothTransition.zero_of_nonpos h1]
-        rcases le_total β t with hbt | hbt
-        · have h2 : 1 ≤ (t - b) / (β - b) := (le_div_iff₀ hb).mpr (by linarith)
-          rw [Real.smoothTransition.one_of_one_le h2]
-          exact ⟨by linarith, by linarith⟩
-        · exact ⟨by nlinarith, by nlinarith⟩
-
-end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
-
-end
-
-end

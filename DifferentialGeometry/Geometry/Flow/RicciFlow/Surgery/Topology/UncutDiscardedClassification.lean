@@ -14,7 +14,7 @@ universe u
 
 variable {P Q : OrientedThreeStage.{u}} {a s : ℝ}
 
-theorem MetricCutCapEvent.exists_isStandardConnectedSum_discardedComponent_threshold_of_uncut
+theorem MetricCutCapEvent.exists_isPoincareStandard_discardedComponent_threshold_of_uncut
     (E : MetricCutCapEvent P Q a s) :
     ∃ L : ℝ, 0 < L ∧ ∀ (hc : SmoothCutCapCompletion E.transition),
       let X := SphericalCutCapTransition.ofSmoothCutCapTransition E.transition hc
@@ -25,8 +25,8 @@ theorem MetricCutCapEvent.exists_isStandardConnectedSum_discardedComponent_thres
             (∀ y : E.incoming.terminalRegularOpen, ConnectedComponents.mk y.val = C →
               metricScalarAt E.terminal.metric y ≤ L →
               y.val ∈ Subtype.val '' E.transition.trace.retainedCore) →
-            DifferentialGeometry.Topology.isStandardConnectedSum
-              (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
+            DifferentialGeometry.Topology.isPoincareStandard
+              (E.discarded.toClosedOrientedManifold.component (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨L, hL, hclass⟩ := E.terminal.exists_component_poincareStandard_threshold E.incoming
   refine ⟨L, hL, ?_⟩
   intro hc X C hC x hx d hxd hretain
@@ -39,7 +39,7 @@ theorem MetricCutCapEvent.exists_isStandardConnectedSum_discardedComponent_thres
     exact Sum.inr_ne_inl (hxd.symm.trans hq)
   have hstd := hclass C (by
     intro y hy
-    have hyC : y.val ∈ P.componentSet C :=
+    have hyC : y.val ∈ P.toClosedOrientedManifold.componentSet C :=
       (DifferentialGeometry.Topology.ClosedOrientedManifold.mem_componentSet _ _ _).mpr hy
     have hycore : y.val ∈ E.transition.trace.tubes.core :=
       X.componentSet_subset_core_of_cutIndices_eq_empty C hC hyC
@@ -52,7 +52,7 @@ theorem MetricCutCapEvent.exists_isStandardConnectedSum_discardedComponent_thres
     intro hlow
     obtain ⟨w, hw, hwy⟩ := hretain y hy hlow
     exact hn ((Subtype.ext hwy : w = z) ▸ hw))
-  exact X.isStandardConnectedSum_discardedComponent_of_cutIndices_eq_empty C hC x hx d hxd' hstd
+  exact X.isPoincareStandard_discardedComponent_of_cutIndices_eq_empty C hC x hx d hxd' hstd
 
 theorem MetricCutCapEvent.exists_poincareStandardDiscarded_threshold_of_isEmpty_index
     (E : MetricCutCapEvent P Q a s) [IsEmpty E.transition.trace.tubes.Index] :
@@ -60,7 +60,7 @@ theorem MetricCutCapEvent.exists_poincareStandardDiscarded_threshold_of_isEmpty_
       ((∀ x : E.incoming.terminalRegularOpen, metricScalarAt E.terminal.metric x ≤ L →
         x.val ∈ Subtype.val '' E.transition.trace.retainedCore) →
       E.poincareStandardDiscarded) := by
-  obtain ⟨L, hL, hclass⟩ := E.exists_isStandardConnectedSum_discardedComponent_threshold_of_uncut
+  obtain ⟨L, hL, hclass⟩ := E.exists_isPoincareStandard_discardedComponent_threshold_of_uncut
   refine ⟨L, hL, ?_⟩
   intro hretain c
   have hboundary : E.transition.boundaryFrameReversing := by
@@ -79,10 +79,10 @@ theorem MetricCutCapEvent.exists_poincareStandardDiscarded_threshold_of_isEmpty_
   have hout := hclass hc (ConnectedComponents.mk x.val) hcut x hx d hxd' (fun y _ => hretain y)
   change ConnectedComponents.mk (α := E.discarded.Carrier) d = c at hd
   exact (congrArg (fun K : ConnectedComponents E.discarded.Carrier =>
-    DifferentialGeometry.Topology.isStandardConnectedSum
-      (E.discarded.component K).Carrier) hd).mp hout
+    DifferentialGeometry.Topology.isPoincareStandard
+      (E.discarded.toClosedOrientedManifold.component K).Carrier) hd).mp hout
 
-theorem GeometricCutoffRecord.exists_isStandardConnectedSum_discardedComponent_threshold_of_uncut
+theorem GeometricCutoffRecord.exists_isPoincareStandard_discardedComponent_threshold_of_uncut
     {H : ObservedHistory.{u}} (i : Fin H.eventCount) :
     ∃ L : ℝ, 0 < L ∧ ∀ (parameters : CutoffParameters),
       GeometricCutoffRecord H i parameters →
@@ -94,11 +94,11 @@ theorem GeometricCutoffRecord.exists_isStandardConnectedSum_discardedComponent_t
               (H.event i).transition.trace.presentation
                 ((H.event i).transition.trace.capping.coreInclusion x) = Sum.inr d →
               L ≤ ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ →
-              DifferentialGeometry.Topology.isStandardConnectedSum
-                ((H.event i).discarded.component
+              DifferentialGeometry.Topology.isPoincareStandard
+                ((H.event i).discarded.toClosedOrientedManifold.component
                   (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨L, hL, hstd⟩ :=
-    (H.event i).exists_isStandardConnectedSum_discardedComponent_threshold_of_uncut
+    (H.event i).exists_isPoincareStandard_discardedComponent_threshold_of_uncut
   refine ⟨L, hL, ?_⟩
   intro parameters R hc X C hC x hx d hd hscale
   apply hstd hc C hC x hx d hd

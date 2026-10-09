@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Polar.Evaluation
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.MinimizingDomain.NoConjugatePoints
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.NoConjugatePoints
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Frame
 
 set_option autoImplicit false

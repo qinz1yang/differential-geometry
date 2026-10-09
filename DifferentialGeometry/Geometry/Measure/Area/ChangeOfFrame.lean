@@ -55,7 +55,7 @@ theorem tangentTwoJacobian_comp_complex (g : SmoothRiemannianMetric I M) {x : M}
     congr 1
     simp [Complex.real_smul, Complex.re_add_im]
   rw [hv (A 1), hv (A Complex.I), tangentTwoJacobian_changeOfFrame,
-    LinearMap.det_complex]
+    complex_linearMap_det]
   simp only [ContinuousLinearMap.coe_coe, mul_comm]
 
 set_option backward.isDefEq.respectTransparency false in

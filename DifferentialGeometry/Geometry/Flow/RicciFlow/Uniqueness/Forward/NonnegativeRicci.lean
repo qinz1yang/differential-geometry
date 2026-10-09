@@ -1,10 +1,10 @@
-import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
+import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricFirstOrder
 import DifferentialGeometry.Geometry.Connection.Convergence.ReferenceBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.CutoffGrowth
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Riemannian
-import DifferentialGeometry.Geometry.Comparison.Volume.IntegralEstimate
+import DifferentialGeometry.Analysis.Integration.Integral.VolumeGrowth
 import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.CotangentNorm
 
 noncomputable section

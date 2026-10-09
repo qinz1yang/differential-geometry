@@ -109,9 +109,9 @@ private theorem deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x) D
-      = slotInsertEndomorphism (I := I) (M := M) 2 0 x
+      = slotInsertEndoFib (I := I) (M := M) 2 0 x
           (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) D from rfl]
-  rw [slotInsertEndomorphism_apply_eval (I := I) (M := M) 2 0 x
+  rw [slotInsertEndoFib_apply_eval (I := I) (M := M) 2 0 x
     (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) D m]
   rw [show (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
@@ -150,12 +150,12 @@ private theorem deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum
         (Tensor0SSpace.ofModel
           (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
             (Tensor0SSpace.toModel D)))
-      = slotInsertEndomorphism (I := I) (M := M) 2 0 x
+      = slotInsertEndoFib (I := I) (M := M) 2 0 x
           (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x)
           (Tensor0SSpace.ofModel
             (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
               (Tensor0SSpace.toModel D))) from rfl]
-  rw [slotInsertEndomorphism_apply_eval (I := I) (M := M) 2 0 x
+  rw [slotInsertEndoFib_apply_eval (I := I) (M := M) 2 0 x
     (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x)
     (Tensor0SSpace.ofModel
       (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)

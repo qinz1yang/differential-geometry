@@ -32,9 +32,9 @@ theorem regularRepresentative_smooth_exists (g : SmoothRiemannianMetric I Q)
   let ε := ε₀ / 2
   have hε : ε ∈ Ioo (0 : ℝ) ε₀ := ⟨half_pos hε₀, half_lt_self hε₀⟩
   obtain ⟨F, _, hF⟩ := hhom ε hε
-  have hctr (k : Sphere 2) : ContinuousMap.Nullhomotopic (S ε k).toContinuousLoop := by
+  have hctr (k : Sphere 2) : IsContractibleLoop (S ε k).toContinuousLoop := by
     have h := hF k (Γ.1 k).2 1
-    exact Eq.mp (congrArg ContinuousMap.Nullhomotopic (F.apply_one k)) h
+    exact Eq.mp (congrArg IsContractibleLoop (F.apply_one k)) h
   let T : RegularFamily (I := I) (Q := Q) (Sphere 2) :=
     ⟨fun k => ⟨S ε k, hctr k⟩, (S ε).continuous.subtype_mk _⟩
   have hhomT : ContinuousMap.Homotopic (contractibleRegularLoopInclusion.comp Γ.1)
@@ -50,15 +50,15 @@ theorem regularRepresentative_smooth_exists (g : SmoothRiemannianMetric I Q)
     · intro k
       apply Subtype.ext
       exact F.apply_one k
-  have hclass : DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp T) = ξ :=
-    ((DifferentialGeometry.Topology.FreeHomotopyClass.mk_eq_mk_iff _ _).mpr hhomT).symm.trans Γ.2
+  have hclass : FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp T) = ξ :=
+    ((FreeHomotopyClass.mk_eq_mk_iff _ _).mpr hhomT).symm.trans Γ.2
   refine ⟨⟨T, hclass⟩, ?_⟩
   simpa only [HasContinuousSmoothLoopJets, HasContinuousSmoothJets, T,
     ContinuousMap.coe_mk] using hjets ε hε
 
 theorem regularClass_existsUnique (ξ : FreeContractibleSphereClass Q) :
-    ∃! ξ₁ : DifferentialGeometry.Topology.FreeHomotopyClass (Sphere 2) (ContractibleRegularLoop (I := I) (Q := Q)),
-      DifferentialGeometry.Topology.FreeHomotopyClass.map contractibleRegularLoopInclusion ξ₁ = ξ := by
+    ∃! ξ₁ : FreeHomotopyClass (Sphere 2) (ContractibleRegularLoop (I := I) (Q := Q)),
+      FreeHomotopyClass.map contractibleRegularLoopInclusion ξ₁ = ξ := by
   have hb := rfs_regular_class_correspondence (I := I) (Q := Q)
   obtain ⟨ξ₁, hξ₁⟩ := hb.surjective ξ
   exact ⟨ξ₁, hξ₁, fun ξ₂ hξ₂ => hb.injective (hξ₂.trans hξ₁.symm)⟩
@@ -72,21 +72,21 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
 theorem canonical_regularClass_existsUnique (g : SmoothRiemannianMetric ThreeModel M)
     (o : TangentOrientationSection M) {N : ℕ}
     (e : SmoothLoopEmbedding (I := ThreeModel) (Q := M) N) :
-    ∃! ξ : DifferentialGeometry.Topology.FreeHomotopyClass (Sphere 2) (ContractibleRegularLoop (I := ThreeModel) (Q := M)),
-      DifferentialGeometry.Topology.FreeHomotopyClass.map contractibleRegularLoopInclusion ξ = positiveFreeContractibleClass o ∧
-      (∀ q : M, ξ ≠ DifferentialGeometry.Topology.FreeHomotopyClass.mk
+    ∃! ξ : FreeHomotopyClass (Sphere 2) (ContractibleRegularLoop (I := ThreeModel) (Q := M)),
+      FreeHomotopyClass.map contractibleRegularLoopInclusion ξ = positiveFreeContractibleClass o ∧
+      (∀ q : M, ξ ≠ FreeHomotopyClass.mk
         (ContinuousMap.const (Sphere 2) (constantContractibleRegularLoop (I := ThreeModel) q))) ∧
       ∃ Γ : RegularFamily (I := ThreeModel) (Q := M) (Sphere 2),
-        DifferentialGeometry.Topology.FreeHomotopyClass.mk Γ = ξ ∧ HasContinuousSmoothLoopJets e Γ := by
+        FreeHomotopyClass.mk Γ = ξ ∧ HasContinuousSmoothLoopJets e Γ := by
   classical
   obtain ⟨ξ, hξ, huniq⟩ := regularClass_existsUnique (I := ThreeModel) (positiveFreeContractibleClass o)
   obtain ⟨Γ, hΓ⟩ := regularRepresentative_smooth_exists g (positiveFreeContractibleClass o) e
-  have hΓclass : DifferentialGeometry.Topology.FreeHomotopyClass.mk Γ.1 = ξ := huniq _ Γ.2
+  have hΓclass : FreeHomotopyClass.mk Γ.1 = ξ := huniq _ Γ.2
   refine ⟨ξ, ⟨hξ, ?_, Γ.1, hΓclass, hΓ⟩, fun η hη => huniq η hη.1⟩
   intro q hq
   apply positiveFreeContractibleClass_nontrivial o q
   exact hξ.symm.trans (congrArg
-    (DifferentialGeometry.Topology.FreeHomotopyClass.map (X := Sphere 2) contractibleRegularLoopInclusion) hq)
+    (FreeHomotopyClass.map (X := Sphere 2) contractibleRegularLoopInclusion) hq)
 
 end Canonical
 

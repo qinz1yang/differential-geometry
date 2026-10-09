@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.AllScales
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorCone
 import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

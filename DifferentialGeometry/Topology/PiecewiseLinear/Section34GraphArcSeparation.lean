@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCellSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphFaceArcs
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphEdgeArcs
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.CutCells.Intersections
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCutIntersections
 import DifferentialGeometry.Topology.PiecewiseLinear.BallDensity
 
 open Set
@@ -24,7 +29,7 @@ variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensi
 private theorem subsingleton_split_inter_triangle
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (s : Section34SimplexIndex 𝒦 3) (e : Section34EdgeIndex 𝒦 𝒦') :
-    (graphSplittingDisk 𝒦 𝒦' e ∩ section34GraphResidualCell 𝒦 𝒦' s.1).Subsingleton := by
+    (section34GraphSplitCell 𝒦 𝒦' e ∩ section34GraphResidualCell 𝒦 𝒦' s.1).Subsingleton := by
   by_cases hes : Section34Incident e.1 s.1
   · obtain ⟨p, hp⟩ := exists_singleton_section34GraphSplitCell_inter_residualTriangle
       hsub hmap s e hes
@@ -37,7 +42,7 @@ private theorem subsingleton_split_inter_triangle
 private theorem subsingleton_split_inter_distinct_tetrahedra
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (s t : Section34SimplexIndex 𝒦 4) (e : Section34EdgeIndex 𝒦 𝒦') (hst : s ≠ t) :
-    (graphSplittingDisk 𝒦 𝒦' e ∩
+    (section34GraphSplitCell 𝒦 𝒦' e ∩
       (section34GraphResidualCell 𝒦 𝒦' s.1 ∩
         section34GraphResidualCell 𝒦 𝒦' t.1)).Subsingleton := by
   classical
@@ -64,14 +69,14 @@ private theorem subsingleton_split_inter_distinct_tetrahedra
 
 theorem section34GraphCutFamily_subset_strict_on_arcs
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map) :
-    let src := graphCutCell 𝒦 𝒦'
+    let src := section34GraphCutFamily 𝒦 𝒦'
     (∀ a l, src (.faceArc a) ⊆ src l →
       (.faceArc a : Section34CutLabelOf 𝒦 𝒦') = l ∨ 1 < section34Dim l) ∧
     ∀ i l, src (.edgeArc i) ⊆ src l →
       (.edgeArc i : Section34CutLabelOf 𝒦 𝒦') = l ∨ 1 < section34Dim l := by
   classical
-  let C := graphVertexCell 𝒦 𝒦'
-  let E := graphSplittingDisk 𝒦 𝒦'
+  let C := section34GraphVertexCell 𝒦 𝒦'
+  let E := section34GraphSplitCell 𝒦 𝒦'
   let R := section34GraphResidualCell 𝒦 𝒦'
   let A := fun a : Section34ArcIndex 𝒦 𝒦' => C a.1.2 ∩ R a.1.1.1
   let I := fun i : Section34EdgeArcIndex 𝒦 𝒦' => R i.1.1.1 ∩ E i.1.2
@@ -111,7 +116,7 @@ theorem section34GraphCutFamily_subset_strict_on_arcs
     obtain ⟨x, hx⟩ := (hI i).nonempty
     have he : i.1.2 = j.1.2 := by
       by_contra he
-      exact disjoint_left.mp (pairwise_disjoint_graphSplittingDisk 𝒦 𝒦' he)
+      exact disjoint_left.mp (pairwise_disjoint_section34GraphSplitCell 𝒦 𝒦' he)
         hx.2 (h hx).2
     have ht : i.1.1 = j.1.1 := by
       by_contra ht

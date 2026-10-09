@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.CurveSpeedCalculus
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
+import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
 import DifferentialGeometry.Topology.FirstExit
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling

@@ -659,7 +659,7 @@ theorem diffStep_leibniz_eval
             (fun a : Fin s => fun y' : M => (S y') (fun b : Fin s => (τ a b) y'))) y) := by
       funext y; simp only [Finset.sum_apply]
     rw [h1, mvfderiv_neg_at (I := I) (W x)
-          (MDifferentiableAt.sum (I := I) (t := Finset.univ) (fun a _ => hdiff a)),
+          (mdiffAt_finset_sum (I := I) Finset.univ _ (fun a _ => hdiff a)),
         mvfderiv_finset_sum_at (I := I) Finset.univ
           (fun a : Fin s => fun y : M => (S y) (fun b : Fin s => (τ a b) y)) (W x)
           (fun a _ => hdiff a)]

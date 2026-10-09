@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.SphereSeparation.Normal.Charts
+import DifferentialGeometry.Topology.SphereSeparation.LocalNormalForm
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 
 set_option autoImplicit false

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceEssentialBoundaryTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalComponentMarkRetention
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeWindowReduction
@@ -22,7 +27,7 @@ variable [DecidableEq E3] {X Y : ℤ → Geometry.SimplicialComplex ℝ E3}
 theorem HasCanonicalBridgeWitnesses.of_null_splits
     (hX : HasCanonicalBridgeWitnesses X T'')
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (window : Finset ℤ)
+    (h314 : Moise314) (window : Finset ℤ)
     (hpath : Relation.ReflTransGen (fun U V =>
       IsCanonicalSurface U (fun j => φ '' S j) T'' I P' a b ∧
       IsCanonicalSurface V (fun j => φ '' S j) T'' I P' a b ∧
@@ -31,7 +36,7 @@ theorem HasCanonicalBridgeWitnesses.of_null_splits
   intro i
   obtain ⟨c, G₀, G₁, h₀, h₁, he₀, he₁⟩ := hX i
   obtain ⟨d, hd₀, hd₁⟩ :=
-    htw.exists_component_containing_essential_seams_of_null_splits window hpath i
+    htw.exists_component_containing_essential_seams_of_null_splits h314 window hpath i
       ⟨c, h₀, h₁⟩ he₀ he₁
   exact ⟨d, G₀, G₁, hd₀, hd₁, he₀, he₁⟩
 

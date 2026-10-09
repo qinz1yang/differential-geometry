@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Toponogov.PuncturedConeApproximation
-import DifferentialGeometry.Topology.MetricSpace.Cone.Annulus
+import DifferentialGeometry.Geometry.Metric.ConeAnnulus
 
 set_option autoImplicit false
 noncomputable section

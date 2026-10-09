@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonAttainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskAreaMetricFirstVariation
-import DifferentialGeometry.Geometry.Metric.Family.Pullback.Smoothness
+import DifferentialGeometry.Geometry.Metric.ParameterPullbackFamily
 
 noncomputable section
 

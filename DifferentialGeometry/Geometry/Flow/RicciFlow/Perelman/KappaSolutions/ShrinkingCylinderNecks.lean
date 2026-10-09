@@ -1,9 +1,9 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Cylinders.Classification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderBranch
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderScalarNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonReflexive
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Cylinder.ReferenceMetric
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Classification.Cylinder.PositiveEnd
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Classification.Cylinder.ScalarNormalization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderReferenceModel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderCoverPositiveEnd
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderCoverScalarNormalization
 import DifferentialGeometry.Geometry.Neck.Spatial
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorph
 
