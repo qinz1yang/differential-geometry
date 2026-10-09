@@ -29017,3 +29017,17 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DistLADriver
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12V11Fin4ASM
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyV7LocFin2ASM
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12V11Fin2ASM
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #142
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResFThDefFS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResFThSFS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10FinalTransFS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10FinalSlotsFS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10FinalAuxFS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6J10FinalSupplyFS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HnrTupleFS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6DrvResFEngFS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResJFEngFS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResJFConj2FS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyV7LocFin2FS
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12V11Fin2FS
