@@ -9,10 +9,7 @@ on:
 jobs:
   audit:
     name: Audit Project
-    runs-on: 
-      - self-hosted
-      - macOS
-      - ARM64
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
